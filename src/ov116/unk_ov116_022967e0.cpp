@@ -1,360 +1,238 @@
-#define vfunc_08() vfunc_08(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
-#undef vfunc_14
+#include "ui/UiWidget.h"
+#include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "ui/LabelString.h"
+#include "menu/MenuCursor.h"
+#include "menu/CreatureBookPanel.h"
+#include "menu/MenuTabBar.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
-extern u8 data_021ef5f0;
-extern u8 data_021ef5ec;
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern u16 data_021f47d8[];
+extern u8 gTouchCurX;
+extern u8 gTouchCurY;
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern u16 gPad[];
 
-void *func_020ed174();
-void func_020ed188(void *p);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-BOOL func_0206e63c();
-BOOL func_0206e61c();
-BOOL func_0206ef0c();
-BOOL func_0206ef00();
-s32 func_ov090_02291aa0();
-u8 func_ov090_02291a38(u8 a);
-u8 func_ov090_02291a58(u8 a);
+void *ProcBase_GetParent();
+void ProcBase_RequestDelete(void *p);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+BOOL MenuCtrl_TickForceClose();
+BOOL MenuCtrl_IsForceCloseDue();
+BOOL MenuCtrl_IsTouch();
+BOOL MenuCtrl_IsButtons();
+s32 MenuTabBar_HitTestTouch();
+u8 MenuTabBar_NextTab(u8 a);
+u8 MenuTabBar_PrevTab(u8 a);
 
 // ov114 sub-object (+0xf8) functions
-void func_ov114_02294e6c(void *p);
-s32 func_ov114_022950cc(void *p);
-BOOL func_ov114_022950b4(void *p);
-s32 func_ov114_022950e8(void *p);
-s32 func_ov114_02295150(void *p);
-BOOL func_ov114_02295c9c(void *p);
-void func_ov114_02295d04(void *p);
-void func_ov114_02295ce0(void *p);
-BOOL func_ov114_02295d98(void *p);
-BOOL func_ov114_02294d88(void *p);
-BOOL func_ov114_02294ed0(void *p, s32 a);
-void func_ov114_02295dec(void *p, u32 a);
-void func_ov114_02295dc4(void *p);
-BOOL func_ov114_02295510(void *p, u32 a, u32 b);
-void func_ov114_0229559c(void *p);
-void func_ov114_0229539c(void *p);
-void func_ov114_02295374(void *p);
-void func_ov114_022956a4(void *p, s32 a);
+void CreatureBook_ClampFocusToView(void *p);
+s32 CreatureBook_GetFocusedTab(void *p);
+BOOL CreatureBook_IsFocusOnPageArrow(void *p);
+s32 CreatureBook_GetFocusY(void *p);
+s32 CreatureBook_GetFocusX(void *p);
+BOOL CreatureBook_FinishScrollHold(void *p);
+void CreatureBook_UpdateScrollHold(void *p);
+void CreatureBook_ReleaseKnob(void *p);
+BOOL CreatureBook_WaitScrollHoldStart(void *p);
+BOOL CreatureBook_ActivateFocus(void *p);
+BOOL CreatureBook_MoveFocus(void *p, s32 a);
+void CreatureBook_UpdateScrollTouch(void *p, u32 a);
+void CreatureBook_EndScrollTouch(void *p);
+BOOL CreatureBook_TouchRow(void *p, u32 a, u32 b);
+void CreatureBook_RefreshRowIcons(void *p);
+void CreatureBook_InitPictureView(void *p);
+void CreatureBook_StopPictureFade(void *p);
+void CreatureBook_DrawRows(void *p, s32 a);
 }
 
-class Unk_ov090_022921e0 {
-public:
-    void func_ov090_02291d2c();
-    void func_ov090_02291d8c(u32 a);
-};
 
-class Unk_ov116_02297378;
-
-struct Unk_ov116_SceneEntry {
-    Unk_ov116_02297378 *(*create)();
-    u16 a;
-    u16 b;
-};
+class InsectBookTab;
 
 
-class Unk_020e0488 {
-public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206fc44();
-    u8 unk_04[0x3c];
-};
 
-class Unk_ov114_02294c40 {
-public:
-    Unk_ov114_02294c40();
-    ~Unk_ov114_02294c40();
-    BOOL func_ov114_02295eb4(s32 a, s32 b);
-    void func_ov114_02295fec(s32 a);
-    void func_ov114_0229600c();
-    BOOL func_ov114_02296024(s32 a, s32 b);
-    void func_ov114_02296078(s32 a);
-    void func_ov114_02296148();
-    void func_ov114_022961c0();
-    void func_ov114_022962e4();
-    void func_ov114_0229633c();
-    void func_ov114_0229636c();
-    void func_ov114_02296390(u8 a, u8 b, u8 c, u8 d);
-    u32 unk_00[0x129c / 4];
-};
 
-class Unk_020e0db4 {
-public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-};
 
-class Unk_020e100c : public Unk_020e0db4 {
-public:
-    Unk_020e100c(BOOL flag);
-    virtual ~Unk_020e100c();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
 
-    BOOL func_0208d4fc();
 
-    /* 0x0c */ u8 unk_0c[0x3f];
-};
 
-class Unk_ov002_02202d98 : public Unk_020e100c {
-public:
-    void func_ov002_02202844();
-    BOOL func_ov002_022028f0();
-    void func_ov002_022029e8(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_02202a40(s32 a, s32 b);
-    void func_ov002_02202a78();
-    void func_ov002_02202af0();
-};
 
-class Unk_ov002_0220464c : public Unk_020e100c {
-public:
-    void func_ov002_02202b68();
-    void func_ov002_02202be0();
-    void func_ov002_02202c40();
-    void func_ov002_02202d00(s32 a);
-};
 
-// +0x94 sub-object (0x64 bytes)
-class Unk_ov002_02204614 : public Unk_ov002_02202d98 {
-public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
-    u8 unk_4b[0x64 - 0x4b];
-};
-
-// Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
-public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
-
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_022008c4(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_022008e0(s32 a, s32 b, s32 c, s32 d);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200920();
-    void func_ov002_02200980();
-    u32 func_ov002_022009c8();
-    BOOL func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
-
-    /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
-    /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
-};
-
-typedef void (Unk_ov116_02297378::*Unk_ov116_02297378_Fn)();
+typedef void (InsectBookTab::*Unk_ov116_02297378_Fn)();
 
 // Vtable 0x02297378, size 0x13e0
-class Unk_ov116_02297378 : public Unk_ov002_022044e4 {
+class InsectBookTab : public MenuProc {
 public:
-    Unk_ov116_02297378() : unk_94(), unk_f8(), unk_1394() {}
+    InsectBookTab() : cursor(), bookPanel(), textLabels() {}
 
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
+    virtual BOOL onDraw();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov116_02296868(u32 mask);
-    BOOL func_ov116_02296878(u32 mask);
-    void func_ov116_02296890();
-    void func_ov116_022968b8();
-    void func_ov116_022968d0();
-    void func_ov116_022968ec(s32 a, s32 b);
-    void func_ov116_02296920();
-    s32 func_ov116_02296990();
-    s32 func_ov116_0229699c();
-    void func_ov116_02296974();
-    void func_ov116_022969a8();
-    void func_ov116_02296a10();
-    void func_ov116_02296a2c();
-    void func_ov116_02296a4c();
-    void func_ov116_02296a68();
-    void func_ov116_02296a80();
-    void func_ov116_02296ad0();
-    void func_ov116_02296b34();
-    void func_ov116_02296b80();
-    void func_ov116_02296ba8();
-    void func_ov116_02296c00();
-    void func_ov116_02296c28();
-    void func_ov116_02296cb0();
-    void func_ov116_02296ce8();
-    void func_ov116_02296d70();
-    void func_ov116_02296d88();
-    void func_ov116_02296da0();
-    void func_ov116_02296de8();
-    void func_ov116_02296df4();
-    void func_ov116_02296e0c();
-    void func_ov116_02296e14();
-    void func_ov116_02296e2c();
-    void func_ov116_02296e44();
-    void func_ov116_02296e68();
-    void func_ov116_02296ea4();
-    void func_ov116_02296edc();
-    void func_ov116_02296f14();
-    void func_ov116_02296f3c();
-    BOOL func_ov116_02296f8c(s32 v);
-    BOOL func_ov116_02296fcc();
-    void func_ov116_022970a8();
+    void setFlags(u32 mask);
+    BOOL testFlags(u32 mask);
+    void releaseCursor();
+    void pressCursor();
+    void refreshCursor();
+    void moveCursorTo(s32 a, s32 b);
+    void moveCursorToTarget();
+    s32 getCursorTargetY();
+    s32 getCursorTargetX();
+    void hideCursor();
+    void showCursor();
+    void resetTextLabels();
+    void resumeInput();
+    void startButtonInput();
+    void startTouchInput();
+    void mainAct08();
+    void mainAct07();
+    void mainAct06();
+    void updateCursorRelease();
+    void updateCursorPress();
+    void updateCursorMove();
+    void updateButtons();
+    void mainAct01();
+    void updateTouch();
+    void loadObjGfx();
+    void loadBgGfx();
+    void setupBgLayers();
+    void postStateUpdate();
+    void preStateUpdate();
+    void postInputUpdate();
+    void preInputUpdate();
+    void releaseResources();
+    void initInsectBook();
+    void updateLayerSlide();
+    void stateClosing();
+    void stateClose();
+    void stateOpening();
+    void stateOpen();
+    BOOL requestTab(s32 v);
+    BOOL handleTabSwitch();
+    void runMainState();
 
     /* 0x0091 */ u8 unk_91[0x3];
-    /* 0x0094 */ Unk_ov002_02204614 unk_94;
-    /* 0x00f8 */ Unk_ov114_02294c40 unk_f8;
-    /* 0x1394 */ Unk_020e0488 unk_1394[1];
-    /* 0x13d4 */ s32 unk_13d4;
-    /* 0x13d8 */ u16 unk_13d8;
-    /* 0x13da */ u8 unk_13da;
+    /* 0x0094 */ MenuCursorBuf0 cursor;
+    /* 0x00f8 */ CreatureBookPanel bookPanel;
+    /* 0x1394 */ LabelString textLabels[1];
+    /* 0x13d4 */ s32 slideY;
+    /* 0x13d8 */ u16 flags;
+    /* 0x13da */ u8 labelCount;
     /* 0x13db */ u8 unk_13db;
-    /* 0x13dc */ u8 unk_13dc;
+    /* 0x13dc */ u8 returnState;
 };
 
 static inline BOOL Unk_ov116_02296ce8_Both() {
-    if (data_021f4770 != 0 && data_021f4774 != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" Unk_ov116_02297378 *func_ov116_022972a0() { return new Unk_ov116_02297378(); }
+extern "C" InsectBookTab *InsectBookTab_Create() { return new InsectBookTab(); }
 
-BOOL Unk_ov116_02297378::vfunc_00() {
-    func_ov116_02296e44();
-    func_ov002_02200a50(0);
-    func_ov002_02200a60(1);
+BOOL InsectBookTab::onCreate() {
+    initInsectBook();
+    setTransitionState(0);
+    setPhase(1);
     return TRUE;
 }
 
-BOOL Unk_ov116_02297378::vfunc_0c() {
-    ((Unk_ov090_022921e0 *)func_020ed174())->func_ov090_02291d2c();
-    func_ov116_02296e2c();
+BOOL InsectBookTab::onDelete() {
+    ((MenuTabBar *)ProcBase_GetParent())->onTabMenuClosed();
+    releaseResources();
     return TRUE;
 }
 
-BOOL Unk_ov116_02297378::vfunc_24() {
-    if (!func_ov116_02296878(1)) {
+BOOL InsectBookTab::onDraw() {
+    if (!testFlags(1)) {
         return TRUE;
     }
-    unk_f8.func_ov114_02295fec(unk_13d4);
-    if (func_0206ef00()) {
-        unk_94.func_ov002_02202844();
+    bookPanel.placeScrollKnob(slideY);
+    if (MenuCtrl_IsButtons()) {
+        cursor.drawWrapped();
     }
-    unk_f8.func_ov114_02296078(unk_13d4);
-    func_ov114_022956a4(&unk_f8, unk_13d4);
-    unk_f8.func_ov114_0229600c();
+    bookPanel.drawButtons(slideY);
+    CreatureBook_DrawRows(&bookPanel, slideY);
+    bookPanel.drawScrollKnob();
     return TRUE;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov116_SceneEntry data_ov116_02297318;
+extern "C" ProcProfile sInsectBookTabProfile;
 
-extern "C" Unk_ov116_SceneEntry data_ov116_02297318 = {func_ov116_022972a0, 0xa0, 0xa4};
+extern "C" ProcProfile sInsectBookTabProfile = {(void *(*)())InsectBookTab_Create, 0xa0, 0xa4};
 
-BOOL Unk_ov116_02297378::vfunc_4c() {
+BOOL InsectBookTab::execTransition() {
     static Unk_ov116_02297378_Fn tbl[4] = {
-        &Unk_ov116_02297378::func_ov116_02296f3c,
-        &Unk_ov116_02297378::func_ov116_02296f14,
-        &Unk_ov116_02297378::func_ov116_02296edc,
-        &Unk_ov116_02297378::func_ov116_02296ea4};
-    func_ov116_02296df4();
-    (this->*tbl[unk_8c])();
-    func_ov116_02296de8();
+        &InsectBookTab::stateOpen,
+        &InsectBookTab::stateOpening,
+        &InsectBookTab::stateClose,
+        &InsectBookTab::stateClosing};
+    preStateUpdate();
+    (this->*tbl[transitionState])();
+    postStateUpdate();
     return TRUE;
 }
 
-void Unk_ov116_02297378::func_ov116_022970a8() {
+void InsectBookTab::runMainState() {
     static Unk_ov116_02297378_Fn tbl[9] = {
-        &Unk_ov116_02297378::func_ov116_02296ce8,
-        &Unk_ov116_02297378::func_ov116_02296cb0,
-        &Unk_ov116_02297378::func_ov116_02296c28,
-        &Unk_ov116_02297378::func_ov116_02296c00,
-        &Unk_ov116_02297378::func_ov116_02296ba8,
-        &Unk_ov116_02297378::func_ov116_02296b80,
-        &Unk_ov116_02297378::func_ov116_02296b34,
-        &Unk_ov116_02297378::func_ov116_02296ad0,
-        &Unk_ov116_02297378::func_ov116_02296a80};
-    (this->*tbl[unk_8d])();
+        &InsectBookTab::updateTouch,
+        &InsectBookTab::mainAct01,
+        &InsectBookTab::updateButtons,
+        &InsectBookTab::updateCursorMove,
+        &InsectBookTab::updateCursorPress,
+        &InsectBookTab::updateCursorRelease,
+        &InsectBookTab::mainAct06,
+        &InsectBookTab::mainAct07,
+        &InsectBookTab::mainAct08};
+    (this->*tbl[mainState])();
 }
 
-BOOL Unk_ov116_02297378::vfunc_50() {
-    if (func_ov116_02296fcc()) {
+BOOL InsectBookTab::execMain() {
+    if (handleTabSwitch()) {
         return TRUE;
     }
-    func_ov116_02296e14();
-    func_ov116_022970a8();
-    func_ov116_02296e0c();
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov116_02297378::vfunc_54() { return TRUE; }
+BOOL InsectBookTab::execPhase3() { return TRUE; }
 
-BOOL Unk_ov116_02297378::vfunc_58() { return TRUE; }
+BOOL InsectBookTab::execPhase4() { return TRUE; }
 
-BOOL Unk_ov116_02297378::vfunc_5c() {
-    func_020ed188(this);
+BOOL InsectBookTab::execClosed() {
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-BOOL Unk_ov116_02297378::func_ov116_02296fcc() {
+BOOL InsectBookTab::handleTabSwitch() {
     s32 r;
-    func_0206e63c();
-    if (func_0206e61c()) {
-        return func_ov116_02296f8c(7);
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
+        return requestTab(7);
     }
-    if (unk_8d != 0 && unk_8d != 2) {
+    if (mainState != 0 && mainState != 2) {
         return FALSE;
     }
     r = -1;
-    if (func_0206ef0c()) {
-        r = func_ov090_02291aa0();
+    if (MenuCtrl_IsTouch()) {
+        r = MenuTabBar_HitTestTouch();
     } else {
-        u32 m = data_021f47d8[1];
+        u32 m = gPad[1];
         if (m & 2) {
             r = 7;
         } else if (m & 0x800) {
@@ -365,320 +243,320 @@ BOOL Unk_ov116_02297378::func_ov116_02296fcc() {
             r = 4;
         }
     }
-    return func_ov116_02296f8c(r);
+    return requestTab(r);
 }
 
-BOOL Unk_ov116_02297378::func_ov116_02296f8c(s32 v) {
-    void *h = func_020ed174();
+BOOL InsectBookTab::requestTab(s32 v) {
+    void *h = ProcBase_GetParent();
     if (v != -1 && v != 3) {
-        ((Unk_ov090_022921e0 *)h)->func_ov090_02291d8c((u8)v);
-        unk_8c = 2;
-        func_ov002_02200a60(1);
+        ((MenuTabBar *)h)->selectTab((u8)v);
+        transitionState = 2;
+        setPhase(1);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov116_02297378::func_ov116_02296f3c() {
-    func_ov116_02296da0();
-    func_ov116_02296d88();
-    func_ov116_02296d70();
-    func_ov002_022008e0(0xb, 0, 0, 0x30);
-    func_020020b8(3);
-    func_020020b8(6);
-    func_ov116_02296868(1);
-    func_ov116_02296e68();
-    func_ov002_02200a50(1);
+void InsectBookTab::stateOpen() {
+    setupBgLayers();
+    loadBgGfx();
+    loadObjGfx();
+    beginSubSlideIn(0xb, 0, 0, 0x30);
+    Gfx2d_ShowLayer(3);
+    Gfx2d_ShowLayer(6);
+    setFlags(1);
+    updateLayerSlide();
+    setTransitionState(1);
 }
 
-void Unk_ov116_02297378::func_ov116_02296f14() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        func_ov116_02296a2c();
+void InsectBookTab::stateOpening() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        resumeInput();
     }
-    func_ov116_02296e68();
+    updateLayerSlide();
 }
 
-void Unk_ov116_02297378::func_ov116_02296edc() {
-    func_ov116_02296974();
-    func_ov002_022008c4(0xb, 0, 0, 0x30);
-    func_ov116_02296e68();
-    func_ov002_02200a50(3);
-    func_ov114_02295374(&unk_f8);
+void InsectBookTab::stateClose() {
+    hideCursor();
+    beginSubSlideOut(0xb, 0, 0, 0x30);
+    updateLayerSlide();
+    setTransitionState(3);
+    CreatureBook_StopPictureFade(&bookPanel);
 }
 
-void Unk_ov116_02297378::func_ov116_02296ea4() {
-    if (func_ov002_022008fc(0)) {
-        func_020021a0(3);
-        func_020021a0(6);
-        func_020021a0(4);
-        func_ov002_02200a60(5);
+void InsectBookTab::stateClosing() {
+    if (stepSlideOut(0)) {
+        Gfx2d_ResetLayer(3);
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
+        setPhase(5);
     } else {
-        func_ov116_02296e68();
+        updateLayerSlide();
     }
 }
 
-void Unk_ov116_02297378::func_ov116_02296e68() {
-    func_ov002_02200840(3, 0, 0);
-    func_ov002_02200840(6, 0, 0);
-    func_ov002_02200840(4, 0, 0);
-    unk_13d4 = func_ov002_02200920();
+void InsectBookTab::updateLayerSlide() {
+    applySlideOffset(3, 0, 0);
+    applySlideOffset(6, 0, 0);
+    applySlideOffset(4, 0, 0);
+    slideY = getSlideOffsetY();
 }
 
-void Unk_ov116_02297378::func_ov116_02296e44() {
-    unk_13d8 = 0;
-    unk_f8.func_ov114_02296390(3, 6, 4, 1);
+void InsectBookTab::initInsectBook() {
+    flags = 0;
+    bookPanel.init(3, 6, 4, 1);
 }
 
-void Unk_ov116_02297378::func_ov116_02296e2c() {
-    unk_f8.func_ov114_0229636c();
-    func_ov116_02296a10();
+void InsectBookTab::releaseResources() {
+    bookPanel.cleanup();
+    resetTextLabels();
 }
 
-void Unk_ov116_02297378::func_ov116_02296e14() {
-    func_ov116_02296df4();
-    unk_94.vfunc_0c();
+void InsectBookTab::preInputUpdate() {
+    preStateUpdate();
+    cursor.update();
 }
 
-void Unk_ov116_02297378::func_ov116_02296e0c() {
-    func_ov116_02296de8();
+void InsectBookTab::postInputUpdate() {
+    postStateUpdate();
 }
 
-void Unk_ov116_02297378::func_ov116_02296df4() {
-    unk_f8.func_ov114_0229633c();
-    func_ov116_02296a10();
+void InsectBookTab::preStateUpdate() {
+    bookPanel.preUpdate();
+    resetTextLabels();
 }
 
-void Unk_ov116_02297378::func_ov116_02296de8() {
-    unk_f8.func_ov114_022962e4();
+void InsectBookTab::postStateUpdate() {
+    bookPanel.postUpdate();
 }
 
-void Unk_ov116_02297378::func_ov116_02296da0() {
-    func_02002398(3, 1);
-    func_0200226c(3, 0, 0, 0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 2);
-    func_0200226c(4, 0, 0, 0);
+void InsectBookTab::setupBgLayers() {
+    Gfx2d_SetLayerPriority(3, 1);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 2);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
-void Unk_ov116_02297378::func_ov116_02296d88() {
-    unk_f8.func_ov114_022961c0();
-    func_ov114_0229539c(&unk_f8);
+void InsectBookTab::loadBgGfx() {
+    bookPanel.loadBgGraphics();
+    CreatureBook_InitPictureView(&bookPanel);
 }
 
-void Unk_ov116_02297378::func_ov116_02296d70() {
-    unk_f8.func_ov114_02296148();
-    func_ov114_0229559c(&unk_f8);
+void InsectBookTab::loadObjGfx() {
+    bookPanel.loadObjGraphics();
+    CreatureBook_RefreshRowIcons(&bookPanel);
 }
 
-void Unk_ov116_02297378::func_ov116_02296ce8() {
-    if (func_ov002_02200a14(1)) {
-        func_ov116_02296a4c();
+void InsectBookTab::updateTouch() {
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
     } else if (Unk_ov116_02296ce8_Both()) {
-        u32 a = data_021ef5f0;
-        u32 b = data_021ef5ec;
-        if (unk_f8.func_ov114_02296024(a, b) == 0) {
-            if (unk_f8.func_ov114_02295eb4(a, b)) {
-                func_ov002_02200a58(1);
-            } else if (func_ov114_02295510(&unk_f8, a, b) != 0) {
+        u32 a = gTouchCurX;
+        u32 b = gTouchCurY;
+        if (bookPanel.hitDescPageButtons(a, b) == 0) {
+            if (bookPanel.beginScrollTouch(a, b)) {
+                setMainState(1);
+            } else if (CreatureBook_TouchRow(&bookPanel, a, b) != 0) {
                 return;
             }
         }
     }
 }
 
-void Unk_ov116_02297378::func_ov116_02296cb0() {
-    if (data_021f4770 != 0) {
-        func_ov114_02295dec(&unk_f8, data_021ef5f0);
+void InsectBookTab::mainAct01() {
+    if (gTouchHeld != 0) {
+        CreatureBook_UpdateScrollTouch(&bookPanel, gTouchCurX);
     } else {
-        func_ov114_02295dc4(&unk_f8);
-        func_ov002_02200a58(0);
+        CreatureBook_EndScrollTouch(&bookPanel);
+        setMainState(0);
     }
 }
 
-void Unk_ov116_02297378::func_ov116_02296c28() {
-    if (func_ov002_022009d4()) {
-        func_ov116_02296a68();
+void InsectBookTab::updateButtons() {
+    if (checkSwitchToTouch()) {
+        startTouchInput();
     } else {
-        u32 k = func_ov002_022009c8();
-        if (func_ov114_02294ed0(&unk_f8, k)) {
-            func_ov116_02296920();
+        u32 k = takeRepeatedKeys();
+        if (CreatureBook_MoveFocus(&bookPanel, k)) {
+            moveCursorToTarget();
         } else {
-            u32 m = data_021f47d8[1];
+            u32 m = gPad[1];
             if (m & 1) {
-                func_ov116_022968b8();
+                pressCursor();
             } else if (m & 0x100) {
-                func_ov116_02296f8c(func_ov090_02291a38(3));
+                requestTab(MenuTabBar_NextTab(3));
             } else if (m & 0x200) {
-                func_ov116_02296f8c(func_ov090_02291a58(3));
+                requestTab(MenuTabBar_PrevTab(3));
             }
         }
     }
 }
 
-void Unk_ov116_02297378::func_ov116_02296c00() {
-    if (!unk_94.func_ov002_022028f0()) {
-        func_ov002_02200a58(unk_13dc);
-        func_ov116_022970a8();
+void InsectBookTab::updateCursorMove() {
+    if (!cursor.isMoving()) {
+        setMainState(returnState);
+        runMainState();
     }
 }
 
-void Unk_ov116_02297378::func_ov116_02296ba8() {
-    if (unk_94.func_0208d4fc()) {
-        s32 r = func_ov114_022950cc(&unk_f8);
+void InsectBookTab::updateCursorPress() {
+    if (cursor.isAnimDone()) {
+        s32 r = CreatureBook_GetFocusedTab(&bookPanel);
         if (r != -1) {
-            if (func_ov116_02296f8c(r) != 0) {
+            if (requestTab(r) != 0) {
                 return;
             }
             goto bea;
         } else {
-            if (func_ov114_02294d88(&unk_f8) == 0) {
+            if (CreatureBook_ActivateFocus(&bookPanel) == 0) {
                 goto bea;
             }
-            func_ov002_02200a58(6);
+            setMainState(6);
             return;
         }
         return;
     bea:
-        func_ov002_02200a58(2);
-        func_ov116_02296890();
+        setMainState(2);
+        releaseCursor();
     }
 }
 
-void Unk_ov116_02297378::func_ov116_02296b80() {
-    if (unk_94.func_0208d4fc()) {
-        func_ov116_022968d0();
-        func_ov002_02200a58(unk_13dc);
+void InsectBookTab::updateCursorRelease() {
+    if (cursor.isAnimDone()) {
+        refreshCursor();
+        setMainState(returnState);
     }
 }
 
-void Unk_ov116_02297378::func_ov116_02296b34() {
-    if (func_ov114_02295d98(&unk_f8)) {
-        func_ov002_02200a58(7);
+void InsectBookTab::mainAct06() {
+    if (CreatureBook_WaitScrollHoldStart(&bookPanel)) {
+        setMainState(7);
     }
-    unk_f8.func_ov114_02295fec(unk_13d4);
-    s32 a = func_ov116_0229699c();
-    s32 b = func_ov116_02296990();
-    unk_94.func_ov002_02202a40(a, b);
+    bookPanel.placeScrollKnob(slideY);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    cursor.warpTo(a, b);
 }
 
-void Unk_ov116_02297378::func_ov116_02296ad0() {
-    if (data_021f47d8[0] & 1) {
-        func_ov114_02295d04(&unk_f8);
+void InsectBookTab::mainAct07() {
+    if (gPad[0] & 1) {
+        CreatureBook_UpdateScrollHold(&bookPanel);
     } else {
-        func_ov114_02295ce0(&unk_f8);
-        func_ov002_02200a58(8);
+        CreatureBook_ReleaseKnob(&bookPanel);
+        setMainState(8);
     }
-    unk_f8.func_ov114_02295fec(unk_13d4);
-    s32 a = func_ov116_0229699c();
-    s32 b = func_ov116_02296990();
-    unk_94.func_ov002_02202a40(a, b);
+    bookPanel.placeScrollKnob(slideY);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    cursor.warpTo(a, b);
 }
 
-void Unk_ov116_02297378::func_ov116_02296a80() {
-    if (func_ov114_02295c9c(&unk_f8)) {
-        func_ov002_02200a58(2);
-        func_ov116_02296890();
+void InsectBookTab::mainAct08() {
+    if (CreatureBook_FinishScrollHold(&bookPanel)) {
+        setMainState(2);
+        releaseCursor();
     }
-    unk_f8.func_ov114_02295fec(unk_13d4);
-    s32 a = func_ov116_0229699c();
-    s32 b = func_ov116_02296990();
-    unk_94.func_ov002_02202a40(a, b);
+    bookPanel.placeScrollKnob(slideY);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    cursor.warpTo(a, b);
 }
 
-void Unk_ov116_02297378::func_ov116_02296a68() {
-    func_ov116_02296974();
-    func_ov002_02200a58(0);
+void InsectBookTab::startTouchInput() {
+    hideCursor();
+    setMainState(0);
 }
 
-void Unk_ov116_02297378::func_ov116_02296a4c() {
-    func_ov116_022969a8();
-    func_ov002_02200980();
-    func_ov002_02200a58(2);
+void InsectBookTab::startButtonInput() {
+    showCursor();
+    restartKeyRepeat();
+    setMainState(2);
 }
 
-void Unk_ov116_02297378::func_ov116_02296a2c() {
-    if (func_0206ef0c()) {
-        func_ov116_02296a68();
+void InsectBookTab::resumeInput() {
+    if (MenuCtrl_IsTouch()) {
+        startTouchInput();
     } else {
-        func_ov116_02296a4c();
+        startButtonInput();
     }
 }
 
-void Unk_ov116_02297378::func_ov116_02296a10() {
-    unk_13da = 0;
-    unk_1394[0].func_0206fc44();
+void InsectBookTab::resetTextLabels() {
+    labelCount = 0;
+    textLabels[0].destroyLabel();
 }
 
-void Unk_ov116_02297378::func_ov116_022969a8() {
-    func_ov114_02294e6c(&unk_f8);
-    s32 a = func_ov116_0229699c();
-    s32 b = func_ov116_02296990();
-    unk_94.func_ov002_02202a40(a, b);
-    s32 r = func_ov114_022950cc(&unk_f8);
-    if (r != -1 || func_ov114_022950b4(&unk_f8) != 0) {
-        ((Unk_ov002_0220464c *)&unk_94)->func_ov002_02202d00(0xd);
+void InsectBookTab::showCursor() {
+    CreatureBook_ClampFocusToView(&bookPanel);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    cursor.warpTo(a, b);
+    s32 r = CreatureBook_GetFocusedTab(&bookPanel);
+    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(0xd);
     } else {
-        ((Unk_ov002_0220464c *)&unk_94)->func_ov002_02202d00(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
-    func_ov116_022968d0();
+    refreshCursor();
 }
 
-s32 Unk_ov116_02297378::func_ov116_0229699c() {
-    return func_ov114_02295150(&unk_f8);
+s32 InsectBookTab::getCursorTargetX() {
+    return CreatureBook_GetFocusX(&bookPanel);
 }
 
-s32 Unk_ov116_02297378::func_ov116_02296990() {
-    return func_ov114_022950e8(&unk_f8);
+s32 InsectBookTab::getCursorTargetY() {
+    return CreatureBook_GetFocusY(&bookPanel);
 }
 
-void Unk_ov116_02297378::func_ov116_02296974() {
-    ((Unk_ov002_0220464c *)&unk_94)->func_ov002_02202d00(0);
-    unk_94.vfunc_0c();
+void InsectBookTab::hideCursor() {
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.update();
 }
 
-void Unk_ov116_02297378::func_ov116_02296920() {
-    s32 r = func_ov114_022950cc(&unk_f8);
-    if (r != -1 || func_ov114_022950b4(&unk_f8) != 0) {
-        ((Unk_ov002_0220464c *)&unk_94)->func_ov002_02202be0();
+void InsectBookTab::moveCursorToTarget() {
+    s32 r = CreatureBook_GetFocusedTab(&bookPanel);
+    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
+        ((MenuCursor *)&cursor)->switchToAnim0D();
     } else {
-        ((Unk_ov002_0220464c *)&unk_94)->func_ov002_02202c40();
+        ((MenuCursor *)&cursor)->switchToAnim01();
     }
-    s32 a = func_ov116_0229699c();
-    s32 b = func_ov116_02296990();
-    func_ov116_022968ec(a, b);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    moveCursorTo(a, b);
 }
 
-void Unk_ov116_02297378::func_ov116_022968ec(s32 a, s32 b) {
-    unk_94.func_ov002_022029e8(a, b, 3, 1);
-    unk_13dc = unk_8d;
-    func_ov002_02200a58(3);
+void InsectBookTab::moveCursorTo(s32 a, s32 b) {
+    cursor.moveToEase(a, b, 3, 1);
+    returnState = mainState;
+    setMainState(3);
 }
 
-void Unk_ov116_02297378::func_ov116_022968d0() {
-    unk_94.func_ov002_02202a78();
-    unk_94.vfunc_0c();
+void InsectBookTab::refreshCursor() {
+    cursor.setPoseIdle();
+    cursor.update();
 }
 
-void Unk_ov116_02297378::func_ov116_022968b8() {
-    ((Unk_ov002_0220464c *)&unk_94)->func_ov002_02202b68();
-    func_ov002_02200a58(4);
+void InsectBookTab::pressCursor() {
+    ((MenuCursor *)&cursor)->setPosePress();
+    setMainState(4);
 }
 
-void Unk_ov116_02297378::func_ov116_02296890() {
-    unk_94.func_ov002_02202af0();
-    unk_13dc = unk_8d;
-    func_ov002_02200a58(5);
+void InsectBookTab::releaseCursor() {
+    cursor.setPoseRelease();
+    returnState = mainState;
+    setMainState(5);
 }
 
-BOOL Unk_ov116_02297378::func_ov116_02296878(u32 mask) {
-    if (unk_13d8 & mask) {
+BOOL InsectBookTab::testFlags(u32 mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov116_02297378::func_ov116_02296868(u32 mask) {
-    unk_13d8 |= mask;
+void InsectBookTab::setFlags(u32 mask) {
+    flags |= mask;
 }

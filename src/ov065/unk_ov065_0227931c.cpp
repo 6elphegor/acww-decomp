@@ -1,121 +1,75 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/GsSocket.h"
+#include "net/SockHostEnt.h"
+#include "net/ghttpConnection.h"
+#include "net/gsPlatformUtil.h"
 
 // ov065 TU37: ghttp (1): ghttpBuffer / connection table / ghttpMain (0x0227931c..0x0227a284)
 
 
 extern "C" {
-s32 data_ov065_0228ca50 = 125;
-u32 data_ov065_0228ca4c = 250;
-void **data_ov065_022910d4;
-s32 data_ov065_022910d0;
-s32 data_ov065_022910cc;
-s32 data_ov065_022910c8;
-void *data_ov065_022910c4;
-u32 data_ov065_022910c0;
-s32 data_ov065_022910d8;
+s32 ghiThrottleBufferSize = 125;
+u32 ghiThrottleTimeDelay = 250;
+void **ghiConnections;
+s32 ghiNextUniqueID;
+s32 ghiNumConnections;
+s32 ghiConnectionsLen;
+void *ghiProxyAddress;
+u32 ghiProxyPort;
+s32 ghiReferenceCount;
 }
 
 namespace Ng {
-struct Unk_ov065_02278c64_Sa {
-    u8 b[8];
-};
 
-struct Unk_ov065_02278f0c_Pfd {
-    s32 fd;
-    s16 events;
-    s16 revents;
-};
 
-struct Unk_ov065_0227931c_Owner {
-    u8 pad_00[0x38];
-    s32 unk_38;
-    u8 pad_3c[0x0c];
-    s32 unk_48;
-    s32 unk_4c;
-    u8 pad_50[4];
-    char *unk_54;
-    u8 pad_58[4];
-    s32 unk_5c;
-    s32 unk_60;
-    u8 pad_64[0x98];
-    s32 unk_fc;
-    u8 pad_100[0x64];
-    u32 unk_164[6];
-    s32 (*unk_17c)(Unk_ov065_0227931c_Owner *, void *, char *, s32 *, char *, s32 *);
-};
 
-struct Unk_ov065_0227931c_Buf {
-    Unk_ov065_0227931c_Owner *unk_00;
-    char *unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    s32 unk_20;
-};
 
-extern s32 data_ov065_02291080;
-struct Unk_ov065_02291094 {
-    u32 unk_00;
-};
-extern Unk_ov065_02291094 data_ov065_02291094;
+extern s32 GSINitroErrno;
+extern GsHostAddr data_ov065_02291094;
 extern u8 data_0213a410[];
 
-struct Unk_ov065_02278e64_A {
-    u32 unk_00;
-    u32 unk_04;
-    s16 unk_08;
-    s16 unk_0a;
-    u32 unk_0c;
-};
-struct Unk_ov065_02278e64_B {
-    u32 *unk_00;
-    u32 unk_04;
-};
-extern Unk_ov065_02278e64_A data_ov065_02291084;
-extern Unk_ov065_02278e64_B data_ov065_022910a8;
+extern SockHostEnt localhost;
+extern GsHostAddrList data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 
 extern "C" {
-void func_02115fb4(void *p, s32 v, s32 n);
-s32 func_ov065_0226149c(s32 a, s32 b, s32 c, u32 d, void *sa);
-s32 func_ov065_0226150c(s32 a, s32 b, s32 c, u32 d);
-s32 func_ov065_02261524(s32 a, s32 b, s32 c, u32 d, u8 *sa);
-s32 func_ov065_02261588(s32 a, s32 b, s32 c, u32 d);
-s32 func_ov065_0226129c(s32 a, u8 *sa);
-s32 func_ov065_022612f4(s32 a, s32 b, s32 c);
-s32 func_ov065_022615a0(s32 a, void *sa);
-s32 func_ov065_022615f0(s32 a, void *sa);
-s32 func_ov065_02261494(s32 a, s32 b, s32 c);
-s32 func_ov065_0226148c(s32 a, s32 b, s32 c);
-s32 func_ov065_02261610(s32 a, s32 b);
-s32 func_ov065_02260fa4(Unk_ov065_02278f0c_Pfd *arr, u32 n, s64 timeout);
-s32 func_ov065_0226125c(s32 a, s32 cmd, u32 flags);
-u32 func_ov065_02260cb4();
-s32 func_ov065_02261034(u32 v, u32 *p);
-u32 func_ov065_02278be8(s32 s);
-s32 func_ov065_022796a8(Unk_ov065_0227931c_Owner *o, char *buf, s32 n);
-u32 func_021277d4(const char *s);
-char *func_02127838(char *d, const char *s);
-void *func_ov065_02277af0(u32 n);
-void *func_ov065_02277ad8(void *p, s32 n);
-void func_ov065_02277ac8(void *p);
-void func_021132e0(s32 ms);
-u64 func_01ffa6b4();
+void MI_CpuFill8(void *p, s32 v, s32 n);
+s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, void *sa);
+s32 Sock_Send(s32 a, s32 b, s32 c, u32 d);
+s32 Sock_RecvFrom(s32 a, s32 b, s32 c, u32 d, u8 *sa);
+s32 Sock_Recv(s32 a, s32 b, s32 c, u32 d);
+s32 Sock_Accept(s32 a, u8 *sa);
+s32 Sock_Listen(s32 a, s32 b, s32 c);
+s32 Sock_Connect(s32 a, void *sa);
+s32 Sock_Bind(s32 a, void *sa);
+s32 Sock_Shutdown(s32 a, s32 b, s32 c);
+s32 Sock_Close(s32 a, s32 b, s32 c);
+s32 Sock_Create(s32 a, s32 b);
+s32 Sock_Poll(GsPollFd *arr, u32 n, s64 timeout);
+s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
+u32 SockCore_GetHostIp();
+s32 IpAddr_StoreBe32(u32 v, u32 *p);
+u32 GOAGetLastError(s32 s);
+s32 ghiDoSend(GHIConnection *o, char *buf, s32 n);
+u32 STD_GetStringLength(const char *s);
+char *STD_CopyString(char *d, const char *s);
+void *GsUtil_Alloc(u32 n);
+void *GsUtil_Realloc(void *p, s32 n);
+void GsUtil_Free(void *p);
+void OS_Sleep(s32 ms);
+u64 OS_GetTick();
 u64 func_02132ef8(u64 a, u32 b, u32 c);
-void func_02128a00(void *d, const void *s, u32 n);
-void func_0212899c(void *d, s32 v, u32 n);
-s32 func_021130d0(char *buf, const char *fmt, ...);
+void memcpy(void *d, const void *s, u32 n);
+void memset(void *d, s32 v, u32 n);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
-s32 func_ov065_02278dec(s32 a, s32 b);
-s32 func_ov065_02278c38(s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_ov065_02278c44(s32 a, s32 b, s32 c, void *val, s32 *len);
-s32 func_ov065_02278f0c(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 func_ov065_0227931c(Unk_ov065_0227931c_Buf *o, char *s, s32 len);
-s32 func_ov065_0227953c(Unk_ov065_0227931c_Buf *o, s32 n);
+s32 CheckRcode(s32 a, s32 b);
+s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
+s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
+s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
+s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 
 }
 
@@ -125,339 +79,168 @@ static inline u32 Unk_ov065_02278dfc_Ntohl(u32 x) {
 }
 }
 extern "C" {
-s32 func_ov065_0227931c(Unk_ov065_0227931c_Buf *o, char *s, s32 len);
-void func_ov065_0227946c(Unk_ov065_0227931c_Buf *o);
-s32 func_ov065_02279494(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, char *buf, s32 size);
-s32 func_ov065_022794d0(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, s32 size, s32 grow);
-s32 func_ov065_0227953c(Unk_ov065_0227931c_Buf *o, s32 n);
+s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
+void ghiFreeBuffer(GHIBuffer *o);
+s32 ghiInitFixedBuffer(GHIConnection *ow, GHIBuffer *o, char *buf, s32 size);
+s32 ghiInitBuffer(GHIConnection *ow, GHIBuffer *o, s32 size, s32 grow);
+s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 }
 }
 
 namespace Nc {
-struct Unk_ov065_02279c7c;
 
-typedef void (*Unk_ov065_02279588_Cb1)(u32, u32, u32, u32, u32, u32);
-typedef void (*Unk_ov065_022795d4_Cb2)(u32, u32, u32, u32, u32, u32, u32);
-typedef s32 (*Unk_ov065_0227960c_Cb3)(u32, u32, u32, u32, u32);
-typedef s32 (*Unk_ov065_022798f8_Cb4)(Unk_ov065_02279c7c *, void *, u8 *, s32 *, u8 *, s32 *);
-typedef void (*Unk_ov065_02279a64_Cb5)(Unk_ov065_02279c7c *, void *);
+typedef void (*ghttpPostCallback)(u32, u32, u32, u32, u32, u32);
+typedef void (*ghttpProgressCallback)(u32, u32, u32, u32, u32, u32, u32);
+typedef s32 (*ghttpCompletedCallback)(u32, u32, u32, u32, u32);
+typedef s32 (*GsHttpDecryptFn)(GHIConnection *, void *, u8 *, s32 *, u8 *, s32 *);
+typedef void (*GsHttpEncryptCleanupFn)(GHIConnection *, void *);
 
-struct Unk_ov065_02279c7c {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    void *unk_14;
-    void *unk_18;
-    s32 unk_1c;
-    u16 unk_20;
-    void *unk_24;
-    void *unk_28;
-    s32 unk_2c;
-    s32 unk_30;
-    s32 unk_34;
-    s32 unk_38;
-    Unk_ov065_022795d4_Cb2 unk_3c;
-    Unk_ov065_0227960c_Cb3 unk_40;
-    u32 unk_44;
-    s32 unk_48;
-    s32 unk_4c;
-    u32 unk_50[3];
-    u32 unk_5c;
-    u32 unk_60[5];
-    u32 unk_74;
-    u8 *unk_78;
-    s32 unk_7c;
-    s32 unk_80;
-    s32 unk_84;
-    s32 unk_88;
-    u32 unk_8c[3];
-    u32 unk_98;
-    u8 *unk_9c;
-    u32 unk_a0;
-    s32 unk_a4;
-    s32 unk_a8;
-    u32 unk_ac[4];
-    u32 unk_bc;
-    u32 unk_c0;
-    u32 unk_c4[5];
-    u32 unk_d8;
-    u32 unk_dc;
-    s32 unk_e0;
-    s32 unk_e4;
-    s32 unk_e8;
-    s32 unk_ec;
-    s32 unk_f0;
-    s32 unk_f4;
-    s32 unk_f8;
-    s32 unk_fc;
-    u32 unk_100;
-    u32 unk_104;
-    void *unk_108;
-    s32 unk_10c;
-    s32 unk_110;
-    u32 unk_114[6];
-    s32 unk_12c;
-    s32 unk_130;
-    u32 unk_134;
-    u32 unk_138;
-    void *unk_13c;
-    u32 unk_140;
-    u32 unk_144;
-    u32 unk_148;
-    u32 unk_14c;
-    Unk_ov065_02279588_Cb1 unk_150;
-    u32 unk_154;
-    u32 unk_158;
-    void *unk_15c;
-    u16 unk_160;
-    u32 unk_164;
-    u32 unk_168;
-    u32 unk_16c;
-    u32 unk_170;
-    u32 unk_174;
-    Unk_ov065_02279a64_Cb5 unk_178;
-    u32 unk_17c;
-    Unk_ov065_022798f8_Cb4 unk_180;
-};
 
 extern "C" {
-extern Unk_ov065_02279c7c **data_ov065_022910d4;
-extern s32 data_ov065_022910c8;
-extern s32 data_ov065_022910cc;
-extern s32 data_ov065_022910d0;
-extern u32 data_ov065_0228ca4c;
-extern s32 data_ov065_0228ca50;
+extern GHIConnection **ghiConnections;
+extern s32 ghiConnectionsLen;
+extern s32 ghiNumConnections;
+extern s32 ghiNextUniqueID;
+extern u32 ghiThrottleTimeDelay;
+extern s32 ghiThrottleBufferSize;
 
-u32 func_ov065_02278684(u32);
-s32 func_ov065_02278ca0(s32, u8 *, s32, s32);
-s32 func_ov065_02278ce0(s32, u8 *, s32, s32);
-s32 func_ov065_02278be8(s32);
-void func_ov065_02278da4(s32, s32);
-void func_ov065_02278dbc(s32);
-u32 func_ov065_02279144();
-BOOL func_ov065_02279168(void *, u8 *, s32 *);
-void func_ov065_0227924c(void *);
-BOOL func_ov065_0227931c(void *, u8 *, s32);
-void func_ov065_0227946c(void *);
-BOOL func_ov065_022794d0(void *, void *, s32, s32);
-BOOL func_ov065_0227953c(void *, s32);
-void func_ov065_02277ac8(void *);
-void *func_ov065_02277ad8(void *, u32);
-void *func_ov065_02277af0(u32);
-void func_ov065_0227a884(void *);
-BOOL func_ov065_0227acf8(void *);
-void func_ov065_0227ace0(void *);
-void func_021289b4(void *, void *, u32);
-void func_0212899c(void *, s32, u32);
+u32 ArrayLength(u32);
+s32 send(s32, u8 *, s32, s32);
+s32 recv(s32, u8 *, s32, s32);
+s32 GOAGetLastError(s32);
+void shutdown(s32, s32);
+void closesocket(s32);
+BOOL ghiReadDataFromBuffer(void *, u8 *, s32 *);
+void ghiResetBuffer(void *);
+BOOL ghiAppendDataToBuffer(void *, u8 *, s32);
+void ghiFreeBuffer(void *);
+BOOL ghiInitBuffer(void *, void *, s32, s32);
+BOOL ghiResizeBuffer(void *, s32);
+void GsUtil_Free(void *);
+void *GsUtil_Realloc(void *, u32);
+void *GsUtil_Alloc(u32);
+void ghiPostCleanupState(void *);
+BOOL ghiIsPostAutoFree(void *);
+void ghiFreePost(void *);
+void memmove(void *, void *, u32);
+void memset(void *, s32, u32);
 
-void func_ov065_022799f4();
-void func_ov065_022799f8();
-BOOL func_ov065_02279b58(Unk_ov065_02279c7c *);
-s32 func_ov065_02279e04();
-BOOL func_ov065_022798f8(Unk_ov065_02279c7c *);
-void func_ov065_02279b08(BOOL (*)(Unk_ov065_02279c7c *));
+void ghiUnlock();
+void ghiLock();
+BOOL ghiFreeConnection(GHIConnection *);
+s32 ghiFindFreeSlot();
+BOOL ghiDecryptReceivedData(GHIConnection *);
+void ghiEnumConnections(BOOL (*)(GHIConnection *));
 }
 
 
 extern "C" {
-s32 func_ov065_022796a8(Unk_ov065_02279c7c *self, u8 *buf, s32 len);
+s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
 }
 extern "C" {
-void func_ov065_02279588(Unk_ov065_02279c7c *self);
-void func_ov065_022795d4(Unk_ov065_02279c7c *self, u32 p1, u32 p2);
-void func_ov065_0227960c(Unk_ov065_02279c7c *self);
-s32 func_ov065_02279654(Unk_ov065_02279c7c *self, u8 *buf, s32 len);
-s32 func_ov065_022796a8(Unk_ov065_02279c7c *self, u8 *buf, s32 len);
-s32 func_ov065_02279714(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen);
-BOOL func_ov065_022798f8(Unk_ov065_02279c7c *self);
-void func_ov065_02279a04();
-void func_ov065_02279a64(Unk_ov065_02279c7c *self);
-void func_ov065_02279b08(BOOL (*cb)(Unk_ov065_02279c7c *));
-BOOL func_ov065_02279b58(Unk_ov065_02279c7c *s);
-Unk_ov065_02279c7c *func_ov065_02279c7c();
-s32 func_ov065_02279e04();
-void func_ov065_022799f4();
-void func_ov065_022799f8();
-void func_ov065_022799fc();
-void func_ov065_02279a00();
+void ghiCallPostCallback(GHIConnection *self);
+void ghiCallProgressCallback(GHIConnection *self, u32 p1, u32 p2);
+void ghiCallCompletedCallback(GHIConnection *self);
+s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len);
+s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
+s32 ghiDoReceive(GHIConnection *self, u8 *buf, s32 *plen);
+BOOL ghiDecryptReceivedData(GHIConnection *self);
+void ghiCleanupConnections();
+void ghiRedirectConnection(GHIConnection *self);
+void ghiEnumConnections(BOOL (*cb)(GHIConnection *));
+BOOL ghiFreeConnection(GHIConnection *s);
+GHIConnection *ghiNewConnection();
+s32 ghiFindFreeSlot();
+void ghiUnlock();
+void ghiLock();
+void ghiFreeLock();
+void ghiCreateLock();
 }
 }
 
 namespace Nm {
-struct Unk_ov065_0227a4e8_Part {
-    s32 unk_00;
-    char *unk_04;
-    char *unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-};
 
-struct Unk_ov065_0227a4e8_Slot {
-    Unk_ov065_0227a4e8_Part *unk_00;
-    s32 unk_04;
-    u32 unk_08;
-    s32 unk_0c;
-};
 
-struct Unk_ov065_0227a3f4_List {
-    void *unk_00;
-    s32 unk_04;
-};
 
-struct Unk_ov065_0227a4e8_Req {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-};
 
-struct Unk_ov065_02279c7c {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    void *unk_14;
-    void *unk_18;
-    s32 unk_1c;
-    u16 unk_20;
-    void *unk_24;
-    void *unk_28;
-    s32 unk_2c;
-    s32 unk_30;
-    s32 unk_34;
-    s32 unk_38;
-    void *unk_3c;
-    void *unk_40;
-    u32 unk_44;
-    s32 unk_48;
-    s32 unk_4c;
-    u32 unk_50[3];
-    s32 unk_5c;
-    s32 unk_60;
-    u32 unk_64[4];
-    u32 unk_74;
-    u8 *unk_78;
-    s32 unk_7c;
-    s32 unk_80;
-    s32 unk_84;
-    s32 unk_88;
-    u32 unk_8c[3];
-    u32 unk_98;
-    u8 *unk_9c;
-    u32 unk_a0;
-    s32 unk_a4;
-    s32 unk_a8;
-    u32 unk_ac[4];
-    u32 unk_bc;
-    u32 unk_c0;
-    u32 unk_c4[5];
-    u32 unk_d8;
-    u32 unk_dc;
-    s32 unk_e0;
-    s32 unk_e4;
-    s32 unk_e8;
-    s32 unk_ec;
-    s32 unk_f0;
-    s32 unk_f4;
-    s32 unk_f8;
-    s32 unk_fc;
-    u32 unk_100;
-    u32 unk_104;
-    void *unk_108;
-    s32 unk_10c;
-    s32 unk_110;
-    u32 unk_114[6];
-    s32 unk_12c;
-    s32 unk_130;
-    u32 unk_134;
-    u32 unk_138;
-    Unk_ov065_0227a4e8_Req *unk_13c;
-    void *unk_140;
-    s32 unk_144;
-    u32 unk_148;
-};
 
 extern "C" {
-extern s32 data_ov065_022910d8;
-extern void *data_ov065_022910c4;
-extern u32 data_ov065_0228ca4c;
-extern s32 data_ov065_0228ca50;
+extern s32 ghiReferenceCount;
+extern void *ghiProxyAddress;
+extern u32 ghiThrottleTimeDelay;
+extern s32 ghiThrottleBufferSize;
 
-s32 func_ov065_0227ac34(void *, const char *, const char *);
-s32 func_ov065_0227acfc();
-void func_ov065_02279b08(s32 (*)(Unk_ov065_02279c7c *));
-char *func_ov065_02279100(const char *);
-Unk_ov065_02279c7c *func_ov065_02279c7c();
-BOOL func_ov065_02279b58(Unk_ov065_02279c7c *);
-BOOL func_ov065_0227a8ec(Unk_ov065_02279c7c *);
-void func_ov065_0227913c(s32);
-void func_ov065_0227bb5c(Unk_ov065_02279c7c *);
-void func_ov065_0227b9c4(Unk_ov065_02279c7c *);
-void func_ov065_0227b8e4(Unk_ov065_02279c7c *);
-void func_ov065_0227b72c(Unk_ov065_02279c7c *);
-void func_ov065_0227b6dc(Unk_ov065_02279c7c *);
-void func_ov065_0227b68c(Unk_ov065_02279c7c *);
-void func_ov065_0227b51c(Unk_ov065_02279c7c *);
-void func_ov065_0227ae94(Unk_ov065_02279c7c *);
-void func_ov065_0227ada4(Unk_ov065_02279c7c *);
-void func_ov065_02279a64(Unk_ov065_02279c7c *);
-void func_ov065_0227960c(Unk_ov065_02279c7c *);
-void func_ov065_022799f4();
-void func_ov065_022799f8();
-void func_ov065_022799fc();
-void func_ov065_02279a00();
-void func_ov065_02279a04();
-void func_ov065_02277ac8(void *);
-s32 func_ov065_02278684(void *);
-Unk_ov065_0227a4e8_Slot *func_ov065_0227866c(void *, s32);
-s32 func_ov065_022791c0(Unk_ov065_02279c7c *);
-void func_ov065_0227924c(void *);
-s32 func_ov065_02279654(Unk_ov065_02279c7c *, const void *, s32);
-s32 func_ov065_022796a8(Unk_ov065_02279c7c *, const void *, s32);
-BOOL func_ov065_02279494(Unk_ov065_02279c7c *, void *, void *, s32);
-BOOL func_ov065_022794d0(Unk_ov065_02279c7c *, void *, s32, s32);
-void func_ov065_02279280(void *, s32);
-BOOL func_ov065_0227931c(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
-s32 func_021277d4(const char *);
-s32 func_0212a120(const char *, s32);
-s32 func_02128030(void *, s32, s32, u32);
+s32 ghiPostAddString(void *, const char *, const char *);
+s32 ghiNewPost();
+void ghiEnumConnections(s32 (*)(GHIConnection *));
+char *goastrdup(const char *);
+GHIConnection *ghiNewConnection();
+BOOL ghiFreeConnection(GHIConnection *);
+BOOL ghiPostInitState(GHIConnection *);
+void msleep(s32);
+void ghiDoHostLookup(GHIConnection *);
+void ghiDoConnecting(GHIConnection *);
+void ghiDoSecuringSession(GHIConnection *);
+void ghiDoSendingRequest(GHIConnection *);
+void ghiDoPosting(GHIConnection *);
+void ghiDoWaiting(GHIConnection *);
+void ghiDoReceivingStatus(GHIConnection *);
+void ghiDoReceivingHeaders(GHIConnection *);
+void ghiDoReceivingFile(GHIConnection *);
+void ghiRedirectConnection(GHIConnection *);
+void ghiCallCompletedCallback(GHIConnection *);
+void ghiUnlock();
+void ghiLock();
+void ghiFreeLock();
+void ghiCreateLock();
+void ghiCleanupConnections();
+void GsUtil_Free(void *);
+s32 ArrayLength(void *);
+GHIPostState *ArrayNth(void *, s32);
+s32 ghiSendBufferedData(GHIConnection *);
+void ghiResetBuffer(void *);
+s32 ghiTrySendThenBuffer(GHIConnection *, const void *, s32);
+s32 ghiDoSend(GHIConnection *, const void *, s32);
+BOOL ghiInitFixedBuffer(GHIConnection *, void *, void *, s32);
+BOOL ghiInitBuffer(GHIConnection *, void *, s32, s32);
+void ghiAppendCharToBuffer(void *, s32);
+BOOL ghiAppendDataToBuffer(void *, const void *, s32);
+s32 OS_SPrintf(char *, const char *, ...);
+s32 STD_GetStringLength(const char *);
+s32 strchr(const char *, s32);
+s32 fread(void *, s32, s32, u32);
 
-s32 func_ov065_0227a284(Unk_ov065_02279c7c *);
-void func_ov065_0227a350(Unk_ov065_02279c7c *);
-s32 func_ov065_0227a4e8(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *, s32);
-s32 func_ov065_0227a624(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-s32 func_ov065_0227a694(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-s32 func_ov065_0227a788(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-void func_ov065_0227a244();
+s32 ghiProcessConnection(GHIConnection *);
+void ghiHandleStatus(GHIConnection *);
+s32 ghiPostStateDoPosting(GHIPostState *, GHIConnection *, s32);
+s32 ghiPostFileMemoryStateDoPosting(GHIPostState *, GHIConnection *);
+s32 ghiPostFileDiskStateDoPosting(GHIPostState *, GHIConnection *);
+s32 ghiPostStringStateDoPosting(GHIPostState *, GHIConnection *);
+void ghttpStartup();
 }
 extern "C" {
-s32 func_ov065_02279eb4(void *a, const char *b, const char *c);
-s32 func_ov065_02279eec();
-void func_ov065_02279ef4();
-s32 func_ov065_02279f04(const char *a, const char *b, Unk_ov065_0227a4e8_Req *c, u32 d, s32 e, u32 f, u32 g, u32 h);
-s32 func_ov065_0227a024(const char *a, Unk_ov065_0227a4e8_Req *b, s32 c, u32 d, u32 e);
-s32 func_ov065_0227a048(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e8_Req *e, u32 f, s32 g, u32 h, u32 i, u32 j);
-s32 func_ov065_0227a1d4(const char *a, s32 b, u32 c, u32 d);
-void func_ov065_0227a1f8();
-void func_ov065_0227a244();
+s32 ghttpPostAddStringA(void *a, const char *b, const char *c);
+s32 ghttpNewPost();
+void ghttpThink();
+s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, u32 f, u32 g, u32 h);
+s32 ghttpPostA(const char *a, GHIPost *b, s32 c, u32 d, u32 e);
+s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, u32 h, u32 i, u32 j);
+s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d);
+void ghttpCleanup();
+void ghttpStartup();
 }
 }
 
 namespace Nm {
 extern "C" {
-void func_ov065_0227a244() {
-    func_ov065_022799f8();
-    if (++data_ov065_022910d8 == 1) {
-        func_ov065_02279a00();
-        data_ov065_0228ca50 = 0x7d;
-        data_ov065_0228ca4c = 0xfa;
+void ghttpStartup() {
+    ghiLock();
+    if (++ghiReferenceCount == 1) {
+        ghiCreateLock();
+        ghiThrottleBufferSize = 0x7d;
+        ghiThrottleTimeDelay = 0xfa;
     } else {
-        func_ov065_022799f4();
+        ghiUnlock();
     }
 }
 }
@@ -465,18 +248,18 @@ void func_ov065_0227a244() {
 
 namespace Nm {
 extern "C" {
-void func_ov065_0227a1f8() {
-    func_ov065_022799f8();
-    if (--data_ov065_022910d8 == 0) {
-        func_ov065_02279a04();
-        if (data_ov065_022910c4 != 0) {
-            func_ov065_02277ac8(data_ov065_022910c4);
-            data_ov065_022910c4 = 0;
+void ghttpCleanup() {
+    ghiLock();
+    if (--ghiReferenceCount == 0) {
+        ghiCleanupConnections();
+        if (ghiProxyAddress != 0) {
+            GsUtil_Free(ghiProxyAddress);
+            ghiProxyAddress = 0;
         }
-        func_ov065_022799f4();
-        func_ov065_022799fc();
+        ghiUnlock();
+        ghiFreeLock();
     } else {
-        func_ov065_022799f4();
+        ghiUnlock();
     }
 }
 }
@@ -484,16 +267,16 @@ void func_ov065_0227a1f8() {
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a1d4(const char *a, s32 b, u32 c, u32 d) {
-    return func_ov065_0227a048(a, 0, 0, 0, 0, 0, b, 0, c, d);
+s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d) {
+    return ghttpGetExA(a, 0, 0, 0, 0, 0, b, 0, c, d);
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a048(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e8_Req *e, u32 f, s32 g, u32 h, u32 i, u32 j) {
-    Unk_ov065_02279c7c *conn;
+s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, u32 h, u32 i, u32 j) {
+    GHIConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
     }
@@ -503,146 +286,146 @@ s32 func_ov065_0227a048(const char *a, const char *b, void *c, s32 d, Unk_ov065_
     if (c != 0 && d == 0) {
         return -1;
     }
-    if (data_ov065_022910d8 == 0) {
-        func_ov065_0227a244();
+    if (ghiReferenceCount == 0) {
+        ghttpStartup();
     }
-    conn = func_ov065_02279c7c();
+    conn = ghiNewConnection();
     if (conn == 0) {
         return -1;
     }
-    conn->unk_0c = 0;
-    conn->unk_14 = func_ov065_02279100(a);
-    if (conn->unk_14 == 0) {
-        func_ov065_02279b58(conn);
+    conn->type = 0;
+    conn->URL = goastrdup(a);
+    if (conn->URL == 0) {
+        ghiFreeConnection(conn);
         return -1;
     }
     if (b != 0 && *b != 0) {
-        conn->unk_28 = func_ov065_02279100(b);
-        if (conn->unk_28 == 0) {
-            func_ov065_02279b58(conn);
+        conn->sendHeaders = goastrdup(b);
+        if (conn->sendHeaders == 0) {
+            ghiFreeConnection(conn);
             return -1;
         }
     }
-    conn->unk_13c = e;
-    conn->unk_30 = g;
-    conn->unk_3c = (void *)h;
-    conn->unk_40 = (void *)i;
-    conn->unk_44 = j;
-    conn->unk_134 = f;
-    conn->unk_e0 = (c != 0) ? 1 : 0;
+    conn->post = e;
+    conn->blocking = g;
+    conn->progressCallback = (ghttpProgressCallback)h;
+    conn->completedCallback = (ghttpCompletedCallback)i;
+    conn->callbackParam = j;
+    conn->throttle = f;
+    conn->userBufferSupplied = (c != 0) ? 1 : 0;
     BOOL ok;
-    if (conn->unk_e0 != 0) {
-        ok = func_ov065_02279494(conn, &conn->unk_bc, c, d);
+    if (conn->userBufferSupplied != 0) {
+        ok = ghiInitFixedBuffer(conn, &conn->getFileBuffer, c, d);
     } else {
-        ok = func_ov065_022794d0(conn, &conn->unk_bc, 0x800, 0x800);
+        ok = ghiInitBuffer(conn, &conn->getFileBuffer, 0x800, 0x800);
     }
     if (ok == 0) {
-        func_ov065_02279b58(conn);
+        ghiFreeConnection(conn);
         return -1;
     }
     if (e != 0) {
-        if (func_ov065_0227a8ec(conn) == 0) {
-            func_ov065_02279b58(conn);
+        if (ghiPostInitState(conn) == 0) {
+            ghiFreeConnection(conn);
             return -1;
         }
     }
     if (g != 0) {
-        if (func_ov065_0227a284(conn) == 0) {
+        if (ghiProcessConnection(conn) == 0) {
             s32 t = 10;
             do {
-                func_ov065_0227913c(t);
-            } while (func_ov065_0227a284(conn) == 0);
+                msleep(t);
+            } while (ghiProcessConnection(conn) == 0);
         }
         return 0;
     }
-    return conn->unk_04;
+    return conn->request;
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_0227a024(const char *a, Unk_ov065_0227a4e8_Req *b, s32 c, u32 d, u32 e) {
-    return func_ov065_02279f04(a, 0, b, 0, c, 0, d, e);
+s32 ghttpPostA(const char *a, GHIPost *b, s32 c, u32 d, u32 e) {
+    return ghttpPostExA(a, 0, b, 0, c, 0, d, e);
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_02279f04(const char *a, const char *b, Unk_ov065_0227a4e8_Req *c, u32 d, s32 e, u32 f, u32 g, u32 h) {
-    Unk_ov065_02279c7c *conn;
+s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, u32 f, u32 g, u32 h) {
+    GHIConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
     }
     if (c == 0) {
         return -1;
     }
-    if (data_ov065_022910d8 == 0) {
-        func_ov065_0227a244();
+    if (ghiReferenceCount == 0) {
+        ghttpStartup();
     }
-    conn = func_ov065_02279c7c();
+    conn = ghiNewConnection();
     if (conn == 0) {
         return -1;
     }
-    conn->unk_0c = 4;
-    conn->unk_14 = func_ov065_02279100(a);
-    if (conn->unk_14 == 0) {
-        func_ov065_02279b58(conn);
+    conn->type = 4;
+    conn->URL = goastrdup(a);
+    if (conn->URL == 0) {
+        ghiFreeConnection(conn);
         return -1;
     }
     if (b != 0 && *b != 0) {
-        conn->unk_28 = func_ov065_02279100(b);
-        if (conn->unk_28 == 0) {
-            func_ov065_02279b58(conn);
+        conn->sendHeaders = goastrdup(b);
+        if (conn->sendHeaders == 0) {
+            ghiFreeConnection(conn);
             return -1;
         }
     }
-    conn->unk_13c = c;
-    conn->unk_30 = e;
-    conn->unk_3c = (void *)f;
-    conn->unk_40 = (void *)g;
-    conn->unk_44 = h;
-    conn->unk_134 = d;
+    conn->post = c;
+    conn->blocking = e;
+    conn->progressCallback = (ghttpProgressCallback)f;
+    conn->completedCallback = (ghttpCompletedCallback)g;
+    conn->callbackParam = h;
+    conn->throttle = d;
     if (c != 0) {
-        if (func_ov065_0227a8ec(conn) == 0) {
-            func_ov065_02279b58(conn);
+        if (ghiPostInitState(conn) == 0) {
+            ghiFreeConnection(conn);
             return -1;
         }
     }
     if (e != 0) {
-        if (func_ov065_0227a284(conn) == 0) {
+        if (ghiProcessConnection(conn) == 0) {
             s32 t = 10;
             do {
-                func_ov065_0227913c(t);
-            } while (func_ov065_0227a284(conn) == 0);
+                msleep(t);
+            } while (ghiProcessConnection(conn) == 0);
         }
         return 0;
     }
-    return conn->unk_04;
+    return conn->request;
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-void func_ov065_02279ef4() {
-    func_ov065_02279b08(func_ov065_0227a284);
+void ghttpThink() {
+    ghiEnumConnections(ghiProcessConnection);
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_02279eec() {
-    return func_ov065_0227acfc();
+s32 ghttpNewPost() {
+    return ghiNewPost();
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 func_ov065_02279eb4(void *a, const char *b, const char *c) {
+s32 ghttpPostAddStringA(void *a, const char *b, const char *c) {
     if (a == 0) {
         return 0;
     }
@@ -652,41 +435,41 @@ s32 func_ov065_02279eb4(void *a, const char *b, const char *c) {
     if (c == 0) {
         c = "";
     }
-    return func_ov065_0227ac34(a, b, c);
+    return ghiPostAddString(a, b, c);
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_02279e04() {
+s32 ghiFindFreeSlot() {
     s32 i = 0;
     s32 base;
     s32 end;
-    for (i = 0; i < data_ov065_022910c8; i++) {
-        if (data_ov065_022910d4[i]->unk_00 == 0) {
+    for (i = 0; i < ghiConnectionsLen; i++) {
+        if (ghiConnections[i]->inUse == 0) {
             return i;
         }
     }
-    base = data_ov065_022910c8;
+    base = ghiConnectionsLen;
     end = base + 4;
-    void *p = func_ov065_02277ad8(data_ov065_022910d4, end * 4);
+    void *p = GsUtil_Realloc(ghiConnections, end * 4);
     if (p == 0) {
         return -1;
     }
-    data_ov065_022910d4 = (Unk_ov065_02279c7c **)p;
+    ghiConnections = (GHIConnection **)p;
     i = base;
     for (; i < end; i++) {
-        data_ov065_022910d4[i] = (Unk_ov065_02279c7c *)func_ov065_02277af0(0x184);
-        if (data_ov065_022910d4[i] == 0) {
+        ghiConnections[i] = (GHIConnection *)GsUtil_Alloc(0x184);
+        if (ghiConnections[i] == 0) {
             for (i--; i >= base; i--) {
-                func_ov065_02277ac8(data_ov065_022910d4[i]);
+                GsUtil_Free(ghiConnections[i]);
             }
             return -1;
         }
-        data_ov065_022910d4[i]->unk_00 = 0;
+        ghiConnections[i]->inUse = 0;
     }
-    data_ov065_022910c8 = end;
+    ghiConnectionsLen = end;
     return base;
 }
 }
@@ -694,73 +477,73 @@ s32 func_ov065_02279e04() {
 
 namespace Nc {
 extern "C" {
-Unk_ov065_02279c7c *func_ov065_02279c7c() {
-    Unk_ov065_02279c7c *s;
+GHIConnection *ghiNewConnection() {
+    GHIConnection *s;
     s32 idx;
     BOOL r;
-    func_ov065_022799f8();
-    idx = func_ov065_02279e04();
+    ghiLock();
+    idx = ghiFindFreeSlot();
     if (idx == -1) {
-        func_ov065_022799f4();
+        ghiUnlock();
         return 0;
     }
-    s = data_ov065_022910d4[idx];
-    func_0212899c(s, 0, 0x184);
-    s->unk_00 = 1;
-    s->unk_04 = idx;
-    s->unk_08 = data_ov065_022910d0++;
-    s->unk_0c = 0;
-    s->unk_10 = 0;
-    s->unk_14 = 0;
-    s->unk_18 = 0;
-    s->unk_1c = 0;
-    s->unk_20 = 0;
-    s->unk_24 = 0;
-    s->unk_28 = 0;
-    s->unk_2c = 0;
-    s->unk_30 = 0;
-    s->unk_34 = 0;
-    s->unk_38 = 0;
-    s->unk_3c = 0;
-    s->unk_40 = 0;
-    s->unk_44 = 0;
-    s->unk_48 = -1;
-    s->unk_4c = 0;
-    s->unk_e0 = 0;
-    s->unk_e4 = 0;
-    s->unk_e8 = 0;
-    s->unk_ec = 0;
-    s->unk_f0 = 0;
-    s->unk_f4 = 0;
-    s->unk_f8 = 0;
-    s->unk_fc = 0;
-    s->unk_100 = 0;
-    s->unk_104 = -1;
-    s->unk_108 = 0;
-    s->unk_10c = 0;
-    s->unk_110 = 0;
-    s->unk_12c = 0;
-    s->unk_134 = 0;
-    s->unk_138 = 0;
-    s->unk_13c = 0;
-    s->unk_158 = 0x1f4;
-    s->unk_160 = 0x50;
-    s->unk_15c = 0;
-    s->unk_164 = 0;
-    r = func_ov065_022794d0(s, &s->unk_50, 0x800, 0x1000);
+    s = ghiConnections[idx];
+    memset(s, 0, 0x184);
+    s->inUse = 1;
+    s->request = idx;
+    s->uniqueID = ghiNextUniqueID++;
+    s->type = 0;
+    s->state = 0;
+    s->URL = 0;
+    s->serverAddress = 0;
+    s->serverIP = 0;
+    s->serverPort = 0;
+    s->requestPath = 0;
+    s->sendHeaders = 0;
+    s->saveFile = 0;
+    s->blocking = 0;
+    s->persistConnection = 0;
+    s->result = 0;
+    s->progressCallback = 0;
+    s->completedCallback = 0;
+    s->callbackParam = 0;
+    s->socket = -1;
+    s->socketError = 0;
+    s->userBufferSupplied = 0;
+    s->statusMajorVersion = 0;
+    s->statusMinorVersion = 0;
+    s->statusCode = 0;
+    s->statusStringIndex = 0;
+    s->headerStringIndex = 0;
+    s->headersEnd = 0;
+    s->completed = 0;
+    s->fileBytesReceived = 0;
+    s->totalSize = -1;
+    s->redirectURL = 0;
+    s->redirectCount = 0;
+    s->chunkedTransfer = 0;
+    s->processing = 0;
+    s->throttle = 0;
+    s->lastThrottleRecv = 0;
+    s->post = 0;
+    s->maxRecvTime = 0x1f4;
+    s->proxyOverridePort = 0x50;
+    s->proxyOverrideServer = 0;
+    s->encryptor = 0;
+    r = ghiInitBuffer(s, &s->sendBuffer, 0x800, 0x1000);
     if (r != 0) {
-        r = func_ov065_022794d0(s, &s->unk_74, 0x800, 0x800);
+        r = ghiInitBuffer(s, &s->recvBuffer, 0x800, 0x800);
     }
     if (r != 0) {
-        r = func_ov065_022794d0(s, &s->unk_98, 0x800, 0x400);
+        r = ghiInitBuffer(s, &s->decodeBuffer, 0x800, 0x400);
     }
     if (r == 0) {
-        func_ov065_02279b58(s);
-        func_ov065_022799f4();
+        ghiFreeConnection(s);
+        ghiUnlock();
         return 0;
     }
-    data_ov065_022910cc++;
-    func_ov065_022799f4();
+    ghiNumConnections++;
+    ghiUnlock();
     return s;
 }
 }
@@ -768,52 +551,52 @@ Unk_ov065_02279c7c *func_ov065_02279c7c() {
 
 namespace Nc {
 extern "C" {
-BOOL func_ov065_02279b58(Unk_ov065_02279c7c *s) {
+BOOL ghiFreeConnection(GHIConnection *s) {
     if (s == 0) {
         return FALSE;
     }
-    if (s->unk_00 == 0) {
+    if (s->inUse == 0) {
         return FALSE;
     }
-    if (s->unk_04 < 0) {
+    if (s->request < 0) {
         return FALSE;
     }
-    if (s->unk_04 >= data_ov065_022910c8) {
+    if (s->request >= ghiConnectionsLen) {
         return FALSE;
     }
-    func_ov065_022799f8();
-    func_ov065_02277ac8(s->unk_14);
-    func_ov065_02277ac8(s->unk_18);
-    func_ov065_02277ac8(s->unk_24);
-    func_ov065_02277ac8(s->unk_28);
-    func_ov065_02277ac8(s->unk_108);
-    func_ov065_02277ac8(s->unk_15c);
-    if (s->unk_48 != -1) {
-        func_ov065_02278da4(s->unk_48, 2);
-        func_ov065_02278dbc(s->unk_48);
+    ghiLock();
+    GsUtil_Free(s->URL);
+    GsUtil_Free(s->serverAddress);
+    GsUtil_Free(s->requestPath);
+    GsUtil_Free(s->sendHeaders);
+    GsUtil_Free(s->redirectURL);
+    GsUtil_Free(s->proxyOverrideServer);
+    if (s->socket != -1) {
+        shutdown(s->socket, 2);
+        closesocket(s->socket);
     }
-    func_ov065_0227946c(&s->unk_50);
-    func_ov065_0227946c(&s->unk_74);
-    func_ov065_0227946c(&s->unk_98);
-    func_ov065_0227946c(&s->unk_bc);
-    if (s->unk_140 != 0) {
-        func_ov065_0227a884(s);
+    ghiFreeBuffer(&s->sendBuffer);
+    ghiFreeBuffer(&s->recvBuffer);
+    ghiFreeBuffer(&s->decodeBuffer);
+    ghiFreeBuffer(&s->getFileBuffer);
+    if (s->postingState.states != 0) {
+        ghiPostCleanupState(s);
     }
-    if (s->unk_13c != 0) {
-        if (func_ov065_0227acf8(s->unk_13c) != 0) {
-            func_ov065_0227ace0(s->unk_13c);
-            s->unk_13c = 0;
+    if (s->post != 0) {
+        if (ghiIsPostAutoFree(s->post) != 0) {
+            ghiFreePost(s->post);
+            s->post = 0;
         }
     }
-    if (s->unk_16c != 0) {
-        if (s->unk_178 != 0) {
-            s->unk_178(s, &s->unk_164);
+    if (s->encryptInitialized != 0) {
+        if (s->encryptCleanupFn != 0) {
+            s->encryptCleanupFn(s, &s->encryptor);
         }
-        s->unk_16c = 0;
+        s->encryptInitialized = 0;
     }
-    s->unk_00 = 0;
-    data_ov065_022910cc--;
-    func_ov065_022799f4();
+    s->inUse = 0;
+    ghiNumConnections--;
+    ghiUnlock();
     return TRUE;
 }
 }
@@ -821,17 +604,17 @@ BOOL func_ov065_02279b58(Unk_ov065_02279c7c *s) {
 
 namespace Nc {
 extern "C" {
-void func_ov065_02279b08(BOOL (*cb)(Unk_ov065_02279c7c *)) {
-    if (data_ov065_022910cc > 0) {
+void ghiEnumConnections(BOOL (*cb)(GHIConnection *)) {
+    if (ghiNumConnections > 0) {
         s32 i;
-        func_ov065_022799f8();
-        for (i = 0; i < data_ov065_022910c8; i++) {
-            Unk_ov065_02279c7c *s = data_ov065_022910d4[i];
-            if (s->unk_00 != 0) {
+        ghiLock();
+        for (i = 0; i < ghiConnectionsLen; i++) {
+            GHIConnection *s = ghiConnections[i];
+            if (s->inUse != 0) {
                 cb(s);
             }
         }
-        func_ov065_022799f4();
+        ghiUnlock();
     }
 }
 }
@@ -839,48 +622,48 @@ void func_ov065_02279b08(BOOL (*cb)(Unk_ov065_02279c7c *)) {
 
 namespace Nc {
 extern "C" {
-void func_ov065_02279a64(Unk_ov065_02279c7c *self) {
-    self->unk_10 = 0;
-    func_ov065_02277ac8(self->unk_14);
-    self->unk_14 = self->unk_108;
-    self->unk_108 = 0;
-    func_ov065_02277ac8(self->unk_18);
-    self->unk_18 = 0;
-    self->unk_1c = 0;
-    self->unk_20 = 0;
-    func_ov065_02277ac8(self->unk_24);
-    self->unk_24 = 0;
-    func_ov065_02278da4(self->unk_48, 2);
-    func_ov065_02278dbc(self->unk_48);
-    self->unk_48 = -1;
-    func_ov065_0227924c(&self->unk_50);
-    func_ov065_0227924c(&self->unk_74);
-    func_ov065_0227924c(&self->unk_98);
-    self->unk_e4 = 0;
-    self->unk_e8 = 0;
-    self->unk_ec = 0;
-    self->unk_f0 = 0;
-    self->unk_f4 = 0;
-    self->unk_f8 = 0;
-    self->unk_130 = 0;
-    self->unk_10c++;
+void ghiRedirectConnection(GHIConnection *self) {
+    self->state = 0;
+    GsUtil_Free(self->URL);
+    self->URL = self->redirectURL;
+    self->redirectURL = 0;
+    GsUtil_Free(self->serverAddress);
+    self->serverAddress = 0;
+    self->serverIP = 0;
+    self->serverPort = 0;
+    GsUtil_Free(self->requestPath);
+    self->requestPath = 0;
+    shutdown(self->socket, 2);
+    closesocket(self->socket);
+    self->socket = -1;
+    ghiResetBuffer(&self->sendBuffer);
+    ghiResetBuffer(&self->recvBuffer);
+    ghiResetBuffer(&self->decodeBuffer);
+    self->statusMajorVersion = 0;
+    self->statusMinorVersion = 0;
+    self->statusCode = 0;
+    self->statusStringIndex = 0;
+    self->headerStringIndex = 0;
+    self->headersEnd = 0;
+    self->connectionClosed = 0;
+    self->redirectCount++;
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-void func_ov065_02279a04() {
-    if (data_ov065_022910d4 != 0) {
+void ghiCleanupConnections() {
+    if (ghiConnections != 0) {
         s32 i;
-        func_ov065_02279b08(func_ov065_02279b58);
-        for (i = 0; i < data_ov065_022910c8; i++) {
-            func_ov065_02277ac8(data_ov065_022910d4[i]);
+        ghiEnumConnections(ghiFreeConnection);
+        for (i = 0; i < ghiConnectionsLen; i++) {
+            GsUtil_Free(ghiConnections[i]);
         }
-        func_ov065_02277ac8(data_ov065_022910d4);
-        data_ov065_022910d4 = 0;
-        data_ov065_022910c8 = 0;
-        data_ov065_022910cc = 0;
+        GsUtil_Free(ghiConnections);
+        ghiConnections = 0;
+        ghiConnectionsLen = 0;
+        ghiNumConnections = 0;
     }
 }
 }
@@ -888,65 +671,65 @@ void func_ov065_02279a04() {
 
 namespace Nc {
 extern "C" {
-void func_ov065_02279a00() {
+void ghiCreateLock() {
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-void func_ov065_022799fc() {
+void ghiFreeLock() {
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-void func_ov065_022799f8() {
+void ghiLock() {
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-void func_ov065_022799f4() {
+void ghiUnlock() {
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-BOOL func_ov065_022798f8(Unk_ov065_02279c7c *self) {
+BOOL ghiDecryptReceivedData(GHIConnection *self) {
     s32 inl = 0;
     s32 outl = 0;
     s32 r;
     do {
-        s32 pos = self->unk_a8;
-        u8 *in = self->unk_9c + pos;
-        inl = self->unk_a4 - pos;
-        s32 w = self->unk_80;
-        u8 *out = self->unk_78 + w;
-        outl = self->unk_7c - w;
-        r = self->unk_180(self, &self->unk_164, in, &inl, out, &outl);
-        if (r == 2 && func_ov065_0227953c(&self->unk_74, self->unk_88) == 0) {
+        s32 pos = self->decodeBuffer.pos;
+        u8 *in = (u8 *)self->decodeBuffer.data + pos;
+        inl = self->decodeBuffer.len - pos;
+        s32 w = self->recvBuffer.len;
+        u8 *out = (u8 *)self->recvBuffer.data + w;
+        outl = self->recvBuffer.size - w;
+        r = self->decryptFn(self, &self->encryptor, in, &inl, out, &outl);
+        if (r == 2 && ghiResizeBuffer(&self->recvBuffer, self->recvBuffer.sizeIncrement) == 0) {
             return FALSE;
         }
     } while (r == 2 && outl == 0);
-    self->unk_a8 += inl;
-    self->unk_80 += outl;
-    if (self->unk_a8 > 0xff) {
-        s32 rest = self->unk_a4 - self->unk_a8;
+    self->decodeBuffer.pos += inl;
+    self->recvBuffer.len += outl;
+    if (self->decodeBuffer.pos > 0xff) {
+        s32 rest = self->decodeBuffer.len - self->decodeBuffer.pos;
         if (rest == 0) {
-            func_ov065_0227924c(&self->unk_98);
+            ghiResetBuffer(&self->decodeBuffer);
         } else {
-            func_021289b4(self->unk_9c, self->unk_9c + self->unk_a8, rest);
-            self->unk_a8 = 0;
-            self->unk_a4 = rest;
+            memmove(self->decodeBuffer.data, self->decodeBuffer.data + self->decodeBuffer.pos, rest);
+            self->decodeBuffer.pos = 0;
+            self->decodeBuffer.len = rest;
         }
     }
     if (r == 3) {
-        self->unk_fc = 1;
-        self->unk_38 = 0x11;
+        self->completed = 1;
+        self->result = 0x11;
         return FALSE;
     }
     return TRUE;
@@ -956,64 +739,64 @@ BOOL func_ov065_022798f8(Unk_ov065_02279c7c *self) {
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_02279714(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
+s32 ghiDoReceive(GHIConnection *self, u8 *buf, s32 *plen) {
     s32 len;
     s32 n = *plen - 1;
-    if (self->unk_134 != 0) {
-        u32 t = func_ov065_02279144();
-        if (t < self->unk_138 + data_ov065_0228ca4c) {
+    if (self->throttle != 0) {
+        u32 t = current_time();
+        if (t < self->lastThrottleRecv + ghiThrottleTimeDelay) {
             return 1;
         }
-        self->unk_138 = t;
-        if (n >= data_ov065_0228ca50) {
-            n = data_ov065_0228ca50;
+        self->lastThrottleRecv = t;
+        if (n >= ghiThrottleBufferSize) {
+            n = ghiThrottleBufferSize;
         }
     }
-    if (self->unk_84 < self->unk_80) {
-        func_ov065_02279168(&self->unk_74, buf, plen);
-        if (self->unk_84 == self->unk_80) {
-            self->unk_80 = self->unk_f8;
-            self->unk_84 = self->unk_f8;
+    if (self->recvBuffer.pos < self->recvBuffer.len) {
+        ghiReadDataFromBuffer(&self->recvBuffer, buf, plen);
+        if (self->recvBuffer.pos == self->recvBuffer.len) {
+            self->recvBuffer.len = self->headersEnd;
+            self->recvBuffer.pos = self->headersEnd;
         }
         return 0;
     }
-    len = func_ov065_02278ce0(self->unk_48, buf, n, 0);
+    len = recv(self->socket, buf, n, 0);
     if (len == -1) {
-        s32 e = func_ov065_02278be8(self->unk_48);
+        s32 e = GOAGetLastError(self->socket);
         if (e == -6 || e == -26 || e == -76) {
             return 1;
         }
-        self->unk_fc = 1;
-        self->unk_38 = 5;
-        self->unk_4c = e;
-        self->unk_130 = 1;
+        self->completed = 1;
+        self->result = 5;
+        self->socketError = e;
+        self->connectionClosed = 1;
         return 3;
     }
     if (len == 0) {
-        self->unk_130 = 1;
+        self->connectionClosed = 1;
         return 2;
     }
-    if (self->unk_168 != 0) {
-        if (func_ov065_0227931c(&self->unk_98, buf, len) == 0) {
+    if (self->encryptEnabled != 0) {
+        if (ghiAppendDataToBuffer(&self->decodeBuffer, buf, len) == 0) {
             return 3;
         }
-        if (func_ov065_022798f8(self) == 0) {
-            self->unk_fc = 1;
-            self->unk_38 = 0x11;
+        if (ghiDecryptReceivedData(self) == 0) {
+            self->completed = 1;
+            self->result = 0x11;
             return 3;
         }
-        if (self->unk_80 - self->unk_84 <= 0) {
+        if (self->recvBuffer.len - self->recvBuffer.pos <= 0) {
             buf[0] = 0;
             *plen = 0;
             return 1;
         }
         len = *plen - 1;
-        if (func_ov065_02279168(&self->unk_74, buf, &len) == 0) {
+        if (ghiReadDataFromBuffer(&self->recvBuffer, buf, &len) == 0) {
             return 3;
         }
-        if (self->unk_84 == self->unk_80) {
-            self->unk_80 = self->unk_f8;
-            self->unk_84 = self->unk_f8;
+        if (self->recvBuffer.pos == self->recvBuffer.len) {
+            self->recvBuffer.len = self->headersEnd;
+            self->recvBuffer.pos = self->headersEnd;
         }
         if (len <= 0) {
             return 1;
@@ -1032,20 +815,20 @@ s32 func_ov065_02279714(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_022796a8(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
-    s32 r = func_ov065_02278ca0(self->unk_48, buf, len, 0);
+s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len) {
+    s32 r = send(self->socket, buf, len, 0);
     if (r == -1) {
-        s32 e = func_ov065_02278be8(self->unk_48);
+        s32 e = GOAGetLastError(self->socket);
         if (e == -6 || e == -26 || e == -76) {
             return 0;
         }
-        self->unk_fc = 1;
-        self->unk_38 = 5;
-        self->unk_4c = e;
+        self->completed = 1;
+        self->result = 5;
+        self->socketError = e;
         return -1;
     }
-    if (self->unk_10 == 4) {
-        self->unk_148 += r;
+    if (self->state == 4) {
+        self->postingState.bytesPosted += r;
     }
     return r;
 }
@@ -1054,10 +837,10 @@ s32 func_ov065_022796a8(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
 
 namespace Nc {
 extern "C" {
-s32 func_ov065_02279654(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
+s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len) {
     s32 r = 0;
-    if (self->unk_5c == 0) {
-        r = func_ov065_022796a8(self, buf, len);
+    if (self->sendBuffer.len == 0) {
+        r = ghiDoSend(self, buf, len);
         if (r == -1) {
             return 0;
         }
@@ -1065,7 +848,7 @@ s32 func_ov065_02279654(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
             return 1;
         }
     }
-    if (func_ov065_0227931c(&self->unk_50, buf + r, len - r) == 0) {
+    if (ghiAppendDataToBuffer(&self->sendBuffer, buf + r, len - r) == 0) {
         return 0;
     }
     return 2;
@@ -1075,20 +858,20 @@ s32 func_ov065_02279654(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
 
 namespace Nc {
 extern "C" {
-void func_ov065_0227960c(Unk_ov065_02279c7c *self) {
-    if (self->unk_40 != 0) {
+void ghiCallCompletedCallback(GHIConnection *self) {
+    if (self->completedCallback != 0) {
         u32 a;
         u32 b;
-        if (self->unk_0c != 0) {
+        if (self->type != 0) {
             a = 0;
             b = 0;
         } else {
-            a = self->unk_c0;
-            b = self->unk_100;
+            a = (u32)self->getFileBuffer.data;
+            b = self->fileBytesReceived;
         }
-        s32 r = self->unk_40(self->unk_04, self->unk_38, a, b, self->unk_44);
+        s32 r = self->completedCallback(self->request, self->result, a, b, self->callbackParam);
         if (a != 0 && r == 0) {
-            self->unk_d8 = 1;
+            self->getFileBuffer.dontFree = 1;
         }
     }
 }
@@ -1097,9 +880,9 @@ void func_ov065_0227960c(Unk_ov065_02279c7c *self) {
 
 namespace Nc {
 extern "C" {
-void func_ov065_022795d4(Unk_ov065_02279c7c *self, u32 p1, u32 p2) {
-    if (self->unk_3c != 0) {
-        self->unk_3c(self->unk_04, self->unk_10, p1, p2, self->unk_100, self->unk_104, self->unk_44);
+void ghiCallProgressCallback(GHIConnection *self, u32 p1, u32 p2) {
+    if (self->progressCallback != 0) {
+        self->progressCallback(self->request, self->state, p1, p2, self->fileBytesReceived, self->totalSize, self->callbackParam);
     }
 }
 }
@@ -1107,10 +890,10 @@ void func_ov065_022795d4(Unk_ov065_02279c7c *self, u32 p1, u32 p2) {
 
 namespace Nc {
 extern "C" {
-void func_ov065_02279588(Unk_ov065_02279c7c *self) {
-    if (self->unk_150 != 0) {
-        u32 a = func_ov065_02278684(self->unk_140);
-        self->unk_150(self->unk_04, self->unk_148, self->unk_14c, self->unk_144, a, self->unk_44);
+void ghiCallPostCallback(GHIConnection *self) {
+    if (self->postingState.callback != 0) {
+        u32 a = ArrayLength((u32)self->postingState.states);
+        self->postingState.callback(self->request, self->postingState.bytesPosted, self->postingState.totalBytes, self->postingState.index, a, self->callbackParam);
     }
 }
 }
@@ -1118,7 +901,7 @@ void func_ov065_02279588(Unk_ov065_02279c7c *self) {
 
 namespace Ng {
 extern "C" {
-s32 func_ov065_0227953c(Unk_ov065_0227931c_Buf *o, s32 n) {
+s32 ghiResizeBuffer(GHIBuffer *o, s32 n) {
     s32 newsize;
     void *p;
     if (o == 0) {
@@ -1127,13 +910,13 @@ s32 func_ov065_0227953c(Unk_ov065_0227931c_Buf *o, s32 n) {
     if (n <= 0) {
         return FALSE;
     }
-    newsize = o->unk_08 + n;
-    p = func_ov065_02277ad8(o->unk_04, newsize);
+    newsize = o->size + n;
+    p = GsUtil_Realloc(o->data, newsize);
     if (p == 0) {
         return FALSE;
     }
-    o->unk_04 = (char *)p;
-    o->unk_08 = newsize;
+    o->data = (char *)p;
+    o->size = newsize;
     return TRUE;
 }
 }
@@ -1141,7 +924,7 @@ s32 func_ov065_0227953c(Unk_ov065_0227931c_Buf *o, s32 n) {
 
 namespace Ng {
 extern "C" {
-s32 func_ov065_022794d0(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, s32 size, s32 grow) {
+s32 ghiInitBuffer(GHIConnection *ow, GHIBuffer *o, s32 size, s32 grow) {
     if (ow == 0) {
         return FALSE;
     }
@@ -1154,19 +937,19 @@ s32 func_ov065_022794d0(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o,
     if (grow <= 0) {
         return FALSE;
     }
-    o->unk_00 = ow;
-    o->unk_04 = 0;
-    o->unk_08 = 0;
-    o->unk_0c = 0;
-    o->unk_10 = 0;
-    o->unk_14 = grow;
-    o->unk_18 = 0;
-    o->unk_1c = 0;
-    o->unk_20 = 0;
-    if (func_ov065_0227953c(o, size) == 0) {
+    o->connection = ow;
+    o->data = 0;
+    o->size = 0;
+    o->len = 0;
+    o->pos = 0;
+    o->sizeIncrement = grow;
+    o->fixed = 0;
+    o->dontFree = 0;
+    o->isEncrypted = 0;
+    if (ghiResizeBuffer(o, size) == 0) {
         return FALSE;
     }
-    *o->unk_04 = 0;
+    *o->data = 0;
     return TRUE;
 }
 }
@@ -1174,7 +957,7 @@ s32 func_ov065_022794d0(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o,
 
 namespace Ng {
 extern "C" {
-s32 func_ov065_02279494(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, char *buf, s32 size) {
+s32 ghiInitFixedBuffer(GHIConnection *ow, GHIBuffer *o, char *buf, s32 size) {
     if (ow == 0) {
         return FALSE;
     }
@@ -1187,15 +970,15 @@ s32 func_ov065_02279494(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o,
     if (size <= 0) {
         return FALSE;
     }
-    o->unk_00 = ow;
-    o->unk_04 = buf;
-    o->unk_08 = size;
-    o->unk_0c = 0;
-    o->unk_14 = 0;
-    o->unk_18 = 1;
-    o->unk_1c = 1;
-    o->unk_20 = 0;
-    *o->unk_04 = 0;
+    o->connection = ow;
+    o->data = buf;
+    o->size = size;
+    o->len = 0;
+    o->sizeIncrement = 0;
+    o->fixed = 1;
+    o->dontFree = 1;
+    o->isEncrypted = 0;
+    *o->data = 0;
     return TRUE;
 }
 }
@@ -1203,12 +986,12 @@ s32 func_ov065_02279494(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o,
 
 namespace Ng {
 extern "C" {
-void func_ov065_0227946c(Unk_ov065_0227931c_Buf *o) {
-    if (o != 0 && o->unk_04 != 0) {
-        if (o->unk_1c == 0) {
-            func_ov065_02277ac8(o->unk_04);
+void ghiFreeBuffer(GHIBuffer *o) {
+    if (o != 0 && o->data != 0) {
+        if (o->dontFree == 0) {
+            GsUtil_Free(o->data);
         }
-        func_0212899c(o, 0, 0x24);
+        memset(o, 0, 0x24);
     }
 }
 }
@@ -1216,8 +999,8 @@ void func_ov065_0227946c(Unk_ov065_0227931c_Buf *o) {
 
 namespace Ng {
 extern "C" {
-s32 func_ov065_0227931c(Unk_ov065_0227931c_Buf *o, char *s, s32 len) {
-    Unk_ov065_0227931c_Owner *ow = o->unk_00;
+s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len) {
+    GHIConnection *ow = o->connection;
     s32 n;
     s32 r;
     if (o == 0) {
@@ -1230,44 +1013,44 @@ s32 func_ov065_0227931c(Unk_ov065_0227931c_Buf *o, char *s, s32 len) {
         return FALSE;
     }
     if (len == 0) {
-        len = func_021277d4(s);
+        len = STD_GetStringLength(s);
     }
-    if (o->unk_20 == 1) {
+    if (o->isEncrypted == 1) {
         do {
-            n = o->unk_08 - o->unk_0c;
-            r = ow->unk_17c(ow, &ow->unk_164, s, &len, o->unk_04 + o->unk_0c, &n);
+            n = o->size - o->len;
+            r = ow->encryptFn(ow, &ow->encryptor, s, &len, o->data + o->len, &n);
             if (r == 2) {
-                if (o->unk_18 != 0) {
-                    o->unk_00->unk_fc = 1;
-                    o->unk_00->unk_38 = 2;
+                if (o->fixed != 0) {
+                    o->connection->completed = 1;
+                    o->connection->result = 2;
                     return FALSE;
                 }
-                if (func_ov065_0227953c(o, o->unk_14) != 0) {
-                    o->unk_00->unk_fc = 1;
-                    o->unk_00->unk_38 = 1;
+                if (ghiResizeBuffer(o, o->sizeIncrement) != 0) {
+                    o->connection->completed = 1;
+                    o->connection->result = 1;
                     return FALSE;
                 }
             } else {
-                o->unk_0c += n;
+                o->len += n;
             }
         } while (r == 2);
     } else {
-        s32 t = o->unk_0c + len;
-        while (t >= o->unk_08) {
-            if (o->unk_18 != 0) {
-                o->unk_00->unk_fc = 1;
-                o->unk_00->unk_38 = 2;
+        s32 t = o->len + len;
+        while (t >= o->size) {
+            if (o->fixed != 0) {
+                o->connection->completed = 1;
+                o->connection->result = 2;
                 return FALSE;
             }
-            if (func_ov065_0227953c(o, o->unk_14) == 0) {
-                o->unk_00->unk_fc = 1;
-                o->unk_00->unk_38 = 1;
+            if (ghiResizeBuffer(o, o->sizeIncrement) == 0) {
+                o->connection->completed = 1;
+                o->connection->result = 1;
                 return FALSE;
             }
         }
-        func_02128a00(o->unk_04 + o->unk_0c, s, len);
-        o->unk_0c = t;
-        o->unk_04[o->unk_0c] = 0;
+        memcpy(o->data + o->len, s, len);
+        o->len = t;
+        o->data[o->len] = 0;
     }
     return TRUE;
 }

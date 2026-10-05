@@ -29,10 +29,10 @@ _fgr:
 	bx lr
 
 ; float compare, x in r0, y in r1: x >= y (_fgeq; unordered -> 0).
-	.global func_02131e24
-	.type func_02131e24, @function
-	.size func_02131e24, 0x3c
-func_02131e24:
+	.global _fgeq
+	.type _fgeq, @function
+	.size _fgeq, 0x3c
+_fgeq:
 	mov r3, #0xff000000
 	cmp r3, r0, lsl #1
 	cmpcs r3, r1, lsl #1

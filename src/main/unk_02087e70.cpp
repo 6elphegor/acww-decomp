@@ -1,144 +1,108 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
+#include "game/TouchPicker.h"
+#include "game/TouchPickSphere.h"
+#include "game/BugNetTarget.h"
+#include "nitro/gxoam.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
-struct Unk_02087e70_Ent {
-    u32 w0;
-    u32 w1lo : 10;
-    u32 w1pri : 2;
-    u32 w1pal : 4;
-    u32 w1id : 16;
-};
 
-struct Unk_02087e70_Oam {
-    u32 a01;
-    u16 a2;
-    u16 pad;
-};
-
-// The original constructor calls the base's C1 and its destructor the base's D2; mwcc would call C2/D2
-// for a base subobject, so the base is a plain struct and the two calls are written out.
-struct Unk_020b6a94 {
-    u8 pad[0x1c];
-};
-
-extern "C" void _ZN12Unk_020b6a94C2Ev(Unk_020b6a94 *p);
-extern "C" void _ZN12Unk_020b6a94D2Ev(Unk_020b6a94 *p);
-
-class Unk_020b6960 {
-public:
-    BOOL func_020b68a8(Unk_020b6a94 *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
-};
-
-class Unk_02088b20 : public Unk_020b6a94 {
-public:
-    Unk_02088b20();
-    ~Unk_02088b20();
-    void func_02088b20(Vec3 *a, s32 b, Vec3 *c, u8 d);
-    /* 0x1c */ Unk_02088b20 *unk_1c;
-    /* 0x20 */ u8 unk_20;
-    /* 0x24 */ s32 unk_24;
-};
 
 extern "C" {
-extern s32 data_020cf558[];
-extern s32 data_020cf588[];
+extern s32 sOamObjHeights[];
+extern s32 sOamObjWidths[];
 extern s16 data_02135f44[];
-extern Unk_02088b20 *data_021ce63c;
+extern BugNetTarget *data_021ce63c;
 
-BOOL func_02087c8c(u32 mode);
-s32 func_02087cd8(void *base, s32 *cnt, s32 *m);
-s32 func_01ffc5a4(s32 v, s32 s);
+BOOL Oam_UseBufferA(u32 mode);
+s32 Oam_AllocAffine(void *base, s32 *cnt, s32 *m);
+s32 FX_Div(s32 v, s32 s);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_02087e30(u32 *p);
-s32 func_02087e50(u32 *p);
-s32 func_0203eeac(Vec3 *out, void *in);
-void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
-s64 func_01ffd028(void *v, void *p);
-void func_02115e78(void *a, void *b, u32 c);
-void func_02115ef4(void *a, void *b, u32 c);
-void func_021145cc(void *a, u32 b);
-void func_02111d34(void *a, u32 b, u32 c);
-void func_02111ccc(void *a, u32 b, u32 c);
-Unk_020b6960 *func_020b50b4();
+s32 Oam_GetObjHeight(u32 *p);
+s32 Oam_GetObjWidth(u32 *p);
+s32 WorldCurve_Apply(VecFx32 *out, void *in);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+s64 Vec_DistSq(void *v, void *p);
+void MIi_CpuCopy32(void *a, void *b, u32 c);
+void MIi_CpuCopyFast(void *a, void *b, u32 c);
+void DC_FlushRange(void *a, u32 b);
+void GX_LoadOAM(void *a, u32 b, u32 c);
+void GXS_LoadOAM(void *a, u32 b, u32 c);
+TouchPicker *Scene_GetTouchPicker();
 }
 
-extern s32 data_021cde28;
-extern s32 data_021cde2c;
-extern s32 data_021cde30;
-extern s32 data_021cde34;
-extern Unk_02087e70_Oam data_021cde38[0x80];
-extern Unk_02087e70_Oam data_021ce238[0x80];
+extern s32 sOamAffineCountA;
+extern s32 sOamCountA;
+extern s32 sOamAffineCountB;
+extern s32 sOamCountB;
+extern GXOamAttr sOamBufferA[0x80];
+extern GXOamAttr sOamBufferB[0x80];
 
 enum Unk_02087e70_Mode_ { Unk_02087e70_Mode_0 = 0, Unk_02087e70_Mode_1 = 1, Unk_02087e70_Mode_2 = 2, Unk_02087e70_Mode_3 = 3 };
 
-static inline void Unk_02087e70_SetAttr(Unk_02087e70_Oam *oam, s32 x, s32 y, s32 priority, Unk_02087e70_Mode_ mode, u32 mosaic, s32 effect, u32 shape, u32 color, u32 charName, s32 cParam, s32 rsParam)
+static inline void Unk_02087e70_SetAttr(GXOamAttr *oam, s32 x, s32 y, s32 priority, Unk_02087e70_Mode_ mode, u32 mosaic, s32 effect, u32 shape, u32 color, u32 charName, s32 cParam, s32 rsParam)
 {
     if (effect == 0x100 || effect == 0x300) {
         if (mode == 3) {
-            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((rsParam << 25) | (y & 0xff))))));
+            oam->attr01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((rsParam << 25) | (y & 0xff))))));
         } else {
-            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((y & 0xff) | ((rsParam << 25) | (color << 13)))))));
+            oam->attr01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((y & 0xff) | ((rsParam << 25) | (color << 13)))))));
         }
     } else {
         if (mode == 3) {
-            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((y & 0xff) | (mode << 10)))));
+            oam->attr01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((y & 0xff) | (mode << 10)))));
         } else {
-            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((color << 13) | (y & 0xff))))));
+            oam->attr01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((color << 13) | (y & 0xff))))));
         }
     }
-    oam->a2 = (cParam << 12) | (charName | (priority << 10));
+    oam->attr2 = (cParam << 12) | (charName | (priority << 10));
 }
 
-Unk_02088b20::Unk_02088b20() {
-    _ZN12Unk_020b6a94C2Ev(this);
-    unk_1c = 0;
-    unk_20 = 0;
+BugNetTarget::BugNetTarget() {
+    nextTarget = 0;
+    isHit = 0;
 }
 
-Unk_02088b20::~Unk_02088b20() {
-    _ZN12Unk_020b6a94D2Ev(this);
+BugNetTarget::~BugNetTarget() {
 }
 
-void Unk_02088b20::func_02088b20(Vec3 *a, s32 b, Vec3 *c, u8 d) {
-    unk_1c = 0;
-    Unk_02088b20 *h = data_021ce63c;
+void BugNetTarget::submit(VecFx32 *a, s32 b, VecFx32 *c, u8 d) {
+    nextTarget = 0;
+    BugNetTarget *h = data_021ce63c;
     if (h == 0) {
         data_021ce63c = this;
     } else {
-        unk_1c = h;
+        nextTarget = h;
         data_021ce63c = this;
     }
-    unk_20 = 0;
-    unk_24 = b;
-    func_020b50b4()->func_020b68a8(this, a, c, 4, d);
+    isHit = 0;
+    hitRadius = b;
+    Scene_GetTouchPicker()->addSphere(this, a, c, 4, d);
 }
 
-extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {
+extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
     BOOL result = FALSE;
-    Unk_02088b20 *p = data_021ce63c;
-    Vec3 v1, v2, v3;
-    Vec3 pts[6];
+    BugNetTarget *p = data_021ce63c;
+    VecFx32 v1, v2, v3;
+    VecFx32 pts[6];
     u32 i;
-    func_0203eeac(&v1, a);
-    func_0203eeac(&v2, b);
-    func_020e9960(&v3, &v2, &v1);
-    v3.x = func_01ffc5a4(v3.x, 0x6000);
-    v3.y = func_01ffc5a4(v3.y, 0x6000);
-    v3.z = func_01ffc5a4(v3.z, 0x6000);
+    WorldCurve_Apply(&v1, a);
+    WorldCurve_Apply(&v2, b);
+    Vec_Sub(&v3, &v2, &v1);
+    v3.x = FX_Div(v3.x, 0x6000);
+    v3.y = FX_Div(v3.y, 0x6000);
+    v3.z = FX_Div(v3.z, 0x6000);
     for (i = 0; i < 6; i++) {
         pts[i].x = v1.x + i * v3.x;
         pts[i].y = v1.y + i * v3.y;
         pts[i].z = v1.z + i * v3.z;
     }
     while (p) {
-        p->unk_20 = 0;
-        s32 len = func_01ffcb0c(rad + p->unk_24, rad + p->unk_24);
+        p->isHit = 0;
+        s32 len = func_01ffcb0c(rad + p->hitRadius, rad + p->hitRadius);
         for (i = 0; i < 6; i++) {
-            if ((s64)len >= func_01ffd028(&pts[i], p)) {
-                p->unk_20 = 1;
+            if ((s64)len >= Vec_DistSq(&pts[i], p)) {
+                p->isHit = 1;
                 result = TRUE;
                 if (out) {
                     *out = ((u8 *)p)[0x10];
@@ -146,57 +110,57 @@ extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {
                 break;
             }
         }
-        p = p->unk_1c;
+        p = p->nextTarget;
     }
     return result;
 }
 
-extern "C" void func_020889f4() {
-    func_02111d34(data_021cde38, 0, 0x400);
-    func_02111ccc(data_021ce238, 0, 0x400);
+extern "C" void Oam_LoadBuffers() {
+    GX_LoadOAM(sOamBufferA, 0, 0x400);
+    GXS_LoadOAM(sOamBufferB, 0, 0x400);
 }
 
-extern "C" void func_020889cc() {
-    func_021145cc(data_021cde38, 0x400);
-    func_021145cc(data_021ce238, 0x400);
+extern "C" void Oam_FlushBuffers() {
+    DC_FlushRange(sOamBufferA, 0x400);
+    DC_FlushRange(sOamBufferB, 0x400);
 }
 
-extern "C" void func_02088960() {
-    data_021cde38[0].a01 = 0xc0;
-    data_021cde38[0].a2 = 0;
-    func_02115e78(data_021cde38, &data_021cde38[1], 0x18);
-    func_02115ef4(data_021cde38, &data_021cde38[4], 0x3e0);
-    func_02115ef4(data_021cde38, data_021ce238, 0x400);
-    data_021cde2c = 0;
-    data_021cde28 = 0;
-    data_021cde34 = 0;
-    data_021cde30 = 0;
+extern "C" void Oam_ResetBuffers() {
+    sOamBufferA[0].attr01 = 0xc0;
+    sOamBufferA[0].attr2 = 0;
+    MIi_CpuCopy32(sOamBufferA, &sOamBufferA[1], 0x18);
+    MIi_CpuCopyFast(sOamBufferA, &sOamBufferA[4], 0x3e0);
+    MIi_CpuCopyFast(sOamBufferA, sOamBufferB, 0x400);
+    sOamCountA = 0;
+    sOamAffineCountA = 0;
+    sOamCountB = 0;
+    sOamAffineCountB = 0;
 }
 
-extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
-    Unk_02087e70_Oam *ent;
+extern "C" s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
+    GXOamAttr *ent;
     s32 *cntp;
     s32 *othp;
     s32 idx, c;
     u32 bit13, base;
     s32 x0, y0, w, h;
     s32 mode2;
-    if (func_02087c8c(mode)) {
-        cntp = &data_021cde2c;
+    if (Oam_UseBufferA(mode)) {
+        cntp = &sOamCountA;
         c = *cntp;
         if (c >= 0x80) {
             return -1;
         }
-        ent = data_021cde38 + c;
-        othp = &data_021cde28;
+        ent = sOamBufferA + c;
+        othp = &sOamAffineCountA;
     } else {
-        cntp = &data_021cde34;
+        cntp = &sOamCountB;
         c = *cntp;
         if (c >= 0x80) {
             return -1;
         }
-        ent = data_021ce238 + c;
-        othp = &data_021cde30;
+        ent = sOamBufferB + c;
+        othp = &sOamAffineCountB;
     }
     x0 = (info[0] << 7) >> 23;
     if (x0 >= 0x100) {
@@ -204,8 +168,8 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
     }
     x0 += x;
     y0 = *(s8 *)info + y;
-    w = func_02087e50(info);
-    h = func_02087e30(info);
+    w = Oam_GetObjWidth(info);
+    h = Oam_GetObjHeight(info);
     if (rect && ((info[0] << 22) >> 30) != 1) {
         x0 -= w >> 1;
         y0 -= h >> 1;
@@ -225,7 +189,7 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
         pri = (info[1] << 20) >> 30;
     }
     if (rect) {
-        idx = func_02087cd8(ent - *cntp, othp, rect);
+        idx = Oam_AllocAffine(ent - *cntp, othp, rect);
         if (idx == -1) {
             return -4;
         }
@@ -245,9 +209,9 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
     return 1;
 }
 
-extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz)
+extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, GXOamAttr *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz)
 {
-    Unk_02087e70_Oam *oam;
+    GXOamAttr *oam;
     s32 *cnt;
     s32 *aux;
     s32 x, y, w, h;
@@ -256,30 +220,30 @@ extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx
     s32 n;
     u32 b13;
     u32 w1lo;
-    if (func_02087c8c(mode)) {
-        cnt = &data_021cde2c;
+    if (Oam_UseBufferA(mode)) {
+        cnt = &sOamCountA;
         n = *cnt;
         if (n >= 0x80) {
             return 0;
         }
-        oam = &data_021cde38[n];
-        aux = &data_021cde28;
+        oam = &sOamBufferA[n];
+        aux = &sOamAffineCountA;
     } else {
-        cnt = &data_021cde34;
+        cnt = &sOamCountB;
         n = *cnt;
         if (n >= 0x80) {
             return 0;
         }
-        oam = &data_021ce238[n];
-        aux = &data_021cde30;
+        oam = &sOamBufferB[n];
+        aux = &sOamAffineCountB;
     }
-    x = (e->w0 << 7) >> 23;
+    x = (e->attr01 << 7) >> 23;
     if (x >= 0x100) {
         x -= 0x200;
     }
     y = *(s8 *)e;
-    w = func_02087e50(&e->w0);
-    h = func_02087e30(&e->w0);
+    w = Oam_GetObjWidth(&e->attr01);
+    h = Oam_GetObjHeight(&e->attr01);
     if (rot != 0) {
         if (sz != 0) {
             s32 s, ty, c, hw, hh, t;
@@ -311,7 +275,7 @@ extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx
             y = ((ty * c + tx * s) >> 12) - hh;
         }
     }
-    if ((scale != 0x1000 || rot != 0) && ((e->w0 << 22) >> 30) != 1) {
+    if ((scale != 0x1000 || rot != 0) && ((e->attr01 << 22) >> 30) != 1) {
         x -= w >> 1;
         y -= h >> 1;
         w <<= 1;
@@ -338,10 +302,10 @@ extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx
         }
     }
     if (pal == -1) {
-        pal = e->w1pal;
+        pal = e->cParam;
     }
     if (pri == -1) {
-        pri = e->w1pri;
+        pri = e->priority;
     }
     if (scale != 0x1000 || rot != 0) {
         s32 m[4];
@@ -354,37 +318,37 @@ extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx
         m[1] = s;
         m[2] = -s;
         m[3] = c;
-        if (e->w0 & 0x10000000) {
+        if (e->attr01 & 0x10000000) {
             m[0] = -c;
             m[1] = -s;
         }
-        if (e->w0 & 0x20000000) {
+        if (e->attr01 & 0x20000000) {
             m[2] = -m[2];
             m[3] = -m[3];
         }
-        idx = func_02087cd8(oam - *cnt, aux, m);
+        idx = Oam_AllocAffine(oam - *cnt, aux, m);
         if (idx == -1) {
             return 0;
         }
-        if (((e->w0 << 22) >> 30) == 1) {
+        if (((e->attr01 << 22) >> 30) == 1) {
             flags = 0x100;
         } else {
             flags = 0x300;
         }
     } else {
         idx = 0;
-        flags = ((volatile Unk_02087e70_Ent *)e)->w0 & 0x30000000;
+        flags = ((volatile GXOamAttr *)e)->attr01 & 0x30000000;
     }
-    w1lo = e->w1lo;
-    b13 = (e->w0 << 18) >> 31;
-    Unk_02087e70_SetAttr(oam, x, y, pri, (Unk_02087e70_Mode_)((e->w0 << 20) >> 30), (e->w0 << 19) >> 31, flags, e->w0 & 0xc000c000, b13, w1lo, pal, idx);
+    w1lo = e->charNo;
+    b13 = (e->attr01 << 18) >> 31;
+    Unk_02087e70_SetAttr(oam, x, y, pri, (Unk_02087e70_Mode_)((e->attr01 << 20) >> 30), (e->attr01 << 19) >> 31, flags, e->attr01 & 0xc000c000, b13, w1lo, pal, idx);
     *cnt = *cnt + 1;
     return oam;
 }
 
-extern "C" void func_02087e70(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
+extern "C" void Oam_DrawCell(u32 mode, GXOamAttr *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
 {
-    Unk_02087e70_Oam *oam;
+    GXOamAttr *oam;
     s32 priv;
     s32 palv;
     s32 w;
@@ -405,16 +369,16 @@ extern "C" void func_02087e70(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32
     BOOL k3;
     BOOL k0;
     BOOL k1;
-    if (func_02087c8c(mode)) {
-        oam = data_021cde38;
-        cnt = &data_021cde2c;
+    if (Oam_UseBufferA(mode)) {
+        oam = sOamBufferA;
+        cnt = &sOamCountA;
         oam += *cnt;
-        aux = &data_021cde28;
+        aux = &sOamAffineCountA;
     } else {
-        oam = data_021ce238;
-        cnt = &data_021cde34;
+        oam = sOamBufferB;
+        cnt = &sOamCountB;
         oam += *cnt;
-        aux = &data_021cde30;
+        aux = &sOamAffineCountB;
     }
     if (sx != 0x1000 || sy != 0x1000 || rot != 0) {
         use = TRUE;
@@ -427,24 +391,24 @@ top:
             goto end;
         }
         k3 = FALSE;
-        if (use && ((e->w0 << 22) >> 30) == 3) {
+        if (use && ((e->attr01 << 22) >> 30) == 3) {
             k3 = TRUE;
         }
         k0 = FALSE;
-        if (use && ((e->w0 << 22) >> 30) == 0) {
+        if (use && ((e->attr01 << 22) >> 30) == 0) {
             k0 = TRUE;
         }
         k1 = FALSE;
-        if (use && ((e->w0 << 22) >> 30) == 1) {
+        if (use && ((e->attr01 << 22) >> 30) == 1) {
             k1 = TRUE;
         }
-        x = (e->w0 << 7) >> 23;
+        x = (e->attr01 << 7) >> 23;
         if (x >= 0x100) {
             x -= 0x200;
         }
         y = *(s8 *)e;
-        w = func_02087e50(&e->w0);
-        h = func_02087e30(&e->w0);
+        w = Oam_GetObjWidth(&e->attr01);
+        h = Oam_GetObjHeight(&e->attr01);
         if (use) {
             if (k3) {
                 w <<= 1;
@@ -455,10 +419,10 @@ top:
             x = (x + hw) << 12;
             y = (y + hh) << 12;
             if (sx != 0x1000) {
-                x = func_01ffc5a4(x, sx);
+                x = FX_Div(x, sx);
             }
             if (sy != 0x1000) {
-                y = func_01ffc5a4(y, sy);
+                y = FX_Div(y, sy);
             }
             if (rot != 0) {
                 s16 *sinp = &data_02135f44[((s32)(u16)(s16)rot >> 4) * 2];
@@ -488,14 +452,14 @@ top:
                 w = h;
             }
             if (x + w < 0 || x > 0x100) {
-                if (e->w1id == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
                 goto top;
             }
             if (y + w < 0 || y > 0xc0) {
-                if (e->w1id == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -503,14 +467,14 @@ top:
             }
         } else {
             if (x + w < 0 || x > 0x100) {
-                if (e->w1id == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
                 goto top;
             }
             if (y + h < 0 || y > 0xc0) {
-                if (e->w1id == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -518,19 +482,19 @@ top:
             }
         }
         if (pal == -1) {
-            palv = e->w1pal;
+            palv = e->cParam;
         } else {
             palv = pal;
         }
         if (pri == -1) {
-            priv = e->w1pri;
+            priv = e->priority;
         } else {
             priv = pri;
         }
         if (sz > 0) {
             size = (Unk_02087e70_Mode_)sz;
         } else {
-            size = (Unk_02087e70_Mode_)((e->w0 << 20) >> 30);
+            size = (Unk_02087e70_Mode_)((e->attr01 << 20) >> 30);
         }
         if (use) {
             s32 P, Q;
@@ -545,17 +509,17 @@ top:
             m[1] = Q;
             m[2] = -((ss * sy + 0x800) >> 12);
             m[3] = (cc * sy + 0x800) >> 12;
-            if (e->w0 & 0x10000000) {
+            if (e->attr01 & 0x10000000) {
                 m[0] = -P;
                 m[1] = -Q;
             }
-            if (e->w0 & 0x20000000) {
+            if (e->attr01 & 0x20000000) {
                 m[2] = -m[2];
                 m[3] = -m[3];
             }
-            idx = func_02087cd8(oam - *cnt, aux, m);
+            idx = Oam_AllocAffine(oam - *cnt, aux, m);
             if (idx == -1) {
-                if (e->w1id == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -568,7 +532,7 @@ top:
             }
         } else {
             idx = 0;
-            flags = e->w0 & 0x30000000;
+            flags = e->attr01 & 0x30000000;
         }
         if (fx) {
             flags |= 0x10000000;
@@ -576,12 +540,12 @@ top:
         if (fy) {
             flags |= 0x20000000;
         }
-        w1lo = e->w1lo;
-        b13 = (e->w0 << 18) >> 31;
-        Unk_02087e70_SetAttr(oam, x, y, priv, size, (e->w0 << 19) >> 31, flags, e->w0 & 0xc000c000, b13, w1lo, palv, idx);
+        w1lo = e->charNo;
+        b13 = (e->attr01 << 18) >> 31;
+        Unk_02087e70_SetAttr(oam, x, y, priv, size, (e->attr01 << 19) >> 31, flags, e->attr01 & 0xc000c000, b13, w1lo, palv, idx);
         oam++;
         *cnt = *cnt + 1;
-        if (e->w1id == 0xffff) {
+        if (e->_3 == 0xffff) {
             goto end;
         }
         e++;
@@ -591,21 +555,21 @@ end:;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern Unk_02087e70_Oam data_021cde38[0x80];
-extern s32 data_021cde34;
-extern Unk_02087e70_Oam data_021ce238[0x80];
-extern s32 data_021cde2c;
-extern s32 data_021cde30;
-extern s32 data_021cde28;
+extern GXOamAttr sOamBufferA[0x80];
+extern s32 sOamCountB;
+extern GXOamAttr sOamBufferB[0x80];
+extern s32 sOamCountA;
+extern s32 sOamAffineCountB;
+extern s32 sOamAffineCountA;
 
-Unk_02087e70_Oam data_021cde38[0x80];
+GXOamAttr sOamBufferA[0x80];
 
-s32 data_021cde34;
+s32 sOamCountB;
 
-Unk_02087e70_Oam data_021ce238[0x80];
+GXOamAttr sOamBufferB[0x80];
 
-s32 data_021cde2c;
+s32 sOamCountA;
 
-s32 data_021cde30;
+s32 sOamAffineCountB;
 
-s32 data_021cde28;
+s32 sOamAffineCountA;

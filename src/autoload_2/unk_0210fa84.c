@@ -10,22 +10,22 @@ typedef int BOOL;
 
 extern u16 data_021fcbd8[13];
 
-extern void func_021104ac(u32 mask);
+extern void GX_VRAMCNT_SetLCDC_(u32 mask);
 
 #define reg_GX_DISPCNT (*(volatile u32 *)0x04000000)
 #define reg_GX_DISP3DCNT (*(volatile u16 *)0x04000060)
 #define VRAMCNT(n) (*(volatile u8 *)(0x04000240 + (n)))
 
-void func_021101f4(int bank);
-void func_02110088(int bank);
-void func_0210ff74(int bank);
-void func_0210febc(int bank);
-void func_0210fcb8(int bank);
-void func_0210fbc4(int bank);
-void func_0210fa84(int bank);
+void GX_SetBankForBG(int bank);
+void GX_SetBankForOBJ(int bank);
+void GX_SetBankForBGExtPltt(int bank);
+void GX_SetBankForOBJExtPltt(int bank);
+void GX_SetBankForTex(int bank);
+void GX_SetBankForTexPltt(int bank);
+void GX_SetBankForClearImage(int bank);
 
 // GX_SetBankForBG
-void func_021101f4(int bank) {
+void GX_SetBankForBG(int bank) {
     data_021fcbd8[0] = (u16)((data_021fcbd8[0] | data_021fcbd8[1]) & ~bank);
     data_021fcbd8[1] = bank;
     switch (bank) {
@@ -53,11 +53,11 @@ void func_021101f4(int bank) {
     case 0x20: VRAMCNT(5) = 0x81; break;
     case 0x40: VRAMCNT(6) = 0x81; break;
     }
-    func_021104ac(data_021fcbd8[0]);
+    GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
 }
 
 // GX_SetBankForOBJ
-void func_02110088(int bank) {
+void GX_SetBankForOBJ(int bank) {
     data_021fcbd8[0] = (u16)((data_021fcbd8[0] | data_021fcbd8[2]) & ~bank);
     data_021fcbd8[2] = bank;
     switch (bank) {
@@ -73,11 +73,11 @@ void func_02110088(int bank) {
     case 0x20: VRAMCNT(5) = 0x82; break;
     case 0x40: VRAMCNT(6) = 0x82; break;
     }
-    func_021104ac(data_021fcbd8[0]);
+    GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
 }
 
 // GX_SetBankForBGExtPltt
-void func_0210ff74(int bank) {
+void GX_SetBankForBGExtPltt(int bank) {
     data_021fcbd8[0] = (u16)((data_021fcbd8[0] | data_021fcbd8[7]) & ~bank);
     data_021fcbd8[7] = bank;
     switch (bank) {
@@ -87,11 +87,11 @@ void func_0210ff74(int bank) {
     case 0x60: VRAMCNT(6) = 0x8c;
     case 0x20: VRAMCNT(5) = 0x84; reg_GX_DISPCNT |= 0x40000000; break;
     }
-    func_021104ac(data_021fcbd8[0]);
+    GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
 }
 
 // GX_SetBankForOBJExtPltt
-void func_0210febc(int bank) {
+void GX_SetBankForOBJExtPltt(int bank) {
     data_021fcbd8[0] = (u16)((data_021fcbd8[0] | data_021fcbd8[8]) & ~bank);
     data_021fcbd8[8] = bank;
     switch (bank) {
@@ -99,11 +99,11 @@ void func_0210febc(int bank) {
     case 0x40: reg_GX_DISPCNT |= 0x80000000; VRAMCNT(6) = 0x85; break;
     case 0: reg_GX_DISPCNT &= ~0x80000000; break;
     }
-    func_021104ac(data_021fcbd8[0]);
+    GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
 }
 
 // GX_SetBankForTex
-void func_0210fcb8(int bank) {
+void GX_SetBankForTex(int bank) {
     data_021fcbd8[0] = (u16)((data_021fcbd8[0] | data_021fcbd8[4]) & ~bank);
     data_021fcbd8[4] = bank;
     if (bank == 0) {
@@ -129,11 +129,11 @@ void func_0210fcb8(int bank) {
         case 1: VRAMCNT(0) = 0x83; break;
         }
     }
-    func_021104ac(data_021fcbd8[0]);
+    GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
 }
 
 // GX_SetBankForTexPltt
-void func_0210fbc4(int bank) {
+void GX_SetBankForTexPltt(int bank) {
     data_021fcbd8[0] = (u16)((data_021fcbd8[0] | data_021fcbd8[5]) & ~bank);
     data_021fcbd8[5] = bank;
     switch (bank) {
@@ -145,11 +145,11 @@ void func_0210fbc4(int bank) {
     case 0x30: VRAMCNT(5) = 0x93;
     case 0x10: VRAMCNT(4) = 0x83; break;
     }
-    func_021104ac(data_021fcbd8[0]);
+    GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
 }
 
 // GX_SetBankForClearImage
-void func_0210fa84(int bank) {
+void GX_SetBankForClearImage(int bank) {
     data_021fcbd8[0] = (u16)((data_021fcbd8[0] | data_021fcbd8[6]) & ~bank);
     data_021fcbd8[6] = bank;
     switch (bank) {
@@ -161,5 +161,5 @@ void func_0210fa84(int bank) {
     case 1: VRAMCNT(0) = 0x9b; reg_GX_DISP3DCNT |= 0x4000; break;
     case 4: VRAMCNT(2) = 0x9b; reg_GX_DISP3DCNT |= 0x4000; break;
     }
-    func_021104ac(data_021fcbd8[0]);
+    GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
 }

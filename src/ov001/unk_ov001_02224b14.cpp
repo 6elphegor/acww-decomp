@@ -1,84 +1,75 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/gxoam.h"
+#include "net/WfcObjGroup.h"
 
 #pragma thumb off
 
-struct Unk_ov001_02224670_Entry {
-    u32 unk_00;
-    u16 unk_04;
-    u16 unk_06;
-};
 
-struct Unk_ov001_02224670 {
-    Unk_ov001_02224670 *unk_00;
-    Unk_ov001_02224670 *unk_04;
-    Unk_ov001_02224670_Entry *unk_08;
-    u8 unk_0c;
-};
 
-struct Unk_ov001_02224b9c_T {
-    u16 unk_00;
+struct WfcCellEntry {
+    u16 numOams;
     u16 unk_02;
-    u32 unk_04;
+    u32 dataOffset;
 };
 
 extern "C" {
-void func_02115e48(void *, void *, u32);
-void func_02115e64(s32, void *, u32);
-void func_02115e78(void *, void *, u32);
-void func_ov001_02224038(void *);
-void *func_ov001_02224074(u32, void *, u32);
-Unk_ov001_02224670 *func_ov001_02224870(s32, s32, s32);
-Unk_ov001_02224670_Entry *func_ov001_022247d4(Unk_ov001_02224670 *, s32);
-Unk_ov001_02224670 *func_ov001_02226814(s32, void *);
+void MIi_CpuCopy16(void *, void *, u32);
+void MIi_CpuClear32(s32, void *, u32);
+void MIi_CpuCopy32(void *, void *, u32);
+void WfcFs_FreeFile(void *);
+void *WfcFs_LoadFile(u32, void *, u32);
+WfcObjGroup *WfcObj_Alloc(s32, s32, s32);
+GXOamAttr *WfcObj_GetOam(WfcObjGroup *, s32);
+WfcObjGroup *WfcOam_AllocEntry(s32, void *);
 
-Unk_ov001_02224670 *func_ov001_02224b14(s32 which, s32 idx, s32 flag);
-Unk_ov001_02224670 *func_ov001_02224b60(s32 which, s32 idx);
-void func_ov001_02224b9c(s32 which, s32 idx, void *dst);
-void func_ov001_02224c40(s32 which);
-void func_ov001_02224c6c(s32 which, u32 path);
+WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag);
+WfcObjGroup *WfcObj_CreateSingle(s32 which, s32 idx);
+void WfcCell_Copy(s32 which, s32 idx, void *dst);
+void WfcCell_Unload(s32 which);
+void WfcCell_Load(s32 which, u32 path);
 
-Unk_ov001_02224b9c_T *data_ov001_0222df38[2];
+WfcCellEntry *sWfcCellData[2];
 }
 
-void func_ov001_02224c6c(s32 which, u32 path) {
+void WfcCell_Load(s32 which, u32 path) {
     u32 buf[2];
-    data_ov001_0222df38[which] = (Unk_ov001_02224b9c_T *)func_ov001_02224074(path, buf, 4);
+    sWfcCellData[which] = (WfcCellEntry *)WfcFs_LoadFile(path, buf, 4);
 }
 
-void func_ov001_02224c40(s32 which) {
-    func_ov001_02224038(data_ov001_0222df38[which]);
-    data_ov001_0222df38[which] = 0;
+void WfcCell_Unload(s32 which) {
+    WfcFs_FreeFile(sWfcCellData[which]);
+    sWfcCellData[which] = 0;
 }
 
-void func_ov001_02224b9c(s32 which, s32 idx, void *dst) {
-    Unk_ov001_02224b9c_T *tbl = data_ov001_0222df38[which];
+void WfcCell_Copy(s32 which, s32 idx, void *dst) {
+    WfcCellEntry *tbl = sWfcCellData[which];
     u8 buf[8];
     volatile s32 z;
-    u32 off = tbl[idx].unk_04;
-    u32 cnt = tbl[idx].unk_00;
+    u32 off = tbl[idx].dataOffset;
+    u32 cnt = tbl[idx].numOams;
     u8 *src = (u8 *)tbl + off;
     s32 i;
     z = 0;
-    func_02115e64(z, buf, 8);
+    MIi_CpuClear32(z, buf, 8);
     for (i = 0; i < (s32)cnt; i++) {
-        func_02115e48(src, buf, 6);
-        func_02115e78(buf, dst, 8);
+        MIi_CpuCopy16(src, buf, 6);
+        MIi_CpuCopy32(buf, dst, 8);
         src += 6;
         dst = (u8 *)dst + 8;
     }
 }
 
-Unk_ov001_02224670 *func_ov001_02224b60(s32 which, s32 idx) {
+WfcObjGroup *WfcObj_CreateSingle(s32 which, s32 idx) {
     u32 buf[2];
-    Unk_ov001_02224670 *r = func_ov001_02226814(which, buf);
-    func_ov001_02224b9c(which, idx, r);
+    WfcObjGroup *r = WfcOam_AllocEntry(which, buf);
+    WfcCell_Copy(which, idx, r);
     return r;
 }
 
-Unk_ov001_02224670 *func_ov001_02224b14(s32 which, s32 idx, s32 flag) {
-    Unk_ov001_02224670 *r = func_ov001_02224870(which, data_ov001_0222df38[which][idx].unk_00, flag);
-    func_ov001_02224b9c(which, idx, func_ov001_022247d4(r, 0));
+WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag) {
+    WfcObjGroup *r = WfcObj_Alloc(which, sWfcCellData[which][idx].numOams, flag);
+    WfcCell_Copy(which, idx, WfcObj_GetOam(r, 0));
     return r;
 }
 

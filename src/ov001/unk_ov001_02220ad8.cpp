@@ -1,98 +1,73 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/Unk_ov001_02221734_D.h"
+#include "nitro/os_rtc.h"
+#include "net/WfcMoveMbWork.h"
 
 #pragma thumb off
 
-struct Unk_ov001_02220ad8_S {
-    u16 state;
-    u16 m[6];
-    u8 pad_0e[0x1b140 - 0x0e];
-    void *unk_1b140;
-    void *unk_1b144;
-};
-struct Unk_ov001_02220ad8_Z { u8 pad[0x1b140]; s32 unk_140; s32 unk_144; };
-
-struct Unk_ov001_02221734_Z { u16 v[7]; };
-
-struct Unk_ov001_02221734_D {
-    u8 lo : 4;
-    u8 hi : 4;
-    u8 b1;
-    u8 data[0x14];
-    Unk_ov001_02221734_Z z;
-};
-
-struct Unk_ov001_02221734_B {
-    u8 pad_00[1];
-    u8 unk_01;
-    u8 pad_02[2];
-    u8 unk_04[0x14];
-    u16 unk_18;
-    u8 pad_1a[0x54 - 0x1a];
-};
-
-extern "C" Unk_ov001_02220ad8_S *data_ov001_0222df08;
-extern "C" u16 *data_ov001_0222df0c[6];
+extern "C" WfcMoveMbWork *sWfcMoveMb;
+extern "C" u16 *sWfcMoveMbMaskPtrs[6];
 
 extern "C" {
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
-void func_02116048(void *, void *, u32);
-s32 func_02122eb0(s32, s32);
-s32 func_02122fac(s32);
-s32 func_02123008(s32);
-void func_02124a94(s32);
-void func_02124c40();
-void func_0206d49c();
-void func_02119d78(void *);
-s32 func_02119a28(void *, s32);
-s32 func_02123e58(void *);
-s32 func_021239ec(void *, void *, u32);
-s32 func_02123680(void *, void *);
-void func_021199e0(void *);
-s32 func_02124d50(s32);
-void func_021155c4(void *);
-s32 func_021251ac(void *, void *, s32, s32, s32);
-void func_02125098(u32, u32);
-void func_021230a4(void *);
-void func_ov001_02222e48(void *);
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
+void MI_CpuCopy8(void *, void *, u32);
+s32 MB_CommResponseRequest(s32, s32);
+s32 MB_CommIsBootable(s32);
+s32 MB_CommGetChildUser(s32);
+void MB_DisconnectChild(s32);
+void MB_End();
+void Fatal_Trap();
+void FS_InitFile(void *);
+s32 FS_OpenFile(void *, s32);
+s32 MB_GetSegmentLength(void *);
+s32 MB_ReadSegment(void *, void *, u32);
+s32 MB_RegisterFile(void *, void *);
+void FS_CloseFile(void *);
+s32 MB_StartParentFromIdle(s32);
+void OS_GetOwnerInfo(void *);
+s32 MB_Init(void *, void *, s32, s32, s32);
+void MB_SetParentCommParam(u32, u32);
+void MB_CommSetParentStateCallback(void *);
+void WfcMoveWh_SetWork(void *);
 
-u32 func_ov001_02220ad8(u8 *mac);
-u8 *func_ov001_02220ba0(u32 id);
-u32 func_ov001_02220bd4(u32 id);
-u32 func_ov001_02220cb8(u32 i);
-u32 func_ov001_02220d18();
-void func_ov001_02220d2c(u32 v);
-void func_ov001_02220d40(u32 id, u32 cmd, u8 *data);
-void func_ov001_022210d0();
-void func_ov001_022210f0();
-u32 func_ov001_02221200();
-void func_ov001_02221278();
-void func_ov001_02221368(u32 id);
-void func_ov001_02221454(u32 n);
-void func_ov001_02221540(u32 n);
-s32 func_ov001_022215f4(s32 *p);
-void func_ov001_022216d0(s32 *a, s32 b);
-void func_ov001_02221734(s32 a, s32 b);
-void func_ov001_02221854(void *p);
+u32 WfcMoveMb_FindAidByMac(u8 *mac);
+u8 *WfcMoveMb_GetChildInfo(u32 id);
+u32 WfcMoveMb_GetChildState(u32 id);
+u32 WfcMoveMb_GetChildMask(u32 i);
+u32 WfcMoveMb_GetState();
+void WfcMoveMb_SetState(u32 v);
+void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data);
+void WfcMoveMb_Cancel();
+void WfcMoveMb_StartRebootAll();
+u32 WfcMoveMb_IsAllBootable();
+void WfcMoveMb_StartDownloadAll();
+void WfcMoveMb_StartDownload(u32 id);
+void WfcMoveMb_KickChild(u32 n);
+void WfcMoveMb_AcceptChild(u32 n);
+s32 WfcMoveMb_RegisterFile(s32 *p);
+void WfcMoveMb_StartParent(s32 *a, s32 b);
+void WfcMoveMb_Init(s32 a, s32 b);
+void WfcMoveMb_SetWork(void *p);
 }
 
-void func_ov001_02221854(void *p) {
-    data_ov001_0222df08 = (Unk_ov001_02220ad8_S *)p;
-    func_ov001_02222e48((u8 *)p + 0x1b160);
-    data_ov001_0222df08->unk_1b140 = 0;
-    data_ov001_0222df08->unk_1b144 = 0;
+void WfcMoveMb_SetWork(void *p) {
+    sWfcMoveMb = (WfcMoveMbWork *)p;
+    WfcMoveWh_SetWork((u8 *)p + 0x1b160);
+    sWfcMoveMb->mbWork = 0;
+    sWfcMoveMb->segmentBuffer = 0;
 }
 
-void func_ov001_02221734(s32 a, s32 b) {
+void WfcMoveMb_Init(s32 a, s32 b) {
     Unk_ov001_02221734_D d;
-    Unk_ov001_02221734_B buf;
-    func_021155c4(&buf);
-    d.lo = buf.unk_01;
-    d.b1 = buf.unk_18;
-    func_02116048(buf.unk_04, d.data, buf.unk_18 * 2);
+    OSOwnerInfo buf;
+    OS_GetOwnerInfo(&buf);
+    d.lo = buf.favoriteColor;
+    d.b1 = buf.nickNameLength;
+    MI_CpuCopy8(buf.nickName, d.data, buf.nickNameLength * 2);
     d.hi = 0;
-    Unk_ov001_02221734_Z *zp = &d.z;
+    WfcMoveMbStateCopy *zp = &d.z;
     zp->v[0] = 0;
     zp->v[1] = 0;
     zp->v[2] = 0;
@@ -100,183 +75,183 @@ void func_ov001_02221734(s32 a, s32 b) {
     zp->v[4] = 0;
     zp->v[5] = 0;
     zp->v[6] = 0;
-    *(Unk_ov001_02221734_Z *)data_ov001_0222df08 = *zp;
-    data_ov001_0222df08->unk_1b140 = (u8 *)data_ov001_0222df08 + 0x10040;
-    if (func_021251ac(data_ov001_0222df08->unk_1b140, &d, a, b, 2) != 0) func_0206d49c();
-    func_02125098(0x100, 1);
-    func_021230a4((void *)func_ov001_02220d40);
-    func_ov001_02220d2c(1);
+    *(WfcMoveMbStateCopy *)sWfcMoveMb = *zp;
+    sWfcMoveMb->mbWork = (u8 *)sWfcMoveMb + 0x10040;
+    if (MB_Init(sWfcMoveMb->mbWork, &d, a, b, 2) != 0) Fatal_Trap();
+    MB_SetParentCommParam(0x100, 1);
+    MB_CommSetParentStateCallback((void *)WfcMoveMb_ParentStateCallback);
+    WfcMoveMb_SetState(1);
 }
 
-void func_ov001_022216d0(s32 *a, s32 b) {
-    func_ov001_02220d2c(2);
-    if (func_02124d50(b) != 0) {
-        func_ov001_02220d2c(7);
+void WfcMoveMb_StartParent(s32 *a, s32 b) {
+    WfcMoveMb_SetState(2);
+    if (MB_StartParentFromIdle(b) != 0) {
+        WfcMoveMb_SetState(7);
         return;
     }
-    if (func_ov001_022215f4(a) != 0) return;
-    func_0206d49c();
+    if (WfcMoveMb_RegisterFile(a) != 0) return;
+    Fatal_Trap();
 }
 
-s32 func_ov001_022215f4(s32 *p) {
+s32 WfcMoveMb_RegisterFile(s32 *p) {
     void *q;
     s32 r = 0;
     u8 buf[0x48];
     if (*p == 0) {
         q = 0;
     } else {
-        func_02119d78(buf);
-        if (func_02119a28(buf, *p) == 0) return r;
+        FS_InitFile(buf);
+        if (FS_OpenFile(buf, *p) == 0) return r;
         q = buf;
     }
-    if (func_02123e58(q) != 0) {
-        Unk_ov001_02220ad8_S *g = data_ov001_0222df08;
-        g->unk_1b144 = (u8 *)g + 0x2c;
-        if (data_ov001_0222df08->unk_1b144 != 0) {
-            if (func_021239ec(q, data_ov001_0222df08->unk_1b144, 0x10000) != 0) {
-                if (func_02123680(p, data_ov001_0222df08->unk_1b144) != 0) r = 1;
+    if (MB_GetSegmentLength(q) != 0) {
+        WfcMoveMbWork *g = sWfcMoveMb;
+        g->segmentBuffer = (u8 *)g + 0x2c;
+        if (sWfcMoveMb->segmentBuffer != 0) {
+            if (MB_ReadSegment(q, sWfcMoveMb->segmentBuffer, 0x10000) != 0) {
+                if (MB_RegisterFile(p, sWfcMoveMb->segmentBuffer) != 0) r = 1;
             }
         }
     }
-    if (q == buf) func_021199e0(buf);
+    if (q == buf) FS_CloseFile(buf);
     return r;
 }
 
-void func_ov001_02221540(u32 n) {
-    if (func_02122eb0(n, 1) != 0) return;
+void WfcMoveMb_AcceptChild(u32 n) {
+    if (MB_CommResponseRequest(n, 1) != 0) return;
     u16 m = ~(1 << n);
-    s32 e = func_01ffa2ec();
-    data_ov001_0222df08->m[0] &= m;
-    data_ov001_0222df08->m[1] &= m;
-    data_ov001_0222df08->m[2] &= m;
-    data_ov001_0222df08->m[3] &= m;
-    data_ov001_0222df08->m[4] &= m;
-    data_ov001_0222df08->m[5] &= m;
-    func_01ffa3d4(e);
-    func_02124a94(n);
+    s32 e = OS_DisableInterrupts();
+    sWfcMoveMb->childMasks[0] &= m;
+    sWfcMoveMb->childMasks[1] &= m;
+    sWfcMoveMb->childMasks[2] &= m;
+    sWfcMoveMb->childMasks[3] &= m;
+    sWfcMoveMb->childMasks[4] &= m;
+    sWfcMoveMb->childMasks[5] &= m;
+    OS_RestoreInterrupts(e);
+    MB_DisconnectChild(n);
 }
 
-void func_ov001_02221454(u32 n) {
-    if (func_02122eb0(n, 0) == 0) {
+void WfcMoveMb_KickChild(u32 n) {
+    if (MB_CommResponseRequest(n, 0) == 0) {
         u16 m = ~(1 << n);
-        s32 e = func_01ffa2ec();
-        data_ov001_0222df08->m[0] &= m;
-        data_ov001_0222df08->m[1] &= m;
-        data_ov001_0222df08->m[2] &= m;
-        data_ov001_0222df08->m[3] &= m;
-        data_ov001_0222df08->m[4] &= m;
-        data_ov001_0222df08->m[5] &= m;
-        func_01ffa3d4(e);
-        func_02124a94(n);
+        s32 e = OS_DisableInterrupts();
+        sWfcMoveMb->childMasks[0] &= m;
+        sWfcMoveMb->childMasks[1] &= m;
+        sWfcMoveMb->childMasks[2] &= m;
+        sWfcMoveMb->childMasks[3] &= m;
+        sWfcMoveMb->childMasks[4] &= m;
+        sWfcMoveMb->childMasks[5] &= m;
+        OS_RestoreInterrupts(e);
+        MB_DisconnectChild(n);
     } else {
-        s32 e = func_01ffa2ec();
+        s32 e = OS_DisableInterrupts();
         u32 m = ~(1 << n);
-        data_ov001_0222df08->m[1] &= m;
-        data_ov001_0222df08->m[0] &= m;
-        func_01ffa3d4(e);
+        sWfcMoveMb->childMasks[1] &= m;
+        sWfcMoveMb->childMasks[0] &= m;
+        OS_RestoreInterrupts(e);
     }
 }
 
-void func_ov001_02221368(u32 id)
+void WfcMoveMb_StartDownload(u32 id)
 {
-    if (func_02122eb0(id, 2) == 0) {
+    if (MB_CommResponseRequest(id, 2) == 0) {
         u16 k = ~(1 << id);
-        u32 r = func_01ffa2ec();
-        data_ov001_0222df08->m[0] &= k;
-        data_ov001_0222df08->m[1] &= k;
-        data_ov001_0222df08->m[2] &= k;
-        data_ov001_0222df08->m[3] &= k;
-        data_ov001_0222df08->m[4] &= k;
-        data_ov001_0222df08->m[5] &= k;
-        func_01ffa3d4(r);
-        func_02124a94(id);
+        u32 r = OS_DisableInterrupts();
+        sWfcMoveMb->childMasks[0] &= k;
+        sWfcMoveMb->childMasks[1] &= k;
+        sWfcMoveMb->childMasks[2] &= k;
+        sWfcMoveMb->childMasks[3] &= k;
+        sWfcMoveMb->childMasks[4] &= k;
+        sWfcMoveMb->childMasks[5] &= k;
+        OS_RestoreInterrupts(r);
+        MB_DisconnectChild(id);
     } else {
-        u32 r = func_01ffa2ec();
+        u32 r = OS_DisableInterrupts();
         u32 one = 1;
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
-        s->m[2] = s->m[2] & ~(one << id);
-        s = data_ov001_0222df08;
-        s->m[3] = s->m[3] | (one << id);
-        func_01ffa3d4(r);
+        WfcMoveMbWork *s = sWfcMoveMb;
+        s->childMasks[2] = s->childMasks[2] & ~(one << id);
+        s = sWfcMoveMb;
+        s->childMasks[3] = s->childMasks[3] | (one << id);
+        OS_RestoreInterrupts(r);
     }
 }
 
-void func_ov001_02221278()
+void WfcMoveMb_StartDownloadAll()
 {
-    func_ov001_02220d2c(3);
+    WfcMoveMb_SetState(3);
     u16 i;
     for (i = 1; i < 16; i++) {
         u32 bit = 1 << i;
-        if (data_ov001_0222df08->m[0] & bit) {
-            if (!(data_ov001_0222df08->m[1] & bit)) {
-                if (!(data_ov001_0222df08->m[2] & bit)) {
+        if (sWfcMoveMb->childMasks[0] & bit) {
+            if (!(sWfcMoveMb->childMasks[1] & bit)) {
+                if (!(sWfcMoveMb->childMasks[2] & bit)) {
                     u16 k = ~bit;
-                    u32 r = func_01ffa2ec();
-                    data_ov001_0222df08->m[0] &= k;
-                    data_ov001_0222df08->m[1] &= k;
-                    data_ov001_0222df08->m[2] &= k;
-                    data_ov001_0222df08->m[3] &= k;
-                    data_ov001_0222df08->m[4] &= k;
-                    data_ov001_0222df08->m[5] &= k;
-                    func_01ffa3d4(r);
-                    func_02124a94(i);
+                    u32 r = OS_DisableInterrupts();
+                    sWfcMoveMb->childMasks[0] &= k;
+                    sWfcMoveMb->childMasks[1] &= k;
+                    sWfcMoveMb->childMasks[2] &= k;
+                    sWfcMoveMb->childMasks[3] &= k;
+                    sWfcMoveMb->childMasks[4] &= k;
+                    sWfcMoveMb->childMasks[5] &= k;
+                    OS_RestoreInterrupts(r);
+                    MB_DisconnectChild(i);
                 } else {
-                    func_ov001_02221368(i);
+                    WfcMoveMb_StartDownload(i);
                 }
             }
         }
     }
 }
 
-u32 func_ov001_02221200()
+u32 WfcMoveMb_IsAllBootable()
 {
-    if (data_ov001_0222df08->m[0] == 0) return 0;
+    if (sWfcMoveMb->childMasks[0] == 0) return 0;
     u16 i;
     for (i = 1; i < 16; i++) {
-        if (data_ov001_0222df08->m[0] & (1 << i)) {
-            if (func_02122fac(i) == 0) return 0;
+        if (sWfcMoveMb->childMasks[0] & (1 << i)) {
+            if (MB_CommIsBootable(i) == 0) return 0;
         }
     }
     return 1;
 }
 
-void func_ov001_022210f0()
+void WfcMoveMb_StartRebootAll()
 {
     u16 i, ok;
     ok = 0;
     for (i = 1; i < 16; i++) {
         u32 bit = 1 << i;
-        if (data_ov001_0222df08->m[4] & bit) {
-            if (func_02122eb0(i, 3)) {
+        if (sWfcMoveMb->childMasks[4] & bit) {
+            if (MB_CommResponseRequest(i, 3)) {
                 ok = ok | bit;
             } else {
                 u16 k = ~bit;
-                u32 r = func_01ffa2ec();
-                data_ov001_0222df08->m[0] &= k;
-                data_ov001_0222df08->m[1] &= k;
-                data_ov001_0222df08->m[2] &= k;
-                data_ov001_0222df08->m[3] &= k;
-                data_ov001_0222df08->m[4] &= k;
-                data_ov001_0222df08->m[5] &= k;
-                func_01ffa3d4(r);
-                func_02124a94(i);
+                u32 r = OS_DisableInterrupts();
+                sWfcMoveMb->childMasks[0] &= k;
+                sWfcMoveMb->childMasks[1] &= k;
+                sWfcMoveMb->childMasks[2] &= k;
+                sWfcMoveMb->childMasks[3] &= k;
+                sWfcMoveMb->childMasks[4] &= k;
+                sWfcMoveMb->childMasks[5] &= k;
+                OS_RestoreInterrupts(r);
+                MB_DisconnectChild(i);
             }
         }
     }
     if (ok == 0) {
-        func_ov001_02220d2c(7);
+        WfcMoveMb_SetState(7);
     } else {
-        func_ov001_02220d2c(4);
+        WfcMoveMb_SetState(4);
     }
 }
 
-void func_ov001_022210d0()
+void WfcMoveMb_Cancel()
 {
-    func_ov001_02220d2c(6);
-    func_02124c40();
+    WfcMoveMb_SetState(6);
+    MB_End();
 }
 
-void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
+void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
 {
     switch (cmd) {
     case 1:
@@ -287,86 +262,86 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
     case 11:
         break;
     case 2: {
-        if (func_ov001_02220d18() != 2) return;
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
-        u32 r = func_01ffa2ec();
-        s->m[0] = s->m[0] | (1 << id);
-        func_01ffa3d4(r);
-        u8 *e = (u8 *)data_ov001_0222df08 + 0x24 + (id - 1) * 0x1e;
+        if (WfcMoveMb_GetState() != 2) return;
+        WfcMoveMbWork *s = sWfcMoveMb;
+        u32 r = OS_DisableInterrupts();
+        s->childMasks[0] = s->childMasks[0] | (1 << id);
+        OS_RestoreInterrupts(r);
+        u8 *e = (u8 *)sWfcMoveMb + 0x24 + (id - 1) * 0x1e;
         e[0] = data[0xa];
         e[1] = data[0xb];
         e[2] = data[0xc];
         e[3] = data[0xd];
         e[4] = data[0xe];
         e[5] = data[0xf];
-        *(u16 *)((u8 *)data_ov001_0222df08 + (id - 1) * 0x1e + 0x2a) = id;
+        *(u16 *)((u8 *)sWfcMoveMb + (id - 1) * 0x1e + 0x2a) = id;
         break;
     }
     case 3: {
-        if (func_ov001_02220bd4(id) == 6) return;
+        if (WfcMoveMb_GetChildState(id) == 6) return;
         u16 k = ~(1 << id);
-        u32 r = func_01ffa2ec();
-        data_ov001_0222df08->m[0] &= k;
-        data_ov001_0222df08->m[1] &= k;
-        data_ov001_0222df08->m[2] &= k;
-        data_ov001_0222df08->m[3] &= k;
-        data_ov001_0222df08->m[4] &= k;
-        data_ov001_0222df08->m[5] &= k;
-        func_01ffa3d4(r);
+        u32 r = OS_DisableInterrupts();
+        sWfcMoveMb->childMasks[0] &= k;
+        sWfcMoveMb->childMasks[1] &= k;
+        sWfcMoveMb->childMasks[2] &= k;
+        sWfcMoveMb->childMasks[3] &= k;
+        sWfcMoveMb->childMasks[4] &= k;
+        sWfcMoveMb->childMasks[5] &= k;
+        OS_RestoreInterrupts(r);
         break;
     }
     case 10: {
-        if (func_ov001_02220d18() != 2) {
-            func_ov001_02221454(id);
+        if (WfcMoveMb_GetState() != 2) {
+            WfcMoveMb_KickChild(id);
             return;
         }
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
-        s->m[1] = s->m[1] | (1 << id);
-        func_ov001_02221540(id);
-        s32 r = func_02123008(id);
+        WfcMoveMbWork *s = sWfcMoveMb;
+        s->childMasks[1] = s->childMasks[1] | (1 << id);
+        WfcMoveMb_AcceptChild(id);
+        s32 r = MB_CommGetChildUser(id);
         if (r == 0) return;
-        func_02116048((void *)r, (u8 *)data_ov001_0222df08 + 0xe + (id - 1) * 0x1e, 0x16);
+        MI_CpuCopy8((void *)r, (u8 *)sWfcMoveMb + 0xe + (id - 1) * 0x1e, 0x16);
         break;
     }
     case 14: {
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        WfcMoveMbWork *s = sWfcMoveMb;
         u32 one = 1;
-        s->m[1] = s->m[1] & ~(one << id);
-        s = data_ov001_0222df08;
-        s->m[2] = s->m[2] | (one << id);
-        if (func_ov001_02220d18() != 3) return;
-        func_ov001_02221368(id);
+        s->childMasks[1] = s->childMasks[1] & ~(one << id);
+        s = sWfcMoveMb;
+        s->childMasks[2] = s->childMasks[2] | (one << id);
+        if (WfcMoveMb_GetState() != 3) return;
+        WfcMoveMb_StartDownload(id);
         break;
     }
     case 7: {
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        WfcMoveMbWork *s = sWfcMoveMb;
         u32 one = 1;
-        s->m[3] = s->m[3] & ~(one << id);
-        s = data_ov001_0222df08;
-        s->m[4] = s->m[4] | (one << id);
+        s->childMasks[3] = s->childMasks[3] & ~(one << id);
+        s = sWfcMoveMb;
+        s->childMasks[4] = s->childMasks[4] | (one << id);
         break;
     }
     case 9: {
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        WfcMoveMbWork *s = sWfcMoveMb;
         u32 one = 1;
-        s->m[4] = s->m[4] & ~(one << id);
-        s = data_ov001_0222df08;
-        s->m[5] = s->m[5] | (one << id);
-        s = data_ov001_0222df08;
-        if (s->m[0] != s->m[5]) return;
-        func_02124c40();
+        s->childMasks[4] = s->childMasks[4] & ~(one << id);
+        s = sWfcMoveMb;
+        s->childMasks[5] = s->childMasks[5] | (one << id);
+        s = sWfcMoveMb;
+        if (s->childMasks[0] != s->childMasks[5]) return;
+        MB_End();
         break;
     }
     case 12: {
-        if (func_ov001_02220d18() == 4) {
-            func_ov001_02220d2c(5);
+        if (WfcMoveMb_GetState() == 4) {
+            WfcMoveMb_SetState(5);
         } else {
-            func_ov001_02220d2c(0);
+            WfcMoveMb_SetState(0);
         }
-        Unk_ov001_02220ad8_Z *z = (Unk_ov001_02220ad8_Z *)data_ov001_0222df08;
-        if (z->unk_144 != 0) z->unk_144 = 0;
-        z = (Unk_ov001_02220ad8_Z *)data_ov001_0222df08;
-        if (z->unk_140 != 0) z->unk_140 = 0;
+        WfcMoveMbWork *z = sWfcMoveMb;
+        if (z->segmentBuffer != 0) z->segmentBuffer = 0;
+        z = sWfcMoveMb;
+        if (z->mbWork != 0) z->mbWork = 0;
         break;
     }
     case 13: {
@@ -375,7 +350,7 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
         case 1:
         case 2:
         case 9:
-            func_ov001_02220d2c(7);
+            WfcMoveMb_SetState(7);
             break;
         case 8:
             break;
@@ -383,45 +358,45 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
         break;
     }
     default:
-        func_0206d49c();
+        Fatal_Trap();
         break;
     }
 }
 
-void func_ov001_02220d2c(u32 v)
+void WfcMoveMb_SetState(u32 v)
 {
-    data_ov001_0222df08->state = v;
+    sWfcMoveMb->state = v;
 }
 
-u32 func_ov001_02220d18()
+u32 WfcMoveMb_GetState()
 {
-    return data_ov001_0222df08->state;
+    return sWfcMoveMb->state;
 }
 
-u32 func_ov001_02220cb8(u32 i)
+u32 WfcMoveMb_GetChildMask(u32 i)
 {
-    Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
-    data_ov001_0222df0c[0] = &s->m[0];
-    data_ov001_0222df0c[1] = &s->m[1];
-    data_ov001_0222df0c[2] = &s->m[2];
-    data_ov001_0222df0c[3] = &s->m[3];
-    data_ov001_0222df0c[4] = &s->m[4];
-    data_ov001_0222df0c[5] = &s->m[5];
-    return *data_ov001_0222df0c[i];
+    WfcMoveMbWork *s = sWfcMoveMb;
+    sWfcMoveMbMaskPtrs[0] = &s->childMasks[0];
+    sWfcMoveMbMaskPtrs[1] = &s->childMasks[1];
+    sWfcMoveMbMaskPtrs[2] = &s->childMasks[2];
+    sWfcMoveMbMaskPtrs[3] = &s->childMasks[3];
+    sWfcMoveMbMaskPtrs[4] = &s->childMasks[4];
+    sWfcMoveMbMaskPtrs[5] = &s->childMasks[5];
+    return *sWfcMoveMbMaskPtrs[i];
 }
 
-u32 func_ov001_02220bd4(u32 id)
+u32 WfcMoveMb_GetChildState(u32 id)
 {
     u16 buf[7];
-    u32 r = func_01ffa2ec();
+    u32 r = OS_DisableInterrupts();
     u16 bit = 1 << id;
-    Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
-    if (!(s->m[0] & bit)) {
-        func_01ffa3d4(r);
+    WfcMoveMbWork *s = sWfcMoveMb;
+    if (!(s->childMasks[0] & bit)) {
+        OS_RestoreInterrupts(r);
         return 0;
     }
-    func_02116048(s, buf, 0xe);
-    func_01ffa3d4(r);
+    MI_CpuCopy8(s, buf, 0xe);
+    OS_RestoreInterrupts(r);
     if (buf[2] & bit) return 2;
     if (buf[3] & bit) return 3;
     if (buf[4] & bit) return 4;
@@ -430,20 +405,20 @@ u32 func_ov001_02220bd4(u32 id)
     return 1;
 }
 
-u8 *func_ov001_02220ba0(u32 id)
+u8 *WfcMoveMb_GetChildInfo(u32 id)
 {
-    Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
-    if (s->m[0] & (1 << id)) {
+    WfcMoveMbWork *s = sWfcMoveMb;
+    if (s->childMasks[0] & (1 << id)) {
         return (u8 *)s + 0xe + (id - 1) * 0x1e;
     }
     return 0;
 }
 
-u32 func_ov001_02220ad8(u8 *mac)
+u32 WfcMoveMb_FindAidByMac(u8 *mac)
 {
-    Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+    WfcMoveMbWork *s = sWfcMoveMb;
     u16 i;
-    u16 mask = s->m[0];
+    u16 mask = s->childMasks[0];
     for (i = 1; i < 2; i++) {
         if (mask & (1 << i)) {
             u8 *e = (u8 *)s + 0x24 + (i - 1) * 0x1e;
@@ -455,5 +430,5 @@ u32 func_ov001_02220ad8(u8 *mac)
     return 0;
 }
 
-extern "C" Unk_ov001_02220ad8_S *data_ov001_0222df08 = 0;
-extern "C" u16 *data_ov001_0222df0c[6] = {0, 0, 0, 0, 0, 0};
+extern "C" WfcMoveMbWork *sWfcMoveMb = 0;
+extern "C" u16 *sWfcMoveMbMaskPtrs[6] = {0, 0, 0, 0, 0, 0};

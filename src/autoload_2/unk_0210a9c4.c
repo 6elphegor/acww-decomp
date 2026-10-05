@@ -9,7 +9,7 @@ typedef int s32;
 typedef int BOOL;
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFndList;
-typedef struct PMCbInfo { void (*cb)(void *); void *arg; void *next; } PMCbInfo;
+#include "sys/PMCbInfo.h"
 typedef struct Strm {
     NNSFndLink link;        // 0x00
     PMCbInfo pm0;           // 0x08
@@ -53,34 +53,34 @@ typedef struct CapMsg { Cap *cap; u32 size; u32 off; u32 l; u32 r; } CapMsg;
 extern s32 data_021fb6a4;
 extern NNSFndList data_021fb6a8;
 extern Cap data_021fb7b4;
-extern void func_02100444(NNSFndList *, u16);
-extern void func_0210a4f0(void *);
-extern void func_0210a478(void *);
-extern void func_0210ab48(Cap *);
-extern void func_021097a4(u32);
-extern u32 func_021097dc(u32);
-extern s32 func_02114188();
-extern s32 func_02114234();
-extern void func_02114594(void *, u32);
-extern void func_021145cc(void *, u32);
-extern void func_02115e64(u32, void *, u32);
-extern void func_02116a9c(u32, u32, u32, u32);
-extern void func_02116a2c(u32, u32, u32, u32);
-extern u32 func_02116f58(void);
-extern u32 func_02116f98(u32);
-extern u32 func_02117028(u32);
-extern void func_02109764(u32);
-extern void func_02109700(s32);
-extern void func_02116774(u32, u32, u32, u32);
+extern void NNS_FndInitList(NNSFndList *, u16);
+extern void BeginSleep__stream(void *);
+extern void EndSleep__stream(void *);
+extern void AlarmCallback(Cap *);
+extern void NNS_SndUnlockChannel(u32);
+extern u32 NNS_SndLockChannel(u32);
+extern s32 OS_ReceiveMessage();
+extern s32 OS_SendMessage();
+extern void DC_InvalidateRange(void *, u32);
+extern void DC_FlushRange(void *, u32);
+extern void MIi_CpuClear32(u32, void *, u32);
+extern void SND_StartTimer(u32, u32, u32, u32);
+extern void SND_StopTimer(u32, u32, u32, u32);
+extern u32 SND_GetCurrentCommandTag(void);
+extern u32 SND_WaitForCommandProc(u32);
+extern u32 SND_FlushCommand(u32);
+extern void NNS_SndUnlockCapture(u32);
+extern void NNS_SndFreeAlarm(s32);
+extern void SND_SetOutputSelector(u32, u32, u32, u32);
 extern u32 data_027e038c;
 extern s32 data_027e0390;
 extern CapMsg data_021fb808[];
 extern u32 data_021fb774;
-extern void func_0210ad4c(void);
-extern void func_0210aadc(void *);
+extern void NNSi_SndCaptureStop(void);
+extern void CaptureThread(void *);
 
 // NNS_SndCaptureStop
-void func_0210ad4c(void)
+void NNSi_SndCaptureStop(void)
 {
     BOOL hasAlarm;
     u32 tag;
@@ -89,47 +89,47 @@ void func_0210ad4c(void)
         return;
     }
     hasAlarm = c->alarm >= 0;
-    func_02116a2c(c->startCh, c->capMask,
+    SND_StopTimer(c->startCh, c->capMask,
                   hasAlarm ? 1 << c->alarm : 0, 0);
     if (hasAlarm) {
-        tag = func_02116f58();
-        func_02117028(1);
-        func_02116f98(tag);
+        tag = SND_GetCurrentCommandTag();
+        SND_FlushCommand(1);
+        SND_WaitForCommandProc(tag);
         do {
-        } while (func_02114188(&data_021fb774, 0, 0) != 0);
+        } while (OS_ReceiveMessage(&data_021fb774, 0, 0) != 0);
     }
     if (c->capMask != 0) {
-        func_02109764(c->capMask);
+        NNS_SndUnlockCapture(c->capMask);
     }
     if (c->chMask != 0) {
-        func_021097a4(c->chMask);
+        NNS_SndUnlockChannel(c->chMask);
     }
     if (hasAlarm) {
-        func_02109700(c->alarm);
+        NNS_SndFreeAlarm(c->alarm);
     }
     if (c->mode == 1) {
-        func_02116774(0, 0, 0, 0);
+        SND_SetOutputSelector(0, 0, 0, 0);
     }
     c->active = 0;
 }
 
 // NNS_SndCapturePause
-void func_0210acec(void)
+void NNSi_SndCaptureBeginSleep(void)
 {
     Cap *c = &data_021fb7b4;
     u32 tag;
     if (c->active == 0) {
         return;
     }
-    func_02116a2c(c->startCh, c->capMask,
+    SND_StopTimer(c->startCh, c->capMask,
                   (c->alarm >= 0) ? 1 << c->alarm : 0, 0);
-    tag = func_02116f58();
-    func_02117028(1);
-    func_02116f98(tag);
+    tag = SND_GetCurrentCommandTag();
+    SND_FlushCommand(1);
+    SND_WaitForCommandProc(tag);
 }
 
 // NNS_SndCaptureStartEffect restart / clear
-void func_0210ac4c(void)
+void NNSi_SndCaptureEndSleep(void)
 {
     Cap *c = &data_021fb7b4;
     volatile u32 zero1;
@@ -139,16 +139,16 @@ void func_0210ac4c(void)
     }
     c->blkIdx = 0;
     zero1 = 0;
-    func_02115e64(zero1, (void *)c->bufL, c->size);
+    MIi_CpuClear32(zero1, (void *)c->bufL, c->size);
     zero2 = 0;
-    func_02115e64(zero2, (void *)c->bufR, c->size);
-    func_021145cc((void *)c->bufL, c->size);
-    func_021145cc((void *)c->bufR, c->size);
-    func_02116a9c(c->startCh, c->capMask, (c->alarm >= 0) ? 1 << c->alarm : 0, 0);
+    MIi_CpuClear32(zero2, (void *)c->bufR, c->size);
+    DC_FlushRange((void *)c->bufL, c->size);
+    DC_FlushRange((void *)c->bufR, c->size);
+    SND_StartTimer(c->startCh, c->capMask, (c->alarm >= 0) ? 1 << c->alarm : 0, 0);
 }
 
 // capture alarm callback
-void func_0210ab48(Cap *cap)
+void AlarmCallback(Cap *cap)
 {
     u32 l;
     u32 r;
@@ -165,14 +165,14 @@ void func_0210ab48(Cap *cap)
         m->off = off;
         m->l = l;
         m->r = r;
-        func_02114234(&data_021fb774, m, 0);
+        OS_SendMessage(&data_021fb774, m, 0);
         data_027e0390++;
         if (data_027e0390 >= 8) {
             data_027e0390 = 0;
         }
     } else {
-        func_02114594((void *)l, size);
-        func_02114594((void *)r, size);
+        DC_InvalidateRange((void *)l, size);
+        DC_InvalidateRange((void *)r, size);
         cap->cb((void *)l, (void *)r, size, cap->fmt, cap->cbArg);
     }
     cap->blkIdx++;
@@ -182,29 +182,29 @@ void func_0210ab48(Cap *cap)
 }
 
 // capture thread
-void func_0210aadc(void *arg)
+void CaptureThread(void *arg)
 {
     void *m;
     CapMsg *msg;
     for (;;) {
-        func_02114188(&data_021fb774, &m, 1);
+        OS_ReceiveMessage(&data_021fb774, &m, 1);
         msg = (CapMsg *)m;
-        func_02114594((void *)msg->l, msg->size);
-        func_02114594((void *)msg->r, msg->size);
+        DC_InvalidateRange((void *)msg->l, msg->size);
+        DC_InvalidateRange((void *)msg->r, msg->size);
         msg->cap->cb((void *)msg->l, (void *)msg->r, msg->size, msg->cap->fmt, msg->cap->cbArg);
     }
 }
 
 // NNS_SndStrmInit
-void func_0210aa58(Strm *st)
+void NNS_SndStrmInit(Strm *st)
 {
     if (data_021fb6a4 == 0) {
-        func_02100444(&data_021fb6a8, 0);
+        NNS_FndInitList(&data_021fb6a8, 0);
         data_021fb6a4 = 1;
     }
-    st->pm0.cb = (void (*)(void *))func_0210a4f0;
+    st->pm0.cb = (void (*)(void *))BeginSleep__stream;
     st->pm0.arg = st;
-    st->pm1.cb = (void (*)(void *))func_0210a478;
+    st->pm1.cb = (void (*)(void *))EndSleep__stream;
     st->pm1.arg = st;
     st->chMask = 0;
     st->chCount = 0;
@@ -213,7 +213,7 @@ void func_0210aa58(Strm *st)
 }
 
 // NNS_SndStrmAllocChannel
-BOOL func_0210a9f4(Strm *st, s32 n, u8 *ch)
+BOOL NNS_SndStrmAllocChannel(Strm *st, s32 n, u8 *ch)
 {
     u32 mask = 0;
     s32 i;
@@ -221,7 +221,7 @@ BOOL func_0210a9f4(Strm *st, s32 n, u8 *ch)
         st->chIdx[i] = ch[i];
         mask |= 1 << ch[i];
     }
-    if (func_021097dc(mask) == 0) {
+    if (NNS_SndLockChannel(mask) == 0) {
         return 0;
     }
     st->chCount = n;
@@ -230,12 +230,12 @@ BOOL func_0210a9f4(Strm *st, s32 n, u8 *ch)
 }
 
 // NNS_SndStrmFreeChannel
-void func_0210a9c4(Strm *st)
+void NNS_SndStrmFreeChannel(Strm *st)
 {
     if (st->chMask == 0) {
         return;
     }
-    func_021097a4(st->chMask);
+    NNS_SndUnlockChannel(st->chMask);
     st->chMask = 0;
     st->chCount = 0;
 }

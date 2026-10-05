@@ -4,7 +4,7 @@
 #define lpd ((unsigned long *) dst)
 #define deref_auto_inc(p) *(p)++
 // __fill_mem
-void func_02128a20(void *dst, int val, unsigned long n) {
+void __fill_mem(void *dst, int val, unsigned long n) {
     unsigned long v = (unsigned char)val;
     unsigned long i;
     

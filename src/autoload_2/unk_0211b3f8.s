@@ -2,7 +2,7 @@
 ; linked as assembly per the project's assembly policy.
 ; autoload_2 0x0211b3f8-0x0211b68c: the routine's 20-byte constant block (0x0211b3f8-0x0211b40c, placed in .text
 ; IN FRONT of the code and read with negative pc-relative loads, no relocations) and the block transform itself
-; (func_0211b40c, reached through a function pointer in .data at 0x0213c1c8).
+; (DGTi_hash2_arm4_small, reached through a function pointer in .data at 0x0213c1c8).
 ; The constant block is data at the start of the unit, named data_0211b3f8 (symbols.txt kind:data: dsd keeps it as
 ; the routine's pre-code constant pool); the loads address it by local labels.
 ; Assembled with mwasmarm (tools/configure.py, rule mwasm).
@@ -27,10 +27,10 @@ L_0211b408:
 
 ; SHA-1 block transform(hash[5], data, len): processes len bytes (multiple of 64) of data into hash.
 ; sp+0x00..0x7f: 32-word message schedule ring (each word is stored at w and w+16), sp+0x80: remaining length.
-	.global func_0211b40c
-	.type func_0211b40c, @function
-	.size func_0211b40c, 0x280
-func_0211b40c:
+	.global DGTi_hash2_arm4_small
+	.type DGTi_hash2_arm4_small, @function
+	.size DGTi_hash2_arm4_small, 0x280
+DGTi_hash2_arm4_small:
 	stmfd sp!, {r4, r5, r6, r7, r8, r9, r10, r11, ip, lr}
 	ldmia r0, {r3, r9, r10, r11, ip}
 	sub sp, sp, #0x84

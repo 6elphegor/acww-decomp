@@ -9,6 +9,14 @@ different linked units. symbols.txt holds one function symbol per address, and
 mwld rejects two full-size symbols at the same address ("the sum of all symbol
 sizes exceed section size"), so the alias is added as a zero-size label of the
 same mode (thumb/arm), right after the existing symbol.
+
+Use the symbols.txt of the module that holds the address (config/usa/arm9/
+symbols.txt for main, .../autoload_2/, .../itcm/, .../overlays/ovNNN/ for an
+overlay). Both names then resolve in every module: while the address is
+delinked, dsd's object defines both; once its unit is compiled, the build step
+tools/aliases.py adds the name the object lacks (or folds an identical second
+copy) in main, autoload_2, itcm and the overlays alike. See
+tools/pipeline/linking.md, "Second names of functions".
 """
 import re
 import sys

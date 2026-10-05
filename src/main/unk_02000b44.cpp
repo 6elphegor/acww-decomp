@@ -8,7 +8,7 @@
 #pragma thumb off
 
 // OSi_ReferSymbol
-extern "C" void func_02000b44(void *symbol)
+extern "C" void OSi_ReferSymbol(void *symbol)
 {
 #pragma unused(symbol)
 }

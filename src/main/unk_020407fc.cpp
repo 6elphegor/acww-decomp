@@ -1,146 +1,125 @@
 #include "types.h"
 
 #include "Unk_020d8c7c.h"
+#include "talk/TalkMsgRequest.h"
+#include "net/CommManager.h"
+#include "talk/TalkWindowState.h"
+#include "sys/ProcProfile.h"
 
-class Unk_020ddcf0 {
-public:
-    Unk_020ddcf0();
-    ~Unk_020ddcf0();
-    u8 unk_00[0x44];
-};
 
-class Unk_020da258 : public Unk_020d8c7c {
+class EventAnnouncer : public GameProc {
 public:
-    Unk_020da258();
-    virtual ~Unk_020da258();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
+    EventAnnouncer();
+    virtual ~EventAnnouncer();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
+    virtual BOOL onExecute();
 
     /* 0x50 */ u32 unk_50;
-    /* 0x54 */ Unk_020ddcf0 unk_54;
+    /* 0x54 */ TalkMsgRequest msgRequest;
 };
 
-struct Unk_02040754_Time { u8 b[4]; };
-struct Unk_020407fc_Data { u8 b[0x64]; };
+struct ClockDateBytes { u8 b[4]; };
 
-struct Unk_02040974_State {
-    Unk_02040974_State() { unk_00 = 0; unk_04 = 0; unk_01 = 0; }
-    ~Unk_02040974_State();
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04;
+struct EventAnnounceState {
+    EventAnnounceState() { announceState = 0; msgIndex = 0; isEnd = 0; }
+    ~EventAnnounceState();
+    u8 announceState;
+    u8 isEnd;
+    u8 busy;
+    u8 dayChangePending;
+    u8 msgIndex;
     u8 pad_05[3];
-    s32 unk_08;
+    s32 nextEvent;
 };
 
-struct Unk_02040974_Obj { u8 pad[0x64]; s32 unk_64; };
 struct Unk_02040974_Rtc { s32 a; s32 b; };
-struct Unk_02040cac_Rtc { u8 b0; u8 b1; u8 b2; u8 b3; s32 b; };
-union Unk_02040cac_Rtc2 { s32 w[2]; Unk_02040cac_Rtc v; };
-struct Unk_02040ad8_Member {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-};
-struct Unk_02040ad8_Owner {
-    u8 pad[0x54];
-    Unk_02040ad8_Member unk_54;
-};
-struct Unk_02040a84_Obj { s32 unk_00; s32 unk_04; s32 unk_08; };
-static inline s32 Unk_02040a84_Get(Unk_02040a84_Obj *p)
+static inline s32 Unk_02040a84_Get(TalkWindowState *p)
 {
-    s32 v = p->unk_04;
+    s32 v = p->state;
     return v;
 }
 static inline BOOL Unk_02040ad8_IsTwo(u8 v)
 {
     return v == 2 ? TRUE : FALSE;
 }
-struct Unk_02040d80_Obj {
-    u8 pad[0xc];
-    u16 unk_0c;
-};
 
 extern "C" {
-s32 func_02063b8c(s32);
-void func_0209d2c0(s32, s32);
-void func_02116048(void *, void *, u32);
-s32 func_0203f218(void *, s32, void *);
-void func_0209cf88(void *);
-s32 func_0209cd00(void *, void *);
-void func_02040df0(void);
-void func_02040864(u8 *);
-void func_02040a60(s32);
-void func_020402f8(void *, s32);
-void func_0203f4c0(s32);
-void func_02040684(void *);
-s32 func_020b50e8(void);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *);
-s32 func_020850e0(void);
-s32 func_0208517c(void);
-s32 _ZN12Unk_02086f1413func_02086f18Ev(void);
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *, s32);
-void func_0209d498(void *);
-void *func_02067918(s32);
-void _ZN12Unk_020660f813func_02067958Ev(void *p);
-s32 func_020b4934(void);
-void func_020b4bbc(s32, s32);
-void _ZN12Unk_020d8e1413func_02035368Eii(void *, s32, s32);
-void _ZN12Unk_020d8e1413func_020353b0Eii(void *, s32, s32);
-void _ZN12Unk_020e2a3013func_020a710cEPKc(void *, void *);
-void _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(void *, void *);
-s32 func_0203d9cc(void);
-BOOL func_02040c10(void);
-void func_02040c6c(s32);
-void func_02040c50(s32);
-void func_02040c38(s32);
-void func_02040b48(s32);
-void func_02040ad8(Unk_02040ad8_Owner *);
-void func_02040a84(s32);
-void func_02040c94(void);
-void func_02040e14(void);
-BOOL func_02040d80(void);
-void func_02040cac(void);
-s32 func_0203d9d8(void);
-s32 func_0203d9c0(void);
-s32 func_0206da30(void);
-s32 func_0204da0c(void);
-s32 func_0204d560(s32, void *);
-s32 func_0204d780(s32, void *, s32, s32);
-void func_020b4a08(s32, s32);
-void func_020b4f18(s32, s32, void *, s32, ...);
-s32 func_020a5cc0(s32);
-s32 func_0203f31c(s32, void *, s32);
-s32 func_0203f2e0(s32, void *, s32);
-s32 func_0203d99c(void);
-s32 func_0203d984(void);
-s32 func_0203d990(void);
-s32 func_020b5164(void);
-void func_02046c24(void);
-void func_020460dc(s32);
-s32 func_020b101c(void);
-void func_02115e30(u32 v, u32 dst, u32 size);
-u32 func_021108e8();
-u32 func_0211065c();
-u32 func_02110868();
-u32 func_02110614();
-void func_020014f4(u32);
-void func_020014bc(u32);
-void func_02041104();
-BOOL func_02040908(void);
-void func_02040974(s32 a, s32 b, s32 c);
+s32 Random_GlobalBelow(s32);
+void DateTime_AddDays(s32, s32);
+void MI_CpuCopy8(void *, void *, u32);
+s32 EventSchedule_CollectAtNoon(void *, s32, void *);
+void Clock_GetDate(void *);
+s32 Date_DaysBetween(void *, void *);
+void EventAnnounce_Restart(void);
+void EventWeekSlots_InitNew(u8 *);
+void EventAnnounce_SetState(s32);
+void EventWeekSlots_UpdateWeek(void *, s32);
+void Event_RefreshToday(s32);
+void EventWeekSlots_ClearWeek(void *);
+s32 Scene_GetCurrent(void);
+s32 _ZN11CommManager8isOnlineEv(void *);
+s32 TownSessionState_Get(void);
+s32 TownSessionState_GetResettiFlag(void);
+s32 _ZN16ResettiVisitFlag5isSetEv(void);
+s32 _ZN11CommManager12isSlotActiveEi(void *, s32);
+void Clock_GetDateTime(void *);
+void *TalkWindow_Get(s32);
+void _ZN15TalkWindowState13detachRequestEv(void *p);
+s32 Scene_GetWarpRequest(void);
+void SceneWarp_RequestExit(s32, s32);
+void _ZN12BgmSceneFade18prepareEventReturnEii(void *, s32, s32);
+void _ZN12BgmSceneFade16prepareEventWarpEii(void *, s32, s32);
+void _ZN10MsgRequest11setFileNameEPKc(void *, void *);
+void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
+s32 TalkRequestFlags_IsEventWarpStarted(void);
+BOOL EventAnnounce_RequestWarp(void);
+void EventAnnounce_RunIdle(s32);
+void EventAnnounce_RunWaitChimeStart(s32);
+void EventAnnounce_RunWaitChimeEnd(s32);
+void EventAnnounce_RunWarp(s32);
+void EventAnnounce_RunShowMessage(EventAnnouncer *);
+void EventAnnounce_RunWaitMessageEnd(s32);
+void EventAnnounce_Update(void);
+void EventAnnounce_Reset(void);
+BOOL EventAnnounce_CanCheck(void);
+void EventAnnounce_CheckEvents(void);
+s32 TalkRequest_AddEventWarp(void);
+s32 TalkRequestFlags_IsEventWarpReady(void);
+s32 Melody_IsBusy(void);
+s32 TownBlockMap_Get(void);
+s32 Town_FindGulliverShip(s32, void *);
+s32 Town_FindTownHall(s32, void *, s32, s32);
+void Scene_SavePlayerPos(s32, s32);
+void SceneWarp_RequestAt(s32, s32, void *, s32, ...);
+s32 NetArea_IsUnsharedScene(s32);
+s32 Event_GetStateAt(s32, void *, s32);
+s32 Event_GetState(s32, void *, s32);
+s32 TalkRequestFlags_IsSceneHold(void);
+s32 TalkRequestFlags_ClearSceneHold(void);
+s32 TalkRequestFlags_SetSceneHold(void);
+s32 Scene_InTownUnk31(void);
+void Town_RefreshEventsOffline(void);
+void Town_UpdateDay(s32);
+s32 HouseVisitor_ClearPresent(void);
+void MIi_CpuClear16(u32 v, u32 dst, u32 size);
+u32 G2_GetBG2ScrPtr();
+u32 G2_GetBG2CharPtr();
+u32 G2S_GetBG2ScrPtr();
+u32 G2S_GetBG2CharPtr();
+void Gfx2d_ShowMainPlanes(u32);
+void Gfx2d_ShowSubPlanes(u32);
+void ScreenTransition_ShowCover();
+BOOL EventAnnounce_IsBlockedScene(void);
+void EventAnnounce_Request(s32 a, s32 b, s32 c);
 }
 
-extern Unk_02040974_Obj *data_020cbb18;
-extern u8 data_021c3cc0;
-extern "C" Unk_020da258 *func_020410ec();
-struct Unk_020da224_Rec { void *(*unk_00)(); s16 unk_04; s16 unk_06; };
-extern Unk_02040d80_Obj *data_021eda68;
+extern CommManager *gCommManager;
+extern u8 gScreenTransition;
+extern "C" EventAnnouncer *EventAnnouncer_Create();
+extern ProcBase *gActorDefaultParent;
 extern u8 data_021ed170[];
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern u8 *data_021c1b3c;
 
 static inline u8 Unk_02040cac_B2(u8 *p)
@@ -148,220 +127,220 @@ static inline u8 Unk_02040cac_B2(u8 *p)
     return p[2];
 }
 
-s32 data_021c3c98;
-Unk_020da224_Rec data_020da224 = { (void *(*)())func_020410ec, 0xd6, 0xd1 };
-const char *data_020da22c[2] = { "obj_ev_start", "obj_ev_end" };
-s32 data_021c3c90;
-s32 data_021c3c94;
-s32 data_020da220 = 99;
-s32 data_020da218 = 99;
-s32 data_020da21c = 99;
-extern const u8 data_020c9098[12];
-const u8 data_020c9098[12] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 0};
-Unk_02040974_State data_021c3ca8;
+s32 sEventAnnounceBusy;
+ProcProfile sEventAnnouncerProfile = { (void *(*)())EventAnnouncer_Create, 0xd6, 0xd1 };
+const char *sEventAnnounceMsgFiles[2] = { "obj_ev_start", "obj_ev_end" };
+s32 sEventAnnounceWasOnline;
+s32 sEventAnnounceBgmCode;
+s32 sEventAnnouncePendingEvent = 99;
+s32 sEventAnnounceActiveEvent = 99;
+s32 sEventAnnounceCurEvent = 99;
+extern const u8 sAnnouncedEventIds[12];
+const u8 sAnnouncedEventIds[12] = {9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 0};
+EventAnnounceState sEventAnnounceState;
 
 static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
     volatile u16 t = v;
-    func_02115e30(t, dst, size);
+    MIi_CpuClear16(t, dst, size);
 }
 
-extern "C" void func_02041104() {
+extern "C" void ScreenTransition_ShowCover() {
     volatile u16 *r;
     r = (volatile u16 *)0x400000c;
     *r &= ~3;
     *r = (*r & 0x43) | 0x600;
-    Unk_02041104_Fill(0, func_021108e8(), 0x800);
-    Unk_02041104_Fill(0x1111, func_0211065c(), 0x20);
+    Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
+    Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000000, 4);
-    func_020014f4(4);
+    Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
     *r &= ~3;
     *r = (*r & 0x43) | 0xe04;
-    Unk_02041104_Fill(0, func_02110868(), 0x800);
-    Unk_02041104_Fill(0x1111, func_02110614(), 0x20);
+    Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
+    Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000400, 4);
-    func_020014bc(4);
+    Gfx2d_ShowSubPlanes(4);
 }
 
-extern "C" Unk_020da258 *func_020410ec() {
-    return new Unk_020da258();
+extern "C" EventAnnouncer *EventAnnouncer_Create() {
+    return new EventAnnouncer();
 }
 
-Unk_020da258::Unk_020da258() {}
+EventAnnouncer::EventAnnouncer() {}
 
-Unk_020da258::~Unk_020da258() {}
+EventAnnouncer::~EventAnnouncer() {}
 
-BOOL Unk_020da258::vfunc_00()
+BOOL EventAnnouncer::onCreate()
 {
     u8 *r5;
     Unk_02040974_Rtc t;
     u8 buf[8];
     s32 r;
     s32 v;
-    if (func_02040908()) {
+    if (EventAnnounce_IsBlockedScene()) {
         return FALSE;
     }
-    r5 = data_021d7350;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0 && func_020b50e8() != 0xd) {
-        if (data_021c3c90 != 0) {
+    r5 = gSaveData;
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && Scene_GetCurrent() != 0xd) {
+        if (sEventAnnounceWasOnline != 0) {
             u32 k;
             t.a = 0;
             t.b = 0;
-            func_0209d498(&t);
-            func_02040e14();
+            Clock_GetDateTime(&t);
+            EventAnnounce_Reset();
             k = r5[0x15e29];
-            func_02116048(&t, buf, 8);
-            r = func_0203f2e0(k, buf, 0);
+            MI_CpuCopy8(&t, buf, 8);
+            r = Event_GetState(k, buf, 0);
             if (r != 0 && r != 3) {
-                data_020da218 = k;
-                data_020da220 = k;
-                data_020da21c = k;
+                sEventAnnounceActiveEvent = k;
+                sEventAnnouncePendingEvent = k;
+                sEventAnnounceCurEvent = k;
             }
         }
         r5[0x15e29] = 99;
-        data_021c3c90 = 0;
-        if (func_020b5164() != 0 && data_021c3ca8.unk_03 == 0) {
-            func_02046c24();
+        sEventAnnounceWasOnline = 0;
+        if (Scene_InTownUnk31() != 0 && sEventAnnounceState.dayChangePending == 0) {
+            Town_RefreshEventsOffline();
         }
     } else {
-        func_02040e14();
+        EventAnnounce_Reset();
         v = r5[0x15e29];
-        data_020da218 = v;
-        data_020da220 = v;
-        data_020da21c = v;
-        data_021c3c90 = 1;
+        sEventAnnounceActiveEvent = v;
+        sEventAnnouncePendingEvent = v;
+        sEventAnnounceCurEvent = v;
+        sEventAnnounceWasOnline = 1;
     }
-    switch (data_021c3ca8.unk_00) {
+    switch (sEventAnnounceState.announceState) {
     case 0:
         break;
     case 1:
-        func_02040e14();
+        EventAnnounce_Reset();
         break;
     case 2:
     case 3:
         break;
     default:
-        if (func_020b5164() == 0) {
-            func_02040e14();
+        if (Scene_InTownUnk31() == 0) {
+            EventAnnounce_Reset();
         } else {
-            func_0203d990();
-            data_021c3ca8.unk_00 = 5;
-            if (data_021c3ca8.unk_03 != 0) {
-                func_020460dc(0);
-                data_021c3ca8.unk_03 = 0;
+            TalkRequestFlags_SetSceneHold();
+            sEventAnnounceState.announceState = 5;
+            if (sEventAnnounceState.dayChangePending != 0) {
+                Town_UpdateDay(0);
+                sEventAnnounceState.dayChangePending = 0;
             }
-            v = data_020da220;
+            v = sEventAnnouncePendingEvent;
             if (v != 99) {
-                data_020da218 = v;
+                sEventAnnounceActiveEvent = v;
             }
-            func_020b101c();
+            HouseVisitor_ClearPresent();
         }
         break;
     }
     return TRUE;
 }
 
-BOOL Unk_020da258::vfunc_18()
+BOOL EventAnnouncer::onExecute()
 {
     s32 x = (s32)this;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
-        func_02040c94();
-        switch (data_021c3ca8.unk_00) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+        EventAnnounce_Update();
+        switch (sEventAnnounceState.announceState) {
         case 0:
-            func_02040c6c(x);
+            EventAnnounce_RunIdle(x);
             break;
         case 1:
-            func_02040c50(x);
+            EventAnnounce_RunWaitChimeStart(x);
             break;
         case 2:
-            func_02040c38(x);
+            EventAnnounce_RunWaitChimeEnd(x);
             break;
         case 3:
-            func_02040b48(x);
+            EventAnnounce_RunWarp(x);
             break;
         case 4:
-            func_02040c6c(x);
+            EventAnnounce_RunIdle(x);
             break;
         case 5:
-            func_02040ad8((Unk_02040ad8_Owner *)x);
+            EventAnnounce_RunShowMessage((EventAnnouncer *)x);
             break;
         case 6:
-            func_02040a84(x);
+            EventAnnounce_RunWaitMessageEnd(x);
             break;
         }
     }
     return TRUE;
 }
 
-BOOL Unk_020da258::vfunc_0c()
+BOOL EventAnnouncer::onDelete()
 {
-    if (func_02040908()) {
+    if (EventAnnounce_IsBlockedScene()) {
         return TRUE;
     }
-    if (func_0203d99c()) {
-        func_0203d984();
-        data_021c3c98 = 0;
-        data_021c3ca8.unk_00 = 0;
-        data_021c3ca8.unk_02 = 0;
+    if (TalkRequestFlags_IsSceneHold()) {
+        TalkRequestFlags_ClearSceneHold();
+        sEventAnnounceBusy = 0;
+        sEventAnnounceState.announceState = 0;
+        sEventAnnounceState.busy = 0;
     }
-    switch (data_021c3ca8.unk_00) {
+    switch (sEventAnnounceState.announceState) {
     case 0:
-        if (data_020da21c == 99) {
-            func_02040e14();
+        if (sEventAnnounceCurEvent == 99) {
+            EventAnnounce_Reset();
         }
         break;
     case 1:
-        data_021c3ca8.unk_00 = 2;
+        sEventAnnounceState.announceState = 2;
         break;
     }
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
-        data_021ed170[9] = data_020da21c;
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+        data_021ed170[9] = sEventAnnounceCurEvent;
     }
     return TRUE;
 }
 
-extern "C" void func_02040e14(void)
+extern "C" void EventAnnounce_Reset(void)
 {
-    data_020da220 = 99;
-    data_020da21c = 99;
-    data_020da218 = 99;
-    data_021c3ca8.unk_00 = 0;
-    data_021c3ca8.unk_02 = 0;
-    data_021c3ca8.unk_03 = 0;
+    sEventAnnouncePendingEvent = 99;
+    sEventAnnounceCurEvent = 99;
+    sEventAnnounceActiveEvent = 99;
+    sEventAnnounceState.announceState = 0;
+    sEventAnnounceState.busy = 0;
+    sEventAnnounceState.dayChangePending = 0;
 }
 
-extern "C" void func_02040df0(void)
+extern "C" void EventAnnounce_Restart(void)
 {
-    func_02040e14();
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
-        func_02040cac();
+    EventAnnounce_Reset();
+    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+        EventAnnounce_CheckEvents();
     }
 }
 
-extern "C" BOOL func_02040d80(void)
+extern "C" BOOL EventAnnounce_CanCheck(void)
 {
-    if (!Unk_02040ad8_IsTwo(data_021c3cc0)) {
+    if (!Unk_02040ad8_IsTwo(gScreenTransition)) {
         return FALSE;
     }
-    if (func_020b50e8() == 0x3f) {
+    if (Scene_GetCurrent() == 0x3f) {
         return FALSE;
     }
-    if (func_020b50e8() == 0x2c) {
+    if (Scene_GetCurrent() == 0x2c) {
         return FALSE;
     }
-    if (func_020b50e8() == 6) {
+    if (Scene_GetCurrent() == 6) {
         return FALSE;
     }
-    if (func_020a5cc0(func_020b50e8()) != 0) {
+    if (NetArea_IsUnsharedScene(Scene_GetCurrent()) != 0) {
         return FALSE;
     }
-    if (data_021eda68 != 0 && data_021eda68->unk_0c != 6) {
+    if (gActorDefaultParent != 0 && gActorDefaultParent->profile != 6) {
         return FALSE;
     }
     return TRUE;
 }
 
-extern "C" void func_02040cac(void)
+extern "C" void EventAnnounce_CheckEvents(void)
 {
     s32 zero;
     Unk_02040974_Rtc t;
@@ -370,195 +349,195 @@ extern "C" void func_02040cac(void)
     s32 i;
     t.a = 0;
     t.b = 0;
-    func_0209d498(&t);
-    if (data_020da220 == 99) {
+    Clock_GetDateTime(&t);
+    if (sEventAnnouncePendingEvent == 99) {
         zero = 0;
         for (i = 0; i < 11; i++) {
             u32 k;
             s32 r;
-            func_02116048(&t, buf, 8);
-            k = data_020c9098[i];
-            r = func_0203f31c(k, buf, 0);
+            MI_CpuCopy8(&t, buf, 8);
+            k = sAnnouncedEventIds[i];
+            r = Event_GetStateAt(k, buf, 0);
             switch (r) {
             case 2:
                 if (k == 0x13) {
-                    data_020da220 = k;
-                    data_020da21c = k;
+                    sEventAnnouncePendingEvent = k;
+                    sEventAnnounceCurEvent = k;
                 } else if (Unk_02040cac_B2((u8 *)&t) < 6) {
-                    data_020da21c = k;
+                    sEventAnnounceCurEvent = k;
                 } else {
-                    func_02040974(k, k, zero);
+                    EventAnnounce_Request(k, k, zero);
                 }
                 break;
             case 3:
                 if (k == 0x12) {
-                    data_020da220 = 0x12;
-                    data_020da21c = 0x12;
-                    data_020da218 = 0x12;
+                    sEventAnnouncePendingEvent = 0x12;
+                    sEventAnnounceCurEvent = 0x12;
+                    sEventAnnounceActiveEvent = 0x12;
                 }
                 break;
             }
         }
     }
-    if (data_020da21c != 99) {
-        func_02116048(&t, buf2, 8);
-        if (func_0203f31c(data_020da21c, buf2, 0) == 0) {
-            if (data_020da21c == 0x13) {
-                data_020da220 = 99;
-                data_020da21c = 99;
+    if (sEventAnnounceCurEvent != 99) {
+        MI_CpuCopy8(&t, buf2, 8);
+        if (Event_GetStateAt(sEventAnnounceCurEvent, buf2, 0) == 0) {
+            if (sEventAnnounceCurEvent == 0x13) {
+                sEventAnnouncePendingEvent = 99;
+                sEventAnnounceCurEvent = 99;
             } else {
-                func_02040974(data_020da21c, 99, 1);
+                EventAnnounce_Request(sEventAnnounceCurEvent, 99, 1);
             }
         }
     }
 }
 
-extern "C" void func_02040c94(void)
+extern "C" void EventAnnounce_Update(void)
 {
-    if (func_02040d80()) {
-        func_02040cac();
+    if (EventAnnounce_CanCheck()) {
+        EventAnnounce_CheckEvents();
     }
 }
 
-extern "C" s32 func_02040c88(void)
+extern "C" s32 EventAnnounce_IsBusy(void)
 {
-    return data_021c3c98;
+    return sEventAnnounceBusy;
 }
 
-extern "C" s32 func_02040c7c(void)
+extern "C" s32 EventAnnounce_GetActiveEvent(void)
 {
-    return data_020da218;
+    return sEventAnnounceActiveEvent;
 }
 
-extern "C" s32 func_02040c70(void)
+extern "C" s32 EventAnnounce_GetCurrentEvent(void)
 {
-    return data_020da21c;
+    return sEventAnnounceCurEvent;
 }
 
-extern "C" void func_02040c6c(s32)
+extern "C" void EventAnnounce_RunIdle(s32)
 {
 }
 
-extern "C" void func_02040c50(s32)
+extern "C" void EventAnnounce_RunWaitChimeStart(s32)
 {
-    if (func_0206da30() != 0) {
-        data_021c3ca8.unk_00 = 2;
+    if (Melody_IsBusy() != 0) {
+        sEventAnnounceState.announceState = 2;
     }
 }
 
-extern "C" void func_02040c38(s32)
+extern "C" void EventAnnounce_RunWaitChimeEnd(s32)
 {
-    if (func_0206da30() == 0) {
-        func_02040a60(3);
+    if (Melody_IsBusy() == 0) {
+        EventAnnounce_SetState(3);
     }
 }
 
-extern "C" BOOL func_02040c10(void)
+extern "C" BOOL EventAnnounce_RequestWarp(void)
 {
     BOOL r = FALSE;
-    if (func_0203d9d8() == 0) {
-        data_021c3ca8.unk_00 = r;
-        data_021c3ca8.unk_02 = r;
+    if (TalkRequest_AddEventWarp() == 0) {
+        sEventAnnounceState.announceState = r;
+        sEventAnnounceState.busy = r;
     } else {
         r = TRUE;
-        data_021c3ca8.unk_02 = r;
+        sEventAnnounceState.busy = r;
     }
     return r;
 }
 
-extern "C" void func_02040b48(s32)
+extern "C" void EventAnnounce_RunWarp(s32)
 {
     u8 buf[0x10];
     s32 r;
-    if (func_0203d9cc() == 0) {
-        if (func_0203d9d8() == 0) {
-            data_021c3ca8.unk_00 = 0;
-            data_021c3ca8.unk_02 = 0;
+    if (TalkRequestFlags_IsEventWarpStarted() == 0) {
+        if (TalkRequest_AddEventWarp() == 0) {
+            sEventAnnounceState.announceState = 0;
+            sEventAnnounceState.busy = 0;
         }
     } else {
-        s32 v = data_021c3ca8.unk_08;
-        data_020da220 = v;
-        data_020da21c = v;
-        if (func_0203d9c0() != 0 && func_0206da30() == 0) {
-            r = func_0204da0c();
+        s32 v = sEventAnnounceState.nextEvent;
+        sEventAnnouncePendingEvent = v;
+        sEventAnnounceCurEvent = v;
+        if (TalkRequestFlags_IsEventWarpReady() != 0 && Melody_IsBusy() == 0) {
+            r = TownBlockMap_Get();
             if (r != 0) {
-                if (data_021c3ca8.unk_04 == 14) {
-                    r = func_0204d560(r, buf);
+                if (sEventAnnounceState.msgIndex == 14) {
+                    r = Town_FindGulliverShip(r, buf);
                 } else {
-                    r = func_0204d780(r, buf, 0, 0);
+                    r = Town_FindTownHall(r, buf, 0, 0);
                 }
                 if (r != 0) {
-                    func_020b4a08(func_020b4934(), 0);
-                    func_020b4f18(func_020b4934(), 0x31, buf, 0x400000, 0, 2, 2);
-                    _ZN12Unk_020d8e1413func_020353b0Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
-                    data_021c3ca8.unk_00 = 4;
-                    data_021c3c98 = 1;
+                    Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
+                    SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, buf, 0x400000, 0, 2, 2);
+                    _ZN12BgmSceneFade16prepareEventWarpEii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+                    sEventAnnounceState.announceState = 4;
+                    sEventAnnounceBusy = 1;
                 }
             }
         }
     }
 }
 
-extern "C" void func_02040ad8(Unk_02040ad8_Owner *o)
+extern "C" void EventAnnounce_RunShowMessage(EventAnnouncer *o)
 {
-    if (Unk_02040ad8_IsTwo(data_021c3cc0)) {
-        Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)func_02067918(0);
-        o->unk_54.vfunc_08();
-        _ZN12Unk_020e2a3013func_020a710cEPKc(&o->unk_54, (void *)data_020da22c[data_021c3ca8.unk_01]);
-        *((u8 *)o + 0x72) = data_021c3ca8.unk_04;
-        _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(p, &o->unk_54);
-        p->unk_08 = 1;
-        data_021c3ca8.unk_00 = 6;
+    if (Unk_02040ad8_IsTwo(gScreenTransition)) {
+        TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
+        o->msgRequest.resetMsg();
+        _ZN10MsgRequest11setFileNameEPKc(&o->msgRequest, (void *)sEventAnnounceMsgFiles[sEventAnnounceState.isEnd]);
+        *((u8 *)o + 0x72) = sEventAnnounceState.msgIndex;
+        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(p, &o->msgRequest);
+        p->nextState = 1;
+        sEventAnnounceState.announceState = 6;
     }
 }
 
-extern "C" void func_02040a84(s32)
+extern "C" void EventAnnounce_RunWaitMessageEnd(s32)
 {
-    Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)func_02067918(0);
-    if (p->unk_04 == 0) {
-        _ZN12Unk_020660f813func_02067958Ev(p);
-        func_020b4bbc(func_020b4934(), 20);
-        _ZN12Unk_020d8e1413func_02035368Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
-        data_021c3c94 = 0;
-        data_021c3ca8.unk_00 = 0;
-        data_021c3ca8.unk_02 = 0;
+    TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
+    if (p->state == 0) {
+        _ZN15TalkWindowState13detachRequestEv(p);
+        SceneWarp_RequestExit(Scene_GetWarpRequest(), 20);
+        _ZN12BgmSceneFade18prepareEventReturnEii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+        sEventAnnounceBgmCode = 0;
+        sEventAnnounceState.announceState = 0;
+        sEventAnnounceState.busy = 0;
     }
 }
 
-extern "C" void func_02040a60(s32 v)
+extern "C" void EventAnnounce_SetState(s32 v)
 {
     BOOL r;
     if (v == 3) {
-        r = func_02040c10();
+        r = EventAnnounce_RequestWarp();
     } else {
         r = TRUE;
     }
     if (r) {
-        data_021c3ca8.unk_00 = v;
+        sEventAnnounceState.announceState = v;
     }
 }
 
-Unk_02040974_State::~Unk_02040974_State()
+EventAnnounceState::~EventAnnounceState()
 {
 }
 
-extern "C" void func_02040974(s32 a, s32 b, s32 c)
+extern "C" void EventAnnounce_Request(s32 a, s32 b, s32 c)
 {
     s32 r4;
     s32 r6;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return;
     }
-    if (func_020b50e8() == 0) {
-        func_020850e0();
-        func_0208517c();
-        if (_ZN12Unk_02086f1413func_02086f18Ev()) {
-            if (!_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
+    if (Scene_GetCurrent() == 0) {
+        TownSessionState_Get();
+        TownSessionState_GetResettiFlag();
+        if (_ZN16ResettiVisitFlag5isSetEv()) {
+            if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
                 return;
             }
         }
     }
-    if (data_021c3ca8.unk_02 != 0) {
+    if (sEventAnnounceState.busy != 0) {
         return;
     }
     r4 = -1;
@@ -566,27 +545,27 @@ extern "C" void func_02040974(s32 a, s32 b, s32 c)
         r4 = a;
         r4 -= 9;
         if (c == 0) {
-            data_021c3c94 = 1;
+            sEventAnnounceBgmCode = 1;
         } else {
-            data_021c3c94 = 2;
+            sEventAnnounceBgmCode = 2;
         }
         r6 = 2;
     } else if (a == 0x44) {
-        if (data_021c3ca8.unk_00 == 0) {
+        if (sEventAnnounceState.announceState == 0) {
             r4 = 14;
-            data_021c3c94 = 0;
+            sEventAnnounceBgmCode = 0;
             r6 = 2;
         }
     } else if (a < 0) {
-        switch (data_021c3ca8.unk_00) {
+        switch (sEventAnnounceState.announceState) {
         case 0: {
             Unk_02040974_Rtc t;
             t.a = 0;
             t.b = 0;
             r4 = 15;
-            data_021c3c94 = 0;
-            data_021c3ca8.unk_03 = 1;
-            func_0209d498(&t);
+            sEventAnnounceBgmCode = 0;
+            sEventAnnounceState.dayChangePending = 1;
+            Clock_GetDateTime(&t);
             if (((u8 *)&t)[1] == 0) {
                 r6 = 1;
             } else {
@@ -595,21 +574,21 @@ extern "C" void func_02040974(s32 a, s32 b, s32 c)
             break;
         }
         case 2:
-            data_021c3ca8.unk_03 = 1;
+            sEventAnnounceState.dayChangePending = 1;
             break;
         }
     }
     if (r4 >= 0) {
-        func_02040a60(r6);
-        data_021c3ca8.unk_04 = r4;
-        data_021c3ca8.unk_01 = c;
-        data_021c3ca8.unk_08 = b;
+        EventAnnounce_SetState(r6);
+        sEventAnnounceState.msgIndex = r4;
+        sEventAnnounceState.isEnd = c;
+        sEventAnnounceState.nextEvent = b;
     }
 }
 
-extern "C" BOOL func_02040908(void)
+extern "C" BOOL EventAnnounce_IsBlockedScene(void)
 {
-    switch (func_020b50e8()) {
+    switch (Scene_GetCurrent()) {
     case 6:
     case 12:
     case 13:
@@ -625,26 +604,26 @@ extern "C" BOOL func_02040908(void)
     return FALSE;
 }
 
-extern "C" void func_02040900(u8 *p)
+extern "C" void EventWeekSlots_Construct(u8 *p)
 {
     *(s32 *)(p + 0x34) = 0;
     *(s32 *)(p + 0x38) = 0;
 }
 
-extern "C" void func_020408fc(void)
+extern "C" void EventWeekSlots_Destruct(void)
 {
 }
 
-extern "C" void func_02040864(u8 *p)
+extern "C" void EventWeekSlots_InitNew(u8 *p)
 {
-    Unk_02040754_Time t;
-    func_0209cf88(&t);
-    Unk_02040754_Time t1 = t;
+    ClockDateBytes t;
+    Clock_GetDate(&t);
+    ClockDateBytes t1 = t;
     p[0] = t1.b[0];
     p[1] = t1.b[1];
     p[2] = t1.b[2];
     p[3] = t1.b[3];
-    Unk_02040754_Time t2 = t;
+    ClockDateBytes t2 = t;
     p[4] = t2.b[0];
     p[5] = t2.b[1];
     p[6] = t2.b[2];
@@ -657,39 +636,39 @@ extern "C" void func_02040864(u8 *p)
     p[13] = 1;
     p[14] = 0;
     p[15] = 0;
-    p[16] = func_02063b8c(5) + 1;
+    p[16] = Random_GlobalBelow(5) + 1;
     p[17] = 99;
     *(s32 *)(p + 0x34) = 0;
     *(s32 *)(p + 0x38) = 0;
-    func_02040684(p);
-    func_020402f8(p, 1);
+    EventWeekSlots_ClearWeek(p);
+    EventWeekSlots_UpdateWeek(p, 1);
 }
 
-extern "C" void func_0204085c(u8 *p)
+extern "C" void EventWeekSlots_Reset(u8 *p)
 {
-    func_02040864(p);
+    EventWeekSlots_InitNew(p);
 }
 
-extern "C" void func_020407fc(u8 *p)
+extern "C" void EventWeekSlots_OnLoad(u8 *p)
 {
-    Unk_02040754_Time a;
-    Unk_02040754_Time b;
-    func_0209cf88(&a);
-    if (func_0209cd00(&a, p + 8) >= 7) {
+    ClockDateBytes a;
+    ClockDateBytes b;
+    Clock_GetDate(&a);
+    if (Date_DaysBetween(&a, p + 8) >= 7) {
         p[8] = 1;
         p[9] = 1;
         p[10] = 0;
         p[11] = 0;
     }
-    func_0209cf88(&b);
-    if (func_0209cd00(&b, p + 12) >= 7) {
+    Clock_GetDate(&b);
+    if (Date_DaysBetween(&b, p + 12) >= 7) {
         p[12] = 1;
         p[13] = 1;
         p[14] = 0;
         p[15] = 0;
     }
-    func_020402f8(p, 0);
-    func_0203f4c0(1);
-    func_02040df0();
+    EventWeekSlots_UpdateWeek(p, 0);
+    Event_RefreshToday(1);
+    EventAnnounce_Restart();
 }
 

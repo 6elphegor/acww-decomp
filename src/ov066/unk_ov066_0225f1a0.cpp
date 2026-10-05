@@ -1,1162 +1,658 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-struct Unk_ov066_0226453c_Node {
-    u32 unk_00;
-    struct Unk_ov066_0226453c_Node *unk_04;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
+#include "nitro/os_alarm.h"
+#include "nitro/wm.h"
+
+// Local wireless layer over NitroSDK WM (B33 LocalWl_*): four heap work areas, sLocalWl (LocalWlWork),
+// sLocalWlSession (LocalWlSession), sLocalWlMp (LocalWlMpWork, MP data layer on port 13) and sLocalWlScan
+// (LocalWlScanWork). Every function of this unit sees the same layouts (the per-function views were folded in N08).
+
+struct LocalWlConfig {
+    u32 ggid;
+    u8 maxMembers;
+    u8 maxBeacons;
+    u8 recordSize;
+    u8 mpFreq;
 };
 
-struct Unk_ov066_02264574_Node {
-    struct Unk_ov066_02264574_Node *unk_00;
-    struct Unk_ov066_02264574_Node *unk_04;
-    u8 pad_08[0x20 - 0x08];
-    u8 unk_20;
-};
-
-struct Unk_ov066_0226460c_Bits {
-    s32 f0 : 1;
+struct LocalWlWorkBits {
+    s32 f0 : 1; // f0-f2: passed to the StartMP call (LocalWl_StartMp), set by LocalWl_ApplyConfig
     s32 f1 : 1;
     s32 f2 : 1;
-    s32 f3 : 1;
-    s32 f4 : 1;
-    s32 f5 : 1;
-    s32 f6 : 1;
-    s32 f7 : 1;
-    s32 f8 : 1;
+    s32 stopScanOnParent : 1; // clear the list per scan loop; stop scanning when a parent beacon is seen
+    s32 skipNoGameInfo : 1;   // ignore beacons without game info (else they are listed with tag 0xacce)
+    s32 filterGgid : 1;       // LocalWl_FilterBeacon: GGID must match
+    s32 filterScanSlot : 1;   // LocalWl_FilterBeacon: game info scan slot must match
+    s32 filterVersion : 1;    // LocalWl_FilterBeacon: game info version must be 5
+    s32 f8 : 1;               // LocalWl_OnParentLost clears member 0
     s32 f9 : 1;
-    s32 rest : 22;
+    s32 resetting : 1;          // 0x400: WM_Reset in progress (LocalWl_Reset / ClearResetFlag)
+    s32 modeRequestPending : 1; // 0x800: LocalWl_RequestMode until the mode is reached or an error
+    s32 mpStarted : 1;          // MP start event seen
+    s32 rest : 19;
 };
 
-struct Unk_ov066_0226460c_A {
-    u32 unk_00;
-    u8 pad_04[0x08 - 0x04];
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-    u8 unk_0c;
-    u8 pad_0d[0x14 - 0x0d];
-    u8 unk_14;
-    u8 pad_15[2];
-    u8 unk_17;
-    u16 unk_18;
-    u16 unk_1a;
-    u16 unk_1c;
-    u16 unk_1e;
-    u16 unk_20;
-    u16 unk_22;
-    u16 unk_24;
-    u8 pad_26[0x28 - 0x26];
-    u32 unk_28;
-    u8 pad_2c[0x3c - 0x2c];
-    Unk_ov066_0226460c_Bits unk_3c;
+struct LocalWlWork {
+    /* 0x00 */ u32 requestedMode;
+    /* 0x04 */ u32 state;
+    /* 0x08 */ u8 channel;
+    /* 0x09 */ u8 numScanChannels;
+    /* 0x0a */ u8 maxChildren;
+    /* 0x0b */ u8 maxMembers;
+    /* 0x0c */ u8 maxBeacons;
+    /* 0x0d */ u8 dmaNo;
+    /* 0x0e */ u8 pad_0e[2];
+    /* 0x10 */ u8 *scanChannels;
+    /* 0x14 */ u8 parentWaitBeacons;
+    /* 0x15 */ u8 resetRetryCount;
+    /* 0x16 */ u8 abortRequest;
+    /* 0x17 */ u8 mpFreq;
+    /* 0x18 */ u16 recvChildSize;
+    /* 0x1a */ u16 parentMaxSize;
+    /* 0x1c */ u16 recvParentSize;
+    /* 0x1e */ u16 childMaxSize;
+    /* 0x20 */ u16 scanLoopTime;
+    /* 0x22 */ u16 scanMaxChannelTime;
+    /* 0x24 */ u16 unk_24;
+    /* 0x26 */ u8 pad_26[2];
+    /* 0x28 */ u32 ggid;
+    /* 0x2c */ u32 unk_2c;
+    /* 0x30 */ void (*doneCallback)(u32);
+    /* 0x34 */ u32 doneCallbackArg;
+    /* 0x38 */ void (*eventCallback)(void *);
+    /* 0x3c */ union {
+        u32 flags;
+        LocalWlWorkBits bits;
+    };
 };
 
-struct Unk_ov066_0226460c_In {
-    u32 unk_00;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
+// ---- MP data layer
+struct LocalWlMpRecord {
+    u8 type : 2; // 0 first record (dest mask + total size), 1 continuation, 2 ack only, 3 resend request
+    u8 isLast : 1;
+    u8 hasAck : 1;
+    u8 frameId : 4;
+    u8 length;
+    u16 destMask;
+    u16 totalSizeLo;
+    u16 totalSizeHi;
+    u8 data[1];
 };
 
-struct Unk_ov066_02263c3c_Rec {
-    u8 a : 2;
-    u8 c : 1;
-    u8 b : 1;
-    u8 d : 4;
-    u8 unk_01;
-    u16 unk_02;
-    u16 unk_04;
-    u16 unk_06;
-    u8 unk_08[1];
-};
-
-struct Unk_ov066_02263c3c_Lo {
-    u8 lo : 4;
-    u8 hi : 4;
-};
-
-struct Unk_ov066_02263c3c_Fl {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 f2 : 1;
-    u8 f3 : 1;
-    u8 f4 : 1;
-};
-
-struct Unk_ov066_02263c3c_Node {
-    u32 unk_00;
-    Unk_ov066_02263c3c_Node *unk_04;
-    u8 pad[0x18];
-    u8 unk_20;
-};
-
-struct Unk_ov066_02263c3c_Q {
-    u32 unk_00;
-    Unk_ov066_02263c3c_Node *unk_04;
-};
-
-struct Unk_ov066_02263c3c_Ent {
-    u8 *unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-};
-
-struct Unk_ov066_02263c3c_Link {
-    u32 unk_00;
-    Unk_ov066_02263c3c_Link *unk_04;
-};
-
-struct Unk_ov066_02263c3c_G {
-    u8 unk_00;
-    Unk_ov066_02263c3c_Lo unk_01;
-    s8 unk_02;
-    s8 unk_03;
-    Unk_ov066_02263c3c_Fl unk_04;
-    u8 pad[3];
-    u32 unk_08;
-    u32 unk_0c;
-    Unk_ov066_02263c3c_Link *unk_10;
-    u32 pad14;
-    Unk_ov066_02263c3c_Q *unk_18;
-    u16 unk_1c;
-    u16 unk_1e;
-    u8 *unk_20;
-    u32 unk_24;
-    s32 unk_28;
-    void (*unk_2c)(u32);
-    Unk_ov066_02263c3c_Ent *unk_30;
-};
-
-struct Unk_ov066_02263c3c_S {
-    u8 pad[4];
-    u32 unk_04;
-    u8 pad2[3];
-    u8 unk_0b;
-};
-
-struct Unk_ov066_02263c3c_V {
-    u8 pad[0x9c];
-    void *unk_9c;
-    void *unk_a0;
-    void *unk_a4;
-    void *unk_a8;
-    void *unk_ac;
-    void *unk_b0;
-    void *unk_b4;
-    void (*unk_b8)(u32, u8 *, u32);
-    void *unk_bc;
-};
-
-struct Unk_ov066_02263c3c_Wrap {
-    u8 pad[0x14];
-    Unk_ov066_02263c3c_Rec *unk_14;
-};
-
-struct Unk_ov066_02263f54_Obj {
-    u8 pad[0x24];
-    Unk_ov066_02263c3c_Rec unk_24;
-};
-
-struct Unk_ov066_02263320_Flags {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 f2 : 1;
-    u8 f3 : 1;
-};
-
-struct Unk_ov066_02263320_Pay {
-    u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
-    u8 unk_04[1];
-};
-
-struct Unk_ov066_02263320_Rec {
-    Unk_ov066_02263320_Rec *unk_00;
-    Unk_ov066_02263320_Rec *unk_04;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
-    u8 pad[0x20 - 0x0e];
-    Unk_ov066_02263320_Pay unk_20;
-};
-
-struct Unk_ov066_02263320_G {
-    u8 unk_00;
-    u8 lo : 4;
-    u8 hi : 4;
-    s8 unk_02;
-    s8 unk_03;
-    Unk_ov066_02263320_Flags unk_04;
-    u8 pad[3];
-    Unk_ov066_02263320_Rec *unk_08;
-    Unk_ov066_02263320_Rec *unk_0c;
-    Unk_ov066_02263320_Rec *unk_10;
-    Unk_ov066_02263320_Rec *unk_14;
-    Unk_ov066_02263320_Rec **unk_18;
-    u16 unk_1c;
-    u16 unk_1e;
-    u32 unk_20;
-    u32 unk_24;
-    s32 unk_28;
-    u32 unk_2c;
-};
-
-struct Unk_ov066_02263320_S {
-    u8 pad[0xb];
-    u8 unk_0b;
-};
-
-struct Unk_ov066_02263320_V {
-    u8 pad[0x98];
-    u16 unk_98;
-};
-
-struct Unk_ov066_02263320_Hdr {
-    u8 a : 2;
+struct LocalWlMpRecordHdr {
+    u8 type : 2;
     u8 pad : 1;
-    u8 b : 1;
-    u8 c : 4;
-    u8 d;
+    u8 hasAck : 1;
+    u8 frameId : 4;
+    u8 length;
 };
 
-struct Unk_ov066_02263320_Msg {
-    u16 unk_00;
-    u16 unk_02;
-    u16 unk_04;
-    u8 pad[6];
-    Unk_ov066_02263320_Pay *unk_0c;
-    u16 unk_10;
-    u16 unk_12;
-    u8 pad2[0x20 - 0x14];
-    void (*unk_20)(void *);
+struct LocalWlMpRecvEntry {
+    u8 *buffer;
+    u32 bufferSize;
+    u32 totalSize;
+    u32 receivedSize;
 };
 
-struct Unk_ov066_022629cc_S {
-    u32 unk_00;
-    u32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-};
-
-struct Unk_ov066_022629cc_V {
-    u8 pad[0x8d];
-    u8 unk_8d;
-    u8 pad2[2];
-    u16 unk_90;
-    u8 unk_92;
-    u8 pad3[0xc0 - 0x93];
-    u32 unk_c0;
-};
-
-struct Unk_ov066_022629cc_Msg {
-    u16 unk_00;
-    u16 unk_02;
-    u8 unk_04[4];
-    u16 unk_08;
-    u16 unk_0a;
-};
-
-struct Unk_ov066_022629cc_E {
-    u32 a;
-    u32 b;
-    u32 pad[2];
-};
-
-struct Unk_ov066_022629cc_G {
-    u8 pad[0x1c];
-    u16 unk_1c;
-    u8 pad2[0x30 - 0x1e];
-    Unk_ov066_022629cc_E *unk_30;
-};
-
-struct Unk_ov066_022629cc_Ent;
-
-struct Unk_ov066_022629cc_Rec {
-    u16 unk_00;
-    u8 unk_02[6];
-    u16 unk_08;
-    u8 unk_0a;
-    u8 unk_0b;
-    u8 unk_0c[6];
-    u8 pad[2];
-    Unk_ov066_022629cc_Ent *unk_14;
-    u8 pad2[8];
-    u8 unk_20[0xc0];
-};
-
-struct Unk_ov066_022629cc_Sub {
-    u8 pad[0x2c];
-};
-
-struct Unk_ov066_022629cc_Ent {
-    u8 unk_00;
+struct LocalWlMpFramePayload {
+    u8 frameId;
     u8 unk_01;
-    u8 unk_02;
-    u8 pad;
-    Unk_ov066_022629cc_Rec *unk_04;
-    Unk_ov066_022629cc_Sub *unk_08;
-    void (*unk_0c)(Unk_ov066_022629cc_Rec *);
+    u16 aidMask;
+    u8 records[1];
 };
 
-struct Unk_ov066_02262074_Flags {
-    u32 f0 : 1;
-    u32 f1 : 1;
-    u32 f2 : 1;
-    u32 f3 : 1;
-    u32 f4 : 1;
-    u32 f5 : 1;
-    u32 f6 : 1;
-    u32 f7 : 1;
-    u32 f8 : 1;
-    u32 f9 : 1;
-    u32 f10 : 1;
-    u32 rest : 21;
+struct LocalWlMpFrame {
+    /* 0x00 */ LocalWlMpFrame *prev;
+    /* 0x04 */ LocalWlMpFrame *next;
+    /* 0x08 */ u16 frameSize;
+    /* 0x0a */ u16 destMask;
+    /* 0x0c */ u16 ackMask;
+    /* 0x0e */ u8 pad[0x20 - 0x0e];
+    /* 0x20 */ LocalWlMpFramePayload payload;
 };
 
-struct Unk_ov066_02262074_Ent {
-    u8 b[6];
+struct LocalWlMpFlags {
+    u8 waitFirstFrame : 1; // set by LocalWlMp_Reset, cleared by the first delivered frame
+    u8 frameLost : 1;      // child: more than one frame missed
+    u8 resendRequest : 1;  // child: exactly one frame missed, ask for missingFrameId
+    u8 sending : 1;        // LocalWlMp_Send .. LocalWlMp_FinishSend
+    u8 lastRecordPut : 1;  // the last record of the current message is out
 };
 
-struct Unk_ov066_02262074_Row {
-    u8 pad[0x28];
-    Unk_ov066_02262074_Ent e;
+struct LocalWlMpWork {
+    /* 0x00 */ u8 recordSize;
+    /* 0x01 */ u8 lastFrameId : 4;
+    u8 missingFrameId : 4;
+    /* 0x02 */ s8 numPendingSends;
+    /* 0x03 */ s8 numRecordsInFlight;
+    /* 0x04 */ LocalWlMpFlags flags;
+    /* 0x05 */ u8 pad[3];
+    /* 0x08 */ LocalWlMpFrame *sendRing;
+    /* 0x0c */ LocalWlMpFrame *recvRing;
+    /* 0x10 */ LocalWlMpFrame *curSendFrame;
+    /* 0x14 */ LocalWlMpFrame *resendFrame;
+    /* 0x18 */ LocalWlMpFrame **recvCursors; // per aid; a child uses [0] as receive and [1] as ack position
+    /* 0x1c */ u16 recvActiveMask;
+    /* 0x1e */ u16 sendDestMask;
+    /* 0x20 */ u8 *sendData;
+    /* 0x24 */ u32 sendSize;
+    /* 0x28 */ s32 sendOffset;
+    /* 0x2c */ void (*sendDoneCallback)(u32);
+    /* 0x30 */ LocalWlMpRecvEntry *recvEntries;
 };
 
-struct Unk_ov066_02262074_Rec {
-    void *unk_00;
-    u16 unk_04;
-    u16 pad06;
-    u32 unk_08;
-    u16 unk_0c;
-    u16 unk_0e;
-    u16 unk_10;
-    u16 unk_12;
-    u16 unk_14;
-    u16 unk_16;
-    u16 unk_18;
-    u8 pad1a[0x32 - 0x1a];
-    u16 unk_32;
-    u16 unk_34;
-    u16 unk_36;
-};
-
-struct Unk_ov066_02262074_Rec2 {
-    u16 unk_00;
-    u16 unk_02;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-};
-
-struct Unk_ov066_02262074_Buf {
-    u32 unk_00;
-    u8 *unk_04;
-};
-
-struct Unk_ov066_02262074_Data {
-    u8 pad[0x17e];
-    u16 unk_17e;
-};
-
-struct Unk_ov066_02262074_A {
-    u32 unk_00;
-    u32 unk_04;
-    u8 unk_08;
-    u8 pad09;
-    u8 unk_0a;
-    u8 pad0b[2];
-    u8 unk_0d;
-    u8 pad0e[0x18 - 0xe];
-    u16 unk_18;
-    u16 unk_1a;
-    u16 unk_1c;
-    u16 unk_1e;
-    u16 unk_20;
-    u8 pad22[6];
-    u32 unk_28;
-};
-
-struct Unk_ov066_02262074_B {
-    Unk_ov066_02262074_Rec *unk_00;
-    Unk_ov066_02262074_Buf *unk_04;
-    Unk_ov066_02262074_Rec2 *unk_08;
-    void *unk_0c;
-    void *unk_10;
-    void *unk_14;
-    u16 unk_18;
-    u16 unk_1a;
-    u16 unk_1c;
-    u16 unk_1e;
-    u16 unk_20;
-    u8 unk_22[2];
-    u8 unk_24[4];
-    Unk_ov066_02262074_Ent unk_28[16];
-    u8 *unk_88;
-    u8 unk_8c;
-    u8 unk_8d;
-    u8 unk_8e;
-    u8 unk_8f;
-    u8 pad90[3];
-    u8 unk_93;
-    u8 unk_94;
-    u8 unk_95;
-    u8 unk_96;
-    u8 pad97;
-    u16 unk_98;
-    u8 pad9a[2];
-    void (*unk_9c)(void);
-    u8 pad_a0[0xb0 - 0xa0];
-    s32 (*unk_b0)(u32, u32, u32, u32);
-    s32 (*unk_b4)(void);
-    u32 unk_b8;
-    u8 padbc[4];
-    Unk_ov066_02262074_Flags unk_c0;
-};
-
-struct Unk_ov066_02261764_CBits {
-    s32 f0 : 1;
-    s32 f1 : 1;
-    s32 f2 : 1;
-    s32 f3 : 1;
-    s32 f4 : 1;
-    s32 f5 : 1;
-    s32 f6 : 1;
-};
-
-struct Unk_ov066_02261764_TBits {
-    s32 pad : 8;
-    s32 f8 : 1;
-};
-
-struct Unk_ov066_02261764_S {
-    u32 unk_00;
-    u32 unk_04;
-    u8 unk_08[3];
-    u8 unk_0b;
-    u8 unk_0c[8];
-    u8 unk_14;
-    u8 unk_15[0x3c - 0x15];
-    Unk_ov066_02261764_TBits unk_3c;
-};
-
-struct Unk_ov066_02261764_V {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u8 *unk_14;
-    u16 unk_18;
-    u16 unk_1a;
-    u16 unk_1c;
-    u16 unk_1e;
-    u8 unk_20[8];
-    u8 unk_28[0x60];
-    u8 unk_88[4];
-    u8 unk_8c;
-    u8 unk_8d[5];
-    u8 unk_92[4];
-    u8 unk_96;
-    u8 unk_97;
-    u16 unk_98;
-    u8 unk_9a[2];
-    void (*unk_9c)(void);
-    u8 pad[0xac - 0xa0];
-    void (*unk_ac)(u8 *, u32, u32, void (*)(void));
-    u8 pad2[0xbc - 0xb0];
-    void (*unk_bc)(u32);
-    Unk_ov066_02261764_CBits unk_c0;
-};
-
-struct Unk_ov066_02261764_Msg {
-    u8 unk_00[0xa];
-    u16 unk_0a;
-    u8 *unk_0c;
-    u16 unk_10;
-    u16 unk_12;
-};
-
-struct Unk_ov066_02261764_R6 {
-    u8 b[6];
-};
-
-struct Unk_ov066_02261764_Hdr {
-    u16 a;
-    u16 b;
-    u32 c;
-};
-
-struct Unk_ov066_02260e18_Bits {
-    s32 f0 : 1;
-    s32 f1 : 1;
-    s32 f2 : 1;
-    s32 f3 : 1;
-    s32 f4 : 1;
-    s32 f5 : 1;
-    s32 f6 : 1;
-    s32 f7 : 1;
-    u32 f8 : 2;
-    s32 f10 : 1;
-    s32 f11 : 1;
-    s32 f12 : 1;
-};
-
-struct Unk_ov066_02260e18_CBits {
-    s32 f0 : 1;
-    s32 f1 : 1;
-    s32 f2 : 1;
-    s32 f3 : 1;
-    s32 f4 : 1;
-    s32 f5 : 1;
-    s32 f6 : 1;
-};
-
-struct Unk_ov066_02260e18_S {
-    u32 unk_00;
-    u32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-    u32 unk_0c;
-    u32 unk_10;
-    u8 unk_14;
-    u8 unk_15;
-    u8 unk_16;
-    u8 unk_17;
-    u32 unk_18[4];
-    u32 unk_28;
-    u32 unk_2c;
-    u32 unk_30;
-    u32 unk_34;
-    u32 unk_38;
-    Unk_ov066_02260e18_Bits unk_3c;
-};
-
-struct Unk_ov066_02260e18_V {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u16 unk_14;
-    u16 unk_16;
-    u16 unk_18;
-    u16 unk_1a;
-    u16 unk_1c;
-    u16 unk_1e;
-    u16 unk_20;
-    u8 unk_22[0x8c - 0x22];
-    u8 unk_8c;
-    u8 pad[0x9c - 0x8d];
-    void (*unk_9c)(void);
-    void (*unk_a0)(void);
-    void (*unk_a4)(void);
-    u8 pad2[0xc0 - 0xa8];
-    Unk_ov066_02260e18_CBits unk_c0;
-};
-
-struct Unk_ov066_02260e18_Msg {
-    u16 unk_00;
-    u16 unk_02;
-    u16 unk_04;
+// ---- WM callback union: one view for the StartParent / StartConnect / StartMP / SetGameInfo callbacks (the
+// single-command callbacks use the nitro/wm.h SDK structs)
+struct LocalWlEventMsg {
+    u16 apiid;
+    u16 errcode;
+    u16 mpEvent; // StartMP state (10 started, 11/12 parent, 13 child)
     u16 unk_06;
-    u16 unk_08;
+    u16 event; // StartParent / StartConnect state (2 beacon sent, 6, 7 connected, 8, 9 disconnected)
+    union {
+        u16 myAid;      // StartConnect: own aid
+        u8 peerMac[6];  // StartParent: MAC of the child
+    };
+    u16 peerAid; // StartParent: aid of the child
 };
 
-struct Unk_ov066_02260518_Bits {
-    s32 f0 : 1;
-    s32 f1 : 1;
+// ---- beacons
+// game-defined content of WMGameInfo.userGameInfo (0x70)
+struct LocalWlGameInfo {
+    u16 tag; // 0x2348 parent looking for children, 0xbd8a parent with a session
+    u16 nonce;
+    u8 scanSlot;
+    u8 memberCount;
+    u8 version;
+    u8 userDataSize;
+    u8 userData[0x68];
+};
+
+struct LocalWlBeaconList;
+
+struct LocalWlBeacon {
+    /* 0x00 */ u16 inUse;
+    /* 0x02 */ u8 macAddr[6];
+    /* 0x08 */ u16 tag;
+    /* 0x0a */ u8 linkLevel;
+    /* 0x0b */ u8 linkLevelPos;
+    /* 0x0c */ u8 linkLevels[6];
+    /* 0x12 */ u8 pad[2];
+    /* 0x14 */ LocalWlBeaconList *ownerList;
+    /* 0x18 */ u8 pad2[8];
+    /* 0x20 */ WMBssDesc bssDesc;
+};
+
+struct LocalWlBeaconList {
+    u8 listId;
+    u8 numUsed;
+    u8 capacity;
+    u8 pad;
+    LocalWlBeacon *entries;
+    OSAlarm *alarms;
+    void (*changeCallback)(LocalWlBeacon *); // called when an entry is added or expires (never set in this unit)
+};
+
+struct LocalWlScanFlags {
+    s32 stopPending : 1; // stop alarm armed after a parent beacon
+    s32 looping : 1;     // scan loop running (next channel after each scan)
     s32 rest : 30;
 };
 
-struct Unk_ov066_02260518_Bits3 {
-    s32 pad : 3;
-    s32 f3 : 1;
-    s32 rest : 28;
+struct LocalWlScanWork {
+    /* 0x00 */ WMScanParam *scanParam;
+    /* 0x04 */ WMBssDesc *scanBuffer;
+    /* 0x08 */ LocalWlBeaconList *beaconLists;
+    /* 0x0c */ LocalWlScanFlags scanFlags;
+    /* 0x10 */ OSAlarm scanTimer;
+    /* 0x3c */ OSAlarm stopTimer;
+    /* 0x68 */ u32 unk_68;
+    /* 0x6c */ s32 (*beaconFilter)(void *);
 };
 
-struct Unk_ov066_02260518_CBits {
-    s32 pad : 7;
-    s32 f7 : 1;
-    s32 f8 : 1;
-    s32 f9 : 1;
-    s32 rest : 22;
+// ---- session
+struct LocalWlMacAddr {
+    u8 b[6];
 };
 
-struct Unk_ov066_02260518_Elem {
-    u32 v[4];
+struct LocalWlControlHdr {
+    u16 type;
+    u16 size;
+    u32 nonce;
 };
 
-struct Unk_ov066_02260518_Head {
-    u32 unk_00;
-    u16 unk_04;
-    u16 unk_06;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-    u8 unk_0c;
-    u8 unk_0d;
-};
-
-// data_ov066_022647ac
-struct Unk_ov066_02260518_A {
-    u32 unk_00;
-    s32 unk_04;
-    u8 pad_08;
-    u8 unk_09;
-    u8 pad_0a[2];
-    u8 unk_0c;
-    u8 pad_0d[3];
-    u8 *unk_10;
-    u8 pad_14[0x20 - 0x14];
-    u16 unk_20;
-    u16 unk_22;
-    u8 pad_24[0x3c - 0x24];
-    Unk_ov066_02260518_Bits3 unk_3c;
-};
-
-// data_ov066_022647b0
-struct Unk_ov066_02260518_B {
-    Unk_ov066_02260518_Head *unk_00;
-    u32 unk_04;
-    Unk_ov066_02260518_Elem *unk_08;
-    Unk_ov066_02260518_Bits unk_0c;
-    u32 unk_10[11];
-    u32 unk_3c[12];
-    s32 unk_6c;
-};
-
-struct Unk_ov066_02260dd0_Msg {
-    u16 unk_00;
-    u16 unk_02;
-};
-
-struct Unk_ov066_02260518_Rec {
-    u16 unk_00;
-    u8 unk_02[6];
-    u16 unk_08;
-};
-
-// data_ov066_022647b4
-struct Unk_ov066_02260518_C {
-    u8 pad_00[0x88];
-    Unk_ov066_02260518_Rec *unk_88;
-    u8 unk_8c;
-    u8 pad_8d;
-    u8 unk_8e;
-    u8 pad_8f[4];
-    u8 unk_93;
-    u8 unk_94;
-    u8 unk_95;
-    u8 pad_96[0xb8 - 0x96];
-    u32 unk_b8;
-    u8 pad_bc[4];
-    Unk_ov066_02260518_CBits unk_c0;
-};
-
-struct Unk_ov066_0225faf8_Bits {
-    u32 f0 : 3;
-    s32 f3 : 1;
-    s32 f4 : 1;
-    s32 f5 : 1;
-    s32 f6 : 1;
-    s32 f7 : 1;
-    u32 f8 : 2;
+struct LocalWlSessionBits {
+    s32 sendingMemberTable : 1; // LocalWl_SendMemberTable .. OnMemberTableSent
+    s32 memberTableResend : 1;  // table changed while sending
+    s32 endRequested : 1;       // LocalWl_RequestEnd
+    s32 ending : 1;             // LocalWl_CheckEndRequest started WM_EndMP
+    s32 gameInfoDirty : 1;      // rebuild the beacon game info after the next beacon
+    s32 startMpOnGameInfo : 1;  // first child joined: start MP when the game info is set
+    s32 retryConnect : 1;       // 0x40: connect failure -> reset and rescan instead of abort
+    s32 autoChannel : 1;        // 0x80: measure channels before starting a parent
+    s32 parentFound : 1;        // 0x100: LocalWl_StopScanSoon (join in LocalWl_StepAuto)
+    s32 beaconSelected : 1;     // LocalWl_ConnectToParent
     s32 f10 : 1;
-    s32 f11 : 1;
-    s32 f12 : 1;
+    s32 rest : 21;
 };
 
-struct Unk_ov066_0225faf8_S {
-    u32 unk_00;
-    u32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-    u8 unk_0c;
-    u8 unk_0d;
-    u32 unk_10;
-    u8 unk_14;
-    u8 unk_15;
-    u8 unk_16;
-    u8 unk_17;
-    u32 unk_18[4];
-    u32 unk_28;
-    u32 unk_2c;
-    u32 unk_30;
-    u32 unk_34;
-    u32 unk_38;
-    Unk_ov066_0225faf8_Bits unk_3c;
-};
-
-struct Unk_ov066_0225faf8_TBits {
-    s32 f0 : 1;
-    s32 f1 : 1;
-    u32 f2 : 30;
-};
-
-struct Unk_ov066_0225faf8_W {
-    u8 pad[0x3c];
-    u16 unk_3c;
-    u16 unk_3e;
-    u32 unk_40;
-    u32 unk_44;
-    u8 unk_48[3];
-    u8 unk_4b;
-    u8 unk_4c[4];
-    u8 unk_50[8];
-};
-
-struct Unk_ov066_0225faf8_T {
-    s32 unk_00;
-    Unk_ov066_0225faf8_W *unk_04;
-    u8 *unk_08;
-    Unk_ov066_0225faf8_TBits unk_0c;
-    u32 unk_10[11];
-    u32 unk_3c[12];
-    s32 (*unk_6c)(void *);
-};
-
-struct Unk_ov066_0225faf8_V {
-    u8 pad[0x8e];
-    u8 unk_8e;
-    u8 pad2[6];
-    u8 unk_95;
-    u8 pad3[0xc0 - 0x96];
-    u32 unk_c0;
-};
-
-struct Unk_ov066_0225faf8_Msg {
-    u16 unk_00;
-    u16 unk_02;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    u16 unk_08;
-    u8 unk_0a[8];
-    u16 unk_12;
-};
-
-struct Unk_ov066_0225f1a0_S {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[3];
-    u8 unk_14;
-    u8 unk_15;
-    u8 unk_16;
-    u8 unk_17;
-    u32 unk_18[6];
-    void (*unk_30)(u32);
-    u32 unk_34;
-    void (*unk_38)(void *);
-    u32 unk_3c;
-};
-
-struct Unk_ov066_0225f7c8_Bits {
-    s32 lo : 10;
-    s32 f : 1;
-    s32 hi : 21;
-};
-
-struct Unk_ov066_0225f1a0_Msg {
-    u16 unk_00;
-    u16 unk_02;
-};
-
-struct Unk_ov066_0225f64c_Rec {
-    u8 pad[0x5c];
-    u16 unk_5c;
-    u8 pad2[0x77 - 0x5e];
-    u8 unk_77;
+struct LocalWlSession {
+    /* 0x00 */ WMParentParam *parentParam;
+    /* 0x04 */ WMArm9Buf *wmBuf;
+    /* 0x08 */ LocalWlGameInfo *gameInfo;
+    /* 0x0c */ void *recvBuf;
+    /* 0x10 */ void *sendBuf;
+    /* 0x14 */ u8 *controlBuf;
+    /* 0x18 */ u16 gameInfoLength;
+    /* 0x1a */ u16 recvBufSize;
+    /* 0x1c */ u16 sendBufSize;
+    /* 0x1e */ u16 myAid;
+    /* 0x20 */ u16 tgid;
+    /* 0x22 */ u8 myMac[6];
+    /* 0x28 */ LocalWlMacAddr memberMacs[16];
+    /* 0x88 */ LocalWlBeacon *selectedBeacon;
+    /* 0x8c */ u8 numMembers;
+    /* 0x8d */ u8 channel;
+    /* 0x8e */ u8 scanChannel;
+    /* 0x8f */ u8 fixedChannel;
+    /* 0x90 */ u16 allowedChannelMask;
+    /* 0x92 */ u8 numAllowedChannels;
+    /* 0x93 */ u8 roleTurnTarget;
+    /* 0x94 */ u8 roleTurnCount;
+    /* 0x95 */ u8 scanSlot;
+    /* 0x96 */ u8 numBeaconsSent;
+    /* 0x97 */ u8 unk_97;
+    /* 0x98 */ u16 readyMask;
+    /* 0x9a */ u8 pad_9a[2];
+    /* 0x9c */ void (*resetHook)(void);
+    /* 0xa0 */ void (*parentSendHook)(void);
+    /* 0xa4 */ void (*childSendHook)(void);
+    /* 0xa8 */ void (*shutdownHook)(void);
+    /* 0xac */ void (*sendControlHook)(u8 *, u32, u32, void (*)(void));
+    /* 0xb0 */ s32 (*sendHook)(u32, u32, u32, u32);
+    /* 0xb4 */ s32 (*isReadyToSendHook)(void);
+    /* 0xb8 */ void (*recvCallback)(u32, u8 *, u32);
+    /* 0xbc */ void (*memberLeftHook)(u32);
+    /* 0xc0 */ union {
+        u32 flags;
+        LocalWlSessionBits bits;
+    };
 };
 
 extern "C" {
-s32 func_02120434(void *);
-s32 func_021203ec(void *);
-s32 func_021203a4(void *);
-s32 func_0212035c(void *);
-s32 (*data_ov066_02264780[4])(void *) = {func_02120434, func_021203ec, func_021203a4, func_0212035c};
+s32 WM_Enable(void *);
+s32 WM_Disable(void *);
+s32 WM_PowerOn(void *);
+s32 WM_PowerOff(void *);
+s32 (*sLocalWlPowerApis[4])(void *) = {WM_Enable, WM_Disable, WM_PowerOn, WM_PowerOff};
 u32 data_ov066_022647c4;
 u32 data_ov066_022647c0;
 u32 data_ov066_022647bc;
-u32 data_ov066_022647b8;
-Unk_ov066_02263c3c_V *data_ov066_022647b4;
-Unk_ov066_02263c3c_G *data_ov066_022647c8;
-Unk_ov066_0226460c_A *data_ov066_022647ac;
-void *(*data_ov066_022647a8)(u32, u32);
-Unk_ov066_02260518_B *data_ov066_022647b0;
-void (*data_ov066_022647a0)(u32);
-void (*data_ov066_022647a4)(void *);
+u32 sLocalWlRandSeed;
+LocalWlSession *sLocalWlSession;
+LocalWlMpWork *sLocalWlMp;
+LocalWlWork *sLocalWl;
+void *(*sLocalWlAllocHook)(u32, u32);
+LocalWlScanWork *sLocalWlScan;
+void (*sLocalWlErrorHook)(u32);
+void (*sLocalWlFreeHook)(void *);
 
-u32 func_01ffa2ec(void);
-s32 func_01ffa3d4(u32);
-s32 func_0206d49c(void);
-void func_02114594(void *p, s32 v);
-s32 func_021145b0(void *, s32);
-s32 func_02114e48(void);
-s32 func_02114ef4(u32);
-s32 func_02114f74(void *, u32);
-s32 func_02115094(void *);
-s32 func_0211512c(void *, s64, void *, void *);
-s32 func_021152e4(void *);
-s32 func_02115304(void);
-void func_02115640(void *p);
-s32 func_02115ea8(s32, void *, s32);
-s32 func_02115ef4(void *, void *, s32);
-void func_02115fb4(void *p, u32 v, u32 n);
-s32 func_02116048(void *, void *, s32);
-s32 func_0211f188(void);
-s32 func_0211f3dc(void *p, s32 v);
-u32 func_0211f698(void);
-s32 func_0211f73c(void);
+u32 OS_DisableInterrupts(void);
+s32 OS_RestoreInterrupts(u32);
+s32 Fatal_Trap(void);
+void DC_InvalidateRange(void *p, s32 v);
+s32 DC_StoreRange(void *, s32);
+s32 OS_InitTick(void);
+s32 OS_CancelAlarms(u32);
+s32 OS_SetAlarmTag(void *, u32);
+s32 OS_CancelAlarm(void *);
+s32 OS_SetAlarm(void *, s64, void *, void *);
+s32 OS_CreateAlarm(void *);
+s32 OS_InitAlarm(void);
+void OS_GetMacAddress(void *p);
+s32 MIi_CpuClearFast(s32, void *, s32);
+s32 MIi_CpuCopyFast(void *, void *, s32);
+void MI_CpuFill8(void *p, u32 v, u32 n);
+s32 MI_CpuCopy8(void *, void *, s32);
+s32 WM_Finish(void);
+s32 WM_Init(void *p, s32 v);
+u32 WM_GetDispersionBeaconPeriod(void);
+s32 WM_GetLinkLevel(void);
 s32 func_0211f7e4(void);
-u32 func_0211f800(void);
-s32 func_0211fb0c(u32, void *, s32);
-s32 func_0211fb68(void *);
-s32 func_0211fbb4(void *, u32);
-s32 func_0211fcbc(void *, u32, u32, u32, u32);
-s32 func_0211fd8c(void *);
-s32 func_0211ff5c(void *, s32);
-s32 func_02120060(void *);
-s32 func_021200a8(void *);
-s32 func_02120164(void *, u32);
-s32 func_021202b4(void);
-s32 func_021204a0(void *);
-s32 func_0212052c(void *, u32, u32, u32, u32, u32, u32);
-s32 func_021206b4(void *, u32, u32, u32, u32, u32, u32, s32, s32, s32, s32);
-s32 func_02121870(void *, u32);
-s32 func_021218d0(void *, s32, s32, u32, s32);
-s32 func_02121a24(void *, u32, u32, u32, u32, u8);
-u32 func_0212741c(void);
+u32 WM_GetAllowedChannel(void);
+s32 WM_SetPortCallback(u32, void *, s32);
+s32 WM_SetIndCallback(void *);
+s32 WM_Disconnect(void *, u32);
+s32 WM_StartConnectEx(void *, u32, u32, u32, u32);
+s32 WM_EndScan(void *);
+s32 WM_StartScan(void *, s32);
+s32 WM_EndParent(void *);
+s32 WM_StartParent(void *);
+s32 WM_SetParentParameter(void *, u32);
+s32 WM_Reset(void);
+s32 WM_EndMP(void *);
+s32 WM_SetMPDataToPortEx(void *, u32, u32, u32, u32, u32, u32);
+s32 WM_StartMPEx(void *, u32, u32, u32, u32, u32, u32, s32, s32, s32, s32);
+s32 WM_SetEntry(void *, u32);
+s32 WM_MeasureChannel(void *, s32, s32, u32, s32);
+s32 WM_SetGameInfo(void *, u32, u32, u32, u32, u8);
+u32 MATH_CountPopulation(void);
 u32 func_0213335c(u32 a, u32 b);
-s32 func_ov066_0225f1a0(void (*fn)(void *));
-void func_ov066_0225f1c0(u32 a, u32 b);
-void func_ov066_0225f1e4(void *p);
-void func_ov066_0225f22c(u32 v);
-void func_ov066_0225f284(void *p);
-s32 func_ov066_0225f2c8(s32 a, s32 b);
-void func_ov066_0225f310(void);
-void func_ov066_0225f32c(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f3c8(void *p);
-void func_ov066_0225f40c(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f44c(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f494(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f4d4(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f514(u32 idx);
-void func_ov066_0225f554(Unk_ov066_0225f1a0_Msg *m);
-void func_ov066_0225f5b4(void);
-u32 func_ov066_0225f63c(Unk_ov066_0225f1a0_Msg *m);
-void * func_ov066_0225f64c(Unk_ov066_0225f64c_Rec *r);
-s32 func_ov066_0225f688(Unk_ov066_0225f64c_Rec *r);
-s32 func_ov066_0225f6a8(void);
-void func_ov066_0225f77c(void);
-s32 func_ov066_0225f7c8(void);
-void func_ov066_0225f824(void);
-void func_ov066_0225f830(void);
-void func_ov066_0225f938(void);
-void func_ov066_0225f998(void);
-void func_ov066_0225f9f8(void);
-void func_ov066_0225fa48(void);
-void func_ov066_0225fa98(void);
-void func_ov066_0225faf8(void);
-void func_ov066_0225fb48(void);
-void func_ov066_0225fbe4(void);
-void func_ov066_0225fc3c(void);
-s32 func_ov066_0225fc78(s32 a, u32 b, u32 c);
-s32 func_ov066_0225fd08(void);
-s32 func_ov066_0225fdc4(void);
-s32 func_ov066_0225fe4c(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32));
-void func_ov066_0225fef0(u32 a);
-s32 func_ov066_0225ffcc(void);
-void func_ov066_0225fffc(Unk_ov066_0225faf8_Msg *m);
-s32 func_ov066_0226004c(void);
-void func_ov066_02260060(Unk_ov066_0225faf8_Msg *m);
-void func_ov066_02260100(void);
-s32 func_ov066_02260144(u32 idx, u32 b);
-s32 func_ov066_022601a0(u32 idx);
-s32 func_ov066_022601fc(void *a, u8 *b);
-void func_ov066_022602c8(void);
-void func_ov066_0226030c(void);
-void func_ov066_02260318(Unk_ov066_0225faf8_Msg *m);
-void func_ov066_02260518(void);
-void func_ov066_022605a0(void);
-void func_ov066_022605cc(void);
-void func_ov066_02260634(void);
-void func_ov066_02260670(s32 t);
-u32 func_ov066_02260774(u32 idx);
-void func_ov066_022607c0(s32 v);
-void func_ov066_022607e8(void);
-void func_ov066_022608b8(void);
-void func_ov066_022609a8(u32 v);
-BOOL func_ov066_022609e4(u8 *p);
-u8 func_ov066_02260a3c(void);
-void func_ov066_02260a58(void);
-BOOL func_ov066_02260b4c(void);
-void func_ov066_02260c28(void);
-void func_ov066_02260c8c(void);
-s32 func_ov066_02260cac(Unk_ov066_02260518_Rec *p, u32 a, u32 b);
-void func_ov066_02260d30(u32 v);
-s32 func_ov066_02260d74(u8 *a, u8 *b);
-u32 func_ov066_02260dac(u8 *p);
-void func_ov066_02260dd0(Unk_ov066_02260dd0_Msg *m);
-void func_ov066_02260e18(Unk_ov066_02260e18_Msg *m);
-void func_ov066_02260e4c(u32 a);
-void func_ov066_02260e84(Unk_ov066_02260e18_Msg *m);
-void func_ov066_02260efc(void);
-void func_ov066_02260f30(Unk_ov066_02260e18_Msg *m);
-void func_ov066_022610b0(void);
-void func_ov066_02261158(Unk_ov066_02260e18_Msg *m);
-void func_ov066_022611b4(void);
-void func_ov066_02261238(Unk_ov066_02260e18_Msg *m);
-s32 func_ov066_0226128c(u32 a);
-void func_ov066_022612cc(Unk_ov066_02260e18_Msg *m);
-void func_ov066_022613dc(u32 a);
-void func_ov066_02261420(Unk_ov066_02260e18_Msg *m);
-void func_ov066_02261490(void);
-void func_ov066_022614c4(Unk_ov066_02260e18_Msg *m);
-void func_ov066_022615a4(void);
-void func_ov066_022615d8(Unk_ov066_02260e18_Msg *m);
-void func_ov066_0226160c(void);
-s32 func_ov066_02261650(void);
-void func_ov066_022616c8(void);
-void func_ov066_02261704(void *m);
-void func_ov066_02261764(Unk_ov066_02261764_Msg *m);
-void func_ov066_022617d4(void);
-void func_ov066_0226185c(void);
-void func_ov066_02261860(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261894(u32 idx, u8 *src);
-void func_ov066_022618dc(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261958(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261a4c(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261b14(void);
-void func_ov066_02261bc4(u32 a);
-void func_ov066_02261bfc(Unk_ov066_02261764_Msg *m);
-void func_ov066_02261c5c(void);
-void func_ov066_02261c80(void);
-void func_ov066_02261ce0(u8 *a, u8 *b);
-void func_ov066_02261db0(void);
-void func_ov066_02261dfc(void);
-void func_ov066_02261ee8(void);
-void func_ov066_02261f6c(u32 idx, u8 *src);
-s32 func_ov066_02261ff8(void *a, u32 n);
-void func_ov066_02262074(u8 *p, u32 v);
-void func_ov066_022620e8(void);
-void func_ov066_02262108(u32 a);
-void func_ov066_0226214c(u32 a);
-void func_ov066_0226223c(u32 a, u32 b);
-s32 func_ov066_022622ac(u32 a, u32 b, u32 c, u32 d);
-s32 func_ov066_022622f4(void);
-u32 func_ov066_0226233c(void);
-u32 func_ov066_0226238c(void);
-u32 func_ov066_022623ac(void);
-void func_ov066_022623d4(void);
-void func_ov066_02262464(void);
-void func_ov066_02262548(void);
-void func_ov066_022625e8(void);
-void func_ov066_0226278c(void);
-s32 func_ov066_0226292c(void);
-void func_ov066_022629cc(void);
-void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m);
-s32 func_ov066_02262b20(u32 a);
-u32 func_ov066_02262b70(u32 a);
-void func_ov066_02262be4(void);
-s32 func_ov066_02262c38(u32 i);
-void func_ov066_02262ca8(Unk_ov066_022629cc_Ent *o, s32 x);
-void func_ov066_02262d70(Unk_ov066_022629cc_Ent *o);
-void func_ov066_02262dc4(Unk_ov066_022629cc_Ent *o);
-Unk_ov066_022629cc_Rec * func_ov066_02262dd8(Unk_ov066_022629cc_Ent *o, u32 i);
-u32 func_ov066_02262df4(Unk_ov066_022629cc_Ent *o);
-void func_ov066_02262dfc(Unk_ov066_022629cc_Rec *r);
-s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, void *e);
-void func_ov066_02263198(Unk_ov066_022629cc_Ent *o);
-void func_ov066_022631d0(Unk_ov066_022629cc_Ent *o, u32 id, s32 n);
-s32 func_ov066_02263284(s32 idx, u32 a, u32 b);
-void func_ov066_02263320(void);
-void func_ov066_02263478(Unk_ov066_02263320_Msg *m);
-void func_ov066_022634e4(Unk_ov066_02263320_Msg *m);
-void func_ov066_022634e8(Unk_ov066_02263320_Msg *m);
-void func_ov066_02263628(u32 idx, void *src, u32 size);
-Unk_ov066_02263320_Rec * func_ov066_0226375c(u32 id, Unk_ov066_02263320_Rec *head);
-void func_ov066_0226378c(Unk_ov066_02263320_Msg *m);
-void func_ov066_022637dc(u32 a, u32 b, u32 c, u32 d);
-s32 func_ov066_02263810(u32 x, u32 a, u32 b, u32 c, u32 d);
-void func_ov066_02263878(u32 idx);
-void func_ov066_022638c4(void);
-void func_ov066_022638fc(void);
-s32 func_ov066_02263a48(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src);
-void func_ov066_02263b90(Unk_ov066_02263320_Pay *p);
-void func_ov066_02263c3c(u32 idx, u8 *msg);
-void func_ov066_02263d90(void);
-void func_ov066_02263f54(Unk_ov066_02263f54_Obj *o);
-u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec);
-void func_ov066_022640dc(void);
-void func_ov066_022640f8(Unk_ov066_02263c3c_Wrap *w);
-void func_ov066_0226416c(void);
-void func_ov066_022641d8(void);
-s32 func_ov066_022641dc(u8 *a, u32 b, u32 c, void (*d)(u32));
-s32 func_ov066_0226427c(void);
-void func_ov066_022642cc(void);
-void func_ov066_02264378(u8 *msg);
-void func_ov066_0226453c(Unk_ov066_0226453c_Node *p, s32 n);
-void * func_ov066_02264574(s32 n);
-void func_ov066_0226460c(Unk_ov066_0226460c_In *in);
+s32 LocalWl_SetEventCallback(void (*fn)(void *));
+void LocalWl_PostEvent(u32 a, u32 b);
+void LocalWl_CallEventCallback(void *p);
+void LocalWl_SetError(u32 v);
+void LocalWl_Free(void *p);
+s32 LocalWl_Alloc(s32 a, s32 b);
+void LocalWl_ClearResetFlag(void);
+void LocalWl_OnReset(WMMsg *m);
+void LocalWl_Reset(void *p);
+void LocalWl_OnPowerOff(WMMsg *m);
+void LocalWl_OnPowerOn(WMMsg *m);
+void LocalWl_OnDisable(WMMsg *m);
+void LocalWl_OnEnable(WMMsg *m);
+void LocalWl_CallPowerApi(u32 idx);
+void LocalWl_OnPowerApiDone(WMMsg *m);
+void LocalWl_Advance(void);
+u32 LocalWl_IsBeaconValid(WMMsg *m);
+void * LocalWl_GetBeaconGameInfo(LocalWlBeacon *r);
+s32 LocalWl_GetBeaconGameInfoSize(LocalWlBeacon *r);
+s32 LocalWl_GetLinkLevel(void);
+void LocalWl_ResetIfActive(void);
+s32 LocalWl_IsAborting(void);
+void LocalWl_Abort(void);
+void LocalWl_Step(void);
+void LocalWl_StepChildMp(void);
+void LocalWl_StepParentMp(void);
+void LocalWl_StepMeasuring(void);
+void LocalWl_StepConnecting(void);
+void LocalWl_StepScanning(void);
+void LocalWl_StepParentWaiting(void);
+void LocalWl_StepIdle(void);
+void LocalWl_StepEnabled(void);
+void LocalWl_StepReady(void);
+s32 LocalWl_RequestMode(s32 a, u32 b, u32 c);
+s32 LocalWl_IsModeReached(void);
+s32 LocalWl_Finish(void);
+s32 LocalWl_Init(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32));
+void LocalWl_ResetSettings(u32 a);
+s32 LocalWl_GetState(void);
+void LocalWl_OnEndScan(WMStartScanCallback *m);
+s32 LocalWl_EndScan(void);
+void LocalWl_OnScan(WMStartScanCallback *m);
+void LocalWl_StartScan(void);
+s32 LocalWl_GetBeacon(u32 idx, u32 b);
+s32 LocalWl_GetBeaconCount(u32 idx);
+s32 LocalWl_FilterBeacon(void *a, u8 *b);
+void LocalWl_StopScanSoon(void);
+void LocalWl_OnScanStopTimer(void);
+void LocalWl_OnBeaconFound(WMStartScanCallback *m);
+void LocalWl_SetupScanParam(void);
+void LocalWl_StopScanLoop(void);
+void LocalWl_ScanNextChannel(void);
+void LocalWl_OnScanTimer(void);
+void LocalWl_StartScanLoop(s32 t);
+u32 LocalWl_GetScanChannel(u32 idx);
+void LocalWl_SetBeaconFilter(s32 v);
+void LocalWl_FreeScanWork(void);
+void LocalWl_AllocScanWork(void);
+void LocalWl_SetRecvCallback(u32 v);
+BOOL LocalWl_IsMacSet(u8 *p);
+u8 LocalWl_GetMemberCount(void);
+void LocalWl_StepAuto(void);
+BOOL LocalWl_JoinBestParent(void);
+void LocalWl_NextRoleTurn(void);
+void LocalWl_StartScanMode(void);
+s32 LocalWl_ConnectToParent(LocalWlBeacon *p, u32 a, u32 b);
+void LocalWl_StartParent(u32 v);
+s32 LocalWl_CompareMac(u8 *a, u8 *b);
+u32 LocalWl_ReadBe32(u8 *p);
+void LocalWl_OnConnectFailReset(WMMsg *m);
+void LocalWl_OnSetEntry(LocalWlEventMsg *m);
+void LocalWl_SetEntry(u32 a);
+void LocalWl_OnEndMp(LocalWlEventMsg *m);
+void LocalWl_EndMp(void);
+void LocalWl_OnMpEvent(LocalWlEventMsg *m);
+void LocalWl_StartMp(void);
+void LocalWl_OnSetGameInfo(LocalWlEventMsg *m);
+void LocalWl_UpdateGameInfo(void);
+void LocalWl_OnDisconnect(LocalWlEventMsg *m);
+s32 LocalWl_Disconnect(u32 a);
+void LocalWl_OnChildConnectEvent(LocalWlEventMsg *m);
+void LocalWl_StartConnect(u32 a);
+void LocalWl_OnEndParent(LocalWlEventMsg *m);
+void LocalWl_EndParent(void);
+void LocalWl_OnParentEvent(LocalWlEventMsg *m);
+void LocalWl_StartParentNow(void);
+void LocalWl_OnSetParentParameter(LocalWlEventMsg *m);
+void LocalWl_SetParentParameter(void);
+s32 LocalWl_CheckEndRequest(void);
+void LocalWl_RequestEnd(void);
+void LocalWl_ApplyMemberTable(void *m);
+void LocalWl_OnChildControl(WMPortRecvCallback *m);
+void LocalWl_OnParentLost(void);
+void LocalWl_OnChildEvent8Stub(void);
+void LocalWl_OnChildConnected(LocalWlEventMsg *m);
+void LocalWl_OnChildReady(u32 idx, u8 *src);
+void LocalWl_OnParentControl(WMPortRecvCallback *m);
+void LocalWl_OnChildLeft(LocalWlEventMsg *m);
+void LocalWl_OnChildJoined(LocalWlEventMsg *m);
+void LocalWl_OnBeaconSent(void);
+void LocalWl_CallMemberLeftCb(u32 a);
+void LocalWl_OnControlRecv(WMPortRecvCallback *m);
+void LocalWl_ClearMembers(void);
+void LocalWl_CountMembers(void);
+void LocalWl_MergeMemberTable(u8 *a, u8 *b);
+void LocalWl_OnMemberTableSent(void);
+void LocalWl_SendMemberTable(void);
+void LocalWl_SendReady(void);
+void LocalWl_SetMember(u32 idx, u8 *src);
+s32 LocalWl_SetGameInfo(void *a, u32 n);
+void LocalWl_ConnectToBeacon(u8 *p, u32 v);
+void LocalWl_ConnectToSelected(void);
+void LocalWl_BeginParent(u32 a);
+void LocalWl_BuildParentParameter(u32 a);
+void LocalWl_BuildGameInfo(u32 a, u32 b);
+s32 LocalWl_Send(u32 a, u32 b, u32 c, u32 d);
+s32 LocalWl_IsReadyToSend(void);
+u32 LocalWl_GetConnectedMask(void);
+u32 LocalWl_GetMyAid(void);
+u32 LocalWl_Rand(void);
+void LocalWl_StartSession(void);
+void LocalWl_FinishWm(void);
+void LocalWl_InitWm(void);
+void LocalWl_AllocBuffers(void);
+void LocalWl_ResetSessionInfo(void);
+s32 LocalWl_PickChannel(void);
+void LocalWl_StartMeasureChannels(void);
+void LocalWl_OnMeasureChannel(WMMeasureChannelCallback *m);
+s32 LocalWl_MeasureChannel(u32 a);
+u32 LocalWl_NextAllowedChannel(u32 a);
+void LocalWl_UpdateAllowedChannels(void);
+s32 LocalWl_MeasureNextChannel(u32 i);
+void LocalWlBcn_RefreshTimeouts(LocalWlBeaconList *o, s32 x);
+void LocalWlBcn_Clear(LocalWlBeaconList *o);
+void LocalWlBcn_CancelAlarms(LocalWlBeaconList *o);
+LocalWlBeacon * LocalWlBcn_Get(LocalWlBeaconList *o, u32 i);
+u32 LocalWlBcn_Count(LocalWlBeaconList *o);
+void LocalWlBcn_OnExpire(LocalWlBeacon *r);
+s32 LocalWlBcn_Add(LocalWlBeaconList *o, s32 a, u8 *b, u32 c, u16 d, void *e);
+void LocalWlBcn_Free(LocalWlBeaconList *o);
+void LocalWlBcn_Init(LocalWlBeaconList *o, u32 id, s32 n);
+s32 LocalWlMp_SetRecvBuffer(s32 idx, u32 a, u32 b);
+void LocalWlMp_Reset(void);
+void LocalWlMp_OnDataRecv(WMPortRecvCallback *m);
+void LocalWlMp_OnDataDisconnectStub(WMPortRecvCallback *m);
+void LocalWlMp_OnPacket(WMPortRecvCallback *m);
+void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size);
+LocalWlMpFrame * LocalWlMp_FindFrame(u32 id, LocalWlMpFrame *head);
+void LocalWlMp_OnSetMpData(WMPortSendCallback *m);
+void LocalWlMp_SendControl(u32 a, u32 b, u32 c, u32 d);
+s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d);
+void LocalWlMp_OnMemberLeft(u32 idx);
+void LocalWlMp_ChildSendStep(void);
+void LocalWlMp_ParentSendStep(void);
+s32 LocalWlMp_MergeFrame(LocalWlMpFrame *dst, LocalWlMpFrame *src);
+void LocalWlMp_DeliverFrame(LocalWlMpFramePayload *p);
+void LocalWlMp_ReceiveRecord(u32 idx, u8 *msg);
+void LocalWlMp_BuildChildPacket(void);
+void LocalWlMp_PutParentRecord(LocalWlMpFrame *o);
+u16 LocalWlMp_PutSendRecord(LocalWlMpRecord *rec);
+void LocalWlMp_OnFrameSent(void);
+void LocalWlMp_OnChildPacketSent(WMPortSendCallback *w);
+void LocalWlMp_FinishSend(void);
+void LocalWlMp_OnIndicationStub(void);
+s32 LocalWlMp_Send(u8 *a, u32 b, u32 c, void (*d)(u32));
+s32 LocalWlMp_IsReadyToSend(void);
+void LocalWlMp_Shutdown(void);
+void LocalWlMp_Start(u8 *msg);
+void LocalWlMp_ClearRing(LocalWlMpFrame *p, s32 n);
+void * LocalWlMp_AllocRing(s32 n);
+void LocalWl_ApplyConfig(LocalWlConfig *in);
 }
 
 #pragma thumb off
 extern "C" {
 
 // ---- unk_0226453c
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
 
-void func_ov066_0226460c(Unk_ov066_0226460c_In *in) {
-    u8 w = in->unk_06;
-    u32 sz = w * in->unk_04;
+void LocalWl_ApplyConfig(LocalWlConfig *in) {
+    u8 w = in->recordSize;
+    u32 sz = w * in->maxMembers;
     u16 t = sz + 4;
-    data_ov066_022647ac->unk_28 = in->unk_00;
-    data_ov066_022647ac->unk_3c.f3 = 0;
-    data_ov066_022647ac->unk_3c.f0 = 0;
-    data_ov066_022647ac->unk_3c.f5 = -1;
-    data_ov066_022647ac->unk_3c.f6 = -1;
-    data_ov066_022647ac->unk_3c.f7 = -1;
-    data_ov066_022647ac->unk_3c.f9 = 0;
-    data_ov066_022647ac->unk_3c.f8 = 0;
-    data_ov066_022647ac->unk_3c.f2 = -1;
-    data_ov066_022647ac->unk_3c.f1 = -1;
-    data_ov066_022647ac->unk_17 = in->unk_07;
-    data_ov066_022647ac->unk_08 = 0xfe;
-    data_ov066_022647ac->unk_09 = 1;
-    data_ov066_022647ac->unk_0a = in->unk_04 - 1;
-    data_ov066_022647ac->unk_0b = in->unk_04;
-    data_ov066_022647ac->unk_0c = in->unk_05;
-    data_ov066_022647ac->unk_18 = w;
-    data_ov066_022647ac->unk_1a = t;
-    data_ov066_022647ac->unk_1c = t;
-    data_ov066_022647ac->unk_1e = w;
-    data_ov066_022647ac->unk_22 = 0x1e;
-    data_ov066_022647ac->unk_20 = 0x5a;
-    data_ov066_022647ac->unk_24 = 0xc8;
-    data_ov066_022647ac->unk_14 = 4;
+    sLocalWl->ggid = in->ggid;
+    sLocalWl->bits.stopScanOnParent = 0;
+    sLocalWl->bits.f0 = 0;
+    sLocalWl->bits.filterGgid = -1;
+    sLocalWl->bits.filterScanSlot = -1;
+    sLocalWl->bits.filterVersion = -1;
+    sLocalWl->bits.f9 = 0;
+    sLocalWl->bits.f8 = 0;
+    sLocalWl->bits.f2 = -1;
+    sLocalWl->bits.f1 = -1;
+    sLocalWl->mpFreq = in->mpFreq;
+    sLocalWl->channel = 0xfe;
+    sLocalWl->numScanChannels = 1;
+    sLocalWl->maxChildren = in->maxMembers - 1;
+    sLocalWl->maxMembers = in->maxMembers;
+    sLocalWl->maxBeacons = in->maxBeacons;
+    sLocalWl->recvChildSize = w;
+    sLocalWl->parentMaxSize = t;
+    sLocalWl->recvParentSize = t;
+    sLocalWl->childMaxSize = w;
+    sLocalWl->scanMaxChannelTime = 0x1e;
+    sLocalWl->scanLoopTime = 0x5a;
+    sLocalWl->unk_24 = 0xc8;
+    sLocalWl->parentWaitBeacons = 4;
 }
 
-void *func_ov066_02264574(s32 n) {
-    u32 sz = (data_ov066_022647ac->unk_1a + 0x43) & ~0x1f;
+void *LocalWlMp_AllocRing(s32 n) {
+    u32 sz = (sLocalWl->parentMaxSize + 0x43) & ~0x1f;
     u32 tot = sz * n;
-    Unk_ov066_02264574_Node *p = (Unk_ov066_02264574_Node *)func_ov066_0225f2c8(tot, 0x20);
+    LocalWlMpFrame *p = (LocalWlMpFrame *)LocalWl_Alloc(tot, 0x20);
     u16 i;
-    Unk_ov066_02264574_Node *q;
-    Unk_ov066_02264574_Node *head;
-    func_02115fb4(p, 0, tot);
+    LocalWlMpFrame *q;
+    LocalWlMpFrame *head;
+    MI_CpuFill8(p, 0, tot);
     head = p;
     s32 last = n - 1;
     for (i = 0; (s32)i < last; ) {
         i++;
-        p->unk_20 = 0;
+        p->payload.frameId = 0;
         q = p;
-        p->unk_04 = (Unk_ov066_02264574_Node *)((u8 *)p + sz);
-        p = p->unk_04;
-        p->unk_00 = q;
+        p->next = (LocalWlMpFrame *)((u8 *)p + sz);
+        p = p->next;
+        p->prev = q;
     }
-    p->unk_20 = last;
-    p->unk_04 = head;
-    head->unk_00 = p;
+    p->payload.frameId = last;
+    p->next = head;
+    head->prev = p;
     return head;
 }
 
-void func_ov066_0226453c(Unk_ov066_0226453c_Node *p, s32 n) {
+void LocalWlMp_ClearRing(LocalWlMpFrame *p, s32 n) {
     u16 i;
     for (i = 0; (s32)i < n; ) {
         i++;
-        p->unk_08 = 0;
-        p->unk_0a = 0;
-        p->unk_0c = 0;
-        p = p->unk_04;
+        p->frameSize = 0;
+        p->destMask = 0;
+        p->ackMask = 0;
+        p = p->next;
     }
 }
-#undef func_ov066_0225f2c8
+#undef LocalWl_Alloc
 
 // ---- unk_02263c3c
-#define data_ov066_022647ac (*(Unk_ov066_02263c3c_S * *)&data_ov066_022647ac)
-#define func_02115fb4 ((void (*)(void *, s32, u32))func_02115fb4)
-#define func_02116048 ((s32 (*)(void *, void *, u32))func_02116048)
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
-#define func_ov066_02261bfc ((void (*)(void))func_ov066_02261bfc)
-#define func_ov066_02263478 ((void (*)(void))func_ov066_02263478)
-#define func_ov066_02263810 ((void (*)(u32, void *, s32, s32, void *))func_ov066_02263810)
-#define func_ov066_02263878 ((void (*)(void))func_ov066_02263878)
-#define func_ov066_022637dc ((void (*)(void))func_ov066_022637dc)
-#define func_ov066_0226460c ((void (*)(u8 *))func_ov066_0226460c)
-#define func_ov066_02264574 ((void * (*)(u32))func_ov066_02264574)
+#define MI_CpuFill8 ((void (*)(void *, s32, u32))MI_CpuFill8)
+#define MI_CpuCopy8 ((s32 (*)(void *, void *, u32))MI_CpuCopy8)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
+#define LocalWl_OnControlRecv ((void (*)(void))LocalWl_OnControlRecv)
+#define LocalWlMp_OnDataRecv ((void (*)(void))LocalWlMp_OnDataRecv)
+#define LocalWlMp_SetMpData ((void (*)(u32, void *, s32, s32, void *))LocalWlMp_SetMpData)
+#define LocalWlMp_OnMemberLeft ((void (*)(void))LocalWlMp_OnMemberLeft)
+#define LocalWlMp_SendControl ((void (*)(void))LocalWlMp_SendControl)
+#define LocalWl_ApplyConfig ((void (*)(u8 *))LocalWl_ApplyConfig)
+#define LocalWlMp_AllocRing ((void * (*)(u32))LocalWlMp_AllocRing)
 
-void func_ov066_02264378(u8 *msg) {
+void LocalWlMp_Start(u8 *msg) {
     u32 n;
-    if (data_ov066_022647c8 != NULL) {
+    if (sLocalWlMp != NULL) {
         return;
     }
-    func_ov066_0226460c(msg);
-    func_ov066_02262548();
-    data_ov066_022647b4->unk_9c = (void *)func_ov066_02263320;
-    data_ov066_022647b4->unk_a0 = (void *)func_ov066_022638fc;
-    data_ov066_022647b4->unk_a4 = (void *)func_ov066_022638c4;
-    data_ov066_022647b4->unk_ac = (void *)func_ov066_022637dc;
-    data_ov066_022647b4->unk_b0 = (void *)func_ov066_022641dc;
-    data_ov066_022647b4->unk_b4 = (void *)func_ov066_0226427c;
-    data_ov066_022647b4->unk_a8 = (void *)func_ov066_022642cc;
-    data_ov066_022647b4->unk_bc = (void *)func_ov066_02263878;
-    data_ov066_022647c8 = (Unk_ov066_02263c3c_G *)func_ov066_0225f2c8(0x34, 4);
-    n = data_ov066_022647ac->unk_0b << 4;
-    data_ov066_022647c8->unk_30 = (Unk_ov066_02263c3c_Ent *)func_ov066_0225f2c8(n, 4);
-    func_02115fb4(data_ov066_022647c8->unk_30, 0, n);
-    data_ov066_022647c8->unk_08 = (u32)func_ov066_02264574(3);
-    data_ov066_022647c8->unk_0c = (u32)func_ov066_02264574(3);
-    n = data_ov066_022647ac->unk_0b << 2;
-    data_ov066_022647c8->unk_18 = (Unk_ov066_02263c3c_Q *)func_ov066_0225f2c8(n, 4);
-    func_02115fb4(data_ov066_022647c8->unk_18, 0, n);
-    data_ov066_022647c8->unk_00 = msg[6];
-    func_0211fb0c(0xc, (void *)func_ov066_02261bfc, 0);
-    func_0211fb0c(0xd, (void *)func_ov066_02263478, 0);
-    func_0211fb68((void *)func_ov066_022641d8);
-    func_ov066_02263320();
+    LocalWl_ApplyConfig(msg);
+    LocalWl_InitWm();
+    sLocalWlSession->resetHook = LocalWlMp_Reset;
+    sLocalWlSession->parentSendHook = LocalWlMp_ParentSendStep;
+    sLocalWlSession->childSendHook = LocalWlMp_ChildSendStep;
+    sLocalWlSession->sendControlHook = (void (*)(u8 *, u32, u32, void (*)(void)))LocalWlMp_SendControl;
+    sLocalWlSession->sendHook = (s32 (*)(u32, u32, u32, u32))LocalWlMp_Send;
+    sLocalWlSession->isReadyToSendHook = LocalWlMp_IsReadyToSend;
+    sLocalWlSession->shutdownHook = LocalWlMp_Shutdown;
+    sLocalWlSession->memberLeftHook = (void (*)(u32))LocalWlMp_OnMemberLeft;
+    sLocalWlMp = (LocalWlMpWork *)LocalWl_Alloc(0x34, 4);
+    n = sLocalWl->maxMembers << 4;
+    sLocalWlMp->recvEntries = (LocalWlMpRecvEntry *)LocalWl_Alloc(n, 4);
+    MI_CpuFill8(sLocalWlMp->recvEntries, 0, n);
+    sLocalWlMp->sendRing = (LocalWlMpFrame *)LocalWlMp_AllocRing(3);
+    sLocalWlMp->recvRing = (LocalWlMpFrame *)LocalWlMp_AllocRing(3);
+    n = sLocalWl->maxMembers << 2;
+    sLocalWlMp->recvCursors = (LocalWlMpFrame **)LocalWl_Alloc(n, 4);
+    MI_CpuFill8(sLocalWlMp->recvCursors, 0, n);
+    sLocalWlMp->recordSize = msg[6];
+    WM_SetPortCallback(0xc, (void *)LocalWl_OnControlRecv, 0);
+    WM_SetPortCallback(0xd, (void *)LocalWlMp_OnDataRecv, 0);
+    WM_SetIndCallback((void *)LocalWlMp_OnIndicationStub);
+    LocalWlMp_Reset();
 }
 
-void func_ov066_022642cc(void) {
-    if (data_ov066_022647c8 == NULL) {
+void LocalWlMp_Shutdown(void) {
+    if (sLocalWlMp == NULL) {
         return;
     }
-    func_0211fb0c(0xc, 0, 0);
-    func_0211fb0c(0xd, 0, 0);
-    func_ov066_0225f284(data_ov066_022647c8->unk_18);
-    func_ov066_0225f284((void *)data_ov066_022647c8->unk_0c);
-    func_ov066_0225f284((void *)data_ov066_022647c8->unk_08);
-    func_ov066_0225f284(data_ov066_022647c8->unk_30);
-    func_ov066_0225f284(data_ov066_022647c8);
-    func_ov066_02262464();
-    data_ov066_022647c8 = NULL;
+    WM_SetPortCallback(0xc, 0, 0);
+    WM_SetPortCallback(0xd, 0, 0);
+    LocalWl_Free(sLocalWlMp->recvCursors);
+    LocalWl_Free((void *)sLocalWlMp->recvRing);
+    LocalWl_Free((void *)sLocalWlMp->sendRing);
+    LocalWl_Free(sLocalWlMp->recvEntries);
+    LocalWl_Free(sLocalWlMp);
+    LocalWl_FinishWm();
+    sLocalWlMp = NULL;
 }
 
-s32 func_ov066_0226427c(void) {
-    Unk_ov066_02263c3c_G *g = data_ov066_022647c8;
+s32 LocalWlMp_IsReadyToSend(void) {
+    LocalWlMpWork *g = sLocalWlMp;
     s32 r = 0;
     if (g == NULL) {
         return r;
     }
-    s32 t = data_ov066_022647ac->unk_04;
+    s32 t = sLocalWl->state;
     switch (t) {
     case 10:
     case 11:
-        r = g->unk_04.f3;
+        r = g->flags.sending;
         if (r == 0) {
             r = 1;
         } else {
@@ -1166,62 +662,62 @@ s32 func_ov066_0226427c(void) {
     return r;
 }
 
-s32 func_ov066_022641dc(u8 *a, u32 b, u32 c, void (*d)(u32)) {
+s32 LocalWlMp_Send(u8 *a, u32 b, u32 c, void (*d)(u32)) {
     s32 r = 0;
-    u32 irq = func_01ffa2ec();
-    if (func_ov066_0226427c() != 0) {
-        data_ov066_022647c8->unk_04.f3 = 1;
-        data_ov066_022647c8->unk_04.f4 = 0;
-        data_ov066_022647c8->unk_20 = a;
-        data_ov066_022647c8->unk_24 = b;
-        data_ov066_022647c8->unk_28 = r;
+    u32 irq = OS_DisableInterrupts();
+    if (LocalWlMp_IsReadyToSend() != 0) {
+        sLocalWlMp->flags.sending = 1;
+        sLocalWlMp->flags.lastRecordPut = 0;
+        sLocalWlMp->sendData = a;
+        sLocalWlMp->sendSize = b;
+        sLocalWlMp->sendOffset = r;
         r = 1;
-        data_ov066_022647c8->unk_1e = c;
-        data_ov066_022647c8->unk_2c = d;
+        sLocalWlMp->sendDestMask = c;
+        sLocalWlMp->sendDoneCallback = d;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return r;
 }
 
-void func_ov066_022641d8(void) {
+void LocalWlMp_OnIndicationStub(void) {
 }
 
-void func_ov066_0226416c(void) {
-    Unk_ov066_02263c3c_G *g = data_ov066_022647c8;
-    u32 n = g->unk_24;
-    void (*cb)(u32) = g->unk_2c;
-    g->unk_04.f3 = 0;
-    data_ov066_022647c8->unk_1e = 0;
-    data_ov066_022647c8->unk_20 = 0;
-    data_ov066_022647c8->unk_24 = 0;
-    data_ov066_022647c8->unk_28 = -1;
-    data_ov066_022647c8->unk_2c = 0;
+void LocalWlMp_FinishSend(void) {
+    LocalWlMpWork *g = sLocalWlMp;
+    u32 n = g->sendSize;
+    void (*cb)(u32) = g->sendDoneCallback;
+    g->flags.sending = 0;
+    sLocalWlMp->sendDestMask = 0;
+    sLocalWlMp->sendData = 0;
+    sLocalWlMp->sendSize = 0;
+    sLocalWlMp->sendOffset = -1;
+    sLocalWlMp->sendDoneCallback = 0;
     if (cb == NULL) {
         return;
     }
     cb(n);
 }
 
-void func_ov066_022640f8(Unk_ov066_02263c3c_Wrap *w) {
-    Unk_ov066_02263c3c_Rec *rec = w->unk_14;
-    data_ov066_022647c8->unk_02--;
-    if (rec->a != 0) {
-        if (rec->a != 1) {
+void LocalWlMp_OnChildPacketSent(WMPortSendCallback *w) {
+    LocalWlMpRecord *rec = (LocalWlMpRecord *)w->data;
+    sLocalWlMp->numPendingSends--;
+    if (rec->type != 0) {
+        if (rec->type != 1) {
             return;
         }
     }
-    if (rec->c == 0) {
+    if (rec->isLast == 0) {
         return;
     }
-    rec->c = 0;
-    func_ov066_0226416c();
+    rec->isLast = 0;
+    LocalWlMp_FinishSend();
 }
 
-void func_ov066_022640dc(void) {
-    data_ov066_022647c8->unk_02--;
+void LocalWlMp_OnFrameSent(void) {
+    sLocalWlMp->numPendingSends--;
 }
 
-u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec) {
+u16 LocalWlMp_PutSendRecord(LocalWlMpRecord *rec) {
     u8 *dst;
     u8 *base;
     s32 off;
@@ -1229,107 +725,107 @@ u16 func_ov066_02263f84(Unk_ov066_02263c3c_Rec *rec) {
     u32 tot;
     u8 *src;
     u16 ret;
-    Unk_ov066_02263c3c_G *g;
+    LocalWlMpWork *g;
     u32 len;
     u32 n;
-    off = data_ov066_022647c8->unk_28;
-    tot = data_ov066_022647c8->unk_24;
-    base = data_ov066_022647c8->unk_20;
+    off = sLocalWlMp->sendOffset;
+    tot = sLocalWlMp->sendSize;
+    base = sLocalWlMp->sendData;
     rem = tot - off;
     src = base + off;
     if (off == 0) {
-        rec->a = 0;
+        rec->type = 0;
         dst = (u8 *)rec + 8;
-        rec->unk_02 = data_ov066_022647c8->unk_1e;
-        rec->unk_04 = data_ov066_022647c8->unk_24;
-        rec->unk_06 = data_ov066_022647c8->unk_24 >> 16;
-        g = data_ov066_022647c8;
-        n = g->unk_24;
-        if (n > (u32)(g->unk_00 - 8)) {
-            n = g->unk_00 - 8;
+        rec->destMask = sLocalWlMp->sendDestMask;
+        rec->totalSizeLo = sLocalWlMp->sendSize;
+        rec->totalSizeHi = sLocalWlMp->sendSize >> 16;
+        g = sLocalWlMp;
+        n = g->sendSize;
+        if (n > (u32)(g->recordSize - 8)) {
+            n = g->recordSize - 8;
         }
         len = (u8)n;
         ret = (len + 9) & ~1;
     } else {
-        rec->a = 1;
+        rec->type = 1;
         dst = (u8 *)rec + 2;
-        g = data_ov066_022647c8;
+        g = sLocalWlMp;
         n = rem;
-        if (n > (u32)(g->unk_00 - 2)) {
-            n = g->unk_00 - 2;
+        if (n > (u32)(g->recordSize - 2)) {
+            n = g->recordSize - 2;
         }
         len = (u8)n;
         ret = (len + 3) & ~1;
     }
-    g->unk_28 += len;
-    rec->unk_01 = len;
-    rec->c = (data_ov066_022647c8->unk_28 == (s32)data_ov066_022647c8->unk_24) ? 1 : 0;
-    data_ov066_022647c8->unk_04.f4 = rec->c;
-    func_02116048(src, dst, len);
+    g->sendOffset += len;
+    rec->length = len;
+    rec->isLast = (sLocalWlMp->sendOffset == (s32)sLocalWlMp->sendSize) ? 1 : 0;
+    sLocalWlMp->flags.lastRecordPut = rec->isLast;
+    MI_CpuCopy8(src, dst, len);
     return ret;
 }
 
-void func_ov066_02263f54(Unk_ov066_02263f54_Obj *o) {
-    func_ov066_02263f84(&o->unk_24);
-    if (o->unk_24.c == 0) {
+void LocalWlMp_PutParentRecord(LocalWlMpFrame *o) {
+    LocalWlMp_PutSendRecord((LocalWlMpRecord *)o->payload.records);
+    if (((LocalWlMpRecord *)o->payload.records)->isLast == 0) {
         return;
     }
-    func_ov066_0226416c();
+    LocalWlMp_FinishSend();
 }
 
-void func_ov066_02263d90(void) {
-    Unk_ov066_02263c3c_G *g = data_ov066_022647c8;
+void LocalWlMp_BuildChildPacket(void) {
+    LocalWlMpWork *g = sLocalWlMp;
     s32 sent = 0;
-    Unk_ov066_02263c3c_Rec *rec = (Unk_ov066_02263c3c_Rec *)((u8 *)g->unk_10 + 0x20);
-    if (g->unk_04.f2 != 0) {
-        rec->a = 3;
+    LocalWlMpRecord *rec = (LocalWlMpRecord *)((u8 *)g->curSendFrame + 0x20);
+    if (g->flags.resendRequest != 0) {
+        rec->type = 3;
         sent = 2;
-        rec->d = data_ov066_022647c8->unk_01.hi;
-    } else if (g->unk_04.f3 != 0) {
-        if (g->unk_03 < 2) {
-            if (g->unk_04.f4 == 0) {
-                if (g->unk_04.f1 == 0) {
-                    sent = func_ov066_02263f84(rec);
-                    data_ov066_022647c8->unk_03++;
+        rec->frameId = sLocalWlMp->missingFrameId;
+    } else if (g->flags.sending != 0) {
+        if (g->numRecordsInFlight < 2) {
+            if (g->flags.lastRecordPut == 0) {
+                if (g->flags.frameLost == 0) {
+                    sent = LocalWlMp_PutSendRecord(rec);
+                    sLocalWlMp->numRecordsInFlight++;
                 }
             }
         }
     }
-    if (data_ov066_022647c8->unk_18->unk_00 != (u32)data_ov066_022647c8->unk_18->unk_04) {
+    if (sLocalWlMp->recvCursors[0] != sLocalWlMp->recvCursors[1]) {
         if (sent == 0) {
-            rec->a = 2;
+            rec->type = 2;
             sent = 2;
-            rec->c = 0;
+            rec->isLast = 0;
         }
-        rec->b = 1;
-        rec->d = data_ov066_022647c8->unk_18->unk_04->unk_20;
-        data_ov066_022647c8->unk_18->unk_04 = data_ov066_022647c8->unk_18->unk_04->unk_04;
+        rec->hasAck = 1;
+        rec->frameId = sLocalWlMp->recvCursors[1]->payload.frameId;
+        sLocalWlMp->recvCursors[1] = sLocalWlMp->recvCursors[1]->next;
     } else {
-        rec->b = 0;
+        rec->hasAck = 0;
     }
     if (sent != 0) {
-        data_ov066_022647c8->unk_02++;
-        func_ov066_02263810(0xd, rec, sent, 1, (void *)func_ov066_022640f8);
-        data_ov066_022647c8->unk_10 = data_ov066_022647c8->unk_10->unk_04;
+        sLocalWlMp->numPendingSends++;
+        LocalWlMp_SetMpData(0xd, rec, sent, 1, (void *)LocalWlMp_OnChildPacketSent);
+        sLocalWlMp->curSendFrame = sLocalWlMp->curSendFrame->next;
     }
-    data_ov066_022647c8->unk_04.f1 = 0;
+    sLocalWlMp->flags.frameLost = 0;
 }
 
-void func_ov066_02263c3c(u32 idx, u8 *msg) {
+void LocalWlMp_ReceiveRecord(u32 idx, u8 *msg) {
     u32 len = 0;
-    Unk_ov066_02263c3c_Ent *e = data_ov066_022647c8->unk_30 + idx;
+    LocalWlMpRecvEntry *e = sLocalWlMp->recvEntries + idx;
     u8 *p;
-    u32 t = ((Unk_ov066_02263c3c_Rec *)msg)->a;
+    u32 t = ((LocalWlMpRecord *)msg)->type;
     switch (t) {
     case 0:
         p = msg + 8;
-        if ((*(u16 *)(msg + 2) & (1 << func_ov066_0226238c())) != 0) {
-            data_ov066_022647c8->unk_1c |= 1 << idx;
-            e->unk_0c = len;
-            e->unk_08 = (*(u16 *)(msg + 6) << 16) | *(u16 *)(msg + 4);
-            len = e->unk_08;
-            if (len > (u32)(data_ov066_022647c8->unk_00 - 8)) {
-                len = data_ov066_022647c8->unk_00 - 8;
+        if ((*(u16 *)(msg + 2) & (1 << LocalWl_GetMyAid())) != 0) {
+            sLocalWlMp->recvActiveMask |= 1 << idx;
+            e->receivedSize = len;
+            e->totalSize = (*(u16 *)(msg + 6) << 16) | *(u16 *)(msg + 4);
+            len = e->totalSize;
+            if (len > (u32)(sLocalWlMp->recordSize - 8)) {
+                len = sLocalWlMp->recordSize - 8;
             }
         }
         break;
@@ -1338,64 +834,60 @@ void func_ov066_02263c3c(u32 idx, u8 *msg) {
         len = msg[1];
         break;
     }
-    if ((data_ov066_022647c8->unk_1c & (1 << idx)) == 0) {
+    if ((sLocalWlMp->recvActiveMask & (1 << idx)) == 0) {
         return;
     }
-    if (e->unk_0c + len <= e->unk_04) {
-        func_02116048(p, e->unk_00 + e->unk_0c, len);
-        e->unk_0c += len;
+    if (e->receivedSize + len <= e->bufferSize) {
+        MI_CpuCopy8(p, e->buffer + e->receivedSize, len);
+        e->receivedSize += len;
     }
-    if (e->unk_08 != e->unk_0c) {
+    if (e->totalSize != e->receivedSize) {
         return;
     }
-    data_ov066_022647c8->unk_1c ^= 1 << idx;
-    if (data_ov066_022647b4->unk_b8 == NULL) {
+    sLocalWlMp->recvActiveMask ^= 1 << idx;
+    if (sLocalWlSession->recvCallback == NULL) {
         return;
     }
-    data_ov066_022647b4->unk_b8(idx, e->unk_00, e->unk_08);
+    sLocalWlSession->recvCallback(idx, e->buffer, e->totalSize);
 }
-#undef data_ov066_022647ac
-#undef func_02115fb4
-#undef func_02116048
-#undef func_ov066_0225f2c8
-#undef func_ov066_02261bfc
-#undef func_ov066_02263478
-#undef func_ov066_02263810
-#undef func_ov066_02263878
-#undef func_ov066_022637dc
-#undef func_ov066_0226460c
-#undef func_ov066_02264574
+#undef MI_CpuFill8
+#undef MI_CpuCopy8
+#undef LocalWl_Alloc
+#undef LocalWl_OnControlRecv
+#undef LocalWlMp_OnDataRecv
+#undef LocalWlMp_SetMpData
+#undef LocalWlMp_OnMemberLeft
+#undef LocalWlMp_SendControl
+#undef LocalWl_ApplyConfig
+#undef LocalWlMp_AllocRing
 
 // ---- unk_02263320
-#define data_ov066_022647ac (*(Unk_ov066_02263320_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02263320_V * *)&data_ov066_022647b4)
-#define data_ov066_022647c8 (*(Unk_ov066_02263320_G * *)&data_ov066_022647c8)
-#define func_ov066_0226238c ((s32 (*)(void))func_ov066_0226238c)
-#define func_ov066_0226453c ((void (*)(void *, s32))func_ov066_0226453c)
-#define func_ov066_02263f54 ((void (*)(void *))func_ov066_02263f54)
-#define func_ov066_02263c3c ((void (*)(s32, void *))func_ov066_02263c3c)
-void func_ov066_022634e8(Unk_ov066_02263320_Msg *m);
-void func_ov066_02263628(u32 idx, void *src, u32 size);
-void func_ov066_02263b90(Unk_ov066_02263320_Pay *p);
-Unk_ov066_02263320_Rec *func_ov066_0226375c(u32 id, Unk_ov066_02263320_Rec *head);
-s32 func_ov066_02263810(u32 x, u32 a, u32 b, u32 c, u32 d);
-s32 func_ov066_02263a48(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src);
+#define LocalWl_GetMyAid ((s32 (*)(void))LocalWl_GetMyAid)
+#define LocalWlMp_ClearRing ((void (*)(void *, s32))LocalWlMp_ClearRing)
+#define LocalWlMp_PutParentRecord ((void (*)(void *))LocalWlMp_PutParentRecord)
+#define LocalWlMp_ReceiveRecord ((void (*)(s32, void *))LocalWlMp_ReceiveRecord)
+void LocalWlMp_OnPacket(WMPortRecvCallback *m);
+void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size);
+void LocalWlMp_DeliverFrame(LocalWlMpFramePayload *p);
+LocalWlMpFrame *LocalWlMp_FindFrame(u32 id, LocalWlMpFrame *head);
+s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d);
+s32 LocalWlMp_MergeFrame(LocalWlMpFrame *dst, LocalWlMpFrame *src);
 
-void func_ov066_02263b90(Unk_ov066_02263320_Pay *p) {
+void LocalWlMp_DeliverFrame(LocalWlMpFramePayload *p) {
     u16 i;
-    u8 *q = p->unk_04;
-    for (i = 0; i < data_ov066_022647ac->unk_0b; i++) {
-        if ((p->unk_02 & (1 << i)) != 0) {
-            if (i == func_ov066_0226238c()) {
-                data_ov066_022647c8->unk_03 = data_ov066_022647c8->unk_03 - 1;
+    u8 *q = p->records;
+    for (i = 0; i < sLocalWl->maxMembers; i++) {
+        if ((p->aidMask & (1 << i)) != 0) {
+            if (i == LocalWl_GetMyAid()) {
+                sLocalWlMp->numRecordsInFlight = sLocalWlMp->numRecordsInFlight - 1;
             }
-            func_ov066_02263c3c(i, q);
-            q += data_ov066_022647c8->unk_00 & ~1;
+            LocalWlMp_ReceiveRecord(i, q);
+            q += sLocalWlMp->recordSize & ~1;
         }
     }
 }
 
-s32 func_ov066_02263a48(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src) {
+s32 LocalWlMp_MergeFrame(LocalWlMpFrame *dst, LocalWlMpFrame *src) {
     u16 mask;
     u16 i;
     u16 total;
@@ -1403,316 +895,310 @@ s32 func_ov066_02263a48(Unk_ov066_02263320_Rec *dst, Unk_ov066_02263320_Rec *src
     u8 sz;
     u8 *rd;
     u8 *rp;
-    mask = src->unk_20.unk_02;
+    mask = src->payload.aidMask;
     if (mask != 0) {
         u32 t;
-        sz = data_ov066_022647c8->unk_00;
+        sz = sLocalWlMp->recordSize;
         rd = (u8 *)src + 0x24;
         total = 4;
         rp = (u8 *)dst + 0x24;
-        dst->unk_20.unk_02 = mask;
-        t = data_ov066_022647c8->lo;
-        data_ov066_022647c8->lo = t + 1;
-        dst->unk_20.unk_00 = t;
-        for (i = 0; i < data_ov066_022647ac->unk_0b; i++) {
+        dst->payload.aidMask = mask;
+        t = sLocalWlMp->lastFrameId;
+        sLocalWlMp->lastFrameId = t + 1;
+        dst->payload.frameId = t;
+        for (i = 0; i < sLocalWl->maxMembers; i++) {
             if ((mask & (1 << i)) != 0) {
-                func_02116048(rd + sz * i, rp, sz);
+                MI_CpuCopy8(rd + sz * i, rp, sz);
                 rp += sz;
                 total = total + sz;
             }
-            if (data_ov066_022647c8->unk_18[i] == src) {
-                data_ov066_022647c8->unk_18[i] = src->unk_04;
+            if (sLocalWlMp->recvCursors[i] == src) {
+                sLocalWlMp->recvCursors[i] = src->next;
             }
         }
-        src->unk_20.unk_02 = 0;
-        dst->unk_0a = data_ov066_022647b4->unk_98;
-        dst->unk_0c = 0;
-        dst->unk_08 = total;
-        func_ov066_02263b90(&dst->unk_20);
+        src->payload.aidMask = 0;
+        dst->destMask = sLocalWlSession->readyMask;
+        dst->ackMask = 0;
+        dst->frameSize = total;
+        LocalWlMp_DeliverFrame(&dst->payload);
         result = 1;
     }
     return result;
 }
 
-void func_ov066_022638fc(void) {
-    Unk_ov066_02263320_G *g = data_ov066_022647c8;
-    Unk_ov066_02263320_Rec *n14;
-    Unk_ov066_02263320_Rec *r5;
-    Unk_ov066_02263320_Rec *e0;
-    if (g->unk_02 >= 1) {
+void LocalWlMp_ParentSendStep(void) {
+    LocalWlMpWork *g = sLocalWlMp;
+    LocalWlMpFrame *n14;
+    LocalWlMpFrame *r5;
+    LocalWlMpFrame *e0;
+    if (g->numPendingSends >= 1) {
         return;
     }
-    e0 = g->unk_18[0];
+    e0 = g->recvCursors[0];
     r5 = 0;
-    n14 = g->unk_14;
+    n14 = g->resendFrame;
     if (n14 != 0) {
-        Unk_ov066_02263320_Rec *nx = n14->unk_04;
+        LocalWlMpFrame *nx = n14->next;
         r5 = n14;
-        if (nx == g->unk_10) {
-            g->unk_14 = 0;
+        if (nx == g->curSendFrame) {
+            g->resendFrame = 0;
         } else {
-            g->unk_14 = nx;
+            g->resendFrame = nx;
         }
     } else {
-        Unk_ov066_02263320_Rec *p = g->unk_10->unk_00->unk_00;
-        u16 a = p->unk_0a;
-        if (a == 0 || a == p->unk_0c) {
-            if (g->unk_04.f3) {
-                func_ov066_02263f54(e0);
-                e0->unk_20.unk_02 = e0->unk_20.unk_02 | 1;
-                data_ov066_022647c8->unk_03 = data_ov066_022647c8->unk_03 + 1;
+        LocalWlMpFrame *p = g->curSendFrame->prev->prev;
+        u16 a = p->destMask;
+        if (a == 0 || a == p->ackMask) {
+            if (g->flags.sending) {
+                LocalWlMp_PutParentRecord(e0);
+                e0->payload.aidMask = e0->payload.aidMask | 1;
+                sLocalWlMp->numRecordsInFlight = sLocalWlMp->numRecordsInFlight + 1;
             }
-            if (func_ov066_02263a48(data_ov066_022647c8->unk_10, e0) != 0) {
-                g = data_ov066_022647c8;
-                r5 = g->unk_10;
-                g->unk_10 = r5->unk_04;
+            if (LocalWlMp_MergeFrame(sLocalWlMp->curSendFrame, e0) != 0) {
+                g = sLocalWlMp;
+                r5 = g->curSendFrame;
+                g->curSendFrame = r5->next;
             }
         }
     }
     if (r5 == 0) {
         return;
     }
-    if (r5->unk_0a == 0) {
+    if (r5->destMask == 0) {
         return;
     }
-    g = data_ov066_022647c8;
-    g->unk_02 = g->unk_02 + 1;
-    func_ov066_02263810(0xd, (u32)&r5->unk_20, r5->unk_08, r5->unk_0a, (u32)func_ov066_022640dc);
+    g = sLocalWlMp;
+    g->numPendingSends = g->numPendingSends + 1;
+    LocalWlMp_SetMpData(0xd, (u32)&r5->payload, r5->frameSize, r5->destMask, (u32)LocalWlMp_OnFrameSent);
 }
 
-void func_ov066_022638c4(void) {
-    if (data_ov066_022647c8->unk_02 >= 2) {
+void LocalWlMp_ChildSendStep(void) {
+    if (sLocalWlMp->numPendingSends >= 2) {
         return;
     }
-    func_ov066_02263d90();
+    LocalWlMp_BuildChildPacket();
 }
 
-void func_ov066_02263878(u32 idx) {
+void LocalWlMp_OnMemberLeft(u32 idx) {
     u16 mask = ~(1 << idx);
-    Unk_ov066_02263320_Rec *head = data_ov066_022647c8->unk_10;
-    Unk_ov066_02263320_Rec *n = head;
+    LocalWlMpFrame *head = sLocalWlMp->curSendFrame;
+    LocalWlMpFrame *n = head;
     do {
-        n->unk_0a = n->unk_0a & mask;
-        n->unk_0c = n->unk_0c & mask;
-        n = n->unk_00;
+        n->destMask = n->destMask & mask;
+        n->ackMask = n->ackMask & mask;
+        n = n->prev;
     } while (head != n);
 }
 
-s32 func_ov066_02263810(u32 x, u32 a, u32 b, u32 c, u32 d) {
-    s32 r = func_0212052c((void *)func_ov066_0226378c, d, a, b, c, x, 2);
+s32 LocalWlMp_SetMpData(u32 x, u32 a, u32 b, u32 c, u32 d) {
+    s32 r = WM_SetMPDataToPortEx((void *)LocalWlMp_OnSetMpData, d, a, b, c, x, 2);
     if (r != 2 && r != 7) {
-        func_ov066_0225f22c(r);
+        LocalWl_SetError(r);
         return 0;
     }
     return 1;
 }
 
-void func_ov066_022637dc(u32 a, u32 b, u32 c, u32 d) {
-    func_ov066_02263810(0xc, a, b, c, d);
+void LocalWlMp_SendControl(u32 a, u32 b, u32 c, u32 d) {
+    LocalWlMp_SetMpData(0xc, a, b, c, d);
 }
 
-void func_ov066_0226378c(Unk_ov066_02263320_Msg *m) {
-    if (m->unk_02 == 0) {
-        if (m->unk_20 == 0) {
+void LocalWlMp_OnSetMpData(WMPortSendCallback *m) {
+    if (m->errcode == 0) {
+        if (m->arg == 0) {
             return;
         }
-        m->unk_20(m);
+        ((void (*)(void *))m->arg)(m); // arg = the per-send callback given to WM_SetMPDataToPortEx
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
-    func_0206d49c();
+    LocalWl_SetError(m->errcode);
+    Fatal_Trap();
 }
 
-Unk_ov066_02263320_Rec *func_ov066_0226375c(u32 id, Unk_ov066_02263320_Rec *head) {
-    Unk_ov066_02263320_Rec *n;
-    for (n = head->unk_00; head != n; n = n->unk_00) {
-        if (n->unk_20.unk_00 == id) {
+LocalWlMpFrame *LocalWlMp_FindFrame(u32 id, LocalWlMpFrame *head) {
+    LocalWlMpFrame *n;
+    for (n = head->prev; head != n; n = n->prev) {
+        if (n->payload.frameId == id) {
             return n;
         }
     }
     return 0;
 }
 
-void func_ov066_02263628(u32 idx, void *src, u32 size) {
-    Unk_ov066_02263320_Hdr h;
-    Unk_ov066_02263320_Rec *r;
-    Unk_ov066_02263320_Rec *e;
-    func_02116048(src, &h, 2);
-    if (h.b) {
-        r = func_ov066_0226375c(h.c, data_ov066_022647c8->unk_10);
+void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size) {
+    LocalWlMpRecordHdr h;
+    LocalWlMpFrame *r;
+    LocalWlMpFrame *e;
+    MI_CpuCopy8(src, &h, 2);
+    if (h.hasAck) {
+        r = LocalWlMp_FindFrame(h.frameId, sLocalWlMp->curSendFrame);
         if (r != 0) {
-            r->unk_0c = r->unk_0c | (r->unk_0a & (1 << idx));
+            r->ackMask = r->ackMask | (r->destMask & (1 << idx));
         }
     }
-    if (h.a == 3) {
-        if (data_ov066_022647c8->unk_14 != 0) {
+    if (h.type == 3) {
+        if (sLocalWlMp->resendFrame != 0) {
             return;
         }
-        r = func_ov066_0226375c(h.c, data_ov066_022647c8->unk_10);
+        r = LocalWlMp_FindFrame(h.frameId, sLocalWlMp->curSendFrame);
         if (r != 0) {
-            data_ov066_022647c8->unk_14 = r;
+            sLocalWlMp->resendFrame = r;
         }
         return;
     }
-    if (h.a == 2) {
+    if (h.type == 2) {
         return;
     }
-    e = data_ov066_022647c8->unk_18[idx];
-    func_02116048(src, (u8 *)e + 0x24 + idx * data_ov066_022647c8->unk_00, size);
-    e->unk_20.unk_02 = e->unk_20.unk_02 | (1 << idx);
-    data_ov066_022647c8->unk_18[idx] = e->unk_04;
+    e = sLocalWlMp->recvCursors[idx];
+    MI_CpuCopy8(src, (u8 *)e + 0x24 + idx * sLocalWlMp->recordSize, size);
+    e->payload.aidMask = e->payload.aidMask | (1 << idx);
+    sLocalWlMp->recvCursors[idx] = e->next;
 }
 
-void func_ov066_022634e8(Unk_ov066_02263320_Msg *m) {
-    Unk_ov066_02263320_G *g;
-    Unk_ov066_02263320_Pay *p;
-    if (m->unk_10 == 0) {
+void LocalWlMp_OnPacket(WMPortRecvCallback *m) {
+    LocalWlMpWork *g;
+    LocalWlMpFramePayload *p;
+    if (m->length == 0) {
         return;
     }
-    if (m->unk_12 != 0) {
-        func_ov066_02263628(m->unk_12, m->unk_0c, m->unk_10);
+    if (m->aid != 0) {
+        LocalWlMp_StoreChildPacket(m->aid, m->data, m->length);
         return;
     }
-    g = data_ov066_022647c8;
-    p = m->unk_0c;
-    if (g->unk_04.f0 == 0) {
-        if (p->unk_00 != ((g->lo + 1) & 0xf)) {
+    g = sLocalWlMp;
+    p = (LocalWlMpFramePayload *)m->data;
+    if (g->flags.waitFirstFrame == 0) {
+        if (p->frameId != ((g->lastFrameId + 1) & 0xf)) {
             goto cc;
         }
     }
     {
-        Unk_ov066_02263320_Rec *e = g->unk_18[0];
-        e->unk_20.unk_00 = p->unk_00;
-        data_ov066_022647c8->unk_18[0] = e->unk_04;
+        LocalWlMpFrame *e = g->recvCursors[0];
+        e->payload.frameId = p->frameId;
+        sLocalWlMp->recvCursors[0] = e->next;
     }
-    func_ov066_02263b90(p);
-    data_ov066_022647c8->unk_04.f0 = 0;
-    data_ov066_022647c8->unk_04.f2 = 0;
-    data_ov066_022647c8->lo = p->unk_00;
+    LocalWlMp_DeliverFrame(p);
+    sLocalWlMp->flags.waitFirstFrame = 0;
+    sLocalWlMp->flags.resendRequest = 0;
+    sLocalWlMp->lastFrameId = p->frameId;
     return;
 cc:
-    if (p->unk_00 != ((g->lo + 2) & 0xf)) {
-        g->unk_04.f1 = 1;
+    if (p->frameId != ((g->lastFrameId + 2) & 0xf)) {
+        g->flags.frameLost = 1;
         return;
     }
-    g->unk_04.f2 = 1;
-    data_ov066_022647c8->hi = (data_ov066_022647c8->lo + 1) & 0xf;
+    g->flags.resendRequest = 1;
+    sLocalWlMp->missingFrameId = (sLocalWlMp->lastFrameId + 1) & 0xf;
 }
 
-void func_ov066_022634e4(Unk_ov066_02263320_Msg *m) {
+void LocalWlMp_OnDataDisconnectStub(WMPortRecvCallback *m) {
 }
 
-void func_ov066_02263478(Unk_ov066_02263320_Msg *m) {
+void LocalWlMp_OnDataRecv(WMPortRecvCallback *m) {
     u32 t;
-    if (func_ov066_0225f7c8() != 0) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 != 0) {
+    if (m->errcode != 0) {
         return;
     }
-    t = m->unk_04;
+    t = m->state;
     if (t == 7) {
         return;
     }
     if (t != 9) {
         if (t == 0x15) {
-            func_ov066_022634e8(m);
+            LocalWlMp_OnPacket(m);
         }
     } else {
-        func_ov066_022634e4(m);
+        LocalWlMp_OnDataDisconnectStub(m);
     }
 }
 
-void func_ov066_02263320(void) {
-    u32 t = func_01ffa2ec();
+void LocalWlMp_Reset(void) {
+    u32 t = OS_DisableInterrupts();
     u16 i;
-    data_ov066_022647c8->unk_10 = data_ov066_022647c8->unk_08;
-    func_ov066_0226453c(data_ov066_022647c8->unk_08, 3);
-    func_ov066_0226453c(data_ov066_022647c8->unk_0c, 3);
-    for (i = 0; i < data_ov066_022647ac->unk_0b; i++) {
-        data_ov066_022647c8->unk_18[i] = data_ov066_022647c8->unk_0c;
+    sLocalWlMp->curSendFrame = sLocalWlMp->sendRing;
+    LocalWlMp_ClearRing(sLocalWlMp->sendRing, 3);
+    LocalWlMp_ClearRing(sLocalWlMp->recvRing, 3);
+    for (i = 0; i < sLocalWl->maxMembers; i++) {
+        sLocalWlMp->recvCursors[i] = sLocalWlMp->recvRing;
     }
-    data_ov066_022647c8->lo = 0;
-    data_ov066_022647c8->hi = 0;
-    data_ov066_022647c8->unk_02 = 0;
-    data_ov066_022647c8->unk_03 = 0;
-    data_ov066_022647c8->unk_04.f0 = 1;
-    data_ov066_022647c8->unk_04.f1 = 0;
-    data_ov066_022647c8->unk_04.f2 = 0;
-    data_ov066_022647c8->unk_04.f3 = 0;
-    data_ov066_022647c8->unk_14 = 0;
-    data_ov066_022647c8->unk_1c = 0;
-    data_ov066_022647c8->unk_1e = 0;
-    data_ov066_022647c8->unk_20 = 0;
-    data_ov066_022647c8->unk_24 = 0;
-    data_ov066_022647c8->unk_28 = -1;
-    data_ov066_022647c8->unk_2c = 0;
-    func_01ffa3d4(t);
+    sLocalWlMp->lastFrameId = 0;
+    sLocalWlMp->missingFrameId = 0;
+    sLocalWlMp->numPendingSends = 0;
+    sLocalWlMp->numRecordsInFlight = 0;
+    sLocalWlMp->flags.waitFirstFrame = 1;
+    sLocalWlMp->flags.frameLost = 0;
+    sLocalWlMp->flags.resendRequest = 0;
+    sLocalWlMp->flags.sending = 0;
+    sLocalWlMp->resendFrame = 0;
+    sLocalWlMp->recvActiveMask = 0;
+    sLocalWlMp->sendDestMask = 0;
+    sLocalWlMp->sendData = 0;
+    sLocalWlMp->sendSize = 0;
+    sLocalWlMp->sendOffset = -1;
+    sLocalWlMp->sendDoneCallback = 0;
+    OS_RestoreInterrupts(t);
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
-#undef data_ov066_022647c8
-#undef func_ov066_0226238c
-#undef func_ov066_0226453c
-#undef func_ov066_02263f54
-#undef func_ov066_02263c3c
+#undef LocalWl_GetMyAid
+#undef LocalWlMp_ClearRing
+#undef LocalWlMp_PutParentRecord
+#undef LocalWlMp_ReceiveRecord
 
 // ---- unk_022629cc
-#define data_ov066_022647ac (*(Unk_ov066_022629cc_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_022629cc_V * *)&data_ov066_022647b4)
 #define data_ov066_022647bc (*(u8 *)&data_ov066_022647bc)
 #define data_ov066_022647c0 (*(u16 *)&data_ov066_022647c0)
 #define data_ov066_022647c4 (*(u16 *)&data_ov066_022647c4)
-#define data_ov066_022647c8 (*(Unk_ov066_022629cc_G * *)&data_ov066_022647c8)
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
-#define func_ov066_0226292c ((s32 (*)(u32))func_ov066_0226292c)
-#define func_ov066_02260d74 ((s32 (*)(void *, void *))func_ov066_02260d74)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
+#define LocalWl_PickChannel ((s32 (*)(u32))LocalWl_PickChannel)
+#define LocalWl_CompareMac ((s32 (*)(void *, void *))LocalWl_CompareMac)
 
-s32 func_ov066_02263284(s32 idx, u32 a, u32 b) {
+s32 LocalWlMp_SetRecvBuffer(s32 idx, u32 a, u32 b) {
     BOOL r = FALSE;
-    u32 t = func_01ffa2ec();
-    Unk_ov066_022629cc_G *g = data_ov066_022647c8;
-    Unk_ov066_022629cc_E *p;
-    if (g != NULL && (p = g->unk_30) != NULL && data_ov066_022647b4 != NULL && idx < (s32)data_ov066_022647ac->unk_0b) {
-        if ((g->unk_1c & (1 << idx)) == 0) {
-            p[idx].a = a;
+    u32 t = OS_DisableInterrupts();
+    LocalWlMpWork *g = sLocalWlMp;
+    LocalWlMpRecvEntry *p;
+    if (g != NULL && (p = g->recvEntries) != NULL && sLocalWlSession != NULL && idx < (s32)sLocalWl->maxMembers) {
+        if ((g->recvActiveMask & (1 << idx)) == 0) {
+            p[idx].buffer = (u8 *)a;
             r = TRUE;
-            p[idx].b = b;
+            p[idx].bufferSize = b;
         }
     }
-    func_01ffa3d4(t);
+    OS_RestoreInterrupts(t);
     return r;
 }
 
-void func_ov066_022631d0(Unk_ov066_022629cc_Ent *o, u32 id, s32 n) {
+void LocalWlBcn_Init(LocalWlBeaconList *o, u32 id, s32 n) {
     volatile s32 z;
     s32 i;
     s32 size = n * 0xe0;
-    o->unk_00 = id;
-    o->unk_01 = 0;
-    o->unk_02 = n;
-    o->unk_0c = NULL;
-    o->unk_04 = (Unk_ov066_022629cc_Rec *)func_ov066_0225f2c8(size, 0x20);
-    o->unk_08 = (Unk_ov066_022629cc_Sub *)func_ov066_0225f2c8(n * 0x2c, 0x20);
+    o->listId = id;
+    o->numUsed = 0;
+    o->capacity = n;
+    o->changeCallback = NULL;
+    o->entries = (LocalWlBeacon *)LocalWl_Alloc(size, 0x20);
+    o->alarms = (OSAlarm *)LocalWl_Alloc(n * 0x2c, 0x20);
     z = 0;
-    func_02115ea8(z, o->unk_04, size);
-    func_021145b0(o->unk_04, size);
+    MIi_CpuClearFast(z, o->entries, size);
+    DC_StoreRange(o->entries, size);
     for (i = 0; i < n; i++) {
-        func_021152e4(&o->unk_08[i]);
+        OS_CreateAlarm(&o->alarms[i]);
     }
 }
 
-void func_ov066_02263198(Unk_ov066_022629cc_Ent *o) {
-    o->unk_01 = 0;
-    o->unk_02 = 0;
-    func_02114ef4(o->unk_00 + 0x80);
-    func_ov066_0225f284(o->unk_08);
-    func_ov066_0225f284(o->unk_04);
+void LocalWlBcn_Free(LocalWlBeaconList *o) {
+    o->numUsed = 0;
+    o->capacity = 0;
+    OS_CancelAlarms(o->listId + 0x80);
+    LocalWl_Free(o->alarms);
+    LocalWl_Free(o->entries);
 }
 
-s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, void *e) {
+s32 LocalWlBcn_Add(LocalWlBeaconList *o, s32 a, u8 *b, u32 c, u16 d, void *e) {
     u8 v8;
-    Unk_ov066_022629cc_Rec *r;
+    LocalWlBeacon *r;
     s32 i;
     u32 t;
     u32 v = d;
@@ -1721,137 +1207,137 @@ s32 func_ov066_02262e54(Unk_ov066_022629cc_Ent *o, s32 a, u8 *b, u32 c, u16 d, v
         v = 0xff;
     }
     v8 = v;
-    if (o->unk_01 != 0) {
-        for (i = 0; i < o->unk_02; i++) {
-            Unk_ov066_022629cc_Rec *r = &o->unk_04[i];
-            if (r->unk_00 == 1 && func_ov066_02260d74(r->unk_02, b) == 0) {
+    if (o->numUsed != 0) {
+        for (i = 0; i < o->capacity; i++) {
+            LocalWlBeacon *r = &o->entries[i];
+            if (r->inUse == 1 && LocalWl_CompareMac(r->macAddr, b) == 0) {
                 s32 j, sum, k;
                 u32 soff;
                 u8 nw;
                 u8 *p;
-                func_02115094(&o->unk_08[i]);
-                t = func_01ffa2ec();
-                o->unk_04[i].unk_08 = c;
-                p = &o->unk_04->unk_0b;
+                OS_CancelAlarm(&o->alarms[i]);
+                t = OS_DisableInterrupts();
+                o->entries[i].tag = c;
+                p = &o->entries->linkLevelPos;
                 k = (u8)(p[i * 0xe0] + 1);
                 nw = k % 6;
                 p[i * 0xe0] = nw;
-                o->unk_04[i].unk_0c[nw] = v8;
+                o->entries[i].linkLevels[nw] = v8;
                 sum = 0;
                 for (j = 0; j < 6; j++) {
-                    sum += o->unk_04[i].unk_0c[j];
+                    sum += o->entries[i].linkLevels[j];
                 }
-                o->unk_04[i].unk_0a = sum / 6;
-                func_02115ef4(e, o->unk_04[i].unk_20, 0xc0);
-                func_021145b0(o->unk_04[i].unk_20, 0xc0);
-                func_01ffa3d4(t);
+                o->entries[i].linkLevel = sum / 6;
+                MIi_CpuCopyFast(e, &o->entries[i].bssDesc, 0xc0);
+                DC_StoreRange(&o->entries[i].bssDesc, 0xc0);
+                OS_RestoreInterrupts(t);
                 soff = i * 0x2c;
-                func_0211512c((u8 *)o->unk_08 + soff, a * 0x82ea / 64, (void *)func_ov066_02262dfc, &o->unk_04[i]);
-                func_02114f74((u8 *)o->unk_08 + soff, o->unk_00 + 0x80);
+                OS_SetAlarm((u8 *)o->alarms + soff, a * 0x82ea / 64, (void *)LocalWlBcn_OnExpire, &o->entries[i]);
+                OS_SetAlarmTag((u8 *)o->alarms + soff, o->listId + 0x80);
                 return TRUE;
             }
         }
     }
     i2 = 0;
-    if (i2 < *(volatile u8 *)&o->unk_02) {
-    r = o->unk_04;
+    if (i2 < *(volatile u8 *)&o->capacity) {
+    r = o->entries;
     do {
-        if (r->unk_00 == 0) {
+        if (r->inUse == 0) {
             s32 j, q;
             u32 off;
-            t = func_01ffa2ec();
-            o->unk_01 = o->unk_01 + 1;
-            r->unk_00 = 1;
-            r->unk_02[0] = b[0];
-            r->unk_02[1] = b[1];
-            r->unk_02[2] = b[2];
-            r->unk_02[3] = b[3];
-            r->unk_02[4] = b[4];
-            r->unk_02[5] = b[5];
-            r->unk_08 = c;
-            r->unk_14 = o;
-            r->unk_0b = 0;
+            t = OS_DisableInterrupts();
+            o->numUsed = o->numUsed + 1;
+            r->inUse = 1;
+            r->macAddr[0] = b[0];
+            r->macAddr[1] = b[1];
+            r->macAddr[2] = b[2];
+            r->macAddr[3] = b[3];
+            r->macAddr[4] = b[4];
+            r->macAddr[5] = b[5];
+            r->tag = c;
+            r->ownerList = o;
+            r->linkLevelPos = 0;
             for (j = 0; j < 6; j++) {
-                r->unk_0c[j] = v8;
+                r->linkLevels[j] = v8;
             }
-            r->unk_0a = v8;
-            func_02115ef4(e, r->unk_20, 0xc0);
-            func_021145b0(r->unk_20, 0xc0);
-            func_01ffa3d4(t);
-            func_02115094(&o->unk_08[i2]);
+            r->linkLevel = v8;
+            MIi_CpuCopyFast(e, &r->bssDesc, 0xc0);
+            DC_StoreRange(&r->bssDesc, 0xc0);
+            OS_RestoreInterrupts(t);
+            OS_CancelAlarm(&o->alarms[i2]);
             off = i2 * 0xe0;
-            func_0211512c(&o->unk_08[i2], a * 0x82ea / 64, (void *)func_ov066_02262dfc, (u8 *)o->unk_04 + off);
-            func_02114f74(&o->unk_08[i2], o->unk_00 + 0x80);
-            if (o->unk_0c != NULL) {
-                o->unk_0c((Unk_ov066_022629cc_Rec *)((u8 *)o->unk_04 + off));
+            OS_SetAlarm(&o->alarms[i2], a * 0x82ea / 64, (void *)LocalWlBcn_OnExpire, (u8 *)o->entries + off);
+            OS_SetAlarmTag(&o->alarms[i2], o->listId + 0x80);
+            if (o->changeCallback != NULL) {
+                o->changeCallback((LocalWlBeacon *)((u8 *)o->entries + off));
             }
             return TRUE;
         }
         i2++;
         r++;
-    } while (i2 < *(volatile u8 *)&o->unk_02);
+    } while (i2 < *(volatile u8 *)&o->capacity);
     }
     return FALSE;
 }
 
-void func_ov066_02262dfc(Unk_ov066_022629cc_Rec *r) {
-    Unk_ov066_022629cc_Ent *o = r->unk_14;
-    if (r->unk_00 != 1) {
+void LocalWlBcn_OnExpire(LocalWlBeacon *r) {
+    LocalWlBeaconList *o = r->ownerList;
+    if (r->inUse != 1) {
         return;
     }
-    o->unk_01 = o->unk_01 - 1;
-    r->unk_00 = 0;
-    if (o->unk_0c != NULL) {
-        o->unk_0c(r);
+    o->numUsed = o->numUsed - 1;
+    r->inUse = 0;
+    if (o->changeCallback != NULL) {
+        o->changeCallback(r);
     }
 }
 
-u32 func_ov066_02262df4(Unk_ov066_022629cc_Ent *o) {
-    return o->unk_01;
+u32 LocalWlBcn_Count(LocalWlBeaconList *o) {
+    return o->numUsed;
 }
 
-Unk_ov066_022629cc_Rec *func_ov066_02262dd8(Unk_ov066_022629cc_Ent *o, u32 i) {
-    if (i < o->unk_02) {
-        return &o->unk_04[i];
+LocalWlBeacon *LocalWlBcn_Get(LocalWlBeaconList *o, u32 i) {
+    if (i < o->capacity) {
+        return &o->entries[i];
     }
     return NULL;
 }
 
-void func_ov066_02262dc4(Unk_ov066_022629cc_Ent *o) {
-    func_02114ef4(o->unk_00 + 0x80);
+void LocalWlBcn_CancelAlarms(LocalWlBeaconList *o) {
+    OS_CancelAlarms(o->listId + 0x80);
 }
 
-void func_ov066_02262d70(Unk_ov066_022629cc_Ent *o) {
+void LocalWlBcn_Clear(LocalWlBeaconList *o) {
     volatile s32 z;
     u32 n;
-    func_ov066_02262dc4(o);
-    o->unk_01 = 0;
-    n = *(volatile u8 *)&o->unk_02;
+    LocalWlBcn_CancelAlarms(o);
+    o->numUsed = 0;
+    n = *(volatile u8 *)&o->capacity;
     z = 0;
-    func_02115ea8(z, o->unk_04, n * 0xe0);
-    func_021145b0(o->unk_04, o->unk_02 * 0xe0);
+    MIi_CpuClearFast(z, o->entries, n * 0xe0);
+    DC_StoreRange(o->entries, o->capacity * 0xe0);
 }
 
-void func_ov066_02262ca8(Unk_ov066_022629cc_Ent *o, s32 x) {
+void LocalWlBcn_RefreshTimeouts(LocalWlBeaconList *o, s32 x) {
     s32 i = 0;
-    if (i < o->unk_02) {
+    if (i < o->capacity) {
         s32 q = x * 0x82ea / 64;
         do {
-            if (o->unk_04[i].unk_00 == 1) {
-                func_02115094(&o->unk_08[i]);
-                func_0211512c(&o->unk_08[i], q, (void *)func_ov066_02262dfc, &o->unk_04[i]);
-                func_02114f74(&o->unk_08[i], o->unk_00 + 0x80);
+            if (o->entries[i].inUse == 1) {
+                OS_CancelAlarm(&o->alarms[i]);
+                OS_SetAlarm(&o->alarms[i], q, (void *)LocalWlBcn_OnExpire, &o->entries[i]);
+                OS_SetAlarmTag(&o->alarms[i], o->listId + 0x80);
             }
             i++;
-        } while (i < o->unk_02);
+        } while (i < o->capacity);
     }
 }
 
-s32 func_ov066_02262c38(u32 i) {
+s32 LocalWl_MeasureNextChannel(u32 i) {
     if (i < 0xe) {
         do {
-            if (data_ov066_022647b4->unk_90 & (1 << i)) {
-                if (func_ov066_02262b20((u16)(i + 1)) != 0) {
+            if (sLocalWlSession->allowedChannelMask & (1 << i)) {
+                if (LocalWl_MeasureChannel((u16)(i + 1)) != 0) {
                     return TRUE;
                 }
             }
@@ -1861,18 +1347,18 @@ s32 func_ov066_02262c38(u32 i) {
     return FALSE;
 }
 
-void func_ov066_02262be4(void) {
-    u32 r = func_0211f800();
+void LocalWl_UpdateAllowedChannels(void) {
+    u32 r = WM_GetAllowedChannel();
     if (r == 0) {
-        func_ov066_0225f22c(0x41);
+        LocalWl_SetError(0x41);
         return;
     }
-    data_ov066_022647b4->unk_90 = r;
-    r = func_0212741c();
-    data_ov066_022647b4->unk_92 = r;
+    sLocalWlSession->allowedChannelMask = r;
+    r = MATH_CountPopulation();
+    sLocalWlSession->numAllowedChannels = r;
 }
 
-u32 func_ov066_02262b70(u32 a) {
+u32 LocalWl_NextAllowedChannel(u32 a) {
     u32 idx = a;
     u32 n = 0;
     do {
@@ -1880,7 +1366,7 @@ u32 func_ov066_02262b70(u32 a) {
         if (idx > 0xe) {
             idx = 1;
         }
-        if (data_ov066_022647b4->unk_90 & (1 << (idx - 1))) {
+        if (sLocalWlSession->allowedChannelMask & (1 << (idx - 1))) {
             return idx;
         }
         n = (u16)(n + 1);
@@ -1888,19 +1374,19 @@ u32 func_ov066_02262b70(u32 a) {
     return a;
 }
 
-s32 func_ov066_02262b20(u32 a) {
-    s32 r = func_021218d0((void *)func_ov066_02262a34, 3, 0x11, a, 0x1e);
+s32 LocalWl_MeasureChannel(u32 a) {
+    s32 r = WM_MeasureChannel((void *)LocalWl_OnMeasureChannel, 3, 0x11, a, 0x1e);
     if (r == 2) {
         return TRUE;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
     return FALSE;
 }
 
-void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m) {
-    if (m->unk_02 == 0) {
-        u16 a = m->unk_0a;
-        u16 b = m->unk_08;
+void LocalWl_OnMeasureChannel(WMMeasureChannelCallback *m) {
+    if (m->errcode == 0) {
+        u16 a = m->ccaBusyRatio;
+        u16 b = m->channel;
         if (data_ov066_022647c4 > a) {
             data_ov066_022647c4 = a;
             data_ov066_022647c0 = 1 << (b - 1);
@@ -1909,52 +1395,47 @@ void func_ov066_02262a34(Unk_ov066_022629cc_Msg *m) {
             data_ov066_022647c0 = data_ov066_022647c0 | (1 << (b - 1));
             data_ov066_022647bc = data_ov066_022647bc + 1;
         }
-        if (func_ov066_0226292c(b) != 0) {
-            data_ov066_022647ac->unk_04 = 4;
-            if (data_ov066_022647ac->unk_08 == 0xfe) {
-                data_ov066_022647b4->unk_c0 &= ~0x80;
+        if (LocalWl_PickChannel(b) != 0) {
+            sLocalWl->state = 4;
+            if (sLocalWl->channel == 0xfe) {
+                sLocalWlSession->flags &= ~0x80;
             }
-            func_ov066_0225f5b4();
+            LocalWl_Advance();
         }
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-void func_ov066_022629cc(void) {
-    data_ov066_022647ac->unk_04 = 5;
+void LocalWl_StartMeasureChannels(void) {
+    sLocalWl->state = 5;
     data_ov066_022647bc = 0;
     data_ov066_022647c0 = 0;
     data_ov066_022647c4 = 0x65;
-    data_ov066_022647b4->unk_8d = 0;
-    func_ov066_0226292c(0);
+    sLocalWlSession->channel = 0;
+    LocalWl_PickChannel(0);
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
 #undef data_ov066_022647bc
 #undef data_ov066_022647c0
 #undef data_ov066_022647c4
-#undef data_ov066_022647c8
-#undef func_ov066_0225f2c8
-#undef func_ov066_0226292c
-#undef func_ov066_02260d74
+#undef LocalWl_Alloc
+#undef LocalWl_PickChannel
+#undef LocalWl_CompareMac
 
 // ---- unk_02262074
-#define data_ov066_022647ac (*(Unk_ov066_02262074_A * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02262074_B * *)&data_ov066_022647b4)
 #define data_ov066_022647bc (*(u8 *)&data_ov066_022647bc)
 #define data_ov066_022647c0 (*(u16 *)&data_ov066_022647c0)
-#define func_02115fb4 ((void (*)(void *, s32, s32))func_02115fb4)
-#define func_ov066_0225f2c8 ((void * (*)(s32, s32))func_ov066_0225f2c8)
-#define func_ov066_02260dac ((u32 (*)(void *))func_ov066_02260dac)
-#define func_ov066_022613dc ((void (*)(void *))func_ov066_022613dc)
-#define func_ov066_02262c38 ((s32 (*)(void))func_ov066_02262c38)
+#define MI_CpuFill8 ((void (*)(void *, s32, s32))MI_CpuFill8)
+#define LocalWl_Alloc ((void * (*)(s32, s32))LocalWl_Alloc)
+#define LocalWl_ReadBe32 ((u32 (*)(void *))LocalWl_ReadBe32)
+#define LocalWl_StartConnect ((void (*)(void *))LocalWl_StartConnect)
+#define LocalWl_MeasureNextChannel ((s32 (*)(void))LocalWl_MeasureNextChannel)
 
-s32 func_ov066_0226292c(void) {
-    if (func_ov066_02262c38() == 0) {
+s32 LocalWl_PickChannel(void) {
+    if (LocalWl_MeasureNextChannel() == 0) {
         if (data_ov066_022647bc != 0) {
             u8 i = 0;
-            u32 t = func_ov066_022623ac();
+            u32 t = LocalWl_Rand();
             u32 sel = (u8)(t % data_ov066_022647bc);
             u16 m = data_ov066_022647c0;
             do {
@@ -1962,7 +1443,7 @@ s32 func_ov066_0226292c(void) {
                     if (sel != 0) {
                         sel = (u8)(sel - 1);
                     } else {
-                        data_ov066_022647b4->unk_8d = i + 1;
+                        sLocalWlSession->channel = i + 1;
                         return 1;
                     }
                 }
@@ -1973,313 +1454,309 @@ s32 func_ov066_0226292c(void) {
     return 0;
 }
 
-void func_ov066_0226278c(void) {
+void LocalWl_ResetSessionInfo(void) {
     u8 buf[6];
-    data_ov066_022647b4->unk_1e = 0xffff;
-    data_ov066_022647b4->unk_8c = 1;
-    data_ov066_022647b4->unk_c0.f0 = 0;
-    data_ov066_022647b4->unk_c0.f1 = 0;
-    data_ov066_022647b4->unk_c0.f2 = 0;
-    data_ov066_022647b4->unk_c0.f3 = 0;
-    data_ov066_022647b4->unk_c0.f4 = 0;
-    data_ov066_022647b4->unk_c0.f5 = 0;
-    data_ov066_022647b4->unk_c0.f6 = 0;
-    data_ov066_022647b4->unk_c0.f10 = 0;
-    if ((u8)(data_ov066_022647ac->unk_08 + 2) <= 1) {
-        data_ov066_022647b4->unk_c0.f7 = 1;
-        data_ov066_022647b4->unk_8d = 0;
-        data_ov066_022647b4->unk_8e = 0;
-        data_ov066_022647b4->unk_8f = 0;
+    sLocalWlSession->myAid = 0xffff;
+    sLocalWlSession->numMembers = 1;
+    sLocalWlSession->bits.sendingMemberTable = 0;
+    sLocalWlSession->bits.memberTableResend = 0;
+    sLocalWlSession->bits.endRequested = 0;
+    sLocalWlSession->bits.ending = 0;
+    sLocalWlSession->bits.gameInfoDirty = 0;
+    sLocalWlSession->bits.startMpOnGameInfo = 0;
+    sLocalWlSession->bits.retryConnect = 0;
+    sLocalWlSession->bits.f10 = 0;
+    if ((u8)(sLocalWl->channel + 2) <= 1) {
+        sLocalWlSession->bits.autoChannel = 1;
+        sLocalWlSession->channel = 0;
+        sLocalWlSession->scanChannel = 0;
+        sLocalWlSession->fixedChannel = 0;
     } else {
-        data_ov066_022647b4->unk_c0.f7 = 0;
-        data_ov066_022647b4->unk_8d = data_ov066_022647ac->unk_08;
-        data_ov066_022647b4->unk_8e = 0;
-        data_ov066_022647b4->unk_8f = data_ov066_022647ac->unk_08;
+        sLocalWlSession->bits.autoChannel = 0;
+        sLocalWlSession->channel = sLocalWl->channel;
+        sLocalWlSession->scanChannel = 0;
+        sLocalWlSession->fixedChannel = sLocalWl->channel;
     }
-    func_02115fb4(buf, 0, 6);
+    MI_CpuFill8(buf, 0, 6);
     s32 i;
-    Unk_ov066_02262074_Row *e = (Unk_ov066_02262074_Row *)data_ov066_022647b4;
+    LocalWlSession *e = sLocalWlSession;
     for (i = 0; i < 16; i++) {
-        e->e = *(Unk_ov066_02262074_Ent *)buf;
-        e = (Unk_ov066_02262074_Row *)((u8 *)e + 6);
+        e->memberMacs[0] = *(LocalWlMacAddr *)buf; // walks memberMacs by moving the base 6 bytes per entry
+        e = (LocalWlSession *)((u8 *)e + 6);
     }
 }
 
-void func_ov066_022625e8(void) {
-    data_ov066_022647b4->unk_00 = (Unk_ov066_02262074_Rec *)func_ov066_0225f2c8(0x40, 0x20);
-    data_ov066_022647b4->unk_08 = (Unk_ov066_02262074_Rec2 *)func_ov066_0225f2c8(0x70, 0x20);
-    data_ov066_022647b4->unk_18 = 8;
-    u32 a = ((data_ov066_022647ac->unk_18 + 0xe) * data_ov066_022647ac->unk_0a + 0x29) & ~0x1f;
-    u32 b = (data_ov066_022647ac->unk_1c + 0x55) & ~0x1f;
+void LocalWl_AllocBuffers(void) {
+    sLocalWlSession->parentParam = (WMParentParam *)LocalWl_Alloc(0x40, 0x20);
+    sLocalWlSession->gameInfo = (LocalWlGameInfo *)LocalWl_Alloc(0x70, 0x20);
+    sLocalWlSession->gameInfoLength = 8;
+    u32 a = ((sLocalWl->recvChildSize + 0xe) * sLocalWl->maxChildren + 0x29) & ~0x1f;
+    u32 b = (sLocalWl->recvParentSize + 0x55) & ~0x1f;
     u16 x = (u16)(a << 1);
     u16 y = (u16)(b << 1);
     if (x <= y) {
         x = y;
     }
-    data_ov066_022647b4->unk_1a = x;
-    data_ov066_022647b4->unk_0c = func_ov066_0225f2c8(data_ov066_022647b4->unk_1a, 0x20);
-    a = (data_ov066_022647ac->unk_1a + 0x23) & ~0x1f;
-    b = (data_ov066_022647ac->unk_1e + 0x21) & ~0x1f;
+    sLocalWlSession->recvBufSize = x;
+    sLocalWlSession->recvBuf = LocalWl_Alloc(sLocalWlSession->recvBufSize, 0x20);
+    a = (sLocalWl->parentMaxSize + 0x23) & ~0x1f;
+    b = (sLocalWl->childMaxSize + 0x21) & ~0x1f;
     x = (u16)a;
     y = (u16)b;
     if (x <= y) {
         x = y;
     }
-    data_ov066_022647b4->unk_1c = x;
-    data_ov066_022647b4->unk_10 = func_ov066_0225f2c8(data_ov066_022647b4->unk_1c, 0x20);
-    data_ov066_022647b4->unk_14 = func_ov066_0225f2c8(data_ov066_022647ac->unk_1e * 2, 0x20);
-    data_ov066_022647b4->unk_b8 = 0;
-    func_ov066_022608b8();
-    func_02115640(data_ov066_022647b4->unk_22);
-    data_ov066_022647b8 = func_ov066_02260dac(data_ov066_022647b4->unk_24);
-    data_ov066_022647ac->unk_04 = 2;
-    data_ov066_022647ac->unk_00 = 0;
-    func_ov066_0226278c();
+    sLocalWlSession->sendBufSize = x;
+    sLocalWlSession->sendBuf = LocalWl_Alloc(sLocalWlSession->sendBufSize, 0x20);
+    sLocalWlSession->controlBuf = (u8 *)LocalWl_Alloc(sLocalWl->childMaxSize * 2, 0x20);
+    sLocalWlSession->recvCallback = 0;
+    LocalWl_AllocScanWork();
+    OS_GetMacAddress(sLocalWlSession->myMac);
+    sLocalWlRandSeed = LocalWl_ReadBe32(sLocalWlSession->myMac + 2);
+    sLocalWl->state = 2;
+    sLocalWl->requestedMode = 0;
+    LocalWl_ResetSessionInfo();
 }
 
-void func_ov066_02262548(void) {
-    if (data_ov066_022647b4 != NULL) {
+void LocalWl_InitWm(void) {
+    if (sLocalWlSession != NULL) {
         return;
     }
-    data_ov066_022647b4 = (Unk_ov066_02262074_B *)func_ov066_0225f2c8(0xc4, 4);
-    data_ov066_022647b4->unk_04 = (Unk_ov066_02262074_Buf *)func_ov066_0225f2c8(0xf00, 0x20);
-    if (func_0211f3dc(data_ov066_022647b4->unk_04, data_ov066_022647ac->unk_0d) == 0) {
-        func_ov066_022625e8();
+    sLocalWlSession = (LocalWlSession *)LocalWl_Alloc(0xc4, 4);
+    sLocalWlSession->wmBuf = (WMArm9Buf *)LocalWl_Alloc(0xf00, 0x20);
+    if (WM_Init(sLocalWlSession->wmBuf, sLocalWl->dmaNo) == 0) {
+        LocalWl_AllocBuffers();
         return;
     }
-    func_ov066_0225f284(data_ov066_022647b4->unk_04);
+    LocalWl_Free(sLocalWlSession->wmBuf);
 }
 
-void func_ov066_02262464(void) {
-    if (data_ov066_022647ac->unk_04 == 2) {
-        if (func_0211f188() != 0) {
+void LocalWl_FinishWm(void) {
+    if (sLocalWl->state == 2) {
+        if (WM_Finish() != 0) {
             return;
         }
-        func_ov066_022607e8();
-        func_ov066_0225f284(data_ov066_022647b4->unk_14);
-        func_ov066_0225f284(data_ov066_022647b4->unk_10);
-        func_ov066_0225f284(data_ov066_022647b4->unk_0c);
-        func_ov066_0225f284(data_ov066_022647b4->unk_08);
-        func_ov066_0225f284(data_ov066_022647b4->unk_00);
-        func_ov066_0225f284(data_ov066_022647b4->unk_04);
-        func_ov066_0225f284(data_ov066_022647b4);
-        data_ov066_022647b4 = NULL;
-        data_ov066_022647ac->unk_04 = 1;
+        LocalWl_FreeScanWork();
+        LocalWl_Free(sLocalWlSession->controlBuf);
+        LocalWl_Free(sLocalWlSession->sendBuf);
+        LocalWl_Free(sLocalWlSession->recvBuf);
+        LocalWl_Free(sLocalWlSession->gameInfo);
+        LocalWl_Free(sLocalWlSession->parentParam);
+        LocalWl_Free(sLocalWlSession->wmBuf);
+        LocalWl_Free(sLocalWlSession);
+        sLocalWlSession = NULL;
+        sLocalWl->state = 1;
     } else {
-        func_ov066_0225f22c(0x44);
+        LocalWl_SetError(0x44);
     }
 }
 
-void func_ov066_022623d4(void) {
-    func_ov066_022607c0(0);
-    data_ov066_022647b4->unk_c0.f2 = 0;
-    data_ov066_022647b4->unk_9c();
-    data_ov066_022647b4->unk_c0.f0 = 0;
-    data_ov066_022647b4->unk_c0.f1 = 0;
-    data_ov066_022647b4->unk_93 = 0;
-    data_ov066_022647b4->unk_94 = 0;
-    data_ov066_022647b4->unk_95 = 0;
-    data_ov066_022647b4->unk_98 = 0;
-    func_ov066_02261c5c();
-    func_ov066_02262be4();
+void LocalWl_StartSession(void) {
+    LocalWl_SetBeaconFilter(0);
+    sLocalWlSession->bits.endRequested = 0;
+    sLocalWlSession->resetHook();
+    sLocalWlSession->bits.sendingMemberTable = 0;
+    sLocalWlSession->bits.memberTableResend = 0;
+    sLocalWlSession->roleTurnTarget = 0;
+    sLocalWlSession->roleTurnCount = 0;
+    sLocalWlSession->scanSlot = 0;
+    sLocalWlSession->readyMask = 0;
+    LocalWl_ClearMembers();
+    LocalWl_UpdateAllowedChannels();
 }
 
-u32 func_ov066_022623ac(void) {
-    u32 t = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    data_ov066_022647b8 = t;
+u32 LocalWl_Rand(void) {
+    u32 t = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    sLocalWlRandSeed = t;
     return t;
 }
 
-u32 func_ov066_0226238c(void) {
-    if (data_ov066_022647b4 != NULL) {
-        return data_ov066_022647b4->unk_1e;
+u32 LocalWl_GetMyAid(void) {
+    if (sLocalWlSession != NULL) {
+        return sLocalWlSession->myAid;
     }
     return 0xffff;
 }
 
-u32 func_ov066_0226233c(void) {
-    if (func_ov066_0225ffcc() != 10) {
+u32 LocalWl_GetConnectedMask(void) {
+    if (LocalWl_GetState() != 10) {
         return 0;
     }
-    Unk_ov066_02262074_Data *d = (Unk_ov066_02262074_Data *)data_ov066_022647b4->unk_04->unk_04;
-    func_02114594(&d->unk_17e, 2);
-    return d->unk_17e;
+    WMStatus *d = sLocalWlSession->wmBuf->status;
+    DC_InvalidateRange(&d->f17e, 2);
+    return d->f17e;
 }
 
-s32 func_ov066_022622f4(void) {
-    if (data_ov066_022647b4 != NULL) {
-        if (data_ov066_022647b4->unk_b4 != NULL) {
-            return data_ov066_022647b4->unk_b4();
+s32 LocalWl_IsReadyToSend(void) {
+    if (sLocalWlSession != NULL) {
+        if (sLocalWlSession->isReadyToSendHook != NULL) {
+            return sLocalWlSession->isReadyToSendHook();
         }
     }
     return 0;
 }
 
-s32 func_ov066_022622ac(u32 a, u32 b, u32 c, u32 d) {
-    if (data_ov066_022647b4 != NULL) {
-        if (data_ov066_022647b4->unk_b0 != NULL) {
-            return data_ov066_022647b4->unk_b0(a, b, c, d);
+s32 LocalWl_Send(u32 a, u32 b, u32 c, u32 d) {
+    if (sLocalWlSession != NULL) {
+        if (sLocalWlSession->sendHook != NULL) {
+            return sLocalWlSession->sendHook(a, b, c, d);
         }
     }
     return 0;
 }
 
-void func_ov066_0226223c(u32 a, u32 b) {
-    Unk_ov066_02262074_Rec2 *r = data_ov066_022647b4->unk_08;
+void LocalWl_BuildGameInfo(u32 a, u32 b) {
+    LocalWlGameInfo *r = sLocalWlSession->gameInfo;
     if (a != 0xe34d) {
-        r->unk_00 = a;
+        r->tag = a;
     }
-    data_ov066_022647b8 = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    r->unk_02 = data_ov066_022647b8;
-    r->unk_04 = data_ov066_022647b4->unk_95;
-    r->unk_05 = b;
-    r->unk_06 = 5;
+    sLocalWlRandSeed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    r->nonce = sLocalWlRandSeed;
+    r->scanSlot = sLocalWlSession->scanSlot;
+    r->memberCount = b;
+    r->version = 5;
 }
 
-void func_ov066_0226214c(u32 a) {
-    Unk_ov066_02262074_Rec *r = data_ov066_022647b4->unk_00;
-    data_ov066_022647b4->unk_8c = 1;
-    func_ov066_0226223c(a, 1);
-    r->unk_00 = data_ov066_022647b4->unk_08;
-    r->unk_04 = data_ov066_022647b4->unk_18;
-    r->unk_08 = data_ov066_022647ac->unk_28;
-    data_ov066_022647b8 = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    data_ov066_022647b4->unk_20 = data_ov066_022647b8;
-    r->unk_0c = data_ov066_022647b4->unk_20;
-    r->unk_0e = 1;
-    r->unk_12 = 0;
-    r->unk_14 = 0;
-    r->unk_16 = 0;
-    r->unk_10 = data_ov066_022647ac->unk_0a;
-    r->unk_18 = func_0211f698();
-    r->unk_32 = data_ov066_022647b4->unk_8d;
-    r->unk_34 = data_ov066_022647ac->unk_1a;
-    r->unk_36 = data_ov066_022647ac->unk_1e;
+void LocalWl_BuildParentParameter(u32 a) {
+    WMParentParam *r = sLocalWlSession->parentParam;
+    sLocalWlSession->numMembers = 1;
+    LocalWl_BuildGameInfo(a, 1);
+    r->userGameInfo = sLocalWlSession->gameInfo;
+    r->userGameInfoLength = sLocalWlSession->gameInfoLength;
+    r->ggid = sLocalWl->ggid;
+    sLocalWlRandSeed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    sLocalWlSession->tgid = sLocalWlRandSeed;
+    r->tgid = sLocalWlSession->tgid;
+    r->entryFlag = 1;
+    r->multiBootFlag = 0;
+    r->KS_Flag = 0;
+    r->CS_Flag = 0;
+    r->maxEntry = sLocalWl->maxChildren;
+    r->beaconPeriod = WM_GetDispersionBeaconPeriod();
+    r->channel = sLocalWlSession->channel;
+    r->parentMaxSize = sLocalWl->parentMaxSize;
+    r->childMaxSize = sLocalWl->childMaxSize;
 }
 
-void func_ov066_02262108(u32 a) {
-    data_ov066_022647ac->unk_04 = 6;
-    data_ov066_022647b4->unk_96 = 0;
-    func_ov066_0226214c(a);
-    func_ov066_0226160c();
+void LocalWl_BeginParent(u32 a) {
+    sLocalWl->state = 6;
+    sLocalWlSession->numBeaconsSent = 0;
+    LocalWl_BuildParentParameter(a);
+    LocalWl_SetParentParameter();
 }
 
-void func_ov066_022620e8(void) {
-    func_ov066_02262074(data_ov066_022647b4->unk_88, 0);
+void LocalWl_ConnectToSelected(void) {
+    LocalWl_ConnectToBeacon((u8 *)sLocalWlSession->selectedBeacon, 0);
 }
 
-void func_ov066_02262074(u8 *p, u32 v) {
-    if (data_ov066_022647ac->unk_04 != 4) {
+void LocalWl_ConnectToBeacon(u8 *p, u32 v) {
+    if (sLocalWl->state != 4) {
         return;
     }
     if (p == NULL) {
         return;
     }
-    data_ov066_022647ac->unk_04 = 8;
+    sLocalWl->state = 8;
     {
         u32 w = v & 1;
-        u32 c = *(u32 *)&data_ov066_022647b4->unk_c0;
-        *(u32 *)&data_ov066_022647b4->unk_c0 = (c & ~0x40) | (w << 6);
+        u32 c = *(u32 *)&sLocalWlSession->flags;
+        *(u32 *)&sLocalWlSession->flags = (c & ~0x40) | (w << 6);
     }
-    func_ov066_022613dc(p + 0x20);
+    LocalWl_StartConnect(p + 0x20);
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
 #undef data_ov066_022647bc
 #undef data_ov066_022647c0
-#undef func_02115fb4
-#undef func_ov066_0225f2c8
-#undef func_ov066_02260dac
-#undef func_ov066_022613dc
-#undef func_ov066_02262c38
+#undef MI_CpuFill8
+#undef LocalWl_Alloc
+#undef LocalWl_ReadBe32
+#undef LocalWl_StartConnect
+#undef LocalWl_MeasureNextChannel
 
 // ---- unk_02261764
-#define data_ov066_022647ac (*(Unk_ov066_02261764_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02261764_V * *)&data_ov066_022647b4)
-#define func_02115fb4 ((s32 (*)(void *, u32, u32))func_02115fb4)
-#define func_ov066_02261704 ((void (*)(u8 *))func_ov066_02261704)
+#define MI_CpuFill8 ((s32 (*)(void *, u32, u32))MI_CpuFill8)
+#define LocalWl_ApplyMemberTable ((void (*)(u8 *))LocalWl_ApplyMemberTable)
 
-s32 func_ov066_02261ff8(void *a, u32 n) {
-    if (data_ov066_022647b4 != NULL && n <= 0x68) {
-        u8 *p = (u8 *)data_ov066_022647b4->unk_08;
-        data_ov066_022647b4->unk_c0.f4 = 1;
-        func_02116048(a, p + 8, n);
+s32 LocalWl_SetGameInfo(void *a, u32 n) {
+    if (sLocalWlSession != NULL && n <= 0x68) {
+        u8 *p = (u8 *)sLocalWlSession->gameInfo;
+        sLocalWlSession->bits.gameInfoDirty = 1;
+        MI_CpuCopy8(a, p + 8, n);
         p[7] = n;
-        data_ov066_022647b4->unk_18 = (n + 9) & ~1;
+        sLocalWlSession->gameInfoLength = (n + 9) & ~1;
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov066_02261f6c(u32 idx, u8 *src) {
+void LocalWl_SetMember(u32 idx, u8 *src) {
     u8 buf[6];
     u8 *r;
     if (src != NULL) {
-        func_02116048(src, buf, 6);
+        MI_CpuCopy8(src, buf, 6);
     } else {
-        func_02115fb4(buf, 0, 6);
+        MI_CpuFill8(buf, 0, 6);
     }
-    r = (u8 *)data_ov066_022647b4 + idx * 6;
-    *(Unk_ov066_02261764_R6 *)(r + 0x28) = *(Unk_ov066_02261764_R6 *)buf;
-    func_ov066_02261c80();
+    r = (u8 *)sLocalWlSession + idx * 6;
+    *(LocalWlMacAddr *)(r + 0x28) = *(LocalWlMacAddr *)buf;
+    LocalWl_CountMembers();
 }
 
-void func_ov066_02261ee8(void) {
-    Unk_ov066_02261764_Hdr h;
+void LocalWl_SendReady(void) {
+    LocalWlControlHdr h;
     u32 seed;
-    seed = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    h.a = 2;
-    h.b = 8;
-    data_ov066_022647b8 = seed;
-    h.c = seed;
-    func_02116048(&h, data_ov066_022647b4->unk_14, 8);
-    data_ov066_022647b4->unk_ac(data_ov066_022647b4->unk_14, 8, 1, 0);
+    seed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    h.type = 2;
+    h.size = 8;
+    sLocalWlRandSeed = seed;
+    h.nonce = seed;
+    MI_CpuCopy8(&h, sLocalWlSession->controlBuf, 8);
+    sLocalWlSession->sendControlHook(sLocalWlSession->controlBuf, 8, 1, 0);
 }
 
-void func_ov066_02261dfc(void) {
-    Unk_ov066_02261764_Hdr h;
+void LocalWl_SendMemberTable(void) {
+    LocalWlControlHdr h;
     u32 seed;
-    if (data_ov066_022647b4->unk_c0.f0 != 0) {
-        data_ov066_022647b4->unk_c0.f1 = 1;
+    if (sLocalWlSession->bits.sendingMemberTable != 0) {
+        sLocalWlSession->bits.memberTableResend = 1;
         return;
     }
-    data_ov066_022647b4->unk_c0.f0 = 1;
-    data_ov066_022647b4->unk_c0.f1 = 0;
-    h.a = 0;
-    h.b = 0x68;
-    seed = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-    data_ov066_022647b8 = seed;
-    h.c = seed;
-    func_02116048(&h, data_ov066_022647b4->unk_14, 8);
-    func_02116048(data_ov066_022647b4->unk_28, data_ov066_022647b4->unk_14 + 8, 0x60);
-    data_ov066_022647b4->unk_ac(data_ov066_022647b4->unk_14, 0x68, 0xffff, func_ov066_02261db0);
+    sLocalWlSession->bits.sendingMemberTable = 1;
+    sLocalWlSession->bits.memberTableResend = 0;
+    h.type = 0;
+    h.size = 0x68;
+    seed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+    sLocalWlRandSeed = seed;
+    h.nonce = seed;
+    MI_CpuCopy8(&h, sLocalWlSession->controlBuf, 8);
+    MI_CpuCopy8(sLocalWlSession->memberMacs, sLocalWlSession->controlBuf + 8, 0x60);
+    sLocalWlSession->sendControlHook(sLocalWlSession->controlBuf, 0x68, 0xffff, LocalWl_OnMemberTableSent);
 }
 
-void func_ov066_02261db0(void) {
-    data_ov066_022647b4->unk_c0.f0 = 0;
-    if (data_ov066_022647b4->unk_c0.f1 == 0) {
+void LocalWl_OnMemberTableSent(void) {
+    sLocalWlSession->bits.sendingMemberTable = 0;
+    if (sLocalWlSession->bits.memberTableResend == 0) {
         return;
     }
-    func_ov066_02261dfc();
+    LocalWl_SendMemberTable();
 }
 
-void func_ov066_02261ce0(u8 *a, u8 *b) {
+void LocalWl_MergeMemberTable(u8 *a, u8 *b) {
     u16 i = 0;
     do {
-        BOOL ra = func_ov066_022609e4(a + i * 6);
-        BOOL rb = func_ov066_022609e4(b + i * 6);
-        *(Unk_ov066_02261764_R6 *)(a + i * 6) = *(Unk_ov066_02261764_R6 *)(b + i * 6);
+        BOOL ra = LocalWl_IsMacSet(a + i * 6);
+        BOOL rb = LocalWl_IsMacSet(b + i * 6);
+        *(LocalWlMacAddr *)(a + i * 6) = *(LocalWlMacAddr *)(b + i * 6);
         if (ra == 0 && rb != 0) {
-            func_ov066_0225f1c0(0, i);
+            LocalWl_PostEvent(0, i);
         }
         if (ra != 0 && rb == 0) {
-            func_ov066_0225f1c0(1, i);
+            LocalWl_PostEvent(1, i);
         }
         i++;
     } while (i < 16);
 }
 
-void func_ov066_02261c80(void) {
+void LocalWl_CountMembers(void) {
     s32 i;
     u8 n;
     s32 off;
@@ -2287,101 +1764,101 @@ void func_ov066_02261c80(void) {
     i = 0;
     off = 0;
     do {
-        if (func_ov066_022609e4(data_ov066_022647b4->unk_28 + off) != 0) {
+        if (LocalWl_IsMacSet((u8 *)sLocalWlSession->memberMacs + off) != 0) {
             n++;
         }
         i++;
         off += 6;
     } while (i < 16);
-    data_ov066_022647b4->unk_8c = n;
+    sLocalWlSession->numMembers = n;
 }
 
-void func_ov066_02261c5c(void) {
-    func_02115fb4(data_ov066_022647b4->unk_28, 0, 0x60);
+void LocalWl_ClearMembers(void) {
+    MI_CpuFill8(sLocalWlSession->memberMacs, 0, 0x60);
 }
 
-void func_ov066_02261bfc(Unk_ov066_02261764_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnControlRecv(WMPortRecvCallback *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (func_ov066_02261650() != 0) {
+    if (LocalWl_CheckEndRequest() != 0) {
         return;
     }
-    if (data_ov066_022647b4->unk_1e == 0) {
-        func_ov066_022618dc(m);
+    if (sLocalWlSession->myAid == 0) {
+        LocalWl_OnParentControl(m);
         return;
     }
-    func_ov066_02261764(m);
+    LocalWl_OnChildControl(m);
 }
 
-void func_ov066_02261bc4(u32 a) {
-    if (data_ov066_022647b4->unk_bc == NULL) {
+void LocalWl_CallMemberLeftCb(u32 a) {
+    if (sLocalWlSession->memberLeftHook == NULL) {
         return;
     }
-    data_ov066_022647b4->unk_bc(a);
+    sLocalWlSession->memberLeftHook(a);
 }
 
-void func_ov066_02261b14(void) {
-    if (data_ov066_022647b4->unk_c0.f4 != 0) {
-        func_ov066_0226223c(0xe34d, data_ov066_022647b4->unk_8c);
-        func_ov066_022611b4();
-        data_ov066_022647b4->unk_c0.f4 = 0;
+void LocalWl_OnBeaconSent(void) {
+    if (sLocalWlSession->bits.gameInfoDirty != 0) {
+        LocalWl_BuildGameInfo(0xe34d, sLocalWlSession->numMembers);
+        LocalWl_UpdateGameInfo();
+        sLocalWlSession->bits.gameInfoDirty = 0;
     }
-    if (data_ov066_022647ac->unk_04 != 6) {
+    if (sLocalWl->state != 6) {
         return;
     }
-    data_ov066_022647b4->unk_96++;
-    if (data_ov066_022647b4->unk_96 < data_ov066_022647ac->unk_14) {
+    sLocalWlSession->numBeaconsSent++;
+    if (sLocalWlSession->numBeaconsSent < sLocalWl->parentWaitBeacons) {
         return;
     }
-    func_ov066_0225f5b4();
+    LocalWl_Advance();
 }
 
-void func_ov066_02261a4c(Unk_ov066_02261764_Msg *m) {
-    data_ov066_022647b4->unk_c0.f4 = 1;
-    if (data_ov066_022647ac->unk_04 == 6) {
-        data_ov066_022647ac->unk_04 = 9;
-        data_ov066_022647b4->unk_1e = 0;
-        func_ov066_02261c5c();
-        data_ov066_022647b4->unk_c0.f5 = 1;
-        func_ov066_0226223c(0xbd8a, data_ov066_022647b4->unk_8c);
-        func_ov066_022611b4();
+void LocalWl_OnChildJoined(LocalWlEventMsg *m) {
+    sLocalWlSession->bits.gameInfoDirty = 1;
+    if (sLocalWl->state == 6) {
+        sLocalWl->state = 9;
+        sLocalWlSession->myAid = 0;
+        LocalWl_ClearMembers();
+        sLocalWlSession->bits.startMpOnGameInfo = 1;
+        LocalWl_BuildGameInfo(0xbd8a, sLocalWlSession->numMembers);
+        LocalWl_UpdateGameInfo();
     }
-    func_ov066_02261f6c(m->unk_10, (u8 *)&m->unk_0a);
-    func_ov066_0225f1c0(0, m->unk_10);
-    if (data_ov066_022647b4->unk_8c < data_ov066_022647ac->unk_0b) {
+    LocalWl_SetMember(m->peerAid, m->peerMac);
+    LocalWl_PostEvent(0, m->peerAid);
+    if (sLocalWlSession->numMembers < sLocalWl->maxMembers) {
         return;
     }
-    func_ov066_02260e4c(0);
+    LocalWl_SetEntry(0);
 }
 
-void func_ov066_02261958(Unk_ov066_02261764_Msg *m) {
-    if (data_ov066_022647b4->unk_8c == data_ov066_022647ac->unk_0b) {
-        func_ov066_02260e4c(1);
+void LocalWl_OnChildLeft(LocalWlEventMsg *m) {
+    if (sLocalWlSession->numMembers == sLocalWl->maxMembers) {
+        LocalWl_SetEntry(1);
     }
-    data_ov066_022647b4->unk_98 &= ~(1 << m->unk_10);
-    func_ov066_02261f6c(m->unk_10, 0);
-    func_ov066_0225f1c0(1, m->unk_10);
-    if (data_ov066_022647b4->unk_8c <= 1) {
-        if (data_ov066_022647b4->unk_c0.f2 != 0) {
+    sLocalWlSession->readyMask &= ~(1 << m->peerAid);
+    LocalWl_SetMember(m->peerAid, 0);
+    LocalWl_PostEvent(1, m->peerAid);
+    if (sLocalWlSession->numMembers <= 1) {
+        if (sLocalWlSession->bits.endRequested != 0) {
             return;
         }
-        data_ov066_022647b4->unk_9c();
-        data_ov066_022647b4->unk_c0.f0 = 0;
-        data_ov066_022647b4->unk_c0.f1 = 0;
+        sLocalWlSession->resetHook();
+        sLocalWlSession->bits.sendingMemberTable = 0;
+        sLocalWlSession->bits.memberTableResend = 0;
     } else {
-        func_ov066_02261bc4(m->unk_10);
-        func_ov066_02261dfc();
-        data_ov066_022647b4->unk_c0.f4 = 1;
+        LocalWl_CallMemberLeftCb(m->peerAid);
+        LocalWl_SendMemberTable();
+        sLocalWlSession->bits.gameInfoDirty = 1;
     }
 }
 
-void func_ov066_022618dc(Unk_ov066_02261764_Msg *m) {
+void LocalWl_OnParentControl(WMPortRecvCallback *m) {
     u16 b[4];
-    if (m->unk_10 == 0) {
+    if (m->length == 0) {
         return;
     }
-    func_02116048(m->unk_0c, b, 4);
+    MI_CpuCopy8(m->data, b, 4);
     if (b[0] == 0) {
         return;
     }
@@ -2391,46 +1868,46 @@ void func_ov066_022618dc(Unk_ov066_02261764_Msg *m) {
     if (b[0] != 2) {
         return;
     }
-    func_ov066_02261894(m->unk_12, m->unk_0c);
+    LocalWl_OnChildReady(m->aid, (u8 *)m->data);
 }
 
-void func_ov066_02261894(u32 idx, u8 *src) {
+void LocalWl_OnChildReady(u32 idx, u8 *src) {
     u8 buf[8];
-    func_02116048(src, buf, 8);
-    data_ov066_022647b4->unk_98 |= 1 << idx;
-    func_ov066_02261dfc();
+    MI_CpuCopy8(src, buf, 8);
+    sLocalWlSession->readyMask |= 1 << idx;
+    LocalWl_SendMemberTable();
 }
 
-void func_ov066_02261860(Unk_ov066_02261764_Msg *m) {
-    data_ov066_022647ac->unk_04 = 9;
-    data_ov066_022647b4->unk_1e = m->unk_0a;
-    func_ov066_022610b0();
+void LocalWl_OnChildConnected(LocalWlEventMsg *m) {
+    sLocalWl->state = 9;
+    sLocalWlSession->myAid = m->myAid;
+    LocalWl_StartMp();
 }
 
-void func_ov066_0226185c(void) {
+void LocalWl_OnChildEvent8Stub(void) {
 }
 
-void func_ov066_022617d4(void) {
-    data_ov066_022647ac->unk_04 = 4;
-    data_ov066_022647b4->unk_9c();
-    if (data_ov066_022647ac->unk_3c.f8 != 0) {
-        func_ov066_02261f6c(0, 0);
+void LocalWl_OnParentLost(void) {
+    sLocalWl->state = 4;
+    sLocalWlSession->resetHook();
+    if (sLocalWl->bits.f8 != 0) {
+        LocalWl_SetMember(0, 0);
     }
-    if (data_ov066_022647b4->unk_c0.f2 == 0) {
-        func_ov066_0225f824();
+    if (sLocalWlSession->bits.endRequested == 0) {
+        LocalWl_Abort();
     }
-    func_ov066_0225f1c0(2, 0);
+    LocalWl_PostEvent(2, 0);
 }
 
-void func_ov066_02261764(Unk_ov066_02261764_Msg *m) {
+void LocalWl_OnChildControl(WMPortRecvCallback *m) {
     u16 b[4];
-    if (m->unk_10 == 0) {
+    if (m->length == 0) {
         return;
     }
-    func_02116048(m->unk_0c, b, 4);
+    MI_CpuCopy8(m->data, b, 4);
     switch (b[0]) {
     case 0:
-        func_ov066_02261704(m->unk_0c);
+        LocalWl_ApplyMemberTable((u8 *)m->data);
         break;
     case 1:
         return;
@@ -2438,366 +1915,358 @@ void func_ov066_02261764(Unk_ov066_02261764_Msg *m) {
         break;
     }
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
-#undef func_02115fb4
-#undef func_ov066_02261704
+#undef MI_CpuFill8
+#undef LocalWl_ApplyMemberTable
 
 // ---- unk_02260e18
-#define data_ov066_022647ac (*(Unk_ov066_02260e18_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02260e18_V * *)&data_ov066_022647b4)
-#define func_01ffa2ec ((s32 (*)(void))func_01ffa2ec)
-#define func_01ffa3d4 ((s32 (*)(s32))func_01ffa3d4)
-#define func_ov066_02261f6c ((void (*)(u32, void *))func_ov066_02261f6c)
-#define func_ov066_02261860 ((void (*)(void *))func_ov066_02261860)
-#define func_ov066_0226185c ((void (*)(void *))func_ov066_0226185c)
-#define func_ov066_022617d4 ((void (*)(void *))func_ov066_022617d4)
-#define func_ov066_02261b14 ((void (*)(void *))func_ov066_02261b14)
-#define func_ov066_02261a4c ((void (*)(void *))func_ov066_02261a4c)
-#define func_ov066_02261958 ((void (*)(void *))func_ov066_02261958)
-#define func_ov066_02261ce0 ((void (*)(void *, void *))func_ov066_02261ce0)
-#define func_ov066_02260dd0 ((void (*)(void))func_ov066_02260dd0)
+#define OS_DisableInterrupts ((s32 (*)(void))OS_DisableInterrupts)
+#define OS_RestoreInterrupts ((s32 (*)(s32))OS_RestoreInterrupts)
+#define LocalWl_SetMember ((void (*)(u32, void *))LocalWl_SetMember)
+#define LocalWl_OnChildConnected ((void (*)(void *))LocalWl_OnChildConnected)
+#define LocalWl_OnChildEvent8Stub ((void (*)(void *))LocalWl_OnChildEvent8Stub)
+#define LocalWl_OnParentLost ((void (*)(void *))LocalWl_OnParentLost)
+#define LocalWl_OnBeaconSent ((void (*)(void *))LocalWl_OnBeaconSent)
+#define LocalWl_OnChildJoined ((void (*)(void *))LocalWl_OnChildJoined)
+#define LocalWl_OnChildLeft ((void (*)(void *))LocalWl_OnChildLeft)
+#define LocalWl_MergeMemberTable ((void (*)(void *, void *))LocalWl_MergeMemberTable)
+#define LocalWl_OnConnectFailReset ((void (*)(void))LocalWl_OnConnectFailReset)
 
-void func_ov066_02261704(void *m) {
+void LocalWl_ApplyMemberTable(void *m) {
     u8 buf[8];
-    func_02116048(m, buf, 8);
-    func_ov066_02261ce0((u8 *)data_ov066_022647b4 + 0x28, (u8 *)m + 8);
-    func_ov066_02261c80();
-    if (data_ov066_022647ac->unk_04 == 9) {
-        data_ov066_022647ac->unk_04 = 11;
+    MI_CpuCopy8(m, buf, 8);
+    LocalWl_MergeMemberTable((u8 *)sLocalWlSession + 0x28, (u8 *)m + 8);
+    LocalWl_CountMembers();
+    if (sLocalWl->state == 9) {
+        sLocalWl->state = 11;
     }
-    func_ov066_0225f5b4();
+    LocalWl_Advance();
 }
 
-void func_ov066_022616c8(void) {
-    s32 t = func_01ffa2ec();
-    Unk_ov066_02260e18_V *v = data_ov066_022647b4;
-    if (v->unk_c0.f3 == 0) {
-        v->unk_c0.f2 = 1;
+void LocalWl_RequestEnd(void) {
+    s32 t = OS_DisableInterrupts();
+    LocalWlSession *v = sLocalWlSession;
+    if (v->bits.ending == 0) {
+        v->bits.endRequested = 1;
     }
-    func_01ffa3d4(t);
+    OS_RestoreInterrupts(t);
 }
 
-s32 func_ov066_02261650(void) {
-    if (data_ov066_022647b4->unk_c0.f2 != 0 && data_ov066_022647b4->unk_c0.f3 == 0) {
-        func_ov066_02260efc();
-        data_ov066_022647b4->unk_c0.f3 = 1;
-        data_ov066_022647b4->unk_c0.f2 = 0;
+s32 LocalWl_CheckEndRequest(void) {
+    if (sLocalWlSession->bits.endRequested != 0 && sLocalWlSession->bits.ending == 0) {
+        LocalWl_EndMp();
+        sLocalWlSession->bits.ending = 1;
+        sLocalWlSession->bits.endRequested = 0;
         return 1;
     }
     return 0;
 }
 
-void func_ov066_0226160c(void) {
-    s32 r = func_02120164((void *)func_ov066_022615d8, data_ov066_022647b4->unk_00);
+void LocalWl_SetParentParameter(void) {
+    s32 r = WM_SetParentParameter((void *)LocalWl_OnSetParentParameter, (u32)sLocalWlSession->parentParam);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_022615d8(Unk_ov066_02260e18_Msg *m) {
-    if (m->unk_02 == 0) {
-        func_ov066_022615a4();
+void LocalWl_OnSetParentParameter(LocalWlEventMsg *m) {
+    if (m->errcode == 0) {
+        LocalWl_StartParentNow();
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-void func_ov066_022615a4(void) {
-    s32 r = func_021200a8((void *)func_ov066_022614c4);
+void LocalWl_StartParentNow(void) {
+    s32 r = WM_StartParent((void *)LocalWl_OnParentEvent);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_022614c4(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnParentEvent(LocalWlEventMsg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        switch (m->unk_08) {
+    if (m->errcode == 0) {
+        switch (m->event) {
         case 0:
             break;
         case 2:
-            func_ov066_02261b14(m);
+            LocalWl_OnBeaconSent(m);
             break;
         case 7:
-            func_ov066_02261a4c(m);
+            LocalWl_OnChildJoined(m);
             break;
         case 9:
-            if (data_ov066_022647b4->unk_c0.f2 != 0) {
-                func_ov066_0225f824();
+            if (sLocalWlSession->bits.endRequested != 0) {
+                LocalWl_Abort();
             } else {
-                func_ov066_02261958(m);
+                LocalWl_OnChildLeft(m);
             }
             break;
         }
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-void func_ov066_02261490(void) {
-    s32 r = func_02120060((void *)func_ov066_02261420);
+void LocalWl_EndParent(void) {
+    s32 r = WM_EndParent((void *)LocalWl_OnEndParent);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02261420(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnEndParent(LocalWlEventMsg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        if (data_ov066_022647b4->unk_c0.f3 != 0) {
-            func_ov066_0226278c();
+    if (m->errcode == 0) {
+        sLocalWl->state = 4;
+        if (sLocalWlSession->bits.ending != 0) {
+            LocalWl_ResetSessionInfo();
         }
-        func_ov066_0225f5b4();
+        LocalWl_Advance();
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-void func_ov066_022613dc(u32 a) {
-    s32 r = func_0211fcbc((void *)func_ov066_022612cc, a, 0, 1, 0);
+void LocalWl_StartConnect(u32 a) {
+    s32 r = WM_StartConnectEx((void *)LocalWl_OnChildConnectEvent, a, 0, 1, 0);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_022612cc(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnChildConnectEvent(LocalWlEventMsg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        switch (m->unk_08) {
+    if (m->errcode == 0) {
+        switch (m->event) {
         case 6:
             break;
         case 7:
-            func_ov066_02261860(m);
+            LocalWl_OnChildConnected(m);
             break;
         case 8:
-            func_ov066_0226185c(m);
+            LocalWl_OnChildEvent8Stub(m);
             break;
         case 9:
-            if (data_ov066_022647b4->unk_c0.f2 != 0) {
-                func_ov066_0225f824();
+            if (sLocalWlSession->bits.endRequested != 0) {
+                LocalWl_Abort();
             } else {
-                func_ov066_022617d4(m);
+                LocalWl_OnParentLost(m);
             }
             break;
         default:
-            func_ov066_0225f22c(0x10);
+            LocalWl_SetError(0x10);
             break;
         }
-    } else if (m->unk_02 == 1) {
-        if (data_ov066_022647b4->unk_c0.f6 != 0) {
-            func_ov066_0225f3c8((void *)func_ov066_02260dd0);
+    } else if (m->errcode == 1) {
+        if (sLocalWlSession->bits.retryConnect != 0) {
+            LocalWl_Reset((void *)LocalWl_OnConnectFailReset);
         } else {
-            func_ov066_0225f824();
+            LocalWl_Abort();
         }
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-s32 func_ov066_0226128c(u32 a) {
-    s32 r = func_0211fbb4((void *)func_ov066_02261238, a);
+s32 LocalWl_Disconnect(u32 a) {
+    s32 r = WM_Disconnect((void *)LocalWl_OnDisconnect, a);
     if (r == 2) {
         return 1;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
     return 0;
 }
 
-void func_ov066_02261238(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnDisconnect(LocalWlEventMsg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_0226278c();
-        func_ov066_0225f5b4();
+    if (m->errcode == 0) {
+        sLocalWl->state = 4;
+        LocalWl_ResetSessionInfo();
+        LocalWl_Advance();
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-void func_ov066_022611b4(void) {
-    Unk_ov066_02260e18_S *s = data_ov066_022647ac;
-    u32 t = s->unk_0b;
-    u32 f = (*(Unk_ov066_02260e18_V *volatile *)&data_ov066_022647b4)->unk_8c < t;
-    Unk_ov066_02260e18_V *v = *(Unk_ov066_02260e18_V *volatile *)&data_ov066_022647b4;
-    s32 r = func_02121a24((void *)func_ov066_02261158, v->unk_08, v->unk_18, s->unk_28, v->unk_20, f);
+void LocalWl_UpdateGameInfo(void) {
+    LocalWlWork *s = sLocalWl;
+    u32 t = s->maxMembers;
+    u32 f = (*(LocalWlSession *volatile *)&sLocalWlSession)->numMembers < t;
+    LocalWlSession *v = *(LocalWlSession *volatile *)&sLocalWlSession;
+    s32 r = WM_SetGameInfo((void *)LocalWl_OnSetGameInfo, (u32)v->gameInfo, v->gameInfoLength, s->ggid, v->tgid, f);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02261158(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnSetGameInfo(LocalWlEventMsg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        if (data_ov066_022647b4->unk_c0.f5 == 0) {
+    if (m->errcode == 0) {
+        if (sLocalWlSession->bits.startMpOnGameInfo == 0) {
             return;
         }
-        func_ov066_022610b0();
+        LocalWl_StartMp();
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-void func_ov066_022610b0(void) {
-    s32 r = func_021206b4((void *)func_ov066_02260f30, data_ov066_022647b4->unk_0c, data_ov066_022647b4->unk_1a,
-                          data_ov066_022647b4->unk_10, data_ov066_022647b4->unk_1c, data_ov066_022647ac->unk_17, 4,
-                          data_ov066_022647ac->unk_3c.f0, data_ov066_022647ac->unk_3c.f1, 1,
-                          data_ov066_022647ac->unk_3c.f2);
+void LocalWl_StartMp(void) {
+    s32 r = WM_StartMPEx((void *)LocalWl_OnMpEvent, (u32)sLocalWlSession->recvBuf, sLocalWlSession->recvBufSize,
+                          (u32)sLocalWlSession->sendBuf, sLocalWlSession->sendBufSize, sLocalWl->mpFreq, 4,
+                          sLocalWl->bits.f0, sLocalWl->bits.f1, 1,
+                          sLocalWl->bits.f2);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02260f30(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnMpEvent(LocalWlEventMsg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        switch (m->unk_04) {
+    if (m->errcode == 0) {
+        switch (m->mpEvent) {
         case 10:
-            data_ov066_022647b4->unk_c0.f5 = 0;
-            data_ov066_022647ac->unk_3c.f12 = 1;
-            data_ov066_022647b4->unk_9c();
-            data_ov066_022647b4->unk_c0.f0 = 0;
-            data_ov066_022647b4->unk_c0.f1 = 0;
-            if (data_ov066_022647b4->unk_1e == 0) {
-                func_ov066_02261f6c(0, &data_ov066_022647b4->unk_22[0]);
-                if (data_ov066_022647ac->unk_04 != 10) {
-                    data_ov066_022647ac->unk_04 = 10;
+            sLocalWlSession->bits.startMpOnGameInfo = 0;
+            sLocalWl->bits.mpStarted = 1;
+            sLocalWlSession->resetHook();
+            sLocalWlSession->bits.sendingMemberTable = 0;
+            sLocalWlSession->bits.memberTableResend = 0;
+            if (sLocalWlSession->myAid == 0) {
+                LocalWl_SetMember(0, &sLocalWlSession->myMac[0]);
+                if (sLocalWl->state != 10) {
+                    sLocalWl->state = 10;
                 }
-                func_ov066_02261dfc();
-                func_ov066_0225f5b4();
+                LocalWl_SendMemberTable();
+                LocalWl_Advance();
             } else {
-                func_ov066_02261ee8();
+                LocalWl_SendReady();
             }
             break;
         case 11:
-            func_ov066_02261650();
-            if (data_ov066_022647b4->unk_a0 != NULL) {
-                data_ov066_022647b4->unk_a0();
+            LocalWl_CheckEndRequest();
+            if (sLocalWlSession->parentSendHook != NULL) {
+                sLocalWlSession->parentSendHook();
             }
             break;
         case 12:
-            func_ov066_02261650();
+            LocalWl_CheckEndRequest();
             break;
         case 13:
-            if (data_ov066_022647b4->unk_a4 != NULL) {
-                data_ov066_022647b4->unk_a4();
+            if (sLocalWlSession->childSendHook != NULL) {
+                sLocalWlSession->childSendHook();
             }
             break;
         }
     } else {
-        if (m->unk_02 != 9 && m->unk_02 != 0xd && m->unk_02 != 0xf) {
-            func_ov066_0225f22c(m->unk_02);
+        if (m->errcode != 9 && m->errcode != 0xd && m->errcode != 0xf) {
+            LocalWl_SetError(m->errcode);
         }
     }
 }
 
-void func_ov066_02260efc(void) {
-    s32 r = func_021204a0((void *)func_ov066_02260e84);
+void LocalWl_EndMp(void) {
+    s32 r = WM_EndMP((void *)LocalWl_OnEndMp);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02260e84(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnEndMp(LocalWlEventMsg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        if (data_ov066_022647b4->unk_c0.f3 == 0) {
+    if (m->errcode == 0) {
+        if (sLocalWlSession->bits.ending == 0) {
             return;
         }
-        if (data_ov066_022647b4->unk_1e == 0) {
-            func_ov066_02261490();
+        if (sLocalWlSession->myAid == 0) {
+            LocalWl_EndParent();
         } else {
-            func_ov066_0226128c(0);
+            LocalWl_Disconnect(0);
         }
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-void func_ov066_02260e4c(u32 a) {
-    s32 r = func_02121870((void *)func_ov066_02260e18, a);
+void LocalWl_SetEntry(u32 a) {
+    s32 r = WM_SetEntry((void *)LocalWl_OnSetEntry, a);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02260e18(Unk_ov066_02260e18_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnSetEntry(LocalWlEventMsg *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
+    if (m->errcode == 0) {
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->errcode);
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
-#undef func_01ffa2ec
-#undef func_01ffa3d4
-#undef func_ov066_02261f6c
-#undef func_ov066_02261860
-#undef func_ov066_0226185c
-#undef func_ov066_022617d4
-#undef func_ov066_02261b14
-#undef func_ov066_02261a4c
-#undef func_ov066_02261958
-#undef func_ov066_02261ce0
-#undef func_ov066_02260dd0
+#undef OS_DisableInterrupts
+#undef OS_RestoreInterrupts
+#undef LocalWl_SetMember
+#undef LocalWl_OnChildConnected
+#undef LocalWl_OnChildEvent8Stub
+#undef LocalWl_OnParentLost
+#undef LocalWl_OnBeaconSent
+#undef LocalWl_OnChildJoined
+#undef LocalWl_OnChildLeft
+#undef LocalWl_MergeMemberTable
+#undef LocalWl_OnConnectFailReset
 
 // ---- unk_02260518
-#define data_ov066_022647ac (*(Unk_ov066_02260518_A * *)&data_ov066_022647ac)
-#define data_ov066_022647b4 (*(Unk_ov066_02260518_C * *)&data_ov066_022647b4)
-#define func_02115094 ((void (*)(void *))func_02115094)
-#define func_021152e4 ((void (*)(void *))func_021152e4)
-#define func_0211512c ((void (*)(void *, s64, void (*)(void), u32))func_0211512c)
-#define func_01ffa3d4 ((void (*)(u32))func_01ffa3d4)
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
-#define func_ov066_02260144 ((Unk_ov066_02260518_Rec * (*)(u32, u32))func_ov066_02260144)
-#define func_ov066_02262074 ((void (*)(void *, s32))func_ov066_02262074)
-#define func_ov066_022629cc ((void (*)(u32))func_ov066_022629cc)
-#define func_ov066_02262ca8 ((void (*)(void *, s32))func_ov066_02262ca8)
-#define func_ov066_02262d70 ((void (*)(void *))func_ov066_02262d70)
-#define func_ov066_02263198 ((void (*)(void *))func_ov066_02263198)
-#define func_ov066_022631d0 ((void (*)(void *, u8, u32))func_ov066_022631d0)
+#define OS_CancelAlarm ((void (*)(void *))OS_CancelAlarm)
+#define OS_CreateAlarm ((void (*)(void *))OS_CreateAlarm)
+#define OS_SetAlarm ((void (*)(void *, s64, void (*)(void), u32))OS_SetAlarm)
+#define OS_RestoreInterrupts ((void (*)(u32))OS_RestoreInterrupts)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
+#define LocalWl_GetBeacon ((LocalWlBeacon * (*)(u32, u32))LocalWl_GetBeacon)
+#define LocalWl_ConnectToBeacon ((void (*)(void *, s32))LocalWl_ConnectToBeacon)
+#define LocalWl_StartMeasureChannels ((void (*)(u32))LocalWl_StartMeasureChannels)
+#define LocalWlBcn_RefreshTimeouts ((void (*)(void *, s32))LocalWlBcn_RefreshTimeouts)
+#define LocalWlBcn_Clear ((void (*)(void *))LocalWlBcn_Clear)
+#define LocalWlBcn_Free ((void (*)(void *))LocalWlBcn_Free)
+#define LocalWlBcn_Init ((void (*)(void *, u8, u32))LocalWlBcn_Init)
 
-void func_ov066_02260dd0(Unk_ov066_02260dd0_Msg *m) {
-    func_ov066_0225f310();
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_02260670(0x64);
+void LocalWl_OnConnectFailReset(WMMsg *m) {
+    LocalWl_ClearResetFlag();
+    if (m->errcode == 0) {
+        sLocalWl->state = 4;
+        LocalWl_StartScanLoop(0x64);
     } else {
-        func_ov066_0225f22c(m->unk_02);
+        LocalWl_SetError(m->errcode);
     }
 }
 
-u32 func_ov066_02260dac(u8 *p) {
+u32 LocalWl_ReadBe32(u8 *p) {
     return (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3];
 }
 
-s32 func_ov066_02260d74(u8 *a, u8 *b) {
+s32 LocalWl_CompareMac(u8 *a, u8 *b) {
     s32 i;
     for (i = 0; i < 6; i++) {
         u32 bb = b[i];
@@ -2812,52 +2281,52 @@ s32 func_ov066_02260d74(u8 *a, u8 *b) {
     return 0;
 }
 
-void func_ov066_02260d30(u32 v) {
-    if (data_ov066_022647b4->unk_c0.f7) {
-        func_ov066_022629cc(v);
+void LocalWl_StartParent(u32 v) {
+    if (sLocalWlSession->bits.autoChannel) {
+        LocalWl_StartMeasureChannels(v);
     } else {
-        func_ov066_02262108(v);
+        LocalWl_BeginParent(v);
     }
 }
 
-s32 func_ov066_02260cac(Unk_ov066_02260518_Rec *p, u32 a, u32 b) {
-    if (p != NULL && p->unk_00 != 0 && (p->unk_08 == 0x2348 || p->unk_08 == 0xbd8a)) {
-        data_ov066_022647b4->unk_88 = p;
-        data_ov066_022647b4->unk_c0.f9 = 1;
-        return func_ov066_0225fc78(5, a, b);
+s32 LocalWl_ConnectToParent(LocalWlBeacon *p, u32 a, u32 b) {
+    if (p != NULL && p->inUse != 0 && (p->tag == 0x2348 || p->tag == 0xbd8a)) {
+        sLocalWlSession->selectedBeacon = p;
+        sLocalWlSession->bits.beaconSelected = 1;
+        return LocalWl_RequestMode(5, a, b);
     }
     return 0;
 }
 
-void func_ov066_02260c8c(void) {
-    func_ov066_02260670(0);
-    func_ov066_0225f5b4();
+void LocalWl_StartScanMode(void) {
+    LocalWl_StartScanLoop(0);
+    LocalWl_Advance();
 }
 
-void func_ov066_02260c28(void) {
-    data_ov066_022647b4->unk_94 = data_ov066_022647b4->unk_94 + 1;
-    if (data_ov066_022647b4->unk_94 >= 4) {
-        data_ov066_022647b4->unk_94 = 0;
-        data_ov066_022647b8 = data_ov066_022647b8 * 0x5eedf715 + 0x1b0cb173;
-        data_ov066_022647b4->unk_93 = data_ov066_022647b8 & 3;
+void LocalWl_NextRoleTurn(void) {
+    sLocalWlSession->roleTurnCount = sLocalWlSession->roleTurnCount + 1;
+    if (sLocalWlSession->roleTurnCount >= 4) {
+        sLocalWlSession->roleTurnCount = 0;
+        sLocalWlRandSeed = sLocalWlRandSeed * 0x5eedf715 + 0x1b0cb173;
+        sLocalWlSession->roleTurnTarget = sLocalWlRandSeed & 3;
     }
 }
 
-BOOL func_ov066_02260b4c(void) {
+BOOL LocalWl_JoinBestParent(void) {
     u8 i;
-    Unk_ov066_02260518_Rec *best = NULL;
+    LocalWlBeacon *best = NULL;
     i = 0;
-    if (i < data_ov066_022647ac->unk_0c) {
+    if (i < sLocalWl->maxBeacons) {
         do {
-            Unk_ov066_02260518_Rec *e = func_ov066_02260144(data_ov066_022647b4->unk_95, i);
-            if (e->unk_00 != 0) {
-                if (*(volatile u16 *)&e->unk_08 == 0xbd8a) {
+            LocalWlBeacon *e = LocalWl_GetBeacon(sLocalWlSession->scanSlot, i);
+            if (e->inUse != 0) {
+                if (*(volatile u16 *)&e->tag == 0xbd8a) {
                     best = e;
                     break;
                 }
-                if (*(volatile u16 *)&e->unk_08 == 0x2348) {
+                if (*(volatile u16 *)&e->tag == 0x2348) {
                     if (best != NULL) {
-                        if (func_ov066_02260d74(e->unk_02, best->unk_02) != 0) {
+                        if (LocalWl_CompareMac(e->macAddr, best->macAddr) != 0) {
                             best = e;
                         }
                     } else {
@@ -2866,430 +2335,425 @@ BOOL func_ov066_02260b4c(void) {
                 }
             }
             i++;
-        } while (i < data_ov066_022647ac->unk_0c);
+        } while (i < sLocalWl->maxBeacons);
     }
     if (best == NULL) {
         return FALSE;
     }
-    func_ov066_02262074(best, 1);
+    LocalWl_ConnectToBeacon(best, 1);
     return TRUE;
 }
 
-void func_ov066_02260a58(void) {
+void LocalWl_StepAuto(void) {
     s32 r = 0;
-    if (data_ov066_022647b4->unk_c0.f8) {
-        if (func_ov066_022601a0(data_ov066_022647b4->unk_95) > 0) {
-            r = func_ov066_02260b4c();
+    if (sLocalWlSession->bits.parentFound) {
+        if (LocalWl_GetBeaconCount(sLocalWlSession->scanSlot) > 0) {
+            r = LocalWl_JoinBestParent();
         }
     }
     if (r != 0) {
         return;
     }
-    if (data_ov066_022647b4->unk_94 == data_ov066_022647b4->unk_93) {
-        switch (data_ov066_022647ac->unk_04) {
+    if (sLocalWlSession->roleTurnCount == sLocalWlSession->roleTurnTarget) {
+        switch (sLocalWl->state) {
         case 6:
-            func_ov066_02261490();
+            LocalWl_EndParent();
             break;
         case 4:
         case 7:
-            func_ov066_02260c28();
-            func_ov066_02260670(data_ov066_022647ac->unk_20);
+            LocalWl_NextRoleTurn();
+            LocalWl_StartScanLoop(sLocalWl->scanLoopTime);
             break;
         }
     } else {
-        switch (data_ov066_022647ac->unk_04) {
+        switch (sLocalWl->state) {
         case 4:
-            func_ov066_02260d30(0x2348);
+            LocalWl_StartParent(0x2348);
         case 6:
-            func_ov066_02260c28();
+            LocalWl_NextRoleTurn();
             break;
         }
     }
 }
 
-u8 func_ov066_02260a3c(void) {
-    if (data_ov066_022647b4 != NULL) {
-        return data_ov066_022647b4->unk_8c;
+u8 LocalWl_GetMemberCount(void) {
+    if (sLocalWlSession != NULL) {
+        return sLocalWlSession->numMembers;
     }
     return 0;
 }
 
-BOOL func_ov066_022609e4(u8 *p) {
+BOOL LocalWl_IsMacSet(u8 *p) {
     if (p[0] != 0 || p[1] != 0 || p[2] != 0 || p[3] != 0 || p[4] != 0 || p[5] != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov066_022609a8(u32 v) {
-    if (data_ov066_022647b4 == NULL) {
+void LocalWl_SetRecvCallback(u32 v) {
+    if (sLocalWlSession == NULL) {
         return;
     }
-    u32 s = func_01ffa2ec();
-    data_ov066_022647b4->unk_b8 = v;
-    func_01ffa3d4(s);
+    u32 s = OS_DisableInterrupts();
+    sLocalWlSession->recvCallback = (void (*)(u32, u8 *, u32))v;
+    OS_RestoreInterrupts(s);
 }
 
-void func_ov066_022608b8(void) {
+void LocalWl_AllocScanWork(void) {
     s32 i;
-    data_ov066_022647b0 = (Unk_ov066_02260518_B *)func_ov066_0225f2c8(0x70, 4);
-    data_ov066_022647b0->unk_00 = (Unk_ov066_02260518_Head *)func_ov066_0225f2c8(0x20, 0x20);
-    data_ov066_022647b0->unk_04 = (u32)func_ov066_0225f2c8(0xc0, 0x20);
-    data_ov066_022647b0->unk_08 = (Unk_ov066_02260518_Elem *)func_ov066_0225f2c8(data_ov066_022647ac->unk_09 << 4, 4);
-    for (i = 0; i < data_ov066_022647ac->unk_09; i++) {
-        func_ov066_022631d0(&data_ov066_022647b0->unk_08[i], i, data_ov066_022647ac->unk_0c);
+    sLocalWlScan = (LocalWlScanWork *)LocalWl_Alloc(0x70, 4);
+    sLocalWlScan->scanParam = (WMScanParam *)LocalWl_Alloc(0x20, 0x20);
+    sLocalWlScan->scanBuffer = (WMBssDesc *)LocalWl_Alloc(0xc0, 0x20);
+    sLocalWlScan->beaconLists = (LocalWlBeaconList *)LocalWl_Alloc(sLocalWl->numScanChannels << 4, 4);
+    for (i = 0; i < sLocalWl->numScanChannels; i++) {
+        LocalWlBcn_Init(&sLocalWlScan->beaconLists[i], i, sLocalWl->maxBeacons);
     }
-    func_021152e4(&data_ov066_022647b0->unk_10);
-    func_021152e4(&data_ov066_022647b0->unk_3c);
+    OS_CreateAlarm(&sLocalWlScan->scanTimer);
+    OS_CreateAlarm(&sLocalWlScan->stopTimer);
 }
 
-void func_ov066_022607e8(void) {
+void LocalWl_FreeScanWork(void) {
     s32 i;
-    for (i = data_ov066_022647ac->unk_09 - 1; i >= 0; i--) {
-        func_ov066_02263198(&data_ov066_022647b0->unk_08[i]);
+    for (i = sLocalWl->numScanChannels - 1; i >= 0; i--) {
+        LocalWlBcn_Free(&sLocalWlScan->beaconLists[i]);
     }
-    func_ov066_0225f284(data_ov066_022647b0->unk_08);
-    func_ov066_0225f284((void *)data_ov066_022647b0->unk_04);
-    func_ov066_0225f284(data_ov066_022647b0->unk_00);
-    data_ov066_022647b0->unk_6c = 0;
-    data_ov066_022647b0->unk_0c.f0 = 0;
-    func_02115094(&data_ov066_022647b0->unk_3c);
-    func_02115094(&data_ov066_022647b0->unk_10);
-    func_ov066_0225f284(data_ov066_022647b0);
-    data_ov066_022647b0 = NULL;
+    LocalWl_Free(sLocalWlScan->beaconLists);
+    LocalWl_Free((void *)sLocalWlScan->scanBuffer);
+    LocalWl_Free(sLocalWlScan->scanParam);
+    sLocalWlScan->beaconFilter = 0;
+    sLocalWlScan->scanFlags.stopPending = 0;
+    OS_CancelAlarm(&sLocalWlScan->stopTimer);
+    OS_CancelAlarm(&sLocalWlScan->scanTimer);
+    LocalWl_Free(sLocalWlScan);
+    sLocalWlScan = NULL;
 }
 
-void func_ov066_022607c0(s32 v) {
-    u32 s = func_01ffa2ec();
-    data_ov066_022647b0->unk_6c = v;
-    func_01ffa3d4(s);
+void LocalWl_SetBeaconFilter(s32 v) {
+    u32 s = OS_DisableInterrupts();
+    sLocalWlScan->beaconFilter = (s32 (*)(void *))v;
+    OS_RestoreInterrupts(s);
 }
 
-u32 func_ov066_02260774(u32 idx) {
-    u8 *p = data_ov066_022647ac->unk_10;
+u32 LocalWl_GetScanChannel(u32 idx) {
+    u8 *p = sLocalWl->scanChannels;
     if (p != NULL) {
         return p[idx];
     }
-    return func_ov066_02262b70(data_ov066_022647b4->unk_8e);
+    return LocalWl_NextAllowedChannel(sLocalWlSession->scanChannel);
 }
 
-void func_ov066_02260670(s32 t) {
-    if (data_ov066_022647ac->unk_3c.f3) {
-        func_ov066_02262d70(&data_ov066_022647b0->unk_08[data_ov066_022647b4->unk_95]);
+void LocalWl_StartScanLoop(s32 t) {
+    if (sLocalWl->bits.stopScanOnParent) {
+        LocalWlBcn_Clear(&sLocalWlScan->beaconLists[sLocalWlSession->scanSlot]);
     } else {
-        func_ov066_02262ca8(&data_ov066_022647b0->unk_08[data_ov066_022647b4->unk_95], 0x1f4);
-        func_ov066_022607c0(0);
+        LocalWlBcn_RefreshTimeouts(&sLocalWlScan->beaconLists[sLocalWlSession->scanSlot], 0x1f4);
+        LocalWl_SetBeaconFilter(0);
     }
-    data_ov066_022647b0->unk_0c.f1 = 1;
-    data_ov066_022647b0->unk_0c.f0 = 0;
+    sLocalWlScan->scanFlags.looping = 1;
+    sLocalWlScan->scanFlags.stopPending = 0;
     if (t != 0) {
-        func_02115094(&data_ov066_022647b0->unk_10);
-        func_0211512c(&data_ov066_022647b0->unk_10, t * 0x82ea / 64, func_ov066_02260634, 0);
+        OS_CancelAlarm(&sLocalWlScan->scanTimer);
+        OS_SetAlarm(&sLocalWlScan->scanTimer, t * 0x82ea / 64, LocalWl_OnScanTimer, 0);
     }
-    func_ov066_022605cc();
+    LocalWl_ScanNextChannel();
 }
 
-void func_ov066_02260634(void) {
-    if (data_ov066_022647b0->unk_0c.f0) {
+void LocalWl_OnScanTimer(void) {
+    if (sLocalWlScan->scanFlags.stopPending) {
         return;
     }
-    func_ov066_022605a0();
+    LocalWl_StopScanLoop();
 }
 
-void func_ov066_022605cc(void) {
-    data_ov066_022647ac->unk_04 = 7;
-    func_ov066_02260518();
-    func_ov066_02260100();
-    data_ov066_022647b4->unk_95++;
-    if (data_ov066_022647b4->unk_95 >= data_ov066_022647ac->unk_09) {
-        data_ov066_022647b4->unk_95 = 0;
+void LocalWl_ScanNextChannel(void) {
+    sLocalWl->state = 7;
+    LocalWl_SetupScanParam();
+    LocalWl_StartScan();
+    sLocalWlSession->scanSlot++;
+    if (sLocalWlSession->scanSlot >= sLocalWl->numScanChannels) {
+        sLocalWlSession->scanSlot = 0;
     }
 }
 
-void func_ov066_022605a0(void) {
-    data_ov066_022647b0->unk_0c.f1 = 0;
-    func_02115094(&data_ov066_022647b0->unk_10);
+void LocalWl_StopScanLoop(void) {
+    sLocalWlScan->scanFlags.looping = 0;
+    OS_CancelAlarm(&sLocalWlScan->scanTimer);
 }
 
-void func_ov066_02260518(void) {
-    Unk_ov066_02260518_Head *r = data_ov066_022647b0->unk_00;
-    data_ov066_022647b4->unk_8e = func_ov066_02260774(data_ov066_022647b4->unk_95);
-    r->unk_00 = data_ov066_022647b0->unk_04;
-    r->unk_04 = data_ov066_022647b4->unk_8e;
-    r->unk_06 = data_ov066_022647ac->unk_22;
-    r->unk_08 = 0xff;
-    r->unk_09 = 0xff;
-    r->unk_0a = 0xff;
-    r->unk_0b = 0xff;
-    r->unk_0c = 0xff;
-    r->unk_0d = 0xff;
+void LocalWl_SetupScanParam(void) {
+    WMScanParam *r = sLocalWlScan->scanParam;
+    sLocalWlSession->scanChannel = LocalWl_GetScanChannel(sLocalWlSession->scanSlot);
+    r->scanBuf = sLocalWlScan->scanBuffer;
+    r->channel = sLocalWlSession->scanChannel;
+    r->maxChannelTime = sLocalWl->scanMaxChannelTime;
+    r->bssid[0] = 0xff;
+    r->bssid[1] = 0xff;
+    r->bssid[2] = 0xff;
+    r->bssid[3] = 0xff;
+    r->bssid[4] = 0xff;
+    r->bssid[5] = 0xff;
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b4
-#undef func_02115094
-#undef func_021152e4
-#undef func_0211512c
-#undef func_01ffa3d4
-#undef func_ov066_0225f2c8
-#undef func_ov066_02260144
-#undef func_ov066_02262074
-#undef func_ov066_022629cc
-#undef func_ov066_02262ca8
-#undef func_ov066_02262d70
-#undef func_ov066_02263198
-#undef func_ov066_022631d0
+#undef OS_CancelAlarm
+#undef OS_CreateAlarm
+#undef OS_SetAlarm
+#undef OS_RestoreInterrupts
+#undef LocalWl_Alloc
+#undef LocalWl_GetBeacon
+#undef LocalWl_ConnectToBeacon
+#undef LocalWl_StartMeasureChannels
+#undef LocalWlBcn_RefreshTimeouts
+#undef LocalWlBcn_Clear
+#undef LocalWlBcn_Free
+#undef LocalWlBcn_Init
 
 // ---- unk_0225faf8
-#define data_ov066_022647ac (*(Unk_ov066_0225faf8_S * *)&data_ov066_022647ac)
-#define data_ov066_022647b0 (*(Unk_ov066_0225faf8_T * *)&data_ov066_022647b0)
-#define data_ov066_022647b4 (*(Unk_ov066_0225faf8_V * *)&data_ov066_022647b4)
-#define func_02114594 ((s32 (*)(void *, s32))func_02114594)
-#define func_0211512c ((s32 (*)(void *, s32, s32, void *, s32))func_0211512c)
-#define func_ov066_0225f2c8 ((void * (*)(u32, u32))func_ov066_0225f2c8)
-#define func_ov066_02262dc4 ((void * (*)(void *))func_ov066_02262dc4)
-#define func_ov066_02262dd8 ((s32 (*)(void *, u32))func_ov066_02262dd8)
-#define func_ov066_02262df4 ((s32 (*)(void *))func_ov066_02262df4)
-#define func_ov066_02262e54 ((void (*)(void *, s32, void *, u32, u32, void *))func_ov066_02262e54)
+#define DC_InvalidateRange ((s32 (*)(void *, s32))DC_InvalidateRange)
+#define OS_SetAlarm ((s32 (*)(void *, s32, s32, void *, s32))OS_SetAlarm)
+#define LocalWl_Alloc ((void * (*)(u32, u32))LocalWl_Alloc)
+#define LocalWlBcn_CancelAlarms ((void * (*)(void *))LocalWlBcn_CancelAlarms)
+#define LocalWlBcn_Get ((s32 (*)(void *, u32))LocalWlBcn_Get)
+#define LocalWlBcn_Count ((s32 (*)(void *))LocalWlBcn_Count)
+#define LocalWlBcn_Add ((void (*)(void *, s32, void *, u32, u32, void *))LocalWlBcn_Add)
 
-void func_ov066_02260318(Unk_ov066_0225faf8_Msg *m) {
+void LocalWl_OnBeaconFound(WMStartScanCallback *m) {
     volatile u16 buf[4];
-    func_02114594(data_ov066_022647b0->unk_04, 0xc0);
-    Unk_ov066_0225faf8_W *w = data_ov066_022647b0->unk_04;
-    if (w->unk_3c == 0) {
-        if (data_ov066_022647ac->unk_3c.f4 != 0) {
+    DC_InvalidateRange(sLocalWlScan->scanBuffer, 0xc0);
+    WMBssDesc *w = sLocalWlScan->scanBuffer;
+    if (w->gameInfoLength == 0) {
+        if (sLocalWl->bits.skipNoGameInfo != 0) {
             return;
         }
-        func_ov066_02262e54(data_ov066_022647b0->unk_08 + data_ov066_022647b4->unk_95 * 16, 0xfa0, &m->unk_0a, 0xacce, m->unk_12, w);
+        LocalWlBcn_Add((u8 *)sLocalWlScan->beaconLists + sLocalWlSession->scanSlot * 16, 0xfa0, &m->macAddress, 0xacce, m->linkLevel, w);
         return;
     }
-    if ((w->unk_4b & 1) == 0) {
+    if ((w->gameInfo.attribute & 1) == 0) {
         return;
     }
-    func_02116048(w->unk_50, (void *)buf, 8);
-    func_021145b0((void *)buf, 8);
-    if (func_ov066_022601fc(m, (u8 *)buf) == 0) {
+    MI_CpuCopy8(w->gameInfo.userGameInfo, (void *)buf, 8);
+    DC_StoreRange((void *)buf, 8);
+    if (LocalWl_FilterBeacon(m, (u8 *)buf) == 0) {
         return;
     }
-    func_ov066_02262e54(data_ov066_022647b0->unk_08 + data_ov066_022647b4->unk_95 * 16, 0xfa0, &m->unk_0a, buf[0], m->unk_12, data_ov066_022647b0->unk_04);
-    if (data_ov066_022647ac->unk_3c.f3 == 0) {
+    LocalWlBcn_Add((u8 *)sLocalWlScan->beaconLists + sLocalWlSession->scanSlot * 16, 0xfa0, &m->macAddress, buf[0], m->linkLevel, sLocalWlScan->scanBuffer);
+    if (sLocalWl->bits.stopScanOnParent == 0) {
         return;
     }
     if (buf[0] == 0xbd8a) {
-        func_ov066_022602c8();
+        LocalWl_StopScanSoon();
         return;
     }
     if (buf[0] != 0x2348) {
         return;
     }
-    if (data_ov066_022647b0->unk_0c.f0 != 0) {
+    if (sLocalWlScan->scanFlags.stopPending != 0) {
         return;
     }
-    func_02115094(&data_ov066_022647b0->unk_3c);
-    func_0211512c(&data_ov066_022647b0->unk_3c, 0x3d5d, 0, (void *)func_ov066_0226030c, 0);
-    data_ov066_022647b0->unk_0c.f0 = 1;
+    OS_CancelAlarm(&sLocalWlScan->stopTimer);
+    OS_SetAlarm(&sLocalWlScan->stopTimer, 0x3d5d, 0, (void *)LocalWl_OnScanStopTimer, 0);
+    sLocalWlScan->scanFlags.stopPending = 1;
 }
 
-void func_ov066_0226030c(void) {
-    func_ov066_022602c8();
+void LocalWl_OnScanStopTimer(void) {
+    LocalWl_StopScanSoon();
 }
 
-void func_ov066_022602c8(void) {
-    data_ov066_022647b4->unk_c0 |= 0x100;
-    func_02115094(&data_ov066_022647b0->unk_3c);
-    func_ov066_022605a0();
+void LocalWl_StopScanSoon(void) {
+    sLocalWlSession->flags |= 0x100;
+    OS_CancelAlarm(&sLocalWlScan->stopTimer);
+    LocalWl_StopScanLoop();
 }
 
-s32 func_ov066_022601fc(void *a, u8 *b) {
-    Unk_ov066_0225faf8_S *s = data_ov066_022647ac;
-    if (s->unk_3c.f5 != 0) {
-        if (data_ov066_022647b0->unk_04->unk_44 != s->unk_28) {
+s32 LocalWl_FilterBeacon(void *a, u8 *b) {
+    LocalWlWork *s = sLocalWl;
+    if (s->bits.filterGgid != 0) {
+        if (sLocalWlScan->scanBuffer->gameInfo.ggid != s->ggid) {
             goto fail;
         }
     }
-    if (s->unk_3c.f6 != 0) {
-        if (b[4] != data_ov066_022647b4->unk_95) {
+    if (s->bits.filterScanSlot != 0) {
+        if (b[4] != sLocalWlSession->scanSlot) {
             goto fail;
         }
     }
-    if (s->unk_3c.f7 != 0) {
+    if (s->bits.filterVersion != 0) {
         if (b[6] != 5) {
             goto fail;
         }
     }
-    if (data_ov066_022647b0->unk_6c == NULL) {
+    if (sLocalWlScan->beaconFilter == NULL) {
         return 1;
     }
-    return data_ov066_022647b0->unk_6c(a);
+    return sLocalWlScan->beaconFilter(a);
 fail:
     return 0;
 }
 
-s32 func_ov066_022601a0(u32 idx) {
-    Unk_ov066_0225faf8_T *t = data_ov066_022647b0;
-    if (t != NULL && idx < data_ov066_022647ac->unk_09) {
-        return func_ov066_02262df4(t->unk_08 + idx * 16);
+s32 LocalWl_GetBeaconCount(u32 idx) {
+    LocalWlScanWork *t = sLocalWlScan;
+    if (t != NULL && idx < sLocalWl->numScanChannels) {
+        return LocalWlBcn_Count((u8 *)t->beaconLists + idx * 16);
     }
     return 0;
 }
 
-s32 func_ov066_02260144(u32 idx, u32 b) {
-    Unk_ov066_0225faf8_T *t = data_ov066_022647b0;
-    if (t != NULL && idx < data_ov066_022647ac->unk_09) {
-        return func_ov066_02262dd8(t->unk_08 + idx * 16, b);
+s32 LocalWl_GetBeacon(u32 idx, u32 b) {
+    LocalWlScanWork *t = sLocalWlScan;
+    if (t != NULL && idx < sLocalWl->numScanChannels) {
+        return LocalWlBcn_Get((u8 *)t->beaconLists + idx * 16, b);
     }
     return 0;
 }
 
-void func_ov066_02260100(void) {
-    s32 r = func_0211ff5c((void *)func_ov066_02260060, data_ov066_022647b0->unk_00);
+void LocalWl_StartScan(void) {
+    s32 r = WM_StartScan((void *)LocalWl_OnScan, (s32)sLocalWlScan->scanParam);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_02260060(Unk_ov066_0225faf8_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnScan(WMStartScanCallback *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        if (m->unk_08 != 4) {
-            if (m->unk_08 != 5) {
+    if (m->errcode == 0) {
+        if (m->state != 4) {
+            if (m->state != 5) {
                 return;
             }
-            func_ov066_02260318(m);
+            LocalWl_OnBeaconFound(m);
         }
-        if (data_ov066_022647b0->unk_0c.f1 != 0) {
-            func_ov066_022605cc();
+        if (sLocalWlScan->scanFlags.looping != 0) {
+            LocalWl_ScanNextChannel();
             return;
         }
-        func_ov066_02262dc4(data_ov066_022647b0->unk_08 + data_ov066_022647b4->unk_95 * 16);
-        func_ov066_0226004c();
+        LocalWlBcn_CancelAlarms((u8 *)sLocalWlScan->beaconLists + sLocalWlSession->scanSlot * 16);
+        LocalWl_EndScan();
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->errcode);
 }
 
-s32 func_ov066_0226004c(void) {
-    return func_0211fd8c((void *)func_ov066_0225fffc);
+s32 LocalWl_EndScan(void) {
+    return WM_EndScan((void *)LocalWl_OnEndScan);
 }
 
-void func_ov066_0225fffc(Unk_ov066_0225faf8_Msg *m) {
-    if (func_ov066_0225f7c8() != 0) {
+void LocalWl_OnEndScan(WMStartScanCallback *m) {
+    if (LocalWl_IsAborting() != 0) {
         return;
     }
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_0225f5b4();
+    if (m->errcode == 0) {
+        sLocalWl->state = 4;
+        LocalWl_Advance();
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->errcode);
 }
 
-s32 func_ov066_0225ffcc(void) {
+s32 LocalWl_GetState(void) {
     s32 r = 0;
-    u32 irq = func_01ffa2ec();
-    Unk_ov066_0225faf8_S *s = data_ov066_022647ac;
+    u32 irq = OS_DisableInterrupts();
+    LocalWlWork *s = sLocalWl;
     if (s != NULL) {
-        r = s->unk_04;
+        r = s->state;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return r;
 }
 
-void func_ov066_0225fef0(u32 a) {
-    data_ov066_022647ac->unk_00 = 7;
-    data_ov066_022647ac->unk_04 = 1;
-    data_ov066_022647ac->unk_08 = 0xfe;
-    data_ov066_022647ac->unk_09 = 1;
-    data_ov066_022647ac->unk_0a = 0;
-    data_ov066_022647ac->unk_0b = 0;
-    data_ov066_022647ac->unk_0c = 0;
-    data_ov066_022647ac->unk_0d = a;
-    data_ov066_022647ac->unk_10 = 0;
-    data_ov066_022647ac->unk_15 = 0;
-    data_ov066_022647ac->unk_16 = 0;
-    data_ov066_022647ac->unk_30 = 0;
-    data_ov066_022647ac->unk_34 = 0;
-    data_ov066_022647ac->unk_38 = 0;
-    data_ov066_022647ac->unk_3c.f11 = 0;
-    data_ov066_022647ac->unk_3c.f10 = 0;
-    data_ov066_022647ac->unk_3c.f12 = 0;
-    data_ov066_022647ac->unk_3c.f11 = 0;
+void LocalWl_ResetSettings(u32 a) {
+    sLocalWl->requestedMode = 7;
+    sLocalWl->state = 1;
+    sLocalWl->channel = 0xfe;
+    sLocalWl->numScanChannels = 1;
+    sLocalWl->maxChildren = 0;
+    sLocalWl->maxMembers = 0;
+    sLocalWl->maxBeacons = 0;
+    sLocalWl->dmaNo = a;
+    sLocalWl->scanChannels = 0;
+    sLocalWl->resetRetryCount = 0;
+    sLocalWl->abortRequest = 0;
+    sLocalWl->doneCallback = 0;
+    sLocalWl->doneCallbackArg = 0;
+    sLocalWl->eventCallback = 0;
+    sLocalWl->bits.modeRequestPending = 0;
+    sLocalWl->bits.resetting = 0;
+    sLocalWl->bits.mpStarted = 0;
+    sLocalWl->bits.modeRequestPending = 0;
 }
 
-s32 func_ov066_0225fe4c(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32)) {
-    if (data_ov066_022647ac == NULL) {
-        data_ov066_022647a8 = b;
-        data_ov066_022647a4 = c;
-        data_ov066_022647a0 = d;
-        data_ov066_022647ac = (Unk_ov066_0225faf8_S *)func_ov066_0225f2c8(0x40, 4);
-        if (data_ov066_022647ac != NULL) {
-            func_02114e48();
-            func_02115304();
+s32 LocalWl_Init(u32 a, void *(*b)(u32, u32), void (*c)(void *), void (*d)(u32)) {
+    if (sLocalWl == NULL) {
+        sLocalWlAllocHook = b;
+        sLocalWlFreeHook = c;
+        sLocalWlErrorHook = d;
+        sLocalWl = (LocalWlWork *)LocalWl_Alloc(0x40, 4);
+        if (sLocalWl != NULL) {
+            OS_InitTick();
+            OS_InitAlarm();
             if (func_0211f7e4() != 0) {
-                func_ov066_0225fef0(a);
+                LocalWl_ResetSettings(a);
                 return 1;
             }
-            func_ov066_0225f22c(0x41);
-            func_ov066_0225f284(data_ov066_022647ac);
+            LocalWl_SetError(0x41);
+            LocalWl_Free(sLocalWl);
         }
     }
     return 0;
 }
 
-s32 func_ov066_0225fdc4(void) {
-    if (data_ov066_022647ac->unk_04 == 1) {
-        data_ov066_022647ac->unk_04 = 0;
-        func_ov066_0225f284(data_ov066_022647ac);
-        data_ov066_022647a8 = NULL;
-        data_ov066_022647a4 = NULL;
-        data_ov066_022647a0 = NULL;
-        data_ov066_022647ac = NULL;
+s32 LocalWl_Finish(void) {
+    if (sLocalWl->state == 1) {
+        sLocalWl->state = 0;
+        LocalWl_Free(sLocalWl);
+        sLocalWlAllocHook = NULL;
+        sLocalWlFreeHook = NULL;
+        sLocalWlErrorHook = NULL;
+        sLocalWl = NULL;
         return 1;
     }
-    func_ov066_0225f22c(0x44);
+    LocalWl_SetError(0x44);
     return 0;
 }
 
-s32 func_ov066_0225fd08(void) {
+s32 LocalWl_IsModeReached(void) {
     s32 r = 0;
-    switch (data_ov066_022647ac->unk_00) {
+    switch (sLocalWl->requestedMode) {
     case 0:
-        if (data_ov066_022647ac->unk_04 == 2) {
+        if (sLocalWl->state == 2) {
             r = 1;
         }
         break;
     case 1:
-        if (data_ov066_022647ac->unk_04 == 3) {
+        if (sLocalWl->state == 3) {
             r = 1;
         }
         break;
     case 2:
-        if (data_ov066_022647ac->unk_04 == 4) {
+        if (sLocalWl->state == 4) {
             r = 1;
         }
         break;
     case 3:
-        if (data_ov066_022647ac->unk_04 == 10) {
+        if (sLocalWl->state == 10) {
             r = 1;
         }
         break;
     case 4:
-        if (data_ov066_022647ac->unk_04 == 7) {
+        if (sLocalWl->state == 7) {
             r = 1;
         }
         break;
     case 5:
-        if (data_ov066_022647ac->unk_04 == 11) {
+        if (sLocalWl->state == 11) {
             r = 1;
         }
         break;
     case 6:
         {
             s32 t = 1;
-            if (data_ov066_022647ac->unk_04 != 10) {
-                if (data_ov066_022647ac->unk_04 != 11) {
+            if (sLocalWl->state != 10) {
+                if (sLocalWl->state != 11) {
                     t = r;
                 }
             }
@@ -3300,133 +2764,129 @@ s32 func_ov066_0225fd08(void) {
     return r;
 }
 
-s32 func_ov066_0225fc78(s32 a, u32 b, u32 c) {
-    if (data_ov066_022647ac == NULL) {
+s32 LocalWl_RequestMode(s32 a, u32 b, u32 c) {
+    if (sLocalWl == NULL) {
         return 0;
     }
-    if (a >= 7 || a == data_ov066_022647ac->unk_00) {
+    if (a >= 7 || a == sLocalWl->requestedMode) {
         return 0;
     }
-    data_ov066_022647ac->unk_00 = a;
-    data_ov066_022647ac->unk_30 = b;
-    data_ov066_022647ac->unk_34 = c;
-    if (data_ov066_022647ac->unk_3c.f11 == 0) {
-        data_ov066_022647ac->unk_3c.f11 = 1;
-        func_ov066_0225f830();
+    sLocalWl->requestedMode = a;
+    sLocalWl->doneCallback = (void (*)(u32))b;
+    sLocalWl->doneCallbackArg = c;
+    if (sLocalWl->bits.modeRequestPending == 0) {
+        sLocalWl->bits.modeRequestPending = 1;
+        LocalWl_Step();
     }
     return 1;
 }
 
-void func_ov066_0225fc3c(void) {
-    s32 v = data_ov066_022647ac->unk_00;
+void LocalWl_StepReady(void) {
+    s32 v = sLocalWl->requestedMode;
     if (v <= 0) {
         return;
     }
-    func_ov066_0225f514(0);
+    LocalWl_CallPowerApi(0);
 }
 
-void func_ov066_0225fbe4(void) {
-    s32 v = data_ov066_022647ac->unk_00;
+void LocalWl_StepEnabled(void) {
+    s32 v = sLocalWl->requestedMode;
     if (v < 1) {
-        func_ov066_0225f514(1);
+        LocalWl_CallPowerApi(1);
         return;
     }
     if (v <= 1) {
         return;
     }
-    func_ov066_0225f514(2);
+    LocalWl_CallPowerApi(2);
 }
 
-void func_ov066_0225fb48(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepIdle(void) {
+    switch (sLocalWl->requestedMode) {
     case 0:
     case 1:
-        func_ov066_0225f514(3);
+        LocalWl_CallPowerApi(3);
         break;
     case 2:
         break;
     case 3:
-        func_ov066_02260d30(0xbd8a);
+        LocalWl_StartParent(0xbd8a);
         break;
     case 4:
-        func_ov066_02260c8c();
+        LocalWl_StartScanMode();
         break;
     case 5:
-        func_ov066_022620e8();
+        LocalWl_ConnectToSelected();
         break;
     case 6:
-        func_ov066_02260a58();
+        LocalWl_StepAuto();
         break;
     }
 }
 
-void func_ov066_0225faf8(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepParentWaiting(void) {
+    switch (sLocalWl->requestedMode) {
     case 0:
     case 1:
     case 2:
     case 4:
     case 5:
     case 6:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     case 3:
         break;
     }
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647b0
-#undef data_ov066_022647b4
-#undef func_02114594
-#undef func_0211512c
-#undef func_ov066_0225f2c8
-#undef func_ov066_02262dc4
-#undef func_ov066_02262dd8
-#undef func_ov066_02262df4
-#undef func_ov066_02262e54
+#undef DC_InvalidateRange
+#undef OS_SetAlarm
+#undef LocalWl_Alloc
+#undef LocalWlBcn_CancelAlarms
+#undef LocalWlBcn_Get
+#undef LocalWlBcn_Count
+#undef LocalWlBcn_Add
 
 // ---- unk_ov066_0225f1a0
-#define data_ov066_022647ac (*(Unk_ov066_0225f1a0_S * *)&data_ov066_022647ac)
-#define data_ov066_022647a8 (*(s32 (**)(s32, s32))&data_ov066_022647a8)
+#define sLocalWlAllocHook (*(s32 (**)(s32, s32))&sLocalWlAllocHook)
 
-void func_ov066_0225fa98(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepScanning(void) {
+    switch (sLocalWl->requestedMode) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 6:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     case 5:
-        func_ov066_022605a0();
+        LocalWl_StopScanLoop();
         break;
     case 4:
         break;
     }
 }
 
-void func_ov066_0225fa48(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepConnecting(void) {
+    switch (sLocalWl->requestedMode) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 4:
     case 6:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     case 5:
         break;
     }
 }
 
-void func_ov066_0225f9f8(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepMeasuring(void) {
+    switch (sLocalWl->requestedMode) {
     case 0:
     case 1:
     case 2:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     case 3:
     case 4:
@@ -3436,109 +2896,109 @@ void func_ov066_0225f9f8(void) {
     }
 }
 
-void func_ov066_0225f998(void) {
-    switch (data_ov066_022647ac->unk_00) {
-    case 0:
-    case 1:
-    case 2:
-    case 4:
-    case 6:
-        func_ov066_0225f824();
-        break;
-    case 5:
-        func_ov066_022616c8();
-        break;
-    case 3:
-        break;
-    }
-}
-
-void func_ov066_0225f938(void) {
-    switch (data_ov066_022647ac->unk_00) {
+void LocalWl_StepParentMp(void) {
+    switch (sLocalWl->requestedMode) {
     case 0:
     case 1:
     case 2:
     case 4:
     case 6:
-        func_ov066_0225f824();
+        LocalWl_Abort();
+        break;
+    case 5:
+        LocalWl_RequestEnd();
         break;
     case 3:
-        func_ov066_022616c8();
+        break;
+    }
+}
+
+void LocalWl_StepChildMp(void) {
+    switch (sLocalWl->requestedMode) {
+    case 0:
+    case 1:
+    case 2:
+    case 4:
+    case 6:
+        LocalWl_Abort();
+        break;
+    case 3:
+        LocalWl_RequestEnd();
         break;
     case 5:
         break;
     }
 }
 
-void func_ov066_0225f830(void) {
-    switch (data_ov066_022647ac->unk_04) {
+void LocalWl_Step(void) {
+    switch (sLocalWl->state) {
     case 2:
-        func_ov066_0225fc3c();
+        LocalWl_StepReady();
         break;
     case 3:
-        func_ov066_0225fbe4();
+        LocalWl_StepEnabled();
         break;
     case 4:
-        func_ov066_0225fb48();
+        LocalWl_StepIdle();
         break;
     case 6:
-        func_ov066_0225faf8();
+        LocalWl_StepParentWaiting();
         break;
     case 7:
-        func_ov066_0225fa98();
+        LocalWl_StepScanning();
         break;
     case 8:
-        func_ov066_0225fa48();
+        LocalWl_StepConnecting();
         break;
     case 5:
-        func_ov066_0225f9f8();
+        LocalWl_StepMeasuring();
         break;
     case 10:
-        func_ov066_0225f998();
+        LocalWl_StepParentMp();
         break;
     case 11:
-        func_ov066_0225f938();
+        LocalWl_StepChildMp();
         break;
     case 0:
     case 1:
-        func_ov066_0225f22c(0x44);
+        LocalWl_SetError(0x44);
         break;
     default:
-        func_ov066_0225f824();
+        LocalWl_Abort();
         break;
     }
 }
 
-void func_ov066_0225f824(void) {
-    func_ov066_0225f77c();
+void LocalWl_Abort(void) {
+    LocalWl_ResetIfActive();
 }
 
-s32 func_ov066_0225f7c8(void) {
+s32 LocalWl_IsAborting(void) {
     BOOL r = FALSE;
-    if (((Unk_ov066_0225f7c8_Bits *)&data_ov066_022647ac->unk_3c)->f != 0) {
+    if (sLocalWl->bits.resetting != 0) {
         r = TRUE;
-    } else if (data_ov066_022647ac->unk_16 == 1) {
-        func_ov066_0225f77c();
+    } else if (sLocalWl->abortRequest == 1) {
+        LocalWl_ResetIfActive();
         r = TRUE;
     }
     return r;
 }
 
-void func_ov066_0225f77c(void) {
-    switch (data_ov066_022647ac->unk_04) {
+void LocalWl_ResetIfActive(void) {
+    switch (sLocalWl->state) {
     case 0:
     case 1:
     case 2:
     case 3:
         break;
     default:
-        func_ov066_0225f3c8((void *)func_ov066_0225f32c);
+        LocalWl_Reset((void *)LocalWl_OnReset);
         break;
     }
 }
 
-s32 func_ov066_0225f6a8(void) {
-    switch (data_ov066_022647ac->unk_04) {
+s32 LocalWl_GetLinkLevel(void) {
+    switch (sLocalWl->state) {
     case 0:
     case 1:
     case 2:
@@ -3547,7 +3007,7 @@ s32 func_ov066_0225f6a8(void) {
         break;
     case 10:
     case 11:
-        switch (func_0211f73c()) {
+        switch (WM_GetLinkLevel()) {
         case 0:
             return 0;
         case 1:
@@ -3568,195 +3028,194 @@ s32 func_ov066_0225f6a8(void) {
     return 5;
 }
 
-s32 func_ov066_0225f688(Unk_ov066_0225f64c_Rec *r) {
-    if (r != NULL && r->unk_5c != 0) {
-        return r->unk_77;
+s32 LocalWl_GetBeaconGameInfoSize(LocalWlBeacon *r) {
+    if (r != NULL && r->bssDesc.gameInfoLength != 0) {
+        return ((LocalWlGameInfo *)r->bssDesc.gameInfo.userGameInfo)->userDataSize;
     }
     return 0;
 }
 
-void *func_ov066_0225f64c(Unk_ov066_0225f64c_Rec *r) {
-    if (r != NULL && r->unk_5c != 0) {
-        if (func_ov066_0225f688(r) != 0) {
+void *LocalWl_GetBeaconGameInfo(LocalWlBeacon *r) {
+    if (r != NULL && r->bssDesc.gameInfoLength != 0) {
+        if (LocalWl_GetBeaconGameInfoSize(r) != 0) {
             return (u8 *)((u32)r + 0x70) + 8;
         }
     }
     return NULL;
 }
 
-u32 func_ov066_0225f63c(Unk_ov066_0225f1a0_Msg *m) {
+u32 LocalWl_IsBeaconValid(WMMsg *m) {
     if (m != NULL) {
-        return m->unk_00;
+        return m->id;
     }
     return 0;
 }
 
-void func_ov066_0225f5b4(void) {
-    if (func_ov066_0225fd08() != 0) {
-        data_ov066_022647ac->unk_3c &= ~0x800;
-        if (data_ov066_022647ac->unk_30 != NULL) {
-            data_ov066_022647ac->unk_30(data_ov066_022647ac->unk_34);
-            if (data_ov066_022647ac != NULL) {
-                data_ov066_022647ac->unk_30 = NULL;
+void LocalWl_Advance(void) {
+    if (LocalWl_IsModeReached() != 0) {
+        sLocalWl->flags &= ~0x800;
+        if (sLocalWl->doneCallback != NULL) {
+            sLocalWl->doneCallback(sLocalWl->doneCallbackArg);
+            if (sLocalWl != NULL) {
+                sLocalWl->doneCallback = NULL;
             }
         }
-        if (data_ov066_022647ac != NULL) {
-            data_ov066_022647ac->unk_00 = 7;
+        if (sLocalWl != NULL) {
+            sLocalWl->requestedMode = 7;
         }
         return;
     }
-    func_ov066_0225f830();
+    LocalWl_Step();
 }
 
-void func_ov066_0225f554(Unk_ov066_0225f1a0_Msg *m) {
-    switch (m->unk_00) {
+void LocalWl_OnPowerApiDone(WMMsg *m) {
+    switch (m->id) {
     case 0:
     case 1:
     case 2:
         break;
     case 3:
-        func_ov066_0225f4d4(m);
+        LocalWl_OnEnable(m);
         break;
     case 4:
-        func_ov066_0225f494(m);
+        LocalWl_OnDisable(m);
         break;
     case 5:
-        func_ov066_0225f44c(m);
+        LocalWl_OnPowerOn(m);
         break;
     case 6:
-        func_ov066_0225f40c(m);
+        LocalWl_OnPowerOff(m);
         break;
     }
-    func_ov066_0225f5b4();
+    LocalWl_Advance();
 }
 
-void func_ov066_0225f514(u32 idx) {
-    s32 r = data_ov066_02264780[idx]((void *)func_ov066_0225f554);
+void LocalWl_CallPowerApi(u32 idx) {
+    s32 r = sLocalWlPowerApis[idx]((void *)LocalWl_OnPowerApiDone);
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_0225f4d4(Unk_ov066_0225f1a0_Msg *m) {
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 3;
+void LocalWl_OnEnable(WMMsg *m) {
+    if (m->errcode == 0) {
+        sLocalWl->state = 3;
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->errcode);
 }
 
-void func_ov066_0225f494(Unk_ov066_0225f1a0_Msg *m) {
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 2;
+void LocalWl_OnDisable(WMMsg *m) {
+    if (m->errcode == 0) {
+        sLocalWl->state = 2;
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->errcode);
 }
 
-void func_ov066_0225f44c(Unk_ov066_0225f1a0_Msg *m) {
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_022623d4();
+void LocalWl_OnPowerOn(WMMsg *m) {
+    if (m->errcode == 0) {
+        sLocalWl->state = 4;
+        LocalWl_StartSession();
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->errcode);
 }
 
-void func_ov066_0225f40c(Unk_ov066_0225f1a0_Msg *m) {
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_04 = 3;
+void LocalWl_OnPowerOff(WMMsg *m) {
+    if (m->errcode == 0) {
+        sLocalWl->state = 3;
         return;
     }
-    func_ov066_0225f22c(m->unk_02);
+    LocalWl_SetError(m->errcode);
 }
 
-void func_ov066_0225f3c8(void *p) {
-    s32 r = func_021202b4();
-    data_ov066_022647ac->unk_3c |= 0x400;
+void LocalWl_Reset(void *p) {
+    s32 r = WM_Reset();
+    sLocalWl->flags |= 0x400;
     if (r == 2) {
         return;
     }
-    func_ov066_0225f22c(r);
+    LocalWl_SetError(r);
 }
 
-void func_ov066_0225f32c(Unk_ov066_0225f1a0_Msg *m) {
-    data_ov066_022647ac->unk_16 = 0;
-    func_ov066_0225f310();
-    if (m->unk_02 == 0) {
-        data_ov066_022647ac->unk_15 = 0;
-        data_ov066_022647ac->unk_04 = 4;
-        func_ov066_0225f5b4();
+void LocalWl_OnReset(WMMsg *m) {
+    sLocalWl->abortRequest = 0;
+    LocalWl_ClearResetFlag();
+    if (m->errcode == 0) {
+        sLocalWl->resetRetryCount = 0;
+        sLocalWl->state = 4;
+        LocalWl_Advance();
         return;
     }
-    data_ov066_022647ac->unk_15++;
-    if (data_ov066_022647ac->unk_15 > 0x10) {
-        func_ov066_0225f22c(m->unk_02);
+    sLocalWl->resetRetryCount++;
+    if (sLocalWl->resetRetryCount > 0x10) {
+        LocalWl_SetError(m->errcode);
         return;
     }
-    func_ov066_0225f3c8((void *)func_ov066_0225f32c);
+    LocalWl_Reset((void *)LocalWl_OnReset);
 }
 
-void func_ov066_0225f310(void) {
-    data_ov066_022647ac->unk_3c &= ~0x400;
+void LocalWl_ClearResetFlag(void) {
+    sLocalWl->flags &= ~0x400;
 }
 
-s32 func_ov066_0225f2c8(s32 a, s32 b) {
-    if (data_ov066_022647a8 != NULL) {
-        s32 r = data_ov066_022647a8(a, b);
+s32 LocalWl_Alloc(s32 a, s32 b) {
+    if (sLocalWlAllocHook != NULL) {
+        s32 r = sLocalWlAllocHook(a, b);
         if (r != 0) {
             return r;
         }
     }
-    func_ov066_0225f22c(0x42);
+    LocalWl_SetError(0x42);
     return 0;
 }
 
-void func_ov066_0225f284(void *p) {
-    if (data_ov066_022647a4 == NULL) {
+void LocalWl_Free(void *p) {
+    if (sLocalWlFreeHook == NULL) {
         return;
     }
     if (p == NULL) {
         return;
     }
-    data_ov066_022647a4(p);
+    sLocalWlFreeHook(p);
 }
 
-void func_ov066_0225f22c(u32 v) {
-    data_ov066_022647ac->unk_04 = v | 0x80;
-    data_ov066_022647ac->unk_3c &= ~0x800;
-    if (data_ov066_022647a0 == NULL) {
+void LocalWl_SetError(u32 v) {
+    sLocalWl->state = v | 0x80;
+    sLocalWl->flags &= ~0x800;
+    if (sLocalWlErrorHook == NULL) {
         return;
     }
-    data_ov066_022647a0(v);
+    sLocalWlErrorHook(v);
 }
 
-void func_ov066_0225f1e4(void *p) {
-    if (data_ov066_022647ac == NULL) {
+void LocalWl_CallEventCallback(void *p) {
+    if (sLocalWl == NULL) {
         return;
     }
-    if (data_ov066_022647ac->unk_38 == NULL) {
+    if (sLocalWl->eventCallback == NULL) {
         return;
     }
-    data_ov066_022647ac->unk_38(p);
+    sLocalWl->eventCallback(p);
 }
 
-void func_ov066_0225f1c0(u32 a, u32 b) {
+void LocalWl_PostEvent(u32 a, u32 b) {
     u8 buf[2];
     buf[0] = a;
     buf[1] = b;
-    func_ov066_0225f1e4(buf);
+    LocalWl_CallEventCallback(buf);
 }
 
-s32 func_ov066_0225f1a0(void (*fn)(void *)) {
-    if (data_ov066_022647ac != NULL) {
-        data_ov066_022647ac->unk_38 = fn;
+s32 LocalWl_SetEventCallback(void (*fn)(void *)) {
+    if (sLocalWl != NULL) {
+        sLocalWl->eventCallback = fn;
         return TRUE;
     }
     return FALSE;
 }
-#undef data_ov066_022647ac
-#undef data_ov066_022647a8
+#undef sLocalWlAllocHook
 
 }
 #pragma thumb reset

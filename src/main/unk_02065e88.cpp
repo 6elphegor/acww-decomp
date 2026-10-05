@@ -1,1528 +1,941 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgTag.h"
+#include "talk/MsgRunner.h"
+#include "talk/TalkWindowState.h"
+#include "talk/BmgReader.h"
+#include "talk/BmgMsgAttr.h"
+#include "talk/MsgParser.h"
+#include "talk/MsgTextLabel.h"
+#include "talk/MsgRequest.h"
+#include "talk/MsgProcessor.h"
+#include "talk/TalkBmgReader.h"
+#include "talk/MsgWalker.h"
+#include "room/HouseData.h"
+#include "talk/MsgString9.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString33.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/MsgString17.h"
+#include "talk/MsgString17B.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString25.h"
+#include "talk/MsgString11.h"
+#include "talk/MsgString9C.h"
+#include "talk/ChoiceList.h"
+#include "talk/ChoiceMenu.h"
+#include "talk/ChoiceString.h"
+#include "ui/TalkArrow.h"
+#include "nitro/fs.h"
+#include "net/CommManager.h"
 
-class Unk_020e2a30;
-class Unk_020e2a78;
-class Unk_020ddc34;
-class Unk_020ddcf0;
-class Unk_020660f8;
-class Unk_020668a0;
-class Unk_020e2a48;
-class Unk_020a84e0;
-struct Unk_02067c70;
-class Unk_02068808;
-class Unk_0206b754;
-class Unk_0206c74c;
-class Unk_020ddc24;
-class Unk_020ddc64;
-class Unk_020ddccc;
-class Unk_020a72b0;
-class Unk_020e2b08;
-class Unk_020e2b4c;
-class Unk_020e2a90;
-class Unk_020e2ac8;
-class Unk_020a8cf8;
-class Unk_020aa3b8;
-class Unk_020aa72c;
-class Unk_020e2a18;
-class Unk_02068f10_Obj;
-class Unk_020ddc4c;
-struct Unk_020cbb18_Obj;
-struct Unk_020660f8_Pad;
-class Unk_02066978_Owner;
-class Unk_0206891c;
-class Unk_02066ce0;
-struct Unk_020676b4_Tmp;
-struct Unk_02067c70_Z;
-class Unk_020a7238;
-class Unk_020e3efc;
-class Unk_020e05f0;
-class Unk_020dd38c;
-class Unk_020e1c64;
-class Unk_020e05c0;
-class Unk_020e0608;
-struct Unk_02067f44_Sel;
-struct Unk_020682b8_Sub;
-class Unk_020682b8;
-struct Unk_02068490_Ptrs;
-struct Unk_02068558_File;
-class Unk_02068848_Menu;
-struct Unk_02068848_Entry;
-struct Unk_02068848_Owner;
-class Unk_020ddca8;
-class Unk_0206022c;
-class Unk_02068f10;
-class Unk_020ddcf0_v13;
-class Unk_02069878_Obj;
-struct Unk_02069834_Owner;
-class Unk_02069834;
-class Unk_02069fa4;
-class Unk_0206a198_Sub;
-struct Unk_0206a198_Owner;
-class Unk_0206a198;
-class Unk_0206ad58_Ent;
-class Unk_020ddc84;
-struct Unk_0206b1dc_State;
-class Unk_0206b950_Obj;
-class Unk_020a71d0_v16;
-struct Unk_0206b618_Msg;
-struct Unk_0206c4fc_Ent;
-struct Unk_0206c56c_Obj;
-struct Unk_0206c45c_Arg;
+class MsgRequest;
+class MsgString;
+class MsgString9;
+class TalkMsgRequest;
+class TalkWindowState;
+class TalkWindowMsg;
+class MsgString33;
+class MsgRunner;
+struct TalkWindow;
+class TalkFrame;
+class TalkTextBox;
+class TalkMsgBuffer;
+class TalkVoice;
+class TalkRenderProcessor;
+class TalkParser;
+class MsgTag;
+class MsgParser;
+class MsgWalker;
+class MsgTextLabel;
+class MsgProcessor;
+class ChoiceMenu;
+class ChoiceList;
+class ChoiceEntry;
+class BmgReader;
+class TalkBmgReader;
+struct TalkAdvanceStackPad;
+class TalkTagScannerView;
+class TalkAutoAdvance;
+struct TalkWindowShake;
+class BmgMsgAttr;
+class MsgString25;
+class MsgString11;
+class MsgString9C;
+class MsgString9B;
+class MsgString17;
+class MsgString17B;
+class TalkFrameView;
+class TalkTagScanner;
+class HouseData;
+class TalkParserCondTags;
+class TalkParserVarTags;
+class TalkParserTags2;
+class TalkParserTags;
+class TalkCharStepper;
+struct TalkParserSpeedState;
 
-extern "C" { extern u8 data_021edb60; }
+extern "C" { extern u8 gTalkMsgIndexNone; }
 
-class Unk_020e2c80;
+class ChoiceString;
 
-class Unk_020a72b0 {
+
+
+
+class TalkRenderProcessor : public MsgProcessor {
 public:
-    Unk_020a72b0();
-    u32 func_020a72b0();
-    void func_020a72c4(u32 *a, char **b, char **c);
-    void func_020a72f0(char **a, char **b, char **c);
-    void func_020a7338(char **a, char **b);
-    u32 func_020a7388(u8 *a1, u8 *a2, u8 *a3, u8 *s0, u8 *s1, u8 *s2, u8 *s3, u8 *s4, Unk_020e2a78 *s5, Unk_020e2a78 *s6);
-    u32 func_020a7404();
-    u32 func_020a7478(u8 *a1, Unk_020e2a78 *a2, u8 *a3, Unk_020e2a78 *s0, u8 *s1, Unk_020e2a78 *s2, u8 *s3,
-                      Unk_020e2a78 *s4, u8 *s5, Unk_020e2a78 *s6);
-    u32 func_020a74fc(u8 *a1, Unk_020e2a78 *a2, u8 *a3, Unk_020e2a78 *s0, u8 *s1, Unk_020e2a78 *s2, u8 *s3,
-                      Unk_020e2a78 *s4);
-    u32 func_020a7574(u8 *a1, Unk_020e2a78 *a2, u8 *a3, Unk_020e2a78 *s0, u8 *s1, Unk_020e2a78 *s2);
-    u32 func_020a75dc(u8 *a1, Unk_020e2a78 *a2, u8 *a3, Unk_020e2a78 *s0);
-    void func_020a7634(u16 *out);
-    void func_020a7648(u8 *buf, s32 n);
-    void func_020a76bc(u8 *a, u8 *b, u8 *c, u8 *d);
-    void func_020a76fc(u8 *a, u8 *b, u8 *c);
-    void func_020a7730(u8 *a, u8 *b);
-    void func_020a7754(u8 *a);
-    void func_020a777c(u8 *p);
+    TalkRenderProcessor(u8 *owner);
+    virtual ~TalkRenderProcessor();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 c);
+    virtual void onTag(u8 *p);
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ char *unk_0c;
-    /* 0x10 */ u8 *unk_10;
+    void tagGroup0b();
+    void tagGroup04();
+    void tagGroup02();
+    void tagGroup01();
+    void tagGroup00();
+    void dispatchTag();
+    void selectBySlotForm(MsgString *a);
+    void tagAltText();
+    void selectByPlayerGender();
+    void expandNamedSlot(s32 idx);
+    void expandSlot(s32 idx);
+    void pushArticle(MsgString33 *e);
+    s32 measureLine(u32 a, BOOL b);
+    void tagNamedSlotForm3();
+    void tagNamedSlotForm2();
+    void tagNamedSlotForm1();
+    void tagNamedSlotForm0();
+    void tagSlotForm10();
+    void tagSlotForm9();
+    void tagSlotForm8();
+    void tagSlotForm7();
+    void tagSlotForm6();
+    void tagSlotForm5();
+    void tagSlotForm4();
+    void tagSlotForm3();
+    void tagSlotForm2();
+    void tagSlotForm1();
+    void tagSlotForm0();
+    void tagSelectByPlayerGender();
+    void tagArticleMode2();
+    void tagArticleMode1();
+    void tagTrend();
+    void tagCompliment();
+    void tagNickname();
+    void tagImpression();
+    void tagNamedSlot3();
+    void tagNamedSlot2();
+    void tagNamedSlot1();
+    void tagNamedSlot0();
+    void tagSlot10();
+    void tagSlot9();
+    void tagSlot8();
+    void tagSlot7();
+    void tagSlot6();
+    void tagSlot5();
+    void tagSlot4();
+    void tagSlot3();
+    void tagSlot2();
+    void tagSlot1();
+    void tagSlot0();
+    void tagOtherResidentName();
+    void tagRandomVillagerName();
+    void tagEnemyName();
+    void tagFriendName();
+    void tagNumber1714();
+    void tagMinute();
+    void tagHour();
+    void tagWeekday();
+    void tagDay();
+    void tagMonth();
+    void tagYear();
+    void tagTownName();
+    void tagCatchphrase();
+    void tagSpeakerName();
+    void tagPlayerName();
+    void tagGreetingEnd();
+    void tagGreeting();
+    void tagGlyph8();
+    void tagGlyph7();
+    void tagGlyph6();
+    void tagGlyph1();
+    void tagGlyph0();
+    void tagGroupFf();
+
+    /* 0x2c */ u8 *window;
+    /* 0x30 */ MsgTextLabel *measureLabel;
+    /* 0x34 */ MsgTag tag;
+    /* 0x48 */ u8 *altTextEnd;
+    /* 0x4c */ u8 *selectEnd;
+    /* 0x50 */ u32 articleMode;
 };
 
-class Unk_020e2b08 {
-public:
-    Unk_020e2b08();
-    virtual ~Unk_020e2b08();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
 
-    void func_020a832c();
-    void func_020a8348(u8 *p);
-    void func_020a8368(u8 *p);
-    BOOL func_020a837c(u32 arg);
-    BOOL func_020a83f0(u32 c);
-    void func_020a83f4(u8 *p);
-    void func_020a8400(s32 n);
-    void func_020a840c();
-    void func_020a84bc();
 
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ u8 unk_08[0x1c];
-};
-
-class Unk_020e2ac8 : public Unk_020e2b08 {
-public:
-    Unk_020e2ac8(u8 flag);
-    virtual ~Unk_020e2ac8();
-
-    /* 0x24 */ Unk_020e2a90 *unk_24;
-    /* 0x28 */ u8 unk_28;
-};
-
-class Unk_020ddc64 : public Unk_020e2ac8 {
-public:
-    Unk_020ddc64(u8 *owner);
-    virtual ~Unk_020ddc64();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
-
-    void func_0206be04();
-    void func_0206bf78();
-    void func_0206c1c8();
-    void func_0206c1e0();
-    void func_0206c2a8();
-    void func_0206c36c();
-    void func_0206c45c(Unk_0206c45c_Arg *a);
-    void func_0206b7a4();
-    void func_0206c4b4();
-    void func_0206c4fc(s32 idx);
-    void func_0206c534(s32 idx);
-    void func_0206c56c(Unk_0206c4fc_Ent *e);
-    s32 func_0206c630(u32 a, BOOL b);
-    void func_0206b7dc();
-    void func_0206b7f0();
-    void func_0206b804();
-    void func_0206b818();
-    void func_0206b82c();
-    void func_0206b848();
-    void func_0206b864();
-    void func_0206b880();
-    void func_0206b89c();
-    void func_0206b8b8();
-    void func_0206b8d4();
-    void func_0206b8e8();
-    void func_0206b8fc();
-    void func_0206b910();
-    void func_0206b924();
-    void func_0206b938();
-    void func_0206b940();
-    void func_0206b948();
-    void func_0206b950();
-    void func_0206b978();
-    void func_0206b9a0();
-    void func_0206b9c8();
-    void func_0206b9f0();
-    void func_0206b9fc();
-    void func_0206ba08();
-    void func_0206ba14();
-    void func_0206ba20();
-    void func_0206ba2c();
-    void func_0206ba38();
-    void func_0206ba44();
-    void func_0206ba50();
-    void func_0206ba5c();
-    void func_0206ba68();
-    void func_0206ba74();
-    void func_0206ba80();
-    void func_0206ba8c();
-    void func_0206ba98();
-    void func_0206baa4();
-    void func_0206bacc();
-    void func_0206baf4();
-    void func_0206bb1c();
-    void func_0206bb44();
-    void func_0206bb64();
-    void func_0206bb84();
-    void func_0206bba4();
-    void func_0206bbc4();
-    void func_0206bbe4();
-    void func_0206bc04();
-    void func_0206bc24();
-    void func_0206bc4c();
-    void func_0206bc74();
-    void func_0206bc9c();
-    void func_0206bcc4();
-    void func_0206bcc8();
-    void func_0206bd10();
-    void func_0206bd28();
-    void func_0206bd40();
-    void func_0206bd58();
-    void func_0206bd70();
-    void func_0206bd88();
-
-    /* 0x2c */ u8 *unk_2c;
-    /* 0x30 */ Unk_020e2a90 *unk_30;
-    /* 0x34 */ Unk_020a72b0 unk_34;
-    /* 0x48 */ u8 *unk_48;
-    /* 0x4c */ u8 *unk_4c;
-    /* 0x50 */ u32 unk_50;
-};
-
-class Unk_020e2a18 {
-public:
-    Unk_020e2a18(u8 arg1);
-    virtual ~Unk_020e2a18();
-    virtual u32 vfunc_08() = 0;
-    virtual u32 vfunc_0c() = 0;
-    void func_020a8950(u8 *p);
-    s32 func_020a89f0();
-    u8 func_020a8a20(const char *path);
-
-    /* 0x04 */ u8 unk_04;
-};
-
-class Unk_020ddc4c : public Unk_020e2a18 {
-public:
-    Unk_020ddc4c();
-    virtual ~Unk_020ddc4c();
-    virtual u32 vfunc_08();
-    virtual u32 vfunc_0c();
-};
-
-class Unk_020e2b4c : public Unk_020e2b08 {
-public:
-    Unk_020e2b4c() {}
-    virtual ~Unk_020e2b4c() {}
-    virtual BOOL vfunc_18();
-    u8 *func_020a82ec(BOOL arg);
-};
 
 // Sub-object (0x3c bytes)
-class Unk_020ddc84 : public Unk_020e2b4c {
+class TalkCharStepper : public MsgWalker {
 public:
-    Unk_020ddc84(Unk_02067c70 *owner, Unk_0206b754 *buf);
-    virtual ~Unk_020ddc84();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
-    virtual BOOL vfunc_18();
+    TalkCharStepper(TalkWindow *owner, TalkTextBox *buf);
+    virtual ~TalkCharStepper();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 c);
+    virtual void onTag(u8 *p);
+    virtual BOOL canContinue();
 
-    void func_0206b268();
-    BOOL func_0206b2f4();
-    void func_0206b304();
-    void func_0206b338(u8 *p, u32 v, u8 flag);
-    void func_0206b374(u8 *p, s32 n, u8 flag);
+    void stop();
+    BOOL isIdle();
+    void stepOnce();
+    void startUntil(u8 *p, u32 v, u8 flag);
+    void startCount(u8 *p, s32 n, u8 flag);
 
-    /* 0x24 */ Unk_02067c70 *unk_24;
-    /* 0x28 */ Unk_0206b754 *unk_28;
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ u8 unk_38;
-    /* 0x39 */ u8 unk_39;
+    /* 0x24 */ TalkWindow *window;
+    /* 0x28 */ TalkTextBox *textBox;
+    /* 0x2c */ s32 mode;
+    /* 0x30 */ s32 endPos;
+    /* 0x34 */ s32 remaining;
+    /* 0x38 */ u8 stepAllowed;
+    /* 0x39 */ u8 printChars;
 };
 
-struct Unk_0206b1dc_State {
-    /* 0x4c */ u8 unk_4c, unk_4d, unk_4e, unk_4f;
-    /* 0x50 */ s32 unk_50, unk_54, unk_58, unk_5c;
-    Unk_0206b1dc_State() {
-        unk_4c = 0;
-        unk_4d = 0;
-        unk_4e = 0;
-        unk_4f = 0;
-        unk_50 = 0;
-        unk_54 = 0;
-        unk_58 = 0;
-        unk_5c = 0;
+struct TalkParserSpeedState {
+    /* 0x4c */ u8 fastForward, holdStep, instant, fastForwardLock;
+    /* 0x50 */ s32 charCount, stepPhase, waitTimer, textColor;
+    TalkParserSpeedState() {
+        fastForward = 0;
+        holdStep = 0;
+        instant = 0;
+        fastForwardLock = 0;
+        charCount = 0;
+        stepPhase = 0;
+        waitTimer = 0;
+        textColor = 0;
     }
 };
 
-class Unk_020ddccc : public Unk_020e2b4c {
+class TalkParser : public MsgWalker {
 public:
-    Unk_020ddccc(Unk_02067c70 *owner, Unk_0206b754 *buf);
-    virtual ~Unk_020ddccc();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
-    virtual BOOL vfunc_18();
+    TalkParser(TalkWindow *owner, TalkTextBox *buf);
+    virtual ~TalkParser();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 c);
+    virtual void onTag(u8 *p);
+    virtual BOOL canContinue();
 
-    void func_02068e9c();
-    void func_02069fa4();
-    void func_0206a024();
-    void func_0206a198();
-    void func_0206a1f8();
-    void func_0206a2d8();
-    void func_0206a358();
-    void func_0206a380();
-    void func_0206a498();
-    void func_0206a55c();
-    void func_0206a7a8();
-    void func_0206a844();
-    void func_0206a93c();
-    void func_0206aa84();
-    void func_0206ab74();
-    void func_0206ac98(u8 *p);
-    void func_0206acb0(u8 *p);
-    void func_0206ad0c();
-    void func_0206ad58(s32 idx);
-    void func_0206adb8(s32 idx);
-    void func_0206adf0(Unk_0206ad58_Ent *ent, BOOL flag);
-    BOOL func_0206ae70();
-    void func_0206af60();
-    BOOL func_0206af78();
-    void func_0206afa0();
-    void func_0206b110();
-    void func_0206b120();
-    void func_0206b128();
-    void func_0206b13c(s32 v);
-    void func_0206b140();
+    void tagBranchUnk8();
+    void tagGroupFf();
+    void tagGroup0b();
+    void tagGroup0a();
+    void tagGroup09();
+    void tagGroup08();
+    void tagGroup07();
+    void tagGroup06();
+    void tagGroup05();
+    void tagGroup04();
+    void tagGroup03();
+    void tagGroup02();
+    void tagGroup01();
+    void tagGroup00();
+    void dispatchTag();
+    void jumpToMessage(u8 *p);
+    void selectBySlotForm(u8 *p);
+    void selectByPlayerGender();
+    void expandNamedSlot(s32 idx);
+    void expandSlot(s32 idx);
+    void expandArticle(MsgString *ent, BOOL flag);
+    BOOL stepSpeed();
+    void stepSteppers();
+    BOOL steppersIdle();
+    void debugPrintMissing();
+    void resetColor();
+    void clearFastForward();
+    void setFastForward();
+    void setPrintMode(s32 v);
+    void stop();
 
-    /* 0x24 */ Unk_02067c70 *unk_24;
-    /* 0x28 */ Unk_0206b754 *unk_28;
-    /* 0x2c */ u32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ Unk_020a72b0 unk_38;
-    /* 0x4c */ Unk_0206b1dc_State unk_4c;
-    /* 0x60 */ Unk_020ddc84 unk_60;
-    /* 0x9c */ Unk_020ddc84 unk_9c;
-    /* 0xd8 */ u8 unk_d8;
-    /* 0xd9 */ u8 unk_d9;
-    /* 0xdc */ u8 *unk_dc;
-    /* 0xe0 */ s32 unk_e0;
+    /* 0x24 */ TalkWindow *window;
+    /* 0x28 */ TalkTextBox *textBox;
+    /* 0x2c */ u32 lineCount;
+    /* 0x30 */ s32 printStatus;
+    /* 0x34 */ s32 printMode;
+    /* 0x38 */ MsgTag tag;
+    /* 0x4c */ TalkParserSpeedState printVars;
+    /* 0x60 */ TalkCharStepper altTextStepper;
+    /* 0x9c */ TalkCharStepper mainTextStepper;
+    /* 0xd8 */ u8 choiceDeferred;
+    /* 0xd9 */ u8 capitalizeNext;
+    /* 0xdc */ u8 *selectEnd;
+    /* 0xe0 */ s32 articleMode;
 };
 
-class Unk_020ddca8 : public Unk_020e2b4c {
+class TalkTagScanner : public MsgWalker {
 public:
-    Unk_020ddca8(Unk_02068848_Owner *owner);
-    virtual ~Unk_020ddca8();
-    virtual void vfunc_14(u8 *p);
+    TalkTagScanner(TalkWindow *owner);
+    virtual ~TalkTagScanner();
+    virtual void onTag(u8 *p);
 
-    void func_02068848();
-    void func_02068874();
-    void func_020688ac(u8 *p);
-    void func_02068950();
-    void func_020689a0();
-    void func_020689d0();
-    void func_020689e4();
-    void func_020689f8();
-    void func_02068a0c();
-    void func_02068a20();
-    void func_02068a3c();
-    void func_02068a58();
-    void func_02068a74();
-    void func_02068a90();
-    void func_02068aac();
-    void func_02068ac8();
-    void func_02068adc();
-    void func_02068af0();
-    void func_02068b04();
-    void func_02068b18();
-    void func_02068b2c();
-    void func_02068b34();
-    void func_02068b3c();
-    void func_02068b44();
-    void func_02068b4c();
-    void func_02068b50();
-    void func_02068b70();
-    void func_02068b90();
-    void func_02068bb0();
-    void func_02068bd0();
-    void func_02068bf0();
-    void func_02068c10();
-    void func_02068c30();
-    void func_02068c50();
-    void func_02068c70();
-    void func_02068c90();
-    void func_02068c94();
-    void func_02068c98();
-    void func_02068c9c();
-    void func_02068d20();
-    void func_02068d78();
-    void func_02068dd0();
-    void func_02068e40();
+    void reportTag();
+    void resetScan();
+    void scan(u8 *p);
+    void tagAltText();
+    void tagColor();
+    void tagNamedSlotForm3();
+    void tagNamedSlotForm2();
+    void tagNamedSlotForm1();
+    void tagNamedSlotForm0();
+    void tagSlotForm10();
+    void tagSlotForm9();
+    void tagSlotForm8();
+    void tagSlotForm7();
+    void tagSlotForm6();
+    void tagSlotForm5();
+    void tagSlotForm4();
+    void tagSlotForm3();
+    void tagSlotForm2();
+    void tagSlotForm1();
+    void tagSlotForm0();
+    void tagSelectByPlayerGender();
+    void tagCapitalizeNext();
+    void tagArticleMode2();
+    void tagArticleMode1();
+    void tagNop0a00();
+    void tagSignal09_9();
+    void tagSignal09_8();
+    void tagSignal09_7();
+    void tagSignal09_6();
+    void tagSignal09_5();
+    void tagSignal09_4();
+    void tagSignal09_3();
+    void tagSignal09_2();
+    void tagSignal09_1();
+    void tagSignal09_0();
+    void tagNop0802();
+    void tagNop0801();
+    void tagNop0800();
+    void tagBranchSpecies();
+    void tagBranchVisitor();
+    void tagBranchWeekday();
+    void tagBranchResidentCount();
+    void tagBranchWeather();
 
-    void func_0206ac98(u8 *p);
-    void func_0206acb0(void *p);
-    void func_0206ad0c();
-    void func_0206afa0(s32 a, const void *b);
+    void jumpToMessage(u8 *p);
+    void selectBySlotForm(void *p);
+    void selectByPlayerGender();
+    void debugPrintMissing(s32 a, const void *b);
 
-    /* 0x24 */ Unk_02068848_Owner *unk_24;
+    /* 0x24 */ TalkWindow *window;
     /* 0x28 */ u8 *unk_28;
     /* 0x2c */ s32 unk_2c;
     /* 0x30 */ s32 unk_30;
     /* 0x34 */ u32 unk_34;
-    /* 0x38 */ u8 unk_38[0x14];
+    /* 0x38 */ u8 tag[0x14];
     /* 0x4c */ u8 unk_4c[0x10];
-    /* 0x5c */ u32 unk_5c;
-    /* 0x60 */ u8 unk_60[0x3c];
-    /* 0x9c */ u8 unk_9c[0x3c];
+    /* 0x5c */ u32 textColor;
+    /* 0x60 */ u8 altTextStepper[0x3c];
+    /* 0x9c */ u8 mainTextStepper[0x3c];
     /* 0xd8 */ u8 unk_d8;
-    /* 0xd9 */ u8 unk_d9;
+    /* 0xd9 */ u8 capitalizeNext;
     u8 pad_da[6];
-    /* 0xe0 */ u32 unk_e0;
+    /* 0xe0 */ u32 articleMode;
 };
 
-class Unk_020ddc24 {
+class TalkVoice {
 public:
-    Unk_02067c70 *unk_04;
-    u16 unk_08, unk_0a, unk_0c;
-    s32 unk_10, unk_14, unk_18;
-    u8 unk_1c, unk_1d, unk_1e;
-    s32 unk_20, unk_24, unk_28;
+    TalkWindow *window;
+    u16 charKey0, charKey1, carryCharKey;
+    s32 numCharKeys, msgModeOverride, msgMode;
+    u8 instantByMsg, instantByTag, inWait;
+    s32 voiceOverride, voiceType, textColor;
 
-    Unk_020ddc24(Unk_02067c70 *o);
-    virtual ~Unk_020ddc24();
-    void func_02067efc();
-    void func_02067f44();
-    u8 func_02067f88();
-    u32 func_02067fbc();
-    void func_02068000();
-    void func_02068018();
-    void func_02068064(s32 v);
-    void func_02068068();
-    void func_02068114();
-    void func_020681c4(s32 flag);
-    void func_02068244();
-    void func_02068268(s32 r);
-    void func_02068290();
-    void func_02068298(s32 v);
-    void func_0206829c();
-    void func_020682a4(s32 v);
+    TalkVoice(TalkWindow *o);
+    virtual ~TalkVoice();
+    void shiftHistory();
+    void updateVoiceType();
+    u8 getSpeakerMoodIndex();
+    u32 getVoiceStyle();
+    void end();
+    void begin();
+    void setMsgMode(s32 v);
+    void update();
+    void pushChar();
+    void reset(s32 flag);
+    void refreshVoiceType();
+    void setVoiceType(s32 r);
+    void clearMsgModeOverride();
+    void setMsgModeOverride(s32 v);
+    void clearVoiceOverride();
+    void setVoiceOverride(s32 v);
 };
 
-class Unk_020e2a78 {
+
+
+
+
+
+
+
+class TalkWindowMsg {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
-    void func_020a7bd8(Unk_020e2a78 *p);
-    void func_020a7c04(u8 *p);
-    void func_020a7c3c();
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
-};
-
-class Unk_020ddc34 : public Unk_020e2a78 {
-public:
-    Unk_020ddc34();
-    virtual ~Unk_020ddc34();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
-};
-
-class Unk_020e2a30 {
-public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
-    virtual void vfunc_08();
-    void func_020a710c(const char *src);
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
-};
-
-class Unk_020ddcf0 : public Unk_020e2a30 {
-public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
-    virtual void vfunc_08();
-    virtual const char *vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual u32 vfunc_68();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-
-    void func_02065e88();
-    void func_02065e90(u32 v);
-    u32 func_02065f04();
-    u32 func_02065f08();
-    Unk_020ddc34 *func_02065f10();
-    void func_02065f14(Unk_020e2a78 *p, u32 v);
-    void func_02065f50(u32 v);
-    void func_02065f70(Unk_020e2a78 *p, u32 v);
-    void func_02065f90(u8 *p, u32 v);
-
-    /* 0x20 */ Unk_020ddc34 unk_20;
-    /* 0x2c */ u32 unk_2c;
-    u8 pad_30[0xc];
-    /* 0x3c */ u32 unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
-
-class Unk_020660f8 {
-public:
-    Unk_020660f8();
-    ~Unk_020660f8();
-    void func_020660f8();
-    void func_020667e4();
-    void func_02066830();
-    void func_0206684c();
-    void func_02067188();
-    void func_02066cfc();
-    void func_0206620c();
-    void func_02066210();
-    void func_0206621c();
-    void func_02066290();
-    void func_02066310();
-    void func_020663ec();
-    void func_02066400();
-    void func_0206655c();
-    void func_02066568();
-    void func_020665c8();
-    void func_0206672c();
-    void func_02066730();
-    void func_0206673c();
-
-    void func_020671ec();
-    void func_02067214();
-    void func_02067238();
-    void func_02067254();
-    void func_020672a8();
-    BOOL func_020673b0();
-    BOOL func_020673f0();
-    BOOL func_02067438();
-    void func_02067480();
-    void func_0206749c();
-    void func_020674b8();
-    void func_0206755c(s32 a, s32 b, s32 c, s32 d);
-    void *func_020675a8();
-    void *func_020675d8();
-    void *func_0206760c();
-    void *func_02067648();
-    void *func_0206766c();
-    void *func_02067690();
-    void *func_020676b4();
-    s32 func_02067708();
-    void func_02067724(BOOL v);
-    s32 func_0206773c(s32 a);
-    void func_02067764();
-    void func_0206777c();
-    void func_02067934();
-    void func_02067940();
-    void func_0206794c();
-    void func_02067958();
-    void func_02067978(Unk_020ddcf0 *p);
-    s32 func_02067990();
-    s32 func_0206799c();
-    u8 func_020679a8();
-    void *func_020679b4();
-    void func_020679c0(s32 v);
-    void func_020679ec(s32 idx, void *p, u32 val);
-    void func_02067a1c(s32 idx, s32 a, s32 b);
-    s32 func_02067a3c(s32 idx, void *p);
-    void func_02067a54();
-    void func_02067a60();
-    void func_02067a6c();
-    void func_02067a78();
-    void func_02067a84(u8 *src, void *s);
-    BOOL func_02067abc(u8 *src, void *s);
-
-    /* 0x0000 */ u32 unk_00;
-    /* 0x0004 */ s32 unk_04;
-    /* 0x0008 */ s32 unk_08;
-    /* 0x000c */ s32 unk_0c;
-    u8 pad_10[4];
-    /* 0x0014 */ s32 unk_14;
-    /* 0x0018 */ u8 unk_18;
-    u8 pad_19[3];
-    /* 0x001c */ u8 unk_1c[0x9c - 0x1c];
-    /* 0x009c */ s32 unk_9c;
-    /* 0x00a0 */ s16 unk_a0;
-    u8 pad_a2[2];
-    /* 0x00a4 */ s32 unk_a4;
-    /* 0x00a8 */ s32 unk_a8;
-    /* 0x00ac */ s32 unk_ac;
-    /* 0x00b0 */ s32 unk_b0;
-    /* 0x00b4 */ u8 unk_b4[0x314 - 0xb4];
-    /* 0x0314 */ u8 unk_314[0x58c - 0x314];
-    /* 0x058c */ u8 unk_58c[0xa1c - 0x58c];
-    /* 0x0a1c */ u8 unk_a1c[0x12c0 - 0xa1c];
-    /* 0x12c0 */ u8 unk_12c0[0x30];
-    /* 0x12f0 */ s32 unk_12f0;
-    u8 pad_12f4[0x1398 - 0x12f4];
-    /* 0x1398 */ u8 unk_1398;
-    u8 pad_1399[0x13a4 - 0x1399];
-    /* 0x13a4 */ u8 unk_13a4[0xc];
-    /* 0x13b0 */ Unk_020ddcf0 *unk_13b0;
-    /* 0x13b4 */ u8 unk_13b4[0xc];
-    /* 0x13c0 */ u8 unk_13c0[0x15fc - 0x13c0];
-    /* 0x15fc */ u8 unk_15fc[0x16cc - 0x15fc];
-    /* 0x16cc */ u32 unk_16cc[4];
-    /* 0x16dc */ u8 unk_16dc[0x1708 - 0x16dc];
-    /* 0x1708 */ s32 unk_1708;
-    /* 0x170c */ u8 unk_170c;
-    /* 0x170d */ u8 unk_170d;
-    /* 0x170e */ u8 unk_170e;
-    /* 0x170f */ u8 unk_170f;
-    /* 0x1710 */ s32 unk_1710;
-    /* 0x1714 */ s32 unk_1714;
-    /* 0x1718 */ s32 unk_1718;
-    /* 0x171c */ u8 unk_171c[0x1748 - 0x171c];
-    /* 0x1748 */ u8 unk_1748[0x177c - 0x1748];
-    /* 0x177c */ u8 unk_177c[0x17a8 - 0x177c];
-    /* 0x17a8 */ u8 unk_17a8[0x17dc - 0x17a8];
-    /* 0x17dc */ u8 unk_17dc[0x1808 - 0x17dc];
-    /* 0x1808 */ u8 unk_1808[0x1834 - 0x1808];
-    /* 0x1834 */ u8 unk_1834[0x1860 - 0x1834];
-    /* 0x1860 */ u8 unk_1860[0x1880 - 0x1860];
-    /* 0x1880 */ u8 unk_1880[0x189c - 0x1880];
-    /* 0x189c */ u8 unk_189c[0x18b8 - 0x189c];
-    /* 0x18b8 */ u8 unk_18b8[0x18d4 - 0x18b8];
-    /* 0x18d4 */ u8 unk_18d4[0x18f0 - 0x18d4];
-    /* 0x18f0 */ u8 unk_18f0[0x190c - 0x18f0];
-    /* 0x190c */ u8 unk_190c[0x1928 - 0x190c];
-    /* 0x1928 */ u8 unk_1928[0x195c - 0x1928];
-    /* 0x195c */ u8 unk_195c[0x1990 - 0x195c];
-    /* 0x1990 */ u8 unk_1990[0x19ac - 0x1990];
-    /* 0x19ac */ u8 unk_19ac[0x19d0 - 0x19ac];
-    /* 0x19d0 */ u8 unk_19d0[0x19f7 - 0x19d0];
-    /* 0x19f7 */ u8 unk_19f7;
-    /* 0x19f8 */ u8 unk_19f8[0x1a12 - 0x19f8];
-    /* 0x1a12 */ u8 unk_1a12;
-    /* 0x1a13 */ u8 unk_1a13;
-    u8 pad_1a14[2];
-    /* 0x1a16 */ u8 unk_1a16;
-    /* 0x1a17 */ u8 unk_1a17;
-    /* 0x1a18 */ u8 unk_1a18;
-    /* 0x1a19 */ u8 unk_1a19;
-    /* 0x1a1a */ u8 unk_1a1a;
-    u8 pad_1a1b;
-};
-
-// library object, 0x34 bytes (polymorphic)
-struct Unk_020a71d0_v16 {
-    u8 pad[0x34];
-};
-
-class Unk_020668a0 {
-public:
-    void func_020668a0();
-    const char *func_02066900(const char *s);
-    const char *func_0206693c(const char *s);
-    char *func_02066978(const char *a, const char *b);
-    void func_02066a14();
-    void func_02066a50();
-    void func_02066b0c();
-    void func_02066b38();
-    void func_02066b74();
-    void func_02066bbc();
-    void func_02066bf4();
-    void func_02066c14();
-    void func_02066c7c(s32 idx);
-    BOOL func_02066d04();
-    void func_02066d4c();
-    BOOL func_02066d5c();
-    void func_02066da0();
-    BOOL func_02066db0();
-    void func_02066df4();
-    BOOL func_02066e04();
-    void func_02066e40();
-    BOOL func_02066e50();
-    void func_02066e90();
-    BOOL func_02066ea0();
-    void func_02066f08();
-    BOOL func_02066f2c();
-    void func_02066f7c();
-    BOOL func_02066f98();
-    void func_02066fd4();
-    BOOL func_02066fe4();
-    void func_02067020();
-    BOOL func_02067030();
-    void func_02067060();
-    BOOL func_02067070();
-    void func_02067098();
-    BOOL func_020670a8();
-    void func_020670e4();
-    void func_020670f4();
-    void func_0206712c();
-    void func_02067150();
-    void func_02067170();
+    void loadMessageAttr();
+    const char *matchSubdirPrefix(const char *s);
+    const char *matchDirPrefix(const char *s);
+    char *buildMessagePath(const char *a, const char *b);
+    void scanMessageTags();
+    void startMessage();
+    void playMessageSe();
+    void notifyChoice();
+    void notifyMessageEnd();
+    void notifyMessageStart();
+    void destroyNameLabel();
+    void createNameLabel();
+    void applyFriendshipDelta(s32 idx);
+    BOOL buildGreeting();
+    void clearGreeting();
+    BOOL buildCompliment();
+    void clearCompliment();
+    BOOL buildNickname();
+    void clearNickname();
+    BOOL buildImpression();
+    void clearImpression();
+    BOOL buildTrend();
+    void clearTrend();
+    BOOL buildOtherResidentName();
+    void clearOtherResidentName();
+    BOOL buildRandomVillagerName();
+    void clearRandomVillagerName();
+    BOOL buildEnemyName();
+    void clearEnemyName();
+    BOOL buildFriendName();
+    void clearFriendName();
+    BOOL buildPlayerName();
+    void clearPlayerName();
+    BOOL buildTownName();
+    void clearTownName();
+    BOOL buildCatchphrase();
+    void clearCatchphrase();
+    void clearNamedSlots();
+    void clearSlots();
+    void reset();
+    void resetVars();
 
     u8 pad_0000[0x314];
-    /* 0x0314 */ u8 unk_314[4];
+    /* 0x0314 */ u8 choiceList[4];
     u8 pad_0318[0x270];
-    /* 0x0588 */ Unk_02050288 *unk_588;
-    /* 0x058c */ u8 unk_58c[4];
+    /* 0x0588 */ TextLabel *nameLabel;
+    /* 0x058c */ u8 textBox[4];
     u8 pad_0590[0x48c];
-    /* 0x0a1c */ u8 unk_a1c[4];
+    /* 0x0a1c */ u8 msgBuffer[4];
     u8 pad_0a20[0x8a0];
-    /* 0x12c0 */ u8 unk_12c0[4];
+    /* 0x12c0 */ u8 parser[4];
     u8 pad_12c4[0xe0];
-    /* 0x13a4 */ u8 unk_13a4[4];
+    /* 0x13a4 */ u8 runner[4];
     u8 pad_13a8[0x8];
-    union {
-        /* 0x13b0 */ Unk_02066978_Owner *unk_13b0;
-        Unk_020ddcf0 *unk_13b0_v16;
-    };
-    /* 0x13b4 */ u8 unk_13b4[0xc];
-    union {
-        /* 0x13c0 */ u8 unk_13c0[11][0x34];
-        Unk_020a71d0_v16 unk_13c0_v16[11];
-    };
-    union {
-        /* 0x15fc */ u8 unk_15fc[4][0x34];
-        Unk_020a71d0_v16 unk_15fc_v16[4];
-    };
-    /* 0x16cc */ u32 unk_16cc[4];
+    /* 0x13b0 */ TalkMsgRequest *request;
+    /* 0x13b4 */ u8 msgAttr[0xc];
+    /* 0x13c0 */ MsgString33 slots[11];
+    /* 0x15fc */ MsgString33 namedSlots[4];
+    /* 0x16cc */ u32 namedSlotColors[4];
     u8 pad_16dc[0x1c];
-    /* 0x16f8 */ u8 unk_16f8;
+    /* 0x16f8 */ u8 voiceInstantByMsg;
     u8 pad_16f9[0x167];
-    /* 0x1860 */ u8 unk_1860[0x20];
-    /* 0x1880 */ u8 unk_1880[0x1c];
-    /* 0x189c */ u8 unk_189c[0x1c];
-    /* 0x18b8 */ u8 unk_18b8[0x1c];
-    /* 0x18d4 */ u8 unk_18d4[0x1c];
-    /* 0x18f0 */ u8 unk_18f0[0x1c];
-    /* 0x190c */ u8 unk_190c[0x1c];
-    /* 0x1928 */ u8 unk_1928[0x34];
-    /* 0x195c */ u8 unk_195c[0x34];
-    /* 0x1990 */ u8 unk_1990[0x1c];
-    /* 0x19ac */ u8 unk_19ac[0x24];
-    /* 0x19d0 */ u8 unk_19d0[0x24];
-    /* 0x19f4 */ u8 unk_19f4;
-    /* 0x19f5 */ u8 unk_19f5;
-    /* 0x19f6 */ u8 unk_19f6;
+    /* 0x1860 */ u8 catchphrase[0x20];
+    /* 0x1880 */ u8 townName[0x1c];
+    /* 0x189c */ u8 playerName[0x1c];
+    /* 0x18b8 */ u8 friendName[0x1c];
+    /* 0x18d4 */ u8 enemyName[0x1c];
+    /* 0x18f0 */ u8 randomVillagerName[0x1c];
+    /* 0x190c */ u8 otherResidentName[0x1c];
+    /* 0x1928 */ u8 trend[0x34];
+    /* 0x195c */ u8 impression[0x34];
+    /* 0x1990 */ u8 nickname[0x1c];
+    /* 0x19ac */ u8 compliment[0x24];
+    /* 0x19d0 */ u8 greeting[0x24];
+    /* 0x19f4 */ u8 randomVillagerNameBuilt;
+    /* 0x19f5 */ u8 otherResidentNameBuilt;
+    /* 0x19f6 */ u8 otherResidentIsVillager;
     u8 pad_19f7[0x1d];
-    /* 0x1a14 */ u8 unk_1a14;
-    /* 0x1a15 */ u8 unk_1a15;
-    /* 0x1a16 */ u8 unk_1a16;
+    /* 0x1a14 */ u8 startNotifyPending;
+    /* 0x1a15 */ u8 endNotifyPending;
+    /* 0x1a16 */ u8 choiceNotifyPending;
     u8 pad_1a17[0x2];
-    /* 0x1a19 */ u8 unk_1a19;
+    /* 0x1a19 */ u8 noOpenSe;
     u8 pad_1a1a[3];
 };
 
 // Entries of the owner (0x34 bytes)
-class Unk_0206ad58_Ent {
+
+
+
+class TalkFrame {
 public:
-    virtual ~Unk_0206ad58_Ent();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
-    u8 unk_04[0x30];
+    TalkFrame();
+    BOOL load(s32 a, u32 b, s32 c, u8 d);
+    TalkFrame *construct();
+    TalkFrame *destruct();
+    void draw();
+    void update();
+    void freeBuffers();
+    void drawBusyIcon();
+    void updateBusyIcon();
+    void drawArrow();
+    void updateArrow();
+    BOOL loadCharacters(void *file);
+    BOOL loadPalette(void *file);
+    BOOL loadScreen(void *file, BOOL alt);
+    void setTextPalette(s32 idx);
+    void setNamePalette(s32 a, BOOL b);
+
+    /* 0x00 */ u16 *screenData;
+    /* 0x04 */ void *paletteData;
+    /* 0x08 */ void *charData;
+    /* 0x0c */ u8 arrow[0x44];
+    /* 0x50 */ u8 busyIcon[0x24];
+    /* 0x74 */ u32 scrollX;
+    /* 0x78 */ u32 scrollY;
+    /* 0x7c */ u32 busyIconTimer;
 };
 
-class Unk_020e2a48 : public Unk_0206ad58_Ent {
+class TalkTextBox {
 public:
-    Unk_020e2a48();
-    ~Unk_020e2a48();
+    TalkTextBox(TalkWindow *o);
+    ~TalkTextBox();
+    void markLineDirty();
+    void endText();
+    void redrawLines();
+    void clearLabels();
+    void destroyLabels();
+    void createLabels();
+    void setCentered(u8 v);
+    void setRemainingLineColors(u32 v);
+    void beginLine(u32 v);
+    void appendTag(void *m);
+    BOOL appendChar(s32 c0);
+    BOOL appendBytes(s8 *src, u32 n);
+    void setAllLineColors(u32 v);
+    void clearWithColor(u32 v);
+    void clear();
+
+    /* 0x000 */ u8 text[0x400];
+    /* 0x400 */ u32 length;
+    /* 0x404 */ u8 *lineStarts[3];
+    /* 0x410 */ u32 numLines;
+    /* 0x414 */ u32 lineColors[3];
+    /* 0x420 */ TextLabel *labels[3];
+    /* 0x42c */ u32 lineOffsets[3];
+    /* 0x438 */ u8 lineDirty[3];
+    /* 0x43b */ u8 centered;
+    /* 0x43c */ TalkRenderProcessor renderer;
 };
 
-class Unk_020a84e0 { public: u32 pad[0xc / 4]; Unk_020a84e0(Unk_020e2b4c *p); };
-
-class Unk_02068808 {
+class TalkMsgBuffer {
 public:
-    Unk_02068808();
-    BOOL func_02068558(s32 a, u32 b, s32 c, u8 d);
-    Unk_02068808 *func_02068808();
-    Unk_02068808 *func_020687e0();
-    void func_020687b8();
-    void func_020687cc();
-    void func_02068524();
-    void func_020682b8();
-    void func_020682c4();
-    void func_020683bc();
-    void func_020683d0();
-    BOOL func_02068680(void *file);
-    BOOL func_020686e4(void *file);
-    BOOL func_02068748(void *file, BOOL alt);
-    void func_020685c4(s32 idx);
-    void func_0206860c(s32 a, BOOL b);
-
-    /* 0x00 */ u16 *unk_00;
-    /* 0x04 */ void *unk_04;
-    /* 0x08 */ void *unk_08;
-    /* 0x0c */ u8 unk_0c[0x44];
-    /* 0x50 */ u8 unk_50[0x24];
-    /* 0x74 */ u32 unk_74;
-    /* 0x78 */ u32 unk_78;
-    /* 0x7c */ u32 unk_7c;
-};
-
-class Unk_0206b754 {
-public:
-    Unk_0206b754(Unk_02067c70 *o);
-    ~Unk_0206b754();
-    void func_0206b434();
-    void func_0206b454();
-    void func_0206b458();
-    void func_0206b4e4();
-    void func_0206b518();
-    void func_0206b548();
-    void func_0206b590(u8 v);
-    void func_0206b59c(u32 v);
-    void func_0206b5c0(u32 v);
-    void func_0206b618(void *m);
-    BOOL func_0206b628(s32 c0);
-    BOOL func_0206b664(s8 *src, u32 n);
-    void func_0206b6b0(u32 v);
-    void func_0206b6d0(u32 v);
-    void func_0206b72c();
-
-    /* 0x000 */ u8 unk_00[0x400];
-    /* 0x400 */ u32 unk_400;
-    /* 0x404 */ u8 *unk_404[3];
-    /* 0x410 */ u32 unk_410;
-    /* 0x414 */ u32 unk_414[3];
-    /* 0x420 */ Unk_02050288 *unk_420[3];
-    /* 0x42c */ u32 unk_42c[3];
-    /* 0x438 */ u8 unk_438[3];
-    /* 0x43b */ u8 unk_43b;
-    /* 0x43c */ Unk_020ddc64 unk_43c;
-};
-
-class Unk_0206c74c {
-public:
-    Unk_0206c74c();
-    u32 func_0206c6f4();
-    u8 *func_0206c6fc();
-    void func_0206c700();
+    TalkMsgBuffer();
+    u32 getBufferSize();
+    u8 *getBuffer();
+    void clear();
 
     /* 0x00 */ u32 unk_00[0xa4 / 4];
-    /* 0xa4 */ u8 unk_a4[0x800];
+    /* 0xa4 */ u8 buffer[0x800];
 };
 
-class Unk_020a8cf8 {
+
+
+struct TalkWindowShake { u32 scrollY; u16 angle; u32 amplitude, decay, scaleX, scaleY; TalkWindowShake() { scrollY = 0; angle = 0; amplitude = 0; decay = 0; scaleX = 0; scaleY = 0; } };
+
+
+
+
+
+
+
+
+struct TalkWindow {
+    u32 index, state, nextState, stateStep, autoAdvanceTimer, openMode;
+    u8 choicePending;
+    TalkFrame frame;
+    TalkWindowShake scrollShake;
+    ChoiceMenu choiceMenu;
+    ChoiceList choiceList;
+    u32 nameLabel;
+    TalkTextBox textBox;
+    TalkMsgBuffer msgBuffer;
+    TalkParser parser;
+    MsgRunner runner;
+    TalkMsgRequest *request;
+    BmgMsgAttr msgAttr;
+    MsgString33 slots[11];
+    MsgString33 namedSlots[4];
+    u8 *namedSlotColors[4];
+    TalkVoice voice;
+    u32 year;
+    u8 day, month, minute, hour;
+    u32 weekday, second, timeOfDay;
+    MsgString25 yearText;
+    MsgString33 monthText;
+    MsgString25 dayText;
+    MsgString33 weekdayText;
+    MsgString25 hourText, minuteText, secondText;
+    MsgString11 catchphrase;
+    MsgString9C townName;
+    MsgString9B playerName, friendName, enemyName, randomVillagerName, otherResidentName;
+    MsgString33 trend, impression;
+    MsgString9B nickname;
+    MsgString17 compliment;
+    MsgString17B greeting;
+    u8 randomVillagerNameBuilt, otherResidentNameBuilt, otherResidentIsVillager, nextMsgIndex;
+    u8 nextFileName[0x1a];
+    u8 advancePending, advanceLocked, startNotifyPending, endNotifyPending, choiceNotifyPending, voicePlaying, inputDisabled, noOpenSe, silent;
+
+    TalkWindow();
+};
+
+
+
+
+
+struct TalkAdvanceStackPad { s32 v[2]; TalkAdvanceStackPad() {} ~TalkAdvanceStackPad() {} };
+
+
+class TalkTagScannerView {
 public:
-    Unk_020a8cf8();
-    void func_020a8d3c();
-    void func_020a8dc8(Unk_020aa3b8 *p);
-    void func_020a8de0(Unk_020aa3b8 *p);
-    u32 pad[0x260 / 4];
-};
-
-class Unk_020aa3b8 {
-public:
-    Unk_020aa3b8();
-    s32 func_020aa4b8();
-    void func_020aa4cc(s32 v);
-    Unk_020e2c80 *func_020aa538();
-    Unk_020e2c80 *func_020aa54c();
-    Unk_020aa72c *func_020aa560(s32 i);
-    void func_020aa5f4();
-    u32 pad[0x274 / 4];
-};
-
-struct Unk_02067c70_Z { u32 a; u16 b; u32 c, d, e, f; Unk_02067c70_Z() { a = 0; b = 0; c = 0; d = 0; e = 0; f = 0; } };
-
-class Unk_020a7238 { public: u32 pad[0xc / 4]; Unk_020a7238(); };
-
-class Unk_020e3efc { public: u32 pad[0x2c / 4]; Unk_020e3efc(); };
-
-class Unk_020e05f0 { public: u32 pad[0x20 / 4]; Unk_020e05f0(); };
-
-class Unk_020dd38c { public: u32 pad[0x1c / 4]; Unk_020dd38c(); };
-
-class Unk_020e1c64 { public: u32 pad[0x1c / 4]; Unk_020e1c64(); };
-
-class Unk_020e05c0 { public: u32 pad[0x24 / 4]; Unk_020e05c0(); };
-
-class Unk_020e0608 { public: u32 pad[0x24 / 4]; Unk_020e0608(); };
-
-struct Unk_02067c70 {
-    u32 unk_00, unk_04, unk_08, unk_0c, unk_10, unk_14;
-    u8 unk_18;
-    Unk_02068808 unk_1c;
-    Unk_02067c70_Z unk_9c;
-    Unk_020a8cf8 unk_b4;
-    Unk_020aa3b8 unk_314;
-    u32 unk_588;
-    Unk_0206b754 unk_58c;
-    Unk_0206c74c unk_a1c;
-    Unk_020ddccc unk_12c0;
-    Unk_020a84e0 unk_13a4;
-    Unk_02067f44_Sel *unk_13b0;
-    Unk_020a7238 unk_13b4;
-    Unk_020e2a48 unk_13c0[11];
-    Unk_020e2a48 unk_15fc[4];
-    u8 *unk_16cc[4];
-    Unk_020ddc24 unk_16dc;
-    u32 unk_1708;
-    u32 unk_170c_pad;
-    u32 unk_1710, unk_1714, unk_1718;
-    Unk_020e3efc unk_171c;
-    Unk_020e2a48 unk_1748;
-    Unk_020e3efc unk_177c_a;
-    Unk_020e2a48 unk_17a8;
-    Unk_020e3efc unk_17dc, unk_1808, unk_1834;
-    Unk_020e05f0 unk_1860;
-    Unk_020dd38c unk_1880;
-    Unk_020e1c64 unk_189c, unk_18b8, unk_18d4, unk_18f0, unk_190c;
-    Unk_020e2a48 unk_1928, unk_195c;
-    Unk_020e1c64 unk_1990;
-    Unk_020e05c0 unk_19ac;
-    Unk_020e0608 unk_19d0;
-    u8 unk_19f4, unk_19f5, unk_19f6, unk_19f7;
-    u8 unk_19f8[0x1a];
-    u8 unk_1a12, unk_1a13, unk_1a14, unk_1a15, unk_1a16, unk_1a17, unk_1a18, unk_1a19, unk_1a1a;
-
-    Unk_02067c70();
-};
-
-class Unk_020e2a90 : public Unk_02050288 {
-public:
-    Unk_020e2a90(s32 arg1, s32 arg2, s32 arg3);
-    virtual ~Unk_020e2a90();
-    virtual void func_08();
-    virtual u32 func_0c();
-
-    void func_020a7eac(u32 c);
-    void func_020a7ecc();
-    void func_020a7eec();
-    void func_020a7f0c(Unk_020e2ac8 *v);
-};
-
-class Unk_020aa72c {
-public:
-    u8 *func_020aa790();
-    u8 *func_020aa79c();
-    Unk_020e2a78 *func_020aa7a0();
-};
-
-class Unk_02068f10_Obj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34(s32 a, s32 b);
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void *vfunc_68();
-};
-
-struct Unk_020cbb18_Obj { u8 pad[0x64]; u32 unk_64; };
-
-struct Unk_020660f8_Pad { s32 v[2]; Unk_020660f8_Pad() {} ~Unk_020660f8_Pad() {} };
-
-class Unk_02066978_Owner {
-public:
-    virtual ~Unk_02066978_Owner();
-    virtual void vfunc_08();
-    virtual u32 vfunc_0c();
-    virtual void vfunc_10(u32 v);
-    virtual void vfunc_14(u32 v);
-    virtual void vfunc_18(u32 v);
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void *vfunc_68();
-};
-
-class Unk_0206891c {
-public:
-    Unk_0206891c(void *owner);
-    ~Unk_0206891c();
-    void func_020688ac(u32 v);
+    TalkTagScannerView(void *owner);
+    ~TalkTagScannerView();
+    void scan(u32 v);
     u8 pad[0x44];
 };
 
-class Unk_02066ce0 {
+class TalkAutoAdvance {
 public:
-    BOOL func_02066ce0();
-    void func_02066cf8(s32 v);
-    void func_02066cfc();
+    BOOL tick();
+    void start(s32 v);
+    void stop();
     u8 pad[0x10];
-    s32 unk_10;
+    s32 autoAdvanceTimer;
 };
 
-struct Unk_020676b4_Tmp {
-    Unk_020676b4_Tmp();
-    ~Unk_020676b4_Tmp();
-    u8 b[0x38];
-};
 
-struct Unk_02067f44_Sel {
-    virtual void vfunc_00(); virtual void vfunc_04(); virtual void vfunc_08(); virtual void vfunc_0c();
-    virtual void vfunc_10(); virtual void vfunc_14(); virtual void vfunc_18(); virtual void vfunc_1c();
-    virtual void vfunc_20(); virtual void vfunc_24(); virtual void vfunc_28(); virtual void vfunc_2c();
-    virtual void vfunc_30(); virtual void vfunc_34(); virtual void vfunc_38(); virtual void vfunc_3c();
-    virtual void vfunc_40(); virtual void vfunc_44(); virtual void vfunc_48(); virtual void vfunc_4c();
-    virtual void vfunc_50(); virtual void vfunc_54(); virtual void vfunc_58(); virtual void vfunc_5c();
-    virtual void vfunc_60(); virtual void vfunc_64();
-    virtual void *vfunc_68();
-    virtual s32 vfunc_6c();
-};
 
-struct Unk_020682b8_Sub {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-};
 
-class Unk_020682b8 {
+class TalkFrameView {
 public:
     u8 pad_00[0x0c];
-    Unk_020682b8_Sub unk_0c;
-    u8 pad_10[0x74 - 0x10];
-    s32 unk_74, unk_78, unk_7c;
-    void func_020682b8();
-    void func_020682c4();
-    void func_020682f0();
-    void func_02068304();
-    BOOL func_0206831c();
-    BOOL func_0206834c();
-    BOOL func_0206837c();
-    BOOL func_0206839c();
-    void func_020683bc();
-    void func_020683d0();
-    void func_020683f4();
-    void func_02068400();
-    void func_0206840c();
-    void func_02068418();
-    void func_02068424(s32 a, s32 b);
-    void func_02068454(s32 b);
+    TalkArrow arrow;
+    u8 pad_50[0x74 - 0x50];
+    s32 scrollX, scrollY, busyIconTimer;
+    void drawBusyIcon();
+    void updateBusyIcon();
+    void hideBusyIcon();
+    void showBusyIcon();
+    BOOL isArrowEndDone();
+    BOOL isArrowNextDone();
+    BOOL isArrowWaiting();
+    BOOL isArrowHidden();
+    void drawArrow();
+    void updateArrow();
+    void showArrowEnd();
+    void showArrowNext();
+    void showArrowWait();
+    void hideArrow();
+    void setScroll(s32 a, s32 b);
+    void setScrollY(s32 b);
 };
 
-struct Unk_02068490_Ptrs {
-    void *a;
-    u16 *b;
-    void *c;
-};
 
-struct Unk_02068558_File {
-    u32 v[0x12];
-};
 
-class Unk_02068848_Menu {
-public:
-    virtual ~Unk_02068848_Menu();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34(s32 a, s32 b);
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64(u32 v);
-    virtual s32 vfunc_68();
-};
 
-struct Unk_02068848_Entry {
-    u8 unk_00[0x34];
-};
 
-struct Unk_02068848_Owner {
-    u8 pad_0000[0x13b0];
-    /* 0x13b0 */ Unk_02068848_Menu *unk_13b0;
-    u8 pad_13b4[0x13c0 - 0x13b4];
-    /* 0x13c0 */ Unk_02068848_Entry unk_13c0[11];
-    /* 0x15fc */ Unk_02068848_Entry unk_15fc[4];
-    u8 pad_16cc[0x1704 - 0x16cc];
-    /* 0x1704 */ u32 unk_1704;
-    u8 pad_1708[0x1710 - 0x1708];
-    /* 0x1710 */ u32 unk_1710;
-};
 
-class Unk_0206022c {
-public:
-    s32 func_020604c4();
-};
 
 // Script command handlers: member functions reached through pointer tables at 0x020dd6b4..0x020ddbf8
-class Unk_02068f10 : public Unk_020e2b08 {
+class TalkParserCondTags : public MsgParser {
 public:
-    void func_02068f10();
-    void func_02068f9c();
-    void func_02068ffc();
-    void func_0206905c();
-    void func_020690d0();
-    void func_0206912c();
-    void func_020691bc();
-    void func_0206920c();
-    void func_02069258();
-    void func_02069360();
-    void func_020693a0();
-    void func_020693fc();
-    void func_02069400();
-    void func_0206945c();
-    void func_0206949c();
-    void func_020694a8();
-    void func_020694b4();
-    void func_020694c0();
-    void func_020694cc();
-    void func_020694d8();
-    void func_020694e4();
-    void func_020694f0();
-    void func_020694fc();
-    void func_02069508();
-    void func_02069514();
-    void func_02069520();
-    void func_0206952c();
-    void func_02069538();
-    void func_02069544();
-    void func_02069550();
-    void func_020695bc();
-    void func_02069618();
-    void func_02069674();
-    void func_020696d0();
-    void func_020696f0();
-    void func_02069710();
-    void func_02069730();
-    void func_02069750();
-    void func_02069770();
-    void func_02069790();
-    void func_020697b0();
-    void func_020697f4();
+    void tagBranchVillagerCount();
+    void tagBranchFishCount();
+    void tagBranchInsectCount();
+    void tagBranchHouseUnk();
+    void tagBranchPlayerGender();
+    void tagBranchFriendship();
+    void tagBranchRandom3();
+    void tagBranchRandom2();
+    void tagChoiceSlots();
+    void tagTrend();
+    void tagCompliment();
+    void tagNop0420();
+    void tagNickname();
+    void tagImpression();
+    void tagNamedSlot3();
+    void tagNamedSlot2();
+    void tagNamedSlot1();
+    void tagNamedSlot0();
+    void tagSlot10();
+    void tagSlot9();
+    void tagSlot8();
+    void tagSlot7();
+    void tagSlot6();
+    void tagSlot5();
+    void tagSlot4();
+    void tagSlot3();
+    void tagSlot2();
+    void tagSlot1();
+    void tagSlot0();
+    void tagOtherResidentName();
+    void tagRandomVillagerName();
+    void tagEnemyName();
+    void tagFriendName();
+    void tagNumber1714();
+    void tagMinute();
+    void tagHour();
+    void tagWeekday();
+    void tagDay();
+    void tagMonth();
+    void tagYear();
+    void tagTownName();
+    void tagCatchphrase();
 
-    void func_0206ac98(u8 *p);
-    void func_0206ad58(s32 k);
-    void func_0206adb8(s32 k);
-    void func_0206afa0(s32 line, const char *file);
+    void jumpToMessage(u8 *p);
+    void expandNamedSlot(s32 k);
+    void expandSlot(s32 k);
+    void debugPrintMissing(s32 line, const char *file);
 
-    /* 0x24 */ u8 *unk_24;
+    /* 0x24 */ u8 *window;
     /* 0x28 */ u32 unk_28;
     /* 0x2c */ u32 unk_2c;
-    /* 0x30 */ s32 unk_30;
+    /* 0x30 */ s32 printStatus;
     /* 0x34 */ u32 unk_34;
-    /* 0x38 */ Unk_020a72b0 unk_38;
+    /* 0x38 */ MsgTag tag;
     /* 0x4c */ u32 unk_4c;
     /* 0x50 */ u32 unk_50;
     /* 0x54 */ u32 unk_54;
     /* 0x58 */ u32 unk_58;
-    /* 0x5c */ s32 unk_5c;
+    /* 0x5c */ s32 textColor;
     /* 0x60 */ u8 unk_60[0xd8 - 0x60];
-    /* 0xd8 */ u8 unk_d8;
+    /* 0xd8 */ u8 choiceDeferred;
 };
 
-class Unk_020ddcf0_v13 {
+
+
+
+class TalkParserVarTags : public MsgWalker {
 public:
-    virtual ~Unk_020ddcf0_v13();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c(s32 v);
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 v);
-    virtual void vfunc_28(u32 v);
-    virtual void vfunc_2c(u32 v);
-    virtual void vfunc_30(u32 v);
-    Unk_020ddc34 *func_02065f10();
-};
+    void tagSpeakerName();
+    void tagPlayerName();
+    void tagAction4();
+    void tagAction3();
+    void tagAction2();
+    void tagAction1();
+    void tagAction0();
+    void tagChoice5B();
+    void tagChoice4B();
+    void tagChoice3B();
+    void tagChoice2B();
+    void tagChoice5();
+    void tagChoice4();
+    void tagChoice3();
+    void tagChoice2();
+    void tagAutoAdvance();
+    void tagSignal4();
+    void tagSignal3();
+    void tagSignal2();
+    void tagSignal1();
+    void tagSignal0();
+    void tagShakeLarge();
+    void tagShakeMedium();
+    void tagShakeSmall();
+    void tagGreetingEnd();
+    void tagGreeting();
+    void tagFastLockOff();
+    void tagFastLockOn();
+    void tagFastOff();
+    void tagFastOn();
+    void tagPageBreak();
+    void tagWait();
+    void tagGlyph8();
+    void tagGlyph7();
+    void tagGlyph6();
+    void tagGlyph1();
+    void tagGlyph0();
+    void tagNop();
 
-class Unk_02069878_Obj {
-public:
-    virtual ~Unk_02069878_Obj();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-};
-
-struct Unk_02069834_Owner {
-    u8 pad_00[0xb4];
-    /* 0x00b4 */ u8 unk_b4[0x13b0 - 0xb4];
-    /* 0x13b0 */ Unk_020ddcf0_v13 *unk_13b0;
-    u8 pad_13b4[0x16f9 - 0x13b4];
-    /* 0x16f9 */ u8 unk_16f9;
-    /* 0x16fa */ u8 unk_16fa;
-    u8 pad_16fb[0x189c - 0x16fb];
-    /* 0x189c */ Unk_02069878_Obj unk_189c;
-    u8 pad_18a0[0x19d0 - 0x18a0];
-    /* 0x19d0 */ Unk_02069878_Obj unk_19d0;
-};
-
-class Unk_02069834 : public Unk_020e2b4c {
-public:
-    void func_02069834();
-    void func_02069878();
-    void func_020698bc();
-    void func_020698e8();
-    void func_02069914();
-    void func_02069940();
-    void func_0206996c();
-    void func_0206998c();
-    void func_020699a4();
-    void func_020699bc();
-    void func_020699d4();
-    void func_020699ec();
-    void func_02069ad0();
-    void func_02069b94();
-    void func_02069c34();
-    void func_02069cb8();
-    void func_02069cd8();
-    void func_02069cfc();
-    void func_02069d20();
-    void func_02069d44();
-    void func_02069d68();
-    void func_02069d8c();
-    void func_02069dc0();
-    void func_02069df0();
-    void func_02069e24();
-    void func_02069e28();
-    void func_02069e70();
-    void func_02069e88();
-    void func_02069ea0();
-    void func_02069ec4();
-    void func_02069ee8();
-    void func_02069efc();
-    void func_02069f28();
-    void func_02069f40();
-    void func_02069f58();
-    void func_02069f70();
-    void func_02069f88();
-    void func_02069fa0();
-
-    /* 0x24 */ Unk_02069834_Owner *unk_24;
+    /* 0x24 */ TalkWindow *window;
     u8 pad_28[8];
-    /* 0x30 */ s32 unk_30;
+    /* 0x30 */ s32 printStatus;
     u8 pad_34[4];
-    /* 0x38 */ Unk_020a72b0 unk_38;
+    /* 0x38 */ MsgTag tag;
     u8 pad_4c[2];
-    /* 0x4e */ u8 unk_4e;
-    /* 0x4f */ u8 unk_4f;
+    /* 0x4e */ u8 instant;
+    /* 0x4f */ u8 fastForwardLock;
     u8 pad_50[8];
-    /* 0x58 */ u32 unk_58;
-    /* 0x5c */ s32 unk_5c;
+    /* 0x58 */ u32 waitTimer;
+    /* 0x5c */ s32 textColor;
 };
 
-class Unk_02069fa4 {
+class TalkParserTags2 {
 public:
-    void func_02069fa4();
-    void func_02068950();
-    void func_020689a0();
-    void func_02068b44();
-    void func_02068b3c();
-    void func_02068b34();
-    void func_02068b2c();
-    void func_02068b18();
-    void func_02068b04();
-    void func_02068af0();
-    void func_02068adc();
-    void func_02068ac8();
-    void func_02068aac();
-    void func_02068a90();
-    void func_02068a74();
-    void func_02068a58();
-    void func_02068a3c();
-    void func_02068a20();
-    void func_02068a0c();
-    void func_020689f8();
-    void func_020689e4();
-    void func_020689d0();
-    void func_02069fa0();
-    void func_0206a024();
+    void tagGroupFf();
+    void tagAltText();
+    void tagColor();
+    void tagArticleMode1();
+    void tagArticleMode2();
+    void tagCapitalizeNext();
+    void tagSelectByPlayerGender();
+    void tagSlotForm0();
+    void tagSlotForm1();
+    void tagSlotForm2();
+    void tagSlotForm3();
+    void tagSlotForm4();
+    void tagSlotForm5();
+    void tagSlotForm6();
+    void tagSlotForm7();
+    void tagSlotForm8();
+    void tagSlotForm9();
+    void tagSlotForm10();
+    void tagNamedSlotForm0();
+    void tagNamedSlotForm1();
+    void tagNamedSlotForm2();
+    void tagNamedSlotForm3();
+    void tagNop();
+    void tagGroup0b();
     /* 0x00 */ u8 pad_00[0x3c];
-    /* 0x3c */ u32 unk_3c;
+    /* 0x3c */ u32 tagId;
 };
 
-class Unk_0206a198_Sub {
-public:
-    virtual ~Unk_0206a198_Sub();
 
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-};
 
-struct Unk_0206a198_Owner {
-    /* 0x0000 */ u8 pad[0x13b0];
-    /* 0x13b0 */ Unk_0206a198_Sub *unk_13b0;
-};
-
-class Unk_0206a198 : public Unk_020e2b08 {
+class TalkParserTags : public MsgParser {
 public:
 
-    void func_02068b4c();
-    void func_02068b50();
-    void func_02068b70();
-    void func_02068b90();
-    void func_02068bb0();
-    void func_02068bd0();
-    void func_02068bf0();
-    void func_02068c10();
-    void func_02068c30();
-    void func_02068c50();
-    void func_02068c70();
-    void func_02068c90();
-    void func_02068c94();
-    void func_02068c98();
-    void func_02068c9c();
-    void func_02068d20();
-    void func_02068d78();
-    void func_02068dd0();
-    void func_02068e40();
-    void func_02068e9c();
-    void func_02068f10();
-    void func_02068f9c();
-    void func_02068ffc();
-    void func_0206905c();
-    void func_020690d0();
-    void func_0206912c();
-    void func_020691bc();
-    void func_0206920c();
-    void func_02069258();
-    void func_02069360();
-    void func_020693a0();
-    void func_020693fc();
-    void func_02069400();
-    void func_0206945c();
-    void func_0206949c();
-    void func_020694a8();
-    void func_020694b4();
-    void func_020694c0();
-    void func_020694cc();
-    void func_020694d8();
-    void func_020694e4();
-    void func_020694f0();
-    void func_020694fc();
-    void func_02069508();
-    void func_02069514();
-    void func_02069520();
-    void func_0206952c();
-    void func_02069538();
-    void func_02069544();
-    void func_02069550();
-    void func_020695bc();
-    void func_02069618();
-    void func_02069674();
-    void func_020696d0();
-    void func_020696f0();
-    void func_02069710();
-    void func_02069730();
-    void func_02069750();
-    void func_02069770();
-    void func_02069790();
-    void func_020697b0();
-    void func_020697f4();
-    void func_02069834();
-    void func_02069878();
-    void func_020698bc();
-    void func_020698e8();
-    void func_02069914();
-    void func_02069940();
-    void func_0206996c();
-    void func_0206998c();
-    void func_020699a4();
-    void func_020699bc();
-    void func_020699d4();
-    void func_020699ec();
-    void func_02069ad0();
-    void func_02069b94();
-    void func_02069c34();
-    void func_02069cb8();
-    void func_02069cd8();
-    void func_02069cfc();
-    void func_02069d20();
-    void func_02069d44();
-    void func_02069d68();
-    void func_02069d8c();
-    void func_02069dc0();
-    void func_02069df0();
-    void func_02069e24();
-    void func_02069e28();
-    void func_02069e70();
-    void func_02069e88();
-    void func_02069ea0();
-    void func_02069ec4();
-    void func_02069ee8();
-    void func_02069efc();
-    void func_02069f28();
-    void func_02069f40();
-    void func_02069f58();
-    void func_02069f70();
-    void func_02069f88();
-    void func_02069fa0();
-    void func_0206a198();
-    void func_0206a1f8();
-    void func_0206a2d8();
-    void func_0206a358();
-    void func_0206a380();
-    void func_0206a498();
-    void func_0206a55c();
-    void func_0206a7a8();
-    void func_0206a844();
-    void func_0206a93c();
-    void func_0206aa84();
+    void tagNop0a00();
+    void tagSignal09_9();
+    void tagSignal09_8();
+    void tagSignal09_7();
+    void tagSignal09_6();
+    void tagSignal09_5();
+    void tagSignal09_4();
+    void tagSignal09_3();
+    void tagSignal09_2();
+    void tagSignal09_1();
+    void tagSignal09_0();
+    void tagNop0802();
+    void tagNop0801();
+    void tagNop0800();
+    void tagBranchSpecies();
+    void tagBranchVisitor();
+    void tagBranchWeekday();
+    void tagBranchResidentCount();
+    void tagBranchWeather();
+    void tagBranchUnk8();
+    void tagBranchVillagerCount();
+    void tagBranchFishCount();
+    void tagBranchInsectCount();
+    void tagBranchHouseUnk();
+    void tagBranchPlayerGender();
+    void tagBranchFriendship();
+    void tagBranchRandom3();
+    void tagBranchRandom2();
+    void tagChoiceSlots();
+    void tagTrend();
+    void tagCompliment();
+    void tagNop0420();
+    void tagNickname();
+    void tagImpression();
+    void tagNamedSlot3();
+    void tagNamedSlot2();
+    void tagNamedSlot1();
+    void tagNamedSlot0();
+    void tagSlot10();
+    void tagSlot9();
+    void tagSlot8();
+    void tagSlot7();
+    void tagSlot6();
+    void tagSlot5();
+    void tagSlot4();
+    void tagSlot3();
+    void tagSlot2();
+    void tagSlot1();
+    void tagSlot0();
+    void tagOtherResidentName();
+    void tagRandomVillagerName();
+    void tagEnemyName();
+    void tagFriendName();
+    void tagNumber1714();
+    void tagMinute();
+    void tagHour();
+    void tagWeekday();
+    void tagDay();
+    void tagMonth();
+    void tagYear();
+    void tagTownName();
+    void tagCatchphrase();
+    void tagSpeakerName();
+    void tagPlayerName();
+    void tagAction4();
+    void tagAction3();
+    void tagAction2();
+    void tagAction1();
+    void tagAction0();
+    void tagChoice5B();
+    void tagChoice4B();
+    void tagChoice3B();
+    void tagChoice2B();
+    void tagChoice5();
+    void tagChoice4();
+    void tagChoice3();
+    void tagChoice2();
+    void tagAutoAdvance();
+    void tagSignal4();
+    void tagSignal3();
+    void tagSignal2();
+    void tagSignal1();
+    void tagSignal0();
+    void tagShakeLarge();
+    void tagShakeMedium();
+    void tagShakeSmall();
+    void tagGreetingEnd();
+    void tagGreeting();
+    void tagFastLockOff();
+    void tagFastLockOn();
+    void tagFastOff();
+    void tagFastOn();
+    void tagPageBreak();
+    void tagWait();
+    void tagGlyph8();
+    void tagGlyph7();
+    void tagGlyph6();
+    void tagGlyph1();
+    void tagGlyph0();
+    void tagNop();
+    void tagGroup0a();
+    void tagGroup09();
+    void tagGroup08();
+    void tagGroup07();
+    void tagGroup06();
+    void tagGroup05();
+    void tagGroup04();
+    void tagGroup03();
+    void tagGroup02();
+    void tagGroup01();
+    void tagGroup00();
 
-    /* 0x24 */ Unk_0206a198_Owner *unk_24;
+    /* 0x24 */ TalkWindow *window;
     /* 0x28 */ u8 unk_28[0x10];
-    /* 0x38 */ u32 unk_38;
-    /* 0x3c */ u32 unk_3c;
+    /* 0x38 */ u32 tag;
+    /* 0x3c */ u32 tagId;
     /* 0x40 */ u8 unk_40[0x8];
-    /* 0x48 */ u8 *unk_48;
+    /* 0x48 */ u8 *tagRaw;
     /* 0x4c */ u8 unk_4c[0x8c];
-    /* 0xd8 */ u8 unk_d8;
+    /* 0xd8 */ u8 choiceDeferred;
 };
 
-// polymorphic object seen through the owner's member objects
-struct Unk_0206b950_Obj {
-    virtual ~Unk_0206b950_Obj();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-};
 
-struct Unk_0206b618_Msg {
-    u8 pad[8];
-    s32 unk_08;
-    u8 pad2[4];
-    s32 unk_10;
-};
 
-struct Unk_0206c4fc_Ent {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-    u32 unk_04;
-    u8 unk_08[0x2c];
-};
 
-struct Unk_0206c56c_Obj {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual u8 *vfunc_0c();
-};
 
-struct Unk_0206c45c_Arg {
-    u32 unk_00, unk_04, unk_08;
-    s32 unk_0c;
-};
 
 
 // ======== unk_0206c714.cpp ========
@@ -1531,444 +944,439 @@ namespace n18 {
 }
 namespace n0 {
 extern "C" { extern const u8 data_020cba1c[0x6]; const u8 data_020cba1c[0x6] = {26, 5, 1, 1, 0, 0}; }
-extern "C" { Unk_020660f8 *data_021ca140; }
+extern "C" { TalkWindowState *gTalkWindows; }
 }
-Unk_020ddc4c::Unk_020ddc4c() : Unk_020e2a18(1) {
+TalkBmgReader::TalkBmgReader() : BmgReader(1) {
     using namespace n18;}
-// ---- Unk_020ddc4c
-Unk_020ddc4c::~Unk_020ddc4c() {
+// ---- TalkBmgReader
+TalkBmgReader::~TalkBmgReader() {
     using namespace n18;}
 
 // ======== unk_0206be04.cpp ========
 namespace n17 {
 extern "C" { void func_0206c56c_dummy_unused(); }
-extern "C" { Unk_020e2a90 *func_020a8054(u32 a, u32 len, u32 b); }
-extern "C" { void func_020a7fd8(Unk_020e2a90 *p); }
-extern "C" { Unk_0206c56c_Obj *func_020b3078(u8 *key); }
-extern "C" { void *func_0209750c(); }
-extern "C" { void *_ZN12Unk_0209865c13func_0209888cEv(void *); }
-extern "C" { s32 _ZN12Unk_020940a013func_0209411cEv(void *); }
-typedef void (Unk_020ddc64::*Unk_020ddc64_Fn)();
-extern "C" void func_02115fb4(void *dst, u32 value, u32 size);
+extern "C" { MsgTextLabel *MsgTextLabel_CreateVram(u32 a, u32 len, u32 b); }
+extern "C" { void MsgTextLabel_Destroy(MsgTextLabel *p); }
+extern "C" { MsgString *String_GetArticle(u8 *key); }
+extern "C" { void *PlayerData_GetCurrent(); }
+extern "C" { void *_ZN10PlayerData11getPlayerIdEv(void *); }
+extern "C" { s32 _ZN8PlayerId9getGenderEv(void *); }
+typedef void (TalkRenderProcessor::*Unk_020ddc64_Fn)();
+extern "C" void MI_CpuFill8(void *dst, u32 value, u32 size);
 
 }
-void Unk_0206c74c::func_0206c700() {
+void TalkMsgBuffer::clear() {
     using namespace n17;
-    func_02115fb4(unk_a4, 0, 0x800);
+    MI_CpuFill8(buffer, 0, 0x800);
 }
-u8 *Unk_0206c74c::func_0206c6fc() {
+u8 *TalkMsgBuffer::getBuffer() {
     using namespace n17;
-    return unk_a4;
+    return buffer;
 }
-u32 Unk_0206c74c::func_0206c6f4() {
+u32 TalkMsgBuffer::getBufferSize() {
     using namespace n17;
     return 0x800;
 }
-Unk_020ddc64::Unk_020ddc64(u8 *owner) : Unk_020e2ac8(1), unk_2c(owner), unk_30(0) {
+TalkRenderProcessor::TalkRenderProcessor(u8 *owner) : MsgProcessor(1), window(owner), measureLabel(0) {
     using namespace n17;
-    unk_48 = 0;
-    unk_4c = 0;
-    unk_50 = 0;
-    unk_30 = func_020a8054(0, 0x14, 2);
-    if (unk_30 != 0) unk_30->func_020a7f0c(this);
+    altTextEnd = 0;
+    selectEnd = 0;
+    articleMode = 0;
+    measureLabel = MsgTextLabel_CreateVram(0, 0x14, 2);
+    if (measureLabel != 0) measureLabel->setProcessor(this);
 }
-Unk_020ddc64::~Unk_020ddc64() {
+TalkRenderProcessor::~TalkRenderProcessor() {
     using namespace n17;
-    if (unk_30 != 0) func_020a7fd8(unk_30);
+    if (measureLabel != 0) MsgTextLabel_Destroy(measureLabel);
 }
-s32 Unk_020ddc64::func_0206c630(u32 a, BOOL b) {
+s32 TalkRenderProcessor::measureLine(u32 a, BOOL b) {
     using namespace n17;
     s32 r = 0;
     if (b != 0) {
-        if (unk_30 != 0) {
-            unk_30->unk_10 = a;
-            unk_30->func_02050c44();
-            r = unk_30->unk_30;
-            unk_30->unk_10 = 0;
+        if (measureLabel != 0) {
+            measureLabel->textStart = a;
+            measureLabel->alignCenter();
+            r = measureLabel->xOffset;
+            measureLabel->textStart = 0;
         }
     }
     return r;
 }
-void Unk_020ddc64::vfunc_08() {
+void TalkRenderProcessor::onBegin() {
     using namespace n17;
-    if (unk_30 != 0) {
-        unk_50 = 0;
-        unk_48 = 0;
-        unk_4c = 0;
-        unk_30->func_020a7eec();
+    if (measureLabel != 0) {
+        articleMode = 0;
+        altTextEnd = 0;
+        selectEnd = 0;
+        measureLabel->onBegin();
     }
 }
-void Unk_020ddc64::vfunc_0c() {
+void TalkRenderProcessor::onEnd() {
     using namespace n17;
-    if (unk_30 != 0) unk_30->func_020a7ecc();
+    if (measureLabel != 0) measureLabel->onEnd();
 }
-void Unk_020ddc64::vfunc_10(u32 c) {
+void TalkRenderProcessor::onChar(u32 c) {
     using namespace n17;
-    if (unk_30 != 0) unk_30->func_020a7eac(c);
-    if (unk_04 == unk_48) {
-        unk_48 = 0;
-        func_020a832c();
+    if (measureLabel != 0) measureLabel->onChar(c);
+    if (cursor == altTextEnd) {
+        altTextEnd = 0;
+        popText();
     }
-    if (unk_04 == unk_4c) {
-        unk_4c = 0;
-        func_020a832c();
+    if (cursor == selectEnd) {
+        selectEnd = 0;
+        popText();
     }
 }
-void Unk_020ddc64::vfunc_14(u8 *p) {
+void TalkRenderProcessor::onTag(u8 *p) {
     using namespace n17;
-    unk_34.func_020a777c(p);
-    func_0206c36c();
+    tag.parse(p);
+    dispatchTag();
 }
-void Unk_020ddc64::func_0206c56c(Unk_0206c4fc_Ent *e) {
+void TalkRenderProcessor::pushArticle(MsgString33 *e) {
     using namespace n17;
-    u8 *k = e->unk_08 - 0;
-    Unk_0206c56c_Obj *o = 0;
-    if (unk_50 == 0) {
-        o = func_020b3078(k + 8);
-    } else if (unk_50 == 1) {
-        o = func_020b3078(k + 9);
+    u8 *k = (u8 *)&e->attr - 0;
+    MsgString *o = 0;
+    if (articleMode == 0) {
+        o = String_GetArticle(k + 8);
+    } else if (articleMode == 1) {
+        o = String_GetArticle(k + 9);
     }
-    if (o != 0) func_020a8348(o->vfunc_0c());
-    unk_50 = 0;
+    if (o != 0) pushText(o->data());
+    articleMode = 0;
 }
-void Unk_020ddc64::func_0206c534(s32 idx) {
+void TalkRenderProcessor::expandSlot(s32 idx) {
     using namespace n17;
-    Unk_0206c4fc_Ent *e = (Unk_0206c4fc_Ent *)(unk_2c + 0x13c0 + idx * 0x34);
-    func_020a8348(e->vfunc_0c());
-    func_0206c56c(e);
+    MsgString33 *e = (MsgString33 *)(window + 0x13c0 + idx * 0x34);
+    pushText(e->data());
+    pushArticle(e);
 }
-void Unk_020ddc64::func_0206c4fc(s32 idx) {
+void TalkRenderProcessor::expandNamedSlot(s32 idx) {
     using namespace n17;
-    Unk_0206c4fc_Ent *e = (Unk_0206c4fc_Ent *)(unk_2c + 0x15fc + idx * 0x34);
-    func_020a8348(e->vfunc_0c());
-    func_0206c56c(e);
+    MsgString33 *e = (MsgString33 *)(window + 0x15fc + idx * 0x34);
+    pushText(e->data());
+    pushArticle(e);
 }
-void Unk_020ddc64::func_0206c4b4() {
+void TalkRenderProcessor::selectByPlayerGender() {
     using namespace n17;
     char *p0, *p1;
-    unk_34.func_020a7338(&p0, &p1);
-    if (_ZN12Unk_020940a013func_0209411cEv(_ZN12Unk_0209865c13func_0209888cEv(func_0209750c())) == 0) {
-        if (p0 != 0) func_020a8348((u8 *)p0);
+    tag.getStrings2(&p0, &p1);
+    if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0) {
+        if (p0 != 0) pushText((u8 *)p0);
     } else {
         if (p1 != 0) {
-            unk_4c = unk_04;
-            func_020a8348((u8 *)p1);
+            selectEnd = cursor;
+            pushText((u8 *)p1);
         }
     }
 }
-void Unk_020ddc64::func_0206c45c(Unk_0206c45c_Arg *a) {
+void TalkRenderProcessor::selectBySlotForm(MsgString *a) {
     using namespace n17;
     char *p0, *p1, *p2;
-    unk_34.func_020a72f0(&p0, &p1, &p2);
-    if (a->unk_0c == 0) {
-        if (p0 != 0) func_020a8348((u8 *)p0);
-    } else if (a->unk_0c == 1) {
-        if (p1 != 0) func_020a8348((u8 *)p1);
-    } else if (a->unk_0c == 2) {
+    tag.getStrings3(&p0, &p1, &p2);
+    if (a->attr.form == 0) {
+        if (p0 != 0) pushText((u8 *)p0);
+    } else if (a->attr.form == 1) {
+        if (p1 != 0) pushText((u8 *)p1);
+    } else if (a->attr.form == 2) {
         if (p2 != 0) {
-            unk_4c = unk_04;
-            func_020a8348((u8 *)p2);
+            selectEnd = cursor;
+            pushText((u8 *)p2);
         }
     }
 }
-void Unk_020ddc64::func_0206c36c() {
+void TalkRenderProcessor::dispatchTag() {
     using namespace n17;
-    static Unk_020ddc64_Fn tbl[12] = { &Unk_020ddc64::func_0206c2a8, &Unk_020ddc64::func_0206c1e0, &Unk_020ddc64::func_0206c1c8, 0, &Unk_020ddc64::func_0206bf78, 0, 0, 0, 0, 0, 0, &Unk_020ddc64::func_0206be04 };
-    s32 i = unk_34.unk_00;
+    static Unk_020ddc64_Fn tbl[12] = { &TalkRenderProcessor::tagGroup00, &TalkRenderProcessor::tagGroup01, &TalkRenderProcessor::tagGroup02, 0, &TalkRenderProcessor::tagGroup04, 0, 0, 0, 0, 0, 0, &TalkRenderProcessor::tagGroup0b };
+    s32 i = tag.group;
     Unk_020ddc64_Fn f = 0;
-    if (i == 0xff) f = &Unk_020ddc64::func_0206bd88;
+    if (i == 0xff) f = &TalkRenderProcessor::tagGroupFf;
     else if (i < 12) f = tbl[i];
     if (f != 0) (this->*f)();
 }
-void Unk_020ddc64::func_0206c2a8() {
+void TalkRenderProcessor::tagGroup00() {
     using namespace n17;
-    static Unk_020ddc64_Fn tbl[11] = { &Unk_020ddc64::func_0206bd70, &Unk_020ddc64::func_0206bd58, 0, 0, 0, 0, &Unk_020ddc64::func_0206bd40, &Unk_020ddc64::func_0206bd28, &Unk_020ddc64::func_0206bd10, 0, 0 };
-    Unk_020ddc64_Fn f = tbl[unk_34.unk_04];
+    static Unk_020ddc64_Fn tbl[11] = { &TalkRenderProcessor::tagGlyph0, &TalkRenderProcessor::tagGlyph1, 0, 0, 0, 0, &TalkRenderProcessor::tagGlyph6, &TalkRenderProcessor::tagGlyph7, &TalkRenderProcessor::tagGlyph8, 0, 0 };
+    Unk_020ddc64_Fn f = tbl[tag.id];
     (this->*f)();
 }
-void Unk_020ddc64::func_0206c1e0() {
+void TalkRenderProcessor::tagGroup01() {
     using namespace n17;
-    static Unk_020ddc64_Fn tbl[17] = { 0, 0, 0, 0, 0, 0, &Unk_020ddc64::func_0206bcc8, &Unk_020ddc64::func_0206bcc4, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    Unk_020ddc64_Fn f = tbl[unk_34.unk_04];
+    static Unk_020ddc64_Fn tbl[17] = { 0, 0, 0, 0, 0, 0, &TalkRenderProcessor::tagGreeting, &TalkRenderProcessor::tagGreetingEnd, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    Unk_020ddc64_Fn f = tbl[tag.id];
     if (f != 0) (this->*f)();
 }
-void Unk_020ddc64::func_0206c1c8() {
+void TalkRenderProcessor::tagGroup02() {
     using namespace n17;
-    func_020a8400(unk_34.func_020a7404());
+    skip(tag.getTrailingStringsSize());
 }
-void Unk_020ddc64::func_0206bf78() {
+void TalkRenderProcessor::tagGroup04() {
     using namespace n17;
-    static Unk_020ddc64_Fn tbl[35] = { &Unk_020ddc64::func_0206bc9c, &Unk_020ddc64::func_0206bc74, &Unk_020ddc64::func_0206bc4c, &Unk_020ddc64::func_0206bc24, &Unk_020ddc64::func_0206bc04, &Unk_020ddc64::func_0206bbe4, &Unk_020ddc64::func_0206bbc4, &Unk_020ddc64::func_0206bba4, &Unk_020ddc64::func_0206bb84, &Unk_020ddc64::func_0206bb64, &Unk_020ddc64::func_0206bb44, &Unk_020ddc64::func_0206bb1c, &Unk_020ddc64::func_0206baf4, &Unk_020ddc64::func_0206bacc, &Unk_020ddc64::func_0206baa4, &Unk_020ddc64::func_0206ba98, &Unk_020ddc64::func_0206ba8c, &Unk_020ddc64::func_0206ba80, &Unk_020ddc64::func_0206ba74, &Unk_020ddc64::func_0206ba68, &Unk_020ddc64::func_0206ba5c, &Unk_020ddc64::func_0206ba50, &Unk_020ddc64::func_0206ba44, &Unk_020ddc64::func_0206ba38, &Unk_020ddc64::func_0206ba2c, &Unk_020ddc64::func_0206ba20, &Unk_020ddc64::func_0206ba14, &Unk_020ddc64::func_0206ba08, &Unk_020ddc64::func_0206b9fc, &Unk_020ddc64::func_0206b9f0, &Unk_020ddc64::func_0206b9c8, &Unk_020ddc64::func_0206b9a0, 0, &Unk_020ddc64::func_0206b978, &Unk_020ddc64::func_0206b950 };
-    Unk_020ddc64_Fn f = tbl[unk_34.unk_04];
+    static Unk_020ddc64_Fn tbl[35] = { &TalkRenderProcessor::tagPlayerName, &TalkRenderProcessor::tagSpeakerName, &TalkRenderProcessor::tagCatchphrase, &TalkRenderProcessor::tagTownName, &TalkRenderProcessor::tagYear, &TalkRenderProcessor::tagMonth, &TalkRenderProcessor::tagDay, &TalkRenderProcessor::tagWeekday, &TalkRenderProcessor::tagHour, &TalkRenderProcessor::tagMinute, &TalkRenderProcessor::tagNumber1714, &TalkRenderProcessor::tagFriendName, &TalkRenderProcessor::tagEnemyName, &TalkRenderProcessor::tagRandomVillagerName, &TalkRenderProcessor::tagOtherResidentName, &TalkRenderProcessor::tagSlot0, &TalkRenderProcessor::tagSlot1, &TalkRenderProcessor::tagSlot2, &TalkRenderProcessor::tagSlot3, &TalkRenderProcessor::tagSlot4, &TalkRenderProcessor::tagSlot5, &TalkRenderProcessor::tagSlot6, &TalkRenderProcessor::tagSlot7, &TalkRenderProcessor::tagSlot8, &TalkRenderProcessor::tagSlot9, &TalkRenderProcessor::tagSlot10, &TalkRenderProcessor::tagNamedSlot0, &TalkRenderProcessor::tagNamedSlot1, &TalkRenderProcessor::tagNamedSlot2, &TalkRenderProcessor::tagNamedSlot3, &TalkRenderProcessor::tagImpression, &TalkRenderProcessor::tagNickname, 0, &TalkRenderProcessor::tagCompliment, &TalkRenderProcessor::tagTrend };
+    Unk_020ddc64_Fn f = tbl[tag.id];
     if (f != 0) (this->*f)();
 }
-void Unk_020ddc64::func_0206be04() {
+void TalkRenderProcessor::tagGroup0b() {
     using namespace n17;
-    static Unk_020ddc64_Fn tbl[20] = { 0, &Unk_020ddc64::func_0206b948, &Unk_020ddc64::func_0206b940, 0, &Unk_020ddc64::func_0206b938, &Unk_020ddc64::func_0206b924, &Unk_020ddc64::func_0206b910, &Unk_020ddc64::func_0206b8fc, &Unk_020ddc64::func_0206b8e8, &Unk_020ddc64::func_0206b8d4, &Unk_020ddc64::func_0206b8b8, &Unk_020ddc64::func_0206b89c, &Unk_020ddc64::func_0206b880, &Unk_020ddc64::func_0206b864, &Unk_020ddc64::func_0206b848, &Unk_020ddc64::func_0206b82c, &Unk_020ddc64::func_0206b818, &Unk_020ddc64::func_0206b804, &Unk_020ddc64::func_0206b7f0, &Unk_020ddc64::func_0206b7dc };
-    Unk_020ddc64_Fn f = tbl[unk_34.unk_04];
+    static Unk_020ddc64_Fn tbl[20] = { 0, &TalkRenderProcessor::tagArticleMode1, &TalkRenderProcessor::tagArticleMode2, 0, &TalkRenderProcessor::tagSelectByPlayerGender, &TalkRenderProcessor::tagSlotForm0, &TalkRenderProcessor::tagSlotForm1, &TalkRenderProcessor::tagSlotForm2, &TalkRenderProcessor::tagSlotForm3, &TalkRenderProcessor::tagSlotForm4, &TalkRenderProcessor::tagSlotForm5, &TalkRenderProcessor::tagSlotForm6, &TalkRenderProcessor::tagSlotForm7, &TalkRenderProcessor::tagSlotForm8, &TalkRenderProcessor::tagSlotForm9, &TalkRenderProcessor::tagSlotForm10, &TalkRenderProcessor::tagNamedSlotForm0, &TalkRenderProcessor::tagNamedSlotForm1, &TalkRenderProcessor::tagNamedSlotForm2, &TalkRenderProcessor::tagNamedSlotForm3 };
+    Unk_020ddc64_Fn f = tbl[tag.id];
     if (f != 0) (this->*f)();
 }
 
 // ======== unk_0206b4e4.cpp ========
-#define unk_2c ((Unk_020668a0 *)unk_2c)
-#define unk_13b0 unk_13b0_v16
-#define unk_13c0 unk_13c0_v16
-#define unk_15fc unk_15fc_v16
-#define Unk_020a71d0 Unk_020a71d0_v16
-#define Unk_0206b7dc_Arg Unk_0206c45c_Arg
+#define msgWindow ((TalkWindowMsg *)window)
 namespace n16 {
-extern "C" { void func_02115fb4(void *, s32, u32); }
-extern "C" { u8 *func_0205021c(void); }
-extern "C" { u8 *func_02050224(void); }
-extern "C" { u8 *func_0205022c(void); }
-extern "C" { u8 *func_02050234(void); }
-extern "C" { u8 *func_0205023c(void); }
-extern "C" { u32 func_020a6c84(u32 a, s32 b, s32 c); }
-extern "C" { BOOL func_0206774c(void); }
-extern "C" Unk_02050288 *func_020a8054(u32 a, s32 b, s32 c);
-extern "C" void func_020a7fd8(Unk_02050288 *obj);
-extern "C" { Unk_0206b950_Obj *_ZN12Unk_020660f813func_020675a8Ev(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN12Unk_020660f813func_020675d8Ev(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN12Unk_020660f813func_0206760cEv(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN12Unk_020660f813func_02067648Ev(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN12Unk_020660f813func_0206766cEv(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN12Unk_020660f813func_02067690Ev(void *); }
-extern "C" { Unk_0206b950_Obj *_ZN12Unk_020660f813func_020676b4Ev(void *); }
-typedef void (Unk_020ddc64::*Unk_0206bd88_Fn)();
+extern "C" { void MI_CpuFill8(void *, s32, u32); }
+extern "C" { u8 *Text_GetSpecialCharStr5(void); }
+extern "C" { u8 *Text_GetSpecialCharStr7(void); }
+extern "C" { u8 *Text_GetSpecialCharStr6(void); }
+extern "C" { u8 *Text_GetSpecialCharStr4(void); }
+extern "C" { u8 *Text_GetSpecialCharStr1(void); }
+extern "C" { u32 Msg_FindTag(u32 a, s32 b, s32 c); }
+extern "C" { BOOL Talk_IsAltTextEnabled(void); }
+extern "C" TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
+extern "C" void MsgTextLabel_Destroy(TextLabel *obj);
+extern "C" { MsgString *_ZN15TalkWindowState17getNumber1714TextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState13getMinuteTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState11getHourTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState14getWeekdayTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState10getDayTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState12getMonthTextEv(void *); }
+extern "C" { MsgString *_ZN15TalkWindowState11getYearTextEv(void *); }
+typedef void (TalkRenderProcessor::*Unk_0206bd88_Fn)();
 
 }
-void Unk_020ddc64::func_0206bd88() {
+void TalkRenderProcessor::tagGroupFf() {
     using namespace n16;
-    static Unk_0206bd88_Fn tbl[3] = { 0, 0, &Unk_020ddc64::func_0206b7a4 };
-    Unk_0206bd88_Fn f = tbl[unk_34.unk_04];
+    static Unk_0206bd88_Fn tbl[3] = { 0, 0, &TalkRenderProcessor::tagAltText };
+    Unk_0206bd88_Fn f = tbl[tag.id];
     if (f != 0) (this->*f)();
 }
-void Unk_020ddc64::func_0206bd70() {
-    using namespace n16; func_020a8348(func_0205022c()); }
-void Unk_020ddc64::func_0206bd58() {
-    using namespace n16; func_020a8348(func_02050224()); }
-void Unk_020ddc64::func_0206bd40() {
-    using namespace n16; func_020a8348(func_0205021c()); }
-void Unk_020ddc64::func_0206bd28() {
-    using namespace n16; func_020a8348(func_02050234()); }
-void Unk_020ddc64::func_0206bd10() {
-    using namespace n16; func_020a8348(func_0205023c()); }
-void Unk_020ddc64::func_0206bcc8() {
+void TalkRenderProcessor::tagGlyph0() {
+    using namespace n16; pushText(Text_GetSpecialCharStr6()); }
+void TalkRenderProcessor::tagGlyph1() {
+    using namespace n16; pushText(Text_GetSpecialCharStr7()); }
+void TalkRenderProcessor::tagGlyph6() {
+    using namespace n16; pushText(Text_GetSpecialCharStr5()); }
+void TalkRenderProcessor::tagGlyph7() {
+    using namespace n16; pushText(Text_GetSpecialCharStr4()); }
+void TalkRenderProcessor::tagGlyph8() {
+    using namespace n16; pushText(Text_GetSpecialCharStr1()); }
+void TalkRenderProcessor::tagGreeting() {
     using namespace n16;
-    u32 base = (u32)unk_04;
-    u32 r = func_020a6c84(base, 1, 7);
+    u32 base = (u32)cursor;
+    u32 r = Msg_FindTag(base, 1, 7);
     if (r) {
-        if (unk_2c->func_02066d04()) {
-            func_020a8400(r - base);
-            func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_19d0)->vfunc_0c());
+        if (msgWindow->buildGreeting()) {
+            skip(r - base);
+            pushText(((MsgString *)msgWindow->greeting)->data());
         }
     }
 }
-void Unk_020ddc64::func_0206bcc4() {
+void TalkRenderProcessor::tagGreetingEnd() {
     using namespace n16;}
-void Unk_020ddc64::func_0206bc9c() {
+void TalkRenderProcessor::tagPlayerName() {
     using namespace n16;
-    unk_2c->func_02067030();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_189c)->vfunc_0c());
+    msgWindow->buildPlayerName();
+    pushText(((MsgString *)msgWindow->playerName)->data());
 }
-void Unk_020ddc64::func_0206bc74() {
+void TalkRenderProcessor::tagSpeakerName() {
     using namespace n16;
-    func_020a8348(unk_2c->unk_13b0->func_02065f10()->vfunc_0c());
+    pushText(msgWindow->request->getSpeakerName()->data());
 }
-void Unk_020ddc64::func_0206bc4c() {
+void TalkRenderProcessor::tagCatchphrase() {
     using namespace n16;
-    unk_2c->func_020670a8();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_1860)->vfunc_0c());
+    msgWindow->buildCatchphrase();
+    pushText(((MsgString *)msgWindow->catchphrase)->data());
 }
-void Unk_020ddc64::func_0206bc24() {
+void TalkRenderProcessor::tagTownName() {
     using namespace n16;
-    unk_2c->func_02067070();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_1880)->vfunc_0c());
+    msgWindow->buildTownName();
+    pushText(((MsgString *)msgWindow->townName)->data());
 }
-void Unk_020ddc64::func_0206bc04() {
+void TalkRenderProcessor::tagYear() {
     using namespace n16;
-    func_020a8348(_ZN12Unk_020660f813func_020676b4Ev(unk_2c)->vfunc_0c());
+    pushText(_ZN15TalkWindowState11getYearTextEv(msgWindow)->data());
 }
-void Unk_020ddc64::func_0206bbe4() {
+void TalkRenderProcessor::tagMonth() {
     using namespace n16;
-    func_020a8348(_ZN12Unk_020660f813func_02067690Ev(unk_2c)->vfunc_0c());
+    pushText(_ZN15TalkWindowState12getMonthTextEv(msgWindow)->data());
 }
-void Unk_020ddc64::func_0206bbc4() {
+void TalkRenderProcessor::tagDay() {
     using namespace n16;
-    func_020a8348(_ZN12Unk_020660f813func_0206766cEv(unk_2c)->vfunc_0c());
+    pushText(_ZN15TalkWindowState10getDayTextEv(msgWindow)->data());
 }
-void Unk_020ddc64::func_0206bba4() {
+void TalkRenderProcessor::tagWeekday() {
     using namespace n16;
-    func_020a8348(_ZN12Unk_020660f813func_02067648Ev(unk_2c)->vfunc_0c());
+    pushText(_ZN15TalkWindowState14getWeekdayTextEv(msgWindow)->data());
 }
-void Unk_020ddc64::func_0206bb84() {
+void TalkRenderProcessor::tagHour() {
     using namespace n16;
-    func_020a8348(_ZN12Unk_020660f813func_0206760cEv(unk_2c)->vfunc_0c());
+    pushText(_ZN15TalkWindowState11getHourTextEv(msgWindow)->data());
 }
-void Unk_020ddc64::func_0206bb64() {
+void TalkRenderProcessor::tagMinute() {
     using namespace n16;
-    func_020a8348(_ZN12Unk_020660f813func_020675d8Ev(unk_2c)->vfunc_0c());
+    pushText(_ZN15TalkWindowState13getMinuteTextEv(msgWindow)->data());
 }
-void Unk_020ddc64::func_0206bb44() {
+void TalkRenderProcessor::tagNumber1714() {
     using namespace n16;
-    func_020a8348(_ZN12Unk_020660f813func_020675a8Ev(unk_2c)->vfunc_0c());
+    pushText(_ZN15TalkWindowState17getNumber1714TextEv(msgWindow)->data());
 }
-void Unk_020ddc64::func_0206bb1c() {
+void TalkRenderProcessor::tagFriendName() {
     using namespace n16;
-    unk_2c->func_02066fe4();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_18b8)->vfunc_0c());
+    msgWindow->buildFriendName();
+    pushText(((MsgString *)msgWindow->friendName)->data());
 }
-void Unk_020ddc64::func_0206baf4() {
+void TalkRenderProcessor::tagEnemyName() {
     using namespace n16;
-    unk_2c->func_02066f98();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_18d4)->vfunc_0c());
+    msgWindow->buildEnemyName();
+    pushText(((MsgString *)msgWindow->enemyName)->data());
 }
-void Unk_020ddc64::func_0206bacc() {
+void TalkRenderProcessor::tagRandomVillagerName() {
     using namespace n16;
-    unk_2c->func_02066f2c();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_18f0)->vfunc_0c());
+    msgWindow->buildRandomVillagerName();
+    pushText(((MsgString *)msgWindow->randomVillagerName)->data());
 }
-void Unk_020ddc64::func_0206baa4() {
+void TalkRenderProcessor::tagOtherResidentName() {
     using namespace n16;
-    unk_2c->func_02066ea0();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_190c)->vfunc_0c());
+    msgWindow->buildOtherResidentName();
+    pushText(((MsgString *)msgWindow->otherResidentName)->data());
 }
-void Unk_020ddc64::func_0206ba98() {
-    using namespace n16; func_0206c534(0); }
-void Unk_020ddc64::func_0206ba8c() {
-    using namespace n16; func_0206c534(1); }
-void Unk_020ddc64::func_0206ba80() {
-    using namespace n16; func_0206c534(2); }
-void Unk_020ddc64::func_0206ba74() {
-    using namespace n16; func_0206c534(3); }
-void Unk_020ddc64::func_0206ba68() {
-    using namespace n16; func_0206c534(4); }
-void Unk_020ddc64::func_0206ba5c() {
-    using namespace n16; func_0206c534(5); }
-void Unk_020ddc64::func_0206ba50() {
-    using namespace n16; func_0206c534(6); }
-void Unk_020ddc64::func_0206ba44() {
-    using namespace n16; func_0206c534(7); }
-void Unk_020ddc64::func_0206ba38() {
-    using namespace n16; func_0206c534(8); }
-void Unk_020ddc64::func_0206ba2c() {
-    using namespace n16; func_0206c534(9); }
-void Unk_020ddc64::func_0206ba20() {
-    using namespace n16; func_0206c534(10); }
-void Unk_020ddc64::func_0206ba14() {
-    using namespace n16; func_0206c4fc(0); }
-void Unk_020ddc64::func_0206ba08() {
-    using namespace n16; func_0206c4fc(1); }
-void Unk_020ddc64::func_0206b9fc() {
-    using namespace n16; func_0206c4fc(2); }
-void Unk_020ddc64::func_0206b9f0() {
-    using namespace n16; func_0206c4fc(3); }
-void Unk_020ddc64::func_0206b9c8() {
+void TalkRenderProcessor::tagSlot0() {
+    using namespace n16; expandSlot(0); }
+void TalkRenderProcessor::tagSlot1() {
+    using namespace n16; expandSlot(1); }
+void TalkRenderProcessor::tagSlot2() {
+    using namespace n16; expandSlot(2); }
+void TalkRenderProcessor::tagSlot3() {
+    using namespace n16; expandSlot(3); }
+void TalkRenderProcessor::tagSlot4() {
+    using namespace n16; expandSlot(4); }
+void TalkRenderProcessor::tagSlot5() {
+    using namespace n16; expandSlot(5); }
+void TalkRenderProcessor::tagSlot6() {
+    using namespace n16; expandSlot(6); }
+void TalkRenderProcessor::tagSlot7() {
+    using namespace n16; expandSlot(7); }
+void TalkRenderProcessor::tagSlot8() {
+    using namespace n16; expandSlot(8); }
+void TalkRenderProcessor::tagSlot9() {
+    using namespace n16; expandSlot(9); }
+void TalkRenderProcessor::tagSlot10() {
+    using namespace n16; expandSlot(10); }
+void TalkRenderProcessor::tagNamedSlot0() {
+    using namespace n16; expandNamedSlot(0); }
+void TalkRenderProcessor::tagNamedSlot1() {
+    using namespace n16; expandNamedSlot(1); }
+void TalkRenderProcessor::tagNamedSlot2() {
+    using namespace n16; expandNamedSlot(2); }
+void TalkRenderProcessor::tagNamedSlot3() {
+    using namespace n16; expandNamedSlot(3); }
+void TalkRenderProcessor::tagImpression() {
     using namespace n16;
-    unk_2c->func_02066e04();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_195c)->vfunc_0c());
+    msgWindow->buildImpression();
+    pushText(((MsgString *)msgWindow->impression)->data());
 }
-void Unk_020ddc64::func_0206b9a0() {
+void TalkRenderProcessor::tagNickname() {
     using namespace n16;
-    unk_2c->func_02066db0();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_1990)->vfunc_0c());
+    msgWindow->buildNickname();
+    pushText(((MsgString *)msgWindow->nickname)->data());
 }
-void Unk_020ddc64::func_0206b978() {
+void TalkRenderProcessor::tagCompliment() {
     using namespace n16;
-    unk_2c->func_02066d5c();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_19ac)->vfunc_0c());
+    msgWindow->buildCompliment();
+    pushText(((MsgString *)msgWindow->compliment)->data());
 }
-void Unk_020ddc64::func_0206b950() {
+void TalkRenderProcessor::tagTrend() {
     using namespace n16;
-    unk_2c->func_02066e50();
-    func_020a8348(((Unk_0206b950_Obj *)unk_2c->unk_1928)->vfunc_0c());
+    msgWindow->buildTrend();
+    pushText(((MsgString *)msgWindow->trend)->data());
 }
-void Unk_020ddc64::func_0206b948() {
-    using namespace n16; unk_50 = 1; }
-void Unk_020ddc64::func_0206b940() {
-    using namespace n16; unk_50 = 2; }
-void Unk_020ddc64::func_0206b938() {
-    using namespace n16; func_0206c4b4(); }
-void Unk_020ddc64::func_0206b924() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (0))); }
-void Unk_020ddc64::func_0206b910() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (1))); }
-void Unk_020ddc64::func_0206b8fc() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (2))); }
-void Unk_020ddc64::func_0206b8e8() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (3))); }
-void Unk_020ddc64::func_0206b8d4() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (4))); }
-void Unk_020ddc64::func_0206b8b8() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (5))); }
-void Unk_020ddc64::func_0206b89c() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (6))); }
-void Unk_020ddc64::func_0206b880() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (7))); }
-void Unk_020ddc64::func_0206b864() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (8))); }
-void Unk_020ddc64::func_0206b848() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (9))); }
-void Unk_020ddc64::func_0206b82c() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_13c0; func_0206c45c((Unk_0206b7dc_Arg *)(p + (10))); }
-void Unk_020ddc64::func_0206b818() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_15fc; func_0206c45c((Unk_0206b7dc_Arg *)(p + (0))); }
-void Unk_020ddc64::func_0206b804() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_15fc; func_0206c45c((Unk_0206b7dc_Arg *)(p + (1))); }
-void Unk_020ddc64::func_0206b7f0() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_15fc; func_0206c45c((Unk_0206b7dc_Arg *)(p + (2))); }
-void Unk_020ddc64::func_0206b7dc() {
-    using namespace n16; Unk_020a71d0 *p = unk_2c->unk_15fc; func_0206c45c((Unk_0206b7dc_Arg *)(p + (3))); }
-// ---- Unk_020ddc64 state handlers
-void Unk_020ddc64::func_0206b7a4() {
+void TalkRenderProcessor::tagArticleMode1() {
+    using namespace n16; articleMode = 1; }
+void TalkRenderProcessor::tagArticleMode2() {
+    using namespace n16; articleMode = 2; }
+void TalkRenderProcessor::tagSelectByPlayerGender() {
+    using namespace n16; selectByPlayerGender(); }
+void TalkRenderProcessor::tagSlotForm0() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (0))); }
+void TalkRenderProcessor::tagSlotForm1() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (1))); }
+void TalkRenderProcessor::tagSlotForm2() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (2))); }
+void TalkRenderProcessor::tagSlotForm3() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (3))); }
+void TalkRenderProcessor::tagSlotForm4() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (4))); }
+void TalkRenderProcessor::tagSlotForm5() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (5))); }
+void TalkRenderProcessor::tagSlotForm6() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (6))); }
+void TalkRenderProcessor::tagSlotForm7() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (7))); }
+void TalkRenderProcessor::tagSlotForm8() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (8))); }
+void TalkRenderProcessor::tagSlotForm9() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (9))); }
+void TalkRenderProcessor::tagSlotForm10() {
+    using namespace n16; MsgString33 *p = msgWindow->slots; selectBySlotForm((MsgString *)(p + (10))); }
+void TalkRenderProcessor::tagNamedSlotForm0() {
+    using namespace n16; MsgString33 *p = msgWindow->namedSlots; selectBySlotForm((MsgString *)(p + (0))); }
+void TalkRenderProcessor::tagNamedSlotForm1() {
+    using namespace n16; MsgString33 *p = msgWindow->namedSlots; selectBySlotForm((MsgString *)(p + (1))); }
+void TalkRenderProcessor::tagNamedSlotForm2() {
+    using namespace n16; MsgString33 *p = msgWindow->namedSlots; selectBySlotForm((MsgString *)(p + (2))); }
+void TalkRenderProcessor::tagNamedSlotForm3() {
+    using namespace n16; MsgString33 *p = msgWindow->namedSlots; selectBySlotForm((MsgString *)(p + (3))); }
+// ---- TalkRenderProcessor state handlers
+void TalkRenderProcessor::tagAltText() {
     using namespace n16;
     u32 x;
     char *y;
     char *z;
-    unk_34.func_020a72c4(&x, &y, &z);
-    if (!func_0206774c()) {
-        func_020a8400(x * 2);
-        func_020a8348((u8 *)z);
-        unk_48 = (u8 *)y;
+    tag.getAltTextArgs(&x, &y, &z);
+    if (!Talk_IsAltTextEnabled()) {
+        skip(x * 2);
+        pushText((u8 *)z);
+        altTextEnd = (u8 *)y;
     }
 }
-Unk_0206b754::Unk_0206b754(Unk_02067c70 *o) : unk_400(0), unk_410(0), unk_43b(0), unk_43c((u8 *)o) {
+TalkTextBox::TalkTextBox(TalkWindow *o) : length(0), numLines(0), centered(0), renderer((u8 *)o) {
     using namespace n16;
-    func_0206b72c();
+    clear();
     s32 i;
     for (i = 0; (u32)i < 3; i++) {
-        unk_420[i] = 0;
+        labels[i] = 0;
     }
 }
-Unk_0206b754::~Unk_0206b754() {
+TalkTextBox::~TalkTextBox() {
     using namespace n16;
-    func_0206b518();
+    destroyLabels();
 }
-void Unk_0206b754::func_0206b72c() {
-    using namespace n16; func_0206b6d0(0); }
-void Unk_0206b754::func_0206b6d0(u32 v) {
+void TalkTextBox::clear() {
+    using namespace n16; clearWithColor(0); }
+void TalkTextBox::clearWithColor(u32 v) {
     using namespace n16;
     s32 i;
-    unk_400 = 0;
-    func_02115fb4(this, 0, 0x400);
+    length = 0;
+    MI_CpuFill8(this, 0, 0x400);
     for (i = 0; (u32)i < 3; i++) {
-        unk_404[i] = 0;
-        unk_438[i] = 0;
-        unk_42c[i] = 0;
+        lineStarts[i] = 0;
+        lineDirty[i] = 0;
+        lineOffsets[i] = 0;
     }
-    unk_410 = 0;
-    func_0206b6b0(v);
+    numLines = 0;
+    setAllLineColors(v);
 }
-void Unk_0206b754::func_0206b6b0(u32 v) {
+void TalkTextBox::setAllLineColors(u32 v) {
     using namespace n16;
     s32 i;
     for (i = 0; (u32)i < 3; i++) {
-        unk_414[i] = v;
+        lineColors[i] = v;
     }
 }
-BOOL Unk_0206b754::func_0206b664(s8 *src, u32 n) {
+BOOL TalkTextBox::appendBytes(s8 *src, u32 n) {
     using namespace n16;
-    u32 pos = unk_400;
+    u32 pos = length;
     BOOL ok;
     if (0x400 - pos > n) {
         ok = TRUE;
@@ -1978,17 +1386,17 @@ BOOL Unk_0206b754::func_0206b664(s8 *src, u32 n) {
     if (ok) {
         u32 i;
         for (i = 0; i < n; i++) {
-            (&unk_00[unk_400])[i] = src[i];
+            (&text[length])[i] = src[i];
         }
-        unk_400 += n;
-        func_0206b434();
+        length += n;
+        markLineDirty();
     }
     return ok;
 }
-BOOL Unk_0206b754::func_0206b628(s32 c0) {
+BOOL TalkTextBox::appendChar(s32 c0) {
     using namespace n16;
     s8 c = (s8)c0;
-    u32 pos = unk_400;
+    u32 pos = length;
     BOOL ok;
     if (0x400 - pos > 1) {
         ok = TRUE;
@@ -1996,373 +1404,368 @@ BOOL Unk_0206b754::func_0206b628(s32 c0) {
         ok = FALSE;
     }
     if (ok) {
-        unk_400++;
-        unk_00[pos] = c;
-        func_0206b434();
+        length++;
+        text[pos] = c;
+        markLineDirty();
     }
     return ok;
 }
-void Unk_0206b754::func_0206b618(void *m) {
+void TalkTextBox::appendTag(void *m) {
     using namespace n16;
-    Unk_0206b618_Msg *q = (Unk_0206b618_Msg *)m;
-    func_0206b664((s8 *)q->unk_10, q->unk_08 + 5);
+    MsgTag *q = (MsgTag *)m;
+    appendBytes((s8 *)q->raw, q->argLen + 5);
 }
-void Unk_0206b754::func_0206b5c0(u32 v) {
+void TalkTextBox::beginLine(u32 v) {
     using namespace n16;
-    if (unk_410 < 3) {
-        unk_42c[unk_410] = unk_43c.func_0206c630(v, unk_43b);
-        u32 n = unk_410;
-        unk_410 = n + 1;
-        unk_404[n] = &unk_00[unk_400];
+    if (numLines < 3) {
+        lineOffsets[numLines] = renderer.measureLine(v, centered);
+        u32 n = numLines;
+        numLines = n + 1;
+        lineStarts[n] = &text[length];
     }
 }
-void Unk_0206b754::func_0206b59c(u32 v) {
+void TalkTextBox::setRemainingLineColors(u32 v) {
     using namespace n16;
     u32 i;
-    for (i = unk_410; i < 3; i++) {
-        unk_414[i] = v;
+    for (i = numLines; i < 3; i++) {
+        lineColors[i] = v;
     }
 }
-void Unk_0206b754::func_0206b590(u8 v) {
-    using namespace n16; unk_43b = v; }
-void Unk_0206b754::func_0206b548() {
+void TalkTextBox::setCentered(u8 v) {
+    using namespace n16; centered = v; }
+void TalkTextBox::createLabels() {
     using namespace n16;
     u32 i, a;
     for (i = 0, a = 0x11; i < 3; i++, a += 0x28) {
-        Unk_02050288 *p = func_020a8054(a, 0x14, 2);
+        TextLabel *p = MsgTextLabel_CreateVram(a, 0x14, 2);
         if (p) {
-            unk_420[i] = p;
-            p->unk_50 = 2;
-            p->unk_39 = 0xe;
-            p->func_02050c68(0);
+            labels[i] = p;
+            p->copyMode = 2;
+            p->bgColor = 0xe;
+            p->requestClear(0);
         }
     }
 }
-void Unk_0206b754::func_0206b518() {
+void TalkTextBox::destroyLabels() {
     using namespace n16;
     u32 i;
     for (i = 0; i < 3; i++) {
-        if (unk_420[i]) {
-            func_020a7fd8(unk_420[i]);
-            unk_420[i] = 0;
+        if (labels[i]) {
+            MsgTextLabel_Destroy(labels[i]);
+            labels[i] = 0;
         }
     }
 }
-// ---- Unk_0206b754
-void Unk_0206b754::func_0206b4e4() {
+// ---- TalkTextBox
+void TalkTextBox::clearLabels() {
     using namespace n16;
     volatile s32 z = 0;
     u32 i;
     for (i = 0; i < 3; i++) {
-        Unk_02050288 *p = unk_420[i];
+        TextLabel *p = labels[i];
         if (p) {
-            p->func_02050c68(z);
-            p->unk_10 = 0;
+            p->requestClear(z);
+            p->textStart = 0;
         }
     }
 }
-#undef unk_2c
-#undef unk_13b0
-#undef unk_13c0
-#undef unk_15fc
-#undef Unk_020a71d0
-#undef Unk_0206b7dc_Arg
+#undef msgWindow
 
 // ======== unk_0206ab74.cpp ========
-#define unk_404 ((s32 *)unk_404)
-#define unk_16f9 unk_16dc.unk_1d
-#define unk_16fa unk_16dc.unk_1e
-#define unk_1704 unk_16dc.unk_28
+#define lineStartWords ((s32 *)lineStarts)
+#define unk_16f9 voice.instantByTag
+#define unk_16fa voice.inWait
+#define unk_1704 voice.textColor
 namespace n15 {
 extern "C" { extern u8 data_0213a740[]; }
-extern "C" { u8 func_020682a8(u32 x); }
-extern "C" { u32 func_020501e8(u32 key); }
-extern "C" { void _ZN12Unk_020660f813func_02067708Ev(void *p); }
-extern "C" { void _ZN12Unk_020660f813func_0206773cEi(void *p, u32 c); }
-extern "C" { void _ZN12Unk_020660f813func_02067a84EPhPv(void *self, u8 *p, s32 z); }
-extern "C" { void _ZN12Unk_020660f813func_02067a60Ev(void *self); }
-extern "C" { u8 *func_020a72a0(s32 i); }
-extern "C" { u8 *func_020b3078(u8 *p); }
-extern "C" { void *func_0209750c(void); }
-extern "C" { s32 _ZN12Unk_0209865c13func_0209888cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020940a013func_0209411cEv(s32 p); }
+extern "C" { u8 Talk_ColorTagToTextColor(u32 x); }
+extern "C" { u32 Text_ToUpper(u32 key); }
+extern "C" { void _ZN15TalkWindowState10resetVoiceEv(void *p); }
+extern "C" { void _ZN15TalkWindowState13onCharPrintedEi(void *p, u32 c); }
+extern "C" { void _ZN15TalkWindowState14setNextMessageEPhPv(void *self, u8 *p, s32 z); }
+extern "C" { void _ZN15TalkWindowState17setAdvancePendingEv(void *self); }
+extern "C" { u8 *Msg_GetColorTag(s32 i); }
+extern "C" { u8 *String_GetArticle(u8 *p); }
+extern "C" { void *PlayerData_GetCurrent(void); }
+extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(void *p); }
+extern "C" { s32 _ZN8PlayerId9getGenderEv(s32 p); }
 
 }
-void Unk_0206b754::func_0206b458() {
+void TalkTextBox::redrawLines() {
     using namespace n15;
     u32 i;
-    for (i = 0; i < unk_410; i++) {
-        Unk_02050288 *e = unk_420[i];
-        if (e != 0 && unk_438[i] != 0) {
-            e->unk_10 = unk_404[i];
-            e->unk_14 = 0;
-            e->unk_30 = unk_42c[i];
-            e->unk_38 = func_020682a8(unk_414[i]);
-            e->func_02050c90();
+    for (i = 0; i < numLines; i++) {
+        TextLabel *e = labels[i];
+        if (e != 0 && lineDirty[i] != 0) {
+            e->textStart = lineStartWords[i];
+            e->textEnd = 0;
+            e->xOffset = lineOffsets[i];
+            e->fgColor = Talk_ColorTagToTextColor(lineColors[i]);
+            e->requestRedraw();
         }
     }
-    if (unk_410 < 3) {
-        Unk_02050288 *e = unk_420[unk_410];
-        if (e != 0) e->unk_14 = (u32)this + unk_400;
+    if (numLines < 3) {
+        TextLabel *e = labels[numLines];
+        if (e != 0) e->textEnd = (u32)this + length;
     }
 }
-void Unk_0206b754::func_0206b454() {
+void TalkTextBox::endText() {
     using namespace n15;}
 // ---------------------------------------------------------------------------
-void Unk_0206b754::func_0206b434() {
+void TalkTextBox::markLineDirty() {
     using namespace n15;
-    s32 i = unk_410;
+    s32 i = numLines;
     if (i != 0 && (u32)i <= 3) *((u8 *)this + i + 0x437) = 1;
 }
-Unk_020ddc84::Unk_020ddc84(Unk_02067c70 *owner, Unk_0206b754 *buf)
-    : unk_24(owner), unk_28(buf), unk_2c(0), unk_30(0), unk_34(0) {
+TalkCharStepper::TalkCharStepper(TalkWindow *owner, TalkTextBox *buf)
+    : window(owner), textBox(buf), mode(0), endPos(0), remaining(0) {
     using namespace n15;
-    unk_38 = 0;
-    unk_39 = 0;
+    stepAllowed = 0;
+    printChars = 0;
 }
-Unk_020ddc84::~Unk_020ddc84() {
+TalkCharStepper::~TalkCharStepper() {
     using namespace n15;}
-void Unk_020ddc84::func_0206b374(u8 *p, s32 n, u8 flag) {
+void TalkCharStepper::startCount(u8 *p, s32 n, u8 flag) {
     using namespace n15;
     if (n > 0) {
-        func_020a84bc();
-        func_020a8368(p);
-        unk_30 = 0;
-        unk_34 = n;
-        unk_39 = flag;
-        unk_38 = 0;
-        unk_2c = 1;
+        reset();
+        begin(p);
+        endPos = 0;
+        remaining = n;
+        printChars = flag;
+        stepAllowed = 0;
+        mode = 1;
     }
 }
-void Unk_020ddc84::func_0206b338(u8 *p, u32 v, u8 flag) {
+void TalkCharStepper::startUntil(u8 *p, u32 v, u8 flag) {
     using namespace n15;
     if (v > (u32)p) {
-        func_020a84bc();
-        func_020a8368(p);
-        unk_30 = v;
-        unk_34 = 0;
-        unk_39 = flag;
-        unk_38 = 0;
-        unk_2c = 2;
+        reset();
+        begin(p);
+        endPos = v;
+        remaining = 0;
+        printChars = flag;
+        stepAllowed = 0;
+        mode = 2;
     }
 }
-void Unk_020ddc84::func_0206b304() {
+void TalkCharStepper::stepOnce() {
     using namespace n15;
-    s32 s = unk_2c;
+    s32 s = mode;
     if (s == 1) {
-        unk_38 = 1;
-        func_020a82ec(FALSE);
+        stepAllowed = 1;
+        run(FALSE);
     } else if (s == 2) {
-        unk_38 = 1;
-        func_020a82ec((BOOL)unk_30);
+        stepAllowed = 1;
+        run((BOOL)endPos);
     }
 }
-BOOL Unk_020ddc84::func_0206b2f4() {
+BOOL TalkCharStepper::isIdle() {
     using namespace n15;
-    if (unk_2c == 0) return TRUE;
+    if (mode == 0) return TRUE;
     return FALSE;
 }
-void Unk_020ddc84::vfunc_08() {
+void TalkCharStepper::onBegin() {
     using namespace n15;}
-void Unk_020ddc84::vfunc_0c() {
+void TalkCharStepper::onEnd() {
     using namespace n15;
-    if (unk_2c == 2) func_0206b268();
+    if (mode == 2) stop();
 }
-void Unk_020ddc84::vfunc_10(u32 c) {
+void TalkCharStepper::onChar(u32 c) {
     using namespace n15;
-    if (unk_39 != 0) unk_28->func_0206b628(c);
-    unk_38 = 0;
-    if (unk_2c == 1) {
-        unk_34 = unk_34 - 1;
-        if (unk_34 <= 0) func_0206b268();
-    } else if (unk_2c == 2) {
-        _ZN12Unk_020660f813func_0206773cEi(unk_24, c);
+    if (printChars != 0) textBox->appendChar(c);
+    stepAllowed = 0;
+    if (mode == 1) {
+        remaining = remaining - 1;
+        if (remaining <= 0) stop();
+    } else if (mode == 2) {
+        _ZN15TalkWindowState13onCharPrintedEi(window, c);
     }
 }
-void Unk_020ddc84::vfunc_14(u8 *) {
+void TalkCharStepper::onTag(u8 *) {
     using namespace n15;}
-BOOL Unk_020ddc84::vfunc_18() {
+BOOL TalkCharStepper::canContinue() {
     using namespace n15;
-    return unk_38;
+    return stepAllowed;
 }
 // ---------------------------------------------------------------------------
-void Unk_020ddc84::func_0206b268() {
+void TalkCharStepper::stop() {
     using namespace n15;
-    unk_2c = 0;
-    unk_30 = 0;
-    unk_34 = 0;
-    unk_38 = 0;
-    unk_39 = 0;
-    func_020a84bc();
+    mode = 0;
+    endPos = 0;
+    remaining = 0;
+    stepAllowed = 0;
+    printChars = 0;
+    reset();
 }
-Unk_020ddccc::Unk_020ddccc(Unk_02067c70 *owner, Unk_0206b754 *buf)
-    : unk_24(owner), unk_28(buf), unk_2c(0), unk_30(0), unk_34(0), unk_60(owner, buf), unk_9c(owner, buf) {
+TalkParser::TalkParser(TalkWindow *owner, TalkTextBox *buf)
+    : window(owner), textBox(buf), lineCount(0), printStatus(0), printMode(0), altTextStepper(owner, buf), mainTextStepper(owner, buf) {
     using namespace n15;
-    unk_d8 = 0;
-    unk_d9 = 0;
-    unk_dc = 0;
-    unk_e0 = 0;
+    choiceDeferred = 0;
+    capitalizeNext = 0;
+    selectEnd = 0;
+    articleMode = 0;
 }
-Unk_020ddccc::~Unk_020ddccc() {
+TalkParser::~TalkParser() {
     using namespace n15;}
-void Unk_020ddccc::func_0206b140() {
+void TalkParser::stop() {
     using namespace n15;
-    unk_2c = 0;
-    unk_28->func_0206b454();
-    unk_28->func_0206b6d0(unk_4c.unk_5c);
-    unk_28->func_0206b5c0((u32)unk_04);
-    unk_d9 = 0;
-    unk_e0 = 0;
+    lineCount = 0;
+    textBox->endText();
+    textBox->clearWithColor(printVars.textColor);
+    textBox->beginLine((u32)cursor);
+    capitalizeNext = 0;
+    articleMode = 0;
 }
-void Unk_020ddccc::func_0206b13c(s32 v) {
+void TalkParser::setPrintMode(s32 v) {
     using namespace n15;
-    unk_34 = v;
+    printMode = v;
 }
-void Unk_020ddccc::func_0206b128() {
+void TalkParser::setFastForward() {
     using namespace n15;
-    if (unk_4c.unk_4f == 0) unk_4c.unk_4c = 1;
+    if (printVars.fastForwardLock == 0) printVars.fastForward = 1;
 }
-void Unk_020ddccc::func_0206b120() {
+void TalkParser::clearFastForward() {
     using namespace n15;
-    unk_4c.unk_4c = 0;
+    printVars.fastForward = 0;
 }
-void Unk_020ddccc::func_0206b110() {
+void TalkParser::resetColor() {
     using namespace n15;
-    unk_4c.unk_5c = 0;
-    unk_24->unk_1704 = 0;
+    printVars.textColor = 0;
+    window->unk_1704 = 0;
 }
-void Unk_020ddccc::vfunc_08() {
+void TalkParser::onBegin() {
     using namespace n15;
-    unk_30 = 1;
-    unk_2c = 0;
-    unk_4c.unk_4c = 0;
-    unk_4c.unk_4d = 0;
-    unk_4c.unk_4e = 0;
-    unk_4c.unk_4f = 0;
-    unk_4c.unk_50 = 0;
-    unk_4c.unk_54 = 0;
-    unk_4c.unk_58 = 0;
-    unk_28->func_0206b72c();
-    unk_28->func_0206b5c0((u32)unk_04);
-    _ZN12Unk_020660f813func_02067708Ev(unk_24);
-    unk_d9 = 0;
-    unk_dc = 0;
-    unk_e0 = 0;
-    unk_24->unk_16f9 = 0;
-    unk_24->unk_16fa = 0;
+    printStatus = 1;
+    lineCount = 0;
+    printVars.fastForward = 0;
+    printVars.holdStep = 0;
+    printVars.instant = 0;
+    printVars.fastForwardLock = 0;
+    printVars.charCount = 0;
+    printVars.stepPhase = 0;
+    printVars.waitTimer = 0;
+    textBox->clear();
+    textBox->beginLine((u32)cursor);
+    _ZN15TalkWindowState10resetVoiceEv(window);
+    capitalizeNext = 0;
+    selectEnd = 0;
+    articleMode = 0;
+    window->unk_16f9 = 0;
+    window->unk_16fa = 0;
 }
-void Unk_020ddccc::vfunc_0c() {
+void TalkParser::onEnd() {
     using namespace n15;
-    unk_30 = 3;
-    unk_28->func_0206b454();
+    printStatus = 3;
+    textBox->endText();
 }
-void Unk_020ddccc::vfunc_10(u32 c) {
+void TalkParser::onChar(u32 c) {
     using namespace n15;
-    if (unk_d9 != 0) {
-        c = func_020501e8(c);
-        unk_d9 = 0;
+    if (capitalizeNext != 0) {
+        c = Text_ToUpper(c);
+        capitalizeNext = 0;
     }
     BOOL nl = (c == 10) ? TRUE : FALSE;
     BOOL sp = (c == 0x20) ? TRUE : FALSE;
-    unk_28->func_0206b628(c);
+    textBox->appendChar(c);
     if (nl) {
-        unk_28->func_0206b5c0((u32)unk_04);
-        unk_2c++;
-        if (unk_2c >= 3) unk_30 = 2;
+        textBox->beginLine((u32)cursor);
+        lineCount++;
+        if (lineCount >= 3) printStatus = 2;
     }
-    _ZN12Unk_020660f813func_0206773cEi(unk_24, c);
-    unk_24->unk_16fa = 0;
-    if (!sp && !nl) unk_4c.unk_50++;
-    if (unk_04 == unk_dc) {
-        unk_dc = 0;
-        func_020a832c();
+    _ZN15TalkWindowState13onCharPrintedEi(window, c);
+    window->unk_16fa = 0;
+    if (!sp && !nl) printVars.charCount++;
+    if (cursor == selectEnd) {
+        selectEnd = 0;
+        popText();
     }
 }
-void Unk_020ddccc::vfunc_14(u8 *p) {
+void TalkParser::onTag(u8 *p) {
     using namespace n15;
-    unk_38.func_020a777c(p);
-    func_0206ab74();
+    tag.parse(p);
+    dispatchTag();
 }
-BOOL Unk_020ddccc::vfunc_18() {
+BOOL TalkParser::canContinue() {
     using namespace n15;
     BOOL r = TRUE;
-    s32 s = unk_30;
+    s32 s = printStatus;
     if (s == 2 || s == 5) {
         r = FALSE;
-        unk_4c.unk_50 = r;
-        unk_4c.unk_54 = r;
-        unk_4c.unk_58 = r;
+        printVars.charCount = r;
+        printVars.stepPhase = r;
+        printVars.waitTimer = r;
     } else if (s == 4) {
         r = FALSE;
-        unk_4c.unk_50 = r;
-        unk_4c.unk_54 = r;
+        printVars.charCount = r;
+        printVars.stepPhase = r;
     } else if (s == 1) {
-        if (!func_0206ae70()) r = FALSE;
+        if (!stepSpeed()) r = FALSE;
     }
     return r;
 }
-void Unk_020ddccc::func_0206afa0() {
+void TalkParser::debugPrintMissing() {
     using namespace n15;}
-BOOL Unk_020ddccc::func_0206af78() {
+BOOL TalkParser::steppersIdle() {
     using namespace n15;
-    if (unk_60.func_0206b2f4() && unk_9c.func_0206b2f4()) return TRUE;
+    if (altTextStepper.isIdle() && mainTextStepper.isIdle()) return TRUE;
     return FALSE;
 }
-void Unk_020ddccc::func_0206af60() {
+void TalkParser::stepSteppers() {
     using namespace n15;
-    unk_60.func_0206b304();
-    unk_9c.func_0206b304();
+    altTextStepper.stepOnce();
+    mainTextStepper.stepOnce();
 }
-BOOL Unk_020ddccc::func_0206ae70() {
+BOOL TalkParser::stepSpeed() {
     using namespace n15;
     BOOL r = TRUE;
     BOOL f = r;
-    if (unk_34 != 1 && unk_4c.unk_4e == 0) f = FALSE;
-    if (unk_4c.unk_4d != 0) {
+    if (printMode != 1 && printVars.instant == 0) f = FALSE;
+    if (printVars.holdStep != 0) {
         r = FALSE;
-        unk_4c.unk_4d = 0;
+        printVars.holdStep = 0;
         goto end;
     }
     if (f) {
-        unk_4c.unk_50 = 0;
-        unk_4c.unk_54 = 0;
-        unk_4c.unk_58 = 0;
-        while (!func_0206af78()) {
-            func_0206af60();
+        printVars.charCount = 0;
+        printVars.stepPhase = 0;
+        printVars.waitTimer = 0;
+        while (!steppersIdle()) {
+            stepSteppers();
         }
         goto end;
     }
     BOOL t;
-    if (unk_34 != 2 && unk_4c.unk_4f == 0 && unk_4c.unk_4c != 0) {
+    if (printMode != 2 && printVars.fastForwardLock == 0 && printVars.fastForward != 0) {
         t = TRUE;
     } else {
         t = FALSE;
     }
-    if (t) unk_4c.unk_58 = 0;
-    s32 v = unk_4c.unk_58;
+    if (t) printVars.waitTimer = 0;
+    s32 v = printVars.waitTimer;
     if (v > 0) {
-        unk_4c.unk_58 = v - 0x1800;
+        printVars.waitTimer = v - 0x1800;
         r = FALSE;
         goto end;
     }
     s32 n;
-    if (unk_4c.unk_54 == 0) n = 1;
+    if (printVars.stepPhase == 0) n = 1;
     else n = 2;
     if (t) n = 3;
-    if (unk_4c.unk_50 >= n) {
-        unk_4c.unk_50 = 0;
-        unk_4c.unk_54 = unk_4c.unk_54 + 1;
-        if (unk_4c.unk_54 >= 2) unk_4c.unk_54 = 0;
+    if (printVars.charCount >= n) {
+        printVars.charCount = 0;
+        printVars.stepPhase = printVars.stepPhase + 1;
+        if (printVars.stepPhase >= 2) printVars.stepPhase = 0;
         r = FALSE;
         goto end;
     }
-    while (!func_0206af78()) {
-        func_0206af60();
-        unk_4c.unk_50 = unk_4c.unk_50 + 1;
-        if (unk_4c.unk_50 >= n) {
-            unk_4c.unk_50 = 0;
-            unk_4c.unk_54 = unk_4c.unk_54 + 1;
-            if (unk_4c.unk_54 >= 2) unk_4c.unk_54 = 0;
+    while (!steppersIdle()) {
+        stepSteppers();
+        printVars.charCount = printVars.charCount + 1;
+        if (printVars.charCount >= n) {
+            printVars.charCount = 0;
+            printVars.stepPhase = printVars.stepPhase + 1;
+            if (printVars.stepPhase >= 2) printVars.stepPhase = 0;
             r = FALSE;
             goto end;
         }
@@ -2370,625 +1773,623 @@ BOOL Unk_020ddccc::func_0206ae70() {
 end:
     return r;
 }
-void Unk_020ddccc::func_0206adf0(Unk_0206ad58_Ent *ent, BOOL flag) {
+void TalkParser::expandArticle(MsgString *ent, BOOL flag) {
     using namespace n15;
-    u8 *q = ent->unk_04 + 4;
+    u8 *q = (u8 *)&ent->attr;
     u8 *r = 0;
-    if (unk_e0 == 0) {
-        r = func_020b3078(q + 8);
-    } else if (unk_e0 == 1) {
-        r = func_020b3078(q + 9);
+    if (articleMode == 0) {
+        r = String_GetArticle(q + 8);
+    } else if (articleMode == 1) {
+        r = String_GetArticle(q + 9);
     }
     if (r != 0) {
         if (flag) {
-            func_020a8348(func_020a72a0(unk_4c.unk_5c));
-            func_020a8348(((Unk_0206ad58_Ent *)r)->vfunc_0c());
-            func_020a8348(func_020a72a0(0));
+            pushText(Msg_GetColorTag(printVars.textColor));
+            pushText(((MsgString *)r)->data());
+            pushText(Msg_GetColorTag(0));
         } else {
-            func_020a8348(((Unk_0206ad58_Ent *)r)->vfunc_0c());
+            pushText(((MsgString *)r)->data());
         }
     }
-    unk_e0 = 0;
+    articleMode = 0;
 }
-void Unk_020ddccc::func_0206adb8(s32 idx) {
+void TalkParser::expandSlot(s32 idx) {
     using namespace n15;
-    Unk_0206ad58_Ent *ent = &unk_24->unk_13c0[idx];
-    func_020a8348(ent->vfunc_0c());
-    func_0206adf0(ent, 1);
+    MsgString *ent = &window->slots[idx];
+    pushText(ent->data());
+    expandArticle(ent, 1);
 }
-void Unk_020ddccc::func_0206ad58(s32 idx) {
+void TalkParser::expandNamedSlot(s32 idx) {
     using namespace n15;
-    Unk_0206ad58_Ent *ent = &unk_24->unk_15fc[idx];
-    u8 *s = unk_24->unk_16cc[idx];
-    func_020a8348(func_020a72a0(unk_4c.unk_5c));
-    func_020a8348(ent->vfunc_0c());
-    func_020a8348(func_020a72a0((s32)s));
-    func_0206adf0(ent, 0);
+    MsgString *ent = &window->namedSlots[idx];
+    u8 *s = window->namedSlotColors[idx];
+    pushText(Msg_GetColorTag(printVars.textColor));
+    pushText(ent->data());
+    pushText(Msg_GetColorTag((s32)s));
+    expandArticle(ent, 0);
 }
-void Unk_020ddccc::func_0206ad0c() {
+void TalkParser::selectByPlayerGender() {
     using namespace n15;
     char *a, *b;
-    unk_38.func_020a7338(&a, &b);
-    if (_ZN12Unk_020940a013func_0209411cEv(_ZN12Unk_0209865c13func_0209888cEv(func_0209750c())) == 0) {
-        if (a != 0) func_020a8348((u8 *)a);
+    tag.getStrings2(&a, &b);
+    if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0) {
+        if (a != 0) pushText((u8 *)a);
     } else {
         if (b != 0) {
-            unk_dc = unk_04;
-            func_020a8348((u8 *)b);
+            selectEnd = cursor;
+            pushText((u8 *)b);
         }
     }
 }
-void Unk_020ddccc::func_0206acb0(u8 *p) {
+void TalkParser::selectBySlotForm(u8 *p) {
     using namespace n15;
     char *a, *b, *c;
-    unk_38.func_020a72f0(&a, &b, &c);
+    tag.getStrings3(&a, &b, &c);
     s32 k = ((s32 *)p)[3];
     if (k == 0) {
-        if (a != 0) func_020a8348((u8 *)a);
+        if (a != 0) pushText((u8 *)a);
     } else if (k == 1) {
-        if (b != 0) func_020a8348((u8 *)b);
+        if (b != 0) pushText((u8 *)b);
     } else if (k == 2) {
         if (c != 0) {
-            unk_dc = unk_04;
-            func_020a8348((u8 *)c);
+            selectEnd = cursor;
+            pushText((u8 *)c);
         }
     }
 }
-void Unk_020ddccc::func_0206ac98(u8 *p) {
+void TalkParser::jumpToMessage(u8 *p) {
     using namespace n15;
-    _ZN12Unk_020660f813func_02067a84EPhPv(unk_24, p, 0);
-    _ZN12Unk_020660f813func_02067a60Ev(unk_24);
+    _ZN15TalkWindowState14setNextMessageEPhPv(window, p, 0);
+    _ZN15TalkWindowState17setAdvancePendingEv(window);
 }
 // ---------------------------------------------------------------------------
-void Unk_020ddccc::func_0206ab74() {
+void TalkParser::dispatchTag() {
     using namespace n15;
-    typedef void (Unk_020ddccc::*Fn)();
+    typedef void (TalkParser::*Fn)();
     static Fn tbl[12] = {
-        &Unk_020ddccc::func_0206aa84, &Unk_020ddccc::func_0206a93c, &Unk_020ddccc::func_0206a844,
-        &Unk_020ddccc::func_0206a7a8, &Unk_020ddccc::func_0206a55c, &Unk_020ddccc::func_0206a498,
-        &Unk_020ddccc::func_0206a380, &Unk_020ddccc::func_0206a358, &Unk_020ddccc::func_0206a2d8,
-        &Unk_020ddccc::func_0206a1f8, &Unk_020ddccc::func_0206a198, &Unk_020ddccc::func_0206a024,
+        &TalkParser::tagGroup00, &TalkParser::tagGroup01, &TalkParser::tagGroup02,
+        &TalkParser::tagGroup03, &TalkParser::tagGroup04, &TalkParser::tagGroup05,
+        &TalkParser::tagGroup06, &TalkParser::tagGroup07, &TalkParser::tagGroup08,
+        &TalkParser::tagGroup09, &TalkParser::tagGroup0a, &TalkParser::tagGroup0b,
     };
-    s32 id = unk_38.unk_00;
+    s32 id = tag.group;
     Fn fn = 0;
     if (id == 0xff) {
-        fn = &Unk_020ddccc::func_02069fa4;
+        fn = &TalkParser::tagGroupFf;
     } else if (id < 12) {
         fn = tbl[id];
     }
     (this->*fn)();
 }
-#undef unk_404
+#undef lineStartWords
 #undef unk_16f9
 #undef unk_16fa
 #undef unk_1704
 
 // ======== unk_0206a198.cpp ========
 namespace n14 {
-extern "C" { void func_020a7768(void *p); }
+extern "C" { void MsgTag_DtorStub(void *p); }
 extern "C" { extern u8 data_020cba1c[]; }
 
 }
-void Unk_0206a198::func_0206aa84()
+void TalkParserTags::tagGroup00()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[11])() = {
-        &Unk_0206a198::func_02069f88,
-        &Unk_0206a198::func_02069f70,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069f58,
-        &Unk_0206a198::func_02069f40,
-        &Unk_0206a198::func_02069f28,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
+    static void (TalkParserTags::*const tbl[11])() = {
+        &TalkParserTags::tagGlyph0,
+        &TalkParserTags::tagGlyph1,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagGlyph6,
+        &TalkParserTags::tagGlyph7,
+        &TalkParserTags::tagGlyph8,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
-void Unk_0206a198::func_0206a93c()
+void TalkParserTags::tagGroup01()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[17])() = {
-        &Unk_0206a198::func_02069efc,
-        &Unk_0206a198::func_02069ee8,
-        &Unk_0206a198::func_02069ec4,
-        &Unk_0206a198::func_02069ea0,
-        &Unk_0206a198::func_02069e88,
-        &Unk_0206a198::func_02069e70,
-        &Unk_0206a198::func_02069e28,
-        &Unk_0206a198::func_02069e24,
-        &Unk_0206a198::func_02069df0,
-        &Unk_0206a198::func_02069dc0,
-        &Unk_0206a198::func_02069d8c,
-        &Unk_0206a198::func_02069d68,
-        &Unk_0206a198::func_02069d44,
-        &Unk_0206a198::func_02069d20,
-        &Unk_0206a198::func_02069cfc,
-        &Unk_0206a198::func_02069cd8,
-        &Unk_0206a198::func_02069cb8,
+    static void (TalkParserTags::*const tbl[17])() = {
+        &TalkParserTags::tagWait,
+        &TalkParserTags::tagPageBreak,
+        &TalkParserTags::tagFastOn,
+        &TalkParserTags::tagFastOff,
+        &TalkParserTags::tagFastLockOn,
+        &TalkParserTags::tagFastLockOff,
+        &TalkParserTags::tagGreeting,
+        &TalkParserTags::tagGreetingEnd,
+        &TalkParserTags::tagShakeSmall,
+        &TalkParserTags::tagShakeMedium,
+        &TalkParserTags::tagShakeLarge,
+        &TalkParserTags::tagSignal0,
+        &TalkParserTags::tagSignal1,
+        &TalkParserTags::tagSignal2,
+        &TalkParserTags::tagSignal3,
+        &TalkParserTags::tagSignal4,
+        &TalkParserTags::tagAutoAdvance,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
-void Unk_0206a198::func_0206a844()
+void TalkParserTags::tagGroup02()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[8])() = {
-        &Unk_0206a198::func_02069c34,
-        &Unk_0206a198::func_02069b94,
-        &Unk_0206a198::func_02069ad0,
-        &Unk_0206a198::func_020699ec,
-        &Unk_0206a198::func_020699d4,
-        &Unk_0206a198::func_020699bc,
-        &Unk_0206a198::func_020699a4,
-        &Unk_0206a198::func_0206998c,
+    static void (TalkParserTags::*const tbl[8])() = {
+        &TalkParserTags::tagChoice2,
+        &TalkParserTags::tagChoice3,
+        &TalkParserTags::tagChoice4,
+        &TalkParserTags::tagChoice5,
+        &TalkParserTags::tagChoice2B,
+        &TalkParserTags::tagChoice3B,
+        &TalkParserTags::tagChoice4B,
+        &TalkParserTags::tagChoice5B,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
-    if (unk_d8) {
-        unk_d8 = 0;
+    void (TalkParserTags::*f)() = tbl[tagId];
+    if (choiceDeferred) {
+        choiceDeferred = 0;
         (this->*f)();
     } else {
-        func_020a83f4(unk_48);
-        unk_d8 = 1;
-        func_020a8348(data_020cba1c);
+        unreadTag(tagRaw);
+        choiceDeferred = 1;
+        pushText(data_020cba1c);
     }
 }
-void Unk_0206a198::func_0206a7a8()
+void TalkParserTags::tagGroup03()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[5])() = {
-        &Unk_0206a198::func_0206996c,
-        &Unk_0206a198::func_02069940,
-        &Unk_0206a198::func_02069914,
-        &Unk_0206a198::func_020698e8,
-        &Unk_0206a198::func_020698bc,
+    static void (TalkParserTags::*const tbl[5])() = {
+        &TalkParserTags::tagAction0,
+        &TalkParserTags::tagAction1,
+        &TalkParserTags::tagAction2,
+        &TalkParserTags::tagAction3,
+        &TalkParserTags::tagAction4,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
-void Unk_0206a198::func_0206a55c()
+void TalkParserTags::tagGroup04()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[35])() = {
-        &Unk_0206a198::func_02069878,
-        &Unk_0206a198::func_02069834,
-        &Unk_0206a198::func_020697f4,
-        &Unk_0206a198::func_020697b0,
-        &Unk_0206a198::func_02069790,
-        &Unk_0206a198::func_02069770,
-        &Unk_0206a198::func_02069750,
-        &Unk_0206a198::func_02069730,
-        &Unk_0206a198::func_02069710,
-        &Unk_0206a198::func_020696f0,
-        &Unk_0206a198::func_020696d0,
-        &Unk_0206a198::func_02069674,
-        &Unk_0206a198::func_02069618,
-        &Unk_0206a198::func_020695bc,
-        &Unk_0206a198::func_02069550,
-        &Unk_0206a198::func_02069544,
-        &Unk_0206a198::func_02069538,
-        &Unk_0206a198::func_0206952c,
-        &Unk_0206a198::func_02069520,
-        &Unk_0206a198::func_02069514,
-        &Unk_0206a198::func_02069508,
-        &Unk_0206a198::func_020694fc,
-        &Unk_0206a198::func_020694f0,
-        &Unk_0206a198::func_020694e4,
-        &Unk_0206a198::func_020694d8,
-        &Unk_0206a198::func_020694cc,
-        &Unk_0206a198::func_020694c0,
-        &Unk_0206a198::func_020694b4,
-        &Unk_0206a198::func_020694a8,
-        &Unk_0206a198::func_0206949c,
-        &Unk_0206a198::func_0206945c,
-        &Unk_0206a198::func_02069400,
-        &Unk_0206a198::func_020693fc,
-        &Unk_0206a198::func_020693a0,
-        &Unk_0206a198::func_02069360,
+    static void (TalkParserTags::*const tbl[35])() = {
+        &TalkParserTags::tagPlayerName,
+        &TalkParserTags::tagSpeakerName,
+        &TalkParserTags::tagCatchphrase,
+        &TalkParserTags::tagTownName,
+        &TalkParserTags::tagYear,
+        &TalkParserTags::tagMonth,
+        &TalkParserTags::tagDay,
+        &TalkParserTags::tagWeekday,
+        &TalkParserTags::tagHour,
+        &TalkParserTags::tagMinute,
+        &TalkParserTags::tagNumber1714,
+        &TalkParserTags::tagFriendName,
+        &TalkParserTags::tagEnemyName,
+        &TalkParserTags::tagRandomVillagerName,
+        &TalkParserTags::tagOtherResidentName,
+        &TalkParserTags::tagSlot0,
+        &TalkParserTags::tagSlot1,
+        &TalkParserTags::tagSlot2,
+        &TalkParserTags::tagSlot3,
+        &TalkParserTags::tagSlot4,
+        &TalkParserTags::tagSlot5,
+        &TalkParserTags::tagSlot6,
+        &TalkParserTags::tagSlot7,
+        &TalkParserTags::tagSlot8,
+        &TalkParserTags::tagSlot9,
+        &TalkParserTags::tagSlot10,
+        &TalkParserTags::tagNamedSlot0,
+        &TalkParserTags::tagNamedSlot1,
+        &TalkParserTags::tagNamedSlot2,
+        &TalkParserTags::tagNamedSlot3,
+        &TalkParserTags::tagImpression,
+        &TalkParserTags::tagNickname,
+        &TalkParserTags::tagNop0420,
+        &TalkParserTags::tagCompliment,
+        &TalkParserTags::tagTrend,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
-void Unk_0206a198::func_0206a498()
+void TalkParserTags::tagGroup05()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[8])() = {
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069258,
-        &Unk_0206a198::func_02069fa0,
-        &Unk_0206a198::func_02069fa0,
+    static void (TalkParserTags::*const tbl[8])() = {
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagChoiceSlots,
+        &TalkParserTags::tagNop,
+        &TalkParserTags::tagNop,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
-void Unk_0206a198::func_0206a380()
+void TalkParserTags::tagGroup06()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[14])() = {
-        &Unk_0206a198::func_0206920c,
-        &Unk_0206a198::func_020691bc,
-        &Unk_0206a198::func_0206912c,
-        &Unk_0206a198::func_020690d0,
-        &Unk_0206a198::func_0206905c,
-        &Unk_0206a198::func_02068ffc,
-        &Unk_0206a198::func_02068f9c,
-        &Unk_0206a198::func_02068f10,
-        &Unk_0206a198::func_02068e9c,
-        &Unk_0206a198::func_02068e40,
-        &Unk_0206a198::func_02068dd0,
-        &Unk_0206a198::func_02068d78,
-        &Unk_0206a198::func_02068d20,
-        &Unk_0206a198::func_02068c9c,
+    static void (TalkParserTags::*const tbl[14])() = {
+        &TalkParserTags::tagBranchRandom2,
+        &TalkParserTags::tagBranchRandom3,
+        &TalkParserTags::tagBranchFriendship,
+        &TalkParserTags::tagBranchPlayerGender,
+        &TalkParserTags::tagBranchHouseUnk,
+        &TalkParserTags::tagBranchInsectCount,
+        &TalkParserTags::tagBranchFishCount,
+        &TalkParserTags::tagBranchVillagerCount,
+        &TalkParserTags::tagBranchUnk8,
+        &TalkParserTags::tagBranchWeather,
+        &TalkParserTags::tagBranchResidentCount,
+        &TalkParserTags::tagBranchWeekday,
+        &TalkParserTags::tagBranchVisitor,
+        &TalkParserTags::tagBranchSpecies,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
-void Unk_0206a198::func_0206a358()
+void TalkParserTags::tagGroup07()
 {
     using namespace n14;
-    u32 v = unk_3c;
-    Unk_0206a198_Sub *p = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    p->vfunc_38(v);
+    u32 v = tagId;
+    TalkMsgRequest *p = window->request;
+    MsgTag_DtorStub(&tag);
+    p->onEventTag(v);
 }
-void Unk_0206a198::func_0206a2d8()
+void TalkParserTags::tagGroup08()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[3])() = {
-        &Unk_0206a198::func_02068c98,
-        &Unk_0206a198::func_02068c94,
-        &Unk_0206a198::func_02068c90,
+    static void (TalkParserTags::*const tbl[3])() = {
+        &TalkParserTags::tagNop0800,
+        &TalkParserTags::tagNop0801,
+        &TalkParserTags::tagNop0802,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
-void Unk_0206a198::func_0206a1f8()
+void TalkParserTags::tagGroup09()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[10])() = {
-        &Unk_0206a198::func_02068c70,
-        &Unk_0206a198::func_02068c50,
-        &Unk_0206a198::func_02068c30,
-        &Unk_0206a198::func_02068c10,
-        &Unk_0206a198::func_02068bf0,
-        &Unk_0206a198::func_02068bd0,
-        &Unk_0206a198::func_02068bb0,
-        &Unk_0206a198::func_02068b90,
-        &Unk_0206a198::func_02068b70,
-        &Unk_0206a198::func_02068b50,
+    static void (TalkParserTags::*const tbl[10])() = {
+        &TalkParserTags::tagSignal09_0,
+        &TalkParserTags::tagSignal09_1,
+        &TalkParserTags::tagSignal09_2,
+        &TalkParserTags::tagSignal09_3,
+        &TalkParserTags::tagSignal09_4,
+        &TalkParserTags::tagSignal09_5,
+        &TalkParserTags::tagSignal09_6,
+        &TalkParserTags::tagSignal09_7,
+        &TalkParserTags::tagSignal09_8,
+        &TalkParserTags::tagSignal09_9,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
-void Unk_0206a198::func_0206a198()
+void TalkParserTags::tagGroup0a()
 {
     using namespace n14;
-    static void (Unk_0206a198::*const tbl[1])() = {
-        &Unk_0206a198::func_02068b4c,
+    static void (TalkParserTags::*const tbl[1])() = {
+        &TalkParserTags::tagNop0a00,
     };
-    void (Unk_0206a198::*f)() = tbl[unk_3c];
+    void (TalkParserTags::*f)() = tbl[tagId];
     (this->*f)();
 }
 
 // ======== unk_02069834.cpp ========
-#define Unk_020ddcf0 Unk_020ddcf0_v13
 namespace n13 {
-extern "C" { u8 *func_020a72a0(s32 i); }
-extern "C" { Unk_020aa3b8 *_ZN12Unk_020660f813func_020679b4Ev(void *p); }
-extern "C" { void _ZN12Unk_020668a013func_02067030Ev(void *p); }
-extern "C" { void _ZN12Unk_02066ce013func_02066cf8Ei(void *p, u32 v); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066d04Ev(void *p); }
-extern "C" { u8 *func_020a6c84(u8 *p, s32 a, s32 b); }
-extern "C" { void _ZN12Unk_020660f813func_0206755cEiiii(void *p, s32 a, s32 b, s32 c, s32 d); }
-extern "C" { u8 *func_0205023c(); }
-extern "C" { u8 *func_02050234(); }
-extern "C" { u8 *func_0205021c(); }
-extern "C" { u8 *func_02050224(); }
-extern "C" { u8 *func_0205022c(); }
-extern "C" { void func_0200402c(s32 a); }
-extern "C" { void func_020a7768(Unk_020a72b0 *p); }
-typedef void (Unk_02069fa4::*Unk_02069fa4_Fn)();
+extern "C" { u8 *Msg_GetColorTag(s32 i); }
+extern "C" { ChoiceList *_ZN15TalkWindowState13getChoiceListEv(void *p); }
+extern "C" { void _ZN13TalkWindowMsg15buildPlayerNameEv(void *p); }
+extern "C" { void _ZN15TalkAutoAdvance5startEi(void *p, u32 v); }
+extern "C" { s32 _ZN13TalkWindowMsg13buildGreetingEv(void *p); }
+extern "C" { u8 *Msg_FindTag(u8 *p, s32 a, s32 b); }
+extern "C" { void _ZN15TalkWindowState10startShakeEiiii(void *p, s32 a, s32 b, s32 c, s32 d); }
+extern "C" { u8 *Text_GetSpecialCharStr1(); }
+extern "C" { u8 *Text_GetSpecialCharStr4(); }
+extern "C" { u8 *Text_GetSpecialCharStr5(); }
+extern "C" { u8 *Text_GetSpecialCharStr7(); }
+extern "C" { u8 *Text_GetSpecialCharStr6(); }
+extern "C" { void Snd_PlaySe(s32 a); }
+extern "C" { void MsgTag_DtorStub(MsgTag *p); }
+typedef void (TalkParserTags2::*Unk_02069fa4_Fn)();
 
 }
-void Unk_02069fa4::func_0206a024() {
+void TalkParserTags2::tagGroup0b() {
     using namespace n13;
     static Unk_02069fa4_Fn tbl[20] = {
-        &Unk_02069fa4::func_02069fa0,
-        &Unk_02069fa4::func_02068b44,
-        &Unk_02069fa4::func_02068b3c,
-        &Unk_02069fa4::func_02068b34,
-        &Unk_02069fa4::func_02068b2c,
-        &Unk_02069fa4::func_02068b18,
-        &Unk_02069fa4::func_02068b04,
-        &Unk_02069fa4::func_02068af0,
-        &Unk_02069fa4::func_02068adc,
-        &Unk_02069fa4::func_02068ac8,
-        &Unk_02069fa4::func_02068aac,
-        &Unk_02069fa4::func_02068a90,
-        &Unk_02069fa4::func_02068a74,
-        &Unk_02069fa4::func_02068a58,
-        &Unk_02069fa4::func_02068a3c,
-        &Unk_02069fa4::func_02068a20,
-        &Unk_02069fa4::func_02068a0c,
-        &Unk_02069fa4::func_020689f8,
-        &Unk_02069fa4::func_020689e4,
-        &Unk_02069fa4::func_020689d0};
-    Unk_02069fa4_Fn f = tbl[unk_3c];
+        &TalkParserTags2::tagNop,
+        &TalkParserTags2::tagArticleMode1,
+        &TalkParserTags2::tagArticleMode2,
+        &TalkParserTags2::tagCapitalizeNext,
+        &TalkParserTags2::tagSelectByPlayerGender,
+        &TalkParserTags2::tagSlotForm0,
+        &TalkParserTags2::tagSlotForm1,
+        &TalkParserTags2::tagSlotForm2,
+        &TalkParserTags2::tagSlotForm3,
+        &TalkParserTags2::tagSlotForm4,
+        &TalkParserTags2::tagSlotForm5,
+        &TalkParserTags2::tagSlotForm6,
+        &TalkParserTags2::tagSlotForm7,
+        &TalkParserTags2::tagSlotForm8,
+        &TalkParserTags2::tagSlotForm9,
+        &TalkParserTags2::tagSlotForm10,
+        &TalkParserTags2::tagNamedSlotForm0,
+        &TalkParserTags2::tagNamedSlotForm1,
+        &TalkParserTags2::tagNamedSlotForm2,
+        &TalkParserTags2::tagNamedSlotForm3};
+    Unk_02069fa4_Fn f = tbl[tagId];
     (this->*f)();
 }
-void Unk_02069fa4::func_02069fa4() {
+void TalkParserTags2::tagGroupFf() {
     using namespace n13;
-    static Unk_02069fa4_Fn tbl[3] = {&Unk_02069fa4::func_020689a0, 0, &Unk_02069fa4::func_02068950};
-    Unk_02069fa4_Fn f = tbl[unk_3c];
+    static Unk_02069fa4_Fn tbl[3] = {&TalkParserTags2::tagColor, 0, &TalkParserTags2::tagAltText};
+    Unk_02069fa4_Fn f = tbl[tagId];
     (this->*f)();
 }
-void Unk_02069834::func_02069fa0() {
+void TalkParserVarTags::tagNop() {
     using namespace n13;}
-void Unk_02069834::func_02069f88() {
-    using namespace n13; func_020a8348(func_0205022c()); }
-void Unk_02069834::func_02069f70() {
-    using namespace n13; func_020a8348(func_02050224()); }
-void Unk_02069834::func_02069f58() {
-    using namespace n13; func_020a8348(func_0205021c()); }
-void Unk_02069834::func_02069f40() {
-    using namespace n13; func_020a8348(func_02050234()); }
-void Unk_02069834::func_02069f28() {
-    using namespace n13; func_020a8348(func_0205023c()); }
-void Unk_02069834::func_02069efc() {
+void TalkParserVarTags::tagGlyph0() {
+    using namespace n13; pushText(Text_GetSpecialCharStr6()); }
+void TalkParserVarTags::tagGlyph1() {
+    using namespace n13; pushText(Text_GetSpecialCharStr7()); }
+void TalkParserVarTags::tagGlyph6() {
+    using namespace n13; pushText(Text_GetSpecialCharStr5()); }
+void TalkParserVarTags::tagGlyph7() {
+    using namespace n13; pushText(Text_GetSpecialCharStr4()); }
+void TalkParserVarTags::tagGlyph8() {
+    using namespace n13; pushText(Text_GetSpecialCharStr1()); }
+void TalkParserVarTags::tagWait() {
     using namespace n13;
     u16 v[2];
-    unk_38.func_020a7634(v);
-    unk_58 = v[0] << 12;
-    unk_24->unk_16fa = 1;
+    tag.getArgU16(v);
+    waitTimer = v[0] << 12;
+    window->voice.inWait = 1;
 }
-void Unk_02069834::func_02069ee8() {
+void TalkParserVarTags::tagPageBreak() {
     using namespace n13;
-    func_020a7768(&unk_38);
-    unk_30 = 4;
+    MsgTag_DtorStub(&tag);
+    printStatus = 4;
 }
-void Unk_02069834::func_02069ec4() {
+void TalkParserVarTags::tagFastOn() {
     using namespace n13;
-    func_020a7768(&unk_38);
-    unk_4e = 1;
-    unk_24->unk_16f9 = 1;
+    MsgTag_DtorStub(&tag);
+    instant = 1;
+    window->voice.instantByTag = 1;
 }
-void Unk_02069834::func_02069ea0() {
+void TalkParserVarTags::tagFastOff() {
     using namespace n13;
-    func_020a7768(&unk_38);
-    unk_4e = 0;
-    unk_24->unk_16f9 = 0;
+    MsgTag_DtorStub(&tag);
+    instant = 0;
+    window->voice.instantByTag = 0;
 }
-void Unk_02069834::func_02069e88() {
+void TalkParserVarTags::tagFastLockOn() {
     using namespace n13;
-    func_020a7768(&unk_38);
-    unk_4f = 1;
+    MsgTag_DtorStub(&tag);
+    fastForwardLock = 1;
 }
-void Unk_02069834::func_02069e70() {
+void TalkParserVarTags::tagFastLockOff() {
     using namespace n13;
-    func_020a7768(&unk_38);
-    unk_4f = 0;
+    MsgTag_DtorStub(&tag);
+    fastForwardLock = 0;
 }
-void Unk_02069834::func_02069e28() {
+void TalkParserVarTags::tagGreeting() {
     using namespace n13;
-    u8 *base = unk_04;
-    u8 *p = func_020a6c84(base, 1, 7);
+    u8 *base = cursor;
+    u8 *p = Msg_FindTag(base, 1, 7);
     if (p != 0) {
-        if (_ZN12Unk_020668a013func_02066d04Ev(unk_24) != 0) {
-            func_020a8400(p - base);
-            func_020a8348(unk_24->unk_19d0.vfunc_0c());
+        if (_ZN13TalkWindowMsg13buildGreetingEv(window) != 0) {
+            skip(p - base);
+            pushText(window->greeting.data());
         }
     }
 }
-void Unk_02069834::func_02069e24() {
+void TalkParserVarTags::tagGreetingEnd() {
     using namespace n13;}
-void Unk_02069834::func_02069df0() {
+void TalkParserVarTags::tagShakeSmall() {
     using namespace n13;
-    func_0200402c(6);
-    _ZN12Unk_020660f813func_0206755cEiiii(unk_24, 0x6000, 0x666, 0x4cc, 0x1199);
+    Snd_PlaySe(6);
+    _ZN15TalkWindowState10startShakeEiiii(window, 0x6000, 0x666, 0x4cc, 0x1199);
 }
-void Unk_02069834::func_02069dc0() {
+void TalkParserVarTags::tagShakeMedium() {
     using namespace n13;
-    func_0200402c(7);
-    _ZN12Unk_020660f813func_0206755cEiiii(unk_24, 0xa000, 0x800, 0x800, 0x1333);
+    Snd_PlaySe(7);
+    _ZN15TalkWindowState10startShakeEiiii(window, 0xa000, 0x800, 0x800, 0x1333);
 }
-void Unk_02069834::func_02069d8c() {
+void TalkParserVarTags::tagShakeLarge() {
     using namespace n13;
-    func_0200402c(8);
-    _ZN12Unk_020660f813func_0206755cEiiii(unk_24, 0x11000, 0xa66, 0xccc, 0x1000);
+    Snd_PlaySe(8);
+    _ZN15TalkWindowState10startShakeEiiii(window, 0x11000, 0xa66, 0xccc, 0x1000);
 }
-void Unk_02069834::func_02069d68() {
+void TalkParserVarTags::tagSignal0() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    o->vfunc_1c(0);
+    TalkMsgRequest *o = window->request;
+    MsgTag_DtorStub(&tag);
+    o->onSignalTag(0);
 }
-void Unk_02069834::func_02069d44() {
+void TalkParserVarTags::tagSignal1() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    o->vfunc_1c(1);
+    TalkMsgRequest *o = window->request;
+    MsgTag_DtorStub(&tag);
+    o->onSignalTag(1);
 }
-void Unk_02069834::func_02069d20() {
+void TalkParserVarTags::tagSignal2() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    o->vfunc_1c(2);
+    TalkMsgRequest *o = window->request;
+    MsgTag_DtorStub(&tag);
+    o->onSignalTag(2);
 }
-void Unk_02069834::func_02069cfc() {
+void TalkParserVarTags::tagSignal3() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    o->vfunc_1c(3);
+    TalkMsgRequest *o = window->request;
+    MsgTag_DtorStub(&tag);
+    o->onSignalTag(3);
 }
-void Unk_02069834::func_02069cd8() {
+void TalkParserVarTags::tagSignal4() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    o->vfunc_1c(4);
+    TalkMsgRequest *o = window->request;
+    MsgTag_DtorStub(&tag);
+    o->onSignalTag(4);
 }
-void Unk_02069834::func_02069cb8() {
+void TalkParserVarTags::tagAutoAdvance() {
     using namespace n13;
     u8 v[4];
-    unk_38.func_020a7754(v);
-    _ZN12Unk_02066ce013func_02066cf8Ei(unk_24, v[0]);
+    tag.getArgs1(v);
+    _ZN15TalkAutoAdvance5startEi(window, v[0]);
 }
-void Unk_02069834::func_02069c34() {
+void TalkParserVarTags::tagChoice2() {
     using namespace n13;
-    Unk_020aa3b8 *l = _ZN12Unk_020660f813func_020679b4Ev(unk_24);
-    Unk_020aa72c *a = l->func_020aa560(0);
-    Unk_020aa72c *b = l->func_020aa560(1);
-    l->func_020aa5f4();
-    u8 *a1 = a->func_020aa79c();
-    Unk_020e2a78 *a2 = a->func_020aa7a0();
-    u8 *b1 = b->func_020aa79c();
-    Unk_020e2a78 *b2 = b->func_020aa7a0();
-    func_020a8400(unk_38.func_020a75dc(a1, a2, b1, b2));
-    l->func_020aa4cc(2);
-    ((Unk_020a8cf8 *)unk_24->unk_b4)->func_020a8de0(l);
-    ((Unk_020a8cf8 *)unk_24->unk_b4)->func_020a8d3c();
-    unk_30 = 5;
+    ChoiceList *l = _ZN15TalkWindowState13getChoiceListEv(window);
+    ChoiceEntry *a = l->getEntry(0);
+    ChoiceEntry *b = l->getEntry(1);
+    l->clear();
+    u8 *a1 = a->getValuePtr();
+    MsgString *a2 = a->getText();
+    u8 *b1 = b->getValuePtr();
+    MsgString *b2 = b->getText();
+    skip(tag.readArgStrings2(a1, a2, b1, b2));
+    l->setCount(2);
+    window->choiceMenu.setListChoices(l);
+    window->choiceMenu.open();
+    printStatus = 5;
 }
-void Unk_02069834::func_02069b94() {
+void TalkParserVarTags::tagChoice3() {
     using namespace n13;
-    Unk_020aa3b8 *l = _ZN12Unk_020660f813func_020679b4Ev(unk_24);
-    Unk_020aa72c *a = l->func_020aa560(0);
-    Unk_020aa72c *b = l->func_020aa560(1);
-    Unk_020aa72c *c = l->func_020aa560(2);
-    l->func_020aa5f4();
-    u8 *a1 = a->func_020aa79c();
-    Unk_020e2a78 *a2 = a->func_020aa7a0();
-    u8 *b1 = b->func_020aa79c();
-    Unk_020e2a78 *b2 = b->func_020aa7a0();
-    u8 *c1 = c->func_020aa79c();
-    Unk_020e2a78 *c2 = c->func_020aa7a0();
-    func_020a8400(unk_38.func_020a7574(a1, a2, b1, b2, c1, c2));
-    l->func_020aa4cc(3);
-    ((Unk_020a8cf8 *)unk_24->unk_b4)->func_020a8de0(l);
-    ((Unk_020a8cf8 *)unk_24->unk_b4)->func_020a8d3c();
-    unk_30 = 5;
+    ChoiceList *l = _ZN15TalkWindowState13getChoiceListEv(window);
+    ChoiceEntry *a = l->getEntry(0);
+    ChoiceEntry *b = l->getEntry(1);
+    ChoiceEntry *c = l->getEntry(2);
+    l->clear();
+    u8 *a1 = a->getValuePtr();
+    MsgString *a2 = a->getText();
+    u8 *b1 = b->getValuePtr();
+    MsgString *b2 = b->getText();
+    u8 *c1 = c->getValuePtr();
+    MsgString *c2 = c->getText();
+    skip(tag.readArgStrings3(a1, a2, b1, b2, c1, c2));
+    l->setCount(3);
+    window->choiceMenu.setListChoices(l);
+    window->choiceMenu.open();
+    printStatus = 5;
 }
-void Unk_02069834::func_02069ad0() {
+void TalkParserVarTags::tagChoice4() {
     using namespace n13;
-    Unk_020aa3b8 *l = _ZN12Unk_020660f813func_020679b4Ev(unk_24);
-    Unk_020aa72c *a = l->func_020aa560(0);
-    Unk_020aa72c *b = l->func_020aa560(1);
-    Unk_020aa72c *c = l->func_020aa560(2);
-    Unk_020aa72c *d = l->func_020aa560(3);
-    l->func_020aa5f4();
-    u8 *a1 = a->func_020aa79c();
-    Unk_020e2a78 *a2 = a->func_020aa7a0();
-    u8 *b1 = b->func_020aa79c();
-    Unk_020e2a78 *b2 = b->func_020aa7a0();
-    u8 *c1 = c->func_020aa79c();
-    Unk_020e2a78 *c2 = c->func_020aa7a0();
-    u8 *d1 = d->func_020aa79c();
-    Unk_020e2a78 *d2 = d->func_020aa7a0();
-    func_020a8400(unk_38.func_020a74fc(a1, a2, b1, b2, c1, c2, d1, d2));
-    l->func_020aa4cc(4);
-    ((Unk_020a8cf8 *)unk_24->unk_b4)->func_020a8de0(l);
-    ((Unk_020a8cf8 *)unk_24->unk_b4)->func_020a8d3c();
-    unk_30 = 5;
+    ChoiceList *l = _ZN15TalkWindowState13getChoiceListEv(window);
+    ChoiceEntry *a = l->getEntry(0);
+    ChoiceEntry *b = l->getEntry(1);
+    ChoiceEntry *c = l->getEntry(2);
+    ChoiceEntry *d = l->getEntry(3);
+    l->clear();
+    u8 *a1 = a->getValuePtr();
+    MsgString *a2 = a->getText();
+    u8 *b1 = b->getValuePtr();
+    MsgString *b2 = b->getText();
+    u8 *c1 = c->getValuePtr();
+    MsgString *c2 = c->getText();
+    u8 *d1 = d->getValuePtr();
+    MsgString *d2 = d->getText();
+    skip(tag.readArgStrings4(a1, a2, b1, b2, c1, c2, d1, d2));
+    l->setCount(4);
+    window->choiceMenu.setListChoices(l);
+    window->choiceMenu.open();
+    printStatus = 5;
 }
-void Unk_02069834::func_020699ec() {
+void TalkParserVarTags::tagChoice5() {
     using namespace n13;
-    Unk_020aa3b8 *l = _ZN12Unk_020660f813func_020679b4Ev(unk_24);
-    Unk_020aa72c *a = l->func_020aa560(0);
-    Unk_020aa72c *b = l->func_020aa560(1);
-    Unk_020aa72c *c = l->func_020aa560(2);
-    Unk_020aa72c *d = l->func_020aa560(3);
-    Unk_020aa72c *e = l->func_020aa560(4);
-    l->func_020aa5f4();
-    u8 *a1 = a->func_020aa79c();
-    Unk_020e2a78 *a2 = a->func_020aa7a0();
-    u8 *b1 = b->func_020aa79c();
-    Unk_020e2a78 *b2 = b->func_020aa7a0();
-    u8 *c1 = c->func_020aa79c();
-    Unk_020e2a78 *c2 = c->func_020aa7a0();
-    u8 *d1 = d->func_020aa79c();
-    Unk_020e2a78 *d2 = d->func_020aa7a0();
-    u8 *e1 = e->func_020aa79c();
-    Unk_020e2a78 *e2 = e->func_020aa7a0();
-    func_020a8400(unk_38.func_020a7478(a1, a2, b1, b2, c1, c2, d1, d2, e1, e2));
-    l->func_020aa4cc(5);
-    ((Unk_020a8cf8 *)unk_24->unk_b4)->func_020a8de0(l);
-    ((Unk_020a8cf8 *)unk_24->unk_b4)->func_020a8d3c();
-    unk_30 = 5;
+    ChoiceList *l = _ZN15TalkWindowState13getChoiceListEv(window);
+    ChoiceEntry *a = l->getEntry(0);
+    ChoiceEntry *b = l->getEntry(1);
+    ChoiceEntry *c = l->getEntry(2);
+    ChoiceEntry *d = l->getEntry(3);
+    ChoiceEntry *e = l->getEntry(4);
+    l->clear();
+    u8 *a1 = a->getValuePtr();
+    MsgString *a2 = a->getText();
+    u8 *b1 = b->getValuePtr();
+    MsgString *b2 = b->getText();
+    u8 *c1 = c->getValuePtr();
+    MsgString *c2 = c->getText();
+    u8 *d1 = d->getValuePtr();
+    MsgString *d2 = d->getText();
+    u8 *e1 = e->getValuePtr();
+    MsgString *e2 = e->getText();
+    skip(tag.readArgStrings5(a1, a2, b1, b2, c1, c2, d1, d2, e1, e2));
+    l->setCount(5);
+    window->choiceMenu.setListChoices(l);
+    window->choiceMenu.open();
+    printStatus = 5;
 }
-void Unk_02069834::func_020699d4() {
+void TalkParserVarTags::tagChoice2B() {
     using namespace n13;
-    func_02069c34();
-    _ZN12Unk_020660f813func_020679b4Ev(unk_24)->func_020aa4b8();
+    tagChoice2();
+    _ZN15TalkWindowState13getChoiceListEv(window)->setCancelToLast();
 }
-void Unk_02069834::func_020699bc() {
+void TalkParserVarTags::tagChoice3B() {
     using namespace n13;
-    func_02069b94();
-    _ZN12Unk_020660f813func_020679b4Ev(unk_24)->func_020aa4b8();
+    tagChoice3();
+    _ZN15TalkWindowState13getChoiceListEv(window)->setCancelToLast();
 }
-void Unk_02069834::func_020699a4() {
+void TalkParserVarTags::tagChoice4B() {
     using namespace n13;
-    func_02069ad0();
-    _ZN12Unk_020660f813func_020679b4Ev(unk_24)->func_020aa4b8();
+    tagChoice4();
+    _ZN15TalkWindowState13getChoiceListEv(window)->setCancelToLast();
 }
-void Unk_02069834::func_0206998c() {
+void TalkParserVarTags::tagChoice5B() {
     using namespace n13;
-    func_020699ec();
-    _ZN12Unk_020660f813func_020679b4Ev(unk_24)->func_020aa4b8();
+    tagChoice5();
+    _ZN15TalkWindowState13getChoiceListEv(window)->setCancelToLast();
 }
-void Unk_02069834::func_0206996c() {
+void TalkParserVarTags::tagAction0() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    o->vfunc_20();
+    TalkMsgRequest *o = window->request;
+    MsgTag_DtorStub(&tag);
+    o->onActionTag0();
 }
-void Unk_02069834::func_02069940() {
+void TalkParserVarTags::tagAction1() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
+    TalkMsgRequest *o = window->request;
     u8 v[4];
-    unk_38.func_020a7754(v);
-    o->vfunc_24(v[0]);
+    tag.getArgs1(v);
+    o->onActionTag1(v[0]);
 }
-void Unk_02069834::func_02069914() {
+void TalkParserVarTags::tagAction2() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
+    TalkMsgRequest *o = window->request;
     u8 v[4];
-    unk_38.func_020a7754(v);
-    o->vfunc_28(v[0]);
+    tag.getArgs1(v);
+    o->onActionTag2(v[0]);
 }
-void Unk_02069834::func_020698e8() {
+void TalkParserVarTags::tagAction3() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
+    TalkMsgRequest *o = window->request;
     u8 v[4];
-    unk_38.func_020a7754(v);
-    o->vfunc_2c(v[0]);
+    tag.getArgs1(v);
+    o->onActionTag3(v[0]);
 }
-void Unk_02069834::func_020698bc() {
+void TalkParserVarTags::tagAction4() {
     using namespace n13;
-    Unk_020ddcf0 *o = unk_24->unk_13b0;
+    TalkMsgRequest *o = window->request;
     u8 v[4];
-    unk_38.func_020a7754(v);
-    o->vfunc_30(v[0]);
+    tag.getArgs1(v);
+    o->onActionTag4(v[0]);
 }
-void Unk_02069834::func_02069878() {
+void TalkParserVarTags::tagPlayerName() {
     using namespace n13;
-    _ZN12Unk_020668a013func_02067030Ev(unk_24);
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(unk_24->unk_189c.vfunc_0c());
-    func_020a8348(func_020a72a0(5));
+    _ZN13TalkWindowMsg15buildPlayerNameEv(window);
+    pushText(Msg_GetColorTag(textColor));
+    pushText(window->playerName.data());
+    pushText(Msg_GetColorTag(5));
 }
-void Unk_02069834::func_02069834() {
+void TalkParserVarTags::tagSpeakerName() {
     using namespace n13;
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(unk_24->unk_13b0->func_02065f10()->vfunc_0c());
-    func_020a8348(func_020a72a0(6));
+    pushText(Msg_GetColorTag(textColor));
+    pushText(window->request->getSpeakerName()->data());
+    pushText(Msg_GetColorTag(6));
 }
-#undef Unk_020ddcf0
 
 // ======== unk_02068f10.cpp ========
 #define data_020dde2c ((char *)"\202i\220e\226\247\223x")
@@ -3002,244 +2403,244 @@ void Unk_02069834::func_02069834() {
 #define data_020dde94 ((char *)"\222\207\227\307\202\265\202m\202o\202b")
 #define data_020ddea4 ((char *)"\214\373\202\256\202\271\202\360\216g\227p\201H")
 namespace n12 {
-extern "C" { u32 func_0203c304(); }
-extern "C" { u32 func_0203c2f4(); }
-extern "C" { s32 func_0207bb7c(void *p); }
-extern "C" { s32 func_0209750c(); }
-extern "C" { s32 _ZN12Unk_0209865c13func_0209888cEv(); }
-extern "C" { s32 _ZN12Unk_020940a013func_0209411cEv(); }
-extern "C" { s32 func_0207f854(void *p, s32 v); }
-extern "C" { s32 _ZN12Unk_0208091c13func_02080dd8Ev(); }
-extern "C" { s32 func_02063b8c(s32 v); }
-extern "C" { BOOL _ZN12Unk_020668a013func_02066e50Ev(u8 *c); }
-extern "C" { BOOL _ZN12Unk_020668a013func_02066d5cEv(u8 *c); }
-extern "C" { BOOL _ZN12Unk_020668a013func_02066db0Ev(u8 *c); }
-extern "C" { BOOL _ZN12Unk_020668a013func_02066e04Ev(u8 *c); }
-extern "C" { BOOL _ZN12Unk_020668a013func_02066ea0Ev(u8 *c); }
-extern "C" { BOOL _ZN12Unk_020668a013func_02066f2cEv(u8 *c); }
-extern "C" { BOOL _ZN12Unk_020668a013func_02066f98Ev(u8 *c); }
-extern "C" { BOOL _ZN12Unk_020668a013func_02066fe4Ev(u8 *c); }
-extern "C" { BOOL _ZN12Unk_020668a013func_020670a8Ev(u8 *c); }
-extern "C" { void _ZN12Unk_020668a013func_02067070Ev(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN12Unk_020660f813func_020675a8Ev(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN12Unk_020660f813func_020675d8Ev(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN12Unk_020660f813func_0206760cEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN12Unk_020660f813func_02067648Ev(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN12Unk_020660f813func_0206766cEv(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN12Unk_020660f813func_02067690Ev(u8 *c); }
-extern "C" { Unk_02068f10_Obj *_ZN12Unk_020660f813func_020676b4Ev(u8 *c); }
-extern "C" { Unk_020aa3b8 *_ZN12Unk_020660f813func_020679b4Ev(u8 *c); }
-extern "C" { u8 *func_020a72a0(s32 i); }
-extern "C" { extern u8 data_021d7350[]; }
+extern "C" { u32 Catalog_CountFish(); }
+extern "C" { u32 Catalog_CountInsects(); }
+extern "C" { s32 SaveVillagers_Count(void *p); }
+extern "C" { s32 PlayerData_GetCurrent(); }
+extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(); }
+extern "C" { s32 _ZN8PlayerId9getGenderEv(); }
+extern "C" { s32 Villager_FindMemory(void *p, s32 v); }
+extern "C" { s32 _ZN14VillagerMemory13getFriendshipEv(); }
+extern "C" { s32 Random_GlobalBelow(s32 v); }
+extern "C" { BOOL _ZN13TalkWindowMsg10buildTrendEv(u8 *c); }
+extern "C" { BOOL _ZN13TalkWindowMsg15buildComplimentEv(u8 *c); }
+extern "C" { BOOL _ZN13TalkWindowMsg13buildNicknameEv(u8 *c); }
+extern "C" { BOOL _ZN13TalkWindowMsg15buildImpressionEv(u8 *c); }
+extern "C" { BOOL _ZN13TalkWindowMsg22buildOtherResidentNameEv(u8 *c); }
+extern "C" { BOOL _ZN13TalkWindowMsg23buildRandomVillagerNameEv(u8 *c); }
+extern "C" { BOOL _ZN13TalkWindowMsg14buildEnemyNameEv(u8 *c); }
+extern "C" { BOOL _ZN13TalkWindowMsg15buildFriendNameEv(u8 *c); }
+extern "C" { BOOL _ZN13TalkWindowMsg16buildCatchphraseEv(u8 *c); }
+extern "C" { void _ZN13TalkWindowMsg13buildTownNameEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState17getNumber1714TextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState13getMinuteTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState11getHourTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState14getWeekdayTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState10getDayTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState12getMonthTextEv(u8 *c); }
+extern "C" { MsgString *_ZN15TalkWindowState11getYearTextEv(u8 *c); }
+extern "C" { ChoiceList *_ZN15TalkWindowState13getChoiceListEv(u8 *c); }
+extern "C" { u8 *Msg_GetColorTag(s32 i); }
+extern "C" { extern u8 gSaveData[]; }
 extern "C" { extern s32 data_020cbf90; }
-extern "C" { extern u8 data_021e58a8[]; }
+extern "C" { extern u8 gSaveHouse[]; }
 extern "C" { extern u8 data_020cba1c[]; }
-static inline Unk_02068f10_Obj *Sel(u8 *ctx) { return *(Unk_02068f10_Obj **)(ctx + 0x13b0); }
-static inline Unk_02068f10_Obj *At(u8 *ctx, u32 off) { return (Unk_02068f10_Obj *)(ctx + off); }
+static inline TalkMsgRequest *Sel(u8 *ctx) { return *(TalkMsgRequest **)(ctx + 0x13b0); }
+static inline MsgString *At(u8 *ctx, u32 off) { return (MsgString *)(ctx + off); }
 
 }
-void Unk_02068f10::func_020697f4() {
+void TalkParserCondTags::tagCatchphrase() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_020670a8Ev(unk_24)) func_0206afa0(0xb58, data_020ddea4);
-    func_020a8348(At(unk_24, 0x1860)->vfunc_0c());
+    if (!_ZN13TalkWindowMsg16buildCatchphraseEv(window)) debugPrintMissing(0xb58, data_020ddea4);
+    pushText(At(window, 0x1860)->data());
 }
-void Unk_02068f10::func_020697b0() {
+void TalkParserCondTags::tagTownName() {
     using namespace n12;
-    _ZN12Unk_020668a013func_02067070Ev(unk_24);
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(At(unk_24, 0x1880)->vfunc_0c());
-    func_020a8348(func_020a72a0(8));
+    _ZN13TalkWindowMsg13buildTownNameEv(window);
+    pushText(Msg_GetColorTag(textColor));
+    pushText(At(window, 0x1880)->data());
+    pushText(Msg_GetColorTag(8));
 }
-void Unk_02068f10::func_02069790() {
-    using namespace n12; func_020a8348(_ZN12Unk_020660f813func_020676b4Ev(unk_24)->vfunc_0c()); }
-void Unk_02068f10::func_02069770() {
-    using namespace n12; func_020a8348(_ZN12Unk_020660f813func_02067690Ev(unk_24)->vfunc_0c()); }
-void Unk_02068f10::func_02069750() {
-    using namespace n12; func_020a8348(_ZN12Unk_020660f813func_0206766cEv(unk_24)->vfunc_0c()); }
-void Unk_02068f10::func_02069730() {
-    using namespace n12; func_020a8348(_ZN12Unk_020660f813func_02067648Ev(unk_24)->vfunc_0c()); }
-void Unk_02068f10::func_02069710() {
-    using namespace n12; func_020a8348(_ZN12Unk_020660f813func_0206760cEv(unk_24)->vfunc_0c()); }
-void Unk_02068f10::func_020696f0() {
-    using namespace n12; func_020a8348(_ZN12Unk_020660f813func_020675d8Ev(unk_24)->vfunc_0c()); }
-void Unk_02068f10::func_020696d0() {
-    using namespace n12; func_020a8348(_ZN12Unk_020660f813func_020675a8Ev(unk_24)->vfunc_0c()); }
-void Unk_02068f10::func_02069674() {
+void TalkParserCondTags::tagYear() {
+    using namespace n12; pushText(_ZN15TalkWindowState11getYearTextEv(window)->data()); }
+void TalkParserCondTags::tagMonth() {
+    using namespace n12; pushText(_ZN15TalkWindowState12getMonthTextEv(window)->data()); }
+void TalkParserCondTags::tagDay() {
+    using namespace n12; pushText(_ZN15TalkWindowState10getDayTextEv(window)->data()); }
+void TalkParserCondTags::tagWeekday() {
+    using namespace n12; pushText(_ZN15TalkWindowState14getWeekdayTextEv(window)->data()); }
+void TalkParserCondTags::tagHour() {
+    using namespace n12; pushText(_ZN15TalkWindowState11getHourTextEv(window)->data()); }
+void TalkParserCondTags::tagMinute() {
+    using namespace n12; pushText(_ZN15TalkWindowState13getMinuteTextEv(window)->data()); }
+void TalkParserCondTags::tagNumber1714() {
+    using namespace n12; pushText(_ZN15TalkWindowState17getNumber1714TextEv(window)->data()); }
+void TalkParserCondTags::tagFriendName() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_02066fe4Ev(unk_24)) func_0206afa0(0xbbd, data_020dde94);
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(At(unk_24, 0x18b8)->vfunc_0c());
-    func_020a8348(func_020a72a0(6));
+    if (!_ZN13TalkWindowMsg15buildFriendNameEv(window)) debugPrintMissing(0xbbd, data_020dde94);
+    pushText(Msg_GetColorTag(textColor));
+    pushText(At(window, 0x18b8)->data());
+    pushText(Msg_GetColorTag(6));
 }
-void Unk_02068f10::func_02069618() {
+void TalkParserCondTags::tagEnemyName() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_02066f98Ev(unk_24)) func_0206afa0(0xbcd, data_020dde84);
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(At(unk_24, 0x18d4)->vfunc_0c());
-    func_020a8348(func_020a72a0(6));
+    if (!_ZN13TalkWindowMsg14buildEnemyNameEv(window)) debugPrintMissing(0xbcd, data_020dde84);
+    pushText(Msg_GetColorTag(textColor));
+    pushText(At(window, 0x18d4)->data());
+    pushText(Msg_GetColorTag(6));
 }
-void Unk_02068f10::func_020695bc() {
+void TalkParserCondTags::tagRandomVillagerName() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_02066f2cEv(unk_24)) func_0206afa0(0xbdd, data_020dde74);
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(At(unk_24, 0x18f0)->vfunc_0c());
-    func_020a8348(func_020a72a0(6));
+    if (!_ZN13TalkWindowMsg23buildRandomVillagerNameEv(window)) debugPrintMissing(0xbdd, data_020dde74);
+    pushText(Msg_GetColorTag(textColor));
+    pushText(At(window, 0x18f0)->data());
+    pushText(Msg_GetColorTag(6));
 }
-void Unk_02068f10::func_02069550() {
+void TalkParserCondTags::tagOtherResidentName() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_02066ea0Ev(unk_24)) func_0206afa0(0xbee, data_020dde64);
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(At(unk_24, 0x190c)->vfunc_0c());
+    if (!_ZN13TalkWindowMsg22buildOtherResidentNameEv(window)) debugPrintMissing(0xbee, data_020dde64);
+    pushText(Msg_GetColorTag(textColor));
+    pushText(At(window, 0x190c)->data());
     s32 k = 5;
-    if (unk_24[0x19f6] != 0) k = 6;
-    func_020a8348(func_020a72a0(k));
+    if (window[0x19f6] != 0) k = 6;
+    pushText(Msg_GetColorTag(k));
 }
-void Unk_02068f10::func_02069544() {
-    using namespace n12; func_0206adb8(0); }
-void Unk_02068f10::func_02069538() {
-    using namespace n12; func_0206adb8(1); }
-void Unk_02068f10::func_0206952c() {
-    using namespace n12; func_0206adb8(2); }
-void Unk_02068f10::func_02069520() {
-    using namespace n12; func_0206adb8(3); }
-void Unk_02068f10::func_02069514() {
-    using namespace n12; func_0206adb8(4); }
-void Unk_02068f10::func_02069508() {
-    using namespace n12; func_0206adb8(5); }
-void Unk_02068f10::func_020694fc() {
-    using namespace n12; func_0206adb8(6); }
-void Unk_02068f10::func_020694f0() {
-    using namespace n12; func_0206adb8(7); }
-void Unk_02068f10::func_020694e4() {
-    using namespace n12; func_0206adb8(8); }
-void Unk_02068f10::func_020694d8() {
-    using namespace n12; func_0206adb8(9); }
-void Unk_02068f10::func_020694cc() {
-    using namespace n12; func_0206adb8(10); }
-void Unk_02068f10::func_020694c0() {
-    using namespace n12; func_0206ad58(0); }
-void Unk_02068f10::func_020694b4() {
-    using namespace n12; func_0206ad58(1); }
-void Unk_02068f10::func_020694a8() {
-    using namespace n12; func_0206ad58(2); }
-void Unk_02068f10::func_0206949c() {
-    using namespace n12; func_0206ad58(3); }
-void Unk_02068f10::func_0206945c() {
+void TalkParserCondTags::tagSlot0() {
+    using namespace n12; expandSlot(0); }
+void TalkParserCondTags::tagSlot1() {
+    using namespace n12; expandSlot(1); }
+void TalkParserCondTags::tagSlot2() {
+    using namespace n12; expandSlot(2); }
+void TalkParserCondTags::tagSlot3() {
+    using namespace n12; expandSlot(3); }
+void TalkParserCondTags::tagSlot4() {
+    using namespace n12; expandSlot(4); }
+void TalkParserCondTags::tagSlot5() {
+    using namespace n12; expandSlot(5); }
+void TalkParserCondTags::tagSlot6() {
+    using namespace n12; expandSlot(6); }
+void TalkParserCondTags::tagSlot7() {
+    using namespace n12; expandSlot(7); }
+void TalkParserCondTags::tagSlot8() {
+    using namespace n12; expandSlot(8); }
+void TalkParserCondTags::tagSlot9() {
+    using namespace n12; expandSlot(9); }
+void TalkParserCondTags::tagSlot10() {
+    using namespace n12; expandSlot(10); }
+void TalkParserCondTags::tagNamedSlot0() {
+    using namespace n12; expandNamedSlot(0); }
+void TalkParserCondTags::tagNamedSlot1() {
+    using namespace n12; expandNamedSlot(1); }
+void TalkParserCondTags::tagNamedSlot2() {
+    using namespace n12; expandNamedSlot(2); }
+void TalkParserCondTags::tagNamedSlot3() {
+    using namespace n12; expandNamedSlot(3); }
+void TalkParserCondTags::tagImpression() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_02066e04Ev(unk_24)) func_0206afa0(0xc7d, data_020dde5c);
-    func_020a8348(At(unk_24, 0x195c)->vfunc_0c());
+    if (!_ZN13TalkWindowMsg15buildImpressionEv(window)) debugPrintMissing(0xc7d, data_020dde5c);
+    pushText(At(window, 0x195c)->data());
 }
-void Unk_02068f10::func_02069400() {
+void TalkParserCondTags::tagNickname() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_02066db0Ev(unk_24)) func_0206afa0(0xc8b, data_020dde4c);
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(At(unk_24, 0x1990)->vfunc_0c());
-    func_020a8348(func_020a72a0(5));
+    if (!_ZN13TalkWindowMsg13buildNicknameEv(window)) debugPrintMissing(0xc8b, data_020dde4c);
+    pushText(Msg_GetColorTag(textColor));
+    pushText(At(window, 0x1990)->data());
+    pushText(Msg_GetColorTag(5));
 }
-void Unk_02068f10::func_020693fc() {
+void TalkParserCondTags::tagNop0420() {
     using namespace n12;}
-void Unk_02068f10::func_020693a0() {
+void TalkParserCondTags::tagCompliment() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_02066d5cEv(unk_24)) func_0206afa0(0xca4, data_020dde40);
-    func_020a8348(func_020a72a0(unk_5c));
-    func_020a8348(At(unk_24, 0x19ac)->vfunc_0c());
-    func_020a8348(func_020a72a0(2));
+    if (!_ZN13TalkWindowMsg15buildComplimentEv(window)) debugPrintMissing(0xca4, data_020dde40);
+    pushText(Msg_GetColorTag(textColor));
+    pushText(At(window, 0x19ac)->data());
+    pushText(Msg_GetColorTag(2));
 }
-void Unk_02068f10::func_02069360() {
+void TalkParserCondTags::tagTrend() {
     using namespace n12;
-    if (!_ZN12Unk_020668a013func_02066e50Ev(unk_24)) func_0206afa0(0xcb5, data_020dde38);
-    func_020a8348(At(unk_24, 0x1928)->vfunc_0c());
+    if (!_ZN13TalkWindowMsg10buildTrendEv(window)) debugPrintMissing(0xcb5, data_020dde38);
+    pushText(At(window, 0x1928)->data());
 }
-void Unk_02068f10::func_02069258() {
+void TalkParserCondTags::tagChoiceSlots() {
     using namespace n12;
-    if (unk_d8 != 0) {
-        unk_d8 = 0;
-        Unk_020aa3b8 *o = _ZN12Unk_020660f813func_020679b4Ev(unk_24);
-        Unk_020aa72c *a = o->func_020aa560(0);
-        Unk_020aa72c *b = o->func_020aa560(1);
-        Unk_020aa72c *c = o->func_020aa560(2);
-        Unk_020aa72c *d = o->func_020aa560(3);
-        o->func_020aa5f4();
-        u8 *a0 = a->func_020aa790();
-        u8 *a1 = a->func_020aa79c();
-        u8 *b0 = b->func_020aa790();
-        u8 *b1 = b->func_020aa79c();
-        u8 *c0 = c->func_020aa790();
-        u8 *c1 = c->func_020aa79c();
-        u8 *d0 = d->func_020aa790();
-        u8 *d1 = d->func_020aa79c();
-        Unk_020e2c80 *e0 = o->func_020aa54c();
-        Unk_020e2c80 *e1 = o->func_020aa538();
-        func_020a8400(unk_38.func_020a7388(a0, a1, b0, b1, c0, c1, d0, d1, (Unk_020e2a78 *)e0, (Unk_020e2a78 *)e1));
-        o->func_020aa4cc(4);
-        ((Unk_020a8cf8 *)(unk_24 + 0xb4))->func_020a8dc8(o);
-        ((Unk_020a8cf8 *)(unk_24 + 0xb4))->func_020a8d3c();
-        unk_30 = 5;
+    if (choiceDeferred != 0) {
+        choiceDeferred = 0;
+        ChoiceList *o = _ZN15TalkWindowState13getChoiceListEv(window);
+        ChoiceEntry *a = o->getEntry(0);
+        ChoiceEntry *b = o->getEntry(1);
+        ChoiceEntry *c = o->getEntry(2);
+        ChoiceEntry *d = o->getEntry(3);
+        o->clear();
+        u8 *a0 = a->getWeightPtr();
+        u8 *a1 = a->getValuePtr();
+        u8 *b0 = b->getWeightPtr();
+        u8 *b1 = b->getValuePtr();
+        u8 *c0 = c->getWeightPtr();
+        u8 *c1 = c->getValuePtr();
+        u8 *d0 = d->getWeightPtr();
+        u8 *d1 = d->getValuePtr();
+        ChoiceString *e0 = o->getFirstText();
+        ChoiceString *e1 = o->getLastText();
+        skip(tag.readArgBytes8Strings2(a0, a1, b0, b1, c0, c1, d0, d1, (MsgString *)e0, (MsgString *)e1));
+        o->setCount(4);
+        ((ChoiceMenu *)(window + 0xb4))->setSliderChoices(o);
+        ((ChoiceMenu *)(window + 0xb4))->open();
+        printStatus = 5;
     } else {
-        func_020a83f4((u8 *)unk_38.unk_10);
-        unk_d8 = 1;
-        func_020a8348(data_020cba1c);
+        unreadTag((u8 *)tag.raw);
+        choiceDeferred = 1;
+        pushText(data_020cba1c);
     }
 }
-void Unk_02068f10::func_0206920c() {
+void TalkParserCondTags::tagBranchRandom2() {
     using namespace n12;
     u8 r[4];
-    Sel(unk_24)->vfunc_34(0, 2);
-    unk_38.func_020a7730(&r[1], &r[2]);
+    Sel(window)->onConditionTag(0, 2);
+    tag.getArgs2(&r[1], &r[2]);
     u8 *q = &r[1];
-    r[0] = q[func_02063b8c(2)];
-    func_0206ac98(r);
+    r[0] = q[Random_GlobalBelow(2)];
+    jumpToMessage(r);
 }
-void Unk_02068f10::func_020691bc() {
+void TalkParserCondTags::tagBranchRandom3() {
     using namespace n12;
     u8 r[4];
-    Sel(unk_24)->vfunc_34(1, 3);
-    unk_38.func_020a76fc(&r[1], &r[2], &r[3]);
+    Sel(window)->onConditionTag(1, 3);
+    tag.getArgs3(&r[1], &r[2], &r[3]);
     u8 *q = &r[1];
-    r[0] = q[func_02063b8c(3)];
-    func_0206ac98(r);
+    r[0] = q[Random_GlobalBelow(3)];
+    jumpToMessage(r);
 }
-void Unk_02068f10::func_0206912c() {
+void TalkParserCondTags::tagBranchFriendship() {
     using namespace n12;
     u8 r[4];
-    Unk_02068f10_Obj *o = Sel(unk_24);
-    o->vfunc_34(2, 2);
-    unk_38.func_020a76fc(&r[0], &r[2], &r[3]);
+    TalkMsgRequest *o = Sel(window);
+    o->onConditionTag(2, 2);
+    tag.getArgs3(&r[0], &r[2], &r[3]);
     s32 k = 0;
-    void *p = o->vfunc_68();
-    func_0209750c();
+    void *p = (void *)o->getSpeakerData();
+    PlayerData_GetCurrent();
     if (p) {
-        s32 v = _ZN12Unk_0209865c13func_0209888cEv();
-        if (func_0207f854(p, v) != 0) {
-            if (_ZN12Unk_0208091c13func_02080dd8Ev() < r[0]) k = 1;
+        s32 v = _ZN10PlayerData11getPlayerIdEv();
+        if (Villager_FindMemory(p, v) != 0) {
+            if (_ZN14VillagerMemory13getFriendshipEv() < r[0]) k = 1;
         }
     } else {
-        func_0206afa0(0xd64, data_020dde2c);
+        debugPrintMissing(0xd64, data_020dde2c);
     }
     u8 *q = &r[2];
     r[1] = q[k];
-    func_0206ac98(&r[1]);
+    jumpToMessage(&r[1]);
 }
-void Unk_02068f10::func_020690d0() {
+void TalkParserCondTags::tagBranchPlayerGender() {
     using namespace n12;
     u8 r[4];
-    Sel(unk_24)->vfunc_34(3, 2);
-    unk_38.func_020a7730(&r[1], &r[2]);
-    func_0209750c();
-    _ZN12Unk_0209865c13func_0209888cEv();
+    Sel(window)->onConditionTag(3, 2);
+    tag.getArgs2(&r[1], &r[2]);
+    PlayerData_GetCurrent();
+    _ZN10PlayerData11getPlayerIdEv();
     s32 i;
-    if (_ZN12Unk_020940a013func_0209411cEv() != 0) i = 1;
+    if (_ZN8PlayerId9getGenderEv() != 0) i = 1;
     else i = 0;
     u8 *q = &r[1];
     r[0] = q[i];
-    func_0206ac98(r);
+    jumpToMessage(r);
 }
-void Unk_02068f10::func_0206905c() {
+void TalkParserCondTags::tagBranchHouseUnk() {
     using namespace n12;
     u8 r[5];
-    Sel(unk_24)->vfunc_34(4, 4);
-    unk_38.func_020a76bc(&r[1], &r[2], &r[3], &r[4]);
-    s32 t = ((Unk_0206022c *)data_021e58a8)->func_020604c4();
+    Sel(window)->onConditionTag(4, 4);
+    tag.getArgs4(&r[1], &r[2], &r[3], &r[4]);
+    s32 t = ((HouseData *)gSaveHouse)->getLevel();
     s32 i;
     if (t == 0) i = 0;
     else if (t >= 1 && t <= 2) i = 1;
@@ -3247,44 +2648,44 @@ void Unk_02068f10::func_0206905c() {
     else i = 3;
     u8 *q = &r[1];
     r[0] = q[i];
-    func_0206ac98(r);
+    jumpToMessage(r);
 }
-void Unk_02068f10::func_02068ffc() {
+void TalkParserCondTags::tagBranchInsectCount() {
     using namespace n12;
     u8 r[4];
-    Sel(unk_24)->vfunc_34(5, 3);
-    unk_38.func_020a76fc(&r[1], &r[2], &r[3]);
-    u32 t = func_0203c2f4();
+    Sel(window)->onConditionTag(5, 3);
+    tag.getArgs3(&r[1], &r[2], &r[3]);
+    u32 t = Catalog_CountInsects();
     s32 i;
     if (t == 0x38) i = 2;
     else if (t >= 0x21) i = 1;
     else i = 0;
     u8 *q = &r[1];
     r[0] = q[i];
-    func_0206ac98(r);
+    jumpToMessage(r);
 }
-void Unk_02068f10::func_02068f9c() {
+void TalkParserCondTags::tagBranchFishCount() {
     using namespace n12;
     u8 r[4];
-    Sel(unk_24)->vfunc_34(6, 3);
-    unk_38.func_020a76fc(&r[1], &r[2], &r[3]);
-    u32 t = func_0203c304();
+    Sel(window)->onConditionTag(6, 3);
+    tag.getArgs3(&r[1], &r[2], &r[3]);
+    u32 t = Catalog_CountFish();
     s32 i;
     if (t == 0x38) i = 2;
     else if (t >= 0x21) i = 1;
     else i = 0;
     u8 *q = &r[1];
     r[0] = q[i];
-    func_0206ac98(r);
+    jumpToMessage(r);
 }
-void Unk_02068f10::func_02068f10() {
+void TalkParserCondTags::tagBranchVillagerCount() {
     using namespace n12;
     u8 r[5];
-    Sel(unk_24)->vfunc_34(7, 4);
-    unk_38.func_020a76bc(&r[1], &r[2], &r[3], &r[4]);
-    u32 g = (u32)data_021d7350;
+    Sel(window)->onConditionTag(7, 4);
+    tag.getArgs4(&r[1], &r[2], &r[3], &r[4]);
+    u32 g = (u32)gSaveData;
     s32 n;
-    if (g != 0) n = func_0207bb7c((u8 *)g + 0x8a3c);
+    if (g != 0) n = SaveVillagers_Count((u8 *)g + 0x8a3c);
     else n = 0;
     s32 i;
     if (n <= data_020cbf90) i = 0;
@@ -3293,7 +2694,7 @@ void Unk_02068f10::func_02068f10() {
     else i = 2;
     u8 *q = &r[1];
     r[0] = q[i];
-    func_0206ac98(r);
+    jumpToMessage(r);
 }
 #undef data_020dde2c
 #undef data_020dde38
@@ -3307,17 +2708,17 @@ void Unk_02068f10::func_02068f10() {
 #undef data_020ddea4
 
 // ======== unk_02068e9c.cpp ========
-#define unk_24 ((u8 *)unk_24)
+#define windowBytes ((u8 *)window)
 namespace n11 {
-static inline Unk_02068f10_Obj *Sel(u8 *ctx) { return *(Unk_02068f10_Obj **)(ctx + 0x13b0); }
+static inline TalkMsgRequest *Sel(u8 *ctx) { return *(TalkMsgRequest **)(ctx + 0x13b0); }
 
 }
-void Unk_020ddccc::func_02068e9c() {
+void TalkParser::tagBranchUnk8() {
     using namespace n11;
     u8 r[5];
-    Sel(unk_24)->vfunc_34(8, 4);
-    unk_38.func_020a76bc(&r[1], &r[2], &r[3], &r[4]);
-    s32 v = *(s32 *)(unk_24 + 0x1718);
+    Sel(windowBytes)->onConditionTag(8, 4);
+    tag.getArgs4(&r[1], &r[2], &r[3], &r[4]);
+    s32 v = *(s32 *)(windowBytes + 0x1718);
     s32 i = 0;
     if (v == 0) {
     } else if (v == 1) i = 1;
@@ -3325,14 +2726,14 @@ void Unk_020ddccc::func_02068e9c() {
     else if (v == 3) i = 3;
     u8 *q = &r[1];
     r[0] = q[i];
-    func_0206ac98(r);
+    jumpToMessage(r);
 }
-#undef unk_24
+#undef windowBytes
 
 // ======== unk_020685c4.cpp ========
-#define SUB2C ((Unk_020a72b0 *)&unk_2c)
+#define SUB2C ((MsgTag *)&unk_2c)
 #define OWN(off) ((u8 *)unk_24 + (off))
-#define unk_38 (*(Unk_020a72b0 *)unk_38)
+#define msgTag (*(MsgTag *)tag)
 #define data_020dddbc ((u8 *)"/a_mes/a_mes_bg_ncg.bin")
 #define data_020dddd4 ((u8 *)"/a_mes/a_mes_bg_ncl.bin")
 #define data_020dddec ((u8 *)"/a_mes/a_mes0a_bg_nsc.bin")
@@ -3340,401 +2741,401 @@ void Unk_020ddccc::func_02068e9c() {
 #define data_020dde24 ((u8 *)"\202i\216\355\221\260")
 namespace n10 {
 extern "C" { extern u8 data_020cba24[]; }
-extern "C" { extern u8 data_021d7350[]; }
-extern "C" { void *func_020e8594(u32 size); }
-extern "C" { BOOL func_02119a28(void *self, const void *path); }
-extern "C" { s32 func_021198b4(void *self, void *dst, u32 size); }
-extern "C" { BOOL func_021199e0(void *self); }
-extern "C" { void _ZN12Unk_020e0d44C1Eh(void *p, s32 v); }
-extern "C" { void _ZN12Unk_020e0d4413func_02089328Ev(void *p); }
-extern "C" { void _ZN12Unk_020e0d44D1Ev(void *p); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec78Ev(void *p); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec7cEv(void *p); }
-extern "C" { void _ZN12Unk_020e10dcD1Ev(void *p); }
-extern "C" { void _ZN12Unk_020e10dcC1Ev(void *p); }
-extern "C" { BOOL func_0206774c(void); }
-extern "C" { s32 func_0207f9a4(void); }
-extern "C" { s32 func_020974f8(void); }
-extern "C" { s32 func_020978fc(void); }
-extern "C" { s32 func_020978a4(void *p); }
-extern "C" { s32 func_020b8fe8(void); }
-extern "C" { void _ZN12Unk_020ddc8413func_0206b374EPhih(void *self, u32 a, u32 b, BOOL c); }
-extern "C" { void _ZN12Unk_020ddc8413func_0206b338EPhjh(void *self, u32 a, u32 b, BOOL c); }
-extern "C" { void _ZN12Unk_0206b75413func_0206b618EPv(void *a, void *b); }
-extern "C" { void _ZN12Unk_0206b75413func_0206b59cEj(void *a, u32 b); }
-extern "C" { void func_020a7768(void *p); }
-extern "C" { void _ZN12Unk_020a72b0C1Ev(void *p); }
+extern "C" { extern u8 gSaveData[]; }
+extern "C" { void *Mem_AllocTail(u32 size); }
+extern "C" { BOOL FS_OpenFile(void *self, const void *path); }
+extern "C" { s32 FS_ReadFile(void *self, void *dst, u32 size); }
+extern "C" { BOOL FS_CloseFile(void *self); }
+extern "C" { void _ZN9TalkArrowC1Eh(void *p, s32 v); }
+extern "C" { void _ZN9TalkArrow11setAltStyleEv(void *p); }
+extern "C" { void _ZN9TalkArrowD1Ev(void *p); }
+extern "C" { void _ZN12TalkBusyIcon4exitEv(void *p); }
+extern "C" { void _ZN12TalkBusyIcon4initEv(void *p); }
+extern "C" { void _ZN12TalkBusyIconD1Ev(void *p); }
+extern "C" { void _ZN12TalkBusyIconC1Ev(void *p); }
+extern "C" { BOOL Talk_IsAltTextEnabled(void); }
+extern "C" { s32 Villager_GetAnimalKind(void); }
+extern "C" { s32 PlayerData_GetCurrentIndex(void); }
+extern "C" { s32 PlayerData_IsResidentIndex(void); }
+extern "C" { s32 PlayerDataArray_CountUsed(void *p); }
+extern "C" { s32 Weather_GetFallingPrecip(void); }
+extern "C" { void _ZN15TalkCharStepper10startCountEPhih(void *self, u32 a, u32 b, BOOL c); }
+extern "C" { void _ZN15TalkCharStepper10startUntilEPhjh(void *self, u32 a, u32 b, BOOL c); }
+extern "C" { void _ZN11TalkTextBox9appendTagEPv(void *a, void *b); }
+extern "C" { void _ZN11TalkTextBox22setRemainingLineColorsEj(void *a, u32 b); }
+extern "C" { void MsgTag_DtorStub(void *p); }
+extern "C" { void _ZN6MsgTagC1Ev(void *p); }
 
 }
-void Unk_020ddca8::func_02068e40() {
+void TalkTagScanner::tagBranchWeather() {
     using namespace n10;
     u8 b[4];
     s32 i, r;
-    unk_24->unk_13b0->vfunc_34(9, 3);
-    unk_38.func_020a76fc(&b[1], &b[2], &b[3]);
-    r = func_020b8fe8();
+    window->request->onConditionTag(9, 3);
+    msgTag.getArgs3(&b[1], &b[2], &b[3]);
+    r = Weather_GetFallingPrecip();
     i = 0;
     if (r == 1) i = 1;
     else if (r == 2) i = 2;
     b[0] = (&b[1])[i];
-    func_0206ac98(b);
+    jumpToMessage(b);
 }
-void Unk_020ddca8::func_02068dd0() {
+void TalkTagScanner::tagBranchResidentCount() {
     using namespace n10;
     u8 b[8];
     s32 i, t;
     u8 *g;
-    unk_24->unk_13b0->vfunc_34(0xa, 4);
-    unk_38.func_020a76bc(&b[1], &b[2], &b[3], &b[4]);
-    g = data_021d7350;
-    if ((u32)g != 0) t = func_020978a4(g + 0xc);
+    window->request->onConditionTag(0xa, 4);
+    msgTag.getArgs4(&b[1], &b[2], &b[3], &b[4]);
+    g = gSaveData;
+    if ((u32)g != 0) t = PlayerDataArray_CountUsed(g + 0xc);
     else t = 0;
     i = t - 1;
     if (i < 0) i = 0;
     else if (i > 3) i = 3;
     b[0] = (&b[1])[i];
-    func_0206ac98(b);
+    jumpToMessage(b);
 }
-void Unk_020ddca8::func_02068d78() {
+void TalkTagScanner::tagBranchWeekday() {
     using namespace n10;
     u8 b[8];
-    unk_24->unk_13b0->vfunc_34(0xb, 7);
-    unk_38.func_020a7648(&b[1], 7);
-    u32 v = unk_24->unk_1710;
+    window->request->onConditionTag(0xb, 7);
+    msgTag.getArgBytes(&b[1], 7);
+    u32 v = window->weekday;
     s32 i;
     if (v == 0) i = 6;
     else i = v - 1;
     b[0] = (&b[1])[i];
-    func_0206ac98(b);
+    jumpToMessage(b);
 }
-void Unk_020ddca8::func_02068d20() {
+void TalkTagScanner::tagBranchVisitor() {
     using namespace n10;
     u8 b[8];
-    unk_24->unk_13b0->vfunc_34(0xc, 2);
-    unk_38.func_020a7730(&b[1], &b[2]);
-    func_020974f8();
+    window->request->onConditionTag(0xc, 2);
+    msgTag.getArgs2(&b[1], &b[2]);
+    PlayerData_GetCurrentIndex();
     s32 i;
-    s32 r = func_020978fc();
+    s32 r = PlayerData_IsResidentIndex();
     if (r == 1) i = 0;
     else i = 1;
     b[0] = (&b[1])[i];
-    func_0206ac98(b);
+    jumpToMessage(b);
 }
-void Unk_020ddca8::func_02068c9c() {
+void TalkTagScanner::tagBranchSpecies() {
     using namespace n10;
     u8 b[4];
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
+    TalkMsgRequest *m = window->request;
     BOOL i;
     s32 res;
-    m->vfunc_34(0xd, 2);
-    unk_38.func_020a76fc(&b[0], &b[2], &b[3]);
+    m->onConditionTag(0xd, 2);
+    msgTag.getArgs3(&b[0], &b[2], &b[3]);
     b[0]--;
-    res = m->vfunc_68();
+    res = m->getSpeakerData();
     i = 0;
     if (res != 0) {
-        s32 c = func_0207f9a4();
+        s32 c = Villager_GetAnimalKind();
         if (c != b[0]) i = 1;
     } else {
-        func_0206afa0(0xeeb, data_020dde24);
+        debugPrintMissing(0xeeb, data_020dde24);
     }
     u8 *q = &b[2];
     b[1] = q[i];
-    func_0206ac98(&b[1]);
+    jumpToMessage(&b[1]);
 }
-void Unk_020ddca8::func_02068c98() {
+void TalkTagScanner::tagNop0800() {
     using namespace n10;}
-void Unk_020ddca8::func_02068c94() {
+void TalkTagScanner::tagNop0801() {
     using namespace n10;}
-void Unk_020ddca8::func_02068c90() {
+void TalkTagScanner::tagNop0802() {
     using namespace n10;}
-void Unk_020ddca8::func_02068c70() {
+void TalkTagScanner::tagSignal09_0() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_3c();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_0();
 }
-void Unk_020ddca8::func_02068c50() {
+void TalkTagScanner::tagSignal09_1() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_40();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_1();
 }
-void Unk_020ddca8::func_02068c30() {
+void TalkTagScanner::tagSignal09_2() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_44();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_2();
 }
-void Unk_020ddca8::func_02068c10() {
+void TalkTagScanner::tagSignal09_3() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_48();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_3();
 }
-void Unk_020ddca8::func_02068bf0() {
+void TalkTagScanner::tagSignal09_4() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_4c();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_4();
 }
-void Unk_020ddca8::func_02068bd0() {
+void TalkTagScanner::tagSignal09_5() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_50();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_5();
 }
-void Unk_020ddca8::func_02068bb0() {
+void TalkTagScanner::tagSignal09_6() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_54();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_6();
 }
-void Unk_020ddca8::func_02068b90() {
+void TalkTagScanner::tagSignal09_7() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_58();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_7();
 }
-void Unk_020ddca8::func_02068b70() {
+void TalkTagScanner::tagSignal09_8() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_5c();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_8();
 }
-void Unk_020ddca8::func_02068b50() {
+void TalkTagScanner::tagSignal09_9() {
     using namespace n10;
-    Unk_02068848_Menu *m = unk_24->unk_13b0;
-    func_020a7768(&unk_38);
-    m->vfunc_60();
+    TalkMsgRequest *m = window->request;
+    MsgTag_DtorStub(&msgTag);
+    m->onTag09_9();
 }
-void Unk_020ddca8::func_02068b4c() {
+void TalkTagScanner::tagNop0a00() {
     using namespace n10;}
-void Unk_020ddca8::func_02068b44() {
+void TalkTagScanner::tagArticleMode1() {
     using namespace n10;
-    unk_e0 = 1;
+    articleMode = 1;
 }
-void Unk_020ddca8::func_02068b3c() {
+void TalkTagScanner::tagArticleMode2() {
     using namespace n10;
-    unk_e0 = 2;
+    articleMode = 2;
 }
-void Unk_020ddca8::func_02068b34() {
+void TalkTagScanner::tagCapitalizeNext() {
     using namespace n10;
-    unk_d9 = 1;
+    capitalizeNext = 1;
 }
-void Unk_020ddca8::func_02068b2c() {
+void TalkTagScanner::tagSelectByPlayerGender() {
     using namespace n10;
-    func_0206ad0c();
+    selectByPlayerGender();
 }
-void Unk_020ddca8::func_02068b18() {
+void TalkTagScanner::tagSlotForm0() {
     using namespace n10;
-    func_0206acb0(unk_24->unk_13c0);
+    selectBySlotForm(window->slots);
 }
-void Unk_020ddca8::func_02068b04() {
+void TalkTagScanner::tagSlotForm1() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[1]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[1]);
 }
-void Unk_020ddca8::func_02068af0() {
+void TalkTagScanner::tagSlotForm2() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[2]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[2]);
 }
-void Unk_020ddca8::func_02068adc() {
+void TalkTagScanner::tagSlotForm3() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[3]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[3]);
 }
-void Unk_020ddca8::func_02068ac8() {
+void TalkTagScanner::tagSlotForm4() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[4]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[4]);
 }
-void Unk_020ddca8::func_02068aac() {
+void TalkTagScanner::tagSlotForm5() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[5]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[5]);
 }
-void Unk_020ddca8::func_02068a90() {
+void TalkTagScanner::tagSlotForm6() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[6]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[6]);
 }
-void Unk_020ddca8::func_02068a74() {
+void TalkTagScanner::tagSlotForm7() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[7]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[7]);
 }
-void Unk_020ddca8::func_02068a58() {
+void TalkTagScanner::tagSlotForm8() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[8]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[8]);
 }
-void Unk_020ddca8::func_02068a3c() {
+void TalkTagScanner::tagSlotForm9() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[9]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[9]);
 }
-void Unk_020ddca8::func_02068a20() {
+void TalkTagScanner::tagSlotForm10() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_13c0;
-    func_0206acb0(&e[10]);
+    MsgString33 *e = window->slots;
+    selectBySlotForm(&e[10]);
 }
-void Unk_020ddca8::func_02068a0c() {
+void TalkTagScanner::tagNamedSlotForm0() {
     using namespace n10;
-    func_0206acb0(unk_24->unk_15fc);
+    selectBySlotForm(window->namedSlots);
 }
-void Unk_020ddca8::func_020689f8() {
+void TalkTagScanner::tagNamedSlotForm1() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_15fc;
-    func_0206acb0(&e[1]);
+    MsgString33 *e = window->namedSlots;
+    selectBySlotForm(&e[1]);
 }
-void Unk_020ddca8::func_020689e4() {
+void TalkTagScanner::tagNamedSlotForm2() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_15fc;
-    func_0206acb0(&e[2]);
+    MsgString33 *e = window->namedSlots;
+    selectBySlotForm(&e[2]);
 }
-void Unk_020ddca8::func_020689d0() {
+void TalkTagScanner::tagNamedSlotForm3() {
     using namespace n10;
-    Unk_02068848_Entry *e = unk_24->unk_15fc;
-    func_0206acb0(&e[3]);
+    MsgString33 *e = window->namedSlots;
+    selectBySlotForm(&e[3]);
 }
-void Unk_020ddca8::func_020689a0() {
+void TalkTagScanner::tagColor() {
     using namespace n10;
-    unk_5c = unk_38.func_020a72b0();
-    _ZN12Unk_0206b75413func_0206b618EPv(unk_28, &unk_38);
-    _ZN12Unk_0206b75413func_0206b59cEj(unk_28, unk_5c);
-    unk_24->unk_1704 = unk_5c;
+    textColor = msgTag.getArgU8();
+    _ZN11TalkTextBox9appendTagEPv(unk_28, &msgTag);
+    _ZN11TalkTextBox22setRemainingLineColorsEj(unk_28, textColor);
+    window->voice.textColor = textColor;
 }
-void Unk_020ddca8::func_02068950() {
+void TalkTagScanner::tagAltText() {
     using namespace n10;
     u32 a;
     char *b;
     char *c;
-    unk_38.func_020a72c4(&a, &b, &c);
-    BOOL r = func_0206774c();
-    _ZN12Unk_020ddc8413func_0206b374EPhih(unk_60, (u32)b, a, r);
-    _ZN12Unk_020ddc8413func_0206b338EPhjh(unk_9c, (u32)c, (u32)b, r == 0);
-    func_020a8400(a * 2);
+    msgTag.getAltTextArgs(&a, &b, &c);
+    BOOL r = Talk_IsAltTextEnabled();
+    _ZN15TalkCharStepper10startCountEPhih(altTextStepper, (u32)b, a, r);
+    _ZN15TalkCharStepper10startUntilEPhjh(mainTextStepper, (u32)c, (u32)b, r == 0);
+    skip(a * 2);
 }
-Unk_020ddca8::Unk_020ddca8(Unk_02068848_Owner *owner) {
+TalkTagScanner::TalkTagScanner(TalkWindow *owner) {
     using namespace n10;
-    unk_24 = owner;
+    window = owner;
     unk_28 = 0;
-    _ZN12Unk_020a72b0C1Ev(SUB2C);
+    _ZN6MsgTagC1Ev(SUB2C);
 }
-Unk_020ddca8::~Unk_020ddca8() {
+TalkTagScanner::~TalkTagScanner() {
     using namespace n10;}
-void Unk_020ddca8::func_020688ac(u8 *p) {
+void TalkTagScanner::scan(u8 *p) {
     using namespace n10;
-    func_02068874();
+    resetScan();
     unk_28 = 0;
-    func_020a8368(p);
-    func_020a82ec(FALSE);
+    begin(p);
+    run(FALSE);
 }
-void Unk_020ddca8::vfunc_14(u8 *p) {
+void TalkTagScanner::onTag(u8 *p) {
     using namespace n10;
-    SUB2C->func_020a777c(p);
+    SUB2C->parse(p);
     if (unk_28 == 0) {
         s32 a = *(volatile s32 *)&unk_2c;
         s32 b = *(volatile s32 *)&unk_30;
         if (a == 10 && b == 0) {
-            func_02068848();
+            reportTag();
         }
     }
 }
-void Unk_020ddca8::func_02068874() {
+void TalkTagScanner::resetScan() {
     using namespace n10;
     unk_28 = 0;
-    _ZN12Unk_020a72b0C1Ev(SUB2C);
+    _ZN6MsgTagC1Ev(SUB2C);
 }
-// ---- Unk_020ddca8
-void Unk_020ddca8::func_02068848() {
+// ---- TalkTagScanner
+void TalkTagScanner::reportTag() {
     using namespace n10;
     u8 b;
-    SUB2C->func_020a7754(&b);
-    unk_24->unk_13b0->vfunc_64(b);
+    SUB2C->getArgs1(&b);
+    window->request->onScannedTag(b);
 }
-Unk_02068808 *Unk_02068808::func_02068808() {
+TalkFrame *TalkFrame::construct() {
     using namespace n10;
-    unk_00 = NULL;
-    unk_04 = NULL;
-    unk_08 = NULL;
-    _ZN12Unk_020e0d44C1Eh(unk_0c, 1);
-    _ZN12Unk_020e10dcC1Ev(unk_50);
-    unk_74 = 0;
-    unk_78 = 0;
-    unk_7c = 0;
-    _ZN12Unk_020e0d4413func_02089328Ev(unk_0c);
-    _ZN12Unk_020e10dc13func_0208ec7cEv(unk_50);
+    screenData = NULL;
+    paletteData = NULL;
+    charData = NULL;
+    _ZN9TalkArrowC1Eh(arrow, 1);
+    _ZN12TalkBusyIconC1Ev(busyIcon);
+    scrollX = 0;
+    scrollY = 0;
+    busyIconTimer = 0;
+    _ZN9TalkArrow11setAltStyleEv(arrow);
+    _ZN12TalkBusyIcon4initEv(busyIcon);
     return this;
 }
-Unk_02068808 *Unk_02068808::func_020687e0() {
+TalkFrame *TalkFrame::destruct() {
     using namespace n10;
-    _ZN12Unk_020e10dc13func_0208ec78Ev(unk_50);
-    func_02068524();
-    _ZN12Unk_020e10dcD1Ev(unk_50);
-    _ZN12Unk_020e0d44D1Ev(unk_0c);
+    _ZN12TalkBusyIcon4exitEv(busyIcon);
+    freeBuffers();
+    _ZN12TalkBusyIconD1Ev(busyIcon);
+    _ZN9TalkArrowD1Ev(arrow);
     return this;
 }
-void Unk_02068808::func_020687cc() {
+void TalkFrame::update() {
     using namespace n10;
-    func_020683d0();
-    func_020682c4();
+    updateArrow();
+    updateBusyIcon();
 }
-void Unk_02068808::func_020687b8() {
+void TalkFrame::draw() {
     using namespace n10;
-    func_020683bc();
-    func_020682b8();
+    drawArrow();
+    drawBusyIcon();
 }
-BOOL Unk_02068808::func_02068748(void *file, BOOL alt) {
+BOOL TalkFrame::loadScreen(void *file, BOOL alt) {
     using namespace n10;
-    BOOL a = func_02119a28(file, alt ? data_020dddec : data_020dde08);
+    BOOL a = FS_OpenFile(file, alt ? data_020dddec : data_020dde08);
     BOOL ok;
-    unk_00 = (u16 *)func_020e8594(0x800);
-    if (unk_00 != NULL) {
-        s32 n = func_021198b4(file, unk_00, 0x800);
+    screenData = (u16 *)Mem_AllocTail(0x800);
+    if (screenData != NULL) {
+        s32 n = FS_ReadFile(file, screenData, 0x800);
         ok = FALSE;
         if (n != ~ok) ok = TRUE;
     } else {
         ok = FALSE;
     }
-    BOOL r = func_021199e0(file);
-    if (a && ok && r && unk_00) return TRUE;
+    BOOL r = FS_CloseFile(file);
+    if (a && ok && r && screenData) return TRUE;
     return FALSE;
 }
-BOOL Unk_02068808::func_020686e4(void *file) {
+BOOL TalkFrame::loadPalette(void *file) {
     using namespace n10;
-    BOOL a = func_02119a28(file, data_020dddd4);
+    BOOL a = FS_OpenFile(file, data_020dddd4);
     BOOL ok;
-    unk_04 = func_020e8594(0x180);
-    if (unk_04 != NULL) {
-        s32 n = func_021198b4(file, unk_04, 0x180);
+    paletteData = Mem_AllocTail(0x180);
+    if (paletteData != NULL) {
+        s32 n = FS_ReadFile(file, paletteData, 0x180);
         ok = FALSE;
         if (n != ~ok) ok = TRUE;
     } else {
         ok = FALSE;
     }
-    BOOL r = func_021199e0(file);
-    if (a && ok && r && unk_04) return TRUE;
+    BOOL r = FS_CloseFile(file);
+    if (a && ok && r && paletteData) return TRUE;
     return FALSE;
 }
-BOOL Unk_02068808::func_02068680(void *file) {
+BOOL TalkFrame::loadCharacters(void *file) {
     using namespace n10;
-    BOOL a = func_02119a28(file, data_020dddbc);
+    BOOL a = FS_OpenFile(file, data_020dddbc);
     BOOL ok;
-    unk_08 = func_020e8594(0x2800);
-    if (unk_08 != NULL) {
-        s32 n = func_021198b4(file, unk_08, 0x2800);
+    charData = Mem_AllocTail(0x2800);
+    if (charData != NULL) {
+        s32 n = FS_ReadFile(file, charData, 0x2800);
         ok = FALSE;
         if (n != ~ok) ok = TRUE;
     } else {
         ok = FALSE;
     }
-    BOOL r = func_021199e0(file);
-    if (a && ok && r && unk_08) return TRUE;
+    BOOL r = FS_CloseFile(file);
+    if (a && ok && r && charData) return TRUE;
     return FALSE;
 }
-void Unk_02068808::func_0206860c(s32 a, BOOL b) {
+void TalkFrame::setNamePalette(s32 a, BOOL b) {
     using namespace n10;
     u32 pal;
     s32 y, x;
@@ -3748,7 +3149,7 @@ void Unk_02068808::func_0206860c(s32 a, BOOL b) {
     if (pal != 0x1000) {
         for (y = 13; y <= 16; y++) {
             for (x = 3; x <= 14; x++) {
-                u16 *p = (u16 *)((y << 6) + (u32)unk_00);
+                u16 *p = (u16 *)((y << 6) + (u32)screenData);
                 if ((p[x] & 0xf000) == 0x1000) {
                     u16 v = (u16)(p[x] & 0xffff0fff);
                     p[x] = v | pal;
@@ -3757,13 +3158,13 @@ void Unk_02068808::func_0206860c(s32 a, BOOL b) {
         }
     }
 }
-// ---- Unk_02068808
-void Unk_02068808::func_020685c4(s32 idx) {
+// ---- TalkFrame
+void TalkFrame::setTextPalette(s32 idx) {
     using namespace n10;
     s32 y, x;
     for (y = 15; y <= 24; y++) {
         for (x = 1; x <= 30; x++) {
-            u16 *p = (u16 *)((y << 6) + (u32)unk_00);
+            u16 *p = (u16 *)((y << 6) + (u32)screenData);
             u16 v = (u16)(p[x] & 0xffff0fff);
             p[x] = v | (((u32)data_020cba24[idx] << 28) >> 16);
         }
@@ -3771,7 +3172,7 @@ void Unk_02068808::func_020685c4(s32 idx) {
 }
 #undef SUB2C
 #undef OWN
-#undef unk_38
+#undef msgTag
 #undef data_020dddbc
 #undef data_020dddd4
 #undef data_020dddec
@@ -3780,22 +3181,22 @@ void Unk_02068808::func_020685c4(s32 idx) {
 
 // ======== unk_02068558.cpp ========
 namespace n9 {
-extern "C" void func_02119d78(void *p);
+extern "C" void FS_InitFile(void *p);
 
 }
-BOOL Unk_02068808::func_02068558(s32 a, u32 b, s32 c, u8 d) {
+BOOL TalkFrame::load(s32 a, u32 b, s32 c, u8 d) {
     using namespace n9;
     BOOL result = FALSE;
     BOOL alt = (b == 0 && a == 0) ? TRUE : FALSE;
-    Unk_02068558_File file;
-    func_02119d78(&file);
-    if (func_02068748(&file, alt)) {
-        if (func_020686e4(&file)) {
-            if (func_02068680(&file)) {
+    FSFile file;
+    FS_InitFile(&file);
+    if (loadScreen(&file, alt)) {
+        if (loadPalette(&file)) {
+            if (loadCharacters(&file)) {
                 if (alt) {
-                    func_0206860c(c, d);
+                    setNamePalette(c, d);
                 } else {
-                    func_020685c4(a);
+                    setTextPalette(a);
                 }
                 result = TRUE;
             }
@@ -3807,217 +3208,217 @@ BOOL Unk_02068808::func_02068558(s32 a, u32 b, s32 c, u8 d) {
 // ======== unk_02067c70.cpp ========
 namespace n8 {
 extern "C" { void *__cxa_vec_ctor(void *p, u32 n, u32 sz, void *ctor, void *dtor); }
-extern "C" { extern u16 data_020ca488; }
+extern "C" { extern u16 sCharSortKeyZero; }
 extern "C" { extern u8 data_020cba14[]; }
 extern "C" { extern u8 data_020cba0c[]; }
-extern "C" { void *func_0207e310(void *); }
-extern "C" { u32 func_0207856c(void *); }
-extern "C" { BOOL func_0203cb38(); }
-extern "C" { void func_02003f8c(); }
-extern "C" { void func_02003fc8(s32); }
-extern "C" { void func_02003f7c(s32); }
-extern "C" { void func_02003fa4(s32, s32, u32, u32); }
-extern "C" { void func_0200402c(u32); }
-extern "C" { void _ZN12Unk_020660f813func_02067724Ei(void *, s32); }
-extern "C" { void _ZN12Unk_020660f813func_02067708Ev(void *); }
-extern "C" { BOOL func_02050244(u8 *); }
-extern "C" { s32 func_020501d4(u32); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec50Eii(void *, s32, s32); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec58Ev(void *); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec68Ev(void *); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ee30Ev(void *); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ee38Ej(void *); }
-extern "C" { s32 _ZN12Unk_020e0d4413func_020892acEv(void *); }
-extern "C" { BOOL _ZN12Unk_020e0d4413func_02089284Ev(void *); }
-extern "C" { void _ZN12Unk_020e0d4413func_02089320Eii(void *, s32, s32); }
-extern "C" { void _ZN12Unk_020e0d4413func_020892b0Ei(void *, s32); }
-extern "C" { void func_02001804(s32, s32); }
-extern "C" { void func_02001674(s32, s32, s32, s32); }
-extern "C" { void func_020014e4(s32); }
-extern "C" { void func_02001554(s32); }
-extern "C" { void func_020014f4(s32); }
-extern "C" { void func_02001564(s32); }
-extern "C" { void func_02001750(s32); }
-extern "C" { void func_020016cc(s32); }
-extern "C" { void func_021145cc(void *, u32); }
-extern "C" { void func_02111ec8(void *, s32, u32); }
-extern "C" { void func_0211172c(void *, s32, u32); }
-extern "C" { void func_02111a6c(void *, s32, u32); }
-extern "C" { void func_02115fb4(void *, s32, u32); }
-extern "C" { void func_020e8558(void *); }
+extern "C" { void *Villager_GetState(void *); }
+extern "C" { u32 VillagerState_GetMood(void *); }
+extern "C" { BOOL PlayerOptions_GetTalkVoice(); }
+extern "C" { void Snd_EndTalk(); }
+extern "C" { void Snd_BeginTalk(s32); }
+extern "C" { void Snd_SetVoiceType(s32); }
+extern "C" { void Snd_PlayTalkVoice(s32, s32, u32, u32); }
+extern "C" { void Snd_PlaySe(u32); }
+extern "C" { void _ZN15TalkWindowState15setVoicePlayingEi(void *, s32); }
+extern "C" { void _ZN15TalkWindowState10resetVoiceEv(void *); }
+extern "C" { BOOL Text_AsciiToGameChar(u8 *); }
+extern "C" { s32 Text_GetCharSortKey(u32); }
+extern "C" { void _ZN12TalkBusyIcon6setPosEii(void *, s32, s32); }
+extern "C" { void _ZN12TalkBusyIcon8callDrawEv(void *); }
+extern "C" { void _ZN12TalkBusyIcon10callUpdateEv(void *); }
+extern "C" { void _ZN12TalkBusyIcon11requestHideEv(void *); }
+extern "C" { void _ZN12TalkBusyIcon11requestShowEj(void *); }
+extern "C" { s32 _ZN9TalkArrow8getStateEv(void *); }
+extern "C" { BOOL _ZN9TalkArrow10isAnimDoneEv(void *); }
+extern "C" { void _ZN9TalkArrow9setOffsetEii(void *, s32, s32); }
+extern "C" { void _ZN9TalkArrow8setStateEi(void *, s32); }
+extern "C" { void Gfx2d_SetMainBg2Offset(s32, s32); }
+extern "C" { void Gfx2d_SetMainWin0Rect(s32, s32, s32, s32); }
+extern "C" { void Gfx2d_HideMainPlanes(s32); }
+extern "C" { void Gfx2d_DisableMainWindows(s32); }
+extern "C" { void Gfx2d_ShowMainPlanes(s32); }
+extern "C" { void Gfx2d_EnableMainWindows(s32); }
+extern "C" { void Gfx2d_SetMainWin0Planes(s32); }
+extern "C" { void Gfx2d_SetMainWinOutPlanes(s32); }
+extern "C" { void DC_FlushRange(void *, u32); }
+extern "C" { void GX_LoadBGPltt(void *, s32, u32); }
+extern "C" { void GX_LoadBG2Char(void *, s32, u32); }
+extern "C" { void GX_LoadBG2Scr(void *, s32, u32); }
+extern "C" { void MI_CpuFill8(void *, s32, u32); }
+extern "C" { void Mem_Free(void *); }
 
-extern "C" void func_02068524(Unk_02068490_Ptrs *p)
+extern "C" void TalkFrame_FreeBuffers(TalkFrame *p)
 {
-    if (p->a) { func_020e8558(p->a); p->a = 0; }
-    if (p->b) { func_020e8558(p->b); p->b = 0; }
-    if (p->c) { func_020e8558(p->c); p->c = 0; }
+    if (p->screenData) { Mem_Free(p->screenData); p->screenData = 0; }
+    if (p->paletteData) { Mem_Free(p->paletteData); p->paletteData = 0; }
+    if (p->charData) { Mem_Free(p->charData); p->charData = 0; }
 }
-extern "C" void func_020684e4()
+extern "C" void TalkFrame_SetupBgControl()
 {
     volatile u16 *r = (volatile u16 *)0x400000c;
     *r = (*r & ~3) | 1;
     *r = (*r & 0x43) | 0x600;
     *r = *r & ~0x40;
-    func_02001750(0x1f);
-    func_020016cc(0x1b);
+    Gfx2d_SetMainWin0Planes(0x1f);
+    Gfx2d_SetMainWinOutPlanes(0x1b);
 }
-extern "C" void func_02068490(Unk_02068490_Ptrs *p)
+extern "C" void TalkFrame_UploadBg(TalkFrame *p)
 {
-    u16 *q = p->b;
-    func_021145cc(q + 1, 0x17e);
-    func_02111ec8(q + 1, 2, 0x17e);
-    func_021145cc(p->c, 0x2800);
-    func_0211172c(p->c, 0, 0x2800);
-    func_021145cc(p->a, 0x800);
-    func_02111a6c(p->a, 0, 0x800);
+    u16 *q = (u16 *)p->paletteData;
+    DC_FlushRange(q + 1, 0x17e);
+    GX_LoadBGPltt(q + 1, 2, 0x17e);
+    DC_FlushRange(p->charData, 0x2800);
+    GX_LoadBG2Char(p->charData, 0, 0x2800);
+    DC_FlushRange(p->screenData, 0x800);
+    GX_LoadBG2Scr(p->screenData, 0, 0x800);
 }
-extern "C" void func_02068478()
+extern "C" void TalkFrame_ShowBg()
 {
-    func_020014f4(4);
-    func_02001564(1);
+    Gfx2d_ShowMainPlanes(4);
+    Gfx2d_EnableMainWindows(1);
 }
-extern "C" void func_02068460()
+extern "C" void TalkFrame_HideBg()
 {
-    func_020014e4(4);
-    func_02001554(1);
+    Gfx2d_HideMainPlanes(4);
+    Gfx2d_DisableMainWindows(1);
 }
 }
-void Unk_020682b8::func_02068454(s32 b) {
-    using namespace n8; func_02068424(0, b); }
-void Unk_020682b8::func_02068424(s32 a, s32 b)
+void TalkFrameView::setScrollY(s32 b) {
+    using namespace n8; setScroll(0, b); }
+void TalkFrameView::setScroll(s32 a, s32 b)
 {
     using namespace n8;
-    unk_74 = a;
-    unk_78 = b;
-    func_02001804(a, b);
+    scrollX = a;
+    scrollY = b;
+    Gfx2d_SetMainBg2Offset(a, b);
     s32 hi = 0xff - a;
     s32 lo = -a;
     if (lo < 0) lo = 0;
     if (hi > 0xff) hi = 0xff;
-    func_02001674(lo, 0x3c, hi, 0xc0);
+    Gfx2d_SetMainWin0Rect(lo, 0x3c, hi, 0xc0);
 }
-void Unk_020682b8::func_02068418() {
-    using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 0); }
-void Unk_020682b8::func_0206840c() {
-    using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 1); }
-void Unk_020682b8::func_02068400() {
-    using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 2); }
-void Unk_020682b8::func_020683f4() {
-    using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 3); }
-void Unk_020682b8::func_020683d0()
+void TalkFrameView::hideArrow() {
+    using namespace n8; _ZN9TalkArrow8setStateEi(&arrow, 0); }
+void TalkFrameView::showArrowWait() {
+    using namespace n8; _ZN9TalkArrow8setStateEi(&arrow, 1); }
+void TalkFrameView::showArrowNext() {
+    using namespace n8; _ZN9TalkArrow8setStateEi(&arrow, 2); }
+void TalkFrameView::showArrowEnd() {
+    using namespace n8; _ZN9TalkArrow8setStateEi(&arrow, 3); }
+void TalkFrameView::updateArrow()
 {
     using namespace n8;
-    _ZN12Unk_020e0d4413func_02089320Eii(&unk_0c, unk_74 + 0x55, unk_78 + 0x47);
-    unk_0c.vfunc_0c();
+    _ZN9TalkArrow9setOffsetEii(&arrow, scrollX + 0x55, scrollY + 0x47);
+    arrow.update();
 }
-void Unk_020682b8::func_020683bc() {
-    using namespace n8; unk_0c.vfunc_08(); }
-BOOL Unk_020682b8::func_0206839c()
+void TalkFrameView::drawArrow() {
+    using namespace n8; arrow.draw(); }
+BOOL TalkFrameView::isArrowHidden()
 {
     using namespace n8;
-    if (unk_7c == 0 && _ZN12Unk_020e0d4413func_020892acEv(&unk_0c) == 0) return TRUE;
+    if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 0) return TRUE;
     return FALSE;
 }
-BOOL Unk_020682b8::func_0206837c()
+BOOL TalkFrameView::isArrowWaiting()
 {
     using namespace n8;
-    if (unk_7c == 0 && _ZN12Unk_020e0d4413func_020892acEv(&unk_0c) == 1) return TRUE;
+    if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 1) return TRUE;
     return FALSE;
 }
-BOOL Unk_020682b8::func_0206834c()
+BOOL TalkFrameView::isArrowNextDone()
 {
     using namespace n8;
-    if (unk_7c == 0 && _ZN12Unk_020e0d4413func_020892acEv(&unk_0c) == 2 && _ZN12Unk_020e0d4413func_02089284Ev(&unk_0c)) return TRUE;
+    if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 2 && _ZN9TalkArrow10isAnimDoneEv(&arrow)) return TRUE;
     return FALSE;
 }
-BOOL Unk_020682b8::func_0206831c()
+BOOL TalkFrameView::isArrowEndDone()
 {
     using namespace n8;
-    if (unk_7c == 0 && _ZN12Unk_020e0d4413func_020892acEv(&unk_0c) == 3 && _ZN12Unk_020e0d4413func_02089284Ev(&unk_0c)) return TRUE;
+    if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 3 && _ZN9TalkArrow10isAnimDoneEv(&arrow)) return TRUE;
     return FALSE;
 }
-void Unk_020682b8::func_02068304()
+void TalkFrameView::showBusyIcon()
 {
     using namespace n8;
-    _ZN12Unk_020e10dc13func_0208ee38Ej((u8 *)this + 0x50);
-    unk_7c = -1;
+    _ZN12TalkBusyIcon11requestShowEj((u8 *)this + 0x50);
+    busyIconTimer = -1;
 }
-void Unk_020682b8::func_020682f0()
+void TalkFrameView::hideBusyIcon()
 {
     using namespace n8;
-    _ZN12Unk_020e10dc13func_0208ee30Ev((u8 *)this + 0x50);
-    unk_7c = 4;
+    _ZN12TalkBusyIcon11requestHideEv((u8 *)this + 0x50);
+    busyIconTimer = 4;
 }
-void Unk_020682b8::func_020682c4()
+void TalkFrameView::updateBusyIcon()
 {
     using namespace n8;
-    _ZN12Unk_020e10dc13func_0208ec50Eii((u8 *)this + 0x50, unk_74 + 0x59, unk_78 + 0x4b);
-    _ZN12Unk_020e10dc13func_0208ec68Ev((u8 *)this + 0x50);
-    if (unk_7c > 0) unk_7c--;
+    _ZN12TalkBusyIcon6setPosEii((u8 *)this + 0x50, scrollX + 0x59, scrollY + 0x4b);
+    _ZN12TalkBusyIcon10callUpdateEv((u8 *)this + 0x50);
+    if (busyIconTimer > 0) busyIconTimer--;
 }
-void Unk_020682b8::func_020682b8() {
-    using namespace n8; _ZN12Unk_020e10dc13func_0208ec58Ev((u8 *)this + 0x50); }
+void TalkFrameView::drawBusyIcon() {
+    using namespace n8; _ZN12TalkBusyIcon8callDrawEv((u8 *)this + 0x50); }
 namespace n8 {
-extern "C" u8 func_020682a8(u32 x)
+extern "C" u8 Talk_ColorTagToTextColor(u32 x)
 {
     if (x == 9) x = 2;
     return x + 1;
 }
 }
-void Unk_020ddc24::func_020682a4(s32 v) {
-    using namespace n8; unk_20 = v; }
-void Unk_020ddc24::func_0206829c() {
-    using namespace n8; unk_20 = 5; }
-void Unk_020ddc24::func_02068298(s32 v) {
-    using namespace n8; unk_14 = v; }
-void Unk_020ddc24::func_02068290() {
-    using namespace n8; unk_14 = 7; }
-void Unk_020ddc24::func_02068268(s32 r)
+void TalkVoice::setVoiceOverride(s32 v) {
+    using namespace n8; voiceOverride = v; }
+void TalkVoice::clearVoiceOverride() {
+    using namespace n8; voiceOverride = 5; }
+void TalkVoice::setMsgModeOverride(s32 v) {
+    using namespace n8; msgModeOverride = v; }
+void TalkVoice::clearMsgModeOverride() {
+    using namespace n8; msgModeOverride = 7; }
+void TalkVoice::setVoiceType(s32 r)
 {
     using namespace n8;
-    if (unk_20 == 5 && unk_24 != 5 && unk_24 != r) {
-        func_02003f7c(r);
-        unk_24 = r;
+    if (voiceOverride == 5 && voiceType != 5 && voiceType != r) {
+        Snd_SetVoiceType(r);
+        voiceType = r;
     }
 }
-void Unk_020ddc24::func_02068244()
+void TalkVoice::refreshVoiceType()
 {
     using namespace n8;
-    func_02068268(unk_04->unk_13b0->vfunc_6c());
+    setVoiceType(window->request->getVoiceType());
 }
-Unk_020ddc24::Unk_020ddc24(Unk_02067c70 *o)
-    : unk_04(o), unk_14(7), unk_18(0), unk_1c(0), unk_1d(0), unk_1e(0), unk_20(5), unk_24(5), unk_28(0)
+TalkVoice::TalkVoice(TalkWindow *o)
+    : window(o), msgModeOverride(7), msgMode(0), instantByMsg(0), instantByTag(0), inWait(0), voiceOverride(5), voiceType(5), textColor(0)
 {
     using namespace n8;
-    func_020681c4(1);
+    reset(1);
 }
-Unk_020ddc24::~Unk_020ddc24() {
+TalkVoice::~TalkVoice() {
     using namespace n8;}
-void Unk_020ddc24::func_020681c4(s32 flag)
+void TalkVoice::reset(s32 flag)
 {
     using namespace n8;
     s32 i = 0;
-    u16 d = data_020ca488;
-    for (; i < 2; i++) (&unk_08)[i] = d;
-    if (flag != 0) unk_0c = d;
-    unk_10 = 0;
+    u16 d = sCharSortKeyZero;
+    for (; i < 2; i++) (&charKey0)[i] = d;
+    if (flag != 0) carryCharKey = d;
+    numCharKeys = 0;
 }
-void Unk_020ddc24::func_02068114()
+void TalkVoice::pushChar()
 {
     using namespace n8;
-    u32 cur = data_020ca488;
+    u32 cur = sCharSortKeyZero;
     u32 nw = cur;
     s32 low;
-    if (unk_10 < 2) low = 1; else low = 0;
+    if (numCharKeys < 2) low = 1; else low = 0;
     BOOL a, b;
-    if (unk_08 == 0x2a) a = 1; else a = 0;
-    if (unk_0a == 0x2a) b = 1; else b = 0;
+    if (charKey0 == 0x2a) a = 1; else a = 0;
+    if (charKey1 == 0x2a) b = 1; else b = 0;
     if (low != 0 || a != 0 || b != 0) {
         u8 buf;
-        if (func_02050244(&buf)) {
-            s32 v = func_020501d4(buf);
+        if (Text_AsciiToGameChar(&buf)) {
+            s32 v = Text_GetCharSortKey(buf);
             if (v != cur) {
-                if (v == 0x26 && unk_1e != 0) v = 0x27;
+                if (v == 0x26 && inWait != 0) v = 0x27;
                 nw = v;
             }
         }
@@ -4025,348 +3426,348 @@ void Unk_020ddc24::func_02068114()
     if (nw != cur) {
         if (low == 0) {
             if (a != 0) {
-                unk_08 = unk_0a;
-                unk_0a = cur;
-                unk_10 = unk_10 - 1;
+                charKey0 = charKey1;
+                charKey1 = cur;
+                numCharKeys = numCharKeys - 1;
             } else if (b != 0) {
-                unk_0a = cur;
-                unk_10 = unk_10 - 1;
+                charKey1 = cur;
+                numCharKeys = numCharKeys - 1;
             }
         }
-        s32 n = unk_10;
+        s32 n = numCharKeys;
         if (n < 2) {
-            unk_10 = n + 1;
-            (&unk_08)[n] = nw;
+            numCharKeys = n + 1;
+            (&charKey0)[n] = nw;
         }
     }
 }
-void Unk_020ddc24::func_02068068()
+void TalkVoice::update()
 {
     using namespace n8;
-    func_02067f44();
-    func_02067efc();
-    if (unk_1c == 0 && unk_1d == 0) {
-        s32 a = func_02067fbc();
-        s32 b = func_02067f88();
-        if (unk_10 >= 1) {
-            if (unk_24 == 5) {
-                if (a != 2) func_0200402c(0x2c);
+    updateVoiceType();
+    shiftHistory();
+    if (instantByMsg == 0 && instantByTag == 0) {
+        s32 a = getVoiceStyle();
+        s32 b = getSpeakerMoodIndex();
+        if (numCharKeys >= 1) {
+            if (voiceType == 5) {
+                if (a != 2) Snd_PlaySe(0x2c);
             } else {
-                func_02003fa4(a, b, unk_08, unk_0a);
+                Snd_PlayTalkVoice(a, b, charKey0, charKey1);
             }
         }
         s32 flag = 0;
-        if (unk_28 != 4) {
+        if (textColor != 4) {
             s32 i = 0;
-            u16 d = data_020ca488;
-            for (; i < unk_10; i++) {
-                u16 h = (&unk_08)[i];
+            u16 d = sCharSortKeyZero;
+            for (; i < numCharKeys; i++) {
+                u16 h = (&charKey0)[i];
                 if (h != d && h != 0x2a && h != 0x2b && h != 0x29 && h != 0x26 && h != 0x28 && h != 0x27 && h != 0x25)
                     flag = 1;
             }
         }
-        _ZN12Unk_020660f813func_02067724Ei(unk_04, flag);
+        _ZN15TalkWindowState15setVoicePlayingEi(window, flag);
     }
-    if (unk_1e != 0) _ZN12Unk_020660f813func_02067708Ev(unk_04);
+    if (inWait != 0) _ZN15TalkWindowState10resetVoiceEv(window);
 }
-void Unk_020ddc24::func_02068064(s32 v) {
-    using namespace n8; unk_18 = v; }
-void Unk_020ddc24::func_02068018()
+void TalkVoice::setMsgMode(s32 v) {
+    using namespace n8; msgMode = v; }
+void TalkVoice::begin()
 {
     using namespace n8;
     s32 r = 5;
-    if (unk_20 != 5) {
-        r = unk_20;
-    } else if (func_02067fbc() == 0) {
-        if (unk_18 == 3) r = 1;
-        else r = unk_04->unk_13b0->vfunc_6c();
+    if (voiceOverride != 5) {
+        r = voiceOverride;
+    } else if (getVoiceStyle() == 0) {
+        if (msgMode == 3) r = 1;
+        else r = window->request->getVoiceType();
     }
-    unk_24 = r;
-    if (r != 5) func_02003fc8(r);
+    voiceType = r;
+    if (r != 5) Snd_BeginTalk(r);
 }
-void Unk_020ddc24::func_02068000()
+void TalkVoice::end()
 {
     using namespace n8;
-    if (unk_24 != 5) func_02003f8c();
-    unk_24 = 5;
+    if (voiceType != 5) Snd_EndTalk();
+    voiceType = 5;
 }
-u32 Unk_020ddc24::func_02067fbc()
+u32 TalkVoice::getVoiceStyle()
 {
     using namespace n8;
-    u32 r = func_0203cb38();
-    s32 a = unk_18;
+    u32 r = PlayerOptions_GetTalkVoice();
+    s32 a = msgMode;
     BOOL b = r == 0 ? TRUE : FALSE;
-    if (unk_14 != 7) a = unk_14;
+    if (msgModeOverride != 7) a = msgModeOverride;
     if (a != 0 && a != 3 && b) r = 1;
-    if (unk_28 == 4 && b) r = 1;
+    if (textColor == 4 && b) r = 1;
     return data_020cba0c[r];
 }
-u8 Unk_020ddc24::func_02067f88()
+u8 TalkVoice::getSpeakerMoodIndex()
 {
     using namespace n8;
     u32 i = 0;
-    void *p = unk_04->unk_13b0->vfunc_68();
+    void *p = (void *)window->request->getSpeakerData();
     if (p) {
-        p = func_0207e310(p);
-        if (p) i = func_0207856c(p);
+        p = Villager_GetState(p);
+        if (p) i = VillagerState_GetMood(p);
     }
     return data_020cba14[i];
 }
-void Unk_020ddc24::func_02067f44()
+void TalkVoice::updateVoiceType()
 {
     using namespace n8;
     s32 r = 5;
-    if (unk_24 == 0) {
-        if (unk_28 == 9) r = 4;
-    } else if (unk_24 == 4) {
-        if (unk_28 != 9) r = ((Unk_02067c70 *)unk_04)->unk_13b0->vfunc_6c();
+    if (voiceType == 0) {
+        if (textColor == 9) r = 4;
+    } else if (voiceType == 4) {
+        if (textColor != 9) r = ((TalkWindow *)window)->request->getVoiceType();
     }
-    if (r != 5) func_02068268(r);
+    if (r != 5) setVoiceType(r);
 }
-void Unk_020ddc24::func_02067efc()
+void TalkVoice::shiftHistory()
 {
     using namespace n8;
-    if (unk_10 == 0) {
-        u16 c = data_020ca488;
-        if (unk_0c != c) {
-            unk_08 = unk_0c;
-            unk_0c = c;
-            unk_10++;
+    if (numCharKeys == 0) {
+        u16 c = sCharSortKeyZero;
+        if (carryCharKey != c) {
+            charKey0 = carryCharKey;
+            carryCharKey = c;
+            numCharKeys++;
         }
-    } else if (unk_10 == 1) {
-        if (unk_0c != data_020ca488) {
-            unk_0a = unk_08;
-            unk_08 = unk_0c;
-            unk_0c = unk_0a;
-            unk_10++;
+    } else if (numCharKeys == 1) {
+        if (carryCharKey != sCharSortKeyZero) {
+            charKey1 = charKey0;
+            charKey0 = carryCharKey;
+            carryCharKey = charKey1;
+            numCharKeys++;
         }
     } else {
-        unk_0c = unk_0a;
+        carryCharKey = charKey1;
     }
 }
-Unk_02067c70::Unk_02067c70()
-    : unk_00(0), unk_04(0), unk_08(6), unk_0c(0), unk_10(0), unk_14(4), unk_18(0),
-      unk_588(0), unk_58c(this), unk_12c0(this, &unk_58c), unk_13a4(&unk_12c0),
-      unk_13b0(0), unk_16dc(this), unk_1708(0), unk_1710(0), unk_1714(0), unk_1718(0),
-      unk_19f4(0), unk_19f5(0), unk_19f6(0), unk_19f7(data_021edb60),
-      unk_1a12(0), unk_1a13(0), unk_1a14(0), unk_1a15(0), unk_1a16(0), unk_1a17(0), unk_1a18(0), unk_1a19(0), unk_1a1a(0)
+TalkWindow::TalkWindow()
+    : index(0), state(0), nextState(6), stateStep(0), autoAdvanceTimer(0), openMode(4), choicePending(0),
+      nameLabel(0), textBox(this), parser(this, &textBox), runner(&parser),
+      request(0), voice(this), year(0), weekday(0), second(0), timeOfDay(0),
+      randomVillagerNameBuilt(0), otherResidentNameBuilt(0), otherResidentIsVillager(0), nextMsgIndex(gTalkMsgIndexNone),
+      advancePending(0), advanceLocked(0), startNotifyPending(0), endNotifyPending(0), choiceNotifyPending(0), voicePlaying(0), inputDisabled(0), noOpenSe(0), silent(0)
 {
     using namespace n8;
-    func_02115fb4(unk_19f8, 0, 0x1a);
+    MI_CpuFill8(nextFileName, 0, 0x1a);
 }
 
 // ======== unk_020671ec.cpp ========
 #define data_020dddb8 ((u8 *)"20")
 namespace n7 {
-extern "C" { s32 _ZN12Unk_020ddccc13func_0206b140Ev(void *p); }
-extern "C" { s32 _ZN12Unk_0206b75413func_0206b4e4Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020ddccc13func_0206b120Ev(void *p); }
-extern "C" { s32 _ZN12Unk_02066ce013func_02066cfcEv(void *p); }
-extern "C" { s32 func_0209cf0c(); }
-extern "C" { s32 func_0209cfb8(void *p); }
-extern "C" { s32 func_0209cf18(void *p); }
-extern "C" { s32 func_0209cef4(); }
-extern "C" { s32 func_0209cf00(); }
-extern "C" { s32 func_0209ccd0(); }
-extern "C" { s32 func_020e759c(void *p, s32 a, s32 b); }
+extern "C" { s32 _ZN10TalkParser4stopEv(void *p); }
+extern "C" { s32 _ZN11TalkTextBox11clearLabelsEv(void *p); }
+extern "C" { s32 _ZN10TalkParser16clearFastForwardEv(void *p); }
+extern "C" { s32 _ZN15TalkAutoAdvance4stopEv(void *p); }
+extern "C" { s32 Clock_GetYear(); }
+extern "C" { s32 Clock_GetDayMonth(void *p); }
+extern "C" { s32 Clock_GetMinuteHour(void *p); }
+extern "C" { s32 Clock_GetWeekday(); }
+extern "C" { s32 Clock_GetSecond(); }
+extern "C" { s32 Clock_GetTimeOfDay(); }
+extern "C" { s32 Math_StepS32Alt(void *p, s32 a, s32 b); }
 extern "C" { s32 func_01ffcb0c(s32 a, s32 b); }
-extern "C" { s32 _ZN12Unk_020682b813func_02068424Eii(void *p, s32 a, s32 b); }
-extern "C" { s32 func_021108e8(); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066bf4Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066c14Ev(void *p); }
-extern "C" { s32 func_020b3270(void *p, s32 a, s32 b, s32 c, s32 d, s32 e); }
-extern "C" { s32 func_020b3174(void *p, s32 a, s32 b); }
-extern "C" { s32 func_020b313c(void *p, s32 a); }
-extern "C" { s32 func_020b3158(void *p, s32 a); }
-extern "C" { s32 _ZN12Unk_020e2a48C1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020e2a7813func_020a7c04EPh(void *p, void *q); }
-extern "C" { s32 _ZN12Unk_020e2a7813func_020a7a0cEPS_(void *p, void *q); }
-extern "C" { s32 _ZN12Unk_020ddc2413func_020681c4Ei(void *p, s32 a); }
-extern "C" { s32 _ZN12Unk_020ddc2413func_02068114Ev(void *p, s32 a); }
-extern "C" { s32 func_0203cba8(); }
-extern "C" { s32 _ZN12Unk_0206880813func_020687b8Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020a8cf813func_020a8cf8Ev(void *p); }
-extern "C" { s32 _ZN12Unk_0206880813func_020687ccEv(void *p); }
-extern "C" { s32 _ZN12Unk_020a8cf813func_020a8d50Ev(void *p); }
-extern "C" { s32 func_021355a8(void *p, s32 a, s32 b, void *c); }
-extern "C" { s32 _ZN12Unk_020682b813func_020682f0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_02068304Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020a8cf813func_020a8de0EP12Unk_020aa3b8(void *p, void *q); }
-extern "C" { s32 _ZN12Unk_020a8cf813func_020a8d3cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020e2a7813func_020a7bd8EPS_(void *p, void *q); }
-extern "C" { s32 func_020b35f8(void *p, s32 a, s32 b); }
-extern "C" { s32 func_0212a2ec(void *d, void *s, s32 n); }
-extern "C" { s32 func_02115fb4(void *d, s32 v, s32 n); }
-extern "C" { s32 func_020a706c(s32 a, s32 b, s32 c, s32 d); }
-extern "C" { s32 func_020a6e8c(); }
-extern "C" { s32 func_020a6f7c(); }
-extern "C" { s32 func_020a6f54(); }
-extern "C" { s32 func_020a6df8(); }
-extern "C" { s32 func_020a6fa4(); }
-extern "C" { s32 func_020a6e0c(); }
-extern "C" { s32 func_020a6dec(); }
-extern "C" { s32 func_020a70d4(); }
-extern "C" { s32 func_020a6e18(); }
-extern "C" { s32 func_020a6d94(); }
-extern "C" { s32 func_020a6db4(); }
-extern "C" { s32 _ZN12Unk_020e0608D1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020e05c0D1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020e1c64D1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020dd38cD1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020e05f0D1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020e3efcD1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020ddc24D1Ev(void *p); }
+extern "C" { s32 _ZN13TalkFrameView9setScrollEii(void *p, s32 a, s32 b); }
+extern "C" { s32 G2_GetBG2ScrPtr(); }
+extern "C" { s32 _ZN13TalkWindowMsg16destroyNameLabelEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg15createNameLabelEv(void *p); }
+extern "C" { s32 String_FormatNumber(void *p, s32 a, s32 b, s32 c, s32 d, s32 e); }
+extern "C" { s32 String_GetWeekdayName(void *p, s32 a, s32 b); }
+extern "C" { s32 String_GetDayOrdinal(void *p, s32 a); }
+extern "C" { s32 String_GetMonthName(void *p, s32 a); }
+extern "C" { s32 _ZN11MsgString33C1Ev(void *p); }
+extern "C" { s32 _ZN9MsgString3setEPh(void *p, void *q); }
+extern "C" { s32 _ZN9MsgString12appendStringEPS_(void *p, void *q); }
+extern "C" { s32 _ZN9TalkVoice5resetEi(void *p, s32 a); }
+extern "C" { s32 _ZN9TalkVoice8pushCharEv(void *p, s32 a); }
+extern "C" { s32 PlayerOptions_IsHiragana(); }
+extern "C" { s32 _ZN9TalkFrame4drawEv(void *p); }
+extern "C" { s32 _ZN10ChoiceMenu4drawEv(void *p); }
+extern "C" { s32 _ZN9TalkFrame6updateEv(void *p); }
+extern "C" { s32 _ZN10ChoiceMenu6updateEv(void *p); }
+extern "C" { s32 __cxa_vec_delete(void *p, s32 a, s32 b, void *c); }
+extern "C" { s32 _ZN13TalkFrameView12hideBusyIconEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView12showBusyIconEv(void *p); }
+extern "C" { s32 _ZN10ChoiceMenu14setListChoicesEP10ChoiceList(void *p, void *q); }
+extern "C" { s32 _ZN10ChoiceMenu4openEv(void *p); }
+extern "C" { s32 _ZN9MsgString4copyEPS_(void *p, void *q); }
+extern "C" { s32 String_Load(void *p, s32 a, s32 b); }
+extern "C" { s32 strncpy(void *d, void *s, s32 n); }
+extern "C" { s32 MI_CpuFill8(void *d, s32 v, s32 n); }
+extern "C" { s32 Input_IsTouchTrigInRect(s32 a, s32 b, s32 c, s32 d); }
+extern "C" { s32 Input_IsBHeld(); }
+extern "C" { s32 Input_IsATrig(); }
+extern "C" { s32 Input_IsBTrig(); }
+extern "C" { s32 Input_IsTouchMode(); }
+extern "C" { s32 Input_IsAnyKeyTrig(); }
+extern "C" { s32 Input_SetButtonMode(); }
+extern "C" { s32 Input_IsButtonMode(); }
+extern "C" { s32 Input_IsTouchTrig(); }
+extern "C" { s32 Input_SetTouchMode(); }
+extern "C" { s32 Input_StoreMode(); }
+extern "C" { s32 Input_LoadMode(); }
+extern "C" { s32 _ZN12MsgString17BD1Ev(void *p); }
+extern "C" { s32 _ZN11MsgString17D1Ev(void *p); }
+extern "C" { s32 _ZN11MsgString9BD1Ev(void *p); }
+extern "C" { s32 _ZN11MsgString9CD1Ev(void *p); }
+extern "C" { s32 _ZN11MsgString11D1Ev(void *p); }
+extern "C" { s32 _ZN11MsgString25D1Ev(void *p); }
+extern "C" { s32 _ZN9TalkVoiceD1Ev(void *p); }
 extern "C" { void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor); }
-extern "C" { s32 _ZN12Unk_020e2a48D1Ev(void *p); }
-extern "C" { s32 func_020a728c(void *p); }
-extern "C" { s32 func_020a8538(void *p); }
-extern "C" { s32 _ZN12Unk_020ddcccD1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020ddc4cD1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_0206b754D1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020aa3b8D1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020a8cf8D1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_0206880813func_020687e0Ev(void *p); }
+extern "C" { s32 _ZN11MsgString33D1Ev(void *p); }
+extern "C" { s32 BmgMsgAttr_Fini(void *p); }
+extern "C" { s32 MsgRunner_DtorStub(void *p); }
+extern "C" { s32 _ZN10TalkParserD1Ev(void *p); }
+extern "C" { s32 _ZN13TalkBmgReaderD1Ev(void *p); }
+extern "C" { s32 _ZN11TalkTextBoxD1Ev(void *p); }
+extern "C" { s32 _ZN10ChoiceListD1Ev(void *p); }
+extern "C" { s32 _ZN10ChoiceMenuD1Ev(void *p); }
+extern "C" { s32 _ZN9TalkFrame8destructEv(void *p); }
 extern "C" { extern u16 data_020cbadc; }
 extern "C" { extern u16 data_020cbae0; }
 extern "C" { extern u16 data_020cbae4; }
 extern "C" { extern s16 data_02135f44[]; }
-typedef void (Unk_020660f8::*Unk_020660f8_Fn)();
-extern "C" { extern Unk_020660f8 *data_021ca140; }
+typedef void (TalkWindowState::*Unk_020660f8_Fn)();
+extern "C" { extern TalkWindowState *gTalkWindows; }
 
 }
-Unk_020660f8::~Unk_020660f8() {
+TalkWindowState::~TalkWindowState() {
     using namespace n7;
-    _ZN12Unk_020668a013func_02066bf4Ev(this);
-    func_02067958();
-    _ZN12Unk_020e0608D1Ev(unk_19d0);
-    _ZN12Unk_020e05c0D1Ev(unk_19ac);
-    _ZN12Unk_020e1c64D1Ev(unk_1990);
-    _ZN12Unk_020e2a48D1Ev(unk_195c);
-    _ZN12Unk_020e2a48D1Ev(unk_1928);
-    _ZN12Unk_020e1c64D1Ev(unk_190c);
-    _ZN12Unk_020e1c64D1Ev(unk_18f0);
-    _ZN12Unk_020e1c64D1Ev(unk_18d4);
-    _ZN12Unk_020e1c64D1Ev(unk_18b8);
-    _ZN12Unk_020e1c64D1Ev(unk_189c);
-    _ZN12Unk_020dd38cD1Ev(unk_1880);
-    _ZN12Unk_020e05f0D1Ev(unk_1860);
-    _ZN12Unk_020e3efcD1Ev(unk_1834);
-    _ZN12Unk_020e3efcD1Ev(unk_1808);
-    _ZN12Unk_020e3efcD1Ev(unk_17dc);
-    _ZN12Unk_020e2a48D1Ev(unk_17a8);
-    _ZN12Unk_020e3efcD1Ev(unk_177c);
-    _ZN12Unk_020e2a48D1Ev(unk_1748);
-    _ZN12Unk_020e3efcD1Ev(unk_171c);
-    _ZN12Unk_020ddc24D1Ev(unk_16dc);
-    __cxa_vec_cleanup(unk_15fc, 4, 0x34, (void *)_ZN12Unk_020e2a48D1Ev);
-    __cxa_vec_cleanup(unk_13c0, 0xb, 0x34, (void *)_ZN12Unk_020e2a48D1Ev);
-    func_020a728c(unk_13b4);
-    func_020a8538(unk_13a4);
-    _ZN12Unk_020ddcccD1Ev(unk_12c0);
-    _ZN12Unk_020ddc4cD1Ev(unk_a1c);
-    _ZN12Unk_0206b754D1Ev(unk_58c);
-    _ZN12Unk_020aa3b8D1Ev(unk_314);
-    _ZN12Unk_020a8cf8D1Ev(unk_b4);
-    _ZN12Unk_0206880813func_020687e0Ev(unk_1c);
+    _ZN13TalkWindowMsg16destroyNameLabelEv(this);
+    detachRequest();
+    _ZN12MsgString17BD1Ev(greeting);
+    _ZN11MsgString17D1Ev(compliment);
+    _ZN11MsgString9BD1Ev(nickname);
+    _ZN11MsgString33D1Ev(impression);
+    _ZN11MsgString33D1Ev(trend);
+    _ZN11MsgString9BD1Ev(otherResidentName);
+    _ZN11MsgString9BD1Ev(randomVillagerName);
+    _ZN11MsgString9BD1Ev(enemyName);
+    _ZN11MsgString9BD1Ev(friendName);
+    _ZN11MsgString9BD1Ev(playerName);
+    _ZN11MsgString9CD1Ev(townName);
+    _ZN11MsgString11D1Ev(catchphrase);
+    _ZN11MsgString25D1Ev(secondText);
+    _ZN11MsgString25D1Ev(minuteText);
+    _ZN11MsgString25D1Ev(hourText);
+    _ZN11MsgString33D1Ev(weekdayText);
+    _ZN11MsgString25D1Ev(dayText);
+    _ZN11MsgString33D1Ev(monthText);
+    _ZN11MsgString25D1Ev(yearText);
+    _ZN9TalkVoiceD1Ev(voice);
+    __cxa_vec_cleanup(namedSlots, 4, 0x34, (void *)_ZN11MsgString33D1Ev);
+    __cxa_vec_cleanup(slots, 0xb, 0x34, (void *)_ZN11MsgString33D1Ev);
+    BmgMsgAttr_Fini(msgAttr);
+    MsgRunner_DtorStub(runner);
+    _ZN10TalkParserD1Ev(parser);
+    _ZN13TalkBmgReaderD1Ev(msgBuffer);
+    _ZN11TalkTextBoxD1Ev(textBox);
+    _ZN10ChoiceListD1Ev(choiceList);
+    _ZN10ChoiceMenuD1Ev(choiceMenu);
+    _ZN9TalkFrame8destructEv(frame);
 }
-BOOL Unk_020660f8::func_02067abc(u8 *src, void *s) {
+BOOL TalkWindowState::setNextMessageIfUnset(u8 *src, void *s) {
     using namespace n7;
     BOOL r = FALSE;
-    if (unk_19f7 == data_021edb60) {
-        func_02067a84(src, s);
+    if (nextMsgIndex == gTalkMsgIndexNone) {
+        setNextMessage(src, s);
         r = TRUE;
     }
     return r;
 }
-void Unk_020660f8::func_02067a84(u8 *src, void *s) {
+void TalkWindowState::setNextMessage(u8 *src, void *s) {
     using namespace n7;
-    unk_19f7 = *src;
+    nextMsgIndex = *src;
     if (s) {
-        func_0212a2ec(unk_19f8, s, 0x19);
+        strncpy(nextFileName, s, 0x19);
     } else {
-        func_02115fb4(unk_19f8, 0, 0x1a);
+        MI_CpuFill8(nextFileName, 0, 0x1a);
     }
 }
-void Unk_020660f8::func_02067a78() {
-    using namespace n7; unk_1a13 = 1; }
-void Unk_020660f8::func_02067a6c() {
-    using namespace n7; unk_1a13 = 0; }
-void Unk_020660f8::func_02067a60() {
-    using namespace n7; unk_1a12 = 1; }
-void Unk_020660f8::func_02067a54() {
-    using namespace n7; unk_1a12 = 0; }
-s32 Unk_020660f8::func_02067a3c(s32 idx, void *p) {
+void TalkWindowState::lockAdvance() {
+    using namespace n7; advanceLocked = 1; }
+void TalkWindowState::unlockAdvance() {
+    using namespace n7; advanceLocked = 0; }
+void TalkWindowState::setAdvancePending() {
+    using namespace n7; advancePending = 1; }
+void TalkWindowState::clearAdvancePending() {
+    using namespace n7; advancePending = 0; }
+s32 TalkWindowState::setSlot(s32 idx, void *p) {
     using namespace n7;
-    return _ZN12Unk_020e2a7813func_020a7bd8EPS_(unk_13c0 + idx * 0x34, p);
+    return _ZN9MsgString4copyEPS_(slots + idx * 0x34, p);
 }
-void Unk_020660f8::func_02067a1c(s32 idx, s32 a, s32 b) {
+void TalkWindowState::setSlotFromString(s32 idx, s32 a, s32 b) {
     using namespace n7;
-    func_020b35f8(unk_13c0 + idx * 0x34, a, b);
+    String_Load(slots + idx * 0x34, a, b);
 }
-void Unk_020660f8::func_020679ec(s32 idx, void *p, u32 val) {
+void TalkWindowState::setNamedSlot(s32 idx, void *p, u32 val) {
     using namespace n7;
-    _ZN12Unk_020e2a7813func_020a7bd8EPS_(unk_15fc + idx * 0x34, p);
-    unk_16cc[idx] = val;
+    _ZN9MsgString4copyEPS_(namedSlots + idx * 0x34, p);
+    namedSlotColors[idx] = val;
 }
-void Unk_020660f8::func_020679c0(s32 v) {
+void TalkWindowState::openChoices(s32 v) {
     using namespace n7;
     if (v) {
-        unk_18 = 1;
+        choicePending = 1;
     } else {
-        _ZN12Unk_020a8cf813func_020a8de0EP12Unk_020aa3b8(unk_b4, unk_314);
-        _ZN12Unk_020a8cf813func_020a8d3cEv(unk_b4);
+        _ZN10ChoiceMenu14setListChoicesEP10ChoiceList(choiceMenu, choiceList);
+        _ZN10ChoiceMenu4openEv(choiceMenu);
     }
 }
-void *Unk_020660f8::func_020679b4() {
-    using namespace n7; return unk_314; }
-u8 Unk_020660f8::func_020679a8() {
-    using namespace n7; return unk_1a17; }
-s32 Unk_020660f8::func_0206799c() {
-    using namespace n7; return _ZN12Unk_020682b813func_02068304Ev(unk_1c); }
-s32 Unk_020660f8::func_02067990() {
-    using namespace n7; return _ZN12Unk_020682b813func_020682f0Ev(unk_1c); }
-void Unk_020660f8::func_02067978(Unk_020ddcf0 *p) {
+ChoiceList *TalkWindowState::getChoiceList() {
+    using namespace n7; return (ChoiceList *)choiceList; }
+u8 TalkWindowState::isVoicePlaying() {
+    using namespace n7; return voicePlaying; }
+s32 TalkWindowState::showBusyIcon() {
+    using namespace n7; return _ZN13TalkFrameView12showBusyIconEv(frame); }
+s32 TalkWindowState::hideBusyIcon() {
+    using namespace n7; return _ZN13TalkFrameView12hideBusyIconEv(frame); }
+void TalkWindowState::attachRequest(TalkMsgRequest *p) {
     using namespace n7;
-    unk_13b0 = p;
-    p->func_02065e90((u32)this);
+    request = p;
+    p->attachWindow((u32)this);
 }
-void Unk_020660f8::func_02067958() {
+void TalkWindowState::detachRequest() {
     using namespace n7;
-    if (unk_13b0) {
-        unk_13b0->func_02065e88();
-        unk_13b0 = 0;
+    if (request) {
+        request->detachWindow();
+        request = 0;
     }
 }
-void Unk_020660f8::func_0206794c() {
-    using namespace n7; unk_1a18 = 1; }
-void Unk_020660f8::func_02067940() {
-    using namespace n7; unk_1a19 = 1; }
-void Unk_020660f8::func_02067934() {
-    using namespace n7; unk_1a1a = 1; }
+void TalkWindowState::disableInput() {
+    using namespace n7; inputDisabled = 1; }
+void TalkWindowState::setKeepSe() {
+    using namespace n7; noOpenSe = 1; }
+void TalkWindowState::setSilent() {
+    using namespace n7; silent = 1; }
 namespace n7 {
-extern "C" Unk_020660f8 *func_02067918(s32 i) {
-    Unk_020660f8 *r = 0;
-    if (data_021ca140) r = data_021ca140 + i;
+extern "C" TalkWindowState *TalkWindow_Get(s32 i) {
+    TalkWindowState *r = 0;
+    if (gTalkWindows) r = gTalkWindows + i;
     return r;
 }
-extern "C" void func_020678d4() {
-    data_021ca140 = new Unk_020660f8[2];
-    for (s32 i = 0; i < 2; i++) data_021ca140[i].unk_00 = i;
+extern "C" void TalkWindow_CreateAll() {
+    gTalkWindows = new TalkWindowState[2];
+    for (s32 i = 0; i < 2; i++) gTalkWindows[i].index = i;
 }
-extern "C" void func_020678a4() {
-    if (data_021ca140) {
-        delete[] data_021ca140;
-        data_021ca140 = 0;
+extern "C" void TalkWindow_DestroyAll() {
+    if (gTalkWindows) {
+        delete[] gTalkWindows;
+        gTalkWindows = 0;
     }
 }
-extern "C" void func_02067874() {
-    if (data_021ca140) {
-        for (s32 i = 0; i < 2; i++) data_021ca140[i].func_0206777c();
+extern "C" void TalkWindow_UpdateAll() {
+    if (gTalkWindows) {
+        for (s32 i = 0; i < 2; i++) gTalkWindows[i].update();
     }
 }
-extern "C" void func_02067844() {
-    if (data_021ca140) {
-        for (s32 i = 0; i < 2; i++) data_021ca140[i].func_02067764();
+extern "C" void TalkWindow_DrawAll() {
+    if (gTalkWindows) {
+        for (s32 i = 0; i < 2; i++) gTalkWindows[i].draw();
     }
 }
 }
@@ -4374,101 +3775,101 @@ namespace n0 {
 extern "C" { extern const u8 data_020cba14[0x5]; const u8 data_020cba14[0x5] = {0, 4, 1, 2, 3}; }
 extern "C" { extern const u8 data_020cba0c[0x3]; const u8 data_020cba0c[0x3] = {0, 1, 2}; }
 extern "C" { extern const u8 data_020cba24[0x7]; const u8 data_020cba24[0x7] = {3, 6, 7, 8, 9, 5, 10}; }
-extern "C" { s16 data_020ddc10[6] = {-101, -48, -20, -10, 0, 0}; }
+extern "C" { s16 sTalkWindowCloseOffsets[6] = {-101, -48, -20, -10, 0, 0}; }
 }
-void Unk_020660f8::func_0206777c() {
+void TalkWindowState::update() {
     using namespace n7;
     static Unk_020660f8_Fn tbl[6] = {
-        &Unk_020660f8::func_0206672c, &Unk_020660f8::func_02066568, &Unk_020660f8::func_02066400,
-        &Unk_020660f8::func_02066310, &Unk_020660f8::func_0206621c, &Unk_020660f8::func_0206620c,
+        &TalkWindowState::execIdle, &TalkWindowState::execOpening, &TalkWindowState::execWaitInput,
+        &TalkWindowState::execPrinting, &TalkWindowState::execClosing, &TalkWindowState::execClosed,
     };
-    (this->*tbl[unk_04])();
-    func_0206673c();
-    func_020672a8();
-    _ZN12Unk_0206880813func_020687ccEv(unk_1c);
-    _ZN12Unk_020a8cf813func_020a8d50Ev(unk_b4);
-    if (unk_04 != 0 && unk_04 != 5) func_02067480();
+    (this->*tbl[state])();
+    applyStateChange();
+    updateShake();
+    _ZN9TalkFrame6updateEv(frame);
+    _ZN10ChoiceMenu6updateEv(choiceMenu);
+    if (state != 0 && state != 5) storeInputMode();
 }
-void Unk_020660f8::func_02067764() {
+void TalkWindowState::draw() {
     using namespace n7;
-    _ZN12Unk_0206880813func_020687b8Ev(unk_1c);
-    _ZN12Unk_020a8cf813func_020a8cf8Ev(unk_b4);
+    _ZN9TalkFrame4drawEv(frame);
+    _ZN10ChoiceMenu4drawEv(choiceMenu);
 }
 namespace n7 {
-extern "C" BOOL func_0206774c() {
-    if (func_0203cba8() == 0) return TRUE;
+extern "C" BOOL Talk_IsAltTextEnabled() {
+    if (PlayerOptions_IsHiragana() == 0) return TRUE;
     return FALSE;
 }
 }
-s32 Unk_020660f8::func_0206773c(s32 a) {
+s32 TalkWindowState::onCharPrinted(s32 a) {
     using namespace n7;
-    return _ZN12Unk_020ddc2413func_02068114Ev(unk_16dc, a);
+    return _ZN9TalkVoice8pushCharEv(voice, a);
 }
-void Unk_020660f8::func_02067724(BOOL v) {
+void TalkWindowState::setVoicePlaying(BOOL v) {
     using namespace n7;
     if (v) {
-        unk_1a17 = 1;
+        voicePlaying = 1;
     } else {
-        unk_1a17 = 0;
+        voicePlaying = 0;
     }
 }
-s32 Unk_020660f8::func_02067708() {
+s32 TalkWindowState::resetVoice() {
     using namespace n7;
-    unk_1a17 = 0;
-    return _ZN12Unk_020ddc2413func_020681c4Ei(unk_16dc, 1);
+    voicePlaying = 0;
+    return _ZN9TalkVoice5resetEi(voice, 1);
 }
-void *Unk_020660f8::func_020676b4() {
+void *TalkWindowState::getYearText() {
     using namespace n7;
-    Unk_020676b4_Tmp t;
-    func_020b3270(&t, unk_1708, 2, 6, 0, 0);
-    _ZN12Unk_020e2a7813func_020a7c04EPh(unk_171c, data_020dddb8);
-    _ZN12Unk_020e2a7813func_020a7a0cEPS_(unk_171c, &t);
-    return unk_171c;
+    MsgString33 t;
+    String_FormatNumber(&t, year, 2, 6, 0, 0);
+    _ZN9MsgString3setEPh(yearText, data_020dddb8);
+    _ZN9MsgString12appendStringEPS_(yearText, &t);
+    return yearText;
 }
-void *Unk_020660f8::func_02067690() {
+void *TalkWindowState::getMonthText() {
     using namespace n7;
-    func_020b3158(unk_1748, unk_170d);
-    return unk_1748;
+    String_GetMonthName(monthText, month);
+    return monthText;
 }
-void *Unk_020660f8::func_0206766c() {
+void *TalkWindowState::getDayText() {
     using namespace n7;
-    func_020b313c(unk_177c, unk_170c);
-    return unk_177c;
+    String_GetDayOrdinal(dayText, day);
+    return dayText;
 }
-void *Unk_020660f8::func_02067648() {
+void *TalkWindowState::getWeekdayText() {
     using namespace n7;
-    func_020b3174(unk_17a8, unk_1710, 0);
-    return unk_17a8;
+    String_GetWeekdayName(weekdayText, weekday, 0);
+    return weekdayText;
 }
-void *Unk_020660f8::func_0206760c() {
+void *TalkWindowState::getHourText() {
     using namespace n7;
-    u32 t = unk_170f;
+    u32 t = hour;
     if (t >= 12) t -= 12;
     if (t == 0) t = 12;
-    func_020b3270(unk_17dc, t, 2, 0, 0, 0);
-    return unk_17dc;
+    String_FormatNumber(hourText, t, 2, 0, 0, 0);
+    return hourText;
 }
-void *Unk_020660f8::func_020675d8() {
+void *TalkWindowState::getMinuteText() {
     using namespace n7;
-    func_020b3270(unk_1808, unk_170e, 2, 6, 9, 0);
-    return unk_1808;
+    String_FormatNumber(minuteText, minute, 2, 6, 9, 0);
+    return minuteText;
 }
-void *Unk_020660f8::func_020675a8() {
+void *TalkWindowState::getNumber1714Text() {
     using namespace n7;
-    func_020b3270(unk_1834, unk_1714, 2, 0, 0, 0);
-    return unk_1834;
+    String_FormatNumber(secondText, second, 2, 0, 0, 0);
+    return secondText;
 }
-void Unk_020660f8::func_0206755c(s32 a, s32 b, s32 c, s32 d) {
+void TalkWindowState::startShake(s32 a, s32 b, s32 c, s32 d) {
     using namespace n7;
-    unk_a0 = 0;
-    unk_a4 = a;
-    unk_a8 = b;
-    unk_ac = c;
-    unk_b0 = d;
-    unk_a8 = unk_a8 * 3;
-    unk_a8 = unk_a8 >> 1;
+    shakeAngle = 0;
+    shakeAmplitude = a;
+    shakeDecay = b;
+    shakeScaleX = c;
+    shakeScaleY = d;
+    shakeDecay = shakeDecay * 3;
+    shakeDecay = shakeDecay >> 1;
 }
-void Unk_020660f8::func_020674b8() {
+void TalkWindowState::refreshNameColor() {
     using namespace n7;
     s32 y;
     s32 x;
@@ -4481,13 +3882,13 @@ void Unk_020660f8::func_020674b8() {
     u16 * base;
     u16 * p;
     BOOL flag;
-    if (unk_13b0->vfunc_68() == 0) {
+    if (request->getSpeakerData() == 0) {
         flag = TRUE;
     } else {
         flag = FALSE;
     }
-    mode = unk_13b0->func_02065f04();
-    base = (u16 *)func_021108e8();
+    mode = request->getNameKind();
+    base = (u16 *)G2_GetBG2ScrPtr();
     y = 13;
     c0 = data_020cbadc;
     c1 = data_020cbae0;
@@ -4508,575 +3909,575 @@ void Unk_020660f8::func_020674b8() {
             *p = v;
         x++; } while (x <= 14);
     }
-    _ZN12Unk_020668a013func_02066bf4Ev(this);
-    _ZN12Unk_020668a013func_02066c14Ev(this);
+    _ZN13TalkWindowMsg16destroyNameLabelEv(this);
+    _ZN13TalkWindowMsg15createNameLabelEv(this);
 }
-void Unk_020660f8::func_0206749c() {
+void TalkWindowState::loadInputMode() {
     using namespace n7;
-    if (unk_1a18 == 0) func_020a6db4();
+    if (inputDisabled == 0) Input_LoadMode();
 }
-void Unk_020660f8::func_02067480() {
+void TalkWindowState::storeInputMode() {
     using namespace n7;
-    if (unk_1a18 == 0) func_020a6d94();
+    if (inputDisabled == 0) Input_StoreMode();
 }
-BOOL Unk_020660f8::func_02067438() {
+BOOL TalkWindowState::checkDeviceSwitch() {
     using namespace n7;
     BOOL r = FALSE;
-    if (unk_1a18 == 0) {
-        if (func_020a6df8()) {
-            if (func_020a6fa4()) {
-                func_020a6e0c();
+    if (inputDisabled == 0) {
+        if (Input_IsTouchMode()) {
+            if (Input_IsAnyKeyTrig()) {
+                Input_SetButtonMode();
                 r = TRUE;
             }
-        } else if (func_020a6dec()) {
-            if (func_020a70d4()) {
-                func_020a6e18();
+        } else if (Input_IsButtonMode()) {
+            if (Input_IsTouchTrig()) {
+                Input_SetTouchMode();
                 r = TRUE;
             }
         }
     }
     return r;
 }
-BOOL Unk_020660f8::func_020673f0() {
+BOOL TalkWindowState::isAdvanceTriggered() {
     using namespace n7;
     BOOL r = FALSE;
-    if (unk_1a18 == 0) {
-        if (func_02067438() == 0) {
-            if (func_020a706c(8, 0xf8, 0x70, 0xc0)) {
+    if (inputDisabled == 0) {
+        if (checkDeviceSwitch() == 0) {
+            if (Input_IsTouchTrigInRect(8, 0xf8, 0x70, 0xc0)) {
                 r = TRUE;
-            } else if (func_020a6f7c() || func_020a6f54()) {
+            } else if (Input_IsATrig() || Input_IsBTrig()) {
                 r = TRUE;
             }
         }
     }
     return r;
 }
-BOOL Unk_020660f8::func_020673b0() {
+BOOL TalkWindowState::isSkipHeld() {
     using namespace n7;
     BOOL r = FALSE;
-    if (unk_1a18 == 0) {
-        if (func_02067438() == 0) {
-            if (func_020a706c(8, 0xf8, 0x70, 0xc0)) {
+    if (inputDisabled == 0) {
+        if (checkDeviceSwitch() == 0) {
+            if (Input_IsTouchTrigInRect(8, 0xf8, 0x70, 0xc0)) {
                 r = TRUE;
-            } else if (func_020a6e8c()) {
+            } else if (Input_IsBHeld()) {
                 r = TRUE;
             }
         }
     }
     return r;
 }
-void Unk_020660f8::func_020672a8() {
+void TalkWindowState::updateShake() {
     using namespace n7;
-    if (unk_a4 != 0) {
+    if (shakeAmplitude != 0) {
         BOOL c = TRUE;
-        if (unk_04 != 3 && unk_04 != 2) c = FALSE;
-        BOOL z = func_020e759c(&unk_a4, 0, unk_a8) != 0 ? TRUE : FALSE;
+        if (state != 3 && state != 2) c = FALSE;
+        BOOL z = Math_StepS32Alt(&shakeAmplitude, 0, shakeDecay) != 0 ? TRUE : FALSE;
         if (c != 0 && z == 0) {
-            unk_a0 = unk_a0 + 0x4000;
-            s32 a = func_01ffcb0c(unk_a4, unk_ac);
-            s32 b = func_01ffcb0c(unk_a4, unk_b0);
-            s32 ang = unk_a0;
+            shakeAngle = shakeAngle + 0x4000;
+            s32 a = func_01ffcb0c(shakeAmplitude, shakeScaleX);
+            s32 b = func_01ffcb0c(shakeAmplitude, shakeScaleY);
+            s32 ang = shakeAngle;
             a = func_01ffcb0c(data_02135f44[(((u16)(s16)(ang + 0x2000)) >> 4) * 2 + 1], a);
             b = func_01ffcb0c(data_02135f44[(((u16)(s16)(ang * 2 - 0x4000)) >> 4) * 2], b);
-            _ZN12Unk_020682b813func_02068424Eii(unk_1c, -(a >> 12), unk_9c + (b >> 12));
+            _ZN13TalkFrameView9setScrollEii(frame, -(a >> 12), scrollY + (b >> 12));
         } else {
             s32 zero = 0;
-            unk_a0 = zero;
-            unk_a4 = zero;
-            unk_a8 = zero;
-            unk_ac = zero;
-            unk_b0 = zero;
-            _ZN12Unk_020682b813func_02068424Eii(unk_1c, zero, unk_9c);
+            shakeAngle = zero;
+            shakeAmplitude = zero;
+            shakeDecay = zero;
+            shakeScaleX = zero;
+            shakeScaleY = zero;
+            _ZN13TalkFrameView9setScrollEii(frame, zero, scrollY);
         }
     }
 }
-void Unk_020660f8::func_02067254() {
+void TalkWindowState::captureClock() {
     using namespace n7;
-    unk_1708 = func_0209cf0c();
-    func_0209cfb8(&unk_170c);
-    func_0209cf18(&unk_170e);
-    unk_1710 = func_0209cef4();
-    unk_1714 = func_0209cf00();
-    unk_1718 = func_0209ccd0();
+    year = Clock_GetYear();
+    Clock_GetDayMonth(&day);
+    Clock_GetMinuteHour(&minute);
+    weekday = Clock_GetWeekday();
+    second = Clock_GetSecond();
+    timeOfDay = Clock_GetTimeOfDay();
 }
-void Unk_020660f8::func_02067238() {
+void TalkWindowState::resetPrint() {
     using namespace n7;
-    _ZN12Unk_020ddccc13func_0206b120Ev(unk_12c0);
-    func_02066cfc();
+    _ZN10TalkParser16clearFastForwardEv(parser);
+    stopAutoAdvance();
 }
-void Unk_020660f8::func_02067214() {
+void TalkWindowState::finish() {
     using namespace n7;
-    func_02067a54();
-    func_02067238();
-    unk_13b0->vfunc_74();
+    clearAdvancePending();
+    resetPrint();
+    request->onTalkEnd();
 }
-void Unk_020660f8::func_020671ec() {
+void TalkWindowState::stopText() {
     using namespace n7;
-    _ZN12Unk_020ddccc13func_0206b140Ev(unk_12c0);
-    _ZN12Unk_0206b75413func_0206b4e4Ev(unk_58c);
-    func_02067214();
+    _ZN10TalkParser4stopEv(parser);
+    _ZN11TalkTextBox11clearLabelsEv(textBox);
+    finish();
 }
 #undef data_020dddb8
 
 // ======== unk_02067188.cpp ========
 namespace n6 {
-extern "C" { s32 _ZN12Unk_020668a013func_02066f7cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066f08Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_020670e4Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02067098Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02067060Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02067020Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066fd4Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066e90Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066e40Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066df4Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066da0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066d4cEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg23clearRandomVillagerNameEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg22clearOtherResidentNameEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg16clearCatchphraseEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg13clearTownNameEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg15clearPlayerNameEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg15clearFriendNameEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg14clearEnemyNameEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg10clearTrendEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg15clearImpressionEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg13clearNicknameEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg15clearComplimentEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg13clearGreetingEv(void *p); }
 
 }
-void Unk_020660f8::func_02067188() {
+void TalkWindowState::resetTextVars() {
     using namespace n6;
-    ((Unk_020ddccc *)unk_12c0)->func_0206b110();
-    _ZN12Unk_020668a013func_02066f7cEv(this);
-    _ZN12Unk_020668a013func_02066f08Ev(this);
-    _ZN12Unk_020668a013func_020670e4Ev(this);
-    _ZN12Unk_020668a013func_02067098Ev(this);
-    _ZN12Unk_020668a013func_02067060Ev(this);
-    _ZN12Unk_020668a013func_02067020Ev(this);
-    _ZN12Unk_020668a013func_02066fd4Ev(this);
-    _ZN12Unk_020668a013func_02066e90Ev(this);
-    _ZN12Unk_020668a013func_02066e40Ev(this);
-    _ZN12Unk_020668a013func_02066df4Ev(this);
-    _ZN12Unk_020668a013func_02066da0Ev(this);
-    _ZN12Unk_020668a013func_02066d4cEv(this);
-    func_020671ec();
+    ((TalkParser *)parser)->resetColor();
+    _ZN13TalkWindowMsg23clearRandomVillagerNameEv(this);
+    _ZN13TalkWindowMsg22clearOtherResidentNameEv(this);
+    _ZN13TalkWindowMsg16clearCatchphraseEv(this);
+    _ZN13TalkWindowMsg13clearTownNameEv(this);
+    _ZN13TalkWindowMsg15clearPlayerNameEv(this);
+    _ZN13TalkWindowMsg15clearFriendNameEv(this);
+    _ZN13TalkWindowMsg14clearEnemyNameEv(this);
+    _ZN13TalkWindowMsg10clearTrendEv(this);
+    _ZN13TalkWindowMsg15clearImpressionEv(this);
+    _ZN13TalkWindowMsg13clearNicknameEv(this);
+    _ZN13TalkWindowMsg15clearComplimentEv(this);
+    _ZN13TalkWindowMsg13clearGreetingEv(this);
+    stopText();
 }
 
 // ======== unk_020668a0.cpp ========
 #define AT(T, off) (*(T *)((u8 *)this + (off)))
 #define PTR(off) ((void *)((u8 *)this + (off)))
-#define OWNER unk_13b0
-#define M ((Unk_020e2a18 *)unk_a1c)
+#define OWNER request
+#define M ((BmgReader *)msgBuffer)
 #define data_020ddd7c ((char *)"%s/%s/%s/%s_.bmg")
 #define data_020ddd90 ((char *)"%s/%s/Other/%s_.bmg")
 #define data_020ddda4 ((char *)"%s/Other/%s_.bmg")
 namespace n5 {
-extern "C" { extern const char *data_020cba74[]; }
-extern "C" { extern const char *data_020cba50[]; }
-extern "C" { extern char data_021ca258[]; }
-extern "C" { extern s8 data_020cba2c[]; }
+extern "C" { extern const char *sTalkMessageSubdirs[]; }
+extern "C" { extern const char *sTalkMessageDirs[]; }
+extern "C" { extern char sTalkMessagePath[]; }
+extern "C" { extern s8 sTalkFriendshipDeltas[]; }
 extern "C" { extern u16 data_020cba10[]; }
-extern "C" { extern u8 data_021d7350[]; }
-extern "C" { s32 func_0212a15c(const char *a, const char *b, u32 n); }
-extern "C" { u32 func_0212a438(const char *s); }
-extern "C" { char *func_020639e8(char *buf, const char *fmt, ...); }
-extern "C" { void func_020638d0(void *dst, void *src); }
-extern "C" { void func_0200402c(void); }
-extern "C" { void _ZN12Unk_0206c74c13func_0206c700Ev(void *p); }
-extern "C" { void func_020a7264(void *dst, void *src); }
-extern "C" { void *func_020a8548(void *p); }
-extern "C" { s32 func_020a71f0(void *p); }
-extern "C" { s32 func_020a7208(void *p); }
-extern "C" { void func_020a7238(u8 *out, void *p); }
-extern "C" { s32 func_020a7240(void *p); }
-extern "C" { u32 func_020a7244(void *p); }
-extern "C" { u32 func_020a7248(void *p); }
-extern "C" { u32 func_020a724c(void *p); }
-extern "C" { void _ZN12Unk_020a84e013func_020a8520Ev(void *p); }
-extern "C" { void _ZN12Unk_020a84e013func_020a84e0EPh(void *p, u32 v); }
-extern "C" { void *_ZN12Unk_020aa3b813func_020aa4d8Ev(void *p); }
-extern "C" { Unk_02066978_Owner *_ZN12Unk_020aa3b813func_020aa4e4Ev(void *p); }
-extern "C" { void _ZN12Unk_020e2a4813func_020a7188Ev(void *p); }
-extern "C" { void _ZN12Unk_020e2a7813func_020a7c3cEv(void *p); }
-extern "C" { void func_020a7fd8(void *p); }
-extern "C" { void _ZN12Unk_0206b75413func_0206b590Eh(void *p, u32 v); }
-extern "C" { void _ZN12Unk_020ddccc13func_0206b13cEi(void *p, s32 v); }
-extern "C" { void _ZN12Unk_020660f813func_02067a84EPhPv(void *self, u8 *p, s32 z); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067a6cEv(void *self); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067188Ev(void *self); }
-extern "C" { void *func_0209750c(void); }
-extern "C" { s32 _ZN12Unk_0209865c13func_0209888cEv(void *p); }
-extern "C" { s32 func_0207f88c(void *a, s32 b); }
-extern "C" { void *func_0207f86c(void *a, s32 b); }
-extern "C" { void _ZN12Unk_0208091c13func_02080da4Ei(void *a, s32 b); }
-extern "C" { void *_ZN12Unk_0208091c13func_02080dd8Ev(void *a); }
-extern "C" { void func_0207787c(void *a, s32 b, void *c); }
-extern "C" { s32 _ZN12Unk_02097ff413func_0209836cEPv(void *g, void *p); }
-extern "C" { void func_0207df18(void *a, void *b); }
-extern "C" { void func_0207df64(void *a, void *b); }
-extern "C" { void func_0207dfa0(void *a, void *b); }
-extern "C" { void func_0207d0a8(void *a, void *b, s32 c); }
-extern "C" { s32 func_0207e224(void *a, void *b); }
-extern "C" { s32 _ZN12Unk_0207e94013func_0207f1ccEPvS0_(void *a, void *b, s32 c); }
-extern "C" { void _ZN12Unk_0207e94013func_0207f230EPvS0_(void *a, void *b, s32 c); }
-extern "C" { void func_0207f38c(void *a, void *b, s32 c); }
-extern "C" { void _ZN12Unk_0207fb8013func_0207fba8EPvS0_(void *a, void *b, s32 c); }
-extern "C" { void _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(s32 a, void *b); }
-extern "C" { Unk_02066978_Owner *_ZN12Unk_020ddcf013func_02065f10Ev(void *p); }
-extern "C" { Unk_02050288 *func_020a8054(u32 a, s32 b, s32 c); }
+extern "C" { extern u8 gSaveData[]; }
+extern "C" { s32 strncmp(const char *a, const char *b, u32 n); }
+extern "C" { u32 strlen(const char *s); }
+extern "C" { char *Str_SPrintf(char *buf, const char *fmt, ...); }
+extern "C" { void TownId_GetNameString(void *dst, void *src); }
+extern "C" { void Snd_PlaySe(void); }
+extern "C" { void _ZN13TalkMsgBuffer5clearEv(void *p); }
+extern "C" { void BmgMsgAttr_Copy(void *dst, void *src); }
+extern "C" { void *Bmg_GetMsgAttr(void *p); }
+extern "C" { s32 BmgMsgAttr_LookupUnkC(void *p); }
+extern "C" { s32 BmgMsgAttr_LookupUnkB(void *p); }
+extern "C" { void BmgMsgAttr_GetByte08(u8 *out, void *p); }
+extern "C" { s32 BmgMsgAttr_GetByte09(void *p); }
+extern "C" { u32 BmgMsgAttr_GetByte07(void *p); }
+extern "C" { u32 BmgMsgAttr_GetByte06(void *p); }
+extern "C" { u32 BmgMsgAttr_GetByte05(void *p); }
+extern "C" { void _ZN9MsgRunner5resetEv(void *p); }
+extern "C" { void _ZN9MsgRunner5startEPh(void *p, u32 v); }
+extern "C" { void *_ZN10ChoiceList13getResultAttrEv(void *p); }
+extern "C" { ChoiceString *_ZN10ChoiceList13getResultTextEv(void *p); }
+extern "C" { void _ZN11MsgString339initEmptyEv(void *p); }
+extern "C" { void _ZN9MsgString5clearEv(void *p); }
+extern "C" { void MsgTextLabel_Destroy(void *p); }
+extern "C" { void _ZN11TalkTextBox11setCenteredEh(void *p, u32 v); }
+extern "C" { void _ZN10TalkParser12setPrintModeEi(void *p, s32 v); }
+extern "C" { void _ZN15TalkWindowState14setNextMessageEPhPv(void *self, u8 *p, s32 z); }
+extern "C" { s32 _ZN15TalkWindowState13unlockAdvanceEv(void *self); }
+extern "C" { s32 _ZN15TalkWindowState13resetTextVarsEv(void *self); }
+extern "C" { void *PlayerData_GetCurrent(void); }
+extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(void *p); }
+extern "C" { s32 Villager_FindMemoryIndex(void *a, s32 b); }
+extern "C" { void *Villager_GetMemory(void *a, s32 b); }
+extern "C" { void _ZN14VillagerMemory13addFriendshipEi(void *a, s32 b); }
+extern "C" { void *_ZN14VillagerMemory13getFriendshipEv(void *a); }
+extern "C" { void VillagerSync_Friendship(void *a, s32 b, void *c); }
+extern "C" { s32 _ZN10PlayerData20getOtherResidentNameEPv(void *g, void *p); }
+extern "C" { void Villager_GetRandomOtherName(void *a, void *b); }
+extern "C" { void Villager_GetEnemyName(void *a, void *b); }
+extern "C" { void Villager_GetFriendName(void *a, void *b); }
+extern "C" { void Villager_GetImpressionText(void *a, void *b, s32 c); }
+extern "C" { s32 Villager_GetTrend(void *a, void *b); }
+extern "C" { s32 _ZN20VillagerDataItemView14getGreetingForEPvS0_(void *a, void *b, s32 c); }
+extern "C" { void _ZN20VillagerDataItemView16getComplimentForEPvS0_(void *a, void *b, s32 c); }
+extern "C" { void Villager_GetNicknameFor(void *a, void *b, s32 c); }
+extern "C" { void _ZN23VillagerDataProfileView14getCatchphraseEPvS0_(void *a, void *b, s32 c); }
+extern "C" { void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, void *b); }
+extern "C" { MsgString9 *_ZN14TalkMsgRequest14getSpeakerNameEv(void *p); }
+extern "C" { TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c); }
 
 }
-void Unk_020668a0::func_02067170() {
+void TalkWindowMsg::resetVars() {
     using namespace n5;
-    _ZN12Unk_020660f813func_02067188Ev(this);
-    unk_1a19 = 0;
+    _ZN15TalkWindowState13resetTextVarsEv(this);
+    noOpenSe = 0;
 }
-void Unk_020668a0::func_02067150() {
+void TalkWindowMsg::reset() {
     using namespace n5;
-    func_02067170();
-    func_0206712c();
-    func_020670f4();
-    _ZN12Unk_020660f813func_02067a6cEv(this);
+    resetVars();
+    clearSlots();
+    clearNamedSlots();
+    _ZN15TalkWindowState13unlockAdvanceEv(this);
 }
-void Unk_020668a0::func_0206712c() {
+void TalkWindowMsg::clearSlots() {
     using namespace n5;
     s32 i;
     for (i = 0; i < 11; i++) {
-        _ZN12Unk_020e2a4813func_020a7188Ev(unk_13c0[i]);
+        _ZN11MsgString339initEmptyEv(&slots[i]);
     }
 }
-void Unk_020668a0::func_020670f4() {
+void TalkWindowMsg::clearNamedSlots() {
     using namespace n5;
     s32 i;
     for (i = 0; i < 4; i++) {
-        _ZN12Unk_020e2a4813func_020a7188Ev(unk_15fc[i]);
-        unk_16cc[i] = 7;
+        _ZN11MsgString339initEmptyEv(&namedSlots[i]);
+        namedSlotColors[i] = 7;
     }
 }
-void Unk_020668a0::func_020670e4() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_1860); }
-BOOL Unk_020668a0::func_020670a8() {
+void TalkWindowMsg::clearCatchphrase() {
+    using namespace n5; _ZN9MsgString5clearEv(catchphrase); }
+BOOL TalkWindowMsg::buildCatchphrase() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_1860);
+    _ZN9MsgString5clearEv(catchphrase);
     if (r6 != 0) {
-        _ZN12Unk_0207fb8013func_0207fba8EPvS0_(r6, unk_1860, 1);
+        _ZN23VillagerDataProfileView14getCatchphraseEPvS0_(r6, catchphrase, 1);
         r4 = TRUE;
     }
     return r4;
 }
-void Unk_020668a0::func_02067098() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_1880); }
-BOOL Unk_020668a0::func_02067070() {
+void TalkWindowMsg::clearTownName() {
+    using namespace n5; _ZN9MsgString5clearEv(townName); }
+BOOL TalkWindowMsg::buildTownName() {
     using namespace n5;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_1880);
-    func_020638d0((u8 *)((u32)data_021d7350 + 2), unk_1880);
+    _ZN9MsgString5clearEv(townName);
+    TownId_GetNameString((u8 *)((u32)gSaveData + 2), townName);
     return TRUE;
 }
-void Unk_020668a0::func_02067060() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_189c); }
-BOOL Unk_020668a0::func_02067030() {
+void TalkWindowMsg::clearPlayerName() {
+    using namespace n5; _ZN9MsgString5clearEv(playerName); }
+BOOL TalkWindowMsg::buildPlayerName() {
     using namespace n5;
-    void *r4 = func_0209750c();
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_189c);
-    _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(_ZN12Unk_0209865c13func_0209888cEv(r4), unk_189c);
+    void *r4 = PlayerData_GetCurrent();
+    _ZN9MsgString5clearEv(playerName);
+    _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), playerName);
     return TRUE;
 }
-void Unk_020668a0::func_02067020() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_18b8); }
-BOOL Unk_020668a0::func_02066fe4() {
+void TalkWindowMsg::clearFriendName() {
+    using namespace n5; _ZN9MsgString5clearEv(friendName); }
+BOOL TalkWindowMsg::buildFriendName() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_18b8);
+    _ZN9MsgString5clearEv(friendName);
     if (r6 != 0) {
-        func_0207dfa0(r6, unk_18b8);
+        Villager_GetFriendName(r6, friendName);
         r4 = TRUE;
     }
     return r4;
 }
-void Unk_020668a0::func_02066fd4() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_18d4); }
-BOOL Unk_020668a0::func_02066f98() {
+void TalkWindowMsg::clearEnemyName() {
+    using namespace n5; _ZN9MsgString5clearEv(enemyName); }
+BOOL TalkWindowMsg::buildEnemyName() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_18d4);
+    _ZN9MsgString5clearEv(enemyName);
     if (r6 != 0) {
-        func_0207df64(r6, unk_18d4);
+        Villager_GetEnemyName(r6, enemyName);
         r4 = TRUE;
     }
     return r4;
 }
-void Unk_020668a0::func_02066f7c() {
+void TalkWindowMsg::clearRandomVillagerName() {
     using namespace n5;
-    unk_19f4 = 0;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_18f0);
+    randomVillagerNameBuilt = 0;
+    _ZN9MsgString5clearEv(randomVillagerName);
 }
-BOOL Unk_020668a0::func_02066f2c() {
+BOOL TalkWindowMsg::buildRandomVillagerName() {
     using namespace n5;
     BOOL r4 = TRUE;
-    if (unk_19f4 == 0) {
-        void *r6 = OWNER->vfunc_68();
-        _ZN12Unk_020e2a7813func_020a7c3cEv(unk_18f0);
+    if (randomVillagerNameBuilt == 0) {
+        void *r6 = (void *)OWNER->getSpeakerData();
+        _ZN9MsgString5clearEv(randomVillagerName);
         if (r6 != 0) {
-            func_0207df18(r6, unk_18f0);
+            Villager_GetRandomOtherName(r6, randomVillagerName);
         } else {
             r4 = FALSE;
         }
-        unk_19f4 = 1;
+        randomVillagerNameBuilt = 1;
     }
     return r4;
 }
-void Unk_020668a0::func_02066f08() {
+void TalkWindowMsg::clearOtherResidentName() {
     using namespace n5;
-    unk_19f5 = 0;
-    unk_19f6 = 0;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_190c);
+    otherResidentNameBuilt = 0;
+    otherResidentIsVillager = 0;
+    _ZN9MsgString5clearEv(otherResidentName);
 }
-BOOL Unk_020668a0::func_02066ea0() {
+BOOL TalkWindowMsg::buildOtherResidentName() {
     using namespace n5;
     BOOL r4 = TRUE;
-    if (unk_19f5 == 0) {
-        void *g = func_0209750c();
-        _ZN12Unk_020e2a7813func_020a7c3cEv(unk_190c);
-        if (_ZN12Unk_02097ff413func_0209836cEPv(g, unk_190c) == 0) {
-            void *r0 = OWNER->vfunc_68();
+    if (otherResidentNameBuilt == 0) {
+        void *g = PlayerData_GetCurrent();
+        _ZN9MsgString5clearEv(otherResidentName);
+        if (_ZN10PlayerData20getOtherResidentNameEPv(g, otherResidentName) == 0) {
+            void *r0 = (void *)OWNER->getSpeakerData();
             if (r0 != 0) {
-                func_0207df18(r0, unk_190c);
-                unk_19f6 = r4;
+                Villager_GetRandomOtherName(r0, otherResidentName);
+                otherResidentIsVillager = r4;
             } else {
                 r4 = FALSE;
             }
         }
-        unk_19f5 = 1;
+        otherResidentNameBuilt = 1;
     }
     return r4;
 }
-void Unk_020668a0::func_02066e90() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_1928); }
-BOOL Unk_020668a0::func_02066e50() {
+void TalkWindowMsg::clearTrend() {
+    using namespace n5; _ZN9MsgString5clearEv(trend); }
+BOOL TalkWindowMsg::buildTrend() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_1928);
+    _ZN9MsgString5clearEv(trend);
     if (r6 != 0) {
-        if (func_0207e224(r6, unk_1928) != 0) {
+        if (Villager_GetTrend(r6, trend) != 0) {
             r4 = TRUE;
         }
     }
     return r4;
 }
-void Unk_020668a0::func_02066e40() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_195c); }
-BOOL Unk_020668a0::func_02066e04() {
+void TalkWindowMsg::clearImpression() {
+    using namespace n5; _ZN9MsgString5clearEv(impression); }
+BOOL TalkWindowMsg::buildImpression() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_195c);
+    _ZN9MsgString5clearEv(impression);
     if (r6 != 0) {
-        func_0207d0a8(r6, unk_195c, 0);
+        Villager_GetImpressionText(r6, impression, 0);
         r4 = TRUE;
     }
     return r4;
 }
-void Unk_020668a0::func_02066df4() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_1990); }
-BOOL Unk_020668a0::func_02066db0() {
+void TalkWindowMsg::clearNickname() {
+    using namespace n5; _ZN9MsgString5clearEv(nickname); }
+BOOL TalkWindowMsg::buildNickname() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_1990);
+    _ZN9MsgString5clearEv(nickname);
     if (r6 != 0) {
-        void *g = func_0209750c();
-        func_0207f38c(r6, unk_1990, _ZN12Unk_0209865c13func_0209888cEv(g));
+        void *g = PlayerData_GetCurrent();
+        Villager_GetNicknameFor(r6, nickname, _ZN10PlayerData11getPlayerIdEv(g));
         r4 = TRUE;
     }
     return r4;
 }
-void Unk_020668a0::func_02066da0() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_19ac); }
-BOOL Unk_020668a0::func_02066d5c() {
+void TalkWindowMsg::clearCompliment() {
+    using namespace n5; _ZN9MsgString5clearEv(compliment); }
+BOOL TalkWindowMsg::buildCompliment() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_19ac);
+    _ZN9MsgString5clearEv(compliment);
     if (r6 != 0) {
-        void *g = func_0209750c();
-        _ZN12Unk_0207e94013func_0207f230EPvS0_(r6, unk_19ac, _ZN12Unk_0209865c13func_0209888cEv(g));
+        void *g = PlayerData_GetCurrent();
+        _ZN20VillagerDataItemView16getComplimentForEPvS0_(r6, compliment, _ZN10PlayerData11getPlayerIdEv(g));
         r4 = TRUE;
     }
     return r4;
 }
-void Unk_020668a0::func_02066d4c() {
-    using namespace n5; _ZN12Unk_020e2a7813func_020a7c3cEv(unk_19d0); }
-BOOL Unk_020668a0::func_02066d04() {
+void TalkWindowMsg::clearGreeting() {
+    using namespace n5; _ZN9MsgString5clearEv(greeting); }
+BOOL TalkWindowMsg::buildGreeting() {
     using namespace n5;
-    void *r6 = OWNER->vfunc_68();
+    void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(unk_19d0);
+    _ZN9MsgString5clearEv(greeting);
     if (r6 != 0) {
-        void *g = func_0209750c();
-        if (_ZN12Unk_0207e94013func_0207f1ccEPvS0_(r6, unk_19d0, _ZN12Unk_0209865c13func_0209888cEv(g)) != 0) {
+        void *g = PlayerData_GetCurrent();
+        if (_ZN20VillagerDataItemView14getGreetingForEPvS0_(r6, greeting, _ZN10PlayerData11getPlayerIdEv(g)) != 0) {
             r4 = TRUE;
         }
     }
     return r4;
 }
-void Unk_02066ce0::func_02066cfc() {
+void TalkAutoAdvance::stop() {
     using namespace n5;
-    unk_10 = 0;
+    autoAdvanceTimer = 0;
 }
-void Unk_02066ce0::func_02066cf8(s32 v) {
+void TalkAutoAdvance::start(s32 v) {
     using namespace n5;
-    unk_10 = v;
+    autoAdvanceTimer = v;
 }
-BOOL Unk_02066ce0::func_02066ce0() {
+BOOL TalkAutoAdvance::tick() {
     using namespace n5;
     BOOL r = FALSE;
-    if (unk_10 > 0) {
-        unk_10--;
-        if (unk_10 == 0) {
+    if (autoAdvanceTimer > 0) {
+        autoAdvanceTimer--;
+        if (autoAdvanceTimer == 0) {
             r = TRUE;
         }
     }
     return r;
 }
-void Unk_020668a0::func_02066c7c(s32 idx) {
+void TalkWindowMsg::applyFriendshipDelta(s32 idx) {
     using namespace n5;
     if (idx != 0) {
-        void *r4 = OWNER->vfunc_68();
-        void *g = func_0209750c();
+        void *r4 = (void *)OWNER->getSpeakerData();
+        void *g = PlayerData_GetCurrent();
         if (r4 != 0) {
-            s32 r7 = func_0207f88c(r4, _ZN12Unk_0209865c13func_0209888cEv(g));
-            void *r6 = func_0207f86c(r4, r7);
+            s32 r7 = Villager_FindMemoryIndex(r4, _ZN10PlayerData11getPlayerIdEv(g));
+            void *r6 = Villager_GetMemory(r4, r7);
             if (r6 != 0) {
-                _ZN12Unk_0208091c13func_02080da4Ei(r6, data_020cba2c[idx]);
-                func_0207787c(r4, r7, _ZN12Unk_0208091c13func_02080dd8Ev(r6));
+                _ZN14VillagerMemory13addFriendshipEi(r6, sTalkFriendshipDeltas[idx]);
+                VillagerSync_Friendship(r4, r7, _ZN14VillagerMemory13getFriendshipEv(r6));
             }
         }
     }
 }
-void Unk_020668a0::func_02066c14() {
+void TalkWindowMsg::createNameLabel() {
     using namespace n5;
-    unk_588 = func_020a8054(0x89, 8, 2);
-    if (unk_588 != 0) {
-        unk_588->unk_50 = 2;
-        unk_588->unk_39 = 0xe;
-        Unk_02066978_Owner *o = _ZN12Unk_020ddcf013func_02065f10Ev(unk_13b0);
-        Unk_02050288 *t = unk_588;
-        t->unk_10 = o->vfunc_0c();
-        unk_588->func_02050c44();
-        unk_588->unk_38 = 2;
-        unk_588->func_02050c90();
+    nameLabel = MsgTextLabel_CreateVram(0x89, 8, 2);
+    if (nameLabel != 0) {
+        nameLabel->copyMode = 2;
+        nameLabel->bgColor = 0xe;
+        MsgString9 *o = _ZN14TalkMsgRequest14getSpeakerNameEv(request);
+        TextLabel *t = nameLabel;
+        t->textStart = (u32)o->data();
+        nameLabel->alignCenter();
+        nameLabel->fgColor = 2;
+        nameLabel->requestRedraw();
     }
 }
-void Unk_020668a0::func_02066bf4() {
+void TalkWindowMsg::destroyNameLabel() {
     using namespace n5;
-    if (unk_588 != 0) {
-        func_020a7fd8(unk_588);
-        unk_588 = 0;
+    if (nameLabel != 0) {
+        MsgTextLabel_Destroy(nameLabel);
+        nameLabel = 0;
     }
 }
-void Unk_020668a0::func_02066bbc() {
+void TalkWindowMsg::notifyMessageStart() {
     using namespace n5;
-    if (unk_1a14 != 0) {
-        OWNER->vfunc_10(func_020a7248(unk_13b4));
-        unk_1a14 = 0;
+    if (startNotifyPending != 0) {
+        OWNER->onMessageStart(BmgMsgAttr_GetByte06(msgAttr));
+        startNotifyPending = 0;
     }
 }
-void Unk_020668a0::func_02066b74() {
+void TalkWindowMsg::notifyMessageEnd() {
     using namespace n5;
-    if (unk_1a15 != 0) {
-        func_02066c7c(func_020a724c(unk_13b4));
-        OWNER->vfunc_14(func_020a7244(unk_13b4));
-        unk_1a15 = 0;
+    if (endNotifyPending != 0) {
+        applyFriendshipDelta(BmgMsgAttr_GetByte05(msgAttr));
+        OWNER->onMessageEnd(BmgMsgAttr_GetByte07(msgAttr));
+        endNotifyPending = 0;
     }
 }
-void Unk_020668a0::func_02066b38() {
+void TalkWindowMsg::notifyChoice() {
     using namespace n5;
-    if (unk_1a16 != 0) {
-        OWNER->vfunc_18(func_020a7244(_ZN12Unk_020aa3b813func_020aa4d8Ev(unk_314)));
-        unk_1a16 = 0;
+    if (choiceNotifyPending != 0) {
+        OWNER->onChoice(BmgMsgAttr_GetByte07(_ZN10ChoiceList13getResultAttrEv(choiceList)));
+        choiceNotifyPending = 0;
     }
 }
-void Unk_020668a0::func_02066b0c() {
+void TalkWindowMsg::playMessageSe() {
     using namespace n5;
-    s32 r0 = func_020a7240(unk_13b4);
+    s32 r0 = BmgMsgAttr_GetByte09(msgAttr);
     if (r0 < 2) {
         if (data_020cba10[r0] != 0) {
-            func_0200402c();
+            Snd_PlaySe();
         }
     }
 }
-void Unk_020668a0::func_02066a50() {
+void TalkWindowMsg::startMessage() {
     using namespace n5;
     u8 loc;
-    unk_1a15 = 1;
-    unk_1a14 = 1;
-    unk_1a16 = 0;
-    _ZN12Unk_0206b75413func_0206b590Eh(unk_58c, func_020a71f0(unk_13b4) == 1 ? 1 : 0);
-    s32 r4 = func_020a7208(unk_13b4);
-    _ZN12Unk_020ddccc13func_0206b13cEi(unk_12c0, r4);
-    unk_16f8 = r4 == 1 ? 1 : 0;
-    func_020a7238(&loc, unk_13b4);
-    _ZN12Unk_020660f813func_02067a84EPhPv(this, &loc, 0);
-    func_02066bbc();
-    func_02066b0c();
-    _ZN12Unk_020a84e013func_020a8520Ev(unk_13a4);
-    _ZN12Unk_020a84e013func_020a84e0EPh(unk_13a4, M->vfunc_08());
+    endNotifyPending = 1;
+    startNotifyPending = 1;
+    choiceNotifyPending = 0;
+    _ZN11TalkTextBox11setCenteredEh(textBox, BmgMsgAttr_LookupUnkC(msgAttr) == 1 ? 1 : 0);
+    s32 r4 = BmgMsgAttr_LookupUnkB(msgAttr);
+    _ZN10TalkParser12setPrintModeEi(parser, r4);
+    voiceInstantByMsg = r4 == 1 ? 1 : 0;
+    BmgMsgAttr_GetByte08(&loc, msgAttr);
+    _ZN15TalkWindowState14setNextMessageEPhPv(this, &loc, 0);
+    notifyMessageStart();
+    playMessageSe();
+    _ZN9MsgRunner5resetEv(runner);
+    _ZN9MsgRunner5startEPh(runner, M->getBuffer());
 }
-void Unk_020668a0::func_02066a14() {
+void TalkWindowMsg::scanMessageTags() {
     using namespace n5;
-    Unk_02066978_Owner *o = _ZN12Unk_020aa3b813func_020aa4e4Ev(unk_314);
-    Unk_0206891c loc(this);
-    loc.func_020688ac(o->vfunc_0c());
+    ChoiceString *o = _ZN10ChoiceList13getResultTextEv(choiceList);
+    TalkTagScannerView loc(this);
+    ((TalkTagScannerView *)&loc)->scan((u32)o->data());
 }
-char *Unk_020668a0::func_02066978(const char *a, const char *b) {
+char *TalkWindowMsg::buildMessagePath(const char *a, const char *b) {
     using namespace n5;
     u32 r6 = (u32)b;
     if (r6 == 0) {
-        r6 = OWNER->vfunc_0c();
+        r6 = (u32)OWNER->getMsgDir();
     }
-    const char *r5 = a ? a : (const char *)unk_13b0 + 4;
-    const char *r7 = func_0206693c(r5);
+    const char *r5 = a ? a : (const char *)request + 4;
+    const char *r7 = matchDirPrefix(r5);
     if (r7 != 0) {
-        r5 += func_0212a438(r7) + 1;
-        const char *r4 = func_02066900(r5);
+        r5 += strlen(r7) + 1;
+        const char *r4 = matchSubdirPrefix(r5);
         if (r4 != 0) {
-            const char *e = r5 + (func_0212a438(r4) + 1);
-            func_020639e8(data_021ca258, data_020ddd7c, r6, r7, r4, e);
+            const char *e = r5 + (strlen(r4) + 1);
+            Str_SPrintf(sTalkMessagePath, data_020ddd7c, r6, r7, r4, e);
         } else {
-            func_020639e8(data_021ca258, data_020ddd90, r6, r7, r5);
+            Str_SPrintf(sTalkMessagePath, data_020ddd90, r6, r7, r5);
         }
     } else {
-        func_020639e8(data_021ca258, data_020ddda4, r6, r5);
+        Str_SPrintf(sTalkMessagePath, data_020ddda4, r6, r5);
     }
-    return data_021ca258;
+    return sTalkMessagePath;
 }
-const char *Unk_020668a0::func_0206693c(const char *s) {
+const char *TalkWindowMsg::matchDirPrefix(const char *s) {
     using namespace n5;
     const char **p;
     const char *e;
-    for (p = data_020cba50; (e = *p) != 0; p++) {
-        u32 n = func_0212a438(e);
-        if (func_0212a15c(s, e, n) == 0 && s[n] == '_') {
+    for (p = sTalkMessageDirs; (e = *p) != 0; p++) {
+        u32 n = strlen(e);
+        if (strncmp(s, e, n) == 0 && s[n] == '_') {
             break;
         }
     }
     return e;
 }
-const char *Unk_020668a0::func_02066900(const char *s) {
+const char *TalkWindowMsg::matchSubdirPrefix(const char *s) {
     using namespace n5;
     const char **p;
     const char *e;
-    for (p = data_020cba74; (e = *p) != 0; p++) {
-        u32 n = func_0212a438(e);
-        if (func_0212a15c(s, e, n) == 0 && s[n] == '_') {
+    for (p = sTalkMessageSubdirs; (e = *p) != 0; p++) {
+        u32 n = strlen(e);
+        if (strncmp(s, e, n) == 0 && s[n] == '_') {
             break;
         }
     }
     return e;
 }
-void Unk_020668a0::func_020668a0() {
+void TalkWindowMsg::loadMessageAttr() {
     using namespace n5;
-    _ZN12Unk_0206c74c13func_0206c700Ev(unk_a1c);
-    if (M->func_020a8a20(func_02066978(0, 0))) {
-        M->func_020a8950((u8 *)unk_13b0 + 0x1e);
+    _ZN13TalkMsgBuffer5clearEv(msgBuffer);
+    if (M->open(buildMessagePath(0, 0))) {
+        M->loadMessage((u8 *)request + 0x1e);
     }
-    func_020a7264(unk_13b4, func_020a8548(unk_a1c));
-    M->func_020a89f0();
+    BmgMsgAttr_Copy(msgAttr, Bmg_GetMsgAttr(msgBuffer));
+    M->close();
 }
 #undef AT
 #undef PTR
@@ -5087,282 +4488,282 @@ void Unk_020668a0::func_020668a0() {
 #undef data_020ddda4
 
 // ======== unk_0206684c.cpp ========
-#define unk_19f8 (*(s8 *)unk_19f8)
+#define nextFileNameByte (*(s8 *)nextFileName)
 namespace n4 {
-extern "C" { s32 _ZN12Unk_020660f813func_02067a84EPhPv(void *p, u8 *a, void *b); }
-extern "C" { s32 _ZN12Unk_020668a013func_020668a0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066a50Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067254Ev(void *p); }
+extern "C" { s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *p, u8 *a, void *b); }
+extern "C" { s32 _ZN13TalkWindowMsg15loadMessageAttrEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg12startMessageEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState12captureClockEv(void *p); }
 
 }
-void Unk_020660f8::func_0206684c() {
+void TalkWindowState::loadNextMessage() {
     using namespace n4;
-    unk_13b0->unk_1e = unk_19f7;
-    if (unk_19f8 != 0) {
-        unk_13b0->func_020a710c((const char *)&unk_19f8);
+    request->msgIndex = nextMsgIndex;
+    if (nextFileNameByte != 0) {
+        request->setFileName((const char *)&nextFileNameByte);
     }
-    _ZN12Unk_020660f813func_02067a84EPhPv(this, &data_021edb60, 0);
-    _ZN12Unk_020668a013func_020668a0Ev(this);
-    _ZN12Unk_020668a013func_02066a50Ev(this);
-    _ZN12Unk_020660f813func_02067254Ev(this);
+    _ZN15TalkWindowState14setNextMessageEPhPv(this, &gTalkMsgIndexNone, 0);
+    _ZN13TalkWindowMsg15loadMessageAttrEv(this);
+    _ZN13TalkWindowMsg12startMessageEv(this);
+    _ZN15TalkWindowState12captureClockEv(this);
 }
-#undef unk_19f8
+#undef nextFileNameByte
 
 // ======== unk_02065f50.cpp ========
 namespace n3 {
-extern "C" { s32 _ZN12Unk_020660f813func_020679c0Ei(void *p, s32 a); }
-extern "C" { s32 _ZN12Unk_020660f813func_0206684cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02067150Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02067170Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067188Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_020671ecEv(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067214Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067238Ev(void *p); }
-extern "C" { s32 func_02068460(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_02068454Ei(void *p, s32 a); }
-extern "C" { s32 _ZN12Unk_020682b813func_02068418Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066bf4Ev(void *p); }
-extern "C" { s32 _ZN12Unk_0206b75413func_0206b518Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020ddc2413func_02068000Ev(void *p); }
-extern "C" { s32 _ZN12Unk_0203575813func_02035bccEv(void *p); }
-extern "C" { s32 _ZN12Unk_0203575813func_02035bd4Ev(void *p); }
-extern "C" { void func_0200402c(s32 a); }
-extern "C" { s32 _ZN12Unk_020660f813func_020673b0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020ddccc13func_0206b128Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020ddc2413func_020681c4Ei(void *p, s32 a); }
-extern "C" { s32 _ZN12Unk_020a84e013func_020a84f0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_0206b75413func_0206b458Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020ddc2413func_02068068Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066b74Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067708Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020a8cf813func_020a8d10Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020a8cf813func_020a8d2cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_0206839cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_0206840cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_0206837cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_020673f0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_02066ce013func_02066ce0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_02068400Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_0206834cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_020683f4Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020682b813func_0206831cEv(void *p); }
-extern "C" { s32 _ZN12Unk_020ddc2413func_02068018Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_0206749cEv(void *p); }
-extern "C" { s32 func_020a7220(void *p); }
-extern "C" { s32 _ZN12Unk_0206880813func_02068558Eijih(void *p, s32 a, u32 b, u32 c, s32 d); }
-extern "C" { s32 _ZN12Unk_020ddc2413func_02068064Ei(void *p, s32 a); }
-extern "C" { s32 func_020684e4(void *p); }
-extern "C" { s32 func_02068490(void *p); }
-extern "C" { s32 func_02068478(void *p); }
-extern "C" { s32 func_02068524(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066c14Ev(void *p); }
-extern "C" { s32 _ZN12Unk_0206b75413func_0206b548Ev(void *p); }
-extern "C" { s32 func_02038fd4(u32 a); }
-extern "C" { s32 _ZN12Unk_020aa3b813func_020aa4fcEv(void *p); }
-extern "C" { s32 _ZN12Unk_020aa3b813func_020aa4f0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067a84EPhPv(void *p, s32 a, s32 b); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067a60Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066a14Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066b38Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_020668a0Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020668a013func_02066a50Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020660f813func_02067254Ev(void *p); }
-extern "C" { extern u8 data_021edb5c; }
-extern "C" { extern s16 data_020ddc10[]; }
-extern "C" { extern s16 data_020ddc04[]; }
+extern "C" { s32 _ZN15TalkWindowState11openChoicesEi(void *p, s32 a); }
+extern "C" { s32 _ZN15TalkWindowState15loadNextMessageEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg5resetEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg9resetVarsEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState13resetTextVarsEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState8stopTextEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState6finishEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState10resetPrintEv(void *p); }
+extern "C" { s32 TalkFrame_HideBg(void *p); }
+extern "C" { s32 _ZN13TalkFrameView10setScrollYEi(void *p, s32 a); }
+extern "C" { s32 _ZN13TalkFrameView9hideArrowEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg16destroyNameLabelEv(void *p); }
+extern "C" { s32 _ZN11TalkTextBox13destroyLabelsEv(void *p); }
+extern "C" { s32 _ZN9TalkVoice3endEv(void *p); }
+extern "C" { s32 _ZN14BgmVolumeMixer11endTalkDuckEv(void *p); }
+extern "C" { s32 _ZN14BgmVolumeMixer13startTalkDuckEv(void *p); }
+extern "C" { void Snd_PlaySe(s32 a); }
+extern "C" { s32 _ZN15TalkWindowState10isSkipHeldEv(void *p); }
+extern "C" { s32 _ZN10TalkParser14setFastForwardEv(void *p); }
+extern "C" { s32 _ZN9TalkVoice5resetEi(void *p, s32 a); }
+extern "C" { s32 _ZN9MsgRunner7advanceEv(void *p); }
+extern "C" { s32 _ZN11TalkTextBox11redrawLinesEv(void *p); }
+extern "C" { s32 _ZN9TalkVoice6updateEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg16notifyMessageEndEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState10resetVoiceEv(void *p); }
+extern "C" { s32 _ZN10ChoiceMenu11justDecidedEv(void *p); }
+extern "C" { s32 _ZN10ChoiceMenu6isIdleEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView13isArrowHiddenEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView13showArrowWaitEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView14isArrowWaitingEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState18isAdvanceTriggeredEv(void *p); }
+extern "C" { s32 _ZN15TalkAutoAdvance4tickEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView13showArrowNextEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView15isArrowNextDoneEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView12showArrowEndEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView14isArrowEndDoneEv(void *p); }
+extern "C" { s32 _ZN9TalkVoice5beginEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState13loadInputModeEv(void *p); }
+extern "C" { s32 BmgMsgAttr_LookupUnkA(void *p); }
+extern "C" { s32 _ZN9TalkFrame4loadEijih(void *p, s32 a, u32 b, u32 c, s32 d); }
+extern "C" { s32 _ZN9TalkVoice10setMsgModeEi(void *p, s32 a); }
+extern "C" { s32 TalkFrame_SetupBgControl(void *p); }
+extern "C" { s32 TalkFrame_UploadBg(void *p); }
+extern "C" { s32 TalkFrame_ShowBg(void *p); }
+extern "C" { s32 TalkFrame_FreeBuffers(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg15createNameLabelEv(void *p); }
+extern "C" { s32 _ZN11TalkTextBox12createLabelsEv(void *p); }
+extern "C" { s32 ChatBalloon_Dismiss(u32 a); }
+extern "C" { s32 _ZN10ChoiceList14getResultValueEv(void *p); }
+extern "C" { s32 _ZN10ChoiceList13getResultNameEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *p, s32 a, s32 b); }
+extern "C" { s32 _ZN15TalkWindowState17setAdvancePendingEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg15scanMessageTagsEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg12notifyChoiceEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg15loadMessageAttrEv(void *p); }
+extern "C" { s32 _ZN13TalkWindowMsg12startMessageEv(void *p); }
+extern "C" { s32 _ZN15TalkWindowState12captureClockEv(void *p); }
+extern "C" { extern u8 gTalkMsgIndexEnd; }
+extern "C" { extern s16 sTalkWindowCloseOffsets[]; }
+extern "C" { extern s16 sTalkWindowOpenOffsets[]; }
 extern "C" { extern u8 *data_021c1b3c; }
-extern "C" { extern Unk_020cbb18_Obj *data_020cbb18; }
-typedef void (Unk_020660f8::*Unk_020660f8_Fn)();
+extern "C" { extern CommManager *gCommManager; }
+typedef void (TalkWindowState::*Unk_020660f8_Fn)();
 
 }
-void Unk_020660f8::func_02066830() {
+void TalkWindowState::reloadMessage() {
     using namespace n3;
-    _ZN12Unk_020668a013func_020668a0Ev(this);
-    _ZN12Unk_020668a013func_02066a50Ev(this);
-    _ZN12Unk_020660f813func_02067254Ev(this);
+    _ZN13TalkWindowMsg15loadMessageAttrEv(this);
+    _ZN13TalkWindowMsg12startMessageEv(this);
+    _ZN15TalkWindowState12captureClockEv(this);
 }
-void Unk_020660f8::func_020667e4() {
+void TalkWindowState::onChoiceDone() {
     using namespace n3;
-    s32 a = _ZN12Unk_020aa3b813func_020aa4fcEv(unk_314);
-    s32 b = _ZN12Unk_020aa3b813func_020aa4f0Ev(unk_314);
-    _ZN12Unk_020660f813func_02067a84EPhPv(this, a, b);
-    _ZN12Unk_020660f813func_02067a60Ev(this);
-    unk_1a16 = 1;
-    _ZN12Unk_020668a013func_02066a14Ev(this);
-    _ZN12Unk_020668a013func_02066b38Ev(this);
+    s32 a = _ZN10ChoiceList14getResultValueEv(choiceList);
+    s32 b = _ZN10ChoiceList13getResultNameEv(choiceList);
+    _ZN15TalkWindowState14setNextMessageEPhPv(this, a, b);
+    _ZN15TalkWindowState17setAdvancePendingEv(this);
+    choiceNotifyPending = 1;
+    _ZN13TalkWindowMsg15scanMessageTagsEv(this);
+    _ZN13TalkWindowMsg12notifyChoiceEv(this);
 }
 namespace n0 {
-extern "C" { extern const s8 data_020cba2c[0x21]; const s8 data_020cba2c[0x21] = {0, 40, 35, 30, 25, 20, 15, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -15, -20, -25, -30, -35, -40}; }
-extern "C" { char data_021ca258[0x40]; }
-extern "C" { extern const char *const data_020cba50[9]; const char *const data_020cba50[9] = {"fu", "bo", "ha", "ta", "ko", "ge", "sp", "obj", 0}; }
-extern "C" { extern const char *const data_020cba74[26]; const char *const data_020cba74[26] = {"ai", "tsu", "ap", "3p", "etc", "ev", "npc", "q", "q01", "q02", "q03", "q04", "q05", "q06", "q07", "q08", "q09", "q10", "q11", "q12", "q13", "q14", "q15", "q16", "q17", 0}; }
+extern "C" { extern const s8 sTalkFriendshipDeltas[0x21]; const s8 sTalkFriendshipDeltas[0x21] = {0, 40, 35, 30, 25, 20, 15, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -15, -20, -25, -30, -35, -40}; }
+extern "C" { char sTalkMessagePath[0x40]; }
+extern "C" { extern const char *const sTalkMessageDirs[9]; const char *const sTalkMessageDirs[9] = {"fu", "bo", "ha", "ta", "ko", "ge", "sp", "obj", 0}; }
+extern "C" { extern const char *const sTalkMessageSubdirs[26]; const char *const sTalkMessageSubdirs[26] = {"ai", "tsu", "ap", "3p", "etc", "ev", "npc", "q", "q01", "q02", "q03", "q04", "q05", "q06", "q07", "q08", "q09", "q10", "q11", "q12", "q13", "q14", "q15", "q16", "q17", 0}; }
 }
-void Unk_020660f8::func_0206673c() {
+void TalkWindowState::applyStateChange() {
     using namespace n3;
     static Unk_020660f8_Fn tbl[6] = {
-        &Unk_020660f8::func_02066730, &Unk_020660f8::func_020665c8, &Unk_020660f8::func_0206655c,
-        &Unk_020660f8::func_020663ec, &Unk_020660f8::func_02066290, &Unk_020660f8::func_02066210,
+        &TalkWindowState::enterIdle, &TalkWindowState::enterOpening, &TalkWindowState::enterWaitInput,
+        &TalkWindowState::enterPrinting, &TalkWindowState::enterClosing, &TalkWindowState::enterClosed,
     };
-    if (unk_08 != 6) {
-        unk_04 = unk_08;
-        (this->*tbl[unk_08])();
-        unk_08 = 6;
+    if (nextState != 6) {
+        state = nextState;
+        (this->*tbl[nextState])();
+        nextState = 6;
     }
 }
 namespace n0 {
-extern "C" { s16 data_020ddc04[6] = {0, -7, -14, -25, -50, -101}; }
+extern "C" { s16 sTalkWindowOpenOffsets[6] = {0, -7, -14, -25, -50, -101}; }
 extern "C" { extern const u16 data_020cba10[2]; const u16 data_020cba10[2] = {0x0, 0x27}; }
 }
-void Unk_020660f8::func_02066730() {
-    using namespace n3; func_02068460(unk_1c); }
-void Unk_020660f8::func_0206672c() {
+void TalkWindowState::enterIdle() {
+    using namespace n3; TalkFrame_HideBg(frame); }
+void TalkWindowState::execIdle() {
     using namespace n3;}
-void Unk_020660f8::func_020665c8() {
+void TalkWindowState::enterOpening() {
     using namespace n3;
-    _ZN12Unk_020660f813func_0206749cEv(this);
-    BOOL c = unk_14 != 4 ? TRUE : FALSE;
-    if (c) _ZN12Unk_020660f813func_0206684cEv(this);
-    else func_02066830();
-    s32 r6 = func_020a7220(unk_13b4);
-    Unk_020ddcf0 *o = unk_13b0;
-    u8 *p = o->func_02065f10()->vfunc_0c();
-    u32 v8 = unk_13b0->func_02065f04();
-    BOOL r7 = unk_13b0->vfunc_68() == 0 ? TRUE : FALSE;
-    u32 r2 = unk_13b0->func_02065f08();
+    _ZN15TalkWindowState13loadInputModeEv(this);
+    BOOL c = openMode != 4 ? TRUE : FALSE;
+    if (c) _ZN15TalkWindowState15loadNextMessageEv(this);
+    else reloadMessage();
+    s32 r6 = BmgMsgAttr_LookupUnkA(msgAttr);
+    TalkMsgRequest *o = request;
+    u8 *p = o->getSpeakerName()->data();
+    u32 v8 = request->getNameKind();
+    BOOL r7 = request->getSpeakerData() == 0 ? TRUE : FALSE;
+    u32 r2 = request->isNoSpeakerName();
     if (r2 == 0 && r6 == 0 && *(s8 *)p == 0) r6 = 5;
-    _ZN12Unk_0206880813func_02068558Eijih(unk_1c, r6, r2, v8, r7);
-    _ZN12Unk_020ddc2413func_02068064Ei(unk_16dc, r6);
-    func_020684e4(unk_1c);
-    func_02068490(unk_1c);
-    func_02068478(unk_1c);
-    func_02068524(unk_1c);
-    unk_0c = 5;
-    unk_9c = data_020ddc04[unk_0c];
-    _ZN12Unk_020682b813func_02068454Ei(unk_1c, unk_9c);
-    _ZN12Unk_020682b813func_02068418Ev(unk_1c);
-    _ZN12Unk_020668a013func_02066c14Ev(this);
-    _ZN12Unk_0206b75413func_0206b548Ev(unk_58c);
-    if (data_020cbb18) func_02038fd4(data_020cbb18->unk_64);
-    if (unk_1a19 == 0) func_0200402c(9);
-    if (unk_1a18 == 0) {
-        if (unk_14 != 1 && unk_14 != 2 && unk_14 != 3) _ZN12Unk_0203575813func_02035bd4Ev(data_021c1b3c + 0x1c4);
+    _ZN9TalkFrame4loadEijih(frame, r6, r2, v8, r7);
+    _ZN9TalkVoice10setMsgModeEi(voice, r6);
+    TalkFrame_SetupBgControl(frame);
+    TalkFrame_UploadBg(frame);
+    TalkFrame_ShowBg(frame);
+    TalkFrame_FreeBuffers(frame);
+    stateStep = 5;
+    scrollY = sTalkWindowOpenOffsets[stateStep];
+    _ZN13TalkFrameView10setScrollYEi(frame, scrollY);
+    _ZN13TalkFrameView9hideArrowEv(frame);
+    _ZN13TalkWindowMsg15createNameLabelEv(this);
+    _ZN11TalkTextBox12createLabelsEv(textBox);
+    if (gCommManager) ChatBalloon_Dismiss(gCommManager->myAid);
+    if (noOpenSe == 0) Snd_PlaySe(9);
+    if (inputDisabled == 0) {
+        if (openMode != 1 && openMode != 2 && openMode != 3) _ZN14BgmVolumeMixer13startTalkDuckEv(data_021c1b3c + 0x1c4);
     }
-    if (c) unk_14 = 4;
+    if (c) openMode = 4;
 }
-void Unk_020660f8::func_02066568() {
+void TalkWindowState::execOpening() {
     using namespace n3;
     BOOL done = FALSE;
-    if (unk_0c > 0) unk_0c = unk_0c - 1;
+    if (stateStep > 0) stateStep = stateStep - 1;
     else done = TRUE;
-    unk_9c = data_020ddc04[unk_0c];
-    _ZN12Unk_020682b813func_02068454Ei(unk_1c, unk_9c);
+    scrollY = sTalkWindowOpenOffsets[stateStep];
+    _ZN13TalkFrameView10setScrollYEi(frame, scrollY);
     if (done) {
-        if (unk_1a18 == 0) _ZN12Unk_020ddc2413func_02068018Ev(unk_16dc);
-        unk_08 = 3;
+        if (inputDisabled == 0) _ZN9TalkVoice5beginEv(voice);
+        nextState = 3;
     }
 }
-void Unk_020660f8::func_0206655c() {
-    using namespace n3; _ZN12Unk_020682b813func_02068418Ev(unk_1c); }
-void Unk_020660f8::func_02066400() {
+void TalkWindowState::enterWaitInput() {
+    using namespace n3; _ZN13TalkFrameView9hideArrowEv(frame); }
+void TalkWindowState::execWaitInput() {
     using namespace n3;
-    _ZN12Unk_020a84e013func_020a84f0Ev(unk_13a4);
-    s32 st = unk_12f0;
+    _ZN9MsgRunner7advanceEv(runner);
+    s32 st = parserPrintStatus;
     BOOL a = st == 2 ? TRUE : FALSE;
     BOOL b = st == 3 ? TRUE : FALSE;
     BOOL c = st == 4 ? TRUE : FALSE;
     BOOL d = st == 5 ? TRUE : FALSE;
-    if (_ZN12Unk_020a8cf813func_020a8d10Ev(unk_b4) != 0) func_020667e4();
+    if (_ZN10ChoiceMenu11justDecidedEv(choiceMenu) != 0) onChoiceDone();
     if (a || b || c) {
-        if (unk_1a13 == 0 && _ZN12Unk_020a8cf813func_020a8d2cEv(unk_b4) != 0) {
-            if (unk_1a12 != 0) {
-                func_020660f8();
-            } else if (_ZN12Unk_020682b813func_0206839cEv(unk_1c) != 0) {
-                _ZN12Unk_020682b813func_0206840cEv(unk_1c);
-            } else if (_ZN12Unk_020682b813func_0206837cEv(unk_1c) != 0) {
-                if (_ZN12Unk_020660f813func_020673f0Ev(this) != 0 || _ZN12Unk_02066ce013func_02066ce0Ev(this) != 0) {
-                    _ZN12Unk_020682b813func_02068400Ev(unk_1c);
-                    if (unk_1a1a == 0) func_0200402c(0x10);
-                    if (unk_18 != 0 || unk_1398 != 0) func_0200402c(0x13);
+        if (advanceLocked == 0 && _ZN10ChoiceMenu6isIdleEv(choiceMenu) != 0) {
+            if (advancePending != 0) {
+                advance();
+            } else if (_ZN13TalkFrameView13isArrowHiddenEv(frame) != 0) {
+                _ZN13TalkFrameView13showArrowWaitEv(frame);
+            } else if (_ZN13TalkFrameView14isArrowWaitingEv(frame) != 0) {
+                if (_ZN15TalkWindowState18isAdvanceTriggeredEv(this) != 0 || _ZN15TalkAutoAdvance4tickEv(this) != 0) {
+                    _ZN13TalkFrameView13showArrowNextEv(frame);
+                    if (silent == 0) Snd_PlaySe(0x10);
+                    if (choicePending != 0 || parserChoiceDeferred != 0) Snd_PlaySe(0x13);
                 }
-            } else if (_ZN12Unk_020682b813func_0206834cEv(unk_1c) != 0) {
-                _ZN12Unk_020682b813func_020683f4Ev(unk_1c);
-            } else if (_ZN12Unk_020682b813func_0206831cEv(unk_1c) != 0) {
-                func_020660f8();
+            } else if (_ZN13TalkFrameView15isArrowNextDoneEv(frame) != 0) {
+                _ZN13TalkFrameView12showArrowEndEv(frame);
+            } else if (_ZN13TalkFrameView14isArrowEndDoneEv(frame) != 0) {
+                advance();
             }
         } else {
-            if (_ZN12Unk_020682b813func_0206839cEv(unk_1c) == 0) _ZN12Unk_020682b813func_02068418Ev(unk_1c);
+            if (_ZN13TalkFrameView13isArrowHiddenEv(frame) == 0) _ZN13TalkFrameView9hideArrowEv(frame);
         }
     } else if (d) {
-        if (_ZN12Unk_020a8cf813func_020a8d2cEv(unk_b4) != 0) func_020660f8();
+        if (_ZN10ChoiceMenu6isIdleEv(choiceMenu) != 0) advance();
     }
 }
-void Unk_020660f8::func_020663ec() {
+void TalkWindowState::enterPrinting() {
     using namespace n3;
-    _ZN12Unk_020682b813func_02068418Ev(unk_1c);
-    unk_0c = 1;
+    _ZN13TalkFrameView9hideArrowEv(frame);
+    stateStep = 1;
 }
-void Unk_020660f8::func_02066310() {
+void TalkWindowState::execPrinting() {
     using namespace n3;
-    if (_ZN12Unk_020660f813func_020673b0Ev(this) != 0) _ZN12Unk_020ddccc13func_0206b128Ev(unk_12c0);
-    _ZN12Unk_020ddc2413func_020681c4Ei(unk_16dc, 0);
-    _ZN12Unk_020a84e013func_020a84f0Ev(unk_13a4);
-    _ZN12Unk_0206b75413func_0206b458Ev(unk_58c);
-    if (unk_1a18 == 0) _ZN12Unk_020ddc2413func_02068068Ev(unk_16dc);
-    s32 st = unk_12f0;
+    if (_ZN15TalkWindowState10isSkipHeldEv(this) != 0) _ZN10TalkParser14setFastForwardEv(parser);
+    _ZN9TalkVoice5resetEi(voice, 0);
+    _ZN9MsgRunner7advanceEv(runner);
+    _ZN11TalkTextBox11redrawLinesEv(textBox);
+    if (inputDisabled == 0) _ZN9TalkVoice6updateEv(voice);
+    s32 st = parserPrintStatus;
     BOOL b3 = st == 3 ? TRUE : FALSE;
     BOOL b2 = st == 2 ? TRUE : FALSE;
     BOOL b4 = st == 4 ? TRUE : FALSE;
     BOOL b5 = st == 5 ? TRUE : FALSE;
     BOOL b0 = st == 0 ? TRUE : FALSE;
-    BOOL z = unk_0c == 0 ? TRUE : FALSE;
+    BOOL z = stateStep == 0 ? TRUE : FALSE;
     BOOL go = TRUE;
     if (!z && !b2 && !b4 && !b5 && !b0) go = FALSE;
-    if (b3) unk_0c = 0;
+    if (b3) stateStep = 0;
     if (go) {
-        if (z) _ZN12Unk_020668a013func_02066b74Ev(this);
-        unk_08 = 2;
-        _ZN12Unk_020660f813func_02067708Ev(this);
+        if (z) _ZN13TalkWindowMsg16notifyMessageEndEv(this);
+        nextState = 2;
+        _ZN15TalkWindowState10resetVoiceEv(this);
     }
 }
-void Unk_020660f8::func_02066290() {
+void TalkWindowState::enterClosing() {
     using namespace n3;
-    _ZN12Unk_020682b813func_02068418Ev(unk_1c);
-    unk_0c = 4;
-    unk_9c = data_020ddc10[unk_0c];
-    if (unk_1a18 == 0) {
-        _ZN12Unk_020ddc2413func_02068000Ev(unk_16dc);
-        if (unk_14 != 1 && unk_14 != 2 && unk_14 != 3) _ZN12Unk_0203575813func_02035bccEv(data_021c1b3c + 0x1c4);
+    _ZN13TalkFrameView9hideArrowEv(frame);
+    stateStep = 4;
+    scrollY = sTalkWindowCloseOffsets[stateStep];
+    if (inputDisabled == 0) {
+        _ZN9TalkVoice3endEv(voice);
+        if (openMode != 1 && openMode != 2 && openMode != 3) _ZN14BgmVolumeMixer11endTalkDuckEv(data_021c1b3c + 0x1c4);
     }
-    if (unk_1a1a == 0) func_0200402c(10);
-    unk_13b0->vfunc_70();
+    if (silent == 0) Snd_PlaySe(10);
+    request->onWindowClose();
 }
-void Unk_020660f8::func_0206621c() {
+void TalkWindowState::execClosing() {
     using namespace n3;
     BOOL done = FALSE;
-    if (unk_0c > 0) unk_0c = unk_0c - 1;
+    if (stateStep > 0) stateStep = stateStep - 1;
     else done = TRUE;
-    unk_9c = data_020ddc10[unk_0c];
-    _ZN12Unk_020682b813func_02068454Ei(unk_1c, unk_9c);
+    scrollY = sTalkWindowCloseOffsets[stateStep];
+    _ZN13TalkFrameView10setScrollYEi(frame, scrollY);
     if (done) {
-        _ZN12Unk_020668a013func_02066bf4Ev(this);
-        _ZN12Unk_0206b75413func_0206b518Ev(unk_58c);
-        if (unk_14 != 4) {
-            unk_08 = 5;
+        _ZN13TalkWindowMsg16destroyNameLabelEv(this);
+        _ZN11TalkTextBox13destroyLabelsEv(textBox);
+        if (openMode != 4) {
+            nextState = 5;
         } else {
-            unk_1a18 = 0;
-            unk_1a1a = 0;
-            unk_08 = 0;
+            inputDisabled = 0;
+            silent = 0;
+            nextState = 0;
         }
     }
 }
-void Unk_020660f8::func_02066210() {
-    using namespace n3; func_02068460(unk_1c); }
-void Unk_020660f8::func_0206620c() {
+void TalkWindowState::enterClosed() {
+    using namespace n3; TalkFrame_HideBg(frame); }
+void TalkWindowState::execClosed() {
     using namespace n3;}
 // ---- state class ----
-void Unk_020660f8::func_020660f8() {
+void TalkWindowState::advance() {
     using namespace n3;
-    s32 st = unk_12f0;
+    s32 st = parserPrintStatus;
     BOOL a = st == 2 ? TRUE : FALSE;
     BOOL b = st == 4 ? TRUE : FALSE;
     BOOL c = st == 5 ? TRUE : FALSE;
@@ -5370,10 +4771,10 @@ void Unk_020660f8::func_020660f8() {
     s32 r6 = r7;
     s32 flag = 0;
     s32 act = 0;
-    Unk_020660f8_Pad pad;
-    if (unk_18 != 0) {
-        unk_18 = 0;
-        _ZN12Unk_020660f813func_020679c0Ei(this, 0);
+    TalkAdvanceStackPad pad;
+    if (choicePending != 0) {
+        choicePending = 0;
+        _ZN15TalkWindowState11openChoicesEi(this, 0);
     } else if (a || b || c) {
         r7 = 1;
         r6 = 3;
@@ -5381,13 +4782,13 @@ void Unk_020660f8::func_020660f8() {
         else if (b) act = 2;
         else act = r6;
     } else {
-        u32 x = data_021edb60;
-        u32 y = unk_19f7;
-        if (y == data_021edb5c) {
+        u32 x = gTalkMsgIndexNone;
+        u32 y = nextMsgIndex;
+        if (y == gTalkMsgIndexEnd) {
             r7 = 0;
             r6 = 4;
             act = 6;
-        } else if (unk_14 != 4) {
+        } else if (openMode != 4) {
             r7 = 0;
             r6 = 4;
             act = 5;
@@ -5397,77 +4798,77 @@ void Unk_020660f8::func_020660f8() {
         }
     }
     if (flag != 0) {
-        _ZN12Unk_020660f813func_0206684cEv(this);
+        _ZN15TalkWindowState15loadNextMessageEv(this);
         r7 = 1;
         r6 = 3;
     }
-    if (r7 != 6) unk_12f0 = r7;
+    if (r7 != 6) parserPrintStatus = r7;
     if (r6 != 6) {
-        unk_08 = r6;
-        if (act == 1) _ZN12Unk_020660f813func_02067238Ev(this);
-        else if (act == 2) _ZN12Unk_020660f813func_02067214Ev(this);
-        else if (act == 3) _ZN12Unk_020660f813func_020671ecEv(this);
-        else if (act == 4) _ZN12Unk_020660f813func_02067188Ev(this);
-        else if (act == 5) _ZN12Unk_020668a013func_02067170Ev(this);
-        else if (act == 6) _ZN12Unk_020668a013func_02067150Ev(this);
+        nextState = r6;
+        if (act == 1) _ZN15TalkWindowState10resetPrintEv(this);
+        else if (act == 2) _ZN15TalkWindowState6finishEv(this);
+        else if (act == 3) _ZN15TalkWindowState8stopTextEv(this);
+        else if (act == 4) _ZN15TalkWindowState13resetTextVarsEv(this);
+        else if (act == 5) _ZN13TalkWindowMsg9resetVarsEv(this);
+        else if (act == 6) _ZN13TalkWindowMsg5resetEv(this);
     }
 }
-Unk_020ddc34::Unk_020ddc34() {
-    using namespace n3; func_020a7c3c(); }
-Unk_020ddc34::~Unk_020ddc34() {
+MsgString9::MsgString9() {
+    using namespace n3; clear(); }
+MsgString9::~MsgString9() {
     using namespace n3;}
-u32 Unk_020ddc34::vfunc_08() {
+u32 MsgString9::capacity() {
     using namespace n3; return 9; }
-// ---- Unk_020ddc34 ----
-u8 *Unk_020ddc34::vfunc_0c() {
+// ---- MsgString9 ----
+u8 *MsgString9::data() {
     using namespace n3; return (u8 *)this + 0x12; }
-Unk_020ddcf0::Unk_020ddcf0() {
+TalkMsgRequest::TalkMsgRequest() {
     using namespace n3;
-    unk_3c = 0;
-    unk_40 = 0;
+    window = 0;
+    noSpeakerName = 0;
 }
-Unk_020ddcf0::~Unk_020ddcf0() {
+TalkMsgRequest::~TalkMsgRequest() {
     using namespace n3;}
-void Unk_020ddcf0::vfunc_08() {
+void TalkMsgRequest::resetMsg() {
     using namespace n3;
-    Unk_020e2a30::vfunc_08();
-    unk_20.func_020a7c3c();
-    unk_3c = 0;
-    unk_40 = 0;
+    MsgRequest::resetMsg();
+    speakerName.clear();
+    window = 0;
+    noSpeakerName = 0;
 }
-void Unk_020ddcf0::func_02065f90(u8 *p, u32 v) {
+void TalkMsgRequest::setSpeakerName(u8 *p, u32 v) {
     using namespace n3;
-    unk_20.func_020a7c04(p);
-    unk_2c = v;
-    unk_40 = 0;
+    speakerName.set(p);
+    speakerName.attr.form = v;
+    noSpeakerName = 0;
 }
-void Unk_020ddcf0::func_02065f70(Unk_020e2a78 *p, u32 v) {
+void TalkMsgRequest::setSpeakerNameStr(MsgString *p, u32 v) {
     using namespace n3;
-    unk_20.func_020a7bd8(p);
-    unk_2c = v;
-    unk_40 = 0;
+    speakerName.copy(p);
+    speakerName.attr.form = v;
+    noSpeakerName = 0;
 }
-// ---- Unk_020ddcf0 ----
-void Unk_020ddcf0::func_02065f50(u32 v) {
+// ---- TalkMsgRequest ----
+void TalkMsgRequest::setNoSpeakerName(u32 v) {
     using namespace n3;
-    unk_20.func_020a7c3c();
-    unk_2c = v;
-    unk_40 = 1;
+    speakerName.clear();
+    speakerName.attr.form = v;
+    noSpeakerName = 1;
 }
 
 // ======== unk_02065f14.cpp ========
 namespace n2 {
 
 }
-void Unk_020ddcf0::func_02065f14(Unk_020e2a78 *p, u32 v) {
+void TalkMsgRequest::changeSpeakerName(MsgString *p, u32 v) {
     using namespace n2;
-    Unk_020660f8 *o = (Unk_020660f8 *)unk_3c;
-    s32 t = o->unk_04;
+    TalkWindowState *o = (TalkWindowState *)window;
+    s32 t = o->state;
     BOOL five = (t == 5);
-    func_02065f70(p, v);
+    setSpeakerNameStr(p, v);
     if (t != 0 && !five) {
-        ((Unk_020660f8 *)unk_3c)->func_020674b8();
-        ((Unk_020ddc24 *)(((Unk_020660f8 *)unk_3c)->unk_16dc))->func_02068244();
+        ((TalkWindowState *)window)->refreshNameColor();
+        ((TalkVoice *)(((TalkWindowState *)window)->voice))->refreshVoiceType();
     }
 }
 
@@ -5477,69 +4878,69 @@ void Unk_020ddcf0::func_02065f14(Unk_020e2a78 *p, u32 v) {
 namespace n1 {
 
 }
-Unk_020ddc34 *Unk_020ddcf0::func_02065f10() {
-    using namespace n1; return &unk_20; }
-u32 Unk_020ddcf0::func_02065f08() {
-    using namespace n1; return unk_40; }
-u32 Unk_020ddcf0::func_02065f04() {
+MsgString9 *TalkMsgRequest::getSpeakerName() {
+    using namespace n1; return &speakerName; }
+u32 TalkMsgRequest::isNoSpeakerName() {
+    using namespace n1; return noSpeakerName; }
+u32 TalkMsgRequest::getNameKind() {
     using namespace n1; return unk_04[(0x2c - 4) / 4]; }
-const char *Unk_020ddcf0::vfunc_0c() {
+const char *TalkMsgRequest::getMsgDir() {
     using namespace n1; return data_020ddd68; }
-void Unk_020ddcf0::vfunc_10() {
+void TalkMsgRequest::onMessageStart(u32 attr) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_14() {
+void TalkMsgRequest::onMessageEnd(u32 attr) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_18() {
+void TalkMsgRequest::onChoice(u32 attr) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_1c() {
+void TalkMsgRequest::onSignalTag(s32 id) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_20() {
+void TalkMsgRequest::onActionTag0() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_24() {
+void TalkMsgRequest::onActionTag1(u32 arg) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_28() {
+void TalkMsgRequest::onActionTag2(u32 arg) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_2c() {
+void TalkMsgRequest::onActionTag3(u32 arg) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_30() {
+void TalkMsgRequest::onActionTag4(u32 arg) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_34() {
+void TalkMsgRequest::onConditionTag(u32 condition, u32 branchCount) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_38(u32 a) {
+void TalkMsgRequest::onEventTag(u32 a) {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_3c() {
+void TalkMsgRequest::onTag09_0() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_40() {
+void TalkMsgRequest::onTag09_1() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_44() {
+void TalkMsgRequest::onTag09_2() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_48() {
+void TalkMsgRequest::onTag09_3() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_4c() {
+void TalkMsgRequest::onTag09_4() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_50() {
+void TalkMsgRequest::onTag09_5() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_54() {
+void TalkMsgRequest::onTag09_6() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_58() {
+void TalkMsgRequest::onTag09_7() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_5c() {
+void TalkMsgRequest::onTag09_8() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_60() {
+void TalkMsgRequest::onTag09_9() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_64() {
+void TalkMsgRequest::onScannedTag(u32 tag) {
     using namespace n1;}
-u32 Unk_020ddcf0::vfunc_68() {
+u32 TalkMsgRequest::getSpeakerData() {
     using namespace n1; return 0; }
-s32 Unk_020ddcf0::vfunc_6c() {
+s32 TalkMsgRequest::getVoiceType() {
     using namespace n1; return 5; }
-void Unk_020ddcf0::vfunc_70() {
+void TalkMsgRequest::onWindowClose() {
     using namespace n1;}
-void Unk_020ddcf0::vfunc_74() {
+void TalkMsgRequest::onTalkEnd() {
     using namespace n1;}
-void Unk_020ddcf0::func_02065e90(u32 v) {
-    using namespace n1; unk_3c = v; }
-void Unk_020ddcf0::func_02065e88() {
-    using namespace n1; unk_3c = 0; }
+void TalkMsgRequest::attachWindow(u32 v) {
+    using namespace n1; window = (TalkWindowState *)v; }
+void TalkMsgRequest::detachWindow() {
+    using namespace n1; window = 0; }
 #undef unk_04
 #undef data_020ddd68

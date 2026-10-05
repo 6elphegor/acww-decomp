@@ -36,9 +36,9 @@ typedef struct JOut {
 
 extern RS *data_021f5cc0;
 extern u32 data_0213bcbc;
-extern u8 data_02135e5c[][4], data_02135e5d[][4], data_02135e5e[][4], data_02135e5f[][4];
-extern void func_02116178(void *);
-extern void func_02115e30(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
+extern const u8 data_02135e5c[9][4], data_02135e5d[][4], data_02135e5e[][4], data_02135e5f[][4]; // e5d..e5f: interior labels
+extern void MI_Zero36B(void *);
+extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
 
 static inline u8 *JntEnt(RS *rs)
 {
@@ -51,7 +51,7 @@ static inline u8 *JntEnt(RS *rs)
 typedef struct P16 { s16 x, y; } P16;
 
 // anm object init from a joint anim: tbl[i] = node id | 0x100 (node map cleared with MI_CpuClear16)
-void func_021074c8(TexObj *o, u8 *res, u8 *src)
+void NNSi_G3dAnmObjInitNsBca(TexObj *o, u8 *res, u8 *src)
 {
     u32 i;
     u16 *offs;
@@ -60,7 +60,7 @@ void func_021074c8(TexObj *o, u8 *res, u8 *src)
     o->cnt = src[0x17];
     {
         volatile u16 zero = 0;
-        func_02115e30(zero, o->tbl, o->cnt * 2);
+        MIi_CpuClear16(zero, o->tbl, o->cnt * 2);
     }
     offs = (u16 *)(res + 20);
     for (i = 0; i < *(u16 *)(res + 6); i++) {
@@ -69,7 +69,7 @@ void func_021074c8(TexObj *o, u8 *res, u8 *src)
 }
 
 // joint translation from the render state node
-void func_02107460(JOut *out)
+void getMdlTrans_(JOut *out)
 {
     RS *rs = data_021f5cc0;
     u8 *ent = JntEnt(rs);
@@ -84,7 +84,7 @@ void func_02107460(JOut *out)
 }
 
 // joint scale from the render state node (calls the RS callback with the data pointer)
-void func_021073f8(void *out)
+void getMdlScale_(void *out)
 {
     RS *rs = data_021f5cc0;
     u8 *jnt = rs->jnt;
@@ -107,7 +107,7 @@ void func_021073f8(void *out)
 }
 
 // joint rotation from the render state node (identity flag / pivot matrix / 8 stored values)
-void func_02107298(JOut *out)
+void getMdlRot_(JOut *out)
 {
     RS *rs = data_021f5cc0;
     u8 *ent = JntEnt(rs);
@@ -121,7 +121,7 @@ void func_02107298(JOut *out)
             s32 a = p[0];
             s32 b = p[1];
             s32 k = (s32)(flag & 0xf0) >> 4;
-            func_02116178(out->m);
+            MI_Zero36B(out->m);
             out->m[k] = (*(u16 *)ent & 0x100) ? -0x1000 : 0x1000;
             out->m[data_02135e5c[k][0]] = a;
             out->m[data_02135e5d[k][0]] = b;
@@ -150,7 +150,7 @@ void func_02107298(JOut *out)
 }
 
 // same as 02106f90 but without frame blending
-void func_0210710c(s32 *out, u32 f, u32 *ent, u8 *base)
+void getTransData_(s32 *out, u32 f, u32 *ent, u8 *base)
 {
     u8 *d;
     u32 info;
@@ -218,7 +218,7 @@ fetch:
 }
 
 // joint animation: interpolated single value (s16 or s32, with frame blending)
-void func_02106f90(s32 *out, s32 frame, u32 *ent, u8 *hdr)
+void getTransDataEx_(s32 *out, s32 frame, u32 *ent, u8 *hdr)
 {
     u8 *d = hdr + ent[1];
     u32 info = ent[0];
@@ -291,3 +291,12 @@ void func_02106f90(s32 *out, s32 frame, u32 *ent, u8 *hdr)
         *out = (a * mul + ((t * (b - a)) >> 12)) >> sh;
     }
 }
+
+// ---- file-scope objects (.rodata 0x02135e5c-0x02135e80): for each of the 9 compressed-rotation kinds the matrix
+// element indices of its four entries (also read by getRotDataByIdx_ in ITCM). data_02135e5d / e5e / e5f are interior
+// labels (autoload_2 lcf_symbols.txt).
+const u8 data_02135e5c[9][4] = {
+    {4, 5, 7, 8}, {3, 5, 6, 8}, {3, 4, 6, 7},
+    {1, 2, 7, 8}, {0, 2, 6, 8}, {0, 1, 6, 7},
+    {1, 2, 4, 5}, {0, 2, 3, 5}, {0, 1, 3, 4},
+};

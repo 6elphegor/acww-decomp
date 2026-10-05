@@ -9,10 +9,10 @@
 	.arm
 
 ; OS_SpinWait(cycle): busy loop, 4 cycles per iteration
-	.global func_01ffa494
-	.type func_01ffa494, @function
-	.size func_01ffa494, 0xc
-func_01ffa494:
+	.global OS_SpinWait
+	.type OS_SpinWait, @function
+	.size OS_SpinWait, 0xc
+OS_SpinWait:
 L_01ffa494: ; loop
 	subs r0, r0, #4
 	bcs L_01ffa494

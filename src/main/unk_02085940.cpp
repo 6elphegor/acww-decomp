@@ -1,223 +1,167 @@
 #include "types.h"
+#include "sys/ClockDateTime.h"
+#include "gfx/VecFx32.h"
+#include "player/PlayerSpNpcRecord.h"
+#include "npc/VillagerId.h"
+#include "save/Unk_02085810_Rec.h"
+#include "save/BlancaFaceRecord.h"
+#include "save/LostChildRecord.h"
+#include "town/VisitorPos.h"
+#include "save/ContestRecord.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString25.h"
+#include "item/ItemName.h"
+#include "item/Letter.h"
+#include "town/TownBlockMap.h"
 #pragma opt_loop_invariants off
 #define LB(o) (((u8 *)&l)[o])
 extern "C" {
-void _ZN12Unk_020940a013func_02094294Ev(void *p);
-void func_0209cf88(u8 *p);
-void _ZN12Unk_020940a0C1Ev(void *p);
-void _ZN12Unk_020940a0C1EPv(void *p);
-void _ZN12Unk_020e1c64C1Ev(void *p);
-void _ZN12Unk_020e1c64D1Ev(void *p);
-void _ZN12Unk_020e3efcC1Ev(void *p);
-void _ZN12Unk_020e3efcD1Ev(void *p);
-void _ZN12Unk_020dd324C1EPt(void *p, u16 *v);
-void _ZN12Unk_020dd324D1Ev(void *p);
-void _ZN12Unk_0209da4413func_0209e120Ej(void *, u32);
-s32 _ZN12Unk_0209da4413func_0209e170Ej(void *, s32);
-void func_020b31a8(void *a, s32 b, s32 c);
-void func_020b3270(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 func_0204b2d4(u16 *p);
-u32 func_0204b25c(void *p);
-void func_02076fc8(u32 a, u32 b);
-void func_0203ce4c(s32 i, void *x);
-void func_0203ce38(s32 i, s32 x);
-void func_0203ce24(s32 i, s32 x);
-void _ZN12Unk_02002fc813func_02002fc8Ej(void *a, void *b);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *p);
-s32 _ZN12Unk_020940a013func_02094218Ev(void *p);
-void _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(void *a, void *b);
-s32 func_02063b8c(u32 n);
-void func_0209cffc(void *a, void *b, u32 c, u32 d, u32 e);
-void func_0209d498(void *p);
-void func_0209d164(void *p, s32 v);
-s32 func_0209d3d0(void *a, void *b, s32 c);
-s32 func_0209d3a4(void *a, void *b);
-s32 func_0203f42c(s32 a);
-void *func_02097868(void *, s32);
-s32 _ZN12Unk_0209865c13func_02098a48Ev(void *p);
-void *_ZN12Unk_0209865c13func_0209868cEv(void *p);
-s32 _ZN12Unk_02087ad813func_02087bc0Ev(void *p);
-s32 _ZN12Unk_02087ad813func_02087ba8Ev(void *p);
-u16 *_ZN12Unk_0209865c13func_0209888cEv(void *p);
-s32 _ZN12Unk_02087ad813func_02087b30Ev(void *p);
-void _ZN12Unk_02087ad813func_02087b18Ev(void *p);
-void func_020656dc(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
-void _ZN12Unk_0206555413func_02065588Etj(void *obj, u32 v, s32 w);
-s32 func_02096aac(void *obj);
-void _ZN12Unk_020dd458C1Ev(void *p);
-void _ZN12Unk_020dd458D1Ev(void *p);
-s32 func_02128930(void *a, void *b, u32 n);
-s32 _ZN12Unk_020940a013func_020941e8EPS_(void *a, void *b);
-s32 func_0209cef4();
-s32 func_020e77cc(u32 v, u32 lo, u32 hi);
-s32 func_020ae02c(void *p);
-void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
-void *func_02115fb4(void *d, s32 v, u32 n);
-void func_02116048(void *, void *, u32);
-s32 func_0209ceac(s32 a, s32 b, s32 c);
-s32 func_0206e844();
-s32 func_0206e850();
-s32 func_02063b74(s32 a);
-void *func_0204da0c();
-void func_0204edf8(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
-void func_0204edd8(void *a, void *b);
-void _ZN12Unk_02086b7c13func_02086ba8Ev(void *);
-extern u8 data_021d7350[];
-void func_02063990(void *p);
-s32 func_020639a0(void *p);
-s32 func_020639b8(void *p);
-s32 func_0204ee10(s32 *x, s32 *y, s32 v);
-s32 func_02077f68();
-u16 *func_0204ebd8(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-s32 func_0204bd14(u16 *p);
-s32 func_0204b08c(u16 *p);
-s32 _ZN12Unk_02071e0413func_02071e10Ej(void *p, s32 v);
-void *_ZN12Unk_02071e0413func_02071e04Ev(void *p);
-void *_ZN12Unk_02071e04D1Ev(void *p);
-void *_ZN12Unk_02071e04C1Ev(void *p);
-s32 _ZN12Unk_02071ed013func_0207200cEj(void *p, s32 v);
-void *func_0209750c();
-void *_ZN12Unk_0209865c13func_020986a4Ev();
-s32 _ZN12Unk_02097ff413func_02097ff4Ej(void *p, s32 v);
-extern void *data_021c47c4;
+void _ZN8PlayerId5clearEv(void *p);
+void Clock_GetDate(u8 *p);
+void _ZN8PlayerIdC1Ev(void *p);
+void _ZN8PlayerIdC1EPv(void *p);
+void _ZN11MsgString9BC1Ev(void *p);
+void _ZN11MsgString9BD1Ev(void *p);
+void _ZN11MsgString25C1Ev(void *p);
+void _ZN11MsgString25D1Ev(void *p);
+void _ZN8ItemNameC1EPt(void *p, u16 *v);
+void _ZN8ItemNameD1Ev(void *p);
+void _ZN8SaveData9clearFlagEj(void *, u32);
+s32 _ZN8SaveData8testFlagEj(void *, s32);
+void String_FormatFixedPoint(void *a, s32 b, s32 c);
+void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+s32 Item_IsFurniture(u16 *p);
+u32 Item_GetFurnitureIndex(void *p);
+void Bbs_PostMsgToday(u32 a, u32 b);
+void MailText_SetSlot(s32 i, void *x);
+void MailText_SetSlotMonth(s32 i, s32 x);
+void MailText_SetSlotDayOrdinal(s32 i, s32 x);
+void _ZN10VillagerId7getNameEj(void *a, void *b);
+s32 _ZN10VillagerId7isValidEv(void *p);
+s32 _ZN8PlayerId7isValidEv(void *p);
+void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
+s32 Random_GlobalBelow(u32 n);
+void DateTime_Make(void *a, void *b, u32 c, u32 d, u32 e);
+void Clock_GetDateTime(void *p);
+void DateTime_SubDays(void *p, s32 v);
+s32 DateTime_Compare(void *a, void *b, s32 c);
+s32 DateTime_DiffDays(void *a, void *b);
+s32 Event_GetDaysSinceStart(s32 a);
+void *PlayerData_GetResident(void *, s32);
+s32 _ZN10PlayerData6isUsedEv(void *p);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
+s32 _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(void *p);
+s32 _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(void *p);
+u16 *_ZN10PlayerData11getPlayerIdEv(void *p);
+s32 _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(void *p);
+void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *p);
+void Letter_ComposeFromMail(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
+void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 w);
+s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
+void _ZN6LetterC1Ev(void *p);
+void _ZN6LetterD1Ev(void *p);
+s32 memcmp(void *a, void *b, u32 n);
+s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
+s32 Clock_GetWeekday();
+s32 Math_IsInRange(u32 v, u32 lo, u32 hi);
+s32 NookShop_GetLevel(void *p);
+void _ZN14RoostGuestRoll4rollEv(void *);
+void *MI_CpuFill8(void *d, s32 v, u32 n);
+void MI_CpuCopy8(void *, void *, u32);
+s32 Date_GetWeekday(s32 a, s32 b, s32 c);
+s32 MenuCtrl_IsClockMovedForward();
+s32 MenuCtrl_IsClockMovedBack();
+s32 Random_GlobalBelow2(s32 a);
+void *TownBlockMap_Get();
+void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
+void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
+extern u8 gSaveData[];
+void TownId_Assign(void *p);
+s32 TownId_Clear(void *p);
+s32 TownId_Destruct(void *p);
+s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
+s32 TownMap_IsUnitWalkable();
+u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+s32 Item_IsMarker(u16 *p);
+s32 Item_IsTreeStage0(u16 *p);
+s32 _ZN7Pattern4fillEj(void *p, s32 v);
+void *_ZN7Pattern7getInfoEv(void *p);
+void *_ZN7PatternD1Ev(void *p);
+void *_ZN7PatternC1Ev(void *p);
+s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
+void *PlayerData_GetCurrent();
+void *_ZN10PlayerData18getLostChildRecordEv();
+s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
+extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
-extern u32 data_021cdda8[];
+extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
-void *func_020639bc(void *);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *);
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
-void *_ZN12Unk_0209865c13func_020986b0Ev(void *);
-s32 func_0209ce68(u8 a, u32 b, u32 c, u32 d);
-void func_0209d2c0(void *, s32);
-s32 _ZN12Unk_0206fe8013func_02070060Ev(void *);
-BOOL func_02096a50(void *a, s32 b);
-void _ZN12Unk_0206338013func_0206338cEii(void *, s32, s32);
-void func_02063388(void *);
-void func_02062f94(u16 *, void *, u32, u32, u32, u32, u32);
-s32 func_020966d0(s32, s32);
-s32 func_02087e14(void *);
-s32 func_02087e50(void *);
-s32 func_02087e0c(void *);
-s32 func_02087e30(void *);
-extern void *data_020cbb18;
+void *TownId_Construct(void *);
+s32 _ZN11CommManager8isOnlineEv(void *);
+BOOL _ZN10PlayerData8testFlagEj(void *, s32);
+void *_ZN10PlayerData14getDramaRecordEv(void *);
+s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
+void DateTime_AddDays(void *, s32);
+s32 _ZN10MuseumData10isCompleteEv(void *);
+BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
+void _ZN12ItemPickSpec3setEii(void *, s32, s32);
+void ItemPickSpec_Destruct(void *);
+void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
+s32 LetterPaper_PickRandom(s32, s32);
+s32 Oam_GetObjX(void *);
+s32 Oam_GetObjWidth(void *);
+s32 Oam_GetObjY(void *);
+s32 Oam_GetObjHeight(void *);
+extern void *gCommManager;
 extern const u8 data_020cf288[];
 extern const u8 data_020cf328[];
 extern u8 data_021ed0a0[];
 extern u8 data_020e0c54[];
 extern u8 data_020e0c4c[];
 extern u8 data_020e0c44[];
-extern s32 data_021c5384;
+extern s32 gGfxMainOnTop;
 }
 #include "types.h"
 
-struct Unk_02085810_Rec {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
-};
 
-struct Unk_02085810_Base {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
-    /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ u8 unk_0c[8];
-    /* 0x14 */ s8 unk_14;
-    /* 0x15 */ u8 unk_15;
-};
 
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 
-extern u32 data_020e0ca8[4];
+extern u32 sContestResultBbsFiles[4];
 
-struct Unk_02085df0_Rec {
-    u32 unk_00[7];
-    Unk_02085df0_Rec() { _ZN12Unk_020e1c64C1Ev(this); }
-    ~Unk_02085df0_Rec() { _ZN12Unk_020e1c64D1Ev(this); }
-};
-
-struct Unk_02085df0_Num {
-    u32 unk_00[11];
-    Unk_02085df0_Num() { _ZN12Unk_020e3efcC1Ev(this); }
-    ~Unk_02085df0_Num() { _ZN12Unk_020e3efcD1Ev(this); }
-};
-
-struct Unk_02085df0_Str {
-    u32 unk_00[9];
-    Unk_02085df0_Str(u16 *v) { _ZN12Unk_020dd324C1EPt(this, v); }
-    ~Unk_02085df0_Str() { _ZN12Unk_020dd324D1Ev(this); }
-};
-
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 
 extern u8 data_020e0c48[];
 
 extern u8 data_020e0c50[];
 
-extern void *data_020e0cb8[4];
+extern void *sContestResultMailFiles[4];
 
-struct Unk_020859b4_Pair {
-    s32 unk_00;
-    s32 unk_04;
+struct ContestLetterLocals {
+    /* 0x00 */ u8 letterVariant;
+    /* 0x02 */ u16 trophy;
+    /* 0x04 */ u16 emptyItem;
+    /* 0x06 */ u8 today[3];
+    /* 0x0c */ u32 contestTime[2];
+    /* 0x14 */ u32 now;
+    /* 0x18 */ u32 nowHi;
 };
 
-struct Unk_020859b4_Loc {
-    /* 0x00 */ u8 unk_00;
-    /* 0x02 */ u16 unk_02;
-    /* 0x04 */ u16 unk_04;
-    /* 0x06 */ u8 unk_06[3];
-    /* 0x0c */ u32 unk_0c[2];
-    /* 0x14 */ u32 unk_14;
-    /* 0x18 */ u32 unk_18;
-};
 
-struct Unk_020859b4_Buf {
-    u32 unk_00[0x3d];
-    Unk_020859b4_Buf() { _ZN12Unk_020dd458C1Ev(this); }
-    ~Unk_020859b4_Buf() { _ZN12Unk_020dd458D1Ev(this); }
-};
 
-class Unk_02085810 {
+class RoostGuestRoll {
 public:
-    u32 func_02085810();
-    void func_02085814(s32 v);
-    void func_0208582c(Unk_02085810_Rec *src);
-    Unk_02085810_Rec *func_02085828();
-    void func_02085860();
-    Unk_02085810_Rec *func_0208586c();
-    void func_02085870(Unk_02085810_Rec *src);
-    void func_020858b0(Unk_02085810_Base *src);
-    void func_02085900(u32 v);
-    void func_02085908();
-    void func_02085940();
-    void func_02085df0();
-    void func_020859b4();
-    void func_020858ac();
-    Unk_02085810 *func_0208596c();
-    Unk_02085810 *func_0208598c();
-
-    /* 0x00 */ Unk_02085810_Base unk_00;
-    /* 0x16 */ Unk_02085810_Rec unk_16;
-    /* 0x22 */ Unk_02085810_Rec unk_22;
-    /* 0x2e */ u16 unk_2e;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ u8 unk_34;
-    /* 0x35 */ u8 unk_35;
-    /* 0x36 */ u8 unk_36;
-    /* 0x37 */ u8 unk_37;
-};
-
-class Unk_02085f7c {
-public:
-    BOOL func_02085f7c();
-    u32 func_02085f90();
-    u32 func_02085f98();
-    BOOL func_02085fa0();
-    void func_02085fb4();
-    u8 unk_00_0 : 1;
-    u8 unk_00_1 : 3;
-    u8 unk_00_2 : 3;
-    u8 unk_00_3 : 1;
+    BOOL hasLateGuest();
+    u32 getAfternoonGuest();
+    u32 getNoonGuest();
+    BOOL hasMorningGuest();
+    void roll();
+    void clear();
+    u8 morningGuest : 1;
+    u8 noonGuest : 3;
+    u8 afternoonGuest : 3;
+    u8 lateGuest : 1;
 };
 
 extern u8 data_021ed104[];
@@ -226,156 +170,115 @@ struct Unk_02086340_T {
     u32 w0, w1;
 };
 
-struct Unk_020868cc_Vec3 {
-    s32 x, y, z;
-};
-
-struct Unk_020868e4_Ctx {
-    s32 unk_00;
-    s32 v[2];
-};
-
 // ---- bitfield byte objects ----
-struct Unk_0208620c {
-    u8 a : 1;
-    u8 b : 3;
-    u8 c : 3;
-    u8 d : 1;
-    void func_0208620c();
-};
-
-struct Unk_02086238 {
+struct GulliverQuest {
     u8 cnt : 3;
     u8 flag : 1;
-    void func_02086238();
-    BOOL func_02086244();
-    void func_02086258();
-    s32 func_02086274();
+    void start();
+    BOOL isStarted();
+    void addPart();
+    s32 getPartCount();
 };
 
-extern "C" void func_02086284(void *p);
+extern "C" void GulliverQuest_Clear(void *p);
 
 // ---- 0x18-byte record ----
-struct Unk_02086328_B8 {
+struct ReddSaleName {
     u8 b[8];
 };
 
-struct Unk_02086328 {
-    u16 unk_00;
-    Unk_02086328_B8 unk_02;
-    u16 unk_0a;
-    Unk_02086328_B8 unk_0c;
-    s8 unk_14;
+struct ReddLastSale {
+    u16 townId;
+    ReddSaleName townName;
+    u16 playerId;
+    ReddSaleName playerName;
+    s8 gender;
     u8 unk_15;
-    u16 unk_16;
-    void func_02086298(const Unk_02086328 *o);
-    void func_020862a0(const Unk_02086328 *o);
-    void func_020862a8(const Unk_02086328 *o);
-    void func_02086300();
-    Unk_02086328();
-    ~Unk_02086328();
+    u16 item;
+    void copyItemFrom(const ReddLastSale *o);
+    void setItem(const ReddLastSale *o);
+    void setBuyer(const ReddLastSale *o);
+    void clear();
+    ReddLastSale();
+    ~ReddLastSale();
 };
 
 // ---- generator object ----
-struct Unk_02086340 {
-    u8 unk_00, unk_01, unk_02, unk_03, unk_04, unk_05, unk_06, unk_07;
-    u16 unk_08;
-    u8 unk_0a[14];
-    u8 unk_18;
-    void func_02086340(void *src);
-    void func_02086388();
-    void func_020863fc(void *src);
-    void func_02086444(s32 d);
-    void func_020864f8();
-    u16 func_0208653c();
-    void func_02086578(s32 flag);
-    s32 func_02086740();
-    void func_02086768();
-    u8 func_020867e8();
-    u8 func_020867fc();
-    u8 func_02086810();
-    void func_02086824(s32 i, s32 n);
-    u8 func_02086854(s32 k, s32 z);
-    void func_02086878();
-    void func_020868a8();
+struct TurnipMarket {
+    u8 weekStartDay, weekStartMonth, weekStartYear, unk_03, purchaseDay, purchaseMonth, purchaseYear, unk_07;
+    u16 peakPrice;
+    u8 prices[14];
+    u8 pattern;
+    void setPurchaseDate(void *src);
+    void checkTurnipExpiry();
+    void setWeekDate(void *src);
+    void updateDay(s32 d);
+    void spoilOnReset();
+    u16 getPrice();
+    void generateWeek(s32 flag);
+    s32 rollPeakPrice();
+    void generateSmallSpike();
+    u8 calcHighPrice();
+    u8 calcMidPrice();
+    u8 calcLowPrice();
+    void fillDecreasing(s32 i, s32 n);
+    u8 calcPrice(s32 k, s32 z);
+    void init();
+    void clear();
 };
 
 // ---- position pair ----
-struct Unk_020868cc {
-    s32 x, z;
-    void func_020868cc(Unk_020868cc_Vec3 *out) const;
-    void func_020868dc(s32 a, s32 b);
-    BOOL func_020868e4();
-    BOOL func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx);
-    s32 func_02086a80(s32 *pos, void *ctx);
-};
 
-// ---- tail ----
-struct Unk_02086af0 {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 c : 2;
-    u8 d : 2;
-    u8 e : 2;
-    void func_02086af0(void *v, u16 *out, Unk_020868cc_Vec3 *p);
-};
 
-struct Unk_02086af0_Off {
-    s32 x, z;
-};
+extern const VecXZ sGulliverSpotOffsets[];
 
-extern const Unk_02086af0_Off data_020cf270[];
+extern const s16 sGulliverRepairedAngles[];
 
-extern const s16 data_020cf268[];
-
-extern Unk_02086238 data_021e58a6;
-
-struct Unk_02086ec4_Vec3 {
-    s32 x, y, z;
-};
+extern GulliverQuest data_021e58a6;
 
 // 0x02086e60 record (also used by the free functions below)
 class Unk_02086e60;
 
 // ---- 0x02086b7c: random-flags byte
-class Unk_02086b7c {
+class VisitorSpawnFlags {
 public:
-    void func_02086b7c();
-    void func_02086b88();
-    BOOL func_02086b94();
-    void func_02086ba8();
-    void func_02086bf0();
-    void func_02086bfc();
-    void func_02086c00();
+    void setVisitorSpawned();
+    void clearVisitorSpawned();
+    BOOL isVisitorSpawned();
+    void rollGulliverSpot();
+    void clear();
+    void destruct();
+    void construct();
+    void getGulliverSpawn(void *v, u16 *out, VecFx32 *p);
 
-    u8 unk_00_0 : 1;
-    u8 unk_00_1 : 1;
-    u8 unk_00_2 : 2;
-    u8 unk_00_4 : 2;
+    u8 visitorSpawned : 1;
+    u8 gulliverSpotRolled : 1;
+    u8 gulliverSpot : 2;
+    u8 gulliverFacing : 2;
 };
 
 // ---- 0x02086c04: 12-byte position record with flag byte at +8
-class Unk_02086c04 {
+class PeteFallState {
 public:
-    BOOL func_02086c04(s32 px, s32 flip);
-    s16 func_02086e60();
-    void func_02086e6c();
-    void func_02086e78();
-    BOOL func_02086e84();
-    void func_02086e98();
-    void func_02086ea4();
-    BOOL func_02086eb0();
-    void func_02086ec4(Unk_02086ec4_Vec3 *out);
-    void func_02086ed0(Unk_02086ec4_Vec3 *v);
-    void func_02086edc();
-    void func_02086ee8();
-    void func_02086eec();
+    BOOL pickFallPos(s32 px, s32 flip);
+    s16 getFacing();
+    void setVisitorActive();
+    void clearVisitorActive();
+    BOOL isVisitorActive();
+    void unmarkFallPos();
+    void markFallPos();
+    BOOL hasFallPos();
+    void getPos(VecFx32 *out);
+    void setPos(VecFx32 *v);
+    void clear();
+    void destruct();
+    void construct();
 
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08_0 : 1;
-    u8 unk_08_1 : 1;
-    u8 unk_08_2 : 2;
+    s32 fallPosX;
+    s32 fallPosZ;
+    u8 fallPosValid : 1;
+    u8 visitorActive : 1;
+    u8 facing : 2;
 };
 
 struct Unk_02086c04_Map {
@@ -383,119 +286,78 @@ struct Unk_02086c04_Map {
     s32 w, h;
 };
 
-struct Unk_02086c04_Pair {
-    s32 a, b;
-};
-
 // ---- 0x02086ef0: s16 + byte
-class Unk_02086ef0 {
+class TownTravelState {
 public:
-    s16 func_02086ef0();
-    void func_02086ef8(s32 v);
-    u8 func_02086efc();
-    void func_02086f00(u32 v);
-    void func_02086f04();
-    void func_02086f0c();
-    void func_02086f10();
+    s16 getAngle();
+    void setAngle(s32 v);
+    u8 getMode();
+    void setMode(u32 v);
+    void clearMode();
+    void destruct();
+    void construct();
 
-    s16 unk_00;
-    u8 unk_02;
+    s16 angle;
+    u8 mode;
 };
 
-// ---- 0x02086f14: three bytes
-class Unk_02086f14 {
+// ---- 0x02086f14: one byte (TownSessionState+0x30)
+class ResettiVisitFlag {
 public:
-    void func_02086f14(u32 v);
-    BOOL func_02086f18();
-    void func_02086f28();
-    void func_02086f30();
-    void func_02086f34();
-    BOOL func_02086f38();
-    void func_02086f68();
+    void set(u32 v);
+    BOOL isSet();
+    void clear();
+    void destruct();
+    void construct();
 
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 isPending;
 };
 
 struct Unk_02086f38_Buf {
     s32 a, b;
 };
 
-// ---- 0x02086f84: 2 words + byte
-class Unk_02086f84 {
+// ---- 0x02086f38: the shop's closing time, a DateTime (TownSessionState+0x18, TownSessionState_GetClosingTime)
+class ShopClosingTime {
 public:
-    void func_02086f80();
-    void func_02086f84();
-    void func_02086f8c();
-    void func_02086f90();
-    void func_02086f98();
-    void func_02086fa0();
-    BOOL func_02086fa8();
-    void func_02086fb8(Unk_02086ec4_Vec3 *out);
-    void func_02086fc4(Unk_02086ec4_Vec3 *v);
-    void func_02086fd0();
+    BOOL isPastClosingTime();
+    void setClosingTimeToday();
+    void getTime();
+    void clearClosingTime();
+    void destruct();
+    void construct();
 
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08;
+    union {
+        struct {
+            /* 0x0 */ u8 second;
+            /* 0x1 */ u8 minute;
+            /* 0x2 */ u8 hour;
+        };
+        /* 0x0 */ s32 raw[2];
+    };
 };
 
-// ---- 0x02087210
-class Unk_02087210 {
+// ---- 0x02086f98: Katie's position and follow flag (TownSessionState+0xc, TownSessionState_GetKatieState)
+class KatieVisitState {
 public:
-    void func_02087210();
-    void func_0208721c();
-    void func_02087220();
+    void clearFollowing();
+    void setFollowing();
+    BOOL isFollowing();
+    void getPos(VecFx32 *out);
+    void setPos(VecFx32 *v);
+    void pickKatiePos();
+    void clear();
+    void destruct();
+    void construct();
 
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08;
+    s32 posX;
+    s32 posZ;
+    u8 following;
 };
 
-// ---- 0x02087224: big singleton (data_021d7350)
-class Unk_02087224 {
-public:
-    u16 func_02087224();
-    void func_02087230(u32 v);
-    BOOL func_0208723c();
-    u8 func_02087268();
-    void func_02087274(u32 v);
-    u8 func_02087280();
-    void func_0208728c(u32 v);
-    void *func_02087298();
-    void func_0208729c();
-    void func_020872c0();
-    void func_020872c8();
-    Unk_02087224 *func_020872dc();
-    Unk_02087224 *func_020872ec();
-
-    u32 unk_00[0x228 / 4];
-    u16 unk_228;
-    u8 unk_22a;
-    u8 unk_22b;
-};
+// ---- 0x02087224: big singleton (gSaveData)
 
 // ---- 0x020872fc: flag byte at +0xa
-class Unk_020872fc {
-public:
-    void func_020872fc();
-    void func_02087308();
-    BOOL func_02087314();
-    void func_02087328(u8 v);
-    BOOL func_0208733c();
-    void func_02087344(u8 v);
-    u32 func_02087354();
-    void func_0208735c();
-    void func_02087364();
-    void func_02087368();
-
-    u32 unk_00[2];
-    u16 unk_08;
-    u8 unk_0a_0 : 4;
-    u8 unk_0a_4 : 1;
-    u8 unk_0a_5 : 1;
-};
 
 struct Unk_020874e8_Bits {
     u8 a : 2;
@@ -503,101 +365,36 @@ struct Unk_020874e8_Bits {
     u8 c : 3;
 };
 
-struct Unk_02087650_E {
+struct DramaScheduleEntry {
     u8 a;
     u8 b;
     u8 pad[2];
     u32 c;
 };
 
-struct Unk_02087650_S {
-    union {
-        u32 z[2];
-        struct {
-            u8 pad[3];
-            u8 c, b, a;
-            u8 pad2[2];
-        };
-    };
-};
-
-class Unk_020877e0 {
+class PlayerDailyTalkFlags {
 public:
-    void func_020877e0(u32 i);
-    void func_02087804(u32 i);
-    BOOL func_02087838(u32 i);
-    void func_02087860(u8 *src);
-    void func_02087870();
-    void func_02087af0();
+    void clear(u32 i);
+    void set(u32 i);
+    BOOL test(u32 i);
+    void setDate(u8 *src);
+    void clearAll();
+    void stampToday();
 
-    u8 unk_00[3];
-    u32 unk_04[2];
+    u8 date[3];
+    u32 flags[2];
 };
 
-class Unk_02087ad8 {
-public:
-    void func_02087888();
-    BOOL func_020879b4(s32 idx, u16 *v);
-    void func_02087ad8();
-    u32 func_02087aec();
-    void func_02087b18();
-    void func_02087b24();
-    u32 func_02087b30();
-    void func_02087b38();
-    void func_02087b40();
-    void func_02087b4c();
-    u32 func_02087b8c();
-    void func_02087b94(s32 v);
-    u32 func_02087ba8();
-    void func_02087bb0(s32 v);
-    u32 func_02087bc0();
-    void func_02087bc8(u32 v);
-    u32 func_02087bdc();
-    void func_02087be0();
-    u32 func_02087bf4();
-    void func_02087bf8();
-    u32 func_02087c0c();
-    void func_02087c10(s32 v);
-    u32 func_02087c20();
-    void func_02087c24(u32 v);
-    u32 func_02087c38();
-    void func_02087c3c(u32 v);
-    u32 func_02087c4c();
-    void func_02087c50(u32 v);
-    u32 func_02087c54();
-    void func_02087c58();
-    u8 *func_02087c7c();
 
-    u8 unk_00[8];
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
-    union {
-        u8 unk_10;
-        struct {
-            u8 unk_10_0 : 1;
-            u8 unk_10_1 : 1;
-            u8 unk_10_2 : 4;
-            u8 unk_10_6 : 1;
-            u8 unk_10_7 : 1;
-        };
-    };
-};
+extern "C" BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
 
-extern "C" BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
+extern "C" u8 *DramaRecord_GetDate(u8 *p);
 
-extern "C" u8 *func_0208779c(u8 *p);
-
-extern "C" void func_020877c0(void *a, void *b);
+extern "C" void DramaRecord_GetLastPart(void *a, void *b);
 
 enum Unk_020874e8_K { UNK_020874E8_K = 0x15db4 };
 
-struct Unk_02087a20_L {
+struct MissingLetterLocals {
     u8 a;
     u8 b;
     u16 h;
@@ -605,7 +402,7 @@ struct Unk_02087a20_L {
     u8 pad;
 };
 
-extern "C" BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d);
+extern "C" BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 
 // extern declarations
 extern "C" {
@@ -615,191 +412,191 @@ extern char data_020e0c70[];
 extern char data_020e0c7c[];
 extern char data_020e0c88[];
 extern char data_020e0c98[];
-s32 func_020030e8(Unk_02085810_Rec *p);
-void _ZN12Unk_020940a013func_02094294Ev(void *p);
-void func_0209cf88(u8 *p);
-void func_02003100(Unk_02085810_Rec *p);
-void func_02003130(Unk_02085810_Rec *p);
-void _ZN12Unk_020940a0C1Ev(void *p);
-void _ZN12Unk_020940a0C1EPv(void *p);
-void _ZN12Unk_020e1c64C1Ev(void *p);
-void _ZN12Unk_020e1c64D1Ev(void *p);
-void _ZN12Unk_020e3efcC1Ev(void *p);
-void _ZN12Unk_020e3efcD1Ev(void *p);
-void _ZN12Unk_020dd324C1EPt(void *p, u16 *v);
-void _ZN12Unk_020dd324D1Ev(void *p);
-void _ZN12Unk_0209da4413func_0209e120Ej(void *, u32);
-s32 _ZN12Unk_0209da4413func_0209e170Ej(void *, s32);
-void func_020b31a8(void *a, s32 b, s32 c);
-void func_020b3270(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 func_0204b2d4(u16 *p);
-u32 func_0204b25c(void *p);
-void func_02076fc8(u32 a, u32 b);
-void func_0203ce4c(s32 i, void *x);
-void func_0203ce38(s32 i, s32 x);
-void func_0203ce24(s32 i, s32 x);
-void _ZN12Unk_02002fc813func_02002fc8Ej(void *a, void *b);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *p);
-s32 _ZN12Unk_020940a013func_02094218Ev(void *p);
-void _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(void *a, void *b);
-s32 func_02063b8c(u32 n);
-void func_0209cffc(void *a, void *b, u32 c, u32 d, u32 e);
-void func_0209d498(void *p);
-void func_0209d164(void *p, s32 v);
-s32 func_0209d3d0(void *a, void *b, s32 c);
-s32 func_0209d3a4(void *a, void *b);
-s32 func_0203f42c(s32 a);
-void *func_02097868(void *, s32);
-s32 _ZN12Unk_0209865c13func_02098a48Ev(void *p);
-void *_ZN12Unk_0209865c13func_0209868cEv(void *p);
-s32 _ZN12Unk_02087ad813func_02087bc0Ev(void *p);
-s32 _ZN12Unk_02087ad813func_02087ba8Ev(void *p);
-u16 *_ZN12Unk_0209865c13func_0209888cEv(void *p);
-s32 _ZN12Unk_02087ad813func_02087b30Ev(void *p);
-void _ZN12Unk_02087ad813func_02087b18Ev(void *p);
-void func_020656dc(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
-void _ZN12Unk_0206555413func_02065588Etj(void *obj, u32 v, s32 w);
-s32 func_02096aac(void *obj);
-void _ZN12Unk_020dd458C1Ev(void *p);
-void _ZN12Unk_020dd458D1Ev(void *p);
-s32 func_02128930(void *a, void *b, u32 n);
-s32 _ZN12Unk_020940a013func_020941e8EPS_(void *a, void *b);
-s32 func_0209cef4();
-s32 func_020e77cc(u32 v, u32 lo, u32 hi);
-s32 func_020ae02c(void *p);
-void _ZN12Unk_02085f7c13func_02085fb4Ev(void *);
-void *func_02115fb4(void *d, s32 v, u32 n);
-void func_02116048(void *, void *, u32);
-s32 func_0209ceac(s32 a, s32 b, s32 c);
-s32 func_0206e844();
-s32 func_0206e850();
-s32 func_02063b74(s32 a);
-void *func_0204da0c();
-void func_0204edf8(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
-s32 func_0204ed8c(Unk_020868cc_Vec3 *out, s32 x, s32 z);
-void func_0204edd8(void *a, void *b);
-void _ZN12Unk_02086b7c13func_02086ba8Ev(void *);
-extern u8 data_021d7350[];
-void func_02063990(void *p);
-s32 func_020639a0(void *p);
-s32 func_020639b8(void *p);
-s32 func_0204ee10(s32 *x, s32 *y, s32 v);
-s32 func_02077f68();
-u16 *func_0204ebd8(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-s32 func_0204bd14(u16 *p);
-s32 func_0204b08c(u16 *p);
-s32 _ZN12Unk_02071e0413func_02071e10Ej(void *p, s32 v);
-void *_ZN12Unk_02071e0413func_02071e04Ev(void *p);
-void *_ZN12Unk_02071e04D1Ev(void *p);
-void *_ZN12Unk_02071e04C1Ev(void *p);
-s32 _ZN12Unk_02071ed013func_0207200cEj(void *p, s32 v);
-void *func_0209750c();
-void *_ZN12Unk_0209865c13func_020986a4Ev();
-s32 _ZN12Unk_02097ff413func_02097ff4Ej(void *p, s32 v);
-extern void *data_021c47c4;
+s32 VillagerId_Clear(VillagerId *p);
+void _ZN8PlayerId5clearEv(void *p);
+void Clock_GetDate(u8 *p);
+void VillagerId_Destruct(VillagerId *p);
+void VillagerId_Construct(VillagerId *p);
+void _ZN8PlayerIdC1Ev(void *p);
+void _ZN8PlayerIdC1EPv(void *p);
+void _ZN11MsgString9BC1Ev(void *p);
+void _ZN11MsgString9BD1Ev(void *p);
+void _ZN11MsgString25C1Ev(void *p);
+void _ZN11MsgString25D1Ev(void *p);
+void _ZN8ItemNameC1EPt(void *p, u16 *v);
+void _ZN8ItemNameD1Ev(void *p);
+void _ZN8SaveData9clearFlagEj(void *, u32);
+s32 _ZN8SaveData8testFlagEj(void *, s32);
+void String_FormatFixedPoint(void *a, s32 b, s32 c);
+void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+s32 Item_IsFurniture(u16 *p);
+u32 Item_GetFurnitureIndex(void *p);
+void Bbs_PostMsgToday(u32 a, u32 b);
+void MailText_SetSlot(s32 i, void *x);
+void MailText_SetSlotMonth(s32 i, s32 x);
+void MailText_SetSlotDayOrdinal(s32 i, s32 x);
+void _ZN10VillagerId7getNameEj(void *a, void *b);
+s32 _ZN10VillagerId7isValidEv(void *p);
+s32 _ZN8PlayerId7isValidEv(void *p);
+void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
+s32 Random_GlobalBelow(u32 n);
+void DateTime_Make(void *a, void *b, u32 c, u32 d, u32 e);
+void Clock_GetDateTime(void *p);
+void DateTime_SubDays(void *p, s32 v);
+s32 DateTime_Compare(void *a, void *b, s32 c);
+s32 DateTime_DiffDays(void *a, void *b);
+s32 Event_GetDaysSinceStart(s32 a);
+void *PlayerData_GetResident(void *, s32);
+s32 _ZN10PlayerData6isUsedEv(void *p);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
+s32 _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(void *p);
+s32 _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(void *p);
+u16 *_ZN10PlayerData11getPlayerIdEv(void *p);
+s32 _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(void *p);
+void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *p);
+void Letter_ComposeFromMail(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
+void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 w);
+s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
+void _ZN6LetterC1Ev(void *p);
+void _ZN6LetterD1Ev(void *p);
+s32 memcmp(void *a, void *b, u32 n);
+s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
+s32 Clock_GetWeekday();
+s32 Math_IsInRange(u32 v, u32 lo, u32 hi);
+s32 NookShop_GetLevel(void *p);
+void _ZN14RoostGuestRoll4rollEv(void *);
+void *MI_CpuFill8(void *d, s32 v, u32 n);
+void MI_CpuCopy8(void *, void *, u32);
+s32 Date_GetWeekday(s32 a, s32 b, s32 c);
+s32 MenuCtrl_IsClockMovedForward();
+s32 MenuCtrl_IsClockMovedBack();
+s32 Random_GlobalBelow2(s32 a);
+void *TownBlockMap_Get();
+void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
+s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
+void FieldPos_SnapToUnitCenter(void *a, void *b);
+void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
+extern u8 gSaveData[];
+void TownId_Assign(void *p);
+s32 TownId_Clear(void *p);
+s32 TownId_Destruct(void *p);
+s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
+s32 TownMap_IsUnitWalkable();
+u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+s32 Item_IsMarker(u16 *p);
+s32 Item_IsTreeStage0(u16 *p);
+s32 _ZN7Pattern4fillEj(void *p, s32 v);
+void *_ZN7Pattern7getInfoEv(void *p);
+void *_ZN7PatternD1Ev(void *p);
+void *_ZN7PatternC1Ev(void *p);
+s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
+void *PlayerData_GetCurrent();
+void *_ZN10PlayerData18getLostChildRecordEv();
+s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
+extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
-extern u32 data_021cdda8[];
+extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
-void *func_020639bc(void *);
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *);
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
-void *_ZN12Unk_0209865c13func_020986b0Ev(void *);
-s32 func_0209ce68(u8 a, u32 b, u32 c, u32 d);
-void func_0209d2c0(void *, s32);
-s32 _ZN12Unk_0206fe8013func_02070060Ev(void *);
-BOOL func_02096a50(void *a, s32 b);
-void _ZN12Unk_0206338013func_0206338cEii(void *, s32, s32);
-void func_02063388(void *);
-void func_02062f94(u16 *, void *, u32, u32, u32, u32, u32);
-s32 func_020966d0(s32, s32);
-s32 func_02087e14(void *);
-s32 func_02087e50(void *);
-s32 func_02087e0c(void *);
-s32 func_02087e30(void *);
-extern void *data_020cbb18;
+void *TownId_Construct(void *);
+s32 _ZN11CommManager8isOnlineEv(void *);
+BOOL _ZN10PlayerData8testFlagEj(void *, s32);
+void *_ZN10PlayerData14getDramaRecordEv(void *);
+s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
+void DateTime_AddDays(void *, s32);
+s32 _ZN10MuseumData10isCompleteEv(void *);
+BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
+void _ZN12ItemPickSpec3setEii(void *, s32, s32);
+void ItemPickSpec_Destruct(void *);
+void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
+s32 LetterPaper_PickRandom(s32, s32);
+s32 Oam_GetObjX(void *);
+s32 Oam_GetObjWidth(void *);
+s32 Oam_GetObjY(void *);
+s32 Oam_GetObjHeight(void *);
+extern void *gCommManager;
 extern const u8 data_020cf288[];
 extern const u8 data_020cf328[];
 extern u8 data_021ed0a0[];
 extern u8 data_020e0c54[];
 extern u8 data_020e0c4c[];
 extern u8 data_020e0c44[];
-extern s32 data_021c5384;
+extern s32 gGfxMainOnTop;
 }
 
 // own functions
 extern "C" {
-void func_02086204(void *p);
-void func_02086230();
-void func_02086234();
-void func_02086290();
-void func_02086294();
-void func_020862f4();
-void func_020868c4();
-void func_020868c8();
-void func_02086ae8();
-void func_02086aec();
-void func_0208627c(void *p);
-void func_02086284(void *p);
-void func_02086adc(void *p);
-void func_020862f8(Unk_02086328 *p);
-s32 func_02086d78(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
-BOOL func_02086e48(s32 x, s32 y, void *map);
-BOOL func_02086e50(s32 x, s32 y, void *map);
-BOOL func_0208709c(s32 x, s32 y, void *map);
-void func_02087390();
-void func_020873e0();
-BOOL func_0208740c();
-BOOL func_02087444();
-void func_0208747c(s32 n);
-void *func_020874c8(void *p);
-void *func_020874d8(void *p);
-BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d);
-BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
-void func_020877a0(s32 a, void *b);
-void func_020877cc(void *a);
-void func_020877d8();
-void func_020877dc();
-void func_02087880();
-void func_02087884();
-void func_02087a20();
-void func_02087b14();
-void func_02087c80();
-void func_02087c84();
-void func_02087c88();
-BOOL func_02087c8c(s32 t);
-s32 func_02087cd8(u8 *self, s32 *cnt, s32 *v);
-s32 func_02087d6c(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
-BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d);
-u8 *func_0208779c(u8 *p);
-void func_020877c0(void *a, void *b);
+void RoostGuestRoll_Init(void *p);
+void RoostGuestRoll_Destruct();
+void RoostGuestRoll_Construct();
+void GulliverQuest_Destruct();
+void GulliverQuest_Construct();
+void ReddLastSale_GetBuyer();
+void TurnipMarket_Destruct();
+void TurnipMarket_Construct();
+void VisitorPos_Destruct();
+void VisitorPos_Construct();
+void GulliverQuest_Init(void *p);
+void GulliverQuest_Clear(void *p);
+void VisitorPos_Clear(void *p);
+void ReddLastSale_Clear(ReddLastSale *p);
+s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
+BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map);
+BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map);
+BOOL Field_IsClearSpot(s32 x, s32 y, void *map);
+void LostChild_LoadFromTown();
+void LostChild_SaveToTown();
+BOOL LostChild_IsKaitlinDue();
+BOOL LostChild_IsKatieDue();
+void LostChild_AdvanceDays(s32 n);
+void *LostChildRecord_Destruct(void *p);
+void *LostChildRecord_Construct(void *p);
+BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d);
+BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
+void DramaRecord_SetLastPart(s32 a, void *b);
+void DramaRecord_Clear(void *a);
+void DramaRecord_Destruct();
+void DramaRecord_Construct();
+void PlayerDailyTalkFlags_Destruct();
+void PlayerDailyTalkFlags_Construct();
+void PlayerSpNpcRecord_SendMissingLetter();
+void PlayerSpNpcRecord_GetInsuranceDate();
+void PlayerSpNpcRecord_InitNop();
+void PlayerSpNpcRecord_Destruct();
+void PlayerSpNpcRecord_Construct();
+BOOL Oam_UseBufferA(s32 t);
+s32 Oam_AllocAffine(u8 *self, s32 *cnt, s32 *v);
+s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
+BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
+u8 *DramaRecord_GetDate(u8 *p);
+void DramaRecord_GetLastPart(void *a, void *b);
 }
 
 namespace Ns_02086204 {
 extern "C" {
-u32 _ZN12Unk_020940a013func_02094294Ev(void *p);
-s32 func_02063b8c(s32 a);
+u32 _ZN8PlayerId5clearEv(void *p);
+s32 Random_GlobalBelow(s32 a);
 }
 }
 
 namespace Ns_02086b7c {
 extern "C" {
-void *func_02116048(void *dst, const void *src, u32 n);
-s32 func_02063b8c(s32 n);
-void func_0204ed8c(Unk_02086ec4_Vec3 *out, s32 x, s32 y);
-s32 func_0204edf8(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
-s32 func_020e77cc(s32 a, s32 b, s32 c);
+void *MI_CpuCopy8(void *dst, const void *src, u32 n);
+s32 Random_GlobalBelow(s32 n);
+void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
+s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
+s32 Math_IsInRange(s32 a, s32 b, s32 c);
 }
 }
 
 namespace Ns_020874d8 {
 extern "C" {
-void _ZN12Unk_02097ff413func_02097ff4Ej(void *, s32);
-void func_02116048(void *, void *, s32);
-void func_02115fb4(void *, s32, s32);
-void func_0209cf88(void *);
-s32 func_02063b8c(s32);
-u32 _ZN12Unk_0209865c13func_0209888cEv(void *);
-void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
+void _ZN10PlayerData9clearFlagEj(void *, s32);
+void MI_CpuCopy8(void *, void *, s32);
+void MI_CpuFill8(void *, s32, s32);
+void Clock_GetDate(void *);
+s32 Random_GlobalBelow(s32);
+u32 _ZN10PlayerData11getPlayerIdEv(void *);
+void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
 }
 
@@ -842,7 +639,7 @@ static inline u16 *Unk_0208709c_Cell(void *map, s32 x, s32 y) {
     s32 hy = y >> 4;
     s32 lx = x - (hx << 4);
     s32 ly = y - (hy << 4);
-    return func_0204ebd8(map, hx, hy, lx, ly, 0);
+    return BlockMap_GetItemPtr(map, hx, hy, lx, ly, 0);
 }
 
 static inline BOOL Unk_0208709c_In(u16 *p) {
@@ -851,27 +648,27 @@ static inline BOOL Unk_0208709c_In(u16 *p) {
     return f;
 }
 
-extern "C" BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d) {
-    s32 r7 = func_02087e14(p) - c;
+extern "C" BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d) {
+    s32 r7 = Oam_GetObjX(p) - c;
     if (r7 > a) return FALSE;
-    if (r7 + (c * 2 + func_02087e50(p)) < a) return FALSE;
-    s32 t = func_02087e0c(p) - d;
+    if (r7 + (c * 2 + Oam_GetObjWidth(p)) < a) return FALSE;
+    s32 t = Oam_GetObjY(p) - d;
     if (t > b) return FALSE;
-    if (t + (d * 2 + func_02087e30(p)) >= b) return TRUE;
+    if (t + (d * 2 + Oam_GetObjHeight(p)) >= b) return TRUE;
     return FALSE;
 }
 
-extern "C" s32 func_02087d6c(void *p, s32 n, s32 c, s32 d, s32 e, s32 f) {
+extern "C" s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f) {
     s32 i;
     for (i = 0; i < n; p = (u8 *)p + 8, i++) {
-        if (func_02087dac(p, c, d, e, f)) {
+        if (Cell_HitTest(p, c, d, e, f)) {
             return i;
         }
     }
     return -1;
 }
 
-extern "C" s32 func_02087cd8(u8 *self, s32 *cnt, s32 *v) {
+extern "C" s32 Oam_AllocAffine(u8 *self, s32 *cnt, s32 *v) {
     volatile s32 *vv = v;
     s32 a = (u32)(vv[0] << 12) >> 16;
     s32 b = (u32)(vv[1] << 12) >> 16;
@@ -899,240 +696,240 @@ extern "C" s32 func_02087cd8(u8 *self, s32 *cnt, s32 *v) {
     return -1;
 }
 
-extern "C" BOOL func_02087c8c(s32 t) {
+extern "C" BOOL Oam_UseBufferA(s32 t) {
     switch (t) {
     case 0:
         return TRUE;
     case 1:
         return FALSE;
     case 2:
-        if (data_021c5384 == 1) return TRUE;
+        if (gGfxMainOnTop == 1) return TRUE;
         return FALSE;
     case 3:
-        if (data_021c5384 == 0) return TRUE;
+        if (gGfxMainOnTop == 0) return TRUE;
         return FALSE;
     }
     return FALSE;
 }
 
-extern "C" void func_02087c88() {}
+extern "C" void PlayerSpNpcRecord_Construct() {}
 
-extern "C" void func_02087c84() {}
+extern "C" void PlayerSpNpcRecord_Destruct() {}
 
-extern "C" void func_02087c80() {}
+extern "C" void PlayerSpNpcRecord_InitNop() {}
 
-u8 *Unk_02087ad8::func_02087c7c() { return unk_00 + 4; }
+u8 *PlayerSpNpcRecord::getArbeitDate() { return serviceDates + 4; }
 
-void Unk_02087ad8::func_02087c58() {
+void PlayerSpNpcRecord::stampArbeitDate() {
     u8 tmp[3];
-    Ns_020874d8::func_0209cf88(tmp);
-    unk_00[6] = tmp[2];
-    unk_00[5] = tmp[1];
-    unk_00[4] = tmp[0];
+    Ns_020874d8::Clock_GetDate(tmp);
+    serviceDates[6] = tmp[2];
+    serviceDates[5] = tmp[1];
+    serviceDates[4] = tmp[0];
 }
 
-u32 Unk_02087ad8::func_02087c54() { return unk_08; }
+u32 PlayerSpNpcRecord::getSableTalkCount() { return sableTalkCount; }
 
-void Unk_02087ad8::func_02087c50(u32 v) { unk_08 = v; }
+void PlayerSpNpcRecord::setSableTalkCount(u32 v) { sableTalkCount = v; }
 
-u32 Unk_02087ad8::func_02087c4c() { return unk_09; }
+u32 PlayerSpNpcRecord::getCafeVisits() { return cafeVisits; }
 
-void Unk_02087ad8::func_02087c3c(u32 v) {
-    unk_09 = v;
-    if (unk_09 > 15) unk_09 = 15;
+void PlayerSpNpcRecord::setCafeVisits(u32 v) {
+    cafeVisits = v;
+    if (cafeVisits > 15) cafeVisits = 15;
 }
 
-u32 Unk_02087ad8::func_02087c38() { return unk_0a; }
+u32 PlayerSpNpcRecord::getHaircutCount() { return haircutCount; }
 
-void Unk_02087ad8::func_02087c24(u32 v) {
-    unk_0a = unk_0a + v;
-    if (unk_0a > 16) unk_0a = 16;
+void PlayerSpNpcRecord::addHaircutCount(u32 v) {
+    haircutCount = haircutCount + v;
+    if (haircutCount > 16) haircutCount = 16;
 }
 
-u32 Unk_02087ad8::func_02087c20() { return unk_0b; }
+u32 PlayerSpNpcRecord::getAcornsDelivered() { return acornsDelivered; }
 
-void Unk_02087ad8::func_02087c10(s32 v) {
-    s32 t = unk_0b;
+void PlayerSpNpcRecord::addAcornsDelivered(s32 v) {
+    s32 t = acornsDelivered;
     t = t + v;
     if (t > 255) t = 255;
-    unk_0b = t;
+    acornsDelivered = t;
 }
 
-u32 Unk_02087ad8::func_02087c0c() { return unk_0c; }
+u32 PlayerSpNpcRecord::getAcornPrizeStep() { return acornPrizeStep; }
 
-void Unk_02087ad8::func_02087bf8() {
-    unk_0c = unk_0c + 1;
-    if (unk_0c > 12) unk_0c = 12;
+void PlayerSpNpcRecord::advanceAcornPrizeStep() {
+    acornPrizeStep = acornPrizeStep + 1;
+    if (acornPrizeStep > 12) acornPrizeStep = 12;
 }
 
-u32 Unk_02087ad8::func_02087bf4() { return unk_0d; }
+u32 PlayerSpNpcRecord::getResetCount() { return resetCount; }
 
-void Unk_02087ad8::func_02087be0() {
-    unk_0d = unk_0d + 1;
-    if (unk_0d > 6) unk_0d = 6;
+void PlayerSpNpcRecord::addResetCount() {
+    resetCount = resetCount + 1;
+    if (resetCount > 6) resetCount = 6;
 }
 
-u32 Unk_02087ad8::func_02087bdc() { return unk_0e; }
+u32 PlayerSpNpcRecord::getStyleScore() { return styleScore; }
 
-void Unk_02087ad8::func_02087bc8(u32 v) {
-    unk_0e = unk_0e + v;
-    if (unk_0e > 100) unk_0e = 100;
+void PlayerSpNpcRecord::addStyleScore(u32 v) {
+    styleScore = styleScore + v;
+    if (styleScore > 100) styleScore = 100;
 }
 
-u32 Unk_02087ad8::func_02087bc0() { return unk_10_0; }
+u32 PlayerSpNpcRecord::hasEnteredFishingTourney() { return unk_10_0; }
 
-void Unk_02087ad8::func_02087bb0(s32 v) { unk_10 = (unk_10 & ~1) | (v & 1); }
+void PlayerSpNpcRecord::setEnteredFishingTourney(s32 v) { unk_10 = (unk_10 & ~1) | (v & 1); }
 
-u32 Unk_02087ad8::func_02087ba8() { return unk_10_1; }
+u32 PlayerSpNpcRecord::hasEnteredBugOff() { return unk_10_1; }
 
-void Unk_02087ad8::func_02087b94(s32 v) { unk_10 = (unk_10 & ~2) | ((v & 1) << 1); }
+void PlayerSpNpcRecord::setEnteredBugOff(s32 v) { unk_10 = (unk_10 & ~2) | ((v & 1) << 1); }
 
-u32 Unk_02087ad8::func_02087b8c() { return unk_10_2; }
+u32 PlayerSpNpcRecord::getFireworksGiven() { return unk_10_2; }
 
-void Unk_02087ad8::func_02087b4c() {
+void PlayerSpNpcRecord::addFireworksGiven() {
     unk_10_2 = unk_10_2 + 1;
     if (unk_10_2 > 10) {
         unk_10_2 = 10;
     }
 }
 
-void Unk_02087ad8::func_02087b40() { unk_10_2 = 0; }
+void PlayerSpNpcRecord::resetFireworksGiven() { unk_10_2 = 0; }
 
-void Unk_02087ad8::func_02087b38() { unk_0b = 0; unk_0c = 0; }
+void PlayerSpNpcRecord::resetAcornCount() { acornsDelivered = 0; acornPrizeStep = 0; }
 
-u32 Unk_02087ad8::func_02087b30() { return unk_10_6; }
+u32 PlayerSpNpcRecord::hasFestivalGift() { return unk_10_6; }
 
-void Unk_02087ad8::func_02087b24() { unk_10_6 = 1; }
+void PlayerSpNpcRecord::setFestivalGift() { unk_10_6 = 1; }
 
-void Unk_02087ad8::func_02087b18() { unk_10_6 = 0; }
+void PlayerSpNpcRecord::clearFestivalGift() { unk_10_6 = 0; }
 
-extern "C" void func_02087b14() {}
+extern "C" void PlayerSpNpcRecord_GetInsuranceDate() {}
 
-void Unk_020877e0::func_02087af0() {
+void PlayerDailyTalkFlags::stampToday() {
     u8 tmp[3];
-    Ns_020874d8::func_0209cf88(tmp);
-    unk_00[2] = tmp[2];
-    unk_00[1] = tmp[1];
-    unk_00[0] = tmp[0];
+    Ns_020874d8::Clock_GetDate(tmp);
+    date[2] = tmp[2];
+    date[1] = tmp[1];
+    date[0] = tmp[0];
 }
 
-u32 Unk_02087ad8::func_02087aec() { return unk_0f; }
+u32 PlayerSpNpcRecord::getInsuranceClaims() { return insuranceClaims; }
 
-void Unk_02087ad8::func_02087ad8() {
-    unk_0f = unk_0f + 1;
-    if (unk_0f >= 0xff) unk_0f = 0xff;
+void PlayerSpNpcRecord::addInsuranceClaim() {
+    insuranceClaims = insuranceClaims + 1;
+    if (insuranceClaims >= 0xff) insuranceClaims = 0xff;
 }
 
-extern "C" void func_02087a20() {
+extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
     u8 big[0xf4];
-    Unk_02087a20_L l;
+    MissingLetterLocals l;
     u8 obj[8];
-    void *r4 = func_0209750c();
-    if (r4 != NULL && _ZN12Unk_02097ff413func_02098044Ej(r4, 0x36)) {
-        _ZN12Unk_020dd458C1Ev(big);
+    void *r4 = PlayerData_GetCurrent();
+    if (r4 != NULL && _ZN10PlayerData8testFlagEj(r4, 0x36)) {
+        _ZN6LetterC1Ev(big);
         l.a = 0;
-        l.a = Ns_020874d8::func_02063b8c(3);
-        Ns_020874d8::func_0209cf88(l.c);
-        l.b = func_020966d0(3, l.c[1]);
-        Ns_020874d8::func_020656dc(big, &l, "sp_npc_missing", data_020e0c44, &l.b, Ns_020874d8::_ZN12Unk_0209865c13func_0209888cEv(r4));
-        _ZN12Unk_0206338013func_0206338cEii(obj, 0, 0x1b);
-        func_02062f94(&l.h, obj, 0, 0, 1, 1, 0);
-        _ZN12Unk_0206555413func_02065588Etj(big, l.h, 1);
-        func_02063388(obj);
-        if (func_02096a50(big, 0)) {
-            Ns_020874d8::_ZN12Unk_02097ff413func_02097ff4Ej(r4, 0x36);
+        l.a = Ns_020874d8::Random_GlobalBelow(3);
+        Ns_020874d8::Clock_GetDate(l.c);
+        l.b = LetterPaper_PickRandom(3, l.c[1]);
+        Ns_020874d8::Letter_ComposeFromMail(big, &l, "sp_npc_missing", data_020e0c44, &l.b, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(r4));
+        _ZN12ItemPickSpec3setEii(obj, 0, 0x1b);
+        ItemPick_One(&l.h, obj, 0, 0, 1, 1, 0);
+        _ZN10LetterView10setPresentEtj(big, l.h, 1);
+        ItemPickSpec_Destruct(obj);
+        if (LetterDelivery_QueueOutgoing(big, 0)) {
+            Ns_020874d8::_ZN10PlayerData9clearFlagEj(r4, 0x36);
         }
-        _ZN12Unk_020dd458D1Ev(big);
+        _ZN6LetterD1Ev(big);
     }
 }
 
-BOOL Unk_02087ad8::func_020879b4(s32 idx, u16 *v) {
+BOOL PlayerSpNpcRecord::sendInsuranceLetter(s32 idx, u16 *v) {
     u32 big[0x3d];
     u8 c;
     BOOL r;
-    _ZN12Unk_020dd458C1Ev(big);
+    _ZN6LetterC1Ev(big);
     c = 0;
-    void *o = func_0209750c();
+    void *o = PlayerData_GetCurrent();
     c = idx;
-    Ns_020874d8::func_020656dc(big, &c, "sp_npc_insurance", data_020e0c4c, data_020e0c54, Ns_020874d8::_ZN12Unk_0209865c13func_0209888cEv(o));
-    _ZN12Unk_0206555413func_02065588Etj(big, *v, 1);
-    if (func_02096a50(big, 0)) {
+    Ns_020874d8::Letter_ComposeFromMail(big, &c, "sp_npc_insurance", data_020e0c4c, data_020e0c54, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(o));
+    _ZN10LetterView10setPresentEtj(big, *v, 1);
+    if (LetterDelivery_QueueOutgoing(big, 0)) {
         r = TRUE;
     } else {
         r = FALSE;
     }
-    _ZN12Unk_020dd458D1Ev(big);
+    _ZN6LetterD1Ev(big);
     return r;
 }
 
-void Unk_02087ad8::func_02087888() {
+void PlayerSpNpcRecord::sendInsuranceLetters() {
     u32 bufA[11];
     u32 bufB[8];
     u16 h[3];
     s32 r6;
-    _ZN12Unk_020e3efcC1Ev(bufA);
-    void *obj = func_0209750c();
-    _ZN12Unk_020e1c64C1Ev(bufB);
-    Unk_02087ad8 *r7 = (Unk_02087ad8 *)_ZN12Unk_0209865c13func_0209868cEv(obj);
-    if (_ZN12Unk_02097ff413func_02098044Ej(obj, 0x17)) {
-        if (_ZN12Unk_02097ff413func_02098044Ej(obj, 0x19)) {
+    _ZN11MsgString25C1Ev(bufA);
+    void *obj = PlayerData_GetCurrent();
+    _ZN11MsgString9BC1Ev(bufB);
+    PlayerSpNpcRecord *r7 = (PlayerSpNpcRecord *)_ZN10PlayerData14getSpNpcRecordEv(obj);
+    if (_ZN10PlayerData8testFlagEj(obj, 0x17)) {
+        if (_ZN10PlayerData8testFlagEj(obj, 0x19)) {
             h[0] = 0x1492;
-            s32 r = Ns_020874d8::func_02063b8c(2);
-            if (func_020879b4(r, &h[0])) {
-                Ns_020874d8::_ZN12Unk_02097ff413func_02097ff4Ej(obj, 0x19);
+            s32 r = Ns_020874d8::Random_GlobalBelow(2);
+            if (sendInsuranceLetter(r, &h[0])) {
+                Ns_020874d8::_ZN10PlayerData9clearFlagEj(obj, 0x19);
             }
         }
-        if (_ZN12Unk_02097ff413func_02098044Ej(obj, 0x1a)) {
+        if (_ZN10PlayerData8testFlagEj(obj, 0x1a)) {
             h[1] = 0x1492;
-            s32 r = Ns_020874d8::func_02063b8c(2);
-            if (func_020879b4(r + 2, &h[1])) {
-                Ns_020874d8::_ZN12Unk_02097ff413func_02097ff4Ej(obj, 0x1a);
+            s32 r = Ns_020874d8::Random_GlobalBelow(2);
+            if (sendInsuranceLetter(r + 2, &h[1])) {
+                Ns_020874d8::_ZN10PlayerData9clearFlagEj(obj, 0x1a);
             }
         }
     }
-    if (_ZN12Unk_02097ff413func_02098044Ej(obj, 0x18)) {
-        if (r7->func_02087aec() >= 1) {
-            func_020b3270(bufA, r7->func_02087aec(), 10, 0, 0, 0);
-            func_0203ce4c(3, bufA);
-            r6 = Ns_020874d8::func_02063b8c(2) + 4;
-            u32 cnt = r7->func_02087aec();
+    if (_ZN10PlayerData8testFlagEj(obj, 0x18)) {
+        if (r7->getInsuranceClaims() >= 1) {
+            String_FormatNumber(bufA, r7->getInsuranceClaims(), 10, 0, 0, 0);
+            MailText_SetSlot(3, bufA);
+            r6 = Ns_020874d8::Random_GlobalBelow(2) + 4;
+            u32 cnt = r7->getInsuranceClaims();
             if (cnt >= 10) {
                 cnt = 10;
                 r6 = 6;
             }
-            func_020b3270(bufA, cnt * 100, 10, 0, 0, 0);
-            func_0203ce4c(4, bufA);
+            String_FormatNumber(bufA, cnt * 100, 10, 0, 0, 0);
+            MailText_SetSlot(4, bufA);
             h[2] = cnt + 0x1491;
-            if (func_020879b4(r6, &h[2])) {
-                unk_0f = 0;
+            if (sendInsuranceLetter(r6, &h[2])) {
+                insuranceClaims = 0;
             }
         }
     }
-    _ZN12Unk_020e1c64D1Ev(bufB);
-    _ZN12Unk_020e3efcD1Ev(bufA);
+    _ZN11MsgString9BD1Ev(bufB);
+    _ZN11MsgString25D1Ev(bufA);
 }
 
-extern "C" void func_02087884() {}
+extern "C" void PlayerDailyTalkFlags_Construct() {}
 
-extern "C" void func_02087880() {}
+extern "C" void PlayerDailyTalkFlags_Destruct() {}
 
-void Unk_020877e0::func_02087870() {
-    Ns_020874d8::func_02115fb4(unk_04, 0, 8);
+void PlayerDailyTalkFlags::clearAll() {
+    Ns_020874d8::MI_CpuFill8(flags, 0, 8);
 }
 
-void Unk_020877e0::func_02087860(u8 *src) {
-    unk_00[2] = src[2];
-    unk_00[1] = src[1];
-    unk_00[0] = src[0];
+void PlayerDailyTalkFlags::setDate(u8 *src) {
+    date[2] = src[2];
+    date[1] = src[1];
+    date[0] = src[0];
 }
 
-BOOL Unk_020877e0::func_02087838(u32 i) {
+BOOL PlayerDailyTalkFlags::test(u32 i) {
     BOOL r;
     s32 w = i >> 5;
     u32 b = i & 0x1f;
     if (w < 2) {
         r = TRUE;
-        if (((r << b) & unk_04[w]) != 0) {
+        if (((r << b) & flags[w]) != 0) {
             goto out;
         }
     }
@@ -1141,60 +938,60 @@ out:
     return r;
 }
 
-void Unk_020877e0::func_02087804(u32 i) {
+void PlayerDailyTalkFlags::set(u32 i) {
     u8 tmp[3];
     s32 w = i >> 5;
     u32 b = i & 0x1f;
     if (w < 2) {
-        unk_04[w] = *(volatile u32 *)&unk_04[w] | (1 << b);
+        flags[w] = *(volatile u32 *)&flags[w] | (1 << b);
     }
-    Ns_020874d8::func_0209cf88(tmp);
-    func_02087860(tmp);
+    Ns_020874d8::Clock_GetDate(tmp);
+    setDate(tmp);
 }
 
-void Unk_020877e0::func_020877e0(u32 i) {
+void PlayerDailyTalkFlags::clear(u32 i) {
     s32 w = i >> 5;
     u32 b = i & 0x1f;
     if (w < 2) {
-        unk_04[w] = ~(1 << b) & *(volatile u32 *)&unk_04[w];
+        flags[w] = ~(1 << b) & *(volatile u32 *)&flags[w];
     }
 }
 
-extern "C" void func_020877dc() {}
+extern "C" void DramaRecord_Construct() {}
 
-extern "C" void func_020877d8() {}
+extern "C" void DramaRecord_Destruct() {}
 
-extern "C" void func_020877cc(void *a) {
-    Ns_020874d8::func_02115fb4(a, 0xff, 1);
+extern "C" void DramaRecord_Clear(void *a) {
+    Ns_020874d8::MI_CpuFill8(a, 0xff, 1);
 }
 
-extern "C" void func_020877c0(void *a, void *b) {
-    Ns_020874d8::func_02116048(a, b, 1);
+extern "C" void DramaRecord_GetLastPart(void *a, void *b) {
+    Ns_020874d8::MI_CpuCopy8(a, b, 1);
 }
 
-extern "C" void func_020877a0(s32 a, void *b) {
-    Ns_020874d8::func_0209cf88((void *)(a + 1));
-    Ns_020874d8::func_02116048(b, (void *)a, 1);
+extern "C" void DramaRecord_SetLastPart(s32 a, void *b) {
+    Ns_020874d8::Clock_GetDate((void *)(a + 1));
+    Ns_020874d8::MI_CpuCopy8(b, (void *)a, 1);
 }
 
-extern "C" u8 *func_0208779c(u8 *p) {
+extern "C" u8 *DramaRecord_GetDate(u8 *p) {
     return p + 1;
 }
 
-extern "C" BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out) {
-    Unk_02087650_S s1, s2;
+extern "C" BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out) {
+    ClockDateTimeWords s1, s2;
     s32 r4, r7, r6;
     u32 x4, x8, xc;
     s32 j;
     s32 v;
-    Unk_02087650_E *t1;
+    DramaScheduleEntry *t1;
     const u8 *t2;
     u32 *t3;
-    s1.z[0] = 0;
-    s1.z[1] = 0;
-    s1.a = lim;
-    s1.b = b;
-    s1.c = c;
+    s1.words[0] = 0;
+    s1.words[1] = 0;
+    s1.dt.year = lim;
+    s1.dt.month = b;
+    s1.dt.day = c;
     r4 = lim - 1;
     goto test4;
 loop4:
@@ -1203,11 +1000,11 @@ loop4:
         goto test7;
     loop7:
         r6 = 0;
-        t1 = (Unk_02087650_E *)(data_020cf288 + r7 * 0x28);
+        t1 = (DramaScheduleEntry *)(data_020cf288 + r7 * 0x28);
         t2 = data_020cf328 + r7 * 0x8c;
         goto test6;
     loop6:
-        Unk_02087650_E *e;
+        DramaScheduleEntry *e;
         e = &t1[r6];
         x8 = t1[r6].a;
         if (x8 != 0) {
@@ -1215,24 +1012,24 @@ loop4:
             xc = e->c;
         retry:
             s32 r;
-            r = func_0209ce68(r4, x8, xc, x4);
+            r = Date_GetNthWeekdayDay(r4, x8, xc, x4);
             if (r == -1) {
                 x4 = (u8)(x4 - 1);
                 goto retry;
             }
-            s2.z[0] = 0;
-            s2.z[1] = 0;
-            s2.a = r4;
-            s2.b = x8;
-            s2.c = r;
+            s2.words[0] = 0;
+            s2.words[1] = 0;
+            s2.dt.year = r4;
+            s2.dt.month = x8;
+            s2.dt.day = r;
             j = 0;
             t3 = (u32 *)(t2 + r6 * 0x1c);
             for (; j < 7; j++) {
                 v = t3[j];
                 if (v == 0) continue;
-                s32 t = func_0209d3a4(&s1, &s2);
+                s32 t = DateTime_DiffDays(&s1, &s2);
                 if (t == 0) {
-                    t = -func_0209d3a4(&s2, &s1);
+                    t = -DateTime_DiffDays(&s2, &s1);
                 }
                 if (t + v > 0 && t <= 0) {
                     out->a = r7;
@@ -1240,7 +1037,7 @@ loop4:
                     out->c = j;
                     return TRUE;
                 }
-                func_0209d2c0(&s2, v);
+                DateTime_AddDays(&s2, v);
             }
         }
         r6++;
@@ -1256,20 +1053,20 @@ test4:
     return FALSE;
 }
 
-extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return FALSE;
     }
-    void *o = func_0209750c();
-    if (_ZN12Unk_02097ff413func_02098044Ej(o, 1)) {
+    void *o = PlayerData_GetCurrent();
+    if (_ZN10PlayerData8testFlagEj(o, 1)) {
         return FALSE;
     }
-    if (!func_02087650(a, b, c, d)) {
+    if (!Drama_FindScheduledPart(a, b, c, d)) {
         return FALSE;
     }
     Unk_020874e8_Bits t;
-    func_020877c0(_ZN12Unk_0209865c13func_020986b0Ev(o), &t);
-    u8 *p = func_0208779c((u8 *)_ZN12Unk_0209865c13func_020986b0Ev(o));
+    DramaRecord_GetLastPart(_ZN10PlayerData14getDramaRecordEv(o), &t);
+    u8 *p = DramaRecord_GetDate((u8 *)_ZN10PlayerData14getDramaRecordEv(o));
     if (d->a == t.a && d->b == t.b && d->c == t.c) {
         if ((p[2] == a && p[1] == b && p[0] == c) || (p[2] == 0 && p[1] == 0 && p[0] == 0)) {
             return TRUE;
@@ -1279,23 +1076,23 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
     if (d->c == 0) {
         switch (d->a) {
         case 0:
-            if (_ZN12Unk_02097ff413func_02098044Ej(o, 6)) {
+            if (_ZN10PlayerData8testFlagEj(o, 6)) {
                 return TRUE;
             }
             break;
         case 2:
-            if (((Unk_02087ad8 *)_ZN12Unk_0209865c13func_0209868cEv(o))->func_02087c54() == 0xf) {
+            if (((PlayerSpNpcRecord *)_ZN10PlayerData14getSpNpcRecordEv(o))->getSableTalkCount() == 0xf) {
                 return TRUE;
             }
             break;
         case 3:
             Unk_020874e8_K k = UNK_020874E8_K;
-            if (func_020ae02c((u8 *)((u32)data_021d7350 + k)) == 3) {
+            if (NookShop_GetLevel((u8 *)((u32)gSaveData + k)) == 3) {
                 return TRUE;
             }
             break;
         case 1:
-            if (_ZN12Unk_02097ff413func_02098044Ej(o, 8) || _ZN12Unk_0206fe8013func_02070060Ev(data_021ed0a0)) {
+            if (_ZN10PlayerData8testFlagEj(o, 8) || _ZN10MuseumData10isCompleteEv(data_021ed0a0)) {
                 return TRUE;
             }
             break;
@@ -1309,156 +1106,156 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
     return FALSE;
 }
 
-extern "C" void *func_020874d8(void *p) {
-    func_020639bc(p);
+extern "C" void *LostChildRecord_Construct(void *p) {
+    TownId_Construct(p);
     return p;
 }
 
-extern "C" void *func_020874c8(void *p) {
-    func_020639b8(p);
+extern "C" void *LostChildRecord_Destruct(void *p) {
+    TownId_Destruct(p);
     return p;
 }
 
-extern "C" void func_0208747c(s32 n) {
+extern "C" void LostChild_AdvanceDays(s32 n) {
     if (n >= 1) {
-        u8 *const g = data_021d7350;
-        s32 v = ((Unk_020872fc *)data_021ed31a)->func_02087354() - n;
+        u8 *const g = gSaveData;
+        s32 v = ((LostChildRecord *)data_021ed31a)->getDaysLeft() - n;
         if (v < 0) v = 0;
         if (v <= 0) {
-            ((Unk_020872fc *)(g + 0x15fca))->func_02087368();
+            ((LostChildRecord *)(g + 0x15fca))->clear();
         } else {
-            ((Unk_020872fc *)(g + 0x15fca))->func_02087344((u8)v);
+            ((LostChildRecord *)(g + 0x15fca))->setDaysLeft((u8)v);
         }
-        func_02087390();
+        LostChild_LoadFromTown();
     }
 }
 
-extern "C" BOOL func_02087444() {
-    if (func_0209750c() != 0) {
-        Unk_020872fc *p = (Unk_020872fc *)_ZN12Unk_0209865c13func_020986a4Ev();
-        if (p->func_0208733c() == 0) {
-            if (Ns_02086b7c::func_020e77cc(p->func_02087354(), 1, 7) != 0) return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-extern "C" BOOL func_0208740c() {
-    if (func_0209750c() != 0) {
-        Unk_020872fc *p = (Unk_020872fc *)_ZN12Unk_0209865c13func_020986a4Ev();
-        if (p->func_0208733c() == 1) {
-            if (Ns_02086b7c::func_020e77cc(p->func_02087354(), 1, 7) != 0) return TRUE;
+extern "C" BOOL LostChild_IsKatieDue() {
+    if (PlayerData_GetCurrent() != 0) {
+        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv();
+        if (p->isKaitlinRole() == 0) {
+            if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
     }
     return FALSE;
 }
 
-extern "C" void func_020873e0() {
-    u8 *const g = data_021d7350;
-    if (func_0209750c() != 0 && g != 0) {
-        Ns_02086b7c::func_02116048(_ZN12Unk_0209865c13func_020986a4Ev(), g + 0x15fca, 12);
+extern "C" BOOL LostChild_IsKaitlinDue() {
+    if (PlayerData_GetCurrent() != 0) {
+        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv();
+        if (p->isKaitlinRole() == 1) {
+            if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+extern "C" void LostChild_SaveToTown() {
+    u8 *const g = gSaveData;
+    if (PlayerData_GetCurrent() != 0 && g != 0) {
+        Ns_02086b7c::MI_CpuCopy8(_ZN10PlayerData18getLostChildRecordEv(), g + 0x15fca, 12);
     }
 }
 
-extern "C" void func_02087390() {
-    u8 *const g = data_021d7350;
-    void *a = func_0209750c();
+extern "C" void LostChild_LoadFromTown() {
+    u8 *const g = gSaveData;
+    void *a = PlayerData_GetCurrent();
     if (a != 0 && g != 0) {
-        void *b = _ZN12Unk_0209865c13func_020986a4Ev();
-        Ns_02086b7c::func_02116048(g + 0x15fca, b, 12);
-        if (Ns_02086b7c::func_020e77cc(((Unk_020872fc *)(g + 0x15fca))->func_02087354(), 1, 7) == 0) _ZN12Unk_02097ff413func_02097ff4Ej(a, 0x33);
+        void *b = _ZN10PlayerData18getLostChildRecordEv();
+        Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
+        if (Ns_02086b7c::Math_IsInRange(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN10PlayerData9clearFlagEj(a, 0x33);
     }
 }
 
-void Unk_020872fc::func_02087368() {
-    func_020639a0(this);
-    unk_0a_0 = 0;
-    unk_0a_4 = 0;
-    unk_0a_5 = 0;
+void LostChildRecord::clear() {
+    TownId_Clear(this);
+    daysLeft = 0;
+    kaitlinRole = 0;
+    escorting = 0;
 }
 
-void Unk_020872fc::func_02087364() {}
+u16 *LostChildRecord::getTownId() { return (u16 *)this; }
 
-void Unk_020872fc::func_0208735c() { func_02063990(this); }
+void LostChildRecord::setTownId() { TownId_Assign(this); }
 
-u32 Unk_020872fc::func_02087354() { return unk_0a_0; }
+u32 LostChildRecord::getDaysLeft() { return daysLeft; }
 
-void Unk_020872fc::func_02087344(u8 v) { unk_0a_0 = v; }
+void LostChildRecord::setDaysLeft(u8 v) { daysLeft = v; }
 
-BOOL Unk_020872fc::func_0208733c() { return unk_0a_4; }
+BOOL LostChildRecord::isKaitlinRole() { return kaitlinRole; }
 
-void Unk_020872fc::func_02087328(u8 v) { unk_0a_4 = v; }
+void LostChildRecord::setKaitlinRole(u8 v) { kaitlinRole = v; }
 
-BOOL Unk_020872fc::func_02087314() {
-    if (unk_0a_5) return TRUE;
+BOOL LostChildRecord::isEscorting() {
+    if (escorting) return TRUE;
     return FALSE;
 }
 
-void Unk_020872fc::func_02087308() { unk_0a_5 = 1; }
+void LostChildRecord::setEscorting() { escorting = 1; }
 
-void Unk_020872fc::func_020872fc() { unk_0a_5 = 0; }
+void LostChildRecord::clearEscorting() { escorting = 0; }
 
-Unk_02087224 *Unk_02087224::func_020872ec() {
-    _ZN12Unk_02071e04C1Ev(this);
+BlancaFaceRecord *BlancaFaceRecord::construct() {
+    _ZN7PatternC1Ev(this);
     return this;
 }
 
-Unk_02087224 *Unk_02087224::func_020872dc() {
-    _ZN12Unk_02071e04D1Ev(this);
+BlancaFaceRecord *BlancaFaceRecord::destruct() {
+    _ZN7PatternD1Ev(this);
     return this;
 }
 
-void Unk_02087224::func_020872c8() {
-    unk_22a = 0;
-    func_0208729c();
+void BlancaFaceRecord::reset() {
+    visitState = 0;
+    resetPattern();
 }
 
-void Unk_02087224::func_020872c0() { func_020872c8(); }
+void BlancaFaceRecord::init() { reset(); }
 
-void Unk_02087224::func_0208729c() {
-    _ZN12Unk_02071e0413func_02071e10Ej(func_02087298(), 0xf);
-    _ZN12Unk_02071ed013func_0207200cEj(_ZN12Unk_02071e0413func_02071e04Ev(func_02087298()), 0);
+void BlancaFaceRecord::resetPattern() {
+    _ZN7Pattern4fillEj(getPattern(), 0xf);
+    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(getPattern()), 0);
 }
 
-void *Unk_02087224::func_02087298() {}
+void *BlancaFaceRecord::getPattern() {}
 
-void Unk_02087224::func_0208728c(u32 v) { unk_22a = v; }
+void BlancaFaceRecord::setState(u32 v) { visitState = v; }
 
-u8 Unk_02087224::func_02087280() { return unk_22a; }
+u8 BlancaFaceRecord::getState() { return visitState; }
 
-void Unk_02087224::func_02087274(u32 v) { unk_22b = v; }
+void BlancaFaceRecord::setConcept(u32 v) { concept = v; }
 
-u8 Unk_02087224::func_02087268() { return unk_22b; }
+u8 BlancaFaceRecord::getConcept() { return concept; }
 
-BOOL Unk_02087224::func_0208723c() {
-    if (_ZN12Unk_0209da4413func_0209e170Ej(data_021d7350, 0x13) == 0 && unk_22a == 2) return TRUE;
+BOOL BlancaFaceRecord::isBlancaDue() {
+    if (_ZN8SaveData8testFlagEj(gSaveData, 0x13) == 0 && visitState == 2) return TRUE;
     return FALSE;
 }
 
-void Unk_02087224::func_02087230(u32 v) { unk_228 = v; }
+void BlancaFaceRecord::setChecksum(u32 v) { checksum = v; }
 
-u16 Unk_02087224::func_02087224() { return unk_228; }
+u16 BlancaFaceRecord::getChecksum() { return checksum; }
 
-void Unk_02087210::func_02087220() {}
+void KatieVisitState::construct() {}
 
-void Unk_02087210::func_0208721c() {}
+void KatieVisitState::destruct() {}
 
-void Unk_02087210::func_02087210() {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
+void KatieVisitState::clear() {
+    posX = 0;
+    posZ = 0;
+    following = 0;
 }
 
-extern "C" BOOL func_0208709c(s32 x, s32 y, void *map) {
+extern "C" BOOL Field_IsClearSpot(s32 x, s32 y, void *map) {
     if (map == 0) goto fail;
-    if (func_02077f68() == 0) goto fail;
+    if (TownMap_IsUnitWalkable() == 0) goto fail;
     for (s32 i = 1; i <= 2; i++) {
         s32 ty = y + i;
         s32 hx = x >> 4;
         s32 hy = ty >> 4;
         s32 lx = x - (hx << 4);
-        u16 *p = func_0204ebd8(map, hx, hy, lx, ty - (hy << 4), 0);
-        if (p == 0 || Unk_0208709c_In(p) || func_0204bd14(p) != 0 || (func_0204b08c(p) == 0 && Unk_0208709c_Chk(p))) {
+        u16 *p = BlockMap_GetItemPtr(map, hx, hy, lx, ty - (hy << 4), 0);
+        if (p == 0 || Unk_0208709c_In(p) || Item_IsMarker(p) != 0 || (Item_IsTreeStage0(p) == 0 && Unk_0208709c_Chk(p))) {
             return FALSE;
         }
         p = Unk_0208709c_Cell(map, x, y - i);
@@ -1471,20 +1268,20 @@ fail:
     return FALSE;
 }
 
-void Unk_02086f84::func_02086fd0() {
-    void *map = func_0204da0c();
+void KatieVisitState::pickKatiePos() {
+    void *map = TownBlockMap_Get();
     if (map != 0) {
         s32 cnt = 0;
         s32 bx = 0, by = 0;
-        u32 *tbl = data_021cdda8;
+        u32 *tbl = sKatieSpotRows;
         s32 x, y;
-        func_02115fb4(tbl, 0, 0x80);
-        Ns_02086b7c::func_0204edf8(&bx, &by, 2, 2, 0, 0);
+        MI_CpuFill8(tbl, 0, 0x80);
+        Ns_02086b7c::FieldUnit_FromBlockUnit(&bx, &by, 2, 2, 0, 0);
         y = 0;
         do {
             x = 0;
             do {
-                if (func_0208709c(bx + x, by + y, map) != 0) {
+                if (Field_IsClearSpot(bx + x, by + y, map) != 0) {
                     tbl[0] |= 1 << x;
                     cnt++;
                 }
@@ -1494,8 +1291,8 @@ void Unk_02086f84::func_02086fd0() {
             y++;
         } while (y < 32);
         if (cnt > 0) {
-            s32 x2, y2; s32 r = Ns_02086b7c::func_02063b8c(cnt);
-            tbl = data_021cdda8;
+            s32 x2, y2; s32 r = Ns_02086b7c::Random_GlobalBelow(cnt);
+            tbl = sKatieSpotRows;
             y2 = 0;
             goto testy2;
 loopy2:
@@ -1504,9 +1301,9 @@ loopy2:
 loopx2:
             if (((tbl[0] >> x2) & 1) != 0) {
                 if (r == 0) {
-                    Unk_02086ec4_Vec3 v;
-                    Ns_02086b7c::func_0204ed8c(&v, bx + x2, by + y2);
-                    func_02086fc4(&v);
+                    VecFx32 v;
+                    Ns_02086b7c::FieldPos_FromUnitCenter(&v, bx + x2, by + y2);
+                    setPos(&v);
                     goto after;
                 }
                 r--;
@@ -1523,135 +1320,135 @@ testy2:
         }
     }
 end:
-    unk_08 = 0;
+    following = 0;
 }
 
-void Unk_02086f84::func_02086fc4(Unk_02086ec4_Vec3 *v) {
-    unk_00 = v->x;
-    unk_04 = v->z;
+void KatieVisitState::setPos(VecFx32 *v) {
+    posX = v->x;
+    posZ = v->z;
 }
 
-void Unk_02086f84::func_02086fb8(Unk_02086ec4_Vec3 *out) {
-    out->x = unk_00;
-    out->z = unk_04;
+void KatieVisitState::getPos(VecFx32 *out) {
+    out->x = posX;
+    out->z = posZ;
 }
 
-BOOL Unk_02086f84::func_02086fa8() {
-    if (unk_08 != 0) return TRUE;
+BOOL KatieVisitState::isFollowing() {
+    if (following != 0) return TRUE;
     return FALSE;
 }
 
-void Unk_02086f84::func_02086fa0() { unk_08 = 1; }
+void KatieVisitState::setFollowing() { following = 1; }
 
-void Unk_02086f84::func_02086f98() { unk_08 = 0; }
+void KatieVisitState::clearFollowing() { following = 0; }
 
-void Unk_02086f84::func_02086f90() {
-    unk_00 = 0;
-    unk_04 = 0;
+void ShopClosingTime::construct() {
+    raw[0] = 0;
+    raw[1] = 0;
 }
 
-void Unk_02086f84::func_02086f8c() {}
+void ShopClosingTime::destruct() {}
 
-void Unk_02086f84::func_02086f84() {
-    unk_00 = 0;
-    unk_04 = 0;
+void ShopClosingTime::clearClosingTime() {
+    raw[0] = 0;
+    raw[1] = 0;
 }
 
-void Unk_02086f84::func_02086f80() {}
+void ShopClosingTime::getTime() {}
 
-void Unk_02086f14::func_02086f68() {
-    func_0209d498(this);
-    unk_02 = 0x17;
-    unk_01 = 0;
-    unk_00 = 0;
+void ShopClosingTime::setClosingTimeToday() {
+    Clock_GetDateTime(this);
+    hour = 0x17;
+    minute = 0;
+    second = 0;
 }
 
-BOOL Unk_02086f14::func_02086f38() {
+BOOL ShopClosingTime::isPastClosingTime() {
     Unk_02086f38_Buf buf;
     buf.a = 0;
     buf.b = 0;
-    func_0209d498(&buf);
-    s32 t = func_0209d3d0(this, &buf, 0x3f);
+    Clock_GetDateTime(&buf);
+    s32 t = DateTime_Compare(this, &buf, 0x3f);
     BOOL r = FALSE;
     if (t == -1) r = TRUE;
     return r;
 }
 
-void Unk_02086f14::func_02086f34() {}
+void ResettiVisitFlag::construct() {}
 
-void Unk_02086f14::func_02086f30() {}
+void ResettiVisitFlag::destruct() {}
 
-void Unk_02086f14::func_02086f28() { unk_00 = 0; }
+void ResettiVisitFlag::clear() { isPending = 0; }
 
-BOOL Unk_02086f14::func_02086f18() {
-    if (unk_00 != 0) return TRUE;
+BOOL ResettiVisitFlag::isSet() {
+    if (isPending != 0) return TRUE;
     return FALSE;
 }
 
-void Unk_02086f14::func_02086f14(u32 v) { unk_00 = v; }
+void ResettiVisitFlag::set(u32 v) { isPending = v; }
 
-void Unk_02086ef0::func_02086f10() {}
+void TownTravelState::construct() {}
 
-void Unk_02086ef0::func_02086f0c() {}
+void TownTravelState::destruct() {}
 
-void Unk_02086ef0::func_02086f04() { unk_02 = 0; }
+void TownTravelState::clearMode() { mode = 0; }
 
-void Unk_02086ef0::func_02086f00(u32 v) { unk_02 = v; }
+void TownTravelState::setMode(u32 v) { mode = v; }
 
-u8 Unk_02086ef0::func_02086efc() { return unk_02; }
+u8 TownTravelState::getMode() { return mode; }
 
-void Unk_02086ef0::func_02086ef8(s32 v) { unk_00 = v; }
+void TownTravelState::setAngle(s32 v) { angle = v; }
 
-s16 Unk_02086ef0::func_02086ef0() { return unk_00; }
+s16 TownTravelState::getAngle() { return angle; }
 
-void Unk_02086c04::func_02086eec() {}
+void PeteFallState::construct() {}
 
-void Unk_02086c04::func_02086ee8() {}
+void PeteFallState::destruct() {}
 
-void Unk_02086c04::func_02086edc() { func_02115fb4(this, 0, 12); }
+void PeteFallState::clear() { MI_CpuFill8(this, 0, 12); }
 
-void Unk_02086c04::func_02086ed0(Unk_02086ec4_Vec3 *v) {
-    unk_00 = v->x;
-    unk_04 = v->z;
+void PeteFallState::setPos(VecFx32 *v) {
+    fallPosX = v->x;
+    fallPosZ = v->z;
 }
 
-void Unk_02086c04::func_02086ec4(Unk_02086ec4_Vec3 *out) {
-    out->x = unk_00;
-    out->z = unk_04;
+void PeteFallState::getPos(VecFx32 *out) {
+    out->x = fallPosX;
+    out->z = fallPosZ;
 }
 
-BOOL Unk_02086c04::func_02086eb0() {
-    if (unk_08_0) return TRUE;
+BOOL PeteFallState::hasFallPos() {
+    if (fallPosValid) return TRUE;
     return FALSE;
 }
 
-void Unk_02086c04::func_02086ea4() { unk_08_0 = 1; }
+void PeteFallState::markFallPos() { fallPosValid = 1; }
 
-void Unk_02086c04::func_02086e98() { unk_08_0 = 0; }
+void PeteFallState::unmarkFallPos() { fallPosValid = 0; }
 
-BOOL Unk_02086c04::func_02086e84() {
-    if (unk_08_1) return TRUE;
+BOOL PeteFallState::isVisitorActive() {
+    if (visitorActive) return TRUE;
     return FALSE;
 }
 
-void Unk_02086c04::func_02086e78() { unk_08_1 = 0; }
+void PeteFallState::clearVisitorActive() { visitorActive = 0; }
 
-void Unk_02086c04::func_02086e6c() { unk_08_1 = 1; }
+void PeteFallState::setVisitorActive() { visitorActive = 1; }
 
-s16 Unk_02086c04::func_02086e60() { return (s16)(unk_08_2 << 14); }
+s16 PeteFallState::getFacing() { return (s16)(facing << 14); }
 
-extern "C" BOOL func_02086e50(s32 x, s32 y, void *map) { return func_0208709c(y, x, map); }
+extern "C" BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map) { return Field_IsClearSpot(y, x, map); }
 
-extern "C" BOOL func_02086e48(s32 x, s32 y, void *map) { return func_0208709c(x, y, map); }
+extern "C" BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map) { return Field_IsClearSpot(x, y, map); }
 
-extern "C" s32 func_02086d78(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n) {
+extern "C" s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n) {
     s32 r, bit = 0, i = 0, cnt = 0, bi, ii, k;
     if (cur > limit) {
         s32 t = cur;
         cur = limit;
         limit = t;
     }
-    func_02115fb4(buf, 0, n * 2);
+    MI_CpuFill8(buf, 0, n * 2);
     k = cur;
     goto test1;
 loop1:
@@ -1670,7 +1467,7 @@ test1:
     if (k <= limit) goto loop1;
 done1:
     if (cnt > 0) {
-        r = Ns_02086b7c::func_02063b8c(cnt);
+        r = Ns_02086b7c::Random_GlobalBelow(cnt);
         bi = 0; ii = 0;
         goto test2;
 loop2:
@@ -1695,30 +1492,30 @@ fail:
     return 0;
 }
 
-BOOL Unk_02086c04::func_02086c04(s32 px, s32 flip) {
+BOOL PeteFallState::pickFallPos(s32 px, s32 flip) {
     s32 dir;
-    Unk_02086c04_Map *map = (Unk_02086c04_Map *)data_021c47c4;
+    Unk_02086c04_Map *map = (Unk_02086c04_Map *)gSceneBlockMap;
     if (map == 0) {
-        func_02086e98();
+        unmarkFallPos();
         return FALSE;
     }
     s32 f1, f2, w, h;
-    Unk_02086c04_Pair *sel = 0;
+    Vec2 *sel = 0;
     s32 sx = 0, sy = 0;
     s32 *dims = &map->w;
     w = dims[0];
     h = dims[1];
-    Unk_02086c04_Pair p1, p2;
+    Vec2 p1, p2;
     u16 buf1[4], buf2[4];
-    Unk_02086ec4_Vec3 v;
+    VecFx32 v;
     s32 a, b, c, d;
     s32 y;
-    p1.a = 0;
-    p1.b = 0;
-    p2.a = 0;
-    p2.b = 0;
+    p1.x = 0;
+    p1.y = 0;
+    p2.x = 0;
+    p2.y = 0;
     if (flip != 0) dir = -1; else dir = 1;
-    func_0204ee10(&sx, &sy, px);
+    FieldPos_ToUnit(&sx, &sy, px);
     a = sx + dir * 8 - flip;
     y = sy + 5;
     b = a;
@@ -1729,20 +1526,20 @@ BOOL Unk_02086c04::func_02086c04(s32 px, s32 flip) {
     goto test;
 loop:
     if (y < h) {
-        p1.b = y;
-        f1 = func_02086d78(&p1.a, func_02086e50, y, a, sx, map, buf1, 4);
+        p1.y = y;
+        f1 = Field_PickRandomInLine(&p1.x, Field_IsClearSpotYX, y, a, sx, map, buf1, 4);
         if (a > 0 && a < w - 1) a += dir;
         y++;
     }
     if (b >= 0 && b < w) {
-        p2.a = b;
-        f2 = func_02086d78(&p2.b, func_02086e48, b, sy, c, map, buf2, 4);
+        p2.x = b;
+        f2 = Field_PickRandomInLine(&p2.y, Field_IsClearSpotXY, b, sy, c, map, buf2, 4);
         b += dir;
         if (c < h - 1) c++;
     }
     if (f1 != 0) {
         if (f2 != 0) {
-            if (Ns_02086b7c::func_02063b8c(10) & 1) {
+            if (Ns_02086b7c::Random_GlobalBelow(10) & 1) {
                 sel = &p2;
                 goto done;
             }
@@ -1759,104 +1556,104 @@ test:
     if (b < w) goto loop;
 done:
     if (sel != 0) {
-        Ns_02086b7c::func_0204ed8c(&v, sel->a, sel->b);
-        func_02086ed0(&v);
-        unk_08_2 = Ns_02086b7c::func_02063b8c(4);
-        func_02086ea4();
+        Ns_02086b7c::FieldPos_FromUnitCenter(&v, sel->x, sel->y);
+        setPos(&v);
+        facing = Ns_02086b7c::Random_GlobalBelow(4);
+        markFallPos();
         return TRUE;
     }
-    func_02086e98();
+    unmarkFallPos();
     return FALSE;
 }
 
-void Unk_02086b7c::func_02086c00() {}
+void VisitorSpawnFlags::construct() {}
 
-void Unk_02086b7c::func_02086bfc() {}
+void VisitorSpawnFlags::destruct() {}
 
-void Unk_02086b7c::func_02086bf0() { func_02115fb4(this, 0, 1); }
+void VisitorSpawnFlags::clear() { MI_CpuFill8(this, 0, 1); }
 
-void Unk_02086b7c::func_02086ba8() {
-    unk_00_2 = Ns_02086b7c::func_02063b8c(3);
-    unk_00_4 = Ns_02086b7c::func_02063b8c(4);
-    unk_00_1 = 1;
+void VisitorSpawnFlags::rollGulliverSpot() {
+    gulliverSpot = Ns_02086b7c::Random_GlobalBelow(3);
+    gulliverFacing = Ns_02086b7c::Random_GlobalBelow(4);
+    gulliverSpotRolled = 1;
 }
 
-BOOL Unk_02086b7c::func_02086b94() {
-    if (unk_00_0) return TRUE;
+BOOL VisitorSpawnFlags::isVisitorSpawned() {
+    if (visitorSpawned) return TRUE;
     return FALSE;
 }
 
-void Unk_02086b7c::func_02086b88() { unk_00_0 = 0; }
+void VisitorSpawnFlags::clearVisitorSpawned() { visitorSpawned = 0; }
 
-void Unk_02086b7c::func_02086b7c() { unk_00_0 = 1; }
+void VisitorSpawnFlags::setVisitorSpawned() { visitorSpawned = 1; }
 
-void Unk_02086af0::func_02086af0(void *v, u16 *out, Unk_020868cc_Vec3 *p) {
-    if (f1 == 0) _ZN12Unk_02086b7c13func_02086ba8Ev(this);
-    Unk_020868cc_Vec3 t;
-    const Unk_02086af0_Off *tb = data_020cf270;
-    const Unk_02086af0_Off *e = &tb[c];
+void VisitorSpawnFlags::getGulliverSpawn(void *v, u16 *out, VecFx32 *p) {
+    if (gulliverSpotRolled == 0) _ZN17VisitorSpawnFlags16rollGulliverSpotEv(this);
+    VecFx32 t;
+    const VecXZ *tb = sGulliverSpotOffsets;
+    const VecXZ *e = &tb[gulliverSpot];
     s32 z = p->z + e->z;
-    s32 x = p->x + tb[c].x;
+    s32 x = p->x + tb[gulliverSpot].x;
     t.x = x;
     t.y = 0;
     t.z = z;
-    func_0204edd8(v, &t);
-    if (data_021e58a6.func_02086274() >= 5) {
-        *out = data_020cf268[c];
-    } else if (data_021e58a6.func_02086244()) {
+    FieldPos_SnapToUnitCenter(v, &t);
+    if (data_021e58a6.getPartCount() >= 5) {
+        *out = sGulliverRepairedAngles[gulliverSpot];
+    } else if (data_021e58a6.isStarted()) {
         *out = 0;
     } else {
-        *out = d << 14;
+        *out = gulliverFacing << 14;
     }
 }
 
-extern "C" void func_02086aec() {}
+extern "C" void VisitorPos_Construct() {}
 
-extern "C" void func_02086ae8() {}
+extern "C" void VisitorPos_Destruct() {}
 
-extern "C" void func_02086adc(void *p) {
-    func_02115fb4(p, 0, 8);
+extern "C" void VisitorPos_Clear(void *p) {
+    MI_CpuFill8(p, 0, 8);
 }
 
-s32 Unk_020868cc::func_02086a80(s32 *pos, void *ctx) {
+s32 VisitorPos::countFreeInAcre(s32 *pos, void *ctx) {
     s32 bx = 0, by = 0;
     s32 n = 0;
     s32 x, y;
-    func_0204edf8(&bx, &by, pos[0], pos[1], 0, 0);
+    FieldUnit_FromBlockUnit(&bx, &by, pos[0], pos[1], 0, 0);
     s32 xe = bx + 16;
     s32 ye = by + 16;
     for (y = by; y < ye; y++) {
         for (x = bx; x < xe; x++) {
-            if (func_0208709c(x, y, ctx)) n++;
+            if (Field_IsClearSpot(x, y, ctx)) n++;
         }
     }
     return n;
 }
 
-BOOL Unk_020868cc::func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
+BOOL VisitorPos::pickFreeInAcre(VecFx32 *out, s32 *pos, void *ctx) {
     s32 n = 0;
     s32 bx = 0, by = 0;
     u16 arr[16];
     s32 x, y;
-    func_02115fb4(arr, 0, 0x20);
-    func_0204edf8(&bx, &by, pos[0], pos[1], 0, 0);
+    MI_CpuFill8(arr, 0, 0x20);
+    FieldUnit_FromBlockUnit(&bx, &by, pos[0], pos[1], 0, 0);
     for (y = 0; y < 16; y++) {
         u16 *pp;
         for (x = 0, pp = &arr[y]; x < 16; x++) {
-            if (func_0208709c(bx + x, by + y, ctx)) {
+            if (Field_IsClearSpot(bx + x, by + y, ctx)) {
                 *pp |= 1 << x;
                 n++;
             }
         }
     }
     if (n > 0) {
-        s32 r = Ns_02086204::func_02063b8c(n);
+        s32 r = Ns_02086204::Random_GlobalBelow(n);
         for (x = 0; x < 16; x++) {
             u16 *qq;
             for (y = 0, qq = &arr[x]; y < 16; y++) {
                 if ((*qq >> y) & 1) {
                     if (r == 0) {
-                        func_0204ed8c(out, bx + y, by + x);
+                        FieldPos_FromUnitCenter(out, bx + y, by + x);
                         return TRUE;
                     }
                     r--;
@@ -1867,36 +1664,36 @@ BOOL Unk_020868cc::func_020869c8(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
     return FALSE;
 }
 
-BOOL Unk_020868cc::func_020868e4() {
+BOOL VisitorPos::pickRandomPos() {
     u8 buf[4];
     s32 xy[2];
-    Unk_020868cc_Vec3 out;
+    VecFx32 out;
     s32 n;
-    Unk_020868e4_Ctx *o = (Unk_020868e4_Ctx *)func_0204da0c();
+    TownBlockMap *o = (TownBlockMap *)TownBlockMap_Get();
     if (o != NULL) {
         n = 0;
         xy[0] = 0;
         xy[1] = 0;
-        s32 *s = o->v;
+        s32 *s = &o->width;
         s32 w = s[0];
         s32 h = s[1];
-        func_02115fb4(buf, 0, 4);
+        MI_CpuFill8(buf, 0, 4);
         for (xy[1] = 1; xy[1] < h - 1; xy[1]++) {
             for (xy[0] = 1; xy[0] < w - 1; xy[0]++) {
-                if (func_02086a80(xy, o)) {
+                if (countFreeInAcre(xy, o)) {
                     buf[xy[1] - 1] |= 1 << (xy[0] - 1);
                     n++;
                 }
             }
         }
         if (n > 0) {
-            s32 r = Ns_02086204::func_02063b8c(n);
+            s32 r = Ns_02086204::Random_GlobalBelow(n);
             for (xy[1] = 1; xy[1] < h - 1; xy[1]++) {
                 for (xy[0] = 1; xy[0] < w - 1; xy[0]++) {
                     if ((buf[xy[1] - 1] >> (xy[0] - 1)) & 1) {
                         if (r == 0) {
-                            func_020869c8(&out, xy, o);
-                            func_020868dc(out.x, out.z);
+                            pickFreeInAcre(&out, xy, o);
+                            setPos(out.x, out.z);
                             return TRUE;
                         }
                         r--;
@@ -1908,587 +1705,587 @@ BOOL Unk_020868cc::func_020868e4() {
     return FALSE;
 }
 
-void Unk_020868cc::func_020868dc(s32 a, s32 b) {
+void VisitorPos::setPos(s32 a, s32 b) {
     x = a;
     z = b;
 }
 
-void Unk_020868cc::func_020868cc(Unk_020868cc_Vec3 *out) const {
+void VisitorPos::getPos(VecFx32 *out) const {
     out->x = x;
     out->z = z;
     out->y = 0;
 }
 
-extern "C" void func_020868c8() {}
+extern "C" void TurnipMarket_Construct() {}
 
-extern "C" void func_020868c4() {}
+extern "C" void TurnipMarket_Destruct() {}
 
-void Unk_02086340::func_020868a8() {
-    unk_18 = 0xff;
-    unk_08 = 0;
-    unk_00 = 1;
-    unk_01 = 1;
-    unk_02 = 0;
+void TurnipMarket::clear() {
+    pattern = 0xff;
+    peakPrice = 0;
+    weekStartDay = 1;
+    weekStartMonth = 1;
+    weekStartYear = 0;
     unk_03 = 0;
-    unk_04 = 1;
-    unk_05 = 1;
-    unk_06 = 0;
+    purchaseDay = 1;
+    purchaseMonth = 1;
+    purchaseYear = 0;
     unk_07 = 0;
 }
 
-void Unk_02086340::func_02086878() {
+void TurnipMarket::init() {
     Unk_02086340_T t;
-    func_02086578(0);
+    generateWeek(0);
     t.w0 = 0;
     t.w1 = 0;
-    func_0209d498(&t);
-    func_020863fc(&t);
-    func_02086340(&t);
+    Clock_GetDateTime(&t);
+    setWeekDate(&t);
+    setPurchaseDate(&t);
 }
 
-u8 Unk_02086340::func_02086854(s32 k, s32 z) {
-    s32 t = func_02063b74(z);
-    return (u8)((unk_0a[0] * (k + t)) >> 12);
+u8 TurnipMarket::calcPrice(s32 k, s32 z) {
+    s32 t = Random_GlobalBelow2(z);
+    return (u8)((prices[0] * (k + t)) >> 12);
 }
 
-void Unk_02086340::func_02086824(s32 i, s32 n) {
+void TurnipMarket::fillDecreasing(s32 i, s32 n) {
     s32 k = 0xca4;
     for (; i < n; k -= 0x66, i++) {
-        unk_0a[i] = func_02086854(k, 0x29);
+        prices[i] = calcPrice(k, 0x29);
     }
 }
 
-u8 Unk_02086340::func_02086810() {
-    return func_02086854(0x666, 0x68f);
+u8 TurnipMarket::calcLowPrice() {
+    return calcPrice(0x666, 0x68f);
 }
 
-u8 Unk_02086340::func_020867fc() {
-    return func_02086854(0xccd, 0x9c3);
+u8 TurnipMarket::calcMidPrice() {
+    return calcPrice(0xccd, 0x9c3);
 }
 
-u8 Unk_02086340::func_020867e8() {
-    return func_02086854(0x1666, 0x9c3);
+u8 TurnipMarket::calcHighPrice() {
+    return calcPrice(0x1666, 0x9c3);
 }
 
-void Unk_02086340::func_02086768() {
-    s32 n = Ns_02086204::func_02063b8c(6) + 7;
-    func_02086824(2, n - 3);
-    unk_0a[n - 3] = func_020867fc();
-    unk_0a[n - 2] = func_020867fc();
-    unk_0a[n] = func_02086854(0x1b33, 0x4f6);
-    unk_0a[n - 1] = func_02086854(0x168f, 0x4a4);
-    unk_0a[n + 1] = func_02086854(0x168f, 0x4a4);
-    func_02086824(n + 2, 0xe);
+void TurnipMarket::generateSmallSpike() {
+    s32 n = Ns_02086204::Random_GlobalBelow(6) + 7;
+    fillDecreasing(2, n - 3);
+    prices[n - 3] = calcMidPrice();
+    prices[n - 2] = calcMidPrice();
+    prices[n] = calcPrice(0x1b33, 0x4f6);
+    prices[n - 1] = calcPrice(0x168f, 0x4a4);
+    prices[n + 1] = calcPrice(0x168f, 0x4a4);
+    fillDecreasing(n + 2, 0xe);
 }
 
-s32 Unk_02086340::func_02086740() {
-    s32 t = func_02063b74(0x419a);
-    unk_08 = (unk_0a[0] * (t + 0x2000)) >> 12;
+s32 TurnipMarket::rollPeakPrice() {
+    s32 t = Random_GlobalBelow2(0x419a);
+    peakPrice = (prices[0] * (t + 0x2000)) >> 12;
     return 0;
 }
 
-void Unk_02086340::func_02086578(s32 flag) {
-    if (unk_18 != 0xff) {
-        s32 r = Ns_02086204::func_02063b8c(0x65);
-        switch (unk_18) {
+void TurnipMarket::generateWeek(s32 flag) {
+    if (pattern != 0xff) {
+        s32 r = Ns_02086204::Random_GlobalBelow(0x65);
+        switch (pattern) {
         case 0:
-            if (r < 0x1e) unk_18 = 1;
-            else if (r < 0x41) unk_18 = 3;
-            else if (r < 0x50) unk_18 = 2;
+            if (r < 0x1e) pattern = 1;
+            else if (r < 0x41) pattern = 3;
+            else if (r < 0x50) pattern = 2;
             break;
         case 1:
-            if (r < 0x14) unk_18 = 3;
-            else if (r < 0x41) unk_18 = 0;
-            else if (r < 0x55) unk_18 = 2;
+            if (r < 0x14) pattern = 3;
+            else if (r < 0x41) pattern = 0;
+            else if (r < 0x55) pattern = 2;
             break;
         case 2:
-            if (r < 0x2d) unk_18 = 1;
-            else if (r < 0x46) unk_18 = 3;
-            else if (r < 0x5f) unk_18 = 0;
+            if (r < 0x2d) pattern = 1;
+            else if (r < 0x46) pattern = 3;
+            else if (r < 0x5f) pattern = 0;
             break;
         case 3:
-            if (r < 0x19) unk_18 = 1;
-            else if (r < 0x46) unk_18 = 0;
-            else if (r < 0x55) unk_18 = 2;
+            if (r < 0x19) pattern = 1;
+            else if (r < 0x46) pattern = 0;
+            else if (r < 0x55) pattern = 2;
             break;
         }
-        if (flag != 0) unk_18 = 2;
+        if (flag != 0) pattern = 2;
     } else {
-        unk_18 = Ns_02086204::func_02063b8c(4);
+        pattern = Ns_02086204::Random_GlobalBelow(4);
     }
-    unk_08 = 0;
-    func_02115fb4(&unk_0a[0], 0, 0xe);
-    unk_0a[0] = Ns_02086204::func_02063b8c(0x15) + 0x5a;
-    unk_0a[1] = unk_0a[0];
-    switch (unk_18) {
+    peakPrice = 0;
+    MI_CpuFill8(&prices[0], 0, 0xe);
+    prices[0] = Ns_02086204::Random_GlobalBelow(0x15) + 0x5a;
+    prices[1] = prices[0];
+    switch (pattern) {
     case 0:
-        unk_0a[2] = func_020867fc();
-        unk_0a[3] = func_02086810();
-        unk_0a[4] = func_02086810();
-        unk_0a[5] = func_02086810();
-        unk_0a[6] = func_020867fc();
-        unk_0a[7] = func_020867fc();
-        unk_0a[8] = func_020867fc();
-        unk_0a[9] = func_02086810();
-        unk_0a[10] = func_02086810();
-        unk_0a[11] = func_020867fc();
-        unk_0a[12] = func_020867fc();
-        unk_0a[13] = func_020867fc();
+        prices[2] = calcMidPrice();
+        prices[3] = calcLowPrice();
+        prices[4] = calcLowPrice();
+        prices[5] = calcLowPrice();
+        prices[6] = calcMidPrice();
+        prices[7] = calcMidPrice();
+        prices[8] = calcMidPrice();
+        prices[9] = calcLowPrice();
+        prices[10] = calcLowPrice();
+        prices[11] = calcMidPrice();
+        prices[12] = calcMidPrice();
+        prices[13] = calcMidPrice();
         break;
     case 1: {
-        s32 n = Ns_02086204::func_02063b8c(4) + 8;
-        unk_0a[n] = func_02086740();
-        func_02086824(2, n - 2);
-        unk_0a[n - 1] = func_020867e8();
-        unk_0a[n + 1] = func_020867e8();
-        unk_0a[n - 2] = func_020867fc();
-        unk_0a[n + 2] = func_020867fc();
-        func_02086824(n + 3, 0xe);
+        s32 n = Ns_02086204::Random_GlobalBelow(4) + 8;
+        prices[n] = rollPeakPrice();
+        fillDecreasing(2, n - 2);
+        prices[n - 1] = calcHighPrice();
+        prices[n + 1] = calcHighPrice();
+        prices[n - 2] = calcMidPrice();
+        prices[n + 2] = calcMidPrice();
+        fillDecreasing(n + 3, 0xe);
         break;
     }
     case 2:
-        func_02086824(2, 0xe);
+        fillDecreasing(2, 0xe);
         break;
     case 3:
-        func_02086768();
+        generateSmallSpike();
         break;
     }
 }
 
-u16 Unk_02086340::func_0208653c() {
+u16 TurnipMarket::getPrice() {
     Unk_02086340_T t;
     s32 i = 0;
     t.w0 = 0;
     t.w1 = 0;
-    func_0209d498(&t);
+    Clock_GetDateTime(&t);
     if (((u8 *)&t)[2] >= 12) i++;
-    s32 k = func_0209cef4();
-    u8 b = unk_0a[k + k + i];
+    s32 k = Clock_GetWeekday();
+    u8 b = prices[k + k + i];
     u16 r = b;
     if (r == 0) {
-        u16 v = unk_08;
+        u16 v = peakPrice;
         if (v != 0) r = v;
     }
     return r;
 }
 
-void Unk_02086340::func_020864f8() {
+void TurnipMarket::spoilOnReset() {
     Unk_02086340_T t;
-    if (func_0206e844() != 0 || func_0206e850() != 0) {
+    if (MenuCtrl_IsClockMovedForward() != 0 || MenuCtrl_IsClockMovedBack() != 0) {
         t.w0 = 0;
         t.w1 = 0;
-        func_0209d498(&t);
-        func_02086578(1);
-        func_020863fc(&t);
-        func_02086340(&t);
+        Clock_GetDateTime(&t);
+        generateWeek(1);
+        setWeekDate(&t);
+        setPurchaseDate(&t);
     }
 }
 
-void Unk_02086340::func_02086444(s32 d) {
+void TurnipMarket::updateDay(s32 d) {
     struct {
         Unk_02086340_T a, b;
     } l;
-    func_0209cffc(&l.a, this, 6, 0, 0);
+    DateTime_Make(&l.a, this, 6, 0, 0);
     l.b.w0 = 0;
     l.b.w1 = 0;
-    func_0209d498(&l.b);
+    Clock_GetDateTime(&l.b);
     if (LB(0xa) < 6) {
-        func_0209d164(&l.b, 1);
+        DateTime_SubDays(&l.b, 1);
         LB(0xa) = 6;
         LB(9) = 0;
         LB(8) = 0;
     }
-    s32 r = func_0209d3d0(&l.b, &l.a, 0x38);
-    func_02086388();
+    s32 r = DateTime_Compare(&l.b, &l.a, 0x38);
+    checkTurnipExpiry();
     if (r == 1) {
-        s32 t = func_0209ceac(LB(5), LB(4), LB(3));
-        s32 u = func_0209ceac(LB(0xd), LB(0xc), LB(0xb));
-        if (u < t || func_0209d3a4(&l.a, &l.b) >= 7) {
-            func_02086578(0);
-            func_020863fc(&l.b);
+        s32 t = Date_GetWeekday(LB(5), LB(4), LB(3));
+        s32 u = Date_GetWeekday(LB(0xd), LB(0xc), LB(0xb));
+        if (u < t || DateTime_DiffDays(&l.a, &l.b) >= 7) {
+            generateWeek(0);
+            setWeekDate(&l.b);
         }
     } else if (d < 0) {
-        func_02086578(1);
-        func_020863fc(&l.b);
-        func_02086340(&l.b);
+        generateWeek(1);
+        setWeekDate(&l.b);
+        setPurchaseDate(&l.b);
     }
 }
 
-void Unk_02086340::func_020863fc(void *src) {
+void TurnipMarket::setWeekDate(void *src) {
     Unk_02086340_T t;
     t.w0 = 0;
     t.w1 = 0;
     if (src == NULL) {
-        func_0209d498(&t);
+        Clock_GetDateTime(&t);
     } else {
-        func_02116048(src, &t, 8);
+        MI_CpuCopy8(src, &t, 8);
     }
-    if (((u8 *)&t)[2] < 6) func_0209d164(&t, 1);
-    unk_02 = ((u8 *)&t)[5];
-    unk_01 = ((u8 *)&t)[4];
-    unk_00 = ((u8 *)&t)[3];
+    if (((u8 *)&t)[2] < 6) DateTime_SubDays(&t, 1);
+    weekStartYear = ((u8 *)&t)[5];
+    weekStartMonth = ((u8 *)&t)[4];
+    weekStartDay = ((u8 *)&t)[3];
 }
 
-void Unk_02086340::func_02086388() {
+void TurnipMarket::checkTurnipExpiry() {
     struct {
         Unk_02086340_T a, b;
     } l;
-    func_0209cffc(&l.a, &unk_04, 6, 0, 0);
+    DateTime_Make(&l.a, &purchaseDay, 6, 0, 0);
     l.b.w0 = 0;
     l.b.w1 = 0;
-    func_0209d498(&l.b);
+    Clock_GetDateTime(&l.b);
     if (LB(0xa) < 6) {
-        func_0209d164(&l.b, 1);
+        DateTime_SubDays(&l.b, 1);
         LB(0xa) = 6;
         LB(9) = 0;
         LB(8) = 0;
     }
-    if (func_0209d3d0(&l.b, &l.a, 0x38) == 1) {
-        if (func_0209d3a4(&l.a, &l.b) >= 7) {
-            _ZN12Unk_0209da4413func_0209e120Ej(data_021d7350, 4);
-            func_02086340(&l.b);
+    if (DateTime_Compare(&l.b, &l.a, 0x38) == 1) {
+        if (DateTime_DiffDays(&l.a, &l.b) >= 7) {
+            _ZN8SaveData9clearFlagEj(gSaveData, 4);
+            setPurchaseDate(&l.b);
         }
     }
 }
 
-void Unk_02086340::func_02086340(void *src) {
+void TurnipMarket::setPurchaseDate(void *src) {
     Unk_02086340_T t;
     t.w0 = 0;
     t.w1 = 0;
     if (src == NULL) {
-        func_0209d498(&t);
+        Clock_GetDateTime(&t);
     } else {
-        func_02116048(src, &t, 8);
+        MI_CpuCopy8(src, &t, 8);
     }
-    if (((u8 *)&t)[2] < 6) func_0209d164(&t, 1);
-    unk_06 = ((u8 *)&t)[5];
-    unk_05 = ((u8 *)&t)[4];
-    unk_04 = ((u8 *)&t)[3];
+    if (((u8 *)&t)[2] < 6) DateTime_SubDays(&t, 1);
+    purchaseYear = ((u8 *)&t)[5];
+    purchaseMonth = ((u8 *)&t)[4];
+    purchaseDay = ((u8 *)&t)[3];
 }
 
-Unk_02086328::Unk_02086328() {
-    _ZN12Unk_020940a0C1EPv(this);
-    unk_16 = 0xfff1;
+ReddLastSale::ReddLastSale() {
+    _ZN8PlayerIdC1EPv(this);
+    item = 0xfff1;
 }
 
-Unk_02086328::~Unk_02086328() {
-    _ZN12Unk_020940a0C1Ev(this);
+ReddLastSale::~ReddLastSale() {
+    _ZN8PlayerIdC1Ev(this);
 }
 
-void Unk_02086328::func_02086300() {
-    Ns_02086204::_ZN12Unk_020940a013func_02094294Ev(this);
-    unk_16 = 0xfff1;
+void ReddLastSale::clear() {
+    Ns_02086204::_ZN8PlayerId5clearEv(this);
+    item = 0xfff1;
 }
 
-extern "C" void func_020862f8(Unk_02086328 *p) {
-    p->func_02086300();
+extern "C" void ReddLastSale_Clear(ReddLastSale *p) {
+    p->clear();
 }
 
-extern "C" void func_020862f4() {}
+extern "C" void ReddLastSale_GetBuyer() {}
 
-void Unk_02086328::func_020862a8(const Unk_02086328 *o) {
-    unk_00 = o->unk_00;
-    unk_02 = o->unk_02;
-    unk_0a = o->unk_0a;
-    unk_0c = o->unk_0c;
-    unk_14 = o->unk_14;
+void ReddLastSale::setBuyer(const ReddLastSale *o) {
+    townId = o->townId;
+    townName = o->townName;
+    playerId = o->playerId;
+    playerName = o->playerName;
+    gender = o->gender;
     unk_15 = o->unk_15;
 }
 
-void Unk_02086328::func_020862a0(const Unk_02086328 *o) {
-    unk_16 = o->unk_00;
+void ReddLastSale::setItem(const ReddLastSale *o) {
+    item = o->townId;
 }
 
-void Unk_02086328::func_02086298(const Unk_02086328 *o) {
-    unk_00 = o->unk_16;
+void ReddLastSale::copyItemFrom(const ReddLastSale *o) {
+    townId = o->item;
 }
 
-extern "C" void func_02086294() {}
+extern "C" void GulliverQuest_Construct() {}
 
-extern "C" void func_02086290() {}
+extern "C" void GulliverQuest_Destruct() {}
 
-extern "C" void func_02086284(void *p) {
-    func_02115fb4(p, 0, 1);
+extern "C" void GulliverQuest_Clear(void *p) {
+    MI_CpuFill8(p, 0, 1);
 }
 
-extern "C" void func_0208627c(void *p) {
-    func_02086284(p);
+extern "C" void GulliverQuest_Init(void *p) {
+    GulliverQuest_Clear(p);
 }
 
-s32 Unk_02086238::func_02086274() {
+s32 GulliverQuest::getPartCount() {
     return cnt;
 }
 
-void Unk_02086238::func_02086258() {
+void GulliverQuest::addPart() {
     cnt = cnt + 1;
 }
 
-BOOL Unk_02086238::func_02086244() {
+BOOL GulliverQuest::isStarted() {
     if (flag == 1) return TRUE;
     return FALSE;
 }
 
-void Unk_02086238::func_02086238() {
+void GulliverQuest::start() {
     flag = 1;
 }
 
-extern "C" void func_02086234() {}
+extern "C" void RoostGuestRoll_Construct() {}
 
-extern "C" void func_02086230() {}
+extern "C" void RoostGuestRoll_Destruct() {}
 
-void Unk_0208620c::func_0208620c() {
-    a = 0;
-    b = 0;
-    c = 0;
-    d = 0;
+void RoostGuestRoll::clear() {
+    morningGuest = 0;
+    noonGuest = 0;
+    afternoonGuest = 0;
+    lateGuest = 0;
 }
 
-extern "C" void func_02086204(void *p) {
-    _ZN12Unk_02085f7c13func_02085fb4Ev(p);
+extern "C" void RoostGuestRoll_Init(void *p) {
+    _ZN14RoostGuestRoll4rollEv(p);
 }
 
-void Unk_02085f7c::func_02085fb4() {
+void RoostGuestRoll::roll() {
     u32 a, b, c;
-    unk_00_0 = func_02063b8c(2);
-    unk_00_3 = 1;
-    a = func_02063b8c(100);
-    b = func_02063b8c(100);
-    c = func_02063b8c(100);
-    switch (func_0209cef4()) {
+    morningGuest = Random_GlobalBelow(2);
+    lateGuest = 1;
+    a = Random_GlobalBelow(100);
+    b = Random_GlobalBelow(100);
+    c = Random_GlobalBelow(100);
+    switch (Clock_GetWeekday()) {
     case 6:
-        if (func_020e77cc(a, 0, 0x4a)) unk_00_1 = 0;
-        else if (func_020e77cc(a, 0x4b, 0x54)) unk_00_1 = 1;
-        else unk_00_1 = 2;
-        if (func_020e77cc(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (func_020e77cc(b, 0x4b, 0x54)) unk_00_2 = 1;
-        else unk_00_2 = 2;
+        if (Math_IsInRange(a, 0, 0x4a)) noonGuest = 0;
+        else if (Math_IsInRange(a, 0x4b, 0x54)) noonGuest = 1;
+        else noonGuest = 2;
+        if (Math_IsInRange(b, 0, 0x4a)) afternoonGuest = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x54)) afternoonGuest = 1;
+        else afternoonGuest = 2;
         break;
     case 0:
-        if (func_020e77cc(a, 0, 0x31)) unk_00_1 = 0;
-        else if (func_020e77cc(a, 0x32, 0x3b)) unk_00_1 = 1;
-        else if (func_020e77cc(a, 0x3c, 0x46)) unk_00_1 = 2;
-        else unk_00_1 = 4;
-        if (func_020e77cc(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (func_020e77cc(b, 0x4b, 0x54)) unk_00_2 = 1;
-        else if (func_020e77cc(b, 0x55, 0x5e)) unk_00_2 = 2;
-        else unk_00_2 = 3;
+        if (Math_IsInRange(a, 0, 0x31)) noonGuest = 0;
+        else if (Math_IsInRange(a, 0x32, 0x3b)) noonGuest = 1;
+        else if (Math_IsInRange(a, 0x3c, 0x46)) noonGuest = 2;
+        else noonGuest = 4;
+        if (Math_IsInRange(b, 0, 0x4a)) afternoonGuest = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x54)) afternoonGuest = 1;
+        else if (Math_IsInRange(b, 0x55, 0x5e)) afternoonGuest = 2;
+        else afternoonGuest = 3;
         break;
     default:
-        if (func_020e77cc(a, 0, 0x4a)) unk_00_1 = 0;
-        else if (func_020e77cc(a, 0x4b, 0x55)) unk_00_1 = 1;
-        else unk_00_1 = 2;
-        if (func_020e77cc(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (func_020e77cc(b, 0x4b, 0x55)) unk_00_2 = 1;
-        else unk_00_2 = 2;
-        if (func_020e77cc(c, 0, 0x1d) && func_020ae02c(data_021ed104) == 3) unk_00_3 = 1;
-        else unk_00_3 = 0;
+        if (Math_IsInRange(a, 0, 0x4a)) noonGuest = 0;
+        else if (Math_IsInRange(a, 0x4b, 0x55)) noonGuest = 1;
+        else noonGuest = 2;
+        if (Math_IsInRange(b, 0, 0x4a)) afternoonGuest = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x55)) afternoonGuest = 1;
+        else afternoonGuest = 2;
+        if (Math_IsInRange(c, 0, 0x1d) && NookShop_GetLevel(data_021ed104) == 3) lateGuest = 1;
+        else lateGuest = 0;
         break;
     }
-    if (unk_00_1 == unk_00_2) unk_00_2 = 0;
+    if (noonGuest == afternoonGuest) afternoonGuest = 0;
 }
 
-BOOL Unk_02085f7c::func_02085fa0() { if (unk_00_0) return TRUE; return FALSE; }
+BOOL RoostGuestRoll::hasMorningGuest() { if (morningGuest) return TRUE; return FALSE; }
 
-u32 Unk_02085f7c::func_02085f98() { return unk_00_1; }
+u32 RoostGuestRoll::getNoonGuest() { return noonGuest; }
 
-u32 Unk_02085f7c::func_02085f90() { return unk_00_2; }
+u32 RoostGuestRoll::getAfternoonGuest() { return afternoonGuest; }
 
-BOOL Unk_02085f7c::func_02085f7c() { if (unk_00_3) return TRUE; return FALSE; }
+BOOL RoostGuestRoll::hasLateGuest() { if (lateGuest) return TRUE; return FALSE; }
 
-void Unk_02085810::func_02085df0() {
-    if (_ZN12Unk_020940a013func_02094218Ev(this) == 0 && _ZN12Unk_02002fc813func_020030b4Ev(&unk_16) == 0) {
-        _ZN12Unk_0209da4413func_0209e120Ej(data_021d7350, 0xf);
+void ContestRecord::postResultNotice() {
+    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&holderVillager) == 0) {
+        _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
     }
-    if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
-    if (_ZN12Unk_0209da4413func_0209e170Ej(data_021d7350, 0xf) == 0) return;
-    Unk_02085df0_Rec rec;
-    if (_ZN12Unk_020940a013func_02094218Ev(this) != 0) _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(this, &rec);
-    else _ZN12Unk_02002fc813func_02002fc8Ej(&unk_16, &rec);
-    if ((u8)(unk_37 + 0xff) <= 1) {
-        func_0203ce38(0, unk_35);
-        func_0203ce24(1, unk_34);
-        func_0203ce4c(4, &rec);
-        if (unk_30 > 0) {
-            Unk_02085df0_Num num;
-            if (unk_37 == 1) func_020b31a8(&num, unk_30, 1);
-            else func_020b3270(&num, unk_30 >> 12, 3, 0, 0, 0);
-            func_0203ce4c(3, &num);
+    if (kind != 1 && kind != 2 && kind != 3) return;
+    if (_ZN8SaveData8testFlagEj(gSaveData, 0xf) == 0) return;
+    MsgString9B rec;
+    if (_ZN8PlayerId7isValidEv(this) != 0) _ZN8PlayerId13getNameStringEP9MsgString(this, &rec);
+    else _ZN10VillagerId7getNameEj(&holderVillager, &rec);
+    if ((u8)(kind + 0xff) <= 1) {
+        MailText_SetSlotMonth(0, dateMonth);
+        MailText_SetSlotDayOrdinal(1, dateDay);
+        MailText_SetSlot(4, &rec);
+        if (size > 0) {
+            MsgString25 num;
+            if (kind == 1) String_FormatFixedPoint(&num, size, 1);
+            else String_FormatNumber(&num, size >> 12, 3, 0, 0, 0);
+            MailText_SetSlot(3, &num);
         }
         BOOL same;
-        if (func_0204b2d4(&unk_2e) != 0) {
+        if (Item_IsFurniture(&item) != 0) {
             u16 v = 0xfff1;
-            u32 a = func_0204b25c(&unk_2e);
-            if (a == func_0204b25c(&v)) same = TRUE; else same = FALSE;
+            u32 a = Item_GetFurnitureIndex(&item);
+            if (a == Item_GetFurnitureIndex(&v)) same = TRUE; else same = FALSE;
         } else {
-            if (unk_2e == 0xfff1) same = TRUE; else same = FALSE;
+            if (item == 0xfff1) same = TRUE; else same = FALSE;
         }
         if (same == 0) {
-            Unk_02085df0_Str str(&unk_2e);
-            func_0203ce4c(2, &str);
+            ItemName str(&item);
+            MailText_SetSlot(2, &str);
         }
     } else {
-        func_0203ce4c(0, &rec);
+        MailText_SetSlot(0, &rec);
     }
     s32 k;
-    if ((u8)(unk_37 + 0xff) <= 1) k = func_02063b8c(3);
-    else k = func_02063b8c(2);
-    func_02076fc8(k, data_020e0ca8[unk_37]);
-    _ZN12Unk_0209da4413func_0209e120Ej(data_021d7350, 0xf);
+    if ((u8)(kind + 0xff) <= 1) k = Random_GlobalBelow(3);
+    else k = Random_GlobalBelow(2);
+    Bbs_PostMsgToday(k, sContestResultBbsFiles[kind]);
+    _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
 }
 
-void Unk_02085810::func_020859b4() {
-    if (_ZN12Unk_020940a013func_02094218Ev(this) == 0 && _ZN12Unk_02002fc813func_020030b4Ev(&unk_16) == 0) return;
-    if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
-    Unk_020859b4_Loc l;
-    func_0209cf88(l.unk_06);
-    if (unk_36 == 0) return;
-    if (unk_35 == 0) return;
-    if (unk_34 == 0) return;
-    func_0209cffc(l.unk_0c, &unk_34, 6, 0, 0);
-    l.unk_14 = 0;
-    l.unk_18 = 0;
-    func_0209d498(&l.unk_14);
-    if (((u8 *)&l.unk_14)[2] < 6) {
-        func_0209d164(&l.unk_14, 1);
-        ((u8 *)&l.unk_14)[2] = 6;
-        ((u8 *)&l.unk_14)[1] = 0;
-        ((u8 *)&l.unk_14)[0] = 0;
+void ContestRecord::sendResultLetters() {
+    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&holderVillager) == 0) return;
+    if (kind != 1 && kind != 2 && kind != 3) return;
+    ContestLetterLocals l;
+    Clock_GetDate(l.today);
+    if (dateYear == 0) return;
+    if (dateMonth == 0) return;
+    if (dateDay == 0) return;
+    DateTime_Make(l.contestTime, &dateDay, 6, 0, 0);
+    l.now = 0;
+    l.nowHi = 0;
+    Clock_GetDateTime(&l.now);
+    if (((u8 *)&l.now)[2] < 6) {
+        DateTime_SubDays(&l.now, 1);
+        ((u8 *)&l.now)[2] = 6;
+        ((u8 *)&l.now)[1] = 0;
+        ((u8 *)&l.now)[0] = 0;
     }
-    s32 r6 = func_0209d3d0(&l.unk_14, l.unk_0c, 0x38);
-    if (r6 == 1 && func_0209d3a4(l.unk_0c, &l.unk_14) >= 10) goto reset;
-    if (r6 == -1 && func_0209d3a4(&l.unk_14, l.unk_0c) >= 10) {
+    s32 r6 = DateTime_Compare(&l.now, l.contestTime, 0x38);
+    if (r6 == 1 && DateTime_DiffDays(l.contestTime, &l.now) >= 10) goto reset;
+    if (r6 == -1 && DateTime_DiffDays(&l.now, l.contestTime) >= 10) {
     reset:
-        func_02085940();
-        _ZN12Unk_0209da4413func_0209e120Ej(data_021d7350, 0xf);
+        clear();
+        _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
     }
-    if (unk_37 != 3) {
-        if (unk_36 == l.unk_06[2] && unk_35 == l.unk_06[1] && unk_34 == l.unk_06[0]) return;
+    if (kind != 3) {
+        if (dateYear == l.today[2] && dateMonth == l.today[1] && dateDay == l.today[0]) return;
     } else {
-        s32 r4 = func_0203f42c(0xe);
-        func_0209d498(&l.unk_14);
+        s32 r4 = Event_GetDaysSinceStart(0xe);
+        Clock_GetDateTime(&l.now);
         if (r4 != -1) {
             if (r4 < 7) return;
-            if (r4 == 7 && ((u8 *)&l.unk_14)[2] < 6) return;
+            if (r4 == 7 && ((u8 *)&l.now)[2] < 6) return;
         }
-        if (r6 == 1 && func_0209d3a4(l.unk_0c, &l.unk_14) < 1) return;
+        if (r6 == 1 && DateTime_DiffDays(l.contestTime, &l.now) < 1) return;
     }
-    if (unk_37 == 3 && _ZN12Unk_020940a013func_02094218Ev(this) == 0) {
-        func_02085df0();
-        func_02085940();
+    if (kind == 3 && _ZN8PlayerId7isValidEv(this) == 0) {
+        postResultNotice();
+        clear();
         return;
     }
-    Unk_02085df0_Num n1;
-    Unk_02085df0_Num n2;
-    Unk_02085df0_Num n3;
-    Unk_020859b4_Buf buf;
-    Unk_02085df0_Rec rec;
+    MsgString25 n1;
+    MsgString25 n2;
+    MsgString25 n3;
+    Letter buf;
+    MsgString9B rec;
     s32 i = 0;
     s32 ok, z10, z14, z1c, z20, z24, z2c;
-    l.unk_00 = 0;
+    l.letterVariant = 0;
     z1c = 0; z14 = 0; z20 = 0; z24 = 0; z2c = 0; z10 = 0;
     for (; i < 4; i++) {
         ok = z10;
-        void *r4 = func_02097868(data_021d735c, i);
+        void *r4 = PlayerData_GetResident(gSavePlayers, i);
         if (r4 == 0) continue;
-        if (_ZN12Unk_0209865c13func_02098a48Ev(r4) == 0) continue;
-        void *r7 = _ZN12Unk_0209865c13func_0209868cEv(r4);
-        if ((u8)(unk_37 + 0xff) <= 1) {
-            func_0203ce38(z14, unk_35);
-            func_0203ce24(1, unk_34);
+        if (_ZN10PlayerData6isUsedEv(r4) == 0) continue;
+        void *r7 = _ZN10PlayerData14getSpNpcRecordEv(r4);
+        if ((u8)(kind + 0xff) <= 1) {
+            MailText_SetSlotMonth(z14, dateMonth);
+            MailText_SetSlotDayOrdinal(1, dateDay);
             s32 f;
-            if (func_0204b2d4(&unk_2e) != 0) {
-                l.unk_04 = 0xfff1;
-                u32 t = func_0204b25c(&unk_2e);
-                f = (t == func_0204b25c(&l.unk_04)) ? 1 : z1c;
+            if (Item_IsFurniture(&item) != 0) {
+                l.emptyItem = 0xfff1;
+                u32 t = Item_GetFurnitureIndex(&item);
+                f = (t == Item_GetFurnitureIndex(&l.emptyItem)) ? 1 : z1c;
             } else {
-                f = (unk_2e == 0xfff1) ? 1 : z20;
+                f = (item == 0xfff1) ? 1 : z20;
             }
             if (f == 0) {
-                Unk_02085df0_Str str(&unk_2e);
-                func_0203ce4c(2, &str);
+                ItemName str(&item);
+                MailText_SetSlot(2, &str);
             }
-            if (unk_30 > 0) {
-                if (unk_37 == 1) func_020b31a8(&n1, unk_30, 1);
-                else func_020b3270(&n1, unk_30 >> 12, 3, z24, z24, z24);
-                func_0203ce4c(3, &n1);
+            if (size > 0) {
+                if (kind == 1) String_FormatFixedPoint(&n1, size, 1);
+                else String_FormatNumber(&n1, size >> 12, 3, z24, z24, z24);
+                MailText_SetSlot(3, &n1);
             }
-            if (unk_37 == 1) ok = _ZN12Unk_02087ad813func_02087bc0Ev(r7);
-            else ok = _ZN12Unk_02087ad813func_02087ba8Ev(r7);
+            if (kind == 1) ok = _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(r7);
+            else ok = _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(r7);
         } else {
-            u16 *p = _ZN12Unk_0209865c13func_0209888cEv(r4);
-            if ((unk_00.unk_00 == p[0] && func_02128930((u8 *)this + 2, p + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, p) != 0) || _ZN12Unk_02087ad813func_02087b30Ev(r7) != 0) {
-                l.unk_00 = func_02063b8c(3);
-                _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(_ZN12Unk_0209865c13func_0209888cEv(r4), &rec);
-                _ZN12Unk_02087ad813func_02087b18Ev(r7);
-                func_0203ce4c(z2c, &rec);
+            u16 *p = _ZN10PlayerData11getPlayerIdEv(r4);
+            if ((holderPlayer.townId == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
+                l.letterVariant = Random_GlobalBelow(3);
+                _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
+                _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(r7);
+                MailText_SetSlot(z2c, &rec);
                 ok = 1;
             }
         }
         if (ok == 0) continue;
-        if ((u8)(unk_37 + 0xff) <= 1) {
-            u16 *q = _ZN12Unk_0209865c13func_0209888cEv(r4);
-            if (unk_00.unk_00 == q[0] && func_02128930((u8 *)this + 2, q + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, q) != 0) {
-                l.unk_00 = func_02063b8c(3);
+        if ((u8)(kind + 0xff) <= 1) {
+            u16 *q = _ZN10PlayerData11getPlayerIdEv(r4);
+            if (holderPlayer.townId == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
+                l.letterVariant = Random_GlobalBelow(3);
             } else {
-                l.unk_00 = func_02063b8c(3) + 3;
+                l.letterVariant = Random_GlobalBelow(3) + 3;
             }
-            _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(_ZN12Unk_0209865c13func_0209888cEv(r4), &rec);
-            func_0203ce4c(4, &rec);
+            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
+            MailText_SetSlot(4, &rec);
         }
-        u16 *w = _ZN12Unk_0209865c13func_0209888cEv(r4);
-        func_020656dc(&buf, &l, data_020e0cb8[unk_37], data_020e0c50, data_020e0c48, w);
-        u16 *x = _ZN12Unk_0209865c13func_0209888cEv(r4);
-        if ((unk_00.unk_00 == x[0] && func_02128930((u8 *)this + 2, x + 1, 8) == 0 && _ZN12Unk_020940a013func_020941e8EPS_(this, x) != 0) || unk_37 == 3) {
-            l.unk_02 = 0x3878;
-            if (unk_37 == 2) l.unk_02 = 0x387c;
-            else if (unk_37 == 3) l.unk_02 = 0x3880;
-            _ZN12Unk_0206555413func_02065588Etj(&buf, l.unk_02, 1);
+        u16 *w = _ZN10PlayerData11getPlayerIdEv(r4);
+        Letter_ComposeFromMail(&buf, &l, sContestResultMailFiles[kind], data_020e0c50, data_020e0c48, w);
+        u16 *x = _ZN10PlayerData11getPlayerIdEv(r4);
+        if ((holderPlayer.townId == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || kind == 3) {
+            l.trophy = 0x3878;
+            if (kind == 2) l.trophy = 0x387c;
+            else if (kind == 3) l.trophy = 0x3880;
+            _ZN10LetterView10setPresentEtj(&buf, l.trophy, 1);
         }
-        func_02096aac(&buf);
+        LetterDelivery_PutInAddresseeMailbox(&buf);
     }
-    func_02085df0();
-    func_02085940();
+    postResultNotice();
+    clear();
 }
 
-Unk_02085810 *Unk_02085810::func_0208598c() {
-    _ZN12Unk_020940a0C1EPv(this);
-    func_02003130(&unk_16);
-    func_02003130(&unk_22);
-    unk_2e = 0xfff1;
+ContestRecord *ContestRecord::construct() {
+    _ZN8PlayerIdC1EPv(this);
+    VillagerId_Construct(&holderVillager);
+    VillagerId_Construct(&votedVillager);
+    item = 0xfff1;
     return this;
 }
 
-Unk_02085810 *Unk_02085810::func_0208596c() {
-    func_02003100(&unk_22);
-    func_02003100(&unk_16);
-    _ZN12Unk_020940a0C1Ev(this);
+ContestRecord *ContestRecord::destruct() {
+    VillagerId_Destruct(&votedVillager);
+    VillagerId_Destruct(&holderVillager);
+    _ZN8PlayerIdC1Ev(this);
     return this;
 }
 
-void Unk_02085810::func_02085940() {
-    _ZN12Unk_020940a013func_02094294Ev(this);
-    func_020030e8(&unk_16);
-    func_020030e8(&unk_22);
-    unk_2e = 0xfff1;
-    unk_30 = 0;
+void ContestRecord::clear() {
+    _ZN8PlayerId5clearEv(this);
+    VillagerId_Clear(&holderVillager);
+    VillagerId_Clear(&votedVillager);
+    item = 0xfff1;
+    size = 0;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern char data_020e0c88[];
-extern const s16 data_020cf268[4];
+extern const s16 sGulliverRepairedAngles[4];
 extern const u8 data_020cf288[0xa0];
 extern const u8 data_020cf328[0x230];
 extern char data_020e0c7c[];
 extern u8 data_020e0c4c[4];
-extern u32 data_021cdda8[0x20];
-extern const Unk_02086af0_Off data_020cf270[3];
+extern u32 sKatieSpotRows[0x20];
+extern const VecXZ sGulliverSpotOffsets[3];
 extern u8 data_020e0c50[4];
 extern char data_020e0c58[];
 extern char data_020e0c98[];
-extern u32 data_020e0ca8[4];
-extern void *data_020e0cb8[4];
+extern u32 sContestResultBbsFiles[4];
+extern void *sContestResultMailFiles[4];
 extern char data_020e0c70[];
 extern u8 data_020e0c48[4];
 extern char data_020e0c64[];
@@ -2497,7 +2294,7 @@ extern u8 data_020e0c44[4];
 
 char data_020e0c88[] = "ev_gardening";
 
-const s16 data_020cf268[4] = {(s16)0x8000, 0x4000, (s16)0xc000, 0};
+const s16 sGulliverRepairedAngles[4] = {(s16)0x8000, 0x4000, (s16)0xc000, 0};
 
 const u8 data_020cf288[0xa0] = {
     0x06, 0x02, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x06, 0x04, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00,
@@ -2554,9 +2351,9 @@ char data_020e0c7c[] = "bbs_fishing";
 
 u8 data_020e0c4c[4] = {0x7, 0, 0, 0};
 
-u32 data_021cdda8[0x20];
+u32 sKatieSpotRows[0x20];
 
-const Unk_02086af0_Off data_020cf270[3] = {{0, 0x4000}, {-0x4000, 0}, {0x4000, 0}};
+const VecXZ sGulliverSpotOffsets[3] = {{0, 0x4000}, {-0x4000, 0}, {0x4000, 0}};
 
 u8 data_020e0c50[4] = {0xf, 0, 0, 0};
 
@@ -2564,9 +2361,9 @@ char data_020e0c58[] = "ev_insect";
 
 char data_020e0c98[] = "bbs_gardening";
 
-u32 data_020e0ca8[4] = {(u32)data_020e0c7c, (u32)data_020e0c7c, (u32)data_020e0c64, (u32)data_020e0c98};
+u32 sContestResultBbsFiles[4] = {(u32)data_020e0c7c, (u32)data_020e0c7c, (u32)data_020e0c64, (u32)data_020e0c98};
 
-void *data_020e0cb8[4] = {data_020e0c70, data_020e0c70, data_020e0c58, data_020e0c88};
+void *sContestResultMailFiles[4] = {data_020e0c70, data_020e0c70, data_020e0c58, data_020e0c88};
 
 char data_020e0c70[] = "ev_fishing";
 

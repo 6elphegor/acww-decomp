@@ -1,566 +1,451 @@
-#define vfunc_08() vfunc_08(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
-#undef vfunc_14
+#include "menu/MenuProc.h"
+#include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/DateTimePicker.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
-extern const u8 data_ov137_022961f8[4];
-extern const u8 data_ov137_022961fc[4];
-extern const u8 data_ov137_02296200[4];
-extern const u8 data_ov137_02296204[4];
-extern const s32 data_ov137_02296208[3];
-extern const s32 data_ov137_02296214[3];
-extern u16 data_021f47d8[];
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern u8 data_021ef5ec;
-extern u8 data_021ef5f0;
+extern const u8 sBirthdayCursorRightTable[4];
+extern const u8 sBirthdayCursorLeftTable[4];
+extern const u8 sBirthdayCursorDownTable[4];
+extern const u8 sBirthdayCursorUpTable[4];
+extern const s32 sBirthdayCursorXTable[3];
+extern const s32 sBirthdayCursorYTable[3];
+extern u16 gPad[];
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern u8 gTouchCurY;
+extern u8 gTouchCurX;
 
-BOOL func_0206ef0c();
-BOOL func_0206ef00();
-void *func_0209750c();
-void _ZN12Unk_02097ff413func_020982f4Ejj(void *p, u32 a, u32 b);
-BOOL func_ov002_0220125c(u32 v);
-BOOL func_ov002_0220126c(u32 v);
-BOOL func_ov002_0220127c(u32 v);
-BOOL func_ov002_0220128c(u32 v);
-void *func_020ed174();
-void func_020ed188(void *p);
-void func_020015b8(s32 a);
-void func_02002398(s32 a, s32 b);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_020021a0(s32 a);
-void func_020020b8(s32 a);
-void _ZN18Unk_ov092_02291ec819func_ov092_02291c5cEv(void *self);
-void _ZN18Unk_ov092_02291ec819func_ov092_02291ce4Eii(void *self, s32 a, s32 b);
+BOOL MenuCtrl_IsTouch();
+BOOL MenuCtrl_IsButtons();
+void *PlayerData_GetCurrent();
+void _ZN10PlayerData11setBirthdayEjj(void *p, u32 a, u32 b);
+BOOL MenuKeys_HasRight(u32 v);
+BOOL MenuKeys_HasLeft(u32 v);
+BOOL MenuKeys_HasDown(u32 v);
+BOOL MenuKeys_HasUp(u32 v);
+void *ProcBase_GetParent();
+void ProcBase_RequestDelete(void *p);
+void Gfx2d_SetSubBgModeState(s32 a);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_ShowLayer(s32 a);
+void _ZN12MenuLauncher13onChildClosedEv(void *self);
+void _ZN12MenuLauncher14setNextRequestEii(void *self, s32 a, s32 b);
 
-BOOL _ZN12Unk_020e100c13func_0208d4fcEv(void *self);
-BOOL _ZN12Unk_020e100c13func_0208d534Ev(void *self);
-void func_ov002_02203920(void *self);
+BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
+BOOL _ZN10HandCursor7getAnimEv(void *self);
+void MenuButtons_LoadTextColors(void *self);
 
-// ov134 library object (class Unk_ov134_02291f60): plain functions take the object first
-BOOL func_ov134_02292c54(void *self, s32 x, s32 y);
-s32 func_ov134_02292cb0(void *self);
-void func_ov134_02292df4(void *self);
-void func_ov134_02292e40(void *self);
-s32 func_ov134_02292f40(void *self);
-void func_ov134_02293024(void *self, s32 a);
-u8 func_ov134_022932d8(void *self);
-s32 func_ov134_02293564(void *self, u8 a, u8 b);
-void func_ov134_02293c48(void *self, s32 a, s32 b);
-void func_ov134_022946fc(void *self);
-void func_ov134_022947b8(void *self, u32 a);
-void func_ov134_022947e8(void *self);
-void func_ov134_022948d8(void *self, void *out);
-void func_ov134_022948e4(void *self);
-void func_ov134_022949a8(void *self);
-void func_ov134_022949ec(void *self);
-void func_ov134_02294a34(void *self, u32 a, u32 b, u32 c, u8 d);
+// ov134 library object (class DateTimePicker): plain functions take the object first
+BOOL DateTimePicker_HitTestList(void *self, s32 x, s32 y);
+s32 DateTimePicker_UpdateListClose(void *self);
+void DateTimePicker_CancelList(void *self);
+void DateTimePicker_DecideList(void *self);
+s32 DateTimePicker_UpdateListOpen(void *self);
+void DateTimePicker_OpenList(void *self, s32 a);
+u8 DateTimePicker_GetCursorField(void *self);
+s32 DateTimePicker_HitTestMonthDayField(void *self, u8 a, u8 b);
+void DateTimePicker_Draw(void *self, s32 a, s32 b);
+void DateTimePicker_LoadObjGraphics(void *self);
+void DateTimePicker_DrawTitleAndFields(void *self, u32 a);
+void DateTimePicker_LoadBgGraphics(void *self);
+void DateTimePicker_GetDateTime(void *self, void *out);
+void DateTimePicker_EndFrame(void *self);
+void DateTimePicker_BeginFrame(void *self);
+void DateTimePicker_Shutdown(void *self);
+void DateTimePicker_Init(void *self, u32 a, u32 b, u32 c, u8 d);
 }
 
-// Vtable 0x022044e4
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
+
+
+
+
+
+
+
+class BirthdayMenu;
+typedef void (BirthdayMenu::*Unk_ov137_022962e0_Fn)();
+
+// Vtable 0x022962e0, size 0x2824 (scene overlay on MenuProc)
+class BirthdayMenu : public MenuProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
+    BirthdayMenu() : cursor(), bottomButtons(), picker() {}
 
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
+    virtual BOOL onDraw();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_02200850(s32 a);
-    void func_ov002_022008c4(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008e0(s32 a, s32 b, s32 c, s32 d);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200920();
-    void func_ov002_02200980();
-    s32 func_ov002_022009c8();
-    s32 func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
-    void func_ov002_02200a68();
-
-    /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
-    /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
-};
-
-class Unk_ov002_02202d98 {
-public:
-    void func_ov002_02202844();
-    void func_ov002_02202af0();
-    void func_ov002_02202a78();
-    void func_ov002_022029e8(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_02202a40(s32 a, s32 b);
-    BOOL func_ov002_022028f0();
-};
-
-class Unk_ov002_0220464c {
-public:
-    void func_ov002_02202b68();
-    void func_ov002_02202ca0();
-    void func_ov002_02202c40();
-    void func_ov002_02202d00(s32 v);
-};
-
-// Sub-object at +0x94 (vtable 0x02204614, size 0x64)
-class Unk_ov002_02204614 {
-public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    u32 unk_04[0x60 / 4];
-};
-
-class Unk_ov002_02202fac {
-public:
-    void func_ov002_022030ac(u8 v);
-    BOOL func_ov002_02203110(s32 v);
-    BOOL func_ov002_0220308c();
-    s32 func_ov002_0220306c();
-    s32 func_ov002_022030f4(s32 v);
-    s32 func_ov002_022030b8(s32 v);
-};
-
-// Sub-object at +0xf8 (vtable 0x022046cc, size 0x164)
-class Unk_ov002_022046cc : public Unk_ov002_02202fac {
-public:
-    Unk_ov002_022046cc();
-    ~Unk_ov002_022046cc();
-    void func_ov002_02203510(s32 v);
-    void func_ov002_022036a4(s32 a);
-    void func_ov002_02203900();
-    u32 unk_00[0x164 / 4];
-};
-
-// ov134 sub-object at +0x25c (class Unk_ov134_02291f60)
-class Unk_ov134_02291f60 {
-public:
-    Unk_ov134_02291f60();
-    ~Unk_ov134_02291f60();
-    void func_ov134_02292340(s32 y);
-    s32 func_ov134_0229236c();
-    s32 func_ov134_022923a0();
-    BOOL func_ov134_02292530();
-    BOOL func_ov134_02292170();
-    BOOL func_ov134_02292420();
-    void func_ov134_02292450();
-    void func_ov134_02292444();
-    s32 func_ov134_0229219c(u32 pad);
-    void func_ov134_022924b0(s32 x);
-    void func_ov134_022924d8(s32 x);
-    u8 unk_00[0x25c4];
-};
-
-class Unk_ov137_022962e0;
-typedef void (Unk_ov137_022962e0::*Unk_ov137_022962e0_Fn)();
-
-// Vtable 0x022962e0, size 0x2824 (scene overlay on Unk_ov002_022044e4)
-class Unk_ov137_022962e0 : public Unk_ov002_022044e4 {
-public:
-    Unk_ov137_022962e0() : unk_94(), unk_f8(), unk_25c() {}
-
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
-
-    void func_ov137_022953f4(u32 m);
-    void func_ov137_02295404(u32 m);
-    BOOL func_ov137_02295414(u32 m);
-    BOOL func_ov137_0229542c(u32 a);
-    void func_ov137_022954c8();
-    void func_ov137_022954f0();
-    void func_ov137_02295508();
-    void func_ov137_02295524(s32 a, s32 b);
-    void func_ov137_02295584();
-    void func_ov137_022955d4();
-    s32 func_ov137_022955f0();
-    s32 func_ov137_02295634();
-    void func_ov137_02295678();
-    void func_ov137_022956d4();
-    void func_ov137_022956f4();
-    void func_ov137_02295730();
-    void func_ov137_02295748();
-    void func_ov137_02295774();
-    void func_ov137_022957a0(u32 a);
-    void func_ov137_022957cc();
-    void func_ov137_02295818();
-    void func_ov137_02295838();
-    void func_ov137_02295854();
-    void func_ov137_0229586c();
-    void func_ov137_022958ac();
-    void func_ov137_022958cc();
-    void func_ov137_02295930();
-    void func_ov137_02295958();
-    void func_ov137_022959c0();
-    void func_ov137_022959e8();
-    void func_ov137_02295a30();
-    void func_ov137_02295a88();
-    void func_ov137_02295b20();
-    void func_ov137_02295b84();
-    void func_ov137_02295bc0();
-    void func_ov137_02295bfc();
-    void func_ov137_02295c94();
-    void func_ov137_02295d10();
-    void func_ov137_02295d30();
-    void func_ov137_02295d50();
-    void func_ov137_02295d9c();
-    void func_ov137_02295dac();
-    void func_ov137_02295dc8();
-    void func_ov137_02295dd0();
-    void func_ov137_02295de8();
-    void func_ov137_02295e08();
-    void func_ov137_02295e40();
-    void func_ov137_02295e60();
-    void func_ov137_02295e90();
-    void func_ov137_02295ec8();
-    void func_ov137_02295ef0();
-    void func_ov137_02295f80();
+    void clearFlags(u32 m);
+    void setFlags(u32 m);
+    BOOL testFlags(u32 m);
+    BOOL moveCursorByPad(u32 a);
+    void releaseCursor();
+    void pressCursor();
+    void refreshCursor();
+    void startCursorMove(s32 a, s32 b);
+    void moveCursorToTarget();
+    void hideCursor();
+    s32 getCursorTargetY();
+    s32 getCursorTargetX();
+    void showCursor();
+    void enterListInputMode();
+    void enterListButtonMode();
+    void enterListTouchMode();
+    void cancelList();
+    void decideList();
+    void openFieldList(u32 a);
+    void confirm();
+    void resumeInput();
+    void startButtonInput();
+    void startTouchInput();
+    void stateListClosing();
+    void stateListOpening();
+    void stateExit();
+    void updateCursorRelease();
+    void updateCursorPress();
+    void updateCursorMove();
+    void stateListKnobRelease();
+    void stateListKnobHold();
+    void stateListButtons();
+    void updateButtons();
+    void stateListTrackDrag();
+    void stateListKnobDrag();
+    void stateListTouch();
+    void updateTouch();
+    void loadObjGfx();
+    void loadBgGfx();
+    void setupBgLayers();
+    void postStateUpdate();
+    void preStateUpdate();
+    void postInputUpdate();
+    void preInputUpdate();
+    void releaseResources();
+    void initPicker();
+    void updateLayerSlide();
+    void stateClosing();
+    void stateClose();
+    void stateOpening();
+    void stateOpen();
+    void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ Unk_ov002_02204614 unk_94;
-    /* 0x0f8 */ Unk_ov002_022046cc unk_f8;
-    /* 0x25c */ Unk_ov134_02291f60 unk_25c;
-    /* 0x2820 */ u16 unk_2820;
-    /* 0x2822 */ u8 unk_2822;
-    /* 0x2823 */ u8 unk_2823;
+    /* 0x094 */ MenuCursorBuf0 cursor;
+    /* 0x0f8 */ MenuBottomButtons bottomButtons;
+    /* 0x25c */ DateTimePicker picker;
+    /* 0x2820 */ u16 flags;
+    /* 0x2822 */ u8 returnState;
+    /* 0x2823 */ u8 cursorSlot;
 };
 
-#define U94A ((Unk_ov002_02202d98 *)&unk_94)
-#define U94B ((Unk_ov002_0220464c *)&unk_94)
+#define U94A ((MenuCursorBase *)&cursor)
+#define U94B ((MenuCursor *)&cursor)
 
 static inline BOOL Unk_ov137_Both() {
-    if (data_021f4770 != 0 && data_021f4774 != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" Unk_ov137_022962e0 *func_ov137_022961b4() { return new Unk_ov137_022962e0(); }
+extern "C" BirthdayMenu *BirthdayMenu_Create() { return new BirthdayMenu(); }
 
-BOOL Unk_ov137_022962e0::vfunc_00() {
-    func_ov137_02295e08();
-    unk_8c = 0;
-    func_ov002_02200a60(0);
+BOOL BirthdayMenu::onCreate() {
+    initPicker();
+    transitionState = 0;
+    setPhase(0);
     return TRUE;
 }
 
-BOOL Unk_ov137_022962e0::vfunc_0c() {
-    _ZN18Unk_ov092_02291ec819func_ov092_02291c5cEv(func_020ed174());
-    func_ov137_02295de8();
+BOOL BirthdayMenu::onDelete() {
+    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
+    releaseResources();
     return TRUE;
 }
 
-BOOL Unk_ov137_022962e0::vfunc_24() {
-    if (func_0206ef00()) {
-        U94A->func_ov002_02202844();
+BOOL BirthdayMenu::onDraw() {
+    if (MenuCtrl_IsButtons()) {
+        U94A->drawWrapped();
     }
-    if (!func_ov137_02295414(1)) {
+    if (!testFlags(1)) {
         return FALSE;
     }
-    s32 r = func_ov002_02200920();
-    func_ov134_02293c48(&unk_25c, 0, r);
-    s32 r2 = func_ov002_02200920();
-    unk_f8.func_ov002_022036a4(r2);
+    s32 r = getSlideOffsetY();
+    DateTimePicker_Draw(&picker, 0, r);
+    s32 r2 = getSlideOffsetY();
+    bottomButtons.drawAt(r2);
     return TRUE;
 }
 
-struct Unk_ov137_SceneEntry {
-    Unk_ov137_022962e0 *(*create)();
-    u16 a;
-    u16 b;
-};
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern "C" const u8 data_ov137_022961fc[4];
-extern "C" const s32 data_ov137_02296208[3];
-extern "C" const s32 data_ov137_02296214[3];
-extern "C" const u8 data_ov137_02296204[4];
-extern "C" const u8 data_ov137_02296200[4];
-extern "C" Unk_ov137_SceneEntry data_ov137_022962c8;
-extern "C" const u8 data_ov137_022961f8[4];// Declarations for data defined further down (definition order sets the data layout)
-extern "C" const s32 data_ov137_02296208[3];
-extern "C" const u8 data_ov137_022961f8[4];
-extern "C" const u8 data_ov137_022961fc[4];
-extern "C" const u8 data_ov137_02296204[4];
-extern "C" const u8 data_ov137_02296200[4];
-extern "C" const s32 data_ov137_02296214[3];
-extern "C" Unk_ov137_SceneEntry data_ov137_022962c8;
+extern "C" const u8 sBirthdayCursorLeftTable[4];
+extern "C" const s32 sBirthdayCursorXTable[3];
+extern "C" const s32 sBirthdayCursorYTable[3];
+extern "C" const u8 sBirthdayCursorUpTable[4];
+extern "C" const u8 sBirthdayCursorDownTable[4];
+extern "C" ProcProfile sBirthdayMenuProfile;
+extern "C" const u8 sBirthdayCursorRightTable[4];// Declarations for data defined further down (definition order sets the data layout)
+extern "C" const s32 sBirthdayCursorXTable[3];
+extern "C" const u8 sBirthdayCursorRightTable[4];
+extern "C" const u8 sBirthdayCursorLeftTable[4];
+extern "C" const u8 sBirthdayCursorUpTable[4];
+extern "C" const u8 sBirthdayCursorDownTable[4];
+extern "C" const s32 sBirthdayCursorYTable[3];
+extern "C" ProcProfile sBirthdayMenuProfile;
 
-extern "C" const s32 data_ov137_02296208[3] = {0x60, 0xac, 0};
+extern "C" const s32 sBirthdayCursorXTable[3] = {0x60, 0xac, 0};
 
-BOOL Unk_ov137_022962e0::vfunc_4c() {
+BOOL BirthdayMenu::execTransition() {
     static Unk_ov137_022962e0_Fn tbl[4] = {
-        &Unk_ov137_022962e0::func_ov137_02295ef0,
-        &Unk_ov137_022962e0::func_ov137_02295ec8,
-        &Unk_ov137_022962e0::func_ov137_02295e90,
-        &Unk_ov137_022962e0::func_ov137_02295e60};
-    func_ov137_02295dac();
-    (this->*tbl[unk_8c])();
-    func_ov137_02295d9c();
+        &BirthdayMenu::stateOpen,
+        &BirthdayMenu::stateOpening,
+        &BirthdayMenu::stateClose,
+        &BirthdayMenu::stateClosing};
+    preStateUpdate();
+    (this->*tbl[transitionState])();
+    postStateUpdate();
     return TRUE;
 }
 
-void Unk_ov137_022962e0::func_ov137_02295f80() {
+void BirthdayMenu::runMainState() {
     static Unk_ov137_022962e0_Fn tbl[14] = {
-        &Unk_ov137_022962e0::func_ov137_02295c94,
-        &Unk_ov137_022962e0::func_ov137_02295bfc,
-        &Unk_ov137_022962e0::func_ov137_02295bc0,
-        &Unk_ov137_022962e0::func_ov137_02295b84,
-        &Unk_ov137_022962e0::func_ov137_02295b20,
-        &Unk_ov137_022962e0::func_ov137_02295a88,
-        &Unk_ov137_022962e0::func_ov137_02295a30,
-        &Unk_ov137_022962e0::func_ov137_022959e8,
-        &Unk_ov137_022962e0::func_ov137_022959c0,
-        &Unk_ov137_022962e0::func_ov137_02295958,
-        &Unk_ov137_022962e0::func_ov137_02295930,
-        &Unk_ov137_022962e0::func_ov137_022958cc,
-        &Unk_ov137_022962e0::func_ov137_022958ac,
-        &Unk_ov137_022962e0::func_ov137_0229586c};
-    (this->*tbl[unk_8d])();
+        &BirthdayMenu::updateTouch,
+        &BirthdayMenu::stateListTouch,
+        &BirthdayMenu::stateListKnobDrag,
+        &BirthdayMenu::stateListTrackDrag,
+        &BirthdayMenu::updateButtons,
+        &BirthdayMenu::stateListButtons,
+        &BirthdayMenu::stateListKnobHold,
+        &BirthdayMenu::stateListKnobRelease,
+        &BirthdayMenu::updateCursorMove,
+        &BirthdayMenu::updateCursorPress,
+        &BirthdayMenu::updateCursorRelease,
+        &BirthdayMenu::stateExit,
+        &BirthdayMenu::stateListOpening,
+        &BirthdayMenu::stateListClosing};
+    (this->*tbl[mainState])();
 }
 
-BOOL Unk_ov137_022962e0::vfunc_50() {
-    func_ov137_02295dd0();
-    func_ov137_02295f80();
-    func_ov137_02295dc8();
+BOOL BirthdayMenu::execMain() {
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov137_022962e0::vfunc_54() { return TRUE; }
+BOOL BirthdayMenu::execPhase3() { return TRUE; }
 
-BOOL Unk_ov137_022962e0::vfunc_58() { return TRUE; }
+BOOL BirthdayMenu::execPhase4() { return TRUE; }
 
-BOOL Unk_ov137_022962e0::vfunc_5c() {
-    func_020ed188(this);
+BOOL BirthdayMenu::execClosed() {
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-void Unk_ov137_022962e0::func_ov137_02295ef0() {
-    func_ov137_02295d50();
-    func_ov137_02295d30();
-    func_ov137_02295d10();
-    func_ov002_022008e0(10, 4, 0, 0x30);
-    func_020020b8(6);
-    func_020020b8(4);
-    func_ov137_02295e40();
-    func_ov137_02295404(1);
-    unk_f8.func_ov002_02203510(0x21);
-    func_ov002_02200a50(1);
+void BirthdayMenu::stateOpen() {
+    setupBgLayers();
+    loadBgGfx();
+    loadObjGfx();
+    beginSubSlideIn(10, 4, 0, 0x30);
+    Gfx2d_ShowLayer(6);
+    Gfx2d_ShowLayer(4);
+    updateLayerSlide();
+    setFlags(1);
+    bottomButtons.setLayoutSingle05(0x21);
+    setTransitionState(1);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295ec8() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        func_ov137_02295818();
+void BirthdayMenu::stateOpening() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        resumeInput();
     }
-    func_ov137_02295e40();
+    updateLayerSlide();
 }
 
-void Unk_ov137_022962e0::func_ov137_02295e90() {
-    _ZN18Unk_ov092_02291ec819func_ov092_02291ce4Eii(func_020ed174(), 0x44, 1);
-    func_ov002_022008c4(10, 0, 0, 0x30);
-    func_ov137_02295e40();
-    func_ov002_02200a50(3);
+void BirthdayMenu::stateClose() {
+    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(), 0x44, 1);
+    beginSubSlideOut(10, 0, 0, 0x30);
+    updateLayerSlide();
+    setTransitionState(3);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295e60() {
-    if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
-        func_020021a0(4);
-        func_ov002_02200a60(5);
+void BirthdayMenu::stateClosing() {
+    if (stepSlideOut(0)) {
+        Gfx2d_ResetLayer(6);
+        Gfx2d_ResetLayer(4);
+        setPhase(5);
     } else {
-        func_ov137_02295e40();
+        updateLayerSlide();
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295e40() {
-    func_ov002_02200840(6, 0, 0);
-    func_ov002_02200840(4, 0, 0);
+void BirthdayMenu::updateLayerSlide() {
+    applySlideOffset(6, 0, 0);
+    applySlideOffset(4, 0, 0);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295e08() {
-    func_ov134_02294a34(&unk_25c, 2, 6, 4, 3);
-    unk_2823 = 0;
-    unk_2820 = 0;
+void BirthdayMenu::initPicker() {
+    DateTimePicker_Init(&picker, 2, 6, 4, 3);
+    cursorSlot = 0;
+    flags = 0;
 }
 
-void Unk_ov137_022962e0::func_ov137_02295de8() {
-    func_ov134_022949ec(&unk_25c);
-    unk_f8.func_ov002_02203900();
+void BirthdayMenu::releaseResources() {
+    DateTimePicker_Shutdown(&picker);
+    bottomButtons.freeTexts();
 }
 
-void Unk_ov137_022962e0::func_ov137_02295dd0() {
-    func_ov137_02295dac();
-    unk_94.vfunc_0c();
+void BirthdayMenu::preInputUpdate() {
+    preStateUpdate();
+    cursor.update();
 }
 
-void Unk_ov137_022962e0::func_ov137_02295dc8() {
-    func_ov137_02295d9c();
+void BirthdayMenu::postInputUpdate() {
+    postStateUpdate();
 }
 
-void Unk_ov137_022962e0::func_ov137_02295dac() {
-    unk_f8.func_ov002_02203900();
-    func_ov134_022949a8(&unk_25c);
+void BirthdayMenu::preStateUpdate() {
+    bottomButtons.freeTexts();
+    DateTimePicker_BeginFrame(&picker);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295d9c() {
-    func_ov134_022948e4(&unk_25c);
+void BirthdayMenu::postStateUpdate() {
+    DateTimePicker_EndFrame(&picker);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295d50() {
-    func_020015b8(0);
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
-    func_02002398(4, 1);
-    func_0200226c(4, 0, 0, 0);
-    func_02002398(3, 1);
-    func_0200226c(3, 0, 0, 0);
+void BirthdayMenu::setupBgLayers() {
+    Gfx2d_SetSubBgModeState(0);
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
+    Gfx2d_SetLayerPriority(4, 1);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
+    Gfx2d_SetLayerPriority(3, 1);
+    Gfx2d_SetLayerControl(3, 0, 0, 0);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295d30() {
-    func_ov134_022947e8(&unk_25c);
-    func_ov134_022947b8(&unk_25c, 0x6d);
+void BirthdayMenu::loadBgGfx() {
+    DateTimePicker_LoadBgGraphics(&picker);
+    DateTimePicker_DrawTitleAndFields(&picker, 0x6d);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295d10() {
-    func_ov134_022946fc(&unk_25c);
-    func_ov002_02203920(&unk_f8);
+void BirthdayMenu::loadObjGfx() {
+    DateTimePicker_LoadObjGraphics(&picker);
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295c94() {
-    if (func_ov002_02200a14(1)) {
-        func_ov137_02295838();
+void BirthdayMenu::updateTouch() {
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
     } else {
         if (Unk_ov137_Both()) {
-            if (unk_f8.func_ov002_02203110(6)) {
-                func_ov137_022957cc();
+            if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
+                confirm();
             } else {
-                s32 r = func_ov134_02293564(&unk_25c, data_021ef5f0, data_021ef5ec);
+                s32 r = DateTimePicker_HitTestMonthDayField(&picker, gTouchCurX, gTouchCurY);
                 if (r != 6) {
-                    func_ov137_022957a0(r);
+                    openFieldList(r);
                 }
             }
         }
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295bfc() {
-    if (func_ov002_02200a14(1)) {
-        func_ov137_022956f4();
+void BirthdayMenu::stateListTouch() {
+    if (checkSwitchToButtons(1)) {
+        enterListButtonMode();
         return;
     }
     if (Unk_ov137_Both()) {
-        switch (func_ov134_02292c54(&unk_25c, data_021ef5f0, data_021ef5ec)) {
+        switch (DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
         case 0:
-            func_ov137_02295774();
+            decideList();
             break;
         case 1:
-            func_ov137_02295748();
+            cancelList();
             break;
         case 3:
-            func_ov002_02200a58(2);
+            setMainState(2);
             break;
         case 2:
-            func_ov002_02200a58(3);
+            setMainState(3);
             break;
         }
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295bc0() {
-    if (data_021f4770 != 0) {
-        unk_25c.func_ov134_022924d8(data_021ef5ec);
+void BirthdayMenu::stateListKnobDrag() {
+    if (gTouchHeld != 0) {
+        picker.dragKnob(gTouchCurY);
     } else {
-        unk_25c.func_ov134_02292444();
-        func_ov002_02200a58(1);
+        picker.releaseKnob();
+        setMainState(1);
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295b84() {
-    if (data_021f4770 != 0) {
-        unk_25c.func_ov134_022924b0(data_021ef5ec);
+void BirthdayMenu::stateListTrackDrag() {
+    if (gTouchHeld != 0) {
+        picker.dragKnobToward(gTouchCurY);
     } else {
-        unk_25c.func_ov134_02292444();
-        func_ov002_02200a58(1);
+        picker.releaseKnob();
+        setMainState(1);
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295b20() {
-    if (func_ov002_022009d4()) {
-        func_ov137_02295854();
+void BirthdayMenu::updateButtons() {
+    if (checkSwitchToTouch()) {
+        startTouchInput();
     } else {
-        s32 r = func_ov002_022009c8();
-        if (func_ov137_0229542c(r)) {
-            func_ov137_02295584();
+        s32 r = takeRepeatedKeys();
+        if (moveCursorByPad(r)) {
+            moveCursorToTarget();
         } else {
-            u32 t = data_021f47d8[1];
+            u32 t = gPad[1];
             if (t & 1) {
-                func_ov137_022954f0();
+                pressCursor();
             } else if (t & 8) {
-                func_ov137_022955d4();
-                func_ov137_022957cc();
+                hideCursor();
+                confirm();
             }
         }
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295a88() {
-    if (func_ov002_022009d4()) {
-        func_ov137_02295730();
+void BirthdayMenu::stateListButtons() {
+    if (checkSwitchToTouch()) {
+        enterListTouchMode();
     } else {
-        s32 r = unk_25c.func_ov134_0229219c(func_ov002_022009c8());
+        s32 r = picker.navigateList(takeRepeatedKeys());
         switch (r) {
         case 2:
-            func_ov137_02295404(4);
+            setFlags(4);
             goto dflt;
         case 3: {
-            s32 a = func_ov137_02295634();
-            s32 b = func_ov137_022955f0();
-            U94A->func_ov002_02202a40(a, b);
+            s32 a = getCursorTargetX();
+            s32 b = getCursorTargetY();
+            U94A->warpTo(a, b);
             break;
         }
         default:
         dflt:
-            func_ov137_02295584();
+            moveCursorToTarget();
             break;
         case 0: {
-            u32 t = data_021f47d8[1];
+            u32 t = gPad[1];
             if (t & 1) {
-                func_ov137_022954f0();
+                pressCursor();
             } else if (t & 2) {
-                func_ov137_02295748();
+                cancelList();
             }
             break;
         }
@@ -568,282 +453,282 @@ void Unk_ov137_022962e0::func_ov137_02295a88() {
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295a30() {
-    if (data_021f47d8[0] & 1) {
-        unk_25c.func_ov134_02292450();
-        s32 a = func_ov137_02295634();
-        s32 b = func_ov137_022955f0();
-        U94A->func_ov002_02202a40(a, b);
+void BirthdayMenu::stateListKnobHold() {
+    if (gPad[0] & 1) {
+        picker.moveKnobByPad();
+        s32 a = getCursorTargetX();
+        s32 b = getCursorTargetY();
+        U94A->warpTo(a, b);
     } else {
-        unk_25c.func_ov134_02292444();
-        func_ov002_02200a58(7);
+        picker.releaseKnob();
+        setMainState(7);
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_022959e8() {
-    if (unk_25c.func_ov134_02292420()) {
-        func_ov002_02200a58(5);
-        func_ov137_022954c8();
+void BirthdayMenu::stateListKnobRelease() {
+    if (picker.finishKnobRelease()) {
+        setMainState(5);
+        releaseCursor();
     }
-    s32 a = func_ov137_02295634();
-    s32 b = func_ov137_022955f0();
-    U94A->func_ov002_02202a40(a, b);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    U94A->warpTo(a, b);
 }
 
-void Unk_ov137_022962e0::func_ov137_022959c0() {
-    if (!U94A->func_ov002_022028f0()) {
-        func_ov002_02200a58(unk_2822);
-        func_ov137_02295f80();
+void BirthdayMenu::updateCursorMove() {
+    if (!U94A->isMoving()) {
+        setMainState(returnState);
+        runMainState();
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295958() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(&unk_94)) {
-        if (func_ov137_02295414(2)) {
-            if (unk_25c.func_ov134_02292530()) {
-                func_ov002_02200a58(6);
+void BirthdayMenu::updateCursorPress() {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+        if (testFlags(2)) {
+            if (picker.grabKnobByCursor()) {
+                setMainState(6);
             } else {
-                unk_25c.func_ov134_02292170();
-                func_ov137_02295774();
+                picker.pickListCursorRow();
+                decideList();
             }
         } else {
-            u32 s = unk_2823;
+            u32 s = cursorSlot;
             if (s == 2) {
-                func_ov137_022957cc();
+                confirm();
             } else {
-                func_ov137_022957a0(s + 1);
+                openFieldList(s + 1);
             }
         }
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295930() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(&unk_94)) {
-        func_ov137_02295508();
-        func_ov002_02200a58(unk_2822);
+void BirthdayMenu::updateCursorRelease() {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+        refreshCursor();
+        setMainState(returnState);
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_022958cc() {
-    if (unk_f8.func_ov002_0220308c()) {
-        if (_ZN12Unk_020e100c13func_0208d534Ev(&unk_94)) {
-            s32 a = unk_f8.func_ov002_0220306c();
-            s32 b = unk_f8.func_ov002_022030f4(-1);
-            s32 c = unk_f8.func_ov002_022030b8(-1);
-            U94A->func_ov002_02202a40(a + b, a + c);
+void BirthdayMenu::stateExit() {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
+        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
+            U94A->warpTo(a + b, a + c);
         }
     } else {
-        func_ov137_022955d4();
-        func_ov002_02200a60(1);
+        hideCursor();
+        setPhase(1);
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_022958ac() {
-    if (func_ov134_02292f40(&unk_25c)) {
-        func_ov137_022956d4();
+void BirthdayMenu::stateListOpening() {
+    if (DateTimePicker_UpdateListOpen(&picker)) {
+        enterListInputMode();
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_0229586c() {
-    if (func_ov134_02292cb0(&unk_25c)) {
-        s32 r = func_ov134_022932d8(&unk_25c);
+void BirthdayMenu::stateListClosing() {
+    if (DateTimePicker_UpdateListClose(&picker)) {
+        s32 r = DateTimePicker_GetCursorField(&picker);
         if (r == 6) {
-            unk_2823 = 2;
+            cursorSlot = 2;
         } else {
-            unk_2823 = r - 1;
+            cursorSlot = r - 1;
         }
-        func_ov137_02295818();
+        resumeInput();
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295854() {
-    func_ov137_022955d4();
-    func_ov002_02200a58(0);
+void BirthdayMenu::startTouchInput() {
+    hideCursor();
+    setMainState(0);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295838() {
-    func_ov137_02295678();
-    func_ov002_02200980();
-    func_ov002_02200a58(4);
+void BirthdayMenu::startButtonInput() {
+    showCursor();
+    restartKeyRepeat();
+    setMainState(4);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295818() {
-    if (func_0206ef0c()) {
-        func_ov137_02295854();
+void BirthdayMenu::resumeInput() {
+    if (MenuCtrl_IsTouch()) {
+        startTouchInput();
     } else {
-        func_ov137_02295838();
+        startButtonInput();
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_022957cc() {
+void BirthdayMenu::confirm() {
     u32 w[2];
-    unk_f8.func_ov002_022030ac(6);
-    func_ov002_02200a50(2);
-    func_ov002_02200a58(0xb);
-    void *obj = func_0209750c();
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
+    setTransitionState(2);
+    setMainState(0xb);
+    void *obj = PlayerData_GetCurrent();
     w[0] = 0;
     w[1] = 0;
-    func_ov134_022948d8(&unk_25c, w);
-    _ZN12Unk_02097ff413func_020982f4Ejj(obj, ((u8 *)w)[4], ((u8 *)w)[3]);
+    DateTimePicker_GetDateTime(&picker, w);
+    _ZN10PlayerData11setBirthdayEjj(obj, ((u8 *)w)[4], ((u8 *)w)[3]);
 }
 
-void Unk_ov137_022962e0::func_ov137_022957a0(u32 a) {
-    func_ov137_022955d4();
-    func_ov134_02293024(&unk_25c, a);
-    func_ov002_02200a58(0xc);
+void BirthdayMenu::openFieldList(u32 a) {
+    hideCursor();
+    DateTimePicker_OpenList(&picker, a);
+    setMainState(0xc);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295774() {
-    func_ov137_022955d4();
-    func_ov137_022953f4(2);
-    func_ov134_02292e40(&unk_25c);
-    func_ov002_02200a58(0xd);
+void BirthdayMenu::decideList() {
+    hideCursor();
+    clearFlags(2);
+    DateTimePicker_DecideList(&picker);
+    setMainState(0xd);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295748() {
-    func_ov137_022955d4();
-    func_ov137_022953f4(2);
-    func_ov134_02292df4(&unk_25c);
-    func_ov002_02200a58(0xd);
+void BirthdayMenu::cancelList() {
+    hideCursor();
+    clearFlags(2);
+    DateTimePicker_CancelList(&picker);
+    setMainState(0xd);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295730() {
-    func_ov137_022955d4();
-    func_ov002_02200a58(1);
+void BirthdayMenu::enterListTouchMode() {
+    hideCursor();
+    setMainState(1);
 }
 
-void Unk_ov137_022962e0::func_ov137_022956f4() {
-    s32 t = unk_25c.func_ov134_0229236c();
-    unk_25c.func_ov134_02292340(t);
-    func_ov137_02295404(2);
-    func_ov137_02295678();
-    func_ov002_02200980();
-    func_ov002_02200a58(5);
+void BirthdayMenu::enterListButtonMode() {
+    s32 t = picker.getListCursorY();
+    picker.setListCursorFromY(t);
+    setFlags(2);
+    showCursor();
+    restartKeyRepeat();
+    setMainState(5);
 }
 
-void Unk_ov137_022962e0::func_ov137_022956d4() {
-    if (func_0206ef0c()) {
-        func_ov137_02295730();
+void BirthdayMenu::enterListInputMode() {
+    if (MenuCtrl_IsTouch()) {
+        enterListTouchMode();
     } else {
-        func_ov137_022956f4();
+        enterListButtonMode();
     }
 }
 
-void Unk_ov137_022962e0::func_ov137_02295678() {
-    s32 a = func_ov137_02295634();
-    s32 b = func_ov137_022955f0();
-    U94A->func_ov002_02202a40(a, b);
-    if (func_ov137_02295414(2) || unk_2823 != 2) {
-        U94B->func_ov002_02202d00(1);
+void BirthdayMenu::showCursor() {
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    U94A->warpTo(a, b);
+    if (testFlags(2) || cursorSlot != 2) {
+        U94B->setAnimIfChanged(1);
     } else {
-        U94B->func_ov002_02202d00(7);
+        U94B->setAnimIfChanged(7);
     }
-    func_ov137_02295508();
+    refreshCursor();
 }
 
-s32 Unk_ov137_022962e0::func_ov137_02295634() {
-    if (func_ov137_02295414(2)) {
-        return unk_25c.func_ov134_022923a0();
+s32 BirthdayMenu::getCursorTargetX() {
+    if (testFlags(2)) {
+        return picker.getListCursorX();
     }
-    if (unk_2823 == 2) {
-        return unk_f8.func_ov002_022030f4(6);
+    if (cursorSlot == 2) {
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     }
-    return data_ov137_02296208[unk_2823];
+    return sBirthdayCursorXTable[cursorSlot];
 }
 
-s32 Unk_ov137_022962e0::func_ov137_022955f0() {
-    if (func_ov137_02295414(2)) {
-        return unk_25c.func_ov134_0229236c();
+s32 BirthdayMenu::getCursorTargetY() {
+    if (testFlags(2)) {
+        return picker.getListCursorY();
     }
-    if (unk_2823 == 2) {
-        return unk_f8.func_ov002_022030b8(6);
+    if (cursorSlot == 2) {
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     }
-    return data_ov137_02296214[unk_2823];
+    return sBirthdayCursorYTable[cursorSlot];
 }
 
-void Unk_ov137_022962e0::func_ov137_022955d4() {
-    U94B->func_ov002_02202d00(0);
-    unk_94.vfunc_0c();
+void BirthdayMenu::hideCursor() {
+    U94B->setAnimIfChanged(0);
+    cursor.update();
 }
 
-void Unk_ov137_022962e0::func_ov137_02295584() {
-    if (func_ov137_02295414(2) || unk_2823 != 2) {
-        U94B->func_ov002_02202c40();
+void BirthdayMenu::moveCursorToTarget() {
+    if (testFlags(2) || cursorSlot != 2) {
+        U94B->switchToAnim01();
     } else {
-        U94B->func_ov002_02202ca0();
+        U94B->switchToAnim07();
     }
-    s32 a = func_ov137_02295634();
-    s32 b = func_ov137_022955f0();
-    func_ov137_02295524(a, b);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    startCursorMove(a, b);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295524(s32 a, s32 b) {
-    if (func_ov137_02295414(4)) {
-        U94A->func_ov002_022029e8(a, b, 2, 1);
+void BirthdayMenu::startCursorMove(s32 a, s32 b) {
+    if (testFlags(4)) {
+        U94A->moveToEase(a, b, 2, 1);
     } else {
-        U94A->func_ov002_022029e8(a, b, 3, 1);
+        U94A->moveToEase(a, b, 3, 1);
     }
-    unk_2822 = unk_8d;
-    func_ov002_02200a58(8);
-    func_ov137_022953f4(4);
+    returnState = mainState;
+    setMainState(8);
+    clearFlags(4);
 }
 
-void Unk_ov137_022962e0::func_ov137_02295508() {
-    U94A->func_ov002_02202a78();
-    unk_94.vfunc_0c();
+void BirthdayMenu::refreshCursor() {
+    U94A->setPoseIdle();
+    cursor.update();
 }
 
-void Unk_ov137_022962e0::func_ov137_022954f0() {
-    U94B->func_ov002_02202b68();
-    func_ov002_02200a58(9);
+void BirthdayMenu::pressCursor() {
+    U94B->setPosePress();
+    setMainState(9);
 }
 
-void Unk_ov137_022962e0::func_ov137_022954c8() {
-    U94A->func_ov002_02202af0();
-    unk_2822 = unk_8d;
-    func_ov002_02200a58(10);
+void BirthdayMenu::releaseCursor() {
+    U94A->setPoseRelease();
+    returnState = mainState;
+    setMainState(10);
 }
 
-BOOL Unk_ov137_022962e0::func_ov137_0229542c(u32 a) {
-    u8 old = unk_2823;
-    if (func_ov002_0220126c(a)) {
-        unk_2823 = data_ov137_022961fc[unk_2823];
-    } else if (func_ov002_0220125c(a)) {
-        unk_2823 = data_ov137_022961f8[unk_2823];
+BOOL BirthdayMenu::moveCursorByPad(u32 a) {
+    u8 old = cursorSlot;
+    if (MenuKeys_HasLeft(a)) {
+        cursorSlot = sBirthdayCursorLeftTable[cursorSlot];
+    } else if (MenuKeys_HasRight(a)) {
+        cursorSlot = sBirthdayCursorRightTable[cursorSlot];
     }
-    if (old != unk_2823) {
+    if (old != cursorSlot) {
         return TRUE;
     }
-    if (func_ov002_0220128c(a)) {
-        unk_2823 = data_ov137_02296204[unk_2823];
-    } else if (func_ov002_0220127c(a)) {
-        unk_2823 = data_ov137_02296200[unk_2823];
+    if (MenuKeys_HasUp(a)) {
+        cursorSlot = sBirthdayCursorUpTable[cursorSlot];
+    } else if (MenuKeys_HasDown(a)) {
+        cursorSlot = sBirthdayCursorDownTable[cursorSlot];
     }
-    if (old != unk_2823) {
-        return TRUE;
-    }
-    return FALSE;
-}
-
-BOOL Unk_ov137_022962e0::func_ov137_02295414(u32 m) {
-    if (unk_2820 & m) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov137_022962e0::func_ov137_02295404(u32 m) { unk_2820 = unk_2820 | m; }
+BOOL BirthdayMenu::testFlags(u32 m) {
+    if (flags & m) {
+        return TRUE;
+    }
+    return FALSE;
+}
 
-void Unk_ov137_022962e0::func_ov137_022953f4(u32 m) { unk_2820 = unk_2820 & ~m; }
+void BirthdayMenu::setFlags(u32 m) { flags = flags | m; }
 
-extern "C" const u8 data_ov137_022961f8[4] = {1, 1, 2, 0};
+void BirthdayMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
-extern "C" const u8 data_ov137_022961fc[4] = {0, 0, 2, 0};
+extern "C" const u8 sBirthdayCursorRightTable[4] = {1, 1, 2, 0};
 
-extern "C" const u8 data_ov137_02296204[4] = {0, 1, 1, 0};
+extern "C" const u8 sBirthdayCursorLeftTable[4] = {0, 0, 2, 0};
 
-extern "C" const u8 data_ov137_02296200[4] = {2, 2, 2, 0};
+extern "C" const u8 sBirthdayCursorUpTable[4] = {0, 1, 1, 0};
 
-extern "C" const s32 data_ov137_02296214[3] = {0x78, 0x78, 0};
+extern "C" const u8 sBirthdayCursorDownTable[4] = {2, 2, 2, 0};
 
-extern "C" Unk_ov137_SceneEntry data_ov137_022962c8 = {func_ov137_022961b4, 0xb0, 0xb4};
+extern "C" const s32 sBirthdayCursorYTable[3] = {0x78, 0x78, 0};
+
+extern "C" ProcProfile sBirthdayMenuProfile = {(void *(*)())BirthdayMenu_Create, 0xb0, 0xb4};

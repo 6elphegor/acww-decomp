@@ -1,95 +1,31 @@
-#define vfunc_08() vfunc_08(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
-#undef vfunc_14
+#include "net/CommManager.h"
+#include "ui/UiWidget.h"
+#include "menu/MenuProc.h"
+#include "menu/MenuCursor.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
+#include "ui/TouchPromptBalloon.h"
+#include "ui/CursorMotion.h"
+#include "ui/LetterRenderer.h"
+#include "item/Letter.h"
+#include "menu/MenuLabelButton.h"
+#include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
+#include "menu/PocketMenu.h"
+#include "sys/ProcProfile.h"
 
-class Unk_ov096_0229aea8;
-typedef void (Unk_ov096_0229aea8::*Unk_ov096_0229aea8_Fn)();
-
-// plain-function view of the scene object (the free functions in 0x02297b14..0x02298d34 take it)
-struct Unk_ov096_02294c40 {
-    u8 unk_00[0x8d];
-    u8 unk_8d;
-    u8 unk_8e[0x9c - 0x8e];
-    s32 unk_9c;
-    s32 unk_a0;
-    s32 unk_a4;
-    s32 unk_a8;
-    u16 unk_ac;
-    u16 unk_ae;
-    u8 unk_b0;
-    u8 unk_b1;
-    u8 unk_b2;
-    u8 unk_b3;
-    u8 unk_b4;
-    u8 unk_b5;
-    u8 unk_b6;
-    u8 unk_b7;
-    u8 unk_b8;
-    u8 unk_b9;
-    u8 unk_ba;
-    u8 unk_bb;
-    u8 unk_bc;
-    u8 unk_bd;
-    u8 unk_be;
-    u8 unk_bf;
-    u8 unk_c0;
-    volatile u8 unk_c1;
-    u8 unk_c2;
-    u8 unk_c3;
-    s32 unk_c4;
-    u8 unk_c8[0x358 - 0xc8];
-    u8 s_358[0x23c0 - 0x358];
-    u8 s_23c0[0x2480 - 0x23c0];
-    u8 s_2480[0x2498 - 0x2480];
-    u8 s_2498[0x24fc - 0x2498];
-    u8 s_24fc[0x27f0 - 0x24fc];
-    u8 s_27f0[0x27fc - 0x27f0];
-    u8 s_27fc[0x2b14 - 0x27fc];
-    u8 s_2b14[0x2c8c - 0x2b14];
-    u8 s_2c8c[8];
-};
-typedef Unk_ov096_02294c40 S;
+class PocketMenu;
+typedef void (PocketMenu::*Unk_ov096_0229aea8_Fn)();
 
 struct Unk_ov096_02297fb8_Msg {
     u8 a;
     u8 b;
 };
 
-struct Unk_020cbb18 {
-    u8 pad_00[0x64];
-    s32 unk_64;
-    BOOL func_02072e44();
-};
 
-class Unk_020e0db4 {
-public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-};
-
-class Unk_ov096_0229a94c_Virt {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-};
-
-class Unk_ov096_02299eec_Obj {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-};
 
 static inline BOOL IsZero(u8 v)
 {
@@ -117,731 +53,384 @@ static inline BOOL Unk_ov096_022968bc_InRange(volatile u16 *p, u32 lo, u32 hi) {
 }
 
 extern "C" {
-void _ZN18Unk_ov096_0229aea819func_ov096_02296bb8Et(void *self, s32 a);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_02294d9cEj(S *s, u32 a);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_02294dacEj(S *s, u32 a);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(S *s, u32 a);
-void _ZN18Unk_ov096_0229aea819func_ov096_02294e08Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02294ed4Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02294ef4Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02294f14Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_022956a0Ei(S *s, u32 a);
-void _ZN18Unk_ov096_0229aea819func_ov096_02295a44Ei(S *s, u32 a);
-void _ZN18Unk_ov096_0229aea819func_ov096_02295d28Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02296708Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_0229673cEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02296898Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02296910Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02296964Ev(S *s);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_022969bcEPtiS0_h(S *s, void *a, u32 b, u16 *c, s32 d);
-void _ZN18Unk_ov096_0229aea819func_ov096_02296b68Et(S *s, u32 a);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_02296c18Ev(S *s);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_02296cacEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02296d5cEv(S *s);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_02296d88Ei(S *s, u32 a);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_02296dbcEit(S *s, u32 a, u32 b);
-u32 _ZN18Unk_ov096_0229aea819func_ov096_02296e70Eit(S *s, u32 a, u32 b);
-void _ZN18Unk_ov096_0229aea819func_ov096_0229713cEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02297160Ev(S *s);
-s32 _ZN18Unk_ov096_0229aea819func_ov096_022971dcEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_022972ecEj(S *s, u32 a);
-void _ZN18Unk_ov096_0229aea819func_ov096_02297358Ejj(S *s, u32 a, u32 b);
-void _ZN18Unk_ov096_0229aea819func_ov096_022973a0Ej(S *s, u32 a);
-void _ZN18Unk_ov096_0229aea819func_ov096_022973ccEj(S *s, u32 a);
-void _ZN18Unk_ov096_0229aea819func_ov096_022974b8Ejj(S *s, u32 a, u32 b);
-void _ZN18Unk_ov096_0229aea819func_ov096_022974f4Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_0229751cEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02297548Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_022975d4Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02297750Ej(S *s, u32 a);
-void _ZN18Unk_ov096_0229aea819func_ov096_02297804Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02297834Ej(S *s, u32 a);
-void _ZN18Unk_ov096_0229aea819func_ov096_022978acEv(S *s);
-extern Unk_020cbb18 *data_020cbb18;
-extern u8 data_020e416c;
-extern u8 data_021edb68;
-extern u8 data_021ef5c8;
-extern u8 data_021ef5ec;
-extern u8 data_021ef5f0;
-extern u8 data_021ef5f4;
-extern u8 data_021ef5f8;
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern u16 data_021f47d8[];
-void func_020020b8(s32 a);
-void func_020021a0(s32 a);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_02002398(s32 a, s32 b);
-s32 func_0200402c(s32 a);
-void func_0203a32c();
-void func_0203a344();
-BOOL func_0203a35c();
-void func_02042820(s32 a);
-s32 func_02042830(s32 a);
-s32 func_02042c64(s32 a, s32 b);
-s32 func_02042d10(s32 a);
-s32 func_0204b318(s32 a, s32 b);
-u32 func_0204b338(u16 *p);
-s32 func_0204b354(u16 *p);
-u32 func_0204b718(u32 v, s32 a, s32 *out);
+void _ZN10PocketMenu18withdrawFromWalletEt(void *self, s32 a);
+s32 _ZN10PocketMenu10clearFlagsEj(PocketMenu *s, u32 a);
+s32 _ZN10PocketMenu8setFlagsEj(PocketMenu *s, u32 a);
+s32 _ZN10PocketMenu9testFlagsEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu13wearHeldShirtEv(PocketMenu *s);
+void _ZN10PocketMenu16requestCameraPopEv(PocketMenu *s);
+void _ZN10PocketMenu17requestCameraPushEv(PocketMenu *s);
+void _ZN10PocketMenu18writeLetterOnPaperEv(PocketMenu *s);
+void _ZN10PocketMenu17openAddresseePageEi(PocketMenu *s, u32 a);
+void _ZN10PocketMenu14addItemOptionsEi(PocketMenu *s, u32 a);
+void _ZN10PocketMenu15runChosenActionEv(PocketMenu *s);
+void _ZN10PocketMenu19placeCursorOnTargetEv(PocketMenu *s);
+void _ZN10PocketMenu20cursorToPopupDefaultEv(PocketMenu *s);
+void _ZN10PocketMenu10hideCursorEv(PocketMenu *s);
+void _ZN10PocketMenu19cursorToPopupBottomEv(PocketMenu *s);
+void _ZN10PocketMenu10showCursorEv(PocketMenu *s);
+s32 _ZN10PocketMenu10mergeItemsEPtiS0_h(PocketMenu *s, void *a, u32 b, u16 *c, s32 d);
+void _ZN10PocketMenu15depositToWalletEt(PocketMenu *s, u32 a);
+s32 _ZN10PocketMenu14getWalletBellsEv(PocketMenu *s);
+s32 _ZN10PocketMenu14depositHeldBagEv(PocketMenu *s);
+void _ZN10PocketMenu17cancelUseOnPlayerEv(PocketMenu *s);
+s32 _ZN10PocketMenu17isUseOnPlayerBusyEi(PocketMenu *s, u32 a);
+s32 _ZN10PocketMenu18requestUseOnPlayerEit(PocketMenu *s, u32 a, u32 b);
+u32 _ZN10PocketMenu12swapEquippedEit(PocketMenu *s, u32 a, u32 b);
+void _ZN10PocketMenu16startUseOnPlayerEv(PocketMenu *s);
+void _ZN10PocketMenu9clearHandEv(PocketMenu *s);
+s32 _ZN10PocketMenu12dropHeldItemEv(PocketMenu *s);
+void _ZN10PocketMenu10returnHandEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu11putHandBackEjj(PocketMenu *s, u32 a, u32 b);
+void _ZN10PocketMenu10pickUpItemEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu6pickUpEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu11setHandItemEjj(PocketMenu *s, u32 a, u32 b);
+void _ZN10PocketMenu17syncHandFromMoverEv(PocketMenu *s);
+void _ZN10PocketMenu18syncHandFromCursorEv(PocketMenu *s);
+void _ZN10PocketMenu17syncHandFromTouchEv(PocketMenu *s);
+void _ZN10PocketMenu18updateLabelBalloonEv(PocketMenu *s);
+void _ZN10PocketMenu15highlightTargetEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu15clearHighlightsEv(PocketMenu *s);
+void _ZN10PocketMenu12selectTargetEj(PocketMenu *s, u32 a);
+void _ZN10PocketMenu14clearSelectionEv(PocketMenu *s);
+extern CommManager *gCommManager;
+extern u8 gFieldSceneKind;
+extern u8 gU8None;
+extern u8 gTouchHoldFrames;
+extern u8 gTouchCurY;
+extern u8 gTouchCurX;
+extern u8 gTouchPressY;
+extern u8 gTouchPressX;
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern u16 gPad[];
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_ResetLayer(s32 a);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_SetLayerPriority(s32 a, s32 b);
+s32 Snd_PlaySe(s32 a);
+void Camera_PopView();
+void Camera_PushView();
+BOOL Camera_IsViewPushed();
+void FieldAction_Release(s32 a);
+s32 FieldAction_PollDrop(s32 a);
+s32 FieldAction_RequestDrop(s32 a, s32 b);
+s32 FieldAction_PollResult(s32 a);
+s32 Item_MakePaper(s32 a, s32 b);
+u32 Item_GetPaperCount(u16 *p);
+s32 Item_GetPaperIndex(u16 *p);
+u32 Item_FindMoneyBagForAmount(u32 v, s32 a, s32 *out);
 BOOL func_0204bab8(u16 *p);
-BOOL func_0204bae0(u16 *p);
-u32 func_0204be70(u16 *p);
-s32 _ZN12Unk_0206555413func_02065578Ev(void *obj);
-void _ZN12Unk_0206555413func_02065588Etj(void *a, u32 b, u32 c);
-s32 _ZN12Unk_0206555413func_020655c0Ev(void *a);
-s32 _ZN12Unk_0206555413func_020655d0Ev(void *obj);
-void func_02065af0();
-s32 func_02065bfc();
-void func_02065c34(void *p, u8 v);
-void _ZN12Unk_020dd458C1Ev(void *p);
-void *_ZN12Unk_020dd458D1Ev(void *p);
-void *_ZN18Unk_ov002_02204738D1Ev(void *p);
-void *_ZN12Unk_0206d0a0D1Ev(void *p);
-void *_ZN18Unk_ov002_022040ecD1Ev(void *p);
-void *_ZN18Unk_ov002_02204558D1Ev(void *p);
-void *_ZN18Unk_ov002_02204614D1Ev(void *p);
-void *_ZN18Unk_ov002_02204604D1Ev(void *p);
-void *_ZN18Unk_ov002_02204468D1Ev(void *p);
-void *_ZN18Unk_ov094_02292d6cD1Ev(void *p);
-void *_ZN18Unk_ov094_02294bd4D1Ev(void *p);
-void *_ZN18Unk_ov094_02294a50D1Ev(void *p);
-void func_02065e70(void *dst, void *src);
-void _ZN12Unk_0206d0a013func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_0206d0a013func_0206d394Ev(void *p);
-void _ZN12Unk_0206d0a013func_0206d39cEi(void *p, s32 a);
-void _ZN12Unk_0206d0a0C1Ev(void *p);
-void func_0206e240(void *a, void *b, void *c, void *d);
-BOOL func_0206e61c();
-void func_0206e63c();
-s32 func_0206e8f4(s32 a);
-s32 func_0206ec48();
-s32 func_0206ec54(u32 a);
-void func_0206ed5c(void *p);
-s32 func_0206ed68();
-BOOL func_0206ef00();
-BOOL func_0206ef0c();
-s32 func_0206f53c(s32 a);
-s32 func_0206f604(u8 a, s32 b);
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *obj, u32 v);
-void _ZN12Unk_020e0d9813func_02089ad8Eii(void *p, s32 x, s32 y);
-s32 func_0208a578();
-s32 _ZN12Unk_020e0f1013func_0208c1a4Ev(s32 a);
-BOOL _ZN12Unk_020e100c13func_0208d4fcEv(void *p);
-s32 _ZN12Unk_020e100c13func_0208d534Ev(void *p);
-void _ZN12Unk_020e100c13func_0208d63cEv(void *p);
-void _ZN12Unk_020e100c13func_0208d644Ev(void *p);
-void _ZN12Unk_020e109813func_0208e288Eii(void *p, s32 a, s32 b);
-s32 func_02094b48(u16 *p);
-s32 func_02094b78(u16 *p);
-s32 func_02094bc0();
-s32 func_02094be0(u16 *p);
-s32 func_02094bec(u16 *p);
-s32 func_02094bf8(u16 *p);
-s32 func_02094fa8();
-s32 func_02094fb4();
-s32 func_020951ac();
-void *func_0209750c();
-s32 func_02097ac4(void *p, s32 a, s32 b);
-s32 _ZN12Unk_02097d1c13func_02097d1cEi(void *p, s32 a);
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 a);
-u16 *_ZN12Unk_02097ff413func_020983ccEv(void *p);
-void _ZN12Unk_0209865c13func_020986f0EPt(void *o, u16 *p);
-u16 *_ZN12Unk_0209865c13func_020986fcEv(void *o);
-void _ZN12Unk_0209865c13func_02098708EPt(void *o, u16 *p);
-u16 *_ZN12Unk_0209865c13func_02098714Ev(void *o);
-void _ZN12Unk_0209865c13func_02098720EPt(void *o, u16 *p);
-u16 *_ZN12Unk_0209865c13func_0209872cEv(void *o);
-u16 *_ZN12Unk_0209865c13func_02098744Ev(void *o);
-void *_ZN12Unk_0209865c13func_02098750Ev(void *p);
-s32 func_02098ffc();
-s32 func_020991fc();
-s32 func_020b52f8();
-void _ZN12Unk_020e4608C1Ev(void *p);
-void _ZN12Unk_020e45f813func_020b87d0Ev(void *p);
-void *func_020ed174(void *p);
-void func_020ed188(void *p);
-s32 _ZN18Unk_ov002_0220446819func_ov002_02200680Ev(void *p);
-void _ZN18Unk_ov002_0220446819func_ov002_022006a4Eh(void *p, s32 a);
-void _ZN18Unk_ov002_0220446819func_ov002_022006acEi(void *p, s32 a);
-void _ZN18Unk_ov002_0220446819func_ov002_022006b0Ev(void *p);
-void _ZN18Unk_ov002_0220446819func_ov002_022006b8Ev(void *p);
-void _ZN18Unk_ov002_0220446819func_ov002_022006c0Ev(void *p);
-void _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(void *self, s32 a);
-s32 _ZN18Unk_ov002_0220446819func_ov002_0220071cEv(void *p);
-void _ZN18Unk_ov002_02204468C1Ev(void *p);
-void _ZN18Unk_ov002_022044e419func_ov002_02200980Ev(void *p);
-BOOL func_ov002_0220125c(void *pad);
-BOOL func_ov002_0220126c(void *pad);
-BOOL func_ov002_0220127c(void *pad);
-BOOL func_ov002_0220128c(void *pad);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022013e4EPvj(void *self, void *p, u32 v);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_02201438Ej(void *p, u32 a);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_0220144cEjj(void *p, u32 a, u32 b);
-u32 _ZN18Unk_ov002_022013ac19func_ov002_02201490Ev(void *p);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022014acEii(void *p, u32 a, u32 b);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022014c0Eii(void *p, u32 a, u32 b);
-void _ZN18Unk_ov002_022013ac19func_ov002_0220160cEP22Unk_ov002_022013ac_Reci(void *self, void *r, u32 f);
-s32 func_ov002_022016cc(void *p);
-void func_ov002_022016e4(void *p, u32 v);
-s32 func_ov002_02201700(void *p, u32 a, u32 b);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022017a4Ev(void *p);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022017b4Ev(void *p);
-void _ZN18Unk_ov002_022013ac19func_ov002_022017c4Ev(void *p);
-s32 func_ov002_022019d0(void *p, s32 a, void *b, u32 c);
-s32 func_ov002_02201a28(void *p);
-void func_ov002_02201a3c(void *p, s32 a);
-u8 func_ov002_02201a70(void *self, s32 x);
-void func_ov002_02201aa0(void *p, s32 a, s32 b);
-void func_ov002_02201b04(void *p);
-void func_ov002_02201b28(void *p);
-void func_ov002_02201b58(void *p);
-void func_ov002_02202064(void *self, s32 x);
-void func_ov002_02202098(void *self, s32 x);
-void func_ov002_022020cc(void *self, u32 a, s32 x);
-void _ZN18Unk_ov002_0220455819func_ov002_02202200EP12Unk_020e0d98(void *self, void *p, s32 c);
-void _ZN18Unk_ov002_0220455819func_ov002_02202278Eii(void *self, s32 a, s32 b);
-void _ZN18Unk_ov002_0220455819func_ov002_0220229cEii(void *self, s32 a, s32 c);
-void _ZN18Unk_ov002_0220455819func_ov002_02202310EiiPKc(void *p, s32 a, s32 b, s32 c);
-void _ZN18Unk_ov002_02204558C1Ev(void *p);
-void _ZN18Unk_ov002_02204614C1Ev(void *p);
-void _ZN18Unk_ov002_0220460419func_ov002_022026c4Eiii(void *p, s32 a, s32 b, u32 c);
-void _ZN18Unk_ov002_0220460419func_ov002_022026f4Eii(void *p, s32 a, s32 b);
-s32 _ZN18Unk_ov002_0220460419func_ov002_02202708Ev(void *p);
-s32 _ZN18Unk_ov002_0220460419func_ov002_02202710Ev(void *p);
-s32 _ZN18Unk_ov002_0220460419func_ov002_02202718Ev(void *p);
-void _ZN18Unk_ov002_0220460419func_ov002_022027a4Ev(void *p);
-void _ZN18Unk_ov002_02204604C1Ev(void *p);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202844Ev(void *p);
-void _ZN18Unk_ov002_02202d9819func_ov002_0220288cEv(void *p);
-s32 _ZN18Unk_ov002_02202d9819func_ov002_022028a0Ev(void *p);
-s32 _ZN18Unk_ov002_02202d9819func_ov002_022028c8Ev(void *p);
-BOOL _ZN18Unk_ov002_02202d9819func_ov002_022028f0Ev(void *p);
-BOOL _ZN18Unk_ov002_02202d9819func_ov002_022028fcEv(void *p);
-BOOL _ZN18Unk_ov002_02202d9819func_ov002_02202928Ev(void *p);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(void *p, s32 a, s32 b);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(void *p);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202be0Ev(void *self);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202c40Ev(void *self);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(void *p, s32 a);
-void _ZN18Unk_ov002_02204738C1Ev(void *p);
-s32 _ZN18Unk_ov002_0220473819func_ov002_02203e24Ev(void *p);
-void _ZN18Unk_ov002_0220473819func_ov002_02203ec8Ei(void *p, s32 a);
-s32 _ZN18Unk_ov002_0220473819func_ov002_02203f08Ev(void *p);
-s32 _ZN18Unk_ov002_0220473819func_ov002_02203f28Ei(void *p, s32 a);
-s32 _ZN18Unk_ov002_0220473819func_ov002_02203f78Ei(void *p, s32 a);
-s32 _ZN18Unk_ov002_022040ec19func_ov002_02204234Ei(void *p, s32 a);
-void _ZN18Unk_ov002_022040ec19func_ov002_02204394EPhij(void *p, void *q, u32 a, u32 b);
-void _ZN18Unk_ov002_022040ecC1Ev(void *p);
-s32 _ZN18Unk_ov090_022921e019func_ov090_02291934Ev();
-s32 func_ov090_02291944();
-s32 func_ov090_02291a38(s32 a);
-s32 func_ov090_02291a58(s32 a);
-s32 func_ov090_02291a78(s32 a);
-void _ZN18Unk_ov090_022921e019func_ov090_02291a88Ev(void *p);
-void _ZN18Unk_ov090_022921e019func_ov090_02291a90Ev(void *p);
-s32 func_ov090_02291aa0();
-void _ZN18Unk_ov090_022921e019func_ov090_02291d2cEv();
-void _ZN18Unk_ov090_022921e019func_ov090_02291d8cEj(void *p, u32 idx);
-void func_ov094_02292380();
-void func_ov094_0229238c();
-void func_ov094_02292398();
-BOOL func_ov094_02292414(u32 a);
-s32 func_ov094_02292450(s32 a);
-void func_ov094_02292484(void *p);
-void func_ov094_0229248c(void *p, s32 a);
-BOOL func_ov094_022924c4(u32 a);
-void func_ov094_02292640(void *p, u32 a);
-void func_ov094_022926c8(void *o, u32 v);
-void func_ov094_0229272c(void *p);
-s32 func_ov094_02292738(void *p);
-void func_ov094_02292774(void *p, s32 a);
-void func_ov094_0229277c(void *p, s32 a);
-void func_ov094_02292864(void *p);
-void func_ov094_02292a80(void *p);
-void func_ov094_02292aa4(void *p);
-void func_ov094_02292acc(void *p);
-void func_ov094_02292ae0(void *p);
-void func_ov094_02292c08(void *p);
-void func_ov094_02292c84(void *p, s32 a);
-void func_ov094_02292d30(void *p, s32 a);
-void _ZN18Unk_ov094_02292d6cC1Ev(void *p);
-s32 func_ov094_02292e30(void *p);
-s32 func_ov094_02292efc(void *p, u16 a, u8 b);
-s32 func_ov094_0229311c(void *p, u32 a);
-void func_ov094_0229313c(void *p, s32 a, s32 b);
-void func_ov094_022931e8(void *p, s32 a, s32 b);
-void func_ov094_022932d0(void *p, s32 a, s32 b);
-s32 func_ov094_0229333c(void *p, u32 a);
-void func_ov094_0229341c(void *p, u32 a, u32 b);
-void func_ov094_02293434(void *p, u32 a);
-void func_ov094_02293494(void *p, u32 a, u32 b, u32 c);
-s32 func_ov094_022934d8(void *p, s32 a);
-s32 func_ov094_02293504(void *p, u32 a);
-s32 func_ov094_0229352c(void *p, u32 a);
-void func_ov094_0229357c(void *p, s32 a);
-void func_ov094_0229358c(void *p);
-void func_ov094_0229359c(void *p, s32 a);
-void func_ov094_022935dc(void *p);
-s32 func_ov094_02293610(void *p, u32 a);
-s32 func_ov094_02293624(void *p, u32 a);
-void func_ov094_02293638(void *p, void *q, s32 a);
-void func_ov094_022937a0(void *p);
-s32 func_ov094_02293928(void *p, s32 x, s32 y);
-s32 func_ov094_02293968(void *p);
-void func_ov094_02293998(void *p);
-void func_ov094_022939a0(void *p);
-void func_ov094_022939c0(void *p, s32 a);
-void _ZN18Unk_ov094_02294a50C1Ev(void *p);
-s32 func_ov094_02293c1c(void *p);
-s32 func_ov094_02293c58(void *p);
-void func_ov094_02293d2c(void *p);
-s32 func_ov094_02293d80(void *p, u32 a);
-s32 func_ov094_02293d9c(void *p, u32 a);
-s32 func_ov094_02293df8(void *p, u32 a);
-void _ZN18Unk_ov094_02294bd419func_ov094_0229405cEiiPv(void *p, s32 a, s32 b, void *c);
-void _ZN18Unk_ov094_02294bd419func_ov094_022941a0Eii(void *p, s32 a, s32 b);
-s32 _ZN18Unk_ov094_02294bd419func_ov094_022941ecEi(void *p, u32 a);
-s32 _ZN18Unk_ov094_02294bd419func_ov094_022942f4Ei(void *p, s32 a);
-void _ZN18Unk_ov094_02294bd419func_ov094_02294318Eii(void *p, u32 a, void *q);
-void *_ZN18Unk_ov094_02294bd419func_ov094_0229433cEi(void *p, s32 a);
-void _ZN18Unk_ov094_02294bd419func_ov094_022943a4Ei(void *p, s32 a);
-void _ZN18Unk_ov094_02294bd419func_ov094_022943b0Ev(void *p);
-void _ZN18Unk_ov094_02294bd419func_ov094_022943bcEj(void *p, s32 a);
-void _ZN18Unk_ov094_02294bd419func_ov094_022943f8Ev(void *p);
-void _ZN18Unk_ov094_02294bd419func_ov094_02294420EPvi(void *p, void *q, s32 a);
-s32 _ZN18Unk_ov094_02294bd419func_ov094_02294610Eii(void *p);
-void _ZN18Unk_ov094_02294bd419func_ov094_0229462cEv(void *p);
-void _ZN18Unk_ov094_02294bd419func_ov094_02294644Ei(void *p, s32 a);
-void _ZN18Unk_ov094_02294bd4C1Ev(void *p);
-void *func_ov096_02297b14(S *s, u32 id);
-s32 func_ov096_02297b48(S *s, u32 id);
-u32 func_ov096_02297b9c(S *s, u32 id);
-s32 func_ov096_02297c10(S *s, u32 id);
-s32 func_ov096_02297c68(S *s, u32 id);
-s32 func_ov096_02297cc0(S *s, u32 id);
-s32 func_ov096_02297d50(S *s, u32 id);
-s32 func_ov096_02297de0(S *s, s32 x, s32 y);
-BOOL func_ov096_02297e5c(S *s, s32 x, s32 y);
-BOOL func_ov096_02297e7c(S *s, s32 x, s32 y);
-s32 func_ov096_02297e94(S *s, s32 x, s32 y);
-BOOL func_ov096_02297f20(S *s, s32 x, s32 y);
-void func_ov096_02297f3c(S *s, u32 id, void *p);
-s32 func_ov096_02297f6c(S *s, u32 id);
-u32 func_ov096_02297fb8(S *s, s32 a, s32 b, s32 c);
-u32 func_ov096_02297ff8(S *s, u32 id);
-u32 func_ov096_02298008(S *s, u32 id);
-u32 func_ov096_0229801c(S *s);
-void func_ov096_0229803c(S *s, u32 id);
-void func_ov096_0229806c(S *s, u32 id);
-void func_ov096_022980a0(S *s, u32 id, u32 a, u32 b);
-s32 func_ov096_02298110(S *s, u32 id);
-u32 func_ov096_0229821c(S *s, s32 a, s32 b, s32 c);
-u32 func_ov096_0229825c(S *s, u32 id);
-u32 func_ov096_0229826c(S *s, u32 id);
-void func_ov096_022982a0(S *s);
-u32 func_ov096_022982c0(S *s, u32 id);
-u32 func_ov096_022982d0(S *s, u32 id);
-u32 func_ov096_022982e0(S *s, u32 id);
-u32 func_ov096_022982f0(S *s, u32 id);
-void func_ov096_022982fc(S *s);
-void func_ov096_02298320(S *s);
-void func_ov096_02298334(S *s, u32 a, u32 b, u32 c);
-void func_ov096_0229838c(S *s, u32 a, u32 b, u32 c, u8 d);
-void func_ov096_022983cc(S *s, u32 a, u32 b);
-void func_ov096_022985b8(S *s);
-void func_ov096_0229862c(S *s);
-void func_ov096_02298644(S *s);
-void func_ov096_0229865c(S *s);
-void func_ov096_0229867c(S *s);
-void func_ov096_022986b0(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_022988b8Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_0229895cEv(S *s);
-s32 func_ov096_02298c4c(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298cd8Ev(S *s);
-s32 func_ov097_0229b280(void *self);
-s32 func_ov097_0229b2bc(void *self, s32 a);
-void func_ov097_0229b3a4(void *scene, s32 a);
-void _ZN18Unk_ov096_0229aea819func_ov098_0229bb18Ev(void *scene);
-void _ZN18Unk_ov096_0229aea819func_ov098_0229bb5cEt(void *scene, s32 a);
-s32 func_ov098_0229bc90(void *self, s32 a);
-void func_ov096_02298430(S *s, u32 a);
-void func_ov096_0229849c(S *s, u32 a);
-void func_ov096_02298504(S *s, u32 a);
-void func_ov096_0229860c(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_022986ccEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298768Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298804Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298870Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_022988d0Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298934Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_0229898cEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298a14Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298aa0Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298b34Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298b54Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298b74Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298bdcEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298c10Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298c30Ev(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298c9cEv(S *s);
-void _ZN18Unk_ov096_0229aea819func_ov096_02298d34Ev(S *s);
-s32 _ZN12Unk_020e100c13func_0208d538Ei(void *self, s32);
-void _ZN12Unk_020e109813func_0208e13cEi(void *self, s32);
-u32 _ZN18Unk_ov002_022013ac19func_ov002_02201494Ev(void *self);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei(void *self, s32);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev(void *self);
-void _ZN18Unk_ov002_02202d9819func_ov002_022029e8Eiiii(void *self, s32, s32, s32, s32);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202a18Eiii(void *self, s32, s32, s32);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202a78Ev(void *self);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202af0Ev(void *self);
-void _ZN18Unk_ov002_022044e419func_ov002_02200a50Eh(void *self, u8);
-void _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(void *self, u8);
-void _ZN18Unk_ov002_022044e419func_ov002_02200a60Eh(void *self, u8);
+BOOL Item_IsHoldable(u16 *p);
+u32 Item_GetPrice(u16 *p);
+s32 _ZN10LetterView8getStateEv(void *obj);
+void _ZN10LetterView10setPresentEtj(void *a, u32 b, u32 c);
+s32 _ZN10LetterView15getPresentFlagsEv(void *a);
+s32 _ZN10LetterView10getPresentEv(void *obj);
+void Letter_MarkRead();
+s32 Letter_InitBottleDraft();
+void Letter_InitDraft(void *p, u8 v);
+void *_ZN6LetterD1Ev(void *p);
+void *_ZN15MenuLabelButtonD1Ev(void *p);
+void *_ZN14LetterRendererD1Ev(void *p);
+void *_ZN16MenuErrorMessageD1Ev(void *p);
+void *_ZN15PopupChoiceMenuD1Ev(void *p);
+void *_ZN14MenuCursorBuf0D1Ev(void *p);
+void *_ZN12CursorMotionD1Ev(void *p);
+void *_ZN18TouchPromptBalloonD1Ev(void *p);
+void *_ZN11InventoryBgD1Ev(void *p);
+void *_ZN10LetterGridD1Ev(void *p);
+void *_ZN17InventoryItemGridD1Ev(void *p);
+void Letter_Copy(void *dst, void *src);
+void _ZN14LetterRenderer4showEP10LetterViewPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
+void _ZN14LetterRenderer7releaseEv(void *p);
+void _ZN14LetterRenderer8setLayerEi(void *p, s32 a);
+void MenuScreen_UploadClothPattern(void *a, void *b, void *c, void *d);
+BOOL MenuCtrl_IsForceCloseDue();
+void MenuCtrl_TickForceClose();
+s32 MenuCtrl_SetHandBells(s32 a);
+s32 MenuCtrl_GetSavedSlot();
+s32 MenuCtrl_SetSavedSlot(u32 a);
+void MenuCtrl_SetArg(void *p);
+s32 MenuCtrl_GetArg();
+BOOL MenuCtrl_IsButtons();
+BOOL MenuCtrl_IsTouch();
+s32 HudCountdown_StartWithSe(s32 a);
+s32 CommSub_Send(u8 a, s32 b);
+s32 _ZN11CommManager12isSlotActiveEi(void *obj, u32 v);
+void _ZN12LabelBalloon6setPosEii(void *p, s32 x, s32 y);
+s32 Hud_GetCountdown();
+s32 _ZN12HudCountdown9isStoppedEv(s32 a);
+BOOL _ZN10HandCursor10isAnimDoneEv(void *p);
+s32 _ZN10HandCursor7getAnimEv(void *p);
+void _ZN10HandCursor16disableObjWindowEv(void *p);
+void _ZN10HandCursor15enableObjWindowEv(void *p);
+void _ZN11LabelButton6setPosEii(void *p, s32 a, s32 b);
+s32 PlayerActor_RequestHoldUpItem(u16 *p);
+s32 PlayerActor_RequestChangeHeldItem(u16 *p);
+s32 PlayerActor_RequestFaceChange();
+s32 PlayerActor_RequestWearHat(u16 *p);
+s32 PlayerActor_RequestWearFaceItem(u16 *p);
+s32 PlayerActor_RequestWearShirt(u16 *p);
+s32 PlayerActor_IsChangingHeldItem();
+s32 PlayerActor_IsChangingClothes();
+s32 PlayerActor_IsInAct05();
+void *PlayerData_GetCurrent();
+s32 PlayerInventory_SetWallet(void *p, s32 a, s32 b);
+s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 a);
+void _ZN10PlayerData7setFlagEj(void *p, u32 a);
+u16 *_ZN10PlayerData22getInventoryBackgroundEv(void *p);
+void _ZN10PlayerData11setFaceItemEPt(void *o, u16 *p);
+u16 *_ZN10PlayerData11getFaceItemEv(void *o);
+void _ZN10PlayerData6setHatEPt(void *o, u16 *p);
+u16 *_ZN10PlayerData6getHatEv(void *o);
+void _ZN10PlayerData8setShirtEPt(void *o, u16 *p);
+u16 *_ZN10PlayerData8getShirtEv(void *o);
+u16 *_ZN10PlayerData11getHeldItemEv(void *o);
+void *_ZN10PlayerData12getInventoryEv(void *p);
+s32 Pocket_FindEmpty();
+s32 Inventory_FindEmptyLetter();
+s32 Scene_InHouseRoom();
+void _ZN10BgVramTask6cancelEv(void *p);
+void *ProcBase_GetParent(void *p);
+void ProcBase_RequestDelete(void *p);
+s32 _ZN18TouchPromptBalloon15isOpenOrOpeningEv(void *p);
+void _ZN18TouchPromptBalloon17setAutoCloseTimerEh(void *p, s32 a);
+void _ZN18TouchPromptBalloon11setPriorityEi(void *p, s32 a);
+void _ZN18TouchPromptBalloon16cancelQueuedOpenEv(void *p);
+void _ZN18TouchPromptBalloon9queueOpenEv(void *p);
+void _ZN18TouchPromptBalloon10commitOpenEv(void *p);
+void _ZN18TouchPromptBalloon4hideEi(void *self, s32 a);
+s32 _ZN18TouchPromptBalloon12updatePromptEv(void *p);
+void _ZN8MenuProc16restartKeyRepeatEv(void *p);
+BOOL MenuKeys_HasRight(void *pad);
+BOOL MenuKeys_HasLeft(void *pad);
+BOOL MenuKeys_HasDown(void *pad);
+BOOL MenuKeys_HasUp(void *pad);
+s32 _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(void *self, void *p, u32 v);
+s32 _ZN19PopupChoiceMenuBody16getAddresseeKindEj(void *p, u32 a);
+s32 _ZN19PopupChoiceMenuBody13pickAddresseeEjj(void *p, u32 a, u32 b);
+u32 _ZN19PopupChoiceMenuBody12getPageCountEv(void *p);
+s32 _ZN19PopupChoiceMenuBody10hitTestRowEii(void *p, u32 a, u32 b);
+s32 _ZN19PopupChoiceMenuBody16hitTestRowOrLastEii(void *p, u32 a, u32 b);
+void _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi(void *self, void *r, u32 f);
+s32 ChoiceIdList_Count(void *p);
+void ChoiceIdList_Clear(void *p, u32 v);
+s32 ChoiceIdList_Add(void *p, u32 a, u32 b);
+s32 _ZN19PopupChoiceMenuBody8isClosedEv(void *p);
+s32 _ZN19PopupChoiceMenuBody6isOpenEv(void *p);
+void _ZN19PopupChoiceMenuBody18buildAddresseeListEv(void *p);
+s32 PopupChoice_MoveCursor(void *p, s32 a, void *b, u32 c);
+s32 PopupChoice_TickDecideDelay(void *p);
+void PopupChoice_DecideAddressee(void *p, s32 a);
+u8 PopupChoice_DecideCancel(void *self, s32 x);
+void PopupChoice_DecideRow(void *p, s32 a, s32 b);
+void PopupChoice_ForceClose(void *p);
+void PopupChoice_Draw(void *p);
+void PopupChoice_Update(void *p);
+void PopupChoice_Close(void *self, s32 x);
+void PopupChoice_Open(void *self, s32 x);
+void PopupChoice_OpenAddresseePage(void *self, u32 a, s32 x);
+void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 c);
+void _ZN15PopupChoiceMenu10placeAboveEii(void *self, s32 a, s32 b);
+void _ZN15PopupChoiceMenu14placeNearPointEii(void *self, s32 a, s32 c);
+void _ZN15PopupChoiceMenu4initEiiPKc(void *p, s32 a, s32 b, s32 c);
+void _ZN12CursorMotion11startLinearEiii(void *p, s32 a, s32 b, u32 c);
+void _ZN12CursorMotion6setPosEii(void *p, s32 a, s32 b);
+s32 _ZN12CursorMotion4getYEv(void *p);
+s32 _ZN12CursorMotion4getXEv(void *p);
+s32 _ZN12CursorMotion6updateEv(void *p);
+void _ZN12CursorMotion5resetEv(void *p);
+void _ZN14MenuCursorBase11drawWrappedEv(void *p);
+void _ZN14MenuCursorBase10getScreenXEv(void *p);
+s32 _ZN14MenuCursorBase15getFrameScreenYEv(void *p);
+s32 _ZN14MenuCursorBase15getFrameScreenXEv(void *p);
+BOOL _ZN14MenuCursorBase8isMovingEv(void *p);
+BOOL _ZN14MenuCursorBase19func_ov002_022028fcEv(void *p);
+BOOL _ZN14MenuCursorBase10isGrippingEv(void *p);
+void _ZN14MenuCursorBase6warpToEii(void *p, s32 a, s32 b);
+void _ZN10MenuCursor12setPosePressEv(void *p);
+void _ZN10MenuCursor14switchToAnim0DEv(void *self);
+void _ZN10MenuCursor14switchToAnim01Ev(void *self);
+void _ZN10MenuCursor16setAnimIfChangedEi(void *p, s32 a);
+s32 _ZN15MenuLabelButton9isTouchedEv(void *p);
+void _ZN15MenuLabelButton11showDefaultEi(void *p, s32 a);
+s32 _ZN15MenuLabelButton8stepAnimEv(void *p);
+s32 _ZN15MenuLabelButton10getAnchorYEi(void *p, s32 a);
+s32 _ZN15MenuLabelButton10getAnchorXEi(void *p, s32 a);
+s32 _ZN16MenuErrorMessage6updateEi(void *p, s32 a);
+void _ZN16MenuErrorMessage4openEPhij(void *p, void *q, u32 a, u32 b);
+s32 _ZN10MenuTabBar12isJustOpenedEv();
+s32 MenuTabBar_TabFromX();
+s32 MenuTabBar_NextTab(s32 a);
+s32 MenuTabBar_PrevTab(s32 a);
+s32 MenuTabBar_GetTabX(s32 a);
+void _ZN10MenuTabBar8hideTabsEv(void *p);
+void _ZN10MenuTabBar8showTabsEv(void *p);
+s32 MenuTabBar_HitTestTouch();
+void _ZN10MenuTabBar15onTabMenuClosedEv();
+void _ZN10MenuTabBar9selectTabEj(void *p, u32 idx);
+void Inventory_PlayPickUpSe();
+void Inventory_PlayTouchSe();
+void Inventory_PlayPutDownSe();
+BOOL InvItem_IsNonTransferable(u32 a);
+s32 InvItem_IsDeliveryItem(s32 a);
+void InventoryBg_ResetHighlight(void *p);
+void InventoryBg_SetHighlight(void *p, s32 a);
+BOOL InvItem_IsTurnipFishOrInsect(u32 a);
+void InventoryBg_SetBellsPanelMode(void *p, u32 a);
+void InventoryBg_StartBellRoll(void *o, u32 v);
+void InventoryBg_StopBlink(void *p);
+s32 InventoryBg_UpdateBlink(void *p);
+void InventoryBg_StartBlink(void *p, s32 a);
+void InventoryBg_DrawSprite(void *p, s32 a);
+void InventoryBg_LoadPictureForHeldItem(void *p);
+void InventoryBg_Exit(void *p);
+void InventoryBg_Update(void *p);
+void InventoryBg_PreUpdate(void *p);
+void InventoryBg_LoadObjGraphics(void *p);
+void InventoryBg_LoadGraphics(void *p);
+void InventoryBg_LoadBg(void *p, s32 a);
+void InventoryBg_Init(void *p, s32 a);
+s32 InventoryItemGrid_UpdatePresentAnim(void *p);
+s32 InventoryItemGrid_StartPresentAnim(void *p, u16 a, u8 b);
+s32 InventoryItemGrid_IsSlotEmpty(void *p, u32 a);
+void InventoryItemGrid_DrawHeldItem(void *p, s32 a, s32 b);
+void InventoryItemGrid_DrawExtraMarks(void *p, s32 a, s32 b);
+void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
+s32 InventoryItemGrid_IsSlotDisabled(void *p, u32 a);
+void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
+void InventoryItemGrid_RefreshSlot(void *p, u32 a);
+void InventoryItemGrid_SetSlotItem(void *p, u32 a, u32 b, u32 c);
+s32 InventoryItemGrid_ClearSlot(void *p, s32 a);
+s32 InventoryItemGrid_GetSlotFlags(void *p, u32 a);
+s32 InventoryItemGrid_GetSlotItem(void *p, u32 a);
+void InventoryItemGrid_MarkSlot(void *p, s32 a);
+void InventoryItemGrid_ClearMarks(void *p);
+void InventoryItemGrid_SetCursorSlot(void *p, s32 a);
+void InventoryItemGrid_ClearCursorSlot(void *p);
+s32 InventoryItemGrid_GetSlotY(void *p, u32 a);
+s32 InventoryItemGrid_GetSlotX(void *p, u32 a);
+void InventoryItemGrid_ShowSlotName(void *p, void *q, s32 a);
+void InventoryItemGrid_LoadPockets(void *p);
+s32 InventoryItemGrid_HitTestSlot21(void *p, s32 x, s32 y);
+s32 InventoryItemGrid_FindPocketSlotAt(void *p);
+void InventoryItemGrid_Exit(void *p);
+void InventoryItemGrid_PreUpdate(void *p);
+void InventoryItemGrid_Init(void *p, s32 a);
+s32 LetterGrid_UpdatePopAnim(void *p);
+s32 LetterGrid_StartPopAnim(void *p);
+void LetterGrid_LoadPocketLetters(void *p);
+s32 LetterGrid_IsSlotEmpty(void *p, u32 a);
+s32 LetterGrid_GetSlotY(void *p, u32 a);
+s32 LetterGrid_GetSlotX(void *p, u32 a);
+void _ZN10LetterGrid14drawHeldLetterEiiPv(void *p, s32 a, s32 b, void *c);
+void _ZN10LetterGrid17drawPocketLettersEii(void *p, s32 a, s32 b);
+s32 _ZN10LetterGrid13isHighlightedEi(void *p, u32 a);
+s32 _ZN10LetterGrid11clearLetterEi(void *p, s32 a);
+void _ZN10LetterGrid9setLetterEii(void *p, u32 a, void *q);
+void *_ZN10LetterGrid9getLetterEi(void *p, s32 a);
+void _ZN10LetterGrid8markSlotEi(void *p, s32 a);
+void _ZN10LetterGrid10clearMarksEv(void *p);
+void _ZN10LetterGrid13setCursorSlotEj(void *p, s32 a);
+void _ZN10LetterGrid15clearCursorSlotEv(void *p);
+void _ZN10LetterGrid14showLetterNameEPvi(void *p, void *q, s32 a);
+s32 _ZN10LetterGrid18findPocketLetterAtEii(void *p);
+void _ZN10LetterGrid16updateCursorLiftEv(void *p);
+void _ZN10LetterGrid4initEi(void *p, s32 a);
+void *PocketMenu_GetLetter(PocketMenu *s, u32 id);
+s32 PocketMenu_GetItemFlags(PocketMenu *s, u32 id);
+u32 PocketMenu_GetItem(PocketMenu *s, u32 id);
+s32 PocketMenu_IsSlotEmpty(PocketMenu *s, u32 id);
+s32 PocketMenu_IsSlotDisabled(PocketMenu *s, u32 id);
+s32 PocketMenu_GetTargetY(PocketMenu *s, u32 id);
+s32 PocketMenu_GetTargetX(PocketMenu *s, u32 id);
+s32 PocketMenu_HitWalletAmount(PocketMenu *s, s32 x, s32 y);
+BOOL PocketMenu_HitWalletIcon(PocketMenu *s, s32 x, s32 y);
+BOOL PocketMenu_HitPlayer(PocketMenu *s, s32 x, s32 y);
+s32 PocketMenu_HitSpecialTarget(PocketMenu *s, s32 x, s32 y);
+BOOL PocketMenu_HitShirtBox(PocketMenu *s, s32 x, s32 y);
+void PocketMenu_SetLetter(PocketMenu *s, u32 id, void *p);
+s32 PocketMenu_DropLetterAt(PocketMenu *s, u32 id);
+u32 PocketMenu_HitLetter(PocketMenu *s, s32 a, s32 b, s32 c);
+u32 PocketMenu_LetterIndexToTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_TargetToLetterIndex(PocketMenu *s, u32 id);
+u32 PocketMenu_FindEmptyPocket(PocketMenu *s);
+void PocketMenu_ClearLetter(PocketMenu *s, u32 id);
+void PocketMenu_ClearSlotItem(PocketMenu *s, u32 id);
+void PocketMenu_SetSlotItem(PocketMenu *s, u32 id, u32 a, u32 b);
+s32 PocketMenu_DropItemAt(PocketMenu *s, u32 id);
+u32 PocketMenu_HitPocket(PocketMenu *s, s32 a, s32 b, s32 c);
+u32 PocketMenu_PocketIndexToTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_TargetToGridIndex(PocketMenu *s, u32 id);
+void PocketMenu_MoveCursorToTab(PocketMenu *s);
+u32 PocketMenu_IsSpecialTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_IsTabTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_IsLetterTarget(PocketMenu *s, u32 id);
+u32 PocketMenu_IsPocketTarget(PocketMenu *s, u32 id);
+void PocketMenu_CancelVramTasks(PocketMenu *s);
+void PocketMenu_StartRemoveBlink(PocketMenu *s);
+void PocketMenu_ShowMessage(PocketMenu *s, u32 a, u32 b, u32 c);
+void PocketMenu_FlyItemTo(PocketMenu *s, u32 a, u32 b, u32 c, u8 d);
+void PocketMenu_FlyHandTo(PocketMenu *s, u32 a, u32 b);
+void PocketMenu_PrepareTouchOptions(PocketMenu *s);
+void PocketMenu_EnterAddresseeButtons(PocketMenu *s);
+void PocketMenu_EnterAddresseeTouch(PocketMenu *s);
+void PocketMenu_ReturnToIdle(PocketMenu *s);
+void PocketMenu_EnterButtonIdle(PocketMenu *s);
+void PocketMenu_EnterTouchIdle(PocketMenu *s);
+void _ZN10PocketMenu9mainAct2FEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct27Ev(PocketMenu *s);
+s32 PocketMenu_TickOptionDecide(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1CEv(PocketMenu *s);
+s32 PocketMenu_CanEditRoom(void *self);
+s32 PocketMenu_RequestDropIndoor(void *self, s32 a);
+void PocketMenu_AddRoomItemOptions(void *scene, s32 a);
+void _ZN10PocketMenu15addBottleOptionEv(void *scene);
+void _ZN10PocketMenu15addFieldOptionsEt(void *scene, s32 a);
+s32 PocketMenu_CanDropOutdoor(void *self, s32 a);
+void PocketMenu_StartButtonDrag(PocketMenu *s, u32 a);
+void PocketMenu_StartTouchDrag(PocketMenu *s, u32 a);
+void PocketMenu_BeginTouchOnTarget(PocketMenu *s, u32 a);
+void PocketMenu_EnterAddresseeInput(PocketMenu *s);
+void _ZN10PocketMenu9mainAct29Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct28Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct32Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct31Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct2BEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct2AEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct26Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct25Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct24Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct23Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct22Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct21Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct20Ev(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1FEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1EEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1DEv(PocketMenu *s);
+void _ZN10PocketMenu9mainAct1BEv(PocketMenu *s);
+s32 _ZN10HandCursor12setAnimAtEndEi(void *self, s32);
+void _ZN11LabelButton8setStateEi(void *self, s32);
+u32 _ZN19PopupChoiceMenuBody11getRowCountEv(void *self);
+s32 _ZN19PopupChoiceMenuBody7getRowYEi(void *self, s32);
+s32 _ZN19PopupChoiceMenuBody7getRowXEv(void *self);
+void _ZN14MenuCursorBase10moveToEaseEiiii(void *self, s32, s32, s32, s32);
+void _ZN14MenuCursorBase12moveToLinearEiii(void *self, s32, s32, s32);
+void _ZN14MenuCursorBase11setPoseIdleEv(void *self);
+void _ZN14MenuCursorBase14setPoseReleaseEv(void *self);
+void _ZN8MenuProc18setTransitionStateEh(void *self, u8);
+void _ZN8MenuProc12setMainStateEh(void *self, u8);
+void _ZN8MenuProc8setPhaseEh(void *self, u8);
 }
 
 static inline BOOL Unk_ov096_02299778_Both() {
-    if (data_021f4770 != 0 && data_021f4774 != 0) return TRUE;
+    if (gTouchHeld != 0 && gTouchChanged != 0) return TRUE;
     return FALSE;
 }
 
-// Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
-public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
 
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_022008c4(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008e0(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200920();
-    s32 func_ov002_022009c8();
-    BOOL func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
-
-    /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
-    /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
-    /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
-};
-
-class Unk_ov094_02294a50 { public: ~Unk_ov094_02294a50(); u8 pad[0xa60]; };
-class Unk_ov094_02294bd4 { public: ~Unk_ov094_02294bd4(); u8 pad[0x28]; };
-class Unk_ov094_02292d6c { public: ~Unk_ov094_02292d6c(); u8 pad[0x160]; };
-class Unk_ov002_02204468 { public: ~Unk_ov002_02204468(); u8 pad[0xc0]; };
-class Unk_ov002_02204604 { public: ~Unk_ov002_02204604(); u8 pad[0x18]; };
-class Unk_ov002_02204614 { public: ~Unk_ov002_02204614(); u8 pad[0x64]; };
-class Unk_ov002_02204558 { public: ~Unk_ov002_02204558(); u8 pad[0x2f4]; };
-class Unk_ov002_022040ec { public: ~Unk_ov002_022040ec(); u8 pad[0x108]; };
-class Unk_0206d0a0 { public: ~Unk_0206d0a0(); u8 pad[0x210]; };
-class Unk_ov002_02204738 { public: ~Unk_ov002_02204738(); u8 pad[0x70]; };
-class Unk_020dd458 { public: ~Unk_020dd458(); u8 pad[0x18]; };
-
-// Vtable 0x0229aea8, size 0x2d80
-class Unk_ov096_0229aea8 : public Unk_ov002_022044e4 {
-public:
-    inline Unk_ov096_0229aea8();
-
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
-
-    void func_ov096_02294d9c(u32);
-    void func_ov096_02294dac(u32);
-    BOOL func_ov096_02294dbc(u32);
-    BOOL func_ov096_02294dd0();
-    void func_ov096_02294e08();
-    void func_ov096_02294e84();
-    void func_ov096_02294ed4();
-    void func_ov096_02294ef4();
-    void func_ov096_02294f14();
-    void * func_ov096_02294f9c();
-    void func_ov096_02294fac();
-    void func_ov096_02294fd4();
-    void func_ov096_02294ff8();
-    BOOL func_ov096_02295020(void *, s32);
-    void func_ov096_022950fc(void *, s32);
-    void func_ov096_022952a0(void *, s32);
-    void func_ov096_02295348(void *, s32);
-    void func_ov096_02295538(void *, s32);
-    void func_ov096_022956a0(s32);
-    void func_ov096_022956d0();
-    void func_ov096_022956e4();
-    void func_ov096_02295734(u32, s32);
-    void func_ov096_0229584c();
-    void func_ov096_022958ac();
-    void func_ov096_0229590c(s32);
-    void func_ov096_02295a44(s32);
-    s32 func_ov096_02295ba4();
-    void func_ov096_02295c2c();
-    void func_ov096_02295c60();
-    void func_ov096_02295c94(s32);
-    void func_ov096_02295d28();
-    void func_ov096_02295f94();
-    void func_ov096_02295fb0();
-    void func_ov096_02295fc8(s32);
-    void func_ov096_02296030();
-    void func_ov096_02296094();
-    void func_ov096_022960ac();
-    void func_ov096_022960b4();
-    void func_ov096_02296124();
-    void func_ov096_0229619c();
-    void func_ov096_02296290();
-    void func_ov096_02296338();
-    void func_ov096_0229637c();
-    BOOL func_ov096_022963ac();
-    void func_ov096_022963fc();
-    void func_ov096_02296460();
-    void func_ov096_0229648c();
-    void func_ov096_022964b0();
-    s32 func_ov096_0229652c(s32);
-    BOOL func_ov096_022965ac(s32);
-    void func_ov096_022965f0(u32);
-    void func_ov096_02296638(u32);
-    void func_ov096_02296680();
-    void func_ov096_022966a8();
-    void func_ov096_022966c8();
-    void func_ov096_022966e8();
-    void func_ov096_02296708();
-    void func_ov096_0229673c();
-    void func_ov096_022967a0();
-    void func_ov096_02296804();
-    void func_ov096_02296854();
-    void func_ov096_02296898();
-    s32 func_ov096_022968bc();
-    s32 func_ov096_022968cc();
-    void func_ov096_02296910();
-    void func_ov096_02296964();
-    s32 func_ov096_022969bc(u16 *, s32, u16 *, u8);
-    u32 func_ov096_02296b68(u16);
-    void func_ov096_02296bb8(u16);
-    void func_ov096_02296be8(s32);
-    s32 func_ov096_02296c18();
-    BOOL func_ov096_02296c30(s32);
-    BOOL func_ov096_02296cac();
-    void func_ov096_02296d18();
-    void func_ov096_02296d5c();
-    BOOL func_ov096_02296d88(s32);
-    BOOL func_ov096_02296dbc(s32, u16);
-    u16 func_ov096_02296e70(s32, u16);
-    u16 func_ov096_02296f64(s32);
-    s32 func_ov096_02296fb8();
-    void func_ov096_0229713c();
-    void func_ov096_02297160();
-    BOOL func_ov096_02297170();
-    s32 func_ov096_022971dc();
-    s32 func_ov096_0229725c(u32);
-    void func_ov096_02297284(u32);
-    void func_ov096_022972ec(u32);
-    void func_ov096_02297358(u32, u32);
-    void func_ov096_022973a0(u32);
-    void func_ov096_022973cc(u32);
-    void func_ov096_0229741c(u32);
-    void func_ov096_02297460(u32);
-    void func_ov096_022974b8(u32, u32);
-    void func_ov096_022974f4();
-    void func_ov096_0229751c();
-    void func_ov096_02297548();
-    void func_ov096_02297574();
-    void func_ov096_022975d4();
-    void func_ov096_02297658();
-    BOOL func_ov096_022976f8(s32);
-    BOOL func_ov096_0229770c();
-    void func_ov096_02297750(u32);
-    void func_ov096_02297804();
-    void func_ov096_02297834(u32);
-    void func_ov096_022978ac();
-    s32 func_ov096_022978d0(u32);
-    s32 func_ov096_022978f8(u32);
-    s32 func_ov096_02297910(u32);
-    s32 func_ov096_02297940(u32);
-    s32 func_ov096_0229795c(u32, u32);
-    s32 func_ov096_022979f0(u32, u32, u32);
-    void func_ov096_02298dac();
-    void func_ov096_02298dfc();
-    void func_ov096_02298e84();
-    void func_ov096_02298ea4();
-    void func_ov096_02298f64();
-    void func_ov096_02298fb4();
-    void func_ov096_02298ffc();
-    void func_ov096_02299090();
-    void func_ov096_022990bc();
-    void func_ov096_022990ec();
-    void func_ov096_02299114();
-    void func_ov096_02299148();
-    void func_ov096_02299198();
-    void func_ov096_022991ec();
-    void func_ov096_02299288();
-    void func_ov096_02299340();
-    void func_ov096_022995b0();
-    void func_ov096_022996e8();
-    void func_ov096_02299778();
-    void func_ov096_02299820();
-    void func_ov096_02299868();
-    void func_ov096_02299908();
-    void func_ov096_02299b18();
-    void func_ov096_02299bd8();
-    void func_ov096_02299c20();
-    void func_ov096_02299c90();
-    void func_ov096_02299d4c();
-    void func_ov096_02299e44();
-    void func_ov096_02299e54();
-    void func_ov096_02299e74();
-    void func_ov096_02299eb0();
-    void func_ov096_02299ee4();
-    void func_ov096_02299eec();
-    void func_ov096_02299f08();
-    void func_ov096_02299f48();
-    void func_ov096_0229a000();
-    void func_ov096_0229a014();
-    void func_ov096_0229a094();
-    void func_ov096_0229a0d0();
-    void func_ov096_0229a120();
-    void func_ov096_0229a1a4();
-    void func_ov096_0229a204();
-    void func_ov096_0229a254();
-    void func_ov096_0229a28c();
-    void func_ov096_0229a2f8();
-    void func_ov096_0229a32c();
-    void func_ov096_0229a360();
-    BOOL func_ov096_0229a39c(s32);
-    BOOL func_ov096_0229a3ec();
-    void func_ov096_0229a4cc();
-    void func_ov098_0229b280();
-    void func_ov098_0229b2b0();
-    void func_ov098_0229b2d8();
-    void func_ov098_0229b344();
-    void func_ov098_0229b36c();
-    void func_ov098_0229b390();
-    void func_ov098_0229b3ac();
-    void func_ov098_0229b44c();
-    void func_ov098_0229b468();
-    void func_ov098_0229b488();
-    void func_ov098_0229b4c4();
-    void func_ov098_0229b580();
-    void func_ov098_0229b5d4();
-    void func_ov098_0229b624();
-    void func_ov098_0229b6b4();
-    void func_ov098_0229b790(s16);
-    void func_ov098_0229b864(u8, u32);
-    void func_ov098_0229b8ac();
-    void func_ov098_0229b954();
-    void func_ov098_0229b96c(u8);
-    void func_ov098_0229b978(u8, u8);
-    void func_ov098_0229b9e4();
-    void func_ov098_0229ba60();
-    void func_ov098_0229ba78(s32);
-    void func_ov098_0229bb18();
-    void func_ov098_0229bb5c(u16);
-    void func_ov097_0229b414();
-    void func_ov097_0229b4a4();
-    void func_ov096_022986cc();
-    void func_ov096_02298768();
-    void func_ov096_02298804();
-    void func_ov096_02298870();
-    void func_ov096_022988b8();
-    void func_ov096_022988d0();
-    void func_ov096_02298934();
-    void func_ov096_0229895c();
-    void func_ov096_0229898c();
-    void func_ov096_02298a14();
-    void func_ov096_02298aa0();
-    void func_ov096_02298b34();
-    void func_ov096_02298b54();
-    void func_ov096_02298b74();
-    void func_ov096_02298bdc();
-    void func_ov096_02298c10();
-    void func_ov096_02298c30();
-    void func_ov096_02298c9c();
-    void func_ov096_02298cd8();
-    void func_ov096_02298d34();
-
-    /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ u32 unk_94;
-    /* 0x098 */ u32 unk_98;
-    /* 0x09c */ s32 unk_9c;
-    /* 0x0a0 */ s32 unk_a0;
-    /* 0x0a4 */ s32 unk_a4;
-    /* 0x0a8 */ s32 unk_a8;
-    /* 0x0ac */ u16 unk_ac;
-    /* 0x0ae */ u16 unk_ae;
-    /* 0x0b0 */ u8 unk_b0;
-    /* 0x0b1 */ u8 unk_b1;
-    /* 0x0b2 */ u8 unk_b2;
-    /* 0x0b3 */ u8 unk_b3;
-    /* 0x0b4 */ u8 unk_b4;
-    /* 0x0b5 */ u8 unk_b5;
-    /* 0x0b6 */ u8 unk_b6;
-    /* 0x0b7 */ u8 unk_b7;
-    /* 0x0b8 */ u8 unk_b8;
-    /* 0x0b9 */ u8 unk_b9;
-    /* 0x0ba */ u8 unk_ba;
-    /* 0x0bb */ u8 unk_bb;
-    /* 0x0bc */ u8 unk_bc;
-    /* 0x0bd */ u8 unk_bd;
-    /* 0x0be */ u8 unk_be;
-    /* 0x0bf */ u8 unk_bf;
-    /* 0x0c0 */ u8 unk_c0;
-    /* 0x0c1 */ u8 unk_c1;
-    /* 0x0c2 */ volatile u8 unk_c2;
-    /* 0x0c3 */ u8 unk_c3;
-    /* 0x0c4 */ s32 unk_c4;
-    /* 0x0c8 */ u8 unk_c8[0x20];
-    /* 0x0e8 */ u8 unk_e8[0x200];
-    /* 0x2e8 */ u8 unk_2e8[0x38];
-    /* 0x320 */ u8 unk_320[0x38];
-    /* 0x358 */ Unk_ov094_02294a50 m_358;
-    /* 0xdb8 */ Unk_ov094_02294bd4 m_db8;
-    /* 0xde0 */ Unk_ov094_02292d6c m_de0;
-    /* 0xf40 */ u8 unk_f40[0x1480];
-    /* 0x23c0 */ Unk_ov002_02204468 m_23c0;
-    /* 0x2480 */ Unk_ov002_02204604 m_2480;
-    /* 0x2498 */ Unk_ov002_02204614 m_2498;
-    /* 0x24fc */ Unk_ov002_02204558 m_24fc;
-    /* 0x27f0 */ u8 unk_27f0[0xc];
-    /* 0x27fc */ Unk_ov002_022040ec m_27fc;
-    /* 0x2904 */ Unk_0206d0a0 m_2904;
-    /* 0x2b14 */ Unk_ov002_02204738 m_2b14;
-    /* 0x2b84 */ u8 unk_2b84[0xc];
-    /* 0x2b90 */ u32 unk_2b90;
-    /* 0x2b94 */ u32 unk_2b94;
-    /* 0x2b98 */ Unk_020dd458 m_2b98;
-    /* 0x2bb0 */ u8 unk_2bb0[0xdc];
-    /* 0x2c8c */ Unk_020dd458 m_2c8c;
-    /* 0x2ca4 */ u8 unk_2ca4[0xdc];
-};
 
 #define unk_358 ((u8 *)&m_358)
 #define unk_db8 ((u8 *)&m_db8)
@@ -854,16 +443,11 @@ public:
 #define unk_2b14 ((u8 *)&m_2b14)
 #define unk_2b98 ((u8 *)&m_2b98)
 #define unk_2c8c ((u8 *)&m_2c8c)
-#define unk_27fc ((u8 *)&m_27fc)
+#define unk_27fc ((u8 *)&errorMessage)
 
-struct Unk_ov096_SceneEntry {
-    Unk_ov096_0229aea8 *(*create)();
-    u16 a;
-    u16 b;
-};
 
-extern "C" Unk_ov096_0229aea8 *func_ov096_0229aa64();
-extern "C" Unk_ov096_SceneEntry data_ov096_0229ab68 = {func_ov096_0229aa64, 0x91, 0x95};
+extern "C" PocketMenu *PocketMenu_Create();
+extern "C" ProcProfile sPocketMenuProfile = {(void *(*)())PocketMenu_Create, 0x91, 0x95};
 
 static inline BOOL Unk_ov096_0229619c_Range(volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -902,187 +486,169 @@ static inline BOOL Unk_ov096_022979f0_InRange(volatile u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-inline Unk_ov096_0229aea8::Unk_ov096_0229aea8() {
-    u8 *e = unk_2e8;
-    do {
-        _ZN12Unk_020e4608C1Ev(e);
-        e += 0x38;
-    } while (e != unk_358);
-    _ZN18Unk_ov094_02294a50C1Ev(unk_358);
-    _ZN18Unk_ov094_02294bd4C1Ev(unk_db8);
-    _ZN18Unk_ov094_02292d6cC1Ev(unk_de0);
-    _ZN18Unk_ov002_02204468C1Ev(unk_23c0);
-    _ZN18Unk_ov002_02204604C1Ev(unk_2480);
-    _ZN18Unk_ov002_02204614C1Ev(unk_2498);
-    _ZN18Unk_ov002_02204558C1Ev(unk_24fc);
-    _ZN18Unk_ov002_022040ecC1Ev(unk_27fc);
-    _ZN12Unk_0206d0a0C1Ev(unk_2904);
-    _ZN18Unk_ov002_02204738C1Ev(unk_2b14);
-    unk_2b90 = 0;
-    unk_2b94 = 0;
-    _ZN12Unk_020dd458C1Ev(unk_2b98);
-    _ZN12Unk_020dd458C1Ev(unk_2c8c);
+inline PocketMenu::PocketMenu()
+    : bgTasks(), m_358(), m_db8(), m_de0(), m_23c0(), m_2480(), m_2498(), m_24fc(), errorMessage(), m_2904(), m_2b14(),
+      digUnitX(0), digUnitY(0), m_2b98(), m_2c8c() {}
+
+extern "C" PocketMenu *PocketMenu_Create() {
+    return new PocketMenu;
 }
 
-extern "C" Unk_ov096_0229aea8 *func_ov096_0229aa64() {
-    return new Unk_ov096_0229aea8;
-}
-
-BOOL Unk_ov096_0229aea8::vfunc_00() {
-    func_ov096_02299f48();
-    func_ov002_02200a50(0);
-    func_ov002_02200a60(1);
+BOOL PocketMenu::onCreate() {
+    initPocketMenu();
+    setTransitionState(0);
+    setPhase(1);
     return TRUE;
 }
 
-BOOL Unk_ov096_0229aea8::vfunc_0c() {
-    func_020ed174(this);
-    _ZN18Unk_ov090_022921e019func_ov090_02291d2cEv();
-    func_ov096_02299f08();
-    func_0206e8f4(0);
+BOOL PocketMenu::onDelete() {
+    ProcBase_GetParent(this);
+    _ZN10MenuTabBar15onTabMenuClosedEv();
+    releaseResources();
+    MenuCtrl_SetHandBells(0);
     return TRUE;
 }
 
 // ===== unit 0229a94c =====
-BOOL Unk_ov096_0229aea8::vfunc_24() {
-    func_ov002_02201b28(unk_24fc);
-    if (!func_ov096_02294dbc(1)) {
+BOOL PocketMenu::onDraw() {
+    PopupChoice_Draw(unk_24fc);
+    if (!testFlags(1)) {
         return TRUE;
     }
-    ((Unk_ov096_0229a94c_Virt *)unk_23c0)->vfunc_08();
-    if (func_0206ef00()) {
-        _ZN18Unk_ov002_02202d9819func_ov002_02202844Ev(unk_2498);
+    (&m_23c0)->draw();
+    if (MenuCtrl_IsButtons()) {
+        _ZN14MenuCursorBase11drawWrappedEv(unk_2498);
     }
-    func_ov096_02297574();
-    if (func_ov096_02294dbc(2)) {
-        func_ov094_022932d0(unk_358, 0, unk_98);
-        func_ov094_022931e8(unk_358, 0, unk_98);
-        _ZN18Unk_ov094_02294bd419func_ov094_022941a0Eii(unk_db8, 0, unk_98);
-        func_ov094_0229277c(unk_de0, unk_98);
+    drawHand();
+    if (testFlags(2)) {
+        InventoryItemGrid_DrawPockets(unk_358, 0, slideY);
+        InventoryItemGrid_DrawExtraMarks(unk_358, 0, slideY);
+        _ZN10LetterGrid17drawPocketLettersEii(unk_db8, 0, slideY);
+        InventoryBg_DrawSprite(unk_de0, slideY);
     }
-    if (func_ov096_02294dbc(0x100)) {
-        _ZN12Unk_020e109813func_0208e288Eii(unk_2b14, 0, func_ov002_02200920());
-        ((Unk_ov096_0229a94c_Virt *)unk_2b14)->vfunc_08();
+    if (testFlags(0x100)) {
+        _ZN11LabelButton6setPosEii(unk_2b14, 0, getSlideOffsetY());
+        (&m_2b14)->draw();
     }
     return TRUE;
 }
 
-BOOL Unk_ov096_0229aea8::vfunc_4c() {
+BOOL PocketMenu::execTransition() {
     static Unk_ov096_0229aea8_Fn tbl[11] = {
-        &Unk_ov096_0229aea8::func_ov096_0229a360,
-        &Unk_ov096_0229aea8::func_ov096_0229a32c,
-        &Unk_ov096_0229aea8::func_ov096_0229a2f8,
-        &Unk_ov096_0229aea8::func_ov096_0229a28c,
-        &Unk_ov096_0229aea8::func_ov096_0229a254,
-        &Unk_ov096_0229aea8::func_ov096_0229a204,
-        &Unk_ov096_0229aea8::func_ov096_0229a1a4,
-        &Unk_ov096_0229aea8::func_ov096_0229a120,
-        &Unk_ov096_0229aea8::func_ov096_0229a0d0,
-        &Unk_ov096_0229aea8::func_ov096_0229a094,
-        &Unk_ov096_0229aea8::func_ov096_0229a014};
-    func_ov096_02299eb0();
-    (this->*tbl[unk_8c])();
-    func_ov096_02299e74();
+        &PocketMenu::stateLoadBg,
+        &PocketMenu::stateLoadBgChars,
+        &PocketMenu::stateLoadObj,
+        &PocketMenu::stateSlideIn,
+        &PocketMenu::stateWaitSlideIn,
+        &PocketMenu::stateSlideOut,
+        &PocketMenu::stateWaitSlideOut,
+        &PocketMenu::stateOpenLetterView,
+        &PocketMenu::stateWaitLetterView,
+        &PocketMenu::stateCloseLetterView,
+        &PocketMenu::stateWaitCloseLetterView};
+    preStateUpdate();
+    (this->*tbl[transitionState])();
+    postStateUpdate();
     return TRUE;
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a4cc() {
+void PocketMenu::runMainState() {
     static Unk_ov096_0229aea8_Fn tbl[58] = {
-        &Unk_ov096_0229aea8::func_ov096_02299d4c,
-        &Unk_ov096_0229aea8::func_ov096_02299c90,
-        &Unk_ov096_0229aea8::func_ov096_02299c20,
-        &Unk_ov096_0229aea8::func_ov096_02299bd8,
-        &Unk_ov096_0229aea8::func_ov096_02299b18,
-        &Unk_ov096_0229aea8::func_ov096_02299908,
-        &Unk_ov096_0229aea8::func_ov096_02299868,
-        &Unk_ov096_0229aea8::func_ov096_02299820,
-        &Unk_ov096_0229aea8::func_ov096_02299778,
-        &Unk_ov096_0229aea8::func_ov096_022996e8,
-        &Unk_ov096_0229aea8::func_ov096_022995b0,
-        &Unk_ov096_0229aea8::func_ov096_02299340,
-        &Unk_ov096_0229aea8::func_ov096_02299288,
-        &Unk_ov096_0229aea8::func_ov096_022991ec,
-        &Unk_ov096_0229aea8::func_ov096_02299198,
-        &Unk_ov096_0229aea8::func_ov096_02299148,
-        &Unk_ov096_0229aea8::func_ov096_02299114,
-        &Unk_ov096_0229aea8::func_ov096_022990ec,
-        &Unk_ov096_0229aea8::func_ov096_022990bc,
-        &Unk_ov096_0229aea8::func_ov096_02299090,
-        &Unk_ov096_0229aea8::func_ov096_02298ffc,
-        &Unk_ov096_0229aea8::func_ov096_02298fb4,
-        &Unk_ov096_0229aea8::func_ov096_02298f64,
-        &Unk_ov096_0229aea8::func_ov096_02298ea4,
-        &Unk_ov096_0229aea8::func_ov096_02298e84,
-        &Unk_ov096_0229aea8::func_ov096_02298dfc,
-        &Unk_ov096_0229aea8::func_ov096_02298dac,
-        &Unk_ov096_0229aea8::func_ov096_02298d34,
-        &Unk_ov096_0229aea8::func_ov096_02298cd8,
-        &Unk_ov096_0229aea8::func_ov096_02298c9c,
-        &Unk_ov096_0229aea8::func_ov096_02298c30,
-        &Unk_ov096_0229aea8::func_ov096_02298c10,
-        &Unk_ov096_0229aea8::func_ov096_02298bdc,
-        &Unk_ov096_0229aea8::func_ov096_02298b74,
-        &Unk_ov096_0229aea8::func_ov096_02298b54,
-        &Unk_ov096_0229aea8::func_ov096_02298b34,
-        &Unk_ov096_0229aea8::func_ov096_02298aa0,
-        &Unk_ov096_0229aea8::func_ov096_02298a14,
-        &Unk_ov096_0229aea8::func_ov096_0229898c,
-        &Unk_ov096_0229aea8::func_ov096_0229895c,
-        &Unk_ov096_0229aea8::func_ov096_02298768,
-        &Unk_ov096_0229aea8::func_ov096_022986cc,
-        &Unk_ov096_0229aea8::func_ov096_02298934,
-        &Unk_ov096_0229aea8::func_ov096_022988d0,
-        &Unk_ov096_0229aea8::func_ov098_0229b8ac,
-        &Unk_ov096_0229aea8::func_ov098_0229b5d4,
-        &Unk_ov096_0229aea8::func_ov098_0229b580,
-        &Unk_ov096_0229aea8::func_ov096_022988b8,
-        &Unk_ov096_0229aea8::func_ov098_0229b9e4,
-        &Unk_ov096_0229aea8::func_ov096_02298870,
-        &Unk_ov096_0229aea8::func_ov096_02298804,
-        &Unk_ov096_0229aea8::func_ov098_0229b468,
-        &Unk_ov096_0229aea8::func_ov098_0229b44c,
-        &Unk_ov096_0229aea8::func_ov098_0229b36c,
-        &Unk_ov096_0229aea8::func_ov098_0229b344,
-        &Unk_ov096_0229aea8::func_ov098_0229b2d8,
-        &Unk_ov096_0229aea8::func_ov098_0229b2b0,
-        &Unk_ov096_0229aea8::func_ov098_0229b280};
-    (this->*tbl[unk_8d])();
+        &PocketMenu::mainAct00,
+        &PocketMenu::mainAct01,
+        &PocketMenu::mainAct02,
+        &PocketMenu::mainAct03,
+        &PocketMenu::mainAct04,
+        &PocketMenu::mainAct05,
+        &PocketMenu::mainAct06,
+        &PocketMenu::mainAct07,
+        &PocketMenu::mainAct08,
+        &PocketMenu::mainAct09,
+        &PocketMenu::mainAct0A,
+        &PocketMenu::mainAct0B,
+        &PocketMenu::mainAct0C,
+        &PocketMenu::mainAct0D,
+        &PocketMenu::mainAct0E,
+        &PocketMenu::mainAct0F,
+        &PocketMenu::mainAct10,
+        &PocketMenu::mainAct11,
+        &PocketMenu::mainAct12,
+        &PocketMenu::mainAct13,
+        &PocketMenu::mainAct14,
+        &PocketMenu::mainAct15,
+        &PocketMenu::mainAct16,
+        &PocketMenu::mainAct17,
+        &PocketMenu::mainAct18,
+        &PocketMenu::mainAct19,
+        &PocketMenu::mainAct1A,
+        &PocketMenu::mainAct1B,
+        &PocketMenu::mainAct1C,
+        &PocketMenu::mainAct1D,
+        &PocketMenu::mainAct1E,
+        &PocketMenu::mainAct1F,
+        &PocketMenu::mainAct20,
+        &PocketMenu::mainAct21,
+        &PocketMenu::mainAct22,
+        &PocketMenu::mainAct23,
+        &PocketMenu::mainAct24,
+        &PocketMenu::mainAct25,
+        &PocketMenu::mainAct26,
+        &PocketMenu::mainAct27,
+        &PocketMenu::mainAct28,
+        &PocketMenu::mainAct29,
+        &PocketMenu::mainAct2A,
+        &PocketMenu::mainAct2B,
+        &PocketMenu::mainAct2C,
+        &PocketMenu::mainAct2D,
+        &PocketMenu::mainAct2E,
+        &PocketMenu::mainAct2F,
+        &PocketMenu::mainAct30,
+        &PocketMenu::mainAct31,
+        &PocketMenu::mainAct32,
+        &PocketMenu::mainAct33,
+        &PocketMenu::mainAct34,
+        &PocketMenu::mainAct35,
+        &PocketMenu::mainAct36,
+        &PocketMenu::mainAct37,
+        &PocketMenu::mainAct38,
+        &PocketMenu::mainAct39};
+    (this->*tbl[mainState])();
 }
 
-BOOL Unk_ov096_0229aea8::vfunc_50() {
-    if (func_ov096_0229a3ec()) {
+BOOL PocketMenu::execMain() {
+    if (handleTabSwitch()) {
         return TRUE;
     }
-    func_ov096_02299eec();
-    func_ov096_0229a4cc();
-    func_ov096_02299ee4();
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov096_0229aea8::vfunc_54() { return TRUE; }
+BOOL PocketMenu::execPhase3() { return TRUE; }
 
-BOOL Unk_ov096_0229aea8::vfunc_58() { return TRUE; }
+BOOL PocketMenu::execPhase4() { return TRUE; }
 
-BOOL Unk_ov096_0229aea8::vfunc_5c() {
-    func_020ed188(this);
+BOOL PocketMenu::execClosed() {
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_0229a3ec() {
-    func_0206e63c();
-    if (func_0206e61c()) {
-        if (unk_8d == 0 || unk_8d == 1 || unk_8d == 0xa) {
-            return func_ov096_0229a39c(7);
+BOOL PocketMenu::handleTabSwitch() {
+    MenuCtrl_TickForceClose();
+    if (MenuCtrl_IsForceCloseDue()) {
+        if (mainState == 0 || mainState == 1 || mainState == 0xa) {
+            return requestTab(7);
         }
     }
-    if (unk_8d != 0 && unk_8d != 0xa) {
+    if (mainState != 0 && mainState != 0xa) {
         return FALSE;
     }
     s32 t = -1;
-    if (func_0206ef0c()) {
-        t = func_ov090_02291aa0();
+    if (MenuCtrl_IsTouch()) {
+        t = MenuTabBar_HitTestTouch();
     } else {
-        u16 v = data_021f47d8[1];
+        u16 v = gPad[1];
         if (v & 0x800) {
             t = 7;
         } else if (v & 0x400) {
@@ -1091,1277 +657,1277 @@ BOOL Unk_ov096_0229aea8::func_ov096_0229a3ec() {
             t = 4;
         }
     }
-    return func_ov096_0229a39c(t);
+    return requestTab(t);
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_0229a39c(s32 a) {
-    void *o = func_020ed174(this);
+BOOL PocketMenu::requestTab(s32 a) {
+    void *o = ProcBase_GetParent(this);
     if (a != -1) {
         if (a != 0) {
-            _ZN18Unk_ov090_022921e019func_ov090_02291d8cEj(o, (u8)a);
-            unk_8c = 5;
-            func_ov002_02200a60(1);
+            _ZN10MenuTabBar9selectTabEj(o, (u8)a);
+            transitionState = 5;
+            setPhase(1);
             if (a != 7) {
-                func_ov096_02294ed4();
+                requestCameraPop();
             }
-            func_ov096_02294d9c(0x80);
+            clearFlags(0x80);
             return TRUE;
         }
     }
     return FALSE;
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a360() {
-    func_ov096_02299e54();
-    func_ov094_02292c84(unk_de0, 1);
-    func_ov002_02200a50(1);
-    if (func_ov096_02294dbc(0x80000) == 0) {
-        func_ov096_0229a32c();
+void PocketMenu::stateLoadBg() {
+    setupBgLayer();
+    InventoryBg_LoadBg(unk_de0, 1);
+    setTransitionState(1);
+    if (testFlags(0x80000) == 0) {
+        stateLoadBgChars();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a32c() {
-    func_ov094_02292c08(unk_de0);
-    func_ov002_02200a50(2);
-    if (func_ov096_02294dbc(0x80000) == 0) {
-        func_ov096_0229a2f8();
+void PocketMenu::stateLoadBgChars() {
+    InventoryBg_LoadGraphics(unk_de0);
+    setTransitionState(2);
+    if (testFlags(0x80000) == 0) {
+        stateLoadObj();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a2f8() {
-    func_ov096_02299e44();
-    func_ov002_02200a50(3);
-    if (func_ov096_02294dbc(0x80000) == 0) {
-        func_ov096_0229a28c();
-        func_ov096_02294d9c(0x80000);
+void PocketMenu::stateLoadObj() {
+    loadObjGraphics();
+    setTransitionState(3);
+    if (testFlags(0x80000) == 0) {
+        stateSlideIn();
+        clearFlags(0x80000);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a28c() {
-    func_ov094_022937a0(unk_358);
-    func_ov094_02293d2c(unk_db8);
-    func_ov002_022008e0(8, 3, 0, 0x30);
-    func_020020b8(6);
-    func_ov002_02200840(6, 0, 0);
-    func_ov002_02200a50(4);
-    func_ov096_02294dac(1);
-    func_ov096_02294dac(2);
-    unk_98 = func_ov002_02200920();
+void PocketMenu::stateSlideIn() {
+    InventoryItemGrid_LoadPockets(unk_358);
+    LetterGrid_LoadPocketLetters(unk_db8);
+    beginSubSlideIn(8, 3, 0, 0x30);
+    Gfx2d_ShowLayer(6);
+    applySlideOffset(6, 0, 0);
+    setTransitionState(4);
+    setFlags(1);
+    setFlags(2);
+    slideY = getSlideOffsetY();
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a254() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        func_ov096_0229865c((S *)this);
+void PocketMenu::stateWaitSlideIn() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        PocketMenu_ReturnToIdle(this);
     }
-    func_ov002_02200840(6, 0, 0);
-    unk_98 = func_ov002_02200920();
+    applySlideOffset(6, 0, 0);
+    slideY = getSlideOffsetY();
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a204() {
-    _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 1);
-    func_ov096_02296898();
-    func_ov002_022008c4(8, 0, 0, 0x30);
-    func_ov002_02200840(6, 0, 0);
-    func_ov002_02200a50(6);
-    unk_98 = func_ov002_02200920();
+void PocketMenu::stateSlideOut() {
+    _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
+    hideCursor();
+    beginSubSlideOut(8, 0, 0, 0x30);
+    applySlideOffset(6, 0, 0);
+    setTransitionState(6);
+    slideY = getSlideOffsetY();
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a1a4() {
-    if (func_ov002_022008fc(0)) {
-        func_020021a0(6);
-        func_ov096_02294d9c(2);
-        if (func_ov096_02294dbc(0x80)) {
-            func_ov002_02200a50(7);
+void PocketMenu::stateWaitSlideOut() {
+    if (stepSlideOut(0)) {
+        Gfx2d_ResetLayer(6);
+        clearFlags(2);
+        if (testFlags(0x80)) {
+            setTransitionState(7);
         } else {
-            func_ov002_02200a60(5);
-            func_ov096_02294d9c(1);
+            setPhase(5);
+            clearFlags(1);
         }
     } else {
-        func_ov002_02200840(6, 0, 0);
+        applySlideOffset(6, 0, 0);
     }
-    unk_98 = func_ov002_02200920();
+    slideY = getSlideOffsetY();
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a120() {
-    void *r4 = func_ov096_02294f9c();
-    func_02065af0();
-    _ZN12Unk_0206d0a013func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(unk_2904, r4, 3, 4, 1);
-    func_ov002_022008e0(3, 0, 0, 0x30);
-    func_020020b8(3);
-    func_ov002_02200840(3, 0, 0);
-    func_020020b8(4);
-    func_ov002_02200840(4, 0, 0);
-    func_ov002_02200a50(8);
-    _ZN18Unk_ov002_0220473819func_ov002_02203ec8Ei(unk_2b14, 0x88);
-    func_ov096_02294dac(0x100);
+void PocketMenu::stateOpenLetterView() {
+    void *r4 = getActionLetter();
+    Letter_MarkRead();
+    _ZN14LetterRenderer4showEP10LetterViewPvS2_i(unk_2904, r4, 3, 4, 1);
+    beginSubSlideIn(3, 0, 0, 0x30);
+    Gfx2d_ShowLayer(3);
+    applySlideOffset(3, 0, 0);
+    Gfx2d_ShowLayer(4);
+    applySlideOffset(4, 0, 0);
+    setTransitionState(8);
+    _ZN15MenuLabelButton11showDefaultEi(unk_2b14, 0x88);
+    setFlags(0x100);
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a0d0() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        if (func_0206ef0c()) {
-            func_ov002_02200a58(7);
+void PocketMenu::stateWaitLetterView() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        if (MenuCtrl_IsTouch()) {
+            setMainState(7);
         } else {
-            func_ov002_02200a58(0x17);
+            setMainState(0x17);
         }
     } else {
-        func_ov002_02200840(3, 0, 0);
-        func_ov002_02200840(4, 0, 0);
+        applySlideOffset(3, 0, 0);
+        applySlideOffset(4, 0, 0);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a094() {
-    func_ov002_022008c4(3, 0, 0, 0x30);
-    func_ov002_02200840(3, 0, 0);
-    func_ov002_02200840(4, 0, 0);
-    func_ov002_02200a50(0xa);
+void PocketMenu::stateCloseLetterView() {
+    beginSubSlideOut(3, 0, 0, 0x30);
+    applySlideOffset(3, 0, 0);
+    applySlideOffset(4, 0, 0);
+    setTransitionState(0xa);
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229a014() {
-    if (func_ov002_022008fc(0)) {
-        func_020021a0(3);
-        func_020021a0(4);
-        func_ov096_02294d9c(0x100);
-        void *r4 = func_020ed174(this);
-        if (func_ov096_02294dbc(0x20000)) {
-            func_ov002_02200a60(5);
-            func_ov096_02294d9c(1);
+void PocketMenu::stateWaitCloseLetterView() {
+    if (stepSlideOut(0)) {
+        Gfx2d_ResetLayer(3);
+        Gfx2d_ResetLayer(4);
+        clearFlags(0x100);
+        void *r4 = ProcBase_GetParent(this);
+        if (testFlags(0x20000)) {
+            setPhase(5);
+            clearFlags(1);
         } else {
-            _ZN18Unk_ov090_022921e019func_ov090_02291a90Ev(r4);
-            func_ov096_0229a360();
+            _ZN10MenuTabBar8showTabsEv(r4);
+            stateLoadBg();
         }
     } else {
-        func_ov002_02200840(3, 0, 0);
-        func_ov002_02200840(4, 0, 0);
+        applySlideOffset(3, 0, 0);
+        applySlideOffset(4, 0, 0);
     }
 }
 
 // ===== unit 0229a000 =====
 
-void Unk_ov096_0229aea8::func_ov096_0229a000() {
-    _ZN18Unk_ov090_022921e019func_ov090_02291a88Ev(func_020ed174(this));
+void PocketMenu::hideTabBar() {
+    _ZN10MenuTabBar8hideTabsEv(ProcBase_GetParent(this));
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299f48() {
-    unk_94 = 0;
-    func_ov094_022939c0(unk_358, 2);
-    _ZN18Unk_ov094_02294bd419func_ov094_02294644Ei(unk_db8, 2);
-    func_ov094_02292d30(unk_de0, 6);
-    unk_b3 = 0x26;
-    _ZN18Unk_ov002_0220446819func_ov002_022006acEi(unk_23c0, 2);
-    _ZN18Unk_ov002_0220460419func_ov002_022027a4Ev(unk_2480);
-    func_ov096_02297160();
-    unk_b5 = func_0206ec48();
-    _ZN18Unk_ov002_0220455819func_ov002_02202310EiiPKc(unk_24fc, 3, 1, 0);
-    _ZN18Unk_ov002_022013ac19func_ov002_022017c4Ev(unk_24fc);
-    _ZN12Unk_0206d0a013func_0206d39cEi(unk_2904, 3);
-    unk_c2 = 0;
-    func_020ed174(this);
-    if (_ZN18Unk_ov090_022921e019func_ov090_02291934Ev()) {
-        func_ov096_02294dac(0x80000);
+void PocketMenu::initPocketMenu() {
+    stateFlags = 0;
+    InventoryItemGrid_Init(unk_358, 2);
+    _ZN10LetterGrid4initEi(unk_db8, 2);
+    InventoryBg_Init(unk_de0, 6);
+    balloonTarget = 0x26;
+    _ZN18TouchPromptBalloon11setPriorityEi(unk_23c0, 2);
+    _ZN12CursorMotion5resetEv(unk_2480);
+    clearHand();
+    cursorTarget = MenuCtrl_GetSavedSlot();
+    _ZN15PopupChoiceMenu4initEiiPKc(unk_24fc, 3, 1, 0);
+    _ZN19PopupChoiceMenuBody18buildAddresseeListEv(unk_24fc);
+    _ZN14LetterRenderer8setLayerEi(unk_2904, 3);
+    optionsOpenDelay = 0;
+    ProcBase_GetParent(this);
+    if (_ZN10MenuTabBar12isJustOpenedEv()) {
+        setFlags(0x80000);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299f08() {
-    func_ov096_022982fc((S *)this);
-    func_ov094_02292a80(unk_de0);
-    func_ov094_02293998(unk_358);
-    func_ov002_02201b04(unk_24fc);
-    _ZN12Unk_0206d0a013func_0206d394Ev(unk_2904);
+void PocketMenu::releaseResources() {
+    PocketMenu_CancelVramTasks(this);
+    InventoryBg_Exit(unk_de0);
+    InventoryItemGrid_Exit(unk_358);
+    PopupChoice_ForceClose(unk_24fc);
+    _ZN14LetterRenderer7releaseEv(unk_2904);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299eec() {
-    func_ov096_02299eb0();
-    ((Unk_ov096_02299eec_Obj *)unk_2498)->vfunc_0c();
+void PocketMenu::preInputUpdate() {
+    preStateUpdate();
+    (&m_2498)->update();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299ee4() {
-    func_ov096_02299e74();
+void PocketMenu::postInputUpdate() {
+    postStateUpdate();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299eb0() {
-    func_ov096_022982fc((S *)this);
-    func_ov094_02292acc(unk_de0);
-    func_ov094_022939a0(unk_358);
-    _ZN18Unk_ov094_02294bd419func_ov094_0229462cEv(unk_db8);
+void PocketMenu::preStateUpdate() {
+    PocketMenu_CancelVramTasks(this);
+    InventoryBg_PreUpdate(unk_de0);
+    InventoryItemGrid_PreUpdate(unk_358);
+    _ZN10LetterGrid16updateCursorLiftEv(unk_db8);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299e74() {
-    func_ov096_02294e84();
-    func_ov002_02201b58(unk_24fc);
-    func_ov094_02292aa4(unk_de0);
-    if (_ZN18Unk_ov002_0220446819func_ov002_0220071cEv(unk_23c0)) {
-        func_ov096_02297658();
+void PocketMenu::postStateUpdate() {
+    updateCameraView();
+    PopupChoice_Update(unk_24fc);
+    InventoryBg_Update(unk_de0);
+    if (_ZN18TouchPromptBalloon12updatePromptEv(unk_23c0)) {
+        positionLabelBalloon();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299e54() {
-    func_02002398(6, 2);
-    func_0200226c(6, 0, 0, 0);
+void PocketMenu::setupBgLayer() {
+    Gfx2d_SetLayerPriority(6, 2);
+    Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299e44() {
-    func_ov094_02292ae0(unk_de0);
+void PocketMenu::loadObjGraphics() {
+    InventoryBg_LoadObjGraphics(unk_de0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299d4c() {
-    if (func_ov002_02200a14(1)) {
-        unk_b5 = 0;
-        func_ov096_0229867c((S *)this);
+void PocketMenu::mainAct00() {
+    if (checkSwitchToButtons(1)) {
+        cursorTarget = 0;
+        PocketMenu_EnterButtonIdle(this);
     } else if (Unk_ov096_02299778_Both()) {
-        u8 a = data_021ef5f0;
-        u8 b = data_021ef5ec;
-        s32 t = func_ov096_0229821c((S *)this, a, b, 1);
+        u8 a = gTouchCurX;
+        u8 b = gTouchCurY;
+        s32 t = PocketMenu_HitPocket(this, a, b, 1);
         if (t != 0x26) {
-            func_ov096_02298504((S *)this, t);
+            PocketMenu_BeginTouchOnTarget(this, t);
             return;
         }
-        t = func_ov096_02297fb8((S *)this, a, b, 1);
+        t = PocketMenu_HitLetter(this, a, b, 1);
         if (t != 0x26) {
-            func_ov096_02298504((S *)this, t);
+            PocketMenu_BeginTouchOnTarget(this, t);
             return;
         }
-        if (func_ov096_02297e5c((S *)this, a, b)) {
-            func_ov096_02295734(0x25, 0);
+        if (PocketMenu_HitWalletIcon(this, a, b)) {
+            openTargetOptions(0x25, 0);
             return;
         }
-        switch (func_ov096_02297de0((S *)this, a, b)) {
+        switch (PocketMenu_HitWalletAmount(this, a, b)) {
         case 1:
-            func_ov096_02295734(0x27, 0);
+            openTargetOptions(0x27, 0);
             break;
         case 2:
-            func_ov002_02200a58(9);
-            func_ov094_02292640(unk_de0, unk_bf);
+            setMainState(9);
+            InventoryBg_SetBellsPanelMode(unk_de0, bellsPanelMode);
             break;
         default:
-            if (func_ov096_02297e7c((S *)this, a, b)) {
-                func_ov096_02295734(0x24, 0);
+            if (PocketMenu_HitPlayer(this, a, b)) {
+                openTargetOptions(0x24, 0);
             }
             break;
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299c90() {
-    if (data_021f4770 == 0) {
-        if (func_ov096_02294dbc(0x10000)) {
-            func_ov002_02200a58(0);
-            _ZN18Unk_ov002_0220446819func_ov002_022006a4Eh(unk_23c0, 0x3c);
+void PocketMenu::mainAct01() {
+    if (gTouchHeld == 0) {
+        if (testFlags(0x10000)) {
+            setMainState(0);
+            _ZN18TouchPromptBalloon17setAutoCloseTimerEh(unk_23c0, 0x3c);
         } else {
-            func_ov002_02200a58(3);
-            func_ov096_0229a4cc();
+            setMainState(3);
+            runMainState();
         }
         return;
     }
-    if (func_ov096_02294dbc(4) == 0) goto stop;
-    if (func_ov096_0229770c()) {
-        func_ov096_0229849c((S *)this, unk_b2);
+    if (testFlags(4) == 0) goto stop;
+    if (hasTouchMoved()) {
+        PocketMenu_StartTouchDrag(this, touchedTarget);
         return;
     }
-    if (func_ov096_02294dbc(0x10000) != 0) goto stop;
-    if (_ZN18Unk_ov002_0220446819func_ov002_02200680Ev(unk_23c0) == 0) goto stop;
-    if (unk_c2 != 0) {
-        unk_c2 = unk_c2 - 1;
+    if (testFlags(0x10000) != 0) goto stop;
+    if (_ZN18TouchPromptBalloon15isOpenOrOpeningEv(unk_23c0) == 0) goto stop;
+    if (optionsOpenDelay != 0) {
+        optionsOpenDelay = optionsOpenDelay - 1;
     } else {
-        func_ov096_02295734(unk_b2, 1);
-        func_ov002_02200a58(2);
+        openTargetOptions(touchedTarget, 1);
+        setMainState(2);
     }
     return;
 stop:
-    _ZN18Unk_ov002_0220446819func_ov002_022006c0Ev(unk_23c0);
+    _ZN18TouchPromptBalloon10commitOpenEv(unk_23c0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299c20() {
-    if (func_0206e61c()) {
-        func_ov002_02200a58(4);
-    } else if (data_021f4770 == 0) {
-        func_ov002_02200a58(4);
-    } else if (func_ov096_02294dbc(4)) {
-        if (func_ov096_0229770c()) {
-            func_ov096_0229849c((S *)this, unk_b2);
-            func_ov002_02202064(unk_24fc, 0);
-            _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 1);
+void PocketMenu::mainAct02() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        setMainState(4);
+    } else if (gTouchHeld == 0) {
+        setMainState(4);
+    } else if (testFlags(4)) {
+        if (hasTouchMoved()) {
+            PocketMenu_StartTouchDrag(this, touchedTarget);
+            PopupChoice_Close(unk_24fc, 0);
+            _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299bd8() {
-    if (_ZN18Unk_ov002_0220446819func_ov002_02200680Ev(unk_23c0)) {
-        if (unk_c2 != 0) {
-            unk_c2 = unk_c2 - 1;
+void PocketMenu::mainAct03() {
+    if (_ZN18TouchPromptBalloon15isOpenOrOpeningEv(unk_23c0)) {
+        if (optionsOpenDelay != 0) {
+            optionsOpenDelay = optionsOpenDelay - 1;
         } else {
-            func_ov096_02295734(unk_b2, 1);
-            func_ov002_02200a58(2);
+            openTargetOptions(touchedTarget, 1);
+            setMainState(2);
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299b18() {
-    if (_ZN18Unk_ov002_022013ac19func_ov002_022017b4Ev(unk_24fc)) {
-        if (func_0206e61c()) {
-            func_ov096_02295c60();
-        } else if (func_ov002_02200a14(1)) {
-            func_ov096_02295c60();
+void PocketMenu::mainAct04() {
+    if (_ZN19PopupChoiceMenuBody6isOpenEv(unk_24fc)) {
+        if (MenuCtrl_IsForceCloseDue()) {
+            cancelOptions();
+        } else if (checkSwitchToButtons(1)) {
+            cancelOptions();
         } else if (Unk_ov096_02299778_Both()) {
-            s32 t = _ZN18Unk_ov002_022013ac19func_ov002_022014c0Eii(unk_24fc, data_021ef5f0, data_021ef5ec);
+            s32 t = _ZN19PopupChoiceMenuBody16hitTestRowOrLastEii(unk_24fc, gTouchCurX, gTouchCurY);
             if (t >= 0) {
-                if (func_ov096_02294dbc(0x40000) == 0 || t != 0) {
-                    unk_bb = *((u8 *)this + t + 0x27f5);
-                    s32 u = func_ov096_02295ba4();
-                    func_ov002_02201aa0(unk_24fc, t, u);
-                    func_ov002_02200a58(0x1e);
+                if (testFlags(0x40000) == 0 || t != 0) {
+                    chosenAction = *((u8 *)this + t + 0x27f5);
+                    s32 u = playActionSe();
+                    PopupChoice_DecideRow(unk_24fc, t, u);
+                    setMainState(0x1e);
                 }
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299908() {
-    if (func_0206e61c()) {
-        func_ov096_02297358(unk_b4, 1);
-        func_ov096_0229a39c(7);
+void PocketMenu::mainAct05() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        putHandBack(handSource, 1);
+        requestTab(7);
         return;
     }
-    func_ov096_02297548();
-    func_ov096_02297804();
-    s32 x = unk_a4 + 8;
-    s32 y = unk_a8 + 8;
-    s32 t = func_ov096_0229821c((S *)this, x, y, 0);
+    syncHandFromTouch();
+    clearHighlights();
+    s32 x = handX + 8;
+    s32 y = handY + 8;
+    s32 t = PocketMenu_HitPocket(this, x, y, 0);
     if (t == 0x26) {
-        t = func_ov096_02297fb8((S *)this, x, y, 0);
+        t = PocketMenu_HitLetter(this, x, y, 0);
     }
     if (t != 0x26) {
-        if (data_021f4770 == 0) {
-            if (func_ov096_0229795c(t, unk_b4) == 0) {
-                if (func_ov096_022982e0((S *)this, t)) {
-                    func_ov096_02294ed4();
+        if (gTouchHeld == 0) {
+            if (checkSwap(t, handSource) == 0) {
+                if (PocketMenu_IsLetterTarget(this, t)) {
+                    requestCameraPop();
                 }
-                func_ov096_02298110((S *)this, t);
-                if (unk_8d == 5) {
-                    func_ov096_0229865c((S *)this);
+                PocketMenu_DropItemAt(this, t);
+                if (mainState == 5) {
+                    PocketMenu_ReturnToIdle(this);
                 }
-                if (func_ov096_022982f0((S *)this, t) == 0 && func_ov096_022982e0((S *)this, t) == 0) {
+                if (PocketMenu_IsPocketTarget(this, t) == 0 && PocketMenu_IsLetterTarget(this, t) == 0) {
                     return;
                 }
-                func_ov094_02292398();
+                Inventory_PlayPutDownSe();
             } else {
-                func_ov096_022983cc((S *)this, unk_b4, 4);
+                PocketMenu_FlyHandTo(this, handSource, 4);
             }
         } else {
-            func_ov096_02297750(t);
+            highlightTarget(t);
         }
     } else {
-        t = func_ov096_02297e94((S *)this, x, y);
+        t = PocketMenu_HitSpecialTarget(this, x, y);
         if (t != 0x26) {
-            if (data_021f4770 == 0) {
+            if (gTouchHeld == 0) {
                 if ((u8)(t + 0xde) <= 1) {
-                    if (func_ov096_02297170() == 0) {
-                        func_ov096_022983cc((S *)this, unk_b4, 4);
-                    } else if (func_ov096_022971dc()) {
-                        func_ov096_0229865c((S *)this);
+                    if (canDropHeldItem() == 0) {
+                        PocketMenu_FlyHandTo(this, handSource, 4);
+                    } else if (dropHeldItem()) {
+                        PocketMenu_ReturnToIdle(this);
                     }
                 } else if (t == 0x24) {
-                    unk_c0 = func_ov096_02296fb8();
-                    u32 v = unk_c0;
+                    useOnPlayerKind = getUseOnPlayerKind();
+                    u32 v = useOnPlayerKind;
                     if (v < 1) {
-                        func_ov096_02296d5c();
+                        cancelUseOnPlayer();
                     } else if (v == 1) {
-                        func_ov096_022983cc((S *)this, unk_b4, 4);
+                        PocketMenu_FlyHandTo(this, handSource, 4);
                     } else {
-                        func_ov096_0229713c();
+                        startUseOnPlayer();
                     }
                 } else if (t == 0x25) {
-                    if (func_ov096_02296c30(0)) {
-                        func_ov096_02296cac();
+                    if (isHoldingMoneyBag(0)) {
+                        depositHeldBag();
                     } else {
-                        func_ov096_022983cc((S *)this, unk_b4, 4);
+                        PocketMenu_FlyHandTo(this, handSource, 4);
                     }
                 } else {
-                    func_ov096_022983cc((S *)this, unk_b4, 4);
+                    PocketMenu_FlyHandTo(this, handSource, 4);
                 }
             } else {
-                func_ov096_02297750(t);
+                highlightTarget(t);
             }
-        } else if (func_ov096_02297f20((S *)this, x, y)) {
-            if (data_021f4770 == 0) {
-                if (func_ov096_02294dd0()) {
-                    func_ov096_02294e08();
-                    func_ov096_0229865c((S *)this);
+        } else if (PocketMenu_HitShirtBox(this, x, y)) {
+            if (gTouchHeld == 0) {
+                if (isHoldingShirt()) {
+                    wearHeldShirt();
+                    PocketMenu_ReturnToIdle(this);
                 } else {
-                    func_ov096_022983cc((S *)this, unk_b4, 4);
+                    PocketMenu_FlyHandTo(this, handSource, 4);
                 }
             } else {
-                func_ov096_02297750(0x21);
+                highlightTarget(0x21);
             }
-        } else if (data_021f4770 == 0) {
-            func_ov096_022983cc((S *)this, unk_b4, 4);
+        } else if (gTouchHeld == 0) {
+            PocketMenu_FlyHandTo(this, handSource, 4);
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299868() {
-    if (func_0206e61c()) {
-        func_ov096_02297358(unk_b4, 1);
-        func_ov096_0229a39c(7);
+void PocketMenu::mainAct06() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        putHandBack(handSource, 1);
+        requestTab(7);
     } else {
-        func_ov096_02297548();
-        func_ov096_02297804();
-        s32 t = func_ov096_02297fb8((S *)this, unk_a4 + 8, unk_a8 + 8, 0);
+        syncHandFromTouch();
+        clearHighlights();
+        s32 t = PocketMenu_HitLetter(this, handX + 8, handY + 8, 0);
         if (t != 0x26) {
-            if (data_021f4770 == 0) {
-                if (((s32 (*)(S *))func_ov096_02297f6c)((S *)this) == 0) {
-                    func_ov096_022983cc((S *)this, unk_b4, 4);
+            if (gTouchHeld == 0) {
+                if (((s32 (*)(PocketMenu *))PocketMenu_DropLetterAt)(this) == 0) {
+                    PocketMenu_FlyHandTo(this, handSource, 4);
                 }
-                func_ov094_02292398();
-                func_ov096_0229865c((S *)this);
+                Inventory_PlayPutDownSe();
+                PocketMenu_ReturnToIdle(this);
             } else {
-                func_ov096_02297750(t);
+                highlightTarget(t);
             }
-        } else if (data_021f4770 == 0) {
-            func_ov096_022983cc((S *)this, unk_b4, 4);
+        } else if (gTouchHeld == 0) {
+            PocketMenu_FlyHandTo(this, handSource, 4);
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299820() {
-    if (func_0206e61c()) {
-        func_ov096_02294fac();
-    } else if (func_ov002_02200a14(1)) {
-        func_ov002_02200a58(0x17);
-    } else if (_ZN18Unk_ov002_0220473819func_ov002_02203e24Ev(unk_2b14)) {
-        func_ov096_02294fd4();
+void PocketMenu::mainAct07() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        closeLetterViewAndMenu();
+    } else if (checkSwitchToButtons(1)) {
+        setMainState(0x17);
+    } else if (_ZN15MenuLabelButton9isTouchedEv(unk_2b14)) {
+        closeLetterView();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299778() {
-    if (func_0206e61c()) {
-        func_ov096_02295c2c();
-    } else if (func_ov002_02200a14(1)) {
-        func_ov096_0229862c((S *)this);
+void PocketMenu::mainAct08() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        closeAddresseeList();
+    } else if (checkSwitchToButtons(1)) {
+        PocketMenu_EnterAddresseeButtons(this);
     } else if (Unk_ov096_02299778_Both()) {
-        s32 t = _ZN18Unk_ov002_022013ac19func_ov002_022014acEii(unk_24fc, data_021ef5f0, data_021ef5ec);
+        s32 t = _ZN19PopupChoiceMenuBody10hitTestRowEii(unk_24fc, gTouchCurX, gTouchCurY);
         if (t >= 0) {
-            func_ov002_02201a3c(unk_24fc, t);
-            unk_be = _ZN18Unk_ov002_022013ac19func_ov002_0220144cEjj(unk_24fc, unk_bd, (u8)t);
-            func_ov002_02200a58(0x23);
+            PopupChoice_DecideAddressee(unk_24fc, t);
+            addressee = _ZN19PopupChoiceMenuBody13pickAddresseeEjj(unk_24fc, addresseePage, (u8)t);
+            setMainState(0x23);
         } else {
-            func_ov096_02295c2c();
+            closeAddresseeList();
         }
     }
 }
 
 // ===== unit 022996e8 =====
 
-void Unk_ov096_0229aea8::func_ov096_022996e8() {
-    if (func_0206e61c()) {
-        func_ov096_0229a39c(7);
-        func_ov094_02292640(unk_de0, 0);
-    } else if (data_021f4770 == 0) {
-        func_ov002_02200a58(0);
-        func_ov094_02292640(unk_de0, 0);
-    } else if (func_ov096_022976f8(4)) {
-        func_ov096_02298504((S *)this, 0x25);
-        unk_9c = -8;
-        unk_a0 = -8;
-        func_ov096_0229849c((S *)this, 0x25);
-        func_ov096_02294dac(0x4000);
-        func_ov094_02292640(unk_de0, unk_bf);
+void PocketMenu::mainAct09() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        requestTab(7);
+        InventoryBg_SetBellsPanelMode(unk_de0, 0);
+    } else if (gTouchHeld == 0) {
+        setMainState(0);
+        InventoryBg_SetBellsPanelMode(unk_de0, 0);
+    } else if (isTouchHeldFor(4)) {
+        PocketMenu_BeginTouchOnTarget(this, 0x25);
+        grabOffsetX = -8;
+        grabOffsetY = -8;
+        PocketMenu_StartTouchDrag(this, 0x25);
+        setFlags(0x4000);
+        InventoryBg_SetBellsPanelMode(unk_de0, bellsPanelMode);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022995b0() {
-    if (func_ov002_022009d4()) {
-        func_ov096_022986b0((S *)this);
-        _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 1);
+void PocketMenu::mainAct0A() {
+    if (checkSwitchToTouch()) {
+        PocketMenu_EnterTouchIdle(this);
+        _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
     } else {
-        s32 t = func_ov002_022009c8();
-        if (func_ov096_02295020((void *)t, 0)) {
-            func_ov096_022975d4();
-            func_ov096_02296854();
-            _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 0);
+        s32 t = takeRepeatedKeys();
+        if (moveCursorByPad((void *)t, 0)) {
+            updateLabelBalloon();
+            moveCursorToTarget();
+            _ZN18TouchPromptBalloon4hideEi(unk_23c0, 0);
         } else {
-            u32 k = data_021f47d8[1];
+            u32 k = gPad[1];
             if (k & 1) {
-                if (func_ov096_022982f0((S *)this, unk_b5) || func_ov096_022982e0((S *)this, unk_b5)) {
-                    if (func_ov096_02297c10((S *)this, unk_b5) == 0) {
-                        func_ov096_02295734(unk_b5, 0);
+                if (PocketMenu_IsPocketTarget(this, cursorTarget) || PocketMenu_IsLetterTarget(this, cursorTarget)) {
+                    if (PocketMenu_IsSlotEmpty(this, cursorTarget) == 0) {
+                        openTargetOptions(cursorTarget, 0);
                     }
-                } else if (func_ov096_022982d0((S *)this, unk_b5)) {
-                    func_ov096_022966c8();
-                } else if (unk_b5 == 0x25) {
-                    func_ov096_02295734(0x25, 0);
-                } else if (unk_b5 == 0x24) {
-                    func_ov096_02295734(0x24, 0);
+                } else if (PocketMenu_IsTabTarget(this, cursorTarget)) {
+                    pressTab();
+                } else if (cursorTarget == 0x25) {
+                    openTargetOptions(0x25, 0);
+                } else if (cursorTarget == 0x24) {
+                    openTargetOptions(0x24, 0);
                 }
             } else if (k & 0x100) {
-                func_ov096_0229a39c(func_ov090_02291a38(0));
+                requestTab(MenuTabBar_NextTab(0));
             } else if (k & 0x200) {
-                func_ov096_0229a39c(func_ov090_02291a58(0));
+                requestTab(MenuTabBar_PrevTab(0));
             } else if (k & 2) {
-                func_ov096_0229a39c(7);
+                requestTab(7);
             } else {
-                _ZN18Unk_ov002_0220446819func_ov002_022006c0Ev(unk_23c0);
+                _ZN18TouchPromptBalloon10commitOpenEv(unk_23c0);
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299340() {
-    if (func_0206e61c()) {
-        func_ov096_02297358(unk_b4, 1);
-        func_ov096_0229a39c(7);
+void PocketMenu::mainAct0B() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        putHandBack(handSource, 1);
+        requestTab(7);
     } else {
-        s32 t = func_ov002_022009c8();
-        if (func_ov096_02295020((void *)t, 1)) {
-            func_ov096_022975d4();
-            func_ov096_02296854();
-            _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 0);
+        s32 t = takeRepeatedKeys();
+        if (moveCursorByPad((void *)t, 1)) {
+            updateLabelBalloon();
+            moveCursorToTarget();
+            _ZN18TouchPromptBalloon4hideEi(unk_23c0, 0);
         } else {
-            u32 k = data_021f47d8[1];
+            u32 k = gPad[1];
             if (k & 1) {
-                if (unk_b5 == 0x21) {
-                    if (func_ov096_02294dd0() == 0) {
+                if (cursorTarget == 0x21) {
+                    if (isHoldingShirt() == 0) {
                         return;
                     }
-                    func_ov096_02294ed4();
-                    func_ov096_02296638(unk_b5);
-                } else if (func_ov096_022982c0((S *)this, unk_b5)) {
-                    u32 b = unk_b5;
+                    requestCameraPop();
+                    beginPutDownAt(cursorTarget);
+                } else if (PocketMenu_IsSpecialTarget(this, cursorTarget)) {
+                    u32 b = cursorTarget;
                     if (b == 0x24) {
-                        unk_c0 = func_ov096_02296fb8();
-                        func_ov096_02296638(unk_b5);
+                        useOnPlayerKind = getUseOnPlayerKind();
+                        beginPutDownAt(cursorTarget);
                     } else if (b == 0x22) {
-                        func_ov096_02294ed4();
-                        func_ov096_02296638(unk_b5);
+                        requestCameraPop();
+                        beginPutDownAt(cursorTarget);
                     } else if (b == 0x25) {
-                        if (func_ov096_02296c30(1) == 0 && unk_b4 == 0x25) {
-                            func_0200402c(0x2a);
+                        if (isHoldingMoneyBag(1) == 0 && handSource == 0x25) {
+                            Snd_PlaySe(0x2a);
                         } else {
-                            func_ov096_02294ed4();
-                            func_ov096_02296638(unk_b5);
+                            requestCameraPop();
+                            beginPutDownAt(cursorTarget);
                         }
                     }
-                } else if (func_ov096_022979f0(unk_b5, unk_ac, unk_b0) == 0) {
-                    if (func_ov096_022982e0((S *)this, unk_b5)) {
-                        func_ov096_02294ed4();
+                } else if (checkPlace(cursorTarget, handItem, handItemFlags) == 0) {
+                    if (PocketMenu_IsLetterTarget(this, cursorTarget)) {
+                        requestCameraPop();
                     }
-                    if (func_ov096_022982f0((S *)this, unk_b5)) {
+                    if (PocketMenu_IsPocketTarget(this, cursorTarget)) {
                         u16 v;
                         u32 w;
-                        v = func_ov096_02297b9c((S *)this, unk_b5);
-                        w = func_ov096_02297b48((S *)this, unk_b5);
-                        if (_ZN18Unk_ov096_0229aea819func_ov096_022969bcEPtiS0_h((S *)this, &unk_ac, unk_b0, &v, w) == 0) {
-                            func_ov094_02293494(unk_358, func_ov096_0229826c((S *)this, unk_b5), v, w);
+                        v = PocketMenu_GetItem(this, cursorTarget);
+                        w = PocketMenu_GetItemFlags(this, cursorTarget);
+                        if (_ZN10PocketMenu10mergeItemsEPtiS0_h(this, &handItem, handItemFlags, &v, w) == 0) {
+                            InventoryItemGrid_SetSlotItem(unk_358, PocketMenu_TargetToGridIndex(this, cursorTarget), v, w);
                         }
                     }
-                    if (func_ov096_02297b9c((S *)this, unk_b5) == 0xfff1) {
-                        func_ov096_02296638(unk_b5);
+                    if (PocketMenu_GetItem(this, cursorTarget) == 0xfff1) {
+                        beginPutDownAt(cursorTarget);
                     } else {
-                        if (unk_b9 != 0x26 && func_ov096_02296c30(1)) {
-                            unk_b9 = unk_b5;
-                            unk_ae = unk_ac;
+                        if (swapTarget != 0x26 && isHoldingMoneyBag(1)) {
+                            swapTarget = cursorTarget;
+                            auxItem = handItem;
                         }
-                        func_ov096_022965f0(unk_b5);
+                        beginSwapAt(cursorTarget);
                     }
                 }
             } else {
                 if (k & 2) {
-                    if (func_ov096_02297940(unk_b4) == 0) {
-                        func_ov096_02296638(unk_b4);
+                    if (checkPlaceHand(handSource) == 0) {
+                        beginPutDownAt(handSource);
                     } else {
-                        u32 v = unk_b9;
+                        u32 v = swapTarget;
                         if (v != 0x26) {
-                            u32 o = unk_b4;
-                            unk_b4 = v;
-                            func_ov096_02296638(unk_b4);
-                            unk_b9 = o;
-                            func_ov096_02294dac(0x2000);
+                            u32 o = handSource;
+                            handSource = v;
+                            beginPutDownAt(handSource);
+                            swapTarget = o;
+                            setFlags(0x2000);
                         }
                     }
                 }
-                func_ov096_0229751c();
-                _ZN18Unk_ov002_0220446819func_ov002_022006c0Ev(unk_23c0);
+                syncHandFromCursor();
+                _ZN18TouchPromptBalloon10commitOpenEv(unk_23c0);
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299288() {
-    if (func_0206e61c()) {
-        func_ov096_02297358(unk_b4, 1);
-        func_ov096_0229a39c(7);
+void PocketMenu::mainAct0C() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        putHandBack(handSource, 1);
+        requestTab(7);
     } else {
-        s32 t = func_ov002_022009c8();
-        if (func_ov096_02295020((void *)t, 2)) {
-            func_ov096_022975d4();
-            func_ov096_02296854();
-            _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 0);
+        s32 t = takeRepeatedKeys();
+        if (moveCursorByPad((void *)t, 2)) {
+            updateLabelBalloon();
+            moveCursorToTarget();
+            _ZN18TouchPromptBalloon4hideEi(unk_23c0, 0);
         } else {
-            u32 k = data_021f47d8[1];
+            u32 k = gPad[1];
             if (k & 1) {
-                if (func_ov096_02297c10((S *)this, unk_b5)) {
-                    func_ov096_02296638(unk_b5);
+                if (PocketMenu_IsSlotEmpty(this, cursorTarget)) {
+                    beginPutDownAt(cursorTarget);
                 } else {
-                    func_ov096_022965f0(unk_b5);
+                    beginSwapAt(cursorTarget);
                 }
             } else if (k & 2) {
-                func_ov096_02296638(unk_b4);
+                beginPutDownAt(handSource);
             } else {
-                func_ov096_0229751c();
-                _ZN18Unk_ov002_0220446819func_ov002_022006c0Ev(unk_23c0);
+                syncHandFromCursor();
+                _ZN18TouchPromptBalloon10commitOpenEv(unk_23c0);
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022991ec() {
-    if (func_0206e61c()) {
-        func_ov096_02295c60();
-    } else if (func_ov002_022009d4()) {
-        func_ov096_02295c60();
+void PocketMenu::mainAct0D() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        cancelOptions();
+    } else if (checkSwitchToTouch()) {
+        cancelOptions();
     } else {
-        s32 t = func_ov002_022009c8();
-        u8 f = func_ov096_02294dbc(0x40000);
-        if (func_ov002_022019d0(unk_24fc, t, &unk_bc, f)) {
-            func_ov096_02296804();
+        s32 t = takeRepeatedKeys();
+        u8 f = testFlags(0x40000);
+        if (PopupChoice_MoveCursor(unk_24fc, t, &popupRow, f)) {
+            moveCursorToPopupRow();
         } else {
-            u32 k = data_021f47d8[1];
+            u32 k = gPad[1];
             if (k & 1) {
-                _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(unk_2498);
-                func_ov002_02200a58(0xe);
+                _ZN10MenuCursor12setPosePressEv(unk_2498);
+                setMainState(0xe);
             } else if (k & 2) {
-                func_ov096_022967a0();
+                cancelPopup();
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299198() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(unk_2498)) {
-        unk_bb = *((u8 *)this + unk_bc + 0x27f5);
-        s32 u = func_ov096_02295ba4();
-        func_ov002_02201aa0(unk_24fc, unk_bc, u);
-        func_ov002_02200a58(0x1e);
+void PocketMenu::mainAct0E() {
+    if (_ZN10HandCursor10isAnimDoneEv(unk_2498)) {
+        chosenAction = *((u8 *)this + popupRow + 0x27f5);
+        s32 u = playActionSe();
+        PopupChoice_DecideRow(unk_24fc, popupRow, u);
+        setMainState(0x1e);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299148() {
-    if (_ZN18Unk_ov002_02202d9819func_ov002_022028f0Ev(unk_2498) == 0) {
-        func_ov002_02200a58(unk_ba);
-        if ((u8)(unk_ba + 0xf6) <= 2) {
-            func_ov096_02297834(unk_b5);
+void PocketMenu::mainAct0F() {
+    if (_ZN14MenuCursorBase8isMovingEv(unk_2498) == 0) {
+        setMainState(returnState);
+        if ((u8)(returnState + 0xf6) <= 2) {
+            selectTarget(cursorTarget);
         }
-        func_ov096_0229a4cc();
+        runMainState();
     }
-    func_ov096_0229751c();
+    syncHandFromCursor();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299114() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(unk_2498)) {
-        if (func_ov096_0229a39c(unk_b5 - 0x19) == 0) {
-            func_ov096_022966a8();
+void PocketMenu::mainAct10() {
+    if (_ZN10HandCursor10isAnimDoneEv(unk_2498)) {
+        if (requestTab(cursorTarget - 0x19) == 0) {
+            releaseCursor();
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022990ec() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(unk_2498)) {
-        func_ov096_022966e8();
-        func_ov002_02200a58(0xa);
+void PocketMenu::mainAct11() {
+    if (_ZN10HandCursor10isAnimDoneEv(unk_2498)) {
+        refreshCursor();
+        setMainState(0xa);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022990bc() {
-    if (_ZN18Unk_ov002_02202d9819func_ov002_02202928Ev(unk_2498)) {
-        func_ov096_02298430((S *)this, unk_b5);
-        func_ov002_02200a58(0x13);
+void PocketMenu::mainAct12() {
+    if (_ZN14MenuCursorBase10isGrippingEv(unk_2498)) {
+        PocketMenu_StartButtonDrag(this, cursorTarget);
+        setMainState(0x13);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02299090() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(unk_2498)) {
-        func_ov002_02200a58(unk_ba);
+void PocketMenu::mainAct13() {
+    if (_ZN10HandCursor10isAnimDoneEv(unk_2498)) {
+        setMainState(returnState);
     }
-    func_ov096_0229751c();
+    syncHandFromCursor();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02298ffc() {
-    if (_ZN18Unk_ov002_02202d9819func_ov002_02202928Ev(unk_2498) == 0) {
-        u32 a = unk_b7;
-        u32 b = unk_b5;
+void PocketMenu::mainAct14() {
+    if (_ZN14MenuCursorBase10isGrippingEv(unk_2498) == 0) {
+        u32 a = placeTarget;
+        u32 b = cursorTarget;
         if (b == a) {
-            func_ov096_0229725c(a);
-            if (func_ov096_02294dbc(0x2000)) {
-                func_ov096_022974b8(unk_ae, 0);
-                func_ov096_022983cc((S *)this, unk_b9, 4);
-                func_ov096_02294d9c(0x2000);
+            placeHandAt(a);
+            if (testFlags(0x2000)) {
+                setHandItem(auxItem, 0);
+                PocketMenu_FlyHandTo(this, swapTarget, 4);
+                clearFlags(0x2000);
             }
         } else {
-            func_ov096_022983cc((S *)this, a, 4);
+            PocketMenu_FlyHandTo(this, a, 4);
         }
-        if (unk_8d == 0x14) {
-            func_ov096_022975d4();
-            func_ov002_02200a58(0xa);
-            func_ov094_02292398();
+        if (mainState == 0x14) {
+            updateLabelBalloon();
+            setMainState(0xa);
+            Inventory_PlayPutDownSe();
         }
     } else {
-        func_ov096_0229751c();
+        syncHandFromCursor();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02298fb4() {
-    if (_ZN18Unk_ov002_02202d9819func_ov002_022028fcEv(unk_2498) == 0) {
-        func_ov096_02297284(unk_b7);
-        func_ov096_02294dac(0x40);
-        func_ov002_02200a58(0x16);
-        func_ov096_022975d4();
+void PocketMenu::mainAct15() {
+    if (_ZN14MenuCursorBase19func_ov002_022028fcEv(unk_2498) == 0) {
+        swapHandWith(placeTarget);
+        setFlags(0x40);
+        setMainState(0x16);
+        updateLabelBalloon();
     } else {
-        func_ov002_02200a58(0xa);
+        setMainState(0xa);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02298f64() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(unk_2498)) {
-        func_ov002_02200a58(unk_ba);
+void PocketMenu::mainAct16() {
+    if (_ZN10HandCursor10isAnimDoneEv(unk_2498)) {
+        setMainState(returnState);
     }
-    if (_ZN18Unk_ov002_02202d9819func_ov002_02202928Ev(unk_2498)) {
-        if (func_ov096_02294dbc(0x40)) {
-            func_ov096_02294d9c(0x40);
-            func_ov094_02292380();
+    if (_ZN14MenuCursorBase10isGrippingEv(unk_2498)) {
+        if (testFlags(0x40)) {
+            clearFlags(0x40);
+            Inventory_PlayPickUpSe();
         }
-        func_ov096_0229751c();
+        syncHandFromCursor();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02298ea4() {
-    if (func_0206e61c()) {
-        func_ov096_02294fac();
-    } else if (func_0206e61c()) {
-        func_ov096_02294fd4();
-        func_ov096_02294dac(0x20000);
+void PocketMenu::mainAct17() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        closeLetterViewAndMenu();
+    } else if (MenuCtrl_IsForceCloseDue()) {
+        closeLetterView();
+        setFlags(0x20000);
     } else {
-        if (_ZN12Unk_020e100c13func_0208d534Ev(unk_2498) == 0) {
-            s32 a = _ZN18Unk_ov002_0220473819func_ov002_02203f78Ei(unk_2b14, 1);
-            s32 b = _ZN18Unk_ov002_0220473819func_ov002_02203f28Ei(unk_2b14, 1);
-            _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(unk_2498, a, b);
-            _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 1);
+        if (_ZN10HandCursor7getAnimEv(unk_2498) == 0) {
+            s32 a = _ZN15MenuLabelButton10getAnchorXEi(unk_2b14, 1);
+            s32 b = _ZN15MenuLabelButton10getAnchorYEi(unk_2b14, 1);
+            _ZN14MenuCursorBase6warpToEii(unk_2498, a, b);
+            _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 1);
         }
-        if (func_ov002_022009d4()) {
-            func_ov096_02296898();
-            func_ov002_02200a58(7);
+        if (checkSwitchToTouch()) {
+            hideCursor();
+            setMainState(7);
         } else {
-            u32 k = data_021f47d8[1];
+            u32 k = gPad[1];
             if ((k & 1) || (k & 2)) {
-                _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(unk_2498);
-                func_ov002_02200a58(0x18);
+                _ZN10MenuCursor12setPosePressEv(unk_2498);
+                setMainState(0x18);
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02298e84() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(unk_2498)) {
-        func_ov096_02294fd4();
+void PocketMenu::mainAct18() {
+    if (_ZN10HandCursor10isAnimDoneEv(unk_2498)) {
+        closeLetterView();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02298dfc() {
-    if (func_0206e61c()) {
-        func_ov096_02295c2c();
-    } else if (func_ov002_022009d4()) {
-        func_ov096_02298644((S *)this);
+void PocketMenu::mainAct19() {
+    if (MenuCtrl_IsForceCloseDue()) {
+        closeAddresseeList();
+    } else if (checkSwitchToTouch()) {
+        PocketMenu_EnterAddresseeTouch(this);
     } else {
-        s32 t = func_ov002_022009c8();
-        if (func_ov002_022019d0(unk_24fc, t, &unk_bc, 0)) {
-            func_ov096_02296804();
+        s32 t = takeRepeatedKeys();
+        if (PopupChoice_MoveCursor(unk_24fc, t, &popupRow, 0)) {
+            moveCursorToPopupRow();
         }
-        u32 k = data_021f47d8[1];
+        u32 k = gPad[1];
         if (k & 1) {
-            _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(unk_2498);
-            func_ov002_02200a58(0x1a);
+            _ZN10MenuCursor12setPosePressEv(unk_2498);
+            setMainState(0x1a);
         } else if (k & 2) {
-            func_ov096_02295c2c();
+            closeAddresseeList();
         }
     }
 }
 
 // ===== unit 02298dac =====
 
-void Unk_ov096_0229aea8::func_ov096_02298dac() {
-    if (_ZN12Unk_020e100c13func_0208d4fcEv(unk_2498)) {
-        func_ov002_02201a3c(unk_24fc, unk_bc);
-        unk_be = _ZN18Unk_ov002_022013ac19func_ov002_0220144cEjj(unk_24fc, unk_bd, unk_bc);
-        func_ov002_02200a58(0x23);
+void PocketMenu::mainAct1A() {
+    if (_ZN10HandCursor10isAnimDoneEv(unk_2498)) {
+        PopupChoice_DecideAddressee(unk_24fc, popupRow);
+        addressee = _ZN19PopupChoiceMenuBody13pickAddresseeEjj(unk_24fc, addresseePage, popupRow);
+        setMainState(0x23);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298d34Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1BEv(PocketMenu *s)
 {
-    if (_ZN18Unk_ov002_0220460419func_ov002_02202718Ev((u8 *)s + 0x2480)) {
-        if (func_ov096_022982c0(s, s->unk_b4) || _ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x2000)) {
-            s->unk_a4 = func_ov096_02297d50(s, s->unk_b4);
-            s->unk_a8 = func_ov096_02297cc0(s, s->unk_b4);
-            _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x1c);
+    if (_ZN12CursorMotion6updateEv((u8 *)s + 0x2480)) {
+        if (PocketMenu_IsSpecialTarget(s, s->handSource) || _ZN10PocketMenu9testFlagsEj(s, 0x2000)) {
+            s->handX = PocketMenu_GetTargetX(s, s->handSource);
+            s->handY = PocketMenu_GetTargetY(s, s->handSource);
+            _ZN8MenuProc12setMainStateEh(s, 0x1c);
         } else {
-            _ZN18Unk_ov096_0229aea819func_ov096_02298cd8Ev(s);
+            _ZN10PocketMenu9mainAct1CEv(s);
         }
     } else {
-        _ZN18Unk_ov096_0229aea819func_ov096_022974f4Ev(s);
+        _ZN10PocketMenu17syncHandFromMoverEv(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298cd8Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1CEv(PocketMenu *s)
 {
-    _ZN18Unk_ov096_0229aea819func_ov096_02297358Ejj(s, s->unk_b4, 1);
-    if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x2000)) {
-        func_ov096_0229838c(s, s->unk_b4, s->unk_b9, s->unk_ae, 0);
-        _ZN18Unk_ov096_0229aea819func_ov096_02294d9cEj(s, 0x2000);
+    _ZN10PocketMenu11putHandBackEjj(s, s->handSource, 1);
+    if (_ZN10PocketMenu9testFlagsEj(s, 0x2000)) {
+        PocketMenu_FlyItemTo(s, s->handSource, s->swapTarget, s->auxItem, 0);
+        _ZN10PocketMenu10clearFlagsEj(s, 0x2000);
     } else {
-        func_ov094_02292398();
-        func_ov096_0229865c(s);
+        Inventory_PlayPutDownSe();
+        PocketMenu_ReturnToIdle(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298c9cEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1DEv(PocketMenu *s)
 {
-    if (_ZN18Unk_ov002_022013ac19func_ov002_022017b4Ev((u8 *)s + 0x24fc)) {
-        if (func_0206ef00()) {
-            _ZN18Unk_ov096_0229aea819func_ov096_0229673cEv(s);
-            _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0xd);
+    if (_ZN19PopupChoiceMenuBody6isOpenEv((u8 *)s + 0x24fc)) {
+        if (MenuCtrl_IsButtons()) {
+            _ZN10PocketMenu20cursorToPopupDefaultEv(s);
+            _ZN8MenuProc12setMainStateEh(s, 0xd);
         } else {
-            _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 4);
+            _ZN8MenuProc12setMainStateEh(s, 4);
         }
     }
 }
 
-extern "C" s32 func_ov096_02298c4c(S *s)
+extern "C" s32 PocketMenu_TickOptionDecide(PocketMenu *s)
 {
-    if (func_ov002_02201a28(s->s_24fc)) {
-        func_ov002_02202064(s->s_24fc, 0);
-        _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(s->s_23c0, 1);
-        if (_ZN12Unk_020e100c13func_0208d534Ev(s->s_2498)) {
-            _ZN18Unk_ov096_0229aea819func_ov096_02296708Ev(s);
+    if (PopupChoice_TickDecideDelay(&s->m_24fc)) {
+        PopupChoice_Close(&s->m_24fc, 0);
+        _ZN18TouchPromptBalloon4hideEi(&s->m_23c0, 1);
+        if (_ZN10HandCursor7getAnimEv(&s->m_2498)) {
+            _ZN10PocketMenu19placeCursorOnTargetEv(s);
         }
         return 1;
     }
     return 0;
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298c30Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1EEv(PocketMenu *s)
 {
-    if (func_ov096_02298c4c(s)) {
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x1f);
+    if (PocketMenu_TickOptionDecide(s)) {
+        _ZN8MenuProc12setMainStateEh(s, 0x1f);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298c10Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct1FEv(PocketMenu *s)
 {
-    if (_ZN18Unk_ov002_022013ac19func_ov002_022017a4Ev((u8 *)s + 0x24fc)) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02295d28Ev(s);
+    if (_ZN19PopupChoiceMenuBody8isClosedEv((u8 *)s + 0x24fc)) {
+        _ZN10PocketMenu15runChosenActionEv(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298bdcEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct20Ev(PocketMenu *s)
 {
-    if (_ZN18Unk_ov002_022040ec19func_ov002_02204234Ei((u8 *)s + 0x27fc, 1)) {
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, s->unk_ba);
-        _ZN12Unk_020e100c13func_0208d644Ev((u8 *)s + 0x2498);
+    if (_ZN16MenuErrorMessage6updateEi((u8 *)s + 0x27fc, 1)) {
+        _ZN8MenuProc12setMainStateEh(s, s->returnState);
+        _ZN10HandCursor15enableObjWindowEv((u8 *)s + 0x2498);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298b74Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct21Ev(PocketMenu *s)
 {
-    if (_ZN18Unk_ov002_0220473819func_ov002_02203f08Ev(s->s_2b14)) {
-        if (_ZN12Unk_020e100c13func_0208d534Ev(s->s_2498)) {
-            s32 r4 = _ZN18Unk_ov002_0220473819func_ov002_02203f78Ei(s->s_2b14, 1);
-            _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(s->s_2498, r4, _ZN18Unk_ov002_0220473819func_ov002_02203f28Ei(s->s_2b14, 1));
+    if (_ZN15MenuLabelButton8stepAnimEv(&s->m_2b14)) {
+        if (_ZN10HandCursor7getAnimEv(&s->m_2498)) {
+            s32 r4 = _ZN15MenuLabelButton10getAnchorXEi(&s->m_2b14, 1);
+            _ZN14MenuCursorBase6warpToEii(&s->m_2498, r4, _ZN15MenuLabelButton10getAnchorYEi(&s->m_2b14, 1));
         }
     } else {
-        _ZN18Unk_ov096_0229aea819func_ov096_02296898Ev(s);
-        _ZN18Unk_ov002_022044e419func_ov002_02200a50Eh(s, 9);
-        _ZN18Unk_ov002_022044e419func_ov002_02200a60Eh(s, 1);
+        _ZN10PocketMenu10hideCursorEv(s);
+        _ZN8MenuProc18setTransitionStateEh(s, 9);
+        _ZN8MenuProc8setPhaseEh(s, 1);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298b54Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct22Ev(PocketMenu *s)
 {
-    if (_ZN18Unk_ov002_022013ac19func_ov002_022017b4Ev((u8 *)s + 0x24fc)) {
-        func_ov096_0229860c(s);
+    if (_ZN19PopupChoiceMenuBody6isOpenEv((u8 *)s + 0x24fc)) {
+        PocketMenu_EnterAddresseeInput(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298b34Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct23Ev(PocketMenu *s)
 {
-    if (func_ov096_02298c4c(s)) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02296898Ev(s);
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x24);
+    if (PocketMenu_TickOptionDecide(s)) {
+        _ZN10PocketMenu10hideCursorEv(s);
+        _ZN8MenuProc12setMainStateEh(s, 0x24);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298aa0Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct24Ev(PocketMenu *s)
 {
-    if (_ZN18Unk_ov002_022013ac19func_ov002_022017a4Ev(s->s_24fc)) {
-        if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x200)) {
-            if (_ZN18Unk_ov002_022013ac19func_ov002_02201438Ej(s->s_24fc, s->unk_be) == 1) {
-                _ZN18Unk_ov096_0229aea819func_ov096_02294f14Ev(s);
+    if (_ZN19PopupChoiceMenuBody8isClosedEv(&s->m_24fc)) {
+        if (_ZN10PocketMenu9testFlagsEj(s, 0x200)) {
+            if (_ZN19PopupChoiceMenuBody16getAddresseeKindEj(&s->m_24fc, s->addressee) == 1) {
+                _ZN10PocketMenu18writeLetterOnPaperEv(s);
                 return;
             }
         }
-        if (_ZN18Unk_ov002_022013ac19func_ov002_022013e4EPvj(s->s_24fc, (void *)func_0206ed68(), s->unk_be) == 2) {
-            s->unk_bd = s->unk_bd + 1;
-            if (s->unk_bd >= _ZN18Unk_ov002_022013ac19func_ov002_02201490Ev(s->s_24fc)) {
-                s->unk_bd = 0;
+        if (_ZN19PopupChoiceMenuBody14applyAddresseeEPvj(&s->m_24fc, (void *)MenuCtrl_GetArg(), s->addressee) == 2) {
+            s->addresseePage = s->addresseePage + 1;
+            if (s->addresseePage >= _ZN19PopupChoiceMenuBody12getPageCountEv(&s->m_24fc)) {
+                s->addresseePage = 0;
             }
-            _ZN18Unk_ov096_0229aea819func_ov096_022956a0Ei(s, 0);
+            _ZN10PocketMenu17openAddresseePageEi(s, 0);
         } else {
-            func_ov096_0229865c(s);
+            PocketMenu_ReturnToIdle(s);
         }
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298a14Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct25Ev(PocketMenu *s)
 {
     u32 r4;
-    s->unk_a4 = func_ov096_02297d50(s, 0x24);
-    s->unk_a8 = func_ov096_02297cc0(s, 0x24);
-    r4 = s->unk_c0;
-    if (r4 != 5 || IsZero(data_020e416c)) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02294ef4Ev(s);
+    s->handX = PocketMenu_GetTargetX(s, 0x24);
+    s->handY = PocketMenu_GetTargetY(s, 0x24);
+    r4 = s->useOnPlayerKind;
+    if (r4 != 5 || IsZero(gFieldSceneKind)) {
+        _ZN10PocketMenu17requestCameraPushEv(s);
     }
-    if (_ZN18Unk_ov096_0229aea819func_ov096_02296dbcEit(s, r4, s->unk_ac)) {
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x26);
-        s->unk_ac = _ZN18Unk_ov096_0229aea819func_ov096_02296e70Eit(s, r4, s->unk_ac);
-        func_ov094_02292774((u8 *)s + 0xde0, 1);
+    if (_ZN10PocketMenu18requestUseOnPlayerEit(s, r4, s->handItem)) {
+        _ZN8MenuProc12setMainStateEh(s, 0x26);
+        s->handItem = _ZN10PocketMenu12swapEquippedEit(s, r4, s->handItem);
+        InventoryBg_StartBlink((u8 *)s + 0xde0, 1);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_0229898cEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct26Ev(PocketMenu *s)
 {
-    if (func_ov094_02292738((u8 *)s + 0xde0)) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02297160Ev(s);
-        func_ov094_02292864((u8 *)s + 0xde0);
-        if (s->unk_ac != 0xfff1) {
-            if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x8000)) {
-                func_ov096_0229838c(s, 0x24, s->unk_b4, s->unk_ac, 0);
+    if (InventoryBg_UpdateBlink((u8 *)s + 0xde0)) {
+        _ZN10PocketMenu9clearHandEv(s);
+        InventoryBg_LoadPictureForHeldItem((u8 *)s + 0xde0);
+        if (s->handItem != 0xfff1) {
+            if (_ZN10PocketMenu9testFlagsEj(s, 0x8000)) {
+                PocketMenu_FlyItemTo(s, 0x24, s->handSource, s->handItem, 0);
                 return;
             }
-            _ZN18Unk_ov096_0229aea819func_ov096_022974b8Ejj(s, s->unk_ac, 0);
-            _ZN18Unk_ov096_0229aea819func_ov096_022972ecEj(s, 1);
+            _ZN10PocketMenu11setHandItemEjj(s, s->handItem, 0);
+            _ZN10PocketMenu10returnHandEj(s, 1);
         }
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x27);
-        _ZN18Unk_ov096_0229aea819func_ov096_0229895cEv(s);
+        _ZN8MenuProc12setMainStateEh(s, 0x27);
+        _ZN10PocketMenu9mainAct27Ev(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_0229895cEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct27Ev(PocketMenu *s)
 {
-    if (_ZN18Unk_ov096_0229aea819func_ov096_02296d88Ei(s, s->unk_c0) == 0) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02297160Ev(s);
-        func_ov094_0229272c((u8 *)s + 0xde0);
-        func_ov096_0229865c(s);
+    if (_ZN10PocketMenu17isUseOnPlayerBusyEi(s, s->useOnPlayerKind) == 0) {
+        _ZN10PocketMenu9clearHandEv(s);
+        InventoryBg_StopBlink((u8 *)s + 0xde0);
+        PocketMenu_ReturnToIdle(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298934Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct2AEv(PocketMenu *s)
 {
-    if (func_ov094_02293c1c((u8 *)s + 0xdb8)) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02297160Ev(s);
-        func_ov096_0229865c(s);
+    if (LetterGrid_UpdatePopAnim((u8 *)s + 0xdb8)) {
+        _ZN10PocketMenu9clearHandEv(s);
+        PocketMenu_ReturnToIdle(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_022988d0Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct2BEv(PocketMenu *s)
 {
-    if (func_ov094_02292e30((u8 *)s + 0x358)) {
-        void *p = func_0209750c();
-        u32 v = s->unk_ac;
+    if (InventoryItemGrid_UpdatePresentAnim((u8 *)s + 0x358)) {
+        void *p = PlayerData_GetCurrent();
+        u32 v = s->handItem;
         if (v == 0x136a) {
-            _ZN12Unk_02097ff413func_0209801cEj(p, 0x27);
+            _ZN10PlayerData7setFlagEj(p, 0x27);
         } else if (v == 0x137b) {
-            _ZN12Unk_02097ff413func_0209801cEj(p, 0x28);
+            _ZN10PlayerData7setFlagEj(p, 0x28);
         }
-        s->unk_b0 = 0;
-        _ZN18Unk_ov096_0229aea819func_ov096_02297358Ejj(s, s->unk_b6, 1);
-        func_ov096_0229865c(s);
+        s->handItemFlags = 0;
+        _ZN10PocketMenu11putHandBackEjj(s, s->actionTarget, 1);
+        PocketMenu_ReturnToIdle(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_022988b8Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct2FEv(PocketMenu *s)
 {
-    if (func_020951ac()) {
-        func_ov096_0229865c(s);
+    if (PlayerActor_IsInAct05()) {
+        PocketMenu_ReturnToIdle(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298870Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct31Ev(PocketMenu *s)
 {
     u16 t;
-    func_0200402c(0x40);
-    _ZN18Unk_ov096_0229aea819func_ov096_02294ef4Ev(s);
-    t = func_ov096_02297b9c(s, s->unk_b6);
-    if (func_02094b48(&t)) {
-        func_ov096_0229806c(s, s->unk_b6);
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x2f);
+    Snd_PlaySe(0x40);
+    _ZN10PocketMenu17requestCameraPushEv(s);
+    t = PocketMenu_GetItem(s, s->actionTarget);
+    if (PlayerActor_RequestHoldUpItem(&t)) {
+        PocketMenu_ClearSlotItem(s, s->actionTarget);
+        _ZN8MenuProc12setMainStateEh(s, 0x2f);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298804Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct32Ev(PocketMenu *s)
 {
-    if (s->unk_c1 != 0) {
+    if (s->removeBlinkTimer != 0) {
         s32 r;
-        s->unk_c1 = s->unk_c1 - 1;
-        r = s->unk_c1 % 5;
+        s->removeBlinkTimer = s->removeBlinkTimer - 1;
+        r = s->removeBlinkTimer % 5;
         if (r != 0) {
             if (r == 3) {
-                _ZN18Unk_ov096_0229aea819func_ov096_02297750Ej(s, s->unk_b6);
+                _ZN10PocketMenu15highlightTargetEj(s, s->actionTarget);
             }
         } else {
-            _ZN18Unk_ov096_0229aea819func_ov096_02297804Ev(s);
+            _ZN10PocketMenu15clearHighlightsEv(s);
         }
-        if (s->unk_c1 == 0) {
-            func_ov096_0229806c(s, s->unk_b6);
+        if (s->removeBlinkTimer == 0) {
+            PocketMenu_ClearSlotItem(s, s->actionTarget);
         }
     } else {
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x2f);
-        _ZN18Unk_ov096_0229aea819func_ov096_022988b8Ev(s);
+        _ZN8MenuProc12setMainStateEh(s, 0x2f);
+        _ZN10PocketMenu9mainAct2FEv(s);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_02298768Ev(S *s)
+extern "C" void _ZN10PocketMenu9mainAct28Ev(PocketMenu *s)
 {
-    switch (func_02042830(s->unk_c4)) {
+    switch (FieldAction_PollDrop(s->fieldRequest)) {
     case 1:
-        if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x1000)) {
-            func_ov094_022934d8((u8 *)s + 0x358, func_ov096_0229826c(s, s->unk_b6));
-            func_ov096_0229865c(s);
+        if (_ZN10PocketMenu9testFlagsEj(s, 0x1000)) {
+            InventoryItemGrid_ClearSlot((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, s->actionTarget));
+            PocketMenu_ReturnToIdle(s);
         } else {
-            _ZN18Unk_ov096_0229aea819func_ov096_02297160Ev(s);
-            func_ov096_0229865c(s);
+            _ZN10PocketMenu9clearHandEv(s);
+            PocketMenu_ReturnToIdle(s);
         }
         break;
     case 2:
-        if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x1000) == 0) {
-            _ZN18Unk_ov096_0229aea819func_ov096_022972ecEj(s, 1);
+        if (_ZN10PocketMenu9testFlagsEj(s, 0x1000) == 0) {
+            _ZN10PocketMenu10returnHandEj(s, 1);
         }
-        func_ov096_0229865c(s);
-        func_ov096_02298334(s, 3, 0xff, 0);
-        func_0200402c(0x73);
+        PocketMenu_ReturnToIdle(s);
+        PocketMenu_ShowMessage(s, 3, 0xff, 0);
+        Snd_PlaySe(0x73);
         break;
     default:
         return;
     }
-    func_02042820(s->unk_c4);
-    s->unk_c4 = -1;
+    FieldAction_Release(s->fieldRequest);
+    s->fieldRequest = -1;
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov096_022986ccEv(S *s)
+extern "C" void _ZN10PocketMenu9mainAct29Ev(PocketMenu *s)
 {
-    switch (func_02042d10(s->unk_c4)) {
+    switch (FieldAction_PollResult(s->fieldRequest)) {
     case 1:
-        if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x1000)) {
-            func_ov094_022934d8((u8 *)s + 0x358, func_ov096_0229826c(s, s->unk_b6));
-            func_ov096_0229865c(s);
+        if (_ZN10PocketMenu9testFlagsEj(s, 0x1000)) {
+            InventoryItemGrid_ClearSlot((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, s->actionTarget));
+            PocketMenu_ReturnToIdle(s);
         } else {
-            _ZN18Unk_ov096_0229aea819func_ov096_02297160Ev(s);
-            func_ov096_0229865c(s);
+            _ZN10PocketMenu9clearHandEv(s);
+            PocketMenu_ReturnToIdle(s);
         }
         break;
     case 2:
-        if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x1000) == 0) {
-            _ZN18Unk_ov096_0229aea819func_ov096_022972ecEj(s, 1);
+        if (_ZN10PocketMenu9testFlagsEj(s, 0x1000) == 0) {
+            _ZN10PocketMenu10returnHandEj(s, 1);
         }
-        func_ov096_0229865c(s);
-        func_ov096_02298334(s, 8, 0xff, 0);
-        func_0200402c(0x73);
+        PocketMenu_ReturnToIdle(s);
+        PocketMenu_ShowMessage(s, 8, 0xff, 0);
+        Snd_PlaySe(0x73);
         break;
     default:
         return;
     }
-    func_02042820(s->unk_c4);
-    s->unk_c4 = -1;
+    FieldAction_Release(s->fieldRequest);
+    s->fieldRequest = -1;
 }
 
-extern "C" void func_ov096_022986b0(S *s)
+extern "C" void PocketMenu_EnterTouchIdle(PocketMenu *s)
 {
-    _ZN18Unk_ov096_0229aea819func_ov096_02296898Ev(s);
-    _ZN18Unk_ov096_0229aea819func_ov096_022978acEv(s);
-    _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0);
+    _ZN10PocketMenu10hideCursorEv(s);
+    _ZN10PocketMenu14clearSelectionEv(s);
+    _ZN8MenuProc12setMainStateEh(s, 0);
 }
 
-extern "C" void func_ov096_0229867c(S *s)
+extern "C" void PocketMenu_EnterButtonIdle(PocketMenu *s)
 {
-    s->unk_b3 = 0x26;
-    _ZN18Unk_ov096_0229aea819func_ov096_02296964Ev(s);
-    _ZN18Unk_ov002_022044e419func_ov002_02200980Ev(s);
-    _ZN18Unk_ov096_0229aea819func_ov096_022975d4Ev(s);
-    _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0xa);
-    _ZN18Unk_ov096_0229aea819func_ov096_02297834Ej(s, s->unk_b5);
+    s->balloonTarget = 0x26;
+    _ZN10PocketMenu10showCursorEv(s);
+    _ZN8MenuProc16restartKeyRepeatEv(s);
+    _ZN10PocketMenu18updateLabelBalloonEv(s);
+    _ZN8MenuProc12setMainStateEh(s, 0xa);
+    _ZN10PocketMenu12selectTargetEj(s, s->cursorTarget);
 }
 
-extern "C" void func_ov096_0229865c(S *s)
+extern "C" void PocketMenu_ReturnToIdle(PocketMenu *s)
 {
-    if (func_0206ef0c()) {
-        func_ov096_022986b0(s);
+    if (MenuCtrl_IsTouch()) {
+        PocketMenu_EnterTouchIdle(s);
     } else {
-        func_ov096_0229867c(s);
+        PocketMenu_EnterButtonIdle(s);
     }
 }
 
-extern "C" void func_ov096_02298644(S *s)
+extern "C" void PocketMenu_EnterAddresseeTouch(PocketMenu *s)
 {
-    _ZN18Unk_ov096_0229aea819func_ov096_02296898Ev(s);
-    _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 8);
+    _ZN10PocketMenu10hideCursorEv(s);
+    _ZN8MenuProc12setMainStateEh(s, 8);
 }
 
-extern "C" void func_ov096_0229862c(S *s)
+extern "C" void PocketMenu_EnterAddresseeButtons(PocketMenu *s)
 {
-    _ZN18Unk_ov096_0229aea819func_ov096_02296910Ev(s);
-    _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x19);
+    _ZN10PocketMenu19cursorToPopupBottomEv(s);
+    _ZN8MenuProc12setMainStateEh(s, 0x19);
 }
 
-extern "C" void func_ov096_0229860c(S *s)
+extern "C" void PocketMenu_EnterAddresseeInput(PocketMenu *s)
 {
-    if (func_0206ef0c()) {
-        func_ov096_02298644(s);
+    if (MenuCtrl_IsTouch()) {
+        PocketMenu_EnterAddresseeTouch(s);
     } else {
-        func_ov096_0229862c(s);
+        PocketMenu_EnterAddresseeButtons(s);
     }
 }
 
-extern "C" void func_ov096_022985b8(S *s)
+extern "C" void PocketMenu_PrepareTouchOptions(PocketMenu *s)
 {
-    _ZN18Unk_ov096_0229aea819func_ov096_02294d9cEj(s, 0x10000);
-    if (func_ov096_022982f0(s, s->unk_b2)) {
-        func_ov002_022016e4(s->s_27f0, 0x22);
-        _ZN18Unk_ov096_0229aea819func_ov096_02295a44Ei(s, s->unk_b2);
-        if (func_ov002_022016cc(s->s_27f0) == 0) {
-            _ZN18Unk_ov096_0229aea819func_ov096_02294dacEj(s, 0x10000);
+    _ZN10PocketMenu10clearFlagsEj(s, 0x10000);
+    if (PocketMenu_IsPocketTarget(s, s->touchedTarget)) {
+        ChoiceIdList_Clear(s->optionList, 0x22);
+        _ZN10PocketMenu14addItemOptionsEi(s, s->touchedTarget);
+        if (ChoiceIdList_Count(s->optionList) == 0) {
+            _ZN10PocketMenu8setFlagsEj(s, 0x10000);
         }
     }
 }
 
-extern "C" void func_ov096_02298504(S *s, u32 a)
+extern "C" void PocketMenu_BeginTouchOnTarget(PocketMenu *s, u32 a)
 {
     s32 r6, r7;
-    s->unk_b2 = a;
-    _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 1);
-    r6 = data_021ef5f0;
-    r7 = data_021ef5ec;
-    s->unk_9c = func_ov096_02297d50(s, s->unk_b2) - r6;
-    s->unk_a0 = func_ov096_02297cc0(s, s->unk_b2) - r7;
-    s->unk_b3 = a;
-    _ZN18Unk_ov002_0220446819func_ov002_022006b8Ev(s->s_23c0);
-    _ZN18Unk_ov002_0220446819func_ov002_022006c0Ev(s->s_23c0);
-    s->unk_c2 = 2;
-    func_ov096_022985b8(s);
-    if (func_ov096_02297c68(s, a)) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02294d9cEj(s, 4);
+    s->touchedTarget = a;
+    _ZN8MenuProc12setMainStateEh(s, 1);
+    r6 = gTouchCurX;
+    r7 = gTouchCurY;
+    s->grabOffsetX = PocketMenu_GetTargetX(s, s->touchedTarget) - r6;
+    s->grabOffsetY = PocketMenu_GetTargetY(s, s->touchedTarget) - r7;
+    s->balloonTarget = a;
+    _ZN18TouchPromptBalloon9queueOpenEv(&s->m_23c0);
+    _ZN18TouchPromptBalloon10commitOpenEv(&s->m_23c0);
+    s->optionsOpenDelay = 2;
+    PocketMenu_PrepareTouchOptions(s);
+    if (PocketMenu_IsSlotDisabled(s, a)) {
+        _ZN10PocketMenu10clearFlagsEj(s, 4);
     } else {
-        _ZN18Unk_ov096_0229aea819func_ov096_02294dacEj(s, 4);
+        _ZN10PocketMenu8setFlagsEj(s, 4);
     }
-    if (func_ov096_022982f0(s, a) == 0 && a != 0x24) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02294ed4Ev(s);
+    if (PocketMenu_IsPocketTarget(s, a) == 0 && a != 0x24) {
+        _ZN10PocketMenu16requestCameraPopEv(s);
     }
-    func_ov094_0229238c();
+    Inventory_PlayTouchSe();
 }
 
-extern "C" void func_ov096_0229849c(S *s, u32 a)
+extern "C" void PocketMenu_StartTouchDrag(PocketMenu *s, u32 a)
 {
-    s->unk_b4 = a;
-    _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei((u8 *)s + 0x23c0, 1);
-    _ZN18Unk_ov096_0229aea819func_ov096_022973ccEj(s, a);
-    switch (s->unk_b1) {
+    s->handSource = a;
+    _ZN18TouchPromptBalloon4hideEi((u8 *)s + 0x23c0, 1);
+    _ZN10PocketMenu6pickUpEj(s, a);
+    switch (s->handKind) {
     case 1:
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 6);
+        _ZN8MenuProc12setMainStateEh(s, 6);
         break;
     case 2:
-        _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 5);
+        _ZN8MenuProc12setMainStateEh(s, 5);
         break;
     }
-    _ZN18Unk_ov096_0229aea819func_ov096_02297548Ev(s);
-    _ZN18Unk_ov096_0229aea819func_ov096_02294d9cEj(s, 0x4000);
-    func_ov094_02292380();
-    s->unk_b9 = 0x26;
+    _ZN10PocketMenu17syncHandFromTouchEv(s);
+    _ZN10PocketMenu10clearFlagsEj(s, 0x4000);
+    Inventory_PlayPickUpSe();
+    s->swapTarget = 0x26;
 }
 
 // ===== unit 02298430 =====
-extern "C" void func_ov096_02298430(S *s, u32 a)
+extern "C" void PocketMenu_StartButtonDrag(PocketMenu *s, u32 a)
 {
-    s->unk_b4 = a;
-    _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei((u8 *)s + 0x23c0, 1);
-    if (s->unk_bb == 0) {
-        _ZN18Unk_ov096_0229aea819func_ov096_022973a0Ej(s, a);
+    s->handSource = a;
+    _ZN18TouchPromptBalloon4hideEi((u8 *)s + 0x23c0, 1);
+    if (s->chosenAction == 0) {
+        _ZN10PocketMenu10pickUpItemEj(s, a);
     } else {
-        _ZN18Unk_ov096_0229aea819func_ov096_022973ccEj(s, a);
+        _ZN10PocketMenu6pickUpEj(s, a);
     }
-    switch (s->unk_b1) {
+    switch (s->handKind) {
     case 1:
-        s->unk_ba = 0xc;
+        s->returnState = 0xc;
         break;
     case 2:
-        s->unk_ba = 0xb;
+        s->returnState = 0xb;
         break;
     }
-    _ZN18Unk_ov096_0229aea819func_ov096_0229751cEv(s);
-    func_ov094_02292380();
+    _ZN10PocketMenu18syncHandFromCursorEv(s);
+    Inventory_PlayPickUpSe();
 }
 
-extern "C" void func_ov096_022983cc(S *s, u32 a, u32 b)
+extern "C" void PocketMenu_FlyHandTo(PocketMenu *s, u32 a, u32 b)
 {
     s32 t;
     s32 u;
 
-    s->unk_b4 = a;
-    _ZN18Unk_ov002_0220460419func_ov002_022026f4Eii(s->s_2480, s->unk_a4, s->unk_a8);
-    t = func_ov096_02297d50(s, a);
-    u = func_ov096_02297cc0(s, a);
-    _ZN18Unk_ov002_0220460419func_ov002_022026c4Eiii(s->s_2480, t, u, b);
-    _ZN18Unk_ov002_0220460419func_ov002_02202718Ev(s->s_2480);
-    _ZN18Unk_ov096_0229aea819func_ov096_022974f4Ev(s);
-    _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x1b);
+    s->handSource = a;
+    _ZN12CursorMotion6setPosEii(&s->m_2480, s->handX, s->handY);
+    t = PocketMenu_GetTargetX(s, a);
+    u = PocketMenu_GetTargetY(s, a);
+    _ZN12CursorMotion11startLinearEiii(&s->m_2480, t, u, b);
+    _ZN12CursorMotion6updateEv(&s->m_2480);
+    _ZN10PocketMenu17syncHandFromMoverEv(s);
+    _ZN8MenuProc12setMainStateEh(s, 0x1b);
 }
 
-extern "C" void func_ov096_0229838c(S *s, u32 a, u32 b, u32 c, u8 d)
+extern "C" void PocketMenu_FlyItemTo(PocketMenu *s, u32 a, u32 b, u32 c, u8 d)
 {
-    _ZN18Unk_ov096_0229aea819func_ov096_022974b8Ejj(s, c, d);
-    s->unk_a4 = func_ov096_02297d50(s, a);
-    s->unk_a8 = func_ov096_02297cc0(s, a);
-    func_ov096_022983cc(s, b, 4);
+    _ZN10PocketMenu11setHandItemEjj(s, c, d);
+    s->handX = PocketMenu_GetTargetX(s, a);
+    s->handY = PocketMenu_GetTargetY(s, a);
+    PocketMenu_FlyHandTo(s, b, 4);
 }
 
-extern "C" void func_ov096_02298334(S *s, u32 a, u32 b, u32 c)
+extern "C" void PocketMenu_ShowMessage(PocketMenu *s, u32 a, u32 b, u32 c)
 {
     Unk_ov096_02297fb8_Msg m;
 
     if (b == 0xff) {
-        s->unk_ba = s->unk_8d;
+        s->returnState = s->mainState;
     } else {
-        s->unk_ba = b;
+        s->returnState = b;
     }
-    m.a = data_021edb68;
+    m.a = gU8None;
     m.a = a;
-    _ZN18Unk_ov002_022040ec19func_ov002_02204394EPhij((u8 *)s + 0x27fc, &m, (u32)c, 0);
-    _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x20);
-    _ZN12Unk_020e100c13func_0208d63cEv((u8 *)s + 0x2498);
+    _ZN16MenuErrorMessage4openEPhij((u8 *)s + 0x27fc, &m, (u32)c, 0);
+    _ZN8MenuProc12setMainStateEh(s, 0x20);
+    _ZN10HandCursor16disableObjWindowEv((u8 *)s + 0x2498);
 }
 
-extern "C" void func_ov096_02298320(S *s)
+extern "C" void PocketMenu_StartRemoveBlink(PocketMenu *s)
 {
-    s->unk_c1 = 0xe;
-    _ZN18Unk_ov002_022044e419func_ov002_02200a58Eh(s, 0x32);
+    s->removeBlinkTimer = 0xe;
+    _ZN8MenuProc12setMainStateEh(s, 0x32);
 }
 
-extern "C" void func_ov096_022982fc(S *s)
+extern "C" void PocketMenu_CancelVramTasks(PocketMenu *s)
 {
     s32 i = 0;
     u8 *p = (u8 *)s + 0x2e8;
     for (; i < 2; i++) {
-        _ZN12Unk_020e45f813func_020b87d0Ev(p + i * 0x38);
+        _ZN10BgVramTask6cancelEv(p + i * 0x38);
     }
 }
 
-extern "C" u32 func_ov096_022982f0(S *s, u32 id)
+extern "C" u32 PocketMenu_IsPocketTarget(PocketMenu *s, u32 id)
 {
     if (id <= 0xe) {
         return 1;
@@ -2369,7 +1935,7 @@ extern "C" u32 func_ov096_022982f0(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 func_ov096_022982e0(S *s, u32 id)
+extern "C" u32 PocketMenu_IsLetterTarget(PocketMenu *s, u32 id)
 {
     if (id >= 0xf && id <= 0x18) {
         return 1;
@@ -2377,7 +1943,7 @@ extern "C" u32 func_ov096_022982e0(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 func_ov096_022982d0(S *s, u32 id)
+extern "C" u32 PocketMenu_IsTabTarget(PocketMenu *s, u32 id)
 {
     if (id >= 0x19 && id <= 0x20) {
         return 1;
@@ -2385,7 +1951,7 @@ extern "C" u32 func_ov096_022982d0(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 func_ov096_022982c0(S *s, u32 id)
+extern "C" u32 PocketMenu_IsSpecialTarget(PocketMenu *s, u32 id)
 {
     if (id >= 0x22 && id <= 0x25) {
         return 1;
@@ -2393,24 +1959,24 @@ extern "C" u32 func_ov096_022982c0(S *s, u32 id)
     return 0;
 }
 
-extern "C" void func_ov096_022982a0(S *s)
+extern "C" void PocketMenu_MoveCursorToTab(PocketMenu *s)
 {
-    _ZN18Unk_ov002_02202d9819func_ov002_0220288cEv((u8 *)s + 0x2498);
-    s->unk_b5 = func_ov090_02291944() + 0x19;
+    _ZN14MenuCursorBase10getScreenXEv((u8 *)s + 0x2498);
+    s->cursorTarget = MenuTabBar_TabFromX() + 0x19;
 }
 
-extern "C" u32 func_ov096_0229826c(S *s, u32 id)
+extern "C" u32 PocketMenu_TargetToGridIndex(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982f0(s, id)) {
+    if (PocketMenu_IsPocketTarget(s, id)) {
         return (u8)id;
     }
-    if (func_ov096_022982c0(s, id)) {
+    if (PocketMenu_IsSpecialTarget(s, id)) {
         return (u8)(id - 4);
     }
     return 0;
 }
 
-extern "C" u32 func_ov096_0229825c(S *s, u32 id)
+extern "C" u32 PocketMenu_PocketIndexToTarget(PocketMenu *s, u32 id)
 {
     if (id <= 0xe) {
         return (u8)id;
@@ -2418,98 +1984,98 @@ extern "C" u32 func_ov096_0229825c(S *s, u32 id)
     return 0x26;
 }
 
-extern "C" u32 func_ov096_0229821c(S *s, s32 a, s32 b, s32 c)
+extern "C" u32 PocketMenu_HitPocket(PocketMenu *s, s32 a, s32 b, s32 c)
 {
-    s32 r = func_ov094_02293968((u8 *)s + 0x358);
+    s32 r = InventoryItemGrid_FindPocketSlotAt((u8 *)s + 0x358);
     if (r != 0x23) {
-        if (c && func_ov094_0229311c((u8 *)s + 0x358, r)) {
+        if (c && InventoryItemGrid_IsSlotEmpty((u8 *)s + 0x358, r)) {
             return 0x26;
         }
-        return func_ov096_0229825c(s, r);
+        return PocketMenu_PocketIndexToTarget(s, r);
     }
     return 0x26;
 }
 
-extern "C" s32 func_ov096_02298110(S *s, u32 id)
+extern "C" s32 PocketMenu_DropItemAt(PocketMenu *s, u32 id)
 {
     u16 v;
 
-    if (func_ov096_022982e0(s, id) && func_ov096_02297c10(s, id)) {
+    if (PocketMenu_IsLetterTarget(s, id) && PocketMenu_IsSlotEmpty(s, id)) {
         return 0;
     }
-    if (func_ov096_022982f0(s, id) || func_ov096_022982e0(s, id)) {
-        v = func_ov096_02297b9c(s, id);
-        _ZN18Unk_ov096_0229aea819func_ov096_022969bcEPtiS0_h(s, &s->unk_ac, s->unk_b0, &v, func_ov096_02297b48(s, id));
+    if (PocketMenu_IsPocketTarget(s, id) || PocketMenu_IsLetterTarget(s, id)) {
+        v = PocketMenu_GetItem(s, id);
+        _ZN10PocketMenu10mergeItemsEPtiS0_h(s, &s->handItem, s->handItemFlags, &v, PocketMenu_GetItemFlags(s, id));
         if (v != 0xfff1) {
-            func_ov096_022980a0(s, s->unk_b4, v, func_ov096_02297b48(s, id));
+            PocketMenu_SetSlotItem(s, s->handSource, v, PocketMenu_GetItemFlags(s, id));
         }
-        _ZN18Unk_ov096_0229aea819func_ov096_02297358Ejj(s, id, 1);
+        _ZN10PocketMenu11putHandBackEjj(s, id, 1);
         return 1;
     }
     if ((u8)(id + 0xde) <= 1) {
-        if (_ZN18Unk_ov096_0229aea819func_ov096_022971dcEv(s)) {
+        if (_ZN10PocketMenu12dropHeldItemEv(s)) {
             return 1;
         }
         return 0;
     }
     if (id == 0x24) {
-        if (s->unk_c0 < 1) {
-            _ZN18Unk_ov096_0229aea819func_ov096_02296d5cEv(s);
+        if (s->useOnPlayerKind < 1) {
+            _ZN10PocketMenu17cancelUseOnPlayerEv(s);
             return 0;
         }
-        _ZN18Unk_ov096_0229aea819func_ov096_0229713cEv(s);
+        _ZN10PocketMenu16startUseOnPlayerEv(s);
         return 1;
     }
     if (id == 0x25) {
-        if (!_ZN18Unk_ov096_0229aea819func_ov096_02296cacEv(s)) {
-            _ZN18Unk_ov096_0229aea819func_ov096_02297358Ejj(s, s->unk_b4, 1);
+        if (!_ZN10PocketMenu14depositHeldBagEv(s)) {
+            _ZN10PocketMenu11putHandBackEjj(s, s->handSource, 1);
         }
         return 1;
     }
     if (id == 0x21) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02294e08Ev(s);
+        _ZN10PocketMenu13wearHeldShirtEv(s);
         return 1;
     }
     return 0;
 }
 
-extern "C" void func_ov096_022980a0(S *s, u32 id, u32 a, u32 b)
+extern "C" void PocketMenu_SetSlotItem(PocketMenu *s, u32 id, u32 a, u32 b)
 {
-    if (func_ov096_022982f0(s, id)) {
-        u32 t = func_ov096_0229826c(s, id);
-        func_ov094_02293494((u8 *)s + 0x358, t, a, b);
-        func_ov094_02293434((u8 *)s + 0x358, t);
-    } else if (func_ov096_022982e0(s, id)) {
-        _ZN12Unk_0206555413func_02065588Etj(func_ov096_02297b14(s, id), a, b);
+    if (PocketMenu_IsPocketTarget(s, id)) {
+        u32 t = PocketMenu_TargetToGridIndex(s, id);
+        InventoryItemGrid_SetSlotItem((u8 *)s + 0x358, t, a, b);
+        InventoryItemGrid_RefreshSlot((u8 *)s + 0x358, t);
+    } else if (PocketMenu_IsLetterTarget(s, id)) {
+        _ZN10LetterView10setPresentEtj(PocketMenu_GetLetter(s, id), a, b);
     } else if (id == 0x25) {
-        _ZN18Unk_ov096_0229aea819func_ov096_02296b68Et(s, a);
+        _ZN10PocketMenu15depositToWalletEt(s, a);
     }
 }
 
-extern "C" void func_ov096_0229806c(S *s, u32 id)
+extern "C" void PocketMenu_ClearSlotItem(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982f0(s, id) || func_ov096_022982e0(s, id)) {
-        func_ov096_022980a0(s, id, 0xfff1, 0);
+    if (PocketMenu_IsPocketTarget(s, id) || PocketMenu_IsLetterTarget(s, id)) {
+        PocketMenu_SetSlotItem(s, id, 0xfff1, 0);
     }
 }
 
-extern "C" void func_ov096_0229803c(S *s, u32 id)
+extern "C" void PocketMenu_ClearLetter(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982e0(s, id)) {
-        _ZN18Unk_ov094_02294bd419func_ov094_022942f4Ei((u8 *)s + 0xdb8, func_ov096_02298008(s, id));
+    if (PocketMenu_IsLetterTarget(s, id)) {
+        _ZN10LetterGrid11clearLetterEi((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id));
     }
 }
 
-extern "C" u32 func_ov096_0229801c(S *s)
+extern "C" u32 PocketMenu_FindEmptyPocket(PocketMenu *s)
 {
-    s32 r = func_02098ffc();
+    s32 r = Pocket_FindEmpty();
     if (r == -1) {
         return 0x26;
     }
     return (u8)r;
 }
 
-extern "C" u32 func_ov096_02298008(S *s, u32 id)
+extern "C" u32 PocketMenu_TargetToLetterIndex(PocketMenu *s, u32 id)
 {
     if (id >= 0xf && id <= 0x18) {
         return (u8)(id - 0xf);
@@ -2517,7 +2083,7 @@ extern "C" u32 func_ov096_02298008(S *s, u32 id)
     return 0;
 }
 
-extern "C" u32 func_ov096_02297ff8(S *s, u32 id)
+extern "C" u32 PocketMenu_LetterIndexToTarget(PocketMenu *s, u32 id)
 {
     if (id <= 9) {
         return (u8)(id + 0xf);
@@ -2525,36 +2091,36 @@ extern "C" u32 func_ov096_02297ff8(S *s, u32 id)
     return 0x26;
 }
 
-extern "C" u32 func_ov096_02297fb8(S *s, s32 a, s32 b, s32 c)
+extern "C" u32 PocketMenu_HitLetter(PocketMenu *s, s32 a, s32 b, s32 c)
 {
-    s32 r = _ZN18Unk_ov094_02294bd419func_ov094_02294610Eii((u8 *)s + 0xdb8);
+    s32 r = _ZN10LetterGrid18findPocketLetterAtEii((u8 *)s + 0xdb8);
     if (r != 0x37) {
-        if (c && func_ov094_02293d80((u8 *)s + 0xdb8, r)) {
+        if (c && LetterGrid_IsSlotEmpty((u8 *)s + 0xdb8, r)) {
             return 0x26;
         }
-        return func_ov096_02297ff8(s, r);
+        return PocketMenu_LetterIndexToTarget(s, r);
     }
     return 0x26;
 }
 
-extern "C" s32 func_ov096_02297f6c(S *s, u32 id)
+extern "C" s32 PocketMenu_DropLetterAt(PocketMenu *s, u32 id)
 {
-    if (!func_ov096_02297c10(s, id)) {
-        func_02065e70(s->s_2c8c, func_ov096_02297b14(s, id));
-        func_ov096_02297f3c(s, s->unk_b4, s->s_2c8c);
+    if (!PocketMenu_IsSlotEmpty(s, id)) {
+        Letter_Copy(&s->m_2c8c, PocketMenu_GetLetter(s, id));
+        PocketMenu_SetLetter(s, s->handSource, &s->m_2c8c);
     }
-    _ZN18Unk_ov096_0229aea819func_ov096_02297358Ejj(s, id, 1);
+    _ZN10PocketMenu11putHandBackEjj(s, id, 1);
     return 1;
 }
 
-extern "C" void func_ov096_02297f3c(S *s, u32 id, void *p)
+extern "C" void PocketMenu_SetLetter(PocketMenu *s, u32 id, void *p)
 {
-    if (func_ov096_022982e0(s, id)) {
-        _ZN18Unk_ov094_02294bd419func_ov094_02294318Eii((u8 *)s + 0xdb8, func_ov096_02298008(s, id), p);
+    if (PocketMenu_IsLetterTarget(s, id)) {
+        _ZN10LetterGrid9setLetterEii((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id), p);
     }
 }
 
-extern "C" BOOL func_ov096_02297f20(S *s, s32 x, s32 y)
+extern "C" BOOL PocketMenu_HitShirtBox(PocketMenu *s, s32 x, s32 y)
 {
     if (x < 4 || x >= 0x1c) {
         return FALSE;
@@ -2565,9 +2131,9 @@ extern "C" BOOL func_ov096_02297f20(S *s, s32 x, s32 y)
     return TRUE;
 }
 
-extern "C" s32 func_ov096_02297e94(S *s, s32 x, s32 y)
+extern "C" s32 PocketMenu_HitSpecialTarget(PocketMenu *s, s32 x, s32 y)
 {
-    if (func_ov096_02297e7c(s, x, y)) {
+    if (PocketMenu_HitPlayer(s, x, y)) {
         return 0x24;
     }
     if (x > 0x6c && x < 0xc4 && y > 0x50 && y < 0x68) {
@@ -2576,23 +2142,23 @@ extern "C" s32 func_ov096_02297e94(S *s, s32 x, s32 y)
         }
         return 0x23;
     }
-    if (func_ov096_02297e5c(s, x, y)) {
-        if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x4000)) {
+    if (PocketMenu_HitWalletIcon(s, x, y)) {
+        if (_ZN10PocketMenu9testFlagsEj(s, 0x4000)) {
             return 0x26;
         }
         return 0x25;
     }
     if (x > 0x30 && x < 0x60 && y > 0x50 && y < 0x60) {
-        if (_ZN18Unk_ov096_0229aea819func_ov096_02294dbcEj(s, 0x4000)) {
+        if (_ZN10PocketMenu9testFlagsEj(s, 0x4000)) {
             return 0x26;
         }
         return 0x25;
     }
-    _ZN18Unk_ov096_0229aea819func_ov096_02294d9cEj(s, 0x4000);
+    _ZN10PocketMenu10clearFlagsEj(s, 0x4000);
     return 0x26;
 }
 
-extern "C" BOOL func_ov096_02297e7c(S *s, s32 x, s32 y)
+extern "C" BOOL PocketMenu_HitPlayer(PocketMenu *s, s32 x, s32 y)
 {
     if (x > 0x88 && x < 0xa8 && y > 0x20 && y < 0x50) {
         return TRUE;
@@ -2600,74 +2166,74 @@ extern "C" BOOL func_ov096_02297e7c(S *s, s32 x, s32 y)
     return FALSE;
 }
 
-extern "C" BOOL func_ov096_02297e5c(S *s, s32 x, s32 y)
+extern "C" BOOL PocketMenu_HitWalletIcon(PocketMenu *s, s32 x, s32 y)
 {
-    if (func_ov094_02293928(s->s_358, x, y)) {
+    if (InventoryItemGrid_HitTestSlot21(&s->m_358, x, y)) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" s32 func_ov096_02297de0(S *s, s32 x, s32 y)
+extern "C" s32 PocketMenu_HitWalletAmount(PocketMenu *s, s32 x, s32 y)
 {
     s32 v;
 
     if (y < 0x50 || y > 0x60) {
         return 0;
     }
-    s->unk_bf = 0;
+    s->bellsPanelMode = 0;
     if (x < 0x30) {
         return 0;
     }
     if (x < 0x40) {
         v = 10000;
-        s->unk_bf = 3;
+        s->bellsPanelMode = 3;
     } else if (x < 0x48) {
         v = 1000;
-        s->unk_bf = 2;
+        s->bellsPanelMode = 2;
     } else if (x < 0x60) {
         v = 100;
-        s->unk_bf = 1;
+        s->bellsPanelMode = 1;
     } else {
         return 0;
     }
-    if (v > _ZN18Unk_ov096_0229aea819func_ov096_02296c18Ev(s)) {
+    if (v > _ZN10PocketMenu14getWalletBellsEv(s)) {
         return 1;
     }
-    s->unk_ae = func_0204b718(v, 0, 0);
+    s->auxItem = Item_FindMoneyBagForAmount(v, 0, 0);
     return 2;
 }
 
-extern "C" s32 func_ov096_02297d50(S *s, u32 id)
+extern "C" s32 PocketMenu_GetTargetX(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982f0(s, id)) {
-        return func_ov094_02293624((u8 *)s + 0x358, func_ov096_0229826c(s, id));
+    if (PocketMenu_IsPocketTarget(s, id)) {
+        return InventoryItemGrid_GetSlotX((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
-    if (func_ov096_022982e0(s, id)) {
-        return func_ov094_02293df8((u8 *)s + 0xdb8, func_ov096_02298008(s, id));
+    if (PocketMenu_IsLetterTarget(s, id)) {
+        return LetterGrid_GetSlotX((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id));
     }
-    if (func_ov096_022982d0(s, id)) {
-        return func_ov090_02291a78(id - 0x19) - 8;
+    if (PocketMenu_IsTabTarget(s, id)) {
+        return MenuTabBar_GetTabX(id - 0x19) - 8;
     }
-    if (func_ov096_022982c0(s, id)) {
-        return func_ov094_02293624((u8 *)s + 0x358, func_ov096_0229826c(s, id));
+    if (PocketMenu_IsSpecialTarget(s, id)) {
+        return InventoryItemGrid_GetSlotX((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
     return 0;
 }
 
-extern "C" s32 func_ov096_02297cc0(S *s, u32 id)
+extern "C" s32 PocketMenu_GetTargetY(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982f0(s, id)) {
-        return func_ov094_02293610((u8 *)s + 0x358, func_ov096_0229826c(s, id));
+    if (PocketMenu_IsPocketTarget(s, id)) {
+        return InventoryItemGrid_GetSlotY((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
-    if (func_ov096_022982e0(s, id)) {
-        return func_ov094_02293d9c((u8 *)s + 0xdb8, func_ov096_02298008(s, id));
+    if (PocketMenu_IsLetterTarget(s, id)) {
+        return LetterGrid_GetSlotY((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id));
     }
-    if (func_ov096_022982d0(s, id)) {
+    if (PocketMenu_IsTabTarget(s, id)) {
         return 8;
     }
-    if (func_ov096_022982c0(s, id)) {
-        return func_ov094_02293610((u8 *)s + 0x358, func_ov096_0229826c(s, id));
+    if (PocketMenu_IsSpecialTarget(s, id)) {
+        return InventoryItemGrid_GetSlotY((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
     if (id == 0x21) {
         return 0xb0;
@@ -2675,74 +2241,74 @@ extern "C" s32 func_ov096_02297cc0(S *s, u32 id)
     return 0;
 }
 
-extern "C" s32 func_ov096_02297c68(S *s, u32 id)
+extern "C" s32 PocketMenu_IsSlotDisabled(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982f0(s, id)) {
-        return func_ov094_0229333c((u8 *)s + 0x358, func_ov096_0229826c(s, id));
+    if (PocketMenu_IsPocketTarget(s, id)) {
+        return InventoryItemGrid_IsSlotDisabled((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
-    if (func_ov096_022982e0(s, id)) {
-        return _ZN18Unk_ov094_02294bd419func_ov094_022941ecEi((u8 *)s + 0xdb8, func_ov096_02298008(s, id));
+    if (PocketMenu_IsLetterTarget(s, id)) {
+        return _ZN10LetterGrid13isHighlightedEi((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id));
     }
     return 0;
 }
 
-extern "C" s32 func_ov096_02297c10(S *s, u32 id)
+extern "C" s32 PocketMenu_IsSlotEmpty(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982f0(s, id)) {
-        return func_ov094_0229311c((u8 *)s + 0x358, func_ov096_0229826c(s, id));
+    if (PocketMenu_IsPocketTarget(s, id)) {
+        return InventoryItemGrid_IsSlotEmpty((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
-    if (func_ov096_022982e0(s, id)) {
-        return func_ov094_02293d80((u8 *)s + 0xdb8, func_ov096_02298008(s, id));
+    if (PocketMenu_IsLetterTarget(s, id)) {
+        return LetterGrid_IsSlotEmpty((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id));
     }
     return 1;
 }
 
-extern "C" u32 func_ov096_02297b9c(S *s, u32 id)
+extern "C" u32 PocketMenu_GetItem(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982f0(s, id)) {
-        return func_ov094_0229352c((u8 *)s + 0x358, func_ov096_0229826c(s, id));
+    if (PocketMenu_IsPocketTarget(s, id)) {
+        return InventoryItemGrid_GetSlotItem((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
-    if (func_ov096_022982e0(s, id)) {
-        if (func_ov096_02297c10(s, id)) {
+    if (PocketMenu_IsLetterTarget(s, id)) {
+        if (PocketMenu_IsSlotEmpty(s, id)) {
             return 0xfff1;
         }
-        return _ZN12Unk_0206555413func_020655d0Ev(func_ov096_02297b14(s, id));
+        return _ZN10LetterView10getPresentEv(PocketMenu_GetLetter(s, id));
     }
-    if (func_ov096_022982c0(s, id)) {
-        return s->unk_ae;
+    if (PocketMenu_IsSpecialTarget(s, id)) {
+        return s->auxItem;
     }
     return 0xfff1;
 }
 
-extern "C" s32 func_ov096_02297b48(S *s, u32 id)
+extern "C" s32 PocketMenu_GetItemFlags(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982f0(s, id)) {
-        return func_ov094_02293504((u8 *)s + 0x358, func_ov096_0229826c(s, id));
+    if (PocketMenu_IsPocketTarget(s, id)) {
+        return InventoryItemGrid_GetSlotFlags((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
-    if (func_ov096_022982e0(s, id)) {
-        return _ZN12Unk_0206555413func_020655c0Ev(func_ov096_02297b14(s, id));
+    if (PocketMenu_IsLetterTarget(s, id)) {
+        return _ZN10LetterView15getPresentFlagsEv(PocketMenu_GetLetter(s, id));
     }
-    func_ov096_022982c0(s, id);
+    PocketMenu_IsSpecialTarget(s, id);
     return 0;
 }
 
 // ===== unit 02297b14 =====
-extern "C" void *func_ov096_02297b14(S *s, u32 id)
+extern "C" void *PocketMenu_GetLetter(PocketMenu *s, u32 id)
 {
-    if (func_ov096_022982e0(s, id)) {
+    if (PocketMenu_IsLetterTarget(s, id)) {
     } else {
         return 0;
     }
-    return _ZN18Unk_ov094_02294bd419func_ov094_0229433cEi((u8 *)s + 0xdb8, func_ov096_02298008(s, id));
+    return _ZN10LetterGrid9getLetterEi((u8 *)s + 0xdb8, PocketMenu_TargetToLetterIndex(s, id));
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_022979f0(u32 a, u32 b, u32 c) {
+s32 PocketMenu::checkPlace(u32 a, u32 b, u32 c) {
     u16 tmp = 0xfff1;
-    if (func_ov096_022982f0((S *)this, a)) {
+    if (PocketMenu_IsPocketTarget(this, a)) {
         return 0;
     }
-    if (func_ov096_022982e0((S *)this, a)) {
-        if (func_ov096_02297c10((S *)this, a)) {
+    if (PocketMenu_IsLetterTarget(this, a)) {
+        if (PocketMenu_IsSlotEmpty(this, a)) {
             return 6;
         }
         if (c == 1) {
@@ -2751,19 +2317,19 @@ s32 Unk_ov096_0229aea8::func_ov096_022979f0(u32 a, u32 b, u32 c) {
         if (c == 2) {
             return 1;
         }
-        void *p = func_ov096_02297b14((S *)this, a);
-        if (_ZN12Unk_0206555413func_020655d0Ev(p) != 0xfff1) {
+        void *p = PocketMenu_GetLetter(this, a);
+        if (_ZN10LetterView10getPresentEv(p) != 0xfff1) {
             return 3;
         }
-        s32 s = _ZN12Unk_0206555413func_02065578Ev(p);
-        if (s == 7 || s == 8 || func_ov094_02292414(b)) {
+        s32 s = _ZN10LetterView8getStateEv(p);
+        if (s == 7 || s == 8 || InvItem_IsNonTransferable(b)) {
             return 2;
         }
-        if (func_ov094_022924c4(b)) {
+        if (InvItem_IsTurnipFishOrInsect(b)) {
             return 4;
         }
         tmp = b;
-        if (Unk_ov096_022979f0_InRange(&tmp, 0x1492, 0x14fd) && unk_b4 == 0x25) {
+        if (Unk_ov096_022979f0_InRange(&tmp, 0x1492, 0x14fd) && handSource == 0x25) {
             return 5;
         }
         return 0;
@@ -2776,8 +2342,8 @@ s32 Unk_ov096_0229aea8::func_ov096_022979f0(u32 a, u32 b, u32 c) {
         if (!Unk_ov096_022979f0_InRange(&tmp, 0x1492, 0x14fd)) {
             return 6;
         }
-        s32 t = 0x1869f - func_ov096_02296c18();
-        if (t < (s32)func_0204be70(&tmp)) {
+        s32 t = 0x1869f - getWalletBells();
+        if (t < (s32)Item_GetPrice(&tmp)) {
             return 6;
         }
         return 0;
@@ -2789,17 +2355,17 @@ s32 Unk_ov096_0229aea8::func_ov096_022979f0(u32 a, u32 b, u32 c) {
     return 6;
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_0229795c(u32 a, u32 b) {
-    s32 r = func_ov096_022979f0(a, unk_ac, unk_b0);
+s32 PocketMenu::checkSwap(u32 a, u32 b) {
+    s32 r = checkPlace(a, handItem, handItemFlags);
     if (r == 0) {
-        u16 t = func_ov096_02297b9c((S *)this, a);
+        u16 t = PocketMenu_GetItem(this, a);
         if (t == 0xfff1) {
             return 0;
         }
-        u32 v = func_ov096_02297b48((S *)this, a);
+        u32 v = PocketMenu_GetItemFlags(this, a);
         if (b == 0x25) {
-            u16 t2 = unk_ac;
-            r = _ZN18Unk_ov096_0229aea819func_ov096_022969bcEPtiS0_h((S *)this, &t2, unk_b0, &t, v);
+            u16 t2 = handItem;
+            r = _ZN10PocketMenu10mergeItemsEPtiS0_h(this, &t2, handItemFlags, &t, v);
             if ((u32)(r - 2) <= 1) {
                 return 6;
             }
@@ -2807,16 +2373,16 @@ s32 Unk_ov096_0229aea8::func_ov096_0229795c(u32 a, u32 b) {
                 return 0;
             }
         }
-        r = func_ov096_022979f0(b, t, v);
+        r = checkPlace(b, t, v);
     }
     return r;
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_02297940(u32 a) {
-    return func_ov096_022979f0(a, unk_ac, unk_b0);
+s32 PocketMenu::checkPlaceHand(u32 a) {
+    return checkPlace(a, handItem, handItemFlags);
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_02297910(u32 a) {
+s32 PocketMenu::canNavToPlayer(u32 a) {
     if (a == 0) {
         return 1;
     }
@@ -2824,7 +2390,7 @@ s32 Unk_ov096_0229aea8::func_ov096_02297910(u32 a) {
         return 0;
     }
     if (a == 1) {
-        if (func_ov096_02296fb8() != 1) {
+        if (getUseOnPlayerKind() != 1) {
             return 1;
         }
         return 0;
@@ -2832,14 +2398,14 @@ s32 Unk_ov096_0229aea8::func_ov096_02297910(u32 a) {
     return 0;
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_022978f8(u32 a) {
+s32 PocketMenu::canNavToDropArea(u32 a) {
     if (a == 1) {
-        return func_ov096_02297170();
+        return canDropHeldItem();
     }
     return 0;
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_022978d0(u32 a) {
+s32 PocketMenu::canNavToWallet(u32 a) {
     if (a == 2) {
         return 0;
     }
@@ -2847,69 +2413,69 @@ s32 Unk_ov096_0229aea8::func_ov096_022978d0(u32 a) {
         return 1;
     }
     if (a == 1) {
-        return func_ov096_02296c30(0);
+        return isHoldingMoneyBag(0);
     }
     return 0;
 }
 
-void Unk_ov096_0229aea8::func_ov096_022978ac() {
-    func_ov094_022935dc(unk_358);
-    _ZN18Unk_ov094_02294bd419func_ov094_022943f8Ev(unk_db8);
+void PocketMenu::clearSelection() {
+    InventoryItemGrid_ClearCursorSlot(unk_358);
+    _ZN10LetterGrid15clearCursorSlotEv(unk_db8);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297834(u32 a) {
-    if (func_ov096_022982f0((S *)this, a)) {
-        s32 s = func_ov096_0229826c((S *)this, a);
-        _ZN18Unk_ov094_02294bd419func_ov094_022943f8Ev(unk_db8);
-        func_ov094_0229359c(unk_358, s);
-    } else if (func_ov096_022982e0((S *)this, a)) {
-        s32 s = func_ov096_02298008((S *)this, a);
-        func_ov094_022935dc(unk_358);
-        _ZN18Unk_ov094_02294bd419func_ov094_022943bcEj(unk_db8, s);
+void PocketMenu::selectTarget(u32 a) {
+    if (PocketMenu_IsPocketTarget(this, a)) {
+        s32 s = PocketMenu_TargetToGridIndex(this, a);
+        _ZN10LetterGrid15clearCursorSlotEv(unk_db8);
+        InventoryItemGrid_SetCursorSlot(unk_358, s);
+    } else if (PocketMenu_IsLetterTarget(this, a)) {
+        s32 s = PocketMenu_TargetToLetterIndex(this, a);
+        InventoryItemGrid_ClearCursorSlot(unk_358);
+        _ZN10LetterGrid13setCursorSlotEj(unk_db8, s);
     } else {
-        func_ov094_022935dc(unk_358);
-        _ZN18Unk_ov094_02294bd419func_ov094_022943f8Ev(unk_db8);
+        InventoryItemGrid_ClearCursorSlot(unk_358);
+        _ZN10LetterGrid15clearCursorSlotEv(unk_db8);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297804() {
-    func_ov094_0229358c(unk_358);
-    _ZN18Unk_ov094_02294bd419func_ov094_022943b0Ev(unk_db8);
-    func_ov094_02292484(unk_de0);
+void PocketMenu::clearHighlights() {
+    InventoryItemGrid_ClearMarks(unk_358);
+    _ZN10LetterGrid10clearMarksEv(unk_db8);
+    InventoryBg_ResetHighlight(unk_de0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297750(u32 a) {
-    if (func_ov096_022982f0((S *)this, a)) {
-        func_ov094_0229357c(unk_358, func_ov096_0229826c((S *)this, a));
-    } else if (func_ov096_022982e0((S *)this, a)) {
-        _ZN18Unk_ov094_02294bd419func_ov094_022943a4Ei(unk_db8, func_ov096_02298008((S *)this, a));
-    } else if (func_ov096_022982c0((S *)this, a)) {
+void PocketMenu::highlightTarget(u32 a) {
+    if (PocketMenu_IsPocketTarget(this, a)) {
+        InventoryItemGrid_MarkSlot(unk_358, PocketMenu_TargetToGridIndex(this, a));
+    } else if (PocketMenu_IsLetterTarget(this, a)) {
+        _ZN10LetterGrid8markSlotEi(unk_db8, PocketMenu_TargetToLetterIndex(this, a));
+    } else if (PocketMenu_IsSpecialTarget(this, a)) {
         switch (a) {
         case 0x25:
-            func_ov094_0229357c(unk_358, 0x21);
+            InventoryItemGrid_MarkSlot(unk_358, 0x21);
             break;
         case 0x22:
         case 0x23:
-            func_ov094_0229248c(unk_de0, 0);
+            InventoryBg_SetHighlight(unk_de0, 0);
             break;
         case 0x24:
-            func_ov094_0229248c(unk_de0, 1);
+            InventoryBg_SetHighlight(unk_de0, 1);
             break;
         }
     } else if (a == 0x21) {
-        func_ov094_0229357c(unk_358, 0x22);
+        InventoryItemGrid_MarkSlot(unk_358, 0x22);
     }
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_0229770c() {
-    s32 d = data_021ef5f8 - data_021ef5f0;
+BOOL PocketMenu::hasTouchMoved() {
+    s32 d = gTouchPressX - gTouchCurX;
     if (d < 0) {
         d = -d;
     }
     if (d > 8) {
         return TRUE;
     }
-    d = data_021ef5f4 - data_021ef5ec;
+    d = gTouchPressY - gTouchCurY;
     if (d < 0) {
         d = -d;
     }
@@ -2919,163 +2485,163 @@ BOOL Unk_ov096_0229aea8::func_ov096_0229770c() {
     return FALSE;
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_022976f8(s32 v) {
-    if (data_021ef5c8 >= v) {
+BOOL PocketMenu::isTouchHeldFor(s32 v) {
+    if (gTouchHoldFrames >= v) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297658() {
-    s32 x = func_ov096_02297d50((S *)this, unk_b3) - 0x6d;
-    s32 y = func_ov096_02297cc0((S *)this, unk_b3) - 0x78;
-    if (func_0206ef00()) {
+void PocketMenu::positionLabelBalloon() {
+    s32 x = PocketMenu_GetTargetX(this, balloonTarget) - 0x6d;
+    s32 y = PocketMenu_GetTargetY(this, balloonTarget) - 0x78;
+    if (MenuCtrl_IsButtons()) {
         y -= 8;
     }
-    _ZN12Unk_020e0d9813func_02089ad8Eii(unk_23c0, x, y);
-    if (func_ov096_022982f0((S *)this, unk_b3)) {
-        s32 s = func_ov096_0229826c((S *)this, unk_b3);
-        func_ov094_02293638(unk_358, unk_23c0, s);
-    } else if (func_ov096_022982e0((S *)this, unk_b3)) {
-        s32 s = func_ov096_02298008((S *)this, unk_b3);
-        _ZN18Unk_ov094_02294bd419func_ov094_02294420EPvi(unk_db8, unk_23c0, s);
+    _ZN12LabelBalloon6setPosEii(unk_23c0, x, y);
+    if (PocketMenu_IsPocketTarget(this, balloonTarget)) {
+        s32 s = PocketMenu_TargetToGridIndex(this, balloonTarget);
+        InventoryItemGrid_ShowSlotName(unk_358, unk_23c0, s);
+    } else if (PocketMenu_IsLetterTarget(this, balloonTarget)) {
+        s32 s = PocketMenu_TargetToLetterIndex(this, balloonTarget);
+        _ZN10LetterGrid14showLetterNameEPvi(unk_db8, unk_23c0, s);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022975d4() {
-    if (func_ov096_022982f0((S *)this, unk_b5) || func_ov096_022982e0((S *)this, unk_b5)) {
-        if (func_ov096_02297c10((S *)this, unk_b5)) {
-            _ZN18Unk_ov002_0220446819func_ov002_022006b0Ev(unk_23c0);
+void PocketMenu::updateLabelBalloon() {
+    if (PocketMenu_IsPocketTarget(this, cursorTarget) || PocketMenu_IsLetterTarget(this, cursorTarget)) {
+        if (PocketMenu_IsSlotEmpty(this, cursorTarget)) {
+            _ZN18TouchPromptBalloon16cancelQueuedOpenEv(unk_23c0);
         } else {
-            unk_b3 = unk_b5;
-            _ZN18Unk_ov002_0220446819func_ov002_022006b8Ev(unk_23c0);
+            balloonTarget = cursorTarget;
+            _ZN18TouchPromptBalloon9queueOpenEv(unk_23c0);
         }
     }
-    if (func_ov096_022982d0((S *)this, unk_b5) || func_ov096_022982c0((S *)this, unk_b5)) {
-        _ZN18Unk_ov002_0220446819func_ov002_022006b0Ev(unk_23c0);
+    if (PocketMenu_IsTabTarget(this, cursorTarget) || PocketMenu_IsSpecialTarget(this, cursorTarget)) {
+        _ZN18TouchPromptBalloon16cancelQueuedOpenEv(unk_23c0);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297574() {
-    if (func_ov096_02294dbc(0x40) == 0) {
-        if (unk_b1 != 0) {
-            if (unk_b1 == 2) {
-                func_ov094_0229313c(unk_358, unk_a4, unk_a8);
-            } else if (unk_b1 == 1) {
-                _ZN18Unk_ov094_02294bd419func_ov094_0229405cEiiPv(unk_db8, unk_a4, unk_a8, unk_2b98);
+void PocketMenu::drawHand() {
+    if (testFlags(0x40) == 0) {
+        if (handKind != 0) {
+            if (handKind == 2) {
+                InventoryItemGrid_DrawHeldItem(unk_358, handX, handY);
+            } else if (handKind == 1) {
+                _ZN10LetterGrid14drawHeldLetterEiiPv(unk_db8, handX, handY, unk_2b98);
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297548() {
-    unk_a4 = unk_9c + data_021ef5f0;
-    unk_a8 = unk_a0 + data_021ef5ec;
+void PocketMenu::syncHandFromTouch() {
+    handX = grabOffsetX + gTouchCurX;
+    handY = grabOffsetY + gTouchCurY;
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229751c() {
-    unk_a4 = _ZN18Unk_ov002_02202d9819func_ov002_022028c8Ev(unk_2498) - 2;
-    unk_a8 = _ZN18Unk_ov002_02202d9819func_ov002_022028a0Ev(unk_2498) - 4;
+void PocketMenu::syncHandFromCursor() {
+    handX = _ZN14MenuCursorBase15getFrameScreenXEv(unk_2498) - 2;
+    handY = _ZN14MenuCursorBase15getFrameScreenYEv(unk_2498) - 4;
 }
 
-void Unk_ov096_0229aea8::func_ov096_022974f4() {
-    unk_a4 = _ZN18Unk_ov002_0220460419func_ov002_02202710Ev(unk_2480);
-    unk_a8 = _ZN18Unk_ov002_0220460419func_ov002_02202708Ev(unk_2480);
+void PocketMenu::syncHandFromMover() {
+    handX = _ZN12CursorMotion4getXEv(unk_2480);
+    handY = _ZN12CursorMotion4getYEv(unk_2480);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022974b8(u32 a, u32 b) {
-    unk_b1 = 2;
-    unk_ac = a;
-    unk_b0 = b;
-    func_ov094_0229341c(unk_358, unk_ac, unk_b0);
-    func_ov096_02296d18();
+void PocketMenu::setHandItem(u32 a, u32 b) {
+    handKind = 2;
+    handItem = a;
+    handItemFlags = b;
+    InventoryItemGrid_SetHeldItem(unk_358, handItem, handItemFlags);
+    updateHandPrice();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297460(u32 a) {
-    unk_b1 = 2;
-    unk_ac = func_ov096_02297b9c((S *)this, a);
-    unk_b0 = func_ov096_02297b48((S *)this, a);
-    func_ov096_0229806c((S *)this, a);
-    func_ov094_0229341c(unk_358, unk_ac, unk_b0);
-    func_ov096_02296d18();
+void PocketMenu::pickUpItemFrom(u32 a) {
+    handKind = 2;
+    handItem = PocketMenu_GetItem(this, a);
+    handItemFlags = PocketMenu_GetItemFlags(this, a);
+    PocketMenu_ClearSlotItem(this, a);
+    InventoryItemGrid_SetHeldItem(unk_358, handItem, handItemFlags);
+    updateHandPrice();
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229741c(u32 a) {
-    s32 r = func_ov096_02298008((S *)this, a);
-    unk_b1 = 1;
-    void *p = _ZN18Unk_ov094_02294bd419func_ov094_0229433cEi(unk_db8, r);
-    func_02065e70(unk_2b98, p);
-    _ZN18Unk_ov094_02294bd419func_ov094_022942f4Ei(unk_db8, r);
+void PocketMenu::pickUpLetter(u32 a) {
+    s32 r = PocketMenu_TargetToLetterIndex(this, a);
+    handKind = 1;
+    void *p = _ZN10LetterGrid9getLetterEi(unk_db8, r);
+    Letter_Copy(unk_2b98, p);
+    _ZN10LetterGrid11clearLetterEi(unk_db8, r);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022973cc(u32 a) {
-    if (func_ov096_022982f0((S *)this, a)) {
-        func_ov096_02297460(a);
-    } else if (func_ov096_022982e0((S *)this, a)) {
-        func_ov096_0229741c(a);
+void PocketMenu::pickUp(u32 a) {
+    if (PocketMenu_IsPocketTarget(this, a)) {
+        pickUpItemFrom(a);
+    } else if (PocketMenu_IsLetterTarget(this, a)) {
+        pickUpLetter(a);
     } else if (a == 0x25) {
-        func_ov096_02297460(a);
-        _ZN18Unk_ov096_0229aea819func_ov096_02296bb8Et(this, unk_ac);
+        pickUpItemFrom(a);
+        _ZN10PocketMenu18withdrawFromWalletEt(this, handItem);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022973a0(u32 a) {
-    if (func_ov096_022982f0((S *)this, a) || func_ov096_022982e0((S *)this, a)) {
-        func_ov096_02297460(a);
+void PocketMenu::pickUpItem(u32 a) {
+    if (PocketMenu_IsPocketTarget(this, a) || PocketMenu_IsLetterTarget(this, a)) {
+        pickUpItemFrom(a);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297358(u32 k, u32 f) {
-    switch (unk_b1) {
+void PocketMenu::putHandBack(u32 k, u32 f) {
+    switch (handKind) {
     case 1:
-        func_ov096_02297f3c((S *)this, k, unk_2b98);
+        PocketMenu_SetLetter(this, k, unk_2b98);
         break;
     case 2:
-        func_ov096_022980a0((S *)this, k, unk_ac, unk_b0);
+        PocketMenu_SetSlotItem(this, k, handItem, handItemFlags);
         break;
     }
     if (f != 0) {
-        func_ov096_02297160();
+        clearHand();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022972ec(u32 f) {
-    if (func_ov096_02297940(unk_b4) == 0) {
-        func_ov096_02297358(unk_b4, f);
-    } else if (unk_b9 != 0x26) {
-        u32 a = func_ov096_02297b9c((S *)this, unk_b9);
-        u32 b = func_ov096_02297b48((S *)this, unk_b9);
-        func_ov096_02297358(unk_b9, 1);
-        func_ov096_022980a0((S *)this, unk_b4, a, b);
-        unk_b9 = 0x26;
+void PocketMenu::returnHand(u32 f) {
+    if (checkPlaceHand(handSource) == 0) {
+        putHandBack(handSource, f);
+    } else if (swapTarget != 0x26) {
+        u32 a = PocketMenu_GetItem(this, swapTarget);
+        u32 b = PocketMenu_GetItemFlags(this, swapTarget);
+        putHandBack(swapTarget, 1);
+        PocketMenu_SetSlotItem(this, handSource, a, b);
+        swapTarget = 0x26;
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297284(u32 a) {
-    switch (unk_b1) {
+void PocketMenu::swapHandWith(u32 a) {
+    switch (handKind) {
     case 1:
-        func_02065e70(unk_2c8c, unk_2b98);
-        func_ov096_022973cc(a);
-        func_ov096_02297f3c((S *)this, a, unk_2c8c);
+        Letter_Copy(unk_2c8c, unk_2b98);
+        pickUp(a);
+        PocketMenu_SetLetter(this, a, unk_2c8c);
         break;
     case 2: {
-        u32 x = unk_ac;
-        u32 y = unk_b0;
-        func_ov096_022973a0(a);
-        func_ov096_022980a0((S *)this, a, x, y);
+        u32 x = handItem;
+        u32 y = handItemFlags;
+        pickUpItem(a);
+        PocketMenu_SetSlotItem(this, a, x, y);
         break;
     }
     }
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_0229725c(u32 a) {
+s32 PocketMenu::placeHandAt(u32 a) {
     s32 r;
-    switch (unk_b1) {
+    switch (handKind) {
     case 2:
-        r = func_ov096_02298110((S *)this, a);
+        r = PocketMenu_DropItemAt(this, a);
         break;
     case 1:
-        r = func_ov096_02297f6c((S *)this, a);
+        r = PocketMenu_DropLetterAt(this, a);
         break;
     default:
         r = 0;
@@ -3084,64 +2650,64 @@ s32 Unk_ov096_0229aea8::func_ov096_0229725c(u32 a) {
     return r;
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_022971dc() {
-    if (!func_ov096_02297170()) {
-        func_ov096_0229865c((S *)this);
-        func_ov096_02298334((S *)this, 9, 0xff, 1);
-        func_ov096_022972ec(1);
+s32 PocketMenu::dropHeldItem() {
+    if (!canDropHeldItem()) {
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 9, 0xff, 1);
+        returnHand(1);
         return 0;
     }
-    s32 r = func_ov096_0229652c(unk_ac);
+    s32 r = requestDropItem(handItem);
     if (r == 0) {
-        func_ov096_022972ec(1);
+        returnHand(1);
         return 0;
     }
     if (r == 1) {
-        func_ov096_02297160();
+        clearHand();
         return 1;
     }
     if (r == 2) {
-        func_ov002_02200a58(0x28);
-        func_ov096_02294d9c(0x1000);
+        setMainState(0x28);
+        clearFlags(0x1000);
         return 0;
     }
-    func_ov096_022972ec(1);
+    returnHand(1);
     return 0;
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_02297170() {
-    if (unk_b1 != 2) {
+BOOL PocketMenu::canDropHeldItem() {
+    if (handKind != 2) {
         return FALSE;
     }
-    if (unk_b0 != 0) {
+    if (handItemFlags != 0) {
         return FALSE;
     }
-    volatile u16 t = unk_ac;
-    if (Unk_ov096_022968bc_InRange(&t, 0x1492, 0x14fd) && unk_b4 == 0x25) {
+    volatile u16 t = handItem;
+    if (Unk_ov096_022968bc_InRange(&t, 0x1492, 0x14fd) && handSource == 0x25) {
         return FALSE;
     }
-    return func_ov096_022965ac(*(volatile u16 *)&unk_ac);
+    return canDropItem(*(volatile u16 *)&handItem);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02297160() {
-    unk_b1 = 0;
-    func_0206e8f4(0);
+void PocketMenu::clearHand() {
+    handKind = 0;
+    MenuCtrl_SetHandBells(0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229713c() {
-    func_ov002_02200a58(0x25);
-    _ZN18Unk_ov096_0229aea819func_ov096_02298a14Ev((S *)this);
-    func_ov096_02294d9c(0x8000);
+void PocketMenu::startUseOnPlayer() {
+    setMainState(0x25);
+    _ZN10PocketMenu9mainAct25Ev(this);
+    clearFlags(0x8000);
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_02296fb8() {
-    if (unk_b1 != 2) {
+s32 PocketMenu::getUseOnPlayerKind() {
+    if (handKind != 2) {
         return 1;
     }
-    if (unk_b0 != 0) {
+    if (handItemFlags != 0) {
         return 1;
     }
-    volatile u16 t = unk_ac;
+    volatile u16 t = handItem;
     BOOL r = FALSE;
     u32 v = t;
     u32 w = t;
@@ -3152,7 +2718,7 @@ s32 Unk_ov096_0229aea8::func_ov096_02296fb8() {
         return 2;
     }
     if ((v >= 0x1431 && v <= 0x1470) || (v >= 0x1471 && v <= 0x1491)) {
-        t = func_ov096_02296f64(4);
+        t = getEquipped(4);
         u32 b = t;
         u32 a = t;
         if (a != 0xfff1 && b >= 0x13a8 && b <= 0x13c7 && !func_0204bab8((u16 *)&t)) {
@@ -3161,7 +2727,7 @@ s32 Unk_ov096_0229aea8::func_ov096_02296fb8() {
         return 3;
     }
     if (v >= 0x13a8 && v <= 0x13c7) {
-        if (func_ov096_02296f64(3) != 0xfff1 && !func_0204bab8((u16 *)&t)) {
+        if (getEquipped(3) != 0xfff1 && !func_0204bab8((u16 *)&t)) {
             return 0;
         }
         return 4;
@@ -3169,7 +2735,7 @@ s32 Unk_ov096_0229aea8::func_ov096_02296fb8() {
     if ((v >= 0x13c8 && v <= 0x1407) || (v >= 0x1408 && v <= 0x1428)) {
         return 4;
     }
-    if (func_0204bae0((u16 *)&t)) {
+    if (Item_IsHoldable((u16 *)&t)) {
         return 5;
     }
     BOOL q = FALSE;
@@ -3187,44 +2753,44 @@ s32 Unk_ov096_0229aea8::func_ov096_02296fb8() {
     return 1;
 }
 
-u16 Unk_ov096_0229aea8::func_ov096_02296f64(s32 k) {
-    void *o = func_0209750c();
+u16 PocketMenu::getEquipped(s32 k) {
+    void *o = PlayerData_GetCurrent();
     switch (k) {
     case 2:
-        return *_ZN12Unk_0209865c13func_0209872cEv(o);
+        return *_ZN10PlayerData8getShirtEv(o);
     case 3:
-        return *_ZN12Unk_0209865c13func_020986fcEv(o);
+        return *_ZN10PlayerData11getFaceItemEv(o);
     case 4:
-        return *_ZN12Unk_0209865c13func_02098714Ev(o);
+        return *_ZN10PlayerData6getHatEv(o);
     case 5:
-        return *_ZN12Unk_0209865c13func_02098744Ev(o);
+        return *_ZN10PlayerData11getHeldItemEv(o);
     }
     return 0xfff1;
 }
 
-u16 Unk_ov096_0229aea8::func_ov096_02296e70(s32 k, u16 v) {
-    u16 r = func_ov096_02296f64(k);
-    void *o = func_0209750c();
+u16 PocketMenu::swapEquipped(s32 k, u16 v) {
+    u16 r = getEquipped(k);
+    void *o = PlayerData_GetCurrent();
     volatile u16 t = v;
     switch (k) {
     case 2:
-        _ZN12Unk_0209865c13func_02098720EPt(o, (u16 *)&t);
+        _ZN10PlayerData8setShirtEPt(o, (u16 *)&t);
         t = r;
         if (!Unk_ov096_022968bc_InRange(&t, 0x11a8, 0x12a7)) {
             r = 0xfff1;
         }
         break;
     case 3:
-        _ZN12Unk_0209865c13func_020986f0EPt(o, (u16 *)&t);
+        _ZN10PlayerData11setFaceItemEPt(o, (u16 *)&t);
         break;
     case 6:
-        _ZN12Unk_0209865c13func_020986f0EPt(o, (u16 *)&t);
-        r = func_ov096_02296f64(4);
+        _ZN10PlayerData11setFaceItemEPt(o, (u16 *)&t);
+        r = getEquipped(4);
         t = 0xfff1;
-        _ZN12Unk_0209865c13func_02098708EPt(o, (u16 *)&t);
+        _ZN10PlayerData6setHatEPt(o, (u16 *)&t);
         break;
     case 4:
-        _ZN12Unk_0209865c13func_02098708EPt(o, (u16 *)&t);
+        _ZN10PlayerData6setHatEPt(o, (u16 *)&t);
         t = r;
         if (Unk_ov096_022968bc_InRange(&t, 0x1429, 0x1430)) {
             r = 0xfff1;
@@ -3243,46 +2809,46 @@ u16 Unk_ov096_0229aea8::func_ov096_02296e70(s32 k, u16 v) {
     return r;
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_02296dbc(s32 k, u16 v) {
+BOOL PocketMenu::requestUseOnPlayer(s32 k, u16 v) {
     u16 t = v;
     switch (k) {
     case 2:
-        if (func_02094bf8(&t)) {
+        if (PlayerActor_RequestWearShirt(&t)) {
             return TRUE;
         }
         break;
     case 3:
-        if (func_02094bec(&t)) {
+        if (PlayerActor_RequestWearFaceItem(&t)) {
             return TRUE;
         }
         break;
     case 6:
-        if (func_02094bec(&t)) {
+        if (PlayerActor_RequestWearFaceItem(&t)) {
             t = 0xfff1;
-            func_02094be0(&t);
+            PlayerActor_RequestWearHat(&t);
             return TRUE;
         }
         break;
     case 4:
-        if (func_02094be0(&t)) {
+        if (PlayerActor_RequestWearHat(&t)) {
             return TRUE;
         }
         break;
     case 5:
-        if (func_02094b78(&t)) {
+        if (PlayerActor_RequestChangeHeldItem(&t)) {
             return TRUE;
         }
         break;
     case 7:
-        if (func_02094b48(&t)) {
-            if (!func_0203a35c()) {
-                func_0200402c(0x40);
+        if (PlayerActor_RequestHoldUpItem(&t)) {
+            if (!Camera_IsViewPushed()) {
+                Snd_PlaySe(0x40);
             }
             return TRUE;
         }
         break;
     case 8:
-        if (func_02094bc0()) {
+        if (PlayerActor_RequestFaceChange()) {
             return TRUE;
         }
         break;
@@ -3290,64 +2856,64 @@ BOOL Unk_ov096_0229aea8::func_ov096_02296dbc(s32 k, u16 v) {
     return FALSE;
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_02296d88(s32 k) {
+BOOL PocketMenu::isUseOnPlayerBusy(s32 k) {
     switch (k) {
     case 5:
-        return func_02094fa8();
+        return PlayerActor_IsChangingHeldItem();
     case 7:
     case 8:
-        if (func_020951ac()) {
+        if (PlayerActor_IsInAct05()) {
             return FALSE;
         }
         return TRUE;
     default:
-        return func_02094fb4();
+        return PlayerActor_IsChangingClothes();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296d5c() {
-    func_ov096_0229865c((S *)this);
-    func_ov096_022972ec(1);
-    if (unk_c0 == 0) {
-        func_ov096_02298334((S *)this, 7, 0xff, 1);
+void PocketMenu::cancelUseOnPlayer() {
+    PocketMenu_ReturnToIdle(this);
+    returnHand(1);
+    if (useOnPlayerKind == 0) {
+        PocketMenu_ShowMessage(this, 7, 0xff, 1);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296d18() {
-    volatile u16 t = unk_ac;
+void PocketMenu::updateHandPrice() {
+    volatile u16 t = handItem;
     if (Unk_ov096_022968bc_InRange(&t, 0x1492, 0x14fd)) {
-        func_0206e8f4(func_0204be70((u16 *)&t));
+        MenuCtrl_SetHandBells(Item_GetPrice((u16 *)&t));
     } else {
-        func_0206e8f4(0);
+        MenuCtrl_SetHandBells(0);
     }
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_02296cac() {
-    u16 t = unk_ac;
-    func_0204be70(&t);
-    u32 r = func_ov096_02296b68(unk_ac);
+BOOL PocketMenu::depositHeldBag() {
+    u16 t = handItem;
+    Item_GetPrice(&t);
+    u32 r = depositToWallet(handItem);
     if (r == 0xfff1) {
-        func_ov096_02297160();
-        func_ov096_0229865c((S *)this);
+        clearHand();
+        PocketMenu_ReturnToIdle(this);
     } else {
-        unk_ac = r;
-        func_ov094_0229341c(unk_358 + 0, unk_ac, unk_b0);
-        func_ov096_022983cc((S *)this, unk_b4, 4);
+        handItem = r;
+        InventoryItemGrid_SetHeldItem(unk_358 + 0, handItem, handItemFlags);
+        PocketMenu_FlyHandTo(this, handSource, 4);
     }
     return TRUE;
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_02296c30(s32 flag) {
-    if (unk_b1 != 2) {
+BOOL PocketMenu::isHoldingMoneyBag(s32 flag) {
+    if (handKind != 2) {
         return FALSE;
     }
-    if (unk_b0 != 0) {
+    if (handItemFlags != 0) {
         return FALSE;
     }
-    volatile u16 t = unk_ac;
+    volatile u16 t = handItem;
     if (Unk_ov096_022968bc_InRange(&t, 0x1492, 0x14fd)) {
         if (flag) {
-            if (func_0204be70((u16 *)&t) + func_ov096_02296c18() > 0x1869f) {
+            if (Item_GetPrice((u16 *)&t) + getWalletBells() > 0x1869f) {
                 return FALSE;
             }
         }
@@ -3356,40 +2922,40 @@ BOOL Unk_ov096_0229aea8::func_ov096_02296c30(s32 flag) {
     return FALSE;
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_02296c18() {
-    return _ZN12Unk_02097d1c13func_02097d1cEi(_ZN12Unk_0209865c13func_02098750Ev(func_0209750c()), 0);
+s32 PocketMenu::getWalletBells() {
+    return _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), 0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296be8(s32 v) {
-    func_02097ac4(_ZN12Unk_0209865c13func_02098750Ev(func_0209750c()), v, 0);
-    func_ov094_022926c8(unk_de0 + 0, 0);
+void PocketMenu::setWalletBells(s32 v) {
+    PlayerInventory_SetWallet(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), v, 0);
+    InventoryBg_StartBellRoll(unk_de0 + 0, 0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296bb8(u16 v) {
+void PocketMenu::withdrawFromWallet(u16 v) {
     u16 t = v;
-    u32 a = func_0204be70(&t);
-    func_ov096_02296c18();
-    u32 b = func_ov096_02296c18();
-    func_ov096_02296be8(b - a);
+    u32 a = Item_GetPrice(&t);
+    getWalletBells();
+    u32 b = getWalletBells();
+    setWalletBells(b - a);
 }
 
-u32 Unk_ov096_0229aea8::func_ov096_02296b68(u16 v) {
+u32 PocketMenu::depositToWallet(u16 v) {
     u16 t = v;
     u32 e;
-    u32 a = func_0204be70(&t);
+    u32 a = Item_GetPrice(&t);
     s32 x;
-    a += func_ov096_02296c18();
+    a += getWalletBells();
     u32 r = 0xfff1;
     if (a > 0x1869f) {
         e = a - 0x1869f;
-        r = func_0204b718(e, 1, &x);
+        r = Item_FindMoneyBagForAmount(e, 1, &x);
         a -= e + x;
     }
-    func_ov096_02296be8(a);
+    setWalletBells(a);
     return r;
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_022969bc(u16 *a, s32 f, u16 *b, u8 g) {
+s32 PocketMenu::mergeItems(u16 *a, s32 f, u16 *b, u8 g) {
     u16 loc[3];
     u32 a4, b4, lim;
     BOOL ok;
@@ -3454,10 +3020,10 @@ s32 Unk_ov096_0229aea8::func_ov096_022969bc(u16 *a, s32 f, u16 *b, u8 g) {
     }
     return 1;
 go:
-    a4 = func_0204be70(&loc[0]);
-    b4 = func_0204be70(&loc[1]);
+    a4 = Item_GetPrice(&loc[0]);
+    b4 = Item_GetPrice(&loc[1]);
     loc[2] = 0x14fd;
-    lim = func_0204be70(&loc[2]);
+    lim = Item_GetPrice(&loc[2]);
     {
         s32 out;
         BOOL n4 = (s32)a4 < 1000 ? TRUE : FALSE;
@@ -3485,41 +3051,41 @@ go:
                 a4 = lim;
             }
         }
-        *a = func_0204b718(a4, 1, &out);
+        *a = Item_FindMoneyBagForAmount(a4, 1, &out);
         if (b4 == 0) {
             *b = 0xfff1;
         } else {
-            *b = func_0204b718(b4, 1, &out);
+            *b = Item_FindMoneyBagForAmount(b4, 1, &out);
         }
     }
     return 0;
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296964() {
-    s32 a = func_ov096_022968cc();
-    s32 b = func_ov096_022968bc();
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(unk_2498, a, b);
-    if (func_ov096_022982d0((S *)this, unk_b5)) {
-        _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 0xd);
+void PocketMenu::showCursor() {
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    _ZN14MenuCursorBase6warpToEii(unk_2498, a, b);
+    if (PocketMenu_IsTabTarget(this, cursorTarget)) {
+        _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 0xd);
     } else {
-        _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 1);
+        _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 1);
     }
-    func_ov096_022966e8();
+    refreshCursor();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296910() {
-    unk_bc = _ZN18Unk_ov002_022013ac19func_ov002_02201494Ev(unk_24fc) - 1;
-    s32 a = _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev(unk_24fc);
-    s32 b = _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei(unk_24fc, unk_bc);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(unk_2498, a, b);
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 7);
+void PocketMenu::cursorToPopupBottom() {
+    popupRow = _ZN19PopupChoiceMenuBody11getRowCountEv(unk_24fc) - 1;
+    s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(unk_24fc);
+    s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(unk_24fc, popupRow);
+    _ZN14MenuCursorBase6warpToEii(unk_2498, a, b);
+    _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 7);
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_022968cc() {
-    s32 t = func_ov096_02297d50((S *)this, unk_b5);
-    if (func_ov096_02294dbc(0x20)) {
+s32 PocketMenu::getCursorTargetX() {
+    s32 t = PocketMenu_GetTargetX(this, cursorTarget);
+    if (testFlags(0x20)) {
         t += 0x100;
-    } else if (func_ov096_02294dbc(0x10)) {
+    } else if (testFlags(0x10)) {
         t -= 0x100;
     }
     return t + 8;
@@ -3527,103 +3093,103 @@ s32 Unk_ov096_0229aea8::func_ov096_022968cc() {
 
 // ===== unit 022968bc =====
 
-s32 Unk_ov096_0229aea8::func_ov096_022968bc() {
-    return func_ov096_02297cc0((S *)this, unk_b5);
+s32 PocketMenu::getCursorTargetY() {
+    return PocketMenu_GetTargetY(this, cursorTarget);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296898() {
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 0);
-    ((Unk_020e0db4 *)unk_2498)->vfunc_0c();
+void PocketMenu::hideCursor() {
+    _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 0);
+    ((UiWidget *)unk_2498)->update();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296854() {
-    s32 a = func_ov096_022968cc();
-    s32 b = func_ov096_022968bc();
-    _ZN18Unk_ov002_02202d9819func_ov002_022029e8Eiiii(unk_2498, a, b, 3, 1);
-    unk_ba = unk_8d;
-    func_ov002_02200a58(0xf);
+void PocketMenu::moveCursorToTarget() {
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    _ZN14MenuCursorBase10moveToEaseEiiii(unk_2498, a, b, 3, 1);
+    returnState = mainState;
+    setMainState(0xf);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296804() {
-    s32 a = _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev(unk_24fc);
-    s32 b = _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei(unk_24fc, unk_bc);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a18Eiii(unk_2498, a, b, 2);
-    unk_ba = unk_8d;
-    func_ov002_02200a58(0xf);
+void PocketMenu::moveCursorToPopupRow() {
+    s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(unk_24fc);
+    s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(unk_24fc, popupRow);
+    _ZN14MenuCursorBase12moveToLinearEiii(unk_2498, a, b, 2);
+    returnState = mainState;
+    setMainState(0xf);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022967a0() {
-    unk_bb = 0x22;
-    unk_bc = func_ov002_02201a70(unk_24fc, 1);
-    s32 a = _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev(unk_24fc);
-    s32 b = _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei(unk_24fc, unk_bc);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(unk_2498, a, b);
-    _ZN12Unk_020e100c13func_0208d538Ei(unk_2498, 8);
-    func_ov002_02200a58(0x1e);
+void PocketMenu::cancelPopup() {
+    chosenAction = 0x22;
+    popupRow = PopupChoice_DecideCancel(unk_24fc, 1);
+    s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(unk_24fc);
+    s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(unk_24fc, popupRow);
+    _ZN14MenuCursorBase6warpToEii(unk_2498, a, b);
+    _ZN10HandCursor12setAnimAtEndEi(unk_2498, 8);
+    setMainState(0x1e);
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229673c() {
-    if (func_ov096_02294dbc(0x40000)) {
-        unk_bc = 1;
+void PocketMenu::cursorToPopupDefault() {
+    if (testFlags(0x40000)) {
+        popupRow = 1;
     } else {
-        unk_bc = 0;
+        popupRow = 0;
     }
-    s32 a = _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev(unk_24fc);
-    s32 b = _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei(unk_24fc, unk_bc);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(unk_2498, a, b);
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 7);
+    s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(unk_24fc);
+    s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(unk_24fc, popupRow);
+    _ZN14MenuCursorBase6warpToEii(unk_2498, a, b);
+    _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 7);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296708() {
-    s32 a = func_ov096_022968cc();
-    s32 b = func_ov096_022968bc();
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(unk_2498, a, b);
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 1);
+void PocketMenu::placeCursorOnTarget() {
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    _ZN14MenuCursorBase6warpToEii(unk_2498, a, b);
+    _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 1);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022966e8() {
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a78Ev(unk_2498);
-    ((Unk_020e0db4 *)unk_2498)->vfunc_0c();
+void PocketMenu::refreshCursor() {
+    _ZN14MenuCursorBase11setPoseIdleEv(unk_2498);
+    ((UiWidget *)unk_2498)->update();
 }
 
-void Unk_ov096_0229aea8::func_ov096_022966c8() {
-    _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(unk_2498);
-    func_ov002_02200a58(0x10);
+void PocketMenu::pressTab() {
+    _ZN10MenuCursor12setPosePressEv(unk_2498);
+    setMainState(0x10);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022966a8() {
-    _ZN18Unk_ov002_02202d9819func_ov002_02202af0Ev(unk_2498);
-    func_ov002_02200a58(0x11);
+void PocketMenu::releaseCursor() {
+    _ZN14MenuCursorBase14setPoseReleaseEv(unk_2498);
+    setMainState(0x11);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296680() {
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 4);
-    func_ov002_02200a58(0x12);
-    unk_b9 = 0x26;
+void PocketMenu::actionAct00() {
+    _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 4);
+    setMainState(0x12);
+    swapTarget = 0x26;
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296638(u32 v) {
-    _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 1);
-    unk_b7 = v;
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 5);
-    func_ov002_02200a58(0x14);
-    func_ov096_02294d9c(0x2000);
+void PocketMenu::beginPutDownAt(u32 v) {
+    _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
+    placeTarget = v;
+    _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 5);
+    setMainState(0x14);
+    clearFlags(0x2000);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022965f0(u32 v) {
-    _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 1);
-    unk_ba = unk_8d;
-    unk_b7 = v;
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(unk_2498, 6);
-    func_ov002_02200a58(0x15);
+void PocketMenu::beginSwapAt(u32 v) {
+    _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
+    returnState = mainState;
+    placeTarget = v;
+    _ZN10MenuCursor16setAnimIfChangedEi(unk_2498, 6);
+    setMainState(0x15);
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_022965ac(s32 a) {
-    if (Unk_ov096_0229652c_IsZero(data_020e416c)) {
-        return func_ov098_0229bc90(this, a);
+BOOL PocketMenu::canDropItem(s32 a) {
+    if (Unk_ov096_0229652c_IsZero(gFieldSceneKind)) {
+        return PocketMenu_CanDropOutdoor(this, a);
     }
-    if (func_020b52f8()) {
-        if (func_ov097_0229b280(this)) {
+    if (Scene_InHouseRoom()) {
+        if (PocketMenu_CanEditRoom(this)) {
             return TRUE;
         }
         return FALSE;
@@ -3631,326 +3197,326 @@ BOOL Unk_ov096_0229aea8::func_ov096_022965ac(s32 a) {
     return FALSE;
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_0229652c(s32 a) {
-    if (Unk_ov096_0229652c_IsZero(data_020e416c)) {
-        unk_c4 = func_02042c64(data_020cbb18->unk_64, a);
-        if (unk_c4 == -1) {
-            func_ov096_0229865c((S *)this);
-            func_ov096_02298334((S *)this, 3, 0xff, 0);
-            func_0200402c(0x73);
+s32 PocketMenu::requestDropItem(s32 a) {
+    if (Unk_ov096_0229652c_IsZero(gFieldSceneKind)) {
+        fieldRequest = FieldAction_RequestDrop(gCommManager->myAid, a);
+        if (fieldRequest == -1) {
+            PocketMenu_ReturnToIdle(this);
+            PocketMenu_ShowMessage(this, 3, 0xff, 0);
+            Snd_PlaySe(0x73);
             return 0;
         }
         return 2;
     }
-    if (func_020b52f8()) {
-        return func_ov097_0229b2bc(this, a);
+    if (Scene_InHouseRoom()) {
+        return PocketMenu_RequestDropIndoor(this, a);
     }
     return 0;
 }
 
-void Unk_ov096_0229aea8::func_ov096_022964b0() {
-    u32 t = unk_b6;
-    s32 r6 = func_ov096_02297b9c((S *)this, t);
-    if (!func_ov096_022965ac(r6)) {
-        func_ov096_0229865c((S *)this);
-        func_ov096_02298334((S *)this, 9, 0xff, 1);
+void PocketMenu::actionDropItem() {
+    u32 t = actionTarget;
+    s32 r6 = PocketMenu_GetItem(this, t);
+    if (!canDropItem(r6)) {
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 9, 0xff, 1);
     } else {
-        s32 r = func_ov096_0229652c(r6);
+        s32 r = requestDropItem(r6);
         if (r != 0) {
             if (r == 2) {
-                func_ov002_02200a58(0x28);
-                func_ov096_02294dac(0x1000);
+                setMainState(0x28);
+                setFlags(0x1000);
             } else {
-                s32 x = func_ov096_0229826c((S *)this, t);
-                func_ov094_022934d8(unk_358, x);
-                func_ov096_0229865c((S *)this);
+                s32 x = PocketMenu_TargetToGridIndex(this, t);
+                InventoryItemGrid_ClearSlot(unk_358, x);
+                PocketMenu_ReturnToIdle(this);
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229648c() {
-    func_0206ed5c(func_ov096_02294f9c());
-    func_ov096_022956d0();
-    func_ov096_02294d9c(0x200);
+void PocketMenu::actionAct04() {
+    MenuCtrl_SetArg(getActionLetter());
+    openAddresseeList();
+    clearFlags(0x200);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296460() {
-    func_0206ec54(unk_b6);
-    func_0206ed5c(func_ov096_02294f9c());
-    func_ov096_0229a39c(8);
-    func_ov096_0229a000();
+void PocketMenu::actionEditLetter() {
+    MenuCtrl_SetSavedSlot(actionTarget);
+    MenuCtrl_SetArg(getActionLetter());
+    requestTab(8);
+    hideTabBar();
 }
 
-void Unk_ov096_0229aea8::func_ov096_022963fc() {
-    s32 r6 = func_ov096_0229801c((S *)this);
+void PocketMenu::actionTakeAttachment() {
+    s32 r6 = PocketMenu_FindEmptyPocket(this);
     if (r6 == 0x26) {
-        func_ov096_0229865c((S *)this);
-        func_ov096_02298334((S *)this, 0xb, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 0xb, 0xff, 1);
     } else {
-        s32 a = func_ov096_02297b48((S *)this, unk_b6);
-        s32 b = func_ov096_02297b9c((S *)this, unk_b6);
-        func_ov096_0229806c((S *)this, unk_b6);
-        ((void (*)(S *, u32, u32, u32, s32))func_ov096_0229838c)((S *)this, unk_b6, r6, b, a);
+        s32 a = PocketMenu_GetItemFlags(this, actionTarget);
+        s32 b = PocketMenu_GetItem(this, actionTarget);
+        PocketMenu_ClearSlotItem(this, actionTarget);
+        ((void (*)(PocketMenu *, u32, u32, u32, s32))PocketMenu_FlyItemTo)(this, actionTarget, r6, b, a);
     }
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_022963ac() {
-    s32 t = func_020991fc();
+BOOL PocketMenu::allocLetterSlot() {
+    s32 t = Inventory_FindEmptyLetter();
     if (t == -1) {
-        func_ov096_0229865c((S *)this);
-        func_ov096_02298334((S *)this, 2, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 2, 0xff, 1);
         return FALSE;
     }
-    func_0206ec54(unk_b6);
-    unk_b8 = unk_b6;
-    unk_b6 = t + 0xf;
+    MenuCtrl_SetSavedSlot(actionTarget);
+    paperTarget = actionTarget;
+    actionTarget = t + 0xf;
     return TRUE;
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229637c() {
-    if (func_ov096_022963ac()) {
-        func_0206ed5c(func_ov096_02294f9c());
-        func_ov096_022956d0();
-        func_ov096_02294dac(0x200);
+void PocketMenu::actionWriteLetter() {
+    if (allocLetterSlot()) {
+        MenuCtrl_SetArg(getActionLetter());
+        openAddresseeList();
+        setFlags(0x200);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296338() {
-    if (func_ov096_022963ac()) {
-        s32 t = (s32)func_ov096_02294f9c();
-        func_02065bfc();
-        func_0206ed5c((void *)t);
-        func_ov096_0229806c((S *)this, unk_b8);
-        func_ov096_0229a39c(8);
-        func_ov096_0229a000();
+void PocketMenu::actionAct08() {
+    if (allocLetterSlot()) {
+        s32 t = (s32)getActionLetter();
+        Letter_InitBottleDraft();
+        MenuCtrl_SetArg((void *)t);
+        PocketMenu_ClearSlotItem(this, paperTarget);
+        requestTab(8);
+        hideTabBar();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296290() {
+void PocketMenu::actionTakeOutBells() {
     s32 v;
     s32 r;
-    switch (unk_bb) {
+    switch (chosenAction) {
     case 0xb:
-        v = func_0204b718(func_ov096_02296c18(), 0, 0);
+        v = Item_FindMoneyBagForAmount(getWalletBells(), 0, 0);
         break;
     case 0xc:
-        v = func_0204b718(0x64, 0, 0);
+        v = Item_FindMoneyBagForAmount(0x64, 0, 0);
         break;
     case 0xd:
-        v = func_0204b718(0x3e8, 0, 0);
+        v = Item_FindMoneyBagForAmount(0x3e8, 0, 0);
         break;
     case 0xe:
-        v = func_0204b718(0x2710, 0, 0);
+        v = Item_FindMoneyBagForAmount(0x2710, 0, 0);
         break;
     }
-    r = func_ov096_0229801c((S *)this);
+    r = PocketMenu_FindEmptyPocket(this);
     if (r == 0x26) {
-        func_ov096_0229865c((S *)this);
-        func_ov096_02298334((S *)this, 0xc, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 0xc, 0xff, 1);
     } else {
-        _ZN18Unk_ov096_0229aea819func_ov096_02296bb8Et(this, v);
-        ((void (*)(S *, u32, u32, u32, s32))func_ov096_0229838c)((S *)this, 0x25, r, v, 0);
+        _ZN10PocketMenu18withdrawFromWalletEt(this, v);
+        ((void (*)(PocketMenu *, u32, u32, u32, s32))PocketMenu_FlyItemTo)(this, 0x25, r, v, 0);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229619c() {
+void PocketMenu::actionTakeOff() {
     BOOL ok = TRUE;
     volatile u16 v = 0xfff1;
-    u32 k = unk_bb;
+    u32 k = chosenAction;
     switch (k) {
     case 0xf:
-        unk_c0 = 3;
+        useOnPlayerKind = 3;
         break;
     case 0x10:
-        unk_c0 = 4;
-        v = func_ov096_02296f64(4);
+        useOnPlayerKind = 4;
+        v = getEquipped(4);
         if (Unk_ov096_0229619c_Range(&v, 0x1429, 0x1430)) {
             ok = FALSE;
         }
         break;
     case 0x11:
-        unk_c0 = 5;
-        v = func_ov096_02296f64(5);
+        useOnPlayerKind = 5;
+        v = getEquipped(5);
         if (Unk_ov096_0229619c_Range(&v, 0x13a0, 0x13a7)) {
             ok = FALSE;
         }
         break;
     default:
-        func_ov096_0229865c((S *)this);
+        PocketMenu_ReturnToIdle(this);
         return;
     }
-    s32 r = func_ov096_0229801c((S *)this);
+    s32 r = PocketMenu_FindEmptyPocket(this);
     if (ok && r == 0x26) {
-        func_ov096_0229865c((S *)this);
-        func_ov096_02298334((S *)this, 0xa, 0xff, 0);
-        func_0200402c(0x73);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 0xa, 0xff, 0);
+        Snd_PlaySe(0x73);
         return;
     }
-    unk_b4 = r;
-    func_ov096_02297160();
-    unk_ac = 0xfff1;
-    func_ov096_0229713c();
-    func_ov096_02294dac(0x8000);
+    handSource = r;
+    clearHand();
+    handItem = 0xfff1;
+    startUseOnPlayer();
+    setFlags(0x8000);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296124() {
-    u32 t = unk_b6;
-    func_ov096_02297460(t);
-    unk_a4 = func_ov096_02297d50((S *)this, t);
-    unk_a8 = func_ov096_02297cc0((S *)this, t);
-    if (func_0206ef00()) {
-        unk_a4 = unk_a4 - 2;
-        unk_a8 = unk_a8 - 2;
+void PocketMenu::actionUnwrapItem() {
+    u32 t = actionTarget;
+    pickUpItemFrom(t);
+    handX = PocketMenu_GetTargetX(this, t);
+    handY = PocketMenu_GetTargetY(this, t);
+    if (MenuCtrl_IsButtons()) {
+        handX = handX - 2;
+        handY = handY - 2;
     }
-    func_ov002_02200a58(0x2b);
-    func_ov094_02292efc(unk_358, unk_ac, unk_b0);
+    setMainState(0x2b);
+    InventoryItemGrid_StartPresentAnim(unk_358, handItem, handItemFlags);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022960b4() {
-    u32 t = unk_b6;
-    func_ov096_0229741c(t);
-    unk_a4 = func_ov096_02297d50((S *)this, t);
-    unk_a8 = func_ov096_02297cc0((S *)this, t);
-    if (func_0206ef00()) {
-        unk_a4 = unk_a4 - 2;
-        unk_a8 = unk_a8 - 2;
+void PocketMenu::actionAct09() {
+    u32 t = actionTarget;
+    pickUpLetter(t);
+    handX = PocketMenu_GetTargetX(this, t);
+    handY = PocketMenu_GetTargetY(this, t);
+    if (MenuCtrl_IsButtons()) {
+        handX = handX - 2;
+        handY = handY - 2;
     }
-    func_ov002_02200a58(0x2a);
-    func_ov094_02293c58(unk_db8);
+    setMainState(0x2a);
+    LetterGrid_StartPopAnim(unk_db8);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022960ac() { func_ov096_022956e4(); }
+void PocketMenu::actionAct0A() { openConfirmList(); }
 
-void Unk_ov096_0229aea8::func_ov096_02296094() {
-    func_ov002_02200a58(0x31);
-    _ZN18Unk_ov096_0229aea819func_ov096_02298870Ev((S *)this);
+void PocketMenu::actionAct1A() {
+    setMainState(0x31);
+    _ZN10PocketMenu9mainAct31Ev(this);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02296030() {
-    func_ov002_022016e4(unk_27f0, 0x22);
-    func_ov002_02201700(unk_27f0, 0xdd, 0x1d);
-    func_ov002_02201700(unk_27f0, 0xde, 0x1e);
-    func_ov002_02201700(unk_27f0, 0xdf, 0x1f);
-    func_ov002_02201700(unk_27f0, 0xe0, 0x20);
-    func_ov002_02201700(unk_27f0, 0x2, 0x22);
-    func_ov096_02296898();
-    func_ov096_02295c94(0);
+void PocketMenu::actionOpenCountdownMenu() {
+    ChoiceIdList_Clear(optionList, 0x22);
+    ChoiceIdList_Add(optionList, 0xdd, 0x1d);
+    ChoiceIdList_Add(optionList, 0xde, 0x1e);
+    ChoiceIdList_Add(optionList, 0xdf, 0x1f);
+    ChoiceIdList_Add(optionList, 0xe0, 0x20);
+    ChoiceIdList_Add(optionList, 0x2, 0x22);
+    hideCursor();
+    showOptionList(0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295fc8(s32 n) {
-    Unk_020cbb18 *g = data_020cbb18;
-    if (g->func_02072e44()) {
-        if (g->unk_64 == 0) {
+void PocketMenu::setCountdown(s32 n) {
+    CommManager *g = gCommManager;
+    if (g->isOnline()) {
+        if (g->myAid == 0) {
             BOOL z;
             if (n == 0) {
                 z = TRUE;
             } else {
                 z = FALSE;
             }
-            if (z != _ZN12Unk_020e0f1013func_0208c1a4Ev(func_0208a578())) {
-                func_0206f604((u8)(n + 0x12), 4);
-                func_0206f53c(n);
+            if (z != _ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
+                CommSub_Send((u8)(n + 0x12), 4);
+                HudCountdown_StartWithSe(n);
             }
         } else {
-            func_0206f604((u8)(n + 0xd), 0);
+            CommSub_Send((u8)(n + 0xd), 0);
         }
     } else {
-        func_0206f53c(n);
+        HudCountdown_StartWithSe(n);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295fb0() {
-    func_ov096_02295fc8(0);
-    func_ov096_0229865c((S *)this);
+void PocketMenu::actionStopCountdown() {
+    setCountdown(0);
+    PocketMenu_ReturnToIdle(this);
 }
 
 // ===== unit 02295f94 =====
 
-void Unk_ov096_0229aea8::func_ov096_02295f94() {
-    func_ov096_02295fc8(unk_bb - 0x1c);
-    func_ov096_0229865c((S *)this);
+void PocketMenu::actionStartCountdown() {
+    setCountdown(chosenAction - 0x1c);
+    PocketMenu_ReturnToIdle(this);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295d28() {
-    u32 c = unk_bb;
+void PocketMenu::runChosenAction() {
+    u32 c = chosenAction;
     if (c != 0x22 && c != 0 && c != 0xf && c != 0x10 && c != 0x11 && c != 0x1a) {
-        func_ov096_02294ed4();
+        requestCameraPop();
     }
-    if (unk_bb == 0x22) {
-        func_ov096_0229865c((S *)this);
+    if (chosenAction == 0x22) {
+        PocketMenu_ReturnToIdle(this);
         return;
     }
     static Unk_ov096_0229aea8_Fn tbl[34] = {
-        &Unk_ov096_0229aea8::func_ov096_02296680, &Unk_ov096_0229aea8::func_ov096_02296680,
-        &Unk_ov096_0229aea8::func_ov096_022964b0, &Unk_ov096_0229aea8::func_ov096_02294ff8,
-        &Unk_ov096_0229aea8::func_ov096_0229648c, &Unk_ov096_0229aea8::func_ov096_02296460,
-        &Unk_ov096_0229aea8::func_ov096_022963fc, &Unk_ov096_0229aea8::func_ov096_0229637c,
-        &Unk_ov096_0229aea8::func_ov096_02296338, &Unk_ov096_0229aea8::func_ov096_022960b4,
-        &Unk_ov096_0229aea8::func_ov096_022960ac, &Unk_ov096_0229aea8::func_ov096_02296290,
-        &Unk_ov096_0229aea8::func_ov096_02296290, &Unk_ov096_0229aea8::func_ov096_02296290,
-        &Unk_ov096_0229aea8::func_ov096_02296290, &Unk_ov096_0229aea8::func_ov096_0229619c,
-        &Unk_ov096_0229aea8::func_ov096_0229619c, &Unk_ov096_0229aea8::func_ov096_0229619c,
-        &Unk_ov096_0229aea8::func_ov097_0229b414, &Unk_ov096_0229aea8::func_ov097_0229b4a4,
-        &Unk_ov096_0229aea8::func_ov096_02296124, &Unk_ov096_0229aea8::func_ov098_0229b954,
-        &Unk_ov096_0229aea8::func_ov098_0229b624, &Unk_ov096_0229aea8::func_ov098_0229b4c4,
-        &Unk_ov096_0229aea8::func_ov098_0229ba60, &Unk_ov096_0229aea8::func_ov098_0229b488,
-        &Unk_ov096_0229aea8::func_ov096_02296094, &Unk_ov096_0229aea8::func_ov096_02296030,
-        &Unk_ov096_0229aea8::func_ov096_02295fb0, &Unk_ov096_0229aea8::func_ov096_02295f94,
-        &Unk_ov096_0229aea8::func_ov096_02295f94, &Unk_ov096_0229aea8::func_ov096_02295f94,
-        &Unk_ov096_0229aea8::func_ov096_02295f94, &Unk_ov096_0229aea8::func_ov098_0229b390};
-    (this->*tbl[unk_bb])();
+        &PocketMenu::actionAct00, &PocketMenu::actionAct00,
+        &PocketMenu::actionDropItem, &PocketMenu::actionReadLetter,
+        &PocketMenu::actionAct04, &PocketMenu::actionEditLetter,
+        &PocketMenu::actionTakeAttachment, &PocketMenu::actionWriteLetter,
+        &PocketMenu::actionAct08, &PocketMenu::actionAct09,
+        &PocketMenu::actionAct0A, &PocketMenu::actionTakeOutBells,
+        &PocketMenu::actionTakeOutBells, &PocketMenu::actionTakeOutBells,
+        &PocketMenu::actionTakeOutBells, &PocketMenu::actionTakeOff,
+        &PocketMenu::actionTakeOff, &PocketMenu::actionTakeOff,
+        &PocketMenu::actionUseWallpaper, &PocketMenu::actionUseCarpet,
+        &PocketMenu::actionUnwrapItem, &PocketMenu::actionReleaseInsect,
+        &PocketMenu::actionBuryItem, &PocketMenu::actionPlantItem,
+        &PocketMenu::actionReleaseFish, &PocketMenu::actionThrowBottle,
+        &PocketMenu::actionAct1A, &PocketMenu::actionOpenCountdownMenu,
+        &PocketMenu::actionStopCountdown, &PocketMenu::actionStartCountdown,
+        &PocketMenu::actionStartCountdown, &PocketMenu::actionStartCountdown,
+        &PocketMenu::actionStartCountdown, &PocketMenu::actionAct21};
+    (this->*tbl[chosenAction])();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295c94(s32 a) {
+void PocketMenu::showOptionList(s32 a) {
     u32 r6;
     s32 r2;
-    _ZN18Unk_ov002_022013ac19func_ov002_0220160cEP22Unk_ov002_022013ac_Reci(unk_24fc, unk_27f0, func_ov096_02294dbc(0x40000));
-    r6 = func_ov096_02297d50((S *)this, unk_b6);
-    r2 = func_ov096_02297cc0((S *)this, unk_b6);
-    if (unk_b6 == 0x25) {
-        _ZN18Unk_ov002_0220455819func_ov002_02202278Eii(unk_24fc, 0x68, 0x68);
+    _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi(unk_24fc, optionList, testFlags(0x40000));
+    r6 = PocketMenu_GetTargetX(this, actionTarget);
+    r2 = PocketMenu_GetTargetY(this, actionTarget);
+    if (actionTarget == 0x25) {
+        _ZN15PopupChoiceMenu10placeAboveEii(unk_24fc, 0x68, 0x68);
     } else if (a != 0) {
-        _ZN18Unk_ov002_0220455819func_ov002_02202200EP12Unk_020e0d98(unk_24fc, unk_23c0, r2);
+        _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(unk_24fc, unk_23c0, r2);
     } else {
-        _ZN18Unk_ov002_0220455819func_ov002_0220229cEii(unk_24fc, r6, r2);
+        _ZN15PopupChoiceMenu14placeNearPointEii(unk_24fc, r6, r2);
     }
-    func_ov002_02202098(unk_24fc, 0);
-    func_ov002_02200a58(0x1d);
+    PopupChoice_Open(unk_24fc, 0);
+    setMainState(0x1d);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295c60() {
-    func_0200402c(0x2a);
-    unk_bb = 0x22;
-    func_ov096_02296708();
-    func_ov002_02202064(unk_24fc, 0);
-    func_ov002_02200a58(0x1f);
+void PocketMenu::cancelOptions() {
+    Snd_PlaySe(0x2a);
+    chosenAction = 0x22;
+    placeCursorOnTarget();
+    PopupChoice_Close(unk_24fc, 0);
+    setMainState(0x1f);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295c2c() {
-    func_0200402c(0x28);
-    unk_be = 0xf;
-    func_ov002_02202064(unk_24fc, 1);
-    func_ov002_02200a58(0x24);
-    func_ov096_02296898();
+void PocketMenu::closeAddresseeList() {
+    Snd_PlaySe(0x28);
+    addressee = 0xf;
+    PopupChoice_Close(unk_24fc, 1);
+    setMainState(0x24);
+    hideCursor();
 }
 
-s32 Unk_ov096_0229aea8::func_ov096_02295ba4() {
-    switch (unk_bb) {
+s32 PocketMenu::playActionSe() {
+    switch (chosenAction) {
     case 0x12:
     case 0x13:
-        func_0200402c(0x50);
+        Snd_PlaySe(0x50);
         break;
     case 0x14:
-        func_0200402c(0x71);
+        Snd_PlaySe(0x71);
         break;
     case 9:
-        func_0200402c(0x24);
+        Snd_PlaySe(0x24);
         return 0;
     case 2:
     case 0x16:
     case 0x17:
-        func_0200402c(0x25);
+        Snd_PlaySe(0x25);
         return 0;
     case 0x1c:
     case 0x1d:
@@ -3964,32 +3530,32 @@ s32 Unk_ov096_0229aea8::func_ov096_02295ba4() {
     return 1;
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295a44(s32 a) {
+void PocketMenu::addItemOptions(s32 a) {
     volatile u16 v;
-    if (func_0206ef00()) {
-        func_ov002_02201700(unk_27f0, 0, 0);
+    if (MenuCtrl_IsButtons()) {
+        ChoiceIdList_Add(optionList, 0, 0);
     }
-    s32 r4 = func_ov096_02297b48((S *)this, a);
-    a = func_ov096_02297b9c((S *)this, a);
+    s32 r4 = PocketMenu_GetItemFlags(this, a);
+    a = PocketMenu_GetItem(this, a);
     v = a;
     if (r4 == 0) {
         if (Unk_ov096_02295a44_Range(&v, 0x156c, 0x156c)) {
-            if (_ZN12Unk_020e0f1013func_0208c1a4Ev(func_0208a578())) {
-                func_ov002_02201700(unk_27f0, 0xdc, 0x1b);
+            if (_ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
+                ChoiceIdList_Add(optionList, 0xdc, 0x1b);
             } else {
-                func_ov002_02201700(unk_27f0, 0xe1, 0x1c);
+                ChoiceIdList_Add(optionList, 0xe1, 0x1c);
             }
         }
     }
     switch (r4) {
     case 0:
-        if (func_ov096_022965ac(a)) {
-            func_ov002_02201700(unk_27f0, Unk_ov096_0229590c_IsZero(data_020e416c) ? 1 : 0xa, 2);
+        if (canDropItem(a)) {
+            ChoiceIdList_Add(optionList, Unk_ov096_0229590c_IsZero(gFieldSceneKind) ? 1 : 0xa, 2);
         }
-        if (Unk_ov096_0229590c_IsZero(data_020e416c)) {
-            _ZN18Unk_ov096_0229aea819func_ov098_0229bb5cEt(this, a);
-        } else if (func_020b52f8()) {
-            func_ov097_0229b3a4(this, a);
+        if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
+            _ZN10PocketMenu15addFieldOptionsEt(this, a);
+        } else if (Scene_InHouseRoom()) {
+            PocketMenu_AddRoomItemOptions(this, a);
         }
         {
             BOOL r = FALSE;
@@ -3997,484 +3563,484 @@ void Unk_ov096_0229aea8::func_ov096_02295a44(s32 a) {
             u32 b = v;
             if (b >= 0x1000 && a <= 0x10ff) r = TRUE;
             if (r) {
-                func_ov002_02201700(unk_27f0, 0x1c, 7);
+                ChoiceIdList_Add(optionList, 0x1c, 7);
             } else if (a >= 0x151f && a <= 0x151f) {
-                func_ov002_02201700(unk_27f0, 0x1c, 8);
+                ChoiceIdList_Add(optionList, 0x1c, 8);
             }
         }
         break;
     case 1:
-        func_ov002_02201700(unk_27f0, 9, 0x14);
+        ChoiceIdList_Add(optionList, 9, 0x14);
         break;
     case 2:
-        if (func_ov094_02292450(a) == 0) {
-            func_ov002_02201700(unk_27f0, 0x17, 0x14);
+        if (InvItem_IsDeliveryItem(a) == 0) {
+            ChoiceIdList_Add(optionList, 0x17, 0x14);
         }
         break;
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229590c(s32 a) {
-    void *o = func_ov096_02297b14((S *)this, a);
-    if (func_0206ef00()) {
-        func_ov002_02201700(unk_27f0, 0, 1);
+void PocketMenu::addLetterOptions(s32 a) {
+    void *o = PocketMenu_GetLetter(this, a);
+    if (MenuCtrl_IsButtons()) {
+        ChoiceIdList_Add(optionList, 0, 1);
     }
-    s32 t = _ZN12Unk_0206555413func_02065578Ev(o);
-    func_ov096_02294d9c(8);
+    s32 t = _ZN10LetterView8getStateEv(o);
+    clearFlags(8);
     switch (t) {
     case 1:
-        func_ov002_02201700(unk_27f0, 0x16, 5);
-        func_ov002_02201700(unk_27f0, 0x20, 4);
+        ChoiceIdList_Add(optionList, 0x16, 5);
+        ChoiceIdList_Add(optionList, 0x20, 4);
         break;
     case 4:
-        if (Unk_ov096_0229590c_IsZero(data_020e416c)) {
-            _ZN18Unk_ov096_0229aea819func_ov098_0229bb18Ev(this);
+        if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
+            _ZN10PocketMenu15addBottleOptionEv(this);
         }
-        func_ov002_02201700(unk_27f0, 0x16, 5);
-        if (func_ov096_02294dbc(8) == 0) {
-            if (_ZN12Unk_0206555413func_020655d0Ev(o) == 0xfff1) {
-                if (Unk_ov096_0229590c_IsZero(data_020e416c)) {
-                    func_ov002_02201700(unk_27f0, 0x15, 0xa);
+        ChoiceIdList_Add(optionList, 0x16, 5);
+        if (testFlags(8) == 0) {
+            if (_ZN10LetterView10getPresentEv(o) == 0xfff1) {
+                if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
+                    ChoiceIdList_Add(optionList, 0x15, 0xa);
                 }
             }
         }
         break;
     case 7:
-        func_ov002_02201700(unk_27f0, 0x17, 3);
+        ChoiceIdList_Add(optionList, 0x17, 3);
         break;
     case 0:
         break;
     default:
-        func_ov002_02201700(unk_27f0, 0x14, 3);
+        ChoiceIdList_Add(optionList, 0x14, 3);
         break;
     }
-    if (_ZN12Unk_0206555413func_020655d0Ev(o) != 0xfff1) {
-        func_ov002_02201700(unk_27f0, 0x18, 6);
+    if (_ZN10LetterView10getPresentEv(o) != 0xfff1) {
+        ChoiceIdList_Add(optionList, 0x18, 6);
     } else if (t == 1 || t == 3 || t == 6) {
-        if (Unk_ov096_0229590c_IsZero(data_020e416c)) {
-            func_ov002_02201700(unk_27f0, 0x15, 0xa);
+        if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
+            ChoiceIdList_Add(optionList, 0x15, 0xa);
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022958ac() {
-    s32 r = func_ov096_02296c18();
+void PocketMenu::addTakeOutBellsOptions() {
+    s32 r = getWalletBells();
     if (r >= 0x64) {
-        func_ov002_02201700(unk_27f0, 0x6e, 0xb);
-        func_ov002_02201700(unk_27f0, 0x6f, 0xc);
+        ChoiceIdList_Add(optionList, 0x6e, 0xb);
+        ChoiceIdList_Add(optionList, 0x6f, 0xc);
     }
     if (r >= 0x3e8) {
-        func_ov002_02201700(unk_27f0, 0x70, 0xd);
+        ChoiceIdList_Add(optionList, 0x70, 0xd);
     }
     if (r >= 0x2710) {
-        func_ov002_02201700(unk_27f0, 0x71, 0xe);
+        ChoiceIdList_Add(optionList, 0x71, 0xe);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_0229584c() {
-    if (func_ov096_02296f64(5) != 0xfff1) {
-        func_ov002_02201700(unk_27f0, 0x75, 0x11);
+void PocketMenu::addTakeOffOptions() {
+    if (getEquipped(5) != 0xfff1) {
+        ChoiceIdList_Add(optionList, 0x75, 0x11);
     }
-    if (func_ov096_02296f64(4) != 0xfff1) {
-        func_ov002_02201700(unk_27f0, 0x76, 0x10);
+    if (getEquipped(4) != 0xfff1) {
+        ChoiceIdList_Add(optionList, 0x76, 0x10);
     }
-    if (func_ov096_02296f64(3) != 0xfff1) {
-        func_ov002_02201700(unk_27f0, 0x77, 0xf);
+    if (getEquipped(3) != 0xfff1) {
+        ChoiceIdList_Add(optionList, 0x77, 0xf);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295734(u32 a, s32 b) {
-    func_ov096_02294d9c(0x40000);
-    unk_b6 = a;
-    func_ov002_022016e4(unk_27f0, 0x22);
-    if (func_ov096_022982f0((S *)this, a)) {
-        func_ov096_02295a44(a);
-    } else if (func_ov096_022982e0((S *)this, a)) {
-        func_ov096_0229590c(a);
+void PocketMenu::openTargetOptions(u32 a, s32 b) {
+    clearFlags(0x40000);
+    actionTarget = a;
+    ChoiceIdList_Clear(optionList, 0x22);
+    if (PocketMenu_IsPocketTarget(this, a)) {
+        addItemOptions(a);
+    } else if (PocketMenu_IsLetterTarget(this, a)) {
+        addLetterOptions(a);
     } else if (a == 0x25) {
-        func_ov096_022958ac();
+        addTakeOutBellsOptions();
     } else if (a == 0x24) {
-        func_ov096_0229584c();
+        addTakeOffOptions();
     } else if (a != 0x27) {
         return;
     }
-    if (func_ov002_022016cc(unk_27f0) == 0) {
-        if (func_ov096_022982f0((S *)this, a) || func_ov096_022982e0((S *)this, a)) {
-            func_ov002_02201700(unk_27f0, 0x7c, 0x22);
+    if (ChoiceIdList_Count(optionList) == 0) {
+        if (PocketMenu_IsPocketTarget(this, a) || PocketMenu_IsLetterTarget(this, a)) {
+            ChoiceIdList_Add(optionList, 0x7c, 0x22);
         } else if (a == 0x25 || a == 0x27) {
-            func_ov002_02201700(unk_27f0, 0x7b, 0x22);
-            unk_b6 = 0x25;
+            ChoiceIdList_Add(optionList, 0x7b, 0x22);
+            actionTarget = 0x25;
         } else if (a == 0x24) {
-            func_ov002_02201700(unk_27f0, 0x7a, 0x22);
+            ChoiceIdList_Add(optionList, 0x7a, 0x22);
         }
     } else {
-        func_ov002_02201700(unk_27f0, 2, 0x22);
+        ChoiceIdList_Add(optionList, 2, 0x22);
     }
-    func_ov096_02296898();
+    hideCursor();
     if (b == 0) {
-        _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei(unk_23c0, 1);
+        _ZN18TouchPromptBalloon4hideEi(unk_23c0, 1);
     }
-    func_ov096_02295c94(b);
-    if (func_ov096_022982f0((S *)this, a) == 0 && a != 0x24) {
-        func_ov096_02294ed4();
+    showOptionList(b);
+    if (PocketMenu_IsPocketTarget(this, a) == 0 && a != 0x24) {
+        requestCameraPop();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022956e4() {
-    func_ov096_02294dac(0x40000);
-    func_ov002_022016e4(unk_27f0, 0x22);
-    func_ov002_02201700(unk_27f0, 0x1a, 0x22);
-    func_ov002_02201700(unk_27f0, 0x15, 9);
-    func_ov002_02201700(unk_27f0, 0x19, 0x22);
-    func_ov096_02295c94(0);
+void PocketMenu::openConfirmList() {
+    setFlags(0x40000);
+    ChoiceIdList_Clear(optionList, 0x22);
+    ChoiceIdList_Add(optionList, 0x1a, 0x22);
+    ChoiceIdList_Add(optionList, 0x15, 9);
+    ChoiceIdList_Add(optionList, 0x19, 0x22);
+    showOptionList(0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022956d0() {
-    unk_bd = 0;
-    func_ov096_022956a0(1);
+void PocketMenu::openAddresseeList() {
+    addresseePage = 0;
+    openAddresseePage(1);
 }
 
-void Unk_ov096_0229aea8::func_ov096_022956a0(s32 x) {
-    func_ov096_02296898();
-    func_ov002_022020cc(unk_24fc, unk_bd, x);
-    func_ov002_02200a58(0x22);
+void PocketMenu::openAddresseePage(s32 x) {
+    hideCursor();
+    PopupChoice_OpenAddresseePage(unk_24fc, addresseePage, x);
+    setMainState(0x22);
 }
 
 // ===== unit 0229567c =====
 
-extern "C" u32 func_ov096_0229567c() {
-    u8 *g = (u8 *)data_020cbb18;
+extern "C" u32 PocketMenu_GetPlayerSlot() {
+    u8 *g = (u8 *)gCommManager;
     u32 v = *(u32 *)(g + 0x64);
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(g, v)) {
+    if (_ZN11CommManager12isSlotActiveEi(g, v)) {
         return (u8)v;
     }
     return 0;
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295538(void *pad, s32 mode) {
-    s32 col = unk_b5;
+void PocketMenu::moveCursorInPockets(void *pad, s32 mode) {
+    s32 col = cursorTarget;
     s32 row = 0;
     while (col >= 5) {
         col -= 5;
         row++;
     }
-    if (func_ov002_0220126c(pad)) {
-        if (!func_ov002_0220128c(pad) || row == 0) {
+    if (MenuKeys_HasLeft(pad)) {
+        if (!MenuKeys_HasUp(pad) || row == 0) {
             if (col == 0) {
-                if (row == 2 && func_ov096_02294dd0()) {
-                    unk_b5 = 0x21;
+                if (row == 2 && isHoldingShirt()) {
+                    cursorTarget = 0x21;
                     return;
                 }
-                unk_b5 = (row + 2) * 2 + 0x10;
-                func_ov096_02294dac(0x10);
+                cursorTarget = (row + 2) * 2 + 0x10;
+                setFlags(0x10);
             } else {
-                unk_b5 = unk_b5 - 1;
+                cursorTarget = cursorTarget - 1;
                 col = col - 1;
             }
         }
-    } else if (func_ov002_0220125c(pad)) {
-        if (!func_ov002_0220127c(pad)) {
+    } else if (MenuKeys_HasRight(pad)) {
+        if (!MenuKeys_HasDown(pad)) {
             if (col == 4) {
-                unk_b5 = (row + 2) * 2 + 0xf;
+                cursorTarget = (row + 2) * 2 + 0xf;
             } else {
-                unk_b5 = unk_b5 + 1;
+                cursorTarget = cursorTarget + 1;
                 col = col + 1;
             }
         }
     }
-    if (func_ov096_022982f0((S *)this, unk_b5)) {
-        if (!func_ov096_02294dbc(0x30)) {
-            if (func_ov002_0220128c(pad)) {
+    if (PocketMenu_IsPocketTarget(this, cursorTarget)) {
+        if (!testFlags(0x30)) {
+            if (MenuKeys_HasUp(pad)) {
                 if (row > 0) {
-                    unk_b5 = unk_b5 - 5;
-                } else if (col <= 2 && func_ov096_022978d0(mode)) {
-                    unk_b5 = 0x25;
-                } else if (func_ov096_022978f8(mode)) {
-                    unk_b5 = 0x22;
-                } else if (func_ov096_02297910(mode)) {
-                    unk_b5 = 0x24;
+                    cursorTarget = cursorTarget - 5;
+                } else if (col <= 2 && canNavToWallet(mode)) {
+                    cursorTarget = 0x25;
+                } else if (canNavToDropArea(mode)) {
+                    cursorTarget = 0x22;
+                } else if (canNavToPlayer(mode)) {
+                    cursorTarget = 0x24;
                 }
-            } else if (func_ov002_0220127c(pad)) {
+            } else if (MenuKeys_HasDown(pad)) {
                 if (row < 2) {
-                    unk_b5 = unk_b5 + 5;
+                    cursorTarget = cursorTarget + 5;
                 }
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02295348(void *pad, s32 mode) {
-    s32 t = unk_b5 - 0xf;
+void PocketMenu::moveCursorInLetters(void *pad, s32 mode) {
+    s32 t = cursorTarget - 0xf;
     s32 row = t >> 1;
-    if (func_ov002_0220126c(pad)) {
+    if (MenuKeys_HasLeft(pad)) {
         if ((t & 1) > 0) {
-            unk_b5 = unk_b5 - 1;
+            cursorTarget = cursorTarget - 1;
         } else if (mode == 2) {
         } else if (row >= 2) {
-            unk_b5 = (row - 2) * 5 + 4;
+            cursorTarget = (row - 2) * 5 + 4;
         } else {
-            s32 a = func_ov096_022978f8(mode);
-            s32 b = func_ov096_02297910(mode);
+            s32 a = canNavToDropArea(mode);
+            s32 b = canNavToPlayer(mode);
             if (a & b) {
                 if (row == 0) {
-                    unk_b5 = 0x24;
+                    cursorTarget = 0x24;
                 } else {
-                    unk_b5 = 0x22;
+                    cursorTarget = 0x22;
                 }
             } else if (a != 0) {
-                unk_b5 = 0x22;
+                cursorTarget = 0x22;
             } else if (b != 0) {
-                unk_b5 = 0x24;
-            } else if (func_ov096_022978d0(mode)) {
-                unk_b5 = 0x25;
+                cursorTarget = 0x24;
+            } else if (canNavToWallet(mode)) {
+                cursorTarget = 0x25;
             } else {
-                unk_b5 = 4;
+                cursorTarget = 4;
             }
         }
-    } else if (func_ov002_0220125c(pad)) {
+    } else if (MenuKeys_HasRight(pad)) {
         if ((t & 1) < 1) {
-            unk_b5 = unk_b5 + 1;
+            cursorTarget = cursorTarget + 1;
         } else if (mode == 2) {
         } else {
-            func_ov096_02294dac(0x20);
+            setFlags(0x20);
             if (row < 2) {
-                if (func_ov096_022978d0(mode)) {
-                    unk_b5 = 0x25;
+                if (canNavToWallet(mode)) {
+                    cursorTarget = 0x25;
                 } else {
-                    s32 a = func_ov096_022978f8(mode);
-                    s32 b = func_ov096_02297910(mode);
+                    s32 a = canNavToDropArea(mode);
+                    s32 b = canNavToPlayer(mode);
                     if (a & b) {
                         if (row == 0) {
-                            unk_b5 = 0x24;
+                            cursorTarget = 0x24;
                         } else {
-                            unk_b5 = 0x22;
+                            cursorTarget = 0x22;
                         }
                     } else if (a != 0) {
-                        unk_b5 = 0x22;
+                        cursorTarget = 0x22;
                     } else if (b != 0) {
-                        unk_b5 = 0x24;
+                        cursorTarget = 0x24;
                     } else {
-                        unk_b5 = 0;
+                        cursorTarget = 0;
                     }
                 }
             } else {
-                if (row == 4 && func_ov096_02294dd0()) {
-                    unk_b5 = 0x21;
+                if (row == 4 && isHoldingShirt()) {
+                    cursorTarget = 0x21;
                     return;
                 }
-                unk_b5 = (row - 2) * 5;
+                cursorTarget = (row - 2) * 5;
             }
         }
     }
-    if (func_ov096_022982e0((S *)this, unk_b5)) {
-        if (!func_ov096_02294dbc(0x30)) {
-            if (func_ov002_0220128c(pad)) {
+    if (PocketMenu_IsLetterTarget(this, cursorTarget)) {
+        if (!testFlags(0x30)) {
+            if (MenuKeys_HasUp(pad)) {
                 if (row > 0) {
-                    unk_b5 = unk_b5 - 2;
+                    cursorTarget = cursorTarget - 2;
                 } else if (mode == 0) {
-                    func_ov096_022982a0((S *)this);
-                    _ZN18Unk_ov002_0220464c19func_ov002_02202be0Ev(unk_2498);
+                    PocketMenu_MoveCursorToTab(this);
+                    _ZN10MenuCursor14switchToAnim0DEv(unk_2498);
                 }
-            } else if (func_ov002_0220127c(pad)) {
+            } else if (MenuKeys_HasDown(pad)) {
                 if (row < 4) {
-                    unk_b5 = unk_b5 + 2;
+                    cursorTarget = cursorTarget + 2;
                 }
             }
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022952a0(void *pad, s32 mode) {
-    if (func_ov002_0220126c(pad)) {
-        if (*(volatile u8 *)&unk_b5 > 0x19) {
-            unk_b5 = unk_b5 - 1;
+void PocketMenu::moveCursorInTabs(void *pad, s32 mode) {
+    if (MenuKeys_HasLeft(pad)) {
+        if (*(volatile u8 *)&cursorTarget > 0x19) {
+            cursorTarget = cursorTarget - 1;
         }
-    } else if (func_ov002_0220125c(pad)) {
-        if (*(volatile u8 *)&unk_b5 < 0x20) {
-            unk_b5 = unk_b5 + 1;
+    } else if (MenuKeys_HasRight(pad)) {
+        if (*(volatile u8 *)&cursorTarget < 0x20) {
+            cursorTarget = cursorTarget + 1;
         }
     }
-    if (func_ov002_0220127c(pad)) {
-        s32 d = unk_b5 - 0x19;
+    if (MenuKeys_HasDown(pad)) {
+        s32 d = cursorTarget - 0x19;
         if (d == 7) {
-            unk_b5 = 0x10;
+            cursorTarget = 0x10;
         } else if (d == 6) {
-            unk_b5 = 0xf;
+            cursorTarget = 0xf;
         } else if (d == 0) {
-            unk_b5 = 0x25;
+            cursorTarget = 0x25;
         } else {
-            unk_b5 = 0x24;
+            cursorTarget = 0x24;
         }
-        _ZN18Unk_ov002_0220464c19func_ov002_02202c40Ev(unk_2498);
+        _ZN10MenuCursor14switchToAnim01Ev(unk_2498);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_022950fc(void *pad, s32 mode) {
-    u32 v = unk_b5;
+void PocketMenu::moveCursorInPlayerArea(void *pad, s32 mode) {
+    u32 v = cursorTarget;
     if (v == 0x24) {
-        if (func_ov002_0220126c(pad)) {
-            if (func_ov096_022978d0(mode)) {
-                unk_b5 = 0x25;
+        if (MenuKeys_HasLeft(pad)) {
+            if (canNavToWallet(mode)) {
+                cursorTarget = 0x25;
             } else {
-                func_ov096_02294dac(0x10);
-                unk_b5 = 0x10;
+                setFlags(0x10);
+                cursorTarget = 0x10;
             }
-        } else if (func_ov002_0220125c(pad)) {
-            unk_b5 = 0xf;
-        } else if (func_ov002_0220128c(pad)) {
+        } else if (MenuKeys_HasRight(pad)) {
+            cursorTarget = 0xf;
+        } else if (MenuKeys_HasUp(pad)) {
             if (mode == 0) {
-                func_ov096_022982a0((S *)this);
-                _ZN18Unk_ov002_0220464c19func_ov002_02202be0Ev(unk_2498);
+                PocketMenu_MoveCursorToTab(this);
+                _ZN10MenuCursor14switchToAnim0DEv(unk_2498);
             }
-        } else if (func_ov002_0220127c(pad)) {
-            if (func_ov096_022978f8(mode)) {
-                unk_b5 = 0x22;
+        } else if (MenuKeys_HasDown(pad)) {
+            if (canNavToDropArea(mode)) {
+                cursorTarget = 0x22;
             } else {
-                unk_b5 = 4;
+                cursorTarget = 4;
             }
         }
     } else if ((u8)(v + 0xde) <= 1) {
-        if (func_ov002_0220126c(pad)) {
-            if (func_ov096_022978d0(mode)) {
-                unk_b5 = 0x25;
+        if (MenuKeys_HasLeft(pad)) {
+            if (canNavToWallet(mode)) {
+                cursorTarget = 0x25;
             } else {
-                func_ov096_02294dac(0x10);
-                unk_b5 = 0x12;
+                setFlags(0x10);
+                cursorTarget = 0x12;
             }
-        } else if (func_ov002_0220125c(pad)) {
-            unk_b5 = 0x11;
-        } else if (func_ov002_0220128c(pad)) {
-            if (func_ov096_02297910(mode)) {
-                unk_b5 = 0x24;
+        } else if (MenuKeys_HasRight(pad)) {
+            cursorTarget = 0x11;
+        } else if (MenuKeys_HasUp(pad)) {
+            if (canNavToPlayer(mode)) {
+                cursorTarget = 0x24;
             }
-        } else if (func_ov002_0220127c(pad)) {
-            unk_b5 = 4;
+        } else if (MenuKeys_HasDown(pad)) {
+            cursorTarget = 4;
         }
     } else if (v == 0x25) {
-        if (func_ov002_0220126c(pad)) {
-            func_ov096_02294dac(0x10);
-            unk_b5 = 0x12;
-        } else if (func_ov002_0220125c(pad)) {
-            if (func_ov096_022978f8(mode)) {
-                unk_b5 = 0x22;
-            } else if (func_ov096_02297910(mode)) {
-                unk_b5 = 0x24;
+        if (MenuKeys_HasLeft(pad)) {
+            setFlags(0x10);
+            cursorTarget = 0x12;
+        } else if (MenuKeys_HasRight(pad)) {
+            if (canNavToDropArea(mode)) {
+                cursorTarget = 0x22;
+            } else if (canNavToPlayer(mode)) {
+                cursorTarget = 0x24;
             } else {
-                unk_b5 = 0x11;
+                cursorTarget = 0x11;
             }
-        } else if (func_ov002_0220128c(pad)) {
+        } else if (MenuKeys_HasUp(pad)) {
             if (mode == 0) {
-                func_ov096_022982a0((S *)this);
-                _ZN18Unk_ov002_0220464c19func_ov002_02202be0Ev(unk_2498);
+                PocketMenu_MoveCursorToTab(this);
+                _ZN10MenuCursor14switchToAnim0DEv(unk_2498);
             }
-        } else if (func_ov002_0220127c(pad)) {
-            unk_b5 = 1;
+        } else if (MenuKeys_HasDown(pad)) {
+            cursorTarget = 1;
         }
     }
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_02295020(void *pad, s32 mode) {
-    u8 old = unk_b5;
-    func_ov096_02294d9c(0x30);
+BOOL PocketMenu::moveCursorByPad(void *pad, s32 mode) {
+    u8 old = cursorTarget;
+    clearFlags(0x30);
     if (pad == 0) {
         return FALSE;
     }
-    if (func_ov096_022982f0((S *)this, unk_b5)) {
-        func_ov096_02295538(pad, mode);
-    } else if (func_ov096_022982e0((S *)this, unk_b5)) {
-        func_ov096_02295348(pad, mode);
-    } else if (func_ov096_022982d0((S *)this, unk_b5)) {
-        func_ov096_022952a0(pad, mode);
-    } else if (func_ov096_022982c0((S *)this, unk_b5)) {
-        func_ov096_022950fc(pad, mode);
-    } else if (unk_b5 == 0x21) {
-        if (func_ov002_0220125c(pad)) {
-            unk_b5 = 0xa;
-        } else if (func_ov002_0220126c(pad)) {
-            unk_b5 = 0x18;
-            func_ov096_02294dac(0x10);
+    if (PocketMenu_IsPocketTarget(this, cursorTarget)) {
+        moveCursorInPockets(pad, mode);
+    } else if (PocketMenu_IsLetterTarget(this, cursorTarget)) {
+        moveCursorInLetters(pad, mode);
+    } else if (PocketMenu_IsTabTarget(this, cursorTarget)) {
+        moveCursorInTabs(pad, mode);
+    } else if (PocketMenu_IsSpecialTarget(this, cursorTarget)) {
+        moveCursorInPlayerArea(pad, mode);
+    } else if (cursorTarget == 0x21) {
+        if (MenuKeys_HasRight(pad)) {
+            cursorTarget = 0xa;
+        } else if (MenuKeys_HasLeft(pad)) {
+            cursorTarget = 0x18;
+            setFlags(0x10);
         }
     }
-    if (old != unk_b5) {
+    if (old != cursorTarget) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov096_0229aea8::func_ov096_02294ff8() {
-    func_ov002_02200a50(5);
-    func_ov002_02200a60(1);
-    func_ov096_02294dac(0x80);
-    func_ov096_0229a000();
+void PocketMenu::actionReadLetter() {
+    setTransitionState(5);
+    setPhase(1);
+    setFlags(0x80);
+    hideTabBar();
 }
 
-void Unk_ov096_0229aea8::func_ov096_02294fd4() {
-    func_ov002_02200a58(0x21);
-    _ZN12Unk_020e109813func_0208e13cEi(unk_2b14, 2);
-    func_0200402c(0x29);
+void PocketMenu::closeLetterView() {
+    setMainState(0x21);
+    _ZN11LabelButton8setStateEi(unk_2b14, 2);
+    Snd_PlaySe(0x29);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02294fac() {
-    func_ov096_02294fd4();
-    _ZN18Unk_ov090_022921e019func_ov090_02291d8cEj(func_020ed174(this), 7);
-    func_ov096_02294dac(0x20000);
+void PocketMenu::closeLetterViewAndMenu() {
+    closeLetterView();
+    _ZN10MenuTabBar9selectTabEj(ProcBase_GetParent(this), 7);
+    setFlags(0x20000);
 }
 
-void *Unk_ov096_0229aea8::func_ov096_02294f9c() { return func_ov096_02297b14((S *)this, unk_b6); }
+void *PocketMenu::getActionLetter() { return PocketMenu_GetLetter(this, actionTarget); }
 
-void Unk_ov096_0229aea8::func_ov096_02294f14() {
+void PocketMenu::writeLetterOnPaper() {
     u16 v;
-    void *r4 = func_ov096_02294f9c();
-    v = func_ov096_02297b9c((S *)this, unk_b8);
-    s32 r6 = func_0204b354(&v);
-    func_02065c34(r4, (u8)r6);
-    _ZN18Unk_ov002_022013ac19func_ov002_022013e4EPvj(unk_24fc, r4, unk_be);
-    func_0206ed5c(r4);
-    func_ov096_0229a39c(8);
-    func_ov096_0229a000();
-    u32 n = func_0204b338(&v);
+    void *r4 = getActionLetter();
+    v = PocketMenu_GetItem(this, paperTarget);
+    s32 r6 = Item_GetPaperIndex(&v);
+    Letter_InitDraft(r4, (u8)r6);
+    _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(unk_24fc, r4, addressee);
+    MenuCtrl_SetArg(r4);
+    requestTab(8);
+    hideTabBar();
+    u32 n = Item_GetPaperCount(&v);
     s32 r2;
     if (n <= 1) {
         r2 = 0xfff1;
     } else {
-        r2 = func_0204b318(r6, n - 1);
+        r2 = Item_MakePaper(r6, n - 1);
     }
-    func_ov096_022980a0((S *)this, unk_b8, r2, 0);
+    PocketMenu_SetSlotItem(this, paperTarget, r2, 0);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02294ef4() {
-    func_ov096_02294dac(0x400);
-    func_ov096_02294dac(0x800);
+void PocketMenu::requestCameraPush() {
+    setFlags(0x400);
+    setFlags(0x800);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02294ed4() {
-    func_ov096_02294d9c(0x400);
-    func_ov096_02294dac(0x800);
+void PocketMenu::requestCameraPop() {
+    clearFlags(0x400);
+    setFlags(0x800);
 }
 
-void Unk_ov096_0229aea8::func_ov096_02294e84() {
-    if (func_ov096_02294dbc(0x800)) {
-        if (func_0203a35c()) {
-            if (!func_ov096_02294dbc(0x400)) {
-                func_0203a32c();
+void PocketMenu::updateCameraView() {
+    if (testFlags(0x800)) {
+        if (Camera_IsViewPushed()) {
+            if (!testFlags(0x400)) {
+                Camera_PopView();
             }
         } else {
-            if (func_ov096_02294dbc(0x400)) {
-                func_0203a344();
+            if (testFlags(0x400)) {
+                Camera_PushView();
             }
         }
-        func_ov096_02294d9c(0x800);
+        clearFlags(0x800);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov096_02294e08() {
+void PocketMenu::wearHeldShirt() {
     struct {
         u16 a;
         u16 b;
     } l;
-    l.a = *_ZN12Unk_02097ff413func_020983ccEv(func_0209750c());
-    l.b = unk_ac;
-    func_0206e240(&l.b, &unk_320, &unk_e8, &unk_c8);
+    l.a = *_ZN10PlayerData22getInventoryBackgroundEv(PlayerData_GetCurrent());
+    l.b = handItem;
+    MenuScreen_UploadClothPattern(&l.b, &bgTasks[1], &clothImage, &clothPalette);
     BOOL ok = FALSE;
     volatile u16 *pv = &l.a;
     u16 a = *pv;
@@ -4483,22 +4049,22 @@ void Unk_ov096_0229aea8::func_ov096_02294e08() {
         ok = TRUE;
     }
     if (ok) {
-        unk_ac = a;
-        func_ov096_022972ec(1);
+        handItem = a;
+        returnHand(1);
     } else {
-        func_ov096_02297160();
+        clearHand();
     }
-    func_0200402c(0x6b);
+    Snd_PlaySe(0x6b);
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_02294dd0() {
+BOOL PocketMenu::isHoldingShirt() {
     struct Pad {
         s32 v[2];
         Pad() {}
         ~Pad() {}
     } pad;
     BOOL r;
-    if (unk_b1 == 2 && unk_b0 == 0 && unk_ac >= 0x11a8 && unk_ac <= 0x12a7) {
+    if (handKind == 2 && handItemFlags == 0 && handItem >= 0x11a8 && handItem <= 0x12a7) {
         r = TRUE;
     } else {
         r = FALSE;
@@ -4506,16 +4072,16 @@ BOOL Unk_ov096_0229aea8::func_ov096_02294dd0() {
     return r;
 }
 
-BOOL Unk_ov096_0229aea8::func_ov096_02294dbc(u32 mask) {
-    if (unk_94 & mask) {
+BOOL PocketMenu::testFlags(u32 mask) {
+    if (stateFlags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov096_0229aea8::func_ov096_02294dac(u32 mask) { unk_94 = unk_94 | mask; }
+void PocketMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 
-void Unk_ov096_0229aea8::func_ov096_02294d9c(u32 mask) { unk_94 = unk_94 & ~mask; }
+void PocketMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 
 // ===== unit 02294c40 =====
 

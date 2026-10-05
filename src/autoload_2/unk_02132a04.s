@@ -8,10 +8,10 @@
 	.arm
 
 ; _ffltu(u32) -> float. Evidence: clz.
-	.global func_02132a04
-	.type func_02132a04, @function
-	.size func_02132a04, 0x48
-func_02132a04:
+	.global _ffltu
+	.type _ffltu, @function
+	.size _ffltu, 0x48
+_ffltu:
 	cmp r0, #0
 	bxeq lr
 	mov r3, #158

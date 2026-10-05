@@ -25,17 +25,17 @@ extern PXIFifoCallback data_027e0394[32]; // FifoRecvCallbackTable (dtcm)
 #define REG_PXI_SUBPINTF (*(volatile u16 *)0x04000180)
 #define REG_PXI_FIFO_CNT (*(volatile u16 *)0x04000184)
 
-u32 func_01ffa2ec(void);         // OS_DisableInterrupts
-void func_01ffa3d4(u32 state);   // OS_RestoreInterrupts
-void func_01ff81a8(u32 mask);    // OS_ResetRequestIrqMask
-void func_01ffa404(u32 mask, void (*handler)(void)); // OS_SetIrqFunction
-void func_01ff8128(u32 mask);    // OS_EnableIrqMask
-void func_01ffa500(void);        // PXIi_HandlerRecvFifoNotEmpty
+u32 OS_DisableInterrupts(void);         // OS_DisableInterrupts
+void OS_RestoreInterrupts(u32 state);   // OS_RestoreInterrupts
+void OS_ResetRequestIrqMask(u32 mask);    // OS_ResetRequestIrqMask
+void OS_SetIrqFunction(u32 mask, void (*handler)(void)); // OS_SetIrqFunction
+void OS_EnableIrqMask(u32 mask);    // OS_EnableIrqMask
+void PXIi_HandlerRecvFifoNotEmpty(void);        // PXIi_HandlerRecvFifoNotEmpty
 
 // PXI_InitFifo
-void func_02117f20(void) {
+void PXI_InitFifo(void) {
     OSSystemWork *p = OS_GetSystemWork();
-    u32 enabled = func_01ffa2ec();
+    u32 enabled = OS_DisableInterrupts();
     s32 i;
     if (data_021fea64 == 0) {
         data_021fea64 = 1;
@@ -44,9 +44,9 @@ void func_02117f20(void) {
             data_027e0394[i] = 0;
         }
         REG_PXI_FIFO_CNT = 0xc408;
-        func_01ff81a8(0x40000);
-        func_01ffa404(0x40000, func_01ffa500);
-        func_01ff8128(0x40000);
+        OS_ResetRequestIrqMask(0x40000);
+        OS_SetIrqFunction(0x40000, PXIi_HandlerRecvFifoNotEmpty);
+        OS_EnableIrqMask(0x40000);
         for (i = 0;; i++) {
             s32 timeout;
             s32 status;
@@ -63,24 +63,27 @@ void func_02117f20(void) {
             }
         }
     }
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
 }
 
 // PXI_SetFifoRecvCallback
-void func_02117eb4(s32 tag, PXIFifoCallback callback) {
+void PXI_SetFifoRecvCallback(s32 tag, PXIFifoCallback callback) {
     OSSystemWork *p = OS_GetSystemWork();
-    u32 enabled = func_01ffa2ec();
+    u32 enabled = OS_DisableInterrupts();
     data_027e0394[tag] = callback;
     if (callback) {
         p->pxiHandleChecker[0] |= 1 << tag;
     } else {
         p->pxiHandleChecker[0] &= ~(1 << tag);
     }
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
 }
 
 // PXI_IsCallbackReady
-BOOL func_02117e8c(s32 tag, s32 proc) {
+BOOL PXI_IsCallbackReady(s32 tag, s32 proc) {
     OSSystemWork *p = OS_GetSystemWork();
     return (p->pxiHandleChecker[proc] & (1 << tag)) ? 1 : 0;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fea64-0x021fea68)
+u16 data_021fea64;                 // FifoCtrlInit

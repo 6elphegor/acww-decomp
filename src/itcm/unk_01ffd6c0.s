@@ -14,10 +14,10 @@
 	.arm
 
 ; OSi_DoBoot
-	.global func_01ffd6c0
-	.type func_01ffd6c0, @function
-	.size func_01ffd6c0, 0xb0
-func_01ffd6c0:
+	.global OSi_DoBoot
+	.type OSi_DoBoot, @function
+	.size OSi_DoBoot, 0xb0
+OSi_DoBoot:
 	mov r12, #0x04000000
 	str r12, [r12, #0x208] ; REG_IME = 0
 	ldr r1, L_01ffd758
@@ -38,11 +38,11 @@ L_01ffd6e0: ; wait_arm7
 	ldr r4, [r3, #0]
 	ldr r1, L_01ffd764
 	mov r2, #0x80
-	bl func_01ffd770
+	bl OSi_CpuClear32
 	str r4, [r3, #0]
 	ldr r1, L_01ffd768
 	mov r2, #0x80
-	bl func_01ffd770
+	bl OSi_CpuClear32
 	ldr r1, L_01ffd75c
 L_01ffd724: ; wait_arm7_2
 	ldrh r0, [r1, #0]
@@ -72,10 +72,10 @@ L_01ffd76c:
 	.word 0x027ffe00
 
 ; OSi_CpuClear32(data, destp, size)
-	.global func_01ffd770
-	.type func_01ffd770, @function
-	.size func_01ffd770, 0x14
-func_01ffd770:
+	.global OSi_CpuClear32
+	.type OSi_CpuClear32, @function
+	.size OSi_CpuClear32, 0x14
+OSi_CpuClear32:
 	add r12, r1, r2
 L_01ffd774: ; loop
 	cmp r1, r12

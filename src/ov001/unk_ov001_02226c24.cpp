@@ -1,89 +1,89 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-struct Unk_ov001_02226d68_Regs {
-    u32 unk_00, unk_04, unk_08, unk_0c, unk_10, unk_14, unk_18, unk_1c, unk_20, unk_24, unk_28, unk_2c, unk_30;
+struct WfcVramBankState {
+    u32 bg, obj, bgExtPltt, objExtPltt, tex, texPltt, clearImage, subBg, subObj, subBgExtPltt, subObjExtPltt, arm7, lcdc;
 };
 
 extern "C" {
-u32 func_0210f614();
-u32 func_0210f600();
-u32 func_0210f5dc();
-u32 func_0210f5b8();
-u32 func_0210f5a4();
-u32 func_0210f590();
-u32 func_0210f57c();
-u32 func_0210f540();
-u32 func_0210f52c();
-u32 func_0210f504();
-u32 func_0210f4dc();
-u32 func_0210f568();
-u32 func_0210f554();
-void func_021101f4(u32);
-void func_02110088(u32);
-void func_0210ff74(u32);
-void func_0210febc(u32);
-void func_0210fcb8(u32);
-void func_0210fbc4(u32);
-void func_0210fa84(u32);
-void func_0210f900(u32);
-void func_0210f884(u32);
-void func_0210f7f8(u32);
-void func_0210f76c(u32);
-void func_0210f9ac(u32);
-void func_0210f9cc(u32);
-void func_0211c460(s32);
-void func_0211c3b4(s32);
-s32 func_0211c328(u32 *);
-void func_02115ea8(u32, void *, u32);
-s32 func_ov001_02226c24(u8 *s, s32 n);
-void func_ov001_02226c50();
-void func_ov001_02226c60();
-void func_ov001_02226ca8();
-void func_ov001_02226d68();
-void func_ov001_02226ea8();
+u32 GX_DisableBankForBG();
+u32 GX_DisableBankForOBJ();
+u32 GX_DisableBankForBGExtPltt();
+u32 GX_DisableBankForOBJExtPltt();
+u32 GX_DisableBankForTex();
+u32 GX_DisableBankForTexPltt();
+u32 GX_DisableBankForClearImage();
+u32 GX_DisableBankForSubBG();
+u32 GX_DisableBankForSubOBJ();
+u32 GX_DisableBankForSubBGExtPltt();
+u32 GX_DisableBankForSubOBJExtPltt();
+u32 GX_DisableBankForARM7();
+u32 GX_DisableBankForLCDC();
+void GX_SetBankForBG(u32);
+void GX_SetBankForOBJ(u32);
+void GX_SetBankForBGExtPltt(u32);
+void GX_SetBankForOBJExtPltt(u32);
+void GX_SetBankForTex(u32);
+void GX_SetBankForTexPltt(u32);
+void GX_SetBankForClearImage(u32);
+void GX_SetBankForSubBG(u32);
+void GX_SetBankForSubOBJ(u32);
+void GX_SetBankForSubBGExtPltt(u32);
+void GX_SetBankForSubOBJExtPltt(u32);
+void GX_SetBankForLCDC(u32);
+void GX_SetBankForARM7(u32);
+void PM_SetLCDPower(s32);
+void PMi_SendLEDPatternCommand(s32);
+s32 PM_GetLEDPattern(u32 *);
+void MIi_CpuClearFast(u32, void *, u32);
+s32 WfcUtil_StrNLen(u8 *s, s32 n);
+void WfcUtil_RestoreLed();
+void WfcUtil_UpdateLed();
+void WfcGx_ClearVram();
+void WfcGx_RestoreVramBanks();
+void WfcGx_SaveVramBanks();
 }
 
-extern "C" Unk_ov001_02226d68_Regs data_ov001_0222df78 = {0};
+extern "C" WfcVramBankState sWfcSavedVramBanks = {0};
 
 #pragma thumb off
 
-void func_ov001_02226ea8() {
-    data_ov001_0222df78.unk_00 = func_0210f614();
-    data_ov001_0222df78.unk_04 = func_0210f600();
-    data_ov001_0222df78.unk_08 = func_0210f5dc();
-    data_ov001_0222df78.unk_0c = func_0210f5b8();
-    data_ov001_0222df78.unk_10 = func_0210f5a4();
-    data_ov001_0222df78.unk_14 = func_0210f590();
-    data_ov001_0222df78.unk_18 = func_0210f57c();
-    data_ov001_0222df78.unk_1c = func_0210f540();
-    data_ov001_0222df78.unk_20 = func_0210f52c();
-    data_ov001_0222df78.unk_24 = func_0210f504();
-    data_ov001_0222df78.unk_28 = func_0210f4dc();
-    data_ov001_0222df78.unk_2c = func_0210f568();
-    data_ov001_0222df78.unk_30 = func_0210f554();
-    func_0210f9cc(data_ov001_0222df78.unk_2c);
-    func_ov001_02226ca8();
+void WfcGx_SaveVramBanks() {
+    sWfcSavedVramBanks.bg = GX_DisableBankForBG();
+    sWfcSavedVramBanks.obj = GX_DisableBankForOBJ();
+    sWfcSavedVramBanks.bgExtPltt = GX_DisableBankForBGExtPltt();
+    sWfcSavedVramBanks.objExtPltt = GX_DisableBankForOBJExtPltt();
+    sWfcSavedVramBanks.tex = GX_DisableBankForTex();
+    sWfcSavedVramBanks.texPltt = GX_DisableBankForTexPltt();
+    sWfcSavedVramBanks.clearImage = GX_DisableBankForClearImage();
+    sWfcSavedVramBanks.subBg = GX_DisableBankForSubBG();
+    sWfcSavedVramBanks.subObj = GX_DisableBankForSubOBJ();
+    sWfcSavedVramBanks.subBgExtPltt = GX_DisableBankForSubBGExtPltt();
+    sWfcSavedVramBanks.subObjExtPltt = GX_DisableBankForSubOBJExtPltt();
+    sWfcSavedVramBanks.arm7 = GX_DisableBankForARM7();
+    sWfcSavedVramBanks.lcdc = GX_DisableBankForLCDC();
+    GX_SetBankForARM7(sWfcSavedVramBanks.arm7);
+    WfcGx_ClearVram();
 }
 
-void func_ov001_02226d68() {
-    func_0210f614();
-    func_0210f600();
-    func_0210f540();
-    func_0210f52c();
-    func_ov001_02226ca8();
-    func_021101f4(data_ov001_0222df78.unk_00);
-    func_02110088(data_ov001_0222df78.unk_04);
-    func_0210ff74(data_ov001_0222df78.unk_08);
-    func_0210febc(data_ov001_0222df78.unk_0c);
-    func_0210fcb8(data_ov001_0222df78.unk_10);
-    func_0210fbc4(data_ov001_0222df78.unk_14);
-    func_0210fa84(data_ov001_0222df78.unk_18);
-    func_0210f900(data_ov001_0222df78.unk_1c);
-    func_0210f884(data_ov001_0222df78.unk_20);
-    func_0210f7f8(data_ov001_0222df78.unk_24);
-    func_0210f76c(data_ov001_0222df78.unk_28);
-    func_0210f9ac(data_ov001_0222df78.unk_30);
+void WfcGx_RestoreVramBanks() {
+    GX_DisableBankForBG();
+    GX_DisableBankForOBJ();
+    GX_DisableBankForSubBG();
+    GX_DisableBankForSubOBJ();
+    WfcGx_ClearVram();
+    GX_SetBankForBG(sWfcSavedVramBanks.bg);
+    GX_SetBankForOBJ(sWfcSavedVramBanks.obj);
+    GX_SetBankForBGExtPltt(sWfcSavedVramBanks.bgExtPltt);
+    GX_SetBankForOBJExtPltt(sWfcSavedVramBanks.objExtPltt);
+    GX_SetBankForTex(sWfcSavedVramBanks.tex);
+    GX_SetBankForTexPltt(sWfcSavedVramBanks.texPltt);
+    GX_SetBankForClearImage(sWfcSavedVramBanks.clearImage);
+    GX_SetBankForSubBG(sWfcSavedVramBanks.subBg);
+    GX_SetBankForSubOBJ(sWfcSavedVramBanks.subObj);
+    GX_SetBankForSubBGExtPltt(sWfcSavedVramBanks.subBgExtPltt);
+    GX_SetBankForSubOBJExtPltt(sWfcSavedVramBanks.subObjExtPltt);
+    GX_SetBankForLCDC(sWfcSavedVramBanks.lcdc);
     *(volatile u16 *)0x4000050 = 0;
     *(volatile u16 *)0x4001050 = 0;
     *(volatile u32 *)0x4000010 = 0;
@@ -94,42 +94,42 @@ void func_ov001_02226d68() {
     *(volatile u32 *)0x4001014 = 0;
     *(volatile u32 *)0x4001018 = 0;
     *(volatile u32 *)0x400101c = 0;
-    func_0211c460(1);
+    PM_SetLCDPower(1);
 }
 
-void func_ov001_02226ca8()
+void WfcGx_ClearVram()
 {
     volatile u32 a, b, c, d, e, f;
-    func_0210f9ac(0x1f3);
+    GX_SetBankForLCDC(0x1f3);
     c = 0;
-    func_02115ea8(c, (void *)0x6800000, 0x40000);
+    MIi_CpuClearFast(c, (void *)0x6800000, 0x40000);
     d = 0;
-    func_02115ea8(d, (void *)0x6880000, 0x24000);
-    func_0210f554();
+    MIi_CpuClearFast(d, (void *)0x6880000, 0x24000);
+    GX_DisableBankForLCDC();
     a = 0x200;
-    func_02115ea8(a, (void *)0x7000000, 0x400);
+    MIi_CpuClearFast(a, (void *)0x7000000, 0x400);
     e = 0;
-    func_02115ea8(e, (void *)0x5000000, 0x400);
+    MIi_CpuClearFast(e, (void *)0x5000000, 0x400);
     b = 0x200;
-    func_02115ea8(b, (void *)0x7000400, 0x400);
+    MIi_CpuClearFast(b, (void *)0x7000400, 0x400);
     f = 0;
-    func_02115ea8(f, (void *)0x5000400, 0x400);
+    MIi_CpuClearFast(f, (void *)0x5000400, 0x400);
 }
 
-void func_ov001_02226c60()
+void WfcUtil_UpdateLed()
 {
     u32 v;
-    if (func_0211c328(&v) != 0) return;
+    if (PM_GetLEDPattern(&v) != 0) return;
     if (v == 0xf) return;
-    func_0211c3b4(0xf);
+    PMi_SendLEDPatternCommand(0xf);
 }
 
-void func_ov001_02226c50()
+void WfcUtil_RestoreLed()
 {
-    func_0211c3b4(1);
+    PMi_SendLEDPatternCommand(1);
 }
 
-s32 func_ov001_02226c24(u8 *s, s32 n)
+s32 WfcUtil_StrNLen(u8 *s, s32 n)
 {
     s32 i = 0;
     if (n > 0) {

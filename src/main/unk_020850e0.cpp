@@ -1,63 +1,18 @@
 #include "types.h"
+#include "npc/VillagerId.h"
+#include "save/Unk_02085810_Rec.h"
+#include "save/ContestRecord.h"
+#include "game/GroundInfo.h"
 
-struct Unk_02085810_Rec {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
-};
 
-struct Unk_02085810_Base {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
-    /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ u8 unk_0c[8];
-    /* 0x14 */ s8 unk_14;
-    /* 0x15 */ u8 unk_15;
-};
 
-class Unk_02085810 {
-public:
-    u32 func_02085810();
-    void func_02085814(s32 v);
-    void func_0208582c(Unk_02085810_Rec *src);
-    Unk_02085810_Rec *func_02085828();
-    void func_02085860();
-    Unk_02085810_Rec *func_0208586c();
-    void func_02085870(Unk_02085810_Rec *src);
-    void func_020858b0(Unk_02085810_Base *src);
-    void func_02085900(u32 v);
-    void func_02085908();
-    void func_02085940();
-    void func_020858ac();
 
-    /* 0x00 */ Unk_02085810_Base unk_00;
-    /* 0x16 */ Unk_02085810_Rec unk_16;
-    /* 0x22 */ Unk_02085810_Rec unk_22;
-    /* 0x2e */ u16 unk_2e;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ u8 unk_34;
-    /* 0x35 */ u8 unk_35;
-    /* 0x36 */ u8 unk_36;
-    /* 0x37 */ u8 unk_37;
-};
 
-// Scratch object of the grid probe (func_0203398c constructs, func_02033988 destroys).
-class Unk_0203398c {
-public:
-    u8 pad_00[0x34];
-    s32 unk_34;
-    u8 pad_38[8];
-    Unk_0203398c() {}
-    Unk_0203398c *func_0203398c(s32 x, s32 z, s32 a, s32 b);
-    ~Unk_0203398c();
-};
-
-extern u8 data_021dfd8c[];
-extern u8 data_020e416c;
-extern u8 data_021c47c4[];
-extern u8 data_021d735c[];
-extern u8 data_021d7350[];
+extern u8 gSaveVillagers[];
+extern u8 gFieldSceneKind;
+extern u8 gSceneBlockMap[];
+extern u8 gSavePlayers[];
+extern u8 gSaveData[];
 
 // Neighbour offsets of the grid probes.
 struct Unk_02085490_Pt {
@@ -65,236 +20,237 @@ struct Unk_02085490_Pt {
     Unk_02085490_Pt(s32 px, s32 py) { x = px; y = py; }
 };
 
-class Unk_0208524c {
+class TownSessionState {
 public:
     u8 unk_00[0x34];
-    Unk_0208524c();
-    ~Unk_0208524c();
+    TownSessionState();
+    ~TownSessionState();
 };
 
-Unk_02085490_Pt data_021cdd38[14] = {
+Unk_02085490_Pt sVillagerGardenOffsets[14] = {
     Unk_02085490_Pt(-3, -2), Unk_02085490_Pt(2, -2), Unk_02085490_Pt(-3, -1), Unk_02085490_Pt(2, -1),
     Unk_02085490_Pt(-3, 0), Unk_02085490_Pt(2, 0), Unk_02085490_Pt(-3, 1), Unk_02085490_Pt(2, 1),
     Unk_02085490_Pt(-3, 2), Unk_02085490_Pt(-2, 2), Unk_02085490_Pt(-1, 2), Unk_02085490_Pt(0, 2),
     Unk_02085490_Pt(1, 2), Unk_02085490_Pt(2, 2)
 };
-Unk_02085490_Pt data_021cdcf8[8] = {
+Unk_02085490_Pt sGardenNeighbourOffsets[8] = {
     Unk_02085490_Pt(0, 1), Unk_02085490_Pt(0, -1), Unk_02085490_Pt(-1, 0), Unk_02085490_Pt(1, 0),
     Unk_02085490_Pt(-1, -1), Unk_02085490_Pt(1, -1), Unk_02085490_Pt(-1, 1), Unk_02085490_Pt(1, 1)
 };
-Unk_0208524c data_021cdcc4;
+TownSessionState gTownSessionState;
 
 extern "C" {
-void *_ZN12Unk_0208581013func_0208586cEv(void *self);
-void _ZN12Unk_0208581013func_020858acEv(void *self);
-void _ZN12Unk_0208581013func_020858b0EP17Unk_02085810_Base(void *self, void *src);
-void _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(void *self, void *src);
-void _ZN12Unk_0208581013func_02085908Ev(void *self);
-void func_02115fb4(void *p, u32 v, u32 n);
-s32 func_02116048(void *, void *, s32);
-void *func_0207bf60(void *, s32);
-void *_ZN12Unk_0208086013func_020805c4Ev(void *);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *);
-u8 *_ZN12Unk_0207e94013func_0207f170Ev(...);
-void func_02076a6c(void *, s32, s32);
-void func_02076b08(void *, s32, s32);
-s32 func_02083e60(void *);
-void func_0208403c(void *);
+void *_ZN13ContestRecord17getHolderVillagerEv(void *self);
+void _ZN13ContestRecord15getHolderPlayerEv(void *self);
+void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *self, void *src);
+void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *self, void *src);
+void _ZN13ContestRecord10resetTodayEv(void *self);
+void MI_CpuFill8(void *p, u32 v, u32 n);
+s32 MI_CpuCopy8(void *, void *, s32);
+void *SaveVillagers_Get(void *, s32);
+void *_ZN12VillagerData13getVillagerIdEv(void *);
+s32 _ZN10VillagerId7isValidEv(void *);
+u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
+void NetBuf_PackPair20(void *, s32, s32);
+void CommRecord_PackSource(void *, s32, s32);
+s32 VisitorSchedule_Clear(void *);
+#define RoomFreeUnitMap_ctor _ZN15RoomFreeUnitMapC1Ev
+void RoomFreeUnitMap_ctor(void *);
 BOOL func_02072e88(void *, u32);
-s32 func_020b50e8();
-s32 func_020b4910();
-void *func_0204da0c();
-void *func_02037558(void *, s32, s32, s32);
-void func_02037590(void *, u16 *, s32, s32, s32);
-BOOL func_0204b2d4(u16 *);
-s32 func_0204b25c(u16 *);
-void *func_0209750c();
-void *_ZN12Unk_0209865c13func_0209888cEv(void *);
-s32 _ZN12Unk_020940a013func_02094218Ev(void *);
-s32 _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
-s32 func_0203c338();
-s32 func_0203c31c();
-void func_0209d498(void *);
-s32 func_0203f2e0(s32, void *, s32);
-void _ZN12Unk_02086f8413func_02086f84Ev(void *);
-void _ZN12Unk_02086b7c13func_02086bf0Ev(void *);
-void func_02086adc(void *);
-void _ZN12Unk_02086b7c13func_02086bfcEv(void *);
-void _ZN12Unk_02086f1413func_02086f30Ev(void *);
-void _ZN12Unk_02086c0413func_02086ee8Ev(void *);
-void _ZN12Unk_02086ef013func_02086f0cEv(void *);
-void _ZN12Unk_02086f8413func_02086f8cEv(void *);
-void _ZN12Unk_0208721013func_0208721cEv(void *);
-void func_02086ae8(void *);
-void func_02086aec(void *);
-void _ZN12Unk_0208721013func_02087220Ev(void *);
-void _ZN12Unk_02086f8413func_02086f90Ev(void *);
-void _ZN12Unk_02086ef013func_02086f10Ev(void *);
-void _ZN12Unk_02086c0413func_02086eecEv(void *);
-void _ZN12Unk_02086f1413func_02086f34Ev(void *);
-void _ZN12Unk_02086b7c13func_02086c00Ev(void *);
-void func_020030e8(...);
-void _ZN12Unk_020940a013func_02094294Ev(...);
-s32 func_02063b8c(s32);
-s32 func_0207bcfc(u32, s32, s32);
-s32 func_0204ea88(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
-void func_0204edf8(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
-void *func_0204ebd8(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
+s32 Scene_GetCurrent();
+s32 Scene_GetMaxSpNpcs();
+void *TownBlockMap_Get();
+void *MapBlock_GetItemPtr(void *, s32, s32, s32);
+void MapBlock_SetItem(void *, u16 *, s32, s32, s32);
+BOOL Item_IsFurniture(u16 *);
+s32 Item_GetFurnitureIndex(u16 *);
+void *PlayerData_GetCurrent();
+void *_ZN10PlayerData11getPlayerIdEv(void *);
+s32 _ZN8PlayerId7isValidEv(void *);
+s32 _ZN10PlayerData8testFlagEj(void *, s32);
+s32 Catalog_HasAllFish();
+s32 Catalog_HasAllInsects();
+void Clock_GetDateTime(void *);
+s32 Event_GetState(s32, void *, s32);
+void _ZN15ShopClosingTime16clearClosingTimeEv(void *);
+void _ZN17VisitorSpawnFlags5clearEv(void *);
+void VisitorPos_Clear(void *);
+void _ZN17VisitorSpawnFlags8destructEv(void *);
+void _ZN16ResettiVisitFlag8destructEv(void *);
+void _ZN13PeteFallState8destructEv(void *);
+void _ZN15TownTravelState8destructEv(void *);
+void _ZN15ShopClosingTime8destructEv(void *);
+void _ZN15KatieVisitState8destructEv(void *);
+void VisitorPos_Destruct(void *);
+void VisitorPos_Construct(void *);
+void _ZN15KatieVisitState9constructEv(void *);
+void _ZN15ShopClosingTime9constructEv(void *);
+void _ZN15TownTravelState9constructEv(void *);
+void _ZN13PeteFallState9constructEv(void *);
+void _ZN16ResettiVisitFlag9constructEv(void *);
+void _ZN17VisitorSpawnFlags9constructEv(void *);
+void VillagerId_Clear(...);
+void _ZN8PlayerId5clearEv(...);
+s32 Random_GlobalBelow(s32);
+s32 Random_PickSetBit(u32, s32, s32);
+s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
+void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
+void *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 s32 _s32_div_f(s32, s32);
-s32 func_02085580(u32 v);
-s32 func_020855a8(u32 *out, u16 *p);
-s32 func_02085490(s32 *pos);
-s32 func_020854e0(void *obj, void *grid);
-s32 func_020853a0(void *self, void *grid);
-s32 func_02063b74(s32);
+s32 CountSetBits(u32 v);
+s32 Contest_GetFlowerKind(u32 *out, u16 *p);
+s32 Contest_IsNextToGroundAttr4(s32 *pos);
+s32 ContestRecord_ScoreVillagerGarden(void *obj, void *grid);
+s32 ContestRecord_ScorePlayerGarden(void *self, void *grid);
+s32 Random_GlobalBelow2(s32);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffc5a4(s32 a, s32 b);
-s32 func_0204b978(u16 *);
-s32 func_0204b900(u16 *);
-void func_0209cf88(void *);
-s32 func_0209cd00(void *, void *);
-s32 func_0203f42c(s32);
-void _ZN12Unk_0209da4413func_0209e120Ej(void *, s32);
-void *func_02097868(void *, s32);
-s32 _ZN12Unk_0209865c13func_02098a48Ev(void *);
-void *_ZN12Unk_0209865c13func_0209868cEv(void *);
-void _ZN12Unk_02087ad813func_02087b38Ev(void *);
-void _ZN12Unk_02087ad813func_02087b18Ev(void *);
-void _ZN12Unk_02097ff413func_02097ff4Ej(void *, s32);
-void _ZN12Unk_02087ad813func_02087bb0Ei(void *, s32);
-void _ZN12Unk_02087ad813func_02087b94Ei(void *, s32);
-void func_020851a4(void *self, u32 bit);
+s32 FX_Div(s32 a, s32 b);
+s32 Item_GetFishBaseSize(u16 *);
+s32 Item_GetInsectBaseSize(u16 *);
+void Clock_GetDate(void *);
+s32 Date_DaysBetween(void *, void *);
+s32 Event_GetDaysSinceStart(s32);
+void _ZN8SaveData9clearFlagEj(void *, s32);
+void *PlayerData_GetResident(void *, s32);
+s32 _ZN10PlayerData6isUsedEv(void *);
+void *_ZN10PlayerData14getSpNpcRecordEv(void *);
+void _ZN17PlayerSpNpcRecord15resetAcornCountEv(void *);
+void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *);
+void _ZN10PlayerData9clearFlagEj(void *, s32);
+void _ZN17PlayerSpNpcRecord24setEnteredFishingTourneyEi(void *, s32);
+void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *, s32);
+void TownSessionState_SetFlag(void *self, u32 bit);
 }
 
-struct Unk_020856a4_Rec {
+struct ClockDateBytes {
     u8 b[4];
 };
 
-void Unk_02085810::func_02085908() {
+void ContestRecord::resetToday() {
     u8 d[8];
-    func_02085940();
-    func_0209cf88(d);
-    unk_36 = d[2];
-    unk_35 = d[1];
-    unk_34 = d[0];
-    unk_37 = 0;
+    clear();
+    Clock_GetDate(d);
+    dateYear = d[2];
+    dateMonth = d[1];
+    dateDay = d[0];
+    kind = 0;
 }
 
-void Unk_02085810::func_02085900(u32 v) { unk_37 = v; }
+void ContestRecord::setKind(u32 v) { kind = v; }
 
-void Unk_02085810::func_020858b0(Unk_02085810_Base *src) { unk_00 = *src; func_020030e8(&unk_16); }
+void ContestRecord::setHolderPlayer(Unk_02085810_Base *src) { holderPlayer = *src; VillagerId_Clear(&holderVillager); }
 
-void Unk_02085810::func_020858ac() {}
+void ContestRecord::getHolderPlayer() {}
 
-void Unk_02085810::func_02085870(Unk_02085810_Rec *src) { unk_16 = *src; _ZN12Unk_020940a013func_02094294Ev(this); }
+void ContestRecord::setHolderVillager(VillagerId *src) { holderVillager = *src; _ZN8PlayerId5clearEv(this); }
 
-Unk_02085810_Rec *Unk_02085810::func_0208586c() { return &unk_16; }
+VillagerId *ContestRecord::getHolderVillager() { return &holderVillager; }
 
-void Unk_02085810::func_02085860() { func_020030e8(&unk_22); }
+void ContestRecord::clearVotedVillager() { VillagerId_Clear(&votedVillager); }
 
-void Unk_02085810::func_0208582c(Unk_02085810_Rec *src) { unk_22 = *src; }
+void ContestRecord::setVotedVillager(VillagerId *src) { votedVillager = *src; }
 
-Unk_02085810_Rec *Unk_02085810::func_02085828() { return &unk_22; }
+VillagerId *ContestRecord::getVotedVillager() { return &votedVillager; }
 
-extern "C" void func_02085820(Unk_02085810 *o, u16 *in) { o->unk_2e = *in; }
+extern "C" void ContestRecord_SetItem(ContestRecord *o, u16 *in) { o->item = *in; }
 
-extern "C" void func_02085818(u16 *out, Unk_02085810 *o) { *out = o->unk_2e; }
+extern "C" void ContestRecord_GetItem(u16 *out, ContestRecord *o) { *out = o->item; }
 
-void Unk_02085810::func_02085814(s32 v) { unk_30 = v; }
+void ContestRecord::setSize(s32 v) { size = v; }
 
-u32 Unk_02085810::func_02085810() { return unk_30; }
+u32 ContestRecord::getSize() { return size; }
 
-extern "C" void func_02085784(u8 *self, u32 mode)
+extern "C" void ContestRecord_BeginContestDay(u8 *self, u32 mode)
 {
-    Unk_020856a4_Rec t;
+    ClockDateBytes t;
     s32 i;
     s32 z1 = 0;
     s32 z0 = 0;
-    func_0209cf88(&t);
+    Clock_GetDate(&t);
     if (self[0x36] == t.b[2] && self[0x35] == t.b[1] && self[0x34] == t.b[0]) {
         return;
     }
-    _ZN12Unk_0208581013func_02085908Ev(self);
+    _ZN13ContestRecord10resetTodayEv(self);
     for (i = 0; i < 4; i++) {
-        void *o = func_02097868(data_021d735c, i);
-        if (o != NULL && _ZN12Unk_0209865c13func_02098a48Ev(o) != 0) {
+        void *o = PlayerData_GetResident(gSavePlayers, i);
+        if (o != NULL && _ZN10PlayerData6isUsedEv(o) != 0) {
             switch (mode) {
             case 1:
-                _ZN12Unk_02087ad813func_02087bb0Ei(_ZN12Unk_0209865c13func_0209868cEv(o), z0);
+                _ZN17PlayerSpNpcRecord24setEnteredFishingTourneyEi(_ZN10PlayerData14getSpNpcRecordEv(o), z0);
                 break;
             case 2:
-                _ZN12Unk_02087ad813func_02087b94Ei(_ZN12Unk_0209865c13func_0209868cEv(o), z1);
+                _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(_ZN10PlayerData14getSpNpcRecordEv(o), z1);
                 break;
             }
         }
     }
 }
 
-extern "C" void func_020856a4(u8 *self, u32 mode)
+extern "C" void ContestRecord_BeginFestival(u8 *self, u32 mode)
 {
-    Unk_020856a4_Rec t;
+    ClockDateBytes t;
     s32 v;
     s32 i;
-    func_0209cf88(&t);
+    Clock_GetDate(&t);
     v = 0;
     switch (mode) {
     case 0:
-        v = func_0203f42c(0xe);
+        v = Event_GetDaysSinceStart(0xe);
         break;
     case 1:
-        v = func_0203f42c(0x11);
+        v = Event_GetDaysSinceStart(0x11);
         break;
     case 2:
-        v = func_0203f42c(0x10);
+        v = Event_GetDaysSinceStart(0x10);
         break;
     }
-    s32 r = func_0209cd00(&t, self + 0x34);
+    s32 r = Date_DaysBetween(&t, self + 0x34);
     if (t.b[2] == self[0x36] && v != -1 && r <= 7 && r >= 0 && t.b[0] - v <= self[0x34]) {
         return;
     }
     switch (mode) {
     case 1:
-        _ZN12Unk_0209da4413func_0209e120Ej(data_021d7350, 0x11);
+        _ZN8SaveData9clearFlagEj(gSaveData, 0x11);
         break;
     case 0:
     case 2:
         for (i = 0; i < 4; i++) {
-            void *o = func_02097868(data_021d735c, i);
-            if (o != NULL && _ZN12Unk_0209865c13func_02098a48Ev(o) != 0) {
+            void *o = PlayerData_GetResident(gSavePlayers, i);
+            if (o != NULL && _ZN10PlayerData6isUsedEv(o) != 0) {
                 if (mode == 2) {
-                    _ZN12Unk_02087ad813func_02087b38Ev(_ZN12Unk_0209865c13func_0209868cEv(o));
-                    _ZN12Unk_02097ff413func_02097ff4Ej(o, 0xf);
+                    _ZN17PlayerSpNpcRecord15resetAcornCountEv(_ZN10PlayerData14getSpNpcRecordEv(o));
+                    _ZN10PlayerData9clearFlagEj(o, 0xf);
                 } else {
-                    _ZN12Unk_02087ad813func_02087b18Ev(_ZN12Unk_0209865c13func_0209868cEv(o));
+                    _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(_ZN10PlayerData14getSpNpcRecordEv(o));
                 }
             }
         }
         break;
     }
-    _ZN12Unk_0208581013func_02085908Ev(self);
+    _ZN13ContestRecord10resetTodayEv(self);
 }
 
-extern "C" s32 func_02085618(u16 *p)
+extern "C" s32 Contest_GetCatchSize(u16 *p)
 {
     s32 r = 0;
-    s32 base = func_02063b74(0x666) + 0xccd;
+    s32 base = Random_GlobalBelow2(0x666) + 0xccd;
     BOOL in = r;
     u32 v = *p;
     if (v >= 0x12e8 && v <= 0x131f) {
         in = TRUE;
     }
     if (in) {
-        r = func_01ffc5a4(func_01ffcb0c(func_0204b978(p) << 12, base), 0x28a4);
+        r = FX_Div(func_01ffcb0c(Item_GetFishBaseSize(p) << 12, base), 0x28a4);
         if (r < 0x119a) {
             r = 0x119a;
         }
     } else if (v >= 0x12b0 && v <= 0x12e7) {
-        r = func_01ffcb0c(func_0204b900(p) << 12, base);
+        r = func_01ffcb0c(Item_GetInsectBaseSize(p) << 12, base);
     }
     return r;
 }
 
-extern "C" s32 func_020855a8(u32 *out, u16 *p)
+extern "C" s32 Contest_GetFlowerKind(u32 *out, u16 *p)
 {
     BOOL f4 = TRUE, f3 = TRUE, f2 = TRUE, f1 = FALSE;
     u32 v = *p;
@@ -319,7 +275,7 @@ extern "C" s32 func_020855a8(u32 *out, u16 *p)
     return FALSE;
 }
 
-extern "C" s32 func_02085580(u32 v)
+extern "C" s32 CountSetBits(u32 v)
 {
     s32 n = 0;
     if (v != 0) {
@@ -333,17 +289,17 @@ extern "C" s32 func_02085580(u32 v)
     return n;
 }
 
-extern "C" s32 func_020854e0(void *obj, void *grid)
+extern "C" s32 ContestRecord_ScoreVillagerGarden(void *obj, void *grid)
 {
-    void *k = _ZN12Unk_0208086013func_020805c4Ev(obj);
+    void *k = _ZN12VillagerData13getVillagerIdEv(obj);
     s32 r = 0;
     s32 i, sx, sy, z1, z2, v;
-    if (_ZN12Unk_02002fc813func_020030b4Ev(k) != 0) {
+    if (_ZN10VillagerId7isValidEv(k) != 0) {
         u32 mask = r;
-        u8 *q = _ZN12Unk_0207e94013func_0207f170Ev(obj);
+        u8 *q = _ZN20VillagerDataItemView11getHousePosEv(obj);
         sx = q[0];
         sy = q[1];
-        s32 *d = (s32 *)data_021cdd38;
+        s32 *d = (s32 *)sVillagerGardenOffsets;
         s32 cnt = mask;
         v = cnt;
         i = cnt;
@@ -354,9 +310,9 @@ extern "C" s32 func_020854e0(void *obj, void *grid)
             s32 y = sy + d[1];
             s32 hx = x >> 4;
             s32 hy = y >> 4;
-            void *cell = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), z1);
+            void *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), z1);
             v = z2;
-            if (cell != NULL && func_020855a8((u32 *)&v, (u16 *)cell)) {
+            if (cell != NULL && Contest_GetFlowerKind((u32 *)&v, (u16 *)cell)) {
                 if ((u32)v < 0x20) {
                     mask |= 1 << v;
                 }
@@ -364,20 +320,20 @@ extern "C" s32 func_020854e0(void *obj, void *grid)
             }
             d += 2;
         }
-        r = func_02085580(mask);
+        r = CountSetBits(mask);
         r *= cnt;
     }
     return r;
 }
 
-extern "C" s32 func_02085490(s32 *pos)
+extern "C" s32 Contest_IsNextToGroundAttr4(s32 *pos)
 {
-    s32 *p = (s32 *)data_021cdcf8;
+    s32 *p = (s32 *)sGardenNeighbourOffsets;
     s32 i;
     for (i = 0; i < 8; i++) {
-        Unk_0203398c o;
-        o.func_0203398c(pos[0] + p[0], pos[1] + p[1], 0, 0);
-        if (o.unk_34 == 4) {
+        GroundInfo o;
+        o.initAtUnit(pos[0] + p[0], pos[1] + p[1], 0, 0);
+        if (o.attr == 4) {
             return TRUE;
         }
         p += 2;
@@ -385,7 +341,7 @@ extern "C" s32 func_02085490(s32 *pos)
     return FALSE;
 }
 
-extern "C" s32 func_020853a0(void *self, void *grid)
+extern "C" s32 ContestRecord_ScorePlayerGarden(void *self, void *grid)
 {
     s32 r = 0;
     s32 a, b, c, d;
@@ -400,13 +356,13 @@ extern "C" s32 func_020853a0(void *self, void *grid)
     d = 0;
     lo = 0x5014;
     hi = 0x501a;
-    if (func_0204ea88(grid, &a, &b, &c, &d, &lo, &hi, 1, 0)) {
+    if (BlockMap_FindItemAllAttr(grid, &a, &b, &c, &d, &lo, &hi, 1, 0)) {
         mask = 0;
         sx = 0;
         sy = 0;
         cnt = 0;
         sel = 0;
-        func_0204edf8(&sx, &sy, a, b, c, d);
+        FieldUnit_FromBlockUnit(&sx, &sy, a, b, c, d);
         y = sy - 1;
         goto test1;
     loop1:
@@ -417,12 +373,12 @@ extern "C" s32 func_020853a0(void *self, void *grid)
             hx = x >> 4;
             hy = y >> 4;
             {
-                void *cell = func_0204ebd8(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                void *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (cell != NULL) {
-                    if (func_020855a8((u32 *)&sel, (u16 *)cell)) {
+                    if (Contest_GetFlowerKind((u32 *)&sel, (u16 *)cell)) {
                         pos[0] = x;
                         pos[1] = y;
-                        if (func_02085490(pos)) {
+                        if (Contest_IsNextToGroundAttr4(pos)) {
                             if ((u32)sel < 0x20) {
                                 mask |= 1 << sel;
                             }
@@ -438,32 +394,32 @@ extern "C" s32 func_020853a0(void *self, void *grid)
         y++;
     test1:
         if (y < sy + 9) goto loop1;
-        s32 pc = func_02085580(mask);
+        s32 pc = CountSetBits(mask);
         r = _s32_div_f(pc * cnt + 2, 3);
     }
     return r;
 }
 
-extern "C" void func_02085290(void *self)
+extern "C" void ContestRecord_JudgeGardens(void *self)
 {
     u32 mask;
     void *grid;
     s32 best, cnt, i;
-    BOOL b = (data_020e416c == 0);
+    BOOL b = (gFieldSceneKind == 0);
     if (b) {
-        grid = *(void **)data_021c47c4;
-        _ZN12Unk_0208581013func_0208586cEv(self);
-        func_020030e8();
-        _ZN12Unk_0208581013func_020858acEv(self);
-        _ZN12Unk_020940a013func_02094294Ev();
+        grid = *(void **)gSceneBlockMap;
+        _ZN13ContestRecord17getHolderVillagerEv(self);
+        VillagerId_Clear();
+        _ZN13ContestRecord15getHolderPlayerEv(self);
+        _ZN8PlayerId5clearEv();
         if (grid != NULL) {
             mask = 0;
             best = -1;
             cnt = 0;
             for (i = 0; i < 8; i++) {
-                void *o = func_0207bf60(data_021dfd8c, i);
-                if (o != NULL && _ZN12Unk_02002fc813func_020030b4Ev(_ZN12Unk_0208086013func_020805c4Ev(o)) != 0) {
-                    s32 v = func_020854e0(o, grid);
+                void *o = SaveVillagers_Get(gSaveVillagers, i);
+                if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
+                    s32 v = ContestRecord_ScoreVillagerGarden(o, grid);
                     if (v > best) {
                         mask = (u8)(1 << i);
                         cnt = 1;
@@ -474,52 +430,52 @@ extern "C" void func_02085290(void *self)
                     }
                 }
             }
-            s32 w = func_020853a0(self, grid);
-            if (cnt == 0 || w > best || (w > 0 && w == best && func_02063b8c(2) == 0)) {
-                _ZN12Unk_0208581013func_020858b0EP17Unk_02085810_Base(self, _ZN12Unk_0209865c13func_0209888cEv(func_0209750c()));
+            s32 w = ContestRecord_ScorePlayerGarden(self, grid);
+            if (cnt == 0 || w > best || (w > 0 && w == best && Random_GlobalBelow(2) == 0)) {
+                _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(self, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
             } else {
-                void *o = func_0207bf60(data_021dfd8c, func_0207bcfc(mask, cnt, 8));
-                if (o != NULL && _ZN12Unk_02002fc813func_020030b4Ev(_ZN12Unk_0208086013func_020805c4Ev(o)) != 0) {
-                    _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(self, _ZN12Unk_0208086013func_020805c4Ev(o));
+                void *o = SaveVillagers_Get(gSaveVillagers, Random_PickSetBit(mask, cnt, 8));
+                if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
+                    _ZN13ContestRecord17setHolderVillagerEP10VillagerId(self, _ZN12VillagerData13getVillagerIdEv(o));
                 }
             }
         }
     }
 }
 
-Unk_0208524c::Unk_0208524c()
+TownSessionState::TownSessionState()
 {
     u8 *self = (u8 *)this;
-    func_02086aec(self + 4);
-    _ZN12Unk_0208721013func_02087220Ev(self + 0xc);
-    _ZN12Unk_02086f8413func_02086f90Ev(self + 0x18);
-    _ZN12Unk_02086ef013func_02086f10Ev(self + 0x20);
-    _ZN12Unk_02086c0413func_02086eecEv(self + 0x24);
-    _ZN12Unk_02086f1413func_02086f34Ev(self + 0x30);
-    _ZN12Unk_02086b7c13func_02086c00Ev(self + 0x31);
+    VisitorPos_Construct(self + 4);
+    _ZN15KatieVisitState9constructEv(self + 0xc);
+    _ZN15ShopClosingTime9constructEv(self + 0x18);
+    _ZN15TownTravelState9constructEv(self + 0x20);
+    _ZN13PeteFallState9constructEv(self + 0x24);
+    _ZN16ResettiVisitFlag9constructEv(self + 0x30);
+    _ZN17VisitorSpawnFlags9constructEv(self + 0x31);
 }
 
-Unk_0208524c::~Unk_0208524c()
+TownSessionState::~TownSessionState()
 {
     u8 *self = (u8 *)this;
-    _ZN12Unk_02086b7c13func_02086bfcEv(self + 0x31);
-    _ZN12Unk_02086f1413func_02086f30Ev(self + 0x30);
-    _ZN12Unk_02086c0413func_02086ee8Ev(self + 0x24);
-    _ZN12Unk_02086ef013func_02086f0cEv(self + 0x20);
-    _ZN12Unk_02086f8413func_02086f8cEv(self + 0x18);
-    _ZN12Unk_0208721013func_0208721cEv(self + 0xc);
-    func_02086ae8(self + 4);
+    _ZN17VisitorSpawnFlags8destructEv(self + 0x31);
+    _ZN16ResettiVisitFlag8destructEv(self + 0x30);
+    _ZN13PeteFallState8destructEv(self + 0x24);
+    _ZN15TownTravelState8destructEv(self + 0x20);
+    _ZN15ShopClosingTime8destructEv(self + 0x18);
+    _ZN15KatieVisitState8destructEv(self + 0xc);
+    VisitorPos_Destruct(self + 4);
 }
 
-extern "C" void *func_020851e4(u8 *self)
+extern "C" void *TownSessionState_Reset(u8 *self)
 {
-    _ZN12Unk_02086f8413func_02086f84Ev(self + 0x18);
-    func_02115fb4(self, 0, 4);
-    _ZN12Unk_02086b7c13func_02086bf0Ev(self + 0x31);
-    func_02086adc(self + 4);
+    _ZN15ShopClosingTime16clearClosingTimeEv(self + 0x18);
+    MI_CpuFill8(self, 0, 4);
+    _ZN17VisitorSpawnFlags5clearEv(self + 0x31);
+    VisitorPos_Clear(self + 4);
 }
 
-extern "C" BOOL func_020851bc(u32 *w, u32 bit)
+extern "C" BOOL TownSessionState_TestFlag(u32 *w, u32 bit)
 {
     BOOL r;
     s32 idx = bit >> 5;
@@ -535,7 +491,7 @@ done:
     return r;
 }
 
-extern "C" void func_020851a4(void *self, u32 bit)
+extern "C" void TownSessionState_SetFlag(void *self, u32 bit)
 {
     u32 *w = (u32 *)self;
     s32 idx = bit >> 5;
@@ -545,7 +501,7 @@ extern "C" void func_020851a4(void *self, u32 bit)
     }
 }
 
-extern "C" void func_02085188(u32 *w, u32 bit)
+extern "C" void TownSessionState_ClearFlag(u32 *w, u32 bit)
 {
     s32 idx = bit >> 5;
     u32 b = bit & 0x1f;
@@ -554,36 +510,36 @@ extern "C" void func_02085188(u32 *w, u32 bit)
     }
 }
 
-extern "C" void *func_02085184(u8 *p) { return p + 0x18; }
+extern "C" void *TownSessionState_GetClosingTime(u8 *p) { return p + 0x18; }
 
-extern "C" void *func_02085180(u8 *p) { return p + 0x20; }
+extern "C" void *TownSessionState_GetTravelState(u8 *p) { return p + 0x20; }
 
-extern "C" void *func_0208517c(u8 *p) { return p + 0x30; }
+extern "C" void *TownSessionState_GetResettiFlag(u8 *p) { return p + 0x30; }
 
-extern "C" void *func_02085178(u8 *p) { return p + 0xc; }
+extern "C" void *TownSessionState_GetKatieState(u8 *p) { return p + 0xc; }
 
-extern "C" void *func_02085174(u8 *p) { return p + 0x24; }
+extern "C" void *TownSessionState_GetPeteFall(u8 *p) { return p + 0x24; }
 
-extern "C" void *func_02085170(u8 *p) { return p + 0x31; }
+extern "C" void *TownSessionState_GetVisitorFlags(u8 *p) { return p + 0x31; }
 
-extern "C" void *func_0208516c(u8 *p) { return p + 4; }
+extern "C" void *TownSessionState_GetVisitorPos(u8 *p) { return p + 4; }
 
-extern "C" void func_020850e8(void *self)
+extern "C" void TownSessionState_CheckTortimerReward(void *self)
 {
-    void *r5 = func_0209750c();
+    void *r5 = PlayerData_GetCurrent();
     if (r5 != NULL) {
-        if (_ZN12Unk_020940a013func_02094218Ev(_ZN12Unk_0209865c13func_0209888cEv(r5)) != 0) {
-            if (_ZN12Unk_02097ff413func_02098044Ej(r5, 1) == 0) {
-                if ((_ZN12Unk_02097ff413func_02098044Ej(r5, 0x21) == 0 && func_0203c338() != 0) ||
-                    (_ZN12Unk_02097ff413func_02098044Ej(r5, 0x22) == 0 && func_0203c31c() != 0)) {
+        if (_ZN8PlayerId7isValidEv(_ZN10PlayerData11getPlayerIdEv(r5)) != 0) {
+            if (_ZN10PlayerData8testFlagEj(r5, 1) == 0) {
+                if ((_ZN10PlayerData8testFlagEj(r5, 0x21) == 0 && Catalog_HasAllFish() != 0) ||
+                    (_ZN10PlayerData8testFlagEj(r5, 0x22) == 0 && Catalog_HasAllInsects() != 0)) {
                     s32 a[2];
                     s32 b[2];
                     a[0] = 0;
                     a[1] = 0;
-                    func_0209d498(a);
-                    func_02116048(a, b, 8);
-                    if (func_0203f2e0(8, b, 0) == 0) {
-                        func_020851a4(self, 8);
+                    Clock_GetDateTime(a);
+                    MI_CpuCopy8(a, b, 8);
+                    if (Event_GetState(8, b, 0) == 0) {
+                        TownSessionState_SetFlag(self, 8);
                     }
                 }
             }
@@ -591,8 +547,8 @@ extern "C" void func_020850e8(void *self)
     }
 }
 
-extern "C" void *func_020850e0()
+extern "C" void *TownSessionState_Get()
 {
-    return &data_021cdcc4;
+    return &gTownSessionState;
 }
 

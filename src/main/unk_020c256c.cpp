@@ -1,724 +1,508 @@
 #include "types.h"
+#include "actor/ActorProfile.h"
+#include "npc/NpcTalkCtrl.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
+#include "npc/NpcResHandleView.h"
+#include "npc/NpcObstacleProbe.h"
+#include "npc/Unk_0201ad18.h"
+#include "npc/NpcFootstepFx.h"
+#include "sys/ProcBase.h"
+#include "npc/NpcActionCtrl.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "actor/NpcActor.h"
+#include "actor/SpNpcActor.h"
 
 extern "C" {
-u32 _ZN12Unk_020d77a413func_0201bc4cEj(void *p, s32 n);
-s32 _ZN12Unk_020d77a413func_0201bcf8EPS_i(void *p, void *q, s32 n);
-BOOL func_0203d67c(void *p);
-void _ZN12Unk_020d77a413func_0201bda8EPt(void *p, u16 *q);
-u32 _ZN12Unk_020d77a413func_0201bcbcEPS_(void *p, void *q);
-void _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c(void *p, void *q);
+u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
+s32 _ZN8NpcActor6isNearEPS_i(void *p, void *q, s32 n);
+BOOL TalkRequest_SetTargetDone(void *p);
+void _ZN8NpcActor12setNpcHandleEPt(void *p, u16 *q);
+u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
+void _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(void *p, void *q);
 extern u16 data_020c6cc8;
-void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
+void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 }
 
-// Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
-// Unk_020d77a4::vfunc_08(int).
-class Unk_020d8c7c_Base {
+
+// ---- SpNpcTestTalk and its bases (vtable 0x020ddcf0 chain) ----
+
+
+
+class SpNpcTestTalk;
+typedef void (SpNpcTestTalk::*SpNpcTestTalkEndFn)(void *);
+typedef void (SpNpcTestTalk::*SpNpcTestTalkStartFn)(void *);
+
+class SpNpcTestTalk : public ActorTalkRequest {
 public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
+    SpNpcTestTalk();
+    virtual ~SpNpcTestTalk();
+    virtual void onMessageEnd(u32 attr);
+    virtual void start(TalkStartMsg *out);
 
-    Unk_020d8c7c_Base();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
-    virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    void onMessageEndPhase00(void *a);
+    void dispatchStart(TalkStartMsg *out);
+    void startPhase00(TalkStartMsg *out);
+    void setPhase(s32 v);
+    void attachOwner(u32 v);
+
+    s32 phase;
+    u32 owner;
 };
 
-// ---- Unk_020e73b0 and its bases (vtable 0x020ddcf0 chain) ----
-class Unk_020ddcf0 {
+// ---- SpNpcTest and its bases (scene object derived from NpcActor) ----
+
+
+
+
+
+
+class SpNpcTest;
+typedef BOOL (SpNpcTest::*SpNpcTestActFn)();
+struct SpNpcTestActEntry {
+    SpNpcTestActFn setup;
+    SpNpcTestActFn main;
+};
+
+class SpNpcTest : public SpNpcActor {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14(void *a);
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
+    SpNpcTest() {}
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL onDelete();
+    virtual ~SpNpcTest() {}
+    virtual BOOL acceptsInteraction(void *p);
+    virtual void onInteractionEvent(u32 a, u8 b);
+    virtual BOOL updateAct();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
 
-    /* 0x04 */ u32 unk_04[0x38 / 4];
-    /* 0x3c */ u32 unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
-struct Unk_020c270c_Out {
-    const void *vptr;
-    u8 flag;
-};
-
-class Unk_020d7714 : public Unk_020ddcf0 {
-public:
-    Unk_020d7714();
-    virtual ~Unk_020d7714();
-    virtual void vfunc_08();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_78(Unk_020c270c_Out *out) = 0;
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-
-    void *func_02015aac();
-    void func_02015ab0(u32 a);
-
-    u32 pad_44[(0xac - 0x44) / 4];
-};
-
-class Unk_020e73b0;
-typedef void (Unk_020e73b0::*Unk_020c2620_Fn)(void *);
-typedef void (Unk_020e73b0::*Unk_020c269c_Fn)(void *);
-
-class Unk_020e73b0 : public Unk_020d7714 {
-public:
-    Unk_020e73b0();
-    virtual ~Unk_020e73b0();
-    virtual void vfunc_14(void *a);
-    virtual void vfunc_78(Unk_020c270c_Out *out);
-
-    void func_020c2690(void *a);
-    void func_020c269c(Unk_020c270c_Out *out);
-    void func_020c270c(Unk_020c270c_Out *out);
-    void func_020c271c(s32 v);
-    void func_020c2724(u32 v);
-
-    s32 unk_ac;
-    u32 unk_b0;
-};
-
-// ---- Unk_020e7440 and its bases (scene object derived from Unk_020d77a4) ----
-#define MEMBER(name, size) \
-    struct name { \
-        u8 unk_00[size]; \
-        name(); \
-    }
-MEMBER(Unk_020dbd74, 0x2a0 - 0xec);
-MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
-MEMBER(Unk_0201accc, 0x3a8 - 0x350);
-struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
-struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
-MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
-MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
-MEMBER(Unk_020e0cf4, 0x514 - 0x4cc);
-struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
-struct Unk_02019858 {
-    Unk_02019858();
-    BOOL func_02019790();
-    s32 func_020197a8();
-    void func_020196b4(u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
-    u8 unk_00[0x618 - 0x564];
-};
-struct Unk_02013b10 {
-    BOOL func_02014220();
-    u8 unk_00[0x28];
-};
-struct Unk_02014254 : Unk_02013b10 {
-    Unk_02014254();
-};
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
-
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-};
-
-struct Unk_020d77a4_Vec3 {
-    s32 x, y, z;
-};
-typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
-
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
-public:
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-};
-
-struct Unk_020d9670 : Unk_020d5d84 {
-    u8 pad_04[0x58];
-    Unk_0203e7a4_Vec unk_5c;
-    u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
-    u8 pad_90[4];
-    s16 unk_94;
-    u8 pad_96[0xe6 - 0x92];
-    Unk_020d9670();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_48(void *p);
-    virtual void vfunc_4c(int a);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
-    virtual void vfunc_58(void *p);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-};
-
-struct Unk_020d77a4 : Unk_020d9670 {
-    u16 unk_ea;
-    Unk_020dbd74 unk_ec;
-    Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
-    Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
-    Unk_020e0cf4 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
-    Unk_02014254 unk_618;
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_4c(int a);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual BOOL vfunc_68() = 0;
-    virtual const char *vfunc_6c() = 0;
-    virtual const char *vfunc_70() = 0;
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
-    virtual void vfunc_9c();
-    virtual void vfunc_a0();
-    virtual void vfunc_a4();
-    virtual BOOL vfunc_a8();
-};
-
-class Unk_020d8bc8 : public Unk_020d77a4 {
-public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual BOOL vfunc_a8();
-
-    Unk_020e06dc unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
-};
-
-class Unk_020e7440;
-typedef BOOL (Unk_020e7440::*Unk_020c28b0_Fn)();
-struct Unk_020c28b0_Entry {
-    Unk_020c28b0_Fn a;
-    Unk_020c28b0_Fn b;
-};
-
-class Unk_020e7440 : public Unk_020d8bc8 {
-public:
-    Unk_020e7440() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual ~Unk_020e7440() {}
-    virtual BOOL vfunc_48(void *p);
-    virtual void vfunc_4c(s32 a);
-    virtual BOOL vfunc_68();
-    virtual const char *vfunc_6c();
-    virtual const char *vfunc_70();
-
-    BOOL func_020c2798();
-    BOOL func_020c27c8();
-    BOOL func_020c2804();
-    BOOL func_020c2808();
-    BOOL func_020c2834();
-    BOOL func_020c2878();
-    BOOL func_020c287c();
-    void func_020c28b0(s32 state);
-
-    s32 unk_654;
-    Unk_020e73b0 unk_658;
-    s16 unk_70c;
+    s32 act;
+    SpNpcTestTalk talk;
+    s16 homeAngle;
 };
 
 extern "C" {
-extern const u8 data_020d1c98[8];
-extern const char *const data_020d1ca0[];
+extern const u8 sSpNpcTestMsgKey[8];
+extern const char *const sSpNpcModelPaths[];
 }
 
-extern "C" Unk_020e7440 *func_020c29ec();
-extern Unk_020c28b0_Entry data_021f4728[4];
-extern char data_020e6c5c[23];
-extern char data_020e6c74[23];
-extern char data_020e6c8c[23];
-extern char data_020e6ca4[23];
-extern char data_020e6cbc[23];
-extern char data_020e6cd4[23];
-extern char data_020e6cec[23];
-extern char data_020e6d04[23];
-extern char data_020e6d1c[23];
-extern char data_020e6d34[23];
-extern char data_020e6d4c[23];
-extern char data_020e6d64[23];
-extern char data_020e6d7c[23];
-extern char data_020e6d94[23];
-extern char data_020e6dac[23];
-extern char data_020e6dc4[23];
-extern char data_020e6ddc[23];
-extern char data_020e6df4[23];
-extern char data_020e6e0c[23];
-extern char data_020e6e24[23];
-extern char data_020e6e3c[23];
-extern char data_020e6e54[23];
-extern char data_020e6e6c[23];
-extern char data_020e6e84[23];
-extern char data_020e6e9c[23];
-extern char data_020e6eb4[23];
-extern char data_020e6ecc[23];
-extern char data_020e6ee4[23];
-extern char data_020e6efc[23];
-extern char data_020e6f14[23];
-extern char data_020e6f2c[23];
-extern char data_020e6f44[23];
-extern char data_020e6f5c[23];
-extern char data_020e6f74[23];
-extern char data_020e6f8c[23];
-extern char data_020e6fa4[23];
-extern char data_020e6fd4[27];
-extern char data_020e6ff0[27];
-extern char data_020e700c[27];
-extern char data_020e7028[27];
-extern char data_020e7044[27];
-extern char data_020e7060[27];
-extern char data_020e707c[27];
-extern char data_020e7098[27];
-extern char data_020e70b4[27];
-extern char data_020e70d0[27];
-extern char data_020e70ec[27];
-extern char data_020e7108[27];
-extern char data_020e7124[27];
-extern char data_020e7140[27];
-extern char data_020e715c[27];
-extern char data_020e7178[27];
-extern char data_020e7194[27];
-extern char data_020e71b0[27];
-extern char data_020e71cc[27];
-extern char data_020e71e8[27];
-extern char data_020e7204[27];
-extern char data_020e7220[27];
-extern char data_020e723c[27];
-extern char data_020e7258[27];
-extern char data_020e7274[27];
-extern char data_020e7290[27];
-extern char data_020e72ac[27];
-extern char data_020e72c8[27];
-extern char data_020e72e4[27];
-extern char data_020e7300[27];
-extern char data_020e731c[27];
-extern char data_020e7338[27];
-extern char data_020e7354[27];
-extern char data_020e7370[27];
-extern char data_020e738c[27];
+extern "C" SpNpcTest *SpNpcTest_Create();
+extern SpNpcTestActEntry sSpNpcTestActTable[4];
+extern char sSpNpcModelLos[23];
+extern char sSpNpcModelWrl[23];
+extern char sSpNpcModelMum[23];
+extern char sSpNpcModelXct[23];
+extern char sSpNpcModelPoo[23];
+extern char sSpNpcModelTti[23];
+extern char sSpNpcModelOtt[23];
+extern char sSpNpcModelSeo[23];
+extern char sSpNpcModelSeg[23];
+extern char sSpNpcModelWip[23];
+extern char sSpNpcModelLrc[23];
+extern char sSpNpcModelMol[23];
+extern char sSpNpcModelPge[23];
+extern char sSpNpcModelTtl[23];
+extern char sSpNpcModelDnk[23];
+extern char sSpNpcModelBoa[23];
+extern char sSpNpcModelEnd[23];
+extern char sSpNpcModelPlc[23];
+extern char sSpNpcModelPgb[23];
+extern char sSpNpcModelRcn[23];
+extern char sSpNpcModelHgh[23];
+extern char sSpNpcModelHgs[23];
+extern char sSpNpcModelOws[23];
+extern char sSpNpcModelCml[23];
+extern char sSpNpcModelPlb[23];
+extern char sSpNpcModelBpt[23];
+extern char sSpNpcModelRcs[23];
+extern char sSpNpcModelRcd[23];
+extern char sSpNpcModelGrf[23];
+extern char sSpNpcModelRcc[23];
+extern char sSpNpcModelOwl[23];
+extern char sSpNpcModelPla[23];
+extern char sSpNpcModelMka[23];
+extern char sSpNpcModelFox[23];
+extern char sSpNpcModelUpa[23];
+extern char sSpNpcModelPga[23];
+extern char sSpNpcTexUpa[27];
+extern char sSpNpcTexMol[27];
+extern char sSpNpcTexTtl[27];
+extern char sSpNpcTexLos[27];
+extern char sSpNpcTexWrl[27];
+extern char sSpNpcTexWip[27];
+extern char sSpNpcTexLrc[27];
+extern char sSpNpcTexMum[27];
+extern char sSpNpcTexSeg[27];
+extern char sSpNpcTexSeo[27];
+extern char sSpNpcTexXct[27];
+extern char sSpNpcTexPoo[27];
+extern char sSpNpcTexOws[27];
+extern char sSpNpcTexTti[27];
+extern char sSpNpcTexPla[27];
+extern char sSpNpcTexBoa[27];
+extern char sSpNpcTexRcc[27];
+extern char sSpNpcTexCml[27];
+extern char sSpNpcTexHgh[27];
+extern char sSpNpcTexRcs[27];
+extern char sSpNpcTexHgs[27];
+extern char sSpNpcTexPga[27];
+extern char sSpNpcTexRcd[27];
+extern char sSpNpcTexPgb[27];
+extern char sSpNpcTexPlb[27];
+extern char sSpNpcTexEnd[27];
+extern char sSpNpcTexRcn[27];
+extern char sSpNpcTexBpt[27];
+extern char sSpNpcTexDnk[27];
+extern char sSpNpcTexGrf[27];
+extern char sSpNpcTexOwl[27];
+extern char sSpNpcTexPge[27];
+extern char sSpNpcTexOtt[27];
+extern char sSpNpcTexFox[27];
+extern char sSpNpcTexPlc[27];
 
-char data_020e7124[] = "npc_sp/model/ows_tex.nsbtx";
-char data_020e6cbc[] = "npc_sp/model/poo.nsbmd";
-char data_020e7140[] = "npc_sp/model/tti_tex.nsbtx";
-char data_020e6f14[] = "npc_sp/model/rcc.nsbmd";
-char data_020e6f44[] = "npc_sp/model/pla.nsbmd";
-char data_020e6ecc[] = "npc_sp/model/rcs.nsbmd";
-char data_020e7338[] = "npc_sp/model/pge_tex.nsbtx";
-char data_020e6efc[] = "npc_sp/model/grf.nsbmd";
-char data_020e6f5c[] = "npc_sp/model/mka.nsbmd";
-char data_020e71b0[] = "npc_sp/model/cml_tex.nsbtx";
-char data_020e6e24[] = "npc_sp/model/rcn.nsbmd";
-char data_020e6e3c[] = "npc_sp/model/hgh.nsbmd";
-char data_020e6e6c[] = "npc_sp/model/ows.nsbmd";
-char data_020e7204[] = "npc_sp/model/hgs_tex.nsbtx";
-char data_020e7220[] = "npc_sp/model/pga_tex.nsbtx";
-char data_020e7258[] = "npc_sp/model/pgb_tex.nsbtx";
-char data_020e7274[] = "npc_sp/model/plb_tex.nsbtx";
-struct Unk_020e6fbc_Rec {
-    Unk_020e7440 *(*fn)();
-    u32 w[5];
-};
-Unk_020e6fbc_Rec data_020e6fbc = { func_020c29ec, { 0x0080007c, 2, 0x5000, 0x5000, 0x3e800 } };
-char data_020e7290[] = "npc_sp/model/end_tex.nsbtx";
-char data_020e6dac[] = "npc_sp/model/dnk.nsbmd";
-char data_020e6eb4[] = "npc_sp/model/bpt.nsbmd";
-char data_020e72c8[] = "npc_sp/model/bpt_tex.nsbtx";
-char data_020e72e4[] = "npc_sp/model/dnk_tex.nsbtx";
-char data_020e7300[] = "npc_sp/model/grf_tex.nsbtx";
-char data_020e6d04[] = "npc_sp/model/seo.nsbmd";
-char data_020e731c[] = "npc_sp/model/owl_tex.nsbtx";
-char data_020e7354[] = "npc_sp/model/ott_tex.nsbtx";
-char data_020e6fd4[] = "npc_sp/model/upa_tex.nsbtx";
-char data_020e6cd4[] = "npc_sp/model/tti.nsbmd";
-char data_020e6ff0[] = "npc_sp/model/mol_tex.nsbtx";
-char data_020e6ca4[] = "npc_sp/model/xct.nsbmd";
-char data_020e700c[] = "npc_sp/model/ttl_tex.nsbtx";
-char data_020e6d94[] = "npc_sp/model/ttl.nsbmd";
-char data_020e6c8c[] = "npc_sp/model/mum.nsbmd";
-char data_020e7028[] = "npc_sp/model/los_tex.nsbtx";
-const u8 data_020d1c98[8] = { 't', 'e', 's', 't' };
-char data_020e7060[] = "npc_sp/model/wip_tex.nsbtx";
-char data_020e6cec[] = "npc_sp/model/ott.nsbmd";
-const char *const data_020d1ca0[78] = {
-    data_020e6df4,
-    data_020e738c,
-    data_020e6f44,
-    data_020e715c,
-    data_020e6dc4,
-    data_020e7178,
-    data_020e6e84,
-    data_020e71b0,
-    data_020e6e3c,
-    data_020e71cc,
-    data_020e6e54,
-    data_020e7204,
-    data_020e6fa4,
-    data_020e7220,
-    data_020e6e0c,
-    data_020e7258,
-    data_020e6e9c,
-    data_020e7274,
-    data_020e6e24,
-    data_020e72ac,
-    data_020e6eb4,
-    data_020e72c8,
-    data_020e6efc,
-    data_020e7300,
-    data_020e6f2c,
-    data_020e731c,
-    data_020e6cec,
-    data_020e7354,
-    data_020e6f74,
-    data_020e7370,
-    data_020e6d4c,
-    data_020e707c,
-    data_020e6d4c,
-    data_020e707c,
-    data_020e6d64,
-    data_020e6ff0,
-    data_020e6d94,
-    data_020e700c,
-    data_020e6c74,
-    data_020e7044,
-    data_020e6d34,
-    data_020e7060,
-    data_020e6d1c,
-    data_020e70b4,
-    data_020e6d04,
-    data_020e70d0,
-    data_020e6cbc,
-    data_020e7108,
-    data_020e6e6c,
-    data_020e7124,
-    data_020e6e24,
-    data_020e72ac,
-    data_020e6f14,
-    data_020e7194,
-    data_020e6ecc,
-    data_020e71e8,
-    data_020e6ee4,
-    data_020e723c,
-    data_020e6ddc,
-    data_020e7290,
-    data_020e6dac,
-    data_020e72e4,
-    data_020e6d7c,
-    data_020e7338,
-    data_020e6f5c,
+char sSpNpcTexOws[] = "npc_sp/model/ows_tex.nsbtx";
+char sSpNpcModelPoo[] = "npc_sp/model/poo.nsbmd";
+char sSpNpcTexTti[] = "npc_sp/model/tti_tex.nsbtx";
+char sSpNpcModelRcc[] = "npc_sp/model/rcc.nsbmd";
+char sSpNpcModelPla[] = "npc_sp/model/pla.nsbmd";
+char sSpNpcModelRcs[] = "npc_sp/model/rcs.nsbmd";
+char sSpNpcTexPge[] = "npc_sp/model/pge_tex.nsbtx";
+char sSpNpcModelGrf[] = "npc_sp/model/grf.nsbmd";
+char sSpNpcModelMka[] = "npc_sp/model/mka.nsbmd";
+char sSpNpcTexCml[] = "npc_sp/model/cml_tex.nsbtx";
+char sSpNpcModelRcn[] = "npc_sp/model/rcn.nsbmd";
+char sSpNpcModelHgh[] = "npc_sp/model/hgh.nsbmd";
+char sSpNpcModelOws[] = "npc_sp/model/ows.nsbmd";
+char sSpNpcTexHgs[] = "npc_sp/model/hgs_tex.nsbtx";
+char sSpNpcTexPga[] = "npc_sp/model/pga_tex.nsbtx";
+char sSpNpcTexPgb[] = "npc_sp/model/pgb_tex.nsbtx";
+char sSpNpcTexPlb[] = "npc_sp/model/plb_tex.nsbtx";
+ActorProfile sSpNpcTestProfile = {(void *(*)())SpNpcTest_Create, 0x7c, 0x80, 2, 0x5000, 0x5000, 0x3e800};
+char sSpNpcTexEnd[] = "npc_sp/model/end_tex.nsbtx";
+char sSpNpcModelDnk[] = "npc_sp/model/dnk.nsbmd";
+char sSpNpcModelBpt[] = "npc_sp/model/bpt.nsbmd";
+char sSpNpcTexBpt[] = "npc_sp/model/bpt_tex.nsbtx";
+char sSpNpcTexDnk[] = "npc_sp/model/dnk_tex.nsbtx";
+char sSpNpcTexGrf[] = "npc_sp/model/grf_tex.nsbtx";
+char sSpNpcModelSeo[] = "npc_sp/model/seo.nsbmd";
+char sSpNpcTexOwl[] = "npc_sp/model/owl_tex.nsbtx";
+char sSpNpcTexOtt[] = "npc_sp/model/ott_tex.nsbtx";
+char sSpNpcTexUpa[] = "npc_sp/model/upa_tex.nsbtx";
+char sSpNpcModelTti[] = "npc_sp/model/tti.nsbmd";
+char sSpNpcTexMol[] = "npc_sp/model/mol_tex.nsbtx";
+char sSpNpcModelXct[] = "npc_sp/model/xct.nsbmd";
+char sSpNpcTexTtl[] = "npc_sp/model/ttl_tex.nsbtx";
+char sSpNpcModelTtl[] = "npc_sp/model/ttl.nsbmd";
+char sSpNpcModelMum[] = "npc_sp/model/mum.nsbmd";
+char sSpNpcTexLos[] = "npc_sp/model/los_tex.nsbtx";
+const u8 sSpNpcTestMsgKey[8] = { 't', 'e', 's', 't' };
+char sSpNpcTexWip[] = "npc_sp/model/wip_tex.nsbtx";
+char sSpNpcModelOtt[] = "npc_sp/model/ott.nsbmd";
+const char *const sSpNpcModelPaths[78] = {
+    sSpNpcModelPlc,
+    sSpNpcTexPlc,
+    sSpNpcModelPla,
+    sSpNpcTexPla,
+    sSpNpcModelBoa,
+    sSpNpcTexBoa,
+    sSpNpcModelCml,
+    sSpNpcTexCml,
+    sSpNpcModelHgh,
+    sSpNpcTexHgh,
+    sSpNpcModelHgs,
+    sSpNpcTexHgs,
+    sSpNpcModelPga,
+    sSpNpcTexPga,
+    sSpNpcModelPgb,
+    sSpNpcTexPgb,
+    sSpNpcModelPlb,
+    sSpNpcTexPlb,
+    sSpNpcModelRcn,
+    sSpNpcTexRcn,
+    sSpNpcModelBpt,
+    sSpNpcTexBpt,
+    sSpNpcModelGrf,
+    sSpNpcTexGrf,
+    sSpNpcModelOwl,
+    sSpNpcTexOwl,
+    sSpNpcModelOtt,
+    sSpNpcTexOtt,
+    sSpNpcModelFox,
+    sSpNpcTexFox,
+    sSpNpcModelLrc,
+    sSpNpcTexLrc,
+    sSpNpcModelLrc,
+    sSpNpcTexLrc,
+    sSpNpcModelMol,
+    sSpNpcTexMol,
+    sSpNpcModelTtl,
+    sSpNpcTexTtl,
+    sSpNpcModelWrl,
+    sSpNpcTexWrl,
+    sSpNpcModelWip,
+    sSpNpcTexWip,
+    sSpNpcModelSeg,
+    sSpNpcTexSeg,
+    sSpNpcModelSeo,
+    sSpNpcTexSeo,
+    sSpNpcModelPoo,
+    sSpNpcTexPoo,
+    sSpNpcModelOws,
+    sSpNpcTexOws,
+    sSpNpcModelRcn,
+    sSpNpcTexRcn,
+    sSpNpcModelRcc,
+    sSpNpcTexRcc,
+    sSpNpcModelRcs,
+    sSpNpcTexRcs,
+    sSpNpcModelRcd,
+    sSpNpcTexRcd,
+    sSpNpcModelEnd,
+    sSpNpcTexEnd,
+    sSpNpcModelDnk,
+    sSpNpcTexDnk,
+    sSpNpcModelPge,
+    sSpNpcTexPge,
+    sSpNpcModelMka,
     0,
-    data_020e6f8c,
-    data_020e6fd4,
-    data_020e6c5c,
-    data_020e7028,
-    data_020e6c8c,
-    data_020e7098,
-    data_020e6ca4,
-    data_020e70ec,
-    data_020e6cd4,
-    data_020e7140,
+    sSpNpcModelUpa,
+    sSpNpcTexUpa,
+    sSpNpcModelLos,
+    sSpNpcTexLos,
+    sSpNpcModelMum,
+    sSpNpcTexMum,
+    sSpNpcModelXct,
+    sSpNpcTexXct,
+    sSpNpcModelTti,
+    sSpNpcTexTti,
     0,
     0,
 };
-char data_020e6fa4[] = "npc_sp/model/pga.nsbmd";
-char data_020e6d34[] = "npc_sp/model/wip.nsbmd";
-char data_020e6f74[] = "npc_sp/model/fox.nsbmd";
-char data_020e70b4[] = "npc_sp/model/seg_tex.nsbtx";
-char data_020e70ec[] = "npc_sp/model/xct_tex.nsbtx";
+char sSpNpcModelPga[] = "npc_sp/model/pga.nsbmd";
+char sSpNpcModelWip[] = "npc_sp/model/wip.nsbmd";
+char sSpNpcModelFox[] = "npc_sp/model/fox.nsbmd";
+char sSpNpcTexSeg[] = "npc_sp/model/seg_tex.nsbtx";
+char sSpNpcTexXct[] = "npc_sp/model/xct_tex.nsbtx";
 
-extern "C" Unk_020e7440 *func_020c29ec() {
-    return new Unk_020e7440();
+extern "C" SpNpcTest *SpNpcTest_Create() {
+    return new SpNpcTest();
 }
 
-BOOL Unk_020e7440::vfunc_04() {
+BOOL SpNpcTest::preCreate() {
     u16 v = 0xfff1;
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
     v = 0xd000;
-    _ZN12Unk_020d77a413func_0201bda8EPt(this, &v);
-    _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c(this, &unk_658);
-    unk_658.func_020c2724((u32)this);
+    _ZN8NpcActor12setNpcHandleEPt(this, &v);
+    _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(this, &talk);
+    talk.attachOwner((u32)this);
     return TRUE;
 }
 
-BOOL Unk_020e7440::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+BOOL SpNpcTest::onCreate() {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
-    func_020c28b0(0);
-    unk_70c = unk_8e;
+    changeAct(0);
+    homeAngle = rotY;
     return TRUE;
 }
 
-BOOL Unk_020e7440::vfunc_0c() {
-    if (Unk_020d8bc8::vfunc_0c()) {
+BOOL SpNpcTest::onDelete() {
+    if (SpNpcActor::onDelete()) {
         return TRUE;
     }
     return FALSE;
 }
 
-const char *Unk_020e7440::vfunc_6c() {
-    return data_020d1ca0[1];
+u8 *SpNpcTest::getTexturePath() {
+    return (u8 *)sSpNpcModelPaths[1];
 }
 
-const char *Unk_020e7440::vfunc_70() {
-    return data_020d1ca0[0];
+u8 *SpNpcTest::getModelPath() {
+    return (u8 *)sSpNpcModelPaths[0];
 }
 
-BOOL Unk_020e7440::vfunc_68() {
+BOOL SpNpcTest::updateAct() {
     BOOL result = FALSE;
-    if (data_021f4728[unk_654].b != NULL) {
-        result = (this->*data_021f4728[unk_654].b)();
+    if (sSpNpcTestActTable[act].main != NULL) {
+        result = (this->*sSpNpcTestActTable[act].main)();
     }
     return result;
 }
 
-void Unk_020e7440::func_020c28b0(s32 state) {
+void SpNpcTest::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_021f4728[state].a != NULL) {
-        ok = (this->*data_021f4728[state].a)();
+    if (sSpNpcTestActTable[state].setup != NULL) {
+        ok = (this->*sSpNpcTestActTable[state].setup)();
     }
     if (ok == 1) {
-        unk_654 = state;
+        act = state;
     }
 }
 
-BOOL Unk_020e7440::func_020c287c() {
-    unk_564.func_020196b4(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcTest::setupAct00() {
+    actionCtrl.requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2878() {
+BOOL SpNpcTest::mainAct00() {
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2834() {
+BOOL SpNpcTest::setupAct01() {
     u32 x;
-    void *p = unk_658.func_02015aac();
+    void *p = talk.getTalkPlayer();
     x = 0;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a413func_0201bcbcEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
-    _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, x, 0);
-    unk_658.func_020c271c(0);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    talk.setPhase(0);
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2808() {
-    if (unk_618.func_02014220() == 0) {
-        func_0203d67c(this);
-        func_020c28b0(2);
+BOOL SpNpcTest::mainAct01() {
+    if (talkCtrl.isBusy() == 0) {
+        TalkRequest_SetTargetDone(this);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2804() {
+BOOL SpNpcTest::mainAct02() {
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c27c8() {
-    unk_564.func_020196b4(3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcTest::setupAct03() {
+    actionCtrl.requestAction(3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2798() {
-    if (unk_564.func_020197a8() == 3) {
-        if (unk_564.func_02019790() == 1) {
-            func_020c28b0(0);
+BOOL SpNpcTest::mainAct03() {
+    if (actionCtrl.getAction() == 3) {
+        if (actionCtrl.isActionDone() == 1) {
+            changeAct(0);
         }
     }
     return TRUE;
 }
 
-Unk_020e73b0::Unk_020e73b0() {}
+SpNpcTestTalk::SpNpcTestTalk() {}
 
-Unk_020e73b0::~Unk_020e73b0() {}
+SpNpcTestTalk::~SpNpcTestTalk() {}
 
-void Unk_020e73b0::func_020c2724(u32 v) {
-    vfunc_08();
-    unk_b0 = v;
-    unk_ac = 1;
+void SpNpcTestTalk::attachOwner(u32 v) {
+    resetMsg();
+    owner = v;
+    phase = 1;
 }
 
-void Unk_020e73b0::func_020c271c(s32 v) {
-    unk_ac = v;
+void SpNpcTestTalk::setPhase(s32 v) {
+    phase = v;
 }
 
-void Unk_020e73b0::func_020c270c(Unk_020c270c_Out *out) {
-    out->vptr = data_020d1c98;
-    out->flag = 0;
+void SpNpcTestTalk::startPhase00(TalkStartMsg *out) {
+    out->msgKey = (const char *)sSpNpcTestMsgKey;
+    out->msgIndex = 0;
 }
 
-void Unk_020e73b0::func_020c269c(Unk_020c270c_Out *out) {
-    static Unk_020c269c_Fn tbl[1] = { (Unk_020c269c_Fn)&Unk_020e73b0::func_020c270c };
-    if (unk_ac >= 0 && unk_ac < 1) {
-        if (tbl[unk_ac]) {
-            (this->*tbl[unk_ac])((void *)out);
+void SpNpcTestTalk::dispatchStart(TalkStartMsg *out) {
+    static SpNpcTestTalkStartFn tbl[1] = { (SpNpcTestTalkStartFn)&SpNpcTestTalk::startPhase00 };
+    if (phase >= 0 && phase < 1) {
+        if (tbl[phase]) {
+            (this->*tbl[phase])((void *)out);
         }
     }
 }
 
-void Unk_020e73b0::vfunc_78(Unk_020c270c_Out *out) {
-    func_020c269c(out);
+void SpNpcTestTalk::start(TalkStartMsg *out_) {
+    TalkStartMsg *out = out_;
+    dispatchStart(out);
 }
 
-void Unk_020e73b0::func_020c2690(void *a) {}
+void SpNpcTestTalk::onMessageEndPhase00(void *a) {}
 
-char data_020e6ee4[] = "npc_sp/model/rcd.nsbmd";
-char data_020e7178[] = "npc_sp/model/boa_tex.nsbtx";
-char data_020e6dc4[] = "npc_sp/model/boa.nsbmd";
-char data_020e6e54[] = "npc_sp/model/hgs.nsbmd";
-char data_020e6e84[] = "npc_sp/model/cml.nsbmd";
-char data_020e6e0c[] = "npc_sp/model/pgb.nsbmd";
-char data_020e6e9c[] = "npc_sp/model/plb.nsbmd";
+char sSpNpcModelRcd[] = "npc_sp/model/rcd.nsbmd";
+char sSpNpcTexBoa[] = "npc_sp/model/boa_tex.nsbtx";
+char sSpNpcModelBoa[] = "npc_sp/model/boa.nsbmd";
+char sSpNpcModelHgs[] = "npc_sp/model/hgs.nsbmd";
+char sSpNpcModelCml[] = "npc_sp/model/cml.nsbmd";
+char sSpNpcModelPgb[] = "npc_sp/model/pgb.nsbmd";
+char sSpNpcModelPlb[] = "npc_sp/model/plb.nsbmd";
 
-void Unk_020e73b0::vfunc_14(void *a) {
-    static Unk_020c2620_Fn tbl[1] = { &Unk_020e73b0::func_020c2690 };
-    if (unk_ac >= 0 && unk_ac < 1) {
-        if (tbl[unk_ac]) {
-            (this->*tbl[unk_ac])(a);
+void SpNpcTestTalk::onMessageEnd(u32 a_) {
+    void *a = (void *)a_;
+    static SpNpcTestTalkEndFn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
+    if (phase >= 0 && phase < 1) {
+        if (tbl[phase]) {
+            (this->*tbl[phase])(a);
         }
     }
 }
 
-BOOL Unk_020e7440::vfunc_48(void *p) {
+BOOL SpNpcTest::acceptsInteraction(void *p) {
     BOOL r = FALSE;
-    if (_ZN12Unk_020d77a413func_0201bcf8EPS_i(this, p, 0x2000) == 1) {
+    if (_ZN8NpcActor6isNearEPS_i(this, p, 0x2000) == 1) {
         r = TRUE;
     }
     return r;
 }
 
-void Unk_020e7440::vfunc_4c(s32 a) {
+void SpNpcTest::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(_ZN12Unk_020d77a413func_0201bc4cEj(this, 4));
-        func_020c28b0(1);
+        talk.resetMsg();
+        talk.setTalkPlayer(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        changeAct(1);
         break;
     case 8:
-        func_020c28b0(3);
+        changeAct(3);
         break;
     }
 }
 
-Unk_020c28b0_Entry data_021f4728[4] = {
-    { &Unk_020e7440::func_020c287c, &Unk_020e7440::func_020c2878 },
-    { &Unk_020e7440::func_020c2834, &Unk_020e7440::func_020c2808 },
-    { 0, &Unk_020e7440::func_020c2804 },
-    { &Unk_020e7440::func_020c27c8, &Unk_020e7440::func_020c2798 },
+SpNpcTestActEntry sSpNpcTestActTable[4] = {
+    { &SpNpcTest::setupAct00, &SpNpcTest::mainAct00 },
+    { &SpNpcTest::setupAct01, &SpNpcTest::mainAct01 },
+    { 0, &SpNpcTest::mainAct02 },
+    { &SpNpcTest::setupAct03, &SpNpcTest::mainAct03 },
 };
-char data_020e7098[] = "npc_sp/model/mum_tex.nsbtx";
-char data_020e6d1c[] = "npc_sp/model/seg.nsbmd";
-char data_020e7108[] = "npc_sp/model/poo_tex.nsbtx";
-char data_020e715c[] = "npc_sp/model/pla_tex.nsbtx";
-char data_020e7194[] = "npc_sp/model/rcc_tex.nsbtx";
-char data_020e6ddc[] = "npc_sp/model/end.nsbmd";
-char data_020e723c[] = "npc_sp/model/rcd_tex.nsbtx";
-char data_020e6df4[] = "npc_sp/model/plc.nsbmd";
-char data_020e6d64[] = "npc_sp/model/mol.nsbmd";
-char data_020e6f2c[] = "npc_sp/model/owl.nsbmd";
-char data_020e6c5c[] = "npc_sp/model/los.nsbmd";
-char data_020e7044[] = "npc_sp/model/wrl_tex.nsbtx";
-char data_020e707c[] = "npc_sp/model/lrc_tex.nsbtx";
-char data_020e70d0[] = "npc_sp/model/seo_tex.nsbtx";
-char data_020e6d7c[] = "npc_sp/model/pge.nsbmd";
-char data_020e71cc[] = "npc_sp/model/hgh_tex.nsbtx";
-char data_020e72ac[] = "npc_sp/model/rcn_tex.nsbtx";
-char data_020e7370[] = "npc_sp/model/fox_tex.nsbtx";
-char data_020e6c74[] = "npc_sp/model/wrl.nsbmd";
-char data_020e6f8c[] = "npc_sp/model/upa.nsbmd";
-char data_020e71e8[] = "npc_sp/model/rcs_tex.nsbtx";
-char data_020e738c[] = "npc_sp/model/plc_tex.nsbtx";
-char data_020e6d4c[] = "npc_sp/model/lrc.nsbmd";
+char sSpNpcTexMum[] = "npc_sp/model/mum_tex.nsbtx";
+char sSpNpcModelSeg[] = "npc_sp/model/seg.nsbmd";
+char sSpNpcTexPoo[] = "npc_sp/model/poo_tex.nsbtx";
+char sSpNpcTexPla[] = "npc_sp/model/pla_tex.nsbtx";
+char sSpNpcTexRcc[] = "npc_sp/model/rcc_tex.nsbtx";
+char sSpNpcModelEnd[] = "npc_sp/model/end.nsbmd";
+char sSpNpcTexRcd[] = "npc_sp/model/rcd_tex.nsbtx";
+char sSpNpcModelPlc[] = "npc_sp/model/plc.nsbmd";
+char sSpNpcModelMol[] = "npc_sp/model/mol.nsbmd";
+char sSpNpcModelOwl[] = "npc_sp/model/owl.nsbmd";
+char sSpNpcModelLos[] = "npc_sp/model/los.nsbmd";
+char sSpNpcTexWrl[] = "npc_sp/model/wrl_tex.nsbtx";
+char sSpNpcTexLrc[] = "npc_sp/model/lrc_tex.nsbtx";
+char sSpNpcTexSeo[] = "npc_sp/model/seo_tex.nsbtx";
+char sSpNpcModelPge[] = "npc_sp/model/pge.nsbmd";
+char sSpNpcTexHgh[] = "npc_sp/model/hgh_tex.nsbtx";
+char sSpNpcTexRcn[] = "npc_sp/model/rcn_tex.nsbtx";
+char sSpNpcTexFox[] = "npc_sp/model/fox_tex.nsbtx";
+char sSpNpcModelWrl[] = "npc_sp/model/wrl.nsbmd";
+char sSpNpcModelUpa[] = "npc_sp/model/upa.nsbmd";
+char sSpNpcTexRcs[] = "npc_sp/model/rcs_tex.nsbtx";
+char sSpNpcTexPlc[] = "npc_sp/model/plc_tex.nsbtx";
+char sSpNpcModelLrc[] = "npc_sp/model/lrc.nsbmd";

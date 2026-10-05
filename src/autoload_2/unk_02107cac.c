@@ -15,14 +15,14 @@ typedef struct View { u8 pad[26]; u16 anm[1]; } View;
 
 extern u32 data_0213bcb8;
 extern u32 data_0213bcc4;
-extern void func_02115e30(u16 data, void *dest, u32 size);
-extern s32 func_02106300(void *dict, void *name);
-extern u8 *func_021066e8(u8 *, u32, u32);
-extern u32 func_02106778(u8 *, u32);
-extern u32 func_02106768(u8 *);
-extern u32 *func_02106460(void *);
-extern s32 func_01ffc5a4(s32, s32);
-extern void func_01ff8bd0(u32 cmd, void *args, u32 n);
+extern void MIi_CpuClear16(u16 data, void *dest, u32 size);
+extern s32 NNS_G3dGetResDictIdxByName(void *dict, void *name);
+extern u8 *NNSi_G3dGetTexPatAnmFV(u8 *, u32, u32);
+extern u32 NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *, u32);
+extern u32 NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *);
+extern u32 *NNS_G3dGetResDataByName(void *);
+extern s32 FX_Div(s32, s32);
+extern void NNS_G3dGeBufferOP_N(u32 cmd, void *args, u32 n);
 
 
 static inline s32 FxMul(s32 a, s32 b)
@@ -31,7 +31,7 @@ static inline s32 FxMul(s32 a, s32 b)
 }
 
 // NNS g3d: build the texture matrix (MTX_MODE texture, LOAD/MULT_4x3) from a material SRT result
-void func_02108184(u32 *a)
+void NNSi_G3dSendTexSRTSi3d(u32 *a)
 {
     GeBuf s;
     if (a[0] & 8) {
@@ -81,28 +81,28 @@ void func_02108184(u32 *a)
         s.w[5] = FxMul(a[13], s.w[5]);
         s.w[11] = FxMul(a[13], s.w[11]);
     }
-    func_01ff8bd0(s.cmd, (u32 *)&s + 1, 14);
+    NNS_G3dGeBufferOP_N(s.cmd, (u32 *)&s + 1, 14);
 }
 
 // NNS g3d: send joint SRT result to the geometry engine (NNS_G3dGeBufferOP_N: MTX_MULT_4x3 0x19, MTX_MULT_3x3 0x1a, MTX_SCALE 0x1b, MTX_TRANS 0x1c)
-void func_02108100(u32 *r)
+void NNSi_G3dSendJointSRTBasic(u32 *r)
 {
     if ((r[0] & 4) == 0) {
         if ((r[0] & 2) == 0) {
-            func_01ff8bd0(0x19, r + 10, 12);
+            NNS_G3dGeBufferOP_N(0x19, r + 10, 12);
         } else {
-            func_01ff8bd0(0x1c, r + 19, 3);
+            NNS_G3dGeBufferOP_N(0x1c, r + 19, 3);
         }
     } else if ((r[0] & 2) == 0) {
-        func_01ff8bd0(0x1a, r + 10, 9);
+        NNS_G3dGeBufferOP_N(0x1a, r + 10, 9);
     }
     if ((r[0] & 1) == 0) {
-        func_01ff8bd0(0x1b, r + 1, 3);
+        NNS_G3dGeBufferOP_N(0x1b, r + 1, 3);
     }
 }
 
 // NNS g3d scene-graph helper (SBC node state): copy/flag update
-void func_021080c4(u32 *obj, s32 *src, u8 *info, u32 flags)
+void NNSi_G3dGetJointScaleBasic(u32 *obj, s32 *src, u8 *info, u32 flags)
 {
     if (flags & 4) {
         obj[0] |= 1;
@@ -115,7 +115,7 @@ void func_021080c4(u32 *obj, s32 *src, u8 *info, u32 flags)
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitVisAnm-like): bind a visibility animation block to the model
-void func_02108078(u8 *out, u32 res, u8 *blk)
+void NNSi_G3dAnmObjInitNsBva(u8 *out, u32 res, u8 *blk)
 {
     u32 i = 0;
     *(u32 *)(out + 12) = data_0213bcb8;
@@ -127,7 +127,7 @@ void func_02108078(u8 *out, u32 res, u8 *blk)
 }
 
 // NNS g3d (visibility animation, NNSi_G3dAnmCalcVis-like): look up the visibility bit for a joint at a frame
-void func_02108034(u32 *out, u32 *a, u32 frame)
+void NNSi_G3dAnmCalcNsBva(u32 *out, u32 *a, u32 frame)
 {
     u8 *t = (u8 *)a[2];
     s32 k = (s32)a[0] >> 12;
@@ -136,7 +136,7 @@ void func_02108034(u32 *out, u32 *a, u32 frame)
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitTexPatAnm-like): bind a texture pattern animation block to the model
-void func_02107f74(u8 *obj, u8 *res, u8 *blk)
+void NNSi_G3dAnmObjInitNsBtp(u8 *obj, u8 *res, u8 *blk)
 {
     u8 *dict = blk + *(u32 *)(blk + 8);
     u32 i;
@@ -145,10 +145,10 @@ void func_02107f74(u8 *obj, u8 *res, u8 *blk)
     obj[25] = blk[24];
     *(u8 **)(obj + 8) = res;
     zero = 0;
-    func_02115e30(zero, obj + 26, obj[25] * 2);
+    MIi_CpuClear16(zero, obj + 26, obj[25] * 2);
     for (i = 0; i < res[13]; i++) {
         u8 *d = res + 12 + *(u16 *)(res + 18);
-        s32 r = func_02106300(dict + 4, d + *(u16 *)(d + 2) + i * 16);
+        s32 r = NNS_G3dGetResDictIdxByName(dict + 4, d + *(u16 *)(d + 2) + i * 16);
         if (r >= 0) {
             *(u16 *)(obj + 26 + r * 2) = i | 0x100;
         }
@@ -156,9 +156,9 @@ void func_02107f74(u8 *obj, u8 *res, u8 *blk)
 }
 
 // NNS g3d (texture animation): texture index + tex scale result for the current frame
-s32 func_02107e88(u8 *A, u32 x, u8 *out)
+s32 SetTexParamaters_(u8 *A, u32 x, u8 *out)
 {
-    u32 *p = func_02106460(A + 60);
+    u32 *p = NNS_G3dGetResDataByName(A + 60);
     u32 m;
     u32 w, h;
     s32 r;
@@ -176,22 +176,22 @@ s32 func_02107e88(u8 *A, u32 x, u8 *out)
     if (w == *(u16 *)(out + 44)) {
         r = 0x1000;
     } else {
-        r = func_01ffc5a4(w << 12, *(u16 *)(out + 44) << 12);
+        r = FX_Div(w << 12, *(u16 *)(out + 44) << 12);
     }
     *(s32 *)(out + 48) = r;
     if (h == *(u16 *)(out + 46)) {
         r = 0x1000;
     } else {
-        r = func_01ffc5a4(h << 12, *(u16 *)(out + 46) << 12);
+        r = FX_Div(h << 12, *(u16 *)(out + 46) << 12);
     }
     *(s32 *)(out + 52) = r;
     return r;
 }
 
 // NNS g3d (texture animation): palette index result for the current frame
-u32 func_02107e30(u8 *A, u32 x, u8 *out)
+u32 SetPlttParamaters_(u8 *A, u32 x, u8 *out)
 {
-    u16 *p = (u16 *)func_02106460(A + *(u16 *)(A + 52));
+    u16 *p = (u16 *)NNS_G3dGetResDataByName(A + *(u16 *)(A + 52));
     u16 w = *(u32 *)(A + 44);
     u16 v;
     u16 f = p[1];
@@ -205,19 +205,19 @@ u32 func_02107e30(u8 *A, u32 x, u8 *out)
 }
 
 // NNS g3d (texture/palette animation): per-material calc, texture index then palette index
-u32 func_02107da8(u8 *obj, u32 *a, u32 frame)
+u32 NNSi_G3dAnmCalcNsBtp(u8 *obj, u32 *a, u32 frame)
 {
     u8 *res = (u8 *)a[2];
-    u8 *e = func_021066e8(res, (u16)frame, (u16)(a[0] >> 12));
-    u32 r = func_02107e88((u8 *)a[5], func_02106778(res, e[2]), obj);
+    u8 *e = NNSi_G3dGetTexPatAnmFV(res, (u16)frame, (u16)(a[0] >> 12));
+    u32 r = SetTexParamaters_((u8 *)a[5], NNSi_G3dGetTexPatAnmTexNameByIdx(res, e[2]), obj);
     if (e[3] == 0xff) {
         return r;
     }
-    return func_02107e30((u8 *)a[5], func_02106768(res), obj);
+    return SetPlttParamaters_((u8 *)a[5], NNSi_G3dGetTexPatAnmPlttNameByIdx(res), obj);
 }
 
 // NNS g3d animation key fetch for fx32 values (value stored as fx32 or fx16; constant / full / step-2 / step-4 interpolated)
-s32 func_02107cac(u8 *base, u32 info, u32 offs, u32 frame)
+s32 GetTexSRTAnmVectorVal_(u8 *base, u32 info, u32 offs, u32 frame)
 {
     s16 *d;
     u32 last;

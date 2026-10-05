@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file.c / fs_archive.c / fs_command.c region), autoload_2 0x0211802c-0x02119434. ARM code.
 typedef unsigned char u8;
@@ -6,123 +7,23 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 
-typedef struct FSArc FSArc;
-typedef struct FSFile FSFile;
-typedef int (*FSIoFunc)(FSArc *, void *, u32, u32);
-typedef struct {
-    void *head;
-    void *tail;
-} OSThreadQueue;
-typedef struct {
-    FSArc *arc;
-    union {
-        u32 file_id;
-        struct {
-            u16 own_id;
-            u16 index;
-        } d;
-    } u;
-    u32 pos;
-} FSDirPos;
-typedef struct {
-    FSDirPos pos;
-    u32 is_dir;
-    u32 name_len;
-    char name[128];
-} FSEntry;
-typedef struct {
-    FSArc *arc;
-    u32 pos;
-} FSStream;
-
-struct FSFile {
-    FSFile *prev;
-    FSFile *next;
-    FSArc *arc;
-    volatile u32 stat;
-    u32 command;
-    u32 error;
-    OSThreadQueue queue;
-    union {
-        FSDirPos pos;
-        struct {
-            u32 w20, w24, w28;
-        } w;
-    } p;
-    u32 parent;
-    union {
-        struct {
-            u32 w30;
-            u32 w34;
-            u32 w38;
-        } w;
-        FSDirPos pos;
-        struct {
-            void *buf;
-            u32 buf_size;
-            u16 len;
-            u16 dirid;
-        } path;
-        struct {
-            FSEntry *ent;
-            u32 skip;
-        } rdent;
-        struct {
-            u32 a30;
-            u16 id34;
-            u16 id36;
-            u32 a38;
-        } rd;
-    } a;
-    u32 w3c;
-    u32 w40;
-    FSDirPos *w44;
-};
-
-struct FSArc {
-    u32 name;
-    FSArc *next;
-    FSArc *prev;
-    OSThreadQueue queue;
-    OSThreadQueue queue2;
-    volatile u32 flag;
-    struct {
-        FSFile *prev;
-        FSFile *next;
-    } list;
-    u32 base;
-    u32 fat;
-    u32 fat_size;
-    u32 fnt;
-    u32 fnt_size;
-    u32 fat_orig;
-    u32 fnt_orig;
-    void *load_mem;
-    FSIoFunc read_orig;
-    FSIoFunc write;
-    FSIoFunc read;
-    int (*proc)(FSFile *, u32);
-    u32 proc_mask;
-    u32 pad5c[2];
-};
-
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02113720(OSThreadQueue *);
-extern void func_021136a0(OSThreadQueue *);
-extern void func_02115fb4(void *dst, u32 v, u32 n);
-extern void func_02116048(const void *src, void *dst, u32 n);
-extern void func_02119d78(FSFile *);
-extern BOOL func_02119af4(FSFile *, FSArc *, u32, u32, int);
-extern s32 func_021198b4(FSFile *, void *, s32);
-extern void func_021199e0(FSFile *);
-extern u32 func_02119790(const char *, int);
-extern FSFile *func_02119520(FSArc *);
-extern void func_0211947c(FSFile *);
-extern int func_02119434(FSFile *);
-extern int func_02119718(FSArc *, void *, u32, u32);
-extern int func_02119768(FSArc *, void *, u32, u32);
-extern int func_0211973c(FSArc *, void *, u32, u32);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_SleepThread(OSThreadQueue *);
+extern void OS_WakeupThread(OSThreadQueue *);
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
+extern void FS_InitFile(FSFile *);
+extern BOOL FS_OpenFileDirect(FSFile *, FSArc *, u32, u32, int);
+extern s32 FS_ReadFile(FSFile *, void *, s32);
+extern void FS_CloseFile(FSFile *);
+extern u32 FSi_GetPackedName(const char *, int);
+extern FSFile *FSi_NextCommand(FSArc *);
+extern void FSi_ExecuteAsyncCommand(FSFile *);
+extern int FSi_ExecuteSyncCommand(FSFile *);
+extern int FSi_ReadMemoryCore(FSArc *, void *, u32, u32);
+extern int FSi_ReadMemCallback(FSArc *, void *, u32, u32);
+extern int FSi_WriteMemCallback(FSArc *, void *, u32, u32);
 extern int (*data_0213a388[])(FSFile *);
 extern char data_0213bff4[];
 extern FSArc *data_021fea68;
@@ -172,37 +73,37 @@ static inline u32 FSi_NameLen2(u32 name) {
     return 3;
 }
 
-int func_0211802c(FSFile *file, u32 cmd);
-void func_021181a8(FSFile *file, u32 result);
-int func_0211820c(void);
-int func_02118214(FSFile *file);
-int func_0211823c(FSFile *file);
-int func_021182b8(FSFile *file);
-int func_02118678(FSFile *file);
-int func_02118894(FSFile *file);
-int func_021189a4(FSFile *file);
-int func_02118a3c(FSFile *file);
-int func_02118a3c(FSFile *file);
-int func_02118a74(FSFile *file);
-int func_02118aac(FSFile *file, u32 id);
-void func_02118ae0(FSStream *s, void *dst, u32 len);
-int func_02118b84(const char *a, const char *b, u32 n);
-void func_02118be8(FSArc *arc, u32 result);
-void func_02118c68(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-BOOL func_02118c88(FSArc *arc);
-BOOL func_02118d04();
-void *func_02118d94(FSArc *arc);
-u32 func_02118e2c(FSArc *arc, void *mem, u32 mem_max);
-BOOL func_02118f58(FSArc *arc);
-BOOL func_02119020(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
-void func_02119098(FSArc *arc);
-BOOL func_02119130(FSArc *arc, const char *name, int len);
-FSArc *func_021191f0(const char *name, int len);
-void func_02119240(FSArc *arc);
-BOOL func_02119278(FSFile *file, u32 cmd);
+int FSi_TranslateCommand(FSFile *file, u32 cmd);
+void FSi_ReleaseCommand(FSFile *file, u32 result);
+int FSi_CloseFileCommand(void);
+int FSi_OpenFileDirectCommand(FSFile *file);
+int FSi_OpenFileFastCommand(FSFile *file);
+int FSi_GetPathCommand(FSFile *file);
+int FSi_FindPathCommand(FSFile *file);
+int FSi_ReadDirCommand(FSFile *file);
+int FSi_SeekDirCommand(FSFile *file);
+int FSi_WriteFileCommand(FSFile *file);
+int FSi_WriteFileCommand(FSFile *file);
+int FSi_ReadFileCommand(FSFile *file);
+int FSi_SeekDirDirect(FSFile *file, u32 id);
+void FSi_ReadTable(FSStream *s, void *dst, u32 len);
+int FSi_StrNICmp(const char *a, const char *b, u32 n);
+void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
+void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
+BOOL FS_ResumeArchive(FSArc *arc);
+BOOL FS_SuspendArchive();
+void *FS_UnloadArchiveTables(FSArc *arc);
+u32 FS_LoadArchiveTables(FSArc *arc, void *mem, u32 mem_max);
+BOOL FS_UnloadArchive(FSArc *arc);
+BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr);
+void FS_ReleaseArchiveName(FSArc *arc);
+BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
+FSArc *FS_FindArchive(const char *name, int len);
+void FS_InitArchive(FSArc *arc);
+BOOL FSi_SendCommand(FSFile *file, u32 cmd);
 
 // FSi_SendCommand
-BOOL func_02119278(FSFile *file, u32 cmd) {
+BOOL FSi_SendCommand(FSFile *file, u32 cmd) {
     FSArc *arc = file->arc;
     u32 bit;
     u32 irq;
@@ -212,10 +113,10 @@ BOOL func_02119278(FSFile *file, u32 cmd) {
     file->error = 2;
     bit = 1 << cmd;
     file->stat |= 1;
-    irq = func_01ffa2ec();
+    irq = OS_DisableInterrupts();
     if (arc->flag & 0x80) {
-        func_021181a8(file, 3);
-        func_01ffa3d4(irq);
+        FSi_ReleaseCommand(file, 3);
+        OS_RestoreInterrupts(irq);
         return 0;
     }
     q = (FSFile *)&arc->list;
@@ -236,34 +137,34 @@ BOOL func_02119278(FSFile *file, u32 cmd) {
     }
     if (FSi_IsSuspended(arc) == 0 && (arc->flag & 0x10) == 0) {
         arc->flag |= 0x10;
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
         if (arc->proc_mask & 0x200) {
             arc->proc(file, 9);
         }
-        irq2 = func_01ffa2ec();
+        irq2 = OS_DisableInterrupts();
         file->stat |= 0x40;
         if (FSi_IsBlocking(file) == 0) {
-            func_01ffa3d4(irq2);
-            func_0211947c(file);
+            OS_RestoreInterrupts(irq2);
+            FSi_ExecuteAsyncCommand(file);
             return 1;
         }
-        func_01ffa3d4(irq2);
+        OS_RestoreInterrupts(irq2);
     } else {
         if (FSi_IsBlocking(file) == 0) {
-            func_01ffa3d4(irq);
+            OS_RestoreInterrupts(irq);
             return 1;
         }
         do {
-            func_02113720(&file->queue);
+            OS_SleepThread(&file->queue);
         } while (!(file->stat & 0x40));
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
     }
-    return func_02119434(file);
+    return FSi_ExecuteSyncCommand(file);
 }
 
 // FS_InitArchive
-void func_02119240(FSArc *arc) {
-    func_02115fb4(arc, 0, 0x5c);
+void FS_InitArchive(FSArc *arc) {
+    MI_CpuFill8(arc, 0, 0x5c);
     arc->queue.tail = 0;
     arc->queue.head = arc->queue.tail;
     arc->queue2.tail = 0;
@@ -271,21 +172,21 @@ void func_02119240(FSArc *arc) {
 }
 
 // FS_FindArchive
-FSArc *func_021191f0(const char *name, int len) {
-    u32 pack = func_02119790(name, len);
-    u32 irq = func_01ffa2ec();
+FSArc *FS_FindArchive(const char *name, int len) {
+    u32 pack = FSi_GetPackedName(name, len);
+    u32 irq = OS_DisableInterrupts();
     FSArc *arc;
     for (arc = data_021fea68; arc && arc->name != pack; arc = arc->next) {
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return arc;
 }
 
 // FS_RegisterArchiveName
-BOOL func_02119130(FSArc *arc, const char *name, int len) {
+BOOL FS_RegisterArchiveName(FSArc *arc, const char *name, int len) {
     BOOL ret = 0;
-    u32 irq = func_01ffa2ec();
-    if (!func_021191f0(name, len)) {
+    u32 irq = OS_DisableInterrupts();
+    if (!FS_FindArchive(name, len)) {
         FSArc *p = data_021fea68;
         if (!p) {
             data_021fea68 = arc;
@@ -298,18 +199,18 @@ BOOL func_02119130(FSArc *arc, const char *name, int len) {
             p->next = arc;
             arc->prev = p;
         }
-        arc->name = func_02119790(name, len);
+        arc->name = FSi_GetPackedName(name, len);
         ret = 1;
         arc->flag |= 1;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return ret;
 }
 
 // FS_ReleaseArchiveName
-void func_02119098(FSArc *arc) {
+void FS_ReleaseArchiveName(FSArc *arc) {
     if (arc->name) {
-        u32 irq = func_01ffa2ec();
+        u32 irq = OS_DisableInterrupts();
         if (arc->next) arc->next->prev = arc->prev;
         if (arc->prev) arc->prev->next = arc->next;
         arc->name = 0;
@@ -322,12 +223,12 @@ void func_02119098(FSArc *arc) {
             data_021fea6c.u.d.index = 0;
             data_021fea6c.u.d.own_id = 0;
         }
-        func_01ffa3d4(irq);
+        OS_RestoreInterrupts(irq);
     }
 }
 
 // FS_LoadArchive
-BOOL func_02119020(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr) {
+BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size, FSIoFunc rd, FSIoFunc wr) {
     FSIoFunc r;
     FSIoFunc w;
     arc->base = base;
@@ -338,13 +239,18 @@ BOOL func_02119020(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt
     arc->fnt_orig = fnt;
     arc->fnt = arc->fnt_orig;
     r = rd;
-    if (r == 0) r = func_02119768;
+    if (r == 0) r = FSi_ReadMemCallback;
     arc->read_orig = r;
     w = wr;
-    if (w == 0) w = func_0211973c;
+    if (w == 0) w = FSi_WriteMemCallback;
     arc->write = w;
     arc->read = arc->read_orig;
     arc->load_mem = 0;
     arc->flag |= 2;
     return 1;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fea68-0x021fea78; this definition order gives the original order after mwcc's size
+// sort)
+FSArc *data_021fea68;
+FSDirPos data_021fea6c;

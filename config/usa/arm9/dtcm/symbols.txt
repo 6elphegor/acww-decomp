@@ -24,6 +24,6 @@ data_027e038c kind:data(any) addr:0x027e038c
 data_027e0390 kind:data(any) addr:0x027e0390
 data_027e0394 kind:data(any) addr:0x027e0394
 data_027e0414 kind:data(any) addr:0x027e0414
-data_027e0434 kind:data(any) addr:0x027e0434
-data_027e0438 kind:data(any) addr:0x027e0438
+sMenuWipeLine kind:data(any) addr:0x027e0434
+sMenuWipeEdge kind:data(any) addr:0x027e0438
 data_027e0450 kind:data(any) addr:0x027e0450

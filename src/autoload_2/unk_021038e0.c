@@ -32,7 +32,7 @@ typedef struct ResTex {
     u8 pad1c[0x10];
     u32 plttKey;        // 0x2c
 } ResTex;
-extern s32 func_01ffc5a4(s32, s32);
+extern s32 FX_Div(s32, s32);
 
 static inline void *GetResDataByIdx(const ResDict *dict, u32 idx)
 {
@@ -47,7 +47,7 @@ static inline ResMatData *GetMatDataByIdx(const ResMat *pResMat, u32 idx)
 #define KeyAddr(k) (((k) & 0xffff) << 3)
 
 
-void func_021038e0(ResMat *pMat, BindData *pBindData, const ResTex *pTex, const ResDictPlttData *pPlttData)
+void bindMdlPltt_Internal_(ResMat *pMat, BindData *pBindData, const ResTex *pTex, const ResDictPlttData *pPlttData)
 {
     u8 *base = (u8 *)pMat + pBindData->offset;
     u16 plttBase = pPlttData->offset;

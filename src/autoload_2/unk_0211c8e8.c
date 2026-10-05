@@ -1,3 +1,4 @@
+#include "sys/PMCbInfo.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK TP (touch panel) / PM (power management) / RTC, ARM9 side: autoload_2 0x0211c8e8-0x0211cbd0. mwcc 1.2/base.
 typedef unsigned char u8;
@@ -82,11 +83,6 @@ typedef struct {
 } PMDest;
 
 typedef struct PMCbInfo PMCbInfo;
-struct PMCbInfo {
-    u32 a;
-    u32 b;
-    PMCbInfo *next;
-};
 
 typedef void (*PMCallback)(u32 result, void *arg);
 
@@ -164,70 +160,70 @@ extern u32 data_021feb34;
 extern PMCbInfo *data_021feb38;
 extern u32 data_021feb3c;
 extern PMCbInfo *data_021feb40;
-extern u8 data_021feb54[];
+extern u8 data_021feb54[0x18];
 extern PMFlag data_021feb6c[4];
 extern PMDest data_021feb70[4];
 extern RTCWork data_021feb90;
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern u32 func_0211b7e8(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
-extern void func_02117dcc(void);
-extern BOOL func_02117e8c(u32 tag, u32 proc);
-extern void func_02117eb4(u32 tag, void *cb);
-extern s32 func_02117dd8(u32 tag, u32 data, u32 err);
-extern void func_0206d49c(void);
-extern void func_0211450c(void *p);
-extern BOOL func_0211d518(void);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern u32 TP_CalcCalibrateParam(TPCalibrateParam *p, u16 x1, u16 y1, u8 dx1, u8 dy1, u16 x2, u16 y2, u8 dx2, u8 dy2);
+extern void PXI_Init(void);
+extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
+extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
+extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
+extern void Fatal_Trap(void);
+extern void OS_InitMutex(void *p);
+extern BOOL RTCi_WriteRawStatus2Async(void);
 
-void func_0211c280(PMCbInfo **head, PMCbInfo *info);
-void func_0211c2cc(PMCbInfo **head, PMCbInfo *info);
-void func_0211c314(PMCbInfo **head, PMCbInfo *info);
-u32 func_0211c364(u32 *out, PMCallback cb, void *arg);
-void func_0211cb60(u32 result, void *arg);
-void func_0211cb68(void);
-BOOL func_0211cb80(void);
-void func_0211c570(u32 data);
-u32 func_0211c3f0(u32 a, PMCallback cb, void *arg);
-u32 func_0211c790(u32 a);
-u32 func_0211c7cc(u32 a, PMCallback cb, void *arg);
-u32 func_0211c834(u32 type, u16 *out);
-u32 func_0211c870(u32 type, u16 *out, PMCallback cb, void *arg);
-u32 func_0211c8e8(u32 cmd, PMCallback cb, void *arg);
-u32 func_0211c6ac(PMCallback cb, void *arg);
-u32 func_0211c700(u32 a, u32 b, PMCallback cb, void *arg);
-void func_0211cb0c(u32 result);
-u32 func_0211cbf8(u32 bcd);
-void func_0211bf60(u32 tag, u32 data, u32 err);
-void func_0211c95c(u32 tag, u32 data, u32 err);
-u32 func_0211c480(u32 mode, u32 target, u32 noWait, u32 sync);
+void PMi_DeleteList(PMCbInfo **head, PMCbInfo *info);
+void PMi_AppendList(PMCbInfo **head, PMCbInfo *info);
+void PMi_PrependList(PMCbInfo **head, PMCbInfo *info);
+u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg);
+void PMi_DummyCallback(u32 result, void *arg);
+void PMi_WaitBusy(void);
+BOOL PMi_Lock(void);
+void PMi_SendPxiData(u32 data);
+u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg);
+u32 PMi_SetLED(u32 a);
+u32 PMi_SetLEDAsync(u32 a, PMCallback cb, void *arg);
+u32 PMi_ReadRegister(u32 type, u16 *out);
+u32 PMi_ReadRegisterAsync(u32 type, u16 *out, PMCallback cb, void *arg);
+u32 PM_SendUtilityCommandAsync(u32 cmd, PMCallback cb, void *arg);
+u32 PM_ForceToPowerOffAsync(PMCallback cb, void *arg);
+u32 PM_SetBackLightAsync(u32 a, u32 b, PMCallback cb, void *arg);
+void PMi_CallCallbackAndUnlock(u32 result);
+u32 RtcBCD2HEX(u32 bcd);
+void TPi_TpCallback(u32 tag, u32 data, u32 err);
+void PMi_CommonCallback(u32 tag, u32 data, u32 err);
+u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync);
 
 // PMi_TryLock?: returns 1 when the PM work was free (interrupts disabled around the test)
-BOOL func_0211cb80(void) {
-    u32 e = func_01ffa2ec();
+BOOL PMi_Lock(void) {
+    u32 e = OS_DisableInterrupts();
     if (data_021feb44.lock != 0) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         return 0;
     }
     data_021feb44.lock = 1;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
     return 1;
 }
 
-// PMi_WaitBusy?: spins while the PM work is locked
-void func_0211cb68(void) {
+// PMi_WaitBusy: spins while the PM work is locked
+void PMi_WaitBusy(void) {
     volatile u32 *p = &data_021feb44.lock;
     while (*p != 0) {
     }
 }
 
 // PMi_SyncCallback?: stores the result for the synchronous wrappers
-void func_0211cb60(u32 result, void *arg) {
+void PMi_DummyCallback(u32 result, void *arg) {
     *(u32 *)arg = result;
 }
 
 // PMi_CallCallback?: unlock and call the pending callback
-void func_0211cb0c(u32 result) {
+void PMi_CallCallbackAndUnlock(u32 result) {
     u32 lock = data_021feb44.lock;
     PMCallback cb = data_021feb44.callback;
     void *arg = data_021feb44.arg;
@@ -241,7 +237,7 @@ void func_0211cb0c(u32 result) {
 }
 
 // PM_Init
-void func_0211ca48(void) {
+void PM_Init(void) {
     int i;
     if (data_021feb2c != 0) {
         return;
@@ -249,22 +245,22 @@ void func_0211ca48(void) {
     data_021feb2c = 1;
     data_021feb44.lock = 0;
     data_021feb44.callback = 0;
-    func_02117dcc();
-    while (!func_02117e8c(8, 1)) {
+    PXI_Init();
+    while (!PXI_IsCallbackReady(8, 1)) {
     }
-    func_02117eb4(8, func_0211c95c);
+    PXI_SetFifoRecvCallback(8, PMi_CommonCallback);
     for (i = 0; i < 4; i++) {
         data_021feb6c[i].flag = 0;
     }
-    func_0211450c(data_021feb54);
+    OS_InitMutex(data_021feb54);
     data_021feb3c = *(volatile u32 *)0x027ffc3c;
 }
 
 // PMi_CommonCallback? (PXI tag 8 receive callback)
-void func_0211c95c(u32 tag, u32 data, u32 err) {
+void PMi_CommonCallback(u32 tag, u32 data, u32 err) {
     u32 result;
     if (err) {
-        func_0211cb0c(2);
+        PMi_CallCallbackAndUnlock(2);
         return;
     }
     {
@@ -290,18 +286,29 @@ void func_0211c95c(u32 tag, u32 data, u32 err) {
             }
             result = 0;
         }
-        func_0211cb0c(result);
+        PMi_CallCallbackAndUnlock(result);
     }
 }
 
 // PMi_SendUtilityCommandAsync? (words 0x0200 6300 | number, 0x0101 0000 | parameter)
-u32 func_0211c8e8(u32 cmd, PMCallback cb, void *arg) {
-    if (!func_0211cb80()) {
+u32 PM_SendUtilityCommandAsync(u32 cmd, PMCallback cb, void *arg) {
+    if (!PMi_Lock()) {
         return 1;
     }
     data_021feb44.callback = cb;
     data_021feb44.arg = arg;
-    func_0211c570(((cmd >> 16) & 0xff) | 0x02006300);
-    func_0211c570((cmd & 0xffff) | 0x01010000);
+    PMi_SendPxiData(((cmd >> 16) & 0xff) | 0x02006300);
+    PMi_SendPxiData((cmd & 0xffff) | 0x01010000);
     return 0;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021feb2c-0x021feb6c; this definition order gives the original order after mwcc's size
+// sort)
+u16 data_021feb2c;
+u32 data_021feb3c;
+PMCbInfo *data_021feb40;
+u32 data_021feb34;
+PMCbInfo *data_021feb38;
+u32 data_021feb30;
+PMWork data_021feb44;
+u8 data_021feb54[0x18];

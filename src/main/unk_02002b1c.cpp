@@ -1,5 +1,14 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
+#include "gfx/ToonTable.h"
+#include "gfx/Mtx43.h"
+#include "actor/ActorCollider.h"
+#include "actor/ActorListNode.h"
+#include "gfx/ViewFrustum.h"
+#include "gfx/AbAllObjGfx.h"
+#include "npc/VillagerId.h"
+#include "actor/Actor.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -8,19 +17,19 @@ typedef volatile u32 vu32;
 // Externs
 
 extern "C" {
-extern u16 data_0213c7a8;
+extern u16 sGfx3dClearColor;
 }
 
 extern "C" {
-extern u32 data_0213c7ac;
+extern u32 sGfx3dClearDepth;
 }
 
 extern "C" {
-extern u16 data_020d47e4[32];
+extern u16 sDefaultToonTable[32];
 }
 
 extern "C" {
-extern u8 data_0213c7b0[];
+extern u8 gViewMtxInv[];
 }
 
 extern "C" {
@@ -28,19 +37,19 @@ extern u8 data_02135934[];
 }
 
 extern "C" {
-extern u32 data_020d5d44[];
+extern u32 sAbAllObjCharPath[];
 }
 
 extern "C" {
-extern u32 data_020d5d60[];
+extern u32 sAbAllObjPalettePath[];
 }
 
 extern "C" {
-extern u32 data_020d5dfc[];
+extern u32 sPersonalityFileNameFmt[];
 }
 
 extern "C" {
-extern u32 data_020d5de4[];
+extern u32 sPersonalityPrefixes[];
 }
 
 extern "C" {
@@ -48,127 +57,127 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern u32 **data_021f59e4;
+extern u32 **gProfileTable;
 }
 
 extern "C" {
-extern u32 data_021d7352;
+extern u32 gSaveTownId;
 }
 
 extern "C" {
-extern u32 data_020c6140[];
+extern u32 sPersonalityVoiceTypes[];
 }
 
 extern "C" {
-extern void *data_021eda68;
+extern void *gActorDefaultParent;
 }
 
 extern "C" {
-extern u8 data_021ef414[];
+extern u8 gViewFrustum[];
 }
 
 extern "C" {
-void func_02110db8(u16 a, u32 b, u32 c, u32 d, u32 e);
+void G3X_SetClearColor(u16 a, u32 b, u32 c, u32 d, u32 e);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 n);
+void DC_FlushRange(void *p, u32 n);
 }
 
 extern "C" {
-void func_02110de8(void *p);
+void G3X_SetToonTable(void *p);
 }
 
 extern "C" {
-void func_01ffbb6c(void *a, void *b);
+void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
-void func_02111088(void);
+void G3X_Reset(void);
 }
 
 extern "C" {
-void func_0210fcb8(u32 a);
+void GX_SetBankForTex(u32 a);
 }
 
 extern "C" {
-void func_0210fbc4(u32 a);
+void GX_SetBankForTexPltt(u32 a);
 }
 
 extern "C" {
-void func_02114b00(void);
+void OS_EnableDTCM(void);
 }
 
 extern "C" {
-void func_02111110(void);
+void G3X_Init(void);
 }
 
 extern "C" {
-void func_02110d00(void);
+void G3X_InitTable(void);
 }
 
 extern "C" {
-void func_02110fa4(void);
+void G3X_InitMtxStack(void);
 }
 
 extern "C" {
-void func_02111404(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
-void func_02105d98(void);
+void NNS_G3dInit(void);
 }
 
 extern "C" {
-void func_02111c6c(void *p, u32 a, u32 b);
+void GX_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111c0c(void *p, u32 a, u32 b);
+void GXS_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111df8(void *p, u32 a, u32 b);
+void GX_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111d90(void *p, u32 a, u32 b);
+void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 }
 
 extern "C" {
-void *func_020641d8(void *p);
+void *File_Load(void *p);
 }
 
 extern "C" {
-void func_02119d78(void *p);
+void FS_InitFile(void *p);
 }
 
 extern "C" {
-void func_020e79a0(void *list, void *node);
+void List_Remove(void *list, void *node);
 }
 
 extern "C" {
-void func_020e7968(void *list, void *node);
+void List_PushBack(void *list, void *node);
 }
 
 extern "C" {
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void func_020e8434(void *m, s32 a);
+void Mtx43_RotateX(void *m, s32 a);
 }
 
 extern "C" {
-void func_020e8404(void *m, s32 a);
+void Mtx43_RotateY(void *m, s32 a);
 }
 
 extern "C" {
-void func_020e7b98(s32 a, s32 b);
+void Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {
@@ -176,375 +185,252 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 }
 
 extern "C" {
-void func_02063990(void *p, void *s);
+void TownId_Assign(void *p, void *s);
 }
 
 extern "C" {
-u32 func_02063954(void *p);
+u32 TownId_IsValid(void *p);
 }
 
 extern "C" {
-void func_020639a0(void *p);
+void TownId_Clear(void *p);
 }
 
 extern "C" {
-u32 func_02081550(u32 a, u32 b);
+u32 Villager_GetSpeciesName(u32 a, u32 b);
 }
 
 extern "C" {
-void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
+void Str_SPrintf(void *buf, void *fmt, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
-void *func_020ed4bc(void *list, u32 id, void *p);
+void *ProcList_FindByProfile(void *list, u32 id, void *p);
 }
 
 extern "C" {
-void *func_020ed508(void *list, u32 id);
+void *ProcList_FindById(void *list, u32 id);
 }
 
 extern "C" {
-void func_0202e880(void *a, void *b, void *c, u32 d);
+void GameProc_CreateChild(void *a, void *b, void *c, u32 d);
 }
 
-class Unk_02039eb8 {
-public:
-    s32 func_02039eb8(void *m, void *v, s32 r, s32 *out);
-};
 
 extern "C" {
 void func_020030b4_dummy(void);
 }
 
-struct Unk_02002804_Buf {
-    u16 unk_00[32];
-};
 
-// 0x30-byte record copied around by func_02002848 and func_02002898
-struct Unk_02002848_Data {
-    u32 unk_00[12];
-};
 
-extern Unk_02002848_Data data_0213c7e0;
-extern Unk_02002848_Data data_02135934_;
+extern Mtx43 gViewMtx;
+extern Mtx43 data_02135934_;
 
-// Object with two heap pointers at +0x48 and +0x4c, first method func_020029e8
-class Unk_020029e8 {
-public:
-    Unk_020029e8();
-    ~Unk_020029e8();
-    void func_020029e8();
-    void func_02002a14();
-    void func_02002a3c();
-    void func_02002a54();
-    BOOL func_02002a6c();
-    BOOL func_02002a8c();
 
-    /* 0x00 */ u8 unk_00[0x48];
-    /* 0x48 */ void *unk_48;
-    /* 0x4c */ void *unk_4c;
-};
+extern AbAllObjGfx sAbAllObjGfx;
 
-extern Unk_020029e8 data_0213c81c;
 
-struct Unk_02002f14_Node {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ void *unk_04;
-    /* 0x08 */ void *unk_08;
-};
 
-struct Unk_02002cb0_Vec {
-    /* 0x00 */ u8 unk_00[0x10];
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-};
 
-struct Unk_02002f14_S16Vec {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
-};
 
-struct Unk_02002f14_S32Vec {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-};
 
-// list head (8 bytes, zeroed by an inline constructor: the unit's __sinit) and two pointers
-struct Unk_0213c874 {
-    u32 unk_00;
-    u32 unk_04;
-    Unk_0213c874() {
-        unk_00 = 0;
-        unk_04 = 0;
-    }
-};
+ActorList gActorList;
+void *sActorSpawnPos;
+void *sActorSpawnRot;
 
-Unk_0213c874 data_0213c874;
-void *data_0213c870;
-void *data_0213c86c;
 
-class Unk_020d5d84 : public Unk_020d8c7c {
-public:
-    Unk_020d5d84();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84() { func_020e79a0(&data_0213c874, &unk_50); }
 
-    void func_02002b84(void *out);
-    void func_02002bf4(Unk_02002cb0_Vec *v);
-    void func_02002c10();
-    void func_02002cb0(Unk_02002cb0_Vec *v);
-    void func_02002ce0(s32 a, s32 b, s32 c);
-    static void func_02002cf8(void *a, void *b, void *c, void *d, void *e);
-    static void func_02002d28(void *a, void *b);
-    static void *func_02002d3c(u32 id, Unk_020d5d84 *o);
-    static void *func_02002d74(u32 id);
+extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
+extern "C" u32 Villager_PersonalityToGender(u32 t);
+extern "C" u32 VillagerId_IsValidSpecies(u32 id);
+extern "C" u32 Villager_PersonalityToVoiceType(u32 t);
+extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
 
-    /* 0x50 */ Unk_02002f14_Node unk_50;
-    /* 0x5c */ s32 unk_5c;
-    /* 0x60 */ s32 unk_60;
-    /* 0x64 */ s32 unk_64;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ s32 unk_6c;
-    /* 0x70 */ s32 unk_70;
-    /* 0x74 */ u8 unk_74[0x18];
-    /* 0x8c */ s16 unk_8c;
-    /* 0x8e */ s16 unk_8e;
-    /* 0x90 */ s16 unk_90;
-    /* 0x92 */ s16 unk_92;
-    /* 0x94 */ u16 unk_94;
-    /* 0x96 */ s16 unk_96;
-    /* 0x98 */ s32 unk_98;
-    /* 0x9c */ s32 unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ s32 unk_a8;
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ u32 unk_b0;
-    /* 0xb4 */ s32 unk_b4;
-    /* 0xb8 */ s32 unk_b8;
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ u32 unk_c0;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
-    /* 0xd0 */ u16 unk_d0;
-};
-
-// Class with a type byte at +0x0a and an id byte at +0x0b (base class unknown, 0xc bytes in total)
-class Unk_02002fc8 {
-public:
-    u32 func_02002fc8(u32 arg);
-    void func_0200301c(void *buf, u32 size, u32 arg);
-    u32 func_02003070();
-    void func_0200309c(u32 id, u32 type, void *s);
-    u32 func_020030b4();
-
-    /* 0x00 */ u8 unk_00[0xa];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
-};
-
-extern "C" u32 func_02003098(Unk_02002fc8 *o);
-extern "C" u32 func_02003084(u32 t);
-extern "C" u32 func_02002fec(u32 id);
-extern "C" u32 func_02003008(u32 t);
-extern "C" void func_0200303c(void *buf, u32 size, u32 arg, u32 idx);
-
-extern "C" void func_02002918(void);
+extern "C" void Gfx3d_InitEngine(void);
 // prototypes (test harness)
-extern "C" u32 func_02002ffc(Unk_02002fc8 *o);
-extern "C" u32 func_02002ff8(Unk_02002fc8 *o);
-extern "C" u32 func_02002fec(u32 id);
-extern "C" void func_02002bdc(s32 *a, s32 *b);
+extern "C" u32 VillagerId_GetVoiceType(VillagerId *o);
+extern "C" u32 VillagerId_GetSpecies(VillagerId *o);
+extern "C" u32 VillagerId_IsValidSpecies(u32 id);
+extern "C" void Math_AngleXZ(s32 *a, s32 *b);
 
-extern "C" u32 func_02002ffc(Unk_02002fc8 *o) { return func_02003008(o->unk_0a); }
+extern "C" u32 VillagerId_GetVoiceType(VillagerId *o) { return Villager_PersonalityToVoiceType(o->personality); }
 
-extern "C" u32 func_02002ff8(Unk_02002fc8 *o) { return o->unk_0b; }
+extern "C" u32 VillagerId_GetSpecies(VillagerId *o) { return o->species; }
 
-extern "C" u32 func_02002fec(u32 id) {
+extern "C" u32 VillagerId_IsValidSpecies(u32 id) {
     if (id < 0x96) return TRUE;
     return FALSE;
 }
 
-u32 Unk_02002fc8::func_02002fc8(u32 arg) {
+u32 VillagerId::getName(u32 arg) {
     u32 r = 0;
-    if (func_020030b4() == 1) r = func_02081550(arg, unk_0b);
+    if (isValid() == 1) r = Villager_GetSpeciesName(arg, species);
     return r;
 }
 
-Unk_020d5d84::Unk_020d5d84() {
-    unk_50.unk_00 = 0;
-    unk_50.unk_04 = 0;
-    unk_50.unk_08 = this;
-    func_020e7968(&data_0213c874, &unk_50);
-    Unk_02002f14_S32Vec *v = (Unk_02002f14_S32Vec *)data_0213c870;
+Actor::Actor() {
+    listNode.prev = 0;
+    listNode.next = 0;
+    listNode.owner = this;
+    List_PushBack(&gActorList, &listNode);
+    VecFx32 *v = (VecFx32 *)sActorSpawnPos;
     if (v) {
-        unk_5c = v->unk_00;
-        unk_60 = v->unk_04;
-        unk_64 = v->unk_08;
+        position.x = v->x;
+        position.y = v->y;
+        position.z = v->z;
     }
-    Unk_02002f14_S16Vec *w = (Unk_02002f14_S16Vec *)data_0213c86c;
+    VecFx16 *w = (VecFx16 *)sActorSpawnRot;
     if (w) {
-        unk_8c = w->unk_00;
-        unk_8e = w->unk_02;
-        unk_90 = w->unk_04;
-        Unk_02002f14_S16Vec *x = (Unk_02002f14_S16Vec *)data_0213c86c;
-        unk_92 = x->unk_00;
-        unk_94 = x->unk_02;
-        unk_96 = x->unk_04;
+        rotX = w->x;
+        rotY = w->y;
+        rotZ = w->z;
+        VecFx16 *x = (VecFx16 *)sActorSpawnRot;
+        moveAngleX = x->x;
+        moveAngleY = x->y;
+        moveAngleZ = x->z;
     }
-    u32 *e = data_021f59e4[*(u16 *)&unk_04[8]];
-    unk_b0 = e[2];
-    func_02002ce0(e[3], e[4], e[5]);
+    u32 *e = gProfileTable[profile];
+    actorFlags = e[2];
+    setCullParams(e[3], e[4], e[5]);
 }
 
-BOOL Unk_020d5d84::vfunc_04() {
-    if (Unk_020d8c7c_Base::vfunc_04()) return TRUE;
+BOOL Actor::preCreate() {
+    if (ProcBase::preCreate()) return TRUE;
     return FALSE;
 }
 
-void Unk_020d5d84::vfunc_08() {
-    Unk_020d8c7c::vfunc_08();
-    unk_b0 |= 4;
+void Actor::postCreate(s32 status) {
+    GameProc::postCreate(status);
+    actorFlags |= 4;
 }
 
-BOOL Unk_020d5d84::vfunc_10() {
-    if (Unk_020d8c7c_Base::vfunc_10()) return TRUE;
+BOOL Actor::preDelete() {
+    if (ProcBase::preDelete()) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_020d5d84::vfunc_14() { return Unk_020d8c7c_Base::vfunc_14(); }
+BOOL Actor::postDelete(s32 status) { return ProcBase::postDelete(status); }
 
-BOOL Unk_020d5d84::vfunc_1c() {
+BOOL Actor::preExecute() {
     s32 r4;
-    if (!Unk_020d8c7c_Base::vfunc_1c()) return FALSE;
-    unk_68 = unk_5c;
-    unk_6c = unk_60;
-    unk_70 = unk_64;
-    if (unk_b8) {
-        s32 x = unk_cc + func_01ffcb0c(unk_b4, data_02135f44[(unk_d0 >> 4) * 2]);
-        s32 z = unk_c8 + func_01ffcb0c(unk_b4, data_02135f44[(unk_d0 >> 4) * 2 + 1]);
+    if (!ProcBase::preExecute()) return FALSE;
+    prevPosition.x = position.x;
+    prevPosition.y = position.y;
+    prevPosition.z = position.z;
+    if (cullRadius) {
+        s32 x = drawPos.z + func_01ffcb0c(cullHeight, data_02135f44[(drawTilt >> 4) * 2]);
+        s32 z = drawPos.y + func_01ffcb0c(cullHeight, data_02135f44[(drawTilt >> 4) * 2 + 1]);
         s32 v[3];
-        v[0] = unk_c4;
+        v[0] = drawPos.x;
         v[1] = z;
         v[2] = x;
-        r4 = ((Unk_02039eb8 *)data_021ef414)->func_02039eb8(&data_0213c7e0, v, unk_b8, (s32 *)unk_74);
+        r4 = ((ViewFrustum *)gViewFrustum)->testSphere(&gViewMtx, v, cullRadius, (s32 *)viewPos);
     }
-    unk_b0 &= ~4;
-    if (unk_b0 & 3) {
-        if (r4 > unk_bc) {
-            unk_b0 |= 4;
-            if (unk_b0 & 1) return FALSE;
+    actorFlags &= ~4;
+    if (actorFlags & 3) {
+        if (r4 > cullDepth) {
+            actorFlags |= 4;
+            if (actorFlags & 1) return FALSE;
         }
     }
     return TRUE;
 }
 
-BOOL Unk_020d5d84::vfunc_20() { return Unk_020d8c7c_Base::vfunc_20(); }
+BOOL Actor::postExecute(u32 status) { return ProcBase::postExecute(status); }
 
-BOOL Unk_020d5d84::vfunc_28() {
-    if (!Unk_020d8c7c_Base::vfunc_28()) return FALSE;
-    if ((unk_b0 & 4) && (unk_b0 & 2)) return FALSE;
+BOOL Actor::preDraw() {
+    if (!ProcBase::preDraw()) return FALSE;
+    if ((actorFlags & 4) && (actorFlags & 2)) return FALSE;
     return TRUE;
 }
 
-BOOL Unk_020d5d84::vfunc_2c() { return Unk_020d8c7c_Base::vfunc_2c(); }
+BOOL Actor::postDraw(s32 status) { return ProcBase::postDraw(status); }
 
-void *Unk_020d5d84::func_02002d74(u32 id) {
-    void *r = func_020ed508(&data_0213c874, id);
-    if (r) return ((Unk_02002f14_Node *)r)->unk_08;
+void *Actor::findById(u32 id) {
+    void *r = ProcList_FindById(&gActorList, id);
+    if (r) return ((ActorListNode *)r)->owner;
     return 0;
 }
 
-void *Unk_020d5d84::func_02002d3c(u32 id, Unk_020d5d84 *o) {
+void *Actor::findByProfile(u32 id, Actor *o) {
     void *r;
     if (o != 0) {
-        r = func_020ed4bc(&data_0213c874, id, &o->unk_50);
+        r = ProcList_FindByProfile(&gActorList, id, &o->listNode);
     } else {
-        r = func_020ed4bc(&data_0213c874, id, 0);
+        r = ProcList_FindByProfile(&gActorList, id, 0);
     }
-    if (r) return ((Unk_02002f14_Node *)r)->unk_08;
+    if (r) return ((ActorListNode *)r)->owner;
     return 0;
 }
 
-void Unk_020d5d84::func_02002d28(void *a, void *b) {
-    data_0213c870 = a;
-    data_0213c86c = b;
+void Actor::setSpawnTransform(void *a, void *b) {
+    sActorSpawnPos = a;
+    sActorSpawnRot = b;
 }
 
-void Unk_020d5d84::func_02002cf8(void *a, void *b, void *c, void *d, void *e) {
+void Actor::spawn(void *a, void *b, void *c, void *d, void *e) {
     void *t = e;
-    if (t == 0) t = data_021eda68;
-    func_02002d28(c, d);
-    func_0202e880(a, t, b, 3);
+    if (t == 0) t = gActorDefaultParent;
+    setSpawnTransform(c, d);
+    GameProc_CreateChild(a, t, b, 3);
 }
 
-void Unk_020d5d84::func_02002ce0(s32 a, s32 b, s32 c) {
-    unk_b4 = a;
-    unk_b8 = b;
-    unk_bc = c;
+void Actor::setCullParams(s32 a, s32 b, s32 c) {
+    cullHeight = a;
+    cullRadius = b;
+    cullDepth = c;
 }
 
-void Unk_020d5d84::func_02002cb0(Unk_02002cb0_Vec *v) {
-    func_01ffca8c(&unk_5c, &unk_a4, &unk_5c);
+void Actor::applyVelocity(ActorCollider *v) {
+    VEC_Add(&position, &velocity, &position);
     if (v) {
-        unk_5c = unk_5c + v->unk_10;
-        unk_64 = unk_64 + v->unk_18;
+        position.x = position.x + v->pushX;
+        position.z = position.z + v->pushZ;
     }
 }
 
-void Unk_020d5d84::func_02002c10() {
-    if (unk_98 == 0) {
-        s32 v = unk_a0;
-        s32 w = unk_a8 + unk_9c;
+void Actor::calcVelocity() {
+    if (speed == 0) {
+        s32 v = maxFallSpeed;
+        s32 w = velocity.y + gravity;
         if (w >= v) v = w;
-        unk_a4 = 0;
-        unk_a8 = v;
-        unk_ac = 0;
+        velocity.x = 0;
+        velocity.y = v;
+        velocity.z = 0;
     } else {
-        s32 r = func_01ffcb0c(unk_98, data_02135f44[(unk_94 >> 4) * 2 + 1]);
-        s32 v = unk_a0;
-        s32 w = unk_a8 + unk_9c;
+        s32 r = func_01ffcb0c(speed, data_02135f44[((u16)moveAngleY >> 4) * 2 + 1]);
+        s32 v = maxFallSpeed;
+        s32 w = velocity.y + gravity;
         if (w >= v) v = w;
-        unk_a4 = func_01ffcb0c(unk_98, data_02135f44[(unk_94 >> 4) * 2]);
-        unk_a8 = v;
-        unk_ac = r;
+        velocity.x = func_01ffcb0c(speed, data_02135f44[((u16)moveAngleY >> 4) * 2]);
+        velocity.y = v;
+        velocity.z = r;
     }
 }
 
-void Unk_020d5d84::func_02002bf4(Unk_02002cb0_Vec *v) {
-    func_02002c10();
-    func_02002cb0(v);
+void Actor::updatePosition(ActorCollider *v) {
+    calcVelocity();
+    applyVelocity(v);
 }
 
-extern "C" void func_02002bdc(s32 *a, s32 *b) {
-    func_020e7b98(b[0] - a[0], b[2] - a[2]);
+extern "C" void Math_AngleXZ(s32 *a, s32 *b) {
+    Math_Atan2(b[0] - a[0], b[2] - a[2]);
 }
 
-void Unk_020d5d84::func_02002b84(void *out) {
+void Actor::calcModelMatrix(void *out) {
     u32 m[12];
-    func_020e8388(m, unk_c4, unk_c8, unk_cc);
-    func_020e8434(m, (s16)unk_d0);
-    func_020e8404(m, unk_8e);
-    if (unk_8c != 0) func_020e8434(m, unk_8c);
-    *(Unk_02002848_Data *)out = *(Unk_02002848_Data *)m;
+    Mtx43_SetTranslate(m, drawPos.x, drawPos.y, drawPos.z);
+    Mtx43_RotateX(m, (s16)drawTilt);
+    Mtx43_RotateY(m, rotY);
+    if (rotX != 0) Mtx43_RotateX(m, rotX);
+    *(Mtx43 *)out = *(Mtx43 *)m;
 }
 

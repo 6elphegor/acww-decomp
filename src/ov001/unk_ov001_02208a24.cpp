@@ -1,65 +1,63 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-
-struct Unk_ov001_02208a24_Reg { u32 w0; u16 h4; };
-struct Unk_ov001_02208a24_Obj { Unk_ov001_02208a24_Reg *reg; u32 unk_04; s8 unk_08; };
+#include "ui/WfcLinkIcon.h"
 
 extern "C" {
-extern void func_ov001_02224b9c(s32, u32, u32);
-extern void func_ov001_02226fd0(s32, u32);
-extern void func_ov001_022267c8(u32);
-extern void func_ov001_02225d58(void *);
-extern void *func_ov001_02225dd8(s32, s32);
-extern Unk_ov001_02208a24_Reg *func_ov001_02224b60(s32, s32);
-extern u32 func_ov001_02227094(s32, void *, s32, s32);
-extern u32 func_0211f800();
-extern u32 func_0211f73c();
-void func_ov001_02208a24();
-extern Unk_ov001_02208a24_Obj *data_ov001_0222ddd8;
+extern void WfcCell_Copy(s32, u32, u32);
+extern void WfcTask_Delete(s32, u32);
+extern void WfcOam_FreeEntry(u32);
+extern void WfcHeap_FreeAndClear(void *);
+extern void *WfcHeap_Alloc(s32, s32);
+extern GXOamAttr *WfcObj_CreateSingle(s32, s32);
+extern u32 WfcTask_Add(s32, void *, s32, s32);
+extern u32 WM_GetAllowedChannel();
+extern u32 WM_GetLinkLevel();
+void WfcLinkIcon_Task();
+extern WfcLinkIcon *sWfcLinkIcon;
 }
 
 extern "C" const u16 data_ov001_02229bcc[2] = {0xe5, 0x26};
 extern "C" const u8 data_ov001_02229bd0[2][4] = {{0x18, 0x17, 0x16, 0x15}, {0x5f, 0x5e, 0x5d, 0x5c}};
 extern "C" {
-Unk_ov001_02208a24_Obj *data_ov001_0222ddd8;
+WfcLinkIcon *sWfcLinkIcon;
 }
 
 #pragma thumb off
 
-extern "C" void func_ov001_02208b4c(s32 a) {
-    if (data_ov001_0222ddd8 != NULL) {
+extern "C" void WfcLinkIcon_Create(s32 a) {
+    if (sWfcLinkIcon != NULL) {
         return;
     }
-    data_ov001_0222ddd8 = (Unk_ov001_02208a24_Obj *)func_ov001_02225dd8(0xc, 4);
-    data_ov001_0222ddd8->unk_08 = a;
-    data_ov001_0222ddd8->reg = func_ov001_02224b60(0, data_ov001_02229bd0[a][0]);
-    data_ov001_0222ddd8->reg->w0 = (data_ov001_0222ddd8->reg->w0 & 0xfe00ff00) | (data_ov001_02229bcc[1] & 0xff) | ((data_ov001_02229bcc[0] & 0x1ff) << 16);
-    data_ov001_0222ddd8->reg->h4 = (data_ov001_0222ddd8->reg->h4 & ~0xc00) | 0x800;
-    data_ov001_0222ddd8->unk_04 = func_ov001_02227094(0, (void *)func_ov001_02208a24, 0, 0x78);
+    sWfcLinkIcon = (WfcLinkIcon *)WfcHeap_Alloc(0xc, 4);
+    sWfcLinkIcon->iconSet = a;
+    sWfcLinkIcon->oam = WfcObj_CreateSingle(0, data_ov001_02229bd0[a][0]);
+    sWfcLinkIcon->oam->attr01 = (sWfcLinkIcon->oam->attr01 & 0xfe00ff00) | (data_ov001_02229bcc[1] & 0xff) | ((data_ov001_02229bcc[0] & 0x1ff) << 16);
+    sWfcLinkIcon->oam->attr2 = (sWfcLinkIcon->oam->attr2 & ~0xc00) | 0x800;
+    sWfcLinkIcon->task = WfcTask_Add(0, (void *)WfcLinkIcon_Task, 0, 0x78);
 }
 
-extern "C" void func_ov001_02208af8() {
-    if (data_ov001_0222ddd8 == 0) return;
-    func_ov001_02226fd0(0, data_ov001_0222ddd8->unk_04);
-    func_ov001_022267c8((u32)data_ov001_0222ddd8->reg);
-    func_ov001_02225d58(&data_ov001_0222ddd8);
+extern "C" void WfcLinkIcon_Delete() {
+    if (sWfcLinkIcon == 0) return;
+    WfcTask_Delete(0, sWfcLinkIcon->task);
+    WfcOam_FreeEntry((u32)sWfcLinkIcon->oam);
+    WfcHeap_FreeAndClear(&sWfcLinkIcon);
 }
 
-extern "C" void func_ov001_02208a24() {
+extern "C" void WfcLinkIcon_Task() {
     volatile u16 *ime = (volatile u16 *)0x4000208;
     u16 saved = *ime;
     u32 x = 0;
     *ime = 0;
-    if (func_0211f800() != 0x8000) x = func_0211f73c();
+    if (WM_GetAllowedChannel() != 0x8000) x = WM_GetLinkLevel();
     *ime;
     *ime = saved;
-    const u8 *q = (const u8 *)data_ov001_02229bd0 + data_ov001_0222ddd8->unk_08 * 4;
-    func_ov001_02224b9c(0, q[x], (u32)data_ov001_0222ddd8->reg);
+    const u8 *q = (const u8 *)data_ov001_02229bd0 + sWfcLinkIcon->iconSet * 4;
+    WfcCell_Copy(0, q[x], (u32)sWfcLinkIcon->oam);
     const u16 *p = data_ov001_02229bcc;
-    Unk_ov001_02208a24_Reg *r = data_ov001_0222ddd8->reg;
-    r->w0 = (r->w0 & 0xfe00ff00) | (p[1] & 0xff) | ((p[0] & 0x1ff) << 16);
-    r = data_ov001_0222ddd8->reg;
-    r->h4 = (r->h4 & ~0xc00) | 0x800;
+    GXOamAttr *r = sWfcLinkIcon->oam;
+    r->attr01 = (r->attr01 & 0xfe00ff00) | (p[1] & 0xff) | ((p[0] & 0x1ff) << 16);
+    r = sWfcLinkIcon->oam;
+    r->attr2 = (r->attr2 & ~0xc00) | 0x800;
 }
 
 #pragma thumb reset

@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I002c: itcm 0x01ffa404-0x01ffa494, NitroSDK OS_SetIrqFunction (1 function)
 // I001e: itcm 0x01ff9e10-0x01ffa2ec, NitroSystem g3d Maya texture matrix + NitroSDK MI GX-command DMA (MI_SendGXCommandAsync, MI_WaitDma, MIi_DmaSetParams, FIFO callbacks) (8 functions). ARM, mwcc 1.2/base, -O4,p.
@@ -106,7 +107,6 @@ typedef struct ResMatData {
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct A3 { s32 a[3]; } A3;
-typedef struct MtxFx33 { fx32 a[9]; } MtxFx33;
 
 // NNSG3dJntAnmResult (0x58 bytes)
 typedef struct JntAnm {
@@ -204,11 +204,11 @@ typedef struct OSIrqCallbackInfo {
 extern OSIrqCallbackInfo data_027e0058[]; // OSi_IrqCallbackInfo (DTCM)
 extern u8 data_027e0000[];                // DTCM start (OSi_IrqFunctionTable)
 
-extern u32 func_01ffa2ec(void);                            // OS_DisableInterrupts (assembly)
-extern u32 func_01ffa3d4(u32 enabled);                     // OS_RestoreInterrupts (assembly)
-extern u32 func_01ffa314(void);                            // OS_EnableInterrupts (assembly)
-extern void func_01ffa3c0(void);                           // OS_Halt (assembly)
-extern u32 func_01ff8128(u32 intr);                        // OS_EnableIrqMask
+extern u32 OS_DisableInterrupts(void);                            // OS_DisableInterrupts (assembly)
+extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreInterrupts (assembly)
+extern u32 OS_EnableInterrupts(void);                            // OS_EnableInterrupts (assembly)
+extern void OS_Halt(void);                           // OS_Halt (assembly)
+extern u32 OS_EnableIrqMask(u32 intr);                        // OS_EnableIrqMask
 
 extern volatile u64 data_021fcf24;
 
@@ -218,7 +218,7 @@ extern volatile u64 data_021fcf24;
 /* END PROTOS */
 
 // OS_SetIrqFunction
-void func_01ffa404(u32 intrBit, void (*function)(void)) {
+void OS_SetIrqFunction(u32 intrBit, void (*function)(void)) {
     int n;
     for (n = 0; n < 22; n++) {
         if (intrBit & 1) {

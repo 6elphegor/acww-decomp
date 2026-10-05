@@ -1,88 +1,87 @@
 #include "types.h"
+#include "net/CommManager.h"
+#include "player/PlayerBodyWorkRef.h"
 
-struct Unk_0205f6f8_Cfg { u8 pad[0x6c]; u8 unk_6c; };
 
-struct Unk_0205eebc {
-    u32 unk_00[4];
-    Unk_0205eebc();
-    ~Unk_0205eebc();
+struct PlayerBodyWorkPool {
+    u32 heaps[4];
+    PlayerBodyWorkPool();
+    ~PlayerBodyWorkPool();
 };
 
-struct Unk_0205ee34 {
-    u8 unk_00;
-    Unk_0205ee34();
-};
 
 extern "C" {
-extern void *data_021c61b8;
-extern Unk_0205f6f8_Cfg *data_020cbb18;
-extern void func_0205bb64(void);
-extern s32 func_0205bb48(void);
-extern void func_020e885c(void *p);
-extern void func_020e877c(void *p);
-extern void *func_020e8da0(u32 size, void *heap);
-u32 func_0205eec0(void);
-u32 func_0205ee3c(u32 *base, u32 idx);
-void func_0205ee44(u32 *tbl);
-void func_0205ee7c(u32 *tbl);
+extern void *gPlayerBodyAnimHeap;
+extern CommManager *gCommManager;
+extern void PlayerBodyAnimHeap_Create(void);
+extern s32 PlayerBodyAnimHeap_Destroy(void);
+#define Heap_freeAll _ZN4Heap7freeAllEv
+extern void Heap_freeAll(void *p);
+#define Heap_adjust _ZN4Heap6adjustEv
+extern void Heap_adjust(void *p);
+extern void *FrameHeap_Create(u32 size, void *heap);
+u32 PlayerBodyWork_GetHeapSize(void);
+u32 PlayerBodyWorkPool_GetHeap(u32 *base, u32 idx);
+void PlayerBodyWorkPool_DestroyHeaps(u32 *tbl);
+void PlayerBodyWorkPool_CreateHeaps(u32 *tbl);
 }
 
-Unk_0205eebc data_021c73b8;
+PlayerBodyWorkPool sPlayerBodyWorkPool;
 
-extern "C" void func_0205eee0(void) {
-    func_0205bb64();
-    func_0205ee7c(data_021c73b8.unk_00);
-    if (data_021c61b8) {
-        func_020e877c(data_021c61b8);
+extern "C" void PlayerBodyWorkPool_Create(void) {
+    PlayerBodyAnimHeap_Create();
+    PlayerBodyWorkPool_CreateHeaps(sPlayerBodyWorkPool.heaps);
+    if (gPlayerBodyAnimHeap) {
+        Heap_adjust(gPlayerBodyAnimHeap);
     }
 }
 
-extern "C" void func_0205eec8(void) {
-    func_0205ee44(data_021c73b8.unk_00);
-    func_0205bb48();
+extern "C" void PlayerBodyWorkPool_Destroy(void) {
+    PlayerBodyWorkPool_DestroyHeaps(sPlayerBodyWorkPool.heaps);
+    PlayerBodyAnimHeap_Destroy();
 }
 
-extern "C" u32 func_0205eec0(void) { return 0x768; }
+extern "C" u32 PlayerBodyWork_GetHeapSize(void) { return 0x768; }
 
-Unk_0205eebc::Unk_0205eebc() {}
+PlayerBodyWorkPool::PlayerBodyWorkPool() {}
 
-Unk_0205eebc::~Unk_0205eebc() {}
+PlayerBodyWorkPool::~PlayerBodyWorkPool() {}
 
-extern "C" void func_0205ee7c(u32 *tbl) {
-    void *heap = data_021c61b8;
-    u32 n = data_020cbb18->unk_6c;
+extern "C" void PlayerBodyWorkPool_CreateHeaps(u32 *tbl) {
+    void *heap = gPlayerBodyAnimHeap;
+    u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
-        tbl[i] = (u32)func_020e8da0(func_0205eec0(), heap);
+        tbl[i] = (u32)FrameHeap_Create(PlayerBodyWork_GetHeapSize(), heap);
     }
 }
 
-extern "C" void func_0205ee44(u32 *tbl) {
+extern "C" void PlayerBodyWorkPool_DestroyHeaps(u32 *tbl) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (tbl[i]) {
-            func_020e885c((void *)tbl[i]);
+            Heap_freeAll((void *)tbl[i]);
             tbl[i] = 0;
         }
     }
-    if (data_021c61b8) {
-        func_020e885c(data_021c61b8);
+    if (gPlayerBodyAnimHeap) {
+        Heap_freeAll(gPlayerBodyAnimHeap);
     }
 }
 
-extern "C" u32 func_0205ee3c(u32 *base, u32 idx) {
+extern "C" u32 PlayerBodyWorkPool_GetHeap(u32 *base, u32 idx) {
     return base[idx];
 }
 
-Unk_0205ee34::Unk_0205ee34() { unk_00 = 4; }
+PlayerBodyWorkRef::PlayerBodyWorkRef() { slot = 4; }
 
-extern "C" void func_0205ee30(void) {}
+extern "C" void PlayerBodyWorkRef_Destruct(void) {}
 
-extern "C" void func_0205ee10(u8 *p, u8 v) {
-    func_020e885c((void *)func_0205ee3c(data_021c73b8.unk_00, v));
+extern "C" void PlayerBodyWorkRef_Assign(u8 *p, u8 v) {
+    Heap_freeAll((void *)PlayerBodyWorkPool_GetHeap(sPlayerBodyWorkPool.heaps, v));
     *p = v;
 }
 
-extern "C" u32 func_0205edfc(u8 *p) {
-    return func_0205ee3c(data_021c73b8.unk_00, *p);
+extern "C" u32 PlayerBodyWorkRef_GetHeap(u8 *p) {
+    return PlayerBodyWorkPool_GetHeap(sPlayerBodyWorkPool.heaps, *p);
 }

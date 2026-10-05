@@ -1,43 +1,36 @@
 #include "types.h"
+#include "talk/EncodedString41.h"
 
-// Fixed 0x29 byte string holder (vtable and constructors live in the next unit)
-class Unk_020e0470 {
-public:
-    s32 func_0206f828();
-
-    /* 0x00 */ u8 pad_00[0x0e];
-    /* 0x0e */ u8 unk_0e[0x29];
-};
 
 extern "C" {
-extern u8 data_020de390;
-s32 func_020512e0(const u8 *str, s32 len);
+extern u8 sCommSubPostReply;
+s32 Text_GetLength(const u8 *str, s32 len);
 
-void func_0206f4d8(u8 *p, u32 x);
-void func_0206f4e4(u8 *p, u32 x);
-void func_0206f4f0(u8 *p, u32 x);
-void func_0206f56c(u8 *p, u32 x);
-void func_0206f5a0(u8 *p, u32 x);
-void func_0206f5ac(u8 *p, u32 x);
-void func_0206f650(u8 *p, u32 x);
-void func_0206f668(u8 *p, u32 x);
-void func_0206f6b8(u8 *p, u32 x);
-void func_0206f6fc(u8 *p, u32 x);
-void func_0206f770(u8 *p, u32 x);
-void func_0206f7d0(u8 *p, u32 x);
+void CommSub_RecvClearPendingUnit(u8 *p, u32 x);
+void CommSub_StartCountdown(u8 *p, u32 x);
+void CommSub_RecvCountdownRequest(u8 *p, u32 x);
+void CommSub_RecvTownTune(u8 *p, u32 x);
+void CommSub_RecvPostReply(u8 *p, u32 x);
+void CommSub_RecvPostLetter(u8 *p, u32 x);
+void CommSub_ClearBottleLetter(u8 *p, u32 x);
+void CommSub_RecvBottleLetter(u8 *p, u32 x);
+void CommSub_RecvItemList15(u8 *p, u32 x);
+void CommSub_RecvReleaseOrThrow(u8 *p, u32 x);
+void CommSub_RecvInsectRelease(u8 *p, u32 x);
+void CommSub_RecvBbsPost(u8 *p, u32 x);
 
-typedef void (*Unk_0206f804_Fn)(u8 *, u32);
+typedef void (*CommSubHandler)(u8 *, u32);
 }
 
-Unk_0206f804_Fn data_020de3a8[24] = {
-    func_0206f7d0, func_0206f770, func_0206f6fc, func_0206f6b8, func_0206f6b8, func_0206f6fc,
-    func_0206f668, func_0206f650, func_0206f5ac, func_0206f5a0, func_0206f5a0, func_0206f5a0,
-    func_0206f56c, func_0206f4f0, func_0206f4f0, func_0206f4f0, func_0206f4f0, func_0206f4f0,
-    func_0206f4e4, func_0206f4e4, func_0206f4e4, func_0206f4e4, func_0206f4e4, func_0206f4d8,
+CommSubHandler sCommSubHandlers[24] = {
+    CommSub_RecvBbsPost, CommSub_RecvInsectRelease, CommSub_RecvReleaseOrThrow, CommSub_RecvItemList15, CommSub_RecvItemList15, CommSub_RecvReleaseOrThrow,
+    CommSub_RecvBottleLetter, CommSub_ClearBottleLetter, CommSub_RecvPostLetter, CommSub_RecvPostReply, CommSub_RecvPostReply, CommSub_RecvPostReply,
+    CommSub_RecvTownTune, CommSub_RecvCountdownRequest, CommSub_RecvCountdownRequest, CommSub_RecvCountdownRequest, CommSub_RecvCountdownRequest, CommSub_RecvCountdownRequest,
+    CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_RecvClearPendingUnit,
 };
 
-s32 Unk_020e0470::func_0206f828() { return func_020512e0(unk_0e, 0x29); }
+s32 EncodedString41::getLength() { return Text_GetLength(text, 0x29); }
 
-extern "C" void func_0206f81c() { data_020de390 = 0x18; }
+extern "C" void CommSub_ResetPostReply() { sCommSubPostReply = 0x18; }
 
-extern "C" void func_0206f804(u8 *p, u32 x) { data_020de3a8[p[0]](p, x); }
+extern "C" void CommSub_Dispatch(u8 *p, u32 x) { sCommSubHandlers[p[0]](p, x); }

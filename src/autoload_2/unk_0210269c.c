@@ -58,15 +58,15 @@ typedef struct CharCanvas {         // NNSG2dCharCanvas
     ClearAreaFunc clearArea;        // 0x1c
 } CharCanvas;
 
-extern void func_02115ea8(u32 data, void *dest, u32 size);   // MIi_CpuFillFast(data, dest, size)
-extern u32 func_02103734(BitReader *r, u32 nbits);   // bit reader: get n bits
+extern void MIi_CpuClearFast(u32 data, void *dest, u32 size);   // MIi_CpuFillFast(data, dest, size)
+extern u32 NNSi_G2dBitReaderRead(BitReader *r, u32 nbits);   // bit reader: get n bits
 
-void func_02102f38(u8 *base, u32 x, u32 y, u32 w, u32 h, u32 clr, s32 mode);
-void func_0210287c(CharCanvas *cc, u32 clr);
-void func_0210269c(CharCanvas *cc, u32 clr, s32 x, s32 y, s32 w, s32 h);
+void ClearChar(u8 *base, u32 x, u32 y, u32 w, u32 h, u32 clr, s32 mode);
+void ClearContinuous(CharCanvas *cc, u32 clr);
+void ClearAreaLine(CharCanvas *cc, u32 clr, s32 x, s32 y, s32 w, s32 h);
 
 // NNS_G2dCharCanvasClear: fill the whole canvas with the color (color index replicated over 32 bits)
-void func_0210287c(CharCanvas *cc, u32 clr) {
+void ClearContinuous(CharCanvas *cc, u32 clr) {
     volatile u32 data;
     u32 size;
     if (cc->colorMode == 4) {
@@ -80,11 +80,11 @@ void func_0210287c(CharCanvas *cc, u32 clr) {
     data = clr;
     size = cc->areaWidth * cc->areaHeight;
     size = size * (cc->colorMode * 64 / 8);
-    func_02115ea8(data, cc->charBase, size);
+    MIi_CpuClearFast(data, cc->charBase, size);
 }
 
 // NNS_G2dCharCanvasClearArea (OBJ 1D char layout): clear a pixel rectangle tile by tile
-void func_0210269c(CharCanvas *cc, u32 clr, s32 x, s32 y, s32 w, s32 h) {
+void ClearAreaLine(CharCanvas *cc, u32 clr, s32 x, s32 y, s32 w, s32 h) {
     s32 yy, xe, ye, ye8;
     u8 *rowPtr;
     s32 x0, mode, tileBytes, rowStride;
@@ -115,7 +115,7 @@ void func_0210269c(CharCanvas *cc, u32 clr, s32 x, s32 y, s32 w, s32 h) {
         for (xx = x0; xx < xe8; xx += 8) {
             left = xx < x ? x - xx : 0;
             wIn = ((xe - xx) > 8 ? 8 : (xe - xx)) - left;
-            func_02102f38(p, left, top, wIn, hIn, clr, mode);
+            ClearChar(p, left, top, wIn, hIn, clr, mode);
             p += tileBytes;
         }
         rowPtr += rowStride;

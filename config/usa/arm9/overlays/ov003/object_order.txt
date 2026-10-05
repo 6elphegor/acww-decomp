@@ -3,11 +3,11 @@
 
 # TU05
 src/ov003/unk_ov003_02214494.cpp:
-    extra src/ov003/unk_ov003_02214494_switch.cpp _ZN18Unk_ov003_02230ff08vfunc_4cEjh
+    extra src/ov003/unk_ov003_02214494_switch.cpp _ZN8ReddTent18onInteractionEventEjh
 
 # TU08
 src/ov003/unk_ov003_022150ec.cpp:
-    extra src/ov003/unk_ov003_022150ec_switch.cpp func_ov003_022150f0 _ZN18Unk_ov003_022314d08vfunc_70Ev
+    extra src/ov003/unk_ov003_022150ec_switch.cpp CountdownDigit_Update _ZN14CountdownDigit12initBuildingEv
 
 # unk_ov003_0222ee6c.cpp: placed by object (replaces filler objects)
 src/ov003/unk_ov003_0222ee6c.cpp:

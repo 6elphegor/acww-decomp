@@ -1,16 +1,10 @@
 // mwcc-flags: -nothumb -O4,p
 // G006a: autoload_2 0x020ef150-0x020f0dec (45 functions). mwcc 1.2/base, C++, ARM, -O4,p.
-// The sound/BGM manager of the game (object data_021f5b80, "SndMgr" here): volume ramps, sound-id dispatch,
+// The sound/BGM manager of the game (object gSndMgr, "SndMgr" here): volume ramps, sound-id dispatch,
 // BGM change/fade handling. PARTIAL unit: only extern "C" functions under their symbols.txt names, no data,
 // no vtable (the class SndObj only DECLARES its virtuals), all data and callees extern.
 #include "types.h"
-
-struct Ramp {
-    /* 0x00 */ s16 unk_00;
-    /* 0x02 */ u16 unk_02;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-};
+#include "snd/SndMgr.h"
 
 class SndObj {
 public:
@@ -26,50 +20,15 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28(u32 a, u32 b);
 
-    /* 0x04 */ s8 unk_04;
+    /* 0x04 */ s8 id;
 };
 
 struct SndHandle {
     /* 0x00 */ u8 unk_00[0x38];
-    /* 0x38 */ u16 unk_38;
-    /* 0x3a */ u16 unk_3a;
+    /* 0x38 */ u16 seqNo;
+    /* 0x3a */ u16 seqArcIndex;
 };
 
-struct SndMgr {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Ramp unk_04;
-    /* 0x10 */ Ramp unk_10;
-    /* 0x1c */ Ramp unk_1c;
-    /* 0x28 */ u32 unk_28;
-    /* 0x2c */ SndObj *unk_2c;
-    /* 0x30 */ u32 unk_30;
-    /* 0x34 */ SndHandle *unk_34;
-    /* 0x38 */ SndHandle *unk_38;
-    /* 0x3c */ SndHandle *unk_3c;
-    /* 0x40 */ SndHandle *unk_40;
-    /* 0x44 */ u32 unk_44;
-    /* 0x48 */ SndHandle *unk_48;
-    /* 0x4c */ u8 unk_4c;
-    /* 0x4d */ u8 unk_4d;
-    /* 0x4e */ u8 unk_4e[6];
-    /* 0x54 */ u32 unk_54;
-    /* 0x58 */ u32 unk_58;
-    /* 0x5c */ u32 unk_5c;
-    /* 0x60 */ u8 unk_60;
-    /* 0x61 */ u8 unk_61;
-    /* 0x62 */ u8 unk_62[2];
-    /* 0x64 */ u16 unk_64;
-    /* 0x66 */ u16 unk_66;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ s16 unk_6c;
-    /* 0x6e */ u16 unk_6e;
-    /* 0x70 */ u8 unk_70;
-    /* 0x71 */ u8 unk_71;
-    /* 0x72 */ u8 unk_72;
-    /* 0x73 */ u8 unk_73;
-    /* 0x74 */ u8 unk_74;
-    /* 0x75 */ u8 unk_75;
-};
 
 struct SndEnt {
     u16 a;
@@ -79,58 +38,58 @@ struct SndEnt {
 };
 
 extern "C" {
-extern u16 data_021f5b70;
-extern u8 data_021f5b5c;
-extern u32 data_021f5b7c;
-extern u16 data_0213b200;
-extern SndEnt data_0213b204[];
+extern u16 sVoicePendingSyllable;
+extern u8 sVoicePendingVolume;
+extern u32 sVoicePendingPitch;
+extern u16 gSndPanTrackMask;
+extern SndEnt sBgmTrackVariantTable[];
 
-s32 func_01ffc5a4(s32 a, s32 b); // FX_Div
-void func_020edad0(u16 a, u16 b, void *out);
-void func_020eda30(void *p, u32 a);
-void func_020eda80(void *p, u32 a, s32 b, s32 c, u32 d, u32 e);
-void func_020edb00(u16 a, u16 b);
-void func_0210a0e8(void *p, u32 a, u32 b);
-void func_0210a118(void *p, u32 a, u32 b);
-void func_0210a148(void *p, u32 a, u32 b);
-void func_0210a26c(void *p, u32 a);
-void func_0210a460(u32 a, u32 b);
-void func_0210a378(void *p);
-s32 func_0210d010(void *p, u32 a);
+s32 FX_Div(s32 a, s32 b); // FX_Div
+void Snd_StartSeqArc(u16 a, u16 b, void *out);
+void Snd_StopHandle(void *p, u32 a);
+void Snd_StartSeqArcEx(void *p, u32 a, s32 b, s32 c, u32 d, u32 e);
+void Snd_StartSeqArcDefault(u16 a, u16 b);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
+void NNS_SndPlayerSetTrackPitch(void *p, u32 a, u32 b);
+void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
+void NNS_SndPlayerSetVolume(void *p, u32 a);
+void NNS_SndPlayerSetPlayerVolume(u32 a, u32 b);
+void NNS_SndPlayerStopSeq(void *p);
+s32 NNS_SndArcPlayerStartSeq(void *p, u32 a);
 u32 func_0210e648(void *p);
-void *func_020f4500(void);
-void func_020f45b8(void *p, u32 a);
+void *Snd_GetVolumeCurve(void);
+void SndVolumeCurve_Set(void *p, u32 a);
 
-u16 func_020ef6c8(SndMgr *self, u16 id);
-u8 func_020ef7a0(SndMgr *self, u8 v);
-void func_020effd4(SndMgr *self);
-s16 func_020ef7b0(Ramp *r);
-void func_020ef7f8(Ramp *r, s16 target, u32 frames);
-void func_020ef83c(Ramp *r, s32 v);
-void func_020efc0c(SndMgr *self, s32 v);
-void func_020efc84(SndMgr *self, s32 a, s32 b);
-void func_020efd80(SndMgr *self, u32 flag);
-void func_020f0988(SndMgr *self, s32 a, u32 b);
-void func_0210a214(void *p, s32 v, u32 w);
-void func_0210e6b8(void *p, s32 v, u32 w);
-void func_0210e704(void *p, s32 v);
-void func_0210e730(void *p, u32 a, u32 b);
+u16 SndMgr_GetVoiceSeqIndex(SndMgr *self, u16 id);
+u8 SndMgr_ClampVolume(SndMgr *self, u8 v);
+void SndMgr_UpdateTrackRamps(SndMgr *self);
+s16 SndRamp_Step(SndRamp *r);
+void SndRamp_Start(SndRamp *r, s16 target, u32 frames);
+void SndRamp_Set(SndRamp *r, s32 v);
+void SndMgr_SetSubPlayerVolume(SndMgr *self, s32 v);
+void SndMgr_SetPlayerVolumes(SndMgr *self, s32 a, s32 b);
+void SndMgr_ApplyPan(SndMgr *self, u32 flag);
+void SndMgr_StopSe(SndMgr *self, s32 a, u32 b);
+void NNS_SndPlayerMoveVolume(void *p, s32 v, u32 w);
+void NNS_SndArcStrmMoveVolume(void *p, s32 v, u32 w);
+void NNS_SndArcStrmStop(void *p, s32 v);
+void NNS_SndArcStrmStart(void *p, u32 a, u32 b);
 s32 func_0210e5fc(void *p);
-void func_0210cc4c(void *a, u32 b);
-u32 func_020edc88(void);
-void func_0210a2a0(s32 a, s32 b, u32 c);
-void func_020f00d0(SndMgr *self);
-void func_020f00e0(SndMgr *self, u32 a, u32 b);
+void NNS_SndArcLoadBank(void *a, u32 b);
+u32 Snd_GetHeap(void);
+void NNS_SndPlayerStopSeqBySeqNo(s32 a, s32 b, u32 c);
+void SndMgr_StopBgmSeq(SndMgr *self);
+void SndMgr_StartBgmSeq(SndMgr *self, u32 a, u32 b);
 
-void func_020f0858(SndMgr *self, s32 a, u8 b, s32 c);
+void SndMgr_PlayVoice(SndMgr *self, s32 a, u8 b, s32 c);
 }
 
 static inline BOOL isSet(void *p) {
     return p != NULL;
 }
 
-extern "C" void func_020f0a68(SndMgr *self, s32 id) {
-    if (self->unk_4d != 0) {
+extern "C" void SndMgr_PlaySe(SndMgr *self, s32 id) {
+    if (self->seDisabled != 0) {
         return;
     }
     switch (id) {
@@ -168,42 +127,42 @@ extern "C" void func_020f0a68(SndMgr *self, s32 id) {
         case 0x880:
         case 0x881:
         case 0x882:
-            func_020edad0(id % 1000, id / 1000, &self->unk_38);
-            func_020efd80(self, 0);
+            Snd_StartSeqArc(id % 1000, id / 1000, &self->seHandle);
+            SndMgr_ApplyPan(self, 0);
             break;
         case 0x861:
-            func_020edad0(id % 1000, id / 1000, &self->unk_40);
-            func_020efd80(self, 0);
+            Snd_StartSeqArc(id % 1000, id / 1000, &self->auxSeHandle);
+            SndMgr_ApplyPan(self, 0);
             break;
         case 1:
         case 2:
-            self->unk_72 = 15;
-            func_020edb00(id % 1000, id / 1000);
+            self->curveDelay = 15;
+            Snd_StartSeqArcDefault(id % 1000, id / 1000);
             break;
         default:
-            func_020edb00(id % 1000, id / 1000);
+            Snd_StartSeqArcDefault(id % 1000, id / 1000);
             break;
     }
 }
 
-extern "C" void func_020f09d8(SndMgr *self, s32 a) {
-    func_020edad0(a % 1000, a / 1000, &self->unk_38);
+extern "C" void SndMgr_PlaySeOnHandle(SndMgr *self, s32 a) {
+    Snd_StartSeqArc(a % 1000, a / 1000, &self->seHandle);
     if (a == 0x862) {
-        func_0210a26c(&self->unk_38, 0);
+        NNS_SndPlayerSetVolume(&self->seHandle, 0);
     }
-    func_020efd80(self, 1);
+    SndMgr_ApplyPan(self, 1);
 }
 
-extern "C" void func_020f0988(SndMgr *self, s32 a, u32 b) {
-    func_0210a2a0(a / 1000, a % 1000, b);
+extern "C" void SndMgr_StopSe(SndMgr *self, s32 a, u32 b) {
+    NNS_SndPlayerStopSeqBySeqNo(a / 1000, a % 1000, b);
 }
 
-extern "C" void func_020f0980(SndMgr *self, u32 v) {
-    self->unk_44 = v;
+extern "C" void SndMgr_SetVoiceType(SndMgr *self, u32 v) {
+    self->voiceType = v;
 }
 
-extern "C" void func_020f0858(SndMgr *self, s32 a, u8 x, s32 y) {
-    switch (self->unk_44) {
+extern "C" void SndMgr_PlayVoice(SndMgr *self, s32 a, u8 x, s32 y) {
+    switch (self->voiceType) {
         case 3: {
             y -= 400;
             double k = 1.38;
@@ -223,368 +182,368 @@ extern "C" void func_020f0858(SndMgr *self, s32 a, u8 x, s32 y) {
             break;
         }
     }
-    func_020edad0(a % 1000, a / 1000, &self->unk_48);
-    if (isSet(self->unk_48)) {
-        func_0210a26c(&self->unk_48, x);
-        func_0210a118(&self->unk_48, 15, y);
+    Snd_StartSeqArc(a % 1000, a / 1000, &self->voiceHandle);
+    if (isSet(self->voiceHandle)) {
+        NNS_SndPlayerSetVolume(&self->voiceHandle, x);
+        NNS_SndPlayerSetTrackPitch(&self->voiceHandle, 15, y);
     }
 }
 
-extern "C" void func_020f0838(SndMgr *self, void *a) {
-    func_0210cc4c(a, func_020edc88());
+extern "C" void SndMgr_LoadBank(SndMgr *self, void *a) {
+    NNS_SndArcLoadBank(a, Snd_GetHeap());
 }
 
-extern "C" u16 func_020f07f0(SndMgr *self, u32 n) {
-    self->unk_54 = self->unk_58 * self->unk_54 + self->unk_5c;
+extern "C" u16 SndMgr_Rand(SndMgr *self, u32 n) {
+    self->randState = self->randMul * self->randState + self->randAdd;
     if (n == 0) {
-        return self->unk_54 >> 16;
+        return self->randState >> 16;
     }
-    return ((self->unk_54 >> 16) * n) >> 16;
+    return ((self->randState >> 16) * n) >> 16;
 }
 
-extern "C" void func_020f0720(SndMgr *self, u32 k) {
+extern "C" void SndMgr_PlayBgm(SndMgr *self, u32 k) {
     switch (k) {
         case 0:
         case 1:
-            func_0210e730(&self->unk_34, k, 0);
+            NNS_SndArcStrmStart(&self->strmHandle, k, 0);
             if (k != 0) {
                 return;
             }
-            self->unk_68 = func_0210e5fc(&self->unk_34);
+            self->strmTotalTime = func_0210e5fc(&self->strmHandle);
             return;
     }
-    self->unk_2c->vfunc_28(0, k);
+    self->scene->vfunc_28(0, k);
     if (k >= 176 && k <= 245) {
-        func_020f00e0(self, k, 0);
+        SndMgr_StartBgmSeq(self, k, 0);
         return;
     }
-    func_020f00e0(self, k, 127);
+    SndMgr_StartBgmSeq(self, k, 127);
     if (k < 22) {
         return;
     }
     if (k <= 45) {
-        self->unk_75 = 1;
+        self->variantDirty = 1;
     }
 }
 
-extern "C" void func_020f06b4(SndMgr *self, s32 v) {
-    SndHandle *h = self->unk_34;
+extern "C" void SndMgr_StopBgm(SndMgr *self, s32 v) {
+    SndHandle *h = self->strmHandle;
     if (isSet(h)) {
-        if (self->unk_2c->unk_04 == 51) {
+        if (self->scene->id == 51) {
             v += 1;
         }
-        func_0210e704(&self->unk_34, v);
+        NNS_SndArcStrmStop(&self->strmHandle, v);
         return;
     }
-    func_020f00d0(self);
-    self->unk_2c->vfunc_28(1, 9999);
+    SndMgr_StopBgmSeq(self);
+    self->scene->vfunc_28(1, 9999);
 }
 
-extern "C" void func_020f0658(SndMgr *self, s32 v, u32 w) {
+extern "C" void SndMgr_MoveBgmVolume(SndMgr *self, s32 v, u32 w) {
     if (v > 127) {
         v = 127;
     } else if (v < 0) {
         v = 0;
     }
-    SndHandle *h = self->unk_34;
+    SndHandle *h = self->strmHandle;
     if (isSet(h)) {
-        func_0210e6b8(&self->unk_34, v, w);
+        NNS_SndArcStrmMoveVolume(&self->strmHandle, v, w);
         return;
     }
-    func_0210a214(&self->unk_3c, v, w);
+    NNS_SndPlayerMoveVolume(&self->bgmHandle, v, w);
 }
 
-extern "C" void func_020f0508(SndMgr *self, s32 k) {
-    func_020ef83c(&self->unk_04, 127);
+extern "C" void SndMgr_FadeOutBgmTracks(SndMgr *self, s32 k) {
+    SndRamp_Set(&self->fadeRamp, 127);
     switch (k) {
         case 1:
-            self->unk_64 = 0x84;
+            self->trackMask = 0x84;
             break;
         case 2:
-            self->unk_64 = 24;
+            self->trackMask = 24;
             break;
         case 3:
-            self->unk_64 = 0x1800;
+            self->trackMask = 0x1800;
             break;
         case 4:
-            self->unk_64 = 0x700;
+            self->trackMask = 0x700;
             break;
         case 5:
-            self->unk_64 = 99;
+            self->trackMask = 99;
             break;
         case 6:
-            self->unk_64 = 0xff18;
+            self->trackMask = 0xff18;
             break;
         case 11:
-            self->unk_64 = 0xff9c;
+            self->trackMask = 0xff9c;
             break;
         case 12:
-            self->unk_64 = 0xff84;
+            self->trackMask = 0xff84;
             break;
         case 13:
-            self->unk_64 = 0xe79c;
+            self->trackMask = 0xe79c;
             break;
         case 14:
-            self->unk_64 = 0xf89c;
+            self->trackMask = 0xf89c;
             break;
         case 15:
-            self->unk_64 = 0xf8ff;
+            self->trackMask = 0xf8ff;
             break;
         default:
             return;
     }
     if (k >= 6) {
-        func_0210a148(&self->unk_3c, self->unk_64, 0);
+        NNS_SndPlayerSetTrackVolume(&self->bgmHandle, self->trackMask, 0);
         return;
     }
-    func_020ef7f8(&self->unk_04, 0, 15);
+    SndRamp_Start(&self->fadeRamp, 0, 15);
 }
 
-extern "C" void func_020f0474(SndMgr *self, u32 k) {
-    func_020ef83c(&self->unk_04, 0);
+extern "C" void SndMgr_FadeInBgmTracks(SndMgr *self, u32 k) {
+    SndRamp_Set(&self->fadeRamp, 0);
     switch (k) {
         case 1:
-            self->unk_64 = 0x84;
+            self->trackMask = 0x84;
             break;
         case 2:
-            self->unk_64 = 24;
+            self->trackMask = 24;
             break;
         case 3:
-            self->unk_64 = 0x1800;
+            self->trackMask = 0x1800;
             break;
         case 4:
-            self->unk_64 = 0x700;
+            self->trackMask = 0x700;
             break;
         case 5:
-            self->unk_64 = 99;
+            self->trackMask = 99;
             break;
     }
-    func_020ef7f8(&self->unk_04, 127, 15);
+    SndRamp_Start(&self->fadeRamp, 127, 15);
 }
 
-extern "C" void func_020f0110(SndMgr *self, u32 st) {
-    if (self->unk_73 != st) {
-        self->unk_75 = 1;
-        switch (self->unk_73) {
+extern "C" void SndMgr_SetBgmTrackVariant(SndMgr *self, u32 st) {
+    if (self->trackVariant != st) {
+        self->variantDirty = 1;
+        switch (self->trackVariant) {
             case 0:
-                self->unk_74 = st;
-                if (self->unk_6c > 0 || self->unk_04.unk_02 != 0) {
-                    self->unk_75 = 0;
+                self->pendingVariant = st;
+                if (self->variantTimer > 0 || self->fadeRamp.frames != 0) {
+                    self->variantDirty = 0;
                 }
                 break;
             case 11:
                 switch (st) {
                     case 12:
-                        self->unk_74 = 1;
+                        self->pendingVariant = 1;
                         break;
                     case 13:
-                        self->unk_74 = 3;
+                        self->pendingVariant = 3;
                         break;
                 }
                 break;
             case 12:
-                self->unk_74 = 2;
+                self->pendingVariant = 2;
                 break;
             case 13:
-                self->unk_74 = 4;
+                self->pendingVariant = 4;
                 break;
         }
-        self->unk_73 = st;
+        self->trackVariant = st;
     }
-    if (self->unk_75 == 0) {
+    if (self->variantDirty == 0) {
         return;
     }
-    SndObj *o = self->unk_2c;
+    SndObj *o = self->scene;
     if (o == NULL) {
         return;
     }
-    s32 t = o->unk_04;
+    s32 t = o->id;
     if (t != 1 && t != 3 && t != 60) {
         return;
     }
-    SndHandle *h = self->unk_3c;
+    SndHandle *h = self->bgmHandle;
     if (!isSet(h)) {
         return;
     }
-    u16 idx = h->unk_38 - 22;
+    u16 idx = h->seqNo - 22;
     if (idx > 23) {
         return;
     }
-    self->unk_6c = -1;
-    func_020ef7f8(&self->unk_04, 0, 0);
+    self->variantTimer = -1;
+    SndRamp_Start(&self->fadeRamp, 0, 0);
     u32 mode;
     SndEnt *e;
     u32 mask;
     u32 flag;
     u32 a;
-    a = data_0213b204[idx].a;
-    e = &data_0213b204[idx];
+    a = sBgmTrackVariantTable[idx].a;
+    e = &sBgmTrackVariantTable[idx];
     if (a == 0 && e->b == 0 && e->c == 0 && e->d == 0) {
         return;
     }
     mask = 255;
     flag = 0;
-    mode = self->unk_74;
+    mode = self->pendingVariant;
     switch (mode) {
         case 1:
             mask = (u16)(a | e->b);
             flag = 1;
-            self->unk_6c = 200;
-            self->unk_64 = e->c;
-            self->unk_6e = e->b;
-            self->unk_74 = 12;
+            self->variantTimer = 200;
+            self->trackMask = e->c;
+            self->crossTrackMask = e->b;
+            self->pendingVariant = 12;
             break;
         case 2:
             mask = (u16)(a | e->c);
             flag = 1;
-            self->unk_6c = 200;
-            self->unk_64 = e->b;
-            self->unk_6e = e->c;
-            self->unk_74 = 11;
+            self->variantTimer = 200;
+            self->trackMask = e->b;
+            self->crossTrackMask = e->c;
+            self->pendingVariant = 11;
             break;
         case 3:
             mask = (u16)(a | e->b);
             flag = 1;
-            self->unk_6c = 200;
-            self->unk_64 = e->d;
-            self->unk_6e = e->b;
-            self->unk_74 = 13;
+            self->variantTimer = 200;
+            self->trackMask = e->d;
+            self->crossTrackMask = e->b;
+            self->pendingVariant = 13;
             break;
         case 4:
             mask = (u16)(a | e->d);
             flag = 1;
-            self->unk_6c = 200;
-            self->unk_64 = e->b;
-            self->unk_6e = e->d;
-            self->unk_74 = 11;
+            self->variantTimer = 200;
+            self->trackMask = e->b;
+            self->crossTrackMask = e->d;
+            self->pendingVariant = 11;
             break;
         case 11:
             mask = (u16)(a | e->b);
             flag = 1;
-            self->unk_64 = mask;
+            self->trackMask = mask;
             break;
         case 12:
             mask = (u16)(a | e->c);
             flag = 1;
-            self->unk_64 = mask;
+            self->trackMask = mask;
             break;
         case 13:
             mask = (u16)(a | e->d);
             flag = 1;
-            self->unk_64 = mask;
+            self->trackMask = mask;
             break;
     }
     if (flag == 0) {
         return;
     }
-    func_0210a148(&self->unk_3c, (u16)~mask, 0);
-    self->unk_75 = 0;
+    NNS_SndPlayerSetTrackVolume(&self->bgmHandle, (u16)~mask, 0);
+    self->variantDirty = 0;
 }
 
-extern "C" void func_020f00e0(SndMgr *self, u32 a, u32 b) {
-    func_0210d010(&self->unk_3c, a);
-    func_0210a26c(&self->unk_3c, b);
+extern "C" void SndMgr_StartBgmSeq(SndMgr *self, u32 a, u32 b) {
+    NNS_SndArcPlayerStartSeq(&self->bgmHandle, a);
+    NNS_SndPlayerSetVolume(&self->bgmHandle, b);
 }
 
-extern "C" void func_020f00d0(SndMgr *self) {
-    func_0210a378(&self->unk_3c);
+extern "C" void SndMgr_StopBgmSeq(SndMgr *self) {
+    NNS_SndPlayerStopSeq(&self->bgmHandle);
 }
 
-extern "C" void func_020effd4(SndMgr *self) {
-    SndObj *o = self->unk_2c;
+extern "C" void SndMgr_UpdateTrackRamps(SndMgr *self) {
+    SndObj *o = self->scene;
     if (o == NULL) {
         return;
     }
-    s32 t = o->unk_04;
+    s32 t = o->id;
     if (t >= 40 && t < 50) {
-        if (self->unk_04.unk_02 != 0) {
-            func_0210a148(&self->unk_3c, self->unk_64, func_020ef7b0(&self->unk_04));
+        if (self->fadeRamp.frames != 0) {
+            NNS_SndPlayerSetTrackVolume(&self->bgmHandle, self->trackMask, SndRamp_Step(&self->fadeRamp));
         }
     }
     if (t != 1 && t != 3) {
         return;
     }
-    s16 c = self->unk_6c;
+    s16 c = self->variantTimer;
     if (c > 0) {
-        self->unk_6c = c - 1;
+        self->variantTimer = c - 1;
     } else if (c == 0) {
-        func_020ef83c(&self->unk_04, 0);
-        func_020ef7f8(&self->unk_04, 127, 600);
-        self->unk_6c = -1;
+        SndRamp_Set(&self->fadeRamp, 0);
+        SndRamp_Start(&self->fadeRamp, 127, 600);
+        self->variantTimer = -1;
     }
-    if (self->unk_04.unk_02 == 0) {
+    if (self->fadeRamp.frames == 0) {
         return;
     }
-    s32 v = func_020ef7b0(&self->unk_04);
-    func_0210a148(&self->unk_3c, self->unk_64, v);
-    func_0210a148(&self->unk_3c, self->unk_6e, 127 - v);
+    s32 v = SndRamp_Step(&self->fadeRamp);
+    NNS_SndPlayerSetTrackVolume(&self->bgmHandle, self->trackMask, v);
+    NNS_SndPlayerSetTrackVolume(&self->bgmHandle, self->crossTrackMask, 127 - v);
 }
 
-extern "C" void func_020efe70(SndMgr *self) {
-    SndObj *o = self->unk_2c;
+extern "C" void SndMgr_UpdateVolumeRamps(SndMgr *self) {
+    SndObj *o = self->scene;
     if (o == NULL) {
         return;
     }
-    if (o->unk_04 == 50) {
-        u32 r = func_0210e648(&self->unk_34);
-        s32 vol = ((u32)(self->unk_68 - r) * 20) / 1000;
+    if (o->id == 50) {
+        u32 r = func_0210e648(&self->strmHandle);
+        s32 vol = ((u32)(self->strmTotalTime - r) * 20) / 1000;
         if (r != 0) {
             if (vol > 127) {
-                func_020efc84(self, 0, 0);
+                SndMgr_SetPlayerVolumes(self, 0, 0);
             } else if (vol == 127) {
-                func_020ef83c(&self->unk_04, 0);
-                func_020ef7f8(&self->unk_04, 127, 160);
+                SndRamp_Set(&self->fadeRamp, 0);
+                SndRamp_Start(&self->fadeRamp, 127, 160);
             }
         }
-        if (self->unk_04.unk_02 != 0) {
-            s32 v = func_020ef7b0(&self->unk_04);
-            func_020efc84(self, v, v);
+        if (self->fadeRamp.frames != 0) {
+            s32 v = SndRamp_Step(&self->fadeRamp);
+            SndMgr_SetPlayerVolumes(self, v, v);
         }
     }
-    if (self->unk_2c->unk_04 == 51) {
-        if (self->unk_04.unk_02 != 0) {
-            s32 v = func_020ef7b0(&self->unk_04);
-            func_020efc84(self, v, v);
+    if (self->scene->id == 51) {
+        if (self->fadeRamp.frames != 0) {
+            s32 v = SndRamp_Step(&self->fadeRamp);
+            SndMgr_SetPlayerVolumes(self, v, v);
         }
     }
-    if (self->unk_10.unk_02 != 0) {
-        s32 a = func_020ef7b0(&self->unk_10);
-        s32 b = func_020ef7b0(&self->unk_1c);
-        func_020efc84(self, a, b);
+    if (self->mainRamp.frames != 0) {
+        s32 a = SndRamp_Step(&self->mainRamp);
+        s32 b = SndRamp_Step(&self->subRamp);
+        SndMgr_SetPlayerVolumes(self, a, b);
         return;
     }
-    if (self->unk_1c.unk_02 != 0) {
-        func_020efc0c(self, func_020ef7b0(&self->unk_1c));
+    if (self->subRamp.frames != 0) {
+        SndMgr_SetSubPlayerVolume(self, SndRamp_Step(&self->subRamp));
     }
 }
 
-extern "C" void func_020efd80(SndMgr *self, u32 flag) {
-    s32 v = self->unk_70 - 128;
+extern "C" void SndMgr_ApplyPan(SndMgr *self, u32 flag) {
+    s32 v = self->pan - 128;
     if (v < -128) {
         v = -128;
     } else if (v > 127) {
         v = 127;
     }
     if (flag == 0) {
-        func_0210a0e8(&self->unk_38, 255, v);
-        func_0210a0e8(&self->unk_40, 255, v);
+        NNS_SndPlayerSetTrackPan(&self->seHandle, 255, v);
+        NNS_SndPlayerSetTrackPan(&self->auxSeHandle, 255, v);
         return;
     }
-    SndHandle *h = self->unk_38;
+    SndHandle *h = self->seHandle;
     if (!isSet(h)) {
         return;
     }
-    switch (h->unk_3a) {
+    switch (h->seqArcIndex) {
         case 11:
         case 146:
         case 147:
         case 179:
-            func_0210a0e8(&self->unk_38, 255, v);
+            NNS_SndPlayerSetTrackPan(&self->seHandle, 255, v);
             break;
     }
 }
 
-extern "C" void func_020efc84(SndMgr *self, s32 a, s32 b) {
+extern "C" void SndMgr_SetPlayerVolumes(SndMgr *self, s32 a, s32 b) {
     if (a > 127) {
         a = 127;
     } else if (a < 0) {
@@ -596,136 +555,136 @@ extern "C" void func_020efc84(SndMgr *self, s32 a, s32 b) {
         b = 0;
     }
     s32 h = a >> 1;
-    func_0210a460(4, a);
-    func_0210a460(7, a);
-    func_0210a460(13, a);
-    func_0210a460(9, a);
-    func_0210a460(8, b);
-    func_0210a460(11, b);
-    if (self->unk_61 != 0) {
+    NNS_SndPlayerSetPlayerVolume(4, a);
+    NNS_SndPlayerSetPlayerVolume(7, a);
+    NNS_SndPlayerSetPlayerVolume(13, a);
+    NNS_SndPlayerSetPlayerVolume(9, a);
+    NNS_SndPlayerSetPlayerVolume(8, b);
+    NNS_SndPlayerSetPlayerVolume(11, b);
+    if (self->subDucked != 0) {
         return;
     }
-    func_0210a460(5, b);
-    func_0210a460(6, b);
-    func_0210a460(16, b);
-    func_0210a460(17, b);
-    func_0210a460(18, h);
-    func_0210a460(19, h);
-    func_0210a460(20, b);
+    NNS_SndPlayerSetPlayerVolume(5, b);
+    NNS_SndPlayerSetPlayerVolume(6, b);
+    NNS_SndPlayerSetPlayerVolume(16, b);
+    NNS_SndPlayerSetPlayerVolume(17, b);
+    NNS_SndPlayerSetPlayerVolume(18, h);
+    NNS_SndPlayerSetPlayerVolume(19, h);
+    NNS_SndPlayerSetPlayerVolume(20, b);
 }
 
-extern "C" void func_020efc0c(SndMgr *self, s32 v) {
+extern "C" void SndMgr_SetSubPlayerVolume(SndMgr *self, s32 v) {
     if (v > 127) {
         v = 127;
     } else if (v < 0) {
         v = 0;
     }
-    func_0210a460(5, v);
-    func_0210a460(6, v);
-    func_0210a460(16, v);
-    func_0210a460(17, v);
-    func_0210a460(18, v);
-    func_0210a460(19, v);
-    func_0210a460(20, v);
+    NNS_SndPlayerSetPlayerVolume(5, v);
+    NNS_SndPlayerSetPlayerVolume(6, v);
+    NNS_SndPlayerSetPlayerVolume(16, v);
+    NNS_SndPlayerSetPlayerVolume(17, v);
+    NNS_SndPlayerSetPlayerVolume(18, v);
+    NNS_SndPlayerSetPlayerVolume(19, v);
+    NNS_SndPlayerSetPlayerVolume(20, v);
 }
 
-extern "C" void func_020efbbc(SndMgr *self) {
-    self->unk_60 = 1;
-    func_020ef83c(&self->unk_10, 127);
-    func_020ef83c(&self->unk_1c, 127);
-    func_020ef7f8(&self->unk_10, 70, 15);
-    func_020ef7f8(&self->unk_1c, 40, 15);
+extern "C" void SndMgr_BeginMenuDuck(SndMgr *self) {
+    self->menuDuck = 1;
+    SndRamp_Set(&self->mainRamp, 127);
+    SndRamp_Set(&self->subRamp, 127);
+    SndRamp_Start(&self->mainRamp, 70, 15);
+    SndRamp_Start(&self->subRamp, 40, 15);
 }
 
-extern "C" void func_020efb6c(SndMgr *self) {
-    self->unk_60 = 0;
-    func_020ef83c(&self->unk_10, 70);
-    func_020ef83c(&self->unk_1c, 40);
-    func_020ef7f8(&self->unk_10, 127, 5);
-    func_020ef7f8(&self->unk_1c, 127, 5);
+extern "C" void SndMgr_EndMenuDuck(SndMgr *self) {
+    self->menuDuck = 0;
+    SndRamp_Set(&self->mainRamp, 70);
+    SndRamp_Set(&self->subRamp, 40);
+    SndRamp_Start(&self->mainRamp, 127, 5);
+    SndRamp_Start(&self->subRamp, 127, 5);
 }
 
-extern "C" void func_020efb28(SndMgr *self) {
-    self->unk_61 = 1;
-    if (self->unk_60 != 0) {
+extern "C" void SndMgr_DuckSubPlayers(SndMgr *self) {
+    self->subDucked = 1;
+    if (self->menuDuck != 0) {
         return;
     }
-    func_020ef83c(&self->unk_1c, 127);
-    func_020ef7f8(&self->unk_1c, 40, 15);
+    SndRamp_Set(&self->subRamp, 127);
+    SndRamp_Start(&self->subRamp, 40, 15);
 }
 
-extern "C" void func_020efae4(SndMgr *self) {
-    self->unk_61 = 0;
-    if (self->unk_60 != 0) {
+extern "C" void SndMgr_RestoreSubPlayers(SndMgr *self) {
+    self->subDucked = 0;
+    if (self->menuDuck != 0) {
         return;
     }
-    func_020ef83c(&self->unk_1c, 40);
-    func_020ef7f8(&self->unk_1c, 127, 15);
+    SndRamp_Set(&self->subRamp, 40);
+    SndRamp_Start(&self->subRamp, 127, 15);
 }
 
-extern "C" void func_020efab8(SndMgr *self) {
-    func_020ef83c(&self->unk_04, 0);
-    func_020ef7f8(&self->unk_04, 127, 60);
+extern "C" void SndMgr_StartVolumeFadeIn(SndMgr *self) {
+    SndRamp_Set(&self->fadeRamp, 0);
+    SndRamp_Start(&self->fadeRamp, 127, 60);
 }
 
-extern "C" void *func_020efaa4(SndMgr *self) {
-    if (self->unk_00 != 0) {
-        return (void *)(self->unk_00 + 20);
+extern "C" void *SndMgr_GetBeatState(SndMgr *self) {
+    if (self->beatSync != 0) {
+        return (void *)(self->beatSync + 20);
     }
     return NULL;
 }
 
-extern "C" void func_020efa64(SndMgr *self, u32 a) {
-    u8 c = self->unk_72;
+extern "C" void SndMgr_UpdateVolumeCurve(SndMgr *self, u32 a) {
+    u8 c = self->curveDelay;
     if (c != 0) {
-        self->unk_72 = c - 1;
+        self->curveDelay = c - 1;
         return;
     }
     if (c != 0) {
         return;
     }
-    func_020f45b8(func_020f4500(), a);
+    SndVolumeCurve_Set(Snd_GetVolumeCurve(), a);
 }
 
-extern "C" void func_020efa30(SndMgr *self, u8 v) {
-    if (self->unk_70 == v) {
+extern "C" void SndMgr_SetPanIfChanged(SndMgr *self, u8 v) {
+    if (self->pan == v) {
         return;
     }
-    self->unk_70 = v;
-    func_020efd80(self, 1);
+    self->pan = v;
+    SndMgr_ApplyPan(self, 1);
 }
 
-extern "C" void func_020efa1c(SndMgr *self, u8 v) {
-    self->unk_70 = v;
-    func_020efd80(self, 1);
+extern "C" void SndMgr_SetPan(SndMgr *self, u8 v) {
+    self->pan = v;
+    SndMgr_ApplyPan(self, 1);
 }
 
-extern "C" void func_020ef9fc(SndMgr *self, u32 v) {
+extern "C" void SndMgr_SetKeySeMode(SndMgr *self, u32 v) {
     switch (v) {
         case 1:
-            self->unk_71 = 1;
+            self->keySeMode = 1;
             break;
         default:
-            self->unk_71 = 0;
+            self->keySeMode = 0;
             break;
     }
 }
 
-extern "C" void func_020ef994(SndMgr *self, u32 id) {
+extern "C" void SndMgr_PlayKeySe(SndMgr *self, u32 id) {
     u16 t = id - 1;
     if (t > 36) {
-        func_020edb00(44, 0);
+        Snd_StartSeqArcDefault(44, 0);
         return;
     }
-    u8 m = self->unk_71;
+    u8 m = self->keySeMode;
     if (m == 0) {
     } else if (m == 1) {
         t = t + 36;
     }
-    func_020edb00(t, 3);
+    Snd_StartSeqArcDefault(t, 3);
 }
 
-extern "C" void func_020ef93c(SndMgr *self, s32 v) {
+extern "C" void SndMgr_SetSeHandleVolumes(SndMgr *self, s32 v) {
     s32 a;
     s32 b;
     if (v < 0) {
@@ -741,82 +700,82 @@ extern "C" void func_020ef93c(SndMgr *self, s32 v) {
     if (b > 127) {
         b = 127;
     }
-    func_0210a26c(&self->unk_38, a);
-    func_0210a26c(&self->unk_40, b);
+    NNS_SndPlayerSetVolume(&self->seHandle, a);
+    NNS_SndPlayerSetVolume(&self->auxSeHandle, b);
 }
 
-extern "C" void func_020ef908(SndMgr *self, u32 a) {
-    func_020eda80(&self->unk_40, 10, -1, -1, 0, a);
+extern "C" void SndMgr_PlayAuxSe(SndMgr *self, u32 a) {
+    Snd_StartSeqArcEx(&self->auxSeHandle, 10, -1, -1, 0, a);
 }
 
-extern "C" void func_020ef8d4(SndMgr *self, u32 a) {
-    func_020eda80(&self->unk_40, 10, -1, -1, 0, a);
+extern "C" void SndMgr_PlayAuxSeHeld(SndMgr *self, u32 a) {
+    Snd_StartSeqArcEx(&self->auxSeHandle, 10, -1, -1, 0, a);
 }
 
-extern "C" void func_020ef8c0(SndMgr *self) {
-    func_020eda30(&self->unk_40, 0);
+extern "C" void SndMgr_StopAuxSe(SndMgr *self) {
+    Snd_StopHandle(&self->auxSeHandle, 0);
 }
 
-extern "C" void func_020ef8a8(SndMgr *self) {
-    func_020edad0(45, 0, &self->unk_38);
+extern "C" void SndMgr_StartBellRollSe(SndMgr *self) {
+    Snd_StartSeqArc(45, 0, &self->seHandle);
 }
 
-extern "C" void func_020ef894(SndMgr *self) {
-    func_020f0988(self, 45, 1);
+extern "C" void SndMgr_StopBellRollSe(SndMgr *self) {
+    SndMgr_StopSe(self, 45, 1);
 }
 
-extern "C" void func_020ef850(SndMgr *self, u16 a, u32 b) {
-    func_020edad0(a, 0, &self->unk_38);
-    func_0210a0e8(&self->unk_38, data_0213b200, b);
+extern "C" void SndMgr_PlaySePanned(SndMgr *self, u16 a, u32 b) {
+    Snd_StartSeqArc(a, 0, &self->seHandle);
+    NNS_SndPlayerSetTrackPan(&self->seHandle, gSndPanTrackMask, b);
 }
 
-extern "C" void func_020ef83c(Ramp *r, s32 v) {
-    r->unk_04 = v << 12;
-    r->unk_02 = 0;
+extern "C" void SndRamp_Set(SndRamp *r, s32 v) {
+    r->value = v << 12;
+    r->frames = 0;
 }
 
-extern "C" void func_020ef7f8(Ramp *r, s16 target, u32 frames) {
-    r->unk_00 = target;
-    r->unk_02 = frames;
-    s32 t = r->unk_00 << 12;
-    s32 d = t - r->unk_04;
+extern "C" void SndRamp_Start(SndRamp *r, s16 target, u32 frames) {
+    r->target = target;
+    r->frames = frames;
+    s32 t = r->target << 12;
+    s32 d = t - r->value;
     if (frames == 0) {
-        r->unk_04 = t;
+        r->value = t;
         return;
     }
-    r->unk_08 = func_01ffc5a4(d, frames << 12);
+    r->step = FX_Div(d, frames << 12);
 }
 
-extern "C" s16 func_020ef7b0(Ramp *r) {
-    if (r->unk_02 != 0) {
-        r->unk_02--;
-        if (r->unk_02 != 0) {
-            r->unk_04 += r->unk_08;
+extern "C" s16 SndRamp_Step(SndRamp *r) {
+    if (r->frames != 0) {
+        r->frames--;
+        if (r->frames != 0) {
+            r->value += r->step;
         } else {
-            r->unk_04 = r->unk_00 << 12;
+            r->value = r->target << 12;
         }
     }
-    return (s16)(r->unk_04 >> 12);
+    return (s16)(r->value >> 12);
 }
 
-extern "C" u8 func_020ef7a0(SndMgr *self, u8 v) {
+extern "C" u8 SndMgr_ClampVolume(SndMgr *self, u8 v) {
     if (v > 127) {
         v = 127;
     }
     return v;
 }
 
-extern "C" void func_020ef728(SndMgr *self) {
-    if (data_021f5b70 != 0) {
-        u16 a = func_020ef6c8(self, data_021f5b70);
-        u8 b = func_020ef7a0(self, data_021f5b5c);
-        func_020f0858(self, (u16)(a + 1), b, data_021f5b7c);
+extern "C" void SndMgr_UpdateVoice(SndMgr *self) {
+    if (sVoicePendingSyllable != 0) {
+        u16 a = SndMgr_GetVoiceSeqIndex(self, sVoicePendingSyllable);
+        u8 b = SndMgr_ClampVolume(self, sVoicePendingVolume);
+        SndMgr_PlayVoice(self, (u16)(a + 1), b, sVoicePendingPitch);
     }
-    data_021f5b70 = 0;
+    sVoicePendingSyllable = 0;
 }
 
-extern "C" u16 func_020ef6c8(SndMgr *self, u16 id) {
-    switch (self->unk_44) {
+extern "C" u16 SndMgr_GetVoiceSeqIndex(SndMgr *self, u16 id) {
+    switch (self->voiceType) {
         case 0:
         case 4:
             id = id + 206;
@@ -832,7 +791,7 @@ extern "C" u16 func_020ef6c8(SndMgr *self, u16 id) {
     return id;
 }
 
-extern "C" s32 func_020ef150(s32 a, s32 b) {
+extern "C" s32 SndVoice_GetSyllable(s32 a, s32 b) {
     s32 r = 95;
     switch (a) {
         case 42:
@@ -1041,3 +1000,13 @@ extern "C" s32 func_020ef150(s32 a, s32 b) {
     return r;
 }
 
+// ---- file-scope objects (.data 0x0213b200-0x0213b2c4)
+u16 gSndPanTrackMask = 0x000f;
+SndEnt sBgmTrackVariantTable[24] = {
+    {0x00a0, 0x005f, 0x0100, 0x0604}, {0x07f8, 0x0007, 0x0000, 0x0800}, {0x0007, 0x0078, 0x0180, 0x07a0}, {0x00b8, 0x0347, 0x1c00, 0x6c00},
+    {0x0084, 0x001b, 0x0060, 0x0360}, {0x0024, 0x000b, 0x00d0, 0x0380}, {0x0048, 0x05b7, 0x1a00, 0x7a00}, {0x083c, 0x01c3, 0x1600, 0x7600},
+    {0x0443, 0x403c, 0x0180, 0xa180}, {0x000d, 0x0092, 0x0060, 0x0320}, {0x00d5, 0x042a, 0x0300, 0x1b00}, {0x02dc, 0x1123, 0x0c00, 0x6c00},
+    {0x0038, 0x00c7, 0x0300, 0x0f04}, {0x00b0, 0x004f, 0x4f00, 0x7a00}, {0x0328, 0x00d7, 0x0c00, 0x3c02}, {0x002c, 0x0053, 0x0380, 0x0f80},
+    {0x0570, 0x028f, 0x3800, 0xf000}, {0x005c, 0x02a3, 0x0d00, 0x3d00}, {0x032c, 0x0453, 0x0080, 0x1840}, {0x0152, 0x00ad, 0x0600, 0x1e00},
+    {0x0078, 0x0007, 0x0080, 0x0380}, {0x0b41, 0x143e, 0x6080, 0xe080}, {0x1870, 0x018f, 0x0000, 0x1e00}, {0x003c, 0x0003, 0x1800, 0xfc00},
+};

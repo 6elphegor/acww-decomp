@@ -13,10 +13,10 @@
 
 ; reverse-operand entry: swaps x and y (three eors) and FALLS THROUGH into _fsub (returns y - x).
 ; Evidence: fall-through into the next routine.
-	.global func_02132c74
-	.type func_02132c74, @function
-	.size func_02132c74, 0xc
-func_02132c74:
+	.global _frsb
+	.type _frsb, @function
+	.size _frsb, 0xc
+_frsb:
 	eor r0, r0, r1
 	eor r1, r0, r1
 	eor r0, r0, r1

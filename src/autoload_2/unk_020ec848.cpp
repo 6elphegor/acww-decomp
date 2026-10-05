@@ -1,167 +1,92 @@
 // mwcc-flags: -nothumb -O4,p
 // G005a: autoload_2 0x020ec848-0x020ed4bc (37 functions). mwcc 1.2/base, C++, ARM, -O4,p.
-// The tail-call stubs into the "current heap" new/delete, the object factory (func_020ec970: builds a scene object
-// through the table data_021f59e4, runs the registered hooks, links it into the object tree) and the library base class
-// Unk_020d8c7c_Base (members at 0x020ecc6c-0x020ed378; vtable 0x0213b154 stays extern, nothing is defined here).
-// The symbols.txt names of the class members are C++-mangled (_ZN17Unk_020d8c7c_Base...). They are defined here as
+// The tail-call stubs into the "current heap" new/delete, the object factory (Proc_Create: builds a scene object
+// through the table gProfileTable, runs the registered hooks, links it into the object tree) and the library base class
+// ProcBase (members at 0x020ecc6c-0x020ed378; vtable 0x0213b154 stays extern, nothing is defined here).
+// The symbols.txt names of the class members are C++-mangled (_ZN8ProcBase...). They are defined here as
 // extern "C" functions that carry the mangled identifier verbatim and take the object first (as the game code
 // declares them), so no vtable, D0/D1 or C1 is emitted. Virtual calls go through the declared-only virtuals.
 #include "types.h"
+#include "sys/Heap.h"
+#include "sys/TreeNode.h"
+#include "sys/QNode.h"
+#include "sys/ProcBase.h"
+#include "sys/ProcProfile.h"
 
-class Unk_020e8b94 {
-public:
-    virtual ~Unk_020e8b94(); // 0x00 / 0x04
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void *vfunc_18(u32 size, s32 align) = 0; // alloc
-    virtual void vfunc_1c(void *p) = 0; // free
-    virtual void vfunc_20() = 0; // free all
-    virtual BOOL vfunc_24() = 0;
-    virtual void vfunc_28() = 0;
-    virtual s32 vfunc_2c(void *p, u32 size) = 0; // resize
-    virtual u32 vfunc_30(void *p) = 0; // block size
-    virtual u32 vfunc_34() = 0;
-    virtual u32 vfunc_38() = 0;
-    virtual u32 vfunc_3c(s32 align) = 0; // largest allocatable size
-    virtual u32 vfunc_40() = 0;
-    virtual void *vfunc_44() = 0;
-    virtual void *vfunc_48() = 0;
-    virtual void *vfunc_4c() = 0;
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ void *unk_08;
-    /* 0x0c */ Unk_020e8b94 *unk_0c; // parent heap
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ void *unk_14;
-};
+class ProcBase;
 
-class Unk_020d8c7c_Base;
 
-// tree node (functions 0x020e7af4 / 0x020e7a7c / 0x01ffcfc0 / 0x01ffcffc work on it)
-struct TreeNode {
-    /* 0x00 */ TreeNode *unk_00; // parent
-    /* 0x04 */ TreeNode *unk_04;
-    /* 0x08 */ TreeNode *unk_08;
-    /* 0x0c */ TreeNode *unk_0c;
-    /* 0x10 */ Unk_020d8c7c_Base *unk_10; // owner
-};
 
-struct QNode {
-    /* 0x00 */ QNode *unk_00;
-    /* 0x04 */ QNode *unk_04;
-    /* 0x08 */ Unk_020d8c7c_Base *unk_08;
-    /* 0x0c */ u16 unk_0c;
-    /* 0x0e */ u16 unk_0e;
-};
-
-struct QList {
-    QNode *unk_00;
-    QNode *unk_04;
-};
 
 struct P2 {
     u32 a;
     u32 b;
 };
 
-class Unk_020d8c7c_Base {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
-    virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ u16 unk_0c;
-    /* 0x0e */ u8 unk_0e;
-    /* 0x0f */ u8 unk_0f;
-    /* 0x10 */ u8 unk_10;
-    /* 0x11 */ u8 unk_11;
-    /* 0x12 */ u8 unk_12;
-    /* 0x13 */ u8 unk_13;
-    /* 0x14 */ TreeNode unk_14;
-    /* 0x28 */ QNode unk_28;
-    /* 0x38 */ QNode unk_38;
-    /* 0x48 */ void *unk_48;
-    /* 0x4c */ Unk_020e8b94 *unk_4c;
-};
-
-struct SceneDesc {
-    Unk_020d8c7c_Base *(*unk_00)(void);
-    u16 unk_04;
-    u16 unk_06;
-};
 
 extern "C" {
-extern Unk_020e8b94 *data_021f482c;
-extern Unk_020e8b94 *data_021f4818;
-extern u8 data_021f5974;
-extern u8 data_021f5978;
-extern u16 data_021f597c;
-extern u16 data_021f5980;
-extern u32 data_021f5984;
-extern u32 (*data_021f5988)(u32);
-extern void (*data_021f598c)(u32);
-extern u32 data_021f5990;
-extern u32 data_0213b120;
+extern Heap *gCurrentHeap;
+extern Heap *gProcHeap;
+extern u8 gProcCreateStep;
+extern u8 sProcCreateGroup;
+extern u16 gProcCreateProfile;
+extern u16 sProcCreateProfile;
+extern u32 sProcCreateParent;
+extern u32 (*sProcCreateHook)(u32);
+extern void (*sProcDeleteHook)(u32);
+extern u32 sProcCreateParam;
+extern u32 sProcNextId;
 extern P2 data_0213b124, data_0213b12c, data_0213b134, data_0213b13c, data_0213b144, data_0213b14c;
 extern u32 data_0213b15c[];
-extern u32 data_0213b1a4;
-extern TreeNode data_021f5998;
-extern QList data_021f59a4, data_021f59b4, data_021f59c4, data_021f59d4;
-extern SceneDesc **data_021f59e4;
+extern u32 gTaskPhase;
+extern TreeNode gProcTree;
+extern QList gTaskExecuteList, gTaskCreateList, gTaskDrawList, gTaskDeleteList;
+extern ProcProfile **gProfileTable;
 
-void func_020e85fc(Unk_020e8b94 *heap, void *p);
-void *func_020e8608(Unk_020e8b94 *heap, u32 size);
-void func_02114e48(void);
-void *func_020e8b94(Unk_020e8b94 *self, u32 size, s32 align);
-void func_020e8c94(Unk_020e8b94 *self);
-void func_020e8c88(Unk_020e8b94 *self);
-Unk_020e8b94 *func_020e8698(u32 size, Unk_020e8b94 *parent);
-u32 func_020e8af4(Unk_020e8b94 *self);
-void func_020e8634(void);
-void *func_020e877c(Unk_020e8b94 *self);
-void func_020e8908(Unk_020e8b94 *self, void *p);
-void func_020e7968(QList *l, QNode *n);
-void func_020e79a0(QList *l, QNode *n);
-void func_020e7a7c(TreeNode *root, TreeNode *n);
-void func_020e7af4(TreeNode *root, TreeNode *n, TreeNode *parent);
-TreeNode *func_020e7b80(TreeNode *n);
-void func_020ed5c0(QList *l, QNode *n);
-void func_020ed8cc(void *p);
-BOOL func_020ed7e4(void *p);
-void func_02115fb4(void *dst, u32 v, u32 n); // MI_CpuFill8
-TreeNode *func_01ffcfc0(TreeNode *n);
-TreeNode *func_01ffcffc(TreeNode *n);
-u32 func_01ffd44c(void *p, P2 a, P2 b, P2 c);
+void Heap_Free(Heap *heap, void *p);
+void *Heap_Alloc(Heap *heap, u32 size);
+void OS_InitTick(void);
+#define Heap_alloc _ZN4Heap5allocEji
+void *Heap_alloc(Heap *self, u32 size, s32 align);
+#define Heap_destroy _ZN4Heap7destroyEv
+void Heap_destroy(Heap *self);
+#define Heap_destroy2 _ZN4Heap8destroy2Ev
+void Heap_destroy2(Heap *self);
+Heap *FrameHeap_CreateAsCurrent(u32 size, Heap *parent);
+#define Heap_getFreeSize _ZN4Heap11getFreeSizeEv
+u32 Heap_getFreeSize(Heap *self);
+void Heap_RestoreCurrent(void);
+#define Heap_adjust _ZN4Heap6adjustEv
+void *Heap_adjust(Heap *self);
+#define Heap_free _ZN4Heap4freeEPv
+void Heap_free(Heap *self, void *p);
+void List_PushBack(QList *l, QNode *n);
+void List_Remove(QList *l, QNode *n);
+void TreeNode_Detach(TreeNode *root, TreeNode *n);
+void TreeNode_Attach(TreeNode *root, TreeNode *n, TreeNode *parent);
+TreeNode *TreeNode_Construct(TreeNode *n);
+void Task_InsertByPriority(QList *l, QNode *n);
+void CmdSeq_Undo(void *p);
+BOOL CmdSeq_Poll(void *p);
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
+TreeNode *TreeNode_GetNextSkipChildren(TreeNode *n);
+TreeNode *TreeNode_GetNextPreOrder(TreeNode *n);
+u32 ProcBase_RunPhase(void *p, P2 a, P2 b, P2 c);
 
-void func_020ec878(void *p);
-void *func_020ec894(u32 size);
-Unk_020d8c7c_Base *func_020ec970(u32 a, TreeNode *parent, u32 c, u32 d);
-void func_020ec904(u32 a);
-u32 func_020ec938(u32 a);
-void func_020eca48(u32 a, TreeNode *parent, u32 c, u32 d);
-void func_020ecb78(Unk_020d8c7c_Base *p);
-void func_020ecbe0(Unk_020d8c7c_Base *p);
-void func_020ed188(Unk_020d8c7c_Base *p);
-Unk_020d8c7c_Base *func_020ed174(Unk_020d8c7c_Base *p);
-void _ZN17Unk_020d8c7c_BasedlEPv(void *p);
+void Mem_FreeForDelete(void *p);
+void *Mem_AllocForNew(u32 size);
+ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d);
+void Proc_CallDeleteHook(u32 a);
+u32 Proc_CallCreateHook(u32 a);
+void Proc_SetCreateParams(u32 a, TreeNode *parent, u32 c, u32 d);
+#define ProcBase_taskCreate _ZN8ProcBase10taskCreateEv
+void ProcBase_taskCreate(ProcBase *p);
+void ProcBase_StartCreate(ProcBase *p);
+void ProcBase_RequestDelete(ProcBase *p);
+ProcBase *ProcBase_GetParent(ProcBase *p);
+void _ZN8ProcBasedlEPv(void *p);
 }
 
 static inline BOOL isZero(u32 v) {
@@ -184,175 +109,175 @@ static inline BOOL isTwo(u32 v) {
     return v == 2;
 }
 
-extern "C" Unk_020d8c7c_Base *_ZN17Unk_020d8c7c_BaseC2Ev(Unk_020d8c7c_Base *self) {
+extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
-    func_020e7b80(&self->unk_14);
-    self->unk_14.unk_10 = self;
-    self->unk_28.unk_00 = NULL;
-    self->unk_28.unk_04 = NULL;
-    self->unk_28.unk_08 = self;
-    self->unk_28.unk_0c = 0;
-    self->unk_28.unk_0e = 0;
-    self->unk_38.unk_00 = NULL;
-    self->unk_38.unk_04 = NULL;
-    self->unk_38.unk_08 = self;
-    self->unk_38.unk_0c = 0;
-    self->unk_38.unk_0e = 0;
-    self->unk_04 = data_0213b120;
-    data_0213b120++;
-    self->unk_08 = data_021f5990;
-    self->unk_0c = data_021f5980;
-    self->unk_12 = data_021f5978;
-    func_020e7af4(&data_021f5998, &self->unk_14, (TreeNode *)data_021f5984);
-    SceneDesc *d = data_021f59e4[self->unk_0c];
-    u16 a = d->unk_04;
-    QNode *q1 = &self->unk_28;
-    q1->unk_0c = a;
-    q1->unk_0e = a;
-    u16 b = d->unk_06;
-    QNode *q2 = &self->unk_38;
-    q2->unk_0c = b;
-    q2->unk_0e = b;
-    Unk_020d8c7c_Base *parent = func_020ed174(self);
+    TreeNode_Construct(&self->treeNode);
+    self->treeNode.owner = self;
+    self->executeNode.prev = NULL;
+    self->executeNode.next = NULL;
+    self->executeNode.owner = self;
+    self->executeNode.priority = 0;
+    self->executeNode.pendingPriority = 0;
+    self->drawNode.prev = NULL;
+    self->drawNode.next = NULL;
+    self->drawNode.owner = self;
+    self->drawNode.priority = 0;
+    self->drawNode.pendingPriority = 0;
+    self->id = sProcNextId;
+    sProcNextId++;
+    self->param = sProcCreateParam;
+    self->profile = sProcCreateProfile;
+    self->group = sProcCreateGroup;
+    TreeNode_Attach(&gProcTree, &self->treeNode, (TreeNode *)sProcCreateParent);
+    ProcProfile *d = gProfileTable[self->profile];
+    u16 a = d->executePriority;
+    QNode *q1 = &self->executeNode;
+    q1->priority = a;
+    q1->pendingPriority = a;
+    u16 b = d->drawPriority;
+    QNode *q2 = &self->drawNode;
+    q2->priority = b;
+    q2->pendingPriority = b;
+    ProcBase *parent = ProcBase_GetParent(self);
     if (parent != NULL) {
-        if ((parent->unk_13 & 1) != 0 || (parent->unk_13 & 2) != 0) self->unk_13 |= 2;
-        if ((parent->unk_13 & 4) != 0 || (parent->unk_13 & 8) != 0) self->unk_13 |= 8;
+        if ((parent->procFlags & 1) != 0 || (parent->procFlags & 2) != 0) self->procFlags |= 2;
+        if ((parent->procFlags & 4) != 0 || (parent->procFlags & 8) != 0) self->procFlags |= 8;
     }
     return self;
 }
 
-extern "C" Unk_020d8c7c_Base *func_020ed354(Unk_020d8c7c_Base *self) {
+extern "C" ProcBase *_ZN8ProcBaseD0Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
-    _ZN17Unk_020d8c7c_BasedlEPv(self);
+    _ZN8ProcBasedlEPv(self);
     return self;
 }
 
-extern "C" void _ZN17Unk_020d8c7c_BaseD2Ev(Unk_020d8c7c_Base *self) {
+extern "C" void _ZN8ProcBaseD2Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
 }
 
-extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_00Ev(Unk_020d8c7c_Base *self) {
+extern "C" BOOL _ZN8ProcBase8onCreateEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_04Ev(Unk_020d8c7c_Base *self) {
+extern "C" BOOL _ZN8ProcBase9preCreateEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" void func_020ed2b4(Unk_020d8c7c_Base *self, s32 a) {
+extern "C" void _ZN8ProcBase10postCreateEi(ProcBase *self, s32 a) {
     if (a != 2) return;
-    func_020e79a0(&data_021f59b4, &self->unk_28);
-    if (isThree(data_0213b1a4)) {
-        self->unk_10 = 1;
+    List_Remove(&gTaskCreateList, &self->executeNode);
+    if (isThree(gTaskPhase)) {
+        self->activatePending = 1;
         return;
     }
-    func_020ed5c0(&data_021f59a4, &self->unk_28);
-    func_020ed5c0(&data_021f59c4, &self->unk_38);
-    self->unk_0e = 1;
+    Task_InsertByPriority(&gTaskExecuteList, &self->executeNode);
+    Task_InsertByPriority(&gTaskDrawList, &self->drawNode);
+    self->state = 1;
 }
 
-extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_0cEv(Unk_020d8c7c_Base *self) {
+extern "C" BOOL _ZN8ProcBase8onDeleteEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_10Ev(Unk_020d8c7c_Base *self) {
-    if ((self->unk_48 == NULL || func_020ed7e4(self->unk_48) != 0) && self->unk_14.unk_04 == NULL) {
+extern "C" BOOL _ZN8ProcBase9preDeleteEv(ProcBase *self) {
+    if ((self->seq == NULL || CmdSeq_Poll(self->seq) != 0) && self->treeNode.child == NULL) {
     } else {
         return FALSE;
     }
     return TRUE;
 }
 
-extern "C" void _ZN17Unk_020d8c7c_Base8vfunc_14Ev(Unk_020d8c7c_Base *self, s32 a) {
+extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
     if (a != 2) return;
-    func_020e7a7c(&data_021f5998, &self->unk_14);
-    func_020e79a0(&data_021f59d4, &self->unk_28);
-    if (self->unk_4c != NULL) func_020e8c88(self->unk_4c);
-    if (self->unk_48 != NULL) func_020ed8cc(self->unk_48);
+    TreeNode_Detach(&gProcTree, &self->treeNode);
+    List_Remove(&gTaskDeleteList, &self->executeNode);
+    if (self->procHeap != NULL) Heap_destroy2(self->procHeap);
+    if (self->seq != NULL) CmdSeq_Undo(self->seq);
     delete self;
 }
 
-extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_30Ev(Unk_020d8c7c_Base *self) {
+extern "C" BOOL _ZN8ProcBase15onDeleteRequestEv(ProcBase *self) {
 }
 
-extern "C" void func_020ed1e4(Unk_020d8c7c_Base *self, Unk_020e8b94 *heap) {
-    self->unk_4c = heap;
+extern "C" void ProcBase_SetHeap(ProcBase *self, Heap *heap) {
+    self->procHeap = heap;
 }
 
-extern "C" void func_020ed188(Unk_020d8c7c_Base *self) {
-    if (self->unk_0f != 0) return;
-    if (isTwo(self->unk_0e)) return;
-    self->unk_0f = 1;
-    self->vfunc_30();
+extern "C" void ProcBase_RequestDelete(ProcBase *self) {
+    if (self->deletePending != 0) return;
+    if (isTwo(self->state)) return;
+    self->deletePending = 1;
+    self->onDeleteRequest();
 }
 
-extern "C" Unk_020d8c7c_Base *func_020ed174(Unk_020d8c7c_Base *self) {
-    TreeNode *parent = self->unk_14.unk_00;
-    if (parent != NULL) return parent->unk_10;
+extern "C" ProcBase *ProcBase_GetParent(ProcBase *self) {
+    TreeNode *parent = self->treeNode.parent;
+    if (parent != NULL) return parent->owner;
     return NULL;
 }
 
-extern "C" void func_020ed0d8(Unk_020d8c7c_Base *self, u16 v) {
-    if (isOne(self->unk_0e)) {
-        if (isThree(data_0213b1a4)) {
-            self->unk_28.unk_0e = v;
+extern "C" void ProcBase_SetExecutePriority(ProcBase *self, u16 v) {
+    if (isOne(self->state)) {
+        if (isThree(gTaskPhase)) {
+            self->executeNode.pendingPriority = v;
             return;
         }
-        func_020e79a0(&data_021f59a4, &self->unk_28);
-        QNode *q = &self->unk_28;
-        q->unk_0c = v;
-        q->unk_0e = v;
-        func_020ed5c0(&data_021f59a4, &self->unk_28);
+        List_Remove(&gTaskExecuteList, &self->executeNode);
+        QNode *q = &self->executeNode;
+        q->priority = v;
+        q->pendingPriority = v;
+        Task_InsertByPriority(&gTaskExecuteList, &self->executeNode);
     } else {
-        QNode *q = &self->unk_28;
-        q->unk_0c = v;
-        q->unk_0e = v;
+        QNode *q = &self->executeNode;
+        q->priority = v;
+        q->pendingPriority = v;
     }
 }
 
-extern "C" void func_020ed03c(Unk_020d8c7c_Base *self, u16 v) {
-    if (isOne(self->unk_0e)) {
-        if (isFive(data_0213b1a4)) {
-            self->unk_38.unk_0e = v;
+extern "C" void ProcBase_SetDrawPriority(ProcBase *self, u16 v) {
+    if (isOne(self->state)) {
+        if (isFive(gTaskPhase)) {
+            self->drawNode.pendingPriority = v;
             return;
         }
-        func_020e79a0(&data_021f59c4, &self->unk_38);
-        QNode *q = &self->unk_38;
-        q->unk_0c = v;
-        q->unk_0e = v;
-        func_020ed5c0(&data_021f59c4, &self->unk_38);
+        List_Remove(&gTaskDrawList, &self->drawNode);
+        QNode *q = &self->drawNode;
+        q->priority = v;
+        q->pendingPriority = v;
+        Task_InsertByPriority(&gTaskDrawList, &self->drawNode);
     } else {
-        QNode *q = &self->unk_38;
-        q->unk_0c = v;
-        q->unk_0e = v;
+        QNode *q = &self->drawNode;
+        q->priority = v;
+        q->pendingPriority = v;
     }
 }
 
-extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_34Ev(Unk_020d8c7c_Base *self, u32 size, Unk_020e8b94 *parent) {
-    Unk_020e8b94 *h = NULL;
+extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap *parent) {
+    Heap *h = NULL;
     u32 need;
-    Unk_020e8b94 *h2;
-    if (self->unk_4c != NULL) return TRUE;
+    Heap *h2;
+    if (self->procHeap != NULL) return TRUE;
     if (size != 0) {
-        h = func_020e8698(size, parent);
+        h = FrameHeap_CreateAsCurrent(size, parent);
         if (h != NULL) {
             BOOL ok;
-            u32 f = h->unk_04 & 0x10;
-            if (f) func_020e8b94(h, 0x10, 0x10);
-            ok = self->vfunc_3c();
+            u32 f = h->regionStart & 0x10;
+            if (f) Heap_alloc(h, 0x10, 0x10);
+            ok = self->allocResources();
             if (f == 0) {
-                if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
+                if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
             }
-            func_020e8634();
+            Heap_RestoreCurrent();
             if (ok == 0) {
-                func_020e8c94(h);
+                Heap_destroy(h);
                 h = NULL;
             } else {
-                need = (u32)h->unk_08;
-                need = (need - func_020e8af4(h) + 31) & ~31;
+                need = (u32)h->regionSize;
+                need = (need - Heap_getFreeSize(h) + 31) & ~31;
                 if (size == need) {
-                    func_020e877c(h);
-                    self->unk_4c = h;
+                    Heap_adjust(h);
+                    self->procHeap = h;
                     return TRUE;
                 }
             }
@@ -361,206 +286,207 @@ extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_34Ev(Unk_020d8c7c_Base *self, u32 s
     if (h == NULL) {
         u32 f;
         BOOL ok;
-        h = func_020e8698(-1, parent);
-        f = h->unk_04 & 0x10;
-        if (f) func_020e8b94(h, 0x10, 0x10);
-        ok = self->vfunc_3c();
+        h = FrameHeap_CreateAsCurrent(-1, parent);
+        f = h->regionStart & 0x10;
+        if (f) Heap_alloc(h, 0x10, 0x10);
+        ok = self->allocResources();
         if (f == 0) {
-            if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
+            if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
         }
-        func_020e8634();
+        Heap_RestoreCurrent();
         if (ok == 0) {
-            func_020e8c94(h);
-            func_020ed188(self);
+            Heap_destroy(h);
+            ProcBase_RequestDelete(self);
             return FALSE;
         }
-        need = (u32)h->unk_08;
-                need = (need - func_020e8af4(h) + 31) & ~31;
+        need = (u32)h->regionSize;
+                need = (need - Heap_getFreeSize(h) + 31) & ~31;
     }
     if (h != NULL) {
-        u32 used = (u32)h->unk_08;
+        u32 used = (u32)h->regionSize;
         h2 = NULL;
-        used -= func_020e8af4(h);
-        if (((used + 15) & ~15) + 0x30 < func_020e8af4(parent)) {
-            h2 = func_020e8698(need, parent);
+        used -= Heap_getFreeSize(h);
+        if (((used + 15) & ~15) + 0x30 < Heap_getFreeSize(parent)) {
+            h2 = FrameHeap_CreateAsCurrent(need, parent);
         }
         if (h2 != NULL) {
             if (h2 < h) {
                 BOOL r;
-                func_020e8c94(h);
+                Heap_destroy(h);
                 h = NULL;
-                r = self->vfunc_3c();
-                func_020e8634();
+                r = self->allocResources();
+                Heap_RestoreCurrent();
                 if (r == 0) {
-                    func_020e8c94(h2);
+                    Heap_destroy(h2);
                     h2 = h;
                 }
             } else {
-                func_020e8634();
-                func_020e8c94(h2);
+                Heap_RestoreCurrent();
+                Heap_destroy(h2);
                 h2 = NULL;
             }
         }
         if (h2 != NULL) {
-            func_020e877c(h2);
-            self->unk_4c = h2;
+            Heap_adjust(h2);
+            self->procHeap = h2;
             return TRUE;
         }
         if (h != NULL) {
-            func_020e877c(h);
-            self->unk_4c = h;
+            Heap_adjust(h);
+            self->procHeap = h;
             return TRUE;
         }
     }
-    func_020ed188(self);
+    ProcBase_RequestDelete(self);
     return FALSE;
 }
 
-extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_38Ev(Unk_020d8c7c_Base *self, u32 size, Unk_020e8b94 *parent) {
-    if (self->unk_4c != NULL) return TRUE;
+extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *parent) {
+    if (self->procHeap != NULL) return TRUE;
     if (size != 0) {
-        Unk_020e8b94 *h = func_020e8698(size, parent);
+        Heap *h = FrameHeap_CreateAsCurrent(size, parent);
         if (h != NULL) {
             BOOL ok;
-            u32 f = h->unk_04 & 0x10;
-            if (f) func_020e8b94(h, 0x10, 0x10);
-            ok = self->vfunc_3c();
+            u32 f = h->regionStart & 0x10;
+            if (f) Heap_alloc(h, 0x10, 0x10);
+            ok = self->allocResources();
             if (f == 0) {
-                if (func_020e8b94(h, 0x10, 0x10) == NULL) ok = FALSE;
+                if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
             }
-            func_020e8af4(h);
-            func_020e8634();
+            Heap_getFreeSize(h);
+            Heap_RestoreCurrent();
             if (ok == 0) {
-                func_020e8c94(h);
+                Heap_destroy(h);
             } else {
-                self->unk_4c = h;
+                self->procHeap = h;
                 return TRUE;
             }
         }
     }
-    func_020ed188(self);
+    ProcBase_RequestDelete(self);
     return FALSE;
 }
 
-extern "C" BOOL _ZN17Unk_020d8c7c_Base8vfunc_3cEv(Unk_020d8c7c_Base *self) {
+extern "C" BOOL _ZN8ProcBase14allocResourcesEv(ProcBase *self) {
     return TRUE;
 }
 
-extern "C" void *_ZN17Unk_020d8c7c_BasenwEm(u32 size) {
-    void *p = func_020e8b94(data_021f4818, size, -4);
+extern "C" void *_ZN8ProcBasenwEm(u32 size) {
+    void *p = Heap_alloc(gProcHeap, size, -4);
     if (p == NULL) return NULL;
-    func_02115fb4(p, 0, size);
+    MI_CpuFill8(p, 0, size);
     return p;
 }
 
-extern "C" void _ZN17Unk_020d8c7c_BasedlEPv(void *p) {
-    func_020e8908(data_021f4818, p);
+extern "C" void _ZN8ProcBasedlEPv(void *p) {
+    Heap_free(gProcHeap, p);
 }
 
-extern "C" void func_020ecbe0(Unk_020d8c7c_Base *self) {
-    func_020ecb78(self);
-    if (self->unk_0f != 0) return;
-    if (self->unk_10 != 0) return;
-    if (!isZero(self->unk_0e)) return;
-    if (isTwo(data_0213b1a4)) {
-        self->unk_11 = 1;
+extern "C" void ProcBase_StartCreate(ProcBase *self) {
+    ProcBase_taskCreate(self);
+    if (self->deletePending != 0) return;
+    if (self->activatePending != 0) return;
+    if (!isZero(self->state)) return;
+    if (isTwo(gTaskPhase)) {
+        self->createRetry = 1;
         return;
     }
-    func_020e7968(&data_021f59b4, &self->unk_28);
+    List_PushBack(&gTaskCreateList, &self->executeNode);
 }
 
-extern "C" void func_020ecb78(Unk_020d8c7c_Base *self) {
-    func_01ffd44c(self, data_0213b13c, data_0213b134, data_0213b124);
+extern "C" void ProcBase_taskCreate(ProcBase *self) {
+    ProcBase_RunPhase(self, data_0213b13c, data_0213b134, data_0213b124);
 }
 
-extern "C" u32 func_020ecaf4(Unk_020d8c7c_Base *self) {
-    u16 id = self->unk_0c;
-    u32 r = func_01ffd44c(self, data_0213b12c, data_0213b144, data_0213b14c);
-    if (r == 1) func_020ec904(id);
+#define ProcBase_taskDelete _ZN8ProcBase10taskDeleteEv
+extern "C" u32 ProcBase_taskDelete(ProcBase *self) {
+    u16 id = self->profile;
+    u32 r = ProcBase_RunPhase(self, data_0213b12c, data_0213b144, data_0213b14c);
+    if (r == 1) Proc_CallDeleteHook(id);
     return r;
 }
 
-extern "C" BOOL func_020eca8c(Unk_020d8c7c_Base *self) {
-    TreeNode *root = &self->unk_14;
-    TreeNode *end = func_01ffcfc0(root);
-    TreeNode *n = root->unk_04;
+extern "C" BOOL ProcBase_HasCreatingChild(ProcBase *self) {
+    TreeNode *root = &self->treeNode;
+    TreeNode *end = TreeNode_GetNextSkipChildren(root);
+    TreeNode *n = root->child;
     while (n != NULL && n != end) {
-        if (isZero(n->unk_10->unk_0e)) return TRUE;
-        n = func_01ffcffc(n);
+        if (isZero(n->owner->state)) return TRUE;
+        n = TreeNode_GetNextPreOrder(n);
     }
     return FALSE;
 }
 
-extern "C" void func_020eca48(u32 a, TreeNode *parent, u32 c, u32 d) {
-    data_021f5990 = c;
-    data_021f5980 = a;
-    data_021f5978 = d;
-    data_021f5984 = (u32)parent;
+extern "C" void Proc_SetCreateParams(u32 a, TreeNode *parent, u32 c, u32 d) {
+    sProcCreateParam = c;
+    sProcCreateProfile = a;
+    sProcCreateGroup = d;
+    sProcCreateParent = (u32)parent;
 }
 
-extern "C" Unk_020d8c7c_Base *func_020ec970(u32 a, TreeNode *parent, u32 c, u32 d) {
-    data_021f597c = a;
-    data_021f5974 = 1;
-    func_020ec938(a);
-    data_021f5974 = 2;
-    func_020eca48(a, parent, c, d);
-    data_021f5974 = 3;
-    Unk_020d8c7c_Base *r = data_021f59e4[a]->unk_00();
+extern "C" ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d) {
+    gProcCreateProfile = a;
+    gProcCreateStep = 1;
+    Proc_CallCreateHook(a);
+    gProcCreateStep = 2;
+    Proc_SetCreateParams(a, parent, c, d);
+    gProcCreateStep = 3;
+    ProcBase *r = (ProcBase *)gProfileTable[a]->create();
     if (r == NULL) {
-        data_021f5974 = 0;
-        data_021f597c = 0xffff;
+        gProcCreateStep = 0;
+        gProcCreateProfile = 0xffff;
         return NULL;
     }
-    data_021f5974 = 4;
-    func_020ecbe0(r);
-    data_021f5974 = 0;
-    data_021f597c = 0xffff;
+    gProcCreateStep = 4;
+    ProcBase_StartCreate(r);
+    gProcCreateStep = 0;
+    gProcCreateProfile = 0xffff;
     return r;
 }
 
-extern "C" u32 func_020ec938(u32 a) {
-    if (data_021f5988 == NULL) return 2;
-    return data_021f5988(a);
+extern "C" u32 Proc_CallCreateHook(u32 a) {
+    if (sProcCreateHook == NULL) return 2;
+    return sProcCreateHook(a);
 }
 
-extern "C" void func_020ec904(u32 a) {
-    if (data_021f598c == NULL) return;
-    data_021f598c(a);
+extern "C" void Proc_CallDeleteHook(u32 a) {
+    if (sProcDeleteHook == NULL) return;
+    sProcDeleteHook(a);
 }
 
-extern "C" Unk_020d8c7c_Base *func_020ec8d4(u32 a, Unk_020d8c7c_Base *parent, u32 c, u32 d) {
+extern "C" ProcBase *Proc_CreateChild(u32 a, ProcBase *parent, u32 c, u32 d) {
     if (parent == NULL) return NULL;
-    return func_020ec970(a, &parent->unk_14, c, d);
+    return Proc_Create(a, &parent->treeNode, c, d);
 }
 
-extern "C" Unk_020d8c7c_Base *func_020ec8bc(u32 a, u32 b, u32 c) {
-    return func_020ec970(a, 0, b, c);
+extern "C" ProcBase *Proc_CreateRoot(u32 a, u32 b, u32 c) {
+    return Proc_Create(a, 0, b, c);
 }
 
-extern "C" void func_020ec8b0(void) {
-    func_02114e48();
+extern "C" void Main_InitTick(void) {
+    OS_InitTick();
 }
 
-extern "C" void *func_020ec894(u32 size) {
-    return func_020e8608(data_021f482c, size);
+extern "C" void *Mem_AllocForNew(u32 size) {
+    return Heap_Alloc(gCurrentHeap, size);
 }
 
-extern "C" void func_020ec878(void *p) {
-    func_020e85fc(data_021f482c, p);
+extern "C" void Mem_FreeForDelete(void *p) {
+    Heap_Free(gCurrentHeap, p);
 }
 
-extern "C" void *func_020ec86c(u32 size) {
-    return func_020ec894(size);
+extern "C" void *_Znwm(u32 size) {
+    return Mem_AllocForNew(size);
 }
 
-extern "C" void *func_020ec860(u32 size) {
-    return func_020ec894(size);
+extern "C" void *_Znam(u32 size) {
+    return Mem_AllocForNew(size);
 }
 
 extern "C" void _ZdlPv(void *p) {
-    func_020ec878(p);
+    Mem_FreeForDelete(p);
 }
 
-extern "C" void func_020ec848(void *p) {
-    func_020ec878(p);
+extern "C" void _ZdaPv(void *p) {
+    Mem_FreeForDelete(p);
 }

@@ -34,32 +34,32 @@ typedef struct TexData {
 } TexData;
 
 extern u32 data_0213bcd4, data_0213bcd0, data_0213bccc;
-extern void func_02115e64(u32, void *, u32);   // MIi_CpuClear32
-extern void func_01ff8858(void *, Node *);
-extern void func_02111ff0(void);                // GX_BeginLoadTex
-extern void func_02111f7c(void *, u32, u32);    // GX_LoadTex
-extern void func_02111f24(void);                // GX_EndLoadTex
-extern void func_0211220c(void);                // GX_BeginLoadTexPltt
-extern void func_021120a8(void *, u32, u32);    // GX_LoadTexPltt
-extern void func_02112038(void);                // GX_EndLoadTexPltt
-void func_02103edc(Node **head, Node *n);
-BOOL func_02103dcc(Node **head, Node *n);
+extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32
+extern void updateHintVec___kernel(void *, Node *);
+extern void GX_BeginLoadTexPltt(void);                // GX_BeginLoadTex
+extern void GX_LoadTexPltt(void *, u32, u32);    // GX_LoadTex
+extern void GX_EndLoadTexPltt(void);                // GX_EndLoadTex
+extern void GX_BeginLoadTex(void);                // GX_BeginLoadTexPltt
+extern void GX_LoadTex(void *, u32, u32);    // GX_LoadTexPltt
+extern void GX_EndLoadTex(void);                // GX_EndLoadTexPltt
+void addLink_(Node **head, Node *n);
+BOOL removeLink_(Node **head, Node *n);
 
 // add a node to the list chosen by its kind ('M', 'J', 'V')
-void func_02103e40(u8 *o, Node *n)
+void NNS_G3dRenderObjAddAnmObj(u8 *o, Node *n)
 {
     switch (*(u8 *)((u32 *)n)[2]) {
     case 'M':
-        func_01ff8858(o + 0x3c, n);
-        func_02103edc((Node **)(o + 8), n);
+        updateHintVec___kernel(o + 0x3c, n);
+        addLink_((Node **)(o + 8), n);
         break;
     case 'J':
-        func_01ff8858(o + 0x44, n);
-        func_02103edc((Node **)(o + 16), n);
+        updateHintVec___kernel(o + 0x44, n);
+        addLink_((Node **)(o + 16), n);
         break;
     case 'V':
-        func_01ff8858(o + 0x4c, n);
-        func_02103edc((Node **)(o + 24), n);
+        updateHintVec___kernel(o + 0x4c, n);
+        addLink_((Node **)(o + 24), n);
         break;
     }
 }

@@ -8,10 +8,10 @@
 	.arm
 
 ; double compare, x in r0:r1, y in r2:r3: x > y (_dgr; unordered -> 0).
-	.global func_02132340
-	.type func_02132340, @function
-	.size func_02132340, 0x88
-func_02132340:
+	.global _dgr
+	.type _dgr, @function
+	.size _dgr, 0x88
+_dgr:
 	mov ip, #0x200000
 	cmn ip, r1, lsl #1
 	bcs L_02132394
@@ -52,10 +52,10 @@ L_021323b0:
 	b L_02132354
 
 ; double compare, x in r0:r1, y in r2:r3: x >= y (_dgeq; unordered -> 0).
-	.global func_021323c8
-	.type func_021323c8, @function
-	.size func_021323c8, 0x88
-func_021323c8:
+	.global _dgeq
+	.type _dgeq, @function
+	.size _dgeq, 0x88
+_dgeq:
 	mov ip, #0x200000
 	cmn ip, r1, lsl #1
 	bcs L_0213241c

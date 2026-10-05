@@ -32,7 +32,7 @@ static inline void *GetResDataByIdx(const ResDict *dict, u32 idx)
 }
 
 // NNS_G3dGetResDataByName
-void *func_02106460(const ResDict *dict, const ResName *name)
+void *NNS_G3dGetResDataByName(const ResDict *dict, const ResName *name)
 {
     if (dict->numEntry < 16) {
         u32 i;
@@ -70,7 +70,7 @@ void *func_02106460(const ResDict *dict, const ResName *name)
 }
 
 // NNS_G3dGetResDictIdxByName
-int func_02106300(const ResDict *dict, const ResName *name)
+int NNS_G3dGetResDictIdxByName(const ResDict *dict, const ResName *name)
 {
     if (dict->numEntry < 16) {
         u32 i;

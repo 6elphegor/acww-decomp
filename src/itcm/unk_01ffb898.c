@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I003b: itcm 0x01ffb898-0x01ffbb6c, NitroSDK FX 4x3 matrix C (MTX_MultVec43, MTX_Concat43), 2 functions. ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
@@ -29,11 +30,6 @@ typedef s64 fx64c;
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct VecFx16 { fx16 x, y, z; } VecFx16;
-typedef struct MtxFx33 {
-    fx32 _00, _01, _02;
-    fx32 _10, _11, _12;
-    fx32 _20, _21, _22;
-} MtxFx33;
 typedef struct MtxFx43 {
     fx32 _00, _01, _02;
     fx32 _10, _11, _12;
@@ -128,13 +124,13 @@ static inline u32 CP_GetSqrtResult32(void) {
 }
 
 /* PROTOS */
-void func_01ffb94c(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab);
-void func_01ffb898(const VecFx32 *pSrc, const MtxFx43 *pMtx, VecFx32 *pDst);
+void MTX_Concat43(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab);
+void MTX_MultVec43(const VecFx32 *pSrc, const MtxFx43 *pMtx, VecFx32 *pDst);
 
 /* END PROTOS */
 
 // MTX_Concat43
-void func_01ffb94c(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab) {
+void MTX_Concat43(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab) {
     MtxFx43 tmp;
     MtxFx43 *p = ab;
     fx32 x, y, z;
@@ -167,7 +163,7 @@ void func_01ffb94c(const MtxFx43 *a, const MtxFx43 *b, MtxFx43 *ab) {
 }
 
 // MTX_MultVec43
-void func_01ffb898(const VecFx32 *pSrc, const MtxFx43 *pMtx, VecFx32 *pDst) {
+void MTX_MultVec43(const VecFx32 *pSrc, const MtxFx43 *pMtx, VecFx32 *pDst) {
     fx32 x = pSrc->x;
     fx32 y = pSrc->y;
     fx32 z = pSrc->z;

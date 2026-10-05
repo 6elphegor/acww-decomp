@@ -1,381 +1,318 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/IpSocket.h"
+#include "net/IpFragEntry.h"
+#include "nitro/math.h"
+#include "net/IpStackConfig.h"
+#include "net/SslSession.h"
+#include "net/SslConnection.h"
 
 extern "C" u8 data_ov065_0228f3c0[0x800] = {0};
-extern "C" u8 data_ov065_0228fbc0[0x800] = {0};
-extern "C" u8 data_ov065_0228f200[0x1c0] = {0};
-extern "C" u8 data_ov065_0228ef00[0x180] = {0};
-extern "C" u8 data_ov065_0228f080[0x180] = {0};
-extern "C" u8 data_ov065_0228ed80[0xc0] = {0};
-extern "C" u8 data_ov065_0228ee40[0xc0] = {0};
-extern "C" u32 data_ov065_0228ecb8[25] = {0};
-extern "C" u32 data_ov065_0228ed1c[25] = {0};
-extern "C" u8 data_ov065_0228ec58[0x60] = {0};
+extern "C" u8 sIpRecvThreadStack[0x800] = {0};
+extern "C" u8 sIpFragTable[0x1c0] = {0};
+extern "C" u8 sTimerThreadTxBuf[0x180] = {0};
+extern "C" u8 sTimerThreadRxBuf[0x180] = {0};
+extern "C" u8 sIpTimerThread[0xc0] = {0};
+extern "C" u8 sIpRecvThread[0xc0] = {0};
+extern "C" u32 sTimerThreadSoc[25] = {0};
+extern "C" u32 sTcpResetSoc[25] = {0};
+extern "C" u8 sArpCache[0x60] = {0};
 extern "C" u8 data_ov065_0228ec1c[0x3c] = {0};
-extern "C" u64 data_ov065_0228ec04[3] = {0};
-extern "C" u8 data_ov065_0228b434[12] = {0xaa, 0xaa, 3, 0, 0, 0, 8, 0, 0, 0, 0, 0};
-extern "C" char data_ov065_0228b428[] = "NintendoDS";
-extern "C" u32 data_ov065_0228ebfc[2] = {0};
-extern "C" u8 data_ov065_0228b420[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0, 0};
-extern "C" u8 data_ov065_0228ebf4[6] = {0};
-extern "C" u32 data_ov065_0228ebec = 0;
-extern "C" u32 data_ov065_0228ebb0 = 0;
-extern "C" void *data_ov065_0228ebe4 = 0;
-extern "C" u32 data_ov065_0228ebe0 = 0;
-extern "C" u32 data_ov065_0228ebdc = 0;
-extern "C" void (*data_ov065_0228eba8)(void) = 0;
-extern "C" u32 data_ov065_0228ebd4 = 0;
-extern "C" void (*data_ov065_0228ebd0)(void *) = 0;
-extern "C" void (*data_ov065_0228ebcc)(void) = 0;
-extern "C" u32 data_ov065_0228ebb8 = 0;
-extern "C" u32 data_ov065_0228ebc0 = 0;
-extern "C" u32 data_ov065_0228ebc4 = 0;
-extern "C" u32 data_ov065_0228ebf0 = 0;
-extern "C" u8 *data_ov065_0228ebe8 = 0;
-extern "C" u32 data_ov065_0228eba0 = 0;
-extern "C" u32 data_ov065_0228b418 = 1;
-extern "C" s32 (*data_ov065_0228ebac)(void) = 0;
-extern "C" u32 data_ov065_0228b41c = 0x10;
-extern "C" u32 data_ov065_0228eba4 = 0;
-extern "C" u32 data_ov065_0228ebbc = 0;
-extern "C" void *(*data_ov065_0228ebc8)(u32) = 0;
-extern "C" u32 data_ov065_0228ebd8 = 0;
-extern "C" u32 data_ov065_0228ebb4 = 0;
-extern "C" u16 data_ov065_0228eb9c = 0;
-extern "C" u16 data_ov065_0228eb90 = 0;
-extern "C" u16 data_ov065_0228eb94 = 0;
-extern "C" u16 data_ov065_0228eb98 = 0;
-extern "C" u8 data_ov065_0228eb88 = 0;
-extern "C" u8 data_ov065_0228eb8c = 0;
+extern "C" u64 sIpRandState[3] = {0};
+extern "C" u8 sLlcSnapHeader[12] = {0xaa, 0xaa, 3, 0, 0, 0, 8, 0, 0, 0, 0, 0};
+extern "C" char sDhcpHostName[] = "NintendoDS";
+extern "C" u32 sDnsServers[2] = {0};
+extern "C" u8 sBroadcastMac[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0, 0};
+extern "C" u8 sOwnMac[6] = {0};
+extern "C" u32 sRecvRingSize = 0;
+extern "C" u32 sDhcpServerId = 0;
+extern "C" void *sRecvRingWaiter = 0;
+extern "C" u32 sDhcpRequestedIp = 0;
+extern "C" u32 sDhcpLeaseTime = 0;
+extern "C" void (*sAddrConfiguredCallback)(void) = 0;
+extern "C" u32 sIpTimerStopRequest = 0;
+extern "C" void (*sIpFree)(void *) = 0;
+extern "C" void (*sIpIdleCallback)(void) = 0;
+extern "C" u32 sRecvRingWrite = 0;
+extern "C" u32 sGateway = 0;
+extern "C" u32 sDhcpRetryTime = 0;
+extern "C" u32 sRecvRingRead = 0;
+extern "C" u8 *sRecvRingBuf = 0;
+extern "C" u32 sIpStackStatus = 0;
+extern "C" u32 sIcmpEchoReplyEnabled = 1;
+extern "C" s32 (*sIpLinkCheckCallback)(void) = 0;
+extern "C" u32 sIpThreadPriority = 0x10;
+extern "C" u32 sNetmask = 0;
+extern "C" u32 sIpStackFlags = 0;
+extern "C" void *(*sIpAlloc)(u32) = 0;
+extern "C" u32 gOwnIp = 0;
+extern "C" u32 sIpYieldMode = 0;
+extern "C" u16 sIpIdCounter = 0;
+extern "C" u16 sIcmpSeq = 0;
+extern "C" u16 sMss = 0;
+extern "C" u16 sNextEphemeralPort = 0;
+extern "C" u8 sLinkSendError = 0;
+extern "C" u8 sArpConflict = 0;
 
 
 namespace Unk_ov065_0226482c_Ns {
 
 // ov065_009: socket/SSL library: checksum, init, record send/receive buffering (0x0226482c..0x02265074)
 
-struct Unk_ov065_02264a48_Cfg {
-    u32 unk_00;
-    void *(*unk_04)(u32);
-    void (*unk_08)(void *);
-    s32 (*unk_0c)(void);
-    s32 (*unk_10)(void);
-    u32 unk_14;
-    u32 unk_18;
-    u32 unk_1c;
-    u32 unk_20;
-    u32 unk_24;
-    u32 unk_28;
-    u32 unk_2c;
-};
 
-struct Unk_ov065_02264a48_Rng {
-    u64 unk_00;
-    u64 unk_08;
-    u64 unk_10;
-};
 
-struct Unk_ov065_02264c44_Ent {
-    u8 unk_00[4];
-    u16 unk_04;
-    u8 unk_06[0x2e];
-    void *unk_34;
-};
 
-struct Unk_ov065_02264c44_Sub {
-    void *unk_00;
-    void *unk_04;
-    u8 unk_08;
-    u8 unk_09;
-};
 
-struct Unk_ov065_02264c44_Thr {
-    u8 unk_00[0x68];
-    Unk_ov065_02264c44_Thr *unk_68;
-    u8 unk_6c[0x38];
-    Unk_ov065_02264c44_Sub *unk_a4;
-};
 
-struct Unk_ov065_02264c44_Info {
-    u32 unk_00;
-    Unk_ov065_02264c44_Thr *unk_04;
-    Unk_ov065_02264c44_Thr *unk_08;
-};
 
-struct Unk_ov065_02264d24_Ent {
-    u8 unk_00[0x50];
-    s32 unk_50;
-    u8 unk_54[6];
-    u8 unk_5a;
-    u8 unk_5b;
-};
 
-struct Unk_ov065_02264d80_Conn {
-    u8 unk_000[0x2c0];
-    u8 unk_2c0[0xb8];
-    u8 unk_378[0xb0];
-    u8 unk_428;
-    u8 unk_429;
-    u8 unk_42a;
-    u8 unk_42b[0x3cd];
-    u8 *unk_7f8;
-    u32 unk_7fc;
-    u32 unk_800;
-};
 
-struct Unk_ov065_02264d80_Obj {
-    u8 unk_00[8];
-    u8 unk_08;
-    u8 unk_09[3];
-    Unk_ov065_02264d80_Conn *unk_0c;
-    u8 unk_10[0x34];
-    u32 unk_44;
-};
 
 extern "C" {
-extern u32 data_ov065_0228ebc0;
-extern u32 data_ov065_0228eba4;
-extern u32 data_ov065_0228ebd8;
-extern u32 data_ov065_0228b41c;
-extern u8 data_ov065_0228ee40[];
-extern u8 data_ov065_0228ed80[];
-extern u32 data_ov065_0228ebe4;
-extern u32 data_ov065_0228ebe8;
-extern u32 data_ov065_0228ebec;
-extern void (*data_ov065_0228ebcc)(void);
-extern u32 data_ov065_0228ebd4;
-extern u32 data_ov065_0228eba0;
-extern u32 data_ov065_0228ebfc[2];
-extern u32 data_ov065_0228ebb0;
-extern u8 data_ov065_0228ec58[];
-extern Unk_ov065_02264c44_Info data_021fcc2c;
-extern Unk_ov065_02264c44_Ent data_ov065_0228f200[8];
-extern void (*data_ov065_0228ebd0)(void *);
-extern u32 data_ov065_0228ebb4;
-extern Unk_ov065_02264d24_Ent data_ov065_02290438[4];
-extern void *(*data_ov065_0228ebc8)(u32);
-extern void *(*data_ov065_0228eba8)(void);
-extern s32 (*data_ov065_0228ebac)(void);
-extern u32 data_ov065_0228ebbc;
-extern u16 data_ov065_0228eb94;
-extern u32 data_ov065_0228ebe0;
-extern u32 data_ov065_0228ebf0;
-extern u32 data_ov065_0228ebb8;
-extern u16 data_ov065_0228eb98;
-extern u8 data_ov065_0228ebf4[];
-extern u8 data_ov065_0228eb8c;
-extern Unk_ov065_02264a48_Rng data_ov065_0228ec04;
+extern u32 sGateway;
+extern u32 sNetmask;
+extern u32 gOwnIp;
+extern u32 sIpThreadPriority;
+extern u8 sIpRecvThread[];
+extern u8 sIpTimerThread[];
+extern u32 sRecvRingWaiter;
+extern u32 sRecvRingBuf;
+extern u32 sRecvRingSize;
+extern void (*sIpIdleCallback)(void);
+extern u32 sIpTimerStopRequest;
+extern u32 sIpStackStatus;
+extern u32 sDnsServers[2];
+extern u32 sDhcpServerId;
+extern u8 sArpCache[];
+extern OSThreadInfo data_021fcc2c;
+extern IpFragEntry sIpFragTable[8];
+extern void (*sIpFree)(void *);
+extern u32 sIpYieldMode;
+extern SslSession sSslSessionCache[4];
+extern void *(*sIpAlloc)(u32);
+extern void *(*sAddrConfiguredCallback)(void);
+extern s32 (*sIpLinkCheckCallback)(void);
+extern u32 sIpStackFlags;
+extern u16 sMss;
+extern u32 sDhcpRequestedIp;
+extern u32 sRecvRingRead;
+extern u32 sRecvRingWrite;
+extern u16 sNextEphemeralPort;
+extern u8 sOwnMac[];
+extern u8 sArpConflict;
+extern MATHRandContext32 sIpRandState;
 
-void func_ov065_02262ae4(void);
-void func_ov065_02261fd8(void);
-u32 func_ov065_02265dac(void *, void *);
-u32 func_ov065_0226242c(void *, u32, u32, u32, Unk_ov065_02264d80_Obj *);
-u8 *func_ov065_02262708(u32 *, Unk_ov065_02264d80_Obj *);
-void func_ov065_02262670(u32, Unk_ov065_02264d80_Obj *);
-void func_ov065_02265b9c(void *, void *);
-s32 func_ov065_02265d5c(void *, u32, Unk_ov065_02264d80_Obj *);
-s32 func_ov065_02265a5c(Unk_ov065_02264d80_Obj *);
+void IpStack_RecvThreadMain(void);
+void IpStack_TimerThreadMain(void);
+u32 Ssl_EncryptRecord(void *, void *);
+u32 Tcp_Write(void *, u32, u32, u32, IpSocket *);
+u8 *Tcp_Read(u32 *, IpSocket *);
+void Tcp_Consume(u32, IpSocket *);
+void Ssl_ProcessRecord(void *, void *);
+s32 Ssl_ReadExact(void *, u32, IpSocket *);
+s32 Ssl_ReadRecord(IpSocket *);
 
-u64 func_01ffa6b4(void);
-u32 func_01ffa2ec(void);
-void func_01ffa3d4(u32);
-void func_02000b44(u32);
-void func_02113384(void *, u32);
-void func_02113788(void *);
-void func_021138d0(void *);
-s32 func_02113774(void *);
-void func_0211366c(void *);
-void func_02113498(void);
-void func_021132e0(void);
-void func_02113a70(void *, void *, u32, void *, u32, u32);
-void func_02115640(void *);
-void *func_02115fb4(void *, s32, u32);
-void func_02116048(void *, void *, u32);
+u64 OS_GetTick(void);
+u32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(u32);
+void OSi_ReferSymbol(u32);
+void OS_SetThreadPriority(void *, u32);
+void OS_JoinThread(void *);
+void OS_DestroyThread(void *);
+s32 OS_IsThreadTerminated(void *);
+void OS_WakeupThreadDirect(void *);
+void OS_YieldThread(void);
+void OS_Sleep(void);
+void OS_CreateThread(void *, void *, u32, void *, u32, u32);
+void OS_GetMacAddress(void *);
+void *MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(void *, void *, u32);
 
-u32 func_ov065_02264900(u8 *p, u32 len, u32 sum);
-s32 func_ov065_02264848(u32 a);
-void func_ov065_02264c44(u32 a);
-s32 func_ov065_02264a08(void);
-void func_ov065_02264d0c(void);
-void func_ov065_02264f28(Unk_ov065_02264d80_Obj *o);
-s32 func_ov065_02264c18(void);
-void func_ov065_02264c1c(void);
+u32 Ip_ChecksumAdd(u8 *p, u32 len, u32 sum);
+s32 Ip_IsOnLocalNet(u32 a);
+void IpStack_ResetAddress(u32 a);
+s32 IpStack_RequestStop(void);
+void Ssl_ClearSessionCache(void);
+void Ssl_ReceiveRecordPart(IpSocket *o);
+s32 IpStack_ReturnTrue(void);
+void IpStack_Nop(void);
 }
 
 extern "C" {
 
 extern "C" {
-void func_ov065_02264c44(u32 a);
-void func_ov065_02264c20(void);
-void func_ov065_02264c1c(void);
-s32 func_ov065_02264c18(void);
-void func_ov065_02264a48(Unk_ov065_02264a48_Cfg *c);
-s32 func_ov065_02264a08(void);
-void func_ov065_022649fc(void (*f)(void));
-void func_ov065_022649b8(void);
-void func_ov065_0226498c(u32 a);
-u32 func_ov065_02264900(u8 *p, u32 len, u32 sum);
-u32 func_ov065_022648ec(u32 x);
-u32 func_ov065_022648d4(u8 *a, u32 b);
-s32 func_ov065_02264884(u8 *a, u32 b, u8 *c, u32 d);
-s32 func_ov065_02264848(u32 a);
-u32 func_ov065_0226482c(u32 a);
+void IpStack_ResetAddress(u32 a);
+void IpStack_Yield(void);
+void IpStack_Nop(void);
+s32 IpStack_ReturnTrue(void);
+void IpStack_Init(IpStackConfig *c);
+s32 IpStack_RequestStop(void);
+void IpStack_SetIdleCallback(void (*f)(void));
+void IpStack_Shutdown(void);
+void IpStack_SetThreadPriority(u32 a);
+u32 Ip_ChecksumAdd(u8 *p, u32 len, u32 sum);
+u32 Ip_ChecksumFinish(u32 x);
+u32 Ip_Checksum(u8 *a, u32 b);
+s32 Ip_VerifyPseudoChecksum(u8 *a, u32 b, u8 *c, u32 d);
+s32 Ip_IsOnLocalNet(u32 a);
+u32 Ip_GetNextHop(u32 a);
 }
 
-void func_ov065_02264c44(u32 a) {
+void IpStack_ResetAddress(u32 a) {
     BOOL f;
-    if (data_ov065_0228ebd8 != 0) {
+    if (gOwnIp != 0) {
         f = TRUE;
     } else {
         f = FALSE;
     }
-    data_ov065_0228eba0 = a;
-    data_ov065_0228ebd8 = 0;
-    data_ov065_0228eba4 = 0;
-    data_ov065_0228ebc0 = 0;
-    data_ov065_0228ebfc[0] = 0;
-    data_ov065_0228ebfc[1] = 0;
-    data_ov065_0228ebb0 = 0;
+    sIpStackStatus = a;
+    gOwnIp = 0;
+    sNetmask = 0;
+    sGateway = 0;
+    sDnsServers[0] = 0;
+    sDnsServers[1] = 0;
+    sDhcpServerId = 0;
     if (f) {
-        func_02115fb4(data_ov065_0228ec58, 0, 0x60);
+        MI_CpuFill8(sArpCache, 0, 0x60);
         {
-            Unk_ov065_02264c44_Thr *t = data_021fcc2c.unk_08;
+            OSThread *t = data_021fcc2c.list;
             if (t != 0) {
                 do {
-                    Unk_ov065_02264c44_Sub *s = t->unk_a4;
+                    IpSocket *s = (IpSocket *)t->specific[0];
                     if (s != 0) {
-                        if (s->unk_00 != 0) {
-                            if (s->unk_08 != 10 && s->unk_08 != 11) {
-                                s->unk_08 = 0;
+                        if (s->ownerThread != 0) {
+                            if (s->state != 10 && s->state != 11) {
+                                s->state = 0;
                             }
-                            if (s->unk_04 != 0) {
-                                s->unk_04 = 0;
-                                func_0211366c(s->unk_00);
+                            if (s->waitReason != 0) {
+                                s->waitReason = 0;
+                                OS_WakeupThreadDirect(s->ownerThread);
                             }
                         }
                     }
-                    t = t->unk_68;
+                    t = t->next;
                 } while (t != 0);
             }
         }
         {
             s32 i;
-            Unk_ov065_02264c44_Ent *e;
-            for (i = 0, e = data_ov065_0228f200; i < 8; e++, i++) {
-                if (e->unk_04 != 0) {
-                    data_ov065_0228ebd0(e->unk_34);
-                    e->unk_04 = 0;
+            IpFragEntry *e;
+            for (i = 0, e = sIpFragTable; i < 8; e++, i++) {
+                if (e->cnt != 0) {
+                    sIpFree(e->buf);
+                    e->cnt = 0;
                 }
             }
         }
-        func_ov065_02264d0c();
+        Ssl_ClearSessionCache();
     }
 }
 
-void func_ov065_02264c20(void) {
-    if (data_ov065_0228ebb4 == 0) {
-        func_02113498();
+void IpStack_Yield(void) {
+    if (sIpYieldMode == 0) {
+        OS_YieldThread();
     } else {
-        func_021132e0();
+        OS_Sleep();
     }
 }
 
-void func_ov065_02264c1c(void) {
+void IpStack_Nop(void) {
 }
 
-s32 func_ov065_02264c18(void) {
+s32 IpStack_ReturnTrue(void) {
     return 1;
 }
 
-void func_ov065_02264a48(Unk_ov065_02264a48_Cfg *c) {
-    func_02000b44(0x2000bfc);
-    u64 seed = *(u64 *)&c->unk_14;
+void IpStack_Init(IpStackConfig *c) {
+    OSi_ReferSymbol(0x2000bfc);
+    u64 seed = *(u64 *)&c->randSeed;
     if (seed != 0) {
-        data_ov065_0228ec04.unk_00 = seed;
-        data_ov065_0228ec04.unk_08 = 0x5d588b656c078965ULL;
-        data_ov065_0228ec04.unk_10 = 0x269ec3;
+        sIpRandState.x = seed;
+        sIpRandState.mul = 0x5d588b656c078965ULL;
+        sIpRandState.add = 0x269ec3;
     } else {
-        data_ov065_0228ec04.unk_00 = func_01ffa6b4();
-        data_ov065_0228ec04.unk_08 = 0x5d588b656c078965ULL;
-        data_ov065_0228ec04.unk_10 = 0x269ec3;
+        sIpRandState.x = OS_GetTick();
+        sIpRandState.mul = 0x5d588b656c078965ULL;
+        sIpRandState.add = 0x269ec3;
     }
-    if (c->unk_04 != 0 && c->unk_08 != 0) {
-        data_ov065_0228ebc8 = c->unk_04;
-        data_ov065_0228ebd0 = c->unk_08;
+    if (c->allocFunc != 0 && c->freeFunc != 0) {
+        sIpAlloc = c->allocFunc;
+        sIpFree = c->freeFunc;
     } else {
-        data_ov065_0228ebc8 = (void *(*)(u32))func_ov065_02264c1c;
-        data_ov065_0228ebd0 = (void (*)(void *))func_ov065_02264c1c;
+        sIpAlloc = (void *(*)(u32))IpStack_Nop;
+        sIpFree = (void (*)(void *))IpStack_Nop;
     }
-    data_ov065_0228ebbc = c->unk_00;
-    if (c->unk_24 != 0) {
-        data_ov065_0228eb94 = c->unk_24;
+    sIpStackFlags = c->stackFlags;
+    if (c->mss != 0) {
+        sMss = c->mss;
     } else {
-        data_ov065_0228eb94 = 0x5b4;
+        sMss = 0x5b4;
     }
-    data_ov065_0228ebe0 = c->unk_28;
-    data_ov065_0228ebb4 = c->unk_2c;
-    if (c->unk_0c != 0) {
-        data_ov065_0228eba8 = (void *(*)(void))c->unk_0c;
+    sDhcpRequestedIp = c->requestedIp;
+    sIpYieldMode = c->yieldMode;
+    if (c->addrReadyCallback != 0) {
+        sAddrConfiguredCallback = (void *(*)(void))c->addrReadyCallback;
     } else {
-        data_ov065_0228eba8 = (void *(*)(void))func_ov065_02264c1c;
+        sAddrConfiguredCallback = (void *(*)(void))IpStack_Nop;
     }
-    if (c->unk_10 != 0) {
-        data_ov065_0228ebac = c->unk_10;
+    if (c->linkCheckCallback != 0) {
+        sIpLinkCheckCallback = c->linkCheckCallback;
     } else {
-        data_ov065_0228ebac = func_ov065_02264c18;
+        sIpLinkCheckCallback = IpStack_ReturnTrue;
     }
-    data_ov065_0228ebe8 = c->unk_1c;
-    data_ov065_0228ebec = c->unk_20;
-    data_ov065_0228ebf0 = 0;
-    data_ov065_0228ebb8 = 0;
+    sRecvRingBuf = c->recvRingBuf;
+    sRecvRingSize = c->recvRingSize;
+    sRecvRingRead = 0;
+    sRecvRingWrite = 0;
     {
-        Unk_ov065_02264a48_Rng *r = &data_ov065_0228ec04;
-        r->unk_00 = (u64)((s64)r->unk_08 * (s64)r->unk_00) + r->unk_10;
-        u32 hi = (u32)(r->unk_00 >> 32);
-        data_ov065_0228eb98 = ((u64)((s64)hi * (s64)0xf88) >> 32) + 0x400;
+        MATHRandContext32 *r = &sIpRandState;
+        r->x = (u64)((s64)r->mul * (s64)r->x) + r->add;
+        u32 hi = (u32)(r->x >> 32);
+        sNextEphemeralPort = ((u64)((s64)hi * (s64)0xf88) >> 32) + 0x400;
     }
-    func_02115640(data_ov065_0228ebf4);
-    data_ov065_0228eb8c = 0;
-    func_02113a70(data_ov065_0228ee40, (void *)func_ov065_02262ae4, 0, data_ov065_0228fbc0 + 0x800, 0x800, data_ov065_0228b41c);
-    func_02113a70(data_ov065_0228ed80, (void *)func_ov065_02261fd8, 0, data_ov065_0228f3c0 + 0x800, 0x800, data_ov065_0228b41c);
-    func_0211366c(data_ov065_0228ee40);
-    func_0211366c(data_ov065_0228ed80);
+    OS_GetMacAddress(sOwnMac);
+    sArpConflict = 0;
+    OS_CreateThread(sIpRecvThread, (void *)IpStack_RecvThreadMain, 0, sIpRecvThreadStack + 0x800, 0x800, sIpThreadPriority);
+    OS_CreateThread(sIpTimerThread, (void *)IpStack_TimerThreadMain, 0, data_ov065_0228f3c0 + 0x800, 0x800, sIpThreadPriority);
+    OS_WakeupThreadDirect(sIpRecvThread);
+    OS_WakeupThreadDirect(sIpTimerThread);
 }
 
-s32 func_ov065_02264a08(void) {
-    u32 s = func_01ffa2ec();
-    s32 r = func_02113774(data_ov065_0228ed80);
+s32 IpStack_RequestStop(void) {
+    u32 s = OS_DisableInterrupts();
+    s32 r = OS_IsThreadTerminated(sIpTimerThread);
     if (r == 0) {
-        if (data_ov065_0228ebd4 == 0) {
-            data_ov065_0228ebd4 = 1;
-            func_0211366c(data_ov065_0228ed80);
+        if (sIpTimerStopRequest == 0) {
+            sIpTimerStopRequest = 1;
+            OS_WakeupThreadDirect(sIpTimerThread);
         }
     }
-    func_01ffa3d4(s);
+    OS_RestoreInterrupts(s);
     return r;
 }
 
-void func_ov065_022649fc(void (*f)(void)) {
-    data_ov065_0228ebcc = f;
+void IpStack_SetIdleCallback(void (*f)(void)) {
+    sIpIdleCallback = f;
 }
 
-void func_ov065_022649b8(void) {
-    func_ov065_02264a08();
-    func_02113788(data_ov065_0228ed80);
-    func_021138d0(data_ov065_0228ee40);
-    data_ov065_0228ebe4 = 0;
-    func_ov065_02264c44(0);
-    data_ov065_0228ebe8 = 0;
-    data_ov065_0228ebec = 0;
+void IpStack_Shutdown(void) {
+    IpStack_RequestStop();
+    OS_JoinThread(sIpTimerThread);
+    OS_DestroyThread(sIpRecvThread);
+    sRecvRingWaiter = 0;
+    IpStack_ResetAddress(0);
+    sRecvRingBuf = 0;
+    sRecvRingSize = 0;
 }
 
-void func_ov065_0226498c(u32 a) {
-    data_ov065_0228b41c = a;
-    func_02113384(data_ov065_0228ee40, a);
-    func_02113384(data_ov065_0228ed80, a);
+void IpStack_SetThreadPriority(u32 a) {
+    sIpThreadPriority = a;
+    OS_SetThreadPriority(sIpRecvThread, a);
+    OS_SetThreadPriority(sIpTimerThread, a);
 }
 
-u32 func_ov065_02264900(u8 *p, u32 len, u32 sum) {
+u32 Ip_ChecksumAdd(u8 *p, u32 len, u32 sum) {
     u32 t;
     if (((u32)p & 1) != 0) {
         while (len > 1) {
@@ -406,7 +343,7 @@ u32 func_ov065_02264900(u8 *p, u32 len, u32 sum) {
     return (u16)t;
 }
 
-u32 func_ov065_022648ec(u32 x) {
+u32 Ip_ChecksumFinish(u32 x) {
     x = (u16)(x ^ 0xffff);
     if (x == 0) {
         x = 0xffff;
@@ -414,13 +351,13 @@ u32 func_ov065_022648ec(u32 x) {
     return x;
 }
 
-u32 func_ov065_022648d4(u8 *a, u32 b) {
-    return func_ov065_022648ec((u16)func_ov065_02264900(a, b, 0));
+u32 Ip_Checksum(u8 *a, u32 b) {
+    return Ip_ChecksumFinish((u16)Ip_ChecksumAdd(a, b, 0));
 }
 
-s32 func_ov065_02264884(u8 *a, u32 b, u8 *c, u32 d) {
-    u32 s = func_ov065_02264900(a, b, d);
-    s = func_ov065_02264900(c + 0xc, 8, s);
+s32 Ip_VerifyPseudoChecksum(u8 *a, u32 b, u8 *c, u32 d) {
+    u32 s = Ip_ChecksumAdd(a, b, d);
+    s = Ip_ChecksumAdd(c + 0xc, 8, s);
     s += b;
     if ((s & 0x10000) != 0) {
         s = (s + 1) & 0xffff;
@@ -431,13 +368,13 @@ s32 func_ov065_02264884(u8 *a, u32 b, u8 *c, u32 d) {
     return 0;
 }
 
-s32 func_ov065_02264848(u32 a) {
+s32 Ip_IsOnLocalNet(u32 a) {
     s32 r = TRUE;
     s32 z = 0;
     if (a != (u32)-1) {
         if (a != 0x7f000001) {
-            u32 m = data_ov065_0228eba4;
-            if ((a & m) != (data_ov065_0228ebd8 & m)) {
+            u32 m = sNetmask;
+            if ((a & m) != (gOwnIp & m)) {
                 r = z;
             }
         }
@@ -445,9 +382,9 @@ s32 func_ov065_02264848(u32 a) {
     return r;
 }
 
-u32 func_ov065_0226482c(u32 a) {
-    if (func_ov065_02264848(a) == 0) {
-        a = data_ov065_0228ebc0;
+u32 Ip_GetNextHop(u32 a) {
+    if (Ip_IsOnLocalNet(a) == 0) {
+        a = sGateway;
     }
     return a;
 }
@@ -457,102 +394,94 @@ u32 func_ov065_0226482c(u32 a) {
 
 }
 
+// ARP cache entry (sArpCache, 8 entries; Arp_UpdateCache, IpStack_TimerThreadMain)
+struct ArpCacheEntry {
+    s32 ipAddr;
+    u8 macAddr[6];
+    u16 lastUsed;
+};
+
 namespace Unk_ov065_02263f24_Ns {
 
 #define BS16(x) ((u16)((((s32)(x)) >> 8) | (((s32)(x)) << 8)))
 
-struct Unk_ov065_02263f24_Pkt {
-    u8 unk_00[0x0a];
-    u16 unk_0a;
-    u8 unk_0c[0x10];
-    u32 unk_1c;
-    u8 unk_20[0x2c];
-    u8 *unk_4c;
-};
+extern "C" {
+extern OSThreadInfo data_021fcc2c;
+extern u8 sBroadcastMac[];
+extern u8 sLlcSnapHeader[];
+extern u8 sLinkSendError;
+extern u16 sIcmpSeq;
+extern u16 sIpIdCounter;
+extern u32 sNetmask;
+extern u32 sRecvRingWrite;
+extern u32 gOwnIp;
+extern void *sRecvRingWaiter;
+extern u8 *sRecvRingBuf;
+extern u32 sRecvRingSize;
+extern u32 sRecvRingRead;
+extern u8 sOwnMac[];
+extern ArpCacheEntry sArpCache[8];
 
-struct Unk_ov065_02264298_E {
-    s32 unk_00;
-    u8 unk_04[6];
-    u16 unk_0a;
-};
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
+u64 OS_GetTick();
+void OS_Sleep(s32);
+void OS_SleepThread(void *);
+s32 OS_IsThreadTerminated(void *);
+void OS_WakeupThreadDirect(void *);
+void MI_CpuFill8(void *, s32, u32);
+void MI_CpuCopy8(const void *, void *, u32);
+
+s32 WifiLink_SendFrame(u8 *, u8 *, u32);
+u32 Ip_Checksum(u8 *, u32);
+u32 Ip_ChecksumFinish(u32);
+u32 Ip_ChecksumAdd(u8 *, u32, u32);
+s32 Ip_GetNextHop(u32);
+s32 Ip_IsOnLocalNet(u32);
+
+void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c);
+void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
+void Ip_SendPacket(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
+void Eth_SendIp(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w);
+void Arp_UpdateCache(u8 *mac, u32 ip, u32 flag);
+u8 *Arp_Resolve(u32 ip);
+void Arp_SendRequest(u32 ip);
+u8 *Arp_Lookup(u32 ip);
+void Eth_PopFrame();
+u8 *Eth_WaitFrame(u32 *out);
+void Eth_OnFrameReceived(u8 *, u8 *, u8 *, u32);
+void Eth_EnqueueFrame(u8 *, u8 *, u8 *, u32, u8 *, u32);
+void Eth_SendFrame(u8 *hdr, u32 hlen, u8 *data, u32 n);
+s32 Eth_MacDiffers(u16 *a, u16 *b);
+s32 Ip_IsForMe(u32 ip);
+s32 Ip_IsMulticast(u32 ip);
+s32 Ip_IsBroadcast(u32 ip);
 
 extern "C" {
-extern u32 data_021fcc2c[];
-extern u8 data_ov065_0228b420[];
-extern u8 data_ov065_0228b434[];
-extern u8 data_ov065_0228eb88;
-extern u16 data_ov065_0228eb90;
-extern u16 data_ov065_0228eb9c;
-extern u32 data_ov065_0228eba4;
-extern u32 data_ov065_0228ebb8;
-extern u32 data_ov065_0228ebd8;
-extern void *data_ov065_0228ebe4;
-extern u8 *data_ov065_0228ebe8;
-extern u32 data_ov065_0228ebec;
-extern u32 data_ov065_0228ebf0;
-extern u8 data_ov065_0228ebf4[];
-extern Unk_ov065_02264298_E data_ov065_0228ec58[8];
-
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
-u64 func_01ffa6b4();
-void func_021132e0(s32);
-void func_02113720(void *);
-s32 func_02113774(void *);
-void func_0211366c(void *);
-void func_02115fb4(void *, s32, u32);
-void func_02116048(const void *, void *, u32);
-
-s32 func_ov065_0226aa14(u8 *, u8 *, u32);
-u32 func_ov065_022648d4(u8 *, u32);
-u32 func_ov065_022648ec(u32);
-u32 func_ov065_02264900(u8 *, u32, u32);
-s32 func_ov065_0226482c(u32);
-s32 func_ov065_02264848(u32);
-
-void func_ov065_02263f24(u32 a, u32 b, Unk_ov065_02263f24_Pkt *c);
-void func_ov065_02263f98(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
-void func_ov065_02264110(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
-void func_ov065_022641ec(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w);
-void func_ov065_02264298(u8 *mac, u32 ip, u32 flag);
-u8 *func_ov065_02264360(u32 ip);
-void func_ov065_0226439c(u32 ip);
-u8 *func_ov065_02264440(u32 ip);
-void func_ov065_022644cc();
-u8 *func_ov065_0226450c(u32 *out);
-void func_ov065_0226459c(u8 *, u8 *, u8 *, u32);
-void func_ov065_022645d0(u8 *, u8 *, u8 *, u32, u8 *, u32);
-void func_ov065_02264718(u8 *hdr, u32 hlen, u8 *data, u32 n);
-s32 func_ov065_02264760(u16 *a, u16 *b);
-s32 func_ov065_02264788(u32 ip);
-s32 func_ov065_022647e0(u32 ip);
-s32 func_ov065_022647fc(u32 ip);
-
-extern "C" {
-s32 func_ov065_022647fc(u32 ip);
-s32 func_ov065_022647e0(u32 ip);
-s32 func_ov065_02264788(u32 ip);
-s32 func_ov065_02264760(u16 *a, u16 *b);
-void func_ov065_02264718(u8 *hdr, u32 hlen, u8 *data, u32 n);
-void func_ov065_022645d0(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n);
-void func_ov065_0226459c(u8 *a, u8 *b, u8 *c, u32 d);
-u8 *func_ov065_0226450c(u32 *out);
-void func_ov065_022644cc();
-u8 *func_ov065_02264440(u32 ip);
-void func_ov065_0226439c(u32 ip);
-u8 *func_ov065_02264360(u32 ip);
-void func_ov065_02264298(u8 *mac, u32 ip, u32 flag);
-void func_ov065_022641ec(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w);
-void func_ov065_02264110(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
-void func_ov065_02263f98(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
-void func_ov065_02263f24(u32 a, u32 b, Unk_ov065_02263f24_Pkt *c);
+s32 Ip_IsBroadcast(u32 ip);
+s32 Ip_IsMulticast(u32 ip);
+s32 Ip_IsForMe(u32 ip);
+s32 Eth_MacDiffers(u16 *a, u16 *b);
+void Eth_SendFrame(u8 *hdr, u32 hlen, u8 *data, u32 n);
+void Eth_EnqueueFrame(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n);
+void Eth_OnFrameReceived(u8 *a, u8 *b, u8 *c, u32 d);
+u8 *Eth_WaitFrame(u32 *out);
+void Eth_PopFrame();
+u8 *Arp_Lookup(u32 ip);
+void Arp_SendRequest(u32 ip);
+u8 *Arp_Resolve(u32 ip);
+void Arp_UpdateCache(u8 *mac, u32 ip, u32 flag);
+void Eth_SendIp(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w);
+void Ip_SendPacket(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w);
+void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag);
+void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c);
 }
 
-s32 func_ov065_022647fc(u32 ip)
+s32 Ip_IsBroadcast(u32 ip)
 {
     BOOL r = FALSE;
-    if (func_ov065_02264848(ip) != 0) {
-        u32 m = ~data_ov065_0228eba4;
+    if (Ip_IsOnLocalNet(ip) != 0) {
+        u32 m = ~sNetmask;
         if (m == (m & ip)) {
             r = TRUE;
         }
@@ -560,7 +489,7 @@ s32 func_ov065_022647fc(u32 ip)
     return r;
 }
 
-s32 func_ov065_022647e0(u32 ip)
+s32 Ip_IsMulticast(u32 ip)
 {
     if ((ip & 0xf0000000) == 0xe0000000) {
         return 1;
@@ -568,13 +497,13 @@ s32 func_ov065_022647e0(u32 ip)
     return 0;
 }
 
-s32 func_ov065_02264788(u32 ip)
+s32 Ip_IsForMe(u32 ip)
 {
     BOOL r = TRUE;
     BOOL c = TRUE;
     BOOL b = TRUE;
     BOOL a = TRUE;
-    u32 g = data_ov065_0228ebd8;
+    u32 g = gOwnIp;
     if (g != 0 && ip != g) {
         a = FALSE;
     }
@@ -584,19 +513,19 @@ s32 func_ov065_02264788(u32 ip)
         }
     }
     if (b == 0) {
-        if (func_ov065_022647fc(ip) == 0) {
+        if (Ip_IsBroadcast(ip) == 0) {
             c = FALSE;
         }
     }
     if (c == 0) {
-        if (func_ov065_022647e0(ip) == 0) {
+        if (Ip_IsMulticast(ip) == 0) {
             r = FALSE;
         }
     }
     return r;
 }
 
-s32 func_ov065_02264760(u16 *a, u16 *b)
+s32 Eth_MacDiffers(u16 *a, u16 *b)
 {
     s32 i;
     for (i = 0; i < 3; i++) {
@@ -609,20 +538,20 @@ s32 func_ov065_02264760(u16 *a, u16 *b)
     return 0;
 }
 
-void func_ov065_02264718(u8 *hdr, u32 hlen, u8 *data, u32 n)
+void Eth_SendFrame(u8 *hdr, u32 hlen, u8 *data, u32 n)
 {
     s32 r;
     if (hdr + hlen != data) {
-        func_02116048(data, hdr + hlen, n);
+        MI_CpuCopy8(data, hdr + hlen, n);
     }
-    func_02116048(data_ov065_0228b434, hdr + 6, 6);
-    r = func_ov065_0226aa14(hdr, hdr + 6, hlen + n - 6);
-    data_ov065_0228eb88 = (r < 0) ? 1 : 0;
+    MI_CpuCopy8(sLlcSnapHeader, hdr + 6, 6);
+    r = WifiLink_SendFrame(hdr, hdr + 6, hlen + n - 6);
+    sLinkSendError = (r < 0) ? 1 : 0;
 }
 
-void func_ov065_022645d0(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n)
+void Eth_EnqueueFrame(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n)
 {
-    u8 *buf = data_ov065_0228ebe8;
+    u8 *buf = sRecvRingBuf;
     u32 lim;
     u32 tot;
     u32 sz;
@@ -633,7 +562,7 @@ void func_ov065_022645d0(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n)
     if (buf == 0) {
         return;
     }
-    lim = data_ov065_0228ebec;
+    lim = sRecvRingSize;
     if (lim == 0) {
         return;
     }
@@ -641,13 +570,13 @@ void func_ov065_022645d0(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n)
     if (tot < 8 || tot > 0x5e4) {
         return;
     }
-    if (c[0] != data_ov065_0228b434[0]) {
+    if (c[0] != sLlcSnapHeader[0]) {
         return;
     }
-    if (c[1] != data_ov065_0228b434[1]) {
+    if (c[1] != sLlcSnapHeader[1]) {
         return;
     }
-    if (c[2] != data_ov065_0228b434[2]) {
+    if (c[2] != sLlcSnapHeader[2]) {
         return;
     }
     if (c[6] != 8) {
@@ -657,10 +586,10 @@ void func_ov065_022645d0(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n)
         return;
     }
     sz = (u16)((tot + 9) & ~1);
-    wr = data_ov065_0228ebb8;
+    wr = sRecvRingWrite;
     end = wr + sz;
     nw = end;
-    rd = data_ov065_0228ebf0;
+    rd = sRecvRingRead;
     if (wr < rd) {
         if (rd <= end) {
             return;
@@ -680,131 +609,131 @@ void func_ov065_022645d0(u8 *a, u8 *b, u8 *c, u32 d, u8 *data, u32 n)
     if (end > lim) {
         if (lim - wr >= 2) {
             buf[wr] = 0;
-            u8 *pw = data_ov065_0228ebe8 + data_ov065_0228ebb8;
+            u8 *pw = sRecvRingBuf + sRecvRingWrite;
             pw[1] = 0;
         }
-        data_ov065_0228ebb8 = 0;
+        sRecvRingWrite = 0;
     }
-    data_ov065_0228ebe8[data_ov065_0228ebb8] = sz;
-    u8 *pw2 = data_ov065_0228ebe8 + data_ov065_0228ebb8;
+    sRecvRingBuf[sRecvRingWrite] = sz;
+    u8 *pw2 = sRecvRingBuf + sRecvRingWrite;
     pw2[1] = (s32)sz >> 8;
-    func_02116048(b, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 2, 6);
-    func_02116048(a, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 8, 6);
-    func_02116048(c + 6, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 0xe, d - 6);
+    MI_CpuCopy8(b, sRecvRingBuf + sRecvRingWrite + 2, 6);
+    MI_CpuCopy8(a, sRecvRingBuf + sRecvRingWrite + 8, 6);
+    MI_CpuCopy8(c + 6, sRecvRingBuf + sRecvRingWrite + 0xe, d - 6);
     if (data != 0 && n != 0) {
-        func_02116048(data, data_ov065_0228ebe8 + data_ov065_0228ebb8 + 8 + d, n);
+        MI_CpuCopy8(data, sRecvRingBuf + sRecvRingWrite + 8 + d, n);
     }
-    data_ov065_0228ebb8 = nw;
+    sRecvRingWrite = nw;
 }
 
-void func_ov065_0226459c(u8 *a, u8 *b, u8 *c, u32 d)
+void Eth_OnFrameReceived(u8 *a, u8 *b, u8 *c, u32 d)
 {
-    func_ov065_022645d0(a, b, c, d, 0, 0);
-    if (data_ov065_0228ebe4 != 0) {
-        if (func_02113774(data_ov065_0228ebe4) == 0) {
-            func_0211366c(data_ov065_0228ebe4);
+    Eth_EnqueueFrame(a, b, c, d, 0, 0);
+    if (sRecvRingWaiter != 0) {
+        if (OS_IsThreadTerminated(sRecvRingWaiter) == 0) {
+            OS_WakeupThreadDirect(sRecvRingWaiter);
         }
     }
 }
 
-u8 *func_ov065_0226450c(u32 *out)
+u8 *Eth_WaitFrame(u32 *out)
 {
     u32 len;
     u32 lim;
     u8 *buf;
-    while (data_ov065_0228ebf0 == data_ov065_0228ebb8) {
-        data_ov065_0228ebe4 = (void *)data_021fcc2c[1];
-        func_02113720(0);
-        data_ov065_0228ebe4 = 0;
+    while (sRecvRingRead == sRecvRingWrite) {
+        sRecvRingWaiter = data_021fcc2c.current;
+        OS_SleepThread(0);
+        sRecvRingWaiter = 0;
     }
-    lim = data_ov065_0228ebec;
-    buf = data_ov065_0228ebe8;
+    lim = sRecvRingSize;
+    buf = sRecvRingBuf;
     do {
         u32 o;
-        if (lim - data_ov065_0228ebf0 < 2) {
-            data_ov065_0228ebf0 = 0;
+        if (lim - sRecvRingRead < 2) {
+            sRecvRingRead = 0;
         }
-        o = data_ov065_0228ebf0;
+        o = sRecvRingRead;
         u8 *pp = buf + o;
         u32 l0 = buf[o];
         len = (u16)(l0 + (pp[1] << 8));
         if (len == 0) {
-            data_ov065_0228ebf0 = 0;
+            sRecvRingRead = 0;
         }
     } while (len == 0);
     *out = len - 2;
-    return data_ov065_0228ebe8 + data_ov065_0228ebf0 + 2;
+    return sRecvRingBuf + sRecvRingRead + 2;
 }
 
-void func_ov065_022644cc()
+void Eth_PopFrame()
 {
-    u32 irq = func_01ffa2ec();
-    u32 o = data_ov065_0228ebf0;
-    u8 *base = data_ov065_0228ebe8;
+    u32 irq = OS_DisableInterrupts();
+    u32 o = sRecvRingRead;
+    u8 *base = sRecvRingBuf;
     u32 lo = base[o];
     u32 v = o + (lo + ((base + o)[1] << 8));
-    data_ov065_0228ebf0 = v;
-    if (v >= data_ov065_0228ebec) {
-        data_ov065_0228ebf0 = 0;
+    sRecvRingRead = v;
+    if (v >= sRecvRingSize) {
+        sRecvRingRead = 0;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
 }
 
-u8 *func_ov065_02264440(u32 ip)
+u8 *Arp_Lookup(u32 ip)
 {
-    u32 irq = func_01ffa2ec();
+    u32 irq = OS_DisableInterrupts();
     u8 *r = 0;
-    if (ip == 0x7f000001 || ip == data_ov065_0228ebd8) {
-        r = data_ov065_0228ebf4;
-    } else if (func_ov065_022647fc(ip) != 0 || func_ov065_022647e0(ip) != 0) {
-        r = data_ov065_0228b420;
+    if (ip == 0x7f000001 || ip == gOwnIp) {
+        r = sOwnMac;
+    } else if (Ip_IsBroadcast(ip) != 0 || Ip_IsMulticast(ip) != 0) {
+        r = sBroadcastMac;
     } else {
         s32 i;
-        Unk_ov065_02264298_E *e;
-        for (i = 0, e = data_ov065_0228ec58; (u32)i < 8; e++, i++) {
-            if (ip == e->unk_00) {
-                u32 t = (u32)(func_01ffa6b4() >> 16);
-                data_ov065_0228ec58[i].unk_0a = t;
-                r = data_ov065_0228ec58[i].unk_04;
+        ArpCacheEntry *e;
+        for (i = 0, e = sArpCache; (u32)i < 8; e++, i++) {
+            if (ip == e->ipAddr) {
+                u32 t = (u32)(OS_GetTick() >> 16);
+                sArpCache[i].lastUsed = t;
+                r = sArpCache[i].macAddr;
                 break;
             }
         }
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     return r;
 }
 
-void func_ov065_0226439c(u32 ip)
+void Arp_SendRequest(u32 ip)
 {
     u8 b[0x30];
-    func_02115fb4(b, 0, 0x2a);
-    func_02115fb4(b, 0xff, 6);
-    func_02116048(data_ov065_0228ebf4, b + 6, 6);
+    MI_CpuFill8(b, 0, 0x2a);
+    MI_CpuFill8(b, 0xff, 6);
+    MI_CpuCopy8(sOwnMac, b + 6, 6);
     *(u16 *)(b + 0xc) = 0x608;
     b[0xf] = 1;
     b[0x10] = 8;
     *(u16 *)(b + 0x12) = 0x406;
     b[0x15] = 1;
-    func_02116048(data_ov065_0228ebf4, b + 0x16, 6);
-    *(u16 *)(b + 0x1c) = BS16((u16)(data_ov065_0228ebd8 >> 16));
-    *(u16 *)(b + 0x1e) = BS16((u16)data_ov065_0228ebd8);
+    MI_CpuCopy8(sOwnMac, b + 0x16, 6);
+    *(u16 *)(b + 0x1c) = BS16((u16)(gOwnIp >> 16));
+    *(u16 *)(b + 0x1e) = BS16((u16)gOwnIp);
     *(u16 *)(b + 0x26) = BS16((u16)(ip >> 16));
     *(u16 *)(b + 0x28) = BS16((u16)ip);
-    func_ov065_02264718(b, 0x2a, 0, 0);
+    Eth_SendFrame(b, 0x2a, 0, 0);
 }
 
-u8 *func_ov065_02264360(u32 ip)
+u8 *Arp_Resolve(u32 ip)
 {
     u32 j = 0;
     u32 z = 0;
     do {
         u32 k;
-        func_ov065_0226439c(ip);
+        Arp_SendRequest(ip);
         k = z;
         do {
             u8 *r;
-            func_021132e0(100);
-            r = func_ov065_02264440(ip);
+            OS_Sleep(100);
+            r = Arp_Lookup(ip);
             if (r != 0) {
                 return r;
             }
@@ -815,26 +744,26 @@ u8 *func_ov065_02264360(u32 ip)
     return 0;
 }
 
-void func_ov065_02264298(u8 *mac, u32 ip, u32 flag)
+void Arp_UpdateCache(u8 *mac, u32 ip, u32 flag)
 {
     u32 now;
     s32 i;
-    if (ip == 0x7f000001 || ip == data_ov065_0228ebd8) {
+    if (ip == 0x7f000001 || ip == gOwnIp) {
         return;
     }
-    if (func_ov065_02264848(ip) == 0) {
+    if (Ip_IsOnLocalNet(ip) == 0) {
         return;
     }
-    if (func_ov065_022647e0(ip) != 0) {
+    if (Ip_IsMulticast(ip) != 0) {
         return;
     }
-    now = (u16)(func_01ffa6b4() >> 16);
+    now = (u16)(OS_GetTick() >> 16);
     {
-        Unk_ov065_02264298_E *e;
-        for (i = 0, e = data_ov065_0228ec58; (u32)i < 8; e++, i++) {
-            if (ip == e->unk_00) {
-                data_ov065_0228ec58[i].unk_0a = now;
-                func_02116048(mac, data_ov065_0228ec58[i].unk_04, 6);
+        ArpCacheEntry *e;
+        for (i = 0, e = sArpCache; (u32)i < 8; e++, i++) {
+            if (ip == e->ipAddr) {
+                sArpCache[i].lastUsed = now;
+                MI_CpuCopy8(mac, sArpCache[i].macAddr, 6);
                 return;
             }
         }
@@ -842,41 +771,41 @@ void func_ov065_02264298(u8 *mac, u32 ip, u32 flag)
     if (flag != 0) {
         u32 best = 0;
         u32 idx = 0;
-        Unk_ov065_02264298_E *e;
-        for (i = 0, e = data_ov065_0228ec58; (u32)i < 8; e++, i++) {
-            if (e->unk_00 == 0) {
+        ArpCacheEntry *e;
+        for (i = 0, e = sArpCache; (u32)i < 8; e++, i++) {
+            if (e->ipAddr == 0) {
                 idx = i;
                 break;
             }
-            s32 d = (s16)(now - e->unk_0a);
+            s32 d = (s16)(now - e->lastUsed);
             if (d > (s32)best) {
-                best = (u16)(now - e->unk_0a);
+                best = (u16)(now - e->lastUsed);
                 idx = i;
             }
         }
-        data_ov065_0228ec58[idx].unk_00 = ip;
-        func_02116048(mac, data_ov065_0228ec58[idx].unk_04, 6);
-        data_ov065_0228ec58[idx].unk_0a = now;
+        sArpCache[idx].ipAddr = ip;
+        MI_CpuCopy8(mac, sArpCache[idx].macAddr, 6);
+        sArpCache[idx].lastUsed = now;
     }
 }
 
-void func_ov065_022641ec(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w)
+void Eth_SendIp(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w)
 {
     *(u16 *)(p - 2) = BS16(w);
-    if (func_ov065_022647e0(x) == 0) {
+    if (Ip_IsMulticast(x) == 0) {
         u8 *r;
-        u32 k = func_ov065_0226482c(x);
+        u32 k = Ip_GetNextHop(x);
         if (k == 0) {
             return;
         }
-        r = func_ov065_02264440(k);
+        r = Arp_Lookup(k);
         if (r == 0) {
-            r = func_ov065_02264360(k);
+            r = Arp_Resolve(k);
         }
         if (r == 0) {
             return;
         }
-        func_02116048(r, p - 0xe, 6);
+        MI_CpuCopy8(r, p - 0xe, 6);
     } else {
         p[-0xe] = 1;
         p[-0xd] = 0;
@@ -885,55 +814,55 @@ void func_ov065_022641ec(u8 *p, u32 off, u8 *data, u32 n, u32 x, u16 w)
         p[-0xa] = x >> 8;
         p[-9] = x;
     }
-    func_02116048(data_ov065_0228ebf4, p - 8, 6);
-    func_ov065_02264718(p - 0xe, off + 0xe, data, n);
+    MI_CpuCopy8(sOwnMac, p - 8, 6);
+    Eth_SendFrame(p - 0xe, off + 0xe, data, n);
 }
 
-void func_ov065_02264110(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w)
+void Ip_SendPacket(u8 *p, u32 off, u8 *data, u32 n, u32 x, u32 w)
 {
     *(u16 *)(p - 0x12) = BS16((u16)(off + 0x14 + n));
     *(u16 *)(p - 0xe) = BS16((u16)w);
     *(u16 *)(p - 0xa) = 0;
-    u32 ck = func_ov065_022648d4(p - 0x14, 0x14);
+    u32 ck = Ip_Checksum(p - 0x14, 0x14);
     *(u16 *)(p - 0xa) = BS16(ck);
-    if (x != 0x7f000001 && x != data_ov065_0228ebd8) {
-        func_ov065_022641ec(p - 0x14, off + 0x14, data, n, x, 0x800);
+    if (x != 0x7f000001 && x != gOwnIp) {
+        Eth_SendIp(p - 0x14, off + 0x14, data, n, x, 0x800);
     }
-    if (x == 0x7f000001 || x == data_ov065_0228ebd8 || func_ov065_022647e0(x) != 0) {
-        func_02116048(data_ov065_0228b434, p - 0x1c, 8);
-        u32 irq = func_01ffa2ec();
-        func_ov065_022645d0(data_ov065_0228ebf4, data_ov065_0228ebf4, p - 0x1c, off + 0x1c, data, n);
-        func_01ffa3d4(irq);
+    if (x == 0x7f000001 || x == gOwnIp || Ip_IsMulticast(x) != 0) {
+        MI_CpuCopy8(sLlcSnapHeader, p - 0x1c, 8);
+        u32 irq = OS_DisableInterrupts();
+        Eth_EnqueueFrame(sOwnMac, sOwnMac, p - 0x1c, off + 0x1c, data, n);
+        OS_RestoreInterrupts(irq);
     }
 }
 
-void func_ov065_02263f98(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag)
+void Ip_Send(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag)
 {
     u32 i;
     p[-0x14] = 0x45;
     i = 0;
     p[-0x13] = 0;
-    data_ov065_0228eb9c = data_ov065_0228eb9c + 1;
-    *(u16 *)(p - 0x10) = BS16(data_ov065_0228eb9c);
+    sIpIdCounter = sIpIdCounter + 1;
+    *(u16 *)(p - 0x10) = BS16(sIpIdCounter);
     p[-0xc] = 0x80;
     p[-0xb] = flag;
-    *(u16 *)(p - 8) = BS16((u16)(data_ov065_0228ebd8 >> 16));
-    *(u16 *)(p - 6) = BS16((u16)data_ov065_0228ebd8);
+    *(u16 *)(p - 8) = BS16((u16)(gOwnIp >> 16));
+    *(u16 *)(p - 6) = BS16((u16)gOwnIp);
     *(u16 *)(p - 4) = BS16((u16)(x >> 16));
     *(u16 *)(p - 2) = BS16((u16)x);
     if (len > 0x5c8) {
         u8 *s = p;
         while (len > 0x5c8) {
-            func_ov065_02264110(p, 0, s, 0x5c8, x, i | 0x2000);
+            Ip_SendPacket(p, 0, s, 0x5c8, x, i | 0x2000);
             s += 0x5c8;
             len -= 0x5c8;
             i = (u16)(i + 0xb9);
         }
         if (len != 0) {
             if (n != 0) {
-                func_ov065_02264110(p, 0, s, len, x, i | 0x2000);
+                Ip_SendPacket(p, 0, s, len, x, i | 0x2000);
             } else {
-                func_ov065_02264110(p, 0, s, len, x, i);
+                Ip_SendPacket(p, 0, s, len, x, i);
             }
             i = (u16)(i + (len >> 3));
             len = 0;
@@ -942,7 +871,7 @@ void func_ov065_02263f98(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag)
     if (len + n > 0x5c8) {
         do {
             u32 c = 0x5c8 - len;
-            func_ov065_02264110(p, len, data, c, x, i | 0x2000);
+            Ip_SendPacket(p, len, data, c, x, i | 0x2000);
             data += c;
             n -= c;
             i = (u16)(i + 0xb9);
@@ -950,26 +879,26 @@ void func_ov065_02263f98(u8 *p, u32 len, u8 *data, u32 n, u32 x, u8 flag)
         } while (n > 0x5c8);
     }
     if (len + n != 0) {
-        func_ov065_02264110(p, len, data, n, x, i);
+        Ip_SendPacket(p, len, data, n, x, i);
     }
 }
 
-void func_ov065_02263f24(u32 a, u32 b, Unk_ov065_02263f24_Pkt *c)
+void Icmp_SendEchoRequest(u32 a, u32 b, IpSocket *c)
 {
-    u8 *h = c->unk_4c;
+    u8 *h = c->txBuf;
     u8 *q = h + 0x22;
     *(u16 *)(h + 0x22) = 8;
-    *(u16 *)(q + 4) = data_021fcc2c[1];
+    *(u16 *)(q + 4) = (u32)data_021fcc2c.current;
     *(u16 *)(q + 2) = 0;
-    u16 id = data_ov065_0228eb90;
-    c->unk_0a = id;
-    data_ov065_0228eb90 = data_ov065_0228eb90 + 1;
+    u16 id = sIcmpSeq;
+    c->localPort = id;
+    sIcmpSeq = sIcmpSeq + 1;
     *(u16 *)(q + 6) = id;
-    u32 t = func_ov065_02264900(q, 8, 0);
-    t = func_ov065_02264900((u8 *)a, b, t);
-    u32 ck = func_ov065_022648ec((u16)t);
+    u32 t = Ip_ChecksumAdd(q, 8, 0);
+    t = Ip_ChecksumAdd((u8 *)a, b, t);
+    u32 ck = Ip_ChecksumFinish((u16)t);
     *(u16 *)(q + 2) = BS16(ck);
-    func_ov065_02263f98(q, 8, (u8 *)a, b, c->unk_1c, 1);
+    Ip_Send(q, 8, (u8 *)a, b, c->remoteAddr, 1);
 }
 
 }
@@ -978,101 +907,62 @@ void func_ov065_02263f24(u32 a, u32 b, Unk_ov065_02263f24_Pkt *c)
 
 namespace Unk_ov065_02263578_Ns {
 
-struct Unk_ov065_02262240_Sess;
 
-struct Unk_ov065_02262240_Thr {
-    u8 pad_00[0x68];
-    Unk_ov065_02262240_Thr *next;
-    u8 pad_6c[0xa4 - 0x6c];
-    Unk_ov065_02262240_Sess *sess;
-};
 
-struct Unk_ov065_02262240_Sess {
-    u32 unk_00;
-    u32 unk_04;
-    u8 state;
-    u8 unk_09;
-    u16 unk_0a;
-    u8 pad_0c[4];
-    u32 unk_10;
-    u32 unk_14;
-    u16 unk_18;
-    u16 unk_1a;
-    u32 unk_1c;
-    u32 unk_20;
-    u32 unk_24;
-    u32 unk_28;
-    u16 unk_2c;
-    u16 unk_2e;
-    u32 unk_30;
-    u32 unk_34;
-    u32 unk_38;
-    u32 unk_3c;
-    u8 *unk_40;
-    u32 unk_44;
-    u32 unk_48;
-    u8 *unk_4c;
-    u8 pad_50[0x64 - 0x50];
-};
 
-struct Unk_ov065_02262240_Os {
-    u32 unk_00;
-    Unk_ov065_02262240_Thr *cur;
-    Unk_ov065_02262240_Thr *list;
-};
 
-typedef Unk_ov065_02262240_Sess Sess;
-typedef Unk_ov065_02262240_Thr Thr;
+typedef IpSocket Sess;
+typedef OSThread Thr;
 
 extern "C" {
-extern Unk_ov065_02262240_Os data_021fcc2c;
-extern Sess data_ov065_0228ed1c;
-extern u8 data_ov065_0228ee40[];
-extern u32 data_ov065_0228b418;
-extern u32 data_ov065_0228ebd8;
-extern u8 data_ov065_0228ebf4[];
-extern u8 data_ov065_0228eb8c;
-extern u16 data_ov065_0228eb94;
-#define data_ov065_0228ec3e (data_ov065_0228ec1c + 0x22)
+extern OSThreadInfo data_021fcc2c;
+extern Sess sTcpResetSoc;
+extern u8 sIpRecvThread[];
+extern u32 sIcmpEchoReplyEnabled;
+extern u32 gOwnIp;
+extern u8 sOwnMac[];
+extern u8 sArpConflict;
+extern u16 sMss;
+#define sRecvThreadTxBuf (data_ov065_0228ec1c + 0x22)
 
 // main module
-u64 func_01ffa6b4();
-void func_02115fb4(void *, u32, u32);
-void func_02116048(void *, void *, u32);
-void func_0211366c(u32);
+u64 OS_GetTick();
+void MI_CpuFill8(void *, u32, u32);
+void MI_CpuCopy8(void *, void *, u32);
+void OS_WakeupThreadDirect(u32);
 
 // same overlay, out of range
-s32 func_ov065_0226439c(u32);
-u32 func_ov065_0226482c(u32);
-s32 func_ov065_02264440(u32);
-s32 func_ov065_022647e0(u32);
-u32 func_ov065_022648d4(u8 *, u32);
-u32 func_ov065_022648ec(u32);
-u32 func_ov065_02264900(u8 *, u32, u32);
-s32 func_ov065_02264760(u8 *, u8 *);
-s32 func_ov065_02264298(u8 *, u32, u32);
-s32 func_ov065_02264718(u8 *, u32, u32, u32);
-s32 func_ov065_02263f98(u8 *, u32, u32, u32, u32, u32);
+s32 Arp_SendRequest(u32);
+u32 Ip_GetNextHop(u32);
+s32 Arp_Lookup(u32);
+s32 Ip_IsMulticast(u32);
+u32 Ip_Checksum(u8 *, u32);
+u32 Ip_ChecksumFinish(u32);
+u32 Ip_ChecksumAdd(u8 *, u32, u32);
+s32 Eth_MacDiffers(u8 *, u8 *);
+s32 Arp_UpdateCache(u8 *, u32, u32);
+s32 Eth_SendFrame(u8 *, u32, u32, u32);
+s32 Ip_Send(u8 *, u32, u32, u32, u32, u32);
 
 // in range
-void func_ov065_02263578(u8 *, u8 *, Sess *);
-void func_ov065_02263618(u8 *, u8 *, u32, u32);
-void func_ov065_022636e8(Sess *, u32);
-void func_ov065_022636f4(Sess *, u32);
-void func_ov065_02263700(Sess *, u32, u32);
-s32 func_ov065_02263750(u32);
-void func_ov065_02263770(u8 *, Sess *);
-Sess *func_ov065_022637d0(u8 *, u8 *);
-s32 func_ov065_0226381c(u8 *, u8 *, Sess *);
-Sess *func_ov065_0226389c(u8 *, u8 *);
-void func_ov065_02263924(u8 *, u8 *, u32);
-s32 func_ov065_022639c4(u32, u32);
-void func_ov065_022639e0(u8 *, u8 *, u32);
-void func_ov065_02263a88(u8 *, u8 *, u32);
-void func_ov065_02263b28(u8 *, u32);
-void func_ov065_02263c14(u8 *);
-void func_ov065_02263c90(u8 *, u32, Sess *, u32, u32);
-void func_ov065_02263e4c(u8 *, u32, Sess *);
+void Tcp_AcceptSyn(u8 *, u8 *, Sess *);
+void Tcp_SendReset(u8 *, u8 *, u32, u32);
+void Tcp_SendFinAck(Sess *, u32);
+void Tcp_SendAck(Sess *, u32);
+void Tcp_SendControl(Sess *, u32, u32);
+s32 Ip_IsNextHopResolved(u32);
+void Tcp_ParseOptions(u8 *, Sess *);
+Sess *Tcp_FindConnection(u8 *, u8 *);
+s32 Tcp_MatchConnection(u8 *, u8 *, Sess *);
+Sess *Tcp_FindListener(u8 *, u8 *);
+void Icmp_Input(u8 *, u8 *, u32);
+s32 Ip_AreAddrsValid(u32, u32);
+void Icmp_DeliverEchoReply(u8 *, u8 *, u32);
+void Icmp_SendEchoReply(u8 *, u8 *, u32);
+void Arp_Input(u8 *, u32);
+void Arp_SendReply(u8 *);
+void Tcp_SendSegment(u8 *, u32, Sess *, u32, u32);
+void Udp_Send(u8 *, u32, Sess *);
 }
 
 #define BS16(x) ((u16)((((s32)(x)) >> 8) | (((s32)(x)) << 8)))
@@ -1084,53 +974,53 @@ static inline u32 Swap32(u8 *p) {
 }
 
 extern "C" {
-void func_ov065_02263e4c(u8 *a, u32 b, Sess *s);
-void func_ov065_02263c90(u8 *x, u32 y, Sess *s, u32 flags, u32 z);
-void func_ov065_02263c14(u8 *a);
-void func_ov065_02263b28(u8 *a, u32 len);
-void func_ov065_02263a88(u8 *a, u8 *b, u32 c);
-void func_ov065_022639e0(u8 *a, u8 *b, u32 c);
-s32 func_ov065_022639c4(u32 x, u32 y);
-void func_ov065_02263924(u8 *a, u8 *b, u32 c);
-Sess *func_ov065_0226389c(u8 *a, u8 *b);
-s32 func_ov065_0226381c(u8 *a, u8 *b, Sess *s);
-Sess *func_ov065_022637d0(u8 *a, u8 *b);
-void func_ov065_02263770(u8 *a, Sess *s);
-s32 func_ov065_02263750(u32 x);
-void func_ov065_02263700(Sess *s, u32 a, u32 b);
-void func_ov065_022636f4(Sess *s, u32 x);
-void func_ov065_022636e8(Sess *s, u32 x);
-void func_ov065_02263618(u8 *a, u8 *b, u32 c, u32 d);
-void func_ov065_02263578(u8 *a, u8 *b, Sess *s);
+void Udp_Send(u8 *a, u32 b, Sess *s);
+void Tcp_SendSegment(u8 *x, u32 y, Sess *s, u32 flags, u32 z);
+void Arp_SendReply(u8 *a);
+void Arp_Input(u8 *a, u32 len);
+void Icmp_SendEchoReply(u8 *a, u8 *b, u32 c);
+void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c);
+s32 Ip_AreAddrsValid(u32 x, u32 y);
+void Icmp_Input(u8 *a, u8 *b, u32 c);
+Sess *Tcp_FindListener(u8 *a, u8 *b);
+s32 Tcp_MatchConnection(u8 *a, u8 *b, Sess *s);
+Sess *Tcp_FindConnection(u8 *a, u8 *b);
+void Tcp_ParseOptions(u8 *a, Sess *s);
+s32 Ip_IsNextHopResolved(u32 x);
+void Tcp_SendControl(Sess *s, u32 a, u32 b);
+void Tcp_SendAck(Sess *s, u32 x);
+void Tcp_SendFinAck(Sess *s, u32 x);
+void Tcp_SendReset(u8 *a, u8 *b, u32 c, u32 d);
+void Tcp_AcceptSyn(u8 *a, u8 *b, Sess *s);
 }
 
-void func_ov065_02263e4c(u8 *a, u32 b, Sess *s) {
-    u8 *q = s->unk_4c;
+void Udp_Send(u8 *a, u32 b, Sess *s) {
+    u8 *q = s->txBuf;
     u8 *p = q + 0x22;
-    *(u16 *)(p - 0xc) = BS16((u16)(data_ov065_0228ebd8 >> 16));
-    *(u16 *)(p - 0xa) = BS16((u16)data_ov065_0228ebd8);
-    *(u16 *)(p - 8) = BS16((u16)(s->unk_1c >> 16));
-    *(u16 *)(p - 6) = BS16((u16)s->unk_1c);
+    *(u16 *)(p - 0xc) = BS16((u16)(gOwnIp >> 16));
+    *(u16 *)(p - 0xa) = BS16((u16)gOwnIp);
+    *(u16 *)(p - 8) = BS16((u16)(s->remoteAddr >> 16));
+    *(u16 *)(p - 6) = BS16((u16)s->remoteAddr);
     *(u16 *)(p - 4) = 0x1100;
     *(u16 *)(p + 4) = BS16((u16)(b + 8));
     *(u16 *)(p - 2) = *(u16 *)(p + 4);
-    *(u16 *)(p + 2) = BS16(s->unk_18);
-    *(u16 *)(q + 0x22) = BS16(s->unk_0a);
+    *(u16 *)(p + 2) = BS16(s->remotePort);
+    *(u16 *)(q + 0x22) = BS16(s->localPort);
     *(u16 *)(p + 6) = 0;
-    u32 v = func_ov065_022648ec((u16)func_ov065_02264900(a, b, func_ov065_02264900(p - 0xc, 0x14, 0)));
+    u32 v = Ip_ChecksumFinish((u16)Ip_ChecksumAdd(a, b, Ip_ChecksumAdd(p - 0xc, 0x14, 0)));
     *(u16 *)(p + 6) = BS16(v);
-    func_ov065_02263f98(p, 8, (u32)a, b, s->unk_1c, 0x11);
+    Ip_Send(p, 8, (u32)a, b, s->remoteAddr, 0x11);
 }
 
-void func_ov065_02263c90(u8 *x, u32 y, Sess *s, u32 flags, u32 z) {
+void Tcp_SendSegment(u8 *x, u32 y, Sess *s, u32 flags, u32 z) {
     u8 *p;
     u32 hl;
     u32 f2;
     if (s->state != 0) {
-        if ((u8 *)data_021fcc2c.cur == data_ov065_0228ee40) {
-            p = data_ov065_0228ec3e;
+        if ((u8 *)data_021fcc2c.current == sIpRecvThread) {
+            p = sRecvThreadTxBuf;
         } else {
-            p = s->unk_4c + 0x22;
+            p = s->txBuf + 0x22;
         }
         f2 = flags & 2;
         if (f2 != 0) {
@@ -1138,51 +1028,51 @@ void func_ov065_02263c90(u8 *x, u32 y, Sess *s, u32 flags, u32 z) {
         } else {
             hl = 0x14;
         }
-        *(u16 *)(p - 0xc) = BS16((u16)(data_ov065_0228ebd8 >> 16));
-        *(u16 *)(p - 0xa) = BS16((u16)data_ov065_0228ebd8);
-        *(u16 *)(p - 8) = BS16((u16)(s->unk_1c >> 16));
-        *(u16 *)(p - 6) = BS16((u16)s->unk_1c);
+        *(u16 *)(p - 0xc) = BS16((u16)(gOwnIp >> 16));
+        *(u16 *)(p - 0xa) = BS16((u16)gOwnIp);
+        *(u16 *)(p - 8) = BS16((u16)(s->remoteAddr >> 16));
+        *(u16 *)(p - 6) = BS16((u16)s->remoteAddr);
         *(u16 *)(p - 4) = 0x600;
         *(u16 *)(p - 2) = BS16((u16)(hl + y));
-        *(u16 *)(p) = BS16(s->unk_0a);
-        *(u16 *)(p + 2) = BS16(s->unk_18);
-        *(u16 *)(p + 4) = BS16((u16)(s->unk_28 >> 16));
-        *(u16 *)(p + 6) = BS16((u16)s->unk_28);
-        *(u16 *)(p + 8) = BS16((u16)(s->unk_24 >> 16));
-        *(u16 *)(p + 0xa) = BS16((u16)s->unk_24);
+        *(u16 *)(p) = BS16(s->localPort);
+        *(u16 *)(p + 2) = BS16(s->remotePort);
+        *(u16 *)(p + 4) = BS16((u16)(s->sendNext >> 16));
+        *(u16 *)(p + 6) = BS16((u16)s->sendNext);
+        *(u16 *)(p + 8) = BS16((u16)(s->recvNext >> 16));
+        *(u16 *)(p + 0xa) = BS16((u16)s->recvNext);
         p[0xc] = (hl >> 2) << 4;
         p[0xd] = flags;
-        *(u16 *)(p + 0xe) = BS16((u16)(s->unk_3c - s->unk_44));
+        *(u16 *)(p + 0xe) = BS16((u16)(s->rxBufSize - s->rxLen));
         *(u16 *)(p + 0x10) = 0;
         *(u16 *)(p + 0x12) = BS16(*(u16 *)&z);
         if (f2 != 0) {
-            *(u16 *)(p + 0x14) = BS16((u16)((data_ov065_0228eb94 + 0x2040000U) >> 16));
-            *(u16 *)(p + 0x16) = BS16((u16)(data_ov065_0228eb94 + 0x2040000U));
+            *(u16 *)(p + 0x14) = BS16((u16)((sMss + 0x2040000U) >> 16));
+            *(u16 *)(p + 0x16) = BS16((u16)(sMss + 0x2040000U));
         }
-        u32 v = func_ov065_022648ec((u16)func_ov065_02264900(x, y, func_ov065_02264900(p - 0xc, hl + 0xc, 0)));
+        u32 v = Ip_ChecksumFinish((u16)Ip_ChecksumAdd(x, y, Ip_ChecksumAdd(p - 0xc, hl + 0xc, 0)));
         *(u16 *)(p + 0x10) = BS16(v);
-        func_ov065_02263f98(p, hl, (u32)x, y, s->unk_1c, 6);
-        s->unk_28 = s->unk_28 + y;
+        Ip_Send(p, hl, (u32)x, y, s->remoteAddr, 6);
+        s->sendNext = s->sendNext + y;
         flags &= 3;
         if (flags != 0) {
-            s->unk_28 = s->unk_28 + 1;
+            s->sendNext = s->sendNext + 1;
         }
     }
 }
 
-void func_ov065_02263c14(u8 *a) {
+void Arp_SendReply(u8 *a) {
     *(u16 *)(a + 6) = 0x200;
-    func_02116048(a + 8, a + 0x12, 10);
-    func_02116048(data_ov065_0228ebf4, a + 8, 6);
-    *(u16 *)(a + 0xe) = BS16((u16)(data_ov065_0228ebd8 >> 16));
-    *(u16 *)(a + 0x10) = BS16((u16)data_ov065_0228ebd8);
-    func_02116048(a + 0x12, a - 0xe, 6);
-    func_02116048(data_ov065_0228ebf4, a - 8, 6);
-    func_ov065_02264718(a - 0xe, 0x2a, 0, 0);
+    MI_CpuCopy8(a + 8, a + 0x12, 10);
+    MI_CpuCopy8(sOwnMac, a + 8, 6);
+    *(u16 *)(a + 0xe) = BS16((u16)(gOwnIp >> 16));
+    *(u16 *)(a + 0x10) = BS16((u16)gOwnIp);
+    MI_CpuCopy8(a + 0x12, a - 0xe, 6);
+    MI_CpuCopy8(sOwnMac, a - 8, 6);
+    Eth_SendFrame(a - 0xe, 0x2a, 0, 0);
 }
 
-void func_ov065_02263b28(u8 *a, u32 len) {
-    if (len >= 0x1c && func_ov065_02264760(a + 8, data_ov065_0228ebf4) != 0 && *(volatile u32 *)&data_ov065_0228ebd8 != 0
+void Arp_Input(u8 *a, u32 len) {
+    if (len >= 0x1c && Eth_MacDiffers(a + 8, sOwnMac) != 0 && *(volatile u32 *)&gOwnIp != 0
         && *(u16 *)a == 0x100 && *(u16 *)(a + 2) == 8 && *(u16 *)(a + 4) == 0x406) {
         u32 t = BS16(*(u16 *)(a + 6));
         if (t != 1) {
@@ -1192,7 +1082,7 @@ void func_ov065_02263b28(u8 *a, u32 len) {
         }
         {
             u32 x = Swap32(a + 0xe);
-            u32 g = data_ov065_0228ebd8;
+            u32 g = gOwnIp;
             BOOL k7;
             BOOL k4;
             if (x == g) {
@@ -1206,77 +1096,77 @@ void func_ov065_02263b28(u8 *a, u32 len) {
                 k4 = FALSE;
             }
             if (!k7) {
-                func_ov065_02264298(a + 8, x, k4);
+                Arp_UpdateCache(a + 8, x, k4);
             }
             if (t == 1 && k4) {
-                func_ov065_02263c14(a);
+                Arp_SendReply(a);
                 return;
             }
             if (t == 2 && k4 && k7) {
-                data_ov065_0228eb8c = 1;
+                sArpConflict = 1;
             }
         }
     }
 }
 
-void func_ov065_02263a88(u8 *a, u8 *b, u32 c) {
+void Icmp_SendEchoReply(u8 *a, u8 *b, u32 c) {
     u32 k = Swap32(a + 0xc);
-    if (func_ov065_022647e0(k) == 0) {
-        k = func_ov065_0226482c(k);
+    if (Ip_IsMulticast(k) == 0) {
+        k = Ip_GetNextHop(k);
         if (k != 0) {
-            if (func_ov065_02264440(k) == 0) {
-                func_ov065_0226439c(k);
+            if (Arp_Lookup(k) == 0) {
+                Arp_SendRequest(k);
                 return;
             }
             b[0] = 0;
             *(u16 *)(b + 2) = 0;
-            u32 r = func_ov065_022648d4(b, c);
+            u32 r = Ip_Checksum(b, c);
             *(u16 *)(b + 2) = BS16(r);
-            func_ov065_02263f98(b, c, 0, 0, Swap32(a + 0xc), 1);
+            Ip_Send(b, c, 0, 0, Swap32(a + 0xc), 1);
         }
     }
 }
 
-void func_ov065_022639e0(u8 *a, u8 *b, u32 c) {
+void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c) {
     Thr *t;
     for (t = data_021fcc2c.list; t != 0; t = t->next) {
-        Sess *s = t->sess;
-        if (s != 0 && s->unk_00 != 0 && s->state == 11 && (u16)s->unk_00 == *(u16 *)(b + 4)
-            && s->unk_0a == *(u16 *)(b + 6) && s->unk_44 == 0 && s->unk_1c == Swap32(a + 0xc)) {
-            u32 m = s->unk_3c;
+        Sess *s = (Sess *)t->specific[0];
+        if (s != 0 && s->ownerThread != 0 && s->state == 11 && (u16)(u32)s->ownerThread == *(u16 *)(b + 4)
+            && s->localPort == *(u16 *)(b + 6) && s->rxLen == 0 && s->remoteAddr == Swap32(a + 0xc)) {
+            u32 m = s->rxBufSize;
             c -= 8;
             if (c > m) {
-                s->unk_44 = m;
+                s->rxLen = m;
             } else {
-                s->unk_44 = c;
+                s->rxLen = c;
             }
-            func_02116048(b + 8, s->unk_40, s->unk_44);
-            if (s->unk_04 == 3) {
-                s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+            MI_CpuCopy8(b + 8, s->rxBuf, s->rxLen);
+            if (s->waitReason == 3) {
+                s->waitReason = 0;
+                OS_WakeupThreadDirect((u32)s->ownerThread);
             }
             return;
         }
     }
 }
 
-s32 func_ov065_022639c4(u32 x, u32 y) {
+s32 Ip_AreAddrsValid(u32 x, u32 y) {
     if (x != 0 && x != -1 && y != 0 && y != -1) {
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov065_02263924(u8 *a, u8 *b, u32 c) {
-    if (func_ov065_022648d4(b, c) == 0xffff) {
-        if (func_ov065_022639c4(Swap32(a + 0xc), Swap32(a + 0x10)) != 0) {
+void Icmp_Input(u8 *a, u8 *b, u32 c) {
+    if (Ip_Checksum(b, c) == 0xffff) {
+        if (Ip_AreAddrsValid(Swap32(a + 0xc), Swap32(a + 0x10)) != 0) {
             switch (b[0]) {
             case 0:
-                func_ov065_022639e0(a, b, c);
+                Icmp_DeliverEchoReply(a, b, c);
                 break;
             case 8:
-                if (data_ov065_0228b418 != 0) {
-                    func_ov065_02263a88(a, b, c);
+                if (sIcmpEchoReplyEnabled != 0) {
+                    Icmp_SendEchoReply(a, b, c);
                 }
                 break;
             }
@@ -1284,21 +1174,21 @@ void func_ov065_02263924(u8 *a, u8 *b, u32 c) {
     }
 }
 
-Sess *func_ov065_0226389c(u8 *a, u8 *b) {
+Sess *Tcp_FindListener(u8 *a, u8 *b) {
     Sess *s;
     Thr *t;
     for (t = data_021fcc2c.list; t != 0; t = t->next) {
-        s = t->sess;
-        if (s != 0 && s->unk_00 != 0 && s->state == 1 && s->unk_0a == BS16(*(u16 *)(b + 2))
-            && (s->unk_18 == 0 || s->unk_18 == BS16(*(u16 *)b))
-            && (s->unk_1c == 0 || s->unk_1c == Swap32(a + 0xc))) {
+        s = (Sess *)t->specific[0];
+        if (s != 0 && s->ownerThread != 0 && s->state == 1 && s->localPort == BS16(*(u16 *)(b + 2))
+            && (s->remotePort == 0 || s->remotePort == BS16(*(u16 *)b))
+            && (s->remoteAddr == 0 || s->remoteAddr == Swap32(a + 0xc))) {
             return s;
         }
     }
     return 0;
 }
 
-s32 func_ov065_0226381c(u8 *a, u8 *b, Sess *s) {
+s32 Tcp_MatchConnection(u8 *a, u8 *b, Sess *s) {
     s32 result = 0;
     BOOL c = FALSE;
     BOOL bb = FALSE;
@@ -1307,39 +1197,39 @@ s32 func_ov065_0226381c(u8 *a, u8 *b, Sess *s) {
         aa = TRUE;
     }
     if (aa) {
-        if (s->unk_0a == BS16(*(u16 *)(b + 2))) {
+        if (s->localPort == BS16(*(u16 *)(b + 2))) {
             bb = TRUE;
         }
     }
     if (bb) {
-        if (s->unk_18 == BS16(*(u16 *)b)) {
+        if (s->remotePort == BS16(*(u16 *)b)) {
             c = TRUE;
         }
     }
     if (c) {
-        if (s->unk_1c == Swap32(a + 0xc)) {
+        if (s->remoteAddr == Swap32(a + 0xc)) {
             result = 1;
         }
     }
     return result;
 }
 
-Sess *func_ov065_022637d0(u8 *a, u8 *b) {
+Sess *Tcp_FindConnection(u8 *a, u8 *b) {
     Sess *s;
     Thr *t;
     for (t = data_021fcc2c.list; t != 0; t = t->next) {
-        s = t->sess;
-        if (s != 0 && s->unk_00 != 0 && func_ov065_0226381c(a, b, s) != 0) {
+        s = (Sess *)t->specific[0];
+        if (s != 0 && s->ownerThread != 0 && Tcp_MatchConnection(a, b, s) != 0) {
             return s;
         }
     }
     return 0;
 }
 
-void func_ov065_02263770(u8 *a, Sess *s) {
+void Tcp_ParseOptions(u8 *a, Sess *s) {
     s32 n;
     u8 *p;
-    s->unk_2e = 0x218;
+    s->peerMss = 0x218;
     n = (s32)(a[0xc] & 0xf0) / 4 - 0x14;
     p = a + 0x14;
     while (n--) {
@@ -1351,7 +1241,7 @@ void func_ov065_02263770(u8 *a, Sess *s) {
             continue;
         }
         if (k == 2) {
-            s->unk_2e = (p[1] << 8) | p[2];
+            s->peerMss = (p[1] << 8) | p[2];
             p += 3;
             n -= 3;
         } else {
@@ -1362,58 +1252,58 @@ void func_ov065_02263770(u8 *a, Sess *s) {
     }
 }
 
-s32 func_ov065_02263750(u32 x) {
-    u32 r = func_ov065_0226482c(x);
+s32 Ip_IsNextHopResolved(u32 x) {
+    u32 r = Ip_GetNextHop(x);
     if (r == 0) {
         return 1;
     }
-    return func_ov065_02264440(r);
+    return Arp_Lookup(r);
 }
 
-void func_ov065_02263700(Sess *s, u32 a, u32 b) {
-    if (func_ov065_02263750(s->unk_1c) != 0 || (u8 *)data_021fcc2c.cur != data_ov065_0228ee40) {
-        func_ov065_02263c90(0, 0, s, a, b);
+void Tcp_SendControl(Sess *s, u32 a, u32 b) {
+    if (Ip_IsNextHopResolved(s->remoteAddr) != 0 || (u8 *)data_021fcc2c.current != sIpRecvThread) {
+        Tcp_SendSegment(0, 0, s, a, b);
     } else {
-        func_ov065_0226439c(func_ov065_0226482c(s->unk_1c));
+        Arp_SendRequest(Ip_GetNextHop(s->remoteAddr));
     }
 }
 
-void func_ov065_022636f4(Sess *s, u32 x) {
-    func_ov065_02263700(s, 0x10, x);
+void Tcp_SendAck(Sess *s, u32 x) {
+    Tcp_SendControl(s, 0x10, x);
 }
 
-void func_ov065_022636e8(Sess *s, u32 x) {
-    func_ov065_02263700(s, 0x11, x);
+void Tcp_SendFinAck(Sess *s, u32 x) {
+    Tcp_SendControl(s, 0x11, x);
 }
 
-void func_ov065_02263618(u8 *a, u8 *b, u32 c, u32 d) {
-    Sess *g = &data_ov065_0228ed1c;
-    func_02115fb4(g, 0, 0x64);
-    g->unk_0a = BS16(*(u16 *)(b + 2));
-    g->unk_18 = BS16(*(u16 *)b);
-    g->unk_1c = Swap32(a + 0xc);
+void Tcp_SendReset(u8 *a, u8 *b, u32 c, u32 d) {
+    Sess *g = &sTcpResetSoc;
+    MI_CpuFill8(g, 0, 0x64);
+    g->localPort = BS16(*(u16 *)(b + 2));
+    g->remotePort = BS16(*(u16 *)b);
+    g->remoteAddr = Swap32(a + 0xc);
     if ((b[0xd] & 0x10) != 0) {
-        g->unk_28 = Swap32(b + 8);
-        func_ov065_02263700(g, 4, d);
+        g->sendNext = Swap32(b + 8);
+        Tcp_SendControl(g, 4, d);
         return;
     }
-    g->unk_28 = 0;
-    g->unk_24 = c + Swap32(b + 4);
+    g->sendNext = 0;
+    g->recvNext = c + Swap32(b + 4);
     if ((b[0xd] & 3) != 0) {
-        g->unk_24 = g->unk_24 + 1;
+        g->recvNext = g->recvNext + 1;
     }
-    func_ov065_02263700(g, 0x14, d);
+    Tcp_SendControl(g, 0x14, d);
 }
 
-void func_ov065_02263578(u8 *a, u8 *b, Sess *s) {
+void Tcp_AcceptSyn(u8 *a, u8 *b, Sess *s) {
     s->state = 3;
-    s->unk_10 = (u32)(func_01ffa6b4() >> 16);
-    s->unk_14 = Swap32(a + 0x10);
-    s->unk_18 = BS16(*(u16 *)b);
-    s->unk_1c = Swap32(a + 0xc);
-    s->unk_24 = Swap32(b + 4) + 1;
-    func_ov065_02263770(b, s);
-    func_ov065_02263700(s, 0x12, (u16)((a[5] << 8) + 1));
+    s->handshakeTime = (u32)(OS_GetTick() >> 16);
+    s->localAddr = Swap32(a + 0x10);
+    s->remotePort = BS16(*(u16 *)b);
+    s->remoteAddr = Swap32(a + 0xc);
+    s->recvNext = Swap32(b + 4) + 1;
+    Tcp_ParseOptions(b, s);
+    Tcp_SendControl(s, 0x12, (u16)((a[5] << 8) + 1));
 }
 
 
@@ -1423,81 +1313,32 @@ namespace Unk_ov065_02262c5c_Ns {
 
 // ov065_006: TCP/IP input path (socket library), 0x02262c5c..0x02263577
 
-struct Unk_ov065_02262c5c_Ip {
-    u8 b0;
+struct IpHeader {
+    u8 verIhl;
     u8 b1;
-    u16 h2;
+    u16 totalLength;
     u8 b4;
     u8 b5;
-    u16 h6;
+    u16 fragField;
     u8 b8;
     u8 b9;
     u16 ha;
-    u16 hc;
-    u16 he;
-    u16 h10;
-    u16 h12;
+    u16 srcAddrHi;
+    u16 srcAddrLo;
+    u16 dstAddrHi;
+    u16 dstAddrLo;
 };
 
-struct Unk_ov065_02262c5c_Frag {
-    u32 key;
-    u16 cnt;
-    u16 id;
-    u16 total;
-    u16 end;
-    u16 start[8];
-    u16 fin[8];
-    u32 tick;
-    u8 *data;
-    u8 *buf;
-};
-
-struct Unk_ov065_02262e64_Tcp {
-    u16 h0;
-    u16 h2;
+struct TcpHeader {
+    u16 srcPort;
+    u16 dstPort;
     u16 h4;
     u16 h6;
-    u16 h8;
-    u16 ha;
-    u8 bc;
-    u8 bd;
-    u16 he;
-};
-
-struct Unk_ov065_02262e64_Sock {
-    u32 unk_00;
-    s32 unk_04;
-    u8 unk_08;
-    u8 pad_09;
-    u16 unk_0a;
-    u8 pad_0c[8];
-    u32 unk_14;
-    u16 unk_18;
-    u16 pad_1a;
-    u32 unk_1c;
-    u8 pad_20[4];
-    s32 unk_24;
-    s32 unk_28;
-    u16 unk_2c;
-    u16 pad_2e;
-    u32 unk_30;
-    s32 unk_34;
-    s32 (*unk_38)(u8 *, u32, Unk_ov065_02262e64_Sock *);
-    u32 unk_3c;
-    u8 *unk_40;
-    u32 unk_44;
-};
-
-struct Unk_ov065_02262e64_Conn {
-    u8 pad_00[0x68];
-    Unk_ov065_02262e64_Conn *unk_68;
-    u8 pad_6c[0x38];
-    Unk_ov065_02262e64_Sock *unk_a4;
-};
-
-struct Unk_ov065_02262e64_Ctx {
-    u8 pad_00[8];
-    Unk_ov065_02262e64_Conn *unk_08;
+    u16 ackHi;
+    u16 ackLo;
+    u8 dataOffset;
+    u8 tcpFlags;
+    u16 window;
 };
 
 static inline u16 Unk_ov065_02262c5c_Bs(u16 v) {
@@ -1506,132 +1347,132 @@ static inline u16 Unk_ov065_02262c5c_Bs(u16 v) {
 
 extern "C" {
 
-extern Unk_ov065_02262c5c_Frag data_ov065_0228f200[8];
-extern u8 *(*data_ov065_0228ebc8)(u32);
-extern void (*data_ov065_0228ebd0)(u8 *);
-extern Unk_ov065_02262e64_Ctx data_021fcc2c;
+extern IpFragEntry sIpFragTable[8];
+extern u8 *(*sIpAlloc)(u32);
+extern void (*sIpFree)(u8 *);
+extern OSThreadInfo data_021fcc2c;
 
-u64 func_01ffa6b4();
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
-void func_02113498();
-void func_0211366c(u32);
-void func_02116048(void *, void *, u32);
+u64 OS_GetTick();
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
+void OS_YieldThread();
+void OS_WakeupThreadDirect(void *);
+void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
 
-s32 func_ov065_02264884(Unk_ov065_02262e64_Tcp *, u32, Unk_ov065_02262c5c_Ip *, u32);
-s32 func_ov065_02263618(Unk_ov065_02262c5c_Ip *, Unk_ov065_02262e64_Tcp *, u32, u16);
-s32 func_ov065_022636f4(Unk_ov065_02262e64_Sock *, u16);
-s32 func_ov065_022636e8(Unk_ov065_02262e64_Sock *, u16);
-s32 func_ov065_02263770(Unk_ov065_02262e64_Tcp *, Unk_ov065_02262e64_Sock *);
-Unk_ov065_02262e64_Sock *func_ov065_022637d0(Unk_ov065_02262c5c_Ip *);
-Unk_ov065_02262e64_Sock *func_ov065_0226389c(Unk_ov065_02262c5c_Ip *, Unk_ov065_02262e64_Tcp *);
-s32 func_ov065_022639c4(u32, u32);
-s32 func_ov065_02263578(Unk_ov065_02262c5c_Ip *, Unk_ov065_02262e64_Tcp *, Unk_ov065_02262e64_Sock *);
+s32 Ip_VerifyPseudoChecksum(TcpHeader *, u32, IpHeader *, u32);
+s32 Tcp_SendReset(IpHeader *, TcpHeader *, u32, u16);
+s32 Tcp_SendAck(IpSocket *, u16);
+s32 Tcp_SendFinAck(IpSocket *, u16);
+s32 Tcp_ParseOptions(TcpHeader *, IpSocket *);
+IpSocket *Tcp_FindConnection(IpHeader *);
+IpSocket *Tcp_FindListener(IpHeader *, TcpHeader *);
+s32 Ip_AreAddrsValid(u32, u32);
+s32 Tcp_AcceptSyn(IpHeader *, TcpHeader *, IpSocket *);
 
-void func_ov065_02263098(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q);
-void func_ov065_022630c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_022633c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_0226347c(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-s32 func_ov065_02263518(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
+void Tcp_InputRst(IpHeader *p, TcpHeader *q);
+void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputSyn(IpHeader *p, TcpHeader *q, u32 r);
+s32 Tcp_InputSynExisting(IpHeader *p, TcpHeader *q, u32 r);
 
 extern "C" {
-s32 func_ov065_02263518(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_0226347c(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_022633c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_022630c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_02263098(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q);
-void func_ov065_02262fbc(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r);
-void func_ov065_02262e64(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 c);
-u8 *func_ov065_02262c5c(Unk_ov065_02262c5c_Ip *p, s32 *out);
+s32 Tcp_InputSynExisting(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputSyn(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r);
+void Tcp_InputRst(IpHeader *p, TcpHeader *q);
+void Tcp_Input(IpHeader *p, TcpHeader *q, u32 r);
+void Udp_Input(IpHeader *p, TcpHeader *q, u32 c);
+u8 *Ip_Reassemble(IpHeader *p, s32 *out);
 }
 
-s32 func_ov065_02263518(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    Unk_ov065_02262e64_Sock *s = func_ov065_022637d0(p);
+s32 Tcp_InputSynExisting(IpHeader *p, TcpHeader *q, u32 r) {
+    IpSocket *s = Tcp_FindConnection(p);
     if (s != 0) {
-        if (s->unk_08 == 1) {
-            func_ov065_02263578(p, q, s);
-        } else if ((u8)(s->unk_08 + 0xfd) <= 1) {
-            s->unk_28--;
-            func_ov065_02263578(p, q, s);
+        if (s->state == 1) {
+            Tcp_AcceptSyn(p, q, s);
+        } else if ((u8)(s->state + 0xfd) <= 1) {
+            s->sendNext--;
+            Tcp_AcceptSyn(p, q, s);
         } else {
-            func_ov065_02263618(p, q, r, (u16)((p->b5 << 8) + 3));
+            Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 3));
         }
         return 1;
     }
     return 0;
 }
 
-void func_ov065_0226347c(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    if (func_ov065_022639c4(((u32)Unk_ov065_02262c5c_Bs(p->hc) << 16) | Unk_ov065_02262c5c_Bs(p->he),
-                            ((u32)Unk_ov065_02262c5c_Bs(p->h10) << 16) | Unk_ov065_02262c5c_Bs(p->h12)) != 0) {
-        if (func_ov065_02263518(p, q, r) == 0) {
-            Unk_ov065_02262e64_Sock *x = func_ov065_0226389c(p, q);
+void Tcp_InputSyn(IpHeader *p, TcpHeader *q, u32 r) {
+    if (Ip_AreAddrsValid(((u32)Unk_ov065_02262c5c_Bs(p->srcAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->srcAddrLo),
+                            ((u32)Unk_ov065_02262c5c_Bs(p->dstAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->dstAddrLo)) != 0) {
+        if (Tcp_InputSynExisting(p, q, r) == 0) {
+            IpSocket *x = Tcp_FindListener(p, q);
             if (x != 0) {
-                func_ov065_02263578(p, q, x);
+                Tcp_AcceptSyn(p, q, x);
                 return;
             }
-            func_02113498();
-            x = func_ov065_0226389c(p, q);
-            if (x != 0) func_ov065_02263578(p, q, x);
+            OS_YieldThread();
+            x = Tcp_FindListener(p, q);
+            if (x != 0) Tcp_AcceptSyn(p, q, x);
         }
     }
 }
 
-void func_ov065_022633c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    Unk_ov065_02262e64_Sock *s = func_ov065_022637d0(p);
-    if (s == 0 || s->unk_08 != 2) {
-        func_ov065_02263618(p, q, r, (u16)((p->b5 << 8) + 5));
+void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r) {
+    IpSocket *s = Tcp_FindConnection(p);
+    if (s == 0 || s->state != 2) {
+        Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 5));
         return;
     }
-    func_02113498();
-    s->unk_24 = (((u32)Unk_ov065_02262c5c_Bs(q->h4) << 16) | Unk_ov065_02262c5c_Bs(q->h6)) + 1;
-    s->unk_30 = ((u32)Unk_ov065_02262c5c_Bs(q->h8) << 16) | Unk_ov065_02262c5c_Bs(q->ha);
-    s->unk_2c = Unk_ov065_02262c5c_Bs(q->he);
-    func_ov065_02263770(q, s);
-    func_ov065_022636f4(s, (u16)((p->b5 << 8) + 6));
-    s->unk_08 = 4;
-    if (s->unk_04 == 1) {
-        s->unk_04 = 0;
-        func_0211366c(s->unk_00);
+    OS_YieldThread();
+    s->recvNext = (((u32)Unk_ov065_02262c5c_Bs(q->h4) << 16) | Unk_ov065_02262c5c_Bs(q->h6)) + 1;
+    s->ackedSeq = ((u32)Unk_ov065_02262c5c_Bs(q->ackHi) << 16) | Unk_ov065_02262c5c_Bs(q->ackLo);
+    s->peerWindow = Unk_ov065_02262c5c_Bs(q->window);
+    Tcp_ParseOptions(q, s);
+    Tcp_SendAck(s, (u16)((p->b5 << 8) + 6));
+    s->state = 4;
+    if (s->waitReason == 1) {
+        s->waitReason = 0;
+        OS_WakeupThreadDirect(s->ownerThread);
     }
 }
 
-void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    Unk_ov065_02262e64_Sock *s = func_ov065_022637d0(p);
+void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r) {
+    IpSocket *s = Tcp_FindConnection(p);
     s32 fl;
     s32 last;
     u32 seq;
     if (s == 0) {
-        func_ov065_02263618(p, q, r, (u16)((p->b5 << 8) + 9));
+        Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 9));
         return;
     }
-    fl = q->bd;
-    s->unk_30 = ((u32)Unk_ov065_02262c5c_Bs(q->h8) << 16) | Unk_ov065_02262c5c_Bs(q->ha);
+    fl = q->tcpFlags;
+    s->ackedSeq = ((u32)Unk_ov065_02262c5c_Bs(q->ackHi) << 16) | Unk_ov065_02262c5c_Bs(q->ackLo);
     seq = ((u32)Unk_ov065_02262c5c_Bs(q->h4) << 16) | Unk_ov065_02262c5c_Bs(q->h6);
-    if (s->unk_08 == 4 && (u32)s->unk_24 != seq) {
-        func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0xa));
+    if (s->state == 4 && (u32)s->recvNext != seq) {
+        Tcp_SendAck(s, (u16)((p->b5 << 8) + 0xa));
         return;
     }
-    s->unk_2c = Unk_ov065_02262c5c_Bs(q->he);
-    switch (s->unk_08) {
+    s->peerWindow = Unk_ov065_02262c5c_Bs(q->window);
+    switch (s->state) {
     case 0:
     case 2:
-        func_ov065_02263618(p, q, r, (u16)((p->b5 << 8) + 0x63));
+        Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 0x63));
         break;
     case 3:
-        s->unk_08 = 4;
-        if (s->unk_04 == 1) {
-            s->unk_04 = 0;
-            func_0211366c(s->unk_00);
+        s->state = 4;
+        if (s->waitReason == 1) {
+            s->waitReason = 0;
+            OS_WakeupThreadDirect(s->ownerThread);
         }
         if (r == 0) break;
     case 4:
-        s->unk_34++;
+        s->rxSegmentCount++;
         {
-            u32 room = s->unk_3c - s->unk_44;
+            u32 room = s->rxBufSize - s->rxLen;
             if (r > room) {
                 r = room;
                 last = 0;
@@ -1640,164 +1481,164 @@ void func_ov065_02263174(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
             }
         }
         if (r != 0) {
-            u32 sv = func_01ffa2ec();
-            func_02116048((u8 *)q + _s32_div_f(q->bc & 0xf0, 4), s->unk_40 + s->unk_44, r);
-            s->unk_44 += r;
-            s->unk_24 += r;
-            func_01ffa3d4(sv);
-            if (s->unk_04 == 2) {
-                s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+            u32 sv = OS_DisableInterrupts();
+            MI_CpuCopy8((u8 *)q + _s32_div_f(q->dataOffset & 0xf0, 4), s->rxBuf + s->rxLen, r);
+            s->rxLen += r;
+            s->recvNext += r;
+            OS_RestoreInterrupts(sv);
+            if (s->waitReason == 2) {
+                s->waitReason = 0;
+                OS_WakeupThreadDirect(s->ownerThread);
             }
         }
         if (last != 0 && (fl & 1) != 0) {
-            s->unk_08 = 6;
-            s->unk_24++;
-            func_ov065_022636e8(s, (u16)((p->b5 << 8) + 0xb));
-            if (r == 0 && s->unk_04 == 2) {
-                s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+            s->state = 6;
+            s->recvNext++;
+            Tcp_SendFinAck(s, (u16)((p->b5 << 8) + 0xb));
+            if (r == 0 && s->waitReason == 2) {
+                s->waitReason = 0;
+                OS_WakeupThreadDirect(s->ownerThread);
             }
         } else if (r != 0) {
-            func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0xc));
+            Tcp_SendAck(s, (u16)((p->b5 << 8) + 0xc));
         }
         break;
     case 7:
     case 8:
         if ((fl & 1) != 0) {
-            s->unk_24 += r + 1;
-            func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0xd));
-            s->unk_08 = 0;
-            if (s->unk_04 == 2) {
-                s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+            s->recvNext += r + 1;
+            Tcp_SendAck(s, (u16)((p->b5 << 8) + 0xd));
+            s->state = 0;
+            if (s->waitReason == 2) {
+                s->waitReason = 0;
+                OS_WakeupThreadDirect(s->ownerThread);
             }
         } else {
             if (r != 0) {
-                s->unk_24 += r;
-                func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0xe));
+                s->recvNext += r;
+                Tcp_SendAck(s, (u16)((p->b5 << 8) + 0xe));
             }
-            s->unk_08 = 8;
+            s->state = 8;
         }
         break;
     case 6:
     case 9:
-        s->unk_08 = 0;
-        if (s->unk_04 == 2) {
-            s->unk_04 = 0;
-            func_0211366c(s->unk_00);
+        s->state = 0;
+        if (s->waitReason == 2) {
+            s->waitReason = 0;
+            OS_WakeupThreadDirect(s->ownerThread);
         }
         break;
     case 1:
     case 5:
     default:
-        if ((fl & 1) != 0) s->unk_24++;
-        func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0x12));
+        if ((fl & 1) != 0) s->recvNext++;
+        Tcp_SendAck(s, (u16)((p->b5 << 8) + 0x12));
         break;
     }
-    func_02113498();
+    OS_YieldThread();
 }
 
-void func_ov065_022630c4(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    Unk_ov065_02262e64_Sock *s = func_ov065_022637d0(p);
+void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r) {
+    IpSocket *s = Tcp_FindConnection(p);
     if (s != 0) {
-        switch (s->unk_08) {
+        switch (s->state) {
         case 7:
-            s->unk_24++;
-            func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0x13));
-            s->unk_08 = 9;
+            s->recvNext++;
+            Tcp_SendAck(s, (u16)((p->b5 << 8) + 0x13));
+            s->state = 9;
             return;
         case 8:
-            s->unk_24++;
-            func_ov065_022636f4(s, (u16)((p->b5 << 8) + 0x14));
-            s->unk_08 = 0;
-            if (s->unk_04 == 2) {
-                s->unk_04 = 0;
-                func_0211366c(s->unk_00);
+            s->recvNext++;
+            Tcp_SendAck(s, (u16)((p->b5 << 8) + 0x14));
+            s->state = 0;
+            if (s->waitReason == 2) {
+                s->waitReason = 0;
+                OS_WakeupThreadDirect(s->ownerThread);
                 return;
             }
             return;
         case 4:
-            s->unk_24++;
-            func_ov065_022636e8(s, (u16)((p->b5 << 8) + 0x15));
-            s->unk_08 = 6;
+            s->recvNext++;
+            Tcp_SendFinAck(s, (u16)((p->b5 << 8) + 0x15));
+            s->state = 6;
             return;
         default:
-            func_ov065_02263618(p, q, r, (u16)((p->b5 << 8) + 0x16));
+            Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 0x16));
             break;
         }
     }
 }
 
-void func_ov065_02263098(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q) {
-    Unk_ov065_02262e64_Sock *s = func_ov065_022637d0(p);
+void Tcp_InputRst(IpHeader *p, TcpHeader *q) {
+    IpSocket *s = Tcp_FindConnection(p);
     if (s != 0) {
-        func_02113498();
-        s->unk_08 = 0;
-        if ((u32)(s->unk_04 - 1) <= 1) {
-            s->unk_04 = 0;
-            func_0211366c(s->unk_00);
+        OS_YieldThread();
+        s->state = 0;
+        if ((u32)(s->waitReason - 1) <= 1) {
+            s->waitReason = 0;
+            OS_WakeupThreadDirect(s->ownerThread);
         }
     }
 }
 
-void func_ov065_02262fbc(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 r) {
-    if (func_ov065_02264884(q, r, p, 6) == 0) {
+void Tcp_Input(IpHeader *p, TcpHeader *q, u32 r) {
+    if (Ip_VerifyPseudoChecksum(q, r, p, 6) == 0) {
         s32 t;
-        r -= _s32_div_f(q->bc & 0xf0, 4);
-        t = q->bd;
+        r -= _s32_div_f(q->dataOffset & 0xf0, 4);
+        t = q->tcpFlags;
         switch (t & 0x17) {
         case 2:
-            if ((t & 0x28) == 0) func_ov065_0226347c(p, q, r);
+            if ((t & 0x28) == 0) Tcp_InputSyn(p, q, r);
             return;
         case 0x12:
-            if ((t & 0x28) == 0) func_ov065_022633c4(p, q, r);
+            if ((t & 0x28) == 0) Tcp_InputSynAck(p, q, r);
             return;
         case 0x10:
         case 0x11:
-            func_ov065_02263174(p, q, r);
+            Tcp_InputAck(p, q, r);
             return;
         case 1:
-            func_ov065_022630c4(p, q, r);
+            Tcp_InputFin(p, q, r);
             return;
         default:
             break;
         }
         if ((t & 4) != 0) {
-            func_ov065_02263098(p, q);
+            Tcp_InputRst(p, q);
             return;
         }
-        func_ov065_02263618(p, q, r, (u16)((p->b5 << 8) + 0x17));
+        Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 0x17));
     }
 }
 
-void func_ov065_02262e64(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u32 c) {
-    if (q->h6 != 0 && func_ov065_02264884(q, c, p, 0x11) != 0) return;
-    Unk_ov065_02262e64_Conn *s = data_021fcc2c.unk_08;
-    for (; s != 0; s = s->unk_68) {
-        Unk_ov065_02262e64_Sock *k = s->unk_a4;
-        if (k != 0 && k->unk_00 != 0 && k->unk_08 == 10 && k->unk_0a == Unk_ov065_02262c5c_Bs(q->h2)
-            && (k->unk_18 == 0 || k->unk_18 == Unk_ov065_02262c5c_Bs(q->h0))
-            && (k->unk_1c == 0 || k->unk_1c == (u32)-1
-                || k->unk_1c == (((u32)Unk_ov065_02262c5c_Bs(p->hc) << 16) | Unk_ov065_02262c5c_Bs(p->he)))) {
-            k->unk_14 = ((u32)Unk_ov065_02262c5c_Bs(p->h10) << 16) | Unk_ov065_02262c5c_Bs(p->h12);
-            if (k->unk_1c == 0) {
-                k->unk_1c = ((u32)Unk_ov065_02262c5c_Bs(p->hc) << 16) | Unk_ov065_02262c5c_Bs(p->he);
-                k->unk_18 = Unk_ov065_02262c5c_Bs(q->h0);
+void Udp_Input(IpHeader *p, TcpHeader *q, u32 c) {
+    if (q->h6 != 0 && Ip_VerifyPseudoChecksum(q, c, p, 0x11) != 0) return;
+    OSThread *s = data_021fcc2c.list;
+    for (; s != 0; s = s->next) {
+        IpSocket *k = (IpSocket *)s->specific[0];
+        if (k != 0 && k->ownerThread != 0 && k->state == 10 && k->localPort == Unk_ov065_02262c5c_Bs(q->dstPort)
+            && (k->remotePort == 0 || k->remotePort == Unk_ov065_02262c5c_Bs(q->srcPort))
+            && (k->remoteAddr == 0 || k->remoteAddr == (u32)-1
+                || k->remoteAddr == (((u32)Unk_ov065_02262c5c_Bs(p->srcAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->srcAddrLo)))) {
+            k->localAddr = ((u32)Unk_ov065_02262c5c_Bs(p->dstAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->dstAddrLo);
+            if (k->remoteAddr == 0) {
+                k->remoteAddr = ((u32)Unk_ov065_02262c5c_Bs(p->srcAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->srcAddrLo);
+                k->remotePort = Unk_ov065_02262c5c_Bs(q->srcPort);
             }
-            if (k->unk_44 != 0) return;
-            u32 m = k->unk_3c;
+            if (k->rxLen != 0) return;
+            u32 m = k->rxBufSize;
             c -= 8;
-            if (c > m) k->unk_44 = m;
-            else k->unk_44 = c;
-            func_02116048((u8 *)q + 8, k->unk_40, k->unk_44);
-            if (k->unk_04 == 3) {
-                k->unk_04 = 0;
-                func_0211366c(k->unk_00);
+            if (c > m) k->rxLen = m;
+            else k->rxLen = c;
+            MI_CpuCopy8((u8 *)q + 8, k->rxBuf, k->rxLen);
+            if (k->waitReason == 3) {
+                k->waitReason = 0;
+                OS_WakeupThreadDirect(k->ownerThread);
                 return;
             }
-            if (k->unk_38 != 0) {
-                if (k->unk_38(k->unk_40, k->unk_44, k) != 0) k->unk_44 = 0;
+            if (k->udpCallback != 0) {
+                if (k->udpCallback(k->rxBuf, k->rxLen, k) != 0) k->rxLen = 0;
             }
             return;
         }
@@ -1805,43 +1646,43 @@ void func_ov065_02262e64(Unk_ov065_02262c5c_Ip *p, Unk_ov065_02262e64_Tcp *q, u3
     return;
 }
 
-u8 *func_ov065_02262c5c(Unk_ov065_02262c5c_Ip *p, s32 *out) {
+u8 *Ip_Reassemble(IpHeader *p, s32 *out) {
     u32 flags;
     u8 *ret;
     *out = 0;
-    Unk_ov065_02262c5c_Frag *free = 0;
-    flags = Unk_ov065_02262c5c_Bs(p->h6);
+    IpFragEntry *free = 0;
+    flags = Unk_ov065_02262c5c_Bs(p->fragField);
     if ((flags & 0x3fff) != 0) {
         u32 len, off, hl, end, o8;
-        hl = (p->b0 & 0xf) << 2;
+        hl = (p->verIhl & 0xf) << 2;
         u32 id = *(u16 *)&p->b4;
-        u32 key = ((u32)Unk_ov065_02262c5c_Bs(p->hc) << 16) | Unk_ov065_02262c5c_Bs(p->he);
-        Unk_ov065_02262c5c_Frag *e = data_ov065_0228f200;
+        u32 key = ((u32)Unk_ov065_02262c5c_Bs(p->srcAddrHi) << 16) | Unk_ov065_02262c5c_Bs(p->srcAddrLo);
+        IpFragEntry *e = sIpFragTable;
         u32 i;
         for (i = 0; i < 8; e++, i++) {
             if (e->cnt != 0 && e->key == key && e->id == id) break;
             if (e->cnt == 0 && free == 0) free = e;
         }
-        len = Unk_ov065_02262c5c_Bs(p->h2) - hl;
+        len = Unk_ov065_02262c5c_Bs(p->totalLength) - hl;
         off = flags & 0x1fff;
         o8 = off << 3;
         end = len + o8;
         if (i == 8) {
             if (free == 0 || end > 0x1000) return 0;
             e = free;
-            e->buf = data_ov065_0228ebc8(hl + 0x100e);
+            e->buf = sIpAlloc(hl + 0x100e);
             if (e->buf == 0) return 0;
             e->key = key;
             e->id = id;
             e->total = 0;
-            u64 t = func_01ffa6b4();
+            u64 t = OS_GetTick();
             e->tick = (u32)(t >> 16);
             e->data = e->buf + 0xe + hl;
-            func_02116048(p, e->buf + 0xe, hl);
+            MI_CpuCopy8(p, e->buf + 0xe, hl);
         }
         if (e->cnt == 8 || end > 0x1000) {
             e->cnt = 0;
-            data_ov065_0228ebd0(e->buf);
+            sIpFree(e->buf);
             return 0;
         }
         u32 fin = off + ((len + 7) >> 3);
@@ -1853,7 +1694,7 @@ u8 *func_ov065_02262c5c(Unk_ov065_02262c5c_Ip *p, s32 *out) {
         e->start[e->cnt] = off;
         e->fin[e->cnt] = fin;
         e->cnt++;
-        func_02116048((u8 *)p + hl, e->data + o8, len);
+        MI_CpuCopy8((u8 *)p + hl, e->data + o8, len);
         u32 total = e->total;
         if (total == 0) return 0;
         u32 n, k, cur = 0;
@@ -1884,142 +1725,97 @@ u8 *func_ov065_02262c5c(Unk_ov065_02262c5c_Ip *p, s32 *out) {
 
 namespace Unk_ov065_02262240_Ns {
 
-struct Unk_ov065_02262240_Sess;
 
-struct Unk_ov065_02262240_Thr {
-    u8 pad_00[0x68];
-    Unk_ov065_02262240_Thr *next;
-    u8 pad_6c[0xa4 - 0x6c];
-    Unk_ov065_02262240_Sess *sess;
-};
 
-struct Unk_ov065_02262240_Sess {
-    Unk_ov065_02262240_Thr *unk_00;
-    u32 unk_04;
-    u8 state;
-    u8 unk_09;
-    u16 unk_0a;
-    u8 pad_0c[4];
-    u32 unk_10;
-    u32 unk_14;
-    u16 unk_18;
-    u16 unk_1a;
-    u32 unk_1c;
-    u32 unk_20;
-    u8 pad_24[4];
-    u32 unk_28;
-    u16 unk_2c;
-    u16 unk_2e;
-    u32 unk_30;
-    u32 unk_34;
-    u32 unk_38;
-    u8 pad_3c[4];
-    u8 *unk_40;
-    u32 unk_44;
-    u8 pad_48[0x5c - 0x48];
-    u8 *unk_5c;
-    u32 unk_60;
-};
 
-struct Unk_ov065_02262240_Os {
-    u32 unk_00;
-    Unk_ov065_02262240_Thr *cur;
-    Unk_ov065_02262240_Thr *list;
-};
 
-struct Unk_ov065_02262a54_Rng {
-    s64 unk_00;
-    s64 unk_08;
-    s64 unk_10;
-};
-
-typedef Unk_ov065_02262240_Sess Sess;
-typedef Unk_ov065_02262240_Thr Thr;
+typedef IpSocket Sess;
+typedef OSThread Thr;
 
 extern "C" {
-extern Unk_ov065_02262240_Os data_021fcc2c;
-extern void (*data_ov065_0228eba8)();
-extern s32 (*data_ov065_0228ebac)();
-extern void (*data_ov065_0228ebd0)(void *);
-extern u32 data_ov065_0228ebd8;
-extern u8 data_ov065_0228eb8c;
-extern u8 data_ov065_0228eb88;
-extern u16 data_ov065_0228eb94;
-extern u16 data_ov065_0228eb98;
-extern Unk_ov065_02262a54_Rng data_ov065_0228ec04;
+extern OSThreadInfo data_021fcc2c;
+extern void (*sAddrConfiguredCallback)();
+extern s32 (*sIpLinkCheckCallback)();
+extern void (*sIpFree)(void *);
+extern u32 gOwnIp;
+extern u8 sArpConflict;
+extern u8 sLinkSendError;
+extern u16 sMss;
+extern u16 sNextEphemeralPort;
+extern IpRandStateSigned sIpRandState;
 
 // main module
-u64 func_01ffa6b4();
-u32 func_01ffa2ec();
-void func_01ffa3d4(u32);
-void func_021132e0(s32);
-void func_02113498();
-void func_02113720(void *);
-void func_021289b4(void *, void *, u32);
+u64 OS_GetTick();
+u32 OS_DisableInterrupts();
+void OS_RestoreInterrupts(u32);
+void OS_Sleep(s32);
+void OS_YieldThread();
+void OS_SleepThread(void *);
+void memmove(void *, void *, u32);
 s64 _ll_mul(s64, s64);
 
 // same overlay, out of range
-s32 func_ov065_0226439c(u32);
-s32 func_ov065_02264c44(u32);
-s32 func_ov065_02264c20();
-s32 func_ov065_02264eac(Sess *);
-s32 func_ov065_02263e4c(u8 *, u32, Sess *);
-s32 func_ov065_02263f24(u8 *, u32, Sess *);
-s32 func_ov065_02264dd4(u8 *, u32, u8 *, u32, Sess *);
-s32 func_ov065_02263c90(u8 *, u32, Sess *, u32, u32);
-s32 func_ov065_0226502c(u32, Sess *);
-s32 func_ov065_02265074(u32 *, Sess *);
-s32 func_ov065_022636f4(Sess *, u32);
-s32 func_ov065_022636e8(Sess *, u32);
-s32 func_ov065_02263700(Sess *, u32, u32);
-s32 func_ov065_02264d80(Sess *);
-s32 func_ov065_02265130(Sess *);
-s32 func_ov065_02265228(Sess *);
-u8 *func_ov065_0226450c(u32 *);
-s32 func_ov065_022644cc();
-s32 func_ov065_02263b28(u8 *, u32);
-s32 func_ov065_02264788(u32);
-u32 func_ov065_022648d4(u8 *, u32);
-s32 func_ov065_02264298(u8 *, u32, u32);
-s32 func_ov065_02262e64(u8 *, u8 *, u32);
-s32 func_ov065_02263924(u8 *, u8 *, u32);
-s32 func_ov065_02262fbc(u8 *, u8 *, u32);
-u8 *func_ov065_02262c5c(u8 *, s32 *);
+s32 Arp_SendRequest(u32);
+s32 IpStack_ResetAddress(u32);
+s32 IpStack_Yield();
+s32 Ssl_GetReadLength(Sess *);
+s32 Udp_Send(u8 *, u32, Sess *);
+s32 Icmp_SendEchoRequest(u8 *, u32, Sess *);
+s32 Ssl_Write(u8 *, u32, u8 *, u32, Sess *);
+s32 Tcp_SendSegment(u8 *, u32, Sess *, u32, u32);
+s32 Ssl_Consume(u32, Sess *);
+s32 Ssl_Read(u32 *, Sess *);
+s32 Tcp_SendAck(Sess *, u32);
+s32 Tcp_SendFinAck(Sess *, u32);
+s32 Tcp_SendControl(Sess *, u32, u32);
+s32 Ssl_Shutdown(Sess *);
+s32 Ssl_Connect(Sess *);
+s32 Ssl_Accept(Sess *);
+u8 *Eth_WaitFrame(u32 *);
+s32 Eth_PopFrame();
+s32 Arp_Input(u8 *, u32);
+s32 Ip_IsForMe(u32);
+u32 Ip_Checksum(u8 *, u32);
+s32 Arp_UpdateCache(u8 *, u32, u32);
+s32 Udp_Input(u8 *, u8 *, u32);
+s32 Icmp_Input(u8 *, u8 *, u32);
+s32 Tcp_Input(u8 *, u8 *, u32);
+u8 *Ip_Reassemble(u8 *, s32 *);
 
 // in range
-void func_ov065_02262240();
-void func_ov065_022622c0();
-s32 func_ov065_022622ec();
-u32 func_ov065_02262334(u32, u32);
-u32 func_ov065_022623a4(u8 *, u32, u8 *, u32);
-u32 func_ov065_0226242c(u8 *, u32, u8 *, u32, Sess *);
-void func_ov065_02262580(u8 *, u32, u8 *, u32, Sess *, u32);
-u32 func_ov065_022625ac(u8 *, u32, Sess *, u32);
-void func_ov065_02262640(u32);
-void func_ov065_02262670(u32, Sess *);
-u8 *func_ov065_022626b8(u32 *);
-u8 *func_ov065_02262708(u32 *, Sess *);
-u8 *func_ov065_0226275c(u32 *, Sess *);
-void func_ov065_02262788();
-void func_ov065_022627d4();
-void func_ov065_02262804(Sess *);
-u32 func_ov065_02262840(u16 *, u32 *);
-s32 func_ov065_02262874();
-s32 func_ov065_022628ac(Sess *);
-void func_ov065_02262924();
-void func_ov065_02262954(u32);
-void func_ov065_02262968(Sess *);
-void func_ov065_02262984(Thr *);
-void func_ov065_02262998();
-void func_ov065_022629b0();
-void func_ov065_022629d0(u32, u32, u32);
-void func_ov065_02262a18();
-void func_ov065_02262a34();
-void func_ov065_02262a44(Sess *);
-u32 func_ov065_02262a54();
-u16 func_ov065_02262a80();
-void func_ov065_02262ae4();
-void func_ov065_02262b30(u8 *, u32);
+void Arp_ProbeAddressConflict();
+void IpSoc_FlushPending();
+s32 IpSoc_GetReadLength();
+u32 IpSoc_Write(u32, u32);
+u32 IpSoc_WriteTwo(u8 *, u32, u8 *, u32);
+u32 Tcp_Write(u8 *, u32, u8 *, u32, Sess *);
+void Tcp_SendTwoBuffers(u8 *, u32, u8 *, u32, Sess *, u32);
+u32 Tcp_SendSegments(u8 *, u32, Sess *, u32);
+void IpSoc_Consume(u32);
+void Tcp_Consume(u32, Sess *);
+u8 *IpSoc_Read(u32 *);
+u8 *Tcp_Read(u32 *, Sess *);
+u8 *IpSoc_WaitDatagram(u32 *, Sess *);
+void IpSoc_TcpWaitClosed();
+void IpSoc_TcpShutdown();
+void Tcp_Shutdown(Sess *);
+u32 IpSoc_GetPeer(u16 *, u32 *);
+s32 IpSoc_TcpConnect();
+s32 Tcp_Connect(Sess *);
+void IpSoc_TcpListen();
+void IpSoc_SetUdpCallback(u32);
+void Tcp_Listen(Sess *);
+void IpSoc_ShareWithThread(Thr *);
+void IpSoc_Release();
+void IpSoc_Init();
+void IpSoc_Bind(u32, u32, u32);
+void IpSoc_SetUdp();
+void IpSoc_Unuse();
+void IpSoc_Use(Sess *);
+u32 IpStack_Rand32();
+u16 IpSoc_AllocEphemeralPort();
+void IpStack_RecvThreadMain();
+void Ip_Input(u8 *, u32);
 }
 
 static inline u16 Swap16(u16 v) {
@@ -2027,63 +1823,63 @@ static inline u16 Swap16(u16 v) {
 }
 
 extern "C" {
-void func_ov065_02262b30(u8 *p, u32 len);
-void func_ov065_02262ae4();
-u16 func_ov065_02262a80();
-u32 func_ov065_02262a54();
-void func_ov065_02262a44(Sess *s);
-void func_ov065_02262a34();
-void func_ov065_02262a18();
-void func_ov065_022629d0(u32 a, u32 b, u32 c);
-void func_ov065_022629b0();
-void func_ov065_02262998();
-void func_ov065_02262984(Thr *t);
-void func_ov065_02262968(Sess *s);
-void func_ov065_02262954(u32 v);
-void func_ov065_02262924();
-s32 func_ov065_022628ac(Sess *s);
-s32 func_ov065_02262874();
-u32 func_ov065_02262840(u16 *a, u32 *b);
-void func_ov065_02262804(Sess *s);
-void func_ov065_022627d4();
-void func_ov065_02262788();
-u8 *func_ov065_0226275c(u32 *out, Sess *s);
-u8 *func_ov065_02262708(u32 *out, Sess *s);
-u8 *func_ov065_022626b8(u32 *out);
-void func_ov065_02262670(u32 a, Sess *s);
-void func_ov065_02262640(u32 a);
-u32 func_ov065_022625ac(u8 *a, u32 b, Sess *s, u32 flag);
-void func_ov065_02262580(u8 *a, u32 b, u8 *c, u32 d, Sess *s, u32 flag);
-u32 func_ov065_0226242c(u8 *a, u32 b, u8 *c, u32 d, Sess *s);
-u32 func_ov065_022623a4(u8 *a, u32 b, u8 *c, u32 d);
-u32 func_ov065_02262334(u32 a, u32 b);
-s32 func_ov065_022622ec();
-void func_ov065_022622c0();
-void func_ov065_02262240();
+void Ip_Input(u8 *p, u32 len);
+void IpStack_RecvThreadMain();
+u16 IpSoc_AllocEphemeralPort();
+u32 IpStack_Rand32();
+void IpSoc_Use(Sess *s);
+void IpSoc_Unuse();
+void IpSoc_SetUdp();
+void IpSoc_Bind(u32 a, u32 b, u32 c);
+void IpSoc_Init();
+void IpSoc_Release();
+void IpSoc_ShareWithThread(Thr *t);
+void Tcp_Listen(Sess *s);
+void IpSoc_SetUdpCallback(u32 v);
+void IpSoc_TcpListen();
+s32 Tcp_Connect(Sess *s);
+s32 IpSoc_TcpConnect();
+u32 IpSoc_GetPeer(u16 *a, u32 *b);
+void Tcp_Shutdown(Sess *s);
+void IpSoc_TcpShutdown();
+void IpSoc_TcpWaitClosed();
+u8 *IpSoc_WaitDatagram(u32 *out, Sess *s);
+u8 *Tcp_Read(u32 *out, Sess *s);
+u8 *IpSoc_Read(u32 *out);
+void Tcp_Consume(u32 a, Sess *s);
+void IpSoc_Consume(u32 a);
+u32 Tcp_SendSegments(u8 *a, u32 b, Sess *s, u32 flag);
+void Tcp_SendTwoBuffers(u8 *a, u32 b, u8 *c, u32 d, Sess *s, u32 flag);
+u32 Tcp_Write(u8 *a, u32 b, u8 *c, u32 d, Sess *s);
+u32 IpSoc_WriteTwo(u8 *a, u32 b, u8 *c, u32 d);
+u32 IpSoc_Write(u32 a, u32 b);
+s32 IpSoc_GetReadLength();
+void IpSoc_FlushPending();
+void Arp_ProbeAddressConflict();
 }
 
-void func_ov065_02262b30(u8 *p, u32 len) {
+void Ip_Input(u8 *p, u32 len) {
     s32 flag;
     u32 dst;
     u32 src;
     src = (Swap16(*(u16 *)(p + 0xc)) << 16) | Swap16(*(u16 *)(p + 0xe));
     dst = (Swap16(*(u16 *)(p + 0x10)) << 16) | Swap16(*(u16 *)(p + 0x12));
     if (dst != src) {
-        if (func_ov065_02264788(dst) == 0) return;
+        if (Ip_IsForMe(dst) == 0) return;
         if (len < Swap16(*(u16 *)(p + 2))) return;
-        if (func_ov065_022648d4(p, (p[0] & 0xf) * 4) != 0xffff) return;
+        if (Ip_Checksum(p, (p[0] & 0xf) * 4) != 0xffff) return;
         {
             u16 c = *(u16 *)(p + 0x12);
             u16 d = *(u16 *)(p + 0x10);
             u32 x = (Swap16(d) << 16) | Swap16(c);
-            if (data_ov065_0228ebd8 == x) {
+            if (gOwnIp == x) {
                 u16 a = *(u16 *)(p + 0xe);
                 u16 b = *(u16 *)(p + 0xc);
-                func_ov065_02264298(p - 8, (Swap16(b) << 16) | Swap16(a), 0);
+                Arp_UpdateCache(p - 8, (Swap16(b) << 16) | Swap16(a), 0);
             }
         }
     }
-    p = func_ov065_02262c5c(p, &flag);
+    p = Ip_Reassemble(p, &flag);
     if (p == 0) return;
     {
         u32 hl = (p[0] & 0xf) * 4;
@@ -2091,301 +1887,301 @@ void func_ov065_02262b30(u8 *p, u32 len) {
         u32 n = Swap16(*(u16 *)(p + 2)) - hl;
         u8 proto = p[9];
         if (proto == 0x11) {
-            func_ov065_02262e64(p, pay, n);
-        } else if (data_ov065_0228ebd8 != 0) {
+            Udp_Input(p, pay, n);
+        } else if (gOwnIp != 0) {
             if (proto == 1) {
-                func_ov065_02263924(p, pay, n);
+                Icmp_Input(p, pay, n);
             } else if (proto == 6) {
-                func_ov065_02262fbc(p, pay, n);
+                Tcp_Input(p, pay, n);
             }
         }
         if (flag != 0) {
-            data_ov065_0228ebd0(p - 0xe);
+            sIpFree(p - 0xe);
         }
     }
 }
 
-void func_ov065_02262ae4() {
+void IpStack_RecvThreadMain() {
     u32 len;
     for (;;) {
-        u8 *p = func_ov065_0226450c(&len);
+        u8 *p = Eth_WaitFrame(&len);
         if (len > 0x22) {
             u16 t = Swap16(*(u16 *)(p + 0xc));
             switch (t) {
             case 0x800:
-                func_ov065_02262b30(p + 0xe, len - 0xe);
+                Ip_Input(p + 0xe, len - 0xe);
                 break;
             case 0x806:
-                func_ov065_02263b28(p + 0xe, len - 0xe);
+                Arp_Input(p + 0xe, len - 0xe);
                 break;
             }
         }
-        func_ov065_022644cc();
+        Eth_PopFrame();
     }
 }
 
-u16 func_ov065_02262a80() {
+u16 IpSoc_AllocEphemeralPort() {
     s32 found;
     do {
         found = 0;
-        data_ov065_0228eb98++;
-        if (data_ov065_0228eb98 < 0x400 || data_ov065_0228eb98 >= 0x1388) {
-            data_ov065_0228eb98 = 0x400;
+        sNextEphemeralPort++;
+        if (sNextEphemeralPort < 0x400 || sNextEphemeralPort >= 0x1388) {
+            sNextEphemeralPort = 0x400;
         }
         Thr *t;
         for (t = data_021fcc2c.list; t != 0; t = t->next) {
-            Sess *s = t->sess;
-            if (s != 0 && s->unk_00 != 0 && s->unk_0a == data_ov065_0228eb98) {
+            Sess *s = (Sess *)t->specific[0];
+            if (s != 0 && s->ownerThread != 0 && s->localPort == sNextEphemeralPort) {
                 found = 1;
                 break;
             }
         }
     } while (found != 0);
-    return data_ov065_0228eb98;
+    return sNextEphemeralPort;
 }
 
-u32 func_ov065_02262a54() {
-    Unk_ov065_02262a54_Rng *g = &data_ov065_0228ec04;
-    g->unk_00 = _ll_mul(g->unk_08, g->unk_00) + g->unk_10;
-    return (u32)((u64)g->unk_00 >> 32);
+u32 IpStack_Rand32() {
+    IpRandStateSigned *g = &sIpRandState;
+    g->x = _ll_mul(g->mul, g->x) + g->add;
+    return (u32)((u64)g->x >> 32);
 }
 
-void func_ov065_02262a44(Sess *s) {
-    data_021fcc2c.cur->sess = s;
+void IpSoc_Use(Sess *s) {
+    data_021fcc2c.current->specific[0] = s;
 }
 
-void func_ov065_02262a34() {
-    data_021fcc2c.cur->sess = 0;
+void IpSoc_Unuse() {
+    data_021fcc2c.current->specific[0] = 0;
 }
 
-void func_ov065_02262a18() {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_SetUdp() {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         s->state = 10;
-        s->unk_44 = 0;
+        s->rxLen = 0;
     }
 }
 
-void func_ov065_022629d0(u32 a, u32 b, u32 c) {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_Bind(u32 a, u32 b, u32 c) {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         if (c == 0x7f000001) {
-            c = data_ov065_0228ebd8;
+            c = gOwnIp;
         }
-        s->unk_1a = b;
-        s->unk_18 = s->unk_1a;
-        s->unk_20 = c;
-        s->unk_1c = s->unk_20;
+        s->boundRemotePort = b;
+        s->remotePort = s->boundRemotePort;
+        s->boundRemoteAddr = c;
+        s->remoteAddr = s->boundRemoteAddr;
         if (a == 0) {
-            s->unk_0a = func_ov065_02262a80();
+            s->localPort = IpSoc_AllocEphemeralPort();
         } else {
-            s->unk_0a = a;
+            s->localPort = a;
         }
     }
 }
 
-void func_ov065_022629b0() {
-    Thr *c = data_021fcc2c.cur;
-    Sess *s = c->sess;
+void IpSoc_Init() {
+    Thr *c = data_021fcc2c.current;
+    Sess *s = (Sess *)c->specific[0];
     if (s != 0) {
-        s->unk_00 = c;
+        s->ownerThread = c;
         s->state = 0;
-        s->unk_44 = 0;
-        s->unk_60 = 0;
-        s->unk_38 = 0;
+        s->rxLen = 0;
+        s->pendingTxLen = 0;
+        s->udpCallback = 0;
     }
 }
 
-void func_ov065_02262998() {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_Release() {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        s->unk_00 = 0;
+        s->ownerThread = 0;
     }
 }
 
-void func_ov065_02262984(Thr *t) {
-    t->sess = data_021fcc2c.cur->sess;
+void IpSoc_ShareWithThread(Thr *t) {
+    t->specific[0] = data_021fcc2c.current->specific[0];
 }
 
-void func_ov065_02262968(Sess *s) {
-    s->unk_28 = func_ov065_02262a54();
+void Tcp_Listen(Sess *s) {
+    s->sendNext = IpStack_Rand32();
     s->state = 1;
-    s->unk_04 = 1;
-    func_02113720(0);
+    s->waitReason = 1;
+    OS_SleepThread(0);
 }
 
-void func_ov065_02262954(u32 v) {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_SetUdpCallback(u32 v) {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        s->unk_38 = v;
+        s->udpCallback = (IpSocketUdpCallback)v;
     }
 }
 
-void func_ov065_02262924() {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_TcpListen() {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        if (s->unk_09 != 0) {
-            func_ov065_02265228(s);
+        if (s->useSsl != 0) {
+            Ssl_Accept(s);
         } else {
-            func_ov065_02262968(s);
+            Tcp_Listen(s);
         }
     }
 }
 
-s32 func_ov065_022628ac(Sess *s) {
+s32 Tcp_Connect(Sess *s) {
     u32 i;
-    u32 seed = func_ov065_02262a54();
+    u32 seed = IpStack_Rand32();
     i = 0;
     do {
-        s->unk_28 = seed;
+        s->sendNext = seed;
         s->state = 2;
-        s->unk_10 = (u32)(func_01ffa6b4() >> 16);
-        func_ov065_02263700(s, 2, 0x18);
-        u32 ints = func_01ffa2ec();
-        if (data_ov065_0228ebd8 != 0) {
-            s->unk_04 = 1;
-            func_02113720(0);
+        s->handshakeTime = (u32)(OS_GetTick() >> 16);
+        Tcp_SendControl(s, 2, 0x18);
+        u32 ints = OS_DisableInterrupts();
+        if (gOwnIp != 0) {
+            s->waitReason = 1;
+            OS_SleepThread(0);
         }
-        func_01ffa3d4(ints);
+        OS_RestoreInterrupts(ints);
         if (s->state == 4) {
             return 0;
         }
-        if (data_ov065_0228ebd8 == 0) break;
+        if (gOwnIp == 0) break;
         i++;
     } while (i < 3);
     return 1;
 }
 
-s32 func_ov065_02262874() {
-    Sess *s = data_021fcc2c.cur->sess;
+s32 IpSoc_TcpConnect() {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        if (s->unk_09 != 0) {
-            return func_ov065_02265130(s);
+        if (s->useSsl != 0) {
+            return Ssl_Connect(s);
         }
-        return func_ov065_022628ac(s);
+        return Tcp_Connect(s);
     }
     return 1;
 }
 
-u32 func_ov065_02262840(u16 *a, u32 *b) {
-    Sess *s = data_021fcc2c.cur->sess;
+u32 IpSoc_GetPeer(u16 *a, u32 *b) {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         if (s->state == 4 || s->state == 10) {
             if (a != 0) {
-                *a = s->unk_18;
+                *a = s->remotePort;
             }
             if (b != 0) {
-                *b = s->unk_14;
+                *b = s->localAddr;
             }
-            return s->unk_1c;
+            return s->remoteAddr;
         }
     }
     return 0;
 }
 
-void func_ov065_02262804(Sess *s) {
-    func_02113498();
+void Tcp_Shutdown(Sess *s) {
+    OS_YieldThread();
     u8 st = s->state;
     if ((u8)(st + 0xfd) <= 1) {
-        func_ov065_022636e8(s, 0x19);
+        Tcp_SendFinAck(s, 0x19);
         s->state = 7;
     } else if (st != 0) {
-        func_ov065_022636f4(s, 0x1a);
+        Tcp_SendAck(s, 0x1a);
     }
 }
 
-void func_ov065_022627d4() {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_TcpShutdown() {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        if (s->unk_09 != 0) {
-            func_ov065_02264d80(s);
+        if (s->useSsl != 0) {
+            Ssl_Shutdown(s);
         } else {
-            func_ov065_02262804(s);
+            Tcp_Shutdown(s);
         }
     }
 }
 
-void func_ov065_02262788() {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_TcpWaitClosed() {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        s32 t = (s32)(func_01ffa6b4() >> 16);
-        while (data_ov065_0228ebac() != 0 && s->state != 0 && (s32)(func_01ffa6b4() >> 16) - t < 0x27) {
-            func_ov065_02264c20();
+        s32 t = (s32)(OS_GetTick() >> 16);
+        while (sIpLinkCheckCallback() != 0 && s->state != 0 && (s32)(OS_GetTick() >> 16) - t < 0x27) {
+            IpStack_Yield();
         }
     }
 }
 
-u8 *func_ov065_0226275c(u32 *out, Sess *s) {
-    while (s->unk_44 == 0) {
-        s->unk_04 = 3;
-        func_02113720(0);
+u8 *IpSoc_WaitDatagram(u32 *out, Sess *s) {
+    while (s->rxLen == 0) {
+        s->waitReason = 3;
+        OS_SleepThread(0);
     }
-    *out = s->unk_44;
-    return s->unk_40;
+    *out = s->rxLen;
+    return s->rxBuf;
 }
 
-u8 *func_ov065_02262708(u32 *out, Sess *s) {
-    if (s->unk_44 == 0 && s->state == 4) {
-        while (s->unk_44 == 0 && s->state == 4) {
-            s->unk_04 = 2;
-            func_02113720(0);
+u8 *Tcp_Read(u32 *out, Sess *s) {
+    if (s->rxLen == 0 && s->state == 4) {
+        while (s->rxLen == 0 && s->state == 4) {
+            s->waitReason = 2;
+            OS_SleepThread(0);
         }
     } else {
-        func_02113498();
+        OS_YieldThread();
     }
-    *out = s->unk_44;
+    *out = s->rxLen;
     if (*out != 0) {
-        return s->unk_40;
+        return s->rxBuf;
     }
     return 0;
 }
 
-u8 *func_ov065_022626b8(u32 *out) {
-    Sess *s = data_021fcc2c.cur->sess;
+u8 *IpSoc_Read(u32 *out) {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         if ((u8)(s->state + 0xf6) <= 1) {
-            return func_ov065_0226275c(out, s);
+            return IpSoc_WaitDatagram(out, s);
         }
-        if (s->unk_09 != 0) {
-            return (u8 *)func_ov065_02265074(out, s);
+        if (s->useSsl != 0) {
+            return (u8 *)Ssl_Read(out, s);
         }
-        return func_ov065_02262708(out, s);
+        return Tcp_Read(out, s);
     }
     *out = 0;
     return 0;
 }
 
-void func_ov065_02262670(u32 a, Sess *s) {
-    u32 ints = func_01ffa2ec();
-    u32 n = s->unk_44;
+void Tcp_Consume(u32 a, Sess *s) {
+    u32 ints = OS_DisableInterrupts();
+    u32 n = s->rxLen;
     if (a >= n) {
-        s->unk_44 = 0;
+        s->rxLen = 0;
     } else {
-        u8 *p = s->unk_40;
+        u8 *p = s->rxBuf;
         u8 *q = p + a;
         n -= a;
-        s->unk_44 = n;
+        s->rxLen = n;
         q = n ? q : q;
-        func_021289b4(p, q, n);
+        memmove(p, q, n);
     }
-    func_01ffa3d4(ints);
-    if (s->state != 10 && s->state != 11 && s->unk_44 == 0) {
-        func_ov065_022636f4(s, 0x1b);
+    OS_RestoreInterrupts(ints);
+    if (s->state != 10 && s->state != 11 && s->rxLen == 0) {
+        Tcp_SendAck(s, 0x1b);
     }
 }
 
-void func_ov065_02262640(u32 a) {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_Consume(u32 a) {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        if (s->unk_09 != 0) {
-            func_ov065_0226502c(a, s);
+        if (s->useSsl != 0) {
+            Ssl_Consume(a, s);
             return;
         }
-        func_ov065_02262670(a, s);
+        Tcp_Consume(a, s);
     }
 }
 
-u32 func_ov065_022625ac(u8 *a, u32 b, Sess *s, u32 flag) {
+u32 Tcp_SendSegments(u8 *a, u32 b, Sess *s, u32 flag) {
     u32 r4;
     u32 win;
     u32 cnt;
@@ -2393,76 +2189,76 @@ u32 func_ov065_022625ac(u8 *a, u32 b, Sess *s, u32 flag) {
     if (flag != 0) {
         win = 1;
     } else {
-        win = s->unk_2c;
+        win = s->peerWindow;
     }
-    cnt = s->unk_34;
+    cnt = s->rxSegmentCount;
     budget = cnt * 2 + 4;
     while (b != 0 && s->state == 4) {
-        r4 = s->unk_2e;
+        r4 = s->peerMss;
         if (r4 >= win) r4 = win;
-        if (data_ov065_0228eb94 < r4) r4 = data_ov065_0228eb94;
+        if (sMss < r4) r4 = sMss;
         if (flag == 0) r4 &= ~1;
         if (b < r4) r4 = b;
         {
-            u32 t = budget + (s->unk_34 - cnt);
-            cnt = s->unk_34;
+            u32 t = budget + (s->rxSegmentCount - cnt);
+            cnt = s->rxSegmentCount;
             budget = t - 1;
             if (t == 0) r4 = 0;
         }
         if (r4 == 0) break;
         win -= r4;
-        func_ov065_02263c90(a, r4, s, 0x18, 0);
-        func_02113498();
+        Tcp_SendSegment(a, r4, s, 0x18, 0);
+        OS_YieldThread();
         a += r4;
         b -= r4;
     }
     return r4;
 }
 
-void func_ov065_02262580(u8 *a, u32 b, u8 *c, u32 d, Sess *s, u32 flag) {
-    if (func_ov065_022625ac(a, b, s, flag) != 0) {
+void Tcp_SendTwoBuffers(u8 *a, u32 b, u8 *c, u32 d, Sess *s, u32 flag) {
+    if (Tcp_SendSegments(a, b, s, flag) != 0) {
         if (d != 0) {
-            func_ov065_022625ac(c, d, s, 0);
+            Tcp_SendSegments(c, d, s, 0);
         }
     }
 }
 
-u32 func_ov065_0226242c(u8 *a, u32 b, u8 *c, u32 d, Sess *s) {
+u32 Tcp_Write(u8 *a, u32 b, u8 *c, u32 d, Sess *s) {
     s32 total = 0;
     u32 prev;
     s32 now;
     s32 t1;
     u32 sent;
     u32 flag;
-    s->unk_34 = 0;
+    s->rxSegmentCount = 0;
     flag = 0;
-    now = (s32)(func_01ffa6b4() >> 16);
-    while (data_ov065_0228ebac() != 0 && b != 0 && s->state == 4 && (s32)(func_01ffa6b4() >> 16) - now < 0x9f) {
-        prev = s->unk_28;
-        func_ov065_02262580(a, b, c, d, s, flag);
-        t1 = (s32)(func_01ffa6b4() >> 16);
+    now = (s32)(OS_GetTick() >> 16);
+    while (sIpLinkCheckCallback() != 0 && b != 0 && s->state == 4 && (s32)(OS_GetTick() >> 16) - now < 0x9f) {
+        prev = s->sendNext;
+        Tcp_SendTwoBuffers(a, b, c, d, s, flag);
+        t1 = (s32)(OS_GetTick() >> 16);
         for (;;) {
-            func_ov065_02264c20();
-            if (data_ov065_0228ebac() == 0) break;
+            IpStack_Yield();
+            if (sIpLinkCheckCallback() == 0) break;
             if (s->state != 4) break;
-            if (s->unk_28 == s->unk_30) break;
-            if ((s32)(func_01ffa6b4() >> 16) - t1 >= 0xf) break;
-            if (flag != 0 && s->unk_2c != 0) break;
+            if (s->sendNext == s->ackedSeq) break;
+            if ((s32)(OS_GetTick() >> 16) - t1 >= 0xf) break;
+            if (flag != 0 && s->peerWindow != 0) break;
         }
-        sent = s->unk_30 - prev;
+        sent = s->ackedSeq - prev;
         total += sent;
         if (sent != 0) {
-            now = (s32)(func_01ffa6b4() >> 16);
+            now = (s32)(OS_GetTick() >> 16);
         }
-        s->unk_28 = s->unk_30;
-        if (s->state == 4 && s->unk_2c == 0 && sent == 0) {
+        s->sendNext = s->ackedSeq;
+        if (s->state == 4 && s->peerWindow == 0 && sent == 0) {
             if (flag == 0) {
-                t1 = (s32)(func_01ffa6b4() >> 16);
-                while (data_ov065_0228ebac() != 0 && (s32)(func_01ffa6b4() >> 16) - t1 < 0xf) {
-                    func_ov065_02264c20();
-                    if (s->unk_2c != 0) break;
+                t1 = (s32)(OS_GetTick() >> 16);
+                while (sIpLinkCheckCallback() != 0 && (s32)(OS_GetTick() >> 16) - t1 < 0xf) {
+                    IpStack_Yield();
+                    if (s->peerWindow != 0) break;
                 }
-                if (s->unk_2c == 0) {
+                if (s->peerWindow == 0) {
                     flag = 1;
                 }
             }
@@ -2483,69 +2279,69 @@ u32 func_ov065_0226242c(u8 *a, u32 b, u8 *c, u32 d, Sess *s) {
     return total;
 }
 
-u32 func_ov065_022623a4(u8 *a, u32 b, u8 *c, u32 d) {
+u32 IpSoc_WriteTwo(u8 *a, u32 b, u8 *c, u32 d) {
     u32 r;
-    Sess *s = data_021fcc2c.cur->sess;
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         u8 st = s->state;
         if (st == 10) {
             if (b != 0) {
-                func_ov065_02263e4c(a, b, s);
+                Udp_Send(a, b, s);
             }
             if (d != 0) {
-                func_ov065_02263e4c(c, d, s);
+                Udp_Send(c, d, s);
             }
             r = b + d;
         } else if (st == 11) {
             if (b != 0) {
-                func_ov065_02263f24(a, b, s);
+                Icmp_SendEchoRequest(a, b, s);
             }
             if (d != 0) {
-                func_ov065_02263f24(c, d, s);
+                Icmp_SendEchoRequest(c, d, s);
             }
             r = b + d;
         } else {
-            if (s->unk_09 != 0) {
-                r = func_ov065_02264dd4(a, b, c, d, s);
+            if (s->useSsl != 0) {
+                r = Ssl_Write(a, b, c, d, s);
             } else {
-                r = func_ov065_0226242c(a, b, c, d, s);
+                r = Tcp_Write(a, b, c, d, s);
             }
         }
-        if (data_ov065_0228eb88 == 0) {
+        if (sLinkSendError == 0) {
             return r;
         }
     }
     return 0;
 }
 
-u32 func_ov065_02262334(u32 a, u32 b) {
-    Sess *s = data_021fcc2c.cur->sess;
+u32 IpSoc_Write(u32 a, u32 b) {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         u32 r;
-        if (s->unk_60 != 0) {
-            r = func_ov065_022623a4(s->unk_5c, s->unk_60, (u8 *)a, b);
-            if (r < s->unk_60) {
-                func_021289b4(s->unk_5c, s->unk_5c + r, s->unk_60 - r);
-                s->unk_60 = s->unk_60 - r;
+        if (s->pendingTxLen != 0) {
+            r = IpSoc_WriteTwo(s->pendingTx, s->pendingTxLen, (u8 *)a, b);
+            if (r < s->pendingTxLen) {
+                memmove(s->pendingTx, s->pendingTx + r, s->pendingTxLen - r);
+                s->pendingTxLen = s->pendingTxLen - r;
                 return 0;
             }
-            r = r - s->unk_60;
-            s->unk_60 = 0;
+            r = r - s->pendingTxLen;
+            s->pendingTxLen = 0;
             return r;
         }
-        return func_ov065_022623a4((u8 *)a, b, 0, 0);
+        return IpSoc_WriteTwo((u8 *)a, b, 0, 0);
     }
     return 0;
 }
 
-s32 func_ov065_022622ec() {
-    Sess *s = data_021fcc2c.cur->sess;
+s32 IpSoc_GetReadLength() {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     s32 r;
     if (s != 0) {
-        if (s->unk_09 != 0) {
-            r = func_ov065_02264eac(s);
+        if (s->useSsl != 0) {
+            r = Ssl_GetReadLength(s);
         } else {
-            r = s->unk_44;
+            r = s->rxLen;
         }
         if (r == 0) {
             if (s->state != 4 && (u8)(s->state + 0xf6) > 1) {
@@ -2557,30 +2353,30 @@ s32 func_ov065_022622ec() {
     return 0;
 }
 
-void func_ov065_022622c0() {
-    Sess *s = data_021fcc2c.cur->sess;
+void IpSoc_FlushPending() {
+    Sess *s = (Sess *)data_021fcc2c.current->specific[0];
     if (s != 0) {
-        if (s->unk_60 != 0) {
-            func_ov065_022623a4(s->unk_5c, s->unk_60, 0, 0);
-            s->unk_60 = 0;
+        if (s->pendingTxLen != 0) {
+            IpSoc_WriteTwo(s->pendingTx, s->pendingTxLen, 0, 0);
+            s->pendingTxLen = 0;
         }
     }
 }
 
-void func_ov065_02262240() {
+void Arp_ProbeAddressConflict() {
     s32 start;
-    data_ov065_0228eba8();
-    if (data_ov065_0228ebd8 != 0) {
-        func_ov065_0226439c(data_ov065_0228ebd8);
-        func_021132e0(0x64);
-        func_ov065_0226439c(data_ov065_0228ebd8);
-        start = (s32)(func_01ffa6b4() >> 16);
-        while (data_ov065_0228ebac() != 0 && (s32)(func_01ffa6b4() >> 16) - start < 0x17) {
-            if (data_ov065_0228eb8c != 0) {
-                func_ov065_02264c44(4);
+    sAddrConfiguredCallback();
+    if (gOwnIp != 0) {
+        Arp_SendRequest(gOwnIp);
+        OS_Sleep(0x64);
+        Arp_SendRequest(gOwnIp);
+        start = (s32)(OS_GetTick() >> 16);
+        while (sIpLinkCheckCallback() != 0 && (s32)(OS_GetTick() >> 16) - start < 0x17) {
+            if (sArpConflict != 0) {
+                IpStack_ResetAddress(4);
                 return;
             }
-            func_021132e0(0x64);
+            OS_Sleep(0x64);
         }
     }
 }
@@ -2590,199 +2386,151 @@ void func_ov065_02262240() {
 
 namespace Unk_ov065_02261718_Ns {
 
-struct Unk_ov065_02261fd8_B {
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08;
-    u8 unk_09[7];
-    s32 unk_10;
-    u16 unk_14;
-    u16 unk_16;
-    u16 unk_18;
-    u16 unk_1a;
-    s32 unk_1c;
-    s32 unk_20;
-};
-
-struct Unk_ov065_02261fd8_N {
-    u8 unk_00[0x68];
-    Unk_ov065_02261fd8_N *unk_68;
-    u8 unk_6c[0x38];
-    Unk_ov065_02261fd8_B *unk_a4;
-};
-
-struct Unk_ov065_02261fd8_H {
-    u8 unk_00[8];
-    Unk_ov065_02261fd8_N *unk_08;
-};
-
-struct Unk_ov065_02261fd8_E {
-    s32 unk_00;
-    u8 unk_04[6];
-    u16 unk_0a;
-};
-
-struct Unk_ov065_02261fd8_Q {
-    u32 unk_00;
-    u16 unk_04;
-    u16 unk_06;
-    u8 unk_08[0x24];
-    s32 unk_2c;
-    u32 unk_30;
-    u32 unk_34;
-};
-
-struct Unk_ov065_02261e94_R {
-    u64 unk_00;
-    u64 unk_08;
-    u64 unk_10;
-};
-
 extern "C" {
-#define data_ov065_0228ef2a (data_ov065_0228ef00 + 0x2a)
-extern s32 (*data_ov065_0228ebac)(void);
-extern void (*data_ov065_0228ebcc)(void);
-extern void (*data_ov065_0228ebd0)(u32);
-extern u32 data_ov065_0228eba0;
-extern u32 data_ov065_0228eba4;
-extern u32 data_ov065_0228ebb0;
-extern u32 data_ov065_0228ebbc;
-extern u32 data_ov065_0228ebc0;
-extern u32 data_ov065_0228ebc4;
-extern u32 data_ov065_0228ebd4;
-extern u32 data_ov065_0228ebd8;
-extern u32 data_ov065_0228ebdc;
-extern u32 data_ov065_0228ebe0;
-extern u32 data_ov065_0228ebf4[];
-extern u32 data_ov065_0228ebfc[2];
-extern Unk_ov065_02261e94_R data_ov065_0228ec04;
-extern Unk_ov065_02261fd8_E data_ov065_0228ec58[8];
-extern u32 data_ov065_0228ecb8[25];
-extern u8 data_ov065_0228ef00[];
-extern u32 data_ov065_0228f080;
-extern Unk_ov065_02261fd8_Q data_ov065_0228f200[8];
-extern u8 data_ov065_0228b428[];
-extern Unk_ov065_02261fd8_H data_021fcc2c;
+#define data_ov065_0228ef2a (sTimerThreadTxBuf + 0x2a)
+extern s32 (*sIpLinkCheckCallback)(void);
+extern void (*sIpIdleCallback)(void);
+extern void (*sIpFree)(void *);
+extern u32 sIpStackStatus;
+extern u32 sNetmask;
+extern u32 sDhcpServerId;
+extern u32 sIpStackFlags;
+extern u32 sGateway;
+extern u32 sDhcpRetryTime;
+extern u32 sIpTimerStopRequest;
+extern u32 gOwnIp;
+extern u32 sDhcpLeaseTime;
+extern u32 sDhcpRequestedIp;
+extern u32 sOwnMac[];
+extern u32 sDnsServers[2];
+extern MATHRandContext32 sIpRandState;
+extern ArpCacheEntry sArpCache[8];
+extern u32 sTimerThreadSoc[25];
+extern u8 sTimerThreadTxBuf[];
+extern u32 sTimerThreadRxBuf;
+extern IpFragEntry sIpFragTable[8];
+extern u8 sDhcpHostName[];
+extern OSThreadInfo data_021fcc2c;
 
-u64 func_01ffa6b4(void);
-void func_02115fb4(void *dst, s32 v, s32 n);
-void func_02116048(const void *src, void *dst, s32 n);
-void func_021132e0(s32 ms);
-void func_0211366c(s32 a);
+u64 OS_GetTick(void);
+void MI_CpuFill8(void *dst, s32 v, s32 n);
+void MI_CpuCopy8(const void *src, void *dst, s32 n);
+void OS_Sleep(s32 ms);
+void OS_WakeupThreadDirect(void *a);
 u64 _ll_mul(u64 a, u64 b);
 
-void func_ov065_02262334(u8 *buf, u32 len);
-u8 *func_ov065_022626b8(u32 *len);
-void func_ov065_02262640(u32 len);
-s32 func_ov065_022622ec(void);
-void func_ov065_02264c20(void);
-void func_ov065_02264c44(s32 a);
-void func_ov065_02264d24(u32 a);
-s32 func_ov065_02264760(const void *a, const void *b);
-void func_ov065_022629b0(void);
-void func_ov065_02262a18(void);
-void func_ov065_022629d0(u32 a, u32 b, s32 c);
-void func_ov065_02262998(void);
-void func_ov065_02262a34(void);
-void func_ov065_02262a44(void *a);
-void func_ov065_02262240(void);
+void IpSoc_Write(u8 *buf, u32 len);
+u8 *IpSoc_Read(u32 *len);
+void IpSoc_Consume(u32 len);
+s32 IpSoc_GetReadLength(void);
+void IpStack_Yield(void);
+void IpStack_ResetAddress(s32 a);
+void Ssl_ExpireSessions(u32 a);
+s32 Eth_MacDiffers(const void *a, const void *b);
+void IpSoc_Init(void);
+void IpSoc_SetUdp(void);
+void IpSoc_Bind(u32 a, u32 b, s32 c);
+void IpSoc_Release(void);
+void IpSoc_Unuse(void);
+void IpSoc_Use(void *a);
+void Arp_ProbeAddressConflict(void);
 }
 
 static inline u32 RD16(const u8 *p) { return (u16)(p[0] << 8 | p[1]); }
 #define BS16(x) ((u16)((((s32)(x)) >> 8) | (((s32)(x)) << 8)))
 
 extern "C" {
-s32 func_ov065_022617e4(const u8 *name, u32 type, s32 xid);
-u32 func_ov065_022617bc(const u8 *p, const u8 **end);
-u8 *func_ov065_02261980(u8 *p);
-u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout);
-u8 *func_ov065_02261e74(u32 a, u32 size, u8 *dst, u32 used);
-u32 func_ov065_02261d60(u32 mode);
-u32 func_ov065_02261e00(void);
-s32 func_ov065_02261af8(u32 xid, s32 i);
-s32 func_ov065_022619f8(u32 *out, s32 mode);
-s32 func_ov065_02261aac(void);
-void func_ov065_022619a4(void);
+s32 Dns_Query(const u8 *name, u32 type, s32 xid);
+u32 IpAddr_ParseDecimal(const u8 *p, const u8 **end);
+u8 *Dns_SkipName(u8 *p);
+u8 *Dhcp_BuildHeader(u8 *buf, u32 msgtype, u32 *xidout);
+u8 *Dhcp_PadTo(u32 a, u32 size, u8 *dst, u32 used);
+u32 Dhcp_SendRequest(u32 mode);
+u32 Dhcp_SendDiscover(void);
+s32 Dhcp_WaitReply(u32 xid, s32 i);
+s32 Dhcp_Request(u32 *out, s32 mode);
+s32 Dhcp_Discover(void);
+void Dhcp_SendRelease(void);
 
 extern "C" {
-void func_ov065_02261fd8(void);
-u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout);
-u8 *func_ov065_02261e74(u32 a, u32 size, u8 *dst, u32 used);
-u32 func_ov065_02261e00(void);
-u32 func_ov065_02261d60(u32 mode);
-s32 func_ov065_02261af8(u32 xid, s32 i);
-s32 func_ov065_02261aac(void);
-s32 func_ov065_022619f8(u32 *out, s32 mode);
-void func_ov065_022619a4(void);
-u8 *func_ov065_02261980(u8 *p);
-s32 func_ov065_022617e4(const u8 *name, u32 type, s32 xid);
-u32 func_ov065_022617bc(const u8 *p, const u8 **end);
-s32 func_ov065_02261758(const u8 *s, u32 *out);
-s32 func_ov065_02261718(const u8 *a, const u8 *b, s32 c);
+void IpStack_TimerThreadMain(void);
+u8 *Dhcp_BuildHeader(u8 *buf, u32 msgtype, u32 *xidout);
+u8 *Dhcp_PadTo(u32 a, u32 size, u8 *dst, u32 used);
+u32 Dhcp_SendDiscover(void);
+u32 Dhcp_SendRequest(u32 mode);
+s32 Dhcp_WaitReply(u32 xid, s32 i);
+s32 Dhcp_Discover(void);
+s32 Dhcp_Request(u32 *out, s32 mode);
+void Dhcp_SendRelease(void);
+u8 *Dns_SkipName(u8 *p);
+s32 Dns_Query(const u8 *name, u32 type, s32 xid);
+u32 IpAddr_ParseDecimal(const u8 *p, const u8 **end);
+s32 IpAddr_Parse(const u8 *s, u32 *out);
+s32 Dns_QueryServer(const u8 *a, const u8 *b, s32 c);
 }
 
-void func_ov065_02261fd8(void) {
+void IpStack_TimerThreadMain(void) {
     s32 state;
     s32 first;
     u32 cnt;
     u32 now;
     s32 i;
-    Unk_ov065_02261fd8_E *e;
-    Unk_ov065_02261fd8_N *n;
+    ArpCacheEntry *e;
+    OSThread *n;
     s32 j;
-    Unk_ov065_02261fd8_Q *q;
+    IpFragEntry *q;
 
-    data_ov065_0228ebd4 = 0;
-    func_02115fb4(data_ov065_0228ecb8, 0, 0x64);
-    data_ov065_0228ecb8[15] = 0x180;
-    data_ov065_0228ecb8[16] = (u32)&data_ov065_0228f080;
-    data_ov065_0228ecb8[18] = 0x180;
-    data_ov065_0228ecb8[19] = (u32)&data_ov065_0228ef00;
-    func_ov065_02262a44(data_ov065_0228ecb8);
+    sIpTimerStopRequest = 0;
+    MI_CpuFill8(sTimerThreadSoc, 0, 0x64);
+    sTimerThreadSoc[15] = 0x180;
+    sTimerThreadSoc[16] = (u32)&sTimerThreadRxBuf;
+    sTimerThreadSoc[18] = 0x180;
+    sTimerThreadSoc[19] = (u32)&sTimerThreadTxBuf;
+    IpSoc_Use(sTimerThreadSoc);
     state = 0;
     first = 1;
     cnt = 1;
-    data_ov065_0228eba0 = 1;
+    sIpStackStatus = 1;
     for (;;) {
-        func_021132e0(1000);
-        if (data_ov065_0228ebd4 != 0) {
+        OS_Sleep(1000);
+        if (sIpTimerStopRequest != 0) {
             break;
         }
-        now = (u32)(func_01ffa6b4() >> 16);
-        if (data_ov065_0228ebac() != 0) {
+        now = (u32)(OS_GetTick() >> 16);
+        if (sIpLinkCheckCallback() != 0) {
             cnt--;
             if (cnt == 0) {
-                if ((data_ov065_0228ebbc & 1) != 0) {
+                if ((sIpStackFlags & 1) != 0) {
                     if (state == 0) {
-                        func_ov065_02262240();
+                        Arp_ProbeAddressConflict();
                         state = 1;
                     }
                 } else {
                     switch (state) {
                     case 0:
                         if (first != 0) {
-                            data_ov065_0228eba0 = 2;
+                            sIpStackStatus = 2;
                             first = 0;
                         }
-                        if (func_ov065_02261aac() == 0 || func_ov065_022619f8(&cnt, 0) == 0) {
-                            func_ov065_02262240();
+                        if (Dhcp_Discover() == 0 || Dhcp_Request(&cnt, 0) == 0) {
+                            Arp_ProbeAddressConflict();
                             state = 3;
                         } else {
                             state = 1;
                         }
                         break;
                     case 1:
-                        if (func_ov065_022619f8(&cnt, 1) == 0) {
+                        if (Dhcp_Request(&cnt, 1) == 0) {
                             if (cnt < 0x3c) {
                                 state = 2;
                             }
                         }
                         break;
                     case 2:
-                        if (func_ov065_022619f8(&cnt, 2) != 0) {
+                        if (Dhcp_Request(&cnt, 2) != 0) {
                             state = 1;
                         } else if (cnt < 0x3c) {
-                            func_ov065_02264c44(3);
+                            IpStack_ResetAddress(3);
                             state = 0;
                             cnt = 1;
                         }
@@ -2793,71 +2541,71 @@ void func_ov065_02261fd8(void) {
                 }
             }
         } else {
-            func_ov065_02264c44(1);
+            IpStack_ResetAddress(1);
             state = 0;
             cnt = 1;
         }
-        for (i = 0, e = data_ov065_0228ec58; i < 8; e++, i++) {
-            if (e->unk_00 != 0) {
-                if ((s16)(now - e->unk_0a) > 0x3bd) {
-                    e->unk_00 = 0;
+        for (i = 0, e = sArpCache; i < 8; e++, i++) {
+            if (e->ipAddr != 0) {
+                if ((s16)(now - e->lastUsed) > 0x3bd) {
+                    e->ipAddr = 0;
                 }
             }
         }
-        for (n = data_021fcc2c.unk_08; n != NULL; n = n->unk_68) {
-            Unk_ov065_02261fd8_B *b = n->unk_a4;
-            if (b != NULL && b->unk_00 != 0) {
-                u32 st = b->unk_08;
-                if (st == 3 && (s32)(now - b->unk_10) > 0x27) {
-                    b->unk_08 = 1;
-                    b->unk_18 = b->unk_1a;
-                    b->unk_1c = b->unk_20;
-                } else if (st == 2 && (s32)(now - b->unk_10) > 0x27) {
-                    if (b->unk_04 == 1) {
-                        b->unk_08 = 0;
-                        b->unk_04 = 0;
-                        func_0211366c(b->unk_00);
+        for (n = data_021fcc2c.list; n != NULL; n = n->next) {
+            IpSocket *b = (IpSocket *)n->specific[0];
+            if (b != NULL && b->ownerThread != 0) {
+                u32 st = b->state;
+                if (st == 3 && (s32)(now - b->handshakeTime) > 0x27) {
+                    b->state = 1;
+                    b->remotePort = b->boundRemotePort;
+                    b->remoteAddr = b->boundRemoteAddr;
+                } else if (st == 2 && (s32)(now - b->handshakeTime) > 0x27) {
+                    if (b->waitReason == 1) {
+                        b->state = 0;
+                        b->waitReason = 0;
+                        OS_WakeupThreadDirect(b->ownerThread);
                     }
                 }
             }
         }
-        for (j = 0, q = data_ov065_0228f200; j < 8; q++, j++) {
-            if (q->unk_04 != 0) {
-                if ((s32)(now - q->unk_2c) > 0xef) {
-                    data_ov065_0228ebd0(q->unk_34);
-                    q->unk_04 = 0;
+        for (j = 0, q = sIpFragTable; j < 8; q++, j++) {
+            if (q->cnt != 0) {
+                if ((s32)(now - q->tick) > 0xef) {
+                    sIpFree(q->buf);
+                    q->cnt = 0;
                 }
             }
         }
-        func_ov065_02264d24(now);
-        if (data_ov065_0228ebcc != NULL) {
-            data_ov065_0228ebcc();
+        Ssl_ExpireSessions(now);
+        if (sIpIdleCallback != NULL) {
+            sIpIdleCallback();
         }
     }
-    if ((data_ov065_0228ebbc & 1) == 0 && state != 3) {
-        func_ov065_022619a4();
+    if ((sIpStackFlags & 1) == 0 && state != 3) {
+        Dhcp_SendRelease();
     }
-    func_ov065_02262a34();
+    IpSoc_Unuse();
 }
 
-u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout) {
+u8 *Dhcp_BuildHeader(u8 *buf, u32 msgtype, u32 *xidout) {
     u64 m;
     u32 hi;
-    func_02115fb4(buf, 0, 0xec);
+    MI_CpuFill8(buf, 0, 0xec);
     *(u16 *)(buf + 0) = 0x101;
     buf[2] = 6;
-    m = _ll_mul(data_ov065_0228ec04.unk_08, data_ov065_0228ec04.unk_00);
-    data_ov065_0228ec04.unk_00 = data_ov065_0228ec04.unk_10 + m;
-    m = data_ov065_0228ec04.unk_00;
+    m = _ll_mul(sIpRandState.mul, sIpRandState.x);
+    sIpRandState.x = sIpRandState.add + m;
+    m = sIpRandState.x;
     hi = (u32)(m >> 32);
     if (xidout != 0) {
         *xidout = hi;
     }
     *(u16 *)(buf + 4) = BS16((u16)(hi >> 16));
     *(u16 *)(buf + 6) = BS16((u16)hi);
-    *(u16 *)(buf + 0xc) = BS16((u16)(data_ov065_0228ebd8 >> 16));
-    *(u16 *)(buf + 0xe) = BS16((u16)data_ov065_0228ebd8);
-    func_02116048(data_ov065_0228ebf4, buf + 0x1c, 6);
+    *(u16 *)(buf + 0xc) = BS16((u16)(gOwnIp >> 16));
+    *(u16 *)(buf + 0xe) = BS16((u16)gOwnIp);
+    MI_CpuCopy8(sOwnMac, buf + 0x1c, 6);
     *(u16 *)(buf + 0xec) = 0x8263;
     *(u16 *)(buf + 0xee) = 0x6353;
     *(u16 *)(buf + 0xf0) = 0x135;
@@ -2865,10 +2613,10 @@ u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout) {
     buf[0xf3] = 0x3d;
     buf[0xf4] = 7;
     buf[0xf5] = 1;
-    func_02116048(data_ov065_0228ebf4, buf + 0xf6, 6);
+    MI_CpuCopy8(sOwnMac, buf + 0xf6, 6);
     buf[0xfc] = 0xc;
     buf[0xfd] = 0xa;
-    func_02116048(data_ov065_0228b428, buf + 0xfe, 0xa);
+    MI_CpuCopy8(sDhcpHostName, buf + 0xfe, 0xa);
     buf[0x108] = 0x37;
     buf[0x109] = 3;
     buf[0x10a] = 1;
@@ -2877,62 +2625,62 @@ u8 *func_ov065_02261e94(u8 *buf, u32 msgtype, u32 *xidout) {
     return buf + 0x10d;
 }
 
-u8 *func_ov065_02261e74(u32 a, u32 size, u8 *dst, u32 used) {
+u8 *Dhcp_PadTo(u32 a, u32 size, u8 *dst, u32 used) {
     if (used < size) {
         u32 n = size - used;
-        func_02115fb4(dst, a, n);
+        MI_CpuFill8(dst, a, n);
         dst += n;
     }
     return dst;
 }
 
-u32 func_ov065_02261e00(void) {
+u32 Dhcp_SendDiscover(void) {
     u32 xid;
     u8 *const buf = data_ov065_0228ef2a;
-    u8 *p = func_ov065_02261e94(buf, 1, &xid);
-    if (data_ov065_0228ebe0 != 0) {
+    u8 *p = Dhcp_BuildHeader(buf, 1, &xid);
+    if (sDhcpRequestedIp != 0) {
         p[0] = 0x32;
         p[1] = 4;
-        p[2] = (u16)(data_ov065_0228ebe0 >> 16) >> 8;
-        p[3] = data_ov065_0228ebe0 >> 16;
-        p[4] = (u16)data_ov065_0228ebe0 >> 8;
-        p[5] = data_ov065_0228ebe0;
+        p[2] = (u16)(sDhcpRequestedIp >> 16) >> 8;
+        p[3] = sDhcpRequestedIp >> 16;
+        p[4] = (u16)sDhcpRequestedIp >> 8;
+        p[5] = sDhcpRequestedIp;
         p += 6;
     }
     *p = 0xff;
     p++;
-    u8 *e = func_ov065_02261e74(0, 0x12c, p, p - buf);
-    func_ov065_02262334(buf, e - buf);
+    u8 *e = Dhcp_PadTo(0, 0x12c, p, p - buf);
+    IpSoc_Write(buf, e - buf);
     return xid;
 }
 
-u32 func_ov065_02261d60(u32 mode) {
+u32 Dhcp_SendRequest(u32 mode) {
     u32 xid;
     u8 *const buf = data_ov065_0228ef2a;
-    u8 *p = func_ov065_02261e94(buf, 3, &xid);
+    u8 *p = Dhcp_BuildHeader(buf, 3, &xid);
     if (mode == 0) {
         p[0] = 0x32;
         p[1] = 4;
-        p[2] = (u16)(data_ov065_0228ebe0 >> 16) >> 8;
-        p[3] = data_ov065_0228ebe0 >> 16;
-        p[4] = (u16)data_ov065_0228ebe0 >> 8;
-        p[5] = data_ov065_0228ebe0;
+        p[2] = (u16)(sDhcpRequestedIp >> 16) >> 8;
+        p[3] = sDhcpRequestedIp >> 16;
+        p[4] = (u16)sDhcpRequestedIp >> 8;
+        p[5] = sDhcpRequestedIp;
         p[6] = 0x36;
         p[7] = 4;
-        p[8] = (u16)(data_ov065_0228ebb0 >> 16) >> 8;
-        p[9] = data_ov065_0228ebb0 >> 16;
-        p[10] = (u16)data_ov065_0228ebb0 >> 8;
-        p[11] = data_ov065_0228ebb0;
+        p[8] = (u16)(sDhcpServerId >> 16) >> 8;
+        p[9] = sDhcpServerId >> 16;
+        p[10] = (u16)sDhcpServerId >> 8;
+        p[11] = sDhcpServerId;
         p += 12;
     }
     *p = 0xff;
     p++;
-    u8 *e = func_ov065_02261e74(0, 0x12c, p, p - buf);
-    func_ov065_02262334(buf, e - buf);
+    u8 *e = Dhcp_PadTo(0, 0x12c, p, p - buf);
+    IpSoc_Write(buf, e - buf);
     return xid;
 }
 
-s32 func_ov065_02261af8(u32 xid, s32 i) {
+s32 Dhcp_WaitReply(u32 xid, s32 i) {
     u32 len;
     s32 result;
     u32 start;
@@ -2940,19 +2688,19 @@ s32 func_ov065_02261af8(u32 xid, s32 i) {
     u8 *p;
 
     timeout = (i + 1) * 15;
-    start = (u32)(func_01ffa6b4() >> 16);
+    start = (u32)(OS_GetTick() >> 16);
     result = 0;
     goto test;
 loop:
-    if (func_ov065_022622ec() == 0) {
-        func_ov065_02264c20();
+    if (IpSoc_GetReadLength() == 0) {
+        IpStack_Yield();
         goto test;
     }
     {
-        p = func_ov065_022626b8(&len);
+        p = IpSoc_Read(&len);
         if (len > 0xf0 && p[0] == 2) {
             u32 rx = (BS16(*(u16 *)(p + 4)) << 16) | BS16(*(u16 *)(p + 6));
-            if (xid == rx && func_ov065_02264760(p + 0x1c, data_ov065_0228ebf4) == 0) {
+            if (xid == rx && Eth_MacDiffers(p + 0x1c, sOwnMac) == 0) {
                 u8 *o;
                 u8 *end;
                 u32 ip;
@@ -2969,36 +2717,36 @@ loop:
                         }
                         switch (c) {
                         case 1:
-                            data_ov065_0228eba4 = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
+                            sNetmask = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
                             break;
                         case 3:
-                            data_ov065_0228ebc0 = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
+                            sGateway = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
                             break;
                         case 6:
                             if (o[0] < 8) {
-                                data_ov065_0228ebfc[1] = 0;
+                                sDnsServers[1] = 0;
                             } else {
-                                data_ov065_0228ebfc[1] = ((u16)(o[5] << 8 | o[6]) << 16) | (u16)(o[7] << 8 | o[8]);
+                                sDnsServers[1] = ((u16)(o[5] << 8 | o[6]) << 16) | (u16)(o[7] << 8 | o[8]);
                             }
-                            data_ov065_0228ebfc[0] = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
+                            sDnsServers[0] = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
                             break;
                         case 0x33:
-                            data_ov065_0228ebdc = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
+                            sDhcpLeaseTime = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
                             break;
                         case 0x35:
                             switch (o[1]) {
                             case 2:
-                                data_ov065_0228ebe0 = ip;
+                                sDhcpRequestedIp = ip;
                                 result = 1;
                                 break;
                             case 5:
-                                data_ov065_0228ebd8 = ip;
+                                gOwnIp = ip;
                                 result = 2;
                                 break;
                             }
                             break;
                         case 0x36:
-                            data_ov065_0228ebb0 = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
+                            sDhcpServerId = ((u16)(o[1] << 8 | o[2]) << 16) | (u16)(o[3] << 8 | o[4]);
                             break;
                         }
                         o += o[0] + 1;
@@ -3013,11 +2761,11 @@ loop:
                 }
             }
         }
-        func_ov065_02262640(len);
+        IpSoc_Consume(len);
     }
 test:
-    if (data_ov065_0228ebac() != 0 && result == 0) {
-        u32 now = (u32)(func_01ffa6b4() >> 16);
+    if (sIpLinkCheckCallback() != 0 && result == 0) {
+        u32 now = (u32)(OS_GetTick() >> 16);
         if ((s32)(now - start) < timeout) {
             goto loop;
         }
@@ -3025,56 +2773,56 @@ test:
     return result;
 }
 
-s32 func_ov065_02261aac(void) {
+s32 Dhcp_Discover(void) {
     s32 r;
     s32 i;
-    func_ov065_022629b0();
-    func_ov065_02262a18();
-    func_ov065_022629d0(0x44, 0x43, -1);
+    IpSoc_Init();
+    IpSoc_SetUdp();
+    IpSoc_Bind(0x44, 0x43, -1);
     for (i = 0; i < 4; i++) {
-        r = func_ov065_02261af8(func_ov065_02261e00(), i);
+        r = Dhcp_WaitReply(Dhcp_SendDiscover(), i);
         if (r == 1) {
             break;
         }
     }
-    func_ov065_02262998();
+    IpSoc_Release();
     if (r == 1) {
         return 1;
     }
     return 0;
 }
 
-s32 func_ov065_022619f8(u32 *out, s32 mode) {
+s32 Dhcp_Request(u32 *out, s32 mode) {
     s32 r;
     s32 i;
     u32 v;
-    func_ov065_022629b0();
-    func_ov065_02262a18();
+    IpSoc_Init();
+    IpSoc_SetUdp();
     if (mode == 1) {
-        func_ov065_022629d0(0x44, 0x43, data_ov065_0228ebb0);
+        IpSoc_Bind(0x44, 0x43, sDhcpServerId);
     } else {
-        func_ov065_022629d0(0x44, 0x43, -1);
+        IpSoc_Bind(0x44, 0x43, -1);
     }
     for (i = 0; i < 4; i++) {
-        r = func_ov065_02261af8(func_ov065_02261d60(mode), i);
+        r = Dhcp_WaitReply(Dhcp_SendRequest(mode), i);
         if (r != 0) {
             break;
         }
     }
-    func_ov065_02262998();
+    IpSoc_Release();
     if (r == 2) {
-        *out = data_ov065_0228ebdc >> 1;
-        data_ov065_0228ebc4 = (data_ov065_0228ebdc * 3) >> 3;
+        *out = sDhcpLeaseTime >> 1;
+        sDhcpRetryTime = (sDhcpLeaseTime * 3) >> 3;
         return 1;
     }
-    v = data_ov065_0228ebc4 >> 1;
-    data_ov065_0228ebc4 = v;
+    v = sDhcpRetryTime >> 1;
+    sDhcpRetryTime = v;
     *out = v;
     switch (mode) {
     case 1:
         if (v < 0x3c) {
             *out = 1;
-            data_ov065_0228ebc4 = data_ov065_0228ebdc >> 3;
+            sDhcpRetryTime = sDhcpLeaseTime >> 3;
         }
         break;
     case 2:
@@ -3086,20 +2834,20 @@ s32 func_ov065_022619f8(u32 *out, s32 mode) {
     return 0;
 }
 
-void func_ov065_022619a4(void) {
-    func_ov065_022629b0();
-    func_ov065_02262a18();
-    func_ov065_022629d0(0x44, 0x43, data_ov065_0228ebb0);
+void Dhcp_SendRelease(void) {
+    IpSoc_Init();
+    IpSoc_SetUdp();
+    IpSoc_Bind(0x44, 0x43, sDhcpServerId);
     u8 *const buf = data_ov065_0228ef2a;
-    u8 *p = func_ov065_02261e94(buf, 7, 0);
+    u8 *p = Dhcp_BuildHeader(buf, 7, 0);
     *p = 0xff;
     p++;
-    u8 *e = func_ov065_02261e74(0, 0x12c, p, p - buf);
-    func_ov065_02262334(buf, e - buf);
-    func_ov065_02262998();
+    u8 *e = Dhcp_PadTo(0, 0x12c, p, p - buf);
+    IpSoc_Write(buf, e - buf);
+    IpSoc_Release();
 }
 
-u8 *func_ov065_02261980(u8 *p) {
+u8 *Dns_SkipName(u8 *p) {
     u32 c = *p++;
     while (c != 0) {
         if ((c & 0xc0) == 0xc0) {
@@ -3113,7 +2861,7 @@ u8 *func_ov065_02261980(u8 *p) {
     return p;
 }
 
-s32 func_ov065_022617e4(const u8 *name, u32 type, s32 xid) {
+s32 Dns_Query(const u8 *name, u32 type, s32 xid) {
     struct {
         u32 len;
         u16 id;
@@ -3165,18 +2913,18 @@ s32 func_ov065_022617e4(const u8 *name, u32 type, s32 xid) {
     w[2] = type;
     w[3] = 0;
     w[4] = 1;
-    func_ov065_02262334((u8 *)&l.id, (w + 5) - (u8 *)&l.id);
+    IpSoc_Write((u8 *)&l.id, (w + 5) - (u8 *)&l.id);
 
     result = 0;
-    u32 start = (u32)(func_01ffa6b4() >> 16);
+    u32 start = (u32)(OS_GetTick() >> 16);
     goto test;
 loop:
-    if (func_ov065_022622ec() == 0) {
-        func_ov065_02264c20();
+    if (IpSoc_GetReadLength() == 0) {
+        IpStack_Yield();
         goto test;
     }
     {
-        u8 *p = func_ov065_022626b8(&l.len);
+        u8 *p = IpSoc_Read(&l.len);
         if (l.len > 0xc) {
             u32 id = BS16(*(u16 *)p);
             if (xid == id) {
@@ -3194,7 +2942,7 @@ loop:
                     n = qd - 1;
                     if (qd != 0) {
                         do {
-                            q = func_ov065_02261980(q) + 4;
+                            q = Dns_SkipName(q) + 4;
                         } while (n--);
                     }
                     while (q < end) {
@@ -3203,7 +2951,7 @@ loop:
                         u8 *b;
                         u8 *pa;
                         u8 *pb;
-                        q = func_ov065_02261980(q);
+                        q = Dns_SkipName(q);
                         rdl = RD16(q + 8);
                         if (type == RD16(q)) {
                             a = q + 8;
@@ -3218,11 +2966,11 @@ loop:
                 }
             }
         }
-        func_ov065_02262640(l.len);
+        IpSoc_Consume(l.len);
     }
 test:
-    if (data_ov065_0228ebac() != 0 && result == 0) {
-        u32 now = (u32)(func_01ffa6b4() >> 16);
+    if (sIpLinkCheckCallback() != 0 && result == 0) {
+        u32 now = (u32)(OS_GetTick() >> 16);
         if ((s32)(now - start) < 15) {
             goto loop;
         }
@@ -3230,7 +2978,7 @@ test:
     return result;
 }
 
-u32 func_ov065_022617bc(const u8 *p, const u8 **end) {
+u32 IpAddr_ParseDecimal(const u8 *p, const u8 **end) {
     *end = p;
     u32 n = 0;
     for (;;) {
@@ -3245,13 +2993,13 @@ u32 func_ov065_022617bc(const u8 *p, const u8 **end) {
     return n;
 }
 
-s32 func_ov065_02261758(const u8 *s, u32 *out) {
+s32 IpAddr_Parse(const u8 *s, u32 *out) {
     const u8 *end;
     u32 acc = 0;
     s32 i = 0;
     do {
         acc <<= 8;
-        u32 v = func_ov065_022617bc(s, &end);
+        u32 v = IpAddr_ParseDecimal(s, &end);
         if (s == end) {
             return 0;
         }
@@ -3266,16 +3014,16 @@ s32 func_ov065_02261758(const u8 *s, u32 *out) {
     return 1;
 }
 
-s32 func_ov065_02261718(const u8 *a, const u8 *b, s32 c) {
+s32 Dns_QueryServer(const u8 *a, const u8 *b, s32 c) {
     s32 r;
     if (b == NULL) {
         return -1;
     } else {
-        func_ov065_022629b0();
-        func_ov065_02262a18();
-        func_ov065_022629d0(0, 0x35, (s32)b);
-        r = func_ov065_022617e4(a, 1, c);
-        func_ov065_02262998();
+        IpSoc_Init();
+        IpSoc_SetUdp();
+        IpSoc_Bind(0, 0x35, (s32)b);
+        r = Dns_Query(a, 1, c);
+        IpSoc_Release();
     }
     return r;
 }
@@ -3287,24 +3035,19 @@ s32 func_ov065_02261718(const u8 *a, const u8 *b, s32 c) {
 
 namespace Unk_ov065_02260de4_Ns {
 
-struct Unk_ov065_02261638_Rng {
-    u64 unk_00;
-    s64 unk_08;
-    s64 unk_10;
-};
 
 extern "C" {
 s64 _ll_mul(s64, s64);
-s32 func_ov065_02261718(s32, u32, u32);
-s32 func_ov065_02261758(s32, s32 *);
-extern u32 data_ov065_0228ebfc[2];
-extern Unk_ov065_02261638_Rng data_ov065_0228ec04;
+s32 Dns_QueryServer(s32, u32, u32);
+s32 IpAddr_Parse(s32, s32 *);
+extern u32 sDnsServers[2];
+extern IpRandStateSignedStep sIpRandState;
 
 extern "C" {
-s32 func_ov065_02261638(s32 self);
+s32 Dns_Resolve(s32 self);
 }
 
-s32 func_ov065_02261638(s32 self) {
+s32 Dns_Resolve(s32 self) {
     struct {
         u8 flag[2];
         s32 res;
@@ -3315,12 +3058,12 @@ s32 func_ov065_02261638(s32 self) {
     u16 *pp;
     u32 *pt;
     s32 j;
-    Unk_ov065_02261638_Rng *g = &data_ov065_0228ec04;
-    g->unk_00 = _ll_mul(g->unk_08, g->unk_00) + g->unk_10;
-    l.port[0] = (u32)(((g->unk_00 >> 32) * 0x10000) >> 32);
-    g->unk_00 = _ll_mul(g->unk_08, g->unk_00) + g->unk_10;
-    l.port[1] = (u32)(((g->unk_00 >> 32) * 0x10000) >> 32);
-    if (func_ov065_02261758(self, &l.res)) {
+    IpRandStateSignedStep *g = &sIpRandState;
+    g->x = _ll_mul(g->mul, g->x) + g->add;
+    l.port[0] = (u32)(((g->x >> 32) * 0x10000) >> 32);
+    g->x = _ll_mul(g->mul, g->x) + g->add;
+    l.port[1] = (u32)(((g->x >> 32) * 0x10000) >> 32);
+    if (IpAddr_Parse(self, &l.res)) {
         return l.res;
     }
     l.flag[0] = 1;
@@ -3329,10 +3072,10 @@ s32 func_ov065_02261638(s32 self) {
         j = 0;
         pf = l.flag;
         pp = l.port;
-        pt = data_ov065_0228ebfc;
+        pt = sDnsServers;
         for (; j < 2; pf++, pp++, pt++, j++) {
             if (*pf) {
-                l.res = func_ov065_02261718(self, *pt, *pp);
+                l.res = Dns_QueryServer(self, *pt, *pp);
                 if (l.res != 0 && l.res != -1) {
                     goto done;
                 }

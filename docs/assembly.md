@@ -22,7 +22,7 @@ assembly. It gets a C or C++ attempt, and if it does not match it stays unlinked
 ## How assembly units are written
 
 * One `.s` file per routine or group of routines, under `src/<module>/`, listed in `delinks.txt` as a `complete`
-  unit like any other. There are 69 of them: 52 in `autoload_2`, 13 in ITCM, 3 in main (the secure area, crt0,
+  unit like any other. There are 70 of them: 53 in `autoload_2`, 13 in ITCM, 3 in main (the secure area, crt0,
   and the register-dump routine at 0x0206d470) and 1 in ov065 (two ARM `clz` helpers of the network library).
 * They are assembled with the toolchain's own assembler, `mwasmarm -proc arm5TE -little`, from the same package
   as the compiler (`AS_FLAGS` in `tools/mwcc_config.py`, rule `mwasm` in `tools/configure.py`). A
@@ -78,10 +78,10 @@ and the DSi builds were tried. They behave like the missing 1.2/sp1 build that t
 
 | Function | Overlay, address, size | Closest C version |
 |---|---|---|
-| `func_ov001_0220cd24` (`src/ov001/unk_ov001_0220cd24.cpp`) | ov001, 0x0220cd24, 0x300, ARM | 2 bytes differ: the jump-table guard comes out as `cmp r0, #20` / `addls` instead of the original lower-bound-only `cmp r0, #0` / `addge` |
-| `Unk_ov054_0225b9c4::func_ov054_022595c4` (`src/ov054/unk_ov054_02258de0.cpp`) | ov054, 0x022595c4, 0x19c, Thumb | 246 bytes differ: mwcc builds a 17-entry table for cases 0..16 under a compare tree rooted at 0x52; the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39 |
-| `Unk_ov073_02272430::vfunc_18` (`src/ov073/unk_ov073_022713c0.cpp`) | ov073, 0x02271484, 0x1e0, Thumb | 54 bytes differ: the original dispatches cases 0..12 through a table guarded only by `cmp #0; bge`; mwcc emits `cmp #12; bls`, extra zero-extension shifts and a different table layout |
-| `Unk_ov092_02291ec8::func_ov092_02291a44` (`src/ov092/unk_ov092_022918e0.cpp`) | ov092, 0x02291a44, 0x212, Thumb | 78 bytes differ: mwcc roots the first switch's tree at 0x18 with a bounds-checked 0x1a..0x27 table; the original roots it at 0x23 with a 0x1a..0x23 table that has only a lower-bound check |
+| `WfcTransfer_Task` (`src/ov001/unk_ov001_0220cd24.cpp`) | ov001, 0x0220cd24, 0x300, ARM | 2 bytes differ: the jump-table guard comes out as `cmp r0, #20` / `addls` instead of the original lower-bound-only `cmp r0, #0` / `addge` |
+| `SpNpcPellyPhyllisTalk::onPostOfficeChoice` (`src/ov054/unk_ov054_02258de0.cpp`) | ov054, 0x022595c4, 0x19c, Thumb | 246 bytes differ: mwcc builds a 17-entry table for cases 0..16 under a compare tree rooted at 0x52; the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39 |
+| `SpNpcJoanTalk::onChoice` (`src/ov073/unk_ov073_022713c0.cpp`) | ov073, 0x02271484, 0x1e0, Thumb | 54 bytes differ: the original dispatches cases 0..12 through a table guarded only by `cmp #0; bge`; mwcc emits `cmp #12; bls`, extra zero-extension shifts and a different table layout |
+| `MenuLauncher::updateOpenRequested` (`src/ov092/unk_ov092_022918e0.cpp`) | ov092, 0x02291a44, 0x212, Thumb | 78 bytes differ: mwcc roots the first switch's tree at 0x18 with a bounds-checked 0x1a..0x27 table; the original roots it at 0x23 with a 0x1a..0x23 table that has only a lower-bound check |
 
 The ov001 routine is an `asm` function. The three Thumb ones are one `asm` block forming the whole body of an
 ordinary member function: mwcc emits `asm` functions ahead of every other function of the file, which would move
@@ -90,7 +90,7 @@ original prologue and epilogue from the compiler. The comments in each file expl
 encoded. If a compiler build that reproduces these switches becomes available, the C versions replace the
 assembly.
 
-### The inline `clz` helper in ov067
+### The inline `clz` helper (ov067, NitroSystem g2d)
 
 `src/ov067/unk_ov067_0225f1a0.cpp` defines
 
@@ -102,6 +102,22 @@ static inline u32 Clz(u32 x) {
 }
 ```
 
-for the ARM function `func_ov067_0225fe1c`. This is the NitroSDK's own form of `MATH_CountLeadingZeros`
-(`math.h`), a one-instruction inline `asm` in the SDK itself; mwcc 1.2 has no `clz` intrinsic. It is the only
-inline `asm` in a C or C++ file.
+for the ARM function `WlxWm_MeasureChannelStep`. This is the NitroSDK's own form of `MATH_CountLeadingZeros`
+(`math.h`), a one-instruction inline `asm` in the SDK itself; mwcc 1.2 has no `clz` intrinsic.
+
+The NitroSystem g2d units `src/autoload_2/unk_02101de8.c` (`NNS_G2dArrangeOBJ1D`),
+`src/autoload_2/unk_021022ac.c` (`NNS_G2dCharCanvasInitForOBJ1D`) and `src/autoload_2/unk_021030bc.c`
+(`GetCharIndex1D`) use the same instruction through the SDK's
+`MATH_ILog2`, with the helper in its in-place form:
+
+```c
+static inline u32 MATH_CountLeadingZerosInline(u32 x) {
+    asm { clz x, x }
+    return x;
+}
+```
+
+The original has `movlt r4, r2; clzlt r4, r4; rsblt ip, r4, #0x1f` for `(w >= 8) ? 3 : MATH_ILog2(w)`: the copy
+of the argument and the conditional `clz` are what mwcc makes of this inline (a separate result variable gives
+`clz r4, r2`). These four files are the only inline `asm` in C or C++ files (apart from the `asm` routine bodies
+listed under "Four switch routines" above).

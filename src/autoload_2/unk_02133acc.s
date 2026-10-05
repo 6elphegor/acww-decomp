@@ -8,8 +8,8 @@
 	.arm
 
 ; _fp_init: floating-point emulation start-up hook, empty (`bx lr`); called from the crt0 (0x020008e4).
-	.global func_02133acc
-	.type func_02133acc, @function
-	.size func_02133acc, 0x4
-func_02133acc:
+	.global _fp_init
+	.type _fp_init, @function
+	.size _fp_init, 0x4
+_fp_init:
 	bx lr

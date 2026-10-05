@@ -13,17 +13,23 @@ Supported version:
 
 Every overlay and all of main are built from source, and the build reproduces the original ROM byte for byte.
 
-| Module | Code built from source |
-|---|--:|
-| ARM9 main | 100% of functions |
-| Overlays (148) | 100% |
-| ITCM | 97.0% |
-| `autoload_2` (libraries) | 93.4% |
-| **Total** | **99.1%** |
+| Module | Code built from source | Data owned by a source file |
+|---|--:|--:|
+| ARM9 main | 100% of functions | 99.6% |
+| Overlays (148) | 100% | 100% |
+| ITCM | 97.0% | (code only) |
+| `autoload_2` (libraries) | 97.4% | 98.6% |
+| `autoload_3` (bss of main and the libraries) | | 99.9% |
+| DTCM | | 9.3% |
+| **Total** | **99.6%** | **99.8%** |
 
-The 23 functions still taken from the original image, and the data no source file owns yet, are listed in
-[`docs/unmatched.md`](docs/unmatched.md). Most names are still placeholders (`func_<address>`, `Unk_<address>`);
-naming and documenting the game code is the main open work.
+The 14 functions still taken from the original image, and the data no source file owns yet, are listed in
+[`docs/unmatched.md`](docs/unmatched.md).
+
+Names: 29,222 of the 29,319 functions (99.7%) have real names; 97 are still `func_<address>`, mostly library
+functions whose original names could not be proven. About 300 types are still `Unk_<address>` placeholders, most of
+them views or bitfields whose fold would change the generated code. Library code uses the libraries' own names
+(NitroSDK, NitroSystem, MSL, the GameSpy SDK) where the evidence supports them.
 
 ## Documentation
 
@@ -104,10 +110,10 @@ Tools for matching:
 ## C++
 
 Parts of the game are C++, compiled with the ARM/Itanium C++ ABI:
-- Names are mangled Itanium-style (`_ZN12Unk_02050288C1Ev`). Rename a class's functions in `symbols.txt` to their
+- Names are mangled Itanium-style (`_ZN9TextLabelC1Ev`). Rename a class's functions in `symbols.txt` to their
   mangled names so that other code links against the compiled ones.
 - Vtables are `[0, 0, virtual functions...]` in `.data`, and objects point 8 bytes in. Give the vtable symbol an
-  explicit size, e.g. `_ZTV12Unk_02050288 kind:data(word[4])`, include its range in the file's `.data`, and write
+  explicit size, e.g. `_ZTV9TextLabel kind:data(word[4])`, include its range in the file's `.data`, and write
   references to it as `to:<vtable> add:0x8` in `relocs.txt`.
 - mwcc emits every constructor and destructor variant (C1, C2, D0, D1, D2); the linker dead-strips the unused ones, as
   in the original build. Delinked code is kept through a `FORCE_ACTIVE` block, see `tools/force_active.py`.

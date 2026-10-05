@@ -16,10 +16,10 @@ typedef struct KF { u16 frame; u16 val; } KF;
 typedef struct P16 { s16 x, y; } P16;
 typedef struct P32 { s32 x, y; } P32;
 
-extern BOOL func_01ffaea0(M33 *, void *, void *, u32);   // itcm: decode compressed rotation matrix (tblA, tblB, index)
-extern void func_01ffc714(s32 *, s32 *);                 // itcm: normalise a 3-vector (src, dst)
-extern u8 *func_021062ec(u8 *, u32);                     // block by index (N005a)
-u8 *func_021066cc(u8 *, u32);
+extern BOOL getRotDataByIdx_(M33 *, void *, void *, u32);   // itcm: decode compressed rotation matrix (tblA, tblB, index)
+extern void VEC_Normalize(s32 *, s32 *);                 // itcm: normalise a 3-vector (src, dst)
+extern u8 *NNS_G3dGetDataBlockHeaderByIdx(u8 *, u32);                     // block by index (N005a)
+u8 *NNSi_G3dGetTexPatAnmDataByIdx(u8 *, u32);
 u8 *func_021067c4(u8 *, u32, u32);
 
 static inline void Cross(V3 *a, V3 *b, V3 *c)
@@ -34,7 +34,7 @@ static inline void Cross(V3 *a, V3 *b, V3 *c)
 }
 
 // joint animation: interpolated pair of values (s16 or s32 pairs, with frame blending, 1/2/4 frame rate)
-void func_02106ba8(s32 *out, s32 frame, u32 *ent, u8 *hdr)
+void getScaleDataEx_(s32 *out, s32 frame, u32 *ent, u8 *hdr)
 {
     u8 *d = hdr + ent[1];
     u32 info = ent[0];
@@ -118,9 +118,9 @@ fin:
     }
 }
 
-// joint rotation animation with frame blending (getRotData): two compressed rotation matrices are decoded (func_01ffaea0),
-// interpolated, rows normalised (func_01ffc714), third row by cross product when the decoder says so
-void func_0210685c(M33 *out, s32 frame, u32 *ent, u8 *hdr)
+// joint rotation animation with frame blending (getRotData): two compressed rotation matrices are decoded (getRotDataByIdx_),
+// interpolated, rows normalised (VEC_Normalize), third row by cross product when the decoder says so
+void getRotDataEx_(M33 *out, s32 frame, u32 *ent, u8 *hdr)
 {
     M33 a, b;
     u8 *tblA;
@@ -151,7 +151,7 @@ void func_0210685c(M33 *out, s32 frame, u32 *ent, u8 *hdr)
             fb = 0;
             goto one;
         }
-        if (func_01ffaea0(out, tblA, tblB, ((u16 *)d)[f]) == 0) {
+        if (getRotDataByIdx_(out, tblA, tblB, ((u16 *)d)[f]) == 0) {
             return;
         }
         Cross(&out->r[0], &out->r[1], &out->r[2]);
@@ -189,29 +189,30 @@ one:
 fin:
     {
         r = 0;
-        r |= func_01ffaea0(&a, tblA, tblB, ((u16 *)d)[f]);
-        r |= func_01ffaea0(&b, tblA, tblB, ((u16 *)d)[fb]);
+        r |= getRotDataByIdx_(&a, tblA, tblB, ((u16 *)d)[f]);
+        r |= getRotDataByIdx_(&b, tblA, tblB, ((u16 *)d)[fb]);
         out->m[0] = a.m[0] * mul + ((t * (b.m[0] - a.m[0])) >> 12);
         out->m[1] = a.m[1] * mul + ((t * (b.m[1] - a.m[1])) >> 12);
         out->m[2] = a.m[2] * mul + ((t * (b.m[2] - a.m[2])) >> 12);
         out->m[3] = a.m[3] * mul + ((t * (b.m[3] - a.m[3])) >> 12);
         out->m[4] = a.m[4] * mul + ((t * (b.m[4] - a.m[4])) >> 12);
         out->m[5] = a.m[5] * mul + ((t * (b.m[5] - a.m[5])) >> 12);
-        func_01ffc714(&out->m[0], &out->m[0]);
-        func_01ffc714(&out->m[3], &out->m[3]);
+        VEC_Normalize(&out->m[0], &out->m[0]);
+        VEC_Normalize(&out->m[3], &out->m[3]);
         if (r == 0) {
             out->m[6] = a.m[6] * mul + ((t * (b.m[6] - a.m[6])) >> 12);
             out->m[7] = a.m[7] * mul + ((t * (b.m[7] - a.m[7])) >> 12);
             out->m[8] = a.m[8] * mul + ((t * (b.m[8] - a.m[8])) >> 12);
-            func_01ffc714(&out->m[6], &out->m[6]);
+            VEC_Normalize(&out->m[6], &out->m[6]);
         } else {
             Cross(&out->r[0], &out->r[1], &out->r[2]);
         }
     }
 }
 
-// NNS_G3dGetMdlByIdx (model from model set, NULL if the entry is NULL)
-u8 *func_02106824(u8 *p, u32 i)
+// NNS_G3dGetAnmByIdx: the idx-th animation of an animation file (dictionary of its first data block; NULL if the entry is NULL).
+// Same body as pret pokeheartgold nnsys.s NNS_G3dGetAnmByIdx, minus that version's NULL / index range checks.
+u8 *NNS_G3dGetAnmByIdx(u8 *p, u32 i)
 {
     u8 *base = p + *(u32 *)(p + *(u16 *)(p + 12));
     u8 *d = base + 8 + *(u16 *)(base + 14);
@@ -228,7 +229,7 @@ u8 *func_021067c4(u8 *p, u32 sig, u32 blk)
     if (*(u32 *)p == sig) {
         u32 i;
         for (i = 0; i < *(u16 *)(p + 14); i++) {
-            u8 *b = func_021062ec(p, i);
+            u8 *b = NNS_G3dGetDataBlockHeaderByIdx(p, i);
             if (*(u32 *)b == blk) {
                 return b;
             }
@@ -251,21 +252,21 @@ u8 *func_02106788(u8 *p)
 }
 
 // name/data table entry (+0x8) by index (16-byte entries)
-u8 *func_02106778(u8 *p, u32 i)
+u8 *NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *p, u32 i)
 {
     return p + *(u16 *)(p + 8) + i * 16;
 }
 
 // name/data table entry (+0xa) by index (16-byte entries)
-u8 *func_02106768(u8 *p, u32 i)
+u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 i)
 {
     return p + *(u16 *)(p + 10) + i * 16;
 }
 
 // pattern-anm key search: last key with frame <= frame (guess from the scaled frame, then walk)
-KF *func_021066e8(u8 *p, u32 i, u32 frame)
+KF *NNSi_G3dGetTexPatAnmFV(u8 *p, u32 i, u32 frame)
 {
-    u16 *e = (u16 *)func_021066cc(p, i);
+    u16 *e = (u16 *)NNSi_G3dGetTexPatAnmDataByIdx(p, i);
     KF *tbl;
     u32 k;
     tbl = (KF *)(p + e[3]);
@@ -280,7 +281,7 @@ KF *func_021066e8(u8 *p, u32 i, u32 frame)
 }
 
 // pattern-anm entry by index (dictionary at +0x12)
-u8 *func_021066cc(u8 *p, u32 i)
+u8 *NNSi_G3dGetTexPatAnmDataByIdx(u8 *p, u32 i)
 {
     u8 *d = p + 12 + *(u16 *)(p + 18);
     return d + 4 + *(u16 *)d * i;

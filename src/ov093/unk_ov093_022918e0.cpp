@@ -1,177 +1,153 @@
 #include "types.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString193.h"
+#include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
-class Unk_020e0488 {
-public:
-    Unk_020e0488();
-    ~Unk_020e0488();
-    void func_0206fc44();
-    void func_0206fb48(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fa4c();
-    u32 pad[0x10];
-};
 
-class Unk_020e2a78 {
-public:
-    void func_020a7a64(u8 *s);
-};
 
-class Unk_020e0574 {
-public:
-    Unk_020e0574();
-    ~Unk_020e0574();
-    u32 pad[0xd4 / 4];
-};
 
-class Unk_020e45f8 {
-public:
-    Unk_020e45f8();
-    void func_020b87d0();
-    BOOL func_020b86c0(u32 a, u8 b, u32 c, u32 d);
-    u32 pad[9];
-};
 
 extern "C" {
-void func_0200212c(s32 a);
-s32 func_02001510();
-void func_02001564(s32 a);
-void func_02001750(s32 a);
-void func_020016cc(s32 a);
-void func_020021b8(s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_020021fc(s32 a, s32 b, s32 c);
-void func_020020b8(s32 a);
-void func_0200138c(s32 a, s32 b, s32 c);
-void func_0200137c();
-void func_02001554(s32 a);
-void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-void func_0200261c(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_02002654(const char *a, void *b, s32 c);
-void func_020026c4(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020641b4(const char *a, void *b, s32 c);
-void func_020b35f8(void *a, u8 *b, const char *c);
-s8 *func_020a6b9c(void *a, s32 b);
-void func_02115e48(void *a, void *b, s32 c);
-void func_02115e30(u32 a, void *b, s32 c);
+void Gfx2d_HideLayer(s32 a);
+s32 Gfx2d_GetMainPlanes();
+void Gfx2d_EnableMainWindows(s32 a);
+void Gfx2d_SetMainWin0Planes(s32 a);
+void Gfx2d_SetMainWinOutPlanes(s32 a);
+void Gfx2d_SetWindowRect(s32 a, s32 b, s32 c, s32 d, s32 e);
+void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
+void Gfx2d_ShowLayer(s32 a);
+void Gfx2d_SetMainAlphaBlend(s32 a, s32 b, s32 c);
+void Gfx2d_ResetMainBlend();
+void Gfx2d_DisableMainWindows(s32 a);
+void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
+void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Gfx2d_LoadScreenFile(const char *a, void *b, s32 c);
+void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void File_LoadToBuffer(const char *a, void *b, s32 c);
+void String_Load(void *a, u8 *b, const char *c);
+s8 *Msg_SkipLines(void *a, s32 b);
+void MIi_CpuCopy16(void *a, void *b, s32 c);
+void MIi_CpuClear16(u32 a, void *b, s32 c);
 
-extern void *data_021f482c;
-extern char *data_ov093_02292240;
-extern char *data_ov093_02292244;
+extern void *gCurrentHeap;
+extern char *sStaffRollPalettePath;
+extern char *sStaffRollLogoCharPath;
 }
 
-struct Unk_ov093_022918f8 {
-    void func_022918f8(u32 m);
-    void func_02291900(u32 m);
-    BOOL func_02291908(u32 m);
-    void func_02291918();
-    Unk_ov093_022918f8();
-    ~Unk_ov093_022918f8();
+struct StaffRollLayer {
+    void clearFlags(u32 m);
+    void setFlags(u32 m);
+    BOOL testFlags(u32 m);
+    void reset();
+    StaffRollLayer();
+    ~StaffRollLayer();
 
-    /* 0x00 */ s16 unk_00;
-    /* 0x02 */ s16 unk_02;
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05;
-    /* 0x06 */ u8 unk_06;
+    /* 0x00 */ s16 rowCount;
+    /* 0x02 */ s16 lineIndex;
+    /* 0x04 */ u8 textSlot;
+    /* 0x05 */ u8 flags;
+    /* 0x06 */ u8 blankLines;
     /* 0x07 */ u8 unk_07;
-    /* 0x08 */ u8 unk_08[0x800];
+    /* 0x08 */ u8 screen[0x800];
 };
 
-class Unk_ov093_022918e0 {
+class StaffRoll {
 public:
-    Unk_ov093_022918e0();
-    ~Unk_ov093_022918e0();
-    void func_022918e0(u32 m);
-    BOOL func_022918e8(u32 m);
-    void func_02291938();
-    void func_022919a4();
-    Unk_020e0488 *func_022919e4();
-    void func_02291a0c(BOOL b);
-    void func_02291a3c(s32 a, Unk_ov093_022918f8 *s);
-    s8 *func_02291cf8(s32 i);
-    void func_02291d3c(u8 *src, u32 dstRow, u32 srcRow);
-    void func_02291d5c(u8 *dst, u32 row);
-    void func_02291d80(s32 which, s32 y);
-    BOOL func_02291dd8();
-    void func_02291de4();
-    void func_02291e50();
-    void func_02291e6c(s32 a);
-    void func_02291ed4();
-    void func_02291f3c();
-    void func_02291f5c();
-    void func_02291f70();
-    void func_02291ff0();
-    void func_0229212c();
+    StaffRoll();
+    ~StaffRoll();
+    void setFlags(u32 m);
+    BOOL testFlags(u32 m);
+    void loadLogo();
+    void resetLabels();
+    LabelString *allocLabel();
+    void scroll(BOOL b);
+    void fillNextRow(s32 a, StaffRollLayer *s);
+    s8 *getLine(s32 i);
+    void copyTemplateRow(u8 *src, u32 dstRow, u32 srcRow);
+    void clearRow(u8 *dst, u32 row);
+    void scrollLayer(s32 which, s32 y);
+    BOOL isFinished();
+    void startLogo();
+    void hide();
+    void start(s32 a);
+    void loadTextGraphics();
+    void loadTemplate();
+    void stop();
+    void uploadScreens();
+    void update();
+    void init();
 
-    /* 0x0000 */ u16 unk_00;
+    /* 0x0000 */ u16 flags;
     /* 0x0002 */ u16 unk_02;
-    /* 0x0004 */ u8 unk_04;
-    /* 0x0005 */ u8 unk_05;
-    /* 0x0006 */ u8 unk_06;
-    /* 0x0008 */ s32 unk_08;
-    /* 0x000c */ s32 unk_0c;
-    /* 0x0010 */ s32 unk_10;
-    /* 0x0014 */ s32 unk_14;
-    /* 0x0018 */ Unk_ov093_022918f8 unk_18;
-    /* 0x0820 */ Unk_ov093_022918f8 unk_820;
-    /* 0x1028 */ u16 unk_1028[0x400];
-    /* 0x1828 */ Unk_020e0574 unk_1828;
-    /* 0x18fc */ Unk_020e0488 unk_18fc[26];
-    /* 0x1f7c */ Unk_020e45f8 unk_1f7c[2];
+    /* 0x0004 */ u8 labelCount;
+    /* 0x0005 */ u8 state;
+    /* 0x0006 */ u8 logoTimer;
+    /* 0x0008 */ s32 scrollPos;
+    /* 0x000c */ s32 logoScrollPos;
+    /* 0x0010 */ s32 scrollSpeed;
+    /* 0x0014 */ s32 logoScrollSpeed;
+    /* 0x0018 */ StaffRollLayer layer0;
+    /* 0x0820 */ StaffRollLayer layer4;
+    /* 0x1028 */ u16 templateScreen[0x400];
+    /* 0x1828 */ MsgString193 staffText;
+    /* 0x18fc */ LabelString labels[26];
+    /* 0x1f7c */ BgVramTask screenTasks[2];
 };
 
-Unk_ov093_022918e0::Unk_ov093_022918e0()
+StaffRoll::StaffRoll()
 {
 }
 
-Unk_ov093_022918e0::~Unk_ov093_022918e0()
+StaffRoll::~StaffRoll()
 {
 }
 
-void Unk_ov093_022918e0::func_0229212c()
+void StaffRoll::init()
 {
-    unk_00 = 0;
-    unk_04 = 0;
-    func_0200212c(4);
-    func_0200212c(0);
-    func_0200226c(4, 0, 0, 0);
+    flags = 0;
+    labelCount = 0;
+    Gfx2d_HideLayer(4);
+    Gfx2d_HideLayer(0);
+    Gfx2d_SetLayerControl(4, 0, 0, 0);
     vu16 *r = (vu16 *)0x400000a;
     *r = (*r & 0x43) | 0x700;
-    unk_05 = 0;
-    func_02291f3c();
+    state = 0;
+    loadTemplate();
 }
 
-void Unk_ov093_022918e0::func_02291ff0()
+void StaffRoll::update()
 {
     s32 v;
-    func_022919a4();
-    switch (unk_05) {
+    resetLabels();
+    switch (state) {
     case 1:
-        unk_05 = 2;
-        func_020020b8(4);
-        func_020020b8(0);
-        func_020021fc(4, 8, -0xc0);
-        func_020021fc(0, 8, -0xc0);
-        func_02291ed4();
+        state = 2;
+        Gfx2d_ShowLayer(4);
+        Gfx2d_ShowLayer(0);
+        Gfx2d_SetLayerOffset(4, 8, -0xc0);
+        Gfx2d_SetLayerOffset(0, 8, -0xc0);
+        loadTextGraphics();
         break;
     case 2:
-        func_02291a0c(TRUE);
+        scroll(TRUE);
         break;
     case 3:
-        func_02291a0c(FALSE);
-        func_020020b8(0);
-        func_0200138c(2, 0x21, 0);
-        func_02291938();
-        unk_05 = 5;
+        scroll(FALSE);
+        Gfx2d_ShowLayer(0);
+        Gfx2d_SetMainAlphaBlend(2, 0x21, 0);
+        loadLogo();
+        state = 5;
         break;
     case 4:
-        func_02291a0c(FALSE);
-        func_020020b8(0);
-        func_02291938();
-        unk_05 = 6;
+        scroll(FALSE);
+        Gfx2d_ShowLayer(0);
+        loadLogo();
+        state = 6;
         break;
     case 5: {
-        func_02291a0c(FALSE);
-        u32 c = unk_06;
+        scroll(FALSE);
+        u32 c = logoTimer;
         if (c < 0x48) {
             if (c >= 0x10) {
                 if (c < 0x38) {
@@ -180,168 +156,168 @@ void Unk_ov093_022918e0::func_02291ff0()
                     c = 0x48 - c;
                 }
             }
-            *(volatile u8 *)&unk_06 = *(volatile u8 *)&unk_06 + 1;
-            func_0200138c(2, 0x21, c);
+            *(volatile u8 *)&logoTimer = *(volatile u8 *)&logoTimer + 1;
+            Gfx2d_SetMainAlphaBlend(2, 0x21, c);
         } else {
-            func_02291e50();
-            func_0200137c();
-            func_022918e0(8);
+            hide();
+            Gfx2d_ResetMainBlend();
+            setFlags(8);
         }
         break;
     }
     case 6:
-        func_02291a0c(FALSE);
-        unk_0c = unk_0c + unk_14;
-        v = unk_0c >> 12;
+        scroll(FALSE);
+        logoScrollPos = logoScrollPos + logoScrollSpeed;
+        v = logoScrollPos >> 12;
         if (v >= 0) {
             v = 0;
-            unk_06 = 0x10;
-            func_02001554(1);
-            func_020016cc(0x1f);
-            unk_05 = 5;
+            logoTimer = 0x10;
+            Gfx2d_DisableMainWindows(1);
+            Gfx2d_SetMainWinOutPlanes(0x1f);
+            state = 5;
         } else {
-            func_020021b8(0, 0, -v, 0xfe, 0xbf);
+            Gfx2d_SetWindowRect(0, 0, -v, 0xfe, 0xbf);
         }
-        func_020021fc(0, 0, v);
+        Gfx2d_SetLayerOffset(0, 0, v);
         break;
     }
 }
 
-void Unk_ov093_022918e0::func_02291f70()
+void StaffRoll::uploadScreens()
 {
-    if (unk_820.func_02291908(2)) {
-        if (unk_1f7c[0].func_020b86c0((u32)unk_820.unk_08, 4, 0x800, 0)) {
-            unk_820.func_022918f8(2);
+    if (layer4.testFlags(2)) {
+        if (screenTasks[0].requestScreen((u32)layer4.screen, 4, 0x800, 0)) {
+            layer4.clearFlags(2);
         }
     }
-    if (unk_18.func_02291908(2)) {
-        if (unk_1f7c[1].func_020b86c0((u32)unk_18.unk_08, 0, 0x800, 0)) {
-            unk_18.func_022918f8(2);
+    if (layer0.testFlags(2)) {
+        if (screenTasks[1].requestScreen((u32)layer0.screen, 0, 0x800, 0)) {
+            layer0.clearFlags(2);
         }
     }
 }
 
-void Unk_ov093_022918e0::func_02291f5c()
+void StaffRoll::stop()
 {
-    func_02291e50();
-    func_022919a4();
+    hide();
+    resetLabels();
 }
 
-void Unk_ov093_022918e0::func_02291f3c()
+void StaffRoll::loadTemplate()
 {
-    func_020641b4("menu/staff/bg.bsc", unk_1028, 0x800);
+    File_LoadToBuffer("menu/staff/bg.bsc", templateScreen, 0x800);
 }
 
-void Unk_ov093_022918e0::func_02291ed4()
+void StaffRoll::loadTextGraphics()
 {
-    void *h = data_021f482c;
-    func_020026c4(data_ov093_02292240, h, 4, 1, 1, 3);
-    func_020026c4(data_ov093_02292240, h, 0, 1, 1, 3);
-    func_0200261c(data_ov093_02292244, h, 4, 0x10, 0x10, 0x10);
-    func_0200261c(data_ov093_02292244, h, 0, 0x10, 0x10, 0x10);
+    void *h = gCurrentHeap;
+    Gfx2d_LoadPaletteFile(sStaffRollPalettePath, h, 4, 1, 1, 3);
+    Gfx2d_LoadPaletteFile(sStaffRollPalettePath, h, 0, 1, 1, 3);
+    Gfx2d_LoadCharFile(sStaffRollLogoCharPath, h, 4, 0x10, 0x10, 0x10);
+    Gfx2d_LoadCharFile(sStaffRollLogoCharPath, h, 0, 0x10, 0x10, 0x10);
 }
 
-void Unk_ov093_022918e0::func_02291e6c(s32 a)
+void StaffRoll::start(s32 a)
 {
     volatile u16 t[2];
-    unk_10 = a;
-    unk_14 = 0x2000;
-    unk_08 = 0;
-    unk_18.func_02291918();
-    unk_820.func_02291918();
-    t[0] = unk_1028[0];
-    func_02115e30(t[0], unk_18.unk_08, 0x800);
-    t[1] = unk_1028[0];
-    func_02115e30(t[1], unk_820.unk_08, 0x800);
-    unk_05 = 1;
+    scrollSpeed = a;
+    logoScrollSpeed = 0x2000;
+    scrollPos = 0;
+    layer0.reset();
+    layer4.reset();
+    t[0] = templateScreen[0];
+    MIi_CpuClear16(t[0], layer0.screen, 0x800);
+    t[1] = templateScreen[0];
+    MIi_CpuClear16(t[1], layer4.screen, 0x800);
+    state = 1;
 }
 
-void Unk_ov093_022918e0::func_02291e50()
+void StaffRoll::hide()
 {
-    func_0200212c(4);
-    func_0200212c(0);
-    unk_05 = 0;
+    Gfx2d_HideLayer(4);
+    Gfx2d_HideLayer(0);
+    state = 0;
 }
 
-void Unk_ov093_022918e0::func_02291de4()
+void StaffRoll::startLogo()
 {
-    func_0200212c(0);
-    s32 v = func_02001510();
+    Gfx2d_HideLayer(0);
+    s32 v = Gfx2d_GetMainPlanes();
     vu32 *r = (vu32 *)0x4000000;
     *r = (*r & ~0x1f00) | (v << 8);
-    func_02001564(1);
-    func_02001750(0x1f);
-    func_020016cc(0x1d);
-    func_020021b8(0, 0, 0x78, 0xfe, 0xbf);
-    func_020021fc(0, 0, -0x78);
-    unk_05 = 4;
-    unk_06 = 0;
-    unk_0c = 0xfff88000;
+    Gfx2d_EnableMainWindows(1);
+    Gfx2d_SetMainWin0Planes(0x1f);
+    Gfx2d_SetMainWinOutPlanes(0x1d);
+    Gfx2d_SetWindowRect(0, 0, 0x78, 0xfe, 0xbf);
+    Gfx2d_SetLayerOffset(0, 0, -0x78);
+    state = 4;
+    logoTimer = 0;
+    logoScrollPos = 0xfff88000;
 }
 
-BOOL Unk_ov093_022918e0::func_02291dd8()
+BOOL StaffRoll::isFinished()
 {
-    return func_022918e8(8);
+    return testFlags(8);
 }
 
-void Unk_ov093_022918e0::func_02291d80(s32 which, s32 y)
+void StaffRoll::scrollLayer(s32 which, s32 y)
 {
-    Unk_ov093_022918f8 *s;
+    StaffRollLayer *s;
     if (y >= 0) {
         s32 lim = (y >> 3) + 1;
         if (which == 4) {
-            s = &unk_820;
+            s = &layer4;
         } else {
-            s = &unk_18;
+            s = &layer0;
         }
-        for (; lim > s->unk_00;) {
-            func_02291a3c(which, s);
-            s->func_02291900(2);
+        for (; lim > s->rowCount;) {
+            fillNextRow(which, s);
+            s->setFlags(2);
         }
-        func_020021fc(which, 8, y - 0xc0);
+        Gfx2d_SetLayerOffset(which, 8, y - 0xc0);
     }
 }
 
-void Unk_ov093_022918e0::func_02291d5c(u8 *dst, u32 row)
+void StaffRoll::clearRow(u8 *dst, u32 row)
 {
-    volatile u16 t = unk_1028[0];
-    func_02115e30(t, dst + row * 0x40, 0x40);
+    volatile u16 t = templateScreen[0];
+    MIi_CpuClear16(t, dst + row * 0x40, 0x40);
 }
 
-void Unk_ov093_022918e0::func_02291d3c(u8 *src, u32 dstRow, u32 srcRow)
+void StaffRoll::copyTemplateRow(u8 *src, u32 dstRow, u32 srcRow)
 {
-    func_02115e48((u8 *)unk_1028 + dstRow * 0x40, src + srcRow * 0x40, 0x40);
+    MIi_CpuCopy16((u8 *)templateScreen + dstRow * 0x40, src + srcRow * 0x40, 0x40);
 }
 
-s8 *Unk_ov093_022918e0::func_02291cf8(s32 i)
+s8 *StaffRoll::getLine(s32 i)
 {
     s32 q = i / 6;
     u8 b = q;
-    func_020b35f8((u8 *)&unk_1828 + 0, &b, "st_staffroll");
-    return func_020a6b9c((u8 *)this + 0x183a, i - q * 6);
+    String_Load((u8 *)&staffText + 0, &b, "st_staffroll");
+    return Msg_SkipLines((u8 *)this + 0x183a, i - q * 6);
 }
 
-void Unk_ov093_022918e0::func_02291a3c(s32 a, Unk_ov093_022918f8 *s)
+void StaffRoll::fillNextRow(s32 a, StaffRollLayer *s)
 {
-    s32 t = s->unk_02;
+    s32 t = s->lineIndex;
     if (t < 0) {
-        s->unk_02 = 0;
-        s->unk_00 = 0;
-        s->unk_04 = 0;
+        s->lineIndex = 0;
+        s->rowCount = 0;
+        s->textSlot = 0;
     } else if (t >= 0xde) {
-        if (s->unk_06 < 0xd) {
-            s->unk_06++;
+        if (s->blankLines < 0xd) {
+            s->blankLines++;
         } else {
-            s->func_02291900(4);
+            s->setFlags(4);
         }
-        func_02291d5c(s->unk_08, s->unk_00 & 0x1f);
-        s->unk_00 = s->unk_00 + 1;
+        clearRow(s->screen, s->rowCount & 0x1f);
+        s->rowCount = s->rowCount + 1;
         return;
     }
-    if (s->unk_04 >= 0x19) {
-        s->unk_04 = 0;
+    if (s->textSlot >= 0x19) {
+        s->textSlot = 0;
     }
-    s8 *p = func_02291cf8(s->unk_02);
+    s8 *p = getLine(s->lineIndex);
     BOOL end;
     if (p == NULL) {
         end = TRUE;
@@ -352,162 +328,162 @@ void Unk_ov093_022918e0::func_02291a3c(s32 a, Unk_ov093_022918f8 *s)
         s32 c = *p;
         if (c == 0xa || c == 0) {
             end = TRUE;
-            s->func_02291900(1);
+            s->setFlags(1);
         }
     }
     if (end) {
         s32 i;
         for (i = 0; i < 2; i++) {
-            func_02291d5c(s->unk_08, s->unk_00 & 0x1f);
-            s->unk_00 = s->unk_00 + 1;
+            clearRow(s->screen, s->rowCount & 0x1f);
+            s->rowCount = s->rowCount + 1;
         }
-        s->unk_02 = s->unk_02 + 1;
-        if (s->unk_06 < 0xd) {
-            s->unk_06++;
+        s->lineIndex = s->lineIndex + 1;
+        if (s->blankLines < 0xd) {
+            s->blankLines++;
         } else {
-            s->func_02291900(4);
+            s->setFlags(4);
         }
     } else {
-        s->unk_06 = 0;
+        s->blankLines = 0;
         if (p[0] == 0x20 && p[1] == 0xa) {
-            s->func_022918f8(1);
+            s->clearFlags(1);
         }
-        if (s->func_02291908(1)) {
-            s->func_022918f8(1);
-            func_02291d3c(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
-            Unk_020e0488 *e = func_022919e4();
-            ((Unk_020e2a78 *)e)->func_020a7a64((u8 *)p);
-            e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
-            e->func_0206fab4(0, 0);
-            s->unk_04 = s->unk_04 + 1;
-            s->unk_02 = s->unk_02 + 1;
-            s->unk_00 = s->unk_00 + 1;
-            p = func_02291cf8(s->unk_02);
+        if (s->testFlags(1)) {
+            s->clearFlags(1);
+            copyTemplateRow(s->screen, s->textSlot, s->rowCount & 0x1f);
+            LabelString *e = allocLabel();
+            ((MsgString *)e)->setLine((u8 *)p);
+            e->createSmallLabel(a, s->textSlot * 16 + 0x11, 0x10, 1, 0, 0);
+            e->redrawAligned(0, 0);
+            s->textSlot = s->textSlot + 1;
+            s->lineIndex = s->lineIndex + 1;
+            s->rowCount = s->rowCount + 1;
+            p = getLine(s->lineIndex);
             if (p == NULL || p[0] == 0xa || p[0] == 0) {
-                s->unk_02 = s->unk_02 + 1;
+                s->lineIndex = s->lineIndex + 1;
                 return;
             }
-            func_02291d3c(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
-            e = func_022919e4();
-            ((Unk_020e2a78 *)e)->func_020a7a64((u8 *)p);
-            e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
-            e->func_0206fab4(0, 0);
-            s->unk_04 = s->unk_04 + 1;
-            s->unk_02 = s->unk_02 + 1;
-            s->unk_00 = s->unk_00 + 1;
+            copyTemplateRow(s->screen, s->textSlot, s->rowCount & 0x1f);
+            e = allocLabel();
+            ((MsgString *)e)->setLine((u8 *)p);
+            e->createSmallLabel(a, s->textSlot * 16 + 0x11, 0x10, 1, 0, 0);
+            e->redrawAligned(0, 0);
+            s->textSlot = s->textSlot + 1;
+            s->lineIndex = s->lineIndex + 1;
+            s->rowCount = s->rowCount + 1;
         } else if (p[0] == 0x20 && p[1] == 0xa) {
-            Unk_020e0488 *e = func_022919e4();
-            ((Unk_020e2a78 *)e)->func_020a7a64((u8 *)p);
-            e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
-            e->func_0206fab4(0, 0);
-            s->unk_04 = s->unk_04 + 1;
-            s->unk_02 = s->unk_02 + 1;
-            s->unk_00 = s->unk_00 + 1;
+            LabelString *e = allocLabel();
+            ((MsgString *)e)->setLine((u8 *)p);
+            e->createSmallLabel(a, s->textSlot * 16 + 0x11, 0x10, 1, 0, 0);
+            e->redrawAligned(0, 0);
+            s->textSlot = s->textSlot + 1;
+            s->lineIndex = s->lineIndex + 1;
+            s->rowCount = s->rowCount + 1;
         } else {
-            func_02291d3c(s->unk_08, s->unk_04, s ? (s->unk_00 & 0x1f) : (s->unk_00 & 0x1f));
-            s->unk_00 = s->unk_00 + 1;
-            s->unk_04 = s->unk_04 + 1;
-            func_02291d3c(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
-            s->unk_00 = s->unk_00 + 1;
-            s->unk_04 = s->unk_04 + 1;
-            Unk_020e0488 *e = func_022919e4();
-            ((Unk_020e2a78 *)e)->func_020a7a64((u8 *)p);
-            e->func_0206fb9c(a, (s->unk_04 - 2) * 16 + 0x11, 0x10, 1, 0, 0);
-            e->func_0206fa4c();
-            s->unk_02 = s->unk_02 + 1;
+            copyTemplateRow(s->screen, s->textSlot, s ? (s->rowCount & 0x1f) : (s->rowCount & 0x1f));
+            s->rowCount = s->rowCount + 1;
+            s->textSlot = s->textSlot + 1;
+            copyTemplateRow(s->screen, s->textSlot, s->rowCount & 0x1f);
+            s->rowCount = s->rowCount + 1;
+            s->textSlot = s->textSlot + 1;
+            LabelString *e = allocLabel();
+            ((MsgString *)e)->setLine((u8 *)p);
+            e->createLabel(a, (s->textSlot - 2) * 16 + 0x11, 0x10, 1, 0, 0);
+            e->redrawRight();
+            s->lineIndex = s->lineIndex + 1;
         }
     }
 }
 
-void Unk_ov093_022918e0::func_02291a0c(BOOL b)
+void StaffRoll::scroll(BOOL b)
 {
     s32 v;
-    unk_08 = unk_08 + unk_10;
-    v = unk_08 >> 12;
-    func_02291d80(4, v - 0xc0);
+    scrollPos = scrollPos + scrollSpeed;
+    v = scrollPos >> 12;
+    scrollLayer(4, v - 0xc0);
     if (b) {
-        func_02291d80(0, v);
+        scrollLayer(0, v);
     }
 }
 
-Unk_020e0488 *Unk_ov093_022918e0::func_022919e4()
+LabelString *StaffRoll::allocLabel()
 {
-    if (unk_04 >= 26) {
-        return &unk_18fc[25] + 0;
+    if (labelCount >= 26) {
+        return &labels[25] + 0;
     }
-    unk_04++;
-    return &unk_18fc[unk_04 - 1];
+    labelCount++;
+    return &labels[labelCount - 1];
 }
 
-void Unk_ov093_022918e0::func_022919a4()
+void StaffRoll::resetLabels()
 {
     s32 i;
-    unk_04 = 0;
+    labelCount = 0;
     for (i = 0; i < 26; i++) {
-        unk_18fc[i].func_0206fc44();
+        labels[i].destroyLabel();
     }
     for (i = 0; i < 2; i++) {
-        unk_1f7c[i].func_020b87d0();
+        screenTasks[i].cancel();
     }
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" char *data_ov093_02292244;
+extern "C" char *sStaffRollLogoCharPath;
 extern "C" char data_ov093_0229225c[];
-extern "C" char *data_ov093_02292240;
+extern "C" char *sStaffRollPalettePath;
 
-void Unk_ov093_022918e0::func_02291938()
+void StaffRoll::loadLogo()
 {
-    void *h = data_021f482c;
-    func_02002654("menu/staff/logo.bsc", h, 0);
-    func_0200261c(data_ov093_02292244, h, 0, 0x10, 0x10, 0x78);
-    func_0200261c("menu/staff/logo1.bch", h, 0, 0x79, 0x79, 0xf0);
-    func_0200261c("menu/staff/logo2.bch", h, 0, 0xf1, 0xf1, 0x15f);
+    void *h = gCurrentHeap;
+    Gfx2d_LoadScreenFile("menu/staff/logo.bsc", h, 0);
+    Gfx2d_LoadCharFile(sStaffRollLogoCharPath, h, 0, 0x10, 0x10, 0x78);
+    Gfx2d_LoadCharFile("menu/staff/logo1.bch", h, 0, 0x79, 0x79, 0xf0);
+    Gfx2d_LoadCharFile("menu/staff/logo2.bch", h, 0, 0xf1, 0xf1, 0x15f);
 }
 
-Unk_ov093_022918f8::Unk_ov093_022918f8() {}
+StaffRollLayer::StaffRollLayer() {}
 
-Unk_ov093_022918f8::~Unk_ov093_022918f8() {}
+StaffRollLayer::~StaffRollLayer() {}
 
-void Unk_ov093_022918f8::func_02291918()
+void StaffRollLayer::reset()
 {
-    unk_00 = -1;
-    unk_02 = -1;
-    unk_05 = 0;
-    unk_06 = 0;
-    func_02291900(3);
+    rowCount = -1;
+    lineIndex = -1;
+    flags = 0;
+    blankLines = 0;
+    setFlags(3);
 }
 
-BOOL Unk_ov093_022918f8::func_02291908(u32 m)
+BOOL StaffRollLayer::testFlags(u32 m)
 {
-    if ((unk_05 & m) != 0) {
+    if ((flags & m) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov093_022918f8::func_02291900(u32 m)
+void StaffRollLayer::setFlags(u32 m)
 {
-    unk_05 |= m;
+    flags |= m;
 }
 
-void Unk_ov093_022918f8::func_022918f8(u32 m)
+void StaffRollLayer::clearFlags(u32 m)
 {
-    unk_05 &= ~m;
+    flags &= ~m;
 }
 
-BOOL Unk_ov093_022918e0::func_022918e8(u32 m)
+BOOL StaffRoll::testFlags(u32 m)
 {
-    if ((unk_00 & m) != 0) {
+    if ((flags & m) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov093_022918e0::func_022918e0(u32 m)
+void StaffRoll::setFlags(u32 m)
 {
-    unk_00 |= m;
+    flags |= m;
 }
 
 extern "C" char data_ov093_0229225c[] = "menu/staff/logo.bch";
 
-extern "C" char *data_ov093_02292244 = data_ov093_0229225c;
-extern "C" char *data_ov093_02292240 = "menu/staff/sfr.bpl";
+extern "C" char *sStaffRollLogoCharPath = data_ov093_0229225c;
+extern "C" char *sStaffRollPalettePath = "menu/staff/sfr.bpl";

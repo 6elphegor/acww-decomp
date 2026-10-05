@@ -1,312 +1,217 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
+#include "talk/MsgTag.h"
+#include "talk/BmgReader.h"
+#include "talk/MsgParser.h"
+#include "talk/MsgString.h"
+#include "talk/MsgRequest.h"
+#include "talk/MsgWalker.h"
+#include "talk/MsgString33.h"
 
 extern "C" {
-u32 func_020501e8(u32 key);
-u8 *func_02050204(void);
-u8 *func_02050208(void);
-u8 *func_0205021c(void);
-u32 func_020a6c1c(u32 a, u32 b);
-u32 func_020a6c40(u32 a, u32 b);
-int func_0212a190(const u8 *a, const u8 *b);
-void func_02115fb4(void *dst, u32 value, u32 size);
-s32 func_01ffcac0(s32 v, s32 *out);
-int func_020639e8(char *dst, const char *fmt, ...);
-char *func_020a6b9c(char *p, u32 n);
+u32 Text_ToUpper(u32 key);
+u8 *Text_GetSpecialCharStr10(void);
+u8 *Text_GetSpecialCharStr9(void);
+u8 *Text_GetSpecialCharStr5(void);
+u32 Msg_GetCharFromEnd(u32 a, u32 b);
+u32 Msg_GetCharAt(u32 a, u32 b);
+int strcmp(const u8 *a, const u8 *b);
+void MI_CpuFill8(void *dst, u32 value, u32 size);
+s32 FX_Modf(s32 v, s32 *out);
+int Str_SPrintf(char *dst, const char *fmt, ...);
+char *Msg_SkipLines(char *p, u32 n);
 void func_02133ef8(void *p, u32 n);
 }
 
-class Unk_020e2a08 {
-public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
-    void func_020a8b1c();
-    void func_020a8b34(Unk_020e2a08 *other);
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-};
 
-class Unk_020e2a78 {
-public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
-    u8 func_020a7a0c(Unk_020e2a78 *other);
-    u8 func_020a7a28(u8 *str);
-    u8 func_020a7bd8(Unk_020e2a78 *other);
-    u8 func_020a7c04(u8 *str);
-    void func_020a7c3c();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
-};
 
-class Unk_020e2a48 : public Unk_020e2a78 {
-public:
-    Unk_020e2a48();
-    virtual ~Unk_020e2a48();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
 
-    /* 0x14 */ u32 unk_14[8];
-};
 
-class Unk_020e2a30 {
-public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
-    virtual void vfunc_08();
-    void func_020a710c(const char *src);
 
-    /* 0x04 */ char unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
-};
 
-class Unk_020e2a18 {
-public:
-    Unk_020e2a18(u8 arg1);
-    virtual ~Unk_020e2a18();
-    virtual u32 vfunc_0c() = 0;
-    virtual u32 vfunc_08() = 0;
 
-    BOOL func_020a8950(u8 *arg1);
-    void func_020a89f0();
-    u8 func_020a8a20(const char *path);
-
-    /* 0x04 */ u8 unk_04[0xa0];
-};
-
-class Unk_020a72b0 {
-public:
-    Unk_020a72b0();
-    s32 func_020a736c();
-    BOOL func_020a7374();
-    void func_020a72c4(u32 *a, char **b, char **c);
-    void func_020a76fc(u8 *a, u8 *b, u8 *c);
-    void func_020a777c(u8 *p);
-
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ char *unk_0c;
-    /* 0x10 */ char *unk_10;
-};
-
-class Unk_020e2b08 {
-public:
-    Unk_020e2b08();
-    virtual ~Unk_020e2b08();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
-
-    void func_020a8348(u8 *p);
-    void func_020a8368(u8 *p);
-    void func_020a8400(s32 n);
-    void func_020a84bc();
-
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ u8 unk_08[0x1c];
-};
-
-class Unk_020e2b4c : public Unk_020e2b08 {
-public:
-    Unk_020e2b4c() {}
-    virtual ~Unk_020e2b4c() {}
-    virtual BOOL vfunc_18();
-    u8 *func_020a82ec(BOOL arg);
-};
-
-class Unk_020b2d30;
-
-class Unk_Buf {
-public:
-    virtual ~Unk_Buf();
-    virtual u32 vfunc_08();
-    virtual u32 vfunc_0c();
-};
+class StringBank;
 
 extern "C" {
-BOOL func_020b2dcc(u32 a, u32 b);
-BOOL func_020b3270(Unk_020e2a78 *out, s32 val, s32 width, s32 mode, s32 kind, s32 unused);
-BOOL func_020b3324(Unk_020e2a78 *out, s32 val, s32 kind);
-void func_020b33d8(char *s, u32 size);
-void func_020b3404(char *s, u32 size, s32 minRun);
-void func_020b3460(char *s, u32 size, s32 width);
-void func_020b3480(char *s, u32 size, s32 width);
-void func_020b34a0(char *s, u32 size, s32 width);
-void func_020b34d0(char *s, u32 size, s32 n, s32 maxDigits);
-void func_020b3510(char *s, u32 size, s32 start, s32 shift);
-s32 func_020b3530(const char *s, u32 max);
-BOOL func_020b35ac(Unk_020e2a78 *buf, u8 *key, const char *name);
-BOOL func_020b35f8(Unk_020e2a78 *buf, u8 *key, const char *name);
+BOOL String_CharEqualsIgnoreCase(u32 a, u32 b);
+BOOL String_FormatNumber(MsgString *out, s32 val, s32 width, s32 mode, s32 kind, s32 unused);
+BOOL String_AppendUnitSuffix(MsgString *out, s32 val, s32 kind);
+void Str_Reverse(char *s, u32 size);
+void Str_InsertThousandsSeparators(char *s, u32 size, s32 minRun);
+void Str_PadBackZeros(char *s, u32 size, s32 width);
+void Str_PadBackSpaces(char *s, u32 size, s32 width);
+void Str_PadFrontSpaces(char *s, u32 size, s32 width);
+void Str_WriteDigitsReversed(char *s, u32 size, s32 n, s32 maxDigits);
+void Str_ShiftRight(char *s, u32 size, s32 start, s32 shift);
+s32 Str_LenN(const char *s, u32 max);
+BOOL String_LoadResolveAltText(MsgString *buf, u8 *key, const char *name);
+BOOL String_Load(MsgString *buf, u8 *key, const char *name);
 }
 
 // ---- classes of this unit, declared in reverse order of their vtables in .data ----
 
-class Unk_020e3f5c : public Unk_020e2b4c {
+class StringExpander : public MsgWalker {
 public:
-    Unk_020e3f5c(Unk_020b2d30 *owner);
-    virtual ~Unk_020e3f5c();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
-    virtual BOOL vfunc_18();
+    StringExpander(StringBank *owner);
+    virtual ~StringExpander();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 c);
+    virtual void onTag(u8 *p);
+    virtual BOOL canContinue();
 
-    void func_020b38fc();
-    BOOL func_020b38a8();
-    BOOL func_020b38dc();
-    BOOL func_020b38e0(s32 c);
-    void func_020b3904();
-    void func_020b3944();
-    void func_020b3974();
-    void func_020b3994();
-    void func_020b39ac();
-    void func_020b39c4();
-    void func_020b39dc();
-    void func_020b3a78();
-    void func_020b3ae0();
-    void func_020b3b48();
-    void func_020b3bb0();
-    void func_020b3c1c();
-    void func_020b3c68();
-    u8 func_020b3e74(u8 a, u8 b);
+    void setCapitalizeNext();
+    BOOL differsFromName();
+    BOOL canCheckName();
+    BOOL differsFromLast(s32 c);
+    void setAttr();
+    void insertSlot();
+    void handleTagFF02();
+    void insertGlyphTag10();
+    void insertGlyphTag9();
+    void insertGlyphTag6();
+    void insertNameLast2();
+    void insertNameChar2();
+    void insertNameChar1();
+    void insertNameChar0();
+    void appendTagTail();
+    void appendRawTag();
+    void appendChar();
+    u8 expand(u8 a, u8 b);
 
-    /* 0x24 */ Unk_020b2d30 *unk_24;
-    /* 0x28 */ Unk_020a72b0 unk_28;
-    /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u32 unk_40;
-    /* 0x44 */ u8 unk_44;
-    /* 0x45 */ u8 unk_45;
-    /* 0x46 */ u8 unk_46;
-    /* 0x47 */ u8 unk_47;
-    /* 0x48 */ u8 unk_48;
+    /* 0x24 */ StringBank *bank;
+    /* 0x28 */ MsgTag tag;
+    /* 0x3c */ s32 curChar;
+    /* 0x40 */ u32 outLen;
+    /* 0x44 */ u8 nameCharPending;
+    /* 0x45 */ u8 success;
+    /* 0x46 */ u8 resolveAltText;
+    /* 0x47 */ u8 nicknameMode;
+    /* 0x48 */ u8 capitalizeNext;
 };
 
-class Unk_020e3f38 : public Unk_020e2b4c {
+class TabooCensorWriter : public MsgWalker {
 public:
-    Unk_020e3f38();
-    virtual ~Unk_020e3f38();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
-    virtual BOOL vfunc_18();
+    TabooCensorWriter();
+    virtual ~TabooCensorWriter();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 c);
+    virtual void onTag(u8 *p);
+    virtual BOOL canContinue();
 
-    u8 func_020b36d4(u32 c);
-    s32 func_020b3784();
-    void func_020b37a4();
-    void func_020b37c0(s32 n);
-    void func_020b37dc();
-    void func_020b37f4(Unk_020e2a78 *p);
-    void func_020b37f8(Unk_020e2a78 *p);
-    void func_020b3810();
+    u8 appendChar(u32 c);
+    s32 readChar();
+    void copyChar();
+    void censorChars(s32 n);
+    void restartScan();
+    void setDest(MsgString *p);
+    void setSource(MsgString *p);
+    void resetWriter();
 
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ Unk_020e2a78 *unk_28;
-    /* 0x2c */ Unk_020e2a78 *unk_2c;
-    /* 0x30 */ u8 *unk_30;
-    /* 0x34 */ u8 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x24 */ s32 mode;
+    /* 0x28 */ MsgString *source;
+    /* 0x2c */ MsgString *dest;
+    /* 0x30 */ u8 *scanPos;
+    /* 0x34 */ u8 atEnd;
+    /* 0x38 */ s32 curChar;
+    /* 0x3c */ s32 remaining;
 };
 
-class Unk_020e3f14 : public Unk_020e2b4c {
+class MsgCharReader : public MsgWalker {
 public:
-    Unk_020e3f14();
-    virtual ~Unk_020e3f14();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
-    virtual BOOL vfunc_18();
+    MsgCharReader();
+    virtual ~MsgCharReader();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 c);
+    virtual void onTag(u8 *p);
+    virtual BOOL canContinue();
 
-    /* 0x24 */ u32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ u32 unk_2c;
+    /* 0x24 */ u32 text;
+    /* 0x28 */ s32 remaining;
+    /* 0x2c */ u32 curChar;
 };
 
-class Unk_020e3efc : public Unk_020e2a78 {
+class MsgString25 : public MsgString {
 public:
-    Unk_020e3efc();
-    virtual ~Unk_020e3efc();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    MsgString25();
+    virtual ~MsgString25();
+    virtual u32 capacity();
+    virtual u8 *data();
 
     /* 0x14 */ u32 unk_14[6];
 };
 
-class Unk_020e3ee4 : public Unk_020e2a18 {
+class BmgReader1K : public BmgReader {
 public:
-    Unk_020e3ee4();
-    virtual ~Unk_020e3ee4();
-    virtual u32 vfunc_0c();
-    virtual u32 vfunc_08();
-    void func_020b3fa0();
+    BmgReader1K();
+    virtual ~BmgReader1K();
+    virtual u32 getBuffer();
+    virtual u32 getBufferSize();
+    void clearBuffer();
 
-    /* 0xa4 */ u8 unk_a4[0x400];
+    /* 0xa4 */ u8 buffer[0x400];
 };
 
-class Unk_020e3ecc : public Unk_020e2a30 {
+class StringMsgRequest : public MsgRequest {
 public:
-    Unk_020e3ecc();
-    virtual ~Unk_020e3ecc();
-    virtual u32 vfunc_0c();
+    StringMsgRequest();
+    virtual ~StringMsgRequest();
+    virtual const char *getMsgDir();
 
-    /* 0x20 */ u32 unk_20;
-    /* 0x24 */ Unk_020e2a78 *unk_24;
-    /* 0x28 */ u8 unk_28;
-    /* 0x29 */ u8 unk_29;
+    /* 0x20 */ u32 dirIndex;
+    /* 0x24 */ MsgString *dest;
+    /* 0x28 */ u8 resolveAltText;
+    /* 0x29 */ u8 nicknameMode;
 };
 
-class Unk_020e3eb4 : public Unk_020e2a78 {
+class MsgString256 : public MsgString {
 public:
-    Unk_020e3eb4();
-    virtual ~Unk_020e3eb4();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    MsgString256();
+    virtual ~MsgString256();
+    virtual u32 capacity();
+    virtual u8 *data();
 
-    /* 0x14 */ u8 unk_14[0x100];
+    /* 0x12 */ u8 unk_14[0x100];
 };
 
-class Unk_020e3e9c : public Unk_020e2a78 {
+class ArticleCacheEntry : public MsgString {
 public:
-    Unk_020e3e9c();
-    virtual ~Unk_020e3e9c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
+    ArticleCacheEntry();
+    virtual ~ArticleCacheEntry();
+    virtual u32 capacity();
+    virtual u8 *data();
 
-    /* 0x14 */ u32 unk_14;
-    /* 0x18 */ u32 unk_18;
-    /* 0x1c */ u8 unk_1c;
+    /* 0x12 */ u8 text[10]; // data() / capacity()
+    /* 0x1c */ u8 isLoaded;
 };
 
 // text loader, global at 0x021ee50c
-class Unk_020b2d30 {
+class StringBank {
 public:
-    Unk_020b2d30();
-    ~Unk_020b2d30();
+    StringBank();
+    ~StringBank();
 
-    s32 func_020b2df0();
-    BOOL func_020b2e6c();
-    BOOL func_020b2ef4(Unk_020e2a78 *buf);
-    BOOL func_020b2f98(Unk_020e3ecc *req);
-    void func_020b3048();
+    s32 matchTabooWord();
+    BOOL censorTaboo();
+    BOOL beginTabooCheck(MsgString *buf);
+    BOOL load(StringMsgRequest *req);
+    void reset();
 
-    /* 0x000 */ Unk_020e3f5c unk_000;
-    /* 0x04c */ Unk_020e3ee4 unk_04c;
-    /* 0x4f0 */ Unk_020e2a08 unk_4f0;
-    /* 0x4fc */ u8 unk_4fc[0x400];
-    /* 0x8fc */ Unk_020e2a48 unk_8fc[11];
-    /* 0xb38 */ Unk_Buf *unk_b38;
-    /* 0xb3c */ Unk_020e3f38 unk_b3c;
-    /* 0xb7c */ Unk_020e3f14 unk_b7c;
-    /* 0xbac */ Unk_020e3e9c unk_bac[16];
+    /* 0x000 */ StringExpander expander;
+    /* 0x04c */ BmgReader1K reader;
+    /* 0x4f0 */ MsgStringAttr attr;
+    /* 0x4fc */ u8 output[0x400];
+    /* 0x8fc */ MsgString33 slots[11];
+    /* 0xb38 */ MsgStringBase *nameSource;
+    /* 0xb3c */ TabooCensorWriter censor;
+    /* 0xb7c */ MsgCharReader charReader;
+    /* 0xbac */ ArticleCacheEntry articles[16];
 };
 
 struct Empty {
@@ -314,311 +219,311 @@ struct Empty {
     ~Empty() {}
 };
 
-extern Unk_020b2d30 data_021ee50c;
-extern "C" Unk_020e3eb4 *func_020b406c(void);
-extern "C" BOOL func_020b38f0(u32 x);
+extern StringBank gStringBank;
+extern "C" MsgString256 *String_GetTabooScratch(void);
+extern "C" BOOL String_IsNonNullChar(u32 x);
 
-Unk_020b2d30 data_021ee50c;
+StringBank gStringBank;
 
-Unk_020e3efc::Unk_020e3efc() { func_020a7c3c(); }
+MsgString25::MsgString25() { clear(); }
 
-Unk_020e3efc::~Unk_020e3efc() {}
+MsgString25::~MsgString25() {}
 
-u32 Unk_020e3efc::vfunc_08() { return 0x19; }
+u32 MsgString25::capacity() { return 0x19; }
 
-u8 *Unk_020e3efc::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString25::data() { return (u8 *)this + 0x12; }
 
-Unk_020e3eb4::Unk_020e3eb4() { func_020a7c3c(); }
+MsgString256::MsgString256() { clear(); }
 
-Unk_020e3eb4::~Unk_020e3eb4() {}
+MsgString256::~MsgString256() {}
 
-u32 Unk_020e3eb4::vfunc_08() { return 0x100; }
+u32 MsgString256::capacity() { return 0x100; }
 
-u8 *Unk_020e3eb4::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString256::data() { return (u8 *)this + 0x12; }
 
-extern "C" Unk_020e3eb4 *func_020b406c(void) {
-    static Unk_020e3eb4 inst;
+extern "C" MsgString256 *String_GetTabooScratch(void) {
+    static MsgString256 inst;
     return &inst;
 }
 
-Unk_020e3e9c::Unk_020e3e9c() : unk_1c(0) { func_020a7c3c(); }
+ArticleCacheEntry::ArticleCacheEntry() : isLoaded(0) { clear(); }
 
-Unk_020e3e9c::~Unk_020e3e9c() {}
+ArticleCacheEntry::~ArticleCacheEntry() {}
 
-u32 Unk_020e3e9c::vfunc_08() {
+u32 ArticleCacheEntry::capacity() {
     return 10;
 }
 
-u8 *Unk_020e3e9c::vfunc_0c() {
+u8 *ArticleCacheEntry::data() {
     return (u8 *)this + 0x12;
 }
 
-Unk_020e3ee4::Unk_020e3ee4() : Unk_020e2a18(0) {}
+BmgReader1K::BmgReader1K() : BmgReader(0) {}
 
-Unk_020e3ee4::~Unk_020e3ee4() {}
+BmgReader1K::~BmgReader1K() {}
 
-void Unk_020e3ee4::func_020b3fa0() {
-    func_02115fb4(unk_a4, 0, 0x400);
+void BmgReader1K::clearBuffer() {
+    MI_CpuFill8(buffer, 0, 0x400);
 }
 
-u32 Unk_020e3ee4::vfunc_0c() {
-    return (u32)unk_a4;
+u32 BmgReader1K::getBuffer() {
+    return (u32)buffer;
 }
 
-u32 Unk_020e3ee4::vfunc_08() {
+u32 BmgReader1K::getBufferSize() {
     return 0x400;
 }
 
-Unk_020e3f5c::Unk_020e3f5c(Unk_020b2d30 *owner) : unk_24(owner) {
-    unk_3c = 0;
-    unk_40 = 0;
-    unk_44 = 0;
-    unk_45 = 1;
-    unk_46 = 0;
-    unk_47 = 0;
-    unk_48 = 0;
+StringExpander::StringExpander(StringBank *owner) : bank(owner) {
+    curChar = 0;
+    outLen = 0;
+    nameCharPending = 0;
+    success = 1;
+    resolveAltText = 0;
+    nicknameMode = 0;
+    capitalizeNext = 0;
 }
 
-Unk_020e3f5c::~Unk_020e3f5c() {}
+StringExpander::~StringExpander() {}
 
-u8 Unk_020e3f5c::func_020b3e74(u8 a, u8 b) {
-    unk_45 = 1;
-    unk_40 = 0;
-    unk_46 = a;
-    unk_47 = b;
-    unk_48 = 0;
-    unk_3c = 0;
-    func_020a84bc();
-    func_020a8368((u8 *)unk_24->unk_04c.vfunc_0c());
-    func_020a82ec(FALSE);
-    if (unk_45 && unk_47) {
-        if (!func_020b38dc() || !func_020b38a8()) {
-            unk_45 = 0;
+u8 StringExpander::expand(u8 a, u8 b) {
+    success = 1;
+    outLen = 0;
+    resolveAltText = a;
+    nicknameMode = b;
+    capitalizeNext = 0;
+    curChar = 0;
+    reset();
+    begin((u8 *)bank->reader.getBuffer());
+    run(FALSE);
+    if (success && nicknameMode) {
+        if (!canCheckName() || !differsFromName()) {
+            success = 0;
         }
     }
-    return unk_45;
+    return success;
 }
 
-void Unk_020e3f5c::vfunc_08() {}
+void StringExpander::onBegin() {}
 
-void Unk_020e3f5c::vfunc_0c() {}
+void StringExpander::onEnd() {}
 
-void Unk_020e3f5c::vfunc_10(u32 c) {
-    if (unk_48) {
-        c = func_020501e8(c);
-        unk_48 = 0;
+void StringExpander::onChar(u32 c) {
+    if (capitalizeNext) {
+        c = Text_ToUpper(c);
+        capitalizeNext = 0;
     }
-    if (unk_47 && unk_44) {
-        if (!func_020b38e0(c)) {
-            unk_45 = 0;
+    if (nicknameMode && nameCharPending) {
+        if (!differsFromLast(c)) {
+            success = 0;
         }
-        unk_44 = 0;
+        nameCharPending = 0;
     }
-    if (unk_45) {
-        unk_3c = c;
-        func_020b3c68();
+    if (success) {
+        curChar = c;
+        appendChar();
     }
 }
 
-void Unk_020e3f5c::vfunc_14(u8 *cmd) {
-    typedef void (Unk_020e3f5c::*Fn)();
-    unk_28.func_020a777c(cmd);
-    s32 a = unk_28.unk_00;
-    s32 b = unk_28.unk_04;
+void StringExpander::onTag(u8 *cmd) {
+    typedef void (StringExpander::*Fn)();
+    tag.parse(cmd);
+    s32 a = tag.group;
+    s32 b = tag.id;
     Fn fn = 0;
     if (a == 0 && b == 2) {
-        fn = &Unk_020e3f5c::func_020b3b48;
+        fn = &StringExpander::insertNameChar0;
     } else if (a == 0 && b == 3) {
-        fn = &Unk_020e3f5c::func_020b3ae0;
+        fn = &StringExpander::insertNameChar1;
     } else if (a == 0 && b == 4) {
-        fn = &Unk_020e3f5c::func_020b3a78;
+        fn = &StringExpander::insertNameChar2;
     } else if (a == 0 && b == 5) {
-        fn = &Unk_020e3f5c::func_020b39dc;
+        fn = &StringExpander::insertNameLast2;
     } else if (a == 0 && b == 6) {
-        fn = &Unk_020e3f5c::func_020b39c4;
+        fn = &StringExpander::insertGlyphTag6;
     } else if (a == 0 && b == 9) {
-        fn = &Unk_020e3f5c::func_020b39ac;
+        fn = &StringExpander::insertGlyphTag9;
     } else if (a == 0 && b == 10) {
-        fn = &Unk_020e3f5c::func_020b3994;
+        fn = &StringExpander::insertGlyphTag10;
     } else if (a == 0xff && b == 2) {
-        fn = &Unk_020e3f5c::func_020b3974;
-    } else if (a == 4 && unk_28.func_020a7374()) {
-        fn = &Unk_020e3f5c::func_020b3944;
+        fn = &StringExpander::handleTagFF02;
+    } else if (a == 4 && tag.isSlotTag()) {
+        fn = &StringExpander::insertSlot;
     } else if (a == 0xb && b == 0) {
-        fn = &Unk_020e3f5c::func_020b3904;
+        fn = &StringExpander::setAttr;
     } else if (a == 0xb && b == 3) {
-        fn = &Unk_020e3f5c::func_020b38fc;
+        fn = &StringExpander::setCapitalizeNext;
     }
     if (fn) {
         (this->*fn)();
     } else {
-        unk_45 = 0;
+        success = 0;
     }
 }
 
-BOOL Unk_020e3f5c::vfunc_18() {
-    return unk_45;
+BOOL StringExpander::canContinue() {
+    return success;
 }
 
-void Unk_020e3f5c::func_020b3c68() {
-    s8 c = unk_3c;
-    if (0x400 - unk_40 > 1) {
-        u32 i = unk_40++;
-        unk_24->unk_4fc[i] = c;
+void StringExpander::appendChar() {
+    s8 c = curChar;
+    if (0x400 - outLen > 1) {
+        u32 i = outLen++;
+        bank->output[i] = c;
     } else {
-        unk_45 = 0;
+        success = 0;
     }
 }
 
-void Unk_020e3f5c::func_020b3c1c() {
-    char *p = unk_28.unk_10;
-    u32 n = unk_28.unk_08 + 5;
-    if (0x400 - unk_40 > n) {
+void StringExpander::appendRawTag() {
+    char *p = (char *)tag.raw;
+    u32 n = tag.argLen + 5;
+    if (0x400 - outLen > n) {
         for (u32 i = 0; i < n; i++) {
-            (unk_24->unk_4fc + unk_40)[i] = p[i];
+            (bank->output + outLen)[i] = p[i];
         }
-        unk_40 += n;
+        outLen += n;
     } else {
-        unk_45 = 0;
+        success = 0;
     }
 }
 
-void Unk_020e3f5c::func_020b3bb0() {
+void StringExpander::appendTagTail() {
     u32 a;
     char *b, *c;
-    unk_28.func_020a72c4(&a, &b, &c);
-    u32 n = unk_28.unk_08 - 1;
-    BOOL ok = 0x400 - unk_40 > n;
-    func_020a8400(a * 2);
+    tag.getAltTextArgs(&a, &b, &c);
+    u32 n = tag.argLen - 1;
+    BOOL ok = 0x400 - outLen > n;
+    skip(a * 2);
     if (ok) {
         for (u32 i = 0; i < n; i++) {
-            (unk_24->unk_4fc + unk_40)[i] = c[i];
+            (bank->output + outLen)[i] = c[i];
         }
-        unk_40 += n;
+        outLen += n;
     } else {
-        unk_45 = 0;
+        success = 0;
     }
 }
 
-void Unk_020e3f5c::func_020b3b48() {
-    if (unk_47) {
-        u32 a = func_020a6c40(unk_24->unk_b38->vfunc_0c(), 0);
-        if (unk_48) {
-            a = func_020501e8(a);
-            unk_48 = 0;
+void StringExpander::insertNameChar0() {
+    if (nicknameMode) {
+        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 0);
+        if (capitalizeNext) {
+            a = Text_ToUpper(a);
+            capitalizeNext = 0;
         }
-        if (func_020b38f0(a)) {
-            unk_3c = a;
-            func_020b3c68();
-            unk_44 = 1;
+        if (String_IsNonNullChar(a)) {
+            curChar = a;
+            appendChar();
+            nameCharPending = 1;
         } else {
-            unk_45 = 0;
+            success = 0;
         }
     }
 }
 
-void Unk_020e3f5c::func_020b3ae0() {
-    if (unk_47) {
-        u32 a = func_020a6c40(unk_24->unk_b38->vfunc_0c(), 1);
-        if (unk_48) {
-            a = func_020501e8(a);
-            unk_48 = 0;
+void StringExpander::insertNameChar1() {
+    if (nicknameMode) {
+        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 1);
+        if (capitalizeNext) {
+            a = Text_ToUpper(a);
+            capitalizeNext = 0;
         }
-        if (func_020b38f0(a)) {
-            unk_3c = a;
-            func_020b3c68();
-            unk_44 = 1;
+        if (String_IsNonNullChar(a)) {
+            curChar = a;
+            appendChar();
+            nameCharPending = 1;
         } else {
-            unk_45 = 0;
+            success = 0;
         }
     }
 }
 
-void Unk_020e3f5c::func_020b3a78() {
-    if (unk_47) {
-        u32 a = func_020a6c40(unk_24->unk_b38->vfunc_0c(), 2);
-        if (unk_48) {
-            a = func_020501e8(a);
-            unk_48 = 0;
+void StringExpander::insertNameChar2() {
+    if (nicknameMode) {
+        u32 a = Msg_GetCharAt((u32)bank->nameSource->data(), 2);
+        if (capitalizeNext) {
+            a = Text_ToUpper(a);
+            capitalizeNext = 0;
         }
-        if (func_020b38f0(a)) {
-            unk_3c = a;
-            func_020b3c68();
-            unk_44 = 1;
+        if (String_IsNonNullChar(a)) {
+            curChar = a;
+            appendChar();
+            nameCharPending = 1;
         } else {
-            unk_45 = 0;
+            success = 0;
         }
     }
 }
 
-void Unk_020e3f5c::func_020b39dc() {
-    if (unk_47) {
+void StringExpander::insertNameLast2() {
+    if (nicknameMode) {
         u32 v, b, a;
-        v = unk_24->unk_b38->vfunc_0c();
-        a = func_020a6c1c(v, 0);
-        b = func_020a6c1c(v, 1);
-        if (unk_48) {
-            a = func_020501e8(a);
-            unk_48 = 0;
+        v = (u32)bank->nameSource->data();
+        a = Msg_GetCharFromEnd(v, 0);
+        b = Msg_GetCharFromEnd(v, 1);
+        if (capitalizeNext) {
+            a = Text_ToUpper(a);
+            capitalizeNext = 0;
         }
-        if (unk_48) {
-            b = func_020501e8(b);
-            unk_48 = 0;
+        if (capitalizeNext) {
+            b = Text_ToUpper(b);
+            capitalizeNext = 0;
         }
-        if (func_020b38f0(a) && func_020b38f0(b)) {
-            unk_3c = b;
-            func_020b3c68();
-            unk_3c = a;
-            func_020b3c68();
-            unk_44 = 1;
+        if (String_IsNonNullChar(a) && String_IsNonNullChar(b)) {
+            curChar = b;
+            appendChar();
+            curChar = a;
+            appendChar();
+            nameCharPending = 1;
         } else {
-            unk_45 = 0;
+            success = 0;
         }
     }
 }
 
-void Unk_020e3f5c::func_020b39c4() {
-    func_020a8348(func_0205021c());
+void StringExpander::insertGlyphTag6() {
+    pushText(Text_GetSpecialCharStr5());
 }
 
-void Unk_020e3f5c::func_020b39ac() {
-    func_020a8348(func_02050208());
+void StringExpander::insertGlyphTag9() {
+    pushText(Text_GetSpecialCharStr9());
 }
 
-void Unk_020e3f5c::func_020b3994() {
-    func_020a8348(func_02050204());
+void StringExpander::insertGlyphTag10() {
+    pushText(Text_GetSpecialCharStr10());
 }
 
-void Unk_020e3f5c::func_020b3974() {
-    if (unk_46) {
-        func_020b3bb0();
+void StringExpander::handleTagFF02() {
+    if (resolveAltText) {
+        appendTagTail();
     } else {
-        func_020b3c1c();
+        appendRawTag();
     }
 }
 
-void Unk_020e3f5c::func_020b3944() {
-    func_020a8348(unk_24->unk_8fc[unk_28.func_020a736c()].vfunc_0c());
+void StringExpander::insertSlot() {
+    pushText(bank->slots[tag.getSlotIndex()].data());
 }
 
-void Unk_020e3f5c::func_020b3904() {
+void StringExpander::setAttr() {
     u8 a, b, c;
-    unk_28.func_020a76fc(&a, &b, &c);
-    Unk_020e2a08 *p = &unk_24->unk_4f0;
+    tag.getArgs3(&a, &b, &c);
+    MsgStringAttr *p = &bank->attr;
     s32 v = a;
     if (a >= 3) {
         v = -1;
     }
-    p->unk_04 = v;
-    p->unk_08 = b;
-    p->unk_09 = c;
+    p->form = v;
+    p->attrA = b;
+    p->attrB = c;
 }
 
-void Unk_020e3f5c::func_020b38fc() {
-    unk_48 = 1;
+void StringExpander::setCapitalizeNext() {
+    capitalizeNext = 1;
 }
 
-extern "C" BOOL func_020b38f0(u32 x) {
+extern "C" BOOL String_IsNonNullChar(u32 x) {
     BOOL r = TRUE;
     if (x == 0) {
         r = FALSE;
@@ -626,192 +531,192 @@ extern "C" BOOL func_020b38f0(u32 x) {
     return r;
 }
 
-BOOL Unk_020e3f5c::func_020b38e0(s32 c) {
+BOOL StringExpander::differsFromLast(s32 c) {
     BOOL r = TRUE;
-    if (unk_3c == c) {
+    if (curChar == c) {
         r = FALSE;
     }
     return r;
 }
 
-BOOL Unk_020e3f5c::func_020b38dc() {
+BOOL StringExpander::canCheckName() {
     return TRUE;
 }
 
-BOOL Unk_020e3f5c::func_020b38a8() {
-    u8 *p = (u8 *)unk_24->unk_b38->vfunc_0c();
-    return func_0212a190(p, (u8 *)unk_24->unk_4fc) != 0;
+BOOL StringExpander::differsFromName() {
+    u8 *p = bank->nameSource->data();
+    return strcmp(p, (u8 *)bank->output) != 0;
 }
 
-Unk_020e3f38::Unk_020e3f38() {
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_30 = 0;
-    unk_34 = 0;
-    unk_38 = 0;
-    unk_3c = 0;
+TabooCensorWriter::TabooCensorWriter() {
+    mode = 0;
+    source = 0;
+    dest = 0;
+    scanPos = 0;
+    atEnd = 0;
+    curChar = 0;
+    remaining = 0;
 }
 
-Unk_020e3f38::~Unk_020e3f38() {}
+TabooCensorWriter::~TabooCensorWriter() {}
 
-void Unk_020e3f38::func_020b3810() {
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_30 = 0;
-    unk_34 = 0;
-    unk_38 = 0;
-    unk_3c = 0;
-    func_020a84bc();
+void TabooCensorWriter::resetWriter() {
+    mode = 0;
+    source = 0;
+    dest = 0;
+    scanPos = 0;
+    atEnd = 0;
+    curChar = 0;
+    remaining = 0;
+    reset();
 }
 
-void Unk_020e3f38::func_020b37f8(Unk_020e2a78 *p) {
-    unk_28 = p;
-    unk_30 = p->vfunc_0c();
+void TabooCensorWriter::setSource(MsgString *p) {
+    source = p;
+    scanPos = p->data();
 }
 
-void Unk_020e3f38::func_020b37f4(Unk_020e2a78 *p) {
-    unk_2c = p;
+void TabooCensorWriter::setDest(MsgString *p) {
+    dest = p;
 }
 
-void Unk_020e3f38::func_020b37dc() {
-    func_020a84bc();
-    func_020a8368(unk_30);
+void TabooCensorWriter::restartScan() {
+    reset();
+    begin(scanPos);
 }
 
-void Unk_020e3f38::func_020b37c0(s32 n) {
-    unk_24 = 2;
-    unk_3c = n;
-    func_020a82ec(FALSE);
-    unk_24 = 0;
+void TabooCensorWriter::censorChars(s32 n) {
+    mode = 2;
+    remaining = n;
+    run(FALSE);
+    mode = 0;
 }
 
-void Unk_020e3f38::func_020b37a4() {
-    unk_24 = 1;
-    unk_3c = 1;
-    func_020a82ec(FALSE);
-    unk_24 = 0;
+void TabooCensorWriter::copyChar() {
+    mode = 1;
+    remaining = 1;
+    run(FALSE);
+    mode = 0;
 }
 
-s32 Unk_020e3f38::func_020b3784() {
-    unk_24 = 3;
-    unk_3c = 1;
-    unk_38 = 0;
-    func_020a82ec(FALSE);
-    unk_24 = 0;
-    return unk_38;
+s32 TabooCensorWriter::readChar() {
+    mode = 3;
+    remaining = 1;
+    curChar = 0;
+    run(FALSE);
+    mode = 0;
+    return curChar;
 }
 
-void Unk_020e3f38::vfunc_08() {}
+void TabooCensorWriter::onBegin() {}
 
-void Unk_020e3f38::vfunc_0c() {
-    if (unk_24 == 1 || unk_24 == 2) {
-        unk_34 = 1;
+void TabooCensorWriter::onEnd() {
+    if (mode == 1 || mode == 2) {
+        atEnd = 1;
     }
 }
 
-void Unk_020e3f38::vfunc_10(u32 c) {
-    unk_38 = c;
-    if (unk_24 == 1) {
-        func_020b36d4(c);
+void TabooCensorWriter::onChar(u32 c) {
+    curChar = c;
+    if (mode == 1) {
+        appendChar(c);
         if (c != 10) {
-            unk_3c--;
+            remaining--;
         }
-    } else if (unk_24 == 2) {
+    } else if (mode == 2) {
         if (c == 10) {
-            func_020b36d4(10);
+            appendChar(10);
         } else {
-            func_020b36d4(0x20);
-            unk_3c--;
+            appendChar(0x20);
+            remaining--;
         }
-    } else if (unk_24 == 3) {
+    } else if (mode == 3) {
         if (c != 10) {
-            unk_3c--;
+            remaining--;
         }
     }
 }
 
-void Unk_020e3f38::vfunc_14(u8 *p) {}
+void TabooCensorWriter::onTag(u8 *p) {}
 
-BOOL Unk_020e3f38::vfunc_18() {
-    BOOL r = unk_3c > 0;
-    if ((unk_24 == 1 || unk_24 == 2) && !r) {
-        unk_30 = unk_04;
+BOOL TabooCensorWriter::canContinue() {
+    BOOL r = remaining > 0;
+    if ((mode == 1 || mode == 2) && !r) {
+        scanPos = cursor;
     }
     return r;
 }
 
-u8 Unk_020e3f38::func_020b36d4(u32 c) {
+u8 TabooCensorWriter::appendChar(u32 c) {
     u8 buf[3];
     func_02133ef8(buf, 3);
     buf[0] = c;
-    return unk_2c->func_020a7a28(buf);
+    return dest->append(buf);
 }
 
-Unk_020e3f14::Unk_020e3f14() {
-    unk_24 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
+MsgCharReader::MsgCharReader() {
+    text = 0;
+    remaining = 0;
+    curChar = 0;
 }
 
-Unk_020e3f14::~Unk_020e3f14() {}
+MsgCharReader::~MsgCharReader() {}
 
-void Unk_020e3f14::vfunc_08() {}
+void MsgCharReader::onBegin() {}
 
-void Unk_020e3f14::vfunc_0c() {}
+void MsgCharReader::onEnd() {}
 
-void Unk_020e3f14::vfunc_10(u32 c) {
-    unk_2c = c;
-    unk_28--;
+void MsgCharReader::onChar(u32 c) {
+    curChar = c;
+    remaining--;
 }
 
-void Unk_020e3f14::vfunc_14(u8 *p) {}
+void MsgCharReader::onTag(u8 *p) {}
 
-BOOL Unk_020e3f14::vfunc_18() {
-    return unk_28 > 0;
+BOOL MsgCharReader::canContinue() {
+    return remaining > 0;
 }
 
-extern "C" BOOL func_020b35f8(Unk_020e2a78 *buf, u8 *key, const char *name) {
-    Unk_020e3ecc req;
-    req.func_020a710c(name);
-    req.unk_1e = *key;
-    req.unk_24 = buf;
-    data_021ee50c.func_020b3048();
-    BOOL r = data_021ee50c.func_020b2f98(&req);
+extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name) {
+    StringMsgRequest req;
+    req.setFileName(name);
+    req.msgIndex = *key;
+    req.dest = buf;
+    gStringBank.reset();
+    BOOL r = gStringBank.load(&req);
     return r;
 }
 
-extern "C" BOOL func_020b35ac(Unk_020e2a78 *buf, u8 *key, const char *name) {
-    Unk_020e3ecc req;
-    req.func_020a710c(name);
-    req.unk_1e = *key;
-    req.unk_24 = buf;
-    req.unk_28 = 1;
-    data_021ee50c.func_020b3048();
-    BOOL r = data_021ee50c.func_020b2f98(&req);
+extern "C" BOOL String_LoadResolveAltText(MsgString *buf, u8 *key, const char *name) {
+    StringMsgRequest req;
+    req.setFileName(name);
+    req.msgIndex = *key;
+    req.dest = buf;
+    req.resolveAltText = 1;
+    gStringBank.reset();
+    BOOL r = gStringBank.load(&req);
     return r;
 }
 
-extern "C" BOOL func_020b3558(Unk_020e2a78 *buf, u8 *key, const char *name) {
+extern "C" BOOL String_Load2d(MsgString *buf, u8 *key, const char *name) {
     if (name == NULL) {
         name = "2d_menu";
     }
-    Unk_020e3ecc req;
-    req.unk_20 = 1;
-    req.func_020a710c(name);
-    req.unk_1e = *key;
-    req.unk_24 = buf;
-    data_021ee50c.func_020b3048();
-    BOOL r = data_021ee50c.func_020b2f98(&req);
+    StringMsgRequest req;
+    req.dirIndex = 1;
+    req.setFileName(name);
+    req.msgIndex = *key;
+    req.dest = buf;
+    gStringBank.reset();
+    BOOL r = gStringBank.load(&req);
     return r;
 }
 
-extern "C" u8 func_020b3544(u32 idx, Unk_020e2a78 *other) {
-    return data_021ee50c.unk_8fc[idx].func_020a7bd8(other);
+extern "C" u8 String_SetSlot(u32 idx, MsgString *other) {
+    return gStringBank.slots[idx].copy(other);
 }
 
-extern "C" s32 func_020b3530(const char *s, u32 max) {
+extern "C" s32 Str_LenN(const char *s, u32 max) {
     u32 i = 0;
     while (i < max) {
         if (s[i] == 0) {
@@ -822,7 +727,7 @@ extern "C" s32 func_020b3530(const char *s, u32 max) {
     return i;
 }
 
-extern "C" void func_020b3510(char *s, u32 size, s32 start, s32 shift) {
+extern "C" void Str_ShiftRight(char *s, u32 size, s32 start, s32 shift) {
     if (shift != 0) {
         s32 i = size - shift - 1;
         char *d = s + shift;
@@ -832,7 +737,7 @@ extern "C" void func_020b3510(char *s, u32 size, s32 start, s32 shift) {
     }
 }
 
-extern "C" void func_020b34d0(char *s, u32 size, s32 n, s32 maxDigits) {
+extern "C" void Str_WriteDigitsReversed(char *s, u32 size, s32 n, s32 maxDigits) {
     if (n == 0) {
         s[0] = '0';
     } else {
@@ -844,29 +749,29 @@ extern "C" void func_020b34d0(char *s, u32 size, s32 n, s32 maxDigits) {
     }
 }
 
-extern "C" void func_020b34a0(char *s, u32 size, s32 width) {
-    s32 n = width - func_020b3530(s, size);
-    func_020b3510(s, size, 0, n);
+extern "C" void Str_PadFrontSpaces(char *s, u32 size, s32 width) {
+    s32 n = width - Str_LenN(s, size);
+    Str_ShiftRight(s, size, 0, n);
     for (s32 i = n - 1; i >= 0; i--) {
         s[i] = ' ';
     }
 }
 
-extern "C" void func_020b3480(char *s, u32 size, s32 width) {
-    s32 len = func_020b3530(s, size);
+extern "C" void Str_PadBackSpaces(char *s, u32 size, s32 width) {
+    s32 len = Str_LenN(s, size);
     for (; len < width; len++) {
         s[len] = ' ';
     }
 }
 
-extern "C" void func_020b3460(char *s, u32 size, s32 width) {
-    s32 len = func_020b3530(s, size);
+extern "C" void Str_PadBackZeros(char *s, u32 size, s32 width) {
+    s32 len = Str_LenN(s, size);
     for (; len < width; len++) {
         s[len] = '0';
     }
 }
 
-extern "C" void func_020b3404(char *s, u32 size, s32 minRun) {
+extern "C" void Str_InsertThousandsSeparators(char *s, u32 size, s32 minRun) {
     s32 i = 0;
     s32 run = 0;
     while (s[i] != 0) {
@@ -880,7 +785,7 @@ extern "C" void func_020b3404(char *s, u32 size, s32 minRun) {
                     char *p = s + j;
                     char d = s[j];
                     if (d >= '0' && d <= '9') {
-                        func_020b3510(s, size, i, 1);
+                        Str_ShiftRight(s, size, i, 1);
                         *p = ',';
                     }
                 }
@@ -890,8 +795,8 @@ extern "C" void func_020b3404(char *s, u32 size, s32 minRun) {
     }
 }
 
-extern "C" void func_020b33d8(char *s, u32 size) {
-    u32 len = func_020b3530(s, size);
+extern "C" void Str_Reverse(char *s, u32 size) {
+    u32 len = Str_LenN(s, size);
     u32 half = len >> 1;
     u32 i = 0;
     s32 j = len - 1;
@@ -903,11 +808,11 @@ extern "C" void func_020b33d8(char *s, u32 size) {
     }
 }
 
-extern "C" BOOL func_020b3324(Unk_020e2a78 *out, s32 val, s32 kind) {
+extern "C" BOOL String_AppendUnitSuffix(MsgString *out, s32 val, s32 kind) {
     static const u8 t6[10] = {9, 9, 7, 8, 7, 7, 9, 7, 7, 7};
     static const u8 t9[10] = {0xd, 0xd, 0xc, 0xd, 0xc, 0xc, 0xd, 0xc, 0xd, 0xc};
     static const u8 t3[10] = {3, 3, 2, 4, 2, 2, 3, 2, 3, 3};
-    Unk_020e2a48 tmp;
+    MsgString33 tmp;
     u8 v = 0;
     s32 rem = val % 10;
     if (kind == 1) {
@@ -931,9 +836,9 @@ extern "C" BOOL func_020b3324(Unk_020e2a78 *out, s32 val, s32 kind) {
         v = 0xe;
     }
     u8 c = v;
-    BOOL r = func_020b35f8(&tmp, &c, "st_unit");
+    BOOL r = String_Load(&tmp, &c, "st_unit");
     if (r) {
-        r &= out->func_020a7a0c(&tmp);
+        r &= out->appendString(&tmp);
         if (r) {
             r = TRUE;
         } else {
@@ -943,24 +848,24 @@ extern "C" BOOL func_020b3324(Unk_020e2a78 *out, s32 val, s32 kind) {
     return r;
 }
 
-extern "C" BOOL func_020b3270(Unk_020e2a78 *out, s32 val, s32 width, s32 mode, s32 kind, s32 unused) {
+extern "C" BOOL String_FormatNumber(MsgString *out, s32 val, s32 width, s32 mode, s32 kind, s32 unused) {
     char tmp[0xe];
-    func_02115fb4(tmp, 0, 0xe);
-    func_020b34d0(tmp, 0xe, val, width);
+    MI_CpuFill8(tmp, 0, 0xe);
+    Str_WriteDigitsReversed(tmp, 0xe, val, width);
     switch (mode) {
     case 2:
     case 3:
-        func_020b34a0(tmp, 0xe, width);
+        Str_PadFrontSpaces(tmp, 0xe, width);
     }
     switch (mode) {
     case 4:
     case 5:
-        func_020b3480(tmp, 0xe, width);
+        Str_PadBackSpaces(tmp, 0xe, width);
     }
     switch (mode) {
     case 6:
     case 7:
-        func_020b3460(tmp, 0xe, width);
+        Str_PadBackZeros(tmp, 0xe, width);
     }
     BOOL c = FALSE;
     u32 m = mode - 1;
@@ -968,12 +873,12 @@ extern "C" BOOL func_020b3270(Unk_020e2a78 *out, s32 val, s32 width, s32 mode, s
         c = TRUE;
     }
     if (c) {
-        func_020b3404(tmp, 0xe, 3);
+        Str_InsertThousandsSeparators(tmp, 0xe, 3);
     }
-    func_020b33d8(tmp, 0xe);
-    BOOL r = out->func_020a7c04((u8 *)tmp);
+    Str_Reverse(tmp, 0xe);
+    BOOL r = out->set((u8 *)tmp);
     if (kind != 0) {
-        r &= func_020b3324(out, val, kind);
+        r &= String_AppendUnitSuffix(out, val, kind);
         if (r) {
             r = TRUE;
         } else {
@@ -983,7 +888,7 @@ extern "C" BOOL func_020b3270(Unk_020e2a78 *out, s32 val, s32 width, s32 mode, s
     return r;
 }
 
-extern "C" BOOL func_020b31a8(Unk_020e2a78 *out, s32 val, s32 digits) {
+extern "C" BOOL String_FormatFixedPoint(MsgString *out, s32 val, s32 digits) {
     static const u8 dot[2] = {0x2e, 0};
     BOOL ok;
     s32 i;
@@ -992,37 +897,37 @@ extern "C" BOOL func_020b31a8(Unk_020e2a78 *out, s32 val, s32 digits) {
     s32 ip;
     BOOL res;
     s32 ipart;
-    frac = func_01ffcac0(val, &ip);
+    frac = FX_Modf(val, &ip);
     for (i = 0; i < digits; i++) {
         frac *= 10;
     }
     ipart = ip >> 12;
-    Unk_020e3efc a, b;
-    Unk_020e2a48 c;
-    r1 = func_020b3270(&a, ipart, 10, 0, 0, 0);
+    MsgString25 a, b;
+    MsgString33 c;
+    r1 = String_FormatNumber(&a, ipart, 10, 0, 0, 0);
     ok = TRUE;
     if (!(r1 & ok)) {
         ok = FALSE;
     }
-    ok &= func_020b3270(&b, frac >> 12, 10, 0, 0, 0);
+    ok &= String_FormatNumber(&b, frac >> 12, 10, 0, 0, 0);
     if (ok) {
         res = TRUE;
     } else {
         res = FALSE;
     }
-    res &= out->func_020a7bd8(&a);
+    res &= out->copy(&a);
     if (res) {
         res = TRUE;
     } else {
         res = FALSE;
     }
-    res &= out->func_020a7a28((u8 *)dot);
+    res &= out->append((u8 *)dot);
     if (res) {
         res = TRUE;
     } else {
         res = FALSE;
     }
-    res &= out->func_020a7a0c(&b);
+    res &= out->appendString(&b);
     if (res) {
         res = TRUE;
     } else {
@@ -1031,164 +936,164 @@ extern "C" BOOL func_020b31a8(Unk_020e2a78 *out, s32 val, s32 digits) {
     return res;
 }
 
-extern "C" BOOL func_020b3174(Unk_020e2a78 *buf, u32 idx, BOOL flag) {
+extern "C" BOOL String_GetWeekdayName(MsgString *buf, u32 idx, BOOL flag) {
     static const u8 tbl[8] = {0x17, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0};
     u8 c = tbl[idx];
     const char *name = "st_general";
     BOOL r;
     if (flag) {
-        r = func_020b35ac(buf, &c, name);
+        r = String_LoadResolveAltText(buf, &c, name);
     } else {
-        r = func_020b35f8(buf, &c, name);
+        r = String_Load(buf, &c, name);
     }
     return r;
 }
 
-extern "C" BOOL func_020b3158(Unk_020e2a78 *buf, u8 v) {
+extern "C" BOOL String_GetMonthName(MsgString *buf, u8 v) {
     u8 c = v - 1;
-    return func_020b35f8(buf, &c, "st_day_month");
+    return String_Load(buf, &c, "st_day_month");
 }
 
-extern "C" BOOL func_020b313c(Unk_020e2a78 *buf, u8 v) {
+extern "C" BOOL String_GetDayOrdinal(MsgString *buf, u8 v) {
     u8 c = v + 0xc;
-    return func_020b35f8(buf, &c, "st_day_month");
+    return String_Load(buf, &c, "st_day_month");
 }
 
-extern "C" BOOL func_020b30e0(Unk_020e2a78 *buf, u32 x, u8 *key) {
-    Unk_020e3ecc req;
-    req.func_020a710c("st_nickn");
-    req.unk_1e = *key;
-    req.unk_24 = buf;
-    req.unk_29 = 1;
-    data_021ee50c.unk_b38 = (Unk_Buf *)x;
-    data_021ee50c.func_020b3048();
-    BOOL r = data_021ee50c.func_020b2f98(&req);
-    data_021ee50c.unk_b38 = 0;
+extern "C" BOOL String_MakeNickname(MsgString *buf, u32 x, u8 *key) {
+    StringMsgRequest req;
+    req.setFileName("st_nickn");
+    req.msgIndex = *key;
+    req.dest = buf;
+    req.nicknameMode = 1;
+    gStringBank.nameSource = (MsgStringBase *)x;
+    gStringBank.reset();
+    BOOL r = gStringBank.load(&req);
+    gStringBank.nameSource = 0;
     return r;
 }
 
-extern "C" BOOL func_020b30bc(Unk_020e2a78 *buf) {
+extern "C" BOOL String_CensorTaboo(MsgString *buf) {
     BOOL r = FALSE;
-    if (data_021ee50c.func_020b2ef4(buf)) {
-        r = data_021ee50c.func_020b2e6c();
+    if (gStringBank.beginTabooCheck(buf)) {
+        r = gStringBank.censorTaboo();
     }
     return r;
 }
 
-extern "C" Unk_020e3e9c *func_020b3078(u8 *key) {
-    Unk_020e3e9c *r = NULL;
+extern "C" ArticleCacheEntry *String_GetArticle(u8 *key) {
+    ArticleCacheEntry *r = NULL;
     s32 i = *key;
     if (i < 0x10) {
-        Unk_020e3e9c *e = &data_021ee50c.unk_bac[i];
-        if (e->unk_1c != 0) {
+        ArticleCacheEntry *e = &gStringBank.articles[i];
+        if (e->isLoaded != 0) {
             r = e;
-        } else if (func_020b35f8(e, key, "st_article")) {
-            e->unk_1c = 1;
+        } else if (String_Load(e, key, "st_article")) {
+            e->isLoaded = 1;
             r = e;
         }
     }
     return r;
 }
 
-void Unk_020b2d30::func_020b3048() {
-    unk_04c.func_020b3fa0();
-    unk_4f0.func_020a8b1c();
-    func_02115fb4(unk_4fc, 0, 0x400);
+void StringBank::reset() {
+    reader.clearBuffer();
+    attr.reset();
+    MI_CpuFill8(output, 0, 0x400);
 }
 
-BOOL Unk_020b2d30::func_020b2f98(Unk_020e3ecc *req) {
+BOOL StringBank::load(StringMsgRequest *req) {
     char path[0x44];
-    func_020639e8(path, "%s/%s.bmg", req->vfunc_0c(), req->unk_04);
-    BOOL ok = unk_04c.func_020a8a20(path);
-    BOOL t = ok ? unk_04c.func_020a8950(&req->unk_1e) : FALSE;
+    Str_SPrintf(path, "%s/%s.bmg", req->getMsgDir(), req->fileName);
+    BOOL ok = reader.open(path);
+    BOOL t = ok ? reader.loadMessage(&req->msgIndex) : FALSE;
     ok = ok & t;
     if (ok) {
         ok = TRUE;
     } else {
         ok = FALSE;
     }
-    unk_04c.func_020a89f0();
+    reader.close();
     if (ok) {
-        Unk_020e2a78 *dst = req->unk_24;
-        ok &= unk_000.func_020b3e74(req->unk_28, req->unk_29);
+        MsgString *dst = req->dest;
+        ok &= expander.expand(req->resolveAltText, req->nicknameMode);
         if (ok) {
             ok = TRUE;
         } else {
             ok = FALSE;
         }
         if (dst) {
-            ok &= dst->func_020a7c04(unk_4fc);
+            ok &= dst->set(output);
             if (ok) {
                 ok = TRUE;
             } else {
                 ok = FALSE;
             }
-            dst->unk_08.func_020a8b34(&unk_4f0);
+            dst->attr.copyFrom(&attr);
         }
     }
     return ok;
 }
 
-BOOL Unk_020b2d30::func_020b2ef4(Unk_020e2a78 *buf) {
+BOOL StringBank::beginTabooCheck(MsgString *buf) {
     Empty e;
-    Unk_020e3ecc req;
-    req.func_020a710c("st_taboo");
-    req.unk_1e = 0;
-    func_020b3048();
-    BOOL r = data_021ee50c.func_020b2f98(&req);
+    StringMsgRequest req;
+    req.setFileName("st_taboo");
+    req.msgIndex = 0;
+    reset();
+    BOOL r = gStringBank.load(&req);
     if (r) {
-        func_020b406c()->func_020a7bd8(buf);
-        buf->func_020a7c3c();
-        unk_b3c.func_020b3810();
-        unk_b3c.func_020b37f8(func_020b406c());
-        unk_b3c.func_020b37f4(buf);
-        unk_b7c.unk_24 = 0;
-        unk_b7c.unk_28 = 0;
-        unk_b7c.unk_2c = 0;
-        unk_b7c.func_020a84bc();
+        String_GetTabooScratch()->copy(buf);
+        buf->clear();
+        censor.resetWriter();
+        censor.setSource(String_GetTabooScratch());
+        censor.setDest(buf);
+        charReader.text = 0;
+        charReader.remaining = 0;
+        charReader.curChar = 0;
+        charReader.reset();
     }
     return r;
 }
 
-BOOL Unk_020b2d30::func_020b2e6c() {
+BOOL StringBank::censorTaboo() {
     BOOL result = FALSE;
-    unk_b3c.func_020b37dc();
-    u8 *start = unk_4fc;
-    while (unk_b3c.unk_34 == 0) {
+    censor.restartScan();
+    u8 *start = output;
+    while (censor.atEnd == 0) {
         char *s = (char *)start;
         s32 n = 0;
-        for (; s != NULL && *s != 0xa; s = func_020a6b9c(s, 1)) {
-            unk_b7c.unk_24 = (u32)s;
-            n = func_020b2df0();
+        for (; s != NULL && *s != 0xa; s = Msg_SkipLines(s, 1)) {
+            charReader.text = (u32)s;
+            n = matchTabooWord();
             if (n > 0) {
                 break;
             }
         }
-        unk_b3c.func_020b37dc();
+        censor.restartScan();
         if (n > 0) {
-            unk_b3c.func_020b37c0(n);
+            censor.censorChars(n);
             result = TRUE;
         } else {
-            unk_b3c.func_020b37a4();
+            censor.copyChar();
         }
     }
     return result;
 }
 
-s32 Unk_020b2d30::func_020b2df0() {
+s32 StringBank::matchTabooWord() {
     s32 count = 0;
-    unk_b3c.func_020b37dc();
-    unk_b7c.func_020a84bc();
-    unk_b7c.func_020a8368((u8 *)unk_b7c.unk_24);
+    censor.restartScan();
+    charReader.reset();
+    charReader.begin((u8 *)charReader.text);
     for (;;) {
-        unk_b7c.unk_28 = 1;
-        unk_b7c.unk_2c = 0;
-        unk_b7c.func_020a82ec(FALSE);
-        u32 c = unk_b7c.unk_2c;
+        charReader.remaining = 1;
+        charReader.curChar = 0;
+        charReader.run(FALSE);
+        u32 c = charReader.curChar;
         if (c == 0xa || c == 0) {
             break;
         }
-        if (func_020b2dcc((u32)unk_b3c.func_020b3784(), c)) {
+        if (String_CharEqualsIgnoreCase((u32)censor.readChar(), c)) {
             count++;
         } else {
             count = 0;
@@ -1198,12 +1103,12 @@ s32 Unk_020b2d30::func_020b2df0() {
     return count;
 }
 
-extern "C" BOOL func_020b2dcc(u32 a, u32 b) {
+extern "C" BOOL String_CharEqualsIgnoreCase(u32 a, u32 b) {
     BOOL r = FALSE;
     if (a == b) {
         r = TRUE;
     } else {
-        u32 c = func_020501e8(a);
+        u32 c = Text_ToUpper(a);
         if (c == b) {
             r = TRUE;
         }
@@ -1211,18 +1116,18 @@ extern "C" BOOL func_020b2dcc(u32 a, u32 b) {
     return r;
 }
 
-Unk_020b2d30::Unk_020b2d30() : unk_000(this), unk_b38(0) {
-    func_02115fb4(unk_4fc, 0, 0x400);
+StringBank::StringBank() : expander(this), nameSource(0) {
+    MI_CpuFill8(output, 0, 0x400);
 }
 
-Unk_020b2d30::~Unk_020b2d30() {}
+StringBank::~StringBank() {}
 
-Unk_020e3ecc::Unk_020e3ecc() : unk_20(0), unk_24(0), unk_28(0), unk_29(0) {}
+StringMsgRequest::StringMsgRequest() : dirIndex(0), dest(0), resolveAltText(0), nicknameMode(0) {}
 
-Unk_020e3ecc::~Unk_020e3ecc() {}
+StringMsgRequest::~StringMsgRequest() {}
 
-u32 Unk_020e3ecc::vfunc_0c() {
+const char *StringMsgRequest::getMsgDir() {
     static const char *const tbl[2] = {"/script/ENG/string", "/script/ENG/2d"};
-    return (u32)tbl[unk_20];
+    return tbl[dirIndex];
 }
 

@@ -13,15 +13,15 @@
 	.extern data_021fcc2c
 	.extern data_027e0000
 	.extern data_027e0450
-	.extern func_01ff8000
-	.extern func_01ff806c
+	.extern CPi_RestoreContext
+	.extern CP_SaveContext
 	.arm
 
 ; OS_IrqHandler
-	.global func_01ffd50c
-	.type func_01ffd50c, @function
-	.size func_01ffd50c, 0x58
-func_01ffd50c:
+	.global OS_IrqHandler
+	.type OS_IrqHandler, @function
+	.size OS_IrqHandler, 0x58
+OS_IrqHandler:
 	stmfd sp!, {lr}
 	mov r12, #0x04000000
 	add r12, r12, #0x210 ; REG_IE
@@ -46,13 +46,13 @@ L_01ffd534: ; scan
 L_01ffd55c:
 	.word data_027e0000
 L_01ffd560:
-	.word func_01ffd564
+	.word OS_IrqHandler_ThreadSwitch
 
 ; OS_IrqHandler_ThreadSwitch
-	.global func_01ffd564
-	.type func_01ffd564, @function
-	.size func_01ffd564, 0x15c
-func_01ffd564:
+	.global OS_IrqHandler_ThreadSwitch
+	.type OS_IrqHandler_ThreadSwitch, @function
+	.size OS_IrqHandler_ThreadSwitch, 0x15c
+OS_IrqHandler_ThreadSwitch:
 	mov r2, #1
 	mov r3, #0
 	ldr r12, L_01ffd6b0
@@ -147,6 +147,6 @@ L_01ffd6b0:
 L_01ffd6b4:
 	.word data_021fcc2c
 L_01ffd6b8:
-	.word func_01ff806c
+	.word CP_SaveContext
 L_01ffd6bc:
-	.word func_01ff8000
+	.word CPi_RestoreContext

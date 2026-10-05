@@ -13,8 +13,8 @@ typedef struct ResDictMatCAnmData { u32 Diffuse, Ambient, Specular, Emission, Po
 typedef struct MatAnmResult { u32 flag; u32 prmMatColor0; u32 prmMatColor1; u32 prmPolygonAttr; } MatAnmResult;
 typedef struct AnmObj { s32 frame; s32 ratio; void *resAnm; } AnmObj;
 
-extern u16 func_021077e4(const ResMatCAnm *, u32, u32);   // GetMatColAnmValue_
-extern u16 func_021076f0(const ResMatCAnm *, u32, u32);   // GetMatColAnmPlAlphaValue_
+extern u16 GetMatColAnmValue_(const ResMatCAnm *, u32, u32);   // GetMatColAnmValue_
+extern u16 GetMatColAnmuAlphaValue_(const ResMatCAnm *, u32, u32);   // GetMatColAnmPlAlphaValue_
 
 static inline void *GetResDataByIdx(const ResDict *dict, u32 idx)
 {
@@ -27,20 +27,20 @@ static inline const ResDictMatCAnmData *GetData(const ResMatCAnm *c, u32 idx)
 }
 
 // NNSi_G3dAnmCalcNsBma
-void func_02107564(MatAnmResult *pResult, const AnmObj *pAnmObj, u32 dataIdx)
+void NNSi_G3dAnmCalcNsBma(MatAnmResult *pResult, const AnmObj *pAnmObj, u32 dataIdx)
 {
     const ResMatCAnm *cAnm = (const ResMatCAnm *)pAnmObj->resAnm;
     u32 frame = (u32)(pAnmObj->frame >> 12);
     const ResDictMatCAnmData *pAnmData = GetData(cAnm, (u16)dataIdx);
     {
         u32 a, b;
-        a = func_021077e4(cAnm, pAnmData->Diffuse, frame);
-        b = func_021077e4(cAnm, pAnmData->Ambient, frame);
+        a = GetMatColAnmValue_(cAnm, pAnmData->Diffuse, frame);
+        b = GetMatColAnmValue_(cAnm, pAnmData->Ambient, frame);
         pResult->prmMatColor0 = (pResult->prmMatColor0 & 0x8000) | a | (b << 16);
-        a = func_021077e4(cAnm, pAnmData->Emission, frame);
-        b = func_021077e4(cAnm, pAnmData->Specular, frame);
+        a = GetMatColAnmValue_(cAnm, pAnmData->Emission, frame);
+        b = GetMatColAnmValue_(cAnm, pAnmData->Specular, frame);
         pResult->prmMatColor1 = (pResult->prmMatColor1 & 0x8000) | b | (a << 16);
         pResult->prmPolygonAttr = (pResult->prmPolygonAttr & ~0x1f0000) |
-            (func_021076f0(cAnm, pAnmData->PolygonAlpha, frame) << 16);
+            (GetMatColAnmuAlphaValue_(cAnm, pAnmData->PolygonAlpha, frame) << 16);
     }
 }

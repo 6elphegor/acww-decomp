@@ -8,10 +8,10 @@
 	.arm
 
 ; _f2d(float) -> double. Evidence: clz. Literal 0x7ff00000 at the end.
-	.global func_0213294c
-	.type func_0213294c, @function
-	.size func_0213294c, 0x84
-func_0213294c:
+	.global _f2d
+	.type _f2d, @function
+	.size _f2d, 0x84
+_f2d:
 	and r2, r0, #0x80000000
 	mov ip, r0, lsr #23
 	mov r3, r0, lsl #9

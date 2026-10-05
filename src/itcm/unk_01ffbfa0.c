@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I003d: itcm 0x01ffbfa0-0x01ffc4c8, NitroSDK FX (MTX_Concat44, FX_ModS32/DivS32, FX_DivAsync, FX_GetSqrtResult, FX_SqrtAsync, FX_InvAsync, FX_GetDivResult, FX_GetDivResultFx64c), 9 functions. ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
@@ -29,11 +30,6 @@ typedef s64 fx64c;
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct VecFx16 { fx16 x, y, z; } VecFx16;
-typedef struct MtxFx33 {
-    fx32 _00, _01, _02;
-    fx32 _10, _11, _12;
-    fx32 _20, _21, _22;
-} MtxFx33;
 typedef struct MtxFx43 {
     fx32 _00, _01, _02;
     fx32 _10, _11, _12;
@@ -128,30 +124,30 @@ static inline u32 CP_GetSqrtResult32(void) {
 }
 
 /* PROTOS */
-fx64c func_01ffc4a0(void);
-fx32 func_01ffc464(void);
-void func_01ffc428(fx32 x);
+fx64c FX_GetDivResultFx64c(void);
+fx32 FX_GetDivResult(void);
+void FX_InvAsync(fx32 x);
 void func_01ffc3d8(fx32 x);
-fx32 func_01ffc3ac(void);
-void func_01ffc374(fx32 numer, fx32 denom);
-fx32 func_01ffc31c(fx32 numer, fx32 denom);
-fx32 func_01ffc2c4(fx32 numer, fx32 denom);
-void func_01ffbfa0(const MtxFx44 *a, const MtxFx44 *b, MtxFx44 *ab);
+fx32 FX_GetSqrtResult(void);
+void FX_DivAsync(fx32 numer, fx32 denom);
+fx32 FX_DivS32(fx32 numer, fx32 denom);
+fx32 FX_ModS32(fx32 numer, fx32 denom);
+void MTX_Concat44(const MtxFx44 *a, const MtxFx44 *b, MtxFx44 *ab);
 
 /* END PROTOS */
 
 // FX_GetDivResultFx64c
-fx64c func_01ffc4a0(void) {
+fx64c FX_GetDivResultFx64c(void) {
     return (fx64c)CP_GetDivResult64();
 }
 
 // FX_GetDivResult
-fx32 func_01ffc464(void) {
+fx32 FX_GetDivResult(void) {
     return (fx32)((CP_GetDivResult64() + 0x80000) >> 20);
 }
 
 // FX_InvAsync
-void func_01ffc428(fx32 x) {
+void FX_InvAsync(fx32 x) {
     CP_SetDiv64_32((u64)FX32_ONE << 32, (u32)x);
 }
 
@@ -165,29 +161,29 @@ void func_01ffc3d8(fx32 x) {
 }
 
 // FX_GetSqrtResult
-fx32 func_01ffc3ac(void) {
+fx32 FX_GetSqrtResult(void) {
     return (fx32)((CP_GetSqrtResult32() + 0x200) >> 10);
 }
 
 // FX_DivAsync
-void func_01ffc374(fx32 numer, fx32 denom) {
+void FX_DivAsync(fx32 numer, fx32 denom) {
     CP_SetDiv64_32((u64)numer << 32, (u32)denom);
 }
 
 // FX_DivS32
-fx32 func_01ffc31c(fx32 numer, fx32 denom) {
+fx32 FX_DivS32(fx32 numer, fx32 denom) {
     CP_SetDiv32_32((u32)numer, (u32)denom);
     return (fx32)CP_GetDivResult32();
 }
 
 // FX_ModS32
-fx32 func_01ffc2c4(fx32 numer, fx32 denom) {
+fx32 FX_ModS32(fx32 numer, fx32 denom) {
     CP_SetDiv32_32((u32)numer, (u32)denom);
     return (fx32)CP_GetDivRemResult32();
 }
 
 // MTX_Concat44
-void func_01ffbfa0(const MtxFx44 *a, const MtxFx44 *b, MtxFx44 *ab) {
+void MTX_Concat44(const MtxFx44 *a, const MtxFx44 *b, MtxFx44 *ab) {
     MtxFx44 tmp;
     MtxFx44 *p = ab;
     fx32 x, y, z, w;

@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I003a: itcm 0x01ffb4e8-0x01ffb7cc, NitroSDK FX 3x3 matrix C (MTX_MultVec33, MTX_Concat33, MTX_ScaleApply33), 3 functions. ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
@@ -29,11 +30,6 @@ typedef s64 fx64c;
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct VecFx16 { fx16 x, y, z; } VecFx16;
-typedef struct MtxFx33 {
-    fx32 _00, _01, _02;
-    fx32 _10, _11, _12;
-    fx32 _20, _21, _22;
-} MtxFx33;
 typedef struct MtxFx43 {
     fx32 _00, _01, _02;
     fx32 _10, _11, _12;
@@ -128,14 +124,14 @@ static inline u32 CP_GetSqrtResult32(void) {
 }
 
 /* PROTOS */
-void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z);
-void func_01ffb56c(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab);
-void func_01ffb4e8(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst);
+void MTX_ScaleApply33(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z);
+void MTX_Concat33(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab);
+void MTX_MultVec33(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst);
 
 /* END PROTOS */
 
 // MTX_ScaleApply33
-void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z) {
+void MTX_ScaleApply33(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z) {
     pDst->_00 = (fx32)(((fx64)x * pSrc->_00) >> FX32_SHIFT);
     pDst->_01 = (fx32)(((fx64)x * pSrc->_01) >> FX32_SHIFT);
     pDst->_02 = (fx32)(((fx64)x * pSrc->_02) >> FX32_SHIFT);
@@ -148,7 +144,7 @@ void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z) {
 }
 
 // MTX_Concat33
-void func_01ffb56c(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab) {
+void MTX_Concat33(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab) {
     MtxFx33 tmp;
     MtxFx33 *p = ab;
     fx32 x, y, z;
@@ -176,7 +172,7 @@ void func_01ffb56c(const MtxFx33 *a, const MtxFx33 *b, MtxFx33 *ab) {
 }
 
 // MTX_MultVec33
-void func_01ffb4e8(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst) {
+void MTX_MultVec33(const VecFx32 *pSrc, const MtxFx33 *pMtx, VecFx32 *pDst) {
     fx32 x = pSrc->x;
     fx32 y = pSrc->y;
     fx32 z = pSrc->z;

@@ -29,7 +29,7 @@ typedef struct scan_format {
 typedef int (*ReadProc)(void *, int, int);
 
 extern u32 data_0213c4fc;                 // rand seed
-extern const scan_format data_0213c500;   // default_scan_format {0,0,0,0, 0x7fffffff, zeros}
+extern scan_format data_0213c500;         // default_scan_format {0,0,0,0, 0x7fffffff, zeros}
 extern const u16 data_0213a510[];         // __ctype_map
 extern OSMutex data_02200324;             // signal-table mutex (data_02200298[7])
 extern u32 data_02200250[];
@@ -37,19 +37,19 @@ extern s32 data_02200274[];
 extern struct { u32 a; u32 b; OSThread *cur; } data_021fcc2c;
 extern u32 data_02200650[];               // signal handler table
 
-int func_02114354(OSMutex *);
-void func_02114480(OSMutex *);
-void func_02114410(OSMutex *);
-void func_021279a0(int);
-const char *func_021298b8(const char *format_string, scan_format *format);
-u32 func_0212bd38(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
-u64 func_0212b8f0(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoull
-double func_0212a454(int max_width, ReadProc read, void *arg, int *num_chars, int *overflow);                       // __strtod
+int OS_TryLockMutex(OSMutex *);
+void OS_LockMutex(OSMutex *);
+void OS_UnlockMutex(OSMutex *);
+void exit(int);
+const char *parse_format(const char *format_string, scan_format *format);
+u32 __strtoul(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
+u64 __strtoull(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoull
+double __strtold(int max_width, ReadProc read, void *arg, int *num_chars, int *overflow);                       // __strtod
 float _d2f(double);
-int func_02128908(u16 *, const char *, u32);
-int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap);
-int func_02128d34(void *ctx, int ch, int action);
-int func_02128cd4(const char *s, const char *fmt, va_list ap);
+int mbtowc(u16 *, const char *, u32);
+int __sformatter(ReadProc read, void *arg, const char *format_str, va_list ap);
+int __StringRead(void *ctx, int ch, int action);
+int vsscanf(const char *s, const char *fmt, va_list ap);
 
 static inline int isspace_(int c) {
     return (c < 0 || c >= 128) ? 0 : (data_0213a510[c] & 0x100);
@@ -58,7 +58,7 @@ static inline int isspace_(int c) {
 #define IS_NUM(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[c] & 8))
 
 // strcspn
-u32 func_02129fa0(const char *str, const char *set) {
+u32 strcspn(const char *str, const char *set) {
     u8 tset[32] = {0};
     const u8 *p;
     u32 c;
@@ -79,7 +79,7 @@ u32 func_02129fa0(const char *str, const char *set) {
 }
 
 // strstr
-char *func_02129f1c(const char *str, const char *pat) {
+char *strstr(const char *str, const char *pat) {
     const u8 *s1 = (const u8 *)str;
     const u8 *p1 = (const u8 *)pat;
     u32 firstc, c1, c2;
@@ -97,31 +97,31 @@ char *func_02129f1c(const char *str, const char *pat) {
 }
 
 // raise
-int func_02129dcc(int sig) {
+int raise(int sig) {
     void (*handler)(int);
     OSThread *t;
     if (sig < 1 || sig > 7) return -1;
-    if (func_02114354(&data_02200324) == 0) {
+    if (OS_TryLockMutex(&data_02200324) == 0) {
         data_02200250[7] = data_021fcc2c.cur->id;
         data_02200274[7] = 1;
     } else if (data_02200250[7] == (t = data_021fcc2c.cur)->id) {
         data_02200274[7]++;
     } else {
-        func_02114480(&data_02200324);
+        OS_LockMutex(&data_02200324);
         data_02200250[7] = data_021fcc2c.cur->id;
         data_02200274[7] = 1;
     }
     handler = (void (*)(int))data_02200650[sig - 1];
     if ((u32)handler != 1) data_02200650[sig - 1] = 0;
-    if (--data_02200274[7] == 0) func_02114410(&data_02200324);
+    if (--data_02200274[7] == 0) OS_UnlockMutex(&data_02200324);
     if ((u32)handler == 1 || ((u32)handler == 0 && sig == 1)) return 0;
-    if (handler == 0) func_021279a0(0);
+    if (handler == 0) exit(0);
     handler(sig);
     return 0;
 }
 
 // parse_format (scanf)
-const char *func_021298b8(const char *format_string, scan_format *format) {
+const char *parse_format(const char *format_string, scan_format *format) {
     const u8 *s = (const u8 *)format_string;
     int c;
     int flag;
@@ -280,7 +280,7 @@ const char *func_021298b8(const char *format_string, scan_format *format) {
 }
 
 // __sformatter
-int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) {
+int __sformatter(ReadProc read, void *arg, const char *format_str, va_list ap) {
     s32 s;
     s64 sll;
     int items_assigned, conversions;
@@ -319,7 +319,7 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
             format_ptr++;
             continue;
         }
-        format_ptr = (const u8 *)func_021298b8((const char *)format_ptr, &format);
+        format_ptr = (const u8 *)parse_format((const char *)format_ptr, &format);
         if (!format.suppress_assignment && format.conversion_char != '%') {
             arg_ptr = *(u8 **)((ap += 4) - 4);
         } else {
@@ -336,9 +336,9 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
             base = 0;
         signed_int:
             if (format.argument_options == 7) {
-                ull = func_0212b8f0(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
+                ull = __strtoull(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
             } else {
-                u = func_0212bd38(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
+                u = __strtoul(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
             }
             if (!num_chars) goto end;
             chars_read += num_chars;
@@ -391,9 +391,9 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
             base = 16;
         unsigned_int:
             if (format.argument_options == 7) {
-                ull = func_0212b8f0(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
+                ull = __strtoull(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
             } else {
-                u = func_0212bd38(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
+                u = __strtoul(base, format.field_width, read, arg, &num_chars, &negative, &overflow);
             }
             if (!num_chars) goto end;
             chars_read += num_chars;
@@ -440,7 +440,7 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
         case 'F':
         case 'g':
         case 'G': {
-            double ld = func_0212a454(format.field_width, read, arg, &num_chars, &overflow);
+            double ld = __strtold(format.field_width, read, arg, &num_chars, &overflow);
             if (!num_chars) goto end;
             chars_read += num_chars;
             if (arg_ptr) {
@@ -469,7 +469,7 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
                     if (format.argument_options != 10) {
                         *arg_ptr++ = c;
                     } else {
-                        func_02128908((u16 *)arg_ptr, (const char *)&c, 1);
+                        mbtowc((u16 *)arg_ptr, (const char *)&c, 1);
                         arg_ptr++;
                     }
                     num_chars++;
@@ -514,7 +514,7 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
                     if (format.argument_options != 10) {
                         *arg_ptr++ = c;
                     } else {
-                        func_02128908((u16 *)arg_ptr, (const char *)&c, 1);
+                        mbtowc((u16 *)arg_ptr, (const char *)&c, 1);
                         arg_ptr += 2;
                     }
                     num_chars++;
@@ -581,7 +581,7 @@ end:
 }
 
 // __StringRead
-int func_02128d34(void *ctx, int ch, int action) {
+int __StringRead(void *ctx, int ch, int action) {
     struct { const u8 *cur; int flag; } *c = ctx;
     switch (action) {
     case 0: {
@@ -607,28 +607,32 @@ int func_02128d34(void *ctx, int ch, int action) {
 }
 
 // vsscanf
-int func_02128cd4(const char *s, const char *fmt, va_list ap) {
+int vsscanf(const char *s, const char *fmt, va_list ap) {
     struct { const char *cur; int flag; } ctx;
     ctx.cur = s;
     if (s == 0 || *(u8 *)s == 0) return -1;
     ctx.flag = 0;
-    return func_02128dac(func_02128d34, &ctx, fmt, ap);
+    return __sformatter(__StringRead, &ctx, fmt, ap);
 }
 
 // sscanf
-int func_02128ca4(const char *s, const char *fmt, ...) {
+int sscanf(const char *s, const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    return func_02128cd4(s, fmt, ap);
+    return vsscanf(s, fmt, ap);
 }
 
 // rand
-int func_02128c70(void) {
+int rand(void) {
     data_0213c4fc = data_0213c4fc * 0x41c64e6d + 0x3039;
     return (data_0213c4fc >> 16) & 0x7fff;
 }
 
 // srand
-void func_02128c60(u32 seed) {
+void srand(u32 seed) {
     data_0213c4fc = seed;
 }
+
+// ---- file-scope objects (.data 0x0213c4fc-0x0213c528)
+u32 data_0213c4fc = 1; // rand seed
+scan_format data_0213c500 = {0, 0, 0, 0, 0x7fffffff}; // default_scan_format

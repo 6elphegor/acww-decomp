@@ -93,40 +93,40 @@ extern char __exception_table_end__[];
 extern VoidFunc p__sinit_020c2cd0[]; // start of main's .ctor table
 
 extern "C" {
-void func_02133ccc(const u8 *p);
-int func_02133ce0(void);
+void sys_writec(const u8 *p);
+int sys_readc(void);
 int __FindExceptionTable(ExceptionInfo *info, char *retaddr);
-u8 *func_02133b68(u8 *p);
-void func_02133bc0(ThrowContext *context, ExceptionInfo *info);
-u32 func_02133c68(ThrowContext *context, ExceptionInfo *info);
-void func_02133aec(ThrowContext *context, ExceptionInfo *info, char *pc);
-void func_021279f4(void); // abort
-void *func_020ec860(size_t size); // operator new[]
-void func_020ec848(void *p); // operator delete[]
-void func_02135578(void);
-void func_0213559c(void);
-void func_02135668(void *array, size_t count, size_t size, ObjFunc dtor);
+u8 *__SkipUnwindInfo(u8 *p);
+void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info);
+u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
+void __TransferControl(ThrowContext *context, ExceptionInfo *info, char *pc);
+void abort(void); // abort
+void *_Znam(size_t size); // operator new[]
+void _ZdaPv(void *p); // operator delete[]
+void _ZSt9terminatev(void);
+void _ZSt9dthandlerv(void);
+void __cxa_vec_dtor(void *array, size_t count, size_t size, ObjFunc dtor);
 void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor);
-u8 *func_02133da8(u8 *p, u32 *value);
-u8 *func_02133e50(u8 *p, s32 *value);
-u8 func_02134d70(ActionIterator *iter);
-u8 func_0213510c(ActionIterator *iter);
-void func_02135128(char *retaddr, ExceptionInfo *info);
-ExceptionTableIndex *func_0213524c(ExceptionTableIndex *table, int count, char *addr);
-int func_02135348(const char *throwtype, const char *catchtype, s32 *offset_result);
-void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *catcher);
-CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info);
-int func_02134308(const char *throwtype, ExSpecification *spec);
-void func_0213429c(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp);
-u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *result_offset);
-void func_0213404c(ThrowContext *context, s32 cinfo_ref, s32 offset);
+u8 *__DecodeUnsignedNumber(u8 *p, u32 *value);
+u8 *__DecodeSignedNumber(u8 *p, s32 *value);
+u8 NextAction(ActionIterator *iter);
+u8 CurrentAction(ActionIterator *iter);
+void FindExceptionRecord(char *retaddr, ExceptionInfo *info);
+ExceptionTableIndex *BinarySearch(ExceptionTableIndex *table, int count, char *addr);
+int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result);
+void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catcher);
+CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionInfo *info);
+int IsInSpecification(const char *throwtype, ExSpecification *spec);
+void HandleUnexpected(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp);
+u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, s32 *result_offset);
+void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset);
 }
 
 // __global_destructor_chain (autoload_3 bss 0x0220066c)
 DestructorChain *data_0220066c;
 
 // thandler, the terminate handler (autoload_2 .data 0x0213c6b0), initially dthandler
-VoidFunc data_0213c6b0 = func_0213559c;
+VoidFunc data_0213c6b0 = _ZSt9dthandlerv;
 
 // __partial_array_destructor-style cleanup: destroy the constructed elements [start, ptr) backwards.
 extern "C" void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor) {
@@ -136,13 +136,13 @@ extern "C" void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor)
             dtor(ptr);
         }
     } catch (...) {
-        func_02135578();
+        _ZSt9terminatev();
     }
 }
 
 // __cxa_vec_new (label in symbols.txt)
-extern "C" void *func_021357e0(size_t count, size_t size, size_t padding, ObjFunc ctor, ObjFunc dtor) {
-    char *block = (char *)func_020ec860(count * size + padding);
+extern "C" void *__cxa_vec_new(size_t count, size_t size, size_t padding, ObjFunc ctor, ObjFunc dtor) {
+    char *block = (char *)_Znam(count * size + padding);
     char *array;
     char *ptr;
 
@@ -167,7 +167,7 @@ extern "C" void *func_021357e0(size_t count, size_t size, size_t padding, ObjFun
             if (dtor) {
                 func_021358a8(array, ptr, size, dtor);
             }
-            func_020ec848(block);
+            _ZdaPv(block);
             throw;
         }
     }
@@ -200,7 +200,7 @@ extern "C" void __cxa_vec_ctor(void *array, size_t count, size_t size, ObjFunc c
 }
 
 // __cxa_vec_dtor
-extern "C" void func_02135668(void *array, size_t count, size_t size, ObjFunc dtor) {
+extern "C" void __cxa_vec_dtor(void *array, size_t count, size_t size, ObjFunc dtor) {
     char *ptr;
 
     if (dtor) {
@@ -217,7 +217,7 @@ extern "C" void func_02135668(void *array, size_t count, size_t size, ObjFunc dt
                     dtor(ptr);
                 }
             } catch (...) {
-                func_02135578();
+                _ZSt9terminatev();
             }
             throw;
         }
@@ -236,28 +236,28 @@ extern "C" void __cxa_vec_cleanup(void *array, size_t count, size_t size, ObjFun
                 dtor(ptr);
             }
         } catch (...) {
-            func_02135578();
+            _ZSt9terminatev();
         }
     }
 }
 
 // __cxa_vec_delete (label in symbols.txt)
-extern "C" void func_021355a8(void *array, size_t size, size_t padding, ObjFunc dtor) {
+extern "C" void __cxa_vec_delete(void *array, size_t size, size_t padding, ObjFunc dtor) {
     if (array) {
         if (dtor) {
-            func_02135668(array, ((size_t *)array)[-1], size, dtor);
+            __cxa_vec_dtor(array, ((size_t *)array)[-1], size, dtor);
         }
-        func_020ec848((char *)array - padding);
+        _ZdaPv((char *)array - padding);
     }
 }
 
 // dthandler: default terminate handler
-extern "C" void func_0213559c(void) {
-    func_021279f4();
+extern "C" void _ZSt9dthandlerv(void) {
+    abort();
 }
 
 // terminate
-extern "C" void func_02135578(void) {
+extern "C" void _ZSt9terminatev(void) {
     data_0213c6b0();
 }
 
@@ -271,7 +271,7 @@ extern "C" void *__register_global_object(void *object, void *destructor, void *
 }
 
 // __throw_catch_compare
-extern "C" int func_02135348(const char *throwtype, const char *catchtype, s32 *offset_result) {
+extern "C" int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result) {
     const char *cptr1;
     const char *cptr2;
 
@@ -358,7 +358,7 @@ extern "C" int func_02135348(const char *throwtype, const char *catchtype, s32 *
 }
 
 // __call_static_initializers: run main's .ctor table
-extern "C" void func_02135310(void) {
+extern "C" void __call_static_initializers(void) {
     VoidFunc *ctor;
 
     for (ctor = p__sinit_020c2cd0; ctor && *ctor; ctor++) {
@@ -367,7 +367,7 @@ extern "C" void func_02135310(void) {
 }
 
 // __destroy_global_chain
-extern "C" void func_021352b8(void) {
+extern "C" void __destroy_global_chain(void) {
     DestructorChain *gdc;
 
     while ((gdc = data_0220066c) != 0) {
@@ -377,7 +377,7 @@ extern "C" void func_021352b8(void) {
 }
 
 // binary search of the exception table index for the entry covering addr
-extern "C" ExceptionTableIndex *func_0213524c(ExceptionTableIndex *table, int count, char *addr) {
+extern "C" ExceptionTableIndex *BinarySearch(ExceptionTableIndex *table, int count, char *addr) {
     int lo = 0;
     int hi = count - 1;
     int mid;
@@ -398,7 +398,7 @@ extern "C" ExceptionTableIndex *func_0213524c(ExceptionTableIndex *table, int co
 }
 
 // __FindExceptionRecord
-extern "C" void func_02135128(char *retaddr, ExceptionInfo *info) {
+extern "C" void FindExceptionRecord(char *retaddr, ExceptionInfo *info) {
     ExceptionTableIndex *entry;
     u8 *p;
     u32 offset;
@@ -410,7 +410,7 @@ extern "C" void func_02135128(char *retaddr, ExceptionInfo *info) {
     if (__FindExceptionTable(info, retaddr) == 0) {
         return;
     }
-    entry = func_0213524c((ExceptionTableIndex *)info->exception_table_start,
+    entry = BinarySearch((ExceptionTableIndex *)info->exception_table_start,
                           (info->exception_table_end - info->exception_table_start) / 12, retaddr);
     if (entry == 0) {
         return;
@@ -422,15 +422,15 @@ extern "C" void func_02135128(char *retaddr, ExceptionInfo *info) {
     }
     info->current_function = entry->function;
     offset = retaddr - entry->function;
-    p = func_02133b68(info->exception_record);
+    p = __SkipUnwindInfo(info->exception_record);
     pc = 0;
     for (;;) {
-        p = func_02133da8(p, &range[0]);
+        p = __DecodeUnsignedNumber(p, &range[0]);
         if (range[0] == 0) {
             return;
         }
-        p = func_02133da8(p, &range[1]);
-        p = func_02133da8(p, &range[2]);
+        p = __DecodeUnsignedNumber(p, &range[1]);
+        p = __DecodeUnsignedNumber(p, &range[2]);
         pc += range[0];
         if (offset < pc) {
             return;
@@ -444,6 +444,6 @@ extern "C" void func_02135128(char *retaddr, ExceptionInfo *info) {
 }
 
 // __CurrentAction
-extern "C" u8 func_0213510c(ActionIterator *iter) {
+extern "C" u8 CurrentAction(ActionIterator *iter) {
     return iter->info.action_pointer ? (*iter->info.action_pointer & EXCEPTION_ACTION_MASK) : 0;
 }

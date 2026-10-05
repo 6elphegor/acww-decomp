@@ -1,51 +1,51 @@
 #include "types.h"
 
 extern "C" {
-extern u8 data_021ed2f8[];
+extern u8 gSaveTownTune[];
 extern s32 data_020ddf8c;
 
-u8 *func_02003ac8(void *);
-u8 *func_02003ad0(void *);
-void func_02003ad8(void *, u32);
-BOOL func_02003ae0(void *);
-void *func_02003ae8(void *);
-void func_02003af0(void *, u32);
-void func_02003af8(void *);
-void func_02003b00(void *, u32);
-void func_02003b08(void *, u32, u32);
-void func_02003b44(void *, u32, void *);
-void func_02003b4c(void *, void *);
-void func_02003b54(void *);
+u8 *Snd_MelodyGetDefaultPattern(void *);
+u8 *Snd_MelodyApplyRandomPattern(void *);
+void Snd_MelodyPlayRandom(void *, u32);
+BOOL Snd_MelodyIsPlaying(void *);
+void *Snd_MelodyUpdate(void *);
+void Snd_MelodyPlayNote(void *, u32);
+void Snd_MelodyStartTrackA(void *);
+void Snd_MelodyPlay(void *, u32);
+void Snd_MelodyPlayAt(void *, u32, u32);
+void Snd_MelodyPlayPattern(void *, u32, void *);
+void Snd_MelodySetPattern(void *, void *);
+void Snd_MelodyInit(void *);
 s64 func_02133540(u32, u32, u32);
-void func_0206dad8();
-void func_0206d9d8();
-void func_0206db0c(u32 *, u8 *);
-void func_0206db34(u32 *, u8 *);
+void Melody_ApplyEditPattern();
+void Melody_SaveDefaultPattern();
+void Melody_Unpack(u32 *, u8 *);
+void Melody_Pack(u32 *, u8 *);
 }
 
-// 0x14-byte member, destructor func_020f5b84 (autoload_2, alias in aliases.txt)
-class Unk_020f5b84 {
+// 0x14-byte member, destructor MelodyTrack::~MelodyTrack (autoload_2, alias in aliases.txt)
+class MelodyTrack {
 public:
-    ~Unk_020f5b84();
+    ~MelodyTrack();
     u8 pad_00[0x14];
 };
 
-// 0x40-byte object data_021cb420; destructor is func_0206db70 (renamed in renames.txt)
-class Unk_021cb420 {
+// 0x40-byte object gMelodyPlayer; destructor is func_0206db70 (renamed in renames.txt)
+class MelodyPlayer {
 public:
-    ~Unk_021cb420();
-    Unk_020f5b84 unk_00;
-    Unk_020f5b84 unk_14;
+    ~MelodyPlayer();
+    MelodyTrack trackA;
+    MelodyTrack trackB;
     u8 pad_28[0x18];
 };
 
-Unk_021cb420::~Unk_021cb420()
+MelodyPlayer::~MelodyPlayer()
 {
 }
 
 extern "C" {
 
-void func_0206db34(u32 *dst, u8 *src) {
+void Melody_Pack(u32 *dst, u8 *src) {
     s32 i;
     dst[0] = 0;
     dst[1] = 0;
@@ -55,7 +55,7 @@ void func_0206db34(u32 *dst, u8 *src) {
     }
 }
 
-void func_0206db0c(u32 *src, u8 *dst) {
+void Melody_Unpack(u32 *src, u8 *dst) {
     s32 i;
     for (i = 0; i < 16; i++) {
         dst[i] = (u8)(func_02133540(src[0], src[1], i * 4) & 0xf);
@@ -64,76 +64,76 @@ void func_0206db0c(u32 *src, u8 *dst) {
 
 }
 
-extern s32 data_021cb400;
-extern u8 data_021cb410[];
-extern Unk_021cb420 data_021cb420;
+extern s32 sMelodyTimer;
+extern u8 gMelodyEditPattern[];
+extern MelodyPlayer gMelodyPlayer;
 
 extern "C" {
 
-void func_0206db04() { func_0206d9d8(); }
+void Melody_ResetToDefault() { Melody_SaveDefaultPattern(); }
 
-void func_0206daec(u32 *a) {
-    func_0206db0c(a, data_021cb410);
-    func_0206dad8();
+void Melody_SetPacked(u32 *a) {
+    Melody_Unpack(a, gMelodyEditPattern);
+    Melody_ApplyEditPattern();
 }
 
-void func_0206dad8() { func_02003b4c(&data_021cb420, data_021cb410); }
+void Melody_ApplyEditPattern() { Snd_MelodySetPattern(&gMelodyPlayer, gMelodyEditPattern); }
 
-void func_0206dac0(u32 a) { func_02003b44(&data_021cb420, a, data_021cb410); }
+void Melody_PlayEditPattern(u32 a) { Snd_MelodyPlayPattern(&gMelodyPlayer, a, gMelodyEditPattern); }
 
-void func_0206dab0(u32 a) { func_02003b00(&data_021cb420, a); }
+void Melody_Play(u32 a) { Snd_MelodyPlay(&gMelodyPlayer, a); }
 
-void func_0206da9c(u32 a, u32 b) { func_02003b08(&data_021cb420, a, b); }
+void Melody_PlayAt(u32 a, u32 b) { Snd_MelodyPlayAt(&gMelodyPlayer, a, b); }
 
-void func_0206da6c(s32 a) {
-    func_02003af8(&data_021cb420);
+void Melody_StartTrackA(s32 a) {
+    Snd_MelodyStartTrackA(&gMelodyPlayer);
     if (a != 0) {
-        data_021cb400 = 0x190;
+        sMelodyTimer = 0x190;
     } else {
-        data_021cb400 = 0x14;
+        sMelodyTimer = 0x14;
     }
 }
 
-void func_0206da5c(u32 a) { func_02003af0(&data_021cb420, a); }
+void Melody_PlayNote(u32 a) { Snd_MelodyPlayNote(&gMelodyPlayer, a); }
 
-BOOL func_0206da30() {
-    if (data_021cb400 != 0 || func_02003ae0(&data_021cb420)) {
+BOOL Melody_IsBusy() {
+    if (sMelodyTimer != 0 || Snd_MelodyIsPlaying(&gMelodyPlayer)) {
         return TRUE;
     }
     return FALSE;
 }
 
-void func_0206da20(u32 a) { func_02003ad8(&data_021cb420, a); }
+void Melody_PlayRandom(u32 a) { Snd_MelodyPlayRandom(&gMelodyPlayer, a); }
 
-void func_0206d9fc() {
-    u8 *p = func_02003ad0(&data_021cb420);
+void Melody_SaveRandomPattern() {
+    u8 *p = Snd_MelodyApplyRandomPattern(&gMelodyPlayer);
     if (p) {
-        func_0206db34((u32 *)data_021ed2f8, p);
+        Melody_Pack((u32 *)gSaveTownTune, p);
     }
 }
 
-void func_0206d9d8() {
-    u8 *p = func_02003ac8(&data_021cb420);
+void Melody_SaveDefaultPattern() {
+    u8 *p = Snd_MelodyGetDefaultPattern(&gMelodyPlayer);
     if (p) {
-        func_0206db34((u32 *)data_021ed2f8, p);
+        Melody_Pack((u32 *)gSaveTownTune, p);
     }
 }
 
-void func_0206d9b4(void) {
-    func_02003b54(&data_021cb420);
+void Melody_Init(void) {
+    Snd_MelodyInit(&gMelodyPlayer);
     data_020ddf8c = -1;
-    func_0206dad8();
+    Melody_ApplyEditPattern();
 }
 
-void func_0206d988(void) {
-    if (data_021cb400 != 0) {
-        data_021cb400--;
+void Melody_Update(void) {
+    if (sMelodyTimer != 0) {
+        sMelodyTimer--;
     }
-    data_020ddf8c = (s32)func_02003ae8(&data_021cb420);
+    data_020ddf8c = (s32)Snd_MelodyUpdate(&gMelodyPlayer);
 }
 
 }
 
-s32 data_021cb400;
-u8 data_021cb410[0x10];
-Unk_021cb420 data_021cb420;
+s32 sMelodyTimer;
+u8 gMelodyEditPattern[0x10];
+MelodyPlayer gMelodyPlayer;

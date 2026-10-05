@@ -1,101 +1,81 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
+#include "sys/SceneBase.h"
 
 extern "C" {
-void func_02002ab8(void);
-void func_020040cc(void);
-void func_0208e9a8(void);
-u32 func_0209c08c(void);
-void func_020a4414(u32 a, u32 b, u32 c, u32 d);
-u32 func_020a5ec8(void);
-void func_020a5ed8(u32 x);
-void func_020b5408(void);
-void func_020b541c(void);
-extern u32 data_021c5388;
+void AbAllObjGfx_Upload(void);
+void Snd_CreateScene(void);
+void TransitionCommIcon_Resume(void);
+u32 Scene_GetSavedFadeIn(void);
+void Scene_Request(u32 a, u32 b, u32 c, u32 d);
+u32 NetArea_GetMoveState(void);
+void NetArea_SetMoveState(u32 x);
+void Scene_ShutdownGraphics(void);
+void Scene_SetupGraphics(void);
+extern u32 gGfxFrameHooks;
 }
 
-struct Unk_020cbb18 {
-    u8 unk_00[0x64];
-    u32 unk_64;
-    BOOL func_02072e88(s32 i);
-};
 
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 
-// Intermediate game-state class with an inline constructor that sets flags
-class Unk_020e2988 : public Unk_020d8c7c {
+
+class FieldEntryScene : public SceneBase {
 public:
-    Unk_020e2988() {
-        unk_04[0xf] |= 1;
-        unk_04[0xf] |= 4;
-    }
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020e2988() {}
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
+    virtual ~FieldEntryScene() {}
+
+    void idle();
+    void requestField();
+    void waitAreaMove();
+
+    /* 0x50 */ s32 step;
 };
 
-class Unk_020e40cc : public Unk_020e2988 {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
-    virtual ~Unk_020e40cc() {}
+extern "C" FieldEntryScene *FieldEntryScene_Create(void) { return new FieldEntryScene; }
 
-    void func_020b4704();
-    void func_020b4708();
-    void func_020b4728();
-
-    /* 0x50 */ s32 unk_50;
-};
-
-extern "C" Unk_020e40cc *func_020b4748(void) { return new Unk_020e40cc; }
-
-void Unk_020e40cc::func_020b4728() {
-    if (func_020a5ec8() == 0xb) {
-        func_020a5ed8(0xc);
-        func_020b4708();
+void FieldEntryScene::waitAreaMove() {
+    if (NetArea_GetMoveState() == 0xb) {
+        NetArea_SetMoveState(0xc);
+        requestField();
     }
 }
 
-void Unk_020e40cc::func_020b4708() {
-    func_020a4414(6, 3, func_0209c08c(), 1);
-    unk_50 = 2;
+void FieldEntryScene::requestField() {
+    Scene_Request(6, 3, Scene_GetSavedFadeIn(), 1);
+    step = 2;
 }
 
-void Unk_020e40cc::func_020b4704() {}
+void FieldEntryScene::idle() {}
 
-BOOL Unk_020e40cc::vfunc_00() {
-    if (data_020cbb18->func_02072e88(data_020cbb18->unk_64)) {
-        unk_50 = 0;
+BOOL FieldEntryScene::onCreate() {
+    if (gCommManager->isSlotActive(gCommManager->myAid)) {
+        step = 0;
     } else {
-        unk_50 = 1;
+        step = 1;
     }
-    func_020040cc();
-    func_020b541c();
-    func_02002ab8();
-    func_0208e9a8();
+    Snd_CreateScene();
+    Scene_SetupGraphics();
+    AbAllObjGfx_Upload();
+    TransitionCommIcon_Resume();
     return TRUE;
 }
 
-BOOL Unk_020e40cc::vfunc_0c() {
-    data_021c5388 = 0;
-    func_020b5408();
+BOOL FieldEntryScene::onDelete() {
+    gGfxFrameHooks = 0;
+    Scene_ShutdownGraphics();
     return TRUE;
 }
 
-BOOL Unk_020e40cc::vfunc_18() {
-    typedef void (Unk_020e40cc::*Fn)();
-    Fn dead = &Unk_020e40cc::func_020b4728;
-    static Fn table[3] = {&Unk_020e40cc::func_020b4728, &Unk_020e40cc::func_020b4708, &Unk_020e40cc::func_020b4704};
-    (this->*table[unk_50])();
+BOOL FieldEntryScene::onExecute() {
+    typedef void (FieldEntryScene::*Fn)();
+    Fn dead = &FieldEntryScene::waitAreaMove;
+    static Fn table[3] = {&FieldEntryScene::waitAreaMove, &FieldEntryScene::requestField, &FieldEntryScene::idle};
+    (this->*table[step])();
     return TRUE;
 }
 
-BOOL Unk_020e40cc::vfunc_24() { return TRUE; }
+BOOL FieldEntryScene::onDraw() { return TRUE; }

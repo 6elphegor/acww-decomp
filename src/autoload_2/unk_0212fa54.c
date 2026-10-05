@@ -1,4 +1,6 @@
-// mwcc-flags: -nothumb -O4,p
+// mwcc-flags: -nothumb -O4,p -str reuse
+// -str reuse: the original shares the literals "2" and "5" of __two_exp's default case with its case 1 / case -1
+// (one copy of each in .data), so this MSL file was built with string pooling.
 typedef unsigned int u32;
 typedef int s32;
 typedef unsigned char u8;
@@ -19,26 +21,21 @@ typedef struct {
 } decform;
 
 extern u8 data_0213a410[];
-extern u8 data_0213c5dc[], data_0213c60c[], data_0213c634[], data_0213c64c[], data_0213c65c[], data_0213c664[],
-    data_0213c66c[], data_0213c674[], data_0213c67c[], data_0213c680[], data_0213c684[], data_0213c688[],
-    data_0213c68c[], data_0213c690[], data_0213c694[], data_0213c698[], data_0213c69c[], data_0213c6a0[],
-    data_0213c6a4[], data_0213c6a8[], data_0213c6ac[];
-
-extern double func_0212ef50(double, int *);
-extern double func_0212f010(double, int);
-extern int func_02130b10(const char *, const char *);
-extern int func_02130a18(const decimal *, int);
-extern void func_021309c8(decimal *, int);
-extern void func_02130964(decimal *, int);
-extern void func_02130894(decimal *, u64);
-extern void func_021306ec(decimal *, const decimal *, const decimal *);
-extern void func_02130628(decimal *, const u8 *, short);
-extern void func_02130248(decimal *, int);
-extern int func_02130a88(u32);
-extern int func_02130150(const decimal *, const decimal *);
-extern int func_02130030(const decimal *, const decimal *);
-extern void func_0212fd74(decimal *, const decimal *, const decimal *);
-extern void func_0212fb1c(decimal *, double);
+extern double frexp(double, int *);
+extern double ldexp(double, int);
+extern int stricmp(const char *, const char *);
+extern int __must_round(const decimal *, int);
+extern void __dorounddecup(decimal *, int);
+extern void __rounddec(decimal *, int);
+extern void __ull2dec(decimal *, u64);
+extern void __timesdec(decimal *, const decimal *, const decimal *);
+extern void __str2dec(decimal *, const u8 *, short);
+extern void __two_exp(decimal *, int);
+extern int __count_trailing_zeros(u32);
+extern int __equals_dec(const decimal *, const decimal *);
+extern int __less_dec(const decimal *, const decimal *);
+extern void __minus_dec(decimal *, const decimal *, const decimal *);
+extern void __num2dec_internal(decimal *, double);
 
 static inline int __fpclassifyd(double x) {
     switch (*(1 + (s32 *)&x) & 0x7ff00000) {
@@ -54,7 +51,7 @@ static inline int __fpclassifyd(double x) {
 }
 
 // strcmp-like, case-insensitive (stricmp)
-int func_02130b10(const char *s1, const char *s2) {
+int stricmp(const char *s1, const char *s2) {
     u8 c1, c2;
     int t;
     do {
@@ -70,11 +67,11 @@ int func_02130b10(const char *s1, const char *s2) {
 
 // (stricmp wrapper)
 int func_02130b04(const char *s1, const char *s2) {
-    return func_02130b10(s1, s2);
+    return stricmp(s1, s2);
 }
 
 // __count_trailing_zeros
-int func_02130a88(u32 x) {
+int __count_trailing_zeros(u32 x) {
     u8 *p;
     int n;
     if (x != 0) {
@@ -95,7 +92,7 @@ int func_02130a88(u32 x) {
 }
 
 // __rounddec helper: compare the dropped digits with one half (-1 below, 0 never, 1 above/odd)
-int func_02130a18(const decimal *d, int digits) {
+int __must_round(const decimal *d, int digits) {
     const u8 *p, *q;
     q = d->sig.text + digits;
     p = d->sig.text;
@@ -109,7 +106,7 @@ int func_02130a18(const decimal *d, int digits) {
 }
 
 // __ceil_dec-like: increment the digit string at `digits`, carrying
-void func_021309c8(decimal *d, int digits) {
+void __dorounddecup(decimal *d, int digits) {
     u8 *t = d->sig.text;
     u8 *p = t + digits;
     p--;
@@ -128,18 +125,18 @@ void func_021309c8(decimal *d, int digits) {
 }
 
 // __rounddec
-void func_02130964(decimal *d, int digits) {
+void __rounddec(decimal *d, int digits) {
     int rv;
     if (digits <= 0) return;
     if (digits >= d->sig.length) return;
-    rv = func_02130a18(d, digits);
+    rv = __must_round(d, digits);
     d->sig.length = digits;
     if (rv < 0) return;
-    func_021309c8(d, digits);
+    __dorounddecup(d, digits);
 }
 
 // __ull2dec
-void func_02130894(decimal *d, u64 v) {
+void __ull2dec(decimal *d, u64 v) {
     u8 *a, *b;
     d->sign = 0;
     d->sig.length = 0;
@@ -158,7 +155,7 @@ void func_02130894(decimal *d, u64 v) {
 }
 
 // __timesdec
-void func_021306ec(decimal *result, const decimal *x, const decimal *y) {
+void __timesdec(decimal *result, const decimal *x, const decimal *y) {
     u32 accum = 0;
     u8 buf[64];
     int i;
@@ -212,11 +209,11 @@ void func_021306ec(decimal *result, const decimal *x, const decimal *y) {
         if ((p[-1] & 1) == 0) return;
     }
 up:
-    func_021309c8(result, result->sig.length);
+    __dorounddecup(result, result->sig.length);
 }
 
 // __str2dec
-void func_02130628(decimal *d, const u8 *s, short exp) {
+void __str2dec(decimal *d, const u8 *s, short exp) {
     int i;
     d->exp = exp;
     d->sign = 0;
@@ -233,51 +230,51 @@ void func_02130628(decimal *d, const u8 *s, short exp) {
         if ((d->sig.text[i - 1] & 1) == 0) return;
     }
 up:
-    func_021309c8(d, d->sig.length);
+    __dorounddecup(d, d->sig.length);
 }
 
 // __two_exp
-void func_02130248(decimal *result, int exp) {
+void __two_exp(decimal *result, int exp) {
     decimal temp, temp2;
     switch (exp) {
-    case -64: func_02130628(result, data_0213c5dc, -20); break;
-    case -53: func_02130628(result, data_0213c60c, -16); break;
-    case -32: func_02130628(result, data_0213c634, -10); break;
-    case -16: func_02130628(result, data_0213c64c, -5); break;
-    case -8: func_02130628(result, data_0213c65c, -3); break;
-    case -7: func_02130628(result, data_0213c664, -3); break;
-    case -6: func_02130628(result, data_0213c66c, -2); break;
-    case -5: func_02130628(result, data_0213c674, -2); break;
-    case -4: func_02130628(result, data_0213c67c, -2); break;
-    case -3: func_02130628(result, data_0213c680, -1); break;
-    case -2: func_02130628(result, data_0213c684, -1); break;
-    case -1: func_02130628(result, data_0213c688, -1); break;
-    case 0: func_02130628(result, data_0213c68c, 0); break;
-    case 1: func_02130628(result, data_0213c690, 0); break;
-    case 2: func_02130628(result, data_0213c694, 0); break;
-    case 3: func_02130628(result, data_0213c698, 0); break;
-    case 4: func_02130628(result, data_0213c69c, 1); break;
-    case 5: func_02130628(result, data_0213c6a0, 1); break;
-    case 6: func_02130628(result, data_0213c6a4, 1); break;
-    case 7: func_02130628(result, data_0213c6a8, 2); break;
-    case 8: func_02130628(result, data_0213c6ac, 2); break;
+    case -64: __str2dec(result, (u8 *)"542101086242752217003726400434970855712890625", -20); break;
+    case -53: __str2dec(result, (u8 *)"11102230246251565404236316680908203125", -16); break;
+    case -32: __str2dec(result, (u8 *)"23283064365386962890625", -10); break;
+    case -16: __str2dec(result, (u8 *)"152587890625", -5); break;
+    case -8: __str2dec(result, (u8 *)"390625", -3); break;
+    case -7: __str2dec(result, (u8 *)"78125", -3); break;
+    case -6: __str2dec(result, (u8 *)"15625", -2); break;
+    case -5: __str2dec(result, (u8 *)"3125", -2); break;
+    case -4: __str2dec(result, (u8 *)"625", -2); break;
+    case -3: __str2dec(result, (u8 *)"125", -1); break;
+    case -2: __str2dec(result, (u8 *)"25", -1); break;
+    case -1: __str2dec(result, (u8 *)"5", -1); break;
+    case 0: __str2dec(result, (u8 *)"1", 0); break;
+    case 1: __str2dec(result, (u8 *)"2", 0); break;
+    case 2: __str2dec(result, (u8 *)"4", 0); break;
+    case 3: __str2dec(result, (u8 *)"8", 0); break;
+    case 4: __str2dec(result, (u8 *)"16", 1); break;
+    case 5: __str2dec(result, (u8 *)"32", 1); break;
+    case 6: __str2dec(result, (u8 *)"64", 1); break;
+    case 7: __str2dec(result, (u8 *)"128", 2); break;
+    case 8: __str2dec(result, (u8 *)"256", 2); break;
     default:
-        func_02130248(&temp, (s32)(exp + ((exp & 0x80000000) >> 31)) >> 1);
-        func_021306ec(result, &temp, &temp);
+        __two_exp(&temp, (s32)(exp + ((exp & 0x80000000) >> 31)) >> 1);
+        __timesdec(result, &temp, &temp);
         if (exp & 1) {
             temp2 = *result;
             if (exp > 0)
-                func_02130628(&temp, data_0213c690, 0);
+                __str2dec(&temp, (u8 *)"2", 0);
             else
-                func_02130628(&temp, data_0213c688, -1);
-            func_021306ec(result, &temp2, &temp);
+                __str2dec(&temp, (u8 *)"5", -1);
+            __timesdec(result, &temp2, &temp);
         }
         break;
     }
 }
 
 // __equals_dec
-int func_02130150(const decimal *x, const decimal *y) {
+int __equals_dec(const decimal *x, const decimal *y) {
     int i, length;
     if (x->sig.text[0] == 0) return y->sig.text[0] == 0;
     if (y->sig.text[0] == 0) return x->sig.text[0] == 0;
@@ -295,7 +292,7 @@ int func_02130150(const decimal *x, const decimal *y) {
 }
 
 // __less_dec
-int func_02130030(const decimal *x, const decimal *y) {
+int __less_dec(const decimal *x, const decimal *y) {
     int i, length;
     if (x->sig.text[0] == 0) return y->sig.text[0] != 0;
     if (y->sig.text[0] == 0) return 0;
@@ -315,7 +312,7 @@ int func_02130030(const decimal *x, const decimal *y) {
 }
 
 // __minus_dec
-void func_0212fd74(decimal *z, const decimal *x, const decimal *y) {
+void __minus_dec(decimal *z, const decimal *x, const decimal *y) {
     int zdigits, diff, n, round;
     u8 *zt, *zp, *yt, *yp, *q, *p;
     *z = *x;
@@ -419,12 +416,12 @@ done:
 
 static inline int __cnt(double x) {
     u32 *p = (u32 *)&x;
-    if (p[0]) return func_02130a88(p[0]);
-    return func_02130a88(p[1] | 0x100000) + 32;
+    if (p[0]) return __count_trailing_zeros(p[0]);
+    return __count_trailing_zeros(p[1] | 0x100000) + 32;
 }
 
 // __num2dec_internal
-void func_0212fb1c(decimal *d, double x) {
+void __num2dec_internal(decimal *d, double x) {
     int exp;
     u8 sign = (u8)((*(1 + (s32 *)&x) & 0x80000000) != 0);
     if (x == 0.0) {
@@ -447,25 +444,25 @@ void func_0212fb1c(decimal *d, double x) {
         unsigned long long ull;
         decimal int_d, pow2_d;
         if (sign) x = -x;
-        frac = func_0212ef50(x, &exp);
+        frac = frexp(x, &exp);
         bits = __cnt(frac);
         bits = 53 - bits;
-        func_02130248(&pow2_d, exp - bits);
-        ull = (unsigned long long)func_0212f010(frac, bits);
-        func_02130894(&int_d, ull);
-        func_021306ec(d, &int_d, &pow2_d);
+        __two_exp(&pow2_d, exp - bits);
+        ull = (unsigned long long)ldexp(frac, bits);
+        __ull2dec(&int_d, ull);
+        __timesdec(d, &int_d, &pow2_d);
         d->sign = sign;
     }
 }
 
 // __num2dec
-void func_0212fa54(const decform *f, double x, decimal *d) {
+void __num2dec(const decform *f, double x, decimal *d) {
     short digits = f->digits;
     int i;
-    func_0212fb1c(d, x);
+    __num2dec_internal(d, x);
     if (d->sig.text[0] > 9) return;
     if (digits > 32) digits = 32;
-    func_02130964(d, digits);
+    __rounddec(d, digits);
     while (d->sig.length < digits) d->sig.text[d->sig.length++] = 0;
     d->exp -= d->sig.length - 1;
     for (i = 0; i < d->sig.length; i++) d->sig.text[i] += '0';

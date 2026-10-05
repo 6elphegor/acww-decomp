@@ -1,186 +1,181 @@
 #include "types.h"
+#include "town/TownBlockMap.h"
 
-extern u8 data_020dc524[8];
-extern u8 data_020dc52c[8];
-extern u8 data_020dc534[8];
-extern u8 data_020dc53c[8];
-extern u8 data_020dc544[8];
-extern u8 data_020dc54c[8];
-extern u8 data_020dc554[8];
-extern u8 data_020dc55c[8];
-extern u8 data_020dc564[8];
-extern u8 data_020dc56c[8];
-extern u8 data_020dc574[8];
-extern u8 data_020dc57c[8];
-extern u8 data_020dc584[8];
-extern u8 data_020dc58c[8];
-extern u8 data_020dc594[8];
-extern u8 data_020dc59c[8];
-extern u8 data_020dc5a4[8];
-extern u8 data_020dc5ac[8];
-extern u8 data_020dc5b4[12];
-extern u8 data_020dc5c0[12];
-extern u8 data_020dc5cc[12];
-extern u8 data_020dc5d8[12];
-extern u8 data_020dc5e4[12];
-extern u8 data_020dc5f0[12];
-extern u8 data_020dc5fc[12];
-extern u8 data_020dc608[12];
-extern u8 data_020dc614[16];
-extern u8 data_020dc624[16];
-extern u8 data_020dc634[16];
-extern u8 data_020dc644[16];
-extern u8 data_020dc654[20];
-extern u8 data_020dc668[20];
-extern u8 data_020dc67c[20];
-extern u8 data_020dc690[20];
-extern u8 data_020dc6a4[20];
-extern u8 data_020dc6b8[20];
-extern u8 data_020dc6cc[20];
-extern u8 data_020dc6e0[20];
-extern u8 data_020dc6f4[24];
-extern u8 data_020dc70c[24];
-extern u8 data_020dc724[24];
-extern u8 data_020dc73c[24];
-extern u8 data_020dc754[24];
-extern u8 data_020dc76c[24];
-extern u8 data_020dc784[24];
-extern u8 data_020dc79c[24];
-extern u8 data_020dc7b4[24];
-extern u8 data_020dc7cc[24];
-extern u8 data_020dc7e4[24];
-extern u8 data_020dc7fc[24];
-extern u8 data_020dc814[28];
-extern u8 data_020dc830[28];
-extern u8 data_020dc84c[28];
-extern u8 data_020dc868[28];
-extern u8 data_020dc884[28];
-extern u8 data_020dc8a0[28];
-extern u8 data_020dc8bc[28];
-extern u8 data_020dc8d8[28];
-extern u8 data_020dc8f4[36];
-extern u8 data_020dc918[36];
-extern u8 data_020dc93c[36];
-extern u8 data_020dc960[36];
-extern u8 data_020dc984[40];
-extern u8 data_020dc9ac[40];
-extern u8 data_020dc9d4[40];
-extern u8 data_020dc9fc[44];
-extern u8 data_020dca28[44];
-extern u8 data_020dca54[44];
-extern void *data_020dca80[12];
-extern void *data_020dcab0[12];
-extern void *data_020dcae0[12];
-extern void *data_020dcb10[12];
-extern void *data_020dcb40[12];
-extern u8 data_020dcb70[48];
-extern void *data_020dcba0[12];
-extern void *data_020dcbd0[12];
-extern void *data_020dcc00[12];
-extern void *data_020dcc30[12];
-extern void *data_020dcc60[12];
-extern void *data_020dcc90[12];
-extern void *data_020dccc0[12];
-extern void *data_020dccf0[12];
-extern u8 data_020dcd20[56];
-extern u8 data_020dcd58[56];
-extern u8 data_020dcd90[60];
+extern u8 sInsectSpawnDecSlot3[8];
+extern u8 sInsectSpawnFebSlot2[8];
+extern u8 sInsectSpawnJanSlot2[8];
+extern u8 sInsectSpawnFebSlot3[8];
+extern u8 sInsectSpawnDecSlot2[8];
+extern u8 sInsectSpawnJanSlot3[8];
+extern u8 sInsectSpawnJanSlot5[8];
+extern u8 sInsectSpawnDecSlot0[8];
+extern u8 sInsectSpawnFebSlot5[8];
+extern u8 sInsectSpawnFebSlot4[8];
+extern u8 sInsectSpawnJanSlot1[8];
+extern u8 sInsectSpawnJanSlot0[8];
+extern u8 sInsectSpawnFebSlot0[8];
+extern u8 sInsectSpawnDecSlot1[8];
+extern u8 sInsectSpawnDecSlot4[8];
+extern u8 sInsectSpawnDecSlot5[8];
+extern u8 sInsectSpawnFebSlot1[8];
+extern u8 sInsectSpawnJanSlot4[8];
+extern u8 sInsectSpawnMarSlot0[12];
+extern u8 sInsectSpawnMarSlot5[12];
+extern u8 sInsectSpawnOctSlot5[12];
+extern u8 sInsectSpawnAprSlot0[12];
+extern u8 sInsectSpawnNovSlot0[12];
+extern u8 sInsectSpawnOctSlot0[12];
+extern u8 sInsectSpawnNovSlot5[12];
+extern u8 sInsectSpawnAprSlot5[12];
+extern u8 sInsectSpawnNovSlot1[16];
+extern u8 sInsectSpawnMaySlot0[16];
+extern u8 sInsectSpawnMaySlot5[16];
+extern u8 sInsectSpawnOctSlot1[16];
+extern u8 sInsectSpawnMarSlot1[20];
+extern u8 sInsectSpawnNovSlot4[20];
+extern u8 sInsectSpawnMarSlot4[20];
+extern u8 sInsectSpawnAprSlot4[20];
+extern u8 sInsectSpawnMaySlot1[20];
+extern u8 sInsectSpawnMaySlot4[20];
+extern u8 sInsectSpawnOctSlot4[20];
+extern u8 sInsectSpawnAprSlot1[20];
+extern u8 sInsectSpawnNovSlot2[24];
+extern u8 sInsectSpawnNovSlot3[24];
+extern u8 sInsectSpawnMarSlot2[24];
+extern u8 sInsectSpawnMarSlot3[24];
+extern u8 sInsectSpawnMaySlot3[24];
+extern u8 sInsectSpawnOctSlot2[24];
+extern u8 sInsectSpawnOctSlot3[24];
+extern u8 sInsectSpawnJulSlot4[24];
+extern u8 sInsectSpawnSepSlot1[24];
+extern u8 sInsectSpawnAprSlot3[24];
+extern u8 sInsectSpawnAprSlot2[24];
+extern u8 sInsectSpawnMaySlot2[24];
+extern u8 sInsectSpawnJunSlot1[28];
+extern u8 sInsectSpawnJunSlot4[28];
+extern u8 sInsectSpawnJunSlot5[28];
+extern u8 sInsectSpawnAugSlot4[28];
+extern u8 sInsectSpawnSepSlot5[28];
+extern u8 sInsectSpawnJunSlot0[28];
+extern u8 sInsectSpawnSepSlot0[28];
+extern u8 sInsectSpawnSepSlot4[28];
+extern u8 sInsectSpawnJunSlot2[36];
+extern u8 sInsectSpawnJunSlot3[36];
+extern u8 sInsectSpawnJulSlot5[36];
+extern u8 sInsectSpawnAugSlot5[36];
+extern u8 sInsectSpawnJulSlot1[40];
+extern u8 sInsectSpawnAugSlot1[40];
+extern u8 sInsectSpawnSepSlot3[40];
+extern u8 sInsectSpawnJulSlot0[44];
+extern u8 sInsectSpawnAugSlot0[44];
+extern u8 sInsectSpawnSepSlot2[44];
+extern void *sInsectSpawnJul[12];
+extern void *sInsectSpawnJan[12];
+extern void *sInsectSpawnFeb[12];
+extern void *sInsectSpawnAug[12];
+extern void *sInsectSpawnNov[12];
+extern u8 sInsectSpawnJulSlot2[48];
+extern void *sInsectSpawnMar[12];
+extern void *gInsectSpawnTables[12];
+extern void *sInsectSpawnApr[12];
+extern void *sInsectSpawnSep[12];
+extern void *sInsectSpawnDec[12];
+extern void *sInsectSpawnMay[12];
+extern void *sInsectSpawnJun[12];
+extern void *sInsectSpawnOct[12];
+extern u8 sInsectSpawnJulSlot3[56];
+extern u8 sInsectSpawnAugSlot2[56];
+extern u8 sInsectSpawnAugSlot3[60];
 
 
 extern "C" {
-extern u8 data_020e416c[];
+extern u8 gFieldSceneKind[];
 }
 
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 
 extern "C" {
-extern u8 data_021ec780[];
+extern u8 gSaveDressers[];
 }
 
 extern "C" {
-void *func_0204da0c();
+void *TownBlockMap_Get();
 }
 
 extern "C" {
-void *func_0204d528(s32 i);
+void *HouseRoomMaps_Get(s32 i);
 }
 
 extern "C" {
-void *func_020974a0(s32 i);
+void *PlayerData_Get(s32 i);
 }
 
 extern "C" {
-void *_ZN12Unk_0209865c13func_02098750Ev(void *p);
+void *_ZN10PlayerData12getInventoryEv(void *p);
 }
 
 extern "C" {
-s32 _ZN12Unk_02097d1c13func_02097eb0Ei(void *p, s32 i);
+s32 _ZN15PlayerInventory14getPocketFlagsEi(void *p, s32 i);
 }
 
 extern "C" {
-u16 *_ZN12Unk_02097d1c13func_02097f6cEi(void *p, s32 i);
+u16 *_ZN15PlayerInventory9getPocketEi(void *p, s32 i);
 }
 
 extern "C" {
-void _ZN12Unk_02097d1c13func_02097f30EPtij(void *p, u16 *v, s32 i, s32 z);
+void _ZN15PlayerInventory9setPocketEPtij(void *p, u16 *v, s32 i, s32 z);
 }
 
 extern "C" {
-void *_ZN12Unk_0209865c13func_020986c8Ev(void *p);
+void *_ZN10PlayerData10getCatalogEv(void *p);
 }
 
 extern "C" {
-void func_0203c41c(void *p, u16 *v, s32 z);
+void Catalog_AddItem(void *p, u16 *v, s32 z);
 }
 
 extern "C" {
-u16 func_02039dd4(s32 i);
+u16 RecycleBin_Get(s32 i);
 }
 
 extern "C" {
-void func_02039d94(s32 i, u16 v);
+void RecycleBin_Set(s32 i, u16 v);
 }
 
 extern "C" {
-u16 *func_02039d74(void *p);
+u16 *ChestStorage_GetItems(void *p);
 }
 
 extern "C" {
-BOOL func_0204b2d4(u16 *p);
+BOOL Item_IsFurniture(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b25c(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 }
 
 extern "C" {
-void *func_0204ebd8(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
+void *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 }
 
 extern "C" {
-void func_0204eb30(void *self, u16 *p, s32 x, s32 y, u32 flag);
+void BlockMap_SetItemAtUnit(void *self, u16 *p, s32 x, s32 y, u32 flag);
 }
 
 extern "C" {
-void func_02061060(void *g);
+void Grid_ConvertFakePaintings(void *g);
 }
 
 extern "C" {
-void func_02061110(u16 *out, u16 *in);
+void Item_ConvertFakePainting(u16 *out, u16 *in);
 }
-
-struct Unk_02061060_Grid {
-    u8 unk_00[0xc];
-    s32 w;
-    s32 h;
-};
 
 static inline BOOL Unk_02060e3c_Eq(u16 *a, u16 *b) {
-    if (func_0204b2d4(a)) {
-        s32 x = func_0204b25c(a);
-        return x == func_0204b25c(b) ? TRUE : FALSE;
+    if (Item_IsFurniture(a)) {
+        s32 x = Item_GetFurnitureIndex(a);
+        return x == Item_GetFurnitureIndex(b) ? TRUE : FALSE;
     }
     u16 p = *a;
     return p == *b ? TRUE : FALSE;
@@ -216,8 +211,8 @@ static inline BOOL Unk_02061168_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
 }
 }
-extern "C" void func_02061168(u16 *out, u16 *in, s32 n) {
-    if (Unk_02061168_IsOne(data_020e416c[0]) || n != 0) {
+extern "C" void Item_ToPlacedForm(u16 *out, u16 *in, s32 n) {
+    if (Unk_02061168_IsOne(gFieldSceneKind[0]) || n != 0) {
     u16 *pv = in;
     if (Unk_02061168_In(pv, 0x11a8, 0x12a7)) {
         s32 idx;
@@ -324,7 +319,7 @@ extern "C" void func_02061168(u16 *out, u16 *in, s32 n) {
     *out = *in;
 }
 
-extern "C" void func_02061110(u16 *out, u16 *in) {
+extern "C" void Item_ConvertFakePainting(u16 *out, u16 *in) {
     if (Unk_02061110_In(in, 0x38e4, 0x3933)) {
         s32 idx = Unk_02061110_Idx(*in);
         s32 m1 = -1;
@@ -336,8 +331,8 @@ extern "C" void func_02061110(u16 *out, u16 *in) {
     *out = *in;
 }
 
-extern "C" void func_02061060(void *g) {
-    Unk_02061060_Grid *gr = (Unk_02061060_Grid *)g;
+extern "C" void Grid_ConvertFakePaintings(void *g) {
+    TownBlockMap *gr = (TownBlockMap *)g;
     s32 y;
     s32 x;
     s32 hx;
@@ -345,73 +340,73 @@ extern "C" void func_02061060(void *g) {
     u16 t;
     u16 *p;
     if (gr) {
-        for (y = 0; y < gr->h; y++) {
+        for (y = 0; y < gr->unitsZ; y++) {
             x = 0;
-            if (x < gr->w) {
+            if (x < gr->unitsX) {
                 goto test;
             loop:
                 hx = x >> 4;
                 hy = y >> 4;
-                p = (u16 *)func_0204ebd8(gr, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                p = (u16 *)BlockMap_GetItemPtr(gr, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (p) {
-                    func_02061110(&t, p);
+                    Item_ConvertFakePainting(&t, p);
                     if (!Unk_02060e3c_Eq(p, &t)) {
-                        func_0204eb30(gr, &t, x, y, 0);
+                        BlockMap_SetItemAtUnit(gr, &t, x, y, 0);
                     }
                 }
                 x++;
             test:
-                if (x < gr->w) goto loop;
+                if (x < gr->unitsX) goto loop;
             }
         }
     }
 }
 
-extern "C" void func_02060e3c() {
+extern "C" void Save_ConvertFakePaintings() {
     void *m;
     u16 *q;
     u32 n, k, j;
     u16 t[8];
-    func_02061060(func_0204da0c());
+    Grid_ConvertFakePaintings(TownBlockMap_Get());
     for (j = 0; j < 5; j++) {
-        func_02061060(func_0204d528(j));
+        Grid_ConvertFakePaintings(HouseRoomMaps_Get(j));
     }
     for (k = 0; k < 7; k++) {
-        m = func_020974a0(k);
+        m = PlayerData_Get(k);
         if (m) {
             for (j = 0; j < 15; j++) {
-                s32 s = _ZN12Unk_02097d1c13func_02097eb0Ei(_ZN12Unk_0209865c13func_02098750Ev(m), j);
-                t[0] = *_ZN12Unk_02097d1c13func_02097f6cEi(_ZN12Unk_0209865c13func_02098750Ev(m), j);
-                func_02061110(&t[1], &t[0]);
+                s32 s = _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData12getInventoryEv(m), j);
+                t[0] = *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(m), j);
+                Item_ConvertFakePainting(&t[1], &t[0]);
                 u16 *pb = &t[0];
                 if (!Unk_02060e3c_Eq(&t[1], pb) && s == 0) {
-                    _ZN12Unk_02097d1c13func_02097f30EPtij(_ZN12Unk_0209865c13func_02098750Ev(m), &t[1], j, 0);
-                    func_0203c41c(_ZN12Unk_0209865c13func_020986c8Ev(m), &t[1], 0);
+                    _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(m), &t[1], j, 0);
+                    Catalog_AddItem(_ZN10PlayerData10getCatalogEv(m), &t[1], 0);
                 }
             }
         }
     }
     for (k = 0; k < 15; k++) {
-        t[2] = func_02039dd4(k);
-        func_02061110(&t[3], &t[2]);
+        t[2] = RecycleBin_Get(k);
+        Item_ConvertFakePainting(&t[3], &t[2]);
         if (!Unk_02060e3c_Eq(&t[2], &t[3])) {
-            func_02039d94(k, t[3]);
+            RecycleBin_Set(k, t[3]);
         }
     }
     for (k = 0; k < 15; k++) {
-        q = (u16 *)(data_021d7350 + k * 2);
+        q = (u16 *)(gSaveData + k * 2);
         q = (u16 *)((u8 *)q + 0x15ec0);
         t[4] = *q;
-        func_02061110(&t[5], &t[4]);
+        Item_ConvertFakePainting(&t[5], &t[4]);
         if (!Unk_02060e3c_Eq(&t[4], &t[5])) {
             *q = t[5];
         }
     }
     for (k = 0; k < 4; k++) {
-        q = func_02039d74(data_021ec780 + k * 0xb4);
+        q = ChestStorage_GetItems(gSaveDressers + k * 0xb4);
         for (n = 0; n < 90; q++, n++) {
             t[6] = *q;
-            func_02061110(&t[7], &t[6]);
+            Item_ConvertFakePainting(&t[7], &t[6]);
             if (!Unk_02060e3c_Eq(&t[6], &t[7])) {
                 *q = t[7];
             }
@@ -419,12 +414,12 @@ extern "C" void func_02060e3c() {
     }
 }
 
-extern "C" void *func_02060e24(s32 i) {
+extern "C" void *Insect_GetSpawnTable(s32 i) {
     if (i < 0 || i > 11) i = 0;
-    return data_020dcbd0[i];
+    return gInsectSpawnTables[i];
 }
 
-extern "C" s32 func_02060de4(u32 x) {
+extern "C" s32 Insect_HourToTimeSlot(u32 x) {
     if (x >= 4 && x <= 7) return 1;
     if (x >= 8 && x <= 0xf) return 2;
     if (x == 0x10) return 3;
@@ -433,7 +428,7 @@ extern "C" s32 func_02060de4(u32 x) {
     return 0;
 }
 
-extern "C" s32 func_02060c70(u32 x) {
+extern "C" s32 Insect_GetBaseSize(u32 x) {
     switch (x) {
     case 0:
         return 0x32;
@@ -555,7 +550,7 @@ extern "C" s32 func_02060c70(u32 x) {
     return 0;
 }
 
-extern "C" s32 func_02060b9c(u32 x) {
+extern "C" s32 Insect_GetHabitat(u32 x) {
     switch (x) {
     case 9:
     case 16:
@@ -640,544 +635,544 @@ extern "C" s32 func_02060b9c(u32 x) {
     return 4;
 }
 
-u8 data_020dcd90[60] = {
+u8 sInsectSpawnAugSlot3[60] = {
     0x00, 0x01, 0x01, 0x02, 0x02, 0x04, 0x03, 0x06, 0x05, 0x07, 0x06, 0x08, 0x07, 0x09, 0x0a, 0x0a,
     0x0c, 0x0d, 0x0e, 0x10, 0x0f, 0x12, 0x10, 0x15, 0x11, 0x17, 0x12, 0x23, 0x13, 0x33, 0x14, 0x34,
     0x16, 0x3c, 0x17, 0x3e, 0x19, 0x41, 0x1a, 0x44, 0x1d, 0x4e, 0x1f, 0x50, 0x21, 0x54, 0x26, 0x57,
     0x27, 0x5c, 0x28, 0x5d, 0x30, 0x5e, 0x31, 0x60, 0x34, 0x62, 0x35, 0x64
 };
 
-u8 data_020dcd20[56] = {
+u8 sInsectSpawnJulSlot3[56] = {
     0x00, 0x01, 0x01, 0x02, 0x02, 0x04, 0x03, 0x06, 0x05, 0x07, 0x06, 0x08, 0x07, 0x09, 0x0a, 0x0a,
     0x10, 0x14, 0x11, 0x1c, 0x12, 0x20, 0x13, 0x38, 0x14, 0x39, 0x16, 0x41, 0x17, 0x43, 0x19, 0x46,
     0x1a, 0x49, 0x1d, 0x4d, 0x1f, 0x50, 0x21, 0x54, 0x26, 0x57, 0x27, 0x5c, 0x28, 0x5d, 0x30, 0x5e,
     0x31, 0x60, 0x34, 0x62, 0x35, 0x64, 0x00, 0x00
 };
 
-u8 data_020dcd58[56] = {
+u8 sInsectSpawnAugSlot2[56] = {
     0x00, 0x02, 0x01, 0x04, 0x02, 0x05, 0x03, 0x06, 0x05, 0x08, 0x06, 0x09, 0x07, 0x0a, 0x0a, 0x0b,
     0x0c, 0x0c, 0x0e, 0x0e, 0x0f, 0x0f, 0x10, 0x2c, 0x11, 0x42, 0x12, 0x4b, 0x16, 0x4e, 0x17, 0x50,
     0x19, 0x51, 0x1a, 0x54, 0x1d, 0x56, 0x1f, 0x58, 0x21, 0x59, 0x26, 0x5b, 0x27, 0x5f, 0x28, 0x60,
     0x30, 0x61, 0x31, 0x62, 0x34, 0x63, 0x35, 0x64
 };
 
-void *data_020dca80[12] = {
-    data_020dc9fc,
+void *sInsectSpawnJul[12] = {
+    sInsectSpawnJulSlot0,
     (void *)0x16,
-    data_020dc984,
+    sInsectSpawnJulSlot1,
     (void *)0x13,
-    data_020dcb70,
+    sInsectSpawnJulSlot2,
     (void *)0x18,
-    data_020dcd20,
+    sInsectSpawnJulSlot3,
     (void *)0x1b,
-    data_020dc79c,
+    sInsectSpawnJulSlot4,
     (void *)0xc,
-    data_020dc93c,
+    sInsectSpawnJulSlot5,
     (void *)0x12
 };
 
-void *data_020dcab0[12] = {
-    data_020dc57c,
+void *sInsectSpawnJan[12] = {
+    sInsectSpawnJanSlot0,
     (void *)0x4,
-    data_020dc574,
+    sInsectSpawnJanSlot1,
     (void *)0x4,
-    data_020dc534,
+    sInsectSpawnJanSlot2,
     (void *)0x3,
-    data_020dc54c,
+    sInsectSpawnJanSlot3,
     (void *)0x3,
-    data_020dc5ac,
+    sInsectSpawnJanSlot4,
     (void *)0x4,
-    data_020dc554,
+    sInsectSpawnJanSlot5,
     (void *)0x4
 };
 
-void *data_020dcae0[12] = {
-    data_020dc584,
+void *sInsectSpawnFeb[12] = {
+    sInsectSpawnFebSlot0,
     (void *)0x4,
-    data_020dc5a4,
+    sInsectSpawnFebSlot1,
     (void *)0x4,
-    data_020dc52c,
+    sInsectSpawnFebSlot2,
     (void *)0x3,
-    data_020dc53c,
+    sInsectSpawnFebSlot3,
     (void *)0x3,
-    data_020dc56c,
+    sInsectSpawnFebSlot4,
     (void *)0x4,
-    data_020dc564,
+    sInsectSpawnFebSlot5,
     (void *)0x4
 };
 
-void *data_020dcc30[12] = {
-    data_020dc8bc,
+void *sInsectSpawnSep[12] = {
+    sInsectSpawnSepSlot0,
     (void *)0xe,
-    data_020dc7b4,
+    sInsectSpawnSepSlot1,
     (void *)0xc,
-    data_020dca54,
+    sInsectSpawnSepSlot2,
     (void *)0x16,
-    data_020dc9d4,
+    sInsectSpawnSepSlot3,
     (void *)0x13,
-    data_020dc8d8,
+    sInsectSpawnSepSlot4,
     (void *)0xe,
-    data_020dc884,
+    sInsectSpawnSepSlot5,
     (void *)0xd
 };
 
-void *data_020dcb10[12] = {
-    data_020dca28,
+void *sInsectSpawnAug[12] = {
+    sInsectSpawnAugSlot0,
     (void *)0x16,
-    data_020dc9ac,
+    sInsectSpawnAugSlot1,
     (void *)0x13,
-    data_020dcd58,
+    sInsectSpawnAugSlot2,
     (void *)0x1c,
-    data_020dcd90,
+    sInsectSpawnAugSlot3,
     (void *)0x1e,
-    data_020dc868,
+    sInsectSpawnAugSlot4,
     (void *)0xd,
-    data_020dc960,
+    sInsectSpawnAugSlot5,
     (void *)0x12
 };
 
-void *data_020dcb40[12] = {
-    data_020dc5e4,
+void *sInsectSpawnNov[12] = {
+    sInsectSpawnNovSlot0,
     (void *)0x6,
-    data_020dc614,
+    sInsectSpawnNovSlot1,
     (void *)0x7,
-    data_020dc6f4,
+    sInsectSpawnNovSlot2,
     (void *)0xb,
-    data_020dc70c,
+    sInsectSpawnNovSlot3,
     (void *)0xb,
-    data_020dc668,
+    sInsectSpawnNovSlot4,
     (void *)0x9,
-    data_020dc5fc,
+    sInsectSpawnNovSlot5,
     (void *)0x6
 };
 
-u8 data_020dcb70[48] = {
+u8 sInsectSpawnJulSlot2[48] = {
     0x00, 0x02, 0x01, 0x04, 0x02, 0x05, 0x03, 0x06, 0x05, 0x08, 0x06, 0x09, 0x07, 0x0a, 0x0a, 0x0c,
     0x10, 0x2c, 0x11, 0x47, 0x12, 0x4a, 0x16, 0x4d, 0x17, 0x4f, 0x19, 0x50, 0x1a, 0x53, 0x1f, 0x55,
     0x21, 0x56, 0x26, 0x58, 0x27, 0x5c, 0x28, 0x5d, 0x30, 0x5e, 0x31, 0x60, 0x34, 0x62, 0x35, 0x64
 };
 
-void *data_020dcba0[12] = {
-    data_020dc5b4,
+void *sInsectSpawnMar[12] = {
+    sInsectSpawnMarSlot0,
     (void *)0x5,
-    data_020dc654,
+    sInsectSpawnMarSlot1,
     (void *)0x9,
-    data_020dc724,
+    sInsectSpawnMarSlot2,
     (void *)0xb,
-    data_020dc73c,
+    sInsectSpawnMarSlot3,
     (void *)0xb,
-    data_020dc67c,
+    sInsectSpawnMarSlot4,
     (void *)0x9,
-    data_020dc5c0,
+    sInsectSpawnMarSlot5,
     (void *)0x5
 };
 
-void *data_020dcbd0[12] = {
-    data_020dcab0,
-    data_020dcae0,
-    data_020dcba0,
-    data_020dcc00,
-    data_020dcc90,
-    data_020dccc0,
-    data_020dca80,
-    data_020dcb10,
-    data_020dcc30,
-    data_020dccf0,
-    data_020dcb40,
-    data_020dcc60
+void *gInsectSpawnTables[12] = {
+    sInsectSpawnJan,
+    sInsectSpawnFeb,
+    sInsectSpawnMar,
+    sInsectSpawnApr,
+    sInsectSpawnMay,
+    sInsectSpawnJun,
+    sInsectSpawnJul,
+    sInsectSpawnAug,
+    sInsectSpawnSep,
+    sInsectSpawnOct,
+    sInsectSpawnNov,
+    sInsectSpawnDec
 };
 
-void *data_020dcc00[12] = {
-    data_020dc5d8,
+void *sInsectSpawnApr[12] = {
+    sInsectSpawnAprSlot0,
     (void *)0x6,
-    data_020dc6e0,
+    sInsectSpawnAprSlot1,
     (void *)0xa,
-    data_020dc7e4,
+    sInsectSpawnAprSlot2,
     (void *)0xc,
-    data_020dc7cc,
+    sInsectSpawnAprSlot3,
     (void *)0xc,
-    data_020dc690,
+    sInsectSpawnAprSlot4,
     (void *)0xa,
-    data_020dc608,
+    sInsectSpawnAprSlot5,
     (void *)0x6
 };
 
-void *data_020dcc60[12] = {
-    data_020dc55c,
+void *sInsectSpawnDec[12] = {
+    sInsectSpawnDecSlot0,
     (void *)0x4,
-    data_020dc58c,
+    sInsectSpawnDecSlot1,
     (void *)0x4,
-    data_020dc544,
+    sInsectSpawnDecSlot2,
     (void *)0x3,
-    data_020dc524,
+    sInsectSpawnDecSlot3,
     (void *)0x3,
-    data_020dc594,
+    sInsectSpawnDecSlot4,
     (void *)0x4,
-    data_020dc59c,
+    sInsectSpawnDecSlot5,
     (void *)0x4
 };
 
-void *data_020dcc90[12] = {
-    data_020dc624,
+void *sInsectSpawnMay[12] = {
+    sInsectSpawnMaySlot0,
     (void *)0x7,
-    data_020dc6a4,
+    sInsectSpawnMaySlot1,
     (void *)0xa,
-    data_020dc7fc,
+    sInsectSpawnMaySlot2,
     (void *)0xc,
-    data_020dc754,
+    sInsectSpawnMaySlot3,
     (void *)0xc,
-    data_020dc6b8,
+    sInsectSpawnMaySlot4,
     (void *)0xa,
-    data_020dc634,
+    sInsectSpawnMaySlot5,
     (void *)0x7
 };
 
-void *data_020dccc0[12] = {
-    data_020dc8a0,
+void *sInsectSpawnJun[12] = {
+    sInsectSpawnJunSlot0,
     (void *)0xe,
-    data_020dc814,
+    sInsectSpawnJunSlot1,
     (void *)0xd,
-    data_020dc8f4,
+    sInsectSpawnJunSlot2,
     (void *)0x11,
-    data_020dc918,
+    sInsectSpawnJunSlot3,
     (void *)0x12,
-    data_020dc830,
+    sInsectSpawnJunSlot4,
     (void *)0xd,
-    data_020dc84c,
+    sInsectSpawnJunSlot5,
     (void *)0xd
 };
 
-void *data_020dccf0[12] = {
-    data_020dc5f0,
+void *sInsectSpawnOct[12] = {
+    sInsectSpawnOctSlot0,
     (void *)0x6,
-    data_020dc644,
+    sInsectSpawnOctSlot1,
     (void *)0x8,
-    data_020dc76c,
+    sInsectSpawnOctSlot2,
     (void *)0xc,
-    data_020dc784,
+    sInsectSpawnOctSlot3,
     (void *)0xc,
-    data_020dc6cc,
+    sInsectSpawnOctSlot4,
     (void *)0xa,
-    data_020dc5cc,
+    sInsectSpawnOctSlot5,
     (void *)0x6
 };
 
-u8 data_020dc9fc[44] = {
+u8 sInsectSpawnJulSlot0[44] = {
     0x08, 0x10, 0x09, 0x12, 0x14, 0x15, 0x1a, 0x1a, 0x21, 0x29, 0x22, 0x2b, 0x24, 0x2d, 0x28, 0x33,
     0x29, 0x39, 0x2a, 0x3a, 0x2b, 0x3b, 0x2c, 0x42, 0x2d, 0x43, 0x2e, 0x44, 0x2f, 0x45, 0x30, 0x47,
     0x31, 0x4f, 0x32, 0x57, 0x34, 0x5b, 0x35, 0x62, 0x36, 0x63, 0x37, 0x64
 };
 
-u8 data_020dca28[44] = {
+u8 sInsectSpawnAugSlot0[44] = {
     0x08, 0x10, 0x09, 0x12, 0x14, 0x15, 0x1a, 0x1a, 0x21, 0x29, 0x22, 0x2b, 0x24, 0x2d, 0x28, 0x33,
     0x29, 0x39, 0x2a, 0x3a, 0x2b, 0x3b, 0x2c, 0x42, 0x2d, 0x43, 0x2e, 0x44, 0x2f, 0x45, 0x30, 0x47,
     0x31, 0x4f, 0x32, 0x57, 0x34, 0x5b, 0x35, 0x62, 0x36, 0x63, 0x37, 0x64
 };
 
-u8 data_020dca54[44] = {
+u8 sInsectSpawnSepSlot2[44] = {
     0x00, 0x01, 0x01, 0x02, 0x02, 0x04, 0x03, 0x06, 0x04, 0x14, 0x05, 0x15, 0x06, 0x16, 0x07, 0x17,
     0x0c, 0x25, 0x0d, 0x2f, 0x0e, 0x39, 0x0f, 0x3f, 0x12, 0x41, 0x15, 0x46, 0x19, 0x48, 0x1a, 0x4c,
     0x1d, 0x57, 0x1f, 0x59, 0x30, 0x5a, 0x31, 0x5e, 0x34, 0x60, 0x35, 0x64
 };
 
-u8 data_020dc9ac[40] = {
+u8 sInsectSpawnAugSlot1[40] = {
     0x13, 0x19, 0x14, 0x1c, 0x1a, 0x21, 0x1f, 0x24, 0x21, 0x31, 0x22, 0x33, 0x24, 0x34, 0x28, 0x3b,
     0x29, 0x42, 0x2a, 0x43, 0x2b, 0x44, 0x2c, 0x4a, 0x2d, 0x4b, 0x2e, 0x4c, 0x2f, 0x4d, 0x30, 0x4f,
     0x31, 0x57, 0x34, 0x5c, 0x35, 0x64, 0x00, 0x00
 };
 
-u8 data_020dc9d4[40] = {
+u8 sInsectSpawnSepSlot3[40] = {
     0x04, 0x0d, 0x05, 0x0e, 0x06, 0x0f, 0x07, 0x10, 0x0c, 0x17, 0x0d, 0x1a, 0x0e, 0x1e, 0x0f, 0x21,
     0x12, 0x22, 0x14, 0x23, 0x15, 0x47, 0x19, 0x4a, 0x1a, 0x4d, 0x1d, 0x57, 0x1f, 0x59, 0x30, 0x5a,
     0x31, 0x5e, 0x34, 0x60, 0x35, 0x64, 0x00, 0x00
 };
 
-u8 data_020dc984[40] = {
+u8 sInsectSpawnJulSlot1[40] = {
     0x13, 0x1e, 0x14, 0x21, 0x1a, 0x26, 0x1f, 0x29, 0x21, 0x36, 0x22, 0x38, 0x24, 0x39, 0x28, 0x3f,
     0x29, 0x45, 0x2a, 0x46, 0x2b, 0x47, 0x2c, 0x4d, 0x2d, 0x4e, 0x2e, 0x4f, 0x2f, 0x50, 0x30, 0x52,
     0x31, 0x59, 0x34, 0x5d, 0x35, 0x64, 0x00, 0x00
 };
 
-u8 data_020dc8f4[36] = {
+u8 sInsectSpawnJunSlot2[36] = {
     0x00, 0x12, 0x01, 0x23, 0x02, 0x30, 0x03, 0x39, 0x05, 0x3a, 0x06, 0x3b, 0x07, 0x3c, 0x0a, 0x46,
     0x16, 0x4c, 0x19, 0x50, 0x1a, 0x56, 0x20, 0x5a, 0x27, 0x5e, 0x30, 0x5f, 0x31, 0x61, 0x34, 0x62,
     0x35, 0x64, 0x00, 0x00
 };
 
-u8 data_020dc918[36] = {
+u8 sInsectSpawnJunSlot3[36] = {
     0x00, 0x0f, 0x01, 0x1e, 0x02, 0x2a, 0x03, 0x32, 0x05, 0x33, 0x06, 0x34, 0x07, 0x35, 0x0a, 0x3b,
     0x14, 0x3c, 0x16, 0x4b, 0x19, 0x4f, 0x1a, 0x55, 0x20, 0x59, 0x27, 0x5e, 0x30, 0x5f, 0x31, 0x61,
     0x34, 0x63, 0x35, 0x64
 };
 
-u8 data_020dc93c[36] = {
+u8 sInsectSpawnJulSlot5[36] = {
     0x08, 0x0d, 0x09, 0x0e, 0x1a, 0x14, 0x21, 0x23, 0x24, 0x24, 0x28, 0x29, 0x29, 0x2e, 0x2b, 0x2f,
     0x2c, 0x34, 0x2d, 0x35, 0x2e, 0x36, 0x30, 0x38, 0x31, 0x40, 0x32, 0x56, 0x34, 0x5a, 0x35, 0x62,
     0x36, 0x63, 0x37, 0x64
 };
 
-u8 data_020dc960[36] = {
+u8 sInsectSpawnAugSlot5[36] = {
     0x08, 0x0d, 0x09, 0x0e, 0x1a, 0x14, 0x21, 0x23, 0x24, 0x24, 0x28, 0x29, 0x29, 0x2e, 0x2b, 0x2f,
     0x2c, 0x34, 0x2d, 0x35, 0x2e, 0x36, 0x30, 0x38, 0x31, 0x40, 0x32, 0x56, 0x34, 0x5a, 0x35, 0x62,
     0x36, 0x63, 0x37, 0x64
 };
 
-u8 data_020dc814[28] = {
+u8 sInsectSpawnJunSlot1[28] = {
     0x00, 0x05, 0x01, 0x0a, 0x02, 0x0d, 0x03, 0x10, 0x14, 0x13, 0x1a, 0x19, 0x24, 0x1a, 0x29, 0x1d,
     0x2b, 0x1e, 0x30, 0x20, 0x31, 0x29, 0x34, 0x2d, 0x35, 0x36, 0x00, 0x00
 };
 
-u8 data_020dc830[28] = {
+u8 sInsectSpawnJunSlot4[28] = {
     0x00, 0x05, 0x01, 0x0a, 0x02, 0x0d, 0x03, 0x10, 0x14, 0x13, 0x19, 0x18, 0x1a, 0x1e, 0x27, 0x23,
     0x30, 0x25, 0x31, 0x2e, 0x32, 0x42, 0x34, 0x46, 0x35, 0x4f, 0x00, 0x00
 };
 
-u8 data_020dc84c[28] = {
+u8 sInsectSpawnJunSlot5[28] = {
     0x08, 0x0a, 0x09, 0x0b, 0x1a, 0x0f, 0x24, 0x10, 0x25, 0x49, 0x29, 0x4b, 0x2b, 0x4c, 0x30, 0x4e,
     0x31, 0x53, 0x32, 0x5c, 0x34, 0x5e, 0x35, 0x63, 0x36, 0x64, 0x00, 0x00
 };
 
-u8 data_020dc868[28] = {
+u8 sInsectSpawnAugSlot4[28] = {
     0x0c, 0x04, 0x13, 0x24, 0x14, 0x26, 0x19, 0x2b, 0x1a, 0x2f, 0x1f, 0x33, 0x21, 0x3b, 0x28, 0x3c,
     0x30, 0x3e, 0x31, 0x46, 0x32, 0x58, 0x34, 0x5c, 0x35, 0x64, 0x00, 0x00
 };
 
-u8 data_020dc884[28] = {
+u8 sInsectSpawnSepSlot5[28] = {
     0x08, 0x05, 0x09, 0x06, 0x1a, 0x0a, 0x1b, 0x2d, 0x1c, 0x46, 0x21, 0x49, 0x2b, 0x4a, 0x30, 0x4c,
     0x31, 0x53, 0x32, 0x5a, 0x34, 0x5d, 0x35, 0x63, 0x37, 0x64, 0x00, 0x00
 };
 
-u8 data_020dc8a0[28] = {
+u8 sInsectSpawnJunSlot0[28] = {
     0x08, 0x10, 0x09, 0x12, 0x14, 0x15, 0x1a, 0x19, 0x24, 0x1a, 0x25, 0x4a, 0x29, 0x4d, 0x2b, 0x4e,
     0x30, 0x50, 0x31, 0x55, 0x32, 0x5b, 0x34, 0x5e, 0x35, 0x63, 0x36, 0x64
 };
 
-u8 data_020dc8bc[28] = {
+u8 sInsectSpawnSepSlot0[28] = {
     0x08, 0x0a, 0x09, 0x0b, 0x14, 0x0d, 0x1a, 0x11, 0x1b, 0x31, 0x1c, 0x4a, 0x21, 0x50, 0x2b, 0x51,
     0x30, 0x53, 0x31, 0x58, 0x32, 0x5c, 0x34, 0x5f, 0x35, 0x63, 0x37, 0x64
 };
 
-u8 data_020dc8d8[28] = {
+u8 sInsectSpawnSepSlot4[28] = {
     0x0c, 0x0a, 0x0d, 0x12, 0x14, 0x14, 0x15, 0x19, 0x19, 0x1c, 0x1a, 0x20, 0x1b, 0x39, 0x1c, 0x4d,
     0x1f, 0x50, 0x30, 0x52, 0x31, 0x58, 0x32, 0x5d, 0x34, 0x60, 0x35, 0x64
 };
 
-u8 data_020dc6f4[24] = {
+u8 sInsectSpawnNovSlot2[24] = {
     0x04, 0x14, 0x0c, 0x1e, 0x0d, 0x26, 0x0e, 0x2e, 0x0f, 0x34, 0x1e, 0x39, 0x1f, 0x3b, 0x30, 0x3c,
     0x31, 0x45, 0x34, 0x49, 0x35, 0x4e, 0x00, 0x00
 };
 
-u8 data_020dc70c[24] = {
+u8 sInsectSpawnNovSlot3[24] = {
     0x04, 0x0f, 0x0c, 0x15, 0x0d, 0x18, 0x0e, 0x1c, 0x0f, 0x1f, 0x1e, 0x24, 0x1f, 0x26, 0x30, 0x27,
     0x31, 0x30, 0x34, 0x34, 0x35, 0x39, 0x00, 0x00
 };
 
-u8 data_020dc724[24] = {
+u8 sInsectSpawnMarSlot2[24] = {
     0x00, 0x0c, 0x01, 0x18, 0x02, 0x1e, 0x03, 0x23, 0x0a, 0x2d, 0x1e, 0x32, 0x20, 0x3e, 0x30, 0x3f,
     0x31, 0x48, 0x34, 0x4c, 0x35, 0x51, 0x00, 0x00
 };
 
-u8 data_020dc79c[24] = {
+u8 sInsectSpawnJulSlot4[24] = {
     0x13, 0x2d, 0x14, 0x2f, 0x19, 0x34, 0x1a, 0x38, 0x1f, 0x3c, 0x21, 0x44, 0x28, 0x45, 0x30, 0x47,
     0x31, 0x4c, 0x32, 0x5e, 0x34, 0x62, 0x35, 0x64
 };
 
-u8 data_020dc73c[24] = {
+u8 sInsectSpawnMarSlot3[24] = {
     0x00, 0x0c, 0x01, 0x18, 0x02, 0x1e, 0x03, 0x23, 0x0a, 0x29, 0x1e, 0x2e, 0x20, 0x36, 0x30, 0x37,
     0x31, 0x40, 0x34, 0x44, 0x35, 0x49, 0x00, 0x00
 };
 
-u8 data_020dc754[24] = {
+u8 sInsectSpawnMaySlot3[24] = {
     0x00, 0x12, 0x01, 0x24, 0x02, 0x2e, 0x03, 0x34, 0x0a, 0x3e, 0x1a, 0x44, 0x1e, 0x46, 0x20, 0x50,
     0x30, 0x52, 0x31, 0x5a, 0x34, 0x5d, 0x35, 0x64
 };
 
-u8 data_020dc76c[24] = {
+u8 sInsectSpawnOctSlot2[24] = {
     0x04, 0x21, 0x0c, 0x2f, 0x0d, 0x39, 0x0e, 0x43, 0x0f, 0x4b, 0x15, 0x51, 0x1f, 0x53, 0x20, 0x5d,
     0x30, 0x5e, 0x31, 0x60, 0x34, 0x62, 0x35, 0x64
 };
 
-u8 data_020dc784[24] = {
+u8 sInsectSpawnOctSlot3[24] = {
     0x04, 0x19, 0x0c, 0x1f, 0x0d, 0x22, 0x0e, 0x26, 0x0f, 0x29, 0x15, 0x55, 0x1f, 0x57, 0x20, 0x5c,
     0x30, 0x5d, 0x31, 0x5f, 0x34, 0x61, 0x35, 0x64
 };
 
-u8 data_020dc7b4[24] = {
+u8 sInsectSpawnSepSlot1[24] = {
     0x04, 0x06, 0x14, 0x08, 0x1a, 0x0d, 0x1b, 0x2c, 0x1c, 0x42, 0x1f, 0x45, 0x21, 0x4b, 0x2b, 0x4c,
     0x30, 0x4e, 0x31, 0x57, 0x34, 0x5b, 0x35, 0x64
 };
 
-u8 data_020dc7cc[24] = {
+u8 sInsectSpawnAprSlot3[24] = {
     0x00, 0x14, 0x01, 0x28, 0x02, 0x30, 0x03, 0x35, 0x0a, 0x3d, 0x1a, 0x41, 0x1e, 0x44, 0x20, 0x4e,
     0x30, 0x4f, 0x31, 0x58, 0x34, 0x5c, 0x35, 0x64
 };
 
-u8 data_020dc7e4[24] = {
+u8 sInsectSpawnAprSlot2[24] = {
     0x00, 0x16, 0x01, 0x2c, 0x02, 0x34, 0x03, 0x39, 0x0a, 0x45, 0x1a, 0x48, 0x1e, 0x4b, 0x20, 0x57,
     0x30, 0x58, 0x31, 0x5d, 0x34, 0x5f, 0x35, 0x64
 };
 
-u8 data_020dc7fc[24] = {
+u8 sInsectSpawnMaySlot2[24] = {
     0x00, 0x13, 0x01, 0x26, 0x02, 0x32, 0x03, 0x3a, 0x0a, 0x47, 0x1a, 0x4b, 0x1e, 0x4d, 0x20, 0x57,
     0x30, 0x58, 0x31, 0x5d, 0x34, 0x5f, 0x35, 0x64
 };
 
-u8 data_020dc668[20] = {
+u8 sInsectSpawnNovSlot4[20] = {
     0x0c, 0x07, 0x0d, 0x0b, 0x1b, 0x14, 0x1e, 0x19, 0x1f, 0x1c, 0x30, 0x1d, 0x31, 0x26, 0x34, 0x2a,
     0x35, 0x2f, 0x00, 0x00
 };
 
-u8 data_020dc67c[20] = {
+u8 sInsectSpawnMarSlot4[20] = {
     0x00, 0x04, 0x01, 0x08, 0x02, 0x0a, 0x03, 0x0c, 0x1e, 0x11, 0x30, 0x12, 0x31, 0x1b, 0x34, 0x1f,
     0x35, 0x24, 0x00, 0x00
 };
 
-u8 data_020dc690[20] = {
+u8 sInsectSpawnAprSlot4[20] = {
     0x00, 0x05, 0x01, 0x0a, 0x02, 0x0d, 0x03, 0x10, 0x1a, 0x14, 0x1e, 0x18, 0x30, 0x19, 0x31, 0x22,
     0x34, 0x26, 0x35, 0x2f
 };
 
-u8 data_020dc6a4[20] = {
+u8 sInsectSpawnMaySlot1[20] = {
     0x00, 0x05, 0x01, 0x0a, 0x02, 0x0d, 0x03, 0x10, 0x1a, 0x16, 0x1e, 0x19, 0x30, 0x1b, 0x31, 0x24,
     0x34, 0x28, 0x35, 0x31
 };
 
-u8 data_020dc6b8[20] = {
+u8 sInsectSpawnMaySlot4[20] = {
     0x00, 0x05, 0x01, 0x0a, 0x02, 0x0d, 0x03, 0x10, 0x1a, 0x16, 0x1e, 0x19, 0x30, 0x1b, 0x31, 0x24,
     0x34, 0x28, 0x35, 0x31
 };
 
-u8 data_020dc6cc[20] = {
+u8 sInsectSpawnOctSlot4[20] = {
     0x0c, 0x09, 0x0d, 0x0f, 0x15, 0x17, 0x1b, 0x30, 0x1c, 0x40, 0x1f, 0x43, 0x30, 0x44, 0x31, 0x4d,
     0x34, 0x51, 0x35, 0x5a
 };
 
-u8 data_020dc6e0[20] = {
+u8 sInsectSpawnAprSlot1[20] = {
     0x00, 0x05, 0x01, 0x0a, 0x02, 0x0d, 0x03, 0x10, 0x1a, 0x14, 0x1e, 0x18, 0x30, 0x19, 0x31, 0x22,
     0x34, 0x26, 0x35, 0x2f
 };
 
-u8 data_020dc654[20] = {
+u8 sInsectSpawnMarSlot1[20] = {
     0x00, 0x04, 0x01, 0x08, 0x02, 0x0a, 0x03, 0x0c, 0x1e, 0x11, 0x30, 0x12, 0x31, 0x1b, 0x34, 0x1f,
     0x35, 0x24, 0x00, 0x00
 };
 
-u8 data_020dc614[16] = {
+u8 sInsectSpawnNovSlot1[16] = {
     0x1b, 0x09, 0x1e, 0x0e, 0x1f, 0x11, 0x30, 0x12, 0x31, 0x1b, 0x34, 0x1f, 0x35, 0x24, 0x00, 0x00
 };
 
-u8 data_020dc634[16] = {
+u8 sInsectSpawnMaySlot5[16] = {
     0x08, 0x03, 0x1a, 0x09, 0x1e, 0x0c, 0x30, 0x0e, 0x31, 0x17, 0x34, 0x1b, 0x35, 0x24, 0x00, 0x00
 };
 
-u8 data_020dc624[16] = {
+u8 sInsectSpawnMaySlot0[16] = {
     0x08, 0x05, 0x1a, 0x0b, 0x1e, 0x0e, 0x30, 0x10, 0x31, 0x19, 0x34, 0x1d, 0x35, 0x26, 0x00, 0x00
 };
 
-u8 data_020dc644[16] = {
+u8 sInsectSpawnOctSlot1[16] = {
     0x04, 0x03, 0x1b, 0x1c, 0x1c, 0x2c, 0x1f, 0x2f, 0x30, 0x30, 0x31, 0x39, 0x34, 0x3d, 0x35, 0x46
 };
 
-u8 data_020dc5b4[12] = {
+u8 sInsectSpawnMarSlot0[12] = {
     0x1e, 0x05, 0x30, 0x06, 0x31, 0x0f, 0x34, 0x13, 0x35, 0x18, 0x00, 0x00
 };
 
-u8 data_020dc5c0[12] = {
+u8 sInsectSpawnMarSlot5[12] = {
     0x1e, 0x05, 0x30, 0x06, 0x31, 0x0f, 0x34, 0x13, 0x35, 0x18, 0x00, 0x00
 };
 
-u8 data_020dc5cc[12] = {
+u8 sInsectSpawnOctSlot5[12] = {
     0x1b, 0x23, 0x1c, 0x39, 0x30, 0x3a, 0x31, 0x43, 0x34, 0x47, 0x35, 0x50
 };
 
-u8 data_020dc5d8[12] = {
+u8 sInsectSpawnAprSlot0[12] = {
     0x1a, 0x04, 0x1e, 0x08, 0x30, 0x09, 0x31, 0x12, 0x34, 0x16, 0x35, 0x1f
 };
 
-u8 data_020dc5e4[12] = {
+u8 sInsectSpawnNovSlot0[12] = {
     0x1b, 0x0f, 0x1e, 0x14, 0x30, 0x15, 0x31, 0x1e, 0x34, 0x22, 0x35, 0x27
 };
 
-u8 data_020dc5f0[12] = {
+u8 sInsectSpawnOctSlot0[12] = {
     0x1b, 0x20, 0x1c, 0x36, 0x30, 0x37, 0x31, 0x40, 0x34, 0x44, 0x35, 0x4d
 };
 
-u8 data_020dc608[12] = {
+u8 sInsectSpawnAprSlot5[12] = {
     0x1a, 0x04, 0x1e, 0x08, 0x30, 0x09, 0x31, 0x12, 0x34, 0x16, 0x35, 0x1f
 };
 
-u8 data_020dc5fc[12] = {
+u8 sInsectSpawnNovSlot5[12] = {
     0x1b, 0x0f, 0x1e, 0x14, 0x30, 0x15, 0x31, 0x1e, 0x34, 0x22, 0x35, 0x27
 };
 
-u8 data_020dc584[8] = {
+u8 sInsectSpawnFebSlot0[8] = {
     0x1e, 0x06, 0x23, 0x08, 0x31, 0x11, 0x34, 0x15
 };
 
-u8 data_020dc524[8] = {
+u8 sInsectSpawnDecSlot3[8] = {
     0x1e, 0x06, 0x31, 0x0f, 0x34, 0x13, 0x00, 0x00
 };
 
-u8 data_020dc554[8] = {
+u8 sInsectSpawnJanSlot5[8] = {
     0x1e, 0x06, 0x23, 0x07, 0x31, 0x10, 0x34, 0x14
 };
 
-u8 data_020dc56c[8] = {
+u8 sInsectSpawnFebSlot4[8] = {
     0x1e, 0x06, 0x23, 0x07, 0x31, 0x10, 0x34, 0x14
 };
 
-u8 data_020dc574[8] = {
+u8 sInsectSpawnJanSlot1[8] = {
     0x1e, 0x06, 0x23, 0x08, 0x31, 0x11, 0x34, 0x15
 };
 
-u8 data_020dc58c[8] = {
+u8 sInsectSpawnDecSlot1[8] = {
     0x1e, 0x06, 0x23, 0x08, 0x31, 0x11, 0x34, 0x15
 };
 
-u8 data_020dc53c[8] = {
+u8 sInsectSpawnFebSlot3[8] = {
     0x1e, 0x06, 0x31, 0x0f, 0x34, 0x13, 0x00, 0x00
 };
 
-u8 data_020dc57c[8] = {
+u8 sInsectSpawnJanSlot0[8] = {
     0x1e, 0x06, 0x23, 0x08, 0x31, 0x11, 0x34, 0x15
 };
 
-u8 data_020dc5a4[8] = {
+u8 sInsectSpawnFebSlot1[8] = {
     0x1e, 0x06, 0x23, 0x08, 0x31, 0x11, 0x34, 0x15
 };
 
-u8 data_020dc534[8] = {
+u8 sInsectSpawnJanSlot2[8] = {
     0x1e, 0x06, 0x31, 0x0f, 0x34, 0x13, 0x00, 0x00
 };
 
-u8 data_020dc52c[8] = {
+u8 sInsectSpawnFebSlot2[8] = {
     0x1e, 0x06, 0x31, 0x0f, 0x34, 0x13, 0x00, 0x00
 };
 
-u8 data_020dc564[8] = {
+u8 sInsectSpawnFebSlot5[8] = {
     0x1e, 0x06, 0x23, 0x07, 0x31, 0x10, 0x34, 0x14
 };
 
-u8 data_020dc544[8] = {
+u8 sInsectSpawnDecSlot2[8] = {
     0x1e, 0x06, 0x31, 0x0f, 0x34, 0x13, 0x00, 0x00
 };
 
-u8 data_020dc594[8] = {
+u8 sInsectSpawnDecSlot4[8] = {
     0x1e, 0x06, 0x23, 0x07, 0x31, 0x10, 0x34, 0x14
 };
 
-u8 data_020dc59c[8] = {
+u8 sInsectSpawnDecSlot5[8] = {
     0x1e, 0x06, 0x23, 0x07, 0x31, 0x10, 0x34, 0x14
 };
 
-u8 data_020dc54c[8] = {
+u8 sInsectSpawnJanSlot3[8] = {
     0x1e, 0x06, 0x31, 0x0f, 0x34, 0x13, 0x00, 0x00
 };
 
-u8 data_020dc55c[8] = {
+u8 sInsectSpawnDecSlot0[8] = {
     0x1e, 0x06, 0x23, 0x08, 0x31, 0x11, 0x34, 0x15
 };
 
-u8 data_020dc5ac[8] = {
+u8 sInsectSpawnJanSlot4[8] = {
     0x1e, 0x06, 0x23, 0x07, 0x31, 0x10, 0x34, 0x14
 };

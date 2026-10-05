@@ -1,3 +1,5 @@
+#include "sys/DtorEntry.h"
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file / fs_archive / fs_overlay) + MATH_CalcHMACMD5, autoload_2 0x02119434-0x0211a8d4. ARM code.
 typedef unsigned char u8;
@@ -5,102 +7,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-
-typedef struct FSArc FSArc;
-typedef struct FSFile FSFile;
-typedef struct {
-    void *head;
-    void *tail;
-} OSThreadQueue;
-typedef struct {
-    FSArc *arc;
-    union {
-        u32 file_id;
-        struct {
-            u16 own_id;
-            u16 index;
-        } d;
-    } u;
-    u32 pos;
-} FSDirPos;
-typedef struct {
-    FSArc *arc;
-    u32 file_id;
-} FSFileID;
-typedef struct {
-    u32 offset;
-    u32 length;
-} FSROMTable;
-typedef struct {
-    u8 *ptr;
-    u32 size;
-} FSOvtCache;
-
-struct FSFile {
-    FSFile *prev;
-    FSFile *next;
-    FSArc *arc;
-    u32 stat;
-    u32 command;
-    u32 error;
-    OSThreadQueue queue;
-    u32 w20;
-    s32 start;
-    s32 end;
-    s32 pos;
-    u32 a30;
-    u32 a34;
-    u32 a38;
-    u32 a3c;
-    u32 a40;
-    FSDirPos *a44;
-};
-
-struct FSArc {
-    u32 name;
-    FSArc *next;
-    FSArc *prev;
-    OSThreadQueue queue;
-    OSThreadQueue queue2;
-    u32 flag;
-    struct {
-        FSFile *prev;
-        FSFile *next;
-    } list;
-    u32 base;
-    u32 fat;
-    u32 fat_size;
-    u32 fnt;
-    u32 fnt_size;
-    u32 fat_orig;
-    u32 fnt_orig;
-    void *load_mem;
-    int (*read_orig)(FSArc *, void *, u32, u32);
-    int (*write)(FSArc *, void *, u32, u32);
-    int (*read)(FSArc *, void *, u32, u32);
-    int (*proc)(FSFile *, u32);
-    u32 proc_mask;
-    u32 pad5c[2];
-};
-
-typedef struct {
-    u32 id;
-    u32 ram_address;
-    u32 ram_size;
-    u32 bss_size;
-    void (**sinit_init)(void);
-    void (**sinit_init_end)(void);
-    u32 file_id;
-    u32 compressed : 24;
-    u32 flag : 8;
-} FSOverlayInfoHeader;
-
-typedef struct {
-    FSOverlayInfoHeader header;
-    u32 target;
-    u32 start;
-    u32 length;
-} FSOverlayInfo;
 
 typedef struct {
     u32 w[23];
@@ -111,42 +17,37 @@ typedef struct {
 } Digest20;
 
 typedef struct DtorEntry DtorEntry;
-struct DtorEntry {
-    DtorEntry *next;
-    void (*dtor)(void *);
-    void *obj;
-};
 
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02113720(OSThreadQueue *);
-extern void func_021136a0(OSThreadQueue *);
-extern void func_02115fb4(void *dst, u32 v, u32 n);
-extern void func_02116048(const void *src, void *dst, u32 n);
-extern int func_0211802c(FSFile *file, u32 cmd);
-extern void func_021181a8(FSFile *file, u32 result);
-extern void func_02118be8(FSArc *arc, u32 result);
-extern void func_02118c68(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
-extern void func_02119020(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_SleepThread(OSThreadQueue *);
+extern void OS_WakeupThread(OSThreadQueue *);
+extern void MI_CpuFill8(void *dst, u32 v, u32 n);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
+extern int FSi_TranslateCommand(FSFile *file, u32 cmd);
+extern void FSi_ReleaseCommand(FSFile *file, u32 result);
+extern void FS_NotifyArchiveAsyncEnd(FSArc *arc, u32 result);
+extern void FS_SetArchiveProc(FSArc *arc, int (*proc)(FSFile *, u32), u32 mask);
+extern void FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fnt_size,
                           int (*read)(FSArc *, void *, u32, u32), int (*write)(FSArc *, void *, u32, u32));
-extern void func_02119130(FSArc *arc, const char *name, int len);
-extern FSArc *func_021191f0(const char *name, int len);
-extern void func_02119240(FSArc *arc);
-extern BOOL func_02119278(FSFile *file, u32 cmd);
-extern u32 func_021123d0(void);
-extern void func_0211d6a0(u32);
-extern void func_0211d6c0(u32);
-extern void func_0211e0ac(void);
-extern void func_0211e130(u32 dma, u32 src, void *dst, u32 len, void (*cb)(FSArc *), FSArc *arg, BOOL async);
-extern void func_021145cc(u32 addr, u32 len);
-extern void func_02114594(u32 addr, u32 len);
-extern void func_02114608(u32 addr, u32 len);
-extern void func_02000934(u32 addr);
-extern void func_0206d49c(void);
-extern void func_0211aeb4(void *digest, const void *data, u32 len, const void *key, u32 keylen);
-extern void func_0211ae74(MD5Context *ctx);
-extern void func_0211ad80(MD5Context *ctx, const void *data, u32 len);
-extern void func_0211acbc(void *digest, MD5Context *ctx);
+extern void FS_RegisterArchiveName(FSArc *arc, const char *name, int len);
+extern FSArc *FS_FindArchive(const char *name, int len);
+extern void FS_InitArchive(FSArc *arc);
+extern BOOL FSi_SendCommand(FSFile *file, u32 cmd);
+extern u32 OS_GetLockID(void);
+extern void CARD_UnlockRom(u32);
+extern void CARD_LockRom(u32);
+extern void CARD_Init(void);
+extern void CARDi_ReadRom(u32 dma, u32 src, void *dst, u32 len, void (*cb)(FSArc *), FSArc *arg, BOOL async);
+extern void DC_FlushRange(u32 addr, u32 len);
+extern void DC_InvalidateRange(u32 addr, u32 len);
+extern void IC_InvalidateRange(u32 addr, u32 len);
+extern void MIi_UncompressBackward(u32 addr);
+extern void Fatal_Trap(void);
+extern void DGT_Hash2CalcHmac(void *digest, const void *data, u32 len, const void *key, u32 keylen);
+extern void DGT_Hash1Reset(MD5Context *ctx);
+extern void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);
+extern void DGT_Hash1GetDigest_R(void *digest, MD5Context *ctx);
 
 extern FSDirPos data_021fea6c;
 extern u32 data_021fea78;
@@ -206,34 +107,34 @@ static inline BOOL IsIdle(volatile FSFile *f) {
     return r;
 }
 
-int func_02119f94(FSFile *file, u32 cmd);
-u32 func_02119f8c(void);
-u32 func_02119f84(void);
-u32 func_0211a024(void);
-int func_0211a02c(FSArc *arc, void *dst, u32 src, u32 len);
-void func_0211a078(FSArc *arc);
-void func_02119d78(FSFile *file);
-void func_02119de4(u32 dma);
-BOOL func_02119a78(FSFile *file, FSFileID id);
-BOOL func_02119af4(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
-BOOL func_02119b4c(FSFileID *id, const char *path);
-BOOL func_02119c18(FSFile *file, const char *path, FSFileID *id, FSDirPos *pos);
-s32 func_02119b90(FSFile *file, void *dst, s32 len, BOOL async);
-s32 func_021198b4(FSFile *file, void *dst, s32 len);
-BOOL func_021199e0(FSFile *file);
-BOOL func_02119910(FSFile *file);
-int func_02119434(FSFile *file);
-FSFile *func_02119520(volatile FSArc *arc);
-void func_0211947c(FSFile *file);
-BOOL func_0211a358(const u8 *expected, const void *data, u32 len);
-void func_0211a258(FSOverlayInfoHeader *h);
-BOOL func_0211a3fc(FSOverlayInfo *p);
-BOOL func_0211a49c(FSOverlayInfo *p, int target, u32 id);
-BOOL func_0211a138(FSOverlayInfo *p);
-void func_0211a154(FSOverlayInfo *p);
-FSFileID func_0211a6c0(const FSOverlayInfoHeader *h);
-void func_0211a6e8(FSOverlayInfoHeader *h);
-u32 func_0211a72c(const FSOverlayInfoHeader *h);
+int FSi_RomArchiveProc(FSFile *file, u32 cmd);
+u32 FSi_ReadDummyCallback(void);
+u32 FSi_EmptyArchiveProc(void);
+u32 FSi_WriteDummyCallback(void);
+int FSi_ReadRomCallback(FSArc *arc, void *dst, u32 src, u32 len);
+void FSi_OnRomReadDone(FSArc *arc);
+void FS_InitFile(FSFile *file);
+void FSi_InitRom(u32 dma);
+BOOL FS_OpenFileFast(FSFile *file, FSFileID id);
+BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id);
+BOOL FS_ConvertPathToFileID(FSFileID *id, const char *path);
+BOOL FSi_FindPath(FSFile *file, const char *path, FSFileID *id, FSDirPos *pos);
+s32 FSi_ReadFileCore(FSFile *file, void *dst, s32 len, BOOL async);
+s32 FS_ReadFile(FSFile *file, void *dst, s32 len);
+BOOL FS_CloseFile(FSFile *file);
+BOOL FS_WaitAsync(FSFile *file);
+int FSi_ExecuteSyncCommand(FSFile *file);
+FSFile *FSi_NextCommand(volatile FSArc *arc);
+void FSi_ExecuteAsyncCommand(FSFile *file);
+BOOL FSi_CompareDigest(const u8 *expected, const void *data, u32 len);
+void FS_StartOverlay(FSOverlayInfoHeader *h);
+BOOL FS_LoadOverlayImage(FSOverlayInfo *p);
+BOOL FS_LoadOverlayInfo(FSOverlayInfo *p, int target, u32 id);
+BOOL FS_UnloadOverlayImage(FSOverlayInfo *p);
+void FS_EndOverlay(FSOverlayInfo *p);
+FSFileID FS_GetOverlayFileID(const FSOverlayInfoHeader *h);
+void FS_ClearOverlayImage(FSOverlayInfoHeader *h);
+u32 FSi_GetOverlayBinarySize(const FSOverlayInfoHeader *h);
 
 // FS_LoadOverlayInfo
 static inline const FSROMTable *GetOVT(int target) {
@@ -241,24 +142,24 @@ static inline const FSROMTable *GetOVT(int target) {
 }
 
 // FSi_StartOverlay
-void func_0211a258(FSOverlayInfoHeader *h) {
-    u32 size = func_0211a72c(h);
+void FS_StartOverlay(FSOverlayInfoHeader *h) {
+    u32 size = FSi_GetOverlayBinarySize(h);
     void (**it)(void);
     void (**end)(void);
     if (REG_BOOTTYPE == 2) {
         BOOL ok = 0;
         if (h->flag & 2) {
             s32 n = data_020e74ec_end - data_020e74ec;
-            if (h->id < n) ok = func_0211a358(data_020e74ec[h->id].b, (void *)h->ram_address, size);
+            if (h->id < n) ok = FSi_CompareDigest(data_020e74ec[h->id].b, (void *)h->ram_address, size);
         }
         if (!ok) {
-            func_02115fb4((void *)h->ram_address, 0, size);
-            func_0206d49c();
+            MI_CpuFill8((void *)h->ram_address, 0, size);
+            Fatal_Trap();
             return;
         }
     }
-    if (h->flag & 1) func_02000934(h->ram_address + size);
-    func_021145cc(h->ram_address, h->ram_size);
+    if (h->flag & 1) MIi_UncompressBackward(h->ram_address + size);
+    DC_FlushRange(h->ram_address, h->ram_size);
     it = h->sinit_init;
     end = h->sinit_init_end;
     for (; it < end; it++) {

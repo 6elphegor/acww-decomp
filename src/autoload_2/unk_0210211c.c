@@ -4,7 +4,7 @@
 typedef unsigned int u32;
 
 // number of OBJs (64/32/16/8 pixel sizes) needed to cover an area of x by y characters
-u32 func_0210211c(u32 x, u32 y) {
+u32 NNSi_G2dCalcRequiredOBJ(u32 x, u32 y) {
     u32 a = x >> 3;
     u32 b = y >> 3;
     u32 xh = (x & 4) >> 2;

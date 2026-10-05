@@ -1,937 +1,661 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
+#include "npc/NpcResHandleView.h"
+#include "npc/NpcObstacleProbe.h"
+#include "npc/Unk_0201ad18.h"
+#include "npc/NpcFootstepFx.h"
+#include "sys/ProcBase.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "npc/NpcTalkCtrl.h"
+#include "talk/MsgString9B.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
+#include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "actor/NpcActor.h"
+#include "actor/SpNpcActor.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/SpNpcTalkRequest.h"
+#include "actor/ActorProfile.h"
+#include "net/CommManager.h"
+#include "talk/TalkStartMsg.h"
+#include "item/PocketMatches.h"
 
-#define func_02002d3c _ZN12Unk_020d5d8413func_02002d3cEjPS_
-#define func_02002fc8 _ZN12Unk_02002fc813func_02002fc8Ej
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_02014ce4 _ZN12Unk_0201442013func_02014ce4EPtjjj
-#define func_02014e60 _ZN12Unk_020d771013func_02014e60EPtjjj
-#define func_02015170 _ZN12Unk_020d771013func_02015170Ejj
-#define func_0201517c _ZN12Unk_020d771013func_0201517cEjjj
-#define func_020151d0 _ZN12Unk_020d771013func_020151d0Ei
-#define func_0201578c _ZN12Unk_020d771413func_0201578cEjjj
-#define func_02015848 _ZN12Unk_020d771413func_02015848Ejj
-#define func_02015878 _ZN12Unk_020d771413func_02015878Ejj
-#define func_02015958 _ZN12Unk_020d771413func_02015958Eijiii
-#define func_02015a5c _ZN12Unk_020d771413func_02015a5cEv
-#define func_02015aac _ZN12Unk_020d771413func_02015aacEv
-#define func_02015ab0 _ZN12Unk_020d771413func_02015ab0Ej
-#define func_02019614 _ZN12Unk_0201985813func_02019614Ejt
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_0201a8d0 _ZN12Unk_0201a8c413func_0201a8d0Eiiii
-#define func_0201a99c _ZN12Unk_0201a8c413func_0201a99cEs
-#define func_0201a9ec _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3
-#define func_02035f30 _ZN12Unk_020d8e3413func_02035f30Ev
-#define func_0204e328 _ZN12Unk_0204e2f013func_0204e328EPv
-#define func_020602cc _ZN12Unk_0206022c13func_020602ccEj
-#define func_02060308 _ZN12Unk_0206022c13func_02060308Ev
-#define func_02060340 _ZN12Unk_0206022c13func_02060340Ev
-#define func_02060370 _ZN12Unk_0206022c13func_02060370Ei
-#define func_02060388 _ZN12Unk_0206022c13func_02060388Ev
-#define func_02060430 _ZN12Unk_0206022c13func_02060430Ej
-#define func_020604c4 _ZN12Unk_0206022c13func_020604c4Ev
-#define func_020604d4 _ZN12Unk_0206022c13func_020604d4Ev
-#define func_02067a1c _ZN12Unk_020660f813func_02067a1cEiii
-#define func_02067a3c _ZN12Unk_020660f813func_02067a3cEiPv
-#define func_02067a84 _ZN12Unk_020660f813func_02067a84EPhPv
-#define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
-#define func_0208653c _ZN12Unk_0208634013func_0208653cEv
-#define func_02086f38 _ZN12Unk_02086f1413func_02086f38Ev
-#define func_02086f68 _ZN12Unk_02086f1413func_02086f68Ev
-#define func_02086f80 _ZN12Unk_02086f8413func_02086f80Ev
-#define func_02086f84 _ZN12Unk_02086f8413func_02086f84Ev
-#define func_02087c58 _ZN12Unk_02087ad813func_02087c58Ev
-#define func_02087c7c _ZN12Unk_02087ad813func_02087c7cEv
-#define func_02094018 _ZN12Unk_020e1c64D1Ev
-#define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_02097ff4 _ZN12Unk_02097ff413func_02097ff4Ej
-#define func_0209801c _ZN12Unk_02097ff413func_0209801cEj
-#define func_02098044 _ZN12Unk_02097ff413func_02098044Ej
-#define func_02098308 _ZN12Unk_02097ff413func_02098308Ev
-#define func_0209865c _ZN12Unk_0209865c13func_0209865cEv
-#define func_0209868c _ZN12Unk_0209865c13func_0209868cEv
-#define func_0209872c _ZN12Unk_0209865c13func_0209872cEv
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
-#define func_02099864 _ZN12Unk_020994cc13func_02099864Ev
-#define func_0209abb4 _ZN12Unk_0209ada413func_0209abb4Eh
-#define func_0209abc4 _ZN12Unk_0209ada413func_0209abc4Ev
-#define func_0209ac64 _ZN12Unk_0209ada413func_0209ac64Ev
-#define func_0209ad68 _ZN12Unk_0209ada413func_0209ad68Ev
-#define func_0209e120 _ZN12Unk_0209da4413func_0209e120Ej
-#define func_0209e148 _ZN12Unk_0209da4413func_0209e148Ej
-#define func_0209e170 _ZN12Unk_0209da4413func_0209e170Ej
-#define func_020aa514 _ZN12Unk_020aa3b813func_020aa514Ev
-#define func_ov004_022355d8 _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii
+#define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
+#define VillagerId_getName _ZN10VillagerId7getNameEj
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
+#define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
+#define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
+#define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
+#define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
+#define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
+#define ActorTalkRequest_setDaySlot _ZN16ActorTalkRequest10setDaySlotEjj
+#define ActorTalkRequest_setMonthSlot _ZN16ActorTalkRequest12setMonthSlotEjj
+#define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
+#define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
+#define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
+#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
+#define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
+#define RoomBgm_forceClosingMusic _ZN7RoomBgm17forceClosingMusicEv
+#define BlockMap_getWalkLinksAtPos _ZN8BlockMap17getWalkLinksAtPosEPv
+#define HouseData_orderUpgrade _ZN9HouseData12orderUpgradeEj
+#define HouseData_isUpgradePaidOff _ZN9HouseData16isUpgradePaidOffEv
+#define HouseData_startLoan _ZN9HouseData9startLoanEv
+#define HouseData_setDebt _ZN9HouseData7setDebtEi
+#define HouseData_getDebt _ZN9HouseData7getDebtEv
+#define HouseData_orderRoofPaint _ZN9HouseData14orderRoofPaintEj
+#define HouseData_getLevel _ZN9HouseData8getLevelEv
+#define HouseData_isUpgradePending _ZN9HouseData16isUpgradePendingEv
+#define TalkWindowState_setSlotFromString _ZN15TalkWindowState17setSlotFromStringEiii
+#define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
+#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
+#define CommManager_isOnline _ZN11CommManager8isOnlineEv
+#define TurnipMarket_getPrice _ZN12TurnipMarket8getPriceEv
+#define ShopClosingTime_isPastClosingTime _ZN15ShopClosingTime17isPastClosingTimeEv
+#define ShopClosingTime_setClosingTimeToday _ZN15ShopClosingTime19setClosingTimeTodayEv
+#define ShopClosingTime_getTime _ZN15ShopClosingTime7getTimeEv
+#define ShopClosingTime_clearClosingTime _ZN15ShopClosingTime16clearClosingTimeEv
+#define PlayerSpNpcRecord_stampArbeitDate _ZN17PlayerSpNpcRecord15stampArbeitDateEv
+#define PlayerSpNpcRecord_getArbeitDate _ZN17PlayerSpNpcRecord13getArbeitDateEv
+#define func_02094018 _ZN11MsgString9BD1Ev
+#define func_02094030 _ZN11MsgString9BC1Ev
+#define PlayerData_clearFlag _ZN10PlayerData9clearFlagEj
+#define PlayerData_setFlag _ZN10PlayerData7setFlagEj
+#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
+#define PlayerData_getBirthday _ZN10PlayerData11getBirthdayEv
+#define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
+#define PlayerData_getSpNpcRecord _ZN10PlayerData14getSpNpcRecordEv
+#define PlayerData_getShirt _ZN10PlayerData8getShirtEv
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
+#define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
+#define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
+#define ErrandRecord_getStep _ZN12ErrandRecord7getStepEv
+#define ErrandRecord_getKind _ZN12ErrandRecord7getKindEv
+#define ErrandRecord_isActive _ZN12ErrandRecord8isActiveEv
+#define SaveData_clearFlag _ZN8SaveData9clearFlagEj
+#define SaveData_setFlag _ZN8SaveData7setFlagEj
+#define SaveData_testFlag _ZN8SaveData8testFlagEj
+#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
+#define FtrActorGrid_getActor _ZN12FtrActorGrid8getActorEiii
 #define data_0213a740 __ptmf_null
 
-struct Unk_0201bc1c;
-class Unk_020d77a4;
-class Unk_ov050_0225e400;
-class Unk_ov050_0225e4b4;
+class ActorTalkRequest;
+class NpcActor;
+class SpNpcNookShop;
+class SpNpcNookShopTalk;
 
-struct Unk_ov050_022590f8_Vec {
-    s32 x, y, z;
-};
-typedef Unk_ov050_022590f8_Vec Unk_ov050_022590f8_Pos;
-typedef Unk_ov050_022590f8_Vec Unk_ov050_0225c9dc_Vec;
-typedef Unk_ov050_022590f8_Vec Unk_ov050_0225cd90_Vec;
 
-struct Unk_ov050_02258f80_Loc : Unk_ov050_022590f8_Vec {
-    Unk_ov050_02258f80_Loc() {}
+struct SpNpcNookShopVecLocal : VecFx32 {
+    SpNpcNookShopVecLocal() {}
 };
 
-struct Unk_020cbb18_Ov050 {
-    u8 pad_00[0x64];
-    s32 unk_64;
-};
-
-struct Unk_ov050_022598e0_Buf {
+struct SpNpcNookShopDramaChoiceLocal {
     u8 a;
     u8 b;
     u8 pad[6];
 };
 
-struct Unk_ov050_0225a888_Out {
-    const void *unk_00;
-    u8 unk_04;
-};
 
-struct Unk_ov050_0225b908_Out {
-    u8 *unk_00;
-    u8 unk_04;
-};
 
-struct Unk_ov050_0225b7f4_Out {
-    const void *unk_00;
-    u8 unk_04;
-};
-
-struct Unk_ov050_0225b908_Owner;
-
-struct Unk_ov050_0225a888_Buf {
+struct SpNpcNookShopStartLocal {
     u8 lo : 2;
     u8 b : 3;
     u8 c : 3;
-    u8 unk_01;
+    u8 roofColor;
 };
 
-struct Unk_ov050_0225a888_Bytes {
+struct ClockDateBytes {
     u8 b[4];
 };
 
-struct Unk_ov050_0225bc18_Buf {
-    u16 v;
-    u8 b;
-    u8 pad;
-};
+
 
 struct Unk_ov050_0225c0a0_Msg {
-    u8 unk_00;
+    u8 msgIndex;
     u8 pad_01;
-    u16 unk_02;
-    u16 unk_04;
+    u16 item;
+    u16 cmpItem;
 };
 
-struct Unk_020e1c64 {
-    u8 pad_00[0x1c];
-    Unk_020e1c64();
-    ~Unk_020e1c64();
-};
 
-struct Unk_ov050_MsgRow {
-    const char *name;
-    u8 id;
-    u8 pad[3];
-};
 
-struct Unk_ov050_SceneEntry {
-    Unk_ov050_0225e400 *(*factory)();
-    u16 a, b;
-    s32 c, d, e, f;
-};
 
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+class ActorTalkRequest;
+class NpcActor;
+class SpNpcMabel;
+class SpNpcMabelTalk;
+
+
+
+
+
+
+
+
+
+
+class SpNpcNookShopTalk : public SpNpcTalkRequest {
 public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
+    typedef void (SpNpcNookShopTalk::*Fn)();
+    typedef void (SpNpcNookShopTalk::*ArgFn)(s32);
+    typedef void (SpNpcNookShopTalk::*PtrFn)(void *);
 
-    Unk_020d8c7c_Base();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
-    virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
-};
+    SpNpcNookShopTalk();
+    virtual ~SpNpcNookShopTalk();
+    virtual void resetMsg();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
+    virtual void onTaskDone(u32 id);
+    virtual void pickArbeitStartMsg0B(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg0C(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg0D(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg0E(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg0F(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg10(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg11(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg12(TalkStartMsg *out);
+    virtual void onArbeitMessageEnd();
 
-struct Unk_0201bc1c;
-class Unk_020d77a4;
-class Unk_ov049_0225bf04;
-class Unk_ov049_0225be74;
-// Menu-state machine root (main's Unk_020d7714 / Unk_020ddcf0 / Unk_020d7710 / Unk_020d8b38 chain).
-class Unk_020d7714 {
-public:
-    Unk_020d7714();
-    virtual ~Unk_020d7714();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18(s32 a);
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 v);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov050_0225a888_Out *out);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    u8 pad_04[0x1a];
-    u8 unk_1e;
-    u8 pad_1f[0x3c - 0x1f];
-    void *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
+    s32 buySelectedItem();
+    void onArbeitStationeryChoice(s32 p);
+    void onArbeitChoice();
+    void onDrama2Choice();
+    void onRoofColorChoice3(s32 p);
+    void onRoofColorChoice2(s32 p);
+    void onRoofColorChoice1(s32 p);
+    void onRoofColorChoice0(s32 p);
+    void onSellConfirmChoice(s32 p);
+    void onSafeOfferChoice(s32 p);
+    void onBuyPaintChoice(s32 p);
+    void onBuyOrShowChoice(s32 p);
+    void onBuyAfterPreviewChoice(s32 p);
+    void onBuyChoice(s32 p);
+    void onCatalogOrderChoice(s32 p);
+    void onCannotBuyChoice(s32 p);
+    void onDeliveryChoice(s32 p);
+    void onMainMenuChoice(s32 p);
+    void onShopChoice();
+    void setRoofColor(s32 row, s32 col);
+    void ackHouseUpgrade();
+    void showFirstPurchaseHint();
+    void onPurchaseDone();
+    void openCatalogMenu();
+    void giveMoneyBag();
+    void openSellMenu();
+    void onSafeOfferDeclined();
+    void giveGlamourShot();
+    void arbeitPushPlayerBack(void *h);
+    void arbeitFinish(void *h);
+    void arbeitReduceLoan(void *h);
+    void onArbeitMsgEnd31(void *h);
+    void arbeitPresentWateringCan(void *h);
+    void arbeitStartWateringCanDelivery(void *h);
+    void arbeitGiveCarpet(void *h);
+    void arbeitStartCarpetDelivery(void *h);
+    void arbeitRetryLetter(void *h);
+    void arbeitGiveNewStationery(void *h);
+    void arbeitOfferStationery(void *h);
+    void arbeitGiveStationery(void *h);
+    void arbeitStartLetterTask(void *h);
+    void arbeitGiveDeliveryParcel(void *h);
+    void arbeitStartFurnitureDelivery(void *h);
+    void onArbeitMsgEnd12(void *h);
+    void onArbeitMsgEnd0E(void *h);
+    void arbeitGivePlants(void *h);
+    void arbeitCheckPocketSpace(void *h);
+    void arbeitPresentUniform(void *h);
+    void arbeitGiveUniform(void *h);
+    BOOL checkNotInUniform(TalkStartMsg *out);
+    void givePlantingItems();
+    s32 getTopic();
+    void setTopic(s32 v);
+    void attachOwner(SpNpcNookShop *owner);
+    void handleDeliveryMenu();
+    void handleCatalogMenu();
+    void handleSellMenu();
+    void setPendingMenuHandler(s32 idx);
 
-class Unk_020ddcf0 : public Unk_020d7714 {
-public:
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-};
-
-class Unk_020d7710 : public Unk_020ddcf0 {
-public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64_alt();
-};
-
-class Unk_020d8b38 : public Unk_020d7710 {
-public:
-    Unk_020d8b38();
-    virtual ~Unk_020d8b38();
-};
-#define MEMBER(name, size) \
-    struct name { \
-        u8 unk_00[size]; \
-        name(); \
-        ~name(); \
-    }
-struct Unk_020dbd74 {
-    u8 pad_00[0xa4];
-    s32 unk_a4;
-    u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-    ~Unk_020dbd74();
-};
-MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
-MEMBER(Unk_0201accc, 0x3a8 - 0x350);
-struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
-struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
-MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
-MEMBER(Unk_0201a13c, 0x49c - 0x420);
-MEMBER(Unk_02032238, 0x30);
-struct Unk_02088d00 {
-    u8 pad_00[0x1c];
-    u32 unk_1c;
-    u8 pad_20[0x514 - 0x4cc - 0x20];
-    Unk_02088d00();
-    ~Unk_02088d00();
-};
-struct Unk_020135e4 {
-    u8 pad_00[8];
-    u8 unk_08;
-    u8 pad_09[2];
-    u8 unk_0b;
-    Unk_020135e4();
-    ~Unk_020135e4();
-};
-MEMBER(Unk_02019858, 0x618 - 0x564);
-MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
-
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-    ~Unk_020f4080();
-};
-
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
-public:
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-};
-
-struct Unk_020d77a4_Vec3;
-
-class Unk_020d9670 : public Unk_020d5d84 {
-public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 cmd, u32 arg);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
-    virtual BOOL vfunc_58();
-    u8 pad_04[4];
-    u32 unk_08;
-    u16 unk_0c;
-    u8 pad_0e[0x5c - 0xe];
-    s32 unk_5c, unk_60, unk_64;
-    u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
-    u8 pad_90[4];
-    s16 unk_94;
-    u8 pad_96[2];
-    s32 unk_98;
-    u8 pad_9c[0xea - 0x9c];
-};
-
-class Unk_020d77a4 : public Unk_020d9670 {
-public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual BOOL vfunc_68();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual void vfunc_74(u32 v);
-    virtual void vfunc_78();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual void vfunc_88();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
-    virtual void vfunc_9c();
-    virtual void vfunc_a0();
-    virtual void vfunc_a4();
-    virtual s32 vfunc_a8();
-
-    BOOL func_0201b9bc();
-    BOOL func_0201ba88();
-    void func_0201b9fc(u32 a, u32 b, u32 c, ...);
-
-    void func_0201bc28(Unk_0201bc1c *p);
-    s32 func_0201bc4c(u32 v);
-    s32 func_0201bc70(u32 v);
-    s32 func_0201bcbc(Unk_020d77a4 *other);
-    s32 func_0201bd20(u32 v);
-    void func_0201bd9c(s32 v);
-
-    u16 unk_ea;
-    Unk_020dbd74 unk_ec;
-    Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
-    Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
-    Unk_02088d00 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
-    Unk_02014254 unk_618;
-};
-
-class Unk_020d8bc8 : public Unk_020d77a4 {
-public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
-    virtual void vfunc_74(u32 v);
-    virtual void vfunc_78();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual s32 vfunc_a8();
-    void func_0202e548(s32 a, s32 b);
-
-    Unk_020e06dc unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
-};
-
-class Unk_ov050_0225e4b4 : public Unk_020d8b38 {
-public:
-    typedef void (Unk_ov050_0225e4b4::*Fn)();
-    typedef void (Unk_ov050_0225e4b4::*ArgFn)(s32);
-    typedef void (Unk_ov050_0225e4b4::*PtrFn)(void *);
-
-    Unk_ov050_0225e4b4();
-    virtual ~Unk_ov050_0225e4b4();
-    virtual void vfunc_08();
-    virtual void vfunc_14();
-    virtual void vfunc_18(s32 a);
-    virtual void vfunc_78(Unk_ov050_0225a888_Out *out);
-    virtual void vfunc_84();
-    virtual void vfunc_88(Unk_ov050_0225b908_Out *out);
-    virtual void vfunc_8c(Unk_ov050_0225b908_Out *out);
-    virtual void vfunc_90(Unk_ov050_0225b908_Out *out);
-    virtual void vfunc_94(Unk_ov050_0225b908_Out *out);
-    virtual void vfunc_98(Unk_ov050_0225b908_Out *out);
-    virtual void vfunc_9c(Unk_ov050_0225b7f4_Out *out);
-    virtual void vfunc_a0(Unk_ov050_0225b7f4_Out *out);
-    virtual void vfunc_a4(Unk_ov050_0225b7f4_Out *out);
-    virtual void vfunc_a8();
-
-    s32 func_ov050_0225978c();
-    void func_ov050_02259808(s32 p);
-    void func_ov050_02259838();
-    void func_ov050_022598e0();
-    void func_ov050_022599f8(s32 p);
-    void func_ov050_02259a14(s32 p);
-    void func_ov050_02259a30(s32 p);
-    void func_ov050_02259a4c(s32 p);
-    void func_ov050_02259a68(s32 p);
-    void func_ov050_02259af0(s32 p);
-    void func_ov050_02259b2c(s32 p);
-    void func_ov050_02259bb8(s32 p);
-    void func_ov050_02259cac(s32 p);
-    void func_ov050_02259d48(s32 p);
-    void func_ov050_02259d90(s32 p);
-    void func_ov050_02259e38(s32 p);
-    void func_ov050_02259e4c(s32 p);
-    void func_ov050_02259e80(s32 p);
-    void func_ov050_02259f18();
-    void func_ov050_0225a288(s32 row, s32 col);
-    void func_ov050_0225a2c0();
-    void func_ov050_0225a2d0();
-    void func_ov050_0225a570();
-    void func_ov050_0225a634();
-    void func_ov050_0225a658();
-    void func_ov050_0225a66c();
-    void func_ov050_0225a690();
-    void func_ov050_0225a69c();
-    void func_0225afd4(void *h);
-    void func_0225afe4(void *h);
-    void func_0225b018(void *h);
-    void func_0225b088(void *h);
-    void func_0225b0c0(void *h);
-    void func_0225b0f4(void *h);
-    void func_0225b158(void *h);
-    void func_0225b194(void *h);
-    void func_0225b210(void *h);
-    void func_0225b24c(void *h);
-    void func_0225b288(void *h);
-    void func_0225b2d0(void *h);
-    void func_0225b330(void *h);
-    void func_0225b3ac(void *h);
-    void func_0225b3e8(void *h);
-    void func_0225b478(void *h);
-    void func_0225b48c(void *h);
-    void func_0225b498(void *h);
-    void func_0225b4c8(void *h);
-    void func_0225b518(void *h);
-    void func_0225b56c(void *h);
-    BOOL func_ov050_0225bd54(Unk_ov050_0225b908_Out *out);
-    void func_ov050_0225bdc8();
-    s32 func_ov050_0225bff8();
-    void func_ov050_0225c000(s32 v);
-    void func_ov050_0225c008(Unk_ov050_0225b908_Owner *owner);
-    void func_ov050_0225c0a0();
-    void func_ov050_0225c1a8();
-    void func_ov050_0225c294();
-    void func_ov050_0225c4fc(s32 idx);
-
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ Unk_ov050_0225e400 *unk_b0;
-    /* 0xb4 */ Fn unk_b4;
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ s32 unk_c0;
+    /* 0xac */ s32 topic;
+    /* 0xb0 */ SpNpcNookShop *ownerNpc;
+    /* 0xb4 */ Fn pendingMenuHandler;
+    /* 0xbc */ s32 soldCount;
+    /* 0xc0 */ s32 price;
     /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
+    /* 0xc8 */ s32 safeSlot;
+    /* 0xcc */ s32 nextMsg;
 };
 
-class Unk_ov050_0225e400 : public Unk_020d8bc8 {
+class SpNpcNookShop : public SpNpcActor {
 public:
-    typedef BOOL (Unk_ov050_0225e400::*Fn)();
+    typedef BOOL (SpNpcNookShop::*Fn)();
 
-    Unk_ov050_0225e400() : unk_658(), unk_72e(0xfff1), unk_730(0), unk_734(0) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 cmd, u32 arg);
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_68();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
+    SpNpcNookShop() : talk(), selectedItem(0xfff1), selectedItemX(0), selectedItemZ(0) {}
+    virtual BOOL onCreate();
+    virtual BOOL preCreate();
+    virtual BOOL acceptsInteraction(void *other);
+    virtual void onInteractionEvent(u32 cmd, u8 arg);
+    virtual BOOL acceptsSelfRequestedInteraction(void *a);
+    virtual BOOL updateAct();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
+    virtual BOOL canPlayTalkMelody();
+    virtual void onTalkMelodyPlayed();
 
-    s32 func_ov050_02258e34();
-    s32 func_ov050_02258e58();
-    BOOL func_ov050_02258e7c();
-    BOOL func_ov050_02258ea0();
-    BOOL func_ov050_02258eb8();
-    BOOL func_ov050_02258ed0();
-    BOOL func_ov050_02258ee8();
-    BOOL func_ov050_02258f80();
-    BOOL func_ov050_02259074();
-    BOOL func_ov050_022590d8();
-    BOOL func_ov050_022590f8();
-    s32 func_ov050_02259398();
-    BOOL func_ov050_022593b0();
-    BOOL func_ov050_0225c5a8();
-    BOOL func_ov050_0225c6c0();
-    BOOL func_ov050_0225c700();
-    BOOL func_ov050_0225c704();
-    BOOL func_ov050_0225c708();
-    BOOL func_ov050_0225c740();
-    BOOL func_ov050_0225c780();
-    BOOL func_ov050_0225c7bc();
-    BOOL func_ov050_0225c7e0();
-    BOOL func_ov050_0225c838();
-    BOOL func_ov050_0225c83c();
-    BOOL func_ov050_0225c94c();
-    BOOL func_ov050_0225c950();
-    BOOL func_ov050_0225c9a8();
-    BOOL func_ov050_0225c9dc();
-    BOOL func_ov050_0225ca98();
-    BOOL func_ov050_0225caa8();
-    BOOL func_ov050_0225cb18();
-    BOOL func_ov050_0225cb4c();
-    BOOL func_ov050_0225cb6c();
-    BOOL func_ov050_0225cba0();
-    BOOL func_ov050_0225cba4();
-    BOOL func_ov050_0225cbd4();
-    BOOL func_ov050_0225cc00();
-    BOOL func_ov050_0225cc04();
-    BOOL func_ov050_0225cc08();
-    BOOL func_ov050_0225cc0c();
-    BOOL func_ov050_0225cc68();
-    BOOL func_ov050_0225ccb8();
-    BOOL func_ov050_0225cd18();
-    BOOL func_ov050_0225cd90();
-    BOOL func_ov050_0225cec4();
-    BOOL func_ov050_0225cef8();
-    BOOL func_ov050_0225cfec();
-    BOOL func_ov050_0225d020();
-    BOOL func_ov050_0225d118();
-    BOOL func_ov050_0225d188();
-    BOOL func_ov050_0225d19c();
-    void func_ov050_0225d1d4(s32 state);
+    s32 getRunDistance();
+    s32 getFollowDistance();
+    BOOL isTwin();
+    BOOL isTommy();
+    BOOL isTimmy();
+    BOOL isNook();
+    BOOL tryClosingTimeTalk();
+    BOOL tryFarewellTalk();
+    BOOL tryStairsBlockTalk();
+    BOOL tryItemTalk();
+    BOOL pickItemTopic();
+    s32 getOtherTwinProfile();
+    BOOL isPlayerCloserThanOtherTwin();
+    BOOL mainAct10();
+    BOOL setupAct10();
+    BOOL mainAct0F();
+    BOOL setupAct0F();
+    BOOL mainAct0E();
+    BOOL setupAct0E();
+    BOOL mainAct0D();
+    BOOL setupAct0D();
+    BOOL mainAct09();
+    BOOL setupAct09();
+    BOOL mainAct08();
+    BOOL setupAct08();
+    BOOL mainAct12();
+    BOOL setupAct12();
+    BOOL mainAct11();
+    BOOL setupAct11();
+    BOOL mainAct07();
+    BOOL setupAct07();
+    BOOL mainAct0B();
+    BOOL setupAct0B();
+    BOOL mainAct0C();
+    BOOL setupAct0C();
+    BOOL mainAct0A();
+    BOOL setupAct0A();
+    BOOL mainAct06();
+    BOOL setupAct06();
+    BOOL mainAct05();
+    BOOL setupAct05();
+    BOOL mainAct04();
+    BOOL setupAct04();
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct02();
+    BOOL setupAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
-    /* 0x651 */ u8 unk_651;
-    /* 0x654 */ s32 unk_654;
-    /* 0x658 */ Unk_ov050_0225e4b4 unk_658;
-    /* 0x728 */ u8 unk_728;
-    /* 0x72a */ u16 unk_72a;
-    /* 0x72c */ u16 unk_72c;
-    /* 0x72e */ u16 unk_72e;
-    /* 0x730 */ s32 unk_730;
-    /* 0x734 */ s32 unk_734;
-    /* 0x738 */ u8 unk_738;
-    /* 0x739 */ u8 unk_739;
-    /* 0x73a */ u8 unk_73a;
-    /* 0x73b */ u8 unk_73b;
+    /* 0x654 */ s32 act;
+    /* 0x658 */ SpNpcNookShopTalk talk;
+    /* 0x728 */ u8 dramaPending;
+    /* 0x72a */ u16 dramaTimer;
+    /* 0x72c */ u16 standBlend;
+    /* 0x72e */ u16 selectedItem;
+    /* 0x730 */ s32 selectedItemX;
+    /* 0x734 */ s32 selectedItemZ;
+    /* 0x738 */ u8 purchasePending;
+    /* 0x739 */ u8 approachTimer;
+    /* 0x73a */ u8 arbeitPrompted;
+    /* 0x73b */ u8 nookTalkMelodyPlayed;
 };
 
 struct Unk_ov050_0225d1d4_Ent {
-    Unk_ov050_0225e400::Fn enter;
-    Unk_ov050_0225e400::Fn exit;
+    SpNpcNookShop::Fn enter;
+    SpNpcNookShop::Fn exit;
 };
 
-typedef Unk_ov050_0225e4b4::ArgFn Unk_ov050_02259838_Fn;
-typedef Unk_ov050_0225e4b4::ArgFn Unk_ov050_0225e4b4_ArgFn;
-typedef Unk_ov050_0225e4b4::Fn Unk_ov050_0225e4b4_Fn;
+typedef SpNpcNookShopTalk::ArgFn Unk_ov050_02259838_Fn;
+typedef SpNpcNookShopTalk::ArgFn Unk_ov050_0225e4b4_ArgFn;
+typedef SpNpcNookShopTalk::Fn Unk_ov050_0225e4b4_Fn;
 
-struct Unk_ov050_02259838_Row {
+struct SpNpcNookShopChoiceHandler {
     u32 id;
-    Unk_ov050_0225e4b4::ArgFn fn;
+    SpNpcNookShopTalk::ArgFn fn;
 };
 
 struct Unk_ov050_0225a6e0_Row {
     u32 id;
-    Unk_ov050_0225e4b4::Fn f;
+    SpNpcNookShopTalk::Fn f;
 };
 
-struct Unk_ov050_0225b5a8_Row {
+struct SpNpcNookShopArbeitMessageEndHandler {
     u32 id;
-    Unk_ov050_0225e4b4::PtrFn f;
+    SpNpcNookShopTalk::PtrFn f;
 };
 
 extern "C" {
 extern u16 data_020c6cc8;
-extern Unk_020cbb18_Ov050 *data_020cbb18;
-extern u8 data_020e416c;
+extern CommManager *gCommManager;
+extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern u32 data_0213a740[];
 extern u8 *data_021c1b3c;
-extern u8 data_021d7350[];
-extern u8 data_021d735c;
-extern u8 data_021dfd8c[];
-extern u8 data_021e58a8[];
+extern u8 gSaveData[];
+extern u8 gSavePlayers;
+extern u8 gSaveVillagers[];
+extern u8 gSaveHouse[];
 extern u8 data_021ed104[];
 extern u8 data_021ed29c[];
-extern u8 data_021edb5c[];
-extern u8 data_021ef5cc[];
-extern u8 data_021ef5d0[];
-extern u16 data_021f47d8[];
+extern u8 gTalkMsgIndexEnd[];
+extern u8 gTouchPrevChanged[];
+extern u8 gTouchPrevHeld[];
+extern u16 gPad[];
 extern u16 data_020c6cc8;
 extern s16 data_020c6cc0;
-extern void *data_021c47c4;
-extern const Unk_ov050_022590f8_Vec data_ov050_0225da28;
-extern const Unk_ov050_022590f8_Vec data_ov050_0225da34;
+extern void *gSceneBlockMap;
+extern const VecFx32 sSpNpcNookShopArbeitStairsBound;
+extern const VecFx32 sSpNpcNookShopArbeitPushBackPos;
 extern const s32 data_ov050_0225da40[3];
-extern const u8 data_ov050_0225da4c[16];
-extern const u8 data_ov050_0225da5c[32];
-extern const s32 data_ov050_0225da7c[6][2];
-extern const Unk_ov050_MsgRow data_ov050_0225daac[31];
-extern char data_ov050_0225e1a4[];
-extern char data_ov050_0225e1b4[];
-extern char data_ov050_0225e1c4[];
-extern char data_ov050_0225e1d4[];
-extern char *data_ov050_0225e1e8[5];
-extern char *data_ov050_0225e1fc[5];
-extern Unk_ov050_0225d1d4_Ent data_ov050_0225e8a8[19];
+extern const u8 sSpNpcNookShopRoofColorChoices[16];
+extern const u8 sSpNpcNookShopDramaMsgTable[32];
+extern const s32 sSpNpcNookShopItemTopicTable[6][2];
+extern const TalkStartMsg sSpNpcNookShopTopicTable[31];
+extern char sSpNpcNookShopTwinsKey[];
+extern char sSpNpcNookShopDramaKey[];
+extern char sSpNpcNookShopKey[];
+extern char sSpNpcNookShopSequence5_1Key[];
+extern char *sSpNpcNookShopTexturePaths[5];
+extern char *sSpNpcNookShopModelPaths[5];
+extern Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];
 
-s32 func_01ffc854(void *v);
+s32 VEC_Mag(void *v);
 s32 func_01ffcb0c(s32 a, s32 b);
-void *func_02002d3c(s32 a, s32 b);
-void func_02002fc8(void *p, void *buf);
-void func_020141b4(void *self, s32 a, s32 b, s32 c);
-s32 func_02014220(void *p);
-void func_02014ce4(void *self, u16 *a, u32 b, u32 c, u32 d);
-void func_02014e60(void *self, u16 *p, s32 b, s32 c, s32 d);
-void func_02015170(void *self, u32 a, u32 b);
-void func_0201517c(void *self, void *fn, u32 b, u32 c);
-s32 func_020151d0(void *self, s32 a);
-void func_02015848(void *self, u32 a, u32 b);
-void func_02015878(void *self, u32 a, u32 b);
-void func_0201578c(void *self, u16 *p, s32 a, s32 b);
-void func_02015958(void *self, ...);
-s32 func_02015a5c(void *self);
-Unk_020d77a4 *func_02015aac(void *self);
-void func_02015ab0(void *self, s32 v);
-void func_02019614(void *self, s32 a, u32 b);
-void func_020196b4(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
-s32 func_02019790(void *self);
-s32 func_020197a8(void *self);
-void func_0201a8d0(void *self, s32 a, s32 b, s32 c, s32 d);
-void func_0201a99c(void *self, s32 v);
-void func_0201a9ec(void *self, Unk_ov050_0225cd90_Vec *v);
-void func_0201ad4c(void *self, s32 v);
-s32 func_0201ad68(void *self, s32 v, s32 w);
-void func_0201adc8(void *self, s32 v);
-s32 func_0201ade4(void *self, s32 v);
-void func_0201ae00(Unk_ov050_0225cd90_Vec *out, void *self, Unk_ov050_0225cd90_Vec *v);
-s32 func_0202e148(...);
-void func_0202e174(void *a, void *b);
-s32 func_0202e18c(void *a, void *b, s32 c);
-BOOL func_0202e1cc(s32 a, s32 b);
-s32 func_0202ff64(void *p);
-void func_0202ffb0(s32 a);
-void func_020341c0(s32 a);
-void func_020341f4(s32 a);
-void func_02034250(void *a, s32 b, s32 c, s32 d);
-void func_020342cc(void *a, s32 b, s32 c, s32 d);
-void func_02035f30(void *p);
-void func_0203a5ac();
-void func_0203a844();
-void func_0203d67c(void *self);
-void func_0203d704(void *p, s32 v);
-s32 func_0203e2f4();
-s32 func_0204b25c(void *p);
-s32 func_0204b2d4(void *p);
-s32 func_0204bd80(u16 *p);
-void *func_0204bde8(u16 *p);
-s32 func_0204be70(u16 *p);
-void func_0204e328(void *g, void *v);
-void func_0204ee10(s32 *a, s32 *b, Unk_ov050_0225c9dc_Vec *v);
-void func_020602cc(void *g, s32 a);
-s32 func_02060308(void *m);
-void func_02060340(void *g);
-void func_02060370(void *g, s32 v);
-s32 func_02060388(void *g);
-void func_02060430(void *g, u32 a);
-s32 func_020604c4(void *m);
-BOOL func_020604d4(void *p);
-s32 func_020626a8(u16 *p);
-s32 func_02063b8c(s32 a);
-void func_02067a1c(void *o, s32 a, void *b, void *c);
-void func_02067a3c(void *self, s32 id, void *buf);
-void func_02067a84(void *o, void *p, void *q);
-s32 func_0206e72c();
-void func_0206eb38(s32 v);
-u16 *func_0206eb9c();
-BOOL func_0206ed18();
-s32 func_0206ed38();
+void *Actor_findByProfile(s32 a, s32 b);
+void VillagerId_getName(void *p, void *buf);
+void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
+s32 NpcTalkCtrl_isBusy(void *p);
+void ActorTalkRequest_requestTakeItem(void *self, u16 *a, u32 b, u32 c, u32 d);
+void ActorTalkRequest_requestGiveItem(void *self, u16 *p, s32 b, s32 c, s32 d);
+void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
+void ActorTalkRequest_setPocketFilter(void *self, void *fn, u32 b, u32 c);
+s32 ActorTalkRequest_openSubScene(void *self, s32 a);
+void ActorTalkRequest_setDaySlot(void *self, u32 a, u32 b);
+void ActorTalkRequest_setMonthSlot(void *self, u32 a, u32 b);
+void ActorTalkRequest_setItemNameSlot(void *self, u16 *p, s32 a, s32 b);
+void ActorTalkRequest_setNumberSlot(void *self, ...);
+s32 ActorTalkRequest_getChoiceList(void *self);
+NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
+void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
+void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
+void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
+s32 NpcActionCtrl_isActionDone(void *self);
+s32 NpcActionCtrl_getAction(void *self);
+void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
+void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
+void NpcMoveCtrl_setWaypoint(void *self, VecFx32 *v);
+void NpcActor_PayPlayer(void *self, s32 v);
+s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w);
+void NpcActor_ChargePlayer(void *self, s32 v);
+s32 NpcActor_CanPlayerPay(void *self, s32 v);
+void NpcActor_FindFreeUnitNear(VecFx32 *out, void *self, VecFx32 *v);
+s32 Talk_IsInOwnTown(...);
+void Talk_AdvanceDrama(void *a, void *b);
+s32 Talk_IsDramaPending(void *a, void *b, s32 c);
+BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+s32 Ground_IsOnLockedExit(void *p);
+void Ground_LockExit(s32 a);
+void RoomWallFloor_RestoreCarpet(s32 a);
+void RoomWallFloor_RestoreWallpaper(s32 a);
+void RoomWallFloor_SetCarpet(void *a, s32 b, s32 c, s32 d);
+void RoomWallFloor_SetWallpaper(void *a, s32 b, s32 c, s32 d);
+void RoomBgm_forceClosingMusic(void *p);
+void Camera_RestorePrevMode();
+void Camera_SetModeDefault();
+void TalkRequest_SetTargetDone(void *self);
+void TalkRequest_AddPlayerTalk6(void *p, s32 v);
+s32 TalkRequest_IsActive();
+s32 Item_GetFurnitureIndex(void *p);
+s32 Item_IsFurniture(void *p);
+s32 Item_GetShopPrice(u16 *p);
+void *Item_GetMemberPrice(u16 *p);
+s32 Item_GetPrice(u16 *p);
+void BlockMap_getWalkLinksAtPos(void *g, void *v);
+void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *v);
+void HouseData_orderUpgrade(void *g, s32 a);
+s32 HouseData_isUpgradePaidOff(void *m);
+void HouseData_startLoan(void *g);
+void HouseData_setDebt(void *g, s32 v);
+s32 HouseData_getDebt(void *g);
+void HouseData_orderRoofPaint(void *g, u32 a);
+s32 HouseData_getLevel(void *m);
+BOOL HouseData_isUpgradePending(void *p);
+s32 Item_IsClass4Furniture(u16 *p);
+s32 Random_GlobalBelow(s32 a);
+void TalkWindowState_setSlotFromString(void *o, s32 a, void *b, void *c);
+void TalkWindowState_setSlot(void *self, s32 id, void *buf);
+void TalkWindowState_setNextMessage(void *o, void *p, void *q);
+s32 MenuCtrl_GetCatalogItem();
+void MenuCtrl_ReturnChosenItems(s32 v);
+u16 *MenuCtrl_GetChosenItems();
+BOOL MenuCtrl_IsResultOk();
+s32 MenuCtrl_GetIndex();
 void func_02071e74(void *self);
-BOOL func_02072e44(void *g);
-void func_020787b0();
-BOOL func_02079678(void *a, u32 b);
-void *func_020850e0();
-void *func_02085184(void *p);
-void func_020851a4(void *p, s32 v);
-s32 func_020851bc(void *p, s32 a);
-s32 func_0208653c(void *p);
-s32 func_02086f38(void *p);
-s32 func_02086f68(void *p);
-s32 func_02086f80(void *p);
-s32 func_02086f84(void *p);
-s32 func_02087c58(void *p);
-u8 *func_02087c7c(void *p);
+BOOL CommManager_isOnline(void *g);
+void VillagerTrend_OnFurnitureBought();
+BOOL SaveVillagers_AllKnowPlayer(void *a, u32 b);
+void *TownSessionState_Get();
+void *TownSessionState_GetClosingTime(void *p);
+void TownSessionState_SetFlag(void *p, s32 v);
+s32 TownSessionState_TestFlag(void *p, s32 a);
+s32 TurnipMarket_getPrice(void *p);
+s32 ShopClosingTime_isPastClosingTime(void *p);
+s32 ShopClosingTime_setClosingTimeToday(void *p);
+s32 ShopClosingTime_getTime(void *p);
+s32 ShopClosingTime_clearClosingTime(void *p);
+s32 PlayerSpNpcRecord_stampArbeitDate(void *p);
+u8 *PlayerSpNpcRecord_getArbeitDate(void *p);
 void func_02094018(void *p);
 void func_02094030(void *p);
-void *func_020947f0(s32 a);
-void func_02094b0c(Unk_ov050_0225c9dc_Vec *v, s32 a, s32 b);
-s32 func_02095154(s32 a, s32 b);
-BOOL func_020951b8(s32 a);
-void *func_02095204(s32 a);
-void *func_0209750c();
-void func_02097740(void *a, s32 b);
-void func_02097ff4(void *p, s32 v);
-void func_0209801c(void *h, u32 a);
-s32 func_02098044(void *h, s32 a);
-u16 *func_02098308(void *a);
-void *func_0209865c(void *a);
-void *func_0209868c(void *h);
-u16 *func_0209872c(void *a);
-u32 func_0209888c(...);
-s32 func_02098eb0(u16 *p);
-void func_02098f30(void *buf, void *fn);
-s32 func_02098ffc(...);
-s32 func_02099014(void *p, s32 v);
-u16 func_02099048(s32 a);
-void func_02099064(...);
-void *func_02099864(void *a);
-void func_020998b8(void *h);
-void func_02099910(void *h);
-void func_0209992c(void *h);
-void func_02099948(void *h);
-void func_02099ae4(void *h);
-void func_02099b4c(void *h);
-s32 func_02099b90(void *h);
-void func_02099bac(void *h);
-BOOL func_02099bc8(void *a);
-void func_02099bd8(void *h);
-void func_02099be0(void *h);
-void func_02099be8(void *h);
-s32 func_02099c68(void *h, void *buf, void *v);
-void *func_02099db4(void *a, s32 b);
-BOOL func_02099f98(void *a, u16 *p);
-void *func_0209a108(void *a);
-BOOL func_0209a42c(void *a);
-void *func_0209a4e4(void *p, s32 v);
-void *func_0209a4f0(...);
-void func_0209abb4(void *p, s32 v);
-u32 func_0209abc4(void *p);
-u32 func_0209ac64(void *p);
-BOOL func_0209ad68(void *p);
-s16 *func_0209c37c(s32 a, s32 b);
-s32 func_0209cd00(void *o, void *p);
-s32 func_0209cef4();
-void func_0209cf88(void *o);
-s32 func_0209d020();
-void func_0209e120(void *g, s32 a);
-void func_0209e148(void *g, s32 a);
-BOOL func_0209e170(void *g, s32 a);
-s32 func_020a62a0();
-s32 func_020aa514();
-void func_020ac948(void *p);
-s32 func_020aca18();
-s32 func_020aca44();
-void func_020aca4c(void *a, void *b, void *c, void *d);
-void func_020acb28(void *p);
-s32 func_020ae02c(void *g);
-BOOL func_020ae8fc(void *g);
-u32 func_020aea38(void *g);
-void *func_020aeac4(void *g);
-BOOL func_020aeac8(void *g);
-BOOL func_020aeb14(void *g);
-BOOL func_020aeb80(void *g);
-s32 func_020b4934();
-void func_020b4bbc(s32 a, s32 b);
-void *func_020b50b4();
-s32 func_020b50dc();
-void *func_020b50e8();
-void *func_020b6048(void *a, s32 b, s32 c);
-void func_020b60b0(void *a, void *b);
-s32 func_020e7500(void *p);
-s32 func_020e7518(void *p);
-s32 func_020e780c(s32 a, s32 b);
-s32 func_020e96ec(Unk_ov050_0225cd90_Vec *a, void *b);
-s32 func_020e972c(Unk_ov050_0225cd90_Vec *a, void *b);
-void func_020e9960(void *out, void *a, void *b);
-s32 func_0212a15c(const char *a, const char *b, s32 n);
-s32 func_0212a438(const char *s);
-void *func_ov004_022355d8(void *self, s32 a, s32 b, s32 c);
-void *func_ov004_02235718();
-u16 *func_ov004_0223ed40(s32 a, s32 b);
-void func_ov004_0223fcb4();
-void func_ov004_0223fcd4();
-BOOL func_ov050_0225be74(u16 *p);
-s32 func_ov050_0225be88(void *self);
-BOOL func_ov050_0225c180(u16 *p, s32 m);
-Unk_ov050_0225e400 *func_ov050_0225d68c();
-Unk_ov050_0225e400 *func_ov050_0225d7c0();
-Unk_ov050_0225e400 *func_ov050_0225d8f4();
-s32 _ZN12Unk_020d77a413func_0201b9e8Eii(void *self, s32 *a, s32 *b);
+void *PlayerActor_GetBodyPos(s32 a);
+void PlayerActor_RequestWalkTo(VecFx32 *v, s32 a, s32 b);
+s32 PlayerActor_IsInAction(s32 a, s32 b);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
+void *PlayerActor_GetActor(s32 a);
+void *PlayerData_GetCurrent();
+void PlayerDataArray_FindById(void *a, s32 b);
+void PlayerData_clearFlag(void *p, s32 v);
+void PlayerData_setFlag(void *h, u32 a);
+s32 PlayerData_testFlag(void *h, s32 a);
+u16 *PlayerData_getBirthday(void *a);
+void *PlayerData_getErrands(void *a);
+void *PlayerData_getSpNpcRecord(void *h);
+u16 *PlayerData_getShirt(void *a);
+u32 PlayerData_getPlayerId(...);
+s32 Pocket_FindItem(u16 *p);
+void Pocket_CountMatching(void *buf, void *fn);
+s32 Pocket_FindEmpty(...);
+s32 Pocket_AddItem(void *p, s32 v);
+u16 Pocket_GetItem(s32 a);
+void Pocket_RemoveItem(...);
+void *SickVillagerRecord_getParcelErrand(void *a);
+void Arbeit_Finish(void *h);
+void Arbeit_StartBbsTask(void *h);
+void Arbeit_StartWateringCanDelivery(void *h);
+void Arbeit_StartCarpetDelivery(void *h);
+void Arbeit_StartLetterTask(void *h);
+void Arbeit_StartFurnitureDelivery(void *h);
+s32 Arbeit_StartGreetings(void *h);
+void Arbeit_StartPlanting(void *h);
+BOOL Arbeit_IsOnDuty(void *a);
+void Arbeit_ClearOnDuty(void *h);
+void Arbeit_SetOnDuty(void *h);
+void Arbeit_Start(void *h);
+s32 PlayerErrands_GetDeliveryRecipientName(void *h, void *buf, void *v);
+void *PlayerErrands_GetSlot(void *a, s32 b);
+BOOL ParcelErrand_IsFor(void *a, u16 *p);
+void *ParcelErrand_GetRecord(void *a);
+BOOL PlayerErrandSlot_IsStepDone(void *a);
+void *PlayerErrandSlot_GetVillager(void *p, s32 v);
+void *PlayerErrandSlot_GetRecord(...);
+void ErrandRecord_setStep(void *p, s32 v);
+u32 ErrandRecord_getStep(void *p);
+u32 ErrandRecord_getKind(void *p);
+BOOL ErrandRecord_isActive(void *p);
+s16 *DebugVar_GetPtr(s32 a, s32 b);
+s32 Date_DaysBetween(void *o, void *p);
+s32 Clock_GetWeekday();
+void Clock_GetDate(void *o);
+s32 DateTime_IsInvalid();
+void SaveData_clearFlag(void *g, s32 a);
+void SaveData_setFlag(void *g, s32 a);
+BOOL SaveData_testFlag(void *g, s32 a);
+s32 NetArea_IsLocalOwner();
+s32 ChoiceList_getResult();
+void NookShop_SendCatalogOrder(void *p);
+s32 NookShop_CanTakeCatalogOrder();
+s32 NookShop_IsPurchaseSynced();
+void NookShop_BuyAt(void *a, void *b, void *c, void *d);
+void NookShop_RecordBuyback(void *p);
+s32 NookShop_GetLevel(void *g);
+BOOL NookShop_IsClosedTomorrow(void *g);
+u32 NookShop_GetClosedDate(void *g);
+void *NookShop_GetRenovation(void *g);
+BOOL NookShop_HasClass4Furniture(void *g);
+BOOL NookShop_IsPointSpecialToday(void *g);
+BOOL NookShop_IsSaleTime(void *g);
+s32 Scene_GetWarpRequest();
+void SceneWarp_RequestExit(s32 a, s32 b);
+void *Scene_GetTouchPicker();
+s32 Scene_GetPrevious();
+void *Scene_GetCurrent();
+void *TouchPick_GetTargetObject(void *a, s32 b, s32 c);
+void TouchPick_GetGroundPos(void *a, void *b);
+s32 Math_CountDownU16(void *p);
+s32 Math_CountDownU8(void *p);
+s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_NotEqual(VecFx32 *a, void *b);
+s32 Vec_Equal(VecFx32 *a, void *b);
+void Vec_Sub(void *out, void *a, void *b);
+s32 strncmp(const char *a, const char *b, s32 n);
+s32 strlen(const char *s);
+void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
+void *FtrActorGrid_GetInstance();
+u16 *ShopStock_GetItemAt(s32 a, s32 b);
+void Camera_SetMode12();
+void Camera_SetMode11();
+BOOL SpNpcNookShop_IsEmptyItem(u16 *p);
+s32 SpNpcNookShop_GetHouseUpgradeMsg(void *self);
+BOOL SpNpcNookShop_IsDeliveryParcel(u16 *p, s32 m);
+SpNpcNookShop *SpNpcNookShop_CreateTommy();
+SpNpcNookShop *SpNpcNookShop_CreateTimmy();
+SpNpcNookShop *SpNpcNookShop_Create();
+s32 _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 }
 
-#define func_ov050_0225bd54_self _ZN18Unk_ov050_0225e4b419func_ov050_0225bd54EP22Unk_ov050_0225b908_Out
+#define func_ov050_0225bd54_self _ZN17SpNpcNookShopTalk17checkNotInUniformEP12TalkStartMsg
 extern "C" BOOL func_ov050_0225bd54_self(void *self);
 
 // ---- ptmf constants (named so their creation order can be set)
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259a4cEi();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cb6cEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cb4cEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225caa8Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225d020Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c83cEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cba4Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259af0Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259a68Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b0f4EPv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cc04Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225ccb8Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cb18Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225d19cEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cfecEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cc00Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259a30Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259a14Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b018EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259e38Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259e4cEi();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b498EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259d48Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259838Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259b2cEi();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259f18Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cc0cEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cd18Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225d118Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cc08Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225a2c0Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225a2d0Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225a570Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cec4Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c94cEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c838Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_022599f8Ei();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cbd4Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b0c0EPv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cd90Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cef8Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225afd4EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225afe4EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225a69cEv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b088EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259808Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225a690Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b158EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b194EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b210EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b24cEPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b288EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b2d0EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b330EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b3acEPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b3e8EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b478EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b48cEPv();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225a66cEv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b4c8EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b518EPv();
-extern "C" void _ZN18Unk_ov050_0225e4b413func_0225b56cEPv();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259d90Ei();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_022598e0Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225c0a0Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225c1a8Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225c294Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cc68Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259cacEi();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225a658Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c740Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_02259bb8Ei();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c708Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225d188Ev();
-extern "C" void _ZN18Unk_ov050_0225e4b419func_ov050_0225a634Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c950Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c9a8Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c9dcEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225ca98Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c5a8Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c6c0Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c700Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c704Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c7e0Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c780Ev();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225c7bcEv();
-extern "C" void _ZN18Unk_ov050_0225e40019func_ov050_0225cba0Ev();
+extern "C" void _ZN17SpNpcNookShopTalk18onRoofColorChoice0Ei();
+extern "C" void _ZN13SpNpcNookShop10setupAct0BEv();
+extern "C" void _ZN13SpNpcNookShop9mainAct0BEv();
+extern "C" void _ZN13SpNpcNookShop9mainAct07Ev();
+extern "C" void _ZN13SpNpcNookShop9mainAct01Ev();
+extern "C" void _ZN13SpNpcNookShop9mainAct08Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct0CEv();
+extern "C" void _ZN17SpNpcNookShopTalk17onSafeOfferChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk19onSellConfirmChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk16onMainMenuChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk30arbeitStartWateringCanDeliveryEPv();
+extern "C" void _ZN13SpNpcNookShop9mainAct06Ev();
+extern "C" void _ZN13SpNpcNookShop9mainAct04Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct07Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct00Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct02Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct0AEv();
+extern "C" void _ZN17SpNpcNookShopTalk18onRoofColorChoice1Ei();
+extern "C" void _ZN17SpNpcNookShopTalk18onRoofColorChoice2Ei();
+extern "C" void _ZN17SpNpcNookShopTalk16arbeitReduceLoanEPv();
+extern "C" void _ZN17SpNpcNookShopTalk17onCannotBuyChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk16onDeliveryChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk16arbeitGivePlantsEPv();
+extern "C" void _ZN17SpNpcNookShopTalk11onBuyChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk14onArbeitChoiceEv();
+extern "C" void _ZN17SpNpcNookShopTalk16onBuyPaintChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk12onShopChoiceEv();
+extern "C" void _ZN13SpNpcNookShop9mainAct05Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct04Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct01Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct06Ev();
+extern "C" void _ZN17SpNpcNookShopTalk15ackHouseUpgradeEv();
+extern "C" void _ZN17SpNpcNookShopTalk21showFirstPurchaseHintEv();
+extern "C" void _ZN17SpNpcNookShopTalk14onPurchaseDoneEv();
+extern "C" void _ZN13SpNpcNookShop10setupAct03Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct08Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct09Ev();
+extern "C" void _ZN17SpNpcNookShopTalk18onRoofColorChoice3Ei();
+extern "C" void _ZN13SpNpcNookShop9mainAct0AEv();
+extern "C" void _ZN17SpNpcNookShopTalk24arbeitPresentWateringCanEPv();
+extern "C" void _ZN13SpNpcNookShop9mainAct03Ev();
+extern "C" void _ZN13SpNpcNookShop9mainAct02Ev();
+extern "C" void _ZN17SpNpcNookShopTalk20arbeitPushPlayerBackEPv();
+extern "C" void _ZN17SpNpcNookShopTalk12arbeitFinishEPv();
+extern "C" void _ZN17SpNpcNookShopTalk15giveGlamourShotEv();
+extern "C" void _ZN17SpNpcNookShopTalk16onArbeitMsgEnd31EPv();
+extern "C" void _ZN17SpNpcNookShopTalk24onArbeitStationeryChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk19onSafeOfferDeclinedEv();
+extern "C" void _ZN17SpNpcNookShopTalk16arbeitGiveCarpetEPv();
+extern "C" void _ZN17SpNpcNookShopTalk25arbeitStartCarpetDeliveryEPv();
+extern "C" void _ZN17SpNpcNookShopTalk17arbeitRetryLetterEPv();
+extern "C" void _ZN17SpNpcNookShopTalk23arbeitGiveNewStationeryEPv();
+extern "C" void _ZN17SpNpcNookShopTalk21arbeitOfferStationeryEPv();
+extern "C" void _ZN17SpNpcNookShopTalk20arbeitGiveStationeryEPv();
+extern "C" void _ZN17SpNpcNookShopTalk21arbeitStartLetterTaskEPv();
+extern "C" void _ZN17SpNpcNookShopTalk24arbeitGiveDeliveryParcelEPv();
+extern "C" void _ZN17SpNpcNookShopTalk28arbeitStartFurnitureDeliveryEPv();
+extern "C" void _ZN17SpNpcNookShopTalk16onArbeitMsgEnd12EPv();
+extern "C" void _ZN17SpNpcNookShopTalk16onArbeitMsgEnd0EEPv();
+extern "C" void _ZN17SpNpcNookShopTalk12openSellMenuEv();
+extern "C" void _ZN17SpNpcNookShopTalk22arbeitCheckPocketSpaceEPv();
+extern "C" void _ZN17SpNpcNookShopTalk20arbeitPresentUniformEPv();
+extern "C" void _ZN17SpNpcNookShopTalk17arbeitGiveUniformEPv();
+extern "C" void _ZN17SpNpcNookShopTalk20onCatalogOrderChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk14onDrama2ChoiceEv();
+extern "C" void _ZN17SpNpcNookShopTalk18handleDeliveryMenuEv();
+extern "C" void _ZN17SpNpcNookShopTalk17handleCatalogMenuEv();
+extern "C" void _ZN17SpNpcNookShopTalk14handleSellMenuEv();
+extern "C" void _ZN13SpNpcNookShop10setupAct05Ev();
+extern "C" void _ZN17SpNpcNookShopTalk23onBuyAfterPreviewChoiceEi();
+extern "C" void _ZN17SpNpcNookShopTalk12giveMoneyBagEv();
+extern "C" void _ZN13SpNpcNookShop10setupAct0EEv();
+extern "C" void _ZN17SpNpcNookShopTalk17onBuyOrShowChoiceEi();
+extern "C" void _ZN13SpNpcNookShop9mainAct0EEv();
+extern "C" void _ZN13SpNpcNookShop9mainAct00Ev();
+extern "C" void _ZN17SpNpcNookShopTalk15openCatalogMenuEv();
+extern "C" void _ZN13SpNpcNookShop9mainAct12Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct12Ev();
+extern "C" void _ZN13SpNpcNookShop9mainAct11Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct11Ev();
+extern "C" void _ZN13SpNpcNookShop9mainAct10Ev();
+extern "C" void _ZN13SpNpcNookShop10setupAct10Ev();
+extern "C" void _ZN13SpNpcNookShop9mainAct0FEv();
+extern "C" void _ZN13SpNpcNookShop10setupAct0FEv();
+extern "C" void _ZN13SpNpcNookShop9mainAct09Ev();
+extern "C" void _ZN13SpNpcNookShop9mainAct0DEv();
+extern "C" void _ZN13SpNpcNookShop10setupAct0DEv();
+extern "C" void _ZN13SpNpcNookShop9mainAct0CEv();
 static inline BOOL Unk_ov050_02258ea0_Eq(u16 v, u16 k) {
     if (v == k) {
         return TRUE;
@@ -940,17 +664,17 @@ static inline BOOL Unk_ov050_02258ea0_Eq(u16 v, u16 k) {
 }
 
 static inline BOOL Unk_ov050_022590f8_Flags() {
-    if (data_021ef5d0[0] && data_021ef5cc[0]) {
+    if (gTouchPrevHeld[0] && gTouchPrevChanged[0]) {
         return TRUE;
     }
     return FALSE;
 }
 
 static inline BOOL Unk_ov050_022590f8_Eq(u16 *p, u16 *k) {
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         *k = 0xfff1;
-        s32 a = func_0204b25c(p);
-        if (a == func_0204b25c(k)) return TRUE;
+        s32 a = Item_GetFurnitureIndex(p);
+        if (a == Item_GetFurnitureIndex(k)) return TRUE;
         return FALSE;
     }
     if (*p == 0xfff1) return TRUE;
@@ -961,10 +685,10 @@ static inline BOOL Unk_ov050_022590f8_Eq(u16 *p, u16 *k) {
 
 static inline BOOL Unk_ov050_02259bb8_Match(u16 *p) {
     BOOL r;
-    if (func_0204b2d4(p) != 0) {
+    if (Item_IsFurniture(p) != 0) {
         u16 v = 0xfff1;
-        s32 a = func_0204b25c(p);
-        if (a == func_0204b25c(&v)) {
+        s32 a = Item_GetFurnitureIndex(p);
+        if (a == Item_GetFurnitureIndex(&v)) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -988,10 +712,10 @@ static inline BOOL Unk_ov050_0225a2d0_R(u16 *p, u32 lo, u32 hi) {
 
 static inline BOOL Unk_ov050_0225a2d0_Same(u16 *p) {
     u16 t;
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         t = 0xfff1;
-        s32 a = func_0204b25c(p);
-        s32 b = func_0204b25c(&t);
+        s32 a = Item_GetFurnitureIndex(p);
+        s32 b = Item_GetFurnitureIndex(&t);
         if (a == b) {
             return TRUE;
         }
@@ -1004,10 +728,10 @@ static inline BOOL Unk_ov050_0225a2d0_Same(u16 *p) {
 }
 
 static inline BOOL Unk_ov050_0225a888_Same(u16 *p, u16 *t) {
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         *t = 0xfff1;
-        s32 a = func_0204b25c(p);
-        s32 b = func_0204b25c(t);
+        s32 a = Item_GetFurnitureIndex(p);
+        s32 b = Item_GetFurnitureIndex(t);
         if (a == b) {
             return TRUE;
         }
@@ -1030,10 +754,10 @@ static inline BOOL Unk_ov050_0225b7b4_IsOne(u8 v) {
     return FALSE;
 }
 static inline BOOL Unk_ov050_0225bd54_Same(u16 *p, u16 *t, u32 k) {
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         *t = k;
-        s32 a = func_0204b25c(p);
-        s32 b = func_0204b25c(t);
+        s32 a = Item_GetFurnitureIndex(p);
+        s32 b = Item_GetFurnitureIndex(t);
         if (a == b) {
             return TRUE;
         }
@@ -1047,7 +771,7 @@ static inline BOOL Unk_ov050_0225bd54_Same(u16 *p, u16 *t, u32 k) {
 
 static inline BOOL Unk_ov050_0225bacc_Chk(u16 *p) {
     BOOL r = FALSE;
-    if (func_02098eb0(p) >= 0) {
+    if (Pocket_FindItem(p) >= 0) {
         r = TRUE;
     }
     return r;
@@ -1059,136 +783,136 @@ static inline BOOL Unk_ov050_0225c294_Rng(volatile u16 *p, u32 lo, u32 hi, BOOL 
     return r;
 }
 
-extern "C" Unk_ov050_0225e400 *func_ov050_0225d8f4() { return new Unk_ov050_0225e400; }
+extern "C" SpNpcNookShop *SpNpcNookShop_Create() { return new SpNpcNookShop; }
 
-extern "C" Unk_ov050_0225e400 *func_ov050_0225d7c0() { return new Unk_ov050_0225e400; }
+extern "C" SpNpcNookShop *SpNpcNookShop_CreateTimmy() { return new SpNpcNookShop; }
 
-extern "C" Unk_ov050_0225e400 *func_ov050_0225d68c() { return new Unk_ov050_0225e400; }
+extern "C" SpNpcNookShop *SpNpcNookShop_CreateTommy() { return new SpNpcNookShop; }
 
-BOOL Unk_ov050_0225e400::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+BOOL SpNpcNookShop::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    func_0201bc28((Unk_0201bc1c *)&unk_658);
-    unk_658.func_ov050_0225c008((Unk_ov050_0225b908_Owner *)this);
-    if (func_ov050_02258e7c()) {
-        func_0202e548(0xccd, 0x2000);
-        func_0201bd9c(0xb00);
+    setTalkRequest((ActorTalkRequest *)&talk);
+    talk.attachOwner(this);
+    if (isTwin()) {
+        setColliderSize(0xccd, 0x2000);
+        setCollisionRadius(0xb00);
     }
-    unk_72c = data_020c6cc8;
-    func_0201a8d0(&unk_350, 2, 0x400, 0x133, 0x199);
-    if (func_02072e44(data_020cbb18) || *func_0209c37c(0, 0x4a) != 0) {
-        switch (unk_08) {
+    standBlend = data_020c6cc8;
+    NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x400, 0x133, 0x199);
+    if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
+        switch (param) {
         case 0xd00f:
-            unk_5c = 0xf000;
-            unk_60 = 0;
-            unk_64 = 0x11000;
+            position.x = 0xf000;
+            position.y = 0;
+            position.z = 0x11000;
             break;
         case 0xd010:
-            unk_5c = 0xf000;
-            unk_60 = 0;
-            unk_64 = 0x13000;
+            position.x = 0xf000;
+            position.y = 0;
+            position.z = 0x13000;
             break;
         case 0xd019:
-            unk_5c = 0xf000;
-            unk_60 = 0;
-            unk_64 = 0x19000;
+            position.x = 0xf000;
+            position.y = 0;
+            position.z = 0x19000;
             break;
         case 0xd01a:
-            unk_5c = 0x13000;
-            unk_60 = 0;
-            unk_64 = 0x17000;
+            position.x = 0x13000;
+            position.y = 0;
+            position.z = 0x17000;
             break;
         case 0xd01b:
-            unk_5c = 0xf000;
-            unk_60 = 0;
-            unk_64 = 0x15000;
+            position.x = 0xf000;
+            position.y = 0;
+            position.z = 0x15000;
             break;
         case 0xd01c:
-            unk_5c = 0x11000;
-            unk_60 = 0;
-            unk_64 = 0x13000;
+            position.x = 0x11000;
+            position.y = 0;
+            position.z = 0x13000;
             break;
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::vfunc_00() {
+BOOL SpNpcNookShop::onCreate() {
     s32 v;
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
-    if (func_02072e44(data_020cbb18) != 0 || *func_0209c37c(0, 0x4a) != 0) {
-        unk_4cc.unk_1c |= 2;
-        if (func_020a62a0()) {
-            func_02086f80(func_02085184(func_020850e0()));
-            if (func_0209d020()) {
-                func_02086f68(func_02085184(func_020850e0()));
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+        collider.groups |= 2;
+        if (NetArea_IsLocalOwner()) {
+            ShopClosingTime_getTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
+            if (DateTime_IsInvalid()) {
+                ShopClosingTime_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
             }
-            unk_8e = 0;
-            unk_94 = 0;
-            func_ov050_0225d1d4(0xd);
+            rotY = 0;
+            moveAngleY = 0;
+            changeAct(0xd);
         } else {
-            func_ov050_0225d1d4(8);
+            changeAct(8);
         }
         return TRUE;
     }
-    func_02086f80(func_02085184(func_020850e0()));
-    if (func_0209d020()) {
-        func_02086f68(func_02085184(func_020850e0()));
+    ShopClosingTime_getTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
+    if (DateTime_IsInvalid()) {
+        ShopClosingTime_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
     }
-    void *h = func_02085184(func_020850e0());
-    void *p = func_0209750c();
-    void *q = func_0209865c(p);
-    if (func_02098044(p, 1)) {
-        func_02099db4(q, 0);
-        void *m = func_0209a4f0();
-        func_0202ffb0(1);
-        unk_658.func_ov050_0225c000(5);
-        func_02086f68(h);
-        if (func_02086f38(h)) {
-            func_02035f30(data_021c1b3c + 0x2a0);
+    void *h = TownSessionState_GetClosingTime(TownSessionState_Get());
+    void *p = PlayerData_GetCurrent();
+    void *q = PlayerData_getErrands(p);
+    if (PlayerData_testFlag(p, 1)) {
+        PlayerErrands_GetSlot(q, 0);
+        void *m = PlayerErrandSlot_GetRecord();
+        Ground_LockExit(1);
+        talk.setTopic(5);
+        ShopClosingTime_setClosingTimeToday(h);
+        if (ShopClosingTime_isPastClosingTime(h)) {
+            RoomBgm_forceClosingMusic(data_021c1b3c + 0x2a0);
         }
-        if (func_0209ad68(m) && (func_0209abc4(m) >= 1 || func_0209ac64(m) >= 0xc)) {
-            func_ov050_0225d1d4(1);
+        if (ErrandRecord_isActive(m) && (ErrandRecord_getStep(m) >= 1 || ErrandRecord_getKind(m) >= 0xc)) {
+            changeAct(1);
         } else {
-            func_ov050_0225d1d4(0);
+            changeAct(0);
         }
         return TRUE;
     }
-    if (func_ov050_02258ea0() && func_020b50dc() == 0x1d) {
-        func_02086f68(h);
-        func_ov050_0225d1d4(0);
-    } else if (func_ov050_02258eb8() && func_020b50dc() == 0x1d) {
-        func_ov050_0225d1d4(0xa);
-    } else if (func_ov050_02258ed0() && func_020b50dc() == 0) {
-        func_02086f68(h);
-        func_ov050_0225d1d4(0);
+    if (isTommy() && Scene_GetPrevious() == 0x1d) {
+        ShopClosingTime_setClosingTimeToday(h);
+        changeAct(0);
+    } else if (isTimmy() && Scene_GetPrevious() == 0x1d) {
+        changeAct(0xa);
+    } else if (isNook() && Scene_GetPrevious() == 0) {
+        ShopClosingTime_setClosingTimeToday(h);
+        changeAct(0);
     } else {
-        if (func_020b50dc() != 0x1e) {
-            func_02086f68(h);
+        if (Scene_GetPrevious() != 0x1e) {
+            ShopClosingTime_setClosingTimeToday(h);
         }
-        func_ov050_0225d1d4(1);
+        changeAct(1);
     }
-    func_0202ffb0(0);
-    if (func_ov050_02258ed0()) {
-        if (func_02086f38(h)) {
-            func_02035f30(data_021c1b3c + 0x2a0);
+    Ground_LockExit(0);
+    if (isNook()) {
+        if (ShopClosingTime_isPastClosingTime(h)) {
+            RoomBgm_forceClosingMusic(data_021c1b3c + 0x2a0);
         }
-        if (func_0202e18c(this, &v, 3)) {
-            unk_728 = 1;
+        if (Talk_IsDramaPending(this, &v, 3)) {
+            dramaPending = 1;
         }
     }
     return TRUE;
 }
 
-u8 *Unk_ov050_0225e400::vfunc_6c() {
+u8 *SpNpcNookShop::getTexturePath() {
     s32 r = 0;
-    if (func_ov050_02258e7c()) {
+    if (isTwin()) {
         r = 4;
     } else {
-        switch (unk_08) {
+        switch (param) {
         case 0xd019:
             r = 0;
             break;
@@ -1203,15 +927,15 @@ u8 *Unk_ov050_0225e400::vfunc_6c() {
             break;
         }
     }
-    return (u8 *)data_ov050_0225e1e8[r];
+    return (u8 *)sSpNpcNookShopTexturePaths[r];
 }
 
-u8 *Unk_ov050_0225e400::vfunc_70() {
+u8 *SpNpcNookShop::getModelPath() {
     s32 r = 0;
-    if (func_ov050_02258e7c()) {
+    if (isTwin()) {
         r = 4;
     } else {
-        switch (unk_08) {
+        switch (param) {
         case 0xd019:
             r = 0;
             break;
@@ -1226,505 +950,505 @@ u8 *Unk_ov050_0225e400::vfunc_70() {
             break;
         }
     }
-    return (u8 *)data_ov050_0225e1fc[r];
+    return (u8 *)sSpNpcNookShopModelPaths[r];
 }
 
-BOOL Unk_ov050_0225e400::vfunc_68() {
+BOOL SpNpcNookShop::updateAct() {
     BOOL r = FALSE;
-    if (((Unk_ov050_0225d1d4_Ent *)&data_ov050_0225e8a8[0].exit)[unk_654].enter) {
-        r = (this->*data_ov050_0225e8a8[unk_654].exit)();
+    if (((Unk_ov050_0225d1d4_Ent *)&sSpNpcNookShopActTable[0].exit)[act].enter) {
+        r = (this->*sSpNpcNookShopActTable[act].exit)();
     }
     return r;
 }
 
-void Unk_ov050_0225e400::func_ov050_0225d1d4(s32 state) {
+void SpNpcNookShop::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov050_0225e8a8[state].enter) {
-        ok = (this->*data_ov050_0225e8a8[state].enter)();
+    if (sSpNpcNookShopActTable[state].enter) {
+        ok = (this->*sSpNpcNookShopActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225d19c() {
-    if (func_ov050_02258ed0()) {
-        unk_658.func_ov050_0225c000(0);
-    } else if (func_ov050_02258e7c()) {
-        unk_658.func_ov050_0225c000(0x11);
+BOOL SpNpcNookShop::setupAct00() {
+    if (isNook()) {
+        talk.setTopic(0);
+    } else if (isTwin()) {
+        talk.setTopic(0x11);
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225d188() {
-    func_0203d704(this, 0);
+BOOL SpNpcNookShop::mainAct00() {
+    TalkRequest_AddPlayerTalk6(this, 0);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225d118() {
+BOOL SpNpcNookShop::setupAct01() {
     s32 v;
-    func_02019614(&unk_564, 1, unk_72c);
-    unk_72a = func_02063b8c(5) * 20 + 100;
-    unk_72c = data_020c6cc8;
-    if (func_ov050_02258ed0() && func_0202e18c(this, &v, 3)) {
-        unk_728 = 1;
+    NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
+    dramaTimer = Random_GlobalBelow(5) * 20 + 100;
+    standBlend = data_020c6cc8;
+    if (isNook() && Talk_IsDramaPending(this, &v, 3)) {
+        dramaPending = 1;
     } else {
-        unk_728 = 0;
+        dramaPending = 0;
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225d020() {
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)func_020947f0(4);
-    Unk_ov050_0225cd90_Vec v;
+BOOL SpNpcNookShop::mainAct01() {
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    s32 t = func_0201bd20(4);
-    s32 a = func_0201bc70(4);
-    s32 k = func_020e780c(unk_8e, a);
-    s32 s = func_ov050_02258e58();
-    Unk_ov050_0225cd90_Vec out;
-    func_0201ae00(&out, this, &v);
-    if (func_02095154(0x8b, 4) || func_02095154(0x8c, 4)) {
+    s32 t = getDistanceToPlayer(4);
+    s32 a = getAngleToPlayer(4);
+    s32 k = Math_AngleDiffAbs(rotY, a);
+    s32 s = getFollowDistance();
+    VecFx32 out;
+    NpcActor_FindFreeUnitNear(&out, this, &v);
+    if (PlayerActor_IsInAction(0x8b, 4) || PlayerActor_IsInAction(0x8c, 4)) {
         return TRUE;
     }
-    if (t > s && func_020e96ec(&out, &unk_5c)) {
-        func_ov050_0225d1d4(3);
+    if (t > s && Vec_NotEqual(&out, &position)) {
+        changeAct(3);
     } else if (k > 0x2000) {
-        func_ov050_0225d1d4(2);
+        changeAct(2);
     }
-    if (func_ov050_02259074()) {
+    if (tryStairsBlockTalk()) {
         return TRUE;
     }
-    if (func_ov050_02258f80()) {
+    if (tryFarewellTalk()) {
         return TRUE;
     }
-    if (func_ov050_02258ee8()) {
+    if (tryClosingTimeTalk()) {
         return TRUE;
     }
-    if (func_ov050_022590d8()) {
+    if (tryItemTalk()) {
         return TRUE;
     }
-    if (unk_728 && func_020e7500(&unk_72a) == 0) {
-        func_ov050_0225d1d4(7);
+    if (dramaPending && Math_CountDownU16(&dramaTimer) == 0) {
+        changeAct(7);
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cfec() {
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcNookShop::setupAct02() {
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cef8() {
-    if (func_ov050_02259074()) {
+BOOL SpNpcNookShop::mainAct02() {
+    if (tryStairsBlockTalk()) {
         return TRUE;
     }
-    if (func_ov050_02258f80()) {
+    if (tryFarewellTalk()) {
         return TRUE;
     }
-    if (func_ov050_02258ee8()) {
+    if (tryClosingTimeTalk()) {
         return TRUE;
     }
-    if (func_ov050_022590d8()) {
+    if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)func_020947f0(4);
-    Unk_ov050_0225cd90_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    s32 t = func_0201bd20(4);
-    s32 b = func_0201bc70(4);
-    func_020e780c(unk_8e, b);
-    s32 s = func_ov050_02258e58();
-    Unk_ov050_0225cd90_Vec out;
-    func_0201ae00(&out, this, &v);
-    if (func_02095154(0x8b, 4) || func_02095154(0x8c, 4)) {
+    s32 t = getDistanceToPlayer(4);
+    s32 b = getAngleToPlayer(4);
+    Math_AngleDiffAbs(rotY, b);
+    s32 s = getFollowDistance();
+    VecFx32 out;
+    NpcActor_FindFreeUnitNear(&out, this, &v);
+    if (PlayerActor_IsInAction(0x8b, 4) || PlayerActor_IsInAction(0x8c, 4)) {
         return TRUE;
     }
     if (t > s) {
-        if (func_020e96ec(&out, &unk_5c)) {
-            func_ov050_0225d1d4(3);
+        if (Vec_NotEqual(&out, &position)) {
+            changeAct(3);
             return TRUE;
         }
     }
-    func_0201a99c(&unk_350, b);
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
-            func_ov050_0225d1d4(1);
+    NpcMoveCtrl_setTargetAngle(&moveCtrl, b);
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+            changeAct(1);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cec4() {
-    func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcNookShop::setupAct03() {
+    NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cd90() {
-    if (func_02095154(0x8b, 4) || func_02095154(0x8c, 4)) {
-        func_ov050_0225d1d4(1);
+BOOL SpNpcNookShop::mainAct03() {
+    if (PlayerActor_IsInAction(0x8b, 4) || PlayerActor_IsInAction(0x8c, 4)) {
+        changeAct(1);
         return TRUE;
     }
-    if (func_ov050_02259074()) {
+    if (tryStairsBlockTalk()) {
         return TRUE;
     }
-    if (func_ov050_02258f80()) {
+    if (tryFarewellTalk()) {
         return TRUE;
     }
-    if (func_ov050_02258ee8()) {
+    if (tryClosingTimeTalk()) {
         return TRUE;
     }
-    if (func_ov050_022590d8()) {
+    if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)func_020947f0(4);
-    Unk_ov050_0225cd90_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    s32 t = func_0201bd20(4);
-    Unk_ov050_0225cd90_Vec out;
-    func_0201ae00(&out, this, &v);
-    s32 s = func_ov050_02258e58();
-    if (t > func_ov050_02258e34()) {
-        if (func_020197a8(&unk_564) == 1) {
-            func_020196b4(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+    s32 t = getDistanceToPlayer(4);
+    VecFx32 out;
+    NpcActor_FindFreeUnitNear(&out, this, &v);
+    s32 s = getFollowDistance();
+    if (t > getRunDistance()) {
+        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
+            NpcActionCtrl_requestAction(&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (func_020197a8(&unk_564) == 2) {
-            func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&actionCtrl) == 2) {
+            NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    func_0201a9ec(&unk_350, &out);
-    if (t <= s || func_020e972c(&out, &unk_5c) != 0) {
-        func_ov050_0225d1d4(1);
+    NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
+    if (t <= s || Vec_Equal(&out, &position) != 0) {
+        changeAct(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cd18() {
+BOOL SpNpcNookShop::setupAct04() {
     s32 v;
-    Unk_020d77a4 *p = func_02015aac(&unk_658);
+    NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (p) {
-        r = func_0201bcbc(p);
+        r = getAngleTo(p);
     }
-    func_020141b4(&unk_618, 0, r, 0);
-    void *h = func_0209750c();
-    func_0209865c(h);
-    if (func_02098044(h, 1)) {
+    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
+    void *h = PlayerData_GetCurrent();
+    PlayerData_getErrands(h);
+    if (PlayerData_testFlag(h, 1)) {
         return TRUE;
     }
-    if (func_ov050_02258ed0() && func_0202e18c(this, &v, 3)) {
-        unk_728 = 1;
+    if (isNook() && Talk_IsDramaPending(this, &v, 3)) {
+        dramaPending = 1;
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225ccb8() {
-    if (func_02014220(&unk_618)) {
+BOOL SpNpcNookShop::mainAct04() {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return TRUE;
     }
-    if (unk_738 && func_020aca44() == 0) {
+    if (purchasePending && NookShop_IsPurchaseSynced() == 0) {
         return TRUE;
     }
-    if (func_020851bc(func_020850e0(), 5)) {
-        func_020b4bbc(func_020b4934(), 0);
+    if (TownSessionState_TestFlag(TownSessionState_Get(), 5)) {
+        SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
     } else {
-        func_0203d67c(this);
+        TalkRequest_SetTargetDone(this);
     }
-    func_ov050_0225d1d4(6);
+    changeAct(6);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cc68() {
-    Unk_020d77a4 *p = func_02015aac(&unk_658);
+BOOL SpNpcNookShop::setupAct05() {
+    NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
     s32 r = 0;
     if (p) {
-        r = func_0201bcbc(p);
+        r = getAngleTo(p);
     }
-    func_020141b4(&unk_618, 0, r, 1);
-    if (func_ov050_02258ed0()) {
-        func_02086f84(func_02085184(func_020850e0()));
+    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 1);
+    if (isNook()) {
+        ShopClosingTime_clearClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cc0c() {
-    if (func_02014220(&unk_618) == 0) {
-        void *h = func_02085184(func_020850e0());
-        if (func_ov050_02258e7c() && func_02086f38(h)) {
-            func_020b4bbc(func_020b4934(), 1);
+BOOL SpNpcNookShop::mainAct05() {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+        void *h = TownSessionState_GetClosingTime(TownSessionState_Get());
+        if (isTwin() && ShopClosingTime_isPastClosingTime(h)) {
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         } else {
-            func_020b4bbc(func_020b4934(), 0);
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         }
-        func_ov050_0225d1d4(6);
+        changeAct(6);
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cc08() { return TRUE; }
+BOOL SpNpcNookShop::setupAct06() { return TRUE; }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cc04() { return TRUE; }
+BOOL SpNpcNookShop::mainAct06() { return TRUE; }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cc00() { return TRUE; }
+BOOL SpNpcNookShop::setupAct0A() { return TRUE; }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cbd4() {
-    u8 *o = (u8 *)func_02002d3c(func_ov050_02259398(), 0);
+BOOL SpNpcNookShop::mainAct0A() {
+    u8 *o = (u8 *)Actor_findByProfile(getOtherTwinProfile(), 0);
     if (*(s32 *)(o + 0x654) == 1) {
-        func_ov050_0225d1d4(1);
+        changeAct(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cba4() {
-    unk_72c = data_020c6cc8;
-    func_02019614(&unk_564, 1, unk_72c);
+BOOL SpNpcNookShop::setupAct0C() {
+    standBlend = data_020c6cc8;
+    NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
     return TRUE;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cba0() { return TRUE; }
+BOOL SpNpcNookShop::mainAct0C() { return TRUE; }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cb6c() {
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcNookShop::setupAct0B() {
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cb4c() {
-    func_0201a99c(&unk_350, func_0201bc70(4));
+BOOL SpNpcNookShop::mainAct0B() {
+    NpcMoveCtrl_setTargetAngle(&moveCtrl, getAngleToPlayer(4));
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225cb18() {
-    func_020196b4(&unk_564, 0xa, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcNookShop::setupAct07() {
+    NpcActionCtrl_requestAction(&actionCtrl, 0xa, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225caa8() {
-    if (func_ov050_02259074()) {
+BOOL SpNpcNookShop::mainAct07() {
+    if (tryStairsBlockTalk()) {
         return TRUE;
     }
-    if (func_ov050_02258f80()) {
+    if (tryFarewellTalk()) {
         return TRUE;
     }
-    if (func_ov050_02258ee8()) {
+    if (tryClosingTimeTalk()) {
         return TRUE;
     }
-    if (func_ov050_022590d8()) {
+    if (tryItemTalk()) {
         return TRUE;
     }
-    if (func_020197a8(&unk_564) == 0xa) {
-        if (func_02019790(&unk_564)) {
-            unk_72c = 0x18;
-            func_ov050_0225d1d4(1);
+    if (NpcActionCtrl_getAction(&actionCtrl) == 0xa) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+            standBlend = 0x18;
+            changeAct(1);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225ca98() {
-    unk_651 = 0;
+BOOL SpNpcNookShop::setupAct11() {
+    actCounter = 0;
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c9dc() {
-    func_0209750c();
-    Unk_ov050_0225c9dc_Vec *pv = (Unk_ov050_0225c9dc_Vec *)func_020947f0(4);
-    Unk_ov050_0225c9dc_Vec v0;
+BOOL SpNpcNookShop::mainAct11() {
+    PlayerData_GetCurrent();
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v0;
     v0.x = pv->x;
     v0.y = pv->y;
     v0.z = pv->z;
     s32 a0 = 0, a1 = 0, a2 = 0, a3 = 0;
-    Unk_ov050_0225c9dc_Vec v1;
-    v1 = data_ov050_0225da34;
+    VecFx32 v1;
+    v1 = sSpNpcNookShopArbeitPushBackPos;
     s32 gx = v1.x;
     s32 gy = v1.y;
     s32 gz = v1.z;
-    func_0204ee10(&a2, &a3, &v1);
-    func_0204ee10(&a0, &a1, &v0);
-    switch (unk_651) {
+    FieldPos_ToUnit(&a2, &a3, &v1);
+    FieldPos_ToUnit(&a0, &a1, &v0);
+    switch (actCounter) {
     case 0:
-        if (func_02014220(&unk_618) == 0) {
-            func_0203a844();
-            unk_651 = 1;
+        if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+            Camera_SetModeDefault();
+            actCounter = 1;
         }
         break;
     case 1: {
-        Unk_ov050_0225c9dc_Vec v2;
+        VecFx32 v2;
         v2.x = gx;
         v2.y = gy;
         v2.z = gz;
-        func_02094b0c(&v2, 0x266, 4);
-        unk_651 = 2;
+        PlayerActor_RequestWalkTo(&v2, 0x266, 4);
+        actCounter = 2;
         break;
     }
     case 2:
-        if (func_020951b8(4) == 0) {
-            func_0203d67c(this);
-            func_ov050_0225d1d4(2);
+        if (PlayerActor_IsScriptedWalking(4) == 0) {
+            TalkRequest_SetTargetDone(this);
+            changeAct(2);
         }
         break;
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c9a8() {
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcNookShop::setupAct12() {
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c950() {
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
-            func_02019614(&unk_564, 1, unk_72c);
+BOOL SpNpcNookShop::mainAct12() {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+            NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
         }
     }
-    func_0201a99c(&unk_350, func_0201bc70(4));
-    func_0203d704(this, 0);
+    NpcMoveCtrl_setTargetAngle(&moveCtrl, getAngleToPlayer(4));
+    TalkRequest_AddPlayerTalk6(this, 0);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c94c() { return TRUE; }
+BOOL SpNpcNookShop::setupAct08() { return TRUE; }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c83c() {
-    if (func_0201ba88()) {
+BOOL SpNpcNookShop::mainAct08() {
+    if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) && ((x = a), x == (t = data_020cbb18->unk_64)) && x == b) {
-            func_0201b9fc(1, t, t);
-            unk_658.vfunc_08();
-            func_02015ab0(&unk_658, func_0201bc4c(4));
+        if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
+            netSetSlotsIfOwner(1, t, t);
+            talk.resetMsg();
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
             BOOL r;
-            if (func_0204b2d4(&unk_72e)) {
+            if (Item_IsFurniture(&selectedItem)) {
                 u16 tmp = 0xfff1;
-                s32 p = func_0204b25c(&unk_72e);
-                if (p == func_0204b25c(&tmp)) {
+                s32 p = Item_GetFurnitureIndex(&selectedItem);
+                if (p == Item_GetFurnitureIndex(&tmp)) {
                     r = TRUE;
                 } else {
                     r = FALSE;
                 }
             } else {
-                if (unk_72e == 0xfff1) {
+                if (selectedItem == 0xfff1) {
                     r = TRUE;
                 } else {
                     r = FALSE;
                 }
             }
             if (r) {
-                if (func_ov050_02258ed0()) {
-                    unk_658.func_ov050_0225c000(5);
+                if (isNook()) {
+                    talk.setTopic(5);
                 } else {
-                    unk_658.func_ov050_0225c000(0x13);
+                    talk.setTopic(0x13);
                 }
             }
-            func_ov050_0225d1d4(4);
-        } else if (func_020a62a0() && b == 4) {
-            func_0201b9fc(1, data_020cbb18->unk_64, 4);
-            func_ov050_0225d1d4(0xd);
+            changeAct(4);
+        } else if (NetArea_IsLocalOwner() && b == 4) {
+            netSetSlotsIfOwner(1, gCommManager->myAid, 4);
+            changeAct(0xd);
         }
     } else {
-        func_ov050_022590d8();
+        tryItemTalk();
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c838() { return TRUE; }
+BOOL SpNpcNookShop::setupAct09() { return TRUE; }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c7e0() {
-    if (func_0201ba88()) {
+BOOL SpNpcNookShop::mainAct09() {
+    if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) && a == 4 && func_020a62a0()) {
-            func_0201b9fc(1, data_020cbb18->unk_64, 4);
-            func_ov050_0225d1d4(0xd);
+        if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
+            netSetSlotsIfOwner(1, gCommManager->myAid, 4);
+            changeAct(0xd);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c7bc() {
-    func_02019614(&unk_564, 1, unk_72c);
+BOOL SpNpcNookShop::setupAct0D() {
+    NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c780() {
-    s32 t = func_0201bc70(4);
-    if (func_020e780c(unk_8e, t) >= data_020c6cc0) {
-        func_ov050_0225d1d4(0xe);
+BOOL SpNpcNookShop::mainAct0D() {
+    s32 t = getAngleToPlayer(4);
+    if (Math_AngleDiffAbs(rotY, t) >= data_020c6cc0) {
+        changeAct(0xe);
     } else {
-        func_ov050_022590d8();
+        tryItemTalk();
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c740() {
-    s32 f = func_0201bc70(4);
-    func_020196b4(&unk_564, 3, 1, 0, 0, 0, f, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcNookShop::setupAct0E() {
+    s32 f = getAngleToPlayer(4);
+    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, f, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c708() {
-    if (func_020197a8(&unk_564) == 3) {
-        if (func_02019790(&unk_564)) {
-            func_ov050_0225d1d4(0xd);
+BOOL SpNpcNookShop::mainAct0E() {
+    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+            changeAct(0xd);
         } else {
-            func_ov050_022590d8();
+            tryItemTalk();
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c704() { return TRUE; }
+BOOL SpNpcNookShop::setupAct0F() { return TRUE; }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c700() { return TRUE; }
+BOOL SpNpcNookShop::mainAct0F() { return TRUE; }
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c6c0() {
-    unk_739 = 0x32;
-    func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcNookShop::setupAct10() {
+    approachTimer = 0x32;
+    NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-BOOL Unk_ov050_0225e400::func_ov050_0225c5a8() {
-    Unk_ov050_0225c9dc_Vec *pv = (Unk_ov050_0225c9dc_Vec *)func_020947f0(4);
-    Unk_ov050_0225c9dc_Vec v;
+BOOL SpNpcNookShop::mainAct10() {
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_ov050_0225c9dc_Vec out;
-    func_0201ae00(&out, this, &v);
-    s32 t = func_0201bd20(4);
-    func_0204e328(data_021c47c4, &unk_5c);
+    VecFx32 out;
+    NpcActor_FindFreeUnitNear(&out, this, &v);
+    s32 t = getDistanceToPlayer(4);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
     if (t > 0x4000) {
-        if (func_020197a8(&unk_564) == 1) {
-            func_020196b4(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
+            NpcActionCtrl_requestAction(&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (func_020197a8(&unk_564) == 2) {
-            func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction(&actionCtrl) == 2) {
+            NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    func_0201a9ec(&unk_350, &out);
-    if (t <= 0x3000 || func_020e972c(&out, &unk_5c) != 0 || func_020e7518(&unk_739) == 0) {
-        unk_658.vfunc_08();
-        func_02015ab0(&unk_658, func_0201bc4c(4));
-        func_ov050_0225d1d4(4);
+    NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
+    if (t <= 0x3000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
+        talk.resetMsg();
+        ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+        changeAct(4);
     }
     return TRUE;
 }
 
-void Unk_ov050_0225e4b4::vfunc_84() {
-    if (unk_b4) {
-        (this->*unk_b4)();
-        unk_b4 = *(Fn *)data_0213a740;
+void SpNpcNookShopTalk::onTaskDone(u32) {
+    if (pendingMenuHandler) {
+        (this->*pendingMenuHandler)();
+        pendingMenuHandler = *(Fn *)data_0213a740;
     }
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" void *data_ov050_0225df88[2];
@@ -1743,10 +1467,10 @@ extern "C" void *data_ov050_0225df30[2];
 extern "C" void *data_ov050_0225dfd8[2];
 extern "C" void *data_ov050_0225dea8[2];
 extern "C" void *data_ov050_0225de50[2];
-extern "C" const Unk_ov050_022590f8_Vec data_ov050_0225da28;
-extern "C" const Unk_ov050_022590f8_Vec data_ov050_0225da34;
+extern "C" const VecFx32 sSpNpcNookShopArbeitStairsBound;
+extern "C" const VecFx32 sSpNpcNookShopArbeitPushBackPos;
 extern "C" const s32 data_ov050_0225da40[3];
-extern "C" const s32 data_ov050_0225da7c[6][2];
+extern "C" const s32 sSpNpcNookShopItemTopicTable[6][2];
 extern "C" void *data_ov050_0225de68[2];
 extern "C" void *data_ov050_0225ddf8[2];
 extern "C" void *data_ov050_0225dde8[2];
@@ -1784,7 +1508,7 @@ extern "C" void *data_ov050_0225e0e0[2];
 extern "C" void *data_ov050_0225e0d8[2];
 extern "C" void *data_ov050_0225e0d0[2];
 extern "C" void *data_ov050_0225e0c8[2];
-extern "C" char data_ov050_0225e1d4[];
+extern "C" char sSpNpcNookShopSequence5_1Key[];
 extern "C" char data_ov050_0225e2d0[];
 extern "C" char data_ov050_0225e2ec[];
 extern "C" char data_ov050_0225e308[];
@@ -1810,9 +1534,9 @@ extern "C" void *data_ov050_0225e000[2];
 extern "C" void *data_ov050_0225dff8[2];
 extern "C" void *data_ov050_0225dff0[2];
 extern "C" void *data_ov050_0225dfe8[2];
-extern "C" char data_ov050_0225e1a4[];
-extern "C" char data_ov050_0225e1b4[];
-extern "C" const Unk_ov050_MsgRow data_ov050_0225daac[31];
+extern "C" char sSpNpcNookShopTwinsKey[];
+extern "C" char sSpNpcNookShopDramaKey[];
+extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31];
 extern "C" void *data_ov050_0225dfa8[2];
 extern "C" void *data_ov050_0225dfb8[2];
 extern "C" void *data_ov050_0225e040[2];
@@ -1837,8 +1561,8 @@ extern "C" void *data_ov050_0225df10[2];
 extern "C" void *data_ov050_0225df08[2];
 extern "C" void *data_ov050_0225df00[2];
 extern "C" void *data_ov050_0225def8[2];
-extern "C" const u8 data_ov050_0225da4c[16];
-extern "C" const u8 data_ov050_0225da5c[32];
+extern "C" const u8 sSpNpcNookShopRoofColorChoices[16];
+extern "C" const u8 sSpNpcNookShopDramaMsgTable[32];
 extern "C" void *data_ov050_0225ded0[2];
 extern "C" void *data_ov050_0225dec8[2];
 extern "C" void *data_ov050_0225de18[2];
@@ -1852,9 +1576,9 @@ extern "C" void *data_ov050_0225de88[2];
 extern "C" void *data_ov050_0225de10[2];
 extern "C" void *data_ov050_0225de78[2];
 extern "C" void *data_ov050_0225de70[2];
-extern "C" char data_ov050_0225e1c4[];
-extern "C" char *data_ov050_0225e1e8[5];
-extern "C" char *data_ov050_0225e1fc[5];
+extern "C" char sSpNpcNookShopKey[];
+extern "C" char *sSpNpcNookShopTexturePaths[5];
+extern "C" char *sSpNpcNookShopModelPaths[5];
 extern "C" void *data_ov050_0225dee0[2];
 extern "C" void *data_ov050_0225de30[2];
 extern "C" void *data_ov050_0225de20[2];
@@ -1869,10 +1593,10 @@ extern "C" void *data_ov050_0225dee8[2];
 extern "C" void *data_ov050_0225dfe0[2];
 extern "C" void *data_ov050_0225dfd0[2];
 extern "C" void *data_ov050_0225e178[2];
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e288;
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e2a0;
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e2b8;
-extern "C" Unk_ov050_0225d1d4_Ent data_ov050_0225e8a8[19];// Declarations for data defined further down (definition order sets the data layout)
+extern "C" ActorProfile sSpNpcNookShopProfile;
+extern "C" ActorProfile sSpNpcTimmyProfile;
+extern "C" ActorProfile sSpNpcTommyProfile;
+extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];// Declarations for data defined further down (definition order sets the data layout)
 extern "C" void *data_ov050_0225de48[2];
 extern "C" void *data_ov050_0225de10[2];
 extern "C" void *data_ov050_0225e178[2];
@@ -1886,13 +1610,13 @@ extern "C" void *data_ov050_0225df90[2];
 extern "C" void *data_ov050_0225ddf0[2];
 extern "C" void *data_ov050_0225df98[2];
 extern "C" void *data_ov050_0225de98[2];
-extern "C" char data_ov050_0225e1c4[];
-extern "C" char *data_ov050_0225e1e8[5];
-extern "C" char *data_ov050_0225e1fc[5];
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e288;
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e2a0;
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e2b8;
-extern "C" Unk_ov050_0225d1d4_Ent data_ov050_0225e8a8[19];
+extern "C" char sSpNpcNookShopKey[];
+extern "C" char *sSpNpcNookShopTexturePaths[5];
+extern "C" char *sSpNpcNookShopModelPaths[5];
+extern "C" ActorProfile sSpNpcNookShopProfile;
+extern "C" ActorProfile sSpNpcTimmyProfile;
+extern "C" ActorProfile sSpNpcTommyProfile;
+extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];
 extern "C" void *data_ov050_0225dec0[2];
 extern "C" void *data_ov050_0225e090[2];
 extern "C" void *data_ov050_0225dfc0[2];
@@ -1904,16 +1628,16 @@ extern "C" void *data_ov050_0225e140[2];
 extern "C" void *data_ov050_0225e160[2];
 extern "C" void *data_ov050_0225de18[2];
 extern "C" void *data_ov050_0225dde0[2];
-extern "C" const Unk_ov050_022590f8_Vec data_ov050_0225da28;
-extern "C" const Unk_ov050_022590f8_Vec data_ov050_0225da34;
+extern "C" const VecFx32 sSpNpcNookShopArbeitStairsBound;
+extern "C" const VecFx32 sSpNpcNookShopArbeitPushBackPos;
 extern "C" const s32 data_ov050_0225da40[3];
 extern "C" char data_ov050_0225e2d0[];
 extern "C" char data_ov050_0225e2ec[];
 extern "C" char data_ov050_0225e308[];
 extern "C" char data_ov050_0225e324[];
 extern "C" char data_ov050_0225e340[];
-extern "C" const u8 data_ov050_0225da5c[32];
-extern "C" const Unk_ov050_MsgRow data_ov050_0225daac[31];
+extern "C" const u8 sSpNpcNookShopDramaMsgTable[32];
+extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31];
 extern "C" void *data_ov050_0225e138[2];
 extern "C" void *data_ov050_0225e130[2];
 extern "C" void *data_ov050_0225e128[2];
@@ -1935,7 +1659,7 @@ extern "C" void *data_ov050_0225e0b0[2];
 extern "C" void *data_ov050_0225e0a8[2];
 extern "C" void *data_ov050_0225e0a0[2];
 extern "C" void *data_ov050_0225e098[2];
-extern "C" char data_ov050_0225e1d4[];
+extern "C" char sSpNpcNookShopSequence5_1Key[];
 extern "C" void *data_ov050_0225e078[2];
 extern "C" void *data_ov050_0225e070[2];
 extern "C" void *data_ov050_0225e068[2];
@@ -1957,7 +1681,7 @@ extern "C" void *data_ov050_0225dff0[2];
 extern "C" void *data_ov050_0225deb8[2];
 extern "C" void *data_ov050_0225dfe0[2];
 extern "C" void *data_ov050_0225de20[2];
-extern "C" const u8 data_ov050_0225da4c[16];
+extern "C" const u8 sSpNpcNookShopRoofColorChoices[16];
 extern "C" void *data_ov050_0225dfa0[2];
 extern "C" void *data_ov050_0225dfa8[2];
 extern "C" void *data_ov050_0225dfb8[2];
@@ -1978,14 +1702,14 @@ extern "C" void *data_ov050_0225df38[2];
 extern "C" void *data_ov050_0225df30[2];
 extern "C" void *data_ov050_0225df28[2];
 extern "C" void *data_ov050_0225df20[2];
-extern "C" char data_ov050_0225e1a4[];
-extern "C" char data_ov050_0225e1b4[];
+extern "C" char sSpNpcNookShopTwinsKey[];
+extern "C" char sSpNpcNookShopDramaKey[];
 extern "C" char data_ov050_0225e210[];
 extern "C" char data_ov050_0225e228[];
 extern "C" char data_ov050_0225e240[];
 extern "C" char data_ov050_0225e258[];
 extern "C" char data_ov050_0225e270[];
-extern "C" const s32 data_ov050_0225da7c[6][2];
+extern "C" const s32 sSpNpcNookShopItemTopicTable[6][2];
 extern "C" void *data_ov050_0225dec8[2];
 extern "C" void *data_ov050_0225dfe8[2];
 extern "C" void *data_ov050_0225de58[2];
@@ -2035,10 +1759,10 @@ extern "C" void *data_ov050_0225dfd8[2];
 extern "C" void *data_ov050_0225ded8[2];
 extern "C" void *data_ov050_0225de30[2];
 extern "C" void *data_ov050_0225dec0[2];
-extern "C" char data_ov050_0225e1b4[];
-extern "C" const u8 data_ov050_0225da4c[16];
-extern "C" char *data_ov050_0225e1e8[5];
-extern "C" char *data_ov050_0225e1fc[5];
+extern "C" char sSpNpcNookShopDramaKey[];
+extern "C" const u8 sSpNpcNookShopRoofColorChoices[16];
+extern "C" char *sSpNpcNookShopTexturePaths[5];
+extern "C" char *sSpNpcNookShopModelPaths[5];
 extern "C" void *data_ov050_0225dde0[2];
 extern "C" void *data_ov050_0225e130[2];
 extern "C" void *data_ov050_0225dfc0[2];
@@ -2060,8 +1784,8 @@ extern "C" void *data_ov050_0225e168[2];
 extern "C" void *data_ov050_0225e160[2];
 extern "C" void *data_ov050_0225e158[2];
 extern "C" void *data_ov050_0225e150[2];
-extern "C" char data_ov050_0225e1c4[];
-extern "C" const Unk_ov050_MsgRow data_ov050_0225daac[31];
+extern "C" char sSpNpcNookShopKey[];
+extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31];
 extern "C" void *data_ov050_0225e128[2];
 extern "C" void *data_ov050_0225df60[2];
 extern "C" void *data_ov050_0225e118[2];
@@ -2077,10 +1801,10 @@ extern "C" void *data_ov050_0225e0d0[2];
 extern "C" void *data_ov050_0225e0c8[2];
 extern "C" void *data_ov050_0225e0c0[2];
 extern "C" void *data_ov050_0225e0b8[2];
-extern "C" const Unk_ov050_022590f8_Vec data_ov050_0225da28;
-extern "C" const Unk_ov050_022590f8_Vec data_ov050_0225da34;
+extern "C" const VecFx32 sSpNpcNookShopArbeitStairsBound;
+extern "C" const VecFx32 sSpNpcNookShopArbeitPushBackPos;
 extern "C" const s32 data_ov050_0225da40[3];
-extern "C" const u8 data_ov050_0225da5c[32];
+extern "C" const u8 sSpNpcNookShopDramaMsgTable[32];
 extern "C" void *data_ov050_0225e080[2];
 extern "C" void *data_ov050_0225e078[2];
 extern "C" void *data_ov050_0225e070[2];
@@ -2105,8 +1829,8 @@ extern "C" char data_ov050_0225e2ec[];
 extern "C" char data_ov050_0225e308[];
 extern "C" char data_ov050_0225e324[];
 extern "C" char data_ov050_0225e340[];
-extern "C" const s32 data_ov050_0225da7c[6][2];
-extern "C" Unk_ov050_0225d1d4_Ent data_ov050_0225e8a8[19];
+extern "C" const s32 sSpNpcNookShopItemTopicTable[6][2];
+extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];
 extern "C" void *data_ov050_0225e088[2];
 extern "C" void *data_ov050_0225df98[2];
 extern "C" void *data_ov050_0225df90[2];
@@ -2131,10 +1855,10 @@ extern "C" void *data_ov050_0225df00[2];
 extern "C" void *data_ov050_0225def8[2];
 extern "C" void *data_ov050_0225de48[2];
 extern "C" void *data_ov050_0225dee8[2];
-extern "C" char data_ov050_0225e1a4[];
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e288;
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e2a0;
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e2b8;
+extern "C" char sSpNpcNookShopTwinsKey[];
+extern "C" ActorProfile sSpNpcNookShopProfile;
+extern "C" ActorProfile sSpNpcTimmyProfile;
+extern "C" ActorProfile sSpNpcTommyProfile;
 extern "C" void *data_ov050_0225deb0[2];
 extern "C" void *data_ov050_0225dfa0[2];
 extern "C" void *data_ov050_0225e0a0[2];
@@ -2147,7 +1871,7 @@ extern "C" void *data_ov050_0225de70[2];
 extern "C" void *data_ov050_0225de68[2];
 extern "C" void *data_ov050_0225e0a8[2];
 extern "C" void *data_ov050_0225e098[2];
-extern "C" char data_ov050_0225e1d4[];
+extern "C" char sSpNpcNookShopSequence5_1Key[];
 extern "C" void *data_ov050_0225ded0[2];
 extern "C" void *data_ov050_0225de38[2];
 extern "C" void *data_ov050_0225dfc8[2];
@@ -2166,70 +1890,70 @@ extern "C" char data_ov050_0225e258[];
 extern "C" char data_ov050_0225e270[];
 extern "C" char data_ov050_0225e228[];
 
-extern "C" void *data_ov050_0225e020[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b210EPv, 0};
+extern "C" void *data_ov050_0225e020[2] = {(void *)_ZN17SpNpcNookShopTalk17arbeitRetryLetterEPv, 0};
 
-extern "C" void *data_ov050_0225de88[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cc00Ev, 0};
+extern "C" void *data_ov050_0225de88[2] = {(void *)_ZN13SpNpcNookShop10setupAct0AEv, 0};
 
-extern "C" void *data_ov050_0225df28[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cd18Ev, 0};
+extern "C" void *data_ov050_0225df28[2] = {(void *)_ZN13SpNpcNookShop10setupAct04Ev, 0};
 
-extern "C" void *data_ov050_0225ddf8[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225caa8Ev, 0};
+extern "C" void *data_ov050_0225ddf8[2] = {(void *)_ZN13SpNpcNookShop9mainAct07Ev, 0};
 
-extern "C" void *data_ov050_0225de58[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225d19cEv, 0};
+extern "C" void *data_ov050_0225de58[2] = {(void *)_ZN13SpNpcNookShop10setupAct00Ev, 0};
 
-extern "C" void *data_ov050_0225deb8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a4cEi, 0};
+extern "C" void *data_ov050_0225deb8[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice0Ei, 0};
 
-extern "C" void *data_ov050_0225de50[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cb18Ev, 0};
+extern "C" void *data_ov050_0225de50[2] = {(void *)_ZN13SpNpcNookShop10setupAct07Ev, 0};
 
-extern "C" void *data_ov050_0225dfd0[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cef8Ev, 0};
+extern "C" void *data_ov050_0225dfd0[2] = {(void *)_ZN13SpNpcNookShop9mainAct02Ev, 0};
 
-extern "C" void *data_ov050_0225e120[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225e120[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225dec8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225dec8[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225dfe0[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225afe4EPv, 0};
+extern "C" void *data_ov050_0225dfe0[2] = {(void *)_ZN17SpNpcNookShopTalk12arbeitFinishEPv, 0};
 
-extern "C" void *data_ov050_0225dea8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a14Ei, 0};
+extern "C" void *data_ov050_0225dea8[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice2Ei, 0};
 
-extern "C" void *data_ov050_0225dfd8[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225afd4EPv, 0};
+extern "C" void *data_ov050_0225dfd8[2] = {(void *)_ZN17SpNpcNookShopTalk20arbeitPushPlayerBackEPv, 0};
 
-extern "C" void *data_ov050_0225ded8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e4cEi, 0};
+extern "C" void *data_ov050_0225ded8[2] = {(void *)_ZN17SpNpcNookShopTalk16onDeliveryChoiceEi, 0};
 
-extern "C" void *data_ov050_0225de30[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225de30[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225dec0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e38Ei, 0};
+extern "C" void *data_ov050_0225dec0[2] = {(void *)_ZN17SpNpcNookShopTalk17onCannotBuyChoiceEi, 0};
 
-extern "C" char data_ov050_0225e1b4[] = "sp_npc_drama2";
+extern "C" char sSpNpcNookShopDramaKey[] = "sp_npc_drama2";
 
-extern "C" const u8 data_ov050_0225da4c[16] = {0x02, 0x0b, 0x05, 0x07, 0x03, 0x04, 0x0a, 0x0d, 0x06, 0x0e, 0x09, 0x0f, 0x00, 0x01, 0x08, 0x0c};
+extern "C" const u8 sSpNpcNookShopRoofColorChoices[16] = {0x02, 0x0b, 0x05, 0x07, 0x03, 0x04, 0x0a, 0x0d, 0x06, 0x0e, 0x09, 0x0f, 0x00, 0x01, 0x08, 0x0c};
 
-extern "C" char *data_ov050_0225e1e8[5] = {data_ov050_0225e2d0, data_ov050_0225e2ec, data_ov050_0225e308, data_ov050_0225e324, data_ov050_0225e340};
+extern "C" char *sSpNpcNookShopTexturePaths[5] = {data_ov050_0225e2d0, data_ov050_0225e2ec, data_ov050_0225e308, data_ov050_0225e324, data_ov050_0225e340};
 
-extern "C" char *data_ov050_0225e1fc[5] = {data_ov050_0225e210, data_ov050_0225e228, data_ov050_0225e240, data_ov050_0225e258, data_ov050_0225e270};
+extern "C" char *sSpNpcNookShopModelPaths[5] = {data_ov050_0225e210, data_ov050_0225e228, data_ov050_0225e240, data_ov050_0225e258, data_ov050_0225e270};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Menu class
 
-void Unk_ov050_0225e4b4::func_ov050_0225c4fc(s32 idx) {
+void SpNpcNookShopTalk::setPendingMenuHandler(s32 idx) {
     static Fn tbl[3] = {
-        *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e0b8,
-        *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e0b0,
-        *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e0a8,
+        *(SpNpcNookShopTalk::Fn *)data_ov050_0225e0b8,
+        *(SpNpcNookShopTalk::Fn *)data_ov050_0225e0b0,
+        *(SpNpcNookShopTalk::Fn *)data_ov050_0225e0a8,
     };
-    unk_b4 = tbl[idx];
+    pendingMenuHandler = tbl[idx];
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225c294() {
-    void *owner = unk_3c;
+void SpNpcNookShopTalk::handleSellMenu() {
+    void *owner = window;
     struct {
         u8 cmd;
         u16 item;
         u16 pick;
     } l;
     l.cmd = 8;
-    unk_c0 = 0;
-    unk_bc = 0;
-    if (func_0206ed18()) {
-        u16 *list = func_0206eb9c();
+    price = 0;
+    soldCount = 0;
+    if (MenuCtrl_IsResultOk()) {
+        u16 *list = MenuCtrl_GetChosenItems();
         BOOL b1 = FALSE;
         BOOL b2 = FALSE;
         BOOL b3 = FALSE;
@@ -2260,20 +1984,20 @@ void Unk_ov050_0225e4b4::func_ov050_0225c294() {
                     idx = neg;
                 }
                 l.pick = ((u32)idx < 0x14) ? 0x3934 + idx * 4 : 0x3934;
-                unk_c0 += func_0204be70(&l.pick) / 4;
-            } else if (func_0209750c()) {
+                price += Item_GetPrice(&l.pick) / 4;
+            } else if (PlayerData_GetCurrent()) {
                 BOOL r2 = zb;
                 u32 w = *(volatile u16 *)&l.item;
                 if (l.item >= 0x1531 && w <= 0x153a) r2 = TRUE;
                 if (r2) {
-                    if (!func_0209cef4()) {
+                    if (!Clock_GetWeekday()) {
                         b2 = TRUE;
                     } else {
-                        s32 m = func_0208653c(data_021ed29c);
-                        unk_c0 += m * func_0204be70(&l.item);
+                        s32 m = TurnipMarket_getPrice(data_021ed29c);
+                        price += m * Item_GetPrice(&l.item);
                     }
                 } else {
-                    unk_c0 += func_0204be70(&l.item) / 4;
+                    price += Item_GetPrice(&l.item) / 4;
                 }
             }
         }
@@ -2284,51 +2008,51 @@ void Unk_ov050_0225e4b4::func_ov050_0225c294() {
         if (b2 == TRUE) {
             l.cmd = 0xd;
         } else if (b1 == TRUE) {
-            func_02015958(this, unk_c0, 0, 0xa, 1, 0);
+            ActorTalkRequest_setNumberSlot(this, price, 0, 0xa, 1, 0);
             l.cmd = 0x11;
         } else if (b3 == TRUE) {
             l.cmd = 0x40;
-            func_02015958(this, unk_c0, 0, 0xa, 1, 0);
-        } else if (unk_c0 == 0) {
+            ActorTalkRequest_setNumberSlot(this, price, 0, 0xa, 1, 0);
+        } else if (price == 0) {
             l.cmd = 0xa;
         } else {
             l.cmd = 0xe;
-            func_02015958(this, unk_c0, 0, 0xa, 1, 0);
+            ActorTalkRequest_setNumberSlot(this, price, 0, 0xa, 1, 0);
         }
     } else {
         l.cmd = 8;
     }
-    if (unk_b0->func_ov050_02258ed0()) {
-        func_02067a84(owner, &l.cmd, data_ov050_0225e1c4);
+    if (ownerNpc->isNook()) {
+        TalkWindowState_setNextMessage(owner, &l.cmd, sSpNpcNookShopKey);
     } else {
-        func_02067a84(owner, &l.cmd, data_ov050_0225e1a4);
+        TalkWindowState_setNextMessage(owner, &l.cmd, sSpNpcNookShopTwinsKey);
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225c1a8() {
-    void *o = unk_3c;
+void SpNpcNookShopTalk::handleCatalogMenu() {
+    void *o = window;
     Unk_ov050_0225c0a0_Msg m;
-    m.unk_00 = 0x1b;
-    if (func_0206ed18() == 1) {
-        unk_b0->unk_72e = func_0206e72c();
-        u16 *p = &unk_b0->unk_72e;
-        if (!Unk_ov050_0225bd54_Same(p, &m.unk_02, 0xfff1)) {
-            unk_c0 = (s32)func_0204bde8(&unk_b0->unk_72e);
-            if (unk_c0) {
-                func_02015958(this, unk_c0, 0, 10, 1, 0);
-                func_0201578c(this, &unk_b0->unk_72e, 1, 7);
-                m.unk_00 = 0x1a;
+    m.msgIndex = 0x1b;
+    if (MenuCtrl_IsResultOk() == 1) {
+        ownerNpc->selectedItem = MenuCtrl_GetCatalogItem();
+        u16 *p = &ownerNpc->selectedItem;
+        if (!Unk_ov050_0225bd54_Same(p, &m.item, 0xfff1)) {
+            price = (s32)Item_GetMemberPrice(&ownerNpc->selectedItem);
+            if (price) {
+                ActorTalkRequest_setNumberSlot(this, price, 0, 10, 1, 0);
+                ActorTalkRequest_setItemNameSlot(this, &ownerNpc->selectedItem, 1, 7);
+                m.msgIndex = 0x1a;
             }
         }
     }
-    if (unk_b0->func_ov050_02258ed0()) {
-        func_02067a84(o, &m, data_ov050_0225e1c4);
+    if (ownerNpc->isNook()) {
+        TalkWindowState_setNextMessage(o, &m, sSpNpcNookShopKey);
     } else {
-        func_02067a84(o, &m, data_ov050_0225e1a4);
+        TalkWindowState_setNextMessage(o, &m, sSpNpcNookShopTwinsKey);
     }
 }
 
-extern "C" BOOL func_ov050_0225c180(u16 *p, s32 m) {
+extern "C" BOOL SpNpcNookShop_IsDeliveryParcel(u16 *p, s32 m) {
     if (m == 2) {
         BOOL r = FALSE;
         if (*p >= 0x155f && *p <= 0x1560) {
@@ -2339,449 +2063,449 @@ extern "C" BOOL func_ov050_0225c180(u16 *p, s32 m) {
     return FALSE;
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225c0a0() {
-    void *o = unk_3c;
+void SpNpcNookShopTalk::handleDeliveryMenu() {
+    void *o = window;
     Unk_ov050_0225c0a0_Msg m;
-    m.unk_00 = 4;
-    if (func_0206ed18()) {
-        void *r7 = func_0209750c();
-        if (func_0202e148()) {
-            s32 r6 = func_0206ed38();
-            m.unk_02 = func_02099048(r6);
+    m.msgIndex = 4;
+    if (MenuCtrl_IsResultOk()) {
+        void *r7 = PlayerData_GetCurrent();
+        if (Talk_IsInOwnTown()) {
+            s32 r6 = MenuCtrl_GetIndex();
+            m.item = Pocket_GetItem(r6);
             if (r6 >= 0) {
-                func_02099064(r6);
+                Pocket_RemoveItem(r6);
             }
-            if (!Unk_ov050_0225bd54_Same(&m.unk_02, &m.unk_04, 0xfff1)) {
-                func_02014ce4(this, &m.unk_02, 2, 5, 0);
+            if (!Unk_ov050_0225bd54_Same(&m.item, &m.cmpItem, 0xfff1)) {
+                ActorTalkRequest_requestTakeItem(this, &m.item, 2, 5, 0);
             }
-            m.unk_00 = 3;
-            func_0209abb4(func_0209a108(func_02099864(func_0209865c(r7))), 1);
+            m.msgIndex = 3;
+            ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7))), 1);
         }
     }
-    if (unk_b0->func_ov050_02258ed0()) {
-        func_02067a84(o, &m, data_ov050_0225e1c4);
+    if (ownerNpc->isNook()) {
+        TalkWindowState_setNextMessage(o, &m, sSpNpcNookShopKey);
     } else {
-        func_02067a84(o, &m, data_ov050_0225e1a4);
+        TalkWindowState_setNextMessage(o, &m, sSpNpcNookShopTwinsKey);
     }
 }
 
-Unk_ov050_0225e4b4::Unk_ov050_0225e4b4() {}
+SpNpcNookShopTalk::SpNpcNookShopTalk() {}
 
-Unk_ov050_0225e4b4::~Unk_ov050_0225e4b4() {}
+SpNpcNookShopTalk::~SpNpcNookShopTalk() {}
 
-void Unk_ov050_0225e4b4::vfunc_08() {
-    Unk_020d7714::vfunc_08();
-    unk_b4 = *(Fn *)data_0213a740;
+void SpNpcNookShopTalk::resetMsg() {
+    ActorTalkRequest::resetMsg();
+    pendingMenuHandler = *(Fn *)data_0213a740;
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225c008(Unk_ov050_0225b908_Owner *owner) {
-    vfunc_08();
-    unk_b0 = (Unk_ov050_0225e400 *)owner;
-    unk_c8 = -1;
+void SpNpcNookShopTalk::attachOwner(SpNpcNookShop *owner) {
+    resetMsg();
+    ownerNpc = owner;
+    safeSlot = -1;
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225c000(s32 v) {
-    unk_ac = v;
+void SpNpcNookShopTalk::setTopic(s32 v) {
+    topic = v;
 }
 
-s32 Unk_ov050_0225e4b4::func_ov050_0225bff8() {
-    return unk_ac;
+s32 SpNpcNookShopTalk::getTopic() {
+    return topic;
 }
 
-extern "C" s32 func_ov050_0225be88(void *self) {
-    u8 *g = data_021d7350;
-    u8 *const m = data_021e58a8;
-    s32 r5 = func_02060388(m);
-    s32 r4 = func_020604c4(m);
-    s32 r6 = func_02060308(m);
-    if (func_0209e170(g, 0xe)) {
+extern "C" s32 SpNpcNookShop_GetHouseUpgradeMsg(void *self) {
+    u8 *g = gSaveData;
+    u8 *const m = gSaveHouse;
+    s32 r5 = HouseData_getDebt(m);
+    s32 r4 = HouseData_getLevel(m);
+    s32 r6 = HouseData_isUpgradePaidOff(m);
+    if (SaveData_testFlag(g, 0xe)) {
         return 0;
     }
-    if (r5 == 0 && r4 == 0 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 0 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x41;
     }
     if (r4 == 1 && r6 != 0) {
-        func_0209e120(data_021d7350, 0xd);
+        SaveData_clearFlag(gSaveData, 0xd);
         return 0x49;
     }
-    if (r5 == 0 && r4 == 1 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 1 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x4a;
     }
     if (r4 == 2 && r6 != 0) {
-        func_0209e120(data_021d7350, 0xd);
+        SaveData_clearFlag(gSaveData, 0xd);
         return 0x4b;
     }
-    if (r5 == 0 && r4 == 2 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 2 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x4c;
     }
     if (r4 == 3 && r6 != 0) {
-        func_0209e120(data_021d7350, 0xd);
+        SaveData_clearFlag(gSaveData, 0xd);
         return 0x4d;
     }
-    if (r5 == 0 && r4 == 3 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 3 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x4e;
     }
     if (r4 == 4 && r6 != 0) {
-        func_0209e120(data_021d7350, 0xd);
+        SaveData_clearFlag(gSaveData, 0xd);
         return 0x4f;
     }
-    if (r5 == 0 && r4 == 4 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 4 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x50;
     }
     if (r4 == 5 && r6 != 0) {
-        func_0209e120(data_021d7350, 0xd);
+        SaveData_clearFlag(gSaveData, 0xd);
         return 0x51;
     }
-    if (r5 == 0 && r4 == 5 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 5 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x52;
     }
     if (r4 == 6 && r6 != 0) {
-        func_0209e120(data_021d7350, 0xd);
+        SaveData_clearFlag(gSaveData, 0xd);
         return 0x53;
     }
-    if (r5 == 0 && r4 == 6 && !func_020604d4(g + 0xe558)) {
-        func_0209e148(data_021d7350, 0xe);
+    if (r5 == 0 && r4 == 6 && !HouseData_isUpgradePending(g + 0xe558)) {
+        SaveData_setFlag(gSaveData, 0xe);
         return 0x54;
     }
     return 0;
 }
 
-extern "C" BOOL func_ov050_0225be74(u16 *p) {
+extern "C" BOOL SpNpcNookShop_IsEmptyItem(u16 *p) {
     if (*p == 0xfff1) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225bdc8() {
+void SpNpcNookShopTalk::givePlantingItems() {
     u16 l[6];
-    l[0] = 0x14fe + func_02063b8c(3);
-    func_02099014(&l[0], 0);
-    l[1] = 0x1504 + func_02063b8c(3);
-    func_02099014(&l[1], 0);
-    l[2] = 0x150a + func_02063b8c(3);
-    func_02099014(&l[2], 0);
-    l[3] = 0x1510 + func_02063b8c(3);
-    func_02099014(&l[3], 0);
+    l[0] = 0x14fe + Random_GlobalBelow(3);
+    Pocket_AddItem(&l[0], 0);
+    l[1] = 0x1504 + Random_GlobalBelow(3);
+    Pocket_AddItem(&l[1], 0);
+    l[2] = 0x150a + Random_GlobalBelow(3);
+    Pocket_AddItem(&l[2], 0);
+    l[3] = 0x1510 + Random_GlobalBelow(3);
+    Pocket_AddItem(&l[3], 0);
     s32 i;
     for (i = 0; i < 3; i++) {
         l[4] = 0x151d;
-        func_02099014(&l[4], 0);
+        Pocket_AddItem(&l[4], 0);
     }
     l[5] = 0x151d;
-    func_02014e60(this, &l[5], 0, 5, 0);
+    ActorTalkRequest_requestGiveItem(this, &l[5], 0, 5, 0);
 }
 
-BOOL Unk_ov050_0225e4b4::func_ov050_0225bd54(Unk_ov050_0225b908_Out *out) {
-    void *r4 = func_0209750c();
-    if (func_02099bc8(func_0209865c(r4)) && r4) {
-        u16 *p = func_0209872c(r4);
+BOOL SpNpcNookShopTalk::checkNotInUniform(TalkStartMsg *out) {
+    void *r4 = PlayerData_GetCurrent();
+    if (Arbeit_IsOnDuty(PlayerData_getErrands(r4)) && r4) {
+        u16 *p = PlayerData_getShirt(r4);
         u16 t;
         if (!Unk_ov050_0225bd54_Same(p, &t, 0x11a8)) {
-            out->unk_04 = 0xe;
+            out->msgIndex = 0xe;
             return TRUE;
         }
     }
     return FALSE;
 }
 
-void Unk_ov050_0225e4b4::vfunc_88(Unk_ov050_0225b908_Out *out) {
-    void *g = func_0209750c();
-    void *s0 = func_0209865c(g);
-    u8 *a = (u8 *)func_02099db4(s0, 0);
-    void *r4 = func_0209a4f0(a);
-    func_02098ffc(r4);
+void SpNpcNookShopTalk::pickArbeitStartMsg0B(TalkStartMsg *out) {
+    void *g = PlayerData_GetCurrent();
+    void *s0 = PlayerData_getErrands(g);
+    u8 *a = (u8 *)PlayerErrands_GetSlot(s0, 0);
+    void *r4 = PlayerErrandSlot_GetRecord(a);
+    Pocket_FindEmpty(r4);
     u16 l[4];
-    Unk_ov050_0225bc18_Buf r;
-    if (func_0209ac64(r4) == 0xb && (u32)func_0209abc4(r4) >= 1 && func_0209a42c(a)) {
-        if (!func_ov050_0225bd54(out)) {
-            func_02098f30(&r, (void *)func_ov050_0225be74);
-            if (r.b >= 7) {
-                out->unk_04 = 8;
+    PocketMatches r;
+    if (ErrandRecord_getKind(r4) == 0xb && (u32)ErrandRecord_getStep(r4) >= 1 && PlayerErrandSlot_IsStepDone(a)) {
+        if (!checkNotInUniform(out)) {
+            Pocket_CountMatching(&r, (void *)SpNpcNookShop_IsEmptyItem);
+            if (r.count >= 7) {
+                out->msgIndex = 8;
             } else {
-                out->unk_04 = 9;
+                out->msgIndex = 9;
             }
         }
-    } else if (func_0209ac64(r4) == 0xb && (u32)func_0209abc4(r4) >= 1) {
-        u16 *p = func_0209872c(g);
+    } else if (ErrandRecord_getKind(r4) == 0xb && (u32)ErrandRecord_getStep(r4) >= 1) {
+        u16 *p = PlayerData_getShirt(g);
         if (Unk_ov050_0225bd54_Same(p, &l[3], 0x11a8)) {
-            out->unk_04 = 7;
+            out->msgIndex = 7;
         } else {
             l[0] = 0x11a8;
-            BOOL n = func_02098eb0(&l[0]) < 0 ? TRUE : FALSE;
+            BOOL n = Pocket_FindItem(&l[0]) < 0 ? TRUE : FALSE;
             if (n) {
                 l[1] = 0x11a8;
-                if (func_02099014(&l[1], 0)) {
-                    out->unk_04 = 4;
+                if (Pocket_AddItem(&l[1], 0)) {
+                    out->msgIndex = 4;
                 } else {
-                    out->unk_04 = 2;
+                    out->msgIndex = 2;
                 }
             } else {
-                out->unk_04 = 5;
+                out->msgIndex = 5;
             }
         }
     } else {
         l[2] = 0x11a8;
-        if (func_02099014(&l[2], 0)) {
-            func_02099be8(s0);
-            out->unk_04 = 3;
+        if (Pocket_AddItem(&l[2], 0)) {
+            Arbeit_Start(s0);
+            out->msgIndex = 3;
         } else {
-            out->unk_04 = 1;
+            out->msgIndex = 1;
         }
     }
 }
 
-void Unk_ov050_0225e4b4::vfunc_8c(Unk_ov050_0225b908_Out *out) {
-    void *g = func_0209750c();
-    void *p = func_0209a4f0(func_02099db4(func_0209865c(g), 0));
-    func_02098ffc(p);
-    if (!func_ov050_0225bd54(out)) {
+void SpNpcNookShopTalk::pickArbeitStartMsg0C(TalkStartMsg *out) {
+    void *g = PlayerData_GetCurrent();
+    void *p = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(PlayerData_getErrands(g), 0));
+    Pocket_FindEmpty(p);
+    if (!checkNotInUniform(out)) {
         BOOL k0 = FALSE, k1 = FALSE, k2 = FALSE, k3 = FALSE, k4 = FALSE;
         u16 l[5];
         s32 i;
         for (i = 0; i < 3; i++) {
             l[0] = 0x151d;
-            if (func_02098eb0(&l[0]) >= 0 ? TRUE : k0) goto found;
+            if (Pocket_FindItem(&l[0]) >= 0 ? TRUE : k0) goto found;
             l[1] = 0x14fe + i;
-            if (func_02098eb0(&l[1]) >= 0 ? TRUE : k1) goto found;
+            if (Pocket_FindItem(&l[1]) >= 0 ? TRUE : k1) goto found;
             l[2] = 0x1504 + i;
-            if (func_02098eb0(&l[2]) >= 0 ? TRUE : k2) goto found;
+            if (Pocket_FindItem(&l[2]) >= 0 ? TRUE : k2) goto found;
             l[3] = 0x150a + i;
-            if (func_02098eb0(&l[3]) >= 0 ? TRUE : k3) goto found;
+            if (Pocket_FindItem(&l[3]) >= 0 ? TRUE : k3) goto found;
             l[4] = 0x1510 + i;
-            if (func_02098eb0(&l[4]) >= 0 ? TRUE : k4) {
+            if (Pocket_FindItem(&l[4]) >= 0 ? TRUE : k4) {
             found:
-                out->unk_04 = unk_b0->unk_73a + 0xf;
-                unk_b0->unk_73a = 1;
+                out->msgIndex = ownerNpc->arbeitPrompted + 0xf;
+                ownerNpc->arbeitPrompted = 1;
                 return;
             }
         }
-        unk_b0->unk_73a = 1;
-        if (func_02098044(g, 10) && func_02079678(data_021dfd8c, func_0209888c(g)) &&
-            *func_02098308(func_0209750c()) != 0) {
-            func_0209abb4(p, 1);
-            out->unk_04 = 0x1a;
+        ownerNpc->arbeitPrompted = 1;
+        if (PlayerData_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, PlayerData_getPlayerId(g)) &&
+            *PlayerData_getBirthday(PlayerData_GetCurrent()) != 0) {
+            ErrandRecord_setStep(p, 1);
+            out->msgIndex = 0x1a;
         } else {
-            out->unk_04 = 0x11;
+            out->msgIndex = 0x11;
         }
     }
 }
 
-void Unk_ov050_0225e4b4::vfunc_90(Unk_ov050_0225b908_Out *out) {
-    void *g = func_0209750c();
-    func_02098ffc(func_0209a4f0(func_02099db4(func_0209865c(g), 0)));
-    if (!func_ov050_0225bd54(out)) {
-        if (!(func_02098044(g, 10) && func_02079678(data_021dfd8c, func_0209888c(g)))) {
-            if (unk_b0->unk_73a != 0) {
-                out->unk_04 = 0x13;
+void SpNpcNookShopTalk::pickArbeitStartMsg0D(TalkStartMsg *out) {
+    void *g = PlayerData_GetCurrent();
+    Pocket_FindEmpty(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(PlayerData_getErrands(g), 0)));
+    if (!checkNotInUniform(out)) {
+        if (!(PlayerData_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, PlayerData_getPlayerId(g)))) {
+            if (ownerNpc->arbeitPrompted != 0) {
+                out->msgIndex = 0x13;
             } else {
-                out->unk_04 = 0x14;
+                out->msgIndex = 0x14;
             }
         } else {
-            if (*func_02098308(func_0209750c()) == 0) {
-                out->unk_04 = 0x15;
+            if (*PlayerData_getBirthday(PlayerData_GetCurrent()) == 0) {
+                out->msgIndex = 0x15;
             } else {
-                out->unk_04 = 0x16;
+                out->msgIndex = 0x16;
             }
         }
     }
 }
 
-void Unk_ov050_0225e4b4::vfunc_94(Unk_ov050_0225b908_Out *out) {
-    if (!func_ov050_0225bd54(out)) {
-        if (func_0209abc4(func_0209a4f0(func_02099db4(func_0209865c(func_0209750c()), 0))) == 1) {
-            out->unk_04 = 0x1e;
-        } else if (unk_b0->unk_73a == 0) {
-            out->unk_04 = 0x1c;
-            unk_b0->unk_73a = 1;
+void SpNpcNookShopTalk::pickArbeitStartMsg0E(TalkStartMsg *out) {
+    if (!checkNotInUniform(out)) {
+        if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(PlayerData_getErrands(PlayerData_GetCurrent()), 0))) == 1) {
+            out->msgIndex = 0x1e;
+        } else if (ownerNpc->arbeitPrompted == 0) {
+            out->msgIndex = 0x1c;
+            ownerNpc->arbeitPrompted = 1;
         } else {
-            out->unk_04 = 0x10;
+            out->msgIndex = 0x10;
         }
     }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void Unk_ov050_0225e4b4::vfunc_98(Unk_ov050_0225b908_Out *out) {
-    if (!func_ov050_0225bd54(out)) {
-        void *g = func_0209750c();
-        u8 *a = (u8 *)func_02099db4(func_0209865c(g), 0);
-        void *b = func_0209a4f0(a);
-        u8 *c = (u8 *)func_0209a4e4(a, 1);
-        Unk_020e1c64 o;
-        if (func_0209abc4(b) == 2) {
-            out->unk_04 = 0x28;
+void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
+    if (!checkNotInUniform(out)) {
+        void *g = PlayerData_GetCurrent();
+        u8 *a = (u8 *)PlayerErrands_GetSlot(PlayerData_getErrands(g), 0);
+        void *b = PlayerErrandSlot_GetRecord(a);
+        u8 *c = (u8 *)PlayerErrandSlot_GetVillager(a, 1);
+        MsgString9B o;
+        if (ErrandRecord_getStep(b) == 2) {
+            out->msgIndex = 0x28;
             return;
         }
-        if (func_0209abc4(b) == 0) {
-            u8 s = unk_b0->unk_73a;
+        if (ErrandRecord_getStep(b) == 0) {
+            u8 s = ownerNpc->arbeitPrompted;
             if (s == 0 || s == 2) {
                 if (c) {
-                    func_02002fc8(c, &o);
-                    func_02067a3c(unk_3c, 0, &o);
+                    VillagerId_getName(c, &o);
+                    TalkWindowState_setSlot(window, 0, &o);
                 }
-                out->unk_04 = 0x21;
-                if (unk_b0->unk_73a == 2) {
-                    unk_b0->unk_73a = 1;
+                out->msgIndex = 0x21;
+                if (ownerNpc->arbeitPrompted == 2) {
+                    ownerNpc->arbeitPrompted = 1;
                 }
             } else {
-                out->unk_04 = 0x10;
+                out->msgIndex = 0x10;
             }
             return;
         }
-        if (func_0209abc4(b) == 1) {
+        if (ErrandRecord_getStep(b) == 1) {
             if (c) {
-                func_02002fc8(c, &o);
-                func_02067a3c(unk_3c, 0, &o);
+                VillagerId_getName(c, &o);
+                TalkWindowState_setSlot(window, 0, &o);
             }
-            out->unk_04 = 0x27;
+            out->msgIndex = 0x27;
             return;
         }
     }
 }
 
-void Unk_ov050_0225e4b4::vfunc_9c(Unk_ov050_0225b7f4_Out *out) {
+void SpNpcNookShopTalk::pickArbeitStartMsg10(TalkStartMsg *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
-        void *h = func_0209865c(func_0209750c());
-        if (func_0209abc4(func_0209a4f0(func_02099db4(h, 0))) == 1) {
-            out->unk_04 = 0x2c;
-        } else if (unk_b0->unk_73a == 0) {
-            out->unk_04 = 0x2b;
-            unk_b0->unk_73a = 1;
+        void *h = PlayerData_getErrands(PlayerData_GetCurrent());
+        if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
+            out->msgIndex = 0x2c;
+        } else if (ownerNpc->arbeitPrompted == 0) {
+            out->msgIndex = 0x2b;
+            ownerNpc->arbeitPrompted = 1;
         } else {
-            out->unk_04 = 0x10;
+            out->msgIndex = 0x10;
         }
     }
 }
 
-void Unk_ov050_0225e4b4::vfunc_a0(Unk_ov050_0225b7f4_Out *out) {
+void SpNpcNookShopTalk::pickArbeitStartMsg11(TalkStartMsg *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
-        void *h = func_0209865c(func_0209750c());
-        if (func_0209abc4(func_0209a4f0(func_02099db4(h, 0))) == 1) {
-            out->unk_04 = 0x31;
-        } else if (unk_b0->unk_73a == 0) {
-            out->unk_04 = 0x2b;
-            unk_b0->unk_73a = 1;
+        void *h = PlayerData_getErrands(PlayerData_GetCurrent());
+        if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
+            out->msgIndex = 0x31;
+        } else if (ownerNpc->arbeitPrompted == 0) {
+            out->msgIndex = 0x2b;
+            ownerNpc->arbeitPrompted = 1;
         } else {
-            out->unk_04 = 0x10;
+            out->msgIndex = 0x10;
         }
     }
 }
 
-void Unk_ov050_0225e4b4::vfunc_a4(Unk_ov050_0225b7f4_Out *out) {
+void SpNpcNookShopTalk::pickArbeitStartMsg12(TalkStartMsg *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
-        void *h = func_0209865c(func_0209750c());
-        if (func_0209abc4(func_0209a4f0(func_02099db4(h, 0))) == 1) {
-            out->unk_04 = 0x33;
-        } else if (unk_b0->unk_73a == 0) {
-            out->unk_04 = 0x32;
-            unk_b0->unk_73a = 1;
+        void *h = PlayerData_getErrands(PlayerData_GetCurrent());
+        if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
+            out->msgIndex = 0x33;
+        } else if (ownerNpc->arbeitPrompted == 0) {
+            out->msgIndex = 0x32;
+            ownerNpc->arbeitPrompted = 1;
         } else {
-            out->unk_04 = 0x10;
+            out->msgIndex = 0x10;
         }
     }
 }
 
-BOOL Unk_ov050_0225e400::vfunc_7c() {
-    if (func_ov050_02258eb8()) {
+BOOL SpNpcNookShop::canPlayTalkMelody() {
+    if (isTimmy()) {
         return FALSE;
     }
-    if (Unk_ov050_0225b7b4_IsOne(data_020e416c) == 0 || unk_73b == 0) {
+    if (Unk_ov050_0225b7b4_IsOne(gFieldSceneKind) == 0 || nookTalkMelodyPlayed == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov050_0225e400::vfunc_80() {
-    unk_73b = 1;
+void SpNpcNookShop::onTalkMelodyPlayed() {
+    nookTalkMelodyPlayed = 1;
 }
-extern "C" void *data_ov050_0225dde0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a4cEi, 0};
+extern "C" void *data_ov050_0225dde0[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice0Ei, 0};
 
-extern "C" void *data_ov050_0225e130[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c950Ev, 0};
+extern "C" void *data_ov050_0225e130[2] = {(void *)_ZN13SpNpcNookShop9mainAct12Ev, 0};
 
-extern "C" void *data_ov050_0225dfc0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a68Ei, 0};
+extern "C" void *data_ov050_0225dfc0[2] = {(void *)_ZN17SpNpcNookShopTalk19onSellConfirmChoiceEi, 0};
 
-extern "C" void *data_ov050_0225dea0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a30Ei, 0};
+extern "C" void *data_ov050_0225dea0[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice1Ei, 0};
 
-extern "C" void *data_ov050_0225e140[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c9dcEv, 0};
+extern "C" void *data_ov050_0225e140[2] = {(void *)_ZN13SpNpcNookShop9mainAct11Ev, 0};
 
-extern "C" void *data_ov050_0225de00[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225d020Ev, 0};
+extern "C" void *data_ov050_0225de00[2] = {(void *)_ZN13SpNpcNookShop9mainAct01Ev, 0};
 
-extern "C" void *data_ov050_0225de20[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a68Ei, 0};
+extern "C" void *data_ov050_0225de20[2] = {(void *)_ZN17SpNpcNookShopTalk19onSellConfirmChoiceEi, 0};
 
-extern "C" void *data_ov050_0225de28[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225de28[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225dfb8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225dfb8[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225dde8[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cb6cEv, 0};
+extern "C" void *data_ov050_0225dde8[2] = {(void *)_ZN13SpNpcNookShop10setupAct0BEv, 0};
 
-extern "C" void *data_ov050_0225e040[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b330EPv, 0};
+extern "C" void *data_ov050_0225e040[2] = {(void *)_ZN17SpNpcNookShopTalk21arbeitStartLetterTaskEPv, 0};
 
-extern "C" void *data_ov050_0225ddf0[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cb4cEv, 0};
+extern "C" void *data_ov050_0225ddf0[2] = {(void *)_ZN13SpNpcNookShop9mainAct0BEv, 0};
 
-extern "C" void *data_ov050_0225e190[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cba0Ev, 0};
+extern "C" void *data_ov050_0225e190[2] = {(void *)_ZN13SpNpcNookShop9mainAct0CEv, 0};
 
-extern "C" void *data_ov050_0225e188[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c7bcEv, 0};
+extern "C" void *data_ov050_0225e188[2] = {(void *)_ZN13SpNpcNookShop10setupAct0DEv, 0};
 
-extern "C" void *data_ov050_0225e180[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c780Ev, 0};
+extern "C" void *data_ov050_0225e180[2] = {(void *)_ZN13SpNpcNookShop9mainAct0DEv, 0};
 
-extern "C" void *data_ov050_0225e178[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c7e0Ev, 0};
+extern "C" void *data_ov050_0225e178[2] = {(void *)_ZN13SpNpcNookShop9mainAct09Ev, 0};
 
-extern "C" void *data_ov050_0225e170[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a4cEi, 0};
+extern "C" void *data_ov050_0225e170[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice0Ei, 0};
 
-extern "C" void *data_ov050_0225e168[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c704Ev, 0};
+extern "C" void *data_ov050_0225e168[2] = {(void *)_ZN13SpNpcNookShop10setupAct0FEv, 0};
 
-extern "C" void *data_ov050_0225e160[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c700Ev, 0};
+extern "C" void *data_ov050_0225e160[2] = {(void *)_ZN13SpNpcNookShop9mainAct0FEv, 0};
 
-extern "C" void *data_ov050_0225e158[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c6c0Ev, 0};
+extern "C" void *data_ov050_0225e158[2] = {(void *)_ZN13SpNpcNookShop10setupAct10Ev, 0};
 
-extern "C" void *data_ov050_0225e150[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c5a8Ev, 0};
+extern "C" void *data_ov050_0225e150[2] = {(void *)_ZN13SpNpcNookShop9mainAct10Ev, 0};
 
-extern "C" char data_ov050_0225e1c4[] = "sp_npc_raccoon";
+extern "C" char sSpNpcNookShopKey[] = "sp_npc_raccoon";
 
-extern "C" const Unk_ov050_MsgRow data_ov050_0225daac[31] = {
-    {data_ov050_0225e1c4, 0x00}, {data_ov050_0225e1c4, 0x01}, {data_ov050_0225e1c4, 0x32}, {data_ov050_0225e1c4, 0x33},
-    {data_ov050_0225e1c4, 0x34}, {data_ov050_0225e1c4, 0x06}, {data_ov050_0225e1c4, 0x57}, {data_ov050_0225e1c4, 0x02},
-    {data_ov050_0225e1c4, 0x31}, {data_ov050_0225e1c4, 0x1e}, {data_ov050_0225e1c4, 0x2a}, {data_ov050_0225e1c4, 0x2b},
-    {data_ov050_0225e1c4, 0x2d}, {data_ov050_0225e1c4, 0x2e}, {data_ov050_0225e1c4, 0x35}, {data_ov050_0225e1b4, 0x00},
-    {data_ov050_0225e1c4, 0x05}, {data_ov050_0225e1a4, 0x00}, {data_ov050_0225e1a4, 0x01}, {data_ov050_0225e1a4, 0x06},
-    {data_ov050_0225e1a4, 0x31}, {data_ov050_0225e1a4, 0x1e}, {data_ov050_0225e1a4, 0x2a}, {data_ov050_0225e1a4, 0x2b},
-    {data_ov050_0225e1a4, 0x2d}, {data_ov050_0225e1a4, 0x2e}, {data_ov050_0225e1a4, 0x32}, {data_ov050_0225e1a4, 0x33},
-    {data_ov050_0225e1a4, 0x34}, {data_ov050_0225e1a4, 0x57}, {data_ov050_0225e1d4, 0x0c},
+extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31] = {
+    {sSpNpcNookShopKey, 0x00}, {sSpNpcNookShopKey, 0x01}, {sSpNpcNookShopKey, 0x32}, {sSpNpcNookShopKey, 0x33},
+    {sSpNpcNookShopKey, 0x34}, {sSpNpcNookShopKey, 0x06}, {sSpNpcNookShopKey, 0x57}, {sSpNpcNookShopKey, 0x02},
+    {sSpNpcNookShopKey, 0x31}, {sSpNpcNookShopKey, 0x1e}, {sSpNpcNookShopKey, 0x2a}, {sSpNpcNookShopKey, 0x2b},
+    {sSpNpcNookShopKey, 0x2d}, {sSpNpcNookShopKey, 0x2e}, {sSpNpcNookShopKey, 0x35}, {sSpNpcNookShopDramaKey, 0x00},
+    {sSpNpcNookShopKey, 0x05}, {sSpNpcNookShopTwinsKey, 0x00}, {sSpNpcNookShopTwinsKey, 0x01}, {sSpNpcNookShopTwinsKey, 0x06},
+    {sSpNpcNookShopTwinsKey, 0x31}, {sSpNpcNookShopTwinsKey, 0x1e}, {sSpNpcNookShopTwinsKey, 0x2a}, {sSpNpcNookShopTwinsKey, 0x2b},
+    {sSpNpcNookShopTwinsKey, 0x2d}, {sSpNpcNookShopTwinsKey, 0x2e}, {sSpNpcNookShopTwinsKey, 0x32}, {sSpNpcNookShopTwinsKey, 0x33},
+    {sSpNpcNookShopTwinsKey, 0x34}, {sSpNpcNookShopTwinsKey, 0x57}, {sSpNpcNookShopSequence5_1Key, 0x0c},
 };
 
-void Unk_ov050_0225e4b4::vfunc_a8() {
-    void *h = func_0209865c(func_0209750c());
-    func_0209a4f0(func_02099db4(h, 0));
-    unk_cc = 0xff;
-    static Unk_ov050_0225b5a8_Row tbl[24] = {
-        {0x00, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e090},
-        {0x03, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e088},
-        {0x04, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e080},
-        {0x07, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e078},
-        {0x08, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225def0},
-        {0x0e, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e068},
-        {0x12, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e060},
-        {0x16, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e058},
-        {0x1a, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e050},
-        {0x18, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e048},
-        {0x1e, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e040},
-        {0x1f, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e038},
-        {0x21, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e030},
-        {0x25, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e028},
-        {0x27, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e020},
-        {0x28, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e018},
-        {0x29, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225e010},
-        {0x2c, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225de38},
-        {0x2e, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225dfb0},
-        {0x31, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225dff8},
-        {0x33, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225deb0},
-        {0x35, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225dfe8},
-        {0x36, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225dfe0},
-        {0x0c, *(Unk_ov050_0225e4b4::PtrFn *)data_ov050_0225dfd8},
+void SpNpcNookShopTalk::onArbeitMessageEnd() {
+    void *h = PlayerData_getErrands(PlayerData_GetCurrent());
+    PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
+    nextMsg = 0xff;
+    static SpNpcNookShopArbeitMessageEndHandler tbl[24] = {
+        {0x00, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e090},
+        {0x03, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e088},
+        {0x04, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e080},
+        {0x07, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e078},
+        {0x08, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225def0},
+        {0x0e, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e068},
+        {0x12, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e060},
+        {0x16, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e058},
+        {0x1a, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e050},
+        {0x18, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e048},
+        {0x1e, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e040},
+        {0x1f, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e038},
+        {0x21, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e030},
+        {0x25, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e028},
+        {0x27, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e020},
+        {0x28, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e018},
+        {0x29, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225e010},
+        {0x2c, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225de38},
+        {0x2e, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225dfb0},
+        {0x31, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225dff8},
+        {0x33, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225deb0},
+        {0x35, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225dfe8},
+        {0x36, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225dfe0},
+        {0x0c, *(SpNpcNookShopTalk::PtrFn *)data_ov050_0225dfd8},
     };
     s32 i = 0;
-    u8 *p = &unk_1e;
-    Unk_ov050_0225b5a8_Row *t = tbl;
+    u8 *p = &msgIndex;
+    SpNpcNookShopArbeitMessageEndHandler *t = tbl;
     for (; (u32)i < 0x18; i++) {
         u32 a = tbl[i].id;
         u32 b = *p;
@@ -2789,369 +2513,370 @@ void Unk_ov050_0225e4b4::vfunc_a8() {
             (this->*t[i].f)(h);
         }
     }
-    if (unk_cc != 0xff) {
-        u8 v = unk_cc;
-        func_02067a84(unk_3c, &v, data_ov050_0225e1d4);
+    if (nextMsg != 0xff) {
+        u8 v = nextMsg;
+        TalkWindowState_setNextMessage(window, &v, sSpNpcNookShopSequence5_1Key);
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b56c(void *h) {
+void SpNpcNookShopTalk::arbeitGiveUniform(void *h) {
     u16 v = 0x11a8;
-    if (func_02099014(&v, 0)) {
-        func_02099be8(h);
-        unk_cc = 3;
+    if (Pocket_AddItem(&v, 0)) {
+        Arbeit_Start(h);
+        nextMsg = 3;
     } else {
-        unk_cc = 1;
+        nextMsg = 1;
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b518(void *h) {
+void SpNpcNookShopTalk::arbeitPresentUniform(void *h) {
     u16 v = 0x11a8;
-    func_02014e60(this, &v, 0, 5, 0);
-    unk_cc = 6;
-    void *r = func_0209a4f0(func_02099db4(h, 0));
-    if (func_0209ad68(r) && func_0209ac64(r) == 0xb) {
-        func_0209abb4(r, 1);
+    ActorTalkRequest_requestGiveItem(this, &v, 0, 5, 0);
+    nextMsg = 6;
+    void *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
+    if (ErrandRecord_isActive(r) && ErrandRecord_getKind(r) == 0xb) {
+        ErrandRecord_setStep(r, 1);
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b4c8(void *h) {
+void SpNpcNookShopTalk::arbeitCheckPocketSpace(void *h) {
     u8 b[4];
-    func_02098f30(b, (void *)func_ov050_0225be74);
+    Pocket_CountMatching(b, (void *)SpNpcNookShop_IsEmptyItem);
     if (b[2] >= 7) {
-        unk_cc = 8;
+        nextMsg = 8;
     } else {
-        unk_cc = 9;
+        nextMsg = 9;
     }
-    void *r = func_0209a4f0(func_02099db4(h, 0));
-    func_02099be0(h);
-    func_0209abb4(r, 2);
+    void *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
+    Arbeit_SetOnDuty(h);
+    ErrandRecord_setStep(r, 2);
 }
 
-void Unk_ov050_0225e4b4::func_0225b498(void *h) {
-    func_ov050_0225bdc8();
-    func_02099bac(h);
-    unk_b0->unk_73a = 0;
-    unk_cc = 10;
+void SpNpcNookShopTalk::arbeitGivePlants(void *h) {
+    givePlantingItems();
+    Arbeit_StartPlanting(h);
+    ownerNpc->arbeitPrompted = 0;
+    nextMsg = 10;
 }
 
-void Unk_ov050_0225e4b4::func_0225b48c(void *h) {
-    func_02099bd8(h);
+void SpNpcNookShopTalk::onArbeitMsgEnd0E(void *h) {
+    Arbeit_ClearOnDuty(h);
 }
 
-void Unk_ov050_0225e4b4::func_0225b478(void *h) {
-    func_0209750c();
-    func_02099b90(h);
+void SpNpcNookShopTalk::onArbeitMsgEnd12(void *h) {
+    PlayerData_GetCurrent();
+    Arbeit_StartGreetings(h);
 }
 
-void Unk_ov050_0225e4b4::func_0225b3e8(void *h) {
+void SpNpcNookShopTalk::arbeitStartFurnitureDelivery(void *h) {
     u16 v;
     u32 buf[7];
-    void *r = func_0209a4f0(func_02099db4(h, 0));
-    if (func_0209ad68(r) && func_0209ac64(r) == 0xd) {
-        func_0209abb4(r, 1);
+    void *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
+    if (ErrandRecord_isActive(r) && ErrandRecord_getKind(r) == 0xd) {
+        ErrandRecord_setStep(r, 1);
     }
-    if (func_02098ffc() >= 0) {
+    if (Pocket_FindEmpty() >= 0) {
         func_02094030(buf);
-        func_02099b4c(h);
+        Arbeit_StartFurnitureDelivery(h);
         v = 0x1563;
-        func_02099c68(h, buf, &v);
-        func_02067a3c(unk_3c, 1, buf);
-        unk_b0->unk_73a = 0;
-        unk_cc = 0x18;
+        PlayerErrands_GetDeliveryRecipientName(h, buf, &v);
+        TalkWindowState_setSlot(window, 1, buf);
+        ownerNpc->arbeitPrompted = 0;
+        nextMsg = 0x18;
         func_02094018(buf);
     } else {
-        unk_cc = 0x17;
+        nextMsg = 0x17;
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b3ac(void *h) {
+void SpNpcNookShopTalk::arbeitGiveDeliveryParcel(void *h) {
     u16 v[2];
     v[0] = 0x1563;
-    if (func_02099014(&v[0], 2)) {
+    if (Pocket_AddItem(&v[0], 2)) {
         v[1] = 0x1563;
-        func_02014e60(this, &v[1], 2, 5, 0);
+        ActorTalkRequest_requestGiveItem(this, &v[1], 2, 5, 0);
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b330(void *h) {
+void SpNpcNookShopTalk::arbeitStartLetterTask(void *h) {
     u32 buf[8];
-    void *r = func_02099db4(h, 0);
-    func_0209abb4(func_0209a4f0(r), 1);
-    if (func_02098ffc() >= 0) {
-        func_02099ae4(h);
-        r = func_0209a4e4(r, 1);
+    void *r = PlayerErrands_GetSlot(h, 0);
+    ErrandRecord_setStep(PlayerErrandSlot_GetRecord(r), 1);
+    if (Pocket_FindEmpty() >= 0) {
+        Arbeit_StartLetterTask(h);
+        r = PlayerErrandSlot_GetVillager(r, 1);
         if (r) {
             func_02094030(buf);
-            func_02002fc8(r, buf);
-            func_02067a3c(unk_3c, 0, buf);
+            VillagerId_getName(r, buf);
+            TalkWindowState_setSlot(window, 0, buf);
             func_02094018(buf);
         }
-        unk_b0->unk_73a = 0;
-        unk_cc = 0x1f;
+        ownerNpc->arbeitPrompted = 0;
+        nextMsg = 0x1f;
     } else {
-        unk_cc = 0x17;
+        nextMsg = 0x17;
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b2d0(void *h) {
+void SpNpcNookShopTalk::arbeitGiveStationery(void *h) {
     u16 v[2];
     v[0] = 0x1020;
-    if (func_02099014(&v[0], 0)) {
+    if (Pocket_AddItem(&v[0], 0)) {
         v[1] = 0x1020;
-        func_02014e60(this, &v[1], 0, 5, 0);
+        ActorTalkRequest_requestGiveItem(this, &v[1], 0, 5, 0);
     }
-    if (unk_1e == 0x1f) {
-        unk_cc = 0x20;
-        unk_b0->unk_73a = 2;
+    if (msgIndex == 0x1f) {
+        nextMsg = 0x20;
+        ownerNpc->arbeitPrompted = 2;
     } else {
-        unk_cc = 0x26;
+        nextMsg = 0x26;
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b288(void *h) {
-    if (unk_b0->unk_73a == 0 && func_02098ffc() != -1) {
-        unk_cc = 0x22;
+void SpNpcNookShopTalk::arbeitOfferStationery(void *h) {
+    if (ownerNpc->arbeitPrompted == 0 && Pocket_FindEmpty() != -1) {
+        nextMsg = 0x22;
     } else {
-        unk_b0->unk_73a = 1;
-        func_02067a84(unk_3c, data_021edb5c, 0);
+        ownerNpc->arbeitPrompted = 1;
+        TalkWindowState_setNextMessage(window, gTalkMsgIndexEnd, 0);
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b24c(void *h) {
-    func_0209abb4(func_0209a4f0(func_02099db4(h, 0)), 0);
-    unk_b0->unk_73a = 1;
-    func_0225b2d0(h);
+void SpNpcNookShopTalk::arbeitGiveNewStationery(void *h) {
+    ErrandRecord_setStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0)), 0);
+    ownerNpc->arbeitPrompted = 1;
+    arbeitGiveStationery(h);
 }
 
-void Unk_ov050_0225e4b4::func_0225b210(void *h) {
-    func_0209abb4(func_0209a4f0(func_02099db4(h, 0)), 0);
-    if (func_02098ffc() >= 0) {
-        unk_cc = 0x25;
+void SpNpcNookShopTalk::arbeitRetryLetter(void *h) {
+    ErrandRecord_setStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0)), 0);
+    if (Pocket_FindEmpty() >= 0) {
+        nextMsg = 0x25;
     } else {
-        func_02067a84(unk_3c, data_021edb5c, 0);
+        TalkWindowState_setNextMessage(window, gTalkMsgIndexEnd, 0);
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b194(void *h) {
+void SpNpcNookShopTalk::arbeitStartCarpetDelivery(void *h) {
     u16 v;
     u32 buf[7];
-    void *r = func_0209a4f0(func_02099db4(h, 0));
+    void *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
     func_02094030(buf);
-    func_0209abb4(r, 2);
-    unk_b0->unk_73a = 0;
-    if (func_02098ffc() >= 0) {
-        func_02099948(h);
+    ErrandRecord_setStep(r, 2);
+    ownerNpc->arbeitPrompted = 0;
+    if (Pocket_FindEmpty() >= 0) {
+        Arbeit_StartCarpetDelivery(h);
         v = 0x1561;
-        func_02099c68(h, buf, &v);
-        func_02067a3c(unk_3c, 1, buf);
-        unk_cc = 0x29;
+        PlayerErrands_GetDeliveryRecipientName(h, buf, &v);
+        TalkWindowState_setSlot(window, 1, buf);
+        nextMsg = 0x29;
     } else {
-        unk_cc = 0x17;
+        nextMsg = 0x17;
     }
     func_02094018(buf);
 }
 
-void Unk_ov050_0225e4b4::func_0225b158(void *h) {
+void SpNpcNookShopTalk::arbeitGiveCarpet(void *h) {
     u16 v[2];
     v[0] = 0x1561;
-    if (func_02099014(&v[0], 2)) {
+    if (Pocket_AddItem(&v[0], 2)) {
         v[1] = 0x1561;
-        func_02014e60(this, &v[1], 0, 5, 0);
+        ActorTalkRequest_requestGiveItem(this, &v[1], 0, 5, 0);
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b0f4(void *h) {
+void SpNpcNookShopTalk::arbeitStartWateringCanDelivery(void *h) {
     u16 v[2];
     u32 buf[7];
     v[0] = 0x1564;
-    if (func_02099014(&v[0], 2)) {
+    if (Pocket_AddItem(&v[0], 2)) {
         func_02094030(buf);
-        func_0209992c(h);
+        Arbeit_StartWateringCanDelivery(h);
         v[1] = 0x1564;
-        func_02099c68(h, buf, &v[1]);
-        func_02067a3c(unk_3c, 1, buf);
-        unk_cc = 0x2e;
+        PlayerErrands_GetDeliveryRecipientName(h, buf, &v[1]);
+        TalkWindowState_setSlot(window, 1, buf);
+        nextMsg = 0x2e;
         func_02094018(buf);
     } else {
-        unk_cc = 0x17;
+        nextMsg = 0x17;
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225b0c0(void *h) {
+void SpNpcNookShopTalk::arbeitPresentWateringCan(void *h) {
     u16 v = 0x1564;
-    func_02014e60(this, &v, 2, 5, 0);
-    unk_b0->unk_73a = 0;
+    ActorTalkRequest_requestGiveItem(this, &v, 2, 5, 0);
+    ownerNpc->arbeitPrompted = 0;
 }
 
-void Unk_ov050_0225e4b4::func_0225b088(void *h) {
-    func_0209abb4(func_0209a4f0(func_02099db4(h, 0)), 2);
-    func_02099910(h);
-    unk_b0->unk_73a = 0;
+void SpNpcNookShopTalk::onArbeitMsgEnd31(void *h) {
+    ErrandRecord_setStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0)), 2);
+    Arbeit_StartBbsTask(h);
+    ownerNpc->arbeitPrompted = 0;
 }
 
-void Unk_ov050_0225e4b4::func_0225b018(void *h) {
-    u8 *const a = data_021d7350;
-    u8 *const g = data_021e58a8;
-    if (func_02060388(g) < 0x579) {
-        unk_cc = 0x36;
+void SpNpcNookShopTalk::arbeitReduceLoan(void *h) {
+    u8 *const a = gSaveData;
+    u8 *const g = gSaveHouse;
+    if (HouseData_getDebt(g) < 0x579) {
+        nextMsg = 0x36;
     } else {
-        s32 t = func_02060388(g);
-        func_02060370(g, t - 0x578);
-        s32 s = func_02060388(a + 0xe558);
-        func_02015958(this, s, 2, 10, 1, 0);
-        unk_cc = 0x34;
+        s32 t = HouseData_getDebt(g);
+        HouseData_setDebt(g, t - 0x578);
+        s32 s = HouseData_getDebt(a + 0xe558);
+        ActorTalkRequest_setNumberSlot(this, s, 2, 10, 1, 0);
+        nextMsg = 0x34;
     }
 }
 
-void Unk_ov050_0225e4b4::func_0225afe4(void *h) {
-    func_020998b8(h);
-    void *o = func_0209750c();
-    func_02097ff4(o, 1);
-    o = func_0209868c(o);
-    func_020851a4(func_020850e0(), 5);
-    func_02087c58(o);
+void SpNpcNookShopTalk::arbeitFinish(void *h) {
+    Arbeit_Finish(h);
+    void *o = PlayerData_GetCurrent();
+    PlayerData_clearFlag(o, 1);
+    o = PlayerData_getSpNpcRecord(o);
+    TownSessionState_SetFlag(TownSessionState_Get(), 5);
+    PlayerSpNpcRecord_stampArbeitDate(o);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-void Unk_ov050_0225e4b4::func_0225afd4(void *h) {
-    unk_b0->func_ov050_0225d1d4(0x11);
+void SpNpcNookShopTalk::arbeitPushPlayerBack(void *h) {
+    ownerNpc->changeAct(0x11);
 }
 
-void Unk_ov050_0225e4b4::vfunc_78(Unk_ov050_0225a888_Out *out) {
+void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
+    TalkStartMsg *out = (TalkStartMsg *)out_;
     s32 flag;
     void *x;
-    Unk_ov050_0225a888_Buf l;
+    SpNpcNookShopStartLocal l;
     u16 w0, w4, w6, w8, wa, t0, t1, t2, t3;
-    Unk_ov050_0225a888_Bytes s, v, o1, o2, c;
-    void *h = func_0209750c();
-    void *r7 = func_02099864(func_0209865c(h));
-    x = func_0209865c(h);
-    if (func_02098044(h, 1)) {
-        func_02099db4(x, 0);
-        void *ev = func_0209a4f0();
-        u32 t = unk_b0->unk_0c;
+    ClockDateBytes s, v, o1, o2, c;
+    void *h = PlayerData_GetCurrent();
+    void *r7 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(h));
+    x = PlayerData_getErrands(h);
+    if (PlayerData_testFlag(h, 1)) {
+        PlayerErrands_GetSlot(x, 0);
+        void *ev = PlayerErrandSlot_GetRecord();
+        u32 t = ownerNpc->profile;
         if (Unk_ov050_0225a888_Eq(t, 0x75) || Unk_ov050_0225a888_Eq(t, 0x74)) {
-            out->unk_00 = data_ov050_0225e1a4;
-            out->unk_04 = 3;
+            out->msgKey = sSpNpcNookShopTwinsKey;
+            out->msgIndex = 3;
             return;
         }
-        out->unk_00 = data_ov050_0225e1d4;
-        u16 *p = &unk_b0->unk_72e;
+        out->msgKey = sSpNpcNookShopSequence5_1Key;
+        u16 *p = &ownerNpc->selectedItem;
         if (!Unk_ov050_0225a888_Same(p, &t0)) {
-            unk_b0->unk_72e = 0xfff1;
-            out->unk_04 = 0xb;
+            ownerNpc->selectedItem = 0xfff1;
+            out->msgIndex = 0xb;
             return;
         }
-        if (unk_ac == 0x1e) {
-            out->unk_04 = 0xc;
-            unk_ac = 5;
+        if (topic == 0x1e) {
+            out->msgIndex = 0xc;
+            topic = 5;
             return;
         }
-        out->unk_04 = 0;
-        if (!func_0209ad68(ev)) {
+        out->msgIndex = 0;
+        if (!ErrandRecord_isActive(ev)) {
             return;
         }
-        if (func_0209ac64(ev) == 0x12) {
-            vfunc_a4((Unk_ov050_0225b7f4_Out *)out);
+        if (ErrandRecord_getKind(ev) == 0x12) {
+            pickArbeitStartMsg12((TalkStartMsg *)out);
         }
-        if (func_0209ac64(ev) == 0x11) {
-            vfunc_a0((Unk_ov050_0225b7f4_Out *)out);
+        if (ErrandRecord_getKind(ev) == 0x11) {
+            pickArbeitStartMsg11((TalkStartMsg *)out);
         }
-        if (func_0209ac64(ev) == 0x10) {
-            vfunc_9c((Unk_ov050_0225b7f4_Out *)out);
+        if (ErrandRecord_getKind(ev) == 0x10) {
+            pickArbeitStartMsg10((TalkStartMsg *)out);
         }
-        if (func_0209ac64(ev) == 0xf) {
-            vfunc_98((Unk_ov050_0225b908_Out *)out);
+        if (ErrandRecord_getKind(ev) == 0xf) {
+            pickArbeitStartMsg0F(out);
         }
-        if (func_0209ac64(ev) == 0xe) {
-            vfunc_94((Unk_ov050_0225b908_Out *)out);
+        if (ErrandRecord_getKind(ev) == 0xe) {
+            pickArbeitStartMsg0E(out);
         }
-        if (func_0209ac64(ev) == 0xd) {
-            vfunc_90((Unk_ov050_0225b908_Out *)out);
+        if (ErrandRecord_getKind(ev) == 0xd) {
+            pickArbeitStartMsg0D(out);
         }
-        if (func_0209ac64(ev) == 0xc) {
-            vfunc_8c((Unk_ov050_0225b908_Out *)out);
+        if (ErrandRecord_getKind(ev) == 0xc) {
+            pickArbeitStartMsg0C(out);
         }
-        if (func_0209ac64(ev) == 0xb) {
-            vfunc_88((Unk_ov050_0225b908_Out *)out);
+        if (ErrandRecord_getKind(ev) == 0xb) {
+            pickArbeitStartMsg0B(out);
         }
         return;
     }
-    if (unk_b0->func_ov050_02258ed0() && unk_ac == 5 && !func_02072e44(data_020cbb18) && *func_0209c37c(0, 0x4a) == 0) {
-        if (unk_c8 == -1) {
+    if (ownerNpc->isNook() && topic == 5 && !CommManager_isOnline(gCommManager) && *DebugVar_GetPtr(0, 0x4a) == 0) {
+        if (safeSlot == -1) {
             w0 = 0x36fc;
-            unk_c8 = func_02098eb0(&w0);
+            safeSlot = Pocket_FindItem(&w0);
         }
-        if (unk_c8 >= 0) {
-            unk_ac = 0xe;
+        if (safeSlot >= 0) {
+            topic = 0xe;
         } else {
             w4 = 0xd019;
-            if (func_02099f98(r7, &w4) || (w6 = 0xd01a, func_02099f98(r7, &w6)) || (w8 = 0xd01b, func_02099f98(r7, &w8)) ||
-                (wa = 0xd01c, func_02099f98(r7, &wa))) {
-                unk_ac = 0x10;
-            } else if (func_0202e18c(unk_b0, &l, 3)) {
-                out->unk_00 = data_ov050_0225e1b4;
-                out->unk_04 = (data_ov050_0225da5c + l.b * 6)[l.c];
-                func_ov050_0225c000(0xf);
+            if (ParcelErrand_IsFor(r7, &w4) || (w6 = 0xd01a, ParcelErrand_IsFor(r7, &w6)) || (w8 = 0xd01b, ParcelErrand_IsFor(r7, &w8)) ||
+                (wa = 0xd01c, ParcelErrand_IsFor(r7, &wa))) {
+                topic = 0x10;
+            } else if (Talk_IsDramaPending(ownerNpc, &l, 3)) {
+                out->msgKey = sSpNpcNookShopDramaKey;
+                out->msgIndex = (sSpNpcNookShopDramaMsgTable + l.b * 6)[l.c];
+                setTopic(0xf);
                 return;
             }
         }
     }
-    if (unk_ac == 0 || unk_ac == 0x11) {
+    if (topic == 0 || topic == 0x11) {
         flag = 0;
-        if (unk_ac == 0) {
-            out->unk_00 = data_ov050_0225e1c4;
-            if (func_02098044(h, 0x26) == 0) {
-                v = *(Unk_ov050_0225a888_Bytes *)func_020aeac4(data_021ed104);
-                func_0209cf88(&o1);
-                out->unk_04 = 0;
+        if (topic == 0) {
+            out->msgKey = sSpNpcNookShopKey;
+            if (PlayerData_testFlag(h, 0x26) == 0) {
+                v = *(ClockDateBytes *)NookShop_GetRenovation(data_021ed104);
+                Clock_GetDate(&o1);
+                out->msgIndex = 0;
                 if (v.b[3] == 0) {
-                    s32 r = func_0209cd00(&o1, &v);
-                    if (unk_b0->unk_08 == 0xd01a && func_02098044(h, 0x24) == 0 && r == 0) {
-                        out->unk_04 = func_020ae02c(data_021ed104) + 0x59;
+                    s32 r = Date_DaysBetween(&o1, &v);
+                    if (ownerNpc->param == 0xd01a && PlayerData_testFlag(h, 0x24) == 0 && r == 0) {
+                        out->msgIndex = NookShop_GetLevel(data_021ed104) + 0x59;
                     }
-                    if (unk_b0->unk_08 == 0xd01b && func_020ae02c(data_021ed104) == 2 && func_02098044(h, 0x25) == 0 && r == 0) {
-                        out->unk_04 = func_020ae02c(data_021ed104) + 0x59;
+                    if (ownerNpc->param == 0xd01b && NookShop_GetLevel(data_021ed104) == 2 && PlayerData_testFlag(h, 0x25) == 0 && r == 0) {
+                        out->msgIndex = NookShop_GetLevel(data_021ed104) + 0x59;
                     }
-                    if (unk_b0->unk_08 == 0xd01c && func_020ae02c(data_021ed104) == 3 && func_02098044(h, 0x26) == 0 && r == 0) {
-                        out->unk_04 = func_020ae02c(data_021ed104) + 0x59;
+                    if (ownerNpc->param == 0xd01c && NookShop_GetLevel(data_021ed104) == 3 && PlayerData_testFlag(h, 0x26) == 0 && r == 0) {
+                        out->msgIndex = NookShop_GetLevel(data_021ed104) + 0x59;
                     }
-                    switch (func_020ae02c(data_021ed104)) {
+                    switch (NookShop_GetLevel(data_021ed104)) {
                     case 3:
-                        func_0209801c(h, 0x26);
+                        PlayerData_setFlag(h, 0x26);
                     case 2:
-                        func_0209801c(h, 0x25);
+                        PlayerData_setFlag(h, 0x25);
                     case 1:
-                        func_0209801c(h, 0x24);
+                        PlayerData_setFlag(h, 0x24);
                     }
-                    if (out->unk_04 != 0) {
+                    if (out->msgIndex != 0) {
                         return;
                     }
                 }
             }
-            if (func_02098044(h, 3) == 0) {
-                u8 *q = func_02087c7c(func_0209868c(h));
+            if (PlayerData_testFlag(h, 3) == 0) {
+                u8 *q = PlayerSpNpcRecord_getArbeitDate(PlayerData_getSpNpcRecord(h));
                 if (q[2] != 0 || q[1] != 0) {
-                    func_0209cf88(&o2);
-                    if (func_0209cd00(&o2, q)) {
-                        out->unk_04 = 0x3b;
-                        func_0209801c(h, 3);
+                    Clock_GetDate(&o2);
+                    if (Date_DaysBetween(&o2, q)) {
+                        out->msgIndex = 0x3b;
+                        PlayerData_setFlag(h, 3);
                         return;
                     }
                 }
             }
-            if (func_0209e170(data_021d7350, 0x10) == 0) {
-                out->unk_04 = func_ov050_0225be88(this);
-                if (out->unk_04 != 0) {
-                    func_0209e148(data_021d7350, 0x10);
+            if (SaveData_testFlag(gSaveData, 0x10) == 0) {
+                out->msgIndex = SpNpcNookShop_GetHouseUpgradeMsg(this);
+                if (out->msgIndex != 0) {
+                    SaveData_setFlag(gSaveData, 0x10);
                     return;
                 }
             }
-            if (func_0202e1cc(0, 0) == 0) {
-                if (func_020ae8fc(data_021ed104)) {
-                    u32 t = func_020aea38(data_021ed104);
+            if (Talk_CheckAndSetPlayerFlag(0, 0) == 0) {
+                if (NookShop_IsClosedTomorrow(data_021ed104)) {
+                    u32 t = NookShop_GetClosedDate(data_021ed104);
                     s.b[0] = t;
                     t = (u32)(t >> 8);
                     s.b[1] = t;
@@ -3160,56 +2885,56 @@ void Unk_ov050_0225e4b4::vfunc_78(Unk_ov050_0225a888_Out *out) {
                     t = (u32)(t >> 8);
                     s.b[3] = t;
                     c = s;
-                    func_02015878(this, c.b[1], 7);
-                    func_02015848(this, c.b[0], 8);
-                    func_ov050_0225c000(7);
+                    ActorTalkRequest_setMonthSlot(this, c.b[1], 7);
+                    ActorTalkRequest_setDaySlot(this, c.b[0], 8);
+                    setTopic(7);
                     flag = 1;
-                    func_0202e1cc(0, flag);
+                    Talk_CheckAndSetPlayerFlag(0, flag);
                 }
             }
         }
         if (flag == 0) {
-            if (func_020aeb14(data_021ed104)) {
-                if (unk_ac == 0) {
-                    func_ov050_0225c000(2);
+            if (NookShop_IsPointSpecialToday(data_021ed104)) {
+                if (topic == 0) {
+                    setTopic(2);
                 } else {
-                    func_ov050_0225c000(0x1a);
+                    setTopic(0x1a);
                 }
-            } else if (func_020aeb80(data_021ed104)) {
-                if (unk_ac == 0) {
-                    func_ov050_0225c000(3);
+            } else if (NookShop_IsSaleTime(data_021ed104)) {
+                if (topic == 0) {
+                    setTopic(3);
                 } else {
-                    func_ov050_0225c000(0x1b);
+                    setTopic(0x1b);
                 }
-            } else if (func_020aeac8(data_021ed104)) {
-                if (unk_ac == 0) {
-                    func_ov050_0225c000(4);
+            } else if (NookShop_HasClass4Furniture(data_021ed104)) {
+                if (topic == 0) {
+                    setTopic(4);
                 } else {
-                    func_ov050_0225c000(0x1c);
+                    setTopic(0x1c);
                 }
             }
         }
     } else {
-        u16 *p = &unk_b0->unk_72e;
+        u16 *p = &ownerNpc->selectedItem;
         if (!Unk_ov050_0225a888_Same(p, &t1)) {
-            switch (unk_ac) {
+            switch (topic) {
             case 0xc:
             case 0xd:
             case 0x18:
             case 0x19: {
-                if (!Unk_ov050_0225a888_Same(&unk_b0->unk_72e, &t2)) {
+                if (!Unk_ov050_0225a888_Same(&ownerNpc->selectedItem, &t2)) {
                     s32 idx;
                     BOOL r = FALSE;
-                    if (unk_b0->unk_72e >= 0x1521 && unk_b0->unk_72e <= 0x1530) {
+                    if (ownerNpc->selectedItem >= 0x1521 && ownerNpc->selectedItem <= 0x1530) {
                         r = TRUE;
                     }
                     if (r) {
-                        idx = unk_b0->unk_72e - 0x1521;
+                        idx = ownerNpc->selectedItem - 0x1521;
                     } else {
                         idx = -1;
                     }
-                    l.unk_01 = idx;
-                    func_02067a1c(unk_3c, 2, &l.unk_01, (void *)"st_roof_paint");
+                    l.roofColor = idx;
+                    TalkWindowState_setSlotFromString(window, 2, &l.roofColor, (void *)"st_roof_paint");
                 }
             }
             case 8:
@@ -3220,10 +2945,10 @@ void Unk_ov050_0225e4b4::vfunc_78(Unk_ov050_0225a888_Out *out) {
             case 0x15:
             case 0x16:
             case 0x17:
-                if (!Unk_ov050_0225a888_Same(&unk_b0->unk_72e, &t3)) {
-                    unk_c0 = func_0204bd80(&unk_b0->unk_72e);
-                    func_02015958(this, unk_c0, 4, 10, 1, 0);
-                    func_0201578c(this, &unk_b0->unk_72e, 1, 7);
+                if (!Unk_ov050_0225a888_Same(&ownerNpc->selectedItem, &t3)) {
+                    price = Item_GetShopPrice(&ownerNpc->selectedItem);
+                    ActorTalkRequest_setNumberSlot(this, price, 4, 10, 1, 0);
+                    ActorTalkRequest_setItemNameSlot(this, &ownerNpc->selectedItem, 1, 7);
                 }
                 break;
             case 0xe:
@@ -3236,87 +2961,87 @@ void Unk_ov050_0225e4b4::vfunc_78(Unk_ov050_0225a888_Out *out) {
             }
         }
     }
-    if (unk_ac >= 0 && unk_ac < 0x1f) {
-        out->unk_04 = (((u8 (*)[8])((u8 *)data_ov050_0225daac + 4))[unk_ac][0]);
-        out->unk_00 = (char *)data_ov050_0225daac[unk_ac].name;
-        if (unk_ac == 0x12) {
-            void *r = func_02002d3c(unk_b0->func_ov050_02259398(), 0);
+    if (topic >= 0 && topic < 0x1f) {
+        out->msgIndex = (((u8 (*)[8])((u8 *)sSpNpcNookShopTopicTable + 4))[topic][0]);
+        out->msgKey = (char *)sSpNpcNookShopTopicTable[topic].msgKey;
+        if (topic == 0x12) {
+            void *r = Actor_findByProfile(ownerNpc->getOtherTwinProfile(), 0);
             if (r) {
-                ((Unk_ov050_0225e400 *)r)->func_ov050_0225d1d4(0xc);
+                ((SpNpcNookShop *)r)->changeAct(0xc);
             }
         }
     }
 }
-extern "C" void *data_ov050_0225e128[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a2c0Ev, 0};
+extern "C" void *data_ov050_0225e128[2] = {(void *)_ZN17SpNpcNookShopTalk15ackHouseUpgradeEv, 0};
 
-extern "C" void *data_ov050_0225df60[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a2d0Ev, 0};
+extern "C" void *data_ov050_0225df60[2] = {(void *)_ZN17SpNpcNookShopTalk21showFirstPurchaseHintEv, 0};
 
-extern "C" void *data_ov050_0225e118[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a4cEi, 0};
+extern "C" void *data_ov050_0225e118[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice0Ei, 0};
 
-extern "C" void *data_ov050_0225e110[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a634Ev, 0};
+extern "C" void *data_ov050_0225e110[2] = {(void *)_ZN17SpNpcNookShopTalk15openCatalogMenuEv, 0};
 
-extern "C" void *data_ov050_0225e108[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259d48Ei, 0};
+extern "C" void *data_ov050_0225e108[2] = {(void *)_ZN17SpNpcNookShopTalk11onBuyChoiceEi, 0};
 
-extern "C" void *data_ov050_0225e100[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a2c0Ev, 0};
+extern "C" void *data_ov050_0225e100[2] = {(void *)_ZN17SpNpcNookShopTalk15ackHouseUpgradeEv, 0};
 
-extern "C" void *data_ov050_0225e0f8[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225d188Ev, 0};
+extern "C" void *data_ov050_0225e0f8[2] = {(void *)_ZN13SpNpcNookShop9mainAct00Ev, 0};
 
-extern "C" void *data_ov050_0225e0f0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a2c0Ev, 0};
+extern "C" void *data_ov050_0225e0f0[2] = {(void *)_ZN17SpNpcNookShopTalk15ackHouseUpgradeEv, 0};
 
-extern "C" void *data_ov050_0225e0e8[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c708Ev, 0};
+extern "C" void *data_ov050_0225e0e8[2] = {(void *)_ZN13SpNpcNookShop9mainAct0EEv, 0};
 
-extern "C" void *data_ov050_0225e0e0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259bb8Ei, 0};
+extern "C" void *data_ov050_0225e0e0[2] = {(void *)_ZN17SpNpcNookShopTalk17onBuyOrShowChoiceEi, 0};
 
-extern "C" void *data_ov050_0225e0d8[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c740Ev, 0};
+extern "C" void *data_ov050_0225e0d8[2] = {(void *)_ZN13SpNpcNookShop10setupAct0EEv, 0};
 
-extern "C" void *data_ov050_0225e0d0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a658Ev, 0};
+extern "C" void *data_ov050_0225e0d0[2] = {(void *)_ZN17SpNpcNookShopTalk12giveMoneyBagEv, 0};
 
-extern "C" void *data_ov050_0225e0c8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259cacEi, 0};
+extern "C" void *data_ov050_0225e0c8[2] = {(void *)_ZN17SpNpcNookShopTalk23onBuyAfterPreviewChoiceEi, 0};
 
-extern "C" void *data_ov050_0225e0c0[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cc68Ev, 0};
+extern "C" void *data_ov050_0225e0c0[2] = {(void *)_ZN13SpNpcNookShop10setupAct05Ev, 0};
 
-extern "C" void *data_ov050_0225e0b8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225c294Ev, 0};
+extern "C" void *data_ov050_0225e0b8[2] = {(void *)_ZN17SpNpcNookShopTalk14handleSellMenuEv, 0};
 
 // ---- rodata / data
-extern "C" const Unk_ov050_022590f8_Vec data_ov050_0225da28 = {0xd000, 0, 0x8000};
+extern "C" const VecFx32 sSpNpcNookShopArbeitStairsBound = {0xd000, 0, 0x8000};
 
-extern "C" const Unk_ov050_022590f8_Vec data_ov050_0225da34 = {0x10000, 0, 0x9000};
+extern "C" const VecFx32 sSpNpcNookShopArbeitPushBackPos = {0x10000, 0, 0x9000};
 
 extern "C" const s32 data_ov050_0225da40[3] = {0x10000, 0, 0x8000};
 
-extern "C" const u8 data_ov050_0225da5c[32] = {0x00, 0x01, 0x02, 0x03, 0x00, 0x00, 0x04, 0x05, 0x06, 0x00, 0x00, 0x00, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x00, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00};
+extern "C" const u8 sSpNpcNookShopDramaMsgTable[32] = {0x00, 0x01, 0x02, 0x03, 0x00, 0x00, 0x04, 0x05, 0x06, 0x00, 0x00, 0x00, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x00, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-void Unk_ov050_0225e4b4::vfunc_14() {
-    void *h = func_0209750c();
-    func_0209865c(h);
-    if (func_02098044(h, 1)) {
-        vfunc_a8();
+void SpNpcNookShopTalk::onMessageEnd(u32) {
+    void *h = PlayerData_GetCurrent();
+    PlayerData_getErrands(h);
+    if (PlayerData_testFlag(h, 1)) {
+        onArbeitMessageEnd();
         return;
     }
-    if (unk_b0->func_ov050_02258ed0()) {
-        if (func_0212a15c((char *)this + 4, data_ov050_0225e1c4, func_0212a438(data_ov050_0225e1c4)) != 0) {
+    if (ownerNpc->isNook()) {
+        if (strncmp((char *)this + 4, sSpNpcNookShopKey, strlen(sSpNpcNookShopKey)) != 0) {
             return;
         }
     }
-    const char *name = unk_b0->func_ov050_02258ed0() ? data_ov050_0225e1c4 : data_ov050_0225e1a4;
-    unk_cc = 0xff;
+    const char *name = ownerNpc->isNook() ? sSpNpcNookShopKey : sSpNpcNookShopTwinsKey;
+    nextMsg = 0xff;
     static Unk_ov050_0225a6e0_Row tbl[13] = {
-        {0x37, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225dff0},
-        {0x36, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e008},
-        {0x07, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e070},
-        {0x13, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e0d0},
-        {0x18, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e110},
-        {0x22, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225df68},
-        {0x23, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225df60},
-        {0x49, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225df58},
-        {0x4b, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225df50},
-        {0x4d, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e128},
-        {0x4f, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225df40},
-        {0x51, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e100},
-        {0x53, *(Unk_ov050_0225e4b4::Fn *)data_ov050_0225e0f0},
+        {0x37, *(SpNpcNookShopTalk::Fn *)data_ov050_0225dff0},
+        {0x36, *(SpNpcNookShopTalk::Fn *)data_ov050_0225e008},
+        {0x07, *(SpNpcNookShopTalk::Fn *)data_ov050_0225e070},
+        {0x13, *(SpNpcNookShopTalk::Fn *)data_ov050_0225e0d0},
+        {0x18, *(SpNpcNookShopTalk::Fn *)data_ov050_0225e110},
+        {0x22, *(SpNpcNookShopTalk::Fn *)data_ov050_0225df68},
+        {0x23, *(SpNpcNookShopTalk::Fn *)data_ov050_0225df60},
+        {0x49, *(SpNpcNookShopTalk::Fn *)data_ov050_0225df58},
+        {0x4b, *(SpNpcNookShopTalk::Fn *)data_ov050_0225df50},
+        {0x4d, *(SpNpcNookShopTalk::Fn *)data_ov050_0225e128},
+        {0x4f, *(SpNpcNookShopTalk::Fn *)data_ov050_0225df40},
+        {0x51, *(SpNpcNookShopTalk::Fn *)data_ov050_0225e100},
+        {0x53, *(SpNpcNookShopTalk::Fn *)data_ov050_0225e0f0},
     };
     u32 i = 0;
-    u8 *q = &unk_1e;
+    u8 *q = &msgIndex;
     goto test;
 loop:
     {
@@ -3331,50 +3056,50 @@ loop:
     i++;
 test:
     if (i < 13) goto loop;
-    if (unk_cc != 0xff) {
-        u8 c = unk_cc;
-        func_02067a84(unk_3c, &c, (void *)name);
+    if (nextMsg != 0xff) {
+        u8 c = nextMsg;
+        TalkWindowState_setNextMessage(window, &c, (void *)name);
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a69c() {
+void SpNpcNookShopTalk::giveGlamourShot() {
     u16 a = 0x4a30;
-    func_02014e60(this, &a, 0, 5, 0);
+    ActorTalkRequest_requestGiveItem(this, &a, 0, 5, 0);
     u16 b = 0x4a30;
-    func_02099014(&b, 0);
-    unk_c8 = -1;
-    unk_cc = 0x38;
+    Pocket_AddItem(&b, 0);
+    safeSlot = -1;
+    nextMsg = 0x38;
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a690() {
-    unk_c8 = -2;
+void SpNpcNookShopTalk::onSafeOfferDeclined() {
+    safeSlot = -2;
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a66c() {
-    func_02015170(this, 0x1d, 0);
-    func_020151d0(this, 2);
-    func_ov050_0225c4fc(0);
+void SpNpcNookShopTalk::openSellMenu() {
+    ActorTalkRequest_setSubSceneKind(this, 0x1d, 0);
+    ActorTalkRequest_openSubScene(this, 2);
+    setPendingMenuHandler(0);
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a658() {
-    func_0201ad4c(unk_b0, unk_c0);
+void SpNpcNookShopTalk::giveMoneyBag() {
+    NpcActor_PayPlayer(ownerNpc, price);
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a634() {
-    func_02015170(this, 0x3e, 0);
-    func_020151d0(this, 2);
-    func_ov050_0225c4fc(1);
+void SpNpcNookShopTalk::openCatalogMenu() {
+    ActorTalkRequest_setSubSceneKind(this, 0x3e, 0);
+    ActorTalkRequest_openSubScene(this, 2);
+    setPendingMenuHandler(1);
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a570() {
-    u16 *p = &unk_b0->unk_72e;
+void SpNpcNookShopTalk::onPurchaseDone() {
+    u16 *p = &ownerNpc->selectedItem;
     if (Unk_ov050_0225a2d0_Same(p)) {
         return;
     }
-    if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x1521, 0x1530)) {
-        unk_cc = 0x2f;
+    if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x1521, 0x1530)) {
+        nextMsg = 0x2f;
         BOOL r = FALSE;
-        u32 v = unk_b0->unk_72e;
+        u32 v = ownerNpc->selectedItem;
         if (v >= 0x1521 && v <= 0x1530) {
             r = TRUE;
         }
@@ -3384,105 +3109,105 @@ void Unk_ov050_0225e4b4::func_ov050_0225a570() {
         } else {
             idx = -1;
         }
-        func_02060430(data_021e58a8, (u8)idx);
+        HouseData_orderRoofPaint(gSaveHouse, (u8)idx);
     } else {
-        unk_cc = 0x23;
+        nextMsg = 0x23;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a2d0() {
-    u16 *p = &unk_b0->unk_72e;
+void SpNpcNookShopTalk::showFirstPurchaseHint() {
+    u16 *p = &ownerNpc->selectedItem;
     if (Unk_ov050_0225a2d0_Same(p)) {
         return;
     }
-    void *h = func_0209750c();
-    if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x1369, 0x1369) && func_02098044(h, 0x29) == 0) {
-        unk_cc = 0x24;
-        func_0209801c(h, 0x29);
-    } else if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x1376, 0x1376) && func_02098044(h, 0x2a) == 0) {
-        unk_cc = 0x25;
-        func_0209801c(h, 0x2a);
-    } else if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x1374, 0x1374) && func_02098044(h, 0x2b) == 0) {
-        unk_cc = 0x26;
-        func_0209801c(h, 0x2b);
-    } else if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x136b, 0x1372) && func_02098044(h, 0x2c) == 0) {
-        unk_cc = 0x27;
-        func_0209801c(h, 0x2c);
-    } else if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x1378, 0x1378) && func_02098044(h, 0x2d) == 0) {
-        unk_cc = 0x28;
-        func_0209801c(h, 0x2d);
-    } else if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x137a, 0x137a) && func_02098044(h, 0x2e) == 0) {
-        unk_cc = 0x29;
-        func_0209801c(h, 0x2e);
-    } else if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x151f, 0x151f) && func_02098044(h, 0x2f) == 0) {
-        unk_cc = 0x39;
-        func_0209801c(h, 0x2f);
-    } else if (Unk_ov050_0225a2d0_R(&unk_b0->unk_72e, 0x156c, 0x156c) && func_02098044(h, 0x37) == 0) {
-        unk_cc = 0x10;
-        func_0209801c(h, 0x37);
+    void *h = PlayerData_GetCurrent();
+    if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x1369, 0x1369) && PlayerData_testFlag(h, 0x29) == 0) {
+        nextMsg = 0x24;
+        PlayerData_setFlag(h, 0x29);
+    } else if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x1376, 0x1376) && PlayerData_testFlag(h, 0x2a) == 0) {
+        nextMsg = 0x25;
+        PlayerData_setFlag(h, 0x2a);
+    } else if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x1374, 0x1374) && PlayerData_testFlag(h, 0x2b) == 0) {
+        nextMsg = 0x26;
+        PlayerData_setFlag(h, 0x2b);
+    } else if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x136b, 0x1372) && PlayerData_testFlag(h, 0x2c) == 0) {
+        nextMsg = 0x27;
+        PlayerData_setFlag(h, 0x2c);
+    } else if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x1378, 0x1378) && PlayerData_testFlag(h, 0x2d) == 0) {
+        nextMsg = 0x28;
+        PlayerData_setFlag(h, 0x2d);
+    } else if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x137a, 0x137a) && PlayerData_testFlag(h, 0x2e) == 0) {
+        nextMsg = 0x29;
+        PlayerData_setFlag(h, 0x2e);
+    } else if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x151f, 0x151f) && PlayerData_testFlag(h, 0x2f) == 0) {
+        nextMsg = 0x39;
+        PlayerData_setFlag(h, 0x2f);
+    } else if (Unk_ov050_0225a2d0_R(&ownerNpc->selectedItem, 0x156c, 0x156c) && PlayerData_testFlag(h, 0x37) == 0) {
+        nextMsg = 0x10;
+        PlayerData_setFlag(h, 0x37);
     }
-    if (unk_cc == 0xff) {
-        if (func_0202e148()) {
-            if (unk_b0->func_ov050_02258ed0()) {
-                if (func_02098044(h, 0x38) == 0) {
-                    unk_cc = 0x30;
-                    func_0209801c(h, 0x38);
+    if (nextMsg == 0xff) {
+        if (Talk_IsInOwnTown()) {
+            if (ownerNpc->isNook()) {
+                if (PlayerData_testFlag(h, 0x38) == 0) {
+                    nextMsg = 0x30;
+                    PlayerData_setFlag(h, 0x38);
                     return;
                 }
             }
         }
     }
-    func_02067a84(unk_3c, data_021edb5c, 0);
+    TalkWindowState_setNextMessage(window, gTalkMsgIndexEnd, 0);
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a2c0() {
-    func_02060340(data_021e58a8);
+void SpNpcNookShopTalk::ackHouseUpgrade() {
+    HouseData_startLoan(gSaveHouse);
 }
 
-void Unk_ov050_0225e4b4::func_ov050_0225a288(s32 row, s32 col) {
-    const u8 *q = data_ov050_0225da4c + row * 4;
+void SpNpcNookShopTalk::setRoofColor(s32 row, s32 col) {
+    const u8 *q = sSpNpcNookShopRoofColorChoices + row * 4;
     u8 v = q[col];
     u8 b = v;
-    func_02067a1c(unk_3c, 2, &b, (void *)"st_roof_paint");
-    func_020602cc(data_021e58a8, v);
+    TalkWindowState_setSlotFromString(window, 2, &b, (void *)"st_roof_paint");
+    HouseData_orderUpgrade(gSaveHouse, v);
 }
-extern "C" void *data_ov050_0225e080[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b518EPv, 0};
+extern "C" void *data_ov050_0225e080[2] = {(void *)_ZN17SpNpcNookShopTalk20arbeitPresentUniformEPv, 0};
 
-extern "C" void *data_ov050_0225e078[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b4c8EPv, 0};
+extern "C" void *data_ov050_0225e078[2] = {(void *)_ZN17SpNpcNookShopTalk22arbeitCheckPocketSpaceEPv, 0};
 
-extern "C" void *data_ov050_0225e070[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a66cEv, 0};
+extern "C" void *data_ov050_0225e070[2] = {(void *)_ZN17SpNpcNookShopTalk12openSellMenuEv, 0};
 
-extern "C" void *data_ov050_0225e068[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b48cEPv, 0};
+extern "C" void *data_ov050_0225e068[2] = {(void *)_ZN17SpNpcNookShopTalk16onArbeitMsgEnd0EEPv, 0};
 
-extern "C" void *data_ov050_0225e060[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b478EPv, 0};
+extern "C" void *data_ov050_0225e060[2] = {(void *)_ZN17SpNpcNookShopTalk16onArbeitMsgEnd12EPv, 0};
 
-extern "C" void *data_ov050_0225e058[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b3e8EPv, 0};
+extern "C" void *data_ov050_0225e058[2] = {(void *)_ZN17SpNpcNookShopTalk28arbeitStartFurnitureDeliveryEPv, 0};
 
-extern "C" void *data_ov050_0225e050[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b3e8EPv, 0};
+extern "C" void *data_ov050_0225e050[2] = {(void *)_ZN17SpNpcNookShopTalk28arbeitStartFurnitureDeliveryEPv, 0};
 
-extern "C" void *data_ov050_0225e048[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b3acEPv, 0};
+extern "C" void *data_ov050_0225e048[2] = {(void *)_ZN17SpNpcNookShopTalk24arbeitGiveDeliveryParcelEPv, 0};
 
-extern "C" void *data_ov050_0225def0[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b498EPv, 0};
+extern "C" void *data_ov050_0225def0[2] = {(void *)_ZN17SpNpcNookShopTalk16arbeitGivePlantsEPv, 0};
 
-extern "C" void *data_ov050_0225e038[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b2d0EPv, 0};
+extern "C" void *data_ov050_0225e038[2] = {(void *)_ZN17SpNpcNookShopTalk20arbeitGiveStationeryEPv, 0};
 
-extern "C" void *data_ov050_0225e030[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b288EPv, 0};
+extern "C" void *data_ov050_0225e030[2] = {(void *)_ZN17SpNpcNookShopTalk21arbeitOfferStationeryEPv, 0};
 
-extern "C" void *data_ov050_0225e028[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b24cEPv, 0};
+extern "C" void *data_ov050_0225e028[2] = {(void *)_ZN17SpNpcNookShopTalk23arbeitGiveNewStationeryEPv, 0};
 
-extern "C" void *data_ov050_0225dee0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225dee0[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225e018[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b194EPv, 0};
+extern "C" void *data_ov050_0225e018[2] = {(void *)_ZN17SpNpcNookShopTalk25arbeitStartCarpetDeliveryEPv, 0};
 
-extern "C" void *data_ov050_0225e010[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b158EPv, 0};
+extern "C" void *data_ov050_0225e010[2] = {(void *)_ZN17SpNpcNookShopTalk16arbeitGiveCarpetEPv, 0};
 
-extern "C" void *data_ov050_0225e008[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a690Ev, 0};
+extern "C" void *data_ov050_0225e008[2] = {(void *)_ZN17SpNpcNookShopTalk19onSafeOfferDeclinedEv, 0};
 
-extern "C" void *data_ov050_0225e000[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259808Ei, 0};
+extern "C" void *data_ov050_0225e000[2] = {(void *)_ZN17SpNpcNookShopTalk24onArbeitStationeryChoiceEi, 0};
 
-extern "C" void *data_ov050_0225dff8[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b088EPv, 0};
+extern "C" void *data_ov050_0225dff8[2] = {(void *)_ZN17SpNpcNookShopTalk16onArbeitMsgEnd31EPv, 0};
 
-extern "C" void *data_ov050_0225dff0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a69cEv, 0};
+extern "C" void *data_ov050_0225dff0[2] = {(void *)_ZN17SpNpcNookShopTalk15giveGlamourShotEv, 0};
 
 extern "C" char data_ov050_0225e2d0[] = "npc_sp/model/rcn_tex.nsbtx";
 
@@ -3494,151 +3219,152 @@ extern "C" char data_ov050_0225e324[] = "npc_sp/model/rcd_tex.nsbtx";
 
 extern "C" char data_ov050_0225e340[] = "npc_sp/model/lrc_tex.nsbtx";
 
-extern "C" const s32 data_ov050_0225da7c[6][2] = {
+extern "C" const s32 sSpNpcNookShopItemTopicTable[6][2] = {
     {0x0b, 0x17}, {0x0a, 0x16}, {0x0d, 0x19}, {0x0c, 0x18}, {0x08, 0x14}, {0x09, 0x15},
 };
 
-extern "C" Unk_ov050_0225d1d4_Ent data_ov050_0225e8a8[19] = {
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225de58, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e0f8},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225df30, *(Unk_ov050_0225e400::Fn *)data_ov050_0225de00},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225de80, *(Unk_ov050_0225e400::Fn *)data_ov050_0225dfd0},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225df70, *(Unk_ov050_0225e400::Fn *)data_ov050_0225dfc8},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225df28, *(Unk_ov050_0225e400::Fn *)data_ov050_0225de48},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225e0c0, *(Unk_ov050_0225e400::Fn *)data_ov050_0225df18},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225df38, *(Unk_ov050_0225e400::Fn *)data_ov050_0225de40},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225de50, *(Unk_ov050_0225e400::Fn *)data_ov050_0225ddf8},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225df78, *(Unk_ov050_0225e400::Fn *)data_ov050_0225de08},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225df80, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e178},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225de88, *(Unk_ov050_0225e400::Fn *)data_ov050_0225dfa8},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225dde8, *(Unk_ov050_0225e400::Fn *)data_ov050_0225ddf0},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225de10, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e190},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225e188, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e180},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225e0d8, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e0e8},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225e168, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e160},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225e158, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e150},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225e148, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e140},
-    {*(Unk_ov050_0225e400::Fn *)data_ov050_0225e138, *(Unk_ov050_0225e400::Fn *)data_ov050_0225e130},
+extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19] = {
+    {*(SpNpcNookShop::Fn *)data_ov050_0225de58, *(SpNpcNookShop::Fn *)data_ov050_0225e0f8},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225df30, *(SpNpcNookShop::Fn *)data_ov050_0225de00},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225de80, *(SpNpcNookShop::Fn *)data_ov050_0225dfd0},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225df70, *(SpNpcNookShop::Fn *)data_ov050_0225dfc8},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225df28, *(SpNpcNookShop::Fn *)data_ov050_0225de48},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225e0c0, *(SpNpcNookShop::Fn *)data_ov050_0225df18},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225df38, *(SpNpcNookShop::Fn *)data_ov050_0225de40},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225de50, *(SpNpcNookShop::Fn *)data_ov050_0225ddf8},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225df78, *(SpNpcNookShop::Fn *)data_ov050_0225de08},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225df80, *(SpNpcNookShop::Fn *)data_ov050_0225e178},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225de88, *(SpNpcNookShop::Fn *)data_ov050_0225dfa8},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225dde8, *(SpNpcNookShop::Fn *)data_ov050_0225ddf0},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225de10, *(SpNpcNookShop::Fn *)data_ov050_0225e190},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225e188, *(SpNpcNookShop::Fn *)data_ov050_0225e180},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225e0d8, *(SpNpcNookShop::Fn *)data_ov050_0225e0e8},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225e168, *(SpNpcNookShop::Fn *)data_ov050_0225e160},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225e158, *(SpNpcNookShop::Fn *)data_ov050_0225e150},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225e148, *(SpNpcNookShop::Fn *)data_ov050_0225e140},
+    {*(SpNpcNookShop::Fn *)data_ov050_0225e138, *(SpNpcNookShop::Fn *)data_ov050_0225e130},
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-void Unk_ov050_0225e4b4::vfunc_18(s32 a) {
+void SpNpcNookShopTalk::onChoice(u32 a_) {
+    s32 a = (s32)a_;
     static Unk_ov050_0225e4b4_ArgFn tbl[3] = {
-        *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225df10,
-        *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e0a0,
-        *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225df00,
+        *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df10,
+        *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e0a0,
+        *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df00,
     };
     s32 i = 0;
-    void *h = func_0209750c();
-    func_0209865c(h);
-    if (func_02098044(h, 1)) {
+    void *h = PlayerData_GetCurrent();
+    PlayerData_getErrands(h);
+    if (PlayerData_testFlag(h, 1)) {
         i = 2;
-    } else if (unk_ac == 0xf) {
+    } else if (topic == 0xf) {
         i = 1;
     }
     (this->*tbl[i])(a);
 }
-extern "C" void *data_ov050_0225e088[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b518EPv, 0};
+extern "C" void *data_ov050_0225e088[2] = {(void *)_ZN17SpNpcNookShopTalk20arbeitPresentUniformEPv, 0};
 
-extern "C" void *data_ov050_0225df98[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225df98[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225df90[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225df90[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225df88[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_022599f8Ei, 0};
+extern "C" void *data_ov050_0225df88[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice3Ei, 0};
 
-extern "C" void *data_ov050_0225df80[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c838Ev, 0};
+extern "C" void *data_ov050_0225df80[2] = {(void *)_ZN13SpNpcNookShop10setupAct09Ev, 0};
 
-extern "C" void *data_ov050_0225df78[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c94cEv, 0};
+extern "C" void *data_ov050_0225df78[2] = {(void *)_ZN13SpNpcNookShop10setupAct08Ev, 0};
 
-extern "C" void *data_ov050_0225df70[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cec4Ev, 0};
+extern "C" void *data_ov050_0225df70[2] = {(void *)_ZN13SpNpcNookShop10setupAct03Ev, 0};
 
-extern "C" void *data_ov050_0225e138[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c9a8Ev, 0};
+extern "C" void *data_ov050_0225e138[2] = {(void *)_ZN13SpNpcNookShop10setupAct12Ev, 0};
 
-extern "C" void *data_ov050_0225de80[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cfecEv, 0};
+extern "C" void *data_ov050_0225de80[2] = {(void *)_ZN13SpNpcNookShop10setupAct02Ev, 0};
 
-extern "C" void *data_ov050_0225df58[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a2c0Ev, 0};
+extern "C" void *data_ov050_0225df58[2] = {(void *)_ZN17SpNpcNookShopTalk15ackHouseUpgradeEv, 0};
 
-extern "C" void *data_ov050_0225df50[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a2c0Ev, 0};
+extern "C" void *data_ov050_0225df50[2] = {(void *)_ZN17SpNpcNookShopTalk15ackHouseUpgradeEv, 0};
 
-extern "C" void *data_ov050_0225df48[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259d48Ei, 0};
+extern "C" void *data_ov050_0225df48[2] = {(void *)_ZN17SpNpcNookShopTalk11onBuyChoiceEi, 0};
 
-extern "C" void *data_ov050_0225df40[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a2c0Ev, 0};
+extern "C" void *data_ov050_0225df40[2] = {(void *)_ZN17SpNpcNookShopTalk15ackHouseUpgradeEv, 0};
 
-extern "C" void *data_ov050_0225df38[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cc08Ev, 0};
+extern "C" void *data_ov050_0225df38[2] = {(void *)_ZN13SpNpcNookShop10setupAct06Ev, 0};
 
-extern "C" void *data_ov050_0225df30[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225d118Ev, 0};
+extern "C" void *data_ov050_0225df30[2] = {(void *)_ZN13SpNpcNookShop10setupAct01Ev, 0};
 
-extern "C" void *data_ov050_0225e0b0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225c1a8Ev, 0};
+extern "C" void *data_ov050_0225e0b0[2] = {(void *)_ZN17SpNpcNookShopTalk17handleCatalogMenuEv, 0};
 
-extern "C" void *data_ov050_0225df20[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225df20[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225e090[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b56cEPv, 0};
+extern "C" void *data_ov050_0225e090[2] = {(void *)_ZN17SpNpcNookShopTalk17arbeitGiveUniformEPv, 0};
 
-extern "C" void *data_ov050_0225df10[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259f18Ev, 0};
+extern "C" void *data_ov050_0225df10[2] = {(void *)_ZN17SpNpcNookShopTalk12onShopChoiceEv, 0};
 
-extern "C" void *data_ov050_0225df08[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259b2cEi, 0};
+extern "C" void *data_ov050_0225df08[2] = {(void *)_ZN17SpNpcNookShopTalk16onBuyPaintChoiceEi, 0};
 
-extern "C" void *data_ov050_0225df00[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259838Ev, 0};
+extern "C" void *data_ov050_0225df00[2] = {(void *)_ZN17SpNpcNookShopTalk14onArbeitChoiceEv, 0};
 
-extern "C" void *data_ov050_0225def8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259d48Ei, 0};
+extern "C" void *data_ov050_0225def8[2] = {(void *)_ZN17SpNpcNookShopTalk11onBuyChoiceEi, 0};
 
-extern "C" void *data_ov050_0225de48[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225ccb8Ev, 0};
+extern "C" void *data_ov050_0225de48[2] = {(void *)_ZN13SpNpcNookShop9mainAct04Ev, 0};
 
-extern "C" void *data_ov050_0225dee8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225dee8[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" char data_ov050_0225e1a4[] = "sp_npc_twins";
+extern "C" char sSpNpcNookShopTwinsKey[] = "sp_npc_twins";
 
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e288 = {func_ov050_0225d8f4, 0x76, 0x7b, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcNookShopProfile = {(void *(*)())SpNpcNookShop_Create, 0x76, 0x7b, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e2a0 = {func_ov050_0225d7c0, 0x75, 0x7a, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTimmyProfile = {(void *(*)())SpNpcNookShop_CreateTimmy, 0x75, 0x7a, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov050_SceneEntry data_ov050_0225e2b8 = {func_ov050_0225d68c, 0x74, 0x79, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTommyProfile = {(void *(*)())SpNpcNookShop_CreateTommy, 0x74, 0x79, 2, 0x5000, 0x5000, 0x3e800};
 
-void Unk_ov050_0225e4b4::func_ov050_02259f18() {
-    func_02015a5c(this);
-    s32 t = func_020aa514();
-    unk_cc = 0xff;
-    static Unk_ov050_02259838_Row tbl[37] = {
-        {0x00, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dee8},
-        {0x02, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dee0},
-        {0x05, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225ded8},
-        {0x06, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225ded0},
-        {0x08, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dec8},
-        {0x0a, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dec0},
-        {0x0b, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225df98},
-        {0x0c, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de78},
-        {0x0e, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de90},
-        {0x0f, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de98},
-        {0x11, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dfc0},
-        {0x12, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dfb8},
-        {0x17, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225df90},
-        {0x19, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dfa0},
-        {0x1a, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e098},
-        {0x1b, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e120},
-        {0x1c, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de68},
-        {0x1d, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de60},
-        {0x1e, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225df48},
-        {0x2a, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e108},
-        {0x2b, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e0e0},
-        {0x2c, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e0c8},
-        {0x2e, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225df08},
-        {0x31, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225def8},
-        {0x35, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de18},
-        {0x40, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de20},
-        {0x42, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de70},
-        {0x43, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225deb8},
-        {0x44, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dea0},
-        {0x45, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dea8},
-        {0x46, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225df88},
-        {0x47, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e170},
-        {0x55, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225dde0},
-        {0x56, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e118},
-        {0x58, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225df20},
-        {0x59, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de30},
-        {0x5d, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225de28},
+void SpNpcNookShopTalk::onShopChoice() {
+    ActorTalkRequest_getChoiceList(this);
+    s32 t = ChoiceList_getResult();
+    nextMsg = 0xff;
+    static SpNpcNookShopChoiceHandler tbl[37] = {
+        {0x00, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dee8},
+        {0x02, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dee0},
+        {0x05, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225ded8},
+        {0x06, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225ded0},
+        {0x08, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dec8},
+        {0x0a, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dec0},
+        {0x0b, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df98},
+        {0x0c, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de78},
+        {0x0e, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de90},
+        {0x0f, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de98},
+        {0x11, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dfc0},
+        {0x12, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dfb8},
+        {0x17, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df90},
+        {0x19, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dfa0},
+        {0x1a, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e098},
+        {0x1b, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e120},
+        {0x1c, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de68},
+        {0x1d, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de60},
+        {0x1e, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df48},
+        {0x2a, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e108},
+        {0x2b, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e0e0},
+        {0x2c, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e0c8},
+        {0x2e, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df08},
+        {0x31, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225def8},
+        {0x35, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de18},
+        {0x40, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de20},
+        {0x42, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de70},
+        {0x43, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225deb8},
+        {0x44, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dea0},
+        {0x45, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dea8},
+        {0x46, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df88},
+        {0x47, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e170},
+        {0x55, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dde0},
+        {0x56, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e118},
+        {0x58, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df20},
+        {0x59, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de30},
+        {0x5d, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225de28},
     };
     u32 i = 0;
-    u8 *pe = &unk_1e;
+    u8 *pe = &msgIndex;
     goto test;
 loop:
     {
@@ -3653,308 +3379,308 @@ test:
     if (i < 37) {
         goto loop;
     }
-    if (unk_cc != 0xff) {
-        char *str = unk_b0->func_ov050_02258ed0() != 0 ? data_ov050_0225e1c4 : data_ov050_0225e1a4;
-        u8 b = unk_cc;
-        func_02067a84(unk_3c, &b, str);
+    if (nextMsg != 0xff) {
+        char *str = ownerNpc->isNook() != 0 ? sSpNpcNookShopKey : sSpNpcNookShopTwinsKey;
+        u8 b = nextMsg;
+        TalkWindowState_setNextMessage(window, &b, str);
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259e80(s32 p) {
-    func_0209750c();
+void SpNpcNookShopTalk::onMainMenuChoice(s32 p) {
+    PlayerData_GetCurrent();
     switch (p) {
     case 0:
-        unk_cc = 7;
+        nextMsg = 7;
         break;
     case 1:
-        if (func_0202e148() == 0) {
-            unk_cc = 0x59;
-        } else if (func_020aca18() != 0) {
-            unk_cc = 0x18;
+        if (Talk_IsInOwnTown() == 0) {
+            nextMsg = 0x59;
+        } else if (NookShop_CanTakeCatalogOrder() != 0) {
+            nextMsg = 0x18;
         } else {
-            unk_cc = 0x17;
+            nextMsg = 0x17;
         }
         break;
     case 2:
-        if (func_0209cef4() != 0) {
-            s32 r = func_0208653c(data_021ed29c);
-            func_02015958(this, r, 1, 3, 1, 0);
-            unk_cc = 0x16;
+        if (Clock_GetWeekday() != 0) {
+            s32 r = TurnipMarket_getPrice(data_021ed29c);
+            ActorTalkRequest_setNumberSlot(this, r, 1, 3, 1, 0);
+            nextMsg = 0x16;
         } else {
-            unk_cc = 0xd;
+            nextMsg = 0xd;
         }
         break;
     case 3:
-        unk_cc = 0x15;
+        nextMsg = 0x15;
         break;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259e4c(s32 p) {
+void SpNpcNookShopTalk::onDeliveryChoice(s32 p) {
     if (p == 0) {
-        func_0201517c(this, (void *)func_ov050_0225c180, 0xd, 0);
-        func_020151d0(this, 0);
-        func_ov050_0225c4fc(2);
+        ActorTalkRequest_setPocketFilter(this, (void *)SpNpcNookShop_IsDeliveryParcel, 0xd, 0);
+        ActorTalkRequest_openSubScene(this, 0);
+        setPendingMenuHandler(2);
     } else {
-        unk_cc = 0xf;
+        nextMsg = 0xf;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259e38(s32 p) {
+void SpNpcNookShopTalk::onCannotBuyChoice(s32 p) {
     if (p != 0) {
-        func_0206eb38(0);
+        MenuCtrl_ReturnChosenItems(0);
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259d90(s32 p) {
+void SpNpcNookShopTalk::onCatalogOrderChoice(s32 p) {
     if (p == 0) {
-        if (func_0201ade4(unk_b0, (s32)unk_c0) != 0) {
-            func_0201adc8(unk_b0, (s32)unk_c0);
-            unk_cc = 0x1c;
-            u16 *q = &unk_b0->unk_72e;
+        if (NpcActor_CanPlayerPay(ownerNpc, (s32)price) != 0) {
+            NpcActor_ChargePlayer(ownerNpc, (s32)price);
+            nextMsg = 0x1c;
+            u16 *q = &ownerNpc->selectedItem;
             if (!Unk_ov050_02259bb8_Match(q)) {
-                func_020ac948(&unk_b0->unk_72e);
+                NookShop_SendCatalogOrder(&ownerNpc->selectedItem);
             }
         } else {
-            unk_cc = 0x1d;
+            nextMsg = 0x1d;
         }
     } else {
-        unk_cc = 0x1b;
+        nextMsg = 0x1b;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259d48(s32 p) {
+void SpNpcNookShopTalk::onBuyChoice(s32 p) {
     if (p == 0) {
-        if (func_02098ffc() < 0) {
-            unk_cc = 0x20;
-        } else if (func_0201ade4(unk_b0, (s32)unk_c0) == 0) {
-            unk_cc = 0x21;
+        if (Pocket_FindEmpty() < 0) {
+            nextMsg = 0x20;
+        } else if (NpcActor_CanPlayerPay(ownerNpc, (s32)price) == 0) {
+            nextMsg = 0x21;
         } else {
-            unk_cc = 0x22;
-            func_ov050_0225978c();
+            nextMsg = 0x22;
+            buySelectedItem();
         }
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259cac(s32 p) {
-    u16 *q = &unk_b0->unk_72e;
+void SpNpcNookShopTalk::onBuyAfterPreviewChoice(s32 p) {
+    u16 *q = &ownerNpc->selectedItem;
     if (!Unk_ov050_02259bb8_Match(q)) {
         BOOL r = FALSE;
-        u32 v = unk_b0->unk_72e;
+        u32 v = ownerNpc->selectedItem;
         if (v < 0x1100 || v > 0x1143) {
         } else {
             r = TRUE;
         }
         if (r) {
-            func_020341f4(1);
+            RoomWallFloor_RestoreWallpaper(1);
         } else {
-            func_020341c0(1);
+            RoomWallFloor_RestoreCarpet(1);
         }
-        func_0203a5ac();
+        Camera_RestorePrevMode();
     }
-    func_ov050_02259d48(p);
+    onBuyChoice(p);
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259bb8(s32 p) {
+void SpNpcNookShopTalk::onBuyOrShowChoice(s32 p) {
     if (p == 0) {
-        if (func_02098ffc() < 0) {
-            unk_cc = 0x20;
-        } else if (func_0201ade4(unk_b0, (s32)unk_c0) == 0) {
-            unk_cc = 0x21;
+        if (Pocket_FindEmpty() < 0) {
+            nextMsg = 0x20;
+        } else if (NpcActor_CanPlayerPay(ownerNpc, (s32)price) == 0) {
+            nextMsg = 0x21;
         } else {
-            unk_cc = 0x22;
-            func_ov050_0225978c();
+            nextMsg = 0x22;
+            buySelectedItem();
         }
     } else if (p == 1) {
-        u16 *q = &unk_b0->unk_72e;
+        u16 *q = &ownerNpc->selectedItem;
         if (!Unk_ov050_02259bb8_Match(q)) {
             BOOL r = FALSE;
-            u32 v = unk_b0->unk_72e;
+            u32 v = ownerNpc->selectedItem;
             if (v < 0x1100 || v > 0x1143) {
             } else {
                 r = TRUE;
             }
             if (r) {
-                func_ov004_0223fcd4();
-                func_020342cc(&unk_b0->unk_72e, 0, 1, 1);
+                Camera_SetMode11();
+                RoomWallFloor_SetWallpaper(&ownerNpc->selectedItem, 0, 1, 1);
             } else {
-                func_ov004_0223fcb4();
-                func_02034250(&unk_b0->unk_72e, 0, 1, 1);
+                Camera_SetMode12();
+                RoomWallFloor_SetCarpet(&ownerNpc->selectedItem, 0, 1, 1);
             }
         }
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259b2c(s32 p) {
+void SpNpcNookShopTalk::onBuyPaintChoice(s32 p) {
     if (p == 0) {
-        if (func_0201ade4(unk_b0, (s32)unk_c0) == 0) {
-            unk_cc = 0x21;
+        if (NpcActor_CanPlayerPay(ownerNpc, (s32)price) == 0) {
+            nextMsg = 0x21;
         } else {
-            Unk_ov050_0225e400 *o;
-            unk_cc = 0x22;
-            unk_b0->unk_738 = 1;
-            func_0201adc8(unk_b0, (s32)unk_c0);
-            func_0209750c();
-            func_02097740(&data_021d735c, func_0209888c());
-            o = unk_b0;
-            func_020aca4c((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, func_020b50e8());
+            SpNpcNookShop *o;
+            nextMsg = 0x22;
+            ownerNpc->purchasePending = 1;
+            NpcActor_ChargePlayer(ownerNpc, (s32)price);
+            PlayerData_GetCurrent();
+            PlayerDataArray_FindById(&gSavePlayers, PlayerData_getPlayerId());
+            o = ownerNpc;
+            NookShop_BuyAt((void *)o->selectedItemX, (void *)o->selectedItemZ, (void *)price, Scene_GetCurrent());
         }
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259af0(s32 p) {
+void SpNpcNookShopTalk::onSafeOfferChoice(s32 p) {
     if (p == 0) {
-        if (unk_c8 >= 0) {
+        if (safeSlot >= 0) {
             u16 v;
-            func_02099064();
+            Pocket_RemoveItem();
             v = 0x36fc;
-            func_02014ce4(this, &v, 0, 5, 0);
+            ActorTalkRequest_requestTakeItem(this, &v, 0, 5, 0);
         }
-        unk_cc = 0x37;
+        nextMsg = 0x37;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259a68(s32 p) {
+void SpNpcNookShopTalk::onSellConfirmChoice(s32 p) {
     if (p == 0) {
-        switch (func_0201ad68(unk_b0, (s32)unk_c0, unk_bc)) {
+        switch (NpcActor_CheckPayoutFits(ownerNpc, (s32)price, soldCount)) {
         case 0:
-            func_0201ad4c(unk_b0, (s32)unk_c0);
-            func_020acb28((void *)unk_c0);
-            unk_cc = 0x12;
+            NpcActor_PayPlayer(ownerNpc, (s32)price);
+            NookShop_RecordBuyback((void *)price);
+            nextMsg = 0x12;
             break;
         case 1:
-            func_020acb28((void *)unk_c0);
-            unk_cc = 0x13;
+            NookShop_RecordBuyback((void *)price);
+            nextMsg = 0x13;
             break;
         case 2:
-            unk_cc = 0x5d;
-            func_0206eb38(0);
+            nextMsg = 0x5d;
+            MenuCtrl_ReturnChosenItems(0);
             break;
         }
     } else {
-        if (unk_1e != 0x40) {
-            func_0206eb38(0);
+        if (msgIndex != 0x40) {
+            MenuCtrl_ReturnChosenItems(0);
         } else {
-            func_0206eb38(1);
+            MenuCtrl_ReturnChosenItems(1);
         }
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259a4c(s32 p) {
+void SpNpcNookShopTalk::onRoofColorChoice0(s32 p) {
     if (p != 4) {
-        func_ov050_0225a288(0, p);
-        unk_cc = 0x48;
+        setRoofColor(0, p);
+        nextMsg = 0x48;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259a30(s32 p) {
+void SpNpcNookShopTalk::onRoofColorChoice1(s32 p) {
     if (p != 4) {
-        func_ov050_0225a288(1, p);
-        unk_cc = 0x48;
+        setRoofColor(1, p);
+        nextMsg = 0x48;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259a14(s32 p) {
+void SpNpcNookShopTalk::onRoofColorChoice2(s32 p) {
     if (p != 4) {
-        func_ov050_0225a288(2, p);
-        unk_cc = 0x48;
+        setRoofColor(2, p);
+        nextMsg = 0x48;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_022599f8(s32 p) {
+void SpNpcNookShopTalk::onRoofColorChoice3(s32 p) {
     if (p != 4) {
-        func_ov050_0225a288(3, p);
-        unk_cc = 0x48;
+        setRoofColor(3, p);
+        nextMsg = 0x48;
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_022598e0() {
-    func_02015a5c(this);
-    s32 t = func_020aa514();
-    func_0209750c();
+void SpNpcNookShopTalk::onDrama2Choice() {
+    ActorTalkRequest_getChoiceList(this);
+    s32 t = ChoiceList_getResult();
+    PlayerData_GetCurrent();
     u8 *g = data_021ed29c;
-    s32 lv = unk_1e;
+    s32 lv = msgIndex;
     if (lv <= 0x14) {
-        Unk_ov050_022598e0_Buf buf;
-        unk_cc = 0xff;
+        SpNpcNookShopDramaChoiceLocal buf;
+        nextMsg = 0xff;
         if (t != 3) {
-            func_ov050_0225c000(5);
+            setTopic(5);
         }
         switch (t) {
         case 0:
-            unk_cc = 7;
+            nextMsg = 7;
             break;
         case 1:
-            if (func_0202e148() == 0) {
-                unk_cc = 0x59;
-            } else if (func_020aca18() != 0) {
-                unk_cc = 0x18;
+            if (Talk_IsInOwnTown() == 0) {
+                nextMsg = 0x59;
+            } else if (NookShop_CanTakeCatalogOrder() != 0) {
+                nextMsg = 0x18;
             } else {
-                unk_cc = 0x17;
+                nextMsg = 0x17;
             }
             break;
         case 2:
-            if (func_0209cef4() != 0) {
-                s32 r = func_0208653c(g);
-                func_02015958(this, r, 1, 3, 1, 0);
-                unk_cc = 0x16;
+            if (Clock_GetWeekday() != 0) {
+                s32 r = TurnipMarket_getPrice(g);
+                ActorTalkRequest_setNumberSlot(this, r, 1, 3, 1, 0);
+                nextMsg = 0x16;
             } else {
-                unk_cc = 0xd;
+                nextMsg = 0xd;
             }
             break;
         case 3:
-            if (unk_b0->func_ov050_02258ed0() != 0) {
-                if (func_0202e18c(unk_b0, &buf, 3) != 0) {
-                    func_0202e174(unk_b0, &buf);
+            if (ownerNpc->isNook() != 0) {
+                if (Talk_IsDramaPending(ownerNpc, &buf, 3) != 0) {
+                    Talk_AdvanceDrama(ownerNpc, &buf);
                 }
             }
             break;
         case 4:
-            unk_cc = 0x15;
+            nextMsg = 0x15;
             break;
         }
-        s32 c = unk_cc;
+        s32 c = nextMsg;
         if (c != 0xff) {
             buf.b = c;
-            func_02067a84(unk_3c, &buf.b, data_ov050_0225e1c4);
+            TalkWindowState_setNextMessage(window, &buf.b, sSpNpcNookShopKey);
         }
     }
 }
-extern "C" void *data_ov050_0225deb0[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b018EPv, 0};
+extern "C" void *data_ov050_0225deb0[2] = {(void *)_ZN17SpNpcNookShopTalk16arbeitReduceLoanEPv, 0};
 
-extern "C" void *data_ov050_0225dfa0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225dfa0[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225e0a0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_022598e0Ev, 0};
+extern "C" void *data_ov050_0225e0a0[2] = {(void *)_ZN17SpNpcNookShopTalk14onDrama2ChoiceEv, 0};
 
-extern "C" void *data_ov050_0225de98[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225de98[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225de90[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a68Ei, 0};
+extern "C" void *data_ov050_0225de90[2] = {(void *)_ZN17SpNpcNookShopTalk19onSellConfirmChoiceEi, 0};
 
-extern "C" void *data_ov050_0225e148[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225ca98Ev, 0};
+extern "C" void *data_ov050_0225e148[2] = {(void *)_ZN13SpNpcNookShop10setupAct11Ev, 0};
 
-extern "C" void *data_ov050_0225df68[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225a570Ev, 0};
+extern "C" void *data_ov050_0225df68[2] = {(void *)_ZN17SpNpcNookShopTalk14onPurchaseDoneEv, 0};
 
-extern "C" void *data_ov050_0225de78[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225de78[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225de70[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259a4cEi, 0};
+extern "C" void *data_ov050_0225de70[2] = {(void *)_ZN17SpNpcNookShopTalk18onRoofColorChoice0Ei, 0};
 
-extern "C" void *data_ov050_0225de68[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225de68[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225e0a8[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_0225c0a0Ev, 0};
+extern "C" void *data_ov050_0225e0a8[2] = {(void *)_ZN17SpNpcNookShopTalk18handleDeliveryMenuEv, 0};
 
-extern "C" void *data_ov050_0225e098[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259d90Ei, 0};
+extern "C" void *data_ov050_0225e098[2] = {(void *)_ZN17SpNpcNookShopTalk20onCatalogOrderChoiceEi, 0};
 
-extern "C" char data_ov050_0225e1d4[] = "sp_etc_sequence5_1";
+extern "C" char sSpNpcNookShopSequence5_1Key[] = "sp_etc_sequence5_1";
 
-void Unk_ov050_0225e4b4::func_ov050_02259838() {
-    func_02015a5c(this);
-    s32 t = func_020aa514();
-    unk_cc = 0xff;
-    static Unk_ov050_02259838_Row tbl[1] = {
-        {0x22, *(Unk_ov050_0225e4b4::ArgFn *)data_ov050_0225e000},
+void SpNpcNookShopTalk::onArbeitChoice() {
+    ActorTalkRequest_getChoiceList(this);
+    s32 t = ChoiceList_getResult();
+    nextMsg = 0xff;
+    static SpNpcNookShopChoiceHandler tbl[1] = {
+        {0x22, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e000},
     };
     u32 i = 0;
-    u8 *pe = &unk_1e;
+    u8 *pe = &msgIndex;
     goto test;
 loop:
     {
@@ -3969,138 +3695,138 @@ test:
     if (i < 1) {
         goto loop;
     }
-    if (unk_cc != 0xff) {
-        u8 b = unk_cc;
-        func_02067a84(unk_3c, &b, data_ov050_0225e1d4);
+    if (nextMsg != 0xff) {
+        u8 b = nextMsg;
+        TalkWindowState_setNextMessage(window, &b, sSpNpcNookShopSequence5_1Key);
     }
 }
 
-void Unk_ov050_0225e4b4::func_ov050_02259808(s32 p) {
-    func_0209750c();
+void SpNpcNookShopTalk::onArbeitStationeryChoice(s32 p) {
+    PlayerData_GetCurrent();
     if (p == 0) {
-        if (func_02098ffc() >= 0) {
-            unk_cc = 0x25;
+        if (Pocket_FindEmpty() >= 0) {
+            nextMsg = 0x25;
         } else {
-            unk_cc = 0x17;
+            nextMsg = 0x17;
         }
     }
 }
 
-s32 Unk_ov050_0225e4b4::func_ov050_0225978c() {
-    Unk_ov050_0225e400 *o;
-    unk_b0->unk_738 = 1;
-    func_0201adc8(unk_b0, (s32)unk_c0);
-    func_02099014(&unk_b0->unk_72e, 0);
-    func_0209750c();
-    func_02097740(&data_021d735c, func_0209888c());
-    o = unk_b0;
-    func_020aca4c((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, func_020b50e8());
-    func_020787b0();
+s32 SpNpcNookShopTalk::buySelectedItem() {
+    SpNpcNookShop *o;
+    ownerNpc->purchasePending = 1;
+    NpcActor_ChargePlayer(ownerNpc, (s32)price);
+    Pocket_AddItem(&ownerNpc->selectedItem, 0);
+    PlayerData_GetCurrent();
+    PlayerDataArray_FindById(&gSavePlayers, PlayerData_getPlayerId());
+    o = ownerNpc;
+    NookShop_BuyAt((void *)o->selectedItemX, (void *)o->selectedItemZ, (void *)price, Scene_GetCurrent());
+    VillagerTrend_OnFurnitureBought();
 }
 
-BOOL Unk_ov050_0225e400::vfunc_48() {
-    if (unk_64 < data_ov050_0225da40[2]) {
+BOOL SpNpcNookShop::acceptsInteraction(void *) {
+    if (position.z < data_ov050_0225da40[2]) {
         return FALSE;
     }
-    if (func_02014220(&unk_618) != 0 || func_0201b9bc() != 0 || func_ov050_022590d8() != 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0 || tryItemTalk() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_ov050_0225e400
+// SpNpcNookShop
 
-BOOL Unk_ov050_0225e400::vfunc_58() {
-    if (func_02014220(&unk_618) != 0 || func_0201b9bc() != 0) {
+BOOL SpNpcNookShop::acceptsSelfRequestedInteraction(void *) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void Unk_ov050_0225e400::vfunc_4c(u32 cmd, u32 arg) {
-    Unk_020cbb18_Ov050 *g;
+void SpNpcNookShop::onInteractionEvent(u32 cmd, u8 arg) {
+    CommManager *g;
     s32 a, b;
     switch (cmd) {
     case 3:
-        unk_558.unk_08 = arg;
+        partnerPlayer = arg;
         if (arg != 4) {
-            func_0201b9fc(1, data_020cbb18->unk_64, arg);
-            func_ov050_0225d1d4(0xf);
-        } else if (func_0201ba88()) {
-            u32 t = data_020cbb18->unk_64;
-            func_0201b9fc(1, t, t);
-            func_ov050_0225d1d4(0xf);
+            netSetSlotsIfOwner(1, gCommManager->myAid, arg);
+            changeAct(0xf);
+        } else if (isNetOwner()) {
+            u32 t = gCommManager->myAid;
+            netSetSlotsIfOwner(1, t, t);
+            changeAct(0xf);
         }
         break;
     case 1:
-        unk_558.unk_08 = arg;
-        if (arg != 4 && arg != data_020cbb18->unk_64) {
-            func_0201b9fc(1, arg, arg);
-            func_ov050_0225d1d4(9);
-        } else if (func_0201ba88()) {
-            g = data_020cbb18;
-            func_0201b9fc(1, g->unk_64, g->unk_64);
-            unk_658.vfunc_08();
-            func_02015ab0(&unk_658, func_0201bc4c(4));
-            if (unk_658.func_ov050_0225bff8() == 0 || unk_658.func_ov050_0225bff8() == 0x11) {
-                func_ov050_0225d1d4(4);
-            } else if (unk_658.func_ov050_0225bff8() == 1 || unk_658.func_ov050_0225bff8() == 0x12 ||
-                       unk_658.func_ov050_0225bff8() == 6 || unk_658.func_ov050_0225bff8() == 0x1d) {
-                func_ov050_0225d1d4(5);
-            } else if (func_02072e44(g) != 0 || *func_0209c37c(0, 0x4a) != 0) {
-                unk_658.vfunc_08();
-                func_02015ab0(&unk_658, func_0201bc4c(4));
-                func_ov050_0225d1d4(4);
+        partnerPlayer = arg;
+        if (arg != 4 && arg != gCommManager->myAid) {
+            netSetSlotsIfOwner(1, arg, arg);
+            changeAct(9);
+        } else if (isNetOwner()) {
+            g = gCommManager;
+            netSetSlotsIfOwner(1, g->myAid, g->myAid);
+            talk.resetMsg();
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+            if (talk.getTopic() == 0 || talk.getTopic() == 0x11) {
+                changeAct(4);
+            } else if (talk.getTopic() == 1 || talk.getTopic() == 0x12 ||
+                       talk.getTopic() == 6 || talk.getTopic() == 0x1d) {
+                changeAct(5);
+            } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+                talk.resetMsg();
+                ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+                changeAct(4);
             } else {
-                func_ov050_0225d1d4(0x10);
+                changeAct(0x10);
             }
         }
         break;
     case 0:
-        unk_558.unk_08 = arg;
-        if (arg != 4 && arg != data_020cbb18->unk_64) {
-            func_0201b9fc(1, arg, arg);
-            func_ov050_0225d1d4(9);
-        } else if (func_0201ba88()) {
-            func_0201b9fc(1, data_020cbb18->unk_64, data_020cbb18->unk_64);
-            unk_658.vfunc_08();
-            func_02015ab0(&unk_658, func_0201bc4c(4));
-            if (func_ov050_02258ed0()) {
-                unk_658.func_ov050_0225c000(5);
+        partnerPlayer = arg;
+        if (arg != 4 && arg != gCommManager->myAid) {
+            netSetSlotsIfOwner(1, arg, arg);
+            changeAct(9);
+        } else if (isNetOwner()) {
+            netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
+            talk.resetMsg();
+            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+            if (isNook()) {
+                talk.setTopic(5);
             } else {
-                unk_658.func_ov050_0225c000(0x13);
+                talk.setTopic(0x13);
             }
-            func_ov050_0225d1d4(4);
+            changeAct(4);
         }
         break;
     case 8:
         if (arg == 4) {
-            if (func_020a62a0()) {
-                g = data_020cbb18;
-                func_0201b9fc(1, g->unk_64, 4);
-                if (unk_658.func_ov050_0225bff8() == 1 || unk_658.func_ov050_0225bff8() == 0x12 ||
-                    unk_658.func_ov050_0225bff8() == 6 || unk_658.func_ov050_0225bff8() == 0x1d) {
-                } else if (func_02072e44(g) != 0 || *func_0209c37c(0, 0x4a) != 0) {
-                    func_ov050_0225d1d4(0xd);
+            if (NetArea_IsLocalOwner()) {
+                g = gCommManager;
+                netSetSlotsIfOwner(1, g->myAid, 4);
+                if (talk.getTopic() == 1 || talk.getTopic() == 0x12 ||
+                    talk.getTopic() == 6 || talk.getTopic() == 0x1d) {
+                } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+                    changeAct(0xd);
                 } else {
-                    func_ov050_0225d1d4(1);
+                    changeAct(1);
                 }
             } else {
-                func_0201b9fc(1, 4, data_020cbb18->unk_64);
-                func_ov050_0225d1d4(8);
+                netSetSlotsIfOwner(1, 4, gCommManager->myAid);
+                changeAct(8);
             }
         }
         break;
     case 4:
-        if (func_0201b9bc()) {
-            if (func_0201ba88()) {
+        if (netIsTalkLocked()) {
+            if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b)) {
+                if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
-                        func_0201b9fc(1, data_020cbb18->unk_64, 4);
-                        func_ov050_0225d1d4(0xd);
+                        netSetSlotsIfOwner(1, gCommManager->myAid, 4);
+                        changeAct(0xd);
                     }
                 }
             }
@@ -4109,23 +3835,23 @@ void Unk_ov050_0225e400::vfunc_4c(u32 cmd, u32 arg) {
     }
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_022593b0() {
-    if (func_ov050_02258e7c()) {
-        Unk_ov050_022590f8_Vec a;
-        Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)func_020947f0(4);
-        *(Unk_ov050_022590f8_Vec *)&a = *src;
-        u8 *o = (u8 *)func_02002d3c(func_ov050_02259398(), 0);
+BOOL SpNpcNookShop::isPlayerCloserThanOtherTwin() {
+    if (isTwin()) {
+        VecFx32 a;
+        VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+        *(VecFx32 *)&a = *src;
+        u8 *o = (u8 *)Actor_findByProfile(getOtherTwinProfile(), 0);
         if (o != 0) {
-            Unk_ov050_022590f8_Vec b;
-            Unk_ov050_022590f8_Pos *pv = (Unk_ov050_022590f8_Pos *)(o + 0x5c);
+            VecFx32 b;
+            VecFx32 *pv = (VecFx32 *)(o + 0x5c);
             b.x = *(s32 *)(o + 0x5c);
             b.y = pv->y;
             b.z = pv->z;
-            Unk_ov050_022590f8_Vec d1, d2;
-            func_020e9960(&d1, &a, &b);
-            s32 l1 = func_01ffc854(&d1);
-            func_020e9960(&d2, &a, &unk_5c);
-            if (func_01ffc854(&d2) < l1) {
+            VecFx32 d1, d2;
+            Vec_Sub(&d1, &a, &b);
+            s32 l1 = VEC_Mag(&d1);
+            Vec_Sub(&d2, &a, &position);
+            if (VEC_Mag(&d2) < l1) {
                 return TRUE;
             }
         }
@@ -4133,66 +3859,66 @@ BOOL Unk_ov050_0225e400::func_ov050_022593b0() {
     return FALSE;
 }
 
-s32 Unk_ov050_0225e400::func_ov050_02259398() {
-    if (func_ov050_02258ea0()) {
+s32 SpNpcNookShop::getOtherTwinProfile() {
+    if (isTommy()) {
         return 0x75;
     }
     return 0x74;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_022590f8() {
+BOOL SpNpcNookShop::pickItemTopic() {
     u16 t[2];
     s32 bx, by;
-    Unk_ov050_022590f8_Vec v;
-    Unk_020d9670 *p = (Unk_020d9670 *)func_02095204(4);
+    VecFx32 v;
+    Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov050_022590f8_Flags() ? TRUE : FALSE;
-    if (p == 0 || func_0203e2f4() != 0 || func_02014220(&unk_618) != 0 || ((data_021f47d8[1] & 1) == 0 && f == 0)) {
+    if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&talkCtrl) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;
     }
-    if (func_02072e44(data_020cbb18) != 0 || *func_0209c37c(0, 0x4a) != 0) {
-        if (func_ov050_02258ea0()) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+        if (isTommy()) {
             return FALSE;
         }
-    } else if (func_ov050_02258e7c()) {
-        if (func_ov050_022593b0() == 0) {
+    } else if (isTwin()) {
+        if (isPlayerCloserThanOtherTwin() == 0) {
             return FALSE;
         }
     }
-    unk_72e = 0xfff1;
-    Unk_ov050_022590f8_Pos *pv = (Unk_ov050_022590f8_Pos *)&p->unk_5c;
-    v.x = p->unk_5c;
+    selectedItem = 0xfff1;
+    VecFx32 *pv = (VecFx32 *)&p->position;
+    v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
-    u32 ang = p->unk_8e;
+    u32 ang = p->rotY;
     bx = 0;
     by = 0;
     s32 idx = ((u16)ang >> 4) * 2;
     v.x += func_01ffcb0c(0x2000, data_02135f44[idx]);
     v.z += func_01ffcb0c(0x2000, data_02135f44[idx + 1]);
-    func_0204ee10(&bx, &by, &v);
+    FieldPos_ToUnit(&bx, &by, &v);
     if (f) {
-        void *o = func_ov004_022355d8(func_ov004_02235718(), bx, by, 0);
+        void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
-            if (o != func_020b6048(func_020b50b4(), 0, 0)) {
+            if (o != TouchPick_GetTargetObject(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
-            Unk_ov050_022590f8_Vec v2;
-            func_020b60b0(func_020b50b4(), &v2);
-            func_0204ee10(&bx2, &by2, &v2);
+            VecFx32 v2;
+            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
+            FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;
             }
         }
     }
-    t[0] = *func_ov004_0223ed40(bx, by);
+    t[0] = *ShopStock_GetItemAt(bx, by);
     if (Unk_ov050_022590f8_Eq(&t[0], &t[1])) {
         return FALSE;
     }
     s32 f2 = 0;
     s32 kind = 5;
-    if (func_ov050_02258e7c()) {
+    if (isTwin()) {
         f2 = 1;
     }
     {
@@ -4209,133 +3935,133 @@ BOOL Unk_ov050_0225e400::func_ov050_022590f8() {
         } else if (x >= 0x1000 && x <= 0x10ff) {
             kind = 1;
         } else if (x >= 0x1521 && x <= 0x1530) {
-            if (func_0202e148(func_0209750c())) {
+            if (Talk_IsInOwnTown(PlayerData_GetCurrent())) {
                 kind = 2;
             } else {
                 kind = 3;
             }
-        } else if (func_020626a8(&t[0])) {
+        } else if (Item_IsClass4Furniture(&t[0])) {
             kind = 4;
         }
     }
-    unk_658.func_ov050_0225c000(data_ov050_0225da7c[kind][f2]);
-    unk_72e = t[0];
-    unk_730 = bx;
-    unk_734 = by;
-    unk_738 = 0;
+    talk.setTopic(sSpNpcNookShopItemTopicTable[kind][f2]);
+    selectedItem = t[0];
+    selectedItemX = bx;
+    selectedItemZ = by;
+    purchasePending = 0;
     return TRUE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_022590d8() {
-    if (func_ov050_022590f8()) {
-        func_0203d704(this, 0);
+BOOL SpNpcNookShop::tryItemTalk() {
+    if (pickItemTopic()) {
+        TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_02259074() {
-    void *p = func_0209750c();
-    func_0209865c(p);
-    if (func_02098044(p, 1)) {
-        Unk_ov050_02258f80_Loc v;
-        Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)func_020947f0(4);
-        *(Unk_ov050_022590f8_Vec *)&v = *src;
-        if (v.z < data_ov050_0225da28.z && v.x > data_ov050_0225da28.x) {
-            unk_658.func_ov050_0225c000(0x1e);
-            func_0203d704(this, 0);
+BOOL SpNpcNookShop::tryStairsBlockTalk() {
+    void *p = PlayerData_GetCurrent();
+    PlayerData_getErrands(p);
+    if (PlayerData_testFlag(p, 1)) {
+        SpNpcNookShopVecLocal v;
+        VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+        *(VecFx32 *)&v = *src;
+        if (v.z < sSpNpcNookShopArbeitStairsBound.z && v.x > sSpNpcNookShopArbeitStairsBound.x) {
+            talk.setTopic(0x1e);
+            TalkRequest_AddPlayerTalk6(this, 0);
             return TRUE;
         }
     }
     return FALSE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_02258f80() {
-    Unk_ov050_02258f80_Loc v;
-    Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)func_020947f0(4);
-    *(Unk_ov050_022590f8_Vec *)&v = *src;
-    if (unk_658.func_ov050_0225bff8() != 1 && unk_658.func_ov050_0225bff8() != 0x12) {
-        if (func_ov050_02258e7c() && func_ov050_022593b0() == 0) {
-            if (func_0202ff64(&v)) {
-                func_0201a99c(&unk_350, func_0201bc70(4));
+BOOL SpNpcNookShop::tryFarewellTalk() {
+    SpNpcNookShopVecLocal v;
+    VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&v = *src;
+    if (talk.getTopic() != 1 && talk.getTopic() != 0x12) {
+        if (isTwin() && isPlayerCloserThanOtherTwin() == 0) {
+            if (Ground_IsOnLockedExit(&v)) {
+                NpcMoveCtrl_setTargetAngle(&moveCtrl, getAngleToPlayer(4));
             }
             return FALSE;
         }
-        if (func_02072e44(data_020cbb18) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+        if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
             return FALSE;
         }
-        void *p = func_0209750c();
-        func_0209865c(p);
-        if (func_02098044(p, 1)) {
+        void *p = PlayerData_GetCurrent();
+        PlayerData_getErrands(p);
+        if (PlayerData_testFlag(p, 1)) {
             return FALSE;
         }
     }
-    if (func_0202ff64(&v)) {
-        if (func_ov050_02258e7c()) {
-            unk_658.func_ov050_0225c000(0x12);
+    if (Ground_IsOnLockedExit(&v)) {
+        if (isTwin()) {
+            talk.setTopic(0x12);
         } else {
-            unk_658.func_ov050_0225c000(1);
+            talk.setTopic(1);
         }
-        func_0203d704(this, 0);
-        func_ov050_0225d1d4(0x12);
+        TalkRequest_AddPlayerTalk6(this, 0);
+        changeAct(0x12);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_02258ee8() {
-    if (func_0203e2f4()) {
+BOOL SpNpcNookShop::tryClosingTimeTalk() {
+    if (TalkRequest_IsActive()) {
         return FALSE;
     }
-    if (func_02072e44(data_020cbb18) != 0 || *func_0209c37c(0, 0x4a) != 0) {
+    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         return FALSE;
     }
-    if (func_02098044(func_0209750c(), 1)) {
+    if (PlayerData_testFlag(PlayerData_GetCurrent(), 1)) {
         return FALSE;
     }
-    if (func_02086f38(func_02085184(func_020850e0()))) {
-        if (func_ov050_02258ed0()) {
-            unk_658.func_ov050_0225c000(6);
-        } else if (func_ov050_02258ea0()) {
-            unk_658.func_ov050_0225c000(0x1d);
+    if (ShopClosingTime_isPastClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()))) {
+        if (isNook()) {
+            talk.setTopic(6);
+        } else if (isTommy()) {
+            talk.setTopic(0x1d);
         }
-        func_0203d704(this, 0);
+        TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_02258ed0() {
-    if (Unk_ov050_02258ea0_Eq(unk_0c, 0x76)) {
+BOOL SpNpcNookShop::isNook() {
+    if (Unk_ov050_02258ea0_Eq(profile, 0x76)) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_02258eb8() {
-    if (Unk_ov050_02258ea0_Eq(unk_0c, 0x75)) {
+BOOL SpNpcNookShop::isTimmy() {
+    if (Unk_ov050_02258ea0_Eq(profile, 0x75)) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_02258ea0() {
-    if (Unk_ov050_02258ea0_Eq(unk_0c, 0x74)) {
+BOOL SpNpcNookShop::isTommy() {
+    if (Unk_ov050_02258ea0_Eq(profile, 0x74)) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov050_0225e400::func_ov050_02258e7c() {
-    if (func_ov050_02258ea0() || func_ov050_02258eb8()) {
+BOOL SpNpcNookShop::isTwin() {
+    if (isTommy() || isTimmy()) {
         return TRUE;
     }
     return FALSE;
 }
 
-s32 Unk_ov050_0225e400::func_ov050_02258e58() {
-    if (func_ov050_02258e7c()) {
-        func_ov050_022593b0();
+s32 SpNpcNookShop::getFollowDistance() {
+    if (isTwin()) {
+        isPlayerCloserThanOtherTwin();
         return 0x3000;
     }
     return 0x3000;
@@ -4343,37 +4069,37 @@ s32 Unk_ov050_0225e400::func_ov050_02258e58() {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-s32 Unk_ov050_0225e400::func_ov050_02258e34() {
-    if (func_ov050_02258e7c()) {
-        func_ov050_022593b0();
+s32 SpNpcNookShop::getRunDistance() {
+    if (isTwin()) {
+        isPlayerCloserThanOtherTwin();
         return 0x4000;
     }
     return 0x4000;
 }
 
-extern "C" void *data_ov050_0225ded0[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225ded0[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225de38[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b0f4EPv, 0};
+extern "C" void *data_ov050_0225de38[2] = {(void *)_ZN17SpNpcNookShopTalk30arbeitStartWateringCanDeliveryEPv, 0};
 
-extern "C" void *data_ov050_0225dfc8[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cd90Ev, 0};
+extern "C" void *data_ov050_0225dfc8[2] = {(void *)_ZN13SpNpcNookShop9mainAct03Ev, 0};
 
-extern "C" void *data_ov050_0225dfa8[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cbd4Ev, 0};
+extern "C" void *data_ov050_0225dfa8[2] = {(void *)_ZN13SpNpcNookShop9mainAct0AEv, 0};
 
-extern "C" void *data_ov050_0225de18[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259af0Ei, 0};
+extern "C" void *data_ov050_0225de18[2] = {(void *)_ZN17SpNpcNookShopTalk17onSafeOfferChoiceEi, 0};
 
-extern "C" void *data_ov050_0225de10[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cba4Ev, 0};
+extern "C" void *data_ov050_0225de10[2] = {(void *)_ZN13SpNpcNookShop10setupAct0CEv, 0};
 
-extern "C" void *data_ov050_0225de08[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225c83cEv, 0};
+extern "C" void *data_ov050_0225de08[2] = {(void *)_ZN13SpNpcNookShop9mainAct08Ev, 0};
 
-extern "C" void *data_ov050_0225de60[2] = {(void *)_ZN18Unk_ov050_0225e4b419func_ov050_02259e80Ei, 0};
+extern "C" void *data_ov050_0225de60[2] = {(void *)_ZN17SpNpcNookShopTalk16onMainMenuChoiceEi, 0};
 
-extern "C" void *data_ov050_0225df18[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cc0cEv, 0};
+extern "C" void *data_ov050_0225df18[2] = {(void *)_ZN13SpNpcNookShop9mainAct05Ev, 0};
 
-extern "C" void *data_ov050_0225de40[2] = {(void *)_ZN18Unk_ov050_0225e40019func_ov050_0225cc04Ev, 0};
+extern "C" void *data_ov050_0225de40[2] = {(void *)_ZN13SpNpcNookShop9mainAct06Ev, 0};
 
-extern "C" void *data_ov050_0225dfe8[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225afe4EPv, 0};
+extern "C" void *data_ov050_0225dfe8[2] = {(void *)_ZN17SpNpcNookShopTalk12arbeitFinishEPv, 0};
 
-extern "C" void *data_ov050_0225dfb0[2] = {(void *)_ZN18Unk_ov050_0225e4b413func_0225b0c0EPv, 0};
+extern "C" void *data_ov050_0225dfb0[2] = {(void *)_ZN17SpNpcNookShopTalk24arbeitPresentWateringCanEPv, 0};
 
 extern "C" char data_ov050_0225e210[] = "npc_sp/model/rcn.nsbmd";
 

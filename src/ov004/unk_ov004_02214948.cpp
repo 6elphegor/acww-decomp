@@ -1,497 +1,199 @@
 // mwcc-version: 1.2/base
-// ov004 TU06: .text 0x02214948-0x02215f04 (classes Unk_ov004_0224c034 and its member Unk_ov004_0224bfa4)
+// ov004 TU06: .text 0x02214948-0x02215f04 (classes BirthdayHostVillager and its member BirthdayHostVillagerTalk)
 #include "types.h"
-// The no-argument vfunc_08 of the base is widened locally: Unk_020d77a4::vfunc_08 takes one argument.
-#define vfunc_08() vfunc_08(s32 a)
+#include "gfx/VecFx32.h"
+// The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
+#include "game/FxVec3.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/TalkWindowState.h"
+#include "actor/NpcActor.h"
+#include "actor/VillagerActor.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/VillagerTalk.h"
+#include "npc/BirthdayHostVillager.h"
 
 extern "C" {
-struct Unk_ov004_02215c94_V {
-    s32 x, y, z;
-};
-struct Unk_02000c8c : Unk_ov004_02215c94_V {
-    Unk_02000c8c(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-    ~Unk_02000c8c();
-};
 }
 
-struct Unk_020d77a4_Vec3 {
-    s32 x, y, z;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Class chain of Unk_ov004_0224c034 (vtable 0x0224c034). Every slot's final overrider carries the name the symbols use.
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
-public:
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-};
 
-class Unk_020d9670 : public Unk_020d5d84 {
-public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
-    virtual void vfunc_50();
-    virtual BOOL vfunc_54(void *a);
-    virtual BOOL vfunc_58();
 
-    u32 pad_04[0x58 / 4];
-    s32 unk_5c[3];
-    u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
-    u8 pad_90[0xe0 - 0x90];
-};
 
-class Unk_020d77a4 : public Unk_020d9670 {
-public:
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
-    virtual void *vfunc_64();
-    virtual BOOL vfunc_68();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88(u16 *p, BOOL flag);
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
-    virtual void vfunc_9c();
-    virtual void vfunc_a0();
-    virtual void vfunc_a4(u32 a, s32 b);
-    virtual BOOL vfunc_a8();
-    virtual BOOL vfunc_ac();
-    virtual BOOL vfunc_b0();
-
-    u16 pad_e0[5];
-    u16 unk_ea;
-    u8 unk_ec[0x350 - 0xec];
-    u8 unk_350[0x3b0 - 0x350];
-    u8 unk_3b0[0x558 - 0x3b0];
-    u8 unk_558[0xc];
-    u8 unk_564[0x618 - 0x564];
-    u8 unk_618[0x640 - 0x618];
-};
-
-class Unk_020d89c8 : public Unk_020d77a4 {
-public:
-    Unk_020d89c8();
-    virtual ~Unk_020d89c8();
-    virtual BOOL vfunc_0c();
-    virtual void *vfunc_64();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88(u16 *p, BOOL flag);
-    virtual void vfunc_a4(u32 a, s32 b);
-    virtual BOOL vfunc_a8();
-    virtual BOOL vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual void vfunc_b4();
-    virtual void vfunc_b8();
-    virtual void vfunc_bc();
-
-    /* 0x640 */ u32 unk_640;
-    /* 0x644 */ u32 unk_644;
-    /* 0x648 */ u32 unk_648;
-    /* 0x64c */ u8 unk_64c[0x680 - 0x64c];
-    /* 0x680 */ u8 unk_680[0x824 - 0x680];
-    /* 0x824 */ u8 unk_824[8];
-    /* 0x82c */ void *unk_82c;
-    /* 0x830 */ void *unk_830;
-    /* 0x834 */ u32 unk_834;
-    /* 0x838 */ u8 unk_838[0x894 - 0x838];
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Member Unk_ov004_0224bfa4 (at +0x89c of the menu): a menu state holder with the owner at +0x1a0. Its vtable
-// 0x0224bfa4 names its slots after four library classes; the chain below reproduces which class owns which slot.
-class Unk_02015b54 {
-public:
-    Unk_02015b54();
-    virtual ~Unk_02015b54();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 a);
-    virtual void vfunc_28(u32 a);
-    virtual void vfunc_2c(u32 a);
-    virtual void vfunc_30(u32 a);
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60x();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(void *arg);
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-};
 
-class Unk_020d7710 : public Unk_02015b54 {
-public:
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60x();
-};
 
-class Unk_020d7714 : public Unk_020d7710 {
-public:
-    virtual void vfunc_08();
-    virtual void vfunc_34();
-    virtual void vfunc_38(u32 a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_6c();
-};
 
-class Unk_020ddcf0 : public Unk_020d7714 {
-public:
-    virtual void vfunc_0c();
-    virtual void vfunc_1c();
-    virtual void vfunc_64();
-    virtual void vfunc_74();
-};
 
-struct Unk_ov004_0221572c_Sub {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    u8 pad_0c[8];
-    /* 0x14 */ s32 unk_14;
-};
 
-class Unk_020d8938 : public Unk_020ddcf0 {
-public:
-    Unk_020d8938();
-    virtual ~Unk_020d8938();
-    virtual void vfunc_20();
-    virtual void vfunc_24(u32 a);
-    virtual void vfunc_28(u32 a);
-    virtual void vfunc_2c(u32 a);
-    virtual void vfunc_30(u32 a);
-    virtual void vfunc_60();
-    virtual void vfunc_68();
-    virtual void vfunc_70();
-    virtual void vfunc_7c();
 
-    u8 pad_04[0x1e - 4];
-    u8 unk_1e;
-    u8 pad_1f[0x3c - 0x1f];
-    Unk_ov004_0221572c_Sub *unk_3c;
-    u8 pad_40[0x1a0 - 0x40];
-};
+class BirthdayHostVillager;
 
-class Unk_ov004_0224c034;
 
-class Unk_ov004_0224bfa4 : public Unk_020d8938 {
-public:
-    Unk_ov004_0224bfa4() {}
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_78(void *arg);
-    virtual void vfunc_80();
-    virtual void vfunc_84();
 
-    void func_ov004_0221570c(Unk_ov004_0224c034 *owner);
-    void *func_ov004_0221588c();
-    void func_ov004_022158a8(s32 v);
-    BOOL func_ov004_022158c4(u16 *p);
-    void *func_ov004_02215a50();
-    void func_ov004_022159a4();
-    u32 func_ov004_022159bc();
-    void func_ov004_022159d8();
-    BOOL func_ov004_022159f0();
-    void func_ov004_02215a14();
-    BOOL func_ov004_02215a2c();
-
-    Unk_ov004_0224c034 *unk_1a0;
-};
-
-typedef BOOL (Unk_ov004_0224c034::*Unk_ov004_0224c034_Fn)();
-
-class Unk_ov004_0224c034 : public Unk_020d89c8 {
-public:
-    Unk_ov004_0224c034() : unk_a48(0xfff1) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_68();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-
-    BOOL func_ov004_02215c3c();
-    void func_ov004_02215b9c();
-    BOOL func_ov004_02215208(s32 idx);
-    void func_ov004_022150f0();
-    BOOL func_ov004_02215098();
-
-    void func_ov004_02214a04();
-    BOOL func_ov004_02214a38();
-    void func_ov004_02214a3c();
-    BOOL func_ov004_02214a40();
-    void func_ov004_02214a44();
-    BOOL func_ov004_02214a48();
-    void func_ov004_02214a4c();
-    BOOL func_ov004_02214a80();
-    void func_ov004_02214a90();
-    BOOL func_ov004_02214ab0();
-    void func_ov004_02214ab4();
-    BOOL func_ov004_02214be8();
-    void func_ov004_02214c28();
-    BOOL func_ov004_02214c34();
-    void func_ov004_02214c38();
-    BOOL func_ov004_02214c58();
-    void func_ov004_02214c5c();
-    BOOL func_ov004_02214c68();
-    void func_ov004_02214c9c();
-    BOOL func_ov004_02214ca0();
-    void func_ov004_02214cd4();
-    BOOL func_ov004_02214d50();
-    void func_ov004_02214d60();
-    BOOL func_ov004_02214dc0();
-    void func_ov004_02214dd0();
-    BOOL func_ov004_02214dd4();
-    void func_ov004_02214e58();
-
-    /* 0x894 */ s32 unk_894;
-    /* 0x898 */ u8 unk_898;
-    /* 0x899 */ u8 pad_899[3];
-    /* 0x89c */ Unk_ov004_0224bfa4 unk_89c;
-    /* 0xa40 */ Unk_ov004_0224c034_Fn unk_a40;
-    /* 0xa48 */ u16 unk_a48;
-    /* 0xa4a */ u8 unk_a4a;
-    /* 0xa4b */ u8 unk_a4b;
-    /* 0xa4c */ s16 unk_a4c;
-    /* 0xa4e */ u16 unk_a4e;
-    /* 0xa50 */ s32 unk_a50[3];
-    /* 0xa5c */ s32 unk_a5c[3];
-};
-
-struct Unk_ov004_022146ec_Actor {
-    u8 pad_00[0x5c];
-    s32 pos[3];
-    u8 pad_68[0x8e - 0x68];
-    u16 ang;
-};
 
 extern "C" {
-Unk_ov004_0224c034 *func_ov004_02215eac();
-BOOL func_ov004_02215e2c(u16 *p, s32 flag);
-u16 func_ov004_022154ec(s32 n);
+BirthdayHostVillager *BirthdayHostVillager_Get();
+BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag);
+u16 BirthdayHost_PickReturnGift(s32 n);
 void func_ov004_0221570c(void *a, void *b);
-s32 func_ov004_02234f6c(Unk_ov004_02215c94_V *v);
-Unk_ov004_022146ec_Actor *func_ov004_02216c84(void);
-u16 func_ov004_02216ba4(void *, void *, s32);
+s32 FtrMgr_GetSurfaceHeightAtPos(VecFx32 *v);
+Actor *BirthdayGuestVillager_Get(void);
+u16 Room_PickRandomWalkTarget(void *, void *, s32);
 }
 
-#define func_0200301c _ZN12Unk_02002fc813func_0200301cEPvjj
-#define func_020135c4 _ZN12Unk_0201347413func_020135c4Ev
-#define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
-#define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_02014ce4 _ZN12Unk_0201442013func_02014ce4EPtjjj
-#define func_02014e60 _ZN12Unk_020d771013func_02014e60EPtjjj
-#define func_0201578c _ZN12Unk_020d771413func_0201578cEjjj
-#define func_020157b8 _ZN12Unk_020d771413func_020157b8Ejj
-#define func_02015ab0 _ZN12Unk_020d771413func_02015ab0Ej
-#define func_02019614 _ZN12Unk_0201985813func_02019614Ejt
-#define func_02019638 _ZN12Unk_0201985813func_02019638Eiht
-#define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
-#define func_02019790 _ZN12Unk_0201985813func_02019790Ev
-#define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
-#define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
-#define func_0201a9ec _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3
-#define func_0201b138 _ZN12Unk_020d77a48vfunc_24Ev
-#define func_0201bb3c _ZN12Unk_020d77a413func_0201bb3cEP16Unk_020d77a4_Vec
-#define func_0201bc28 _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c
-#define func_0201bc4c _ZN12Unk_020d77a413func_0201bc4cEj
-#define func_0201bcbc _ZN12Unk_020d77a413func_0201bcbcEPS_
-#define func_0201bd20 _ZN12Unk_020d77a413func_0201bd20Ej
-#define func_0202d388 _ZN12Unk_020d893813func_0202d388EP12Unk_020d89c8j
-#define func_0202d928 _ZN12Unk_020d89c88vfunc_10Ev
-#define func_0202d948 _ZN12Unk_020d89c88vfunc_00Ev
-#define func_0202dab0 _ZN12Unk_020d89c88vfunc_04Ev
-#define func_0206338c _ZN12Unk_0206338013func_0206338cEii
-#define func_020679b4 _ZN12Unk_020660f813func_020679b4Ev
-#define func_02067a84 _ZN12Unk_020660f813func_02067a84EPhPv
-#define func_02067abc _ZN12Unk_020660f813func_02067abcEPhPv
-#define func_020805c4 _ZN12Unk_0208086013func_020805c4Ev
-#define func_02080a04 _ZN12Unk_0208091c13func_02080a04Ev
-#define func_02080a2c _ZN12Unk_0208091c13func_02080a2cEv
-#define func_02080a40 _ZN12Unk_0208091c13func_02080a40Ev
-#define func_02080a64 _ZN12Unk_0208091c13func_02080a64Ev
-#define func_02080a74 _ZN12Unk_0208091c13func_02080a74Ev
-#define func_02080a98 _ZN12Unk_0208091c13func_02080a98Ev
-#define func_02080da4 _ZN12Unk_0208091c13func_02080da4Ei
-#define func_02080dd8 _ZN12Unk_0208091c13func_02080dd8Ev
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
-#define func_0209b354 _ZN12Unk_0209b3bc13func_0209b354Ev
-#define func_020aa514 _ZN12Unk_020aa3b813func_020aa514Ev
+#define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
+#define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
+#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
+#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
+#define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
+#define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
+#define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
+#define ActorTalkRequest_setVillagerNameSlot _ZN16ActorTalkRequest19setVillagerNameSlotEjj
+#define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
+#define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
+#define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
+#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
+#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
+#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
+#define func_0201b138 _ZN8NpcActor6onDrawEv
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
+#define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
+#define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
+#define func_0202d928 _ZN13VillagerActor9preDeleteEv
+#define func_0202d948 _ZN13VillagerActor8onCreateEv
+#define func_0202dab0 _ZN13VillagerActor9preCreateEv
+#define ItemPickSpec_set _ZN12ItemPickSpec3setEii
+#define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
+#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
+#define TalkWindowState_setNextMessageIfUnset _ZN15TalkWindowState21setNextMessageIfUnsetEPhPv
+#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
+#define VillagerMemory_isPartyGreeted _ZN14VillagerMemory14isPartyGreetedEv
+#define VillagerMemory_setPartyGreeted _ZN14VillagerMemory15setPartyGreetedEv
+#define VillagerMemory_isPartyGiftReceived _ZN14VillagerMemory19isPartyGiftReceivedEv
+#define VillagerMemory_setPartyGiftReceived _ZN14VillagerMemory20setPartyGiftReceivedEv
+#define VillagerMemory_isTalkedToday _ZN14VillagerMemory13isTalkedTodayEv
+#define VillagerMemory_setTalkedToday _ZN14VillagerMemory14setTalkedTodayEv
+#define VillagerMemory_addFriendship _ZN14VillagerMemory13addFriendshipEi
+#define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
+#define VillagerPlan_getState _ZN12VillagerPlan8getStateEv
+#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 
-struct Unk_ov004_02214ab4_Vec {
-    s32 x, y, z;
-};
 extern "C" {
-Unk_ov004_02214ab4_Vec *func_020947f0(u32);
-s32 func_0201bd20(void *, u32);
-s32 func_020197a8(void *);
-s32 func_020196b4(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-void func_0201a9ec(void *, void *);
-s32 func_02002bdc(void *, void *);
-s32 func_020e780c(s32, s32);
-void func_020141b4(void *, s32, s32, s32);
-void *func_02095204(s32);
-s32 func_0201bcbc(void *, void *);
-s32 func_02019638(void *, s32, s32, u32);
-s32 func_02019614(void *, s32, u32);
-s32 func_020e7b98(s32, s32);
-s32 func_0201a6c0(void *, s32, s32, void *, void *, s32, s32, s32);
-s32 func_02063b8c(s32);
-s32 func_02019790(void *);
-s32 func_0201bb3c(void *, void *);
-s32 func_020e96ec(void *, void *);
-s32 func_020e9650(void *, void *);
-void func_02067a84(void *, void *, s32);
-s32 func_0206ea84(void *);
-s32 func_0206ead4(s32, u32);
-s32 func_0203d67c(void *);
-s32 func_0203d704(void *, u32);
+VecFx32 *PlayerActor_GetBodyPos(u32);
+s32 NpcActor_getDistanceToPlayer(void *, u32);
+s32 NpcActionCtrl_getAction(void *);
+s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+void NpcMoveCtrl_setWaypoint(void *, void *);
+s32 Math_AngleXZ(void *, void *);
+s32 Math_AngleDiffAbs(s32, s32);
+void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
+void *PlayerActor_GetActor(s32);
+s32 NpcActor_getAngleTo(void *, void *);
+s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
+s32 NpcActionCtrl_requestStand(void *, s32, u32);
+s32 Math_Atan2(s32, s32);
+s32 NpcLookAt_setTarget(void *, s32, s32, void *, void *, s32, s32, s32);
+s32 Random_GlobalBelow(s32);
+s32 NpcActionCtrl_isActionDone(void *);
+s32 NpcActor_findAvoidPos(void *, void *);
+s32 Vec_NotEqual(void *, void *);
+s32 Vec_DistXZ(void *, void *);
+void TalkWindowState_setNextMessage(void *, void *, s32);
+s32 MenuCtrl_BuildPocketMask(void *);
+s32 MenuCtrl_OpenPocketSelect(s32, u32);
+s32 TalkRequest_SetTargetDone(void *);
+s32 TalkRequest_AddPlayerTalk6(void *, u32);
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
-extern u8 data_021f4880[];
-extern u8 data_021edb5c[];
-extern u8 data_ov004_0225042c[];
-void *func_020679b4(void *);
-s32 func_020aa514(void *);
-void func_02067abc(void *, void *, s32);
-void func_02014e60(void *, void *, s32, s32, s32);
-void func_02099014(void *, s32);
-void *func_02080dd8(void *);
-void func_02080da4(void *, s8);
-void func_0201578c(void *, void *, s32, s32);
-void func_0206338c(void *, s32, s32);
-void func_02063388(void *);
-void func_02062f94(u16 *, void *, s32, s32, s32, s32, s32);
-void *func_0209750c();
-void func_0206277c(u16 *, void *, s32);
-void *func_020805c4(void *);
-void func_0200301c(void *, void *, s32, void *);
-void func_020157b8(void *, void *, s32);
-void *func_0208175c(s32);
-s32 func_02081780();
-s32 func_0206ec6c();
-s32 func_0206ed18();
-void *func_0206ed38();
-u16 func_02099048();
-s32 func_0204be70(u16 *);
-void func_02099064(void *);
-void func_02014ce4(void *, void *, s32, s32, s32);
-void *func_0207e268(void *);
-u32 func_0209a610(void *);
-u32 func_0209b354(u32);
-s32 func_0204b2d4(void *);
-void func_0202d388(void *, void *, u32);
+extern u8 gVec3Zero[];
+extern u8 gTalkMsgIndexEnd[];
+extern u8 sBirthdayHostMsgFile[];
+void *TalkWindowState_getChoiceList(void *);
+s32 ChoiceList_getResult(void *);
+void TalkWindowState_setNextMessageIfUnset(void *, void *, s32);
+void ActorTalkRequest_requestGiveItem(void *, void *, s32, s32, s32);
+void Pocket_AddItem(void *, s32);
+void *VillagerMemory_getFriendship(void *);
+void VillagerMemory_addFriendship(void *, s8);
+void ActorTalkRequest_setItemNameSlot(void *, void *, s32, s32);
+void ItemPickSpec_set(void *, s32, s32);
+void ItemPickSpec_Destruct(void *);
+void ItemPick_One(u16 *, void *, s32, s32, s32, s32, s32);
+void *PlayerData_GetCurrent();
+void ItemPick_FtrWallCarpetByClass(u16 *, void *, s32);
+void *VillagerData_getVillagerId(void *);
+void VillagerId_makeFileName(void *, void *, s32, void *);
+void ActorTalkRequest_setVillagerNameSlot(void *, void *, s32);
+void *NpcRegistry_GetVillager(s32);
+s32 NpcRegistry_GetSlotCount();
+s32 MenuCtrl_IsFinished();
+s32 MenuCtrl_IsResultOk();
+void *MenuCtrl_GetIndex();
+u16 Pocket_GetItem();
+s32 Item_GetPrice(u16 *);
+void Pocket_RemoveItem(void *);
+void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
+void *Villager_GetPlan(void *);
+u32 VillagerPlanBlock_GetPlan(void *);
+u32 VillagerPlan_getState(u32);
+s32 Item_IsFurniture(void *);
+void VillagerTalk_begin(void *, void *, u32);
 s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
-void func_020135c4(void *p);
-void func_01ffd070(Unk_ov004_02215c94_V *out, void *a, void *b);
-void func_0201bc28(void *self, void *p);
-void *func_0201bc4c(void *self, s32 n);
-void func_02015ab0(void *p, void *q);
-void func_0203a680(void *p);
-void func_0203a844();
-s32 func_0209888c(...);
-void *func_0207f55c(void *p, s32 v);
-void func_02080ecc(void *p, s32 a, s32 b, s32 c);
-s32 func_02080a64(void *p);
-s32 func_02080a40(void *p);
-s32 func_02080a98(void *p);
-s32 func_02080a74(void *p);
-s32 func_02080a2c(void *p);
-s32 func_02080a04(void *p);
-s32 func_02014220(void *p);
+void NpcFootstepFx_enableFootsteps(void *p);
+void Vec_Add(VecFx32 *out, void *a, void *b);
+void NpcActor_setTalkRequest(void *self, void *p);
+void *NpcActor_getPlayerActor(void *self, s32 n);
+void ActorTalkRequest_setTalkPlayer(void *p, void *q);
+void Camera_FocusOnPoint(void *p);
+void Camera_SetModeDefault();
+s32 PlayerData_getPlayerId(...);
+void *Villager_FindOrCreateMemory(void *p, s32 v);
+void VillagerMemory_RecordTalk(void *p, s32 a, s32 b, s32 c);
+s32 VillagerMemory_setPartyGiftReceived(void *p);
+s32 VillagerMemory_isPartyGiftReceived(void *p);
+s32 VillagerMemory_setTalkedToday(void *p);
+s32 VillagerMemory_isTalkedToday(void *p);
+s32 VillagerMemory_setPartyGreeted(void *p);
+s32 VillagerMemory_isPartyGreeted(void *p);
+s32 NpcTalkCtrl_isBusy(void *p);
 s32 func_0201b138(void *p);
-s32 func_0204b25c(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 extern s32 data_020c8cb4;
 extern s32 data_020c8cb8;
 }
 
-struct Unk_ov004_SceneEntry {
-    Unk_ov004_0224c034 *(*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
-struct Unk_ov004_Quad {
-    u8 a, b, c, d;
-    Unk_ov004_Quad(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
-extern "C" Unk_ov004_0224c034 *func_ov004_02215eb8();
-extern "C" void _ZN18Unk_ov004_0224c03419func_ov004_02215c3cEv();
+extern "C" BirthdayHostVillager *BirthdayHostVillager_Create();
+extern "C" void _ZN20BirthdayHostVillager9drawModelEv();
 extern "C" void *data_ov004_0224befc[2];
-extern "C" Unk_ov004_Quad data_ov004_022503c0(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503dc(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503c4(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503bc(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503cc(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503d0(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov004_SceneEntry data_ov004_0224bf84 = { func_ov004_02215eb8, 0x80, 0x84, 2, 0x5000, 0x5000, 0x3e800 };
+extern "C" DebugColor data_ov004_022503c0(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022503dc(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov004_022503c4(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022503bc(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022503cc(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov004_022503d0(0x14, 0x18, 0x18, 0x1f);
+extern "C" ActorProfile sBirthdayHostVillagerProfile = { (void *(*)())BirthdayHostVillager_Create, 0x80, 0x84, 2, 0x5000, 0x5000, 0x3e800 };
 extern "C" {
-Unk_ov004_0224c034 *data_ov004_022503d8;
+BirthdayHostVillager *sBirthdayHostVillager;
 }
 
-typedef Unk_ov004_0221572c_Sub Unk_ov004_02214a4c_Obj;
 
 static inline BOOL Unk_ov004_022158c4_Range(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -501,30 +203,30 @@ static inline BOOL Unk_ov004_022158c4_Range(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-typedef void (Unk_ov004_0224c034::*Unk_ov004_022150f0_Fn)();
-typedef BOOL (Unk_ov004_0224c034::*Unk_ov004_02215208_Fn)();
+typedef void (BirthdayHostVillager::*Unk_ov004_022150f0_Fn)();
+typedef BOOL (BirthdayHostVillager::*Unk_ov004_02215208_Fn)();
 
-extern "C" Unk_ov004_0224c034 *func_ov004_02215eb8() {
-    return new Unk_ov004_0224c034();
+extern "C" BirthdayHostVillager *BirthdayHostVillager_Create() {
+    return new BirthdayHostVillager();
 }
 
-extern "C" Unk_ov004_0224c034 *func_ov004_02215eac() { return data_ov004_022503d8; }
+extern "C" BirthdayHostVillager *BirthdayHostVillager_Get() { return sBirthdayHostVillager; }
 
-extern "C" BOOL func_ov004_02215e84() {
-    Unk_ov004_0224c034 *o = data_ov004_022503d8;
+extern "C" BOOL BirthdayHostVillager_HasReceivedGift() {
+    BirthdayHostVillager *o = sBirthdayHostVillager;
     if (o) {
-        return o->unk_89c.func_ov004_022159bc();
+        return o->talk.hasReceivedGift();
     }
     return FALSE;
 }
 
-extern "C" BOOL func_ov004_02215e2c(u16 *p, s32 flag) {
+extern "C" BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag) {
     if (flag == 0) {
         BOOL eq;
-        if (func_0204b2d4(p)) {
+        if (Item_IsFurniture(p)) {
             u16 v = 0xfff1;
-            s32 a = func_0204b25c(p);
-            if (a == func_0204b25c(&v)) {
+            s32 a = Item_GetFurnitureIndex(p);
+            if (a == Item_GetFurnitureIndex(&v)) {
                 eq = TRUE;
             } else {
                 eq = FALSE;
@@ -543,137 +245,137 @@ extern "C" BOOL func_ov004_02215e2c(u16 *p, s32 flag) {
     return FALSE;
 }
 
-BOOL Unk_ov004_0224c034::vfunc_04() {
+BOOL BirthdayHostVillager::preCreate() {
     if (!func_0202dab0(this)) {
         return FALSE;
     }
-    unk_5c[0] = data_020c8cb4 + 0x1000;
-    unk_5c[2] = data_020c8cb8 - 0x7000;
-    static Unk_02000c8c vs[6] = {
-        Unk_02000c8c(0, 0, 0), Unk_02000c8c(-0x2000, 0, 0), Unk_02000c8c(-0x4000, 0, 0),
-        Unk_02000c8c(0x2000, 0, 0), Unk_02000c8c(0, 0, 0x2000), Unk_02000c8c(-0x2000, 0, 0x2000)
+    position.x = data_020c8cb4 + 0x1000;
+    position.z = data_020c8cb8 - 0x7000;
+    static FxVec3 vs[6] = {
+        FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0), FxVec3(-0x4000, 0, 0),
+        FxVec3(0x2000, 0, 0), FxVec3(0, 0, 0x2000), FxVec3(-0x2000, 0, 0x2000)
     };
     u32 i;
     for (i = 0; i < 6; i++) {
-        Unk_ov004_02215c94_V t;
-        func_01ffd070(&t, unk_5c, &vs[i]);
-        if (!func_ov004_02234f6c(&t)) {
-            unk_5c[0] = t.x;
-            unk_5c[1] = t.y;
-            unk_5c[2] = t.z;
+        VecFx32 t;
+        Vec_Add(&t, &position, &vs[i]);
+        if (!FtrMgr_GetSurfaceHeightAtPos(&t)) {
+            position.x = t.x;
+            position.y = t.y;
+            position.z = t.z;
             break;
         }
     }
-    unk_8e = 0;
-    func_0201bc28(this, &unk_89c);
-    unk_89c.func_ov004_0221570c(this);
-    if (!unk_89c.func_ov004_02215a2c()) {
-        func_ov004_02215208(0);
+    rotY = 0;
+    NpcActor_setTalkRequest(this, &talk);
+    talk.attachOwner(this);
+    if (!talk.isPartyNotGreeted()) {
+        changeAct(0);
     } else {
-        func_ov004_02215208(7);
-        unk_89c.func_ov004_02215a14();
+        changeAct(7);
+        talk.setPartyGreeted();
     }
-    data_ov004_022503d8 = this;
+    sBirthdayHostVillager = this;
     return TRUE;
 }
 
-extern "C" void *data_ov004_0224befc[2] = { (void *)_ZN18Unk_ov004_0224c03419func_ov004_02215c3cEv, 0 };
+extern "C" void *data_ov004_0224befc[2] = { (void *)_ZN20BirthdayHostVillager9drawModelEv, 0 };
 extern "C" {
-u8 data_ov004_0225042c[0x28];
+u8 sBirthdayHostMsgFile[0x28];
 }
 
-BOOL Unk_ov004_0224c034::vfunc_00() {
+BOOL BirthdayHostVillager::onCreate() {
     if (!func_0202d948(this)) {
         return FALSE;
     }
-    unk_a40 = *(Unk_ov004_0224c034_Fn *)data_ov004_0224befc;
-    func_020135c4(&unk_558);
+    drawFn = *(Unk_ov004_0224c034_Fn *)data_ov004_0224befc;
+    NpcFootstepFx_enableFootsteps(&footstepFx);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02215c3c() {
+BOOL BirthdayHostVillager::drawModel() {
     if (func_0201b138(this)) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224c034::vfunc_24() {
-    if (unk_a40) {
-        return (this->*unk_a40)();
+BOOL BirthdayHostVillager::onDraw() {
+    if (drawFn) {
+        return (this->*drawFn)();
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c034::vfunc_10() {
+BOOL BirthdayHostVillager::preDelete() {
     if (!func_0202d928(this)) {
         return FALSE;
     }
-    data_ov004_022503d8 = NULL;
+    sBirthdayHostVillager = NULL;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c034::vfunc_68() {
-    func_ov004_022150f0();
+BOOL BirthdayHostVillager::updateAct() {
+    execAct();
     return TRUE;
 }
 
-void Unk_ov004_0224c034::func_ov004_02215b9c() {
-    void *o = func_0209750c();
-    if (o != NULL && unk_82c != NULL) {
-        s32 r = func_0209888c(o);
-        void *p = func_0207f55c(unk_82c, r);
-        func_02080ecc(p, 0, 0, 0);
+void BirthdayHostVillager::recordPlayerTalk() {
+    void *o = PlayerData_GetCurrent();
+    if (o != NULL && villagerData != NULL) {
+        s32 r = PlayerData_getPlayerId(o);
+        void *p = Villager_FindOrCreateMemory(villagerData, r);
+        VillagerMemory_RecordTalk(p, 0, 0, 0);
     }
 }
 
-BOOL Unk_ov004_0224c034::vfunc_48() {
-    if (func_02014220(&unk_618)) {
+BOOL BirthdayHostVillager::acceptsInteraction(void *) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return FALSE;
     }
-    if (unk_894 <= 3) {
+    if (act <= 3) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224c034::vfunc_58() {
-    if (func_02014220(&unk_618) == 0) {
+BOOL BirthdayHostVillager::acceptsSelfRequestedInteraction(void *) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov004_0224c034::vfunc_4c(s32 a, u32 b) {
-    Unk_ov004_02215c94_V v;
-    v.x = unk_5c[0];
-    v.y = unk_5c[1];
-    v.z = unk_5c[2];
+void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
+    VecFx32 v;
+    v.x = position.x;
+    v.y = position.y;
+    v.z = position.z;
     v.y = v.y + 0x2000;
     switch (a) {
     case 3:
         *((u8 *)this + 0x560) = b;
-        func_ov004_02215208(4);
+        changeAct(4);
         break;
     case 0:
         *((u8 *)this + 0x560) = b;
-        func_02015ab0(&unk_89c, func_0201bc4c(this, 4));
-        func_0203a680(&v);
-        func_ov004_02215208(5);
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+        Camera_FocusOnPoint(&v);
+        changeAct(5);
         break;
     case 1:
         *((u8 *)this + 0x560) = b;
-        func_02015ab0(&unk_89c, func_0201bc4c(this, 4));
-        func_0203a680(&v);
-        func_ov004_02215208(8);
+        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+        Camera_FocusOnPoint(&v);
+        changeAct(8);
         break;
     case 8:
-        func_0203a844();
-        func_ov004_02215b9c();
-        func_ov004_02215208(0);
+        Camera_SetModeDefault();
+        recordPlayerTalk();
+        changeAct(0);
         break;
     case 4:
-        func_ov004_02215208(0);
+        changeAct(0);
         break;
     case 2:
     case 5:
@@ -683,19 +385,19 @@ void Unk_ov004_0224c034::vfunc_4c(s32 a, u32 b) {
     }
 }
 
-void *Unk_ov004_0224bfa4::func_ov004_02215a50() {
-    if (unk_1a0 != NULL && unk_1a0->unk_82c != NULL) {
-        func_0209750c();
-        s32 r = func_0209888c();
-        return func_0207f55c(unk_1a0->unk_82c, r);
+void *BirthdayHostVillagerTalk::getPlayerMemory() {
+    if (villager != NULL && villager->villagerData != NULL) {
+        PlayerData_GetCurrent();
+        s32 r = PlayerData_getPlayerId();
+        return Villager_FindOrCreateMemory(villager->villagerData, r);
     }
     return NULL;
 }
 
-BOOL Unk_ov004_0224bfa4::func_ov004_02215a2c() {
-    void *p = func_ov004_02215a50();
+BOOL BirthdayHostVillagerTalk::isPartyNotGreeted() {
+    void *p = getPlayerMemory();
     if (p) {
-        if (func_02080a04(p) == 0) {
+        if (VillagerMemory_isPartyGreeted(p) == 0) {
             return TRUE;
         }
         return FALSE;
@@ -703,17 +405,17 @@ BOOL Unk_ov004_0224bfa4::func_ov004_02215a2c() {
     return FALSE;
 }
 
-void Unk_ov004_0224bfa4::func_ov004_02215a14() {
-    void *p = func_ov004_02215a50();
+void BirthdayHostVillagerTalk::setPartyGreeted() {
+    void *p = getPlayerMemory();
     if (p) {
-        func_02080a2c(p);
+        VillagerMemory_setPartyGreeted(p);
     }
 }
 
-BOOL Unk_ov004_0224bfa4::func_ov004_022159f0() {
-    void *p = func_ov004_02215a50();
+BOOL BirthdayHostVillagerTalk::isNotTalkedYet() {
+    void *p = getPlayerMemory();
     if (p) {
-        if (func_02080a74(p) == 0) {
+        if (VillagerMemory_isTalkedToday(p) == 0) {
             return TRUE;
         }
         return FALSE;
@@ -721,32 +423,32 @@ BOOL Unk_ov004_0224bfa4::func_ov004_022159f0() {
     return FALSE;
 }
 
-void Unk_ov004_0224bfa4::func_ov004_022159d8() {
-    void *p = func_ov004_02215a50();
+void BirthdayHostVillagerTalk::setTalked() {
+    void *p = getPlayerMemory();
     if (p) {
-        func_02080a98(p);
+        VillagerMemory_setTalkedToday(p);
     }
 }
 
-u32 Unk_ov004_0224bfa4::func_ov004_022159bc() {
-    void *p = func_ov004_02215a50();
+u32 BirthdayHostVillagerTalk::hasReceivedGift() {
+    void *p = getPlayerMemory();
     if (p) {
-        return func_02080a40(p);
+        return VillagerMemory_isPartyGiftReceived(p);
     }
     return 0;
 }
 
-void Unk_ov004_0224bfa4::func_ov004_022159a4() {
-    void *p = func_ov004_02215a50();
+void BirthdayHostVillagerTalk::setReceivedGift() {
+    void *p = getPlayerMemory();
     if (p) {
-        func_02080a64(p);
+        VillagerMemory_setPartyGiftReceived(p);
     }
 }
 
-BOOL Unk_ov004_0224bfa4::func_ov004_022158c4(u16 *p) {
+BOOL BirthdayHostVillagerTalk::isLikedGift(u16 *p) {
     BOOL r;
-    if (unk_1a0 && unk_1a0->unk_82c) {
-        u32 c = func_0209b354(func_0209a610(func_0207e268(unk_1a0->unk_82c)));
+    if (villager && villager->villagerData) {
+        u32 c = VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(villager->villagerData)));
         r = FALSE;
         switch (c) {
         case 0:
@@ -762,7 +464,7 @@ BOOL Unk_ov004_0224bfa4::func_ov004_022158c4(u16 *p) {
             if (*p >= 0x11a8 && *p <= 0x12a7) r = TRUE;
             break;
         case 4:
-            if (func_0204b2d4(p)) {
+            if (Item_IsFurniture(p)) {
                 if (!Unk_ov004_022158c4_Range(p, 0x450c, 0x45db)) r = TRUE;
             }
             break;
@@ -772,431 +474,431 @@ BOOL Unk_ov004_0224bfa4::func_ov004_022158c4(u16 *p) {
     return FALSE;
 }
 
-void Unk_ov004_0224bfa4::func_ov004_022158a8(s32 v) {
-    void *p = this->func_ov004_02215a50();
+void BirthdayHostVillagerTalk::addFriendship(s32 v) {
+    void *p = this->getPlayerMemory();
     if (p) {
-        func_02080da4(p, v);
+        VillagerMemory_addFriendship(p, v);
     }
 }
 
-void *Unk_ov004_0224bfa4::func_ov004_0221588c() {
-    void *p = this->func_ov004_02215a50();
+void *BirthdayHostVillagerTalk::getFriendship() {
+    void *p = this->getPlayerMemory();
     if (p) {
-        return func_02080dd8(p);
+        return VillagerMemory_getFriendship(p);
     }
     return 0;
 }
 
-void Unk_ov004_0224bfa4::vfunc_84() {
-    if (unk_1a0->unk_894 == 0xc) {
-        unk_3c->unk_08 = 1;
+void BirthdayHostVillagerTalk::onTaskDone(u32) {
+    if (villager->act == 0xc) {
+        window->nextState = 1;
     }
 }
 
-void Unk_ov004_0224bfa4::vfunc_80() {
+void BirthdayHostVillagerTalk::update() {
     u8 b0, b1, b2;
     u16 x;
-    if (unk_1a0->unk_894 == 0xb) {
-        if (func_0206ec6c()) {
-            if (func_0206ed18() == 0) {
-                unk_3c->unk_08 = 1;
-                b0 = func_02063b8c(2) + 7;
-                func_02067a84(unk_3c, &b0, 0);
-                unk_1a0->func_ov004_02215208(6);
+    if (villager->act == 0xb) {
+        if (MenuCtrl_IsFinished()) {
+            if (MenuCtrl_IsResultOk() == 0) {
+                window->nextState = 1;
+                b0 = Random_GlobalBelow(2) + 7;
+                TalkWindowState_setNextMessage(window, &b0, 0);
+                villager->changeAct(6);
             } else {
-                void *r6 = func_0206ed38();
-                x = func_02099048();
-                s32 r4 = func_0204be70(&x);
-                func_02099064(r6);
-                func_0201578c(this, &x, 0, 7);
-                if (func_ov004_022158c4(&x)) {
-                    b1 = func_02063b8c(2) + 0xd;
-                    func_02067a84(unk_3c, &b1, 0);
-                    func_ov004_022158a8(5);
-                    if (r4 >= 1000) func_ov004_022158a8(5);
-                    if (r4 >= 2000) func_ov004_022158a8(10);
-                    func_02014ce4(this, &x, 0, 5, 0);
-                    unk_1a0->func_ov004_02215208(12);
+                void *r6 = MenuCtrl_GetIndex();
+                x = Pocket_GetItem();
+                s32 r4 = Item_GetPrice(&x);
+                Pocket_RemoveItem(r6);
+                ActorTalkRequest_setItemNameSlot(this, &x, 0, 7);
+                if (isLikedGift(&x)) {
+                    b1 = Random_GlobalBelow(2) + 0xd;
+                    TalkWindowState_setNextMessage(window, &b1, 0);
+                    addFriendship(5);
+                    if (r4 >= 1000) addFriendship(5);
+                    if (r4 >= 2000) addFriendship(10);
+                    ActorTalkRequest_requestTakeItem(this, &x, 0, 5, 0);
+                    villager->changeAct(12);
                 } else {
-                    b2 = func_02063b8c(2) + 0xb;
-                    func_02067a84(unk_3c, &b2, 0);
-                    func_ov004_022158a8(2);
-                    if (r4 >= 1000) func_ov004_022158a8(5);
-                    if (r4 >= 2000) func_ov004_022158a8(5);
-                    func_02014ce4(this, &x, 0, 5, 0);
-                    unk_1a0->func_ov004_02215208(12);
+                    b2 = Random_GlobalBelow(2) + 0xb;
+                    TalkWindowState_setNextMessage(window, &b2, 0);
+                    addFriendship(2);
+                    if (r4 >= 1000) addFriendship(5);
+                    if (r4 >= 2000) addFriendship(5);
+                    ActorTalkRequest_requestTakeItem(this, &x, 0, 5, 0);
+                    villager->changeAct(12);
                 }
             }
         }
     }
 }
 
-void Unk_ov004_0224bfa4::func_ov004_0221570c(Unk_ov004_0224c034 *owner) {
-    func_0202d388(this, owner, 0x11);
-    unk_1a0 = owner;
+void BirthdayHostVillagerTalk::attachOwner(BirthdayHostVillager *owner) {
+    VillagerTalk_begin(this, owner, 0x11);
+    villager = owner;
 }
 
-void Unk_ov004_0224bfa4::vfunc_78(void *arg) {
+void BirthdayHostVillagerTalk::start(TalkStartMsg *arg) {
     u8 *out = (u8 *)arg;
-    func_0200301c(func_020805c4(unk_1a0->unk_82c), data_ov004_0225042c, 0x28, (void *)"ev_nbirth");
-    *(u32 *)out = (u32)data_ov004_0225042c;
-    if (unk_1a0->unk_894 == 9) {
-        out[4] = func_02063b8c(2);
+    VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), sBirthdayHostMsgFile, 0x28, (void *)"ev_nbirth");
+    *(u32 *)out = (u32)sBirthdayHostMsgFile;
+    if (villager->act == 9) {
+        out[4] = Random_GlobalBelow(2);
     } else {
         s32 k = 3;
-        if (this->func_ov004_022159f0()) {
+        if (this->isNotTalkedYet()) {
             k = 1;
-        } else if (this->func_ov004_022159bc()) {
+        } else if (this->hasReceivedGift()) {
             k = 2;
         }
-        this->func_ov004_022159d8();
+        this->setTalked();
         switch (k) {
         case 1:
-            out[4] = func_02063b8c(2) + 2;
+            out[4] = Random_GlobalBelow(2) + 2;
             break;
         case 2:
-            out[4] = func_02063b8c(4) + 0x13;
+            out[4] = Random_GlobalBelow(4) + 0x13;
             break;
         default:
-            out[4] = func_02063b8c(2) + 4;
+            out[4] = Random_GlobalBelow(2) + 4;
             break;
         }
-        Unk_ov004_0224c034 *p = unk_1a0;
-        if (p->unk_89c.unk_3c) {
-            if (p && p->unk_82c) {
-                func_020157b8(&unk_1a0->unk_89c, func_020805c4(p->unk_82c), 1);
+        BirthdayHostVillager *p = villager;
+        if (p->talk.window) {
+            if (p && p->villagerData) {
+                ActorTalkRequest_setVillagerNameSlot(&villager->talk, VillagerData_getVillagerId(p->villagerData), 1);
             }
             s32 i = 0;
-            Unk_ov004_0224c034 **pp = &unk_1a0;
+            BirthdayHostVillager **pp = &villager;
             goto test;
             for (;;) {
                 void *q;
-                q = func_0208175c(i);
+                q = NpcRegistry_GetVillager(i);
                 if (q && q != *pp) {
-                    func_020157b8(&unk_1a0->unk_89c, func_020805c4(*(void **)((u8 *)q + 0x82c)), 0);
+                    ActorTalkRequest_setVillagerNameSlot(&villager->talk, VillagerData_getVillagerId(*(void **)((u8 *)q + 0x82c)), 0);
                     break;
                 }
                 i++;
             test:
-                if (i >= func_02081780()) break;
+                if (i >= NpcRegistry_GetSlotCount()) break;
             }
             u16 w = 0x1100;
-            func_0201578c(this, &w, 0, 7);
-            func_0201578c(this, &w, 1, 7);
+            ActorTalkRequest_setItemNameSlot(this, &w, 0, 7);
+            ActorTalkRequest_setItemNameSlot(this, &w, 1, 7);
         }
     }
 }
 
-extern "C" u16 func_ov004_022154ec(s32 n) {
+extern "C" u16 BirthdayHost_PickReturnGift(s32 n) {
     u16 w0, w1, w2, w3, w4;
     if (n <= 0) {
         u32 o[2];
-        func_0206338c(o, 1, 0);
-        func_02062f94(&w1, &o, 0, 0, 1, 1, 0);
+        ItemPickSpec_set(o, 1, 0);
+        ItemPick_One(&w1, &o, 0, 0, 1, 1, 0);
         u16 r = w1;
-        func_02063388(o);
+        ItemPickSpec_Destruct(o);
         return r;
     }
     if (n <= 0x3f) {
-        if (func_02063b8c(2) == 0) {
+        if (Random_GlobalBelow(2) == 0) {
             u32 o[2];
-        func_0206338c(o, 0, 0);
-            func_02062f94(&w2, &o, 0, 0, 1, 1, 0);
+        ItemPickSpec_set(o, 0, 0);
+            ItemPick_One(&w2, &o, 0, 0, 1, 1, 0);
             u16 r = w2;
-            func_02063388(o);
+            ItemPickSpec_Destruct(o);
             return r;
         } else {
             u32 o[2];
-        func_0206338c(o, 2, 0);
-            func_02062f94(&w3, &o, 0, 0, 1, 1, 0);
+        ItemPickSpec_set(o, 2, 0);
+            ItemPick_One(&w3, &o, 0, 0, 1, 1, 0);
             u16 r = w3;
-            func_02063388(o);
+            ItemPickSpec_Destruct(o);
             return r;
         }
     }
-    func_0206277c(&w0, func_0209750c(), 0);
+    ItemPick_FtrWallCarpetByClass(&w0, PlayerData_GetCurrent(), 0);
     if (w0 == 0xfff1) {
         u32 o[2];
-        func_0206338c(o, 0, 0);
-        func_02062f94(&w4, &o, 0, 0, 1, 1, 0);
+        ItemPickSpec_set(o, 0, 0);
+        ItemPick_One(&w4, &o, 0, 0, 1, 1, 0);
         u16 r = w4;
-        func_02063388(o);
+        ItemPickSpec_Destruct(o);
         return r;
     }
     return w0;
 }
 
-void Unk_ov004_0224bfa4::vfunc_10() {
-    switch (unk_1e) {
+void BirthdayHostVillagerTalk::onMessageStart(u32) {
+    switch (msgIndex) {
     case 0xf:
     case 0x10: {
         volatile u16 v;
-        v = func_ov004_022154ec((s32)func_ov004_0221588c());
-        unk_1a0->unk_a48 = v;
-        func_0201578c(this, (void *)&v, 1, 7);
+        v = BirthdayHost_PickReturnGift((s32)getFriendship());
+        villager->returnGift = v;
+        ActorTalkRequest_setItemNameSlot(this, (void *)&v, 1, 7);
         break;
     }
     }
 }
 
-void Unk_ov004_0224bfa4::vfunc_14() {
+void BirthdayHostVillagerTalk::onMessageEnd(u32) {
     u8 b[3];
-    switch (unk_1e) {
+    switch (msgIndex) {
     case 4:
     case 5:
     case 6:
         break;
     case 7:
     case 8:
-        b[0] = data_021edb5c[0];
-        func_02067abc(unk_3c, &b[0], 0);
+        b[0] = gTalkMsgIndexEnd[0];
+        TalkWindowState_setNextMessageIfUnset(window, &b[0], 0);
         break;
     case 9:
     case 10:
-        unk_1a0->func_ov004_02215208(10);
+        villager->changeAct(10);
         break;
     case 11:
     case 12:
     case 13:
     case 14:
-        b[1] = func_02063b8c(2) + 0xf;
-        func_02067a84(unk_1a0->unk_89c.unk_3c, &b[1], 0);
+        b[1] = Random_GlobalBelow(2) + 0xf;
+        TalkWindowState_setNextMessage(villager->talk.window, &b[1], 0);
         break;
     case 15:
     case 16:
-        func_02014e60(this, &unk_1a0->unk_a48, 0, 5, 0);
-        func_02099014(&unk_1a0->unk_a48, 0);
-        unk_1a0->func_ov004_02215208(13);
+        ActorTalkRequest_requestGiveItem(this, &villager->returnGift, 0, 5, 0);
+        Pocket_AddItem(&villager->returnGift, 0);
+        villager->changeAct(13);
         break;
     case 17:
     case 18:
-        this->func_ov004_022159a4();
+        this->setReceivedGift();
         break;
     case 19:
     case 20:
     case 21:
     case 22:
-        b[2] = data_021edb5c[0];
-        func_02067abc(unk_3c, &b[2], 0);
+        b[2] = gTalkMsgIndexEnd[0];
+        TalkWindowState_setNextMessageIfUnset(window, &b[2], 0);
         break;
     }
 }
 
-void Unk_ov004_0224bfa4::vfunc_18() {
+void BirthdayHostVillagerTalk::onChoice(u32) {
     u8 b[3];
-    s32 r = func_020aa514(func_020679b4(unk_1a0->unk_89c.unk_3c));
-    switch (unk_1e) {
+    s32 r = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.window));
+    switch (msgIndex) {
     case 4:
     case 5:
         if (r == 0) {
-            if (func_0206ea84((void *)func_ov004_02215e2c)) {
-                b[0] = func_02063b8c(2) + 9;
-                func_02067a84(unk_1a0->unk_89c.unk_3c, &b[0], 0);
+            if (MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter)) {
+                b[0] = Random_GlobalBelow(2) + 9;
+                TalkWindowState_setNextMessage(villager->talk.window, &b[0], 0);
             } else {
                 b[1] = 6;
-                func_02067a84(unk_1a0->unk_89c.unk_3c, &b[1], 0);
+                TalkWindowState_setNextMessage(villager->talk.window, &b[1], 0);
             }
         } else {
-            b[2] = func_02063b8c(2) + 7;
-            func_02067a84(unk_1a0->unk_89c.unk_3c, &b[2], 0);
+            b[2] = Random_GlobalBelow(2) + 7;
+            TalkWindowState_setNextMessage(villager->talk.window, &b[2], 0);
         }
         break;
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02215208(s32 idx) {
+BOOL BirthdayHostVillager::changeAct(s32 idx) {
     static Unk_ov004_02215208_Fn tbl[14] = {
-        &Unk_ov004_0224c034::func_ov004_02215098,
-        &Unk_ov004_0224c034::func_ov004_02214dd4,
-        &Unk_ov004_0224c034::func_ov004_02214dc0,
-        &Unk_ov004_0224c034::func_ov004_02214d50,
-        &Unk_ov004_0224c034::func_ov004_02214ca0,
-        &Unk_ov004_0224c034::func_ov004_02214c68,
-        &Unk_ov004_0224c034::func_ov004_02214c58,
-        &Unk_ov004_0224c034::func_ov004_02214c34,
-        &Unk_ov004_0224c034::func_ov004_02214be8,
-        &Unk_ov004_0224c034::func_ov004_02214ab0,
-        &Unk_ov004_0224c034::func_ov004_02214a80,
-        &Unk_ov004_0224c034::func_ov004_02214a48,
-        &Unk_ov004_0224c034::func_ov004_02214a40,
-        &Unk_ov004_0224c034::func_ov004_02214a38,
+        &BirthdayHostVillager::setupAct00,
+        &BirthdayHostVillager::setupAct01,
+        &BirthdayHostVillager::setupAct02,
+        &BirthdayHostVillager::setupAct03,
+        &BirthdayHostVillager::setupAct04,
+        &BirthdayHostVillager::setupAct05,
+        &BirthdayHostVillager::setupAct06,
+        &BirthdayHostVillager::setupAct07,
+        &BirthdayHostVillager::setupAct08,
+        &BirthdayHostVillager::setupAct09,
+        &BirthdayHostVillager::setupAct0A,
+        &BirthdayHostVillager::setupAct0B,
+        &BirthdayHostVillager::setupAct0C,
+        &BirthdayHostVillager::setupAct0D,
     };
     if (idx < 14) {
         if ((this->*tbl[idx])()) {
-            unk_894 = idx;
+            act = idx;
             return TRUE;
         }
     }
     return FALSE;
 }
 
-void Unk_ov004_0224c034::func_ov004_022150f0() {
+void BirthdayHostVillager::execAct() {
     static Unk_ov004_022150f0_Fn tbl[14] = {
-        &Unk_ov004_0224c034::func_ov004_02214e58,
-        &Unk_ov004_0224c034::func_ov004_02214dd0,
-        &Unk_ov004_0224c034::func_ov004_02214d60,
-        &Unk_ov004_0224c034::func_ov004_02214cd4,
-        &Unk_ov004_0224c034::func_ov004_02214c9c,
-        &Unk_ov004_0224c034::func_ov004_02214c5c,
-        &Unk_ov004_0224c034::func_ov004_02214c38,
-        &Unk_ov004_0224c034::func_ov004_02214c28,
-        &Unk_ov004_0224c034::func_ov004_02214ab4,
-        &Unk_ov004_0224c034::func_ov004_02214a90,
-        &Unk_ov004_0224c034::func_ov004_02214a4c,
-        &Unk_ov004_0224c034::func_ov004_02214a44,
-        &Unk_ov004_0224c034::func_ov004_02214a3c,
-        &Unk_ov004_0224c034::func_ov004_02214a04,
+        &BirthdayHostVillager::mainAct00,
+        &BirthdayHostVillager::mainAct01,
+        &BirthdayHostVillager::mainAct02,
+        &BirthdayHostVillager::mainAct03,
+        &BirthdayHostVillager::mainAct04,
+        &BirthdayHostVillager::mainAct05,
+        &BirthdayHostVillager::mainAct06,
+        &BirthdayHostVillager::mainAct07,
+        &BirthdayHostVillager::mainAct08,
+        &BirthdayHostVillager::mainAct09,
+        &BirthdayHostVillager::mainAct0A,
+        &BirthdayHostVillager::mainAct0B,
+        &BirthdayHostVillager::mainAct0C,
+        &BirthdayHostVillager::mainAct0D,
     };
-    if (unk_894 < 14) {
-        (this->*tbl[unk_894])();
+    if (act < 14) {
+        (this->*tbl[act])();
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02215098() {
-    if (func_02019614(unk_564, 1, data_020c6cc8)) {
-        func_0201a6c0(unk_3b0, 1, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
+BOOL BirthdayHostVillager::setupAct00() {
+    if (NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8)) {
+        NpcLookAt_setTarget((u8 *)&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov004_0224c034::func_ov004_02214e58() {
+void BirthdayHostVillager::mainAct00() {
     s32 c[3];
-    u8 *m = unk_564;
-    if (unk_3b0[0x508 - 0x3b0] != 0 && func_020197a8(m) == 1) {
-        func_020196b4(m, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    u8 *m = (u8 *)&actionCtrl;
+    if (collider.isHit != 0 && NpcActionCtrl_getAction(m) == 1) {
+        NpcActionCtrl_requestAction(m, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         return;
     }
-    if (func_020197a8(unk_564) == 0) {
-        if (unk_a4e != 0) {
-            unk_a4e--;
+    if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 0) {
+        if (walkTimer != 0) {
+            walkTimer--;
         }
-        if (unk_a4e == 0) {
-            unk_a4c = func_ov004_02216ba4(unk_a5c, unk_5c, unk_8e);
-            unk_a50[0] = unk_a5c[0];
-            unk_a50[1] = unk_a5c[1];
-            unk_a50[2] = unk_a5c[2];
-            if (unk_a4c != unk_8e) {
-                if (func_020196b4(unk_564, 3, 1, 0, 0, 0, unk_a4c, 0, 0, data_020c6cc8, 0) != 0) {
-                    unk_a4e = func_02063b8c(0x46) + 0x14;
+        if (walkTimer == 0) {
+            walkAngle = Room_PickRandomWalkTarget(walkTarget, &position, rotY);
+            waypoint[0] = walkTarget[0];
+            waypoint[1] = walkTarget[1];
+            waypoint[2] = walkTarget[2];
+            if (walkAngle != rotY) {
+                if (NpcActionCtrl_requestAction((u8 *)&actionCtrl, 3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) != 0) {
+                    walkTimer = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
-                if (func_020196b4(unk_564, 1, 1, unk_a5c[0], unk_a5c[2], 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
-                    unk_a4e = func_02063b8c(0x50) + 0x14;
+                if (NpcActionCtrl_requestAction((u8 *)&actionCtrl, 1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
+                    walkTimer = Random_GlobalBelow(0x50) + 0x14;
                 }
             }
         } else {
-            if (func_02019790(unk_564) != 0) {
-                func_02019614(unk_564, 1, data_020c6cc8);
+            if (NpcActionCtrl_isActionDone((u8 *)&actionCtrl) != 0) {
+                NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
             }
         }
-    } else if (func_020197a8(unk_564) == 3) {
-        if (func_02019790(unk_564) != 0) {
-            func_020196b4(unk_564, 1, 1, unk_a5c[0], unk_a5c[2], 0, 0, 0, 0, data_020c6cc8, 0);
+    } else if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone((u8 *)&actionCtrl) != 0) {
+            NpcActionCtrl_requestAction((u8 *)&actionCtrl, 1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0);
         }
-    } else if (func_020197a8(unk_564) == 1) {
-        switch (func_0201bb3c(this, c)) {
+    } else if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 1) {
+        switch (NpcActor_findAvoidPos(this, c)) {
         case 1:
-            func_02019614(unk_564, 1, data_020c6cc8);
+            NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
             break;
         case 2:
-            unk_a50[0] = c[0];
-            unk_a50[1] = c[1];
-            unk_a50[2] = c[2];
-            func_0201a9ec(unk_350, unk_a50);
+            waypoint[0] = c[0];
+            waypoint[1] = c[1];
+            waypoint[2] = c[2];
+            NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, waypoint);
             break;
         default:
-            if (func_020e96ec(unk_a50, unk_a5c) != 0) {
-                unk_a50[0] = unk_a5c[0];
-                unk_a50[1] = unk_a5c[1];
-                unk_a50[2] = unk_a5c[2];
-                func_0201a9ec(unk_350, unk_a5c);
-            } else if (func_020e9650(unk_a5c, unk_5c) < 0x200) {
-                func_02019614(unk_564, 1, data_020c6cc8);
+            if (Vec_NotEqual(waypoint, walkTarget) != 0) {
+                waypoint[0] = walkTarget[0];
+                waypoint[1] = walkTarget[1];
+                waypoint[2] = walkTarget[2];
+                NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, walkTarget);
+            } else if (Vec_DistXZ(walkTarget, &position) < 0x200) {
+                NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
             }
             break;
         }
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214dd4() {
-    u8 *m = unk_564;
-    Unk_ov004_022146ec_Actor *o = func_ov004_02216c84();
+BOOL BirthdayHostVillager::setupAct01() {
+    u8 *m = (u8 *)&actionCtrl;
+    Actor *o = BirthdayGuestVillager_Get();
     if (o != 0) {
-        s32 dx = o->pos[0] - unk_5c[0];
-        s32 dz = o->pos[2] - unk_5c[2];
-        s32 ang = func_020e7b98(dx, dz);
-        func_020196b4(m, 3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
-        func_0201a6c0(unk_3b0, 2, 0, o, data_021f4880, 4, data_020c6d1c, 1);
+        s32 dx = o->position.x - position.x;
+        s32 dz = o->position.z - position.z;
+        s32 ang = Math_Atan2(dx, dz);
+        NpcActionCtrl_requestAction(m, 3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
+        NpcLookAt_setTarget((u8 *)&lookAt, 2, 0, o, gVec3Zero, 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov004_0224c034::func_ov004_02214dd0() {}
+void BirthdayHostVillager::mainAct01() {}
 
-BOOL Unk_ov004_0224c034::func_ov004_02214dc0() {
-    unk_a4b = 0x1e;
+BOOL BirthdayHostVillager::setupAct02() {
+    emotionTimer = 0x1e;
     return TRUE;
 }
 
-void Unk_ov004_0224c034::func_ov004_02214d60() {
-    if (unk_a4b != 0) {
-        unk_a4b--;
+void BirthdayHostVillager::mainAct02() {
+    if (emotionTimer != 0) {
+        emotionTimer--;
     }
-    switch (unk_a4b) {
+    switch (emotionTimer) {
     case 0x14:
-        func_02019638(unk_564, 1, 3, data_020c6cc8);
+        NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 3, data_020c6cc8);
         break;
     case 1:
-        func_02019638(unk_564, 1, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 0, data_020c6cc8);
         break;
     case 0:
-        func_ov004_02215208(0);
+        changeAct(0);
         break;
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214d50() {
-    unk_a4b = 0x32;
+BOOL BirthdayHostVillager::setupAct03() {
+    emotionTimer = 0x32;
     return TRUE;
 }
 
-void Unk_ov004_0224c034::func_ov004_02214cd4() {
-    if (unk_a4b != 0) {
-        unk_a4b--;
+void BirthdayHostVillager::mainAct03() {
+    if (emotionTimer != 0) {
+        emotionTimer--;
     }
-    switch (unk_a4b) {
+    switch (emotionTimer) {
     case 0x28:
-        if (func_02063b8c(2) == 0) {
-            func_02019638(unk_564, 1, 0xa, data_020c6cc8);
+        if (Random_GlobalBelow(2) == 0) {
+            NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 0xa, data_020c6cc8);
         } else {
-            func_02019638(unk_564, 1, 0x17, data_020c6cc8);
+            NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 0x17, data_020c6cc8);
         }
         break;
     case 1:
-        func_02019638(unk_564, 1, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 0, data_020c6cc8);
         break;
     case 0:
-        func_ov004_02215208(0);
+        changeAct(0);
         break;
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214ca0() {
-    if ((u32)(unk_894 - 1) <= 2) {
-        func_02019638(unk_564, 2, 0, data_020c6cc8);
+BOOL BirthdayHostVillager::setupAct04() {
+    if ((u32)(act - 1) <= 2) {
+        NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 2, 0, data_020c6cc8);
     }
     return TRUE;
 }
 
-void Unk_ov004_0224c034::func_ov004_02214c9c() {}
+void BirthdayHostVillager::mainAct04() {}
 
-BOOL Unk_ov004_0224c034::func_ov004_02214c68() {
+BOOL BirthdayHostVillager::setupAct05() {
     BOOL r;
-    void *o = func_02095204(4);
+    void *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        func_020141b4(unk_618, 0, func_0201bcbc(this, o), 0);
+        NpcTalkCtrl_requestTurnAndTalk((u8 *)&talkCtrl, 0, NpcActor_getAngleTo(this, o), 0);
         r = TRUE;
     } else {
         r = FALSE;
@@ -1204,114 +906,114 @@ BOOL Unk_ov004_0224c034::func_ov004_02214c68() {
     return r;
 }
 
-void Unk_ov004_0224c034::func_ov004_02214c5c() {
-    func_ov004_02215208(6);
+void BirthdayHostVillager::mainAct05() {
+    changeAct(6);
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214c58() { return TRUE; }
+BOOL BirthdayHostVillager::setupAct06() { return TRUE; }
 
-void Unk_ov004_0224c034::func_ov004_02214c38() {
-    Unk_ov004_02214a4c_Obj *o = unk_89c.unk_3c;
+void BirthdayHostVillager::mainAct06() {
+    TalkWindowState *o = talk.window;
     if (o != 0) {
-        if (o->unk_04 == 0) {
-            func_0203d67c(this);
+        if (o->state == 0) {
+            TalkRequest_SetTargetDone(this);
         }
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214c34() { return TRUE; }
+BOOL BirthdayHostVillager::setupAct07() { return TRUE; }
 
-void Unk_ov004_0224c034::func_ov004_02214c28() {
-    func_0203d704(this, 0);
+void BirthdayHostVillager::mainAct07() {
+    TalkRequest_AddPlayerTalk6(this, 0);
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214be8() {
-    unk_a4a = 0x32;
-    func_020196b4(unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL BirthdayHostVillager::setupAct08() {
+    approachTimer = 0x32;
+    NpcActionCtrl_requestAction((u8 *)&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-void Unk_ov004_0224c034::func_ov004_02214ab4() {
-    Unk_ov004_02214ab4_Vec a, b;
+void BirthdayHostVillager::mainAct08() {
+    VecFx32 a, b;
     s32 v, r4, r0;
-    Unk_ov004_02214ab4_Vec *p = func_020947f0(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;
     b.x = a.x;
     b.y = a.y;
     b.z = a.z;
-    v = func_0201bd20(this, 4);
+    v = NpcActor_getDistanceToPlayer(this, 4);
     if (v > 0x4000) {
-        if (func_020197a8(unk_564) == 1) {
-            func_020196b4(unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 1) {
+            NpcActionCtrl_requestAction((u8 *)&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (func_020197a8(unk_564) == 2) {
-            func_020196b4(unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 2) {
+            NpcActionCtrl_requestAction((u8 *)&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    func_0201a9ec(unk_350, &b);
-    if (unk_a4a != 0) {
-        unk_a4a--;
+    NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, &b);
+    if (approachTimer != 0) {
+        approachTimer--;
     }
-    r4 = func_02002bdc(unk_5c, &a);
-    r0 = func_020e780c(unk_8e, r4);
-    if (v <= 0x3000 || unk_a4a == 0) {
-        func_020141b4(unk_618, 0, r4, 0);
-        func_ov004_02215208(9);
+    r4 = Math_AngleXZ(&position, &a);
+    r0 = Math_AngleDiffAbs(rotY, r4);
+    if (v <= 0x3000 || approachTimer == 0) {
+        NpcTalkCtrl_requestTurnAndTalk((u8 *)&talkCtrl, 0, r4, 0);
+        changeAct(9);
     } else if (r0 > 0x2000) {
-        func_020196b4(unk_564, 4, 2, b.x, b.z, 0, r4, 0, 0, data_020c6cc8, 0);
+        NpcActionCtrl_requestAction((u8 *)&actionCtrl, 4, 2, b.x, b.z, 0, r4, 0, 0, data_020c6cc8, 0);
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214ab0() { return TRUE; }
+BOOL BirthdayHostVillager::setupAct09() { return TRUE; }
 
-void Unk_ov004_0224c034::func_ov004_02214a90() {
-    Unk_ov004_02214a4c_Obj *o = unk_89c.unk_3c;
+void BirthdayHostVillager::mainAct09() {
+    TalkWindowState *o = talk.window;
     if (o != 0) {
-        if (o->unk_04 == 0) {
-            func_0203d67c(this);
+        if (o->state == 0) {
+            TalkRequest_SetTargetDone(this);
         }
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214a80() {
-    unk_89c.unk_3c->unk_14 = 1;
+BOOL BirthdayHostVillager::setupAct0A() {
+    talk.window->openMode = 1;
     return TRUE;
 }
 
-void Unk_ov004_0224c034::func_ov004_02214a4c() {
-    if (unk_89c.unk_3c->unk_04 == 5) {
-        if (func_0206ead4(func_0206ea84((void *)func_ov004_02215e2c), 0xd) != 0) {
-            func_ov004_02215208(0xb);
+void BirthdayHostVillager::mainAct0A() {
+    if (talk.window->state == 5) {
+        if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter), 0xd) != 0) {
+            changeAct(0xb);
         }
     }
 }
 
-BOOL Unk_ov004_0224c034::func_ov004_02214a48() { return TRUE; }
+BOOL BirthdayHostVillager::setupAct0B() { return TRUE; }
 
-void Unk_ov004_0224c034::func_ov004_02214a44() {}
+void BirthdayHostVillager::mainAct0B() {}
 
-BOOL Unk_ov004_0224c034::func_ov004_02214a40() { return TRUE; }
+BOOL BirthdayHostVillager::setupAct0C() { return TRUE; }
 
-void Unk_ov004_0224c034::func_ov004_02214a3c() {}
+void BirthdayHostVillager::mainAct0C() {}
 
-BOOL Unk_ov004_0224c034::func_ov004_02214a38() { return TRUE; }
+BOOL BirthdayHostVillager::setupAct0D() { return TRUE; }
 
-void Unk_ov004_0224c034::func_ov004_02214a04() {
+void BirthdayHostVillager::mainAct0D() {
     u8 buf[1];
-    buf[0] = func_02063b8c(2) + 0x11;
-    func_02067a84(unk_89c.unk_3c, buf, 0);
-    func_ov004_02215208(6);
+    buf[0] = Random_GlobalBelow(2) + 0x11;
+    TalkWindowState_setNextMessage(talk.window, buf, 0);
+    changeAct(6);
 }
 
-void Unk_ov004_0224c034::vfunc_80() {
-    unk_898 = 1;
+void BirthdayHostVillager::onTalkMelodyPlayed() {
+    talkMelodyPlayed = 1;
 }
 
-BOOL Unk_ov004_0224c034::vfunc_7c() {
-    if (unk_898 == 0) {
+BOOL BirthdayHostVillager::canPlayTalkMelody() {
+    if (talkMelodyPlayed == 0) {
         return TRUE;
     }
     return FALSE;

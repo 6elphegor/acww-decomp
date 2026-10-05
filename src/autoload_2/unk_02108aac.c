@@ -19,7 +19,7 @@ typedef struct MatAnmResult {
 } MatAnmResult;
 
 // NNS g3d texture SRT matrix: scale + translation
-void func_02108aac(s32 *m, const MatAnmResult *anm)
+void texmtxCalc_flagR___3dsmax(s32 *m, const MatAnmResult *anm)
 {
     s32 A, B;
     m[0] = anm->scaleS;

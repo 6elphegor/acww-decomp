@@ -1,109 +1,107 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/DwcGsHttpCallbackCtx.h"
 
 // ov065 TU34: GameSpy gsAvailable (0x02277e70..0x02278328)
 
-struct Unk_ov065_02277f70_Ctx {
-    u32 unk_00;
-    void (*unk_04)(s32, s32, s32, u32);
-};
 
-struct Unk_ov065_02291024 {
-    s32 unk_00;
-    u8 unk_04[2];
-    u16 unk_06;
-    u8 unk_08[4];
-    u8 unk_0c;
+// The SDK's anonymous `static struct {...} AC` (sock, address, packet[64], packetLen, sendTime, retryCount).
+struct GsAvailQuery {
+    s32 sock;
+    u8 serverAddr[2];
+    u16 serverPort;
+    u8 serverIp[4];
+    u8 queryPacket;
     u8 unk_0d[4];
-    char unk_11[0x3b];
-    u32 unk_4c;
-    u32 unk_50;
-    u32 unk_54;
+    char gameName[0x3b];
+    u32 packetLen;
+    u32 sendTime;
+    u32 retryCount;
 };
 
 extern "C" {
 
-s32 func_021277d4(const char *);
-void func_02127838(void *, const void *);
-s32 func_02128930(const void *, const void *, s32);
-void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
+s32 STD_GetStringLength(const char *);
+void STD_CopyString(void *, const void *);
+s32 memcmp(const void *, const void *, s32);
+void memcpy(void *, const void *, s32);
+s32 OS_SPrintf(char *, const char *, ...);
 
-extern s32 data_ov065_02290fa0;
-extern char data_ov065_02290fa4[];
-extern char data_ov065_02290fe4[];
+extern s32 __GSIACResult;
+extern char GSIACHostname[];
+extern char __GSIACGamename[];
 
-Unk_ov065_02291024 data_ov065_02291024;
+GsAvailQuery AC;
 
-void *func_ov065_02277b64(s32 a, void *b, s32 c);
-void *func_ov065_02277b8c(s32 a, s32 b);
-s32 func_ov065_0227a1d4(s32, s32, void *, void *);
-s32 func_ov065_0227a024(s32, s32, s32, void *, void *);
-s32 func_ov065_02279eb4(s32);
-s32 func_ov065_02279eec();
-void func_ov065_02279ef4();
-void func_ov065_0227a1f8();
-void func_ov065_0227a244();
-s32 func_ov065_02278ee8(s32 fd);
-s32 func_ov065_02278cb8(s32, void *, s32, s32, void *, void *);
-void func_ov065_02278dbc(s32);
-u32 func_ov065_02279144();
-void func_ov065_02279138();
-s32 func_ov065_02278dd4(s32, s32, s32);
-s32 func_ov065_02278328(const char *, s32, void *);
+void *DwcNet_Free(s32 a, void *b, s32 c);
+void *DwcNet_Alloc(s32 a, s32 b);
+s32 ghttpGetA(s32, s32, void *, void *);
+s32 ghttpPostA(s32, s32, s32, void *, void *);
+s32 ghttpPostAddStringA(s32);
+s32 ghttpNewPost();
+void ghttpThink();
+void ghttpCleanup();
+void ghttpStartup();
+s32 CanReceiveOnSocket(s32 fd);
+s32 recvfrom(s32, void *, s32, s32, void *, void *);
+void closesocket(s32);
+u32 current_time();
+void SocketStartUp();
+s32 socket(s32, s32, s32);
+s32 get_sockaddrin(const char *, s32, void *);
 
-void func_ov065_02270e34(s32, s32);
-s32 func_ov065_02277e70(s32 e);
-s32 func_ov065_02278070(s32, s32, s32, s32, Unk_ov065_02277f70_Ctx *);
-s32 func_ov065_022781b0(s8 *, s32, u8 *, u32 *);
-void func_ov065_022782f4();
-s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
+void DwcCore_SetError(s32, s32);
+s32 DwcGsHttp_ReportError(s32 e);
+s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, DwcGsHttpCallbackCtx *);
+s32 HandlePacket(s8 *, s32, u8 *, u32 *);
+void SendPacket();
+s32 sendto(s32, void *, s32, s32, void *, s32);
 }
 
 extern "C" {
 
-void func_ov065_022782f4() {
-    func_ov065_02278c64(data_ov065_02291024.unk_00, &data_ov065_02291024.unk_0c, data_ov065_02291024.unk_4c, 0,
-                        data_ov065_02291024.unk_04, 8);
-    data_ov065_02291024.unk_50 = func_ov065_02279144();
+void SendPacket() {
+    sendto(AC.sock, &AC.queryPacket, AC.packetLen, 0,
+                        AC.serverAddr, 8);
+    AC.sendTime = current_time();
 }
 
-void func_ov065_02278250(char *url) {
+void GSIStartAvailableCheckA(char *url) {
     char buf[0x44];
     s8 c;
-    func_02127838(data_ov065_02290fe4, url);
-    data_ov065_02291024.unk_00 = -1;
-    func_ov065_02279138();
-    c = data_ov065_02290fa4[0];
+    STD_CopyString(__GSIACGamename, url);
+    AC.sock = -1;
+    SocketStartUp();
+    c = GSIACHostname[0];
     if (c == 0) {
-        func_021130d0(buf, "%s.available.gs.nintendowifi.net", url);
+        OS_SPrintf(buf, "%s.available.gs.nintendowifi.net", url);
     }
-    if (func_ov065_02278328(c != 0 ? data_ov065_02290fa4 : buf, 0x6cfc, data_ov065_02291024.unk_04) != 0) {
-        s32 s = func_ov065_02278dd4(2, 2, 0);
-        data_ov065_02291024.unk_00 = s;
+    if (get_sockaddrin(c != 0 ? GSIACHostname : buf, 0x6cfc, AC.serverAddr) != 0) {
+        s32 s = socket(2, 2, 0);
+        AC.sock = s;
         if (s != -1) {
             s32 n;
-            data_ov065_02291024.unk_0c = 9;
-            n = func_021277d4(url);
-            func_02128a00(data_ov065_02291024.unk_11, url, n + 1);
-            data_ov065_02291024.unk_4c = n + 6;
-            func_ov065_022782f4();
-            data_ov065_02291024.unk_54 = 0;
+            AC.queryPacket = 9;
+            n = STD_GetStringLength(url);
+            memcpy(AC.gameName, url, n + 1);
+            AC.packetLen = n + 6;
+            SendPacket();
+            AC.retryCount = 0;
         }
     }
 }
 
-s32 func_ov065_022781b0(s8 *b, s32 n, u8 *addr, u32 *out) {
+s32 HandlePacket(s8 *b, s32 n, u8 *addr, u32 *out) {
     if (n < 7) {
         return 1;
     }
-    if (func_02128930(addr + 4, data_ov065_02291024.unk_08, 4) != 0) {
+    if (memcmp(addr + 4, AC.serverIp, 4) != 0) {
         return 1;
     }
-    if (*(u16 *)(addr + 2) != data_ov065_02291024.unk_06) {
+    if (*(u16 *)(addr + 2) != AC.serverPort) {
         return 1;
     }
-    if (func_02128930(b, "\xfe\xfd\x09", 3) != 0) {
+    if (memcmp(b, "\xfe\xfd\x09", 3) != 0) {
         return 1;
     }
     u32 v = ((s32)b[3] << 24) & 0xff000000;
@@ -114,120 +112,120 @@ s32 func_ov065_022781b0(s8 *b, s32 n, u8 *addr, u32 *out) {
     return 0;
 }
 
-s32 func_ov065_022780e0() {
+s32 GSIAvailableCheckThink() {
     u32 addr[2];
     s32 len;
     u32 flags;
     u8 buf[0x40];
     len = 8;
-    if (data_ov065_02291024.unk_00 == -1) {
-        data_ov065_02290fa0 = 1;
+    if (AC.sock == -1) {
+        __GSIACResult = 1;
         return 1;
     }
-    if (func_ov065_02278ee8(data_ov065_02291024.unk_00) != 0) {
-        s32 n = func_ov065_02278cb8(data_ov065_02291024.unk_00, buf, 0x40, 0, addr, &len);
-        if (func_ov065_022781b0((s8 *)buf, n, (u8 *)addr, &flags) == 0) {
-            func_ov065_02278dbc(data_ov065_02291024.unk_00);
+    if (CanReceiveOnSocket(AC.sock) != 0) {
+        s32 n = recvfrom(AC.sock, buf, 0x40, 0, addr, &len);
+        if (HandlePacket((s8 *)buf, n, (u8 *)addr, &flags) == 0) {
+            closesocket(AC.sock);
             if ((flags & 1) != 0) {
-                data_ov065_02290fa0 = 2;
+                __GSIACResult = 2;
             } else if ((flags & 2) != 0) {
-                data_ov065_02290fa0 = 3;
+                __GSIACResult = 3;
             } else {
-                data_ov065_02290fa0 = 1;
+                __GSIACResult = 1;
             }
-            return data_ov065_02290fa0;
+            return __GSIACResult;
         }
     }
-    if (func_ov065_02279144() > data_ov065_02291024.unk_50 + 0x7d0) {
-        if (data_ov065_02291024.unk_54 == 1) {
-            func_ov065_02278dbc(data_ov065_02291024.unk_00);
-            data_ov065_02290fa0 = 1;
+    if (current_time() > AC.sendTime + 0x7d0) {
+        if (AC.retryCount == 1) {
+            closesocket(AC.sock);
+            __GSIACResult = 1;
             return 1;
         }
-        func_ov065_022782f4();
-        data_ov065_02291024.unk_54++;
+        SendPacket();
+        AC.retryCount++;
     }
     return 0;
 }
 
-s32 func_ov065_022780d0() {
-    func_ov065_0227a244();
+s32 DwcGsHttp_Startup() {
+    ghttpStartup();
     return 1;
 }
 
-s32 func_ov065_022780c0() {
-    func_ov065_0227a1f8();
+s32 DwcGsHttp_Cleanup() {
+    ghttpCleanup();
     return 1;
 }
 
-s32 func_ov065_022780b0() {
-    func_ov065_02279ef4();
+s32 DwcGsHttp_Process() {
+    ghttpThink();
     return 1;
 }
 
-s32 func_ov065_02278070(s32 a, s32 e, s32 c, s32 d, Unk_ov065_02277f70_Ctx *p) {
-    void (*cb)(s32, s32, s32, u32) = p->unk_04;
+s32 DwcGsHttp_OnRequestDone(s32 a, s32 e, s32 c, s32 d, DwcGsHttpCallbackCtx *p) {
+    void (*cb)(s32, s32, s32, u32) = p->callback;
     if (cb != NULL) {
         if (e == 0) {
-            cb(c, d, e, p->unk_00);
+            cb(c, d, e, p->userData);
         } else {
-            func_ov065_02277e70(e);
-            cb(0, 0, e, p->unk_00);
+            DwcGsHttp_ReportError(e);
+            cb(0, 0, e, p->userData);
         }
     }
-    func_ov065_02277b64(4, p, 0);
+    DwcNet_Free(4, p, 0);
     return 1;
 }
 
-void func_ov065_02278060(s32 *p) {
-    *p = func_ov065_02279eec();
+void DwcGsHttp_PostCreate(s32 *p) {
+    *p = ghttpNewPost();
 }
 
-s32 func_ov065_02278054(s32 *p) {
-    return func_ov065_02279eb4(*p);
+s32 DwcGsHttp_PostAddString(s32 *p) {
+    return ghttpPostAddStringA(*p);
 }
 
-s32 func_ov065_02277fe0(s32 a, s32 *pa, void (*cb)(s32, s32, s32, u32), u32 ud) {
-    Unk_ov065_02277f70_Ctx *p;
+s32 DwcGsHttp_Post(s32 a, s32 *pa, void (*cb)(s32, s32, s32, u32), u32 ud) {
+    DwcGsHttpCallbackCtx *p;
     s32 r;
-    p = (Unk_ov065_02277f70_Ctx *)func_ov065_02277b8c(4, 8);
+    p = (DwcGsHttpCallbackCtx *)DwcNet_Alloc(4, 8);
     if (p == NULL) {
-        func_ov065_02277e70(0x14);
-        cb(0, 0, 0x14, p->unk_00);
+        DwcGsHttp_ReportError(0x14);
+        cb(0, 0, 0x14, p->userData);
         return 0x14;
     }
-    p->unk_00 = ud;
-    p->unk_04 = cb;
-    r = func_ov065_0227a024(a, *pa, 0, (void *)func_ov065_02278070, p);
+    p->userData = ud;
+    p->callback = cb;
+    r = ghttpPostA(a, *pa, 0, (void *)DwcGsHttp_OnRequestDone, p);
     if (r < 0) {
-        func_ov065_02277e70(r);
-        cb(0, 0, r, p->unk_00);
-        func_ov065_02277b64(4, p, 0);
+        DwcGsHttp_ReportError(r);
+        cb(0, 0, r, p->userData);
+        DwcNet_Free(4, p, 0);
     }
     return r;
 }
 
-s32 func_ov065_02277f70(s32 a, void (*cb)(s32, s32, s32, u32), u32 ud) {
-    Unk_ov065_02277f70_Ctx *p;
+s32 DwcGsHttp_Get(s32 a, void (*cb)(s32, s32, s32, u32), u32 ud) {
+    DwcGsHttpCallbackCtx *p;
     s32 r;
-    p = (Unk_ov065_02277f70_Ctx *)func_ov065_02277b8c(4, 8);
+    p = (DwcGsHttpCallbackCtx *)DwcNet_Alloc(4, 8);
     if (p == NULL) {
-        func_ov065_02277e70(0x14);
-        cb(0, 0, 0x14, p->unk_00);
+        DwcGsHttp_ReportError(0x14);
+        cb(0, 0, 0x14, p->userData);
         return 0x14;
     }
-    p->unk_00 = ud;
-    p->unk_04 = cb;
-    r = func_ov065_0227a1d4(a, 0, (void *)func_ov065_02278070, p);
+    p->userData = ud;
+    p->callback = cb;
+    r = ghttpGetA(a, 0, (void *)DwcGsHttp_OnRequestDone, p);
     if (r < 0) {
-        func_ov065_02277e70(r);
-        cb(0, 0, r, p->unk_00);
-        func_ov065_02277b64(4, p, 0);
+        DwcGsHttp_ReportError(r);
+        cb(0, 0, r, p->userData);
+        DwcNet_Free(4, p, 0);
     }
     return r;
 }
 
-s32 func_ov065_02277e70(s32 e) {
+s32 DwcGsHttp_ReportError(s32 e) {
     s32 b = -0x17ed0;
     s32 a = 6;
     if (e == 0) {
@@ -299,7 +297,7 @@ s32 func_ov065_02277e70(s32 e) {
     case 19:
         break;
     }
-    func_ov065_02270e34(a, b);
+    DwcCore_SetError(a, b);
     return e;
 }
 

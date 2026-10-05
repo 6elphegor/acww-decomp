@@ -95,38 +95,38 @@ extern DestructorChain *data_0220066c; // __global_destructor_chain
 extern VoidFunc data_0213c6b0; // thandler (= dthandler)
 
 extern "C" {
-void func_02133ccc(const u8 *p);
-int func_02133ce0(void);
+void sys_writec(const u8 *p);
+int sys_readc(void);
 int __FindExceptionTable(ExceptionInfo *info, char *retaddr);
-u8 *func_02133b68(u8 *p);
-void func_02133bc0(ThrowContext *context, ExceptionInfo *info);
-u32 func_02133c68(ThrowContext *context, ExceptionInfo *info);
-void func_02133aec(ThrowContext *context, ExceptionInfo *info, char *pc);
-void func_021279f4(void); // abort
-void *func_020ec860(size_t size); // operator new[]
-void func_020ec848(void *p); // operator delete[]
-void func_02135578(void);
-void func_02135668(void *array, size_t count, size_t size, ObjFunc dtor);
+u8 *__SkipUnwindInfo(u8 *p);
+void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info);
+u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
+void __TransferControl(ThrowContext *context, ExceptionInfo *info, char *pc);
+void abort(void); // abort
+void *_Znam(size_t size); // operator new[]
+void _ZdaPv(void *p); // operator delete[]
+void _ZSt9terminatev(void);
+void __cxa_vec_dtor(void *array, size_t count, size_t size, ObjFunc dtor);
 void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor);
-u8 *func_02133da8(u8 *p, u32 *value);
-u8 *func_02133e50(u8 *p, s32 *value);
-u8 func_02134d70(ActionIterator *iter);
-u8 func_0213510c(ActionIterator *iter);
-void func_02135128(char *retaddr, ExceptionInfo *info);
-ExceptionTableIndex *func_0213524c(ExceptionTableIndex *table, int count, char *addr);
-int func_02135348(const char *throwtype, const char *catchtype, s32 *offset_result);
-void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *catcher);
-CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info);
-int func_02134308(const char *throwtype, ExSpecification *spec);
-void func_0213429c(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp);
-u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *result_offset);
-void func_0213404c(ThrowContext *context, s32 cinfo_ref, s32 offset);
+u8 *__DecodeUnsignedNumber(u8 *p, u32 *value);
+u8 *__DecodeSignedNumber(u8 *p, s32 *value);
+u8 NextAction(ActionIterator *iter);
+u8 CurrentAction(ActionIterator *iter);
+void FindExceptionRecord(char *retaddr, ExceptionInfo *info);
+ExceptionTableIndex *BinarySearch(ExceptionTableIndex *table, int count, char *addr);
+int __throw_catch_compare(const char *throwtype, const char *catchtype, s32 *offset_result);
+void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catcher);
+CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionInfo *info);
+int IsInSpecification(const char *throwtype, ExSpecification *spec);
+void HandleUnexpected(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp);
+u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, s32 *result_offset);
+void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset);
 }
 
 #define FRAME_VALUE(context, flag, off) ((flag) ? (context)->state.regs[off] : *(u32 *)((context)->FP + (off)))
 
 // __UnwindStack: run the cleanup actions of every frame up to the catcher's action
-extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *catcher) {
+extern "C" void UnwindStack(ThrowContext *context, ExceptionInfo *info, u8 *catcher) {
     u8 *p;
     u8 *next;
     u8 action;
@@ -134,11 +134,11 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
 #pragma exception_terminate // as in the original runtime: no exception may leave the unwinder
     for (;;) {
         if (info->action_pointer == 0) {
-            func_02135128((char *)func_02133c68(context, info), info);
+            FindExceptionRecord((char *)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
-                func_02135578();
+                _ZSt9terminatev();
             }
-            func_02133bc0(context, info);
+            __SetupFrameInfo(context, info);
             if (info->action_pointer == 0) {
                 continue;
             }
@@ -148,13 +148,13 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
         switch (action & EXCEPTION_ACTION_MASK) {
         case 1: {
             s32 offset;
-            func_02133e50(p + 1, &offset);
+            __DecodeSignedNumber(p + 1, &offset);
             info->action_pointer += offset;
             break;
         }
         case 2: {
             s32 local;
-            p = func_02133e50(p + 1, &local);
+            p = __DecodeSignedNumber(p + 1, &local);
             ((DtorFunc)GET_LONG(p))(context->FP + local, -1);
             info->action_pointer = p + 4;
             break;
@@ -164,7 +164,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             s32 cond;
             s32 local;
             DtorFunc dtor;
-            p = func_02133e50(func_02133e50(p + 1, &cond), &local);
+            p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &cond), &local);
             dtor = (DtorFunc)GET_LONG(p);
             next = p + 4;
             if (inreg ? (u8)context->state.regs[cond] : *(u8 *)(context->FP + cond)) {
@@ -177,7 +177,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             u32 inreg = *info->action_pointer & 0x20;
             s32 pointer;
             DtorFunc dtor;
-            p = func_02133e50(p + 1, &pointer);
+            p = __DecodeSignedNumber(p + 1, &pointer);
             dtor = (DtorFunc)GET_LONG(p);
             next = p + 4;
             dtor((void *)FRAME_VALUE(context, inreg, pointer), -1);
@@ -191,7 +191,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             DtorFunc dtor;
             u32 n;
             char *ptr;
-            p = func_02133da8(func_02133da8(func_02133e50(p + 1, &local), &count), &size);
+            p = __DecodeUnsignedNumber(__DecodeUnsignedNumber(__DecodeSignedNumber(p + 1, &local), &count), &size);
             dtor = (DtorFunc)GET_LONG(p);
             next = p + 4;
             ptr = context->FP + local;
@@ -208,7 +208,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             s32 object;
             s32 offset;
             DtorFunc dtor;
-            p = func_02133e50(func_02133e50(p + 1, &object), &offset);
+            p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object), &offset);
             dtor = (DtorFunc)GET_LONG(p);
             next = p + 4;
             dtor((char *)FRAME_VALUE(context, inreg, object) + offset, 0);
@@ -220,7 +220,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             s32 object;
             s32 offset;
             DtorFunc dtor;
-            p = func_02133e50(func_02133e50(p + 1, &object), &offset);
+            p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object), &offset);
             dtor = (DtorFunc)GET_LONG(p);
             next = p + 4;
             dtor((char *)FRAME_VALUE(context, inreg, object) + offset, -1);
@@ -233,7 +233,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             s32 object;
             s32 offset;
             DtorFunc dtor;
-            p = func_02133e50(func_02133e50(func_02133e50(p + 1, &cond), &object), &offset);
+            p = __DecodeSignedNumber(__DecodeSignedNumber(__DecodeSignedNumber(p + 1, &cond), &object), &offset);
             dtor = (DtorFunc)GET_LONG(p);
             next = p + 4;
             if ((action & 0x40) ? (s16)context->state.regs[cond] : *(s16 *)(context->FP + cond)) {
@@ -251,7 +251,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             DtorFunc dtor;
             u32 n;
             char *ptr;
-            p = func_02133da8(func_02133da8(func_02133e50(func_02133e50(p + 1, &object), &offset), &count), &size);
+            p = __DecodeUnsignedNumber(__DecodeUnsignedNumber(__DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object), &offset), &count), &size);
             dtor = (DtorFunc)GET_LONG(p);
             next = p + 4;
             if (inreg) {
@@ -271,7 +271,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             u32 inreg = *info->action_pointer & 0x20;
             s32 pointer;
             ObjFunc del;
-            p = func_02133e50(p + 1, &pointer);
+            p = __DecodeSignedNumber(p + 1, &pointer);
             del = (ObjFunc)GET_LONG(p);
             next = p + 4;
             del((void *)FRAME_VALUE(context, inreg, pointer));
@@ -283,7 +283,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             s32 cond;
             s32 pointer;
             ObjFunc del;
-            p = func_02133e50(func_02133e50(p + 1, &cond), &pointer);
+            p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &cond), &pointer);
             del = (ObjFunc)GET_LONG(p);
             next = p + 4;
             if ((action & 0x40) ? (u8)context->state.regs[cond] : *(u8 *)(context->FP + cond)) {
@@ -298,13 +298,13 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             if (catcher == p) {
                 return;
             }
-            info->action_pointer = func_02133e50(func_02133da8(p + 5, &catch_pcoffset), &cinfo_ref);
+            info->action_pointer = __DecodeSignedNumber(__DecodeUnsignedNumber(p + 5, &catch_pcoffset), &cinfo_ref);
             break;
         }
         case 13: {
             s32 cinfo_ref;
             CatchInfo *ci;
-            p = func_02133e50(p + 1, &cinfo_ref);
+            p = __DecodeSignedNumber(p + 1, &cinfo_ref);
             ci = (CatchInfo *)(context->FP + cinfo_ref);
             if (ci->dtor) {
                 if (context->location == ci->location) {
@@ -323,7 +323,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             if (catcher == p) {
                 return;
             }
-            p = func_02133e50(func_02133da8(func_02133da8(p + 1, &specs), &pcoffset), &cinfo_ref);
+            p = __DecodeSignedNumber(__DecodeUnsignedNumber(__DecodeUnsignedNumber(p + 1, &specs), &pcoffset), &cinfo_ref);
             info->action_pointer = p + specs * 4;
             break;
         }
@@ -336,9 +336,9 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
                 u32 base2;
             } s;
             PairFunc func;
-            p = func_02133e50(func_02133e50(p + 1, &object), &offset);
+            p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object), &offset);
             s.base2 = GET_LONG(p);
-            p = func_02133e50(p + 4, &s.offset2);
+            p = __DecodeSignedNumber(p + 4, &s.offset2);
             func = (PairFunc)GET_LONG(p);
             next = p + 4;
             func((char *)FRAME_VALUE(context, inreg, object) + offset, (char *)s.base2 + s.offset2);
@@ -353,9 +353,9 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             s32 offset1;
             s32 offset2;
             PairFunc func;
-            p = func_02133e50(func_02133e50(p + 1, &object1), &offset1);
+            p = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object1), &offset1);
             inreg2 = *p++ & 0x20;
-            p = func_02133e50(func_02133e50(p, &object2), &offset2);
+            p = __DecodeSignedNumber(__DecodeSignedNumber(p, &object2), &offset2);
             func = (PairFunc)GET_LONG(p);
             next = p + 4;
             {
@@ -376,9 +376,9 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
             u32 n;
             char *ptr;
             u32 total;
-            p = func_02133e50(p + 1, &object);
+            p = __DecodeSignedNumber(p + 1, &object);
             inreg2 = *p++ & 0x20;
-            p = func_02133da8(func_02133e50(p, &bytes), &size);
+            p = __DecodeUnsignedNumber(__DecodeSignedNumber(p, &bytes), &size);
             dtor = (DtorFunc)GET_LONG(p);
             next = p + 4;
             if (inreg) {
@@ -401,11 +401,11 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
         }
         case 19: {
             s32 offset;
-            info->action_pointer = func_02133e50(p + 1, &offset);
+            info->action_pointer = __DecodeSignedNumber(p + 1, &offset);
             break;
         }
         default:
-            func_02135578();
+            _ZSt9terminatev();
             break;
         }
         if (action & 0x80) {
@@ -415,7 +415,7 @@ extern "C" void func_021344e8(ThrowContext *context, ExceptionInfo *info, u8 *ca
 }
 
 // rethrow: find the active catch block of the exception being rethrown and take its exception over
-extern "C" CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info) {
+extern "C" CatchInfo *FindMostRecentException(ThrowContext *context, ExceptionInfo *info) {
     s32 cinfo_ref;
     ActionIterator iter;
     CatchInfo *catchinfo;
@@ -423,7 +423,7 @@ extern "C" CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info) 
 
     iter.info = *info;
     iter.context = *context;
-    for (action = func_0213510c(&iter);; action = func_02134d70(&iter)) {
+    for (action = CurrentAction(&iter);; action = NextAction(&iter)) {
         switch (action) {
         case 13:
             break;
@@ -447,12 +447,12 @@ extern "C" CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info) 
         case 1:
         case 14:
         default:
-            func_02135578();
+            _ZSt9terminatev();
             break;
         }
         break;
     }
-    func_02133e50(iter.info.action_pointer + 1, &cinfo_ref);
+    __DecodeSignedNumber(iter.info.action_pointer + 1, &cinfo_ref);
     catchinfo = (CatchInfo *)(iter.context.FP + cinfo_ref);
     context->throwtype = (char *)catchinfo->typeinfo;
     context->location = catchinfo->location;
@@ -462,7 +462,7 @@ extern "C" CatchInfo *func_02134394(ThrowContext *context, ExceptionInfo *info) 
 }
 
 // __IsInSpecification
-extern "C" int func_02134308(const char *throwtype, ExSpecification *spec) {
+extern "C" int IsInSpecification(const char *throwtype, ExSpecification *spec) {
     struct {
         char *catch_type;
         s32 offset;
@@ -472,7 +472,7 @@ extern "C" int func_02134308(const char *throwtype, ExSpecification *spec) {
 
     for (i = 0; i < spec->specs; i++) {
         s.catch_type = (char *)GET_LONG(p);
-        if (func_02135348(throwtype, s.catch_type, &s.offset)) {
+        if (__throw_catch_compare(throwtype, s.catch_type, &s.offset)) {
             return 1;
         }
         p += 4;
@@ -481,21 +481,21 @@ extern "C" int func_02134308(const char *throwtype, ExSpecification *spec) {
 }
 
 // __HandleUnexpected: unwind to the frame with the violated exception specification and enter its handler
-extern "C" void func_0213429c(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp) {
+extern "C" void HandleUnexpected(ThrowContext *context, ExceptionInfo *info, ExSpecification *spec, u8 *unexp) {
     CatchInfo *catchinfo;
 
 #pragma exception_terminate // as in the original runtime: no exception may leave this function
-    func_021344e8(context, info, unexp);
+    UnwindStack(context, info, unexp);
     catchinfo = (CatchInfo *)(context->FP + spec->cinfo_ref);
     catchinfo->location = context->location;
     catchinfo->typeinfo = context->throwtype;
     catchinfo->dtor = context->dtor;
     catchinfo->stacktop = unexp;
-    func_02133aec(context, info, info->current_function + spec->pcoffset);
+    __TransferControl(context, info, info->current_function + spec->pcoffset);
 }
 
 // __FindExceptionHandler: returns the action of the catch block that takes the exception
-extern "C" u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *result_offset) {
+extern "C" u8 *FindExceptionHandler(ThrowContext *context, ExceptionInfo *info, s32 *result_offset) {
     ExCatchBlock catchblock;
     ExSpecification spec;
     ActionIterator iter;
@@ -503,22 +503,22 @@ extern "C" u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *re
 
     iter.info = *info;
     iter.context = *context;
-    for (action = func_0213510c(&iter);; action = func_02134d70(&iter)) {
+    for (action = CurrentAction(&iter);; action = NextAction(&iter)) {
         switch (action) {
         case 12:
             catchblock.catch_type = (char *)GET_LONG(iter.info.action_pointer + 1);
-            func_02133e50(func_02133da8(iter.info.action_pointer + 5, &catchblock.catch_pcoffset),
+            __DecodeSignedNumber(__DecodeUnsignedNumber(iter.info.action_pointer + 5, &catchblock.catch_pcoffset),
                           &catchblock.cinfo_ref);
-            if (!func_02135348(context->throwtype, catchblock.catch_type, result_offset)) {
+            if (!__throw_catch_compare(context->throwtype, catchblock.catch_type, result_offset)) {
                 continue;
             }
             break;
         case 15:
-            spec.spec = func_02133e50(
-                func_02133da8(func_02133da8(iter.info.action_pointer + 1, &spec.specs), &spec.pcoffset),
+            spec.spec = __DecodeSignedNumber(
+                __DecodeUnsignedNumber(__DecodeUnsignedNumber(iter.info.action_pointer + 1, &spec.specs), &spec.pcoffset),
                 &spec.cinfo_ref);
-            if (func_02134308(context->throwtype, &spec) == 0) {
-                func_0213429c(context, info, &spec, iter.info.action_pointer);
+            if (IsInSpecification(context->throwtype, &spec) == 0) {
+                HandleUnexpected(context, info, &spec, iter.info.action_pointer);
             }
             continue;
         case 0:
@@ -541,7 +541,7 @@ extern "C" u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *re
         case 1:
         case 14:
         default:
-            func_02135578();
+            _ZSt9terminatev();
             break;
         }
         break;
@@ -550,7 +550,7 @@ extern "C" u8 *func_021340bc(ThrowContext *context, ExceptionInfo *info, s32 *re
 }
 
 // __SetupCatchInfo
-extern "C" void func_0213404c(ThrowContext *context, s32 cinfo_ref, s32 offset) {
+extern "C" void SetupCatchInfo(ThrowContext *context, s32 cinfo_ref, s32 offset) {
     CatchInfo *catchinfo = (CatchInfo *)(context->FP + cinfo_ref);
 
     catchinfo->location = context->location;
@@ -564,33 +564,33 @@ extern "C" void func_0213404c(ThrowContext *context, s32 cinfo_ref, s32 offset) 
     }
 }
 
-// __ThrowHandler: entered from __rethrow (func_02133b1c) with the thrower's register context
-extern "C" void func_02133f68(ThrowContext *context) {
+// __ThrowHandler: entered from __rethrow (__rethrow) with the thrower's register context
+extern "C" void __ThrowHandler(ThrowContext *context) {
     s32 offset;
     ExceptionInfo info;
     ExCatchBlock catchblock;
     u8 *p;
 
-    func_02135128(context->returnaddr, &info);
+    FindExceptionRecord(context->returnaddr, &info);
     if (info.exception_record == 0) {
-        func_02135578();
+        _ZSt9terminatev();
     }
-    func_02133bc0(context, &info);
+    __SetupFrameInfo(context, &info);
     if (context->throwtype == 0) {
-        context->catchinfo = func_02134394(context, &info);
+        context->catchinfo = FindMostRecentException(context, &info);
     } else {
         context->catchinfo = 0;
     }
-    p = func_021340bc(context, &info, &offset);
+    p = FindExceptionHandler(context, &info, &offset);
     catchblock.catch_type = (char *)GET_LONG(p + 1);
-    func_02133e50(func_02133da8(p + 5, &catchblock.catch_pcoffset), &catchblock.cinfo_ref);
-    func_021344e8(context, &info, p);
-    func_0213404c(context, catchblock.cinfo_ref, offset);
-    func_02133aec(context, &info, info.current_function + catchblock.catch_pcoffset);
+    __DecodeSignedNumber(__DecodeUnsignedNumber(p + 5, &catchblock.catch_pcoffset), &catchblock.cinfo_ref);
+    UnwindStack(context, &info, p);
+    SetupCatchInfo(context, catchblock.cinfo_ref, offset);
+    __TransferControl(context, &info, info.current_function + catchblock.catch_pcoffset);
 }
 
 // __end__catch (the name mwcc emits at the end of a catch block): destroy the caught exception object
-extern "C" void func_02133f20(CatchInfo *catchinfo) {
+extern "C" void __end__catch(CatchInfo *catchinfo) {
     if (catchinfo->location && catchinfo->dtor) {
         ((DtorFunc)catchinfo->dtor)(catchinfo->location, -1);
     }
@@ -609,7 +609,7 @@ extern "C" void *func_02133ef8(void *ptr, size_t size) {
 }
 
 // __DecodeSignedNumber: 1-4 byte signed number, low bits of the first byte give the length
-extern "C" u8 *func_02133e50(u8 *p, s32 *value) {
+extern "C" u8 *__DecodeSignedNumber(u8 *p, s32 *value) {
     s32 b0 = (s8)p[0];
     s32 b1;
     s32 b2;
@@ -633,7 +633,7 @@ extern "C" u8 *func_02133e50(u8 *p, s32 *value) {
 }
 
 // __DecodeUnsignedNumber
-extern "C" u8 *func_02133da8(u8 *p, u32 *value) {
+extern "C" u8 *__DecodeUnsignedNumber(u8 *p, u32 *value) {
     u32 b0 = p[0];
     u32 b1;
     u32 b2;
@@ -657,12 +657,12 @@ extern "C" u8 *func_02133da8(u8 *p, u32 *value) {
 }
 
 // __read_console (MSL console proc for the semihosting target)
-extern "C" int func_02133d44(u32 handle, u8 *buffer, size_t *count, void *idle_proc) {
+extern "C" int __read_console(u32 handle, u8 *buffer, size_t *count, void *idle_proc) {
     size_t i;
     size_t n = *count;
 
     for (i = 0; i < n; i++) {
-        buffer[i] = func_02133ce0();
+        buffer[i] = sys_readc();
         if (buffer[i] == '\r' || buffer[i] == '\n') {
             *count = i + 1;
             break;
@@ -672,17 +672,17 @@ extern "C" int func_02133d44(u32 handle, u8 *buffer, size_t *count, void *idle_p
 }
 
 // __write_console
-extern "C" int func_02133d0c(u32 handle, u8 *buffer, size_t *count, void *idle_proc) {
+extern "C" int __write_console(u32 handle, u8 *buffer, size_t *count, void *idle_proc) {
     size_t i;
     size_t n = *count;
 
     for (i = 0; i < n; i++) {
-        func_02133ccc(buffer + i);
+        sys_writec(buffer + i);
     }
     return 0;
 }
 
 // __close_console
-extern "C" int func_02133d04(u32 handle) {
+extern "C" int __close_console(u32 handle) {
     return 0;
 }

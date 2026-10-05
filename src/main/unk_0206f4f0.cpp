@@ -1,113 +1,109 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 
-// U119: network message handlers 0x0206f4f0-0x0206f804 (the handler table data_020de3a8 is in the next unit)
+// U119: network message handlers 0x0206f4f0-0x0206f804 (the handler table sCommSubHandlers is in the next unit)
 
-struct Unk_0206f6fc_Pos {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 extern "C" {
-extern u32 data_021cb410[];
-extern u32 data_021ed2f8[];
-extern u32 data_021dfd8c[];
-extern void *data_021f482c;
-extern void *data_020cbb18;
+extern u32 gMelodyEditPattern[];
+extern u32 gSaveTownTune[];
+extern u32 gSaveVillagers[];
+extern void *gCurrentHeap;
+extern void *gCommManager;
 extern u8 data_021eceac[];
 extern u8 data_021e7f8c[];
-extern u8 data_021ed210[];
-extern u8 data_021ed22e[];
-extern u8 data_020e416c;
+extern u8 gSaveLostAndFound[];
+extern u8 gSaveRecycleBin[];
+extern u8 gFieldSceneKind;
 extern u32 data_020c7c1c;
 
-s32 func_0200402c(u32 a);
-void *func_0208a578();
-s32 _ZN12Unk_020e0f1013func_0208c134Eii(void *a, u32 b, u32 c);
-BOOL _ZN12Unk_020e0f1013func_0208c1a4Ev(void *a);
-s32 func_02116048(void *src, void *dst, u32 n);
-void func_0206db34(void *a, void *b);
-void func_0206dad8();
-void func_020795a8(void *a);
-void *func_020e8618(void *heap, u32 size);
-void func_020e85fc(void *heap, void *p);
-s32 func_02096a50(void *obj, s32 v);
-BOOL func_02096880(void);
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *p, void *d, s32 n);
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *p, s32 a, s32 b);
-void func_02096f44(void *p);
-void func_02065c94();
-void *func_0208f158(void *p);
-void func_02065e70(void *p, void *q);
-void _ZN12Unk_0208f23813func_0208f168Ev(void *p);
-void _ZN12Unk_0208f23813func_0208f1a8Ej(void *p, s32 v);
-void func_02076a2c(void *a, void *b, void *c);
-s32 func_ov003_022201bc(u8 a, u32 b, void *c);
-s32 func_ov003_02224d58(void *a, u8 b);
-u8 *func_02095204(u8 x);
-BOOL func_ov003_02227434(u8 x);
-void func_ov003_02227248(u32 a, u8 b);
-s32 func_ov003_0222746c(u8 a, s32 b);
-s32 func_02076f88(void *p);
+s32 Snd_PlaySe(u32 a);
+void *Hud_GetCountdown();
+s32 _ZN12HudCountdown5startEii(void *a, u32 b, u32 c);
+BOOL _ZN12HudCountdown9isStoppedEv(void *a);
+s32 MI_CpuCopy8(void *src, void *dst, u32 n);
+void Melody_Pack(void *a, void *b);
+void Melody_ApplyEditPattern();
+void SaveVillagers_ClearTuneRequester(void *a);
+void *Heap_AllocTail(void *heap, u32 size);
+void Heap_Free(void *heap, void *p);
+s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
+BOOL LetterDelivery_HasFreeOutgoingSlot(void);
+void _ZN11CommManager11beginRecordEv(void *p);
+void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
+void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
+void BottleLetterRecord_GetLetter(void *p);
+void Letter_Clear();
+void *TownExchange_GetLetter(void *p);
+void Letter_Copy(void *p, void *q);
+void _ZN18TownExchangeRecord12resetCounterEv(void *p);
+void _ZN18TownExchangeRecord10setUnkFlagEj(void *p, s32 v);
+void NetBuf_UnpackPair20(void *a, void *b, void *c);
+s32 FishCatch_StartRelease(u8 a, u32 b, void *c);
+s32 BottleThrow_SetTarget(void *a, u8 b);
+u8 *PlayerActor_GetActor(u8 x);
+BOOL HeldInsect_GetStage(u8 x);
+void HeldInsect_Start(u32 a, u8 b);
+s32 HeldInsect_Release(u8 a, s32 b);
+s32 Bbs_AddPost(void *p);
 
-void func_0206f4f0(u8 *p);
-void func_0206f53c(u32 x);
-void func_0206f56c(u8 *p);
-void func_0206f5a0(u8 *p);
-void func_0206f5ac(u8 *p, u32 code);
-void func_0206f604(u32 a, u32 b, ...);
-void func_0206f638(u8 v);
-u8 func_0206f644();
-void func_0206f650();
-void func_0206f668(u8 *p);
-void func_0206f6b8(u8 *p);
-void func_0206f6fc(u8 *p, u32 id);
-void func_0206f770(u8 *p, u32 id);
-void func_0206f7d0(u8 *p);
+void CommSub_RecvCountdownRequest(u8 *p);
+void HudCountdown_StartWithSe(u32 x);
+void CommSub_RecvTownTune(u8 *p);
+void CommSub_RecvPostReply(u8 *p);
+void CommSub_RecvPostLetter(u8 *p, u32 code);
+void CommSub_Send(u32 a, u32 b, ...);
+void CommSub_SetPostReply(u8 v);
+u8 CommSub_GetPostReply();
+void CommSub_ClearBottleLetter();
+void CommSub_RecvBottleLetter(u8 *p);
+void CommSub_RecvItemList15(u8 *p);
+void CommSub_RecvReleaseOrThrow(u8 *p, u32 id);
+void CommSub_RecvInsectRelease(u8 *p, u32 id);
+void CommSub_RecvBbsPost(u8 *p);
 }
 
-u8 data_020de390 = 0x18;
-u32 data_020de394[5] = {0, 1, 2, 3, 4};
+u8 sCommSubPostReply = 0x18;
+u32 sCommCountdownKinds[5] = {0, 1, 2, 3, 4};
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 static inline BOOL Unk_0206f6fc_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
-extern "C" void func_0206f7d0(u8 *p) {
-    void *heap = data_021f482c;
-    void *buf = func_020e8618(heap, 0xc0);
-    func_02116048(p + 1, buf, 0xc0);
-    func_02076f88(buf);
-    func_020e85fc(heap, buf);
+extern "C" void CommSub_RecvBbsPost(u8 *p) {
+    void *heap = gCurrentHeap;
+    void *buf = Heap_AllocTail(heap, 0xc0);
+    MI_CpuCopy8(p + 1, buf, 0xc0);
+    Bbs_AddPost(buf);
+    Heap_Free(heap, buf);
 }
 
-extern "C" void func_0206f770(u8 *p, u32 id) {
-    if (Unk_0206f6fc_IsZero(data_020e416c)) {
+extern "C" void CommSub_RecvInsectRelease(u8 *p, u32 id) {
+    if (Unk_0206f6fc_IsZero(gFieldSceneKind)) {
         u8 id8;
         s16 off;
         u8 *q;
         q = p + 1;
         id8 = id;
         off = (p[2] - 0x1e) * 0xb6;
-        u8 *r = func_02095204(id8);
+        u8 *r = PlayerActor_GetActor(id8);
         if (r != NULL) {
             off = off + *(s16 *)(r + 0x8e);
-            if (func_ov003_02227434(id8) == 0) {
-                func_ov003_02227248(q[0], id8);
-                func_ov003_0222746c(id8, off);
+            if (HeldInsect_GetStage(id8) == 0) {
+                HeldInsect_Start(q[0], id8);
+                HeldInsect_Release(id8, off);
             }
         }
     }
 }
 
-extern "C" void func_0206f6fc(u8 *p, u32 id) {
+extern "C" void CommSub_RecvReleaseOrThrow(u8 *p, u32 id) {
     u8 buf[5];
-    Unk_0206f6fc_Pos pos;
-    if (Unk_0206f6fc_IsZero(data_020e416c)) {
+    VecFx32 pos;
+    if (Unk_0206f6fc_IsZero(gFieldSceneKind)) {
         u8 id8 = id;
-        func_02116048(p + 2, buf, 5);
-        func_02076a2c(buf, &pos.x, &pos.z);
+        MI_CpuCopy8(p + 2, buf, 5);
+        NetBuf_UnpackPair20(buf, &pos.x, &pos.z);
         pos.y = data_020c7c1c;
         if (p[0] == 2) {
             u32 v = p[1];
@@ -117,100 +113,100 @@ extern "C" void func_0206f6fc(u8 *p, u32 id) {
             } else {
                 x = 0x12e8;
             }
-            func_ov003_022201bc(id8, x, &pos);
+            FishCatch_StartRelease(id8, x, &pos);
         } else {
-            func_ov003_02224d58(&pos, id8);
+            BottleThrow_SetTarget(&pos, id8);
         }
     }
 }
 
-extern "C" void func_0206f6b8(u8 *p) {
+extern "C" void CommSub_RecvItemList15(u8 *p) {
     u8 tmp[0x1e];
-    func_02116048(p + 1, tmp, 0x1e);
+    MI_CpuCopy8(p + 1, tmp, 0x1e);
     switch (p[0]) {
     case 3:
-        func_02116048(tmp, data_021ed210, 0x1e);
+        MI_CpuCopy8(tmp, gSaveLostAndFound, 0x1e);
         break;
     case 4:
-        func_02116048(tmp, data_021ed22e, 0x1e);
+        MI_CpuCopy8(tmp, gSaveRecycleBin, 0x1e);
         break;
     }
 }
 
-extern "C" void func_0206f668(u8 *p) {
-    void *heap = data_021f482c;
-    void *buf = func_020e8618(heap, 0xf4);
-    func_02116048(p + 1, buf, 0xf4);
+extern "C" void CommSub_RecvBottleLetter(u8 *p) {
+    void *heap = gCurrentHeap;
+    void *buf = Heap_AllocTail(heap, 0xf4);
+    MI_CpuCopy8(p + 1, buf, 0xf4);
     u8 *const g = data_021e7f8c;
-    void *t = func_0208f158(g);
-    func_02065e70(t, buf);
-    _ZN12Unk_0208f23813func_0208f168Ev(g);
-    _ZN12Unk_0208f23813func_0208f1a8Ej(g, 0);
-    func_020e85fc(heap, buf);
+    void *t = TownExchange_GetLetter(g);
+    Letter_Copy(t, buf);
+    _ZN18TownExchangeRecord12resetCounterEv(g);
+    _ZN18TownExchangeRecord10setUnkFlagEj(g, 0);
+    Heap_Free(heap, buf);
 }
 
-extern "C" void func_0206f650() {
-    func_02096f44(data_021eceac);
-    func_02065c94();
+extern "C" void CommSub_ClearBottleLetter() {
+    BottleLetterRecord_GetLetter(data_021eceac);
+    Letter_Clear();
 }
 
-extern "C" u8 func_0206f644() { return data_020de390; }
+extern "C" u8 CommSub_GetPostReply() { return sCommSubPostReply; }
 
-extern "C" void func_0206f638(u8 v) { data_020de390 = v; }
+extern "C" void CommSub_SetPostReply(u8 v) { sCommSubPostReply = v; }
 
-extern "C" void func_0206f604(u32 a, u32 b, ...) {
-    void *g = data_020cbb18;
-    _ZN12Unk_020cbb1813func_020728d4Ev(g);
-    _ZN12Unk_020cbb1813func_020728a4EPhj(g, &a, 1);
-    _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x16, b);
+extern "C" void CommSub_Send(u32 a, u32 b, ...) {
+    void *g = gCommManager;
+    _ZN11CommManager11beginRecordEv(g);
+    _ZN11CommManager11writeRecordEPhj(g, &a, 1);
+    _ZN11CommManager9endRecordEjj(g, 0x16, b);
 }
 
-extern "C" void func_0206f5ac(u8 *p, u32 code) {
-    void *heap = data_021f482c;
-    void *buf = func_020e8618(heap, 0xf4);
+extern "C" void CommSub_RecvPostLetter(u8 *p, u32 code) {
+    void *heap = gCurrentHeap;
+    void *buf = Heap_AllocTail(heap, 0xf4);
     s32 r = 0xb;
-    func_02116048(p + 1, buf, 0xf4);
-    if (func_02096a50(buf, 1)) {
-        if (func_02096880()) {
+    MI_CpuCopy8(p + 1, buf, 0xf4);
+    if (LetterDelivery_QueueOutgoing(buf, 1)) {
+        if (LetterDelivery_HasFreeOutgoingSlot()) {
             r = 9;
         } else {
             r = 0xa;
         }
     }
-    func_020e85fc(heap, buf);
-    func_0206f604(r, code);
+    Heap_Free(heap, buf);
+    CommSub_Send(r, code);
 }
 
-extern "C" void func_0206f5a0(u8 *p) { data_020de390 = *p; }
+extern "C" void CommSub_RecvPostReply(u8 *p) { sCommSubPostReply = *p; }
 
-extern "C" void func_0206f56c(u8 *p) {
-    func_02116048(p + 1, data_021cb410, 0x10);
-    func_0206db34(data_021ed2f8, data_021cb410);
-    func_0206dad8();
-    func_020795a8(data_021dfd8c);
+extern "C" void CommSub_RecvTownTune(u8 *p) {
+    MI_CpuCopy8(p + 1, gMelodyEditPattern, 0x10);
+    Melody_Pack(gSaveTownTune, gMelodyEditPattern);
+    Melody_ApplyEditPattern();
+    SaveVillagers_ClearTuneRequester(gSaveVillagers);
 }
 
-extern "C" void func_0206f53c(u32 x) {
+extern "C" void HudCountdown_StartWithSe(u32 x) {
     if (x == 0) {
-        func_0200402c(0x67);
+        Snd_PlaySe(0x67);
     } else {
-        func_0200402c(0x66);
+        Snd_PlaySe(0x66);
     }
-    void *r = func_0208a578();
-    _ZN12Unk_020e0f1013func_0208c134Eii(r, data_020de394[x], 0);
+    void *r = Hud_GetCountdown();
+    _ZN12HudCountdown5startEii(r, sCommCountdownKinds[x], 0);
 }
 
-extern "C" void func_0206f4f0(u8 *p) {
+extern "C" void CommSub_RecvCountdownRequest(u8 *p) {
     s32 i = p[0] - 0xd;
     if (i == 0) {
-        if (!_ZN12Unk_020e0f1013func_0208c1a4Ev(func_0208a578())) {
-            func_0206f53c(i);
-            func_0206f604(0x12, 4);
+        if (!_ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
+            HudCountdown_StartWithSe(i);
+            CommSub_Send(0x12, 4);
         }
     } else {
-        if (_ZN12Unk_020e0f1013func_0208c1a4Ev(func_0208a578())) {
-            func_0206f53c(i);
-            func_0206f604((u8)(i + 0x12), 4);
+        if (_ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
+            HudCountdown_StartWithSe(i);
+            CommSub_Send((u8)(i + 0x12), 4);
         }
     }
 }

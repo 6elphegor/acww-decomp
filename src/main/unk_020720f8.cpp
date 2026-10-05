@@ -1,321 +1,26 @@
 #include "types.h"
 
-// U126: communication manager Unk_020cbb18 (singleton data_021cc260, reached through the constant pointer
-// data_020cbb18) and its helpers, 0x020720f8-0x020742f4
+// U126: communication manager CommManager (singleton gCommManagerInstance, reached through the constant pointer
+// gCommManager) and its helpers, 0x020720f8-0x020742f4
 
-struct Unk_02072408_Row {
-    u32 v[3];
-};
-
-struct Unk_02072408_Tail {
-    u32 pad[9];
-    u32 a4c[3];
-    u32 a58[3];
-};
-
-class Unk_020cbb18 {
-public:
-    /* 0x000 */ u8 unk_00[4];
-    /* 0x004 */ u16 unk_04;
-    /* 0x006 */ u8 unk_06;
-    /* 0x007 */ u8 unk_07;
-    /* 0x008 */ u8 *unk_08;
-    /* 0x00c */ u32 unk_0c[3];
-    /* 0x018 */ u32 unk_18[3];
-    /* 0x024 */ u8 *unk_24;
-    /* 0x028 */ union {
-        Unk_02072408_Row unk_28[4];
-        Unk_02072408_Tail unk_28t;
-    };
-    /* 0x064 */ s32 unk_64;
-    /* 0x068 */ u32 unk_68;
-    /* 0x06c */ u8 unk_6c;
-    /* 0x06d */ u8 unk_6d;
-    /* 0x06e */ u8 pad_6e[2];
-    /* 0x070 */ void *unk_70;
-    /* 0x074 */ u8 unk_74;
-    /* 0x078 */ u8 *unk_78;
-    /* 0x07c */ u8 unk_7c[0xc4 - 0x7c];
-    /* 0x0c4 */ u8 *unk_c4;
-    /* 0x0c8 */ u32 unk_c8;
-    /* 0x0cc */ u8 *unk_cc;
-    /* 0x0d0 */ u8 *unk_d0;
-    /* 0x0d4 */ u8 *unk_d4;
-    /* 0x0d8 */ u8 *unk_d8;
-    /* 0x0dc */ u32 unk_dc;
-    /* 0x0e0 */ u8 *unk_e0;
-    /* 0x0e4 */ u8 *unk_e4;
-    /* 0x0e8 */ u32 unk_e8;
-    /* 0x0ec */ u8 *unk_ec;
-    /* 0x0f0 */ u32 unk_f0;
-    /* 0x0f4 */ u8 *unk_f4;
-    /* 0x0f8 */ u32 unk_f8;
-    /* 0x0fc */ u32 unk_fc;
-    /* 0x100 */ u32 unk_100;
-    /* 0x104 */ u8 *unk_104;
-    /* 0x108 */ u32 unk_108;
-    /* 0x10c */ u32 unk_10c;
-    /* 0x110 */ u8 pad_110[4];
-    /* 0x114 */ s16 unk_114;
-    /* 0x116 */ s16 unk_116;
-    /* 0x118 */ u32 unk_118;
-    /* 0x11c */ u32 unk_11c;
-    /* 0x120 */ u32 unk_120;
-    /* 0x124 */ u32 unk_124;
-    /* 0x128 */ u16 unk_128[3];
-    /* 0x12e */ u16 unk_12e;
-    /* 0x130 */ u16 unk_130;
-    /* 0x132 */ u16 unk_132;
-    /* 0x134 */ u8 unk_134[0x3e0];
-    /* 0x514 */ u8 unk_514[0x50];
-
-    Unk_020cbb18();
-    ~Unk_020cbb18();
-
-    u8 *func_020721ec();
-    u8 *func_020721f8();
-    void func_02072204(u32 v);
-    u32 func_02072210();
-    void func_0207221c(u32 v);
-    u32 func_02072228();
-    void func_02072234(u32 v);
-    void func_02072240();
-    void func_02072258(s32 i);
-    u32 func_020722d4(s32 i);
-    u32 func_0207235c();
-    void func_02072368(u32 v);
-    u32 func_02072374();
-    void func_02072380(u32 v);
-    u32 func_0207238c();
-    void func_02072398(u32 v);
-    void func_020723a4(void *src, u32 n);
-    void func_020723d4();
-    u32 func_020723e0();
-    void func_020723ec(u32 v);
-    void func_020723f8();
-
-    void func_02072408();
-    s16 func_02072418();
-    s16 func_02072424();
-    void func_02072430(s16 v);
-    void func_0207243c(s16 v);
-    u32 func_02072448();
-    void func_02072454(u32 v);
-    void func_02072460();
-    void func_0207246c(u32 v);
-    u32 func_02072478();
-    void func_02072484(u8 *src, u32 n);
-    u32 func_020724ac();
-    void func_020724b8(u32 v);
-    void func_020724c4();
-    void func_020724d0(u32 v);
-    u32 func_020724d8();
-    void func_020724e0();
-    u32 func_02072558();
-    void func_02072560(u32 v);
-    void func_02072568();
-    void func_02072574(u8 *v);
-    u8 *func_0207257c();
-    void func_02072584();
-    u32 func_02072620();
-    void func_02072628(u32 v);
-    void func_02072630();
-    void func_0207263c(u8 *v);
-    u8 *func_02072644();
-    void func_0207264c();
-    u32 func_02072744();
-    void func_0207274c(u32 v);
-    void func_02072754();
-    void func_02072760(u8 *v);
-    u8 *func_02072768();
-    void func_02072770(u8 *src, u32 n);
-    u8 *func_02072798();
-    void func_020727a0(u8 *v);
-    u32 func_020727f8();
-    void func_02072800(u32 v);
-    void func_02072808();
-    void func_02072814(u8 *v);
-    u8 *func_0207281c();
-    void func_02072824(u32 a, u32 b);
-    void func_020728a4(u8 *p, u32 n);
-    void func_020728d4();
-    u32 func_02072900();
-    void func_02072908(u32 v);
-    void func_02072910();
-    void func_0207292c(u8 *v);
-    u8 *func_02072938();
-    void func_02072940();
-    void func_02072960(s32 i, u32 v);
-    u32 func_02072968(s32 i);
-    u8 *func_02072970(u32 i);
-    void func_02072994(u8 *v);
-    u8 *func_02072998();
-    void func_0207299c();
-    void func_020729a8(u32 v);
-    BOOL func_020729bc(u32 v);
-    BOOL func_020729cc(u32 v);
-    u32 func_020729dc(s32 a);
-    u32 func_02072a04(s32 a);
-    void func_02072a24(s32 a);
-    void func_02072a50(s32 a);
-    void func_02072a6c();
-    void func_02072a84();
-    void func_02072c38();
-    void func_02072c50(s32 a, u32 b);
-    void func_02072c60(s32 a, u32 b, u32 c);
-    u32 func_02072c80(s32 a, u32 b);
-    void func_02072ca4(u8 *v);
-    u8 *func_02072ca8(s32 a, s32 b);
-    u8 *func_02072cb8(s32 a, s32 b);
-    void func_02072cfc();
-    void func_02072d0c(s32 a);
-    void func_02072d28(s32 a, u32 v);
-    u32 func_02072d44(s32 a);
-
-    void func_02072d5c();
-    void func_02072d6c(s32 a);
-    void func_02072d84(s32 a, u32 b);
-    void func_02072da4(s32 a, u32 b);
-    u32 func_02072dc4(s32 a);
-    u8 *func_02072ddc(s32 i);
-    void func_02072e18(u8 *p);
-    u8 func_02072e1c();
-    void func_02072e20(u32 v);
-    u8 func_02072e24();
-    void func_02072e28(u32 v);
-    void func_02072e2c();
-    s16 func_02072e34();
-    BOOL func_02072e44();
-    void func_02072e68();
-    u32 func_02072e88(s32 i);
-    void func_02072e94(s32 i, u32 v);
-    BOOL func_02072e98();
-    BOOL func_02072ee4(u8 *a1, u32 a2, u32 a3, u8 *s4, u32 s5, u16 s6, u8 *s7, u32 s8, u16 s9);
-    void func_02072fb4();
-    void func_02073044();
-    void func_02073068();
-};
+#include "net/CommManager.h"
+#include "save/PatternOrder.h"
+#include "save/EncodedName8.h"
+#include "sys/OverlayHandle.h"
+#include "save/Unk_020942c8.h"
+#include "save/Pattern.h"
+#include "talk/EncodedString16Buf.h"
 
 // ======== types of unk_02071ae0.cpp ========
-struct Unk_02071b10_Id16 {
-    u8 b[16];
-};
-struct Unk_02071fa4_Id8 {
-    u8 b[8];
-};
-class Unk_020942c8 {
-public:
-    Unk_020942c8();
-    ~Unk_020942c8();
-    u16 unk_00;
-    Unk_02071fa4_Id8 unk_02;
-    u16 unk_0a;
-    Unk_02071fa4_Id8 unk_0c;
-    s8 unk_14;
-    u8 unk_15;
-    BOOL func_020941e8(Unk_020942c8 *o);
-};
-class Unk_020dd30c {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    Unk_020dd30c();
-    virtual ~Unk_020dd30c();
-    void func_02062464(u8 *dst, s32 n);
-    void func_02050f7c(u8 *src, s32 n);
-    u8 unk_04[0x20];
-};
-class Unk_02071ed0 : public Unk_020942c8 {
-public:
-    Unk_02071ed0();
-    ~Unk_02071ed0();
-    Unk_02071b10_Id16 unk_16;
-    struct {
-        u8 lo : 4;
-        u8 hi : 4;
-    } unk_26;
-    u8 pad_27;
-
-    void func_02071ed0(u32 v);
-    u8 func_02071ee8();
-    void func_02071ef4(u8 *src);
-    void func_02071f08(Unk_020dd30c *o);
-    void func_02071f1c(void *x);
-    void func_02071f48(u8 *dst);
-    void func_02071f5c(Unk_020dd30c *o);
-    void func_02071f70(void *x);
-    Unk_020942c8 *func_02071fa0();
-    void func_02071fa4(Unk_020942c8 *src);
-    void func_02071ff0();
-    void func_0207200c(u32 v);
-    u8 func_0207202c();
-    void func_02072040();
-    BOOL func_02072084(Unk_02071ed0 *o);
-};
-class Unk_02071e04 {
-public:
-    Unk_02071e04();
-    ~Unk_02071e04();
-    u8 unk_00[0x200];
-    Unk_02071ed0 unk_200;
-
-    Unk_02071ed0 *func_02071e04();
-    void func_02071e10(u32 v);
-    void func_02071e3c(void *dst);
-    u8 *func_02071e58();
-    BOOL func_02071e8c(Unk_02071e04 *o);
-};
-class Unk_02071ae0 : public Unk_02071e04 {
-public:
-    Unk_02071ae0();
-    ~Unk_02071ae0();
-};
-class Unk_02071c1c {
-public:
-    Unk_02071c1c();
-    ~Unk_02071c1c();
-    u8 unk_00[8];
-    u32 func_02071c1c(u32 i);
-    void func_02071c2c(u32 a, u32 b);
-    void func_02071c44();
-};
-class Unk_02071b00 {
-public:
-    Unk_02071b00();
-    ~Unk_02071b00();
-    Unk_02071e04 unk_00[8];
-
-    Unk_02071e04 *func_02071b00(u8 i);
-    void func_02071b10();
-};
-class Unk_02071c5c {
-public:
-    Unk_02071c5c();
-    ~Unk_02071c5c();
-    Unk_02071e04 unk_00[8];
-    Unk_02071c1c unk_1140;
-
-    Unk_02071c1c *func_02071c5c();
-    Unk_02071e04 *func_02071c68(u32 i);
-    Unk_02071e04 *func_02071c88(u8 i);
-    void func_02071c98(Unk_020942c8 *a, Unk_020942c8 *b);
-    void func_02071d08(Unk_020942c8 *a);
-};
-struct Unk_020720f8_Data {
-    u32 v;
-    u8 f;
-};
 enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
 
 // ======== types of unk_02072408.cpp ========
-struct Unk_020724e0_Loc {
+struct CommRecordUnpackLocals {
     u8 a;
     u8 b;
     u8 buf[5];
 };
-struct Unk_0207264c_Loc {
+struct CommDeferredFlushLocals {
     u8 a;
     u8 b;
     u8 buf[5];
@@ -332,385 +37,386 @@ struct Unk_0207264c_Loc {
 // ======== unk_020739b8.cpp ========
 namespace n4 {
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
-extern u32 *data_021c6218;
+extern u32 *gNetHeap;
 }
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *, s32);
+s32 _ZN11CommManager12isSlotActiveEi(CommManager *, s32);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072e24Ev(Unk_020cbb18 *);
+s32 _ZN11CommManager7getModeEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072584Ev(Unk_020cbb18 *);
+void _ZN11CommManager12dispatchHeldEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020724e0Ev(Unk_020cbb18 *);
+void _ZN11CommManager16dispatchLoopbackEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072a84Ev(Unk_020cbb18 *);
+void _ZN11CommManager15processReceivedEv(CommManager *);
 }
 extern "C" {
-void func_020ebc34();
+void Net_OnHeapDestroyNop();
 }
 extern "C" {
-s32 func_0205c20c();
+s32 NetHeap_Destroy();
 }
 extern "C" {
-u32 func_020e86fc(u32 *, u32);
+#define Heap_setFlags _ZN4Heap8setFlagsEj
+u32 Heap_setFlags(u32 *, u32);
 }
 extern "C" {
-void _Z13func_020720f8v();
+void _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-s32 func_020eb1d8();
+s32 Net_Shutdown();
 }
 extern "C" {
-void func_020b7870();
+void Comm_ReportShutdownError();
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072fb4Ev(Unk_020cbb18 *);
+void _ZN11CommManager5resetEv(CommManager *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072478Ev(Unk_020cbb18 *);
+void *_ZN11CommManager10getAuxBufBEv(CommManager *);
 }
 extern "C" {
-void func_02076b9c(void *);
+void NetHeap_Free(void *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_0207246cEj(Unk_020cbb18 *, void *);
+void _ZN11CommManager10setAuxBufBEj(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_020724d8Ev(Unk_020cbb18 *);
+void *_ZN11CommManager10getAuxBufAEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020724d0Ej(Unk_020cbb18 *, void *);
+void _ZN11CommManager10setAuxBufAEj(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_0207257cEv(Unk_020cbb18 *);
+void *_ZN11CommManager14getLoopbackBufEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072574EPh(Unk_020cbb18 *, void *);
+void _ZN11CommManager14setLoopbackBufEPh(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072644Ev(Unk_020cbb18 *);
+void *_ZN11CommManager10getHeldBufEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_0207263cEPh(Unk_020cbb18 *, void *);
+void _ZN11CommManager10setHeldBufEPh(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072768Ev(Unk_020cbb18 *);
+void *_ZN11CommManager14getDeferredBufEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072760EPh(Unk_020cbb18 *, void *);
+void _ZN11CommManager14setDeferredBufEPh(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_0207281cEv(Unk_020cbb18 *);
+void *_ZN11CommManager15getSendQueueBufEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072814EPh(Unk_020cbb18 *, void *);
+void _ZN11CommManager15setSendQueueBufEPh(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072938Ev(Unk_020cbb18 *);
+void *_ZN11CommManager12getRecordBufEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_0207292cEPh(Unk_020cbb18 *, void *);
+void _ZN11CommManager12setRecordBufEPh(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072cb8Eii(Unk_020cbb18 *, u32, u32);
+void *_ZN11CommManager10getRecvBufEii(CommManager *, u32, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072ca4EPh(Unk_020cbb18 *, void *);
+void _ZN11CommManager11setRecvBufsEPh(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072ddcEi(Unk_020cbb18 *, s32);
+void *_ZN11CommManager10getSendBufEi(CommManager *, s32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072e18EPh(Unk_020cbb18 *, void *);
+void _ZN11CommManager11setSendBufsEPh(CommManager *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072998Ev(Unk_020cbb18 *);
+void *_ZN11CommManager13getSyncVarBufEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072994EPh(Unk_020cbb18 *, void *);
+void _ZN11CommManager13setSyncVarBufEPh(CommManager *, void *);
 }
 extern "C" {
-void func_02076240();
+void CommSyncVar_Init();
 }
 extern "C" {
-void *func_02076bb0(u32, u32);
+void *NetHeap_Alloc(u32, u32);
 }
 extern "C" {
-void func_020ebb6c(u32, u32, u32, u64, u32, void *, void *);
+void Net_Init(u32, u32, u32, u64, u32, void *, void *);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_020721f8Ev(Unk_020cbb18 *);
+s32 _ZN11CommManager17getWifiFriendListEv(CommManager *);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_020721ecEv(Unk_020cbb18 *);
+s32 _ZN11CommManager15getWifiUserDataEv(CommManager *);
 }
 extern "C" {
-void func_02115fb4(void *, u32, u32);
+void MI_CpuFill8(void *, u32, u32);
 }
 extern "C" {
-u32 func_0209750c();
+u32 PlayerData_GetCurrent();
 }
 extern "C" {
-void _ZN12Unk_0209865c13func_02098674Ev();
+void _ZN10PlayerData13getFriendListEv();
 }
 extern "C" {
-u8 *func_02076db4();
+u8 *FriendList_GetEntries();
 }
 extern "C" {
-void func_02076cf0(void *);
+void FriendEntry_GetFriendData(void *);
 }
 extern "C" {
-void *func_02076e1c();
+void *DwcFriendData_GetBytes();
 }
 extern "C" {
-void func_02116048(const void *, void *, u32);
+void MI_CpuCopy8(const void *, void *, u32);
 }
 extern "C" {
-void _ZN12Unk_0209865c13func_0209888cEv(u32);
+void _ZN10PlayerData11getPlayerIdEv(u32);
 }
 extern "C" {
-void *_ZN12Unk_020940a013func_02094104Ev();
+void *_ZN8PlayerId7getNameEv();
 }
 extern "C" {
-void *func_02063964(void *);
+void *TownId_GetName(void *);
 }
 extern "C" {
-void _ZN12Unk_0209865c13func_02098680Ev(u32);
+void _ZN10PlayerData15getWifiUserDataEv(u32);
 }
 extern "C" {
-void *func_02076c80();
+void *PlayerWifiData_GetDwcUserData();
 }
 extern "C" {
-s32 _Z13func_020721b4v();
+s32 _Z21NetOverlay_AssertWifiv();
 }
 extern "C" {
-void func_020eb8c0(u32, void *, void *, void *, void *);
+void Net_StartWifi(u32, void *, void *, void *, void *);
 }
 extern "C" {
-void _Z13func_0207217cv();
+void _Z25NetOverlay_AssertWirelessv();
 }
 extern "C" {
-void func_020eb9fc(u32, void *);
+void Net_StartLocal(u32, void *);
 }
 extern "C" {
-void func_02098e8c();
+void Comm_OnFriendDeletedNop();
 }
 extern "C" {
-void func_02074104(u32, u8 *, u32);
+void Comm_OnReceive(u32, u8 *, u32);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072368Ej(Unk_020cbb18 *, u32);
+s32 _ZN11CommManager12setErrorModeEj(CommManager *, u32);
 }
 extern "C" {
-s32 func_020766e0(u32);
+s32 CommSyncVar_GetVarSize(u32);
 }
 extern "C" {
-void func_0205c228(u32, u32);
+void NetHeap_Create(u32, u32);
 }
 extern "C" {
-void func_020ebc38();
+void Net_OnHeapCreatedNop();
 }
 extern "C" {
-void func_020a63bc(u32, u32, u32, u32, u32);
+void NetArea_SetSlotStatus(u32, u32, u32, u32, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072e94Eij(Unk_020cbb18 *, u32, u32);
+void _ZN11CommManager13setSlotActiveEij(CommManager *, u32, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_020729a8Ej(Unk_020cbb18 *, u32);
+void _ZN11CommManager14setMemberCountEj(CommManager *, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072d6cEi(Unk_020cbb18 *, u32);
+void _ZN11CommManager15resetSendCreditEi(CommManager *, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072d28Eij(Unk_020cbb18 *, u32, u32);
+void _ZN11CommManager11setAckCountEij(CommManager *, u32, u32);
 }
 extern "C" {
-void func_020a5c94(u32);
+void NetSession_RemoveSlot(u32);
 }
 extern "C" {
-u32 func_020a5f8c(u32);
+u32 NetSession_GetSyncState(u32);
 }
 extern "C" {
-void func_02076bf0(void *, u32, u32);
+void CommPacket_SetHeader(void *, u32, u32);
 }
 extern "C" {
-u32 func_02073168(u32);
+u32 Comm_GetMemberMask(u32);
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_020727f8Ev();
+u32 _ZN11CommManager15getSendQueueLenEv();
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_02072744Ev(Unk_020cbb18 *);
+u32 _ZN11CommManager14getDeferredLenEv(CommManager *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_0207274cEj(Unk_020cbb18 *, u32);
+void _ZN11CommManager14setDeferredLenEj(CommManager *, u32);
 }
 extern "C" {
-void func_02076ae8(u8 *, u8 *, u8 *);
+void CommRecord_UnpackSource(u8 *, u8 *, u8 *);
 }
 extern "C" {
-u32 func_0207691c(u8 *);
+u32 CommRecord_GetLength(u8 *);
 }
 extern "C" {
-void func_020b50e8();
+void Scene_GetCurrent();
 }
 extern "C" {
-u32 func_020a6114(u32, u32, u32, u8 *);
+u32 NetArea_ResolveRoute(u32, u32, u32, u8 *);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072968Ei(Unk_020cbb18 *, u32);
+s32 _ZN11CommManager14isSyncVarDirtyEi(CommManager *, u32);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072970Ej(Unk_020cbb18 *, u32);
+void *_ZN11CommManager10getSyncVarEj(CommManager *, u32);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18 *, u32);
+s32 _ZN11CommManager7isMyAidEj(CommManager *, u32);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072d44Ei(Unk_020cbb18 *, u32);
+void *_ZN11CommManager11getAckCountEi(CommManager *, u32);
 }
 extern "C" {
-void func_02076c04(void *, void *);
+void CommPacket_SetAckHeader(void *, void *);
 }
 extern "C" {
-void *_ZN12Unk_020cbb1813func_02072418Ev(Unk_020cbb18 *);
+void *_ZN11CommManager15getConfirmedSeqEv(CommManager *);
 }
 extern "C" {
-void func_01ffa314();
+void OS_EnableInterrupts();
 }
 extern "C" {
-void func_01ffa2ec();
+void OS_DisableInterrupts();
 }
 extern "C" {
-s32 func_02076bd4(u8 *);
+s32 CommPacket_GetAck(u8 *);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072da4Eij(Unk_020cbb18 *, u32, s32);
+void _ZN11CommManager13addSendCreditEij(CommManager *, u32, s32);
 }
 extern "C" {
-s32 func_02076bdc(u8 *);
+s32 CommPacket_IsControl(u8 *);
 }
 extern "C" {
-s32 func_02076bc8(u8 *);
+s32 CommPacket_GetType(u8 *);
 }
 extern "C" {
-void func_020742f4(u8 *, u32, u32, s32);
+void CommCtrl_Dispatch(u8 *, u32, u32, s32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072258Ei(Unk_020cbb18 *, u32);
+void _ZN11CommManager16resetNoAckFramesEi(CommManager *, u32);
 }
 extern "C" {
-u32 _ZN12Unk_020cbb1813func_020729dcEi(Unk_020cbb18 *, u32);
+u32 _ZN11CommManager16getRecvWriteSlotEi(CommManager *, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072c60Eijj(Unk_020cbb18 *, u32, u32, u32);
+void _ZN11CommManager10setRecvLenEijj(CommManager *, u32, u32, u32);
 }
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072a50Ei(Unk_020cbb18 *, u32);
+void _ZN11CommManager12pushRecvSlotEi(CommManager *, u32);
 }
 extern "C" {
-void func_020eb068(u32, void *, u32);
+void Net_SetRecvBuffer(u32, void *, u32);
 }
 extern "C" {
-void func_02114560(u32);
+void DC_FlushAll(u32);
 }
 extern "C" {
-void func_02078348();
+void VillagerStates_ResetRuntime();
 }
 extern "C" {
-void func_020850e0();
+void TownSessionState_Get();
 }
 extern "C" {
-void func_020851e4();
+void TownSessionState_Reset();
 }
 extern "C" {
-void func_0205267c();
+void RoomFtrState_ResetAll();
 }
 extern "C" {
-void func_0209c408();
+void RoomObjSync_Reset();
 }
 extern "C" {
-void func_020b1dc0();
+void BuildingStates_Reset();
 }
 extern "C" {
-void func_0203eb38();
+void CharInteractSync_Reset();
 }
 extern "C" {
-void func_0206f81c();
+void CommSub_ResetPostReply();
 }
 extern "C" {
-void *func_0204b1cc(u32);
+void *Item_MakeBuilding(u32);
 }
 extern "C" {
-void func_020b1040(void *, u32);
+void BuildingOccupancy_Leave(void *, u32);
 }
 extern "C" {
-void func_020514a4(u32);
+void SpotSync_Release(u32);
 }
 extern "C" {
-void func_0209c5a0(u32, u32);
+void RoomEntry_Leave(u32, u32);
 }
 extern "C" {
-void func_02095260(u32);
+void PlayerSession_ResetLastState(u32);
 }
 extern "C" {
-void func_020ad4f4();
+void ReddPassword_ForgetVisitor();
 }
 namespace Unk_02073e14_ns {
-extern "C" s32 func_020741b8(s32);
+extern "C" s32 Comm_ResetPeerState(s32);
 }
-extern "C" s32 func_02073efc(u32);
-extern "C" s32 func_020740c0(s32 a, s32 b);
+extern "C" s32 Comm_IsSyncFinished(u32);
+extern "C" s32 Comm_IsSeqAtOrBefore(s32 a, s32 b);
 
-extern "C" void func_020741b8(s32 r4) {
+extern "C" void Comm_ResetPeerState(s32 r4) {
     if (r4 == 4) {
-        func_02078348();
-        func_020850e0();
-        func_020851e4();
+        VillagerStates_ResetRuntime();
+        TownSessionState_Get();
+        TownSessionState_Reset();
     }
-    func_0205267c();
-    func_0209c408();
-    func_020b1dc0();
-    func_0203eb38();
-    func_0206f81c();
+    RoomFtrState_ResetAll();
+    RoomObjSync_Reset();
+    BuildingStates_Reset();
+    CharInteractSync_Reset();
+    CommSub_ResetPostReply();
     if (r4 < 0) {
-        Unk_020cbb18 *o = data_020cbb18;
-        if (_ZN12Unk_020cbb1813func_020729ccEj(o, 0) != 0 || _ZN12Unk_020cbb1813func_020729ccEj(o, 4) != 0) {
+        CommManager *o = gCommManager;
+        if (_ZN11CommManager7isMyAidEj(o, 0) != 0 || _ZN11CommManager7isMyAidEj(o, 4) != 0) {
             if (r4 == -4) {
                 for (u32 i = 0; i < 0x22; i++) {
-                    void *r6 = func_0204b1cc(i);
-                    func_020b1040(r6, 1);
-                    func_020b1040(r6, 2);
-                    func_020b1040(r6, 3);
+                    void *r6 = Item_MakeBuilding(i);
+                    BuildingOccupancy_Leave(r6, 1);
+                    BuildingOccupancy_Leave(r6, 2);
+                    BuildingOccupancy_Leave(r6, 3);
                 }
-                func_020514a4(1);
-                func_020514a4(2);
-                func_020514a4(3);
+                SpotSync_Release(1);
+                SpotSync_Release(2);
+                SpotSync_Release(3);
                 for (u32 i = 0; i < 0x33; i++) {
                     u32 r6 = (u8)i;
-                    func_0209c5a0(r6, 1);
-                    func_0209c5a0(r6, 2);
-                    func_0209c5a0(r6, 3);
+                    RoomEntry_Leave(r6, 1);
+                    RoomEntry_Leave(r6, 2);
+                    RoomEntry_Leave(r6, 3);
                 }
             } else {
                 s32 r6 = -r4;
                 for (u32 i = 0; i < 0x22; i++) {
-                    func_020b1040(func_0204b1cc(i), r6);
+                    BuildingOccupancy_Leave(Item_MakeBuilding(i), r6);
                 }
-                func_020514a4(r6);
+                SpotSync_Release(r6);
                 for (u32 i = 0; i < 0x33; i++) {
-                    func_0209c5a0((u8)i, r6);
+                    RoomEntry_Leave((u8)i, r6);
                 }
             }
         }
@@ -718,50 +424,50 @@ extern "C" void func_020741b8(s32 r4) {
     if (r4 < 0) {
         if (r4 == -4) {
             for (u32 i = 0; i < 4; i++) {
-                func_02095260(i);
+                PlayerSession_ResetLastState(i);
             }
         } else {
-            func_02095260(-r4);
+            PlayerSession_ResetLastState(-r4);
         }
     }
     if (r4 == -4) {
-        func_020ad4f4();
+        ReddPassword_ForgetVisitor();
     }
     if ((r4 < 0 ? -r4 : r4) < 4) {
         if (r4 < 0) r4 = -r4;
-        _ZN12Unk_020cbb1813func_02072258Ei(data_020cbb18, r4);
+        _ZN11CommManager16resetNoAckFramesEi(gCommManager, r4);
     }
 }
-extern "C" void func_020741b0() {
-    func_01ffa2ec();
+extern "C" void Comm_EnterCritical() {
+    OS_DisableInterrupts();
 }
-extern "C" void func_020741a8() {
-    func_01ffa314();
+extern "C" void Comm_LeaveCritical() {
+    OS_EnableInterrupts();
 }
-extern "C" void func_02074104(u32 a, u8 *b, u32 c) {
-    func_02114560(a);
-    s32 r2 = func_02076bd4(b);
+extern "C" void Comm_OnReceive(u32 a, u8 *b, u32 c) {
+    DC_FlushAll(a);
+    s32 r2 = CommPacket_GetAck(b);
     if (r2 != 0) {
-        _ZN12Unk_020cbb1813func_02072da4Eij(data_020cbb18, a, r2);
+        _ZN11CommManager13addSendCreditEij(gCommManager, a, r2);
     }
-    if (func_02076bdc(b) != 0) {
-        s32 r3 = func_02076bc8(b);
+    if (CommPacket_IsControl(b) != 0) {
+        s32 r3 = CommPacket_GetType(b);
         if (r3 < 0x18) {
-            func_020742f4(b + 1, c - 1, a, r3);
+            CommCtrl_Dispatch(b + 1, c - 1, a, r3);
         }
     } else {
-        _ZN12Unk_020cbb1813func_02072258Ei(data_020cbb18, a);
+        _ZN11CommManager16resetNoAckFramesEi(gCommManager, a);
         if (c > 1) {
-            Unk_020cbb18 *o = data_020cbb18;
-            _ZN12Unk_020cbb1813func_02072c60Eijj(o, a, _ZN12Unk_020cbb1813func_020729dcEi(o, a), c);
-            _ZN12Unk_020cbb1813func_02072a50Ei(o, a);
-            void *r4 = _ZN12Unk_020cbb1813func_02072cb8Eii(o, a, _ZN12Unk_020cbb1813func_020729dcEi(o, a));
-            _Z13func_020720f8v();
-            func_020eb068((u16)a, r4, 0x1000);
+            CommManager *o = gCommManager;
+            _ZN11CommManager10setRecvLenEijj(o, a, _ZN11CommManager16getRecvWriteSlotEi(o, a), c);
+            _ZN11CommManager12pushRecvSlotEi(o, a);
+            void *r4 = _ZN11CommManager10getRecvBufEii(o, a, _ZN11CommManager16getRecvWriteSlotEi(o, a));
+            _Z20NetOverlay_AssertAnyv();
+            Net_SetRecvBuffer((u16)a, r4, 0x1000);
         }
     }
 }
-extern "C" s32 func_020740c0(s32 a, s32 b) {
+extern "C" s32 Comm_IsSeqAtOrBefore(s32 a, s32 b) {
     if (b < 0) return 0;
     if (a < 0) return 1;
     s32 d = a - b;
@@ -775,36 +481,36 @@ extern "C" s32 func_020740c0(s32 a, s32 b) {
     }
     return 1;
 }
-extern "C" void func_020740a0(s32 a) {
-    func_020740c0(a, (s32)_ZN12Unk_020cbb1813func_02072418Ev(data_020cbb18));
+extern "C" void Comm_IsSeqConfirmed(s32 a) {
+    Comm_IsSeqAtOrBefore(a, (s32)_ZN11CommManager15getConfirmedSeqEv(gCommManager));
 }
-extern "C" void func_02074054() {
+extern "C" void Comm_WriteAckHeaders() {
     s32 i = 3;
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     for (; i >= 0; i--) {
-        if (_ZN12Unk_020cbb1813func_02072e88Ei(o, i)) {
-            if (_ZN12Unk_020cbb1813func_020729ccEj(o, i) == 0) {
-                void *p = _ZN12Unk_020cbb1813func_02072ddcEi(o, i);
-                func_02076c04(p, _ZN12Unk_020cbb1813func_02072d44Ei(o, i));
+        if (_ZN11CommManager12isSlotActiveEi(o, i)) {
+            if (_ZN11CommManager7isMyAidEj(o, i) == 0) {
+                void *p = _ZN11CommManager10getSendBufEi(o, i);
+                CommPacket_SetAckHeader(p, _ZN11CommManager11getAckCountEi(o, i));
             }
         }
     }
 }
-extern "C" s32 func_02073fdc(u8 *dst, void *src, s32 n) {
+extern "C" s32 Comm_WriteSyncVars(u8 *dst, void *src, s32 n) {
     if (src == 0) {
         s32 cnt = 0;
         s32 i = 0x45;
-        Unk_020cbb18 *o = data_020cbb18;
+        CommManager *o = gCommManager;
         for (; i >= 0; i--) {
-            if (_ZN12Unk_020cbb1813func_02072968Ei(o, i)) {
+            if (_ZN11CommManager14isSyncVarDirtyEi(o, i)) {
                 u8 tmp;
                 tmp = i;
-                func_02116048(&tmp, dst, 1);
+                MI_CpuCopy8(&tmp, dst, 1);
                 dst++;
                 cnt++;
-                void *p = _ZN12Unk_020cbb1813func_02072970Ej(o, i);
-                s32 sz = func_020766e0(i);
-                func_02116048(p, dst, sz);
+                void *p = _ZN11CommManager10getSyncVarEj(o, i);
+                s32 sz = CommSyncVar_GetVarSize(i);
+                MI_CpuCopy8(p, dst, sz);
                 dst += sz;
                 cnt += sz;
             }
@@ -812,33 +518,33 @@ extern "C" s32 func_02073fdc(u8 *dst, void *src, s32 n) {
         *dst = 0x46;
         return cnt + 1;
     }
-    func_02116048(src, dst, n);
+    MI_CpuCopy8(src, dst, n);
     return n;
 }
-extern "C" u32 func_02073f18(u8 *dst, u32 id) {
+extern "C" u32 Comm_CollectRecordsFor(u8 *dst, u32 id) {
     u32 r7 = 0;
     u32 size, l0c, l14;
-    Unk_020cbb18 *o;
+    CommManager *o;
     u8 a[8];
-    o = data_020cbb18;
-    size = _ZN12Unk_020cbb1813func_020727f8Ev();
-    u8 *r5 = (u8 *)_ZN12Unk_020cbb1813func_0207281cEv(o);
+    o = gCommManager;
+    size = _ZN11CommManager15getSendQueueLenEv();
+    u8 *r5 = (u8 *)_ZN11CommManager15getSendQueueBufEv(o);
     u32 r6 = 0;
     while (r6 < size) {
-        func_02116048(r5, a + 3, 5);
+        MI_CpuCopy8(r5, a + 3, 5);
         l0c = a[6];
-        func_02076ae8(a + 7, a, a + 1);
-        u32 r4 = func_0207691c(a + 3);
-        func_020b50e8();
-        u32 r = func_020a6114(id, l0c, a[0], a + 2);
+        CommRecord_UnpackSource(a + 7, a, a + 1);
+        u32 r4 = CommRecord_GetLength(a + 3);
+        Scene_GetCurrent();
+        u32 r = NetArea_ResolveRoute(id, l0c, a[0], a + 2);
         if (a[2] != 0) {
-            l14 = _ZN12Unk_020cbb1813func_02072744Ev(o);
-            u8 *d2 = (u8 *)_ZN12Unk_020cbb1813func_02072768Ev(o) + l14;
-            func_02116048(r5, d2, r4 + 5);
+            l14 = _ZN11CommManager14getDeferredLenEv(o);
+            u8 *d2 = (u8 *)_ZN11CommManager14getDeferredBufEv(o) + l14;
+            MI_CpuCopy8(r5, d2, r4 + 5);
             l14 += r4 + 5;
-            _ZN12Unk_020cbb1813func_0207274cEj(o, l14);
+            _ZN11CommManager14setDeferredLenEj(o, l14);
         } else if (r == id) {
-            func_02116048(r5, dst, r4 + 5);
+            MI_CpuCopy8(r5, dst, r4 + 5);
             dst += r4 + 5;
             r7 += r4 + 5;
         }
@@ -847,170 +553,170 @@ extern "C" u32 func_02073f18(u8 *dst, u32 id) {
     }
     return r7;
 }
-extern "C" s32 func_02073efc(u32 a) {
-    u32 v = func_020a5f8c(a);
+extern "C" s32 Comm_IsSyncFinished(u32 a) {
+    u32 v = NetSession_GetSyncState(a);
     if (v - 5 <= 1) return 1;
     return 0;
 }
-extern "C" s32 func_02073eb0(u32 a) {
+extern "C" s32 Comm_WriteSyncReply(u32 a) {
     s32 r5 = 0;
-    if (func_02073efc(a)) {
-        u8 *r6 = (u8 *)_ZN12Unk_020cbb1813func_02072ddcEi(data_020cbb18, a);
-        func_02076bf0(r6, r5, 6);
-        u32 r4 = func_020a5f8c(a);
-        u32 t = func_02073168(r4);
+    if (Comm_IsSyncFinished(a)) {
+        u8 *r6 = (u8 *)_ZN11CommManager10getSendBufEi(gCommManager, a);
+        CommPacket_SetHeader(r6, r5, 6);
+        u32 r4 = NetSession_GetSyncState(a);
+        u32 t = Comm_GetMemberMask(r4);
         r6[1] = (r4 & 7) | ((t << 4) & 0xf0);
         r5 += 2;
     }
     return r5;
 }
-extern "C" void func_02073e14(s32 a) {
+extern "C" void Comm_RemoveMember(s32 a) {
     s32 i = 3;
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     for (; i >= 0; i--) {
-        if (_ZN12Unk_020cbb1813func_02072e88Ei(o, i)) {
+        if (_ZN11CommManager12isSlotActiveEi(o, i)) {
             if (i == 0) {
-                func_020a63bc(0, 0x3f, 1, 0, 2);
+                NetArea_SetSlotStatus(0, 0x3f, 1, 0, 2);
             } else {
-                func_020a63bc(i, 0x3f, 0, 0, 2);
+                NetArea_SetSlotStatus(i, 0x3f, 0, 0, 2);
             }
         }
     }
-    func_020a63bc(a, 0x3f, 0, 0, 7);
-    o = data_020cbb18;
-    _ZN12Unk_020cbb1813func_02072e94Eij(o, a, 0);
-    _ZN12Unk_020cbb1813func_020729a8Ej(o, (u8)(o->unk_6c - 1));
-    _ZN12Unk_020cbb1813func_02072d6cEi(o, a);
-    _ZN12Unk_020cbb1813func_02072d28Eij(o, a, 0);
-    func_020a5c94(a);
-    Unk_02073e14_ns::func_020741b8(-a);
+    NetArea_SetSlotStatus(a, 0x3f, 0, 0, 7);
+    o = gCommManager;
+    _ZN11CommManager13setSlotActiveEij(o, a, 0);
+    _ZN11CommManager14setMemberCountEj(o, (u8)(o->memberCount - 1));
+    _ZN11CommManager15resetSendCreditEi(o, a);
+    _ZN11CommManager11setAckCountEij(o, a, 0);
+    NetSession_RemoveSlot(a);
+    Unk_02073e14_ns::Comm_ResetPeerState(-a);
 }
-extern "C" void func_02073dd8(u32 a) {
+extern "C" void Comm_CreateHeap(u32 a) {
     u32 r5 = 0;
     for (s32 i = 0x45; i >= 0; i--) {
-        u32 v = func_020766e0(i);
+        u32 v = CommSyncVar_GetVarSize(i);
         if (v > r5) r5 = v;
     }
-    data_020cbb18->unk_6d = r5;
-    func_0205c228(0x4b000, a);
-    func_020ebc38();
+    gCommManager->maxSyncVarSize = r5;
+    NetHeap_Create(0x4b000, a);
+    Net_OnHeapCreatedNop();
 }
-extern "C" void func_02073bf8(s32 a, u32 b, u32 c) {
-    Unk_020cbb18 *o = data_020cbb18;
-    o->unk_74 = 1;
-    func_02076240();
-    o->unk_70 = func_02076bb0(o->unk_6d, 4);
-    _ZN12Unk_020cbb1813func_02072e18EPh(o, func_02076bb0(0x3000, 4));
-    _ZN12Unk_020cbb1813func_02072ca4EPh(o, func_02076bb0(0x9000, 4));
-    _ZN12Unk_020cbb1813func_0207292cEPh(o, func_02076bb0(0x92e, 4));
-    _ZN12Unk_020cbb1813func_02072814EPh(o, func_02076bb0(0x92e, 4));
-    _ZN12Unk_020cbb1813func_02072760EPh(o, func_02076bb0(0x92e, 4));
-    _ZN12Unk_020cbb1813func_0207263cEPh(o, func_02076bb0(0x92e, 4));
-    _ZN12Unk_020cbb1813func_02072574EPh(o, func_02076bb0(0x92e, 4));
-    _ZN12Unk_020cbb1813func_020724d0Ej(o, func_02076bb0(0xc00, 4));
-    _ZN12Unk_020cbb1813func_0207246cEj(o, func_02076bb0(0xc00, 4));
-    _Z13func_020720f8v();
-    func_020ebb6c(0x41444d45, 0x400040, 1, 0x4fe752, b, (void *)func_02076bb0, (void *)func_02076b9c);
+extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
+    CommManager *o = gCommManager;
+    o->started = 1;
+    CommSyncVar_Init();
+    o->syncCompareBuf = NetHeap_Alloc(o->maxSyncVarSize, 4);
+    _ZN11CommManager11setSendBufsEPh(o, NetHeap_Alloc(0x3000, 4));
+    _ZN11CommManager11setRecvBufsEPh(o, NetHeap_Alloc(0x9000, 4));
+    _ZN11CommManager12setRecordBufEPh(o, NetHeap_Alloc(0x92e, 4));
+    _ZN11CommManager15setSendQueueBufEPh(o, NetHeap_Alloc(0x92e, 4));
+    _ZN11CommManager14setDeferredBufEPh(o, NetHeap_Alloc(0x92e, 4));
+    _ZN11CommManager10setHeldBufEPh(o, NetHeap_Alloc(0x92e, 4));
+    _ZN11CommManager14setLoopbackBufEPh(o, NetHeap_Alloc(0x92e, 4));
+    _ZN11CommManager10setAuxBufAEj(o, NetHeap_Alloc(0xc00, 4));
+    _ZN11CommManager10setAuxBufBEj(o, NetHeap_Alloc(0xc00, 4));
+    _Z20NetOverlay_AssertAnyv();
+    Net_Init(0x41444d45, 0x400040, 1, 0x4fe752, b, (void *)NetHeap_Alloc, (void *)NetHeap_Free);
     if ((u8)(a + 0xff) <= 1) {
-        _Z13func_0207217cv();
-        func_020eb9fc(a, (void *)func_02074104);
+        _Z25NetOverlay_AssertWirelessv();
+        Net_StartLocal(a, (void *)Comm_OnReceive);
     } else {
-        Unk_020cbb18 *p = data_020cbb18;
-        u8 *r5 = (u8 *)_ZN12Unk_020cbb1813func_020721f8Ev(p);
-        u8 *r6 = (u8 *)_ZN12Unk_020cbb1813func_020721ecEv(p);
-        func_02115fb4(r5, 0, 0x3e0);
-        func_02115fb4(r6, 0, 0x50);
-        u32 l18 = func_0209750c();
-        _ZN12Unk_0209865c13func_02098674Ev();
-        u8 *l1c = func_02076db4();
+        CommManager *p = gCommManager;
+        u8 *r5 = (u8 *)_ZN11CommManager17getWifiFriendListEv(p);
+        u8 *r6 = (u8 *)_ZN11CommManager15getWifiUserDataEv(p);
+        MI_CpuFill8(r5, 0, 0x3e0);
+        MI_CpuFill8(r6, 0, 0x50);
+        u32 l18 = PlayerData_GetCurrent();
+        _ZN10PlayerData13getFriendListEv();
+        u8 *l1c = FriendList_GetEntries();
         for (s32 i = 0; i < 0x20; i++) {
-            func_02076cf0(l1c);
-            func_02116048(func_02076e1c(), r5 + i * 12, 12);
+            FriendEntry_GetFriendData(l1c);
+            MI_CpuCopy8(DwcFriendData_GetBytes(), r5 + i * 12, 12);
             l1c += 0x1c;
         }
-        _ZN12Unk_0209865c13func_0209888cEv(l18);
-        func_02116048(_ZN12Unk_020940a013func_02094104Ev(), r6, 8);
-        func_02116048(func_02063964((u8 *)((u32)data_021d7350 + 2)), r6 + 8, 8);
-        _ZN12Unk_0209865c13func_02098680Ev(l18);
-        func_02116048(func_02076c80(), r6 + 0x10, 0x40);
-        _Z13func_020721b4v();
-        func_020eb8c0(a, (void *)func_02074104, (void *)func_02098e8c, r6, r5);
+        _ZN10PlayerData11getPlayerIdEv(l18);
+        MI_CpuCopy8(_ZN8PlayerId7getNameEv(), r6, 8);
+        MI_CpuCopy8(TownId_GetName((u8 *)((u32)gSaveData + 2)), r6 + 8, 8);
+        _ZN10PlayerData15getWifiUserDataEv(l18);
+        MI_CpuCopy8(PlayerWifiData_GetDwcUserData(), r6 + 0x10, 0x40);
+        _Z21NetOverlay_AssertWifiv();
+        Net_StartWifi(a, (void *)Comm_OnReceive, (void *)Comm_OnFriendDeletedNop, r6, r5);
     }
-    _ZN12Unk_020cbb1813func_02072368Ej(o, c);
+    _ZN11CommManager12setErrorModeEj(o, c);
 }
-extern "C" void func_02073bac() {
-    data_020cbb18->unk_74 = 1;
-    _Z13func_020720f8v();
-    func_020ebb6c(0x41444d45, 0x400083, 1, 0x4fe752, 2, (void *)func_02076bb0, (void *)func_02076b9c);
+extern "C" void Comm_StartOv067Mode() {
+    gCommManager->started = 1;
+    _Z20NetOverlay_AssertAnyv();
+    Net_Init(0x41444d45, 0x400083, 1, 0x4fe752, 2, (void *)NetHeap_Alloc, (void *)NetHeap_Free);
 }
-extern "C" s32 func_02073a78() {
+extern "C" s32 Comm_End() {
     s32 r5 = 1;
-    if (data_020cbb18->unk_74 != 0) {
-        u32 *r4 = data_021c6218;
-        u32 r6 = func_020e86fc(r4, 0x8000);
-        func_020e86fc(r4, r6 | 0x2000);
-        _Z13func_020720f8v();
-        if (func_020eb1d8() == 0) {
-            func_020b7870();
+    if (gCommManager->started != 0) {
+        u32 *r4 = gNetHeap;
+        u32 r6 = Heap_setFlags(r4, 0x8000);
+        Heap_setFlags(r4, r6 | 0x2000);
+        _Z20NetOverlay_AssertAnyv();
+        if (Net_Shutdown() == 0) {
+            Comm_ReportShutdownError();
             r5 = 0;
         }
-        func_020e86fc(r4, r6);
-        Unk_020cbb18 *o = data_020cbb18;
-        func_02076b9c(_ZN12Unk_020cbb1813func_02072478Ev(o));
-        _ZN12Unk_020cbb1813func_0207246cEj(o, 0);
-        func_02076b9c(_ZN12Unk_020cbb1813func_020724d8Ev(o));
-        _ZN12Unk_020cbb1813func_020724d0Ej(o, 0);
-        func_02076b9c(_ZN12Unk_020cbb1813func_0207257cEv(o));
-        _ZN12Unk_020cbb1813func_02072574EPh(o, 0);
-        func_02076b9c(_ZN12Unk_020cbb1813func_02072644Ev(o));
-        _ZN12Unk_020cbb1813func_0207263cEPh(o, 0);
-        func_02076b9c(_ZN12Unk_020cbb1813func_02072768Ev(o));
-        _ZN12Unk_020cbb1813func_02072760EPh(o, 0);
-        func_02076b9c(_ZN12Unk_020cbb1813func_0207281cEv(o));
-        _ZN12Unk_020cbb1813func_02072814EPh(o, 0);
-        func_02076b9c(_ZN12Unk_020cbb1813func_02072938Ev(o));
-        _ZN12Unk_020cbb1813func_0207292cEPh(o, 0);
-        func_02076b9c(_ZN12Unk_020cbb1813func_02072cb8Eii(o, 4, 0));
-        _ZN12Unk_020cbb1813func_02072ca4EPh(o, 0);
-        func_02076b9c(_ZN12Unk_020cbb1813func_02072ddcEi(o, 4));
-        _ZN12Unk_020cbb1813func_02072e18EPh(o, 0);
-        func_02076b9c(o->unk_70);
-        o->unk_70 = 0;
-        func_02076b9c(_ZN12Unk_020cbb1813func_02072998Ev(o));
-        _ZN12Unk_020cbb1813func_02072994EPh(o, 0);
-        _ZN12Unk_020cbb1813func_02072fb4Ev(o);
-        o->unk_74 = 0;
+        Heap_setFlags(r4, r6);
+        CommManager *o = gCommManager;
+        NetHeap_Free(_ZN11CommManager10getAuxBufBEv(o));
+        _ZN11CommManager10setAuxBufBEj(o, 0);
+        NetHeap_Free(_ZN11CommManager10getAuxBufAEv(o));
+        _ZN11CommManager10setAuxBufAEj(o, 0);
+        NetHeap_Free(_ZN11CommManager14getLoopbackBufEv(o));
+        _ZN11CommManager14setLoopbackBufEPh(o, 0);
+        NetHeap_Free(_ZN11CommManager10getHeldBufEv(o));
+        _ZN11CommManager10setHeldBufEPh(o, 0);
+        NetHeap_Free(_ZN11CommManager14getDeferredBufEv(o));
+        _ZN11CommManager14setDeferredBufEPh(o, 0);
+        NetHeap_Free(_ZN11CommManager15getSendQueueBufEv(o));
+        _ZN11CommManager15setSendQueueBufEPh(o, 0);
+        NetHeap_Free(_ZN11CommManager12getRecordBufEv(o));
+        _ZN11CommManager12setRecordBufEPh(o, 0);
+        NetHeap_Free(_ZN11CommManager10getRecvBufEii(o, 4, 0));
+        _ZN11CommManager11setRecvBufsEPh(o, 0);
+        NetHeap_Free(_ZN11CommManager10getSendBufEi(o, 4));
+        _ZN11CommManager11setSendBufsEPh(o, 0);
+        NetHeap_Free(o->syncCompareBuf);
+        o->syncCompareBuf = 0;
+        NetHeap_Free(_ZN11CommManager13getSyncVarBufEv(o));
+        _ZN11CommManager13setSyncVarBufEPh(o, 0);
+        _ZN11CommManager5resetEv(o);
+        o->started = 0;
     }
     return r5;
 }
-extern "C" void func_02073a0c() {
-    if (data_020cbb18->unk_74 != 0) {
-        u32 *const r5 = data_021c6218;
-        u32 r4 = func_020e86fc(r5, 0x8000);
-        func_020e86fc(r5, r4 | 0x2000);
-        _Z13func_020720f8v();
-        if (func_020eb1d8() == 0) {
-            func_020b7870();
+extern "C" void Comm_EndOv067Mode() {
+    if (gCommManager->started != 0) {
+        u32 *const r5 = gNetHeap;
+        u32 r4 = Heap_setFlags(r5, 0x8000);
+        Heap_setFlags(r5, r4 | 0x2000);
+        _Z20NetOverlay_AssertAnyv();
+        if (Net_Shutdown() == 0) {
+            Comm_ReportShutdownError();
         }
-        func_020e86fc(r5, r4);
-        Unk_020cbb18 *o = data_020cbb18;
-        _ZN12Unk_020cbb1813func_02072fb4Ev(o);
-        o->unk_74 = 0;
+        Heap_setFlags(r5, r4);
+        CommManager *o = gCommManager;
+        _ZN11CommManager5resetEv(o);
+        o->started = 0;
     }
 }
-extern "C" void func_020739f8() {
-    func_020ebc34();
-    func_0205c20c();
+extern "C" void Comm_DestroyHeap() {
+    Net_OnHeapDestroyNop();
+    NetHeap_Destroy();
 }
-extern "C" void func_020739b8(s32 x) {
+extern "C" void Comm_ProcessReceived(s32 x) {
     if (x == 0) {
-        Unk_020cbb18 *o = data_020cbb18;
-        if (_ZN12Unk_020cbb1813func_02072e88Ei(o, o->unk_64)) {
-            if (_ZN12Unk_020cbb1813func_02072e24Ev(o)) {
-                o = data_020cbb18;
-                _ZN12Unk_020cbb1813func_02072584Ev(o);
-                _ZN12Unk_020cbb1813func_020724e0Ev(o);
-                _ZN12Unk_020cbb1813func_02072a84Ev(o);
+        CommManager *o = gCommManager;
+        if (_ZN11CommManager12isSlotActiveEi(o, o->myAid)) {
+            if (_ZN11CommManager7getModeEv(o)) {
+                o = gCommManager;
+                _ZN11CommManager12dispatchHeldEv(o);
+                _ZN11CommManager16dispatchLoopbackEv(o);
+                _ZN11CommManager15processReceivedEv(o);
             }
         }
     }
@@ -1020,90 +726,90 @@ extern "C" void func_020739b8(s32 x) {
 // ======== new_020733e4.cpp ========
 namespace n5 {
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
-void _Z13func_020720f8v();
+void _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-void _Z13func_020722f0P12Unk_020cbb18(Unk_020cbb18 *self);
+void _Z21Comm_CountNoAckFramesP11CommManager(CommManager *self);
 }
 extern "C" {
-extern u8 data_021cc250[4];
+extern u8 sCommAckPackets[4];
 }
 extern "C" {
-BOOL _Z13func_02072278v(Unk_020cbb18 *self);
+BOOL _Z20Comm_AnyPeerTimedOutv(CommManager *self);
 }
 extern "C" {
-BOOL func_020727a8(void *unused, u8 *buf, u32 n);
+BOOL Comm_QueueRecords(void *unused, u8 *buf, u32 n);
 }
 extern "C" {
-BOOL func_02038178();
+BOOL CommCaution_IsShutDown();
 }
 extern "C" {
-BOOL func_02076b34();
+BOOL Comm_HasSendCreditAll();
 }
 extern "C" {
-void func_02074054();
+void Comm_WriteAckHeaders();
 }
 extern "C" {
 void func_02133ef8(void *, u32);
 }
 extern "C" {
-s32 func_02073fdc(u8 *dst, void *src, s32 n);
+s32 Comm_WriteSyncVars(u8 *dst, void *src, s32 n);
 }
 extern "C" {
-u32 func_02073f18(u8 *dst, u32 id);
+u32 Comm_CollectRecordsFor(u8 *dst, u32 id);
 }
 extern "C" {
-u32 func_02076c0c(s32 a);
+u32 Comm_AidToPeerIndex(s32 a);
 }
 extern "C" {
-s32 func_02073eb0(u32 a);
+s32 Comm_WriteSyncReply(u32 a);
 }
 extern "C" {
-s32 func_02073efc(u32 a);
+s32 Comm_IsSyncFinished(u32 a);
 }
 extern "C" {
-void func_020741b0();
+void Comm_EnterCritical();
 }
 extern "C" {
-void func_020741a8();
+void Comm_LeaveCritical();
 }
 extern "C" {
-void func_020a5f9c(s32 a, s32 b);
+void NetSession_SetSyncState(s32 a, s32 b);
 }
 extern "C" {
-s32 func_020a5ec8();
+s32 NetArea_GetMoveState();
 }
 extern "C" {
-void func_020a5ed8(s32 a);
+void NetArea_SetMoveState(s32 a);
 }
 extern "C" {
-s32 func_02076bd4(u8 *p);
+s32 CommPacket_GetAck(u8 *p);
 }
 extern "C" {
-BOOL func_020733bc();
+BOOL Comm_SendEmpty();
 }
 extern "C" {
-BOOL func_020eaca0();
+BOOL Net_IsReadyToSend();
 }
 extern "C" {
-void func_02076bf0(u8 *p, u32 a, u32 b);
+void CommPacket_SetHeader(u8 *p, u32 a, u32 b);
 }
 extern "C" {
-u32 func_020eaf28();
+u32 Net_GetConnectedMask();
 }
 extern "C" {
-BOOL func_020eb650();
+BOOL Net_PollConnected();
 }
 extern "C" {
-void func_020733e4(s32 a);
+void Comm_Update(s32 a);
 }
 
-extern "C" void func_020733e4(s32 a) {
-    Unk_020cbb18 *g = data_020cbb18;
-    s32 self = g->unk_64;
+extern "C" void Comm_Update(s32 a) {
+    CommManager *g = gCommManager;
+    s32 self = g->myAid;
     u32 mode;
     u32 saved;
     u8 *first;
@@ -1121,136 +827,136 @@ extern "C" void func_020733e4(s32 a) {
     u16 masks3[3];
     u8 *bufs3[3];
 
-    if (!g->func_02072e88(self)) {
+    if (!g->isSlotActive(self)) {
         return;
     }
-    ok = g->func_02072e98();
+    ok = g->isSendReady();
     if (ok) {
-        s16 t = g->func_02072424();
+        s16 t = g->getSentSeq();
         if (t >= 0) {
-            Unk_020cbb18 *o = data_020cbb18;
-            o->func_02072430(t);
-            o->func_02072408();
+            CommManager *o = gCommManager;
+            o->setConfirmedSeq(t);
+            o->clearSentSeq();
         }
     }
     if (ok) {
-        if (g->func_02072e1c() == 1) {
-            Unk_020cbb18 *o = data_020cbb18;
-            o->func_02072e28(1);
-            o->func_02072e20(3);
+        if (g->getPendingMode() == 1) {
+            CommManager *o = gCommManager;
+            o->setMode(1);
+            o->setPendingMode(3);
         }
     }
-    mode = g->func_02072e24();
+    mode = g->getMode();
     if (mode != 0) {
-        u32 n = g->func_02072900();
+        u32 n = g->getRecordLen();
         if (n != 0) {
-            Unk_020cbb18 *o = data_020cbb18;
-            u32 fl = o->func_02072374();
-            if (func_020727a8(o, o->func_02072938(), n)) {
-                g->func_02072910();
+            CommManager *o = gCommManager;
+            u32 fl = o->getErrorFlags();
+            if (Comm_QueueRecords(o, o->getRecordBuf(), n)) {
+                g->resetRecordBuf();
                 if (fl & 2) {
-                    if (!func_02038178()) {
-                        g->func_02072380(fl ^ 2);
+                    if (!CommCaution_IsShutDown()) {
+                        g->setErrorFlags(fl ^ 2);
                     }
                 }
             } else {
                 if (!(fl & 2)) {
-                    g->func_02072380(fl | 2);
+                    g->setErrorFlags(fl | 2);
                 }
             }
         }
     }
     if (ok) {
         if (mode == 2) {
-            if (func_02076b34()) {
-                saved = g->func_02072744();
-                func_02074054();
+            if (Comm_HasSendCreditAll()) {
+                saved = g->getDeferredLen();
+                Comm_WriteAckHeaders();
                 first = NULL;
                 flen = 0;
                 func_02133ef8(bufs, 12);
                 func_02133ef8(lens, 12);
                 func_02133ef8(masks, 6);
                 for (i = 3; i >= 0; i--) {
-                    if (g->func_02072e88(i)) {
-                        if (!g->func_020729cc(i)) {
-                            u8 *p = g->func_02072ddc(i);
+                    if (g->isSlotActive(i)) {
+                        if (!g->isMyAid(i)) {
+                            u8 *p = g->getSendBuf(i);
                             u32 len = 0;
                             p++;
                             len++;
                             if (first == NULL) {
                                 first = p;
-                                flen = func_02073fdc(p, NULL, 0);
+                                flen = Comm_WriteSyncVars(p, NULL, 0);
                                 p += flen;
                                 len += flen;
                             } else {
-                                func_02073fdc(p, first, flen);
+                                Comm_WriteSyncVars(p, first, flen);
                                 p += flen;
                                 len += flen;
                             }
-                            len += func_02073f18(p, i);
-                            u32 idx = func_02076c0c(i);
-                            bufs[idx] = g->func_02072ddc(i);
+                            len += Comm_CollectRecordsFor(p, i);
+                            u32 idx = Comm_AidToPeerIndex(i);
+                            bufs[idx] = g->getSendBuf(i);
                             lens[idx] = len;
                             masks[idx] = 1 << i;
                         } else {
-                            u32 c = g->func_02072558();
-                            u32 r = func_02073f18(g->func_0207257c() + c, i);
+                            u32 c = g->getLoopbackLen();
+                            u32 r = Comm_CollectRecordsFor(g->getLoopbackBuf() + c, i);
                             if (r != 0) {
                                 c += r;
-                                g->func_02072560(c);
+                                g->setLoopbackLen(c);
                             }
                         }
                     } else {
-                        if (g->func_020729cc(0)) {
-                            s32 r = func_02073eb0(i);
+                        if (g->isMyAid(0)) {
+                            s32 r = Comm_WriteSyncReply(i);
                             if (r != 0) {
                                 s32 idx = i - 1;
-                                bufs[idx] = g->func_02072ddc(i);
+                                bufs[idx] = g->getSendBuf(i);
                                 lens[idx] = r;
                                 masks[idx] = 1 << i;
                             }
                         }
                     }
                 }
-                BOOL sent = g->func_02072ee4(bufs[0], lens[0], masks[0], bufs[1], lens[1], masks[1], bufs[2], lens[2], masks[2]);
-                if (sent || g->unk_6c <= 1) {
-                    Unk_020cbb18 *o = data_020cbb18;
-                    o->func_0207243c(o->func_02072e34());
-                    o->func_02072940();
-                    o->func_02072808();
+                BOOL sent = g->sendPackets(bufs[0], lens[0], masks[0], bufs[1], lens[1], masks[1], bufs[2], lens[2], masks[2]);
+                if (sent || g->memberCount <= 1) {
+                    CommManager *o = gCommManager;
+                    o->setSentSeq(o->getSendSeq());
+                    o->clearSyncVarDirty();
+                    o->resetSendQueueLen();
                     for (i = 3; i >= 0; i--) {
-                        if (g->func_02072e88(i)) {
-                            if (!g->func_020729cc(i)) {
-                                func_020741b0();
-                                g->func_02072d84(i, 1);
-                                func_020741a8();
-                                g->func_02072d28(i, 0);
+                        if (g->isSlotActive(i)) {
+                            if (!g->isMyAid(i)) {
+                                Comm_EnterCritical();
+                                g->subSendCredit(i, 1);
+                                Comm_LeaveCritical();
+                                g->setAckCount(i, 0);
                             }
                         } else if (sent) {
-                            if (g->func_020729cc(0)) {
-                                if (func_02073efc(i)) {
-                                    func_020a5f9c(i, 7);
+                            if (g->isMyAid(0)) {
+                                if (Comm_IsSyncFinished(i)) {
+                                    NetSession_SetSyncState(i, 7);
                                 }
                             }
                         }
                     }
-                    if (func_020a5ec8() == 7) {
-                        func_020a5ed8(8);
+                    if (NetArea_GetMoveState() == 7) {
+                        NetArea_SetMoveState(8);
                     }
                 } else {
-                    g->func_0207274c(saved);
+                    g->setDeferredLen(saved);
                 }
             } else {
                 if (ok) {
-                    func_02074054();
+                    Comm_WriteAckHeaders();
                     func_02133ef8(bufs2, 12);
                     func_02133ef8(lens2, 12);
                     func_02133ef8(masks2, 6);
                     s32 cnt = 0;
                     for (i = 3; i >= 0; i--) {
-                        if (g->func_02072e88(i) && !g->func_020729cc(i)) {
-                            u8 *p = g->func_02072ddc(i);
-                            if (func_02076bd4(p)) {
+                        if (g->isSlotActive(i) && !g->isMyAid(i)) {
+                            u8 *p = g->getSendBuf(i);
+                            if (CommPacket_GetAck(p)) {
                                 bufs2[cnt] = p;
                                 lens2[cnt] = 1;
                                 masks2[cnt] = 1 << i;
@@ -1259,52 +965,52 @@ extern "C" void func_020733e4(s32 a) {
                         }
                     }
                     if (cnt != 0) {
-                        if (g->func_02072ee4(bufs2[0], lens2[0], masks2[0], bufs2[1], lens2[1], masks2[1], bufs2[2], lens2[2], masks2[2]) || g->unk_6c <= 1) {
+                        if (g->sendPackets(bufs2[0], lens2[0], masks2[0], bufs2[1], lens2[1], masks2[1], bufs2[2], lens2[2], masks2[2]) || g->memberCount <= 1) {
                             for (i = 3; i >= 0; i--) {
-                                if (g->func_02072e88(i) && !g->func_020729cc(i)) {
-                                    g->func_02072d28(i, 0);
+                                if (g->isSlotActive(i) && !g->isMyAid(i)) {
+                                    g->setAckCount(i, 0);
                                 }
                             }
                         }
                     } else {
-                        if (g->func_020729cc(0)) {
-                            if (g->unk_6c != 4) {
-                                func_020733bc();
+                        if (g->isMyAid(0)) {
+                            if (g->memberCount != 4) {
+                                Comm_SendEmpty();
                             }
                         }
                     }
                 } else {
-                    if (g->func_020729cc(0)) {
-                        if (g->unk_6c != 4) {
-                            func_020733bc();
+                    if (g->isMyAid(0)) {
+                        if (g->memberCount != 4) {
+                            Comm_SendEmpty();
                         }
                     }
                 }
             }
         } else if (mode == 1) {
-            if (g->func_02072e44()) {
-                _Z13func_020720f8v();
-                if (func_020eaca0()) {
+            if (g->isOnline()) {
+                _Z20NetOverlay_AssertAnyv();
+                if (Net_IsReadyToSend()) {
                     func_02133ef8(lens3, 12);
                     func_02133ef8(masks3, 6);
                     func_02133ef8(bufs3, 12);
                     for (i = 3; i >= 0; i--) {
-                        if (g->func_02072e88(i) && !g->func_020729cc(i)) {
-                            u32 v = g->func_02072d44(i);
-                            u32 idx = func_02076c0c(i);
+                        if (g->isSlotActive(i) && !g->isMyAid(i)) {
+                            u32 v = g->getAckCount(i);
+                            u32 idx = Comm_AidToPeerIndex(i);
                             if (v != 0) {
-                                p3 = &data_021cc250[idx];
-                                func_02076bf0(p3, v, 0x18);
+                                p3 = &sCommAckPackets[idx];
+                                CommPacket_SetHeader(p3, v, 0x18);
                                 bufs3[idx] = p3;
                                 lens3[idx]++;
                                 masks3[idx] = 1 << i;
                             }
                         }
                     }
-                    if (g->func_02072ee4(bufs3[0], lens3[0], masks3[0], bufs3[1], lens3[1], masks3[1], bufs3[2], lens3[2], masks3[2])) {
+                    if (g->sendPackets(bufs3[0], lens3[0], masks3[0], bufs3[1], lens3[1], masks3[1], bufs3[2], lens3[2], masks3[2])) {
                         for (i = 3; i >= 0; i--) {
-                            if (g->func_02072e88(i) && !g->func_020729cc(i)) {
-                                g->func_02072d28(i, 0);
+                            if (g->isSlotActive(i) && !g->isMyAid(i)) {
+                                g->setAckCount(i, 0);
                             }
                         }
                     }
@@ -1313,51 +1019,51 @@ extern "C" void func_020733e4(s32 a) {
         }
     }
     if (mode == 2) {
-        func_020741b0();
-        Unk_020cbb18 *o = data_020cbb18;
-        _Z13func_020722f0P12Unk_020cbb18(o);
-        func_020741a8();
-        func_020741b0();
-        BOOL r = _Z13func_02072278v(o);
-        func_020741a8();
-        u32 fl = o->func_02072374();
+        Comm_EnterCritical();
+        CommManager *o = gCommManager;
+        _Z21Comm_CountNoAckFramesP11CommManager(o);
+        Comm_LeaveCritical();
+        Comm_EnterCritical();
+        BOOL r = _Z20Comm_AnyPeerTimedOutv(o);
+        Comm_LeaveCritical();
+        u32 fl = o->getErrorFlags();
         if (r) {
             if (!(fl & 1)) {
-                g->func_02072380(fl | 1);
+                g->setErrorFlags(fl | 1);
             }
         } else {
             if (fl & 1) {
-                if (!func_02038178()) {
-                    g->func_02072380(fl ^ 1);
+                if (!CommCaution_IsShutDown()) {
+                    g->setErrorFlags(fl ^ 1);
                 }
             }
         }
         if (self == 0) {
             u16 m = 0;
             for (i = 3; i >= 0; i--) {
-                if (g->func_02072e88(i) && !g->func_020729cc(i)) {
+                if (g->isSlotActive(i) && !g->isMyAid(i)) {
                     m |= 1 << i;
                 }
             }
-            u32 x = func_020eaf28();
+            u32 x = Net_GetConnectedMask();
             if (m != (m & x)) {
-                u32 f = g->func_02072374();
+                u32 f = g->getErrorFlags();
                 if (!(f & 4)) {
-                    g->func_02072380(f | 4);
+                    g->setErrorFlags(f | 4);
                 }
             }
         } else {
-            _Z13func_020720f8v();
-            if (!func_020eb650()) {
-                u32 f = g->func_02072374();
+            _Z20NetOverlay_AssertAnyv();
+            if (!Net_PollConnected()) {
+                u32 f = g->getErrorFlags();
                 if (!(f & 8)) {
-                    g->func_02072380(f | 8);
+                    g->setErrorFlags(f | 8);
                 }
             }
         }
     }
     if (a == 0) {
-        g->func_02072e2c();
+        g->incSendSeq();
     }
 }
 }
@@ -1365,245 +1071,245 @@ extern "C" void func_020733e4(s32 a) {
 // ======== unk_02072d5c.cpp ========
 namespace n3 {
 extern "C" {
-void _Z13func_020720f8v();
+void _Z20NetOverlay_AssertAnyv();
 }
 extern "C" {
-u32 func_02076c0c(s32 a);
+u32 Comm_AidToPeerIndex(s32 a);
 }
 extern "C" {
-void func_02076bdc(u8 *p);
+void CommPacket_IsControl(u8 *p);
 }
 extern "C" {
-void func_02076bf0(u8 *p, u32 a, u32 b);
+void CommPacket_SetHeader(u8 *p, u32 a, u32 b);
 }
 extern "C" {
-void func_02076b18();
+void Comm_IsWifi();
 }
 extern "C" {
-s32 func_02073a78();
+s32 Comm_End();
 }
 extern "C" {
-void func_020a5ca4();
+void NetSession_Reset();
 }
 extern "C" {
-void func_020a5cb4();
+void NetSession_OnBeginHost();
 }
 extern "C" {
-void func_020a5f8c(s32 a);
+void NetSession_GetSyncState(s32 a);
 }
 extern "C" {
-void func_020a5f9c(s32 a, s32 b);
+void NetSession_SetSyncState(s32 a, s32 b);
 }
 extern "C" {
-void func_020a63bc(u32 a, s32 b, u32 c, u32 d, u32 e);
+void NetArea_SetSlotStatus(u32 a, s32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
-u32 func_020eb004();
+u32 Net_GetMemberCount();
 }
 extern "C" {
-BOOL func_020eaca0();
+BOOL Net_IsReadyToSend();
 }
 extern "C" {
-BOOL func_020eaf90();
+BOOL Net_GetMyAid();
 }
 extern "C" {
-u32 func_020eaf28();
+u32 Net_GetConnectedMask();
 }
 extern "C" {
-BOOL func_020eb650();
+BOOL Net_PollConnected();
 }
 extern "C" {
-BOOL func_020eabe8(u8 *a, u32 b, u32 c, u32 d, u8 *e, u32 f, u16 g, u32 h, u8 *i, u32 j, u16 k, u32 l);
+BOOL Net_SendPackets3(u8 *a, u32 b, u32 c, u32 d, u8 *e, u32 f, u16 g, u32 h, u8 *i, u32 j, u16 k, u32 l);
 }
 extern "C" {
-void func_020eb068(u16 a, u8 *p, u32 sz);
+void Net_SetRecvBuffer(u16 a, u8 *p, u32 sz);
 }
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
-BOOL func_02073090(s32 a);
+BOOL Comm_IsConnectionLost(s32 a);
 }
 extern "C" {
-void func_0207312c();
+void Comm_SetLostFlag();
 }
 extern "C" {
-s32 func_02073154();
+s32 Comm_Shutdown();
 }
 extern "C" {
-u32 func_02073168();
+u32 Comm_GetMemberMask();
 }
 extern "C" {
-u32 func_02073190();
+u32 Comm_GetRemoteMask();
 }
 extern "C" {
-void func_020731d4();
+void Comm_ClearSyncState();
 }
 extern "C" {
-void func_02073204();
+void Comm_GetSyncState();
 }
 extern "C" {
-BOOL func_02073230(u8 a);
+BOOL Comm_RequestSync(u8 a);
 }
 extern "C" {
-void func_020732dc(u32 a);
+void Comm_SetRecvBuffers(u32 a);
 }
 extern "C" {
-void func_02073340();
+void Comm_ResetNetSession();
 }
 extern "C" {
-void func_02073348(u32 a);
+void Comm_PrepareJoin(u32 a);
 }
 extern "C" {
-void func_02073368();
+void Comm_BeginHostSession();
 }
 extern "C" {
-void func_020733b0();
+void Comm_SetRecvBuffersAsHost();
 }
 extern "C" {
-BOOL func_020733bc();
+BOOL Comm_SendEmpty();
 }
 
-extern "C" BOOL func_020733bc() { return data_020cbb18->func_02072ee4(0, 0, 0, 0, 0, 0, 0, 0, 0); }
-extern "C" void func_020733b0() { func_020732dc(0); }
-extern "C" void func_02073368() {
-    Unk_020cbb18 *o = data_020cbb18;
-    o->func_02072e28(2);
-    o->unk_64 = 0;
-    o->func_02072e94(o->unk_64, 1);
-    func_020732dc(0);
-    func_020a5cb4();
-    func_020a63bc(0, func_020b50e8(), 1, 0, 7);
+extern "C" BOOL Comm_SendEmpty() { return gCommManager->sendPackets(0, 0, 0, 0, 0, 0, 0, 0, 0); }
+extern "C" void Comm_SetRecvBuffersAsHost() { Comm_SetRecvBuffers(0); }
+extern "C" void Comm_BeginHostSession() {
+    CommManager *o = gCommManager;
+    o->setMode(2);
+    o->myAid = 0;
+    o->setSlotActive(o->myAid, 1);
+    Comm_SetRecvBuffers(0);
+    NetSession_OnBeginHost();
+    NetArea_SetSlotStatus(0, Scene_GetCurrent(), 1, 0, 7);
 }
-extern "C" void func_02073348(u32 a) {
-    data_020cbb18->func_02072e28(0);
-    func_020732dc(a);
+extern "C" void Comm_PrepareJoin(u32 a) {
+    gCommManager->setMode(0);
+    Comm_SetRecvBuffers(a);
 }
-extern "C" void func_02073340() { func_020a5ca4(); }
-extern "C" void func_020732dc(u32 a) {
+extern "C" void Comm_ResetNetSession() { NetSession_Reset(); }
+extern "C" void Comm_SetRecvBuffers(u32 a) {
     s32 i = 3;
-    Unk_020cbb18 *g = data_020cbb18;
+    CommManager *g = gCommManager;
     for (; i >= 0; i--) {
         if (i < a) {
-            u8 *p = g->func_02072ca8(i, 0);
-            _Z13func_020720f8v();
-            func_020eb068(i, p, 0x1000);
+            u8 *p = g->getRecvBufByPeer(i, 0);
+            _Z20NetOverlay_AssertAnyv();
+            Net_SetRecvBuffer(i, p, 0x1000);
         } else if (i > a) {
-            u8 *p = g->func_02072ca8(i - 1, 0);
-            _Z13func_020720f8v();
-            func_020eb068(i, p, 0x1000);
+            u8 *p = g->getRecvBufByPeer(i - 1, 0);
+            _Z20NetOverlay_AssertAnyv();
+            Net_SetRecvBuffer(i, p, 0x1000);
         }
     }
 }
-extern "C" BOOL func_02073230(u8 a) {
+extern "C" BOOL Comm_RequestSync(u8 a) {
     u8 tmp;
-    Unk_020cbb18 *o = data_020cbb18;
-    s32 idx = o->unk_64;
-    if (!o->func_02072e88(idx)) {
-        func_020a5f9c(3, 4);
-        o = data_020cbb18;
-        u8 *p = o->func_02072ddc(4);
-        func_02076bf0(p, 0, 5);
+    CommManager *o = gCommManager;
+    s32 idx = o->myAid;
+    if (!o->isSlotActive(idx)) {
+        NetSession_SetSyncState(3, 4);
+        o = gCommManager;
+        u8 *p = o->getSendBuf(4);
+        CommPacket_SetHeader(p, 0, 5);
         p[1] = 0;
-        return o->func_02072ee4(o->func_02072ddc(4), 2, 1, 0, 0, 0, 0, 0, 0);
+        return o->sendPackets(o->getSendBuf(4), 2, 1, 0, 0, 0, 0, 0, 0);
     }
-    if (o->func_020729cc(0)) {
-        func_020a5f9c(idx, a);
+    if (o->isMyAid(0)) {
+        NetSession_SetSyncState(idx, a);
     } else {
-        func_020a5f9c(idx, 4);
+        NetSession_SetSyncState(idx, 4);
         tmp = a;
-        o = data_020cbb18;
-        o->func_020728d4();
-        o->func_020728a4(&tmp, 1);
-        o->func_02072824(0, 0);
+        o = gCommManager;
+        o->beginRecord();
+        o->writeRecord(&tmp, 1);
+        o->endRecord(0, 0);
     }
     return TRUE;
 }
-extern "C" void func_02073204() {
-    s32 a = data_020cbb18->unk_64;
-    if (!data_020cbb18->func_02072e88(a)) {
-        func_020a5f8c(3);
+extern "C" void Comm_GetSyncState() {
+    s32 a = gCommManager->myAid;
+    if (!gCommManager->isSlotActive(a)) {
+        NetSession_GetSyncState(3);
     } else {
-        func_020a5f8c(a);
+        NetSession_GetSyncState(a);
     }
 }
-extern "C" void func_020731d4() {
-    s32 a = data_020cbb18->unk_64;
-    if (!data_020cbb18->func_02072e88(a)) {
-        func_020a5f9c(3, 7);
+extern "C" void Comm_ClearSyncState() {
+    s32 a = gCommManager->myAid;
+    if (!gCommManager->isSlotActive(a)) {
+        NetSession_SetSyncState(3, 7);
     } else {
-        func_020a5f9c(a, 7);
+        NetSession_SetSyncState(a, 7);
     }
 }
-extern "C" u32 func_02073190() {
+extern "C" u32 Comm_GetRemoteMask() {
     u32 r = 0;
     s32 i = 3;
-    Unk_020cbb18 *o = data_020cbb18;
+    CommManager *o = gCommManager;
     for (; i >= 0; i--) {
-        if (o->func_02072e88(i) && !o->func_020729cc(i)) {
+        if (o->isSlotActive(i) && !o->isMyAid(i)) {
             r |= (u8)(1 << i);
         }
     }
     return r;
 }
-extern "C" u32 func_02073168() {
-    u32 r = func_02073190();
-    Unk_020cbb18 *o = data_020cbb18;
-    s32 i = o->unk_64;
+extern "C" u32 Comm_GetMemberMask() {
+    u32 r = Comm_GetRemoteMask();
+    CommManager *o = gCommManager;
+    s32 i = o->myAid;
     if (i < 4) {
         r |= (u16)(1 << i);
     }
     return r;
 }
-extern "C" s32 func_02073154() {
-    func_02073340();
-    return func_02073a78();
+extern "C" s32 Comm_Shutdown() {
+    Comm_ResetNetSession();
+    return Comm_End();
 }
-extern "C" void func_0207312c() {
-    Unk_020cbb18 *o = data_020cbb18;
-    u32 v = o->func_02072374();
+extern "C" void Comm_SetLostFlag() {
+    CommManager *o = gCommManager;
+    u32 v = o->getErrorFlags();
     if ((v & 0x40) == 0) {
-        o->func_02072380(v | 0x40);
+        o->setErrorFlags(v | 0x40);
     }
 }
-extern "C" BOOL func_02073090(s32 a) {
-    Unk_020cbb18 *o = data_020cbb18;
-    u32 n = o->func_02072210();
+extern "C" BOOL Comm_IsConnectionLost(s32 a) {
+    CommManager *o = gCommManager;
+    u32 n = o->getSendRetryLimit();
     if (n != 0) {
-        if (o->func_02072e98()) {
-            o = data_020cbb18;
-            o->func_02072234(0);
-            o->func_0207221c(0);
+        if (o->isSendReady()) {
+            o = gCommManager;
+            o->setSendRetry(0);
+            o->setSendRetryLimit(0);
         } else {
-            u32 c = o->func_02072228();
+            u32 c = o->getSendRetry();
             if (c >= n) {
                 return TRUE;
             }
-            o->func_02072234((u16)(c + 1));
+            o->setSendRetry((u16)(c + 1));
         }
     }
     if (a >= 0) {
         u16 h = a;
-        if (func_020eaf90()) {
+        if (Net_GetMyAid()) {
             if (a <= 0) {
                 goto zero;
             }
-            _Z13func_020720f8v();
-            if (func_020eb650()) {
+            _Z20NetOverlay_AssertAnyv();
+            if (Net_PollConnected()) {
                 goto zero;
             }
             return TRUE;
         }
-        u32 m = func_020eaf28();
+        u32 m = Net_GetConnectedMask();
         if (h == (h & m)) {
             goto zero;
         }
         return TRUE;
     }
-    if (func_020eaf28() != 0) {
+    if (Net_GetConnectedMask() != 0) {
         goto zero;
     }
     return TRUE;
@@ -1611,78 +1317,78 @@ zero:
     return FALSE;
 }
 }
-Unk_020cbb18::Unk_020cbb18() {
-    using namespace n3; func_02073068(); }
+CommManager::CommManager() {
+    using namespace n3; init(); }
 namespace n3 {
 }
-Unk_020cbb18::~Unk_020cbb18() {
+CommManager::~CommManager() {
     using namespace n3;}
 namespace n3 {
 }
-void Unk_020cbb18::func_02073068() {
+void CommManager::init() {
     using namespace n3;
-    func_02073044();
-    func_02072fb4();
+    initLocal();
+    reset();
 }
 namespace n3 {
 }
-void Unk_020cbb18::func_02073044() {
+void CommManager::initLocal() {
     using namespace n3;
-    unk_68 = 4;
-    func_0207299c();
-    func_02072398(0);
-    func_02072380(0);
+    localSlot = 4;
+    clearMemberCount();
+    setLatchedErrorFlags(0);
+    setErrorFlags(0);
 }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072fb4() {
+void CommManager::reset() {
     using namespace n3;
-    func_02072e68();
-    func_02072e28(0);
-    func_02072e20(3);
-    func_02072d5c();
-    func_02072cfc();
-    func_02072c38();
-    unk_64 = 4;
-    func_02072940();
-    func_02072910();
-    func_02072808();
-    func_02072754();
-    func_02072630();
-    func_02072568();
-    func_020724c4();
-    func_02072460();
-    func_02072408();
-    func_020723f8();
-    func_02072240();
-    func_02072234(0);
-    func_0207221c(0);
-    func_02072368(0);
+    clearSlotsActive();
+    setMode(0);
+    setPendingMode(3);
+    resetSendCredits();
+    clearAckCounts();
+    clearRecvRings();
+    myAid = 4;
+    clearSyncVarDirty();
+    resetRecordBuf();
+    resetSendQueueLen();
+    clearDeferredLen();
+    clearHeldLen();
+    clearLoopbackLen();
+    clearAuxLenA();
+    clearAuxLenB();
+    clearSentSeq();
+    clearConfirmedSeq();
+    clearNoAckFrames();
+    setSendRetry(0);
+    setSendRetryLimit(0);
+    setErrorMode(0);
 }
 namespace n3 {
 }
-BOOL Unk_020cbb18::func_02072ee4(u8 *a1, u32 a2, u32 a3, u8 *s4, u32 s5, u16 s6, u8 *s7, u32 s8, u16 s9) {
+BOOL CommManager::sendPackets(u8 *a1, u32 a2, u32 a3, u8 *s4, u32 s5, u16 s6, u8 *s7, u32 s8, u16 s9) {
     using namespace n3;
-    _Z13func_020720f8v();
-    if (func_020eabe8(a1, a2, a3, 0, s4, s5, s6, 0, s7, s8, s9, 0)) {
-        if (func_02072e24() != 2) {
+    _Z20NetOverlay_AssertAnyv();
+    if (Net_SendPackets3(a1, a2, a3, 0, s4, s5, s6, 0, s7, s8, s9, 0)) {
+        if (getMode() != 2) {
             if ((a1 != NULL || s4 != NULL || s7 != NULL) && (a2 != 0 || s5 != 0 || s8 != 0)) {
                 if (a1 != NULL && a2 != 0) {
-                    func_02076bdc(a1);
+                    CommPacket_IsControl(a1);
                 }
                 if (s4 != NULL && s5 != 0) {
-                    func_02076bdc(s4);
+                    CommPacket_IsControl(s4);
                 }
                 if (s7 != NULL && s8 != 0) {
-                    func_02076bdc(s7);
+                    CommPacket_IsControl(s7);
                 }
-                func_02072234(0);
-                func_02076b18();
-                func_0207221c(0x258);
+                setSendRetry(0);
+                Comm_IsWifi();
+                setSendRetryLimit(0x258);
             }
         } else {
-            func_02072234(0);
-            func_0207221c(0);
+            setSendRetry(0);
+            setSendRetryLimit(0);
         }
         return TRUE;
     }
@@ -1690,21 +1396,21 @@ BOOL Unk_020cbb18::func_02072ee4(u8 *a1, u32 a2, u32 a3, u8 *s4, u32 s5, u16 s6,
 }
 namespace n3 {
 }
-BOOL Unk_020cbb18::func_02072e98() {
+BOOL CommManager::isSendReady() {
     using namespace n3;
-    s32 n = unk_64;
-    if (func_02072e88(n)) {
+    s32 n = myAid;
+    if (isSlotActive(n)) {
         if (n == 0) {
-            if (func_020eb004() > 1) {
-                _Z13func_020720f8v();
-                if (func_020eaca0()) {
+            if (Net_GetMemberCount() > 1) {
+                _Z20NetOverlay_AssertAnyv();
+                if (Net_IsReadyToSend()) {
                     return TRUE;
                 }
                 return FALSE;
             }
         } else {
-            _Z13func_020720f8v();
-            if (func_020eaca0()) {
+            _Z20NetOverlay_AssertAnyv();
+            if (Net_IsReadyToSend()) {
                 return TRUE;
             }
             return FALSE;
@@ -1714,98 +1420,98 @@ BOOL Unk_020cbb18::func_02072e98() {
 }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072e94(s32 i, u32 v) {
-    using namespace n3; unk_00[i] = v; }
+void CommManager::setSlotActive(s32 i, u32 v) {
+    using namespace n3; slotActive[i] = v; }
 namespace n3 {
 }
-u32 Unk_020cbb18::func_02072e88(s32 i) {
+u32 CommManager::isSlotActive(s32 i) {
     using namespace n3;
     if (i < 4) {
-        return unk_00[i];
+        return slotActive[i];
     }
     return 0;
 }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072e68() {
+void CommManager::clearSlotsActive() {
     using namespace n3;
     for (s32 i = 3; i >= 0; i--) {
-        func_02072e94(i, 0);
+        setSlotActive(i, 0);
     }
 }
 namespace n3 {
 }
-BOOL Unk_020cbb18::func_02072e44() {
+BOOL CommManager::isOnline() {
     using namespace n3;
-    if (func_02072e88(unk_64) && unk_6c >= 2) {
+    if (isSlotActive(myAid) && memberCount >= 2) {
         return TRUE;
     }
     return FALSE;
 }
 namespace n3 {
 }
-s16 Unk_020cbb18::func_02072e34() {
-    using namespace n3; return (s16)(unk_04 & 0x7fff); }
+s16 CommManager::getSendSeq() {
+    using namespace n3; return (s16)(sendSeq & 0x7fff); }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072e2c() {
-    using namespace n3; unk_04 = unk_04 + 1; }
+void CommManager::incSendSeq() {
+    using namespace n3; sendSeq = sendSeq + 1; }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072e28(u32 v) {
-    using namespace n3; unk_06 = v; }
+void CommManager::setMode(u32 v) {
+    using namespace n3; mode = v; }
 namespace n3 {
 }
-u8 Unk_020cbb18::func_02072e24() {
-    using namespace n3; return unk_06; }
+u8 CommManager::getMode() {
+    using namespace n3; return mode; }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072e20(u32 v) {
-    using namespace n3; unk_07 = v; }
+void CommManager::setPendingMode(u32 v) {
+    using namespace n3; pendingMode = v; }
 namespace n3 {
 }
-u8 Unk_020cbb18::func_02072e1c() {
-    using namespace n3; return unk_07; }
+u8 CommManager::getPendingMode() {
+    using namespace n3; return pendingMode; }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072e18(u8 *p) {
-    using namespace n3; unk_08 = p; }
+void CommManager::setSendBufs(u8 *p) {
+    using namespace n3; sendBufs = p; }
 namespace n3 {
 }
-u8 *Unk_020cbb18::func_02072ddc(s32 i) {
+u8 *CommManager::getSendBuf(s32 i) {
     using namespace n3;
     if (i >= 4) {
-        return unk_08;
+        return sendBufs;
     }
-    if (func_020729cc(i)) {
+    if (isMyAid(i)) {
         return NULL;
     }
-    if (i < unk_64) {
-        return unk_08 + (i << 12);
+    if (i < myAid) {
+        return sendBufs + (i << 12);
     }
-    return unk_08 + ((i - 1) << 12);
+    return sendBufs + ((i - 1) << 12);
 }
 namespace n3 {
 }
-u32 Unk_020cbb18::func_02072dc4(s32 a) {
-    using namespace n3; return unk_0c[func_02076c0c(a)]; }
+u32 CommManager::getSendCredit(s32 a) {
+    using namespace n3; return sendCredits[Comm_AidToPeerIndex(a)]; }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072da4(s32 a, u32 b) {
-    using namespace n3; unk_0c[func_02076c0c(a)] += b; }
+void CommManager::addSendCredit(s32 a, u32 b) {
+    using namespace n3; sendCredits[Comm_AidToPeerIndex(a)] += b; }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072d84(s32 a, u32 b) {
-    using namespace n3; unk_0c[func_02076c0c(a)] -= b; }
+void CommManager::subSendCredit(s32 a, u32 b) {
+    using namespace n3; sendCredits[Comm_AidToPeerIndex(a)] -= b; }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072d6c(s32 a) {
-    using namespace n3; unk_0c[func_02076c0c(a)] = 3; }
+void CommManager::resetSendCredit(s32 a) {
+    using namespace n3; sendCredits[Comm_AidToPeerIndex(a)] = 3; }
 namespace n3 {
 }
-void Unk_020cbb18::func_02072d5c() {
+void CommManager::resetSendCredits() {
     using namespace n3;
-    u32 *p = unk_0c;
+    u32 *p = sendCredits;
     for (s32 i = 2; i >= 0; i--) {
         *p++ = 3;
     }
@@ -1816,133 +1522,133 @@ namespace n3 {
 // ======== unk_02072408.cpp ========
 namespace n2 {
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *g);
+BOOL _ZN11CommManager8isOnlineEv(void *g);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *g, u32 i);
+BOOL _ZN11CommManager12isSlotActiveEi(void *g, u32 i);
 }
 extern "C" {
-s32 func_0207521c(u32 x, u32 p, u32 len, u32 b, u32 c, u32 d);
+s32 CommRecv_Dispatch(u32 x, u32 p, u32 len, u32 b, u32 c, u32 d);
 }
 extern "C" {
-u32 func_0207691c(u8 *p);
+u32 CommRecord_GetLength(u8 *p);
 }
 extern "C" {
-void func_02076ae8(u8 *src, u8 *a, u8 *b);
+void CommRecord_UnpackSource(u8 *src, u8 *a, u8 *b);
 }
 extern "C" {
-void func_02076934(void *out, u16 v);
+void CommRecord_SetLength(void *out, u16 v);
 }
 extern "C" {
-void func_02076b08(void *out, u32 a, u32 b);
+void CommRecord_PackSource(void *out, u32 a, u32 b);
 }
 extern "C" {
-u32 func_020766d4(u32 a);
+u32 CommSyncVar_GetVarOffset(u32 a);
 }
 extern "C" {
-u32 func_020766e0();
+u32 CommSyncVar_GetVarSize();
 }
 extern "C" {
-u32 func_02076c0c(s32 a);
+u32 Comm_AidToPeerIndex(s32 a);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
-s32 func_020a6214(u32 a);
+s32 NetArea_FindOwner(u32 a);
 }
 extern "C" {
-BOOL func_020a62f8(u32 a);
+BOOL NetArea_IsSlotMoving(u32 a);
 }
 extern "C" {
-BOOL func_020a62a0();
+BOOL NetArea_IsLocalOwner();
 }
 extern "C" {
-void func_020a5cc0(s32 a);
+void NetArea_IsUnsharedScene(s32 a);
 }
 extern "C" {
-void func_020741b0();
+void Comm_EnterCritical();
 }
 extern "C" {
-void func_020741a8();
+void Comm_LeaveCritical();
 }
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 
 }
-u32 Unk_020cbb18::func_02072d44(s32 a) {
-    using namespace n2; return unk_18[func_02076c0c(a)]; }
+u32 CommManager::getAckCount(s32 a) {
+    using namespace n2; return ackCounts[Comm_AidToPeerIndex(a)]; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072d28(s32 a, u32 v) {
-    using namespace n2; unk_18[func_02076c0c(a)] = v; }
+void CommManager::setAckCount(s32 a, u32 v) {
+    using namespace n2; ackCounts[Comm_AidToPeerIndex(a)] = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072d0c(s32 a) {
-    using namespace n2; unk_18[func_02076c0c(a)] += 1; }
+void CommManager::incAckCount(s32 a) {
+    using namespace n2; ackCounts[Comm_AidToPeerIndex(a)] += 1; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072cfc() {
+void CommManager::clearAckCounts() {
     using namespace n2;
     s32 i;
-    u32 *p = unk_18;
+    u32 *p = ackCounts;
     for (i = 2; i >= 0; i--) *p++ = 0;
 }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_02072cb8(s32 a, s32 b) {
+u8 *CommManager::getRecvBuf(s32 a, s32 b) {
     using namespace n2;
-    if (a >= 4) return unk_24;
-    if (func_020729cc(a)) return 0;
-    if (a < unk_64) {
-        return unk_24 + ((b + a * 3) << 12);
+    if (a >= 4) return recvBufs;
+    if (isMyAid(a)) return 0;
+    if (a < myAid) {
+        return recvBufs + ((b + a * 3) << 12);
     }
-    return unk_24 + ((b + (a - 1) * 3) << 12);
+    return recvBufs + ((b + (a - 1) * 3) << 12);
 }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_02072ca8(s32 a, s32 b) {
+u8 *CommManager::getRecvBufByPeer(s32 a, s32 b) {
     using namespace n2;
-    return unk_24 + ((b + a * 3) << 12);
+    return recvBufs + ((b + a * 3) << 12);
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072ca4(u8 *v) {
-    using namespace n2; unk_24 = v; }
+void CommManager::setRecvBufs(u8 *v) {
+    using namespace n2; recvBufs = v; }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072c80(s32 a, u32 b) {
+u32 CommManager::getRecvLen(s32 a, u32 b) {
     using namespace n2;
-    return unk_28[func_02076c0c(a)].v[b];
+    return unk_28[Comm_AidToPeerIndex(a)].v[b];
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072c60(s32 a, u32 b, u32 c) {
+void CommManager::setRecvLen(s32 a, u32 b, u32 c) {
     using namespace n2;
-    unk_28[func_02076c0c(a)].v[b] = c;
+    unk_28[Comm_AidToPeerIndex(a)].v[b] = c;
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072c50(s32 a, u32 b) {
-    using namespace n2; func_02072c60(a, b, 0); }
+void CommManager::clearRecvLen(s32 a, u32 b) {
+    using namespace n2; setRecvLen(a, b, 0); }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072c38() {
+void CommManager::clearRecvRings() {
     using namespace n2;
     u32 *p = (u32 *)&unk_28[0];
     s32 i;
     for (i = 4; i >= 0; i--) {
         *p++ = 0;
     }
-    func_02072a6c();
+    clearRecvRingIndices();
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072a84() {
+void CommManager::processReceived() {
     using namespace n2;
     s32 outer;
     u32 i;
@@ -1953,7 +1659,7 @@ void Unk_020cbb18::func_02072a84() {
     u32 bb;
     u32 dbg;
     u32 len;
-    Unk_020cbb18 *g;
+    CommManager *g;
     u32 rem;
     u32 n;
     u32 t;
@@ -1963,65 +1669,65 @@ void Unk_020cbb18::func_02072a84() {
     u8 a, b;
     u8 buf[5];
     outer = 2;
-    g = data_020cbb18;
+    g = gCommManager;
     do {
         for (i = 0; i < 4; i++) {
-            if (func_020729cc(i)) continue;
-            x = func_02072a04(i);
+            if (isMyAid(i)) continue;
+            x = getRecvReadSlot(i);
             if (x >= 3) continue;
-            lim = func_02072c80(i, x) - 1;
-            p = func_02072cb8(i, x) + 1;
+            lim = getRecvLen(i, x) - 1;
+            p = getRecvBuf(i, x) + 1;
             j = 0;
             do {
-                func_02116048(p, &c, 1);
+                MI_CpuCopy8(p, &c, 1);
                 p++;
                 j = (u16)(j + 1);
                 cc = c;
                 if (cc >= 0x46) break;
-                n = func_020766e0();
-                func_02116048(p, func_02072970(cc), n);
+                n = CommSyncVar_GetVarSize();
+                MI_CpuCopy8(p, getSyncVar(cc), n);
                 p += n;
                 j = (u16)(j + n);
             } while (j < lim);
             k = 0;
             rem = (u16)(lim - j);
             while (k < rem) {
-                func_02116048(p, buf, 5);
+                MI_CpuCopy8(p, buf, 5);
                 p += 5;
                 k += 5;
                 t = buf[3];
-                func_02076ae8(&buf[4], &a, &b);
+                CommRecord_UnpackSource(&buf[4], &a, &b);
                 bb = b;
-                dbg = func_020b50e8();
-                len = func_0207691c(buf);
-                if (func_020a62f8(unk_64) && t == 7 && a != dbg) {
-                    t = func_02072620();
-                    u8 *dd = func_02072644() + t;
-                    func_02116048(p - 5, dd, len + 5);
-                    u32 nf = t; nf += len + 5; func_02072628(nf);
+                dbg = Scene_GetCurrent();
+                len = CommRecord_GetLength(buf);
+                if (NetArea_IsSlotMoving(myAid) && t == 7 && a != dbg) {
+                    t = getHeldLen();
+                    u8 *dd = getHeldBuf() + t;
+                    MI_CpuCopy8(p - 5, dd, len + 5);
+                    u32 nf = t; nf += len + 5; setHeldLen(nf);
                 } else {
-                    if (func_020a62a0() == 0 && t == 6) {
+                    if (NetArea_IsLocalOwner() == 0 && t == 6) {
                     } else if (t == 6 && a != dbg) {
                     } else if (t == 7 && a != dbg) {
                     } else {
-                        func_0207521c(buf[2], (u32)p, len, t, a, bb);
+                        CommRecv_Dispatch(buf[2], (u32)p, len, t, a, bb);
                     }
                 }
                 p += len;
                 k += len;
             }
-            func_020741b0();
-            g->func_02072c50(i, x);
-            g->func_02072a24(i);
-            g->func_02072d0c(i);
-            func_020741a8();
+            Comm_EnterCritical();
+            g->clearRecvLen(i, x);
+            g->popRecvSlot(i);
+            g->incAckCount(i);
+            Comm_LeaveCritical();
         }
         outer--;
     } while (outer >= 0);
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072a6c() {
+void CommManager::clearRecvRingIndices() {
     using namespace n2;
     u32 *p = unk_28t.a4c;
     u32 *q = unk_28t.a58;
@@ -2033,16 +1739,16 @@ void Unk_020cbb18::func_02072a6c() {
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072a50(s32 a) {
+void CommManager::pushRecvSlot(s32 a) {
     using namespace n2;
-    u32 i = func_02076c0c(a);
+    u32 i = Comm_AidToPeerIndex(a);
     unk_28t.a58[i] += 1;
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072a24(s32 a) {
+void CommManager::popRecvSlot(s32 a) {
     using namespace n2;
-    u32 i = func_02076c0c(a);
+    u32 i = Comm_AidToPeerIndex(a);
     unk_28t.a58[i] -= 1;
     u32 t = unk_28t.a4c[i] + 1;
     if (t >= 3) t = 0;
@@ -2050,17 +1756,17 @@ void Unk_020cbb18::func_02072a24(s32 a) {
 }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072a04(s32 a) {
+u32 CommManager::getRecvReadSlot(s32 a) {
     using namespace n2;
-    u32 i = func_02076c0c(a);
+    u32 i = Comm_AidToPeerIndex(a);
     if (unk_28t.a58[i] == 0) return 3;
     return unk_28t.a4c[i];
 }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_020729dc(s32 a) {
+u32 CommManager::getRecvWriteSlot(s32 a) {
     using namespace n2;
-    u32 i = func_02076c0c(a);
+    u32 i = Comm_AidToPeerIndex(a);
     u32 c = unk_28t.a58[i];
     if (c >= 3) {
         return unk_28t.a4c[i];
@@ -2071,402 +1777,402 @@ u32 Unk_020cbb18::func_020729dc(s32 a) {
 }
 namespace n2 {
 }
-BOOL Unk_020cbb18::func_020729cc(u32 v) {
+BOOL CommManager::isMyAid(u32 v) {
     using namespace n2;
-    if (v == unk_64) return TRUE;
+    if (v == myAid) return TRUE;
     return FALSE;
 }
 namespace n2 {
 }
-BOOL Unk_020cbb18::func_020729bc(u32 v) {
+BOOL CommManager::isLocalSlot(u32 v) {
     using namespace n2;
-    if (v == unk_68) return TRUE;
+    if (v == localSlot) return TRUE;
     return FALSE;
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_020729a8(u32 v) {
+void CommManager::setMemberCount(u32 v) {
     using namespace n2;
     if (v > 4) {
-        unk_6c = 0;
+        memberCount = 0;
         return;
     }
-    unk_6c = v;
+    memberCount = v;
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_0207299c() {
-    using namespace n2; func_020729a8(0); }
+void CommManager::clearMemberCount() {
+    using namespace n2; setMemberCount(0); }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_02072998() {
-    using namespace n2; return unk_78; }
+u8 *CommManager::getSyncVarBuf() {
+    using namespace n2; return syncVarBuf; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072994(u8 *v) {
-    using namespace n2; unk_78 = v; }
+void CommManager::setSyncVarBuf(u8 *v) {
+    using namespace n2; syncVarBuf = v; }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_02072970(u32 i) {
+u8 *CommManager::getSyncVar(u32 i) {
     using namespace n2;
-    u8 *p = func_02072998();
+    u8 *p = getSyncVarBuf();
     if (p == 0) return 0;
-    return p + func_020766d4(i);
+    return p + CommSyncVar_GetVarOffset(i);
 }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072968(s32 i) {
-    using namespace n2; return unk_7c[i]; }
+u32 CommManager::isSyncVarDirty(s32 i) {
+    using namespace n2; return syncVarDirty[i]; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072960(s32 i, u32 v) {
-    using namespace n2; unk_7c[i] = v; }
+void CommManager::setSyncVarDirty(s32 i, u32 v) {
+    using namespace n2; syncVarDirty[i] = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072940() {
+void CommManager::clearSyncVarDirty() {
     using namespace n2;
     s32 i;
     for (i = 0x45; i >= 0; i--) {
-        func_02072960(i, 0);
+        setSyncVarDirty(i, 0);
     }
 }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_02072938() {
-    using namespace n2; return unk_c4; }
+u8 *CommManager::getRecordBuf() {
+    using namespace n2; return recordBuf; }
 namespace n2 {
 }
-void Unk_020cbb18::func_0207292c(u8 *v) {
+void CommManager::setRecordBuf(u8 *v) {
     using namespace n2;
-    unk_c4 = v;
-    unk_cc = v;
+    recordBuf = v;
+    recordWritePtr = v;
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072910() {
+void CommManager::resetRecordBuf() {
     using namespace n2;
-    func_02072908(0);
-    unk_cc = func_02072938();
+    setRecordLen(0);
+    recordWritePtr = getRecordBuf();
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072908(u32 v) {
-    using namespace n2; unk_c8 = v; }
+void CommManager::setRecordLen(u32 v) {
+    using namespace n2; recordLen = v; }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072900() {
-    using namespace n2; return unk_c8; }
+u32 CommManager::getRecordLen() {
+    using namespace n2; return recordLen; }
 namespace n2 {
 }
-void Unk_020cbb18::func_020728d4() {
+void CommManager::beginRecord() {
     using namespace n2;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(this)) {
-        unk_d0 = unk_cc;
-        unk_d4 = unk_cc + 5;
+    if (_ZN11CommManager8isOnlineEv(this)) {
+        curRecordStart = recordWritePtr;
+        curRecordEnd = recordWritePtr + 5;
     }
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_020728a4(u8 *p, u32 n) {
+void CommManager::writeRecord(u8 *p, u32 n) {
     using namespace n2;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(this)) {
-        func_02116048(p, unk_d4, n);
-        unk_d4 += n;
+    if (_ZN11CommManager8isOnlineEv(this)) {
+        MI_CpuCopy8(p, curRecordEnd, n);
+        curRecordEnd += n;
     }
 }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072824(u32 a, u32 b) {
+void CommManager::endRecord(u32 a, u32 b) {
     using namespace n2;
     u8 buf[8];
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(this)) {
+    if (_ZN11CommManager8isOnlineEv(this)) {
         if (b - 6 <= 1) {
-            func_020a5cc0(func_020b50e8());
+            NetArea_IsUnsharedScene(Scene_GetCurrent());
         }
-        u32 len = unk_d4 - unk_d0;
-        func_02076934(buf, (u16)(len - 5));
+        u32 len = curRecordEnd - curRecordStart;
+        CommRecord_SetLength(buf, (u16)(len - 5));
         buf[2] = a;
         buf[3] = b;
-        func_02076b08(buf + 4, func_020b50e8(), (u8)unk_64);
-        func_02116048(buf, unk_d0, 5);
-        unk_c8 += len;
-        unk_cc = unk_d4;
+        CommRecord_PackSource(buf + 4, Scene_GetCurrent(), (u8)myAid);
+        MI_CpuCopy8(buf, curRecordStart, 5);
+        recordLen += len;
+        recordWritePtr = curRecordEnd;
     }
 }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_0207281c() {
-    using namespace n2; return unk_d8; }
+u8 *CommManager::getSendQueueBuf() {
+    using namespace n2; return sendQueueBuf; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072814(u8 *v) {
-    using namespace n2; unk_d8 = v; }
+void CommManager::setSendQueueBuf(u8 *v) {
+    using namespace n2; sendQueueBuf = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072808() {
-    using namespace n2; func_02072800(0); }
+void CommManager::resetSendQueueLen() {
+    using namespace n2; setSendQueueLen(0); }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072800(u32 v) {
-    using namespace n2; unk_dc = v; }
+void CommManager::setSendQueueLen(u32 v) {
+    using namespace n2; sendQueueLen = v; }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_020727f8() {
-    using namespace n2; return unk_dc; }
+u32 CommManager::getSendQueueLen() {
+    using namespace n2; return sendQueueLen; }
 namespace n2 {
-extern "C" BOOL func_020727a8(void *unused, u8 *buf, u32 n) {
-    u32 o = data_020cbb18->func_020727f8();
+extern "C" BOOL Comm_QueueRecords(void *unused, u8 *buf, u32 n) {
+    u32 o = gCommManager->getSendQueueLen();
     if (0x92e - o >= n) {
-        Unk_020cbb18 *g = data_020cbb18;
-        func_02116048(buf, g->func_0207281c() + o, n);
-        g->func_02072800(o + n);
+        CommManager *g = gCommManager;
+        MI_CpuCopy8(buf, g->getSendQueueBuf() + o, n);
+        g->setSendQueueLen(o + n);
         return TRUE;
     }
     return FALSE;
 }
 }
-void Unk_020cbb18::func_020727a0(u8 *v) {
-    using namespace n2; unk_e0 = v; }
+void CommManager::setReadPtr(u8 *v) {
+    using namespace n2; readPtr = v; }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_02072798() {
-    using namespace n2; return unk_e0; }
+u8 *CommManager::getReadPtr() {
+    using namespace n2; return readPtr; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072770(u8 *src, u32 n) {
+void CommManager::readRecord(u8 *src, u32 n) {
     using namespace n2;
-    u8 *d = func_02072798();
-    func_02116048(d, src, n);
-    func_020727a0(d + n);
+    u8 *d = getReadPtr();
+    MI_CpuCopy8(d, src, n);
+    setReadPtr(d + n);
 }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_02072768() {
-    using namespace n2; return unk_e4; }
+u8 *CommManager::getDeferredBuf() {
+    using namespace n2; return deferredBuf; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072760(u8 *v) {
-    using namespace n2; unk_e4 = v; }
+void CommManager::setDeferredBuf(u8 *v) {
+    using namespace n2; deferredBuf = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072754() {
-    using namespace n2; func_0207274c(0); }
+void CommManager::clearDeferredLen() {
+    using namespace n2; setDeferredLen(0); }
 namespace n2 {
 }
-void Unk_020cbb18::func_0207274c(u32 v) {
-    using namespace n2; unk_e8 = v; }
+void CommManager::setDeferredLen(u32 v) {
+    using namespace n2; deferredLen = v; }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072744() {
-    using namespace n2; return unk_e8; }
+u32 CommManager::getDeferredLen() {
+    using namespace n2; return deferredLen; }
 namespace n2 {
 }
-void Unk_020cbb18::func_0207264c() {
+void CommManager::flushDeferred() {
     using namespace n2;
-    Unk_0207264c_Loc l;
-    s32 v6 = unk_64;
-    if (_ZN12Unk_020cbb1813func_02072e88Ei(this, v6)) {
-        u32 total = func_02072744();
+    CommDeferredFlushLocals l;
+    s32 v6 = myAid;
+    if (_ZN11CommManager12isSlotActiveEi(this, v6)) {
+        u32 total = getDeferredLen();
         if (total != 0) {
-            u8 *p = func_02072768();
-            func_02116048(p, l.buf, 5);
-            func_02076ae8(&l.buf[4], &l.a, &l.b);
-            s32 v = func_020a6214(l.a);
+            u8 *p = getDeferredBuf();
+            MI_CpuCopy8(p, l.buf, 5);
+            CommRecord_UnpackSource(&l.buf[4], &l.a, &l.b);
+            s32 v = NetArea_FindOwner(l.a);
             if (v >= 4) return;
             if (v == v6) {
-                u32 c6 = func_02072558();
-                u8 *dst = func_0207257c() + c6;
+                u32 c6 = getLoopbackLen();
+                u8 *dst = getLoopbackBuf() + c6;
                 u32 cnt = 0;
                 u32 len;
                 while (cnt < total) {
-                    func_02116048(p, l.buf3, 5);
-                    len = func_0207691c(l.buf3);
-                    func_02116048(p, dst, len + 5);
+                    MI_CpuCopy8(p, l.buf3, 5);
+                    len = CommRecord_GetLength(l.buf3);
+                    MI_CpuCopy8(p, dst, len + 5);
                     dst += len + 5;
                     c6 += len + 5;
                     p += len + 5;
                     cnt += len + 5;
                 }
-                func_02072560(c6);
+                setLoopbackLen(c6);
             } else {
                 u32 c6 = 0;
                 while (c6 < total) {
-                    func_02116048(p, l.buf2, 5);
+                    MI_CpuCopy8(p, l.buf2, 5);
                     p += 5;
                     c6 += 5;
-                    u32 len = func_0207691c(l.buf2);
-                    func_020728d4();
-                    func_020728a4(p, len);
-                    func_02072824(l.buf2[2], l.buf2[3]);
+                    u32 len = CommRecord_GetLength(l.buf2);
+                    beginRecord();
+                    writeRecord(p, len);
+                    endRecord(l.buf2[2], l.buf2[3]);
                     p += len;
                     c6 += len;
                 }
             }
-            func_02072754();
+            clearDeferredLen();
         }
     }
 }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_02072644() {
-    using namespace n2; return unk_ec; }
+u8 *CommManager::getHeldBuf() {
+    using namespace n2; return heldBuf; }
 namespace n2 {
 }
-void Unk_020cbb18::func_0207263c(u8 *v) {
-    using namespace n2; unk_ec = v; }
+void CommManager::setHeldBuf(u8 *v) {
+    using namespace n2; heldBuf = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072630() {
-    using namespace n2; func_02072628(0); }
+void CommManager::clearHeldLen() {
+    using namespace n2; setHeldLen(0); }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072628(u32 v) {
-    using namespace n2; unk_f0 = v; }
+void CommManager::setHeldLen(u32 v) {
+    using namespace n2; heldLen = v; }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072620() {
-    using namespace n2; return unk_f0; }
+u32 CommManager::getHeldLen() {
+    using namespace n2; return heldLen; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072584() {
+void CommManager::dispatchHeld() {
     using namespace n2;
-    Unk_020724e0_Loc l;
-    u32 size = func_02072620();
+    CommRecordUnpackLocals l;
+    u32 size = getHeldLen();
     if (size != 0) {
-        u8 *p = func_02072644();
-        func_02116048(p, l.buf, 5);
-        func_02076ae8(&l.buf[4], &l.a, &l.b);
-        if (l.a == func_020b50e8()) {
+        u8 *p = getHeldBuf();
+        MI_CpuCopy8(p, l.buf, 5);
+        CommRecord_UnpackSource(&l.buf[4], &l.a, &l.b);
+        if (l.a == Scene_GetCurrent()) {
             u32 pos = 0;
             while (pos < size) {
-                func_02116048(p, l.buf, 5);
+                MI_CpuCopy8(p, l.buf, 5);
                 p += 5;
                 pos += 5;
-                func_02076ae8(&l.buf[4], &l.a, &l.b);
+                CommRecord_UnpackSource(&l.buf[4], &l.a, &l.b);
                 u32 t = l.b;
-                u32 len = func_0207691c(l.buf);
-                func_0207521c(l.buf[2], (u32)p, len, l.buf[3], l.a, t);
+                u32 len = CommRecord_GetLength(l.buf);
+                CommRecv_Dispatch(l.buf[2], (u32)p, len, l.buf[3], l.a, t);
                 p += len;
                 pos += len;
             }
-            func_02072630();
+            clearHeldLen();
         }
     }
 }
 namespace n2 {
 }
-u8 *Unk_020cbb18::func_0207257c() {
-    using namespace n2; return unk_f4; }
+u8 *CommManager::getLoopbackBuf() {
+    using namespace n2; return loopbackBuf; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072574(u8 *v) {
-    using namespace n2; unk_f4 = v; }
+void CommManager::setLoopbackBuf(u8 *v) {
+    using namespace n2; loopbackBuf = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072568() {
-    using namespace n2; func_02072560(0); }
+void CommManager::clearLoopbackLen() {
+    using namespace n2; setLoopbackLen(0); }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072560(u32 v) {
-    using namespace n2; unk_f8 = v; }
+void CommManager::setLoopbackLen(u32 v) {
+    using namespace n2; loopbackLen = v; }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072558() {
-    using namespace n2; return unk_f8; }
+u32 CommManager::getLoopbackLen() {
+    using namespace n2; return loopbackLen; }
 namespace n2 {
 }
-void Unk_020cbb18::func_020724e0() {
+void CommManager::dispatchLoopback() {
     using namespace n2;
-    Unk_020724e0_Loc l;
-    u32 size = func_02072558();
+    CommRecordUnpackLocals l;
+    u32 size = getLoopbackLen();
     if (size != 0) {
         u32 pos = 0;
-        u8 *p = func_0207257c();
+        u8 *p = getLoopbackBuf();
         while (pos < size) {
-            func_02116048(p, l.buf, 5);
+            MI_CpuCopy8(p, l.buf, 5);
             p += 5;
             pos += 5;
-            func_02076ae8(&l.buf[4], &l.a, &l.b);
+            CommRecord_UnpackSource(&l.buf[4], &l.a, &l.b);
             u32 t = l.b;
-            u32 len = func_0207691c(l.buf);
-            func_0207521c(l.buf[2], (u32)p, len, l.buf[3], l.a, t);
+            u32 len = CommRecord_GetLength(l.buf);
+            CommRecv_Dispatch(l.buf[2], (u32)p, len, l.buf[3], l.a, t);
             p += len;
             pos += len;
         }
-        func_02072568();
+        clearLoopbackLen();
     }
 }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_020724d8() {
-    using namespace n2; return unk_fc; }
+u32 CommManager::getAuxBufA() {
+    using namespace n2; return auxBufA; }
 namespace n2 {
 }
-void Unk_020cbb18::func_020724d0(u32 v) {
-    using namespace n2; unk_fc = v; }
+void CommManager::setAuxBufA(u32 v) {
+    using namespace n2; auxBufA = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_020724c4() {
-    using namespace n2; func_020724b8(0); }
+void CommManager::clearAuxLenA() {
+    using namespace n2; setAuxLenA(0); }
 namespace n2 {
 }
-void Unk_020cbb18::func_020724b8(u32 v) {
-    using namespace n2; unk_100 = v; }
+void CommManager::setAuxLenA(u32 v) {
+    using namespace n2; auxLenA = v; }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_020724ac() {
-    using namespace n2; return unk_100; }
+u32 CommManager::getAuxLenA() {
+    using namespace n2; return auxLenA; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072484(u8 *src, u32 n) {
+void CommManager::appendAuxA(u8 *src, u32 n) {
     using namespace n2;
-    func_02116048(src, unk_104, n);
-    unk_104 += n;
+    MI_CpuCopy8(src, auxWritePtrA, n);
+    auxWritePtrA += n;
 }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072478() {
-    using namespace n2; return unk_108; }
+u32 CommManager::getAuxBufB() {
+    using namespace n2; return auxBufB; }
 namespace n2 {
 }
-void Unk_020cbb18::func_0207246c(u32 v) {
-    using namespace n2; unk_108 = v; }
+void CommManager::setAuxBufB(u32 v) {
+    using namespace n2; auxBufB = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072460() {
-    using namespace n2; func_02072454(0); }
+void CommManager::clearAuxLenB() {
+    using namespace n2; setAuxLenB(0); }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072454(u32 v) {
-    using namespace n2; unk_10c = v; }
+void CommManager::setAuxLenB(u32 v) {
+    using namespace n2; auxLenB = v; }
 namespace n2 {
 }
-u32 Unk_020cbb18::func_02072448() {
-    using namespace n2; return unk_10c; }
+u32 CommManager::getAuxLenB() {
+    using namespace n2; return auxLenB; }
 namespace n2 {
 }
-void Unk_020cbb18::func_0207243c(s16 v) {
-    using namespace n2; unk_114 = v; }
+void CommManager::setSentSeq(s16 v) {
+    using namespace n2; sentSeq = v; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072430(s16 v) {
-    using namespace n2; unk_116 = v; }
+void CommManager::setConfirmedSeq(s16 v) {
+    using namespace n2; confirmedSeq = v; }
 namespace n2 {
 }
-s16 Unk_020cbb18::func_02072424() {
-    using namespace n2; return unk_114; }
+s16 CommManager::getSentSeq() {
+    using namespace n2; return sentSeq; }
 namespace n2 {
 }
-s16 Unk_020cbb18::func_02072418() {
-    using namespace n2; return unk_116; }
+s16 CommManager::getConfirmedSeq() {
+    using namespace n2; return confirmedSeq; }
 namespace n2 {
 }
-void Unk_020cbb18::func_02072408() {
-    using namespace n2; unk_114 = -1; }
+void CommManager::clearSentSeq() {
+    using namespace n2; sentSeq = -1; }
 namespace n2 {
 }
-void Unk_020cbb18::func_020723f8() {
-    using namespace n2; unk_116 = -1; }
+void CommManager::clearConfirmedSeq() {
+    using namespace n2; confirmedSeq = -1; }
 namespace n2 {
 }
 
@@ -2488,167 +2194,167 @@ extern "C" {
 extern u16 data_020d03cc;
 }
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
-extern Unk_020720f8_Data data_021cc7d0;
+extern OverlayHandle gOverlayHandle;
 }
 extern "C" {
-void *func_020e8574(u32 n);
+void *Mem_Alloc(u32 n);
 }
 extern "C" {
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 }
 extern "C" {
-void func_020712dc(void *p);
+void AblePatternDefaults_Ctor(void *p);
 }
 extern "C" {
-void func_0207131c(void *p);
+void PlayerPatternDefaults_Ctor(void *p);
 }
 extern "C" {
-BOOL func_020712a0(void *t, void *buf, s16 i);
+BOOL AblePatternDefaults_Extract(void *t, void *buf, s16 i);
 }
 extern "C" {
-BOOL func_020712e0(void *t, void *buf, s16 i);
+BOOL PlayerPatternDefaults_Extract(void *t, void *buf, s16 i);
 }
 extern "C" {
-void func_020712c4(void *t);
+void AblePatternDefaults_Load(void *t);
 }
 extern "C" {
-void func_02071304(void *t);
+void PlayerPatternDefaults_Load(void *t);
 }
 extern "C" {
-void *func_02071320(void);
+void *PatternPresetInfo_Get(void);
 }
 extern "C" {
-void func_02071328(void *t, Unk_02071ed0 *s, s32 id);
+void PatternPresetInfo_Apply(void *t, PatternInfo *s, s32 id);
 }
 extern "C" {
-Unk_020942c8 *func_0209409c(Unk_020942c8 *p);
+Unk_020942c8 *PlayerId_GetTownId(Unk_020942c8 *p);
 }
 extern "C" {
-void func_02063950(Unk_020942c8 *p, u32 v);
+void TownId_SetId(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
-void _ZN12Unk_020940a013func_02094128Et(Unk_020942c8 *p, u32 v);
+void _ZN8PlayerId5setIdEt(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
-void _ZN12Unk_0206395413func_02094094EPS_(Unk_020942c8 *a, Unk_020942c8 *b);
+void _ZN6TownId7setTownEPS_(Unk_020942c8 *a, Unk_020942c8 *b);
 }
 extern "C" {
-s32 func_02128930(void *a, void *b, u32 n);
+s32 memcmp(void *a, void *b, u32 n);
 }
 extern "C" {
-void func_02116048(void *src, void *dst, u32 n);
+void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 extern "C" {
-s32 func_02076c0c(s32 i);
+s32 Comm_AidToPeerIndex(s32 i);
 }
 extern "C" {
-s32 func_02076b18();
+s32 Comm_IsWifi();
 }
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 }
 extern "C" {
-void *_ZN12Unk_0209865c13func_0209888cEv(void *p);
+void *_ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-void *func_020716cc();
+void *PatternTexCache_Get();
 }
 extern "C" {
-void _ZN12Unk_020718a413func_020716d4Ei(void *p, u32 v);
+void _ZN15PatternTexCache10getPaletteEi(void *p, u32 v);
 }
 extern "C" {
-s32 func_0206d49c();
+s32 Fatal_Trap();
 }
 extern "C" {
-void _ZN12Unk_020e2a6013func_020a77f8EP12Unk_020e2a78(Unk_020dd30c *o, void *x);
+void _ZN13EncodedString13fromMsgStringEP9MsgString(EncodedString16Buf *o, void *x);
 }
 extern "C" {
-void _ZN12Unk_020e2a7813func_020a7aa0EP12Unk_020e2a60ii(void *dst, Unk_020dd30c *o, u32 a, u32 b);
+void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *dst, EncodedString16Buf *o, u32 a, u32 b);
 }
 
 }
-void Unk_020cbb18::func_020723ec(u32 v) {
-    using namespace n1; unk_118 = v; }
+void CommManager::setControlLen(u32 v) {
+    using namespace n1; controlLen = v; }
 namespace n1 {
 }
-u32 Unk_020cbb18::func_020723e0() {
-    using namespace n1; return unk_118; }
+u32 CommManager::getControlLen() {
+    using namespace n1; return controlLen; }
 namespace n1 {
 }
-void Unk_020cbb18::func_020723d4() {
-    using namespace n1; unk_118 = 0; }
+void CommManager::clearControlLen() {
+    using namespace n1; controlLen = 0; }
 namespace n1 {
 }
-void Unk_020cbb18::func_020723a4(void *src, u32 n) {
+void CommManager::appendControl(void *src, u32 n) {
     using namespace n1;
-    u8 *d = func_02072ddc(4);
-    d = d + unk_118;
-    func_02116048(src, d, n);
-    unk_118 += n;
+    u8 *d = getSendBuf(4);
+    d = d + controlLen;
+    MI_CpuCopy8(src, d, n);
+    controlLen += n;
 }
 namespace n1 {
 }
-void Unk_020cbb18::func_02072398(u32 v) {
-    using namespace n1; unk_11c = v; }
+void CommManager::setLatchedErrorFlags(u32 v) {
+    using namespace n1; latchedErrorFlags = v; }
 namespace n1 {
 }
-u32 Unk_020cbb18::func_0207238c() {
-    using namespace n1; return unk_11c; }
+u32 CommManager::getLatchedErrorFlags() {
+    using namespace n1; return latchedErrorFlags; }
 namespace n1 {
 }
-void Unk_020cbb18::func_02072380(u32 v) {
-    using namespace n1; unk_120 = v; }
+void CommManager::setErrorFlags(u32 v) {
+    using namespace n1; errorFlags = v; }
 namespace n1 {
 }
-u32 Unk_020cbb18::func_02072374() {
-    using namespace n1; return unk_120; }
+u32 CommManager::getErrorFlags() {
+    using namespace n1; return errorFlags; }
 namespace n1 {
 }
-void Unk_020cbb18::func_02072368(u32 v) {
-    using namespace n1; unk_124 = v; }
+void CommManager::setErrorMode(u32 v) {
+    using namespace n1; errorMode = v; }
 namespace n1 {
 }
-u32 Unk_020cbb18::func_0207235c() {
-    using namespace n1; return unk_124; }
+u32 CommManager::getErrorMode() {
+    using namespace n1; return errorMode; }
 namespace n1 {
 }
-void func_020722f0(Unk_020cbb18 *self) {
+void Comm_CountNoAckFrames(CommManager *self) {
     using namespace n1;
     s32 i;
-    Unk_020cbb18 *g;
+    CommManager *g;
     i = 3;
-    g = data_020cbb18;
+    g = gCommManager;
     for (; i >= 0; i--) {
-        if (g->func_02072e88(i) && !g->func_020729cc(i)) {
-            s32 idx = func_02076c0c(i);
-            u32 v = g->func_020722d4(i);
-            func_02076b18();
-            if (v <= 0x258) self->unk_128[idx]++;
+        if (g->isSlotActive(i) && !g->isMyAid(i)) {
+            s32 idx = Comm_AidToPeerIndex(i);
+            u32 v = g->getNoAckFrames(i);
+            Comm_IsWifi();
+            if (v <= 0x258) self->noAckFrames[idx]++;
         }
     }
 }
 namespace n1 {
 }
-u32 Unk_020cbb18::func_020722d4(s32 i) {
+u32 CommManager::getNoAckFrames(s32 i) {
     using namespace n1;
-    return unk_128[func_02076c0c(i)];
+    return noAckFrames[Comm_AidToPeerIndex(i)];
 }
 namespace n1 {
 }
-BOOL func_02072278() {
+BOOL Comm_AnyPeerTimedOut() {
     using namespace n1;
     s32 i;
-    Unk_020cbb18 *g;
+    CommManager *g;
     i = 3;
-    g = data_020cbb18;
+    g = gCommManager;
     for (; i >= 0; i--) {
-        if (g->func_02072e88(i) && !g->func_020729cc(i)) {
-            func_02076c0c(i);
-            u32 v = g->func_020722d4(i);
-            func_02076b18();
+        if (g->isSlotActive(i) && !g->isMyAid(i)) {
+            Comm_AidToPeerIndex(i);
+            u32 v = g->getNoAckFrames(i);
+            Comm_IsWifi();
             if (v > 0x258) return TRUE;
         }
     }
@@ -2656,101 +2362,101 @@ BOOL func_02072278() {
 }
 namespace n1 {
 }
-void Unk_020cbb18::func_02072258(s32 i) {
+void CommManager::resetNoAckFrames(s32 i) {
     using namespace n1;
-    unk_128[func_02076c0c(i)] = 0;
+    noAckFrames[Comm_AidToPeerIndex(i)] = 0;
 }
 namespace n1 {
 }
-void Unk_020cbb18::func_02072240() {
+void CommManager::clearNoAckFrames() {
     using namespace n1;
-    u16 *p = unk_128;
+    u16 *p = noAckFrames;
     for (s32 i = 2; i >= 0; i--) *p++ = 0;
 }
 namespace n1 {
 }
-void Unk_020cbb18::func_02072234(u32 v) {
-    using namespace n1; unk_12e = v; }
+void CommManager::setSendRetry(u32 v) {
+    using namespace n1; sendRetry = v; }
 namespace n1 {
 }
-u32 Unk_020cbb18::func_02072228() {
-    using namespace n1; return unk_12e; }
+u32 CommManager::getSendRetry() {
+    using namespace n1; return sendRetry; }
 namespace n1 {
 }
-void Unk_020cbb18::func_0207221c(u32 v) {
-    using namespace n1; unk_130 = v; }
+void CommManager::setSendRetryLimit(u32 v) {
+    using namespace n1; sendRetryLimit = v; }
 namespace n1 {
 }
-u32 Unk_020cbb18::func_02072210() {
-    using namespace n1; return unk_130; }
+u32 CommManager::getSendRetryLimit() {
+    using namespace n1; return sendRetryLimit; }
 namespace n1 {
 }
-void Unk_020cbb18::func_02072204(u32 v) {
-    using namespace n1; unk_132 = v; }
+void CommManager::setSessionMemberMask(u32 v) {
+    using namespace n1; sessionMemberMask = v; }
 namespace n1 {
 }
-u8 *Unk_020cbb18::func_020721f8() {
-    using namespace n1; return unk_134; }
+u8 *CommManager::getWifiFriendList() {
+    using namespace n1; return wifiFriendList; }
 namespace n1 {
 }
-u8 *Unk_020cbb18::func_020721ec() {
+u8 *CommManager::getWifiUserData() {
     using namespace n1; return (u8 *)this + 0x514; }
 namespace n1 {
 }
-void func_020721b4() {
+void NetOverlay_AssertWifi() {
     using namespace n1;
     u32 x;
-    if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
+    if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
     if ((u32)OVERLAY_65_ID == x) ok = TRUE; else ok = FALSE;
-    if (!ok) func_0206d49c();
+    if (!ok) Fatal_Trap();
 }
 namespace n1 {
 }
-void func_0207217c() {
+void NetOverlay_AssertWireless() {
     using namespace n1;
     u32 x;
-    if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
+    if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
     if ((u32)OVERLAY_66_ID == x) ok = TRUE; else ok = FALSE;
-    if (!ok) func_0206d49c();
+    if (!ok) Fatal_Trap();
 }
 namespace n1 {
 }
-void func_02072144() {
+void NetOverlay_AssertOv067() {
     using namespace n1;
     u32 x;
-    if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
+    if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
     if ((u32)OVERLAY_67_ID == x) ok = TRUE; else ok = FALSE;
-    if (!ok) func_0206d49c();
+    if (!ok) Fatal_Trap();
 }
 namespace n1 {
 }
-void func_020720f8() {
+void NetOverlay_AssertAny() {
     using namespace n1;
     u32 x;
-    if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
+    if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
     Unk_020720f8_Id a = (Unk_020720f8_Id)(u32)OVERLAY_65_ID;
     Unk_020720f8_Id b = (Unk_020720f8_Id)(u32)OVERLAY_66_ID;
     Unk_020720f8_Id c = (Unk_020720f8_Id)(u32)OVERLAY_67_ID;
     if (x == a || x == b || x == c) ok = TRUE; else ok = FALSE;
-    if (!ok) func_0206d49c();
+    if (!ok) Fatal_Trap();
 }
 namespace n1 {
 }
 
 // ======== data ========
-u8 data_021cc250[4];
+u8 sCommAckPackets[4];
 
-Unk_020cbb18 data_021cc260;
+CommManager gCommManagerInstance;
 
 // The pointer is a constant (.rodata) that every user loads from memory: the users see it as a plain
-// `Unk_020cbb18 *`, so the definition has its own declaration scope.
+// `CommManager *`, so the definition has its own declaration scope.
 namespace U126_def {
 extern "C" {
-extern Unk_020cbb18 *const data_020cbb18;
-Unk_020cbb18 *const data_020cbb18 = &data_021cc260;
+extern CommManager *const gCommManager;
+CommManager *const gCommManager = &gCommManagerInstance;
 }
 }

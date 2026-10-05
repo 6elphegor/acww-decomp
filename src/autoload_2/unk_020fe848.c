@@ -30,15 +30,15 @@ typedef struct { u64 a; u64 b; u16 f16; u16 f18; } S;
 typedef struct { u32 year, month, day; s32 week; } Date;
 typedef struct { u32 hour, minute, second; } Time;
 
-extern void func_02115fb4(void *dst, u32 val, u32 len);
-extern u32 func_02127588(void *table, u32 poly);
-extern u32 func_021274a4(void *table, void *data, u32 len);
-extern u64 func_01ffa6b4(void);
+extern void MI_CpuFill8(void *dst, u32 val, u32 len);
+extern u32 MATHi_CRC32InitTableRev(void *table, u32 poly);
+extern u32 MATH_CalcCRC32(void *table, void *data, u32 len);
+extern u64 OS_GetTick(void);
 extern u64 func_02133100(u64 a, u64 b);
-extern void func_0212769c(void *table, u32 poly);
-extern s32 func_02127510(void *table, void *data, u32 len);
-extern void func_02000b44(void *p);
-extern s32 func_02113088(char *buf, u32 size, const char *fmt, ...);
+extern void MATHi_CRC8InitTable(void *table, u32 poly);
+extern s32 MATH_CalcCRC8(void *table, void *data, u32 len);
+extern void OSi_ReferSymbol(void *p);
+extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 
 extern const u32 data_0213bba8[];
 extern const u8 data_02135ca8[];
@@ -50,83 +50,83 @@ extern u16 data_021f5c50;
 extern u32 data_021f5c54;
 extern u8 data_021f5c80[];
 extern const u8 data_02135c9c[];
-extern s32 func_02128930(const void *a, const void *b, u32 n);
-extern s32 func_02117e8c(u32 tag, u32 x);
-extern void func_02117eb4(u32 tag, void *cb);
-extern void func_021145b0(void *p, u32 n);
-extern void func_02114594(void *p, u32 n);
-extern void func_02115e30(u16 v, void *dst, u32 n);
-extern u16 func_021274dc(void *table, void *data, u32 len);
-extern void func_02127614(void *table, u32 poly);
+extern s32 memcmp(const void *a, const void *b, u32 n);
+extern s32 PXI_IsCallbackReady(u32 tag, u32 x);
+extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
+extern void DC_StoreRange(void *p, u32 n);
+extern void DC_InvalidateRange(void *p, u32 n);
+extern void MIi_CpuClear16(u16 v, void *dst, u32 n);
+extern u16 MATH_CalcCRC16(void *table, void *data, u32 len);
+extern void MATHi_CRC16InitTableRev(void *table, u32 poly);
 extern void WaitByLoop(u32 n);
-extern s32 func_02117dd8(u32 tag, u32 data, s32 err);
-extern void func_0206d49c(void);
-extern void func_02116048(const void *src, void *dst, u32 len);
+extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
+extern void Fatal_Trap(void);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
 extern const char data_0213bbdc[];
 extern const char data_0213bbec[];
 
-u32 func_02100144(FD *p);
-u32 func_02100130(FD *p);
-BOOL func_021001b8(u32 *p, u32 v, u32 shift, u32 mask);
-void func_021000dc(FD *p, u32 v);
-void func_021000b8(FD *p, u32 v);
-u64 func_021001a0(FD *p);
-u64 func_0210018c(FD *p);
-u32 func_02100188(FD *p);
-u32 func_0210019c(FD *p);
-void func_02100154(FD *p, u32 v);
-void func_02100158(FD *p, u32 a, u32 b);
-void func_02100160(FD *p, u32 v);
-void func_02100164(FD *p, u64 v);
-BOOL func_02100018(u64 v, u32 key);
-u64 func_02100060(u32 lo, u32 key);
-BOOL func_020ff554(void);
-u16 func_020fe8d4(u32 tag, u32 data, u32 err);
-BOOL func_020fe900(void);
-BOOL func_020fe948(void *ref, u32 addr, u32 size, void *tmp);
-void func_020fe984(u32 addr, u16 size, void *src);
-BOOL func_020fe9d8(u32 addr, u32 size, void *dst);
-u32 func_020fea34(u32 cmd, u32 a1, u16 a2, u32 a3);
-BOOL func_020fedcc(u8 *p);
-BOOL func_020fedec(u8 *a, u8 *b);
-BOOL func_020fee44(u8 *p);
-void func_020fee5c(u32 n, u8 *out);
-u8 func_020fee84(u8 *p);
-void func_020feeb4(u8 *p);
-BOOL func_020feec4(u8 *buf);
-BOOL func_020fef40(u8 *buf, u32 *flags, u8 *tmp);
-BOOL func_020fefb0(u8 *dst);
-BOOL func_020fefdc(u16 *p);
-BOOL func_020ff154(u8 *dst);
-void func_020ff180(u8 *buf, u32 idx);
-BOOL func_020ff1ac(u8 *buf);
-BOOL func_020ff210(u8 *page);
-s32 func_020ff2e4(u8 *p);
-u8 *func_020fe850(S *p);
-s32 func_020ff2e4(u8 *p);
-BOOL func_020ff734(u32 v);
-BOOL func_020ff6f4(S *p, u32 v);
-extern void func_0211d45c(void);
-extern s32 func_0211d3a0(Date *d);
-extern s32 func_0211d2e0(Time *t);
-extern s32 func_02114e38(void);
-extern void func_02115640(u8 *mac);
-void func_020ff0bc(S *out);
-BOOL func_020ff014(S *p, u8 *buf);
-u64 func_020ff8c8(u32 a, u32 b, u32 c, u32 d);
-s64 func_020ff9f0(Date *d, Time *t);
-s32 func_020ffa38(Time *t);
-s32 func_020ffa4c(Date *d);
-u32 func_020ffffc(u64 v, u32 key);
-void func_020fffac(u64 v, s32 nbits, char *out);
-void func_020fff48(FD *fd, u32 gamecode, char *out);
-void func_020ffe84(FD *p);
-void func_020ff588(Rec *out);
-BOOL func_020ff770(S *p);
-BOOL func_020ffdfc(UserData *p);
-BOOL func_020ffe08(FD *p);
-void func_020ffeec(UserData *p, u32 key);
-BOOL func_020ffde0(FD *p);
+u32 DWCi_Acc_GetFlags(FD *p);
+u32 DWCi_Acc_GetFlag_DataType(FD *p);
+BOOL DWCi_Acc_SetMaskBits(u32 *p, u32 v, u32 shift, u32 mask);
+void DWCi_Acc_SetFlags(FD *p, u32 v);
+void DWCi_Acc_SetFlag_DataType(FD *p, u32 v);
+u64 DWCi_Acc_GetUserId(FD *p);
+u64 DWCi_Acc_GetFriendKey(FD *p);
+u32 DWCi_Acc_GetGsProfileId(FD *p);
+u32 DWCi_Acc_GetPlayerId(FD *p);
+void DWCi_Acc_SetGsProfileId(FD *p, u32 v);
+void DWCi_Acc_SetFriendKey(FD *p, u32 a, u32 b);
+void DWCi_Acc_SetPlayerId(FD *p, u32 v);
+void DWCi_Acc_SetUserId(FD *p, u64 v);
+BOOL DWC_Acc_CheckFriendKey(u64 v, u32 key);
+u64 DWC_Acc_CreateFriendKey(u32 lo, u32 key);
+BOOL DWC_Auth_CheckWiFiIDNeedCreate(void);
+u16 Callback_NVRAM(u32 tag, u32 data, u32 err);
+BOOL writeDisable(void);
+BOOL verify(void *ref, u32 addr, u32 size, void *tmp);
+void writeNvram(u32 addr, u16 size, void *src);
+BOOL readNvram(u32 addr, u32 size, void *dst);
+u32 NVRAMm_ExecuteCommand(u32 cmd, u32 a1, u16 a2, u32 a3);
+BOOL DWC_BACKUPlCheckAddress(u8 *p);
+BOOL DWC_BACKUPlCheckIp(u8 *a, u8 *b);
+BOOL DWC_BACKUPlCheckSsid(u8 *p);
+void DWCi_BACKUPlConvMaskAddr(u32 n, u8 *out);
+u8 DWCi_BACKUPlConvMaskCidr(u8 *p);
+void DWCi_BACKUPlSetWiFi(u8 *p);
+BOOL DWCi_BACKUPlWriteAll(u8 *buf);
+BOOL DWCi_BACKUPlWritePage(u8 *buf, u32 *flags, u8 *tmp);
+BOOL DWCi_BACKUPlRead(u8 *dst);
+BOOL DWCi_BACKUPlInit(u16 *p);
+BOOL DWCi_BM_GetApInfo(u8 *dst);
+void initPage(u8 *buf, u32 idx);
+BOOL init__DwcBm(u8 *buf);
+BOOL checkAp(u8 *page);
+s32 DWC_BM_Init(u8 *p);
+u8 *DWCi_BACKUPlConvWifiInfo(S *p);
+s32 DWC_BM_Init(u8 *p);
+BOOL DWCi_AUTH_MakeWiFiID(u32 v);
+BOOL DWCi_AUTH_UpDateWiFiID(S *p, u32 v);
+extern void RTC_Init(void);
+extern s32 RTC_GetDate(Date *d);
+extern s32 RTC_GetTime(Time *t);
+extern s32 OS_IsTickAvailable(void);
+extern void OS_GetMacAddress(u8 *mac);
+void DWCi_BM_GetWiFiInfo(S *out);
+BOOL DWCi_BM_SetWiFiInfo(S *p, u8 *buf);
+u64 DWCi_Util_WiFiId_scrambleUid(u32 a, u32 b, u32 c, u32 d);
+s64 DWCi_Util_ConvertDateTimeToSecond(Date *d, Time *t);
+s32 DWCi_Util_ConvertTimeToSecond(Time *t);
+s32 DWCi_Util_ConvertDateToDay(Date *d);
+u32 DWC_Acc_FriendKeyToGsProfileId(u64 v, u32 key);
+void DWCi_Acc_U64ToString32(u64 v, s32 nbits, char *out);
+void DWCi_Acc_LoginIdToUserName(FD *fd, u32 gamecode, char *out);
+void DWCi_Acc_CreateTempLoginId(FD *p);
+void DWC_Auth_GetId(Rec *out);
+BOOL DWCi_AUTH_GetNewWiFiInfo(S *p);
+BOOL DWCi_Acc_IsAuthentic(UserData *p);
+BOOL DWCi_Acc_IsValidLoginId(FD *p);
+void DWCi_Acc_CreateUserData(UserData *p, u32 key);
+BOOL DWC_IsValidFriendData(FD *p);
 
 static inline u32 clr(u32 v, u32 m) { return v & ~m; }
 static inline u64 fld(u64 v, u64 mask, s32 shift) { return (v & mask) << shift; }
@@ -198,29 +198,29 @@ static inline u64 fld(u64 v, u64 mask, s32 shift) { return (v & mask) << shift; 
 static inline u32 orr(u32 a, u32 b) { return a | b; }
 
 // NVRAM: read into a buffer (cmd 1) with cache invalidate and retry loop
-BOOL func_020fe9d8(u32 addr, u32 size, void *dst) {
-    func_02114594(dst, size);
-    while (!func_02117e8c(4, 1)) {
+BOOL readNvram(u32 addr, u32 size, void *dst) {
+    DC_InvalidateRange(dst, size);
+    while (!PXI_IsCallbackReady(4, 1)) {
     }
-    func_02117eb4(4, func_020fe8d4);
+    PXI_SetFifoRecvCallback(4, Callback_NVRAM);
     for (;;) {
-        if (func_020fea34(1, addr, size, (u32)dst) == 1) {
+        if (NVRAMm_ExecuteCommand(1, addr, size, (u32)dst) == 1) {
             break;
         }
         WaitByLoop(0x40000);
     }
-    func_02114594(dst, size);
+    DC_InvalidateRange(dst, size);
     return 1;
 }
 
 // NVRAM: write a buffer (cmd 2) with cache store and retry loop
-void func_020fe984(u32 addr, u16 size, void *src) {
-    while (!func_02117e8c(4, 1)) {
+void writeNvram(u32 addr, u16 size, void *src) {
+    while (!PXI_IsCallbackReady(4, 1)) {
     }
-    func_02117eb4(4, func_020fe8d4);
-    func_021145b0(src, size);
+    PXI_SetFifoRecvCallback(4, Callback_NVRAM);
+    DC_StoreRange(src, size);
     for (;;) {
-        if (func_020fea34(2, addr, size, (u32)src) == 1) {
+        if (NVRAMm_ExecuteCommand(2, addr, size, (u32)src) == 1) {
             break;
         }
         WaitByLoop(0x40000);
@@ -228,23 +228,23 @@ void func_020fe984(u32 addr, u16 size, void *src) {
 }
 
 // NVRAM: read back and compare against a reference buffer (write verification)
-BOOL func_020fe948(void *ref, u32 addr, u32 size, void *tmp) {
-    if (!func_020fe9d8(addr, size, tmp)) {
+BOOL verify(void *ref, u32 addr, u32 size, void *tmp) {
+    if (!readNvram(addr, size, tmp)) {
         return 0;
     }
-    if (func_02128930(ref, tmp, size) == 0) {
+    if (memcmp(ref, tmp, size) == 0) {
         return 1;
     }
     return 0;
 }
 
 // NVRAM: init PXI callback and poll the status command (cmd 7) until the ARM7 side is ready
-BOOL func_020fe900(void) {
-    while (!func_02117e8c(4, 1)) {
+BOOL writeDisable(void) {
+    while (!PXI_IsCallbackReady(4, 1)) {
     }
-    func_02117eb4(4, func_020fe8d4);
+    PXI_SetFifoRecvCallback(4, Callback_NVRAM);
     for (;;) {
-        if (func_020fea34(7, 0, 0, 0) == 1) {
+        if (NVRAMm_ExecuteCommand(7, 0, 0, 0) == 1) {
             break;
         }
         WaitByLoop(0x40000);
@@ -253,7 +253,7 @@ BOOL func_020fe900(void) {
 }
 
 // PXI tag 4 (NVRAM) receive callback: stores the result byte and the done flag
-u16 func_020fe8d4(u32 tag, u32 data, u32 err) {
+u16 Callback_NVRAM(u32 tag, u32 data, u32 err) {
     data_021f5c50 = (u16)(data & 0xff);
     data_021f5c54 = 1;
     if (err) {
@@ -262,20 +262,20 @@ u16 func_020fe8d4(u32 tag, u32 data, u32 err) {
     return data_021f5c50;
 }
 
-// pack a WFC-ID record (S) into the 14-byte block data_021f5c5c; inverse of func_020ff0bc
-u8 *func_020fe850(S *p) {
+// pack a WFC-ID record (S) into the 14-byte block data_021f5c5c; inverse of DWCi_BM_GetWiFiInfo
+u8 *DWCi_BACKUPlConvWifiInfo(S *p) {
     u64 t = *(volatile u64 *)&p->b;
-    func_02116048(p, data_021f5c5c, 5);
+    MI_CpuCopy8(p, data_021f5c5c, 5);
     data_021f5c5c[5] = (((u32)(p->a >> 32) >> 8) & 7) | ((t & 0x1f) << 3);
     t >>= 5;
-    func_02116048(&t, data_021f5c62, 4);
+    MI_CpuCopy8(&t, data_021f5c62, 4);
     data_021f5c5c[10] = ((u32)(t >> 32) & 0x3f) | ((p->f16 & 3) << 6);
     data_021f5c5c[11] = p->f16 >> 2;
-    func_02116048(&p->f18, data_021f5c68, 2);
+    MI_CpuCopy8(&p->f18, data_021f5c68, 2);
     return data_021f5c5c;
 }
 
 // WFC-ID block accessor: returns the 14-byte work block data_021f5c5c (NVRAM ID copy)
-u8 *func_020fe848(void) {
+u8 *DWCi_BACKUPlGetWifi(void) {
     return data_021f5c5c;
 }

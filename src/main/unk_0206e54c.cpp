@@ -1,15 +1,10 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "item/Letter.h"
+#include "sys/ProcProfile.h"
 
-// 0xf4-byte object data_021cb5a8 (constructor/destructor in another unit)
-class Unk_020dd458 {
-public:
-    Unk_020dd458();
-    virtual ~Unk_020dd458();
-    u8 d[0xf0];
-};
 
-// 8-byte list head data_021cb4e8: inline constructor, no destructor
+// 8-byte list head sOpenMenuList: inline constructor, no destructor
 class Unk_021cb4e8 {
 public:
     Unk_021cb4e8() {
@@ -20,7 +15,7 @@ public:
     u32 b;
 };
 
-// 8-byte object data_021cb4f0: destructor is func_020044dc (alias in aliases.txt)
+// 8-byte object sMenuDateTime: destructor is func_020044dc (alias in aliases.txt)
 class Unk_021cb4f0 {
 public:
     Unk_021cb4f0() {
@@ -32,643 +27,637 @@ public:
     u32 b;
 };
 
-struct Unk_020de060 {
-    void *f;
-    u16 a;
-    u16 b;
-};
-
-class Unk_020de234 : public Unk_020d8c7c {
+class MenuManager : public GameProc {
 public:
-    Unk_020de234() {}
-    BOOL vfunc_00();
-    BOOL vfunc_0c();
-    BOOL vfunc_18();
-    BOOL vfunc_24();
+    MenuManager() {}
+    BOOL onCreate();
+    BOOL onDelete();
+    BOOL onExecute();
+    BOOL onDraw();
 };
 
 extern "C" {
 // data of this unit
-extern u8 data_020de014[4];
-extern u32 *data_020de2d8[];
-extern u16 data_020de27c[];
-extern u8 data_021cb49c;
-extern u8 data_021cb4a0;
-extern u8 data_021cb4a4;
-extern u8 data_021cb4a8;
-extern u8 data_021cb4ac;
-extern u8 data_021cb4b0;
-extern u8 data_021cb4b4;
-extern u16 data_021cb4b8;
-extern u16 data_021cb4bc;
-extern u16 data_021cb4c0;
-extern u16 data_021cb4c4;
-extern u32 data_021cb4c8;
-extern u32 data_021cb4cc;
-extern u8 data_021cb4d0[4];
-extern u32 data_021cb4d4;
-extern s32 data_021cb4d8;
-extern u32 data_021cb4dc;
-extern u32 data_021cb4e0;
-extern u32 data_021cb4e4;
-extern u32 data_021cb504[3];
-extern u32 data_021cb51c[3];
-extern u8 data_021cb528[16];
-extern u8 data_021cb538[16];
-extern u16 data_021cb548[16];
-extern u16 data_021cb568[16];
-extern u8 data_021cb588[32];
+extern u8 sMenuRequest[4];
+extern u32 *kMenuOverlayLists[];
+extern u16 kMenuProfileIds[];
+extern u8 sKeyboardPage;
+extern u8 sMenuIndex;
+extern u8 sMenuSavedSlot;
+extern u8 sPocketSelectLabel;
+extern u8 sMenuResult;
+extern u8 sMenuMode;
+extern u8 sForceCloseDelay;
+extern u16 sPostOfficeResult;
+extern u16 sPocketSelectMask;
+extern u16 sMenuItem;
+extern u16 sMenuFlags;
+extern u32 gMenuManager;
+extern u32 sMenuAmount;
+extern u8 sKeyboardPageModes[4];
+extern u32 sMenuArg;
+extern s32 sMenuTransitionProgress;
+extern u32 sMenuPtrArg1;
+extern u32 sMenuPtrArg0;
+extern u32 sMenuHandBells;
+extern u32 sMenuReleaseMask[3];
+extern u32 sMenuLoadedMask[3];
+extern u8 sPocketBackupFlags[16];
+extern u8 sMenuText[16];
+extern u16 sPocketBackupItems[16];
+extern u16 sMenuChosenItems[16];
+extern u8 sChatDraft[32];
 
 // data of other units
-extern u8 data_021d726c;
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern u8 data_021ef5ec;
-extern u8 data_021ef5f0;
-extern u16 data_021f47d8[];
+extern u8 gSoftResetRequested;
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern u8 gTouchCurY;
+extern u8 gTouchCurX;
+extern u16 gPad[];
 
 // functions of other units
-void func_0205125c(void *, s32);
-void func_02051268(u32, void *, s32);
-void func_02116048(void *, const void *, u32);
-void *func_020991e4(void);
-void func_02065e70(void *, void *);
-void func_02065b28(void *);
-u32 func_0209750c(void);
-void *func_02097a3c(u32);
-void *func_02096e54(void *);
-u8 *_ZN12Unk_02096e2813func_02096e50Ev(void *);
-void *_ZN12Unk_0209865c13func_02098750Ev(u32);
-u16 *_ZN12Unk_02097d1c13func_02097f6cEi(void *, s32);
-void *_ZN12Unk_02097d1c13func_02097eb0Ei(void *, s32);
-void func_0209909c(u16 *, u32, u32);
-void func_0205137c();
-s32 func_0208f024();
-s32 func_0208f038();
-s32 func_0208f044();
-void func_0204eee4(u32);
-void func_0204ef2c(u32);
-s32 func_0202e880(u32, u32, u32, u32);
-void func_020e79a0(void *, void *);
-void func_020e7968(void *, u32);
-void func_0206df78();
-BOOL func_0203d4d4();
-s32 func_020b50e8();
-BOOL func_0203e2f4();
-s32 func_0201188c();
-void func_0203da24(u32);
-void func_0206dfe4();
-void func_0205c1a4();
-void func_02065328(void *);
-void func_0205c1c0(u32, u32);
-void func_0206e020();
-void func_02045400(u32);
-void func_0206f53c(u32);
+void Mem_Clear(void *, s32);
+void Mem_Copy(u32, void *, s32);
+void MI_CpuCopy8(void *, const void *, u32);
+void *Inventory_GetEmptyLetter(void);
+void Letter_Copy(void *, void *);
+void Letter_MarkSent(void *);
+u32 PlayerData_GetCurrent(void);
+void *PlayerData_GetFutureLetter(u32);
+void *FutureLetter_GetLetter(void *);
+u8 *_ZN12FutureLetter15getDeliveryDateEv(void *);
+void *_ZN10PlayerData12getInventoryEv(u32);
+u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
+void *_ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
+void Pocket_SetItem(u16 *, u32, u32);
+void Text_BuildCharWidthTable();
+s32 InputMode_IsButtons();
+s32 InputMode_SetTouch();
+s32 InputMode_SetButtons();
+void OverlayMgr_Release(u32);
+void OverlayMgr_Acquire(u32);
+s32 GameProc_CreateChild(u32, u32, u32, u32);
+void List_Remove(void *, void *);
+void List_PushBack(void *, u32);
+void MenuScreen_Update();
+BOOL Stub_ReturnFalse();
+s32 Scene_GetCurrent();
+BOOL TalkRequest_IsActive();
+s32 Hud_GetSceneHudKind();
+void TalkRequest_AddMenu(u32);
+void MenuScreen_Reset();
+void MenuHeap_Destroy();
+void PrioList_Init(void *);
+void MenuHeap_Create(u32, u32);
+void MenuScreen_ClearState();
+void PendingUnit_ClearActiveOfAid(u32);
+void HudCountdown_StartWithSe(u32);
 
 // functions of this unit
-void func_0206e594(void);
-void func_0206ebc0(void);
-void func_0206ec04(void);
-BOOL func_0206ef74(u32);
-void func_0206ef8c(u32);
-void func_0206ef9c(u32);
-s32 func_0206ef28();
-s32 func_0206ef3c();
-BOOL func_0206edb0();
-BOOL func_0206f140();
-BOOL func_0206f0f8(u32);
-BOOL func_0206eca4(u32);
-void func_0206ecc8(u32, u32);
-void func_0206ed5c(u32);
-BOOL func_0206f068(s32);
-void func_0206efac(s32);
-void func_0206efd0(s32);
-void func_0206f020(s32);
-void func_0206f044(s32);
-BOOL func_0206eff4(s32);
-BOOL func_0206f178(u32);
-BOOL func_0206f1b4();
-BOOL func_0206f1fc();
-void func_0206f254();
-void func_0206e660(void);
-void func_0206f164();
-Unk_020de234 *func_0206f4ac();
+void MenuCtrl_ClearChatDraft(void);
+void MenuCtrl_RestorePockets(void);
+void MenuCtrl_BackupPockets(void);
+BOOL MenuCtrl_HasFlags(u32);
+void MenuCtrl_ClearFlags(u32);
+void MenuCtrl_SetFlags(u32);
+s32 MenuCtrl_SetButtons();
+s32 MenuCtrl_SetTouch();
+BOOL MenuCtrl_IsTransitionActive();
+BOOL MenuCtrl_IsIdle();
+BOOL MenuCtrl_RequestOpen(u32);
+BOOL MenuCtrl_OpenLauncher(u32);
+void MenuCtrl_SetText(u32, u32);
+void MenuCtrl_SetArg(u32);
+BOOL MenuCtrl_IsLoaded(s32);
+void MenuCtrl_ClearReleasePending(s32);
+void MenuCtrl_SetReleasePending(s32);
+void MenuCtrl_ClearLoaded(s32);
+void MenuCtrl_SetLoaded(s32);
+BOOL MenuCtrl_IsReleasePending(s32);
+BOOL MenuCtrl_ReleaseOverlays(u32);
+BOOL MenuCtrl_LoadRequestedOverlays();
+BOOL MenuCtrl_CreateRequestedMenu();
+void MenuCtrl_ReleaseClosedMenus();
+void MenuCtrl_ResetForceClose(void);
+void MenuCtrl_ResetFlags();
+MenuManager *MenuManager_Create();
 }
 
 // prototypes of the unit's functions
 extern "C" {
-void func_0206f4e4(u8 *o);
-void func_0206f4d8(u8 *o);
-Unk_020de234 *func_0206f4ac();
-void func_0206f2b0(u32 v);
-void func_0206f290(u8 *o);
-void func_0206f254();
-BOOL func_0206f1fc();
-BOOL func_0206f1b4();
-BOOL func_0206f178(u32 i);
-void func_0206f164();
-BOOL func_0206f140();
-BOOL func_0206f11c();
-BOOL func_0206f0f8(u32 v);
-BOOL func_0206f0b8(u32 v);
-BOOL func_0206f094(u32 v);
-BOOL func_0206f068(s32 i);
-void func_0206f044(s32 i);
-void func_0206f020(s32 i);
-BOOL func_0206eff4(s32 i);
-void func_0206efd0(s32 i);
-void func_0206efac(s32 i);
-void func_0206ef9c(u32 m);
-void func_0206ef8c(u32 m);
-BOOL func_0206ef74(u32 m);
-void func_0206ef68();
-void func_0206ef5c();
-BOOL func_0206ef50();
-s32 func_0206ef3c();
-s32 func_0206ef28();
-BOOL func_0206ef0c();
-BOOL func_0206ef00();
-void func_0206eee4();
-s32 func_0206eed4(s32 v);
-void func_0206ee80(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void func_0206ee0c(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 from, u32 to);
-void func_0206ee00(s32 v);
-s32 func_0206ede0();
-s32 func_0206edbc();
-BOOL func_0206edb0();
-void func_0206eda4();
-void func_0206ed98();
-BOOL func_0206ed8c();
-void func_0206ed80();
-void func_0206ed74();
-u32 func_0206ed68();
-void func_0206ed5c(u32 v);
-u32 func_0206ed50();
-void func_0206ed44(u32 v);
-u32 func_0206ed38();
-void func_0206ed2c(u32 v);
-BOOL func_0206ed18();
-BOOL func_0206ed04();
-void func_0206ecf8(u32 v);
-void *func_0206ecf0();
-void func_0206ecc8(u32 a, u32 b);
-BOOL func_0206eca4(u32 a);
-BOOL func_0206ec84(u32 a, u32 b);
-BOOL func_0206ec6c();
-void func_0206ec60();
-void func_0206ec54(u32 v);
-u32 func_0206ec48();
-void func_0206ec04();
-void func_0206ebc0();
-void func_0206eba4(u16 *src);
-u16 *func_0206eb9c(void);
-void func_0206eb38(void *p);
-void func_0206eb04(u32 key, u16 val);
-BOOL func_0206ead4(u32 a, u32 b);
-u16 func_0206ea84(BOOL (*cb)(u16 *, void *));
-u16 func_0206ea78(void);
-u8 func_0206ea6c(void);
-BOOL func_0206ea48(void);
-void func_0206ea3c(u32 v);
-void func_0206ea2c(void *a);
-void func_0206e9d8(void);
-void func_0206e9bc(void);
-u32 func_0206e98c(void);
-BOOL func_0206e974(void);
-u8 func_0206e960(void);
-BOOL func_0206e944(void);
-BOOL func_0206e928(void);
-BOOL func_0206e90c(void);
-u32 func_0206e900(void);
-void func_0206e8f4(u32 v);
-u32 func_0206e8e8(void);
-void func_0206e8dc(u32 v);
-void func_0206e8cc(void *a);
-void func_0206e8b8(void *a);
-BOOL func_0206e888(u32 a, u32 b);
-void func_0206e874(void);
-u32 func_0206e868(void);
-u32 func_0206e85c(void);
-BOOL func_0206e850(void);
-BOOL func_0206e844(void);
-BOOL func_0206e838(void);
-void func_0206e82c(void);
-void func_0206e820(void);
-void func_0206e814(void);
-void func_0206e7f8(void);
-BOOL func_0206e7d4(u32 v);
-BOOL func_0206e7a4(u32 a, u32 b);
-BOOL func_0206e780(u32 v);
-BOOL func_0206e75c(u32 v);
-u16 func_0206e750(void);
-void func_0206e744(u32 v);
-void func_0206e738(u32 v);
-u16 func_0206e72c(void);
-void func_0206e720(u32 v);
-u16 func_0206e714(void);
-BOOL func_0206e6ec(u32 a, u32 b, u32 c);
-void func_0206e6c4(void);
-u8 func_0206e6b8(void);
-void func_0206e6ac(u32 v);
-u8 func_0206e694(u32 i);
-void func_0206e688(u32 i, u32 v);
-void func_0206e67c(void);
-void func_0206e660(void);
-void func_0206e63c(void);
-s32 func_0206e61c(void);
-void func_0206e60c(void);
-void func_0206e5fc(void);
-BOOL func_0206e5ec(void);
-BOOL func_0206e5dc(void);
-void func_0206e5cc(void);
-void func_0206e5bc(void);
-void *func_0206e5b4(void);
-void func_0206e5a4(u32 a);
-void func_0206e594(void);
+void CommSub_StartCountdown(u8 *o);
+void CommSub_RecvClearPendingUnit(u8 *o);
+MenuManager *MenuManager_Create();
+void MenuCtrl_AddOpenMenu(u32 v);
+void MenuCtrl_RemoveOpenMenu(u8 *o);
+void MenuCtrl_ReleaseClosedMenus();
+BOOL MenuCtrl_CreateRequestedMenu();
+BOOL MenuCtrl_LoadRequestedOverlays();
+BOOL MenuCtrl_ReleaseOverlays(u32 i);
+void MenuCtrl_ResetFlags();
+BOOL MenuCtrl_IsIdle();
+BOOL MenuCtrl_IsMenuOpen();
+BOOL MenuCtrl_RequestOpen(u32 v);
+BOOL MenuCtrl_RequestOpenNested(u32 v);
+BOOL MenuCtrl_RequestOpenMenu12(u32 v);
+BOOL MenuCtrl_IsLoaded(s32 i);
+void MenuCtrl_SetLoaded(s32 i);
+void MenuCtrl_ClearLoaded(s32 i);
+BOOL MenuCtrl_IsReleasePending(s32 i);
+void MenuCtrl_SetReleasePending(s32 i);
+void MenuCtrl_ClearReleasePending(s32 i);
+void MenuCtrl_SetFlags(u32 m);
+void MenuCtrl_ClearFlags(u32 m);
+BOOL MenuCtrl_HasFlags(u32 m);
+void MenuCtrl_ClearMenuOnTop();
+void MenuCtrl_SetMenuOnTop();
+BOOL MenuCtrl_IsMenuOnTop();
+s32 MenuCtrl_SetTouch();
+s32 MenuCtrl_SetButtons();
+BOOL MenuCtrl_IsTouch();
+BOOL MenuCtrl_IsButtons();
+void MenuCtrl_SyncFromInputMode();
+s32 Menu_GetIconCharIndex(s32 v);
+void BgScreen_SetRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
+void BgScreen_ReplaceRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 from, u32 to);
+void MenuCtrl_SetTransitionProgress(s32 v);
+s32 MenuCtrl_GetTransitionProgress();
+s32 MenuCtrl_GetTransitionProgressOrFull();
+BOOL MenuCtrl_IsTransitionActive();
+void MenuCtrl_SetTransitionActive();
+void MenuCtrl_ClearTransitionActive();
+BOOL MenuCtrl_IsScreenChanging();
+void MenuCtrl_SetScreenChanging();
+void MenuCtrl_ClearScreenChanging();
+u32 MenuCtrl_GetArg();
+void MenuCtrl_SetArg(u32 v);
+u32 MenuCtrl_GetMode();
+void MenuCtrl_SetMode(u32 v);
+u32 MenuCtrl_GetIndex();
+void MenuCtrl_SetIndex(u32 v);
+BOOL MenuCtrl_IsResultOk();
+BOOL MenuCtrl_IsResultDuplicateName();
+void MenuCtrl_SetResult(u32 v);
+void *MenuCtrl_GetText();
+void MenuCtrl_SetText(u32 a, u32 b);
+BOOL MenuCtrl_OpenLauncher(u32 a);
+BOOL MenuCtrl_OpenLauncherWithIndex(u32 a, u32 b);
+BOOL MenuCtrl_IsFinished();
+void MenuCtrl_ClearSavedSlot();
+void MenuCtrl_SetSavedSlot(u32 v);
+u32 MenuCtrl_GetSavedSlot();
+void MenuCtrl_BackupPockets();
+void MenuCtrl_RestorePockets();
+void MenuCtrl_SetChosenItems(u16 *src);
+u16 *MenuCtrl_GetChosenItems(void);
+void MenuCtrl_ReturnChosenItems(void *p);
+void MenuCtrl_ReplaceBackupItem(u32 key, u16 val);
+BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b);
+u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, void *));
+u16 MenuCtrl_GetPocketSelectMask(void);
+u8 MenuCtrl_GetPocketSelectLabel(void);
+BOOL MenuCtrl_OpenPostOffice(void);
+void MenuCtrl_SetPostOfficeResult(u32 v);
+void MenuCtrl_SetFutureLetter(void *a);
+void MenuCtrl_StoreFutureLetter(void);
+void MenuCtrl_ReturnFutureLetter(void);
+u32 MenuCtrl_GetPostOfficeOutcome(void);
+BOOL MenuCtrl_PostOfficeHadBadAddress(void);
+u8 MenuCtrl_GetPostOfficeFullMailboxes(void);
+BOOL MenuCtrl_PostOfficeWasRejected(void);
+BOOL MenuCtrl_PostOfficeHadNoLetter(void);
+BOOL MenuCtrl_PostOfficeLettersSent(void);
+u32 MenuCtrl_GetHandBells(void);
+void MenuCtrl_SetHandBells(u32 v);
+u32 MenuCtrl_GetAmount(void);
+void MenuCtrl_SetAmount(u32 v);
+void MenuCtrl_SetDateTime(void *a);
+void MenuCtrl_GetDateTime(void *a);
+BOOL MenuCtrl_OpenNearbyTowns(u32 a, u32 b);
+void MenuCtrl_ClearPtrArgs(void);
+u32 MenuCtrl_GetPtrArg0(void);
+u32 MenuCtrl_GetPtrArg1(void);
+BOOL MenuCtrl_IsClockMovedBack(void);
+BOOL MenuCtrl_IsClockMovedForward(void);
+BOOL MenuCtrl_IsClockEdited(void);
+void MenuCtrl_SetClockMovedBack(void);
+void MenuCtrl_SetClockMovedForward(void);
+void MenuCtrl_SetClockEdited(void);
+void MenuCtrl_ClearClockChangeFlags(void);
+BOOL MenuCtrl_OpenPocketsFullInsect(u32 v);
+BOOL MenuCtrl_OpenPocketsFullFish(u32 a, u32 b);
+BOOL MenuCtrl_OpenPocketsFullPickUp(u32 v);
+BOOL MenuCtrl_OpenPocketsFullDug(u32 v);
+u16 MenuCtrl_GetPocketsFullItem(void);
+void MenuCtrl_SetPocketsFullItem(u32 v);
+void MenuCtrl_SetCatalogItem(u32 v);
+u16 MenuCtrl_GetCatalogItem(void);
+void MenuCtrl_SetSongItem(u32 v);
+u16 MenuCtrl_GetSongItem(void);
+BOOL MenuCtrl_OpenLauncherWithText(u32 a, u32 b, u32 c);
+void MenuCtrl_InitKeyboardState(void);
+u8 MenuCtrl_GetKeyboardPage(void);
+void MenuCtrl_SetKeyboardPage(u32 v);
+u8 MenuCtrl_GetKeyboardPageMode(u32 i);
+void MenuCtrl_SetKeyboardPageMode(u32 i, u32 v);
+void MenuCtrl_RequestForceClose(void);
+void MenuCtrl_ResetForceClose(void);
+void MenuCtrl_TickForceClose(void);
+s32 MenuCtrl_IsForceCloseDue(void);
+void MenuCtrl_SetSyncMsgMenu(void);
+void MenuCtrl_ClearSyncMsgMenu(void);
+BOOL MenuCtrl_IsSyncMsgMenu(void);
+BOOL MenuCtrl_IsFriendPageFromIndex(void);
+void MenuCtrl_SetFriendPageFromIndex(void);
+void MenuCtrl_ClearFriendPageFromIndex(void);
+void *MenuCtrl_GetChatDraft(void);
+void MenuCtrl_SetChatDraft(u32 a);
+void MenuCtrl_ClearChatDraft(void);
 }
 
 // ---- data ----
-extern u32 data_020de018[2];
-extern u32 data_020de020[2];
-extern u32 data_020de028[2];
-extern u32 data_020de030[2];
-extern u32 data_020de038[2];
-extern u32 data_020de040[2];
-extern u32 data_020de048[2];
-extern u32 data_020de050[2];
-extern u32 data_020de058[2];
-extern Unk_020de060 data_020de060;
-extern u32 data_020de068[2];
-extern u32 data_020de070[2];
-extern u32 data_020de078[2];
-extern u32 data_020de080[3];
-extern u32 data_020de08c[3];
-extern u32 data_020de098[3];
-extern u32 data_020de0a4[3];
-extern u32 data_020de0b0[3];
-extern u32 data_020de0bc[3];
-extern u32 data_020de0c8[3];
-extern u32 data_020de0d4[3];
-extern u32 data_020de0e0[3];
-extern u32 data_020de0ec[3];
-extern u32 data_020de0f8[3];
-extern u32 data_020de104[3];
-extern u32 data_020de110[3];
-extern u32 data_020de11c[3];
-extern u32 data_020de128[3];
-extern u32 data_020de134[3];
-extern u32 data_020de140[3];
-extern u32 data_020de14c[3];
-extern u32 data_020de158[3];
-extern u32 data_020de164[3];
-extern u32 data_020de170[3];
-extern u32 data_020de17c[3];
-extern u32 data_020de188[3];
-extern u32 data_020de194[3];
-extern u32 data_020de1a0[3];
-extern u32 data_020de1ac[3];
-extern u32 data_020de1b8[3];
-extern u32 data_020de1c4[3];
-extern u32 data_020de1d0[3];
-extern u32 data_020de1dc[4];
-extern u32 data_020de1ec[4];
-extern u32 data_020de1fc[4];
-extern u32 data_020de20c[4];
-extern u32 data_020de21c[4];
+extern u32 kMenuOverlayList23[2];
+extern u32 kMenuOverlayList25[2];
+extern u32 kMenuOverlayList26[2];
+extern u32 kMenuOverlayList0D[2];
+extern u32 kMenuOverlayList27[2];
+extern u32 kMenuOverlayList09[2];
+extern u32 kMenuOverlayList2D[2];
+extern u32 kMenuOverlayList0C[2];
+extern u32 kMenuOverlayList0B[2];
+extern ProcProfile sMenuManagerProfile;
+extern u32 kMenuOverlayList00[2];
+extern u32 kMenuOverlayList03[2];
+extern u32 kMenuOverlayList24[2];
+extern u32 kMenuOverlayList1F[3];
+extern u32 kMenuOverlayList07[3];
+extern u32 kMenuOverlayList20[3];
+extern u32 kMenuOverlayList2B[3];
+extern u32 kMenuOverlayList08[3];
+extern u32 kMenuOverlayList0A[3];
+extern u32 kMenuOverlayList21[3];
+extern u32 kMenuOverlayList22[3];
+extern u32 kMenuOverlayList0E[3];
+extern u32 kMenuOverlayList10[3];
+extern u32 kMenuOverlayList11[3];
+extern u32 kMenuOverlayList12[3];
+extern u32 kMenuOverlayList13[3];
+extern u32 kMenuOverlayList14[3];
+extern u32 kMenuOverlayList15[3];
+extern u32 kMenuOverlayList16[3];
+extern u32 kMenuOverlayList17[3];
+extern u32 kMenuOverlayList18[3];
+extern u32 kMenuOverlayList28[3];
+extern u32 kMenuOverlayList29[3];
+extern u32 kMenuOverlayList1B[3];
+extern u32 kMenuOverlayList2C[3];
+extern u32 kMenuOverlayList06[3];
+extern u32 kMenuOverlayList19[3];
+extern u32 kMenuOverlayList1A[3];
+extern u32 kMenuOverlayList1C[3];
+extern u32 kMenuOverlayList1D[3];
+extern u32 kMenuOverlayList1E[3];
+extern u32 kMenuOverlayList2A[3];
+extern u32 kMenuOverlayList04[4];
+extern u32 kMenuOverlayList05[4];
+extern u32 kMenuOverlayList0F[4];
+extern u32 kMenuOverlayList01[4];
+extern u32 kMenuOverlayList02[4];
 
-u8 data_021cb4a0;
-u32 data_020de14c[3] = {0x6b, 0x5e, 0xffffffff};
-u32 data_020de158[3] = {0x6c, 0x5e, 0xffffffff};
-Unk_021cb4e8 data_021cb4e8;
-u32 data_020de070[2] = {0x79, 0xffffffff};
-u8 data_021cb4b0;
-Unk_020dd458 data_021cb5a8;
-u16 data_021cb548[16];
-u32 data_020de188[3] = {0x6f, 0x5f, 0xffffffff};
-u32 data_021cb4d4;
-u32 data_020de110[3] = {0x66, 0x5e, 0xffffffff};
-u32 data_020de018[2] = {0x8e, 0xffffffff};
-u32 data_020de1a0[3] = {0x81, 0x7f, 0xffffffff};
-s32 data_021cb4d8;
-u32 data_021cb4dc;
-u8 data_021cb588[32];
-u32 data_021cb4e4;
-u32 data_020de1d0[3] = {0x8a, 0x86, 0xffffffff};
-Unk_020de060 data_020de060 = {(void *)func_0206f4ac, 0x8e, 0x92};
-u32 data_020de068[2] = {0x5a, 0xffffffff};
-u8 data_021cb4a4;
-u32 data_020de048[2] = {0x92, 0xffffffff};
-u32 data_020de170[3] = {0x78, 0x75, 0xffffffff};
-u32 data_020de0a4[3] = {0x85, 0x82, 0xffffffff};
-u32 data_020de0b0[3] = {0x7a, 0x5f, 0xffffffff};
-u32 data_020de0bc[3] = {0x70, 0x5f, 0xffffffff};
-u32 data_020de140[3] = {0x6a, 0x5e, 0xffffffff};
-u8 data_021cb4a8;
-u32 data_020de030[2] = {0x7b, 0xffffffff};
-u32 data_020de1dc[4] = {0x73, 0x72, 0x5e, 0xffffffff};
-u32 data_020de058[2] = {0x71, 0xffffffff};
-u32 data_020de1ec[4] = {0x74, 0x72, 0x5e, 0xffffffff};
-u8 data_021cb4d0[4];
-u32 data_020de020[2] = {0x8f, 0xffffffff};
-u16 data_021cb4bc;
-u8 data_021cb4b4;
-u8 data_021cb49c;
-u32 data_020de128[3] = {0x68, 0x5e, 0xffffffff};
-u32 data_020de040[2] = {0x5c, 0xffffffff};
-u32 data_020de1fc[4] = {0x7c, 0x7e, 0x5f, 0xffffffff};
-u32 data_021cb504[3];
-u32 data_020de164[3] = {0x6d, 0x5e, 0xffffffff};
-u32 data_020de17c[3] = {0x6e, 0x5e, 0xffffffff};
-u32 data_020de20c[4] = {0x60, 0x61, 0x5e, 0xffffffff};
-u32 data_021cb51c[3];
-u16 data_021cb4c4;
-u16 data_021cb568[16];
-u32 data_020de1ac[3] = {0x87, 0x86, 0xffffffff};
-u32 data_020de1c4[3] = {0x89, 0x86, 0xffffffff};
-u8 data_021cb538[16];
-u32 data_020de080[3] = {0x83, 0x82, 0xffffffff};
-u32 data_020de08c[3] = {0x76, 0x75, 0xffffffff};
-u32 data_020de050[2] = {0x5b, 0xffffffff};
-u32 data_020de0c8[3] = {0x8c, 0x8b, 0xffffffff};
-u32 data_020de0d4[3] = {0x8d, 0x8b, 0xffffffff};
-u32 data_020de0e0[3] = {0x7c, 0x7d, 0xffffffff};
-u32 data_020de0f8[3] = {0x64, 0x5e, 0xffffffff};
-u32 data_021cb4c8;
-u32 data_020de11c[3] = {0x67, 0x5e, 0xffffffff};
-u16 data_021cb4b8;
-Unk_021cb4f0 data_021cb4f0;
-u32 data_020de21c[4] = {0x60, 0x62, 0x5e, 0xffffffff};
-u16 data_021cb4c0;
-u32 data_020de194[3] = {0x80, 0x7f, 0xffffffff};
-u32 data_021cb4e0;
-u32 data_020de098[3] = {0x84, 0x82, 0xffffffff};
-u32 data_021cb4cc;
-u32 data_020de0ec[3] = {0x63, 0x5e, 0xffffffff};
-u8 data_021cb4ac;
-u32 data_020de134[3] = {0x69, 0x5e, 0xffffffff};
-u8 data_020de014[4] = {0, 0x2e, 0, 0};
-u32 data_020de028[2] = {0x90, 0xffffffff};
-u32 data_020de078[2] = {0x77, 0xffffffff};
-u32 *data_020de2d8[46] = {
-    data_020de068, data_020de20c, data_020de21c, data_020de070, data_020de1dc, data_020de1ec, data_020de188,
-    data_020de08c, data_020de0b0, data_020de040, data_020de0bc, data_020de058, data_020de050, data_020de030,
-    data_020de0e0, data_020de1fc, data_020de0ec, data_020de0f8, data_020de104, data_020de110, data_020de11c,
-    data_020de128, data_020de134, data_020de140, data_020de14c, data_020de194, data_020de1a0, data_020de170,
-    data_020de1ac, data_020de1b8, data_020de1c4, data_020de080, data_020de098, data_020de0c8, data_020de0d4,
-    data_020de018, data_020de078, data_020de020, data_020de028, data_020de038, data_020de158, data_020de164,
-    data_020de1d0, data_020de0a4, data_020de17c, data_020de048,
+u8 sMenuIndex;
+u32 kMenuOverlayList18[3] = {0x6b, 0x5e, 0xffffffff};
+u32 kMenuOverlayList28[3] = {0x6c, 0x5e, 0xffffffff};
+Unk_021cb4e8 sOpenMenuList;
+u32 kMenuOverlayList03[2] = {0x79, 0xffffffff};
+u8 sMenuMode;
+Letter sFutureLetter;
+u16 sPocketBackupItems[16];
+u32 kMenuOverlayList06[3] = {0x6f, 0x5f, 0xffffffff};
+u32 sMenuArg;
+u32 kMenuOverlayList13[3] = {0x66, 0x5e, 0xffffffff};
+u32 kMenuOverlayList23[2] = {0x8e, 0xffffffff};
+u32 kMenuOverlayList1A[3] = {0x81, 0x7f, 0xffffffff};
+s32 sMenuTransitionProgress;
+u32 sMenuPtrArg1;
+u8 sChatDraft[32];
+u32 sMenuHandBells;
+u32 kMenuOverlayList2A[3] = {0x8a, 0x86, 0xffffffff};
+ProcProfile sMenuManagerProfile = {(void *(*)())MenuManager_Create, 0x8e, 0x92};
+u32 kMenuOverlayList00[2] = {0x5a, 0xffffffff};
+u8 sMenuSavedSlot;
+u32 kMenuOverlayList2D[2] = {0x92, 0xffffffff};
+u32 kMenuOverlayList1B[3] = {0x78, 0x75, 0xffffffff};
+u32 kMenuOverlayList2B[3] = {0x85, 0x82, 0xffffffff};
+u32 kMenuOverlayList08[3] = {0x7a, 0x5f, 0xffffffff};
+u32 kMenuOverlayList0A[3] = {0x70, 0x5f, 0xffffffff};
+u32 kMenuOverlayList17[3] = {0x6a, 0x5e, 0xffffffff};
+u8 sPocketSelectLabel;
+u32 kMenuOverlayList0D[2] = {0x7b, 0xffffffff};
+u32 kMenuOverlayList04[4] = {0x73, 0x72, 0x5e, 0xffffffff};
+u32 kMenuOverlayList0B[2] = {0x71, 0xffffffff};
+u32 kMenuOverlayList05[4] = {0x74, 0x72, 0x5e, 0xffffffff};
+u8 sKeyboardPageModes[4];
+u32 kMenuOverlayList25[2] = {0x8f, 0xffffffff};
+u16 sPocketSelectMask;
+u8 sForceCloseDelay;
+u8 sKeyboardPage;
+u32 kMenuOverlayList15[3] = {0x68, 0x5e, 0xffffffff};
+u32 kMenuOverlayList09[2] = {0x5c, 0xffffffff};
+u32 kMenuOverlayList0F[4] = {0x7c, 0x7e, 0x5f, 0xffffffff};
+u32 sMenuReleaseMask[3];
+u32 kMenuOverlayList29[3] = {0x6d, 0x5e, 0xffffffff};
+u32 kMenuOverlayList2C[3] = {0x6e, 0x5e, 0xffffffff};
+u32 kMenuOverlayList01[4] = {0x60, 0x61, 0x5e, 0xffffffff};
+u32 sMenuLoadedMask[3];
+u16 sMenuFlags;
+u16 sMenuChosenItems[16];
+u32 kMenuOverlayList1C[3] = {0x87, 0x86, 0xffffffff};
+u32 kMenuOverlayList1E[3] = {0x89, 0x86, 0xffffffff};
+u8 sMenuText[16];
+u32 kMenuOverlayList1F[3] = {0x83, 0x82, 0xffffffff};
+u32 kMenuOverlayList07[3] = {0x76, 0x75, 0xffffffff};
+u32 kMenuOverlayList0C[2] = {0x5b, 0xffffffff};
+u32 kMenuOverlayList21[3] = {0x8c, 0x8b, 0xffffffff};
+u32 kMenuOverlayList22[3] = {0x8d, 0x8b, 0xffffffff};
+u32 kMenuOverlayList0E[3] = {0x7c, 0x7d, 0xffffffff};
+u32 kMenuOverlayList11[3] = {0x64, 0x5e, 0xffffffff};
+u32 gMenuManager;
+u32 kMenuOverlayList14[3] = {0x67, 0x5e, 0xffffffff};
+u16 sPostOfficeResult;
+Unk_021cb4f0 sMenuDateTime;
+u32 kMenuOverlayList02[4] = {0x60, 0x62, 0x5e, 0xffffffff};
+u16 sMenuItem;
+u32 kMenuOverlayList19[3] = {0x80, 0x7f, 0xffffffff};
+u32 sMenuPtrArg0;
+u32 kMenuOverlayList20[3] = {0x84, 0x82, 0xffffffff};
+u32 sMenuAmount;
+u32 kMenuOverlayList10[3] = {0x63, 0x5e, 0xffffffff};
+u8 sMenuResult;
+u32 kMenuOverlayList16[3] = {0x69, 0x5e, 0xffffffff};
+u8 sMenuRequest[4] = {0, 0x2e, 0, 0};
+u32 kMenuOverlayList26[2] = {0x90, 0xffffffff};
+u32 kMenuOverlayList24[2] = {0x77, 0xffffffff};
+u32 *kMenuOverlayLists[46] = {
+    kMenuOverlayList00, kMenuOverlayList01, kMenuOverlayList02, kMenuOverlayList03, kMenuOverlayList04, kMenuOverlayList05, kMenuOverlayList06,
+    kMenuOverlayList07, kMenuOverlayList08, kMenuOverlayList09, kMenuOverlayList0A, kMenuOverlayList0B, kMenuOverlayList0C, kMenuOverlayList0D,
+    kMenuOverlayList0E, kMenuOverlayList0F, kMenuOverlayList10, kMenuOverlayList11, kMenuOverlayList12, kMenuOverlayList13, kMenuOverlayList14,
+    kMenuOverlayList15, kMenuOverlayList16, kMenuOverlayList17, kMenuOverlayList18, kMenuOverlayList19, kMenuOverlayList1A, kMenuOverlayList1B,
+    kMenuOverlayList1C, kMenuOverlayList1D, kMenuOverlayList1E, kMenuOverlayList1F, kMenuOverlayList20, kMenuOverlayList21, kMenuOverlayList22,
+    kMenuOverlayList23, kMenuOverlayList24, kMenuOverlayList25, kMenuOverlayList26, kMenuOverlayList27, kMenuOverlayList28, kMenuOverlayList29,
+    kMenuOverlayList2A, kMenuOverlayList2B, kMenuOverlayList2C, kMenuOverlayList2D,
 };
-u32 data_020de104[3] = {0x65, 0x5e, 0xffffffff};
-u32 data_020de038[2] = {0x91, 0xffffffff};
-u8 data_021cb528[16];
-u16 data_020de27c[46] = {
+u32 kMenuOverlayList12[3] = {0x65, 0x5e, 0xffffffff};
+u32 kMenuOverlayList27[2] = {0x91, 0xffffffff};
+u8 sPocketBackupFlags[16];
+u16 kMenuProfileIds[46] = {
     0x008f, 0x0091, 0x0091, 0x00a4, 0x009f, 0x00a0, 0x009e, 0x00a1, 0x00a5, 0x0090, 0x00a6, 0x00a7,
     0x00a8, 0x00a9, 0x00aa, 0x00ab, 0x0092, 0x0093, 0x0094, 0x0095, 0x0096, 0x0097, 0x0098, 0x0099,
     0x009a, 0x00ac, 0x00ad, 0x00a3, 0x00ae, 0x00af, 0x00b0, 0x00b2, 0x00b3, 0x00b5, 0x00b6, 0x00b7,
     0x00a2, 0x00b8, 0x00b9, 0x00ba, 0x009b, 0x009c, 0x00b1, 0x00b4, 0x009d, 0x00bb,
 };
-u32 data_020de1b8[3] = {0x88, 0x86, 0xffffffff};
+u32 kMenuOverlayList1D[3] = {0x88, 0x86, 0xffffffff};
 
-extern "C" void func_0206f4e4(u8 *o) { func_0206f53c(o[0] - 0x12); }
+extern "C" void CommSub_StartCountdown(u8 *o) { HudCountdown_StartWithSe(o[0] - 0x12); }
 
-extern "C" void func_0206f4d8(u8 *o) { func_02045400(o[1]); }
+extern "C" void CommSub_RecvClearPendingUnit(u8 *o) { PendingUnit_ClearActiveOfAid(o[1]); }
 
-extern "C" Unk_020de234 *func_0206f4ac() { return new Unk_020de234; }
-
-
+extern "C" MenuManager *MenuManager_Create() { return new MenuManager; }
 
 
 
-BOOL Unk_020de234::vfunc_00() {
-    func_0205c1c0(0x8c00, 0);
-    data_021cb51c[0] = data_021cb51c[1] = data_021cb51c[2] = 0;
-    data_021cb504[0] = data_021cb504[1] = data_021cb504[2] = 0;
-    data_020de014[1] = 0x2e;
-    data_020de014[0] = 1;
-    data_021cb4c8 = (u32)this;
-    data_021cb4c4 = 0;
-    func_0206f164();
-    func_0206e020();
-    data_021cb4d4 = 0;
-    func_0205137c();
-    data_021cb4e4 = 0;
+
+
+BOOL MenuManager::onCreate() {
+    MenuHeap_Create(0x8c00, 0);
+    sMenuLoadedMask[0] = sMenuLoadedMask[1] = sMenuLoadedMask[2] = 0;
+    sMenuReleaseMask[0] = sMenuReleaseMask[1] = sMenuReleaseMask[2] = 0;
+    sMenuRequest[1] = 0x2e;
+    sMenuRequest[0] = 1;
+    gMenuManager = (u32)this;
+    sMenuFlags = 0;
+    MenuCtrl_ResetFlags();
+    MenuScreen_ClearState();
+    sMenuArg = 0;
+    Text_BuildCharWidthTable();
+    sMenuHandBells = 0;
     return TRUE;
 }
 
-BOOL Unk_020de234::vfunc_0c() {
-    data_021cb504[0] |= data_021cb51c[0];
-    data_021cb504[1] |= data_021cb51c[1];
-    data_021cb504[2] |= data_021cb51c[2];
-    func_0206f254();
-    func_0206dfe4();
-    func_0205c1a4();
-    func_02065328(&data_021cb4e8);
-    data_020de014[1] = 0x2e;
-    data_020de014[0] = 0;
-    data_021cb4c8 = 0;
+BOOL MenuManager::onDelete() {
+    sMenuReleaseMask[0] |= sMenuLoadedMask[0];
+    sMenuReleaseMask[1] |= sMenuLoadedMask[1];
+    sMenuReleaseMask[2] |= sMenuLoadedMask[2];
+    MenuCtrl_ReleaseClosedMenus();
+    MenuScreen_Reset();
+    MenuHeap_Destroy();
+    PrioList_Init(&sOpenMenuList);
+    sMenuRequest[1] = 0x2e;
+    sMenuRequest[0] = 0;
+    gMenuManager = 0;
     return TRUE;
 }
 
-BOOL Unk_020de234::vfunc_18() {
+BOOL MenuManager::onExecute() {
     u32 k;
     BOOL r;
-    func_0206f254();
-    func_0206f1b4();
-    func_0206f1fc();
-    func_0206df78();
-    if (func_0203d4d4()) return TRUE;
-    if (func_020b50e8() == 6) return TRUE;
-    if (data_021d726c) return TRUE;
-    if (func_0203e2f4()) return TRUE;
-    if (func_0206f140()) {
-        if (data_021f4770 && data_021f4774) r = TRUE;
+    MenuCtrl_ReleaseClosedMenus();
+    MenuCtrl_LoadRequestedOverlays();
+    MenuCtrl_CreateRequestedMenu();
+    MenuScreen_Update();
+    if (Stub_ReturnFalse()) return TRUE;
+    if (Scene_GetCurrent() == 6) return TRUE;
+    if (gSoftResetRequested) return TRUE;
+    if (TalkRequest_IsActive()) return TRUE;
+    if (MenuCtrl_IsIdle()) {
+        if (gTouchHeld && gTouchChanged) r = TRUE;
         else r = FALSE;
-        if (r && data_021ef5ec <= 0x10 && data_021ef5f0 >= 0xe8) {
-            func_0203da24(0);
-            data_021cb4b0 = 0;
-            func_0206ef3c();
+        if (r && gTouchCurY <= 0x10 && gTouchCurX >= 0xe8) {
+            TalkRequest_AddMenu(0);
+            sMenuMode = 0;
+            MenuCtrl_SetTouch();
             return TRUE;
         }
-        k = data_021f47d8[1];
+        k = gPad[1];
         if (k & 4) {
-            func_0203da24(0);
-            data_021cb4b0 = 4;
-            func_0206ef28();
+            TalkRequest_AddMenu(0);
+            sMenuMode = 4;
+            MenuCtrl_SetButtons();
             return TRUE;
         }
         if (k & 0x800) {
-            func_0203da24(0);
-            data_021cb4b0 = 0;
-            func_0206ef28();
+            TalkRequest_AddMenu(0);
+            sMenuMode = 0;
+            MenuCtrl_SetButtons();
             return TRUE;
         }
-        if (func_0201188c() != 2 && (data_021f47d8[1] & 0x400)) {
-            func_0203da24(0);
-            data_021cb4b0 = 5;
-            func_0206ef28();
+        if (Hud_GetSceneHudKind() != 2 && (gPad[1] & 0x400)) {
+            TalkRequest_AddMenu(0);
+            sMenuMode = 5;
+            MenuCtrl_SetButtons();
             return TRUE;
         }
     }
     return TRUE;
 }
 
-BOOL Unk_020de234::vfunc_24() { return TRUE; }
+BOOL MenuManager::onDraw() { return TRUE; }
 
-extern "C" void func_0206f2b0(u32 v) { func_020e7968(&data_021cb4e8, v); }
+extern "C" void MenuCtrl_AddOpenMenu(u32 v) { List_PushBack(&sOpenMenuList, v); }
 
-extern "C" void func_0206f290(u8 *o) {
-    func_020e79a0(&data_021cb4e8, o);
-    func_0206efd0(*(*(u8 **)(o + 8) + 0x90));
+extern "C" void MenuCtrl_RemoveOpenMenu(u8 *o) {
+    List_Remove(&sOpenMenuList, o);
+    MenuCtrl_SetReleasePending(*(*(u8 **)(o + 8) + 0x90));
 }
 
-extern "C" void func_0206f254() {
+extern "C" void MenuCtrl_ReleaseClosedMenus() {
     u8 i;
-    if (data_021cb504[0] != 0 || data_021cb504[1] != 0 || data_021cb504[2] != 0) {
+    if (sMenuReleaseMask[0] != 0 || sMenuReleaseMask[1] != 0 || sMenuReleaseMask[2] != 0) {
         for (i = 0; i < 0x2e; i++) {
-            if (func_0206eff4(i)) func_0206f178(i);
+            if (MenuCtrl_IsReleasePending(i)) MenuCtrl_ReleaseOverlays(i);
         }
     }
 }
 
-extern "C" BOOL func_0206f1fc() {
+extern "C" BOOL MenuCtrl_CreateRequestedMenu() {
     u32 t;
-    if (data_020de014[0] != 3) return FALSE;
-    if (data_021cb4e8.a != 0) t = ((u32 *)data_021cb4e8.a)[2];
-    else t = data_021cb4c8;
-    func_0206e660();
-    if (!func_0202e880(data_020de27c[data_020de014[1]], t, data_020de014[1], 4)) return FALSE;
-    data_020de014[0] = 1;
+    if (sMenuRequest[0] != 3) return FALSE;
+    if (sOpenMenuList.a != 0) t = ((u32 *)sOpenMenuList.a)[2];
+    else t = gMenuManager;
+    MenuCtrl_ResetForceClose();
+    if (!GameProc_CreateChild(kMenuProfileIds[sMenuRequest[1]], t, sMenuRequest[1], 4)) return FALSE;
+    sMenuRequest[0] = 1;
     return TRUE;
 }
 
-extern "C" BOOL func_0206f1b4() {
-    if (data_020de014[0] != 2) return FALSE;
-    u32 *e = data_020de2d8[data_020de014[1]];
+extern "C" BOOL MenuCtrl_LoadRequestedOverlays() {
+    if (sMenuRequest[0] != 2) return FALSE;
+    u32 *e = kMenuOverlayLists[sMenuRequest[1]];
     s32 n = 0;
     while (e[n] != (u32)-1) {
-        func_0204ef2c(e[n]);
+        OverlayMgr_Acquire(e[n]);
         n++;
     }
-    data_020de014[0] = 3;
-    func_0206f044(data_020de014[1]);
+    sMenuRequest[0] = 3;
+    MenuCtrl_SetLoaded(sMenuRequest[1]);
     return TRUE;
 }
 
-extern "C" BOOL func_0206f178(u32 i) {
+extern "C" BOOL MenuCtrl_ReleaseOverlays(u32 i) {
     u32 *e;
     s32 n;
-    e = data_020de2d8[i];
+    e = kMenuOverlayLists[i];
     n = 0;
     while (e[n] != (u32)-1) {
-        func_0204eee4(e[n]);
+        OverlayMgr_Release(e[n]);
         n++;
     }
-    func_0206f020(i);
-    func_0206efac(i);
+    MenuCtrl_ClearLoaded(i);
+    MenuCtrl_ClearReleasePending(i);
     return TRUE;
 }
 
-extern "C" void func_0206f164() {
-    data_021cb4c4 = 0;
-    data_021cb4d8 = 0;
+extern "C" void MenuCtrl_ResetFlags() {
+    sMenuFlags = 0;
+    sMenuTransitionProgress = 0;
 }
 
-extern "C" BOOL func_0206f140() {
-    if (data_020de014[0] != 1) return FALSE;
-    if (data_021cb4e8.a == 0) return TRUE;
+extern "C" BOOL MenuCtrl_IsIdle() {
+    if (sMenuRequest[0] != 1) return FALSE;
+    if (sOpenMenuList.a == 0) return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL func_0206f11c() {
-    if (data_020de014[0] == 0) return FALSE;
-    if (data_021cb4e8.a != 0) return TRUE;
+extern "C" BOOL MenuCtrl_IsMenuOpen() {
+    if (sMenuRequest[0] == 0) return FALSE;
+    if (sOpenMenuList.a != 0) return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL func_0206f0f8(u32 v) {
-    if (!func_0206f140()) return FALSE;
-    data_020de014[1] = v;
-    data_020de014[0] = 2;
+extern "C" BOOL MenuCtrl_RequestOpen(u32 v) {
+    if (!MenuCtrl_IsIdle()) return FALSE;
+    sMenuRequest[1] = v;
+    sMenuRequest[0] = 2;
     return TRUE;
 }
 
-extern "C" BOOL func_0206f0b8(u32 v) {
-    if (data_020de014[0] != 1) return FALSE;
-    if (data_021cb4e8.a == 0) return FALSE;
-    if (func_0206f068(v)) return FALSE;
-    data_020de014[1] = v;
-    data_020de014[0] = 2;
+extern "C" BOOL MenuCtrl_RequestOpenNested(u32 v) {
+    if (sMenuRequest[0] != 1) return FALSE;
+    if (sOpenMenuList.a == 0) return FALSE;
+    if (MenuCtrl_IsLoaded(v)) return FALSE;
+    sMenuRequest[1] = v;
+    sMenuRequest[0] = 2;
     return TRUE;
 }
 
-extern "C" BOOL func_0206f094(u32 v) {
-    BOOL r = func_0206f0f8(12);
-    if (r) func_0206ed5c(v);
+extern "C" BOOL MenuCtrl_RequestOpenMenu12(u32 v) {
+    BOOL r = MenuCtrl_RequestOpen(12);
+    if (r) MenuCtrl_SetArg(v);
     return r;
 }
 
-extern "C" BOOL func_0206f068(s32 i) {
+extern "C" BOOL MenuCtrl_IsLoaded(s32 i) {
     BOOL r = TRUE;
-    if (!((1 << (i & 0x1f)) & data_021cb51c[i >> 5])) r = FALSE;
+    if (!((1 << (i & 0x1f)) & sMenuLoadedMask[i >> 5])) r = FALSE;
     return r;
 }
 
-extern "C" void func_0206f044(s32 i) { data_021cb51c[i >> 5] |= (1 << (i & 0x1f)); }
+extern "C" void MenuCtrl_SetLoaded(s32 i) { sMenuLoadedMask[i >> 5] |= (1 << (i & 0x1f)); }
 
-extern "C" void func_0206f020(s32 i) { data_021cb51c[i >> 5] &= ~(1 << (i & 0x1f)); }
+extern "C" void MenuCtrl_ClearLoaded(s32 i) { sMenuLoadedMask[i >> 5] &= ~(1 << (i & 0x1f)); }
 
-extern "C" BOOL func_0206eff4(s32 i) {
+extern "C" BOOL MenuCtrl_IsReleasePending(s32 i) {
     BOOL r = TRUE;
-    if (!((1 << (i & 0x1f)) & data_021cb504[i >> 5])) r = FALSE;
+    if (!((1 << (i & 0x1f)) & sMenuReleaseMask[i >> 5])) r = FALSE;
     return r;
 }
 
-extern "C" void func_0206efd0(s32 i) { data_021cb504[i >> 5] |= (1 << (i & 0x1f)); }
+extern "C" void MenuCtrl_SetReleasePending(s32 i) { sMenuReleaseMask[i >> 5] |= (1 << (i & 0x1f)); }
 
-extern "C" void func_0206efac(s32 i) { data_021cb504[i >> 5] &= ~(1 << (i & 0x1f)); }
+extern "C" void MenuCtrl_ClearReleasePending(s32 i) { sMenuReleaseMask[i >> 5] &= ~(1 << (i & 0x1f)); }
 
-extern "C" void func_0206ef9c(u32 m) { data_021cb4c4 |= m; }
+extern "C" void MenuCtrl_SetFlags(u32 m) { sMenuFlags |= m; }
 
-extern "C" void func_0206ef8c(u32 m) { data_021cb4c4 &= ~m; }
+extern "C" void MenuCtrl_ClearFlags(u32 m) { sMenuFlags &= ~m; }
 
-extern "C" BOOL func_0206ef74(u32 m) {
-    if (m == (m & data_021cb4c4)) return TRUE;
+extern "C" BOOL MenuCtrl_HasFlags(u32 m) {
+    if (m == (m & sMenuFlags)) return TRUE;
     return FALSE;
 }
 
-extern "C" void func_0206ef68() { func_0206ef8c(1); }
+extern "C" void MenuCtrl_ClearMenuOnTop() { MenuCtrl_ClearFlags(1); }
 
-extern "C" void func_0206ef5c() { func_0206ef9c(1); }
+extern "C" void MenuCtrl_SetMenuOnTop() { MenuCtrl_SetFlags(1); }
 
-extern "C" BOOL func_0206ef50() { return func_0206ef74(1); }
+extern "C" BOOL MenuCtrl_IsMenuOnTop() { return MenuCtrl_HasFlags(1); }
 
-extern "C" s32 func_0206ef3c() {
-    func_0206ef8c(2);
-    func_0208f038();
+extern "C" s32 MenuCtrl_SetTouch() {
+    MenuCtrl_ClearFlags(2);
+    InputMode_SetTouch();
 }
 
-extern "C" s32 func_0206ef28() {
-    func_0206ef9c(2);
-    func_0208f044();
+extern "C" s32 MenuCtrl_SetButtons() {
+    MenuCtrl_SetFlags(2);
+    InputMode_SetButtons();
 }
 
-extern "C" BOOL func_0206ef0c() {
-    if (func_0206ef74(2)) return FALSE;
+extern "C" BOOL MenuCtrl_IsTouch() {
+    if (MenuCtrl_HasFlags(2)) return FALSE;
     return TRUE;
 }
 
-extern "C" BOOL func_0206ef00() { return func_0206ef74(2); }
+extern "C" BOOL MenuCtrl_IsButtons() { return MenuCtrl_HasFlags(2); }
 
-extern "C" void func_0206eee4() {
-    if (func_0208f024()) func_0206ef28();
-    else func_0206ef3c();
+extern "C" void MenuCtrl_SyncFromInputMode() {
+    if (InputMode_IsButtons()) MenuCtrl_SetButtons();
+    else MenuCtrl_SetTouch();
 }
 
-extern "C" s32 func_0206eed4(s32 v) {
+extern "C" s32 Menu_GetIconCharIndex(s32 v) {
     return (v & 0xf) * 2 + (v >> 4) * 64;
 }
 
-extern "C" void func_0206ee80(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to) {
+extern "C" void BgScreen_SetRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to) {
     s32 y, x, idx;
     u32 t = (to << 28) >> 16;
     for (y = y0; y <= y1; y++) {
@@ -680,7 +669,7 @@ extern "C" void func_0206ee80(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to) 
     }
 }
 
-extern "C" void func_0206ee0c(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 from, u32 to) {
+extern "C" void BgScreen_ReplaceRectPalette(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 from, u32 to) {
     s32 y, x, idx;
     u32 f = (from << 28) >> 16;
     u32 t = (to << 28) >> 16;
@@ -696,121 +685,121 @@ extern "C" void func_0206ee0c(u16 *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 from
     }
 }
 
-extern "C" void func_0206ee00(s32 v) { data_021cb4d8 = v; }
+extern "C" void MenuCtrl_SetTransitionProgress(s32 v) { sMenuTransitionProgress = v; }
 
-extern "C" s32 func_0206ede0() {
-    if (func_0206edb0()) return data_021cb4d8;
+extern "C" s32 MenuCtrl_GetTransitionProgress() {
+    if (MenuCtrl_IsTransitionActive()) return sMenuTransitionProgress;
     return 0;
 }
 
-extern "C" s32 func_0206edbc() {
-    if (func_0206edb0()) return data_021cb4d8;
+extern "C" s32 MenuCtrl_GetTransitionProgressOrFull() {
+    if (MenuCtrl_IsTransitionActive()) return sMenuTransitionProgress;
     return 0x1000;
 }
 
-extern "C" BOOL func_0206edb0() { return func_0206ef74(4); }
+extern "C" BOOL MenuCtrl_IsTransitionActive() { return MenuCtrl_HasFlags(4); }
 
-extern "C" void func_0206eda4() { return func_0206ef9c(4); }
+extern "C" void MenuCtrl_SetTransitionActive() { return MenuCtrl_SetFlags(4); }
 
-extern "C" void func_0206ed98() { return func_0206ef8c(4); }
+extern "C" void MenuCtrl_ClearTransitionActive() { return MenuCtrl_ClearFlags(4); }
 
-extern "C" BOOL func_0206ed8c() { return func_0206ef74(0x10); }
+extern "C" BOOL MenuCtrl_IsScreenChanging() { return MenuCtrl_HasFlags(0x10); }
 
-extern "C" void func_0206ed80() { return func_0206ef9c(0x10); }
+extern "C" void MenuCtrl_SetScreenChanging() { return MenuCtrl_SetFlags(0x10); }
 
-extern "C" void func_0206ed74() { return func_0206ef8c(0x10); }
+extern "C" void MenuCtrl_ClearScreenChanging() { return MenuCtrl_ClearFlags(0x10); }
 
-extern "C" u32 func_0206ed68() { return data_021cb4d4; }
+extern "C" u32 MenuCtrl_GetArg() { return sMenuArg; }
 
-extern "C" void func_0206ed5c(u32 v) { data_021cb4d4 = v; }
+extern "C" void MenuCtrl_SetArg(u32 v) { sMenuArg = v; }
 
-extern "C" u32 func_0206ed50() { return data_021cb4b0; }
+extern "C" u32 MenuCtrl_GetMode() { return sMenuMode; }
 
-extern "C" void func_0206ed44(u32 v) { data_021cb4b0 = v; }
+extern "C" void MenuCtrl_SetMode(u32 v) { sMenuMode = v; }
 
-extern "C" u32 func_0206ed38() { return data_021cb4a0; }
+extern "C" u32 MenuCtrl_GetIndex() { return sMenuIndex; }
 
-extern "C" void func_0206ed2c(u32 v) { data_021cb4a0 = v; }
+extern "C" void MenuCtrl_SetIndex(u32 v) { sMenuIndex = v; }
 
-extern "C" BOOL func_0206ed18() {
-    if (data_021cb4ac == 1) return TRUE;
+extern "C" BOOL MenuCtrl_IsResultOk() {
+    if (sMenuResult == 1) return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL func_0206ed04() {
-    if (data_021cb4ac == 2) return TRUE;
+extern "C" BOOL MenuCtrl_IsResultDuplicateName() {
+    if (sMenuResult == 2) return TRUE;
     return FALSE;
 }
 
-extern "C" void func_0206ecf8(u32 v) { data_021cb4ac = v; }
+extern "C" void MenuCtrl_SetResult(u32 v) { sMenuResult = v; }
 
-extern "C" void *func_0206ecf0() { return data_021cb538; }
+extern "C" void *MenuCtrl_GetText() { return sMenuText; }
 
-extern "C" void func_0206ecc8(u32 a, u32 b) {
-    func_0205125c(data_021cb538, 16);
-    func_02051268(a, data_021cb538, b);
+extern "C" void MenuCtrl_SetText(u32 a, u32 b) {
+    Mem_Clear(sMenuText, 16);
+    Mem_Copy(a, sMenuText, b);
 }
 
-extern "C" BOOL func_0206eca4(u32 a) {
-    if (!func_0206f140()) return FALSE;
-    data_021cb4b0 = a;
-    return func_0206f0f8(9);
+extern "C" BOOL MenuCtrl_OpenLauncher(u32 a) {
+    if (!MenuCtrl_IsIdle()) return FALSE;
+    sMenuMode = a;
+    return MenuCtrl_RequestOpen(9);
 }
 
-extern "C" BOOL func_0206ec84(u32 a, u32 b) {
-    if (func_0206eca4(a)) {
-        data_021cb4a0 = b;
+extern "C" BOOL MenuCtrl_OpenLauncherWithIndex(u32 a, u32 b) {
+    if (MenuCtrl_OpenLauncher(a)) {
+        sMenuIndex = b;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0206ec6c() {
-    if (func_0206f140()) return TRUE;
+extern "C" BOOL MenuCtrl_IsFinished() {
+    if (MenuCtrl_IsIdle()) return TRUE;
     return FALSE;
 }
 
-extern "C" void func_0206ec60() { data_021cb4a4 = 0; }
+extern "C" void MenuCtrl_ClearSavedSlot() { sMenuSavedSlot = 0; }
 
-extern "C" void func_0206ec54(u32 v) { data_021cb4a4 = v; }
+extern "C" void MenuCtrl_SetSavedSlot(u32 v) { sMenuSavedSlot = v; }
 
-extern "C" u32 func_0206ec48() { return data_021cb4a4; }
+extern "C" u32 MenuCtrl_GetSavedSlot() { return sMenuSavedSlot; }
 
-extern "C" void func_0206ec04() {
+extern "C" void MenuCtrl_BackupPockets() {
     void *p;
     s32 i;
-    p = _ZN12Unk_0209865c13func_02098750Ev(func_0209750c());
+    p = _ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent());
     for (i = 0; i < 15; i++) {
-        data_021cb548[i] = *_ZN12Unk_02097d1c13func_02097f6cEi(p, i);
-        data_021cb528[i] = (u32)_ZN12Unk_02097d1c13func_02097eb0Ei(p, i);
+        sPocketBackupItems[i] = *_ZN15PlayerInventory9getPocketEi(p, i);
+        sPocketBackupFlags[i] = (u32)_ZN15PlayerInventory14getPocketFlagsEi(p, i);
     }
 }
 
-extern "C" void func_0206ebc0() {
+extern "C" void MenuCtrl_RestorePockets() {
     u16 tmp[1];
     s32 i;
-    _ZN12Unk_0209865c13func_02098750Ev(func_0209750c());
+    _ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent());
     tmp[0] = 0xfff1;
     for (i = 0; i < 15; i++) {
-        tmp[0] = data_021cb548[i];
-        func_0209909c(tmp, data_021cb528[i], i);
+        tmp[0] = sPocketBackupItems[i];
+        Pocket_SetItem(tmp, sPocketBackupFlags[i], i);
     }
 }
 
-extern "C" void func_0206eba4(u16 *src) {
+extern "C" void MenuCtrl_SetChosenItems(u16 *src) {
     s32 i;
     for (i = 0; i < 15; i++) {
-        data_021cb568[i] = src[i];
+        sMenuChosenItems[i] = src[i];
     }
 }
 
-extern "C" u16 *func_0206eb9c(void) { return data_021cb568; }
+extern "C" u16 *MenuCtrl_GetChosenItems(void) { return sMenuChosenItems; }
 
-extern "C" void func_0206eb38(void *p) {
+extern "C" void MenuCtrl_ReturnChosenItems(void *p) {
     if (p) {
         s32 i;
         for (i = 0; i < 15; i++) {
-            u32 c = data_021cb568[i];
+            u32 c = sMenuChosenItems[i];
             s32 idx;
             if (c >= 0x38e4 && c <= 0x3933) {
                 idx = ((s32)c - 0x38e4) >> 2;
@@ -824,88 +813,88 @@ extern "C" void func_0206eb38(void *p) {
                 } else {
                     v = 0x3934;
                 }
-                func_0206eb04(c, v);
+                MenuCtrl_ReplaceBackupItem(c, v);
             }
         }
     }
-    func_0206ebc0();
+    MenuCtrl_RestorePockets();
 }
 
-extern "C" void func_0206eb04(u32 key, u16 val) {
+extern "C" void MenuCtrl_ReplaceBackupItem(u32 key, u16 val) {
     s32 i;
     for (i = 0; i < 15; i++) {
-        if (key == data_021cb548[i] && data_021cb528[i] == 0) {
-            data_021cb548[i] = val;
+        if (key == sPocketBackupItems[i] && sPocketBackupFlags[i] == 0) {
+            sPocketBackupItems[i] = val;
             break;
         }
     }
 }
 
-extern "C" BOOL func_0206ead4(u32 a, u32 b) {
-    if (func_0206eca4(0x21)) {
-        data_021cb4a8 = b;
-        data_021cb4bc = a;
+extern "C" BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b) {
+    if (MenuCtrl_OpenLauncher(0x21)) {
+        sPocketSelectLabel = b;
+        sPocketSelectMask = a;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u16 func_0206ea84(BOOL (*cb)(u16 *, void *)) {
-    u32 a = func_0209750c();
-    u16 *p = _ZN12Unk_02097d1c13func_02097f6cEi(_ZN12Unk_0209865c13func_02098750Ev(a), 0);
+extern "C" u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, void *)) {
+    u32 a = PlayerData_GetCurrent();
+    u16 *p = _ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(a), 0);
     s32 i;
     u16 mask = 0;
     for (i = 0; i < 15; i++) {
-        if (cb(p + i, _ZN12Unk_02097d1c13func_02097eb0Ei(_ZN12Unk_0209865c13func_02098750Ev(a), i))) {
+        if (cb(p + i, _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData12getInventoryEv(a), i))) {
             mask |= 1 << i;
         }
     }
     return mask;
 }
 
-extern "C" u16 func_0206ea78(void) { return data_021cb4bc; }
+extern "C" u16 MenuCtrl_GetPocketSelectMask(void) { return sPocketSelectMask; }
 
-extern "C" u8 func_0206ea6c(void) { return data_021cb4a8; }
+extern "C" u8 MenuCtrl_GetPocketSelectLabel(void) { return sPocketSelectLabel; }
 
-extern "C" BOOL func_0206ea48(void) {
-    if (func_0206eca4(0x25)) {
-        data_021cb4b8 = 0;
+extern "C" BOOL MenuCtrl_OpenPostOffice(void) {
+    if (MenuCtrl_OpenLauncher(0x25)) {
+        sPostOfficeResult = 0;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_0206ea3c(u32 v) { data_021cb4b8 = v; }
+extern "C" void MenuCtrl_SetPostOfficeResult(u32 v) { sPostOfficeResult = v; }
 
-extern "C" void func_0206ea2c(void *a) {
-    func_02065e70(&data_021cb5a8, a);
+extern "C" void MenuCtrl_SetFutureLetter(void *a) {
+    Letter_Copy(&sFutureLetter, a);
 }
 
-extern "C" void func_0206e9d8(void) {
-    u32 a = func_0209750c();
-    void *p = func_02096e54(func_02097a3c(a));
+extern "C" void MenuCtrl_StoreFutureLetter(void) {
+    u32 a = PlayerData_GetCurrent();
+    void *p = FutureLetter_GetLetter(PlayerData_GetFutureLetter(a));
     u8 *q;
-    func_02065e70(p, &data_021cb5a8);
-    func_02065b28(p);
-    q = _ZN12Unk_02096e2813func_02096e50Ev(func_02097a3c(a));
+    Letter_Copy(p, &sFutureLetter);
+    Letter_MarkSent(p);
+    q = _ZN12FutureLetter15getDeliveryDateEv(PlayerData_GetFutureLetter(a));
     q[0] = 1;
     q[1] = 1;
     q[2] = 0;
     q[3] = 0;
-    q[0] = ((u8 *)&data_021cb4f0)[3];
-    q[1] = ((u8 *)&data_021cb4f0)[4];
-    q[2] = ((u8 *)&data_021cb4f0)[5];
+    q[0] = ((u8 *)&sMenuDateTime)[3];
+    q[1] = ((u8 *)&sMenuDateTime)[4];
+    q[2] = ((u8 *)&sMenuDateTime)[5];
 }
 
-extern "C" void func_0206e9bc(void) {
-    void *p = func_020991e4();
+extern "C" void MenuCtrl_ReturnFutureLetter(void) {
+    void *p = Inventory_GetEmptyLetter();
     if (p) {
-        func_02065e70(p, &data_021cb5a8);
+        Letter_Copy(p, &sFutureLetter);
     }
 }
 
-extern "C" u32 func_0206e98c(void) {
-    u32 v = data_021cb4b8;
+extern "C" u32 MenuCtrl_GetPostOfficeOutcome(void) {
+    u32 v = sPostOfficeResult;
     if (v & 2) {
         return 2;
     }
@@ -918,215 +907,215 @@ extern "C" u32 func_0206e98c(void) {
     return 0;
 }
 
-extern "C" BOOL func_0206e974(void) {
-    if (data_021cb4b8 & 8) {
+extern "C" BOOL MenuCtrl_PostOfficeHadBadAddress(void) {
+    if (sPostOfficeResult & 8) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u8 func_0206e960(void) {
-    return (data_021cb4b8 >> 6) & 3;
+extern "C" u8 MenuCtrl_GetPostOfficeFullMailboxes(void) {
+    return (sPostOfficeResult >> 6) & 3;
 }
 
-extern "C" BOOL func_0206e944(void) {
-    if (data_021cb4b8 & 0x400) {
+extern "C" BOOL MenuCtrl_PostOfficeWasRejected(void) {
+    if (sPostOfficeResult & 0x400) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0206e928(void) {
-    if (data_021cb4b8 & 0x100) {
+extern "C" BOOL MenuCtrl_PostOfficeHadNoLetter(void) {
+    if (sPostOfficeResult & 0x100) {
         return FALSE;
     }
     return TRUE;
 }
 
-extern "C" BOOL func_0206e90c(void) {
-    if (data_021cb4b8 & 0x200) {
+extern "C" BOOL MenuCtrl_PostOfficeLettersSent(void) {
+    if (sPostOfficeResult & 0x200) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u32 func_0206e900(void) { return data_021cb4e4; }
+extern "C" u32 MenuCtrl_GetHandBells(void) { return sMenuHandBells; }
 
-extern "C" void func_0206e8f4(u32 v) { data_021cb4e4 = v; }
+extern "C" void MenuCtrl_SetHandBells(u32 v) { sMenuHandBells = v; }
 
-extern "C" u32 func_0206e8e8(void) { return data_021cb4cc; }
+extern "C" u32 MenuCtrl_GetAmount(void) { return sMenuAmount; }
 
-extern "C" void func_0206e8dc(u32 v) { data_021cb4cc = v; }
+extern "C" void MenuCtrl_SetAmount(u32 v) { sMenuAmount = v; }
 
-extern "C" void func_0206e8cc(void *a) {
-    func_02116048(a, &data_021cb4f0, 8);
+extern "C" void MenuCtrl_SetDateTime(void *a) {
+    MI_CpuCopy8(a, &sMenuDateTime, 8);
 }
 
-extern "C" void func_0206e8b8(void *a) {
-    func_02116048(&data_021cb4f0, a, 8);
+extern "C" void MenuCtrl_GetDateTime(void *a) {
+    MI_CpuCopy8(&sMenuDateTime, a, 8);
 }
 
-extern "C" BOOL func_0206e888(u32 a, u32 b) {
-    if (func_0206eca4(0x3d)) {
-        data_021cb4e0 = a;
-        data_021cb4dc = b;
+extern "C" BOOL MenuCtrl_OpenNearbyTowns(u32 a, u32 b) {
+    if (MenuCtrl_OpenLauncher(0x3d)) {
+        sMenuPtrArg0 = a;
+        sMenuPtrArg1 = b;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_0206e874(void) {
-    data_021cb4e0 = 0;
-    data_021cb4dc = 0;
+extern "C" void MenuCtrl_ClearPtrArgs(void) {
+    sMenuPtrArg0 = 0;
+    sMenuPtrArg1 = 0;
 }
 
-extern "C" u32 func_0206e868(void) { return data_021cb4e0; }
+extern "C" u32 MenuCtrl_GetPtrArg0(void) { return sMenuPtrArg0; }
 
-extern "C" u32 func_0206e85c(void) { return data_021cb4dc; }
+extern "C" u32 MenuCtrl_GetPtrArg1(void) { return sMenuPtrArg1; }
 
-extern "C" BOOL func_0206e850(void) { return func_0206ef74(8); }
+extern "C" BOOL MenuCtrl_IsClockMovedBack(void) { return MenuCtrl_HasFlags(8); }
 
-extern "C" BOOL func_0206e844(void) { return func_0206ef74(0x20); }
+extern "C" BOOL MenuCtrl_IsClockMovedForward(void) { return MenuCtrl_HasFlags(0x20); }
 
-extern "C" BOOL func_0206e838(void) { return func_0206ef74(0x40); }
+extern "C" BOOL MenuCtrl_IsClockEdited(void) { return MenuCtrl_HasFlags(0x40); }
 
-extern "C" void func_0206e82c(void) { func_0206ef9c(8); }
+extern "C" void MenuCtrl_SetClockMovedBack(void) { MenuCtrl_SetFlags(8); }
 
-extern "C" void func_0206e820(void) { func_0206ef9c(0x20); }
+extern "C" void MenuCtrl_SetClockMovedForward(void) { MenuCtrl_SetFlags(0x20); }
 
-extern "C" void func_0206e814(void) { func_0206ef9c(0x40); }
+extern "C" void MenuCtrl_SetClockEdited(void) { MenuCtrl_SetFlags(0x40); }
 
-extern "C" void func_0206e7f8(void) {
-    func_0206ef8c(8);
-    func_0206ef8c(0x20);
-    func_0206ef8c(0x40);
+extern "C" void MenuCtrl_ClearClockChangeFlags(void) {
+    MenuCtrl_ClearFlags(8);
+    MenuCtrl_ClearFlags(0x20);
+    MenuCtrl_ClearFlags(0x40);
 }
 
-extern "C" BOOL func_0206e7d4(u32 v) {
-    if (func_0206eca4(0x2b)) {
-        data_021cb4c0 = v;
+extern "C" BOOL MenuCtrl_OpenPocketsFullInsect(u32 v) {
+    if (MenuCtrl_OpenLauncher(0x2b)) {
+        sMenuItem = v;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0206e7a4(u32 a, u32 b) {
-    if (func_0206eca4(0x2c)) {
-        data_021cb4e0 = b;
-        data_021cb4c0 = a;
+extern "C" BOOL MenuCtrl_OpenPocketsFullFish(u32 a, u32 b) {
+    if (MenuCtrl_OpenLauncher(0x2c)) {
+        sMenuPtrArg0 = b;
+        sMenuItem = a;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0206e780(u32 v) {
-    if (func_0206eca4(0x29)) {
-        data_021cb4c0 = v;
+extern "C" BOOL MenuCtrl_OpenPocketsFullPickUp(u32 v) {
+    if (MenuCtrl_OpenLauncher(0x29)) {
+        sMenuItem = v;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_0206e75c(u32 v) {
-    if (func_0206eca4(0x2a)) {
-        data_021cb4c0 = v;
+extern "C" BOOL MenuCtrl_OpenPocketsFullDug(u32 v) {
+    if (MenuCtrl_OpenLauncher(0x2a)) {
+        sMenuItem = v;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u16 func_0206e750(void) { return data_021cb4c0; }
+extern "C" u16 MenuCtrl_GetPocketsFullItem(void) { return sMenuItem; }
 
-extern "C" void func_0206e744(u32 v) { data_021cb4c0 = v; }
+extern "C" void MenuCtrl_SetPocketsFullItem(u32 v) { sMenuItem = v; }
 
-extern "C" void func_0206e738(u32 v) { data_021cb4c0 = v; }
+extern "C" void MenuCtrl_SetCatalogItem(u32 v) { sMenuItem = v; }
 
-extern "C" u16 func_0206e72c(void) { return data_021cb4c0; }
+extern "C" u16 MenuCtrl_GetCatalogItem(void) { return sMenuItem; }
 
-extern "C" void func_0206e720(u32 v) { data_021cb4c0 = v; }
+extern "C" void MenuCtrl_SetSongItem(u32 v) { sMenuItem = v; }
 
-extern "C" u16 func_0206e714(void) { return data_021cb4c0; }
+extern "C" u16 MenuCtrl_GetSongItem(void) { return sMenuItem; }
 
-extern "C" BOOL func_0206e6ec(u32 a, u32 b, u32 c) {
-    if (func_0206eca4(a)) {
-        func_0206ecc8(b, c);
+extern "C" BOOL MenuCtrl_OpenLauncherWithText(u32 a, u32 b, u32 c) {
+    if (MenuCtrl_OpenLauncher(a)) {
+        MenuCtrl_SetText(b, c);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_0206e6c4(void) {
-    data_021cb49c = 1;
-    data_021cb4d0[0] = 0;
-    data_021cb4d0[1] = 2;
-    data_021cb4d0[2] = 6;
-    data_021cb4d0[3] = 7;
-    func_0206e594();
+extern "C" void MenuCtrl_InitKeyboardState(void) {
+    sKeyboardPage = 1;
+    sKeyboardPageModes[0] = 0;
+    sKeyboardPageModes[1] = 2;
+    sKeyboardPageModes[2] = 6;
+    sKeyboardPageModes[3] = 7;
+    MenuCtrl_ClearChatDraft();
 }
 
-extern "C" u8 func_0206e6b8(void) {
-    return data_021cb49c;
+extern "C" u8 MenuCtrl_GetKeyboardPage(void) {
+    return sKeyboardPage;
 }
 
-extern "C" void func_0206e6ac(u32 v) {
-    data_021cb49c = v;
+extern "C" void MenuCtrl_SetKeyboardPage(u32 v) {
+    sKeyboardPage = v;
 }
 
-extern "C" u8 func_0206e694(u32 i) {
+extern "C" u8 MenuCtrl_GetKeyboardPageMode(u32 i) {
     if (i == 0xff) {
-        i = data_021cb49c;
+        i = sKeyboardPage;
     }
-    return data_021cb4d0[i];
+    return sKeyboardPageModes[i];
 }
 
-extern "C" void func_0206e688(u32 i, u32 v) {
-    data_021cb4d0[i] = v;
+extern "C" void MenuCtrl_SetKeyboardPageMode(u32 i, u32 v) {
+    sKeyboardPageModes[i] = v;
 }
 
-extern "C" void func_0206e67c(void) { func_0206ef9c(0x80); }
+extern "C" void MenuCtrl_RequestForceClose(void) { MenuCtrl_SetFlags(0x80); }
 
-extern "C" void func_0206e660(void) {
-    func_0206ef8c(0x80);
-    data_021cb4b4 = 0x37;
+extern "C" void MenuCtrl_ResetForceClose(void) {
+    MenuCtrl_ClearFlags(0x80);
+    sForceCloseDelay = 0x37;
 }
 
-extern "C" void func_0206e63c(void) {
-    if (func_0206ef74(0x80)) {
-        if (data_021cb4b4 != 0) {
-            data_021cb4b4--;
+extern "C" void MenuCtrl_TickForceClose(void) {
+    if (MenuCtrl_HasFlags(0x80)) {
+        if (sForceCloseDelay != 0) {
+            sForceCloseDelay--;
         }
     }
 }
 
-extern "C" s32 func_0206e61c(void) {
-    if (data_021cb4b4 != 0) {
+extern "C" s32 MenuCtrl_IsForceCloseDue(void) {
+    if (sForceCloseDelay != 0) {
         return 0;
     }
-    return func_0206ef74(0x80);
+    return MenuCtrl_HasFlags(0x80);
 }
 
-extern "C" void func_0206e60c(void) { func_0206ef9c(0x100); }
+extern "C" void MenuCtrl_SetSyncMsgMenu(void) { MenuCtrl_SetFlags(0x100); }
 
-extern "C" void func_0206e5fc(void) { func_0206ef8c(0x100); }
+extern "C" void MenuCtrl_ClearSyncMsgMenu(void) { MenuCtrl_ClearFlags(0x100); }
 
-extern "C" BOOL func_0206e5ec(void) { return func_0206ef74(0x100); }
+extern "C" BOOL MenuCtrl_IsSyncMsgMenu(void) { return MenuCtrl_HasFlags(0x100); }
 
-extern "C" BOOL func_0206e5dc(void) { return func_0206ef74(0x200); }
+extern "C" BOOL MenuCtrl_IsFriendPageFromIndex(void) { return MenuCtrl_HasFlags(0x200); }
 
-extern "C" void func_0206e5cc(void) { func_0206ef9c(0x200); }
+extern "C" void MenuCtrl_SetFriendPageFromIndex(void) { MenuCtrl_SetFlags(0x200); }
 
-extern "C" void func_0206e5bc(void) { func_0206ef8c(0x200); }
+extern "C" void MenuCtrl_ClearFriendPageFromIndex(void) { MenuCtrl_ClearFlags(0x200); }
 
-extern "C" void *func_0206e5b4(void) {
-    return data_021cb588;
+extern "C" void *MenuCtrl_GetChatDraft(void) {
+    return sChatDraft;
 }
 
-extern "C" void func_0206e5a4(u32 a) {
-    func_02051268(a, data_021cb588, 0x20);
+extern "C" void MenuCtrl_SetChatDraft(u32 a) {
+    Mem_Copy(a, sChatDraft, 0x20);
 }
 
 // ---- code ----
 
-extern "C" void func_0206e594(void) {
-    func_0205125c(data_021cb588, 0x20);
+extern "C" void MenuCtrl_ClearChatDraft(void) {
+    Mem_Clear(sChatDraft, 0x20);
 }

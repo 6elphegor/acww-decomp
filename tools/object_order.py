@@ -23,7 +23,8 @@
 #   * moves the overlay's bss into a MEMORY region of its own without an output file, because mwld writes
 #     OBJECT-selected bss into the overlay file as zero bytes otherwise, and makes the overlays that load AFTER this
 #     one start after that region;
-#   * defines the other symbols.txt names of the unit's functions (labels) as linker script aliases;
+#   * defines the other symbols.txt names of the unit's functions (labels) as linker script aliases, at addresses
+#     where no object of the unit defines any of the names (tools/aliases.py adds them to the object otherwise);
 #   * adds the extra objects to the list of objects to link.
 # Without any object_order.txt the linker script and the object list are passed through unchanged.
 #
@@ -423,15 +424,18 @@ class Placement:
         return [f"OBJECT({section.selector()}, {section.obj.path.name})" for section in self.placed.get(kind, [])]
 
     def aliases(self) -> list[str]:
-        '''Other symbols.txt names of the unit's functions, which no object defines'''
+        '''Other symbols.txt names of the unit's functions, at addresses where no object defines any of the names.
+        Where an object defines one of them, tools/aliases.py adds the others to that object as real symbols.'''
         defined = set()
         for obj in self.objects:
             defined |= obj.global_names()
         by_address = {section.address: section for section in self.placed.get(".text", [])}
+        named = {address for name, address, kind in self.symbols
+                 if name in defined and re.match(r"(?:function|label)\(", kind)}
         lines = []
         for name, address, kind in self.symbols:
             section = by_address.get(address)
-            if section is None or name in defined or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name):
+            if section is None or address in named or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name):
                 continue
             match = re.match(r"(?:function|label)\((thumb|arm)", kind)
             if not match:

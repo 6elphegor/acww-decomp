@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I002d: itcm 0x01ffa4a0-0x01ffb040, NitroSDK OSi_EnterDmaCallback / idle loop / PXI recv IRQ / callback dispatch / OS_GetTick + NitroSystem g3d joint animation blend and bca evaluation (10 functions)
 // I001e: itcm 0x01ff9e10-0x01ffa2ec, NitroSystem g3d Maya texture matrix + NitroSDK MI GX-command DMA (MI_SendGXCommandAsync, MI_WaitDma, MIi_DmaSetParams, FIFO callbacks) (8 functions). ARM, mwcc 1.2/base, -O4,p.
@@ -106,7 +107,6 @@ typedef struct ResMatData {
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct A3 { s32 a[3]; } A3;
-typedef struct MtxFx33 { fx32 a[9]; } MtxFx33;
 
 // NNSG3dJntAnmResult (0x58 bytes)
 typedef struct JntAnm {
@@ -204,11 +204,11 @@ typedef struct OSIrqCallbackInfo {
 extern OSIrqCallbackInfo data_027e0058[]; // OSi_IrqCallbackInfo (DTCM)
 extern u8 data_027e0000[];                // DTCM start (OSi_IrqFunctionTable)
 
-extern u32 func_01ffa2ec(void);                            // OS_DisableInterrupts (assembly)
-extern u32 func_01ffa3d4(u32 enabled);                     // OS_RestoreInterrupts (assembly)
-extern u32 func_01ffa314(void);                            // OS_EnableInterrupts (assembly)
-extern void func_01ffa3c0(void);                           // OS_Halt (assembly)
-extern u32 func_01ff8128(u32 intr);                        // OS_EnableIrqMask
+extern u32 OS_DisableInterrupts(void);                            // OS_DisableInterrupts (assembly)
+extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreInterrupts (assembly)
+extern u32 OS_EnableInterrupts(void);                            // OS_EnableInterrupts (assembly)
+extern void OS_Halt(void);                           // OS_Halt (assembly)
+extern u32 OS_EnableIrqMask(u32 intr);                        // OS_EnableIrqMask
 
 extern volatile u64 data_021fcf24;                         // OSi_TickCounter
 
@@ -227,21 +227,21 @@ typedef struct ScaleTmp { fx32 s; fx32 inv; } ScaleTmp;
 extern RS *data_021f5cc0;                 // NNS_G3dRS
 extern const u8 data_02135e5c[][4];       // pivot index tables
 
-extern void func_02115ea8(u32 data, void *dest, u32 size);     // MIi_CpuClearFast
-extern fx32 func_01ffc5a4(fx32 a, fx32 b);                     // FX_Div
-extern void func_01ffc714(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
-extern void func_01ffc928(VecFx32 *a, VecFx32 *b, VecFx32 *dst); // VEC_CrossProduct
-extern void func_02104518(VecFx32 *dst, const VecFx32 *src, fx32 ratio, u32 isOne);   // blend scale
-extern void func_02106f90(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_0210710c(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_0210685c(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_02106ba8(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_02106d60(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_02107460(JntAnm *pResult);
-extern void func_02107298(JntAnm *pResult);
-extern void func_021073f8(JntAnm *pResult);
-extern void func_01ffb040(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
-extern void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult);
+extern void MIi_CpuClearFast(u32 data, void *dest, u32 size);     // MIi_CpuClearFast
+extern fx32 FX_Div(fx32 a, fx32 b);                     // FX_Div
+extern void VEC_Normalize(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
+extern void VEC_CrossProduct(VecFx32 *a, VecFx32 *b, VecFx32 *dst); // VEC_CrossProduct
+extern void blendScaleVec_(VecFx32 *dst, const VecFx32 *src, fx32 ratio, u32 isOne);   // blend scale
+extern void getTransDataEx_(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getTransData_(fx32 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getRotDataEx_(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getScaleDataEx_(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getScaleData_(ScaleTmp *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getMdlTrans_(JntAnm *pResult);
+extern void getMdlRot_(JntAnm *pResult);
+extern void getMdlScale_(JntAnm *pResult);
+extern void getRotData_(MtxFx33 *dst, fx32 frame, const u32 *pData, const ResJntAnm *pJntAnm);
+extern void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult);
 
 /* PROTOS */
 /* END PROTOS */
@@ -267,13 +267,13 @@ static inline int PXIi_RecvWordByFifo(PXIFifoMessage *data) {
         reg_PXI_FIFO_CNT |= 0xc000;
         return -3;
     }
-    enabled = func_01ffa2ec();
+    enabled = OS_DisableInterrupts();
     if (reg_PXI_FIFO_CNT & 0x100) {
-        func_01ffa3d4(enabled);
+        OS_RestoreInterrupts(enabled);
         return -4;
     }
     data->raw = reg_PXI_RECV_FIFO;
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
     return 0;
 }
 
@@ -283,13 +283,13 @@ static inline int PXIi_SendWordByFifo(u32 data) {
         reg_PXI_FIFO_CNT |= 0xc000;
         return -3;
     }
-    enabled = func_01ffa2ec();
+    enabled = OS_DisableInterrupts();
     if (reg_PXI_FIFO_CNT & 2) {
-        func_01ffa3d4(enabled);
+        OS_RestoreInterrupts(enabled);
         return -1;
     }
     reg_PXI_SEND_FIFO = data;
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
     return 0;
 }
 
@@ -301,7 +301,7 @@ typedef struct CbEntry {
 extern CbEntry data_027e032c[];
 
 // NNSi_G3dAnmCalcGetRotMtx
-BOOL func_01ffaea0(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 idx) {
+BOOL getRotDataByIdx_(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 idx) {
     if (idx & 0x8000) {
         u32 n;
         fx32 A;
@@ -352,7 +352,7 @@ BOOL func_01ffaea0(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 
 }
 
 // NNSi_G3dAnmCalcNsBca
-void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult) {
+void getJntSRTAnmResult_(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pResult) {
     u32 ofs = pJntAnm->ofsAnm[dataIdx];
     BOOL interpolate;
     u32 info = *(const u32 *)((const u8 *)pJntAnm + ofs);
@@ -373,9 +373,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
     if (!(info & 6)) {
         if (!(info & 8)) {
             if (interpolate) {
-                func_02106f90(&pResult->trans.x, frame, pData, pJntAnm);
+                getTransDataEx_(&pResult->trans.x, frame, pData, pJntAnm);
             } else {
-                func_0210710c(&pResult->trans.x, frame, pData, pJntAnm);
+                getTransData_(&pResult->trans.x, frame, pData, pJntAnm);
             }
             pData += 2;
         } else {
@@ -383,9 +383,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         }
         if (!(info & 16)) {
             if (interpolate) {
-                func_02106f90(&pResult->trans.y, frame, pData, pJntAnm);
+                getTransDataEx_(&pResult->trans.y, frame, pData, pJntAnm);
             } else {
-                func_0210710c(&pResult->trans.y, frame, pData, pJntAnm);
+                getTransData_(&pResult->trans.y, frame, pData, pJntAnm);
             }
             pData += 2;
         } else {
@@ -393,9 +393,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         }
         if (!(info & 32)) {
             if (interpolate) {
-                func_02106f90(&pResult->trans.z, frame, pData, pJntAnm);
+                getTransDataEx_(&pResult->trans.z, frame, pData, pJntAnm);
             } else {
-                func_0210710c(&pResult->trans.z, frame, pData, pJntAnm);
+                getTransData_(&pResult->trans.z, frame, pData, pJntAnm);
             }
             pData += 2;
         } else {
@@ -405,19 +405,19 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         if (info & 2) {
             pResult->flag |= 4;
         } else {
-            func_02107460(pResult);
+            getMdlTrans_(pResult);
         }
     }
     if (!(info & 0xc0)) {
         if (!(info & 0x100)) {
             if (interpolate) {
-                func_0210685c(&pResult->rot, frame, pData, pJntAnm);
+                getRotDataEx_(&pResult->rot, frame, pData, pJntAnm);
             } else {
-                func_01ffb040(&pResult->rot, frame, pData, pJntAnm);
+                getRotData_(&pResult->rot, frame, pData, pJntAnm);
             }
             pData += 2;
         } else {
-            if (func_01ffaea0(&pResult->rot, (const fx16 *)((const u8 *)pJntAnm + pJntAnm->ofsRot3),
+            if (getRotDataByIdx_(&pResult->rot, (const fx16 *)((const u8 *)pJntAnm + pJntAnm->ofsRot3),
                               (const fx16 *)((const u8 *)pJntAnm + pJntAnm->ofsRot5), *pData)) {
                 fx32 c0, c1, c2;
                 c0 = (pResult->rot.a[1] * pResult->rot.a[5] - pResult->rot.a[2] * pResult->rot.a[4]) >> 12;
@@ -433,15 +433,15 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         if (info & 0x40) {
             pResult->flag |= 2;
         } else {
-            func_02107298(pResult);
+            getMdlRot_(pResult);
         }
     }
     if (!(info & 0x600)) {
         if (!(info & 0x800)) {
             if (interpolate) {
-                func_02106ba8(&tx, frame, pData, pJntAnm);
+                getScaleDataEx_(&tx, frame, pData, pJntAnm);
             } else {
-                func_02106d60(&tx, frame, pData, pJntAnm);
+                getScaleData_(&tx, frame, pData, pJntAnm);
             }
             scale[0] = tx.s;
             scale[3] = tx.inv;
@@ -451,9 +451,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         }
         if (!(info & 0x1000)) {
             if (interpolate) {
-                func_02106ba8(&ty, frame, pData + 2, pJntAnm);
+                getScaleDataEx_(&ty, frame, pData + 2, pJntAnm);
             } else {
-                func_02106d60(&ty, frame, pData + 2, pJntAnm);
+                getScaleData_(&ty, frame, pData + 2, pJntAnm);
             }
             scale[1] = ty.s;
             scale[4] = ty.inv;
@@ -463,9 +463,9 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         }
         if (!(info & 0x2000)) {
             if (interpolate) {
-                func_02106ba8(&tz, frame, pData + 4, pJntAnm);
+                getScaleDataEx_(&tz, frame, pData + 4, pJntAnm);
             } else {
-                func_02106d60(&tz, frame, pData + 4, pJntAnm);
+                getScaleData_(&tz, frame, pData + 4, pJntAnm);
             }
             scale[2] = tz.s;
             scale[5] = tz.inv;
@@ -477,7 +477,7 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
         if (info & 0x200) {
             pResult->flag |= 1;
         } else {
-            func_021073f8(pResult);
+            getMdlScale_(pResult);
             return;
         }
     }
@@ -485,7 +485,7 @@ void func_01ffaab0(const ResJntAnm *pJntAnm, u32 dataIdx, fx32 frame, JntAnm *pR
 }
 
 // NNSi_G3dAnmCalcNsBca (frame clamp wrapper)
-void func_01ffaa68(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
+void NNSi_G3dAnmCalcNsBca(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
     const ResJntAnm *pJntAnm = (const ResJntAnm *)pAnmObj->resAnm;
     fx32 frame = pAnmObj->frame;
     if (frame >= (fx32)(pJntAnm->numFrame << 12)) {
@@ -493,11 +493,11 @@ void func_01ffaa68(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
     } else if (frame < 0) {
         frame = 0;
     }
-    func_01ffaab0(pJntAnm, dataIdx, frame, pResult);
+    getJntSRTAnmResult_(pJntAnm, dataIdx, frame, pResult);
 }
 
 // NNSi_G3dAnmBlendJnt
-BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
+BOOL NNSi_G3dAnmBlendJnt(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
     if (!pAnmObj->next) {
         u16 mapData = pAnmObj->mapData[dataIdx];
         if ((mapData & 0x300) != 0x100) {
@@ -530,7 +530,7 @@ BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
             fx32 ratio;
             {
                 volatile u32 zero = 0;
-                func_02115ea8(zero, pResult, sizeof(JntAnm));
+                MIi_CpuClearFast(zero, pResult, sizeof(JntAnm));
             }
             pResult->flag = 0xffffffff;
             do {
@@ -542,11 +542,11 @@ BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
                 if (sumOfRatio == 0x1000) {
                     ratio = pAnmObj->ratio;
                 } else {
-                    ratio = func_01ffc5a4(pAnmObj->ratio, sumOfRatio);
+                    ratio = FX_Div(pAnmObj->ratio, sumOfRatio);
                 }
-                func_02104518(&pResult->scale, &tmp.scale, ratio, tmp.flag & 1);
-                func_02104518(&pResult->scaleEx0, &tmp.scaleEx0, ratio, tmp.flag & 8);
-                func_02104518(&pResult->scaleEx1, &tmp.scaleEx1, ratio, tmp.flag & 16);
+                blendScaleVec_(&pResult->scale, &tmp.scale, ratio, tmp.flag & 1);
+                blendScaleVec_(&pResult->scaleEx0, &tmp.scaleEx0, ratio, tmp.flag & 8);
+                blendScaleVec_(&pResult->scaleEx1, &tmp.scaleEx1, ratio, tmp.flag & 16);
                 if (!(tmp.flag & 4)) {
                     pResult->trans.x += (fx32)(((s64)ratio * tmp.trans.x) >> 12);
                     pResult->trans.y += (fx32)(((s64)ratio * tmp.trans.y) >> 12);
@@ -565,28 +565,28 @@ BOOL func_01ffa764(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
                 }
                 pResult->flag &= tmp.flag;
             } while ((pAnmObj = pAnmObj->next));
-            func_01ffc928((VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[3], (VecFx32 *)&pResult->rot.a[6]);
-            func_01ffc714((VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[0]);
-            func_01ffc714((VecFx32 *)&pResult->rot.a[6], (VecFx32 *)&pResult->rot.a[6]);
-            func_01ffc928((VecFx32 *)&pResult->rot.a[6], (VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[3]);
+            VEC_CrossProduct((VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[3], (VecFx32 *)&pResult->rot.a[6]);
+            VEC_Normalize((VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[0]);
+            VEC_Normalize((VecFx32 *)&pResult->rot.a[6], (VecFx32 *)&pResult->rot.a[6]);
+            VEC_CrossProduct((VecFx32 *)&pResult->rot.a[6], (VecFx32 *)&pResult->rot.a[0], (VecFx32 *)&pResult->rot.a[3]);
             return TRUE;
         }
     }
 }
 
 // OS_GetTick
-u64 func_01ffa6b4(void) {
-    u32 enabled = func_01ffa2ec();
+u64 OS_GetTick(void) {
+    u32 enabled = OS_DisableInterrupts();
     vu16 countL = *(vu16 *)0x04000100;
     vu64 countH = data_021fcf24 & 0x0000ffffffffffffULL;
     if ((reg_OS_IF & 8) && !(countL & 0x8000)) {
         countH++;
     }
-    func_01ffa3d4(enabled);
+    OS_RestoreInterrupts(enabled);
     return (countH << 16) | countL;
 }
 
-void func_01ffa654(s32 msg) {
+void SNDi_CallAlarmHandler(s32 msg) {
     CbEntry *e = &data_027e032c[msg & 0xff];
     if (((msg >> 8) & 0xff) != e->tag) {
         return;
@@ -597,14 +597,14 @@ void func_01ffa654(s32 msg) {
     e->func(e->arg);
 }
 
-void func_01ffa624(u32 a, s32 msg) {
-    u32 enabled = func_01ffa2ec();
-    func_01ffa654(msg);
-    func_01ffa3d4(enabled);
+void PxiFifoCallback(u32 a, s32 msg) {
+    u32 enabled = OS_DisableInterrupts();
+    SNDi_CallAlarmHandler(msg);
+    OS_RestoreInterrupts(enabled);
 }
 
 // PXI receive FIFO not-empty IRQ handler
-void func_01ffa500(void) {
+void PXIi_HandlerRecvFifoNotEmpty(void) {
     PXIFifoMessage data;
     int error;
     u32 tag;
@@ -629,18 +629,18 @@ void func_01ffa500(void) {
     }
 }
 
-void func_01ffa4ec(void) {
-    func_01ffa314();
+void OSi_IdleThreadProc(void) {
+    OS_EnableInterrupts();
     while (1) {
-        func_01ffa3c0();
+        OS_Halt();
     }
 }
 
 // OSi_EnterDmaCallback
-void func_01ffa4a0(u32 dmaNo, void (*callback)(void *), void *arg) {
+void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg) {
     u32 mask;
     data_027e0058[dmaNo].func = callback;
     data_027e0058[dmaNo].arg = arg;
-    data_027e0058[dmaNo].enable = func_01ff8128(1 << (dmaNo + 8)) & (1 << (dmaNo + 8));
+    data_027e0058[dmaNo].enable = OS_EnableIrqMask(1 << (dmaNo + 8)) & (1 << (dmaNo + 8));
 }
 

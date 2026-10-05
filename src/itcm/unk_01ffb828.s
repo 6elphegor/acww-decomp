@@ -10,10 +10,10 @@
 	.thumb
 
 ; MTX_Scale43_(pDst, x, y, z)
-	.global func_01ffb828
-	.type func_01ffb828, @function
-	.size func_01ffb828, 0x16
-func_01ffb828:
+	.global MTX_Scale43_
+	.type MTX_Scale43_, @function
+	.size MTX_Scale43_, 0x16
+MTX_Scale43_:
 	stmia r0!, {r1}
 	mov r1, #0
 	str r3, [r0, #28]
@@ -28,10 +28,10 @@ func_01ffb828:
 	.short 0x0000
 
 ; MTX_RotX43_(pDst, sinVal, cosVal)
-	.global func_01ffb840
-	.type func_01ffb840, @function
-	.size func_01ffb840, 0x1e
-func_01ffb840:
+	.global MTX_RotX43_
+	.type MTX_RotX43_, @function
+	.size MTX_RotX43_, 0x1e
+MTX_RotX43_:
 	str r1, [r0, #20]
 	neg r1, r1
 	str r1, [r0, #28]
@@ -50,10 +50,10 @@ func_01ffb840:
 	.short 0x0000
 
 ; MTX_RotY43_(pDst, sinVal, cosVal)
-	.global func_01ffb860
-	.type func_01ffb860, @function
-	.size func_01ffb860, 0x1a
-func_01ffb860:
+	.global MTX_RotY43_
+	.type MTX_RotY43_, @function
+	.size MTX_RotY43_, 0x1a
+MTX_RotY43_:
 	str r1, [r0, #24]
 	mov r3, #0
 	stmia r0!, {r2, r3}
@@ -70,10 +70,10 @@ func_01ffb860:
 	.short 0x0000
 
 ; MTX_RotZ43_(pDst, sinVal, cosVal)
-	.global func_01ffb87c
-	.type func_01ffb87c, @function
-	.size func_01ffb87c, 0x1a
-func_01ffb87c:
+	.global MTX_RotZ43_
+	.type MTX_RotZ43_, @function
+	.size MTX_RotZ43_, 0x1a
+MTX_RotZ43_:
 	stmia r0!, {r2}
 	mov r3, #0
 	stmia r0!, {r1, r3}

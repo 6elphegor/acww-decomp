@@ -27,21 +27,21 @@ extern const u32 data_0213c008[48]; // MD5 message index table (rounds 2-4)
 extern const u8 data_0213c004[1];   // MD5 padding byte 0x80
 extern SHA1Compress data_0213c1c8;  // SHA1 block function pointer
 
-extern void func_02115e64(u32 data, void *dest, u32 size); // MI_CpuFill32
-extern void func_02115fb4(void *dest, u32 data, u32 size); // MI_CpuFill8
-extern void func_02116048(const void *src, void *dest, u32 size); // MI_CpuCopy8
+extern void MIi_CpuClear32(u32 data, void *dest, u32 size); // MI_CpuFill32
+extern void MI_CpuFill8(void *dest, u32 data, u32 size); // MI_CpuFill8
+extern void MI_CpuCopy8(const void *src, void *dest, u32 size); // MI_CpuCopy8
 
-void func_0211b3a8(SHA1Context *ctx);
-void func_0211b24c(SHA1Context *ctx, const void *data, u32 len);
-void func_0211b040(SHA1Context *ctx, u8 *hash, ...);
-void func_0211aeb4(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen);
-void func_0211ae74(MD5Context *ctx);
-void func_0211ad80(MD5Context *ctx, const void *data, u32 len);
-void func_0211acbc(u8 *out, MD5Context *ctx);
-void func_0211a8d4(MD5Context *ctx);
+void DGT_Hash2Reset(SHA1Context *ctx);
+void DGT_Hash2SetSource(SHA1Context *ctx, const void *data, u32 len);
+void DGT_Hash2GetDigest(SHA1Context *ctx, u8 *hash, ...);
+void DGT_Hash2CalcHmac(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen);
+void DGT_Hash1Reset(MD5Context *ctx);
+void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);
+void DGT_Hash1GetDigest_R(u8 *out, MD5Context *ctx);
+void ProcessBlock(MD5Context *ctx);
 
 // MATH_SHA1Init
-void func_0211b3a8(SHA1Context *ctx) {
+void DGT_Hash2Reset(SHA1Context *ctx) {
     ctx->h[0] = 0x67452301;
     ctx->h[1] = 0xefcdab89;
     ctx->h[2] = 0x98badcfe;
@@ -53,7 +53,7 @@ void func_0211b3a8(SHA1Context *ctx) {
 }
 
 // MATH_SHA1Update
-void func_0211b24c(SHA1Context *ctx, const void *data, u32 len) {
+void DGT_Hash2SetSource(SHA1Context *ctx, const void *data, u32 len) {
     u8 *buf = ctx->block;
     u32 n;
     if (len == 0) {
@@ -70,13 +70,13 @@ void func_0211b24c(SHA1Context *ctx, const void *data, u32 len) {
     if (ctx->blockLen != 0) {
         if (ctx->blockLen + len >= 64) {
             n = 64 - ctx->blockLen;
-            func_02116048(data, buf + ctx->blockLen, n);
+            MI_CpuCopy8(data, buf + ctx->blockLen, n);
             len -= n;
             data = (const u8 *)data + n;
             data_0213c1c8(ctx, buf, 64);
             ctx->blockLen = 0;
         } else {
-            func_02116048(data, buf + ctx->blockLen, len);
+            MI_CpuCopy8(data, buf + ctx->blockLen, len);
             ctx->blockLen += len;
             return;
         }
@@ -89,7 +89,7 @@ void func_0211b24c(SHA1Context *ctx, const void *data, u32 len) {
             data = (const u8 *)data + n;
         } else {
             do {
-                func_02116048(data, buf, 64);
+                MI_CpuCopy8(data, buf, 64);
                 data = (const u8 *)data + 64;
                 data_0213c1c8(ctx, buf, 64);
                 n -= 64;
@@ -100,11 +100,11 @@ void func_0211b24c(SHA1Context *ctx, const void *data, u32 len) {
     if (len == 0) {
         return;
     }
-    func_02116048(data, buf, len);
+    MI_CpuCopy8(data, buf, len);
 }
 
 // MATH_SHA1GetHash
-void func_0211b040(SHA1Context *ctx, u8 *hash, ...) {
+void DGT_Hash2GetDigest(SHA1Context *ctx, u8 *hash, ...) {
     u32 *w = (u32 *)ctx->block;
     s32 i = ctx->blockLen;
     s32 j = i >> 2;
@@ -172,11 +172,11 @@ void func_0211b040(SHA1Context *ctx, u8 *hash, ...) {
     hash[19] = t;
     ctx->blockLen = 0;
     zero = 0;
-    func_02115e64(zero, &ctx, 4);
+    MIi_CpuClear32(zero, &ctx, 4);
 }
 
 // MATH_CalcHMACSHA1
-void func_0211aeb4(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen) {
+void DGT_Hash2CalcHmac(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen) {
     u8 ipad[64];
     u8 opad[64];
     u8 digest[20];
@@ -187,9 +187,9 @@ void func_0211aeb4(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyL
         return;
     }
     if (keyLen > 64) {
-        func_0211b3a8(&ctx);
-        func_0211b24c(&ctx, key, keyLen);
-        func_0211b040(&ctx, hash);
+        DGT_Hash2Reset(&ctx);
+        DGT_Hash2SetSource(&ctx, key, keyLen);
+        DGT_Hash2GetDigest(&ctx, hash);
         key = hash;
         keyLen = 20;
     }
@@ -201,18 +201,18 @@ void func_0211aeb4(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyL
         ipad[i] = 0x36;
         opad[i] = 0x5c;
     }
-    func_0211b3a8(&ctx);
-    func_0211b24c(&ctx, ipad, 64);
-    func_0211b24c(&ctx, data, dataLen);
-    func_0211b040(&ctx, hash);
-    func_0211b3a8(&ctx);
-    func_0211b24c(&ctx, opad, 64);
-    func_0211b24c(&ctx, hash, 20);
-    func_0211b040(&ctx, out);
+    DGT_Hash2Reset(&ctx);
+    DGT_Hash2SetSource(&ctx, ipad, 64);
+    DGT_Hash2SetSource(&ctx, data, dataLen);
+    DGT_Hash2GetDigest(&ctx, hash);
+    DGT_Hash2Reset(&ctx);
+    DGT_Hash2SetSource(&ctx, opad, 64);
+    DGT_Hash2SetSource(&ctx, hash, 20);
+    DGT_Hash2GetDigest(&ctx, out);
 }
 
 // MATH_MD5Init
-void func_0211ae74(MD5Context *ctx) {
+void DGT_Hash1Reset(MD5Context *ctx) {
     ctx->a = 0x67452301;
     ctx->b = 0xefcdab89;
     ctx->c = 0x98badcfe;
@@ -221,7 +221,7 @@ void func_0211ae74(MD5Context *ctx) {
 }
 
 // MATH_MD5Update
-void func_0211ad80(MD5Context *ctx, const void *data, u32 len) {
+void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len) {
     u32 idx = (u32)ctx->total & 63;
     u32 room;
     s32 blocks;
@@ -232,21 +232,25 @@ void func_0211ad80(MD5Context *ctx, const void *data, u32 len) {
         if (len == 0) {
             return;
         }
-        func_02116048(data, ctx->buffer + idx, len);
+        MI_CpuCopy8(data, ctx->buffer + idx, len);
         return;
     }
-    func_02116048(data, ctx->buffer + idx, room);
-    func_0211a8d4(ctx);
+    MI_CpuCopy8(data, ctx->buffer + idx, room);
+    ProcessBlock(ctx);
     len -= room;
     blocks = len >> 6;
     p = (const u8 *)data + room;
     while (blocks > 0) {
-        func_02116048(p, ctx->buffer, 64);
+        MI_CpuCopy8(p, ctx->buffer, 64);
         p += 64;
-        func_0211a8d4(ctx);
+        ProcessBlock(ctx);
         blocks--;
     }
     if (len & 63) {
-        func_02116048(p, ctx->buffer, len & 63);
+        MI_CpuCopy8(p, ctx->buffer, len & 63);
     }
 }
+
+// ---- file-scope objects (.data 0x0213c1c8-0x0213c1cc)
+void DGTi_hash2_arm4_small(SHA1Context *ctx, const void *data, u32 len);
+SHA1Compress data_0213c1c8 = DGTi_hash2_arm4_small;

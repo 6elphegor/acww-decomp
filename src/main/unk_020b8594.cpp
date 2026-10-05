@@ -1,442 +1,382 @@
 #include "types.h"
+#include "sys/PrioListNode.h"
+#include "gfx/BgTransfer.h"
+#include "gfx/TexTransfer.h"
+#include "gfx/VramTask.h"
+#include "gfx/MatTexVramTask.h"
 
 extern "C" {
 // Other files
-void func_02002580(u32 a, u32 b, u32 c, u32 d, u32 e);
-void func_020024f0(u32 a, u32 b, u32 c, u32 d);
-void func_02002438(u32 a, u32 b, u32 c, u32 d, u32 e);
-u32 _ZN12Unk_02056fd813func_02057110Ei(void *res, u32 idx);
-u32 _ZN12Unk_02056fd813func_020570b0Ei(void *p, u32 x);
-u32 _ZN12Unk_02056fd813func_02057048Ei(void *p, u32 x);
-u32 _ZN12Unk_0205712013func_0205714cEv(void *p);
-u32 _ZN12Unk_02056fd813func_02056fd8Ei(void *p, u32 x);
-u32 _ZN12Unk_0205712013func_0205713cEv(void *p);
-u32 _ZN12Unk_0205712013func_02057120Ev(void *p);
-void func_021145cc(void *p, u32 x);
-void func_02103c40(void *p, u32 x);
-void func_02103bc0(void *p, u32 x);
-void func_02111ff0(void);
-void func_02111f7c(u32 a, u32 b, u32 c);
-void func_02111f24(void);
-void func_0211220c(void);
-void func_021120a8(u32 a, u32 b, u32 c);
-void func_02112038(void);
+void Gfx2d_LoadPaletteRange(u32 a, u32 b, u32 c, u32 d, u32 e);
+void Gfx2d_LoadScreen(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_LoadCharRange(u32 a, u32 b, u32 c, u32 d, u32 e);
+u32 _ZN12G3dResAccess10findMatIdxEi(void *res, u32 idx);
+u32 _ZN12G3dResAccess10getTexDataEi(void *p, u32 x);
+u32 _ZN12G3dResAccess11getPlttDataEi(void *p, u32 x);
+u32 _ZN10G3dMatData10getTexSizeEv(void *p);
+u32 _ZN12G3dResAccess11getPlttSizeEi(void *p, u32 x);
+u32 _ZN10G3dMatData10getTexAddrEv(void *p);
+u32 _ZN10G3dMatData11getPlttAddrEv(void *p);
+void DC_FlushRange(void *p, u32 x);
+void NNS_G3dTexLoad(void *p, u32 x);
+void NNS_G3dPlttLoad(void *p, u32 x);
+void GX_BeginLoadTexPltt(void);
+void GX_LoadTexPltt(u32 a, u32 b, u32 c);
+void GX_EndLoadTexPltt(void);
+void GX_BeginLoadTex(void);
+void GX_LoadTex(u32 a, u32 b, u32 c);
+void GX_EndLoadTex(void);
 }
 
-// Five-word command record (fields depend on the mode it was set up for).
-struct Unk_020b8b40 {
-    u32 unk_00;
-    u8 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
 
-    void func_020b8b44(void);
-    void func_020b8b68(u32 a, u8 b, u32 c, u8 d);
-    void func_020b8b80(void);
-    void func_020b8ba0(u32 a, u8 b, u32 c);
-    void func_020b8bac(void);
-    void func_020b8bc4(u32 a, u8 b, u32 c, u32 d);
-    u8 func_020b8bd0(void);
-    void func_020b8be0(void);
-    void func_020b8bfc(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void func_020b8c0c(void);
-};
-
-// Three-word record used by three modes.
-struct Unk_020b8c1c {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-
-    u8 func_020b8c1c(void);
-    u8 func_020b8c30(void);
-    void func_020b8c40(void);
-    void func_020b8c64(void);
-    void func_020b8c88(void);
-    void func_020b8cac(u32 a, u32 b, u32 c);
-    void func_020b8cb4(void);
-};
 
 extern "C" {
-u8 func_020b8b40(Unk_020b8b40 *p);
-u8 func_020b8b7c(Unk_020b8b40 *p);
-u8 func_020b8ba8(Unk_020b8b40 *p);
-u8 func_020b8c2c(Unk_020b8c1c *p);
+u8 BgTransfer_GetPaletteRangeCost(BgTransfer *p);
+u8 BgTransfer_GetPaletteCost(BgTransfer *p);
+u8 BgTransfer_GetScreenCost(BgTransfer *p);
+u8 TexTransfer_GetPlttCost(TexTransfer *p);
 }
 
-class Unk_020b83b0 {
-public:
-    u32 unk_04;
-    u32 unk_08;
-    u8 unk_0c;
 
-    Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
-};
-
-class Unk_020e4618 : public Unk_020b83b0 {
-public:
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
-
-    Unk_020e4618();
-    virtual BOOL vfunc_00() = 0;
-    void func_020b8464(void);
-    BOOL func_020b847c(void);
-    void func_020b8cc0(void);
-};
 
 extern "C" {
-void func_020b83b0(Unk_020e4618 *p);
-BOOL func_020b83c8(Unk_020e4618 *p);
+void VramQueue2d_Dequeue(VramTask *p);
+BOOL VramQueue2d_Enqueue(VramTask *p);
 }
 
-class Unk_020e45e0: public Unk_020e4618 {
-public:
-    Unk_020b8c1c unk_10;
-    Unk_020b8c1c unk_1c;
 
-    Unk_020e45e0();
-    virtual BOOL vfunc_00();
-    BOOL func_020b8840(void *a, u32 b, void *c, u32 d, u32 e);
-    void func_020b88f8(void);
-    void func_020b8930(void);
-    void func_020b8944(void);
+class TexVramTask : public VramTask {
+public:
+    TexTransfer xfer;
+
+    TexVramTask();
+    virtual BOOL execute();
+    BOOL requestMatTex(void *a, u32 b, u32 c);
+    void cancel(void);
+    void prepare(void);
+    BOOL requestTexResource(u32 *a, u8 b);
+    BOOL requestPltt(u32 a, u32 b, u32 c, u8 d);
+    BOOL requestTex(u32 a, u32 b, u32 c, u8 d);
+    void clear(void);
 };
 
-class Unk_020e45ec : public Unk_020e4618 {
+class BgVramTask : public VramTask {
 public:
-    Unk_020b8c1c unk_10;
+    BgTransfer xfer;
 
-    Unk_020e45ec();
-    virtual BOOL vfunc_00();
-    BOOL func_020b8984(void *a, u32 b, u32 c);
-    void func_020b89c8(void);
-    void func_020b89dc(void);
-    BOOL func_020b89f0(u32 *a, u8 b);
-    BOOL func_020b8a34(u32 a, u32 b, u32 c, u8 d);
-    BOOL func_020b8a84(u32 a, u32 b, u32 c, u8 d);
-    void func_020b8b08(void);
+    BgVramTask();
+    virtual BOOL execute();
+    virtual void clear();
+    BOOL requestPaletteRange(u32 a, u8 b, u32 c, u8 d);
+    BOOL requestPalette(u32 a, u8 b, u32 c);
+    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
+    BOOL requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
+    void prepare(void);
+    void cancel(void);
 };
 
-class Unk_020e45f8 : public Unk_020e4618 {
+class BgVramTaskPair : public BgVramTask {
 public:
-    Unk_020b8b40 unk_10;
+    BgTransfer xfer2;
 
-    Unk_020e45f8();
-    virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b8618(u32 a, u8 b, u32 c, u8 d);
-    BOOL func_020b8670(u32 a, u8 b, u32 c);
-    BOOL func_020b86c0(u32 a, u8 b, u32 c, u32 d);
-    BOOL func_020b8714(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void func_020b876c(void);
-    void func_020b87d0(void);
+    BgVramTaskPair();
+    virtual BOOL execute();
+    virtual void clear();
+    BOOL requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g);
+    BOOL requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
 };
 
-class Unk_020e4608 : public Unk_020e45f8 {
-public:
-    Unk_020b8b40 unk_24;
-
-    Unk_020e4608();
-    virtual BOOL vfunc_00();
-    virtual void vfunc_04();
-    BOOL func_020b84a4(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g);
-    BOOL func_020b851c(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
-};
-
-void Unk_020e4618::func_020b8cc0(void) {
-    unk_0d = 0;
-    unk_0e = 0xa;
-    unk_0f = 1;
+void VramTask::resetState(void) {
+    state = 0;
+    kind = 0xa;
+    cost = 1;
 }
 
-void Unk_020b8c1c::func_020b8cb4(void) {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
+void TexTransfer::clear(void) {
+    dstAddr = 0;
+    src = 0;
+    size = 0;
 }
 
-void Unk_020b8c1c::func_020b8cac(u32 a, u32 b, u32 c) {
-    unk_00 = a;
-    unk_04 = b;
-    unk_08 = c;
+void TexTransfer::set(u32 a, u32 b, u32 c) {
+    dstAddr = a;
+    src = b;
+    size = c;
 }
 
-void Unk_020b8c1c::func_020b8c88(void) {
-    func_021145cc((void *)unk_04, unk_08);
-    func_0211220c();
-    func_021120a8(unk_04, unk_00, unk_08);
-    func_02112038();
+void TexTransfer::loadTex(void) {
+    DC_FlushRange((void *)src, size);
+    GX_BeginLoadTex();
+    GX_LoadTex(src, dstAddr, size);
+    GX_EndLoadTex();
 }
 
-void Unk_020b8c1c::func_020b8c64(void) {
-    func_021145cc((void *)unk_04, unk_08);
-    func_02111ff0();
-    func_02111f7c(unk_04, unk_00, unk_08);
-    func_02111f24();
+void TexTransfer::loadTexPltt(void) {
+    DC_FlushRange((void *)src, size);
+    GX_BeginLoadTexPltt();
+    GX_LoadTexPltt(src, dstAddr, size);
+    GX_EndLoadTexPltt();
 }
 
-void Unk_020b8c1c::func_020b8c40(void) {
-    u32 *p = (u32 *)unk_04;
-    func_021145cc(p, p[1]);
-    func_02103c40(p, 1);
-    func_02103bc0(p, 1);
+void TexTransfer::loadTexResource(void) {
+    u32 *p = (u32 *)src;
+    DC_FlushRange(p, p[1]);
+    NNS_G3dTexLoad(p, 1);
+    NNS_G3dPlttLoad(p, 1);
 }
 
-u8 Unk_020b8c1c::func_020b8c30(void) {
-    u8 t = unk_08 >> 11;
+u8 TexTransfer::getTexCost(void) {
+    u8 t = size >> 11;
     return t + 1;
 }
 
-extern "C" u8 func_020b8c2c(Unk_020b8c1c *p) {
+extern "C" u8 TexTransfer_GetPlttCost(TexTransfer *p) {
     return 1;
 }
 
-// ---- Unk_020b8c1c ----
-u8 Unk_020b8c1c::func_020b8c1c(void) {
-    u8 t = unk_08 >> 11;
+// ---- TexTransfer ----
+u8 TexTransfer::getResCost(void) {
+    u8 t = size >> 11;
     return t + 1;
 }
 
-void Unk_020b8b40::func_020b8c0c(void) {
-    unk_00 = 0;
-    unk_04 = 0xff;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
+void BgTransfer::clear(void) {
+    buf = 0;
+    layer = 0xff;
+    loadArg0 = 0;
+    loadArg1 = 0;
+    loadArg2 = 0;
 }
 
-void Unk_020b8b40::func_020b8bfc(u32 a, u8 b, u32 c, u32 d, u32 e) {
-    unk_00 = a;
-    unk_04 = b;
-    unk_08 = c;
-    unk_0c = d;
-    unk_10 = e;
+void BgTransfer::setChars(u32 a, u8 b, u32 c, u32 d, u32 e) {
+    buf = a;
+    layer = b;
+    loadArg0 = c;
+    loadArg1 = d;
+    loadArg2 = e;
 }
 
-void Unk_020b8b40::func_020b8be0(void) {
-    func_02002438(unk_00, unk_04, unk_08, unk_0c, unk_10);
+void BgTransfer::loadChars(void) {
+    Gfx2d_LoadCharRange(buf, layer, loadArg0, loadArg1, loadArg2);
 }
 
-u8 Unk_020b8b40::func_020b8bd0(void) {
-    return ((unk_10 - unk_0c) + 0x3f) >> 6;
+u8 BgTransfer::getCharCost(void) {
+    return ((loadArg2 - loadArg1) + 0x3f) >> 6;
 }
 
-void Unk_020b8b40::func_020b8bc4(u32 a, u8 b, u32 c, u32 d) {
-    unk_00 = a;
-    unk_04 = b;
-    unk_08 = c;
-    unk_0c = d;
+void BgTransfer::setScreen(u32 a, u8 b, u32 c, u32 d) {
+    buf = a;
+    layer = b;
+    loadArg0 = c;
+    loadArg1 = d;
 }
 
-void Unk_020b8b40::func_020b8bac(void) {
-    func_020024f0(unk_00, unk_04, unk_08, unk_0c);
+void BgTransfer::loadScreen(void) {
+    Gfx2d_LoadScreen(buf, layer, loadArg0, loadArg1);
 }
 
-extern "C" u8 func_020b8ba8(Unk_020b8b40 *p) {
+extern "C" u8 BgTransfer_GetScreenCost(BgTransfer *p) {
     return 1;
 }
 
-void Unk_020b8b40::func_020b8ba0(u32 a, u8 b, u32 c) {
-    unk_00 = a;
-    unk_04 = b;
-    unk_08 = c;
+void BgTransfer::setPalette(u32 a, u8 b, u32 c) {
+    buf = a;
+    layer = b;
+    loadArg0 = c;
 }
 
-void Unk_020b8b40::func_020b8b80(void) {
-    u32 t = (u8)unk_08;
-    func_02002580(unk_00, unk_04, t, t, t);
+void BgTransfer::loadPalette(void) {
+    u32 t = (u8)loadArg0;
+    Gfx2d_LoadPaletteRange(buf, layer, t, t, t);
 }
 
-extern "C" u8 func_020b8b7c(Unk_020b8b40 *p) {
+extern "C" u8 BgTransfer_GetPaletteCost(BgTransfer *p) {
     return 1;
 }
 
-void Unk_020b8b40::func_020b8b68(u32 a, u8 b, u32 c, u8 d) {
-    unk_00 = a;
-    unk_04 = b;
-    unk_08 = c;
-    unk_0c = d;
+void BgTransfer::setPaletteRange(u32 a, u8 b, u32 c, u8 d) {
+    buf = a;
+    layer = b;
+    loadArg0 = c;
+    loadArg1 = d;
 }
 
-// ---- Unk_020b8b40 ----
-void Unk_020b8b40::func_020b8b44(void) {
-    func_02002580(unk_00, unk_04, (u8)unk_08, (u8)unk_08, (u8)unk_0c);
+// ---- BgTransfer ----
+void BgTransfer::loadPaletteRange(void) {
+    Gfx2d_LoadPaletteRange(buf, layer, (u8)loadArg0, (u8)loadArg0, (u8)loadArg1);
 }
 
-extern "C" u8 func_020b8b40(Unk_020b8b40 *p) {
+extern "C" u8 BgTransfer_GetPaletteRangeCost(BgTransfer *p) {
     return 1;
 }
 
-Unk_020e45ec::Unk_020e45ec() {
-    unk_10.func_020b8cb4();
+TexVramTask::TexVramTask() {
+    xfer.clear();
 }
 
-void Unk_020e45ec::func_020b8b08(void) {
-    func_020b8cc0();
-    unk_10.func_020b8cb4();
+void TexVramTask::clear(void) {
+    resetState();
+    xfer.clear();
 }
 
-BOOL Unk_020e45ec::vfunc_00() {
-    switch (unk_0e) {
+BOOL TexVramTask::execute() {
+    switch (kind) {
     case 0:
-        unk_10.func_020b8c40();
+        xfer.loadTexResource();
         break;
     case 1:
-        unk_10.func_020b8c88();
+        xfer.loadTex();
         break;
     case 2:
-        unk_10.func_020b8c64();
+        xfer.loadTexPltt();
         break;
     }
     return TRUE;
 }
 
-BOOL Unk_020e45ec::func_020b8a84(u32 a, u32 b, u32 c, u8 d) {
-    func_020b89dc();
-    unk_0e = 1;
-    unk_10.func_020b8cac(b, a, c);
-    unk_0f = unk_10.func_020b8c30();
-    unk_0c = d;
-    if (func_020b847c()) {
+BOOL TexVramTask::requestTex(u32 a, u32 b, u32 c, u8 d) {
+    prepare();
+    kind = 1;
+    xfer.set(b, a, c);
+    cost = xfer.getTexCost();
+    priority = d;
+    if (enqueueTex()) {
         return TRUE;
     }
-    func_020b8b08();
+    clear();
     return FALSE;
 }
 
-BOOL Unk_020e45ec::func_020b8a34(u32 a, u32 b, u32 c, u8 d) {
-    func_020b89dc();
-    unk_0e = 2;
-    unk_10.func_020b8cac(b, a, c);
-    unk_0f = func_020b8c2c(&unk_10);
-    unk_0c = d;
-    if (func_020b847c()) {
+BOOL TexVramTask::requestPltt(u32 a, u32 b, u32 c, u8 d) {
+    prepare();
+    kind = 2;
+    xfer.set(b, a, c);
+    cost = TexTransfer_GetPlttCost(&xfer);
+    priority = d;
+    if (enqueueTex()) {
         return TRUE;
     }
-    func_020b8b08();
+    clear();
     return FALSE;
 }
 
-BOOL Unk_020e45ec::func_020b89f0(u32 *a, u8 b) {
-    func_020b89dc();
-    unk_0e = 0;
-    unk_10.func_020b8cac(0, (u32)a, a[1]);
-    unk_0f = unk_10.func_020b8c1c();
-    unk_0c = b;
-    if (func_020b847c()) {
+BOOL TexVramTask::requestTexResource(u32 *a, u8 b) {
+    prepare();
+    kind = 0;
+    xfer.set(0, (u32)a, a[1]);
+    cost = xfer.getResCost();
+    priority = b;
+    if (enqueueTex()) {
         return TRUE;
     }
-    func_020b8b08();
+    clear();
     return FALSE;
 }
 
-void Unk_020e45ec::func_020b89dc(void) {
-    func_020b89c8();
-    unk_0d = 1;
+void TexVramTask::prepare(void) {
+    cancel();
+    state = 1;
 }
 
-void Unk_020e45ec::func_020b89c8(void) {
-    func_020b8464();
-    func_020b8b08();
+void TexVramTask::cancel(void) {
+    dequeueTex();
+    clear();
 }
 
-// ---- Unk_020e45ec ----
-BOOL Unk_020e45ec::func_020b8984(void *a, u32 b, u32 c) {
+// ---- TexVramTask ----
+BOOL TexVramTask::requestMatTex(void *a, u32 b, u32 c) {
     u8 *base = (u8 *)a + *(u32 *)((u8 *)a + 8);
     u8 *tbl = base + 4;
     u16 off = *(u16 *)(base + 0xa);
     u8 *ent = tbl + off;
     ent += *(u16 *)ent * b;
     u8 *rec = base + *(u32 *)(ent + 4);
-    u32 v1 = _ZN12Unk_0205712013func_0205714cEv(rec);
-    u32 v2 = _ZN12Unk_0205712013func_0205713cEv(rec);
-    return func_020b8a84(c, v2, v1, 2);
+    u32 v1 = _ZN10G3dMatData10getTexSizeEv(rec);
+    u32 v2 = _ZN10G3dMatData10getTexAddrEv(rec);
+    return requestTex(c, v2, v1, 2);
 }
 
-Unk_020e45e0::Unk_020e45e0() {
-    unk_10.func_020b8cb4();
-    unk_1c.func_020b8cb4();
+MatTexVramTask::MatTexVramTask() {
+    texXfer.clear();
+    plttXfer.clear();
 }
 
-void Unk_020e45e0::func_020b8944(void) {
-    unk_10.func_020b8cb4();
-    unk_1c.func_020b8cb4();
+void MatTexVramTask::clear(void) {
+    texXfer.clear();
+    plttXfer.clear();
 }
 
-void Unk_020e45e0::func_020b8930(void) {
-    func_020b8464();
-    func_020b8944();
+void MatTexVramTask::cancel(void) {
+    dequeueTex();
+    clear();
 }
 
-BOOL Unk_020e45e0::vfunc_00() {
-    if (unk_0e == 3) {
-        unk_10.func_020b8c88();
-        unk_1c.func_020b8c64();
+BOOL MatTexVramTask::execute() {
+    if (kind == 3) {
+        texXfer.loadTex();
+        plttXfer.loadTexPltt();
     }
     return TRUE;
 }
 
-void Unk_020e45e0::func_020b88f8(void) {
-    func_020b8930();
-    unk_0d = 1;
+void MatTexVramTask::prepare(void) {
+    cancel();
+    state = 1;
 }
 
-// ---- Unk_020e45e0 ----
-BOOL Unk_020e45e0::func_020b8840(void *a, u32 b, void *c, u32 d, u32 e) {
-    func_020b88f8();
+// ---- MatTexVramTask ----
+BOOL MatTexVramTask::request(void *a, u32 b, void *c, u32 d, u32 e) {
+    prepare();
     u8 *base = (u8 *)a + *(u32 *)((u8 *)a + 8);
-    u32 idx = _ZN12Unk_02056fd813func_02057110Ei(a, b);
+    u32 idx = _ZN12G3dResAccess10findMatIdxEi(a, b);
     u8 *tbl = base + 4;
     u16 off = *(u16 *)(base + 0xa);
     u8 *ent = tbl + off;
     ent += *(u16 *)ent * idx;
     u8 *rec = base + *(u32 *)(ent + 4);
-    u32 v1 = _ZN12Unk_02056fd813func_020570b0Ei(c, d);
-    u32 v2 = _ZN12Unk_02056fd813func_02057048Ei(c, e);
-    u32 v3 = _ZN12Unk_0205712013func_0205714cEv(rec);
-    u32 v4 = _ZN12Unk_02056fd813func_02056fd8Ei(c, e);
-    unk_0e = 3;
-    unk_10.func_020b8cac(_ZN12Unk_0205712013func_0205713cEv(rec), v1, v3);
-    unk_1c.func_020b8cac(_ZN12Unk_0205712013func_02057120Ev(rec), v2, v4);
-    unk_0f = unk_10.func_020b8c30() + func_020b8c2c(&unk_1c);
-    unk_0c = 0;
-    if (func_020b847c()) {
+    u32 v1 = _ZN12G3dResAccess10getTexDataEi(c, d);
+    u32 v2 = _ZN12G3dResAccess11getPlttDataEi(c, e);
+    u32 v3 = _ZN10G3dMatData10getTexSizeEv(rec);
+    u32 v4 = _ZN12G3dResAccess11getPlttSizeEi(c, e);
+    kind = 3;
+    texXfer.set(_ZN10G3dMatData10getTexAddrEv(rec), v1, v3);
+    plttXfer.set(_ZN10G3dMatData11getPlttAddrEv(rec), v2, v4);
+    cost = texXfer.getTexCost() + TexTransfer_GetPlttCost(&plttXfer);
+    priority = 0;
+    if (enqueueTex()) {
         return TRUE;
     }
-    func_020b8944();
+    clear();
     return FALSE;
 }
 
-Unk_020e45f8::Unk_020e45f8() {
-    unk_10.func_020b8c0c();
+BgVramTask::BgVramTask() {
+    xfer.clear();
 }
 
-void Unk_020e45f8::vfunc_04() {
-    func_020b8cc0();
-    unk_10.func_020b8c0c();
+void BgVramTask::clear() {
+    resetState();
+    xfer.clear();
 }
 
-void Unk_020e45f8::func_020b87d0(void) {
-    func_020b83b0(this);
-    vfunc_04();
+void BgVramTask::cancel(void) {
+    VramQueue2d_Dequeue(this);
+    clear();
 }
 
-BOOL Unk_020e45f8::vfunc_00() {
-    switch (unk_0e) {
+BOOL BgVramTask::execute() {
+    switch (kind) {
     case 4:
-        unk_10.func_020b8be0();
+        xfer.loadChars();
         break;
     case 5:
-        unk_10.func_020b8bac();
+        xfer.loadScreen();
         break;
     case 6:
-        unk_10.func_020b8b80();
+        xfer.loadPalette();
         break;
     case 7:
-        unk_10.func_020b8b44();
+        xfer.loadPaletteRange();
         break;
     default:
         return FALSE;
@@ -444,85 +384,85 @@ BOOL Unk_020e45f8::vfunc_00() {
     return TRUE;
 }
 
-void Unk_020e45f8::func_020b876c(void) {
-    func_020b87d0();
-    unk_0d = 1;
+void BgVramTask::prepare(void) {
+    cancel();
+    state = 1;
 }
 
-BOOL Unk_020e45f8::func_020b8714(u32 a, u8 b, u32 c, u32 d, u32 e) {
-    func_020b876c();
-    unk_0e = 4;
-    unk_10.func_020b8bfc(a, b, c, d, e);
-    unk_0f = unk_10.func_020b8bd0();
-    unk_0c = 4;
-    if (func_020b83c8(this)) {
+BOOL BgVramTask::requestChars(u32 a, u8 b, u32 c, u32 d, u32 e) {
+    prepare();
+    kind = 4;
+    xfer.setChars(a, b, c, d, e);
+    cost = xfer.getCharCost();
+    priority = 4;
+    if (VramQueue2d_Enqueue(this)) {
         return TRUE;
     }
-    vfunc_04();
+    clear();
     return FALSE;
 }
 
-BOOL Unk_020e45f8::func_020b86c0(u32 a, u8 b, u32 c, u32 d) {
-    func_020b876c();
-    unk_0e = 5;
-    unk_10.func_020b8bc4(a, b, c, d);
-    unk_0f = func_020b8ba8(&unk_10);
-    unk_0c = 4;
-    if (func_020b83c8(this)) {
+BOOL BgVramTask::requestScreen(u32 a, u8 b, u32 c, u32 d) {
+    prepare();
+    kind = 5;
+    xfer.setScreen(a, b, c, d);
+    cost = BgTransfer_GetScreenCost(&xfer);
+    priority = 4;
+    if (VramQueue2d_Enqueue(this)) {
         return TRUE;
     }
-    vfunc_04();
+    clear();
     return FALSE;
 }
 
-BOOL Unk_020e45f8::func_020b8670(u32 a, u8 b, u32 c) {
-    func_020b876c();
-    unk_0e = 6;
-    unk_10.func_020b8ba0(a, b, c);
-    unk_0f = func_020b8b7c(&unk_10);
-    unk_0c = 4;
-    if (func_020b83c8(this)) {
+BOOL BgVramTask::requestPalette(u32 a, u8 b, u32 c) {
+    prepare();
+    kind = 6;
+    xfer.setPalette(a, b, c);
+    cost = BgTransfer_GetPaletteCost(&xfer);
+    priority = 4;
+    if (VramQueue2d_Enqueue(this)) {
         return TRUE;
     }
-    vfunc_04();
+    clear();
     return FALSE;
 }
 
-// ---- Unk_020e45f8 ----
-BOOL Unk_020e45f8::func_020b8618(u32 a, u8 b, u32 c, u8 d) {
-    func_020b876c();
-    unk_0e = 7;
-    unk_10.func_020b8b68(a, b, c, d);
-    unk_0f = func_020b8b40(&unk_10);
-    unk_0c = 4;
-    if (func_020b83c8(this)) {
+// ---- BgVramTask ----
+BOOL BgVramTask::requestPaletteRange(u32 a, u8 b, u32 c, u8 d) {
+    prepare();
+    kind = 7;
+    xfer.setPaletteRange(a, b, c, d);
+    cost = BgTransfer_GetPaletteRangeCost(&xfer);
+    priority = 4;
+    if (VramQueue2d_Enqueue(this)) {
         return TRUE;
     }
-    vfunc_04();
+    clear();
     return FALSE;
 }
 
-Unk_020e4608::Unk_020e4608() {
-    unk_24.func_020b8c0c();
+BgVramTaskPair::BgVramTaskPair() {
+    xfer2.clear();
 }
 
-void Unk_020e4608::vfunc_04() {
-    Unk_020e45f8::vfunc_04();
-    unk_24.func_020b8c0c();
+void BgVramTaskPair::clear() {
+    BgVramTask::clear();
+    xfer2.clear();
 }
 
-BOOL Unk_020e4608::vfunc_00() {
-    if (Unk_020e45f8::vfunc_00()) {
+BOOL BgVramTaskPair::execute() {
+    if (BgVramTask::execute()) {
         return TRUE;
     }
-    switch (unk_0e) {
+    switch (kind) {
     case 8:
-        unk_10.func_020b8be0();
-        unk_24.func_020b8be0();
+        xfer.loadChars();
+        xfer2.loadChars();
         break;
     case 9:
-        unk_10.func_020b8be0();
-        unk_24.func_020b8b80();
+        xfer.loadChars();
+        xfer2.loadPalette();
         break;
     default:
         return FALSE;

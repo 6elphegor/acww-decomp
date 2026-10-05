@@ -1,104 +1,34 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/GsBytes.h"
+#include "net/darray.h"
+#include "net/sb_internal.h"
+#include "net/gsPlatformUtil.h"
+#include "net/SockHostEnt.h"
+#include "net/SockAddrIn.h"
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
-char *data_ov065_022918ac;
-void *data_ov065_022918b0;
-u32 data_ov065_022918a8;
+char *SBOverrideMasterServer;
+void *g_sortserverlist;
+u32 SBNullServer;
 }
 
 namespace F02288e2c {
 
 // ov065_067: GameSpy-like key/value parsing, hash table wrappers, connection object (0x02288e2c..0x02289720)
 
-struct Unk_ov065_02289258_Pad {
-    s32 v[1];
-    Unk_ov065_02289258_Pad() {}
-    ~Unk_ov065_02289258_Pad() {}
-};
 
-struct Unk_ov065_02288ffc_W {
-    char *v[2];
-};
 
-struct Unk_ov065_0228909c_P {
-    u32 a;
-    u32 b;
-};
 
-struct Unk_ov065_02289044_Hdr {
-    u8 pad_00[4];
-    u16 unk_04;
-    u8 pad_06[6];
-    u16 unk_0c;
-    u8 pad_0e[7];
-    u8 unk_15;
-};
 
-struct Unk_ov065_02289174_Ctx {
-    u8 pad_00[0x18];
-    void *unk_18;
-};
 
-struct Unk_ov065_0228911c_Ent {
-    s32 unk_00;
-    s32 unk_04;
-};
 
-struct Unk_ov065_02289174_KV {
-    s32 unk_00;
-    s32 unk_04;
-};
 
-struct Unk_ov065_0228903c_Obj {
-    u8 pad_00[0x20];
-    s32 unk_20;
-};
 
-struct Unk_ov065_02289578_Pkt {
-    u32 unk_00;
-    u16 unk_04;
-    u8 pad_06[8];
-    u8 unk_0e[6];
-    u8 unk_14;
-    u8 unk_15;
-};
 
-struct Unk_ov065_02289720_Sub {
-    s32 unk_00;
-    u8 pad_04[0x484];
-    void (*unk_488)(Unk_ov065_02289720_Sub *, s32, s32, void *);
-    u8 pad_48c[8];
-    void *unk_494;
-    u8 pad_498[0x18];
-    s32 unk_4b0;
-    u32 unk_4b4;
-};
 
-struct Unk_ov065_02289460_Obj {
-    u8 pad_00[0x10];
-    s32 unk_10;
-    u8 pad_14[0x2c];
-    s32 unk_40;
-    u8 pad_44[8];
-    s32 unk_4c;
-    u8 pad_50[0x49c];
-    s32 unk_4ec;
-    u8 pad_4f0[0x130];
-    s32 unk_620;
-    s32 unk_624;
-    u32 unk_628;
-    u16 unk_62c;
-    u8 pad_62e[2];
-    void (*unk_630)(Unk_ov065_02289460_Obj *, s32, void *, void *);
-    void *unk_634;
-};
 
-struct Unk_ov065_02289578_Sub {
-    s32 unk_00;
-    void *unk_04;
-};
 
 static inline u16 Unk_ov065_02289044_Htons(u16 x) {
     return (x >> 8 & 0xff) | ((x << 8) & 0xff00);
@@ -106,77 +36,76 @@ static inline u16 Unk_ov065_02289044_Htons(u16 x) {
 
 extern "C" {
 extern char *data_ov065_0228e928[2];
-extern char *data_ov065_0228e504[];
+extern char *qr2_registered_key_list[];
 extern u16 data_0213a510[];
-extern s32 data_ov065_02290fa0;
-extern s32 data_ov065_022918a8;
+extern s32 __GSIACResult;
+extern s32 SBNullServer;
 
-s32 func_0212a190(const char *, const char *);
-u32 func_021277d4(const char *);
-s32 func_021130d0(char *, const char *, ...);
-s32 func_0212b770(char *);
+s32 strcmp(const char *, const char *);
+u32 STD_GetStringLength(const char *);
+s32 OS_SPrintf(char *, const char *, ...);
+s32 atol(char *);
 s32 func_02130b04(char *, char *);
 
-s32 func_ov065_02277ac8(void *);
-void *func_ov065_02277af0(s32);
-s32 func_ov065_02278684(void *);
-void *func_ov065_022787c4(void *, void *);
-s32 func_ov065_0227885c(void *, void *);
-s32 func_ov065_022788b0(void *);
-s32 func_ov065_022788f0(void *);
-void *func_ov065_02278928(s32, s32, s32, void *, void *, void *);
-s32 func_ov065_02278bf4(s32);
-s32 func_ov065_02278cb8(s32, void *, s32, s32, void *, void *);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02278ee8(s32);
-s32 func_ov065_0227913c(s32);
-u32 func_ov065_02279144();
-s32 func_ov065_02288734(void *, void *);
-s32 func_ov065_02288758(void *, s32);
-s32 func_ov065_0228876c(void *);
-s32 func_ov065_02288a70(void *, void *, s32, s32);
-s32 func_ov065_02288acc(void *);
-s32 func_ov065_02288af4(void *);
-s32 func_ov065_02288b0c(void *, s32);
-s32 func_ov065_02288b10(void *, s32, s32, s32, void *, void *);
-s32 func_ov065_02288d18(void *);
-s32 func_ov065_02288d40(void *, s32);
-void *func_ov065_02288d44(void *, u32, u32);
-s32 func_ov065_02288db8(void *);
-s32 func_ov065_02288df0(void *);
-s32 func_ov065_0228a6f0(void *);
-s32 func_ov065_0228a718(void *);
-s32 func_ov065_0228a7f0(void *, char *, s32, s32, s32);
-s32 func_ov065_0228ad34(void *, s32, s32, s32, s32, s32, void *, void *);
-s32 func_ov065_0228ae10(char *, s32);
-s32 func_ov065_0228ae64(s32, char *);
-s32 func_ov065_0228aed0(void *);
-s32 func_ov065_0228af0c(void *);
-s32 func_ov065_0228af48(void *);
-s32 func_ov065_0228af5c(void *);
-s32 func_ov065_0228af68(void *, s32);
-s32 func_ov065_0228afd8(void *, u32, u32);
-s32 func_ov065_0228b030(void *);
-s32 func_ov065_0228b070(void *, void *);
-s32 func_ov065_0228b0a4(void *);
-s32 func_ov065_0228993c(void *);
-s32 func_ov065_02289808(void *, s32, s32, s32);
-s32 func_ov065_02289880(void *, s32, s32, s32, s32);
+s32 GsUtil_Free(void *);
+void *GsUtil_Alloc(s32);
+s32 ArrayLength(void *);
+void *TableLookup(void *, void *);
+s32 TableEnter(void *, void *);
+s32 TableCount(void *);
+s32 TableFree(void *);
+void *TableNew2(s32, s32, s32, void *, void *, void *);
+s32 inet_addr(s32);
+s32 recvfrom(s32, void *, s32, s32, void *, void *);
+s32 closesocket(s32);
+s32 CanReceiveOnSocket(s32);
+s32 msleep(s32);
+s32 SBQueryEngineRemoveServerFromFIFOs(void *, void *);
+s32 SBQueryEngineAddQueryKey(void *, s32);
+s32 SBQueryEngineThink(void *);
+s32 SBQueryEngineUpdateServer(void *, void *, s32, s32);
+s32 SBEngineCleanup(void *);
+s32 SBEngineHaltUpdates(void *);
+s32 SBQueryEngineSetPublicIP(void *, s32);
+s32 SBQueryEngineInit(void *, s32, s32, s32, void *, void *);
+s32 SBIsNullServer(void *);
+s32 SBServerSetFlags(void *, s32);
+void *SBAllocServer(void *, u32, u32);
+s32 SBServerGetPing(void *);
+s32 StringHash(void *);
+s32 SBServerListCleanup(void *);
+s32 SBServerListDisconnect(void *);
+s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
+s32 SBServerListInit(void *, s32, s32, s32, s32, s32, void *, void *);
+s32 NTSLengthSB(char *, s32);
+s32 SBRefStr(s32, char *);
+s32 SBServerListClear(void *);
+s32 SBFreeDeadList(void *);
+s32 SBServerListNth(void *);
+s32 SBServerListCount(void *);
+s32 SBServerListRemoveAt(void *, s32);
+s32 SBServerListFindServerByIP(void *, u32, u32);
+s32 SBServerListFindServer(void *);
+s32 SBServerListAppendServer(void *, void *);
+s32 SBServerListSort(void *);
+s32 ProcessIncomingData(void *);
+s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
+s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
 
-s32 func_ov065_02289174(Unk_ov065_02289174_Ctx *a, char *k, char *v);
-char *func_ov065_02288fb8(char *s, s32 ch);
-s32 func_ov065_02288ffc(char *s);
-s32 func_ov065_0228911c(void *a, char *k, s32 d);
-s32 func_ov065_02289298(void *o);
-s32 func_ov065_022892b0(void *o);
-s32 func_ov065_02289384(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
-void func_ov065_02289500(void *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
-void func_ov065_02289578(Unk_ov065_02289578_Sub *, s32, Unk_ov065_02289578_Pkt *, Unk_ov065_02289460_Obj *);
-s32 func_ov065_022896dc(void *);
-s32 func_ov065_02289720(Unk_ov065_02289720_Sub *);
-s32 func_ov065_02289234(char **, char **);
-s32 func_ov065_02289228(void **);
-s32 func_ov065_02289240(void **);
+s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
+char *mytok(char *s, s32 ch);
+s32 CheckValidKey(char *s);
+s32 SBServerGetStringValueA(void *a, char *k, s32 d);
+s32 ServerBrowserHalt(void *o);
+s32 ServerBrowserThink(void *o);
+s32 ServerBrowserBeginUpdate2(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
+void EngineCallback(void *, s32, _SBServer *, _ServerBrowser *);
+void ListCallback(SBServerList *, s32, _SBServer *, _ServerBrowser *);
+s32 SBListThink(void *);
+s32 ProcessLanData(SBServerList *);
+s32 RefStringCompare(char **, char **);
+s32 RefStringFree(void **);
+s32 RefStringHash(void **);
 
 }
 }
@@ -185,89 +114,44 @@ namespace F02289808 {
 
 // ov065_068: GameSpy-style client message parser (0x02289808..0x0228a20c)
 
-struct Unk_ov065_02289808_Ctx;
-
-typedef void (*Unk_ov065_02289808_Cb0)(Unk_ov065_02289808_Ctx *, s32, u32, u32);
-typedef void (*Unk_ov065_02289808_Cb1)(Unk_ov065_02289808_Ctx *, void *, u32, s32, void *, u32);
-typedef void (*Unk_ov065_02289808_Cb2)(Unk_ov065_02289808_Ctx *, void *, u32, u32, u32, void *, u32);
-
-struct Unk_ov065_02289808_B2 {
-    u8 b[2];
-};
-
-struct Unk_ov065_02289808_B4 {
-    u8 b[4];
-};
-
-struct Unk_ov065_02289808_Ctx {
-    s32 unk_00;
-    u8 unk_04[4];
-    void *unk_08;
-    u8 unk_0c[0x70];
-    u8 *unk_7c;
-    s32 unk_80;
-    u32 unk_84[0xff];
-    s32 unk_480;
-    s32 unk_484;
-    Unk_ov065_02289808_Cb0 unk_488;
-    Unk_ov065_02289808_Cb1 unk_48c;
-    Unk_ov065_02289808_Cb2 unk_490;
-    u32 unk_494;
-    u8 unk_498[8];
-    u8 unk_4a0[8];
-    u16 unk_4a8;
-    u16 unk_4aa;
-    u32 unk_4ac;
-    s32 unk_4b0;
-    u8 unk_4b4[8];
-    u8 unk_4bc[0x108];
-    u32 unk_5c4;
-    s32 unk_5c8;
-};
-
-struct Unk_ov065_02289808_Elem {
-    void *unk_00;
-    u32 unk_04;
-};
-
 
 extern "C" {
-extern u32 data_ov065_022918a8;
-s32 func_ov065_0228a7f0(Unk_ov065_02289808_Ctx *, s32, s32, s32, s32);
-s32 func_ov065_0228a9c0(Unk_ov065_02289808_Ctx *, u8 *, s32);
-s32 func_ov065_02278ca0(s32, void *, s32, s32);
-s32 func_ov065_02278ce0(s32, void *, s32, s32);
-s32 func_ov065_02278ee8(s32);
-void func_ov065_0228aca8(Unk_ov065_02289808_Ctx *);
-void func_ov065_02288510(void *, void *, s32);
-void func_021289b4(void *, void *, s32);
-s32 func_ov065_0228a4f4(Unk_ov065_02289808_Ctx *, u8 *, s32, u32 *, u16 *);
-s32 func_ov065_0228afd8(Unk_ov065_02289808_Ctx *, u32, u32);
-s32 func_ov065_02288d44(Unk_ov065_02289808_Ctx *, u32, u32);
-s32 func_ov065_02288d18();
-s32 func_ov065_0228af48(Unk_ov065_02289808_Ctx *, s32);
-s32 func_ov065_0228af68(Unk_ov065_02289808_Ctx *, s32);
-s32 func_ov065_0228a300(Unk_ov065_02289808_Ctx *, s32, u8 *, s32, s32);
-s32 func_ov065_0228b070(Unk_ov065_02289808_Ctx *, s32);
-s32 func_ov065_0228ae10(u8 *, s32);
-void *func_ov065_0228ae64(Unk_ov065_02289808_Ctx *, u8 *);
-s32 func_ov065_0228a76c(Unk_ov065_02289808_Ctx *);
-void *func_ov065_022786bc(s32, s32, s32);
-s32 func_ov065_02278658(void *, void *);
-s32 func_ov065_02278684(void *);
-s32 func_ov065_0228a678(Unk_ov065_02289808_Ctx *, u8 *, s32);
-s32 func_ov065_0228a20c(Unk_ov065_02289808_Ctx *, u8 *);
-s32 func_ov065_0228a218(Unk_ov065_02289808_Ctx *, u8 *, s32);
+extern u32 SBNullServer;
+s32 SBServerListConnectAndQuery(SBServerList *, s32, s32, s32, s32);
+s32 SendWithRetry(SBServerList *, u8 *, s32);
+s32 send(s32, void *, s32, s32);
+s32 recv(s32, void *, s32, s32);
+s32 CanReceiveOnSocket(s32);
+void ErrorDisconnect(SBServerList *);
+void GOADecrypt(void *, void *, s32);
+void memmove(void *, void *, s32);
+s32 ParseServerIPPort(SBServerList *, u8 *, s32, u32 *, u16 *);
+s32 SBServerListFindServerByIP(SBServerList *, u32, u32);
+s32 SBAllocServer(SBServerList *, u32, u32);
+s32 SBIsNullServer();
+s32 SBServerListNth(SBServerList *, s32);
+s32 SBServerListRemoveAt(SBServerList *, s32);
+s32 ParseServer(SBServerList *, s32, u8 *, s32, s32);
+s32 SBServerListAppendServer(SBServerList *, s32);
+s32 NTSLengthSB(u8 *, s32);
+void *SBRefStr(SBServerList *, u8 *);
+s32 FreeKeyList(SBServerList *);
+void *ArrayNew(s32, s32, s32);
+s32 ArrayAppend(void *, void *);
+s32 ArrayLength(void *);
+s32 InitCryptKey(SBServerList *, u8 *, s32);
+s32 SBSetLastListErrorPtr(SBServerList *, u8 *);
+s32 IncomingListParseServer(SBServerList *, u8 *, s32);
 
-s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32 len);
-s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c);
+s32 SBSendMessageToServer(SBServerList *c, u32 a1, u32 a2, u8 *data, s32 len);
+s32 ProcessAdHocData(SBServerList *c);
 
-s32 func_ov065_02289b28(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289bdc(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n);
-s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c);
+s32 ProcessPushServer(SBServerList *c, u8 *p, s32 n);
+s32 ProcessDeleteServer(SBServerList *c, u8 *p, s32 n);
+s32 ProcessMaploop(SBServerList *c, u8 *p, s32 n);
+s32 ProcessPlayerSearch(SBServerList *c, u8 *p, s32 n);
+s32 ProcessPushKeyList(SBServerList *c, u8 *p, s32 n);
+s32 ProcessMainListData(SBServerList *c);
 }
 
 static inline void Cpy2(u8 *d, u8 *s) {
@@ -304,100 +188,58 @@ namespace F0228a20c {
 
 // ov065_069: GameSpy-like login/handshake packet builder & parser 0x0228a20c..0x0228ab0c
 
-struct Unk_ov065_0228a218_Ent;
-struct Unk_ov065_022786bc_Vec;
-
-struct Unk_ov065_0228a218_Rec {
-    void *unk_00;
-    s32 unk_04;
-};
-
-struct Unk_ov065_0228a218_B4 {
-    u8 b[4];
-};
-
-struct Unk_ov065_0228a218_B2 {
-    u8 b[2];
-};
-
-struct Unk_ov065_0228a218_Ctx {
-    s32 unk_00;
-    void *unk_04;
-    Unk_ov065_022786bc_Vec *unk_08;
-    u8 unk_0c[0x24];
-    u8 unk_30[0x24];
-    s8 unk_54[0x20];
-    s8 unk_74[8];
-    void *unk_7c;
-    void *unk_80;
-    u32 unk_84[0xff];
-    s32 unk_480;
-    s32 unk_484;
-    u8 pad_488[0x4a4 - 0x488];
-    u32 unk_4a4;
-    u16 unk_4a8;
-    u16 pad_4aa;
-    u32 unk_4ac;
-    s32 unk_4b0;
-    u32 unk_4b4;
-    u32 unk_4b8;
-    u8 unk_4bc[0x108];
-    u32 unk_5c4;
-    u32 unk_5c8;
-};
-
 extern "C" {
 
-s32 func_021277d4(const char *);
-void func_02128a00(void *, const void *, s32);
-s32 func_02128930(void *, void *, u32);
-s32 func_02128c70();
+s32 STD_GetStringLength(const char *);
+void memcpy(void *, const void *, s32);
+s32 memcmp(void *, void *, u32);
+s32 rand();
 s32 func_02133150(s32, s32);
 
-void *func_ov065_02277af0(u32);
-void func_ov065_02277ac8(void *);
-void *func_ov065_0227866c(Unk_ov065_022786bc_Vec *, s32);
-s32 func_ov065_02278684(Unk_ov065_022786bc_Vec *);
-void func_ov065_02278688(Unk_ov065_022786bc_Vec *);
-s32 func_ov065_02278ca0(s32, void *, s32, s32);
-void func_ov065_02278dbc(s32);
-void func_ov065_022885d8(void *, void *, s32);
-u32 func_ov065_02288d2c(Unk_ov065_0228a218_Ent *);
-void func_ov065_02288d30(Unk_ov065_0228a218_Ent *, u8);
-void func_ov065_02288d34(Unk_ov065_0228a218_Ent *, u32);
-void func_ov065_02288d38(Unk_ov065_0228a218_Ent *, u32, u32);
-void func_ov065_02288d40(Unk_ov065_0228a218_Ent *, u32);
-Unk_ov065_0228a218_Ent *func_ov065_02288d44(Unk_ov065_0228a218_Ctx *, u32, u32);
-s32 func_ov065_02288d18(Unk_ov065_0228a218_Ent *);
-void func_ov065_0228914c(Unk_ov065_0228a218_Ent *, void *, u32);
-void func_ov065_02289174(Unk_ov065_0228a218_Ent *, void *, void *);
-void func_ov065_022891bc(Unk_ov065_0228a218_Ctx *);
-void func_ov065_0228b070(Unk_ov065_0228a218_Ctx *, Unk_ov065_0228a218_Ent *);
-s32 func_ov065_0228ab3c(u8 **, u32, s32 *);
-void func_ov065_0228ab50(u8 **, const char *, s32 *);
-s32 func_ov065_0228ab8c(Unk_ov065_0228a218_Ctx *);
-void func_ov065_0228aca8(Unk_ov065_0228a218_Ctx *);
-s32 func_ov065_0228ae10(void *, s32);
-void func_ov065_0228ae2c(Unk_ov065_0228a218_Ctx *, void *);
-void func_ov065_0228aed0(Unk_ov065_0228a218_Ctx *);
+void *GsUtil_Alloc(u32);
+void GsUtil_Free(void *);
+void *ArrayNth(void *, s32);
+s32 ArrayLength(void *);
+void ArrayFree(void *);
+s32 send(s32, void *, s32, s32);
+void closesocket(s32);
+void GOACryptInit(void *, void *, s32);
+u32 SBServerGetState(_SBServer *);
+void SBServerSetState(_SBServer *, u8);
+void SBServerSetICMPIP(_SBServer *, u32);
+void SBServerSetPrivateAddr(_SBServer *, u32, u32);
+void SBServerSetFlags(_SBServer *, u32);
+_SBServer *SBAllocServer(SBServerList *, u32, u32);
+s32 SBIsNullServer(_SBServer *);
+void SBServerAddIntKeyValue(_SBServer *, void *, u32);
+void SBServerAddKeyValue(_SBServer *, void *, void *);
+void SBRefStrHashCleanup(SBServerList *);
+void SBServerListAppendServer(SBServerList *, _SBServer *);
+s32 BufferAddByte(u8 **, u32, s32 *);
+void BufferAddNTS(u8 **, const char *, s32 *);
+s32 ServerListConnect(SBServerList *);
+void ErrorDisconnect(SBServerList *);
+s32 NTSLengthSB(void *, s32);
+void SBReleaseStr(SBServerList *, void *);
+void SBServerListClear(SBServerList *);
 
-void func_ov065_0228a20c(Unk_ov065_0228a218_Ctx *ctx, u32 v);
-s32 func_ov065_0228a218(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n);
-s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent, u8 *buf, s32 n, s32 flag);
-void func_ov065_0228a4f4(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port);
-s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n);
-s32 func_ov065_0228a5e4(u8 *buf, s32 n);
-s32 func_ov065_0228a644(u32 flags);
-void func_ov065_0228a678(Unk_ov065_0228a218_Ctx *ctx, s8 *key, s32 n);
-void func_ov065_0228a6f0(Unk_ov065_0228a218_Ctx *ctx);
-void func_ov065_0228a718(Unk_ov065_0228a218_Ctx *ctx);
-void func_ov065_0228a76c(Unk_ov065_0228a218_Ctx *ctx);
-void func_ov065_0228a7b4(Unk_ov065_0228a218_Ctx *ctx);
-s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const char *pass, u32 flags, u32 extra);
-s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n);
-void func_ov065_0228aa34(Unk_ov065_0228a218_Ctx *ctx);
-void func_ov065_0228aaec(u8 **cur, const void *src, s32 n, s32 *len);
-void func_ov065_0228ab0c(u8 **cur, u32 v, s32 *len);
+void SBSetLastListErrorPtr(SBServerList *ctx, u32 v);
+s32 IncomingListParseServer(SBServerList *ctx, u8 *buf, s32 n);
+s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag);
+void ParseServerIPPort(SBServerList *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port);
+s32 AllKeysPresent(SBServerList *ctx, u8 *buf, s32 n);
+s32 FullRulesPresent(u8 *buf, s32 n);
+s32 ServerSizeForFlags(u32 flags);
+void InitCryptKey(SBServerList *ctx, s8 *key, s32 n);
+void SBServerListCleanup(SBServerList *ctx);
+void SBServerListDisconnect(SBServerList *ctx);
+void FreeKeyList(SBServerList *ctx);
+void FreePopularValues(SBServerList *ctx);
+s32 SBServerListConnectAndQuery(SBServerList *ctx, const char *user, const char *pass, u32 flags, u32 extra);
+s32 SendWithRetry(SBServerList *ctx, void *buf, s32 n);
+void SetupListChallenge(SBServerList *ctx);
+void BufferAddData(u8 **cur, const void *src, s32 n, s32 *len);
+void BufferAddInt(u8 **cur, u32 v, s32 *len);
 
 }
 }
@@ -406,150 +248,99 @@ namespace F0228ab3c {
 
 // ov065_070: GameSpy-like server-browser context (0x0228ab3c..0x0228b258)
 
-struct Unk_ov065_0228ad34_Ctx {
-    s32 unk_00;
-    void *unk_04;
-    s32 unk_08;
-    char unk_0c[0x24];
-    char unk_30[0x24];
-    char unk_54[0x28];
-    char *unk_7c;
-    s32 unk_80;
-    u8 pad_84[0x480 - 0x84];
-    s32 unk_480;
-    s32 unk_484;
-    void (*unk_488)(Unk_ov065_0228ad34_Ctx *, s32, u32, u32);
-    s32 unk_48c;
-    u32 unk_490;
-    u32 unk_494;
-    char *unk_498;
-    s32 unk_49c;
-    s32 unk_4a0;
-    s32 unk_4a4;
-    u8 pad_4a8[0x4b0 - 0x4a8];
-    s32 unk_4b0;
-    u8 pad_4b4[0x4b8 - 0x4b4];
-    s32 unk_4b8;
-    u8 pad_4bc[0x5cc - 0x4bc];
-    s32 unk_5cc;
-    void *unk_5d0;
+struct SBRefString {
+    char *str;
+    s32 refcount;
 };
 
-struct Unk_ov065_0228ae2c_Ent {
-    char *unk_00;
-    s32 unk_04;
-};
+typedef SBServerList Ctx070;
 
-struct Unk_ov065_0228ab8c_Ip {
-    u8 v[4];
-};
-
-struct Unk_ov065_0228ab8c_Sa {
-    u8 unk_0;
-    u8 unk_1;
-    u16 unk_2;
-    union {
-        u32 w;
-        Unk_ov065_0228ab8c_Ip ip;
-    } unk_4;
-};
-
-struct Unk_ov065_0228ab8c_Host {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    Unk_ov065_0228ab8c_Ip **unk_0c;
-};
-
-typedef Unk_ov065_0228ad34_Ctx Ctx070;
-
-static inline void Cp4(Unk_ov065_0228ab8c_Ip *d, Unk_ov065_0228ab8c_Ip *s) {
+static inline void Cp4(GsBytes4 *d, GsBytes4 *s) {
     *d = *s;
 }
 
 
 extern "C" {
-extern char *data_ov065_022918ac;
+extern char *SBOverrideMasterServer;
 extern char *data_ov065_0228e954;
-extern u32 data_ov065_022918a8;
-extern s32 data_ov065_02290fa0;
-extern Ctx070 *data_ov065_022918b0;
+extern u32 SBNullServer;
+extern s32 __GSIACResult;
+extern Ctx070 *g_sortserverlist;
 extern u8 data_0213a410[];
-s32 func_021277d4(const char *s);
-void *func_02128a00(void *d, const void *s, u32 n);
-char *func_02127838(char *d, const char *s);
-s32 func_021130d0(char *buf, const char *fmt, ...);
-s32 func_0212a15c(const char *a, const char *b, u32 n);
-s32 func_0212a190(const char *a, const char *b);
+s32 STD_GetStringLength(const char *s);
+void *memcpy(void *d, const void *s, u32 n);
+char *STD_CopyString(char *d, const char *s);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
+s32 strncmp(const char *a, const char *b, u32 n);
+s32 strcmp(const char *a, const char *b);
 s32 func_02130b04(const char *a, const char *b);
-void func_02128c60(u32 seed);
+void srand(u32 seed);
 
-s32 func_ov065_02278bf4(char *s);
-Unk_ov065_0228ab8c_Host *func_ov065_02261408(char *name);
-s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
-s32 func_ov065_02278dbc(s32 fd);
-s32 func_ov065_02278d34(s32 fd, void *sa, s32 len);
-s32 func_ov065_0228a20c(Ctx070 *c, ...);
-void func_ov065_0228a718(Ctx070 *c);
-void *func_ov065_022891e8(Ctx070 *c);
-void *func_ov065_022787c4(void *t, void *key);
-void func_ov065_02278810(void *t, void *key);
-void func_ov065_0227885c(void *t, void *key);
-char *func_ov065_02279100(char *s);
-void *func_ov065_022786bc(s32 a, s32 b, s32 c);
-void *func_ov065_0227866c(void *v, s32 i);
-s32 func_ov065_02278684(void *v);
-void func_ov065_02278420(void *v);
-void func_ov065_02278570(void *v, s32 i);
-void func_ov065_02278658(void *v, s32 *p);
-void func_ov065_02278538(void *v, void *cmp);
-void *func_ov065_0228903c(void *p);
-void func_ov065_022891a0(void *p);
-void func_ov065_02289040(void *a, void *b);
-u32 func_ov065_02289098(void *e);
-u32 func_ov065_02289078(void *e);
-char *func_ov065_0228911c(void *rec, char *key, char *dflt);
-double func_ov065_0228909c(void *rec, char *key, s32 a, s32 b);
-s32 func_ov065_022890b8(void *rec, char *key, s32 a);
-u32 func_ov065_02279144();
-void func_ov065_02279138();
+s32 inet_addr(char *s);
+SockHostEnt *Sock_GetHostByName(char *name);
+s32 socket(s32 a, s32 b, s32 c);
+s32 closesocket(s32 fd);
+s32 connect(s32 fd, void *sa, s32 len);
+s32 SBSetLastListErrorPtr(Ctx070 *c, ...);
+void SBServerListDisconnect(Ctx070 *c);
+void *SBRefStrHash(Ctx070 *c);
+void *TableLookup(void *t, void *key);
+void TableRemove(void *t, void *key);
+void TableEnter(void *t, void *key);
+char *goastrdup(char *s);
+void *ArrayNew(s32 a, s32 b, s32 c);
+void *ArrayNth(void *v, s32 i);
+s32 ArrayLength(void *v);
+void ArrayClear(void *v);
+void ArrayDeleteAt(void *v, s32 i);
+void ArrayAppend(void *v, s32 *p);
+void ArraySort(void *v, void *cmp);
+void *SBServerGetNext(void *p);
+void SBServerFree(void *p);
+void SBServerSetNext(void *a, void *b);
+u32 SBServerGetPublicInetAddress(void *e);
+u32 SBServerGetPublicQueryPortNBO(void *e);
+char *SBServerGetStringValueA(void *rec, char *key, char *dflt);
+double SBServerGetFloatValueA(void *rec, char *key, s32 a, s32 b);
+s32 SBServerGetIntValueA(void *rec, char *key, s32 a);
+void SocketStartUp();
 
-void func_ov065_0228ab3c(char **p, u8 c, s32 *n);
-void func_ov065_0228ab50(char **p, char *s, s32 *n);
-s32 func_ov065_0228ab8c(Ctx070 *c);
-u32 func_ov065_0228ac6c(const char *s, u32 n);
-void func_ov065_0228aca8(Ctx070 *c);
-void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h);
-s32 func_ov065_0228ae10(const char *s, s32 n);
-void func_ov065_0228ae2c(Ctx070 *c, s32 key);
-u32 func_ov065_0228ae64(Ctx070 *c, s32 key);
-void func_ov065_0228aeb0(Ctx070 *c);
-void func_ov065_0228aed0(Ctx070 *c);
-void func_ov065_0228af0c(Ctx070 *c);
-u32 func_ov065_0228af48(Ctx070 *c, s32 i);
-s32 func_ov065_0228af5c(Ctx070 *c);
-void func_ov065_0228af68(Ctx070 *c, s32 i);
-void func_ov065_0228afa8(Ctx070 *c, void *x);
-s32 func_ov065_0228afd8(Ctx070 *c, s32 a, s32 b);
-s32 func_ov065_0228b030(Ctx070 *c, u32 key);
-void func_ov065_0228b070(Ctx070 *c, s32 a, s32 b, s32 d);
-void func_ov065_0228b0a4(Ctx070 *c, s32 a, char *b, u32 mode);
-s32 func_ov065_0228b108(void **a, void **b);
-s32 func_ov065_0228b160(void **a, void **b);
-s32 func_ov065_0228b1b8(void **a, void **b);
-s32 func_ov065_0228b258(void **a, void **b);
+void BufferAddByte(char **p, u8 c, s32 *n);
+void BufferAddNTS(char **p, char *s, s32 *n);
+s32 ServerListConnect(Ctx070 *c);
+u32 StringHash__sb_serverlist(const char *s, u32 n);
+void ErrorDisconnect(Ctx070 *c);
+void SBServerListInit(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h);
+s32 NTSLengthSB(const char *s, s32 n);
+void SBReleaseStr(Ctx070 *c, s32 key);
+u32 SBRefStr(Ctx070 *c, s32 key);
+void SBAllocateServerList(Ctx070 *c);
+void SBServerListClear(Ctx070 *c);
+void SBFreeDeadList(Ctx070 *c);
+u32 SBServerListNth(Ctx070 *c, s32 i);
+s32 SBServerListCount(Ctx070 *c);
+void SBServerListRemoveAt(Ctx070 *c, s32 i);
+void AddServerToDeadlist(Ctx070 *c, void *x);
+s32 SBServerListFindServerByIP(Ctx070 *c, s32 a, s32 b);
+s32 SBServerListFindServer(Ctx070 *c, u32 key);
+void SBServerListAppendServer(Ctx070 *c, s32 a, s32 b, s32 d);
+void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode);
+s32 StrNoCaseKeyCompare(void **a, void **b);
+s32 StrCaseKeyCompare(void **a, void **b);
+s32 FloatKeyCompare(void **a, void **b);
+s32 IntKeyCompare(void **a, void **b);
 
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b258(void **a, void **b) {
+s32 IntKeyCompare(void **a, void **b) {
     void *ra = *(void *volatile *)a;
     void *rb = *b;
-    s32 r = func_ov065_022890b8(ra, data_ov065_022918b0->unk_498, 0);
-    r -= func_ov065_022890b8(rb, data_ov065_022918b0->unk_498, 0);
-    if (data_ov065_022918b0->unk_49c == 0) {
+    s32 r = SBServerGetIntValueA(ra, g_sortserverlist->sortkey, 0);
+    r -= SBServerGetIntValueA(rb, g_sortserverlist->sortkey, 0);
+    if (g_sortserverlist->sortascending == 0) {
         r = -r;
     }
     return r;
@@ -559,13 +350,13 @@ s32 func_ov065_0228b258(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b1b8(void **a, void **b) {
+s32 FloatKeyCompare(void **a, void **b) {
     void *ra = *(void *volatile *)a;
     void *rb = *b;
-    double d1 = func_ov065_0228909c(ra, data_ov065_022918b0->unk_498, 0, 0);
-    double d2 = func_ov065_0228909c(rb, data_ov065_022918b0->unk_498, 0, 0);
+    double d1 = SBServerGetFloatValueA(ra, g_sortserverlist->sortkey, 0, 0);
+    double d2 = SBServerGetFloatValueA(rb, g_sortserverlist->sortkey, 0, 0);
     double d = d1 - d2;
-    if (data_ov065_022918b0->unk_49c == 0) {
+    if (g_sortserverlist->sortascending == 0) {
         d = 0 - d;
     }
     if ((float)d > 0) {
@@ -578,11 +369,11 @@ s32 func_ov065_0228b1b8(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b160(void **a, void **b) {
-    char *s1 = func_ov065_0228911c(*a, data_ov065_022918b0->unk_498, "");
-    char *s2 = func_ov065_0228911c(*b, data_ov065_022918b0->unk_498, "");
-    s32 r = func_0212a190(s1, s2);
-    if (data_ov065_022918b0->unk_49c == 0) {
+s32 StrCaseKeyCompare(void **a, void **b) {
+    char *s1 = SBServerGetStringValueA(*a, g_sortserverlist->sortkey, "");
+    char *s2 = SBServerGetStringValueA(*b, g_sortserverlist->sortkey, "");
+    s32 r = strcmp(s1, s2);
+    if (g_sortserverlist->sortascending == 0) {
         r = -r;
     }
     return r;
@@ -592,11 +383,11 @@ s32 func_ov065_0228b160(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b108(void **a, void **b) {
-    char *s1 = func_ov065_0228911c(*a, data_ov065_022918b0->unk_498, "");
-    char *s2 = func_ov065_0228911c(*b, data_ov065_022918b0->unk_498, "");
+s32 StrNoCaseKeyCompare(void **a, void **b) {
+    char *s1 = SBServerGetStringValueA(*a, g_sortserverlist->sortkey, "");
+    char *s2 = SBServerGetStringValueA(*b, g_sortserverlist->sortkey, "");
     s32 r = func_02130b04(s1, s2);
-    if (data_ov065_022918b0->unk_49c == 0) {
+    if (g_sortserverlist->sortascending == 0) {
         r = -r;
     }
     return r;
@@ -606,49 +397,49 @@ s32 func_ov065_0228b108(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228b0a4(Ctx070 *c, s32 a, char *b, u32 mode) {
+void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode) {
     void *cmp;
     switch (mode) {
     case 0:
-        cmp = (void *)func_ov065_0228b258;
+        cmp = (void *)IntKeyCompare;
         break;
     case 1:
-        cmp = (void *)func_ov065_0228b1b8;
+        cmp = (void *)FloatKeyCompare;
         break;
     case 2:
-        cmp = (void *)func_ov065_0228b160;
+        cmp = (void *)StrCaseKeyCompare;
         break;
     case 3:
-        cmp = (void *)func_ov065_0228b108;
+        cmp = (void *)StrNoCaseKeyCompare;
         break;
     default:
-        cmp = (void *)func_ov065_0228b108;
+        cmp = (void *)StrNoCaseKeyCompare;
         break;
     }
-    c->unk_498 = b;
-    c->unk_49c = a;
-    data_ov065_022918b0 = c;
-    func_ov065_02278538(c->unk_04, cmp);
+    c->sortkey = b;
+    c->sortascending = a;
+    g_sortserverlist = c;
+    ArraySort(c->servers, cmp);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228b070(Ctx070 *c, s32 a, s32 b, s32 d) {
-    func_ov065_02278658(c->unk_04, &a);
-    c->unk_488(c, 0, a, c->unk_494);
+void SBServerListAppendServer(Ctx070 *c, s32 a, s32 b, s32 d) {
+    ArrayAppend(c->servers, &a);
+    c->ListCallback(c, 0, a, c->instance);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228b030(Ctx070 *c, u32 key) {
-    s32 n = func_ov065_02278684(c->unk_04);
+s32 SBServerListFindServer(Ctx070 *c, u32 key) {
+    s32 n = ArrayLength(c->servers);
     s32 i;
     for (i = 0; i < n; i++) {
-        if (key == *(u32 *)func_ov065_0227866c(c->unk_04, i)) {
+        if (key == *(u32 *)ArrayNth(c->servers, i)) {
             return i;
         }
     }
@@ -659,13 +450,13 @@ s32 func_ov065_0228b030(Ctx070 *c, u32 key) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228afd8(Ctx070 *c, s32 a, s32 b) {
+s32 SBServerListFindServerByIP(Ctx070 *c, s32 a, s32 b) {
     void *e;
     s32 i;
-    s32 n = func_ov065_02278684(c->unk_04);
+    s32 n = ArrayLength(c->servers);
     for (i = 0; i < n; i++) {
-        e = *(void **)func_ov065_0227866c(c->unk_04, i);
-        if ((u32)a == func_ov065_02289098(e) && (u32)b == func_ov065_02289078(e)) {
+        e = *(void **)ArrayNth(c->servers, i);
+        if ((u32)a == SBServerGetPublicInetAddress(e) && (u32)b == SBServerGetPublicQueryPortNBO(e)) {
             return i;
         }
     }
@@ -676,56 +467,56 @@ s32 func_ov065_0228afd8(Ctx070 *c, s32 a, s32 b) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228afa8(Ctx070 *c, void *x) {
-    void *t = c->unk_5d0;
+void AddServerToDeadlist(Ctx070 *c, void *x) {
+    void *t = c->deadlist;
     if (t == NULL) {
-        func_ov065_02289040(x, NULL);
+        SBServerSetNext(x, NULL);
     } else {
-        func_ov065_02289040(x, t);
+        SBServerSetNext(x, t);
     }
-    c->unk_5d0 = x;
+    c->deadlist = x;
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228af68(Ctx070 *c, s32 i) {
-    u32 v = *(u32 *)func_ov065_0227866c(c->unk_04, i);
-    c->unk_488(c, 2, v, c->unk_494);
-    func_ov065_02278570(c->unk_04, i);
-    func_ov065_0228afa8(c, (void *)v);
+void SBServerListRemoveAt(Ctx070 *c, s32 i) {
+    u32 v = *(u32 *)ArrayNth(c->servers, i);
+    c->ListCallback(c, 2, v, c->instance);
+    ArrayDeleteAt(c->servers, i);
+    AddServerToDeadlist(c, (void *)v);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228af5c(Ctx070 *c) {
-    return func_ov065_02278684(c->unk_04);
+s32 SBServerListCount(Ctx070 *c) {
+    return ArrayLength(c->servers);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-u32 func_ov065_0228af48(Ctx070 *c, s32 i) {
-    return *(u32 *)func_ov065_0227866c(c->unk_04, i);
+u32 SBServerListNth(Ctx070 *c, s32 i) {
+    return *(u32 *)ArrayNth(c->servers, i);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228af0c(Ctx070 *c) {
-    if (c->unk_5d0 != NULL) {
-        void *cur = c->unk_5d0;
+void SBFreeDeadList(Ctx070 *c) {
+    if (c->deadlist != NULL) {
+        void *cur = c->deadlist;
         while (cur != NULL) {
-            void *next = func_ov065_0228903c(cur);
-            func_ov065_022891a0(&cur);
+            void *next = SBServerGetNext(cur);
+            SBServerFree(&cur);
             cur = next;
         }
-        c->unk_5d0 = NULL;
+        c->deadlist = NULL;
     }
 }
 }
@@ -733,56 +524,56 @@ void func_ov065_0228af0c(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228aed0(Ctx070 *c) {
-    s32 n = func_ov065_02278684(c->unk_04);
+void SBServerListClear(Ctx070 *c) {
+    s32 n = ArrayLength(c->servers);
     s32 i;
     for (i = 0; i < n; i++) {
-        void *p = func_ov065_0227866c(c->unk_04, i);
-        func_ov065_0228afa8(c, *(void **)p);
+        void *p = ArrayNth(c->servers, i);
+        AddServerToDeadlist(c, *(void **)p);
     }
-    func_ov065_02278420(c->unk_04);
-    func_ov065_0228af0c(c);
+    ArrayClear(c->servers);
+    SBFreeDeadList(c);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228aeb0(Ctx070 *c) {
-    c->unk_04 = func_ov065_022786bc(4, 0x64, 0);
-    c->unk_5d0 = NULL;
+void SBAllocateServerList(Ctx070 *c) {
+    c->servers = ArrayNew(4, 0x64, 0);
+    c->deadlist = NULL;
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-u32 func_ov065_0228ae64(Ctx070 *c, s32 key) {
-    Unk_ov065_0228ae2c_Ent l;
-    Unk_ov065_0228ae2c_Ent *e;
-    l.unk_00 = (char *)key;
-    e = (Unk_ov065_0228ae2c_Ent *)func_ov065_022787c4(func_ov065_022891e8(c), &l);
+u32 SBRefStr(Ctx070 *c, s32 key) {
+    SBRefString l;
+    SBRefString *e;
+    l.str = (char *)key;
+    e = (SBRefString *)TableLookup(SBRefStrHash(c), &l);
     if (e != NULL) {
-        e->unk_04++;
-        return (u32)e->unk_00;
+        e->refcount++;
+        return (u32)e->str;
     }
-    l.unk_00 = func_ov065_02279100((char *)key);
-    l.unk_04 = 1;
-    func_ov065_0227885c(func_ov065_022891e8(c), &l);
-    return (u32)l.unk_00;
+    l.str = goastrdup((char *)key);
+    l.refcount = 1;
+    TableEnter(SBRefStrHash(c), &l);
+    return (u32)l.str;
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228ae2c(Ctx070 *c, s32 key) {
+void SBReleaseStr(Ctx070 *c, s32 key) {
     s32 k = key;
-    Unk_ov065_0228ae2c_Ent *e = (Unk_ov065_0228ae2c_Ent *)func_ov065_022787c4(func_ov065_022891e8(c), &k);
+    SBRefString *e = (SBRefString *)TableLookup(SBRefStrHash(c), &k);
     if (e != NULL) {
-        e->unk_04--;
-        if (e->unk_04 == 0) {
-            func_ov065_02278810(func_ov065_022891e8(c), &k);
+        e->refcount--;
+        if (e->refcount == 0) {
+            TableRemove(SBRefStrHash(c), &k);
         }
     }
 }
@@ -791,7 +582,7 @@ void func_ov065_0228ae2c(Ctx070 *c, s32 key) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228ae10(const char *s, s32 n) {
+s32 NTSLengthSB(const char *s, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         if (s[i] == 0) {
@@ -805,32 +596,32 @@ s32 func_ov065_0228ae10(const char *s, s32 n) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h) {
-    if (f != 0 || data_ov065_02290fa0 == 1) {
+void SBServerListInit(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h) {
+    if (f != 0 || __GSIACResult == 1) {
         s32 neg = -1;
-        c->unk_00 = 1;
-        func_ov065_0228aeb0(c);
-        func_ov065_022891e8(c);
-        func_02127838(c->unk_0c, a);
-        func_02127838(c->unk_30, b);
-        func_02127838(c->unk_54, d);
-        c->unk_488 = (void (*)(Ctx070 *, s32, u32, u32))g;
-        c->unk_48c = 0;
-        c->unk_494 = h;
-        c->unk_498 = "";
-        c->unk_4a0 = 0;
-        c->unk_4b0 = neg;
-        c->unk_7c = 0;
-        c->unk_80 = 0;
-        c->unk_08 = 0;
-        c->unk_484 = neg;
-        c->unk_480 = 0;
-        c->unk_4a4 = 0;
-        c->unk_4b8 = e;
-        func_ov065_0228a20c(c, "");
+        c->state = 1;
+        SBAllocateServerList(c);
+        SBRefStrHash(c);
+        STD_CopyString(c->queryforgamename, a);
+        STD_CopyString(c->queryfromgamename, b);
+        STD_CopyString(c->queryfromkey, d);
+        c->ListCallback = (void (*)(Ctx070 *, s32, u32, u32))g;
+        c->MaploopCallback = 0;
+        c->instance = h;
+        c->sortkey = "";
+        c->mypublicip = 0;
+        c->slsocket = neg;
+        c->inbuffer = 0;
+        c->inbufferlen = 0;
+        c->keylist = 0;
+        c->expectedelements = neg;
+        c->numpopularvalues = 0;
+        c->srcip = 0;
+        c->fromgamever = e;
+        SBSetLastListErrorPtr(c, "");
         c->unk_5cc = 0;
-        func_02128c60(func_ov065_02279144());
-        func_ov065_02279138();
+        srand(current_time());
+        SocketStartUp();
     }
 }
 }
@@ -838,24 +629,24 @@ void func_ov065_0228ad34(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, voi
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228aca8(Ctx070 *c) {
-    if (c->unk_80 > 0 && (u32)c->unk_80 > (u32)func_021277d4(data_ov065_0228e954)) {
+void ErrorDisconnect(Ctx070 *c) {
+    if (c->inbufferlen > 0 && (u32)c->inbufferlen > (u32)STD_GetStringLength(data_ov065_0228e954)) {
         char *s = data_ov065_0228e954;
-        s32 len = func_021277d4(s);
-        if (func_0212a15c(c->unk_7c, s, len) == 0) {
-            func_ov065_0228a20c(c, c->unk_7c + func_021277d4(s));
-            c->unk_488(c, 5, data_ov065_022918a8, c->unk_494);
+        s32 len = STD_GetStringLength(s);
+        if (strncmp((char *)c->inbuffer, s, len) == 0) {
+            SBSetLastListErrorPtr(c, (char *)c->inbuffer + STD_GetStringLength(s));
+            c->ListCallback(c, 5, SBNullServer, c->instance);
         }
     }
-    c->unk_488(c, 4, data_ov065_022918a8, c->unk_494);
-    func_ov065_0228a718(c);
+    c->ListCallback(c, 4, SBNullServer, c->instance);
+    SBServerListDisconnect(c);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-u32 func_ov065_0228ac6c(const char *s, u32 n) {
+u32 StringHash__sb_serverlist(const char *s, u32 n) {
     s32 ch;
     u32 h = 0;
     ch = *s;
@@ -875,41 +666,41 @@ u32 func_ov065_0228ac6c(const char *s, u32 n) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 func_ov065_0228ab8c(Ctx070 *c) {
+s32 ServerListConnect(Ctx070 *c) {
     struct {
-        Unk_ov065_0228ab8c_Sa sa;
+        SockAddrIn sa;
         char host[0x80];
     } l;
-    u32 h = func_ov065_0228ac6c(c->unk_0c, 0x14);
-    if (data_ov065_022918ac != NULL) {
-        func_02127838(l.host, data_ov065_022918ac);
+    u32 h = StringHash__sb_serverlist(c->queryforgamename, 0x14);
+    if (SBOverrideMasterServer != NULL) {
+        STD_CopyString(l.host, SBOverrideMasterServer);
     } else {
-        func_021130d0(l.host, "%s.ms%d.gs.nintendowifi.net", c->unk_0c, h);
+        OS_SPrintf(l.host, "%s.ms%d.gs.nintendowifi.net", c->queryforgamename, h);
     }
-    l.sa.unk_1 = 2;
-    l.sa.unk_2 = 0xee70;
-    l.sa.unk_4.w = func_ov065_02278bf4(l.host);
-    if (l.sa.unk_4.w == (u32)-1) {
-        Unk_ov065_0228ab8c_Host *ent = func_ov065_02261408(l.host);
+    l.sa.family = 2;
+    l.sa.port = 0xee70;
+    l.sa.addr = inet_addr(l.host);
+    if (l.sa.addr == (u32)-1) {
+        SockHostEnt *ent = Sock_GetHostByName(l.host);
         if (ent == NULL) {
             return 2;
         }
-        u8 *d = &l.sa.unk_4.ip.v[0];
-        u8 *s2 = (u8 *)*ent->unk_0c;
+        u8 *d = (u8 *)&l.sa.addr;
+        u8 *s2 = (u8 *)*ent->addrList;
         d[0] = s2[0];
         d[1] = s2[1];
         d[2] = s2[2];
         d[3] = s2[3];
     }
-    if (c->unk_4b0 == -1) {
-        c->unk_4b0 = func_ov065_02278dd4(2, 1, 0);
-        if (c->unk_4b0 == -1) {
+    if (c->slsocket == -1) {
+        c->slsocket = socket(2, 1, 0);
+        if (c->slsocket == -1) {
             return 1;
         }
     }
-    if (func_ov065_02278d34(c->unk_4b0, &l.sa, 8) != 0) {
-        func_ov065_02278dbc(c->unk_4b0);
-        c->unk_4b0 = -1;
+    if (connect(c->slsocket, &l.sa, 8) != 0) {
+        closesocket(c->slsocket);
+        c->slsocket = -1;
         return 3;
     }
     return 0;
@@ -919,13 +710,13 @@ s32 func_ov065_0228ab8c(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228ab50(char **p, char *s, s32 *n) {
+void BufferAddNTS(char **p, char *s, s32 *n) {
     s32 len;
     if (s == NULL) {
         s = "";
     }
-    len = func_021277d4(s) + 1;
-    func_02128a00(*p, s, len);
+    len = STD_GetStringLength(s) + 1;
+    memcpy(*p, s, len);
     *n += len;
     *p += len;
 }
@@ -934,7 +725,7 @@ void func_ov065_0228ab50(char **p, char *s, s32 *n) {
 
 namespace F0228ab3c {
 extern "C" {
-void func_ov065_0228ab3c(char **p, u8 c, s32 *n) {
+void BufferAddByte(char **p, u8 c, s32 *n) {
     **p = c;
     ++*n;
     ++*p;
@@ -944,7 +735,7 @@ void func_ov065_0228ab3c(char **p, u8 c, s32 *n) {
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228ab0c(u8 **cur, u32 v, s32 *len)
+void BufferAddInt(u8 **cur, u32 v, s32 *len)
 {
     u8 *d = *cur;
     u8 *sp = (u8 *)&v;
@@ -960,9 +751,9 @@ void func_ov065_0228ab0c(u8 **cur, u32 v, s32 *len)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228aaec(u8 **cur, const void *src, s32 n, s32 *len)
+void BufferAddData(u8 **cur, const void *src, s32 n, s32 *len)
 {
-    func_02128a00(*cur, src, n);
+    memcpy(*cur, src, n);
     *len += n;
     *cur += n;
 }
@@ -971,19 +762,19 @@ void func_ov065_0228aaec(u8 **cur, const void *src, s32 n, s32 *len)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228aa34(Unk_ov065_0228a218_Ctx *ctx)
+void SetupListChallenge(SBServerList *ctx)
 {
     // No volatiles: the eight stack slots are the loop's literal 0/1 constants, hoisted out of the
     // loop and spilled (no free register); the ninth slot is the spilled temp of (i ^ a) & 1.
     s32 acc, i;
     s32 b, a, ta, tb;
 
-    ctx->unk_74[0] = (s8)(func_02128c70() % 0x5d + 0x21);
+    ctx->mychallenge[0] = (s8)(rand() % 0x5d + 0x21);
     acc = 0;
     i = 1;
     do {
-        a = ctx->unk_74[i - 1];
-        b = ctx->unk_74[0];
+        a = ctx->mychallenge[i - 1];
+        b = ctx->mychallenge[0];
         ta = a < b;
         tb = b < 0x4f;
         b &= 1;
@@ -992,9 +783,9 @@ void func_ov065_0228aa34(Unk_ov065_0228a218_Ctx *ctx)
         b ^= tb;
         acc = b;
         acc ^= ta;
-        ctx->unk_74[i] = (s8)(func_02128c70() % 0x5d + 0x21);
-        if ((acc != 0 && (ctx->unk_74[i] & 1) == 0) || (acc == 0 && (ctx->unk_74[i] & 1) == 1)) {
-            ctx->unk_74[i]++;
+        ctx->mychallenge[i] = (s8)(rand() % 0x5d + 0x21);
+        if ((acc != 0 && (ctx->mychallenge[i] & 1) == 0) || (acc == 0 && (ctx->mychallenge[i] & 1) == 1)) {
+            ctx->mychallenge[i]++;
         }
         i++;
     } while (i < 8);
@@ -1004,7 +795,7 @@ void func_ov065_0228aa34(Unk_ov065_0228a218_Ctx *ctx)
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
+s32 SendWithRetry(SBServerList *ctx, void *buf, s32 n)
 {
     s32 tries = 1;
     s32 r;
@@ -1012,17 +803,17 @@ s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
 
     do {
         tries--;
-        r = func_ov065_02278ca0(ctx->unk_4b0, buf, n, 0);
+        r = send(ctx->slsocket, buf, n, 0);
         if (r > 0) {
             break;
         }
         if (tries < 0) {
             break;
         }
-        func_ov065_0228a718(ctx);
-        res = func_ov065_0228a7f0(ctx, 0, 0, 2, 0);
+        SBServerListDisconnect(ctx);
+        res = SBServerListConnectAndQuery(ctx, 0, 0, 2, 0);
         if (res != 0) {
-            func_ov065_0228aca8(ctx);
+            ErrorDisconnect(ctx);
             return res;
         }
     } while (tries >= 0);
@@ -1036,7 +827,7 @@ s32 func_ov065_0228a9c0(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const char *pass, u32 flags, u32 extra)
+s32 SBServerListConnectAndQuery(SBServerList *ctx, const char *user, const char *pass, u32 flags, u32 extra)
 {
     u16 tmp;
     s32 len;
@@ -1052,35 +843,35 @@ s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const cha
     if (pass == 0) {
         pass = (const char *)"";
     }
-    if (func_021277d4(user) > 0x100) {
+    if (STD_GetStringLength(user) > 0x100) {
         return 6;
     }
-    if (func_021277d4(pass) > 0x100) {
+    if (STD_GetStringLength(pass) > 0x100) {
         return 6;
     }
-    r = func_ov065_0228ab8c(ctx);
+    r = ServerListConnect(ctx);
     if (r != 0) {
         goto end;
     }
-    ctx->unk_5c4 = flags;
-    func_ov065_0228aa34(ctx);
+    ctx->queryoptions = flags;
+    SetupListChallenge(ctx);
     len = 2;
     cur = &buf[2];
-    func_ov065_0228ab3c(&cur, 0, &len);
-    func_ov065_0228ab3c(&cur, 1, &len);
-    func_ov065_0228ab3c(&cur, 3, &len);
-    func_ov065_0228ab0c(&cur, ctx->unk_4b8, &len);
-    func_ov065_0228ab50(&cur, (const char *)ctx->unk_0c, &len);
-    func_ov065_0228ab50(&cur, (const char *)ctx->unk_30, &len);
-    func_ov065_0228aaec(&cur, ctx->unk_74, 8, &len);
-    func_ov065_0228ab50(&cur, pass, &len);
-    func_ov065_0228ab50(&cur, user, &len);
-    func_ov065_0228ab0c(&cur, ((flags >> 24) & 0xff) | ((flags >> 8) & 0xff00) | ((flags << 8) & 0xff0000) | ((flags << 24) & 0xff000000), &len);
-    if (ctx->unk_5c4 & 8) {
-        func_ov065_0228ab0c(&cur, ctx->unk_4a4, &len);
+    BufferAddByte(&cur, 0, &len);
+    BufferAddByte(&cur, 1, &len);
+    BufferAddByte(&cur, 3, &len);
+    BufferAddInt(&cur, ctx->fromgamever, &len);
+    BufferAddNTS(&cur, (const char *)ctx->queryforgamename, &len);
+    BufferAddNTS(&cur, (const char *)ctx->queryfromgamename, &len);
+    BufferAddData(&cur, ctx->mychallenge, 8, &len);
+    BufferAddNTS(&cur, pass, &len);
+    BufferAddNTS(&cur, user, &len);
+    BufferAddInt(&cur, ((flags >> 24) & 0xff) | ((flags >> 8) & 0xff00) | ((flags << 8) & 0xff0000) | ((flags << 24) & 0xff000000), &len);
+    if (ctx->queryoptions & 8) {
+        BufferAddInt(&cur, ctx->srcip, &len);
     }
-    if (ctx->unk_5c4 & 0x80) {
-        func_ov065_0228ab0c(&cur, extra, &len);
+    if (ctx->queryoptions & 0x80) {
+        BufferAddInt(&cur, extra, &len);
     }
     {
         u16 l = (u16)*(volatile s32 *)&len;
@@ -1090,18 +881,18 @@ s32 func_ov065_0228a7f0(Unk_ov065_0228a218_Ctx *ctx, const char *user, const cha
     sp = (u8 *)&tmp;
     *(u8 *)da = sp[0];
     *(u8 *)(da + 1) = sp[1];
-    if (func_ov065_02278ca0(ctx->unk_4b0, (u8 *)da, len, 0) <= 0) {
-        func_ov065_0228a718(ctx);
+    if (send(ctx->slsocket, (u8 *)da, len, 0) <= 0) {
+        SBServerListDisconnect(ctx);
         return 3;
     }
-    ctx->unk_00 = 3;
-    ctx->unk_5c8 = 0;
-    if (ctx->unk_7c == 0) {
-        ctx->unk_7c = func_ov065_02277af0(0x1000);
-        if (ctx->unk_7c == 0) {
+    ctx->state = 3;
+    ctx->pstate = 0;
+    if (ctx->inbuffer == 0) {
+        ctx->inbuffer = (u8 *)GsUtil_Alloc(0x1000);
+        if (ctx->inbuffer == 0) {
             return 5;
         }
-        ctx->unk_80 = 0;
+        ctx->inbufferlen = 0;
     }
     r = 0;
 end:
@@ -1112,43 +903,43 @@ end:
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a7b4(Unk_ov065_0228a218_Ctx *ctx)
+void FreePopularValues(SBServerList *ctx)
 {
     s32 i = 0;
-    s32 *pn = &ctx->unk_480;
+    s32 *pn = &ctx->numpopularvalues;
     u32 *p;
 
     if (*pn > 0) {
         p = (u32 *)ctx;
         do {
-            func_ov065_0228ae2c(ctx, (void *)p[0x84 / 4]);
+            SBReleaseStr(ctx, (void *)p[0x84 / 4]);
             p++;
             i++;
         } while (i < *pn);
     }
-    ctx->unk_480 = 0;
+    ctx->numpopularvalues = 0;
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a76c(Unk_ov065_0228a218_Ctx *ctx)
+void FreeKeyList(SBServerList *ctx)
 {
     s32 i;
-    Unk_ov065_0228a218_Rec *rec;
+    KeyInfo *rec;
 
-    if (ctx->unk_08 != 0) {
+    if (ctx->keylist != 0) {
         i = 0;
-        if (func_ov065_02278684(ctx->unk_08) > 0) {
+        if (ArrayLength(ctx->keylist) > 0) {
             do {
-                rec = (Unk_ov065_0228a218_Rec *)func_ov065_0227866c(ctx->unk_08, i);
-                func_ov065_0228ae2c(ctx, rec->unk_00);
+                rec = (KeyInfo *)ArrayNth(ctx->keylist, i);
+                SBReleaseStr(ctx, rec->keyName);
                 i++;
-            } while (i < func_ov065_02278684(ctx->unk_08));
+            } while (i < ArrayLength(ctx->keylist));
         }
-        func_ov065_02278688(ctx->unk_08);
-        ctx->unk_08 = 0;
+        ArrayFree(ctx->keylist);
+        ctx->keylist = 0;
     }
 }
 }
@@ -1156,64 +947,64 @@ void func_ov065_0228a76c(Unk_ov065_0228a218_Ctx *ctx)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a718(Unk_ov065_0228a218_Ctx *ctx)
+void SBServerListDisconnect(SBServerList *ctx)
 {
-    if (ctx->unk_7c != 0) {
-        func_ov065_02277ac8(ctx->unk_7c);
+    if (ctx->inbuffer != 0) {
+        GsUtil_Free(ctx->inbuffer);
     }
-    ctx->unk_7c = 0;
-    ctx->unk_80 = 0;
-    if (ctx->unk_4b0 != -1) {
-        func_ov065_02278dbc(ctx->unk_4b0);
+    ctx->inbuffer = 0;
+    ctx->inbufferlen = 0;
+    if (ctx->slsocket != -1) {
+        closesocket(ctx->slsocket);
     }
-    ctx->unk_4b0 = -1;
-    ctx->unk_00 = 1;
-    func_ov065_0228a76c(ctx);
-    ctx->unk_484 = -1;
-    func_ov065_0228a7b4(ctx);
+    ctx->slsocket = -1;
+    ctx->state = 1;
+    FreeKeyList(ctx);
+    ctx->expectedelements = -1;
+    FreePopularValues(ctx);
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a6f0(Unk_ov065_0228a218_Ctx *ctx)
+void SBServerListCleanup(SBServerList *ctx)
 {
-    func_ov065_0228a718(ctx);
-    func_ov065_0228aed0(ctx);
-    func_ov065_022891bc(ctx);
-    if (ctx->unk_04 != 0) {
-        func_ov065_02278688((Unk_ov065_022786bc_Vec *)ctx->unk_04);
+    SBServerListDisconnect(ctx);
+    SBServerListClear(ctx);
+    SBRefStrHashCleanup(ctx);
+    if (ctx->servers != 0) {
+        ArrayFree((DArrayImplementation *)ctx->servers);
     }
-    ctx->unk_04 = 0;
+    ctx->servers = 0;
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a678(Unk_ov065_0228a218_Ctx *ctx, s8 *key, s32 n)
+void InitCryptKey(SBServerList *ctx, s8 *key, s32 n)
 {
     s32 len;
     s8 *pw;
     s32 i;
     s32 j;
 
-    len = func_021277d4((const char *)ctx->unk_54);
-    pw = ctx->unk_54;
+    len = STD_GetStringLength((const char *)ctx->queryfromkey);
+    pw = (s8 *)ctx->queryfromkey;
     for (i = 0; i < n; i++) {
         s32 c = pw[i % len];
         j = (i * c) % 8;
-        ctx->unk_74[j] = (s8)(ctx->unk_74[j] ^ (s8)(ctx->unk_74[i % 8] ^ key[i]));
+        ctx->mychallenge[j] = (s8)(ctx->mychallenge[j] ^ (s8)(ctx->mychallenge[i % 8] ^ key[i]));
     }
-    func_ov065_022885d8(ctx->unk_4bc, ctx->unk_74, 8);
+    GOACryptInit(&ctx->cryptkey, ctx->mychallenge, 8);
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a644(u32 flags)
+s32 ServerSizeForFlags(u32 flags)
 {
     s32 sz = 5;
     if (flags & 2) {
@@ -1235,19 +1026,19 @@ s32 func_ov065_0228a644(u32 flags)
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a5e4(u8 *buf, s32 n)
+s32 FullRulesPresent(u8 *buf, s32 n)
 {
     s32 l;
     s32 z = 0;
 
     while (n > 0 && ((s8 *)buf)[z] != 0) {
-        l = func_ov065_0228ae10(buf, n);
+        l = NTSLengthSB(buf, n);
         if (l < 0) {
             return 0;
         }
         buf += l;
         n -= l;
-        l = func_ov065_0228ae10(buf, n);
+        l = NTSLengthSB(buf, n);
         if (l < 0) {
             return 0;
         }
@@ -1267,20 +1058,20 @@ s32 func_ov065_0228a5e4(u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
+s32 AllKeysPresent(SBServerList *ctx, u8 *buf, s32 n)
 {
     s32 cnt;
     s32 i;
-    Unk_ov065_0228a218_Rec *rec;
+    KeyInfo *rec;
     u32 c;
     s32 l;
 
-    cnt = func_ov065_02278684(ctx->unk_08);
+    cnt = ArrayLength(ctx->keylist);
     i = 0;
     if (cnt > 0) {
         do {
-            rec = (Unk_ov065_0228a218_Rec *)func_ov065_0227866c(ctx->unk_08, i);
-            switch (rec->unk_04) {
+            rec = (KeyInfo *)ArrayNth(ctx->keylist, i);
+            switch (rec->keyType) {
             case 1:
                 buf += 1;
                 n -= 1;
@@ -1297,7 +1088,7 @@ s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
                 buf++;
                 n--;
                 if (c == 0xff) {
-                    l = func_ov065_0228ae10(buf, n);
+                    l = NTSLengthSB(buf, n);
                     if (l == -1) {
                         return 0;
                     }
@@ -1321,7 +1112,7 @@ s32 func_ov065_0228a544(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a4f4(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port)
+void ParseServerIPPort(SBServerList *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port)
 {
     u32 f;
     u8 *p;
@@ -1345,7 +1136,7 @@ void func_ov065_0228a4f4(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n, u32 *ip, u
         d[1] = p[1];
         return;
     }
-    *port = ctx->unk_4a8;
+    *port = ctx->defaultport;
 end:;
 }
 }
@@ -1353,7 +1144,7 @@ end:;
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent, u8 *buf, s32 n, s32 flag)
+s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag)
 {
     s32 cnt;
     s32 orig;
@@ -1363,11 +1154,11 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
     u16 port;
     u32 ip;
     u8 *d;
-    Unk_ov065_0228a218_Rec *rec;
+    KeyInfo *rec;
 
     orig = n;
     flags = buf[0];
-    func_ov065_02288d40(ent, flags);
+    SBServerSetFlags(ent, flags);
     buf += 5;
     n -= 5;
     if (flags & 0x10) {
@@ -1392,9 +1183,9 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
         buf += 2;
         n -= 2;
     } else {
-        port = ctx->unk_4a8;
+        port = ctx->defaultport;
     }
-    func_ov065_02288d38(ent, ip, port);
+    SBServerSetPrivateAddr(ent, ip, port);
     if (flags & 8) {
         d = (u8 *)&ip;
         d[0] = buf[0];
@@ -1403,17 +1194,17 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
         d[3] = buf[3];
         buf += 4;
         n -= 4;
-        func_ov065_02288d34(ent, ip);
+        SBServerSetICMPIP(ent, ip);
     }
     if (flags & 0x40) {
-        cnt = func_ov065_02278684(ctx->unk_08);
+        cnt = ArrayLength(ctx->keylist);
         i = 0;
         if (cnt > 0) {
             do {
-                rec = (Unk_ov065_0228a218_Rec *)func_ov065_0227866c(ctx->unk_08, i);
-                switch (rec->unk_04) {
+                rec = (KeyInfo *)ArrayNth(ctx->keylist, i);
+                switch (rec->keyType) {
                 case 1:
-                    func_ov065_0228914c(ent, rec->unk_00, *buf);
+                    SBServerAddIntKeyValue(ent, rec->keyName, *buf);
                     buf++;
                     n--;
                     break;
@@ -1423,7 +1214,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
                     d[0] = buf[0];
                     d[1] = buf[1];
                     sw = (u16)(((tmp >> 8) & 0xff) | ((tmp << 8) & 0xff00));
-                    func_ov065_0228914c(ent, rec->unk_00, sw);
+                    SBServerAddIntKeyValue(ent, rec->keyName, sw);
                     buf += 2;
                     n -= 2;
                     break;
@@ -1439,12 +1230,12 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
                     }
                     if (c == 0xff) {
                         s32 l;
-                        func_ov065_02289174(ent, rec->unk_00, buf);
-                        l = func_021277d4((const char *)buf) + 1;
+                        SBServerAddKeyValue(ent, rec->keyName, buf);
+                        l = STD_GetStringLength((const char *)buf) + 1;
                         buf += l;
                         n -= l;
                     } else {
-                        func_ov065_02289174(ent, rec->unk_00, (void *)ctx->unk_84[c]);
+                        SBServerAddKeyValue(ent, rec->keyName, (void *)ctx->popularvalues[c]);
                     }
                     break;
                 }
@@ -1452,7 +1243,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
                 i++;
             } while (i < cnt);
         }
-        func_ov065_02288d30(ent, (u8)(func_ov065_02288d2c(ent) | 1));
+        SBServerSetState(ent, (u8)(SBServerGetState(ent) | 1));
     }
     flags = flags & 0x80;
     if (flags) {
@@ -1461,11 +1252,11 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
             char *p;
             s32 l;
             p = (char *)buf;
-            l = func_021277d4((const char *)buf) + 1;
+            l = STD_GetStringLength((const char *)buf) + 1;
             buf += l;
             n -= l;
-            func_ov065_02289174(ent, p, buf);
-            l = func_021277d4((const char *)buf) + 1;
+            SBServerAddKeyValue(ent, p, buf);
+            l = STD_GetStringLength((const char *)buf) + 1;
             buf += l;
             n -= l;
         test:
@@ -1477,7 +1268,7 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
             }
         }
         n--;
-        func_ov065_02288d30(ent, (u8)(func_ov065_02288d2c(ent) | 2));
+        SBServerSetState(ent, (u8)(SBServerGetState(ent) | 2));
     }
     return orig - n;
 }
@@ -1486,44 +1277,44 @@ s32 func_ov065_0228a300(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *ent
 
 namespace F0228a20c {
 extern "C" {
-s32 func_ov065_0228a218(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
+s32 IncomingListParseServer(SBServerList *ctx, u8 *buf, s32 n)
 {
     s32 off;
     u32 flags;
     u32 ip;
     u16 port;
-    Unk_ov065_0228a218_Ent *ent;
+    _SBServer *ent;
     s32 r;
 
     if (n < 1) {
         return 0;
     }
     flags = buf[0];
-    off = func_ov065_0228a644(flags);
+    off = ServerSizeForFlags(flags);
     if (n < off) {
         return 0;
     }
     if (flags & 0x40) {
-        if (func_ov065_0228a544(ctx, buf + off, n - off) == 0) {
+        if (AllKeysPresent(ctx, buf + off, n - off) == 0) {
             return 0;
         }
     }
     flags = flags & 0x80;
     if (flags) {
-        if (func_ov065_0228a5e4(buf + off, n - off) == 0) {
+        if (FullRulesPresent(buf + off, n - off) == 0) {
             return 0;
         }
     }
-    if (func_02128930(buf + 1, (void *)"\377\377\377\377", 4) == 0) {
+    if (memcmp(buf + 1, (void *)"\377\377\377\377", 4) == 0) {
         return -1;
     }
-    func_ov065_0228a4f4(ctx, buf, n, &ip, &port);
-    ent = func_ov065_02288d44(ctx, ip, port);
-    if (func_ov065_02288d18(ent) != 0) {
+    ParseServerIPPort(ctx, buf, n, &ip, &port);
+    ent = SBAllocServer(ctx, ip, port);
+    if (SBIsNullServer(ent) != 0) {
         return -2;
     }
-    r = func_ov065_0228a300(ctx, ent, buf, n, 1);
-    func_ov065_0228b070(ctx, ent);
+    r = ParseServer(ctx, ent, buf, n, 1);
+    SBServerListAppendServer(ctx, ent);
     return r;
 }
 }
@@ -1531,23 +1322,23 @@ s32 func_ov065_0228a218(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-void func_ov065_0228a20c(Unk_ov065_0228a218_Ctx *ctx, u32 v)
+void SBSetLastListErrorPtr(SBServerList *ctx, u32 v)
 {
-    ctx->unk_4ac = v;
+    ctx->lasterror = (char *)v;
 }
 }
 }
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
-    u8 *p = c->unk_7c;
-    s32 n = c->unk_80;
+s32 ProcessMainListData(SBServerList *c) {
+    u8 *p = c->inbuffer;
+    s32 n = c->inbufferlen;
     s32 a, b, l, r;
     u8 *dd;
     u8 *sp;
-    Unk_ov065_02289808_Elem e;
-    switch (c->unk_5c8) {
+    KeyInfo e;
+    switch (c->pstate) {
     case 0:
         if (n < 1) goto end;
         a = (p[0] ^ 0xec) + 2;
@@ -1555,110 +1346,110 @@ s32 func_ov065_02289f28(Unk_ov065_02289808_Ctx *c) {
         l = p[a - 1] ^ 0xea;
         b = a + l;
         if (n < b) goto end;
-        func_ov065_0228a678(c, p + a, l);
-        c->unk_5c8 = 1;
+        InitCryptKey(c, p + a, l);
+        c->pstate = 1;
         p += b;
         n -= b;
-        func_ov065_02288510(c->unk_4bc, p, n);
+        GOADecrypt(&c->cryptkey, p, n);
     case 1:
         if (n < 6) goto end;
-        dd = c->unk_4a0;
+        dd = (u8 *)&c->mypublicip;
         dd[0] = p[0];
         dd[1] = p[1];
         dd[2] = p[2];
         dd[3] = p[3];
-        c->unk_488(c, 6, data_ov065_022918a8, c->unk_494);
-        dd = (u8 *)&c->unk_4a8;
+        c->ListCallback(c, 6, SBNullServer, c->instance);
+        dd = (u8 *)&c->defaultport;
         sp = p + 4;
         dd[0] = sp[0];
         sp++;
         dd[1] = sp[0];
         if (*(u16 *)dd == 0xffff) {
-            if (func_ov065_0228ae10(p + 6, n - 6) == -1) goto end;
-            func_ov065_0228a20c(c, p + 6);
-            c->unk_488(c, 5, data_ov065_022918a8, c->unk_494);
-            if (c->unk_7c == 0) goto end;
+            if (NTSLengthSB(p + 6, n - 6) == -1) goto end;
+            SBSetLastListErrorPtr(c, p + 6);
+            c->ListCallback(c, 5, SBNullServer, c->instance);
+            if (c->inbuffer == 0) goto end;
         }
         p += 6;
         n -= 6;
-        if ((c->unk_5c4 & 2) != 0 || c->unk_4a8 == 0xffff) {
-            c->unk_5c8 = 5;
-            c->unk_00 = 2;
+        if ((c->queryoptions & 2) != 0 || c->defaultport == 0xffff) {
+            c->pstate = 5;
+            c->state = 2;
             goto end;
         }
-        c->unk_5c8 = 2;
-        c->unk_484 = -1;
+        c->pstate = 2;
+        c->expectedelements = -1;
     case 2:
-        if (c->unk_484 == -1) {
+        if (c->expectedelements == -1) {
             if (n < 1) goto end;
-            c->unk_484 = p[0];
-            c->unk_08 = func_ov065_022786bc(8, c->unk_484, 0);
-            if (c->unk_08 == 0) return 5;
+            c->expectedelements = p[0];
+            c->keylist = ArrayNew(8, c->expectedelements, 0);
+            if (c->keylist == 0) return 5;
             p++;
             n--;
         }
-        while (c->unk_484 > func_ov065_02278684(c->unk_08)) {
+        while (c->expectedelements > ArrayLength(c->keylist)) {
             if (n < 2) break;
-            l = func_ov065_0228ae10(p + 1, n - 1);
+            l = NTSLengthSB(p + 1, n - 1);
             if (l == -1) break;
-            e.unk_04 = p[0];
-            e.unk_00 = func_ov065_0228ae64(c, p + 1);
-            func_ov065_02278658(c->unk_08, &e);
+            e.keyType = p[0];
+            e.keyName = SBRefStr(c, p + 1);
+            ArrayAppend(c->keylist, &e);
             l = l + 1;
             p += l;
             n -= l;
         }
-        if (c->unk_484 > func_ov065_02278684(c->unk_08)) goto end;
-        c->unk_5c8 = 3;
-        c->unk_484 = -1;
+        if (c->expectedelements > ArrayLength(c->keylist)) goto end;
+        c->pstate = 3;
+        c->expectedelements = -1;
     case 3:
-        if (c->unk_484 == -1) {
+        if (c->expectedelements == -1) {
             if (n < 1) goto end;
-            c->unk_484 = p[0];
-            c->unk_480 = 0;
+            c->expectedelements = p[0];
+            c->numpopularvalues = 0;
             p++;
             n--;
         }
-        while (c->unk_484 > c->unk_480) {
-            l = func_ov065_0228ae10(p, n);
+        while (c->expectedelements > c->numpopularvalues) {
+            l = NTSLengthSB(p, n);
             if (l == -1) break;
-            b = (s32)func_ov065_0228ae64(c, p);
-            c->unk_84[c->unk_480++] = b;
+            b = (s32)SBRefStr(c, p);
+            c->popularvalues[c->numpopularvalues++] = b;
             p += l;
             n -= l;
         }
-        if (c->unk_484 > c->unk_480) goto end;
-        c->unk_5c8 = 4;
+        if (c->expectedelements > c->numpopularvalues) goto end;
+        c->pstate = 4;
     case 4:
         if (n < 5) goto end;
         r = 0;
         do {
-            l = func_ov065_0228a218(c, p, n);
+            l = IncomingListParseServer(c, p, n);
             if (l == -2) return 5;
             if (l == -1) {
                 n -= 5;
                 p += 5;
-                c->unk_5c8 = 5;
-                c->unk_00 = 2;
-                c->unk_488(c, 3, data_ov065_022918a8, c->unk_494);
+                c->pstate = 5;
+                c->state = 2;
+                c->ListCallback(c, 3, SBNullServer, c->instance);
                 goto end;
             }
             p += l;
             n -= l;
-            if (c->unk_7c == 0) l = 0;
+            if (c->inbuffer == 0) l = 0;
         } while (l != 0);
         break;
     default:
         break;
     }
 end:
-    if (c->unk_7c == 0) {
+    if (c->inbuffer == 0) {
         return 0;
     }
     if (n != 0) {
-        func_021289b4(c->unk_7c, p, n);
+        memmove(c->inbuffer, p, n);
     }
-    c->unk_80 = n;
+    c->inbufferlen = n;
     return 0;
 }
 }
@@ -1666,19 +1457,19 @@ end:
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 ProcessPushKeyList(SBServerList *c, u8 *p, s32 n) {
     s32 cnt;
     s32 i;
     s32 l;
-    Unk_ov065_02289808_Elem e;
+    KeyInfo e;
     cnt = p[0];
     p++;
     n--;
-    if (c->unk_08 != 0) {
-        func_ov065_0228a76c(c);
+    if (c->keylist != 0) {
+        FreeKeyList(c);
     }
-    c->unk_08 = func_ov065_022786bc(8, cnt, 0);
-    if (c->unk_08 == 0) {
+    c->keylist = ArrayNew(8, cnt, 0);
+    if (c->keylist == 0) {
         return 5;
     }
     i = 0;
@@ -1687,13 +1478,13 @@ s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
             if (n < 2) {
                 return 4;
             }
-            l = func_ov065_0228ae10(p + 1, n - 1);
+            l = NTSLengthSB(p + 1, n - 1);
             if (l == -1) {
                 return 4;
             }
-            e.unk_04 = p[0];
-            e.unk_00 = func_ov065_0228ae64(c, p + 1);
-            func_ov065_02278658(c->unk_08, &e);
+            e.keyType = p[0];
+            e.keyName = SBRefStr(c, p + 1);
+            ArrayAppend(c->keylist, &e);
             l = l + 1;
             p += l;
             n -= l;
@@ -1707,7 +1498,7 @@ s32 func_ov065_02289e88(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 ProcessPlayerSearch(SBServerList *c, u8 *p, s32 n) {
     s32 l;
     u32 flag;
     s32 i;
@@ -1730,7 +1521,7 @@ s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     if (cnt > 0) {
         do {
             s1 = p;
-            l = func_ov065_0228ae10(p, n);
+            l = NTSLengthSB(p, n);
             if (l == -1) {
                 return 4;
             }
@@ -1758,18 +1549,18 @@ s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
             z = HTONL(z);
             p += 10;
             n -= 10;
-            l2 = func_ov065_0228ae10(p, n);
+            l2 = NTSLengthSB(p, n);
             if (l2 == -1) {
                 return 4;
             }
-            c->unk_490(c, s1, x, y, z, p, c->unk_494);
+            c->PlayerSearchCallback(c, s1, x, y, z, p, c->instance);
             p += l2;
             n -= l2;
             i++;
         } while (i < cnt);
     }
     if (flag != 0) {
-        c->unk_490(c, 0, 0, 0, 0, 0, c->unk_494);
+        c->PlayerSearchCallback(c, 0, 0, 0, 0, 0, c->instance);
     }
     return 0;
 }
@@ -1778,7 +1569,7 @@ s32 func_ov065_02289d44(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 ProcessMaploop(SBServerList *c, u8 *p, s32 n) {
     u16 b;
     u32 d;
     u32 a;
@@ -1803,11 +1594,11 @@ s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     dd[0] = s[0];
     s++;
     dd[1] = s[0];
-    r = func_ov065_0228afd8(c, a, b);
+    r = SBServerListFindServerByIP(c, a, b);
     if (r == -1) {
         return 0;
     }
-    x = func_ov065_0228af48(c, r);
+    x = SBServerListNth(c, r);
     dd = (u8 *)&d;
     s = p + 6;
     dd[0] = s[0];
@@ -1824,7 +1615,7 @@ s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
         if (n < 1) {
             break;
         }
-        l = func_ov065_0228ae10(p, n);
+        l = NTSLengthSB(p, n);
         if (l == -1) {
             return 4;
         }
@@ -1833,10 +1624,10 @@ s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
         n -= l;
         i++;
     }
-    if (c->unk_48c == 0) {
+    if (c->MaploopCallback == 0) {
         return 0;
     }
-    c->unk_48c(c, (void *)x, d, i, ptrs, c->unk_494);
+    c->MaploopCallback(c, (void *)x, d, i, ptrs, c->instance);
     return 0;
 }
 }
@@ -1844,7 +1635,7 @@ s32 func_ov065_02289c34(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289bdc(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 ProcessDeleteServer(SBServerList *c, u8 *p, s32 n) {
     u32 a;
     u16 b;
     u8 *d;
@@ -1863,9 +1654,9 @@ s32 func_ov065_02289bdc(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     d[0] = s[0];
     s++;
     d[1] = s[0];
-    r = func_ov065_0228afd8(c, a, b);
+    r = SBServerListFindServerByIP(c, a, b);
     if (r != -1) {
-        func_ov065_0228af68(c, r);
+        SBServerListRemoveAt(c, r);
         return 0;
     }
     return 0;
@@ -1875,7 +1666,7 @@ s32 func_ov065_02289bdc(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289b28(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
+s32 ProcessPushServer(SBServerList *c, u8 *p, s32 n) {
     u32 a;
     u16 b;
     s32 r4;
@@ -1883,23 +1674,23 @@ s32 func_ov065_02289b28(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     if (n < 5) {
         return 4;
     }
-    func_ov065_0228a4f4(c, p, n, &a, &b);
-    r4 = func_ov065_0228afd8(c, a, b);
+    ParseServerIPPort(c, p, n, &a, &b);
+    r4 = SBServerListFindServerByIP(c, a, b);
     if (r4 == -1) {
-        r6 = func_ov065_02288d44(c, a, b);
-        if (func_ov065_02288d18() != 0) {
+        r6 = SBAllocServer(c, a, b);
+        if (SBIsNullServer() != 0) {
             return 5;
         }
     } else {
-        r6 = func_ov065_0228af48(c, r4);
+        r6 = SBServerListNth(c, r4);
     }
-    if (func_ov065_0228a300(c, r6, p, n, 0) < 0) {
+    if (ParseServer(c, r6, p, n, 0) < 0) {
         return 4;
     }
     if (r4 == -1) {
-        func_ov065_0228b070(c, r6);
+        SBServerListAppendServer(c, r6);
     }
-    c->unk_488(c, 1, r6, c->unk_494);
+    c->ListCallback(c, 1, r6, c->instance);
     return 0;
 }
 }
@@ -1907,57 +1698,57 @@ s32 func_ov065_02289b28(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
+s32 ProcessAdHocData(SBServerList *c) {
     u8 *d;
     s32 r = 0;
     u16 ml;
     u8 *p;
-    while (c->unk_80 >= 3) {
+    while (c->inbufferlen >= 3) {
         {
             d = (u8 *)&ml;
-            Get16(d, c->unk_7c);
+            Get16(d, c->inbuffer);
             ml = HTONS(ml);
             if (ml > 0x1000) {
                 r = 4;
                 break;
             }
-            if (c->unk_80 < ml) {
+            if (c->inbufferlen < ml) {
                 return 0;
             }
-            p = c->unk_7c;
+            p = c->inbuffer;
             switch ((s8)p[2]) {
             case 0:
                 break;
             case 1:
-                r = func_ov065_02289e88(c, p + 3, ml - 3);
+                r = ProcessPushKeyList(c, p + 3, ml - 3);
                 break;
             case 2:
-                r = func_ov065_02289b28(c, p + 3, ml - 3);
+                r = ProcessPushServer(c, p + 3, ml - 3);
                 break;
             case 3:
-                if (func_ov065_02278ca0(c->unk_4b0, p, ml, 0) <= 0) {
+                if (send(c->slsocket, p, ml, 0) <= 0) {
                     return 3;
                 }
                 break;
             case 4:
-                r = func_ov065_02289bdc(c, p + 3, ml - 3);
+                r = ProcessDeleteServer(c, p + 3, ml - 3);
                 break;
             case 5:
-                r = func_ov065_02289c34(c, p + 3, ml - 3);
+                r = ProcessMaploop(c, p + 3, ml - 3);
                 break;
             case 6:
-                r = func_ov065_02289d44(c, p + 3, ml - 3);
+                r = ProcessPlayerSearch(c, p + 3, ml - 3);
                 break;
             }
-            c->unk_80 = c->unk_80 - ml;
-            if (c->unk_80 != 0 && c->unk_7c != 0) {
-                func_021289b4(c->unk_7c, c->unk_7c + ml, c->unk_80);
+            c->inbufferlen = c->inbufferlen - ml;
+            if (c->inbufferlen != 0 && c->inbuffer != 0) {
+                memmove(c->inbuffer, c->inbuffer + ml, c->inbufferlen);
             }
         }
         if (r != 0) break;
     }
     if (r != 0) {
-        func_ov065_0228aca8(c);
+        ErrorDisconnect(c);
     }
     return r;
 }
@@ -1966,32 +1757,32 @@ s32 func_ov065_02289a00(Unk_ov065_02289808_Ctx *c) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_0228993c(Unk_ov065_02289808_Ctx *c) {
+s32 ProcessIncomingData(SBServerList *c) {
     s32 old;
     s32 r;
     s32 res;
-    if (func_ov065_02278ee8(c->unk_4b0) == 0) {
+    if (CanReceiveOnSocket(c->slsocket) == 0) {
         return 0;
     }
-    old = c->unk_80;
-    r = func_ov065_02278ce0(c->unk_4b0, c->unk_7c + old, 0x1000 - old, 0);
+    old = c->inbufferlen;
+    r = recv(c->slsocket, c->inbuffer + old, 0x1000 - old, 0);
     if (r == 0 || r == -1) {
-        func_ov065_0228aca8(c);
+        ErrorDisconnect(c);
         return 3;
     }
-    c->unk_80 = c->unk_80 + r;
+    c->inbufferlen = c->inbufferlen + r;
     res = 0;
-    if (c->unk_00 == 2 || c->unk_5c8 > 0) {
-        func_ov065_02288510(c->unk_4bc, c->unk_7c + old, c->unk_80 - old);
+    if (c->state == 2 || c->pstate > 0) {
+        GOADecrypt(&c->cryptkey, c->inbuffer + old, c->inbufferlen - old);
     }
-    if (c->unk_00 == 3) {
-        res = func_ov065_02289f28(c);
+    if (c->state == 3) {
+        res = ProcessMainListData(c);
     }
     if (res != 0) {
         return res;
     }
-    if (c->unk_00 == 2 && c->unk_80 > 0) {
-        return func_ov065_02289a00(c);
+    if (c->state == 2 && c->inbufferlen > 0) {
+        return ProcessAdHocData(c);
     }
     return 0;
 }
@@ -2000,7 +1791,7 @@ s32 func_ov065_0228993c(Unk_ov065_02289808_Ctx *c) {
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32 len) {
+s32 SBSendMessageToServer(SBServerList *c, u32 a1, u32 a2, u8 *data, s32 len) {
     struct {
         u16 t;
         u8 pkt[9];
@@ -2009,10 +1800,10 @@ s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32
     u8 *d;
     u8 *sp;
     s32 r;
-    if (c->unk_00 == 1) {
-        func_ov065_0228a7f0(c, 0, 0, 2, 0);
+    if (c->state == 1) {
+        SBServerListConnectAndQuery(c, 0, 0, 2, 0);
     }
-    if (c->unk_00 == 1) {
+    if (c->state == 1) {
         return 3;
     }
     l.t = HTONS((u16)(len + 9));
@@ -2031,9 +1822,9 @@ s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32
     sp = (u8 *)&a2;
     d[0] = sp[0];
     d[1] = sp[1];
-    r = func_ov065_0228a9c0(c, l.pkt, 9);
+    r = SendWithRetry(c, l.pkt, 9);
     if (r == 0) {
-        if (func_ov065_02278ca0(c->unk_4b0, data, len, 0) < 0) {
+        if (send(c->slsocket, data, len, 0) < 0) {
             return 3;
         }
         r = 0;
@@ -2045,7 +1836,7 @@ s32 func_ov065_02289880(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *data, s32
 
 namespace F02289808 {
 extern "C" {
-s32 func_ov065_02289808(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u32 ip) {
+s32 SBSendNatNegotiateCookieToServer(SBServerList *c, u32 a1, u32 a2, u32 ip) {
     u8 buf[10];
     u8 *d;
     u8 *s;
@@ -2062,45 +1853,41 @@ s32 func_ov065_02289808(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u32 ip) {
     d[1] = s[1];
     d[2] = s[2];
     d[3] = s[3];
-    return func_ov065_02289880(c, a1, a2, buf, 10);
+    return SBSendMessageToServer(c, a1, a2, buf, 10);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_02289720(Unk_ov065_02289720_Sub *s) {
-    struct Unk_ov065_02289720_Addr {
-        u16 fam;
-        u16 port;
-        u32 ip;
-    } addr;
+s32 ProcessLanData(SBServerList *s) {
+    SockAddrIn addr;
     s32 len;
     u8 buf[0x5dc];
     s32 r;
     void *e;
     len = 8;
-    if (func_ov065_02278ee8(s->unk_4b0) != 0) {
+    if (CanReceiveOnSocket(s->slsocket) != 0) {
         do {
-            r = func_ov065_02278cb8(s->unk_4b0, buf, 0x5db, 0, &addr, &len);
+            r = recvfrom(s->slsocket, buf, 0x5db, 0, &addr, &len);
             if (r != -1) {
-                r = func_ov065_0228afd8(s, addr.ip, addr.port);
+                r = SBServerListFindServerByIP(s, addr.addr, addr.port);
                 if (r == -1) {
-                    e = func_ov065_02288d44(s, addr.ip, addr.port);
-                    if (func_ov065_02288d18(e) != 0) {
+                    e = SBAllocServer(s, addr.addr, addr.port);
+                    if (SBIsNullServer(e) != 0) {
                         return 5;
                     }
-                    func_ov065_02288d40(e, 0x11);
-                    func_ov065_0228b070(s, e);
+                    SBServerSetFlags(e, 0x11);
+                    SBServerListAppendServer(s, e);
                 }
             }
-        } while (func_ov065_02278ee8(s->unk_4b0) != 0);
+        } while (CanReceiveOnSocket(s->slsocket) != 0);
     }
-    if (func_ov065_02279144() - s->unk_4b4 > 2000) {
-        func_ov065_02278dbc(s->unk_4b0);
-        s->unk_4b0 = -1;
-        s->unk_00 = 1;
-        s->unk_488(s, 3, data_ov065_022918a8, s->unk_494);
+    if (current_time() - s->lanstarttime > 2000) {
+        closesocket(s->slsocket);
+        s->slsocket = -1;
+        s->state = 1;
+        s->ListCallback(s, 3, SBNullServer, s->instance);
     }
     return 0;
 }
@@ -2109,14 +1896,14 @@ s32 func_ov065_02289720(Unk_ov065_02289720_Sub *s) {
 
 namespace F02288e2c {
 extern "C" {
-s32 func_ov065_022896dc(void *sub) {
-    func_ov065_0228af0c(sub);
+s32 SBListThink(void *sub) {
+    SBFreeDeadList(sub);
     switch (*(s32 *)sub) {
     case 2:
     case 3:
-        return func_ov065_0228993c(sub);
+        return ProcessIncomingData(sub);
     case 0:
-        return func_ov065_02289720((Unk_ov065_02289720_Sub *)sub);
+        return ProcessLanData((SBServerList *)sub);
     case 1:
         break;
     }
@@ -2127,25 +1914,25 @@ s32 func_ov065_022896dc(void *sub) {
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02289578(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065_02289460_Obj *o) {
+void ListCallback(SBServerList *s, s32 code, _SBServer *p, _ServerBrowser *o) {
     switch (code) {
     case 0:
-        o->unk_630(o, 0, p, o->unk_634);
-        if ((p->unk_14 & 3) != 0) {
-            if ((p->unk_14 & 0x40) != 0) {
+        o->BrowserCallback(o, 0, p, o->instance);
+        if ((p->state & 3) != 0) {
+            if ((p->state & 0x40) != 0) {
                 break;
             }
         }
-        if ((p->unk_14 & 0x2c) != 0) {
+        if ((p->state & 0x2c) != 0) {
             break;
         }
-        if (o->unk_624 != 0) {
+        if (o->dontUpdate != 0) {
             break;
         }
         {
             s32 m;
-            if ((p->unk_15 & 1) != 0) {
-                if (o->unk_4c == 0 || o->unk_40 == 0) {
+            if ((p->flags & 1) != 0) {
+                if (o->list.state == 0 || o->engine.numserverkeys == 0) {
                     m = 1;
                 } else {
                     m = 0;
@@ -2153,42 +1940,42 @@ void func_ov065_02289578(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578
             } else {
                 m = 2;
             }
-            func_ov065_02288a70(o, p, 0, m);
+            SBQueryEngineUpdateServer(o, p, 0, m);
         }
         break;
     case 1:
-        if ((p->unk_14 & 0x43) == 0) {
-            o->unk_630(o, 2, p, o->unk_634);
+        if ((p->state & 0x43) == 0) {
+            o->BrowserCallback(o, 2, p, o->instance);
         } else {
-            o->unk_630(o, 1, p, o->unk_634);
+            o->BrowserCallback(o, 1, p, o->instance);
         }
         break;
     case 2:
-        if ((p->unk_14 & 0x2c) != 0) {
-            func_ov065_02288734(o, p);
+        if ((p->state & 0x2c) != 0) {
+            SBQueryEngineRemoveServerFromFIFOs(o, p);
         }
-        o->unk_630(o, 3, p, o->unk_634);
+        o->BrowserCallback(o, 3, p, o->instance);
         break;
     case 3:
-        if (o->unk_620 != 0) {
-            func_ov065_0228a718(s);
+        if (o->disconnectFlag != 0) {
+            SBServerListDisconnect(s);
         }
-        if (func_ov065_02278684(s->unk_04) == 0 || o->unk_10 == 0) {
-            o->unk_630(o, 4, NULL, o->unk_634);
+        if (ArrayLength(s->servers) == 0 || o->engine.querylist.count == 0) {
+            o->BrowserCallback(o, 4, NULL, o->instance);
         }
         break;
     case 4:
         break;
     case 5:
-        o->unk_630(o, 5, NULL, o->unk_634);
+        o->BrowserCallback(o, 5, NULL, o->instance);
         break;
     case 6:
-        func_ov065_02288b0c(o, o->unk_4ec);
+        SBQueryEngineSetPublicIP(o, o->list.mypublicip);
         break;
     }
     if (p != NULL) {
-        if (p->unk_00 == o->unk_628 && p->unk_04 == o->unk_62c) {
-            o->unk_628 = 0;
+        if (p->publicip == o->triggerIP && p->publicport == o->triggerPort) {
+            o->triggerIP = 0;
         }
     }
 }
@@ -2197,21 +1984,21 @@ void func_ov065_02289578(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02289500(void *a, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065_02289460_Obj *o) {
+void EngineCallback(void *a, s32 code, _SBServer *p, _ServerBrowser *o) {
     switch (code) {
     case 1:
-        o->unk_630(o, 2, p, o->unk_634);
+        o->BrowserCallback(o, 2, p, o->instance);
         break;
     case 0:
-        o->unk_630(o, 1, p, o->unk_634);
+        o->BrowserCallback(o, 1, p, o->instance);
         break;
     case 2:
-        o->unk_630(o, 4, p, o->unk_634);
+        o->BrowserCallback(o, 4, p, o->instance);
         break;
     }
     if (p != NULL) {
-        if (p->unk_00 == o->unk_628 && p->unk_04 == o->unk_62c) {
-            o->unk_628 = 0;
+        if (p->publicip == o->triggerIP && p->publicport == o->triggerPort) {
+            o->triggerIP = 0;
         }
     }
 }
@@ -2220,20 +2007,20 @@ void func_ov065_02289500(void *a, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065
 
 namespace F02288e2c {
 extern "C" {
-Unk_ov065_02289460_Obj *func_ov065_02289460(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s32 s7, void *s8, void *s9) {
-    Unk_ov065_02289460_Obj *o;
-    if (s7 == 0 && data_ov065_02290fa0 != 1) {
+_ServerBrowser *ServerBrowserNewA(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s32 s7, void *s8, void *s9) {
+    _ServerBrowser *o;
+    if (s7 == 0 && __GSIACResult != 1) {
         return NULL;
     }
-    o = (Unk_ov065_02289460_Obj *)func_ov065_02277af0(0x638);
+    o = (_ServerBrowser *)GsUtil_Alloc(0x638);
     if (o == NULL) {
         return NULL;
     }
-    o->unk_630 = (void (*)(Unk_ov065_02289460_Obj *, s32, void *, void *))s8;
-    o->unk_634 = s9;
-    o->unk_624 = 0;
-    func_ov065_0228ad34(&o->unk_4c, a, b, c, d, s7, (void *)func_ov065_02289578, o);
-    func_ov065_02288b10(o, s5, s6, s7, (void *)func_ov065_02289500, o);
+    o->BrowserCallback = (void (*)(_ServerBrowser *, s32, void *, void *))s8;
+    o->instance = s9;
+    o->dontUpdate = 0;
+    SBServerListInit(&o->list, a, b, c, d, s7, (void *)ListCallback, o);
+    SBQueryEngineInit(o, s5, s6, s7, (void *)EngineCallback, o);
     return o;
 }
 }
@@ -2241,10 +2028,10 @@ Unk_ov065_02289460_Obj *func_ov065_02289460(s32 a, s32 b, s32 c, s32 d, s32 s5, 
 
 namespace F02288e2c {
 extern "C" {
-void func_ov065_02289444(Unk_ov065_02289460_Obj *o) {
-    func_ov065_0228a6f0(&o->unk_4c);
-    func_ov065_02288acc(o);
-    func_ov065_02277ac8(o);
+void ServerBrowserFree(_ServerBrowser *o) {
+    SBServerListCleanup(&o->list);
+    SBEngineCleanup(o);
+    GsUtil_Free(o);
 }
 }
 }

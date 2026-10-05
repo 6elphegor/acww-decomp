@@ -6,15 +6,15 @@ typedef unsigned int u32;
 typedef int s32;
 
 extern s32 data_0213bfec; // GXi_DmaId
-void func_02115c24(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy32
-void func_02115e78(const void *src, void *dest, u32 size);            // MI_CpuCopy32
+void MI_DmaCopy32(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy32
+void MIi_CpuCopy32(const void *src, void *dest, u32 size);            // MI_CpuCopy32
 
 // GXi_DmaCopy32
 static inline void copy32(s32 dmaNo, const void *src, void *dest, u32 size) {
     if (dmaNo != -1 && size > 48) {
-        func_02115c24(dmaNo, src, dest, size);
+        MI_DmaCopy32(dmaNo, src, dest, size);
     } else {
-        func_02115e78(src, dest, size);
+        MIi_CpuCopy32(src, dest, size);
     }
 }
 
@@ -28,13 +28,13 @@ static inline void *G2S_GetOBJCharPtr(void) {
 }
 
 // GX_LoadOBJ
-void func_02111c6c(const void *src, u32 offset, u32 size) {
+void GX_LoadOBJ(const void *src, u32 offset, u32 size) {
     u32 base = (u32)G2_GetOBJCharPtr();
     copy32(data_0213bfec, src, (void *)(base + offset), size);
 }
 
 // GXS_LoadOBJ
-void func_02111c0c(const void *src, u32 offset, u32 size) {
+void GXS_LoadOBJ(const void *src, u32 offset, u32 size) {
     u32 base = (u32)G2S_GetOBJCharPtr();
     copy32(data_0213bfec, src, (void *)(base + offset), size);
 }

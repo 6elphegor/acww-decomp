@@ -1,5 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
-// RC_020f7a5c: the BGM-synchronised animation source file (G011a + func_020f8604 + G011b part 1) as REAL C++ classes.
+// RC_020f7a5c: the BGM-synchronised animation source file (G011a + BgmSyncSnd_UpdatePosition + G011b part 1) as REAL C++ classes.
 // mwcc 1.2/base, C++, ARM, -O4,p. autoload_2 .text 0x020f7a5c-0x020f8b44 (28 functions), .data 0x0213bb7c-0x0213bb94 (2 vtables of
 // 1 slot), autoload_3 .bss 0x021f5c30-0x021f5c38 (the two beat counters). No rodata, no __sinit.
 // Every function lands on its original address with the original bytes; every old symbols.txt name stays (aliases.txt).
@@ -7,66 +7,44 @@
 // 0x0213bb94 / 0x0213bb9c (smaller: the particle file's, used only by its code); bss data_021f5c30 / 5c34 are used only by this text,
 // data_021f5c38 only by the particle manager (RC_020f8b44); text: after the last G010 class method up to the particle manager.
 // Classes:
-//   Unk_0213bb90   base (vtable 0x0213bb88): virtual refresh f81dc; C1 f833c / C2 f839c, non-virtual destructor D2 f82fc / D1 f831c
+//   BgmTempoTracker   base (vtable 0x0213bb88): virtual refresh f81dc; C1 f833c / C2 f839c, non-virtual destructor D2 f82fc / D1 f831c
 //                  (both called: D1 by the scene class file, D2 by the derived destructor), start f8164, setMode f8290.
-//   Unk_0213bb84 : Unk_0213bb90   (vtable 0x0213bb7c) update f7ebc overrides the refresh; C1 f80d8, D1 f80ac (its body calls the base
+//   BgmBeatSync : BgmTempoTracker   (vtable 0x0213bb7c) update f7ebc overrides the refresh; C1 f80d8, D1 f80ac (its body calls the base
 //                  destructor explicitly: D1 f831c, then the compiler's D2 f82fc call), setEnable f80a4, pickAnim f7d84, readTempo f7cc0,
-//                  calcPhase f7a5c; member Unk_020f8134 at +0x14 (constructor f8134, also called from an overlay).
+//                  calcPhase f7a5c; member BgmBeatPhase at +0x14 (constructor f8134, also called from an overlay).
 //   The "Rb" state machine (f83fc, f8604, f86c0..f8b08, called by name from main) stays plain extern "C" over a struct view.
 // The scene class file (unk_020f0fb4.cpp) and main call the constructors / destructors by their func_ names (aliases keep them).
 #include "types.h"
+#include "snd/BgmBeatPhase.h"
+#include "snd/SndBgmViews.h"
+#include "snd/SndBgmHd.h"
 
-// BGM descriptor: u16 id at +0x38 (240 = a special track whose values are halved)
-struct Hd {
-    u8 pad[0x38];
-    u16 id;
-};
 
-// data_021f5bbc: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
+// gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with NNS_SndPlayerReadVariable(&handle, selector, &out)
 struct Hr {
     Hd *p;
 };
 
-struct Q {
-    u8 pad[0x16];
-    s16 s16v;
-    u8 p18[2];
-    s16 s1a;
-};
 
-class Unk_0213bb84;
-// view of data_021f5b80 (the sound manager SndMgr, unk_020f0dec.cpp): +0 current animation object, +0x2c Q*, +0x3c Hd* (= data_021f5bbc)
+class BgmBeatSync;
+// view of gSndMgr (the sound manager SndMgr, unk_020f0dec.cpp): +0 current animation object, +0x2c Q*, +0x3c Hd* (= gSndBgmHandle)
 struct Mg {
-    Unk_0213bb84 *cur;
+    BgmBeatSync *cur;
     u8 p4[0x28];
     Q *q;
     u8 p30[0xc];
     Hd *h;
 };
 
-// beat/phase state (member at +0x14 of the animation object; its constructor is also called from an overlay)
-class Unk_020f8134 {
-public:
-    Unk_020f8134();
-
-    /* 0x00 */ s8 s0;
-    /* 0x01 */ s8 s1;
-    /* 0x02 */ s8 s2;
-    /* 0x03 */ s8 s3;
-    /* 0x04 */ s8 s4;
-    /* 0x08 */ s32 w8;
-    /* 0x0c */ s32 w12;
-    /* 0x10 */ s32 w16;
-};
 
 // base: BGM tempo follower (vtable 0x0213bb88), 0x14 bytes
-class Unk_0213bb90 {
+class BgmTempoTracker {
 public:
-    Unk_0213bb90();
-    ~Unk_0213bb90();
-    virtual void vfunc_00(); // per-frame refresh
+    BgmTempoTracker();
+    ~BgmTempoTracker();
+    virtual void update(); // per-frame refresh
 
-    void start();
+    void syncTempo();
     void setMode(u8 v);
 
     /* 0x04 */ s32 w4;
@@ -80,19 +58,19 @@ public:
     /* 0x12 */ u16 h18;
 };
 
-// BGM-synchronised animation object (vtable 0x0213bb7c), 0x30 bytes; data_021f5b80.cur points to the live one
-class Unk_0213bb84 : public Unk_0213bb90 {
+// BGM-synchronised animation object (vtable 0x0213bb7c), 0x30 bytes; gSndMgr.cur points to the live one
+class BgmBeatSync : public BgmTempoTracker {
 public:
-    Unk_0213bb84();
-    ~Unk_0213bb84();
-    virtual void vfunc_00(); // update
+    BgmBeatSync();
+    ~BgmBeatSync();
+    virtual void update(); // update
 
     void setEnable(u8 v);
     void pickAnim();
     void readTempo();
     void calcPhase();
 
-    /* 0x14 */ Unk_020f8134 sub;
+    /* 0x14 */ BgmBeatPhase sub;
     /* 0x28 */ u8 c28;
     /* 0x29 */ u8 c29;
     /* 0x2a */ u8 c2a;
@@ -100,51 +78,36 @@ public:
     /* 0x2e */ u8 c2e;
 };
 
-// state machine of a BGM-synchronised sound (main's objects; plain functions, called by name from main)
-struct Rb {
-    u32 w0;
-    u16 h4;
-    u16 h6;
-    u8 c8;
-    s8 c9;
-    s8 c10;
-    s8 c11;
-    s8 c12;
-    s8 c13;
-    s8 c14;
-    u8 c15;
-    u8 c16;
-};
 
 extern "C" {
-extern Mg data_021f5b80;
-extern Hr data_021f5bbc;
-s32 func_01ffc5a4(s32 a, s32 b);
-void func_0210a024(void *p, u32 sel, void *out);
-void func_0210a008(u32 sel, void *out);
-void func_0210d010(void *p, u32 v);
-void func_020eda30(void *p, u32 v);
-void func_020eda60(void *p);
-void func_0210a27c(void *p);
-void func_0210a26c(void *p, s32 v);
-void func_0210a0e8(void *p, u32 a, s32 b);
-void func_0210a0b8(void *p, s32 v);
-void func_02109fd0(void *p, u32 a, s32 b);
-void func_02109fb4(u32 a, s32 b);
-s32 func_020f4904(u32 a, u32 b);
-s32 func_020f48d8(s32 d);
-s32 func_020f4718(u32 a, u32 b);
-u32 func_021172cc(u32 a);
-void func_021094f8(void);
-void func_02117028(u32 a);
-s32 func_02109f80(void *p, void *out);
-s32 func_02109f4c(void *p, u32 a, void *out);
-void func_020f86c0(Rb *r);
-void func_020f87b4(Rb *r);
-void func_020f88b4(Rb *r);
-void func_020f8604(Rb *r, void *arg);
-s32 func_020f83fc(Rb *r);
-void func_020f8a80(Rb *r, u32 mode);
+extern Mg gSndMgr;
+extern Hr gSndBgmHandle;
+s32 FX_Div(s32 a, s32 b);
+void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
+void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
+void NNS_SndArcPlayerStartSeq(void *p, u32 v);
+void Snd_StopHandle(void *p, u32 v);
+void Snd_InitHandle(void *p);
+void NNS_SndHandleReleaseSeq(void *p);
+void NNS_SndPlayerSetVolume(void *p, s32 v);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetTempoRatio(void *p, s32 v);
+void NNS_SndPlayerWriteVariable(void *p, u32 a, s32 b);
+void NNS_SndPlayerWriteGlobalVariable(u32 a, s32 b);
+s32 Snd_CalcListenerDistance(u32 a, u32 b);
+s32 Snd_DistanceToVolume(s32 d);
+s32 Snd_CalcPan(u32 a, u32 b);
+u32 SND_RecvCommandReply(u32 a);
+void NNS_SndUpdateDriverInfo(void);
+void SND_FlushCommand(u32 a);
+s32 NNS_SndPlayerReadDriverPlayerInfo(void *p, void *out);
+s32 NNS_SndPlayerReadDriverTrackInfo(void *p, u32 a, void *out);
+void BgmSyncSnd_ReadHeader(Rb *r);
+void BgmSyncSnd_ReadVars(Rb *r);
+void BgmSyncSnd_SelectStep(Rb *r);
+void BgmSyncSnd_UpdatePosition(Rb *r, void *arg);
+s32 BgmSyncSnd_CalcPhase(Rb *r);
+void BgmSyncSnd_SetState(Rb *r, u32 mode);
 }
 
 // beat counters (bss)
@@ -153,8 +116,8 @@ s16 data_021f5c34;
 
 static inline BOOL nz(u32 v) { return v != 0; }
 
-extern "C" void func_020f8b08(Rb *r, u16 v) {
-    func_020eda60(r);
+extern "C" void BgmSyncSnd_Init(Rb *r, u16 v) {
+    Snd_InitHandle(r);
     r->h4 = v;
     r->h6 = 0;
     r->c13 = -1;
@@ -162,21 +125,21 @@ extern "C" void func_020f8b08(Rb *r, u16 v) {
     r->c16 = 0;
 }
 
-extern "C" void func_020f8ae8(Rb *r) {
-    func_020eda30(r, 0);
-    func_0210a27c(r);
+extern "C" void BgmSyncSnd_Release(Rb *r) {
+    Snd_StopHandle(r, 0);
+    NNS_SndHandleReleaseSeq(r);
 }
 
-extern "C" void func_020f8a80(Rb *r, u32 mode) {
+extern "C" void BgmSyncSnd_SetState(Rb *r, u32 mode) {
     switch (mode) {
     case 0:
         r->c8 = 0;
         r->c15 = 0;
-        func_020eda30(r, 0);
+        Snd_StopHandle(r, 0);
         break;
     case 1:
         r->c8 = 1;
-        func_0210d010(r, r->h4);
+        NNS_SndArcPlayerStartSeq(r, r->h4);
         break;
     case 2:
         r->c8 = 2;
@@ -184,20 +147,20 @@ extern "C" void func_020f8a80(Rb *r, u32 mode) {
     }
 }
 
-extern "C" u32 func_020f8a4c(void) {
+extern "C" u32 BgmSyncSnd_ReadBeat(void) {
     s16 v;
-    func_0210a008(2, &v);
+    NNS_SndPlayerReadGlobalVariable(2, &v);
     data_021f5c30 = v;
     return (u8)v;
 }
 
-extern "C" void func_020f8a28(Rb *r, s8 v) {
+extern "C" void BgmSyncSnd_SetStartBeat(Rb *r, s8 v) {
     r->c11 = v;
     r->c11 = r->c11 - 1;
     r->c11 = (r->c11 < 0) ? 15 : r->c11;
 }
 
-extern "C" s32 func_020f89fc(Rb *r) {
+extern "C" s32 BgmSyncSnd_PollStarted(Rb *r) {
     s32 res = -1;
     if (r->c8 == 1) {
         if (r->c15 == 0) {
@@ -208,29 +171,29 @@ extern "C" s32 func_020f89fc(Rb *r) {
     return res;
 }
 
-extern "C" s32 func_020f8958(Rb *r, void *arg) {
+extern "C" s32 BgmSyncSnd_Update(Rb *r, void *arg) {
     s32 res = -0x1000;
     switch (r->c8) {
     case 0:
         break;
     case 1:
-        func_020f87b4(r);
-        func_020f88b4(r);
-        func_020f8604(r, arg);
-        res = func_020f83fc(r);
+        BgmSyncSnd_ReadVars(r);
+        BgmSyncSnd_SelectStep(r);
+        BgmSyncSnd_UpdatePosition(r, arg);
+        res = BgmSyncSnd_CalcPhase(r);
         break;
     case 2: {
         s16 v;
-        func_0210a008(2, &v);
+        NNS_SndPlayerReadGlobalVariable(2, &v);
         data_021f5c30 = v;
-        if (v == r->c11) func_020f8a80(r, 1);
+        if (v == r->c11) BgmSyncSnd_SetState(r, 1);
         break;
     }
     }
     return res;
 }
 
-extern "C" void func_020f88b4(Rb *r) {
+extern "C" void BgmSyncSnd_SelectStep(Rb *r) {
     s32 j;
     s32 found;
     s32 n = r->c13;
@@ -249,29 +212,29 @@ extern "C" void func_020f88b4(Rb *r) {
         }
     }
     r->c13 = 15 - j;
-    func_02109fd0(r, 12, r->c13);
+    NNS_SndPlayerWriteVariable(r, 12, r->c13);
 }
 
-extern "C" void func_020f87b4(Rb *r) {
+extern "C" void BgmSyncSnd_ReadVars(Rb *r) {
     s16 a[6];
-    if (r->c9 <= 0) func_020f86c0(r);
-    func_0210a008(2, &a[0]);
-    func_0210a008(1, &a[1]);
-    func_0210a024(r, 8, &a[2]);
-    func_0210a024(r, 7, &a[3]);
-    func_0210a024(r, 12, &a[4]);
-    func_0210a024(r, 6, &a[5]);
+    if (r->c9 <= 0) BgmSyncSnd_ReadHeader(r);
+    NNS_SndPlayerReadGlobalVariable(2, &a[0]);
+    NNS_SndPlayerReadGlobalVariable(1, &a[1]);
+    NNS_SndPlayerReadVariable(r, 8, &a[2]);
+    NNS_SndPlayerReadVariable(r, 7, &a[3]);
+    NNS_SndPlayerReadVariable(r, 12, &a[4]);
+    NNS_SndPlayerReadVariable(r, 6, &a[5]);
     data_021f5c30 = a[0];
     data_021f5c34 = a[1];
     r->c11 = a[2];
     r->c12 = a[3];
     r->c13 = a[4];
     r->c14 = a[5];
-    if (!nz((u32)data_021f5b80.h)) return;
-    if (data_021f5b80.h->id == 240) data_021f5c34 = data_021f5c34 >> 1;
+    if (!nz((u32)gSndMgr.h)) return;
+    if (gSndMgr.h->id == 240) data_021f5c34 = data_021f5c34 >> 1;
 }
 
-extern "C" void func_020f86c0(Rb *r) {
+extern "C" void BgmSyncSnd_ReadHeader(Rb *r) {
     struct {
         s16 s0;
         s16 s5;
@@ -279,12 +242,12 @@ extern "C" void func_020f86c0(Rb *r) {
     } q;
     s32 i;
     if (!nz(r->w0)) return;
-    func_0210a024(r, 0, &q.s0);
-    func_0210a024(r, 1, &q.v[0]);
-    func_0210a024(r, 2, &q.v[1]);
-    func_0210a024(r, 3, &q.v[2]);
-    func_0210a024(r, 4, &q.v[3]);
-    func_0210a024(r, 5, &q.s5);
+    NNS_SndPlayerReadVariable(r, 0, &q.s0);
+    NNS_SndPlayerReadVariable(r, 1, &q.v[0]);
+    NNS_SndPlayerReadVariable(r, 2, &q.v[1]);
+    NNS_SndPlayerReadVariable(r, 3, &q.v[2]);
+    NNS_SndPlayerReadVariable(r, 4, &q.v[3]);
+    NNS_SndPlayerReadVariable(r, 5, &q.s5);
     r->c9 = q.s0;
     r->c10 = q.s5;
     if (q.v[0] < 0) return;
@@ -293,21 +256,21 @@ extern "C" void func_020f86c0(Rb *r) {
     }
 }
 
-extern "C" void func_020f8604(Rb *r, void *arg) {
+extern "C" void BgmSyncSnd_UpdatePosition(Rb *r, void *arg) {
     s32 a, b;
     if (arg == 0) return;
-    a = func_020f48d8(func_020f4904((u32)arg, 0));
-    b = func_020f4718((u32)arg, 0);
-    func_0210a26c(r, a);
-    func_0210a0e8(r, 15, b);
-    if (data_021f5b80.q == 0) return;
-    s32 x = func_01ffc5a4(data_021f5b80.q->s16v << 20, 0x78000) >> 12;
-    if (!nz((u32)data_021f5b80.h)) return;
-    if (data_021f5b80.h->id == 240) x >>= 1;
-    func_0210a0b8(r, x);
+    a = Snd_DistanceToVolume(Snd_CalcListenerDistance((u32)arg, 0));
+    b = Snd_CalcPan((u32)arg, 0);
+    NNS_SndPlayerSetVolume(r, a);
+    NNS_SndPlayerSetTrackPan(r, 15, b);
+    if (gSndMgr.q == 0) return;
+    s32 x = FX_Div(gSndMgr.q->s16v << 20, 0x78000) >> 12;
+    if (!nz((u32)gSndMgr.h)) return;
+    if (gSndMgr.h->id == 240) x >>= 1;
+    NNS_SndPlayerSetTempoRatio(r, x);
 }
 
-extern "C" s32 func_020f83fc(Rb *r) {
+extern "C" s32 BgmSyncSnd_CalcPhase(Rb *r) {
     s32 sc;
     s32 rv;
     s16 a;
@@ -318,8 +281,8 @@ extern "C" s32 func_020f83fc(Rb *r) {
         d = data_021f5c30 - a;
         if (d < 0) d += 16;
         rv = d << 14;
-        if (data_021f5b80.q == 0) return 0;
-        if (data_021f5b80.q->s1a == 1) {
+        if (gSndMgr.q == 0) return 0;
+        if (gSndMgr.q->s1a == 1) {
             s32 w = data_021f5c34;
             if (w < 32) {
                 rv += (w << 14) >> 5;
@@ -327,15 +290,15 @@ extern "C" s32 func_020f83fc(Rb *r) {
                 rv += ((w - 32) << 14) >> 4;
             }
         } else {
-            rv += func_01ffc5a4(data_021f5c34 << 14, 0x18000);
+            rv += FX_Div(data_021f5c34 << 14, 0x18000);
         }
         if (r->c10 == 2) {
             rv <<= 1;
             if (rv > 0x40000) rv -= 0x40000;
         }
     } else {
-    func_0210a024(r, 7, &a);
-    func_0210a024(r, 12, &b);
+    NNS_SndPlayerReadVariable(r, 7, &a);
+    NNS_SndPlayerReadVariable(r, 12, &b);
     d = data_021f5c30 - a;
     if (d < 0) d += 16;
     switch (r->c10) {
@@ -348,8 +311,8 @@ extern "C" s32 func_020f83fc(Rb *r) {
         sc = r->c14;
         break;
     }
-    if (data_021f5b80.q == 0) return 0;
-    switch (data_021f5b80.q->s1a) {
+    if (gSndMgr.q == 0) return 0;
+    switch (gSndMgr.q->s1a) {
     case 0:
         rv = 24;
         break;
@@ -373,13 +336,13 @@ extern "C" s32 func_020f83fc(Rb *r) {
     if (r->c16 != 0) {
         rv = 0;
     } else {
-        rv = func_01ffc5a4((d * rv + data_021f5c34) << 12, (sc * rv) << 12) << 6;
+        rv = FX_Div((d * rv + data_021f5c34) << 12, (sc * rv) << 12) << 6;
     }
     }
     return rv;
 }
 
-Unk_0213bb90::Unk_0213bb90() {
+BgmTempoTracker::BgmTempoTracker() {
     w4 = 0;
     c8 = 0;
     c9 = 0;
@@ -388,96 +351,96 @@ Unk_0213bb90::Unk_0213bb90() {
     c12 = -1;
     h14 = 120;
     c16 = -1;
-    func_02109fb4(2, -1);
-    func_02109fb4(1, -1);
+    NNS_SndPlayerWriteGlobalVariable(2, -1);
+    NNS_SndPlayerWriteGlobalVariable(1, -1);
 }
 
-Unk_0213bb90::~Unk_0213bb90() {
-    data_021f5b80.cur = 0;
+BgmTempoTracker::~BgmTempoTracker() {
+    gSndMgr.cur = 0;
 }
 
-void Unk_0213bb90::setMode(u8 v) {
+void BgmTempoTracker::setMode(u8 v) {
     c8 = v;
     c11 = -1;
     c12 = -1;
     c9 = 0;
     if (c8 != 0) {
         h14 = 120;
-        w4 = func_01ffc5a4(0x258000, (s32)h14 << 12);
+        w4 = FX_Div(0x258000, (s32)h14 << 12);
     } else {
         h14 = 120;
-        func_020eda30(&data_021f5bbc, 0);
+        Snd_StopHandle(&gSndBgmHandle, 0);
     }
 }
 
-void Unk_0213bb90::vfunc_00() {
+void BgmTempoTracker::update() {
     s16 a[3];
-    if (!nz((u32)data_021f5b80.h)) func_0210d010(&data_021f5bbc, 248);
-    func_0210a008(1, &a[0]);
-    func_0210a008(2, &a[1]);
-    func_0210a024(&data_021f5bbc, 6, &a[2]);
+    if (!nz((u32)gSndMgr.h)) NNS_SndArcPlayerStartSeq(&gSndBgmHandle, 248);
+    NNS_SndPlayerReadGlobalVariable(1, &a[0]);
+    NNS_SndPlayerReadGlobalVariable(2, &a[1]);
+    NNS_SndPlayerReadVariable(&gSndBgmHandle, 6, &a[2]);
     c10 = (a[1] != c16);
     c16 = a[1];
     h18 = a[2];
     if (c8 != 0) return;
-    start();
+    syncTempo();
 }
 
-void Unk_0213bb90::start() {
-    Hr *const h = &data_021f5bbc;
+void BgmTempoTracker::syncTempo() {
+    Hr *const h = &gSndBgmHandle;
     u16 buf[8];
-    while (func_021172cc(0) != 0)
+    while (SND_RecvCommandReply(0) != 0)
         ;
-    func_021094f8();
-    func_02117028(0);
-    if (func_02109f80(h, buf) == 0) return;
+    NNS_SndUpdateDriverInfo();
+    SND_FlushCommand(0);
+    if (NNS_SndPlayerReadDriverPlayerInfo(h, buf) == 0) return;
     h14 = buf[3];
-    w4 = func_01ffc5a4(0x258000, (s32)h14 << 12);
+    w4 = FX_Div(0x258000, (s32)h14 << 12);
 }
 
-Unk_020f8134::Unk_020f8134() {
-    s1 = -1;
-    s2 = -1;
-    s3 = -1;
-    s4 = -1;
-    w16 = 0;
-    w12 = w16;
-    w8 = w12;
+BgmBeatPhase::BgmBeatPhase() {
+    trackAnim = -1;
+    seqVar0 = -1;
+    seqVar2 = -1;
+    seqVar3 = -1;
+    loopFrame32 = 0;
+    loopFrame20 = loopFrame32;
+    beatFrame = loopFrame20;
 }
 
-Unk_0213bb84::Unk_0213bb84() {
-    sub.s0 = -1;
+BgmBeatSync::BgmBeatSync() {
+    sub.seqVar4 = -1;
     c28 = 0;
     c2a = 0;
     c29 = 1;
     s2c = -1;
     c2e = 1;
-    data_021f5b80.cur = this;
+    gSndMgr.cur = this;
 }
 
-Unk_0213bb84::~Unk_0213bb84() {
-    this->Unk_0213bb90::~Unk_0213bb90();
+BgmBeatSync::~BgmBeatSync() {
+    this->BgmTempoTracker::~BgmTempoTracker();
 }
 
-void Unk_0213bb84::setEnable(u8 v) {
+void BgmBeatSync::setEnable(u8 v) {
     c28 = v;
 }
 
-void Unk_0213bb84::vfunc_00() {
+void BgmBeatSync::update() {
     s16 v;
     if (c28 == 0) return;
-    Unk_0213bb90::vfunc_00();
+    BgmTempoTracker::update();
     pickAnim();
     readTempo();
-    if (sub.s0 == -1) {
-        Hr *h = &data_021f5bbc;
+    if (sub.seqVar4 == -1) {
+        Hr *h = &gSndBgmHandle;
         s32 id;
         if (!nz((u32)h->p)) return;
-        func_0210a024(h, 4, &v);
-        sub.s0 = v;
-        sub.w8 = 0;
-        sub.w12 = 0;
-        sub.w16 = 0;
+        NNS_SndPlayerReadVariable(h, 4, &v);
+        sub.seqVar4 = v;
+        sub.beatFrame = 0;
+        sub.loopFrame20 = 0;
+        sub.loopFrame32 = 0;
         id = h->p->id;
         switch (id) {
         case 109:
@@ -518,68 +481,68 @@ void Unk_0213bb84::vfunc_00() {
     }
 }
 
-void Unk_0213bb84::pickAnim() {
-    Hr *const h = &data_021f5bbc;
+void BgmBeatSync::pickAnim() {
+    Hr *const h = &gSndBgmHandle;
     s32 i;
     u8 buf[28];
-    sub.s1 = -1;
+    sub.trackAnim = -1;
     for (i = 2; i <= 13; i++) {
-        if (func_02109f4c(h, i, buf) == 0) continue;
+        if (NNS_SndPlayerReadDriverTrackInfo(h, i, buf) == 0) continue;
         if (i == 10) continue;
         if (buf[9] == 0) continue;
         switch (i) {
         case 11:
-            sub.s1 = 0;
+            sub.trackAnim = 0;
             return;
         case 6:
-            sub.s1 = 1;
+            sub.trackAnim = 1;
             return;
         case 3:
         case 9:
-            sub.s1 = 2;
+            sub.trackAnim = 2;
             return;
         case 5:
         case 8:
-            sub.s1 = 3;
+            sub.trackAnim = 3;
             return;
         case 2:
         case 7:
         case 12:
-            sub.s1 = 4;
+            sub.trackAnim = 4;
             return;
         case 4:
         case 13:
-            sub.s1 = 5;
+            sub.trackAnim = 5;
             return;
         default:
-            sub.s1 = 0;
+            sub.trackAnim = 0;
             return;
         }
     }
 }
 
-void Unk_0213bb84::readTempo() {
-    Hr *const h = &data_021f5bbc;
+void BgmBeatSync::readTempo() {
+    Hr *const h = &gSndBgmHandle;
     s16 v[4];
     if (!nz((u32)h->p)) return;
-    func_0210a024(h, 1, &v[0]);
-    func_0210a024(h, 0, &v[1]);
-    func_0210a024(h, 2, &v[2]);
-    func_0210a024(h, 3, &v[3]);
-    sub.s2 = v[1];
-    sub.s3 = v[2];
-    sub.s4 = v[3];
+    NNS_SndPlayerReadVariable(h, 1, &v[0]);
+    NNS_SndPlayerReadVariable(h, 0, &v[1]);
+    NNS_SndPlayerReadVariable(h, 2, &v[2]);
+    NNS_SndPlayerReadVariable(h, 3, &v[3]);
+    sub.seqVar0 = v[1];
+    sub.seqVar2 = v[2];
+    sub.seqVar3 = v[3];
     if (s2c > v[0]) c2e = (c2e == 0);
     s2c = v[0];
 }
 
-void Unk_0213bb84::calcPhase() {
+void BgmBeatSync::calcPhase() {
     s16 t;
     s32 den;
     s32 d;
-    sub.w8 = func_01ffc5a4(s2c << 12, 0x3000);
+    sub.beatFrame = FX_Div(s2c << 12, 0x3000);
     t = s2c;
-    switch (sub.s0) {
+    switch (sub.seqVar4) {
     case 3:
         den = 0x4800;
         break;
@@ -602,11 +565,11 @@ void Unk_0213bb84::calcPhase() {
         }
         break;
     }
-    d = func_01ffc5a4(t << 12, den) + 0xc000;
+    d = FX_Div(t << 12, den) + 0xc000;
     if (d >= 0x20000) d -= 0x20000;
-    sub.w16 = d;
+    sub.loopFrame32 = d;
     t = s2c;
-    switch (sub.s0) {
+    switch (sub.seqVar4) {
     case 4:
     default:
         switch (c2a) {
@@ -636,7 +599,7 @@ void Unk_0213bb84::calcPhase() {
         }
         break;
     }
-    d = func_01ffc5a4(t << 12, den) + 0x4000;
+    d = FX_Div(t << 12, den) + 0x4000;
     if (d >= 0x14000) d -= 0x14000;
-    sub.w12 = d;
+    sub.loopFrame20 = d;
 }

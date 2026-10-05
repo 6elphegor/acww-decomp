@@ -39,9 +39,9 @@ typedef struct {
 extern TPWork data_021feaf4;
 extern TPCalibInternal data_021feb0c;
 
-extern u32 func_01ffa2ec(void);               // OS_DisableInterrupts
-extern void func_01ffa3d4(u32 e);             // OS_RestoreInterrupts
-extern s32 func_02117dd8(u32 tag, u32 data, u32 err); // PXI_SendWordByFifo
+extern u32 OS_DisableInterrupts(void);               // OS_DisableInterrupts
+extern void OS_RestoreInterrupts(u32 e);             // OS_RestoreInterrupts
+extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err); // PXI_SendWordByFifo
 
 #define reg_DIVCNT (*(volatile u16 *)0x04000280)
 #define reg_DIV_NUMER (*(volatile u32 *)0x04000290)
@@ -49,7 +49,7 @@ extern s32 func_02117dd8(u32 tag, u32 data, u32 err); // PXI_SendWordByFifo
 #define reg_DIV_DENOM_HI (*(volatile u32 *)0x0400029c)
 #define reg_DIV_RESULT (*(volatile s32 *)0x040002a0)
 
-void func_0211b6b8(TPData *disp, const TPData *raw) {
+void TP_GetCalibratedPoint(TPData *disp, const TPData *raw) {
     TPCalibInternal *p;
     if (data_021feaf4.calibrateOn == 0) {
         *disp = *raw;
@@ -79,11 +79,17 @@ void func_0211b6b8(TPData *disp, const TPData *raw) {
     }
 }
 
-void func_0211b6a0(u32 mask) {
+void TP_WaitBusy(u32 mask) {
     while (data_021feaf4.ack & mask)
         ;
 }
 
-u32 func_0211b68c(u32 mask) {
+u32 TP_CheckError(u32 mask) {
     return data_021feaf4.state & mask;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021feaf0-0x021feb2c; this definition order gives the original order after mwcc's size
+// sort; data_021feb0c is the calibration inside the work
+// record, an interior label)
+u16 data_021feaf0; // used by TP_Init (unk_0211bcdc.c)
+TPWork data_021feaf4;

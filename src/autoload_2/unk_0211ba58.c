@@ -39,9 +39,9 @@ typedef struct {
 extern TPWork data_021feaf4;
 extern TPCalibInternal data_021feb0c;
 
-extern u32 func_01ffa2ec(void);               // OS_DisableInterrupts
-extern void func_01ffa3d4(u32 e);             // OS_RestoreInterrupts
-extern s32 func_02117dd8(u32 tag, u32 data, u32 err); // PXI_SendWordByFifo
+extern u32 OS_DisableInterrupts(void);               // OS_DisableInterrupts
+extern void OS_RestoreInterrupts(u32 e);             // OS_RestoreInterrupts
+extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err); // PXI_SendWordByFifo
 
 #define reg_DIVCNT (*(volatile u16 *)0x04000280)
 #define reg_DIV_NUMER (*(volatile u32 *)0x04000290)
@@ -49,7 +49,7 @@ extern s32 func_02117dd8(u32 tag, u32 data, u32 err); // PXI_SendWordByFifo
 #define reg_DIV_DENOM_HI (*(volatile u32 *)0x0400029c)
 #define reg_DIV_RESULT (*(volatile s32 *)0x040002a0)
 
-void func_0211bbc8(u32 a, u32 b, TPData *buf, u32 n) {
+void TP_RequestAutoSamplingStartAsync(u32 a, u32 b, TPData *buf, u32 n) {
     u32 i;
     TPWork *w = &data_021feaf4;
     u32 e;
@@ -61,16 +61,16 @@ void func_0211bbc8(u32 a, u32 b, TPData *buf, u32 n) {
     for (i = 0; i < n; i++) {
         w->buf[i].touch = 0;
     }
-    e = func_01ffa2ec();
-    if (func_02117dd8(6, (b & 0xff) | 0x02000100, 0) < 0) {
+    e = OS_DisableInterrupts();
+    if (PXI_SendWordByFifo(6, (b & 0xff) | 0x02000100, 0) < 0) {
         ok = 0;
-    } else if (func_02117dd8(6, a | 0x01010000, 0) < 0) {
+    } else if (PXI_SendWordByFifo(6, a | 0x01010000, 0) < 0) {
         ok = 0;
     } else {
         ok = 1;
     }
     if (!(u8)ok) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         data_021feaf4.state |= 2;
         if (data_021feaf4.callback) {
             data_021feaf4.callback(1, 4, 0);
@@ -79,14 +79,14 @@ void func_0211bbc8(u32 a, u32 b, TPData *buf, u32 n) {
     }
     data_021feaf4.ack |= 2;
     data_021feaf4.state &= ~2;
-    func_01ffa3d4(e);
+    OS_RestoreInterrupts(e);
 }
 
-void func_0211bb24(void) {
-    u32 e = func_01ffa2ec();
-    u32 ok = func_02117dd8(6, 0x03000200, 0) >= 0;
+void TP_RequestAutoSamplingStopAsync(void) {
+    u32 e = OS_DisableInterrupts();
+    u32 ok = PXI_SendWordByFifo(6, 0x03000200, 0) >= 0;
     if (!ok) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         data_021feaf4.state |= 4;
         if (data_021feaf4.callback) {
             data_021feaf4.callback(2, 4, 0);
@@ -94,15 +94,15 @@ void func_0211bb24(void) {
     } else {
         data_021feaf4.ack |= 4;
         data_021feaf4.state &= ~4;
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
     }
 }
 
-void func_0211ba68(u32 unused, u32 data) {
-    u32 e = func_01ffa2ec();
-    u32 ok = func_02117dd8(6, data | 0x03000300, 0) >= 0;
+void TP_RequestSetStabilityAsync(u32 unused, u32 data) {
+    u32 e = OS_DisableInterrupts();
+    u32 ok = PXI_SendWordByFifo(6, data | 0x03000300, 0) >= 0;
     if (!ok) {
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
         data_021feaf4.state |= 8;
         if (data_021feaf4.callback) {
             data_021feaf4.callback(3, 4, 0);
@@ -110,10 +110,10 @@ void func_0211ba68(u32 unused, u32 data) {
     } else {
         data_021feaf4.ack |= 8;
         data_021feaf4.state &= ~8;
-        func_01ffa3d4(e);
+        OS_RestoreInterrupts(e);
     }
 }
 
-u16 func_0211ba58(void) {
+u16 TP_GetLatestIndexInAuto(void) {
     return data_021feaf4.sampling;
 }

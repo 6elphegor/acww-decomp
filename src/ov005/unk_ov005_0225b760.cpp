@@ -1,93 +1,41 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
+#include "game/SceneWarp.h"
+#include "game/SceneInfo.h"
 
 // ov005: map scene tables (a scene record, its entry list, the id grid).
 // Generated from the original image; the definition order below
 // reproduces the original data/bss order (mwcc size heapsort) and the __sinit order.
 
 // 12-byte vector with a copy constructor (so it is passed by address of a copy)
-struct Unk_020b4f8c_Vec {
-    s32 x, y, z;
-    Unk_020b4f8c_Vec(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    Unk_020b4f8c_Vec(const Unk_020b4f8c_Vec &o) {
-        x = o.x;
-        y = o.y;
-        z = o.z;
-    }
-};
 
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
-struct Unk_020b4f8c {
-    u8 pad[0x1c];
-    Unk_020b4f8c(u8 id, Unk_020b4f8c_Vec v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
-    ~Unk_020b4f8c();
-};
 
-struct Unk_ov005_Entry {  // one list of the scene: kind 2 = ids (u32), 1 and 0 = 20-byte records
-    u8 kind;
-    u8 count;
-    u16 pad;
-    void *list;
-};
-
-struct Unk_ov005_Head {
-    u32 count;
-    Unk_ov005_Entry *entries;
-};
-
-struct Unk_ov005_Grid {  // width x height ids
-    u32 *ids;
-    u8 width;
-    u8 height;
-    u16 pad;
-};
-
-struct Unk_ov005_Objs {
-    Unk_020b4f8c *objs;
-    u32 count;
-};
-
-struct Unk_ov005_Rec {
-    u32 w[5];
-};
-
-struct Unk_ov005_Scene {  // 24 bytes; main's table data_020e4280 points to it
-    Unk_ov005_Head *head;
-    s32 unk_04;
-    Unk_ov005_Grid *grid;
-    Unk_ov005_Objs *objs;
-    s32 unk_10;
-    s32 unk_14;
-};
-
-extern u8 data_ov003_02232498;  // copied into the entry table by __sinit
-extern Unk_ov005_Objs data_ov003_0223249c;
-extern u32 data_ov003_022324a4[];
+extern u8 sFieldSceneProfileCount;  // copied into the entry table by __sinit
+extern SceneWarpList sFieldSceneObjectList;
+extern u32 sFieldSceneProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern Unk_ov005_Scene data_ov005_0225b7b4;
-extern Unk_ov005_Grid data_ov005_0225b788;
-extern Unk_ov005_Entry data_ov005_0225b7cc[3];
-extern Unk_ov005_Head data_ov005_0225b780;
+extern SceneInfo data_ov005_0225b7b4;
+extern SceneMapInfo data_ov005_0225b788;
+extern SceneSpawnGroup data_ov005_0225b7cc[3];
+extern SceneSpawnList data_ov005_0225b780;
 extern u32 data_ov005_0225b790[4];
 extern u32 data_ov005_0225b7e4[36];
-extern Unk_ov005_Rec data_ov005_0225b7a0[1];
+extern SceneSpawnRecord data_ov005_0225b7a0[1];
 
-Unk_ov005_Scene data_ov005_0225b7b4 = {&data_ov005_0225b780, 1, &data_ov005_0225b788, &data_ov003_0223249c, 9, -1};
+SceneInfo data_ov005_0225b7b4 = {&data_ov005_0225b780, 1, &data_ov005_0225b788, &sFieldSceneObjectList, 9, -1};
 
-Unk_ov005_Grid data_ov005_0225b788 = {data_ov005_0225b7e4, 6, 6};
+SceneMapInfo data_ov005_0225b788 = {data_ov005_0225b7e4, 6, 6};
 
-Unk_ov005_Entry data_ov005_0225b7cc[3] = {
-    {2, data_ov003_02232498, 0, data_ov003_022324a4},
+SceneSpawnGroup data_ov005_0225b7cc[3] = {
+    {2, sFieldSceneProfileCount, 0, sFieldSceneProfiles},
     {2, 4, 0, data_ov005_0225b790},
     {1, 1, 0, data_ov005_0225b7a0},
 };
 
-Unk_ov005_Head data_ov005_0225b780 = {3, data_ov005_0225b7cc};
+SceneSpawnList data_ov005_0225b780 = {3, 0, data_ov005_0225b7cc};
 
 u32 data_ov005_0225b790[4] = {0xbc, 0xd6, 0xd0, 0xc2};
 
@@ -97,6 +45,6 @@ u32 data_ov005_0225b7e4[36] = {
     0xf, 0x29, 0x2d, 0x29, 0x29, 0x11, 0x45, 0x45, 0x45, 0x45, 0x45, 0x45,
 };
 
-Unk_ov005_Rec data_ov005_0225b7a0[1] = {
+SceneSpawnRecord data_ov005_0225b7a0[1] = {
     {0x2400009, 0x2400002, 0, 0, 0x800000},
 };

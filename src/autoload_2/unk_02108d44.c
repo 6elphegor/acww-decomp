@@ -1,9 +1,12 @@
 // mwcc-flags: -nothumb -O4,p
+// NitroSystem G3D texture SRT calculation for XSI (texmtxCalc_*___xsi), autoload_2 0x02108d44-0x021093f4, with its
+// calculator table (.data 0x0213bef0). ARM, mwcc 1.2/base, -O4,p.
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef short s16;
+typedef long long s64;
 typedef int BOOL;
 #define NULL 0
 
@@ -12,9 +15,9 @@ typedef struct GeBuf4 {
     s32 w[18];
 } GeBuf4;
 
-extern void func_01ff8bd0(u32 cmd, void *args, u32 n);
-extern void func_01ffc374(s32 num, s32 den);
-extern s32 func_01ffc464(void);
+extern void NNS_G3dGeBufferOP_N(u32 cmd, void *args, u32 n);
+extern void FX_DivAsync(s32 num, s32 den);
+extern s32 FX_GetDivResult(void);
 extern void (*data_0213bef0[8])(s32 *, u32 *);
 
 
@@ -23,15 +26,89 @@ static inline s32 FxMul(s32 a, s32 b)
     return (s32)(((long long)a * b) >> 12);
 }
 
+typedef struct TexSrt {
+    u8 pad[0x18];
+    s32 sx;     // 0x18
+    s32 sy;     // 0x1c
+    s16 sn;     // 0x20
+    s16 cs;     // 0x22
+    s32 tx;     // 0x24
+    s32 ty;     // 0x28
+    u16 w;      // 0x2c
+    u16 h;      // 0x2e
+} TexSrt;
+#define FXM(a, b) ((s32)(((s64)(a) * (b)) >> 12))
+// g3d texture SRT -> texture matrix (elements 0,1,4,5,12,13): scale + rotation + translation
+void texmtxCalc_flag___xsi(s32 *m, TexSrt *t)
+{
+    s32 h, w, sn, sy, cs, sx, x, y, e;
+    s64 q, d;
+    w = t->w << 12; h = t->h << 12;
+    FX_DivAsync(h, w);
+    cs = t->cs; sx = t->sx; sn = t->sn; sy = t->sy;
+    m[0] = FXM(sx, cs);
+    x = FXM(sx, sn);
+    y = FXM(sy, cs);
+    m[5] = y;
+    m[1] = FXM(sy, sn) * FX_GetDivResult() >> 12;
+    FX_DivAsync(w, h);
+    q = ((s64)t->tx * t->cs + (s64)t->ty * t->sn) >> 12;
+    d = ((s64)t->tx * t->sn - (s64)t->ty * t->cs) >> 12;
+    e = y + (s32)(d * t->sy >> 12);
+    m[12] = (t->w * (x - (s32)(q * t->sx >> 12))) << 4;
+    m[13] = (-(s32)t->h * (e - 0x1000)) << 4;
+    m[4] = (-x) * FX_GetDivResult() >> 12;
+}
+
+// rotation + translation
+void texmtxCalc_flagS___xsi(s32 *m, TexSrt *t)
+{
+    s32 w = t->w << 12;
+    s32 h = t->h << 12;
+    s32 a, b;
+    FX_DivAsync(h, w);
+    m[0] = t->cs;
+    m[5] = t->cs;
+    m[1] = t->sn * FX_GetDivResult() >> 12;
+    FX_DivAsync(w, h);
+    a = (s32)(((s64)t->tx * t->cs + (s64)t->ty * t->sn) >> 12);
+    b = (s32)(((s64)t->tx * t->sn - (s64)t->ty * t->cs) >> 12);
+    m[12] = (t->w * (t->sn - a)) << 4;
+    m[13] = (-(s32)t->h * (t->cs + b - 0x1000)) << 4;
+    m[4] = (-t->sn) * FX_GetDivResult() >> 12;
+}
+
+// scale + translation
+void texmtxCalc_flagR___xsi(s32 *m, TexSrt *t)
+{
+    s32 tx, ty;
+    m[0] = t->sx; m[5] = t->sy; m[1] = 0;
+    tx = -FXM(t->tx, t->sx); ty = FXM(-t->ty, t->sy);
+    m[12] = (t->w * tx) << 4;
+    m[13] = (-(s32)t->h * (t->sy + ty - 0x1000)) << 4;
+    m[4] = 0;
+}
+
+// translation only
+void texmtxCalc_flagRS___xsi(s32 *m, TexSrt *t)
+{
+    s32 tx, ty;
+    m[0] = 0x1000; m[5] = 0x1000; m[1] = 0;
+    tx = -t->tx; ty = -t->ty;
+    m[12] = (t->w * tx) << 4;
+    m[13] = (-(s32)t->h * ty) << 4;
+    m[4] = 0;
+}
+
 // NNS g3d material SRT (Maya-style): scale + rotation
-void func_02108fe8(s32 *o, u8 *s)
+void texmtxCalc_flagT___xsi(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);
     s32 num = w << 12;
     s32 den = h << 12;
     s32 sn, sy, r, t, cs, sx;
-    func_01ffc374(den, num);
+    FX_DivAsync(den, num);
     cs = *(s16 *)(s + 34);
     sx = *(s32 *)(s + 24);
     sn = *(s16 *)(s + 32);
@@ -40,32 +117,32 @@ void func_02108fe8(s32 *o, u8 *s)
     t = FxMul(sy, cs);
     o[0] = FxMul(sx, cs);
     o[5] = t;
-    o[1] = FxMul(sy, sn) * func_01ffc464() >> 12;
-    func_01ffc374(num, den);
+    o[1] = FxMul(sy, sn) * FX_GetDivResult() >> 12;
+    FX_DivAsync(num, den);
     o[12] = (*(u16 *)(s + 44) * r) << 4;
     o[13] = (-(s32)*(u16 *)(s + 46) * (t - 0x1000)) << 4;
-    o[4] = (-r * func_01ffc464()) >> 12;
+    o[4] = (-r * FX_GetDivResult()) >> 12;
 }
 
 // NNS g3d material SRT (Maya-style): rotation only
-void func_02108f38(s32 *o, u8 *s)
+void texmtxCalc_flagTS___xsi(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);
     s32 num = w << 12;
     s32 den = h << 12;
-    func_01ffc374(den, num);
+    FX_DivAsync(den, num);
     o[0] = *(s16 *)(s + 34);
     o[5] = *(s16 *)(s + 34);
-    o[1] = (*(s16 *)(s + 32) * func_01ffc464()) >> 12;
-    func_01ffc374(num, den);
+    o[1] = (*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
+    FX_DivAsync(num, den);
     o[12] = (*(u16 *)(s + 44) * *(s16 *)(s + 32)) << 4;
     o[13] = (-(s32)*(u16 *)(s + 46) * (*(s16 *)(s + 34) - 0x1000)) << 4;
-    o[4] = (-*(s16 *)(s + 32) * func_01ffc464()) >> 12;
+    o[4] = (-*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
 }
 
 // NNS g3d material SRT (Maya-style): scale only
-void func_02108ef8(s32 *o, u8 *s)
+void texmtxCalc_flagTR___xsi(s32 *o, u8 *s)
 {
     o[0] = *(s32 *)(s + 24);
     o[5] = *(s32 *)(s + 28);
@@ -76,7 +153,7 @@ void func_02108ef8(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT (Maya-style): identity
-void func_02108ed4(s32 *o)
+void texmtxCalc_flagTRS___xsi(s32 *o)
 {
     o[0] = 0x1000;
     o[1] = 0;
@@ -87,7 +164,7 @@ void func_02108ed4(s32 *o)
 }
 
 // NNS g3d: build the 4x4 texture matrix, variant that forces unit scale / zero rotation / zero translation per flag bits
-void func_02108d44(u32 *a)
+void NNSi_G3dSendTexSRTXsi(u32 *a)
 {
     GeBuf4 s;
     if (a[0] & 8) {
@@ -130,6 +207,25 @@ void func_02108d44(u32 *a)
         s.w[6] = FxMul(a[13], s.w[6]);
         s.w[14] = FxMul(a[13], s.w[14]);
     }
-    func_01ff8bd0(s.cmd, (u32 *)&s + 1, 18);
+    NNS_G3dGeBufferOP_N(s.cmd, (u32 *)&s + 1, 18);
 }
 
+// ---- file-scope objects (.data 0x0213bef0-0x0213bf10): the texture-matrix calculators by SRT flag bits
+void texmtxCalc_flag___xsi();
+void texmtxCalc_flagS___xsi();
+void texmtxCalc_flagR___xsi();
+void texmtxCalc_flagRS___xsi();
+void texmtxCalc_flagT___xsi();
+void texmtxCalc_flagTS___xsi();
+void texmtxCalc_flagTR___xsi();
+void texmtxCalc_flagTRS___xsi();
+void (*data_0213bef0[8])(s32 *, u32 *) = {
+    (void (*)(s32 *, u32 *))texmtxCalc_flag___xsi,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagS___xsi,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagR___xsi,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagRS___xsi,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagT___xsi,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTS___xsi,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTR___xsi,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTRS___xsi,
+};

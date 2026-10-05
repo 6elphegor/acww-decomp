@@ -9,10 +9,10 @@
 	.arm
 
 ; MI_ReadUncompLZ8(context, data, len): returns the remaining destination count
-	.global func_021162b0
-	.type func_021162b0, @function
-	.size func_021162b0, 0x100
-func_021162b0:
+	.global MI_ReadUncompLZ8
+	.type MI_ReadUncompLZ8, @function
+	.size MI_ReadUncompLZ8, 0x100
+MI_ReadUncompLZ8:
 	stmfd sp!, {r4, r5, r6, r7, r8, r9, r10}
 	ldr r3, [r0, #0]
 	ldr r4, [r0, #4]

@@ -12,15 +12,15 @@
 	.extern data_021fce90
 	.extern data_021fce94
 	.extern data_021fce98
-	.extern func_02114b24
-	.extern func_02114b34
+	.extern OS_EnableProtectionUnit
+	.extern OS_DisableProtectionUnit
 	.arm
 
 ; OSi_ExceptionHandler
-	.global func_02114b54
-	.type func_02114b54, @function
-	.size func_02114b54, 0x74
-func_02114b54:
+	.global OSi_ExceptionHandler
+	.type OSi_ExceptionHandler, @function
+	.size OSi_ExceptionHandler, 0x74
+OSi_ExceptionHandler:
 	ldr ip, L_02114bc0
 	ldr ip, [ip, #0]
 	cmp ip, #0
@@ -34,12 +34,12 @@ func_02114b54:
 	and r1, r1, #0x1f
 	teq r1, #0x17
 	bne L_02114b90
-	bl func_02114bc8
+	bl OSi_GetAndDisplayContext
 	b L_02114b9c
 L_02114b90: ; not_abort
 	teq r1, #0x1b
 	bne L_02114b9c
-	bl func_02114bc8
+	bl OSi_GetAndDisplayContext
 L_02114b9c: ; done
 	ldr ip, L_02114bc0
 	ldr ip, [ip, #0]
@@ -58,21 +58,21 @@ L_02114bc4:
 	.word 0x02000000
 
 ; OSi_GetAndDisplayContext: no stack padding around the two calls (mwcc pads a call frame to 8 bytes)
-	.global func_02114bc8
-	.type func_02114bc8, @function
-	.size func_02114bc8, 0x14
-func_02114bc8:
+	.global OSi_GetAndDisplayContext
+	.type OSi_GetAndDisplayContext, @function
+	.size OSi_GetAndDisplayContext, 0x14
+OSi_GetAndDisplayContext:
 	stmfd sp!, {lr}
-	bl func_02114bdc
-	bl func_02114c6c
+	bl OSi_SetExContext
+	bl OSi_DisplayExContext
 	ldmfd sp!, {lr}
 	bx lr
 
 ; OSi_SetExContext: called from OSi_ExceptionHandler with r0 = (sp & 1), ip = exception stack frame
-	.global func_02114bdc
-	.type func_02114bdc, @function
-	.size func_02114bdc, 0x90
-func_02114bdc:
+	.global OSi_SetExContext
+	.type OSi_SetExContext, @function
+	.size OSi_SetExContext, 0x90
+OSi_SetExContext:
 	ldr r1, L_02114c68
 	mrs r2, cpsr
 	str r2, [r1, #0x74]
@@ -113,10 +113,10 @@ L_02114c68:
 
 ; OSi_DisplayExContext: if a user handler is set, switch to System mode (HW_PSR_SYS_MODE 0x9f, keeping sp) and
 ; call handler(&OSi_ExContext, OSi_UserExceptionArgument) with the protection unit enabled
-	.global func_02114c6c
-	.type func_02114c6c, @function
-	.size func_02114c6c, 0x6c
-func_02114c6c:
+	.global OSi_DisplayExContext
+	.type OSi_DisplayExContext, @function
+	.size OSi_DisplayExContext, 0x6c
+OSi_DisplayExContext:
 	stmfd sp!, {lr}
 	sub sp, sp, #4
 	ldr r0, L_02114cc8
@@ -129,14 +129,14 @@ func_02114c6c:
 	ldr r1, L_02114ccc
 	msr cpsr_cxsf, r1
 	mov sp, r0
-	bl func_02114b24
+	bl OS_EnableProtectionUnit
 	ldr r1, L_02114cd0
 	ldr r0, L_02114cc8
 	ldr r1, [r1, #0]
 	ldr r2, [r0, #0]
 	ldr r0, L_02114cd4
 	blx r2
-	bl func_02114b34
+	bl OS_DisableProtectionUnit
 	add sp, sp, #4
 	ldmfd sp!, {lr}
 	bx lr

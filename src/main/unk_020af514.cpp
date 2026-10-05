@@ -1,19 +1,23 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
+#include "town/TownBlockCell.h"
+#include "town/SceneMapInfo.h"
+#include "game/SceneInfo.h"
 
 extern "C" {
-u32 func_020b50d0(u32);
-void func_0209d498(void *);
-void func_0209d164(void *, u32);
-s32 func_0209cd00(void *, void *);
-s32 func_01ffc5a4(s32, s32);
+u32 GroundSeason_IsSnowPhase(u32);
+void Clock_GetDateTime(void *);
+void DateTime_SubDays(void *, u32);
+s32 Date_DaysBetween(void *, void *);
+s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void *func_0204da0c();
-void func_0204eb30(void *, void *, u32, u32, u32);
-void *func_02037558(void *, u32, u32, u32);
-BOOL func_0204b14c(void *);
-u32 func_0204b124(void *);
-void func_0204edf8(u32 *, u32 *, u32, u32, u32, u32);
+void *TownBlockMap_Get();
+void BlockMap_SetItemAtUnit(void *, void *, u32, u32, u32);
+void *MapBlock_GetItemPtr(void *, u32, u32, u32);
+BOOL Item_IsSnowman(void *);
+u32 Item_GetSnowmanIndex(void *);
+void FieldUnit_FromBlockUnit(u32 *, u32 *, u32, u32, u32, u32);
 }
 
 struct Bits;
@@ -25,17 +29,17 @@ union DateTmpU {
     u32 w[2];
 };
 
-class Unk_020af85c {
+class SnowmanRecord {
 public:
-    Unk_020af85c();
-    ~Unk_020af85c();
-    s32 func_020af85c();
-    u32 func_020af8b4();
-    s32 func_020af8bc();
-    s32 func_020af914();
-    void func_020af96c(u32 a, u32 b, u32 c);
-    BOOL func_020afa1c();
-    void func_020afa38();
+    SnowmanRecord();
+    ~SnowmanRecord();
+    s32 getDaysSinceBuilt();
+    u32 getRank();
+    s32 getBodySize();
+    s32 getHeadSize();
+    void build(u32 a, u32 b, u32 c);
+    BOOL isUsed();
+    void clear();
 
     u16 a0 : 7;
     u16 a1 : 4;
@@ -54,156 +58,122 @@ struct Data021e5890 {
     u8 f14 : 6;
 };
 extern Data021e5890 data_021e5890;
-BOOL func_020af72c(u32 idx);
+BOOL Snowman_RemoveFromTown(u32 idx);
 }
 
-class Unk_020af53c {
+class SnowmanRecords {
 public:
-    Unk_020af53c();
-    ~Unk_020af53c();
-    void func_020af53c(u32 idx);
-    BOOL func_020af564();
-    BOOL func_020af590(u32 idx, u32 *a, u32 *b, u32 *c, u8 *d, u8 *e, u8 *f);
-    s32 func_020af608(u32 a, u32 b, u32 c);
-    BOOL func_020af64c(u32 idx);
-    void func_020af674();
-    void func_020af694();
+    SnowmanRecords();
+    ~SnowmanRecords();
+    void markUnplaced(u32 idx);
+    BOOL isFull();
+    BOOL getInfo(u32 idx, u32 *a, u32 *b, u32 *c, u8 *d, u8 *e, u8 *f);
+    s32 add(u32 a, u32 b, u32 c);
+    BOOL remove(u32 idx);
+    void clearAll();
+    void updateDaily();
 
-    Unk_020af85c e[3];
+    SnowmanRecord e[3];
 };
 
-struct Cell {
-    u8 b[0x28];
-};
 
 struct Grid {
-    Cell *cells;
+    TownBlockCell *cells;
     u32 w;
     u32 h;
 };
 
 extern "C" {
-extern void *data_021eda68;
-void func_0202e880(u32, void *, u32, u32);
-u64 func_01ffa6b4();
+extern void *gActorDefaultParent;
+void GameProc_CreateChild(u32, void *, u32, u32);
+u64 OS_GetTick();
 }
 
-class Unk_020afadc {
-public:
-    void func_020afadc();
-    u8 pad[6];
-    u16 unk_06;
-};
+class SceneSpawnGroup;
 
-class Unk_020afbb8;
+typedef BOOL (*EntryFn)(SceneSpawnGroup *, u8 *, u32, u32);
+extern "C" EntryFn sSceneSpawnGroupHandlers[];
+extern "C" BOOL SceneSpawnGroup_SpawnActors(SceneSpawnGroup *, u8 *, u32, u32);
+extern "C" BOOL _ZN15SceneSpawnGroup21spawnPlayersAndCameraEPhjj(SceneSpawnGroup *, u8 *, u32, u32);
+extern "C" BOOL _ZN15SceneSpawnGroup11createProcsEPhy(SceneSpawnGroup *, u8 *, u32, u32);
 
-typedef BOOL (*EntryFn)(Unk_020afbb8 *, u8 *, u32, u32);
-extern "C" EntryFn data_020e2ed0[];
-extern "C" BOOL func_020afeb4(Unk_020afbb8 *, u8 *, u32, u32);
-extern "C" BOOL _ZN12Unk_020afbb813func_020afc48EPhjj(Unk_020afbb8 *, u8 *, u32, u32);
-extern "C" BOOL _ZN12Unk_020afbb813func_020afbb8EPhy(Unk_020afbb8 *, u8 *, u32, u32);
-
-class Unk_020afafc;
-
-class Unk_020afbb8 {
-public:
-    BOOL func_020afbb8(u8 *idx, u64 start);
-    BOOL func_020afc48(u8 *idx, u32 lo, u32 hi);
-
-    u8 type;
-    u8 count;
-    u16 unk_02;
-    void *ptr;
-};
-
-class Unk_020afafc {
-public:
-    BOOL func_020afafc(u8 *entryIdx, u8 *subIdx, u64 start);
-
-    u16 count;
-    u16 unk_02;
-    Unk_020afbb8 *entries;
-};
 
 struct EntryPair {
     u16 a;
     u16 b;
 };
 
-class Unk_020afaa4 {
+
+// one of the 2 rollable loose snowballs of gLooseSnowballs
+class LooseSnowball {
 public:
-    Unk_020afaa4();
-    ~Unk_020afaa4();
-    BOOL func_020afab8(u8 *entryIdx, u8 *subIdx, u64 start);
-    void func_020afad0();
+    LooseSnowball();
+    ~LooseSnowball();
 
-    Unk_020afafc *unk_00;
-    void *unk_04;
-    Unk_020afadc *unk_08;
-    u32 unk_0c;
+    void *posX;
+    void *posY;
+    void *posZ;
+    u32 radius;
 };
 
-class Unk_020af514 {
+class LooseSnowballs {
 public:
-    ~Unk_020af514();
-    void func_020af514();
+    ~LooseSnowballs();
+    void reset();
 
-    Unk_020afaa4 items[2];
+    LooseSnowball items[2];
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Vec3s {
     s16 x, y, z;
 };
 
-inline void SetVec(Vec3 *v, s32 x, s32 y, s32 z) {
+inline void SetVec(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
 }
 
 class Unk_020b4948;
-extern "C" BOOL func_020b4948(Unk_020b4948 *);
-extern "C" u32 func_020b4958(Unk_020b4948 *);
-extern "C" s32 func_020b495c(Unk_020b4948 *);
-extern "C" Vec3 *func_020b4964(Unk_020b4948 *);
+extern "C" BOOL SceneWarp_HasNoPos(Unk_020b4948 *);
+extern "C" u32 SceneWarp_GetSpawnParam(Unk_020b4948 *);
+extern "C" s32 SceneWarp_GetAngle(Unk_020b4948 *);
+extern "C" VecFx32 *SceneWarp_GetPos(Unk_020b4948 *);
 
 extern "C" {
-Unk_020b4948 *func_020b4934();
-u32 func_020b50e8();
-BOOL func_020b52ac();
-BOOL func_020b5184();
-BOOL _ZN12Unk_020cbb1813func_020729bcEj(void *, ...);
-void _ZN12Unk_020cbb1813func_02072e88Ei(void *, u32);
-s32 func_020952e0(u32);
-BOOL func_020978c8(void *, s32);
-u32 func_0209521c();
-void func_0209524c(u32, u32);
-void func_02094308(u32, Vec3 *, Vec3s *, u32);
-void func_020e93a0(Vec3 *, s32);
-void func_01ffd070(Vec3 *, Vec3 *, Vec3 *);
+Unk_020b4948 *Scene_GetWarpRequest();
+u32 Scene_GetCurrent();
+BOOL Scene_InUnk6Or7();
+BOOL Scene_InTown();
+BOOL _ZN11CommManager11isLocalSlotEj(void *, ...);
+void _ZN11CommManager12isSlotActiveEi(void *, u32);
+s32 PlayerSession_GetDataIndex(u32);
+BOOL PlayerDataArray_IsUsed(void *, s32);
+u32 PlayerSession_FindFreeGfxSlot();
+void PlayerSession_SetGfxSlot(u32, u32);
+void PlayerActor_Spawn(u32, VecFx32 *, Vec3s *, u32);
+void Vec_RotateY(VecFx32 *, s32);
+void Vec_Add(VecFx32 *, VecFx32 *, VecFx32 *);
 
 struct Data020cbb18 {
     u8 pad[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
-extern Data020cbb18 *data_020cbb18;
-extern u8 data_021d735c[];
+extern Data020cbb18 *gCommManager;
+extern u8 gSavePlayers[];
 }
 
-class Unk_020afd04 {
+class ScenePlayerSpawn {
 public:
-    BOOL func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot, u32 *out);
-    inline void get(Vec3 *pos, Vec3s *r, u32 *out) {
+    BOOL getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot, u32 *out);
+    inline void get(VecFx32 *pos, Vec3s *r, u32 *out) {
         Vec3s *q = &rot;
         SetVec(pos, x << 12 >> 4, y << 12 >> 4, z << 12 >> 4);
         r->x = q->x;
         r->y = q->y;
         r->z = q->z;
-        *out = unk_10;
+        *out = spawnParam;
     }
 
     u16 unk_00;
@@ -212,55 +182,55 @@ public:
     s16 z;
     Vec3s rot;
     u16 unk_0e;
-    u32 unk_10;
+    u32 spawnParam;
 };
 
 
-BOOL Unk_020afd04::func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *out) {
+BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32 *out) {
     if (mode) {
-        s32 idx = func_020952e0(i);
-        if (idx < 4 && func_020978c8(data_021d735c, func_020952e0(i))) {
-            if (!_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, i) || func_020b4948(func_020b4934())) {
+        s32 idx = PlayerSession_GetDataIndex(i);
+        if (idx < 4 && PlayerDataArray_IsUsed(gSavePlayers, PlayerSession_GetDataIndex(i))) {
+            if (!_ZN11CommManager11isLocalSlotEj(gCommManager, i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
-                Vec3 *v = func_020b4964(func_020b4934());
+                VecFx32 *v = SceneWarp_GetPos(Scene_GetWarpRequest());
                 pos->x = v->x;
                 pos->y = v->y;
                 pos->z = v->z;
-                s32 t = func_020b495c(func_020b4934());
+                s32 t = SceneWarp_GetAngle(Scene_GetWarpRequest());
                 rot_->x = 0;
                 rot_->y = t;
                 rot_->z = 0;
-                *out = func_020b4958(func_020b4934());
+                *out = SceneWarp_GetSpawnParam(Scene_GetWarpRequest());
             }
             return TRUE;
         }
     } else {
-        if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18)) {
-            if (func_020b4948(func_020b4934())) {
+        if (_ZN11CommManager11isLocalSlotEj(gCommManager)) {
+            if (SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 get(pos, rot_, out);
             } else {
-                Vec3 v;
+                VecFx32 v;
                 v.x = 0;
                 v.y = 0;
                 v.z = 0;
-                if (!func_020b5184() && func_020b4958(func_020b4934()) == 0x800000) {
+                if (!Scene_InTown() && SceneWarp_GetSpawnParam(Scene_GetWarpRequest()) == 0x800000) {
                     i &= 3;
                     v.x = (i << 10) - 0x800;
                     v.y = 0;
                     v.z = 0;
-                    func_020e93a0(&v, func_020b495c(func_020b4934()));
+                    Vec_RotateY(&v, SceneWarp_GetAngle(Scene_GetWarpRequest()));
                 }
-                Vec3 t;
-                func_01ffd070(&t, func_020b4964(func_020b4934()), &v);
+                VecFx32 t;
+                Vec_Add(&t, SceneWarp_GetPos(Scene_GetWarpRequest()), &v);
                 pos->x = t.x;
                 pos->y = t.y;
                 pos->z = t.z;
-                s32 u = func_020b495c(func_020b4934());
+                s32 u = SceneWarp_GetAngle(Scene_GetWarpRequest());
                 rot_->x = 0;
                 rot_->y = u;
                 rot_->z = 0;
-                *out = func_020b4958(func_020b4934());
+                *out = SceneWarp_GetSpawnParam(Scene_GetWarpRequest());
             }
             return TRUE;
         }
@@ -268,41 +238,41 @@ BOOL Unk_020afd04::func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *
     return FALSE;
 }
 
-BOOL Unk_020afbb8::func_020afc48(u8 *idx, u32 lo, u32 hi) {
-    Unk_020afd04 *items = (Unk_020afd04 *)ptr;
-    if (items != NULL && func_020b50e8() != 0xd && func_020b50e8() != 0xe && func_020b50e8() != 0x2f) {
-        if (func_020b52ac()) {
-            _ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64);
+BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
+    ScenePlayerSpawn *items = (ScenePlayerSpawn *)list;
+    if (items != NULL && Scene_GetCurrent() != 0xd && Scene_GetCurrent() != 0xe && Scene_GetCurrent() != 0x2f) {
+        if (Scene_InUnk6Or7()) {
+            _ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid);
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
                 u32 v;
-                Vec3 pos;
-                if (items->func_020afd04(i, TRUE, &pos, &rot, &v)) {
-                    func_02094308(i, &pos, &rot, v);
+                VecFx32 pos;
+                if (items->getSpawn(i, TRUE, &pos, &rot, &v)) {
+                    PlayerActor_Spawn(i, &pos, &rot, v);
                 }
             }
         } else {
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
                 u32 v;
-                Vec3 pos;
-                if (items->func_020afd04(i, FALSE, &pos, &rot, &v)) {
-                    func_0209524c(i, func_0209521c());
-                    func_02094308(i, &pos, &rot, v);
+                VecFx32 pos;
+                if (items->getSpawn(i, FALSE, &pos, &rot, &v)) {
+                    PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
+                    PlayerActor_Spawn(i, &pos, &rot, v);
                 }
             }
         }
     }
-    func_0202e880(0xb, data_021eda68, 0, 0);
+    GameProc_CreateChild(0xb, gActorDefaultParent, 0, 0);
     return TRUE;
 }
 
-BOOL Unk_020afbb8::func_020afbb8(u8 *idx, u64 start) {
+BOOL SceneSpawnGroup::createProcs(u8 *idx, u64 start) {
     u32 i = idx != NULL ? *idx : 0;
-    EntryPair *p = (EntryPair *)ptr + i;
+    EntryPair *p = (EntryPair *)list + i;
     BOOL ok = TRUE;
     for (;;) {
-        func_0202e880(p->a, data_021eda68, p->b, 0);
+        GameProc_CreateChild(p->a, gActorDefaultParent, p->b, 0);
         p++;
         i = (u8)(i + 1);
         if (idx != NULL) {
@@ -312,7 +282,7 @@ BOOL Unk_020afbb8::func_020afbb8(u8 *idx, u64 start) {
             break;
         }
         if (idx != NULL) {
-            u32 ms = ((func_01ffa6b4() - start) * 64) / 0x82ea;
+            u32 ms = ((OS_GetTick() - start) * 64) / 0x82ea;
             if (ms > 0x28) {
                 ok = FALSE;
                 break;
@@ -325,13 +295,13 @@ BOOL Unk_020afbb8::func_020afbb8(u8 *idx, u64 start) {
     return FALSE;
 }
 
-BOOL Unk_020afafc::func_020afafc(u8 *entryIdx, u8 *subIdx, u64 start) {
+BOOL SceneSpawnList::run(u8 *entryIdx, u8 *subIdx, u64 start) {
     s32 i = entryIdx != NULL ? *entryIdx : 0;
-    Unk_020afbb8 *e = entries + i;
+    SceneSpawnGroup *e = groups + i;
     BOOL result = TRUE;
     for (; i < count;) {
         BOOL r = result;
-        EntryFn f = data_020e2ed0[e->type];
+        EntryFn f = sSceneSpawnGroupHandlers[e->kind];
         if (f != NULL) {
             r = f(e, subIdx, (u32)start, (u32)(start >> 32));
         }
@@ -348,7 +318,7 @@ BOOL Unk_020afafc::func_020afafc(u8 *entryIdx, u8 *subIdx, u64 start) {
                 break;
             }
             if (entryIdx != NULL) {
-                u32 ms = ((func_01ffa6b4() - start) * 64) / 0x82ea;
+                u32 ms = ((OS_GetTick() - start) * 64) / 0x82ea;
                 if (ms > 0x28) {
                     result = FALSE;
                     break;
@@ -365,34 +335,34 @@ BOOL Unk_020afafc::func_020afafc(u8 *entryIdx, u8 *subIdx, u64 start) {
     return FALSE;
 }
 
-void Unk_020afadc::func_020afadc() {
-    func_0202e880(0xc, data_021eda68, unk_06, 0);
+void SceneMapInfo::createMapModule() {
+    GameProc_CreateChild(0xc, gActorDefaultParent, moduleParam, 0);
 }
 
-void Unk_020afaa4::func_020afad0() {
-    unk_08->func_020afadc();
+void SceneInfo::createSceneMapModule() {
+    mapInfo->createMapModule();
 }
 
-BOOL Unk_020afaa4::func_020afab8(u8 *entryIdx, u8 *subIdx, u64 start) {
-    return unk_00->func_020afafc(entryIdx, subIdx, start);
+BOOL SceneInfo::runSpawnList(u8 *entryIdx, u8 *subIdx, u64 start) {
+    return spawnList->run(entryIdx, subIdx, start);
 }
 
-Unk_020afaa4::Unk_020afaa4() {
-    unk_00 = NULL;
-    unk_04 = NULL;
-    unk_08 = NULL;
-    unk_0c = 0x800;
+LooseSnowball::LooseSnowball() {
+    posX = NULL;
+    posY = NULL;
+    posZ = NULL;
+    radius = 0x800;
 }
 
-Unk_020afaa4::~Unk_020afaa4() {}
+LooseSnowball::~LooseSnowball() {}
 
-Unk_020af514::~Unk_020af514() {}
+LooseSnowballs::~LooseSnowballs() {}
 
-Unk_020af85c::Unk_020af85c() {}
+SnowmanRecord::SnowmanRecord() {}
 
-Unk_020af85c::~Unk_020af85c() {}
+SnowmanRecord::~SnowmanRecord() {}
 
-void Unk_020af85c::func_020afa38() {
+void SnowmanRecord::clear() {
     a0 = 0;
     a1 = 0;
     a2 = 0;
@@ -402,14 +372,14 @@ void Unk_020af85c::func_020afa38() {
     c5 = 0;
 }
 
-BOOL Unk_020af85c::func_020afa1c() {
+BOOL SnowmanRecord::isUsed() {
     if (b0 != 0 && b1 != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_020af85c::func_020af96c(u32 x, u32 y, u32 z) {
+void SnowmanRecord::build(u32 x, u32 y, u32 z) {
     b0 = x >> 7;
     b1 = y >> 7;
     b2 = z;
@@ -417,9 +387,9 @@ void Unk_020af85c::func_020af96c(u32 x, u32 y, u32 z) {
     DateTmp d;
     ((u32 *)&d)[0] = 0;
     ((u32 *)&d)[1] = 0;
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     if (d.b2 < 6) {
-        func_0209d164(&d, 1);
+        DateTime_SubDays(&d, 1);
     }
     a0 = d.b5;
     a1 = d.b4;
@@ -427,16 +397,16 @@ void Unk_020af85c::func_020af96c(u32 x, u32 y, u32 z) {
     c5 = 1;
 }
 
-s32 Unk_020af85c::func_020af914() {
+s32 SnowmanRecord::getHeadSize() {
     s32 t = b0 << 7;
     if (t == 0) {
         t = 0x1000;
     }
     s32 u = 0x1000;
     if (c4 == 1) {
-        u = func_01ffc5a4(0x3000, 0x4000);
+        u = FX_Div(0x3000, 0x4000);
     } else if (c4 == 2) {
-        u = func_01ffc5a4(u, 0x2000);
+        u = FX_Div(u, 0x2000);
     }
     if (u > 0x1000) {
         u = 0x1000;
@@ -444,16 +414,16 @@ s32 Unk_020af85c::func_020af914() {
     return func_01ffcb0c(t, u);
 }
 
-s32 Unk_020af85c::func_020af8bc() {
+s32 SnowmanRecord::getBodySize() {
     s32 t = b1 << 7;
     if (t == 0) {
         t = 0x1000;
     }
     s32 u = 0x1000;
     if (c4 == 1) {
-        u = func_01ffc5a4(0x3000, 0x4000);
+        u = FX_Div(0x3000, 0x4000);
     } else if (c4 == 2) {
-        u = func_01ffc5a4(u, 0x2000);
+        u = FX_Div(u, 0x2000);
     }
     if (u > 0x1000) {
         u = 0x1000;
@@ -461,19 +431,19 @@ s32 Unk_020af85c::func_020af8bc() {
     return func_01ffcb0c(t, u);
 }
 
-u32 Unk_020af85c::func_020af8b4() {
+u32 SnowmanRecord::getRank() {
     return b2;
 }
 
-s32 Unk_020af85c::func_020af85c() {
+s32 SnowmanRecord::getDaysSinceBuilt() {
     DateTmp d;
     ((u32 *)&d)[0] = 0;
     ((u32 *)&d)[1] = 0;
     u8 e[4];
     u8 f[4];
-    func_0209d498(&d);
+    Clock_GetDateTime(&d);
     if (d.b2 < 6) {
-        func_0209d164(&d, 1);
+        DateTime_SubDays(&d, 1);
     }
     e[2] = d.b5;
     e[1] = d.b4;
@@ -481,16 +451,16 @@ s32 Unk_020af85c::func_020af85c() {
     f[2] = a0;
     f[1] = a1;
     f[0] = a2;
-    return func_0209cd00(e, f);
+    return Date_DaysBetween(e, f);
 }
 
-Unk_020af53c::Unk_020af53c() {}
+SnowmanRecords::SnowmanRecords() {}
 
-Unk_020af53c::~Unk_020af53c() {}
+SnowmanRecords::~SnowmanRecords() {}
 
-extern "C" BOOL func_020af768(u32 *a, u32 *b, u32 idx) {
-    Cell *cell;
-    Grid *g = (Grid *)func_0204da0c();
+extern "C" BOOL Snowman_FindInTown(u32 *a, u32 *b, u32 idx) {
+    TownBlockCell *cell;
+    Grid *g = (Grid *)TownBlockMap_Get();
     for (s32 y = 1; y <= 4; y++) {
         for (s32 x = 1; x <= 4; x++) {
             if ((u32)x < g->w && (u32)y < g->h && g->cells != NULL) {
@@ -501,9 +471,9 @@ extern "C" BOOL func_020af768(u32 *a, u32 *b, u32 idx) {
             if (cell != NULL) {
                 for (s32 j = 0; j < 16; j++) {
                     for (s32 i = 0; i < 16; i++) {
-                        void *o = func_02037558(cell, i, j, 0);
-                        if (o != NULL && func_0204b14c(o) && idx == func_0204b124(o)) {
-                            func_0204edf8(a, b, x, y, i, j);
+                        void *o = MapBlock_GetItemPtr(cell, i, j, 0);
+                        if (o != NULL && Item_IsSnowman(o) && idx == Item_GetSnowmanIndex(o)) {
+                            FieldUnit_FromBlockUnit(a, b, x, y, i, j);
                             return TRUE;
                         }
                     }
@@ -514,38 +484,38 @@ extern "C" BOOL func_020af768(u32 *a, u32 *b, u32 idx) {
     return FALSE;
 }
 
-extern "C" BOOL func_020af72c(u32 idx) {
+extern "C" BOOL Snowman_RemoveFromTown(u32 idx) {
     u32 a, b;
-    if (func_020af768(&a, &b, idx)) {
-        void *p = func_0204da0c();
+    if (Snowman_FindInTown(&a, &b, idx)) {
+        void *p = TownBlockMap_Get();
         u16 h = 0xfff1;
-        func_0204eb30(p, &h, a, b, 0);
+        BlockMap_SetItemAtUnit(p, &h, a, b, 0);
         return TRUE;
     } else {
         return TRUE;
     }
 }
 
-void Unk_020af53c::func_020af694() {
+void SnowmanRecords::updateDaily() {
     BOOL flag = FALSE;
-    u32 v = func_020b50d0(data_021e5890.f14);
+    u32 v = GroundSeason_IsSnowPhase(data_021e5890.f14);
     for (u32 i = 0; i < 3; i++) {
         if (v == 0) {
-            if (func_020af72c(i)) {
-                e[i].func_020afa38();
+            if (Snowman_RemoveFromTown(i)) {
+                e[i].clear();
             }
         } else {
-            Unk_020af85c *r = &e[i];
-            if (r->func_020afa1c()) {
-                s32 n = r->func_020af85c();
+            SnowmanRecord *r = &e[i];
+            if (r->isUsed()) {
+                s32 n = r->getDaysSinceBuilt();
                 BOOL x = r->c5 ? TRUE : flag;
                 if (!x) {
                     if (n != 0) {
-                        r->func_020afa38();
+                        r->clear();
                     }
                 } else if (n >= 3 || n < 0) {
-                    if (func_020af72c(i)) {
-                        r->func_020afa38();
+                    if (Snowman_RemoveFromTown(i)) {
+                        r->clear();
                     }
                 } else {
                     r->c4 = n;
@@ -555,48 +525,48 @@ void Unk_020af53c::func_020af694() {
     }
 }
 
-void Unk_020af53c::func_020af674() {
+void SnowmanRecords::clearAll() {
     u32 i = 0;
     do {
-        e[i].func_020afa38();
+        e[i].clear();
         i++;
     } while (i < 3);
 }
 
-BOOL Unk_020af53c::func_020af64c(u32 idx) {
+BOOL SnowmanRecords::remove(u32 idx) {
     if (idx < 3) {
-        Unk_020af85c *r = &e[idx];
-        if (r->func_020afa1c()) {
-            r->func_020afa38();
+        SnowmanRecord *r = &e[idx];
+        if (r->isUsed()) {
+            r->clear();
             return TRUE;
         }
     }
     return FALSE;
 }
 
-s32 Unk_020af53c::func_020af608(u32 a, u32 b, u32 c) {
+s32 SnowmanRecords::add(u32 a, u32 b, u32 c) {
     for (u32 i = 0; i < 3; i++) {
-        Unk_020af85c *r = &e[i];
-        if (!r->func_020afa1c()) {
-            r->func_020af96c(a, b, c);
+        SnowmanRecord *r = &e[i];
+        if (!r->isUsed()) {
+            r->build(a, b, c);
             return i;
         }
     }
     return -1;
 }
 
-BOOL Unk_020af53c::func_020af590(u32 idx, u32 *a, u32 *b, u32 *c, u8 *d, u8 *ee, u8 *f) {
+BOOL SnowmanRecords::getInfo(u32 idx, u32 *a, u32 *b, u32 *c, u8 *d, u8 *ee, u8 *f) {
     if (idx < 3) {
-        Unk_020af85c *r = &e[idx];
-        if (r->func_020afa1c()) {
+        SnowmanRecord *r = &e[idx];
+        if (r->isUsed()) {
             if (a != NULL) {
-                *a = r->func_020af914();
+                *a = r->getHeadSize();
             }
             if (b != NULL) {
-                *b = r->func_020af8bc();
+                *b = r->getBodySize();
             }
             if (c != NULL) {
-                *c = r->func_020af8b4();
+                *c = r->getRank();
             }
             if (d != NULL) {
                 *d = r->a0;
@@ -613,32 +583,32 @@ BOOL Unk_020af53c::func_020af590(u32 idx, u32 *a, u32 *b, u32 *c, u8 *d, u8 *ee,
     return FALSE;
 }
 
-BOOL Unk_020af53c::func_020af564() {
+BOOL SnowmanRecords::isFull() {
     for (u32 i = 0; i < 3; i++) {
-        if (!e[i].func_020afa1c()) {
+        if (!e[i].isUsed()) {
             return FALSE;
         }
     }
     return TRUE;
 }
 
-void Unk_020af53c::func_020af53c(u32 idx) {
+void SnowmanRecords::markUnplaced(u32 idx) {
     if (idx < 3) {
-        if (e[idx].func_020afa1c()) {
+        if (e[idx].isUsed()) {
             e[idx].c5 = 0;
         }
     }
 }
 
-void Unk_020af514::func_020af514() {
+void LooseSnowballs::reset() {
     for (u32 i = 0; i < 2; i++) {
-        items[i].unk_00 = NULL;
-        items[i].unk_04 = NULL;
-        items[i].unk_08 = NULL;
-        items[i].unk_0c = 0x800;
+        items[i].posX = NULL;
+        items[i].posY = NULL;
+        items[i].posZ = NULL;
+        items[i].radius = 0x800;
     }
 }
 
-EntryFn data_020e2ed0[3] = {func_020afeb4, _ZN12Unk_020afbb813func_020afc48EPhjj, _ZN12Unk_020afbb813func_020afbb8EPhy};
+EntryFn sSceneSpawnGroupHandlers[3] = {SceneSpawnGroup_SpawnActors, _ZN15SceneSpawnGroup21spawnPlayersAndCameraEPhjj, _ZN15SceneSpawnGroup11createProcsEPhy};
 
-Unk_020af514 data_021ee25c;
+LooseSnowballs gLooseSnowballs;

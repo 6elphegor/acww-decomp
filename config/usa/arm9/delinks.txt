@@ -29,6 +29,38 @@ src/main/unk_02000c2c.cpp:
     .rodata     start:0x020c6108 end:0x020c6140
     .data       start:0x020d1f60 end:0x020d2024
 
+src/main/unk_020d2024.cpp:
+    complete
+    .data       start:0x020d2024 end:0x020d467c
+
+src/main/unk_020d467c.cpp:
+    complete
+    .data       start:0x020d467c end:0x020d468c
+
+src/main/unk_020d468c.cpp:
+    complete
+    .data       start:0x020d468c end:0x020d477c
+
+src/main/unk_020d477c.cpp:
+    complete
+    .data       start:0x020d477c end:0x020d4824
+
+src/main/unk_020d4824.cpp:
+    complete
+    .data       start:0x020d4824 end:0x020d5ce4
+
+src/main/unk_020d5ce4.cpp:
+    complete
+    .data       start:0x020d5ce4 end:0x020d5d0c
+
+src/main/unk_020d5d0c.cpp:
+    complete
+    .data       start:0x020d5d0c end:0x020d5d34
+
+src/main/unk_020d5d34.cpp:
+    complete
+    .data       start:0x020d5d34 end:0x020d5d44
+
 src/main/unk_0200137c.cpp:
     complete
     .text       start:0x0200137c end:0x020027b4
@@ -709,6 +741,14 @@ src/main/unk_0206f804.cpp:
     .text       start:0x0206f804 end:0x0206f834
     .data       start:0x020de3a8 end:0x020de408
 
+src/main/unk_020de408.cpp:
+    complete
+    .data       start:0x020de408 end:0x020e0408
+
+src/main/unk_020e0408.cpp:
+    complete
+    .data       start:0x020e0408 end:0x020e0468
+
 src/main/unk_0206f834.cpp:
     complete
     .text       start:0x0206f834 end:0x0206fc44
@@ -991,6 +1031,10 @@ src/main/unk_02097d1c.cpp:
     complete
     .text       start:0x02097d1c end:0x02098d20
     .data       start:0x020e1e20 end:0x020e1e2c
+
+src/main/unk_020e1e2c.cpp:
+    complete
+    .data       start:0x020e1e2c end:0x020e218c
 
 src/main/unk_02098d20.cpp:
     complete
@@ -1363,6 +1407,11 @@ src/autoload_2/unk_02133d04.main.cpp:
     .exception  start:0x020c2b04 end:0x020c2b2c
     .exceptix   start:0x020c2bd4 end:0x020c2c40
 
+src/autoload_2/unk_02134d70.main.cpp:
+    complete
+    .exception  start:0x020c2b2c end:0x020c2b34
+    .exceptix   start:0x020c2c40 end:0x020c2c4c
+
 src/autoload_2/unk_0213510c.main.cpp:
     complete
     .exception  start:0x020c2b34 end:0x020c2bb0
@@ -1375,6 +1424,21 @@ src/autoload_2/unk_02133ad0.main.cpp:
 src/autoload_2/unk_02133b68.main.cpp:
     complete
     .exceptix   start:0x020c2bbc end:0x020c2bd4
+
+src/autoload_2/unk_020e7fd4.main.cpp:
+    complete
+    .init       start:0x020c5f68 end:0x020c5f6c
+    .ctor       start:0x020d1f40 end:0x020d1f44
+
+src/autoload_2/unk_020f44f0.main.cpp:
+    complete
+    .init       start:0x020c6094 end:0x020c6108
+    .ctor       start:0x020d1f54 end:0x020d1f58
+
+src/autoload_2/unk_020e92f4.main.cpp:
+    complete
+    .init       start:0x020c5f6c end:0x020c5fa0
+    .ctor       start:0x020d1f44 end:0x020d1f48
 
 src/autoload_2/unk_020ed4bc.main.cpp:
     complete

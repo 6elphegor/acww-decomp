@@ -14,13 +14,13 @@ extern u32 data_021fcc0c;       // OSi_IrqStackWarningOffset
 #define OSi_IRQ_STACK_TOP (OSi_IRQ_STACK_BOTTOM - (s32)SDK_IRQ_STACKSIZE)
 
 // OS_SetIrqStackChecker
-void func_0211232c(void) {
+void OS_SetIrqStackChecker(void) {
     *(u32 *)(HW_DTCM + 0x3f7c) = 0xfddb597d;
     *(u32 *)(OSi_IRQ_STACK_TOP) = 0x7bf9dd5b;
 }
 
 // OS_GetIrqStackStatus: 0 ok, 1 overflow, 2 about to overflow, 3 underflow
-s32 func_021122b0(void) {
+s32 OS_GetIrqStackStatus(void) {
     if (*(u32 *)(OSi_IRQ_STACK_TOP) != 0x7bf9dd5b) {
         return 1;
     }
@@ -32,3 +32,6 @@ s32 func_021122b0(void) {
     }
     return 0;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fcc0c-0x021fcc10)
+u32 data_021fcc0c;       // OSi_IrqStackWarningOffset

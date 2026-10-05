@@ -1,177 +1,125 @@
 #include "types.h"
-extern u16 data_020e2f84[0x718];
-extern char *data_020e2f04[5];
-extern char data_020e2ef0[0x14];
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
+#include "game/ConstellationRecord.h"
+#include "gfx/StarTwinkle.h"
+#include "talk/EncodedStringBase.h"
+#include "talk/MsgString.h"
+#include "talk/EncodedString.h"
+#include "talk/ConstellationMsgString17.h"
+#include "talk/ConstellationEncodedString16.h"
+extern u16 sConstellationLineCells[0x718];
+extern char *sStarTwinklePalettePaths[5];
+extern char sStarPalPathB4[0x14];
 
 extern "C" {
-u32 func_02063b8c(u32 n);
-void func_02116048(const void *src, void *dst, u32 size);
-void func_020641b4(u32 a, void *b, u32 c);
-s32 func_02002580(void *a, u32 b, u32 c, u32 d, u32 e);
-void _ZN12Unk_020e45f813func_020b8618Ejhjh(void *p, void *q, u32 a, u32 b, u32 c);
-void _ZN12Unk_020e45f8C1Ev(void *p);
-void func_0205125c(void *p, u32 n);
-u32 _ZN12Unk_020940a013func_02094294Ev(void *p);
-void _ZN12Unk_020940a0C1Ev(void *p);
-void _ZN12Unk_020940a0C1EPv(void *p);
+u32 Random_GlobalBelow(u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
+void File_LoadToBuffer(u32 a, void *b, u32 c);
+s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
+void _ZN10BgVramTask19requestPaletteRangeEjhjh(void *p, void *q, u32 a, u32 b, u32 c);
+void _ZN10BgVramTaskC1Ev(void *p);
+void Mem_Clear(void *p, u32 n);
+u32 _ZN8PlayerId5clearEv(void *p);
+void _ZN8PlayerIdC1Ev(void *p);
+void _ZN8PlayerIdC1EPv(void *p);
 }
 
-class Unk_020d9200 {
+
+
+
+
+
+
+
+
+class ConstellationStore {
 public:
-    virtual ~Unk_020d9200() {}
+    ConstellationStore();
+    ~ConstellationStore();
+    ConstellationRecord records[16];
 };
 
-class Unk_020d9218 {
-public:
-    virtual ~Unk_020d9218() {}
-};
-
-class Unk_020e2a08 {
-public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
-    s32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
-};
-
-class Unk_020e2a60 : public Unk_020d9200 {
-public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
-    Unk_020e2a08 unk_04;
-};
-
-class Unk_020e2a78 : public Unk_020d9218 {
-public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
-    void func_020a7c3c();
-    u32 unk_04;
-    Unk_020e2a08 unk_08;
-};
-
-class Unk_020e2f74 : public Unk_020e2a78 {
-public:
-    Unk_020e2f74();
-    virtual ~Unk_020e2f74();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
-    u8 unk_12[0x11];
-};
-
-class Unk_020e2f5c : public Unk_020e2a60 {
-public:
-    Unk_020e2f5c();
-    virtual ~Unk_020e2f5c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
-    u8 unk_0e[0x10];
-};
-
-class Unk_020b0a60 {
-public:
-    Unk_020b0a60();
-    ~Unk_020b0a60();
-    u8 unk_00[0x46];
-};
-
-class Unk_020b09f0 {
-public:
-    Unk_020b09f0();
-    ~Unk_020b09f0();
-    Unk_020b0a60 unk_00[16];
-};
-
-class Unk_020b08b4 {
-public:
-    Unk_020b08b4();
-    ~Unk_020b08b4();
-};
 
 extern "C" {
-void *_ZN12Unk_020e45f813func_020b87d0Ev(void *p);
+void *_ZN10BgVramTask6cancelEv(void *p);
 }
 
-Unk_020b0a60::Unk_020b0a60() {
-    _ZN12Unk_020940a0C1EPv(this);
+ConstellationRecord::ConstellationRecord() {
+    _ZN8PlayerIdC1EPv(this);
 }
 
-Unk_020b0a60::~Unk_020b0a60() {
-    _ZN12Unk_020940a0C1Ev(this);
+ConstellationRecord::~ConstellationRecord() {
+    _ZN8PlayerIdC1Ev(this);
 }
 
 extern "C" {
-u32 func_020b0a30(u8 *p) {
+u32 ConstellationRecord_Clear(u8 *p) {
     s32 i;
     for (i = 0; i < 16; i++) {
         ((u16 *)(p + 0x26))[i] = 0xffff;
     }
-    func_0205125c(p + 0x16, 16);
-    return _ZN12Unk_020940a013func_02094294Ev(p);
+    Mem_Clear(p + 0x16, 16);
+    return _ZN8PlayerId5clearEv(p);
 }
-void *func_020b0a18(void *p, const void *src) {
-    func_02116048(src, p, 0x46);
+void *ConstellationRecord_Copy(void *p, const void *src) {
+    MI_CpuCopy8(src, p, 0x46);
     return p;
 }
 }
 
-Unk_020b09f0::Unk_020b09f0() {}
+ConstellationStore::ConstellationStore() {}
 
-Unk_020b09f0::~Unk_020b09f0() {}
+ConstellationStore::~ConstellationStore() {}
 
 extern "C" {
-void func_020b09c0(u8 *p) {
+void ConstellationStore_Clear(u8 *p) {
     *(u16 *)(p + 0x460) = 0;
     *(u16 *)(p + 0x462) = 0;
 }
-void func_020b09ac(u8 *p, u32 bit) {
+void ConstellationStore_SetUsed(u8 *p, u32 bit) {
     *(u16 *)(p + 0x460) |= (1 << bit);
 }
 
-void func_020b0998(u8 *p, u32 bit) {
+void ConstellationStore_ClearUsed(u8 *p, u32 bit) {
     *(u16 *)(p + 0x460) &= ~(1 << bit);
 }
 
-BOOL func_020b0980(u8 *p, u32 bit) {
+BOOL ConstellationStore_IsUsed(u8 *p, u32 bit) {
     return (*(u16 *)(p + 0x460) & (1 << bit)) != 0;
 }
 
 }
 
-Unk_020e2f74::Unk_020e2f74() {
-    func_020a7c3c();
+ConstellationMsgString17::ConstellationMsgString17() {
+    clear();
 }
 
-Unk_020e2f74::~Unk_020e2f74() {}
+ConstellationMsgString17::~ConstellationMsgString17() {}
 
-u32 Unk_020e2f74::vfunc_08() { return 0x11; }
+u32 ConstellationMsgString17::capacity() { return 0x11; }
 
-u8 *Unk_020e2f74::vfunc_0c() { return unk_12; }
+u8 *ConstellationMsgString17::data() { return text; }
 
-Unk_020e2f5c::Unk_020e2f5c() {}
+ConstellationEncodedString16::ConstellationEncodedString16() {}
 
-Unk_020e2f5c::~Unk_020e2f5c() {}
+ConstellationEncodedString16::~ConstellationEncodedString16() {}
 
-u32 Unk_020e2f5c::vfunc_08() { return 0x10; }
+u32 ConstellationEncodedString16::capacity() { return 0x10; }
 
-u8 *Unk_020e2f5c::vfunc_0c() { return unk_0e; }
+u8 *ConstellationEncodedString16::data() { return text; }
 
-Unk_020b08b4::Unk_020b08b4() {
-    _ZN12Unk_020e45f8C1Ev(this);
+StarTwinkle::StarTwinkle() {
+    _ZN10BgVramTaskC1Ev(this);
 }
 
-Unk_020b08b4::~Unk_020b08b4() {}
+StarTwinkle::~StarTwinkle() {}
 
 extern "C" {
-void func_020b080c(u8 *p) {
+void StarTwinkle_Update(u8 *p) {
     s32 i;
     BOOL changed;
-    _ZN12Unk_020e45f813func_020b87d0Ev(p);
+    _ZN10BgVramTask6cancelEv(p);
     changed = FALSE;
     for (i = 0; i < 4; i++) {
         u8 *e = p + i;
@@ -179,55 +127,55 @@ void func_020b080c(u8 *p) {
             e[0x324]--;
         } else {
             if (e[0x328] == 0) {
-                e[0x328] = func_02063b8c(4) + 1;
-                e[0x324] = func_02063b8c(15) + 5;
+                e[0x328] = Random_GlobalBelow(4) + 1;
+                e[0x324] = Random_GlobalBelow(15) + 5;
             } else {
                 e[0x328] = 0;
-                e[0x324] = func_02063b8c(30) + 10;
+                e[0x324] = Random_GlobalBelow(30) + 10;
             }
             changed = TRUE;
-            func_02116048(p + 0xa4 + e[0x328] * 128 + i * 32, p + 0x24 + i * 32, 0x20);
+            MI_CpuCopy8(p + 0xa4 + e[0x328] * 128 + i * 32, p + 0x24 + i * 32, 0x20);
         }
     }
     if (changed) {
-        _ZN12Unk_020e45f813func_020b8618Ejhjh(p, p + 0x24, p[0x32c], 4, 7);
+        _ZN10BgVramTask19requestPaletteRangeEjhjh(p, p + 0x24, p[0x32c], 4, 7);
     }
 }
-void func_020b0788(u8 *self, s32 arg) {
+void StarTwinkle_Init(u8 *self, s32 arg) {
     s32 i, j;
-    _ZN12Unk_020e45f813func_020b87d0Ev(self);
+    _ZN10BgVramTask6cancelEv(self);
     for (i = 0; i < 5; i++) {
         u8 *p = self + i;
-        p[0x324] = func_02063b8c(0x5a) + 10;
+        p[0x324] = Random_GlobalBelow(0x5a) + 10;
         p[0x328] = 0;
     }
     self[0x32c] = arg;
     for (j = 0; j < 5; j++) {
-        func_020641b4((u32)data_020e2f04[j], self + 0xa4 + j * 0x80, 0x80);
+        File_LoadToBuffer((u32)sStarTwinklePalettePaths[j], self + 0xa4 + j * 0x80, 0x80);
     }
-    func_02116048(self + 0xa4, self + 0x24, 0x80);
-    func_02002580(self + 0x24, arg, 4, 4, 7);
+    MI_CpuCopy8(self + 0xa4, self + 0x24, 0x80);
+    Gfx2d_LoadPaletteRange(self + 0x24, arg, 4, 4, 7);
 }
 
-void *func_020b0780(void *p) {
-    return _ZN12Unk_020e45f813func_020b87d0Ev(p);
+void *StarTwinkle_Stop(void *p) {
+    return _ZN10BgVramTask6cancelEv(p);
 }
 
-u8 *func_020b0774(s32 n) {
-    return (u8 *)data_020e2f84 + n * 8;
+u8 *Constellation_GetLineCells(s32 n) {
+    return (u8 *)sConstellationLineCells + n * 8;
 }
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern u16 data_020e2f84[0x718];
-extern char data_020e2edc[0x14];
-extern char data_020e2f40[0x14];
-extern char data_020e2f2c[0x14];
-extern char data_020e2f18[0x14];
-extern char *data_020e2f04[5];
-extern char data_020e2ef0[0x14];
+extern u16 sConstellationLineCells[0x718];
+extern char sStarPalPathA[0x14];
+extern char sStarPalPathB1[0x14];
+extern char sStarPalPathB3[0x14];
+extern char sStarPalPathB2[0x14];
+extern char *sStarTwinklePalettePaths[5];
+extern char sStarPalPathB4[0x14];
 
-u16 data_020e2f84[0x718] = {
+u16 sConstellationLineCells[0x718] = {
     0x0001, 0x0002, 0x0003, 0x0004, 0x0006, 0x0007, 0x0008, 0xffff,
     0x000a, 0x000b, 0x010c, 0x010d, 0x010f, 0x0110, 0x0111, 0xffff,
     0x0113, 0x0014, 0x0015, 0xffff, 0x0017, 0x0018, 0x0019, 0xffff,
@@ -457,14 +405,14 @@ u16 data_020e2f84[0x718] = {
     0x0029, 0x0129, 0xffff, 0xffff, 0x012a, 0x022a, 0xffff, 0xffff,
 };
 
-char data_020e2edc[0x14] = "menu/star/a_bg.bpl";
+char sStarPalPathA[0x14] = "menu/star/a_bg.bpl";
 
-char data_020e2f40[0x14] = "menu/star/b_bg1.bpl";
+char sStarPalPathB1[0x14] = "menu/star/b_bg1.bpl";
 
-char data_020e2f2c[0x14] = "menu/star/b_bg3.bpl";
+char sStarPalPathB3[0x14] = "menu/star/b_bg3.bpl";
 
-char data_020e2f18[0x14] = "menu/star/b_bg2.bpl";
+char sStarPalPathB2[0x14] = "menu/star/b_bg2.bpl";
 
-char *data_020e2f04[5] = {data_020e2edc, data_020e2f40, data_020e2f18, data_020e2f2c, data_020e2ef0};
+char *sStarTwinklePalettePaths[5] = {sStarPalPathA, sStarPalPathB1, sStarPalPathB2, sStarPalPathB3, sStarPalPathB4};
 
-char data_020e2ef0[0x14] = "menu/star/b_bg4.bpl";
+char sStarPalPathB4[0x14] = "menu/star/b_bg4.bpl";

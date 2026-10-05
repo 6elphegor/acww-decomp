@@ -14,29 +14,20 @@ typedef struct {
     } sig;
 } decimal;
 
-extern u8 data_0213c5b4[];
-extern double data_0213c574[];
+extern double data_0213c574[8];
 extern float data_0213c31c;
-extern void func_02130628(decimal *, const u8 *, short);
-extern int func_02130030(const decimal *, const decimal *);
-extern int func_02130150(const decimal *, const decimal *);
-extern void func_0212fd74(decimal *, const decimal *, const decimal *);
-extern void func_0212fb1c(decimal *, double);
-extern double func_0212f2f4(double, double);
-extern double func_0212f010(double, int);
-extern double func_0212ef04(double, double);
+extern void __str2dec(decimal *, const u8 *, short);
+extern int __less_dec(const decimal *, const decimal *);
+extern int __equals_dec(const decimal *, const decimal *);
+extern void __minus_dec(decimal *, const decimal *, const decimal *);
+extern void __num2dec_internal(decimal *, double);
+extern double pow(double, double);
+extern double ldexp(double, int);
+extern double copysign(double, double);
 
-#define copysign func_0212ef04
-#define pow func_0212f2f4
-#define ldexp func_0212f010
-#define __str2dec func_02130628
-#define __less_dec func_02130030
-#define __equals_dec func_02130150
-#define __minus_dec func_0212fd74
-#define __num2dec_internal func_0212fb1c
 #define INFINITY data_0213c31c
 #define pow_10 data_0213c574
-#define max_dbl_str data_0213c5b4
+#define max_dbl_str "179769313486231580793728714053034151"
 #define DBL_MAX 1.7976931348623157e308
 #define isinf(x) (__fpclassifyd(x) == 2)
 
@@ -54,7 +45,7 @@ static inline int __fpclassifyd(double x) {
 }
 
 // __dec2num (MSL ansi_fp.c)
-double func_0212f300(const decimal *d) {
+double __dec2num(const decimal *d) {
     if (d->sig.length <= 0) return copysign(0.0, d->sign == 0 ? 1.0 : -1.0);
     switch (d->sig.text[0]) {
     case '0':
@@ -81,7 +72,7 @@ double func_0212f300(const decimal *d) {
         exponent = dec.exp;
         {
             decimal max;
-            __str2dec(&max, max_dbl_str, 308);
+            __str2dec(&max, (const u8 *)max_dbl_str, 308);
             if (__less_dec(&max, &dec)) return copysign((double)INFINITY, d->sign == 0 ? 1.0 : -1.0);
         }
         i = dec.sig.text;
@@ -149,3 +140,6 @@ double func_0212f300(const decimal *d) {
         return first_guess;
     }
 }
+
+// ---- file-scope objects (.data 0x0213c574-0x0213c5b4, then the string literal up to 0x0213c5dc)
+double data_0213c574[8] = {1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8}; // pow_10

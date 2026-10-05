@@ -32,8 +32,8 @@ struct RS {
     u8 padb4[0x24];
     u8 *mat_d8;        // 0xd8
 };
-extern void func_01ff8bd0(u32, void *, u32);
-extern void func_01ff8d4c(void *, u32);
+extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
+extern void NNS_G3dGeSendDL(void *, u32);
 
 typedef struct V3 { s32 x, y, z; } V3;
 typedef union Glb {
@@ -53,11 +53,11 @@ extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
 extern u32 data_0213bd58[2];
 extern u32 data_0213bd5c;
-extern void func_02105e5c(void *, void *);
+extern void NNS_G3dGetCurrentMtx(void *, void *);
 
-// NNS_G3dFuncSbc_CALLDL (9-byte SBC command: display list offset + size, sent via func_01ff8d4c)
+// NNS_G3dFuncSbc_CALLDL (9-byte SBC command: display list offset + size, sent via NNS_G3dGeSendDL)
 static inline u32 rd32(u8 *p) { return p[0] | (p[1] << 8) | (p[2] << 16) | (p[3] << 24); }
-void func_02104c9c(RS *rs)
+void NNSi_G3dFuncSbc_CALLDL(RS *rs)
 {
     u32 timing;
     u32 skip;
@@ -72,7 +72,7 @@ void func_02104c9c(RS *rs)
     }
     if (!(rs->flag & 0x100) && !skip) {
         u8 *c = rs->c;
-        func_01ff8d4c(c + rd32(c + 1), rd32(c + 5));
+        NNS_G3dGeSendDL(c + rd32(c + 1), rd32(c + 5));
     }
     if (timing == 3) {
         rs->flag &= ~0x40;
@@ -83,7 +83,7 @@ void func_02104c9c(RS *rs)
 
 // NNS_G3dFuncSbc_ENVMAP (3-byte SBC command: material id; texgen = normal source, texture matrix from camera)
 #define CB_TIMING(rs, cb, t) ((rs)->cb ? (rs)->t : 0)
-void func_02104978(RS *rs)
+void NNSi_G3dFuncSbc_ENVMAP(RS *rs)
 {
     u32 timing;
     u32 skip;
@@ -100,10 +100,10 @@ void func_02104978(RS *rs)
             rs->mat_b0[4] &= ~0xc0000000;
             rs->mat_b0[4] |= 0x80000000;
             data_0213bd58[1] = rs->mat_b0[4];
-            func_01ff8bd0(data_0213bd58[0], &data_0213bd5c, 1);
+            NNS_G3dGeBufferOP_N(data_0213bd58[0], &data_0213bd5c, 1);
         }
         mode = 3;
-        func_01ff8bd0(0x10, &mode, 1);
+        NNS_G3dGeBufferOP_N(0x10, &mode, 1);
         timing = CB_TIMING(rs, cb3c, t98);
         if (timing == 1) {
             rs->flag &= ~0x40;
@@ -120,9 +120,9 @@ void func_02104978(RS *rs)
             sc.x = t << 15;
             sc.y = -s << 15;
             sc.z = 0x10000;
-            func_01ff8bd0(0x1b, &sc, 3);
+            NNS_G3dGeBufferOP_N(0x1b, &sc, 3);
             st = (u16)(s16)(t << 3) | ((u16)(s16)(s << 3) << 16);
-            func_01ff8bd0(0x22, &st, 1);
+            NNS_G3dGeBufferOP_N(0x22, &st, 1);
         }
         if (timing == 2) {
             rs->flag &= ~0x40;
@@ -142,7 +142,7 @@ void func_02104978(RS *rs)
                 if ((f & 2) == 0) p += 8;
                 if ((f & 4) == 0) p += 4;
                 if ((f & 8) == 0) p += 8;
-                func_01ff8bd0(0x18, p, 16);
+                NNS_G3dGeBufferOP_N(0x18, p, 16);
             }
         }
         if (timing == 3) {
@@ -154,23 +154,23 @@ void func_02104978(RS *rs)
         }
         if (skip == 0) {
             m1 = 2;
-            func_01ff8bd0(0x10, &m1, 1);
-            func_02105e5c(0, mtx);
+            NNS_G3dGeBufferOP_N(0x10, &m1, 1);
+            NNS_G3dGetCurrentMtx(0, mtx);
             m3 = 3;
-            func_01ff8bd0(0x10, &m3, 1);
+            NNS_G3dGeBufferOP_N(0x10, &m3, 1);
             if (data_027e00c8.n.flag & 1) {
-                func_01ff8bd0(0x1a, data_027e0114, 9);
-                func_01ff8bd0(0x1a, data_027e0184, 9);
-                func_01ff8bd0(0x1a, mtx, 9);
+                NNS_G3dGeBufferOP_N(0x1a, data_027e0114, 9);
+                NNS_G3dGeBufferOP_N(0x1a, data_027e0184, 9);
+                NNS_G3dGeBufferOP_N(0x1a, mtx, 9);
             } else if (data_027e00c8.n.flag & 2) {
-                func_01ff8bd0(0x1a, data_027e0114, 9);
-                func_01ff8bd0(0x1a, mtx, 9);
+                NNS_G3dGeBufferOP_N(0x1a, data_027e0114, 9);
+                NNS_G3dGeBufferOP_N(0x1a, mtx, 9);
             } else {
-                func_01ff8bd0(0x1a, mtx, 9);
+                NNS_G3dGeBufferOP_N(0x1a, mtx, 9);
             }
         }
         m4 = 2;
-        func_01ff8bd0(0x10, &m4, 1);
+        NNS_G3dGeBufferOP_N(0x10, &m4, 1);
     }
     rs->c += 3;
 }

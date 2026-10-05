@@ -14,46 +14,46 @@ typedef int BOOL;
 extern u8 *data_0220001c;
 extern u8 data_0213c200;
 extern u32 data_0213a3ec[];
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02115fb4(void *, u32, u32);
-extern void func_02116048(void *, void *, u32);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void MI_CpuFill8(void *, u32, u32);
+extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 func_0213335c(u32, u32);
-extern void func_0206d49c(void);
-extern void *func_02126e00(void *, void *);
-extern u32 func_02121c34(u32);
-extern u32 func_02123f24(u32, u32, void *);
-extern u8 *func_0211f82c(void *, u32);
-extern void func_02119d78(void *);
-extern void *func_021191f0(void *, u32);
-extern u32 func_02119af4(void *, void *, u32, u32, int);
-extern u32 func_021198b4(void *, u32, u32);
-extern void func_021199e0(void *);
-extern u8 *func_02126cc4(void *, void *, u32);
-extern u32 func_02121c50(u32, u32);
-extern void func_02126e88(u32);
-extern void func_02121cc8(void);
-extern void func_021245ec(void *, void *, u32, u32);
-extern u32 func_0212491c(void);
-extern u32 func_02124908(void);
-extern u32 func_021248a8(void);
-extern void func_02124480(u32, u32, u32);
-extern void func_02121c10(u32, u32);
-extern void func_02115ea8(u32, void *, u32);
+extern void Fatal_Trap(void);
+extern void *MBi_MakeParentSendBuffer(void *, void *);
+extern u32 IsChildAidValid(u32);
+extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
+extern u8 *WM_ReadMPData(void *, u32);
+extern void FS_InitFile(void *);
+extern void *FS_FindArchive(void *, u32);
+extern u32 FS_OpenFileDirect(void *, void *, u32, u32, int);
+extern u32 FS_ReadFile(void *, u32, u32);
+extern void FS_CloseFile(void *);
+extern u8 *MBi_SetRecvBufferFromChild(void *, void *, u32);
+extern u32 MBi_calc_nextsendblock(u32, u32);
+extern void MBi_ClearParentPieceBuffer(u32);
+extern void MBi_CommParentSendData(void);
+extern void MB_UpdateGameInfoMember(void *, void *, u32, u32);
+extern u32 MBi_GetGgid(void);
+extern u32 MBi_GetTgid(void);
+extern u32 MBi_GetAttribute(void);
+extern void MB_SendGameInfoBeacon(u32, u32, u32);
+extern void MBi_CommCallParentError(u32, u32);
+extern void MIi_CpuClearFast(u32, void *, u32);
 typedef struct { u32 a[3]; u16 b[3]; u16 n; } WTab;
 typedef struct { u32 w0, w4, w8, wc; } WSeg;
 typedef struct { u8 pad[12]; WSeg seg[3]; } WSrc;
 typedef struct { u32 a[3]; u16 b[4]; } WDst;
-BOOL func_021230d0(u32 idx, u32 addr, u32 size);
-BOOL func_021231e4(u32 idx, u32 addr, u32 size);
-void func_02122e24(u32 a, u32 b, void *c);
-void func_0212244c(u8 *msg, u32 aid);
+BOOL IsAbleToLoad(u32 idx, u32 addr, u32 size);
+BOOL MBi_IsAbleToRecv(u32 idx, u32 addr, u32 size);
+void MBi_CommChangeParentStateCallbackOnly(u32 a, u32 b, void *c);
+void MBi_CommParentRecvDataPerChild(u8 *msg, u32 aid);
 typedef struct { u8 id; u16 aid; u16 pad; } WMsg;
 typedef struct { u32 f0, f4, f8, fc; } WJob;
 typedef struct { u8 pad[0x14]; u32 f14; } WObj;
 typedef struct { u8 pad[0x10]; WJob *job; WObj *obj; } WArg;
 typedef struct { u8 f0 : 4; u8 aid : 4; } WEnt;
-void func_02122e60(u32 a, u32 b, void *c);
+void MBi_CommChangeParentState(u32 a, u32 b, void *c);
 typedef struct { u8 f0 : 4; u8 aid : 4; u8 pad[21]; } WEnt22;
 typedef struct { u8 _0[0x14]; u32 f14; u8 f18; } WObj2;
 typedef struct {
@@ -87,17 +87,17 @@ typedef struct {
     WPeer peer[16];            // 0x1788
 } WWork;
 #define WK2 ((WWork *)data_0220001c)
-void func_021223a4(void *arg);
+void MBi_CommParentRecvData(void *arg);
 static inline void wsave(u32 idx, u8 *buf, u32 aid) {
     WK2->f14a8[idx] = *(u32 *)(buf + 20);
     WK2->f148a[idx] = *(u16 *)(buf + 46);
-    func_02116048(buf + 24, &WK2->ent[idx], 22);
+    MI_CpuCopy8(buf + 24, &WK2->ent[idx], 22);
     WK2->ent[idx].aid = (u8)aid;
 }
 
 #define PEER(x) ((u8 *)data_0220001c + (x) * 0x5d4)
 // (per-aid message handler state machine; message type in buf[0], aid 1..15)
-void func_0212244c(u8 *msg, u32 aid) {
+void MBi_CommParentRecvDataPerChild(u8 *msg, u32 aid) {
     u8 buf[56];
     u8 x;
     u8 type;
@@ -106,7 +106,7 @@ void func_0212244c(u8 *msg, u32 aid) {
     u32 i;
     if (aid == 0) return;
     if (aid > 15) return;
-    p = func_02126cc4(msg + 10, buf, aid);
+    p = MBi_SetRecvBufferFromChild(msg + 10, buf, aid);
     type = buf[0];
     i = aid - 1;
     state = WK2->state[i];
@@ -117,9 +117,9 @@ void func_0212244c(u8 *msg, u32 aid) {
         if (state == 2) {
 
             if (p == 0) return;
-            func_02116048(p, buf + 20, 29);
+            MI_CpuCopy8(p, buf + 20, 29);
             wsave(aid - 1, buf, aid);
-            func_02122e60(aid, 10, buf + 24);
+            MBi_CommChangeParentState(aid, 10, buf + 24);
         }
         if (state != 10) return;
         x = p[28];
@@ -138,7 +138,7 @@ void func_0212244c(u8 *msg, u32 aid) {
                 }
                 if (cnt >= o->f18) {
                     WK2->st16[i] = 0;
-                    func_02122e60(aid, 11, 0);
+                    MBi_CommChangeParentState(aid, 11, 0);
                     return;
                 }
             }
@@ -155,19 +155,19 @@ void func_0212244c(u8 *msg, u32 aid) {
                 *(u16 *)(PEER(x) + 0x1d4e) |= bit;
                 *(u16 *)(PEER(x) + 0x1d50) |= bit;
                 WK2->st16[aid - 1] = 0;
-                func_02122e60(aid, 5, 0);
+                MBi_CommChangeParentState(aid, 5, 0);
                 return;
             }
             case 4:
                 W16(sp, 0x54) = 0;
-                func_02122e60(aid, 4, 0);
+                MBi_CommChangeParentState(aid, 4, 0);
                 return;
             }
             return;
         }
     case 8:
         if (state == 5) {
-            func_02122e60(aid, 14, 0);
+            MBi_CommChangeParentState(aid, 14, 0);
             return;
         }
         if (state != 14) return;
@@ -177,7 +177,7 @@ void func_0212244c(u8 *msg, u32 aid) {
             *(u16 *)(data_0220001c + off + 0x1d4c) |= 1 << aid;
             *(u16 *)(data_0220001c + off + 0x1d48) = 0;
             WK2->st16[i] = 0;
-            func_02122e60(aid, 6, 0);
+            MBi_CommChangeParentState(aid, 6, 0);
         }
         return;
     case 9:
@@ -187,7 +187,7 @@ void func_0212244c(u8 *msg, u32 aid) {
             u32 off;
             if (x == 0xff) return;
             off = x * 0x5d4;
-            *(u16 *)(data_0220001c + off + 0x1d4a) = func_02121c50(*(u16 *)(data_0220001c + off + 0x1d4a), *(u16 *)(buf + 2));
+            *(u16 *)(data_0220001c + off + 0x1d4a) = MBi_calc_nextsendblock(*(u16 *)(data_0220001c + off + 0x1d4a), *(u16 *)(buf + 2));
         }
         return;
     case 10:
@@ -197,20 +197,20 @@ void func_0212244c(u8 *msg, u32 aid) {
             if (x == 0xff) return;
             off = x * 0x5d4;
             *(u16 *)(data_0220001c + off + 0x1d4c) &= ~(1 << aid);
-            func_02122e60(aid, 7, 0);
+            MBi_CommChangeParentState(aid, 7, 0);
             return;
         }
         if (state != 7) return;
         if (WK2->st16[i] != 5) return;
         WK2->st16[i] = 0;
-        func_02122e60(aid, 8, 0);
+        MBi_CommChangeParentState(aid, 8, 0);
         return;
     default:
         break;
     }
 }
-// (clear per-peer fields, then run func_0212244c for aids 1..15)
-void func_021223a4(void *arg) {
+// (clear per-peer fields, then run MBi_CommParentRecvDataPerChild for aids 1..15)
+void MBi_CommParentRecvData(void *arg) {
     u16 i;
     u8 *w;
     for (i = 0; i < 16; i++) {
@@ -218,19 +218,19 @@ void func_021223a4(void *arg) {
         if (W8(w + 0x1000, 0xd52) != 0) W16(w + 0x1d00, 0x4a) = 0;
     }
     for (i = 1; i <= 15; i++) {
-        u16 *p = (u16 *)func_0211f82c(arg, i);
-        if (p != 0 && *p != 0xffff && *p != 0) func_0212244c((u8 *)p, i);
+        u16 *p = (u16 *)WM_ReadMPData(arg, i);
+        if (p != 0 && *p != 0xffff && *p != 0) MBi_CommParentRecvDataPerChild((u8 *)p, i);
     }
 }
 
 // (send one message byte, then notify code 6)
-void func_02122360(u8 a, u32 b) {
+void MBi_CommParentSendMsg(u8 a, u32 b) {
     u8 buf = a;
-    func_02126e00(&buf, data_0220001c);
-    func_02123f24(6, b, data_0220001c);
+    MBi_MakeParentSendBuffer(&buf, data_0220001c);
+    MBi_BlockHeaderEnd(6, b, data_0220001c);
 }
 // (pick next peer slot round-robin, build aid bitmask, request record, notify code 0xea)
-u32 func_021221b0(void) {
+u32 MBi_CommParentSendDLFileInfo(void) {
     s8 best = -1;
     u16 mask = 0;
     WMsg msg;
@@ -238,7 +238,7 @@ u32 func_021221b0(void) {
     u16 i;
     u8 j, k;
     void *ent;
-    func_02115fb4(cnt, 0, 16);
+    MI_CpuFill8(cnt, 0, 16);
     for (i = 1; i <= 15; i++) {
         if (W32(data_0220001c + (i - 1) * 4 + 0x1000, 0x4e8) == 5) {
             s8 idx = (s8)W8(data_0220001c + (i - 1) + 0x1500, 0x26);
@@ -262,12 +262,12 @@ u32 func_021221b0(void) {
     }
     msg.id = 3;
     msg.aid = best;
-    ent = func_02126e00(&msg, data_0220001c);
-    if (ent != 0) func_02116048(data_0220001c + 0x1788 + best * 0x5d4, ent, 0xe4);
-    return func_02123f24(0xea, mask, data_0220001c);
+    ent = MBi_MakeParentSendBuffer(&msg, data_0220001c);
+    if (ent != 0) MI_CpuCopy8(data_0220001c + 0x1788 + best * 0x5d4, ent, 0xe4);
+    return MBi_BlockHeaderEnd(0xea, mask, data_0220001c);
 }
 // (job completion: run transfer step, job state = 2 on success, else OS_Terminate)
-void func_02122114(WArg *arg) {
+void MBi_ReloadCache(WArg *arg) {
     u8 buf[72];
     WJob *job;
     WObj *obj;
@@ -275,13 +275,16 @@ void func_02122114(WArg *arg) {
     void *rp;
     obj = arg->obj;
     job = arg->job;
-    func_02119d78(buf);
+    FS_InitFile(buf);
     base = job->f0;
-    rp = func_021191f0((u8 *)obj + 0x10, obj->f14);
-    if (func_02119af4(buf, rp, base, base + job->f4, -1) != 0) {
-        if (job->f4 == func_021198b4(buf, job->f8, job->f4)) job->fc = 2;
-        func_021199e0(buf);
+    rp = FS_FindArchive((u8 *)obj + 0x10, obj->f14);
+    if (FS_OpenFileDirect(buf, rp, base, base + job->f4, -1) != 0) {
+        if (job->f4 == FS_ReadFile(buf, job->f8, job->f4)) job->fc = 2;
+        FS_CloseFile(buf);
     }
     if (job->fc == 2) return;
-    func_0206d49c();
+    Fatal_Trap();
 }
+
+// ---- file-scope objects (.data 0x0213c200-0x0213c204)
+u8 data_0213c200 = 0xff;

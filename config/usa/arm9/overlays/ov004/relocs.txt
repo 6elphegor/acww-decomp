@@ -11049,7 +11049,7 @@ from:0x0223a7dc kind:thumb_call to:0x0223d5a8 module:overlay(4)
 from:0x0223a7f2 kind:thumb_call to:0x020547a4 module:main
 from:0x0223a7f8 kind:thumb_call to:0x0223d5e8 module:overlay(4)
 from:0x0223a80a kind:thumb_call_arm to:0x02063b8c module:main
-from:0x0223a834 kind:load to:0x02136744 module:autoload(2)
+from:0x0223a834 kind:load to:0x02135f44 add:0x800 module:autoload(2)
 from:0x0223a858 kind:thumb_call to:0x0223d020 module:overlay(4)
 from:0x0223a87c kind:thumb_call to:0x0223a6e8 module:overlay(4)
 from:0x0223a892 kind:thumb_call_arm to:0x020e7530 module:autoload(2)

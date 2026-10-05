@@ -1,140 +1,136 @@
 #include "types.h"
+#include "snd/BgmSceneFade.h"
 
-class Unk_020d8e14 {
-public:
-    void func_02035518();
-    void func_020355dc();
+
+struct ScreenTransitionType {
+    void (*handlers[4])();
 };
 
-struct Unk_02041104_Ent {
-    void (*unk_00[4])();
-};
-
-struct Unk_021c3cc0 {
-    u8 unk_00;
-    u8 unk_01;
+struct ScreenTransition {
+    u8 state;
+    u8 type;
     u8 unk_02[2];
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    s32 progress;
+    s32 step;
+    s32 brightness;
     s32 unk_10;
 };
 
 extern "C" {
-void func_02041838();
-void func_02041834();
-void func_02041810();
-void func_02041800();
-void func_020415d4();
-void func_02041588();
-void func_020414b0();
-void func_02041474();
-void func_02041468();
-void func_02041464();
-void func_02041460();
-void func_0204145c();
+void ScreenFade_Begin();
+void ScreenFade_End();
+void ScreenFade_Update();
+void ScreenFade_VBlank();
+void IrisWipe_Begin();
+void IrisWipe_End();
+void IrisWipe_Update();
+void IrisWipe_SwapTables();
+void CutTransition_Begin();
+void CutTransition_End();
+void CutTransition_Update();
+void CutTransition_VBlank();
 }
 
-extern const Unk_02041104_Ent data_020c90a4[4];
-const Unk_02041104_Ent data_020c90a4[4] = {
-    { { func_02041838, func_02041834, func_02041810, func_02041800 } },
-    { { func_02041838, func_02041834, func_02041810, func_02041800 } },
-    { { func_020415d4, func_02041588, func_020414b0, func_02041474 } },
-    { { func_02041468, func_02041464, func_02041460, func_0204145c } },
+extern const ScreenTransitionType sTransitionTypeTable[4];
+const ScreenTransitionType sTransitionTypeTable[4] = {
+    { { ScreenFade_Begin, ScreenFade_End, ScreenFade_Update, ScreenFade_VBlank } },
+    { { ScreenFade_Begin, ScreenFade_End, ScreenFade_Update, ScreenFade_VBlank } },
+    { { IrisWipe_Begin, IrisWipe_End, IrisWipe_Update, IrisWipe_SwapTables } },
+    { { CutTransition_Begin, CutTransition_End, CutTransition_Update, CutTransition_VBlank } },
 };
 
-u8 data_021c3cb4;
+u8 sIrisWipeFlags;
 u8 data_021c3cb8;
-u16 *data_021c3cbc;
-Unk_021c3cc0 data_021c3cc0;
-u8 data_021c3cd4[0x1c];
-u16 data_021c3cf0[0x60];
-u16 data_021c3db0[0x60];
+u16 *sIrisWipeActiveTable;
+ScreenTransition gScreenTransition;
+u8 sIrisWipeHBlankTask[0x1c];
+u16 sIrisWipeTableA[0x60];
+u16 sIrisWipeTableB[0x60];
 
 extern u32 data_021c1b3c;
-extern volatile u32 data_021c40cc[];
+extern volatile u32 gTownEval[];
 
 extern "C" {
-void func_02115e30(u32 v, u32 dst, u32 size);
+void MIi_CpuClear16(u32 v, u32 dst, u32 size);
 }
 static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
     volatile u16 t = v;
-    func_02115e30(t, dst, size);
+    MIi_CpuClear16(t, dst, size);
 }
 extern "C" {
-u32 func_021108e8();
-u32 func_0211065c();
-u32 func_02110868();
-u32 func_02110614();
-void func_020014f4(u32);
-void func_020014bc(u32);
-void func_020014e4(u32);
-void func_020014ac(u32);
-void func_0203d4c4(u32);
-void func_0203d4c8(u32);
-void func_02001504(u32);
-void func_020014cc(u32);
-void func_0200145c(s32);
-s32 func_0203818c();
-s32 func_020e759c(void *, u32, s32);
-s32 func_01ffc5a4(s32, s32);
-void func_0208e9d4(u32);
-void func_0208e9f4(u32);
-void func_0200403c();
-s32 func_01ffc538(s32);
-void func_02001554(u32);
-void func_0200151c(u32);
-void func_0205b69c(void *);
-s32 func_0205b6e4(void *, void *, void *, u32);
-void func_02001564(u32);
-void func_0200152c(u32);
-void func_02001750(u32);
-void func_02001724(u32, u32);
-void func_020016cc(u32);
-void func_020016b0(u32);
-void func_02001674(u32, u32, u32, u32);
-void func_0200162c(u32, u32, u32, u32);
-void func_02041104();
-void func_020411f8();
-void func_020411dc();
-void func_02041648();
-void func_02041788();
-void func_020417bc();
+u32 G2_GetBG2ScrPtr();
+u32 G2_GetBG2CharPtr();
+u32 G2S_GetBG2ScrPtr();
+u32 G2S_GetBG2CharPtr();
+void Gfx2d_ShowMainPlanes(u32);
+void Gfx2d_ShowSubPlanes(u32);
+void Gfx2d_HideMainPlanes(u32);
+void Gfx2d_HideSubPlanes(u32);
+void ScreenLayers_ReleaseStub(u32);
+void ScreenLayers_AcquireStub(u32);
+void Gfx2d_SetMainPlanes(u32);
+void Gfx2d_SetSubPlanes(u32);
+void Gfx2d_SetBrightness(s32);
+s32 CommCaution_ArePlanesHidden();
+s32 Math_StepS32Alt(void *, u32, s32);
+s32 FX_Div(s32, s32);
+void TransitionCommIcon_RequestHide(u32);
+void TransitionCommIcon_RequestShow(u32);
+void Snd_FadeOutScene();
+s32 FX_Sqrt(s32);
+void Gfx2d_DisableMainWindows(u32);
+void Gfx2d_DisableSubWindows(u32);
+void HBlank_Remove(void *);
+s32 HBlank_Add(void *, void *, void *, u32);
+void Gfx2d_EnableMainWindows(u32);
+void Gfx2d_EnableSubWindows(u32);
+void Gfx2d_SetMainWin0Planes(u32);
+void Gfx2d_SetSubWin0Planes(u32, u32);
+void Gfx2d_SetMainWinOutPlanes(u32);
+void Gfx2d_SetSubWinOutPlanes(u32);
+void Gfx2d_SetMainWin0Rect(u32, u32, u32, u32);
+void Gfx2d_SetSubWin0Rect(u32, u32, u32, u32);
+void ScreenTransition_ShowCover();
+void ScreenTransition_OnHidden();
+void ScreenTransition_HideCover();
+void IrisWipe_SetupLayers();
+void IrisWipe_VBlankRegs();
+void IrisWipe_HBlank();
 }
 
-extern "C" void func_02041838() {
-    Unk_021c3cc0 *s = &data_021c3cc0;
-    if (s->unk_00 == 3) {
-        s->unk_0c = 0;
-    } else if (s->unk_01 == 0) {
-        s->unk_0c = -16;
+extern "C" void ScreenFade_Begin() {
+    ScreenTransition *s = &gScreenTransition;
+    if (s->state == 3) {
+        s->brightness = 0;
+    } else if (s->type == 0) {
+        s->brightness = -16;
     } else {
-        s->unk_0c = 16;
+        s->brightness = 16;
     }
-    func_0200145c(s->unk_0c);
+    Gfx2d_SetBrightness(s->brightness);
 }
 
-extern "C" void func_02041834() {}
+extern "C" void ScreenFade_End() {}
 
-extern "C" void func_02041810() {
-    Unk_021c3cc0 *s = &data_021c3cc0;
-    if (s->unk_01 == 0) {
-        s->unk_0c = -(s->unk_04 << 4) >> 12;
+extern "C" void ScreenFade_Update() {
+    ScreenTransition *s = &gScreenTransition;
+    if (s->type == 0) {
+        s->brightness = -(s->progress << 4) >> 12;
     } else {
-        s->unk_0c = (s->unk_04 << 4) >> 12;
+        s->brightness = (s->progress << 4) >> 12;
     }
 }
 
-extern "C" void func_02041800() {
-    func_0200145c(data_021c3cc0.unk_0c);
+extern "C" void ScreenFade_VBlank() {
+    Gfx2d_SetBrightness(gScreenTransition.brightness);
 }
 
-extern "C" void func_020417bc() {
+extern "C" void IrisWipe_HBlank() {
     volatile u16 *r = (volatile u16 *)0x4000000;
     u32 line = r[3];
     if ((s32)line < 0xc0) {
         if ((s32)line >= 0x60) line = 0xbf - line;
-        u16 v = data_021c3cbc[line];
+        u16 v = sIrisWipeActiveTable[line];
         if (*(volatile u16 *)0x4000004 & 2) {
             *(volatile u16 *)((u8 *)r + 0x40) = v;
             *(volatile u16 *)((u8 *)r + 0x1040) = v;
@@ -142,80 +138,80 @@ extern "C" void func_020417bc() {
     }
 }
 
-extern "C" void func_02041788() {
-    *(volatile u16 *)0x4000040 = *data_021c3cbc;
-    *(volatile u16 *)0x4001040 = *data_021c3cbc;
+extern "C" void IrisWipe_VBlankRegs() {
+    *(volatile u16 *)0x4000040 = *sIrisWipeActiveTable;
+    *(volatile u16 *)0x4001040 = *sIrisWipeActiveTable;
     *(volatile u16 *)0x4000044 = 0xc0;
     *(volatile u16 *)0x4001044 = 0xc0;
 }
 
-extern "C" void func_02041648() {
+extern "C" void IrisWipe_SetupLayers() {
     volatile u16 *r;
-    func_0203d4c8(0);
-    func_02001564(1);
-    func_0200152c(1);
-    func_02001750(0x1b);
-    func_02001724(0x1b, 1);
-    func_020016cc(4);
-    func_020016b0(4);
-    if (data_021c3cc0.unk_04 == 0) {
-        func_02001674(0, 0, 0xff, 0xc0);
-        func_0200162c(0, 0, 0xff, 0xc0);
+    ScreenLayers_AcquireStub(0);
+    Gfx2d_EnableMainWindows(1);
+    Gfx2d_EnableSubWindows(1);
+    Gfx2d_SetMainWin0Planes(0x1b);
+    Gfx2d_SetSubWin0Planes(0x1b, 1);
+    Gfx2d_SetMainWinOutPlanes(4);
+    Gfx2d_SetSubWinOutPlanes(4);
+    if (gScreenTransition.progress == 0) {
+        Gfx2d_SetMainWin0Rect(0, 0, 0xff, 0xc0);
+        Gfx2d_SetSubWin0Rect(0, 0, 0xff, 0xc0);
     } else {
-        func_02001674(0, 0, 0, 0);
-        func_0200162c(0, 0, 0, 0);
+        Gfx2d_SetMainWin0Rect(0, 0, 0, 0);
+        Gfx2d_SetSubWin0Rect(0, 0, 0, 0);
     }
     r = (volatile u16 *)0x400000c;
     *r &= ~3;
     *r = (*r & 0x43) | 0x600;
-    Unk_02041104_Fill(0, func_021108e8(), 0x800);
-    Unk_02041104_Fill(0x1111, func_0211065c(), 0x20);
+    Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
+    Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000000, 4);
-    func_020014f4(4);
+    Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
     *r &= ~3;
     *r = (*r & 0x43) | 0xe04;
-    Unk_02041104_Fill(0, func_02110868(), 0x800);
-    Unk_02041104_Fill(0x1111, func_02110614(), 0x20);
+    Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
+    Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000400, 4);
-    func_020014bc(4);
+    Gfx2d_ShowSubPlanes(4);
 }
 
-extern "C" void func_020415d4() {
+extern "C" void IrisWipe_Begin() {
     volatile u16 z = 0;
-    func_02115e30(z, (u32)data_021c3cf0, 0x180);
-    data_021c3cbc = data_021c3cf0;
-    func_02041648();
-    if (func_0205b6e4(data_021c3cd4, (void *)func_020417bc, (void *)func_02041788, 0) != 0) {
-        data_021c3cb4 |= 1;
+    MIi_CpuClear16(z, (u32)sIrisWipeTableA, 0x180);
+    sIrisWipeActiveTable = sIrisWipeTableA;
+    IrisWipe_SetupLayers();
+    if (HBlank_Add(sIrisWipeHBlankTask, (void *)IrisWipe_HBlank, (void *)IrisWipe_VBlankRegs, 0) != 0) {
+        sIrisWipeFlags |= 1;
     }
-    if (data_021c3cc0.unk_04 == 0x1000) func_0200145c(0);
+    if (gScreenTransition.progress == 0x1000) Gfx2d_SetBrightness(0);
 }
 
-extern "C" void func_02041588() {
-    func_02001554(1);
-    func_0200151c(1);
-    if (data_021c3cb4 & 1) {
-        func_0205b69c(data_021c3cd4);
-        data_021c3cb4 &= ~1;
+extern "C" void IrisWipe_End() {
+    Gfx2d_DisableMainWindows(1);
+    Gfx2d_DisableSubWindows(1);
+    if (sIrisWipeFlags & 1) {
+        HBlank_Remove(sIrisWipeHBlankTask);
+        sIrisWipeFlags &= ~1;
     }
-    func_020014e4(4);
-    func_020014ac(4);
-    func_0203d4c4(0);
+    Gfx2d_HideMainPlanes(4);
+    Gfx2d_HideSubPlanes(4);
+    ScreenLayers_ReleaseStub(0);
 }
 
-extern "C" void func_020414b0() {
+extern "C" void IrisWipe_Update() {
     u16 *p;
     u16 t;
-    Unk_021c3cc0 *s = &data_021c3cc0;
-    if (data_021c3cb4 & 2) p = data_021c3cf0; else p = data_021c3db0;
-    s32 v = s->unk_04;
+    ScreenTransition *s = &gScreenTransition;
+    if (sIrisWipeFlags & 2) p = sIrisWipeTableA; else p = sIrisWipeTableB;
+    s32 v = s->progress;
     if (v == 0) {
         volatile u16 c = 0xff;
-        func_02115e30(c, (u32)p, 0xc0);
+        MIi_CpuClear16(c, (u32)p, 0xc0);
     } else if (v == 0x1000) {
         volatile u16 c = 0x8080;
-        func_02115e30(c, (u32)data_021c3cf0, 0x180);
+        MIi_CpuClear16(c, (u32)sIrisWipeTableA, 0x180);
     } else {
         s32 h = ((0x1000 - v) * 160) >> 12;
         s32 h2 = (h * h) << 12;
@@ -224,7 +220,7 @@ extern "C" void func_020414b0() {
             if (d > h) {
                 *p = 0x8080;
             } else {
-                s32 r = func_01ffc538(h2 - ((d * d) << 12));
+                s32 r = FX_Sqrt(h2 - ((d * d) << 12));
                 if (r < 0x80000) {
                     s32 x = (0x80 - (r >> 12)) & 0xffff;
                     *p = ((x << 8) & 0xff00) | ((0x100 - x) & 0xff);
@@ -236,137 +232,137 @@ extern "C" void func_020414b0() {
     }
 }
 
-extern "C" void func_02041474() {
-    u32 v = data_021c3cb4;
+extern "C" void IrisWipe_SwapTables() {
+    u32 v = sIrisWipeFlags;
     if (v & 2) {
-        data_021c3cbc = data_021c3cf0;
+        sIrisWipeActiveTable = sIrisWipeTableA;
         v &= ~2;
-        data_021c3cb4 = v;
+        sIrisWipeFlags = v;
     } else {
-        data_021c3cbc = data_021c3db0;
+        sIrisWipeActiveTable = sIrisWipeTableB;
         v |= 2;
-        data_021c3cb4 = v;
+        sIrisWipeFlags = v;
     }
 }
 
-extern "C" void func_02041468() {
-    func_0200145c(0);
+extern "C" void CutTransition_Begin() {
+    Gfx2d_SetBrightness(0);
 }
 
-extern "C" void func_02041464() {}
+extern "C" void CutTransition_End() {}
 
-extern "C" void func_02041460() {}
+extern "C" void CutTransition_Update() {}
 
-extern "C" void func_0204145c() {}
+extern "C" void CutTransition_VBlank() {}
 
-extern "C" void func_0204142c() {
-    data_021c3cc0.unk_00 = 0;
-    data_021c3cc0.unk_01 = 0;
-    data_021c3cc0.unk_0c = -16;
-    data_021c3cc0.unk_04 = 0x1000;
-    data_021c3cc0.unk_08 = 0;
-    data_021c3cbc = 0;
-    data_021c3cb4 = 0;
+extern "C" void ScreenTransition_Init() {
+    gScreenTransition.state = 0;
+    gScreenTransition.type = 0;
+    gScreenTransition.brightness = -16;
+    gScreenTransition.progress = 0x1000;
+    gScreenTransition.step = 0;
+    sIrisWipeActiveTable = 0;
+    sIrisWipeFlags = 0;
 }
 
-extern "C" BOOL func_0204137c(u32 a, u32 b) {
-    u32 old = data_021c3cc0.unk_01;
+extern "C" BOOL ScreenTransition_StartFadeOut(u32 a, u32 b) {
+    u32 old = gScreenTransition.type;
     BOOL ok;
-    if (data_021c3cc0.unk_00 == 2) ok = TRUE; else ok = FALSE;
+    if (gScreenTransition.state == 2) ok = TRUE; else ok = FALSE;
     if (!ok && data_021c3cb8 == 0) return FALSE;
-    data_021c3cc0.unk_00 = 3;
+    gScreenTransition.state = 3;
     data_021c3cb8 = 0;
-    void (*fn)() = data_020c90a4[old].unk_00[1];
+    void (*fn)() = sTransitionTypeTable[old].handlers[1];
     if (fn) fn();
-    data_021c3cc0.unk_01 = a;
-    data_021c3cc0.unk_04 = 0;
-    fn = data_020c90a4[a].unk_00[0];
+    gScreenTransition.type = a;
+    gScreenTransition.progress = 0;
+    fn = sTransitionTypeTable[a].handlers[0];
     if (fn) {
         fn();
-        ((Unk_020d8e14 *)(data_021c1b3c + 0x2d0))->func_020355dc();
-        func_0208e9f4(a);
-        if (a == 2) func_0200403c();
+        ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeOut();
+        TransitionCommIcon_RequestShow(a);
+        if (a == 2) Snd_FadeOutScene();
     }
     if (b == 0 || a == 3) {
-        data_021c3cc0.unk_08 = 0x1000;
+        gScreenTransition.step = 0x1000;
     } else {
-        data_021c3cc0.unk_08 = func_01ffc5a4(0x1000, b << 12);
+        gScreenTransition.step = FX_Div(0x1000, b << 12);
     }
     return TRUE;
 }
 
-extern "C" BOOL func_020412f0(u32 a, u32 b, u32 c) {
+extern "C" BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c) {
     BOOL ok;
-    if (data_021c3cc0.unk_00 == 0) ok = TRUE; else ok = FALSE;
+    if (gScreenTransition.state == 0) ok = TRUE; else ok = FALSE;
     if (!ok) return FALSE;
-    func_020411dc();
-    data_021c3cc0.unk_00 = 1;
-    data_021c3cc0.unk_01 = a;
-    data_021c3cc0.unk_04 = 0x1000;
-    void (*fn)() = data_020c90a4[a].unk_00[0];
+    ScreenTransition_HideCover();
+    gScreenTransition.state = 1;
+    gScreenTransition.type = a;
+    gScreenTransition.progress = 0x1000;
+    void (*fn)() = sTransitionTypeTable[a].handlers[0];
     if (fn) fn();
     if (b == 0 || a == 3) {
-        data_021c3cc0.unk_08 = -0x1000;
+        gScreenTransition.step = -0x1000;
     } else {
-        data_021c3cc0.unk_08 = func_01ffc5a4(-0x1000, b << 12);
+        gScreenTransition.step = FX_Div(-0x1000, b << 12);
     }
     if (c == 0) {
-        ((Unk_020d8e14 *)(data_021c1b3c + 0x2d0))->func_02035518();
-        func_0208e9d4(a);
+        ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeIn();
+        TransitionCommIcon_RequestHide(a);
     }
     return TRUE;
 }
 
-extern "C" void func_02041290() {
-    if (func_0203818c() != 0) return;
-    u32 idx = data_021c3cc0.unk_01;
-    u32 st = data_021c3cc0.unk_00;
+extern "C" void ScreenTransition_Update() {
+    if (CommCaution_ArePlanesHidden() != 0) return;
+    u32 idx = gScreenTransition.type;
+    u32 st = gScreenTransition.state;
     if (st == 0 || st == 2) return;
-    s32 v = data_021c3cc0.unk_08;
+    s32 v = gScreenTransition.step;
     if (v != 0) {
         u32 a = v >= 0 ? 0x1000 : 0;
         if (v < 0) v = -v;
-        if (func_020e759c(&data_021c3cc0.unk_04, a, v) != 0) {
-            data_021c3cc0.unk_08 = 0;
+        if (Math_StepS32Alt(&gScreenTransition.progress, a, v) != 0) {
+            gScreenTransition.step = 0;
         }
     }
-    void (*fn)() = data_020c90a4[idx].unk_00[2];
+    void (*fn)() = sTransitionTypeTable[idx].handlers[2];
     if (fn) fn();
 }
 
-extern "C" void func_02041220() {
-    if (func_0203818c() != 0) return;
-    Unk_021c3cc0 *s = &data_021c3cc0;
-    u32 idx = s->unk_01;
-    u32 st = s->unk_00;
+extern "C" void ScreenTransition_VBlank() {
+    if (CommCaution_ArePlanesHidden() != 0) return;
+    ScreenTransition *s = &gScreenTransition;
+    u32 idx = s->type;
+    u32 st = s->state;
     if (st == 2 || st == 0) return;
-    void (*fn)() = data_020c90a4[idx].unk_00[3];
+    void (*fn)() = sTransitionTypeTable[idx].handlers[3];
     if (fn) fn();
-    if (data_021c3cc0.unk_00 == 1) {
-        if (data_021c3cc0.unk_08 != 0) return;
-        data_021c3cc0.unk_00 = 2;
-        fn = data_020c90a4[idx].unk_00[1];
+    if (gScreenTransition.state == 1) {
+        if (gScreenTransition.step != 0) return;
+        gScreenTransition.state = 2;
+        fn = sTransitionTypeTable[idx].handlers[1];
         if (fn) fn();
-    } else if (data_021c3cc0.unk_00 == 3) {
-        if (data_021c3cc0.unk_08 != 0) return;
-        data_021c3cc0.unk_00 = 0;
-        fn = data_020c90a4[idx].unk_00[1];
+    } else if (gScreenTransition.state == 3) {
+        if (gScreenTransition.step != 0) return;
+        gScreenTransition.state = 0;
+        fn = sTransitionTypeTable[idx].handlers[1];
         if (fn) fn();
-        func_020411f8();
+        ScreenTransition_OnHidden();
     }
 }
 
-extern "C" void func_020411f8() {
-    func_0203d4c8(0);
-    func_02001504(0x10);
-    func_020014cc(0);
-    func_02041104();
-    func_0200145c(-16);
+extern "C" void ScreenTransition_OnHidden() {
+    ScreenLayers_AcquireStub(0);
+    Gfx2d_SetMainPlanes(0x10);
+    Gfx2d_SetSubPlanes(0);
+    ScreenTransition_ShowCover();
+    Gfx2d_SetBrightness(-16);
 }
 
-extern "C" void func_020411dc() {
-    func_020014e4(4);
-    func_020014ac(4);
-    func_0203d4c4(0);
+extern "C" void ScreenTransition_HideCover() {
+    Gfx2d_HideMainPlanes(4);
+    Gfx2d_HideSubPlanes(4);
+    ScreenLayers_ReleaseStub(0);
 }
 

@@ -2,14 +2,15 @@
 // RC_020f4a5c: the sequence-player source file (G012b) as a WHOLE file with its data. mwcc 1.2/base, C++, ARM, -O4,p.
 // autoload_2 .text 0x020f4a5c-0x020f5b9c (40 functions), .rodata 0x0213597c-0x02135c9c (three pattern tables), .data 0x0213b9d8-0x0213b9dc
 // (stream-pair switch), autoload_3 .bss 0x021f5c28-0x021f5c30. No vtable, no __sinit. Code unchanged from G012b (functions stay
-// extern "C" under their func_ names, the object first; func_020f5b84 keeps its label _ZN12Unk_020f5b84D1Ev).
+// extern "C" under their func_ names, the object first; MelodyTrack::~MelodyTrack keeps its label _ZN11MelodyTrackD1Ev).
 // EXTENT (new): this is NOT part of the blocked pan-curve file 0x020f44f0-0x020f4a5c. bss: the pan-curve objects end with the 0x1c-byte
-// Ramp data_021f5c0c; the 2-byte data_021f5c28 after it starts a new file (objects are sorted by ascending size); its users and those
-// of data_021f5c2c, the 1-byte data_0213b9d8 (after the 0x1c-byte vtables of unk_020f30fc.cpp: new file) and the .rodata tables
+// Ramp gSndVolumeCurve; the 2-byte data_021f5c28 after it starts a new file (objects are sorted by ascending size); its users and those
+// of sMelodyBeatPattern, the 1-byte data_0213b9d8 (after the 0x1c-byte vtables of unk_020f30fc.cpp: new file) and the .rodata tables
 // 0x0213597c.. (after the 0x18-byte name table of the task manager: new file; followed by a 4-byte object: next file) are all in
-// 0x020f4a5c-0x020f5b9c; the pan-curve code (0x020f44f0-0x020f4a5c, with func_020f4904) uses only bss 0x021f5bfc-0x021f5c28.
+// 0x020f4a5c-0x020f5b9c; the pan-curve code (0x020f44f0-0x020f4a5c, with Snd_CalcListenerDistance) uses only bss 0x021f5bfc-0x021f5c28.
 // The unit's own compile reproduces the order of all six objects with the definitions at the end of the file in address order.
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 struct Obj {
     /* 0x00 */ u32 *vptr;
@@ -22,9 +23,6 @@ struct Obj {
     /* 0x40 */ u8 b40;
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Seq1 {
     /* 0x00 */ void *h;
@@ -85,55 +83,55 @@ struct Glob {
 };
 
 extern "C" {
-extern Glob data_021f5b80;
+extern Glob gSndMgr;
 
-u32 func_020f07f0(void *g, u32 n);
-void func_0210a26c(void *p, s32 v);
-void func_0210a27c(void *p);
-void func_0210a148(void *p, u32 a, s32 b);
-void func_0210a0e8(void *p, u32 a, s32 b);
-void func_0210a0b8(void *p, s32 v);
-void func_0210a024(void *p, u32 a, void *out);
-void func_020eda30(void *p, u32 v);
-void func_020eda60(void *p);
-void func_020edad0(u16 a, u16 b, void *out);
-void *func_020edc88(void);
-void func_0210bd58(void *a, u32 b);
-void func_0210cc84(u32 id, void *h);
-void func_0210cc4c(u32 id, void *h);
-BOOL func_0210cf78(void *a, u32 b, u32 c);
-s32 func_01ffc5a4(s32 a, s32 b);
+u32 SndMgr_Rand(void *g, u32 n);
+void NNS_SndPlayerSetVolume(void *p, s32 v);
+void NNS_SndHandleReleaseSeq(void *p);
+void NNS_SndPlayerSetTrackVolume(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetTempoRatio(void *p, s32 v);
+void NNS_SndPlayerReadVariable(void *p, u32 a, void *out);
+void Snd_StopHandle(void *p, u32 v);
+void Snd_InitHandle(void *p);
+void Snd_StartSeqArc(u16 a, u16 b, void *out);
+void *Snd_GetHeap(void);
+void NNS_SndHeapLoadState(void *a, u32 b);
+void NNS_SndArcLoadSeqArc(u32 id, void *h);
+void NNS_SndArcLoadBank(u32 id, void *h);
+BOOL NNS_SndArcPlayerStartSeqArc(void *a, u32 b, u32 c);
+s32 FX_Div(s32 a, s32 b);
 
-s32 func_020f48d8(s32 x);
-s32 func_020f4718(Vec3 *p, s32 m);
-s32 func_020f4904(Vec3 *p, s32 m);
-void func_020f4a5c(void *obj, Vec3 *pos);
-BOOL func_020f4ab4(Seq1 *self);
-void func_020f4b50(Seq1 *self, Vec3 *pos);
-void func_020f4c48(Seq1 *self);
-u8 *func_020f53fc(Ctl2 *c);
-void func_020f5034(void *c, u32 id);
-void func_020f5018(void *c, u32 id);
-void func_020f5a34(Seq2 *s, u16 v);
-void func_020f5a3c(Seq2 *s, u32 idx);
-void func_020f5aa8(Seq2 *s, u8 *pat);
-void func_020f5b08(Seq2 *s, u16 id, u8 *pat);
-void func_020f5b68(Seq2 *s);
-void func_020f5a24(void *p);
-void func_020f59f0(Seq2 *s);
-s32 func_020f5480(Seq2 *s);
-BOOL func_020f5534(Seq2 *s);
-void func_020f5654(Seq2 *s);
-u8 func_020f582c(Seq2 *s, u8 idx);
-void func_020f5968(Seq2 *s);
+s32 Snd_DistanceToVolume(s32 x);
+s32 Snd_CalcPan(VecFx32 *p, s32 m);
+s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
+void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos);
+BOOL MelodyBeat_EndStep(Seq1 *self);
+void MelodyBeat_PlayStep(Seq1 *self, VecFx32 *pos);
+void MelodyBeat_ReadParams(Seq1 *self);
+u8 *MelodyPlayer_GetPattern(Ctl2 *c);
+void MelodyPlayer_LoadBank(void *c, u32 id);
+void MelodyPlayer_LoadSeqArc(void *c, u32 id);
+void MelodyTrack_SetInstrument(Seq2 *s, u16 v);
+void MelodyTrack_PlayNote(Seq2 *s, u32 idx);
+void MelodyTrack_StartPattern(Seq2 *s, u8 *pat);
+void MelodyTrack_Start(Seq2 *s, u16 id, u8 *pat);
+void MelodyTrack_Init(Seq2 *s);
+void MelodyTrack_Stop(void *p);
+void MelodyTrack_Reset(Seq2 *s);
+s32 MelodyTrack_Update(Seq2 *s);
+BOOL MelodyTrack_CheckEnd(Seq2 *s);
+void MelodyTrack_PlayStep(Seq2 *s);
+u8 MelodyTrack_GetStepNote(Seq2 *s, u8 idx);
+void MelodyTrack_ReadParams(Seq2 *s);
 }
 
 // this file's objects (defined at the end of the file; defining them here instead gives the same object)
 extern u8 data_0213b9d8;
 extern u16 data_021f5c28;
-extern u8 *data_021f5c2c;
-extern const u8 data_0213599c[48][16];
-extern const u8 data_0213598c[16];
+extern u8 *sMelodyBeatPattern;
+extern const u8 sMelodyPresetPatterns[48][16];
+extern const u8 sMelodyDefaultPattern[16];
 extern const u8 data_0213597c[16];
 
 static inline s32 FX_Mul(s32 a, s32 b) {
@@ -144,57 +142,58 @@ static inline BOOL nz(void *p) {
     return p != 0;
 }
 
-// dtor D1 (alias _ZN12Unk_020f5b84D1Ev): func_0210a27c(this)
-extern "C" Obj *func_020f5b84(Obj *self) {
-    func_0210a27c(self);
+// dtor D1 (alias _ZN11MelodyTrackD1Ev): NNS_SndHandleReleaseSeq(this)
+#define MelodyTrack_dtor _ZN11MelodyTrackD1Ev
+extern "C" Obj *MelodyTrack_dtor(Obj *self) {
+    NNS_SndHandleReleaseSeq(self);
     return self;
 }
 
 // Seq2: init
-extern "C" void func_020f5b68(Seq2 *self) {
-    func_020f59f0(self);
-    func_020eda60(self);
+extern "C" void MelodyTrack_Init(Seq2 *self) {
+    MelodyTrack_Reset(self);
+    Snd_InitHandle(self);
 }
 
 // Seq2: start with id and pattern
-extern "C" void func_020f5b08(Seq2 *self, u16 id, u8 *pat) {
-    func_020f59f0(self);
-    if (nz(self->h)) func_020eda30(self, 0);
+extern "C" void MelodyTrack_Start(Seq2 *self, u16 id, u8 *pat) {
+    MelodyTrack_Reset(self);
+    if (nz(self->h)) Snd_StopHandle(self, 0);
     self->id = id;
     self->pat = pat;
     self->active = 1;
-    func_020edad0(0, self->id, self);
+    Snd_StartSeqArc(0, self->id, self);
 }
 
 // Seq2: start with a pattern
-extern "C" void func_020f5aa8(Seq2 *self, u8 *pat) {
-    func_020f59f0(self);
-    if (nz(self->h)) func_020eda30(self, 0);
+extern "C" void MelodyTrack_StartPattern(Seq2 *self, u8 *pat) {
+    MelodyTrack_Reset(self);
+    if (nz(self->h)) Snd_StopHandle(self, 0);
     self->pat = pat;
     self->active = 1;
-    func_020edad0(0, self->id, self);
+    Snd_StartSeqArc(0, self->id, self);
 }
 
 // Seq2: play event idx + 20
-extern "C" void func_020f5a3c(Seq2 *self, u32 idx) {
-    func_020f59f0(self);
+extern "C" void MelodyTrack_PlayNote(Seq2 *self, u32 idx) {
+    MelodyTrack_Reset(self);
     if (idx > 13) return;
-    if (nz(self->h)) func_020eda30(self, 0);
-    func_020edad0(idx + 20, 0xd3, self);
+    if (nz(self->h)) Snd_StopHandle(self, 0);
+    Snd_StartSeqArc(idx + 20, 0xd3, self);
 }
 
 // Seq2: set id
-extern "C" void func_020f5a34(Seq2 *s, u16 v) {
+extern "C" void MelodyTrack_SetInstrument(Seq2 *s, u16 v) {
     s->id = v;
 }
 
-// cancel (func_020eda30(p, 5))
-extern "C" void func_020f5a24(void *p) {
-    return func_020eda30(p, 5);
+// cancel (Snd_StopHandle(p, 5))
+extern "C" void MelodyTrack_Stop(void *p) {
+    return Snd_StopHandle(p, 5);
 }
 
 // Seq2: reset state
-extern "C" void func_020f59f0(Seq2 *self) {
+extern "C" void MelodyTrack_Reset(Seq2 *self) {
     self->active = 0;
     self->pos = -1;
     self->tick = 0;
@@ -202,16 +201,16 @@ extern "C" void func_020f59f0(Seq2 *self) {
 }
 
 // Seq2: read the four parameters of the playing sound
-extern "C" void func_020f5968(Seq2 *self) {
+extern "C" void MelodyTrack_ReadParams(Seq2 *self) {
     s16 a, b, c, d;
     d = -1;
     c = -1;
     b = -1;
     a = -1;
-    func_0210a024(self, 0, &a);
-    func_0210a024(self, 1, &b);
-    func_0210a024(self, 2, &c);
-    func_0210a024(self, 3, &d);
+    NNS_SndPlayerReadVariable(self, 0, &a);
+    NNS_SndPlayerReadVariable(self, 1, &b);
+    NNS_SndPlayerReadVariable(self, 2, &c);
+    NNS_SndPlayerReadVariable(self, 3, &d);
     self->s14 = a;
     self->s15 = b;
     self->s16 = c;
@@ -219,7 +218,7 @@ extern "C" void func_020f5968(Seq2 *self) {
 }
 
 // Seq2: pattern value for step idx (mode 0 plain, 1 / 2 pairs, 3 table lookup)
-extern "C" u8 func_020f582c(Seq2 *self, u8 idx) {
+extern "C" u8 MelodyTrack_GetStepNote(Seq2 *self, u8 idx) {
     u8 r;
     switch (self->s16) {
     case 0:
@@ -270,20 +269,20 @@ extern "C" u8 func_020f582c(Seq2 *self, u8 idx) {
 }
 
 // Seq2: start the sound of the current step, volume by position
-extern "C" void func_020f5654(Seq2 *self) {
-    u32 v = func_020f582c(self, self->pos);
+extern "C" void MelodyTrack_PlayStep(Seq2 *self) {
+    u32 v = MelodyTrack_GetStepNote(self, self->pos);
     s32 d = 153600 / (self->s14 * 120);
     switch (v) {
     case 13:
-        func_020edad0(v + 1 + func_020f07f0(&data_021f5b80, 6), self->id, self);
-        func_0210a0b8(self, d);
+        Snd_StartSeqArc(v + 1 + SndMgr_Rand(&gSndMgr, 6), self->id, self);
+        NNS_SndPlayerSetTempoRatio(self, d);
         break;
     case 14:
     case 15:
         break;
     default:
-        func_020edad0(v + 1, self->id, self);
-        func_0210a0b8(self, d);
+        Snd_StartSeqArc(v + 1, self->id, self);
+        NNS_SndPlayerSetTempoRatio(self, d);
         break;
     }
     if (self->s16 != 3) return;
@@ -305,59 +304,59 @@ extern "C" void func_020f5654(Seq2 *self) {
         else if (p == t[11]) vol = 32;
         else if (p == t[12]) vol = 16;
         else vol = -1;
-        if (vol != -1) func_0210a26c(self, vol);
+        if (vol != -1) NNS_SndPlayerSetVolume(self, vol);
     }
     {
-        Ctl2 *c = data_021f5b80.f30;
-        func_0210a148(self, 0xff, c->b39);
-        func_0210a0e8(self, 0xff, c->b3a);
+        Ctl2 *c = gSndMgr.f30;
+        NNS_SndPlayerSetTrackVolume(self, 0xff, c->b39);
+        NNS_SndPlayerSetTrackPan(self, 0xff, c->b3a);
     }
 }
 
 // Seq2: end-of-pattern test (positions 15 / 23 / table+6 depending on the mode); starts the next step
-extern "C" BOOL func_020f5534(Seq2 *self) {
+extern "C" BOOL MelodyTrack_CheckEnd(Seq2 *self) {
     s8 k = self->s16;
     u32 v;
     if (k == 0) {
         if (self->pos == 15) {
-            func_020eda30(self, 0);
-            data_021f5b80.f30->b3c = 0;
+            Snd_StopHandle(self, 0);
+            gSndMgr.f30->b3c = 0;
             return TRUE;
         }
     } else if ((u8)(s8)(k - 1) <= 1) {
         if (self->pos == 23) {
-            func_020eda30(self, 0);
-            data_021f5b80.f30->b3c = 0;
+            Snd_StopHandle(self, 0);
+            gSndMgr.f30->b3c = 0;
             return TRUE;
         }
     } else if (k == 3) {
         if (self->pos == data_0213597c[12] + 6) {
-            func_020eda30(self, 0);
-            data_021f5b80.f30->b3c = 0;
+            Snd_StopHandle(self, 0);
+            gSndMgr.f30->b3c = 0;
             return TRUE;
         }
     }
-    v = func_020f582c(self, self->pos + 1);
-    if (v != 14 && (v != 15 || self->s17 != 1)) func_020eda30(self, 0);
+    v = MelodyTrack_GetStepNote(self, self->pos + 1);
+    if (v != 14 && (v != 15 || self->s17 != 1)) Snd_StopHandle(self, 0);
     return FALSE;
 }
 
 // Seq2: per-frame update; returns the current position or -1
-extern "C" s32 func_020f5480(Seq2 *self) {
+extern "C" s32 MelodyTrack_Update(Seq2 *self) {
     s32 r = -1;
     if (self->active) {
         if (self->s14 == -1) {
-            func_020f5968(self);
+            MelodyTrack_ReadParams(self);
         } else {
             BOOL t = 0;
-            if (self->tick == self->s15) t = func_020f5534(self);
+            if (self->tick == self->s15) t = MelodyTrack_CheckEnd(self);
             if (t) {
-                func_020f59f0(self);
+                MelodyTrack_Reset(self);
             } else {
                 if (self->tick == 0 || self->tick == self->s14) {
                     self->tick = 0;
                     self->pos++;
-                    func_020f5654(self);
+                    MelodyTrack_PlayStep(self);
                 }
                 self->tick++;
             }
@@ -367,25 +366,25 @@ extern "C" s32 func_020f5480(Seq2 *self) {
     return r;
 }
 
-// Ctl2 ctor: registers itself in data_021f5b80+0x30
-extern "C" void func_020f5430(Ctl2 *c) {
-    data_021f5b80.f30 = c;
-    func_020f5b68(&c->b);
-    func_020f5b68(&c->a);
-    func_020f5a34(&c->a, 0);
+// Ctl2 ctor: registers itself in gSndMgr+0x30
+extern "C" void MelodyPlayer_Init(Ctl2 *c) {
+    gSndMgr.f30 = c;
+    MelodyTrack_Init(&c->b);
+    MelodyTrack_Init(&c->a);
+    MelodyTrack_SetInstrument(&c->a, 0);
     c->b38 = 0;
     c->b39 = -1;
     c->b3a = 0;
     c->b3b = 0;
 }
 
-// address of data_0213598c
-extern "C" u8 *func_020f5424(void) {
-    return (u8 *)data_0213598c;
+// address of sMelodyDefaultPattern
+extern "C" u8 *Melody_GetDefaultPattern(void) {
+    return (u8 *)sMelodyDefaultPattern;
 }
 
 // Ctl2: copy a 16-byte pattern
-extern "C" void func_020f5404(Ctl2 *c, u8 *src) {
+extern "C" void MelodyPlayer_SetPattern(Ctl2 *c, u8 *src) {
     s32 i;
     for (i = 0; i < 16; i++) {
         c->pat[i] = src[i];
@@ -393,66 +392,66 @@ extern "C" void func_020f5404(Ctl2 *c, u8 *src) {
 }
 
 // Ctl2: address of the pattern (+0x28)
-extern "C" u8 *func_020f53fc(Ctl2 *c) {
+extern "C" u8 *MelodyPlayer_GetPattern(Ctl2 *c) {
     return c->pat;
 }
 
 // Ctl2: start by index with a given pattern (400 = special)
-extern "C" void func_020f5340(Ctl2 *c, u32 v, u8 *pat) {
+extern "C" void MelodyPlayer_PlayPattern(Ctl2 *c, u32 v, u8 *pat) {
     u32 w;
     c->b3c = 1;
     c->b39 = -1;
     if (v == 400) {
-        func_020f5b08(&c->b, 0xd3, pat);
+        MelodyTrack_Start(&c->b, 0xd3, pat);
         return;
     }
     if (v < 200) {
-        func_020f5034(c, v + 0x1df);
+        MelodyPlayer_LoadBank(c, v + 0x1df);
         w = v + 4;
-        func_020f5018(c, w);
-        func_020f5b08(&c->b, w, pat);
+        MelodyPlayer_LoadSeqArc(c, w);
+        MelodyTrack_Start(&c->b, w, pat);
     } else {
-        func_020f5034(c, v + 0x1ad);
+        MelodyPlayer_LoadBank(c, v + 0x1ad);
         w = v - 0x2e;
-        func_020f5018(c, w);
-        func_020f5b08(&c->b, w, pat);
+        MelodyPlayer_LoadSeqArc(c, w);
+        MelodyTrack_Start(&c->b, w, pat);
     }
 }
 
 // Ctl2: start by index with the stored pattern (index < 200 or >= 200)
-extern "C" void func_020f5298(Ctl2 *c, u32 v) {
+extern "C" void MelodyPlayer_Play(Ctl2 *c, u32 v) {
     u32 w;
     c->b3c = 1;
     c->b39 = -1;
     if (v < 200) {
-        func_020f5034(c, v + 0x1df);
+        MelodyPlayer_LoadBank(c, v + 0x1df);
         w = v + 4;
-        func_020f5018(c, w);
-        func_020f5b08(&c->b, w, c->pat);
+        MelodyPlayer_LoadSeqArc(c, w);
+        MelodyTrack_Start(&c->b, w, c->pat);
     } else {
-        func_020f5034(c, v + 0x1ad);
+        MelodyPlayer_LoadBank(c, v + 0x1ad);
         w = v - 0x2e;
-        func_020f5018(c, w);
-        func_020f5b08(&c->b, w, c->pat);
+        MelodyPlayer_LoadSeqArc(c, w);
+        MelodyTrack_Start(&c->b, w, c->pat);
     }
 }
 
 // Ctl2: start by index (0..200), random pattern row
-extern "C" void func_020f5208(Ctl2 *c, u32 v) {
+extern "C" void MelodyPlayer_PlayRandom(Ctl2 *c, u32 v) {
     u32 w;
     c->b3c = 1;
     c->b39 = -1;
     if (v > 200) return;
-    func_020f5034(c, v + 0x1df);
+    MelodyPlayer_LoadBank(c, v + 0x1df);
     w = v + 4;
-    func_020f5018(c, w);
-    c->b3b = func_020f07f0(&data_021f5b80, 0x30);
-    func_020f5b08(&c->b, w, (u8 *)data_0213599c[c->b3b]);
+    MelodyPlayer_LoadSeqArc(c, w);
+    c->b3b = SndMgr_Rand(&gSndMgr, 0x30);
+    MelodyTrack_Start(&c->b, w, (u8 *)sMelodyPresetPatterns[c->b3b]);
 }
 
-// Ctl2: copy a random-chosen pattern row (16 bytes) from data_0213599c
-extern "C" u8 *func_020f51d4(Ctl2 *c) {
-    const u8 *src = data_0213599c[c->b3b];
+// Ctl2: copy a random-chosen pattern row (16 bytes) from sMelodyPresetPatterns
+extern "C" u8 *MelodyPlayer_ApplyRandomPattern(Ctl2 *c) {
+    const u8 *src = sMelodyPresetPatterns[c->b3b];
     s32 i;
     for (i = 0; i < 16; i++) {
         c->pat[i] = src[i];
@@ -461,23 +460,23 @@ extern "C" u8 *func_020f51d4(Ctl2 *c) {
 }
 
 // Ctl2: stop the second player
-extern "C" void func_020f51b4(Ctl2 *c) {
-    func_020f5a24(&c->b);
+extern "C" void MelodyPlayer_StopTrackB(Ctl2 *c) {
+    MelodyTrack_Stop(&c->b);
     c->b.active = 0;
 }
 
 // Ctl2: start the first player with the stored pattern
-extern "C" void func_020f51a4(Ctl2 *c) {
-    return func_020f5aa8(&c->a, c->pat);
+extern "C" void MelodyPlayer_StartTrackA(Ctl2 *c) {
+    return MelodyTrack_StartPattern(&c->a, c->pat);
 }
 
 // Ctl2: start the event of the given mode with listener volume / pan from a position
-extern "C" void func_020f50c0(Ctl2 *c, Vec3 *pos, u32 mode) {
+extern "C" void MelodyPlayer_PlayAt(Ctl2 *c, VecFx32 *pos, u32 mode) {
     u32 a;
     u32 b;
     if ((u8)(c->b3c + 255) <= 1) return;
-    c->b39 = func_020f48d8(func_020f4904(pos, 0));
-    c->b3a = func_020f4718(pos, 0);
+    c->b39 = Snd_DistanceToVolume(Snd_CalcListenerDistance(pos, 0));
+    c->b3a = Snd_CalcPan(pos, 0);
     c->b3c = 4;
     switch (mode) {
     case 0:
@@ -499,56 +498,56 @@ extern "C" void func_020f50c0(Ctl2 *c, Vec3 *pos, u32 mode) {
     default:
         return;
     }
-    func_020f5034(c, a);
-    func_020f5018(c, b);
-    func_020f5b08(&c->b, b, c->pat);
+    MelodyPlayer_LoadBank(c, a);
+    MelodyPlayer_LoadSeqArc(c, b);
+    MelodyTrack_Start(&c->b, b, c->pat);
 }
 
 // Ctl2: start event on the second player
-extern "C" void func_020f50b0(Ctl2 *c, u32 idx) {
-    return func_020f5a3c(&c->b, idx);
+extern "C" void MelodyPlayer_PlayNote(Ctl2 *c, u32 idx) {
+    return MelodyTrack_PlayNote(&c->b, idx);
 }
 
 // Ctl2: update both Seq2 players, +0x38 = first one is active
-extern "C" void func_020f5084(Ctl2 *c) {
-    c->b38 = func_020f5480(&c->a) >= 0;
-    func_020f5480(&c->b);
+extern "C" void MelodyPlayer_Update(Ctl2 *c) {
+    c->b38 = MelodyTrack_Update(&c->a) >= 0;
+    MelodyTrack_Update(&c->b);
 }
 
 // Ctl2: byte +0x38 (playing flag)
-extern "C" u8 func_020f507c(Ctl2 *c) {
+extern "C" u8 MelodyPlayer_IsPlaying(Ctl2 *c) {
     return c->b38;
 }
 
-// forward to func_020f5a34 (set id)
-extern "C" void func_020f5070(Seq2 *s, u16 v) {
-    return func_020f5a34(s, v);
+// forward to MelodyTrack_SetInstrument (set id)
+extern "C" void MelodyPlayer_SetInstrument(Seq2 *s, u16 v) {
+    return MelodyTrack_SetInstrument(s, v);
 }
 
-// same with volume reset (func_0210bd58(stream, 0)) and func_0210cc4c
-extern "C" void func_020f5034(void *c, u32 id) {
-    void *h = data_021f5b80.f28;
-    func_0210bd58(h, 0);
-    func_0210cc4c(id, h);
+// same with volume reset (NNS_SndHeapLoadState(stream, 0)) and NNS_SndArcLoadBank
+extern "C" void MelodyPlayer_LoadBank(void *c, u32 id) {
+    void *h = gSndMgr.f28;
+    NNS_SndHeapLoadState(h, 0);
+    NNS_SndArcLoadBank(id, h);
 }
 
-// start sound id in the stream of the sound manager (data_021f5b80+0x28)
-extern "C" void func_020f5018(void *c, u32 id) {
-    func_0210cc84(id, data_021f5b80.f28);
-}
-
-// empty
-extern "C" void func_020f5014(void) {
+// start sound id in the stream of the sound manager (gSndMgr+0x28)
+extern "C" void MelodyPlayer_LoadSeqArc(void *c, u32 id) {
+    NNS_SndArcLoadSeqArc(id, gSndMgr.f28);
 }
 
 // empty
-extern "C" void func_020f5010(void) {
+extern "C" void MelodyBeat_Construct(void) {
 }
 
-// Seq1: init (pattern table from func_020f53fc)
-extern "C" void func_020f4fbc(Seq1 *self) {
-    data_021f5c2c = func_020f53fc(data_021f5b80.f30);
-    func_020eda60(self);
+// empty
+extern "C" void MelodyBeat_Destruct(void) {
+}
+
+// Seq1: init (pattern table from MelodyPlayer_GetPattern)
+extern "C" void MelodyBeat_Init(Seq1 *self) {
+    sMelodyBeatPattern = MelodyPlayer_GetPattern(gSndMgr.f30);
+    Snd_InitHandle(self);
     self->active = 0;
     self->step = -1;
     self->tick = 0;
@@ -556,32 +555,32 @@ extern "C" void func_020f4fbc(Seq1 *self) {
 }
 
 // Seq1: stop
-extern "C" void func_020f4f7c(Seq1 *self) {
+extern "C" void MelodyBeat_Stop(Seq1 *self) {
     self->active = 0;
-    if (nz(self->h)) func_020eda30(self, 0);
-    func_0210a27c(self);
+    if (nz(self->h)) Snd_StopHandle(self, 0);
+    NNS_SndHandleReleaseSeq(self);
 }
 
 // Seq1: start pattern/sound id (switches the stream pair 1 / 2 through data_0213b9d8)
-extern "C" void func_020f4e04(Seq1 *self, u16 id) {
-    Ctl2 *c = data_021f5b80.f30;
+extern "C" void MelodyBeat_Start(Seq1 *self, u16 id) {
+    Ctl2 *c = gSndMgr.f30;
     SndObjX *o;
     void *h;
     u32 ok;
     if (c->b3c == 1) return;
-    func_020eda30(self, 0);
+    Snd_StopHandle(self, 0);
     c->b3c = 2;
     data_021f5c28 = self->id;
     self->id = id;
     ok = 0;
     self->active = 1;
     self->step = -1;
-    if (func_0210cf78(self, self->id, ok)) {
+    if (NNS_SndArcPlayerStartSeqArc(self, self->id, ok)) {
         if (data_021f5c28 == self->id) ok = 1;
-        func_020eda30(self, 0);
+        Snd_StopHandle(self, 0);
     }
     if (ok) return;
-    o = data_021f5b80.f2c;
+    o = gSndMgr.f2c;
     if (o == 0) return;
     if (o->b6 != 0) {
         data_0213b9d8 = 2;
@@ -589,37 +588,37 @@ extern "C" void func_020f4e04(Seq1 *self, u16 id) {
         data_0213b9d8 = (data_0213b9d8 == 1) ? 2 : 1;
     }
     if (data_0213b9d8 == 1) {
-        h = func_020edc88();
-        func_0210bd58(h, o->b1d + 1);
+        h = Snd_GetHeap();
+        NNS_SndHeapLoadState(h, o->b1d + 1);
     } else if (data_0213b9d8 == 2) {
-        h = data_021f5b80.f28;
-        func_020edc88();
-        func_0210bd58(h, 0);
+        h = gSndMgr.f28;
+        Snd_GetHeap();
+        NNS_SndHeapLoadState(h, 0);
     }
     {
         u32 sid = self->id;
-        func_0210cc84(sid, h);
-        func_0210cc4c(sid + 0x1db, h);
+        NNS_SndArcLoadSeqArc(sid, h);
+        NNS_SndArcLoadBank(sid + 0x1db, h);
     }
 }
 
 // Seq1: per-frame update of the pattern player
-extern "C" void func_020f4c98(Seq1 *self, Vec3 *pos) {
+extern "C" void MelodyBeat_Update(Seq1 *self, VecFx32 *pos) {
     SndObjX *o;
     u8 flag;
     s32 v;
     s32 w;
     if (self->active == 0) return;
     if (self->v8 == -1) {
-        if (!nz(self->h)) func_020edad0(0, self->id, self);
-        func_020f4c48(self);
+        if (!nz(self->h)) Snd_StartSeqArc(0, self->id, self);
+        MelodyBeat_ReadParams(self);
         return;
     }
     self->tick++;
-    o = data_021f5b80.f2c;
+    o = gSndMgr.f2c;
     flag = o->b12;
     if (self->tick >= self->limit) {
-        BOOL done = func_020f4ab4(self);
+        BOOL done = MelodyBeat_EndStep(self);
         self->tick = 0;
         if (done) return;
     }
@@ -627,9 +626,9 @@ extern "C" void func_020f4c98(Seq1 *self, Vec3 *pos) {
     self->step++;
     self->tick = 0;
     if (self->step < 16) {
-        func_020f4b50(self, pos);
+        MelodyBeat_PlayStep(self, pos);
     } else if (self->step >= 16) {
-        func_020f4ab4(self);
+        MelodyBeat_EndStep(self);
         return;
     }
     v = self->v8;
@@ -638,75 +637,75 @@ extern "C" void func_020f4c98(Seq1 *self, Vec3 *pos) {
         self->limit = w >> 12;
         return;
     }
-    self->limit = FX_Mul(w, func_01ffc5a4(v << 12, 100 << 12)) >> 12;
+    self->limit = FX_Mul(w, FX_Div(v << 12, 100 << 12)) >> 12;
 }
 
 // Seq1: read the two pattern parameters (ids 4 and 3) of the playing sound
-extern "C" void func_020f4c48(Seq1 *self) {
+extern "C" void MelodyBeat_ReadParams(Seq1 *self) {
     s16 a, b;
     b = -1;
     a = -1;
-    func_0210a024(self, 4, &a);
-    func_0210a024(self, 3, &b);
+    NNS_SndPlayerReadVariable(self, 4, &a);
+    NNS_SndPlayerReadVariable(self, 3, &b);
     self->v8 = a;
     self->v9 = b;
 }
 
 // Seq1: start the sound of the current pattern step (13 = random variant)
-extern "C" void func_020f4b50(Seq1 *self, Vec3 *pos) {
-    u32 v = data_021f5c2c[self->step];
+extern "C" void MelodyBeat_PlayStep(Seq1 *self, VecFx32 *pos) {
+    u32 v = sMelodyBeatPattern[self->step];
     switch (v) {
     case 13:
-        if (nz(self->h)) func_020eda30(self, 0);
-        func_0210cf78(self, self->id, (u16)(v + 1 + func_020f07f0(&data_021f5b80, 6)));
-        func_020f4a5c(self, pos);
+        if (nz(self->h)) Snd_StopHandle(self, 0);
+        NNS_SndArcPlayerStartSeqArc(self, self->id, (u16)(v + 1 + SndMgr_Rand(&gSndMgr, 6)));
+        MelodyBeat_ApplyPosition(self, pos);
         return;
     case 14:
     case 15:
         return;
     }
-    if (nz(self->h)) func_020eda30(self, 0);
-    func_0210cf78(self, self->id, (u16)(v + 1));
-    func_020f4a5c(self, pos);
+    if (nz(self->h)) Snd_StopHandle(self, 0);
+    NNS_SndArcPlayerStartSeqArc(self, self->id, (u16)(v + 1));
+    MelodyBeat_ApplyPosition(self, pos);
 }
 
 // Seq1: advance to the next pattern step or end the sequence (returns TRUE at the end)
-extern "C" BOOL func_020f4ab4(Seq1 *self) {
+extern "C" BOOL MelodyBeat_EndStep(Seq1 *self) {
     s32 s = self->step;
     if (s >= 15) {
-        func_020eda30(self, 0);
-        data_021f5b80.f30->b3c = 0;
+        Snd_StopHandle(self, 0);
+        gSndMgr.f30->b3c = 0;
         self->active = 0;
         self->step = -1;
         self->tick = 0;
         return TRUE;
     }
-    u32 v = data_021f5c2c[s + 1];
+    u32 v = sMelodyBeatPattern[s + 1];
     if (v != 14) {
         if (v == 15) {
-            if (self->v9 != 1) func_020eda30(self, 0);
+            if (self->v9 != 1) Snd_StopHandle(self, 0);
         } else {
-            func_020eda30(self, 0);
+            Snd_StopHandle(self, 0);
         }
     }
     return FALSE;
 }
 
 // set the volume (id 15) and pan (id 15) of a voice from a position
-extern "C" void func_020f4a5c(void *obj, Vec3 *pos) {
-    s32 a = func_020f48d8(func_020f4904(pos, 0));
-    s32 b = func_020f4718(pos, 0);
-    func_0210a148(obj, 15, a);
-    func_0210a0e8(obj, 15, b);
+extern "C" void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos) {
+    s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(pos, 0));
+    s32 b = Snd_CalcPan(pos, 0);
+    NNS_SndPlayerSetTrackVolume(obj, 15, a);
+    NNS_SndPlayerSetTrackPan(obj, 15, b);
 }
 
 // ---- file-scope objects, defined after their users (definition order sets the .rodata / .data / .bss order)
 u8 data_0213b9d8 = 1; // which stream pair (1 / 2) Seq1 uses
 u16 data_021f5c28; // id of the last Seq1 pattern
-u8 *data_021f5c2c; // current Ctl2 pattern row
+u8 *sMelodyBeatPattern; // current Ctl2 pattern row
 const u8 data_0213597c[16] = {0, 2, 3, 4, 5, 6, 7, 9, 11, 15, 19, 25, 33, 0, 0, 0};
-const u8 data_0213598c[16] = {10, 12, 10, 7, 6, 7, 9, 11, 10, 15, 13, 15, 3, 14, 14, 15};
-const u8 data_0213599c[48][16] = {
+const u8 sMelodyDefaultPattern[16] = {10, 12, 10, 7, 6, 7, 9, 11, 10, 15, 13, 15, 3, 14, 14, 15};
+const u8 sMelodyPresetPatterns[48][16] = {
     {10, 14, 3, 14, 4, 9, 14, 3, 6, 7, 8, 9, 10, 14, 14, 14},
     {0, 2, 4, 7, 9, 14, 8, 14, 0, 2, 4, 7, 9, 14, 14, 14},
     {10, 9, 8, 7, 6, 5, 4, 3, 2, 3, 4, 5, 3, 15, 15, 15},

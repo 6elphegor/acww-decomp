@@ -3,15 +3,15 @@
 
 # TU05
 src/ov004/unk_ov004_02213b90.cpp:
-    extra src/ov004/unk_ov004_02213b90_switch.cpp _ZN18Unk_ov004_0224bda019func_ov004_02214494Ev
+    extra src/ov004/unk_ov004_02213b90_switch.cpp _ZN17MuseumExhibitInfo13buildItemListEv
 
 # TU26
 src/ov004/unk_ov004_02229660.cpp:
-    extra src/ov004/unk_ov004_02229660_switch.cpp _ZN18Unk_ov004_0224e2b88vfunc_70Ejh
+    extra src/ov004/unk_ov004_02229660_switch.cpp _ZN13RoomTelephone8onChoiceEj
 
 # TU03 (0x02209f70-0x022136d0): thunks need 1.2/sp2, the two switch functions of Unk_ov004_0224b43c need 1.2/base
 src/ov004/unk_ov004_02209f70.cpp:
-    extra src/ov004/unk_ov004_02209f70_switch.cpp _ZN18Unk_ov004_0224b43c8vfunc_80Ev _ZN18Unk_ov004_0224b43c8vfunc_7cEv
+    extra src/ov004/unk_ov004_02209f70_switch.cpp _ZN16FtrSingingInsect12updateActiveEv _ZN16FtrSingingInsect9initModelEv
 
 # unk_ov004_0223f43c.cpp: placed by object (replaces filler objects)
 src/ov004/unk_ov004_0223f43c.cpp:

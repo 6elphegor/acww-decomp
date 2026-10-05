@@ -4,14 +4,14 @@
 
 extern "C" {
 
-u16 data_021d7168[0x82];
+u16 sDebugVarTable[0x82];
 
-u32 func_0209c38c() {
+u32 DebugVar_GetStub() {
     return 0;
 }
 
-u16 *func_0209c37c(u32 a, u32 b) {
-    return (u16 *)((u32)data_021d7168 + (a << 8) + b * 2);
+u16 *DebugVar_GetPtr(u32 a, u32 b) {
+    return (u16 *)((u32)sDebugVarTable + (a << 8) + b * 2);
 }
 
 }

@@ -1,321 +1,281 @@
 #include "types.h"
+#include "talk/MsgStringAttr.h"
+#include "item/ItemId.h"
+#include "sys/RecordFile.h"
+#include "talk/EncodedStringBase.h"
+#include "talk/EncodedString.h"
+#include "talk/EncodedString16Buf.h"
 
-class Unk_0203442c {
+
+
+class ItemInfoTables {
 public:
-    Unk_0203442c() { unk_00 = 0xfff1; }
-    ~Unk_0203442c();
-    u16 unk_00;
+    ItemInfoTables();
+    ~ItemInfoTables();
+    RecordFile always;
+    RecordFile indoor;
+    RecordFile dma;
+    RecordFile series;
 };
 
-class Unk_0206d8b8 {
-public:
-    Unk_0206d8b8();
-    ~Unk_0206d8b8();
-    u8 unk_00[0x1c];
-};
 
-class Unk_02062404 {
-public:
-    Unk_02062404();
-    ~Unk_02062404();
-    Unk_0206d8b8 unk_00;
-    Unk_0206d8b8 unk_1c;
-    Unk_0206d8b8 unk_38;
-    Unk_0206d8b8 unk_54;
-};
 
-class Unk_020d9200 {
-public:
-    virtual ~Unk_020d9200();
-};
 
-class Unk_020e2a08 {
-public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
-
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-};
-
-class Unk_020e2a60 : public Unk_020d9200 {
-public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
-
-    /* 0x04 */ Unk_020e2a08 unk_04;
-};
-
-// 16-byte raw buffer (vtable 0x020dd30c, in the next unit)
-class Unk_020dd30c : public Unk_020e2a60 {
-public:
-    Unk_020dd30c();
-    Unk_020dd30c(u8 *src);
-    virtual ~Unk_020dd30c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
-    BOOL func_02062464(u8 *out, s32 n);
-
-    /* 0x0e */ u8 unk_0e[16];
-};
 
 extern "C" {
-u32 func_02061efc(u16 *p);
-s32 func_0206209c(u16 *);
-u16 *func_020620e0(u16 *p);
-void func_02062194();
-void func_020621a4(s32 a);
-s32 func_020621b4();
-s32 func_020621c4();
-BOOL func_020621d4();
-s32 func_0204b25c(u16 *p);
-BOOL func_0204b2d4(u16 *p);
-BOOL func_0204b300(u16 *p);
-BOOL func_0204b37c(u16 *p);
-BOOL func_0204b430(u16 *p);
-void func_02050fd0(void *);
-u32 func_02052e4c(s32);
-u8 func_020533fc(s32);
-u8 func_02053430(s32);
-u32 func_02053464(s32);
-void func_02061478(u16 *out, u16 *in);
-u32 func_020618cc(s32);
-BOOL func_02061cbc(u16 *p);
-s32 func_02061d84(u16 *p);
-s32 func_02061dd0(u16 *p);
-s32 func_02061e0c(u16 *p);
-s32 func_02061ec0(u16 *p);
-s32 func_02061fe8(u16 *p);
-s32 func_02062024(u16 *p);
-s32 func_02062060(u16 *p);
-s32 func_020620a4(u16 *p);
-void func_020621d8();
-void func_02062258();
-void func_020622cc();
-void func_02062354(void *);
-void func_0206235c(void *, s32);
-s32 func_02062364(void *);
-s32 func_0206237c(void *);
-void *_ZN12Unk_0206d7cc13func_0206d794Ev(void *);
-void *_ZN12Unk_0206d7cc13func_0206d798Ev(void *);
-void *_ZN12Unk_0206d7cc13func_0206d79cEv(void *);
-void _ZN12Unk_0206d7cc13func_0206d7a0Ev(void *);
-void _ZN12Unk_0206d7cc13func_0206d7b4Ei(void *, s32);
-s32 _ZN12Unk_0206d7cc13func_0206d7ccEv(void *);
-BOOL _ZN12Unk_0206d7cc13func_0206d7ecEPviS0_iS0_ii(void *, const char *, s32, const char *, s32, const char *, s32, s32);
-u8 *_ZN12Unk_0206d8b813func_0206d86cEj(void *, u32);
-s32 _ZN12Unk_0206d8b813func_0206d8b8Ev(void *);
-s32 _ZN12Unk_0206d8b813func_0206d904Ev(void *);
-s32 _ZN12Unk_0206d8b813func_0206d940EPvii(void *, const char *, s32, s32);
+u32 ItemInfo_GetPrice(u16 *p);
+s32 ItemInfo_GetNameForm(u16 *);
+u16 *ItemInfo_GetName(u16 *p);
+void ItemInfo_FreeIndoor();
+void ItemInfo_LoadIndoor(s32 a);
+s32 ItemInfo_Exit();
+s32 ItemInfo_Init();
+BOOL ItemInfo_IsReady();
+s32 Item_GetFurnitureIndex(u16 *p);
+BOOL Item_IsFurniture(u16 *p);
+BOOL Item_IsNormalItem(u16 *p);
+BOOL Item_IsFlowerAltItem(u16 *p);
+BOOL Item_IsFlowerItem(u16 *p);
+void StrBuf_ClearAlt(void *);
+u32 FtrInfo_GetName(s32);
+u8 FtrInfo_GetNameAttrA(s32);
+u8 FtrInfo_GetNameAttrB(s32);
+u32 FtrInfo_GetNameForm(s32);
+void Item_FromPlacedForm(u16 *out, u16 *in);
+u32 Series_GetName(s32);
+BOOL ItemInfo_IsHoldable(u16 *p);
+s32 ItemInfo_GetSeason(u16 *p);
+s32 ItemInfo_GetUnk07(u16 *p);
+s32 ItemInfo_GetClass(u16 *p);
+s32 ItemInfo_GetKind(u16 *p);
+s32 ItemInfo_GetSeries(u16 *p);
+s32 ItemInfo_GetNameAttrA(u16 *p);
+s32 ItemInfo_GetNameAttrB(u16 *p);
+s32 ItemInfo_GetUnk02(u16 *p);
+void ItemInfo_CountClass1dHeadwear();
+void ItemInfo_CountFlowerItems();
+void ItemInfo_CountHoldable();
+void ItemInfoTables_FreeIndoor(void *);
+void ItemInfoTables_LoadIndoor(void *, s32);
+s32 ItemInfoTables_Close(void *);
+s32 ItemInfoTables_Open(void *);
+void *_ZN12InfoTableSet6getDmaEv(void *);
+void *_ZN12InfoTableSet9getIndoorEv(void *);
+void *_ZN12InfoTableSet9getAlwaysEv(void *);
+void _ZN12InfoTableSet10freeIndoorEv(void *);
+void _ZN12InfoTableSet10loadIndoorEi(void *, s32);
+s32 _ZN12InfoTableSet5closeEv(void *);
+BOOL _ZN12InfoTableSet4openEPviS0_iS0_ii(void *, const char *, s32, const char *, s32, const char *, s32, s32);
+u8 *_ZN10RecordFile9getRecordEj(void *, u32);
+s32 _ZN10RecordFile5closeEv(void *);
+s32 _ZN10RecordFile7loadAllEv(void *);
+s32 _ZN10RecordFile4openEPvii(void *, const char *, s32, s32);
 void func_0206d964(void *);
 void func_0206d974(void *);
-void func_02116048(const void *src, void *dst, u32 n);
+void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
-extern const u16 data_020cb5c4[46];
-extern char data_020dcdcc[];
-extern char data_020dcdd0[];
-extern char data_020dcdd4[];
-extern char data_020dcdd8[];
-extern char data_020dcddc[];
-extern char data_020dcde0[];
-extern char data_020dcde8[];
-extern char data_020dcdf0[];
-extern char data_020dcdf8[];
-extern char data_020dce00[];
-extern char data_020dce08[];
-extern char data_020dce10[];
-extern char data_020dce18[];
-extern char data_020dce20[];
-extern char data_020dce28[];
-extern char data_020dce30[];
-extern char data_020dce38[];
-extern char data_020dce40[];
-extern char data_020dce48[];
-extern char data_020dce50[];
-extern char data_020dce58[];
-extern char data_020dce60[];
-extern char data_020dce68[];
-extern char data_020dce70[];
-extern char data_020dce78[];
-extern char data_020dce80[];
-extern char data_020dce88[];
-extern char data_020dce90[];
-extern char data_020dce98[];
-extern char data_020dcea0[];
-extern char data_020dcea8[];
-extern char data_020dceb0[];
-extern char data_020dceb8[];
-extern char data_020dcec0[];
-extern char data_020dcec8[];
-extern char data_020dced0[];
-extern char data_020dced8[];
-extern char data_020dcee0[];
-extern char data_020dcee8[];
-extern char data_020dcef0[];
-extern char data_020dcef8[];
-extern char data_020dcf00[];
-extern char data_020dcf08[];
-extern char data_020dcf10[];
-extern char data_020dcf18[];
-extern char data_020dcf20[];
-extern char data_020dcf28[];
-extern char data_020dcf30[];
-extern char data_020dcf38[];
-extern char data_020dcf40[];
-extern char data_020dcf48[];
-extern char data_020dcf50[];
-extern char data_020dcf58[];
-extern char data_020dcf60[];
-extern char data_020dcf68[];
-extern char data_020dcf70[];
-extern char data_020dcf78[];
-extern char data_020dcf80[];
-extern char data_020dcf88[];
-extern char data_020dcf94[];
-extern char data_020dcfa0[];
-extern char data_020dcfac[];
-extern char data_020dcfb8[];
-extern char data_020dcfc4[];
-extern char data_020dcfd0[];
-extern char data_020dcfdc[];
-extern char data_020dcfe8[];
-extern char data_020dcff4[];
-extern char data_020dd000[];
-extern char data_020dd00c[];
-extern char data_020dd018[];
-extern char data_020dd024[];
-extern char data_020dd030[];
-extern char data_020dd03c[];
-extern char data_020dd048[];
-extern char data_020dd054[];
+extern const u16 sFtrClassBasePoints[46];
+extern char sIconModelStrNet[];
+extern char sIconModelStrCap[];
+extern char sIconModelStrWig[];
+extern char sIconModelStrBox[];
+extern char sIconModelStrAxe[];
+extern char sIconModelStrSeed[];
+extern char sIconModelStrGnet[];
+extern char sIconModelStrCage[];
+extern char sIconModelStrCoin[];
+extern char sIconModelStrDust[];
+extern char sIconModelStrGaxe[];
+extern char sIconModelStrKabu[];
+extern char sIconModelStrTane[];
+extern char sIconModelStrWall[];
+extern char sIconModelStrPear[];
+extern char sIconModelStrGear[];
+extern char sIconModelStrLeaf[];
+extern char sIconModelStrSango[];
+extern char sIconModelStrPaper[];
+extern char sIconModelStrScoop[];
+extern char sIconModelStrTimer[];
+extern char sIconModelStrAcorn[];
+extern char sIconModelStrMusic[];
+extern char sIconModelStrCloth[];
+extern char sIconModelStrPeach[];
+extern char sIconModelStrApple[];
+extern char sIconModelStrCherry[];
+extern char sIconModelStrRKabu[];
+extern char sIconModelStrGscoop[];
+extern char sIconModelStrFossil[];
+extern char sIconModelStrHanabi[];
+extern char sIconModelStrClover[];
+extern char sIconModelStrHaniwa[];
+extern char sIconModelStrCarpet[];
+extern char sIconModelStrOrange[];
+extern char sIconModelStrPresent[];
+extern char sIconModelStrPaint01[];
+extern char sIconModelStrPaint02[];
+extern char sIconModelStrPaint03[];
+extern char sIconModelStrPaint05[];
+extern char sIconModelStrPaint06[];
+extern char sIconModelStrPaint07[];
+extern char sIconModelStrPaint08[];
+extern char sIconModelStrPaint09[];
+extern char sIconModelStrPaint10[];
+extern char sIconModelStrPaint11[];
+extern char sIconModelStrPaint12[];
+extern char sIconModelStrPaint13[];
+extern char sIconModelStrPaint14[];
+extern char sIconModelStrPaint15[];
+extern char sIconModelStrSoldout[];
+extern char sIconModelStrCoconut[];
+extern char sIconModelStrCracker[];
+extern char sIconModelStrMakigai[];
+extern char sIconModelStrPaint04[];
+extern char sIconModelStrGlasses[];
+extern char sIconModelStrToolbox[];
+extern char sIconModelStrPaint00[];
+extern char sIconModelStrMakigai2[];
+extern char sIconModelStrSeedling[];
+extern char sIconModelStrMedicine[];
+extern char sIconModelStrPaperbag[];
+extern char sIconModelStrUmbrella[];
+extern char sIconModelStrGtoolbox[];
+extern char sIconModelStrWatering[];
+extern char sIconModelStrPachinko[];
+extern char sIconModelStrMoneybag[];
+extern char sIconModelStrDeliverL[];
+extern char sIconModelStrHoneycomb[];
+extern char sIconModelStrGwatering[];
+extern char sIconModelStrGpachinko[];
+extern char sIconModelStrSeedlingC[];
+extern char sIconModelStrFishingrod[];
+extern char sIconModelStrSeedpitfall[];
+extern char sIconModelStrBottleMail[];
+extern char sIconModelStrGfishingrod[];
 
-char data_020dced0[] = "present";
-char data_020dcf20[] = "paint11";
-char data_020dcf38[] = "paint14";
-char data_020dcef8[] = "paint06";
-char data_020dce20[] = "wall";
-char data_020dd030[] = "fishingrod";
-char data_020dd03c[] = "seedpitfall";
-char data_020dcfe8[] = "moneybag";
-char data_020dcf10[] = "paint09";
-char data_020dcea8[] = "hanabi";
-char data_020dd048[] = "bottle_mail";
-char data_020dce18[] = "tane";
-char data_020dcdd4[] = "wig";
-char data_020dce00[] = "dust";
-const u16 data_020cb5c4[46] = {0x33, 0x33, 0x33, 0x33, 0x97, 0x19c, 0x3e8, 0x33c, 0x3, 0x3, 0x3, 0x3, 0x5, 0x3, 0x3, 0x12c, 0x3e8, 0x457, 0x378, 0x19c, 0x53, 0x607, 0xc80, 0x3, 0x0, 0x0, 0x19c, 0x500, 0x145, 0x3, 0x390, 0x320, 0x320, 0x320, 0x3, 0x3, 0x3, 0x0, 0x97, 0x0, 0x457, 0x457, 0x0, 0x97, 0x97, 0xd2};
-char data_020dcf28[] = "paint12";
-char data_020dcf08[] = "paint08";
-char data_020dcf40[] = "paint15";
-s32 data_021c7ca0;
-char data_020dcdd8[] = "box";
-char data_020dce48[] = "paper";
-char data_020dcddc[] = "axe";
-char data_020dcf58[] = "cracker";
-char data_020dcf60[] = "makigai";
-Unk_02062404 data_021c7cc8;
-char data_020dce78[] = "peach";
-char data_020dcec8[] = "orange";
-char data_020dcdd0[] = "cap";
-char data_020dcf88[] = "makigai2";
-char data_020dce50[] = "scoop";
-char data_020dcee8[] = "paint03";
-char data_020dcde0[] = "seed";
-s32 data_021c7ca8;
-char data_020dd00c[] = "gwatering";
-char data_020dcfa0[] = "medicine";
-char data_020dd018[] = "gpachinko";
-char data_020dcdf0[] = "cage";
-char data_020dce98[] = "gscoop";
-char data_020dcfac[] = "paperbag";
-char data_020dce80[] = "apple";
-char data_020dcfb8[] = "umbrella";
-char data_020dce10[] = "kabu";
-char data_020dcfc4[] = "gtoolbox";
-char data_020dcef0[] = "paint05";
-char data_020dcfdc[] = "pachinko";
-char data_020dce70[] = "cloth";
-char data_020dce68[] = "music";
-char data_020dcde8[] = "gnet";
-char data_020dce88[] = "cherry";
-char data_020dcdf8[] = "coin";
-char data_020dce60[] = "acorn";
-char data_020dce38[] = "leaf";
-char data_020dce30[] = "gear";
-const char *data_020dd060[146] = {
-    data_020dce38, data_020dce38, data_020dceb8, data_020dceb8,
-    data_020dcdd8, data_020dce20, data_020dcdd8, data_020dcec0,
-    data_020dcdd8, data_020dce68, data_020dcfac, data_020dce48,
-    data_020dce70, data_020dce70, data_020dcdd8, data_020dcfb8,
-    data_020dcdd8, data_020dcdd0, data_020dcdd8, data_020dcf70,
-    data_020dcf78, data_020dce50, data_020dcfc4, data_020dce98,
-    data_020dcf78, data_020dcddc, data_020dcfc4, data_020dce08,
-    data_020dcf78, data_020dd030, data_020dcfc4, data_020dd054,
-    data_020dcf78, data_020dcdcc, data_020dcfc4, data_020dcde8,
-    data_020dcf78, data_020dcfd0, data_020dcfc4, data_020dd00c,
-    data_020dcf78, data_020dcfdc, data_020dcfc4, data_020dd018,
-    data_020dcfe8, data_020dcdf8, data_020dcfe8, data_020dcfe8,
-    data_020dcdd8, data_020dcdd4, data_020dce80, data_020dce80,
-    data_020dcec8, data_020dcec8, data_020dce28, data_020dce28,
-    data_020dce78, data_020dce78, data_020dce88, data_020dce88,
-    data_020dce60, data_020dce60, data_020dce10, data_020dce10,
-    data_020dce90, data_020dce90, data_020dce00, data_020dce00,
-    data_020dcea0, data_020dcea0, data_020dce38, data_020dce38,
-    data_020dcf60, data_020dcf60, data_020dcf88, data_020dcf88,
-    data_020dce40, data_020dce40, data_020dced0, data_020dced0,
-    data_020dcdf0, data_020dcdf0, data_020dce30, data_020dce30,
-    data_020dcfac, data_020dcde0, data_020dcfac, data_020dcf94,
-    data_020dd03c, data_020dd03c, data_020dcfac, data_020dd024,
-    data_020dd048, data_020dd048, data_020dce38, data_020dcf80,
-    data_020dce38, data_020dced8, data_020dce38, data_020dcee0,
-    data_020dce38, data_020dcee8, data_020dce38, data_020dcf68,
-    data_020dce38, data_020dcef0, data_020dce38, data_020dcef8,
-    data_020dce38, data_020dcf00, data_020dce38, data_020dcf08,
-    data_020dce38, data_020dcf10, data_020dce38, data_020dcf18,
-    data_020dce38, data_020dcf20, data_020dce38, data_020dcf28,
-    data_020dce38, data_020dcf30, data_020dce38, data_020dcf38,
-    data_020dce38, data_020dcf40, data_020dce38, data_020dcf48,
-    data_020dcf50, data_020dcf50, data_020dcfac, data_020dcfa0,
-    data_020dcff4, data_020dcff4, data_020dcfac, data_020dcf58,
-    data_020dcfac, data_020dcea8, data_020dceb0, data_020dceb0,
-    data_020dce18, data_020dce38, data_020dd000, data_020dce38,
-    data_020dcf78, data_020dce58,
+char sIconModelStrPresent[] = "present";
+char sIconModelStrPaint11[] = "paint11";
+char sIconModelStrPaint14[] = "paint14";
+char sIconModelStrPaint06[] = "paint06";
+char sIconModelStrWall[] = "wall";
+char sIconModelStrFishingrod[] = "fishingrod";
+char sIconModelStrSeedpitfall[] = "seedpitfall";
+char sIconModelStrMoneybag[] = "moneybag";
+char sIconModelStrPaint09[] = "paint09";
+char sIconModelStrHanabi[] = "hanabi";
+char sIconModelStrBottleMail[] = "bottle_mail";
+char sIconModelStrTane[] = "tane";
+char sIconModelStrWig[] = "wig";
+char sIconModelStrDust[] = "dust";
+const u16 sFtrClassBasePoints[46] = {0x33, 0x33, 0x33, 0x33, 0x97, 0x19c, 0x3e8, 0x33c, 0x3, 0x3, 0x3, 0x3, 0x5, 0x3, 0x3, 0x12c, 0x3e8, 0x457, 0x378, 0x19c, 0x53, 0x607, 0xc80, 0x3, 0x0, 0x0, 0x19c, 0x500, 0x145, 0x3, 0x390, 0x320, 0x320, 0x320, 0x3, 0x3, 0x3, 0x0, 0x97, 0x0, 0x457, 0x457, 0x0, 0x97, 0x97, 0xd2};
+char sIconModelStrPaint12[] = "paint12";
+char sIconModelStrPaint08[] = "paint08";
+char sIconModelStrPaint15[] = "paint15";
+s32 sFlowerAltCount;
+char sIconModelStrBox[] = "box";
+char sIconModelStrPaper[] = "paper";
+char sIconModelStrAxe[] = "axe";
+char sIconModelStrCracker[] = "cracker";
+char sIconModelStrMakigai[] = "makigai";
+ItemInfoTables gItemInfo;
+char sIconModelStrPeach[] = "peach";
+char sIconModelStrOrange[] = "orange";
+char sIconModelStrCap[] = "cap";
+char sIconModelStrMakigai2[] = "makigai2";
+char sIconModelStrScoop[] = "scoop";
+char sIconModelStrPaint03[] = "paint03";
+char sIconModelStrSeed[] = "seed";
+s32 sHoldableItemCount;
+char sIconModelStrGwatering[] = "gwatering";
+char sIconModelStrMedicine[] = "medicine";
+char sIconModelStrGpachinko[] = "gpachinko";
+char sIconModelStrCage[] = "cage";
+char sIconModelStrGscoop[] = "gscoop";
+char sIconModelStrPaperbag[] = "paperbag";
+char sIconModelStrApple[] = "apple";
+char sIconModelStrUmbrella[] = "umbrella";
+char sIconModelStrKabu[] = "kabu";
+char sIconModelStrGtoolbox[] = "gtoolbox";
+char sIconModelStrPaint05[] = "paint05";
+char sIconModelStrPachinko[] = "pachinko";
+char sIconModelStrCloth[] = "cloth";
+char sIconModelStrMusic[] = "music";
+char sIconModelStrGnet[] = "gnet";
+char sIconModelStrCherry[] = "cherry";
+char sIconModelStrCoin[] = "coin";
+char sIconModelStrAcorn[] = "acorn";
+char sIconModelStrLeaf[] = "leaf";
+char sIconModelStrGear[] = "gear";
+const char *sItemIconModelNames[146] = {
+    sIconModelStrLeaf, sIconModelStrLeaf, sIconModelStrHaniwa, sIconModelStrHaniwa,
+    sIconModelStrBox, sIconModelStrWall, sIconModelStrBox, sIconModelStrCarpet,
+    sIconModelStrBox, sIconModelStrMusic, sIconModelStrPaperbag, sIconModelStrPaper,
+    sIconModelStrCloth, sIconModelStrCloth, sIconModelStrBox, sIconModelStrUmbrella,
+    sIconModelStrBox, sIconModelStrCap, sIconModelStrBox, sIconModelStrGlasses,
+    sIconModelStrToolbox, sIconModelStrScoop, sIconModelStrGtoolbox, sIconModelStrGscoop,
+    sIconModelStrToolbox, sIconModelStrAxe, sIconModelStrGtoolbox, sIconModelStrGaxe,
+    sIconModelStrToolbox, sIconModelStrFishingrod, sIconModelStrGtoolbox, sIconModelStrGfishingrod,
+    sIconModelStrToolbox, sIconModelStrNet, sIconModelStrGtoolbox, sIconModelStrGnet,
+    sIconModelStrToolbox, sIconModelStrWatering, sIconModelStrGtoolbox, sIconModelStrGwatering,
+    sIconModelStrToolbox, sIconModelStrPachinko, sIconModelStrGtoolbox, sIconModelStrGpachinko,
+    sIconModelStrMoneybag, sIconModelStrCoin, sIconModelStrMoneybag, sIconModelStrMoneybag,
+    sIconModelStrBox, sIconModelStrWig, sIconModelStrApple, sIconModelStrApple,
+    sIconModelStrOrange, sIconModelStrOrange, sIconModelStrPear, sIconModelStrPear,
+    sIconModelStrPeach, sIconModelStrPeach, sIconModelStrCherry, sIconModelStrCherry,
+    sIconModelStrAcorn, sIconModelStrAcorn, sIconModelStrKabu, sIconModelStrKabu,
+    sIconModelStrRKabu, sIconModelStrRKabu, sIconModelStrDust, sIconModelStrDust,
+    sIconModelStrFossil, sIconModelStrFossil, sIconModelStrLeaf, sIconModelStrLeaf,
+    sIconModelStrMakigai, sIconModelStrMakigai, sIconModelStrMakigai2, sIconModelStrMakigai2,
+    sIconModelStrSango, sIconModelStrSango, sIconModelStrPresent, sIconModelStrPresent,
+    sIconModelStrCage, sIconModelStrCage, sIconModelStrGear, sIconModelStrGear,
+    sIconModelStrPaperbag, sIconModelStrSeed, sIconModelStrPaperbag, sIconModelStrSeedling,
+    sIconModelStrSeedpitfall, sIconModelStrSeedpitfall, sIconModelStrPaperbag, sIconModelStrSeedlingC,
+    sIconModelStrBottleMail, sIconModelStrBottleMail, sIconModelStrLeaf, sIconModelStrPaint00,
+    sIconModelStrLeaf, sIconModelStrPaint01, sIconModelStrLeaf, sIconModelStrPaint02,
+    sIconModelStrLeaf, sIconModelStrPaint03, sIconModelStrLeaf, sIconModelStrPaint04,
+    sIconModelStrLeaf, sIconModelStrPaint05, sIconModelStrLeaf, sIconModelStrPaint06,
+    sIconModelStrLeaf, sIconModelStrPaint07, sIconModelStrLeaf, sIconModelStrPaint08,
+    sIconModelStrLeaf, sIconModelStrPaint09, sIconModelStrLeaf, sIconModelStrPaint10,
+    sIconModelStrLeaf, sIconModelStrPaint11, sIconModelStrLeaf, sIconModelStrPaint12,
+    sIconModelStrLeaf, sIconModelStrPaint13, sIconModelStrLeaf, sIconModelStrPaint14,
+    sIconModelStrLeaf, sIconModelStrPaint15, sIconModelStrLeaf, sIconModelStrSoldout,
+    sIconModelStrCoconut, sIconModelStrCoconut, sIconModelStrPaperbag, sIconModelStrMedicine,
+    sIconModelStrDeliverL, sIconModelStrDeliverL, sIconModelStrPaperbag, sIconModelStrCracker,
+    sIconModelStrPaperbag, sIconModelStrHanabi, sIconModelStrClover, sIconModelStrClover,
+    sIconModelStrTane, sIconModelStrLeaf, sIconModelStrHoneycomb, sIconModelStrLeaf,
+    sIconModelStrToolbox, sIconModelStrTimer,
 };
-char data_020dcf78[] = "toolbox";
-char data_020dd000[] = "honeycomb";
-char data_020dced8[] = "paint01";
-char data_020dcee0[] = "paint02";
-char data_020dcf94[] = "seedling";
-char data_020dcdcc[] = "net";
-char data_020dd024[] = "seedling_c";
-char data_020dceb8[] = "haniwa";
-char data_020dcea0[] = "fossil";
-char data_020dce40[] = "sango";
-s32 data_021c7c9c;
-s32 data_021c7ca4;
-char data_020dcec0[] = "carpet";
-char data_020dcf18[] = "paint10";
-char data_020dcf30[] = "paint13";
-char data_020dd054[] = "gfishingrod";
-char data_020dcf50[] = "coconut";
-char data_020dcff4[] = "deliver_l";
-s32 data_021c7cac;
-char data_020dce28[] = "pear";
-char data_020dce90[] = "r_kabu";
-char data_020dcfd0[] = "watering";
-char data_020dce08[] = "gaxe";
-Unk_0203442c data_021c7c98;
-char data_020dcf68[] = "paint04";
-char data_020dce58[] = "timer";
-char data_020dcf00[] = "paint07";
-char data_020dcf48[] = "soldout";
-char data_020dcf70[] = "glasses";
-char data_020dceb0[] = "clover";
-char data_020dcf80[] = "paint00";
+char sIconModelStrToolbox[] = "toolbox";
+char sIconModelStrHoneycomb[] = "honeycomb";
+char sIconModelStrPaint01[] = "paint01";
+char sIconModelStrPaint02[] = "paint02";
+char sIconModelStrSeedling[] = "seedling";
+char sIconModelStrNet[] = "net";
+char sIconModelStrSeedlingC[] = "seedling_c";
+char sIconModelStrHaniwa[] = "haniwa";
+char sIconModelStrFossil[] = "fossil";
+char sIconModelStrSango[] = "sango";
+s32 sFlowerItemCount;
+s32 sFullHeadwearClass1dCount;
+char sIconModelStrCarpet[] = "carpet";
+char sIconModelStrPaint10[] = "paint10";
+char sIconModelStrPaint13[] = "paint13";
+char sIconModelStrGfishingrod[] = "gfishingrod";
+char sIconModelStrCoconut[] = "coconut";
+char sIconModelStrDeliverL[] = "deliver_l";
+s32 sHatClass1dCount;
+char sIconModelStrPear[] = "pear";
+char sIconModelStrRKabu[] = "r_kabu";
+char sIconModelStrWatering[] = "watering";
+char sIconModelStrGaxe[] = "gaxe";
+ItemId sFirstHoldableItem(0xfff1);
+char sIconModelStrPaint04[] = "paint04";
+char sIconModelStrTimer[] = "timer";
+char sIconModelStrPaint07[] = "paint07";
+char sIconModelStrSoldout[] = "soldout";
+char sIconModelStrGlasses[] = "glasses";
+char sIconModelStrClover[] = "clover";
+char sIconModelStrPaint00[] = "paint00";
 
 static inline BOOL Unk_02061478_R(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -349,10 +309,10 @@ static inline u16 Unk_020621d8_Idx(u32 i, u32 n, u32 base) {
 }
 
 static inline BOOL Unk_020622cc_IsFree(u16 *g, u16 *t) {
-    if (func_0204b2d4(g)) {
+    if (Item_IsFurniture(g)) {
         *t = 0xfff1;
-        s32 x = func_0204b25c(g);
-        if (x == func_0204b25c(t)) return TRUE;
+        s32 x = Item_GetFurnitureIndex(g);
+        if (x == Item_GetFurnitureIndex(t)) return TRUE;
         return FALSE;
     }
     if (*g == 0xfff1) return TRUE;
@@ -362,7 +322,7 @@ static inline BOOL Unk_020622cc_IsFree(u16 *g, u16 *t) {
 static inline u8 *Unk_02061e0c_Lookup(u32 v) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    return (u8 *)_ZN12Unk_0206d8b813func_0206d86cEj(_ZN12Unk_0206d7cc13func_0206d79cEv((&data_021c7cc8)), i);
+    return (u8 *)_ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getAlwaysEv((&gItemInfo)), i);
 }
 
 static inline BOOL Unk_02061e0c_InRange(u16 *p) {
@@ -385,115 +345,115 @@ static inline u16 Unk_02061e0c_Conv(u16 *p) {
 static inline u8 *Unk_02062024_Lookup(u32 v) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    return (u8 *)_ZN12Unk_0206d8b813func_0206d86cEj(_ZN12Unk_0206d7cc13func_0206d794Ev((&data_021c7cc8)), i);
+    return (u8 *)_ZN10RecordFile9getRecordEj(_ZN12InfoTableSet6getDmaEv((&gItemInfo)), i);
 }
 
-extern "C" u16 *func_020620e0(u16 *p);
+extern "C" u16 *ItemInfo_GetName(u16 *p);
 
 static inline BOOL Unk_0206198c_Tail(u32 v, u32 sh) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = _ZN12Unk_0206d8b813func_0206d86cEj(_ZN12Unk_0206d7cc13func_0206d79cEv((&data_021c7cc8)), i);
+    u8 *r = _ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getAlwaysEv((&gItemInfo)), i);
     if (r) return (r[9] >> sh) & 1 ? TRUE : FALSE;
     return FALSE;
 }
 
-BOOL Unk_020dd30c::func_02062464(u8 *out, s32 n) {
-    if (n >= (s32)vfunc_08()) {
-        func_02116048(unk_0e, out, vfunc_08());
+BOOL EncodedString16Buf::copyTo(u8 *out, s32 n) {
+    if (n >= (s32)capacity()) {
+        MI_CpuCopy8(text, out, capacity());
         return TRUE;
     }
     return FALSE;
 }
 
-Unk_02062404::Unk_02062404() {}
+ItemInfoTables::ItemInfoTables() {}
 
-Unk_02062404::~Unk_02062404() {
-    _ZN12Unk_0206d7cc13func_0206d7ccEv(this);
-    _ZN12Unk_0206d8b813func_0206d8b8Ev(&unk_54);
+ItemInfoTables::~ItemInfoTables() {
+    _ZN12InfoTableSet5closeEv(this);
+    _ZN10RecordFile5closeEv(&series);
 }
 
-s32 func_0206237c(void *o) {
+s32 ItemInfoTables_Open(void *o) {
     BOOL ok;
-    data_021c7ca8 = 0;
+    sHoldableItemCount = 0;
     ok = TRUE;
-    ok = (ok | _ZN12Unk_0206d7cc13func_0206d7ecEPviS0_iS0_ii(o, "/item_info/always.bin", 0xc, "/item_info/indoor.bin", 4, "/item_info/dma.bin", 0x14, 0x600)) ? TRUE : FALSE;
+    ok = (ok | _ZN12InfoTableSet4openEPviS0_iS0_ii(o, "/item_info/always.bin", 0xc, "/item_info/indoor.bin", 4, "/item_info/dma.bin", 0x14, 0x600)) ? TRUE : FALSE;
     if (ok) {
-        func_020622cc();
-        func_02062258();
-        func_020621d8();
+        ItemInfo_CountHoldable();
+        ItemInfo_CountFlowerItems();
+        ItemInfo_CountClass1dHeadwear();
     }
-    ok = (ok | _ZN12Unk_0206d8b813func_0206d940EPvii((u8 *)o + 0x54, "/item_info/series.bin", 0x14, 0x80)) ? TRUE : FALSE;
+    ok = (ok | _ZN10RecordFile4openEPvii((u8 *)o + 0x54, "/item_info/series.bin", 0x14, 0x80)) ? TRUE : FALSE;
     if (ok) {
-        _ZN12Unk_0206d8b813func_0206d904Ev((u8 *)o + 0x54);
+        _ZN10RecordFile7loadAllEv((u8 *)o + 0x54);
     }
     return ok;
 }
 
-s32 func_02062364(void *o) {
-    _ZN12Unk_0206d7cc13func_0206d7ccEv(o);
-    return _ZN12Unk_0206d8b813func_0206d8b8Ev((u8 *)o + 0x54);
+s32 ItemInfoTables_Close(void *o) {
+    _ZN12InfoTableSet5closeEv(o);
+    return _ZN10RecordFile5closeEv((u8 *)o + 0x54);
 }
 
-void func_0206235c(void *p, s32 x) { _ZN12Unk_0206d7cc13func_0206d7b4Ei(p, x); }
+void ItemInfoTables_LoadIndoor(void *p, s32 x) { _ZN12InfoTableSet10loadIndoorEi(p, x); }
 
-void func_02062354(void *p) { _ZN12Unk_0206d7cc13func_0206d7a0Ev(p); }
+void ItemInfoTables_FreeIndoor(void *p) { _ZN12InfoTableSet10freeIndoorEv(p); }
 
-void func_020622cc() {
+void ItemInfo_CountHoldable() {
     u16 i;
     struct { u16 a; u16 b; } l;
     for (i = 0x1000; i < 0x156e; i++) {
         l.a = i;
-        if (func_02061cbc(&l.a)) {
-            if (Unk_020622cc_IsFree(&data_021c7c98.unk_00, &l.b)) {
-                data_021c7c98.unk_00 = l.a;
+        if (ItemInfo_IsHoldable(&l.a)) {
+            if (Unk_020622cc_IsFree(&sFirstHoldableItem.id, &l.b)) {
+                sFirstHoldableItem.id = l.a;
             }
-            data_021c7ca8++;
+            sHoldableItemCount++;
         }
     }
 }
 
-void func_02062258() {
+void ItemInfo_CountFlowerItems() {
     u32 i;
     struct { u16 a; u16 b; } l;
     for (i = 0; i < 0x21; i++) {
         l.a = Unk_020621d8_Idx(i, 0x21, 0x1408);
         l.b = Unk_020621d8_Idx(i, 0x21, 0x1471);
-        if (func_0204b430(&l.a)) {
-            data_021c7c9c++;
-        } else if (func_0204b37c(&l.b)) {
-            data_021c7ca0++;
+        if (Item_IsFlowerItem(&l.a)) {
+            sFlowerItemCount++;
+        } else if (Item_IsFlowerAltItem(&l.b)) {
+            sFlowerAltCount++;
         }
     }
 }
 
-void func_020621d8() {
+void ItemInfo_CountClass1dHeadwear() {
     u32 i;
     struct { u16 a; u16 b; } l;
-    data_021c7ca4 = 0;
-    data_021c7cac = 0;
+    sFullHeadwearClass1dCount = 0;
+    sHatClass1dCount = 0;
     for (i = 0; i < 0x40; i++) {
         l.a = Unk_020621d8_Idx(i, 0x40, 0x13c8);
-        if (func_02061e0c(&l.a) == 0x1d) data_021c7cac++;
+        if (ItemInfo_GetClass(&l.a) == 0x1d) sHatClass1dCount++;
     }
     for (i = 0; i < 0x20; i++) {
         l.b = Unk_020621d8_Idx(i, 0x20, 0x13a8);
-        if (func_02061e0c(&l.b) == 0x1d) data_021c7ca4++;
+        if (ItemInfo_GetClass(&l.b) == 0x1d) sFullHeadwearClass1dCount++;
     }
 }
 
-BOOL func_020621d4() { return TRUE; }
+BOOL ItemInfo_IsReady() { return TRUE; }
 
-s32 func_020621c4() { return func_0206237c((&data_021c7cc8)); }
+s32 ItemInfo_Init() { return ItemInfoTables_Open((&gItemInfo)); }
 
-s32 func_020621b4() { return func_02062364((&data_021c7cc8)); }
+s32 ItemInfo_Exit() { return ItemInfoTables_Close((&gItemInfo)); }
 
-void func_020621a4(s32 a) { func_0206235c((&data_021c7cc8), a); }
+void ItemInfo_LoadIndoor(s32 a) { ItemInfoTables_LoadIndoor((&gItemInfo), a); }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void func_02062194() { func_02062354((&data_021c7cc8)); }
+void ItemInfo_FreeIndoor() { ItemInfoTables_FreeIndoor((&gItemInfo)); }
 
-u16 *func_020620e0(u16 *p) {
+u16 *ItemInfo_GetName(u16 *p) {
     if (Unk_02061e0c_InRange(p)) {
         volatile u16 tmp = Unk_02061e0c_Conv(p);
         u8 *r = Unk_02062024_Lookup(tmp);
@@ -505,33 +465,33 @@ u16 *func_020620e0(u16 *p) {
     return 0;
 }
 
-s32 func_020620a4(u16 *p) {
+s32 ItemInfo_GetUnk02(u16 *p) {
     u8 *r = Unk_02061e0c_Lookup(*p);
     if (r) return *(u16 *)(r + 2);
     return 0;
 }
 
-s32 func_0206209c(u16 *) { return -1; }
+s32 ItemInfo_GetNameForm(u16 *) { return -1; }
 
-s32 func_02062060(u16 *p) {
+s32 ItemInfo_GetNameAttrB(u16 *p) {
     u8 *r = Unk_02062024_Lookup(*p);
     if (r) return r[0];
     return 0;
 }
 
-s32 func_02062024(u16 *p) {
+s32 ItemInfo_GetNameAttrA(u16 *p) {
     u8 *r = Unk_02062024_Lookup(*p);
     if (r) return r[1];
     return 0;
 }
 
-s32 func_02061fe8(u16 *p) {
+s32 ItemInfo_GetSeries(u16 *p) {
     u8 *r = Unk_02061e0c_Lookup(*p);
     if (r) return r[5];
     return 0;
 }
 
-u32 func_02061efc(u16 *p) {
+u32 ItemInfo_GetPrice(u16 *p) {
     u32 rec;
     if (Unk_02061e0c_InRange(p)) {
         volatile u16 tmp = Unk_02061e0c_Conv(p);
@@ -554,13 +514,13 @@ u32 func_02061efc(u16 *p) {
     return rec;
 }
 
-s32 func_02061ec0(u16 *p) {
+s32 ItemInfo_GetKind(u16 *p) {
     u8 *r = Unk_02061e0c_Lookup(*p);
     if (r) return r[4];
     return 0;
 }
 
-s32 func_02061e0c(u16 *p) {
+s32 ItemInfo_GetClass(u16 *p) {
     if (Unk_02061e0c_InRange(p)) {
         volatile u16 tmp = Unk_02061e0c_Conv(p);
         u8 *r = Unk_02061e0c_Lookup(tmp);
@@ -572,26 +532,26 @@ s32 func_02061e0c(u16 *p) {
     return 0;
 }
 
-s32 func_02061dd0(u16 *p) {
+s32 ItemInfo_GetUnk07(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = (u8 *)_ZN12Unk_0206d8b813func_0206d86cEj(_ZN12Unk_0206d7cc13func_0206d79cEv((&data_021c7cc8)), i);
+    u8 *r = (u8 *)_ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getAlwaysEv((&gItemInfo)), i);
     if (r) return r[7];
     return 0;
 }
 
-s32 func_02061d84(u16 *p) {
-    if (func_02061ec0(p) == 5) {
+s32 ItemInfo_GetSeason(u16 *p) {
+    if (ItemInfo_GetKind(p) == 5) {
         u32 i = *p & 0xfff;
         if (i >= 0x56e) i = 0x56d;
-        u8 *r = (u8 *)_ZN12Unk_0206d8b813func_0206d86cEj(_ZN12Unk_0206d7cc13func_0206d79cEv((&data_021c7cc8)), i);
+        u8 *r = (u8 *)_ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getAlwaysEv((&gItemInfo)), i);
         if (r) return r[8];
         return 0;
     }
     return -1;
 }
 
-extern "C" BOOL func_02061cbc(u16 *p) {
+extern "C" BOOL ItemInfo_IsHoldable(u16 *p) {
     BOOL in = FALSE;
     u16 v = *p;
     if (v >= 0x1000 && v <= 0x10ff) in = TRUE;
@@ -607,7 +567,7 @@ extern "C" BOOL func_02061cbc(u16 *p) {
     return Unk_0206198c_Tail(v, 0);
 }
 
-extern "C" BOOL func_02061bf0(u16 *p) {
+extern "C" BOOL ItemInfo_TestFlag1(u16 *p) {
     BOOL in = FALSE;
     u16 v = *p;
     if (v >= 0x1000 && v <= 0x10ff) in = TRUE;
@@ -623,7 +583,7 @@ extern "C" BOOL func_02061bf0(u16 *p) {
     return Unk_0206198c_Tail(v, 1);
 }
 
-extern "C" BOOL func_02061b24(u16 *p) {
+extern "C" BOOL ItemInfo_TestFlag2(u16 *p) {
     BOOL in = FALSE;
     u16 v = *p;
     if (v >= 0x1000 && v <= 0x10ff) in = TRUE;
@@ -639,7 +599,7 @@ extern "C" BOOL func_02061b24(u16 *p) {
     return Unk_0206198c_Tail(v, 2);
 }
 
-extern "C" BOOL func_02061a58(u16 *p) {
+extern "C" BOOL ItemInfo_TestFlag3(u16 *p) {
     BOOL in = FALSE;
     u16 v = *p;
     if (v >= 0x1000 && v <= 0x10ff) in = TRUE;
@@ -655,7 +615,7 @@ extern "C" BOOL func_02061a58(u16 *p) {
     return Unk_0206198c_Tail(v, 3);
 }
 
-extern "C" BOOL func_0206198c(u16 *p) {
+extern "C" BOOL ItemInfo_TestFlag4(u16 *p) {
     BOOL in = FALSE;
     u16 v = *p;
     if (v >= 0x1000 && v <= 0x10ff) in = TRUE;
@@ -671,61 +631,61 @@ extern "C" BOOL func_0206198c(u16 *p) {
     return Unk_0206198c_Tail(v, 4);
 }
 
-extern "C" u32 func_02061950(u16 *p) {
+extern "C" u32 ItemInfo_GetIndoorUnk1(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = _ZN12Unk_0206d8b813func_0206d86cEj(_ZN12Unk_0206d7cc13func_0206d798Ev((&data_021c7cc8)), i);
+    u8 *r = _ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getIndoorEv((&gItemInfo)), i);
     if (r) return r[1];
     return 0;
 }
 
-extern "C" u32 func_02061914(u16 *p) {
+extern "C" u32 ItemInfo_GetIndoorUnk0(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = _ZN12Unk_0206d8b813func_0206d86cEj(_ZN12Unk_0206d7cc13func_0206d798Ev((&data_021c7cc8)), i);
+    u8 *r = _ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getIndoorEv((&gItemInfo)), i);
     if (r) return r[0];
     return 0;
 }
 
-extern "C" u32 func_020618f0(s32 i) {
+extern "C" u32 Series_GetType(s32 i) {
     if (i < 0x4a) {
-        u8 *r = _ZN12Unk_0206d8b813func_0206d86cEj((&data_021c7cc8.unk_54), i);
+        u8 *r = _ZN10RecordFile9getRecordEj((&gItemInfo.series), i);
         if (r) return *r;
     }
     return 3;
 }
 
-extern "C" u32 func_020618cc(s32 i) {
+extern "C" u32 Series_GetName(s32 i) {
     if (i < 0x4a) {
-        u8 *r = _ZN12Unk_0206d8b813func_0206d86cEj((&data_021c7cc8.unk_54), i);
+        u8 *r = _ZN10RecordFile9getRecordEj((&gItemInfo.series), i);
         if (r) return (u32)r + 1;
     }
     return 0;
 }
 
-extern "C" u32 func_020618b8(s32 i) {
-    if (i < 0x2e) return data_020cb5c4[i];
+extern "C" u32 FtrClass_GetBasePoints(s32 i) {
+    if (i < 0x2e) return sFtrClassBasePoints[i];
     return 0;
 }
 
-extern "C" u32 func_02061888(s32 a, s32 b) {
+extern "C" u32 Item_GetIconModelName(s32 a, s32 b) {
     if (a < 0x49) {
         u32 c = b == 0 ? 1 : 0;
-        return *(u32 *)((u8 *)data_020dd060 + a * 8 + (u8)c * 4);
+        return *(u32 *)((u8 *)sItemIconModelNames + a * 8 + (u8)c * 4);
     }
-    return func_02061888(0, b);
+    return Item_GetIconModelName(0, b);
 }
 
-extern "C" u32 func_0206187c() { return data_021c7ca8; }
+extern "C" u32 ItemInfo_GetHoldableCount() { return sHoldableItemCount; }
 
-extern "C" void func_02061820(u16 *out, s32 idx) {
-    if (data_021c7ca8) {
+extern "C" void ItemInfo_GetNthHoldable(u16 *out, s32 idx) {
+    if (sHoldableItemCount) {
         s32 cnt = 0;
         u16 i;
-        for (i = data_021c7c98.unk_00; i < 0x156e; i++) {
+        for (i = sFirstHoldableItem.id; i < 0x156e; i++) {
             u16 buf;
             buf = i;
-            if (func_02061cbc(&buf)) {
+            if (ItemInfo_IsHoldable(&buf)) {
                 if (cnt == idx) {
                     *out = buf;
                     return;
@@ -734,22 +694,22 @@ extern "C" void func_02061820(u16 *out, s32 idx) {
             }
         }
     }
-    *out = data_021c7c98.unk_00;
+    *out = sFirstHoldableItem.id;
 }
 
-extern "C" s32 func_02061794(u16 *p) {
-    if (data_021c7ca8) {
+extern "C" s32 ItemInfo_GetHoldableIndex(u16 *p) {
+    if (sHoldableItemCount) {
         s32 cnt = 0;
         u16 i;
         BOOL a = FALSE, b = FALSE;
-        for (i = data_021c7c98.unk_00; i < 0x156e; i++) {
+        for (i = sFirstHoldableItem.id; i < 0x156e; i++) {
             u16 buf;
             buf = i;
-            if (func_02061cbc(&buf)) {
+            if (ItemInfo_IsHoldable(&buf)) {
                 BOOL f;
-                if (func_0204b2d4(&buf)) {
-                    s32 x = func_0204b25c(&buf);
-                    f = (x == func_0204b25c(p)) ? TRUE : a;
+                if (Item_IsFurniture(&buf)) {
+                    s32 x = Item_GetFurnitureIndex(&buf);
+                    f = (x == Item_GetFurnitureIndex(p)) ? TRUE : a;
                 } else {
                     f = (buf == *p) ? TRUE : b;
                 }
@@ -761,16 +721,16 @@ extern "C" s32 func_02061794(u16 *p) {
     return -1;
 }
 
-extern "C" u32 func_02061788() { return data_021c7c9c; }
+extern "C" u32 Item_GetFlowerItemCount() { return sFlowerItemCount; }
 
-extern "C" u32 func_0206177c() { return data_021c7ca0; }
+extern "C" u32 Item_GetFlowerAltCount() { return sFlowerAltCount; }
 
-extern "C" u32 func_02061770() { return data_021c7cac; }
+extern "C" u32 ItemInfo_GetHatClass1dCount() { return sHatClass1dCount; }
 
-extern "C" u32 func_02061764() { return data_021c7ca4; }
+extern "C" u32 ItemInfo_GetFullHeadwearClass1dCount() { return sFullHeadwearClass1dCount; }
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" void func_02061478(u16 *out, u16 *in) {
+extern "C" void Item_FromPlacedForm(u16 *out, u16 *in) {
     u32 o; s32 k; u16 t[2];
     if (Unk_02061478_R(in, 0x3984, 0x3d83)) {
         *out = Unk_02061478_M(Unk_02061478_I(*in, 0x3984, 0x3d83), 0x100, 0x11a8);
@@ -794,11 +754,11 @@ extern "C" void func_02061478(u16 *out, u16 *in) {
         if (Unk_02061478_V(*in, 0, 0x20)) k = *in;
         if (k != -1) {
             t[0] = Unk_02061478_M(k, 0x21, 0x1408);
-            if (func_0204b430(&t[0])) {
+            if (Item_IsFlowerItem(&t[0])) {
                 *out = t[0];
             } else {
                 t[1] = Unk_02061478_M(k, 0x21, 0x1471);
-                if (func_0204b37c(&t[1])) *out = t[1];
+                if (Item_IsFlowerAltItem(&t[1])) *out = t[1];
                 else *out = 0x137c;
             }
         } else if ((*in >= 0xd4 && *in <= 0xda) || (*in >= 0xdb && *in <= 0xe1)) {

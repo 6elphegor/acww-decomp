@@ -61,7 +61,7 @@ use those objects mark roughly where the file's code is. "Global" rows are objec
 managers, so they don't locate the file. The BSS addresses increase with the `.ctor` index, confirming the link order.
 
 Our first decompiled functions (`src/main/unk_020501d4.c`, `unk_02050204.c`) belong with initializer 25, which
-references their table `data_020dbac8` and calls the class constructor at `0x02050e84`.
+references their table `sCharSortKeyTable` and calls the class constructor at `0x02050e84`.
 
 | # | `__sinit` | First BSS | Functions using that BSS |
 |--:|---|---|---|

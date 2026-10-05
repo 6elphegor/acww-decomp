@@ -1,554 +1,429 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
+#include "talk/MsgStringBase.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
+#include "talk/LabelBalloonText.h"
+#include "ui/LabelBalloon.h"
 
 extern "C" {
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-BOOL func_020510d8(StrBuf *dst, StrBuf *src);
-void func_0205113c(StrBuf *buf);
-Unk_02050288 *func_020a8054(u32 a, s32 b, s32 c);
-void func_020a7fd8(Unk_02050288 *obj);
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+BOOL StrBuf_Copy(StrBuf *dst, StrBuf *src);
+void StrBuf_Clear(StrBuf *buf);
+TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
+void MsgTextLabel_Destroy(TextLabel *obj);
 }
 
-struct Unk_02089270_Rec {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s16 unk_08;
-    /* 0x0a */ s16 unk_0a;
-};
 
-struct Unk_02089270_Tbl {
-    /* 0x00 */ Unk_02089270_Rec *unk_00;
-    /* 0x04 */ s32 unk_04;
-};
 
-class Unk_02089270 {
-public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    void func_020891bc();
-    void func_020891d0();
-    BOOL func_020891d8();
-    s32 func_02089210(s32 v);
-    s32 func_02089228(s32 v);
-    Unk_02089270_Tbl *func_02089240();
-    s32 func_02089244();
-    void *func_02089248();
-    void func_02089258(s32 a, s32 b);
-    void func_02089260(s32 v);
-    void func_02089264(s32 v);
-    void func_02089268(Unk_02089270_Tbl *v);
 
-    /* 0x00 */ Unk_02089270_Tbl *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-};
 
-class Unk_020d9218 {
-public:
-    virtual ~Unk_020d9218() {}
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c() = 0;
-};
 
-class Unk_020e0d80 : public Unk_020d9218 {
-public:
-    Unk_020e0d80();
-    virtual ~Unk_020e0d80();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
-
-    /* 0x04 */ u8 unk_04[0x24];
-};
-
-class Unk_020e0db4 {
-public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
-
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-};
 
 extern u8 data_020d5ce4[];
 extern u8 data_020d5cec[];
-extern u8 data_021c4924[];
-extern u8 data_021c4910[];
+extern u8 gFontB[];
+extern u8 gFontA[];
 
-class Unk_020e0d98 : public Unk_020e0db4 {
-public:
-    Unk_020e0d98(s32 flag);
-    virtual ~Unk_020e0d98();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
 
-    void func_02089508();
-    void func_02089554();
-    void func_02089588();
-    void func_020896dc();
-    void func_020897b0();
-    void func_020897fc();
-    s32 func_02089868();
-    s32 func_0208987c();
-    s32 func_02089880();
-    s32 func_02089884();
-    s32 func_0208989c();
-    Unk_02089270 *func_020898b8();
-    s32 func_020898bc();
-    void func_020898c0();
-    void func_02089908();
-    void func_02089924();
-    void func_02089944();
-    void func_0208994c();
-    void func_020899bc();
-    void func_020899f0();
-    void func_02089a1c();
-    BOOL func_02089a24();
-    BOOL func_02089a40();
-    void func_02089a5c(s32 flag);
-    void func_02089ab0(u8 v);
-    void func_02089ab8();
-    void func_02089ac0(StrBuf *src);
-    void func_02089ad8(s32 a, s32 b);
-    void func_02089ae0();
-    void func_02089ae8();
-    void func_02089af0();
-    void func_02089af8();
-    void func_02089b00();
-    void func_02089b08();
-    void func_02089b10();
+typedef void (LabelBalloon::*Unk_020e0d98_Fn)();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
-    /* 0x20 */ Unk_02089270 unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ u8 unk_54;
-    /* 0x55 */ u8 unk_55;
-    /* 0x56 */ u8 unk_56;
-    /* 0x57 */ u8 unk_57;
-    /* 0x58 */ u8 unk_58;
-    /* 0x59 */ u8 unk_59;
-    /* 0x5a */ u8 unk_5a;
-    /* 0x5b */ u8 unk_5b;
-    /* 0x5c */ u8 unk_5c;
-    /* 0x60 */ Unk_020e0d80 unk_60;
-    /* 0x88 */ Unk_020e0d80 unk_88;
-    /* 0xb0 */ Unk_02050288 *unk_b0;
-    /* 0xb4 */ Unk_02050288 *unk_b4;
-    /* 0xb8 */ s32 unk_b8;
-};
-
-typedef void (Unk_020e0d98::*Unk_020e0d98_Fn)();
-
-void Unk_020e0db4::vfunc_10(s32 a, s32 b) {
-    unk_04 = a + 0x80;
-    unk_08 = b + 0x60;
+void UiWidget::setOrigin(s32 a, s32 b) {
+    originX = a + 0x80;
+    originY = b + 0x60;
 }
 
-s32 Unk_020e0db4::func_02089f68() { return unk_04; }
+s32 UiWidget::getOriginX() { return originX; }
 
-s32 Unk_020e0db4::func_02089f64() { return unk_08; }
+s32 UiWidget::getOriginY() { return originY; }
 
-Unk_020e0d80::Unk_020e0d80() { func_0205113c((StrBuf *)this); }
+LabelBalloonText::LabelBalloonText() { StrBuf_Clear((StrBuf *)this); }
 
-Unk_020e0d80::~Unk_020e0d80() {}
+LabelBalloonText::~LabelBalloonText() {}
 
-u32 Unk_020e0d80::vfunc_08() { return 0x21; }
+u32 LabelBalloonText::capacity() { return 0x21; }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_020e0d80 and Unk_020e0db4 members
+// LabelBalloonText and UiWidget members
 
-u8 *Unk_020e0d80::vfunc_0c() { return (u8 *)this + 4; }
+u8 *LabelBalloonText::data() { return (u8 *)this + 4; }
 
-Unk_020e0d98::Unk_020e0d98(s32 flag)
-    : unk_34(0), unk_38(0), unk_3c(0), unk_40(0), unk_44(-1), unk_48(0), unk_4c(0), unk_50(0), unk_54(0),
-      unk_55(0), unk_56(flag), unk_57(0), unk_58(0), unk_59(0), unk_5a(0), unk_5b(0), unk_5c(0), unk_b0(0),
-      unk_b4(0), unk_b8(0) {
-    func_020897b0();
-    func_02089a1c();
+LabelBalloon::LabelBalloon(s32 flag)
+    : state(0), animTimer(0), x(0), posY(0), priority(-1), popOffsetX(0), popOffsetY(0), clampOffsetX(0), openRequest(0),
+      closeRequest(0), onBufferA(flag), clampToScreen(0), objWindow(0), noPopAnim(0), popDownward(0), layer2Visible(0), centerText(0), label(0),
+      label2(0), textMode(0) {
+    initAnims();
+    enterClosed();
 }
 
-Unk_020e0d98::~Unk_020e0d98() { func_02089554(); }
+LabelBalloon::~LabelBalloon() { freeLabels(); }
 
-void Unk_020e0d98::vfunc_08() {
-    if (unk_34 != 0) {
-        void *h0 = unk_0c.func_02089248();
-        void *h1 = unk_20.func_02089248();
-        s32 base = func_0208989c();
-        s32 base2 = func_02089884();
-        s32 x0 = base + unk_0c.func_02089228(-1);
-        s32 y0 = base2 + unk_0c.func_02089210(-1);
-        s32 x1 = base + unk_20.func_02089228(-1);
-        s32 y1 = base2 + unk_20.func_02089210(-1);
-        if (unk_56 != 0) {
-            func_02087e70(0, h0, x0, y0, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
-            if (unk_5b != 0) {
-                func_02087e70(0, h1, x1, y1, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
+void LabelBalloon::draw() {
+    if (state != 0) {
+        void *h0 = layer1.getCell();
+        void *h1 = layer2.getCell();
+        s32 base = getDrawX();
+        s32 base2 = getDrawY();
+        s32 x0 = base + layer1.getFrameX(-1);
+        s32 y0 = base2 + layer1.getFrameY(-1);
+        s32 x1 = base + layer2.getFrameX(-1);
+        s32 y1 = base2 + layer2.getFrameY(-1);
+        if (onBufferA != 0) {
+            Oam_DrawCell(0, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
+            if (layer2Visible != 0) {
+                Oam_DrawCell(0, h1, x1, y1, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
             }
-            if (unk_58 != 0) {
-                func_02087e70(0, h0, x0, y0, -1, unk_44, 0x1000, 0x1000, 0, 2, 0, 0);
-                if (unk_5b != 0) {
-                    func_02087e70(0, h1, x1, y1, -1, unk_44, 0x1000, 0x1000, 0, 2, 0, 0);
+            if (objWindow != 0) {
+                Oam_DrawCell(0, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
+                if (layer2Visible != 0) {
+                    Oam_DrawCell(0, h1, x1, y1, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
                 }
             }
         } else {
-            func_02087e70(1, h0, x0, y0, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
-            if (unk_5b != 0) {
-                func_02087e70(1, h1, x1, y1, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
+            if (layer2Visible != 0) {
+                Oam_DrawCell(1, h1, x1, y1, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
             }
-            if (unk_58 != 0) {
-                func_02087e70(1, h0, x0, y0, -1, unk_44, 0x1000, 0x1000, 0, 2, 0, 0);
-                if (unk_5b != 0) {
-                    func_02087e70(1, h1, x1, y1, -1, unk_44, 0x1000, 0x1000, 0, 2, 0, 0);
+            if (objWindow != 0) {
+                Oam_DrawCell(1, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
+                if (layer2Visible != 0) {
+                    Oam_DrawCell(1, h1, x1, y1, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
                 }
             }
         }
     }
 }
 
-void Unk_020e0d98::vfunc_0c() {
-    static Unk_020e0d98_Fn tbl[4] = {&Unk_020e0d98::func_020899f0, &Unk_020e0d98::func_0208994c,
-                                     &Unk_020e0d98::func_02089924, &Unk_020e0d98::func_020898c0};
-    (this->*tbl[unk_34])();
-    if (unk_34 != 0) {
-        unk_0c.func_02089140();
-        unk_20.func_02089140();
-        func_02089508();
+void LabelBalloon::update() {
+    static Unk_020e0d98_Fn tbl[4] = {&LabelBalloon::updateClosed, &LabelBalloon::updateOpening,
+                                     &LabelBalloon::updateOpen, &LabelBalloon::updateClosing};
+    (this->*tbl[state])();
+    if (state != 0) {
+        layer1.update();
+        layer2.update();
+        updateScreenClamp();
     }
 }
 
-void Unk_020e0d98::func_02089b10() { unk_58 = 1; }
+void LabelBalloon::enableObjWindow() { objWindow = 1; }
 
-void Unk_020e0d98::func_02089b08() { unk_58 = 0; }
+void LabelBalloon::disableObjWindow() { objWindow = 0; }
 
-void Unk_020e0d98::func_02089b00() { unk_59 = 1; }
+void LabelBalloon::disablePopAnim() { noPopAnim = 1; }
 
-void Unk_020e0d98::func_02089af8() { unk_5a = 1; }
+void LabelBalloon::setPopDownward() { popDownward = 1; }
 
-void Unk_020e0d98::func_02089af0() { unk_5a = 0; }
+void LabelBalloon::setPopUpward() { popDownward = 0; }
 
-void Unk_020e0d98::func_02089ae8() { unk_5b = 1; }
+void LabelBalloon::showLayer2() { layer2Visible = 1; }
 
-void Unk_020e0d98::func_02089ae0() { unk_5b = 0; }
+void LabelBalloon::hideLayer2() { layer2Visible = 0; }
 
-void Unk_020e0d98::func_02089ad8(s32 a, s32 b) {
-    unk_3c = a;
-    unk_40 = b;
+void LabelBalloon::setPos(s32 a, s32 b) {
+    x = a;
+    posY = b;
 }
 
-void Unk_020e0d98::func_02089ac0(StrBuf *src) {
-    func_020510d8((StrBuf *)&unk_60, src);
-    unk_b8 = 1;
+void LabelBalloon::setText(StrBuf *src) {
+    StrBuf_Copy((StrBuf *)&text, src);
+    textMode = 1;
 }
 
-void Unk_020e0d98::func_02089ab8() { unk_5c = 1; }
+void LabelBalloon::enableCenterText() { centerText = 1; }
 
-void Unk_020e0d98::func_02089ab0(u8 v) { unk_57 = v; }
+void LabelBalloon::setClampToScreen(u8 v) { clampToScreen = v; }
 
-void Unk_020e0d98::func_02089a5c(s32 flag) {
-    Unk_02050288 *p = unk_b0;
+void LabelBalloon::refreshText(s32 flag) {
+    TextLabel *p = label;
     if (p) {
-        p->unk_10 = (u32)unk_60.vfunc_0c();
-        unk_b0->func_02050c90();
+        p->textStart = (u32)text.data();
+        label->requestRedraw();
     }
-    p = unk_b4;
+    p = label2;
     if (p) {
-        p->unk_10 = (u32)unk_88.vfunc_0c();
-        unk_b4->func_02050c90();
+        p->textStart = (u32)text2.data();
+        label2->requestRedraw();
     }
     if (flag) {
-        func_020896dc();
+        fitToText();
     }
 }
 
-BOOL Unk_020e0d98::func_02089a40() {
-    BOOL r = unk_34 == 0 ? TRUE : FALSE;
+BOOL LabelBalloon::requestOpen() {
+    BOOL r = state == 0 ? TRUE : FALSE;
     if (r) {
-        unk_54 = 1;
+        openRequest = 1;
     }
     return r;
 }
 
-BOOL Unk_020e0d98::func_02089a24() {
-    BOOL r = unk_34 == 2 ? TRUE : FALSE;
+BOOL LabelBalloon::requestClose() {
+    BOOL r = state == 2 ? TRUE : FALSE;
     if (r) {
-        unk_55 = 1;
+        closeRequest = 1;
     }
     return r;
 }
 
-void Unk_020e0d98::func_02089a1c() { unk_34 = 0; }
+void LabelBalloon::enterClosed() { state = 0; }
 
-void Unk_020e0d98::func_020899f0() {
-    if (unk_54 != 0) {
-        unk_54 = 0;
-        func_02089588();
-        func_020896dc();
-        func_020899bc();
+void LabelBalloon::updateClosed() {
+    if (openRequest != 0) {
+        openRequest = 0;
+        createLabels();
+        fitToText();
+        enterOpening();
     }
 }
 
-void Unk_020e0d98::func_020899bc() {
-    if (unk_59 != 0) {
-        unk_38 = 1;
-        unk_48 = 0;
-        unk_4c = 0;
+void LabelBalloon::enterOpening() {
+    if (noPopAnim != 0) {
+        animTimer = 1;
+        popOffsetX = 0;
+        popOffsetY = 0;
     } else {
-        unk_38 = 3;
-        unk_48 = -5;
+        animTimer = 3;
+        popOffsetX = -5;
         s32 v = -5;
-        if (unk_5a == 0) {
+        if (popDownward == 0) {
             v = 5;
         }
-        unk_4c = v;
+        popOffsetY = v;
     }
-    unk_34 = 1;
+    state = 1;
 }
 
-void Unk_020e0d98::func_0208994c() {
-    if (unk_59 == 0) {
-        if (unk_38 > 2) {
-            unk_48 += 6;
+void LabelBalloon::updateOpening() {
+    if (noPopAnim == 0) {
+        if (animTimer > 2) {
+            popOffsetX += 6;
             s32 d;
-            if (unk_5a != 0) {
+            if (popDownward != 0) {
                 d = 6;
             } else {
                 d = -6;
             }
-            unk_4c += d;
+            popOffsetY += d;
         } else {
-            unk_48 -= 1;
+            popOffsetX -= 1;
             s32 d;
-            if (unk_5a != 0) {
+            if (popDownward != 0) {
                 d = -1;
             } else {
                 d = 1;
             }
-            unk_4c += d;
+            popOffsetY += d;
         }
     }
-    unk_38--;
-    if (unk_38 <= 0) {
-        unk_48 = 0;
-        unk_4c = 0;
-        func_02089944();
+    animTimer--;
+    if (animTimer <= 0) {
+        popOffsetX = 0;
+        popOffsetY = 0;
+        enterOpen();
     }
 }
 
-void Unk_020e0d98::func_02089944() { unk_34 = 2; }
+void LabelBalloon::enterOpen() { state = 2; }
 
-void Unk_020e0d98::func_02089924() {
-    if (unk_55 != 0) {
-        unk_55 = 0;
-        func_02089908();
+void LabelBalloon::updateOpen() {
+    if (closeRequest != 0) {
+        closeRequest = 0;
+        enterClosing();
     }
 }
 
-void Unk_020e0d98::func_02089908() {
-    if (unk_59 != 0) {
-        unk_38 = 1;
+void LabelBalloon::enterClosing() {
+    if (noPopAnim != 0) {
+        animTimer = 1;
     } else {
-        unk_38 = 2;
+        animTimer = 2;
     }
-    unk_34 = 3;
+    state = 3;
 }
 
-void Unk_020e0d98::func_020898c0() {
-    if (unk_59 == 0) {
-        unk_48 -= 11;
+void LabelBalloon::updateClosing() {
+    if (noPopAnim == 0) {
+        popOffsetX -= 11;
         s32 d;
-        if (unk_5a != 0) {
+        if (popDownward != 0) {
             d = -11;
         } else {
             d = 11;
         }
-        unk_4c += d;
+        popOffsetY += d;
     }
-    unk_38--;
-    if (unk_38 <= 0) {
-        func_02089554();
-        func_02089a1c();
+    animTimer--;
+    if (animTimer <= 0) {
+        freeLabels();
+        enterClosed();
     }
 }
 
-s32 Unk_020e0d98::func_020898bc() { return unk_34; }
+s32 LabelBalloon::getState() { return state; }
 
-Unk_02089270 *Unk_020e0d98::func_020898b8() { return &unk_0c; }
+SpriteAnim *LabelBalloon::getAnim() { return &layer1; }
 
-s32 Unk_020e0d98::func_0208989c() { return unk_50 + (unk_48 + (unk_3c + func_02089f68())); }
+s32 LabelBalloon::getDrawX() { return clampOffsetX + (popOffsetX + (x + getOriginX())); }
 
-s32 Unk_020e0d98::func_02089884() { return unk_4c + (unk_40 + func_02089f64()); }
+s32 LabelBalloon::getDrawY() { return popOffsetY + (posY + getOriginY()); }
 
-s32 Unk_020e0d98::func_02089880() { return unk_3c; }
+s32 LabelBalloon::getPosX() { return x; }
 
-s32 Unk_020e0d98::func_0208987c() { return unk_40; }
+s32 LabelBalloon::getPosY() { return posY; }
 
-s32 Unk_020e0d98::func_02089868() { return unk_0c.func_02089244() * 8 + 0x18; }
+s32 LabelBalloon::getWidth() { return layer1.getFrameIndex() * 8 + 0x18; }
 
-void Unk_020e0d98::func_020897fc() {
-    unk_34 = 0;
-    unk_38 = 0;
-    unk_3c = 0;
-    unk_40 = 0;
-    unk_44 = -1;
-    unk_48 = 0;
-    unk_4c = 0;
-    unk_50 = 0;
-    unk_54 = 0;
-    unk_55 = 0;
-    unk_57 = 0;
-    unk_58 = 0;
-    unk_59 = 0;
-    unk_5a = 0;
-    unk_5b = 0;
-    unk_5c = 0;
-    func_0205113c((StrBuf *)&unk_60);
-    func_0205113c((StrBuf *)&unk_88);
-    unk_b8 = 0;
-    func_02089554();
+void LabelBalloon::reset() {
+    state = 0;
+    animTimer = 0;
+    x = 0;
+    posY = 0;
+    priority = -1;
+    popOffsetX = 0;
+    popOffsetY = 0;
+    clampOffsetX = 0;
+    openRequest = 0;
+    closeRequest = 0;
+    clampToScreen = 0;
+    objWindow = 0;
+    noPopAnim = 0;
+    popDownward = 0;
+    layer2Visible = 0;
+    centerText = 0;
+    StrBuf_Clear((StrBuf *)&text);
+    StrBuf_Clear((StrBuf *)&text2);
+    textMode = 0;
+    freeLabels();
 }
 
-void Unk_020e0d98::func_020897b0() {
-    unk_0c.func_02089268((Unk_02089270_Tbl *)data_020d5ce4);
-    unk_0c.func_02089264(1);
-    unk_0c.func_02089260(0);
-    unk_20.func_02089268((Unk_02089270_Tbl *)data_020d5cec);
-    unk_20.func_02089264(1);
-    unk_20.func_02089260(0);
+void LabelBalloon::initAnims() {
+    layer1.setSeq((SpriteAnimSeq *)data_020d5ce4);
+    layer1.setPlayOnce(1);
+    layer1.setSpeed(0);
+    layer2.setSeq((SpriteAnimSeq *)data_020d5cec);
+    layer2.setPlayOnce(1);
+    layer2.setSpeed(0);
 }
 
-void Unk_020e0d98::func_020896dc() {
+void LabelBalloon::fitToText() {
     u32 w0;
     u32 w1;
     u32 n;
     s32 hi;
     s32 lo;
-    if (unk_b0 != NULL) {
-        w0 = unk_b0->func_0c();
+    if (label != NULL) {
+        w0 = label->measureWidth();
     } else {
         w0 = 0;
     }
-    if (unk_b4 != NULL) {
-        u32 t1 = unk_b4->func_0c();
+    if (label2 != NULL) {
+        u32 t1 = label2->measureWidth();
         w1 = t1;
     } else {
         w1 = 0;
     }
     n = (w0 + 7) >> 3;
     n = n > ((w1 + 7) >> 3) ? n : ((w1 + 7) >> 3);
-    hi = unk_0c.func_02089240()->unk_04 - 1;
+    hi = layer1.getSeq()->frameCount - 1;
     lo = n - 1;
     if (lo < 0) {
         hi = 0;
     } else if (lo <= hi) {
         hi = lo;
     }
-    unk_0c.func_02089258(hi, 0);
-    unk_20.func_02089258(hi, 0);
-    if (unk_5c != 0) {
+    layer1.setFrame(hi, 0);
+    layer2.setFrame(hi, 0);
+    if (centerText != 0) {
         u32 full = n * 8;
-        if (unk_b0 != NULL) {
-            unk_b0->unk_30 = full > w0 ? (full - w0) >> 1 : 0;
+        if (label != NULL) {
+            label->xOffset = full > w0 ? (full - w0) >> 1 : 0;
         }
-        if (unk_b4 != NULL) {
-            unk_b4->unk_30 = full > w1 ? (full - w1) >> 1 : 0;
+        if (label2 != NULL) {
+            label2->xOffset = full > w1 ? (full - w1) >> 1 : 0;
         }
     } else {
-        if (unk_b0 != NULL) {
-            unk_b0->unk_30 = 0;
+        if (label != NULL) {
+            label->xOffset = 0;
         }
-        if (unk_b4 != NULL) {
-            unk_b4->unk_30 = 0;
+        if (label2 != NULL) {
+            label2->xOffset = 0;
         }
     }
 }
 
-void Unk_020e0d98::func_02089588() {
+void LabelBalloon::createLabels() {
     BOOL two;
-    if (unk_b8 == 2) {
+    if (textMode == 2) {
         two = TRUE;
     } else {
         two = FALSE;
     }
-    if (unk_b0 == NULL) {
-        unk_b0 = func_020a8054(0x41, 0x14, 2);
-        if (unk_b0 != NULL) {
-            unk_b0->unk_2c = 4;
-            Unk_02050288 *t = unk_b0;
-            t->unk_10 = (u32)((StrBuf *)&unk_60)->data();
-            unk_b0->unk_58 = 1;
-            if (unk_56 != 0) {
-                unk_b0->unk_50 = 2;
+    if (label == NULL) {
+        label = MsgTextLabel_CreateVram(0x41, 0x14, 2);
+        if (label != NULL) {
+            label->vramLoader = 4;
+            TextLabel *t = label;
+            t->textStart = (u32)((StrBuf *)&text)->data();
+            label->group = 1;
+            if (onBufferA != 0) {
+                label->copyMode = 2;
             }
             if (two) {
-                unk_b0->unk_28 = (Unk_02050288_Font *)data_021c4924;
+                label->font = (GameFontDesc *)gFontB;
             } else {
-                unk_b0->unk_28 = (Unk_02050288_Font *)data_021c4910;
+                label->font = (GameFontDesc *)gFontA;
             }
-            unk_b0->unk_55 = 1;
-            unk_b0->unk_39 = 0;
-            unk_b0->unk_38 = 3;
-            unk_b0->func_02050c90();
+            label->rowStride1K = 1;
+            label->bgColor = 0;
+            label->fgColor = 3;
+            label->requestRedraw();
         }
     }
-    if (unk_b4 == NULL && two) {
-        unk_b4 = func_020a8054(0x61, 0x14, 2);
-        if (unk_b4 != NULL) {
-            unk_b4->unk_2c = 4;
-            Unk_02050288 *t = unk_b4;
-            t->unk_10 = (u32)((StrBuf *)&unk_88)->data();
-            unk_b4->unk_58 = 1;
-            if (unk_56 != 0) {
-                unk_b4->unk_50 = 2;
+    if (label2 == NULL && two) {
+        label2 = MsgTextLabel_CreateVram(0x61, 0x14, 2);
+        if (label2 != NULL) {
+            label2->vramLoader = 4;
+            TextLabel *t = label2;
+            t->textStart = (u32)((StrBuf *)&text2)->data();
+            label2->group = 1;
+            if (onBufferA != 0) {
+                label2->copyMode = 2;
             }
-            unk_b4->unk_28 = (Unk_02050288_Font *)data_021c4924;
-            unk_b4->unk_55 = 1;
-            unk_b4->unk_39 = 0;
-            unk_b4->unk_38 = 3;
-            unk_b4->func_02050c90();
+            label2->font = (GameFontDesc *)gFontB;
+            label2->rowStride1K = 1;
+            label2->bgColor = 0;
+            label2->fgColor = 3;
+            label2->requestRedraw();
         }
     }
 }
 
-void Unk_020e0d98::func_02089554() {
-    if (unk_b0 != NULL) {
-        func_020a7fd8(unk_b0);
-        unk_b0 = NULL;
+void LabelBalloon::freeLabels() {
+    if (label != NULL) {
+        MsgTextLabel_Destroy(label);
+        label = NULL;
     }
-    if (unk_b4 != NULL) {
-        func_020a7fd8(unk_b4);
-        unk_b4 = NULL;
+    if (label2 != NULL) {
+        MsgTextLabel_Destroy(label2);
+        label2 = NULL;
     }
 }
 
-void Unk_020e0d98::func_02089508() {
-    if (unk_57 != 0) {
-        s32 w = unk_0c.func_02089244() * 4 + 12;
-        s32 c = unk_3c + unk_48;
+void LabelBalloon::updateScreenClamp() {
+    if (clampToScreen != 0) {
+        s32 w = layer1.getFrameIndex() * 4 + 12;
+        s32 c = x + popOffsetX;
         s32 lo = c - w + 0x80;
         s32 hi = w + c - 0x80;
         if (lo < 0) {
-            unk_50 = -lo;
+            clampOffsetX = -lo;
         } else if (hi > 0) {
-            unk_50 = -hi;
+            clampOffsetX = -hi;
         } else {
-            unk_50 = 0;
+            clampOffsetX = 0;
         }
     } else {
-        unk_50 = 0;
+        clampOffsetX = 0;
     }
 }
 

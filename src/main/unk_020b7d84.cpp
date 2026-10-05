@@ -1,111 +1,111 @@
 #include "types.h"
 
 extern "C" {
-void func_020e7fd4(void);
-void func_020e814c(void);
-s32 func_02003b5c(u32 a);
+void TouchPanel_Update(void);
+void TouchPanel_Init(void);
+s32 Snd_SetPan(u32 a);
 }
 
 extern "C" {
-extern u8 data_021ef5c8, data_021ef5cc, data_021ef5d0;
-extern u8 data_021f4770, data_021f4774;
-extern u16 data_021f4778, data_021f477c;
+extern u8 gTouchHoldFrames, gTouchPrevChanged, gTouchPrevHeld;
+extern u8 gTouchHeld, gTouchChanged;
+extern u16 gTouchX, gTouchY;
 }
 
-extern u8 data_021ef5d4, data_021ef5d8, data_021ef5dc, data_021ef5e0, data_021ef5e4, data_021ef5e8;
-extern u8 data_021ef5ec, data_021ef5f0, data_021ef5f4, data_021ef5f8, data_021ef5fc;
-extern u16 data_021ef600, data_021ef604;
+extern u8 sTouchPrevReleaseFrames, sTouchPrevHoldFrames, sTouchPrevCurY, sTouchPrevCurX, sTouchPrevPressY, sTouchPrevPressX;
+extern u8 gTouchCurY, gTouchCurX, gTouchPressY, gTouchPressX, sTouchReleaseFrames;
+extern u16 sTouchPrevRawX, sTouchPrevRawY;
 
-extern "C" void func_020b7eec(void) {
-    func_020e814c();
-    data_021ef5c8 = 0;
-    data_021ef5fc = 0xc8;
-    data_021ef5d8 = 0;
-    data_021ef5d4 = 0xc8;
+extern "C" void Touch_Init(void) {
+    TouchPanel_Init();
+    gTouchHoldFrames = 0;
+    sTouchReleaseFrames = 0xc8;
+    sTouchPrevHoldFrames = 0;
+    sTouchPrevReleaseFrames = 0xc8;
 }
 
-extern "C" void func_020b7d84(void) {
-    data_021ef5e8 = data_021ef5f8;
-    data_021ef5e4 = data_021ef5f4;
-    data_021ef5e0 = data_021ef5f0;
-    data_021ef5dc = data_021ef5ec;
-    data_021ef5d8 = data_021ef5c8;
-    data_021ef5d4 = data_021ef5fc;
-    u8 t = data_021f4770;
-    data_021ef5d0 = t;
-    data_021ef5cc = data_021f4774 ? 1 : 0;
-    data_021ef600 = (u8)data_021f4778;
-    data_021ef604 = (u8)data_021f477c;
+extern "C" void Touch_Update(void) {
+    sTouchPrevPressX = gTouchPressX;
+    sTouchPrevPressY = gTouchPressY;
+    sTouchPrevCurX = gTouchCurX;
+    sTouchPrevCurY = gTouchCurY;
+    sTouchPrevHoldFrames = gTouchHoldFrames;
+    sTouchPrevReleaseFrames = sTouchReleaseFrames;
+    u8 t = gTouchHeld;
+    gTouchPrevHeld = t;
+    gTouchPrevChanged = gTouchChanged ? 1 : 0;
+    sTouchPrevRawX = (u8)gTouchX;
+    sTouchPrevRawY = (u8)gTouchY;
     if ((s32)(*(volatile u16 *)0x27fffa8 & 0x8000) >> 15) {
-        data_021f4774 = t;
-        data_021f4770 = 0;
-        data_021f4778 = 0;
-        data_021f477c = 0;
+        gTouchChanged = t;
+        gTouchHeld = 0;
+        gTouchX = 0;
+        gTouchY = 0;
     } else {
-        func_020e7fd4();
+        TouchPanel_Update();
     }
-    if (data_021f4770 != 0) {
-        BOOL p = (data_021f4770 != 0 && data_021f4774 != 0) ? TRUE : FALSE;
+    if (gTouchHeld != 0) {
+        BOOL p = (gTouchHeld != 0 && gTouchChanged != 0) ? TRUE : FALSE;
         if (p) {
-            data_021ef5f8 = data_021f4778;
-            data_021ef5f4 = data_021f477c;
-            data_021ef5c8 = 0;
+            gTouchPressX = gTouchX;
+            gTouchPressY = gTouchY;
+            gTouchHoldFrames = 0;
         }
-        if (data_021ef5c8 < 0xc8) {
-            data_021ef5c8++;
+        if (gTouchHoldFrames < 0xc8) {
+            gTouchHoldFrames++;
         }
-        u8 v = data_021f4778;
-        data_021ef5f0 = v;
-        data_021ef5ec = data_021f477c;
-        func_02003b5c(v);
+        u8 v = gTouchX;
+        gTouchCurX = v;
+        gTouchCurY = gTouchY;
+        Snd_SetPan(v);
     } else {
-        BOOL p = (data_021f4770 == 0 && data_021f4774 != 0) ? TRUE : FALSE;
+        BOOL p = (gTouchHeld == 0 && gTouchChanged != 0) ? TRUE : FALSE;
         if (p) {
-            data_021ef5fc = 0;
+            sTouchReleaseFrames = 0;
         }
-        if (data_021ef5fc < 0xc8) {
-            data_021ef5fc++;
+        if (sTouchReleaseFrames < 0xc8) {
+            sTouchReleaseFrames++;
         }
     }
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern u8 data_021ef5d8;
-extern u8 data_021ef5fc;
-extern u8 data_021ef5f8;
-extern u8 data_021ef5f4;
-extern u8 data_021ef5f0;
-extern u8 data_021ef5ec;
-extern u8 data_021ef5e8;
-extern u8 data_021ef5e4;
-extern u8 data_021ef5e0;
-extern u16 data_021ef604;
-extern u16 data_021ef600;
-extern u8 data_021ef5dc;
-extern u8 data_021ef5d4;
+extern u8 sTouchPrevHoldFrames;
+extern u8 sTouchReleaseFrames;
+extern u8 gTouchPressX;
+extern u8 gTouchPressY;
+extern u8 gTouchCurX;
+extern u8 gTouchCurY;
+extern u8 sTouchPrevPressX;
+extern u8 sTouchPrevPressY;
+extern u8 sTouchPrevCurX;
+extern u16 sTouchPrevRawY;
+extern u16 sTouchPrevRawX;
+extern u8 sTouchPrevCurY;
+extern u8 sTouchPrevReleaseFrames;
 
-u8 data_021ef5d8;
+u8 sTouchPrevHoldFrames;
 
-u8 data_021ef5fc;
+u8 sTouchReleaseFrames;
 
-u8 data_021ef5f8;
+u8 gTouchPressX;
 
-u8 data_021ef5f4;
+u8 gTouchPressY;
 
-u8 data_021ef5f0;
+u8 gTouchCurX;
 
-u8 data_021ef5ec;
+u8 gTouchCurY;
 
-u8 data_021ef5e8;
+u8 sTouchPrevPressX;
 
-u8 data_021ef5e4;
+u8 sTouchPrevPressY;
 
-u8 data_021ef5e0;
+u8 sTouchPrevCurX;
 
-u16 data_021ef604;
+u16 sTouchPrevRawY;
 
-u16 data_021ef600;
+u16 sTouchPrevRawX;
 
-u8 data_021ef5dc;
+u8 sTouchPrevCurY;
 
-u8 data_021ef5d4;
+u8 sTouchPrevReleaseFrames;

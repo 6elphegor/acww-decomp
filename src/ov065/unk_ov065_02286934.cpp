@@ -1,6 +1,14 @@
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
+#include "net/darray.h"
+#include "net/GsInAddr.h"
+#include "net/SockAddrIn.h"
+#include "net/natneg.h"
+#include "net/SockHostEnt.h"
+#include "net/qr2.h"
+#include "net/GsBytes.h"
+#include "net/gsPlatformUtil.h"
 
 
 
@@ -14,96 +22,16 @@ extern "C" {
 #define SWAP32(x) ((((x) << 24) & 0xff000000) | ((((x) << 8) & 0xff0000) | ((((x) >> 24) & 0xff) | (((x) >> 8) & 0xff00))))
 #define SWAP16(x) ((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00))
 
-struct Unk_ov065_022868b0_InAddr {
-    u32 addr;
-};
 
-struct Unk_ov065_02286c74_Sa {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
 
-typedef void (*Unk_ov065_02286c74_Cb34)(s32 state, void *user);
-typedef void (*Unk_ov065_02286c74_Cb38)(s32 code, s32 fd, void *arg, void *user);
 
-struct Unk_ov065_02286c74_Ctx {
-    s32 unk_00;
-    s32 unk_04;
-    u32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14[3];
-    s32 unk_20;
-    s32 unk_24;
-    u32 unk_28;
-    u32 unk_2c;
-    u16 unk_30;
-    u8 unk_32;
-    u8 unk_33;
-    Unk_ov065_02286c74_Cb34 unk_34;
-    Unk_ov065_02286c74_Cb38 unk_38;
-    void *unk_3c;
-};
 
-struct Unk_ov065_02286934_Buf14 {
-    u8 b[0x14];
-};
 
-struct Unk_ov065_02286934_Buf15 {
-    u8 b[0x15];
-};
 
-struct Unk_ov065_02286bb4_Magic {
-    u8 b[6];
-};
 
-struct Unk_ov065_02286bb4_Pkt {
-    u8 magic[6];
-    u8 version;
-    u8 type;
-    u32 cookie;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
-};
 
-struct Unk_ov065_02287000_Pkt {
-    u8 magic[6];
-    u8 version;
-    u8 type;
-    u32 cookie;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
-    char name[0x43];
-};
 
-struct Unk_ov065_02286f04_Hostent {
-    char *name;
-    char **aliases;
-    s16 addrtype;
-    s16 length;
-    u32 **addr_list;
-};
 
-struct Unk_ov065_022871ac_List {
-    u8 pad_00[0xc];
-    u8 *unk_0c;
-};
 
 extern "C" {
 extern s32 data_ov065_02291504;
@@ -111,57 +39,56 @@ extern char data_ov065_02291508[];
 
 
 
-extern u8 data_ov065_0228e16c[];
+extern u8 NNMagicData[];
 
 
 
-extern char data_ov065_02290fe4[];
-extern s32 data_ov065_02290fa0;
-extern u32 data_ov065_02291534;
-extern u32 data_ov065_02291538;
-extern u32 data_ov065_0229153c;
-extern u32 data_ov065_02291540;
-extern void *data_ov065_02291544;
+extern char __GSIACGamename[];
+extern s32 __GSIACResult;
+extern u32 Matchup2Hostname;
+extern u32 Matchup1Hostname;
+extern u32 matchup2ip;
+extern u32 matchup1ip;
+extern void *negotiateList;
 extern u8 data_ov065_02291548[];
 
-s32 func_021130d0(char *buf, const char *fmt, ...);
-s32 func_02113088(char *buf, s32 n, const char *fmt, ...);
-char *func_02127838(char *dst, const char *src);
-u32 func_021277d4(const char *s);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
+s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
+char *STD_CopyString(char *dst, const char *src);
+u32 STD_GetStringLength(const char *s);
 
-char *func_ov065_022610f0(Unk_ov065_022868b0_InAddr a);
-Unk_ov065_02286f04_Hostent *func_ov065_02261408(const char *name);
-s32 func_ov065_0227866c(void *list, s32 i);
-s32 func_ov065_02278684(void *list);
-s32 func_ov065_02278bf4(const char *s);
-s32 func_ov065_02278c14(s32 fd, Unk_ov065_02286c74_Sa *sa, s32 *len);
-s32 func_ov065_02278cb8(s32 fd, void *buf, s32 n, s32 flags, Unk_ov065_02286c74_Sa *from, s32 *len);
-s32 func_ov065_02278dbc(s32 fd);
-s32 func_ov065_02278dd4(s32 a, s32 b, s32 c);
-Unk_ov065_022871ac_List *func_ov065_02278e64();
-s32 func_ov065_02278dfc(void *p);
-s32 func_ov065_02278ee8(s32 fd);
-u32 func_ov065_02279144();
-s32 func_ov065_0228723c();
-s32 func_ov065_02287200(s32 fd, u32 addr, u32 port, void *buf, s32 len);
-s32 func_ov065_02287280(Unk_ov065_02286c74_Ctx *ctx);
-s32 func_ov065_022872c8();
-Unk_ov065_02286c74_Ctx *func_ov065_02287348(u32 cookie);
+char *Sock_InetNtoA(GsInAddr a);
+SockHostEnt *Sock_GetHostByName(const char *name);
+s32 ArrayNth(void *list, s32 i);
+s32 ArrayLength(void *list);
+s32 inet_addr(const char *s);
+s32 getsockname(s32 fd, SockAddrIn *sa, s32 *len);
+s32 recvfrom(s32 fd, void *buf, s32 n, s32 flags, SockAddrIn *from, s32 *len);
+s32 closesocket(s32 fd);
+s32 socket(s32 a, s32 b, s32 c);
+SockHostEnt *getlocalhost();
+s32 IsPrivateIP(void *p);
+s32 CanReceiveOnSocket(s32 fd);
+s32 CheckMagic();
+s32 SendPacket__natneg(s32 fd, u32 addr, u32 port, void *buf, s32 len);
+s32 RemoveNegotiator(_NATNegotiator *ctx);
+s32 AddNegotiator();
+_NATNegotiator *FindNegotiatorForCookie(u32 cookie);
 
-u32 func_ov065_022871ac();
-u32 func_ov065_02287188(s32 fd);
-void func_ov065_02287000(Unk_ov065_02286c74_Ctx *ctx);
-void func_ov065_02286f34(Unk_ov065_02286c74_Ctx *ctx);
-u32 func_ov065_02286f04(const char *name);
-u32 func_ov065_02286ed8(const char *name, const char *s);
-s32 func_ov065_02286e70();
-void func_ov065_02286da0(u32 cookie);
-void func_ov065_02286c74(Unk_ov065_02286c74_Ctx *ctx);
-void func_ov065_02286bb4(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286c74_Sa *sa);
-void func_ov065_02286b34(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void func_ov065_02286aa8(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void func_ov065_02286934(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa);
+u32 GetLocalIP();
+u32 GetLocalPort(s32 fd);
+void SendInitPackets(_NATNegotiator *ctx);
+void SendPingPacket(_NATNegotiator *ctx);
+u32 NameToIp(const char *name);
+u32 ResolveServer(const char *name, const char *s);
+s32 ResolveServers();
+void NNCancel(u32 cookie);
+void NegotiateThink(_NATNegotiator *ctx);
+void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa);
+void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);
 }
 
 
@@ -190,85 +117,22 @@ extern "C" {
 
 // ov065_064: GameSpy query-and-report style (0xfe 0xfd packets) server object helpers (0x02287200..0x02287aa4)
 
-struct Unk_ov065_02287390_Buf {
-    u8 unk_000[0x800];
-    s32 unk_800;
-};
 
-struct Unk_ov065_02287390_Qr;
-struct Unk_ov065_02287390_W {
-    u32 v;
-};
 
-typedef s32 (*Unk_ov065_02287390_Cb88)(u32, Unk_ov065_02287390_Buf *, void *);
-typedef s32 (*Unk_ov065_02287390_Cb8c)(u32, s32, Unk_ov065_02287390_Buf *, void *);
-typedef s32 (*Unk_ov065_02287390_Cb94)(s32, u8 *, void *);
-typedef s32 (*Unk_ov065_02287390_Cb98)(s32, void *);
-typedef s32 (*Unk_ov065_02287390_Cb9c)(s32, u8 *, void *);
-typedef s32 (*Unk_ov065_02287390_Cba0)(u32, void *);
-typedef s32 (*Unk_ov065_02287390_Cba4)(u8 *, s32, void *);
 
-struct Unk_ov065_02287390_Qr {
-    s32 unk_00;
-    u8 unk_04[0x80];
-    u8 unk_84[4];
-    Unk_ov065_02287390_Cb88 unk_88;
-    Unk_ov065_02287390_Cb8c unk_8c;
-    Unk_ov065_02287390_Cb8c unk_90;
-    Unk_ov065_02287390_Cb94 unk_94;
-    Unk_ov065_02287390_Cb98 unk_98;
-    Unk_ov065_02287390_Cb9c unk_9c;
-    Unk_ov065_02287390_Cba0 unk_a0;
-    Unk_ov065_02287390_Cba4 unk_a4;
-    s32 unk_a8;
-    s32 unk_ac;
-    s32 unk_b0;
-    s32 unk_b4;
-    s32 unk_b8;
-    s32 unk_bc;
-    s32 unk_c0;
-    s32 unk_c4;
-    s32 unk_c8;
-    u8 unk_cc[8];
-    s32 unk_d4;
-    u32 unk_d8[10];
-    s32 unk_100;
-    s32 unk_104;
-    u16 unk_108;
-    u16 unk_10a;
-    void *unk_10c;
-};
 
-struct Unk_ov065_0228758c_B4 {
-    u8 b[4];
-};
 
-struct Unk_ov065_02287200_Sa {
-    u8 unk_0;
-    u8 unk_1;
-    u16 unk_2;
-    u32 unk_4;
-};
 
-struct Unk_ov065_02287348_Ent {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    u8 unk_14[0x2c];
-};
 
-struct Unk_ov065_022786bc_Vec;
 
-typedef Unk_ov065_02287390_Qr Qr;
-typedef Unk_ov065_02287390_Buf Buf;
-typedef Unk_ov065_02287348_Ent Ent;
-typedef Unk_ov065_022786bc_Vec Vec;
+typedef qr2_implementation_s Qr;
+typedef qr2_buffer_s Buf;
+typedef _NATNegotiator Ent;
+typedef DArrayImplementation Vec;
 
 extern "C" {
-extern u8 data_ov065_0228e16c[];
-extern Qr *data_ov065_0228e1b4;
+extern u8 NNMagicData[];
+extern Qr *current_rec;
 extern u8 data_ov065_0228e1b8[];
 extern char data_ov065_0228e2d0[];
 extern char data_ov065_0228e2dc[];
@@ -283,37 +147,36 @@ extern char data_ov065_0228e32c[];
 extern char data_ov065_0228e340[];
 extern char data_ov065_0228e348[];
 extern char data_ov065_0228e34c[];
-extern char *data_ov065_0228e504[];
-extern Vec *data_ov065_02291544;
-extern s32 data_ov065_02291748;
-extern u32 data_ov065_0229174c[];
+extern char *qr2_registered_key_list[];
+extern Vec *negotiateList;
+extern s32 num_local_ips;
+extern u32 local_ip_list[];
 
-s32 func_02128930(const void *, const void *, s32);
-void func_02128a00(void *, const void *, s32);
-s32 func_021130d0(char *, const char *, ...);
-s32 func_ov065_02278c64(s32, void *, s32, s32, void *, s32);
-s32 func_ov065_02278dbc(s32);
-s32 func_ov065_02279144(void);
-void func_ov065_02278688(Vec *);
-s32 func_ov065_02278684(Vec *);
-void *func_ov065_0227866c(Vec *, s32);
-void func_ov065_02278658(Vec *, void *);
-void func_ov065_0227858c(Vec *, s32);
-Vec *func_ov065_022786bc(s32, s32, void *);
-char *func_ov065_022610f0(Unk_ov065_02287390_W);
-void func_ov065_02287df8(Buf *, s32, u8 *);
-void func_ov065_02288094(Buf *, const char *);
-void func_ov065_022880d8(Buf *, s32);
-void func_ov065_02287b18(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
-void func_ov065_02287d04(Qr *, u8 *);
-void func_ov065_02287d90(Qr *, Buf *, u8 *, s32);
+s32 memcmp(const void *, const void *, s32);
+void memcpy(void *, const void *, s32);
+s32 OS_SPrintf(char *, const char *, ...);
+s32 sendto(s32, void *, s32, s32, void *, s32);
+s32 closesocket(s32);
+void ArrayFree(Vec *);
+s32 ArrayLength(Vec *);
+void *ArrayNth(Vec *, s32);
+void ArrayAppend(Vec *, void *);
+void ArrayRemoveAt(Vec *, s32);
+Vec *ArrayNew(s32, s32, void *);
+char *Sock_InetNtoA(GsInAddr);
+void qr_add_packet_header(Buf *, s32, u8 *);
+void qr2_buffer_addA(Buf *, const char *);
+void qr2_buffer_add_int(Buf *, s32);
+void qr_build_query_reply(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
+void handle_public_address(Qr *, u8 *);
+void compute_challenge_response(Qr *, Buf *, u8 *, s32);
 
-void func_ov065_02287324(Ent *e);
-void func_ov065_02287940(Qr *q, Buf *buf, s32 kind);
-void func_ov065_022878f0(Qr *q, Buf *buf);
-BOOL func_ov065_022877d4(Qr *q, u32 v);
-void func_ov065_02287828(Qr *q, u8 *p, s32 n);
-void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n);
+void GsNatNeg_FreeEntry(Ent *e);
+void qr_build_partial_old_query_reply(Qr *q, Buf *buf, s32 kind);
+void qr_process_old_query(Qr *q, Buf *buf);
+BOOL qr_got_recent_message(Qr *q, u32 v);
+void qr_process_client_message(Qr *q, u8 *p, s32 n);
+void qr_process_query(Qr *q, Buf *buf, u8 *p, s32 n);
 
 #define HTONS(x) ((u16)((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00)))
 #define HTONL(x) (((x) >> 24 & 0xff) | ((x) >> 8 & 0xff00) | ((x) << 8 & 0xff0000) | ((x) << 24 & 0xff000000))
@@ -338,18 +201,18 @@ void func_ov065_02287aa4(Qr *q, Buf *buf, u8 *p, s32 n);
 }
 }
 
-extern "C" { u32 data_ov065_02291538; } //@
-extern "C" { void *data_ov065_02291544; } //@
+extern "C" { u32 Matchup1Hostname; } //@
+extern "C" { void *negotiateList; } //@
 namespace N02287200 { extern "C" {
-Ent *func_ov065_02287348(s32 x) {
+Ent *FindNegotiatorForCookie(s32 x) {
     s32 i;
     Ent *e;
-    if (data_ov065_02291544 == NULL) {
+    if (negotiateList == NULL) {
         return NULL;
     }
-    for (i = 0; i < func_ov065_02278684(data_ov065_02291544); i++) {
-        e = (Ent *)func_ov065_0227866c(data_ov065_02291544, i);
-        if (e->unk_08 == x) {
+    for (i = 0; i < ArrayLength(negotiateList); i++) {
+        e = (Ent *)ArrayNth(negotiateList, i);
+        if (e->cookie == x) {
             return e;
         }
     }
@@ -358,33 +221,33 @@ Ent *func_ov065_02287348(s32 x) {
 } }
 
 namespace N02287200 { extern "C" {
-void func_ov065_02287324(Ent *e) {
-    if (e->unk_00 != -1) {
-        func_ov065_02278dbc(e->unk_00);
+void GsNatNeg_FreeEntry(Ent *e) {
+    if (e->negotiateSock != -1) {
+        closesocket(e->negotiateSock);
     }
-    e->unk_00 = -1;
-    e->unk_10 = 4;
+    e->negotiateSock = -1;
+    e->state = 4;
 }
 } }
 
-extern "C" { u32 data_ov065_02291540; } //@
+extern "C" { u32 matchup1ip; } //@
 namespace N02287200 { extern "C" {
-void *func_ov065_022872c8(void) {
+void *AddNegotiator(void) {
     Ent z = {0};
-    if (data_ov065_02291544 == NULL) {
-        data_ov065_02291544 = func_ov065_022786bc(0x40, 4, (void *)func_ov065_02287324);
+    if (negotiateList == NULL) {
+        negotiateList = ArrayNew(0x40, 4, (void *)GsNatNeg_FreeEntry);
     }
-    func_ov065_02278658(data_ov065_02291544, &z);
-    return func_ov065_0227866c(data_ov065_02291544, func_ov065_02278684(data_ov065_02291544) - 1);
+    ArrayAppend(negotiateList, &z);
+    return ArrayNth(negotiateList, ArrayLength(negotiateList) - 1);
 }
 } }
 
 namespace N02287200 { extern "C" {
-void func_ov065_02287280(void *key) {
+void RemoveNegotiator(void *key) {
     s32 i;
-    for (i = 0; i < func_ov065_02278684(data_ov065_02291544); i++) {
-        if (key == func_ov065_0227866c(data_ov065_02291544, i)) {
-            func_ov065_0227858c(data_ov065_02291544, i);
+    for (i = 0; i < ArrayLength(negotiateList); i++) {
+        if (key == ArrayNth(negotiateList, i)) {
+            ArrayRemoveAt(negotiateList, i);
             return;
         }
     }
@@ -392,17 +255,17 @@ void func_ov065_02287280(void *key) {
 } }
 
 namespace N02287200 { extern "C" {
-void func_ov065_02287260(void) {
-    if (data_ov065_02291544 != NULL) {
-        func_ov065_02278688(data_ov065_02291544);
-        data_ov065_02291544 = NULL;
+void NNFreeNegotiateList(void) {
+    if (negotiateList != NULL) {
+        ArrayFree(negotiateList);
+        negotiateList = NULL;
     }
 }
 } }
 
 namespace N02287200 { extern "C" {
-BOOL func_ov065_0228723c(void *p) {
-    if (func_02128930(p, data_ov065_0228e16c, 6) == 0) {
+BOOL CheckMagic(void *p) {
+    if (memcmp(p, NNMagicData, 6) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -411,19 +274,19 @@ BOOL func_ov065_0228723c(void *p) {
 
 extern "C" { u8 data_ov065_02291548[0x200]; } //@
 namespace N02287200 { extern "C" {
-s32 func_ov065_02287200(s32 sock, u32 ip, s32 port, void *buf, s32 len) {
-    Unk_ov065_02287200_Sa sa;
-    sa.unk_1 = 2;
-    sa.unk_2 = HTONS(port);
-    sa.unk_4 = ip;
-    return func_ov065_02278c64(sock, buf, len, 0, &sa, 8);
+s32 SendPacket__natneg(s32 sock, u32 ip, s32 port, void *buf, s32 len) {
+    SockAddrIn sa;
+    sa.family = 2;
+    sa.port = HTONS(port);
+    sa.addr = ip;
+    return sendto(sock, buf, len, 0, &sa, 8);
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 func_ov065_022871ac() {
+extern "C" u32 GetLocalIP() {
     u32 r = 0;
-    Unk_ov065_022871ac_List *list = func_ov065_02278e64();
+    SockHostEnt *list = getlocalhost();
     if (list == NULL) {
         return r;
     }
@@ -431,7 +294,7 @@ extern "C" u32 func_ov065_022871ac() {
     s32 i;
     unsigned long *e;
     for (i = 0;; i++) {
-        e = ((unsigned long **)list->unk_0c)[i];
+        e = ((unsigned long **)list->addrList)[i];
         if (e == NULL) {
             break;
         }
@@ -439,7 +302,7 @@ extern "C" u32 func_ov065_022871ac() {
             continue;
         }
         r = *e;
-        if (func_ov065_02278dfc(e) != 0) {
+        if (IsPrivateIP(e) != 0) {
             return r;
         }
     }
@@ -447,12 +310,12 @@ extern "C" u32 func_ov065_022871ac() {
 }
 } }
 
-extern "C" u8 data_ov065_0228e16c[6] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2}; //@
+extern "C" u8 NNMagicData[6] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2}; //@
 namespace N022868b0 { extern "C" {
-extern "C" u32 func_ov065_02287188(s32 fd) {
-    Unk_ov065_02286c74_Sa sa;
+extern "C" u32 GetLocalPort(s32 fd) {
+    SockAddrIn sa;
     s32 len = 8;
-    s32 r = func_ov065_02278c14(fd, &sa, &len);
+    s32 r = getsockname(fd, &sa, &len);
     u32 port = 0;
     if (r != -1) {
         port = sa.port;
@@ -462,10 +325,10 @@ extern "C" u32 func_ov065_02287188(s32 fd) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02287000(Unk_ov065_02286c74_Ctx *ctx) {
-    Unk_ov065_02287000_Pkt pkt;
+extern "C" void SendInitPackets(_NATNegotiator *ctx) {
+    GsNatNegInitPacket pkt;
     u8 *p = (u8 *)&pkt;
-    const u8 *m = (const u8 *)data_ov065_0228e16c;
+    const u8 *m = (const u8 *)NNMagicData;
     p[0] = m[0];
     p[1] = m[1];
     p[2] = m[2];
@@ -474,49 +337,49 @@ extern "C" void func_ov065_02287000(Unk_ov065_02286c74_Ctx *ctx) {
     p[5] = m[5];
     p[6] = 2;
     p[7] = 0;
-    p[0xd] = ctx->unk_0c;
-    u32 c = ctx->unk_08;
+    p[0xd] = ctx->clientindex;
+    u32 c = ctx->cookie;
     *(u32 *)(p + 8) = SWAP32(c);
     u8 flag = 0;
-    if (ctx->unk_04 != -1) {
+    if (ctx->gameSock != -1) {
         flag = 1;
     }
     p[0xe] = flag;
-    u32 ip = SWAP32(func_ov065_022871ac());
-    pkt.unk_0f = ip >> 24;
-    pkt.unk_10 = ip >> 16;
-    pkt.unk_11 = ip >> 8;
-    pkt.unk_12 = ip;
-    pkt.unk_13 = 0;
-    pkt.unk_14 = 0;
-    func_02127838(pkt.name, data_ov065_02290fe4);
-    s32 len = func_021277d4(data_ov065_02290fe4) + 0x16;
-    if (p[0xe] != 0 && ctx->unk_14[0] == 0) {
+    u32 ip = SWAP32(GetLocalIP());
+    pkt.localIp0 = ip >> 24;
+    pkt.localIp1 = ip >> 16;
+    pkt.localIp2 = ip >> 8;
+    pkt.localIp3 = ip;
+    pkt.localPortHi = 0;
+    pkt.localPortLo = 0;
+    STD_CopyString(pkt.name, __GSIACGamename);
+    s32 len = STD_GetStringLength(__GSIACGamename) + 0x16;
+    if (p[0xe] != 0 && ctx->initAckRecv[0] == 0) {
         p[0xc] = 0;
-        func_ov065_02287200(ctx->unk_04, data_ov065_02291540, 0x6cfd, p, len);
+        SendPacket__natneg(ctx->gameSock, matchup1ip, 0x6cfd, p, len);
     }
-    if (ctx->unk_14[1] == 0) {
+    if (ctx->initAckRecv[1] == 0) {
         p[0xc] = 1;
-        func_ov065_02287200(ctx->unk_00, data_ov065_02291540, 0x6cfd, p, len);
+        SendPacket__natneg(ctx->negotiateSock, matchup1ip, 0x6cfd, p, len);
     }
-    s32 port = SWAP16((s32)func_ov065_02287188(p[0xe] != 0 ? ctx->unk_04 : ctx->unk_00));
+    s32 port = SWAP16((s32)GetLocalPort(p[0xe] != 0 ? ctx->gameSock : ctx->negotiateSock));
     port = (u16)port;
-    pkt.unk_13 = port >> 8;
-    pkt.unk_14 = port;
-    if (ctx->unk_14[2] == 0) {
+    pkt.localPortHi = port >> 8;
+    pkt.localPortLo = port;
+    if (ctx->initAckRecv[2] == 0) {
         p[0xc] = 2;
-        func_ov065_02287200(ctx->unk_00, data_ov065_0229153c, 0x6cfd, p, len);
+        SendPacket__natneg(ctx->negotiateSock, matchup2ip, 0x6cfd, p, len);
     }
-    ctx->unk_28 = func_ov065_02279144() + 0x1f4;
-    ctx->unk_24 = 0x1e;
+    ctx->retryTime = current_time() + 0x1f4;
+    ctx->maxRetryCount = 0x1e;
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286f34(Unk_ov065_02286c74_Ctx *ctx) {
-    Unk_ov065_02286bb4_Pkt pkt;
+extern "C" void SendPingPacket(_NATNegotiator *ctx) {
+    GsNatNegPacket pkt;
     u8 *d = (u8 *)&pkt;
-    const u8 *m = (const u8 *)data_ov065_0228e16c;
+    const u8 *m = (const u8 *)NNMagicData;
     d[0] = m[0];
     d[1] = m[1];
     d[2] = m[2];
@@ -525,60 +388,60 @@ extern "C" void func_ov065_02286f34(Unk_ov065_02286c74_Ctx *ctx) {
     d[5] = m[5];
     pkt.version = 2;
     pkt.type = 7;
-    u32 c = ctx->unk_08;
+    u32 c = ctx->cookie;
     pkt.cookie = SWAP32(c);
-    *(u32 *)&pkt.unk_0c = ctx->unk_2c;
-    u16 p = ctx->unk_30;
-    *(u16 *)&pkt.unk_10 = SWAP16(p);
-    pkt.unk_12 = ctx->unk_32;
-    pkt.unk_13 = ctx->unk_10 == 2 ? 0 : 1;
-    s32 fd = ctx->unk_04;
+    *(u32 *)&pkt.peerIp = ctx->guessedIP;
+    u16 p = ctx->guessedPort;
+    *(u16 *)&pkt.peerPort = SWAP16(p);
+    pkt.gotPeerPing = ctx->gotRemoteData;
+    pkt.finished = ctx->state == 2 ? 0 : 1;
+    s32 fd = ctx->gameSock;
     if (fd == -1) {
-        fd = ctx->unk_00;
+        fd = ctx->negotiateSock;
     }
-    func_ov065_02287200(fd, ctx->unk_2c, ctx->unk_30, &pkt, 0x14);
-    ctx->unk_28 = func_ov065_02279144() + 0x2bc;
-    ctx->unk_24 = 0xc;
-    if (ctx->unk_32 != 0) {
-        ctx->unk_33 = 1;
+    SendPacket__natneg(fd, ctx->guessedIP, ctx->guessedPort, &pkt, 0x14);
+    ctx->retryTime = current_time() + 0x2bc;
+    ctx->maxRetryCount = 0xc;
+    if (ctx->gotRemoteData != 0) {
+        ctx->sendGotRemoteData = 1;
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 func_ov065_02286f04(const char *name) {
-    u32 r = func_ov065_02278bf4(name);
+extern "C" u32 NameToIp(const char *name) {
+    u32 r = inet_addr(name);
     if (r == (u32)-1) {
-        Unk_ov065_02286f04_Hostent *h = func_ov065_02261408(name);
+        SockHostEnt *h = Sock_GetHostByName(name);
         if (h == NULL) {
             return 0;
         }
-        r = **h->addr_list;
+        r = *(u32 *)*h->addrList;
     }
     return r;
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 func_ov065_02286ed8(const char *name, const char *s) {
+extern "C" u32 ResolveServer(const char *name, const char *s) {
     char buf[0x80];
     if (name == NULL) {
-        func_02113088(buf, 0x80, "%s.%s", data_ov065_02290fe4, s);
+        OS_SNPrintf(buf, 0x80, "%s.%s", __GSIACGamename, s);
         name = buf;
     }
-    return func_ov065_02286f04(name);
+    return NameToIp(name);
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" s32 func_ov065_02286e70() {
-    if (data_ov065_02291540 == 0) {
-        data_ov065_02291540 = func_ov065_02286ed8((const char *)data_ov065_02291538, "natneg1.gs.nintendowifi.net");
+extern "C" s32 ResolveServers() {
+    if (matchup1ip == 0) {
+        matchup1ip = ResolveServer((const char *)Matchup1Hostname, "natneg1.gs.nintendowifi.net");
     }
-    if (data_ov065_0229153c == 0) {
-        data_ov065_0229153c = func_ov065_02286ed8((const char *)data_ov065_02291534, "natneg2.gs.nintendowifi.net");
+    if (matchup2ip == 0) {
+        matchup2ip = ResolveServer((const char *)Matchup2Hostname, "natneg2.gs.nintendowifi.net");
     }
-    if (data_ov065_02291540 == 0 || data_ov065_0229153c == 0) {
+    if (matchup1ip == 0 || matchup2ip == 0) {
         return 0;
     }
     return 1;
@@ -586,130 +449,130 @@ extern "C" s32 func_ov065_02286e70() {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" s32 func_ov065_02286dcc(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
-    if (data_ov065_02290fa0 != 1) {
+extern "C" s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
+    if (__GSIACResult != 1) {
         return 2;
     }
-    if (func_ov065_02286e70() == 0) {
+    if (ResolveServers() == 0) {
         return 3;
     }
-    Unk_ov065_02286c74_Ctx *ctx = (Unk_ov065_02286c74_Ctx *)func_ov065_022872c8();
+    _NATNegotiator *ctx = (_NATNegotiator *)AddNegotiator();
     if (ctx == NULL) {
         return 1;
     }
-    ctx->unk_04 = a;
-    ctx->unk_0c = c;
-    ctx->unk_08 = b;
-    ctx->unk_34 = (Unk_ov065_02286c74_Cb34)d;
-    ctx->unk_38 = (Unk_ov065_02286c74_Cb38)e;
-    ctx->unk_3c = f;
-    ctx->unk_00 = func_ov065_02278dd4(2, 2, 0);
-    ctx->unk_20 = 0;
-    ctx->unk_32 = 0;
-    ctx->unk_33 = 0;
-    ctx->unk_2c = 0;
-    ctx->unk_30 = 0;
-    ctx->unk_24 = 0;
-    if (ctx->unk_00 == -1) {
-        func_ov065_02287280(ctx);
+    ctx->gameSock = a;
+    ctx->clientindex = c;
+    ctx->cookie = b;
+    ctx->progressCallback = (NegotiateProgressFunc)d;
+    ctx->completedCallback = (NegotiateCompletedFunc)e;
+    ctx->userdata = f;
+    ctx->negotiateSock = socket(2, 2, 0);
+    ctx->retryCount = 0;
+    ctx->gotRemoteData = 0;
+    ctx->sendGotRemoteData = 0;
+    ctx->guessedIP = 0;
+    ctx->guessedPort = 0;
+    ctx->maxRetryCount = 0;
+    if (ctx->negotiateSock == -1) {
+        RemoveNegotiator(ctx);
         return 2;
     }
-    func_ov065_02287000(ctx);
+    SendInitPackets(ctx);
     return 0;
 }
 } }
 
-extern "C" { u32 data_ov065_0229153c; } //@
+extern "C" { u32 matchup2ip; } //@
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286da0(u32 cookie) {
-    Unk_ov065_02286c74_Ctx *ctx = func_ov065_02287348(cookie);
+extern "C" void NNCancel(u32 cookie) {
+    _NATNegotiator *ctx = FindNegotiatorForCookie(cookie);
     if (ctx != NULL) {
-        if (ctx->unk_00 != -1) {
-            func_ov065_02278dbc(ctx->unk_00);
+        if (ctx->negotiateSock != -1) {
+            closesocket(ctx->negotiateSock);
         }
-        ctx->unk_00 = -1;
-        ctx->unk_10 = 4;
+        ctx->negotiateSock = -1;
+        ctx->state = 4;
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286c74(Unk_ov065_02286c74_Ctx *ctx) {
-    Unk_ov065_02286c74_Sa from;
+extern "C" void NegotiateThink(_NATNegotiator *ctx) {
+    SockAddrIn from;
     s32 len;
-    Unk_ov065_02286c74_Sa out;
+    SockAddrIn out;
     len = 8;
-    if (ctx->unk_10 == 4) {
-        func_ov065_02287280(ctx);
+    if (ctx->state == 4) {
+        RemoveNegotiator(ctx);
         return;
     }
-    while (ctx->unk_00 != -1) {
-        if (func_ov065_02278ee8(ctx->unk_00) == 0) {
+    while (ctx->negotiateSock != -1) {
+        if (CanReceiveOnSocket(ctx->negotiateSock) == 0) {
             break;
         }
-        s32 n = func_ov065_02278cb8(ctx->unk_00, data_ov065_02291548, 0x200, 0, &from, &len);
+        s32 n = recvfrom(ctx->negotiateSock, data_ov065_02291548, 0x200, 0, &from, &len);
         if (n == -1) {
             break;
         }
-        func_ov065_02286934(data_ov065_02291548, n, &from);
-        if (ctx->unk_10 == 4) {
+        NNProcessData(data_ov065_02291548, n, &from);
+        if (ctx->state == 4) {
             break;
         }
     }
-    if (ctx->unk_10 == 0 || ctx->unk_10 == 2) {
-        if (func_ov065_02279144() > ctx->unk_28) {
-            s32 a = ctx->unk_20;
-            if (a > ctx->unk_24) {
-                ctx->unk_38(2, -1, 0, ctx->unk_3c);
-                func_ov065_02286da0(ctx->unk_08);
+    if (ctx->state == 0 || ctx->state == 2) {
+        if (current_time() > ctx->retryTime) {
+            s32 a = ctx->retryCount;
+            if (a > ctx->maxRetryCount) {
+                ctx->completedCallback(2, -1, 0, ctx->userdata);
+                NNCancel(ctx->cookie);
             } else {
-                ctx->unk_20 = a + 1;
-                if (ctx->unk_10 == 0) {
-                    func_ov065_02287000(ctx);
+                ctx->retryCount = a + 1;
+                if (ctx->state == 0) {
+                    SendInitPackets(ctx);
                 } else {
-                    func_ov065_02286f34(ctx);
+                    SendPingPacket(ctx);
                 }
             }
         }
     }
-    if (ctx->unk_10 == 3) {
-        if (func_ov065_02279144() > ctx->unk_28) {
-            if (ctx->unk_04 == -1) {
+    if (ctx->state == 3) {
+        if (current_time() > ctx->retryTime) {
+            if (ctx->gameSock == -1) {
                 out.family = 2;
-                u16 p = ctx->unk_30;
+                u16 p = ctx->guessedPort;
                 out.port = SWAP16(p);
-                out.addr = ctx->unk_2c;
-                ctx->unk_38(0, ctx->unk_00, &out, ctx->unk_3c);
-                ctx->unk_00 = -1;
+                out.addr = ctx->guessedIP;
+                ctx->completedCallback(0, ctx->negotiateSock, &out, ctx->userdata);
+                ctx->negotiateSock = -1;
             }
-            func_ov065_02286da0(ctx->unk_08);
+            NNCancel(ctx->cookie);
         }
     }
-    if (ctx->unk_10 == 1) {
-        if (func_ov065_02279144() > ctx->unk_28) {
-            ctx->unk_38(1, -1, 0, ctx->unk_3c);
-            func_ov065_02286da0(ctx->unk_08);
+    if (ctx->state == 1) {
+        if (current_time() > ctx->retryTime) {
+            ctx->completedCallback(1, -1, 0, ctx->userdata);
+            NNCancel(ctx->cookie);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286c3c() {
-    if (data_ov065_02291544 != NULL) {
+extern "C" void NNThink() {
+    if (negotiateList != NULL) {
         s32 i;
-        for (i = func_ov065_02278684(data_ov065_02291544) - 1; i >= 0; i--) {
-            func_ov065_02286c74((Unk_ov065_02286c74_Ctx *)func_ov065_0227866c(data_ov065_02291544, i));
+        for (i = ArrayLength(negotiateList) - 1; i >= 0; i--) {
+            NegotiateThink((_NATNegotiator *)ArrayNth(negotiateList, i));
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286bb4(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286c74_Sa *sa) {
-    Unk_ov065_02286bb4_Pkt pkt;
+extern "C" void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa) {
+    GsNatNegPacket pkt;
     u8 *d = (u8 *)&pkt;
-    const u8 *m = data_ov065_0228e16c;
+    const u8 *m = NNMagicData;
     d[0] = m[0];
     d[1] = m[1];
     d[2] = m[2];
@@ -718,21 +581,21 @@ extern "C" void func_ov065_02286bb4(Unk_ov065_02286c74_Ctx *ctx, Unk_ov065_02286
     d[5] = m[5];
     pkt.version = 2;
     pkt.type = 6;
-    pkt.unk_0d = ctx->unk_0c;
-    u32 c = ctx->unk_08;
+    pkt.clientIndex = ctx->clientindex;
+    u32 c = ctx->cookie;
     pkt.cookie = SWAP32(c);
     u16 p = sa->port;
-    func_ov065_02287200(ctx->unk_00, sa->addr, (u16)SWAP16(p), d, 0x15);
+    SendPacket__natneg(ctx->negotiateSock, sa->addr, (u16)SWAP16(p), d, 0x15);
 }
 } }
 
-extern "C" { u32 data_ov065_02291534; } //@
+extern "C" { u32 Matchup2Hostname; } //@
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286b34(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa) {
     if (pkt[0x13] == 0) {
-        func_ov065_02286bb4(ctx, sa);
+        SendConnectAck(ctx, sa);
     }
-    if (ctx->unk_10 < 2) {
+    if (ctx->state < 2) {
         u32 r = pkt[0x13];
         if (r != 0) {
             s32 code = 3;
@@ -741,60 +604,60 @@ extern "C" void func_ov065_02286b34(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov
             } else if (r == 2) {
                 code = 2;
             }
-            ctx->unk_38(code, -1, 0, ctx->unk_3c);
-            func_ov065_02286da0(ctx->unk_08);
+            ctx->completedCallback(code, -1, 0, ctx->userdata);
+            NNCancel(ctx->cookie);
         } else {
-            ctx->unk_2c = *(u32 *)&pkt[0xc];
+            ctx->guessedIP = *(u32 *)&pkt[0xc];
             u16 p = *(u16 *)&pkt[0x10];
-            ctx->unk_30 = SWAP16(p);
-            ctx->unk_20 = 0;
-            ctx->unk_10 = 2;
-            ctx->unk_34(ctx->unk_10, ctx->unk_3c);
-            func_ov065_02286f34(ctx);
+            ctx->guessedPort = SWAP16(p);
+            ctx->retryCount = 0;
+            ctx->state = 2;
+            ctx->progressCallback(ctx->state, ctx->userdata);
+            SendPingPacket(ctx);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286aa8(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
-    if (ctx->unk_10 >= 2) {
-        ctx->unk_2c = sa->addr;
+extern "C" void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa) {
+    if (ctx->state >= 2) {
+        ctx->guessedIP = sa->addr;
         u16 p = sa->port;
-        ctx->unk_30 = SWAP16(p);
-        ctx->unk_32 = 1;
+        ctx->guessedPort = SWAP16(p);
+        ctx->gotRemoteData = 1;
         if (pkt[0x12] == 0) {
-            func_ov065_02286f34(ctx);
+            SendPingPacket(ctx);
             return;
         }
-        if (ctx->unk_10 == 2) {
-            if (ctx->unk_33 == 0) {
-                func_ov065_02286f34(ctx);
+        if (ctx->state == 2) {
+            if (ctx->sendGotRemoteData == 0) {
+                SendPingPacket(ctx);
             }
-            ctx->unk_10 = 3;
-            ctx->unk_28 = func_ov065_02279144() + 5000;
-            if (ctx->unk_04 != -1) {
-                ctx->unk_38(0, ctx->unk_04, sa, ctx->unk_3c);
+            ctx->state = 3;
+            ctx->retryTime = current_time() + 5000;
+            if (ctx->gameSock != -1) {
+                ctx->completedCallback(0, ctx->gameSock, sa, ctx->userdata);
             }
         } else if (pkt[0x13] == 0) {
-            func_ov065_02286f34(ctx);
+            SendPingPacket(ctx);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa) {
     switch (pkt[7]) {
     case 1: {
         u32 i = pkt[0xc];
         if (i <= 2) {
-            ctx->unk_14[i] = 1;
-            if (ctx->unk_10 == 0 && ctx->unk_14[1] != 0 && ctx->unk_14[2] != 0) {
-                if (ctx->unk_04 == -1 || ctx->unk_14[0] != 0) {
-                    ctx->unk_10 = 1;
-                    ctx->unk_28 = func_ov065_02279144() + 10000;
-                    ctx->unk_34(ctx->unk_10, ctx->unk_3c);
+            ctx->initAckRecv[i] = 1;
+            if (ctx->state == 0 && ctx->initAckRecv[1] != 0 && ctx->initAckRecv[2] != 0) {
+                if (ctx->gameSock == -1 || ctx->initAckRecv[0] != 0) {
+                    ctx->state = 1;
+                    ctx->retryTime = current_time() + 10000;
+                    ctx->progressCallback(ctx->state, ctx->userdata);
                 }
             }
         }
@@ -803,7 +666,7 @@ extern "C" void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov
     case 2: {
         pkt[7] = 3;
         u16 p = sa->port;
-        func_ov065_02287200(ctx->unk_00, sa->addr, (u16)SWAP16(p), pkt, 0x15);
+        SendPacket__natneg(ctx->negotiateSock, sa->addr, (u16)SWAP16(p), pkt, 0x15);
         break;
     }
     }
@@ -811,10 +674,10 @@ extern "C" void func_ov065_02286a0c(Unk_ov065_02286c74_Ctx *ctx, u8 *pkt, Unk_ov
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void func_ov065_02286934(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa) {
-    Unk_ov065_02286934_Buf14 h;
-    Unk_ov065_02286934_Buf15 g;
-    if (func_ov065_0228723c() == 0) {
+extern "C" void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa) {
+    GsNatNegConnectPktBuf h;
+    GsNatNegReplyPktBuf g;
+    if (CheckMagic() == 0) {
         return;
     }
     u32 type = pkt[7];
@@ -822,28 +685,28 @@ extern "C" void func_ov065_02286934(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa)
         if (len < 0x14) {
             return;
         }
-        h = *(Unk_ov065_02286934_Buf14 *)pkt;
+        h = *(GsNatNegConnectPktBuf *)pkt;
         u32 c = *(u32 *)&h.b[8];
-        Unk_ov065_02286c74_Ctx *ctx = func_ov065_02287348(SWAP32(c));
+        _NATNegotiator *ctx = FindNegotiatorForCookie(SWAP32(c));
         if (ctx == NULL) {
             return;
         }
         if (type == 5) {
-            func_ov065_02286b34(ctx, h.b, sa);
+            ProcessConnectPacket(ctx, h.b, sa);
         } else {
-            func_ov065_02286aa8(ctx, h.b, sa);
+            ProcessPingPacket(ctx, h.b, sa);
         }
     } else {
         if (len < 0x15) {
             return;
         }
-        g = *(Unk_ov065_02286934_Buf15 *)pkt;
+        g = *(GsNatNegReplyPktBuf *)pkt;
         u32 c = *(u32 *)&g.b[8];
-        Unk_ov065_02286c74_Ctx *ctx = func_ov065_02287348(SWAP32(c));
+        _NATNegotiator *ctx = FindNegotiatorForCookie(SWAP32(c));
         if (ctx == NULL) {
             return;
         }
-        func_ov065_02286a0c(ctx, g.b, sa);
+        ProcessInitPacket(ctx, g.b, sa);
     }
 }
 } }

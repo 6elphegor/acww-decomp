@@ -1,25 +1,16 @@
 // mwcc-flags: -nothumb -O4,p
 // RC_020f8b44 (companion of RC_020f7a5c): G011b without its first ten functions (the Rb state machine 0x020f86c0-0x020f8b44, now in the BGM file RC_020f7a5c).
 // autoload_2 0x020f8b44-0x020f92d4 (10 functions), PARTIAL, code unchanged from G011b: particle manager (emit, update);
-// 0x020f8e70-0x020f9018: resource table loaders (callbacks) and resource layout builder (func_020f9018).
+// 0x020f8e70-0x020f9018: resource table loaders (callbacks) and resource layout builder (SPL_Load).
 #include "types.h"
+#include "snd/SndBgmViews.h"
+#include "gfx/SplEmitterViews.h"
+#include "snd/SndBgmHd.h"
 
-// BGM descriptor: u16 id at +0x38 (240 = a special track whose values are halved)
-struct Hd {
-    u8 pad[0x38];
-    u16 id;
-};
 
-// data_021f5bbc: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
-struct Q {
-    u8 pad[0x16];
-    s16 s16v;
-    u8 p18[2];
-    s16 s1a;
-};
 
 struct Fo;
-// view of data_021f5b80 (sound manager of G006): +0 current object, +0x2c Q*, +0x3c Hd* (same word as data_021f5bbc)
+// view of gSndMgr (sound manager of G006): +0 current object, +0x2c Q*, +0x3c Hd* (same word as gSndBgmHandle)
 struct Mg {
     Fo *cur;
     u8 p4[0x28];
@@ -50,21 +41,6 @@ struct Fo {
     u8 c2e;
 };
 
-// base object (vtable 0x0213bb90), view A (+4 is an fx32 value)
-struct Rb {
-    u32 w0;
-    u16 h4;
-    u16 h6;
-    u8 c8;
-    s8 c9;
-    s8 c10;
-    s8 c11;
-    s8 c12;
-    s8 c13;
-    s8 c14;
-    u8 c15;
-    u8 c16;
-};
 
 // SPL-style particle manager: ResInfo = emitter resource header, Entry = live emitter, Mgr = manager
 struct ResInfo {
@@ -166,24 +142,6 @@ struct Fp {
     u16 h26;
 };
 
-// per-resource header: bits 8-11 and 16 = optional blocks, bits 24-29 = field types (each gets a handler function)
-struct HdrBits {
-    u32 pad0 : 8;
-    u32 b8 : 1;
-    u32 b9 : 1;
-    u32 b10 : 1;
-    u32 b11 : 1;
-    u32 pad12 : 4;
-    u32 b16 : 1;
-    u32 pad17 : 7;
-    u32 b24 : 1;
-    u32 b25 : 1;
-    u32 b26 : 1;
-    u32 b27 : 1;
-    u32 b28 : 1;
-    u32 b29 : 1;
-    u32 pad30 : 2;
-};
 
 struct Item8 {
     void *fn;
@@ -203,56 +161,56 @@ struct Pool32 {
 };
 
 extern "C" {
-extern Mg data_021f5b80;
+extern Mg gSndMgr;
 extern s16 data_021f5c30;
 extern s16 data_021f5c34;
-void func_0210a024(void *p, u32 sel, void *out);
-void func_0210a008(u32 sel, void *out);
-void func_0210d010(void *p, u32 v);
-void func_020eda30(void *p, u32 v);
-void func_020eda60(void *p);
-void func_0210a27c(void *p);
-void func_02109fd0(void *p, u32 a, s32 b);
-void func_020f86c0(Rb *r);
-void func_020f87b4(Rb *r);
-void func_020f88b4(Rb *r);
-void func_020f8604(Rb *r, void *arg);
-s32 func_020f83fc(Rb *r);
-void func_020f8a80(Rb *r, u32 mode);
+void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
+void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
+void NNS_SndArcPlayerStartSeq(void *p, u32 v);
+void Snd_StopHandle(void *p, u32 v);
+void Snd_InitHandle(void *p);
+void NNS_SndHandleReleaseSeq(void *p);
+void NNS_SndPlayerWriteVariable(void *p, u32 a, s32 b);
+void BgmSyncSnd_ReadHeader(Rb *r);
+void BgmSyncSnd_ReadVars(Rb *r);
+void BgmSyncSnd_SelectStep(Rb *r);
+void BgmSyncSnd_UpdatePosition(Rb *r, void *arg);
+s32 BgmSyncSnd_CalcPhase(Rb *r);
+void BgmSyncSnd_SetState(Rb *r, u32 mode);
 void func_020f9690(Entry *e, void *list);
-void func_020fa0f4(Entry *e, void *tab, void *v);
-Entry *func_020fe35c(void *list);
-void func_020fe3a0(void *list, Entry *e);
-Entry *func_020fe2f0(void *list, Entry *e);
-void func_020f969c(Mgr *m, u32 a);
-void func_020f98ac(Mgr *m, Entry *e);
+void spl_init(Entry *e, void *tab, void *v);
+Entry *spl_pop_front(void *list);
+void spl_push_front(void *list, Entry *e);
+Entry *spl_del(void *list, Entry *e);
+void spl_draw(Mgr *m, u32 a);
+void spl_calc(Mgr *m, Entry *e);
 extern u16 data_021f5c38;
-void func_020fe2bc(void);
-void func_020fe1f4(void);
-void func_020fe170(void);
-void func_020fe098(void);
-void func_020fdf7c(void);
-void func_020fdee8(void);
-void func_02111ff0(void);
-void func_02111f7c(void *dst, u32 a, u32 n);
-void func_02111f24(void);
-void func_0211220c(void);
-void func_021120a8(void *dst, u32 a, u32 n);
-void func_02112038(void);
-s32 func_020f8e98(Fp *self, Cb cb);
-u32 func_020f9620(u32 a, u32 b);
-s32 func_020f8f4c(Fp *self, Cb cb);
-u32 func_020f9658(u32 a, u32 b);
-void *func_02115fb4(void *p, u32 v, u32 n);
+void spl_calc_gravity(void);
+void spl_calc_random(void);
+void spl_calc_magnet(void);
+void spl_calc_spin(void);
+void spl_calc_scfield(void);
+void spl_calc_convergence(void);
+void GX_BeginLoadTexPltt(void);
+void GX_LoadTexPltt(void *dst, u32 a, u32 n);
+void GX_EndLoadTexPltt(void);
+void GX_BeginLoadTex(void);
+void GX_LoadTex(void *dst, u32 a, u32 n);
+void GX_EndLoadTex(void);
+s32 SPL_LoadTexPlttByCallbackFunction(Fp *self, Cb cb);
+u32 sAllocTexPalette(u32 a, u32 b);
+s32 SPL_LoadTexByCallbackFunction(Fp *self, Cb cb);
+u32 sAllocTex(u32 a, u32 b);
+void *MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 static inline BOOL nz(u32 v) { return v != 0; }
 
-extern "C" void func_020f9018(Fp *self, u8 *base) {
+extern "C" void SPL_Load(Fp *self, u8 *base) {
     s32 i;
     u32 off = 0;
     self->p1c = (u8 *)self->alloc(self->h24 << 5);
-    func_02115fb4(self->p1c, 0, self->h24 << 5);
+    MI_CpuFill8(self->p1c, 0, self->h24 << 5);
     for (i = 0; i < self->h24; i++) {
         Pool32 *p = (Pool32 *)(self->p1c + i * 32);
         HdrBits h;
@@ -296,37 +254,37 @@ extern "C" void func_020f9018(Fp *self, u8 *base) {
             it = p->p18;
             if (h.b24) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fe2bc;
+                it->fn = (void *)spl_calc_gravity;
                 off += 8;
                 it++;
             }
             if (h.b25) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fe1f4;
+                it->fn = (void *)spl_calc_random;
                 off += 8;
                 it++;
             }
             if (h.b26) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fe170;
+                it->fn = (void *)spl_calc_magnet;
                 off += 16;
                 it++;
             }
             if (h.b27) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fe098;
+                it->fn = (void *)spl_calc_spin;
                 off += 4;
                 it++;
             }
             if (h.b28) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fdf7c;
+                it->fn = (void *)spl_calc_scfield;
                 off += 8;
                 it++;
             }
             if (h.b29) {
                 it->p4 = base + off;
-                it->fn = (void *)func_020fdee8;
+                it->fn = (void *)spl_calc_convergence;
                 off += 16;
                 it++;
             }
@@ -336,9 +294,9 @@ extern "C" void func_020f9018(Fp *self, u8 *base) {
     }
 }
 
-extern "C" s32 func_020f8f4c(Fp *self, Cb cb) {
+extern "C" s32 SPL_LoadTexByCallbackFunction(Fp *self, Cb cb) {
     s32 i;
-    func_0211220c();
+    GX_BeginLoadTex();
     for (i = 0; i < self->h26; i++) {
         Slot *s = &self->tab[i];
         SEnt *e = s->e;
@@ -346,40 +304,40 @@ extern "C" s32 func_020f8f4c(Fp *self, Cb cb) {
             s->w4 = self->tab[e->b.idx].w4;
         } else {
             u32 r = cb(e->w8, e->b.kind == 5 ? 1 : 0);
-            func_021120a8((u8 *)s->e + 32, r, e->w8);
+            GX_LoadTex((u8 *)s->e + 32, r, e->w8);
             s->w4 = r;
         }
     }
-    func_02112038();
+    GX_EndLoadTex();
     return 1;
 }
 
-extern "C" s32 func_020f8e98(Fp *self, Cb cb) {
+extern "C" s32 SPL_LoadTexPlttByCallbackFunction(Fp *self, Cb cb) {
     s32 i;
-    func_02111ff0();
+    GX_BeginLoadTexPltt();
     for (i = 0; i < self->h26; i++) {
         Slot *s = &self->tab[i];
         SEnt *e = s->e;
         u32 r = 0;
         if (e->w16 != 0) {
             r = cb(e->w16, e->b.kind == 2 ? 1 : 0);
-            func_02111f7c((u8 *)s->e + e->wc, r, e->w16);
+            GX_LoadTexPltt((u8 *)s->e + e->wc, r, e->w16);
         }
         s->w8 = r;
     }
-    func_02111f24();
+    GX_EndLoadTexPltt();
     return 1;
 }
 
-extern "C" s32 func_020f8e84(Fp *self) {
-    return func_020f8f4c(self, func_020f9658);
+extern "C" s32 SPL_LoadTexByVRAMManager(Fp *self) {
+    return SPL_LoadTexByCallbackFunction(self, sAllocTex);
 }
 
-extern "C" s32 func_020f8e70(Fp *self) {
-    return func_020f8e98(self, func_020f9620);
+extern "C" s32 SPL_LoadTexPlttByVRAMManager(Fp *self) {
+    return SPL_LoadTexPlttByCallbackFunction(self, sAllocTexPalette);
 }
 
-extern "C" void func_020f8d24(Mgr *m) {
+extern "C" void SPL_Calc(Mgr *m) {
     Entry *e;
     for (e = m->act; e != 0;) {
         Entry *next;
@@ -394,11 +352,11 @@ extern "C" void func_020f8d24(Mgr *m) {
         }
         if (e->fl.b2 == 0) {
             u32 t = e->f16;
-            if (t == 0 || data_021f5c38 == t - 1) func_020f98ac(m, e);
+            if (t == 0 || data_021f5c38 == t - 1) spl_calc(m, e);
         }
         if ((ri->f14 != 0 && ri->h38 != 0 && e->fl.b4 != 0 && e->h38 > ri->h38) || e->fl.b0 != 0) {
             if (e->w12 == 0 && e->w20 == 0) {
-                func_020fe3a0(&m->fr, func_020fe2f0(&m->act, e));
+                spl_push_front(&m->fr, spl_del(&m->act, e));
             }
         }
         e = next;
@@ -407,7 +365,7 @@ extern "C" void func_020f8d24(Mgr *m) {
     if (data_021f5c38 > 1) data_021f5c38 = 0;
 }
 
-extern "C" void func_020f8cb8(Mgr *m, u32 a1, u32 a2) {
+extern "C" void SPL_Draw(Mgr *m, u32 a1, u32 a2) {
     Entry *e;
     *(vu16 *)0x04000060 = (u16)((*(vu16 *)0x04000060 & ~0x3000) | 8);
     m->w38 = a1;
@@ -415,30 +373,30 @@ extern "C" void func_020f8cb8(Mgr *m, u32 a1, u32 a2) {
     if (e == 0) return;
     do {
         m->cur = e;
-        if (e->fl.b3 == 0) func_020f969c(m, a2);
+        if (e->fl.b3 == 0) spl_draw(m, a2);
         e = e->next;
     } while (e != 0);
 }
 
-extern "C" Entry *func_020f8c44(Mgr *m, s32 idx, void *p) {
+extern "C" Entry *SPL_Create(Mgr *m, s32 idx, void *p) {
     Entry *e = 0;
     if (m->fr != 0) {
-        e = func_020fe35c(&m->fr);
-        func_020fa0f4(e, m->tab + idx * 32, p);
-        func_020fe3a0(&m->act, e);
+        e = spl_pop_front(&m->fr);
+        spl_init(e, m->tab + idx * 32, p);
+        spl_push_front(&m->act, e);
         if (e->res->p0->f14 != 0) e = 0;
     }
     return e;
 }
 
-extern "C" Entry *func_020f8bb0(Mgr *m, u32 idx, void (*cb)(Entry *)) {
+extern "C" Entry *SPL_CreateWithInitialize(Mgr *m, u32 idx, void (*cb)(Entry *)) {
     Entry *e = 0;
     if (m->fr != 0) {
         Fx3 z = {0, 0, 0};
-        e = func_020fe35c(&m->fr);
-        func_020fa0f4(e, m->tab + idx * 32, &z);
+        e = spl_pop_front(&m->fr);
+        spl_init(e, m->tab + idx * 32, &z);
         if (cb != 0) cb(e);
-        func_020fe3a0(&m->act, e);
+        spl_push_front(&m->act, e);
         if (e->res->p0->f14 != 0) e = 0;
     }
     return e;
@@ -451,3 +409,5 @@ extern "C" void func_020f8b44(Mgr *m, Entry *e, Fx3 *v) {
     func_020f9690(e, (u8 *)m + 20);
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f5c38-0x021f5c3c)
+u16 data_021f5c38;

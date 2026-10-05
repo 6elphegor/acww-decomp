@@ -99,7 +99,7 @@ Rerun `configure.py` after adding, removing or renaming a unit, or after changin
   finding where a source file starts and ends.
 * `python3 tools/pipeline/ovdump.py ovNNN` dumps an overlay's `.data` with relocation targets and labels.
 
-### Compare one function (main and overlays)
+### Compare one function
 
 ```
 python3 tools/asmdiff.py scratch.cpp <compiled symbol> --original <symbols.txt name>
@@ -110,12 +110,12 @@ addresses are not compared (the link check below catches those). asmdiff uses th
 header line pass them explicitly, e.g.
 
 ```
-python3 tools/asmdiff.py f.cpp func_ov065_02261fd8 --version 1.2/sp2p3 \
+python3 tools/asmdiff.py f.cpp IpStack_TimerThreadMain --version 1.2/sp2p3 \
     --flags "$(cd tools && python3 -c 'from mwcc_config import CC_FLAGS; print(CC_FLAGS)') -O4,p"
 ```
 
-asmdiff only knows main and the overlays. For autoload_2 and ITCM use `linkprep.py compile` and `check` and compare
-`arm-none-eabi-objdump -d` of your object with `maindis.py`.
+asmdiff (and compiler_search) find the original in main, the overlays, `autoload_2` and ITCM. Library and ITCM files
+are mostly ARM: replace `-thumb` by `-nothumb` in the flags (and add the file's `-O4,p`).
 
 ### Check a whole unit
 
@@ -160,8 +160,8 @@ which ranges differ.
 
 ## 3. Naming
 
-* Free functions keep their `symbols.txt` name: declare them `extern "C"` (`func_0210f0e0`,
-  `func_ov065_02261fd8`). Never leave a `func_` name C++-mangled.
+* Free functions keep their `symbols.txt` name: declare them `extern "C"` (`GX_SetGraphicsMode`,
+  `IpStack_TimerThreadMain`). Never leave a `func_` name C++-mangled.
 * Classes are named `Unk_<address>` after their vtable (the address objects store, 8 bytes into the vtable) or,
   without a vtable, after their first function. Overlay-only classes are `Unk_ovNNN_<address>`. Local helper
   types are `Unk_<function address>_Xxx`. Generic names (`Obj`, `Info`) collide when files are combined.

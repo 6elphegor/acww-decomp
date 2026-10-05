@@ -9,10 +9,10 @@
 	.arm
 
 ; MTX_Identity33_(pDst): 3x3 identity, FX32_ONE = 0x1000
-	.global func_01ffb448
-	.type func_01ffb448, @function
-	.size func_01ffb448, 0x24
-func_01ffb448:
+	.global MTX_Identity33_
+	.type MTX_Identity33_, @function
+	.size MTX_Identity33_, 0x24
+MTX_Identity33_:
 	mov r2, #0x1000
 	str r2, [r0, #32]
 	mov r3, #0
@@ -24,10 +24,10 @@ func_01ffb448:
 	bx lr
 
 ; MTX_Copy33To43_(pSrc, pDst): copies the 3x3 rows, translation row cleared
-	.global func_01ffb46c
-	.type func_01ffb46c, @function
-	.size func_01ffb46c, 0x2c
-func_01ffb46c:
+	.global MTX_Copy33To43_
+	.type MTX_Copy33To43_, @function
+	.size MTX_Copy33To43_, 0x2c
+MTX_Copy33To43_:
 	ldmia r0!, {r2, r3, r12}
 	stmia r1!, {r2, r3, r12}
 	ldmia r0!, {r2, r3, r12}

@@ -14,7 +14,7 @@ typedef struct P32 { s32 x, y; } P32;
 
 // NNS g3d (NitroSystem) animation: two-value (pair) track evaluation in the nsbca getScaleData_ shape
 // (step 1/2/4 tracks, last_interp, 1:1 and 3:1 / 1:3 interpolation, fx16 or fx32 pair arrays).
-void func_02106d60(s32 *out, u32 f, u32 *ent, u8 *base)
+void getScaleData_(s32 *out, u32 f, u32 *ent, u8 *base)
 {
     u8 *d;
     u32 info;

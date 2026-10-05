@@ -1,42 +1,38 @@
 // mwcc-flags: -nothumb -O4,p
 // RC_020f44f0: autoload_2 0x020f44f0-0x020f4904 (11 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL, unchanged code of G012a
 // (src/autoload_2/unk_020f3e50.cpp) minus the channel-object classes 0x020f3e50-0x020f44f0, which RC_020f3e50 now builds as real
-// classes. This is the start of the NEXT source file (sound-position pan / volume curve, listener callbacks; its .data byte
-// data_0213b9d8, bss 0x021f5bfc-0x021f5c2c and main's __sinit 0x020c6094 (FX_Div constants, Ramp clear func_020f46d4) belong to it, see PLAN.md); it stays
-// PARTIAL until that file is reconstructed whole (it continues with G012b 0x020f4a5c-0x020f5b9c and needs func_020f4904).
+// classes. This is the sound-position pan / volume curve file (listener callbacks). It owns its bss (autoload_3
+// 0x021f5bfc-0x021f5c28) and its __sinit (main .init 0x020c6094-0x020c6108, .ctor 0x020d1f54), see the end of the file.
+// The file ends with Snd_CalcListenerDistance (0x020f4904-0x020f4a5c), which is not built yet; the .data byte data_0213b9d8 and the
+// bss from 0x021f5c28 on belong to the next file (unk_020f4a5c.cpp).
 #include "types.h"
+#include "gfx/VecFx32.h"
+#include "snd/PlayCtx.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
-struct PlayCtx {
-    s32 w0;
-    Vec3 *pos;
-    s32 w8;
-    s32 wc;
-    s32 w10;
-};
 
+struct Ramp;
+extern "C" void SndVolumeCurve_Clear(Ramp *r);
 struct Ramp {
     s32 w0, w4, w8, wc, w10, w14, w18;
+    Ramp() { SndVolumeCurve_Clear(this); } // the pan curve starts cleared (the file's __sinit)
 };
 
 extern "C" {
-extern Ramp data_021f5c0c;
+extern Ramp gSndVolumeCurve;
 extern s32 data_021f5c00;
 extern s32 data_021f5c04;
 extern s32 data_021f5c08;
 extern u8 data_021f5bfc;
 
-s32 func_01ffc5a4(s32 a, s32 b);
-s32 func_020f48f0(PlayCtx *p);
-s32 func_020f48c8(PlayCtx *p);
-s32 func_020f4704(PlayCtx *p);
-s32 func_020f48d8(s32 x);
-s32 func_020f4718(Vec3 *p, s32 m);
-s32 func_020f4904(Vec3 *p, s32 m);
-s32 func_020f450c(Ramp *r, s32 x);
+s32 FX_Div(s32 a, s32 b);
+s32 Snd_ListenerDistanceCallback(PlayCtx *p);
+s32 Snd_ListenerVolumeCallback(PlayCtx *p);
+s32 Snd_ListenerPanCallback(PlayCtx *p);
+s32 Snd_DistanceToVolume(s32 x);
+s32 Snd_CalcPan(VecFx32 *p, s32 m);
+s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
+s32 SndVolumeCurve_Eval(Ramp *r, s32 x);
 }
 
 
@@ -44,23 +40,23 @@ static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
 }
 
-// listener callback: distance of the listener at p->pos (mode 0)
-extern "C" s32 func_020f48f0(PlayCtx *p) {
-    return func_020f4904(p->pos, 0);
+// listener callback: distance of the listener at p->source (mode 0)
+extern "C" s32 Snd_ListenerDistanceCallback(PlayCtx *p) {
+    return Snd_CalcListenerDistance((VecFx32 *)p->source, 0);
 }
 
 // volume of the pan curve at x
-extern "C" s32 func_020f48d8(s32 x) {
-    return func_020f450c(&data_021f5c0c, x);
+extern "C" s32 Snd_DistanceToVolume(s32 x) {
+    return SndVolumeCurve_Eval(&gSndVolumeCurve, x);
 }
 
 // listener callback: volume from the distance w10
-extern "C" s32 func_020f48c8(PlayCtx *p) {
-    return func_020f48d8(p->w10);
+extern "C" s32 Snd_ListenerVolumeCallback(PlayCtx *p) {
+    return Snd_DistanceToVolume(p->distance);
 }
 
 // left / right volume (0..127) from the depth z
-extern "C" void func_020f47ac(s32 z, s32 *a, s32 *b) {
+extern "C" void Snd_CalcDepthVolumes(s32 z, s32 *a, s32 *b) {
     s32 l;
     s32 r;
     if (z <= 0) {
@@ -94,7 +90,7 @@ extern "C" void func_020f47ac(s32 z, s32 *a, s32 *b) {
 }
 
 // pan value (-128..127) of a position: mode 0 spread, 1 sign, 2 offset from the screen centre
-extern "C" s32 func_020f4718(Vec3 *p, s32 m) {
+extern "C" s32 Snd_CalcPan(VecFx32 *p, s32 m) {
     s32 r;
     s32 x;
     if (p == 0) return 0;
@@ -122,33 +118,33 @@ extern "C" s32 func_020f4718(Vec3 *p, s32 m) {
     return r;
 }
 
-// listener callback: pan of the listener at p->pos (mode 0)
-extern "C" s32 func_020f4704(PlayCtx *p) {
-    return func_020f4718(p->pos, 0);
+// listener callback: pan of the listener at p->source (mode 0)
+extern "C" s32 Snd_ListenerPanCallback(PlayCtx *p) {
+    return Snd_CalcPan((VecFx32 *)p->source, 0);
 }
 
 // clear the Ramp
-extern "C" void func_020f46d4(Ramp *r) {
+extern "C" void SndVolumeCurve_Clear(Ramp *r) {
     r->w4 = r->w8 = r->wc = r->w10 = 0;
     r->w14 = r->w18 = 0;
 }
 
 // rebuild the pan curve Ramp for a new centre value (cached in w0)
-extern "C" void func_020f45b8(Ramp *r, s32 v) {
+extern "C" void SndVolumeCurve_Set(Ramp *r, s32 v) {
     s32 t;
     if (r->w0 == v) return;
     r->w0 = v;
     t = r->w0 - 0xb000;
     r->w4 = 0x7f000 - FX_Mul(t, 0x3000);
     r->w8 = 0x68000 - FX_Mul(t, 0x4000);
-    r->wc = FX_Mul(func_01ffc5a4(0x2000, 0x3000), t) + 0x4000;
-    r->w10 = FX_Mul(func_01ffc5a4(0x4000, 0x3000), t) + 0x11000;
-    r->w14 = func_01ffc5a4(r->w4 - r->w8, r->wc - r->w0);
-    r->w18 = func_01ffc5a4(r->w8, r->w0 - r->w10);
+    r->wc = FX_Mul(FX_Div(0x2000, 0x3000), t) + 0x4000;
+    r->w10 = FX_Mul(FX_Div(0x4000, 0x3000), t) + 0x11000;
+    r->w14 = FX_Div(r->w4 - r->w8, r->wc - r->w0);
+    r->w18 = FX_Div(r->w8, r->w0 - r->w10);
 }
 
 // pan curve: piecewise-linear mapping of x (fixed point) through the Ramp points, clamped to 0..127
-extern "C" s32 func_020f450c(Ramp *r, s32 x) {
+extern "C" s32 SndVolumeCurve_Eval(Ramp *r, s32 x) {
     s32 v;
     if (x >= (r->w10 >> 12)) {
         v = 0;
@@ -164,13 +160,21 @@ extern "C" s32 func_020f450c(Ramp *r, s32 x) {
     return v;
 }
 
-// address of the pan curve data_021f5c0c (Ramp)
-extern "C" Ramp *func_020f4500(void) {
-    return &data_021f5c0c;
+// address of the pan curve gSndVolumeCurve (Ramp)
+extern "C" Ramp *Snd_GetVolumeCurve(void) {
+    return &gSndVolumeCurve;
 }
 
 // set data_021f5bfc (byte flag)
-extern "C" void func_020f44f0(u8 v) {
+extern "C" void Snd_SetUnusedFlag(u8 v) {
     data_021f5bfc = v;
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f5bfc-0x021f5c28) and their initialisation, the file's __sinit (main .init
+// 0x020c6094-0x020c6108, .ctor 0x020d1f54): clear the pan curve, then the three slopes of the default curve. This
+// definition order gives the original order after mwcc's size sort.
+Ramp gSndVolumeCurve;
+u8 data_021f5bfc;
+s32 data_021f5c00 = FX_Div(0x7f000, 0x99a);
+s32 data_021f5c08 = FX_Div(0x7f000, 0x666);
+s32 data_021f5c04 = FX_Div(0x7f000, 0x333);

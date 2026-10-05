@@ -1,1024 +1,737 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
+#include "net/CommManager.h"
+#include "gfx/Mtx43.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
+#include "npc/NpcResHandleView.h"
+#include "npc/NpcObstacleProbe.h"
+#include "npc/Unk_0201ad18.h"
+#include "npc/NpcFootstepFx.h"
+#include "sys/ProcBase.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
+#include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/TalkWindowState.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "actor/NpcActor.h"
+#include "actor/ActorFollowCollider.h"
+#include "actor/SpNpcActor.h"
+#include "talk/SpNpcTalkRequest.h"
+#include "talk/SpNpcKatieTalk.h"
+#include "npc/SpNpcKatie.h"
 
-struct Unk_020bfe30_Vec {
-    s32 x, y, z;
-};
-typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
-struct Unk_020cbb18 {
-    u8 unk_00[0x68];
-    s32 unk_68;
-};
-
-class Unk_020e6924;
+class SpNpcKatie;
 
 extern "C" {
-void _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c(void *a, void *b);
-void _ZN12Unk_0201a8c413func_0201a8d0Eiiii(void *self, s32 a, s32 b, s32 c, s32 d);
-s32 func_020b50e8(void);
-s32 func_020b50dc(void);
-void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
-void _ZN12Unk_0201985813func_020195c8Eiijtt(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 _ZN12Unk_0201985813func_02019790Ev(void *self);
-s32 _ZN12Unk_0201985813func_020197a8Ev(void *self);
-s32 _ZN12Unk_0201a33413func_0201a7e8Ev(void *self);
-void _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(void *a, s32 b, s32 c, s32 d, u8 *e, s32 f, s32 g, s32 h);
-void _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(void *a, void *b);
-void _ZN12Unk_0201ad2013func_0201ad34Ei(void *a, s32 b);
-void _ZN12Unk_0201ad2013func_0201ad30Ei(void *a, s32 b);
-s32 _ZN12Unk_020d77a413func_0201bd20Ej(void *a, s32 b);
-u32 _ZN12Unk_020d77a413func_0201bc4cEj(void *p, s32 n);
-s32 _ZN12Unk_020d77a413func_0201bcbcEPS_(void *a, s32 b);
-s32 _ZN12Unk_020d771413func_02015aacEv(void *a);
-void _ZN12Unk_020d771413func_02015ab0Ej(void *a, s32 b);
-s32 _ZN12Unk_020d77148vfunc_38Ej(void *p, void *q);
-void _ZN12Unk_020d771413func_02015a80EP18Unk_02015b8c_Scene(void *p, s32 a);
-void _ZN12Unk_020d771413func_02015818Ejj(void *self, s32 a, s32 b);
-BOOL _ZN12Unk_0201635013func_0201622cEiPv(void *a, s32 b, void *c);
-s32 func_02090330(s32 a, void *b, void *c, s32 d);
-void func_020902d4(s32 a, void *b, void *c, s32 d);
-void func_020902f8(s32 a);
-void _ZN12Unk_02086f8413func_02086f98Ev(void *a);
-void _ZN12Unk_02086f8413func_02086fa0Ev(void *a);
-s32 _ZN12Unk_02086f8413func_02086fa8Ev(void *a);
-void _ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(void *a, void *b);
-void _ZN12Unk_02086f8413func_02086fc4EP17Unk_02086ec4_Vec3(void *a, void *b);
-void func_02003e70(void *a, s32 b, s32 c, s32 d);
-void *func_0209750c(void);
-void *func_020850e0(void);
-void *func_02085178(void *a);
-void *func_020947f0(s32 a);
-void *func_0204da0c(void);
-void func_0204d684(void *a, Unk_020c0acc_Vec *b, s32 c, s32 d);
-void func_0204edd8(Unk_020c0acc_Vec *a, Unk_020c0acc_Vec *b);
-void func_0204ed8c(Unk_020c0acc_Vec *a, s32 b, s32 c);
-s32 _ZN12Unk_0209865c13func_020986a4Ev(void *a);
-BOOL _ZN12Unk_020872fc13func_02087314Ev(s32 a);
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void *a, s32 b);
-s32 _ZN12Unk_02097ff413func_0209801cEj(void *a, s32 b);
-BOOL func_0202e1cc(s32 a, s32 b);
-void func_0203d67c(void *a);
-void func_0203d984(void);
-void func_0203d990(void);
-BOOL _ZN12Unk_02013b1013func_02014220Ev(void *a);
-void _ZN12Unk_02013b1013func_020141b4Essh(void *a, s32 b, s32 c, s32 d);
-BOOL func_02077e7c(Unk_020c0acc_Vec *a, s32 b, s32 c, s32 d);
-void func_02077f40(Unk_020c0acc_Vec *a, s32 b);
-s32 func_020e9650(void *a, void *b);
-BOOL func_020e7500(void *a);
-s32 _ZN12Unk_02019dd813func_02019d8cEv(void *p);
-s32 _ZN12Unk_020660f813func_020679b4Ev(void *p);
-s32 _ZN12Unk_020aa3b813func_020aa514Ev(void);
-void _ZN12Unk_020660f813func_02067a84EPhPv(void *a, void *b, u32 c);
-void _ZN12Unk_020660f813func_02067a78Ev(void *p);
-void _ZN12Unk_020660f813func_02067a6cEv(void *p);
-s32 func_02002bdc(void *a, void *b);
-void func_02094ae8(s32 a, s32 b);
-void func_02094b0c(void *v, s32 a, s32 b);
-BOOL func_02094f2c(s32 a, s32 b);
-BOOL func_020951b8(s32 a);
-s32 func_020a0414(void);
-s32 func_02097520(s32 a);
-BOOL func_020a03c4(void);
-void func_020b78c4(void);
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18 *p, s32 a);
-s32 _ZN12Unk_020872fc13func_0208733cEv(void);
-void _ZN12Unk_020872fc13func_02087368Ev(s32 a);
-void _ZN12Unk_0208721013func_02087210Ev(void *a);
-s32 func_020b4934(void);
-void func_020b4bbc(s32 a, s32 b);
-s32 func_020816f8(s32 a);
-void func_0203a5d8(void);
-void _ZN12Unk_02013b1013func_02014198Ehh(void *p, s32 a, s32 b);
-s32 _ZN12Unk_020872fc13func_02087364Ev(void *p);
-s32 func_02063b8c(u32 n);
-extern u8 data_021c3cc0;
+void _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(void *a, void *b);
+void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
+s32 Scene_GetCurrent(void);
+s32 Scene_GetPrevious(void);
+void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
+void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
+s32 _ZN13NpcActionCtrl9getActionEv(void *self);
+s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *a, s32 b, s32 c, s32 d, u8 *e, s32 f, s32 g, s32 h);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
+void _ZN14NpcMoveAnimSet12setStandAnimEi(void *a, s32 b);
+void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *a, s32 b);
+s32 _ZN8NpcActor19getDistanceToPlayerEj(void *a, s32 b);
+u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
+s32 _ZN8NpcActor10getAngleToEPS_(void *a, s32 b);
+s32 _ZN16ActorTalkRequest13getTalkPlayerEv(void *a);
+void _ZN16ActorTalkRequest13setTalkPlayerEj(void *a, s32 b);
+s32 _ZN16ActorTalkRequest10onEventTagEj(void *p, void *q);
+void _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(void *p, s32 a);
+void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
+BOOL _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *a, s32 b, void *c);
+s32 Effect_Create(s32 a, void *b, void *c, s32 d);
+void Effect_SetPosition(s32 a, void *b, void *c, s32 d);
+void Effect_End(s32 a);
+void _ZN15KatieVisitState14clearFollowingEv(void *a);
+void _ZN15KatieVisitState12setFollowingEv(void *a);
+s32 _ZN15KatieVisitState11isFollowingEv(void *a);
+void _ZN15KatieVisitState6getPosEP7VecFx32(void *a, void *b);
+void _ZN15KatieVisitState6setPosEP7VecFx32(void *a, void *b);
+void Snd_SeEmitterPlayOneShot(void *a, s32 b, s32 c, s32 d);
+void *PlayerData_GetCurrent(void);
+void *TownSessionState_Get(void);
+void *TownSessionState_GetKatieState(void *a);
+void *PlayerActor_GetBodyPos(s32 a);
+void *TownBlockMap_Get(void);
+void Town_FindGateHouse(void *a, VecFx32 *b, s32 c, s32 d);
+void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
+void FieldPos_FromUnitCenter(VecFx32 *a, s32 b, s32 c);
+s32 _ZN10PlayerData18getLostChildRecordEv(void *a);
+BOOL _ZN15LostChildRecord11isEscortingEv(s32 a);
+BOOL _ZN10PlayerData8testFlagEj(void *a, s32 b);
+s32 _ZN10PlayerData7setFlagEj(void *a, s32 b);
+BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+void TalkRequest_SetTargetDone(void *a);
+void TalkRequestFlags_ClearSceneHold(void);
+void TalkRequestFlags_SetSceneHold(void);
+BOOL _ZN11NpcTalkCtrl6isBusyEv(void *a);
+void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *a, s32 b, s32 c, s32 d);
+BOOL TownMap_FindBuildingAbovePos(VecFx32 *a, s32 b, s32 c, s32 d);
+void TownMap_IsPosWalkable(VecFx32 *a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
+BOOL Math_CountDownU16(void *a);
+s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
+s32 _ZN15TalkWindowState13getChoiceListEv(void *p);
+s32 _ZN10ChoiceList9getResultEv(void);
+void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
+void _ZN15TalkWindowState11lockAdvanceEv(void *p);
+void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
+s32 Math_AngleXZ(void *a, void *b);
+void PlayerActor_RequestTurnTo(s32 a, s32 b);
+void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
+BOOL PlayerActor_SetNetFollowPaused(s32 a, s32 b);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
+s32 Net_GetJoiningAid(void);
+s32 PlayerData_GetBySessionSlot(s32 a);
+BOOL SaveManager_IsSessionJoined(void);
+void FieldInfoBalloon_ShowPleaseWait(void);
+BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
+s32 _ZN15LostChildRecord13isKaitlinRoleEv(void);
+void _ZN15LostChildRecord5clearEv(s32 a);
+void _ZN15KatieVisitState5clearEv(void *a);
+s32 Scene_GetWarpRequest(void);
+void SceneWarp_RequestExit(s32 a, s32 b);
+s32 NpcRegistry_FindSpNpc(s32 a);
+void Camera_SetMode19(void);
+void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
+s32 _ZN15LostChildRecord9getTownIdEv(void *p);
+s32 Random_GlobalBelow(u32 n);
+extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
-extern u8 data_021f4880[];
-extern Unk_020cbb18 *data_020cbb18;
+extern u8 gVec3Zero[];
+extern CommManager *gCommManager;
 }
-void func_020c22fc(void);
-void func_020c22e0(void);
+void SpNpcKaitlin_ChangeAct04(void);
+void SpNpcKaitlin_ChangeAct06(void);
 static inline BOOL Unk_020c06a0_IsMode2() {
-    return data_021c3cc0 == 2;
+    return gScreenTransition == 2;
 }
 
-// Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
-// Unk_020d77a4::vfunc_08(int).
-class Unk_020d8c7c_Base {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
-    virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+// ---- SpNpcKatieTalk and its bases (vtable 0x020ddcf0 chain) ----
+
+
+
+
+
+
+// ---- SpNpcKatie and its bases (scene object derived from NpcActor) ----
+
+
+
+
+
+
+
+typedef BOOL (SpNpcKatie::*SpNpcKatieActFn)();
+struct SpNpcKatieActEntry {
+    SpNpcKatieActFn setup;
+    SpNpcKatieActFn main;
 };
 
-// ---- Unk_020e6894 and its bases (vtable 0x020ddcf0 chain) ----
-struct Unk_020c0408_Obj {
-    u8 unk_00[4];
-    s32 unk_04;
-    s32 unk_08;
-    u8 unk_0c[8];
-    s32 unk_14;
-};
 
-struct Unk_020c0538_Out {
-    u32 unk_00;
-    u8 unk_04;
-};
+extern SpNpcKatieActEntry sSpNpcKatieActTable[9];
+extern SpNpcKatie *sSpNpcKatieInstance;
+extern char sSpNpcKatieKey[16];
+extern char sSpNpcKatieModelPath[23];
+extern char sSpNpcKatieTexPath[27];
+extern char *sSpNpcKatieMsgKey;
+extern const VecFx32 sSpNpcKatieReunionWalkPos;
+extern "C" SpNpcKatie *SpNpcKatie_Create(void);
 
-class Unk_020ddcf0 {
-public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(void *a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-
-    /* 0x04 */ u8 unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
-    /* 0x1f */ u8 unk_1f[0x1d];
-    /* 0x3c */ Unk_020c0408_Obj *unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
-
-class Unk_020d7714 : public Unk_020ddcf0 {
-public:
-    Unk_020d7714();
-    virtual ~Unk_020d7714();
-    virtual void vfunc_08();
-    virtual void vfunc_34();
-    virtual void vfunc_38(void *a);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual s32 vfunc_6c();
-    virtual void vfunc_78(Unk_020c0538_Out *out) = 0;
-    virtual void vfunc_7c();
-    virtual void vfunc_80();
-    virtual void vfunc_84();
-
-    u32 pad_44[(0xac - 0x44) / 4];
-};
-
-class Unk_020d8b38 : public Unk_020d7714 {
-public:
-    Unk_020d8b38();
-    virtual ~Unk_020d8b38();
-};
-
-class Unk_020e6894 : public Unk_020d8b38 {
-public:
-    Unk_020e6894();
-    virtual ~Unk_020e6894();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_38(void *p);
-    virtual void vfunc_78(Unk_020c0538_Out *out);
-
-    s32 func_020c0624();
-    void func_020c062c(s32 v);
-    void func_020c0634(Unk_020e6924 *owner);
-
-    Unk_020e6924 *unk_ac;
-    s32 unk_b0;
-};
-
-// ---- Unk_020e6924 and its bases (scene object derived from Unk_020d77a4) ----
-#define MEMBER(name, size) \
-    struct name { \
-        u8 unk_00[size]; \
-        name(); \
-    }
-struct Unk_020dbd74 {
-    u8 unk_00[0xa4];
-    u32 unk_a4;
-    u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    Unk_020dbd74();
-};
-MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(Unk_02019dd8, 0x334 - 0x2ac);
-MEMBER(Unk_02016350, 0x1c);
-MEMBER(Unk_0201accc, 0x3a8 - 0x350);
-struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
-struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
-MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(Unk_0201a194, 8);
-struct Unk_0201a13c {
-    u8 unk_00[0x58];
-    u8 unk_58[0x7c - 0x58];
-    Unk_0201a13c();
-};
-MEMBER(Unk_02032238, 0x30);
-struct Unk_020e0cf4 {
-    u8 unk_00[0x1c];
-    u32 unk_1c;
-    u8 pad_20[0x44 - 0x20];
-    u8 unk_44;
-    u8 pad_45[3];
-    Unk_020e0cf4();
-};
-struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
-MEMBER(Unk_02019858, 0x618 - 0x564);
-MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
-
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-};
-
-struct Unk_020d77a4_Vec3 {
-    s32 x, y, z;
-};
-
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
-public:
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-};
-
-struct Unk_020d9670 : Unk_020d5d84 {
-    u8 pad_04[0x58];
-    Unk_020c0acc_Vec unk_5c;
-    u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
-    u8 pad_90[4];
-    s16 unk_94;
-    u8 pad_96[0xea - 0x96];
-    Unk_020d9670();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(int a);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
-    virtual void vfunc_58(void *p);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-};
-
-struct Unk_020d77a4 : Unk_020d9670 {
-    u16 unk_ea;
-    Unk_020dbd74 unk_ec;
-    Unk_0201ad3c unk_2a0;
-    Unk_02019dd8 unk_2ac;
-    Unk_02016350 unk_334;
-    Unk_0201accc unk_350;
-    Unk_0201a8bc unk_3a8;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 unk_3b0;
-    Unk_0201a194 unk_418;
-    Unk_0201a13c unk_420;
-    Unk_02032238 unk_49c;
-    Unk_020e0cf4 unk_4cc;
-    Unk_020f4080 unk_514;
-    Unk_020135e4 unk_558;
-    Unk_02019858 unk_564;
-    Unk_02014254 unk_618;
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_4c(int a);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual BOOL vfunc_68() = 0;
-    virtual void *vfunc_6c() = 0;
-    virtual void *vfunc_70() = 0;
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
-    virtual void vfunc_9c();
-    virtual void vfunc_a0();
-    virtual void vfunc_a4();
-    virtual BOOL vfunc_a8();
-};
-
-class Unk_020d8bc8 : public Unk_020d77a4 {
-public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
-    virtual BOOL vfunc_7c();
-    virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual BOOL vfunc_a8();
-
-    Unk_020e06dc unk_640;
-    s32 unk_648;
-    s32 unk_64c;
-    u8 unk_650;
-    u8 unk_651;
-};
-
-typedef BOOL (Unk_020e6924::*Unk_020c11b8_Fn)();
-struct Unk_020c11b8_Ent {
-    Unk_020c11b8_Fn a;
-    Unk_020c11b8_Fn b;
-};
-
-class Unk_020e6924 : public Unk_020d8bc8 {
-public:
-    Unk_020e6924() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual ~Unk_020e6924() {}
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
-    virtual BOOL vfunc_68();
-    virtual void *vfunc_6c();
-    virtual void *vfunc_70();
-
-    BOOL func_020c06a0();
-    BOOL func_020c0abc();
-    BOOL func_020c0acc();
-    BOOL func_020c0b9c();
-    BOOL func_020c0c08();
-    BOOL func_020c0dc8();
-    BOOL func_020c0e04();
-    BOOL func_020c0e28();
-    BOOL func_020c0e48();
-    BOOL func_020c0e4c();
-    BOOL func_020c0e50();
-    BOOL func_020c0e7c();
-    BOOL func_020c0efc();
-    BOOL func_020c0f80();
-    BOOL func_020c0fdc();
-    BOOL func_020c108c();
-    BOOL func_020c1140();
-    BOOL func_020c1144();
-    void func_020c11b8(s32 state);
-
-    s32 unk_654;
-    Unk_020e6894 unk_658;
-    u8 unk_70c;
-    u8 unk_70d;
-    u16 unk_70e;
-    u16 unk_710;
-    Unk_020c0acc_Vec unk_714;
-    s32 unk_720;
-    u8 unk_724;
-};
-
-extern Unk_020c11b8_Ent data_021f4594[9];
-extern Unk_020e6924 *data_021f4578;
-extern char data_020e6830[16];
-extern char data_020e6840[23];
-extern char data_020e6870[27];
-extern char *data_020e679c;
-extern const Unk_020bfe30_Vec data_020d1c8c;
-extern "C" Unk_020e6924 *func_020c1620(void);
-
-extern "C" Unk_020e6924 *func_020c1620(void) {
-    return new Unk_020e6924();
+extern "C" SpNpcKatie *SpNpcKatie_Create(void) {
+    return new SpNpcKatie();
 }
 
-BOOL Unk_020e6924::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+BOOL SpNpcKatie::preCreate() {
+    if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c(this, &unk_658);
-    unk_658.func_020c0634(this);
-    _ZN12Unk_0201a8c413func_0201a8d0Eiiii(&unk_350, 2, 0x333, 0xcc, 0x133);
-    _ZN12Unk_0201a8c413func_0201a8d0Eiiii(&unk_350, 1, 0x1b3, 0xcc, 0x133);
-    if (func_020b50e8() == 0xb) {
-        unk_8e = -0x8000;
-        unk_94 = -0x8000;
+    _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(this, &talk);
+    talk.attachOwner(this);
+    _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x333, 0xcc, 0x133);
+    _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x1b3, 0xcc, 0x133);
+    if (Scene_GetCurrent() == 0xb) {
+        rotY = -0x8000;
+        moveAngleY = -0x8000;
     }
-    if (func_020b50e8() == 0xc) {
-        unk_8e = -0x8000;
-        unk_94 = -0x8000;
+    if (Scene_GetCurrent() == 0xc) {
+        rotY = -0x8000;
+        moveAngleY = -0x8000;
     }
-    if (func_020b50e8() == 0x2f) {
-        unk_8e = 0;
-        unk_94 = 0;
-        unk_5c.x = 0xe000;
-        unk_5c.z = 0x4000;
-        _ZN12Unk_0201a8c413func_0201a8d0Eiiii(&unk_350, 1, 0x280, 0xcc, 0x133);
+    if (Scene_GetCurrent() == 0x2f) {
+        rotY = 0;
+        moveAngleY = 0;
+        position.x = 0xe000;
+        position.z = 0x4000;
+        _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x280, 0xcc, 0x133);
     }
-    unk_558.unk_0b = 1;
+    netSyncOff = 1;
     return TRUE;
 }
 
-BOOL Unk_020e6924::vfunc_00() {
+BOOL SpNpcKatie::onCreate() {
     void *p;
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
-    data_021f4578 = this;
-    unk_720 = -1;
-    p = func_0209750c();
-    if (func_020b50e8() == 0) {
-        func_0204edd8(&unk_5c, &unk_5c);
-        if (func_02077e7c(&unk_5c, 1, 0, 0)) {
-            func_02077f40(&unk_5c, 0);
-            unk_5c.x += 0x2000;
-            unk_5c.z += 0x2000;
+    sSpNpcKatieInstance = this;
+    effectHandle = -1;
+    p = PlayerData_GetCurrent();
+    if (Scene_GetCurrent() == 0) {
+        FieldPos_SnapToUnitCenter((VecFx32 *)&position, (VecFx32 *)&position);
+        if (TownMap_FindBuildingAbovePos((VecFx32 *)&position, 1, 0, 0)) {
+            TownMap_IsPosWalkable((VecFx32 *)&position, 0);
+            position.x += 0x2000;
+            position.z += 0x2000;
         }
-        if (_ZN12Unk_02086f8413func_02086fa8Ev(func_02085178(func_020850e0())) != 0) {
-            if (func_020b50dc() == 0xb) {
-                func_0204d684(func_0204da0c(), &unk_5c, 0, 0);
-                unk_5c.z -= 0x2000;
-                unk_658.func_020c062c(3);
-                func_020c11b8(5);
-                unk_4cc.unk_44 = 0;
+        if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
+            if (Scene_GetPrevious() == 0xb) {
+                Town_FindGateHouse(TownBlockMap_Get(), (VecFx32 *)&position, 0, 0);
+                position.z -= 0x2000;
+                talk.setTopic(3);
+                changeAct(5);
+                collisionEnabled = 0;
             } else {
-                unk_658.func_020c062c(5);
-                func_020c11b8(1);
+                talk.setTopic(5);
+                changeAct(1);
             }
-        } else if (_ZN12Unk_02097ff413func_02098044Ej(p, 0x33) == 0) {
-            if (_ZN12Unk_02097ff413func_02098044Ej(p, 0x31) == 0) {
-                unk_658.func_020c062c(0);
+        } else if (_ZN10PlayerData8testFlagEj(p, 0x33) == 0) {
+            if (_ZN10PlayerData8testFlagEj(p, 0x31) == 0) {
+                talk.setTopic(0);
             } else {
-                unk_658.func_020c062c(1);
+                talk.setTopic(1);
             }
-            func_020c11b8(1);
+            changeAct(1);
         } else {
-            if (func_0202e1cc(0x29, 0) == 0) {
-                unk_658.func_020c062c(2);
+            if (Talk_CheckAndSetPlayerFlag(0x29, 0) == 0) {
+                talk.setTopic(2);
             } else {
-                unk_658.func_020c062c(3);
+                talk.setTopic(3);
             }
-            func_020c11b8(1);
+            changeAct(1);
         }
-    } else if (func_020b50e8() == 0xb) {
-        unk_658.func_020c062c(3);
-        func_020c11b8(5);
-        unk_4cc.unk_44 = 0;
-    } else if (func_020b50e8() == 0xc) {
-        _ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(func_02085178(func_020850e0()), &unk_5c);
-        unk_658.func_020c062c(3);
-        func_020c11b8(5);
-    } else if (func_020b50e8() == 0x2f) {
-        unk_4cc.unk_44 = 0;
-        func_0203d990();
-        func_020c11b8(8);
+    } else if (Scene_GetCurrent() == 0xb) {
+        talk.setTopic(3);
+        changeAct(5);
+        collisionEnabled = 0;
+    } else if (Scene_GetCurrent() == 0xc) {
+        _ZN15KatieVisitState6getPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
+        talk.setTopic(3);
+        changeAct(5);
+    } else if (Scene_GetCurrent() == 0x2f) {
+        collisionEnabled = 0;
+        TalkRequestFlags_SetSceneHold();
+        changeAct(8);
     }
     return TRUE;
 }
 
-BOOL Unk_020e6924::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+BOOL SpNpcKatie::onDelete() {
+    if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
-    data_021f4578 = NULL;
-    if (func_020b50e8() == 0x2f) {
-        func_0203d984();
+    sSpNpcKatieInstance = NULL;
+    if (Scene_GetCurrent() == 0x2f) {
+        TalkRequestFlags_ClearSceneHold();
     }
     return TRUE;
 }
 
-void *Unk_020e6924::vfunc_6c() {
-    return data_020e6870;
+u8 *SpNpcKatie::getTexturePath() {
+    return (u8 *)sSpNpcKatieTexPath;
 }
 
-void *Unk_020e6924::vfunc_70() {
-    return data_020e6840;
+u8 *SpNpcKatie::getModelPath() {
+    return (u8 *)sSpNpcKatieModelPath;
 }
 
-BOOL Unk_020e6924::vfunc_68() {
+BOOL SpNpcKatie::updateAct() {
     s32 r = 0;
-    if (data_021f4594[unk_654].b != 0) {
-        r = (this->*(data_021f4594[unk_654].b))();
+    if (sSpNpcKatieActTable[act].main != 0) {
+        r = (this->*(sSpNpcKatieActTable[act].main))();
     }
-    if (func_020b50e8() == 0) {
-        _ZN12Unk_02086f8413func_02086fc4EP17Unk_02086ec4_Vec3(func_02085178(func_020850e0()), &unk_5c);
+    if (Scene_GetCurrent() == 0) {
+        _ZN15KatieVisitState6setPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
     }
-    if (func_020b50e8() == 0xb) {
-        if (_ZN12Unk_020872fc13func_02087314Ev(_ZN12Unk_0209865c13func_020986a4Ev(func_0209750c()))) {
-            _ZN12Unk_02086f8413func_02086fc4EP17Unk_02086ec4_Vec3(func_02085178(func_020850e0()), &unk_5c);
+    if (Scene_GetCurrent() == 0xb) {
+        if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()))) {
+            _ZN15KatieVisitState6setPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
         }
     }
     return r;
 }
 
-BOOL Unk_020e6924::vfunc_48() {
-    return _ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0;
+BOOL SpNpcKatie::acceptsInteraction(void *) {
+    return _ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0;
 }
 
-void Unk_020e6924::vfunc_4c(s32 state) {
+void SpNpcKatie::onInteractionEvent(u32 state, u8) {
     switch (state) {
     case 0:
     case 1:
-        unk_658.vfunc_08();
-        _ZN12Unk_020d771413func_02015ab0Ej(&unk_658, _ZN12Unk_020d77a413func_0201bc4cEj(this, 4));
-        if (unk_658.func_020c0624() != 6) {
-            func_020c11b8(3);
+        talk.resetMsg();
+        _ZN16ActorTalkRequest13setTalkPlayerEj(&talk, _ZN8NpcActor14getPlayerActorEj(this, 4));
+        if (talk.getTopic() != 6) {
+            changeAct(3);
         }
         break;
     case 8:
-        unk_658.func_020c062c(3);
-        if (_ZN12Unk_02086f8413func_02086fa8Ev(func_02085178(func_020850e0())) != 0) {
-            func_020c11b8(5);
-        } else if (unk_70d != 0) {
-            func_020c11b8(2);
+        talk.setTopic(3);
+        if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
+            changeAct(5);
+        } else if (escortDeclined != 0) {
+            changeAct(2);
         } else {
-            func_020c11b8(0);
+            changeAct(0);
         }
         break;
     }
 }
 
-void Unk_020e6924::func_020c11b8(s32 state) {
+void SpNpcKatie::changeAct(s32 state) {
     BOOL result = TRUE;
-    Unk_020c11b8_Ent *e = &data_021f4594[state];
-    if (e->a != 0) {
-        result = (this->*(e->a))();
+    SpNpcKatieActEntry *e = &sSpNpcKatieActTable[state];
+    if (e->setup != 0) {
+        result = (this->*(e->setup))();
     }
     if (result) {
-        if (state != 1 && unk_720 != -1) {
-            func_020902f8(unk_720);
-            unk_720 = -1;
+        if (state != 1 && effectHandle != -1) {
+            Effect_End(effectHandle);
+            effectHandle = -1;
         }
-        unk_654 = state;
+        act = state;
     }
 }
 
-BOOL Unk_020e6924::func_020c1144() {
-    unk_4cc.unk_1c |= 2;
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
-    _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+BOOL SpNpcKatie::setupAct00() {
+    collider.groups |= 2;
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c1140() {
+BOOL SpNpcKatie::mainAct00() {
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c108c() {
-    Unk_020c0acc_Vec a, b;
-    unk_4cc.unk_1c |= 2;
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
-    _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0x53, 1, data_020c6cc8, 0);
-    func_0204d684(func_0204da0c(), &a, 0, 0);
-    func_0204edd8(&b, &unk_5c);
+BOOL SpNpcKatie::setupAct01() {
+    VecFx32 a, b;
+    collider.groups |= 2;
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x53, 1, data_020c6cc8, 0);
+    Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
+    FieldPos_SnapToUnitCenter(&b, (VecFx32 *)&position);
     if (b.z < a.z) {
         if (b.x >= a.x - 0x4000 && b.x <= a.x + 0x4000) {
-            unk_5c.z = a.z + 0x1000;
+            position.z = a.z + 0x1000;
         }
     }
-    unk_4cc.unk_44 = 1;
+    collisionEnabled = 1;
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c0fdc() {
-    if (_ZN12Unk_0201635013func_0201622cEiPv(&unk_334, 0x53, &unk_2a0) && _ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-        _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-        _ZN12Unk_0201ad2013func_0201ad34Ei(&unk_2a0, 0x54);
-        _ZN12Unk_0201ad2013func_0201ad30Ei(&unk_2a0, 0x54);
+BOOL SpNpcKatie::mainAct01() {
+    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0x53, &moveAnimSet) && _ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0x54);
+        _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0x54);
     }
-    if (unk_720 == -1) {
-        unk_720 = func_02090330(0x54, unk_420.unk_58, &unk_8e, 0);
+    if (effectHandle == -1) {
+        effectHandle = Effect_Create(0x54, &jointPos[0], &rotY, 0);
     }
-    if (unk_720 != -1) {
-        func_020902d4(unk_720, unk_420.unk_58, &unk_8e, 0);
-    }
-    return TRUE;
-}
-
-BOOL Unk_020e6924::func_020c0f80() {
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
-    _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0xab, 1, data_020c6cc8, 0);
-    return TRUE;
-}
-
-BOOL Unk_020e6924::func_020c0efc() {
-    unk_4cc.unk_1c |= 2;
-    if (_ZN12Unk_0201635013func_0201622cEiPv(&unk_334, 0xab, &unk_2a0) && _ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-        _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-        _ZN12Unk_0201ad2013func_0201ad34Ei(&unk_2a0, 0xac);
-        _ZN12Unk_0201ad2013func_0201ad30Ei(&unk_2a0, 0xac);
+    if (effectHandle != -1) {
+        Effect_SetPosition(effectHandle, &jointPos[0], &rotY, 0);
     }
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c0e7c() {
+BOOL SpNpcKatie::setupAct02() {
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xab, 1, data_020c6cc8, 0);
+    return TRUE;
+}
+
+BOOL SpNpcKatie::mainAct02() {
+    collider.groups |= 2;
+    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0xab, &moveAnimSet) && _ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xac);
+        _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xac);
+    }
+    return TRUE;
+}
+
+BOOL SpNpcKatie::setupAct03() {
     s32 p, r4;
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
-    p = _ZN12Unk_020d771413func_02015aacEv(&unk_658);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    p = _ZN16ActorTalkRequest13getTalkPlayerEv(&talk);
     r4 = 0;
     if (p != 0) {
-        r4 = _ZN12Unk_020d77a413func_0201bcbcEPS_(this, p);
+        r4 = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
-    _ZN12Unk_0201ad2013func_0201ad34Ei(&unk_2a0, 0xac);
-    _ZN12Unk_0201ad2013func_0201ad30Ei(&unk_2a0, 0xac);
-    _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, r4, 0);
+    _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xac);
+    _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xac);
+    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, r4, 0);
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c0e50() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
-        func_0203d67c(this);
-        func_020c11b8(7);
-    }
-    return TRUE;
-}
-
-BOOL Unk_020e6924::func_020c0e4c() {
-    return TRUE;
-}
-
-BOOL Unk_020e6924::func_020c0e48() {
-    return TRUE;
-}
-
-BOOL Unk_020e6924::func_020c0e28() {
-    unk_4cc.unk_1c &= ~2;
-    unk_710 = 0x28;
-    return TRUE;
-}
-
-BOOL Unk_020e6924::func_020c0e04() {
-    if (func_020e7500(&unk_710) == 0) {
-        func_020c11b8(5);
+BOOL SpNpcKatie::mainAct03() {
+    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+        TalkRequest_SetTargetDone(this);
+        changeAct(7);
     }
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c0dc8() {
-    unk_4cc.unk_1c &= ~2;
-    unk_70e = 0x28;
-    unk_714 = unk_5c;
+BOOL SpNpcKatie::setupAct07() {
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c0c08() {
-    Unk_020c0acc_Vec a, b, c, d;
-    void *p = func_0209750c();
+BOOL SpNpcKatie::mainAct07() {
+    return TRUE;
+}
+
+BOOL SpNpcKatie::setupAct04() {
+    collider.groups &= ~2;
+    waitTimer = 0x28;
+    return TRUE;
+}
+
+BOOL SpNpcKatie::mainAct04() {
+    if (Math_CountDownU16(&waitTimer) == 0) {
+        changeAct(5);
+    }
+    return TRUE;
+}
+
+BOOL SpNpcKatie::setupAct05() {
+    collider.groups &= ~2;
+    stuckTimer = 0x28;
+    prevPos = *(VecFx32 *)&position;
+    return TRUE;
+}
+
+BOOL SpNpcKatie::mainAct05() {
+    VecFx32 a, b, c, d;
+    void *p = PlayerData_GetCurrent();
     void *q;
     s32 t;
     if (p == NULL) {
         return TRUE;
     }
-    if (unk_4cc.unk_44 == 0 && func_020b50e8() == 0) {
-        func_0204d684(func_0204da0c(), &a, 0, 0);
-        func_0204edd8(&b, &unk_5c);
+    if (collisionEnabled == 0 && Scene_GetCurrent() == 0) {
+        Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
+        FieldPos_SnapToUnitCenter(&b, (VecFx32 *)&position);
         if (b.z > a.z) {
-            unk_4cc.unk_44 = 1;
+            collisionEnabled = 1;
         }
     }
-    if (unk_4cc.unk_44 == 0 && func_020b50e8() == 0xb) {
-        func_0204edd8(&d, &unk_5c);
-        func_0204ed8c(&c, 6, 15);
+    if (collisionEnabled == 0 && Scene_GetCurrent() == 0xb) {
+        FieldPos_SnapToUnitCenter(&d, (VecFx32 *)&position);
+        FieldPos_FromUnitCenter(&c, 6, 15);
         if (d.z < c.z) {
-            unk_4cc.unk_44 = 1;
+            collisionEnabled = 1;
         }
     }
-    q = func_020947f0(4);
+    q = PlayerActor_GetBodyPos(4);
     if (q == NULL) {
         return TRUE;
     }
-    t = _ZN12Unk_020d77a413func_0201bd20Ej(this, 4);
-    if ((func_020b50e8() == 0 || (func_020b50e8() == 0xc && _ZN12Unk_020872fc13func_02087314Ev(_ZN12Unk_0209865c13func_020986a4Ev(p)) == 0)) && _ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 2) {
+    t = _ZN8NpcActor19getDistanceToPlayerEj(this, 4);
+    if ((Scene_GetCurrent() == 0 || (Scene_GetCurrent() == 0xc && _ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(p)) == 0)) && _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2) {
         s32 v, d2;
         if (t > 0x6000) {
-            func_020c11b8(6);
+            changeAct(6);
             return TRUE;
         }
-        v = _ZN12Unk_0201a33413func_0201a7e8Ev(&unk_3a8);
-        d2 = func_020e9650(&unk_714, &unk_5c);
-        unk_714 = unk_5c;
+        v = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
+        d2 = Vec_DistXZ(&prevPos, &position);
+        prevPos = *(VecFx32 *)&position;
         if (d2 <= 0x29 || v != 0) {
-            if (func_020e7500(&unk_70e) == 0) {
-                func_020c11b8(1);
+            if (Math_CountDownU16(&stuckTimer) == 0) {
+                changeAct(1);
                 return TRUE;
             }
         } else {
-            unk_70e = 0x28;
+            stuckTimer = 0x28;
         }
     }
     if (t > 0x2800) {
-        if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) != 2) {
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 2, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 2) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
-        _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(&unk_350, q);
-    } else if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) != 0) {
-        _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, q);
+    } else if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 0) {
+        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     }
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c0b9c() {
-    if (func_020b50e8() == 0) {
-        _ZN12Unk_02086f8413func_02086f98Ev(func_02085178(func_020850e0()));
+BOOL SpNpcKatie::setupAct06() {
+    if (Scene_GetCurrent() == 0) {
+        _ZN15KatieVisitState14clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
     }
-    _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0x122, 1, data_020c6cc8, 0);
-    unk_658.func_020c062c(4);
-    func_02003e70(&unk_514, 0x7db, 0x7f, 0);
+    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x122, 1, data_020c6cc8, 0);
+    talk.setTopic(4);
+    Snd_SeEmitterPlayOneShot(&seEmitter, 0x7db, 0x7f, 0);
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c0acc() {
-    Unk_020c0acc_Vec v;
+BOOL SpNpcKatie::mainAct06() {
+    VecFx32 v;
     s16 a;
-    if (_ZN12Unk_0201635013func_0201622cEiPv(&unk_334, 0x122, &unk_2a0)) {
-        a = unk_8e;
-        Unk_020c0acc_Vec *src = &unk_5c;
+    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0x122, &moveAnimSet)) {
+        a = rotY;
+        VecFx32 *src = (VecFx32 *)&position;
         v = *src;
-        if (((unk_ec.unk_a4 << 4) >> 16) == 7) {
-            func_02090330(0x39, &v, &a, 0);
+        if ((((u32)model.curFrame << 4) >> 16) == 7) {
+            Effect_Create(0x39, &v, &a, 0);
         }
-        if (((unk_ec.unk_a4 << 4) >> 16) == 9) {
-            func_02090330(0x38, &v, &a, 0);
+        if ((((u32)model.curFrame << 4) >> 16) == 9) {
+            Effect_Create(0x38, &v, &a, 0);
         }
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0x123, 1, data_020c6cc8, 0);
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x123, 1, data_020c6cc8, 0);
         }
     }
-    if (_ZN12Unk_0201635013func_0201622cEiPv(&unk_334, 0x123, &unk_2a0)) {
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            func_020c11b8(1);
+    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0x123, &moveAnimSet)) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            changeAct(1);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c0abc() {
-    unk_724 = 0;
+BOOL SpNpcKatie::setupAct08() {
+    reunionStep = 0;
     return TRUE;
 }
 
-BOOL Unk_020e6924::func_020c06a0() {
+BOOL SpNpcKatie::mainAct08() {
     u8 buf;
-    Unk_020bfe30_Vec vec24;
-    Unk_020bfe30_Vec vec30;
-    s32 r5 = func_020a0414();
-    Unk_020cbb18 *r7 = data_020cbb18;
-    s32 r6 = r7->unk_68;
-    s32 s = func_02097520(r5);
-    switch (unk_724) {
+    VecFx32 vec24;
+    VecFx32 vec30;
+    s32 r5 = Net_GetJoiningAid();
+    CommManager *r7 = gCommManager;
+    s32 r6 = r7->localSlot;
+    s32 s = PlayerData_GetBySessionSlot(r5);
+    switch (reunionStep) {
     case 0:
         if (Unk_020c06a0_IsMode2()) {
-            if (func_02094f2c(1, r5)) {
-                unk_724 = 1;
+            if (PlayerActor_SetNetFollowPaused(1, r5)) {
+                reunionStep = 1;
             }
         }
         break;
     case 1:
-        vec30 = data_020d1c8c;
-        func_02094b0c(&vec30, 0x35c, r5);
-        _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
-        unk_724 = 2;
+        vec30 = sSpNpcKatieReunionWalkPos;
+        PlayerActor_RequestWalkTo(&vec30, 0x35c, r5);
+        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
+        reunionStep = 2;
         break;
     case 2:
-        if (func_020951b8(r5)) {
+        if (PlayerActor_IsScriptedWalking(r5)) {
             break;
         }
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            unk_724 = 3;
-            unk_658.func_020c062c(6);
-            _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            _ZN12Unk_02013b1013func_02014198Ehh(&unk_618, 0, 1);
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            reunionStep = 3;
+            talk.setTopic(6);
+            _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 0, 1);
         }
         break;
     case 3:
-        if (unk_658.unk_3c->unk_04 == 5) {
-            _ZN12Unk_020660f813func_02067a78Ev(unk_658.unk_3c);
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
-            func_020c22fc();
-            func_0203a5d8();
-            unk_724 = 4;
+        if (talk.window->state == 5) {
+            _ZN15TalkWindowState11lockAdvanceEv(talk.window);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
+            SpNpcKaitlin_ChangeAct04();
+            Camera_SetMode19();
+            reunionStep = 4;
         }
         break;
     case 4:
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
-            s32 t = func_020816f8(0x23);
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+            s32 t = NpcRegistry_FindSpNpc(0x23);
             if (t) {
-                _ZN12Unk_020d771413func_02015a80EP18Unk_02015b8c_Scene(&unk_658, t);
+                _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(&talk, t);
             }
             buf = 10;
-            _ZN12Unk_020660f813func_02067a84EPhPv(unk_658.unk_3c, &buf, (u32)data_020e679c);
-            unk_658.unk_3c->unk_08 = 1;
-            _ZN12Unk_020660f813func_02067a6cEv(unk_658.unk_3c);
-            unk_724 = 5;
+            _ZN15TalkWindowState14setNextMessageEPhPv(talk.window, &buf, (u32)sSpNpcKatieMsgKey);
+            talk.window->nextState = 1;
+            _ZN15TalkWindowState13unlockAdvanceEv(talk.window);
+            reunionStep = 5;
         }
         break;
     case 5:
-        if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
+        if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
             vec24.x = 0xde00;
             vec24.y = 0;
             vec24.z = 0x13a00;
-            s32 t = func_02002bdc(&unk_5c, &vec24);
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
-            unk_724 = 6;
+            s32 t = Math_AngleXZ(&position, &vec24);
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
+            reunionStep = 6;
         }
         break;
     case 6:
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0xde00, 0x13a00, 0, 0, 0, 0, data_020c6cc8, 0);
-            func_02094ae8(0, r5);
-            func_020c22e0();
-            unk_724 = 7;
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xde00, 0x13a00, 0, 0, 0, 0, data_020c6cc8, 0);
+            PlayerActor_RequestTurnTo(0, r5);
+            SpNpcKaitlin_ChangeAct06();
+            reunionStep = 7;
         }
         break;
     case 7:
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_724 = 8;
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            reunionStep = 8;
         }
         break;
     case 8:
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0xf000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_724 = 9;
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xf000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
+            reunionStep = 9;
         }
         break;
     case 9:
-        if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            if (r5 != r6 && !func_020a03c4()) {
-                func_020b78c4();
+        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+            if (r5 != r6 && !SaveManager_IsSessionJoined()) {
+                FieldInfoBalloon_ShowPleaseWait();
                 break;
             }
-            unk_724 = 10;
+            reunionStep = 10;
         }
         break;
     case 10:
-        if (_ZN12Unk_020cbb1813func_020729ccEj(r7, 0)) {
-            s32 x = _ZN12Unk_0209865c13func_020986a4Ev(func_0209750c());
-            if (_ZN12Unk_020872fc13func_0208733cEv() == 1) {
-                _ZN12Unk_020872fc13func_02087368Ev(x);
+        if (_ZN11CommManager7isMyAidEj(r7, 0)) {
+            s32 x = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
+            if (_ZN15LostChildRecord13isKaitlinRoleEv() == 1) {
+                _ZN15LostChildRecord5clearEv(x);
             }
-            _ZN12Unk_02097ff413func_0209801cEj(func_0209750c(), 0x39);
-            _ZN12Unk_020872fc13func_02087368Ev(_ZN12Unk_0209865c13func_020986a4Ev((void *)s));
-            _ZN12Unk_0208721013func_02087210Ev(func_02085178(func_020850e0()));
-            func_020b4bbc(func_020b4934(), 1);
+            _ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 0x39);
+            _ZN15LostChildRecord5clearEv(_ZN10PlayerData18getLostChildRecordEv((void *)s));
+            _ZN15KatieVisitState5clearEv(TownSessionState_GetKatieState(TownSessionState_Get()));
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         }
         if (r5 == r6) {
-            _ZN12Unk_020872fc13func_02087368Ev(_ZN12Unk_0209865c13func_020986a4Ev(func_0209750c()));
-            _ZN12Unk_0208721013func_02087210Ev(func_02085178(func_020850e0()));
-            _ZN12Unk_02097ff413func_0209801cEj(func_0209750c(), 0x31);
-            func_020b4bbc(func_020b4934(), 0);
+            _ZN15LostChildRecord5clearEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
+            _ZN15KatieVisitState5clearEv(TownSessionState_GetKatieState(TownSessionState_Get()));
+            _ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 0x31);
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
-            func_020b4bbc(func_020b4934(), 1);
+            SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         }
-        unk_724 = 11;
+        reunionStep = 11;
         break;
     }
     return TRUE;
 }
 
-Unk_020e6894::Unk_020e6894() {}
+SpNpcKatieTalk::SpNpcKatieTalk() {}
 
-Unk_020e6894::~Unk_020e6894() {}
+SpNpcKatieTalk::~SpNpcKatieTalk() {}
 
-void Unk_020e6894::func_020c0634(Unk_020e6924 *owner) {
-    vfunc_08();
-    unk_ac = owner;
+void SpNpcKatieTalk::attachOwner(SpNpcKatie *owner) {
+    resetMsg();
+    katie = owner;
 }
 
-void Unk_020e6894::func_020c062c(s32 v) {
-    unk_b0 = v;
+void SpNpcKatieTalk::setTopic(s32 v) {
+    topic = v;
 }
 
-s32 Unk_020e6894::func_020c0624() {
-    return unk_b0;
+s32 SpNpcKatieTalk::getTopic() {
+    return topic;
 }
 
-void Unk_020e6894::vfunc_38(void *p) {
-    _ZN12Unk_0201ad2013func_0201ad34Ei(&unk_ac->unk_2a0, 0);
-    _ZN12Unk_0201ad2013func_0201ad30Ei(&unk_ac->unk_2a0, 1);
-    _ZN12Unk_020d77148vfunc_38Ej(this, p);
+void SpNpcKatieTalk::onEventTag(u32 p_) {
+    void *p = (void *)p_;
+    _ZN14NpcMoveAnimSet12setStandAnimEi(&katie->moveAnimSet, 0);
+    _ZN14NpcMoveAnimSet11setWalkAnimEi(&katie->moveAnimSet, 1);
+    _ZN16ActorTalkRequest10onEventTagEj(this, p);
 }
 
-void Unk_020e6894::vfunc_78(Unk_020c0538_Out *out) {
-    void *t = func_0209750c();
-    out->unk_00 = (u32)data_020e679c;
-    switch (func_020c0624()) {
+void SpNpcKatieTalk::start(TalkStartMsg *out_) {
+    TalkStartMsg *out = (TalkStartMsg *)out_;
+    void *t = PlayerData_GetCurrent();
+    out->msgKey = (const char *)sSpNpcKatieMsgKey;
+    switch (getTopic()) {
     case 0:
-        _ZN12Unk_02097ff413func_0209801cEj(t, 0x33);
-        out->unk_04 = 0;
+        _ZN10PlayerData7setFlagEj(t, 0x33);
+        out->msgIndex = 0;
         break;
     case 1:
-        _ZN12Unk_02097ff413func_0209801cEj(t, 0x33);
-        out->unk_04 = func_02063b8c(3) + 1;
+        _ZN10PlayerData7setFlagEj(t, 0x33);
+        out->msgIndex = Random_GlobalBelow(3) + 1;
         break;
     case 2:
-        out->unk_04 = func_02063b8c(3) + 4;
-        func_0202e1cc(0x29, 1);
+        out->msgIndex = Random_GlobalBelow(3) + 4;
+        Talk_CheckAndSetPlayerFlag(0x29, 1);
         break;
     case 3:
-        out->unk_04 = func_02063b8c(3) + 7;
+        out->msgIndex = Random_GlobalBelow(3) + 7;
         break;
     case 4:
-        out->unk_04 = func_02063b8c(3) + 0x19;
+        out->msgIndex = Random_GlobalBelow(3) + 0x19;
         break;
     case 5:
-        out->unk_04 = func_02063b8c(3) + 0x22;
+        out->msgIndex = Random_GlobalBelow(3) + 0x22;
         break;
     case 6:
-        out->unk_04 = 0x14;
+        out->msgIndex = 0x14;
         break;
     }
-    unk_ac->unk_70d = 0;
+    katie->escortDeclined = 0;
 }
 
-void Unk_020e6894::vfunc_10() {
-    s32 a = _ZN12Unk_0209865c13func_020986a4Ev(func_0209750c());
-    _ZN12Unk_020d771413func_02015818Ejj(this, _ZN12Unk_020872fc13func_02087364Ev((void *)a), 0);
-    _ZN12Unk_020d771413func_02015818Ejj(this, _ZN12Unk_020872fc13func_02087364Ev((void *)a), 1);
+void SpNpcKatieTalk::onMessageStart(u32) {
+    s32 a = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
+    _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 0);
+    _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 1);
 }
 
-void Unk_020e6894::vfunc_14() {
-    if (unk_1e == 0x14) {
-        unk_3c->unk_14 = 0;
+void SpNpcKatieTalk::onMessageEnd(u32) {
+    if (msgIndex == 0x14) {
+        window->openMode = 0;
     }
 }
 
-void Unk_020e6894::vfunc_18() {
-    switch (unk_1e) {
+void SpNpcKatieTalk::onChoice(u32) {
+    switch (msgIndex) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
     case 25: case 26: case 27:
     case 34: case 35: case 36: {
         u8 v[2];
-        _ZN12Unk_020660f813func_020679b4Ev(unk_3c);
-        switch (_ZN12Unk_020aa3b813func_020aa514Ev()) {
+        _ZN15TalkWindowState13getChoiceListEv(window);
+        switch (_ZN10ChoiceList9getResultEv()) {
         case 0:
-            v[0] = func_02063b8c(3) + 0x1c;
-            _ZN12Unk_020660f813func_02067a84EPhPv(unk_3c, &v[0], (u32)data_020e679c);
-            _ZN12Unk_02086f8413func_02086fa0Ev(func_02085178(func_020850e0()));
+            v[0] = Random_GlobalBelow(3) + 0x1c;
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v[0], (u32)sSpNpcKatieMsgKey);
+            _ZN15KatieVisitState12setFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             break;
         case 1:
-            v[1] = func_02063b8c(3) + 0x1f;
-            _ZN12Unk_020660f813func_02067a84EPhPv(unk_3c, &v[1], (u32)data_020e679c);
-            if (func_020b50e8() == 0) {
-                _ZN12Unk_02086f8413func_02086f98Ev(func_02085178(func_020850e0()));
+            v[1] = Random_GlobalBelow(3) + 0x1f;
+            _ZN15TalkWindowState14setNextMessageEPhPv(window, &v[1], (u32)sSpNpcKatieMsgKey);
+            if (Scene_GetCurrent() == 0) {
+                _ZN15KatieVisitState14clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             }
-            unk_ac->unk_70d = 1;
+            katie->escortDeclined = 1;
             break;
         }
         break;
@@ -1029,10 +742,10 @@ void Unk_020e6894::vfunc_18() {
     }
 }
 
-extern "C" BOOL func_020c03c8() {
-    Unk_020e6924 *p = data_021f4578;
+extern "C" BOOL SpNpcKatie_IsIdle() {
+    SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
-        if (_ZN12Unk_02019dd813func_02019d8cEv(&p->unk_2ac) == 0xba && data_021f4578->unk_654 == 0) {
+        if (_ZN11NpcFaceAnim12getMouthAnimEv(&p->faceAnim) == 0xba && sSpNpcKatieInstance->act == 0) {
             return TRUE;
         }
         return FALSE;
@@ -1040,58 +753,45 @@ extern "C" BOOL func_020c03c8() {
     return TRUE;
 }
 
-extern "C" void func_020c03a0() {
-    Unk_020e6924 *p = data_021f4578;
+extern "C" void SpNpcKatie_ResetAct() {
+    SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
-        if (p->unk_654 != 0) {
-            p->func_020c11b8(0);
+        if (p->act != 0) {
+            p->changeAct(0);
         }
     }
 }
 
-extern "C" void func_020c0378() {
-    Unk_020e6924 *p = data_021f4578;
+extern "C" void SpNpcKatie_ChangeAct05() {
+    SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
-        if (p->unk_654 != 5) {
-            p->func_020c11b8(5);
+        if (p->act != 5) {
+            p->changeAct(5);
         }
     }
 }
 
-struct Unk_021f458c_Color {
-    u8 v[4];
-    Unk_021f458c_Color(u8 a, u8 b, u8 c, u8 d) {
-        v[0] = a;
-        v[1] = b;
-        v[2] = c;
-        v[3] = d;
-    }
+DebugColor data_021f458c(31, 20, 20, 31);
+DebugColor data_021f4580(20, 20, 31, 31);
+DebugColor data_021f4584(31, 31, 20, 31);
+DebugColor data_021f457c(20, 31, 20, 31);
+DebugColor data_021f4590(20, 31, 31, 31);
+DebugColor data_021f4588(20, 24, 24, 31);
+const VecFx32 sSpNpcKatieReunionWalkPos = { 0x10000, 0, 0x11800 };
+SpNpcKatieActEntry sSpNpcKatieActTable[9] = {
+    { &SpNpcKatie::setupAct00, &SpNpcKatie::mainAct00 },
+    { &SpNpcKatie::setupAct01, &SpNpcKatie::mainAct01 },
+    { &SpNpcKatie::setupAct02, &SpNpcKatie::mainAct02 },
+    { &SpNpcKatie::setupAct03, &SpNpcKatie::mainAct03 },
+    { &SpNpcKatie::setupAct04, &SpNpcKatie::mainAct04 },
+    { &SpNpcKatie::setupAct05, &SpNpcKatie::mainAct05 },
+    { &SpNpcKatie::setupAct06, &SpNpcKatie::mainAct06 },
+    { &SpNpcKatie::setupAct07, &SpNpcKatie::mainAct07 },
+    { &SpNpcKatie::setupAct08, &SpNpcKatie::mainAct08 },
 };
-Unk_021f458c_Color data_021f458c(31, 20, 20, 31);
-Unk_021f458c_Color data_021f4580(20, 20, 31, 31);
-Unk_021f458c_Color data_021f4584(31, 31, 20, 31);
-Unk_021f458c_Color data_021f457c(20, 31, 20, 31);
-Unk_021f458c_Color data_021f4590(20, 31, 31, 31);
-Unk_021f458c_Color data_021f4588(20, 24, 24, 31);
-const Unk_020bfe30_Vec data_020d1c8c = { 0x10000, 0, 0x11800 };
-Unk_020c11b8_Ent data_021f4594[9] = {
-    { &Unk_020e6924::func_020c1144, &Unk_020e6924::func_020c1140 },
-    { &Unk_020e6924::func_020c108c, &Unk_020e6924::func_020c0fdc },
-    { &Unk_020e6924::func_020c0f80, &Unk_020e6924::func_020c0efc },
-    { &Unk_020e6924::func_020c0e7c, &Unk_020e6924::func_020c0e50 },
-    { &Unk_020e6924::func_020c0e28, &Unk_020e6924::func_020c0e04 },
-    { &Unk_020e6924::func_020c0dc8, &Unk_020e6924::func_020c0c08 },
-    { &Unk_020e6924::func_020c0b9c, &Unk_020e6924::func_020c0acc },
-    { &Unk_020e6924::func_020c0e4c, &Unk_020e6924::func_020c0e48 },
-    { &Unk_020e6924::func_020c0abc, &Unk_020e6924::func_020c06a0 },
-};
-Unk_020e6924 *data_021f4578;
-char data_020e6830[] = "sp_npc_missing1";
-char *data_020e679c = data_020e6830;
-char data_020e6870[] = "npc_sp/model/los_tex.nsbtx";
-char data_020e6840[] = "npc_sp/model/los.nsbmd";
-struct Unk_020e6858_Rec {
-    Unk_020e6924 *(*fn)();
-    u32 w[5];
-};
-Unk_020e6858_Rec data_020e6858 = { func_020c1620, { 0x0082007e, 2, 0x5000, 0x5000, 0x3e800 } };
+SpNpcKatie *sSpNpcKatieInstance;
+char sSpNpcKatieKey[] = "sp_npc_missing1";
+char *sSpNpcKatieMsgKey = sSpNpcKatieKey;
+char sSpNpcKatieTexPath[] = "npc_sp/model/los_tex.nsbtx";
+char sSpNpcKatieModelPath[] = "npc_sp/model/los.nsbmd";
+ActorProfile sSpNpcKatieProfile = {(void *(*)())SpNpcKatie_Create, 0x7e, 0x82, 2, 0x5000, 0x5000, 0x3e800};

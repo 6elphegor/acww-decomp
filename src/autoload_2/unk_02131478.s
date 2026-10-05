@@ -9,10 +9,10 @@
 
 ; double square root (bit-by-bit). Evidence: asrs + bcs on the shifted-out bit, lsls/adc and subs/sbc
 ; 64-bit chains, rrxs + adcs rounding chain, clz. Literals 0x7ff00000, 0x7ff80000 (NaN) at the end.
-	.global func_02131478
-	.type func_02131478, @function
-	.size func_02131478, 0x18c
-func_02131478:
+	.global _dsqrt
+	.type _dsqrt, @function
+	.size _dsqrt, 0x18c
+_dsqrt:
 	stmfd sp!, {r4, r5, r6, lr}
 	ldr r2, L_021315fc ; (was ldr r2, [pc, #0x178])
 	cmp r1, r2

@@ -5,72 +5,72 @@
 
 #define REGSET(a) do { u32 t = *(volatile u16 *)(a); t &= ~3; t |= 3; *(volatile u16 *)(a) = t; } while (0)
 extern "C" {
-extern void *data_ov001_0222de1c;
+extern void *gWfcMsgBank;
 
-s32 func_ov001_022147a4();
-s32 func_ov001_0220c668(void *);
-s32 func_ov001_0220c654(s32, s32);
-s32 func_ov001_0220c618(s32, s32);
-s32 func_ov001_0220c5f0(void *, void *);
-s32 func_ov001_0220c5e0();
-s32 func_ov001_0220cc10(void *, s32);
-s32 func_ov001_022250e0(s32);
-s32 func_ov001_0221e9a0(s32);
-s32 func_ov001_02224ff8(s32, s32, s32, s32);
-s32 func_ov001_02225cb4(s32, s32);
-s32 func_ov001_02225c58(s32, s32);
-s32 func_ov001_02208594(const char *, void *);
-s32 func_ov001_0222558c(s32, s32);
-s32 func_ov001_022080a0();
-s32 func_ov001_022253d4(s32);
-s32 func_ov001_02208244();
-s32 func_ov001_02208114();
-s32 func_ov001_02208070();
-s32 func_ov001_02224e4c(s32);
-s32 func_ov001_02208100();
-s32 func_ov001_022261cc(s32);
-s32 func_ov001_022080e0(s32);
-s32 func_ov001_02208088();
-s32 func_ov001_022084f8(s32);
-s32 func_ov001_02225290(s32, s32, s32, s32, s32, void *, s32);
-s32 func_ov001_02208388();
-s32 func_ov001_02225254(s32, s32, s32, s32, s32, s32, s32, s32);
-s32 func_ov001_0222516c(s32);
-s32 func_ov001_022156e0(s32);
-s32 func_0212c234(void *, s32, void *, s32);
-void func_02111a6c(void *, s32, u32);
-void func_ov001_0221aae4();
-void func_ov001_02217e40();
+s32 WfcAddrEdit_Idle();
+s32 WfcUtil_SetScene(void *);
+s32 WfcUtil_SetScreenFlags(s32, s32);
+s32 WfcUtil_SetEditParams(s32, s32);
+s32 WfcUtil_GetEditParams(void *, void *);
+s32 WfcUtil_GetLanguage();
+s32 WfcMsg_GetString(void *, s32);
+s32 WfcFade_IsBusy(s32);
+s32 WfcSound_Play(s32);
+s32 WfcFade_Start(s32, s32, s32, s32);
+s32 WfcGx_ShowPlanes(s32, s32);
+s32 WfcGx_HidePlanes(s32, s32);
+s32 WfcUtil_LoadFileTo(const char *, void *);
+s32 WfcText_CreateBgCanvas(s32, s32);
+s32 WfcButtonBar_IsClosed();
+s32 WfcText_DestroyBgCanvas(s32);
+s32 WfcUtil_HideTopMessage();
+s32 WfcButtonBar_Close();
+s32 WfcButtonBar_DisableInput();
+s32 WfcFade_StartWait(s32);
+s32 WfcButtonBar_GetResult();
+s32 WfcInput_IsKeyPressed(s32);
+s32 WfcButtonBar_SetResult(s32);
+s32 WfcButtonBar_EnableInput();
+s32 WfcUtil_OpenButtonBar(s32);
+s32 WfcText_DrawMonospace(s32, s32, s32, s32, s32, void *, s32);
+s32 WfcUtil_GetTextFlags();
+s32 WfcText_DrawTextRect(s32, s32, s32, s32, s32, s32, s32, s32);
+s32 WfcText_RequestTransfer(s32);
+s32 WfcManualSetup_SetMode(s32);
+s32 swprintf(void *, s32, void *, s32);
+void GX_LoadBG2Scr(void *, s32, u32);
+void WfcConnSelect_Enter();
+void WfcManualSetup_Enter();
 
-void func_ov001_02214f50(s32 a);
-void func_ov001_02214f60();
-void func_ov001_02215044();
-void func_ov001_022150a8();
-void func_ov001_022150d4();
-void func_ov001_02215110();
-void func_ov001_02215114();
-void func_ov001_02215148();
-void func_ov001_02215168();
-void func_ov001_022151a4();
-void func_ov001_022151fc();
-void func_ov001_0221523c();
-void func_ov001_02215618();
-void func_ov001_022156b8();
+void WfcError_SetCode(s32 a);
+void WfcError_Exit();
+void WfcError_FadeOut();
+void WfcError_StartExit();
+void WfcError_HandleResult();
+void WfcError_Idle();
+void WfcError_HandleInput();
+void WfcError_Update();
+void WfcError_WaitButtonBar();
+void WfcError_WaitFadeIn();
+void WfcError_FadeIn();
+void WfcError_DrawMessage();
+void WfcError_LoadBg();
+void WfcError_Enter();
 
-const u16 data_ov001_0222a088[4] = {0x0d, 0x3c, 0xe6, 0x5e};
-const u8 data_ov001_0222a080[8] = {0, 1, 1, 1, 1, 1, 0, 0};
-const u16 data_ov001_0222a090[6][2] = {{0x62, 0x22}, {0x62, 0x22}, {0x3d, 0x22}, {0x65, 0x22}, {0x6c, 0x22}, {0x34, 0x22}};
-u16 data_ov001_0222b030[4] = {0x25, 0x64, 0, 0};
-s32 data_ov001_0222de80;
+const u16 sWfcErrorTextRect[4] = {0x0d, 0x3c, 0xe6, 0x5e};
+const u8 sWfcErrorCodeFont[8] = {0, 1, 1, 1, 1, 1, 0, 0};
+const u16 sWfcErrorCodePos[6][2] = {{0x62, 0x22}, {0x62, 0x22}, {0x3d, 0x22}, {0x65, 0x22}, {0x6c, 0x22}, {0x34, 0x22}};
+u16 sWfcErrorCodeFormat[4] = {0x25, 0x64, 0, 0};
+s32 sWfcErrorCode;
 
-void func_ov001_022156b8() {
-    func_ov001_02215618();
-    func_ov001_0221523c();
-    func_ov001_0220c668((void *)func_ov001_022151fc);
+void WfcError_Enter() {
+    WfcError_LoadBg();
+    WfcError_DrawMessage();
+    WfcUtil_SetScene((void *)WfcError_FadeIn);
 }
 
-void func_ov001_02215618() {
-    func_ov001_02208594("char/jb4Error.nsc.l", (void *)func_02111a6c);
+void WfcError_LoadBg() {
+    WfcUtil_LoadFileTo("char/jb4Error.nsc.l", (void *)GX_LoadBG2Scr);
     REGSET(0x4001008);
     REGSET(0x400100a);
     REGSET(0x4000008);
@@ -78,12 +78,12 @@ void func_ov001_02215618() {
     REGSET(0x400000c);
 }
 
-void func_ov001_0221523c() {
+void WfcError_DrawMessage() {
     s32 sel;
     s32 r4;
     u16 buf[8];
-    func_ov001_0220c5f0(0, &sel);
-    s32 v = data_ov001_0222de80;
+    WfcUtil_GetEditParams(0, &sel);
+    s32 v = sWfcErrorCode;
     if (v >= -20099) r4 = 0;
     else if (v >= -20100) r4 = 21;
     else if (v >= -20101) r4 = 74;
@@ -119,91 +119,91 @@ void func_ov001_0221523c() {
     else if (v >= -52999) r4 = 0;
     else if (v >= -53299) r4 = 0x15;
     else r4 = 0;
-    s32 r5 = func_ov001_0222558c(0, data_ov001_0222a080[func_ov001_0220c5e0()]);
-    s32 r4b = func_ov001_0220cc10(data_ov001_0222de1c, r4);
-    func_0212c234(buf, 8, data_ov001_0222b030, -data_ov001_0222de80);
-    u32 a = data_ov001_0222a090[func_ov001_0220c5e0()][1];
-    u32 b = data_ov001_0222a090[func_ov001_0220c5e0()][0];
-    func_ov001_02225290(r5, b, a, 2, 10, buf, 0);
-    func_ov001_02225254(r5, data_ov001_0222a088[0], data_ov001_0222a088[1], data_ov001_0222a088[2], data_ov001_0222a088[3], 2, func_ov001_02208388(), r4b);
-    func_ov001_0222516c(r5);
+    s32 r5 = WfcText_CreateBgCanvas(0, sWfcErrorCodeFont[WfcUtil_GetLanguage()]);
+    s32 r4b = WfcMsg_GetString(gWfcMsgBank, r4);
+    swprintf(buf, 8, sWfcErrorCodeFormat, -sWfcErrorCode);
+    u32 a = sWfcErrorCodePos[WfcUtil_GetLanguage()][1];
+    u32 b = sWfcErrorCodePos[WfcUtil_GetLanguage()][0];
+    WfcText_DrawMonospace(r5, b, a, 2, 10, buf, 0);
+    WfcText_DrawTextRect(r5, sWfcErrorTextRect[0], sWfcErrorTextRect[1], sWfcErrorTextRect[2], sWfcErrorTextRect[3], 2, WfcUtil_GetTextFlags(), r4b);
+    WfcText_RequestTransfer(r5);
 }
 
-void func_ov001_022151fc() {
-    func_ov001_02224ff8(2, 0, 0x15, 8);
-    func_ov001_02225cb4(0, 0x15);
-    func_ov001_0220c668((void *)func_ov001_022151a4);
+void WfcError_FadeIn() {
+    WfcFade_Start(2, 0, 0x15, 8);
+    WfcGx_ShowPlanes(0, 0x15);
+    WfcUtil_SetScene((void *)WfcError_WaitFadeIn);
 }
 
-void func_ov001_022151a4() {
-    if (func_ov001_022250e0(1) != 0) return;
-    if (func_ov001_022250e0(0) != 0) return;
-    func_ov001_022084f8(4);
-    func_ov001_0220c668((void *)func_ov001_02215168);
+void WfcError_WaitFadeIn() {
+    if (WfcFade_IsBusy(1) != 0) return;
+    if (WfcFade_IsBusy(0) != 0) return;
+    WfcUtil_OpenButtonBar(4);
+    WfcUtil_SetScene((void *)WfcError_WaitButtonBar);
 }
 
-void func_ov001_02215168() {
-    if (func_ov001_02208100() == -2) return;
-    func_ov001_02208088();
-    func_ov001_0220c668((void *)func_ov001_02215148);
+void WfcError_WaitButtonBar() {
+    if (WfcButtonBar_GetResult() == -2) return;
+    WfcButtonBar_EnableInput();
+    WfcUtil_SetScene((void *)WfcError_Update);
 }
 
-void func_ov001_02215148() {
-    func_ov001_02215114();
-    func_ov001_02215110();
-    func_ov001_022150d4();
+void WfcError_Update() {
+    WfcError_HandleInput();
+    WfcError_Idle();
+    WfcError_HandleResult();
 }
 
-void func_ov001_02215114() {
-    if (func_ov001_022261cc(1) == 0) return;
-    func_ov001_022080e0(0);
+void WfcError_HandleInput() {
+    if (WfcInput_IsKeyPressed(1) == 0) return;
+    WfcButtonBar_SetResult(0);
 }
 
-void func_ov001_02215110() {}
+void WfcError_Idle() {}
 
-void func_ov001_022150d4() {
-    if (func_ov001_02208100() != 0) return;
-    func_ov001_0221e9a0(6);
-    func_ov001_0220c668((void *)func_ov001_022150a8);
+void WfcError_HandleResult() {
+    if (WfcButtonBar_GetResult() != 0) return;
+    WfcSound_Play(6);
+    WfcUtil_SetScene((void *)WfcError_StartExit);
 }
 
-void func_ov001_022150a8() {
-    func_ov001_02208070();
-    func_ov001_02224e4c(8);
-    func_ov001_0220c668((void *)func_ov001_02215044);
+void WfcError_StartExit() {
+    WfcButtonBar_DisableInput();
+    WfcFade_StartWait(8);
+    WfcUtil_SetScene((void *)WfcError_FadeOut);
 }
 
-void func_ov001_02215044() {
-    if (func_ov001_022250e0(1) != 0) return;
-    func_ov001_02208114();
-    func_ov001_02224ff8(3, 1, 1, 8);
-    func_ov001_02224ff8(3, 0, 0x15, 8);
-    func_ov001_0220c668((void *)func_ov001_02214f60);
+void WfcError_FadeOut() {
+    if (WfcFade_IsBusy(1) != 0) return;
+    WfcButtonBar_Close();
+    WfcFade_Start(3, 1, 1, 8);
+    WfcFade_Start(3, 0, 0x15, 8);
+    WfcUtil_SetScene((void *)WfcError_Exit);
 }
 
-void func_ov001_02214f60() {
+void WfcError_Exit() {
     s32 sel;
-    if (func_ov001_022250e0(1) != 0) return;
-    if (func_ov001_022250e0(0) != 0) return;
-    if (func_ov001_022080a0() == 0) return;
-    func_ov001_022253d4(0);
-    func_ov001_02208244();
-    func_ov001_02225c58(1, 1);
-    func_ov001_02225c58(0, 0x15);
-    func_ov001_0220c5f0(0, &sel);
+    if (WfcFade_IsBusy(1) != 0) return;
+    if (WfcFade_IsBusy(0) != 0) return;
+    if (WfcButtonBar_IsClosed() == 0) return;
+    WfcText_DestroyBgCanvas(0);
+    WfcUtil_HideTopMessage();
+    WfcGx_HidePlanes(1, 1);
+    WfcGx_HidePlanes(0, 0x15);
+    WfcUtil_GetEditParams(0, &sel);
     if (sel != 0) {
-        func_ov001_0220c654(2, 1);
-        func_ov001_0220c668((void *)func_ov001_0221aae4);
+        WfcUtil_SetScreenFlags(2, 1);
+        WfcUtil_SetScene((void *)WfcConnSelect_Enter);
     } else {
-        func_ov001_0220c654(2, 0);
-        func_ov001_0220c618(0, 0);
-        func_ov001_022156e0(0);
-        func_ov001_0220c668((void *)func_ov001_02217e40);
+        WfcUtil_SetScreenFlags(2, 0);
+        WfcUtil_SetEditParams(0, 0);
+        WfcManualSetup_SetMode(0);
+        WfcUtil_SetScene((void *)WfcManualSetup_Enter);
     }
 }
 
-void func_ov001_02214f50(s32 a) {
-    data_ov001_0222de80 = a;
+void WfcError_SetCode(s32 a) {
+    sWfcErrorCode = a;
 }
 }
 #pragma thumb reset

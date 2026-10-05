@@ -24,21 +24,21 @@ they cannot be split across files. Start from the unit files in `src/ovNNN/`.
   `grep "addr:0x0206fcc8" config/usa/arm9/symbols.txt` (main), `config/usa/arm9/overlays/ov002/symbols.txt`,
   `config/usa/arm9/autoload_2/symbols.txt` (runtime and `func_020e...`/`func_0213...`), `itcm`, other overlays.
   Then declare the class/function so it mangles to that name:
-  * a method `_ZN18Unk_ov139_02291f6019func_ov139_02292154Ei` → class `Unk_ov139_02291f60`, method
+  * a method `_ZN17MenuTownListPanel8clearRowEi` → class `MenuTownListPanel`, method
     `func_ov139_02292154(s32)`; parameter letters: `h` u8, `t` u16, `j` u32, `i` s32, `s` s16, `a` s8,
     `Ph` u8*, `Pv` void*. Return types are not mangled: keep whatever the function matched with.
-  * a plain `func_XXXXXXXX` → `extern "C"`. A `_Z13func_0207217cv` → C++ linkage, declared outside `extern "C"`.
+  * a plain `func_XXXXXXXX` → `extern "C"`. A `_Z25NetOverlay_AssertWirelessv` → C++ linkage, declared outside `extern "C"`.
   * a call the unit wrote as a free function taking the object (`f(&unk_94, i)`) becomes a method call
     (`unk_94.f(i)`) when the real symbol is a method; the code is the same.
-  * methods of one object split across several classes in ov002 (known case: `Unk_ov002_02202d98` and
-    `Unk_ov002_0220464c` are the same cursor object) — declare both classes and call the second through a cast
-    `((Unk_ov002_0220464c *)&unk_6b8)->func_ov002_02202b68()`.
-  * a callee reached through a returned singleton (`func_020ed174()` then `func_ov092_02291c5c()` with r0
-    unchanged) is `((Unk_ov092_02291ec8 *)func_020ed174())->func_ov092_02291c5c()`.
+  * methods of one object split across several classes in ov002 (known case: `MenuCursorBase` and
+    `MenuCursor` are the same cursor object) — declare both classes and call the second through a cast
+    `((MenuCursor *)&unk_6b8)->func_ov002_02202b68()`.
+  * a callee reached through a returned singleton (`ProcBase_GetParent()` then `func_ov092_02291c5c()` with r0
+    unchanged) is `((MenuLauncher *)ProcBase_GetParent())->func_ov092_02291c5c()`.
   * Never rename a symbol of another module to change its signature: other overlays call it too. If a call site
     needs a different argument list than the symbol's mangled signature (e.g. the original passes an extra
     argument), declare an `extern "C"` function whose *name is the mangled symbol* and pass the object first:
-    `extern "C" void _ZN18Unk_ov002_0220455819func_ov002_02202200EP12Unk_020e0d98(void *self, void *p, s32 x);`
+    `extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);`
     — the call compiles exactly like the method call. Renames are only for your own overlay's symbols and for
     agreed shared names (constructors/destructors; see the renames already committed in symbols.txt).
   * Runtime helpers the compiler calls implicitly must exist by name in `autoload_2/symbols.txt`
@@ -58,7 +58,7 @@ all of it:
   `extern "C" u32 data_ov140_02293da4[10] = {...};` (copy the words from the dump; pointers as the symbol).
 * The scene registration entry `{factory, u16, u16}` near the start of `.data` (referenced from main by
   address only) is a named definition too, e.g.
-  `extern "C" Unk_ov140_SceneEntry data_ov140_02293d10 = {func_ov140_02293c6c, 0xb5, 0xb9};`.
+  `extern "C" Unk_ov140_SceneEntry sDistantTownsMenuProfile = {DistantTownsMenu_Create, 0xb5, 0xb9};`.
   Words are little-endian: the dump word `00b900b5` is the u16 `0xb5` followed by `0xb9`. The entry is 8 bytes;
   two zero words right before a vtable are the vtable's own header (offset-to-top and typeinfo), not padding.
 * `linkprep.py data` checks each object's contents; an `ERROR ... match nowhere` means a wrong initializer.
@@ -88,15 +88,15 @@ all of it:
 
 Nothing special is needed in the source: mwcc generates `__sinit_<file>` (in `.init`) and its `.ctor` word itself
 from any file-scope object with a non-constant initialiser — typically a table of pointer-to-member-function
-pairs, e.g. `Ent data_ov083_02271d20[3] = {{&C::f824,&C::f7d8},{&C::f790,&C::f764},{NULL,&C::f760}};`.
+pairs, e.g. `Ent sSpNpcTortimerFlowerFestActTable[3] = {{&C::f824,&C::f7d8},{&C::f790,&C::f764},{NULL,&C::f760}};`.
 * A NULL member pointer is copied from the runtime constant `__ptmf_null` (autoload_2 0x0213a740): add
   `autoload_2 0213a740 __ptmf_null` to renames.txt until it is committed.
 * Strings shared by several functions (one copy in the original) need `// mwcc-flags: -str reuse` on line 1;
   the default `-str noreuse` makes one copy per use. `#pragma reuse_strings` is ignored.
-* The overlays built on main's `Unk_020d77a4`/`Unk_020d8bc8` scene classes (ov080, ov083, ...) share a set of
+* The overlays built on main's `NpcActor`/`SpNpcActor` scene classes (ov080, ov083, ...) share a set of
   main renames and class chains: reuse the class declarations of the linked ov083 units rather than inventing new
   names. Their inline constructors store
-  `_ZTV12Unk_020d77a4` / `_ZTV12Unk_020d8bc8` (being added to main's symbols.txt).
+  `_ZTV8NpcActor` / `_ZTV10SpNpcActor` (being added to main's symbols.txt).
 
 ## 3. Order the functions
 
@@ -116,8 +116,8 @@ inline helpers above them. This is the original file's definition order, so inli
 * `check` must report 0 layout problems, 0 wrong targets and 0 unresolved symbols. EXTRA functions are ones the
   original does not have (e.g. an out-of-line copy of an inline function); ORDER means a definition is out of
   place; TARGET means a call or pointer names a symbol that exists but at a different address than the
-  original's (typically a sub-object declared with a similar but wrong class, e.g. `Unk_ov002_02204738` instead
-  of `Unk_ov002_0220471c`) — use the class whose symbols live at the address the check prints.
+  original's (typically a sub-object declared with a similar but wrong class, e.g. `MenuLabelButton` instead
+  of `MenuLabelButtonStyle1`) — use the class whose symbols live at the address the check prints.
 * `data` maps each data/bss object to its original address and reports whether the object's data order matches.
   mwcc heapsorts a file's data by size over the reverse of creation order, so the order depends on where each
   named object is *defined* relative to the functions. `--apply` searches for a placement that reproduces the
@@ -149,9 +149,11 @@ it matches; otherwise it saves `linkprep.py diff` output to `link_fail.txt` in t
 
 mwcc emits a complete-object (C1) and a base-object (C2) constructor, but the game keeps one body for
 both. Different linked units may call the same address by different names (e.g. ov048/ov118/ov120 call
-`_ZN12Unk_020dd38cC2Ev`, ov139's function-local statics call `C1`). symbols.txt holds one sized symbol per
+`_ZN11MsgString9CC2Ev`, ov139's function-local statics call `C1`). symbols.txt holds one sized symbol per
 address and mwld aborts on two ("the sum of all symbol sizes exceed section size"), so add the second
-name as a zero-size label: `python3 tools/pipeline/alias.py config/usa/arm9/symbols.txt <existing> <new>`.
+name as a zero-size label: `python3 tools/pipeline/alias.py config/usa/arm9/symbols.txt <existing> <new>`
+(an overlay's address: `config/usa/arm9/overlays/ovNNN/symbols.txt`; `tools/aliases.py` makes both names
+resolve once the unit is compiled, in every module).
 Never rename a constructor that a linked unit already calls; alias it instead (`rename_impact.py` tells you).
 
 ## Creation-order rules the data model gets wrong (found on ov147, ov123, ov139, ov129)
@@ -171,10 +173,10 @@ them by hand (the ROM checksum catches any mismatch anyway).
 
 39 overlays have no code of their own: their `delinks.txt` header lists only `.init`, `.ctor`, `.data` and `.bss`
 (ov005-ov008, ov010-ov044: a map scene record, its entry list and id grid, and for ov013-ov029/ov031-ov044 1-7
-static map objects of main's class `Unk_020b4f8c`). Their one source file defines the data under the `symbols.txt`
+static map objects of main's class `SceneWarp`). Their one source file defines the data under the `symbols.txt`
 names; mwcc emits the Thumb `__sinit_<file>` (`.init`) and its `.ctor` word itself from the objects with a
 non-constant initialiser (an aggregate with an `extern u8` element: the byte that `__sinit` copies from ov003/ov004;
-`Unk_020b4f8c` objects built by their out-of-line constructor and registered with `__register_global_object`).
+`SceneWarp` objects built by their out-of-line constructor and registered with `__register_global_object`).
 Their sources were generated from the original image, with the definition order solved against the data layout.
 
 * The spec has no `.text` line: `unit unit.cpp`, then `.init`, `.ctor`, `.data` and (when not empty) `.bss`.
@@ -186,7 +188,7 @@ Their sources were generated from the original image, with the definition order 
   object table 8, object array 0x1c per object. Every overlay's `.data` is then one ascending size run.
 * A global that nothing refers to is dead-stripped unless `symbols.txt` names it (`check`: `unused`); a named
   global keeps its `symbols.txt` name (ov069's empty initialiser object `data_ov069_02260cc0`).
-* Labels used from outside the unit: main's `data_020e4280` table names `data_ov005_0225b79c`, which is the fourth
+* Labels used from outside the unit: main's `sSceneInfoTable` table names `data_ov005_0225b79c`, which is the fourth
   id of ov005's list `data_ov005_0225b790`: `ov005 0225b79c interior:0225b790` in the unit's renames.txt.
 
 ## Overlays that were two translation units
@@ -230,7 +232,7 @@ dependencies on the unit's objects; without any such file the build is as before
 
     # comment
     src/ov009/unk_ov009_0225b880.cpp:
-        extra src/ov009/unk_ov009_0225b880_switch.cpp _ZN18Unk_ov009_0225e29c8vfunc_4cEjh
+        extra src/ov009/unk_ov009_0225b880_switch.cpp _ZN13BuildingActor18onInteractionEventEjh
         place __arraydtor$303 0x0225e05c
 
 * `<main source>:` — a unit of this overlay's `delinks.txt` (one block per unit; the other units of the overlay
@@ -272,10 +274,13 @@ In the linker script it:
   the `AFTER(...)` list of every module loaded after it. mwld writes OBJECT-selected bss into the overlay's
   file as zero bytes otherwise. (The region name must not start with `OV`: dsd reads such regions as overlays.)
   `OVNNN_BSS_START`/`_END` keep their values, and the other units' `file.o(.bss)` lines move along unchanged;
-* defines every other `symbols.txt` name of a placed function that no object of the unit defines as an alias at
-  the end of `SECTIONS`: `alias = defined_name + 1;` (`+ 1` for Thumb). This is how other linked units keep
-  using their own names for the unit's functions (see "One constructor, two names"): add the name the source
-  defines, or the name another unit uses, as a label with `tools/pipeline/alias.py` and the tool does the rest;
+* defines the `symbols.txt` names of a placed function as an alias at the end of `SECTIONS`
+  (`alias = section_symbol + 1;`, `+ 1` for Thumb) when no object of the unit defines any of that address's
+  names (the section was placed by relocation or `place`). Where an object defines one of them,
+  `tools/aliases.py` adds the others to that object as real symbols instead (see "Second names of functions").
+  Either way other linked units keep using their own names for the unit's functions (see "One constructor, two
+  names"): add the name the source defines, or the name another unit uses, as a label with
+  `tools/pipeline/alias.py` and the build does the rest;
 * adds the extra objects to the object list right after the main object (`objects_object_order.txt`), so
   `force_active.py` keeps their `symbols.txt` functions.
 
@@ -290,15 +295,16 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
   name; for main see "Linking the main module", "Units placed object by object").
 * The whole bss of the overlay moves to the file-less region as soon as one of its units is object-ordered;
   this is harmless for the other units.
-* An alias is an untyped absolute linker symbol. It is right for pointers (vtable slots, tables) and Thumb
-  callers — the only uses so far — but mwld cannot know its ARM/Thumb mode, so check the ROM when a new kind of
-  caller appears, or give callers the name the source defines.
+* A linker script alias is an untyped absolute linker symbol. It is right for pointers (vtable slots, tables) and
+  Thumb callers, but mwld cannot know its ARM/Thumb mode, so check the ROM when a new kind of caller appears, or
+  give callers the name the source defines. (Since `aliases.py` covers overlays, all 56 aliases of the current
+  object-ordered units are real symbols; none is left in the linker script.)
 * Data labels of `symbols.txt` get no aliases: if another unit references `data_ovNNN_XXXXXXXX` by name, the
   source must define the object under that name (or, for a label inside an object, record it in the overlay's
   `lcf_symbols.txt`, see "Names the linker script defines"). A pointer from another module into the middle of one of the
   unit's objects is handled as for any linked unit: name the object's start in `symbols.txt` and give the
   relocation `add:<offset>` (ov003 TU08: main's word at 0x020cdf4c points to 0x02231707, inside a vtable; it is
-  now `to:0x0223160c add:0xfb` with `_ZTV18Unk_ov003_02231614` at 0x0223160c). mwld does **not** report the
+  now `to:0x0223160c add:0xfb` with `_ZTV13CountdownSign` at 0x0223160c). mwld does **not** report the
   leftover undefined label: the word is linked as 0 and only the ROM checksum shows it
   (`tools/pipeline/romdiff.py` then names `arm9.bin`).
 * An object is placed in the range of its own section kind: an object the original keeps in `.rodata` must be
@@ -306,7 +312,7 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
 * An object that nothing placed points to, and that has no `symbols.txt` name, needs a `place` line.
 * Two sections of one object that share a local symbol name cannot be selected (the tool reports it).
 * A link-once function that another unit already provides at its own address (the shared thunk
-  `_ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev` in ov003 TU04) lies outside the unit's range, is therefore not
+  `_ZThn236_N13BuildingActor8vfunc_88Ev` in ov003 TU04) lies outside the unit's range, is therefore not
   placed, and the first copy keeps being used.
 * Tools that compare `src/ovNNN/*.cpp` with `delinks.txt` see the extra file as an unlisted source.
 
@@ -373,14 +379,14 @@ Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` ->
 
 `renames.txt` (one per line, `#` comments):
 
-    main 02050e84 _ZN20Unk_02050288_FontObjC1Ev     a symbol of the unit gets the name the object defines
-    main 020dd36c _ZTV12Unk_020dd374                vtable: named at its start, see below
+    main 02050e84 _ZN8GameFontC1Ev     a symbol of the unit gets the name the object defines
+    main 020dd36c _ZTV15EncodedString8B                vtable: named at its start, see below
     autoload_3 021bdd80 interior:021bdb80           label inside an object, see "Interior labels"
     main 020d1dd8 section:.ctor                     name the linker script must define, see "Names the linker
                                                     script defines"
 
 `aliases.txt`: `<module> <existing name> <second name>` adds a label with `tools/pipeline/alias.py`, e.g.
-`autoload_2 func_02132198 _dls` (a compiler helper the symbol table named only by address).
+`autoload_2 _dls _dls` (a compiler helper the symbol table named only by address).
 
 Never alias a signed and an unsigned helper onto one address: the code then links whatever signedness the source
 uses and hides a wrong source. The 64-bit runtime helpers are one routine with four entry points: 0x02132ef8
@@ -391,24 +397,24 @@ A 64-bit division of the wrong signedness now links to a different address and s
 ### Vtables
 
 dsd labelled 230 vtables of main 8 bytes into the object (`data_020dd374` = first slot of the vtable at
-0x020dd36c). The compiled unit emits `_ZTV12Unk_020dd374` at the start, so the label must become that symbol and
+0x020dd36c). The compiled unit emits `_ZTV15EncodedString8B` at the start, so the label must become that symbol and
 every relocation to it `to:<start> add:0x8`. A `renames.txt` line `main <start> _ZTV<n><class>` does both
 (`tools/pipeline/vtable_rename.py`; standalone: `vtable_rename.py [-n] main <start or label> <class or _ZTV name>`).
 Do the same for the vtable that starts where the unit's `.data` range ends, even though it belongs to the next
 unit: the range must end on a symbol, and the vtable symbol is the right one (TU102: `main 020dd384
-_ZTV12Unk_020dd38c`). `check` prints a `BOUND` line for every boundary that still lacks a symbol.
+_ZTV11MsgString9C`). `check` prints a `BOUND` line for every boundary that still lacks a symbol.
 
 ### Interior labels
 
 Thumb code reaches a member at a large offset through a literal `object + 0x200` plus a small displacement, and
 dsd made a symbol of every such literal. So many `data_` labels, in `.data` and above all in bss, are **addresses
-inside an object**, not objects: `data_021bdd80` and `data_021bddc0` are `data_021bdb80 + 0x200` and `+ 0x240`
+inside an object**, not objects: `data_021bdd80` and `data_021bddc0` are `sHudObjGfx + 0x200` and `+ 0x240`
 (one 0x258-byte object, members `unk_250` and `unk_254`); `data_020dbbc8/bc08/bc48` are parts of the 0x1c0-byte
-table `data_020dbac8`. The signs: a matched function reads `data_X[0x50 / 4]` next to `p->unk_250` of the
+table `sCharSortKeyTable`. The signs: a matched function reads `data_X[0x50 / 4]` next to `p->unk_250` of the
 neighbouring object; a table is indexed beyond its "size"; a class is larger than the gap to the next symbol; a
 section that should be one size-sorted run has "runs" of objects that only `__sinit` references. The current
 files declare such labels `extern`; **the unit must define the whole object once and use members or indices**
-(`data_021bdb80.unk_250`), which compiles to the same literal. `check`'s TARGET test compares the resolved
+(`sHudObjGfx.unk_250`), which compiles to the same literal. `check`'s TARGET test compares the resolved
 address with the original word, so it confirms the object + offset. If code *outside* the unit refers to the
 label (`check`: `MISSING ... interior`; or other sources under `src/` declare it `extern`), add
 `<module> <label> interior:<object>` to `renames.txt`. At install the label is removed from `symbols.txt`, the
@@ -421,9 +427,9 @@ section). Inside the unit itself use the member, not an extern of the label.
 Once a range belongs to a compiled unit, only the global symbols of its object exist there. Two kinds of names
 that other code uses are then defined by nobody:
 
-* an **interior label** that compiled sources of other units declare `extern` (`data_021d7352` =
-  `data_021d7350 + 2`; 106 linked files use the 49 labels inside the save object). The link stops with
-  `Undefined: "data_021d7352"`;
+* an **interior label** that compiled sources of other units declare `extern` (`gSaveTownId` =
+  `gSaveData + 2`; 106 linked files use the 49 labels inside the save object). The link stops with
+  `Undefined: "gSaveTownId"`;
 * a name for a place the compiler gives only a **local symbol**: the first word of main's `.ctor` table is
   `.p__sinit_<file>` in the object, and the runtime in autoload_2 has a relocation to it (0x02135344). A delinked
   object's references are weak: no message, the word is 0, `autoload_2.bin` differs.
@@ -431,13 +437,13 @@ that other code uses are then defined by nobody:
 Both are recorded in `lcf_symbols.txt` next to the module's `symbols.txt` (main: `config/usa/arm9/`, main's bss:
 `config/usa/arm9/autoload_3/`, overlays likewise):
 
-    data_021d7352      addr:0x021d7352  base:data_021d7350
+    gSaveTownId      addr:0x021d7352  base:gSaveData
     p__sinit_020c2cd0  addr:0x020d1dd8  base:ARM9_CTOR_START
 
 `base` is a data/bss symbol of the same `symbols.txt` that a complete unit defines as a global object, or a
 section start of the module as dsd's script names it (`ARM9_CTOR_START`, `OV004_DATA_START`). The build step
 (after `aliases.py`, before `force_active.py`; only present when such a file has entries, so rerun
-`tools/configure.py`) appends `data_021d7352 = data_021d7350 + 0x2;` to the end of `SECTIONS`.
+`tools/configure.py`) appends `gSaveTownId = gSaveData + 0x2;` to the end of `SECTIONS`.
 
 What mwld does (tested with a miniature link of real mwcc objects, 1.2/base mwldarm):
 
@@ -457,7 +463,7 @@ a name that `symbols.txt` has at another address; duplicates; non-identifiers. `
 objects that use it. Every recorded name is defined, used or not.
 
 **Which references it is for.** Compiled sources that use a label as an extern object: always this (the literal
-`data_021d7352` and `data_021d7350 + 2` are the same bytes, and no source changes). Relocations of delinked code
+`gSaveTownId` and `gSaveData + 2` are the same bytes, and no source changes). Relocations of delinked code
 (`to:<label>` in a `relocs.txt`): rewrite them as `to:<object start> add:<offset>` whenever the object start has
 a global symbol, which is what `interior:` does: it needs no linker symbol, dsd resolves it against the real
 object, and it stays right when the label is forgotten. Use a linker script name for a delinked relocation only
@@ -467,7 +473,7 @@ it for the relocation and as the unit boundary), renames it to an identifier and
 section start. Function names never go here (`aliases.py`).
 
 `linkprep.py check` and `undef` read `lcf_symbols.txt` like `symbols.txt` (a later unit that uses
-`data_021d7352` as an extern resolves, and its TARGET test has the address); a `MISSING ... used from outside`
+`gSaveTownId` as an extern resolves, and its TARGET test has the address); a `MISSING ... used from outside`
 line is satisfied by a recorded name or by an `interior:`/`section:` line of the unit's `renames.txt`, which
 `check` validates (the object must define the base as a global there). Standalone:
 `vtable_rename.py [-n] --interior <module> <label> <object>` and `--section <module> <address> [.ctor]`.
@@ -521,18 +527,23 @@ objects sit in the neighbour (TU021/TU022, TU207-TU209), the units are one file 
 ## Second names of functions: `tools/aliases.py`
 
 symbols.txt has 59+ `kind:label` aliases in main, mostly a C1 next to a C2 constructor, because linked overlay
-units call one address by both names. For a delinked address dsd defines every name. A compiled unit would
+units call one address by both names; overlays have their own (C1/C2 pairs, and a method's old and new mangled
+names after a signature fix, e.g. `_ZN9TitleTalk8onChoiceEv` / `...Ej` in ov147). For a delinked address dsd
+defines every name. A compiled unit would
 * define both C1 and C2 as two functions, and the build keeps every global that symbols.txt names
   (`force_active.py`): both bodies would be linked and the unit would grow;
-* leave undefined a name it does not use (another class's name for the same function).
-A linker script assignment (`alias = name + 1;`, what `object_order.py` writes for overlays) does not solve the
-first case: mwld prefers the object's own definition (tested). So `tools/aliases.py` (build step, present when
-main has complete units) rewrites the symbol table of each compiled main unit that has such names into a copy
-under `build/usa/aliases/`, and that copy is linked: an alias the object defines with **identical code** is
-redirected to the primary name's section (the duplicate, now nameless, is dead-stripped); names the object does
-not define are added to it as real function symbols (correct for ARM callers too). Different code under two
-names is an error. Nothing to do in the source; `check` prints `ALIAS` lines saying what will happen.
-When a unit calls a constructor by the name symbols.txt does not have (`_ZN12Unk_020ddf44C2Ev` for a base class
+* leave undefined a name it does not use (another class's name for the same function, or the old name).
+A linker script assignment (`alias = name + 1;`) does not solve the first case: mwld prefers the object's own
+definition (tested). So `tools/aliases.py` (build step, present when a module has complete units) rewrites the
+symbol table of each compiled unit of main, autoload_2, itcm **and the overlays** that has such names (from its
+own module's `symbols.txt`) into a copy under `build/usa/aliases/`, and that copy is linked: an alias the object
+defines with **identical code** is redirected to the primary name's section (the duplicate, now nameless, is
+dead-stripped); names the object does not define are added to it as real function symbols (correct for ARM
+callers too). Different code under two names is an error. Nothing to do in the source; for main `check` prints
+`ALIAS` lines saying what will happen. Units placed object by object (`object_order.txt`) are handled the same
+way, extra objects included (a name another object of the link defines is not added again); only names at an
+address where no object defines any of the names are left to `object_order.py`'s linker script aliases.
+When a unit calls a constructor by the name symbols.txt does not have (`_ZN14LetterTextLineC2Ev` for a base class
 whose symbol is `...C1Ev`), add the missing one in `aliases.txt`; never rename (see "One constructor, two names").
 
 ## Preparing and checking a unit
@@ -594,16 +605,16 @@ address words in the code that uses the objects.
   `extern "C"` function taking the object first). Rename only the unit's own symbols, and only when nothing
   compiled references the old name (`rename_impact.py`).
 * **A callee whose address exists in several overlays** (`relocs.txt`: `module:overlays(113,123,...)`): name the
-  symbol of the first overlay in the list (TU210: `_ZN18Unk_ov113_02293640D1Ev`). The link resolves it to the
+  symbol of the first overlay in the list (TU210: `_ZN11BbsReadMenuD1Ev`). The link resolves it to the
   shared address; `check` verifies address and module.
 * **Empty `__sinit`** (2 bytes, `bx lr`; nos. 23, 28, 50, 59): mwcc emits one for a file-scope object of a class
   whose constructor is inline and empty (`struct A { A() {} ... }; A obj;`), also through an empty base
   constructor. The unit that owns such an object owns the `.init`/`.ctor` slot.
-* **Assembly routines of the original** (`func_0206d470`: pushes all registers and CPSR) cannot be written in
+* **Assembly routines of the original** (`Fatal_SaveRegisters`: pushes all registers and CPSR) cannot be written in
   C++: cut the C++ unit around them (TU113 is two complete units with the routine in between) and link the routine
   as an assembly unit of its own (see "Assembly units (.s)").
 * `extern const` objects defined in the *next* file look like part of this one by their users
-  (`data_020ca638`, used only by TU068's `func_02050cb4`, is the first `.rodata` object of the following file):
+  (`data_020ca638`, used only by TU068's `GameFont_FindGlyph`, is the first `.rodata` object of the following file):
   an object that sits after the unit's size-sorted run and is loaded from memory although its value is a
   constant belongs to the neighbour. Shorten the range and keep it `extern`.
 
@@ -685,8 +696,8 @@ in the module's `delinks.txt`, and handles boundary symbols, `renames.txt` (`aut
 unresolved symbols`; a spec whose ranges are outside the module is refused with `NORANGE`.
 
 Build chain: `dsd lcf` writes `unk_XXXXXXXX.o(.text)` between the gap objects of `.autoload_2` / `.itcm`;
-`bss_units.py` handles the placeholder; `aliases.py` gives compiled units of autoload_2 and itcm their second
-names from the module's own `symbols.txt` (both have `kind:label` aliases, e.g. `_ll_udiv`); `lcf_symbols.py`
+`bss_units.py` handles the placeholder; `aliases.py` gives compiled units of autoload_2 and itcm (as of every
+module, overlays included) their second names from the module's own `symbols.txt` (both have `kind:label` aliases, e.g. `_ll_udiv`); `lcf_symbols.py`
 accepts `lcf_symbols.txt` in the module directory (section starts `AUTOLOAD_2_DATA_START`, `ITCM_TEXT_START`);
 `force_active.py` keeps the unit's `symbols.txt` globals. `python3 tools/configure.py usa` after every install.
 
@@ -694,6 +705,45 @@ First unit: GX_SetGraphicsMode/GXS_SetGraphicsMode, 0x0210f0c4-0x0210f154.
 
 SDK functions that use numbers of the SDK's linker script (stack sizes, arena starts) need the names of
 `config/usa/arm9/abs_symbols.txt`: see "Absolute symbols" under "Names the linker script defines".
+
+## Data of library units
+
+What the data ownership of the library modules (batch M5) found; it applies to main units as well.
+
+* **Size order per file.** All data objects of one file (`.data`, `.rodata` and `.bss` together) are heapsorted by
+  size, so in every section a file's objects appear in ascending size. A run of objects that is not ascending is
+  several files. Many early library units were cut by code only and are several original files: they are split at
+  function boundaries with `tools/pipeline/split_unit.py` (the declarations are copied into every part), and each
+  part owns its file's ranges. A unit that turned out to be one file cut into several is merged; when the parts
+  declare the same objects or functions with different types, each part's declarations and code can be kept in a
+  namespace of its own (everything `extern "C"`, so no symbol name changes; mwcc accepts differing `extern "C"`
+  declarations in different namespaces): `src/autoload_2/unk_020e9a08.cpp`.
+* **Creation order.** For C++ files the model of `linkprep.py data` holds (objects created at their definition, the
+  reversed list heapsorted). For C files mwcc heapsorts the creation list itself, not reversed: write the C
+  definitions in the reverse of the C++ order (checked on the NitroSDK SND command file, the NNS sound main file and
+  others). A file-scope `static` or tentative definition near the top creates its object there, and the objects an
+  initialiser refers to (the string literals of a pointer table, for example) are created with it and take part in
+  the sort. String literals used inside functions are not sorted: they follow the sorted objects in the order of the
+  functions in the ROM. When a definition order is not obvious, permuting the definitions of one size and running
+  `check` is quick.
+* **Adding an object reorders the others.** An extra object changes the heap, so equal-size objects elsewhere in the
+  file can swap; adding a profile or a constant to an otherwise finished unit can make its bss wrong although the
+  new object is in place. Search the definition order again (or give up on the object).
+* **One link order for all sections.** dsd sorts the units by one order over all sections of a module (`dsd lcf`:
+  "Link order cycle detected"): a unit that owns `.text` and data must not have its data before the data of a unit
+  whose `.text` comes before its own. Units with data only (no `.text`) are free; they work in `autoload_2`,
+  `main` and `dtcm` (`src/dtcm/`), named after their first address.
+* **Interior labels and views.** dsd made labels for members and element addresses (`array + 0x1000`, the field of
+  a record); the unit defines the whole object and `vtable_rename.py --interior <module> <label> <object>` (works for
+  `autoload_2`, `autoload_3`, `itcm` too) records the label in `lcf_symbols.txt`. Declared types are often views:
+  check a definition's size against the gap to the next object, and look for an unlabelled thread stack after an
+  `OSThread` (its end is the next object's label, which `OS_CreateThread` gets as the stack top).
+* **Details.** `__attribute__((aligned(32)))` reproduces the SDK's `ATTRIBUTE_ALIGN(32)` buffers. Explicit zero
+  initialisers go to `.bss`, so zero data inside an original `.data` range (the DTCM objects) cannot be written as
+  plain C. Two library files were built with string pooling (`-str reuse` in the file's `mwcc-flags` line): MSL's
+  decimal conversion (`unk_0212fa54.c`) and the network file. A static initialiser of a library file is owned with a
+  `unk_<start>.main.<ext>` placeholder in main's `delinks.txt` (`.init`, `.ctor`), as before. An ITCM unit's bss is
+  owned with the same `.bss` placeholder as an `autoload_2` unit's.
 
 Not supported / open:
 

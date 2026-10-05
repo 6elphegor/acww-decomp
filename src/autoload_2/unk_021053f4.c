@@ -32,7 +32,7 @@ struct RS {
     u8 padb4[0x24];
     u8 *mat_d8;        // 0xd8
 };
-extern void func_01ff8bd0(u32, void *, u32);
+extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 
 typedef struct V3 { s32 x, y, z; } V3;
 typedef union Glb {
@@ -50,8 +50,8 @@ typedef union Glb {
 } Glb;
 extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
-extern void func_01ff8ccc(void);
-extern BOOL func_02110e5c(void *);
+extern void NNS_G3dGeFlushBuffer(void);
+extern BOOL G3X_GetClipMtx(void *);
 typedef struct Cb {
     u8 pad0[0x10];
     struct Cb *next;    // 0x10
@@ -59,23 +59,23 @@ typedef struct Cb {
     u8 n;               // 0x19
     u16 tbl[1];         // 0x1a
 } Cb;
-extern u8 *func_02104140(void);
-extern u8 *func_021040fc(void);
-extern u8 *func_021041e8(void);
-extern void func_01ffb7f4(void *, void *);
-extern void func_01ffbfa0(void *, void *, void *);
-extern s32 func_01ffc854(void *);
-extern void func_01ffc714(void *, void *);
-extern void func_02115e90(void *, void *, u32);
+extern u8 *NNS_G3dGlbGetWV(void);
+extern u8 *NNS_G3dGlbGetInvWV(void);
+extern u8 *NNS_G3dGlbGetInvV(void);
+extern void MTX_Copy43To44_(void *, void *);
+extern void MTX_Concat44(void *, void *, void *);
+extern s32 VEC_Mag(void *);
+extern void VEC_Normalize(void *, void *);
+extern void MIi_CpuSend32(void *, void *, u32);
 extern s32 data_0213be38[3];
 extern s32 data_0213be44[3];
 extern s32 data_0213be14[9];
-extern u8 data_0213be0c[], data_0213be08[];
+extern u8 data_0213be0c[]; extern u32 data_0213be08[18];
 extern s32 data_0213bdf0[3], data_0213bdfc[3];
-extern u8 data_0213bdc4[], data_0213bdcc[], data_0213bdc0[];
+extern u8 data_0213bdc4[], data_0213bdcc[]; extern u32 data_0213bdc0[18];
 
 // marks (in a bit set) every table slot flagged 0x100 in a linked list of nodes
-void func_02105ac4(u32 *bits, Cb *n)
+void updateHintVec_(u32 *bits, Cb *n)
 {
     s32 i;
     if (n == NULL) {
@@ -92,7 +92,7 @@ void func_02105ac4(u32 *bits, Cb *n)
 }
 
 // NNS_G3dFuncSbc_BBY
-void func_0210578c(RS *rs, u32 opt)
+void NNSi_G3dFuncSbc_BB(RS *rs, u32 opt)
 {
     u32 cmdlen = 2;
     s32 *trans = data_0213bdf0;
@@ -110,7 +110,7 @@ void func_0210578c(RS *rs, u32 opt)
         if ((rs->flag & 0x100) == 0) {
             u32 v;
             if (opt == 0x40) v = rs->c[2]; else v = rs->c[3];
-            func_01ff8bd0(0x14, &v, 1);
+            NNS_G3dGeBufferOP_N(0x14, &v, 1);
         }
     }
     timing = rs->cb28 ? rs->t93 : 0;
@@ -126,39 +126,39 @@ void func_0210578c(RS *rs, u32 opt)
         s32 m[16];
         s32 m2[16];
         s32 m3[16];
-        func_01ff8ccc();
+        NNS_G3dGeFlushBuffer();
         *(volatile u32 *)0x04000400 = 0x00151110;
         *(volatile u32 *)0x04000400 = 0;
         *(volatile u32 *)0x04000400 = 0;
-        while (func_02110e5c(m) != 0) {
+        while (G3X_GetClipMtx(m) != 0) {
         }
         if (data_027e00c8.n.flag & 1) {
-            func_01ffb7f4(func_02104140(), m2);
-            func_01ffbfa0(m, m2, m);
+            MTX_Copy43To44_(NNS_G3dGlbGetWV(), m2);
+            MTX_Concat44(m, m2, m);
         } else if (data_027e00c8.n.flag & 2) {
-            func_01ffb7f4(data_027e0114, m3);
-            func_01ffbfa0(m, m3, m);
+            MTX_Copy43To44_(data_027e0114, m3);
+            MTX_Concat44(m, m3, m);
         }
         trans[0] = m[12];
         trans[1] = m[13];
         trans[2] = m[14];
-        scale[0] = func_01ffc854(&m[0]);
-        scale[1] = func_01ffc854(&m[4]);
-        scale[2] = func_01ffc854(&m[8]);
+        scale[0] = VEC_Mag(&m[0]);
+        scale[1] = VEC_Mag(&m[4]);
+        scale[2] = VEC_Mag(&m[8]);
         if (data_027e00c8.n.flag & 1) {
             *(volatile u32 *)0x04000400 = 0x00171012;
-            func_02115e90(data_0213bdc4, (void *)0x04000400, 8);
-            func_02115e90(func_021040fc(), (void *)0x04000400, 0x30);
+            MIi_CpuSend32(data_0213bdc4, (void *)0x04000400, 8);
+            MIi_CpuSend32(NNS_G3dGlbGetInvWV(), (void *)0x04000400, 0x30);
             *(volatile u32 *)0x04000400 = 0x1b19;
-            func_02115e90(data_0213bdcc, (void *)0x04000400, 0x3c);
+            MIi_CpuSend32(data_0213bdcc, (void *)0x04000400, 0x3c);
         } else if (data_027e00c8.n.flag & 2) {
             *(volatile u32 *)0x04000400 = 0x00171012;
-            func_02115e90(data_0213bdc4, (void *)0x04000400, 8);
-            func_02115e90(func_021041e8(), (void *)0x04000400, 0x30);
+            MIi_CpuSend32(data_0213bdc4, (void *)0x04000400, 8);
+            MIi_CpuSend32(NNS_G3dGlbGetInvV(), (void *)0x04000400, 0x30);
             *(volatile u32 *)0x04000400 = 0x1b19;
-            func_02115e90(data_0213bdcc, (void *)0x04000400, 0x3c);
+            MIi_CpuSend32(data_0213bdcc, (void *)0x04000400, 0x3c);
         } else {
-            func_02115e90(data_0213bdc0, (void *)0x04000400, 0x48);
+            MIi_CpuSend32(data_0213bdc0, (void *)0x04000400, 0x48);
         }
     }
     if (timing == 3) {
@@ -172,14 +172,14 @@ void func_0210578c(RS *rs, u32 opt)
         cmdlen++;
         if (skip == 0 && (rs->flag & 0x100) == 0) {
             u32 v = rs->c[2];
-            func_01ff8bd0(0x13, &v, 1);
+            NNS_G3dGeBufferOP_N(0x13, &v, 1);
         }
     }
     rs->c += cmdlen;
 }
 
 // NNS_G3dFuncSbc_BB
-void func_021053f4(RS *rs, u32 opt)
+void NNSi_G3dFuncSbc_BBY(RS *rs, u32 opt)
 {
     u32 cmdlen = 2;
     s32 *trans = data_0213be38;
@@ -198,7 +198,7 @@ void func_021053f4(RS *rs, u32 opt)
         if ((rs->flag & 0x100) == 0) {
             u32 v;
             if (opt == 0x40) v = rs->c[2]; else v = rs->c[3];
-            func_01ff8bd0(0x14, &v, 1);
+            NNS_G3dGeBufferOP_N(0x14, &v, 1);
         }
     }
     timing = rs->cb2c ? rs->t94 : 0;
@@ -214,48 +214,48 @@ void func_021053f4(RS *rs, u32 opt)
         s32 m[16];
         s32 m2[16];
         s32 m3[16];
-        func_01ff8ccc();
+        NNS_G3dGeFlushBuffer();
         *(volatile u32 *)0x04000400 = 0x00151110;
         *(volatile u32 *)0x04000400 = 0;
         *(volatile u32 *)0x04000400 = 0;
-        while (func_02110e5c(m) != 0) {
+        while (G3X_GetClipMtx(m) != 0) {
         }
         if (data_027e00c8.n.flag & 1) {
-            func_01ffb7f4(func_02104140(), m2);
-            func_01ffbfa0(m, m2, m);
+            MTX_Copy43To44_(NNS_G3dGlbGetWV(), m2);
+            MTX_Concat44(m, m2, m);
         } else if (data_027e00c8.n.flag & 2) {
-            func_01ffb7f4(data_027e0114, m3);
-            func_01ffbfa0(m, m3, m);
+            MTX_Copy43To44_(data_027e0114, m3);
+            MTX_Concat44(m, m3, m);
         }
         trans[0] = m[12];
         trans[1] = m[13];
         trans[2] = m[14];
-        scale[0] = func_01ffc854(&m[0]);
-        scale[1] = func_01ffc854(&m[4]);
-        scale[2] = func_01ffc854(&m[8]);
+        scale[0] = VEC_Mag(&m[0]);
+        scale[1] = VEC_Mag(&m[4]);
+        scale[2] = VEC_Mag(&m[8]);
         if (m[5] != 0 || m[6] != 0) {
-            func_01ffc714(&m[4], rot + 3);
+            VEC_Normalize(&m[4], rot + 3);
             rot[7] = -rot[5];
             rot[8] = rot[4];
         } else {
-            func_01ffc714(&m[8], rot + 6);
+            VEC_Normalize(&m[8], rot + 6);
             rot[5] = -rot[7];
             rot[4] = rot[8];
         }
         if (data_027e00c8.n.flag & 1) {
             *(volatile u32 *)0x04000400 = 0x00171012;
-            func_02115e90(data_0213be0c, (void *)0x04000400, 8);
-            func_02115e90(func_021040fc(), (void *)0x04000400, 0x30);
+            MIi_CpuSend32(data_0213be0c, (void *)0x04000400, 8);
+            MIi_CpuSend32(NNS_G3dGlbGetInvWV(), (void *)0x04000400, 0x30);
             *(volatile u32 *)0x04000400 = 0x1b19;
-            func_02115e90(data_0213be14, (void *)0x04000400, 0x3c);
+            MIi_CpuSend32(data_0213be14, (void *)0x04000400, 0x3c);
         } else if (data_027e00c8.n.flag & 2) {
             *(volatile u32 *)0x04000400 = 0x00171012;
-            func_02115e90(data_0213be0c, (void *)0x04000400, 8);
-            func_02115e90(func_021041e8(), (void *)0x04000400, 0x30);
+            MIi_CpuSend32(data_0213be0c, (void *)0x04000400, 8);
+            MIi_CpuSend32(NNS_G3dGlbGetInvV(), (void *)0x04000400, 0x30);
             *(volatile u32 *)0x04000400 = 0x1b19;
-            func_02115e90(data_0213be14, (void *)0x04000400, 0x3c);
+            MIi_CpuSend32(data_0213be14, (void *)0x04000400, 0x3c);
         } else {
-            func_02115e90(data_0213be08, (void *)0x04000400, 0x48);
+            MIi_CpuSend32(data_0213be08, (void *)0x04000400, 0x48);
         }
     }
     if (timing == 3) {
@@ -269,8 +269,107 @@ void func_021053f4(RS *rs, u32 opt)
         cmdlen++;
         if (skip == 0 && (rs->flag & 0x100) == 0) {
             u32 v = rs->c[2];
-            func_01ff8bd0(0x13, &v, 1);
+            NNS_G3dGeBufferOP_N(0x13, &v, 1);
         }
     }
     rs->c += cmdlen;
 }
+
+// ---- file-scope objects (.data 0x0213bd50-0x0213bed0): the rest of sbc.c's data: the PRJMAP / ENVMAP command packets and
+// matrix, the material / shape / command function tables (the functions are partly in ITCM) and the geometry command
+// packets of the billboard functions (packed command bytes, then their parameters: two words, a 3x3 rotation,
+// translation and scale). The parts the code uses separately (data_0213bd54, data_0213bd5c, data_0213bdc4/bdcc/bdf0/bdfc,
+// data_0213be0c/be14/be38/be44) are interior labels (autoload_2 lcf_symbols.txt). This definition order gives the
+// original order after mwcc's size sort.
+// .rodata 0x02135d18-0x02135d5c: the material colour bit masks and the pivot index table of the billboard / pivot
+// matrices (data_02135d39 / d3a / d3b: interior labels), used by the SBC functions in ITCM.
+void NNSi_G3dFuncSbc_BB();
+void NNSi_G3dFuncSbc_BBY();
+void NNSi_G3dFuncSbc_CALLDL();
+void NNSi_G3dFuncSbc_ENVMAP();
+void NNSi_G3dFuncSbc_MAT();
+void NNSi_G3dFuncSbc_MAT_InternalDefault();
+void NNSi_G3dFuncSbc_MTX();
+void NNSi_G3dFuncSbc_NODE();
+void NNSi_G3dFuncSbc_NODEDESC();
+void NNSi_G3dFuncSbc_NODEMIX();
+void NNSi_G3dFuncSbc_PRJMAP();
+void NNSi_G3dFuncSbc_SHP();
+void NNSi_G3dFuncSbc_SHP_InternalDefault();
+void NNSi_G3dFuncSbc_NOP();
+void NNSi_G3dFuncSbc_POSSCALE();
+void NNSi_G3dFuncSbc_RET();
+void (*data_0213be50[32])() = { // NNS_G3dFuncSbcTable
+    NNSi_G3dFuncSbc_NOP,
+    NNSi_G3dFuncSbc_RET,
+    NNSi_G3dFuncSbc_NODE,
+    NNSi_G3dFuncSbc_MTX,
+    NNSi_G3dFuncSbc_MAT,
+    NNSi_G3dFuncSbc_SHP,
+    NNSi_G3dFuncSbc_NODEDESC,
+    NNSi_G3dFuncSbc_BB,
+    NNSi_G3dFuncSbc_BBY,
+    NNSi_G3dFuncSbc_NODEMIX,
+    NNSi_G3dFuncSbc_CALLDL,
+    NNSi_G3dFuncSbc_POSSCALE,
+    NNSi_G3dFuncSbc_ENVMAP,
+    NNSi_G3dFuncSbc_PRJMAP,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+};
+u32 data_0213bdc0[18] = {
+    0x1b171012, 0x00000001, 0x00000002, 0x00001000, 0x00000000, 0x00000000,
+    0x00000000, 0x00001000, 0x00000000, 0x00000000, 0x00000000, 0x00001000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+};
+u32 data_0213be08[18] = {
+    0x1b171012, 0x00000001, 0x00000002, 0x00001000, 0x00000000, 0x00000000,
+    0x00000000, 0x00001000, 0x00000000, 0x00000000, 0x00000000, 0x00001000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+};
+u32 data_0213bd80[16] = {
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00010000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00010000,
+};
+const u8 data_02135d38[9][4] = {
+    {4, 5, 7, 8}, {3, 5, 6, 8}, {3, 4, 6, 7},
+    {1, 2, 7, 8}, {0, 2, 6, 8}, {0, 1, 6, 7},
+    {1, 2, 4, 5}, {0, 2, 3, 5}, {0, 1, 3, 4},
+};
+const u32 data_02135d18[8] = {0x00000000, 0x00007fff, 0x7fff0000, 0x7fff7fff, 0x00008000, 0x0000ffff, 0x7fff8000, 0x7fffffff};
+void (*data_0213bd60[4])() = { // NNS_G3dFuncSbcMatTable
+    NNSi_G3dFuncSbc_MAT_InternalDefault,
+    0,
+    0,
+    0,
+};
+void (*data_0213bd70[4])() = { // NNS_G3dFuncSbcShpTable
+    NNSi_G3dFuncSbc_SHP_InternalDefault,
+    0,
+    0,
+    0,
+};
+u32 data_0213bd58[2] = {0x2a, 0};
+u32 data_0213bd50[2] = {0x2a, 0};
+
+// autoload_3 .bss 0x021f5cc0-0x021f70c4: NNS_G3dRS (the current render state) and NNS_G3dRSOnGlb (the render state with
+// its material and joint-scale caches; data_021f61ff and data_021f6ac4 .. data_021f6ad8 are interior labels), used by
+// the SBC and G3D functions in autoload_2 and ITCM.
+void *data_021f5cc0;
+u32 data_021f5cc4[0x500];

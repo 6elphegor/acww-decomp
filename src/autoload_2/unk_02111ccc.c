@@ -5,42 +5,42 @@ typedef unsigned int u32;
 typedef int s32;
 
 extern s32 data_0213bfec; // GXi_DmaId
-void func_02115c24(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy32
-void func_02115e78(const void *src, void *dest, u32 size);            // MI_CpuCopy32
-void func_02115bac(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy16
-void func_02115e48(const void *src, void *dest, u32 size);            // MI_CpuCopy16
+void MI_DmaCopy32(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy32
+void MIi_CpuCopy32(const void *src, void *dest, u32 size);            // MI_CpuCopy32
+void MI_DmaCopy16(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy16
+void MIi_CpuCopy16(const void *src, void *dest, u32 size);            // MI_CpuCopy16
 extern u32 data_021fcbf8;
 extern s32 data_021fcbfc;
-extern u16 data_02139f44[];
+extern const u16 data_02139f44[8];
 extern u32 data_021fcbf4, data_021fcc00, data_021fcc04, data_021fcc08;
-void func_01ffa080(s32 dmaNo);                                   // MI_WaitDma
-void func_0210fbc4(s32 bank);
-void func_0210fcb8(u32 bank);
-s32 func_0210f70c(void);
-void func_02115a2c(s32 dmaNo, const void *src, void *dest, u32 size, void *callback, void *arg);
+void MI_WaitDma(s32 dmaNo);                                   // MI_WaitDma
+void GX_SetBankForTexPltt(s32 bank);
+void GX_SetBankForTex(u32 bank);
+s32 GX_ResetBankForTexPltt(void);
+void MI_DmaCopy32Async(s32 dmaNo, const void *src, void *dest, u32 size, void *callback, void *arg);
 
 static inline void copy32(s32 dmaNo, const void *src, void *dest, u32 size) {
     if (dmaNo != -1 && size > 48) {
-        func_02115c24(dmaNo, src, dest, size);
+        MI_DmaCopy32(dmaNo, src, dest, size);
     } else {
-        func_02115e78(src, dest, size);
+        MIi_CpuCopy32(src, dest, size);
     }
 }
 
 static inline void copy16(s32 dmaNo, const void *src, void *dest, u32 size) {
     if (dmaNo != -1 && size > 28) {
-        func_02115bac(dmaNo, src, dest, size);
+        MI_DmaCopy16(dmaNo, src, dest, size);
     } else {
-        func_02115e48(src, dest, size);
+        MIi_CpuCopy16(src, dest, size);
     }
 }
 
 // GX_EndLoadTex
-void func_02112038(void) {
+void GX_EndLoadTex(void) {
     if (data_0213bfec != -1) {
-        func_01ffa080(data_0213bfec);
+        MI_WaitDma(data_0213bfec);
     }
-    func_0210fcb8(data_021fcc00);
+    GX_SetBankForTex(data_021fcc00);
     data_021fcc08 = 0;
     data_021fcc04 = 0;
     data_021fcbf4 = 0;
@@ -48,59 +48,70 @@ void func_02112038(void) {
 }
 
 // GX_BeginLoadBGExtPltt
-void func_02111ff0(void) {
-    s32 v = func_0210f70c();
+void GX_BeginLoadTexPltt(void) {
+    s32 v = GX_ResetBankForTexPltt();
     data_021fcbfc = v;
     data_021fcbf8 = (u32)data_02139f44[v >> 4] << 12;
 }
 
 // GX_LoadBGExtPltt
-void func_02111f7c(const void *src, u32 offset, u32 size) {
+void GX_LoadTexPltt(const void *src, u32 offset, u32 size) {
     u8 *dest = (u8 *)data_021fcbf8 + offset;
     if (data_0213bfec != -1) {
-        func_02115a2c(data_0213bfec, src, dest, size, 0, 0);
+        MI_DmaCopy32Async(data_0213bfec, src, dest, size, 0, 0);
     } else {
-        func_02115e78(src, dest, size);
+        MIi_CpuCopy32(src, dest, size);
     }
 }
 
 // GX_EndLoadBGExtPltt
-void func_02111f24(void) {
+void GX_EndLoadTexPltt(void) {
     if (data_0213bfec != -1) {
-        func_01ffa080(data_0213bfec);
+        MI_WaitDma(data_0213bfec);
     }
-    func_0210fbc4(data_021fcbfc);
+    GX_SetBankForTexPltt(data_021fcbfc);
     data_021fcbfc = 0;
     data_021fcbf8 = 0;
 }
 
 // GX_LoadBGPltt (0x05000000)
-void func_02111ec8(const void *src, u32 offset, u32 size) {
+void GX_LoadBGPltt(const void *src, u32 offset, u32 size) {
     copy16(data_0213bfec, src, (u8 *)0x5000000 + offset, size);
 }
 
 // GXS_LoadBGPltt (0x05000400)
-void func_02111e60(const void *src, u32 offset, u32 size) {
+void GXS_LoadBGPltt(const void *src, u32 offset, u32 size) {
     copy16(data_0213bfec, src, (u8 *)0x5000400 + offset, size);
 }
 
 // GX_LoadOBJPltt (0x05000200)
-void func_02111df8(const void *src, u32 offset, u32 size) {
+void GX_LoadOBJPltt(const void *src, u32 offset, u32 size) {
     copy16(data_0213bfec, src, (u8 *)0x5000200 + offset, size);
 }
 
 // GXS_LoadOBJPltt (0x05000600)
-void func_02111d90(const void *src, u32 offset, u32 size) {
+void GXS_LoadOBJPltt(const void *src, u32 offset, u32 size) {
     copy16(data_0213bfec, src, (u8 *)0x5000600 + offset, size);
 }
 
 // GX_LoadOAM (main engine OAM, 0x07000000)
-void func_02111d34(const void *src, u32 offset, u32 size) {
+void GX_LoadOAM(const void *src, u32 offset, u32 size) {
     copy32(data_0213bfec, src, (u8 *)0x7000000 + offset, size);
 }
 
 // GXS_LoadOAM (sub engine OAM, 0x07000400)
-void func_02111ccc(const void *src, u32 offset, u32 size) {
+void GXS_LoadOAM(const void *src, u32 offset, u32 size) {
     copy32(data_0213bfec, src, (u8 *)0x7000400 + offset, size);
 }
 
+// ---- file-scope objects (.rodata 0x02139f44-0x02139f54)
+const u16 data_02139f44[8] = {0x0000, 0x6880, 0x6890, 0x6880, 0x6894, 0x0000, 0x6890, 0x6880};
+
+// ---- file-scope objects (autoload_3 .bss 0x021fcbf4-0x021fcc0c; this definition order gives the original order after mwcc's size
+// sort)
+u32 data_021fcbf8;
+u32 data_021fcbf4;
+u32 data_021fcc08;
+s32 data_021fcbfc;
+u32 data_021fcc00;
+u32 data_021fcc04;

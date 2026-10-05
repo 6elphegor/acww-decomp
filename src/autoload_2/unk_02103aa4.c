@@ -32,7 +32,7 @@ typedef struct ResTex {
     u8 pad1c[0x10];
     u32 plttKey;        // 0x2c
 } ResTex;
-extern s32 func_01ffc5a4(s32, s32);
+extern s32 FX_Div(s32, s32);
 
 static inline void *GetResDataByIdx(const ResDict *dict, u32 idx)
 {
@@ -46,7 +46,7 @@ static inline ResMatData *GetMatDataByIdx(const ResMat *pResMat, u32 idx)
 }
 #define KeyAddr(k) (((k) & 0xffff) << 3)
 
-void func_02103aa4(ResMat *pMat, BindData *pBindData, const ResTex *pTex, const ResDictTexData *pTexData)
+void bindMdlTex_Internal_(ResMat *pMat, BindData *pBindData, const ResTex *pTex, const ResDictTexData *pTexData)
 {
     u8 *base = (u8 *)pMat + pBindData->offset;
     u32 vramOffset;
@@ -62,8 +62,8 @@ void func_02103aa4(ResMat *pMat, BindData *pBindData, const ResTex *pTex, const 
         {
             u32 w = pTexData->extraParam & 0x7ff;
             u32 h = (pTexData->extraParam >> 11) & 0x7ff;
-            matData->magW = (w != matData->origWidth) ? func_01ffc5a4(w << 12, matData->origWidth << 12) : 0x1000;
-            matData->magH = (h != matData->origHeight) ? func_01ffc5a4(h << 12, matData->origHeight << 12) : 0x1000;
+            matData->magW = (w != matData->origWidth) ? FX_Div(w << 12, matData->origWidth << 12) : 0x1000;
+            matData->magH = (h != matData->origHeight) ? FX_Div(h << 12, matData->origHeight << 12) : 0x1000;
         }
     }
     pBindData->flag |= 1;

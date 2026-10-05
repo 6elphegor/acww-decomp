@@ -1,130 +1,44 @@
 #include "types.h"
-// Library base class; its code is ARM in autoload_2 and ITCM. It allocates its objects on a separate heap.
-class Unk_020d8c7c_Base {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
-
-    Unk_020d8c7c_Base();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void func_0203e678(s32 a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
-    virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
-};
-
-// Vtable at 0x020d8c74. Its constructor and destructor are inline, which is why derived constructors and destructors
-// store two vtable pointers in a row.
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
-public:
-    Unk_020d8c7c() {}
-    virtual void func_0203e678(s32 a);
-    virtual ~Unk_020d8c7c() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
+#include "gfx/VecFx32.h"
+#include "actor/CharacterListNode.h"
+#include "talk/TalkRequestEntry.h"
+#include "game/CharacterList.h"
+#include "net/CommManager.h"
+#include "sys/ProcBase.h"
+#include "actor/Character.h"
 
 
-struct Unk_0203e22c_State {
-    /* 0x00 */ u8 pad_00[8];
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 pad_09[3];
-    /* 0x0c */ void *unk_0c;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ u8 unk_15;
-    /* 0x16 */ u8 unk_16;
-    /* 0x17 */ u8 unk_17;
-};
-
-class Unk_020d9670 {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void vfunc_50();
-    virtual BOOL vfunc_54(void *a);
-    virtual BOOL vfunc_58(void *a);
-};
 
 
-struct Unk_0203e5d0_Node {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ Unk_020d9670 *unk_0c;
-};
 
-struct Unk_0203e5d0_List {
-    /* 0x00 */ Unk_0203e5d0_Node *unk_00;
-    /* 0x04 */ u32 unk_04;
-    Unk_0203e5d0_List() {
-        unk_00 = 0;
-        unk_04 = 0;
-    }
-};
 
-extern Unk_0203e5d0_List data_021c39d4;
-extern u32 data_021c39dc;
-extern u32 data_021c39e0[4];
-extern u8 data_020d96d0;
 
-struct Unk_0203e938_Net {
-    /* 0x00 */ u8 pad_00[0x64];
-    /* 0x64 */ u32 unk_64;
-};
 
-struct Unk_0203e4f0_Vec {
-    s32 x, y, z;
-};
+extern CharacterList gCharacterList;
+extern u32 sCharInteractReservedId;
+extern u32 sCharInteractLockIds[4];
+extern u8 sCharInteractSyncResult;
+
+
 
 extern "C" {
-extern Unk_0203e22c_State *data_021c39c0;
+extern TalkRequestEntry *gTalkRequestCurrent;
 }
 
 extern "C" {
-extern u32 data_021c39c4;
+extern u32 sTalkTargetId;
 }
 
 extern "C" {
-extern u32 data_021c39c8;
+extern u32 sTalkRequestFlags;
 }
 
 extern "C" {
-extern u32 data_021c39cc;
+extern u32 sTalkRequestList;
 }
 
 extern "C" {
-extern Unk_0203e938_Net *volatile data_020cbb18;
+extern CommManager *volatile gCommManager;
 }
 
 extern "C" {
@@ -132,63 +46,62 @@ extern s16 data_020c905c;
 }
 
 extern "C" {
-extern u8 data_0213c874[];
 }
 
 extern "C" {
-void func_02065328(void *);
+void PrioList_Init(void *);
 }
 
 extern "C" {
-void func_0203ebb0(void);
+void TalkRequestPool_Reset(void);
 }
 
 extern "C" {
-void func_0203d904(u32);
+void TalkRequestFlags_Clear(u32);
 }
 
 extern "C" {
-BOOL func_02094960(void);
+BOOL PlayerActor_RequestAct10(void);
 }
 
 extern "C" {
-void func_0203d640(u32);
+void TalkRequest_SetTalkTarget(u32);
 }
 
 extern "C" {
-BOOL func_02094c38(void);
+BOOL PlayerActor_RequestReturnToWait(void);
 }
 
 extern "C" {
-u32 func_0206ec6c(u32);
+u32 MenuCtrl_IsFinished(u32);
 }
 
 extern "C" {
-BOOL func_0206f140(void);
+BOOL MenuCtrl_IsIdle(void);
 }
 
 extern "C" {
-BOOL func_02094e64(void);
+BOOL PlayerActor_CanOpenMenu(void);
 }
 
 extern "C" {
-BOOL func_02094d3c(void);
+BOOL PlayerActor_RequestAct05(void);
 }
 
 extern "C" {
-void func_0206f0f8(u32);
+void MenuCtrl_RequestOpen(u32);
 }
 
 extern "C" {
-s32 func_020b14f0(void);
+s32 Field_GetExitedBuildingKey(void);
 }
 
 extern "C" {
-Unk_0203e22c_State *func_0203eb78(void);
+TalkRequestEntry *TalkRequestPool_Alloc(void);
 }
 
 extern "C" {
-void func_020e79a0(void *, void *);
+void List_Remove(void *, void *);
 }
 
 extern "C" {
@@ -196,139 +109,139 @@ s32 func_01ffcb0c(s32);
 }
 
 extern "C" {
-u32 func_0203d5e4(s32);
+u32 Talk_DetachRequest(s32);
 }
 
 extern "C" {
-u32 func_0203d5f0(s32);
+u32 Talk_AttachRequestToWindow0(s32);
 }
 
 extern "C" {
-s32 func_02002bdc(Unk_0203e4f0_Vec *, Unk_0203e4f0_Vec *);
+s32 Math_AngleXZ(VecFx32 *, VecFx32 *);
 }
 
 extern "C" {
-long long func_020e9630(Unk_0203e4f0_Vec *);
+long long Vec_MagSqXZ(VecFx32 *);
 }
 
 extern "C" {
-void *func_020652c0(void *, u32);
+void *PrioList_FindById(void *, u32);
 }
 
 extern "C" {
-void func_020652dc(void *, void *);
+void PrioList_PushBack(void *, void *);
 }
 
 extern "C" {
-void _ZN12Unk_020d5d848vfunc_08Ev(void *, s32);
+void _ZN5Actor10postCreateEv(void *, s32);
 }
 
 extern "C" {
-void func_0203eb04(u8 a, u32 aid, ...);
+void CharInteractSync_SendReply(u8 a, u32 aid, ...);
 }
 
 extern "C" {
-void func_0203eab8(u32 idx);
+void CharInteractSync_ClearLock(u32 idx);
 }
 
 extern "C" {
-u32 func_0203eac8(u32 idx, u32 id);
+u32 CharInteractSync_IsFree(u32 idx, u32 id);
 }
 
 extern "C" {
-void func_0203ea08(u32);
+void CharInteractSync_RequestLock(u32);
 }
 
 extern "C" {
-s32 func_0203ea74(u32);
+s32 CharInteractSync_Check(u32);
 }
 
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *, u32);
+BOOL _ZN11CommManager7isMyAidEj(void *, u32);
 }
 
 extern "C" {
-void *func_02095204(u32);
+void *PlayerActor_GetActor(u32);
 }
 
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *);
+BOOL _ZN11CommManager8isOnlineEv(void *);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728d4Ev(void *);
+void _ZN11CommManager11beginRecordEv(void *);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_020728a4EPhj(void *, void *, u32);
+void _ZN11CommManager11writeRecordEPhj(void *, void *, u32);
 }
 
 extern "C" {
-void _ZN12Unk_020cbb1813func_02072824Ejj(void *, u32, u32);
+void _ZN11CommManager9endRecordEjj(void *, u32, u32);
 }
 
 extern "C" {
-BOOL func_020a62a0(void);
+BOOL NetArea_IsLocalOwner(void);
 }
 
 extern "C" {
-void func_0203e938(u32 id, u8 x, u8 mode);
+void CharInteractSync_SendCharMsg(u32 id, u8 x, u8 mode);
 }
 
 extern "C" {
-void func_0203e358(void);
+void TalkRequestQueue_Reset(void);
 }
 
 extern "C" {
-void func_0203eb38(void);
+void CharInteractSync_Reset(void);
 }
 
 extern "C" {
-Unk_020d9670 *func_0203e604(u32 id);
+Character *Character_FindByCharId(u32 id);
 }
 
 
-extern "C" void func_0203eb38(void) {
+extern "C" void CharInteractSync_Reset(void) {
     for (s32 i = 0; i < 4; i++) {
-        data_021c39e0[i] = 0;
+        sCharInteractLockIds[i] = 0;
     }
-    data_021c39dc = 0;
-    data_020d96d0 = 6;
+    sCharInteractReservedId = 0;
+    sCharInteractSyncResult = 6;
 }
 
-extern "C" void func_0203eb04(u8 a, u32 aid, ...) {
-    Unk_0203e938_Net *o = data_020cbb18;
-    _ZN12Unk_020cbb1813func_020728d4Ev(o);
-    _ZN12Unk_020cbb1813func_020728a4EPhj(o, &a, 1);
-    _ZN12Unk_020cbb1813func_02072824Ejj(o, 0x17, aid);
+extern "C" void CharInteractSync_SendReply(u8 a, u32 aid, ...) {
+    CommManager *o = gCommManager;
+    _ZN11CommManager11beginRecordEv(o);
+    _ZN11CommManager11writeRecordEPhj(o, &a, 1);
+    _ZN11CommManager9endRecordEjj(o, 0x17, aid);
 }
 
-extern "C" u32 func_0203eac8(u32 idx, u32 id) {
-    if (data_021c39e0[idx] != 0) {
+extern "C" u32 CharInteractSync_IsFree(u32 idx, u32 id) {
+    if (sCharInteractLockIds[idx] != 0) {
         return 0;
     }
-    if (data_021c39dc == id) {
+    if (sCharInteractReservedId == id) {
         return 0;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (id == data_021c39e0[i]) {
+        if (id == sCharInteractLockIds[i]) {
             return 0;
         }
     }
     return 1;
 }
 
-extern "C" void func_0203eab8(u32 idx) {
-    data_021c39e0[idx] = 0;
+extern "C" void CharInteractSync_ClearLock(u32 idx) {
+    sCharInteractLockIds[idx] = 0;
 }
 
-extern "C" s32 func_0203ea74(u32 id) {
-    Unk_0203e938_Net *o = data_020cbb18;
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(o)) {
+extern "C" s32 CharInteractSync_Check(u32 id) {
+    CommManager *o = gCommManager;
+    if (!_ZN11CommManager8isOnlineEv(o)) {
         return 2;
     }
-    if (o->unk_64 == 0) {
-        if (func_0203eac8((u8)o->unk_64, id)) {
+    if (o->myAid == 0) {
+        if (CharInteractSync_IsFree((u8)o->myAid, id)) {
             return 2;
         }
         return 0;
@@ -336,137 +249,137 @@ extern "C" s32 func_0203ea74(u32 id) {
     return 1;
 }
 
-extern "C" void func_0203ea08(u32 id) {
-    Unk_0203e938_Net *o = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(o)) {
-        if (o->unk_64 == 0) {
-            data_021c39e0[o->unk_64] = id;
+extern "C" void CharInteractSync_RequestLock(u32 id) {
+    CommManager *o = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(o)) {
+        if (o->myAid == 0) {
+            sCharInteractLockIds[o->myAid] = id;
         } else {
             u8 buf[5];
-            data_020d96d0 = 0;
+            sCharInteractSyncResult = 0;
             buf[0] = 0;
             buf[1] = id;
             buf[2] = id >> 8;
             buf[3] = id >> 16;
             buf[4] = id >> 24;
-            Unk_0203e938_Net *p = data_020cbb18;
-            _ZN12Unk_020cbb1813func_020728d4Ev(p);
-            _ZN12Unk_020cbb1813func_020728a4EPhj(p, buf, 5);
-            _ZN12Unk_020cbb1813func_02072824Ejj(p, 0x17, 0);
+            CommManager *p = gCommManager;
+            _ZN11CommManager11beginRecordEv(p);
+            _ZN11CommManager11writeRecordEPhj(p, buf, 5);
+            _ZN11CommManager9endRecordEjj(p, 0x17, 0);
         }
     }
 }
 
-extern "C" void func_0203e9d8(void) {
-    Unk_0203e938_Net *o = data_020cbb18;
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(o)) {
-        if (o->unk_64 == 0) {
-            func_0203eab8(0);
+extern "C" void CharInteractSync_ReleaseLock(void) {
+    CommManager *o = gCommManager;
+    if (_ZN11CommManager8isOnlineEv(o)) {
+        if (o->myAid == 0) {
+            CharInteractSync_ClearLock(0);
         } else {
-            func_0203eb04(3, 0);
+            CharInteractSync_SendReply(3, 0);
         }
     }
 }
 
-extern "C" s32 func_0203e9ac(void) {
-    if (!_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+extern "C" s32 CharInteractSync_CheckArea(void) {
+    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         return 2;
     }
-    if (func_020a62a0()) {
+    if (NetArea_IsLocalOwner()) {
         return 2;
     }
     return 1;
 }
 
-extern "C" void func_0203e9a0(u32 id, u8 x) {
-    func_0203e938(id, x, 4);
+extern "C" void CharInteractSync_SendQuery(u32 id, u8 x) {
+    CharInteractSync_SendCharMsg(id, x, 4);
 }
 
-extern "C" void func_0203e994(u32 id, u8 x) {
-    func_0203e938(id, x, 5);
+extern "C" void CharInteractSync_SendEvent(u32 id, u8 x) {
+    CharInteractSync_SendCharMsg(id, x, 5);
 }
 
-extern "C" void func_0203e938(u32 id, u8 x, u8 mode) {
-    if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
+extern "C" void CharInteractSync_SendCharMsg(u32 id, u8 x, u8 mode) {
+    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u8 buf[6];
-        data_020d96d0 = mode;
+        sCharInteractSyncResult = mode;
         buf[0] = mode;
         buf[1] = id;
         buf[2] = id >> 8;
         buf[3] = id >> 16;
         buf[4] = id >> 24;
         buf[5] = x;
-        Unk_0203e938_Net *o = data_020cbb18;
-        _ZN12Unk_020cbb1813func_020728d4Ev(o);
-        _ZN12Unk_020cbb1813func_020728a4EPhj(o, buf, 6);
-        _ZN12Unk_020cbb1813func_02072824Ejj(o, 0x17, 6);
+        CommManager *o = gCommManager;
+        _ZN11CommManager11beginRecordEv(o);
+        _ZN11CommManager11writeRecordEPhj(o, buf, 6);
+        _ZN11CommManager9endRecordEjj(o, 0x17, 6);
     }
 }
 
-extern "C" void func_0203e8ec(u8 *msg, u32 aid) {
+extern "C" void CharInteractSync_OnLockRequest(u8 *msg, u32 aid) {
     u32 id = (msg[4] << 24) | ((msg[3] << 16) | (msg[1] | (msg[2] << 8)));
-    if (func_0203eac8((u8)aid, id)) {
-        data_021c39e0[aid] = id;
-        func_0203eb04(1, aid);
+    if (CharInteractSync_IsFree((u8)aid, id)) {
+        sCharInteractLockIds[aid] = id;
+        CharInteractSync_SendReply(1, aid);
     } else {
-        func_0203eb04(2, aid);
+        CharInteractSync_SendReply(2, aid);
     }
 }
 
-extern "C" void func_0203e8e0(u8 *msg) {
-    data_020d96d0 = msg[0];
+extern "C" void CharInteractSync_OnReply(u8 *msg) {
+    sCharInteractSyncResult = msg[0];
 }
 
-extern "C" void func_0203e8d4(void *msg, u32 aid) {
-    func_0203eab8((u8)aid);
+extern "C" void CharInteractSync_OnRelease(void *msg, u32 aid) {
+    CharInteractSync_ClearLock((u8)aid);
 }
 
-extern "C" void func_0203e7d0(u8 *msg, u32 aid) {
+extern "C" void CharInteractSync_OnCharMsg(u8 *msg, u32 aid) {
     u32 r6 = msg[5];
-    Unk_020d9670 *o = func_0203e604((msg[4] << 24) | ((msg[3] << 16) | (msg[1] | (msg[2] << 8))));
-    void *w = func_02095204(aid);
+    Character *o = Character_FindByCharId((msg[4] << 24) | ((msg[3] << 16) | (msg[1] | (msg[2] << 8))));
+    void *w = PlayerActor_GetActor(aid);
     if (!o || !w) {
         if (msg[0] == 4) {
-            if (!_ZN12Unk_020cbb1813func_020729ccEj(data_020cbb18, aid)) {
-                func_0203eb04(2, aid);
+            if (!_ZN11CommManager7isMyAidEj(gCommManager, aid)) {
+                CharInteractSync_SendReply(2, aid);
             } else {
-                data_020d96d0 = 2;
+                sCharInteractSyncResult = 2;
             }
         }
     } else if (msg[0] == 5) {
-        o->vfunc_4c(r6, (u8)aid);
+        o->onInteractionEvent(r6, (u8)aid);
     } else {
         BOOL r5 = FALSE;
         switch (r6) {
         case 0:
-            r5 = o->vfunc_48(w);
+            r5 = o->acceptsInteraction(w);
             break;
         case 5:
-            r5 = o->vfunc_54(w);
+            r5 = o->acceptsInteractionOutOfRange(w);
             break;
         case 1:
-            r5 = o->vfunc_58(w);
+            r5 = o->acceptsSelfRequestedInteraction(w);
             break;
         }
-        if (!_ZN12Unk_020cbb1813func_020729ccEj(data_020cbb18, aid)) {
+        if (!_ZN11CommManager7isMyAidEj(gCommManager, aid)) {
             if (r5) {
-                o->vfunc_4c(3, (u8)aid);
-                func_0203eb04(1, aid);
+                o->onInteractionEvent(3, (u8)aid);
+                CharInteractSync_SendReply(1, aid);
             } else {
-                func_0203eb04(2, aid);
+                CharInteractSync_SendReply(2, aid);
             }
         } else {
             if (r5) {
-                o->vfunc_4c(3, 4);
-                data_020d96d0 = 1;
+                o->onInteractionEvent(3, 4);
+                sCharInteractSyncResult = 1;
             } else {
-                data_020d96d0 = 2;
+                sCharInteractSyncResult = 2;
             }
         }
     }
 }
 
 
-u8 data_020d96d0 = 6;
-u32 data_021c39dc;
-u32 data_021c39e0[4];
+u8 sCharInteractSyncResult = 6;
+u32 sCharInteractReservedId;
+u32 sCharInteractLockIds[4];

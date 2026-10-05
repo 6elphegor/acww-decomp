@@ -1,67 +1,61 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-struct Unk_ov001_0220cbd0_Tbl {
-    u32 *unk_00;
-    u8 *unk_04;
-    void *unk_08;
+struct WfcMsgBank {
+    u32 *offsets;
+    u8 *strings;
+    void *file;
 };
 
-struct Unk_ov001_0220cc30_Ent {
-    u32 unk_00;
-    u32 unk_04;
-    void *unk_08;
-};
-
-struct Unk_ov001_0220cc30_Mgr {
-    u8 unk_00[0x60];
-    void *unk_60;
+struct WfcMsgPool {
+    u8 bankStorage[0x60];
+    void *pool;
 };
 
 extern "C" {
-Unk_ov001_0220cc30_Mgr *data_ov001_0222de10;
+WfcMsgPool *sWfcMsgPool;
 
-extern void func_ov001_02224038(void *);
-extern void *func_ov001_02224ca0(void *);
-extern void func_ov001_02224cfc(void *, void *);
-extern void *func_ov001_02224074(void *, void *, u32);
-extern void *func_ov001_02224d84(s32, void *, s32);
-extern void func_ov001_02225d58(void *);
-extern void *func_ov001_02225dd8(s32, s32);
+extern void WfcFs_FreeFile(void *);
+extern void *WfcPool_Get(void *);
+extern void WfcPool_Put(void *, void *);
+extern void *WfcFs_LoadFile(void *, void *, u32);
+extern void *WfcPool_CreateFrom(s32, void *, s32);
+extern void WfcHeap_FreeAndClear(void *);
+extern void *WfcHeap_Alloc(s32, s32);
 
 #pragma thumb off
 
-void func_ov001_0220ccdc() {
-    Unk_ov001_0220cc30_Mgr *m = (Unk_ov001_0220cc30_Mgr *)func_ov001_02225dd8(0x64, 4);
-    data_ov001_0222de10 = m;
-    data_ov001_0222de10->unk_60 = func_ov001_02224d84(8, m, 0xc);
+void WfcMsg_InitPool() {
+    WfcMsgPool *m = (WfcMsgPool *)WfcHeap_Alloc(0x64, 4);
+    sWfcMsgPool = m;
+    sWfcMsgPool->pool = WfcPool_CreateFrom(8, m, 0xc);
 }
 
-void func_ov001_0220ccc8() {
-    func_ov001_02225d58(&data_ov001_0222de10);
+void WfcMsg_FreePool() {
+    WfcHeap_FreeAndClear(&sWfcMsgPool);
 }
 
-Unk_ov001_0220cc30_Ent *func_ov001_0220cc60(void *a) {
+WfcMsgBank *WfcMsg_Load(void *a) {
     u32 sz;
-    Unk_ov001_0220cc30_Ent *e = (Unk_ov001_0220cc30_Ent *)func_ov001_02224ca0(data_ov001_0222de10->unk_60);
-    e->unk_08 = func_ov001_02224074(a, &sz, 4);
-    u8 *b = (u8 *)e->unk_08 + 0x20;
-    e->unk_00 = (u32)(b + 0x10);
-    e->unk_04 = (u32)(b + *(u32 *)(b + 4) + 8);
+    WfcMsgBank *e = (WfcMsgBank *)WfcPool_Get(sWfcMsgPool->pool);
+    e->file = WfcFs_LoadFile(a, &sz, 4);
+    u8 *b = (u8 *)e->file + 0x20;
+    e->offsets = (u32 *)(b + 0x10);
+    e->strings = b + *(u32 *)(b + 4) + 8;
     return e;
 }
 
-void func_ov001_0220cc30(Unk_ov001_0220cc30_Ent *e) {
-    func_ov001_02224038(e->unk_08);
-    func_ov001_02224cfc(data_ov001_0222de10->unk_60, e);
+void WfcMsg_Unload(WfcMsgBank *e) {
+    WfcFs_FreeFile(e->file);
+    WfcPool_Put(sWfcMsgPool->pool, e);
 }
 
-u8 *func_ov001_0220cc10(Unk_ov001_0220cbd0_Tbl *t, u32 i) {
-    return t->unk_04 + t->unk_00[i & 0xffff];
+u8 *WfcMsg_GetString(WfcMsgBank *t, u32 i) {
+    return t->strings + t->offsets[i & 0xffff];
 }
 
-u16 *func_ov001_0220cbd0(Unk_ov001_0220cbd0_Tbl *t, u32 i, s32 j, u32 v) {
-    u16 *p = (u16 *)(t->unk_04 + t->unk_00[i & 0xffff]);
+u16 *WfcMsg_GetStringWithDigit(WfcMsgBank *t, u32 i, s32 j, u32 v) {
+    u16 *p = (u16 *)(t->strings + t->offsets[i & 0xffff]);
     if (j >= 0) p[j] = v + 0x30;
     return p;
 }

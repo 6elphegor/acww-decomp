@@ -1,64 +1,64 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-typedef void (*Unk_ov001_02208594_Fn)(void *, s32, u32);
+typedef void (*WfcLoadFunc)(void *, s32, u32);
 
 extern "C" {
-extern void func_02111b3c(void *, s32, u32);
-extern void func_021117fc(void *, s32, u32);
-extern void func_021145cc(void *, u32);
-extern void func_02115ef4(void *, void *, u32);
-extern u32 func_ov001_0220c5c8();
-extern void *func_ov001_02224074(void *, void *, u32);
-extern void func_ov001_02224038(void *);
-extern void func_ov001_02225d58(void *);
-extern void *func_ov001_02225dd8(s32, s32);
-extern void func_ov001_02226fdc(s32, s32);
-extern void func_ov001_02227094(s32, void *, s32, s32);
-extern u8 *func_ov001_0221e8b4();
-extern s32 func_ov001_02208594(void *a, Unk_ov001_02208594_Fn fn);
-extern u8 *func_ov001_022085e0(u8 *p);
-s32 func_ov001_0220891c(s32 n);
-void func_ov001_02208890(s32 a);
-extern void *data_ov001_0222a7e0[20];
-extern u8 *data_ov001_0222ddd4;
+extern void GX_LoadBG1Scr(void *, s32, u32);
+extern void GX_LoadBG1Char(void *, s32, u32);
+extern void DC_FlushRange(void *, u32);
+extern void MIi_CpuCopyFast(void *, void *, u32);
+extern u32 WfcUtil_GetStartMode();
+extern void *WfcFs_LoadFile(void *, void *, u32);
+extern void WfcFs_FreeFile(void *);
+extern void WfcHeap_FreeAndClear(void *);
+extern void *WfcHeap_Alloc(s32, s32);
+extern void WfcTask_RequestDelete(s32, s32);
+extern void WfcTask_Add(s32, void *, s32, s32);
+extern u8 *WfcConfig_GetEdit();
+extern s32 WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
+extern u8 *WfcUtil_LocalizePath(u8 *p);
+s32 WfcHighlight_Set(s32 n);
+void WfcHighlight_TransferTask(s32 a);
+extern void *sWfcHighlightScreens[20];
+extern u8 *sWfcHighlightScreen;
 }
 
 #pragma thumb off
 
-extern "C" void func_ov001_02208990() {
-    data_ov001_0222ddd4 = (u8 *)func_ov001_02225dd8(0xc0, 4);
-    func_ov001_02208594((void *)"char/jbBgHl.ncg.l", func_021117fc);
-    switch (func_ov001_0220c5c8()) {
+extern "C" void WfcHighlight_Init() {
+    sWfcHighlightScreen = (u8 *)WfcHeap_Alloc(0xc0, 4);
+    WfcUtil_LoadFileTo((void *)"char/jbBgHl.ncg.l", GX_LoadBG1Char);
+    switch (WfcUtil_GetStartMode()) {
     case 0:
-        func_ov001_02208594(data_ov001_0222a7e0[0], func_02111b3c);
+        WfcUtil_LoadFileTo(sWfcHighlightScreens[0], GX_LoadBG1Scr);
         break;
     case 1:
-        func_ov001_02208594(data_ov001_0222a7e0[1], func_02111b3c);
+        WfcUtil_LoadFileTo(sWfcHighlightScreens[1], GX_LoadBG1Scr);
         break;
     }
 }
 
-extern "C" void func_ov001_0220897c() {
-    func_ov001_02225d58(&data_ov001_0222ddd4);
+extern "C" void WfcHighlight_Free() {
+    WfcHeap_FreeAndClear(&sWfcHighlightScreen);
 }
 
-extern "C" s32 func_ov001_0220891c(s32 n) {
-    void *h = func_ov001_02224074(func_ov001_022085e0((u8 *)data_ov001_0222a7e0[n]), 0, 4);
-    func_02115ef4(h, data_ov001_0222ddd4, 0xc0);
-    func_ov001_02224038(h);
-    func_ov001_02227094(1, (void *)func_ov001_02208890, 0, 0x78);
+extern "C" s32 WfcHighlight_Set(s32 n) {
+    void *h = WfcFs_LoadFile(WfcUtil_LocalizePath((u8 *)sWfcHighlightScreens[n]), 0, 4);
+    MIi_CpuCopyFast(h, sWfcHighlightScreen, 0xc0);
+    WfcFs_FreeFile(h);
+    WfcTask_Add(1, (void *)WfcHighlight_TransferTask, 0, 0x78);
 }
 
-extern "C" void func_ov001_022088f8() {
-    func_ov001_0220891c(func_ov001_0221e8b4()[0xf4] + 5);
+extern "C" void WfcHighlight_SetConnection() {
+    WfcHighlight_Set(WfcConfig_GetEdit()[0xf4] + 5);
 }
 
-extern "C" void func_ov001_022088d4() {
-    func_ov001_0220891c(func_ov001_0221e8b4()[0xf4] + 2);
+extern "C" void WfcHighlight_SetListEntry() {
+    WfcHighlight_Set(WfcConfig_GetEdit()[0xf4] + 2);
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" char data_ov001_0222a638[];
-extern "C" void *data_ov001_0222a7e0[20];
+extern "C" void *sWfcHighlightScreens[20];
 extern "C" char data_ov001_0222a6a8[];
 extern "C" char data_ov001_0222a768[];
 extern "C" char data_ov001_0222a6c0[];
@@ -79,17 +79,17 @@ extern "C" char data_ov001_0222a690[];
 extern "C" char data_ov001_0222a624[];
 extern "C" char data_ov001_0222a7b0[];
 
-extern "C" void func_ov001_02208890(s32 a) {
-    func_021145cc(data_ov001_0222ddd4, 0xc0);
-    func_02111b3c(data_ov001_0222ddd4, 0, 0xc0);
-    func_ov001_02226fdc(1, a);
+extern "C" void WfcHighlight_TransferTask(s32 a) {
+    DC_FlushRange(sWfcHighlightScreen, 0xc0);
+    GX_LoadBG1Scr(sWfcHighlightScreen, 0, 0xc0);
+    WfcTask_RequestDelete(1, a);
 }
 
 #pragma thumb reset
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" char data_ov001_0222a638[];
-extern "C" void *data_ov001_0222a7e0[20];
+extern "C" void *sWfcHighlightScreens[20];
 extern "C" char data_ov001_0222a6a8[];
 extern "C" char data_ov001_0222a768[];
 extern "C" char data_ov001_0222a6c0[];
@@ -99,7 +99,7 @@ extern "C" char data_ov001_0222a720[];
 extern "C" char data_ov001_0222a708[];
 extern "C" char data_ov001_0222a64c[];
 extern "C" char data_ov001_0222a678[];
-extern "C" u8 *data_ov001_0222ddd4;
+extern "C" u8 *sWfcHighlightScreen;
 extern "C" char data_ov001_0222a750[];
 extern "C" char data_ov001_0222a780[];
 extern "C" char data_ov001_0222a610[];
@@ -113,7 +113,7 @@ extern "C" char data_ov001_0222a7b0[];
 
 extern "C" char data_ov001_0222a638[] = "char/jb4HlWep.nsc.l";
 
-extern "C" void *data_ov001_0222a7e0[20] = {
+extern "C" void *sWfcHighlightScreens[20] = {
     data_ov001_0222a6a8,
     data_ov001_0222a610,
     data_ov001_0222a750,
@@ -154,7 +154,7 @@ extern "C" char data_ov001_0222a64c[] = "char/jb4HlUsb.nsc.l";
 
 extern "C" char data_ov001_0222a678[] = "char/jb4HlSsid.nsc.l";
 
-extern "C" u8 *data_ov001_0222ddd4 = 0;
+extern "C" u8 *sWfcHighlightScreen = 0;
 
 extern "C" char data_ov001_0222a750[] = "char/jb3HlList1.nsc.l";
 

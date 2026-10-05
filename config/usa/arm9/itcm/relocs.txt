@@ -84,16 +84,16 @@ from:0x01ff9664 kind:arm_call to:0x01ff8bd0 module:itcm
 from:0x01ff97c4 kind:arm_call_thumb to:0x02116178 module:autoload(2)
 from:0x01ff999c kind:arm_call to:0x01ff8bd0 module:itcm
 from:0x01ff99b8 kind:load to:0x02135d38 module:autoload(2)
-from:0x01ff99bc kind:load to:0x02135d39 module:autoload(2)
-from:0x01ff99c0 kind:load to:0x02135d3a module:autoload(2)
-from:0x01ff99c4 kind:load to:0x02135d3b module:autoload(2)
+from:0x01ff99bc kind:load to:0x02135d38 add:0x1 module:autoload(2)
+from:0x01ff99c0 kind:load to:0x02135d38 add:0x2 module:autoload(2)
+from:0x01ff99c4 kind:load to:0x02135d38 add:0x3 module:autoload(2)
 from:0x01ff9a44 kind:arm_call to:0x01ff8bd0 module:itcm
 from:0x01ff9b00 kind:load to:0x0213bd70 module:autoload(2)
 from:0x01ff9b80 kind:arm_call to:0x01ff8d4c module:itcm
 from:0x01ff9d24 kind:load to:0x021f5cc0 module:autoload(3)
-from:0x01ff9d28 kind:load to:0x021f6ad0 module:autoload(3)
-from:0x01ff9d2c kind:load to:0x021f6ad4 module:autoload(3)
-from:0x01ff9d30 kind:load to:0x021f6ad8 module:autoload(3)
+from:0x01ff9d28 kind:load to:0x021f5cc4 add:0xe0c module:autoload(3)
+from:0x01ff9d2c kind:load to:0x021f5cc4 add:0xe10 module:autoload(3)
+from:0x01ff9d30 kind:load to:0x021f5cc4 add:0xe14 module:autoload(3)
 from:0x01ff9d74 kind:arm_call to:0x01ff8bd0 module:itcm
 from:0x01ff9d88 kind:arm_call to:0x01ff8bd0 module:itcm
 from:0x01ff9dac kind:arm_call to:0x01ff8bd0 module:itcm
@@ -182,9 +182,9 @@ from:0x01ffae0c kind:arm_call to:0x02106d60 module:autoload(2)
 from:0x01ffae50 kind:arm_call to:0x021073f8 module:autoload(2)
 from:0x01ffae9c kind:load to:0x021f5cc0 module:autoload(3)
 from:0x01ffb030 kind:load to:0x02135e5c module:autoload(2)
-from:0x01ffb034 kind:load to:0x02135e5d module:autoload(2)
-from:0x01ffb038 kind:load to:0x02135e5e module:autoload(2)
-from:0x01ffb03c kind:load to:0x02135e5f module:autoload(2)
+from:0x01ffb034 kind:load to:0x02135e5c add:0x1 module:autoload(2)
+from:0x01ffb038 kind:load to:0x02135e5c add:0x2 module:autoload(2)
+from:0x01ffb03c kind:load to:0x02135e5c add:0x3 module:autoload(2)
 from:0x01ffb0f8 kind:arm_call to:0x01ffaea0 module:itcm
 from:0x01ffb114 kind:arm_call to:0x01ffaea0 module:itcm
 from:0x01ffb188 kind:arm_call to:0x01ffc714 module:itcm

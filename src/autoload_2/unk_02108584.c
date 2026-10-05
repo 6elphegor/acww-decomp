@@ -12,9 +12,9 @@ typedef struct GeBuf4 {
     s32 w[18];
 } GeBuf4;
 
-extern void func_01ff8bd0(u32 cmd, void *args, u32 n);
-extern void func_01ffc374(s32 num, s32 den);
-extern s32 func_01ffc464(void);
+extern void NNS_G3dGeBufferOP_N(u32 cmd, void *args, u32 n);
+extern void FX_DivAsync(s32 num, s32 den);
+extern s32 FX_GetDivResult(void);
 extern void (*data_0213bed0[8])(s32 *, u32 *);
 
 
@@ -24,7 +24,7 @@ static inline s32 FxMul(s32 a, s32 b)
 }
 
 // NNS g3d material SRT: 2D matrix, translation only
-void func_02108a64(s32 *o, u8 *s)
+void texmtxCalc_flagRS___3dsmax(s32 *o, u8 *s)
 {
     o[0] = 0x1000;
     o[5] = 0x1000;
@@ -35,7 +35,7 @@ void func_02108a64(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT: 2D matrix, scale + rotation
-void func_02108960(s32 *o, u8 *s)
+void texmtxCalc_flagT___3dsmax(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);
@@ -43,7 +43,7 @@ void func_02108960(s32 *o, u8 *s)
     s32 den = h << 12;
     s32 cs, sn, sx, sy, p, q, u, v, A, B, t12, t13;
     long long pA;
-    func_01ffc374(den, num);
+    FX_DivAsync(den, num);
     cs = *(s16 *)(s + 34);
     sx = *(s32 *)(s + 24);
     sn = *(s16 *)(s + 32);
@@ -54,8 +54,8 @@ void func_02108960(s32 *o, u8 *s)
     v = FxMul(sy, sn);
     o[0] = p;
     o[5] = u;
-    o[1] = v * func_01ffc464() >> 12;
-    func_01ffc374(num, den);
+    o[1] = v * FX_GetDivResult() >> 12;
+    FX_DivAsync(num, den);
     w = *(u16 *)(s + 44);
     h = *(u16 *)(s + 46);
     B = -(s32)h << 11;
@@ -65,33 +65,33 @@ void func_02108960(s32 *o, u8 *s)
     t12 = (s32)((pA - (long long)q * B) >> 8);
     o[12] = t12 + (w << 15);
     o[13] = t13 + (*(u16 *)(s + 46) << 15);
-    o[4] = (-q * func_01ffc464()) >> 12;
+    o[4] = (-q * FX_GetDivResult()) >> 12;
 }
 
 // NNS g3d material SRT: 2D matrix, rotation only
-void func_0210887c(s32 *o, u8 *s)
+void texmtxCalc_flagTS___3dsmax(s32 *o, u8 *s)
 {
     u32 w = *(u16 *)(s + 44);
     u32 h = *(u16 *)(s + 46);
     s32 num = w << 12;
     s32 den = h << 12;
     s32 A, B;
-    func_01ffc374(den, num);
+    FX_DivAsync(den, num);
     o[0] = *(s16 *)(s + 34);
     o[5] = *(s16 *)(s + 34);
-    o[1] = (*(s16 *)(s + 32) * func_01ffc464()) >> 12;
-    func_01ffc374(num, den);
+    o[1] = (*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
+    FX_DivAsync(num, den);
     w = *(u16 *)(s + 44);
     h = *(u16 *)(s + 46);
     A = -(s32)w << 11;
     B = -(s32)h << 11;
     o[12] = (s32)(((long long)*(s16 *)(s + 34) * A - (long long)*(s16 *)(s + 32) * B) >> 8) + (w << 15);
     o[13] = (s32)(((long long)*(s16 *)(s + 32) * A + (long long)*(s16 *)(s + 34) * B) >> 8) + (*(u16 *)(s + 46) << 15);
-    o[4] = (-*(s16 *)(s + 32) * func_01ffc464()) >> 12;
+    o[4] = (-*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
 }
 
 // NNS g3d material SRT: 2D matrix, scale only
-void func_0210882c(s32 *o, u8 *s)
+void texmtxCalc_flagTR___3dsmax(s32 *o, u8 *s)
 {
     o[0] = *(s32 *)(s + 24);
     o[5] = *(s32 *)(s + 28);
@@ -102,7 +102,7 @@ void func_0210882c(s32 *o, u8 *s)
 }
 
 // NNS g3d material SRT: 2D matrix for flags 0 (identity)
-void func_02108808(s32 *o)
+void texmtxCalc_flagTRS___3dsmax(s32 *o)
 {
     o[0] = 0x1000;
     o[1] = 0;
@@ -113,7 +113,7 @@ void func_02108808(s32 *o)
 }
 
 // NNS g3d: build the 4x4 texture matrix (LOAD_4x4 / MULT_4x4) from a material SRT result, 2D matrix chosen by a function-pointer table
-void func_021086bc(u32 *a)
+void NNSi_G3dSendTexSRT3dsMax(u32 *a)
 {
     GeBuf4 s;
     if (a[0] & 8) {
@@ -144,17 +144,17 @@ void func_021086bc(u32 *a)
         s.w[6] = FxMul(a[13], s.w[6]);
         s.w[14] = FxMul(a[13], s.w[14]);
     }
-    func_01ff8bd0(s.cmd, (u32 *)&s + 1, 18);
+    NNS_G3dGeBufferOP_N(s.cmd, (u32 *)&s + 1, 18);
 }
 
 // NNS g3d: send joint SRT result (scale/trans through a temporary vector) to the geometry engine
-void func_02108584(u32 *a)
+void NNSi_G3dSendJointSRTSi3d(u32 *a)
 {
     s32 v[3];
     BOOL t = 0;
     u32 f = a[0] & 0x18;
     if (f == 0) {
-        func_01ff8bd0(0x1b, a + 7, 3);
+        NNS_G3dGeBufferOP_N(0x1b, a + 7, 3);
     }
     if ((a[0] & 4) == 0) {
         if (f != 0) {
@@ -163,23 +163,42 @@ void func_02108584(u32 *a)
             v[0] = FxMul(a[19], a[4]);
             v[1] = FxMul(a[20], a[5]);
             v[2] = FxMul(a[21], a[6]);
-            func_01ff8bd0(0x1c, v, 3);
+            NNS_G3dGeBufferOP_N(0x1c, v, 3);
         }
     }
     if ((a[0] & 2) == 0) {
         if (t != 0) {
-            func_01ff8bd0(0x19, a + 10, 12);
+            NNS_G3dGeBufferOP_N(0x19, a + 10, 12);
         } else {
-            func_01ff8bd0(0x1a, a + 10, 9);
+            NNS_G3dGeBufferOP_N(0x1a, a + 10, 9);
         }
     } else if (t != 0) {
-        func_01ff8bd0(0x1c, a + 19, 3);
+        NNS_G3dGeBufferOP_N(0x1c, a + 19, 3);
     }
     if (f == 0) {
-        func_01ff8bd0(0x1b, a + 4, 3);
+        NNS_G3dGeBufferOP_N(0x1b, a + 4, 3);
     }
     if ((a[0] & 1) == 0) {
-        func_01ff8bd0(0x1b, a + 1, 3);
+        NNS_G3dGeBufferOP_N(0x1b, a + 1, 3);
     }
 }
 
+// ---- file-scope objects (.data 0x0213bed0-0x0213bef0): the texture-matrix calculators by SRT flag bits
+void texmtxCalc_flag___3dsmax();
+void texmtxCalc_flagS___3dsmax();
+void texmtxCalc_flagR___3dsmax();
+void texmtxCalc_flagRS___3dsmax();
+void texmtxCalc_flagT___3dsmax();
+void texmtxCalc_flagTS___3dsmax();
+void texmtxCalc_flagTR___3dsmax();
+void texmtxCalc_flagTRS___3dsmax();
+void (*data_0213bed0[8])(s32 *, u32 *) = {
+    (void (*)(s32 *, u32 *))texmtxCalc_flag___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagS___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagR___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagRS___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagT___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTS___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTR___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTRS___3dsmax,
+};

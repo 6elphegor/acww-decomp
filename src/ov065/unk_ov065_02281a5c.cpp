@@ -1,351 +1,140 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/gpiSearch.h"
+#include "net/gpiProfile.h"
+#include "net/gpi.h"
+#include "net/gpiOperation.h"
+#include "net/SockAddrIn.h"
+#include "net/SockHostEnt.h"
+#include "net/gpersist.h"
 
 // ov065 TU49: GP gpiSearch.c (0x02281a5c..0x02283304)
 
 namespace Nb {
-// ov065_057: search manager connect / parse helpers (0x02282f90..)
-struct Unk_ov065_02282f90_Ctx {
-    char unk_000[0x100];
-    u8 pad_100[0x418 - 0x100];
-    s32 unk_418;
-};
 
-struct Unk_ov065_02282f90_Handle {
-    Unk_ov065_02282f90_Ctx *unk_00;
-};
 
-struct Unk_ov065_02282f90_Conn {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    char *unk_18;
-    s32 unk_1c;
-    s32 unk_20;
-    s32 unk_24;
-    char unk_28[0x1f];
-    char unk_47[0x15];
-    char unk_5c[0x33];
-    char unk_8f[0x1f];
-    char unk_ae[0x1f];
-    u8 pad_cd[0x130 - 0xcd];
-    s32 unk_130;
-    s32 unk_134;
-    s32 unk_138;
-    s32 unk_13c;
-    s32 unk_140;
-};
 
-struct Unk_ov065_022831c0_Sock {
-    s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
-    s32 unk_0c;
-};
 
-struct Unk_ov065_022831c0_Obj {
-    s32 unk_00;
-    Unk_ov065_022831c0_Sock *unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-};
 
-struct Unk_ov065_022831c0_Host {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 **unk_0c;
-};
 
-struct Unk_ov065_022831c0_Addr {
-    u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
-    u32 unk_04;
-};
 
-struct Unk_ov065_022833b4_Pair {
-    s32 v[2];
-};
 
-struct Unk_ov065_022833b4_Src {
-    u8 pad_00[0xc];
-    Unk_ov065_022833b4_Pair unk_0c;
-};
 
-struct Unk_ov065_022837bc_Ent {
-    u32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    void *unk_18;
-};
 
-struct Unk_ov065_02283744_Buf {
-    u8 b[16];
-};
 
 extern "C" {
-void func_ov065_02283ce0(char *, s32);
-s32 func_ov065_022838c4(char *, s32);
-s32 func_ov065_02283bd4(char *, s32);
-void func_ov065_022790d0(char *);
-s32 func_ov065_022809a4(void *, s32, void *, void *, s32, s32, s32);
-s32 func_ov065_0227c6f0(void *, s32);
-void *func_ov065_02277af0(u32);
-s32 func_ov065_02278dd4(s32, s32, s32);
-s32 func_ov065_0227908c(s32, s32);
-Unk_ov065_022831c0_Host *func_ov065_02261408(const char *);
-s32 func_ov065_02278d34(s32, void *, s32);
-s32 func_ov065_02278be8(s32);
-void func_ov065_0227e160(void *, s32, s32);
-s32 func_ov065_02280c84(void *, s32, s32, void *);
-s32 func_ov065_0227dc28(void *, s32, char *);
-s32 func_ov065_02280c08(void *, s32, const char *, s32);
-s32 func_ov065_0227e0e8(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
-void func_ov065_0228090c(void *, void *);
-s32 func_ov065_02278f0c(s32, s32, s32 *, s32 *);
-s32 func_ov065_02278684(void *);
-void func_ov065_02278688(void *);
-void *func_ov065_0227866c(void *, s32);
-void func_ov065_02278570(void *, s32);
-char *func_0212a2ec(char *dst, const char *src, u32 n);
-char *func_02129f1c(const char *, const char *);
-s32 func_021277d4(const char *);
-s32 func_0212a15c(const char *, const char *, u32);
-s32 func_021130d0(char *buf, const char *fmt, ...);
-s32 func_02128ca4(const char *, const char *, ...);
-s32 func_0212b770(const char *);
-s32 func_0212899c(void *, s32, u32);
+void xcode_buf(char *, s32);
+s32 ProcessStatement(char *, s32);
+s32 FindFinal(char *, s32);
+void _strlwr(char *);
+s32 gpiAddOperation(void *, s32, void *, void *, s32, s32, s32);
+s32 gpiProcess(void *, s32);
+void *GsUtil_Alloc(u32);
+s32 socket(s32, s32, s32);
+s32 SetSockBlocking(s32, s32);
+SockHostEnt *Sock_GetHostByName(const char *);
+s32 connect(s32, void *, s32);
+s32 GOAGetLastError(s32);
+void gpiCallErrorCallback(void *, s32, s32);
+s32 gpiPeerStartTransferMessage(void *, s32, s32, void *);
+s32 gpiSendOrBufferString(void *, s32, char *);
+s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
+s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
+void gpiRemoveOperation(void *, void *);
+s32 GSISocketSelect(s32, s32, s32 *, s32 *);
+s32 ArrayLength(void *);
+void ArrayFree(void *);
+void *ArrayNth(void *, s32);
+void ArrayDeleteAt(void *, s32);
+char *strncpy(char *dst, const char *src, u32 n);
+char *strstr(const char *, const char *);
+s32 STD_GetStringLength(const char *);
+s32 strncmp(const char *, const char *, u32);
+s32 OS_SPrintf(char *buf, const char *fmt, ...);
+s32 sscanf(const char *, const char *, ...);
+s32 atol(const char *);
+s32 memset(void *, s32, u32);
 
-void func_ov065_02283460(void *, const char *);
-void func_ov065_02283470(void *, s32, const char *);
-void func_ov065_02283720(void *, const char *, ...);
-void func_ov065_02283728(char *, const char *, s32);
-s32 func_ov065_02283630(const char *, const char *, char *, s32);
-s32 func_ov065_02283684(void *, const char *, s32);
-s32 func_ov065_0228312c(void *, void *, s32);
-s32 func_ov065_022830d4(void *, void *, s32, s32, s32);
-s32 func_ov065_022831c0(void *, void *);
-s32 func_ov065_02283350(void *, s32 *, s32, s32, const char *);
-s32 func_ov065_022837bc(s32, s32, s32, void *, s32);
+void gpiSetErrorString(void *, const char *);
+void gpiSetError(void *, s32, const char *);
+void gpiDebug(void *, const char *, ...);
+void strzcpy(char *, const char *, s32);
+s32 gpiValueForKey(const char *, const char *, char *, s32);
+s32 gpiCheckForError(void *, const char *, s32);
+s32 gpiInitSearchData(void *, void *, s32);
+s32 gpiStartSearch(void *, void *, s32, s32, s32);
+s32 gpiStartProfileSearch(void *, void *);
+s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
+s32 CallReqCallback(s32, s32, s32, void *, s32);
 }
 
 }
 
 namespace Na {
-// ov065_056: search result parsing (0x02281a5c..0x02282f90)
-struct Unk_ov065_02281974_Pair {
-    s32 a;
-    s32 b;
-};
-
-struct Unk_ov065_02281974_Nest {
-    Unk_ov065_02281974_Pair p;
-};
-
-struct Unk_ov065_02281790_Sub {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    void *unk_0c;
-};
-
-struct Unk_ov065_02281790_Elem {
-    s32 unk_00;
-    s32 unk_04;
-    Unk_ov065_02281790_Sub *unk_08;
-    s32 unk_0c;
-    void *unk_10;
-    s32 unk_14;
-    void *unk_18;
-};
-
-struct Unk_ov065_02281790_Conn {
-    s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
-    u8 pad_0c[0x18 - 0x0c];
-    char *unk_18;
-    u8 pad_1c[0x28 - 0x1c];
-    char unk_28[0x1f];
-    char unk_47[0x15];
-    char unk_5c[0x33];
-    char unk_8f[0x1f];
-    char unk_ae[0x1f];
-    char unk_cd[0x1f];
-    char unk_ec[0x130 - 0xec];
-    s32 unk_130;
-    s32 unk_134;
-    s32 unk_138;
-    s32 unk_13c;
-    s32 unk_140;
-};
-
-struct Unk_ov065_02281790_Node {
-    s32 unk_00;
-    Unk_ov065_02281790_Conn *unk_04;
-    Unk_ov065_02281790_Sub *unk_08;
-    Unk_ov065_02281974_Nest unk_0c;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_02281790_Node *unk_20;
-};
-
-struct Unk_ov065_02281790_Ctx {
-    u8 pad_000[0x198];
-    s32 unk_198;
-    u8 pad_19c[4];
-    s32 unk_1a0;
-    u8 pad_1a4[0x210 - 0x1a4];
-    s32 unk_210;
-    u8 pad_214[0x418 - 0x214];
-    s32 unk_418;
-    u8 pad_41c[0x424 - 0x41c];
-    Unk_ov065_02281790_Node *unk_424;
-    void *unk_428;
-    s32 unk_42c;
-    s32 unk_430;
-    u8 pad_434[0x46c - 0x434];
-    s32 unk_46c;
-    s32 unk_470;
-};
-
-typedef Unk_ov065_02281790_Ctx Ctx0228;
-typedef Unk_ov065_02281790_Node Node0228;
-typedef Unk_ov065_02281790_Elem Elem0228;
-typedef Unk_ov065_02281790_Conn Conn0228;
 
 
 
 extern "C" {
-extern char data_ov065_02290fe4[];
+extern char __GSIACGamename[];
 
-typedef s32 (*Unk_ov065_022817c8_Cb)(Ctx0228 **, Node0228 *, void *);
+typedef s32 (*gpiProfileMapFunc)(GPConnection *, GPIProfile *, void *);
 
-s32 func_ov065_02278758(void *, s32 (*)(void *, void *), void *);
-s32 func_ov065_02278810(void *, void *);
-void *func_ov065_022787c4(void *, void *);
-s32 func_ov065_0227885c(void *, void *);
-void *func_ov065_02278980(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
-void func_ov065_02277ac8(void *);
-void *func_ov065_02277af0(s32);
-void func_ov065_02283460(Ctx0228 **, const char *);
-void func_ov065_02283470(Ctx0228 **, s32, const char *);
-s32 func_ov065_02283684(Ctx0228 **, char *, s32);
-s32 func_ov065_02283630(char *, const char *, void *, s32);
-s32 func_ov065_02283590(Ctx0228 **, s32, void *);
-void func_ov065_0227e160(Ctx0228 **, s32, s32);
-s32 func_ov065_0227e0e8(Ctx0228 **, Unk_ov065_02281974_Pair, void *, void *, s32);
-void func_ov065_0228090c(Ctx0228 **, Node0228 *);
-void func_ov065_0227f2a4(void *);
-s32 func_0212a15c(const char *, const char *, s32);
-s32 func_0212a190(const char *, const char *);
-s32 func_0212b770(void *);
+s32 TableMapSafe2(void *, s32 (*)(void *, void *), void *);
+s32 TableRemove(void *, void *);
+void *TableLookup(void *, void *);
+s32 TableEnter(void *, void *);
+void *TableNew(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
+void GsUtil_Free(void *);
+void *GsUtil_Alloc(s32);
+void gpiSetErrorString(GPConnection *, const char *);
+void gpiSetError(GPConnection *, s32, const char *);
+s32 gpiCheckForError(GPConnection *, char *, s32);
+s32 gpiValueForKey(char *, const char *, void *, s32);
+s32 gpiCheckSocketConnect(GPConnection *, s32, void *);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
+s32 gpiAddCallback(GPConnection *, GPICallback, void *, void *, s32);
+void gpiRemoveOperation(GPConnection *, GPIOperation *);
+void gpiFreeInfoCache(void *);
+s32 strncmp(const char *, const char *, s32);
+s32 strcmp(const char *, const char *);
+s32 atol(void *);
 
-s32 func_ov065_02281bf4(Ctx0228 **, Node0228 *);
-s32 func_ov065_022817b0(Ctx0228 **, Node0228 *, void *);
-s32 func_ov065_022817fc(Node0228 *, void *);
-s32 func_ov065_02281844(Ctx0228 **, Node0228 *, void *);
-s32 func_ov065_022818bc(Ctx0228 **, s32, void *);
-void func_ov065_02281ab4(void *);
-s32 func_ov065_022817c8(Ctx0228 **, Unk_ov065_022817c8_Cb, void *);
-s32 func_ov065_02281b04(s32 *, s32 *);
-s32 func_ov065_02281b0c(s32 *, s32);
+s32 gpiProcessSearch(GPConnection *, GPIOperation *);
+s32 gpiCheckForBuddy(GPConnection *, GPIProfile *, void *);
+s32 gpiProfileMapCallback(GPIProfile *, void *);
+s32 gpiCheckProfileForUser(GPConnection *, GPIProfile *, void *);
+s32 gpiGetProfile(GPConnection *, s32, void *);
+void gpiProfilesTableFree(void *);
+s32 gpiProfileMap(GPConnection *, gpiProfileMapFunc, void *);
+s32 gpiProfilesTableCompare(s32 *, s32 *);
+s32 gpiProfilesTableHash(s32 *, s32);
 
-struct Unk_ov065_02281790_L1 {
-    s32 a;
-    Node0228 *r;
-};
 
-s32 func_ov065_02283498(Ctx0228 **, char *, s32 *, char *, char *);
-void func_ov065_0227de10(Ctx0228 **, char **, const char *);
-void func_ov065_0227dde8(Ctx0228 **, char **, s32);
-s32 func_ov065_0227da7c(Ctx0228 **, s32, char **, s32 *, s32, const char *);
-s32 func_ov065_0227db18(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
-void *func_ov065_02277ad8(void *, s32);
-void func_ov065_02283728(char *, const char *, s32);
-void *func_0212899c(void *, s32, s32);
-char *func_02127838(char *, const char *);
-char *func_02129f1c(const char *, const char *);
-void func_ov065_0227913c(s32);
-s32 func_ov065_02282f90(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, void *, s32, s32);
+s32 gpiReadKeyAndValue(GPConnection *, char *, s32 *, char *, char *);
+void gpiAppendStringToBuffer(GPConnection *, char **, const char *);
+void gpiAppendIntToBuffer(GPConnection *, char **, s32);
+s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
+s32 gpiRecvToBuffer(GPConnection *, s32, char **, s32 *, s32 *, const char *);
+void *GsUtil_Realloc(void *, s32);
+void strzcpy(char *, const char *, s32);
+void *memset(void *, s32, s32);
+char *STD_CopyString(char *, const char *);
+char *strstr(const char *, const char *);
+void msleep(s32);
+s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 
-struct Unk_ov065_02281bf4_Rec {
-    s32 unk_00;
-    char unk_04[0x1f];
-    char unk_23[0x15];
-    char unk_38[0x1f];
-    char unk_57[0x1f];
-    char unk_76[0x33];
-    u8 pad_a9[3];
-};
 
-struct Unk_ov065_02281bf4_Res2 {
-    s32 unk_00;
-    char unk_04[0x34];
-    s32 unk_38;
-};
 
-struct Unk_ov065_02281bf4_Res3 {
-    s32 unk_00;
-    char unk_04[0x34];
-    s32 unk_38;
-    char **unk_3c;
-    char **unk_40;
-};
 
-struct Unk_ov065_02281bf4_Ent {
-    s32 unk_00;
-    char unk_04[0x1f];
-    u8 pad_23;
-    s32 unk_24;
-    char unk_28[0x100];
-};
 
-struct Unk_ov065_02281bf4_Res4 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    Unk_ov065_02281bf4_Ent *unk_0c;
-};
 
-struct Unk_ov065_02281bf4_Res7 {
-    s32 unk_00;
-    s32 unk_04;
-    Unk_ov065_02281bf4_Rec *unk_08;
-};
 
-struct Unk_ov065_02281bf4_Res8 {
-    s32 unk_00;
-    s32 unk_04;
-    char **unk_08;
-};
 
-struct Unk_ov065_02281bf4_Res5 {
-    s32 unk_00;
-    s32 unk_04;
-};
 
-struct Unk_ov065_02281bf4_S1 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    Unk_ov065_02281bf4_Rec *unk_0c;
-};
 
-#define ERR3() { func_ov065_02283470(h, 1, "Error reading from the search server."); func_ov065_0227e160(h, 3, 1); return 3; }
-#define ERRMEM(m) { func_ov065_02283460(h, m); return 1; }
-#define GETTOK(t) r = func_ov065_02283498(h, c->unk_08, &pos, t, buf); if (r != 0) { return r; }
+#define ERR3() { gpiSetError(h, 1, "Error reading from the search server."); gpiCallErrorCallback(h, 3, 1); return 3; }
+#define ERRMEM(m) { gpiSetErrorString(h, m); return 1; }
+#define GETTOK(t) r = gpiReadKeyAndValue(h, c->inputBuffer, &pos, t, buf); if (r != 0) { return r; }
 
 }
 }
@@ -358,99 +147,99 @@ char data_ov065_0228dadc[0x40] = "gpsp.gs.nintendowifi.net";
 }
 namespace Nb {
 extern "C" {
-s32 func_ov065_022831c0(void *h0, void *o0) {
-    Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
-    Unk_ov065_022831c0_Obj *o = (Unk_ov065_022831c0_Obj *)o0;
-    Unk_ov065_022831c0_Sock *s = o->unk_04;
-    Unk_ov065_022831c0_Host *ent;
-    Unk_ov065_022831c0_Addr sa;
+s32 gpiStartProfileSearch(void *h0, void *o0) {
+    GPConnection *h = (GPConnection *)h0;
+    GPIOperation *o = (GPIOperation *)o0;
+    GPISearchData *s = (GPISearchData *)o->data;
+    SockHostEnt *ent;
+    SockAddrIn sa;
     s32 r;
     s32 m;
-    s->unk_0c = 0x1000;
-    s->unk_08 = (char *)func_ov065_02277af0(s->unk_0c + 1);
-    if (s->unk_08 == NULL) {
-        func_ov065_02283460(h, "Out of memory.");
+    s->inputBufferCapacity = 0x1000;
+    s->inputBuffer = (char *)GsUtil_Alloc(s->inputBufferCapacity + 1);
+    if (s->inputBuffer == NULL) {
+        gpiSetErrorString(h, "Out of memory.");
         return 1;
     }
-    s->unk_04 = func_ov065_02278dd4(2, 1, 0);
-    if (s->unk_04 == -1) {
-        func_ov065_02283470(h, 5, "There was an error creating a socket.");
-        func_ov065_0227e160(h, 3, 1);
+    s->sock = socket(2, 1, 0);
+    if (s->sock == -1) {
+        gpiSetError(h, 5, "There was an error creating a socket.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
-    if (func_ov065_0227908c(s->unk_04, 0) == 0) {
-        func_ov065_02283470(h, 5, "There was an error making a socket non-blocking.");
-        func_ov065_0227e160(h, 3, 1);
+    if (SetSockBlocking(s->sock, 0) == 0) {
+        gpiSetError(h, 5, "There was an error making a socket non-blocking.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
-    ent = func_ov065_02261408(data_ov065_0228dadc);
+    ent = Sock_GetHostByName(data_ov065_0228dadc);
     if (ent == NULL) {
-        func_ov065_02283470(h, 5, "Could not resolve search mananger host name.");
-        func_ov065_0227e160(h, 3, 1);
+        gpiSetError(h, 5, "Could not resolve search mananger host name.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
     u32 *w = (u32 *)&sa;
     w[0] = 0;
     w[1] = 0;
-    sa.unk_01 = 2;
-    sa.unk_04 = **ent->unk_0c;
-    sa.unk_02 = 0xcd74;
-    if (func_ov065_02278d34(s->unk_04, &sa, 8) == -1) {
-        r = func_ov065_02278be8(s->unk_04);
+    sa.family = 2;
+    sa.addr = *(u32 *)*ent->addrList;
+    sa.port = 0xcd74;
+    if (connect(s->sock, &sa, 8) == -1) {
+        r = GOAGetLastError(s->sock);
         if (r != -6 && r != -0x1a && r != -0x4c) {
-            func_ov065_02283470(h, 5, "There was an error connecting a socket.");
-            func_ov065_0227e160(h, 3, 1);
+            gpiSetError(h, 5, "There was an error connecting a socket.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
     }
-    o->unk_14 = 1;
+    o->state = 1;
     return 0;
 }
 
-s32 func_ov065_0228312c(void *h0, void *out, s32 p2) {
-    Unk_ov065_02282f90_Conn *cn;
-    Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
-    cn = (Unk_ov065_02282f90_Conn *)func_ov065_02277af0(0x144);
+s32 gpiInitSearchData(void *h0, void *out, s32 p2) {
+    GPISearchData *cn;
+    GPConnection *h = (GPConnection *)h0;
+    cn = (GPISearchData *)GsUtil_Alloc(0x144);
     if (cn == NULL) {
-        func_ov065_02283460(h, "Out of memory.");
+        gpiSetErrorString(h, "Out of memory.");
         return 1;
     }
-    func_0212899c(cn, 0, 0x144);
-    cn->unk_00 = p2;
-    cn->unk_04 = -1;
-    cn->unk_08 = 0;
-    cn->unk_10 = 0;
-    cn->unk_14 = 0;
-    cn->unk_0c = 0;
-    cn->unk_20 = 0;
-    cn->unk_24 = 0;
-    cn->unk_1c = 0x1000;
-    cn->unk_18 = (char *)func_ov065_02277af0(cn->unk_1c + 1);
-    if (cn->unk_18 == NULL) {
-        func_ov065_02283460(h, "Out of memory.");
+    memset(cn, 0, 0x144);
+    cn->type = p2;
+    cn->sock = -1;
+    cn->inputBuffer = 0;
+    cn->inputBufferLength = 0;
+    cn->inputBufferPos = 0;
+    cn->inputBufferCapacity = 0;
+    cn->outputBufferLength = 0;
+    cn->outputBufferPos = 0;
+    cn->outputBufferCapacity = 0x1000;
+    cn->outputBuffer = (char *)GsUtil_Alloc(cn->outputBufferCapacity + 1);
+    if (cn->outputBuffer == NULL) {
+        gpiSetErrorString(h, "Out of memory.");
         return 1;
     }
-    cn->unk_13c = 0;
-    cn->unk_140 = 0;
-    *(Unk_ov065_02282f90_Conn **)out = cn;
+    cn->processing = 0;
+    cn->remove = 0;
+    *(GPISearchData **)out = cn;
     return 0;
 }
 
-s32 func_ov065_022830d4(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
-    Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
-    Unk_ov065_022831c0_Obj *o;
+s32 gpiStartSearch(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
+    GPConnection *h = (GPConnection *)h0;
+    GPIOperation *o;
     s32 r;
-    *(s32 *)((u8 *)h->unk_00 + 0x210) += 1;
-    r = func_ov065_022809a4(h, 3, cn, &o, p2, p3, p4);
+    (*h)->numSearches += 1;
+    r = gpiAddOperation(h, 3, cn, &o, p2, p3, p4);
     if (r != 0) {
         return r;
     }
-    r = func_ov065_022831c0(h, o);
+    r = gpiStartProfileSearch(h, o);
     if (r != 0) {
         return r;
     }
-    if (o->unk_08 != 0) {
-        r = func_ov065_0227c6f0(h, o->unk_18);
+    if (o->blocking != 0) {
+        r = gpiProcess(h, o->id);
         if (r != 0) {
             return r;
         }
@@ -458,49 +247,49 @@ s32 func_ov065_022830d4(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
     return 0;
 }
 
-s32 func_ov065_02282f90(Unk_ov065_02282f90_Handle *h, char *a, char *b, char *c, char *d, char *e, s32 f, s32 g, s32 p8, s32 p9, s32 p10) {
-    Unk_ov065_02282f90_Conn *cn;
+s32 gpiProfileSearch(GPConnection *h, char *a, char *b, char *c, char *d, char *e, s32 f, s32 g, s32 p8, s32 p9, s32 p10) {
+    GPISearchData *cn;
     s32 r;
     if ((a == NULL || *a == 0) && (c == NULL || *c == 0) && (d == NULL || *d == 0) && (e == NULL || *e == 0) && f == 0 && (b == NULL || *b == 0)) {
-        func_ov065_02283460(h, "No search criteria.");
+        gpiSetErrorString(h, "No search criteria.");
         return 2;
     }
-    r = func_ov065_0228312c(h, &cn, 1);
+    r = gpiInitSearchData(h, &cn, 1);
     if (r != 0) {
         return r;
     }
     if (a == NULL) {
-        cn->unk_28[0] = 0;
+        cn->nick[0] = 0;
     } else {
-        func_ov065_02283728(cn->unk_28, a, 0x1f);
+        strzcpy(cn->nick, a, 0x1f);
     }
     if (b == NULL) {
-        cn->unk_47[0] = 0;
+        cn->uniquenick[0] = 0;
     } else {
-        func_ov065_02283728(cn->unk_47, b, 0x15);
+        strzcpy(cn->uniquenick, b, 0x15);
     }
     if (c == NULL) {
-        cn->unk_5c[0] = 0;
+        cn->email[0] = 0;
     } else {
-        func_ov065_02283728(cn->unk_5c, c, 0x33);
+        strzcpy(cn->email, c, 0x33);
     }
-    func_ov065_022790d0(cn->unk_5c);
+    _strlwr(cn->email);
     if (d == NULL) {
-        cn->unk_8f[0] = 0;
+        cn->firstname[0] = 0;
     } else {
-        func_ov065_02283728(cn->unk_8f, d, 0x1f);
+        strzcpy(cn->firstname, d, 0x1f);
     }
     if (e == NULL) {
-        cn->unk_ae[0] = 0;
+        cn->lastname[0] = 0;
     } else {
-        func_ov065_02283728(cn->unk_ae, e, 0x1f);
+        strzcpy(cn->lastname, e, 0x1f);
     }
-    cn->unk_130 = f;
+    cn->icquin = f;
     if (g < 0) {
         g = 0;
     }
-    cn->unk_134 = g;
-    r = func_ov065_022830d4(h, cn, p8, p9, p10);
+    cn->skip = g;
+    r = gpiStartSearch(h, cn, p8, p9, p10);
     if (r != 0) {
         return r;
     }
@@ -512,215 +301,215 @@ s32 func_ov065_02282f90(Unk_ov065_02282f90_Handle *h, char *a, char *b, char *c,
 
 namespace Na {
 extern "C" {
-s32 func_ov065_02281bf4(Ctx0228 **h, Node0228 *node) {
+s32 gpiProcessSearch(GPConnection *h, GPIOperation *node) {
     s32 done, save1;
-    Ctx0228 *ctx = *h;
+    GPIConnection *ctx = *h;
     s32 done2;
-    Unk_ov065_02281bf4_Res4 *p4;
-    Unk_ov065_02281bf4_Res7 *p7;
+    GPFindPlayersResponseArg *p4;
+    GPGetReverseBuddiesResponseArg *p7;
     s32 cnt;
     s32 retry;
-    Conn0228 *c = node->unk_04;
+    GPISearchData *c = (GPISearchData *)node->data;
     s32 r;
     s32 v8c;
     s32 pos;
-    Unk_ov065_02281974_Nest pr1;
+    GPICallbackCopy pr1;
     s32 vv[2];
-    Unk_ov065_02281974_Nest pr8, pr7, pr6, pr5, pr4, pr3, pr2;
-    Unk_ov065_02281bf4_S1 s1;
+    GPICallbackCopy pr8, pr7, pr6, pr5, pr4, pr3, pr2;
+    GPProfileSearchResponseArg s1;
     char tok[0x200];
     char buf[0x200];
 
-    if (node->unk_08 != 0) {
+    if (node->blocking != 0) {
         retry = 1;
     } else {
         retry = 0;
     }
 again:
-    r = func_ov065_0227da7c(h, c->unk_04, &c->unk_18, &vv[1], 1, "SM");
+    r = gpiSendFromBuffer(h, c->sock, &c->outputBuffer, &vv[1], 1, "SM");
     if (r != 0) {
         return r;
     }
-    if (node->unk_14 == 1) {
-        r = func_ov065_02283590(h, c->unk_04, &v8c);
+    if (node->state == 1) {
+        r = gpiCheckSocketConnect(h, c->sock, &v8c);
         if (r != 0) {
             return r;
         }
         if (v8c == 4) {
-            func_ov065_02283470(h, 0xd01, "Could not connect to the search manager.");
-            func_ov065_0227e160(h, 4, 0);
+            gpiSetError(h, 0xd01, "Could not connect to the search manager.");
+            gpiCallErrorCallback(h, 4, 0);
             return 4;
         }
         if (v8c != 3) {
             goto endchk;
         }
-        if (c->unk_00 == 1) {
-            func_ov065_0227de10(h, &c->unk_18, "\\search\\");
-            func_ov065_0227de10(h, &c->unk_18, "\\sesskey\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_198);
-            func_ov065_0227de10(h, &c->unk_18, "\\profileid\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_1a0);
-            func_ov065_0227de10(h, &c->unk_18, "\\namespaceid\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_470);
-            if (c->unk_28[0] != 0) {
-                func_ov065_0227de10(h, &c->unk_18, "\\nick\\");
-                func_ov065_0227de10(h, &c->unk_18, c->unk_28);
+        if (c->type == 1) {
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\search\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->sessKey);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\profileid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileid);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
+            if (c->nick[0] != 0) {
+                gpiAppendStringToBuffer(h, &c->outputBuffer, "\\nick\\");
+                gpiAppendStringToBuffer(h, &c->outputBuffer, c->nick);
             }
-            if (c->unk_47[0] != 0) {
-                func_ov065_0227de10(h, &c->unk_18, "\\uniquenick\\");
-                func_ov065_0227de10(h, &c->unk_18, c->unk_47);
+            if (c->uniquenick[0] != 0) {
+                gpiAppendStringToBuffer(h, &c->outputBuffer, "\\uniquenick\\");
+                gpiAppendStringToBuffer(h, &c->outputBuffer, c->uniquenick);
             }
-            if (c->unk_5c[0] != 0) {
-                func_ov065_0227de10(h, &c->unk_18, "\\email\\");
-                func_ov065_0227de10(h, &c->unk_18, c->unk_5c);
+            if (c->email[0] != 0) {
+                gpiAppendStringToBuffer(h, &c->outputBuffer, "\\email\\");
+                gpiAppendStringToBuffer(h, &c->outputBuffer, c->email);
             }
-            if (c->unk_8f[0] != 0) {
-                func_ov065_0227de10(h, &c->unk_18, "\\firstname\\");
-                func_ov065_0227de10(h, &c->unk_18, c->unk_8f);
+            if (c->firstname[0] != 0) {
+                gpiAppendStringToBuffer(h, &c->outputBuffer, "\\firstname\\");
+                gpiAppendStringToBuffer(h, &c->outputBuffer, c->firstname);
             }
-            if (c->unk_ae[0] != 0) {
-                func_ov065_0227de10(h, &c->unk_18, "\\lastname\\");
-                func_ov065_0227de10(h, &c->unk_18, c->unk_ae);
+            if (c->lastname[0] != 0) {
+                gpiAppendStringToBuffer(h, &c->outputBuffer, "\\lastname\\");
+                gpiAppendStringToBuffer(h, &c->outputBuffer, c->lastname);
             }
-            if (c->unk_130 != 0) {
-                func_ov065_0227de10(h, &c->unk_18, "\\icquin\\");
-                func_ov065_0227dde8(h, &c->unk_18, c->unk_130);
+            if (c->icquin != 0) {
+                gpiAppendStringToBuffer(h, &c->outputBuffer, "\\icquin\\");
+                gpiAppendIntToBuffer(h, &c->outputBuffer, c->icquin);
             }
-            if (c->unk_134 > 0) {
-                func_ov065_0227de10(h, &c->unk_18, "\\skip\\");
-                func_ov065_0227dde8(h, &c->unk_18, c->unk_134);
+            if (c->skip > 0) {
+                gpiAppendStringToBuffer(h, &c->outputBuffer, "\\skip\\");
+                gpiAppendIntToBuffer(h, &c->outputBuffer, c->skip);
             }
-        } else if (c->unk_00 == 2) {
-            func_ov065_0227de10(h, &c->unk_18, "\\valid\\");
-            func_ov065_0227de10(h, &c->unk_18, "\\email\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_5c);
-        } else if (c->unk_00 == 3) {
-            func_ov065_0227de10(h, &c->unk_18, "\\nicks\\");
-            func_ov065_0227de10(h, &c->unk_18, "\\email\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_5c);
-            func_ov065_0227de10(h, &c->unk_18, "\\pass\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_cd);
-            func_ov065_0227de10(h, &c->unk_18, "\\namespaceid\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_470);
-        } else if (c->unk_00 == 4) {
-            func_ov065_0227de10(h, &c->unk_18, "\\pmatch\\");
-            func_ov065_0227de10(h, &c->unk_18, "\\sesskey\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_198);
-            func_ov065_0227de10(h, &c->unk_18, "\\profileid\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_1a0);
-            func_ov065_0227de10(h, &c->unk_18, "\\productid\\");
-            func_ov065_0227dde8(h, &c->unk_18, c->unk_138);
-        } else if (c->unk_00 == 5) {
-            func_ov065_0227de10(h, &c->unk_18, "\\check\\");
-            func_ov065_0227de10(h, &c->unk_18, "\\nick\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_28);
-            func_ov065_0227de10(h, &c->unk_18, "\\email\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_5c);
-            func_ov065_0227de10(h, &c->unk_18, "\\pass\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_cd);
-        } else if (c->unk_00 == 6) {
-            func_ov065_0227de10(h, &c->unk_18, "\\newuser\\");
-            func_ov065_0227de10(h, &c->unk_18, "\\nick\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_28);
-            func_ov065_0227de10(h, &c->unk_18, "\\email\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_5c);
-            func_ov065_0227de10(h, &c->unk_18, "\\pass\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_cd);
-            func_ov065_0227de10(h, &c->unk_18, "\\productID\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_46c);
-            func_ov065_0227de10(h, &c->unk_18, "\\namespaceid\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_470);
-            func_ov065_0227de10(h, &c->unk_18, "\\uniquenick\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_47);
-            if (c->unk_ec[0] != 0) {
-                func_ov065_0227de10(h, &c->unk_18, "\\cdkey\\");
-                func_ov065_0227de10(h, &c->unk_18, c->unk_ec);
+        } else if (c->type == 2) {
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\valid\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\email\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->email);
+        } else if (c->type == 3) {
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\nicks\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\email\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->email);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\pass\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->password);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
+        } else if (c->type == 4) {
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\pmatch\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->sessKey);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\profileid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileid);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\productid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, c->productID);
+        } else if (c->type == 5) {
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\check\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\nick\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->nick);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\email\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->email);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\pass\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->password);
+        } else if (c->type == 6) {
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\newuser\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\nick\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->nick);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\email\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->email);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\pass\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->password);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\productID\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->productID);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\uniquenick\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->uniquenick);
+            if (c->cdkey[0] != 0) {
+                gpiAppendStringToBuffer(h, &c->outputBuffer, "\\cdkey\\");
+                gpiAppendStringToBuffer(h, &c->outputBuffer, c->cdkey);
             }
-        } else if (c->unk_00 == 7) {
-            func_ov065_0227de10(h, &c->unk_18, "\\others\\");
-            func_ov065_0227de10(h, &c->unk_18, "\\sesskey\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_198);
-            func_ov065_0227de10(h, &c->unk_18, "\\profileid\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_1a0);
-            func_ov065_0227de10(h, &c->unk_18, "\\namespaceid\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_470);
-        } else if (c->unk_00 == 8) {
-            func_ov065_0227de10(h, &c->unk_18, "\\uniquesearch\\");
-            func_ov065_0227de10(h, &c->unk_18, "\\preferrednick\\");
-            func_ov065_0227de10(h, &c->unk_18, c->unk_47);
-            func_ov065_0227de10(h, &c->unk_18, "\\namespaceid\\");
-            func_ov065_0227dde8(h, &c->unk_18, ctx->unk_470);
+        } else if (c->type == 7) {
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\others\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->sessKey);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\profileid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileid);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
+        } else if (c->type == 8) {
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\uniquesearch\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\preferrednick\\");
+            gpiAppendStringToBuffer(h, &c->outputBuffer, c->uniquenick);
+            gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
         }
-        func_ov065_0227de10(h, &c->unk_18, "\\gamename\\");
-        func_ov065_0227de10(h, &c->unk_18, data_ov065_02290fe4);
-        func_ov065_0227de10(h, &c->unk_18, "\\final\\");
-        node->unk_14 = 4;
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\gamename\\");
+        gpiAppendStringToBuffer(h, &c->outputBuffer, __GSIACGamename);
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
+        node->state = 4;
         goto endchk;
     }
-    if (node->unk_14 != 4) {
+    if (node->state != 4) {
         goto endchk;
     }
-    r = func_ov065_0227db18(h, c->unk_04, &c->unk_08, &vv[0], &vv[1], "SM");
+    r = gpiRecvToBuffer(h, c->sock, &c->inputBuffer, &vv[0], &vv[1], "SM");
     if (r != 0) {
         if (r != 3) {
             return r;
         }
-        func_ov065_02283470(h, 0xd01, "There was an error reading from the server.");
-        func_ov065_0227e160(h, 3, 0);
+        gpiSetError(h, 0xd01, "There was an error reading from the server.");
+        gpiCallErrorCallback(h, 3, 0);
         return 3;
     }
-    if (func_02129f1c(c->unk_08, "\\final\\") == 0) {
+    if (strstr(c->inputBuffer, "\\final\\") == 0) {
         goto endchk;
     }
     pos = 0;
-    node->unk_14 = 5;
-    if (func_ov065_02283684(h, c->unk_08, 1) != 0) {
-        c->unk_140 = 1;
+    node->state = 5;
+    if (gpiCheckForError(h, c->inputBuffer, 1) != 0) {
+        c->remove = 1;
         return 4;
     }
-    if (c->unk_00 == 1) {
+    if (c->type == 1) {
         done = 0;
-        s1.unk_00 = 0;
-        s1.unk_04 = 0;
-        s1.unk_0c = 0;
-        s1.unk_08 = 0x601;
+        s1.result = 0;
+        s1.numMatches = 0;
+        s1.matches = 0;
+        s1.more = 0x601;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "bsrdone") == 0) {
+            if (strcmp(tok, "bsrdone") == 0) {
                 GETTOK(tok)
-                if (func_0212a190(tok, "more") == 0) {
-                    if (func_0212a190(buf, "0") != 0) {
-                        s1.unk_08 = 0x600;
+                if (strcmp(tok, "more") == 0) {
+                    if (strcmp(buf, "0") != 0) {
+                        s1.more = 0x600;
                     }
                 }
                 done = 1;
-            } else if (func_0212a190(tok, "bsr") == 0) {
-                Unk_ov065_02281bf4_Rec *e;
+            } else if (strcmp(tok, "bsr") == 0) {
+                GPProfileSearchMatch *e;
                 s32 idx;
-                Unk_ov065_02281bf4_Rec *base;
-                s1.unk_04++;
-                base = (Unk_ov065_02281bf4_Rec *)func_ov065_02277ad8(s1.unk_0c, s1.unk_04 * 0xac);
-                s1.unk_0c = base;
+                GPProfileSearchMatch *base;
+                s1.numMatches++;
+                base = (GPProfileSearchMatch *)GsUtil_Realloc(s1.matches, s1.numMatches * 0xac);
+                s1.matches = base;
                 if (base == 0) ERRMEM("Out of memory.")
-                idx = s1.unk_04 - 1;
+                idx = s1.numMatches - 1;
                 e = &base[idx];
-                func_0212899c(e, 0, 0xac);
-                base[idx].unk_00 = func_0212b770(buf);
+                memset(e, 0, 0xac);
+                base[idx].profile = atol(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
                     GETTOK(tok)
-                    if (func_0212a190(tok, "nick") == 0) {
-                        func_ov065_02283728(e->unk_04, buf, 0x1f);
-                    } else if (func_0212a190(tok, "uniquenick") == 0) {
-                        func_ov065_02283728(e->unk_23, buf, 0x15);
-                    } else if (func_0212a190(tok, "firstname") == 0) {
-                        func_ov065_02283728(e->unk_38, buf, 0x1f);
-                    } else if (func_0212a190(tok, "lastname") == 0) {
-                        func_ov065_02283728(e->unk_57, buf, 0x1f);
-                    } else if (func_0212a190(tok, "email") == 0) {
-                        func_ov065_02283728(e->unk_76, buf, 0x33);
-                    } else if (func_0212a190(tok, "bsr") == 0 || func_0212a190(tok, "bsrdone") == 0) {
+                    if (strcmp(tok, "nick") == 0) {
+                        strzcpy(e->nick, buf, 0x1f);
+                    } else if (strcmp(tok, "uniquenick") == 0) {
+                        strzcpy(e->uniquenick, buf, 0x15);
+                    } else if (strcmp(tok, "firstname") == 0) {
+                        strzcpy(e->firstname, buf, 0x1f);
+                    } else if (strcmp(tok, "lastname") == 0) {
+                        strzcpy(e->lastname, buf, 0x1f);
+                    } else if (strcmp(tok, "email") == 0) {
+                        strzcpy(e->email, buf, 0x33);
+                    } else if (strcmp(tok, "bsr") == 0 || strcmp(tok, "bsrdone") == 0) {
                         done2 = 1;
                         pos = save1;
                     }
@@ -730,132 +519,132 @@ again:
             }
         } while (done == 0);
         {
-            s32 t = s1.unk_08;
-            pr1 = node->unk_0c;
-            if (pr1.p.a != 0) {
-                ((void (*)(Ctx0228 **, void *, s32))pr1.p.a)(h, &s1, pr1.p.b);
+            s32 t = s1.more;
+            pr1 = node->callback;
+            if (pr1.p.callback != 0) {
+                ((void (*)(GPConnection *, void *, s32))pr1.p.callback)(h, &s1, pr1.p.param);
             }
-            if (t == 0x600 && s1.unk_08 == 0x600) {
-                r = func_ov065_02282f90(h, c->unk_28, c->unk_47, c->unk_5c, c->unk_8f, c->unk_ae, c->unk_130, s1.unk_04 + c->unk_134, node->unk_08, node->unk_0c.p.a, node->unk_0c.p.b);
+            if (t == 0x600 && s1.more == 0x600) {
+                r = gpiProfileSearch(h, c->nick, c->uniquenick, c->email, c->firstname, c->lastname, c->icquin, s1.numMatches + c->skip, node->blocking, node->callback.p.callback, node->callback.p.param);
                 if (r != 0) {
                     return r;
                 }
             }
         }
-        func_ov065_02277ac8(s1.unk_0c);
-        s1.unk_0c = 0;
+        GsUtil_Free(s1.matches);
+        s1.matches = 0;
         goto done;
-    } else if (c->unk_00 == 2) {
-        Unk_ov065_02281bf4_Res2 *p;
-        pr2 = node->unk_0c;
-        if (pr2.p.a == 0) {
+    } else if (c->type == 2) {
+        GPIsValidEmailResponseArg *p;
+        pr2 = node->callback;
+        if (pr2.p.callback == 0) {
             goto done;
         }
         GETTOK(tok)
-        if (func_0212a190(tok, "vr") != 0) ERR3()
-        p = (Unk_ov065_02281bf4_Res2 *)func_ov065_02277af0(0x3c);
+        if (strcmp(tok, "vr") != 0) ERR3()
+        p = (GPIsValidEmailResponseArg *)GsUtil_Alloc(0x3c);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = 0;
-        func_ov065_02283728(p->unk_04, c->unk_5c, 0x33);
+        p->result = 0;
+        strzcpy(p->email, c->email, 0x33);
         if (buf[0] == 0x30) {
-            p->unk_38 = 0;
+            p->isValid = 0;
         } else {
-            p->unk_38 = 1;
+            p->isValid = 1;
         }
-        r = func_ov065_0227e0e8(h, pr2.p, p, node, 0);
+        r = gpiAddCallback(h, pr2.p, p, node, 0);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 3) {
-        Unk_ov065_02281bf4_Res3 *p;
-        pr3 = node->unk_0c;
-        if (pr3.p.a == 0) {
+    } else if (c->type == 3) {
+        GPGetUserNicksResponseArg *p;
+        pr3 = node->callback;
+        if (pr3.p.callback == 0) {
             goto done;
         }
-        p = (Unk_ov065_02281bf4_Res3 *)func_ov065_02277af0(0x44);
+        p = (GPGetUserNicksResponseArg *)GsUtil_Alloc(0x44);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = 0;
-        func_02127838(p->unk_04, c->unk_5c);
-        p->unk_38 = 0;
-        p->unk_3c = 0;
-        p->unk_40 = 0;
+        p->result = 0;
+        STD_CopyString(p->email, c->email);
+        p->numNicks = 0;
+        p->nicks = 0;
+        p->uniquenicks = 0;
         GETTOK(tok)
-        if (func_0212a190(tok, "nr") != 0) ERR3()
+        if (strcmp(tok, "nr") != 0) ERR3()
         done = 0;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "nick") == 0) {
-                void *t = func_ov065_02277ad8(p->unk_3c, (p->unk_38 + 1) * 4);
+            if (strcmp(tok, "nick") == 0) {
+                void *t = GsUtil_Realloc(p->nicks, (p->numNicks + 1) * 4);
                 if (t == 0) ERRMEM("Out of memory.")
-                p->unk_3c = (char **)t;
-                t = func_ov065_02277af0(0x1f);
+                p->nicks = (char **)t;
+                t = GsUtil_Alloc(0x1f);
                 if (t == 0) ERRMEM("Out of memory.")
-                p->unk_3c[p->unk_38] = (char *)t;
-                func_ov065_02283728(p->unk_3c[p->unk_38], buf, 0x1f);
-                p->unk_38++;
-            } else if (func_0212a190(tok, "uniquenick") == 0) {
-                if (p->unk_38 > 0) {
-                    void *t = func_ov065_02277ad8(p->unk_40, p->unk_38 * 4);
+                p->nicks[p->numNicks] = (char *)t;
+                strzcpy(p->nicks[p->numNicks], buf, 0x1f);
+                p->numNicks++;
+            } else if (strcmp(tok, "uniquenick") == 0) {
+                if (p->numNicks > 0) {
+                    void *t = GsUtil_Realloc(p->uniquenicks, p->numNicks * 4);
                     if (t == 0) ERRMEM("Out of memory.")
-                    p->unk_40 = (char **)t;
-                    t = func_ov065_02277af0(0x15);
+                    p->uniquenicks = (char **)t;
+                    t = GsUtil_Alloc(0x15);
                     if (t == 0) ERRMEM("Out of memory.")
-                    p->unk_40[p->unk_38 - 1] = (char *)t;
-                    func_ov065_02283728(p->unk_40[p->unk_38 - 1], buf, 0x15);
+                    p->uniquenicks[p->numNicks - 1] = (char *)t;
+                    strzcpy(p->uniquenicks[p->numNicks - 1], buf, 0x15);
                 }
-            } else if (func_0212a190(tok, "ndone") == 0) {
+            } else if (strcmp(tok, "ndone") == 0) {
                 done = 1;
             } else {
                 ERR3()
             }
         } while (done == 0);
-        r = func_ov065_0227e0e8(h, pr3.p, p, node, 3);
+        r = gpiAddCallback(h, pr3.p, p, node, 3);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 4) {
-        pr4 = node->unk_0c;
-        if (pr4.p.a == 0) {
+    } else if (c->type == 4) {
+        pr4 = node->callback;
+        if (pr4.p.callback == 0) {
             goto done;
         }
-        p4 = (Unk_ov065_02281bf4_Res4 *)func_ov065_02277af0(0x10);
+        p4 = (GPFindPlayersResponseArg *)GsUtil_Alloc(0x10);
         if (p4 == 0) ERRMEM("Out of memory.")
-        p4->unk_04 = c->unk_138;
+        p4->productID = c->productID;
         done = 0;
-        p4->unk_00 = 0;
-        p4->unk_08 = 0;
-        p4->unk_0c = 0;
+        p4->result = 0;
+        p4->numMatches = 0;
+        p4->matches = 0;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "psrdone") == 0) {
+            if (strcmp(tok, "psrdone") == 0) {
                 done = 1;
-            } else if (func_0212a190(tok, "psr") == 0) {
-                Unk_ov065_02281bf4_Ent *e;
+            } else if (strcmp(tok, "psr") == 0) {
+                GPFindPlayerMatch *e;
                 s32 idx;
-                Unk_ov065_02281bf4_Ent *base;
-                p4->unk_08++;
-                p4->unk_0c = (Unk_ov065_02281bf4_Ent *)func_ov065_02277ad8(p4->unk_0c, p4->unk_08 * 0x128);
-                base = p4->unk_0c;
+                GPFindPlayerMatch *base;
+                p4->numMatches++;
+                p4->matches = (GPFindPlayerMatch *)GsUtil_Realloc(p4->matches, p4->numMatches * 0x128);
+                base = p4->matches;
                 if (base == 0) ERRMEM("Out of memory.")
-                idx = p4->unk_08 - 1;
+                idx = p4->numMatches - 1;
                 e = &base[idx];
-                func_0212899c(e, 0, 0x128);
-                e->unk_24 = 1;
-                base[idx].unk_00 = func_0212b770(buf);
+                memset(e, 0, 0x128);
+                e->status = 1;
+                base[idx].profile = atol(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
                     GETTOK(tok)
-                    if (func_0212a190(tok, "status") == 0) {
-                        func_ov065_02283728(e->unk_28, buf, 0x100);
-                    } else if (func_0212a190(tok, "nick") == 0) {
-                        func_ov065_02283728(e->unk_04, buf, 0x1f);
+                    if (strcmp(tok, "status") == 0) {
+                        strzcpy(e->statusString, buf, 0x100);
+                    } else if (strcmp(tok, "nick") == 0) {
+                        strzcpy(e->nick, buf, 0x1f);
                     }
-                    if (func_0212a190(tok, "statuscode") == 0) {
-                        e->unk_24 = func_0212b770(buf);
-                    } else if (func_0212a190(tok, "psr") == 0 || func_0212a190(tok, "psrdone") == 0) {
+                    if (strcmp(tok, "statuscode") == 0) {
+                        e->status = atol(buf);
+                    } else if (strcmp(tok, "psr") == 0 || strcmp(tok, "psrdone") == 0) {
                         done2 = 1;
                         pos = save1;
                     }
@@ -864,112 +653,112 @@ again:
                 ERR3()
             }
         } while (done == 0);
-        r = func_ov065_0227e0e8(h, pr4.p, p4, node, 4);
+        r = gpiAddCallback(h, pr4.p, p4, node, 4);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 5) {
+    } else if (c->type == 5) {
         s32 a4;
         s32 a6;
-        Unk_ov065_02281bf4_Res5 *p;
-        pr5 = node->unk_0c;
-        if (pr5.p.a == 0) {
+        GPCheckResponseArg *p;
+        pr5 = node->callback;
+        if (pr5.p.callback == 0) {
             goto done;
         }
         GETTOK(tok)
-        if (func_0212a190(tok, "cur") != 0) ERR3()
-        a4 = func_0212b770(buf);
+        if (strcmp(tok, "cur") != 0) ERR3()
+        a4 = atol(buf);
         if (a4 != 0) {
-            ctx->unk_418 = a4;
+            ctx->errorCode = a4;
             a6 = 0;
         } else {
-            if (func_ov065_02283630(c->unk_08, "\\pid\\", buf, 0x200) == 0) ERR3()
-            a6 = func_0212b770(buf);
+            if (gpiValueForKey(c->inputBuffer, "\\pid\\", buf, 0x200) == 0) ERR3()
+            a6 = atol(buf);
         }
-        p = (Unk_ov065_02281bf4_Res5 *)func_ov065_02277af0(8);
+        p = (GPCheckResponseArg *)GsUtil_Alloc(8);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = a4;
-        p->unk_04 = a6;
-        r = func_ov065_0227e0e8(h, pr5.p, p, node, 0);
+        p->result = a4;
+        p->profile = a6;
+        r = gpiAddCallback(h, pr5.p, p, node, 0);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 6) {
+    } else if (c->type == 6) {
         s32 a4;
         s32 a6;
-        Unk_ov065_02281bf4_Res5 *p;
-        pr6 = node->unk_0c;
-        if (pr6.p.a == 0) {
+        GPCheckResponseArg *p;
+        pr6 = node->callback;
+        if (pr6.p.callback == 0) {
             goto done;
         }
         GETTOK(tok)
-        if (func_0212a190(tok, "nur") != 0) ERR3()
-        a4 = func_0212b770(buf);
+        if (strcmp(tok, "nur") != 0) ERR3()
+        a4 = atol(buf);
         if (a4 != 0) {
-            ctx->unk_418 = a4;
+            ctx->errorCode = a4;
         }
-        if (func_ov065_02283630(c->unk_08, "\\pid\\", buf, 0x200) == 0) {
+        if (gpiValueForKey(c->inputBuffer, "\\pid\\", buf, 0x200) == 0) {
             if (a4 == 0) ERR3()
             a6 = 0;
         } else {
-            a6 = func_0212b770(buf);
+            a6 = atol(buf);
         }
-        p = (Unk_ov065_02281bf4_Res5 *)func_ov065_02277af0(8);
+        p = (GPCheckResponseArg *)GsUtil_Alloc(8);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = a4;
-        p->unk_04 = a6;
-        r = func_ov065_0227e0e8(h, pr6.p, p, node, 0);
+        p->result = a4;
+        p->profile = a6;
+        r = gpiAddCallback(h, pr6.p, p, node, 0);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 7) {
-        pr7 = node->unk_0c;
-        if (pr7.p.a == 0) {
+    } else if (c->type == 7) {
+        pr7 = node->callback;
+        if (pr7.p.callback == 0) {
             goto done;
         }
-        p7 = (Unk_ov065_02281bf4_Res7 *)func_ov065_02277af0(0xc);
+        p7 = (GPGetReverseBuddiesResponseArg *)GsUtil_Alloc(0xc);
         if (p7 == 0) ERRMEM("Out of memory.")
-        p7->unk_00 = 0;
-        p7->unk_04 = 0;
-        p7->unk_08 = 0;
+        p7->result = 0;
+        p7->numProfiles = 0;
+        p7->profiles = 0;
         GETTOK(tok)
-        if (func_0212a190(tok, "others") != 0) ERR3()
+        if (strcmp(tok, "others") != 0) ERR3()
         done = 0;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "odone") == 0) {
+            if (strcmp(tok, "odone") == 0) {
                 done = 1;
-            } else if (func_0212a190(tok, "o") == 0) {
-                Unk_ov065_02281bf4_Rec *e;
+            } else if (strcmp(tok, "o") == 0) {
+                GPProfileSearchMatch *e;
                 s32 idx;
-                Unk_ov065_02281bf4_Rec *base;
-                void *t = func_ov065_02277ad8(p7->unk_08, (p7->unk_04 + 1) * 0xac);
+                GPProfileSearchMatch *base;
+                void *t = GsUtil_Realloc(p7->profiles, (p7->numProfiles + 1) * 0xac);
                 if (t == 0) ERRMEM("Out of memory.")
-                p7->unk_08 = (Unk_ov065_02281bf4_Rec *)t;
-                base = p7->unk_08;
-                idx = p7->unk_04;
+                p7->profiles = (GPProfileSearchMatch *)t;
+                base = p7->profiles;
+                idx = p7->numProfiles;
                 e = &base[idx];
-                func_0212899c(e, 0, 0xac);
-                p7->unk_04++;
-                base[idx].unk_00 = func_0212b770(buf);
+                memset(e, 0, 0xac);
+                p7->numProfiles++;
+                base[idx].profile = atol(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
                     GETTOK(tok)
-                    if (func_0212a190(tok, "nick") == 0) {
-                        func_ov065_02283728(e->unk_04, buf, 0x1f);
-                    } else if (func_0212a190(tok, "uniquenick") == 0) {
-                        func_ov065_02283728(e->unk_23, buf, 0x15);
-                    } else if (func_0212a190(tok, "first") == 0) {
-                        func_ov065_02283728(e->unk_38, buf, 0x1f);
-                    } else if (func_0212a190(tok, "last") == 0) {
-                        func_ov065_02283728(e->unk_57, buf, 0x1f);
-                    } else if (func_0212a190(tok, "email") == 0) {
-                        func_ov065_02283728(e->unk_76, buf, 0x33);
-                    } else if (func_0212a190(tok, "o") == 0 || func_0212a190(tok, "odone") == 0) {
+                    if (strcmp(tok, "nick") == 0) {
+                        strzcpy(e->nick, buf, 0x1f);
+                    } else if (strcmp(tok, "uniquenick") == 0) {
+                        strzcpy(e->uniquenick, buf, 0x15);
+                    } else if (strcmp(tok, "first") == 0) {
+                        strzcpy(e->firstname, buf, 0x1f);
+                    } else if (strcmp(tok, "last") == 0) {
+                        strzcpy(e->lastname, buf, 0x1f);
+                    } else if (strcmp(tok, "email") == 0) {
+                        strzcpy(e->email, buf, 0x33);
+                    } else if (strcmp(tok, "o") == 0 || strcmp(tok, "odone") == 0) {
                         done2 = 1;
                         pos = save1;
                     }
@@ -978,54 +767,54 @@ again:
                 ERR3()
             }
         } while (done == 0);
-        r = func_ov065_0227e0e8(h, pr7.p, p7, node, 8);
+        r = gpiAddCallback(h, pr7.p, p7, node, 8);
         if (r == 0) {
             goto done;
         }
         return r;
-    } else if (c->unk_00 == 8) {
-        Unk_ov065_02281bf4_Res8 *p;
-        pr8 = node->unk_0c;
-        if (pr8.p.a == 0) {
+    } else if (c->type == 8) {
+        GPSuggestUniqueNickResponseArg *p;
+        pr8 = node->callback;
+        if (pr8.p.callback == 0) {
             goto done;
         }
         cnt = 0;
-        p = (Unk_ov065_02281bf4_Res8 *)func_ov065_02277af0(0xc);
+        p = (GPSuggestUniqueNickResponseArg *)GsUtil_Alloc(0xc);
         if (p == 0) ERRMEM("Out of memory.")
-        p->unk_00 = 0;
-        p->unk_04 = 0;
-        p->unk_08 = 0;
+        p->result = 0;
+        p->numSuggestedNicks = 0;
+        p->suggestedNicks = 0;
         GETTOK(tok)
-        if (func_0212a190(tok, "us") != 0) ERR3()
-        p->unk_04 = func_0212b770(buf);
-        p->unk_08 = (char **)func_ov065_02277af0(p->unk_04 * 4);
-        if (p->unk_08 == 0) ERRMEM("Out of memory.")
+        if (strcmp(tok, "us") != 0) ERR3()
+        p->numSuggestedNicks = atol(buf);
+        p->suggestedNicks = (char **)GsUtil_Alloc(p->numSuggestedNicks * 4);
+        if (p->suggestedNicks == 0) ERRMEM("Out of memory.")
         done = 0;
         do {
             GETTOK(tok)
-            if (func_0212a190(tok, "nick") == 0) {
-                p->unk_08[cnt] = (char *)func_ov065_02277af0(0x15);
-                if (p->unk_08[cnt] == 0) ERRMEM("Out of memory.")
-                func_ov065_02283728(p->unk_08[cnt], buf, 0x15);
+            if (strcmp(tok, "nick") == 0) {
+                p->suggestedNicks[cnt] = (char *)GsUtil_Alloc(0x15);
+                if (p->suggestedNicks[cnt] == 0) ERRMEM("Out of memory.")
+                strzcpy(p->suggestedNicks[cnt], buf, 0x15);
                 cnt++;
-            } else if (func_0212a190(tok, "usdone") == 0) {
-                p->unk_04 = cnt;
+            } else if (strcmp(tok, "usdone") == 0) {
+                p->numSuggestedNicks = cnt;
                 done = 1;
             } else {
                 ERR3()
             }
         } while (done == 0);
-        r = func_ov065_0227e0e8(h, pr8.p, p, node, 9);
+        r = gpiAddCallback(h, pr8.p, p, node, 9);
         if (r != 0) {
             return r;
         }
     }
 done:
-    c->unk_140 = 1;
+    c->remove = 1;
     retry = 0;
 endchk:
     if (retry != 0) {
-        func_ov065_0227913c(10);
+        msleep(10);
     }
     if (retry != 0) {
         goto again;
@@ -1033,74 +822,74 @@ endchk:
     return 0;
 }
 
-s32 func_ov065_02281b20(Ctx0228 **h) {
-    Ctx0228 *c = *h;
+s32 gpiProcessSearches(GPConnection *h) {
+    GPIConnection *c = *h;
     s32 n = 0;
     s32 i;
-    Node0228 **arr;
-    Node0228 *nd;
+    GPIOperation **arr;
+    GPIOperation *nd;
     s32 z = 0;
-    if (c->unk_210 > 0) {
-        arr = (Node0228 **)func_ov065_02277af0(c->unk_210 * 4);
+    if (c->numSearches > 0) {
+        arr = (GPIOperation **)GsUtil_Alloc(c->numSearches * 4);
         if (arr == 0) {
-            func_ov065_02283460(h, "Out of memory.");
+            gpiSetErrorString(h, "Out of memory.");
             return 1;
         }
-        for (nd = c->unk_424; nd != 0; nd = nd->unk_20) {
-            if (nd->unk_00 == 3 && nd->unk_14 != 5 && nd->unk_04->unk_13c == 0) {
+        for (nd = c->operationList; nd != 0; nd = nd->pnext) {
+            if (nd->type == 3 && nd->state != 5 && ((GPISearchData *)nd->data)->processing == 0) {
                 arr[n++] = nd;
-                nd->unk_04->unk_13c = 1;
+                ((GPISearchData *)nd->data)->processing = 1;
             }
         }
         for (i = 0; i < n; i++) {
-            s32 r = func_ov065_02281bf4(h, arr[i]);
+            s32 r = gpiProcessSearch(h, arr[i]);
             if (r != 0) {
-                arr[i]->unk_1c = r;
+                arr[i]->result = r;
             }
         }
         for (i = 0; i < n; i++) {
-            Conn0228 *s = arr[i]->unk_04;
-            s->unk_13c = z;
-            if (s->unk_140 != 0) {
-                func_ov065_0228090c(h, arr[i]);
+            GPISearchData *s = (GPISearchData *)arr[i]->data;
+            s->processing = z;
+            if (s->remove != 0) {
+                gpiRemoveOperation(h, arr[i]);
             }
         }
-        func_ov065_02277ac8(arr);
+        GsUtil_Free(arr);
     }
     return 0;
 }
 
-s32 func_ov065_02281b0c(s32 *p, s32 n) {
+s32 gpiProfilesTableHash(s32 *p, s32 n) {
     return *p % n;
 }
 
-s32 func_ov065_02281b04(s32 *a, s32 *b) {
+s32 gpiProfilesTableCompare(s32 *a, s32 *b) {
     return *a - *b;
 }
 
-void func_ov065_02281ab4(void *p) {
-    Elem0228 *e = (Elem0228 *)p;
-    if (e->unk_08 != 0) {
-        func_ov065_02277ac8(e->unk_08->unk_08);
-        e->unk_08->unk_08 = 0;
-        func_ov065_02277ac8(e->unk_08->unk_0c);
-        e->unk_08->unk_0c = 0;
-        func_ov065_02277ac8(e->unk_08);
-        e->unk_08 = 0;
+void gpiProfilesTableFree(void *p) {
+    GPIProfile *e = (GPIProfile *)p;
+    if (e->buddyStatus != 0) {
+        GsUtil_Free(e->buddyStatus->statusString);
+        e->buddyStatus->statusString = 0;
+        GsUtil_Free(e->buddyStatus->locationString);
+        e->buddyStatus->locationString = 0;
+        GsUtil_Free(e->buddyStatus);
+        e->buddyStatus = 0;
     }
-    func_ov065_0227f2a4(e);
-    func_ov065_02277ac8(e->unk_10);
-    e->unk_10 = 0;
-    func_ov065_02277ac8(e->unk_18);
-    e->unk_18 = 0;
+    gpiFreeInfoCache(e);
+    GsUtil_Free(e->authSig);
+    e->authSig = 0;
+    GsUtil_Free(e->peerSig);
+    e->peerSig = 0;
 }
 
-s32 func_ov065_02281a5c(Ctx0228 **h) {
-    Ctx0228 *c = *h;
-    c->unk_430 = 0;
-    c->unk_42c = 0;
-    c->unk_428 = func_ov065_02278980(0x1c, 4, func_ov065_02281b0c, func_ov065_02281b04, func_ov065_02281ab4);
-    if (c->unk_428 != 0) {
+s32 gpiInitProfiles(GPConnection *h) {
+    GPIConnection *c = *h;
+    c->numBuddies = 0;
+    c->numProfiles = 0;
+    c->profileTable = TableNew(0x1c, 4, gpiProfilesTableHash, gpiProfilesTableCompare, gpiProfilesTableFree);
+    if (c->profileTable != 0) {
         return 1;
     }
     return 0;

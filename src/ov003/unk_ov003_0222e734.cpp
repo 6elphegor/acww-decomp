@@ -1,185 +1,146 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
+#include "net/CommManager.h"
+#include "field/Snowball.h"
+#include "town/Unk_0204e858_Grid.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
-struct Unk_ov003_0222e734_Chunk {
+struct UnitMaskChunk {
     u16 bits[16];
     u16 cnt;
-    Unk_ov003_0222e734_Chunk() {}
-    ~Unk_ov003_0222e734_Chunk() {}
+    UnitMaskChunk() {}
+    ~UnitMaskChunk() {}
 };
 
-struct Unk_ov003_0222e734_Pool {
-    Unk_ov003_0222e734_Chunk c[4][4];
+struct UnitMaskPool {
+    UnitMaskChunk c[4][4];
 };
 
-struct Unk_ov003_0222e734_Cell {
-    u8 pad_00[0x24];
-    u16 *unk_24;
-};
-
-struct Unk_ov003_0222e734_Grid {
-    Unk_ov003_0222e734_Cell *cells;
-    u32 w, h;
-};
-
-struct Unk_ov003_0222eb10_Fl {
-    u16 a : 2;
-    u16 b : 2;
-    u16 c : 1;
-    u16 d : 1;
-    u16 e : 1;
-    u16 f : 1;
-    u16 g : 1;
-    u16 h : 1;
-    u16 i : 1;
-};
-
-struct Unk_ov003_0222eb10_Obj {
-    u8 pad_00[8];
-    u32 unk_08;
-    u8 pad_0c[0x2e4 - 0xc];
-    u8 unk_2e4;
-    u8 pad_2e5[0x374 - 0x2e5];
-    Unk_ov003_0222eb10_Fl unk_374;
-    u8 pad_376[0x398 - 0x376];
-    s32 unk_398;
-    s32 unk_39c;
-};
-
-struct Unk_ov003_0222ed20_V3 {
-    s32 x, y, z;
-};
-
-struct Unk_ov003_0222ed20_Sess {
-    u8 pad_00[0x64];
-    u32 unk_64;
-};
-
-struct Unk_ov003_0222ed20_St {
-    Unk_ov003_0222ed20_V3 a;
+struct LooseSnowballsView {
+    VecFx32 a;
     u32 pad_0c;
-    Unk_ov003_0222ed20_V3 b;
+    VecFx32 b;
 };
 
-struct Unk_ov003_0222ed20_Loc {
-    u8 k[3];
+struct SnowballSpawnLocals {
+    u8 snowmanDate[3];
     u8 pad;
-    u32 w[2];
+    u32 dateTime[2];
 };
 
 // ---- externs ----
 // other modules' methods are reached through their real mangled symbols (object first)
-#define func_02002cf8 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
-#define func_020af514 _ZN12Unk_020af51413func_020af514Ev
-#define func_020af564 _ZN12Unk_020af53c13func_020af564Ev
-#define func_020af590 _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_
+#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
+#define LooseSnowballs_reset _ZN14LooseSnowballs5resetEv
+#define SnowmanRecords_isFull _ZN14SnowmanRecords6isFullEv
+#define SnowmanRecords_getInfo _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_
 
 extern "C" {
-extern Unk_ov003_0222e734_Grid *data_021c47c4;
-extern Unk_ov003_0222ed20_Sess *data_020cbb18;
+extern Unk_0204e858_Grid *gSceneBlockMap;
+extern CommManager *gCommManager;
 extern u8 data_021ed2e6[];
 
-BOOL func_02072e88(void *, u32);
-s32 func_02076280(s32 a, s32 b, s32 c, s32 d);
-void func_0204edf8(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
-void func_0204ee10(s32 *a, s32 *b, void *c);
-void func_0204ed8c(void *out, s32 x, s32 z);
-void func_0204eda4(Unk_ov003_0222ed20_V3 *out, s32 a, s32 b, s32 c, s32 d);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-BOOL func_02031130(s32 a, s32 b);
-BOOL func_020310f8(s32 a, s32 b);
-s32 func_02063b8c(s32 n);
-void *func_02037558(void *c, u32 i, u32 j, s32 k);
-void func_02037590(void *c, u16 *p, u32 a, u32 b, u32 d);
-BOOL func_0204b14c(u16 *p);
-s32 func_0204b124(u16 *p);
-s32 func_020af590(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
-s32 func_02002cf8(u32 a, u32 b, void *c, u32 d, void *e);
-Unk_ov003_0222ed20_St *func_020af3f4();
-void func_020af514();
-s32 func_020b50bc();
-s32 func_020b5184();
-BOOL func_020af564(void *o);
-void func_0209d498(void *);
-void func_0209d164(void *, s32);
-BOOL func_ov003_022132a0(void *p);
-BOOL func_ov003_022132b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+BOOL CommManager_isSlotActive(void *, u32);
+s32 CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
+void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
+void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
+void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
+void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
+BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
+BOOL Ground_IsFreeGrass(s32 a, s32 b);
+s32 Random_GlobalBelow(s32 n);
+void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
+void MapBlock_SetItem(void *c, u16 *p, u32 a, u32 b, u32 d);
+BOOL Item_IsSnowman(u16 *p);
+s32 Item_GetSnowmanIndex(u16 *p);
+s32 SnowmanRecords_getInfo(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
+s32 Actor_spawn(u32 a, u32 b, void *c, u32 d, void *e);
+LooseSnowballsView *LooseSnowballs_Get();
+void LooseSnowballs_reset();
+s32 GroundSeason_IsSnow();
+s32 Scene_InTown();
+BOOL SnowmanRecords_isFull(void *o);
+void Clock_GetDateTime(void *);
+void DateTime_SubDays(void *, s32);
+BOOL Snowball_IsInBallState(void *p);
+BOOL Snowball_TryPush(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 
-void func_ov003_0222e964(Unk_ov003_0222e734_Pool *pool, s32 x, s32 y);
-s32 func_ov003_0222e998(Unk_ov003_0222e734_Pool *pool);
-void func_ov003_0222e9d4(Unk_ov003_0222e734_Pool *pool);
-BOOL func_ov003_0222e8e0(Unk_ov003_0222e734_Pool *pool, s32 *ox, s32 *oy);
-void func_ov003_0222ea84(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y);
-BOOL func_ov003_0222ea64(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y);
-BOOL func_ov003_0222ea08(Unk_ov003_0222e734_Chunk *c, s32 *ox, s32 *oy);
-void func_ov003_0222eabc(Unk_ov003_0222e734_Chunk *c);
-Unk_ov003_0222eb10_Obj *func_ov003_0222ebb0(u32 id);
-BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d);
+void UnitMaskPool_Mark(UnitMaskPool *pool, s32 x, s32 y);
+s32 UnitMaskPool_CountFreeChunks(UnitMaskPool *pool);
+void UnitMaskPool_Clear(UnitMaskPool *pool);
+BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy);
+void UnitMaskChunk_Mark(UnitMaskChunk *c, s32 x, s32 y);
+BOOL UnitMaskChunk_IsMarked(UnitMaskChunk *c, s32 x, s32 y);
+BOOL UnitMaskChunk_PickRandom(UnitMaskChunk *c, s32 *ox, s32 *oy);
+void UnitMaskChunk_Clear(UnitMaskChunk *c);
+Snowball *Snowball_FindByParam(u32 id);
+BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d);
 }
 
 // the eight actor slots
 extern "C" {
-Unk_ov003_0222eb10_Obj *data_ov003_0225b4f8[8];
+Snowball *sSnowballs[8];
 }
 
 // ---- functions ----
 
-extern "C" void func_ov003_0222ed20(void *self) {
-    if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) != 0 || func_020b50bc() == 0) {
-        func_020af3f4();
-        func_020af514();
+extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
+    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) != 0 || GroundSeason_IsSnow() == 0) {
+        LooseSnowballs_Get();
+        LooseSnowballs_reset();
         return;
     }
     struct {
-        Unk_ov003_0222ed20_Loc l;
+        SnowballSpawnLocals l;
         s32 p[3];
-        Unk_ov003_0222ed20_V3 A, B;
+        VecFx32 A, B;
     } f;
     u32 i;
     for (i = 0; i < 3; i++) {
-        f.l.w[0] = 0;
-        f.l.w[1] = 0;
-        func_0209d498(f.l.w);
+        f.l.dateTime[0] = 0;
+        f.l.dateTime[1] = 0;
+        Clock_GetDateTime(f.l.dateTime);
         if (((u8 *)&f.l)[6] < 6) {
-            func_0209d164(f.l.w, 1);
+            DateTime_SubDays(f.l.dateTime, 1);
         }
-        if (func_020af590(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.k[0], &f.l.k[1], &f.l.k[2]) != 0) {
-            if (f.l.k[0] == ((u8 *)&f.l)[9] && f.l.k[1] == ((u8 *)&f.l)[8] && f.l.k[2] == ((u8 *)&f.l)[7]) {
-                func_020af3f4();
-                func_020af514();
+        if (SnowmanRecords_getInfo(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.snowmanDate[0], &f.l.snowmanDate[1], &f.l.snowmanDate[2]) != 0) {
+            if (f.l.snowmanDate[0] == ((u8 *)&f.l)[9] && f.l.snowmanDate[1] == ((u8 *)&f.l)[8] && f.l.snowmanDate[2] == ((u8 *)&f.l)[7]) {
+                LooseSnowballs_Get();
+                LooseSnowballs_reset();
                 return;
             }
         }
     }
-    if (func_020b5184() != 0) {
-        if (func_020af564(data_021ed2e6) == 0) {
-            if (func_020af3f4()->a.x != 0) {
-                Unk_ov003_0222ed20_St *s = func_020af3f4();
+    if (Scene_InTown() != 0) {
+        if (SnowmanRecords_isFull(data_021ed2e6) == 0) {
+            if (LooseSnowballs_Get()->a.x != 0) {
+                LooseSnowballsView *s = LooseSnowballs_Get();
                 f.A.x = s->a.x;
                 f.A.y = s->a.y;
                 f.A.z = s->a.z;
             } else {
-                func_ov003_0222e734(self, &f.A, 0, 1);
+                Snowball_FindSpawnPos(self, &f.A, 0, 1);
             }
-            if (func_020af3f4()->b.x != 0) {
-                Unk_ov003_0222ed20_St *s = func_020af3f4();
-                Unk_ov003_0222ed20_V3 *pv = &s->b;
+            if (LooseSnowballs_Get()->b.x != 0) {
+                LooseSnowballsView *s = LooseSnowballs_Get();
+                VecFx32 *pv = &s->b;
                 f.B.x = pv->x;
                 f.B.y = pv->y;
                 f.B.z = pv->z;
             } else {
-                func_ov003_0222e734(self, &f.B, (s32)&f.A, 1);
+                Snowball_FindSpawnPos(self, &f.B, (s32)&f.A, 1);
             }
-            if (func_02002cf8(0xbd, 0, &f.A, 0, self)) {
-                Unk_ov003_0222ed20_St *s = func_020af3f4();
+            if (Actor_spawn(0xbd, 0, &f.A, 0, self)) {
+                LooseSnowballsView *s = LooseSnowballs_Get();
                 s->a.x = f.A.x;
                 s->a.y = f.A.y;
                 s->a.z = f.A.z;
             }
-            if (func_02002cf8(0xbd, 1, &f.B, 0, self)) {
-                Unk_ov003_0222ed20_St *s = func_020af3f4();
+            if (Actor_spawn(0xbd, 1, &f.B, 0, self)) {
+                LooseSnowballsView *s = LooseSnowballs_Get();
                 s->b.x = f.B.x;
                 s->b.y = f.B.y;
                 s->b.z = f.B.z;
@@ -188,15 +149,15 @@ extern "C" void func_ov003_0222ed20(void *self) {
     }
 }
 
-extern "C" void func_ov003_0222ec20(void *self) {
-    Unk_ov003_0222e734_Grid *g = data_021c47c4;
+extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
+    Unk_0204e858_Grid *g = gSceneBlockMap;
     u32 by, bx;
     s32 lx, n;
-    Unk_ov003_0222e734_Cell *cell;
+    TownBlockCell *cell;
     for (by = 1; by <= 4; by++) {
         for (bx = 1; bx <= 4; bx++) {
-            if (bx < g->w && by < g->h && g->cells != 0) {
-                cell = &g->cells[by * g->w + bx];
+            if (bx < g->width && by < g->height && g->blocks != 0) {
+                cell = &g->blocks[by * g->width + bx];
             } else {
                 cell = 0;
             }
@@ -204,20 +165,20 @@ extern "C" void func_ov003_0222ec20(void *self) {
                 s32 ly;
                 for (ly = 0; ly < 16; ly++) {
                     for (lx = 0; lx < 16; lx++) {
-                        u16 *t = (u16 *)func_02037558(cell, lx, ly, 0);
+                        u16 *t = (u16 *)MapBlock_GetItemPtr(cell, lx, ly, 0);
                         if (t != 0) {
-                            if (func_0204b14c(t)) {
-                                s32 v = func_0204b124(t);
-                                if (func_020af590(data_021ed2e6, v, 0, 0, 0, 0, 0, 0) == 0) {
+                            if (Item_IsSnowman(t)) {
+                                s32 v = Item_GetSnowmanIndex(t);
+                                if (SnowmanRecords_getInfo(data_021ed2e6, v, 0, 0, 0, 0, 0, 0) == 0) {
                                     u16 tmp[1];
                                     tmp[0] = 0xfff1;
-                                    func_02037590(cell, tmp, lx, ly, 0);
+                                    MapBlock_SetItem(cell, tmp, lx, ly, 0);
                                 } else {
                                     n = v * 2 + 2;
-                                    Unk_ov003_0222ed20_V3 loc;
-                                    func_0204eda4(&loc, bx, by, lx, ly);
-                                    func_02002cf8(0xbd, n, &loc, 0, self);
-                                    func_02002cf8(0xbd, n + 1, &loc, 0, self);
+                                    VecFx32 loc;
+                                    FieldPos_FromBlockUnitCenter(&loc, bx, by, lx, ly);
+                                    Actor_spawn(0xbd, n, &loc, 0, self);
+                                    Actor_spawn(0xbd, n + 1, &loc, 0, self);
                                 }
                             }
                         }
@@ -228,8 +189,8 @@ extern "C" void func_ov003_0222ec20(void *self) {
     }
 }
 
-extern "C" BOOL func_ov003_0222ec00(Unk_ov003_0222eb10_Obj *p) {
-    Unk_ov003_0222eb10_Obj **s = &data_ov003_0225b4f8[p->unk_08 & 7];
+extern "C" BOOL Snowball_Register(Snowball *p) {
+    Snowball **s = &sSnowballs[p->param & 7];
     if (*s != 0) {
         return FALSE;
     }
@@ -237,8 +198,8 @@ extern "C" BOOL func_ov003_0222ec00(Unk_ov003_0222eb10_Obj *p) {
     return TRUE;
 }
 
-extern "C" BOOL func_ov003_0222ebdc(Unk_ov003_0222eb10_Obj *p) {
-    Unk_ov003_0222eb10_Obj **s = &data_ov003_0225b4f8[p->unk_08 & 7];
+extern "C" BOOL Snowball_Unregister(Snowball *p) {
+    Snowball **s = &sSnowballs[p->param & 7];
     if (*s == p) {
         *s = 0;
         return TRUE;
@@ -246,22 +207,22 @@ extern "C" BOOL func_ov003_0222ebdc(Unk_ov003_0222eb10_Obj *p) {
     return FALSE;
 }
 
-extern "C" Unk_ov003_0222eb10_Obj *func_ov003_0222ebb0(u32 id) {
+extern "C" Snowball *Snowball_FindByParam(u32 id) {
     u32 i;
     for (i = 0; i < 8; i++) {
-        Unk_ov003_0222eb10_Obj *p = data_ov003_0225b4f8[i];
-        if (p != 0 && id == p->unk_08) {
+        Snowball *p = sSnowballs[i];
+        if (p != 0 && id == p->param) {
             return p;
         }
     }
     return 0;
 }
 
-extern "C" BOOL func_ov003_0222eb68(void *self, s32 a, s32 b, s32 c, s32 d) {
+extern "C" BOOL Snowball_TryPushAny(void *self, s32 a, s32 b, s32 c, s32 d) {
     u32 i;
     for (i = 0; i < 8; i++) {
-        if (data_ov003_0225b4f8[i] != 0) {
-            if (func_ov003_022132b4(data_ov003_0225b4f8[i], (s32)self, a, b, c, d)) {
+        if (sSnowballs[i] != 0) {
+            if (Snowball_TryPush(sSnowballs[i], (s32)self, a, b, c, d)) {
                 return TRUE;
             }
         }
@@ -269,19 +230,19 @@ extern "C" BOOL func_ov003_0222eb68(void *self, s32 a, s32 b, s32 c, s32 d) {
     return FALSE;
 }
 
-extern "C" void *func_ov003_0222eb10(u32 id) {
-    Unk_ov003_0222eb10_Obj *o = func_ov003_0222ebb0(id & 1);
+extern "C" void *Snowball_GetLooseBall(u32 id) {
+    Snowball *o = Snowball_FindByParam(id & 1);
     if (o != 0) {
-        if (o->unk_39c == 0) {
-            if (o->unk_398 == 0) {
+        if (o->talkAct == 0) {
+            if (o->snowballState == 0) {
                 BOOL bit;
-                if (o->unk_374.e) {
+                if (o->snowballFlags.e) {
                     bit = TRUE;
                 } else {
                     bit = FALSE;
                 }
                 if (bit == 0) {
-                    if (o->unk_2e4 == 0) {
+                    if (o->collider.hitThisFrame == 0) {
                         return o;
                     }
                 }
@@ -291,18 +252,18 @@ extern "C" void *func_ov003_0222eb10(u32 id) {
     return 0;
 }
 
-extern "C" void *func_ov003_0222ead4(void *self) {
+extern "C" void *Snowball_FindOtherInBallState(void *self) {
     u32 i;
     for (i = 0; i < 8; i++) {
-        Unk_ov003_0222eb10_Obj *p = data_ov003_0225b4f8[i];
-        if (p != 0 && p != self && func_ov003_022132a0(p)) {
+        Snowball *p = sSnowballs[i];
+        if (p != 0 && p != self && Snowball_IsInBallState(p)) {
             return p;
         }
     }
     return 0;
 }
 
-extern "C" void func_ov003_0222eabc(Unk_ov003_0222e734_Chunk *c) {
+extern "C" void UnitMaskChunk_Clear(UnitMaskChunk *c) {
     u32 i;
     for (i = 0; i < 16; i++) {
         c->bits[i] = 0;
@@ -310,16 +271,16 @@ extern "C" void func_ov003_0222eabc(Unk_ov003_0222e734_Chunk *c) {
     c->cnt = 0x100;
 }
 
-extern "C" void func_ov003_0222ea84(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y) {
+extern "C" void UnitMaskChunk_Mark(UnitMaskChunk *c, s32 x, s32 y) {
     u8 ux = x & 15;
     u8 uy = y & 15;
-    if (!func_ov003_0222ea64(c, x, y)) {
+    if (!UnitMaskChunk_IsMarked(c, x, y)) {
         c->bits[uy] |= 1 << ux;
         c->cnt--;
     }
 }
 
-extern "C" BOOL func_ov003_0222ea64(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y) {
+extern "C" BOOL UnitMaskChunk_IsMarked(UnitMaskChunk *c, s32 x, s32 y) {
     s32 v = c->bits[(u8)(y & 15)];
     if ((v >> (u8)(x & 15)) & 1) {
         return TRUE;
@@ -327,14 +288,14 @@ extern "C" BOOL func_ov003_0222ea64(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y) {
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_0222ea08(Unk_ov003_0222e734_Chunk *c, s32 *ox, s32 *oy) {
+extern "C" BOOL UnitMaskChunk_PickRandom(UnitMaskChunk *c, s32 *ox, s32 *oy) {
     if (c->cnt != 0) {
-        s32 r = func_02063b8c(c->cnt);
+        s32 r = Random_GlobalBelow(c->cnt);
         s32 n = 0;
         u32 i, j;
         for (i = 0; i < 16; i++) {
             for (j = 0; j < 16; j++) {
-                if (!func_ov003_0222ea64(c, j, i)) {
+                if (!UnitMaskChunk_IsMarked(c, j, i)) {
                     if (r == n) {
                         *ox = j;
                         *oy = i;
@@ -348,16 +309,16 @@ extern "C" BOOL func_ov003_0222ea08(Unk_ov003_0222e734_Chunk *c, s32 *ox, s32 *o
     return FALSE;
 }
 
-extern "C" void func_ov003_0222e9d4(Unk_ov003_0222e734_Pool *pool) {
+extern "C" void UnitMaskPool_Clear(UnitMaskPool *pool) {
     u32 i, j;
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            func_ov003_0222eabc(&pool->c[i][j]);
+            UnitMaskChunk_Clear(&pool->c[i][j]);
         }
     }
 }
 
-extern "C" s32 func_ov003_0222e998(Unk_ov003_0222e734_Pool *pool) {
+extern "C" s32 UnitMaskPool_CountFreeChunks(UnitMaskPool *pool) {
     s32 n = 0;
     u32 i, j;
     for (i = 0; i < 4; i++) {
@@ -370,23 +331,23 @@ extern "C" s32 func_ov003_0222e998(Unk_ov003_0222e734_Pool *pool) {
     return n;
 }
 
-extern "C" void func_ov003_0222e964(Unk_ov003_0222e734_Pool *pool, s32 x, s32 y) {
-    func_ov003_0222ea84(&pool->c[((y - 16) >> 4) & 3][((x - 16) >> 4) & 3], x & 15, y & 15);
+extern "C" void UnitMaskPool_Mark(UnitMaskPool *pool, s32 x, s32 y) {
+    UnitMaskChunk_Mark(&pool->c[((y - 16) >> 4) & 3][((x - 16) >> 4) & 3], x & 15, y & 15);
 }
 
-extern "C" BOOL func_ov003_0222e8e0(Unk_ov003_0222e734_Pool *pool, s32 *ox, s32 *oy) {
-    s32 cnt = func_ov003_0222e998(pool);
+extern "C" BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy) {
+    s32 cnt = UnitMaskPool_CountFreeChunks(pool);
     if (cnt != 0) {
-        s32 r = func_02063b8c(cnt);
+        s32 r = Random_GlobalBelow(cnt);
         s32 n = 0;
         u32 i, j;
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
-                Unk_ov003_0222e734_Chunk *c = &pool->c[i][j];
+                UnitMaskChunk *c = &pool->c[i][j];
                 if (c->cnt != 0) {
                     if (r == n) {
                         s32 px, py;
-                        if (func_ov003_0222ea08(c, &px, &py)) {
+                        if (UnitMaskChunk_PickRandom(c, &px, &py)) {
                             *ox = ((j + 1) << 4) + px;
                             *oy = ((i + 1) << 4) + py;
                             return TRUE;
@@ -401,27 +362,27 @@ extern "C" BOOL func_ov003_0222e8e0(Unk_ov003_0222e734_Pool *pool, s32 *ox, s32 
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
-    Unk_ov003_0222e734_Grid *g = data_021c47c4;
-    static Unk_ov003_0222e734_Pool pool;
-    func_ov003_0222e9d4(&pool);
+extern "C" BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d) {
+    Unk_0204e858_Grid *g = gSceneBlockMap;
+    static UnitMaskPool pool;
+    UnitMaskPool_Clear(&pool);
     u32 by, bx, ly, lx, k;
     for (by = 1; by < 6; by++) {
         for (bx = 1; bx < 6; bx++) {
             for (ly = 0; ly < 16; ly++) {
                 for (lx = 0; lx < 16; lx++) {
                     s32 x, y;
-                    func_0204edf8(&x, &y, bx, by, lx, ly);
-                    if (!func_02031130(x, y) || !func_020310f8(x, y + 1) || !func_020310f8(x, y + 2)) {
-                        func_ov003_0222e964(&pool, x, y);
+                    FieldUnit_FromBlockUnit(&x, &y, bx, by, lx, ly);
+                    if (!Ground_IsFreeGrassOffPath(x, y) || !Ground_IsFreeGrass(x, y + 1) || !Ground_IsFreeGrass(x, y + 2)) {
+                        UnitMaskPool_Mark(&pool, x, y);
                     } else if (d != 0) {
                         s32 ex = *(volatile s32 *)&x;
                         s32 ey = *(volatile s32 *)&y;
                         s32 hx = ex >> 4;
                         s32 hy = ey >> 4;
-                        u16 *cell = func_0204ebd8(g, hx, hy, ex - (hx << 4), ey - (hy << 4), 0);
+                        u16 *cell = BlockMap_GetItemPtr(g, hx, hy, ex - (hx << 4), ey - (hy << 4), 0);
                         if (cell != 0 && *cell != 0xfff1) {
-                            func_ov003_0222e964(&pool, x, y);
+                            UnitMaskPool_Mark(&pool, x, y);
                         }
                     }
                 }
@@ -430,20 +391,20 @@ extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
     }
     if (c != 0) {
         s32 px, py;
-        func_0204ee10(&px, &py, (void *)c);
+        FieldPos_ToUnit(&px, &py, (void *)c);
         s32 yy, xx;
         for (yy = py - 7; yy <= py + 7; yy++) {
             for (xx = px - 7; xx <= px + 7; xx++) {
-                func_ov003_0222e964(&pool, xx, yy);
+                UnitMaskPool_Mark(&pool, xx, yy);
             }
         }
     }
     s32 ox, oy;
-    if (func_ov003_0222e8e0(&pool, &ox, &oy)) {
-        func_0204ed8c(b, ox, oy);
+    if (UnitMaskPool_PickRandom(&pool, &ox, &oy)) {
+        FieldPos_FromUnitCenter(b, ox, oy);
         return TRUE;
     } else if (d != 0) {
-        return func_ov003_0222e734(a, b, c, 0);
+        return Snowball_FindSpawnPos(a, b, c, 0);
     }
     return FALSE;
 }

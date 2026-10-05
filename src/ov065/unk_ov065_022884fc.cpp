@@ -32,7 +32,7 @@ char data_ov065_0228e4c0[] = "maxplayers";
 char data_ov065_0228e420[] = "score_t";
 char data_ov065_0228e3d8[] = "team_";
 
-char *data_ov065_0228e504[0xfe] = {
+char *qr2_registered_key_list[0xfe] = {
     "",
     data_ov065_0228e454,
     data_ov065_0228e430,
@@ -65,9 +65,9 @@ char *data_ov065_0228e504[0xfe] = {
     data_ov065_0228e420,
 };
 
-void func_ov065_022884fc(s32 i, u32 v) {
+void qr2_register_keyA(s32 i, u32 v) {
     if (i >= 0x32 && i <= 0xfe) {
-        data_ov065_0228e504[i] = (char *)v;
+        qr2_registered_key_list[i] = (char *)v;
     }
 }
 }

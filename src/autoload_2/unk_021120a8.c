@@ -9,30 +9,30 @@ extern s32 data_0213bfec; // GXi_DmaId
 extern u32 data_021fcbf4; // sTexLCDCBlk1
 extern u32 data_021fcc04; // sTexLCDCBlk2
 extern u32 data_021fcc08; // sSzTexBlk1
-void func_02115c24(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy32
-void func_02115e78(const void *src, void *dest, u32 size);            // MI_CpuCopy32
-void func_02115a2c(s32 dmaNo, const void *src, void *dest, u32 size, void *callback, void *arg); // MI_DmaCopy32Async
+void MI_DmaCopy32(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCopy32
+void MIi_CpuCopy32(const void *src, void *dest, u32 size);            // MI_CpuCopy32
+void MI_DmaCopy32Async(s32 dmaNo, const void *src, void *dest, u32 size, void *callback, void *arg); // MI_DmaCopy32Async
 
 // GXi_DmaCopy32
 static inline void GXi_DmaCopy32(s32 dmaNo, const void *src, void *dest, u32 size) {
     if (dmaNo != -1 && size > 48) {
-        func_02115c24(dmaNo, src, dest, size);
+        MI_DmaCopy32(dmaNo, src, dest, size);
     } else {
-        func_02115e78(src, dest, size);
+        MIi_CpuCopy32(src, dest, size);
     }
 }
 
 // GXi_DmaCopy32Async
 static inline void GXi_DmaCopy32Async(s32 dmaNo, const void *src, void *dest, u32 size, void *callback, void *arg) {
     if (dmaNo != -1) {
-        func_02115a2c(dmaNo, src, dest, size, callback, arg);
+        MI_DmaCopy32Async(dmaNo, src, dest, size, callback, arg);
     } else {
-        func_02115e78(src, dest, size);
+        MIi_CpuCopy32(src, dest, size);
     }
 }
 
 // GX_LoadTex
-void func_021120a8(const void *pSrc, u32 dstSlotOffset, u32 szByte) {
+void GX_LoadTex(const void *pSrc, u32 dstSlotOffset, u32 szByte) {
     void *pLCDC;
 
     if (0 == data_021fcc04) {

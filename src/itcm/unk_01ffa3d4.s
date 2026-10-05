@@ -8,10 +8,10 @@
 	.arm
 
 ; OS_RestoreInterrupts(state): sets the IRQ-disable bit to `state`, returns the previous one
-	.global func_01ffa3d4
-	.type func_01ffa3d4, @function
-	.size func_01ffa3d4, 0x18
-func_01ffa3d4:
+	.global OS_RestoreInterrupts
+	.type OS_RestoreInterrupts, @function
+	.size OS_RestoreInterrupts, 0x18
+OS_RestoreInterrupts:
 	mrs r1, cpsr
 	bic r2, r1, #0x80
 	orr r2, r2, r0
@@ -20,10 +20,10 @@ func_01ffa3d4:
 	bx lr
 
 ; OS_RestoreInterrupts_IrqAndFiq(state)
-	.global func_01ffa3ec
-	.type func_01ffa3ec, @function
-	.size func_01ffa3ec, 0x18
-func_01ffa3ec:
+	.global OS_RestoreInterrupts_IrqAndFiq
+	.type OS_RestoreInterrupts_IrqAndFiq, @function
+	.size OS_RestoreInterrupts_IrqAndFiq, 0x18
+OS_RestoreInterrupts_IrqAndFiq:
 	mrs r1, cpsr
 	bic r2, r1, #0xc0
 	orr r2, r2, r0

@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
-// NitroSDK CARD (card_common.c): CARDi_IdentifyBackupCore (func_0211da74), autoload_2 0x0211da74-0x0211dc4c. ARM, mwcc 1.2/base -O4,p.
+#include "nitro/os_rtc.h"
+// NitroSDK CARD (card_common.c): CARDi_IdentifyBackupCore (CARDi_IdentifyBackupCore), autoload_2 0x0211da74-0x0211dc4c. ARM, mwcc 1.2/base -O4,p.
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -8,8 +9,6 @@ typedef long long s64;
 typedef int BOOL;
 
 typedef struct { u32 head, tail; } OSQ;
-typedef struct { u32 year, month, day; s32 week; } RTCDate;
-typedef struct { s32 hour, minute, second; } RTCTime;
 typedef struct { u32 w[0x30]; } OST;
 
 typedef struct {
@@ -75,63 +74,63 @@ extern RomDev data_021ff240;
 extern u32 data_021fcc2c[];
 extern u32 data_0213c1c8[];
 
-u32 func_01ffa2ec(void);
-void func_01ffa3d4(u32);
-void func_02000b44(void *);
-void func_0206d49c(void);
-void func_021124a0(u32);
-void func_021124bc(u32);
-void func_02113384(void *, u32);
-void func_0211366c(void *);
-void func_021136a0(void *);
-void func_02113720(void *);
-void func_02113a70(void *, void (*)(void *), void *, void *, u32, u32);
-void func_02114594(void *, u32);
-void func_021145cc(void *, u32);
-void func_021145f0(void);
-void func_021159a8(u32);
-void func_02115ea8(u32, void *, u32);
-void func_02115fb4(void *, u32, u32);
-void func_02116048(const void *, void *, u32);
-void func_02117dcc(void);
-BOOL func_02117e8c(u32, u32);
-s32 func_02117dd8(u32, u32, u32);
-void func_02117eb4(u32, void *);
-void func_0211cbd0(void);
-void func_0211cbe8(void);
-void func_0211cc7c(void);
-void func_0211e8fc(void *);
-void func_0211e958(void);
-BOOL func_0211e7c0(void *, u32, u32);
-void func_0211eac8(void);
-void func_0211e688(u32, u32);
-BOOL func_0211e728(void *);
-BOOL func_0211e3fc(void *);
+u32 OS_DisableInterrupts(void);
+void OS_RestoreInterrupts(u32);
+void OSi_ReferSymbol(void *);
+void Fatal_Trap(void);
+void OS_UnlockCard(u32);
+void OS_LockCard(u32);
+void OS_SetThreadPriority(void *, u32);
+void OS_WakeupThreadDirect(void *);
+void OS_WakeupThread(void *);
+void OS_SleepThread(void *);
+void OS_CreateThread(void *, void (*)(void *), void *, void *, u32, u32);
+void DC_InvalidateRange(void *, u32);
+void DC_FlushRange(void *, u32);
+void DC_WaitWriteBufferEmpty(void);
+void MI_StopDma(u32);
+void MIi_CpuClearFast(u32, void *, u32);
+void MI_CpuFill8(void *, u32, u32);
+void MI_CpuCopy8(const void *, void *, u32);
+void PXI_Init(void);
+BOOL PXI_IsCallbackReady(u32, u32);
+s32 PXI_SendWordByFifo(u32, u32, u32);
+void PXI_SetFifoRecvCallback(u32, void *);
+void RtcWaitBusy(void);
+void RtcGetResultCallback(void);
+void RtcCommonCallback(void);
+void CARDi_TaskThread(void *);
+void CARDi_OnFifoRecv(void);
+BOOL CARDi_Request(void *, u32, u32);
+void CARD_InitPulledOutCallback(void);
+void CARDi_SetRomOp(u32, u32);
+BOOL CARDi_ReadFromCache(void *);
+BOOL CARDi_TryReadCardDma(void *);
 
-u32 func_0211d250(u32, u32, void (*)(void), u32);
-u32 func_0211d324(u32, void (*)(void), u32);
-u32 func_0211d3e4(u32, void (*)(void), u32);
-BOOL func_0211d4e4(u32);
-BOOL func_0211d538(void);
-BOOL func_0211d528(void);
-BOOL func_0211d548(void);
-s32 func_0211d5d0(RTCTime *);
-s32 func_0211d5ec(RTCDate *);
-void func_0211d798(u32);
-void func_0211d7a8(void);
-u32 func_0211d7d4(void);
-void func_0211d7e4(void);
-void func_0211d8ec(u32, u32);
-void func_0211d990(u32, u32);
-void func_0211da2c(void (*)(CARDCommon *));
-void func_0211da74(s32);
-void func_0211ded8(CARDCommon *);
-void *func_0211e094(void);
-BOOL func_0211e0a0(void);
-void func_0211e258(CARDCommon *);
-void func_0211e2fc(void *);
-BOOL func_0211d720(void);
-BOOL func_0211d73c(void);
+u32 RTC_GetDateTimeAsync(u32, u32, void (*)(void), u32);
+u32 RTC_GetTimeAsync(u32, void (*)(void), u32);
+u32 RTC_GetDateAsync(u32, void (*)(void), u32);
+BOOL RtcSendPxiCommand(u32);
+BOOL RTCi_ReadRawDateAsync(void);
+BOOL RTCi_ReadRawTimeAsync(void);
+BOOL RTCi_ReadRawDateTimeAsync(void);
+s32 RTCi_ConvertTimeToSecond(RTCTime *);
+s32 RTC_ConvertDateToDay(RTCDate *);
+void CARD_Enable(u32);
+void CARD_CheckEnabled(void);
+u32 CARD_IsEnabled(void);
+void CARDi_InitCommon(void);
+void CARDi_UnlockResource(u32, u32);
+void CARDi_LockResource(u32, u32);
+void CARDi_SetTask(void (*)(CARDCommon *));
+void CARDi_IdentifyBackupCore(s32);
+void CARDi_RequestStreamCommandCore(CARDCommon *);
+void *CARDi_GetRomAccessor(void);
+BOOL CARD_WaitRomAsync(void);
+void CARDi_ReadRomSyncCore(CARDCommon *);
+void CARDi_ReadCard(void *);
+BOOL CARDi_TryWaitAsync(void);
+BOOL CARDi_WaitAsync(void);
 
 #define REG_MCCNT1 (*(volatile u32 *)0x040001a4)
 typedef struct {
@@ -139,9 +138,9 @@ typedef struct {
 } Spec;
 typedef struct { u32 result; s32 type; u32 id, src, dst, len; Spec spec; } Arg;
 // CARDi_IdentifyBackupCore (SDK text shape: nested spec struct, switch with default: goto invalid_type first)
-void func_0211da74(s32 type) {
+void CARDi_IdentifyBackupCore(s32 type) {
     Arg *const p = (Arg *)data_021fec00.cmd;
-    func_02115fb4(&p->spec, 0, sizeof(p->spec));
+    MI_CpuFill8(&p->spec, 0, sizeof(p->spec));
     p->type = type;
     if (type != 0) {
         const u32 size = (u32)(1 << ((type >> 8) & 0xff));

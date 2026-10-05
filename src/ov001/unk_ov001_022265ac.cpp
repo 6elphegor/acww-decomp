@@ -3,48 +3,48 @@
 
 extern "C" {
 extern u8 data_027e0000[];
-void func_ov001_022270b4(s32);
-s32 func_01ff80e0(s32);
-s32 func_01ff8128(s32);
-void func_01ff8228(u32);
-void func_01ff81a8(s32);
-s32 func_01ffa328(s32);
-void func_01ffa404(s32, void *);
-void func_01ffa314(s32);
-void func_ov001_022265ac();
-void func_ov001_022265e0();
-void func_ov001_0222662c();
+void WfcTask_RunList(s32);
+s32 OS_DisableIrqMask(s32);
+s32 OS_EnableIrqMask(s32);
+void OS_SetIrqMask(u32);
+void OS_ResetRequestIrqMask(s32);
+s32 OS_GetIrqFunction(s32);
+void OS_SetIrqFunction(s32, void *);
+void OS_EnableInterrupts(s32);
+void WfcIrq_VBlank();
+void WfcIrq_Restore();
+void WfcIrq_Init();
 }
 
-extern "C" u32 data_ov001_0222df68 = 0;
-extern "C" u32 data_ov001_0222df6c = 0;
+extern "C" u32 sWfcSavedVBlankHandler = 0;
+extern "C" u32 sWfcSavedIrqMask = 0;
 
 #pragma thumb off
 
-void func_ov001_0222662c()
+void WfcIrq_Init()
 {
-    data_ov001_0222df6c = *(volatile u32 *)0x4000210;
-    func_01ff8228(0x40018);
-    func_01ff8128(1);
-    data_ov001_0222df68 = func_01ffa328(1);
-    func_01ffa404(1, (void *)func_ov001_022265ac);
-    func_01ff81a8(1);
+    sWfcSavedIrqMask = *(volatile u32 *)0x4000210;
+    OS_SetIrqMask(0x40018);
+    OS_EnableIrqMask(1);
+    sWfcSavedVBlankHandler = OS_GetIrqFunction(1);
+    OS_SetIrqFunction(1, (void *)WfcIrq_VBlank);
+    OS_ResetRequestIrqMask(1);
     u16 t = *(volatile u16 *)0x4000208;
     *(volatile u16 *)0x4000208 = 1;
-    func_01ffa314(1);
+    OS_EnableInterrupts(1);
 }
 
-void func_ov001_022265e0()
+void WfcIrq_Restore()
 {
     u16 t = *(volatile u16 *)0x4000208;
     *(volatile u16 *)0x4000208 = 0;
-    func_01ff8228(data_ov001_0222df6c);
-    func_01ffa404(1, (void *)data_ov001_0222df68);
+    OS_SetIrqMask(sWfcSavedIrqMask);
+    OS_SetIrqFunction(1, (void *)sWfcSavedVBlankHandler);
 }
 
-void func_ov001_022265ac()
+void WfcIrq_VBlank()
 {
-    func_ov001_022270b4(1);
+    WfcTask_RunList(1);
     u32 *g = (u32 *)data_027e0000;
     g += 0xc00;
     g[0x3fe] |= 1;

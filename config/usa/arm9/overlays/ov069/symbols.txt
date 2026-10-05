@@ -1,4 +1,4 @@
-func_ov069_0225f1a0 kind:function(thumb,size=0x124) addr:0x0225f1a0
+VillagerTalkTopics_CopyTables kind:function(thumb,size=0x124) addr:0x0225f1a0
 __sinit_ov069_0225f2c4 kind:function(thumb,size=0x124c) addr:0x0225f2c4
 .p__sinit_ov069_0225f2c4 kind:data(word) addr:0x02260510
 data_ov069_02260520 kind:data(any) addr:0x02260520

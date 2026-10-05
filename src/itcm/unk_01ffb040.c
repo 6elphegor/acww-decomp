@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
 typedef unsigned char u8;
@@ -19,7 +20,6 @@ typedef s32 fx32;
 typedef s16 fx16;
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
-typedef struct MtxFx33 { fx32 a[9]; } MtxFx33;
 
 typedef struct ResJntAnm {
     u32 anmHeader;     // 0x00
@@ -31,8 +31,8 @@ typedef struct ResJntAnm {
     u16 ofsAnm[1];     // 0x14
 } ResJntAnm;
 
-extern BOOL func_01ffaea0(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 idx);   // getRotDataByIdx_ (pivot/5-element rotation; returns TRUE when row 2 must be rebuilt)
-extern void func_01ffc714(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
+extern BOOL getRotDataByIdx_(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 idx);   // getRotDataByIdx_ (pivot/5-element rotation; returns TRUE when row 2 must be rebuilt)
+extern void VEC_Normalize(VecFx32 *src, VecFx32 *dst);         // VEC_Normalize
 
 // NitroSystem g3d anm/nsbca.c: vecCross_ (static inline, 32-bit cross product) and getRotData_
 static inline void vecCross_(const VecFx32 *a, const VecFx32 *b, VecFx32 *axb) {
@@ -45,7 +45,7 @@ static inline void vecCross_(const VecFx32 *a, const VecFx32 *b, VecFx32 *axb) {
     axb->z = z;
 }
 
-void func_01ffb040(MtxFx33 *pRot, fx32 Frame, const u32 *pData, const ResJntAnm *pJntAnm) {
+void getRotData_(MtxFx33 *pRot, fx32 Frame, const u32 *pData, const ResJntAnm *pJntAnm) {
     u32 frame = (u32)(Frame >> 12);
     const fx16 *pArrayRot3 = (const fx16 *)((const u8 *)pJntAnm + pJntAnm->ofsRot3);
     const fx16 *pArrayRot5 = (const fx16 *)((const u8 *)pJntAnm + pJntAnm->ofsRot5);
@@ -89,21 +89,21 @@ void func_01ffb040(MtxFx33 *pRot, fx32 Frame, const u32 *pData, const ResJntAnm 
                     idx = frame >> 2;
                     idx_sub = idx + 1;
                 }
-                doCross |= func_01ffaea0(pRot, pArrayRot3, pArrayRot5, pDataRot[idx]);
-                doCross |= func_01ffaea0(&r, pArrayRot3, pArrayRot5, pDataRot[idx_sub]);
+                doCross |= getRotDataByIdx_(pRot, pArrayRot3, pArrayRot5, pDataRot[idx]);
+                doCross |= getRotDataByIdx_(&r, pArrayRot3, pArrayRot5, pDataRot[idx_sub]);
                 pRot->a[0] = pRot->a[0] * 3 + r.a[0];
                 pRot->a[1] = pRot->a[1] * 3 + r.a[1];
                 pRot->a[2] = pRot->a[2] * 3 + r.a[2];
                 pRot->a[3] = pRot->a[3] * 3 + r.a[3];
                 pRot->a[4] = pRot->a[4] * 3 + r.a[4];
                 pRot->a[5] = pRot->a[5] * 3 + r.a[5];
-                func_01ffc714((VecFx32 *)&pRot->a[0], (VecFx32 *)&pRot->a[0]);
-                func_01ffc714((VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[3]);
+                VEC_Normalize((VecFx32 *)&pRot->a[0], (VecFx32 *)&pRot->a[0]);
+                VEC_Normalize((VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[3]);
                 if (!doCross) {
                     pRot->a[6] = pRot->a[6] * 3 + r.a[6];
                     pRot->a[7] = pRot->a[7] * 3 + r.a[7];
                     pRot->a[8] = pRot->a[8] * 3 + r.a[8];
-                    func_01ffc714((VecFx32 *)&pRot->a[6], (VecFx32 *)&pRot->a[6]);
+                    VEC_Normalize((VecFx32 *)&pRot->a[6], (VecFx32 *)&pRot->a[6]);
                 } else {
                     vecCross_((const VecFx32 *)&pRot->a[0], (const VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[6]);
                 }
@@ -121,28 +121,28 @@ ROT_INTERP_1_1:
     {
         BOOL doCross = FALSE;
         MtxFx33 r;
-        doCross |= func_01ffaea0(pRot, pArrayRot3, pArrayRot5, pDataRot[idx]);
-        doCross |= func_01ffaea0(&r, pArrayRot3, pArrayRot5, pDataRot[idx + 1]);
+        doCross |= getRotDataByIdx_(pRot, pArrayRot3, pArrayRot5, pDataRot[idx]);
+        doCross |= getRotDataByIdx_(&r, pArrayRot3, pArrayRot5, pDataRot[idx + 1]);
         pRot->a[0] += r.a[0];
         pRot->a[1] += r.a[1];
         pRot->a[2] += r.a[2];
         pRot->a[3] += r.a[3];
         pRot->a[4] += r.a[4];
         pRot->a[5] += r.a[5];
-        func_01ffc714((VecFx32 *)&pRot->a[0], (VecFx32 *)&pRot->a[0]);
-        func_01ffc714((VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[3]);
+        VEC_Normalize((VecFx32 *)&pRot->a[0], (VecFx32 *)&pRot->a[0]);
+        VEC_Normalize((VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[3]);
         if (!doCross) {
             pRot->a[6] += r.a[6];
             pRot->a[7] += r.a[7];
             pRot->a[8] += r.a[8];
-            func_01ffc714((VecFx32 *)&pRot->a[6], (VecFx32 *)&pRot->a[6]);
+            VEC_Normalize((VecFx32 *)&pRot->a[6], (VecFx32 *)&pRot->a[6]);
         } else {
             vecCross_((const VecFx32 *)&pRot->a[0], (const VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[6]);
         }
         return;
     }
 ROT_NONINTERP:
-    if (func_01ffaea0(pRot, pArrayRot3, pArrayRot5, pDataRot[idx])) {
+    if (getRotDataByIdx_(pRot, pArrayRot3, pArrayRot5, pDataRot[idx])) {
         vecCross_((const VecFx32 *)&pRot->a[0], (const VecFx32 *)&pRot->a[3], (VecFx32 *)&pRot->a[6]);
     }
 }

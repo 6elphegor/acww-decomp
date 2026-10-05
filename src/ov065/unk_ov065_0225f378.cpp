@@ -1,156 +1,124 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-
-struct Unk_ov065_0225f378_Obj;
-
-struct Unk_ov065_0225f4d4_Msg {
-    s32 (*unk_00)(Unk_ov065_0225f4d4_Msg *);
-    Unk_ov065_0225f378_Obj *unk_04;
-    void *unk_08;
-    s8 unk_0c;
-    s8 unk_0d;
-};
-
-struct Unk_ov065_0225f378_Obj {
-    u8 pad_00[0x64];
-    void *unk_64;
-    void *unk_68;
-    s32 unk_6c;
-    u8 pad_70[3];
-    s8 unk_73;
-};
-
-struct Unk_ov065_0225f410_Q {
-    u32 unk_00[8];
-};
-
-struct Unk_ov065_0225f524_Q {
-    u32 unk_00[5];
-    s32 unk_14;
-    u32 unk_18;
-    s32 unk_1c;
-};
-
-struct Unk_ov065_0225f1cc_Cfg {
-    u8 pad_00[0x18];
-    void *(*unk_18)(u32);
-    void (*unk_1c)(void *);
-};
+#include "net/SockCoreConfig.h"
+#include "net/SockCoreCommand.h"
+#include "net/SockCoreSocket.h"
+#include "sys/OSMessageQueue.h"
 
 extern "C" {
 // TU01
-extern Unk_ov065_0225f1cc_Cfg *data_ov065_0228e9a0;
+extern SockCoreConfig *sSockCoreConfig;
 
 // main module
-u32 func_01ffa2ec(void);
-void func_02113254(void);
-s32 func_02114188(void *, void *, s32);
-s32 func_02114234(void *, void *, s32);
-void func_0211321c(void);
-void func_01ffa3d4(u32);
-void func_02113554(void);
-void func_021142dc(void *, void *, s32);
-s32 func_02114050(void *, void *, s32);
+u32 OS_DisableInterrupts(void);
+void OS_DisableScheduler(void);
+s32 OS_ReceiveMessage(void *, void *, s32);
+s32 OS_SendMessage(void *, void *, s32);
+void OS_EnableScheduler(void);
+void OS_RestoreInterrupts(u32);
+void OSi_RescheduleThread(void);
+void OS_InitMessageQueue(void *, void *, s32);
+s32 OS_ReadMessage(void *, void *, s32);
 
-void func_ov065_0225f378(void *);
-s32 func_ov065_0225f3e4(Unk_ov065_0225f378_Obj *, Unk_ov065_0225f4d4_Msg *);
-s32 func_ov065_0225f3f8(Unk_ov065_0225f378_Obj *, Unk_ov065_0225f4d4_Msg *);
-s32 func_ov065_0225f404(Unk_ov065_0225f378_Obj *, Unk_ov065_0225f4d4_Msg *);
-s32 func_ov065_0225f410(void *, Unk_ov065_0225f4d4_Msg *);
-s32 func_ov065_0225f458(Unk_ov065_0225f378_Obj *, Unk_ov065_0225f4d4_Msg *);
-s32 func_ov065_0225f46c(void *, Unk_ov065_0225f4d4_Msg *);
-void *func_ov065_0225f4ac(Unk_ov065_0225f378_Obj *);
-void func_ov065_0225f4b8(void *);
-Unk_ov065_0225f4d4_Msg *func_ov065_0225f4d4(void *, Unk_ov065_0225f378_Obj *, s32);
-Unk_ov065_0225f4d4_Msg *func_ov065_0225f4fc(s32);
-s32 func_ov065_0225f524(void);
-s32 func_ov065_0225f560(s32);
+void SockCore_CommandThreadMain(void *);
+s32 SockCore_ExecCommand(SockCoreSocket *, SockCoreCommand *);
+s32 SockCore_ExecOnSendSide(SockCoreSocket *, SockCoreCommand *);
+s32 SockCore_ExecOnRecvSide(SockCoreSocket *, SockCoreCommand *);
+s32 SockCore_PostCommandAndWait(void *, SockCoreCommand *);
+s32 SockCore_PostCommandAsync(SockCoreSocket *, SockCoreCommand *);
+s32 SockCore_PostCommand(void *, SockCoreCommand *);
+void *SockCore_GetCommandQueue(SockCoreSocket *);
+void SockCore_FreeMsg(void *);
+SockCoreCommand *SockCore_AllocMsg(void *, SockCoreSocket *, s32);
+SockCoreCommand *SockCore_TakeFreeMsg(s32);
+s32 SockCore_DestroyMsgPool(void);
+s32 SockCore_CreateMsgPool(s32);
 }
 
 extern "C" {
-void *data_ov065_0228e9e4;
-Unk_ov065_0225f524_Q data_ov065_0228e9e8;
+void *sSockMsgPool;
+OSMessageQueue sSockMsgFreeQueue;
 
-s32 func_ov065_0225f560(s32 n)
+s32 SockCore_CreateMsgPool(s32 n)
 {
     u32 a = (n * 4 + 3) & ~3;
     u32 b = (n * 0x2c + 3) & ~3;
-    u8 *p = (u8 *)data_ov065_0228e9a0->unk_18(b + a);
+    u8 *p = (u8 *)sSockCoreConfig->alloc(b + a);
     u8 *e;
     if (p == NULL) {
         return -1;
     }
-    func_021142dc(&data_ov065_0228e9e8, p, n);
+    OS_InitMessageQueue(&sSockMsgFreeQueue, p, n);
     e = p + a;
     while (n > 0) {
-        func_ov065_0225f4b8(e);
+        SockCore_FreeMsg(e);
         e += 0x2c;
         n--;
     }
-    data_ov065_0228e9e4 = p;
+    sSockMsgPool = p;
     return 0;
 }
 
-s32 func_ov065_0225f524(void)
+s32 SockCore_DestroyMsgPool(void)
 {
-    if (data_ov065_0228e9e8.unk_1c < data_ov065_0228e9e8.unk_14) {
+    if (sSockMsgFreeQueue.usedCount < sSockMsgFreeQueue.msgCount) {
         return -1;
     }
-    data_ov065_0228e9a0->unk_1c(data_ov065_0228e9e4);
-    data_ov065_0228e9e4 = NULL;
+    sSockCoreConfig->free(sSockMsgPool);
+    sSockMsgPool = NULL;
     return 0;
 }
 
-Unk_ov065_0225f4d4_Msg *func_ov065_0225f4fc(s32 c)
+SockCoreCommand *SockCore_TakeFreeMsg(s32 c)
 {
-    Unk_ov065_0225f4d4_Msg *m;
-    if (func_02114188(&data_ov065_0228e9e8, &m, c)) {
+    SockCoreCommand *m;
+    if (OS_ReceiveMessage(&sSockMsgFreeQueue, &m, c)) {
         return m;
     }
     return NULL;
 }
 
-Unk_ov065_0225f4d4_Msg *func_ov065_0225f4d4(void *fn, Unk_ov065_0225f378_Obj *o, s32 c)
+SockCoreCommand *SockCore_AllocMsg(void *fn, SockCoreSocket *o, s32 c)
 {
-    Unk_ov065_0225f4d4_Msg *m = func_ov065_0225f4fc(c);
+    SockCoreCommand *m = SockCore_TakeFreeMsg(c);
     if (m != NULL) {
-        m->unk_00 = (s32 (*)(Unk_ov065_0225f4d4_Msg *))fn;
-        m->unk_04 = o;
-        m->unk_08 = NULL;
-        m->unk_0c = o->unk_73;
-        m->unk_0d = c;
+        m->handler = (s32 (*)(SockCoreCommand *))fn;
+        m->sock = o;
+        m->replyQueue = NULL;
+        m->sockType = o->sockType;
+        m->blocking = c;
     }
     return m;
 }
 
-void func_ov065_0225f4b8(void *m)
+void SockCore_FreeMsg(void *m)
 {
     if (m != NULL) {
-        func_02114234(&data_ov065_0228e9e8, m, 0);
+        OS_SendMessage(&sSockMsgFreeQueue, m, 0);
     }
 }
 
-void *func_ov065_0225f4ac(Unk_ov065_0225f378_Obj *o)
+void *SockCore_GetCommandQueue(SockCoreSocket *o)
 {
-    void *p = o->unk_64;
+    void *p = o->recvPipe;
     if (p == NULL) {
-        p = o->unk_68;
+        p = o->sendPipe;
     }
     return p;
 }
 
-s32 func_ov065_0225f46c(void *q, Unk_ov065_0225f4d4_Msg *m)
+s32 SockCore_PostCommand(void *q, SockCoreCommand *m)
 {
     s32 flag;
     s32 r;
     if (m != NULL) {
-        flag = m->unk_0d;
+        flag = m->blocking;
     } else {
         flag = 1;
     }
-    r = func_02114234(q, m, flag);
+    r = OS_SendMessage(q, m, flag);
     if (r == 0) {
-        func_ov065_0225f4b8(m);
+        SockCore_FreeMsg(m);
     }
     if (r != 0) {
         return 0;
@@ -158,65 +126,65 @@ s32 func_ov065_0225f46c(void *q, Unk_ov065_0225f4d4_Msg *m)
     return -0x2a;
 }
 
-s32 func_ov065_0225f458(Unk_ov065_0225f378_Obj *o, Unk_ov065_0225f4d4_Msg *m)
+s32 SockCore_PostCommandAsync(SockCoreSocket *o, SockCoreCommand *m)
 {
-    return func_ov065_0225f46c(func_ov065_0225f4ac(o), m);
+    return SockCore_PostCommand(SockCore_GetCommandQueue(o), m);
 }
 
-s32 func_ov065_0225f410(void *q, Unk_ov065_0225f4d4_Msg *m)
+s32 SockCore_PostCommandAndWait(void *q, SockCoreCommand *m)
 {
     s32 res;
     s32 buf;
-    Unk_ov065_0225f410_Q lq;
-    if (m->unk_0d == 0) {
-        m->unk_08 = NULL;
-        res = func_ov065_0225f46c(q, m);
+    OSMessageQueue lq;
+    if (m->blocking == 0) {
+        m->replyQueue = NULL;
+        res = SockCore_PostCommand(q, m);
     } else {
-        func_021142dc(&lq, &buf, 1);
-        m->unk_08 = &lq;
-        func_ov065_0225f46c(q, m);
-        func_02114188(&lq, &res, 1);
+        OS_InitMessageQueue(&lq, &buf, 1);
+        m->replyQueue = &lq;
+        SockCore_PostCommand(q, m);
+        OS_ReceiveMessage(&lq, &res, 1);
     }
     return res;
 }
 
-s32 func_ov065_0225f404(Unk_ov065_0225f378_Obj *o, Unk_ov065_0225f4d4_Msg *m)
+s32 SockCore_ExecOnRecvSide(SockCoreSocket *o, SockCoreCommand *m)
 {
-    return func_ov065_0225f410(o->unk_64, m);
+    return SockCore_PostCommandAndWait(o->recvPipe, m);
 }
 
-s32 func_ov065_0225f3f8(Unk_ov065_0225f378_Obj *o, Unk_ov065_0225f4d4_Msg *m)
+s32 SockCore_ExecOnSendSide(SockCoreSocket *o, SockCoreCommand *m)
 {
-    return func_ov065_0225f410(o->unk_68, m);
+    return SockCore_PostCommandAndWait(o->sendPipe, m);
 }
 
-s32 func_ov065_0225f3e4(Unk_ov065_0225f378_Obj *o, Unk_ov065_0225f4d4_Msg *m)
+s32 SockCore_ExecCommand(SockCoreSocket *o, SockCoreCommand *m)
 {
-    return func_ov065_0225f410(func_ov065_0225f4ac(o), m);
+    return SockCore_PostCommandAndWait(SockCore_GetCommandQueue(o), m);
 }
 
-void func_ov065_0225f378(void *q)
+void SockCore_CommandThreadMain(void *q)
 {
-    Unk_ov065_0225f4d4_Msg *m;
+    SockCoreCommand *m;
     for (;;) {
-        func_02114050(q, &m, 1);
+        OS_ReadMessage(q, &m, 1);
         if (m == NULL) {
             break;
         }
-        s32 r = m->unk_00(m);
-        u32 irq = func_01ffa2ec();
-        func_02113254();
-        func_02114188(q, 0, 0);
-        if (m->unk_04 != NULL) {
-            m->unk_04->unk_6c = r;
+        s32 r = m->handler(m);
+        u32 irq = OS_DisableInterrupts();
+        OS_DisableScheduler();
+        OS_ReceiveMessage(q, 0, 0);
+        if (m->sock != NULL) {
+            m->sock->result = r;
         }
-        if (m->unk_08 != NULL) {
-            func_02114234(m->unk_08, (void *)r, 0);
+        if (m->replyQueue != NULL) {
+            OS_SendMessage(m->replyQueue, (void *)r, 0);
         }
-        func_ov065_0225f4b8(m);
-        func_0211321c();
-        func_01ffa3d4(irq);
-        func_02113554();
+        SockCore_FreeMsg(m);
+        OS_EnableScheduler();
+        OS_RestoreInterrupts(irq);
+        OSi_RescheduleThread();
     }
 }
 }

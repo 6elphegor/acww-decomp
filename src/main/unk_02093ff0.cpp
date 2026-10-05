@@ -1,105 +1,47 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
+#include "talk/MsgStringBase.h"
+#include "talk/MsgStringAttr.h"
+#include "save/TownId.h"
+#include "talk/EncodedStringBase.h"
+#include "player/PlayerId.h"
+#include "gfx/EffectSlot.h"
+#include "gfx/EffectSplEmitter.h"
+#include "talk/MsgString.h"
+#include "game/GroundInfo.h"
+#include "talk/EncodedString.h"
+#include "talk/MsgString9B.h"
+#include "talk/EncodedString8.h"
 
-struct Unk_02093aa8_Vec {
-    s32 x, y, z;
-};
 
-// Effect entry (0x1c bytes), array data_021d04b0[32], scratch entry at data_021d0830
-struct Unk_02093c28_Entry {
-    /* 0x00 */ s32 x, y, z;
-    /* 0x0c */ s16 unk_0c;
-    /* 0x0e */ s16 unk_0e;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-};
 
-struct Unk_02093bb4_Scratch {
-    Unk_02093c28_Entry e;
-    /* 0x1c */ u16 unk_1c;
-};
 
-struct Unk_02093c28_Handle {
-    u8 b[4];
-};
 
-struct Unk_02093dc8_Root {
-    s32 unk_00;
-    s32 unk_04, unk_08, unk_0c;
-};
 
-struct Unk_02093dc8_Ptr {
-    Unk_02093dc8_Root *unk_00;
-};
 
-// Particle object
-struct Unk_02093c28_Obj {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_02093c28_Handle unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ struct Unk_02093dc8_Obj *unk_0c;
-};
 
-struct Unk_02093dc8_Obj {
-    /* 0x00 */ u8 pad_00[0x18];
-    /* 0x18 */ Unk_02093dc8_Ptr *unk_18;
-    /* 0x1c */ u32 unk_1c;
-    /* 0x20 */ s32 unk_20, unk_24, unk_28;
-    /* 0x2c */ u8 pad_2c[0x10];
-    /* 0x3c */ s16 unk_3c;
-    /* 0x3e */ s16 unk_3e;
-    /* 0x40 */ s16 unk_40;
-    /* 0x42 */ u8 pad_42[0x12];
-    /* 0x54 */ s32 unk_54;
-};
 
-struct Unk_02093aa8_Node {
-    /* 0x00 */ Unk_02093aa8_Node *next;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ s32 x, y, z;
-    /* 0x14 */ u8 pad_14[0x10];
-    /* 0x24 */ u16 unk_24;
-    /* 0x26 */ u16 unk_26;
-    /* 0x28 */ u8 pad_28[0x10];
-    /* 0x38 */ s32 ox, oy, oz;
-};
 
-struct Unk_02093aa8_Owner {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_02093aa8_Node *unk_08;
-};
 
-class Unk_0203398c {
-public:
-    u8 pad_00[0x24];
-    s32 unk_24, unk_28, unk_2c;
-    s32 unk_30;
-    u8 pad_34[8];
-    s32 unk_3c;
-    Unk_0203398c() {}
-    Unk_0203398c *func_020339bc(Unk_02093aa8_Vec *v, s32 a, s32 b);
-    ~Unk_0203398c();
-};
 
 extern "C" {
-extern Unk_02093c28_Entry data_021d04b0[];
+extern EffectSlot gEffectManager[];
 }
 
 extern "C" {
-extern Unk_02093bb4_Scratch data_021d0830;
+extern EffectScratchSlot data_021d0830;
 }
 
 extern "C" {
-extern Unk_02093aa8_Vec data_021f4880;
+extern VecFx32 gVec3Zero;
 }
 
 extern "C" {
-extern u32 data_020e17bc[];
+extern u32 sEffectDefaultTrackedCbs[];
 }
 
 extern "C" {
-extern u32 data_020e16f4[];
+extern u32 sEffectDefaultOneShotCbs[];
 }
 
 extern "C" {
@@ -107,15 +49,15 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-s32 func_0208fb20(void *, s32, s32, void *);
+s32 EffectSpl_CreateTracked(void *, s32, s32, void *);
 }
 
 extern "C" {
-s32 func_0208fc88(void *, s32, s32, void *);
+s32 EffectSpl_CreateOneShot(void *, s32, s32, void *);
 }
 
 extern "C" {
-s32 func_0208fe0c(void *);
+s32 EffectSpl_ApplySceneTint(void *);
 }
 
 extern "C" {
@@ -131,55 +73,55 @@ s32 func_02090538(void *);
 }
 
 extern "C" {
-void func_020e93a0(void *, s32);
+void Vec_RotateY(void *, s32);
 }
 
 extern "C" {
-s32 func_020e94f8(void *);
+s32 Vec_SafeNormalize(void *);
 }
 
 extern "C" {
-void func_01ffca8c(void *, void *, void *);
+void VEC_Add(void *, void *, void *);
 }
 
 extern "C" {
-s32 func_02116048(const void *src, void *dst, u32 n);
+s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {
-s32 func_02115fb4(void *dst, u32 v, u32 n);
+s32 MI_CpuFill8(void *dst, u32 v, u32 n);
 }
 
 extern "C" {
-s32 func_02128930(const void *, const void *, u32);
+s32 memcmp(const void *, const void *, u32);
 }
 
 extern "C" {
-s32 func_02093c28(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {
-s32 func_02093c94(Unk_02093c28_Obj *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {
-s32 func_02093d54(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
+s32 Effect_StartOneShot(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
 }
 
 extern "C" {
-void func_02093dc8(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+void EffectCb_PlaceEmitter(EffectSplEmitter *o, EffectSlot *e, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {
-s32 func_02093e88(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
+s32 EffectCb_PlaceFacingBack(EffectSplEmitter *o, EffectSlot *e);
 }
 
 extern "C" {
-s32 func_02093efc(Unk_02093dc8_Obj *o, Unk_02093c28_Entry *e);
+s32 EffectCb_PlaceFacing(EffectSplEmitter *o, EffectSlot *e);
 }
 
 extern "C" {
-s32 func_02093f50(Unk_02093dc8_Obj *o);
+s32 EffectCb_InitOneShot(EffectSplEmitter *o);
 }
 
  // extern "C"
@@ -187,189 +129,92 @@ s32 func_02093f50(Unk_02093dc8_Obj *o);
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffers (see unk_0206c714.cpp for the bases)
 
-class Unk_020d9200 {
-public:
-    virtual ~Unk_020d9200() {}
-};
 
-class Unk_020d9218 {
-public:
-    virtual ~Unk_020d9218() {}
-};
 
-class Unk_020e2a08 {
-public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-};
+class MsgString;
 
-class Unk_020e2a78;
 
-class Unk_020e2a60 : public Unk_020d9200 {
-public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a77f8(Unk_020e2a78 *src);
 
-    /* 0x04 */ Unk_020e2a08 unk_04;
-};
+extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
 
-class Unk_020e2a78 : public Unk_020d9218 {
-public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
-    virtual u32 vfunc_08() = 0;
-    virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a7aa0(Unk_020e2a60 *src, BOOL a, BOOL b);
-    void func_020a7c3c();
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
-};
-
-extern "C" BOOL func_020a78a4(void *, const void *, s32);
-
-// 8-byte destination buffer at +0xe
-class Unk_020e1c4c : public Unk_020e2a60 {
-public:
-    Unk_020e1c4c();
-    virtual ~Unk_020e1c4c();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
-
-    void func_02093f90(void *dst, u32 n);
-
-    /* 0x0e */ u8 unk_0e[8];
-};
-
-// 9-byte source buffer at +0x12
-class Unk_020e1c64 : public Unk_020e2a78 {
-public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
-    virtual u32 vfunc_08();
-    virtual u8 *vfunc_0c();
-
-    /* 0x12 */ u8 unk_12[9];
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14
 
-class Unk_02063954 {
-public:
-    // constructors and methods at 0x020639b8.. are plain functions in symbols.txt (declared below, `this` first)
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02[8];
 
-    s32 func_02094058();
-    void func_02094094(Unk_02063954 *o);
-};
-
-class Unk_020940a0 : public Unk_02063954 {
-public:
-    Unk_020940a0();
-    Unk_020940a0(void *o);
-    Unk_020940a0(const Unk_020940a0 &o);
-    // the base class Unk_02063954 has no declared constructor: its two are called through their symbols
-
-    void func_020940a0(Unk_020e2a78 *x);
-    void func_020940d0(Unk_020e2a78 *x);
-    u8 *func_02094104();
-    void func_02094108(void *src);
-    s8 func_0209411c();
-    void func_02094124(u8 v);
-    void func_02094128(u16 v);
-    u16 func_0209412c();
-    void func_020941b4(void *src, u16 a, s8 b, Unk_02063954 *p);
-    BOOL func_020941e8(Unk_020940a0 *o);
-    BOOL func_02094218();
-    void func_02094238(Unk_020940a0 *o);
-    void func_02094264(Unk_020940a0 *o);
-    void func_02094294();
-    void func_020942b8(void *src);
-
-    /* 0x0a */ u16 unk_0a;
-    /* 0x0c */ u8 unk_0c[8];
-    /* 0x14 */ s8 unk_14;
-};
 
 extern "C" {
-extern Unk_02063954 data_021d7352;
-s32 func_02063954(Unk_02063954 *self);
-void func_02063968(Unk_02063954 *self, Unk_02063954 *o);
-void func_0206397c(Unk_02063954 *self, Unk_02063954 *o);
-void func_02063990(Unk_02063954 *self, Unk_02063954 *o);
-void func_020639a0(Unk_02063954 *self);
-void func_020639b8(Unk_02063954 *self);
-void func_020639bc(Unk_02063954 *self, void *o);
+extern TownId gSaveTownId;
+s32 TownId_IsValid(TownId *self);
+void TownId_CopyTo(TownId *self, TownId *o);
+void TownId_CopyFrom(TownId *self, TownId *o);
+void TownId_Assign(TownId *self, TownId *o);
+void TownId_Clear(TownId *self);
+void TownId_Destruct(TownId *self);
+void TownId_Construct(TownId *self, void *o);
 }
 
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 
 extern "C" {
-s32 func_02097740(void *, void *);
+s32 PlayerDataArray_FindById(void *, void *);
 }
 
 extern "C" {
-s32 func_02095774(s32);
+s32 PlayerActor_Get(s32);
 }
 
 extern "C" {
-s32 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(u32, u32, u32, u32, u32);
+s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32, u32, u32, u32, u32);
 }
 
 extern "C" {
-u32 func_02063b8c(u32);
+u32 Random_GlobalBelow(u32);
 }
 
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 func_02095204(s32);
+s32 PlayerActor_GetActor(s32);
 }
 
 extern "C" {
-BOOL func_02094184(u16 v, u16 *arr, s32 n);
+BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n);
 }
 
 extern "C" {
-s32 func_02095154(s32, s32);
+s32 PlayerActor_IsInAction(s32, s32);
 }
 
 extern "C" {
-s32 func_0204ee10(s32 *, s32 *, void *);
+s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 }
 
 extern "C" {
-s32 func_0204989c(s32, s32, s32, s32, s32);
+s32 Area_PlaceItem(s32, s32, s32, s32, s32);
 }
-extern "C" void func_02094360(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f);
-extern "C" s32 func_02094348();
-extern "C" s32 func_02094340();
-extern "C" s32 func_0209433c();
-extern "C" s32 func_02094308(u32 a, u32 b, u32 c, u32 d);
-extern "C" BOOL func_02094184(u16 v, u16 *arr, s32 n);
-extern "C" u16 func_02094154(u16 *arr, s32 n);
-extern "C" u16 func_02094130();
-extern "C" void func_0209409c();
-extern "C" s32 func_02094048(void *x);
+extern "C" void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f);
+extern "C" s32 PlayerActor_GetLocalSessionSlot();
+extern "C" s32 PlayerActor_GetObjectSize();
+extern "C" s32 PlayerActor_GetObjectAlign();
+extern "C" s32 PlayerActor_Spawn(u32 a, u32 b, u32 c, u32 d);
+extern "C" BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n);
+extern "C" u16 PlayerId_GenerateUniqueId(u16 *arr, s32 n);
+extern "C" u16 PlayerId_GenerateRandomId();
+extern "C" void PlayerId_GetTownId();
+extern "C" s32 PlayerId_FindResidentIndex(void *x);
 
-extern "C" void func_02094360(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
+extern "C" void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
 {
-    if (*b == func_020b50e8()) {
+    if (*b == Scene_GetCurrent()) {
         if (*c != 0x75 || *d == 0x75) return;
-        if (func_02095204(*a) != 0 && func_02095154(0x75, *a) != 0) return;
+        if (PlayerActor_GetActor(*a) != 0 && PlayerActor_IsInAction(0x75, *a) != 0) return;
     } else {
         if (*d != 0x75 || *c == 0x75) return;
     }
@@ -380,79 +225,79 @@ extern "C" void func_02094360(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
         s[0] = *e;
         s[1] = 0;
         s[2] = fv;
-        func_0204ee10(&o1, &o2, s);
-        func_0204989c(0, o1, o2, 0xfff1, 0);
+        FieldPos_ToUnit(&o1, &o2, s);
+        Area_PlaceItem(0, o1, o2, 0xfff1, 0);
     }
 }
 
-extern "C" s32 func_02094348()
+extern "C" s32 PlayerActor_GetLocalSessionSlot()
 {
-    return *(s32 *)((u8 *)func_02095774(4) + 0x7fc);
+    return *(s32 *)((u8 *)PlayerActor_Get(4) + 0x7fc);
 }
 
-extern "C" s32 func_02094340() { return 0xc9c; }
+extern "C" s32 PlayerActor_GetObjectSize() { return 0xc9c; }
 
-extern "C" s32 func_0209433c() { return 4; }
+extern "C" s32 PlayerActor_GetObjectAlign() { return 4; }
 
-extern "C" s32 func_02094308(u32 a, u32 b, u32 c, u32 d)
+extern "C" s32 PlayerActor_Spawn(u32 a, u32 b, u32 c, u32 d)
 {
-    return _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(9, ((a << 30) & 0xc0000000) | (d & 0x3fffffff), b, c, 0);
+    return _ZN5Actor5spawnEPvS0_S0_S0_S0_(9, ((a << 30) & 0xc0000000) | (d & 0x3fffffff), b, c, 0);
 }
 
-Unk_020940a0::Unk_020940a0(void *o) { func_020639bc(this, o); }
+PlayerId::PlayerId(void *o) { TownId_Construct(this, o); }
 
-Unk_020940a0::Unk_020940a0(const Unk_020940a0 &o) { func_020639bc(this, (void *)&o); func_02094264((Unk_020940a0 *)&o); }
+PlayerId::PlayerId(const PlayerId &o) { TownId_Construct(this, (void *)&o); copyFrom((PlayerId *)&o); }
 
-Unk_020940a0::Unk_020940a0() { func_020639b8(this); }
+PlayerId::PlayerId() { TownId_Destruct(this); }
 
-void Unk_020940a0::func_020942b8(void *src) { func_02116048(src, this, 0x16); }
+void PlayerId::setRaw(void *src) { MI_CpuCopy8(src, this, 0x16); }
 
-void Unk_020940a0::func_02094294()
+void PlayerId::clear()
 {
-    func_02115fb4(unk_0c, 0, 8);
-    unk_0a = 0;
-    unk_14 = 2;
-    func_020639a0(this);
+    MI_CpuFill8(playerName, 0, 8);
+    playerId = 0;
+    gender = 2;
+    TownId_Clear(this);
 }
 
-void Unk_020940a0::func_02094264(Unk_020940a0 *o)
+void PlayerId::copyFrom(PlayerId *o)
 {
-    func_02116048(o->unk_0c, unk_0c, 8);
-    unk_0a = o->unk_0a;
-    unk_14 = o->unk_14;
-    func_0206397c(this, o);
+    MI_CpuCopy8(o->playerName, playerName, 8);
+    playerId = o->playerId;
+    gender = o->gender;
+    TownId_CopyFrom(this, o);
 }
 
-void Unk_020940a0::func_02094238(Unk_020940a0 *o)
+void PlayerId::copyTo(PlayerId *o)
 {
-    func_02116048(unk_0c, o->unk_0c, 8);
-    o->unk_0a = unk_0a;
-    o->unk_14 = unk_14;
-    func_02063968(this, o);
+    MI_CpuCopy8(playerName, o->playerName, 8);
+    o->playerId = playerId;
+    o->gender = gender;
+    TownId_CopyTo(this, o);
 }
 
-BOOL Unk_020940a0::func_02094218()
+BOOL PlayerId::isValid()
 {
-    if (func_02063954(this) == 1 && unk_0a != 0) return TRUE;
+    if (TownId_IsValid(this) == 1 && playerId != 0) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_020940a0::func_020941e8(Unk_020940a0 *o)
+BOOL PlayerId::equals(PlayerId *o)
 {
-    if (unk_0a == o->unk_0a && unk_14 == o->unk_14 && func_02128930(unk_0c, o->unk_0c, 8) == 0) return TRUE;
+    if (playerId == o->playerId && gender == o->gender && memcmp(playerName, o->playerName, 8) == 0) return TRUE;
     return FALSE;
 }
 
-void Unk_020940a0::func_020941b4(void *src, u16 a, s8 b, Unk_02063954 *p)
+void PlayerId::set(void *src, u16 a, s8 b, TownId *p)
 {
-    func_02116048(src, unk_0c, 8);
-    unk_0a = a;
-    unk_14 = b;
-    if (p == NULL) p = &data_021d7352;
-    func_02063990(this, p);
+    MI_CpuCopy8(src, playerName, 8);
+    playerId = a;
+    gender = b;
+    if (p == NULL) p = &gSaveTownId;
+    TownId_Assign(this, p);
 }
 
-extern "C" BOOL func_02094184(u16 v, u16 *arr, s32 n)
+extern "C" BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n)
 {
     BOOL r = FALSE;
     if (n != 0 && arr != NULL) {
@@ -467,57 +312,57 @@ extern "C" BOOL func_02094184(u16 v, u16 *arr, s32 n)
     return r;
 }
 
-extern "C" u16 func_02094154(u16 *arr, s32 n)
+extern "C" u16 PlayerId_GenerateUniqueId(u16 *arr, s32 n)
 {
     u16 t;
-    t = func_02094130();
-    while (t == 0 || func_02094184(t, arr, n) == 1) {
-        t = func_02094130();
+    t = PlayerId_GenerateRandomId();
+    while (t == 0 || PlayerId_ListContainsId(t, arr, n) == 1) {
+        t = PlayerId_GenerateRandomId();
     }
     return t;
 }
 
-extern "C" u16 func_02094130()
+extern "C" u16 PlayerId_GenerateRandomId()
 {
-    return (u16)((u16)func_02063b8c(0x7ffc) | 0x8000);
+    return (u16)((u16)Random_GlobalBelow(0x7ffc) | 0x8000);
 }
 
-u16 Unk_020940a0::func_0209412c() { return unk_0a; }
+u16 PlayerId::getId() { return playerId; }
 
-void Unk_020940a0::func_02094128(u16 v) { unk_0a = v; }
+void PlayerId::setId(u16 v) { playerId = v; }
 
-void Unk_020940a0::func_02094124(u8 v) { unk_14 = v; }
+void PlayerId::setGender(u8 v) { gender = v; }
 
-s8 Unk_020940a0::func_0209411c() { return unk_14; }
+s8 PlayerId::getGender() { return gender; }
 
-void Unk_020940a0::func_02094108(void *src) { func_02116048(src, unk_0c, 8); }
+void PlayerId::setName(void *src) { MI_CpuCopy8(src, playerName, 8); }
 
-u8 *Unk_020940a0::func_02094104() { return unk_0c; }
+u8 *PlayerId::getName() { return playerName; }
 
-void Unk_020940a0::func_020940d0(Unk_020e2a78 *x)
+void PlayerId::getNameString(MsgString *x)
 {
-    Unk_020e1c4c buf;
-    func_020a78a4(&buf, unk_0c, 8);
-    x->func_020a7aa0(&buf, 0, 0);
+    EncodedString8 buf;
+    EncodedString_SetRaw(&buf, playerName, 8);
+    x->fromEncoded(&buf, 0, 0);
 }
 
-void Unk_020940a0::func_020940a0(Unk_020e2a78 *x)
+void PlayerId::setNameString(MsgString *x)
 {
-    Unk_020e1c4c buf;
-    buf.func_020a77f8(x);
-    buf.func_02093f90(unk_0c, 8);
+    EncodedString8 buf;
+    buf.fromMsgString(x);
+    buf.copyTo(playerName, 8);
 }
 
-extern "C" void func_0209409c() {}
+extern "C" void PlayerId_GetTownId() {}
 
-void Unk_02063954::func_02094094(Unk_02063954 *o) { func_02063990(this, o); }
+void TownId::setTown(TownId *o) { TownId_Assign(this, o); }
 
-s32 Unk_02063954::func_02094058()
+s32 TownId::getTownRelation()
 {
     s32 r = 2;
-    if (func_02063954(this) != 0) {
-        Unk_02063954 *p = &data_021d7352;
-        if (unk_00 == p->unk_00 && func_02128930(unk_02, p->unk_02, 8) == 0) {
+    if (TownId_IsValid(this) != 0) {
+        TownId *p = &gSaveTownId;
+        if (townId == p->townId && memcmp(townName, p->townName, 8) == 0) {
             r = 0;
         } else {
             r = 1;
@@ -526,16 +371,16 @@ s32 Unk_02063954::func_02094058()
     return r;
 }
 
-extern "C" s32 func_02094048(void *x)
+extern "C" s32 PlayerId_FindResidentIndex(void *x)
 {
-    return func_02097740(data_021d735c, x);
+    return PlayerDataArray_FindById(gSavePlayers, x);
 }
 
-Unk_020e1c64::Unk_020e1c64() {}
+MsgString9B::MsgString9B() {}
 
-Unk_020e1c64::~Unk_020e1c64() {}
+MsgString9B::~MsgString9B() {}
 
-u32 Unk_020e1c64::vfunc_08() { return 9; }
+u32 MsgString9B::capacity() { return 9; }
 
-u8 *Unk_020e1c64::vfunc_0c() { return unk_12; }
+u8 *MsgString9B::data() { return text; }
 

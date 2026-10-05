@@ -1,1223 +1,647 @@
 #include "types.h"
+#include "sys/ClockDateTime.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
+#include "net/CommManager.h"
+#include "gfx/Mtx43.h"
+#include "game/EventDayEntry.h"
+#include "item/PickedItem.h"
+#include "gfx/StarTwinkle.h"
+#include "item/ItemPickSpec.h"
+#include "snd/SndEnvChannel.h"
+#include "gfx/SpriteAnim.h"
+#include "game/WeatherRecord.h"
+#include "item/Letter.h"
+#include "game/FxVec3.h"
+#include "snd/RainSndChannel.h"
+#include "snd/SkySndChannel.h"
+#include "game/SkyProc.h"
+#include "actor/Actor.h"
+#include "gfx/Rgb555.h"
+#include "actor/SpNpcActor.h"
+#include "talk/SpNpcTalkRequest.h"
+#include "talk/SpNpcKatieTalk.h"
+#include "npc/SpNpcKatie.h"
 
 // ======== class types (global scope) ========
-struct Unk_021f4400;
-struct Unk_021f4420;
-struct Unk_021f44a0;
-struct Unk_021f14c8;
-struct Unk_020b8ec0_Time;
-struct Unk_02095204;
-struct Unk_021efc08;
-struct Unk_021efa88;
-class Unk_020e5668;
-struct Unk_020b96b8_Ent;
-struct Unk_020b96b8_Cfg;
-struct Unk_020b9964_Src;
-struct Unk_020b9964_Obj;
-struct Unk_020b9b94_Src;
-struct Unk_020b9b94_Col;
-struct Unk_020b9c90;
-struct Unk_020ba1dc_Time;
-struct Unk_020ba518_Time;
-struct Unk_020ba6f4_Color;
-struct Unk_020ba8cc_Obj;
-struct Unk_020ba8cc_State;
-struct Unk_020b9fe4;
-struct Unk_020ba93c_Obj;
-struct Unk_020baa10_Time;
-struct Unk_020baa10_Buf;
-struct Unk_020bacc0_Vec;
-struct Unk_020bacc0_P;
-struct Unk_020bacc0_Entry;
-struct Unk_020bacc0_Obj;
-struct Unk_020baa10_Ptr;
-struct Unk_020bb25c_Ent14;
-struct Unk_020bb25c_Ent74;
-class Unk_020bb25c;
-struct Unk_020d0f40;
+class SkyProc;
+struct MinuteHour;
+struct WeatherManager;
+struct SkyLightingLocals;
+struct SkySpawnRate;
 struct Unk_020bbcc8_Xxx;
-struct Unk_020bbc28;
-struct Unk_020bc754_Slot;
-struct Unk_020bccc8_Entry;
-struct Unk_020bca5c_Elem;
-struct Unk_020bc754_Vec;
-struct Unk_020dd458;
-struct Unk_02063380;
-struct Unk_02062f94_Ret;
-struct Unk_020bc99c_Loc;
+struct Letter;
+struct ItemPickSpec;
+struct PickedItem;
+struct StarWishLetterVars;
 struct Unk_020bcb04_Ent;
-class Unk_020bc58c;
-struct Unk_02089270;
-struct Unk_020bd058;
-struct Unk_020bda7c;
-struct Unk_020bdcbc;
-struct Unk_020bd8f8;
-struct Unk_020bd054;
-struct Unk_0213b91c;
-struct Unk_0213b970;
-struct Unk_0213b938;
-struct Unk_02000c8c;
-struct Unk_020bd0a4_Vec3;
-struct Unk_020bd06c;
-struct Unk_020bd774_Entry;
-struct Unk_020bd1b0;
-struct Unk_020bd718;
-struct Unk_020bcf04;
-struct Unk_020d16e8;
-struct Unk_020bd868;
-struct Unk_020bd9a0_Row;
-struct Unk_020bdd94_Out;
-struct Unk_020bdd94;
-struct Unk_020bdd4c_Out;
-struct Unk_021f23d4;
-struct Unk_020bdef0_Vec;
-struct Unk_020be0bc;
-struct Unk_020be0f4;
-struct Unk_020be204_Vec;
-struct Unk_020bca5c_Rec;
-class Unk_020be204;
-struct Unk_020be018_Vec;
+struct SpriteAnim;
+struct SkySprite;
+struct SkyObjGfxSlot;
+struct SkyObjGfxLoader;
+struct SkyShotRequest;
+struct SndEnvChannel;
+struct SkySndChannel;
+struct RainSndChannel;
+struct FxVec3;
+struct SkySePlayer;
+struct SkyShotSequence;
+struct SkyObjPalette;
+struct SkySprites;
+struct SkyObjGfxDef;
+struct SkyObjCharLayout;
+struct SkySoundPosBuf;
+struct SkyLookAtVec;
 struct Unk_020bee28_Vec2;
-struct Unk_020bf1d8_Vec;
-struct Unk_020bec40_Col;
-struct Unk_020bec40_Pair;
-struct Unk_021f4398;
-struct Unk_020be018;
+struct FireworkColorPair;
 struct Unk_020bee28_V;
-struct Unk_020bf18c_Pad;
-struct Unk_020bfc48_Pad;
-struct Unk_020bfe30_Vec;
-struct Unk_020bfe38_Ent;
-struct Unk_020bfec0_Ent;
-struct Unk_020bffc0_Mtx;
-class Unk_020bfe30;
-struct Unk_020c010c;
-struct Unk_020c010c_Ent;
-struct Unk_020c0538_Out;
-class Unk_020d8b38;
-struct Unk_020c0408_Obj;
-class Unk_020e6894;
-class Unk_0202e5a8;
-class Unk_020e6924;
-struct Unk_021f4400 { u8 pad[9]; u8 unk_09; };
-struct Unk_021f4420 { u8 pad[0x10]; u8 unk_10; };
-struct Unk_021f44a0 { u8 pad[6]; u8 unk_06; u8 unk_07; u8 unk_08; };
-struct Unk_021f14c8 { u8 pad[0xc]; s32 unk_0c; };
-struct Unk_020b8ec0_Time { u8 unk_00; u8 unk_01; u8 unk_02; u8 pad[5]; };
-struct Unk_02095204 { u8 pad[0x5c]; struct { u32 unk_00; u32 unk_04; u32 unk_08; } unk_5c; };
-struct Unk_021efc08 { u8 pad[4]; u16 unk_04; };
-struct Unk_021efa88 { u8 pad[2]; u16 unk_02; };
-struct Unk_0213b91c {
-    virtual void vfunc_00();
-    u32 unk_04;
+struct SkyParticleStackPad;
+struct SkyShootingStarStackPad;
+struct Mtx43;
+struct WeatherRecord;
+struct EventDayEntry;
+struct TalkStartMsg;
+class SpNpcTalkRequest;
+class SpNpcKatieTalk;
+class SpNpcActor;
+class SpNpcKatie;
+// {minute, hour} as Clock_GetMinuteHour writes them
+struct MinuteHour {
+    /* 0x0 */ u8 minute;
+    /* 0x1 */ u8 hour;
 };
-struct Unk_0213b938 : Unk_0213b91c {
-    virtual void vfunc_00();
-    u8 unk_08[8];
+// Per-line affine parameters of the cloud BG layer (BG3 reference point x/y and pa scale), written by
+// Sky_UpdateLineTables, copied to the BG registers by the H-blank handler and the V-blank functions.
+struct SkyLineAffine {
+    /* 0x0 */ s32 x;
+    /* 0x4 */ s32 y;
+    /* 0x8 */ s16 pa;
+    /* 0xa */ u8 pad_0a[2];
 };
-class Unk_020e5668 : public Unk_020d8c7c {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+// Sky backdrop gradient (sSkyGradient): SkyGradient_Build interpolates the 192 line colours of one buffer between the
+// two key colours/lines set by Sky_BlendPalettes (palette colours 4/5); bufferIndex is the buffer last built.
+struct SkyGradient {
+    /* 0x000 */ s32 bufferIndex;
+    /* 0x004 */ u16 lineColors[2][0xc0];
+    /* 0x304 */ u16 keyColors[2];
+    /* 0x308 */ s32 keyLines[2];
 
-    /* 0x50 */ Unk_0213b938 unk_50;
+    void setKey(s32 idx, u16 color, s32 line);
 };
-struct Unk_020b96b8_Ent {
-    s32 a;
-    s32 b;
-    s16 c;
-    u8 pad[0x900 - 10];
-};
-struct Unk_020b96b8_Cfg {
-    u8 pad0[0x1c];
-    s32 idx;
-    u8 pad1[0x1c];
-    u16 h3c;
-    u16 h3e;
-};
-struct Unk_020b9964_Src {
-    u32 w0;
-    u32 pad[1];
-    s32 pos;
-};
-struct Unk_020b9964_Obj {
-    u8 pad[0x5c];
-    Unk_020b9964_Src src;
-};
-struct Unk_020b9b94_Src {
-    u16 h0, h2, h4, h6;
-    s32 s0, s1;
-};
-struct Unk_020b9b94_Col {
-    u16 r : 5;
-    u16 g : 5;
-    u16 b : 5;
-    u16 pad : 1;
-};
-struct Unk_020b9c90 {
-    u16 unk_000[0x304 / 2];
-    u16 unk_304[1];
-    u8 pad0[0x1208 - 0x306];
-    s32 unk_1208;
-    s32 unk_120c;
-    u8 pad1[0x1520 - 0x1210];
-    s32 unk_1520;
-    s32 unk_1524;
-    s32 unk_1528;
-    s32 unk_152c;
-    s32 unk_1530;
-    u8 pad2[0x1578 - 0x1534];
-    s32 unk_1578;
-    u8 *unk_157c;
-    s32 unk_1580;
-    u8 pad3[0x158c - 0x1584];
-    s32 unk_158c;
-    s32 unk_1590;
+// Weather and sky state (gWeatherManager): cloud level 0..4 and its transitions, the line tables of the cloud BG,
+// the star BG scroll and the sky palettes.
+struct WeatherManager {
+    /* 0x0000 */ s32 engine;
+    /* 0x0004 */ s32 lineBufferIndex;
+    /* 0x0008 */ SkyLineAffine lineAffine[2][0xc0];
+    /* 0x1208 */ s32 cloudScroll;
+    /* 0x120c */ s32 transitionProgress;
+    /* 0x1210 */ u16 lineBlend[2][0xc0];
+    /* 0x1510 */ u8 pad_1510[4];
+    /* 0x1514 */ s32 screenOffsetY[2];
+    /* 0x151c */ s32 bufferIndex;
+    /* 0x1520 */ s32 transitionBusy;
+    /* 0x1524 */ s32 level;
+    /* 0x1528 */ s32 targetLevel;
+    /* 0x152c */ s32 requestedLevel;
+    /* 0x1530 */ s32 direction;
+    /* 0x1534 */ s32 precipKind;
+    /* 0x1538 */ s16 rainSlant;
+    /* 0x153a */ u8 pad_153a[2];
+    /* 0x153c */ u16 starScrollX;
+    /* 0x153e */ u16 starScrollY;
+    /* 0x1540 */ u8 pad_1540[4];
+    /* 0x1544 */ u8 *paletteFiles[2][2];
+    /* 0x1554 */ u32 paletteFileSizes[2][2];
+    /* 0x1564 */ u16 *palettes[3]; // blended sky BG colours: [0] current level, [1] target level, [2] mix of both
+    /* 0x1570 */ s32 cloudVariant;
+    /* 0x1574 */ s32 nextCloudVariant;
+    /* 0x1578 */ s32 streamBlock;
+    /* 0x157c */ u8 *curCloudScreen;
+    /* 0x1580 */ u32 curCloudScreenSize;
+    /* 0x1584 */ u8 *cloudScreen;
+    /* 0x1588 */ u32 cloudScreenSize;
+    /* 0x158c */ s32 transitionStep;
+    /* 0x1590 */ s32 transitionTimer;
+    /* 0x1594 */ s32 prevPlayerZ;
 
-    void func_020b9c90(s32 idx, u16 a, s32 b);
-    void func_020b9d44();
-    void func_020b9d94();
-    void func_020b9df0();
-    void func_020b9e10();
-    void func_020b9e60();
-    void func_020b9ea8();
-    void func_020b9ef8();
-    void func_020b9f84();
-    void func_020ba2e4(s32 a, s32 b);
-    void func_020ba06c();
-    void func_020b9fe4();
-    s32 func_020ba170(s32 a, s32 b);
-    s32 func_020ba10c(s32 *a, s32 *b, s32 c, s32 d);
-};
-struct Unk_020ba1dc_Time {
-    u32 unk_00;
-    u32 unk_04;
-};
-struct Unk_020ba518_Time {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-};
-struct Unk_020ba6f4_Color {
-    u16 r : 5;
-    u16 g : 5;
-    u16 b : 5;
-    u16 a : 1;
-};
-struct Unk_020ba8cc_Obj {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-};
-struct Unk_020ba8cc_State {
-    u8 pad_00[0x24];
-    s32 unk_24;
-    s32 unk_28;
-    u8 pad_2c[8];
-    s32 unk_34;
-};
-struct Unk_020b9fe4 {
-    s32 unk_0000;
-    u8 pad_0004[0x1204];
-    s32 unk_1208;
-    s32 unk_120c;
-    u8 pad_1210[0x304];
-    s32 unk_1514;
-    s32 unk_1518;
-    s32 unk_151c;
-    s32 unk_1520;
-    s32 unk_1524;
-    s32 unk_1528;
-    s32 unk_152c;
-    s32 unk_1530;
-    s32 unk_1534;
-    s16 unk_1538;
-    u8 pad_153a[2];
-    u16 unk_153c;
-    u16 unk_153e;
-    u8 pad_1540[4];
-    s32 unk_1544[2][2];
-    s32 unk_1554[2][2];
-    s32 unk_1564;
-    s32 unk_1568;
-    s32 unk_156c;
-    s32 unk_1570;
-    s32 unk_1574;
-    s32 unk_1578;
-    s32 unk_157c;
-    u8 pad_1580[4];
-    u8 *unk_1584;
-    u32 unk_1588;
-    s32 unk_158c;
-    u8 pad_1590[8];
-
-    Unk_020b9fe4();
-    ~Unk_020b9fe4();
-    void func_020b9fe4();
-    void func_020ba06c();
-    BOOL func_020ba10c(u8 **p1, u32 *p2, s32 mode, s32 idx);
-    BOOL func_020ba170(s32 idx, s32 unused);
-    s32 func_020ba1a4(s32 a, s32 b);
-    s32 func_020ba1b4(s32 v);
-    void func_020ba1dc();
-    BOOL func_020ba260(s32 v);
-    void func_020ba2a4(s32 v);
-    void func_020ba2e4(s32 a, s32 b);
-    s32 func_020ba334(s32 v);
-    void func_020ba3e4();
+    WeatherManager();
+    ~WeatherManager();
+    void streamCloudScreen();
+    void loadNextCloudGraphics();
+    BOOL loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx);
+    BOOL loadCloudChars(s32 idx, s32 unused);
+    s32 getPatternWeather(s32 a, s32 b);
+    s32 getWeatherAtOffset(s32 v);
+    void updateHourly();
+    BOOL requestLevel(s32 v);
+    void startTransition(s32 v);
+    void setLevels(s32 a, s32 b);
+    s32 getPrecipKind(s32 v);
+    void init();
     void func_020ba49c();
-    void func_020ba670(s32 *a, s32 *b);
-    void func_020ba794();
+    void getSkyBlend(s32 *a, s32 *b);
+    void rollRainSlant();
+    void updateTransitionTimed();
+    void transitionTimedWait();
+    void transitionTimedFinish();
+    void transitionTimedBlend();
+    void transitionTimedBegin();
+    void updateTransitionStreamed();
+    void streamCurrentCloudScreen();
+    void reloadCurrentCloudGraphics();
 };
 enum Unk_020ba518_E { Unk_020ba518_E0 = 0 };
-struct Unk_020ba93c_Obj { u32 pad[3]; s32 f0c; };
-struct Unk_020baa10_Time { u8 lo; u8 hi; };
-struct Unk_020baa10_Buf { u16 x; Unk_020baa10_Time t; u16 y; u16 z; };
-struct Unk_020bacc0_Vec { s32 x; s32 y; };
-struct Unk_020bacc0_P { s32 x; s32 y; };
-struct Unk_020bacc0_Entry {
-    s32 f00; s32 f04; s32 f08; s32 f0c;
-    u8 f10[0x14];
-    s32 f24;
-    u8 pad28[9];
-    u8 f31;
-    u8 pad32[2];
-    s32 f34; s32 f38;
-    u8 pad3c[0x10];
-    s32 f4c; s32 f50;
-    u16 f54;
-    s8 f56; s8 f57;
-    s32 f58;
-    u8 f5c; s8 f5d;
-    u8 pad5e[2];
-    s32 f60;
-    u8 pad64[0x10];
+// Locals of Sky_UpdateLighting kept together in their stack order: room light colour, current time, 3D clear colour
+// (gradient key 1) and the colour argument of NNS_G3dGlbMaterialColorSpecEmi
+struct SkyLightingLocals {
+    /* 0x0 */ u16 roomColor;
+    /* 0x2 */ MinuteHour time;
+    /* 0x4 */ u16 clearColor;
+    /* 0x6 */ u16 roomColorArg;
 };
-struct Unk_020bacc0_Obj {
-    Unk_020bacc0_Entry e[0x3c];
-    u8 pad1b30[0x13d8];
-    s32 f2f08; s32 f2f0c;
-    u8 pad2f10[4];
-    s32 f2f14;
-    u8 pad2f18[0x18];
-    s32 f2f30;
-    u8 pad2f34[0x1d];
-    u8 f2f51;
-};
-struct Unk_020baa10_Ptr { u16 pad[3]; u16 h6; };
-struct Unk_020bb25c_Ent14 {
-    s32 unk_00;
-    u8 unk_04[0xc];
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12[2];
-};
-struct Unk_020bb25c_Ent74 {
-    s32 unk_00;
-    u8 unk_04[0x5c];
-    u32 unk_60;
-    u8 unk_64[0x10];
-};
-class Unk_020bb25c {
-public:
-    u8 unk_0000[0xe80];
-    s32 unk_0e80;
-    u8 unk_0e84[0x14d8 - 0xe84];
-    Unk_020bb25c_Ent74 unk_14d8[13];
-    u8 unk_1abc[0x2f18 - 0x1abc];
-    u8 unk_2f18;
-    u8 unk_2f19;
-    u8 unk_2f1a[0x2f29 - 0x2f1a];
-    u8 unk_2f29;
-    u8 unk_2f2a[2];
-    s32 unk_2f2c;
-    s32 unk_2f30;
-    s32 unk_2f34;
-    s32 unk_2f38[4];
-    s32 unk_2f48;
-    u8 unk_2f4c[0x2f51 - 0x2f4c];
-    u8 unk_2f51;
-    u8 unk_2f52[0x2f58 - 0x2f52];
-    Unk_020bb25c_Ent14 unk_2f58[4];
-    u8 unk_2fa8[4];
+// Slingshot shot request of one player (SkySprites::shotRequests): set by SkySprites::onSlingshotFired from the player's
+// position, turned into kind 11 sprites (3 with the golden slingshot) by the shot spawner.
+struct SkyShotRequest {
+    /* 0x00 */ s32 playerSlot;
+    /* 0x04 */ VecFx32 pos;
+    /* 0x10 */ u8 golden;
+    /* 0x11 */ u8 pending;
 
-    void func_020bb25c();
-    void func_020bb294();
-    void func_020bb2cc();
-    void func_020bb304();
-    void func_020bb33c();
-    void func_020bb374();
-    void func_020bb3b0();
-    void func_020bb3e8();
-    void func_020bb420();
-    void func_020bb458();
-    void func_020bb490();
-    void func_020bb4c8(s32 mode);
-    void func_020bb584(s32 a, s32 b, s32 c);
-    void func_020bb5b4();
-    void func_020bb688();
-    void func_020bb774();
-    void func_020bb7e8();
-    void func_020bb834();
-    void func_020bb880(s32 *out);
-    void func_020bb8a4(s32 idx, s32 a, s32 b);
-    BOOL func_020bb8fc(s32 idx);
-    BOOL func_020bb964(s32 idx);
-    void func_020bb9b8();
-    void func_020bbac0();
-    void func_020bbb58();
-
-    BOOL func_020bc754(s32 a, s32 b, s32 c, s32 d);
-    void func_020bc718(s32 a);
-    void func_020bb04c();
+    SkyShotRequest();
+    ~SkyShotRequest();
+    void clear();
+    void set(s32 a, s32 *p, u8 b);
 };
 enum Unk_020bb8a4_E { Unk_020bb8a4_E_0 = 0 };
-struct Unk_020d0f40 {
-    s32 unk_00;
-    s32 unk_04;
+// Row of sRainSpawnRates / sSnowSpawnRates (per precipitation strength): spawn interval = base + Random(random)
+struct SkySpawnRate {
+    /* 0x0 */ s32 baseInterval;
+    /* 0x4 */ s32 randomInterval;
 };
 struct Unk_020bbcc8_Xxx {
     u32 a, b;
 };
-struct Unk_020bbc28 {
-    char pad_0000[0xe0c];
-    s32 unk_0e0c;
-    char pad_0e10[0x1464 - 0xe10];
-    s32 unk_1464;
-    char pad_1468[0x2eb8 - 0x1468];
-    char unk_2eb8[0x48];
-    s32 unk_2f00;
-    s32 unk_2f04;
-    s32 unk_2f08;
-    s32 unk_2f0c;
-    char pad_2f10[8];
-    u8 unk_2f18;
-    u8 unk_2f19;
-    u8 unk_2f1a;
-    u8 unk_2f1b;
-    s32 unk_2f1c;
-    s32 unk_2f20;
-    u8 unk_2f24;
-    u8 unk_2f25;
-    u8 unk_2f26;
-    u8 unk_2f27;
-    s32 unk_2f28;
-    s32 unk_2f2c;
-    s32 unk_2f30;
-    s32 unk_2f34;
-    s32 unk_2f38;
-    s32 unk_2f3c;
-    s32 unk_2f40;
-    s32 unk_2f44;
-    s32 unk_2f48;
-    s32 unk_2f4c;
-    s32 unk_2f50;
-    char unk_2f54[8];
+// Graphics slot of the sky sprites (SkySprites::gfxSlots, 5): which sky object's characters are loaded into the slot's
+// OBJ VRAM area, by how many sprites it is used, and whether the characters still have to be loaded / uploaded.
+struct SkyObjGfxSlot {
+    /* 0x00 */ s32 gfxId;
+    /* 0x04 */ s32 refCount;
+    /* 0x08 */ u8 loaded;
+    /* 0x09 */ u8 dirty;
+    /* 0x0a */ u8 unk_0a[2];
 
-    void func_020bbc28();
-    void func_020bbcc8();
-    void func_020bbdd4();
-    void func_020bbeb8();
-    void func_020bc18c();
-    void func_020bc1d4();
-    void func_020bc2a8();
-    void func_020bc43c();
-    void func_020bc754(s32 a, s32 b, s32 c, s32 d);
-    void func_020bc718(s32 a);
-    void func_020bb4c8(s32 a);
-    s32 func_020bcbd8(s32 a);
-    void func_020bc5cc();
-    void func_020bb490();
-    void func_020bb458();
-    void func_020bb420();
-    void func_020bb3e8();
-    void func_020bb3b0();
-    void func_020bb374();
-    void func_020bb33c();
-    void func_020bb304();
-    void func_020bb2cc();
-    void func_020bb294();
-    void func_020bb25c();
-    void func_020bb224();
-    void func_020bb1f8();
-    void func_020bb1c4();
-    void func_020bb190();
-    void func_020bb15c();
-    void func_020bb128();
-    void func_020bb0fc();
-    void func_020bb0c8();
+    SkyObjGfxSlot();
 };
-struct Unk_020bc754_Slot {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    u8 unk_0c[0x18];
-    s32 unk_24;
-    u8 unk_28[0xc];
-    s32 unk_34;
-    s32 unk_38;
-    s32 unk_3c;
-    u8 unk_40[0x1d];
-    s8 unk_5d;
-    u8 unk_5e[0x16];
+// Row of sSkySpriteAnimSeqs: the animation sequence of a sky sprite and its play-once flag (SkySprite_StartAnim).
+struct SkySpriteAnimDef {
+    /* 0x00 */ SpriteAnimSeq seq;
+    /* 0x08 */ s32 playOnce;
 };
-struct Unk_020bccc8_Entry {
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a[2];
-};
-struct Unk_020bca5c_Elem {
-    u8 unk_00[0x14];
-};
-struct Unk_020bc754_Vec {
-    s32 x, y, z;
-};
-struct Unk_020dd458 {
-    Unk_020dd458();
-    ~Unk_020dd458();
-    u8 unk_00[0xf4];
-};
-struct Unk_02063380 {
-    Unk_02063380(s32 a, s32 b);
-    ~Unk_02063380();
-    u32 unk_00;
-    u32 unk_04;
-};
-struct Unk_02062f94_Ret {
-    u16 v;
-    Unk_02062f94_Ret();
-};
-struct Unk_020bc99c_Loc {
-    u8 a;
-    u8 pad;
-    u16 b;
+// Locals of SkySprites::sendWishLetters: variant of the "ev_star" letter and its present
+struct StarWishLetterVars {
+    /* 0x0 */ u8 msgVariant;
+    /* 0x1 */ u8 pad_01;
+    /* 0x2 */ u16 present;
 };
 struct Unk_020bcb04_Ent {
     u16 id;
     u8 pad[10];
 };
-class Unk_020bc58c {
-public:
-    void func_020bc58c();
-    void func_020bc5cc();
-    void func_020bc628();
-    void func_020bc6e4();
-    void func_020bc718(s32 id);
-    Unk_020bc754_Slot *func_020bc754(s32 kind, s32 idx, Unk_020bc754_Vec *vec, s32 arg);
-    s32 func_020bc814(s32 kind, s32 arg);
-    void func_020bc928();
-    void func_020bc960();
-    void func_020bc99c();
-    Unk_020bca5c_Elem *func_020bca5c(s32 i);
-    void func_020bca6c(s32 i);
-    void func_020bcadc(BOOL a);
-    void func_020bcb04();
-    void func_020bcba4();
-    void func_020bcbac();
-    s32 func_020bcbd8(s32 id);
-    s32 func_020bcbfc(s32 kind, s32 idx);
-    void func_020bcc64(s32 k);
-    s32 func_020bccc8(s32 t);
-    void func_020bcdd8();
-    void func_020bce4c();
-    void func_020bce8c();
-    void func_020bc18c();
-    void func_020bbb58();
-
-    Unk_020bc754_Slot unk_0000[0x3c];
-    Unk_020bccc8_Entry unk_1b30[5];
-    u8 unk_1b6c[0x2eb8 - 0x1b6c];
-    u8 unk_2eb8[0x2f08 - 0x2eb8];
-    s32 unk_2f08;
-    s32 unk_2f0c;
-    s32 unk_2f10;
-    s32 unk_2f14;
-    u16 unk_2f18;
-    u16 unk_2f1a;
-    s32 unk_2f1c;
-    s32 unk_2f20;
-    u8 unk_2f24;
-    u8 unk_2f25;
-    u8 unk_2f26;
-    u8 unk_2f27;
-    u8 unk_2f28;
-    u8 unk_2f29[0x2f54 - 0x2f29];
-    s32 unk_2f54;
-    Unk_020bca5c_Elem unk_2f58[4];
-    u8 unk_2fa8[0x10];
-};
-struct Unk_02089270 {
-    u8 unk_00[4];
-    ~Unk_02089270();
-};
-// 0x74-byte element of the 60-element array at the start of Unk_020bcf04
-struct Unk_020bd058 {
-    u8 unk_00[0x10];
-    Unk_02089270 unk_10;
-    u8 unk_14[0x74 - 0x14];
-    Unk_020bd058();
-    ~Unk_020bd058();
-};
-// 0xc-byte element (5 of them at 0x1b30)
-struct Unk_020bda7c {
-    u8 unk_00[0xc];
-    Unk_020bda7c();
-};
-struct Unk_020bdcbc {
+struct SkyObjGfxLoader {
     u8 unk_00[0x134c];
-    void func_020bdcbc();
+    void init();
 };
-struct Unk_020bd8f8 {
-    u8 unk_00[0x48];
-    Unk_020bd8f8();
-};
-struct Unk_020bd054 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    u8 unk_10;
-    u8 unk_11;
-    Unk_020bd054();
-    ~Unk_020bd054();
-    void func_020bd6dc();
-    void func_020bd6f0(s32 a, s32* p, u8 b);
-};
-struct Unk_0213b970 : Unk_0213b91c {
-    virtual void vfunc_00();
-    u32 unk_08;
-    void func_02003c30();
-    void func_02003c40(s32 a);
-    void func_02003c50(s32 a);
-    void func_02003c60(void* p);
-    void func_02003cbc();
-};
-struct Unk_02000c8c {
-    s32 x, y, z;
-    Unk_02000c8c();
-    ~Unk_02000c8c();
-};
-struct Unk_020bd0a4_Vec3 {
-    s32 x, y, z;
-};
-struct Unk_020bd06c {
-    Unk_0213b970 unk_00[8];
-    Unk_02000c8c unk_60[8];
-    u8 unk_c0;
+// Sky sprite (0x74; SkySprites::sprites holds 60): rain drop, snow flake, particle, shooting star, moon, balloon, UFO,
+// Pete, lightning bolt, firework, rainbow, slingshot shot or bird (kind 0..12; 13 = free). initByKind/updateByKind/
+// endByKind dispatch to the kind's functions (methods here, SkySprite_* free functions for kinds 1..5).
+struct SkySprite {
+    /* 0x00 */ s32 kind;
+    /* 0x04 */ s32 state; // 0 free, 1 starting, 2 running, 3 ending
+    /* 0x08 */ s32 gfxId;
+    /* 0x0c */ s32 animSeq;
+    /* 0x10 */ SpriteAnim anim;
+    /* 0x24 */ s32 gfxSlot;
+    /* 0x28 */ s32 trackX;
+    /* 0x2c */ s16 wavePhase;
+    /* 0x2e */ u8 dir;
+    /* 0x2f */ u8 localShot;
+    /* 0x30 */ u8 hit;
+    /* 0x31 */ u8 hidden;
+    /* 0x32 */ u8 unk_32[2];
+    /* 0x34 */ VecFx32 screenPos;
+    /* 0x40 */ VecFx32 screenVel;
+    /* 0x4c */ s32 scaleX;
+    /* 0x50 */ s32 scaleY;
+    /* 0x54 */ s16 angle;
+    /* 0x56 */ s8 hFlip;
+    /* 0x57 */ s8 vFlip;
+    /* 0x58 */ s32 priority;
+    /* 0x5c */ u8 cullRadius;
+    /* 0x5d */ s8 palette;
+    /* 0x5e */ u8 unk_5e[2];
+    /* 0x60 */ u32 work0;
+    /* 0x64 */ s32 work1;
+    /* 0x68 */ u32 work2;
+    /* 0x6c */ s32 work3;
+    /* 0x70 */ s32 work4;
 
-    Unk_020bd06c();
-    void func_020bd06c();
-    void func_020bd0a4(s32 idx, s32 a, Unk_020bd0a4_Vec3* p);
-    void func_020bd0d4(s32 idx, s32 a, Unk_020bd0a4_Vec3* p);
-    void func_020bd104();
-    void func_020bd12c();
+    SkySprite();
+    ~SkySprite();
+    SkySprite *construct();
+    void clear();
+    void resetFree();
+    void initByKind(u32 a);
+    void updateByKind();
+    void endByKind();
+    void release();
+    void startAnim();
+    void requestSe(s32 a);
+    void requestSeSustained(s32 a);
+    void requestSeSustainedOn(u32 a, u32 b);
+    s32 checkShotHit(s32 a, s32 b, s32 c);
+    void beginCrossing(s32 a, s32 b);
+    s32 advanceCrossing(s32 a, s32 b, s32 c);
+    // kind 0 rain drop
+    void initRainDrop(BOOL flag);
+    void updateRainDrop();
+    void endRainDrop();
+    // kind 6 UFO
+    void initUfo();
+    void updateUfo();
+    void endUfo();
+    void spawnUfoDebris();
+    // kind 7 Pete
+    void initPete();
+    void updatePete();
+    void endPete();
+    // kind 8 lightning
+    void initLightning();
+    void updateLightning();
+    void endLightning();
+    // kind 9 firework
+    void initFirework(u32 a);
+    void initFireworkShell(u32 a);
+    void initFireworkBurst(u32 a);
+    void updateFirework();
+    void updateFireworkShell();
+    void updateFireworkBurst();
+    void updateFireworkScale(s32 a);
+    s32 riseDistance(s32 a);
+    void updateFireworkPalette();
+    void releaseFireworkPalette();
+    void endFirework();
+    // kind 10 rainbow
+    void initRainbow();
+    void updateRainbow();
+    void endRainbow();
+    // kind 11 slingshot shot
+    void initShot(u32 a);
+    void updateShot();
+    void endShot();
+    // kind 12 bird
+    void initBird(u32 a);
+    void updateBird();
+    void endBird();
 };
-struct Unk_020bd774_Entry {
-    u8 unk_00[0xc];
-    s8 unk_0c;
-    s8 unk_0d;
-    u8 unk_0e[2];
-};
-struct Unk_020bd1b0 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    u8 unk_18;
-    s16 unk_1a;
-    s16 unk_1c;
-    u8 unk_1e;
-    u8 unk_1f;
-    u8 unk_20;
-    u8 unk_21;
+struct SkySePlayer {
+    SkySndChannel channels[8];
+    FxVec3 positions[8];
+    u8 active;
 
-    Unk_020bd1b0();
-    void func_020bd1b0(s32 a, s32 b);
-    void func_020bd1e8();
-    void func_020bd25c();
-    void func_020bd288();
-    void func_020bd2d8();
-    void func_020bd32c();
-    void func_020bd334();
-    void func_020bd3ac();
-    void func_020bd400();
-    void func_020bd408();
-    void func_020bd4b4();
-    void func_020bd4bc();
-    void func_020bd520();
-    void func_020bd604(s32 a, s32 b, s32 c, u8 d);
-    void func_020bd618();
-    void func_020bd624();
-    void func_020bd640();
-    void func_020bd64c();
-    void func_020bd668();
-    void func_020bd67c(u8 a);
-    void func_020bd69c(s32 a);
-    void func_020bd6a8(s32 a);
+    SkySePlayer();
+    void update();
+    void request(s32 idx, s32 a, VecFx32* p);
+    void requestSustained(s32 idx, s32 a, VecFx32* p);
+    void releaseAll();
+    void resetAll();
 };
-struct Unk_020bd718 {
-    s32 unk_00;
-    s8 unk_04[4];
-    u16 unk_08;
-    u16 unk_0a[15];
-    u16 unk_28[16];
+struct SkyShotSequence {
+    s32 state;
+    s32 playerSlot;
+    s32 timer;
+    s32 targetX;
+    s32 targetY;
+    s32 targetScale;
+    u8 fallDir;
+    s16 headPitch;
+    s16 headYaw;
+    u8 balloonDropEnded;
+    u8 landSePending;
+    u8 splashSePending;
+    u8 goldenBalloon;
 
-    void func_020bd718(s32 idx, u16* p);
-    BOOL func_020bd744(s32 idx);
-    void func_020bd758(s32 idx);
-    void func_020bd764(s32 a, s32 b);
-    BOOL func_020bd774(s32 idx);
-    void func_020bd7a8(s32 idx);
-    void func_020bd7c0(s32 v);
-    void func_020bd7e4();
-    BOOL func_020bd808(s32 v);
+    SkyShotSequence();
+    void relaxHead(s32 a, s32 b);
+    void lookAtTarget();
+    void reset();
+    void actPeteFallen();
+    void actPeteFall();
+    void actPeteHit();
+    void actUfoCrashed();
+    void actUfoFall();
+    void actUfoHit();
+    void actBalloonDrop();
+    void actBalloonHit();
+    void actShotFlight();
+    void update();
+    void setTarget(s32 a, s32 b, s32 c, u8 d);
+    void onPeteFell();
+    void onPeteHit();
+    void onUfoFell();
+    void onUfoHit();
+    void onBalloonFell();
+    void onBalloonHit(u8 a);
+    void endWatch(s32 a);
+    void startShot(s32 a);
 };
-struct Unk_020bcf04 {
-    Unk_020bd058 unk_0000[60];
-    Unk_020bda7c unk_1b30[5];
-    Unk_020bdcbc unk_1b6c;
-    Unk_020bd8f8 unk_2eb8;
-    u32 unk_2f00;
-    u32 unk_2f04;
-    u32 unk_2f08;
-    u32 unk_2f0c;
-    u32 unk_2f10;
-    u32 unk_2f14;
-    u8 unk_2f18[0xc];
-    u8 unk_2f24;
-    u8 unk_2f25;
-    u8 unk_2f26;
-    u8 unk_2f27;
-    u8 unk_2f28;
-    u8 unk_2f29;
-    u8 unk_2f2a[2];
-    u32 unk_2f2c;
-    u32 unk_2f30;
-    u32 unk_2f34;
-    u32 unk_2f38;
-    u32 unk_2f3c;
-    u32 unk_2f40;
-    u32 unk_2f44;
-    u32 unk_2f48;
-    u32 unk_2f4c;
-    u8 unk_2f50;
-    u8 unk_2f51;
-    u8 unk_2f52[2];
-    u32 unk_2f54;
-    Unk_020bd054 unk_2f58[4];
-    Unk_020bd1b0 unk_2fa8;
-    Unk_020bd06c unk_2fcc;
+struct SkyObjPalette {
+    s32 balloonColor;
+    s8 loadedSrcPalettes[4];
+    u16 overrideMask;
+    u16 overrideColors[15];
+    u16 colors[16];
 
-    Unk_020bcf04();
-    ~Unk_020bcf04();
+    SkyObjPalette();
+    void setOverride(s32 idx, u16* p);
+    BOOL hasOverride(s32 idx);
+    void clearOverride(s32 idx);
+    void setLoadedRow(s32 a, s32 b);
+    BOOL isLoaded(s32 idx);
+    void invalidateFor(s32 idx);
+    void invalidate(s32 v);
+    void pickBalloonColor();
+    BOOL applyOverrides(s32 v);
+};
+// The sky sprite system (gSkySprites): 60 sprites, their 5 graphics slots, the graphics loader and OBJ palette, the
+// spawner state (rain, snow, lightning, moon, rainbow, birds, shooting stars, fireworks, balloon / UFO / Pete
+// visitors), the slingshot shot requests and shot sequence, and the positional SE player.
+struct SkySprites {
+    /* 0x0000 */ SkySprite sprites[60];
+    /* 0x1b30 */ SkyObjGfxSlot gfxSlots[5];
+    /* 0x1b6c */ SkyObjGfxLoader loader;
+    /* 0x2eb8 */ SkyObjPalette palette;
+    /* 0x2f00 */ s32 spawnInterval;
+    /* 0x2f04 */ s32 spawnAccum;
+    /* 0x2f08 */ s32 precipIntensity;
+    /* 0x2f0c */ s32 snowCounter;
+    /* 0x2f10 */ s32 thunderTimer;
+    /* 0x2f14 */ s32 spriteCount;
+    union {
+        /* 0x2f18 */ u16 minuteHour;     // {minute, hour} of this frame (Clock_GetMinuteHour)
+        MinuteHour time;
+    };
+    union {
+        /* 0x2f1a */ u16 prevMinuteHour; // ... and of the previous frame
+        MinuteHour prevTime;
+    };
+    /* 0x2f1c */ s32 second;
+    /* 0x2f20 */ s32 prevSecond;
+    /* 0x2f24 */ u8 balloonChance;
+    /* 0x2f25 */ u8 ufoChance;
+    /* 0x2f26 */ u8 ufoEventToday;
+    /* 0x2f27 */ u8 peteEventToday;
+    /* 0x2f28 */ u8 fireworksToday;
+    /* 0x2f29 */ u8 birdsRequested;
+    /* 0x2f2a */ u8 unk_2f2a[2];
+    /* 0x2f2c */ s32 fireworksPattern;
+    /* 0x2f30 */ s32 fireworksPatternTime;
+    /* 0x2f34 */ s32 fireworksBigTimer;
+    /* 0x2f38 */ s32 fireworksSlotTimers[4];
+    /* 0x2f48 */ s32 fireworksInterval;
+    /* 0x2f4c */ s32 shootingStarDelay;
+    /* 0x2f50 */ u8 shootingStarVisible;
+    /* 0x2f51 */ u8 rainbowStrength;
+    /* 0x2f52 */ u8 unk_2f52[2];
+    /* 0x2f54 */ s32 rainStrength;
+    /* 0x2f58 */ SkyShotRequest shotRequests[4];
+    /* 0x2fa8 */ SkyShotSequence shotSeq;
+    /* 0x2fcc */ SkySePlayer se;
+
+    SkySprites();
+    ~SkySprites();
+    void start();
+    void stop();
+    void initClock();
+    void tickClock();
+    void checkTodayEvents();
+    void onDayChange(BOOL a);
+    void sendWishLetters();
+    void onSlingshotFired(s32 i);
+    SkyShotRequest *getShotRequest(s32 i);
+    SkySprite *spawn(s32 kind, s32 idx, VecFx32 *vec, s32 arg);
+    s32 getGfxIdForKind(s32 kind, s32 arg);
+    s32 findFreeIndex(s32 kind, s32 idx);
+    s32 findKind(s32 id);
+    void killKind(s32 id);
+    void killAll();
+    s32 pickGfxSlot(s32 t);
+    void releaseConflictingSlots(s32 k);
+    void reloadAllGfx();
+    void loadDirtyGfx();
+    void uploadDirtyGfx();
+    void spawnInitialPrecip();
+    void updateLightning();
+    void updateThunderFlash();
+    void updateMoon();
+    void updateRainbow();
+    // spawners (event checks run by SkySprites_UpdateEvents)
+    void updateRain();
+    void updateSnow();
+    void updateShootingStar();
+    void updateFireworksShow();
+    void updateBalloon();
+    void updateUfo();
+    void updatePete();
+    void updateBirds();
+    void spawnShots();
+    void applyRainbowBlend();
+    // fireworks show: launch slots 0..3 and the pattern acts (sFireworksPattern* tables)
+    BOOL canLaunchBig(s32 idx);
+    BOOL canLaunchSmall(s32 idx);
+    void launchFirework(s32 idx, s32 a, s32 b);
+    void rollLaunchInterval(s32 *out);
+    void tickBigLaunch();
+    void tickLowBigLaunch();
+    void tickSmallLaunches();
+    void tickPairLaunches();
+    void tickTripleLaunches();
+    void setFireworksTiming(s32 a, s32 b, s32 c);
+    void selectFireworksPattern(s32 mode);
+    void fireworksPatternAct01();
+    void fireworksPatternAct02();
+    void fireworksPatternAct03();
+    void fireworksPatternAct04();
+    void fireworksPatternAct05();
+    void fireworksPatternAct06();
+    void fireworksPatternAct07();
+    void fireworksPatternAct08();
+    void fireworksPatternAct09();
+    void fireworksPatternAct0A();
+    void fireworksPatternAct0B();
 };
 // The original computes the destination address BEFORE loading *p. An enum-typed local is not forwarded by mwcc,
 // so holding the element base in one keeps the address computation where it is written.
 enum Unk_020bd718_E { Unk_020bd718_E0 };
-struct Unk_020d16e8 { u32 unk_00; u16 unk_04; u16 unk_06; u32 unk_08; s8 unk_0c; s8 unk_0d; s8 unk_0e; s8 unk_0f; };
-struct Unk_020bd868 {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u16 unk_0a[15];
-    /* 0x28 */ u8 unk_28[0x20];
+// Row of sSkyObjGfxTable (one per sky object graphic): char file (sSkyObjCharFiles), top/bottom tile numbers, char
+// layout (sSkyObjCharLayouts), source palette row and OBJ palette; unk_0e/unk_0f are 0 in every row
+struct SkyObjGfxDef { u32 charFile; u16 charTileA; u16 charTileB; u32 charLayout; s8 srcPalette; s8 objPalette; s8 unk_0e; s8 unk_0f; };
+// Row of sSkyObjCharLayouts: where the top and bottom tile runs of a graphic go in its slot
+struct SkyObjCharLayout { u32 topTileX; u32 topTileCount; u32 bottomTileX; u32 bottomTileCount; };
+// 16-byte local of SkySprite_RequestSe / RequestSeSustained; SkySprite_GetSoundPos fills the first three words
+struct SkySoundPosBuf {
+    /* 0x0 */ s32 x;
+    /* 0x4 */ s32 y;
+    /* 0x8 */ s32 volume;
+    /* 0xc */ s32 unk_0c;
 };
-struct Unk_020bd9a0_Row { u32 unk_00; u32 unk_04; u32 unk_08; u32 unk_0c; };
-struct Unk_020bdd94_Out { s32 unk_00; s32 unk_04; s32 unk_08; };
-struct Unk_020bdd94 {
-    /* 0x00 */ u8 unk_00[0x24];
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s16 unk_2c;
-    /* 0x2e */ u8 unk_2e;
-    /* 0x2f */ u8 unk_2f;
-    /* 0x30 */ u8 unk_30[4];
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40[0xc];
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-};
-struct Unk_020bdd4c_Out { s32 unk_00; s32 unk_04; s32 unk_08; s32 unk_0c; };
-struct Unk_021f23d4 {
-    /* 0x00 */ u8 unk_00[4];
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08[0x2c];
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ u8 unk_3c[0x8];
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48[0x2c];
-};
-struct Unk_020bdef0_Vec { s32 unk_00[3]; Unk_020bdef0_Vec() {} ~Unk_020bdef0_Vec() {} };
-struct Unk_020be0bc {
-    /* 0x00 */ u8 unk_00[0xc];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u8 unk_10[1];
+// gCameraLookAt as SkySprite_ProjectWorldPos reads it, and its local copy (vector object, trivial ctor/dtor)
+struct SkyLookAtVec {
+    /* 0x0 */ s32 x;
+    /* 0x4 */ s32 y;
+    /* 0x8 */ s32 z;
+    SkyLookAtVec() {}
+    ~SkyLookAtVec() {}
 };
 enum Unk_020be0bc_E { Unk_020be0bc_E_0 = 0 };
-struct Unk_020be0f4 {
-    s32 unk_00;
-    void func_020be4d0();
-    void func_020be61c();
-    void func_020be7b4();
-    void func_020be7dc();
-    void func_020bef24();
-    void func_020bef90();
-    void func_020bf1d0();
-    void func_020bf4ac();
-    void func_020bf620();
-    void func_020bfa08();
-    void func_020bfb60();
-    void func_020bfcc8();
-    void func_020bfe30();
-    void func_020be0f4();
-};
-struct Unk_020be204_Vec {
-    s32 x, y, z;
-};
-struct Unk_020bca5c_Rec {
-    u32 unk_00;
-    Unk_020be204_Vec unk_04;
-};
-class Unk_020be204 {
-public:
-    void func_020be204();
-    void func_020be314(u32 a);
-    void func_020be428();
-    void func_020be44c();
-    Unk_020be204 *func_020be4b0();
-    void func_020be4d0();
-    void func_020be4d8();
-    void func_020be58c(u32 a);
-    void func_020be61c();
-    void func_020be624();
-    void func_020be6f0(u32 a);
-    void func_020be7b4();
-    void func_020be7bc();
-    void func_020be7c0();
-    void func_020be7dc();
-    void func_020be820();
-    void func_020be970();
-    void func_020be9e8();
-    void func_020bea24(u32 a);
-    void func_020beac8(u32 a);
-
-    // other methods
-    void func_020be094();
-    void func_020bec00();
-    void func_020bec40();
-    void func_020beb88(s32 a);
-    void func_020bdd24(u32 a, u32 b);
-    void func_020bfe38();
-    void func_020bfcd0();
-    void func_020bfb68();
-    void func_020bfa1c();
-    void func_020bf634();
-    void func_020bf4b4();
-    void func_020bf1d8();
-    void func_020bef98();
-    void func_020bef2c();
-    void func_020bfec0(u32 a);
-    void func_020bfd7c(u32 a);
-    void func_020bfbf8(u32 a);
-    void func_020bfa90(u32 a);
-    void func_020bf664(u32 a);
-    void func_020bf5d8(u32 a);
-    void func_020bf3bc(u32 a);
-    void func_020bf15c(u32 a);
-    void func_020bef44(u32 a);
-    void func_020beb40(u32 a);
-
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u32 unk_10[5];
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ u16 unk_2c;
-    /* 0x2e */ u8 unk_2e;
-    /* 0x2f */ u8 unk_2f;
-    /* 0x30 */ u8 unk_30;
-    /* 0x31 */ u8 unk_31;
-    /* 0x32 */ u8 unk_32[2];
-    /* 0x34 */ Unk_020be204_Vec unk_34;
-    /* 0x40 */ Unk_020be204_Vec unk_40;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ u16 unk_54;
-    /* 0x56 */ u8 unk_56;
-    /* 0x57 */ u8 unk_57;
-    /* 0x58 */ s32 unk_58;
-    /* 0x5c */ u8 unk_5c;
-    /* 0x5d */ u8 unk_5d;
-    /* 0x5e */ u8 unk_5e[2];
-    /* 0x60 */ u32 unk_60;
-    /* 0x64 */ s32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ s32 unk_6c;
-    /* 0x70 */ s32 unk_70;
-};
 enum Unk_020be820_E { Unk_020be820_E_0 = 0 };
-struct Unk_020be018_Vec { s32 x, y, z; };
 struct Unk_020bee28_Vec2 {
     s32 x, y;
     Unk_020bee28_Vec2(s32 a, s32 b) { x = a; y = b; }
 };
-struct Unk_020bf1d8_Vec {
-    s32 x, y, z;
-    Unk_020bf1d8_Vec(const Unk_020bf1d8_Vec &o) { x = o.x; y = o.y; z = o.z; }
-};
-struct Unk_020bec40_Col { u16 r : 5; u16 g : 5; u16 b : 5; };
-struct Unk_020bec40_Pair { Unk_020bec40_Col a; Unk_020bec40_Col b; };
-struct Unk_021f4398 {
-    void func_020bd718(s32 i, u16 *col);
-    void func_020bd758(s32 i);
-};
-struct Unk_020be018 {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u8 unk_10[0x14];
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s16 unk_2c;
-    /* 0x2e */ u8 unk_2e;
-    /* 0x2f */ u8 unk_2f;
-    /* 0x30 */ u32 unk_30;
-    /* 0x34 */ Unk_020be018_Vec unk_34;
-    /* 0x40 */ Unk_020be018_Vec unk_40;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ s32 unk_54;
-    /* 0x58 */ s32 unk_58;
-    /* 0x5c */ s32 unk_5c;
-    /* 0x60 */ u32 unk_60;
-    /* 0x64 */ s32 unk_64;
-    /* 0x68 */ s32 unk_68;
-
-    s32 func_020be018(s32 a, s32 b, s32 c);
-    void func_020be06c(s32 a, s32 b);
-    void func_020be094();
-    void func_020be0bc();
-    s32 func_020bde0c(s32 a, s32 b, s32 c);
-    void func_020bdd70(s32 a);
-    void func_020bdd4c(s32 a);
-    s32 func_020bea24(u32 a);
-    s32 func_020beac8(u32 a);
-    void func_020beb40(u32 a);
-    void func_020beb88(s32 a);
-    s32 func_020bebfc(s32 a);
-    void func_020bec00();
-    void func_020bec40();
-    void func_020bef24();
-    void func_020bef2c();
-    void func_020bef44();
-    void func_020bef90();
-    void func_020bef98();
-    void func_020bf15c();
-    void func_020bf1d0();
-    void func_020bf1d8();
-    void func_020bf3bc();
-    void func_020bf400();
+// sFireworkColors row: a burst fades from the first colour to the second (SkySprite::updateFireworkPalette)
+struct FireworkColorPair {
+    /* 0x0 */ Rgb555 start;
+    /* 0x2 */ Rgb555 end;
 };
 struct Unk_020bee28_V {
     s32 x, y, z;
-    Unk_020bee28_V(const Unk_020bf1d8_Vec &o) { x = o.x; y = o.y; z = o.z; }
+    Unk_020bee28_V(const VecFx32Copy &o) { x = o.x; y = o.y; z = o.z; }
     ~Unk_020bee28_V() {}
 };
-struct Unk_020bf18c_Pad {
+struct SkyParticleStackPad {
     s32 v[3];
-    Unk_020bf18c_Pad() {}
-    ~Unk_020bf18c_Pad() {}
+    SkyParticleStackPad() {}
+    ~SkyParticleStackPad() {}
 };
-struct Unk_020bfc48_Pad {
+struct SkyShootingStarStackPad {
     s32 v[4];
-    Unk_020bfc48_Pad() {}
-    ~Unk_020bfc48_Pad() {}
-};
-struct Unk_020bfe30_Vec {
-    s32 x, y, z;
-};
-struct Unk_020bfe38_Ent {
-    u8 unk_00[0x5c];
-    s32 unk_5c;
-    u8 unk_60[8];
-    s32 unk_68;
-};
-struct Unk_020bfec0_Ent {
-    u8 unk_00[0x54];
-    s32 unk_54;
-};
-struct Unk_020bffc0_Mtx {
-    s32 m[12];
-};
-class Unk_020bfe30 {
-public:
-    /* 0x00 */ u8 unk_00[4];
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 unk_08[4];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u8 unk_10[0x24];
-    /* 0x34 */ Unk_020bfe30_Vec unk_34;
-    /* 0x40 */ Unk_020bfe30_Vec unk_40;
-    /* 0x4c */ u8 unk_4c[4];
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ s16 unk_54;
-    /* 0x56 */ u8 unk_56[2];
-    /* 0x58 */ s32 unk_58;
-    /* 0x5c */ u8 unk_5c[4];
-    /* 0x60 */ s32 unk_60;
-    /* 0x64 */ u8 unk_64[4];
-    /* 0x68 */ s32 unk_68;
-
-    void func_020bfe30();
-    void func_020bfe38();
-    void func_020bfec0(BOOL flag);
-};
-struct Unk_020c010c {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04;
-    u8 unk_05;
-    s8 unk_06;
-    u8 unk_07;
-};
-struct Unk_020c010c_Ent {
-    u16 unk_00;
-    u8 unk_02[10];
+    SkyShootingStarStackPad() {}
+    ~SkyShootingStarStackPad() {}
 };
 // ---------------------------------------------------------------------------------------------------------------------
-struct Unk_020c0538_Out {
-    u32 unk_00;
-    u8 unk_04;
-};
-// Library base class; its ctor and dtor are out of line.
-class Unk_020d8b38 {
-public:
-    Unk_020d8b38();
-    virtual ~Unk_020d8b38();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38(void *p);
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78(Unk_020c0538_Out *out);
-};
-struct Unk_020c0408_Obj {
-    u8 unk_00[4];
-    s32 unk_04;
-    s32 unk_08;
-    u8 unk_0c[8];
-    s32 unk_14;
-};
-// Sub-object at 0x658 of Unk_020e6924
-class Unk_020e6894 : public Unk_020d8b38 {
-public:
-    Unk_020e6894();
-    virtual ~Unk_020e6894();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_38(void *p);
-    virtual void vfunc_78(Unk_020c0538_Out *out);
 
-    /* 0x04 */ u8 unk_04[0x1a];
-    /* 0x1e */ u8 unk_1e;
-    /* 0x1f */ u8 unk_1f[0x1d];
-    /* 0x3c */ Unk_020c0408_Obj *unk_3c;
-    /* 0x40 */ u8 unk_40[0x6c];
-    /* 0xac */ Unk_020e6924 *unk_ac;
-    /* 0xb0 */ s32 unk_b0;
-
-    s32 func_020c0624();
-    void func_020c062c(s32 v);
-    void func_020c0634(Unk_020e6924 *owner);
-};
-// Base of Unk_020e6924; its dtor is out of line.
-class Unk_0202e5a8 : public Unk_020d8c7c_Base {
-public:
-    virtual ~Unk_0202e5a8();
-
-    /* 0x004 */ u8 unk_004[0x5c - 4];
-    /* 0x05c */ u8 unk_05c[0x2a0 - 0x5c];
-    /* 0x2a0 */ u8 unk_2a0[0xc];
-    /* 0x2ac */ u8 unk_2ac[0x3b0 - 0x2ac];
-    /* 0x3b0 */ u8 unk_3b0[0x564 - 0x3b0];
-    /* 0x564 */ u8 unk_564[0x618 - 0x564];
-    /* 0x618 */ u8 unk_618[0x654 - 0x618];
-};
-class Unk_020e6924 : public Unk_0202e5a8 {
-public:
-    virtual ~Unk_020e6924();
-
-    /* 0x654 */ s32 unk_654;
-    /* 0x658 */ Unk_020e6894 unk_658;
-    /* 0x70c */ u8 unk_70c;
-    /* 0x70d */ u8 unk_70d;
-    /* 0x70e */ u8 unk_70e[0x724 - 0x70e];
-    /* 0x724 */ u8 unk_724;
-
-    void func_020c11b8(s32 state);
-    BOOL func_020c06a0();
-};
-
-// 0x330-byte object of another unit's class (constructor 0x020b08b8, destructor 0x020b08b4)
-class Unk_020b08b4 {
-public:
-    Unk_020b08b4();
-    ~Unk_020b08b4();
-    u8 unk_000[0x330];
-};
 struct U234_Record {
     void *fn;
-    u16 unk_04;
-    u16 unk_06;
+    u16 executePriority;
+    u16 drawPriority;
 };
 namespace n00 {
 extern "C" {
 extern const s32 data_020c8cbc;
-void func_020c003c(void);
+void SkyProc_Create(void);
 }
 }
 
 // ======== the unit's objects (defined further down, in creation order) ========
 namespace n00 {
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd2d8Ev(void);
-void _ZN12Unk_020bd1b013func_020bd32cEv(void);
-void _ZN12Unk_020be01813func_020bef90Ev(void);
-void _ZN12Unk_020be20413func_020be7c0Ev(void);
-void _ZN12Unk_020bb25c13func_020bb420Ev(void);
-void _ZN12Unk_020bb25c13func_020bb304Ev(void);
-void _ZN12Unk_020bb25c13func_020bb3b0Ev(void);
-void _ZN12Unk_020bb25c13func_020bb33cEv(void);
-void _ZN12Unk_020be01813func_020bef2cEv(void);
-void _ZN12Unk_020bd1b013func_020bd408Ev(void);
-void func_020bb1c4(void);
-void func_020bb0fc(void);
-void _ZN12Unk_020bb25c13func_020bb490Ev(void);
-void _ZN12Unk_020be01813func_020bf15cEv(void);
-void func_020bb0c8(void);
-void func_020bfbf8(void);
-void func_020bf5d8(void);
-void func_020bfb60(void);
-void _ZN12Unk_020bd1b013func_020bd334Ev(void);
-void _ZN12Unk_020be20413func_020be58cEj(void);
-void func_020bfcd0(void);
-void func_020bb128(void);
-void _ZN12Unk_020be20413func_020be7dcEv(void);
-void _ZN12Unk_020bd1b013func_020bd4b4Ev(void);
-void _ZN12Unk_020bb25c13func_020bb458Ev(void);
-void _ZN12Unk_020be20413func_020be7bcEv(void);
-void _ZN12Unk_020be20413func_020be624Ev(void);
-void _ZN12Unk_020be20413func_020be6f0Ej(void);
-void _ZN12Unk_020bd1b013func_020bd4bcEv(void);
-void func_020bb1f8(void);
-void func_020bb224(void);
-void _ZN12Unk_020bb25c13func_020bb2ccEv(void);
-void _ZN12Unk_020bb25c13func_020bb294Ev(void);
-void func_020bb15c(void);
-void _ZN12Unk_020be01813func_020bef44Ev(void);
-void func_020bfd7c(void);
-void _ZN12Unk_020be01813func_020bef98Ev(void);
-void _ZN12Unk_020bd1b013func_020bd400Ev(void);
-void _ZN12Unk_020bd1b013func_020bd288Ev(void);
-void func_020bfb68(void);
-void func_020bf664(void);
-void _ZN12Unk_020bb25c13func_020bb3e8Ev(void);
-void _ZN12Unk_020be01813func_020bf3bcEv(void);
-void _ZN12Unk_020be20413func_020be4d0Ev(void);
-void _ZN12Unk_020be20413func_020be61cEv(void);
-void _ZN12Unk_020be20413func_020be7b4Ev(void);
-void _ZN12Unk_020be01813func_020bef24Ev(void);
-void _ZN12Unk_020be01813func_020bf1d0Ev(void);
-void func_020bf4ac(void);
-void func_020bf620(void);
-void func_020bfa08(void);
-void _ZN12Unk_020bfe3013func_020bfe38Ev(void);
-void _ZN12Unk_020bfe3013func_020bfe30Ev(void);
-void func_020bfa1c(void);
-void _ZN12Unk_020be01813func_020bf1d8Ev(void);
-void func_020bb190(void);
-void _ZN12Unk_020bd1b013func_020bd3acEv(void);
-void _ZN12Unk_020bb25c13func_020bb374Ev(void);
-void func_020bf634(void);
-void func_020bf4b4(void);
-void _ZN12Unk_020be20413func_020be4d8Ev(void);
-void func_020bfcc8(void);
-void _ZN12Unk_020be01813func_020beb40Ej(void);
-void _ZN12Unk_020be20413func_020be9e8Ev(void);
-void func_020bfa90(void);
-void _ZN12Unk_020bb25c13func_020bb25cEv(void);
-void _ZN12Unk_020bfe3013func_020bfec0Ei(void);
-extern const u32 data_020d0dec[1];
-extern const u32 data_020d0df0[1];
-extern const u32 data_020d0df4[1];
-extern const u32 data_020d0df8[1];
-extern const u32 data_020d0dfc[1];
-extern const u32 data_020d0e00[1];
+void _ZN15SkyShotSequence11actPeteFallEv(void);
+void _ZN15SkyShotSequence10actPeteHitEv(void);
+void _ZN9SkySprite7endPeteEv(void);
+void _ZN9SkySprite11initRainbowEv(void);
+void _ZN10SkySprites21fireworksPatternAct03Ev(void);
+void _ZN10SkySprites21fireworksPatternAct08Ev(void);
+void _ZN10SkySprites21fireworksPatternAct05Ev(void);
+void _ZN10SkySprites21fireworksPatternAct07Ev(void);
+void _ZN9SkySprite15updateLightningEv(void);
+void _ZN15SkyShotSequence14actBalloonDropEv(void);
+void SkySprites_FireworksPatternAct0E(void);
+void SkySprites_FireworksPatternAct12(void);
+void _ZN10SkySprites21fireworksPatternAct01Ev(void);
+void _ZN9SkySprite8initPeteEv(void);
+void SkySprites_FireworksPatternAct13(void);
+void SkySprite_InitParticle(void);
+void SkySprite_InitBalloon(void);
+void SkySprite_EndParticle(void);
+void _ZN15SkyShotSequence13actUfoCrashedEv(void);
+void _ZN9SkySprite8initBirdEj(void);
+void SkySprite_UpdateSnowFlake(void);
+void SkySprites_FireworksPatternAct11(void);
+void _ZN9SkySprite11endFireworkEv(void);
+void _ZN15SkyShotSequence13actBalloonHitEv(void);
+void _ZN10SkySprites21fireworksPatternAct02Ev(void);
+void _ZN9SkySprite13updateRainbowEv(void);
+void _ZN9SkySprite10updateShotEv(void);
+void _ZN9SkySprite8initShotEj(void);
+void _ZN15SkyShotSequence13actShotFlightEv(void);
+void SkySprites_FireworksPatternAct0D(void);
+void SkySprites_FireworksPatternAct0C(void);
+void _ZN10SkySprites21fireworksPatternAct09Ev(void);
+void _ZN10SkySprites21fireworksPatternAct0AEv(void);
+void SkySprites_FireworksPatternAct10(void);
+void _ZN9SkySprite13initLightningEv(void);
+void SkySprite_InitSnowFlake(void);
+void _ZN9SkySprite10updatePeteEv(void);
+void _ZN15SkyShotSequence9actUfoHitEv(void);
+void _ZN15SkyShotSequence13actPeteFallenEv(void);
+void SkySprite_UpdateParticle(void);
+void SkySprite_InitMoon(void);
+void _ZN10SkySprites21fireworksPatternAct04Ev(void);
+void _ZN9SkySprite7initUfoEv(void);
+void _ZN9SkySprite7endBirdEv(void);
+void _ZN9SkySprite7endShotEv(void);
+void _ZN9SkySprite10endRainbowEv(void);
+void _ZN9SkySprite12endLightningEv(void);
+void _ZN9SkySprite6endUfoEv(void);
+void SkySprite_EndBalloon(void);
+void SkySprite_EndMoon(void);
+void SkySprite_EndShootingStar(void);
+void _ZN9SkySprite14updateRainDropEv(void);
+void _ZN9SkySprite11endRainDropEv(void);
+void SkySprite_UpdateShootingStar(void);
+void _ZN9SkySprite9updateUfoEv(void);
+void SkySprites_FireworksPatternAct0F(void);
+void _ZN15SkyShotSequence10actUfoFallEv(void);
+void _ZN10SkySprites21fireworksPatternAct06Ev(void);
+void SkySprite_UpdateMoon(void);
+void SkySprite_UpdateBalloon(void);
+void _ZN9SkySprite10updateBirdEv(void);
+void SkySprite_EndSnowFlake(void);
+void _ZN9SkySprite12initFireworkEj(void);
+void _ZN9SkySprite14updateFireworkEv(void);
+void SkySprite_InitShootingStar(void);
+void _ZN10SkySprites21fireworksPatternAct0BEv(void);
+void _ZN9SkySprite12initRainDropEi(void);
+extern const u32 sSkyCloudBgLayer[1];
+extern const u32 sSkyPaletteLayer[1];
+extern const u32 sSkyStarBgLayer[1];
+extern const u32 sSkyNextCloudBgLayer[1];
+extern const u32 sSkyObjPalDefaultColor[1];
+extern const u32 sBirdDelays[1];
 extern const u8 data_020d0e04[5];
-extern const u32 data_020d0e0c[2];
-extern void *const data_020d0e14[3];
-extern const u32 data_020d0e20[3];
-extern const u32 data_020d0e2c[3];
-extern const u32 data_020d0e38[3];
-extern const u32 data_020d0e44[3];
-extern const u8 data_020d0e50[14];
-extern const u8 data_020d0e60[15];
-extern const u32 data_020d0e70[4];
-extern const u32 data_020d0e80[4];
-extern const u32 data_020d0e90[4];
-extern const u32 data_020d0ea0[5];
-extern const u32 data_020d0eb4[5];
+extern const u32 sFireworkFlicker[2];
+extern void *const sSkyObjCharFiles[3];
+extern const u32 sRainParallax[3];
+extern const u32 sSnowAnimIds[3];
+extern const u32 sSnowFallSpeeds[3];
+extern const u32 sSnowParallax[3];
+extern const u8 sFireworksPatternWeights[14];
+extern const u8 sSkyObjPalOverrideSlots[15];
+extern const u32 sRainSeIds[4];
+extern const u32 sFireworkColors[4];
+extern const u32 sFireworkShellTypes[4];
+extern const u32 sSkyPaletteSetByLevel[5];
+extern const u32 sFireworksPatternDelays[5];
 extern const u32 data_020d0ec8[6];
 extern const u32 data_020d0ee0[6];
 extern const u32 data_020d0ef8[6];
 extern const u32 data_020d0f10[6];
-extern const u32 data_020d0f28[6];
-extern const u32 data_020d0f40[8];
-extern const u32 data_020d0f60[8];
-extern const u32 data_020d0f80[9];
-extern const u32 data_020d0fa4[9];
+extern const u32 sParticleAnimIds[6];
+extern const u32 sRainSpawnRates[8];
+extern const u32 sSnowSpawnRates[8];
+extern const u32 sFireworkScaleBig[9];
+extern const u32 sFireworkScaleSmall[9];
 extern const u32 data_020d0fc8[12];
 extern const u32 data_020d0ff8[12];
 extern const u32 data_020d1028[12];
@@ -1228,21 +652,21 @@ extern const u32 data_020d10e8[12];
 extern const u32 data_020d1118[12];
 extern const u32 data_020d1148[12];
 extern const u32 data_020d1178[12];
-extern const u32 data_020d11a8[13];
-extern const u32 data_020d11dc[20];
-extern const u32 data_020d122c[23];
-extern const u32 data_020d1288[44];
-extern const u32 data_020d1338[44];
-extern const u32 data_020d13e8[192];
-extern const u32 data_020d16e8[208];
+extern const u32 sSkySpriteDefaultGfx[13];
+extern const u32 sSkyObjCharLayouts[20];
+extern const u32 sParticleTrailScales[23];
+extern const u32 sFireworkScaleBigLong[44];
+extern const u32 sFireworkScaleSmallLong[44];
+extern const u32 sWeatherHourTable[192];
+extern const u32 sSkyObjGfxTable[208];
 extern u32 data_020e4630[1];
 extern u32 data_020e4634[1];
-extern u32 data_020e4638[1];
-extern u32 data_020e463c[1];
-extern u32 data_020e4640[1];
+extern u32 sSnowSideToggle[1];
+extern u32 sRainSideToggle[1];
+extern u32 sSkyBlendLineCache[1];
 extern u32 data_020e4644[2];
 extern void *data_020e464c[2];
-extern U234_Record data_020e4654;
+extern U234_Record sSkyProcProfile;
 extern u32 data_020e465c[2];
 extern void *data_020e4664[2];
 extern u32 data_020e466c[2];
@@ -1381,7 +805,7 @@ extern void *data_020e4aa0[3];
 extern void *data_020e4aac[3];
 extern void *data_020e4ab8[3];
 extern void *data_020e4ac4[3];
-extern void *data_020e4ad0[3];
+extern void *sCloudScreenFiles[3];
 extern void *data_020e4adc[3];
 extern void *data_020e4ae8[3];
 extern void *data_020e4af4[3];
@@ -1413,7 +837,7 @@ extern u32 data_020e4c64[4];
 extern u32 data_020e4c74[4];
 extern u32 data_020e4c84[4];
 extern u32 data_020e4c94[4];
-extern void *data_020e4ca4[4];
+extern void *sSkyPaletteFiles[4];
 extern u32 data_020e4cb4[4];
 extern u32 data_020e4cc4[4];
 extern u32 data_020e4cd4[4];
@@ -1422,11 +846,11 @@ extern u32 data_020e4cf4[4];
 extern u32 data_020e4d04[4];
 extern u32 data_020e4d14[4];
 extern u32 data_020e4d24[4];
-extern void *data_020e4d34[5];
-extern void *data_020e4d48[5];
-extern void *data_020e4d5c[5];
+extern void *sCloudCharFiles[5];
+extern void *sSkyLightColorTables[5];
+extern void *sSkyFogOffsetTables[5];
 extern void *data_020e4d70[5];
-extern void *data_020e4d84[5];
+extern void *sSkyLightParamTables[5];
 extern void *data_020e4d98[5];
 extern char data_020e4dac[23];
 extern void *data_020e4ddc[6];
@@ -1493,265 +917,260 @@ extern void *data_020e5d04[132];
 extern void *data_020e5f14[132];
 extern void *data_020e6124[132];
 extern void *data_020e6334[132];
-extern void *data_020e6544[138];
-extern u8 data_021ef654;
-extern u32 data_021ef658[1];
-extern u32 data_021ef670;
-extern s32 data_021ef674;
-extern u32 data_021ef678[2];
-extern u32 data_021ef680[2];
-extern u32 data_021ef688[3];
-extern u32 data_021ef694[3];
-extern u32 data_021ef6c4[7];
-extern u32 data_021ef908[196];
-extern Unk_020b08b4 data_021efc18;
-extern Unk_020b9fe4 data_021eff48;
-extern Unk_020bcf04 data_021f14e0;
+extern void *sSkySpriteAnimSeqs[138];
+extern u8 sSkyLineTablesReady;
+extern u32 sSkyBlackBackdrop[1];
+extern u32 sSkyOutdoors;
+extern s32 sSkyCrossingWidth;
+extern u32 sSkyLineScrollY[2];
+extern u32 sSkyLineScrollX[2];
+extern u32 sSkyLight[3];
+extern u32 sMoonColors[3];
+extern u32 sSkyHBlankTask[7];
+extern SkyGradient sSkyGradient;
+extern StarTwinkle data_021efc18;
+extern WeatherManager gWeatherManager;
+extern SkySprites gSkySprites;
 }
 }
 
 // ======== unk_020bfe30.cpp ========
 namespace n13 {
-struct Unk_020cbb18;
-static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
+static inline void Unk_020bfe30_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
 }
-struct Unk_020cbb18 {
-    u8 unk_00[0x68];
-    s32 unk_68;
-};
 extern "C" {
-void func_020be094(void *p);
+void SkySprite_Release(void *p);
 }
 extern "C" {
-void func_01ffca8c(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
+void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *c);
 }
 extern "C" {
-Unk_020bfe38_Ent *func_02095204(s32 n);
+Actor *PlayerActor_GetActor(s32 n);
 }
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
-Unk_020bffc0_Mtx *func_0203a220(void);
+Mtx43 *Camera_GetViewMatrix(void);
 }
 extern "C" {
-void func_0203eeac(void *out, void *in);
+void WorldCurve_Apply(void *out, void *in);
 }
 extern "C" {
-void func_01ffb898(void *a, void *b, void *c);
+void MTX_MultVec43(void *a, void *b, void *c);
 }
 extern "C" {
-s32 _ZN12Unk_0203b35013func_0203bc3cEv(s32 a);
+s32 _ZN6Camera9getFovTanEv(s32 a);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-void func_020e9888(void *a, s32 b);
+void Vec_Scale(void *a, s32 b);
 }
 extern "C" {
 s32 __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*dtor)(void *));
 }
 extern "C" {
-void _ZN12Unk_02000c8cD1Ev(void *p);
+void _ZN6FxVec3D1Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bd054D1Ev(void *p);
+void _ZN14SkyShotRequestD1Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bd058D1Ev(void *p);
+void _ZN9SkySpriteD1Ev(void *p);
 }
 extern "C" {
-s32 func_0209cc08(void *p);
+s32 DateTime_GetWeatherPeriod(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_020cbb1813func_02072e44Ev(Unk_020cbb18 *p);
+s32 _ZN11CommManager8isOnlineEv(CommManager *p);
 }
 extern "C" {
-void func_02116048(void *a, void *b, s32 n);
+void MI_CpuCopy8(void *a, void *b, s32 n);
 }
 extern "C" {
-void func_0209d124(void *p, s32 n);
+void DateTime_SubHours(void *p, s32 n);
 }
 extern "C" {
-s32 func_0209d374(void *a, void *b);
+s32 DateTime_DiffMinutes(void *a, void *b);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void func_0209d2c0(void *p, s32 n);
+void DateTime_AddDays(void *p, s32 n);
 }
 extern "C" {
-s32 func_020b50e8(void);
+s32 Scene_GetCurrent(void);
 }
 extern "C" {
-BOOL func_020a032c(void);
+BOOL GameStart_IsActive(void);
 }
 extern "C" {
-s32 func_0209750c(void);
+s32 PlayerData_GetCurrent(void);
 }
 extern "C" {
-BOOL _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
+BOOL _ZN10PlayerData8testFlagEj(s32 a, s32 b);
 }
 extern "C" {
-u16 *func_0203f2d8(void);
+u16 *Event_GetTodayList(void);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-void func_0209cf88(void *p);
+void Clock_GetDate(void *p);
 }
 extern "C" {
-void _ZN12Unk_020d8bc8D2Ev(void *p);
+void _ZN10SpNpcActorD2Ev(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_02019dd813func_02019d8cEv(void *p);
+s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_020660f813func_020679b4Ev(void *p);
+s32 _ZN15TalkWindowState13getChoiceListEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_020aa3b813func_020aa514Ev(void);
+s32 _ZN10ChoiceList9getResultEv(void);
 }
 extern "C" {
-void _ZN12Unk_020660f813func_02067a84EPhPv(void *a, void *b, u32 c);
+void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
 }
 extern "C" {
-void func_020850e0(void);
+void TownSessionState_Get(void);
 }
 extern "C" {
-void func_02085178(void);
+void TownSessionState_GetKatieState(void);
 }
 extern "C" {
-void _ZN12Unk_02086f8413func_02086fa0Ev(void);
+void _ZN15KatieVisitState12setFollowingEv(void);
 }
 extern "C" {
-void _ZN12Unk_02086f8413func_02086f98Ev(void);
+void _ZN15KatieVisitState14clearFollowingEv(void);
 }
 extern "C" {
-s32 _ZN12Unk_0209865c13func_020986a4Ev(s32 a);
+s32 _ZN10PlayerData18getLostChildRecordEv(s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_020872fc13func_02087364Ev(s32 a);
+s32 _ZN15LostChildRecord9getTownIdEv(s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_020d771413func_02015818Ejj(void *p, s32 a, s32 b);
+s32 _ZN16ActorTalkRequest15setTownNameSlotEjj(void *p, s32 a, s32 b);
 }
 extern "C" {
-s32 _ZN12Unk_02097ff413func_0209801cEj(s32 a, s32 b);
+s32 _ZN10PlayerData7setFlagEj(s32 a, s32 b);
 }
 extern "C" {
-void func_0202e1cc(s32 a, s32 b);
+void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 }
 extern "C" {
-s32 _ZN12Unk_0201ad2013func_0201ad34Ei(void *p, s32 a);
+s32 _ZN14NpcMoveAnimSet12setStandAnimEi(void *p, s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_0201ad2013func_0201ad30Ei(void *p, s32 a);
+s32 _ZN14NpcMoveAnimSet11setWalkAnimEi(void *p, s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_020d77148vfunc_38Ej(void *p, void *q);
+s32 _ZN16ActorTalkRequest10onEventTagEj(void *p, void *q);
 }
 extern "C" {
-void _ZN12Unk_020d8b38D2Ev(void *p);
+void _ZN16SpNpcTalkRequestD2Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020d8b38C2Ev(void *p);
+void _ZN16SpNpcTalkRequestC2Ev(void *p);
 }
 extern "C" {
 void func_020c11b8(void *p, s32 n);
 }
 extern "C" {
-s32 func_020a0414(void);
+s32 Net_GetJoiningAid(void);
 }
 extern "C" {
-s32 func_02097520(s32 a);
+s32 PlayerData_GetBySessionSlot(s32 a);
 }
 extern "C" {
-BOOL func_02094f2c(s32 a, s32 b);
+BOOL PlayerActor_SetNetFollowPaused(s32 a, s32 b);
 }
 extern "C" {
-void func_02094b0c(void *v, s32 a, s32 b);
+void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 }
 extern "C" {
-void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 }
 extern "C" {
-BOOL func_020951b8(s32 a);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
 }
 extern "C" {
-BOOL _ZN12Unk_0201985813func_02019790Ev(void *p);
+BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 }
 extern "C" {
-void _ZN12Unk_02013b1013func_02014198Ehh(void *p, s32 a, s32 b);
+void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
 }
 extern "C" {
-void _ZN12Unk_020660f813func_02067a78Ev(void *p);
+void _ZN15TalkWindowState11lockAdvanceEv(void *p);
 }
 extern "C" {
 void _Z13func_020c22fcv(void);
 }
 extern "C" {
-void func_0203a5d8(void);
+void Camera_SetMode19(void);
 }
 extern "C" {
-s32 func_020816f8(s32 a);
+s32 NpcRegistry_FindSpNpc(s32 a);
 }
 extern "C" {
-void _ZN12Unk_020d771413func_02015a80EP18Unk_02015b8c_Scene(void *p, s32 a);
+void _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(void *p, s32 a);
 }
 extern "C" {
-void _ZN12Unk_020660f813func_02067a6cEv(void *p);
+void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_02013b1013func_02014220Ev(void *p);
+s32 _ZN11NpcTalkCtrl6isBusyEv(void *p);
 }
 extern "C" {
-s32 func_02002bdc(void *a, void *b);
+s32 Math_AngleXZ(void *a, void *b);
 }
 extern "C" {
-void func_02094ae8(s32 a, s32 b);
+void PlayerActor_RequestTurnTo(s32 a, s32 b);
 }
 extern "C" {
 void _Z13func_020c22e0v(void);
 }
 extern "C" {
-BOOL func_020a03c4(void);
+BOOL SaveManager_IsSessionJoined(void);
 }
 extern "C" {
-void func_020b78c4(void);
+void FieldInfoBalloon_ShowPleaseWait(void);
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18 *p, s32 a);
+BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_020872fc13func_0208733cEv(void);
+s32 _ZN15LostChildRecord13isKaitlinRoleEv(void);
 }
 extern "C" {
-void _ZN12Unk_020872fc13func_02087368Ev(s32 a);
+void _ZN15LostChildRecord5clearEv(s32 a);
 }
 extern "C" {
-void _ZN12Unk_0208721013func_02087210Ev(void);
+void _ZN15KatieVisitState5clearEv(void);
 }
 extern "C" {
-s32 func_020b4934(void);
+s32 Scene_GetWarpRequest(void);
 }
 extern "C" {
-void func_020b4bbc(s32 a, s32 b);
+void SceneWarp_RequestExit(s32 a, s32 b);
 }
 extern "C" {
-extern u8 data_021c3cc0;
+extern u8 gScreenTransition;
 }
 extern "C" {
-extern Unk_020bfe30_Vec data_020d1c8c;
+extern VecFx32 sSpNpcKatieReunionWalkPos;
 }
 extern "C" {
 extern u16 data_020c6cc8;
@@ -1760,146 +1179,144 @@ extern "C" {
 extern u32 data_020c6d1c;
 }
 extern "C" {
-extern u8 data_021f4880[];
+extern u8 gVec3Zero[];
 }
 extern "C" {
-extern s32 data_020d0e20[];
+extern s32 sRainParallax[];
 }
 extern "C" {
-extern s32 data_020e463c;
+extern s32 sRainSideToggle;
 }
-namespace L_021f43e0 { extern "C" { extern struct S { u8 p[0x2f00]; Unk_020bfec0_Ent v; } data_021f14e0; } }
-#define data_021f43e0 n13::L_021f43e0::data_021f14e0.v
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s16 v[1]; } data_021eff48; } }
-#define data_021f1448 n13::L_021f1448::data_021eff48.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s16 v[1]; } gWeatherManager; } }
+#define data_021f1448 n13::L_021f1448::gWeatherManager.v
 extern "C" {
 extern s16 data_02135f44[];
 }
 extern "C" {
-extern Unk_020bffc0_Mtx data_021f47e0;
+extern Mtx43 data_021f47e0;
 }
 extern "C" {
-extern s32 data_021c3070;
+extern s32 gCamera;
 }
 extern "C" {
-extern u8 data_021f4570;
+extern u8 sWeatherPrevDayRain;
 }
 extern "C" {
-extern s32 data_021f4574;
+extern s32 sWeatherRolledAtLoad;
 }
 extern "C" {
-extern Unk_020e6924 *data_021f4578;
+extern SpNpcKatie *sSpNpcKatieInstance;
 }
 extern "C" {
-extern u8 data_020d1a2c[];
+extern u8 sWeatherPatternWeights[];
 }
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
-extern u32 data_020e679c;
+extern u32 sSpNpcKatieMsgKey;
 }
 // ---------------------------------------------------------------------------------------------------------------------
 static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
     *dst += v;
 }
 static inline BOOL Unk_020c06a0_IsMode2() {
-    return data_021c3cc0 == 2;
+    return gScreenTransition == 2;
 }
 
-extern "C" void func_020bffc0(s32 *out, Unk_020bfe30_Vec *in);
-extern "C" Unk_020e5668 *func_020c003c();
-extern "C" void *func_020c0078(void *p);
+extern "C" void Sky_ProjectToScreenX(s32 *out, VecFx32 *in);
+extern "C" SkyProc *SkyProc_Create();
+extern "C" void *SkySprites_Destruct(void *p);
 
-extern "C" void *func_020c0078(void *p) {
-    __cxa_vec_cleanup((u8 *)p + 0x302c, 8, 0xc, _ZN12Unk_02000c8cD1Ev);
-    __cxa_vec_cleanup((u8 *)p + 0x2f58, 4, 0x14, _ZN12Unk_020bd054D1Ev);
-    __cxa_vec_cleanup(p, 0x3c, 0x74, _ZN12Unk_020bd058D1Ev);
+extern "C" void *SkySprites_Destruct(void *p) {
+    __cxa_vec_cleanup((u8 *)p + 0x302c, 8, 0xc, _ZN6FxVec3D1Ev);
+    __cxa_vec_cleanup((u8 *)p + 0x2f58, 4, 0x14, _ZN14SkyShotRequestD1Ev);
+    __cxa_vec_cleanup(p, 0x3c, 0x74, _ZN9SkySpriteD1Ev);
     return p;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Vtable classes of the library (autoload_2)
 
-extern "C" Unk_020e5668 *func_020c003c() {
-    return new Unk_020e5668();
+extern "C" SkyProc *SkyProc_Create() {
+    return new SkyProc();
 }
 
-extern "C" void func_020bffc0(s32 *out, Unk_020bfe30_Vec *in) {
-    Unk_020bffc0_Mtx *m = func_0203a220();
+extern "C" void Sky_ProjectToScreenX(s32 *out, VecFx32 *in) {
+    Mtx43 *m = Camera_GetViewMatrix();
     data_021f47e0 = *m;
-    Unk_020bfe30_Vec v;
+    VecFx32 v;
     v.x = in->x;
     v.y = in->y;
     v.z = in->z;
     u8 a[12];
     s32 b[3];
-    func_0203eeac(a, &v);
-    func_01ffb898(a, &data_021f47e0, b);
-    s32 c = _ZN12Unk_0203b35013func_0203bc3cEv(data_021c3070);
-    s32 q = -func_01ffc5a4(0x60000, c);
-    func_020e9888(b, func_01ffc5a4(q, b[2]));
+    WorldCurve_Apply(a, &v);
+    MTX_MultVec43(a, &data_021f47e0, b);
+    s32 c = _ZN6Camera9getFovTanEv(gCamera);
+    s32 q = -FX_Div(0x60000, c);
+    Vec_Scale(b, FX_Div(q, b[2]));
     *out = b[0] + 0x80000;
 }
 
 }
-void Unk_020bfe30::func_020bfec0(BOOL flag) {
+void SkySprite::initRainDrop(BOOL flag) {
     using namespace n13;
     s32 idx;
-    s32 x = (data_020e463c * func_02063b8c(0x8a) + 0x80) << 12;
-    data_020e463c *= -1;
-    s32 y = -0x14000 - (func_02063b8c(0x10) << 12);
-    Unk_020bfe30_Vec *p34 = &unk_34;
+    s32 x = (sRainSideToggle * Random_GlobalBelow(0x8a) + 0x80) << 12;
+    sRainSideToggle *= -1;
+    s32 y = -0x14000 - (Random_GlobalBelow(0x10) << 12);
+    VecFx32 *p34 = (VecFx32 *)&screenPos;
     p34->x = x;
     p34->y = y;
     p34->z = 0;
-    s32 mul = data_021f43e0.unk_54;
-    s32 rr = func_02063b8c(0xaac) - 0x556;
+    s32 mul = n00::gSkySprites.rainStrength;
+    s32 rr = Random_GlobalBelow(0xaac) - 0x556;
     s32 sh = ((mul * (rr + data_021f1448[0x38 / 2])) << 4) >> 16;
     idx = ((u16)sh >> 4) * 2;
-    Unk_020bfe30_Vec *p40 = &unk_40;
+    VecFx32 *p40 = (VecFx32 *)&screenVel;
     s16 *tab = data_02135f44;
     p40->x = tab[idx] * -0x24;
     p40->y = tab[idx + 1] * 0x24;
     p40->z = 0;
-    unk_50 = 0x800;
-    unk_54 = (u16)sh;
-    s32 r = func_02063b8c(3);
-    unk_0c = r + 2;
+    scaleY = 0x800;
+    angle = (u16)sh;
+    s32 r = Random_GlobalBelow(3);
+    animSeq = r + 2;
     s32 v;
     switch (r) {
     case 0:
-        v = func_02063b8c(0x40) + 0x80;
+        v = Random_GlobalBelow(0x40) + 0x80;
         break;
     case 1:
-        v = func_02063b8c(0x40) + 0x40;
+        v = Random_GlobalBelow(0x40) + 0x40;
         break;
     default:
-        v = func_02063b8c(0x40);
+        v = Random_GlobalBelow(0x40);
         break;
     }
-    unk_60 = v;
+    work0 = v;
     if (flag == 1) {
-        unk_34.y += func_02063b8c(v + 0x101) << 12;
+        screenPos.y += Random_GlobalBelow(v + 0x101) << 12;
     }
-    unk_58 = 2;
+    priority = 2;
 }
 namespace n13 {
 
 }
-void Unk_020bfe30::func_020bfe38() {
+void SkySprite::updateRainDrop() {
     using namespace n13;
-    Unk_020bfe30_Vec *p = &unk_34;
-    func_01ffca8c(p, &unk_40, p);
-    Unk_020bfe38_Ent *e = func_02095204(4);
+    VecFx32 *p = (VecFx32 *)&screenPos;
+    VEC_Add(p, (VecFx32 *)&screenVel, p);
+    Actor *e = PlayerActor_GetActor(4);
     if (e) {
-        s32 d = -(e->unk_5c - e->unk_68);
-        s32 m = data_020d0e20[unk_68];
+        s32 d = -(e->position.x - e->prevPosition.x);
+        s32 m = sRainParallax[work2];
         d = (d * m) >> 12;
         p->x += d;
     }
-    if (p->y > (unk_60 << 12) + 0x100000) {
-        unk_04 = 3;
+    if (p->y > ((s32)work0 << 12) + 0x100000) {
+        state = 3;
     } else if (p->x < -0x14000) {
         p->x += 0x11e000;
     } else if (p->x > 0x114000) {
@@ -1909,122 +1326,91 @@ void Unk_020bfe30::func_020bfe38() {
 namespace n13 {
 
 }
-void Unk_020bfe30::func_020bfe30() {
+void SkySprite::endRainDrop() {
     using namespace n13;
-    func_020be094(this);
+    SkySprite_Release(this);
 }
 namespace n13 {
 
-#undef data_021f43e0
 #undef data_021f1448
 }
 
 // ======== unk_020bf4ac.cpp ========
 namespace n12 {
-struct Unk_020bf4b4;
-struct Unk_020bf4b4;
-typedef struct { s32 x, y, z; }
- Unk_020bf4b4_Vec;
-struct Unk_020bf4b4 {
-    u32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    u8 unk_10[0x14];
-    s32 unk_24;
-    u8 unk_28[6];
-    u8 unk_2e;
-    u8 unk_2f[5];
-    s32 unk_34;
-    s32 unk_38;
-    s32 unk_3c;
-    s32 unk_40;
-    s32 unk_44;
-    s32 unk_48;
-    s32 unk_4c;
-    s32 unk_50;
-    s16 unk_54;
-    s16 unk_56;
-    s32 unk_58;
-    s32 unk_5c;
-    s32 unk_60;
-    s32 unk_64;
-    s32 unk_68;
-    s32 unk_6c;
-    s32 unk_70;
+// Locals of SkySprite_CalcMoonColors: current time, the clear/cloudy colours of this hour and the next, the result
+struct MoonColorBlend {
+    /* 0x0 */ u8 minute;
+    /* 0x1 */ u8 hour;
+    /* 0x2 */ Rgb555 clearColor;
+    /* 0x4 */ Rgb555 clearColorNext;
+    /* 0x6 */ Rgb555 cloudyColor;
+    /* 0x8 */ Rgb555 cloudyColorNext;
+    /* 0xa */ u16 blended;
 };
-typedef struct { u8 unk_00[12]; }
- Unk_020bf4b4_Elem;
-typedef struct { u16 r:5; u16 g:5; u16 b:5; u16 pad:1; }
- Unk_020bf77c_Col;
-typedef struct { u8 unk_00; u8 unk_01; Unk_020bf77c_Col unk_02; Unk_020bf77c_Col unk_04; Unk_020bf77c_Col unk_06; Unk_020bf77c_Col unk_08; u16 unk_0a; }
- Unk_020bf77c_Rec;
-typedef struct { u8 pad0[6]; u16 a[5]; u8 pad1[6]; u16 b[5]; }
- Unk_020bf77c_Tbl;
-typedef struct { u8 pad[0x10]; u8 unk_10; }
- Unk_020bfa08_Data;
-typedef struct { u8 pad[0x24]; s32 unk_24; s32 unk_28; }
- Unk_020bf720_Data;
-typedef struct { u8 pad[0x5c]; s32 unk_5c; u8 pad2[8]; s32 unk_68; }
- Unk_020bfcd0_Obj;
-typedef struct { u8 pad[4]; s32 unk_04; u8 pad2[0x2c]; s32 unk_34; s32 unk_38; u8 pad3[0x18]; s32 unk_50; s16 unk_54; }
- Unk_020bfc48_Slot;
+// One 16-colour row of the moon palette file (a_sky_moon_obj_ncl.bin, loaded at SkyObjGfxLoader+0x1208), one per
+// night hour: colours 3..7 for a cloudy sky, 11..15 for a clear one (SkySprite_CalcMoonColors)
+struct SkyMoonPaletteRow {
+    /* 0x00 */ u16 unk_00[3];
+    /* 0x06 */ u16 cloudyColors[5];
+    /* 0x10 */ u16 unk_10[3];
+    /* 0x16 */ u16 clearColors[5];
+};
 extern "C" {
-u32 func_020be094(void *);
+u32 SkySprite_Release(void *);
 }
 extern "C" {
-s32 func_020be018(void *, s32, s32, s32);
+s32 SkySprite_AdvanceCrossing(void *, s32, s32, s32);
 }
 extern "C" {
-s32 func_020bde0c(void *, s32, s32, s32);
+s32 SkySprite_CheckShotHit(void *, s32, s32, s32);
 }
 extern "C" {
-void func_020bd964(void *, s32);
+void SkyObjGfxSlot_SetGfx(void *, s32);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd67cEh(void *, s32);
+void _ZN15SkyShotSequence12onBalloonHitEh(void *, s32);
 }
 extern "C" {
-void func_020bdd70(void *, s32);
+void SkySprite_RequestSeSustained(void *, s32);
 }
 extern "C" {
-void func_020bdd4c(void *, s32);
+void SkySprite_RequestSe(void *, s32);
 }
 extern "C" {
-void func_020be0bc(void *);
+void SkySprite_StartAnim(void *);
 }
 extern "C" {
 s32 func_01ffcb0c(s32, s32);
 }
 extern "C" {
-void func_01ffca8c(void *, void *, void *);
+void VEC_Add(void *, void *, void *);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd668Ev(void *);
+void _ZN15SkyShotSequence13onBalloonFellEv(void *);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd604Eiiih(void *, s32, s32, s32, s32);
+void _ZN15SkyShotSequence9setTargetEiiih(void *, s32, s32, s32, s32);
 }
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 }
 extern "C" {
-void func_020be06c(void *, s32, s32);
+void SkySprite_BeginCrossing(void *, s32, s32);
 }
 extern "C" {
-void _ZN12Unk_020bd71813func_020bd758Ei(void *, s32);
+void _ZN13SkyObjPalette13clearOverrideEi(void *, s32);
 }
 extern "C" {
-void _ZN12Unk_020bd71813func_020bd718EiPt(void *, s32, void *);
+void _ZN13SkyObjPalette11setOverrideEiPt(void *, s32, void *);
 }
 extern "C" {
-void func_020e759c(void *, s32, s32);
+void Math_StepS32Alt(void *, s32, s32);
 }
 extern "C" {
-void func_0209cf18(void *);
+void Clock_GetMinuteHour(void *);
 }
 extern "C" {
-u32 func_0209cf00(void);
+u32 Clock_GetSecond(void);
 }
 extern "C" {
 s32 _s32_div_f(s32, s32);
@@ -2033,165 +1419,158 @@ extern "C" {
 u32 _u32_div_f(u32, u32);
 }
 extern "C" {
-s32 func_01ffc538(s32);
+s32 FX_Sqrt(s32);
 }
 extern "C" {
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 }
 extern "C" {
-s32 func_020e7b98(s32, s32);
+s32 Math_Atan2(s32, s32);
 }
 extern "C" {
-void func_020bdd24(void *, s32, s32);
+void SkySprite_RequestSeSustainedOn(void *, s32, s32);
 }
 extern "C" {
-void func_020e9888(void *, s32);
+void Vec_Scale(void *, s32);
 }
 extern "C" {
-BOOL _ZN12Unk_0208927013func_020891d8Ev(void *);
+BOOL _ZN10SpriteAnim10isFinishedEv(void *);
 }
 extern "C" {
-s32 _ZN12Unk_020bc58c13func_020bcbd8Ei(void *, s32);
+s32 _ZN10SkySprites8findKindEi(void *, s32);
 }
 extern "C" {
-BOOL func_020bfc48(Unk_020bf4b4 *);
+BOOL SkySprite_FollowShootingStar(SkySprite *);
 }
 extern "C" {
-void *func_02095204(s32);
+void *PlayerActor_GetActor(s32);
 }
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } data_021f14e0; } }
-#define data_021f3010 n12::L_021f3010::data_021f14e0.v
-namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4488 n12::L_021f4488::data_021f14e0.v
+namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } gSkySprites; } }
+#define data_021f3010 n12::L_021f3010::gSkySprites.v
+namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4488 n12::L_021f4488::gSkySprites.v
 extern "C" {
-extern u32 data_021f4768;
+extern u32 gFrameCounter;
 }
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4398 n12::L_021f4398::data_021f14e0.v
+namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4398 n12::L_021f4398::gSkySprites.v
 extern "C" {
-extern u16 data_021ef694[];
+extern u16 sMoonColors[];
 }
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020bf720_Data v; } data_021eff48; } }
-#define data_021f1448 n12::L_021f1448::data_021eff48.v
-namespace L_021f4254 { extern "C" { extern struct S { u8 p[0x2d74]; Unk_020bf77c_Tbl v[1]; } data_021f14e0; } }
-#define data_021f4254 n12::L_021f4254::data_021f14e0.v
-namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; Unk_020bfa08_Data v; } data_021f14e0; } }
-#define data_021f4420 n12::L_021f4420::data_021f14e0.v
+namespace L_021f4254 { extern "C" { extern struct S { u8 p[0x2d74]; SkyMoonPaletteRow v[1]; } gSkySprites; } }
+#define data_021f4254 n12::L_021f4254::gSkySprites.v
 extern "C" {
 extern s16 data_02135f44[];
 }
 extern "C" {
-extern s32 data_020d122c[];
+extern s32 sParticleTrailScales[];
 }
 extern "C" {
-extern s32 data_020d0f28[];
+extern s32 sParticleAnimIds[];
 }
 extern "C" {
-extern s32 data_020d0e44[];
+extern s32 sSnowParallax[];
 }
 extern "C" {
-extern s32 data_020d0e38[];
+extern s32 sSnowFallSpeeds[];
 }
 extern "C" {
-extern s32 data_020d0e2c[];
+extern s32 sSnowAnimIds[];
 }
 extern "C" {
-extern s32 data_020e4638;
+extern s32 sSnowSideToggle;
 }
 extern "C" {
-extern Unk_020bf4b4 data_021f14e0[];
+void SkySprite_ResetMoonPalette(void);
 }
 extern "C" {
-void func_020bf68c(void);
+BOOL SkySprite_CalcMoonPos(void *out);
 }
 extern "C" {
-BOOL func_020bf948(void *out);
+void SkySprite_UpdateMoonPalette(SkySprite *this_);
 }
 extern "C" {
-void func_020bf6b0(Unk_020bf4b4 *this_);
+void SkySprite_InitMoonPalette(SkySprite *this_);
 }
 extern "C" {
-void func_020bf6e8(Unk_020bf4b4 *this_);
+void SkySprite_FadeMoonClarity(SkySprite *this_);
 }
 extern "C" {
-void func_020bf720(Unk_020bf4b4 *this_);
+void SkySprite_SetMoonClarity(SkySprite *this_);
 }
 extern "C" {
-void func_020bf75c(Unk_020bf4b4 *this_);
-}
-extern "C" {
-void func_020bf77c(Unk_020bf4b4 *this_);
+void SkySprite_CalcMoonColors(SkySprite *this_);
 }
 
-extern "C" u32 func_020bf4ac(void *a);
-extern "C" void func_020bf4b4(Unk_020bf4b4 *this_);
-extern "C" void func_020bf5d8(Unk_020bf4b4 *this_, u32 arg);
-extern "C" void func_020bf620(Unk_020bf4b4 *this_);
-extern "C" void func_020bf634(Unk_020bf4b4 *this_);
-extern "C" void func_020bf664(Unk_020bf4b4 *this_);
-extern "C" void func_020bf68c(void);
-extern "C" void func_020bf6b0(Unk_020bf4b4 *this_);
-extern "C" void func_020bf6e8(Unk_020bf4b4 *this_);
-extern "C" void func_020bf720(Unk_020bf4b4 *this_);
-extern "C" void func_020bf75c(Unk_020bf4b4 *this_);
-extern "C" void func_020bf77c(Unk_020bf4b4 *this_);
-extern "C" BOOL func_020bf948(void *out_);
-extern "C" void func_020bfa08(Unk_020bf4b4 *this_);
-extern "C" void func_020bfa1c(Unk_020bf4b4 *this_);
-extern "C" void func_020bfa90(Unk_020bf4b4 *this_);
-extern "C" void func_020bfb60(void *a);
-extern "C" void func_020bfb68(Unk_020bf4b4 *this_);
-extern "C" void func_020bfbf8(Unk_020bf4b4 *this_, s32 arg);
-extern "C" BOOL func_020bfc48(Unk_020bf4b4 *this_);
-extern "C" void func_020bfcc8(void *a);
-extern "C" void func_020bfcd0(Unk_020bf4b4 *this_);
-extern "C" void func_020bfd7c(Unk_020bf4b4 *this_, s32 arg);
+extern "C" u32 SkySprite_EndBalloon(void *a);
+extern "C" void SkySprite_UpdateBalloon(SkySprite *this_);
+extern "C" void SkySprite_InitBalloon(SkySprite *this_, u32 arg);
+extern "C" void SkySprite_EndMoon(SkySprite *this_);
+extern "C" void SkySprite_UpdateMoon(SkySprite *this_);
+extern "C" void SkySprite_InitMoon(SkySprite *this_);
+extern "C" void SkySprite_ResetMoonPalette(void);
+extern "C" void SkySprite_UpdateMoonPalette(SkySprite *this_);
+extern "C" void SkySprite_InitMoonPalette(SkySprite *this_);
+extern "C" void SkySprite_FadeMoonClarity(SkySprite *this_);
+extern "C" void SkySprite_SetMoonClarity(SkySprite *this_);
+extern "C" void SkySprite_CalcMoonColors(SkySprite *this_);
+extern "C" BOOL SkySprite_CalcMoonPos(void *out_);
+extern "C" void SkySprite_EndShootingStar(SkySprite *this_);
+extern "C" void SkySprite_UpdateShootingStar(SkySprite *this_);
+extern "C" void SkySprite_InitShootingStar(SkySprite *this_);
+extern "C" void SkySprite_EndParticle(void *a);
+extern "C" void SkySprite_UpdateParticle(SkySprite *this_);
+extern "C" void SkySprite_InitParticle(SkySprite *this_, s32 arg);
+extern "C" BOOL SkySprite_FollowShootingStar(SkySprite *this_);
+extern "C" void SkySprite_EndSnowFlake(void *a);
+extern "C" void SkySprite_UpdateSnowFlake(SkySprite *this_);
+extern "C" void SkySprite_InitSnowFlake(SkySprite *this_, s32 arg);
 
-extern "C" void func_020bfd7c(Unk_020bf4b4 *this_, s32 arg) {
-    s32 a = func_02063b8c(3);
-    s32 b = func_02063b8c(0x80);
-    s32 g = data_020e4638;
+extern "C" void SkySprite_InitSnowFlake(SkySprite *this_, s32 arg) {
+    s32 a = Random_GlobalBelow(3);
+    s32 b = Random_GlobalBelow(0x80);
+    s32 g = sSnowSideToggle;
     s32 x = (g * b + 0x80) << 12;
-    Unk_020bf4b4_Vec *pos, *vel;
-    data_020e4638 = g * 0xffffffff;
-    pos = (Unk_020bf4b4_Vec *)&this_->unk_34;
-    this_->unk_34 = x;
+    VecFx32 *pos, *vel;
+    sSnowSideToggle = g * 0xffffffff;
+    pos = &this_->screenPos;
+    this_->screenPos.x = x;
     pos->y = -0x14000;
     pos->z = 0;
-    vel = (Unk_020bf4b4_Vec *)&this_->unk_40;
-    this_->unk_40 = 0;
-    vel->y = data_020d0e38[a];
+    vel = &this_->screenVel;
+    this_->screenVel.x = 0;
+    vel->y = sSnowFallSpeeds[a];
     vel->z = 0;
-    this_->unk_60 = func_02063b8c(0x300) + 0x180;
-    this_->unk_64 = func_02063b8c(0x10000);
-    this_->unk_68 = a;
-    this_->unk_6c = x;
-    this_->unk_70 = func_02063b8c(2) + 0x5000;
-    this_->unk_0c = data_020d0e2c[a];
-    this_->unk_58 = 2;
+    this_->work0 = Random_GlobalBelow(0x300) + 0x180;
+    this_->work1 = Random_GlobalBelow(0x10000);
+    this_->work2 = a;
+    this_->work3 = x;
+    this_->work4 = Random_GlobalBelow(2) + 0x5000;
+    this_->animSeq = sSnowAnimIds[a];
+    this_->priority = 2;
     if (arg == 1) {
-        this_->unk_38 = this_->unk_38 + (func_02063b8c(0x1c1) << 12);
+        this_->screenPos.y = this_->screenPos.y + (Random_GlobalBelow(0x1c1) << 12);
     }
 }
 
-extern "C" void func_020bfcd0(Unk_020bf4b4 *this_) {
-    Unk_020bf4b4_Vec *pos = (Unk_020bf4b4_Vec *)&this_->unk_34;
-    Unk_020bfcd0_Obj *o;
+extern "C" void SkySprite_UpdateSnowFlake(SkySprite *this_) {
+    VecFx32 *pos = &this_->screenPos;
+    Actor *o;
     s32 base, ang;
-    func_01ffca8c(pos, &this_->unk_40, pos);
-    o = (Unk_020bfcd0_Obj *)func_02095204(4);
+    VEC_Add(pos, &this_->screenVel, pos);
+    o = (Actor *)PlayerActor_GetActor(4);
     if (o != NULL) {
-        s32 dv = -(o->unk_5c - o->unk_68);
-        dv = (dv * data_020d0e44[this_->unk_68]) >> 12;
-        dv += this_->unk_6c;
-        this_->unk_6c = dv;
+        s32 dv = -(o->position.x - o->prevPosition.x);
+        dv = (dv * sSnowParallax[this_->work2]) >> 12;
+        dv += this_->work3;
+        this_->work3 = dv;
     }
-    base = this_->unk_6c;
-    ang = (s16)((s16)this_->unk_64 + this_->unk_60);
-    this_->unk_64 = ang;
-    { s32 tv = data_02135f44[((u16)ang >> 4) * 2]; s32 sc = this_->unk_70; pos->x = base + ((tv * sc) >> 12); }
+    base = this_->work3;
+    ang = (s16)((s16)this_->work1 + this_->work0);
+    this_->work1 = ang;
+    { s32 tv = data_02135f44[((u16)ang >> 4) * 2]; s32 sc = this_->work4; pos->x = base + ((tv * sc) >> 12); }
     if (pos->y > 0x1d4000) {
-        this_->unk_04 = 3;
+        this_->state = 3;
     } else if (pos->x < -0x14000) {
         pos->x = pos->x + 0x11e000;
     } else if (pos->x > 0x114000) {
@@ -2199,19 +1578,19 @@ extern "C" void func_020bfcd0(Unk_020bf4b4 *this_) {
     }
 }
 
-extern "C" void func_020bfcc8(void *a) { func_020be094(a); }
+extern "C" void SkySprite_EndSnowFlake(void *a) { SkySprite_Release(a); }
 
-extern "C" BOOL func_020bfc48(Unk_020bf4b4 *this_) {
-    Unk_020bfc48_Pad pad;
-    Unk_020bf4b4 *p = &data_021f14e0[_ZN12Unk_020bc58c13func_020bcbd8Ei(data_021f14e0, 3)];
+extern "C" BOOL SkySprite_FollowShootingStar(SkySprite *this_) {
+    SkyShootingStarStackPad pad;
+    SkySprite *p = &n00::gSkySprites.sprites[_ZN10SkySprites8findKindEi(&n00::gSkySprites, 3)];
     BOOL result = FALSE;
-    if (p != NULL && p->unk_04 == 2) {
-        Unk_020bf4b4_Vec *pos = (Unk_020bf4b4_Vec *)&p->unk_34;
-        s32 k = ((s32)((u32)(p->unk_54 << 16) >> 16) >> 4) * 2;
-        s32 d = func_01ffc5a4(0x10000, p->unk_50);
+    if (p != NULL && p->state == 2) {
+        VecFx32 *pos = &p->screenPos;
+        s32 k = ((s32)((u32)(p->angle << 16) >> 16) >> 4) * 2;
+        s32 d = FX_Div(0x10000, p->scaleY);
         s32 y = pos->y + func_01ffcb0c(data_02135f44[k + 1], d);
         s32 x = pos->x - func_01ffcb0c(data_02135f44[k], d);
-        Unk_020bf4b4_Vec *out = (Unk_020bf4b4_Vec *)&this_->unk_34;
+        VecFx32 *out = &this_->screenPos;
         out->x = x;
         out->y = y;
         out->z = 0;
@@ -2220,122 +1599,122 @@ extern "C" BOOL func_020bfc48(Unk_020bf4b4 *this_) {
     return result;
 }
 
-extern "C" void func_020bfbf8(Unk_020bf4b4 *this_, s32 arg) {
+extern "C" void SkySprite_InitParticle(SkySprite *this_, s32 arg) {
     s32 m = arg & 0xf;
-    this_->unk_0c = data_020d0f28[m];
+    this_->animSeq = sParticleAnimIds[m];
     if (m == 1) {
-        this_->unk_58 = 3;
+        this_->priority = 3;
     } else {
-        this_->unk_58 = 2;
+        this_->priority = 2;
     }
-    this_->unk_60 = arg;
-    this_->unk_64 = 0;
+    this_->work0 = arg;
+    this_->work1 = 0;
     if (m == 1) {
-        s32 v = data_020d122c[0];
-        this_->unk_4c = v;
-        this_->unk_50 = v;
-        if (!func_020bfc48(this_)) {
-            this_->unk_04 = 3;
+        s32 v = sParticleTrailScales[0];
+        this_->scaleX = v;
+        this_->scaleY = v;
+        if (!SkySprite_FollowShootingStar(this_)) {
+            this_->state = 3;
         }
     }
 }
 
-extern "C" void func_020bfb68(Unk_020bf4b4 *this_) {
-    s32 m = this_->unk_60 & 0xf;
-    this_->unk_64 = this_->unk_64 + 1;
+extern "C" void SkySprite_UpdateParticle(SkySprite *this_) {
+    s32 m = this_->work0 & 0xf;
+    this_->work1 = this_->work1 + 1;
     if (m == 0) {
-        func_020e9888(&this_->unk_40, 0xe66);
-        func_01ffca8c(&this_->unk_34, &this_->unk_40, &this_->unk_34);
-        if (_ZN12Unk_0208927013func_020891d8Ev(&this_->unk_10)) {
-            this_->unk_04 = 3;
+        Vec_Scale(&this_->screenVel, 0xe66);
+        VEC_Add(&this_->screenPos, &this_->screenVel, &this_->screenPos);
+        if (_ZN10SpriteAnim10isFinishedEv(&this_->anim)) {
+            this_->state = 3;
         }
     } else if (m == 1) {
-        s32 n = this_->unk_64;
-        s32 v = data_020d122c[n];
+        s32 n = this_->work1;
+        s32 v = sParticleTrailScales[n];
         if (n >= 0x17) {
-            this_->unk_04 = 3;
+            this_->state = 3;
         } else {
-            this_->unk_4c = v;
-            this_->unk_50 = v;
-            *(u16 *)&this_->unk_54 += 0xe39;
-            if (!func_020bfc48(this_)) {
-                this_->unk_04 = 3;
+            this_->scaleX = v;
+            this_->scaleY = v;
+            *(u16 *)&this_->angle += 0xe39;
+            if (!SkySprite_FollowShootingStar(this_)) {
+                this_->state = 3;
             }
         }
-    } else if (this_->unk_64 >= 6) {
-        this_->unk_04 = 3;
+    } else if (this_->work1 >= 6) {
+        this_->state = 3;
     }
 }
 
-extern "C" void func_020bfb60(void *a) { func_020be094(a); }
+extern "C" void SkySprite_EndParticle(void *a) { SkySprite_Release(a); }
 
-extern "C" void func_020bfa90(Unk_020bf4b4 *this_) {
+extern "C" void SkySprite_InitShootingStar(SkySprite *this_) {
     s32 ang, x, y, sn, cs, k, nx, ny;
-    this_->unk_4c = 0x1000;
-    this_->unk_50 = 0x800;
-    if (func_02063b8c(2) == 0) {
-        x = (func_02063b8c(0x3c) + 0xc4) << 12;
+    this_->scaleX = 0x1000;
+    this_->scaleY = 0x800;
+    if (Random_GlobalBelow(2) == 0) {
+        x = (Random_GlobalBelow(0x3c) + 0xc4) << 12;
         y = 0;
     } else {
         x = 0x100000;
-        y = func_02063b8c(0x30) << 12;
+        y = Random_GlobalBelow(0x30) << 12;
     }
-    ang = func_020e7b98((func_02063b8c(0x17) + 0x80 << 12) - y, -x);
+    ang = Math_Atan2((Random_GlobalBelow(0x17) + 0x80 << 12) - y, -x);
     k = ((u16)ang >> 4) * 2;
     sn = data_02135f44[k];
     cs = data_02135f44[k + 1];
     x -= cs * 0x23;
     y -= sn * 0x23;
-    this_->unk_34 = x;
-    this_->unk_38 = y;
-    this_->unk_3c = 0;
-    this_->unk_40 = func_01ffcb0c(cs, 0x7800);
-    this_->unk_44 = func_01ffcb0c(sn, 0x7800);
-    this_->unk_48 = 0;
-    this_->unk_54 = ang - 0x4000;
-    this_->unk_0c = 0x11;
-    this_->unk_58 = 3;
-    data_021f4420.unk_10 = 0;
-    func_020bdd24(this_, 6, 0x801);
+    this_->screenPos.x = x;
+    this_->screenPos.y = y;
+    this_->screenPos.z = 0;
+    this_->screenVel.x = func_01ffcb0c(cs, 0x7800);
+    this_->screenVel.y = func_01ffcb0c(sn, 0x7800);
+    this_->screenVel.z = 0;
+    this_->angle = ang - 0x4000;
+    this_->animSeq = 0x11;
+    this_->priority = 3;
+    n00::gSkySprites.shootingStarVisible = 0;
+    SkySprite_RequestSeSustainedOn(this_, 6, 0x801);
 }
 
-extern "C" void func_020bfa1c(Unk_020bf4b4 *this_) {
-    func_01ffca8c(&this_->unk_34, &this_->unk_40, &this_->unk_34);
-    s32 x = this_->unk_34 >> 12;
+extern "C" void SkySprite_UpdateShootingStar(SkySprite *this_) {
+    VEC_Add(&this_->screenPos, &this_->screenVel, &this_->screenPos);
+    s32 x = this_->screenPos.x >> 12;
     BOOL out;
-    s32 y = this_->unk_38 >> 12;
+    s32 y = this_->screenPos.y >> 12;
     if (y < -0x23 || y > 0xca || x < -0x23 || x > 0x123) {
         out = TRUE;
     } else {
         out = FALSE;
     }
     s32 in;
-    if (this_->unk_60 == 0 && !out && y > 0 && y < 0xc0 && x > 0 && x < 0x100) {
+    if (this_->work0 == 0 && !out && y > 0 && y < 0xc0 && x > 0 && x < 0x100) {
         in = 1;
     } else {
         in = 0;
     }
-    data_021f4420.unk_10 = in;
+    n00::gSkySprites.shootingStarVisible = in;
     if (out) {
-        this_->unk_04 = 3;
+        this_->state = 3;
     }
 }
 
-extern "C" void func_020bfa08(Unk_020bf4b4 *this_) {
-    data_021f4420.unk_10 = 0;
-    func_020be094(this_);
+extern "C" void SkySprite_EndShootingStar(SkySprite *this_) {
+    n00::gSkySprites.shootingStarVisible = 0;
+    SkySprite_Release(this_);
 }
 
-extern "C" BOOL func_020bf948(void *out_) {
+extern "C" BOOL SkySprite_CalcMoonPos(void *out_) {
     s32 *out = (s32 *)out_;
     BOOL ok = TRUE;
     u8 d[4];
     u32 b, a, base, off, x;
     s32 r, y;
-    func_0209cf18(d);
+    Clock_GetMinuteHour(d);
     b = d[1];
     a = d[0];
-    base = func_0209cf00();
+    base = Clock_GetSecond();
     off = 0;
     if (b >= 0x13) {
         off = base + (a * 0x3c + (b - 0x13) * 0xe10);
@@ -2348,8 +1727,8 @@ extern "C" BOOL func_020bf948(void *out_) {
         x = _u32_div_f(off << 12, 0x7e90);
         r = func_01ffcb0c(0xffee0000, x) + 0x110000;
         y = func_01ffcb0c(x - 0x800, x - 0x800);
-        y = func_01ffc538(0x1000 - y);
-        y = func_01ffc5a4(y - 0xddb, 0x225);
+        y = FX_Sqrt(0x1000 - y);
+        y = FX_Div(y - 0xddb, 0x225);
         out[0] = r;
         y <<= 4;
         y = -y;
@@ -2359,262 +1738,258 @@ extern "C" BOOL func_020bf948(void *out_) {
     return ok;
 }
 
-extern "C" void func_020bf77c(Unk_020bf4b4 *this_) {
-    Unk_020bf77c_Rec rec;
-    Unk_020bf77c_Tbl *t0;
-    Unk_020bf77c_Tbl *t1;
+extern "C" void SkySprite_CalcMoonColors(SkySprite *this_) {
+    MoonColorBlend rec;
+    SkyMoonPaletteRow *t0;
+    SkyMoonPaletteRow *t1;
     s32 inv, v0, v1, v2, v3, v4, v5, w0, w1, t;
     u32 i;
     s32 r7, r5;
-    func_0209cf18(&rec);
-    u32 idx = rec.unk_01;
-    u32 mon = rec.unk_00;
+    Clock_GetMinuteHour(&rec);
+    u32 idx = rec.hour;
+    u32 mon = rec.minute;
     if (idx >= 0x13) idx -= 0x13; else idx += 5;
     t0 = &data_021f4254[idx];
     t1 = &data_021f4254[idx + 1];
-    t = this_->unk_6c;
+    t = this_->work3;
     inv = 0x1000 - t;
     r7 = _s32_div_f(mon << 12, 60);
     r5 = 0x1000 - r7;
     for (i = 0; i < 5; i++) {
         s32 w2;
-        *(u16 *)&rec.unk_02 = t0->b[i];
-        *(u16 *)&rec.unk_04 = t1->b[i];
-        *(u16 *)&rec.unk_06 = t0->a[i];
-        *(u16 *)&rec.unk_08 = t1->a[i];
-        v0 = func_01ffcb0c(rec.unk_02.r << 12, r5) + func_01ffcb0c(rec.unk_04.r << 12, r7);
-        v1 = func_01ffcb0c(rec.unk_02.g << 12, r5) + func_01ffcb0c(rec.unk_04.g << 12, r7);
-        v2 = func_01ffcb0c(rec.unk_02.b << 12, r5) + func_01ffcb0c(rec.unk_04.b << 12, r7);
-        v3 = func_01ffcb0c(rec.unk_06.r << 12, r5) + func_01ffcb0c(rec.unk_08.r << 12, r7);
-        v4 = func_01ffcb0c(rec.unk_06.g << 12, r5) + func_01ffcb0c(rec.unk_08.g << 12, r7);
-        v5 = func_01ffcb0c(rec.unk_06.b << 12, r5) + func_01ffcb0c(rec.unk_08.b << 12, r7);
+        *(u16 *)&rec.clearColor = t0->clearColors[i];
+        *(u16 *)&rec.clearColorNext = t1->clearColors[i];
+        *(u16 *)&rec.cloudyColor = t0->cloudyColors[i];
+        *(u16 *)&rec.cloudyColorNext = t1->cloudyColors[i];
+        v0 = func_01ffcb0c(rec.clearColor.r << 12, r5) + func_01ffcb0c(rec.clearColorNext.r << 12, r7);
+        v1 = func_01ffcb0c(rec.clearColor.g << 12, r5) + func_01ffcb0c(rec.clearColorNext.g << 12, r7);
+        v2 = func_01ffcb0c(rec.clearColor.b << 12, r5) + func_01ffcb0c(rec.clearColorNext.b << 12, r7);
+        v3 = func_01ffcb0c(rec.cloudyColor.r << 12, r5) + func_01ffcb0c(rec.cloudyColorNext.r << 12, r7);
+        v4 = func_01ffcb0c(rec.cloudyColor.g << 12, r5) + func_01ffcb0c(rec.cloudyColorNext.g << 12, r7);
+        v5 = func_01ffcb0c(rec.cloudyColor.b << 12, r5) + func_01ffcb0c(rec.cloudyColorNext.b << 12, r7);
         w0 = func_01ffcb0c(v0, t) + func_01ffcb0c(v3, inv);
         w1 = func_01ffcb0c(v1, t) + func_01ffcb0c(v4, inv);
         w2 = func_01ffcb0c(v2, t) + func_01ffcb0c(v5, inv);
-        rec.unk_0a = (((w2 + 0x800) >> 12) << 10) | (((w0 + 0x800) >> 12) | (((w1 + 0x800) >> 12) << 5));
-        data_021ef694[i] = rec.unk_0a;
+        rec.blended = (((w2 + 0x800) >> 12) << 10) | (((w0 + 0x800) >> 12) | (((w1 + 0x800) >> 12) << 5));
+        sMoonColors[i] = rec.blended;
     }
 }
 
-extern "C" void func_020bf75c(Unk_020bf4b4 *this_) {
-    s32 s = data_021f1448.unk_24;
+extern "C" void SkySprite_SetMoonClarity(SkySprite *this_) {
+    s32 s = n00::gWeatherManager.level;
     s32 f;
     if (s != 3 && s != 4) {
         f = 0x1000;
     } else {
         f = 0;
     }
-    this_->unk_6c = f;
+    this_->work3 = f;
 }
 
-extern "C" void func_020bf720(Unk_020bf4b4 *this_) {
+extern "C" void SkySprite_FadeMoonClarity(SkySprite *this_) {
     s32 v;
-    s32 s = data_021f1448.unk_28;
+    s32 s = n00::gWeatherManager.targetLevel;
     s32 f;
     if (s != 3 && s != 4) {
         f = 0x1000;
     } else {
         f = 0;
     }
-    v = this_->unk_6c;
-    func_020e759c(&v, f, 0x100);
-    this_->unk_6c = v;
+    v = this_->work3;
+    Math_StepS32Alt(&v, f, 0x100);
+    this_->work3 = v;
 }
 
-extern "C" void func_020bf6e8(Unk_020bf4b4 *this_) {
+extern "C" void SkySprite_InitMoonPalette(SkySprite *this_) {
     u8 *p = data_021f4398;
-    func_020bf75c(this_);
-    func_020bf77c(this_);
+    SkySprite_SetMoonClarity(this_);
+    SkySprite_CalcMoonColors(this_);
     for (u32 i = 0; i < 5; i++) {
-        _ZN12Unk_020bd71813func_020bd718EiPt(p, i + 10, &data_021ef694[i]);
+        _ZN13SkyObjPalette11setOverrideEiPt(p, i + 10, &sMoonColors[i]);
     }
 }
 
-extern "C" void func_020bf6b0(Unk_020bf4b4 *this_) {
+extern "C" void SkySprite_UpdateMoonPalette(SkySprite *this_) {
     u8 *p = data_021f4398;
-    func_020bf720(this_);
-    func_020bf77c(this_);
+    SkySprite_FadeMoonClarity(this_);
+    SkySprite_CalcMoonColors(this_);
     for (u32 i = 0; i < 5; i++) {
-        _ZN12Unk_020bd71813func_020bd718EiPt(p, i + 10, &data_021ef694[i]);
+        _ZN13SkyObjPalette11setOverrideEiPt(p, i + 10, &sMoonColors[i]);
     }
 }
 
-extern "C" void func_020bf68c(void) {
+extern "C" void SkySprite_ResetMoonPalette(void) {
     u8 *p = data_021f4398;
     for (u32 i = 0; i < 5; i++) {
-        _ZN12Unk_020bd71813func_020bd758Ei(p, i + 10);
+        _ZN13SkyObjPalette13clearOverrideEi(p, i + 10);
     }
 }
 
-extern "C" void func_020bf664(Unk_020bf4b4 *this_) {
-    if (func_020bf948(&this_->unk_34)) {
-        this_->unk_0c = 0x12;
-        this_->unk_58 = 3;
-        func_020bf6e8(this_);
+extern "C" void SkySprite_InitMoon(SkySprite *this_) {
+    if (SkySprite_CalcMoonPos(&this_->screenPos)) {
+        this_->animSeq = 0x12;
+        this_->priority = 3;
+        SkySprite_InitMoonPalette(this_);
     } else {
-        this_->unk_04 = 3;
+        this_->state = 3;
     }
 }
 
-extern "C" void func_020bf634(Unk_020bf4b4 *this_) {
-    if ((data_021f4768 & 0x7f) == 0) {
-        if (!func_020bf948(&this_->unk_34)) {
-            this_->unk_04 = 3;
+extern "C" void SkySprite_UpdateMoon(SkySprite *this_) {
+    if ((gFrameCounter & 0x7f) == 0) {
+        if (!SkySprite_CalcMoonPos(&this_->screenPos)) {
+            this_->state = 3;
         }
-        func_020bf6b0(this_);
+        SkySprite_UpdateMoonPalette(this_);
     }
 }
 
-extern "C" void func_020bf620(Unk_020bf4b4 *this_) {
-    func_020bf68c();
-    func_020be094(this_);
+extern "C" void SkySprite_EndMoon(SkySprite *this_) {
+    SkySprite_ResetMoonPalette();
+    SkySprite_Release(this_);
 }
 
-extern "C" void func_020bf5d8(Unk_020bf4b4 *this_, u32 arg) {
-    func_020be06c(this_, func_02063b8c(2) == 0 ? 1 : 0, 0x3e8);
-    this_->unk_0c = 1;
-    this_->unk_58 = 2;
-    this_->unk_60 = 0;
+extern "C" void SkySprite_InitBalloon(SkySprite *this_, u32 arg) {
+    SkySprite_BeginCrossing(this_, Random_GlobalBelow(2) == 0 ? 1 : 0, 0x3e8);
+    this_->animSeq = 1;
+    this_->priority = 2;
+    this_->work0 = 0;
     arg &= 1;
-    this_->unk_64 = arg != 0 ? 1 : 0;
-    this_->unk_68 = 0;
+    this_->work1 = arg != 0 ? 1 : 0;
+    this_->work2 = 0;
 }
 
-extern "C" void func_020bf4b4(Unk_020bf4b4 *this_) {
+extern "C" void SkySprite_UpdateBalloon(SkySprite *this_) {
     s32 t;
-    if (this_->unk_60 == 0) {
-        if (func_020be018(this_, 0x1ec, 0x5000, 0x3e8)) {
-            this_->unk_04 = 3;
-        } else if (func_020bde0c(this_, 0xe000, 0x1a000, -0x3000)) {
-            t = this_->unk_08 + 1;
-            func_020bd964(data_021f3010 + this_->unk_24 * 12, t);
-            this_->unk_08 = t;
-            _ZN12Unk_020bd1b013func_020bd67cEh(data_021f4488, this_->unk_64 != 0 ? 1 : 0);
-            func_020bdd70(this_, 0x7f8);
-            this_->unk_60 = 1;
+    if (this_->work0 == 0) {
+        if (SkySprite_AdvanceCrossing(this_, 0x1ec, 0x5000, 0x3e8)) {
+            this_->state = 3;
+        } else if (SkySprite_CheckShotHit(this_, 0xe000, 0x1a000, -0x3000)) {
+            t = this_->gfxId + 1;
+            SkyObjGfxSlot_SetGfx(data_021f3010 + this_->gfxSlot * 12, t);
+            this_->gfxId = t;
+            _ZN15SkyShotSequence12onBalloonHitEh(data_021f4488, this_->work1 != 0 ? 1 : 0);
+            SkySprite_RequestSeSustained(this_, 0x7f8);
+            this_->work0 = 1;
         } else {
-            func_020bdd4c(this_, 0x7f7);
+            SkySprite_RequestSe(this_, 0x7f7);
         }
-    } else if (this_->unk_60 == 1) {
-        this_->unk_0c = 0;
-        func_020be0bc(this_);
-        this_->unk_40 = 0;
-        this_->unk_44 = -0x800;
-        this_->unk_48 = 0;
-        this_->unk_60 = 2;
-        this_->unk_68 = 0;
+    } else if (this_->work0 == 1) {
+        this_->animSeq = 0;
+        SkySprite_StartAnim(this_);
+        this_->screenVel.x = 0;
+        this_->screenVel.y = -0x800;
+        this_->screenVel.z = 0;
+        this_->work0 = 2;
+        this_->work2 = 0;
     } else {
-        this_->unk_44 += 0x666;
-        this_->unk_44 = func_01ffcb0c(this_->unk_44, 0xfd7);
-        func_01ffca8c(&this_->unk_34, &this_->unk_40, &this_->unk_34);
-        if (this_->unk_38 > 0xd0000) {
-            _ZN12Unk_020bd1b013func_020bd668Ev(data_021f4488);
-            this_->unk_04 = 3;
+        this_->screenVel.y += 0x666;
+        this_->screenVel.y = func_01ffcb0c(this_->screenVel.y, 0xfd7);
+        VEC_Add(&this_->screenPos, &this_->screenVel, &this_->screenPos);
+        if (this_->screenPos.y > 0xd0000) {
+            _ZN15SkyShotSequence13onBalloonFellEv(data_021f4488);
+            this_->state = 3;
         }
     }
-    if (this_->unk_60 >= 1) {
-        _ZN12Unk_020bd1b013func_020bd604Eiiih(data_021f4488, this_->unk_34, this_->unk_38, this_->unk_4c, this_->unk_2e == 0 ? 1 : 0);
+    if ((s32)this_->work0 >= 1) {
+        _ZN15SkyShotSequence9setTargetEiiih(data_021f4488, this_->screenPos.x, this_->screenPos.y, this_->scaleX, this_->dir == 0 ? 1 : 0);
     }
 }
 
-extern "C" u32 func_020bf4ac(void *a) { return func_020be094(a); }
+extern "C" u32 SkySprite_EndBalloon(void *a) { return SkySprite_Release(a); }
 
 #undef data_021f3010
 #undef data_021f4488
 #undef data_021f4398
-#undef data_021f1448
 #undef data_021f4254
-#undef data_021f4420
 }
 
 // ======== unk_020beb40.cpp ========
 namespace n11 {
-struct Unk_021f3010;
-struct Unk_021f3010 { s32 unk_00; s32 unk_04; u8 unk_08; u8 unk_09; u8 pad[2]; };
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-void func_01ffca8c(Unk_020be018_Vec *a, Unk_020be018_Vec *b, Unk_020be018_Vec *out);
+void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
 }
 extern "C" {
-void func_020e9888(Unk_020be018_Vec *v, s32 scale);
+void Vec_Scale(VecFx32 *v, s32 scale);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_02089244Ev(void *p);
+s32 _ZN10SpriteAnim13getFrameIndexEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_020891d8Ev(void *p);
+s32 _ZN10SpriteAnim10isFinishedEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_020891d0Ev(void *p);
+void _ZN10SpriteAnim5pauseEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_020891bcEv(void *p);
+void _ZN10SpriteAnim7restartEv(void *p);
 }
 extern "C" {
-s32 func_020bd950(Unk_021f3010 *p, s32 v);
+s32 SkyObjGfxSlot_RefreshPalette(SkyObjGfxSlot *p, s32 v);
 }
 extern "C" {
-void func_020bd964(Unk_021f3010 *p, s32 v);
+void SkyObjGfxSlot_SetGfx(SkyObjGfxSlot *p, s32 v);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd604Eiiih(void *p, s32 a, s32 b, s32 c, BOOL d);
+void _ZN15SkyShotSequence9setTargetEiiih(void *p, s32 a, s32 b, s32 c, BOOL d);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd618Ev(void *p);
+void _ZN15SkyShotSequence10onPeteFellEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd624Ev(void *p);
+void _ZN15SkyShotSequence9onPeteHitEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd640Ev(void *p);
+void _ZN15SkyShotSequence9onUfoFellEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd64cEv(void *p);
+void _ZN15SkyShotSequence8onUfoHitEv(void *p);
 }
 extern "C" {
-void func_02040208(s32 a);
+void EventWeekSlots_MarkTodaySeen(s32 a);
 }
 extern "C" {
-s32 func_02094348();
+s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
-s32 func_020947f0();
+s32 PlayerActor_GetBodyPos();
 }
 extern "C" {
-void func_020b17e0(s32 a, BOOL b);
+void Town_PlaceGulliverShip(s32 a, BOOL b);
 }
 extern "C" {
-void _ZN12Unk_0209da4413func_0209e148Ej(void *p, s32 a);
+void _ZN8SaveData7setFlagEj(void *p, s32 a);
 }
 extern "C" {
-s32 func_020beef8(s32 a, s32 flag);
+s32 SkySprite_GetFireworkPalIndex(s32 a, s32 flag);
 }
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; Unk_021f4398 v; } data_021f14e0; } }
-#define data_021f4398 n11::L_021f4398::data_021f14e0.v
-namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4488 n11::L_021f4488::data_021f14e0.v
+namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; SkyObjPalette v; } gSkySprites; } }
+#define data_021f4398 n11::L_021f4398::gSkySprites.v
+namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4488 n11::L_021f4488::gSkySprites.v
 extern "C" {
-extern u8 data_021d7350[];
-}
-extern "C" {
-extern u8 data_021f14e0[];
+extern u8 gSaveData[];
 }
 extern "C" {
-extern Unk_020bf1d8_Vec data_021c309c;
+extern u8 gSkySprites[];
 }
 extern "C" {
-extern Unk_020bf1d8_Vec data_021f4880;
+extern VecFx32Copy gCameraLookAt;
+}
+extern "C" {
+extern VecFx32Copy gVec3Zero;
 }
 extern "C" {
 extern s32 data_020c8cb8;
@@ -2623,283 +1998,283 @@ extern "C" {
 extern s32 data_020c8cbc;
 }
 extern "C" {
-extern s32 data_020d0e0c[];
+extern s32 sFireworkFlicker[];
 }
 extern "C" {
-extern Unk_020bec40_Pair data_020d0e80[];
+extern FireworkColorPair sFireworkColors[];
 }
 extern "C" {
-extern s32 data_020d0f80[];
+extern s32 sFireworkScaleBig[];
 }
 extern "C" {
-extern s32 data_020d0fa4[];
+extern s32 sFireworkScaleSmall[];
 }
 extern "C" {
-extern s32 data_020d1288[];
+extern s32 sFireworkScaleBigLong[];
 }
 extern "C" {
-extern s32 data_020d1338[];
+extern s32 sFireworkScaleSmallLong[];
 }
 extern "C" {
 extern s16 data_02135f44[];
 }
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[1]; } data_021f14e0; } }
-#define data_021f3010 n11::L_021f3010::data_021f14e0.v
+namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[1]; } gSkySprites; } }
+#define data_021f3010 n11::L_021f3010::gSkySprites.v
 extern "C" {
-Unk_020be018 *_ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(void *tab, s32 a, s32 b, void *pos, s32 c);
+SkySprite *_ZN10SkySprites5spawnEiiP7VecFx32i(void *tab, s32 a, s32 b, void *pos, s32 c);
 }
 extern "C" {
-void func_020bf18c(Unk_020be018_Vec *pos, s32 scale, s32 speed);
+void SkySprite_SpawnHitParticle(VecFx32 *pos, s32 scale, s32 speed);
 }
 extern "C" {
-Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b);
+Unk_020bee28_Vec2 SkySprite_ProjectFirework(s32 a, s32 b);
 }
 
-extern "C" Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b);
-extern "C" s32 func_020beef8(s32 a, s32 flag);
-extern "C" void func_020bf18c(Unk_020be018_Vec *pos, s32 scale, s32 speed);
+extern "C" Unk_020bee28_Vec2 SkySprite_ProjectFirework(s32 a, s32 b);
+extern "C" s32 SkySprite_GetFireworkPalIndex(s32 a, s32 flag);
+extern "C" void SkySprite_SpawnHitParticle(VecFx32 *pos, s32 scale, s32 speed);
 
 }
-void Unk_020be018::func_020bf400()
+void SkySprite::spawnUfoDebris()
 {
     using namespace n11;
-    if (unk_64 > 0) {
-        if (unk_64 == 1) {
+    if (work1 > 0) {
+        if (work1 == 1) {
             s32 r4, scale, y, q, idx;
-            unk_64 = func_02063b8c(2) + 1;
-            r4 = func_02063b8c(2) + 2;
-            scale = unk_4c;
-            q = func_01ffc5a4(func_02063b8c(0x10) << 12, scale);
-            idx = ((u16)(s16)func_02063b8c(0x10000) >> 4) << 1;
-            y = unk_34.y + func_01ffcb0c(q, data_02135f44[idx]);
-            Unk_020be018_Vec pos;
-            pos.x = unk_34.x + func_01ffcb0c(q, data_02135f44[idx + 1]);
+            work1 = Random_GlobalBelow(2) + 1;
+            r4 = Random_GlobalBelow(2) + 2;
+            scale = scaleX;
+            q = FX_Div(Random_GlobalBelow(0x10) << 12, scale);
+            idx = ((u16)(s16)Random_GlobalBelow(0x10000) >> 4) << 1;
+            y = screenPos.y + func_01ffcb0c(q, data_02135f44[idx]);
+            VecFx32 pos;
+            pos.x = screenPos.x + func_01ffcb0c(q, data_02135f44[idx + 1]);
             pos.y = y;
             pos.z = 0;
-            Unk_020be018 *o = _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(data_021f14e0, 2, 0x3c, &pos, r4 & 0xf);
+            SkySprite *o = _ZN10SkySprites5spawnEiiP7VecFx32i(gSkySprites, 2, 0x3c, &pos, r4 & 0xf);
             if (o) {
-                o->unk_4c = scale;
-                o->unk_50 = scale;
+                o->scaleX = scale;
+                o->scaleY = scale;
             }
         } else {
-            unk_64 = unk_64 - 1;
+            work1 = work1 - 1;
         }
     }
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bf3bc()
+void SkySprite::initUfo()
 {
     using namespace n11;
-    func_020be06c(func_02063b8c(2) == 0 ? 1 : 0, 0x1000);
-    unk_0c = 0x16;
-    unk_58 = 2;
-    _ZN12Unk_0209da4413func_0209e148Ej(data_021d7350, 9);
-    unk_60 = 0;
-    unk_64 = 0;
-    unk_68 = 0;
+    beginCrossing(Random_GlobalBelow(2) == 0 ? 1 : 0, 0x1000);
+    animSeq = 0x16;
+    priority = 2;
+    _ZN8SaveData7setFlagEj(gSaveData, 9);
+    work0 = 0;
+    work1 = 0;
+    work2 = 0;
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bf1d8()
+void SkySprite::updateUfo()
 {
     using namespace n11;
-    if (unk_60 == 0) {
-        if (func_020be018(0x385, 0x1000, 0xfa0)) {
-            unk_04 = 3;
-        } else if (func_020bde0c(0x1a000, 0xc000, 0x5000)) {
-            func_020bd964(data_021f3010 + unk_24, 0x24);
-            unk_08 = 0x24;
-            func_020bdd70(0x7fc);
-            _ZN12Unk_020bd1b013func_020bd64cEv(data_021f4488);
-            unk_60 = 1;
+    if (work0 == 0) {
+        if (advanceCrossing(0x385, 0x1000, 0xfa0)) {
+            state = 3;
+        } else if (checkShotHit(0x1a000, 0xc000, 0x5000)) {
+            SkyObjGfxSlot_SetGfx(data_021f3010 + gfxSlot, 0x24);
+            gfxId = 0x24;
+            requestSeSustained(0x7fc);
+            _ZN15SkyShotSequence8onUfoHitEv(data_021f4488);
+            work0 = 1;
         } else {
-            func_020bdd4c(0x7fb);
+            requestSe(0x7fb);
         }
-    } else if (unk_60 == 1) {
-        unk_0c = 0x17;
-        func_020be0bc();
-        unk_40.x = unk_2e ? 0x2666 : -0x2666;
-        unk_40.y = -0x399a;
-        unk_40.z = 0;
-        unk_60 = 2;
-    } else if (unk_60 == 2) {
-        if (_ZN12Unk_0208927013func_020891d8Ev(unk_10)) {
-            func_020bd964(data_021f3010 + unk_24, 0x25);
-            unk_08 = 0x25;
-            unk_60 = 3;
-            unk_64 = 1;
+    } else if (work0 == 1) {
+        animSeq = 0x17;
+        startAnim();
+        screenVel.x = dir ? 0x2666 : -0x2666;
+        screenVel.y = -0x399a;
+        screenVel.z = 0;
+        work0 = 2;
+    } else if (work0 == 2) {
+        if (_ZN10SpriteAnim10isFinishedEv(&anim)) {
+            SkyObjGfxSlot_SetGfx(data_021f3010 + gfxSlot, 0x25);
+            gfxId = 0x25;
+            work0 = 3;
+            work1 = 1;
         }
-    } else if (unk_60 == 3) {
-        unk_0c = 0x18;
-        func_020be0bc();
-        unk_60 = 4;
-        unk_68 = 0;
-    } else if (unk_60 == 4) {
-        if (unk_34.y > 0xd0000) {
-            func_02040208(0x44);
-            func_02094348();
-            s32 obj = func_020947f0();
-            func_020b17e0(obj, unk_2e == 0 ? 1 : 0);
-            _ZN12Unk_020bd1b013func_020bd640Ev(data_021f4488);
-            unk_04 = 3;
+    } else if (work0 == 3) {
+        animSeq = 0x18;
+        startAnim();
+        work0 = 4;
+        work2 = 0;
+    } else if (work0 == 4) {
+        if (screenPos.y > 0xd0000) {
+            EventWeekSlots_MarkTodaySeen(0x44);
+            PlayerActor_GetLocalSessionSlot();
+            s32 obj = PlayerActor_GetBodyPos();
+            Town_PlaceGulliverShip(obj, dir == 0 ? 1 : 0);
+            _ZN15SkyShotSequence9onUfoFellEv(data_021f4488);
+            state = 3;
         }
     }
-    if ((s32)unk_60 >= 2) {
-        Unk_020bf1d8_Vec v = data_021f4880;
+    if ((s32)work0 >= 2) {
+        VecFx32Copy v = gVec3Zero;
         s32 sc;
-        if ((s32)unk_60 >= 4) {
-            v.x = unk_2e ? 0x19a : -0x19a;
+        if ((s32)work0 >= 4) {
+            v.x = dir ? 0x19a : -0x19a;
             v.y = 0x19a;
             sc = 0xfd7;
         } else {
             v.y = 0x800;
             sc = 0x1000;
         }
-        func_01ffca8c(&unk_40, (Unk_020be018_Vec *)&v, &unk_40);
-        func_020e9888(&unk_40, sc);
-        func_01ffca8c(&unk_34, &unk_40, &unk_34);
+        VEC_Add(&screenVel, (VecFx32 *)&v, &screenVel);
+        Vec_Scale(&screenVel, sc);
+        VEC_Add(&screenPos, &screenVel, &screenPos);
     }
-    if ((s32)unk_60 >= 1) {
-        _ZN12Unk_020bd1b013func_020bd604Eiiih(data_021f4488, unk_34.x, unk_34.y, unk_4c, unk_2e == 0 ? 1 : 0);
+    if ((s32)work0 >= 1) {
+        _ZN15SkyShotSequence9setTargetEiiih(data_021f4488, screenPos.x, screenPos.y, scaleX, dir == 0 ? 1 : 0);
     }
-    func_020bf400();
+    spawnUfoDebris();
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bf1d0()
+void SkySprite::endUfo()
 {
     using namespace n11;
-    func_020be094();
+    release();
 }
 namespace n11 {
 
-extern "C" void func_020bf18c(Unk_020be018_Vec *pos, s32 scale, s32 speed)
+extern "C" void SkySprite_SpawnHitParticle(VecFx32 *pos, s32 scale, s32 speed)
 {
-    Unk_020bf18c_Pad tmp;
-    Unk_020be018 *o = _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(data_021f14e0, 2, 0x3c, pos, 0);
+    SkyParticleStackPad tmp;
+    SkySprite *o = _ZN10SkySprites5spawnEiiP7VecFx32i(gSkySprites, 2, 0x3c, pos, 0);
     if (o) {
-        o->unk_4c = scale;
-        o->unk_50 = scale;
-        o->unk_40.x = func_01ffcb0c(speed, 0x800);
-        o->unk_40.y = 0;
-        o->unk_40.z = 0;
+        o->scaleX = scale;
+        o->scaleY = scale;
+        o->screenVel.x = func_01ffcb0c(speed, 0x800);
+        o->screenVel.y = 0;
+        o->screenVel.z = 0;
     }
 }
 
 }
-void Unk_020be018::func_020bf15c()
+void SkySprite::initPete()
 {
     using namespace n11;
-    func_020be06c(unk_08 == 0x28 ? 1 : 0, 0x8000);
-    unk_0c = 0x13;
-    unk_58 = 2;
-    unk_60 = 0;
-    unk_64 = 0;
+    beginCrossing(gfxId == 0x28 ? 1 : 0, 0x8000);
+    animSeq = 0x13;
+    priority = 2;
+    work0 = 0;
+    work1 = 0;
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bef98()
+void SkySprite::updatePete()
 {
     using namespace n11;
-    if (unk_60 == 0) {
-        if (func_020be018(0x30a, 0x8000, -100)) {
-            unk_04 = 3;
-        } else if (func_020bde0c(0x1b000, 0x15000, 0)) {
-            s32 t = unk_08 + 1;
-            func_020bd964(data_021f3010 + unk_24, t);
-            unk_08 = t;
-            _ZN12Unk_020bd1b013func_020bd624Ev(data_021f4488);
-            func_020bdd70(0x7ff);
-            unk_60 = 1;
-            unk_64 = 0;
-        } else if (_ZN12Unk_0208927013func_02089244Ev(unk_10) == 0) {
-            if (unk_64++ == 0) func_020bdd70(0x7fe);
+    if (work0 == 0) {
+        if (advanceCrossing(0x30a, 0x8000, -100)) {
+            state = 3;
+        } else if (checkShotHit(0x1b000, 0x15000, 0)) {
+            s32 t = gfxId + 1;
+            SkyObjGfxSlot_SetGfx(data_021f3010 + gfxSlot, t);
+            gfxId = t;
+            _ZN15SkyShotSequence9onPeteHitEv(data_021f4488);
+            requestSeSustained(0x7ff);
+            work0 = 1;
+            work1 = 0;
+        } else if (_ZN10SpriteAnim13getFrameIndexEv(&anim) == 0) {
+            if (work1++ == 0) requestSeSustained(0x7fe);
         } else {
-            unk_64 = 0;
+            work1 = 0;
         }
-    } else if (unk_60 == 1) {
-        unk_0c = 0x14;
-        func_020be0bc();
-        _ZN12Unk_0208927013func_020891d0Ev(unk_10);
-        unk_40.x = unk_2e ? 0x3c00 : -0x3c00;
-        unk_40.y = -0x4000;
-        unk_40.z = 0;
-        func_020bf18c(&unk_34, unk_4c, unk_40.x);
-        unk_4c = func_01ffcb0c(unk_4c, 0xe8c);
-        unk_50 = func_01ffcb0c(unk_50, 0xe8c);
-        unk_60 = 2;
-        unk_64 = 0;
-    } else if (unk_60 == 2) {
-        unk_64 = unk_64 + 1;
-        if (unk_64 >= 1) {
-            unk_4c = func_01ffcb0c(unk_4c, 0x119a);
-            unk_50 = func_01ffcb0c(unk_50, 0x119a);
-            unk_60 = 6;
-            unk_64 = 0;
-            _ZN12Unk_0208927013func_020891bcEv(unk_10);
+    } else if (work0 == 1) {
+        animSeq = 0x14;
+        startAnim();
+        _ZN10SpriteAnim5pauseEv(&anim);
+        screenVel.x = dir ? 0x3c00 : -0x3c00;
+        screenVel.y = -0x4000;
+        screenVel.z = 0;
+        SkySprite_SpawnHitParticle(&screenPos, scaleX, screenVel.x);
+        scaleX = func_01ffcb0c(scaleX, 0xe8c);
+        scaleY = func_01ffcb0c(scaleY, 0xe8c);
+        work0 = 2;
+        work1 = 0;
+    } else if (work0 == 2) {
+        work1 = work1 + 1;
+        if (work1 >= 1) {
+            scaleX = func_01ffcb0c(scaleX, 0x119a);
+            scaleY = func_01ffcb0c(scaleY, 0x119a);
+            work0 = 6;
+            work1 = 0;
+            _ZN10SpriteAnim7restartEv(&anim);
         }
     }
-    if ((s32)unk_60 >= 6) {
-        unk_40.y += 0x59a;
-        func_020e9888(&unk_40, 0x1000);
-        func_01ffca8c(&unk_34, &unk_40, &unk_34);
+    if ((s32)work0 >= 6) {
+        screenVel.y += 0x59a;
+        Vec_Scale(&screenVel, 0x1000);
+        VEC_Add(&screenPos, &screenVel, &screenPos);
     }
-    if ((s32)unk_60 >= 6 && unk_34.y > 0xd0000) {
-        _ZN12Unk_020bd1b013func_020bd618Ev(data_021f4488);
-        func_02040208(0x45);
-        unk_04 = 3;
+    if ((s32)work0 >= 6 && screenPos.y > 0xd0000) {
+        _ZN15SkyShotSequence10onPeteFellEv(data_021f4488);
+        EventWeekSlots_MarkTodaySeen(0x45);
+        state = 3;
     }
-    if ((s32)unk_60 >= 1) {
-        _ZN12Unk_020bd1b013func_020bd604Eiiih(data_021f4488, unk_34.x, unk_34.y, unk_4c, unk_2e == 0 ? 1 : 0);
+    if ((s32)work0 >= 1) {
+        _ZN15SkyShotSequence9setTargetEiiih(data_021f4488, screenPos.x, screenPos.y, scaleX, dir == 0 ? 1 : 0);
     }
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bef90()
+void SkySprite::endPete()
 {
     using namespace n11;
-    func_020be094();
+    release();
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bef44()
+void SkySprite::initLightning()
 {
     using namespace n11;
-    s32 a = (func_02063b8c(0x80) * (func_02063b8c(2) * 2 - 1) + 0x80) << 12;
-    s32 c = (func_02063b8c(0x50) + 0x50) << 12;
-    Unk_020be018_Vec *p = &unk_34;
-    unk_34.x = a;
+    s32 a = (Random_GlobalBelow(0x80) * (Random_GlobalBelow(2) * 2 - 1) + 0x80) << 12;
+    s32 c = (Random_GlobalBelow(0x50) + 0x50) << 12;
+    VecFx32 *p = &screenPos;
+    screenPos.x = a;
     p->y = c;
     p->z = 0;
-    unk_0c = func_02063b8c(8) + 8;
-    unk_58 = 2;
+    animSeq = Random_GlobalBelow(8) + 8;
+    priority = 2;
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bef2c()
+void SkySprite::updateLightning()
 {
     using namespace n11;
-    if (_ZN12Unk_0208927013func_020891d8Ev(unk_10)) unk_04 = 3;
+    if (_ZN10SpriteAnim10isFinishedEv(&anim)) state = 3;
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bef24()
+void SkySprite::endLightning()
 {
     using namespace n11;
-    func_020be094();
+    release();
 }
 namespace n11 {
 
-extern "C" s32 func_020beef8(s32 a, s32 flag)
+extern "C" s32 SkySprite_GetFireworkPalIndex(s32 a, s32 flag)
 {
     s32 r = 0xf;
     if (flag != 0) {
@@ -2916,15 +2291,15 @@ extern "C" s32 func_020beef8(s32 a, s32 flag)
     return r;
 }
 
-extern "C" Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b)
+extern "C" Unk_020bee28_Vec2 SkySprite_ProjectFirework(s32 a, s32 b)
 {
-    Unk_020bee28_V v = data_021c309c;
+    Unk_020bee28_V v = gCameraLookAt;
     s32 base = data_020c8cb8;
     s32 d = v.z - base;
     s32 cnt = data_020c8cbc;
     s32 h = _s32_div_f(cnt << 2, 2);
-    s32 p = func_01ffc5a4((v.x - cnt * 3) << 4, h);
-    s32 q = func_01ffc5a4(d, base << 2);
+    s32 p = FX_Div((v.x - cnt * 3) << 4, h);
+    s32 q = FX_Div(d, base << 2);
     if (p < -0x10000) p = -0x10000;
     else if (p > 0x10000) p = 0x10000;
     if (q < 0) q = 0;
@@ -2938,16 +2313,16 @@ extern "C" Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b)
     if (b < 0) c = 0;
     else if (b > 0xbf000) c = 0xbf000;
     else c = b;
-    s32 m = func_01ffcb0c(w, func_01ffc5a4(0xbf000 - c, 0xbf000));
+    s32 m = func_01ffcb0c(w, FX_Div(0xbf000 - c, 0xbf000));
     b = b + m;
     return Unk_020bee28_Vec2(a + p, b);
 }
 
 }
-void Unk_020be018::func_020bec40()
+void SkySprite::updateFireworkPalette()
 {
     using namespace n11;
-    s32 n = unk_64;
+    s32 n = work1;
     s32 t, lo, hi, r, g, inv;
     if (n < 0x10) {
         t = 0;
@@ -2956,10 +2331,10 @@ void Unk_020be018::func_020bec40()
     } else {
         t = 0x1000;
     }
-    u32 v = unk_60;
+    u32 v = work0;
     s32 k = (v >> 8) & 3;
     BOOL f = ((v >> 31) & 1) != 0;
-    lo = func_020beef8(k, f);
+    lo = SkySprite_GetFireworkPalIndex(k, f);
     hi = lo + 1;
     s32 i1, i0;
     i0 = 0;
@@ -2970,14 +2345,14 @@ void Unk_020be018::func_020bec40()
         if (x != 0) i1 = 1;
         else i1 = 0;
     }
-    s32 *p0 = data_020d0e0c + i0;
-    s32 *p1 = data_020d0e0c + i1;
+    s32 *p0 = sFireworkFlicker + i0;
+    s32 *p1 = sFireworkFlicker + i1;
     if (k >= 4 || lo >= 15 || hi >= 15) return;
-    Unk_020bec40_Pair *e = &data_020d0e80[k];
+    FireworkColorPair *e = &sFireworkColors[k];
     r = 0; g = 0; inv = 0x1000 - t;
-    r = func_01ffcb0c(data_020d0e80[k].a.r << 12, inv) + func_01ffcb0c(e->b.r << 12, t);
-    g = func_01ffcb0c(data_020d0e80[k].a.g << 12, inv) + func_01ffcb0c(e->b.g << 12, t);
-    s32 b = func_01ffcb0c(data_020d0e80[k].a.b << 12, inv) + func_01ffcb0c(e->b.b << 12, t);
+    r = func_01ffcb0c(sFireworkColors[k].start.r << 12, inv) + func_01ffcb0c(e->end.r << 12, t);
+    g = func_01ffcb0c(sFireworkColors[k].start.g << 12, inv) + func_01ffcb0c(e->end.g << 12, t);
+    s32 b = func_01ffcb0c(sFireworkColors[k].start.b << 12, inv) + func_01ffcb0c(e->end.b << 12, t);
     u32 B1, G1, R0, R1, B0, G0;
     s32 r0 = func_01ffcb0c(r, *p0);
     s32 g0 = func_01ffcb0c(g, *p0);
@@ -3000,30 +2375,30 @@ void Unk_020be018::func_020bec40()
     u16 col[2];
     col[0] = R0 | (G0 << 5) | (B0 << 10);
     col[1] = R1 | (G1 << 5) | (B1 << 10);
-    s32 idx = unk_24;
-    s32 u8v = unk_08;
-    Unk_021f4398 *const pal = &data_021f4398;
-    pal->func_020bd718(lo, &col[0]);
-    pal->func_020bd718(hi, &col[1]);
-    func_020bd950(data_021f3010 + idx, u8v);
+    s32 idx = gfxSlot;
+    s32 u8v = gfxId;
+    SkyObjPalette *const pal = &data_021f4398;
+    pal->setOverride(lo, &col[0]);
+    pal->setOverride(hi, &col[1]);
+    SkyObjGfxSlot_RefreshPalette(data_021f3010 + idx, u8v);
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020bec00()
+void SkySprite::releaseFireworkPalette()
 {
     using namespace n11;
-    u32 v = unk_60;
+    u32 v = work0;
     BOOL f = ((v >> 31) & 1) != 0;
-    s32 lo = func_020beef8((v >> 8) & 3, f);
+    s32 lo = SkySprite_GetFireworkPalIndex((v >> 8) & 3, f);
     s32 hi = lo + 1;
-    if (lo < 15) data_021f4398.func_020bd758(lo);
-    if (hi < 15) data_021f4398.func_020bd758(hi);
+    if (lo < 15) data_021f4398.clearOverride(lo);
+    if (hi < 15) data_021f4398.clearOverride(hi);
 }
 namespace n11 {
 
 }
-s32 Unk_020be018::func_020bebfc(s32 a)
+s32 SkySprite::riseDistance(s32 a)
 {
     using namespace n11;
     return a << 14;
@@ -3031,46 +2406,46 @@ s32 Unk_020be018::func_020bebfc(s32 a)
 namespace n11 {
 
 }
-void Unk_020be018::func_020beb88(s32 a)
+void SkySprite::updateFireworkScale(s32 a)
 {
     using namespace n11;
     s32 max;
     s32 *tab;
-    u32 v = unk_60;
+    u32 v = work0;
     BOOL f = ((v >> 30) & 1) != 0;
     if ((v >> 31) & 1) {
-        if (f) { tab = data_020d1288; max = 0xb0; }
-        else { tab = data_020d0f80; max = 0x24; }
+        if (f) { tab = sFireworkScaleBigLong; max = 0xb0; }
+        else { tab = sFireworkScaleBig; max = 0x24; }
     } else {
-        if (f) { tab = data_020d1338; max = 0xb0; }
-        else { tab = data_020d0fa4; max = 0x24; }
+        if (f) { tab = sFireworkScaleSmallLong; max = 0xb0; }
+        else { tab = sFireworkScaleSmall; max = 0x24; }
     }
-    if (a < 0) a = _ZN12Unk_0208927013func_02089244Ev(unk_10);
+    if (a < 0) a = _ZN10SpriteAnim13getFrameIndexEv(&anim);
     if (a < 0) max = 0;
     else if (a <= max) max = a;
     s32 x = tab[max];
-    unk_4c = x;
-    unk_50 = x;
+    scaleX = x;
+    scaleY = x;
 }
 namespace n11 {
 
 }
-void Unk_020be018::func_020beb40(u32 a)
+void SkySprite::initFirework(u32 a)
 {
     using namespace n11;
     s32 id = (a & 0xf) + 0x1d;
-    unk_0c = id;
-    unk_58 = 2;
-    unk_60 = a;
-    unk_64 = 0;
-    unk_68 = 0;
+    animSeq = id;
+    priority = 2;
+    work0 = a;
+    work1 = 0;
+    work2 = 0;
     BOOL r = FALSE;
     s32 t = id - 0x21;
     if ((u32)t <= 9 && ((1 << t) & 0x249)) r = TRUE;
     if (r) {
-        func_020bea24(a);
+        initFireworkShell(a);
     } else {
-        func_020beac8(a);
+        initFireworkBurst(a);
     }
 }
 namespace n11 {
@@ -3083,16 +2458,16 @@ namespace n11 {
 // ======== unk_020be204.cpp ========
 namespace n10 {
 extern "C" {
-s32 _ZN12Unk_020be01813func_020bebfcEi(s32 a, s32 b);
+s32 _ZN9SkySprite12riseDistanceEi(s32 a, s32 b);
 }
 extern "C" {
-void func_020bee28(Unk_020be204_Vec *v, s32 a, s32 b, BOOL c);
+void SkySprite_ProjectFirework(VecFx32 *v, s32 a, s32 b, BOOL c);
 }
 extern "C" {
-void func_01ffca8c(Unk_020be204_Vec *a, Unk_020be204_Vec *b, Unk_020be204_Vec *c);
+void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *c);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -3101,136 +2476,133 @@ extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void func_020e9888(Unk_020be204_Vec *v, s32 a);
+void Vec_Scale(VecFx32 *v, s32 a);
 }
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
-s32 func_02063b74(s32 n);
+s32 Random_GlobalBelow2(s32 n);
 }
 extern "C" {
-void _ZN12Unk_02089270C1Ev(void *p);
+void _ZN10SpriteAnimC1Ev(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_020891d8Ev(void *p);
+s32 _ZN10SpriteAnim10isFinishedEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(void *a, u32 b, u32 c, void *d);
+void _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(void *a, u32 b, u32 c, void *d);
 }
 extern "C" {
-Unk_020bca5c_Rec *_ZN12Unk_020bc58c13func_020bca5cEi(void *a, u32 b);
+SkyShotRequest *_ZN10SkySprites14getShotRequestEi(void *a, u32 b);
 }
 extern "C" {
-Unk_020be204_Vec func_020bffc0(Unk_020be204_Vec *v);
+VecFx32 Sky_ProjectToScreenX(VecFx32 *v);
 }
 extern "C" {
-s32 func_02094348();
+s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
-s32 _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(void *a, u32 b, u32 c, void *d, u32 e);
+s32 _ZN10SkySprites5spawnEiiP7VecFx32i(void *a, u32 b, u32 c, void *d, u32 e);
 }
 extern "C" {
-void func_02064928(u32 a);
+void SceneLights_StartFlash(u32 a);
 }
 extern "C" {
-extern s8 data_020d0e00[];
+extern s8 sBirdDelays[];
 }
 extern "C" {
-extern u32 data_020d1a28;
+extern u32 kFireworkBurstFlag29;
 }
 extern "C" {
 extern s32 data_020c8cb8;
 }
 extern "C" {
-extern s32 data_021c309c[];
+extern s32 gCameraLookAt[];
 }
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } data_021f14e0; } }
-#define data_021f44ac n10::L_021f44ac::data_021f14e0.v
+namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
+#define data_021f44ac n10::L_021f44ac::gSkySprites.v
 extern "C" {
-extern u8 data_021f4880[];
+extern u8 gVec3Zero[];
 }
 extern "C" {
-extern u8 data_021f14e0[];
+extern u8 gSkySprites[];
 }
-static inline void Unk_020be204_Set(Unk_020be204_Vec *v, s32 x, s32 y, s32 z) {
+static inline void SkyVec_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
 }
-static inline BOOL Unk_020be204_Outside(Unk_020be204_Vec *v) {
+static inline BOOL SkySprite_IsOffScreen(VecFx32 *v) {
     BOOL r = v->y < -0xa000 || v->y > 0xca000 || v->x < -0xa000 || v->x > 0x10a000;
     return r;
 }
-static inline BOOL Unk_020be204_Bit(u32 v, u32 n) {
+static inline BOOL Sky_TestBit(u32 v, u32 n) {
     BOOL r = ((v >> n) & 1) ? TRUE : FALSE;
     return r;
 }
-static inline u32 Unk_020be820_Nib(s32 v) {
-    return (v - 0x1d) & 0xf;
-}
-static inline u32 Unk_020be820_NibE(Unk_020be820_E v) { return (v - 0x1d) & 0xf; }
+static inline u32 Firework_VariantOf(Unk_020be820_E v) { return (v - 0x1d) & 0xf; }
 
 }
-void Unk_020be204::func_020beac8(u32 a) {
+void SkySprite::initFireworkBurst(u32 a) {
     using namespace n10;
-    BOOL b = Unk_020be204_Bit(a, 31);
-    func_020beb88(0);
-    unk_6c = unk_34.x;
-    unk_70 = unk_34.y;
-    func_020bee28(&unk_34, unk_6c, unk_70, b);
+    BOOL b = Sky_TestBit(a, 31);
+    updateFireworkScale(0);
+    work3 = screenPos.x;
+    work4 = screenPos.y;
+    SkySprite_ProjectFirework(&screenPos, work3, work4, b);
     u32 r2 = b ? 0x804 : 0x803;
     u32 m = (a >> 8) & 3;
-    func_020bdd24(b ? 1 : m + 2, r2);
+    requestSeSustainedOn(b ? 1 : m + 2, r2);
     if (b) {
-        unk_5c = 4;
-        func_02064928(m + 5);
+        cullRadius = 4;
+        SceneLights_StartFlash(m + 5);
     } else {
-        func_02064928(m + 1);
+        SceneLights_StartFlash(m + 1);
     }
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020bea24(u32 a) {
+void SkySprite::initFireworkShell(u32 a) {
     using namespace n10;
-    BOOL b = Unk_020be204_Bit(a, 31);
+    BOOL b = Sky_TestBit(a, 31);
     s32 x, y;
     if (b) {
-        x = func_02063b8c(0x60) + 0x50;
+        x = Random_GlobalBelow(0x60) + 0x50;
         if ((a >> 28) & 1) {
             y = 0;
         } else {
-            y = func_02063b8c(0x20);
+            y = Random_GlobalBelow(0x20);
         }
         y += 0x52;
     } else {
-        x = func_02063b8c(0xa0) + 0x30;
-        y = func_02063b8c(0x60) + 0x32;
+        x = Random_GlobalBelow(0xa0) + 0x30;
+        y = Random_GlobalBelow(0x60) + 0x32;
     }
-    unk_6c = x << 12;
-    unk_70 = 0xbf000;
-    unk_34.z = y << 12;
-    func_020bee28(&unk_34, unk_6c, unk_70, b);
-    unk_40.x = 0;
-    unk_40.y = -0x3800;
-    unk_40.z = 0;
-    unk_50 = 0xa000;
+    work3 = x << 12;
+    work4 = 0xbf000;
+    screenPos.z = y << 12;
+    SkySprite_ProjectFirework(&screenPos, work3, work4, b);
+    screenVel.x = 0;
+    screenVel.y = -0x3800;
+    screenVel.z = 0;
+    scaleY = 0xa000;
     u32 m = (a >> 8) & 3;
     if (b) {
         m = 1;
     } else {
         m += 2;
     }
-    func_020bdd24(m, 0x802);
+    requestSeSustainedOn(m, 0x802);
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be9e8() {
+void SkySprite::updateFirework() {
     using namespace n10;
-    unk_64++;
-    u32 t = unk_0c;
+    work1++;
+    u32 t = animSeq;
     BOOL m = FALSE;
     t -= 0x21;
     if (t > 9) {
@@ -3238,175 +2610,175 @@ void Unk_020be204::func_020be9e8() {
         m = TRUE;
     }
     if (m) {
-        func_020be820();
+        updateFireworkShell();
     } else {
-        func_020be970();
+        updateFireworkBurst();
     }
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be970() {
+void SkySprite::updateFireworkBurst() {
     using namespace n10;
-    u32 flags = unk_60;
+    u32 flags = work0;
     BOOL r4 = ((flags >> 30) & 1) ? FALSE : TRUE;
-    BOOL r6 = Unk_020be204_Bit(flags, 31);
-    if (_ZN12Unk_0208927013func_020891d8Ev(&unk_10)) {
+    BOOL r6 = Sky_TestBit(flags, 31);
+    if (_ZN10SpriteAnim10isFinishedEv(&anim)) {
         if (r4) {
-            func_020bec00();
+            releaseFireworkPalette();
         }
-        unk_04 = 3;
+        state = 3;
     } else {
-        func_020beb88(-1);
-        func_020bee28(&unk_34, unk_6c, unk_70, r6);
+        updateFireworkScale(-1);
+        SkySprite_ProjectFirework(&screenPos, work3, work4, r6);
         if (r4) {
-            func_020bec40();
+            updateFireworkPalette();
         }
     }
-    if (unk_64 == 0x1d) {
-        unk_60 |= data_020d1a28;
+    if (work1 == 0x1d) {
+        work0 |= kFireworkBurstFlag29;
     }
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be820() {
+void SkySprite::updateFireworkShell() {
     using namespace n10;
     s32 lim;
-    u32 flags = unk_60;
-    BOOL b31 = Unk_020be204_Bit(flags, 31);
+    u32 flags = work0;
+    BOOL b31 = Sky_TestBit(flags, 31);
     BOOL done = FALSE;
-    if (unk_31) {
-        unk_68++;
-        if ((s32)unk_68 > 6) {
+    if (hidden) {
+        work2++;
+        if ((s32)work2 > 6) {
             done = TRUE;
         }
     } else {
-        lim = 0xc0000 - unk_34.z;
-        s32 r = _ZN12Unk_020be01813func_020bebfcEi(lim, unk_64);
+        lim = 0xc0000 - screenPos.z;
+        s32 r = _ZN9SkySprite12riseDistanceEi(lim, work1);
         if (r <= 0x20000) {
-            unk_50 = func_01ffc5a4(0x20000, r);
-            unk_70 = 0xc0000 - _s32_div_f(r, 2);
+            scaleY = FX_Div(0x20000, r);
+            work4 = 0xc0000 - _s32_div_f(r, 2);
         } else {
             if (r < lim) {
-                unk_50 = 0x1000;
+                scaleY = 0x1000;
             } else {
-                unk_50 = func_01ffcb0c(unk_50, 0x14cd);
-                if (unk_50 >= 0xa000) {
-                    unk_50 = 0xa000;
-                    unk_31 = 1;
+                scaleY = func_01ffcb0c(scaleY, 0x14cd);
+                if (scaleY >= 0xa000) {
+                    scaleY = 0xa000;
+                    hidden = 1;
                 }
                 r = lim;
             }
-            unk_70 = 0xc0000 - (r - func_01ffc5a4(0x10000, unk_50));
+            work4 = 0xc0000 - (r - FX_Div(0x10000, scaleY));
         }
-        func_020bee28(&unk_34, unk_6c, unk_70, b31);
+        SkySprite_ProjectFirework(&screenPos, work3, work4, b31);
     }
     if (done) {
         u32 m, a;
-        unk_04 = 3;
+        state = 3;
         m = (flags >> 8) & 3;
-        if ((unk_60 >> 31) & 1) {
+        if ((work0 >> 31) & 1) {
             m = (m & 3) << 8;
             a = m | 0x80000000;
             m |= 0xc0000001;
         } else {
-            s32 c = unk_0c;
+            s32 c = animSeq;
             m = (m & 3) << 8;
-            a = m | Unk_020be820_NibE((Unk_020be820_E)(c - 2));
-            m |= Unk_020be820_NibE((Unk_020be820_E)(c - 1)) | 0x40000000;
+            a = m | Firework_VariantOf((Unk_020be820_E)(c - 2));
+            m |= Firework_VariantOf((Unk_020be820_E)(c - 1)) | 0x40000000;
         }
-        Unk_020be204_Vec v;
-        Unk_020be204_Set(&v, unk_6c, unk_34.z - 0x2000, 0);
-        _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(data_021f14e0, 9, 0x3c, &v, a);
-        _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(data_021f14e0, 9, 0x3c, &v, m);
+        VecFx32 v;
+        SkyVec_Set(&v, work3, screenPos.z - 0x2000, 0);
+        _ZN10SkySprites5spawnEiiP7VecFx32i(gSkySprites, 9, 0x3c, &v, a);
+        _ZN10SkySprites5spawnEiiP7VecFx32i(gSkySprites, 9, 0x3c, &v, m);
     }
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be7dc() {
+void SkySprite::endFirework() {
     using namespace n10;
-    u32 t = unk_0c;
+    u32 t = animSeq;
     BOOL m = FALSE;
     t -= 0x21;
     if (t > 9) {
     } else if ((1 << t) & 0x249) {
         m = TRUE;
     }
-    if (!m && !((unk_60 >> 30) & 1)) {
-        func_020bec00();
+    if (!m && !((work0 >> 30) & 1)) {
+        releaseFireworkPalette();
     }
-    func_020be094();
+    release();
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be7c0() {
+void SkySprite::initRainbow() {
     using namespace n10;
-    unk_34.x = 0xb0000;
-    unk_34.y = 0x67000;
-    unk_0c = 0x15;
-    unk_58 = 3;
+    screenPos.x = 0xb0000;
+    screenPos.y = 0x67000;
+    animSeq = 0x15;
+    priority = 3;
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be7bc() {
+void SkySprite::updateRainbow() {
     using namespace n10;
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be7b4() {
+void SkySprite::endRainbow() {
     using namespace n10;
-    func_020be094();
+    release();
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be6f0(u32 a) {
+void SkySprite::initShot(u32 a) {
     using namespace n10;
-    Unk_020bca5c_Rec *rec = _ZN12Unk_020bc58c13func_020bca5cEi(data_021f14e0, a & 0xf);
+    SkyShotRequest *rec = _ZN10SkySprites14getShotRequestEi(gSkySprites, a & 0xf);
     s32 id;
-    unk_0c = 0x2d;
-    unk_58 = 2;
-    unk_60 = 0x18;
-    id = rec->unk_00;
-    unk_64 = id;
-    Unk_020be204_Vec *pos = &rec->unk_04;
-    const Unk_020be204_Vec &vt = func_020bffc0(pos);
-    Unk_020be204_Vec *p34 = &unk_34;
+    animSeq = 0x2d;
+    priority = 2;
+    work0 = 0x18;
+    id = rec->playerSlot;
+    work1 = id;
+    VecFx32 *pos = &rec->pos;
+    const VecFx32 &vt = Sky_ProjectToScreenX(pos);
+    VecFx32 *p34 = &screenPos;
     p34->x = vt.x;
     p34->y = 0xc5000;
     p34->z = 0;
-    Unk_020be204_Vec *p40 = &unk_40;
+    VecFx32 *p40 = &screenVel;
     p40->x = 0;
     p40->y = -0xc000;
     p40->z = 0;
     s32 lim = data_020c8cb8 * 2;
-    if (id == func_02094348() && pos->z < lim) {
-        unk_2f = 1;
+    if (id == PlayerActor_GetLocalSessionSlot() && pos->z < lim) {
+        localShot = 1;
     }
-    s32 d = pos->z - data_021c309c[2];
+    s32 d = pos->z - gCameraLookAt[2];
     BOOL far = (d < -0x14000 || d > 0xf000) ? TRUE : FALSE;
     a |= far << 31;
-    if (far || unk_34.y >= 0xc0000) {
-        unk_31 = 1;
+    if (far || screenPos.y >= 0xc0000) {
+        hidden = 1;
     }
-    unk_68 = a;
+    work2 = a;
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be624() {
+void SkySprite::updateShot() {
     using namespace n10;
-    u32 flags = unk_68;
-    unk_60--;
-    if ((s32)unk_60 < 0) {
-        Unk_020be204_Vec *pos = &unk_34;
-        Unk_020be204_Vec *vel = &unk_40;
-        if ((s32)unk_60 == -2) {
+    u32 flags = work2;
+    work0--;
+    if ((s32)work0 < 0) {
+        VecFx32 *pos = &screenPos;
+        VecFx32 *vel = &screenVel;
+        if ((s32)work0 == -2) {
             u32 t = (flags >> 4) & 0xf;
             if (t == 1) {
                 vel->x = 0x2800;
@@ -3414,137 +2786,137 @@ void Unk_020be204::func_020be624() {
                 vel->x = -0x2800;
             }
         }
-        func_01ffca8c(pos, vel, pos);
-        if (Unk_020be204_Outside(pos) || unk_30) {
-            unk_04 = 3;
+        VEC_Add(pos, vel, pos);
+        if (SkySprite_IsOffScreen(pos) || hit) {
+            state = 3;
         }
     }
-    if (unk_31 && !((flags >> 31) & 1) && unk_34.y < 0xc0000) {
-        unk_31 = 0;
+    if (hidden && !((flags >> 31) & 1) && screenPos.y < 0xc0000) {
+        hidden = 0;
     }
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be61c() {
+void SkySprite::endShot() {
     using namespace n10;
-    func_020be094();
+    release();
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be58c(u32 a) {
+void SkySprite::initBird(u32 a) {
     using namespace n10;
-    unk_60 = a;
-    unk_64 = data_020d0e00[a & 3] + 0x14;
-    unk_0c = 0x2c;
-    unk_58 = 2;
-    s32 y = (func_02063b8c(0x38) + 0x90) << 12;
-    unk_34.x = -0x8000;
-    unk_34.y = y;
-    unk_34.z = 0;
-    unk_40.x = 0x1000;
-    unk_40.y = 0x2000;
-    unk_40.z = 0;
-    unk_40.x += func_02063b74(0x8000);
-    unk_40.y -= func_02063b74(0x2000);
-    unk_6c = -0x666;
-    unk_70 = 0xcd;
-    unk_6c += 0x8cd;
-    unk_70 -= 0x666;
+    work0 = a;
+    work1 = sBirdDelays[a & 3] + 0x14;
+    animSeq = 0x2c;
+    priority = 2;
+    s32 y = (Random_GlobalBelow(0x38) + 0x90) << 12;
+    screenPos.x = -0x8000;
+    screenPos.y = y;
+    screenPos.z = 0;
+    screenVel.x = 0x1000;
+    screenVel.y = 0x2000;
+    screenVel.z = 0;
+    screenVel.x += Random_GlobalBelow2(0x8000);
+    screenVel.y -= Random_GlobalBelow2(0x2000);
+    work3 = -0x666;
+    work4 = 0xcd;
+    work3 += 0x8cd;
+    work4 -= 0x666;
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be4d8() {
+void SkySprite::updateBird() {
     using namespace n10;
-    if (unk_64 > 0) {
-        unk_64--;
-        if (unk_64 <= 0 && (unk_60 & 3) == 0) {
-            _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(data_021f44ac, 7, 0x805, data_021f4880);
+    if (work1 > 0) {
+        work1--;
+        if (work1 <= 0 && (work0 & 3) == 0) {
+            _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, 7, 0x805, gVec3Zero);
         }
     } else {
-        Unk_020be204_Vec *pos = &unk_34;
-        Unk_020be204_Vec *vel = &unk_40;
-        vel->x += unk_6c;
-        vel->y += unk_70;
-        func_020e9888(vel, 0xfc3);
-        func_01ffca8c(pos, vel, pos);
-        if (Unk_020be204_Outside(pos)) {
-            unk_04 = 3;
+        VecFx32 *pos = &screenPos;
+        VecFx32 *vel = &screenVel;
+        vel->x += work3;
+        vel->y += work4;
+        Vec_Scale(vel, 0xfc3);
+        VEC_Add(pos, vel, pos);
+        if (SkySprite_IsOffScreen(pos)) {
+            state = 3;
         }
     }
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be4d0() {
+void SkySprite::endBird() {
     using namespace n10;
-    func_020be094();
+    release();
 }
 namespace n10 {
 
 }
-Unk_020be204 *Unk_020be204::func_020be4b0() {
+SkySprite *SkySprite::construct() {
     using namespace n10;
-    _ZN12Unk_02089270C1Ev(&unk_10);
-    func_020be44c();
-    func_020be428();
+    _ZN10SpriteAnimC1Ev(&anim);
+    clear();
+    resetFree();
     return this;
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be44c() {
+void SkySprite::clear() {
     using namespace n10;
     u32 z = 0;
     u32 m = ~z;
-    unk_4c = 0x1000;
-    unk_50 = 0x1000;
-    unk_34.x = 0;
-    unk_34.y = 0;
-    unk_34.z = 0;
-    unk_40.x = 0;
-    unk_40.y = 0;
-    unk_40.z = 0;
-    unk_54 = 0;
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_2e = 1;
-    unk_2f = 0;
-    unk_30 = 0;
-    unk_31 = 0;
-    unk_56 = 0;
-    unk_57 = 0;
-    unk_58 = m;
-    unk_5c = 0;
-    *(s8 *)&unk_5d = m;
-    unk_60 = 0;
-    unk_64 = 0;
-    unk_68 = 0;
-    unk_6c = 0;
-    unk_70 = 0;
+    scaleX = 0x1000;
+    scaleY = 0x1000;
+    screenPos.x = 0;
+    screenPos.y = 0;
+    screenPos.z = 0;
+    screenVel.x = 0;
+    screenVel.y = 0;
+    screenVel.z = 0;
+    angle = 0;
+    trackX = 0;
+    wavePhase = 0;
+    dir = 1;
+    localShot = 0;
+    hit = 0;
+    hidden = 0;
+    hFlip = 0;
+    vFlip = 0;
+    priority = m;
+    cullRadius = 0;
+    *(s8 *)&palette = m;
+    work0 = 0;
+    work1 = 0;
+    work2 = 0;
+    work3 = 0;
+    work4 = 0;
 }
 namespace n10 {
 
 }
-void Unk_020be204::func_020be428() {
+void SkySprite::resetFree() {
     using namespace n10;
-    unk_00 = 0xd;
-    unk_04 = 0;
-    unk_08 = 0x34;
-    unk_0c = 0x2e;
-    unk_24 = 5;
-    unk_4c = 0x1000;
-    unk_50 = 0x1000;
-    unk_54 = 0;
+    kind = 0xd;
+    state = 0;
+    gfxId = 0x34;
+    animSeq = 0x2e;
+    gfxSlot = 5;
+    scaleX = 0x1000;
+    scaleY = 0x1000;
+    angle = 0;
 }
 namespace n10 {
 
 }
 namespace n00 {
 extern "C" {
-const u32 data_020d16e8[208] = {0x0, 0xffff0000, 0x0, 0xc00, 0x0, 0xffff000c, 0x0, 0xc00, 0x0, 0xffff008c, 0x0,
+const u32 sSkyObjGfxTable[208] = {0x0, 0xffff0000, 0x0, 0xc00, 0x0, 0xffff000c, 0x0, 0xc00, 0x0, 0xffff008c, 0x0,
     0xc00, 0x0, 0x200ffff, 0x1, 0xc00, 0x0, 0x204ffff, 0x1, 0xc00, 0x0, 0x208ffff, 0x1, 0xc00, 0x0, 0x20cffff,
     0x1, 0xc00, 0x0, 0x210ffff, 0x1, 0xc00, 0x0, 0x214ffff, 0x1, 0xc00, 0x0, 0x218ffff, 0x1, 0xc00, 0x0,
     0x21cffff, 0x1, 0xc00, 0x0, 0x280ffff, 0x1, 0xc00, 0x0, 0x284ffff, 0x1, 0xc00, 0x0, 0x288ffff, 0x1, 0xc00,
@@ -3559,7 +2931,7 @@ const u32 data_020d16e8[208] = {0x0, 0xffff0000, 0x0, 0xc00, 0x0, 0xffff000c, 0x
     0x1900110, 0x2, 0xd09, 0x0, 0x1980118, 0x2, 0xd09, 0x0, 0x800004, 0x4, 0xd01, 0x1, 0xffff0210, 0x0, 0xe03,
     0x2, 0xffffffff, 0x6, 0xffff, 0x2, 0xffffffff, 0x6, 0xffff, 0x2, 0xffffffff, 0x6, 0xffff, 0x0, 0xffff0010,
     0x0, 0xc00};
-const u32 data_020d0df8[1] = {0x206};
+const u32 sSkyNextCloudBgLayer[1] = {0x206};
 void *data_020e6124[132] = {0, (void *)0x2, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4,
     (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0,
     (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4,
@@ -3587,16 +2959,16 @@ u32 data_020e4c24[4] = {0x91f880e0, 0x9e, 0x91f88000, 0xffff011e};
 }
 namespace n10 {
 }
-void Unk_020be204::func_020be314(u32 a) {
+void SkySprite::initByKind(u32 a) {
     using namespace n10;
-    static void (Unk_020be204::*tbl[13])(u32) = {
-        *(void (Unk_020be204::**)(u32))n00::data_020e4a4c, *(void (Unk_020be204::**)(u32))n00::data_020e481c, *(void (Unk_020be204::**)(u32))n00::data_020e4714,
-        *(void (Unk_020be204::**)(u32))n00::data_020e4a34, *(void (Unk_020be204::**)(u32))n00::data_020e48b4, *(void (Unk_020be204::**)(u32))n00::data_020e471c,
-        *(void (Unk_020be204::**)(u32))n00::data_020e48fc, *(void (Unk_020be204::**)(u32))n00::data_020e46f4, *(void (Unk_020be204::**)(u32))n00::data_020e480c,
-        *(void (Unk_020be204::**)(u32))n00::data_020e4a04, *(void (Unk_020be204::**)(u32))n00::data_020e468c,
-        *(void (Unk_020be204::**)(u32))n00::data_020e47ac, *(void (Unk_020be204::**)(u32))n00::data_020e473c,
+    static void (SkySprite::*tbl[13])(u32) = {
+        *(void (SkySprite::**)(u32))n00::data_020e4a4c, *(void (SkySprite::**)(u32))n00::data_020e481c, *(void (SkySprite::**)(u32))n00::data_020e4714,
+        *(void (SkySprite::**)(u32))n00::data_020e4a34, *(void (SkySprite::**)(u32))n00::data_020e48b4, *(void (SkySprite::**)(u32))n00::data_020e471c,
+        *(void (SkySprite::**)(u32))n00::data_020e48fc, *(void (SkySprite::**)(u32))n00::data_020e46f4, *(void (SkySprite::**)(u32))n00::data_020e480c,
+        *(void (SkySprite::**)(u32))n00::data_020e4a04, *(void (SkySprite::**)(u32))n00::data_020e468c,
+        *(void (SkySprite::**)(u32))n00::data_020e47ac, *(void (SkySprite::**)(u32))n00::data_020e473c,
     };
-    void (Unk_020be204::*fn)(u32) = tbl[unk_00];
+    void (SkySprite::*fn)(u32) = tbl[kind];
     if (fn) {
         (this->*fn)(a);
     }
@@ -3609,25 +2981,25 @@ extern "C" {
 const u32 data_020d1148[12] = {0xcb00d2, 0xbb00c3, 0xb400b4, 0xd200b4, 0x10400f0, 0x12c0118, 0x1400140,
     0x1400140, 0x1400140, 0x1400140, 0x11b0140, 0xee00ff};
 u32 data_020e4644[2] = {0x81f000f0, 0xffff309c};
-void *data_020e4804[2] = {(void *)func_020bb15c, 0};
-const u32 data_020d0e2c[3] = {0x5, 0x6, 0x7};
+void *data_020e4804[2] = {(void *)SkySprites_FireworksPatternAct10, 0};
+const u32 sSnowAnimIds[3] = {0x5, 0x6, 0x7};
 u32 data_020e4c34[4] = {0x51fc80e0, 0x9d, 0x51fc8000, 0xffff011d};
-const u8 data_020d0e60[15] = {0xde, 0xdf, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xcb, 0xcc, 0xcd, 0xce,
+const u8 sSkyObjPalOverrideSlots[15] = {0xde, 0xdf, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xcb, 0xcc, 0xcd, 0xce,
     0xcf};
 void *data_020e4d70[5] = {(void *)data_020e4fe8, (void *)data_020e5008, (void *)data_020e5028,
     (void *)data_020e5048, (void *)data_020e5048};
 const u32 data_020d1178[12] = {0x8f0096, 0x800087, 0x780078, 0x960078, 0xbc00b4, 0xc100c3, 0xd200d2, 0xd200d2,
     0xd200d2, 0xd200d2, 0xc300d2, 0xa500b4};
-void *data_020e49dc[2] = {(void *)_ZN12Unk_020be20413func_020be4d8Ev, 0};
+void *data_020e49dc[2] = {(void *)_ZN9SkySprite10updateBirdEv, 0};
 void *data_020e4ae8[3] = {(void *)data_020e4864, (void *)0x4, 0};
 u32 data_020e4c54[4] = {0x71fc8000, 0x9d, 0x71fc80e0, 0xffff011d};
 u32 data_020e497c[2] = {0x81f000f0, 0xffff211c};
-void *data_020e49ac[2] = {(void *)_ZN12Unk_020bd1b013func_020bd3acEv, 0};
+void *data_020e49ac[2] = {(void *)_ZN15SkyShotSequence10actUfoFallEv, 0};
 void *data_020e5258[12] = {(void *)data_020e49a4, (void *)0x1, 0, (void *)data_020e4a1c, (void *)0x1, 0,
     (void *)data_020e486c, (void *)0x1, 0, (void *)data_020e477c, (void *)0x1, 0};
-const u32 data_020d0e90[4] = {0x21, 0x24, 0x27, 0x2a};
-u32 data_020e4638[1] = {0x1};
-const u32 data_020d13e8[192] = {0x0, 0x101, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1010000, 0x1010101, 0x1, 0x0, 0x0,
+const u32 sFireworkShellTypes[4] = {0x21, 0x24, 0x27, 0x2a};
+u32 sSnowSideToggle[1] = {0x1};
+const u32 sWeatherHourTable[192] = {0x0, 0x101, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1010000, 0x1010101, 0x1, 0x0, 0x0,
     0x0, 0x1010100, 0x10101, 0x0, 0x1010101, 0x1, 0x1010100, 0x1010101, 0x0, 0x0, 0x1000000, 0x1010101,
     0x1010101, 0x1010000, 0x1, 0x0, 0x1010100, 0x1010101, 0x2010101, 0x1020202, 0x1010101, 0x1010101, 0x1010101,
     0x1020202, 0x1010101, 0x1010101, 0x1010202, 0x1010101, 0x1010101, 0x2020202, 0x2020101, 0x2010102, 0x2020202,
@@ -3652,55 +3024,55 @@ u32 data_020e5440[18] = {0x1f500e5, 0x30b7, 0x30130001, 0x30b7, 0x100d0009, 0x30
     0x1e800f9, 0x30b6, 0x301000f7, 0x30b6, 0x201100ea, 0x3097, 0x31ed00ed, 0x3094, 0x11ed0006, 0xffff3097};
 u32 data_020e4634[1] = {0x9};
 u32 data_020e48d4[2] = {0x81f000f0, 0xffff2098};
-void *data_020e47cc[2] = {(void *)func_020bb1f8, 0};
-void *data_020e47e4[2] = {(void *)_ZN12Unk_020bb25c13func_020bb294Ev, 0};
-void *data_020e4834[2] = {(void *)_ZN12Unk_020be01813func_020bef98Ev, 0};
-const u32 data_020d0f60[8] = {0x3e8, 0x7d0, 0x3e8, 0x7d0, 0x320, 0x3e8, 0x258, 0x320};
-void *data_020e472c[2] = {(void *)_ZN12Unk_020bd1b013func_020bd334Ev, 0};
+void *data_020e47cc[2] = {(void *)SkySprites_FireworksPatternAct0D, 0};
+void *data_020e47e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct0AEv, 0};
+void *data_020e4834[2] = {(void *)_ZN9SkySprite10updatePeteEv, 0};
+const u32 sSnowSpawnRates[8] = {0x3e8, 0x7d0, 0x3e8, 0x7d0, 0x320, 0x3e8, 0x258, 0x320};
+void *data_020e472c[2] = {(void *)_ZN15SkyShotSequence13actUfoCrashedEv, 0};
 void *data_020e58a8[27] = {(void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0,
     (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4,
     (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0, (void *)data_020e49f4, (void *)0x1, 0,
     (void *)data_020e49f4, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
-const u32 data_020d0f28[6] = {0x2b, 0x10, 0x19, 0x1a, 0x1b, 0x1c};
+const u32 sParticleAnimIds[6] = {0x2b, 0x10, 0x19, 0x1a, 0x1b, 0x1c};
 u32 data_020e470c[2] = {0x1fc00fc, 0xffff0078};
-const u32 data_020d1338[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c,
+const u32 sFireworkScaleSmallLong[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c,
     0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835,
     0x835, 0x835, 0x835, 0x835, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800,
     0x800, 0x800, 0x800};
-void *data_020e481c[2] = {(void *)func_020bfd7c, 0};
+void *data_020e481c[2] = {(void *)SkySprite_InitSnowFlake, 0};
 char data_020e5088[31] = "/sky/d_2d_b_cld_f_a_bg_nsc.bin";
 u32 data_020e52b8[12] = {0x1700f7, 0x30b7, 0x11f0000c, 0x3095, 0x100f000c, 0x30d4, 0x11e200fc, 0x3095,
     0x101400e8, 0x30d6, 0x11ea00e9, 0xffff30b6};
-void *data_020e4664[2] = {(void *)_ZN12Unk_020bd1b013func_020bd32cEv, 0};
-void *data_020e4904[2] = {(void *)_ZN12Unk_020be20413func_020be4d0Ev, 0};
-Unk_020b9fe4 data_021eff48;
+void *data_020e4664[2] = {(void *)_ZN15SkyShotSequence10actPeteHitEv, 0};
+void *data_020e4904[2] = {(void *)_ZN9SkySprite7endBirdEv, 0};
+WeatherManager gWeatherManager;
 u32 data_020e5488[18] = {0x130002, 0x30f7, 0x31f500e5, 0x30f6, 0xc0007, 0x30f6, 0x200600e4, 0x30f6, 0x1e600fa,
     0x30b6, 0x101300f5, 0x30b6, 0x201300ea, 0x3097, 0x31eb00eb, 0x30d5, 0x11f20008, 0xffff3097};
 u32 data_020e4a5c[2] = {0x400080f0, 0xffff0094};
 u32 data_020e4cc4[4] = {0x91f880e0, 0x9a, 0x91f88000, 0xffff011a};
 u32 data_020e4cd4[4] = {0x51fc80e0, 0x99, 0x51fc8000, 0xffff0119};
 void *data_020e4ac4[3] = {(void *)data_020e46dc, (void *)0x1, 0};
-void *data_020e480c[2] = {(void *)_ZN12Unk_020be01813func_020bef44Ev, 0};
+void *data_020e480c[2] = {(void *)_ZN9SkySprite13initLightningEv, 0};
 void *data_020e4a94[3] = {(void *)data_020e47c4, (void *)0x1, 0};
 char data_020e4f88[30] = "/sky/d_2d_b_cld_f1_bg_ncl.bin";
 u32 data_020e4cf4[4] = {0x61fc8000, 0x99, 0x61fc80e0, 0xffff0119};
-U234_Record data_020e4654 = {(void *)func_020c003c, 0x89, 0x8f};
+U234_Record sSkyProcProfile = {(void *)SkyProc_Create, 0x89, 0x8f};
 char data_020e4e10[27] = "/sky/d_2d_b_cld_bg_ncg.bin";
-void *data_020e490c[2] = {(void *)_ZN12Unk_020be20413func_020be61cEv, 0};
+void *data_020e490c[2] = {(void *)_ZN9SkySprite7endShotEv, 0};
 }
 }
 namespace n10 {
 }
-void Unk_020be204::func_020be204() {
+void SkySprite::updateByKind() {
     using namespace n10;
-    static void (Unk_020be204::*tbl[13])() = {
-        *(void (Unk_020be204::**)())n00::data_020e4954, *(void (Unk_020be204::**)())n00::data_020e4744, *(void (Unk_020be204::**)())n00::data_020e48ac,
-        *(void (Unk_020be204::**)())n00::data_020e496c, *(void (Unk_020be204::**)())n00::data_020e49bc, *(void (Unk_020be204::**)())n00::data_020e49c4,
-        *(void (Unk_020be204::**)())n00::data_020e4974, *(void (Unk_020be204::**)())n00::data_020e4834, *(void (Unk_020be204::**)())n00::data_020e46bc,
-        *(void (Unk_020be204::**)())n00::data_020e4a2c, *(void (Unk_020be204::**)())n00::data_020e479c, *(void (Unk_020be204::**)())n00::data_020e47a4,
-        *(void (Unk_020be204::**)())n00::data_020e49dc,
+    static void (SkySprite::*tbl[13])() = {
+        *(void (SkySprite::**)())n00::data_020e4954, *(void (SkySprite::**)())n00::data_020e4744, *(void (SkySprite::**)())n00::data_020e48ac,
+        *(void (SkySprite::**)())n00::data_020e496c, *(void (SkySprite::**)())n00::data_020e49bc, *(void (SkySprite::**)())n00::data_020e49c4,
+        *(void (SkySprite::**)())n00::data_020e4974, *(void (SkySprite::**)())n00::data_020e4834, *(void (SkySprite::**)())n00::data_020e46bc,
+        *(void (SkySprite::**)())n00::data_020e4a2c, *(void (SkySprite::**)())n00::data_020e479c, *(void (SkySprite::**)())n00::data_020e47a4,
+        *(void (SkySprite::**)())n00::data_020e49dc,
     };
-    void (Unk_020be204::*fn)() = tbl[unk_00];
+    void (SkySprite::*fn)() = tbl[kind];
     if (fn) {
         (this->*fn)();
     }
@@ -3712,113 +3084,108 @@ namespace n10 {
 
 // ======== unk_020bd868.cpp ========
 namespace n09 {
-struct Unk_021f3010;
 extern "C" {
-extern Unk_020d16e8 data_020d16e8[];
+extern SkyObjGfxDef sSkyObjGfxTable[];
 }
 extern "C" {
-extern s32 data_021eff48;
+extern s32 gWeatherManager;
 }
 extern "C" {
-extern u16 data_020d0dfc;
+extern u16 sSkyObjPalDefaultColor;
 }
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4398 n09::L_021f4398::data_021f14e0.v
+namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4398 n09::L_021f4398::gSkySprites.v
 extern "C" {
-void func_02116048(void*, void*, u32);
-}
-extern "C" {
-void func_021145cc(void*, u32);
+void MI_CpuCopy8(void*, void*, u32);
 }
 extern "C" {
-void func_02111df8(void*, u32, u32);
+void DC_FlushRange(void*, u32);
 }
 extern "C" {
-void func_02111d90(void*, u32, u32);
+void GX_LoadOBJPltt(void*, u32, u32);
 }
 extern "C" {
-s32 _ZN12Unk_020bd71813func_020bd808Ei(Unk_020bd868*, s32);
+void GXS_LoadOBJPltt(void*, u32, u32);
 }
 extern "C" {
-void _ZN12Unk_020bd71813func_020bd764Eii(Unk_020bd868*, s32, s32);
+s32 _ZN13SkyObjPalette14applyOverridesEi(SkyObjPalette*, s32);
 }
 extern "C" {
-void _ZN12Unk_020bd71813func_020bd7c0Ei(Unk_020bd868*, s32);
+void _ZN13SkyObjPalette12setLoadedRowEii(SkyObjPalette*, s32, s32);
 }
 extern "C" {
-void _ZN12Unk_020bd71813func_020bd7a8Ei(void*, ...);
+void _ZN13SkyObjPalette10invalidateEi(SkyObjPalette*, s32);
 }
 extern "C" {
-void func_02115fb4(void*, u32, u32);
+void _ZN13SkyObjPalette13invalidateForEi(void*, ...);
 }
 extern "C" {
-extern Unk_020bd9a0_Row data_020d11dc[];
+void MI_CpuFill8(void*, u32, u32);
 }
 extern "C" {
-void func_02111c6c(u32, u32, u32);
+extern SkyObjCharLayout sSkyObjCharLayouts[];
 }
 extern "C" {
-void func_02111c0c(u32, u32, u32);
+void GX_LoadOBJ(u32, u32, u32);
 }
 extern "C" {
-static inline void Unk_020bd9a0_Copy(u32 d, u32 a, u32 n, u32 k, BOOL flag) {
+void GXS_LoadOBJ(u32, u32, u32);
+}
+extern "C" {
+static inline void SkyObjGfx_LoadTileRow(u32 d, u32 a, u32 n, u32 k, BOOL flag) {
     u32 sz = n << 5;
     u32 src = (k + a) << 5;
-    func_02111c6c(d, src, sz);
-    if (flag) func_02111c0c(d, src, sz);
+    GX_LoadOBJ(d, src, sz);
+    if (flag) GXS_LoadOBJ(d, src, sz);
 }
 }
 extern "C" {
-s32 func_02119a28(void*, const char*);
+s32 FS_OpenFile(void*, const char*);
 }
 extern "C" {
-s32 func_021198b4(void*, void*, u32);
+s32 FS_ReadFile(void*, void*, u32);
 }
 extern "C" {
-s32 func_021199e0(void*);
+s32 FS_CloseFile(void*);
 }
 extern "C" {
-s32 func_02119848(void*, u32, u32);
+s32 FS_SeekFile(void*, u32, u32);
 }
 extern "C" {
-void func_02119d78(void*);
+void FS_InitFile(void*);
 }
 extern "C" {
-extern const char* data_020d0e14[];
+extern const char* sSkyObjCharFiles[];
 }
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } data_021f14e0; } }
-#define data_021f44ac n09::L_021f44ac::data_021f14e0.v
+namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
+#define data_021f44ac n09::L_021f44ac::gSkySprites.v
 extern "C" {
-void _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(void*, s32, s32, void*);
-}
-extern "C" {
-void _ZN12Unk_020bd06c13func_020bd0a4EiiP17Unk_020bd0a4_Vec3(void*, s32, s32, void*);
+void _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(void*, s32, s32, void*);
 }
 extern "C" {
-void func_020bdd94(Unk_020bdd94*, Unk_020bdd94_Out*);
+void _ZN11SkySePlayer7requestEiiP7VecFx32(void*, s32, s32, void*);
 }
 extern "C" {
-s32 func_020bddbc(Unk_020bdd94_Out*, s32, s32, s32);
+void SkySprite_GetPos(SkySprite*, VecFx32*);
 }
 extern "C" {
-void func_020bdda4(Unk_020bdd94*, Unk_020bdd94_Out*);
+s32 SkySprite_MakeSoundPos(VecFx32*, s32, s32, s32);
+}
+extern "C" {
+void SkySprite_GetSoundPos(SkySprite*, VecFx32*);
 }
 extern "C" {
 s32 func_01ffcb0c(s32, s32);
 }
 extern "C" {
-s32 func_01ffc5a4(s32, s32);
+s32 FX_Div(s32, s32);
 }
 extern "C" {
-s32 func_01ffc588(s32);
+s32 FX_Inv(s32);
 }
 extern "C" {
 s32 _s32_div_f(s32, s32);
 }
-namespace L_021f23d4 { extern "C" { extern struct S { u8 p[0xef4]; Unk_021f23d4 v[1]; } data_021f14e0; } }
-#define data_021f23d4 n09::L_021f23d4::data_021f14e0.v
-namespace L_021f2944 { extern "C" { extern struct S { u8 p[0x1464]; Unk_021f23d4 v[1]; } data_021f14e0; } }
-#define data_021f2944 n09::L_021f2944::data_021f14e0.v
 extern "C" {
 extern s32 data_020c8cb8;
 }
@@ -3826,70 +3193,66 @@ extern "C" {
 extern s32 data_020c8cbc;
 }
 extern "C" {
-extern s32 data_021c3070;
+extern s32 gCamera;
 }
 extern "C" {
-extern s32 data_021ef674;
+extern s32 sSkyCrossingWidth;
 }
 extern "C" {
-extern Unk_020bdef0_Vec data_021c309c;
+extern SkyLookAtVec gCameraLookAt;
 }
 extern "C" {
 extern s16 data_02135f44[][2];
 }
 extern "C" {
-s32 func_0203a4b0();
+s32 Camera_GetCloseUpFactor();
 }
 extern "C" {
-void func_020bdef0(Unk_020bdd94*, Unk_020bdd94_Out*, s32);
+void SkySprite_ProjectWorldPos(SkySprite*, VecFx32*, s32);
 }
-struct Unk_021f3010 { u8 unk_00[8]; s32 unk_08; };
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[1]; } data_021f14e0; } }
-#define data_021f3010 n09::L_021f3010::data_021f14e0.v
+namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[1]; } gSkySprites; } }
+#define data_021f3010 n09::L_021f3010::gSkySprites.v
 extern "C" {
-extern Unk_021f3010 data_020e6544[];
-}
-extern "C" {
-void _ZN12Unk_020be20413func_020be428Ev(Unk_020bdd94*);
+extern SkySpriteAnimDef sSkySpriteAnimSeqs[];
 }
 extern "C" {
-void _ZN12Unk_0208927013func_02089268EP16Unk_02089270_Tbl(void*, void*);
+void _ZN9SkySprite9resetFreeEv(SkySprite*);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_02089264Ei(void*, s32);
+void _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(void*, void*);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_020891bcEv(void*);
+void _ZN10SpriteAnim11setPlayOnceEi(void*, s32);
 }
 extern "C" {
-static inline Unk_021f3010* Unk_020be0bc_Get(s32 i) { return &data_020e6544[i]; }
+s32 _ZN10SpriteAnim7restartEv(void*);
 }
 
-extern "C" void func_020bd868(Unk_020bd868* p, u8* base, u32 idx);
-extern "C" Unk_020bd868* func_020bd8f8(Unk_020bd868* p);
-extern "C" void func_020bd940(Unk_020bd868* p);
-extern "C" void func_020bd950(Unk_020bd868* p, s32 a);
-extern "C" void func_020bd964(Unk_020bd868* p, s32 v);
-extern "C" void func_020bd978(Unk_020bd868* p, s32 v, void* x);
-extern "C" void func_020bd9a0(Unk_020bd868* p, u8* base);
-extern "C" void func_020bda7c(Unk_020bd868* p);
-extern "C" void func_020bda8c(u8* p);
-extern "C" BOOL func_020bdaa4(u8* p);
-extern "C" BOOL func_020bdb68(u8* p, s32 idx);
-extern "C" void func_020bdcbc(u8* p);
-extern "C" void func_020bdd24(Unk_020bdd94* p, s32 a, s32 b);
-extern "C" void func_020bdd4c(Unk_020bdd94* p, s32 a);
-extern "C" void func_020bdd70(Unk_020bdd94* p, s32 a);
-extern "C" void func_020bdd94(Unk_020bdd94* p, Unk_020bdd94_Out* out);
-extern "C" void func_020bdda4(Unk_020bdd94* p, Unk_020bdd94_Out* out);
-extern "C" s32 func_020bddbc(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c);
-extern "C" BOOL func_020bde0c(Unk_020bdd94* p, s32 a, s32 b, s32 c);
-extern "C" void func_020bdecc(Unk_020bdd94* p, s32 a);
-extern "C" void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a);
-extern "C" BOOL func_020be018(Unk_020bdd94* p, s32 a, s32 b, s32 c);
-extern "C" void func_020be06c(Unk_020bdd94* p, u8 a, s32 b);
-extern "C" void func_020be094(Unk_020bdd94* p);
-extern "C" void func_020be0bc(Unk_020be0bc* p);
+extern "C" void SkyObjPalette_Load(SkyObjPalette* p, u8* base, u32 idx);
+extern "C" SkyObjPalette* SkyObjPalette_Init(SkyObjPalette* p);
+extern "C" void SkyObjGfxSlot_Release(SkyObjGfxSlot* p);
+extern "C" void SkyObjGfxSlot_RefreshPalette(SkyObjGfxSlot* p, s32 a);
+extern "C" void SkyObjGfxSlot_SetGfx(SkyObjGfxSlot* p, s32 v);
+extern "C" void SkyObjGfxSlot_Acquire(SkyObjGfxSlot* p, s32 v, void* x);
+extern "C" void SkyObjGfxSlot_Upload(SkyObjGfxSlot* p, u8* base);
+extern "C" void SkyObjGfxSlot_Init(SkyObjGfxSlot* p);
+extern "C" void SkyObjGfxLoader_FlushChars(u8* p);
+extern "C" BOOL SkyObjGfxLoader_LoadPalettes(u8* p);
+extern "C" BOOL SkyObjGfxLoader_LoadChars(u8* p, s32 idx);
+extern "C" void SkyObjGfxLoader_Init(u8* p);
+extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b);
+extern "C" void SkySprite_RequestSe(SkySprite* p, s32 a);
+extern "C" void SkySprite_RequestSeSustained(SkySprite* p, s32 a);
+extern "C" void SkySprite_GetPos(SkySprite* p, VecFx32* out);
+extern "C" void SkySprite_GetSoundPos(SkySprite* p, VecFx32* out);
+extern "C" s32 SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c);
+extern "C" BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c);
+extern "C" void SkySprite_ProjectCrossing(SkySprite* p, s32 a);
+extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, VecFx32* q, s32 a);
+extern "C" BOOL SkySprite_AdvanceCrossing(SkySprite* p, s32 a, s32 b, s32 c);
+extern "C" void SkySprite_BeginCrossing(SkySprite* p, u8 a, s32 b);
+extern "C" void SkySprite_Release(SkySprite* p);
+extern "C" void SkySprite_StartAnim(SkySprite* p);
 
 }
 namespace n00 {
@@ -3897,16 +3260,16 @@ extern "C" {
 u32 data_020e47f4[2] = {0x81f000f0, 0xffff4118};
 u32 data_020e4d14[4] = {0x71fc8000, 0x99, 0x71fc80e0, 0xffff0119};
 u32 data_020e4d24[4] = {0x71fc8000, 0x98, 0x71fc80e0, 0xffff0118};
-const u32 data_020d11dc[20] = {0x0, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x4, 0x4, 0x8, 0x4, 0x8, 0x0, 0xc, 0x4, 0x8,
+const u32 sSkyObjCharLayouts[20] = {0x0, 0x4, 0x0, 0x0, 0x0, 0x0, 0x0, 0x4, 0x4, 0x8, 0x4, 0x8, 0x0, 0xc, 0x4, 0x8,
     0x4, 0x8, 0x0, 0xc};
-u32 data_021ef670;
+u32 sSkyOutdoors;
 u32 data_020e487c[2] = {0x0, 0xffff0094};
-void *data_020e4a34[2] = {(void *)func_020bfa90, 0};
-void *data_020e49bc[2] = {(void *)func_020bf634, 0};
+void *data_020e4a34[2] = {(void *)SkySprite_InitShootingStar, 0};
+void *data_020e49bc[2] = {(void *)SkySprite_UpdateMoon, 0};
 void *data_020e4d98[5] = {(void *)data_020e5068, (void *)data_020e5068, (void *)data_020e5088,
     (void *)data_020e50a8, (void *)data_020e50c8};
 char data_020e4fa8[30] = "/sky/d_2d_b_cld_r0_bg_ncl.bin";
-void *data_020e6544[138] = {(void *)data_020e5318, (void *)0x4, (void *)0x1, (void *)data_020e5704, (void *)0x8,
+void *sSkySpriteAnimSeqs[138] = {(void *)data_020e5318, (void *)0x4, (void *)0x1, (void *)data_020e5704, (void *)0x8,
     0, (void *)data_020e4adc, (void *)0x1, (void *)0x1, (void *)data_020e4ae8, (void *)0x1, (void *)0x1,
     (void *)data_020e4af4, (void *)0x1, (void *)0x1, (void *)data_020e4b00, (void *)0x1, (void *)0x1,
     (void *)data_020e4b0c, (void *)0x1, (void *)0x1, (void *)data_020e4b18, (void *)0x1, (void *)0x1,
@@ -3930,22 +3293,22 @@ void *data_020e6544[138] = {(void *)data_020e5318, (void *)0x4, (void *)0x1, (vo
     (void *)data_020e4ab8, (void *)0x1, (void *)0x1, (void *)data_020e5980, (void *)0xf, (void *)0x1,
     (void *)data_020e4ddc, (void *)0x2, 0, (void *)data_020e4ac4, (void *)0x1, (void *)0x1};
 char data_020e50c8[31] = "/sky/d_2d_b_cld_r_a_bg_nsc.bin";
-void *data_020e4964[2] = {(void *)_ZN12Unk_020bfe3013func_020bfe30Ev, 0};
+void *data_020e4964[2] = {(void *)_ZN9SkySprite11endRainDropEv, 0};
 void *data_020e4b30[3] = {(void *)data_020e498c, (void *)0x1, 0};
 u32 data_020e4a54[2] = {0x81f880f0, 0xffff4118};
 u32 data_020e4a3c[2] = {0x1fc80f8, 0xffff0094};
 u32 data_020e4984[2] = {0x81f880f0, 0xffff4098};
-const u32 data_020d0df4[1] = {0x4};
+const u32 sSkyStarBgLayer[1] = {0x4};
 u32 data_020e49ec[2] = {0x81e003e0, 0xffff9098};
 u32 data_020e476c[2] = {0x81f880f0, 0xffff4098};
-void *data_020e4754[2] = {(void *)_ZN12Unk_020be20413func_020be7dcEv, 0};
+void *data_020e4754[2] = {(void *)_ZN9SkySprite11endFireworkEv, 0};
 void *data_020e4b3c[3] = {(void *)data_020e482c, (void *)0x1, 0};
 void *data_020e53b0[18] = {(void *)data_020e466c, (void *)0x2, 0, (void *)data_020e495c, (void *)0x2, 0,
     (void *)data_020e4764, (void *)0x2, 0, (void *)data_020e48dc, (void *)0x2, 0, (void *)data_020e499c,
     (void *)0x2, 0, (void *)data_020e469c, (void *)0x2, 0};
-void *data_020e4a2c[2] = {(void *)_ZN12Unk_020be20413func_020be9e8Ev, 0};
+void *data_020e4a2c[2] = {(void *)_ZN9SkySprite14updateFireworkEv, 0};
 u32 data_020e49d4[2] = {0x1fc00fc, 0xffff0077};
-void *data_020e46cc[2] = {(void *)func_020bb1c4, 0};
+void *data_020e46cc[2] = {(void *)SkySprites_FireworksPatternAct0E, 0};
 void *data_020e5980[45] = {(void *)data_020e5208, (void *)0x1, 0, (void *)data_020e54d0, (void *)0x1, 0,
     (void *)data_020e5520, (void *)0x1, 0, (void *)data_020e5570, (void *)0x1, 0, (void *)data_020e55c0,
     (void *)0x1, 0, (void *)data_020e5610, (void *)0x1, 0, (void *)data_020e53f8, (void *)0x3, 0,
@@ -3953,100 +3316,100 @@ void *data_020e5980[45] = {(void *)data_020e5208, (void *)0x1, 0, (void *)data_0
     (void *)0x3, 0, (void *)data_020e52b8, (void *)0x3, 0, (void *)data_020e52e8, (void *)0x3, 0,
     (void *)data_020e4bc4, (void *)0x3, 0, (void *)data_020e4bd4, (void *)0x3, 0, (void *)data_020e4be4,
     (void *)0x3, 0};
-u32 data_021ef688[3];
+u32 sSkyLight[3];
 void *data_020e478c[2] = {(void *)data_020d0ec8, (void *)data_020d0ee0};
 u32 data_020e469c[2] = {0x91f000f0, 0xffff2098};
 char data_020e4e48[30] = "/sky/d_2d_b_cld_b0_bg_nsc.bin";
 u32 data_020e495c[2] = {0x81f000f0, 0xffff2118};
 u32 data_020e4764[2] = {0x81f000f0, 0xffff211c};
-void *data_020e4954[2] = {(void *)_ZN12Unk_020bfe3013func_020bfe38Ev, 0};
+void *data_020e4954[2] = {(void *)_ZN9SkySprite14updateRainDropEv, 0};
 u32 data_020e4874[2] = {0x81f880f0, 0xffff409e};
-u32 data_021ef694[3];
+u32 sMoonColors[3];
 char data_020e4e68[30] = "/sky/d_2d_b_cld_f0_bg_nsc.bin";
 u32 data_020e5378[14] = {0x301500f7, 0x30f6, 0x11f1000a, 0x3095, 0xe000b, 0x30d4, 0x11e300fb, 0x3095, 0x200600e4,
     0x30d4, 0x101300e8, 0x30d5, 0x31ea00ea, 0xffff30f5};
-const u32 data_020d0fa4[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
+const u32 sFireworkScaleSmall[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
 char data_020e4e88[30] = "/sky/d_2d_b_cld_f1_bg_nsc.bin";
 }
 }
 namespace n09 {
 }
-void Unk_020be0f4::func_020be0f4() {
+void SkySprite::endByKind() {
     using namespace n09;
-    static void (Unk_020be0f4::*tbl[13])() = {
-        *(void (Unk_020be0f4::**)())n00::data_020e4964,
-        *(void (Unk_020be0f4::**)())n00::data_020e49e4,
-        *(void (Unk_020be0f4::**)())n00::data_020e4724,
-        *(void (Unk_020be0f4::**)())n00::data_020e494c,
-        *(void (Unk_020be0f4::**)())n00::data_020e4944,
-        *(void (Unk_020be0f4::**)())n00::data_020e493c,
-        *(void (Unk_020be0f4::**)())n00::data_020e4934,
-        *(void (Unk_020be0f4::**)())n00::data_020e467c,
-        *(void (Unk_020be0f4::**)())n00::data_020e4924,
-        *(void (Unk_020be0f4::**)())n00::data_020e4754,
-        *(void (Unk_020be0f4::**)())n00::data_020e4914,
-        *(void (Unk_020be0f4::**)())n00::data_020e490c,
-        *(void (Unk_020be0f4::**)())n00::data_020e4904,
+    static void (SkySprite::*tbl[13])() = {
+        *(void (SkySprite::**)())n00::data_020e4964,
+        *(void (SkySprite::**)())n00::data_020e49e4,
+        *(void (SkySprite::**)())n00::data_020e4724,
+        *(void (SkySprite::**)())n00::data_020e494c,
+        *(void (SkySprite::**)())n00::data_020e4944,
+        *(void (SkySprite::**)())n00::data_020e493c,
+        *(void (SkySprite::**)())n00::data_020e4934,
+        *(void (SkySprite::**)())n00::data_020e467c,
+        *(void (SkySprite::**)())n00::data_020e4924,
+        *(void (SkySprite::**)())n00::data_020e4754,
+        *(void (SkySprite::**)())n00::data_020e4914,
+        *(void (SkySprite::**)())n00::data_020e490c,
+        *(void (SkySprite::**)())n00::data_020e4904,
     };
-    void (Unk_020be0f4::*fn)() = tbl[unk_00];
+    void (SkySprite::*fn)() = tbl[kind];
     if (fn) (this->*fn)();
 }
 namespace n09 {
 
-extern "C" void func_020be0bc(Unk_020be0bc* p) {
-    Unk_020be0bc_E i = (Unk_020be0bc_E)p->unk_0c;
-    Unk_021f3010* row = &data_020e6544[i];
-    _ZN12Unk_0208927013func_02089268EP16Unk_02089270_Tbl(p->unk_10, row);
-    _ZN12Unk_0208927013func_02089264Ei(p->unk_10, row->unk_08);
-    _ZN12Unk_0208927013func_020891bcEv(p->unk_10);
+extern "C" void SkySprite_StartAnim(SkySprite* p) {
+    Unk_020be0bc_E i = (Unk_020be0bc_E)p->animSeq;
+    SkySpriteAnimDef* row = &sSkySpriteAnimSeqs[i];
+    _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&p->anim, row);
+    _ZN10SpriteAnim11setPlayOnceEi(&p->anim, row->playOnce);
+    _ZN10SpriteAnim7restartEv(&p->anim);
 }
 
-extern "C" void func_020be094(Unk_020bdd94* p) {
-    s32 i = p->unk_24;
+extern "C" void SkySprite_Release(SkySprite* p) {
+    s32 i = p->gfxSlot;
     if (i != 6) {
-        func_020bd940((Unk_020bd868*)&data_021f3010[i]);
+        SkyObjGfxSlot_Release(&data_021f3010[i]);
     }
-    _ZN12Unk_020be20413func_020be428Ev(p);
+    _ZN9SkySprite9resetFreeEv(p);
 }
 
-extern "C" void func_020be06c(Unk_020bdd94* p, u8 a, s32 b) {
-    p->unk_2e = a;
+extern "C" void SkySprite_BeginCrossing(SkySprite* p, u8 a, s32 b) {
+    p->dir = a;
     s32 v;
-    if (p->unk_2e != 0) {
+    if (p->dir != 0) {
         v = 0;
     } else {
-        v = data_021ef674;
+        v = sSkyCrossingWidth;
     }
-    p->unk_28 = v;
-    return func_020bdecc(p, b);
+    p->trackX = v;
+    return SkySprite_ProjectCrossing(p, b);
 }
 
-extern "C" BOOL func_020be018(Unk_020bdd94* p, s32 a, s32 b, s32 c) {
+extern "C" BOOL SkySprite_AdvanceCrossing(SkySprite* p, s32 a, s32 b, s32 c) {
     BOOL r = FALSE;
-    if (p->unk_2e != 0) {
-        p->unk_28 += a;
-        if (p->unk_28 > data_021ef674) r = TRUE;
+    if (p->dir != 0) {
+        p->trackX += a;
+        if (p->trackX > sSkyCrossingWidth) r = TRUE;
     } else {
-        p->unk_28 -= a;
-        if (p->unk_28 < 0) r = TRUE;
+        p->trackX -= a;
+        if (p->trackX < 0) r = TRUE;
     }
     if (!r) {
-        p->unk_2c += c;
-        func_020bdecc(p, b);
+        p->wavePhase += c;
+        SkySprite_ProjectCrossing(p, b);
     }
     return r;
 }
 
-extern "C" void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
-    Unk_020bdef0_Vec loc;
-    loc.unk_00[0] = data_021c309c.unk_00[0];
-    loc.unk_00[1] = data_021c309c.unk_00[1];
-    loc.unk_00[2] = data_021c309c.unk_00[2];
+extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, VecFx32* q, s32 a) {
+    SkyLookAtVec loc;
+    loc.x = gCameraLookAt.x;
+    loc.y = gCameraLookAt.y;
+    loc.z = gCameraLookAt.z;
     s32 inv, idx, z, y, t;
     s32 sx, sy, sc, fx, k, dz;
-    dz = loc.unk_00[2] - q->unk_08;
-    fx = func_01ffc5a4(q->unk_00 - loc.unk_00[0], data_020c8cbc);
-    dz = func_01ffc5a4(dz, data_020c8cb8 << 2);
+    dz = loc.z - q->z;
+    fx = FX_Div(q->x - loc.x, data_020c8cbc);
+    dz = FX_Div(dz, data_020c8cb8 << 2);
     t = func_01ffcb0c(-0x1000, dz - 0x1000);
     k = func_01ffcb0c(dz, t + 0x1000);
     s32 w = func_01ffcb0c(-0x666, k) + 0xe66;
@@ -4055,149 +3418,149 @@ extern "C" void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
     sx = z << 8;
     sy = func_01ffcb0c(0x50000, k) + 0x50000;
     inv = 0x1000 - k;
-    if (data_021c3070 != 0) {
-        idx = func_01ffcb0c(func_0203a4b0(), inv);
+    if (gCamera != 0) {
+        idx = func_01ffcb0c(Camera_GetCloseUpFactor(), inv);
     } else {
         idx = 0;
     }
     idx = func_01ffcb0c(idx, 0x10000);
-    p->unk_34 = sx;
-    p->unk_38 = sy - idx;
-    p->unk_3c = 0;
+    p->screenPos.x = sx;
+    p->screenPos.y = sy - idx;
+    p->screenPos.z = 0;
     sc = func_01ffcb0c(-0xc00, k) + 0x1000;
     if (sc < 0x400) sc = 0x400;
     else if (sc > 0x1000) sc = 0x1000;
-    z = func_01ffc588(sc);
-    p->unk_4c = z;
-    p->unk_50 = z;
-    idx = (u16)p->unk_2c >> 4;
+    z = FX_Inv(sc);
+    p->scaleX = z;
+    p->scaleY = z;
+    idx = (u16)p->wavePhase >> 4;
     z = func_01ffcb0c(data_02135f44[idx][0], a);
     z = func_01ffcb0c(z, sc);
-    p->unk_38 += z;
+    p->screenPos.y += z;
 }
 
-extern "C" void func_020bdecc(Unk_020bdd94* p, s32 a) {
-    Unk_020bdd94_Out t;
-    t.unk_00 = p->unk_28;
-    t.unk_04 = 0;
-    t.unk_08 = data_020c8cb8;
-    func_020bdef0(p, &t, a);
+extern "C" void SkySprite_ProjectCrossing(SkySprite* p, s32 a) {
+    VecFx32 t;
+    t.x = p->trackX;
+    t.y = 0;
+    t.z = data_020c8cb8;
+    SkySprite_ProjectWorldPos(p, &t, a);
 }
 
-extern "C" BOOL func_020bde0c(Unk_020bdd94* p, s32 a, s32 b, s32 c) {
+extern "C" BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c) {
     s32 d;
-    s32 w = func_01ffcb0c(a, p->unk_4c);
-    s32 h = func_01ffcb0c(b, p->unk_50);
-    s32 dy = func_01ffcb0c(c, p->unk_50);
+    s32 w = func_01ffcb0c(a, p->scaleX);
+    s32 h = func_01ffcb0c(b, p->scaleY);
+    s32 dy = func_01ffcb0c(c, p->scaleY);
     s32 hw = _s32_div_f(w, 2);
     s32 hh = _s32_div_f(h, 2);
-    s32 y = p->unk_38 + dy;
-    s32 x = p->unk_34;
+    s32 y = p->screenPos.y + dy;
+    s32 x = p->screenPos.x;
     s32 left = x - hw;
     s32 right = x + hw;
     s32 top = y - hh;
     s32 bottom = y + hh;
-    Unk_021f23d4* o = data_021f23d4;
+    SkySprite* o = &n00::gSkySprites.sprites[33];
     BOOL found = FALSE;
-    for (; o < data_021f2944; o++) {
-        if (o->unk_04 == 2 && ((u8*)o)[0x2f] != 0) {
-            d = o->unk_44;
+    for (; o < &n00::gSkySprites.sprites[45]; o++) {
+        if (o->state == 2 && o->localShot != 0) {
+            d = o->screenVel.y;
             if (d < 0) d = -d;
-            s32 xl = o->unk_34 - 0x1000;
-            s32 yt = o->unk_38 - 0x1000;
-            s32 yb = d + (o->unk_38 + 0x1000);
-            s32 xr = o->unk_34 + 0x1000;
+            s32 xl = o->screenPos.x - 0x1000;
+            s32 yt = o->screenPos.y - 0x1000;
+            s32 yb = d + (o->screenPos.y + 0x1000);
+            s32 xr = o->screenPos.x + 0x1000;
             if (left <= xr && right >= xl && top <= yb && bottom >= yt) {
                 found = TRUE;
-                ((u8*)o)[0x30] = 1;
+                o->hit = 1;
             }
         }
     }
     return found;
 }
 
-extern "C" s32 func_020bddbc(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c) {
+extern "C" s32 SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c) {
     s32 t = func_01ffcb0c(0x400, c);
     s32 u = func_01ffcb0c(0x1000, c);
-    s32 v = func_01ffc5a4(0x1000 - t, u - t);
+    s32 v = FX_Div(0x1000 - t, u - t);
     if (v < 0) v = 0;
     else if (v > 0x1000) v = 0x1000;
-    out->unk_00 = a;
-    out->unk_04 = b;
-    out->unk_08 = v;
+    out->x = a;
+    out->y = b;
+    out->z = v;
     return v;
 }
 
-extern "C" void func_020bdda4(Unk_020bdd94* p, Unk_020bdd94_Out* out) {
-    func_020bddbc(out, p->unk_34, p->unk_38, p->unk_4c);
+extern "C" void SkySprite_GetSoundPos(SkySprite* p, VecFx32* out) {
+    SkySprite_MakeSoundPos(out, p->screenPos.x, p->screenPos.y, p->scaleX);
 }
 
-extern "C" void func_020bdd94(Unk_020bdd94* p, Unk_020bdd94_Out* out) {
-    out->unk_00 = p->unk_34;
-    out->unk_04 = p->unk_38;
-    out->unk_08 = 0;
+extern "C" void SkySprite_GetPos(SkySprite* p, VecFx32* out) {
+    out->x = p->screenPos.x;
+    out->y = p->screenPos.y;
+    out->z = 0;
 }
 
-extern "C" void func_020bdd70(Unk_020bdd94* p, s32 a) {
-    Unk_020bdd4c_Out out;
-    func_020bdda4(p, (Unk_020bdd94_Out*)&out);
-    _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(data_021f44ac, 0, a, &out);
+extern "C" void SkySprite_RequestSeSustained(SkySprite* p, s32 a) {
+    SkySoundPosBuf out;
+    SkySprite_GetSoundPos(p, (VecFx32*)&out);
+    _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, 0, a, &out);
 }
 
-extern "C" void func_020bdd4c(Unk_020bdd94* p, s32 a) {
-    Unk_020bdd4c_Out out;
-    func_020bdda4(p, (Unk_020bdd94_Out*)&out);
-    _ZN12Unk_020bd06c13func_020bd0a4EiiP17Unk_020bd0a4_Vec3(data_021f44ac, 0, a, &out);
+extern "C" void SkySprite_RequestSe(SkySprite* p, s32 a) {
+    SkySoundPosBuf out;
+    SkySprite_GetSoundPos(p, (VecFx32*)&out);
+    _ZN11SkySePlayer7requestEiiP7VecFx32(data_021f44ac, 0, a, &out);
 }
 
-extern "C" void func_020bdd24(Unk_020bdd94* p, s32 a, s32 b) {
-    Unk_020bdd94_Out out;
-    func_020bdd94(p, &out);
-    _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(data_021f44ac, a, b, &out);
+extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b) {
+    VecFx32 out;
+    SkySprite_GetPos(p, &out);
+    _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, a, b, &out);
 }
 
-extern "C" void func_020bdcbc(u8* p) {
-    func_02119d78(p);
-    func_02115fb4(p + 0x48, 0, 0x400);
-    func_02115fb4(p + 0x448, 0, 0xc00);
-    func_02115fb4(p + 0x1048, 0, 0x1c0);
-    func_02115fb4(p + 0x1208, 0, 0x140);
+extern "C" void SkyObjGfxLoader_Init(u8* p) {
+    FS_InitFile(p);
+    MI_CpuFill8(p + 0x48, 0, 0x400);
+    MI_CpuFill8(p + 0x448, 0, 0xc00);
+    MI_CpuFill8(p + 0x1048, 0, 0x1c0);
+    MI_CpuFill8(p + 0x1208, 0, 0x140);
     *(u32*)(p + 0x1348) = 0x12345678;
 }
 
-extern "C" BOOL func_020bdb68(u8* p, s32 idx) {
-    Unk_020d16e8* row = &data_020d16e8[idx];
-    Unk_020bd9a0_Row* t;
-    s32 a = func_02119a28(p, data_020d0e14[row->unk_00]);
+extern "C" BOOL SkyObjGfxLoader_LoadChars(u8* p, s32 idx) {
+    SkyObjGfxDef* row = &sSkyObjGfxTable[idx];
+    SkyObjCharLayout* t;
+    s32 a = FS_OpenFile(p, sSkyObjCharFiles[row->charFile]);
     BOOL ok1 = TRUE;
     BOOL ok2 = TRUE;
     u8* src;
     s32 i;
     s32 f;
-    t = &data_020d11dc[row->unk_08];
-    if (row->unk_04 != 0xffff) {
+    t = &sSkyObjCharLayouts[row->charLayout];
+    if (row->charTileA != 0xffff) {
         src = p + 0x448;
-        ok1 &= func_02119848(p, (row->unk_04 & ~0x1f) << 5, 0);
+        ok1 &= FS_SeekFile(p, (row->charTileA & ~0x1f) << 5, 0);
         for (i = 0; i < 4; i++) {
-            if (t->unk_04 != 0) {
-                ok2 &= func_021198b4(p, p + 0x48, 0x400) > 0;
-                func_02116048(p + 0x48 + ((row->unk_04 & 0x1f) << 5), src + (t->unk_00 << 5), t->unk_04 << 5);
+            if (t->topTileCount != 0) {
+                ok2 &= FS_ReadFile(p, p + 0x48, 0x400) > 0;
+                MI_CpuCopy8(p + 0x48 + ((row->charTileA & 0x1f) << 5), src + (t->topTileX << 5), t->topTileCount << 5);
             }
             src += 0x180;
         }
     }
-    if (row->unk_06 != 0xffff) {
+    if (row->charTileB != 0xffff) {
         src = p + 0xa48;
-        ok1 &= func_02119848(p, (row->unk_06 & ~0x1f) << 5, 0);
+        ok1 &= FS_SeekFile(p, (row->charTileB & ~0x1f) << 5, 0);
         for (i = 4; i < 8; i++) {
-            if (t->unk_0c != 0) {
-                ok2 &= func_021198b4(p, p + 0x48, 0x400) > 0;
-                func_02116048(p + 0x48 + ((row->unk_06 & 0x1f) << 5), src + (t->unk_08 << 5), t->unk_0c << 5);
+            if (t->bottomTileCount != 0) {
+                ok2 &= FS_ReadFile(p, p + 0x48, 0x400) > 0;
+                MI_CpuCopy8(p + 0x48 + ((row->charTileB & 0x1f) << 5), src + (t->bottomTileX << 5), t->bottomTileCount << 5);
             }
             src += 0x180;
         }
     }
-    f = func_021199e0(p);
+    f = FS_CloseFile(p);
     if (a && ok1 && ok2 && f) return TRUE;
     return FALSE;
 }
@@ -4205,143 +3568,141 @@ extern "C" BOOL func_020bdb68(u8* p, s32 idx) {
 }
 namespace n00 {
 extern "C" {
-void *data_020e4924[2] = {(void *)_ZN12Unk_020be01813func_020bef24Ev, 0};
-const u32 data_020d0ea0[5] = {0x0, 0x0, 0x0, 0x1, 0x1};
+void *data_020e4924[2] = {(void *)_ZN9SkySprite12endLightningEv, 0};
+const u32 sSkyPaletteSetByLevel[5] = {0x0, 0x0, 0x0, 0x1, 0x1};
 }
 }
 namespace n09 {
-extern "C" BOOL func_020bdaa4(u8* p) {
+extern "C" BOOL SkyObjGfxLoader_LoadPalettes(u8* p) {
     char name1[0x17] = "/sky/a_sky_obj_ncl.bin";
-    s32 a = func_02119a28(p, name1);
-    BOOL b = func_021198b4(p, p + 0x1048, 0x1c0) > 0;
-    s32 c = func_021199e0(p);
+    s32 a = FS_OpenFile(p, name1);
+    BOOL b = FS_ReadFile(p, p + 0x1048, 0x1c0) > 0;
+    s32 c = FS_CloseFile(p);
     char name2[0x1c] = "/sky/a_sky_moon_obj_ncl.bin";
-    s32 d = func_02119a28(p, name2);
-    BOOL e = func_021198b4(p, p + 0x1208, 0x140) > 0;
-    s32 f = func_021199e0(p);
+    s32 d = FS_OpenFile(p, name2);
+    BOOL e = FS_ReadFile(p, p + 0x1208, 0x140) > 0;
+    s32 f = FS_CloseFile(p);
     if (a && b && c && d && e && f) return TRUE;
     return FALSE;
 }
 
-extern "C" void func_020bda8c(u8* p) {
-    func_021145cc(p + 0x448, 0xc00);
+extern "C" void SkyObjGfxLoader_FlushChars(u8* p) {
+    DC_FlushRange(p + 0x448, 0xc00);
 }
 
-extern "C" void func_020bda7c(Unk_020bd868* p) {
-    p->unk_00 = 0x34;
-    p->unk_04 = 0;
-    p->unk_08 = 0;
-    p->unk_09 = 0;
+extern "C" void SkyObjGfxSlot_Init(SkyObjGfxSlot* p) {
+    p->gfxId = 0x34;
+    p->refCount = 0;
+    p->loaded = 0;
+    p->dirty = 0;
 }
 
-extern "C" void func_020bd9a0(Unk_020bd868* p, u8* base) {
-    Unk_020bd9a0_Row* row;
+extern "C" void SkyObjGfxSlot_Upload(SkyObjGfxSlot* p, u8* base) {
+    SkyObjCharLayout* row;
     u32 dst;
     u32 o, k;
     BOOL flag;
-    if (data_021eff48 == 0) flag = TRUE; else flag = FALSE;
-    func_020bda8c(base);
-    Unk_020d16e8* ent = &data_020d16e8[p->unk_00];
-    row = &data_020d11dc[ent->unk_08];
+    if (gWeatherManager == 0) flag = TRUE; else flag = FALSE;
+    SkyObjGfxLoader_FlushChars(base);
+    SkyObjGfxDef* ent = &sSkyObjGfxTable[p->gfxId];
+    row = &sSkyObjCharLayouts[ent->charLayout];
     dst = (u32)base + 0x448;
     o = 0;
     k = 0x94;
     for (s32 i = 0; i < 4; i++) {
         u32 d;
-        u32 n = row->unk_04;
+        u32 n = row->topTileCount;
         if (n != 0) {
-            u32 a = row->unk_00;
+            u32 a = row->topTileX;
             d = dst + (o << 5);
             d += a << 5;
-            Unk_020bd9a0_Copy(d, a, n, k, flag);
+            SkyObjGfx_LoadTileRow(d, a, n, k, flag);
         }
         o += 0xc;
         k += 0x20;
     }
     for (s32 i = 4; i < 8; i++) {
         u32 d;
-        u32 n = row->unk_0c;
+        u32 n = row->bottomTileCount;
         if (n != 0) {
-            u32 a = row->unk_08;
+            u32 a = row->bottomTileX;
             d = dst + (o << 5);
             d += a << 5;
-            Unk_020bd9a0_Copy(d, a, n, k, flag);
+            SkyObjGfx_LoadTileRow(d, a, n, k, flag);
         }
         o += 0xc;
         k += 0x20;
     }
 }
 
-extern "C" void func_020bd978(Unk_020bd868* p, s32 v, void* x) {
-    p->unk_04++;
-    if (v != p->unk_00) {
-        p->unk_08 = 0;
-        _ZN12Unk_020bd71813func_020bd7a8Ei(x);
-        p->unk_00 = v;
+extern "C" void SkyObjGfxSlot_Acquire(SkyObjGfxSlot* p, s32 v, void* x) {
+    p->refCount++;
+    if (v != p->gfxId) {
+        p->loaded = 0;
+        _ZN13SkyObjPalette13invalidateForEi(x);
+        p->gfxId = v;
     }
 }
 
-extern "C" void func_020bd964(Unk_020bd868* p, s32 v) {
-    if (v != p->unk_00) {
-        p->unk_08 = 0;
-        p->unk_09 = 1;
-        p->unk_00 = v;
+extern "C" void SkyObjGfxSlot_SetGfx(SkyObjGfxSlot* p, s32 v) {
+    if (v != p->gfxId) {
+        p->loaded = 0;
+        p->dirty = 1;
+        p->gfxId = v;
     }
 }
 
-extern "C" void func_020bd950(Unk_020bd868* p, s32 a) {
-    p->unk_09 = 1;
-    _ZN12Unk_020bd71813func_020bd7a8Ei(data_021f4398, a);
+extern "C" void SkyObjGfxSlot_RefreshPalette(SkyObjGfxSlot* p, s32 a) {
+    p->dirty = 1;
+    _ZN13SkyObjPalette13invalidateForEi(data_021f4398, a);
 }
 
-extern "C" void func_020bd940(Unk_020bd868* p) {
-    s32 t = p->unk_04 - 1;
+extern "C" void SkyObjGfxSlot_Release(SkyObjGfxSlot* p) {
+    s32 t = p->refCount - 1;
     if (t <= 0) t = 0;
-    p->unk_04 = t;
+    p->refCount = t;
 }
 
-extern "C" Unk_020bd868* func_020bd8f8(Unk_020bd868* p) {
+extern "C" SkyObjPalette* SkyObjPalette_Init(SkyObjPalette* p) {
     volatile u16 tmp;
     u16* end;
     u16* q;
-    p->unk_00 = 0;
-    *(u16*)&p->unk_08 = 0;
-    _ZN12Unk_020bd71813func_020bd7c0Ei(p, -1);
-    end = (u16*)p->unk_28;
-    q = p->unk_0a;
-    tmp = data_020d0dfc;
+    p->balloonColor = 0;
+    p->overrideMask = 0;
+    _ZN13SkyObjPalette10invalidateEi(p, -1);
+    end = (u16*)p->colors;
+    q = p->overrideColors;
+    tmp = sSkyObjPalDefaultColor;
     for (; q < end; q++) {
         *q = tmp;
     }
-    func_02115fb4(p->unk_28, 0, 0x20);
+    MI_CpuFill8(p->colors, 0, 0x20);
     return p;
 }
 
-extern "C" void func_020bd868(Unk_020bd868* p, u8* base, u32 idx) {
-    Unk_020d16e8* row = &data_020d16e8[idx];
-    s32 a = row->unk_0c;
+extern "C" void SkyObjPalette_Load(SkyObjPalette* p, u8* base, u32 idx) {
+    SkyObjGfxDef* row = &sSkyObjGfxTable[idx];
+    s32 a = row->srcPalette;
     u32 b;
     s32 res;
     if (idx - 0x1f <= 1) {
-        a += p->unk_00;
+        a += p->balloonColor;
     }
-    b = row->unk_0d << 5;
-    func_02116048(base + 0x1048 + a * 32, p->unk_28, 0x20);
-    res = _ZN12Unk_020bd71813func_020bd808Ei(p, row->unk_0d);
-    func_021145cc(p->unk_28, 0x20);
-    func_02111df8(p->unk_28, b, 0x20);
-    if (data_021eff48 == 0) {
-        func_02111d90(p->unk_28, b, 0x20);
+    b = row->objPalette << 5;
+    MI_CpuCopy8(base + 0x1048 + a * 32, p->colors, 0x20);
+    res = _ZN13SkyObjPalette14applyOverridesEi(p, row->objPalette);
+    DC_FlushRange(p->colors, 0x20);
+    GX_LoadOBJPltt(p->colors, b, 0x20);
+    if (gWeatherManager == 0) {
+        GXS_LoadOBJPltt(p->colors, b, 0x20);
     }
     if (res == 0) {
-        _ZN12Unk_020bd71813func_020bd764Eii(p, row->unk_0d, a);
+        _ZN13SkyObjPalette12setLoadedRowEii(p, row->objPalette, a);
     }
 }
 
 #undef data_021f4398
 #undef data_021f44ac
-#undef data_021f23d4
-#undef data_021f2944
 #undef data_021f3010
 }
 
@@ -4350,119 +3711,119 @@ namespace n08 {
 extern "C" {
 void* __cxa_vec_ctor(void* array, u32 count, u32 size, void* (*ctor)(void*), void* (*dtor)(void*, s32));
 }
-namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; Unk_020bd06c v; } data_021f14e0; } }
-#define data_021f44ac n08::L_021f44ac::data_021f14e0.v
+namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; SkySePlayer v; } gSkySprites; } }
+#define data_021f44ac n08::L_021f44ac::gSkySprites.v
 extern "C" {
-void func_020e7530(s16* p, s32 target, s32 step);
+void Math_StepAngle(s16* p, s32 target, s32 step);
 }
 extern "C" {
-void func_02094574(s32 a, s32 b, s32 c);
+void PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
 }
 extern "C" {
-void* func_020947f0(s32 a);
+void* PlayerActor_GetBodyPos(s32 a);
 }
 extern "C" {
-void func_020bffc0(s32* out, void* p);
+void Sky_ProjectToScreenX(s32* out, void* p);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-void func_020850e0();
+void TownSessionState_Get();
 }
 extern "C" {
-s32 func_02085174();
+s32 TownSessionState_GetPeteFall();
 }
 extern "C" {
-void _ZN12Unk_02086c0413func_02086c04Eii(s32 a, void* p, u8 b);
+void _ZN13PeteFallState11pickFallPosEii(s32 a, void* p, u8 b);
 }
 extern "C" {
-void func_ov003_02212140();
+void PlayerActor_LocalEndWatch();
 }
 extern "C" {
-void func_0203a5ac();
+void Camera_RestorePrevMode();
 }
 extern "C" {
-void func_0203a5ec(s32 a);
+void Camera_StartShake(s32 a);
 }
 extern "C" {
-void func_020bddbc(Unk_020bd0a4_Vec3* out, s32 a, s32 b, s32 c);
+void SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c);
 }
 extern "C" {
-void* func_02097868(void* a, s32 i);
+void* PlayerData_GetResident(void* a, s32 i);
 }
 extern "C" {
-s32 _ZN12Unk_0209865c13func_02098a48Ev(void* p);
+s32 _ZN10PlayerData6isUsedEv(void* p);
 }
 extern "C" {
-void* _ZN12Unk_0209865c13func_02098698Ev(void* p);
+void* _ZN10PlayerData17getDailyTalkFlagsEv(void* p);
 }
 extern "C" {
-void _ZN12Unk_020877e013func_020877e0Ej(void* p, s32 a);
+void _ZN20PlayerDailyTalkFlags5clearEj(void* p, s32 a);
 }
 extern "C" {
-void func_02086284(void* p);
+void GulliverQuest_Clear(void* p);
 }
 extern "C" {
-void func_02040974(s32 a, s32 b, s32 c);
+void EventAnnounce_Request(s32 a, s32 b, s32 c);
 }
 extern "C" {
-s32 func_ov003_02219654(s32 a, s32 b);
+s32 FieldItemFx_StartBalloonDrop(s32 a, s32 b);
 }
 extern "C" {
-void func_ov003_02212190(s32 a, s32 b);
+void PlayerActor_SetWatchMode(s32 a, s32 b);
 }
 extern "C" {
-void* func_0209750c();
+void* PlayerData_GetCurrent();
 }
 extern "C" {
-u32 _ZN12Unk_02097ff413func_020981b8Ev(void* p);
+u32 _ZN10PlayerData14getSkyShotHitsEv(void* p);
 }
 extern "C" {
-void _ZN12Unk_02097ff413func_020981acEj(void* p, u8 v);
+void _ZN10PlayerData14setSkyShotHitsEj(void* p, u8 v);
 }
 extern "C" {
-s32 func_02094348();
+s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
-BOOL func_020bd4e0();
+BOOL SkyShot_HasMaxHits();
 }
 extern "C" {
-void func_020bd4fc();
+void SkyShot_AddHit();
 }
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 extern "C" {
 extern u8 data_021e58a6[];
 }
 extern "C" {
-extern u8 data_020d0e60[];
+extern u8 sSkyObjPalOverrideSlots[];
 }
-namespace L_020d18c8 { extern "C" { extern struct S { u8 p[0x1e0]; s8 v[1]; } data_020d16e8; } }
-#define data_020d18c8 n08::L_020d18c8::data_020d16e8.v
+namespace L_020d18c8 { extern "C" { extern struct S { u8 p[0x1e0]; s8 v[1]; } sSkyObjGfxTable; } }
+#define data_020d18c8 n08::L_020d18c8::sSkyObjGfxTable.v
 extern "C" {
-extern Unk_020bd774_Entry data_020d16e8[];
+extern SkyObjGfxDef sSkyObjGfxTable[];
 }
-typedef void (Unk_020bd1b0::*Unk_020bd520_Fn)();
+typedef void (SkyShotSequence::*SkyShotActFn)();
 
-extern "C" BOOL func_020bd4e0();
-extern "C" void func_020bd4fc();
+extern "C" BOOL SkyShot_HasMaxHits();
+extern "C" void SkyShot_AddHit();
 
 }
-BOOL Unk_020bd718::func_020bd808(s32 v) {
+BOOL SkyObjPalette::applyOverrides(s32 v) {
     using namespace n08;
     BOOL result = FALSE;
-    if (unk_08 != 0) {
+    if (overrideMask != 0) {
         for (s32 i = 0; i < 15; i++) {
-            BOOL has = func_020bd744(i);
-            s32 s = data_020d0e60[i];
+            BOOL has = hasOverride(i);
+            s32 s = sSkyObjPalOverrideSlots[i];
             BOOL match = ((s >> 4) & 0xf) == v;
             if (has && match) {
-                unk_28[s & 0xf] = unk_0a[i];
+                colors[s & 0xf] = overrideColors[i];
                 result = TRUE;
             }
         }
@@ -4472,43 +3833,43 @@ BOOL Unk_020bd718::func_020bd808(s32 v) {
 namespace n08 {
 
 }
-void Unk_020bd718::func_020bd7e4() {
+void SkyObjPalette::pickBalloonColor() {
     using namespace n08;
-    unk_00 = func_02063b8c(5);
-    func_020bd7c0(data_020d18c8[0x1d]);
+    balloonColor = Random_GlobalBelow(5);
+    invalidate(data_020d18c8[0x1d]);
 }
 namespace n08 {
 
 }
-void Unk_020bd718::func_020bd7c0(s32 v) {
+void SkyObjPalette::invalidate(s32 v) {
     using namespace n08;
     if (v < 0) {
         for (s32 i = 0; (u32)i < 4; i++) {
-            unk_04[i] = -1;
+            loadedSrcPalettes[i] = -1;
         }
     } else {
-        unk_04[v - 12] = -1;
+        loadedSrcPalettes[v - 12] = -1;
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd718::func_020bd7a8(s32 idx) {
+void SkyObjPalette::invalidateFor(s32 idx) {
     using namespace n08;
-    Unk_020bd774_Entry* e = &data_020d16e8[idx];
-    func_020bd7c0(e->unk_0d);
+    SkyObjGfxDef* e = &sSkyObjGfxTable[idx];
+    invalidate(e->objPalette);
 }
 namespace n08 {
 
 }
-BOOL Unk_020bd718::func_020bd774(s32 idx) {
+BOOL SkyObjPalette::isLoaded(s32 idx) {
     using namespace n08;
-    Unk_020bd774_Entry* e = &data_020d16e8[idx];
-    s32 y = e->unk_0d;
-    s32 x = e->unk_0c;
+    SkyObjGfxDef* e = &sSkyObjGfxTable[idx];
+    s32 y = e->objPalette;
+    s32 x = e->srcPalette;
     BOOL result = TRUE;
     if (y >= 0 && x >= 0) {
-        if (x != unk_04[y - 12]) {
+        if (x != loadedSrcPalettes[y - 12]) {
             result = FALSE;
         }
     }
@@ -4517,25 +3878,25 @@ BOOL Unk_020bd718::func_020bd774(s32 idx) {
 namespace n08 {
 
 }
-void Unk_020bd718::func_020bd764(s32 a, s32 b) {
+void SkyObjPalette::setLoadedRow(s32 a, s32 b) {
     using namespace n08;
     if (a >= 0 && b >= 0) {
-        unk_04[a - 12] = b;
+        loadedSrcPalettes[a - 12] = b;
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd718::func_020bd758(s32 idx) {
+void SkyObjPalette::clearOverride(s32 idx) {
     using namespace n08;
-    unk_08 &= ~(1 << idx);
+    overrideMask &= ~(1 << idx);
 }
 namespace n08 {
 
 }
-BOOL Unk_020bd718::func_020bd744(s32 idx) {
+BOOL SkyObjPalette::hasOverride(s32 idx) {
     using namespace n08;
-    if (unk_08 & (1 << idx)) {
+    if (overrideMask & (1 << idx)) {
         return TRUE;
     }
     return FALSE;
@@ -4543,133 +3904,133 @@ BOOL Unk_020bd718::func_020bd744(s32 idx) {
 namespace n08 {
 
 }
-void Unk_020bd718::func_020bd718(s32 idx, u16* p) {
+void SkyObjPalette::setOverride(s32 idx, u16* p) {
     using namespace n08;
-    unk_08 |= 1 << idx;
+    overrideMask |= 1 << idx;
     Unk_020bd718_E o = (Unk_020bd718_E)((u32)this + (idx << 1));
     *(u16 *)(o + 10) = *p; // unk_0a[idx] = *p
-    func_020bd7c0((data_020d0e60[idx] >> 4) & 0xf);
+    invalidate((sSkyObjPalOverrideSlots[idx] >> 4) & 0xf);
 }
 namespace n08 {
 
 }
-Unk_020bd054::Unk_020bd054() {
+SkyShotRequest::SkyShotRequest() {
     using namespace n08;
-    func_020bd6dc();
+    clear();
 }
 namespace n08 {
 
 }
-void Unk_020bd054::func_020bd6f0(s32 a, s32* p, u8 b) {
+void SkyShotRequest::set(s32 a, s32* p, u8 b) {
     using namespace n08;
-    unk_00 = a;
-    unk_04 = p[0];
-    unk_08 = p[1];
-    unk_0c = p[2];
-    unk_10 = b;
-    unk_11 = 1;
+    playerSlot = a;
+    pos.x = p[0];
+    pos.y = p[1];
+    pos.z = p[2];
+    golden = b;
+    pending = 1;
 }
 namespace n08 {
 
 }
-void Unk_020bd054::func_020bd6dc() {
+void SkyShotRequest::clear() {
     using namespace n08;
-    unk_00 = 4;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_11 = 0;
+    playerSlot = 4;
+    pos.x = 0;
+    pos.y = 0;
+    pos.z = 0;
+    golden = 0;
+    pending = 0;
 }
 namespace n08 {
 
 }
-Unk_020bd1b0::Unk_020bd1b0() {
+SkyShotSequence::SkyShotSequence() {
     using namespace n08;
-    func_020bd25c();
+    reset();
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd6a8(s32 a) {
+void SkyShotSequence::startShot(s32 a) {
     using namespace n08;
-    if (a == func_02094348()) {
-        unk_00 = 1;
-        unk_04 = a;
-        unk_08 = 0x2b;
+    if (a == PlayerActor_GetLocalSessionSlot()) {
+        state = 1;
+        playerSlot = a;
+        timer = 0x2b;
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd69c(s32 a) {
+void SkyShotSequence::endWatch(s32 a) {
     using namespace n08;
-    func_ov003_02212190(0, a);
+    PlayerActor_SetWatchMode(0, a);
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd67c(u8 a) {
+void SkyShotSequence::onBalloonHit(u8 a) {
     using namespace n08;
-    unk_21 = a;
-    unk_00 = 2;
-    func_ov003_02212190(1, unk_04);
-    func_020bd4fc();
+    goldenBalloon = a;
+    state = 2;
+    PlayerActor_SetWatchMode(1, playerSlot);
+    SkyShot_AddHit();
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd668() {
+void SkyShotSequence::onBalloonFell() {
     using namespace n08;
-    unk_00 = 3;
-    unk_08 = 2;
-    unk_1e = 0;
-    unk_1f = 0;
-    unk_20 = 0;
+    state = 3;
+    timer = 2;
+    balloonDropEnded = 0;
+    landSePending = 0;
+    splashSePending = 0;
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd64c() {
+void SkyShotSequence::onUfoHit() {
     using namespace n08;
-    unk_00 = 4;
-    func_ov003_02212190(1, unk_04);
-    func_020bd4fc();
+    state = 4;
+    PlayerActor_SetWatchMode(1, playerSlot);
+    SkyShot_AddHit();
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd640() {
+void SkyShotSequence::onUfoFell() {
     using namespace n08;
-    unk_00 = 5;
-    unk_08 = 0x1e;
+    state = 5;
+    timer = 0x1e;
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd624() {
+void SkyShotSequence::onPeteHit() {
     using namespace n08;
-    unk_00 = 7;
-    func_ov003_02212190(1, unk_04);
-    func_020bd4fc();
+    state = 7;
+    PlayerActor_SetWatchMode(1, playerSlot);
+    SkyShot_AddHit();
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd618() {
+void SkyShotSequence::onPeteFell() {
     using namespace n08;
-    unk_00 = 8;
-    unk_08 = 0x14;
+    state = 8;
+    timer = 0x14;
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd604(s32 a, s32 b, s32 c, u8 d) {
+void SkyShotSequence::setTarget(s32 a, s32 b, s32 c, u8 d) {
     using namespace n08;
-    unk_0c = a;
-    unk_10 = b;
-    unk_14 = c;
-    unk_18 = d;
+    targetX = a;
+    targetY = b;
+    targetScale = c;
+    fallDir = d;
 }
 namespace n08 {
 
@@ -4680,8 +4041,8 @@ const u32 data_020d0ff8[12] = {0x53f953f9, 0x53f953f9, 0x428f53f9, 0x18823105, 0
     0xc010800, 0x24441001, 0x468f38a8, 0x53f953f9, 0x53f953f9};
 char data_020e4ea8[30] = "/sky/d_2d_b_cld_c0_bg_nsc.bin";
 u32 data_020e485c[2] = {0x400080f0, 0xffff0096};
-const u32 data_020d0e44[3] = {0x7fff, 0x6667, 0x4cce};
-void *data_020e4784[2] = {(void *)_ZN12Unk_020bd1b013func_020bd4b4Ev, 0};
+const u32 sSnowParallax[3] = {0x7fff, 0x6667, 0x4cce};
+void *data_020e4784[2] = {(void *)_ZN15SkyShotSequence13actBalloonHitEv, 0};
 void *data_020e5704[24] = {(void *)data_020e476c, (void *)0x2, 0, (void *)data_020e4a14, (void *)0x3, 0,
     (void *)data_020e489c, (void *)0x4, 0, (void *)data_020e4874, (void *)0xa, 0, (void *)data_020e48f4,
     (void *)0x2, 0, (void *)data_020e4a54, (void *)0x3, 0, (void *)data_020e4984, (void *)0x4, 0,
@@ -4689,243 +4050,243 @@ void *data_020e5704[24] = {(void *)data_020e476c, (void *)0x2, 0, (void *)data_0
 u32 data_020e491c[2] = {0x91f000f0, 0xffff209c};
 u32 data_020e4b64[4] = {0x41fc80e0, 0x99, 0x41fc8000, 0xffff0119};
 void *data_020e4a70[3] = {(void *)data_020e46ec, (void *)0x1, 0};
-void *data_020e48fc[2] = {(void *)_ZN12Unk_020be01813func_020bf3bcEv, 0};
-u8 data_021ef654;
-void *data_020e49e4[2] = {(void *)func_020bfcc8, 0};
-void *data_020e47dc[2] = {(void *)_ZN12Unk_020bb25c13func_020bb2ccEv, 0};
+void *data_020e48fc[2] = {(void *)_ZN9SkySprite7initUfoEv, 0};
+u8 sSkyLineTablesReady;
+void *data_020e49e4[2] = {(void *)SkySprite_EndSnowFlake, 0};
+void *data_020e47dc[2] = {(void *)_ZN10SkySprites21fireworksPatternAct09Ev, 0};
 const u8 data_020d0e04[5] = {0xf, 0xe, 0xd, 0xe, 0xd};
-Unk_020b08b4 data_021efc18;
+StarTwinkle data_021efc18;
 u32 data_020e47b4[2] = {0x41fb80f0, 0xffff9097};
 const u32 data_020d1028[12] = {0x50a550a5, 0x50a550a5, 0x4cc650a5, 0x4d4a4ce7, 0x4d8c4d8c, 0x4d6b4d6b,
     0x494a4d4a, 0x494a494a, 0x4929494a, 0x4ca54ce7, 0x50a550a5, 0x50a550a5};
 void *data_020e4b74[4] = {(void *)data_020d0fc8, (void *)data_020d0ff8, (void *)data_020d1028,
     (void *)data_020d1058};
 u32 data_020e47ec[2] = {0x81f000f0, 0xffff411c};
-void *data_020e47d4[2] = {(void *)func_020bb224, 0};
+void *data_020e47d4[2] = {(void *)SkySprites_FireworksPatternAct0C, 0};
 void *data_020e4b84[4] = {(void *)data_020d1088, (void *)data_020d10b8, (void *)data_020d10e8,
     (void *)data_020d1118};
 }
 }
 namespace n08 {
 }
-void Unk_020bd1b0::func_020bd520() {
+void SkyShotSequence::update() {
     using namespace n08;
-    static Unk_020bd520_Fn tbl[10] = {
+    static SkyShotActFn tbl[10] = {
         0,
-        *(Unk_020bd520_Fn *)n00::data_020e47bc,
-        *(Unk_020bd520_Fn *)n00::data_020e4784,
-        *(Unk_020bd520_Fn *)n00::data_020e46c4,
-        *(Unk_020bd520_Fn *)n00::data_020e4894,
-        *(Unk_020bd520_Fn *)n00::data_020e49ac,
-        *(Unk_020bd520_Fn *)n00::data_020e472c,
-        *(Unk_020bd520_Fn *)n00::data_020e4664,
-        *(Unk_020bd520_Fn *)n00::data_020e464c,
-        *(Unk_020bd520_Fn *)n00::data_020e48a4,
+        *(SkyShotActFn *)n00::data_020e47bc,
+        *(SkyShotActFn *)n00::data_020e4784,
+        *(SkyShotActFn *)n00::data_020e46c4,
+        *(SkyShotActFn *)n00::data_020e4894,
+        *(SkyShotActFn *)n00::data_020e49ac,
+        *(SkyShotActFn *)n00::data_020e472c,
+        *(SkyShotActFn *)n00::data_020e4664,
+        *(SkyShotActFn *)n00::data_020e464c,
+        *(SkyShotActFn *)n00::data_020e48a4,
     };
-    Unk_020bd520_Fn f = tbl[unk_00];
+    SkyShotActFn f = tbl[state];
     if (f) {
         (this->*f)();
     }
 }
 namespace n08 {
 
-extern "C" void func_020bd4fc() {
-    void* p = func_0209750c();
-    u32 n = _ZN12Unk_02097ff413func_020981b8Ev(p);
+extern "C" void SkyShot_AddHit() {
+    void* p = PlayerData_GetCurrent();
+    u32 n = _ZN10PlayerData14getSkyShotHitsEv(p);
     if (n < 0x10) {
-        _ZN12Unk_02097ff413func_020981acEj(p, n + 1);
+        _ZN10PlayerData14setSkyShotHitsEj(p, n + 1);
     }
 }
 
-extern "C" BOOL func_020bd4e0() {
-    return _ZN12Unk_02097ff413func_020981b8Ev(func_0209750c()) >= 0x10;
+extern "C" BOOL SkyShot_HasMaxHits() {
+    return _ZN10PlayerData14getSkyShotHitsEv(PlayerData_GetCurrent()) >= 0x10;
 }
 
 }
-void Unk_020bd1b0::func_020bd4bc() {
+void SkyShotSequence::actShotFlight() {
     using namespace n08;
-    unk_08--;
-    if (unk_08 <= 0) {
-        func_020bd69c(unk_04);
-        func_020bd25c();
+    timer--;
+    if (timer <= 0) {
+        endWatch(playerSlot);
+        reset();
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd4b4() {
+void SkyShotSequence::actBalloonHit() {
     using namespace n08;
-    func_020bd1e8();
+    lookAtTarget();
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd408() {
+void SkyShotSequence::actBalloonDrop() {
     using namespace n08;
-    func_020bd1b0(0x190, 0x190);
-    if (unk_08 > 0) {
-        unk_08--;
-        if (unk_08 == 0) {
-            if (func_ov003_02219654(unk_21 != 0 ? 1 : 0, ((unk_0c + 0x800) >> 12) - 0x80) == 0) {
-                unk_1e = 1;
+    relaxHead(0x190, 0x190);
+    if (timer > 0) {
+        timer--;
+        if (timer == 0) {
+            if (FieldItemFx_StartBalloonDrop(goldenBalloon != 0 ? 1 : 0, ((targetX + 0x800) >> 12) - 0x80) == 0) {
+                balloonDropEnded = 1;
             }
         }
     }
-    if (unk_1f != 0 || unk_20 != 0) {
-        s32 id = unk_1f != 0 ? 0x7f9 : 0x7fa;
-        Unk_020bd0a4_Vec3 v;
-        func_020bddbc(&v, unk_0c, unk_10, unk_14);
-        data_021f44ac.func_020bd0d4(0, id, &v);
-        unk_1f = 0;
-        unk_20 = 0;
+    if (landSePending != 0 || splashSePending != 0) {
+        s32 id = landSePending != 0 ? 0x7f9 : 0x7fa;
+        VecFx32 v;
+        SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
+        data_021f44ac.requestSustained(0, id, &v);
+        landSePending = 0;
+        splashSePending = 0;
     }
-    if (unk_1e != 0) {
-        func_ov003_02212140();
-        func_020bd25c();
-    }
-}
-namespace n08 {
-
-}
-void Unk_020bd1b0::func_020bd400() {
-    using namespace n08;
-    func_020bd1e8();
-}
-namespace n08 {
-
-}
-void Unk_020bd1b0::func_020bd3ac() {
-    using namespace n08;
-    func_020bd1b0(0x50, 0);
-    unk_08--;
-    if (unk_08 <= 0) {
-        Unk_020bd0a4_Vec3 v;
-        func_0203a5ec(0xa3d);
-        func_020bddbc(&v, unk_0c, unk_10, unk_14);
-        data_021f44ac.func_020bd0d4(0, 0x7fd, &v);
-        unk_08 = 0x32;
-        unk_00 = 6;
+    if (balloonDropEnded != 0) {
+        PlayerActor_LocalEndWatch();
+        reset();
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd334() {
+void SkyShotSequence::actUfoHit() {
     using namespace n08;
-    func_020bd1b0(0x190, 0x190);
-    unk_08--;
-    if (unk_08 <= 0) {
-        func_ov003_02212140();
-        func_0203a5ac();
+    lookAtTarget();
+}
+namespace n08 {
+
+}
+void SkyShotSequence::actUfoFall() {
+    using namespace n08;
+    relaxHead(0x50, 0);
+    timer--;
+    if (timer <= 0) {
+        VecFx32 v;
+        Camera_StartShake(0xa3d);
+        SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
+        data_021f44ac.requestSustained(0, 0x7fd, &v);
+        timer = 0x32;
+        state = 6;
+    }
+}
+namespace n08 {
+
+}
+void SkyShotSequence::actUfoCrashed() {
+    using namespace n08;
+    relaxHead(0x190, 0x190);
+    timer--;
+    if (timer <= 0) {
+        PlayerActor_LocalEndWatch();
+        Camera_RestorePrevMode();
         for (s32 i = 0; i < 4; i++) {
-            void* p = func_02097868(data_021d735c, i);
-            if (p && _ZN12Unk_0209865c13func_02098a48Ev(p)) {
-                _ZN12Unk_020877e013func_020877e0Ej(_ZN12Unk_0209865c13func_02098698Ev(p), 0x14);
+            void* p = PlayerData_GetResident(gSavePlayers, i);
+            if (p && _ZN10PlayerData6isUsedEv(p)) {
+                _ZN20PlayerDailyTalkFlags5clearEj(_ZN10PlayerData17getDailyTalkFlagsEv(p), 0x14);
             }
         }
-        func_02086284(data_021e58a6);
-        func_02040974(0x44, 0x63, 0);
-        func_020bd25c();
+        GulliverQuest_Clear(data_021e58a6);
+        EventAnnounce_Request(0x44, 0x63, 0);
+        reset();
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd32c() {
+void SkyShotSequence::actPeteHit() {
     using namespace n08;
-    func_020bd1e8();
+    lookAtTarget();
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd2d8() {
+void SkyShotSequence::actPeteFall() {
     using namespace n08;
-    func_020bd1b0(0x50, 0);
-    if (unk_08 > 0) {
-        unk_08--;
+    relaxHead(0x50, 0);
+    if (timer > 0) {
+        timer--;
     } else {
-        Unk_020bd0a4_Vec3 v;
-        func_0203a5ec(0x5c3);
-        func_020bddbc(&v, unk_0c, unk_10, unk_14);
-        data_021f44ac.func_020bd0d4(0, 0x800, &v);
-        unk_08 = 0x1e;
-        unk_00 = 9;
+        VecFx32 v;
+        Camera_StartShake(0x5c3);
+        SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
+        data_021f44ac.requestSustained(0, 0x800, &v);
+        timer = 0x1e;
+        state = 9;
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd288() {
+void SkyShotSequence::actPeteFallen() {
     using namespace n08;
-    func_020bd1b0(0x190, 0x190);
-    unk_08--;
-    if (unk_08 <= 0) {
-        void* p = func_020947f0(unk_04);
+    relaxHead(0x190, 0x190);
+    timer--;
+    if (timer <= 0) {
+        void* p = PlayerActor_GetBodyPos(playerSlot);
         if (p) {
-            func_020850e0();
-            _ZN12Unk_02086c0413func_02086c04Eii(func_02085174(), p, unk_18);
+            TownSessionState_Get();
+            _ZN13PeteFallState11pickFallPosEii(TownSessionState_GetPeteFall(), p, fallDir);
         }
-        func_ov003_02212140();
-        func_0203a5ac();
-        func_020bd25c();
+        PlayerActor_LocalEndWatch();
+        Camera_RestorePrevMode();
+        reset();
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd25c() {
+void SkyShotSequence::reset() {
     using namespace n08;
-    unk_00 = 0;
-    unk_04 = 4;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_14 = 0x1000;
-    unk_18 = 0;
-    unk_1a = 0;
-    unk_1c = 0;
-    unk_1e = 0;
-    unk_1f = 0;
-    unk_20 = 0;
-    unk_21 = 0;
+    state = 0;
+    playerSlot = 4;
+    timer = 0;
+    targetX = 0;
+    targetY = 0;
+    targetScale = 0x1000;
+    fallDir = 0;
+    headPitch = 0;
+    headYaw = 0;
+    balloonDropEnded = 0;
+    landSePending = 0;
+    splashSePending = 0;
+    goldenBalloon = 0;
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd1e8() {
+void SkyShotSequence::lookAtTarget() {
     using namespace n08;
-    void* p = func_020947f0(4);
+    void* p = PlayerActor_GetBodyPos(4);
     s32 x = 0x80000;
     if (p) {
-        func_020bffc0(&x, p);
+        Sky_ProjectToScreenX(&x, p);
     }
-    s32 t = (func_01ffc5a4(unk_0c - x, 0x100000) * -10000) >> 12;
+    s32 t = (FX_Div(targetX - x, 0x100000) * -10000) >> 12;
     if (t < -5000) {
         t = -5000;
     } else if (t > 5000) {
         t = 5000;
     }
     s16 v = t;
-    func_02094574(4000, v, 4);
-    unk_1a = 4000;
-    unk_1c = v;
+    PlayerActor_SetHeadTilt(4000, v, 4);
+    headPitch = 4000;
+    headYaw = v;
 }
 namespace n08 {
 
 }
-void Unk_020bd1b0::func_020bd1b0(s32 a, s32 b) {
+void SkyShotSequence::relaxHead(s32 a, s32 b) {
     using namespace n08;
-    func_020e7530(&unk_1a, 0, a);
-    func_020e7530(&unk_1c, 0, b);
-    func_02094574(unk_1a, unk_1c, 4);
+    Math_StepAngle(&headPitch, 0, a);
+    Math_StepAngle(&headYaw, 0, b);
+    PlayerActor_SetHeadTilt(headPitch, headYaw, 4);
 }
 namespace n08 {
 
 }
-Unk_020bd06c::Unk_020bd06c() {
+SkySePlayer::SkySePlayer() {
     using namespace n08;
-    unk_c0 = 0;
-    for (Unk_02000c8c* p = unk_60; p < (Unk_02000c8c*)&unk_c0; p++) {
+    active = 0;
+    for (FxVec3* p = positions; p < (FxVec3*)&active; p++) {
         p->x = 0;
         p->y = 0;
         p->z = 0;
@@ -4934,100 +4295,100 @@ Unk_020bd06c::Unk_020bd06c() {
 namespace n08 {
 
 }
-void Unk_020bd06c::func_020bd12c() {
+void SkySePlayer::resetAll() {
     using namespace n08;
-    for (Unk_0213b970* e = unk_00; e < (Unk_0213b970*)unk_60; e++) {
-        e->func_02003cbc();
+    for (SkySndChannel* e = channels; e < (SkySndChannel*)positions; e++) {
+        e->callReset();
     }
-    unk_c0 = 1;
+    active = 1;
 }
 namespace n08 {
 
 }
-void Unk_020bd06c::func_020bd104() {
+void SkySePlayer::releaseAll() {
     using namespace n08;
-    unk_c0 = 0;
-    for (Unk_0213b970* e = &unk_00[7]; e >= unk_00; e--) {
-        e->func_02003c30();
-    }
-}
-namespace n08 {
-
-}
-void Unk_020bd06c::func_020bd0d4(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
-    using namespace n08;
-    if (unk_c0) {
-        unk_00[idx].func_02003c50(a);
-        unk_60[idx].x = p->x;
-        unk_60[idx].y = p->y;
-        unk_60[idx].z = p->z;
+    active = 0;
+    for (SkySndChannel* e = &channels[7]; e >= channels; e--) {
+        e->callRelease();
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd06c::func_020bd0a4(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
+void SkySePlayer::requestSustained(s32 idx, s32 a, VecFx32* p) {
     using namespace n08;
-    if (unk_c0) {
-        unk_00[idx].func_02003c40(a);
-        unk_60[idx].x = p->x;
-        unk_60[idx].y = p->y;
-        unk_60[idx].z = p->z;
+    if (active) {
+        channels[idx].callRequestSustained((void *)a);
+        positions[idx].x = p->x;
+        positions[idx].y = p->y;
+        positions[idx].z = p->z;
     }
 }
 namespace n08 {
 
 }
-void Unk_020bd06c::func_020bd06c() {
+void SkySePlayer::request(s32 idx, s32 a, VecFx32* p) {
     using namespace n08;
-    if (unk_c0) {
-        Unk_0213b970* a = unk_00;
-        Unk_02000c8c* b = unk_60;
+    if (active) {
+        channels[idx].callRequest((void *)a);
+        positions[idx].x = p->x;
+        positions[idx].y = p->y;
+        positions[idx].z = p->z;
+    }
+}
+namespace n08 {
+
+}
+void SkySePlayer::update() {
+    using namespace n08;
+    if (active) {
+        SkySndChannel* a = channels;
+        FxVec3* b = positions;
         for (s32 i = 0; i < 8; i++, a++, b++) {
-            a->func_02003c60(i == 7 ? NULL : b);
+            a->callUpdate(i == 7 ? NULL : b);
         }
     }
 }
 namespace n08 {
 
 }
-Unk_020bd058::~Unk_020bd058() {
+SkySprite::~SkySprite() {
     using namespace n08;}
 namespace n08 {
 
 }
-Unk_020bd054::~Unk_020bd054() {
+SkyShotRequest::~SkyShotRequest() {
     using namespace n08;}
 namespace n08 {
 
 }
-Unk_020bcf04::Unk_020bcf04() {
+SkySprites::SkySprites() {
     using namespace n08;
-    unk_2f00 = 0;
-    unk_2f04 = 0;
-    unk_2f08 = 0;
-    unk_2f0c = 0;
-    unk_2f10 = 0;
-    unk_2f14 = 0;
-    unk_2f24 = 0;
-    unk_2f25 = 0;
-    unk_2f26 = 0;
-    unk_2f27 = 0;
-    unk_2f28 = 0;
-    unk_2f29 = 0;
-    unk_2f2c = 0;
-    unk_2f30 = 0;
-    unk_2f34 = 0;
-    unk_2f38 = 0;
-    unk_2f3c = 0;
-    unk_2f40 = 0;
-    unk_2f44 = 0;
-    unk_2f48 = 0;
-    unk_2f4c = 0;
-    unk_2f50 = 0;
-    unk_2f51 = 0;
-    unk_2f54 = 0;
-    unk_1b6c.func_020bdcbc();
+    spawnInterval = 0;
+    spawnAccum = 0;
+    precipIntensity = 0;
+    snowCounter = 0;
+    thunderTimer = 0;
+    spriteCount = 0;
+    balloonChance = 0;
+    ufoChance = 0;
+    ufoEventToday = 0;
+    peteEventToday = 0;
+    fireworksToday = 0;
+    birdsRequested = 0;
+    fireworksPattern = 0;
+    fireworksPatternTime = 0;
+    fireworksBigTimer = 0;
+    fireworksSlotTimers[0] = 0;
+    fireworksSlotTimers[1] = 0;
+    fireworksSlotTimers[2] = 0;
+    fireworksSlotTimers[3] = 0;
+    fireworksInterval = 0;
+    shootingStarDelay = 0;
+    shootingStarVisible = 0;
+    rainbowStrength = 0;
+    rainStrength = 0;
+    loader.init();
 }
 namespace n08 {
 
@@ -5037,20 +4398,20 @@ namespace n08 {
 
 // ======== unk_020bc58c.cpp ========
 namespace n07 {
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s32 v[1]; } data_021eff48; } }
-#define data_021f1448 n07::L_021f1448::data_021eff48.v
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s32 v[1]; } gWeatherManager; } }
+#define data_021f1448 n07::L_021f1448::gWeatherManager.v
 extern "C" {
-extern s32 data_020d11a8[];
+extern s32 sSkySpriteDefaultGfx[];
 }
-namespace L_020d16f0 { extern "C" { extern struct S { u8 p[0x8]; s32 v[1]; } data_020d16e8; } }
-#define data_020d16f0 n07::L_020d16f0::data_020d16e8.v
-namespace L_020d16f5 { extern "C" { extern struct S { u8 p[0xd]; s8 v[1]; } data_020d16e8; } }
-#define data_020d16f5 n07::L_020d16f5::data_020d16e8.v
+namespace L_020d16f0 { extern "C" { extern struct S { u8 p[0x8]; s32 v[1]; } sSkyObjGfxTable; } }
+#define data_020d16f0 n07::L_020d16f0::sSkyObjGfxTable.v
+namespace L_020d16f5 { extern "C" { extern struct S { u8 p[0xd]; s8 v[1]; } sSkyObjGfxTable; } }
+#define data_020d16f5 n07::L_020d16f5::sSkyObjGfxTable.v
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 extern "C" {
 extern u8 data_020e4630[];
@@ -5060,131 +4421,131 @@ extern "C" {
 extern u8 data_020e4634[];
 }
 extern "C" {
-void func_02064928(s32 a);
+void SceneLights_StartFlash(s32 a);
 }
 extern "C" {
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
-void _ZN12Unk_020be0f413func_020be0f4Ev(Unk_020bc754_Slot *s);
+void _ZN9SkySprite9endByKindEv(SkySprite *s);
 }
 extern "C" {
-void _ZN12Unk_020be20413func_020be44cEv(Unk_020bc754_Slot *s);
+void _ZN9SkySprite5clearEv(SkySprite *s);
 }
 extern "C" {
-void _ZN12Unk_020be20413func_020be314Ej(Unk_020bc754_Slot *s, s32 a);
+void _ZN9SkySprite10initByKindEj(SkySprite *s, s32 a);
 }
 extern "C" {
-void func_020bd978(void *a, s32 b, void *c);
+void SkyObjGfxSlot_Acquire(void *a, s32 b, void *c);
 }
 extern "C" {
-void func_020bd9a0(void *a, void *b);
+void SkyObjGfxSlot_Upload(void *a, void *b);
 }
 extern "C" {
-s32 _ZN12Unk_020bd71813func_020bd774Ei(void *a, s32 b);
+s32 _ZN13SkyObjPalette8isLoadedEi(void *a, s32 b);
 }
 extern "C" {
-void func_020bd868(void *a, void *b, s32 c);
+void SkyObjPalette_Load(void *a, void *b, s32 c);
 }
 extern "C" {
-void func_020bdb68(void *a, s32 b);
+void SkyObjGfxLoader_LoadChars(void *a, s32 b);
 }
 extern "C" {
-void _ZN12Unk_020bd05413func_020bd6f0EiPih(Unk_020bca5c_Elem *a, s32 b, s32 c, s32 d);
+void _ZN14SkyShotRequest3setEiPih(SkyShotRequest *a, s32 b, s32 c, s32 d);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd6a8Ei(void *a, s32 b);
+void _ZN15SkyShotSequence9startShotEi(void *a, s32 b);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd69cEi(void *a, s32 b);
+void _ZN15SkyShotSequence8endWatchEi(void *a, s32 b);
 }
 extern "C" {
-void func_0209cf88(void *a);
+void Clock_GetDate(void *a);
 }
 extern "C" {
-void func_0209cf18(void *a);
+void Clock_GetMinuteHour(void *a);
 }
 extern "C" {
-s32 func_0209cd00(void *a, void *b);
+s32 Date_DaysBetween(void *a, void *b);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-s32 func_01ffc5a4(s32 a, s32 b);
+s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-u32 func_0209cf00();
+u32 Clock_GetSecond();
 }
 extern "C" {
-void *func_02097868(void *p, u32 i);
+void *PlayerData_GetResident(void *p, u32 i);
 }
 extern "C" {
-u32 _ZN12Unk_02097ff413func_02098044Ej(void *p, u32 n);
+u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
 }
 extern "C" {
-u32 _ZN12Unk_0209865c13func_0209888cEv(void *p);
+u32 _ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
+void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
 extern "C" {
-void _ZN12Unk_0206555413func_02065588Etj(void *a, u32 b, s32 c);
+void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
 }
 extern "C" {
-u32 func_02096aac(void *c);
+u32 LetterDelivery_PutInAddresseeMailbox(void *c);
 }
 extern "C" {
-void _ZN12Unk_02097ff413func_02097ff4Ej(void *p, u32 n);
+void _ZN10PlayerData9clearFlagEj(void *p, u32 n);
 }
 extern "C" {
-void func_02062f94(u16 *ret, Unk_02063380 q, u32 a, u32 b, u32 c, u32 d, u32 e);
+void ItemPick_One(u16 *ret, ItemPickSpec q, u32 a, u32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
-s32 func_020bc8a0();
+s32 SkySprites_GetMoonPhaseGfx();
 }
 extern "C" {
-s32 func_020947f0(s32 i);
+s32 PlayerActor_GetBodyPos(s32 i);
 }
 extern "C" {
-void func_020947c0(void *p, s32 i);
+void PlayerActor_GetSlotHeldItem(void *p, s32 i);
 }
 extern "C" {
-void _ZN12Unk_0209da4413func_0209e120Ej(void *p, u32 n);
+void _ZN8SaveData9clearFlagEj(void *p, u32 n);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 extern "C" {
-s32 func_0203f52c(void *a, void *b, s32 c);
+s32 EventSchedule_CollectDay(void *a, void *b, s32 c);
 }
 extern "C" {
-BOOL func_0203f2e0(u32 a, void *b, s32 c);
+BOOL Event_GetState(u32 a, void *b, s32 c);
 }
 
-extern "C" s32 func_020bc8a0();
+extern "C" s32 SkySprites_GetMoonPhaseGfx();
 
 }
-void Unk_020bc58c::func_020bce8c() {
+void SkySprites::reloadAllGfx() {
     using namespace n07;
-    Unk_020bccc8_Entry *p, *end = &unk_1b30[5];
-    for (p = &unk_1b30[0]; p < end; p++) {
-        s32 id = p->unk_00;
+    SkyObjGfxSlot *p, *end = &gfxSlots[5];
+    for (p = &gfxSlots[0]; p < end; p++) {
+        s32 id = p->gfxId;
         if (id != 0x34) {
             s32 r;
-            s32 flag = p->unk_08;
-            r = _ZN12Unk_020bd71813func_020bd774Ei(unk_2eb8, id);
+            s32 flag = p->loaded;
+            r = _ZN13SkyObjPalette8isLoadedEi(&palette, id);
             if (flag == 0) {
-                func_020bdb68(unk_1b6c, id);
-                func_020bd9a0(p, unk_1b6c);
-                p->unk_08 = 1;
-                p->unk_09 = 0;
+                SkyObjGfxLoader_LoadChars(&loader, id);
+                SkyObjGfxSlot_Upload(p, &loader);
+                p->loaded = 1;
+                p->dirty = 0;
             }
             if (r == 0) {
-                func_020bd868(unk_2eb8, unk_1b6c, id);
+                SkyObjPalette_Load(&palette, &loader, id);
             }
         }
     }
@@ -5192,16 +4553,16 @@ void Unk_020bc58c::func_020bce8c() {
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bce4c() {
+void SkySprites::loadDirtyGfx() {
     using namespace n07;
-    Unk_020bccc8_Entry *end = &unk_1b30[5], *p;
-    for (p = &unk_1b30[0]; p < end; p++) {
-        s32 id = p->unk_00;
-        if (p->unk_09 != 0) {
+    SkyObjGfxSlot *end = &gfxSlots[5], *p;
+    for (p = &gfxSlots[0]; p < end; p++) {
+        s32 id = p->gfxId;
+        if (p->dirty != 0) {
             if (id == 0x34) {
-                p->unk_09 = 0;
-            } else if (p->unk_08 == 0) {
-                func_020bdb68(unk_1b6c, id);
+                p->dirty = 0;
+            } else if (p->loaded == 0) {
+                SkyObjGfxLoader_LoadChars(&loader, id);
             }
         }
     }
@@ -5209,32 +4570,32 @@ void Unk_020bc58c::func_020bce4c() {
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bcdd8() {
+void SkySprites::uploadDirtyGfx() {
     using namespace n07;
-    Unk_020bccc8_Entry *p, *end = &unk_1b30[5];
-    for (p = &unk_1b30[0]; p < end; p++) {
-        s32 id = p->unk_00;
-        if (p->unk_09 != 0) {
+    SkyObjGfxSlot *p, *end = &gfxSlots[5];
+    for (p = &gfxSlots[0]; p < end; p++) {
+        s32 id = p->gfxId;
+        if (p->dirty != 0) {
             if (id != 0x34) {
                 s32 r;
-                s32 flag = p->unk_08;
-                r = _ZN12Unk_020bd71813func_020bd774Ei(unk_2eb8, id);
+                s32 flag = p->loaded;
+                r = _ZN13SkyObjPalette8isLoadedEi(&palette, id);
                 if (flag == 0) {
-                    func_020bd9a0(p, unk_1b6c);
-                    p->unk_08 = 1;
+                    SkyObjGfxSlot_Upload(p, &loader);
+                    p->loaded = 1;
                 }
                 if (r == 0) {
-                    func_020bd868(unk_2eb8, unk_1b6c, id);
+                    SkyObjPalette_Load(&palette, &loader, id);
                 }
             }
-            p->unk_09 = 0;
+            p->dirty = 0;
         }
     }
 }
 namespace n07 {
 
 }
-s32 Unk_020bc58c::func_020bccc8(s32 t) {
+s32 SkySprites::pickGfxSlot(s32 t) {
     using namespace n07;
     s32 grp;
     BOOL ok;
@@ -5242,14 +4603,14 @@ s32 Unk_020bc58c::func_020bccc8(s32 t) {
     ok = FALSE;
     if (grp == 6) {
         ok = TRUE;
-    } else if (t == unk_1b30[grp].unk_00) {
+    } else if (t == gfxSlots[grp].gfxId) {
         ok = TRUE;
     } else {
-        BOOL c0 = unk_1b30[0].unk_04 > 0 ? 1 : 0;
-        BOOL c1 = unk_1b30[1].unk_04 > 0 ? 1 : 0;
-        BOOL c2 = unk_1b30[2].unk_04 > 0 ? 1 : 0;
-        BOOL c3 = unk_1b30[3].unk_04 > 0 ? 1 : 0;
-        BOOL c4 = unk_1b30[4].unk_04 > 0 ? 1 : 0;
+        BOOL c0 = gfxSlots[0].refCount > 0 ? 1 : 0;
+        BOOL c1 = gfxSlots[1].refCount > 0 ? 1 : 0;
+        BOOL c2 = gfxSlots[2].refCount > 0 ? 1 : 0;
+        BOOL c3 = gfxSlots[3].refCount > 0 ? 1 : 0;
+        BOOL c4 = gfxSlots[4].refCount > 0 ? 1 : 0;
         if (grp == 0) {
             ok = (c0 == 0 && c3 == 0) ? TRUE : FALSE;
         } else if (grp == 1) {
@@ -5268,55 +4629,55 @@ s32 Unk_020bc58c::func_020bccc8(s32 t) {
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bcc64(s32 k) {
+void SkySprites::releaseConflictingSlots(s32 k) {
     using namespace n07;
     if (k == 0) {
-        unk_1b30[3].unk_00 = 0x34;
+        gfxSlots[3].gfxId = 0x34;
         return;
     }
     if (k == 1) {
-        unk_1b30[4].unk_00 = 0x34;
+        gfxSlots[4].gfxId = 0x34;
         return;
     }
     if (k == 2) {
-        unk_1b30[3].unk_00 = 0x34;
-        unk_1b30[4].unk_00 = 0x34;
+        gfxSlots[3].gfxId = 0x34;
+        gfxSlots[4].gfxId = 0x34;
         return;
     }
     if (k == 3) {
-        unk_1b30[0].unk_00 = 0x34;
-        unk_1b30[2].unk_00 = 0x34;
-        unk_1b30[4].unk_00 = 0x34;
+        gfxSlots[0].gfxId = 0x34;
+        gfxSlots[2].gfxId = 0x34;
+        gfxSlots[4].gfxId = 0x34;
         return;
     }
     if (k == 4) {
-        unk_1b30[1].unk_00 = 0x34;
-        unk_1b30[2].unk_00 = 0x34;
-        unk_1b30[3].unk_00 = 0x34;
+        gfxSlots[1].gfxId = 0x34;
+        gfxSlots[2].gfxId = 0x34;
+        gfxSlots[3].gfxId = 0x34;
     }
 }
 namespace n07 {
 
 }
-s32 Unk_020bc58c::func_020bcbfc(s32 kind, s32 idx) {
+s32 SkySprites::findFreeIndex(s32 kind, s32 idx) {
     using namespace n07;
     s32 r = 0x3c;
     if (idx != 0x3c) {
-        if (unk_0000[idx].unk_00 == 0xd) r = idx;
+        if (sprites[idx].kind == 0xd) r = idx;
     } else if (kind == 9) {
-        Unk_020bc754_Slot *p = &unk_0000[0x2e];
+        SkySprite *p = &sprites[0x2e];
         s32 i;
         for (i = 0x2e; i <= 0x3a; i++, p++) {
-            if (p->unk_00 == 0xd) {
+            if (p->kind == 0xd) {
                 r = i;
                 break;
             }
         }
-    } else if (unk_2f14 < 0x1e) {
+    } else if (spriteCount < 0x1e) {
         s32 i;
-        Unk_020bc754_Slot *p = &unk_0000[0];
+        SkySprite *p = &sprites[0];
         for (i = 0; i < 0x1e; p++, i++) {
-            if (p->unk_00 == 0xd) {
+            if (p->kind == 0xd) {
                 r = i;
                 break;
             }
@@ -5327,13 +4688,13 @@ s32 Unk_020bc58c::func_020bcbfc(s32 kind, s32 idx) {
 namespace n07 {
 
 }
-s32 Unk_020bc58c::func_020bcbd8(s32 id) {
+s32 SkySprites::findKind(s32 id) {
     using namespace n07;
     s32 r = 0x3c;
     s32 i;
-    Unk_020bc754_Slot *p = unk_0000;
+    SkySprite *p = sprites;
     for (i = 0; i < 0x3c; i++, p++) {
-        if (id == p->unk_00) {
+        if (id == p->kind) {
             r = i;
             break;
         }
@@ -5343,51 +4704,51 @@ s32 Unk_020bc58c::func_020bcbd8(s32 id) {
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bcbac() {
+void SkySprites::start() {
     using namespace n07;
-    func_020bcb04();
-    func_020bc628();
-    func_020bc18c();
-    func_020bbb58();
-    unk_2f24 = 0;
+    checkTodayEvents();
+    spawnInitialPrecip();
+    updateMoon();
+    updateRainbow();
+    balloonChance = 0;
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bcba4() {
+void SkySprites::stop() {
     using namespace n07;
-    func_020bc6e4();
+    killAll();
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bcb04() {
+void SkySprites::checkTodayEvents() {
     using namespace n07;
     u32 a[2];
     u32 b[2];
     u32 c[2];
     Unk_020bcb04_Ent arr[7];
     Unk_020bcb04_Ent *p, *end;
-    unk_2f26 = 0;
-    unk_2f27 = 0;
-    unk_2f28 = 0;
+    ufoEventToday = 0;
+    peteEventToday = 0;
+    fireworksToday = 0;
     a[0] = 0;
     a[1] = 0;
-    func_0209d498(a);
-    func_02116048(a, b, 8);
-    end = arr + func_0203f52c(arr, b, 0);
+    Clock_GetDateTime(a);
+    MI_CpuCopy8(a, b, 8);
+    end = arr + EventSchedule_CollectDay(arr, b, 0);
     for (p = arr; p < end; p++) {
         u32 id = p->id;
         BOOL ok;
-        func_02116048(a, c, 8);
-        if (func_0203f2e0(id, c, 0)) ok = TRUE; else ok = FALSE;
+        MI_CpuCopy8(a, c, 8);
+        if (Event_GetState(id, c, 0)) ok = TRUE; else ok = FALSE;
         if (ok) {
             if (id == 0x44) {
-                unk_2f26 = 1;
+                ufoEventToday = 1;
             } else if (id == 0x45) {
-                unk_2f27 = 1;
+                peteEventToday = 1;
             } else if (id == 0x13 || id == 0xf) {
-                unk_2f28 = 1;
+                fireworksToday = 1;
             }
         }
     }
@@ -5395,58 +4756,58 @@ void Unk_020bc58c::func_020bcb04() {
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bcadc(BOOL a) {
+void SkySprites::onDayChange(BOOL a) {
     using namespace n07;
     if (a) {
-        _ZN12Unk_0209da4413func_0209e120Ej(data_021d7350, 9);
-        func_020bcb04();
-        func_020bc99c();
+        _ZN8SaveData9clearFlagEj(gSaveData, 9);
+        checkTodayEvents();
+        sendWishLetters();
     }
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bca6c(s32 i) {
+void SkySprites::onSlingshotFired(s32 i) {
     using namespace n07;
     s32 j = 0;
     if (i < 4) j = i;
-    s32 v = func_020947f0(i);
+    s32 v = PlayerActor_GetBodyPos(i);
     if (v != 0) {
         u16 buf[4];
-        func_020947c0(buf, i);
+        PlayerActor_GetSlotHeldItem(buf, i);
         s32 flag = 0;
         if (buf[0] >= 0x137b && buf[0] <= 0x137b) flag = 1;
-        _ZN12Unk_020bd05413func_020bd6f0EiPih(func_020bca5c(j), i, v, flag);
-        _ZN12Unk_020bd1b013func_020bd6a8Ei(unk_2fa8, i);
+        _ZN14SkyShotRequest3setEiPih(getShotRequest(j), i, v, flag);
+        _ZN15SkyShotSequence9startShotEi(&shotSeq, i);
     } else {
-        _ZN12Unk_020bd1b013func_020bd69cEi(unk_2fa8, i);
+        _ZN15SkyShotSequence8endWatchEi(&shotSeq, i);
     }
 }
 namespace n07 {
 
 }
-Unk_020bca5c_Elem *Unk_020bc58c::func_020bca5c(s32 i) {
+SkyShotRequest *SkySprites::getShotRequest(s32 i) {
     using namespace n07;
-    return &unk_2f58[i];
+    return &shotRequests[i];
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bc99c() {
+void SkySprites::sendWishLetters() {
     using namespace n07;
     s32 i;
     for (i = 0; i < 4; i++) {
-        void *o = func_02097868(data_021d735c, i);
-        if (o != NULL && _ZN12Unk_02097ff413func_02098044Ej(o, 0x32) != 0) {
-            Unk_020dd458 ctx;
-            Unk_020bc99c_Loc l;
-            l.a = func_02063b8c(3);
-            func_020656dc(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN12Unk_0209865c13func_0209888cEv(o));
-            Unk_02063380 q(0, 4);
-            func_02062f94(&l.b, q, 0, 0, 1, 1, 0);
-            _ZN12Unk_0206555413func_02065588Etj(&ctx, l.b, 1);
-            if (func_02096aac(&ctx) != 0) {
-                _ZN12Unk_02097ff413func_02097ff4Ej(o, 0x32);
+        void *o = PlayerData_GetResident(gSavePlayers, i);
+        if (o != NULL && _ZN10PlayerData8testFlagEj(o, 0x32) != 0) {
+            Letter ctx;
+            StarWishLetterVars l;
+            l.msgVariant = Random_GlobalBelow(3);
+            Letter_ComposeFromMail(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN10PlayerData11getPlayerIdEv(o));
+            ItemPickSpec q(0, 4);
+            ItemPick_One(&l.present, q, 0, 0, 1, 1, 0);
+            _ZN10LetterView10setPresentEtj(&ctx, l.present, 1);
+            if (LetterDelivery_PutInAddresseeMailbox(&ctx) != 0) {
+                _ZN10PlayerData9clearFlagEj(o, 0x32);
             }
         }
     }
@@ -5454,39 +4815,39 @@ void Unk_020bc58c::func_020bc99c() {
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bc960() {
+void SkySprites::initClock() {
     using namespace n07;
-    func_0209cf18(&unk_2f18);
-    unk_2f1c = func_0209cf00();
-    unk_2f1a = unk_2f18;
-    unk_2f20 = unk_2f1c;
+    Clock_GetMinuteHour(&minuteHour);
+    second = Clock_GetSecond();
+    prevMinuteHour = minuteHour;
+    prevSecond = second;
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bc928() {
+void SkySprites::tickClock() {
     using namespace n07;
-    unk_2f1a = unk_2f18;
-    unk_2f20 = unk_2f1c;
-    func_0209cf18(&unk_2f18);
-    unk_2f1c = func_0209cf00();
+    prevMinuteHour = minuteHour;
+    prevSecond = second;
+    Clock_GetMinuteHour(&minuteHour);
+    second = Clock_GetSecond();
 }
 namespace n07 {
 
-extern "C" s32 func_020bc8a0() {
+extern "C" s32 SkySprites_GetMoonPhaseGfx() {
     u8 buf[12];
     buf[2] = 1;
     buf[3] = 1;
     buf[4] = 0;
     buf[5] = 0;
-    func_0209cf88(buf + 6);
-    func_0209cf18(buf);
-    s32 t = func_0209cd00(buf + 6, buf + 2);
+    Clock_GetDate(buf + 6);
+    Clock_GetMinuteHour(buf);
+    s32 t = Date_DaysBetween(buf + 6, buf + 2);
     if (buf[1] < 12) t--;
     if (t < 0) t = 0;
     t = t * 100 + 0x974;
     t = ((t % 0xb89) << 12) / 100;
-    t = func_01ffc5a4(t, 0x1d87b);
+    t = FX_Div(t, 0x1d87b);
     t = (t * 0x1c - 0x800) >> 12;
     if (t < 0) t = 0x1b;
     if (t > 0x1b) t = 0x1b;
@@ -5494,13 +4855,13 @@ extern "C" s32 func_020bc8a0() {
 }
 
 }
-s32 Unk_020bc58c::func_020bc814(s32 kind, s32 arg) {
+s32 SkySprites::getGfxIdForKind(s32 kind, s32 arg) {
     using namespace n07;
-    s32 r = data_020d11a8[kind];
+    s32 r = sSkySpriteDefaultGfx[kind];
     if (kind == 4) {
-        r = func_020bc8a0();
+        r = SkySprites_GetMoonPhaseGfx();
     } else if (kind == 7) {
-        if (func_02063b8c(2) != 0) r = 0x28;
+        if (Random_GlobalBelow(2) != 0) r = 0x28;
     } else if (kind == 5) {
         if ((arg & 1) != 0) r = 0x21;
     } else if (kind == 9) {
@@ -5523,32 +4884,32 @@ s32 Unk_020bc58c::func_020bc814(s32 kind, s32 arg) {
 namespace n07 {
 
 }
-Unk_020bc754_Slot *Unk_020bc58c::func_020bc754(s32 kind, s32 idx, Unk_020bc754_Vec *vec, s32 arg) {
+SkySprite *SkySprites::spawn(s32 kind, s32 idx, VecFx32 *vec, s32 arg) {
     using namespace n07;
-    s32 t = func_020bc814(kind, arg);
-    Unk_020bc754_Slot *slot = NULL;
-    s32 grp = func_020bccc8(t);
+    s32 t = getGfxIdForKind(kind, arg);
+    SkySprite *slot = NULL;
+    s32 grp = pickGfxSlot(t);
     if (grp != 5) {
-        s32 n = func_020bcbfc(kind, idx);
+        s32 n = findFreeIndex(kind, idx);
         if (n != 0x3c) {
             if (grp != 6) {
-                func_020bd978(&unk_1b30[grp], t, unk_2eb8);
-                func_020bcc64(grp);
+                SkyObjGfxSlot_Acquire(&gfxSlots[grp], t, &palette);
+                releaseConflictingSlots(grp);
             }
-            slot = &unk_0000[n];
-            _ZN12Unk_020be20413func_020be44cEv(slot);
-            unk_0000[n].unk_00 = kind;
-            slot->unk_04 = 1;
-            slot->unk_24 = grp;
-            slot->unk_08 = t;
-            slot->unk_5d = data_020d16f5[t * 16];
+            slot = &sprites[n];
+            _ZN9SkySprite5clearEv(slot);
+            sprites[n].kind = kind;
+            slot->state = 1;
+            slot->gfxSlot = grp;
+            slot->gfxId = t;
+            slot->palette = data_020d16f5[t * 16];
             if (vec != NULL) {
-                slot->unk_34 = vec->x;
-                slot->unk_38 = vec->y;
-                slot->unk_3c = vec->z;
+                slot->screenPos.x = vec->x;
+                slot->screenPos.y = vec->y;
+                slot->screenPos.z = vec->z;
             }
-            _ZN12Unk_020be20413func_020be314Ej(slot, arg);
-            unk_2f14++;
+            _ZN9SkySprite10initByKindEj(slot, arg);
+            spriteCount++;
         }
     }
     return slot;
@@ -5556,33 +4917,33 @@ Unk_020bc754_Slot *Unk_020bc58c::func_020bc754(s32 kind, s32 idx, Unk_020bc754_V
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bc718(s32 id) {
+void SkySprites::killKind(s32 id) {
     using namespace n07;
-    Unk_020bc754_Slot *p, *end = &unk_0000[0x3c];
-    for (p = &unk_0000[0]; p < end; p++) {
-        if (id == p->unk_00) {
-            _ZN12Unk_020be0f413func_020be0f4Ev(p);
-            unk_2f14--;
+    SkySprite *p, *end = &sprites[0x3c];
+    for (p = &sprites[0]; p < end; p++) {
+        if (id == p->kind) {
+            _ZN9SkySprite9endByKindEv(p);
+            spriteCount--;
         }
     }
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bc6e4() {
+void SkySprites::killAll() {
     using namespace n07;
-    Unk_020bc754_Slot *p, *end = &unk_0000[0x3c];
-    for (p = &unk_0000[0]; p < end; p++) {
-        if (p->unk_00 != 0xd) {
-            _ZN12Unk_020be0f413func_020be0f4Ev(p);
-            unk_2f14--;
+    SkySprite *p, *end = &sprites[0x3c];
+    for (p = &sprites[0]; p < end; p++) {
+        if (p->kind != 0xd) {
+            _ZN9SkySprite9endByKindEv(p);
+            spriteCount--;
         }
     }
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bc628() {
+void SkySprites::spawnInitialPrecip() {
     using namespace n07;
     BOOL a, b;
     s32 v = data_021f1448[9];
@@ -5593,48 +4954,48 @@ void Unk_020bc58c::func_020bc628() {
         s32 idx = 0xd;
         if (w == 1) idx = 0;
         else if (w == 2) idx = 1;
-        unk_2f08 = 0x6400;
-        unk_2f0c = 0x32;
+        precipIntensity = 0x6400;
+        snowCounter = 0x32;
         if (idx != 0xd) {
             s32 n = a ? 15 : 20;
             s32 i;
             for (i = 0; i < n; i++) {
-                func_020bc754(idx, 0x3c, NULL, 1);
+                spawn(idx, 0x3c, NULL, 1);
             }
         }
-        if (a) unk_2f54 = 0x800;
-        else unk_2f54 = 0x1000;
+        if (a) rainStrength = 0x800;
+        else rainStrength = 0x1000;
     } else {
-        unk_2f08 = 0;
-        unk_2f0c = 0;
-        unk_2f54 = 0;
+        precipIntensity = 0;
+        snowCounter = 0;
+        rainStrength = 0;
     }
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bc5cc() {
+void SkySprites::updateLightning() {
     using namespace n07;
-    if (unk_2f10 <= 0) unk_2f10 = 0x32;
-    unk_2f10--;
-    if (unk_2f10 <= 0) {
-        if (func_02063b8c(8) == 0) {
-            func_020bc754(8, 0x3b, NULL, 0);
+    if (thunderTimer <= 0) thunderTimer = 0x32;
+    thunderTimer--;
+    if (thunderTimer <= 0) {
+        if (Random_GlobalBelow(8) == 0) {
+            spawn(8, 0x3b, NULL, 0);
         }
-        func_02064928(0);
-        unk_2f10 = func_02063b8c(200) + 10;
+        SceneLights_StartFlash(0);
+        thunderTimer = Random_GlobalBelow(200) + 10;
     }
 }
 namespace n07 {
 
 }
-void Unk_020bc58c::func_020bc58c() {
+void SkySprites::updateThunderFlash() {
     using namespace n07;
-    if (unk_2f10 <= 0) unk_2f10 = 0x32;
-    unk_2f10--;
-    if (unk_2f10 <= 0) {
-        func_02064928(0);
-        unk_2f10 = func_02063b8c(200) + 10;
+    if (thunderTimer <= 0) thunderTimer = 0x32;
+    thunderTimer--;
+    if (thunderTimer <= 0) {
+        SceneLights_StartFlash(0);
+        thunderTimer = Random_GlobalBelow(200) + 10;
     }
 }
 namespace n07 {
@@ -5647,119 +5008,99 @@ namespace n07 {
 
 // ======== unk_020bbc28.cpp ========
 namespace n06 {
-struct Unk_020cbb18;
-struct Unk_021ed2b0;
-struct Unk_021f1448;
-struct Unk_020cbb18 {
-    char pad_00[0x64];
-    s32 unk_64;
-};
-struct Unk_021f1448 {
-    char pad_00[0x24];
-    s32 unk_24;
-    s32 unk_28;
-};
-struct Unk_021ed2b0 {
-    char pad_00[0xa];
-    u8 unk_0a;
-};
-typedef void (Unk_020bbc28::*Unk_020bbeb8_Fn)();
+typedef void (SkySprites::*Unk_020bbeb8_Fn)();
 extern "C" {
-extern Unk_020cbb18 *data_020cbb18;
+extern CommManager *gCommManager;
 }
 extern "C" {
-BOOL func_020816f8(s32);
+BOOL NpcRegistry_FindSpNpc(s32);
 }
 extern "C" {
-BOOL _ZN12Unk_020d77a413func_0201b84cEv();
+BOOL _ZN8NpcActor10isUpdatingEv();
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *, s32);
+BOOL _ZN11CommManager12isSlotActiveEi(CommManager *, s32);
 }
 extern "C" {
-s32 func_020b8fe8();
+s32 Weather_GetFallingPrecip();
 }
 extern "C" {
-void func_020850e0();
+void TownSessionState_Get();
 }
 extern "C" {
-void func_02085174();
+void TownSessionState_GetPeteFall();
 }
 extern "C" {
-s32 _ZN12Unk_02086c0413func_02086e84Ev();
+s32 _ZN13PeteFallState15isVisitorActiveEv();
 }
 extern "C" {
-void func_02085170();
+void TownSessionState_GetVisitorFlags();
 }
 extern "C" {
-s32 _ZN12Unk_02086b7c13func_02086b94Ev();
+s32 _ZN17VisitorSpawnFlags16isVisitorSpawnedEv();
 }
 extern "C" {
-s32 _ZN12Unk_0209da4413func_0209e170Ej(void *, s32);
+s32 _ZN8SaveData8testFlagEj(void *, s32);
 }
 extern "C" {
-extern char data_021d7350[];
+extern char gSaveData[];
 }
 extern "C" {
-extern Unk_020d0f40 data_020d0f40[];
+extern SkySpawnRate sRainSpawnRates[];
 }
 extern "C" {
-extern Unk_020d0f40 data_020d0f60[];
+extern SkySpawnRate sSnowSpawnRates[];
 }
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } data_021eff48; } }
-#define data_021f1448 n06::L_021f1448::data_021eff48.v
+namespace L_021ed2b6 { extern "C" { extern struct S { u8 p[6]; WeatherRecord v; } data_021ed2b0; } }
 extern "C" {
-extern Unk_021ed2b0 data_021ed2b0;
-}
-extern "C" {
-void func_0209d498(void *);
+void Clock_GetDateTime(void *);
 }
 extern "C" {
-void func_02116048(void *, void *, u32);
+void MI_CpuCopy8(void *, void *, u32);
 }
 extern "C" {
-s32 func_0203f2e0(s32, void *, s32);
+s32 Event_GetState(s32, void *, s32);
 }
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 }
 extern "C" {
-s32 func_02040c7c();
+s32 EventAnnounce_GetActiveEvent();
 }
 extern "C" {
-BOOL func_020b5164();
+BOOL Scene_InTownUnk31();
 }
 extern "C" {
-BOOL _ZN12Unk_020cbb1813func_02072e44Ev(Unk_020cbb18 *);
+BOOL _ZN11CommManager8isOnlineEv(CommManager *);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
-void func_020e759c(void *, s32, s32);
+void Math_StepS32Alt(void *, s32, s32);
 }
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 }
 extern "C" {
-BOOL _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
+BOOL _ZN10PlayerData8testFlagEj(void *, s32);
 }
 extern "C" {
-BOOL func_020bd4e0();
+BOOL SkyShot_HasMaxHits();
 }
 extern "C" {
-void _ZN12Unk_020bd71813func_020bd7e4Ev(void *);
+void _ZN13SkyObjPalette16pickBalloonColorEv(void *);
 }
 extern "C" {
 u32 _u32_div_f(u32, u32);
 }
 
 }
-void Unk_020bbc28::func_020bc43c() {
+void SkySprites::updateRain() {
     using namespace n06;
     s32 kind = 0;
-    s32 a = data_021f1448.unk_24;
-    s32 b = data_021f1448.unk_28;
+    s32 a = n00::gWeatherManager.level;
+    s32 b = n00::gWeatherManager.targetLevel;
     if (a == b) {
         if (a == 3) {
             kind = 2;
@@ -5780,50 +5121,50 @@ void Unk_020bbc28::func_020bc43c() {
         }
     }
     if (kind == 0) {
-        unk_2f08 = 0;
+        precipIntensity = 0;
     } else {
-        Unk_020d0f40 *t = &data_020d0f40[kind - 1];
-        if (unk_2f00 == 0) {
-            unk_2f00 = t->unk_00 + func_02063b8c(t->unk_04);
+        SkySpawnRate *t = &sRainSpawnRates[kind - 1];
+        if (spawnInterval == 0) {
+            spawnInterval = t->baseInterval + Random_GlobalBelow(t->randomInterval);
         }
         if (b >= 3) {
-            unk_2f08 += 2;
-            if (unk_2f08 > 0x6400) {
-                unk_2f08 = 0x6400;
+            precipIntensity += 2;
+            if (precipIntensity > 0x6400) {
+                precipIntensity = 0x6400;
             }
         } else {
-            unk_2f08 -= 2;
-            if (unk_2f08 < 0) {
-                unk_2f08 = 0;
+            precipIntensity -= 2;
+            if (precipIntensity < 0) {
+                precipIntensity = 0;
             }
         }
-        unk_2f04 += unk_2f08 >> 8;
-        while (unk_2f04 >= unk_2f00) {
-            func_020bc754(0, 0x3c, 0, 0);
-            unk_2f04 -= unk_2f00;
-            if (unk_2f04 <= unk_2f00) {
-                unk_2f00 = t->unk_00 + func_02063b8c(t->unk_04);
-                if (unk_2f00 < 0x23) {
-                    unk_2f00 = 0x23;
+        spawnAccum += precipIntensity >> 8;
+        while (spawnAccum >= spawnInterval) {
+            spawn(0, 0x3c, 0, 0);
+            spawnAccum -= spawnInterval;
+            if (spawnAccum <= spawnInterval) {
+                spawnInterval = t->baseInterval + Random_GlobalBelow(t->randomInterval);
+                if (spawnInterval < 0x23) {
+                    spawnInterval = 0x23;
                 }
-                unk_2f04 = 0;
+                spawnAccum = 0;
                 break;
             }
         }
     }
     if (kind == 4) {
-        func_020bc5cc();
+        updateLightning();
     }
-    func_020e759c(unk_2f54, b == 4 ? 0x1000 : 0x800, 2);
+    Math_StepS32Alt(&rainStrength, b == 4 ? 0x1000 : 0x800, 2);
 }
 namespace n06 {
 
 }
-void Unk_020bbc28::func_020bc2a8() {
+void SkySprites::updateSnow() {
     using namespace n06;
     s32 kind = 0;
-    s32 a = data_021f1448.unk_24;
-    s32 b = data_021f1448.unk_28;
+    s32 a = n00::gWeatherManager.level;
+    s32 b = n00::gWeatherManager.targetLevel;
     if (a == b) {
         if (a == 3) {
             kind = 2;
@@ -5844,61 +5185,61 @@ void Unk_020bbc28::func_020bc2a8() {
         }
     }
     if (kind == 0) {
-        unk_2f00 = 0;
-        unk_2f0c = 0;
+        spawnInterval = 0;
+        snowCounter = 0;
     } else {
-        Unk_020d0f40 *t = &data_020d0f60[kind - 1];
-        if (unk_2f00 == 0) {
-            unk_2f00 = 0x3e8;
+        SkySpawnRate *t = &sSnowSpawnRates[kind - 1];
+        if (spawnInterval == 0) {
+            spawnInterval = 0x3e8;
         }
-        if (unk_2f0c > 2) {
+        if (snowCounter > 2) {
             if (b >= 3) {
-                unk_2f08 += 2;
-                if (unk_2f08 > 0x6400) {
-                    unk_2f08 = 0x6400;
+                precipIntensity += 2;
+                if (precipIntensity > 0x6400) {
+                    precipIntensity = 0x6400;
                 }
             } else {
-                unk_2f08 -= 2;
-                if (unk_2f08 < 0) {
-                    unk_2f08 = 0;
+                precipIntensity -= 2;
+                if (precipIntensity < 0) {
+                    precipIntensity = 0;
                 }
             }
         } else {
             if (b >= 3) {
-                unk_2f08 = 0x6400;
+                precipIntensity = 0x6400;
             } else {
-                unk_2f08 -= 2;
-                if (unk_2f08 < 0) {
-                    unk_2f08 = 0;
+                precipIntensity -= 2;
+                if (precipIntensity < 0) {
+                    precipIntensity = 0;
                 }
             }
         }
-        unk_2f04 += unk_2f08 >> 8;
-        while (unk_2f04 >= unk_2f00) {
-            func_020bc754(1, 0x3c, 0, 0);
-            unk_2f04 -= unk_2f00;
-            if (unk_2f04 <= unk_2f00) {
-                switch (unk_2f0c) {
+        spawnAccum += precipIntensity >> 8;
+        while (spawnAccum >= spawnInterval) {
+            spawn(1, 0x3c, 0, 0);
+            spawnAccum -= spawnInterval;
+            if (spawnAccum <= spawnInterval) {
+                switch (snowCounter) {
                 case 0:
-                    unk_2f00 = 0x2af8;
-                    unk_2f04 = 0;
+                    spawnInterval = 0x2af8;
+                    spawnAccum = 0;
                     break;
                 case 1:
-                    unk_2f00 = 0x2328;
-                    unk_2f04 = 0;
+                    spawnInterval = 0x2328;
+                    spawnAccum = 0;
                     break;
                 default:
-                    unk_2f00 = t->unk_00 + func_02063b8c(t->unk_04);
-                    if (unk_2f0c < 0x32) {
-                        unk_2f04 = 0x4b;
+                    spawnInterval = t->baseInterval + Random_GlobalBelow(t->randomInterval);
+                    if (snowCounter < 0x32) {
+                        spawnAccum = 0x4b;
                     } else {
-                        unk_2f04 = 0;
+                        spawnAccum = 0;
                     }
                     break;
                 }
-                unk_2f0c++;
-                if (unk_2f0c > 0x32) {
-                    unk_2f0c = 0x32;
+                snowCounter++;
+                if (snowCounter > 0x32) {
+                    snowCounter = 0x32;
                 }
                 break;
             }
@@ -5908,55 +5249,55 @@ void Unk_020bbc28::func_020bc2a8() {
 namespace n06 {
 
 }
-void Unk_020bbc28::func_020bc1d4() {
+void SkySprites::updateShootingStar() {
     using namespace n06;
-    u8 v = unk_2f19;
+    u8 v = time.hour;
     BOOL a = TRUE;
     if (v < 0x13 && v >= 4) {
         a = FALSE;
     }
-    s32 x = data_021f1448.unk_24;
+    s32 x = n00::gWeatherManager.level;
     BOOL c = FALSE;
     if (x != 3 && x != 4) {
         c = TRUE;
     }
     BOOL d = FALSE;
-    if (unk_2f2c == 0 && func_020bcbd8(9) == 0x3c) {
+    if (fireworksPattern == 0 && findKind(9) == 0x3c) {
         d = TRUE;
     }
     if (a && c && d) {
-        if (unk_2f4c > 0) {
-            unk_2f4c--;
-            if (unk_2f4c == 0) {
-                func_020bc754(3, 0x1e, 0, 0);
+        if (shootingStarDelay > 0) {
+            shootingStarDelay--;
+            if (shootingStarDelay == 0) {
+                spawn(3, 0x1e, 0, 0);
             }
-        } else if (unk_2f1c == 0x1e && unk_2f1c != unk_2f20) {
-            if (!func_02063b8c(data_021ed2b0.unk_0a == 0 ? 4 : 0x100)) {
-                unk_2f4c = func_02063b8c(0x258);
+        } else if (second == 0x1e && second != prevSecond) {
+            if (!Random_GlobalBelow(L_021ed2b6::data_021ed2b0.v.todayPattern == 0 ? 4 : 0x100)) {
+                shootingStarDelay = Random_GlobalBelow(0x258);
             }
         }
     } else {
-        unk_2f4c = 0;
+        shootingStarDelay = 0;
     }
 }
 namespace n06 {
 
 }
-void Unk_020bbc28::func_020bc18c() {
+void SkySprites::updateMoon() {
     using namespace n06;
-    u8 v = unk_2f19;
+    u8 v = time.hour;
     BOOL b;
-    if (unk_0e0c == 4) {
+    if (sprites[31].kind == 4) {
         b = TRUE;
     } else {
         b = FALSE;
     }
     if (v >= 0x13 || v < 4) {
         if (!b) {
-            func_020bc754(4, 0x1f, 0, 0);
+            spawn(4, 0x1f, 0, 0);
         }
     } else if (b) {
-        func_020bc718(4);
+        killKind(4);
     }
 }
 namespace n06 {
@@ -5969,46 +5310,46 @@ void *data_020e510c[9] = {(void *)data_020e4c24, (void *)0x2, 0, (void *)data_02
 void *data_020e4a88[3] = {(void *)data_020e470c, (void *)0x1, 0};
 u32 data_020e46dc[2] = {0x1fc00fc, 0xffff0040};
 u32 data_020e46fc[2] = {0x81f000f0, 0xffff209c};
-void *data_020e46f4[2] = {(void *)_ZN12Unk_020be01813func_020bf15cEv, 0};
-void *data_020e46bc[2] = {(void *)_ZN12Unk_020be01813func_020bef2cEv, 0};
+void *data_020e46f4[2] = {(void *)_ZN9SkySprite8initPeteEv, 0};
+void *data_020e46bc[2] = {(void *)_ZN9SkySprite15updateLightningEv, 0};
 u32 data_020e4ba4[4] = {0xa1f88000, 0x9e, 0xa1f880e0, 0xffff011e};
 void *data_020e4aa0[3] = {(void *)data_020e48c4, (void *)0x1, 0};
 void *data_020e4aac[3] = {(void *)data_020e4a0c, (void *)0x1, 0};
 void *data_020e5130[9] = {(void *)data_020e4c44, (void *)0x2, 0, (void *)data_020e4c54, (void *)0x1, 0,
     (void *)data_020e4c64, (void *)0x1, 0};
 char data_020e4ec8[30] = "/sky/d_2d_b_cld_c1_bg_nsc.bin";
-void *data_020e4894[2] = {(void *)_ZN12Unk_020bd1b013func_020bd400Ev, 0};
+void *data_020e4894[2] = {(void *)_ZN15SkyShotSequence9actUfoHitEv, 0};
 const u32 data_020d10e8[12] = {0x48a548a5, 0x48a548a5, 0x48c648a5, 0x4d2948e7, 0x4d4a4d4a, 0x4d4a4d4a,
     0x4d4a4d4a, 0x4d4a4d4a, 0x4d294d4a, 0x4ca54ce7, 0x48a548a5, 0x48a548a5};
 u32 data_020e4bb4[4] = {0x41fc80e0, 0x9d, 0x41fc8000, 0xffff011d};
-void *data_020e467c[2] = {(void *)_ZN12Unk_020be01813func_020bef90Ev, 0};
+void *data_020e467c[2] = {(void *)_ZN9SkySprite7endPeteEv, 0};
 const u32 data_020d1118[12] = {0x72d16eb1, 0x76f472d2, 0x7ef57af5, 0x7f567f14, 0x7fb97fb9, 0x7fb97fb9,
     0x7fb97fb9, 0x7fb97fb9, 0x7b397fb9, 0x76f676b6, 0x76f57716, 0x6eb272f4};
 u32 data_020e4bc4[4] = {0x1400e7, 0x30f6, 0x1e70000, 0xffff30b7};
 const u32 data_020d0ef8[6] = {0xb0b0b0b, 0x13000b0b, 0x15141413, 0x16161615, 0xb001315, 0xb0b0b0b};
-void *data_020e4a04[2] = {(void *)_ZN12Unk_020be01813func_020beb40Ej, 0};
+void *data_020e4a04[2] = {(void *)_ZN9SkySprite12initFireworkEj, 0};
 void *data_020e5154[9] = {(void *)data_020e4ba4, (void *)0x2, 0, (void *)data_020e4c74, (void *)0x1, 0,
     (void *)data_020e4c84, (void *)0x1, 0};
 u32 data_020e4bd4[4] = {0x1600e7, 0x30d4, 0x1e90002, 0xffff30f6};
 void *data_020e5230[10] = {(void *)data_020e4e48, (void *)data_020e4e48, (void *)data_020e4e68,
     (void *)data_020e4e88, (void *)data_020e4ea8, (void *)data_020e4ec8, (void *)data_020e4ee8,
     (void *)data_020e4f08, (void *)data_020e4f28, (void *)data_020e4f48};
-void *data_020e4944[2] = {(void *)func_020bf620, 0};
+void *data_020e4944[2] = {(void *)SkySprite_EndMoon, 0};
 u32 data_020e4a24[2] = {0x81f000f0, 0xffff2118};
 u32 data_020e4be4[4] = {0x1800e7, 0x30f7, 0x1eb0004, 0xffff30d4};
-void *data_020e4ad0[3] = {(void *)data_020e5230, (void *)data_020e4d98, (void *)data_020e4d70};
-void *data_020e4d48[5] = {(void *)data_020e4b74, (void *)data_020e4b74, (void *)data_020e4b84,
+void *sCloudScreenFiles[3] = {(void *)data_020e5230, (void *)data_020e4d98, (void *)data_020e4d70};
+void *sSkyLightColorTables[5] = {(void *)data_020e4b74, (void *)data_020e4b74, (void *)data_020e4b84,
     (void *)data_020e4b84, (void *)data_020e4b84};
 u32 data_020e488c[2] = {0x0, 0xffff00b4};
 u32 data_020e55c0[20] = {0x300200e8, 0x3094, 0x201000fe, 0x30b6, 0x10000009, 0x30b6, 0x1eb00fa, 0x30b6, 0xc00f4,
     0x30b6, 0x1f800eb, 0x3095, 0x300f000c, 0x30b4, 0x200f00ea, 0x30d7, 0x1f200f1, 0x30d7, 0x1ed0004,
     0xffff3097};
 const u32 data_020d0f10[6] = {0xc0c0c0c, 0x60a, 0x0, 0x0, 0x6000000, 0xc0c0c0a};
-void *data_020e46b4[2] = {(void *)_ZN12Unk_020bb25c13func_020bb33cEv, 0};
+void *data_020e46b4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct07Ev, 0};
 char data_020e5048[31] = "/sky/d_2d_b_cld_r_b_bg_nsc.bin";
-void *data_020e47a4[2] = {(void *)_ZN12Unk_020be20413func_020be624Ev, 0};
-u32 data_021ef678[2];
-const u32 data_020d11a8[13] = {0x0, 0x1, 0x2f, 0x2, 0x3, 0x1f, 0x23, 0x26, 0x2a, 0x2b, 0x2e, 0x32, 0x33};
+void *data_020e47a4[2] = {(void *)_ZN9SkySprite10updateShotEv, 0};
+u32 sSkyLineScrollY[2];
+const u32 sSkySpriteDefaultGfx[13] = {0x0, 0x1, 0x2f, 0x2, 0x3, 0x1f, 0x23, 0x26, 0x2a, 0x2b, 0x2e, 0x32, 0x33};
 char data_020e4df4[27] = "/sky/a_sky_fly_obj_ncg.bin";
 u32 data_020e4bf4[4] = {0x51fc80e0, 0x9c, 0x51fc8000, 0xffff011c};
 u32 data_020e482c[2] = {0x81f004f0, 0xffff0094};
@@ -6021,16 +5362,16 @@ u32 data_020e484c[2] = {0x81e003e0, 0xffff9118};
 char data_020e4f28[30] = "/sky/d_2d_b_cld_h0_bg_nsc.bin";
 void *data_020e519c[9] = {(void *)data_020e4cc4, (void *)0x2, 0, (void *)data_020e4cd4, (void *)0x1, 0,
     (void *)data_020e4b54, (void *)0x1, 0};
-void *data_020e479c[2] = {(void *)_ZN12Unk_020be20413func_020be7bcEv, 0};
+void *data_020e479c[2] = {(void *)_ZN9SkySprite13updateRainbowEv, 0};
 u32 data_020e4c44[4] = {0xb1f88000, 0x9e, 0xb1f880e0, 0xffff011e};
-const u32 data_020d0f40[8] = {0x2d, 0x69, 0x1e, 0x5a, 0xf, 0x4b, 0x1, 0x3c};
+const u32 sRainSpawnRates[8] = {0x2d, 0x69, 0x1e, 0x5a, 0xf, 0x4b, 0x1, 0x3c};
 u32 data_020e47fc[2] = {0x91f000f0, 0xffff211c};
 void *data_020e51c0[9] = {(void *)data_020e4ce4, (void *)0x2, 0, (void *)data_020e4cf4, (void *)0x1, 0,
     (void *)data_020e4d04, (void *)0x1, 0};
-u32 data_020e4640[1] = {0xffffffff};
+u32 sSkyBlendLineCache[1] = {0xffffffff};
 u32 data_020e4c74[4] = {0x61fc8000, 0x9d, 0x61fc80e0, 0xffff011d};
 u32 data_020e4c84[4] = {0x61fc8000, 0x9c, 0x61fc80e0, 0xffff011c};
-void *data_020e4a4c[2] = {(void *)_ZN12Unk_020bfe3013func_020bfec0Ei, 0};
+void *data_020e4a4c[2] = {(void *)_ZN9SkySprite12initRainDropEi, 0};
 void *data_020e4af4[3] = {(void *)data_020e485c, (void *)0x4, 0};
 void *data_020e4b00[3] = {(void *)data_020e487c, (void *)0x4, 0};
 void *data_020e4ddc[6] = {(void *)data_020e4a3c, (void *)0x2, 0, (void *)data_020e483c, (void *)0x1, 0};
@@ -6039,56 +5380,56 @@ u32 data_020e5a34[48] = {0x800004d0, 0x1114, 0x802084d0, 0x1118, 0x3044d8, 0x113
     0x109c, 0x4004e8, 0x10bf, 0x91e004d0, 0x1114, 0x91d084d0, 0x1118, 0x11c044d8, 0x113a, 0x51c004e0, 0x115a,
     0x91c004f0, 0x1098, 0x11e004f0, 0x109f, 0x91a00410, 0x111c, 0x11c00410, 0x111b, 0x91a04400, 0x10dc,
     0x51b004f0, 0x109c, 0x11b804e8, 0x10bf, 0x5004f8, 0x10be, 0x11a804f8, 0xffff10be};
-u32 data_021ef908[196];
+SkyGradient sSkyGradient;
 u32 data_020e4a1c[2] = {0x81f000f0, 0xffff309c};
-u32 data_021ef680[2];
-void *data_020e464c[2] = {(void *)_ZN12Unk_020bd1b013func_020bd2d8Ev, 0};
+u32 sSkyLineScrollX[2];
+void *data_020e464c[2] = {(void *)_ZN15SkyShotSequence11actPeteFallEv, 0};
 u32 data_020e4814[2] = {0x81f000f0, 0xffff4098};
 u32 data_020e4ce4[4] = {0xa1f88000, 0x9a, 0xa1f880e0, 0xffff011a};
 void *data_020e4b18[3] = {(void *)data_020e4854, (void *)0x4, 0};
 u32 data_020e4d04[4] = {0x61fc8000, 0x98, 0x61fc80e0, 0xffff0118};
 u32 data_020e4630[1] = {0x3d};
-void *data_020e4d84[5] = {(void *)data_020e478c, (void *)data_020e478c, (void *)data_020e4824,
+void *sSkyLightParamTables[5] = {(void *)data_020e478c, (void *)data_020e478c, (void *)data_020e4824,
     (void *)data_020e4824, (void *)data_020e4824};
-const u32 data_020d0dec[1] = {0x206};
-void *data_020e4794[2] = {(void *)_ZN12Unk_020bb25c13func_020bb458Ev, 0};
+const u32 sSkyCloudBgLayer[1] = {0x206};
+void *data_020e4794[2] = {(void *)_ZN10SkySprites21fireworksPatternAct02Ev, 0};
 void *data_020e51e4[9] = {(void *)data_020e4b94, (void *)0x2, 0, (void *)data_020e4d14, (void *)0x1, 0,
     (void *)data_020e4d24, (void *)0x1, 0};
 char data_020e50a8[31] = "/sky/d_2d_b_cld_c_a_bg_nsc.bin";
-Unk_020bcf04 data_021f14e0;
-void *data_020e4974[2] = {(void *)_ZN12Unk_020be01813func_020bf1d8Ev, 0};
-void *data_020e4994[2] = {(void *)func_020bb190, 0};
+SkySprites gSkySprites;
+void *data_020e4974[2] = {(void *)_ZN9SkySprite9updateUfoEv, 0};
+void *data_020e4994[2] = {(void *)SkySprites_FireworksPatternAct0F, 0};
 u32 data_020e499c[2] = {0x91f000f0, 0xffff2118};
-void *data_020e49b4[2] = {(void *)_ZN12Unk_020bb25c13func_020bb374Ev, 0};
+void *data_020e49b4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct06Ev, 0};
 void *data_020e4b48[3] = {(void *)data_020e4734, (void *)0x4, 0};
-void *const data_020d0e14[3] = {(void *)data_020e4dac, (void *)data_020e4df4, 0};
+void *const sSkyObjCharFiles[3] = {(void *)data_020e4dac, (void *)data_020e4df4, 0};
 u32 data_020e477c[2] = {0x81f000f0, 0xffff311c};
-void *data_020e46e4[2] = {(void *)_ZN12Unk_020bb25c13func_020bb490Ev, 0};
+void *data_020e46e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct01Ev, 0};
 u32 data_020e4774[2] = {0x1fc00fc, 0xffff0057};
 u32 data_020e492c[2] = {0x91f000f0, 0xffff2118};
 const u32 data_020d0ec8[6] = {0xe0e0e0e, 0x18000e0e, 0x1a191918, 0x1b1b1b1a, 0xe00181a, 0xe0e0e0e};
-const u32 data_020d0e80[4] = {0x21b0340, 0x340021b, 0x7c7b7e24, 0x211f7c7b};
+const u32 sFireworkColors[4] = {0x21b0340, 0x340021b, 0x7c7b7e24, 0x211f7c7b};
 u32 data_020e486c[2] = {0x81f000f0, 0xffff3118};
 u32 data_020e4a14[2] = {0x81f880f0, 0xffff409a};
 const u32 data_020d0fc8[12] = {0x4000000, 0xc200820, 0x3e0a1440, 0x67fb67f4, 0x67ff67ff, 0x67ff67ff, 0x5bff67ff,
     0x3fdf4bdf, 0x1abf33df, 0x16d021f, 0x6300a5, 0x210042};
 char data_020e4dac[23] = "/sky/a_sky_obj_ncg.bin";
-const u32 data_020d0e38[3] = {0x2402, 0x123a, 0x17e2};
-void *data_020e4714[2] = {(void *)func_020bfbf8, 0};
+const u32 sSnowFallSpeeds[3] = {0x2402, 0x123a, 0x17e2};
+void *data_020e4714[2] = {(void *)SkySprite_InitParticle, 0};
 u32 data_020e5520[20] = {0x300000ed, 0x3094, 0x200a00fc, 0x30b6, 0x10010007, 0x30b6, 0x1ee00fa, 0x30b6, 0x900f3,
     0x30b6, 0x1f900ee, 0x3095, 0x300b0008, 0x30b4, 0x100c00ed, 0x3097, 0x1f500f3, 0x30b4, 0x1ef0002,
     0xffff3097};
 u32 data_020e49f4[2] = {0x81e003e0, 0xffff911c};
-const u32 data_020d122c[23] = {0x5000, 0x16db, 0x1000, 0xe8c, 0xd55, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f,
+const u32 sParticleTrailScales[23] = {0x5000, 0x16db, 0x1000, 0xe8c, 0xd55, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f, 0xc4f,
     0xd55, 0xe8c, 0x1000, 0x11c7, 0x1400, 0x16db, 0x1aab, 0x2000, 0x2800, 0x3555, 0x5000, 0xa000};
-void *data_020e46a4[2] = {(void *)_ZN12Unk_020bb25c13func_020bb304Ev, 0};
+void *data_020e46a4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct08Ev, 0};
 u32 data_020e48f4[2] = {0x81f880f0, 0xffff409c};
 char data_020e5028[31] = "/sky/d_2d_b_cld_c_b_bg_nsc.bin";
 u32 data_020e4734[2] = {0x81f000f0, 0xffff0114};
 void *data_020e56b0[21] = {(void *)data_020e48d4, (void *)0x2, 0, (void *)data_020e46fc, (void *)0x2, 0,
     (void *)data_020e475c, (void *)0x2, 0, (void *)data_020e4844, (void *)0x2, 0, (void *)data_020e47fc,
     (void *)0x2, 0, (void *)data_020e492c, (void *)0x2, 0, (void *)data_020e491c, (void *)0x2, 0};
-u32 data_021ef658[1];
+u32 sSkyBlackBackdrop[1];
 u32 data_020e5570[20] = {0x300100ea, 0x3094, 0x200d00fd, 0x30b6, 0x10000008, 0x30b6, 0x1ec00fa, 0x30b6, 0xb00f3,
     0x30b6, 0x1f800ec, 0x3095, 0x300e000b, 0x30b4, 0x100e00eb, 0x3097, 0x1f300f2, 0x30d7, 0x1ed0003,
     0xffff3097};
@@ -6115,9 +5456,9 @@ void *data_020e5d04[132] = {0, (void *)0x2, 0, (void *)data_020e49ec, (void *)0x
     (void *)0x1, (void *)0xf0000, (void *)data_020e49ec, (void *)0x1, (void *)0xf0000, (void *)data_020e49ec,
     (void *)0x1, (void *)0xf0000};
 const u32 data_020d0ee0[6] = {0x10101010, 0x80d, 0x0, 0x0, 0x8000000, 0x1010100d};
-void *data_020e48b4[2] = {(void *)func_020bf664, 0};
-void *data_020e48ac[2] = {(void *)func_020bfb68, 0};
-u32 data_020e463c[1] = {0x1};
+void *data_020e48b4[2] = {(void *)SkySprite_InitMoon, 0};
+void *data_020e48ac[2] = {(void *)SkySprite_UpdateParticle, 0};
+u32 sRainSideToggle[1] = {0x1};
 const u32 data_020d10b8[12] = {0x3ed03ed0, 0x3ed03ed0, 0x31e93ed0, 0x106024e2, 0x4200820, 0x400, 0x4000000,
     0xc010800, 0x18011001, 0x31ea2443, 0x3ed03ed0, 0x3ed03ed0};
 u32 data_020e465c[2] = {0x81f000f0, 0xffff311c};
@@ -6125,21 +5466,21 @@ void *data_020e57d0[27] = {(void *)data_020e49ec, (void *)0x1, 0, (void *)data_0
     (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec,
     (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0, (void *)data_020e49ec, (void *)0x1, 0,
     (void *)data_020e49ec, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
-void *data_020e494c[2] = {(void *)func_020bfa08, 0};
+void *data_020e494c[2] = {(void *)SkySprite_EndShootingStar, 0};
 u32 data_020e48bc[2] = {0x81f000f0, 0xffff209c};
 void *data_020e4ab8[3] = {(void *)data_020e47b4, (void *)0x1, 0};
-void *data_020e48e4[2] = {(void *)_ZN12Unk_020bb25c13func_020bb3e8Ev, 0};
+void *data_020e48e4[2] = {(void *)_ZN10SkySprites21fireworksPatternAct04Ev, 0};
 char data_020e4f08[30] = "/sky/d_2d_b_cld_r1_bg_nsc.bin";
 u32 data_020e4884[2] = {0x81f000f0, 0xffff2098};
-void *data_020e47bc[2] = {(void *)_ZN12Unk_020bd1b013func_020bd4bcEv, 0};
-void *data_020e4a44[2] = {(void *)_ZN12Unk_020bb25c13func_020bb25cEv, 0};
-void *data_020e46c4[2] = {(void *)_ZN12Unk_020bd1b013func_020bd408Ev, 0};
-u32 data_021ef6c4[7];
-void *data_020e468c[2] = {(void *)_ZN12Unk_020be20413func_020be7c0Ev, 0};
-void *data_020e473c[2] = {(void *)_ZN12Unk_020be20413func_020be58cEj, 0};
+void *data_020e47bc[2] = {(void *)_ZN15SkyShotSequence13actShotFlightEv, 0};
+void *data_020e4a44[2] = {(void *)_ZN10SkySprites21fireworksPatternAct0BEv, 0};
+void *data_020e46c4[2] = {(void *)_ZN15SkyShotSequence14actBalloonDropEv, 0};
+u32 sSkyHBlankTask[7];
+void *data_020e468c[2] = {(void *)_ZN9SkySprite11initRainbowEv, 0};
+void *data_020e473c[2] = {(void *)_ZN9SkySprite8initBirdEj, 0};
 u32 data_020e4c14[4] = {0x41fc80e0, 0x9c, 0x41fc8000, 0xffff011c};
 u32 data_020e466c[2] = {0x81f000f0, 0xffff209c};
-void *data_020e49c4[2] = {(void *)func_020bf4b4, 0};
+void *data_020e49c4[2] = {(void *)SkySprite_UpdateBalloon, 0};
 void *data_020e583c[27] = {(void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0,
     (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c,
     (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0,
@@ -6147,11 +5488,11 @@ void *data_020e583c[27] = {(void *)data_020e484c, (void *)0x1, 0, (void *)data_0
 char data_020e4f48[30] = "/sky/d_2d_b_cld_h1_bg_nsc.bin";
 u32 data_020e49cc[2] = {0x81f000f0, 0xffff3098};
 u32 data_020e4c64[4] = {0x71fc8000, 0x9c, 0x71fc80e0, 0xffff011c};
-void *data_020e493c[2] = {(void *)func_020bf4ac, 0};
+void *data_020e493c[2] = {(void *)SkySprite_EndBalloon, 0};
 void *data_020e5288[12] = {(void *)data_020e4884, (void *)0x2, 0, (void *)data_020e48bc, (void *)0x2, 0,
     (void *)data_020e4a24, (void *)0x2, 0, (void *)data_020e497c, (void *)0x2, 0};
 u32 data_020e46ec[2] = {0x1fc00fc, 0xffff0058};
-void *data_020e4ca4[4] = {(void *)data_020e4f68, (void *)data_020e4f88, (void *)data_020e4fa8,
+void *sSkyPaletteFiles[4] = {(void *)data_020e4f68, (void *)data_020e4f88, (void *)data_020e4fa8,
     (void *)data_020e4fc8};
 u32 data_020e49fc[2] = {0x81e003e0, 0xffff909c};
 u32 data_020e4a0c[2] = {0x41fb80f0, 0xffff9096};
@@ -6179,24 +5520,24 @@ void *data_020e6334[132] = {0, (void *)0x2, 0, (void *)data_020e49fc, (void *)0x
     (void *)0x1, (void *)0xf0000};
 u32 data_020e48cc[2] = {0xc1c003c0, 0xffff9098};
 u32 data_020e475c[2] = {0x81f000f0, 0xffff2118};
-void *data_020e47ac[2] = {(void *)_ZN12Unk_020be20413func_020be6f0Ej, 0};
+void *data_020e47ac[2] = {(void *)_ZN9SkySprite8initShotEj, 0};
 void *data_020e5318[12] = {(void *)data_020e4814, (void *)0x1, 0, (void *)data_020e4684, (void *)0x1, 0,
     (void *)data_020e47f4, (void *)0x1, 0, (void *)data_020e47ec, (void *)0x1, 0};
-void *data_020e4744[2] = {(void *)func_020bfcd0, 0};
+void *data_020e4744[2] = {(void *)SkySprite_UpdateSnowFlake, 0};
 void *data_020e5348[12] = {(void *)data_020e49cc, (void *)0x2, 0, (void *)data_020e4644, (void *)0x2, 0,
     (void *)data_020e4674, (void *)0x2, 0, (void *)data_020e465c, (void *)0x2, 0};
 void *data_020e5914[27] = {(void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0,
     (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc,
     (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0, (void *)data_020e49fc, (void *)0x1, 0,
     (void *)data_020e49fc, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
-void *data_020e4914[2] = {(void *)_ZN12Unk_020be20413func_020be7b4Ev, 0};
+void *data_020e4914[2] = {(void *)_ZN9SkySprite10endRainbowEv, 0};
 void *data_020e4824[2] = {(void *)data_020d0ef8, (void *)data_020d0f10};
 void *data_020e5764[27] = {(void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0,
     (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc,
     (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0,
     (void *)data_020e48cc, (void *)0x1, (void *)0x20000, 0, (void *)0x25, 0};
 char data_020e4fe8[31] = "/sky/d_2d_b_cld_b_b_bg_nsc.bin";
-void *data_020e4934[2] = {(void *)_ZN12Unk_020be01813func_020bf1d0Ev, 0};
+void *data_020e4934[2] = {(void *)_ZN9SkySprite6endUfoEv, 0};
 void *data_020e5af4[132] = {0, (void *)0x2, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc,
     (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0,
     (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc, (void *)0x1, 0, (void *)data_020e48cc,
@@ -6220,8 +5561,8 @@ void *data_020e5af4[132] = {0, (void *)0x2, 0, (void *)data_020e48cc, (void *)0x
     (void *)0x1, (void *)0xf0000, (void *)data_020e48cc, (void *)0x1, (void *)0xf0000, (void *)data_020e48cc,
     (void *)0x1, (void *)0xf0000};
 u32 data_020e4b54[4] = {0x51fc80e0, 0x98, 0x51fc8000, 0xffff0118};
-const u32 data_020d0eb4[5] = {0xfa780000, 0xfa7828, 0x0, 0x280000, 0x2800};
-const u32 data_020d0dfc[1] = {0x0};
+const u32 sFireworksPatternDelays[5] = {0xfa780000, 0xfa7828, 0x0, 0x280000, 0x2800};
+const u32 sSkyObjPalDefaultColor[1] = {0x0};
 u32 data_020e47c4[2] = {0x41fb80f0, 0xffff9094};
 const u32 data_020d1058[12] = {0x6b516731, 0x73516f51, 0x7fb47792, 0x7ffc7ff5, 0x7fff7fff, 0x7fff7fff,
     0x7fff7fff, 0x6fdf77df, 0x6f7f6bdf, 0x5ef566ff, 0x6f756f97, 0x6b526f74};
@@ -6230,9 +5571,9 @@ const u32 data_020d1088[12] = {0x10010000, 0x30232022, 0x48a83c44, 0x5dee554c, 0
     0x668f668f, 0x668f668f, 0x5a2f668f, 0x45084d8c, 0x2c633cc6, 0xc211c42};
 u32 data_020e498c[2] = {0x41f003f0, 0xffff0810};
 u32 data_020e489c[2] = {0x81f880f0, 0xffff409c};
-void *data_020e4d34[5] = {(void *)data_020e4e10, (void *)data_020e4e10, (void *)data_020e4e10,
+void *sCloudCharFiles[5] = {(void *)data_020e4e10, (void *)data_020e4e10, (void *)data_020e4e10,
     (void *)data_020e4e10, (void *)data_020e4e10};
-void *data_020e471c[2] = {(void *)func_020bf5d8, 0};
+void *data_020e471c[2] = {(void *)SkySprite_InitBalloon, 0};
 void *data_020e5f14[132] = {0, (void *)0x2, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c,
     (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0,
     (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c, (void *)0x1, 0, (void *)data_020e484c,
@@ -6256,42 +5597,42 @@ void *data_020e5f14[132] = {0, (void *)0x2, 0, (void *)data_020e484c, (void *)0x
     (void *)0x1, (void *)0xf0000, (void *)data_020e484c, (void *)0x1, (void *)0xf0000, (void *)data_020e484c,
     (void *)0x1, (void *)0xf0000};
 u32 data_020e4854[2] = {0x0, 0xffff00d4};
-void *data_020e4d5c[5] = {(void *)data_020d1148, (void *)data_020d1148, (void *)data_020d1178,
+void *sSkyFogOffsetTables[5] = {(void *)data_020d1148, (void *)data_020d1148, (void *)data_020d1178,
     (void *)data_020d1178, (void *)data_020d1178};
 void *data_020e4adc[3] = {(void *)data_020e4a5c, (void *)0x4, 0};
-void *data_020e46ac[2] = {(void *)_ZN12Unk_020bb25c13func_020bb3b0Ev, 0};
-const u32 data_020d1288[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c,
+void *data_020e46ac[2] = {(void *)_ZN10SkySprites21fireworksPatternAct05Ev, 0};
+const u32 sFireworkScaleBigLong[44] = {0x1000, 0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c,
     0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x86c, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835, 0x835,
     0x835, 0x835, 0x835, 0x835, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800, 0x800,
     0x800, 0x800, 0x800};
-void *data_020e496c[2] = {(void *)func_020bfa1c, 0};
+void *data_020e496c[2] = {(void *)SkySprite_UpdateShootingStar, 0};
 void *data_020e4a64[3] = {(void *)data_020e5a34, (void *)0x4, 0};
 void *data_020e4b24[3] = {(void *)data_020e4774, (void *)0x1, 0};
 u32 data_020e4c94[4] = {0x81f880e0, 0x9a, 0x81f88000, 0xffff011a};
 u32 data_020e4cb4[4] = {0x41fc80e0, 0x98, 0x41fc8000, 0xffff0118};
-s32 data_021ef674 = data_020c8cbc * 6;
+s32 sSkyCrossingWidth = data_020c8cbc * 6;
 u32 data_020e52e8[12] = {0x101400e8, 0x30b6, 0x1ef000d, 0x30b7, 0x11e300fe, 0x3095, 0x3012000a, 0x30d4,
     0x101800f8, 0x30d4, 0x21e800e8, 0xffff30b7};
 char data_020e4fc8[30] = "/sky/d_2d_b_cld_r1_bg_ncl.bin";
-void *data_020e48a4[2] = {(void *)_ZN12Unk_020bd1b013func_020bd288Ev, 0};
-const u32 data_020d0e70[4] = {0xffffffff, 0x80a, 0x4ce, 0xffffffff};
-const u32 data_020d0f80[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
+void *data_020e48a4[2] = {(void *)_ZN15SkyShotSequence13actPeteFallenEv, 0};
+const u32 sRainSeIds[4] = {0xffffffff, 0x80a, 0x4ce, 0xffffffff};
+const u32 sFireworkScaleBig[9] = {0x2800, 0x11c7, 0xc4f, 0xa00, 0x8e4, 0x86c, 0x86c, 0x86c, 0x86c};
 char data_020e5008[31] = "/sky/d_2d_b_cld_f_b_bg_nsc.bin";
-void *data_020e474c[2] = {(void *)func_020bb128, 0};
+void *data_020e474c[2] = {(void *)SkySprites_FireworksPatternAct11, 0};
 u32 data_020e48ec[2] = {0x81f880f0, 0xffff411a};
 u32 data_020e4b94[4] = {0xb1f88000, 0x9a, 0xb1f880e0, 0xffff011a};
-void *data_020e46d4[2] = {(void *)func_020bb0fc, 0};
-void *data_020e4694[2] = {(void *)_ZN12Unk_020bb25c13func_020bb420Ev, 0};
+void *data_020e46d4[2] = {(void *)SkySprites_FireworksPatternAct12, 0};
+void *data_020e4694[2] = {(void *)_ZN10SkySprites21fireworksPatternAct03Ev, 0};
 u32 data_020e48c4[2] = {0x41fb80f0, 0xffff9095};
 u32 data_020e4844[2] = {0x81f000f0, 0xffff211c};
 u32 data_020e483c[2] = {0x1fc80f8, 0xffff0095};
 void *data_020e5178[9] = {(void *)data_020e4c94, (void *)0x2, 0, (void *)data_020e4b64, (void *)0x1, 0,
     (void *)data_020e4cb4, (void *)0x1, 0};
 char data_020e5068[31] = "/sky/d_2d_b_cld_b_a_bg_nsc.bin";
-const u32 data_020d0e00[1] = {0x50301};
+const u32 sBirdDelays[1] = {0x50301};
 void *data_020e4b0c[3] = {(void *)data_020e488c, (void *)0x4, 0};
-void *data_020e4704[2] = {(void *)func_020bb0c8, 0};
-const u32 data_020d0e20[3] = {0x7fff, 0x6667, 0x4cce};
+void *data_020e4704[2] = {(void *)SkySprites_FireworksPatternAct13, 0};
+const u32 sRainParallax[3] = {0x7fff, 0x6667, 0x4cce};
 u32 data_020e54d0[20] = {0x31ff00f0, 0x3094, 0x200700fb, 0x30b6, 0x10020005, 0x30b6, 0x1f200fa, 0x30b6, 0x400f5,
     0x30b6, 0x1f900f0, 0x3095, 0x30090006, 0x30b4, 0x100800ef, 0x3097, 0x1f600f4, 0x30b4, 0x1f00002,
     0xffff3097};
@@ -6302,12 +5643,12 @@ u32 data_020e5208[10] = {0x1fb00f1, 0x3095, 0x30060004, 0x30b4, 0x100500f1, 0x30
 u32 data_020e4864[2] = {0x400080f0, 0xffff0095};
 u32 data_020e53f8[18] = {0x1f700e7, 0x30b7, 0x120000, 0x30f6, 0x1010000c, 0x3097, 0x300400e4, 0x3095, 0x1e900f9,
     0x30b6, 0xe00f5, 0x30b6, 0x1100ea, 0x30d7, 0x11ef00ed, 0x30d7, 0x11ec0006, 0xffff3097};
-void *data_020e4724[2] = {(void *)func_020bfb60, 0};
+void *data_020e4724[2] = {(void *)SkySprite_EndParticle, 0};
 }
 }
 namespace n06 {
 }
-void Unk_020bbc28::func_020bbeb8() {
+void SkySprites::updateFireworksShow() {
     using namespace n06;
     BOOL r4 = FALSE;
     BOOL r6 = FALSE;
@@ -6316,13 +5657,13 @@ void Unk_020bbc28::func_020bbeb8() {
     Unk_020bbcc8_Xxx t1, t2, t3, t4;
     s.a = 0;
     s.b = 0;
-    s32 kind = func_02040c7c();
-    func_0209d498(&s);
-    func_02116048(&s, &t1, 8);
-    if (func_0203f2e0(0x13, &t1, 1)) {
-        u8 a = unk_2f19;
-        u8 b = unk_2f18;
-        s32 c = unk_2f1c;
+    s32 kind = EventAnnounce_GetActiveEvent();
+    Clock_GetDateTime(&s);
+    MI_CpuCopy8(&s, &t1, 8);
+    if (Event_GetState(0x13, &t1, 1)) {
+        u8 a = time.hour;
+        u8 b = time.minute;
+        s32 c = second;
         if (a < 2) {
             r4 = TRUE;
             if (a == 0 && b == 0 && c == 0) {
@@ -6330,23 +5671,23 @@ void Unk_020bbc28::func_020bbeb8() {
             }
         }
     } else if (kind == 0xf) {
-        if (func_020b5164()) {
-            func_02116048(&s, &t2, 8);
-            if (func_0203f2e0(0xf, &t2, r4)) {
+        if (Scene_InTownUnk31()) {
+            MI_CpuCopy8(&s, &t2, 8);
+            if (Event_GetState(0xf, &t2, r4)) {
                 r4 = TRUE;
             }
-        } else if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
-            func_02116048(&s, &t3, 8);
-            if (func_0203f2e0(0xf, &t3, r4)) {
+        } else if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+            MI_CpuCopy8(&s, &t3, 8);
+            if (Event_GetState(0xf, &t3, r4)) {
                 r4 = TRUE;
             }
         } else {
             r4 = TRUE;
         }
-    } else if (func_020b50e8() == 0x2c) {
+    } else if (Scene_GetCurrent() == 0x2c) {
         BOOL x;
-        func_02116048(&s, &t4, 8);
-        if (func_0203f2e0(0xf, &t4, 1) == 2) {
+        MI_CpuCopy8(&s, &t4, 8);
+        if (Event_GetState(0xf, &t4, 1) == 2) {
             x = TRUE;
         } else {
             x = r4;
@@ -6365,57 +5706,57 @@ void Unk_020bbc28::func_020bbeb8() {
             *(Unk_020bbeb8_Fn *)n00::data_020e4804, *(Unk_020bbeb8_Fn *)n00::data_020e474c, *(Unk_020bbeb8_Fn *)n00::data_020e46d4,
             *(Unk_020bbeb8_Fn *)n00::data_020e4704,
         };
-        if (unk_2f2c == 0) {
+        if (fireworksPattern == 0) {
             s32 v;
             if (r6) {
                 v = 0x12;
-            } else if (func_02063b8c(2) == 0) {
+            } else if (Random_GlobalBelow(2) == 0) {
                 v = 0xe;
             } else {
                 v = 0x10;
             }
-            func_020bb4c8(v);
-            unk_2f30 = 0;
+            selectFireworksPattern(v);
+            fireworksPatternTime = 0;
         }
-        unk_2f30--;
-        fn = tbl[unk_2f2c];
+        fireworksPatternTime--;
+        fn = tbl[fireworksPattern];
         (this->*fn)();
     } else {
-        unk_2f2c = 0;
-        unk_2f30 = 0;
-        unk_2f34 = 0;
-        unk_2f38 = 0;
-        unk_2f3c = 0;
-        unk_2f40 = 0;
-        unk_2f44 = 0;
-        unk_2f48 = 0;
+        fireworksPattern = 0;
+        fireworksPatternTime = 0;
+        fireworksBigTimer = 0;
+        fireworksSlotTimers[0] = 0;
+        fireworksSlotTimers[1] = 0;
+        fireworksSlotTimers[2] = 0;
+        fireworksSlotTimers[3] = 0;
+        fireworksInterval = 0;
     }
 }
 namespace n06 {
 
 }
-void Unk_020bbc28::func_020bbdd4() {
+void SkySprites::updateBalloon() {
     using namespace n06;
-    if (!_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
-        u8 v = unk_2f19;
+    if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
+        u8 v = time.hour;
         if (v >= 0xa && v < 0x10) {
-            if (unk_2f1a != unk_2f18) {
-                if ((u32)unk_2f18 % 10 == 4) {
-                    if (unk_1464 != 5) {
-                        if (unk_2f24 == 0) {
-                            unk_2f24 = func_02063b8c(8) + 1;
+            if (prevTime.minute != time.minute) {
+                if ((u32)time.minute % 10 == 4) {
+                    if (sprites[45].kind != 5) {
+                        if (balloonChance == 0) {
+                            balloonChance = Random_GlobalBelow(8) + 1;
                         }
-                        u8 c = unk_2f24;
-                        if (func_02063b8c(8) < c) {
-                            if (!_ZN12Unk_02097ff413func_02098044Ej(func_0209750c(), 0x30) && func_020bd4e0() && !func_02063b8c(4)) {
-                                func_020bc754(5, 0x2d, 0, 1);
+                        u8 c = balloonChance;
+                        if (Random_GlobalBelow(8) < c) {
+                            if (!_ZN10PlayerData8testFlagEj(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !Random_GlobalBelow(4)) {
+                                spawn(5, 0x2d, 0, 1);
                             } else {
-                                func_020bc754(5, 0x2d, 0, 0);
-                                _ZN12Unk_020bd71813func_020bd7e4Ev(unk_2eb8);
+                                spawn(5, 0x2d, 0, 0);
+                                _ZN13SkyObjPalette16pickBalloonColorEv(&palette);
                             }
-                            unk_2f24 = 1;
+                            balloonChance = 1;
                         } else if (c < 8) {
-                            unk_2f24++;
+                            balloonChance++;
                         }
                     }
                 }
@@ -6426,48 +5767,48 @@ void Unk_020bbc28::func_020bbdd4() {
 namespace n06 {
 
 }
-void Unk_020bbc28::func_020bbcc8() {
+void SkySprites::updateUfo() {
     using namespace n06;
-    if (unk_2f26 != 0) {
-        if (_ZN12Unk_0209da4413func_0209e170Ej(data_021d7350, 9)) {
-            unk_2f26 = 0;
+    if (ufoEventToday != 0) {
+        if (_ZN8SaveData8testFlagEj(gSaveData, 9)) {
+            ufoEventToday = 0;
         } else {
             Unk_020bbcc8_Xxx s;
             Unk_020bbcc8_Xxx t;
             s.a = 0;
             s.b = 0;
             BOOL b;
-            func_0209d498(&s);
-            func_02116048(&s, &t, 8);
-            if (func_0203f2e0(0x44, &t, 0) == 0) {
+            Clock_GetDateTime(&s);
+            MI_CpuCopy8(&s, &t, 8);
+            if (Event_GetState(0x44, &t, 0) == 0) {
                 b = TRUE;
             } else {
                 b = FALSE;
             }
             if (b) {
-                unk_2f26 = 0;
+                ufoEventToday = 0;
             }
         }
     }
-    if (unk_2f26 != 0) {
-        if (!_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
-            u8 v = unk_2f18;
+    if (ufoEventToday != 0) {
+        if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
+            u8 v = time.minute;
             u32 m = (u32)v % 10;
-            if (unk_2f1a != v) {
+            if (prevTime.minute != v) {
                 if (m == 2 || m == 7) {
-                    func_020850e0();
-                    func_02085170();
-                    if (!_ZN12Unk_02086b7c13func_02086b94Ev()) {
-                        if (unk_1464 != 6) {
-                            if (unk_2f25 == 0) {
-                                unk_2f25 = func_02063b8c(8) + 1;
+                    TownSessionState_Get();
+                    TownSessionState_GetVisitorFlags();
+                    if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv()) {
+                        if (sprites[45].kind != 6) {
+                            if (ufoChance == 0) {
+                                ufoChance = Random_GlobalBelow(8) + 1;
                             }
-                            u8 c = unk_2f25;
-                            if (func_02063b8c(8) < c) {
-                                func_020bc754(6, 0x2d, 0, 0);
-                                unk_2f25 = 1;
+                            u8 c = ufoChance;
+                            if (Random_GlobalBelow(8) < c) {
+                                spawn(6, 0x2d, 0, 0);
+                                ufoChance = 1;
                             } else if (c < 8) {
-                                unk_2f25++;
+                                ufoChance++;
                             }
                         }
                     }
@@ -6479,26 +5820,26 @@ void Unk_020bbc28::func_020bbcc8() {
 namespace n06 {
 
 }
-void Unk_020bbc28::func_020bbc28() {
+void SkySprites::updatePete() {
     using namespace n06;
-    if (unk_2f27 != 0) {
-        if (func_020816f8(8)) {
-            if (_ZN12Unk_020d77a413func_0201b84cEv()) {
-                unk_2f27 = 0;
+    if (peteEventToday != 0) {
+        if (NpcRegistry_FindSpNpc(8)) {
+            if (_ZN8NpcActor10isUpdatingEv()) {
+                peteEventToday = 0;
             }
         }
     }
-    if (unk_2f27 != 0) {
-        if (!_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64)) {
-            s32 r = func_020b8fe8();
+    if (peteEventToday != 0) {
+        if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
+            s32 r = Weather_GetFallingPrecip();
             if (r != 1 && r != 2) {
-                if (unk_2f19 != unk_2f1b) {
-                    if (unk_2f19 == 9 || unk_2f19 == 0x11) {
-                        func_020850e0();
-                        func_02085174();
-                        if (!_ZN12Unk_02086c0413func_02086e84Ev()) {
-                            if (unk_1464 != 7) {
-                                func_020bc754(7, 0x2d, 0, 0);
+                if (time.hour != prevTime.hour) {
+                    if (time.hour == 9 || time.hour == 0x11) {
+                        TownSessionState_Get();
+                        TownSessionState_GetPeteFall();
+                        if (!_ZN13PeteFallState15isVisitorActiveEv()) {
+                            if (sprites[45].kind != 7) {
+                                spawn(7, 0x2d, 0, 0);
                             }
                         }
                     }
@@ -6509,57 +5850,56 @@ void Unk_020bbc28::func_020bbc28() {
 }
 namespace n06 {
 
-#undef data_021f1448
 }
 
 // ======== unk_020bb25c.cpp ========
 namespace n05 {
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
-void func_02064928(s32 a);
+void SceneLights_StartFlash(s32 a);
 }
 extern "C" {
-BOOL func_020b8fe8(void);
+BOOL Weather_GetFallingPrecip(void);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-u32 func_0209d3d0(void *a, void *b, s32 n);
+u32 DateTime_Compare(void *a, void *b, s32 n);
 }
 extern "C" {
-void func_02116048(void *a, void *b, s32 n);
+void MI_CpuCopy8(void *a, void *b, s32 n);
 }
-namespace L_020d0e51 { extern "C" { extern struct S { u8 p[0x1]; u8 v[1]; } data_020d0e50; } }
-#define data_020d0e51 n05::L_020d0e51::data_020d0e50.v
+namespace L_020d0e51 { extern "C" { extern struct S { u8 p[0x1]; u8 v[1]; } sFireworksPatternWeights; } }
+#define data_020d0e51 n05::L_020d0e51::sFireworksPatternWeights.v
 extern "C" {
-extern u8 data_020d0eb4[];
+extern u8 sFireworksPatternDelays[];
 }
 extern "C" {
 extern u8 data_020d0e04[];
 }
 extern "C" {
-extern u32 data_020d0e90[];
+extern u32 sFireworkShellTypes[];
 }
 extern "C" {
-extern s32 data_021ef670;
+extern s32 sSkyOutdoors;
 }
 extern "C" {
 extern u8 data_021ed2b0[];
 }
-extern "C" void _ZN12Unk_020bd05413func_020bd6dcEv(Unk_020bb25c_Ent14 *p);
-extern "C" void _ZN12Unk_020bd1b013func_020bd69cEi(void *p, s32 v);
+extern "C" void _ZN14SkyShotRequest5clearEv(SkyShotRequest *p);
+extern "C" void _ZN15SkyShotSequence8endWatchEi(void *p, s32 v);
 
 }
-void Unk_020bb25c::func_020bbb58() {
+void SkySprites::updateRainbow() {
     using namespace n05;
-    unk_2f51 = 0;
+    rainbowStrength = 0;
     u8 k = data_021ed2b0[0xa];
     if (k >= 0x13 && k <= 0x17) {
-        if (*(data_020d0e04 + k - 0x13) == unk_2f19) {
-            s32 n = unk_2f18;
+        if (*(data_020d0e04 + k - 0x13) == time.hour) {
+            s32 n = time.minute;
             if (n < 0x2d) {
                 s32 v;
                 if (n <= 0xf) {
@@ -6572,29 +5912,29 @@ void Unk_020bb25c::func_020bbb58() {
                 } else if (v > 0xc000) {
                     v = 0xc000;
                 }
-                unk_2f51 = (v + 0x800) >> 12;
+                rainbowStrength = (v + 0x800) >> 12;
             }
         }
     }
-    BOOL f = unk_0e80 == 10 ? TRUE : FALSE;
-    if (unk_2f51 != 0) {
-        func_020bb04c();
+    BOOL f = sprites[32].kind == 10 ? TRUE : FALSE;
+    if (rainbowStrength != 0) {
+        applyRainbowBlend();
         if (!f) {
-            if (!func_020bc754(10, 0x20, 0, 0)) {
-                unk_2f51 = 0;
+            if (!spawn(10, 0x20, 0, 0)) {
+                rainbowStrength = 0;
             }
         }
     } else if (f) {
-        func_020bc718(10);
+        killKind(10);
     }
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bbac0() {
+void SkySprites::spawnShots() {
     using namespace n05;
-    Unk_020bb25c_Ent14 *p = &unk_2f58[0];
-    Unk_020bb25c_Ent14 *end = p + 4;
+    SkyShotRequest *p = &shotRequests[0];
+    SkyShotRequest *end = p + 4;
     s32 slot = 0x21;
     s32 i = 0;
     s32 vals[3];
@@ -6602,28 +5942,28 @@ void Unk_020bb25c::func_020bbac0() {
     vals[1] = 0;
     vals[2] = 0;
     for (; p < end; p++, slot += 3, i++) {
-        if (p->unk_11 != 0) {
-            u8 flag = p->unk_10;
-            if (func_020bc754(0xb, slot, vals[0], i)) {
+        if (p->pending != 0) {
+            u8 flag = p->golden;
+            if (spawn(0xb, slot, (VecFx32 *)vals[0], i)) {
                 if (flag != 0) {
-                    func_020bc754(0xb, slot + 1, vals[1], i | 0x10);
-                    func_020bc754(0xb, slot + 2, vals[2], i | 0x20);
+                    spawn(0xb, slot + 1, (VecFx32 *)vals[1], i | 0x10);
+                    spawn(0xb, slot + 2, (VecFx32 *)vals[2], i | 0x20);
                 }
             } else {
-                _ZN12Unk_020bd1b013func_020bd69cEi(&unk_2fa8[0], p->unk_00);
+                _ZN15SkyShotSequence8endWatchEi(&shotSeq, p->playerSlot);
             }
-            _ZN12Unk_020bd05413func_020bd6dcEv(p);
+            _ZN14SkyShotRequest5clearEv(p);
         }
     }
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb9b8() {
+void SkySprites::updateBirds() {
     using namespace n05;
-    if (unk_2f29 != 0) {
-        unk_2f29 = 0;
-        BOOL a = func_020b8fe8() == 0 ? TRUE : FALSE;
+    if (birdsRequested != 0) {
+        birdsRequested = 0;
+        BOOL a = Weather_GetFallingPrecip() == 0 ? TRUE : FALSE;
         u32 x[6];
         x[0] = 0;
         x[1] = 0;
@@ -6631,15 +5971,15 @@ void Unk_020bb25c::func_020bb9b8() {
         x[3] = 0;
         x[4] = 0;
         x[5] = 0;
-        func_0209d498(&x[4]);
-        func_02116048(&x[4], &x[0], 8);
-        func_02116048(&x[4], &x[2], 8);
+        Clock_GetDateTime(&x[4]);
+        MI_CpuCopy8(&x[4], &x[0], 8);
+        MI_CpuCopy8(&x[4], &x[2], 8);
         ((u8 *)x)[4] = 3;
         ((u8 *)x)[3] = 0x10;
         ((u8 *)x)[12] = 9;
         ((u8 *)x)[11] = 0xf;
-        u32 r5 = func_0209d3d0(&x[0], &x[4], 0x18);
-        u32 r0 = func_0209d3d0(&x[4], &x[2], 0x18);
+        u32 r5 = DateTime_Compare(&x[0], &x[4], 0x18);
+        u32 r0 = DateTime_Compare(&x[4], &x[2], 0x18);
         BOOL b = FALSE;
         if (r5 == (u32)-1 || r5 == 0) {
             if (r0 == (u32)-1 || r0 == 0) {
@@ -6648,8 +5988,8 @@ void Unk_020bb25c::func_020bb9b8() {
         }
         ((u8 *)x)[2] = 6;
         ((u8 *)x)[10] = 9;
-        r5 = func_0209d3d0(&x[0], &x[4], 4);
-        r0 = func_0209d3d0(&x[4], &x[2], 4);
+        r5 = DateTime_Compare(&x[0], &x[4], 4);
+        r0 = DateTime_Compare(&x[4], &x[2], 4);
         BOOL c = FALSE;
         if (r5 == (u32)-1 || r5 == 0) {
             if (r0 == (u32)-1) {
@@ -6657,23 +5997,23 @@ void Unk_020bb25c::func_020bb9b8() {
             }
         }
         if (a && b && c) {
-            func_020bc754(0xc, 0x3c, 0, 0);
-            func_020bc754(0xc, 0x3c, 0, 1);
-            func_020bc754(0xc, 0x3c, 0, 2);
+            spawn(0xc, 0x3c, 0, 0);
+            spawn(0xc, 0x3c, 0, 1);
+            spawn(0xc, 0x3c, 0, 2);
         }
     }
 }
 namespace n05 {
 
 }
-BOOL Unk_020bb25c::func_020bb964(s32 idx) {
+BOOL SkySprites::canLaunchBig(s32 idx) {
     using namespace n05;
     BOOL result = TRUE;
-    Unk_020bb25c_Ent74 *p = &unk_14d8[0];
-    Unk_020bb25c_Ent74 *end = (Unk_020bb25c_Ent74 *)unk_1abc;
+    SkySprite *p = &sprites[46];
+    SkySprite *end = &sprites[59];
     for (; p < end; p++) {
-        if (p->unk_00 == 9) {
-            u32 f = p->unk_60;
+        if (p->kind == 9) {
+            u32 f = p->work0;
             s32 slot = (f >> 8) & 3;
             BOOL b1 = ((f >> 29) & 1) ? TRUE : FALSE;
             if (slot == idx || !b1) {
@@ -6687,16 +6027,16 @@ BOOL Unk_020bb25c::func_020bb964(s32 idx) {
 namespace n05 {
 
 }
-BOOL Unk_020bb25c::func_020bb8fc(s32 idx) {
+BOOL SkySprites::canLaunchSmall(s32 idx) {
     using namespace n05;
     BOOL result = TRUE;
-    Unk_020bb25c_Ent74 *p = &unk_14d8[0];
-    Unk_020bb25c_Ent74 *end = (Unk_020bb25c_Ent74 *)unk_1abc;
+    SkySprite *p = &sprites[46];
+    SkySprite *end = &sprites[59];
     for (; p < end; p++) {
-        if (p->unk_00 == 9) {
+        if (p->kind == 9) {
             s32 slot;
             BOOL b1, b2;
-            u32 f = p->unk_60;
+            u32 f = p->work0;
             slot = (f >> 8) & 3;
             b1 = ((f >> 29) & 1) ? TRUE : FALSE;
             b2 = ((f >> 31) & 1) ? TRUE : FALSE;
@@ -6715,24 +6055,24 @@ BOOL Unk_020bb25c::func_020bb8fc(s32 idx) {
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb8a4(s32 idx, s32 a, s32 b) {
+void SkySprites::launchFirework(s32 idx, s32 a, s32 b) {
     using namespace n05;
-    if (data_021ef670 != 0) {
-        Unk_020bb8a4_E fa = (Unk_020bb8a4_E)(a << 31); Unk_020bb8a4_E lo = (Unk_020bb8a4_E)((data_020d0e90[idx] - 0x1d) & 0xf); Unk_020bb8a4_E i8 = (Unk_020bb8a4_E)((idx & 3) << 8); Unk_020bb8a4_E fb = (Unk_020bb8a4_E)(b << 28); func_020bc754(9, 0x3c, 0, fb | (i8 | (lo | fa)));
+    if (sSkyOutdoors != 0) {
+        Unk_020bb8a4_E fa = (Unk_020bb8a4_E)(a << 31); Unk_020bb8a4_E lo = (Unk_020bb8a4_E)((sFireworkShellTypes[idx] - 0x1d) & 0xf); Unk_020bb8a4_E i8 = (Unk_020bb8a4_E)((idx & 3) << 8); Unk_020bb8a4_E fb = (Unk_020bb8a4_E)(b << 28); spawn(9, 0x3c, 0, fb | (i8 | (lo | fa)));
     } else if (a != 0) {
-        func_02064928(idx + 5);
+        SceneLights_StartFlash(idx + 5);
     } else {
-        func_02064928(idx + 1);
+        SceneLights_StartFlash(idx + 1);
     }
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb880(s32 *out) {
+void SkySprites::rollLaunchInterval(s32 *out) {
     using namespace n05;
     s32 r;
-    if (unk_2f48 > 0) {
-        r = func_02063b8c(unk_2f48);
+    if (fireworksInterval > 0) {
+        r = Random_GlobalBelow(fireworksInterval);
     } else {
         r = 0;
     }
@@ -6741,46 +6081,46 @@ void Unk_020bb25c::func_020bb880(s32 *out) {
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb834() {
+void SkySprites::tickBigLaunch() {
     using namespace n05;
-    unk_2f34 = unk_2f34 - 1;
-    if (unk_2f34 <= 0) {
-        s32 r = func_02063b8c(4);
-        if (func_020bb964(r)) {
-            func_020bb8a4(r, 1, 0);
-            func_020bb880(&unk_2f34);
+    fireworksBigTimer = fireworksBigTimer - 1;
+    if (fireworksBigTimer <= 0) {
+        s32 r = Random_GlobalBelow(4);
+        if (canLaunchBig(r)) {
+            launchFirework(r, 1, 0);
+            rollLaunchInterval(&fireworksBigTimer);
         }
     }
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb7e8() {
+void SkySprites::tickLowBigLaunch() {
     using namespace n05;
-    unk_2f34 = unk_2f34 - 1;
-    if (unk_2f34 <= 0) {
-        s32 r = func_02063b8c(4);
-        if (func_020bb964(r)) {
-            func_020bb8a4(r, 1, 1);
-            func_020bb880(&unk_2f34);
+    fireworksBigTimer = fireworksBigTimer - 1;
+    if (fireworksBigTimer <= 0) {
+        s32 r = Random_GlobalBelow(4);
+        if (canLaunchBig(r)) {
+            launchFirework(r, 1, 1);
+            rollLaunchInterval(&fireworksBigTimer);
         }
     }
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb774() {
+void SkySprites::tickSmallLaunches() {
     using namespace n05;
-    s32 *ptrs[4] = {&unk_2f38[0], &unk_2f38[1], &unk_2f38[2], &unk_2f38[3]};
+    s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 i;
     for (i = 0; i < 4; i++, pp++) {
         s32 *c = *pp;
         *c = *c - 1;
         if (*c <= 0) {
-            if (func_020bb8fc(i)) {
-                func_020bb8a4(i, 0, 0);
-                func_020bb880(c);
+            if (canLaunchSmall(i)) {
+                launchFirework(i, 0, 0);
+                rollLaunchInterval(c);
             }
         }
     }
@@ -6788,9 +6128,9 @@ void Unk_020bb25c::func_020bb774() {
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb688() {
+void SkySprites::tickPairLaunches() {
     using namespace n05;
-    s32 *ptrs[4] = {&unk_2f38[0], &unk_2f38[1], &unk_2f38[2], &unk_2f38[3]};
+    s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 all = 1;
     s32 i;
@@ -6799,8 +6139,8 @@ void Unk_020bb25c::func_020bb688() {
         if (*c > 0) {
             *c = *c - 1;
             if (*c <= 0) {
-                if (func_020bb8fc(i)) {
-                    func_020bb8a4(i, 0, 0);
+                if (canLaunchSmall(i)) {
+                    launchFirework(i, 0, 0);
                 } else {
                     *c = 1;
                 }
@@ -6814,12 +6154,12 @@ void Unk_020bb25c::func_020bb688() {
         }
     }
     if (all) {
-        s32 a = func_02063b8c(4);
-        s32 b = (a + 1 + func_02063b8c(3)) & 3;
+        s32 a = Random_GlobalBelow(4);
+        s32 b = (a + 1 + Random_GlobalBelow(3)) & 3;
         s32 **p2 = ptrs;
         for (i = 0; i < 4; i++, p2++) {
             if (a == i || b == i) {
-                *(*p2) = unk_2f48 + func_02063b8c(30);
+                *(*p2) = fireworksInterval + Random_GlobalBelow(30);
             }
         }
     }
@@ -6827,9 +6167,9 @@ void Unk_020bb25c::func_020bb688() {
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb5b4() {
+void SkySprites::tickTripleLaunches() {
     using namespace n05;
-    s32 *ptrs[4] = {&unk_2f38[0], &unk_2f38[1], &unk_2f38[2], &unk_2f38[3]};
+    s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 all = 1;
     s32 i;
@@ -6838,8 +6178,8 @@ void Unk_020bb25c::func_020bb5b4() {
         if (*c > 0) {
             *c = *c - 1;
             if (*c <= 0) {
-                if (func_020bb8fc(i)) {
-                    func_020bb8a4(i, 0, 0);
+                if (canLaunchSmall(i)) {
+                    launchFirework(i, 0, 0);
                 } else {
                     *c = 1;
                 }
@@ -6853,11 +6193,11 @@ void Unk_020bb25c::func_020bb5b4() {
         }
     }
     if (all) {
-        s32 skip = func_02063b8c(4);
+        s32 skip = Random_GlobalBelow(4);
         s32 **p2 = ptrs;
         for (i = 0; i < 4; i++, p2++) {
             if (i != skip) {
-                *(*p2) = unk_2f48 + func_02063b8c(30);
+                *(*p2) = fireworksInterval + Random_GlobalBelow(30);
             }
         }
     }
@@ -6865,24 +6205,24 @@ void Unk_020bb25c::func_020bb5b4() {
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb584(s32 a, s32 b, s32 c) {
+void SkySprites::setFireworksTiming(s32 a, s32 b, s32 c) {
     using namespace n05;
-    unk_2f48 = a;
+    fireworksInterval = a;
     s32 r;
     if (c > 0) {
-        r = func_02063b8c(c);
+        r = Random_GlobalBelow(c);
     } else {
         r = 0;
     }
-    unk_2f30 = b + r;
+    fireworksPatternTime = b + r;
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb4c8(s32 mode) {
+void SkySprites::selectFireworksPattern(s32 mode) {
     using namespace n05;
     if (mode == 0x14) {
-        u32 r = func_02063b8c(100);
+        u32 r = Random_GlobalBelow(100);
         u8 *p = data_020d0e51;
         s32 m = 5;
         s32 i;
@@ -6892,12 +6232,12 @@ void Unk_020bb25c::func_020bb4c8(s32 mode) {
                 break;
             }
         }
-        unk_2f2c = m;
+        fireworksPattern = m;
     } else {
-        unk_2f2c = mode;
+        fireworksPattern = mode;
     }
-    s32 idx = unk_2f2c;
-    s32 cnt = data_020d0eb4[idx];
+    s32 idx = fireworksPattern;
+    s32 cnt = sFireworksPatternDelays[idx];
     if (cnt > 0) {
         BOOL flag = FALSE;
         u32 sh = idx - 1;
@@ -6905,157 +6245,157 @@ void Unk_020bb25c::func_020bb4c8(s32 mode) {
             flag = TRUE;
         }
         if (flag) {
-            unk_2f34 = func_02063b8c(cnt);
+            fireworksBigTimer = Random_GlobalBelow(cnt);
         } else {
-            unk_2f38[0] = func_02063b8c(cnt);
-            unk_2f38[1] = func_02063b8c(cnt);
-            unk_2f38[2] = func_02063b8c(cnt);
-            unk_2f38[3] = func_02063b8c(cnt);
+            fireworksSlotTimers[0] = Random_GlobalBelow(cnt);
+            fireworksSlotTimers[1] = Random_GlobalBelow(cnt);
+            fireworksSlotTimers[2] = Random_GlobalBelow(cnt);
+            fireworksSlotTimers[3] = Random_GlobalBelow(cnt);
         }
     }
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb490() {
+void SkySprites::fireworksPatternAct01() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x14, 0x64, 400); 
+        setFireworksTiming(0x14, 0x64, 400); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb834(); 
+    tickBigLaunch(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb458() {
+void SkySprites::fireworksPatternAct02() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x64, 0x64, 500); 
+        setFireworksTiming(0x64, 0x64, 500); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb834(); 
+    tickBigLaunch(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb420() {
+void SkySprites::fireworksPatternAct03() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0xc8, 0x64, 600); 
+        setFireworksTiming(0xc8, 0x64, 600); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb834(); 
+    tickBigLaunch(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb3e8() {
+void SkySprites::fireworksPatternAct04() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x32, 0x64, 400); 
+        setFireworksTiming(0x32, 0x64, 400); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb774(); 
+    tickSmallLaunches(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb3b0() {
+void SkySprites::fireworksPatternAct05() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0xa0, 0x64, 500); 
+        setFireworksTiming(0xa0, 0x64, 500); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb774(); 
+    tickSmallLaunches(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb374() {
+void SkySprites::fireworksPatternAct06() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x12c, 0x64, 600); 
+        setFireworksTiming(0x12c, 0x64, 600); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb774(); 
+    tickSmallLaunches(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb33c() {
+void SkySprites::fireworksPatternAct07() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x1e, 0x96, 400); 
+        setFireworksTiming(0x1e, 0x96, 400); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb688(); 
+    tickPairLaunches(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb304() {
+void SkySprites::fireworksPatternAct08() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x3c, 0x96, 500); 
+        setFireworksTiming(0x3c, 0x96, 500); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb688(); 
+    tickPairLaunches(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb2cc() {
+void SkySprites::fireworksPatternAct09() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x64, 0x96, 600); 
+        setFireworksTiming(0x64, 0x96, 600); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb688(); 
+    tickPairLaunches(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb294() {
+void SkySprites::fireworksPatternAct0A() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x28, 0x96, 400); 
+        setFireworksTiming(0x28, 0x96, 400); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb5b4(); 
+    tickTripleLaunches(); 
 }
 namespace n05 {
 
 }
-void Unk_020bb25c::func_020bb25c() {
+void SkySprites::fireworksPatternAct0B() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
-        func_020bb584(0x50, 0x96, 500); 
+        setFireworksTiming(0x50, 0x96, 500); 
     } else if (v == 0) { 
-        func_020bb4c8(0x14); 
+        selectFireworksPattern(0x14); 
     } 
-    func_020bb5b4(); 
+    tickTripleLaunches(); 
 }
 namespace n05 {
 
@@ -7064,336 +6404,320 @@ namespace n05 {
 
 // ======== unk_020ba93c.cpp ========
 namespace n04 {
-struct Unk_021eff48;
-struct Unk_021f1448;
-struct Unk_021f1448 { u8 pad0[0x1c]; s32 f1c; u8 pad1[4]; s32 f24; s32 f28; u8 pad2[0x08]; s32 f34; };
-struct Unk_021eff48 { s32 f0; s32 f4; };
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } data_021eff48; } }
-#define data_021f1448 n04::L_021f1448::data_021eff48.v
 extern "C" {
-extern s32 data_020d0e70[];
+extern s32 sRainSeIds[];
 }
-namespace L_021ef690 { extern "C" { extern struct S { u8 p[0x8]; u8 v[1]; } data_021ef688; } }
-#define data_021ef690 n04::L_021ef690::data_021ef688.v
+namespace L_021ef690 { extern "C" { extern struct S { u8 p[0x8]; u8 v[1]; } sSkyLight; } }
+#define data_021ef690 n04::L_021ef690::sSkyLight.v
 extern "C" {
-extern u16 data_021ef688[];
+extern u16 sSkyLight[];
 }
 extern "C" {
-extern s32 data_021ef670;
-}
-namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; s32 v[1]; } data_021eff48; } }
-#define data_021f145c n04::L_021f145c::data_021eff48.v
-extern "C" {
-extern Unk_021eff48 data_021eff48;
-}
-namespace L_021f1158 { extern "C" { extern struct S { u8 p[0x1210]; u8 v[1]; } data_021eff48; } }
-#define data_021f1158 n04::L_021f1158::data_021eff48.v
-namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; s32 v; } data_021eff48; } }
-#define data_021f146c n04::L_021f146c::data_021eff48.v
-namespace L_021f1470 { extern "C" { extern struct S { u8 p[0x1528]; s32 v; } data_021eff48; } }
-#define data_021f1470 n04::L_021f1470::data_021eff48.v
-extern "C" {
-extern u8 **data_020e4d84[];
+extern s32 sSkyOutdoors;
 }
 extern "C" {
-extern u16 *data_020e4d5c[];
+extern WeatherManager gWeatherManager;
 }
 extern "C" {
-extern u16 **data_020e4d48[];
+extern u8 **sSkyLightParamTables[];
+}
+extern "C" {
+extern u16 *sSkyFogOffsetTables[];
+}
+extern "C" {
+extern u16 **sSkyLightColorTables[];
 }
 extern "C" {
 extern u8 data_021ef690_out[];
 }
-namespace L_021efc08 { extern "C" { extern struct S { u8 p[0x300]; Unk_020baa10_Ptr v; } data_021ef908; } }
-#define data_021efc08 n04::L_021efc08::data_021ef908.v
 extern "C" {
-void _ZN12Unk_02003c3013func_02003c30Ev(void*);
+void _ZN13SndEnvChannel11callReleaseEv(void*);
 }
 extern "C" {
-void _ZN12Unk_02003c4013func_02003c40EPv(void*, s32);
+void _ZN13SndEnvChannel11callRequestEPv(void*, s32);
 }
 extern "C" {
-void _ZN12Unk_02003c4013func_02003c60EPv(void*, void*);
+void _ZN13SndEnvChannel10callUpdateEPv(void*, void*);
 }
 extern "C" {
-void _ZN12Unk_02003c3013func_02003cbcEv(void*);
+void _ZN13SndEnvChannel9callResetEv(void*);
 }
 extern "C" {
-s32 func_020b5364(s32);
+s32 Scene_GetSkyKind(s32);
 }
 extern "C" {
-void func_020ba8cc(void*);
+void RainSe_FadeVolume(void*);
 }
 extern "C" {
 void func_02133ef8(void *p, u32 n);
 }
 extern "C" {
-void func_0209cf18(void*);
+void Clock_GetMinuteHour(void*);
 }
 extern "C" {
 u32 _u32_div_f(u32, u32);
 }
 extern "C" {
-void func_020bac14(s32, s32, u32, u32);
+void Sky_CalcLightColors(s32, s32, u32, u32);
 }
 extern "C" {
-void func_020baaa0(s32, s32, u32, u32);
+void Sky_CalcLightParams(s32, s32, u32, u32);
 }
 extern "C" {
-void func_020bab7c(s32, s32, u32, u32);
+void Sky_CalcFogOffset(s32, s32, u32, u32);
 }
 extern "C" {
-s32 func_020b53ec(u32);
+s32 Fog_SetOffset(u32);
 }
 extern "C" {
-void *_ZN12Unk_0208927013func_02089248Ev(void*);
+void *_ZN10SpriteAnim7getCellEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_02089228Ei(void*, s32);
+s32 _ZN10SpriteAnim9getFrameXEi(void*, s32);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_02089210Ei(void*, s32);
+s32 _ZN10SpriteAnim9getFrameYEi(void*, s32);
 }
 extern "C" {
-void func_02087e70(s32, void*, s32, s32, s32, s32, s32, s32, u32, s32, u32, u32);
+void Oam_DrawCell(s32, void*, s32, s32, s32, s32, s32, s32, u32, s32, u32, u32);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_02089140Ev(void*);
+void _ZN10SpriteAnim6updateEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bc928Ev(void*);
+void _ZN10SkySprites9tickClockEv(void*);
 }
 extern "C" {
-void func_020baf2c(void*);
+void SkySprites_UpdateStub(void*);
 }
 extern "C" {
-void func_020baf68(Unk_020bacc0_Obj*);
+void SkySprites_UpdateEvents(SkySprites*);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bce8cEv(void*);
+void _ZN10SkySprites12reloadAllGfxEv(void*);
 }
 extern "C" {
-void func_020be0bc(void*);
+void SkySprite_StartAnim(void*);
 }
 extern "C" {
-void _ZN12Unk_020be20413func_020be204Ev(void*);
+void _ZN9SkySprite12updateByKindEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020be0f413func_020be0f4Ev(void*);
+void _ZN9SkySprite9endByKindEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bce4cEv(void*);
+void _ZN10SkySprites12loadDirtyGfxEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bd1b013func_020bd520Ev(void*);
+void _ZN15SkyShotSequence6updateEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bd06c13func_020bd06cEv(void*);
+void _ZN11SkySePlayer6updateEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bd06c13func_020bd104Ev(void*);
+void _ZN11SkySePlayer10releaseAllEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bc58c13func_020bcba4Ev(void*);
+s32 _ZN10SkySprites4stopEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bc58c13func_020bcbacEv(void*);
+s32 _ZN10SkySprites5startEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bd06c13func_020bd12cEv(void*);
+void _ZN11SkySePlayer8resetAllEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bc58c13func_020bcbd8Ei(void*, s32);
+s32 _ZN10SkySprites8findKindEi(void*, s32);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(void*, s32, s32, s32, s32);
+void _ZN10SkySprites5spawnEiiP7VecFx32i(void*, s32, s32, s32, s32);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bc58cEv(void*);
+void _ZN10SkySprites18updateThunderFlashEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2813func_020bbeb8Ev(void*);
+void _ZN10SkySprites19updateFireworksShowEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2813func_020bc43cEv(void*);
+void _ZN10SkySprites10updateRainEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2813func_020bc2a8Ev(void*);
+void _ZN10SkySprites10updateSnowEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bb25c13func_020bb9b8Ev(void*);
+void _ZN10SkySprites11updateBirdsEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2813func_020bc18cEv(void*);
+void _ZN10SkySprites10updateMoonEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bb25c13func_020bbb58Ev(void*);
+void _ZN10SkySprites13updateRainbowEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2813func_020bc1d4Ev(void*);
+void _ZN10SkySprites18updateShootingStarEv(void*);
 }
 extern "C" {
-s32 func_020b50e8();
+s32 Scene_GetCurrent();
 }
 extern "C" {
-void _ZN12Unk_020bbc2813func_020bbdd4Ev(void*);
+void _ZN10SkySprites13updateBalloonEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2813func_020bbcc8Ev(void*);
+void _ZN10SkySprites9updateUfoEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bbc2813func_020bbc28Ev(void*);
+void _ZN10SkySprites10updatePeteEv(void*);
 }
 extern "C" {
-void _ZN12Unk_020bb25c13func_020bbac0Ev(void*);
+void _ZN10SkySprites10spawnShotsEv(void*);
 }
 extern "C" {
 s32 _s32_div_f(s32, s32);
 }
 extern "C" {
-void _ZN12Unk_020bb25c13func_020bb584Eiii(void*, s32, s32, s32);
+void _ZN10SkySprites18setFireworksTimingEiii(void*, s32, s32, s32);
 }
 extern "C" {
-void _ZN12Unk_020bb25c13func_020bb4c8Ei(void*, s32);
+void _ZN10SkySprites22selectFireworksPatternEi(void*, s32);
 }
 extern "C" {
-s32 _ZN12Unk_020bb25c13func_020bb7e8Ev(void*);
+s32 _ZN10SkySprites16tickLowBigLaunchEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bb25c13func_020bb774Ev(void*);
+s32 _ZN10SkySprites17tickSmallLaunchesEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bb25c13func_020bb834Ev(void*);
+s32 _ZN10SkySprites13tickBigLaunchEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_020bb25c13func_020bb5b4Ev(void*);
+s32 _ZN10SkySprites18tickTripleLaunchesEv(void*);
 }
 extern "C" {
-void func_020baf30(Unk_020bacc0_Obj*);
+void SkySprites_UpdateEventsIndoor(SkySprites*);
 }
 extern "C" {
-void func_020ba6f4(u16*, u16*, u16*, s32);
+void Color_Lerp(u16*, u16*, u16*, s32);
 }
 extern "C" {
-void func_020b53f8(s32);
+void Fog_SetAlpha(s32);
 }
 extern "C" {
-void func_020027f8(s32);
+void Gfx3d_SetClearDepth(s32);
 }
 extern "C" {
-void func_020027ec(u32);
+void Gfx3d_SetClearColor(u32);
 }
 extern "C" {
-u16 func_02064cc4();
+u16 SceneLights_GetRoomColor();
 }
 extern "C" {
-s32 func_02104238(s32, u32, s32);
+s32 NNS_G3dGlbMaterialColorSpecEmi(s32, u32, s32);
 }
 
-extern "C" void func_020ba93c(Unk_020ba93c_Obj *p);
-extern "C" void func_020ba990(void *p);
-extern "C" void func_020ba998(Unk_020ba93c_Obj *p);
-extern "C" void func_020ba9e4(Unk_020ba93c_Obj *p);
-extern "C" u8 func_020ba9f8(s32 i);
-extern "C" s16 func_020baa04(s32 i);
-extern "C" void func_020baa10(s32 a, s32 b);
-extern "C" void func_020baaa0(s32 a, s32 b, u32 c, u32 d);
-extern "C" void func_020bab7c(s32 a, s32 b, u32 c, u32 d);
-extern "C" void func_020bac14(s32 a, s32 b, u32 c, u32 d);
-extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bae84(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bae8c(Unk_020bacc0_Obj *obj);
-extern "C" void func_020baf2c(void *);
-extern "C" void func_020baf30(Unk_020bacc0_Obj *obj);
-extern "C" void func_020baf68(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bafe0(Unk_020bacc0_Obj *obj);
-extern "C" void func_020baffc(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb018(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb04c(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb0c8(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb0fc(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb128(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb15c(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb190(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb1c4(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb1f8(Unk_020bacc0_Obj *obj);
-extern "C" void func_020bb224(Unk_020bacc0_Obj *obj);
+extern "C" void RainSe_InitVolume(RainSndChannel *p);
+extern "C" void RainSe_Release(void *p);
+extern "C" void RainSe_Update(RainSndChannel *p);
+extern "C" void RainSe_Init(RainSndChannel *p);
+extern "C" u8 Sky_GetLightParam(s32 i);
+extern "C" s16 Sky_GetLightColor(s32 i);
+extern "C" void Sky_UpdateLighting(s32 a, s32 b);
+extern "C" void Sky_CalcLightParams(s32 a, s32 b, u32 c, u32 d);
+extern "C" void Sky_CalcFogOffset(s32 a, s32 b, u32 c, u32 d);
+extern "C" void Sky_CalcLightColors(s32 a, s32 b, u32 c, u32 d);
+extern "C" void SkySprites_Draw(SkySprites *obj);
+extern "C" void SkySprites_UpdateIndoor(SkySprites *obj);
+extern "C" void SkySprites_Update(SkySprites *obj);
+extern "C" void SkySprites_UpdateStub(void *);
+extern "C" void SkySprites_UpdateEventsIndoor(SkySprites *obj);
+extern "C" void SkySprites_UpdateEvents(SkySprites *obj);
+extern "C" void SkySprites_Stop(SkySprites *obj);
+extern "C" void SkySprites_Start(SkySprites *obj);
+extern "C" void SkySprites_OnStarWish(SkySprites *obj);
+extern "C" void SkySprites_ApplyRainbowBlend(SkySprites *obj);
+extern "C" void SkySprites_FireworksPatternAct13(SkySprites *obj);
+extern "C" void SkySprites_FireworksPatternAct12(SkySprites *obj);
+extern "C" void SkySprites_FireworksPatternAct11(SkySprites *obj);
+extern "C" void SkySprites_FireworksPatternAct10(SkySprites *obj);
+extern "C" void SkySprites_FireworksPatternAct0F(SkySprites *obj);
+extern "C" void SkySprites_FireworksPatternAct0E(SkySprites *obj);
+extern "C" void SkySprites_FireworksPatternAct0D(SkySprites *obj);
+extern "C" void SkySprites_FireworksPatternAct0C(SkySprites *obj);
 
-extern "C" void func_020bb224(Unk_020bacc0_Obj *obj) {
-    if (obj->f2f30 < 0) {
-        _ZN12Unk_020bb25c13func_020bb584Eiii(obj, 0x8c, 0x96, 0x258);
-    } else if (obj->f2f30 == 0) {
-        _ZN12Unk_020bb25c13func_020bb4c8Ei(obj, 0x14);
+extern "C" void SkySprites_FireworksPatternAct0C(SkySprites *obj) {
+    if (obj->fireworksPatternTime < 0) {
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0x8c, 0x96, 0x258);
+    } else if (obj->fireworksPatternTime == 0) {
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x14);
     }
-    _ZN12Unk_020bb25c13func_020bb5b4Ev(obj);
+    _ZN10SkySprites18tickTripleLaunchesEv(obj);
 }
 
-extern "C" void func_020bb1f8(Unk_020bacc0_Obj *obj) {
-    if (obj->f2f30 < 0) {
-        _ZN12Unk_020bb25c13func_020bb584Eiii(obj, 0, 0x64, 0x96);
-    } else if (obj->f2f30 == 0) {
-        _ZN12Unk_020bb25c13func_020bb4c8Ei(obj, 0x14);
-    }
-}
-
-extern "C" void func_020bb1c4(Unk_020bacc0_Obj *obj) {
-    if (obj->f2f30 < 0) {
-        _ZN12Unk_020bb25c13func_020bb584Eiii(obj, 0, 0x64, 0);
-    } else if (obj->f2f30 == 0) {
-        _ZN12Unk_020bb25c13func_020bb4c8Ei(obj, 0xf);
-    }
-    _ZN12Unk_020bb25c13func_020bb774Ev(obj);
-}
-
-extern "C" void func_020bb190(Unk_020bacc0_Obj *obj) {
-    if (obj->f2f30 < 0) {
-        _ZN12Unk_020bb25c13func_020bb584Eiii(obj, 0, 0xc8, 0);
-    } else if (obj->f2f30 == 0) {
-        _ZN12Unk_020bb25c13func_020bb4c8Ei(obj, 4);
-    }
-    _ZN12Unk_020bb25c13func_020bb834Ev(obj);
-}
-
-extern "C" void func_020bb15c(Unk_020bacc0_Obj *obj) {
-    if (obj->f2f30 < 0) {
-        _ZN12Unk_020bb25c13func_020bb584Eiii(obj, 0, 0x64, 0);
-    } else if (obj->f2f30 == 0) {
-        _ZN12Unk_020bb25c13func_020bb4c8Ei(obj, 0x11);
-    }
-    _ZN12Unk_020bb25c13func_020bb834Ev(obj);
-}
-
-extern "C" void func_020bb128(Unk_020bacc0_Obj *obj) {
-    if (obj->f2f30 < 0) {
-        _ZN12Unk_020bb25c13func_020bb584Eiii(obj, 0, 0x64, 0);
-    } else if (obj->f2f30 == 0) {
-        _ZN12Unk_020bb25c13func_020bb4c8Ei(obj, 1);
-    }
-    _ZN12Unk_020bb25c13func_020bb774Ev(obj);
-}
-
-extern "C" void func_020bb0fc(Unk_020bacc0_Obj *obj) {
-    if (obj->f2f30 < 0) {
-        _ZN12Unk_020bb25c13func_020bb584Eiii(obj, 0, 0xe1, 0);
-    } else if (obj->f2f30 == 0) {
-        _ZN12Unk_020bb25c13func_020bb4c8Ei(obj, 0x13);
+extern "C" void SkySprites_FireworksPatternAct0D(SkySprites *obj) {
+    if (obj->fireworksPatternTime < 0) {
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0x96);
+    } else if (obj->fireworksPatternTime == 0) {
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x14);
     }
 }
 
-extern "C" void func_020bb0c8(Unk_020bacc0_Obj *obj) {
-    if (obj->f2f30 < 0) {
-        _ZN12Unk_020bb25c13func_020bb584Eiii(obj, 0, 0x64, 0);
-    } else if (obj->f2f30 == 0) {
-        _ZN12Unk_020bb25c13func_020bb4c8Ei(obj, 0x10);
+extern "C" void SkySprites_FireworksPatternAct0E(SkySprites *obj) {
+    if (obj->fireworksPatternTime < 0) {
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0);
+    } else if (obj->fireworksPatternTime == 0) {
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0xf);
     }
-    _ZN12Unk_020bb25c13func_020bb7e8Ev(obj);
+    _ZN10SkySprites17tickSmallLaunchesEv(obj);
 }
 
-extern "C" void func_020bb04c(Unk_020bacc0_Obj *obj) {
-    u16 *p = (u16 *)(data_021f1158 + data_021eff48.f4 * 0x180);
+extern "C" void SkySprites_FireworksPatternAct0F(SkySprites *obj) {
+    if (obj->fireworksPatternTime < 0) {
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0xc8, 0);
+    } else if (obj->fireworksPatternTime == 0) {
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 4);
+    }
+    _ZN10SkySprites13tickBigLaunchEv(obj);
+}
+
+extern "C" void SkySprites_FireworksPatternAct10(SkySprites *obj) {
+    if (obj->fireworksPatternTime < 0) {
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0);
+    } else if (obj->fireworksPatternTime == 0) {
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x11);
+    }
+    _ZN10SkySprites13tickBigLaunchEv(obj);
+}
+
+extern "C" void SkySprites_FireworksPatternAct11(SkySprites *obj) {
+    if (obj->fireworksPatternTime < 0) {
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0);
+    } else if (obj->fireworksPatternTime == 0) {
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 1);
+    }
+    _ZN10SkySprites17tickSmallLaunchesEv(obj);
+}
+
+extern "C" void SkySprites_FireworksPatternAct12(SkySprites *obj) {
+    if (obj->fireworksPatternTime < 0) {
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0xe1, 0);
+    } else if (obj->fireworksPatternTime == 0) {
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x13);
+    }
+}
+
+extern "C" void SkySprites_FireworksPatternAct13(SkySprites *obj) {
+    if (obj->fireworksPatternTime < 0) {
+        _ZN10SkySprites18setFireworksTimingEiii(obj, 0, 0x64, 0);
+    } else if (obj->fireworksPatternTime == 0) {
+        _ZN10SkySprites22selectFireworksPatternEi(obj, 0x10);
+    }
+    _ZN10SkySprites16tickLowBigLaunchEv(obj);
+}
+
+extern "C" void SkySprites_ApplyRainbowBlend(SkySprites *obj) {
+    u16 *p = (u16 *)((u8 *)gWeatherManager.lineBlend + gWeatherManager.lineBufferIndex * 0x180);
     u16 *end1 = (u16 *)((u8 *)p + 0xee);
     u16 *end2 = (u16 *)((u8 *)p + 0x12e);
-    u32 v = obj->f2f51;
+    u32 v = obj->rainbowStrength;
     u16 h = v | 0x1000;
     s32 step, i;
     for (; p < end1; p++) {
@@ -7406,126 +6730,126 @@ extern "C" void func_020bb04c(Unk_020bacc0_Obj *obj) {
     }
 }
 
-extern "C" void func_020bb018(Unk_020bacc0_Obj *obj) {
-    Unk_020bacc0_Entry *e = &obj->e[_ZN12Unk_020bc58c13func_020bcbd8Ei(obj, 3)];
+extern "C" void SkySprites_OnStarWish(SkySprites *obj) {
+    SkySprite *e = &obj->sprites[_ZN10SkySprites8findKindEi(obj, 3)];
     if (e != NULL) {
-        _ZN12Unk_020bc58c13func_020bc754EiiP16Unk_020bc754_Veci(obj, 2, 0x3c, 0, 1);
-        e->f60 = 1;
+        _ZN10SkySprites5spawnEiiP7VecFx32i(obj, 2, 0x3c, 0, 1);
+        e->work0 = 1;
     }
 }
 
-extern "C" void func_020baffc(Unk_020bacc0_Obj *obj) {
-    _ZN12Unk_020bc58c13func_020bcbacEv(obj);
-    _ZN12Unk_020bd06c13func_020bd12cEv((u8 *)obj + 0x2fcc);
+extern "C" void SkySprites_Start(SkySprites *obj) {
+    _ZN10SkySprites5startEv(obj);
+    _ZN11SkySePlayer8resetAllEv((u8 *)obj + 0x2fcc);
 }
 
-extern "C" void func_020bafe0(Unk_020bacc0_Obj *obj) {
-    _ZN12Unk_020bd06c13func_020bd104Ev((u8 *)obj + 0x2fcc);
-    _ZN12Unk_020bc58c13func_020bcba4Ev(obj);
+extern "C" void SkySprites_Stop(SkySprites *obj) {
+    _ZN11SkySePlayer10releaseAllEv((u8 *)obj + 0x2fcc);
+    _ZN10SkySprites4stopEv(obj);
 }
 
-extern "C" void func_020baf68(Unk_020bacc0_Obj *obj) {
-    switch (data_021f1448.f34) {
+extern "C" void SkySprites_UpdateEvents(SkySprites *obj) {
+    switch (gWeatherManager.precipKind) {
     case 1:
-        _ZN12Unk_020bbc2813func_020bc43cEv(obj);
+        _ZN10SkySprites10updateRainEv(obj);
         break;
     case 2:
-        _ZN12Unk_020bbc2813func_020bc2a8Ev(obj);
+        _ZN10SkySprites10updateSnowEv(obj);
         break;
     default:
-        obj->f2f08 = 0;
-        obj->f2f0c = 0;
+        obj->precipIntensity = 0;
+        obj->snowCounter = 0;
         break;
     }
-    _ZN12Unk_020bb25c13func_020bb9b8Ev(obj);
-    _ZN12Unk_020bbc2813func_020bc18cEv(obj);
-    _ZN12Unk_020bb25c13func_020bbb58Ev(obj);
-    _ZN12Unk_020bbc2813func_020bc1d4Ev(obj);
-    _ZN12Unk_020bbc2813func_020bbeb8Ev(obj);
-    if (func_020b50e8() != 0x2c) {
-        _ZN12Unk_020bbc2813func_020bbdd4Ev(obj);
-        _ZN12Unk_020bbc2813func_020bbcc8Ev(obj);
-        _ZN12Unk_020bbc2813func_020bbc28Ev(obj);
-        _ZN12Unk_020bb25c13func_020bbac0Ev(obj);
+    _ZN10SkySprites11updateBirdsEv(obj);
+    _ZN10SkySprites10updateMoonEv(obj);
+    _ZN10SkySprites13updateRainbowEv(obj);
+    _ZN10SkySprites18updateShootingStarEv(obj);
+    _ZN10SkySprites19updateFireworksShowEv(obj);
+    if (Scene_GetCurrent() != 0x2c) {
+        _ZN10SkySprites13updateBalloonEv(obj);
+        _ZN10SkySprites9updateUfoEv(obj);
+        _ZN10SkySprites10updatePeteEv(obj);
+        _ZN10SkySprites10spawnShotsEv(obj);
     }
 }
 
-extern "C" void func_020baf30(Unk_020bacc0_Obj *obj) {
-    s32 r = func_020b5364(0);
+extern "C" void SkySprites_UpdateEventsIndoor(SkySprites *obj) {
+    s32 r = Scene_GetSkyKind(0);
     if (r != 0 && r != 3) {
-        if (data_021f1448.f34 == 1 && data_021f1448.f24 == 4) {
-            _ZN12Unk_020bc58c13func_020bc58cEv(obj);
+        if (gWeatherManager.precipKind == 1 && gWeatherManager.level == 4) {
+            _ZN10SkySprites18updateThunderFlashEv(obj);
         }
-        _ZN12Unk_020bbc2813func_020bbeb8Ev(obj);
+        _ZN10SkySprites19updateFireworksShowEv(obj);
     }
 }
 
-extern "C" void func_020baf2c(void *) {
+extern "C" void SkySprites_UpdateStub(void *) {
 }
 
-extern "C" void func_020bae8c(Unk_020bacc0_Obj *obj) {
-    Unk_020bacc0_Entry *e = obj->e;
-    Unk_020bacc0_Entry *end = obj->e + 0x3c;
+extern "C" void SkySprites_Update(SkySprites *obj) {
+    SkySprite *e = obj->sprites;
+    SkySprite *end = obj->sprites + 0x3c;
     s32 *cnt;
-    _ZN12Unk_020bc58c13func_020bc928Ev(obj);
-    func_020baf2c(obj);
-    func_020baf68(obj);
-    cnt = &obj->f2f14;
+    _ZN10SkySprites9tickClockEv(obj);
+    SkySprites_UpdateStub(obj);
+    SkySprites_UpdateEvents(obj);
+    cnt = &obj->spriteCount;
     for (; e < end; e++) {
-        if (e->f08 != 0x34) {
-            void *sub = e->f10;
-            switch (e->f04) {
+        if (e->gfxId != 0x34) {
+            void *sub = &e->anim;
+            switch (e->state) {
             case 1:
-                if (e->f24 != 6) {
-                    _ZN12Unk_020bc58c13func_020bce8cEv(obj);
+                if (e->gfxSlot != 6) {
+                    _ZN10SkySprites12reloadAllGfxEv(obj);
                 }
-                func_020be0bc(e);
-                e->f04 = 2;
+                SkySprite_StartAnim(e);
+                e->state = 2;
                 break;
             case 2:
-                _ZN12Unk_0208927013func_02089140Ev(sub);
-                _ZN12Unk_020be20413func_020be204Ev(e);
+                _ZN10SpriteAnim6updateEv(sub);
+                _ZN9SkySprite12updateByKindEv(e);
                 break;
             case 3:
-                _ZN12Unk_020be0f413func_020be0f4Ev(e);
+                _ZN9SkySprite9endByKindEv(e);
                 *cnt -= 1;
                 break;
             }
         }
     }
-    _ZN12Unk_020bc58c13func_020bce4cEv(obj);
-    _ZN12Unk_020bd1b013func_020bd520Ev((u8 *)obj + 0x2fa8);
-    _ZN12Unk_020bd06c13func_020bd06cEv((u8 *)obj + 0x2fcc);
+    _ZN10SkySprites12loadDirtyGfxEv(obj);
+    _ZN15SkyShotSequence6updateEv((u8 *)obj + 0x2fa8);
+    _ZN11SkySePlayer6updateEv((u8 *)obj + 0x2fcc);
 }
 
-extern "C" void func_020bae84(Unk_020bacc0_Obj *obj) {
-    func_020baf30(obj);
+extern "C" void SkySprites_UpdateIndoor(SkySprites *obj) {
+    SkySprites_UpdateEventsIndoor(obj);
 }
 
-extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
-    Unk_020bacc0_Entry *e;
-    Unk_020bacc0_Entry *end = obj->e + 0x3c;
-    s32 yoff = data_021f145c[data_021f1448.f1c ^ 1];
+extern "C" void SkySprites_Draw(SkySprites *obj) {
+    SkySprite *e;
+    SkySprite *end = obj->sprites + 0x3c;
+    s32 yoff = gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex ^ 1];
     s32 id = -1;
-    for (e = obj->e; e < end; e++) {
+    for (e = obj->sprites; e < end; e++) {
         void *sub;
         void *r;
-        Unk_020bacc0_P *pos;
+        Vec2 *pos;
         s32 a, b, x, y, py;
-        if (e->f00 == 0xd) continue;
-        if (e->f04 != 2) continue;
-        if (e->f31 != 0) continue;
-        sub = e->f10;
-        r = _ZN12Unk_0208927013func_02089248Ev(sub);
+        if (e->kind == 0xd) continue;
+        if (e->state != 2) continue;
+        if (e->hidden != 0) continue;
+        sub = &e->anim;
+        r = _ZN10SpriteAnim7getCellEv(sub);
         if (r == NULL) continue;
-        pos = (Unk_020bacc0_P *)&e->f34;
-        a = _ZN12Unk_0208927013func_02089228Ei(sub, id);
-        b = _ZN12Unk_0208927013func_02089210Ei(sub, id);
+        pos = (Vec2 *)&e->screenPos;
+        a = _ZN10SpriteAnim9getFrameXEi(sub, id);
+        b = _ZN10SpriteAnim9getFrameYEi(sub, id);
         x = a + ((pos->x + 0x800) >> 12);
         py = b + ((pos->y + 0x800) >> 12);
         y = py - yoff;
-        if (data_021eff48.f0 == 1) {
-            u8 k = e->f5c;
+        if (gWeatherManager.engine == 1) {
+            u8 k = e->cullRadius;
             BOOL hidden = FALSE;
             if (k != 0) {
                 s32 lo = y - k;
@@ -7533,9 +6857,9 @@ extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
                 if (hi < 0 || lo > 0xbf) hidden = TRUE;
             }
             if (hidden) continue;
-            func_02087e70(0, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)(e->f56 << 24) >> 24, (u32)(e->f57 << 24) >> 24);
+            Oam_DrawCell(0, r, x, y, e->palette, e->priority, e->scaleX, e->scaleY, (u16)e->angle, id, (u32)(e->hFlip << 24) >> 24, (u32)(e->vFlip << 24) >> 24);
         } else if (py < 0xc0) {
-            u8 k = e->f5c;
+            u8 k = e->cullRadius;
             BOOL hidden = FALSE;
             if (k != 0) {
                 s32 lo = y - k;
@@ -7543,12 +6867,12 @@ extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
                 if (hi < 0 || lo > 0xbf) hidden = TRUE;
             }
             if (hidden) continue;
-            func_02087e70(1, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u8)e->f56, (u8)e->f57);
+            Oam_DrawCell(1, r, x, y, e->palette, e->priority, e->scaleX, e->scaleY, (u16)e->angle, id, (u8)e->hFlip, (u8)e->vFlip);
         } else if (py > 0x100) {
             u8 k;
             BOOL hidden;
             s32 y2 = y - 0x100;
-            k = e->f5c;
+            k = e->cullRadius;
             hidden = FALSE;
             if (k != 0) {
                 s32 lo = y2 - k;
@@ -7556,66 +6880,66 @@ extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
                 if (hi < 0 || lo > 0xbf) hidden = TRUE;
             }
             if (hidden) continue;
-            func_02087e70(0, r, x, y2, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)(e->f56 << 24) >> 24, (u32)(e->f57 << 24) >> 24);
+            Oam_DrawCell(0, r, x, y2, e->palette, e->priority, e->scaleX, e->scaleY, (u16)e->angle, id, (u32)(e->hFlip << 24) >> 24, (u32)(e->vFlip << 24) >> 24);
         }
     }
 }
 
-extern "C" void func_020bac14(s32 a, s32 b, u32 c, u32 d) {
-    u16 *out = (u16 *)data_021ef688;
+extern "C" void Sky_CalcLightColors(s32 a, s32 b, u32 c, u32 d) {
+    u16 *out = (u16 *)sSkyLight;
     u16 tmp[2];
     u16 **tbl;
     u16 **row;
     u16 *t;
     s32 i;
-    if (data_021f1470 != data_021f146c) {
+    if (gWeatherManager.targetLevel != gWeatherManager.level) {
         for (i = 0; i < 4; i++) {
-            row = data_020e4d48[data_021f146c];
+            row = sSkyLightColorTables[gWeatherManager.level];
             t = row[i];
-            func_020ba6f4(&tmp[0], t + c, t + d, a);
-            row = data_020e4d48[data_021f1470];
+            Color_Lerp(&tmp[0], t + c, t + d, a);
+            row = sSkyLightColorTables[gWeatherManager.targetLevel];
             t = row[i];
-            func_020ba6f4(&tmp[1], t + c, t + d, a);
-            func_020ba6f4(out, &tmp[0], &tmp[1], b);
+            Color_Lerp(&tmp[1], t + c, t + d, a);
+            Color_Lerp(out, &tmp[0], &tmp[1], b);
             out++;
         }
     } else {
-        row = data_020e4d48[data_021f146c];
+        row = sSkyLightColorTables[gWeatherManager.level];
         for (i = 0; i < 4; i++) {
             t = row[i];
-            func_020ba6f4(out, t + c, t + d, a);
+            Color_Lerp(out, t + c, t + d, a);
             out++;
         }
     }
 }
 
-extern "C" void func_020bab7c(s32 a, s32 b, u32 c, u32 d) {
-    s32 cur = data_021f1448.f24;
-    s32 next = data_021f1448.f28;
+extern "C" void Sky_CalcFogOffset(s32 a, s32 b, u32 c, u32 d) {
+    s32 cur = gWeatherManager.level;
+    s32 next = gWeatherManager.targetLevel;
     if (next != cur) {
-        u16 *pc = data_020e4d5c[cur];
+        u16 *pc = sSkyFogOffsetTables[cur];
         u32 t1 = (u16)(((0x1000 - a) * pc[c] + a * pc[d]) >> 12);
-        u16 *pn = data_020e4d5c[next];
+        u16 *pn = sSkyFogOffsetTables[next];
         t1 = t1 * (0x1000 - b);
         u32 t2 = (u16)(((0x1000 - a) * pn[c] + a * pn[d]) >> 12);
-        func_020b53ec((u16)((t1 + t2 * b) >> 12));
+        Fog_SetOffset((u16)((t1 + t2 * b) >> 12));
     } else {
-        func_020b53ec((u16)(((0x1000 - a) * data_020e4d5c[cur][c] + a * data_020e4d5c[cur][d]) >> 12));
+        Fog_SetOffset((u16)(((0x1000 - a) * sSkyFogOffsetTables[cur][c] + a * sSkyFogOffsetTables[cur][d]) >> 12));
     }
 }
 
-extern "C" void func_020baaa0(s32 a, s32 b, u32 c, u32 d) {
+extern "C" void Sky_CalcLightParams(s32 a, s32 b, u32 c, u32 d) {
     u8 *out = data_021ef690;
     s32 i;
     s32 ia2, ia, ib;
-    if (data_021f1470 != data_021f146c) {
+    if (gWeatherManager.targetLevel != gWeatherManager.level) {
         i = 0;
         ia = 0x1000 - a;
         ib = 0x1000 - b;
         for (; i < 2; i++) {
-            u8 *p1 = data_020e4d84[data_021f146c][i];
+            u8 *p1 = sSkyLightParamTables[gWeatherManager.level][i];
             s32 t1 = (u16)((ia * p1[c] + a * p1[d]) >> 12);
-            u8 *p2 = data_020e4d84[data_021f1470][i];
+            u8 *p2 = sSkyLightParamTables[gWeatherManager.targetLevel][i];
             t1 = t1 * ib;
             s32 t2 = (u16)((ia * p2[c] + a * p2[d]) >> 12);
             *out = (t1 + t2 * b) >> 12;
@@ -7625,247 +6949,215 @@ extern "C" void func_020baaa0(s32 a, s32 b, u32 c, u32 d) {
         i = 0;
         ia2 = 0x1000 - a;
         for (; i < 2; i++) {
-            u8 *p = data_020e4d84[data_021f146c][i];
+            u8 *p = sSkyLightParamTables[gWeatherManager.level][i];
             *out = (ia2 * p[c] + a * p[d]) >> 12;
             out++;
         }
     }
 }
 
-extern "C" void func_020baa10(s32 a, s32 b) {
-    Unk_020baa10_Buf b0;
+extern "C" void Sky_UpdateLighting(s32 a, s32 b) {
+    SkyLightingLocals b0;
     u32 hour, rem;
-    func_0209cf18(&b0.t);
-    hour = b0.t.hi;
+    Clock_GetMinuteHour(&b0.time);
+    hour = b0.time.hour;
     rem = (hour + 1) % 24;
-    func_020bac14(a, b, hour, rem);
-    func_020baaa0(a, b, hour, rem);
-    func_020bab7c(a, b, hour, rem);
-    if (data_021ef670 != 0) {
-        func_020b53f8(0);
-        func_020027f8(0x1c2);
-        b0.y = data_021efc08.h6;
-        func_020027ec(b0.y);
+    Sky_CalcLightColors(a, b, hour, rem);
+    Sky_CalcLightParams(a, b, hour, rem);
+    Sky_CalcFogOffset(a, b, hour, rem);
+    if (sSkyOutdoors != 0) {
+        Fog_SetAlpha(0);
+        Gfx3d_SetClearDepth(0x1c2);
+        b0.clearColor = n00::sSkyGradient.keyColors[1];
+        Gfx3d_SetClearColor(b0.clearColor);
     }
-    b0.x = func_02064cc4();
-    b0.z = b0.x;
-    func_02104238(0, b0.z, 0);
+    b0.roomColor = SceneLights_GetRoomColor();
+    b0.roomColorArg = b0.roomColor;
+    NNS_G3dGlbMaterialColorSpecEmi(0, b0.roomColorArg, 0);
 }
 
-extern "C" s16 func_020baa04(s32 i) {
-    return data_021ef688[i];
+extern "C" s16 Sky_GetLightColor(s32 i) {
+    return sSkyLight[i];
 }
 
-extern "C" u8 func_020ba9f8(s32 i) {
+extern "C" u8 Sky_GetLightParam(s32 i) {
     return data_021ef690[i];
 }
 
-extern "C" void func_020ba9e4(Unk_020ba93c_Obj *p) {
-    func_020ba93c(p);
-    _ZN12Unk_02003c3013func_02003cbcEv(p);
+extern "C" void RainSe_Init(RainSndChannel *p) {
+    RainSe_InitVolume(p);
+    _ZN13SndEnvChannel9callResetEv(p);
 }
 
-extern "C" void func_020ba998(Unk_020ba93c_Obj *p) {
+extern "C" void RainSe_Update(RainSndChannel *p) {
     s32 v[3];
-    if (p->f0c != 0) {
-        s32 k = data_020d0e70[func_020b5364(0)];
+    if (p->volume != 0) {
+        s32 k = sRainSeIds[Scene_GetSkyKind(0)];
         if (k >= 0) {
-            _ZN12Unk_02003c4013func_02003c40EPv(p, k);
+            _ZN13SndEnvChannel11callRequestEPv(p, k);
         }
     }
     func_02133ef8(v, 12);
-    v[2] = p->f0c >> 8;
-    _ZN12Unk_02003c4013func_02003c60EPv(p, v);
-    func_020ba8cc(p);
+    v[2] = p->volume >> 8;
+    _ZN13SndEnvChannel10callUpdateEPv(p, v);
+    RainSe_FadeVolume(p);
 }
 
-extern "C" void func_020ba990(void *p) {
-    _ZN12Unk_02003c3013func_02003c30Ev(p);
+extern "C" void RainSe_Release(void *p) {
+    _ZN13SndEnvChannel11callReleaseEv(p);
 }
 
-extern "C" void func_020ba93c(Unk_020ba93c_Obj *p) {
-    BOOL a = data_021f1448.f24 == 3;
-    BOOL b = data_021f1448.f24 == 4;
-    BOOL c = data_021f1448.f34 == 1;
-    p->f0c = 0;
+extern "C" void RainSe_InitVolume(RainSndChannel *p) {
+    BOOL a = gWeatherManager.level == 3;
+    BOOL b = gWeatherManager.level == 4;
+    BOOL c = gWeatherManager.precipKind == 1;
+    p->volume = 0;
     if (c) {
         if (a) {
-            p->f0c = 0x99a00;
+            p->volume = 0x99a00;
         } else if (b) {
-            p->f0c = 0x100000;
+            p->volume = 0x100000;
         }
     }
 }
 
-#undef data_021f1448
 #undef data_021ef690
-#undef data_021f145c
-#undef data_021f1158
-#undef data_021f146c
-#undef data_021f1470
-#undef data_021efc08
 }
 
 // ======== unk_020b9fe4.cpp ========
 namespace n03 {
-struct Unk_021ed2b0;
-struct Unk_021ed2b0 {
-    u8 pad_00[0xa];
-    u8 unk_0a;
-    u8 pad_0b;
-    s8 unk_0c;
-    u8 unk_0d;
-};
 extern "C" {
-BOOL func_020ba800(u16 **p);
+BOOL Sky_AllocPaletteBufs(u16 **p);
 }
 extern "C" {
-BOOL func_020ba834();
+BOOL Sky_LoadPaletteFiles();
 }
 extern "C" {
-void func_020ba518();
+void Sky_BlendPalettes();
 }
 extern "C" {
-s32 func_020ba624(s32 x);
+s32 Sky_ApplyPalettes(s32 x);
 }
 extern "C" {
-void func_020ba6c4(u16 *d, u16 *s1, u16 *s2, s32 t);
+void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t);
 }
 extern "C" {
-void func_020ba6f4(u16 *d, u16 *s1, u16 *s2, s32 t);
+void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t);
 }
 extern "C" {
-void func_020ba8cc(Unk_020ba8cc_Obj *o);
+void RainSe_FadeVolume(RainSndChannel *o);
 }
 extern "C" {
-BOOL func_020024f0(void *p, s32 a, s32 b, s32 off);
+BOOL Gfx2d_LoadScreen(void *p, s32 a, s32 b, s32 off);
 }
 extern "C" {
-BOOL func_020025fc(u32 res, void *heap, s32 c, s32 d, s32 e, s32 f);
+BOOL Gfx2d_LoadCharFile8bpp(u32 res, void *heap, s32 c, s32 d, s32 e, s32 f);
 }
 extern "C" {
-s32 func_02002580(u8 *a, s32 b, s32 c, s32 d, s32 e);
+s32 Gfx2d_LoadPaletteRange(u8 *a, s32 b, s32 c, s32 d, s32 e);
 }
 extern "C" {
-u8 *func_020641ec(u32 res, void *heap, s32 a, void *b);
+u8 *File_LoadAlloc(u32 res, void *heap, s32 a, void *b);
 }
 extern "C" {
-BOOL func_020641b4(u32 res, u8 *a, s32 b);
+BOOL File_LoadToBuffer(u32 res, u8 *a, s32 b);
 }
 extern "C" {
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void func_02063968(void *a, void *b);
+void TownId_CopyTo(void *a, void *b);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-s32 func_0209cc08(void *p);
+s32 DateTime_GetWeatherPeriod(void *p);
 }
 extern "C" {
-void func_0209d124(void *p, s32 a);
+void DateTime_SubHours(void *p, s32 a);
 }
 extern "C" {
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 }
 extern "C" {
-void func_020c010c(void *dst, void *src);
+void Weather_UpdateDaily(void *dst, void *src);
 }
 extern "C" {
-u16 func_020b9cd8(Unk_020b9fe4 *self, void *t);
+u16 Sky_CalcStarScrollY(WeatherManager *self, void *t);
 }
 extern "C" {
-u16 func_020b9d18(Unk_020b9fe4 *self, void *t);
+u16 Sky_CalcStarScrollX(WeatherManager *self, void *t);
 }
 extern "C" {
-void _ZN12Unk_020b9c9013func_020b9c90Eiti(void *a, s32 b, s32 c, s32 d);
-}
-extern "C" {
-void func_020baa10(s32 a, s32 b);
+void Sky_UpdateLighting(s32 a, s32 b);
 }
 extern "C" {
 u32 _u32_div_f(u32 a, u32 b);
 }
 extern "C" {
-void func_020e7fcc(void *st, u32 v);
+void Random_SetSeed(void *st, u32 v);
 }
 extern "C" {
-s32 func_020e7f90(void *st, s32 n);
+s32 Random_NextBelow(void *st, s32 n);
 }
 extern "C" {
-void *func_020e8594(s32 n);
+void *Mem_AllocTail(s32 n);
 }
 extern "C" {
-void func_020e759c(s32 *p, s32 a, s32 b);
+void Math_StepS32Alt(s32 *p, s32 a, s32 b);
 }
 extern "C" {
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 }
 extern "C" {
-extern Unk_020b9fe4 data_021eff48;
+extern WeatherManager gWeatherManager;
 }
 extern "C" {
-extern u32 *data_020e4ad0[];
+extern u32 *sCloudScreenFiles[];
 }
 extern "C" {
-extern u32 data_020e4d34[];
+extern u32 sCloudCharFiles[];
 }
 extern "C" {
-extern s8 data_020d13e8[];
+extern s8 sWeatherHourTable[];
+}
+namespace L_021ed2b6 { extern "C" { extern struct S { u8 p[6]; WeatherRecord v; } data_021ed2b0; } }
+extern "C" {
+extern u8 gSaveData[];
 }
 extern "C" {
-extern Unk_021ed2b0 data_021ed2b0;
+extern u8 gSaveTownId[];
 }
 extern "C" {
-extern u8 data_021d7350[];
+extern s32 sSkyOutdoors;
 }
 extern "C" {
-extern u8 data_021d7352[];
-}
-namespace L_021f14ac { extern "C" { extern struct S { u8 p[0x1564]; u16 * v[3]; } data_021eff48; } }
-#define data_021f14ac n03::L_021f14ac::data_021eff48.v
-extern "C" {
-extern s32 data_021ef670;
+extern u8 sSkyPaletteLayer[];
 }
 extern "C" {
-extern u8 data_020d0df0[];
+extern s32 sSkyPaletteSetByLevel[];
 }
-namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; s32 v; } data_021eff48; } }
-#define data_021f146c n03::L_021f146c::data_021eff48.v
 extern "C" {
-extern s32 data_020d0ea0[];
-}
-namespace L_021f148c { extern "C" { extern struct S { u8 p[0x1544]; u8 * v[1][2]; } data_021eff48; } }
-#define data_021f148c n03::L_021f148c::data_021eff48.v
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020ba8cc_State v; } data_021eff48; } }
-#define data_021f1448 n03::L_021f1448::data_021eff48.v
-extern "C" {
-extern u8 data_021ef908[];
-}
-namespace L_021f149c { extern "C" { extern struct S { u8 p[0x1554]; u32 v[2][2]; } data_021eff48; } }
-#define data_021f149c n03::L_021f149c::data_021eff48.v
-extern "C" {
-extern u32 data_020e4ca4[2][2];
+extern u32 sSkyPaletteFiles[2][2];
 }
 
-extern "C" s32 func_020ba3a0(s32 x);
-extern "C" void func_020ba518();
-extern "C" s32 func_020ba624(s32 x);
-extern "C" void func_020ba6c4(u16 *d, u16 *s1, u16 *s2, s32 t);
-extern "C" void func_020ba6f4(u16 *d, u16 *s1, u16 *s2, s32 t);
-extern "C" BOOL func_020ba800(u16 **p);
-extern "C" BOOL func_020ba834();
-extern "C" void func_020ba8cc(Unk_020ba8cc_Obj *o);
+extern "C" s32 Sky_LoadPalettes(s32 x);
+extern "C" void Sky_BlendPalettes();
+extern "C" s32 Sky_ApplyPalettes(s32 x);
+extern "C" void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t);
+extern "C" void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t);
+extern "C" BOOL Sky_AllocPaletteBufs(u16 **p);
+extern "C" BOOL Sky_LoadPaletteFiles();
+extern "C" void RainSe_FadeVolume(RainSndChannel *o);
 
-extern "C" void func_020ba8cc(Unk_020ba8cc_Obj *o) {
-    s32 a = data_021f1448.unk_28 == 3;
-    s32 b = data_021f1448.unk_28 == 4;
-    s32 on = data_021f1448.unk_34 == 1;
+extern "C" void RainSe_FadeVolume(RainSndChannel *o) {
+    s32 a = gWeatherManager.targetLevel == 3;
+    s32 b = gWeatherManager.targetLevel == 4;
+    s32 on = gWeatherManager.precipKind == 1;
     s32 v = 0;
     s32 w;
     if (on) {
@@ -7877,38 +7169,38 @@ extern "C" void func_020ba8cc(Unk_020ba8cc_Obj *o) {
     }
     w = 0xdf;
     if (on) {
-        if (v < o->unk_0c) {
+        if (v < o->volume) {
             w = 0x1eb;
         }
     } else {
         w = 0x5200;
     }
-    func_020e759c(&o->unk_0c, v, w);
+    Math_StepS32Alt(&o->volume, v, w);
 }
 
-extern "C" BOOL func_020ba834() {
+extern "C" BOOL Sky_LoadPaletteFiles() {
     s32 i, j;
     for (i = 0; i < 2; i++) {
         for (j = 0; j < 2; j++) {
-            if (data_021eff48.unk_1544[i][j] == 0) {
-                u8 **dst = &data_021f148c[i][j];
-                *dst = func_020641ec(data_020e4ca4[i][j], (void *)data_021f482c, -4, &data_021f149c[i][j]);
+            if (gWeatherManager.paletteFiles[i][j] == 0) {
+                u8 **dst = &gWeatherManager.paletteFiles[i][j];
+                *dst = File_LoadAlloc(sSkyPaletteFiles[i][j], (void *)gCurrentHeap, -4, &gWeatherManager.paletteFileSizes[i][j]);
                 if (!*dst) {
                     return FALSE;
                 }
             } else {
-                func_020641b4(data_020e4ca4[i][j], (u8 *)data_021eff48.unk_1544[i][j], data_021eff48.unk_1554[i][j]);
+                File_LoadToBuffer(sSkyPaletteFiles[i][j], gWeatherManager.paletteFiles[i][j], gWeatherManager.paletteFileSizes[i][j]);
             }
         }
     }
     return TRUE;
 }
 
-extern "C" BOOL func_020ba800(u16 **p) {
+extern "C" BOOL Sky_AllocPaletteBufs(u16 **p) {
     s32 i;
     for (i = 0; i < 3; i++) {
         if (*p == 0) {
-            *p = (u16 *)func_020e8594(32);
+            *p = (u16 *)Mem_AllocTail(32);
             if (*p == 0) {
                 return FALSE;
             }
@@ -7919,38 +7211,38 @@ extern "C" BOOL func_020ba800(u16 **p) {
 }
 
 }
-void Unk_020b9fe4::func_020ba794() {
+void WeatherManager::rollRainSlant() {
     using namespace n03;
-    Unk_020ba1dc_Time t;
+    ClockDateTimeWords t;
     u32 st;
     u16 buf[8];
     u32 seed;
-    t.unk_00 = 0;
-    t.unk_04 = 0;
-    func_02063968(data_021d7352, buf);
-    func_0209d498(&t);
-    seed = ((u8 *)&t)[3] | ((((u8 *)&t)[4] << 5) | ((buf[0] << 16) | ((((u8 *)&t)[5] & 0x1f) << 9)));
-    func_020e7fcc(&st, 1);
-    func_020e7fcc(&st, seed);
-    unk_1538 = func_020e7f90(&st, 0x2aaa) - 0x1555;
+    t.words[0] = 0;
+    t.words[1] = 0;
+    TownId_CopyTo(gSaveTownId, buf);
+    Clock_GetDateTime(&t);
+    seed = t.dt.day | ((t.dt.month << 5) | ((buf[0] << 16) | ((t.dt.year & 0x1f) << 9)));
+    Random_SetSeed(&st, 1);
+    Random_SetSeed(&st, seed);
+    rainSlant = Random_NextBelow(&st, 0x2aaa) - 0x1555;
 }
 namespace n03 {
 
-extern "C" void func_020ba6f4(u16 *d, u16 *s1, u16 *s2, s32 t) {
-    Unk_020ba6f4_Color *dc = (Unk_020ba6f4_Color *)d;
-    Unk_020ba6f4_Color *c1 = (Unk_020ba6f4_Color *)s1;
-    Unk_020ba6f4_Color *c2 = (Unk_020ba6f4_Color *)s2;
+extern "C" void Color_Lerp(u16 *d, u16 *s1, u16 *s2, s32 t) {
+    Rgb555 *dc = (Rgb555 *)d;
+    Rgb555 *c1 = (Rgb555 *)s1;
+    Rgb555 *c2 = (Rgb555 *)s2;
     s32 inv = 0x1000 - t;
     dc->r = (c1->r * inv + c2->r * t) >> 12;
     dc->g = (c1->g * inv + c2->g * t) >> 12;
     dc->b = (c1->b * inv + c2->b * t) >> 12;
-    dc->a = 0;
+    dc->x = 0;
 }
 
-extern "C" void func_020ba6c4(u16 *d, u16 *s1, u16 *s2, s32 t) {
+extern "C" void Color_Lerp6(u16 *d, u16 *s1, u16 *s2, s32 t) {
     s32 i;
     for (i = 0; i < 6; i++) {
-        func_020ba6f4(d, s1, s2, t);
+        Color_Lerp(d, s1, s2, t);
         d++;
         s1++;
         s2++;
@@ -7958,137 +7250,137 @@ extern "C" void func_020ba6c4(u16 *d, u16 *s1, u16 *s2, s32 t) {
 }
 
 }
-void Unk_020b9fe4::func_020ba670(s32 *a, s32 *b) {
+void WeatherManager::getSkyBlend(s32 *a, s32 *b) {
     using namespace n03;
-    Unk_020ba518_Time t;
-    func_0209cf18(&t);
-    *a = (u32)(t.unk_00 * 0x44445) >> 12;
-    if (unk_1528 != unk_1524) {
-        *b = _s32_div_f(unk_120c << 12, 32);
+    MinuteHour t;
+    Clock_GetMinuteHour(&t);
+    *a = (u32)(t.minute * 0x44445) >> 12;
+    if (targetLevel != level) {
+        *b = _s32_div_f(transitionProgress << 12, 32);
     } else {
         *b = 0;
     }
 }
 namespace n03 {
 
-extern "C" s32 func_020ba624(s32 x) {
-    u16 **pal = data_021f14ac;
+extern "C" s32 Sky_ApplyPalettes(s32 x) {
+    u16 **pal = gWeatherManager.palettes;
     s32 r;
-    func_020ba518();
-    if (data_021f1448.unk_28 != data_021f1448.unk_24) {
-        r = func_02002580((u8 *)pal[2], data_020d0df0[x], 1, 1, 1);
+    Sky_BlendPalettes();
+    if (gWeatherManager.targetLevel != gWeatherManager.level) {
+        r = Gfx2d_LoadPaletteRange((u8 *)pal[2], sSkyPaletteLayer[x], 1, 1, 1);
     } else {
-        r = func_02002580((u8 *)pal[0], data_020d0df0[x], 1, 1, 1);
+        r = Gfx2d_LoadPaletteRange((u8 *)pal[0], sSkyPaletteLayer[x], 1, 1, 1);
     }
     return r;
 }
 
-extern "C" void func_020ba518() {
-    u16 **pal = data_021f14ac;
-    Unk_020ba518_Time t;
+extern "C" void Sky_BlendPalettes() {
+    u16 **pal = gWeatherManager.palettes;
+    MinuteHour t;
     s32 a = 0;
     s32 b = 0;
     s32 h, pm;
     s32 h2, pm2;
-    data_021eff48.func_020ba670(&a, &b);
-    func_0209cf18(&t);
-    h = t.unk_01;
-    if ((s32)t.unk_01 < 12) {
+    gWeatherManager.getSkyBlend(&a, &b);
+    Clock_GetMinuteHour(&t);
+    h = t.hour;
+    if ((s32)t.hour < 12) {
         pm = 0;
     } else {
         h -= 12;
         pm = 1;
     }
-    h2 = (u32)(t.unk_01 + 1) % 24;
+    h2 = (u32)(t.hour + 1) % 24;
     if (h2 < 12) {
         pm2 = 0;
     } else {
         h2 -= 12;
         pm2 = 1;
     }
-    Unk_020ba518_E set = (Unk_020ba518_E)data_020d0ea0[data_021f146c];
-    u16 *s1 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm])[h * 16];
-    u16 *s2 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm2])[h2 * 16];
-    func_020ba6c4(pal[0], s1, s2, a);
-    if (data_021f1448.unk_28 != data_021f146c) {
-        set = (Unk_020ba518_E)data_020d0ea0[data_021f1448.unk_28];
-        s1 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm])[h * 16];
-        s2 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm2])[h2 * 16];
-        func_020ba6c4(pal[1], s1, s2, a);
-        func_020ba6c4(pal[2], pal[0], pal[1], b);
-        _ZN12Unk_020b9c9013func_020b9c90Eiti(data_021ef908, 0, pal[2][4], 0);
-        _ZN12Unk_020b9c9013func_020b9c90Eiti(data_021ef908, 1, pal[2][5], 0xc0);
+    Unk_020ba518_E set = (Unk_020ba518_E)sSkyPaletteSetByLevel[gWeatherManager.level];
+    u16 *s1 = &((u16 *)((u8 **)((s32)gWeatherManager.paletteFiles + set * 8))[pm])[h * 16];
+    u16 *s2 = &((u16 *)((u8 **)((s32)gWeatherManager.paletteFiles + set * 8))[pm2])[h2 * 16];
+    Color_Lerp6(pal[0], s1, s2, a);
+    if (gWeatherManager.targetLevel != gWeatherManager.level) {
+        set = (Unk_020ba518_E)sSkyPaletteSetByLevel[gWeatherManager.targetLevel];
+        s1 = &((u16 *)((u8 **)((s32)gWeatherManager.paletteFiles + set * 8))[pm])[h * 16];
+        s2 = &((u16 *)((u8 **)((s32)gWeatherManager.paletteFiles + set * 8))[pm2])[h2 * 16];
+        Color_Lerp6(pal[1], s1, s2, a);
+        Color_Lerp6(pal[2], pal[0], pal[1], b);
+        n00::sSkyGradient.setKey(0, pal[2][4], 0);
+        n00::sSkyGradient.setKey(1, pal[2][5], 0xc0);
     } else {
-        _ZN12Unk_020b9c9013func_020b9c90Eiti(data_021ef908, 0, pal[0][4], 0);
-        _ZN12Unk_020b9c9013func_020b9c90Eiti(data_021ef908, 1, pal[0][5], 0xc0);
+        n00::sSkyGradient.setKey(0, pal[0][4], 0);
+        n00::sSkyGradient.setKey(1, pal[0][5], 0xc0);
     }
-    func_020baa10(a, b);
+    Sky_UpdateLighting(a, b);
 }
 
 }
-Unk_020b9fe4::Unk_020b9fe4() {
+WeatherManager::WeatherManager() {
     using namespace n03;
-    unk_0000 = 0;
-    unk_1520 = 0;
-    unk_157c = 0;
-    unk_1584 = 0;
-    unk_158c = 0;
-    unk_1578 = -1;
-    unk_1514 = 0;
-    unk_1518 = 0;
-    unk_151c = 0;
-    unk_1564 = 0;
-    unk_1568 = 0;
-    unk_156c = 0;
-    unk_1534 = 0;
-    func_020ba794();
+    engine = 0;
+    transitionBusy = 0;
+    curCloudScreen = 0;
+    cloudScreen = 0;
+    transitionStep = 0;
+    streamBlock = -1;
+    screenOffsetY[0] = 0;
+    screenOffsetY[1] = 0;
+    bufferIndex = 0;
+    palettes[0] = 0;
+    palettes[1] = 0;
+    palettes[2] = 0;
+    precipKind = 0;
+    rollRainSlant();
 }
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba49c() {
+void WeatherManager::func_020ba49c() {
     using namespace n03;
 }
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba3e4() {
+void WeatherManager::init() {
     using namespace n03;
-    Unk_020ba1dc_Time t;
-    s32 r = func_020ba1b4(0);
+    ClockDateTimeWords t;
+    s32 r = getWeatherAtOffset(0);
     switch (r) {
     case 3:
     case 4:
-        data_021ed2b0.unk_0d = 1;
+        L_021ed2b6::data_021ed2b0.v.rained = 1;
         break;
     }
-    func_020ba2e4(r, r);
-    unk_0000 = 1;
-    unk_158c = 0;
-    unk_152c = -1;
-    unk_1530 = 2;
-    unk_1574 = func_02063b8c(2);
-    unk_1570 = unk_1574;
-    unk_1520 = 0;
-    unk_1578 = 0;
-    unk_120c = 0;
-    t.unk_00 = 0;
-    t.unk_04 = 0;
-    func_0209d498(&t);
-    unk_153e = func_020b9cd8(this, &t);
-    func_0209d124(&t, 6);
-    unk_153c = func_020b9d18(this, &t);
+    setLevels(r, r);
+    engine = 1;
+    transitionStep = 0;
+    requestedLevel = -1;
+    direction = 2;
+    nextCloudVariant = Random_GlobalBelow(2);
+    cloudVariant = nextCloudVariant;
+    transitionBusy = 0;
+    streamBlock = 0;
+    transitionProgress = 0;
+    t.words[0] = 0;
+    t.words[1] = 0;
+    Clock_GetDateTime(&t);
+    starScrollY = Sky_CalcStarScrollY(this, &t);
+    DateTime_SubHours(&t, 6);
+    starScrollX = Sky_CalcStarScrollX(this, &t);
 }
 namespace n03 {
 
-extern "C" s32 func_020ba3a0(s32 x) {
+extern "C" s32 Sky_LoadPalettes(s32 x) {
     s32 r = 0;
-    if (func_020ba834()) {
-        if (func_020ba800(data_021f14ac)) {
-            if (data_021ef670 != 0) {
-                r = func_020ba624(x);
+    if (Sky_LoadPaletteFiles()) {
+        if (Sky_AllocPaletteBufs(gWeatherManager.palettes)) {
+            if (sSkyOutdoors != 0) {
+                r = Sky_ApplyPalettes(x);
             } else {
-                func_020ba518();
+                Sky_BlendPalettes();
                 r = TRUE;
             }
         }
@@ -8097,17 +7389,17 @@ extern "C" s32 func_020ba3a0(s32 x) {
 }
 
 }
-s32 Unk_020b9fe4::func_020ba334(s32 v) {
+s32 WeatherManager::getPrecipKind(s32 v) {
     using namespace n03;
     s32 r = 0;
-    Unk_020ba1dc_Time t;
-    t.unk_00 = 0;
-    t.unk_04 = 0;
-    func_0209d498(&t);
+    ClockDateTimeWords t;
+    t.words[0] = 0;
+    t.words[1] = 0;
+    Clock_GetDateTime(&t);
     switch (v) {
     case 3:
     case 4:
-        switch (func_0209cc08(&t)) {
+        switch (DateTime_GetWeatherPeriod(&t)) {
         case 0:
         case 1:
         case 2:
@@ -8129,72 +7421,72 @@ s32 Unk_020b9fe4::func_020ba334(s32 v) {
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba2e4(s32 a, s32 b) {
+void WeatherManager::setLevels(s32 a, s32 b) {
     using namespace n03;
-    s32 x = func_020ba334(a);
-    s32 y = func_020ba334(b);
+    s32 x = getPrecipKind(a);
+    s32 y = getPrecipKind(b);
     if (x != 0) {
-        unk_1534 = x;
+        precipKind = x;
     } else if (y != 0) {
-        unk_1534 = y;
+        precipKind = y;
     } else {
-        unk_1534 = 0;
+        precipKind = 0;
     }
-    unk_1524 = a;
-    unk_1528 = b;
+    level = a;
+    targetLevel = b;
 }
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba2a4(s32 v) {
+void WeatherManager::startTransition(s32 v) {
     using namespace n03;
-    unk_152c = v;
-    if (v > unk_1524) {
-        unk_1530 = 0;
+    requestedLevel = v;
+    if (v > level) {
+        direction = 0;
     } else {
-        unk_1530 = 1;
+        direction = 1;
     }
-    unk_1574 = func_02063b8c(2);
+    nextCloudVariant = Random_GlobalBelow(2);
 }
 namespace n03 {
 
 }
-BOOL Unk_020b9fe4::func_020ba260(s32 v) {
+BOOL WeatherManager::requestLevel(s32 v) {
     using namespace n03;
     BOOL r = FALSE;
     if (v == -1) {
-    } else if (v == unk_1524) {
+    } else if (v == level) {
         r = TRUE;
-    } else if (unk_1520 == 0) {
-        func_020ba2a4(v);
+    } else if (transitionBusy == 0) {
+        startTransition(v);
         r = TRUE;
-        unk_158c = r;
-        unk_1520 = r;
+        transitionStep = r;
+        transitionBusy = r;
     }
     return r;
 }
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba1dc() {
+void WeatherManager::updateHourly() {
     using namespace n03;
-    Unk_020ba1dc_Time t;
-    u8 *base = data_021d7350;
-    t.unk_00 = 0;
-    t.unk_04 = 0;
-    func_0209d498(&t);
-    if ((data_021ed2b0.unk_0c + 6) % 24 != ((u8 *)&t)[2]) {
+    ClockDateTimeWords t;
+    u8 *base = gSaveData;
+    t.words[0] = 0;
+    t.words[1] = 0;
+    Clock_GetDateTime(&t);
+    if ((L_021ed2b6::data_021ed2b0.v.hourBase + 6) % 24 != t.dt.hour) {
         s32 r;
-        func_020c010c(base + 0x15f66, &t);
-        r = func_020ba1b4(1);
+        Weather_UpdateDaily(base + 0x15f66, &t);
+        r = getWeatherAtOffset(1);
         switch (r) {
         case 3:
         case 4:
             base[0x15f6d] = 1;
             break;
         }
-        if (func_020ba260(r)) {
-            s32 h = ((u8 *)&t)[2] - 6;
+        if (requestLevel(r)) {
+            s32 h = t.dt.hour - 6;
             if (h < 0) {
                 h += 24;
             }
@@ -8205,26 +7497,26 @@ void Unk_020b9fe4::func_020ba1dc() {
 namespace n03 {
 
 }
-s32 Unk_020b9fe4::func_020ba1b4(s32 v) {
+s32 WeatherManager::getWeatherAtOffset(s32 v) {
     using namespace n03;
-    s32 t = v + data_021ed2b0.unk_0c;
-    return func_020ba1a4(data_021ed2b0.unk_0a, t % 24);
+    s32 t = v + L_021ed2b6::data_021ed2b0.v.hourBase;
+    return getPatternWeather(L_021ed2b6::data_021ed2b0.v.todayPattern, t % 24);
 }
 namespace n03 {
 
 }
-s32 Unk_020b9fe4::func_020ba1a4(s32 a, s32 b) {
+s32 WeatherManager::getPatternWeather(s32 a, s32 b) {
     using namespace n03;
-    s8 *p = data_020d13e8 + a * 24;
+    s8 *p = sWeatherHourTable + a * 24;
     return p[b];
 }
 namespace n03 {
 
 }
-BOOL Unk_020b9fe4::func_020ba170(s32 idx, s32 unused) {
+BOOL WeatherManager::loadCloudChars(s32 idx, s32 unused) {
     using namespace n03;
     BOOL ok = FALSE;
-    if (func_020025fc(data_020e4d34[idx], (void *)data_021f482c, unused, 16, 16, 47)) {
+    if (Gfx2d_LoadCharFile8bpp(sCloudCharFiles[idx], (void *)gCurrentHeap, unused, 16, 16, 47)) {
         ok = TRUE;
     }
     return ok;
@@ -8232,24 +7524,24 @@ BOOL Unk_020b9fe4::func_020ba170(s32 idx, s32 unused) {
 namespace n03 {
 
 }
-BOOL Unk_020b9fe4::func_020ba10c(u8 **p1, u32 *p2, s32 mode, s32 idx) {
+BOOL WeatherManager::loadCloudScreen(u8 **p1, u32 *p2, s32 mode, s32 idx) {
     using namespace n03;
     BOOL ok = FALSE;
     s32 i;
     u32 res;
     if (mode == 0) {
         s32 t = idx * 2;
-        i = t + unk_1570;
+        i = t + cloudVariant;
     } else {
         i = idx;
     }
-    res = data_020e4ad0[mode][i];
+    res = sCloudScreenFiles[mode][i];
     if (*p1 == NULL) {
-        *p1 = func_020641ec(res, (void *)data_021f482c, -4, p2);
+        *p1 = File_LoadAlloc(res, (void *)gCurrentHeap, -4, p2);
         if (*p1 != NULL) {
             ok = TRUE;
         }
-    } else if (func_020641b4(res, *p1, *p2)) {
+    } else if (File_LoadToBuffer(res, *p1, *p2)) {
         ok = TRUE;
     }
     return ok;
@@ -8257,214 +7549,185 @@ BOOL Unk_020b9fe4::func_020ba10c(u8 **p1, u32 *p2, s32 mode, s32 idx) {
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020ba06c() {
+void WeatherManager::loadNextCloudGraphics() {
     using namespace n03;
     s32 mode, next;
-    if (unk_1530 == 0) {
+    if (direction == 0) {
         mode = 1;
-        next = unk_1524 + 1;
+        next = level + 1;
     } else {
         mode = 2;
-        next = unk_1524 - 1;
+        next = level - 1;
     }
-    if (func_020ba170(next, 6)) {
-        if (func_020ba10c(&unk_1584, &unk_1588, mode, next)) {
-            func_020ba2e4(unk_1524, next);
-            if (unk_1524 < 3 && unk_1528 >= 3) {
-                func_020ba794();
+    if (loadCloudChars(next, 6)) {
+        if (loadCloudScreen(&cloudScreen, &cloudScreenSize, mode, next)) {
+            setLevels(level, next);
+            if (level < 3 && targetLevel >= 3) {
+                rollRainSlant();
             }
-            unk_1578 = 0;
-            unk_120c = 0;
-            unk_158c = 2;
+            streamBlock = 0;
+            transitionProgress = 0;
+            transitionStep = 2;
         }
     }
 }
 namespace n03 {
 
 }
-void Unk_020b9fe4::func_020b9fe4() {
+void WeatherManager::streamCloudScreen() {
     using namespace n03;
-    s32 idx = unk_1578;
-    s32 blk = (((unk_1208 >> 8) - 8) & 0xff) >> 3;
+    s32 idx = streamBlock;
+    s32 blk = (((cloudScroll >> 8) - 8) & 0xff) >> 3;
     if (blk == idx) {
-        if (func_020024f0(unk_1584 + (blk << 5), 6, 32, blk << 5)) {
-            s32 cnt = unk_120c;
+        if (Gfx2d_LoadScreen(cloudScreen + (blk << 5), 6, 32, blk << 5)) {
+            s32 cnt = transitionProgress;
             idx = idx + 1;
             cnt = cnt + 1;
             if (idx >= 32) {
                 idx = -1;
                 cnt = 32;
-                func_020ba2e4(unk_1528, unk_1528);
-                unk_1570 = unk_1574;
-                unk_158c = 3;
+                setLevels(targetLevel, targetLevel);
+                cloudVariant = nextCloudVariant;
+                transitionStep = 3;
             }
-            unk_1578 = idx;
-            unk_120c = cnt;
+            streamBlock = idx;
+            transitionProgress = cnt;
         }
     }
 }
 namespace n03 {
 
-#undef data_021f14ac
-#undef data_021f146c
-#undef data_021f148c
-#undef data_021f1448
-#undef data_021f149c
 }
 
 // ======== unk_020b96b8.cpp ========
 namespace n02 {
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_020b96b8_Cfg v; } data_021eff48; } }
-#define data_021f1448 n02::L_021f1448::data_021eff48.v
-namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; s32 v[1]; } data_021eff48; } }
-#define data_021f145c n02::L_021f145c::data_021eff48.v
-namespace L_021efc08 { extern "C" { extern struct S { u8 p[0x300]; volatile u16 v[1]; } data_021ef908; } }
-#define data_021efc08 n02::L_021efc08::data_021ef908.v
-namespace L_021eff50 { extern "C" { extern struct S { u8 p[0x8]; Unk_020b96b8_Ent v[1]; } data_021eff48; } }
-#define data_021eff50 n02::L_021eff50::data_021eff48.v
 extern "C" {
-extern s32 data_021eff48[];
-}
-namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4420 n02::L_021f4420::data_021f14e0.v
-extern "C" {
-void func_0209cf18(u8 *out);
+void Clock_GetMinuteHour(u8 *out);
 }
 extern "C" {
-Unk_020b9964_Obj *func_02095204(u32 x);
+Actor *PlayerActor_GetActor(u32 x);
 }
 extern "C" {
-s32 func_02064c84(u32 x);
-}
-namespace L_021f1158 { extern "C" { extern struct S { u8 p[0x1210]; u16 v[1]; } data_021eff48; } }
-#define data_021f1158 n02::L_021f1158::data_021eff48.v
-namespace L_021f14dc { extern "C" { extern struct S { u8 p[0x1594]; s32 v; } data_021eff48; } }
-#define data_021f14dc n02::L_021f14dc::data_021eff48.v
-namespace L_021f1150 { extern "C" { extern struct S { u8 p[0x1208]; s32 v; } data_021eff48; } }
-#define data_021f1150 n02::L_021f1150::data_021eff48.v
-extern "C" {
-extern u8 data_021ef654;
+s32 SceneLights_GetLightParam(u32 x);
 }
 extern "C" {
-extern s32 data_021ef680[];
+extern u8 sSkyLineTablesReady;
 }
 extern "C" {
-extern s32 data_021ef678[];
+extern s32 sSkyLineScrollX[];
 }
 extern "C" {
-extern u16 data_020e4640[];
+extern s32 sSkyLineScrollY[];
 }
 extern "C" {
-extern s32 data_021ef908;
-}
-namespace L_021ef90c { extern "C" { extern struct S { u8 p[0x4]; u16 v[1]; } data_021ef908; } }
-#define data_021ef90c n02::L_021ef90c::data_021ef908.v
-extern "C" {
-void func_020014e4(u32 x);
+extern u16 sSkyBlendLineCache[];
 }
 extern "C" {
-void func_020014ac(u32 x);
+void Gfx2d_HideMainPlanes(u32 x);
 }
 extern "C" {
-void func_020014bc(u32 x);
+void Gfx2d_HideSubPlanes(u32 x);
 }
 extern "C" {
-s32 func_0206ef50();
+void Gfx2d_ShowSubPlanes(u32 x);
 }
 extern "C" {
-void func_020014f4(u32 x);
+s32 MenuCtrl_IsMenuOnTop();
 }
 extern "C" {
-void func_02001564(u32 x);
+void Gfx2d_ShowMainPlanes(u32 x);
 }
 extern "C" {
-void func_02001750(u32 x);
+void Gfx2d_EnableMainWindows(u32 x);
 }
 extern "C" {
-void func_020016cc(u32 x);
+void Gfx2d_SetMainWin0Planes(u32 x);
 }
 extern "C" {
-void func_02001674(u32 a, u32 b, u32 c, u32 d);
+void Gfx2d_SetMainWinOutPlanes(u32 x);
+}
+extern "C" {
+void Gfx2d_SetMainWin0Rect(u32 a, u32 b, u32 c, u32 d);
 }
 #define REG16(a) (*(volatile u16 *)(a))
 #define REG32(a) (*(volatile u32 *)(a))
-extern "C" s32 func_020024f0(void *p, u32 a, u32 b, u32 off);
+extern "C" s32 Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 off);
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-s32 func_0209d3a4(void *a, void *b);
+s32 DateTime_DiffDays(void *a, void *b);
 }
 extern "C" {
-u32 func_020b9cd8(u32 unused, u8 *d);
+u32 Sky_CalcStarScrollY(u32 unused, u8 *d);
 }
 
-extern "C" void func_020b96b8();
-extern "C" void func_020b9848();
-extern "C" void func_020b9964();
-extern "C" void func_020b9b94();
-extern "C" u32 func_020b9cb4(u32 x);
-extern "C" u32 func_020b9cd8(u32 unused, u8 *d);
-extern "C" u16 func_020b9d18(u32 unused, void *unused2);
+extern "C" void Sky_VBlankMain();
+extern "C" void Sky_VBlankSub();
+extern "C" void Sky_UpdateLineTables();
+extern "C" void SkyGradient_Build();
+extern "C" u32 Sky_GetStarScrollYNow(u32 x);
+extern "C" u32 Sky_CalcStarScrollY(u32 unused, u8 *d);
+extern "C" u16 Sky_CalcStarScrollX(u32 unused, void *unused2);
 
 }
-void Unk_020b9c90::func_020b9f84()
+void WeatherManager::reloadCurrentCloudGraphics()
 {
     using namespace n02;
-    s32 cur = unk_1524;
-    if (func_020ba170(cur, 6) != 0) {
-        if (func_020ba10c((s32 *)&unk_157c, &unk_1580, 0, cur) != 0) {
-            unk_1578 = 0;
-            unk_120c = 0x20;
-            unk_158c = 4;
+    s32 cur = level;
+    if (loadCloudChars(cur, 6) != 0) {
+        if (loadCloudScreen(&curCloudScreen, &curCloudScreenSize, 0, cur) != 0) {
+            streamBlock = 0;
+            transitionProgress = 0x20;
+            transitionStep = 4;
         }
     }
 }
 namespace n02 {
 
 }
-void Unk_020b9c90::func_020b9ef8()
+void WeatherManager::streamCurrentCloudScreen()
 {
     using namespace n02;
-    s32 cur = unk_1578;
-    s32 k = (((unk_1208 >> 8) - 8) & 0xff) >> 3;
+    s32 cur = streamBlock;
+    s32 k = (((cloudScroll >> 8) - 8) & 0xff) >> 3;
     if (k == cur) {
-        if (func_020024f0((u8 *)unk_157c + (k << 5), 6, 0x20, k << 5) != 0) {
+        if (Gfx2d_LoadScreen(curCloudScreen + (k << 5), 6, 0x20, k << 5) != 0) {
             cur++;
             if (cur >= 0x20) {
                 cur = -1;
-                if (unk_152c == unk_1524) {
-                    unk_158c = 0;
-                    unk_152c = cur;
-                    unk_1530 = 2;
-                    unk_1520 = 0;
+                if (requestedLevel == level) {
+                    transitionStep = 0;
+                    requestedLevel = cur;
+                    direction = 2;
+                    transitionBusy = 0;
                 } else {
-                    unk_158c = 1;
+                    transitionStep = 1;
                 }
             }
-            unk_1578 = cur;
+            streamBlock = cur;
         }
     }
 }
 namespace n02 {
 
 }
-void Unk_020b9c90::func_020b9ea8()
+void WeatherManager::updateTransitionStreamed()
 {
     using namespace n02;
-    if (unk_1520 != 0) {
-        switch (unk_158c) {
+    if (transitionBusy != 0) {
+        switch (transitionStep) {
         case 1:
-            func_020ba06c();
+            loadNextCloudGraphics();
             break;
         case 2:
-            func_020b9fe4();
+            streamCloudScreen();
             break;
         case 3:
-            func_020b9f84();
+            reloadCurrentCloudGraphics();
             break;
         case 4:
-            func_020b9ef8();
+            streamCurrentCloudScreen();
             break;
         }
     }
@@ -8472,96 +7735,96 @@ void Unk_020b9c90::func_020b9ea8()
 namespace n02 {
 
 }
-void Unk_020b9c90::func_020b9e60()
+void WeatherManager::transitionTimedBegin()
 {
     using namespace n02;
-    s32 cur = unk_1524;
+    s32 cur = level;
     s32 next;
-    if (unk_152c > cur) {
+    if (requestedLevel > cur) {
         next = cur + 1;
     } else {
         next = cur - 1;
     }
-    func_020ba2e4(cur, next);
-    unk_120c = 0;
-    unk_158c = 2;
-    unk_1590 = 0;
+    setLevels(cur, next);
+    transitionProgress = 0;
+    transitionStep = 2;
+    transitionTimer = 0;
 }
 namespace n02 {
 
 }
-void Unk_020b9c90::func_020b9e10()
+void WeatherManager::transitionTimedBlend()
 {
     using namespace n02;
-    unk_1590++;
-    if (unk_1590 >= 0x2a8) {
-        func_020ba2e4(unk_1528, unk_1528);
-        unk_158c = 3;
+    transitionTimer++;
+    if (transitionTimer >= 0x2a8) {
+        setLevels(targetLevel, targetLevel);
+        transitionStep = 3;
     }
-    unk_120c = (unk_1590 << 5) / 0x2a8;
+    transitionProgress = (transitionTimer << 5) / 0x2a8;
 }
 namespace n02 {
 
 }
-void Unk_020b9c90::func_020b9df0()
+void WeatherManager::transitionTimedFinish()
 {
     using namespace n02;
-    unk_120c = 0x20;
-    unk_158c = 4;
-    unk_1590 = 0;
+    transitionProgress = 0x20;
+    transitionStep = 4;
+    transitionTimer = 0;
 }
 namespace n02 {
 
 }
-void Unk_020b9c90::func_020b9d94()
+void WeatherManager::transitionTimedWait()
 {
     using namespace n02;
-    unk_1590++;
-    if (unk_1590 >= 0x2a8) {
-        if (unk_152c == unk_1524) {
-            unk_158c = 0;
-            unk_152c = -1;
-            unk_1530 = 2;
-            unk_1520 = 0;
+    transitionTimer++;
+    if (transitionTimer >= 0x2a8) {
+        if (requestedLevel == level) {
+            transitionStep = 0;
+            requestedLevel = -1;
+            direction = 2;
+            transitionBusy = 0;
         } else {
-            unk_158c = 1;
+            transitionStep = 1;
         }
     }
 }
 namespace n02 {
 
 }
-void Unk_020b9c90::func_020b9d44()
+void WeatherManager::updateTransitionTimed()
 {
     using namespace n02;
-    if (unk_1520 != 0) {
-        switch (unk_158c) {
+    if (transitionBusy != 0) {
+        switch (transitionStep) {
         case 1:
-            func_020b9e60();
+            transitionTimedBegin();
             break;
         case 2:
-            func_020b9e10();
+            transitionTimedBlend();
             break;
         case 3:
-            func_020b9df0();
+            transitionTimedFinish();
             break;
         case 4:
-            func_020b9d94();
+            transitionTimedWait();
             break;
         }
     }
 }
 namespace n02 {
 
-extern "C" u16 func_020b9d18(u32 unused, void *unused2)
+extern "C" u16 Sky_CalcStarScrollX(u32 unused, void *unused2)
 {
     u64 d = 0;
     u64 t = 0x100000000ULL | 0x1000000;
     d = t;
-    return (u16)((func_0209d3a4(&d, unused2) % 0x40) << 3);
+    return (u16)((DateTime_DiffDays(&d, unused2) % 0x40) << 3);
 }
 
-extern "C" u32 func_020b9cd8(u32 unused, u8 *d)
+extern "C" u32 Sky_CalcStarScrollY(u32 unused, u8 *d)
 {
     s32 m = (d[2] + 6) % 0x18;
     if (m >= 0xc) return 0x100;
@@ -8570,37 +7833,37 @@ extern "C" u32 func_020b9cd8(u32 unused, u8 *d)
     return (u32)((t * 0x68000) / 0x2d0 << 4) >> 16;
 }
 
-extern "C" u32 func_020b9cb4(u32 x)
+extern "C" u32 Sky_GetStarScrollYNow(u32 x)
 {
     u8 d[8];
     ((u32 *)d)[0] = 0;
     ((u32 *)d)[1] = 0;
-    func_0209d498(d);
-    return func_020b9cd8(x, d);
+    Clock_GetDateTime(d);
+    return Sky_CalcStarScrollY(x, d);
 }
 
 }
-void Unk_020b9c90::func_020b9c90(s32 idx, u16 a, s32 b)
+void SkyGradient::setKey(s32 idx, u16 color, s32 line)
 {
     using namespace n02;
-    *(u16 *)((u8 *)this + idx * 2 + 0x304) = a;
-    *(s32 *)((u8 *)this + idx * 4 + 0x308) = b;
+    keyColors[idx] = color;
+    keyLines[idx] = line;
 }
 namespace n02 {
 
-extern "C" void func_020b9b94()
+extern "C" void SkyGradient_Build()
 {
-    s32 idx = (data_021ef908 + 1) % 2;
+    s32 idx = (n00::sSkyGradient.bufferIndex + 1) % 2;
     volatile u16 out;
-    Unk_020b9b94_Col c1, c2;
+    Rgb555 c1, c2;
     volatile u16 in1, in2;
-    in1 = data_021efc08[2];
-    c1 = *(Unk_020b9b94_Col *)&in1;
-    in2 = data_021efc08[3];
-    c2 = *(Unk_020b9b94_Col *)&in2;
-    u16 *dst = (u16 *)((u8 *)data_021ef90c + idx * 0x180);
-    s32 s0 = ((volatile s32 *)data_021efc08)[2];
-    s32 s1 = ((volatile s32 *)data_021efc08)[3];
+    in1 = n00::sSkyGradient.keyColors[0];
+    c1 = *(Rgb555 *)&in1;
+    in2 = n00::sSkyGradient.keyColors[1];
+    c2 = *(Rgb555 *)&in2;
+    u16 *dst = (u16 *)((u8 *)n00::sSkyGradient.lineColors + idx * 0x180);
+    s32 s0 = n00::sSkyGradient.keyLines[0];
+    s32 s1 = n00::sSkyGradient.keyLines[1];
     s32 i = 0;
     s32 span = s1 - s0;
     s32 c2g = c2.g;
@@ -8624,23 +7887,23 @@ extern "C" void func_020b9b94()
         *dst++ = out;
         i++;
     } while (i < 0xc0);
-    data_021ef908 = idx;
+    n00::sSkyGradient.bufferIndex = idx;
 }
 
-extern "C" void func_020b9964()
+extern "C" void Sky_UpdateLineTables()
 {
     u16 *pal;
     s32 a = 0, b = 0;
-    s32 idx = (data_021eff48[1] + 1) % 2;
+    s32 idx = (n00::gWeatherManager.lineBufferIndex + 1) % 2;
     s32 j, i;
-    pal = (u16 *)((u8 *)data_021f1158 + idx * 0x180);
-    Unk_020b9964_Obj *o = func_02095204(4);
+    pal = (u16 *)((u8 *)n00::gWeatherManager.lineBlend + idx * 0x180);
+    Actor *o = PlayerActor_GetActor(4);
     if (o) {
-        Unk_020b9964_Src *p = &o->src;
+        VecFx32 *p = &o->position;
         if (p) {
-            a = (s32)p->w0 >> 3;
-            s32 *g = &data_021f14dc;
-            s32 pos = p->pos;
+            a = p->x >> 3;
+            s32 *g = &n00::gWeatherManager.prevPlayerZ;
+            s32 pos = p->z;
             s32 d = (pos - *g) >> 4;
             if (d < 0) {
                 b = (d * -176) >> 8;
@@ -8650,35 +7913,35 @@ extern "C" void func_020b9964()
             *g = pos;
         }
     }
-    s32 *gp = &data_021f1150;
+    s32 *gp = &n00::gWeatherManager.cloudScroll;
     s32 c = b; b = *gp; b += 0x60; b += c;
     if (b >= 0x10000) b -= 0x10000;
     *gp = b;
-    if (data_021ef654 == 0) {
-        data_021ef654 = 1;
+    if (sSkyLineTablesReady == 0) {
+        sSkyLineTablesReady = 1;
         for (i = 0; i < 2; i++) {
-            data_021ef680[i] = a;
-            data_021ef678[i] = b;
-            Unk_020b96b8_Ent *q = (Unk_020b96b8_Ent *)((u8 *)data_021eff50 + i * 0x900);
+            sSkyLineScrollX[i] = a;
+            sSkyLineScrollY[i] = b;
+            SkyLineAffine *q = (SkyLineAffine *)((u8 *)n00::gWeatherManager.lineAffine + i * 0x900);
             for (j = 0; j < 0xc0; j++) {
                 s32 t = -(j << 8) / 0xc0;
-                q->c = 0x10000 / (t + 0x200);
-                s32 n = (q->c - 0x100) << 7;
+                q->pa = 0x10000 / (t + 0x200);
+                s32 n = (q->pa - 0x100) << 7;
                 n = -n;
-                q->a = a + n;
+                q->x = a + n;
                 s32 u = (j * 0xc000 / 0xc0 + 0x3000) / 0xc0;
-                q->b = b + (u * u >> 8) * 0xc0;
-                q = (Unk_020b96b8_Ent *)((u8 *)q + 0xc);
+                q->y = b + (u * u >> 8) * 0xc0;
+                q = (SkyLineAffine *)((u8 *)q + 0xc);
             }
         }
     }
-    s32 da = a - data_021ef680[idx];
-    s32 db = b - data_021ef678[idx];
+    s32 da = a - sSkyLineScrollX[idx];
+    s32 db = b - sSkyLineScrollY[idx];
     if (da != 0 || db != 0) {
-        data_021ef680[idx] = a;
-        data_021ef678[idx] = b;
+        sSkyLineScrollX[idx] = a;
+        sSkyLineScrollY[idx] = b;
         s32 *end, *q;
-        q = (s32 *)((u8 *)data_021eff50 + idx * 0x900);
+        q = (s32 *)((u8 *)n00::gWeatherManager.lineAffine + idx * 0x900);
         end = (s32 *)((u8 *)q + 0x900);
         if (db == 0) {
             for (; q < end; q += 3) q[0] += da;
@@ -8692,9 +7955,9 @@ extern "C" void func_020b9964()
         }
     }
     i = 0;
-    u32 w = func_02064c84(1);
-    if (w != data_020e4640[idx]) {
-        data_020e4640[idx] = w;
+    u32 w = SceneLights_GetLightParam(1);
+    if (w != sSkyBlendLineCache[idx]) {
+        sSkyBlendLineCache[idx] = w;
         u16 c = w | 0x1000;
         for (; i < 0x77; i++) *pal++ = c;
         for (; i < 0x97; i++) *pal++ = (w - (w * (i - 0x77) >> 5)) | 0x1000;
@@ -8706,75 +7969,75 @@ extern "C" void func_020b9964()
         }
         for (; i < 0xc0; i++) *pal++ = 0x1000;
     }
-    data_021eff48[1] = idx;
+    n00::gWeatherManager.lineBufferIndex = idx;
 }
 
-extern "C" void func_020b9848()
+extern "C" void Sky_VBlankSub()
 {
     u8 t[2];
     volatile u16 v1, v2;
-    s32 y = data_021f145c[data_021f1448.idx];
-    v1 = data_021efc08[2];
+    s32 y = n00::gWeatherManager.screenOffsetY[n00::gWeatherManager.bufferIndex];
+    v1 = n00::sSkyGradient.keyColors[0];
     REG16(0x5000400) = v1;
-    v2 = data_021efc08[3];
+    v2 = n00::sSkyGradient.keyColors[1];
     REG16(0x5000000) = v2;
-    Unk_020b96b8_Ent *e = &data_021eff50[data_021eff48[1]];
-    REG16(0x4001030) = e->c;
-    REG32(0x4001038) = e->a;
-    REG32(0x400103c) = e->b;
-    func_0209cf18(t);
+    SkyLineAffine *e = n00::gWeatherManager.lineAffine[n00::gWeatherManager.lineBufferIndex];
+    REG16(0x4001030) = e->pa;
+    REG32(0x4001038) = e->x;
+    REG32(0x400103c) = e->y;
+    Clock_GetMinuteHour(t);
     if (t[1] >= 6 && t[1] < 0x12) {
         REG32(0x4001000) = REG32(0x4001000) & 0xfffffdff;
-        if (func_0206ef50() == 0) func_020014ac(2);
+        if (MenuCtrl_IsMenuOnTop() == 0) Gfx2d_HideSubPlanes(2);
     } else {
         REG32(0x4001000) |= 0x200;
-        if (func_0206ef50() == 0) func_020014bc(2);
+        if (MenuCtrl_IsMenuOnTop() == 0) Gfx2d_ShowSubPlanes(2);
     }
-    if (data_021f4420[0x11] != 0) {
+    if (n00::gSkySprites.rainbowStrength != 0) {
         REG16(0x4001050) = 0x2040;
     } else {
         REG16(0x4001050) = 0x2042;
     }
-    u16 s = y + data_021f1448.h3e;
+    u16 s = y + n00::gWeatherManager.starScrollY;
     if (s > 0x100) s = 0x100;
     REG16(0x4001016) = s;
-    REG16(0x4001014) = data_021f1448.h3c;
+    REG16(0x4001014) = n00::gWeatherManager.starScrollX;
 }
 
-extern "C" void func_020b96b8()
+extern "C" void Sky_VBlankMain()
 {
     u8 t[2];
     volatile u16 v1, v2;
-    s32 y = data_021f145c[data_021f1448.idx];
-    v1 = data_021efc08[2];
+    s32 y = n00::gWeatherManager.screenOffsetY[n00::gWeatherManager.bufferIndex];
+    v1 = n00::sSkyGradient.keyColors[0];
     REG16(0x5000400) = v1;
-    v2 = data_021efc08[2];
+    v2 = n00::sSkyGradient.keyColors[0];
     REG16(0x5000000) = v2;
-    Unk_020b96b8_Ent *e = &data_021eff50[data_021eff48[1]];
-    REG16(0x4000030) = e->c;
-    REG32(0x4000038) = e->a;
-    REG32(0x400003c) = e->b;
-    func_0209cf18(t);
+    SkyLineAffine *e = n00::gWeatherManager.lineAffine[n00::gWeatherManager.lineBufferIndex];
+    REG16(0x4000030) = e->pa;
+    REG32(0x4000038) = e->x;
+    REG32(0x400003c) = e->y;
+    Clock_GetMinuteHour(t);
     if (t[1] >= 6 && t[1] < 0x12) {
         REG32(0x4000000) = REG32(0x4000000) & 0xfffffdff;
-        func_020014e4(2);
+        Gfx2d_HideMainPlanes(2);
     } else {
         REG32(0x4000000) |= 0x200;
-        func_020014f4(2);
+        Gfx2d_ShowMainPlanes(2);
     }
     s32 r;
     if (y > 0xa8) {
         REG32(0x4000000) = REG32(0x4000000) & 0xfffff5ff;
-        func_020014e4(0xa);
+        Gfx2d_HideMainPlanes(0xa);
         REG16(0x4000050) = 0x2040;
     } else {
         REG32(0x4000000) |= 0x800;
-        func_020014f4(8);
+        Gfx2d_ShowMainPlanes(8);
         if (y > 0x97) {
             REG32(0x4000000) = REG32(0x4000000) & 0xfffffdff;
-            func_020014e4(2);
+            Gfx2d_HideMainPlanes(2);
             REG16(0x4000050) = 0x2048;
-        } else if (data_021f4420[0x11] != 0) {
+        } else if (n00::gSkySprites.rainbowStrength != 0) {
             REG16(0x4000050) = 0x2040;
         } else {
             REG16(0x4000050) = 0x2042;
@@ -8783,556 +8046,491 @@ extern "C" void func_020b96b8()
     r = 0xc0 - y;
     if (r < 0) r = 0;
     else if (r > 0xc0) r = 0xc0;
-    u16 s = y + data_021f1448.h3e;
+    u16 s = y + n00::gWeatherManager.starScrollY;
     if (s > 0x100) s = 0x100;
     REG16(0x4000016) = s;
-    REG16(0x4000014) = data_021f1448.h3c;
-    func_02001564(1);
-    func_02001750(0x15);
-    func_020016cc(0x1f);
-    func_02001674(0, r, 0xff, 0xc0);
+    REG16(0x4000014) = n00::gWeatherManager.starScrollX;
+    Gfx2d_EnableMainWindows(1);
+    Gfx2d_SetMainWin0Planes(0x15);
+    Gfx2d_SetMainWinOutPlanes(0x1f);
+    Gfx2d_SetMainWin0Rect(0, r, 0xff, 0xc0);
 }
 
-#undef data_021f1448
-#undef data_021f145c
-#undef data_021efc08
-#undef data_021eff50
-#undef data_021f4420
-#undef data_021f1158
-#undef data_021f14dc
-#undef data_021f1150
-#undef data_021ef90c
 #undef REG16
 #undef REG32
 }
 
 // ======== unk_020b8d98.cpp ========
 namespace n01 {
-struct Unk_021eff48;
-struct Unk_021f1448;
-struct Unk_021f3010;
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
-struct Unk_021f1448 {
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u32 unk_1c;
-    /* 0x20 */ u32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ u32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ u32 unk_38;
-    /* 0x3c */ u16 unk_3c;
-    /* 0x3e */ u16 unk_3e;
-    /* 0x40 */ u8 pad_40[0x24];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ u32 unk_6c;
-    /* 0x70 */ u8 pad_70[8];
-    /* 0x78 */ s32 unk_78;
-};
-struct Unk_021eff48 {
-    /* 0x0000 */ s32 unk_0000;
-    /* 0x0004 */ u8 pad_0004[0x1540];
-    /* 0x1544 */ u32 unk_1544[2][2];
-};
-struct Unk_021f3010 { u8 pad[8]; u8 unk_08; u8 pad2[3]; };
-namespace L_021f4400 { extern "C" { extern struct S { u8 p[0x2f20]; Unk_021f4400 v; } data_021f14e0; } }
-#define data_021f4400 n01::L_021f4400::data_021f14e0.v
-namespace L_021f4420 { extern "C" { extern struct S { u8 p[0x2f40]; Unk_021f4420 v; } data_021f14e0; } }
-#define data_021f4420 n01::L_021f4420::data_021f14e0.v
-namespace L_021f44a0 { extern "C" { extern struct S { u8 p[0x2fc0]; Unk_021f44a0 v; } data_021f14e0; } }
-#define data_021f44a0 n01::L_021f44a0::data_021f14e0.v
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } data_021eff48; } }
-#define data_021f1448 n01::L_021f1448::data_021eff48.v
 extern "C" {
-extern Unk_021eff48 data_021eff48;
+extern WeatherManager gWeatherManager;
 }
 extern "C" {
-extern u8 data_021f14e0[];
+extern u8 gSkySprites[];
 }
 extern "C" {
-extern u8 data_021ef6c4[];
+extern u8 sSkyHBlankTask[];
 }
 extern "C" {
 extern u8 data_021efc18[];
 }
-namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } data_021f14e0; } }
-#define data_021f4398 n01::L_021f4398::data_021f14e0.v
-namespace L_021f304c { extern "C" { extern struct S { u8 p[0x1b6c]; u8 v[1]; } data_021f14e0; } }
-#define data_021f304c n01::L_021f304c::data_021f14e0.v
+namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#define data_021f4398 n01::L_021f4398::gSkySprites.v
+namespace L_021f304c { extern "C" { extern struct S { u8 p[0x1b6c]; u8 v[1]; } gSkySprites; } }
+#define data_021f304c n01::L_021f304c::gSkySprites.v
 extern "C" {
-extern u8 data_021ef658[];
+extern u8 sSkyBlackBackdrop[];
 }
-namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[5]; } data_021f14e0; } }
-#define data_021f3010 n01::L_021f3010::data_021f14e0.v
+namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[5]; } gSkySprites; } }
+#define data_021f3010 n01::L_021f3010::gSkySprites.v
 extern "C" {
-extern void *data_021f482c;
-}
-namespace L_021f14c8 { extern "C" { extern struct S { u8 p[0x1580]; Unk_021f14c8 v; } data_021eff48; } }
-#define data_021f14c8 n01::L_021f14c8::data_021eff48.v
-namespace L_021f14c4 { extern "C" { extern struct S { u8 p[0x157c]; u32 v; } data_021eff48; } }
-#define data_021f14c4 n01::L_021f14c4::data_021eff48.v
-namespace L_021f14cc { extern "C" { extern struct S { u8 p[0x1584]; u32 v; } data_021eff48; } }
-#define data_021f14cc n01::L_021f14cc::data_021eff48.v
-namespace L_021f14d0 { extern "C" { extern struct S { u8 p[0x1588]; u32 v; } data_021eff48; } }
-#define data_021f14d0 n01::L_021f14d0::data_021eff48.v
-namespace L_021f146c { extern "C" { extern struct S { u8 p[0x1524]; u32 v; } data_021eff48; } }
-#define data_021f146c n01::L_021f146c::data_021eff48.v
-namespace L_021f14dc { extern "C" { extern struct S { u8 p[0x1594]; u32 v; } data_021eff48; } }
-#define data_021f14dc n01::L_021f14dc::data_021eff48.v
-namespace L_021f14ac { extern "C" { extern struct S { u8 p[0x1564]; u32 v[3]; } data_021eff48; } }
-#define data_021f14ac n01::L_021f14ac::data_021eff48.v
-extern "C" {
-extern u32 data_021ef670;
+extern void *gCurrentHeap;
 }
 extern "C" {
-extern u32 data_021c3070;
-}
-namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; u32 v[1]; } data_021eff48; } }
-#define data_021f145c n01::L_021f145c::data_021eff48.v
-namespace L_021efc08 { extern "C" { extern struct S { u8 p[0x300]; Unk_021efc08 v; } data_021ef908; } }
-#define data_021efc08 n01::L_021efc08::data_021ef908.v
-namespace L_021efa88 { extern "C" { extern struct S { u8 p[0x180]; Unk_021efa88 v; } data_021ef908; } }
-#define data_021efa88 n01::L_021efa88::data_021ef908.v
-extern "C" {
-extern u8 data_020d0df4[];
+extern u32 sSkyOutdoors;
 }
 extern "C" {
-extern u8 data_020d0df8[];
+extern u32 gCamera;
 }
 extern "C" {
-extern u8 data_020d0dec[];
+extern u8 sSkyStarBgLayer[];
 }
 extern "C" {
-extern u8 data_020e416c;
+extern u8 sSkyNextCloudBgLayer[];
+}
+extern "C" {
+extern u8 sSkyCloudBgLayer[];
+}
+extern "C" {
+extern u8 gFieldSceneKind;
 }
 #define data_020e676c ((char *)"menu/star/a_bg.bch")
 #define data_020e6780 ((u8 *)"menu/star/bg.bsc")
 extern "C" {
-void *func_0209750c(void);
+void *PlayerData_GetCurrent(void);
 }
 extern "C" {
-void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 x);
+void _ZN10PlayerData7setFlagEj(void *p, u32 x);
 }
 extern "C" {
-void func_020bb018(void *p);
+void SkySprites_OnStarWish(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bcdd8Ev(void *p);
+void _ZN10SkySprites14uploadDirtyGfxEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bca6cEi(void *p, u32 x);
+void _ZN10SkySprites16onSlingshotFiredEi(void *p, u32 x);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bcadcEi(void *p, u32 x);
+void _ZN10SkySprites11onDayChangeEi(void *p, u32 x);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba794Ev(void *p);
+void _ZN14WeatherManager13rollRainSlantEv(void *p);
 }
 extern "C" {
-void func_0209d498(void *p);
+void Clock_GetDateTime(void *p);
 }
 extern "C" {
-void func_020b9cd8(void *p, void *q);
+void Sky_CalcStarScrollY(void *p, void *q);
 }
 extern "C" {
-void func_0209d124(void *p, u32 x);
+void DateTime_SubHours(void *p, u32 x);
 }
 extern "C" {
-s32 func_020b9d18(void *p, void *q);
+s32 Sky_CalcStarScrollX(void *p, void *q);
 }
 extern "C" {
-void func_02116048(const void *src, void *dst, u32 size);
+void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 extern "C" {
-void func_0209d2c0(void *p, s32 x);
+void DateTime_AddDays(void *p, s32 x);
 }
 extern "C" {
-void func_0209d258(void *p, s32 x);
+void DateTime_AddMinutes(void *p, s32 x);
 }
 extern "C" {
-BOOL func_0209d3d0(void *p, void *q, u32 x);
+BOOL DateTime_Compare(void *p, void *q, u32 x);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba1b4Ei(void *p, u32 x);
+void _ZN14WeatherManager18getWeatherAtOffsetEi(void *p, u32 x);
 }
 extern "C" {
-void func_0205b690(void *p, void *fn, void *cb);
+void HBlank_Replace(void *p, void *fn, void *cb);
 }
 extern "C" {
-u32 func_0205b69c(void *p);
+u32 HBlank_Remove(void *p);
 }
 extern "C" {
-u32 func_0205b6e4(void *p, void *fn, void *cb, void *cb2);
+u32 HBlank_Add(void *p, void *fn, void *cb, void *cb2);
 }
 extern "C" {
-void func_020014e4(u32 x);
+void Gfx2d_HideMainPlanes(u32 x);
 }
 extern "C" {
-void func_020014ac(u32 x);
+void Gfx2d_HideSubPlanes(u32 x);
 }
 extern "C" {
-void func_020014bc(u32 x);
+void Gfx2d_ShowSubPlanes(u32 x);
 }
 extern "C" {
-void func_020014f4(u32 x);
+void Gfx2d_ShowMainPlanes(u32 x);
 }
 extern "C" {
-void func_020015b8(u32 x);
+void Gfx2d_SetSubBgModeState(u32 x);
 }
 extern "C" {
-void func_020015e0(u32 x);
+void Gfx2d_SetMainBgModeState(u32 x);
 }
 extern "C" {
-void func_0209cf18(void *p);
+void Clock_GetMinuteHour(void *p);
 }
 extern "C" {
-void func_01ffcd4c(void);
+void Sky_HBlankNone(void);
 }
 extern "C" {
-void func_01ffcd50(void);
+void Sky_HBlankMain(void);
 }
 extern "C" {
-void func_01ffceb8(void);
+void Sky_HBlankSub(void);
 }
 extern "C" {
-void func_020b9848(void);
+void Sky_VBlankSub(void);
 }
 extern "C" {
-void func_020b96b8(void);
+void Sky_VBlankMain(void);
 }
 extern "C" {
-void func_020b9678(void);
+void Sky_VBlankDisabled(void);
 }
 extern "C" {
-void func_020b9608(void);
+void Sky_FrameOutdoor(void);
 }
 extern "C" {
-void func_020b95dc(void);
+void Sky_FrameIndoor(void);
 }
 extern "C" {
-void *func_02095204(u32 x);
+void *PlayerActor_GetActor(u32 x);
 }
 extern "C" {
-void _ZN12Unk_020bd71813func_020bd7c0Ei(void *p, s32 x);
+void _ZN13SkyObjPalette10invalidateEi(void *p, s32 x);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bce8cEv(void *p);
+void _ZN10SkySprites12reloadAllGfxEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_020bc58c13func_020bc960Ev(void *p);
+void _ZN10SkySprites9initClockEv(void *p);
 }
 extern "C" {
-BOOL func_0200261c(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
+BOOL Gfx2d_LoadCharFile(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
 }
 extern "C" {
-void *func_020e8618(void *heap, u32 size);
+void *Heap_AllocTail(void *heap, u32 size);
 }
 extern "C" {
-void func_020e85fc(void *heap, void *ptr);
+void Heap_Free(void *heap, void *ptr);
 }
 extern "C" {
-void func_020e8558(u32 p);
+void Mem_Free(u32 p);
 }
 extern "C" {
-void func_020641b4(void *a, void *b, u32 c);
+void File_LoadToBuffer(void *a, void *b, u32 c);
 }
 extern "C" {
-void func_020aff60(void *p);
+void Constellation_MaskSkyScreen(void *p);
 }
 extern "C" {
-BOOL func_020024f0(void *p, u32 a, u32 b, u32 c);
+BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_020b0788(void *p, u32 x);
+void StarTwinkle_Init(void *p, u32 x);
 }
 extern "C" {
-void func_020b0780(void *p);
+void StarTwinkle_Stop(void *p);
 }
 extern "C" {
-BOOL _ZN12Unk_020b9fe413func_020ba170Eii(void *p, u32 a, u32 b);
+BOOL _ZN14WeatherManager14loadCloudCharsEii(void *p, u32 a, u32 b);
 }
 extern "C" {
-BOOL _ZN12Unk_020b9fe413func_020ba10cEPPhPjii(void *p, void *a, void *b, u32 c, u32 d);
+BOOL _ZN14WeatherManager15loadCloudScreenEPPhPjii(void *p, void *a, void *b, u32 c, u32 d);
 }
 extern "C" {
-BOOL func_020ba3a0(u32 x);
+BOOL Sky_LoadPalettes(u32 x);
 }
 extern "C" {
-void func_02111ec8(void *p, u32 a, u32 b);
+void GX_LoadBGPltt(void *p, u32 a, u32 b);
 }
 extern "C" {
-void func_02111e60(void *p, u32 a, u32 b);
+void GXS_LoadBGPltt(void *p, u32 a, u32 b);
 }
 extern "C" {
-void func_020bafe0(void *p);
+void SkySprites_Stop(void *p);
 }
 extern "C" {
-void func_020ba990(void *p);
+void RainSe_Release(void *p);
 }
 extern "C" {
-void func_020bacc0(void *p);
+void SkySprites_Draw(void *p);
 }
 extern "C" {
-BOOL func_0206ef50(void);
+BOOL MenuCtrl_IsMenuOnTop(void);
 }
 extern "C" {
-void func_020b080c(void *p);
+void StarTwinkle_Update(void *p);
 }
 extern "C" {
-void func_020bae8c(void *p);
+void SkySprites_Update(void *p);
 }
 extern "C" {
-void func_020bae84(void *p);
+void SkySprites_UpdateIndoor(void *p);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba1dcEv(void *p);
+void _ZN14WeatherManager12updateHourlyEv(void *p);
 }
 extern "C" {
-void func_020ba998(void *p);
+void RainSe_Update(void *p);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba3e4Ev(void *p);
+void _ZN14WeatherManager4initEv(void *p);
 }
 extern "C" {
-BOOL func_020bdaa4(void *p);
+BOOL SkyObjGfxLoader_LoadPalettes(void *p);
 }
 extern "C" {
-void func_020baffc(void *p);
+void SkySprites_Start(void *p);
 }
 extern "C" {
-void func_020ba9e4(void *p);
+void RainSe_Init(void *p);
 }
 extern "C" {
-void _ZN12Unk_020b9c9013func_020b9d44Ev(void *p);
+void _ZN14WeatherManager21updateTransitionTimedEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_020b9fe413func_020ba670EPiS0_(void *p, u32 *a, u32 *b);
+void _ZN14WeatherManager11getSkyBlendEPiS0_(void *p, u32 *a, u32 *b);
 }
 extern "C" {
-void func_020ba518(void);
+void Sky_BlendPalettes(void);
 }
 extern "C" {
-void func_020b9b94(void);
+void SkyGradient_Build(void);
 }
 extern "C" {
-void func_020b9964(void);
+void Sky_UpdateLineTables(void);
 }
 extern "C" {
-void _ZN12Unk_020b9c9013func_020b9ea8Ev(void *p);
+void _ZN14WeatherManager24updateTransitionStreamedEv(void *p);
 }
 extern "C" {
-void func_020ba624(s32 x);
+void Sky_ApplyPalettes(s32 x);
 }
 extern "C" {
-s32 func_0206ede0(void);
+s32 MenuCtrl_GetTransitionProgress(void);
 }
 extern "C" {
-s32 func_0203a4b0(void);
+s32 Camera_GetCloseUpFactor(void);
 }
 extern "C" {
-u16 func_020b9cb4(void *p);
+u16 Sky_GetStarScrollYNow(void *p);
 }
 extern "C" {
-BOOL func_020b91f8(u32 idx);
+BOOL Sky_LoadStarBg(u32 idx);
 }
 extern "C" {
-BOOL func_020b9290(u32 idx);
+BOOL Sky_LoadNextCloudBg(u32 idx);
 }
 extern "C" {
-BOOL func_020b9370(u32 idx);
+BOOL Sky_LoadCloudBg(u32 idx);
 }
 extern "C" {
-void func_020b91bc(void);
+void Sky_ResetObjGfx(void);
 }
 
-extern "C" void func_020b8de4(void);
-extern "C" void func_020b8df0(void);
-extern "C" u32 func_020b8e14(void);
-extern "C" void func_020b8e20(BOOL x);
-extern "C" void func_020b8e38(void);
-extern "C" void func_020b8e44(void);
-extern "C" void func_020b8e60(u32 x);
-extern "C" void func_020b8e70(u32 x);
-extern "C" void func_020b8e80(void);
-extern "C" void func_020b8e90(void);
-extern "C" void func_020b8ea0(void);
-extern "C" void func_020b8eb0(void);
-extern "C" void func_020b8ec0(Unk_020b8ec0_Time *out, s32 a, s32 b);
-extern "C" u32 func_020b8f8c(void);
-extern "C" u32 func_020b8f98(void);
-extern "C" u32 func_020b8fa4(void);
-extern "C" u32 func_020b8fbc(void);
-extern "C" void func_020b8fc8(s32 *a, s32 *b);
-extern "C" void func_020b8fd8(void);
-extern "C" s32 func_020b8fe8(void);
-extern "C" void func_020b901c(void);
-extern "C" BOOL func_020b9044(s32 arg);
-extern "C" void func_020b91bc(void);
-extern "C" BOOL func_020b91f8(u32 idx);
-extern "C" BOOL func_020b9290(u32 idx);
-extern "C" BOOL func_020b9370(u32 idx);
-void func_020b95dc(void);
-void func_020b9608(void);
-void func_020b9678(void);
+extern "C" void Sky_RequestBirds(void);
+extern "C" void Sky_WishOnShootingStar(void);
+extern "C" u32 Sky_IsShootingStarVisible(void);
+extern "C" void Sky_PlayBalloonDropSe(BOOL x);
+extern "C" void Sky_EndBalloonDrop(void);
+extern "C" void Sky_SwapBuffers(void);
+extern "C" void Sky_OnSlingshotFired(u32 x);
+extern "C" void Sky_OnDayChange(u32 x);
+extern "C" void Weather_RerollRainSlant(void);
+extern "C" void Weather_RerollRainSlantAlt(void);
+extern "C" void Weather_RerollRainSlantAlt2(void);
+extern "C" void Weather_RerollRainSlantAlt3(void);
+extern "C" void Sky_GetStarViewingTime(ClockDateTime *out, s32 a, s32 b);
+extern "C" u32 Sky_GetStarScrollY(void);
+extern "C" u32 Sky_GetStarScrollX(void);
+extern "C" u32 Sky_GetCurrentPalette(void);
+extern "C" u32 Weather_GetPrecipKind(void);
+extern "C" void Weather_GetLevels(s32 *a, s32 *b);
+extern "C" void Weather_GetCurrent(void);
+extern "C" s32 Weather_GetFallingPrecip(void);
+extern "C" void Sky_Disable(void);
+extern "C" BOOL Sky_SetEngine(s32 arg);
+extern "C" void Sky_ResetObjGfx(void);
+extern "C" BOOL Sky_LoadStarBg(u32 idx);
+extern "C" BOOL Sky_LoadNextCloudBg(u32 idx);
+extern "C" BOOL Sky_LoadCloudBg(u32 idx);
+void Sky_FrameIndoor(void);
+void Sky_FrameOutdoor(void);
+void Sky_VBlankDisabled(void);
 
-void func_020b9678(void) {
+void Sky_VBlankDisabled(void) {
     vu16 t;
-    t = data_021efc08.unk_04;
+    t = n00::sSkyGradient.keyColors[0];
     *(vu16 *)0x5000400 = t;
-    *(vu16 *)0x5000000 = data_021efa88.unk_02;
+    *(vu16 *)0x5000000 = n00::sSkyGradient.lineColors[0][0xbf];
     *(vu32 *)0x4000000 = *(vu32 *)0x4000000 & 0xfffff5ff;
 }
 
-void func_020b9608(void) {
+void Sky_FrameOutdoor(void) {
     s32 a, b;
-    func_020b9b94();
-    if (!func_0206ef50()) {
-        func_020b9964();
-        _ZN12Unk_020b9c9013func_020b9ea8Ev(&data_021eff48);
+    SkyGradient_Build();
+    if (!MenuCtrl_IsMenuOnTop()) {
+        Sky_UpdateLineTables();
+        _ZN14WeatherManager24updateTransitionStreamedEv(&gWeatherManager);
     }
-    func_020ba624(data_021eff48.unk_0000);
-    if (data_021c3070 != 0) {
-        a = func_0206ede0() * 0x123 >> 12;
-        b = func_0203a4b0() * 30 >> 12;
-        data_021f145c[data_021f1448.unk_1c ^ 1] = a + b;
+    Sky_ApplyPalettes(gWeatherManager.engine);
+    if (gCamera != 0) {
+        a = MenuCtrl_GetTransitionProgress() * 0x123 >> 12;
+        b = Camera_GetCloseUpFactor() * 30 >> 12;
+        gWeatherManager.screenOffsetY[gWeatherManager.bufferIndex ^ 1] = a + b;
     }
-    data_021f1448.unk_3e = func_020b9cb4(&data_021eff48);
+    gWeatherManager.starScrollY = Sky_GetStarScrollYNow(&gWeatherManager);
 }
 
-void func_020b95dc(void) {
+void Sky_FrameIndoor(void) {
     u32 a, b;
-    if (!func_0206ef50()) {
-        _ZN12Unk_020b9c9013func_020b9d44Ev(&data_021eff48);
+    if (!MenuCtrl_IsMenuOnTop()) {
+        _ZN14WeatherManager21updateTransitionTimedEv(&gWeatherManager);
     }
-    _ZN12Unk_020b9fe413func_020ba670EPiS0_(&data_021eff48, &a, &b);
-    func_020ba518();
+    _ZN14WeatherManager11getSkyBlendEPiS0_(&gWeatherManager, &a, &b);
+    Sky_BlendPalettes();
 }
 
 }
-BOOL Unk_020e5668::vfunc_00() {
+BOOL SkyProc::onCreate() {
     using namespace n01;
     u32 r4 = 0;
     u32 v = 0;
-    BOOL t = (data_020e416c == 0);
+    BOOL t = (gFieldSceneKind == 0);
     if (t) {
         v = 1;
     }
-    data_021ef670 = v;
-    _ZN12Unk_020b9fe413func_020ba3e4Ev(&data_021eff48);
-    if (data_021ef670 != 0) {
-        if (func_020bdaa4(data_021f304c)) {
-            if (func_020b9044(0)) {
-                func_020baffc(data_021f14e0);
-                r4 = func_0205b6e4(data_021ef6c4, (void *)func_01ffceb8, (void *)func_020b9848, (void *)func_020b9608);
+    sSkyOutdoors = v;
+    _ZN14WeatherManager4initEv(&gWeatherManager);
+    if (sSkyOutdoors != 0) {
+        if (SkyObjGfxLoader_LoadPalettes(data_021f304c)) {
+            if (Sky_SetEngine(0)) {
+                SkySprites_Start(gSkySprites);
+                r4 = HBlank_Add(sSkyHBlankTask, (void *)Sky_HBlankSub, (void *)Sky_VBlankSub, (void *)Sky_FrameOutdoor);
             }
         }
     } else {
-        if (func_020ba3a0(0)) {
-            r4 = func_0205b6e4(data_021ef6c4, 0, 0, (void *)func_020b95dc);
+        if (Sky_LoadPalettes(0)) {
+            r4 = HBlank_Add(sSkyHBlankTask, 0, 0, (void *)Sky_FrameIndoor);
         }
     }
     if (r4 != 0) {
-        func_020ba9e4((u8 *)this + 0x50);
+        RainSe_Init((u8 *)this + 0x50);
     }
     return r4;
 }
 namespace n01 {
 
 }
-BOOL Unk_020e5668::vfunc_18() {
+BOOL SkyProc::onExecute() {
     using namespace n01;
-    if (data_021ef670 != 0) {
-        if (!func_0206ef50()) {
-            func_020b080c(data_021efc18);
+    if (sSkyOutdoors != 0) {
+        if (!MenuCtrl_IsMenuOnTop()) {
+            StarTwinkle_Update(data_021efc18);
         }
-        func_020bae8c(data_021f14e0);
+        SkySprites_Update(gSkySprites);
     } else {
-        func_020bae84(data_021f14e0);
+        SkySprites_UpdateIndoor(gSkySprites);
     }
-    _ZN12Unk_020b9fe413func_020ba1dcEv(&data_021eff48);
-    func_020ba998((u8 *)this + 0x50);
+    _ZN14WeatherManager12updateHourlyEv(&gWeatherManager);
+    RainSe_Update((u8 *)this + 0x50);
     return TRUE;
 }
 namespace n01 {
 
 }
-BOOL Unk_020e5668::vfunc_24() {
+BOOL SkyProc::onDraw() {
     using namespace n01;
-    if (data_021ef670 != 0) {
-        func_020bacc0(data_021f14e0);
+    if (sSkyOutdoors != 0) {
+        SkySprites_Draw(gSkySprites);
     }
     return TRUE;
 }
 namespace n01 {
 
 }
-BOOL Unk_020e5668::vfunc_0c() {
+BOOL SkyProc::onDelete() {
     using namespace n01;
-    u32 saved = func_0205b69c(data_021ef6c4);
+    u32 saved = HBlank_Remove(sSkyHBlankTask);
     s32 i, j, k;
     u32 *pp;
-    func_02111ec8(data_021ef658, 0, 2);
-    func_02111e60(data_021ef658, 0, 2);
-    u32 *p4 = &data_021f14c4;
+    GX_LoadBGPltt(sSkyBlackBackdrop, 0, 2);
+    GXS_LoadBGPltt(sSkyBlackBackdrop, 0, 2);
+    u32 *p4 = (u32 *)&gWeatherManager.curCloudScreen;
     u32 v4 = *p4;
     if (v4 != 0) {
-        func_020e8558(v4);
+        Mem_Free(v4);
     }
     *p4 = 0;
-    p4 = &data_021f14cc;
+    p4 = (u32 *)&gWeatherManager.cloudScreen;
     v4 = *p4;
     if (v4 != 0) {
-        func_020e8558(v4);
+        Mem_Free(v4);
     }
     *p4 = 0;
     for (i = 0; i < 2; i++) {
         u8 *row;
         j = 0;
-        row = (u8 *)&data_021eff48 + i * 8;
+        row = (u8 *)&gWeatherManager + i * 8;
         for (; j < 2; j++) {
             u8 *r0 = row + j * 4;
             u32 *q = (u32 *)(r0 + 0x1544);
             if (*(u32 *)(r0 + 0x1544) != 0) {
-                func_020e8558(*(u32 *)(r0 + 0x1544));
+                Mem_Free(*(u32 *)(r0 + 0x1544));
             }
             *q = 0;
         }
     }
-    pp = data_021f14ac;
+    pp = (u32 *)gWeatherManager.palettes;
     for (k = 0; k < 3; k++) {
         if (*pp != 0) {
-            func_020e8558(*pp);
+            Mem_Free(*pp);
             *pp = 0;
         }
         pp++;
     }
-    if (data_021ef670 != 0) {
-        func_020bafe0(data_021f14e0);
+    if (sSkyOutdoors != 0) {
+        SkySprites_Stop(gSkySprites);
     }
-    func_020b0780(data_021efc18);
-    func_020ba990((u8 *)this + 0x50);
+    StarTwinkle_Stop(data_021efc18);
+    RainSe_Release((u8 *)this + 0x50);
     return saved;
 }
 namespace n01 {
 
-extern "C" BOOL func_020b9370(u32 idx) {
+extern "C" BOOL Sky_LoadCloudBg(u32 idx) {
     u8 r5;
     s32 r4;
     BOOL result;
-    r4 = data_021f1448.unk_24;
+    r4 = gWeatherManager.level;
     result = FALSE;
-    r5 = data_020d0dec[idx];
-    if (func_020ba3a0(idx)) {
-        if (_ZN12Unk_020b9fe413func_020ba170Eii(&data_021eff48, r4, r5)) {
-            u32 *r7 = (u32 *)&data_021f14c8;
-            if (_ZN12Unk_020b9fe413func_020ba10cEPPhPjii(&data_021eff48, &data_021f14c4, r7, 0, r4)) {
-                if (func_020024f0((void *)data_021f14c4, r5, *r7, 0)) {
+    r5 = sSkyCloudBgLayer[idx];
+    if (Sky_LoadPalettes(idx)) {
+        if (_ZN14WeatherManager14loadCloudCharsEii(&gWeatherManager, r4, r5)) {
+            u32 *r7 = &gWeatherManager.curCloudScreenSize;
+            if (_ZN14WeatherManager15loadCloudScreenEPPhPjii(&gWeatherManager, &gWeatherManager.curCloudScreen, r7, 0, r4)) {
+                if (Gfx2d_LoadScreen((void *)gWeatherManager.curCloudScreen, r5, *r7, 0)) {
                     result = TRUE;
                 }
             }
@@ -9341,13 +8539,13 @@ extern "C" BOOL func_020b9370(u32 idx) {
     return result;
 }
 
-extern "C" BOOL func_020b9290(u32 idx) {
+extern "C" BOOL Sky_LoadNextCloudBg(u32 idx) {
     BOOL result = FALSE;
-    if (data_021f1448.unk_20 != 0 && data_021f1448.unk_30 != 2) {
-        s32 r3 = data_021f1448.unk_30;
-        s32 r5 = data_021f1448.unk_78;
-        s32 r2 = data_021f146c;
-        s32 r1 = data_021f1448.unk_28;
+    if (gWeatherManager.transitionBusy != 0 && gWeatherManager.direction != 2) {
+        s32 r3 = gWeatherManager.direction;
+        s32 r5 = gWeatherManager.streamBlock;
+        s32 r2 = gWeatherManager.level;
+        s32 r1 = gWeatherManager.targetLevel;
         s32 r4;
         u32 r7;
         u32 stk4;
@@ -9355,7 +8553,7 @@ extern "C" BOOL func_020b9290(u32 idx) {
             if (r5 >= 0) {
                 r5 = 0x20 - r5;
             } else if (r5 == 0) {
-                switch (data_021f14c8.unk_0c) {
+                switch (gWeatherManager.transitionStep) {
                 case 3:
                 case 4:
                     r5 = 0x20 - r5;
@@ -9367,7 +8565,7 @@ extern "C" BOOL func_020b9290(u32 idx) {
             result = TRUE;
             goto end;
         }
-        r7 = data_020d0df8[idx];
+        r7 = sSkyNextCloudBgLayer[idx];
         if (r3 == 0) {
             r4 = r2 + 1;
             stk4 = 1;
@@ -9375,7 +8573,7 @@ extern "C" BOOL func_020b9290(u32 idx) {
             r4 = r2 - 1;
             stk4 = 2;
         }
-        switch (data_021f14c8.unk_0c) {
+        switch (gWeatherManager.transitionStep) {
         case 3:
         case 4:
             if (r1 == r2) {
@@ -9383,11 +8581,11 @@ extern "C" BOOL func_020b9290(u32 idx) {
             }
             break;
         }
-        if (_ZN12Unk_020b9fe413func_020ba170Eii(&data_021eff48, r4, r7)) {
-            if (_ZN12Unk_020b9fe413func_020ba10cEPPhPjii(&data_021eff48, &data_021f14cc, &data_021f14d0, stk4, r4)) {
-                u8 *buf = (u8 *)data_021f14cc;
+        if (_ZN14WeatherManager14loadCloudCharsEii(&gWeatherManager, r4, r7)) {
+            if (_ZN14WeatherManager15loadCloudScreenEPPhPjii(&gWeatherManager, &gWeatherManager.cloudScreen, &gWeatherManager.cloudScreenSize, stk4, r4)) {
+                u8 *buf = gWeatherManager.cloudScreen;
                 u32 off, n;
-                if (r4 == (s32)data_021f146c) {
+                if (r4 == gWeatherManager.level) {
                     n = r5 << 5;
                     off = (0x20 - r5) << 5;
                     buf += off;
@@ -9395,7 +8593,7 @@ extern "C" BOOL func_020b9290(u32 idx) {
                     n = r5 << 5;
                     off = 0;
                 }
-                if (func_020024f0(buf, r7, n, off)) {
+                if (Gfx2d_LoadScreen(buf, r7, n, off)) {
                     result = TRUE;
                 }
             }
@@ -9407,86 +8605,86 @@ end:
     return result;
 }
 
-extern "C" BOOL func_020b91f8(u32 idx) {
-    void *heap = data_021f482c;
-    u8 v6 = data_020d0df4[idx];
+extern "C" BOOL Sky_LoadStarBg(u32 idx) {
+    void *heap = gCurrentHeap;
+    u8 v6 = sSkyStarBgLayer[idx];
     void *buf;
-    if (!func_0200261c(data_020e676c, heap, v6, 0x10, 0x10, 0x1f)) {
+    if (!Gfx2d_LoadCharFile(data_020e676c, heap, v6, 0x10, 0x10, 0x1f)) {
         return FALSE;
     }
-    buf = func_020e8618(heap, 0x1000);
+    buf = Heap_AllocTail(heap, 0x1000);
     if (buf == NULL) {
         return FALSE;
     }
-    func_020641b4(data_020e6780, buf, 0x1000);
-    func_020aff60(buf);
-    if (!func_020024f0(buf, v6, 0x1000, 0)) {
-        func_020e85fc(heap, buf);
+    File_LoadToBuffer(data_020e6780, buf, 0x1000);
+    Constellation_MaskSkyScreen(buf);
+    if (!Gfx2d_LoadScreen(buf, v6, 0x1000, 0)) {
+        Heap_Free(heap, buf);
         return FALSE;
     }
-    func_020e85fc(heap, buf);
-    func_020b0788(data_021efc18, v6);
+    Heap_Free(heap, buf);
+    StarTwinkle_Init(data_021efc18, v6);
     return TRUE;
 }
 
-extern "C" void func_020b91bc(void) {
-    Unk_021f3010 *p = data_021f3010;
+extern "C" void Sky_ResetObjGfx(void) {
+    SkyObjGfxSlot *p = data_021f3010;
     s32 i;
     for (i = 0; i < 5; p++, i++) {
-        p->unk_08 = 0;
+        p->loaded = 0;
     }
-    _ZN12Unk_020bd71813func_020bd7c0Ei(data_021f4398, -1);
-    _ZN12Unk_020bc58c13func_020bce8cEv(data_021f14e0);
-    _ZN12Unk_020bc58c13func_020bc960Ev(data_021f14e0);
+    _ZN13SkyObjPalette10invalidateEi(data_021f4398, -1);
+    _ZN10SkySprites12reloadAllGfxEv(gSkySprites);
+    _ZN10SkySprites9initClockEv(gSkySprites);
 }
 
-extern "C" BOOL func_020b9044(s32 arg) {
+extern "C" BOOL Sky_SetEngine(s32 arg) {
     BOOL result = FALSE;
-    Unk_020b8ec0_Time t;
+    MinuteHour t;
     if (arg == 0) {
-        func_020015b8(1);
-        func_0209cf18(&t);
-        if (t.unk_01 >= 6 && t.unk_01 < 0x12) {
-            func_020014ac(2);
+        Gfx2d_SetSubBgModeState(1);
+        Clock_GetMinuteHour(&t);
+        if (t.hour >= 6 && t.hour < 0x12) {
+            Gfx2d_HideSubPlanes(2);
         } else {
-            func_020014bc(2);
+            Gfx2d_ShowSubPlanes(2);
         }
-        func_020014bc(0x10);
-        func_020014bc(8);
+        Gfx2d_ShowSubPlanes(0x10);
+        Gfx2d_ShowSubPlanes(8);
         vu16 *ra = (vu16 *)0x400100a;
         vu16 *rb = (vu16 *)0x400100e;
         *ra = (*ra & ~3) | 3;
         *rb = (*rb & ~3) | 2;
         *ra = (*ra & 0x43) | 0x4c00;
         *rb = (*rb & 0x43) | 0x6f00;
-        func_0205b690(data_021ef6c4, (void *)func_01ffceb8, (void *)func_020b9848);
+        HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankSub, (void *)Sky_VBlankSub);
     } else {
-        func_020015e0(1);
-        func_0209cf18(&t);
-        if (t.unk_01 >= 6 && t.unk_01 < 0x12) {
-            func_020014e4(2);
+        Gfx2d_SetMainBgModeState(1);
+        Clock_GetMinuteHour(&t);
+        if (t.hour >= 6 && t.hour < 0x12) {
+            Gfx2d_HideMainPlanes(2);
         } else {
-            func_020014f4(2);
+            Gfx2d_ShowMainPlanes(2);
         }
-        func_020014f4(0x10);
-        func_020014f4(8);
+        Gfx2d_ShowMainPlanes(0x10);
+        Gfx2d_ShowMainPlanes(8);
         vu16 *ra = (vu16 *)0x400000a;
         vu16 *rb = (vu16 *)0x400000e;
         *ra = (*ra & ~3) | 3;
         *rb = (*rb & ~3) | 2;
         *ra = (*ra & 0x43) | 0x4400;
         *rb = (*rb & 0x43) | 0x6700;
-        func_0205b690(data_021ef6c4, (void *)func_01ffcd50, (void *)func_020b96b8);
+        HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankMain, (void *)Sky_VBlankMain);
     }
-    if (arg != data_021eff48.unk_0000 || arg == 1) {
-        if (func_020b9370(arg) && func_020b9290(arg) && func_020b91f8(arg)) {
-            data_021eff48.unk_0000 = arg;
-            func_020b91bc();
+    if (arg != gWeatherManager.engine || arg == 1) {
+        if (Sky_LoadCloudBg(arg) && Sky_LoadNextCloudBg(arg) && Sky_LoadStarBg(arg)) {
+            gWeatherManager.engine = arg;
+            Sky_ResetObjGfx();
             result = TRUE;
         }
     }
-    void *p = func_02095204(4);
-    u32 *dst = &data_021f14dc;
+    void *p = PlayerActor_GetActor(4);
+    u32 *dst = (u32 *)&gWeatherManager.prevPlayerZ;
     *dst = 0;
     if (p != NULL) {
         p = (u8 *)p + 0x5c;
@@ -9497,17 +8695,17 @@ extern "C" BOOL func_020b9044(s32 arg) {
     return result;
 }
 
-extern "C" void func_020b901c(void) {
-    func_0205b690(data_021ef6c4, (void *)func_01ffcd4c, (void *)func_020b9678);
-    func_020014e4(0xa);
+extern "C" void Sky_Disable(void) {
+    HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankNone, (void *)Sky_VBlankDisabled);
+    Gfx2d_HideMainPlanes(0xa);
 }
 
-extern "C" s32 func_020b8fe8(void) {
-    switch (data_021f1448.unk_24) {
+extern "C" s32 Weather_GetFallingPrecip(void) {
+    switch (gWeatherManager.level) {
     case 2:
     case 3:
     case 4:
-        switch (data_021f1448.unk_34) {
+        switch (gWeatherManager.precipKind) {
         case 1:
             return 1;
         case 2:
@@ -9520,118 +8718,104 @@ extern "C" s32 func_020b8fe8(void) {
     }
 }
 
-extern "C" void func_020b8fd8(void) { _ZN12Unk_020b9fe413func_020ba1b4Ei(&data_021eff48, 0); }
+extern "C" void Weather_GetCurrent(void) { _ZN14WeatherManager18getWeatherAtOffsetEi(&gWeatherManager, 0); }
 
-extern "C" void func_020b8fc8(s32 *a, s32 *b) {
-    *a = data_021f1448.unk_24;
-    *b = data_021f1448.unk_28;
+extern "C" void Weather_GetLevels(s32 *a, s32 *b) {
+    *a = gWeatherManager.level;
+    *b = gWeatherManager.targetLevel;
 }
 
-extern "C" u32 func_020b8fbc(void) { return data_021f1448.unk_34; }
+extern "C" u32 Weather_GetPrecipKind(void) { return gWeatherManager.precipKind; }
 
-extern "C" u32 func_020b8fa4(void) {
-    if (data_021f1448.unk_28 != data_021f1448.unk_24) {
-        return data_021f1448.unk_6c;
+extern "C" u32 Sky_GetCurrentPalette(void) {
+    if (gWeatherManager.targetLevel != gWeatherManager.level) {
+        return (u32)gWeatherManager.palettes[2];
     }
-    return data_021f1448.unk_64;
+    return (u32)gWeatherManager.palettes[0];
 }
 
-extern "C" u32 func_020b8f98(void) { return data_021f1448.unk_3c; }
+extern "C" u32 Sky_GetStarScrollX(void) { return gWeatherManager.starScrollX; }
 
-extern "C" u32 func_020b8f8c(void) { return data_021f1448.unk_3e; }
+extern "C" u32 Sky_GetStarScrollY(void) { return gWeatherManager.starScrollY; }
 
-extern "C" void func_020b8ec0(Unk_020b8ec0_Time *out, s32 a, s32 b) {
+extern "C" void Sky_GetStarViewingTime(ClockDateTime *out, s32 a, s32 b) {
     u32 tmp[2];
     s32 r7;
     tmp[0] = 0;
     tmp[1] = 0;
-    func_0209d498(tmp);
-    func_020b9cd8(&data_021eff48, tmp);
-    func_0209d124(tmp, 6);
-    r7 = func_020b9d18(&data_021eff48, tmp);
-    func_02116048(tmp, out, 8);
+    Clock_GetDateTime(tmp);
+    Sky_CalcStarScrollY(&gWeatherManager, tmp);
+    DateTime_SubHours(tmp, 6);
+    r7 = Sky_CalcStarScrollX(&gWeatherManager, tmp);
+    MI_CpuCopy8(tmp, out, 8);
     if (a < 0) {
         a += 0x200;
     }
     if (a < r7) {
         a += 0x200;
     }
-    func_0209d2c0(out, (a - r7) / 8);
+    DateTime_AddDays(out, (a - r7) / 8);
     if (b < 0) {
         b = 0;
     } else if (b > 0x68) {
         b = 0x68;
     }
-    out->unk_02 = 0x12;
-    out->unk_01 = 0;
-    out->unk_00 = 0;
-    func_0209d258(out, b * 0x2d0 / 0x68);
-    if (out->unk_02 == 6) {
-        func_0209d124(out, 1);
+    out->hour = 0x12;
+    out->minute = 0;
+    out->second = 0;
+    DateTime_AddMinutes(out, b * 0x2d0 / 0x68);
+    if (out->hour == 6) {
+        DateTime_SubHours(out, 1);
     }
-    func_0209d498(tmp);
-    func_0209d258(tmp, 0x1e);
-    if (func_0209d3d0(tmp, out, 0x3c) == 1) {
-        func_0209d2c0(out, 0x40);
+    Clock_GetDateTime(tmp);
+    DateTime_AddMinutes(tmp, 0x1e);
+    if (DateTime_Compare(tmp, out, 0x3c) == 1) {
+        DateTime_AddDays(out, 0x40);
     }
 }
 
-extern "C" void func_020b8eb0(void) { _ZN12Unk_020b9fe413func_020ba794Ev(&data_021eff48); }
+extern "C" void Weather_RerollRainSlantAlt3(void) { _ZN14WeatherManager13rollRainSlantEv(&gWeatherManager); }
 
-extern "C" void func_020b8ea0(void) { _ZN12Unk_020b9fe413func_020ba794Ev(&data_021eff48); }
+extern "C" void Weather_RerollRainSlantAlt2(void) { _ZN14WeatherManager13rollRainSlantEv(&gWeatherManager); }
 
-extern "C" void func_020b8e90(void) { _ZN12Unk_020b9fe413func_020ba794Ev(&data_021eff48); }
+extern "C" void Weather_RerollRainSlantAlt(void) { _ZN14WeatherManager13rollRainSlantEv(&gWeatherManager); }
 
-extern "C" void func_020b8e80(void) { _ZN12Unk_020b9fe413func_020ba794Ev(&data_021eff48); }
+extern "C" void Weather_RerollRainSlant(void) { _ZN14WeatherManager13rollRainSlantEv(&gWeatherManager); }
 
-extern "C" void func_020b8e70(u32 x) { _ZN12Unk_020bc58c13func_020bcadcEi(data_021f14e0, x); }
+extern "C" void Sky_OnDayChange(u32 x) { _ZN10SkySprites11onDayChangeEi(gSkySprites, x); }
 
-extern "C" void func_020b8e60(u32 x) { _ZN12Unk_020bc58c13func_020bca6cEi(data_021f14e0, x); }
+extern "C" void Sky_OnSlingshotFired(u32 x) { _ZN10SkySprites16onSlingshotFiredEi(gSkySprites, x); }
 
-extern "C" void func_020b8e44(void) {
-    data_021f1448.unk_1c ^= 1;
-    _ZN12Unk_020bc58c13func_020bcdd8Ev(data_021f14e0);
+extern "C" void Sky_SwapBuffers(void) {
+    gWeatherManager.bufferIndex ^= 1;
+    _ZN10SkySprites14uploadDirtyGfxEv(gSkySprites);
 }
 
-extern "C" void func_020b8e38(void) { data_021f44a0.unk_06 = 1; }
+extern "C" void Sky_EndBalloonDrop(void) { n00::gSkySprites.shotSeq.balloonDropEnded = 1; }
 
-extern "C" void func_020b8e20(BOOL x) {
+extern "C" void Sky_PlayBalloonDropSe(BOOL x) {
     if (x) {
-        data_021f44a0.unk_08 = 1;
+        n00::gSkySprites.shotSeq.splashSePending = 1;
     } else {
-        data_021f44a0.unk_07 = 1;
+        n00::gSkySprites.shotSeq.landSePending = 1;
     }
 }
 
-extern "C" u32 func_020b8e14(void) { return data_021f4420.unk_10; }
+extern "C" u32 Sky_IsShootingStarVisible(void) { return n00::gSkySprites.shootingStarVisible; }
 
-extern "C" void func_020b8df0(void) {
-    void *p = func_0209750c();
+extern "C" void Sky_WishOnShootingStar(void) {
+    void *p = PlayerData_GetCurrent();
     if (p != NULL) {
-        _ZN12Unk_02097ff413func_0209801cEj(p, 0x32);
-        func_020bb018(data_021f14e0);
+        _ZN10PlayerData7setFlagEj(p, 0x32);
+        SkySprites_OnStarWish(gSkySprites);
     }
 }
 
-extern "C" void func_020b8de4(void) { data_021f4400.unk_09 = 1; }
+extern "C" void Sky_RequestBirds(void) { n00::gSkySprites.birdsRequested = 1; }
 
-#undef data_021f4400
-#undef data_021f4420
-#undef data_021f44a0
-#undef data_021f1448
 #undef data_021f4398
 #undef data_021f304c
 #undef data_021f3010
-#undef data_021f14c8
-#undef data_021f14c4
-#undef data_021f14cc
-#undef data_021f14d0
-#undef data_021f146c
-#undef data_021f14dc
-#undef data_021f14ac
-#undef data_021f145c
-#undef data_021efc08
-#undef data_021efa88
 #undef data_020e676c
 #undef data_020e6780
 }
@@ -9639,9 +8823,9 @@ extern "C" void func_020b8de4(void) { data_021f4400.unk_09 = 1; }
 namespace n00 {
 extern "C" {
 u32 data_020e48dc[2] = {0x91f000f0, 0xffff211c};
-const u32 data_020d0e0c[2] = {0x1000, 0x800};
-const u32 data_020d0df0[1] = {0x206};
-const u8 data_020d0e50[14] = {0x0, 0x5, 0xa, 0xf, 0x19, 0x23, 0x2d, 0x37, 0x41, 0x4b, 0x51, 0x59, 0x5f, 0x64};
+const u32 sFireworkFlicker[2] = {0x1000, 0x800};
+const u32 sSkyPaletteLayer[1] = {0x206};
+const u8 sFireworksPatternWeights[14] = {0x0, 0x5, 0xa, 0xf, 0x19, 0x23, 0x2d, 0x37, 0x41, 0x4b, 0x51, 0x59, 0x5f, 0x64};
 char data_020e4f68[30] = "/sky/d_2d_b_cld_f0_bg_ncl.bin";
 }
 }

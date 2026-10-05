@@ -1,21 +1,14 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
+#include "sys/ProcProfile.h"
+#include "town/BuildingActor.h"
 
 // TU21 of ov003: house models, scene 0x022324ec (0x022187fc-0x02219294)
 // mwcc samples optimiser pragmas at the end of the file, so this applies to the whole TU
-// (func_ov003_02218c60 needs it; all other functions of the TU still match with it)
+// (Building_FindNearPos needs it; all other functions of the TU still match with it)
 #pragma opt_loop_invariants off
-
-struct Unk_ov003_02218e2c_V3 {
-    s32 x, y, z;
-};
-
-struct Unk_ov003_02218bc8_Ent {
-    u8 pad_00[0x228];
-    /* 0x228 */ s32 unk_228;
-    /* 0x22c */ s32 unk_22c;
-};
 
 struct Unk_ov003_02218c60_Grid {
     /* 0x00 */ u8 *cells;
@@ -25,212 +18,207 @@ struct Unk_ov003_02218c60_Grid {
 
 // ---- the three statically constructed objects (constructors/destructors are this TU's own) ----
 // 4-byte object at 0x02235818
-class Unk_ov003_02218860 {
+class PlayerHouseTex {
 public:
-    Unk_ov003_02218860();
-    ~Unk_ov003_02218860();
-    s32 unk_00;
+    PlayerHouseTex();
+    ~PlayerHouseTex();
+    s32 tex;
 };
 
 // 0x20-byte object at 0x02235840
-class Unk_ov003_02218968 {
+class HouseLightUpDeco {
 public:
-    Unk_ov003_02218968();
-    ~Unk_ov003_02218968();
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04[5];
-    /* 0x18 */ u32 unk_18;
-    /* 0x1c */ u8 unk_1c;
+    HouseLightUpDeco();
+    ~HouseLightUpDeco();
+    /* 0x00 */ u32 tex;
+    /* 0x04 */ u32 models[5];
+    /* 0x18 */ u32 texPattern;
+    /* 0x1c */ u8 isLoaded;
 };
 
 // 0x28-byte object at 0x02235860
-class Unk_ov003_02218adc {
+class VillagerHouseTex {
 public:
-    Unk_ov003_02218adc();
-    ~Unk_ov003_02218adc();
-    /* 0x00 */ u32 unk_00[4];
-    /* 0x10 */ u32 unk_10[4];
-    /* 0x20 */ u32 unk_20;
-    /* 0x24 */ u32 unk_24;
+    VillagerHouseTex();
+    ~VillagerHouseTex();
+    /* 0x00 */ u32 houseTextures[4];
+    /* 0x10 */ u32 lightTextures[4];
+    /* 0x20 */ u32 doorInAnim;
+    /* 0x24 */ u32 doorOutAnim;
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
-#define func_02002cf8 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_
-#define func_020375d0 _ZN12Unk_020375d013func_020375d0Ev
-#define func_0204e114 _ZN12Unk_0204debc13func_0204e114EPtiih
-#define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
-#define func_020b23a4 _ZN12Unk_020b23a013func_020b23a4Ev
-#define func_020b2a0c _ZN12Unk_020b28ac13func_020b2a0cEPiS0_S0_j
-#define func_020b2b28 _ZN12Unk_020b28ac13func_020b2b28Ev
-#define func_ov009_0225b98c _ZN18Unk_ov009_0225e29c19func_ov009_0225b98cEv
-#define func_ov009_0225b998 _ZN18Unk_ov009_0225e29c19func_ov009_0225b998Ev
-#define func_ov009_0225b9b8 _ZN18Unk_ov009_0225e29c19func_ov009_0225b9b8Ev
-#define func_ov009_0225b9fc _ZN18Unk_ov009_0225e29c19func_ov009_0225b9fcEv
-#define func_ov009_0225ba1c _ZN18Unk_ov009_0225e29c19func_ov009_0225ba1cEv
+#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
+#define MapBlockAcre_getAcreId _ZN12MapBlockAcre9getAcreIdEv
+#define TownMap_placeStructure _ZN7TownMap14placeStructureEPtiih
+#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
+#define TownStyleRecordView_getHouseStyles _ZN19TownStyleRecordView14getHouseStylesEv
+#define StrBSizeData_getSolidUnit _ZN12StrBSizeData12getSolidUnitEPiS0_S0_j
+#define StrBSizeData_getSolidUnitCount _ZN12StrBSizeData17getSolidUnitCountEv
+#define BuildingActor_getItemId _ZN13BuildingActor9getItemIdEv
+#define BuildingActor_tryOpenDoorForExit _ZN13BuildingActor18tryOpenDoorForExitEv
+#define BuildingActor_openDoorForExit _ZN13BuildingActor15openDoorForExitEv
+#define BuildingActor_tryOpenDoorForEntry _ZN13BuildingActor19tryOpenDoorForEntryEv
+#define BuildingActor_openDoorForEntry _ZN13BuildingActor16openDoorForEntryEv
 
 extern "C" {
-extern void *data_021c6204;
-extern u8 data_021ecc7c[];
-extern void *data_021f482c;
-extern Unk_ov003_02218bc8_Ent *data_ov003_022358b0[0x20];
-extern Unk_ov003_02218c60_Grid *data_021c47c4;
+extern void *gFieldStructureHeap;
+extern u8 gSaveTownFlag[];
+extern void *gCurrentHeap;
+extern BuildingActor *sBuildingList[0x20];
+extern Unk_ov003_02218c60_Grid *gSceneBlockMap;
 extern u8 data_020d0a7c[];
-extern u32 *data_021eda68;
-extern u32 *data_020cbb18;
+extern u32 *gActorDefaultParent;
+extern u32 *gCommManager;
 }
 
-class Unk_ov003_022324ec : public Unk_020d8c7c {
+class FieldStructureMgr : public GameProc {
 public:
-    Unk_ov003_022324ec();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
-    virtual ~Unk_ov003_022324ec();
+    FieldStructureMgr();
+    virtual BOOL onCreate();
+    virtual BOOL onDelete();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
+    virtual ~FieldStructureMgr();
 };
 
 extern "C" {
-s32 func_020b0f0c();
-s32 func_020b0f30();
-s32 func_020375d0(void *c);
-void func_02037590(void *c, u16 *p, s32 a, s32 b, s32 d);
-void *func_02037558(void *c, u32 i, u32 j, s32 k);
-void func_0204edf8(s32 *a, s32 *b, s32 x, s32 y, u32 i, u32 j);
-s32 func_020b5184();
-s32 func_02072e88(void *self, u32 v);
-s32 func_0204da0c();
-s32 func_0204d5d8(s32 k, s32 *a, s32 *b, s32 *c);
-void *func_020b23a4(void *p);
-s32 func_020b2514(void *p, s32 i);
-void *func_02064020(void *heap, s32 a, const char *fmt, ...);
-void *func_0210629c(...);
-s32 func_020557a0(void *p, s32 a);
-void *func_0205588c(void *p, void *heap);
-void func_020e8558(void *p);
-s32 func_02055724(void *p, s32 a);
-void *func_020641ec(const char *s, void *heap, s32 a, s32 b);
+s32 Taxi_IsArriving();
+s32 Taxi_IsLeaving();
+s32 MapBlockAcre_getAcreId(void *c);
+void MapBlock_SetItem(void *c, u16 *p, s32 a, s32 b, s32 d);
+void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
+void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 x, s32 y, u32 i, u32 j);
+s32 Scene_InTown();
+s32 CommManager_isSlotActive(void *self, u32 v);
+s32 TownBlockMap_Get();
+s32 Town_FindTownHallFront(s32 k, s32 *a, s32 *b, s32 *c);
+void *TownStyleRecordView_getHouseStyles(void *p);
+s32 TownStyle_GetVillagerHouseStyle(void *p, s32 i);
+void *File_LoadAllocF(void *heap, s32 a, const char *fmt, ...);
+void *NNS_G3dGetTex(...);
+s32 Gfx3d_LoadTex(void *p, s32 a);
+void *Gfx3d_CopyTex(void *p, void *heap);
+void Mem_Free(void *p);
+s32 Gfx3d_LoadTexAndPltt(void *p, s32 a);
+void *File_LoadAlloc(const char *s, void *heap, s32 a, s32 b);
 void *func_021065dc();
 void *func_021065f8(void *p, s32 a);
-u16 *func_ov009_0225b98c(void *p);
-s32 func_0204b2d4(u16 *p);
-s32 func_0204b25c(u16 *p);
-s32 func_020b50bc();
-s32 func_ov009_0225b998(void *p);
-s32 func_ov009_0225b9fc(void *p);
-s32 func_ov009_0225b9b8(void *p);
-s32 func_ov009_0225ba1c(void *p);
-void func_0204ee10(s32 *a, s32 *b, s32 c);
-u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-void func_0205c108(s32 a);
-void func_0205c124(s32 a, s32 b);
-void *func_020b27a4(s32 p);
-s32 func_020b2b28(void *self);
-s32 func_020b2a0c(void *self, s32 *a, s32 *b, s32 *c, u32 i);
-void func_0203006c(s32 x, s32 y, u32 v);
-void func_0204ed8c(Unk_ov003_02218e2c_V3 *v, s32 x, s32 y);
-void func_020b16bc(void *o, void *p);
-s32 func_020b16ac(void *o);
-s32 func_020b16b4(void *o);
-void func_020b16b8(void *o);
-s32 func_02002cf8(s32 self, void *b, void *c, void *d, void *e);
-void func_0204e114(void *self, u16 *p, s32 x, s32 y, u8 z);
-void func_020b2774(s32 a);
-void func_020b15d4();
-void func_020b278c(s32 a);
-void func_0202e880(s32 a, u32 *b, s32 c, s32 d);
-void func_02055744(void *, s32);
-extern u32 data_021ed1a4[];
-s32 func_0204c188(void *, s32);
-s32 func_02101340(char *, const char *, void *);
-void func_020639e8(char *, const char *, ...);
-void *func_021012bc(const char *);
-void *func_021062dc(void *);
+u16 *BuildingActor_getItemId(void *p);
+s32 Item_IsFurniture(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
+s32 GroundSeason_IsSnow();
+s32 BuildingActor_tryOpenDoorForExit(void *p);
+s32 BuildingActor_tryOpenDoorForEntry(void *p);
+s32 BuildingActor_openDoorForExit(void *p);
+s32 BuildingActor_openDoorForEntry(void *p);
+void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
+u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
+void FieldStructureHeap_Destroy(s32 a);
+void FieldStructureHeap_Create(s32 a, s32 b);
+void *StrBSize_Get(s32 p);
+s32 StrBSizeData_getSolidUnitCount(void *self);
+s32 StrBSizeData_getSolidUnit(void *self, s32 *a, s32 *b, s32 *c, u32 i);
+void Ground_SetQuadrantsBlocked(s32 x, s32 y, u32 v);
+void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 y);
+void BuildingInfo_Copy(void *o, void *p);
+s32 BuildingInfo_GetKind(void *o);
+s32 BuildingInfo_GetProfile(void *o);
+void BuildingInfo_Destroy(void *o);
+s32 Actor_spawn(s32 self, void *b, void *c, void *d, void *e);
+void TownMap_placeStructure(void *self, u16 *p, s32 x, s32 y, u8 z);
+void FieldStructureMgr_Unregister(s32 a);
+void Field_CacheExitedBuildingKey();
+void FieldStructureMgr_Register(s32 a);
+void GameProc_CreateChild(s32 a, u32 *b, s32 c, s32 d);
+void Gfx3d_LoadPltt(void *, s32);
+extern u32 gSaveTownState[];
+s32 TownState_FindEvent(void *, s32);
+s32 NNS_FndMountArchive(char *, const char *, void *);
+void Str_SPrintf(char *, const char *, ...);
+void *NNS_FndGetArchiveFileByName(const char *);
+void *NNS_G3dGetMdlSet(void *);
 void *func_02106690(void *);
 void *func_021066ac(void *, s32);
-void func_02101310(char *);
+void NNS_FndUnmountArchive(char *);
 }
 
 extern "C" {
-void func_ov003_02218aec();
-void func_ov003_02218b04();
-void func_ov003_02218dc0(s32 a);
-void func_ov003_02218dc8(s32 a);
+void BuildingList_Clear();
+void BuildingList_Init();
+void FieldStructureMgr_DestroyHeap(s32 a);
+void FieldStructureMgr_CreateHeap(s32 a);
 void func_ov003_02219160(s32 a);
 void func_ov003_02219164(s32 a);
-void *func_ov003_02218b40(u32 id);
-void *func_ov003_02218c60(s32 a);
-s32 func_ov003_02218dd8(s32 a, u16 *b, s32 x, s32 y);
-s32 func_ov003_02218e2c(void *self, u16 *pv, s32 x, s32 y, u8 flag);
-s32 func_ov003_02218eec(void *self);
-s32 func_ov003_022189b8(Unk_ov003_02218adc *self);
-void func_ov003_02218998(Unk_ov003_02218adc *o);
-void func_ov003_0221894c(Unk_ov003_02218968 *o);
-void func_ov003_02218884(void *p);
-s32 func_ov003_02218da8();
-s32 func_ov003_0221888c(Unk_ov003_02218968 *r);
-s32 func_ov003_02218800(void **out);
-void func_ov003_022187fc(void *p);
+void *BuildingList_FindByItem(u32 id);
+void *Building_FindNearPos(s32 a);
+s32 FieldStructureMgr_ApplyFootprint(s32 a, u16 *b, s32 x, s32 y);
+s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag);
+s32 FieldStructureMgr_SpawnAll(void *self);
+s32 VillagerHouseTex_Load(VillagerHouseTex *self);
+void VillagerHouseTex_Clear(VillagerHouseTex *o);
+void HouseLightUpDeco_Clear(HouseLightUpDeco *o);
+void HouseLightUpDeco_Release(void *p);
+s32 Field_GetStructureTexSuffix();
+s32 HouseLightUpDeco_Load(HouseLightUpDeco *r);
+s32 PlayerHouseTex_Load(void **out);
+void PlayerHouseTex_Release(void *p);
 }
 
-// scene registration entry {factory, 0xc4, 0x1f}
-struct Unk_ov003_022324dc_Entry {
-    void *factory;
-    u16 a, b;
-};
 
-extern "C" void *func_ov003_0221927c();
+extern "C" void *FieldStructureMgr_Create();
 
 // the TU's bss objects; the three static objects have constructors and destructors (see __sinit)
 extern "C" {
-Unk_ov003_02218860 data_ov003_02235818;
-Unk_ov003_02218adc data_ov003_02235860;
-Unk_ov003_02218968 data_ov003_02235840;
-Unk_ov003_022324dc_Entry data_ov003_022324dc = {(void *)func_ov003_0221927c, 0xc4, 0x1f};
-u8 data_ov003_02235810;
-u16 data_ov003_02235814;
+PlayerHouseTex sPlayerHouseTex;
+VillagerHouseTex sVillagerHouseTex;
+HouseLightUpDeco sHouseLightUpDeco;
+ProcProfile sFieldStructureMgrProfile = {(void *(*)())FieldStructureMgr_Create, 0xc4, 0x1f};
+u8 sDoorExitMode;
+u16 sSpawnedBuildingCount1;
 char data_ov003_02235888[0x28];
-Unk_ov003_02218bc8_Ent *data_ov003_022358b0[0x20];
-const char data_ov003_0222f018[3] = "sw";
+BuildingActor *sBuildingList[0x20];
+const char sStructureTexSuffixes[3] = "sw";
 }
 
 // ---------------------------------------------------------------- functions
 
-extern "C" void *func_ov003_0221927c() {
-    return new Unk_ov003_022324ec;
+extern "C" void *FieldStructureMgr_Create() {
+    return new FieldStructureMgr;
 }
 
-Unk_ov003_022324ec::Unk_ov003_022324ec() {
-    func_ov003_02218b04();
+FieldStructureMgr::FieldStructureMgr() {
+    BuildingList_Init();
 }
 
-Unk_ov003_022324ec::~Unk_ov003_022324ec() {}
+FieldStructureMgr::~FieldStructureMgr() {}
 
-BOOL Unk_ov003_022324ec::vfunc_00() {
-    func_ov003_02218b04();
-    func_020b15d4();
-    func_020b278c((s32)this);
-    func_ov003_02218dc8((s32)this);
-    func_ov003_02218800((void **)&data_ov003_02235818);
-    func_ov003_022189b8(&data_ov003_02235860);
-    func_ov003_0221888c(&data_ov003_02235840);
+BOOL FieldStructureMgr::onCreate() {
+    BuildingList_Init();
+    Field_CacheExitedBuildingKey();
+    FieldStructureMgr_Register((s32)this);
+    FieldStructureMgr_CreateHeap((s32)this);
+    PlayerHouseTex_Load((void **)&sPlayerHouseTex);
+    VillagerHouseTex_Load(&sVillagerHouseTex);
+    HouseLightUpDeco_Load(&sHouseLightUpDeco);
     func_ov003_02219164((s32)this);
     func_ov003_02219160((s32)this);
-    func_ov003_02218eec(this);
-    func_0202e880(0xf, data_021eda68, 0, 0);
+    FieldStructureMgr_SpawnAll(this);
+    GameProc_CreateChild(0xf, gActorDefaultParent, 0, 0);
     return TRUE;
 }
 
-BOOL Unk_ov003_022324ec::vfunc_18() { return TRUE; }
+BOOL FieldStructureMgr::onExecute() { return TRUE; }
 
-BOOL Unk_ov003_022324ec::vfunc_24() { return TRUE; }
+BOOL FieldStructureMgr::onDraw() { return TRUE; }
 
-BOOL Unk_ov003_022324ec::vfunc_0c() {
-    func_ov003_02218aec();
-    func_020b2774((s32)this);
-    func_ov003_02218998(&data_ov003_02235860);
-    func_ov003_02218884(&data_ov003_02235840);
-    func_ov003_022187fc(&data_ov003_02235818);
-    func_ov003_02218dc0((s32)this);
+BOOL FieldStructureMgr::onDelete() {
+    BuildingList_Clear();
+    FieldStructureMgr_Unregister((s32)this);
+    VillagerHouseTex_Clear(&sVillagerHouseTex);
+    HouseLightUpDeco_Release(&sHouseLightUpDeco);
+    PlayerHouseTex_Release(&sPlayerHouseTex);
+    FieldStructureMgr_DestroyHeap((s32)this);
     return TRUE;
 }
 
@@ -240,7 +228,7 @@ void func_ov003_02219164(s32 a) {}
 
 void func_ov003_02219160(s32 a) {}
 
-s32 func_ov003_02218eec(void *self) {
+s32 FieldStructureMgr_SpawnAll(void *self) {
     BOOL go;
     u32 gw, gh;
     u32 ii, jj;
@@ -256,13 +244,13 @@ s32 func_ov003_02218eec(void *self) {
     u32 x, y;
     u16 *p;
     Unk_ov003_02218c60_Grid *g;
-    data_ov003_02235814 = 0;
-    g = data_021c47c4;
+    sSpawnedBuildingCount1 = 0;
+    g = gSceneBlockMap;
     gw = g->w;
     gh = g->h;
     a = TRUE;
-    if (func_020b0f0c() == 0) {
-        if (func_020b0f30() == 0) {
+    if (Taxi_IsArriving() == 0) {
+        if (Taxi_IsLeaving() == 0) {
             a = FALSE;
         }
     }
@@ -274,17 +262,17 @@ s32 func_ov003_02218eec(void *self) {
             } else {
                 cell = 0;
             }
-            s32 t = func_020375d0(cell);
+            s32 t = MapBlockAcre_getAcreId(cell);
             switch (t) {
             case 0x1a:
             case 0x1b:
             case 0x1c:
                 buf[1] = 0x500b;
-                func_02037590(cell, &buf[1], 7, 0, 0);
+                MapBlock_SetItem(cell, &buf[1], 7, 0, 0);
             }
             for (jj = 0; jj < 0x10; jj++) {
                 for (ii = 0; ii < 0x10; ii++) {
-                    p = (u16 *)func_02037558(cell, ii, jj, 0);
+                    p = (u16 *)MapBlock_GetItemPtr(cell, ii, jj, 0);
                     if (p != 0) {
                         BOOL f = FALSE;
                         if (*p >= 0x5000 && *p <= 0x5021) {
@@ -292,7 +280,7 @@ s32 func_ov003_02218eec(void *self) {
                         }
                         if (f) {
                             u32 idx;
-                            func_0204edf8(&ax, &ay, x, y, ii, jj);
+                            FieldUnit_FromBlockUnit(&ax, &ay, x, y, ii, jj);
                             BOOL f2 = FALSE;
                             u32 v = *p;
                             if (v >= 0x5000 && v <= 0x5021) {
@@ -309,48 +297,48 @@ s32 func_ov003_02218eec(void *self) {
                             } else {
                                 q = data_020d0a7c;
                             }
-                            func_020b16bc(obj, q);
-                            r24 = func_020b16ac(obj);
+                            BuildingInfo_Copy(obj, q);
+                            r24 = BuildingInfo_GetKind(obj);
                             if (a == 0 || r24 != 2) {
                                 go = 1;
                             } else {
                                 go = 0;
                             }
                             BOOL m;
-                            if (func_0204b2d4(p) != 0) {
+                            if (Item_IsFurniture(p) != 0) {
                                 buf[2] = 0x501e;
-                                s32 k = func_0204b25c(p);
-                                m = (k == func_0204b25c(&buf[2])) ? 1 : 0;
+                                s32 k = Item_GetFurnitureIndex(p);
+                                m = (k == Item_GetFurnitureIndex(&buf[2])) ? 1 : 0;
                             } else {
                                 m = (*p == 0x501e) ? 1 : 0;
                             }
                             if (m) {
-                                if (func_020b50bc() == 0) {
+                                if (GroundSeason_IsSnow() == 0) {
                                     go = 0;
                                 }
                             }
                             if (go) {
-                                if (func_ov003_02218e2c(self, p, ax, ay, 1)) {
+                                if (FieldStructureMgr_SpawnBuilding(self, p, ax, ay, 1)) {
                                     if (r24 == 1) {
-                                        data_ov003_02235814 = data_ov003_02235814 + 1;
+                                        sSpawnedBuildingCount1 = sSpawnedBuildingCount1 + 1;
                                     }
                                     count++;
                                 }
                             }
-                            func_020b16b8(obj);
+                            BuildingInfo_Destroy(obj);
                         }
                     }
                 }
             }
         }
     }
-    if (func_020b5184()) {
-        if (!func_02072e88(data_020cbb18, data_020cbb18[0x64 / 4])) {
-            s32 k = func_0204da0c();
-            if (func_020b0f0c() != 0 || func_020b0f30() != 0) {
-                if (func_0204d5d8(k, &tl.cx, &bx, &by)) {
+    if (Scene_InTown()) {
+        if (!CommManager_isSlotActive(gCommManager, gCommManager[0x64 / 4])) {
+            s32 k = TownBlockMap_Get();
+            if (Taxi_IsArriving() != 0 || Taxi_IsLeaving() != 0) {
+                if (Town_FindTownHallFront(k, &tl.cx, &bx, &by)) {
                     buf[0] = 0x501b;
-                    func_ov003_02218e2c(self, &buf[0], bx, by + 1, 0);
+                    FieldStructureMgr_SpawnBuilding(self, &buf[0], bx, by + 1, 0);
                 }
             }
         }
@@ -358,14 +346,14 @@ s32 func_ov003_02218eec(void *self) {
     return count;
 }
 
-s32 func_ov003_02218e2c(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
-    Unk_ov003_02218e2c_V3 vec;
+s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
+    VecFx32 vec;
     u32 obj[3];
     u32 idx;
     vec.x = 0;
     vec.y = 0;
     vec.z = 0;
-    func_0204ed8c(&vec, x, y);
+    FieldPos_FromUnitCenter(&vec, x, y);
     BOOL f = FALSE;
     u32 v = *pv;
     if (v >= 0x5000 && v <= 0x5021) {
@@ -382,94 +370,94 @@ s32 func_ov003_02218e2c(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
     } else {
         q = data_020d0a7c;
     }
-    func_020b16bc(obj, q);
-    if (func_02002cf8(func_020b16b4(obj), (void *)*pv, &vec, 0, 0) != 0) {
+    BuildingInfo_Copy(obj, q);
+    if (Actor_spawn(BuildingInfo_GetProfile(obj), (void *)*pv, &vec, 0, 0) != 0) {
         if (flag != 0) {
-            func_0204e114(data_021c47c4, pv, x, y, 0);
-            func_ov003_02218dd8((s32)self, pv, x, y);
+            TownMap_placeStructure(gSceneBlockMap, pv, x, y, 0);
+            FieldStructureMgr_ApplyFootprint((s32)self, pv, x, y);
         }
-        func_020b16b8(obj);
+        BuildingInfo_Destroy(obj);
         return 1;
     }
-    func_020b16b8(obj);
+    BuildingInfo_Destroy(obj);
     return 0;
 }
 
-s32 func_ov003_02218dd8(s32 a, u16 *b, s32 x, s32 y) {
+s32 FieldStructureMgr_ApplyFootprint(s32 a, u16 *b, s32 x, s32 y) {
     s32 va, vb, vc;
-    void *p = func_020b27a4((s32)b);
+    void *p = StrBSize_Get((s32)b);
     if (p != 0) {
-        u32 n = func_020b2b28(p);
+        u32 n = StrBSizeData_getSolidUnitCount(p);
         u32 i;
         for (i = 0; i < n; i++) {
-            if (func_020b2a0c(p, &vc, &va, &vb, i)) {
-                func_0203006c(x + va, y + vb, (u8)vc);
+            if (StrBSizeData_getSolidUnit(p, &vc, &va, &vb, i)) {
+                Ground_SetQuadrantsBlocked(x + va, y + vb, (u8)vc);
             }
         }
     }
     return 1;
 }
 
-void func_ov003_02218dc8(s32 a) { func_0205c124(0x1f000, 0); }
+void FieldStructureMgr_CreateHeap(s32 a) { FieldStructureHeap_Create(0x1f000, 0); }
 
-void func_ov003_02218dc0(s32 a) { func_0205c108(a); }
+void FieldStructureMgr_DestroyHeap(s32 a) { FieldStructureHeap_Destroy(a); }
 
-s32 func_ov003_02218da8() { return ((s8 *)data_ov003_0222f018)[func_020b50bc()]; }
+s32 Field_GetStructureTexSuffix() { return ((s8 *)sStructureTexSuffixes)[GroundSeason_IsSnow()]; }
 
-u32 func_ov003_02218d9c() { return data_ov003_02235814; }
+u32 Field_GetSpawnedKind1Count() { return sSpawnedBuildingCount1; }
 
-void *func_ov003_02218d94() { return &data_ov003_02235818; }
+void *FieldStructureMgr_GetPlayerHouseTex() { return &sPlayerHouseTex; }
 
-void *func_ov003_02218d8c() { return &data_ov003_02235860; }
+void *FieldStructureMgr_GetVillagerHouseTex() { return &sVillagerHouseTex; }
 
-void *func_ov003_02218d84() { return &data_ov003_02235840; }
+void *FieldStructureMgr_GetLightUpDeco() { return &sHouseLightUpDeco; }
 
-u32 func_ov003_02218d78() { return data_ov003_02235810; }
+u32 Field_GetDoorExitMode() { return sDoorExitMode; }
 
-void func_ov003_02218d6c(u32 v) { data_ov003_02235810 = v; }
+void Field_SetDoorExitMode(u32 v) { sDoorExitMode = v; }
 
-s32 func_ov003_02218d50(s32 a) {
-    void *r = func_ov003_02218c60(a);
+s32 Building_OpenDoorForEntryAt(s32 a) {
+    void *r = Building_FindNearPos(a);
     if (r != 0) {
-        return func_ov009_0225ba1c(r);
+        return BuildingActor_openDoorForEntry(r);
     }
     return 0;
 }
 
-s32 func_ov003_02218d34(s32 a) {
-    void *r = func_ov003_02218c60(a);
+s32 Building_OpenDoorForExitAt(s32 a) {
+    void *r = Building_FindNearPos(a);
     if (r != 0) {
-        return func_ov009_0225b9b8(r);
+        return BuildingActor_openDoorForExit(r);
     }
     return 0;
 }
 
-s32 func_ov003_02218d0c(s32 a) {
-    void *r = func_ov003_02218b40((u16)(a + 0x5001));
+s32 VillagerHouse_TryOpenDoorForEntry(s32 a) {
+    void *r = BuildingList_FindByItem((u16)(a + 0x5001));
     if (r != 0) {
-        return func_ov009_0225b9fc(r);
+        return BuildingActor_tryOpenDoorForEntry(r);
     }
     return 0;
 }
 
-s32 func_ov003_02218ce4(s32 a) {
-    void *r = func_ov003_02218b40((u16)(a + 0x5001));
+s32 VillagerHouse_TryOpenDoorForExit(s32 a) {
+    void *r = BuildingList_FindByItem((u16)(a + 0x5001));
     if (r != 0) {
-        return func_ov009_0225b998(r);
+        return BuildingActor_tryOpenDoorForExit(r);
     }
     return 0;
 }
 
-void *func_ov003_02218c60(s32 a) {
-    Unk_ov003_02218c60_Grid *g = data_021c47c4;
+void *Building_FindNearPos(s32 a) {
+    Unk_ov003_02218c60_Grid *g = gSceneBlockMap;
     s32 xy[2];
     if (g != 0) {
-        func_0204ee10(&xy[0], &xy[1], a);
+        FieldPos_ToUnit(&xy[0], &xy[1], a);
         for (s32 y = xy[1]; y >= xy[1] - 5; y--) {
             for (s32 x = xy[0] - 3; x <= xy[0] + 3; x++) {
                 s32 hx = x >> 4;
                 s32 hy = y >> 4;
-                u16 *cell = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
+                u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (cell != 0) {
                     BOOL f = FALSE;
                     u16 v = *cell;
@@ -477,7 +465,7 @@ void *func_ov003_02218c60(s32 a) {
                         f = TRUE;
                     }
                     if (f) {
-                        void *r = func_ov003_02218b40(v);
+                        void *r = BuildingList_FindByItem(v);
                         if (r != 0) {
                             return r;
                         }
@@ -489,61 +477,61 @@ void *func_ov003_02218c60(s32 a) {
     return 0;
 }
 
-s32 func_ov003_02218c34(void *p) {
+s32 BuildingList_Add(void *p) {
     s32 i;
     for (i = 0; (u32)i < 0x20; i++) {
-        if (data_ov003_022358b0[i] == 0) {
-            data_ov003_022358b0[i] = (Unk_ov003_02218bc8_Ent *)p;
+        if (sBuildingList[i] == 0) {
+            sBuildingList[i] = (BuildingActor *)p;
             return 1;
         }
     }
     return 0;
 }
 
-s32 func_ov003_02218b1c(void *p);
+s32 BuildingList_IndexOf(void *p);
 
-s32 func_ov003_02218c0c(void *p) {
-    s32 i = func_ov003_02218b1c(p);
+s32 BuildingList_Remove(void *p) {
+    s32 i = BuildingList_IndexOf(p);
     s32 m = -1;
     if (i != m) {
-        *(u32 *)&data_ov003_022358b0[i] = 0;
+        *(u32 *)&sBuildingList[i] = 0;
         return 1;
     }
     return 0;
 }
 
-void *func_ov003_02218bc8(s32 a, s32 b) {
+void *BuildingList_FindByGrid(s32 a, s32 b) {
     s32 i;
     for (i = 0; (u32)i < 0x20; i++) {
-        Unk_ov003_02218bc8_Ent *e = data_ov003_022358b0[i];
-        if (e != 0 && e->unk_228 == a && e->unk_22c == b) {
+        BuildingActor *e = sBuildingList[i];
+        if (e != 0 && e->gridX == a && e->gridZ == b) {
             return e;
         }
     }
     return 0;
 }
 
-void *func_ov003_02218bb0(s32 i) {
+void *BuildingList_GetAt(s32 i) {
     if (i >= 0 && (u32)i < 0x20) {
-        return data_ov003_022358b0[i];
+        return sBuildingList[i];
     }
     return 0;
 }
 
-void *func_ov003_02218b40(u32 id) {
+void *BuildingList_FindByItem(u32 id) {
     s32 i;
     s32 z0 = 0;
     s32 z1 = 0;
     for (i = 0; (u32)i < 0x20; i++) {
-        Unk_ov003_02218bc8_Ent *e = data_ov003_022358b0[i];
+        BuildingActor *e = sBuildingList[i];
         if (e != 0) {
-            u16 *r = func_ov009_0225b98c(e);
+            u16 *r = BuildingActor_getItemId(e);
             BOOL ok;
-            if (func_0204b2d4(r) != 0) {
+            if (Item_IsFurniture(r) != 0) {
                 u16 tmp;
                 tmp = id;
-                s32 a = func_0204b25c(r);
-                ok = (a == func_0204b25c(&tmp)) ? 1 : z0;
+                s32 a = Item_GetFurnitureIndex(r);
+                ok = (a == Item_GetFurnitureIndex(&tmp)) ? 1 : z0;
             } else {
                 ok = (*r == id) ? 1 : z1;
             }
@@ -555,193 +543,193 @@ void *func_ov003_02218b40(u32 id) {
     return 0;
 }
 
-s32 func_ov003_02218b1c(void *p) {
+s32 BuildingList_IndexOf(void *p) {
     s32 i;
     for (i = 0; (u32)i < 0x20; i++) {
-        if (p == data_ov003_022358b0[i]) {
+        if (p == sBuildingList[i]) {
             return i;
         }
     }
     return -1;
 }
 
-void func_ov003_02218b04() {
+void BuildingList_Init() {
     u32 i;
     s32 z = 0;
     for (i = 0; i < 0x20; i++) {
-        *(u32 *)&data_ov003_022358b0[i] = z;
+        *(u32 *)&sBuildingList[i] = z;
     }
 }
 
-void func_ov003_02218aec() {
+void BuildingList_Clear() {
     u32 i;
     s32 z = 0;
     for (i = 0; i < 0x20; i++) {
-        *(u32 *)&data_ov003_022358b0[i] = z;
+        *(u32 *)&sBuildingList[i] = z;
     }
 }
 
 }
 
-Unk_ov003_02218adc::Unk_ov003_02218adc() {
-    func_ov003_02218998(this);
+VillagerHouseTex::VillagerHouseTex() {
+    VillagerHouseTex_Clear(this);
 }
 
-Unk_ov003_02218adc::~Unk_ov003_02218adc() {}
+VillagerHouseTex::~VillagerHouseTex() {}
 
 extern "C" {
 
-s32 func_ov003_022189b8(Unk_ov003_02218adc *self) {
+s32 VillagerHouseTex_Load(VillagerHouseTex *self) {
     void *str;
-    void *heap = data_021c6204;
+    void *heap = gFieldStructureHeap;
     u8 i = 0;
     s32 m3 = -4;
     s32 zb = 0;
     s32 za = 0;
     do {
-        s32 v = func_020b2514(func_020b23a4(data_021ecc7c), i);
+        s32 v = TownStyle_GetVillagerHouseStyle(TownStyleRecordView_getHouseStyles(gSaveTownFlag), i);
         s32 c = (s8)(v / 5 + 0x41);
         s32 rem = v % 5;
-                void *h2 = data_021f482c;
-        s32 a = func_ov003_02218da8();
-        str = func_02064020(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
+                void *h2 = gCurrentHeap;
+        s32 a = Field_GetStructureTexSuffix();
+        str = File_LoadAllocF(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
         u32 off = i << 2;
-        u32 *e = &self->unk_00[i];
-        self->unk_00[i] = (u32)func_0210629c(str);
-        if (func_020557a0((void *)self->unk_00[i], za)) {
-            *e = (u32)func_0205588c((void *)*e, data_021c6204);
+        u32 *e = &self->houseTextures[i];
+        self->houseTextures[i] = (u32)NNS_G3dGetTex(str);
+        if (Gfx3d_LoadTex((void *)self->houseTextures[i], za)) {
+            *e = (u32)Gfx3d_CopyTex((void *)*e, gFieldStructureHeap);
         }
-        func_020e8558(str);
-        str = func_02064020(data_021f482c, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
-        e[4] = (u32)func_0210629c(str);
-        if (func_02055724((void *)e[4], zb)) {
-            e[4] = (u32)func_0205588c((void *)e[4], heap);
+        Mem_Free(str);
+        str = File_LoadAllocF(gCurrentHeap, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
+        e[4] = (u32)NNS_G3dGetTex(str);
+        if (Gfx3d_LoadTexAndPltt((void *)e[4], zb)) {
+            e[4] = (u32)Gfx3d_CopyTex((void *)e[4], heap);
         }
-        func_020e8558(str);
+        Mem_Free(str);
         i = i + 1;
     } while (i < 4);
-    func_020641ec("/str/obj_house_i.nsbca", heap, 4, 0);
-    self->unk_20 = (u32)func_021065f8(func_021065dc(), 0);
-    func_020641ec("/str/obj_house_o.nsbca", heap, 4, 0);
-    self->unk_24 = (u32)func_021065f8(func_021065dc(), 0);
+    File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0);
+    self->doorInAnim = (u32)func_021065f8(func_021065dc(), 0);
+    File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0);
+    self->doorOutAnim = (u32)func_021065f8(func_021065dc(), 0);
     return 1;
 }
 
-void func_ov003_02218998(Unk_ov003_02218adc *o) {
+void VillagerHouseTex_Clear(VillagerHouseTex *o) {
     u32 i;
     s32 z = 0;
     for (i = 0; i < 4; i++) {
-        u32 *e = &o->unk_00[i];
-        o->unk_00[i] = z;
+        u32 *e = &o->houseTextures[i];
+        o->houseTextures[i] = z;
         e[4] = z;
     }
-    o->unk_24 = z;
-    o->unk_20 = o->unk_24;
+    o->doorOutAnim = z;
+    o->doorInAnim = o->doorOutAnim;
 }
 
-s32 func_ov003_0221898c(Unk_ov003_02218adc *o, u32 i) { return o->unk_00[i & 3]; }
+s32 VillagerHouseTex_GetHouseTex(VillagerHouseTex *o, u32 i) { return o->houseTextures[i & 3]; }
 
-s32 func_ov003_02218980(Unk_ov003_02218adc *o, u32 i) { return o->unk_10[i & 3]; }
+s32 VillagerHouseTex_GetLightTex(VillagerHouseTex *o, u32 i) { return o->lightTextures[i & 3]; }
 
-s32 func_ov003_0221897c(Unk_ov003_02218adc *o) { return o->unk_20; }
+s32 VillagerHouseTex_GetDoorInAnim(VillagerHouseTex *o) { return o->doorInAnim; }
 
-s32 func_ov003_02218978(Unk_ov003_02218adc *o) { return o->unk_24; }
+s32 VillagerHouseTex_GetDoorOutAnim(VillagerHouseTex *o) { return o->doorOutAnim; }
 
 }
 
-Unk_ov003_02218968::Unk_ov003_02218968() {
-    func_ov003_0221894c(this);
+HouseLightUpDeco::HouseLightUpDeco() {
+    HouseLightUpDeco_Clear(this);
 }
 
-Unk_ov003_02218968::~Unk_ov003_02218968() {}
+HouseLightUpDeco::~HouseLightUpDeco() {}
 
 extern "C" {
 
-void func_ov003_0221894c(Unk_ov003_02218968 *o) {
+void HouseLightUpDeco_Clear(HouseLightUpDeco *o) {
     u32 i;
     s32 z = 0;
     for (i = 0; i < 5; i++) {
-        o->unk_04[i] = z;
+        o->models[i] = z;
     }
-    o->unk_00 = z;
-    o->unk_18 = z;
-    o->unk_1c = z;
+    o->tex = z;
+    o->texPattern = z;
+    o->isLoaded = z;
 }
 
-s32 func_ov003_0221888c(Unk_ov003_02218968 *r) {
+s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
     u32 buf[0x6c / 4];
     u32 i;
     BOOL z;
-    func_ov003_0221894c(r);
-    s32 c = func_0204c188(data_021ed1a4, 0x11);
+    HouseLightUpDeco_Clear(r);
+    s32 c = TownState_FindEvent(gSaveTownState, 0x11);
     z = FALSE;
     if (c == ~z) {
         return z;
     }
-    void *t = func_020641ec("/str/npcHsX.arc", data_021c6204, 4, z);
-    if (func_02101340((char *)buf, "STR", t) != 0) {
+    void *t = File_LoadAlloc("/str/npcHsX.arc", gFieldStructureHeap, 4, z);
+    if (NNS_FndMountArchive((char *)buf, "STR", t) != 0) {
         for (i = 0; i < 5; i++) {
-            func_020639e8(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
-            u8 *p = (u8 *)func_021062dc(func_021012bc(data_ov003_02235888));
-            r->unk_04[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
+            Str_SPrintf(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
+            u8 *p = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName(data_ov003_02235888));
+            r->models[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
         }
-        r->unk_00 = (s32)func_0210629c(func_021012bc("STR:a/obj_x_house0.nsbtx"));
-        func_02055724((void *)r->unk_00, 0);
-        r->unk_18 = (s32)func_021066ac(func_02106690(func_021012bc("STR:a/obj_x_deco.nsbtp")), 0);
-        r->unk_1c = 1;
-        func_02101310((char *)buf);
+        r->tex = (s32)NNS_G3dGetTex(NNS_FndGetArchiveFileByName("STR:a/obj_x_house0.nsbtx"));
+        Gfx3d_LoadTexAndPltt((void *)r->tex, 0);
+        r->texPattern = (s32)func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("STR:a/obj_x_deco.nsbtp")), 0);
+        r->isLoaded = 1;
+        NNS_FndUnmountArchive((char *)buf);
     }
     return 1;
 }
 
-void func_ov003_02218884(void *p) {
-    func_ov003_0221894c((Unk_ov003_02218968 *)p);
+void HouseLightUpDeco_Release(void *p) {
+    HouseLightUpDeco_Clear((HouseLightUpDeco *)p);
 }
 
-s32 func_ov003_02218880(s32 *p) {
+s32 HouseLightUpDeco_GetTex(s32 *p) {
     return *p;
 }
 
-s32 func_ov003_02218870(Unk_ov003_02218968 *r, u32 idx) {
+s32 HouseLightUpDeco_GetModel(HouseLightUpDeco *r, u32 idx) {
     if (idx < 5) {
-        return r->unk_04[idx];
+        return r->models[idx];
     }
     return 0;
 }
 
-s32 func_ov003_0221886c(Unk_ov003_02218968 *r) {
-    return r->unk_18;
+s32 HouseLightUpDeco_GetTexPattern(HouseLightUpDeco *r) {
+    return r->texPattern;
 }
 
-u8 func_ov003_02218868(Unk_ov003_02218968 *r) {
-    return r->unk_1c;
+u8 HouseLightUpDeco_IsLoaded(HouseLightUpDeco *r) {
+    return r->isLoaded;
 }
 
 }
 
-Unk_ov003_02218860::Unk_ov003_02218860() {
-    unk_00 = 0;
+PlayerHouseTex::PlayerHouseTex() {
+    tex = 0;
 }
 
-Unk_ov003_02218860::~Unk_ov003_02218860() {}
+PlayerHouseTex::~PlayerHouseTex() {}
 
 extern "C" {
 
-s32 func_ov003_02218800(void **out) {
-    void *r4 = data_021f482c;
-    s32 r3 = func_ov003_02218da8();
-    void *t = func_02064020(r4, -4, "/str/house_pl/house_pl_%c.nsbtx", r3);
+s32 PlayerHouseTex_Load(void **out) {
+    void *r4 = gCurrentHeap;
+    s32 r3 = Field_GetStructureTexSuffix();
+    void *t = File_LoadAllocF(r4, -4, "/str/house_pl/house_pl_%c.nsbtx", r3);
     if (t != 0) {
-        *out = func_0210629c();
-        func_02055744(*out, 0);
-        *out = func_0205588c(*out, data_021c6204);
-        func_020e8558(t);
+        *out = NNS_G3dGetTex();
+        Gfx3d_LoadPltt(*out, 0);
+        *out = Gfx3d_CopyTex(*out, gFieldStructureHeap);
+        Mem_Free(t);
         return 1;
     }
     return 0;
 }
 
-void func_ov003_022187fc(void *p) {
+void PlayerHouseTex_Release(void *p) {
 }
 
 }

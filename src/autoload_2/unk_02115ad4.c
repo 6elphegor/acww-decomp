@@ -6,11 +6,11 @@ typedef unsigned int u32;
 typedef volatile u32 vu32;
 typedef void (*MIDmaCallback)(void *arg);
 
-extern u32 func_01ffa2ec(void);                                         // OS_DisableInterrupts
-extern void func_01ffa3d4(u32 mode);                                    // OS_RestoreInterrupts
-extern void func_01ffa080(u32 dmaNo);                                   // MI_WaitDma
-extern void func_01ffa4a0(u32 dmaNo, MIDmaCallback cb, void *arg);      // OSi_EnterDmaCallback
-extern void func_01ffda34(u32 dmaNo, u32 src, u32 dest, u32 ctrl);      // MIi_DmaSetParams_noInt
+extern u32 OS_DisableInterrupts(void);                                         // OS_DisableInterrupts
+extern void OS_RestoreInterrupts(u32 mode);                                    // OS_RestoreInterrupts
+extern void MI_WaitDma(u32 dmaNo);                                   // MI_WaitDma
+extern void OSi_EnterDmaCallback(u32 dmaNo, MIDmaCallback cb, void *arg);      // OSi_EnterDmaCallback
+extern void MIi_DmaSetParams_noInt(u32 dmaNo, u32 src, u32 dest, u32 ctrl);      // MIi_DmaSetParams_noInt
 
 #define MIi_DMA_CLEAR_DATA(dmaNo) (((vu32 *)0x040000e0)[dmaNo])
 
@@ -21,21 +21,21 @@ static inline void MIi_CallCallback(MIDmaCallback callback, void *arg) {
 }
 
 static inline void MIi_DmaSetParams_src32(u32 dmaNo, u32 data, u32 dest, u32 ctrl) {
-    u32 enabled = func_01ffa2ec();
+    u32 enabled = OS_DisableInterrupts();
     vu32 *p = &MIi_DMA_CLEAR_DATA(dmaNo);
     *p = data;
-    func_01ffda34(dmaNo, (u32)p, dest, ctrl);
-    func_01ffa3d4(enabled);
+    MIi_DmaSetParams_noInt(dmaNo, (u32)p, dest, ctrl);
+    OS_RestoreInterrupts(enabled);
 }
 
 // MI_DmaFill32Async
-void func_02115ad4(u32 dmaNo, void *dest, u32 data, u32 size, MIDmaCallback callback, void *arg) {
+void MI_DmaFill32Async(u32 dmaNo, void *dest, u32 data, u32 size, MIDmaCallback callback, void *arg) {
     if (size == 0) {
         MIi_CallCallback(callback, arg);
     } else {
-        func_01ffa080(dmaNo);
+        MI_WaitDma(dmaNo);
         if (callback) {
-            func_01ffa4a0(dmaNo, callback, arg);
+            OSi_EnterDmaCallback(dmaNo, callback, arg);
             MIi_DmaSetParams_src32(dmaNo, data, (u32)dest, (size >> 2) | 0xc5000000);
         } else {
             MIi_DmaSetParams_src32(dmaNo, data, (u32)dest, (size >> 2) | 0x85000000);

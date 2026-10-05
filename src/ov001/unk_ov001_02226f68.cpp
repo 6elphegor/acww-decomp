@@ -1,163 +1,163 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
-struct Unk_ov001_02226f80_Node {
-    void *unk_00;
-    Unk_ov001_02226f80_Node *unk_04;
-    void (*unk_08)(Unk_ov001_02226f80_Node *, void *);
-    void *unk_0c;
-    u8 unk_10;
-    u8 unk_11;
+struct WfcTask {
+    void *prev;
+    WfcTask *next;
+    void (*unk_08)(WfcTask *, void *);
+    void *work;
+    u8 priority;
+    u8 ownsWork;
 };
 
-struct Unk_ov001_02226f80_Slot {
-    void *unk_00;
-    void *unk_04;
-    void *unk_08;
-    void *unk_0c;
-    Unk_ov001_02226f80_Node *unk_10;
+struct WfcTaskList {
+    void *nodePool;
+    void *deleteQueue;
+    void *list;
+    void *headNode;
+    WfcTask *firstTask;
     u8 pad_14[8];
-    u8 unk_1c;
+    u8 headPriority;
     u8 pad_1d[3];
-    u8 unk_20[0x10];
-    u8 unk_30;
+    u8 tailNode[0x10];
+    u8 tailPriority;
     u8 pad_31[3];
-    s32 unk_34;
-    u8 unk_38;
+    s32 capacity;
+    u8 isActive;
     u8 pad_39[3];
-    void *unk_3c;
+    void *nodeBuffer;
 };
 
 extern "C" {
-s32 func_01ff80e0(s32);
-void func_01ff8128(s32);
-void func_ov001_02225d58(void *);
-void func_ov001_02226710(void *);
-void func_ov001_02224cfc(void *, void *);
-void *func_ov001_02224ca0(void *);
-void func_ov001_022266d0(void *, void *);
-void func_ov001_02226754(void *);
-void func_ov001_02224d60(void *);
-void *func_ov001_02225dd8(s32, s32);
-void *func_ov001_02224d84(s32, void *, s32);
-void *func_ov001_02224dc8(s32);
-void *func_ov001_02226778();
-void func_ov001_022266b0(void *, void *);
-void func_ov001_022266c0(void *, void *);
-void func_ov001_02226f68(u32 i, u32 v);
-void func_ov001_02226f80(u32 i, void *p);
-void func_ov001_02226fd0(u32 i, void *p);
-void func_ov001_02226fdc(u32 i, void *p);
-void func_ov001_02226ffc(Unk_ov001_02226f80_Node *n, void *v);
-void *func_ov001_02227004(u32 i, void *a, void *b, u32 c, u8 d);
-void *func_ov001_02227094(u32 i, void *a, void *b, u32 c);
-void func_ov001_022270b4(u32 i);
-void func_ov001_0222718c();
-void func_ov001_022271dc();
+s32 OS_DisableIrqMask(s32);
+void OS_EnableIrqMask(s32);
+void WfcHeap_FreeAndClear(void *);
+void WfcList_Remove(void *);
+void WfcPool_Put(void *, void *);
+void *WfcPool_Get(void *);
+void WfcList_InsertBefore(void *, void *);
+void WfcList_Destroy(void *);
+void WfcPool_Destroy(void *);
+void *WfcHeap_Alloc(s32, s32);
+void *WfcPool_CreateFrom(s32, void *, s32);
+void *WfcPool_Create(s32);
+void *WfcList_Create();
+void WfcList_PushFront(void *, void *);
+void WfcList_PushBack(void *, void *);
+void WfcTask_SetListActive(u32 i, u32 v);
+void WfcTask_Release(u32 i, void *p);
+void WfcTask_Delete(u32 i, void *p);
+void WfcTask_RequestDelete(u32 i, void *p);
+void WfcTask_SetFunc(WfcTask *n, void *v);
+void *WfcTask_AddEx(u32 i, void *a, void *b, u32 c, u8 d);
+void *WfcTask_Add(u32 i, void *a, void *b, u32 c);
+void WfcTask_RunList(u32 i);
+void WfcTask_Shutdown();
+void WfcTask_Init();
 }
 
-extern "C" const u8 data_ov001_0222a468[2] = {0x80, 0x20};
-extern "C" Unk_ov001_02226f80_Slot *data_ov001_0222dfac = 0;
+extern "C" const u8 sWfcTaskListSizes[2] = {0x80, 0x20};
+extern "C" WfcTaskList *sWfcTaskLists = 0;
 
 #pragma thumb off
 
-void func_ov001_022271dc() {
+void WfcTask_Init() {
     s32 i;
     const u8 *pa;
-    data_ov001_0222dfac = (Unk_ov001_02226f80_Slot *)func_ov001_02225dd8(0x80, 4);
-    pa = data_ov001_0222a468;
+    sWfcTaskLists = (WfcTaskList *)WfcHeap_Alloc(0x80, 4);
+    pa = sWfcTaskListSizes;
     for (i = 0; i < 2; i++) {
-        data_ov001_0222dfac[i].unk_34 = *pa;
-        data_ov001_0222dfac[i].unk_3c = func_ov001_02225dd8(*pa * 0x14, 4);
-        data_ov001_0222dfac[i].unk_00 = func_ov001_02224d84(*pa, data_ov001_0222dfac[i].unk_3c, 0x14);
-        data_ov001_0222dfac[i].unk_04 = func_ov001_02224dc8(*pa);
-        data_ov001_0222dfac[i].unk_08 = func_ov001_02226778();
-        data_ov001_0222dfac[i].unk_1c = 0;
-        data_ov001_0222dfac[i].unk_30 = 0xff;
-        func_ov001_022266b0(data_ov001_0222dfac[i].unk_08, &data_ov001_0222dfac[i].unk_0c);
-        func_ov001_022266c0(data_ov001_0222dfac[i].unk_08, &data_ov001_0222dfac[i].unk_20);
-        data_ov001_0222dfac[i].unk_38 = 1;
+        sWfcTaskLists[i].capacity = *pa;
+        sWfcTaskLists[i].nodeBuffer = WfcHeap_Alloc(*pa * 0x14, 4);
+        sWfcTaskLists[i].nodePool = WfcPool_CreateFrom(*pa, sWfcTaskLists[i].nodeBuffer, 0x14);
+        sWfcTaskLists[i].deleteQueue = WfcPool_Create(*pa);
+        sWfcTaskLists[i].list = WfcList_Create();
+        sWfcTaskLists[i].headPriority = 0;
+        sWfcTaskLists[i].tailPriority = 0xff;
+        WfcList_PushFront(sWfcTaskLists[i].list, &sWfcTaskLists[i].headNode);
+        WfcList_PushBack(sWfcTaskLists[i].list, &sWfcTaskLists[i].tailNode);
+        sWfcTaskLists[i].isActive = 1;
         pa++;
     }
 }
 
-void func_ov001_0222718c() {
+void WfcTask_Shutdown() {
     s32 i = 0;
     do {
-        func_ov001_02226754(data_ov001_0222dfac[i].unk_08);
-        func_ov001_02224d60(data_ov001_0222dfac[i].unk_00);
+        WfcList_Destroy(sWfcTaskLists[i].list);
+        WfcPool_Destroy(sWfcTaskLists[i].nodePool);
         i++;
     } while (i < 2);
-    func_ov001_02225d58(&data_ov001_0222dfac);
+    WfcHeap_FreeAndClear(&sWfcTaskLists);
 }
 
-void func_ov001_022270b4(u32 i) {
-    Unk_ov001_02226f80_Slot *s = &data_ov001_0222dfac[i];
-    if (s->unk_38 == 0) return;
-    Unk_ov001_02226f80_Node *n = s->unk_10;
-    if (n != (Unk_ov001_02226f80_Node *)s->unk_20) {
+void WfcTask_RunList(u32 i) {
+    WfcTaskList *s = &sWfcTaskLists[i];
+    if (s->isActive == 0) return;
+    WfcTask *n = s->firstTask;
+    if (n != (WfcTask *)s->tailNode) {
         do {
-            n->unk_08(n, n->unk_0c);
-            n = n->unk_04;
-        } while (n != (Unk_ov001_02226f80_Node *)data_ov001_0222dfac[i].unk_20);
+            n->unk_08(n, n->work);
+            n = n->next;
+        } while (n != (WfcTask *)sWfcTaskLists[i].tailNode);
     }
     s32 k = 0;
-    if (data_ov001_0222dfac[i].unk_34 > 0) {
+    if (sWfcTaskLists[i].capacity > 0) {
         do {
-            void *e = func_ov001_02224ca0(data_ov001_0222dfac[i].unk_04);
+            void *e = WfcPool_Get(sWfcTaskLists[i].deleteQueue);
             if (e == 0) return;
-            func_ov001_02226f80(i, e);
+            WfcTask_Release(i, e);
             k++;
-        } while (k < data_ov001_0222dfac[i].unk_34);
+        } while (k < sWfcTaskLists[i].capacity);
     }
 }
 
-void *func_ov001_02227094(u32 i, void *a, void *b, u32 c) {
-    return func_ov001_02227004(i, a, b, c, 0);
+void *WfcTask_Add(u32 i, void *a, void *b, u32 c) {
+    return WfcTask_AddEx(i, a, b, c, 0);
 }
 
-void *func_ov001_02227004(u32 i, void *a, void *b, u32 c, u8 d) {
-    Unk_ov001_02226f80_Node *n = (Unk_ov001_02226f80_Node *)func_ov001_02224ca0(data_ov001_0222dfac[i].unk_00);
-    n->unk_08 = (void (*)(Unk_ov001_02226f80_Node *, void *))a;
-    n->unk_0c = b;
-    n->unk_10 = c;
-    n->unk_11 = d;
-    s32 irq = func_01ff80e0(1);
-    Unk_ov001_02226f80_Node *q = data_ov001_0222dfac[i].unk_10;
+void *WfcTask_AddEx(u32 i, void *a, void *b, u32 c, u8 d) {
+    WfcTask *n = (WfcTask *)WfcPool_Get(sWfcTaskLists[i].nodePool);
+    n->unk_08 = (void (*)(WfcTask *, void *))a;
+    n->work = b;
+    n->priority = c;
+    n->ownsWork = d;
+    s32 irq = OS_DisableIrqMask(1);
+    WfcTask *q = sWfcTaskLists[i].firstTask;
 loop:
-    if (c >= q->unk_10) goto next;
-    func_ov001_022266d0(q, n);
+    if (c >= q->priority) goto next;
+    WfcList_InsertBefore(q, n);
     goto done;
 next:
-    q = q->unk_04;
+    q = q->next;
     goto loop;
 done:
-    func_01ff8128(irq);
+    OS_EnableIrqMask(irq);
     return n;
 }
 
-void func_ov001_02226ffc(Unk_ov001_02226f80_Node *n, void *v) {
-    n->unk_08 = (void (*)(Unk_ov001_02226f80_Node *, void *))v;
+void WfcTask_SetFunc(WfcTask *n, void *v) {
+    n->unk_08 = (void (*)(WfcTask *, void *))v;
 }
 
-void func_ov001_02226fdc(u32 i, void *p) {
-    func_ov001_02224cfc(data_ov001_0222dfac[i].unk_04, p);
+void WfcTask_RequestDelete(u32 i, void *p) {
+    WfcPool_Put(sWfcTaskLists[i].deleteQueue, p);
 }
 
-void func_ov001_02226fd0(u32 i, void *p) {
-    func_ov001_02226f80(i, p);
+void WfcTask_Delete(u32 i, void *p) {
+    WfcTask_Release(i, p);
 }
 
-void func_ov001_02226f80(u32 i, void *p) {
-    Unk_ov001_02226f80_Node *n = (Unk_ov001_02226f80_Node *)p;
-    if (n->unk_11 != 0) {
-        func_ov001_02225d58(&n->unk_0c);
+void WfcTask_Release(u32 i, void *p) {
+    WfcTask *n = (WfcTask *)p;
+    if (n->ownsWork != 0) {
+        WfcHeap_FreeAndClear(&n->work);
     }
-    func_ov001_02226710(n);
-    func_ov001_02224cfc(data_ov001_0222dfac[i].unk_00, n);
+    WfcList_Remove(n);
+    WfcPool_Put(sWfcTaskLists[i].nodePool, n);
 }
 
-void func_ov001_02226f68(u32 i, u32 v) {
-    data_ov001_0222dfac[i].unk_38 = v;
+void WfcTask_SetListActive(u32 i, u32 v) {
+    sWfcTaskLists[i].isActive = v;
 }
 

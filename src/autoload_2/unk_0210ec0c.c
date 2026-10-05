@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) sound library tail: sound-archive stream player (NNS_SndArcStrm*: thread, job queue,
 // stream contexts), capture effects (NNS_SndCapture*) and the NNSiSndFader helpers.
@@ -24,12 +25,11 @@ typedef struct Fader {
 } Fader;
 
 #define HDR(c) ((u8 *)(c) + 0xa8)
-typedef struct FSFileID { void *arc; u32 id; } FSFileID;
 
 // stream context (NNSSndArcStrm), 0x160 bytes, 4 of them (data_021fc650)
 typedef struct Ctx {
     u8 strm[0x5c];          // 0x00 NNSSndStrm
-    u8 file[0x48];          // 0x5c FSFile
+    FSFile file;            // 0x5c
     u32 a4;                 // 0xa4
     u8 pad_a8[0x18];        // 0xa8 .. 0xe8: 64-byte stream header buffer (type etc. are bytes of it)
     u8 type;                // 0xc0
@@ -134,79 +134,79 @@ extern s32 data_0213bf28[];
 extern s16 data_02139fb4[];
 
 // externs: functions
-extern void *func_02100248(NNSFndList *, void *);
-extern void func_02100260(NNSFndList *, void *);
-extern void func_021003b0(NNSFndList *, void *);
-extern void func_02100444(NNSFndList *, u16);
-extern u32 func_01ffa2ec(void);
-extern void func_01ffa3d4(u32);
-extern void func_02114480(void *);
-extern void func_02114410(void *);
-extern void func_0211450c(void *);
-extern void func_02113a70(void *, void *, void *, void *, u32, u32);
-extern void func_0211366c(void *);
-extern void func_021136a0(void *);
-extern void func_02115fb4(u32, u32, u32);
-extern void func_02115e30(u32, void *, u32);
-extern void func_02115ef4();
-extern void func_021145cc(void *, u32);
-extern void func_021166b4(u32);
-extern void func_021198c4(void *);
-extern void func_021199e0(void *);
-extern void func_02119d78(void *);
-extern BOOL func_02119a78(void *, FSFileID);
-extern void func_0210a6b0(Ctx *, s32, s32);
-extern void func_0210a6f4(Ctx *, s32);
-extern void func_0210a768(Ctx *);
-extern void func_0210a798(Ctx *);
-extern BOOL func_0210a7f4();
-extern void func_0210a9c4(Ctx *);
-extern BOOL func_0210a9f4();
-extern void func_0210aa58(Ctx *);
-extern void func_0210b364();
+extern void *NNS_FndGetNextListObject(NNSFndList *, void *);
+extern void NNS_FndRemoveListObject(NNSFndList *, void *);
+extern void NNS_FndAppendListObject(NNSFndList *, void *);
+extern void NNS_FndInitList(NNSFndList *, u16);
+extern u32 OS_DisableInterrupts(void);
+extern void OS_RestoreInterrupts(u32);
+extern void OS_LockMutex(void *);
+extern void OS_UnlockMutex(void *);
+extern void OS_InitMutex(void *);
+extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
+extern void OS_WakeupThreadDirect(void *);
+extern void OS_WakeupThread(void *);
+extern void MI_CpuFill8(u32, u32, u32);
+extern void MIi_CpuClear16(u32, void *, u32);
+extern void MIi_CpuCopyFast();
+extern void DC_FlushRange(void *, u32);
+extern void SND_SetSurroundDecay(u32);
+extern void FS_CancelFile(void *);
+extern void FS_CloseFile(void *);
+extern void FS_InitFile(void *);
+extern BOOL FS_OpenFileFast(void *, FSFileID);
+extern void NNS_SndStrmSetChannelPan(Ctx *, s32, s32);
+extern void NNS_SndStrmSetVolume(Ctx *, s32);
+extern void NNS_SndStrmStop(Ctx *);
+extern void NNS_SndStrmStart(Ctx *);
+extern BOOL NNS_SndStrmSetup();
+extern void NNS_SndStrmFreeChannel(Ctx *);
+extern BOOL NNS_SndStrmAllocChannel();
+extern void NNS_SndStrmInit(Ctx *);
+extern void NNS_SndCaptureStartEffect();
 extern FSFileID func_0210b48c(void);
-extern s32 func_0210b4ac();
-extern u32 func_0210b558();
-extern u8 *func_0210b5e4();
-extern SInfo *func_0210b6ac();
-extern void *func_0210be9c();
-extern void func_0210d10c();
+extern s32 NNS_SndArcReadFile();
+extern u32 NNS_SndArcGetFileOffset();
+extern u8 *NNS_SndArcGetStrmPlayerInfo();
+extern SInfo *NNS_SndArcGetStrmInfo();
+extern void *NNS_SndHeapAlloc();
+extern void StrmThreadProc();
 
 // in-unit prototypes
-void func_0210da28(Ctx *);
-void func_0210db74(s32, s32, u32 *, u32, s32, Ctx *);
-void func_0210dcc0(void *, u32, Ctx *);
-void func_0210dd6c(Job *);
-Job *func_0210dda4(void);
-Job *func_0210ddf0(NNSFndList *);
-void func_0210de44(NNSFndList *, Ctx *);
-void func_0210deb8(ThreadInfo *, u32);
-void func_0210df2c(Ctx *);
-BOOL func_0210df74();
-void func_0210dfb4(Ctx *);
-void func_0210e024(Ctx *);
-void func_0210e0c4(Ctx *, s32);
-BOOL func_0210e128();
-void func_0210e400(Ctx *);
-Ctx *func_0210e43c(Ctx **, s32, s32);
-void func_0210e694(Ctx **);
-void func_0210e760(Ctx **);
-BOOL func_0210e778(Ctx **, s32, s32);
-BOOL func_0210e7e0(void *);
+void RequestNextStrm(Ctx *);
+void StrmDataCallback(s32, s32, u32 *, u32, s32, Ctx *);
+void StrmBufDisposeCallback(void *, u32, Ctx *);
+void FreeCommandBuffer(Job *);
+Job *AllocCommandBuffer(void);
+Job *PopCommandBuffer(NNSFndList *);
+void RemoveCommandByPlayer(NNSFndList *, Ctx *);
+void CreateStrmThread(ThreadInfo *, u32);
+void FreeChannel(Ctx *);
+BOOL AllocChannel();
+void ShutdownPlayer__sndarc_stream(Ctx *);
+void ForceStopStrm__sndarc_stream(Ctx *);
+void StopStrm(Ctx *, s32);
+BOOL PrepareStrmCore();
+void FreePlayer(Ctx *);
+Ctx *AllocPlayer(Ctx **, s32, s32);
+void NNS_SndStrmHandleRelease(Ctx **);
+void NNS_SndArcStrmStartPrepared(Ctx **);
+BOOL NNS_SndArcStrmPrepare(Ctx **, s32, s32);
+BOOL SetupStrmPlayers(void *);
 void func_0210ea0c();
-void func_0210e9c0();
-void func_0210ec0c();
-void func_0210edb0(void);
-void func_0210edb4();
-void func_0210ee4c(s32);
-BOOL func_0210efdc(Fader *);
-void func_0210f078(Fader *);
-s32 func_0210f00c(Fader *);
-void func_0210f048(Fader *, s32, s32);
-void func_0210eff4(Fader *);
+void OutputEffectMono();
+void OutputEffectSurround();
+void OutputEffectNormal(void);
+void OutputEffectCallback();
+void NNS_SndCaptureChangeOutputEffect(s32);
+BOOL NNSi_SndFaderIsFinished(Fader *);
+void NNSi_SndFaderInit(Fader *);
+s32 NNSi_SndFaderGet(Fader *);
+void NNSi_SndFaderSet(Fader *, s32, s32);
+void NNSi_SndFaderUpdate(Fader *);
 
 // NNSi sound value encoder-like (0 -> 0, positive -> v|0x4000, negative -> (-v)|0x8000)
-void func_0210f098(u16 *p, s32 v)
+void GXx_SetMasterBrightness_(u16 *p, s32 v)
 {
     if (v == 0) {
         *p = 0;
@@ -218,7 +218,7 @@ void func_0210f098(u16 *p, s32 v)
 }
 
 // NNSiSndFader_Init
-void func_0210f078(Fader *f)
+void NNSi_SndFaderInit(Fader *f)
 {
     f->end = 0;
     f->start = f->end;
@@ -227,16 +227,16 @@ void func_0210f078(Fader *f)
 }
 
 // NNSiSndFader_Set
-void func_0210f048(Fader *f, s32 target, s32 frames)
+void NNSi_SndFaderSet(Fader *f, s32 target, s32 frames)
 {
-    f->start = func_0210f00c(f);
+    f->start = NNSi_SndFaderGet(f);
     f->end = target;
     f->frames = frames;
     f->cnt = 0;
 }
 
 // NNSiSndFader_Get
-s32 func_0210f00c(Fader *f)
+s32 NNSi_SndFaderGet(Fader *f)
 {
     s32 start;
     if (f->cnt >= f->frames) return f->end;
@@ -245,19 +245,19 @@ s32 func_0210f00c(Fader *f)
 }
 
 // NNSiSndFader_Update
-void func_0210eff4(Fader *f)
+void NNSi_SndFaderUpdate(Fader *f)
 {
     if (f->cnt < f->frames) f->cnt++;
 }
 
 // NNSiSndFader_IsFinished
-BOOL func_0210efdc(Fader *f)
+BOOL NNSi_SndFaderIsFinished(Fader *f)
 {
     return f->cnt >= f->frames;
 }
 
 // NNSi_SndArc entry lookup-like (count at +0x1c, 12-byte entries from +0x20, first word -1 = unused)
-void *func_0210ef9c(ArcTbl *t, s32 i)
+void *NNSi_SndSeqArcGetSeqInfo(ArcTbl *t, s32 i)
 {
     if (i < 0) return 0;
     if ((u32)i >= t->count) return 0;
@@ -266,62 +266,62 @@ void *func_0210ef9c(ArcTbl *t, s32 i)
 }
 
 // NNS_SndCaptureStartEffect-like (select effect and start the capture)
-void func_0210ef44(void *a, void *b, s32 effect)
+void NNS_SndCaptureStartOutputEffect(void *a, void *b, s32 effect)
 {
-    func_0210ee4c(effect);
-    func_0210b364(a, b, 0, 32000, 2, func_0210edb4, &data_0213bf10);
+    NNS_SndCaptureChangeOutputEffect(effect);
+    NNS_SndCaptureStartEffect(a, b, 0, 32000, 2, OutputEffectCallback, &data_0213bf10);
 }
 
 // NNS_SndCaptureSetEffect-like (select effect 0..3, clear state)
-void func_0210ee4c(s32 effect)
+void NNS_SndCaptureChangeOutputEffect(s32 effect)
 {
     u32 irq;
     volatile u16 zero;
     if (effect == data_0213bf10.type) return;
-    if (data_0213bf10.type == 1) func_021166b4(0);
-    irq = func_01ffa2ec();
+    if (data_0213bf10.type == 1) SND_SetSurroundDecay(0);
+    irq = OS_DisableInterrupts();
     zero = 0;
-    func_02115e30(zero, data_0213bf28, 0xc0);
+    MIi_CpuClear16(zero, data_0213bf28, 0xc0);
     data_0213bf10.type = effect;
     switch (effect) {
     case 1:
-        data_0213bf10.fn = func_0210ec0c;
+        data_0213bf10.fn = OutputEffectSurround;
         break;
     case 2:
         data_0213bf10.fn = func_0210ea0c;
         break;
     case 3:
-        data_0213bf10.fn = func_0210e9c0;
+        data_0213bf10.fn = OutputEffectMono;
         break;
     case 0:
-        data_0213bf10.fn = func_0210edb0;
+        data_0213bf10.fn = OutputEffectNormal;
         break;
     default:
-        data_0213bf10.fn = func_0210edb0;
+        data_0213bf10.fn = OutputEffectNormal;
         break;
     }
-    func_01ffa3d4(irq);
+    OS_RestoreInterrupts(irq);
     if (effect != 1) return;
-    func_021166b4(0x3000);
+    SND_SetSurroundDecay(0x3000);
 }
 
 // NNSi_SndCaptureCallback-like (pre callback, effect, post callback, flush)
-void func_0210edb4(void *l, void *r, u32 len, s32 fmt, EffCtl *c)
+void OutputEffectCallback(void *l, void *r, u32 len, s32 fmt, EffCtl *c)
 {
     if (c->pre != 0) c->pre(l, r, len, fmt, c->preArg);
     c->fn(l, r, len, c);
     if (c->post != 0) c->post(l, r, len, fmt, c->postArg);
-    func_021145cc(l, len);
-    func_021145cc(r, len);
+    DC_FlushRange(l, len);
+    DC_FlushRange(r, len);
 }
 
 // empty capture effect (effect 0)
-void func_0210edb0(void)
+void OutputEffectNormal(void)
 {
 }
 
 // NNSi_SndCaptureEffect side-signal-like (capture effect 1)
-void func_0210ec0c(s16 *l, s16 *r, u32 len, EffCtl *c)
+void OutputEffectSurround(s16 *l, s16 *r, u32 len, EffCtl *c)
 {
     s16 tmp[2];
     u32 n = len >> 1;
@@ -367,3 +367,7 @@ void func_0210ec0c(s16 *l, s16 *r, u32 len, EffCtl *c)
         c->u.w[i] = tmp[i];
     }
 }
+
+// ---- file-scope objects (.data 0x0213bf10-0x0213bfe8): the capture-effect control block. data_0213bf28 (its sample
+// work area u.w) is an interior label (autoload_2 lcf_symbols.txt).
+EffCtl data_0213bf10 = {-1};

@@ -1,8 +1,10 @@
 #include "types.h"
+#include "sys/ClockDateTime.h"
+#include "nitro/os_rtc.h"
 
-struct Unk_0209cbd8 {
-    u32 unk_00;
-    u16 unk_04;
+struct ClockOffset {
+    u32 minutes;
+    u16 seconds;
 };
 
 struct Unk_0209cf28_T {
@@ -14,126 +16,110 @@ struct Unk_0209cf28_T {
     }
 };
 
-struct Unk_0209cc08_T {
-    u8 unk_00, unk_01, unk_02, unk_03;
-    Unk_0209cc08_T() {
-        unk_00 = 1;
-        unk_01 = 1;
-        unk_02 = 0;
-        unk_03 = 0;
+struct ClockDateInit {
+    u8 day, month, year, pad_03;
+    ClockDateInit() {
+        day = 1;
+        month = 1;
+        year = 0;
+        pad_03 = 0;
     }
 };
 
-union Unk_0209cdf8_T {
+union MinuteHour {
     struct {
-        u8 unk_00;
-        u8 unk_01;
+        u8 minute;
+        u8 hour;
     };
-    u16 unk_h;
+    u16 v;
 };
 
-struct Unk_0209d0e4 {
-    u8 unk_00; // seconds
-    u8 unk_01; // minutes
-    u8 unk_02; // hours
-    u8 unk_03; // day
-    u8 unk_04; // month
-    u8 unk_05; // year (0..99)
-    u8 unk_06;
-    u8 unk_07;
-};
 
-struct Unk_0209d4c0_Date {
-    s32 year, month, day, week;
-};
-struct Unk_0209d4c0_Time {
-    s32 hour, min, sec;
-};
 
 // rodata
-extern const u8 data_020d0660[12];
-extern const u8 data_020d066c[12];
-extern const u16 data_020d0678[20];
-extern const u16 data_020d06a0[24];
-extern const u16 data_020d06d0[26];
+extern const u8 sDaysInMonthLeap[12];
+extern const u8 sDaysInMonth[12];
+extern const u16 sWeatherPeriodEnds[20];
+extern const u16 sSeasonPeriodEnds[24];
+extern const u16 sDaysBeforeMonth[26];
 
 extern u8 data_021ed2d0[];
-extern s32 data_021d72ec[7];
+extern s32 gClock[7];
 
 extern "C" {
-void func_0204605c();
-void func_0211d45c();
-void func_0211d20c(void *date, void *time);
-void func_02116048(void *src, void *dst, u32 size);
-void func_0209d0a4(Unk_0209d0e4 *p, u32 n);
-void func_0209d0e4(Unk_0209d0e4 *p, s32 n);
-void func_0209d124(Unk_0209d0e4 *p, s32 n);
-void func_0209d164(Unk_0209d0e4 *p, s32 n);
-void func_0209d1d0(Unk_0209d0e4 *p, s32 n);
-void func_0209d214(Unk_0209d0e4 *p, s32 n);
-void func_0209d224(Unk_0209d0e4 *p, s32 n);
-void func_0209d258(Unk_0209d0e4 *p, s32 n);
-void func_0209d28c(Unk_0209d0e4 *p, s32 n);
-void func_0209d2c0(Unk_0209d0e4 *p, s32 n);
-void func_0209d2f4(Unk_0209d0e4 *p, s32 n);
-void func_0209d328(Unk_0209d0e4 *p, s32 n);
-s32 func_0209d374(Unk_0209d0e4 *a, Unk_0209d0e4 *b);
-s32 func_0209d3a4(Unk_0209d0e4 *a, Unk_0209d0e4 *b);
-void func_0209d4c0(s32 *out);
-void func_0209d5d4(Unk_0209d4c0_Date *d, Unk_0209d4c0_Time *t);
-s32 func_0209cc34(Unk_0209cc08_T *t);
-s32 func_0209cc98(Unk_0209cc08_T *t);
-s32 func_0209cdc0(u8 *a, u8 *b);
-s32 func_0209cd00(u8 *a, u8 *b);
-void func_0209cf18(u8 *out);
-void func_0209cf28(u8 *out);
-void func_0209cf88(u8 *out);
-s32 func_0209cef4();
-s32 func_0209ce48(u32 y, u32 m);
-s32 func_0209ceac(u32 a, u32 b, u32 c);
+void Town_CheckDayChange();
+void RTC_Init();
+void RTC_GetDateTime(void *date, void *time);
+void MI_CpuCopy8(void *src, void *dst, u32 size);
+void DateTime_SubSeconds(ClockDateTime *p, u32 n);
+void DateTime_SubMinutes(ClockDateTime *p, s32 n);
+void DateTime_SubHours(ClockDateTime *p, s32 n);
+void DateTime_SubDays(ClockDateTime *p, s32 n);
+void DateTime_SubMonths(ClockDateTime *p, s32 n);
+void DateTime_SubYears(ClockDateTime *p, s32 n);
+void DateTime_AddSeconds(ClockDateTime *p, s32 n);
+void DateTime_AddMinutes(ClockDateTime *p, s32 n);
+void DateTime_AddHours(ClockDateTime *p, s32 n);
+void DateTime_AddDays(ClockDateTime *p, s32 n);
+void DateTime_AddMonths(ClockDateTime *p, s32 n);
+void DateTime_AddYears(ClockDateTime *p, s32 n);
+s32 DateTime_DiffMinutes(ClockDateTime *a, ClockDateTime *b);
+s32 DateTime_DiffDays(ClockDateTime *a, ClockDateTime *b);
+void Clock_ReadAdjusted(s32 *out);
+void Clock_ReadRtc(RTCDate *d, RTCTime *t);
+s32 Date_GetWeatherPeriod(ClockDateInit *t);
+s32 Date_GetSeasonPeriod(ClockDateInit *t);
+s32 Date_IsAfterOrEqual(u8 *a, u8 *b);
+s32 Date_DaysBetween(u8 *a, u8 *b);
+void Clock_GetMinuteHour(u8 *out);
+void Clock_GetRtcDateTime(u8 *out);
+void Clock_GetDate(u8 *out);
+s32 Clock_GetWeekday();
+s32 Date_GetDaysInMonth(u32 y, u32 m);
+s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 
-void _ZN12Unk_0209ea5013func_0209ea60Ev(void *);
-void func_02084f48(void);
-void func_02084ecc(void);
-void func_02079c7c(void *);
-void func_020850e0(void);
-void func_020851e4(void);
-void func_0205267c(void);
-void func_0209c408(void);
-void func_020b1dc0(void);
-void func_020b11fc(void);
-void func_02034164(void);
-void func_020407fc(void *);
-void func_020c0270(void *);
-void func_02045e98(void);
-void func_020ae3a4(void *, s32);
-void func_0206daec(void *);
-void func_02085178(void);
-void _ZN12Unk_02086f8413func_02086fd0Ev(void);
-void func_02085174(void);
-void _ZN12Unk_02086c0413func_02086edcEv(void);
-void func_020850e8(void);
-void func_0208516c(void);
-void _ZN12Unk_020868cc13func_020868e4Ev(void);
-s32 func_0208a578(void);
-void _ZN12Unk_020e0f1013func_0208c134Eii(s32, s32, s32);
-void func_0202e8b0(void);
-void func_0207a038(void *);
-void func_0206e6c4(void);
-void func_020b101c(void);
-void *func_0209750c(void);
-void func_02079f1c(void *, void *);
-void func_020781ec(void);
-void func_02078308(void);
-void func_020782e0(void);
-void func_02078328(void);
+void _ZN11SaveRecord410expireDateEv(void *);
+void NpcSpawn_ResetAll(void);
+void NpcNetRecords_InitVillagers(void);
+void SaveVillagers_ResetMoods(void *);
+void TownSessionState_Get(void);
+void TownSessionState_Reset(void);
+void RoomFtrState_ResetAll(void);
+void RoomObjSync_Reset(void);
+void BuildingStates_Reset(void);
+void BuildingOccupancy_Reset(void);
+void RoomWallFloor_ClearScenes(void);
+void EventWeekSlots_OnLoad(void *);
+void Weather_Apply(void *);
+void Town_OnLoad(void);
+void NookShop_UpdateDaily(void *, s32);
+void Melody_SetPacked(void *);
+void TownSessionState_GetKatieState(void);
+void _ZN15KatieVisitState12pickKatiePosEv(void);
+void TownSessionState_GetPeteFall(void);
+void _ZN13PeteFallState5clearEv(void);
+void TownSessionState_CheckTortimerReward(void);
+void TownSessionState_GetVisitorPos(void);
+void _ZN10VisitorPos13pickRandomPosEv(void);
+s32 Hud_GetCountdown(void);
+void _ZN12HudCountdown5startEii(s32, s32, s32);
+void LowBattery_Reset(void);
+void SaveVillagers_PickGreeter(void *);
+void MenuCtrl_InitKeyboardState(void);
+void HouseVisitor_ClearPresent(void);
+void *PlayerData_GetCurrent(void);
+void SaveVillagers_InitTalkUrges(void *, void *);
+void VillagerStates_ResetIdleFrames(void);
+void VillagerStates_ClearUnk1dBit2(void);
+void VillagerStates_ResetTalkRepeats(void);
+void VillagerStates_ClearUnk1dBit0(void);
 }
 
-static inline void Unk_0209cdf8_Norm(Unk_0209cdf8_T *p, u16 *out) {
-    while (p->unk_01 >= 0x18) {
-        p->unk_01 -= 0x18;
+static inline void Unk_0209cdf8_Norm(MinuteHour *p, u16 *out) {
+    while (p->hour >= 0x18) {
+        p->hour -= 0x18;
     }
-    *out = p->unk_h;
+    *out = p->v;
 }
 
 static inline s32 Unk_0209d0e4_Abs(s32 v) {
@@ -143,13 +129,11 @@ static inline s32 Unk_0209d0e4_Abs(s32 v) {
     return v;
 }
 
-struct Unk_0209d4c0_V4 { s32 v[4]; };
-struct Unk_0209d4c0_V3 { s32 v[3]; };
-struct Unk_0209d4c0_B : Unk_0209d0e4 {
-    Unk_0209d4c0_B() { ((u32 *)this)[0] = 0; ((u32 *)this)[1] = 0; }
+struct ZeroedClockDateTime : ClockDateTime {
+    ZeroedClockDateTime() { ((u32 *)this)[0] = 0; ((u32 *)this)[1] = 0; }
 };
-struct Unk_0209d4c0_Dt : Unk_0209d4c0_B {
-    Unk_0209d4c0_Dt() { ((u32 *)this)[0] = 0; ((u32 *)this)[1] = 0; }
+struct ZeroedClockDateTime2 : ZeroedClockDateTime {
+    ZeroedClockDateTime2() { ((u32 *)this)[0] = 0; ((u32 *)this)[1] = 0; }
 };
 static inline s16 Unk_0209d4c0_Abs16(s16 v) {
     if (v < 0) {
@@ -158,254 +142,254 @@ static inline s16 Unk_0209d4c0_Abs16(s16 v) {
     return v;
 }
 
-class Unk_0209d5f8 {
+class LetterStorageBlock {
 public:
     u32 pad[0x11df0 / 4];
-    u8 unk_11df0;
+    u8 validMarker;
 };
 
-extern "C" void func_0209d624(u8 *p) {
-    _ZN12Unk_0209ea5013func_0209ea60Ev(p + 0x15fc5);
-    func_02084f48();
-    func_02084ecc();
-    func_02079c7c(p + 0x8a3c);
-    func_020850e0();
-    func_020851e4();
-    func_0205267c();
-    func_0209c408();
-    func_020b1dc0();
-    func_020b11fc();
-    func_02034164();
-    func_020407fc(p + 0x15e18);
-    func_020c0270(p + 0x15f66);
-    func_02045e98();
-    func_020ae3a4(p + 0x15db4, 0);
-    func_0206daec(p + 0x15fa8);
-    func_020850e0();
-    func_02085178();
-    _ZN12Unk_02086f8413func_02086fd0Ev();
-    func_020850e0();
-    func_02085174();
-    _ZN12Unk_02086c0413func_02086edcEv();
-    func_020850e0();
-    func_020850e8();
-    func_020850e0();
-    func_0208516c();
-    _ZN12Unk_020868cc13func_020868e4Ev();
-    _ZN12Unk_020e0f1013func_0208c134Eii(func_0208a578(), 0, 1);
-    func_0202e8b0();
-    func_0207a038(p + 0x8a3c);
-    func_0206e6c4();
-    func_020b101c();
-    func_02079f1c(p + 0x8a3c, func_0209750c());
-    func_020781ec();
-    func_02078308();
-    func_020782e0();
-    func_02078328();
+extern "C" void SaveData_Apply(u8 *p) {
+    _ZN11SaveRecord410expireDateEv(p + 0x15fc5);
+    NpcSpawn_ResetAll();
+    NpcNetRecords_InitVillagers();
+    SaveVillagers_ResetMoods(p + 0x8a3c);
+    TownSessionState_Get();
+    TownSessionState_Reset();
+    RoomFtrState_ResetAll();
+    RoomObjSync_Reset();
+    BuildingStates_Reset();
+    BuildingOccupancy_Reset();
+    RoomWallFloor_ClearScenes();
+    EventWeekSlots_OnLoad(p + 0x15e18);
+    Weather_Apply(p + 0x15f66);
+    Town_OnLoad();
+    NookShop_UpdateDaily(p + 0x15db4, 0);
+    Melody_SetPacked(p + 0x15fa8);
+    TownSessionState_Get();
+    TownSessionState_GetKatieState();
+    _ZN15KatieVisitState12pickKatiePosEv();
+    TownSessionState_Get();
+    TownSessionState_GetPeteFall();
+    _ZN13PeteFallState5clearEv();
+    TownSessionState_Get();
+    TownSessionState_CheckTortimerReward();
+    TownSessionState_Get();
+    TownSessionState_GetVisitorPos();
+    _ZN10VisitorPos13pickRandomPosEv();
+    _ZN12HudCountdown5startEii(Hud_GetCountdown(), 0, 1);
+    LowBattery_Reset();
+    SaveVillagers_PickGreeter(p + 0x8a3c);
+    MenuCtrl_InitKeyboardState();
+    HouseVisitor_ClearPresent();
+    SaveVillagers_InitTalkUrges(p + 0x8a3c, PlayerData_GetCurrent());
+    VillagerStates_ResetIdleFrames();
+    VillagerStates_ClearUnk1dBit2();
+    VillagerStates_ResetTalkRepeats();
+    VillagerStates_ClearUnk1dBit0();
 }
 
-extern "C" BOOL func_0209d610(Unk_0209d5f8 *p) {
-    if (p->unk_11df0 == 2) {
+extern "C" BOOL LetterStorage_IsValid(LetterStorageBlock *p) {
+    if (p->validMarker == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_0209d604(Unk_0209d5f8 *p) {
-    p->unk_11df0 = 0x1c;
+extern "C" void LetterStorage_MarkInterrupted(LetterStorageBlock *p) {
+    p->validMarker = 0x1c;
 }
 
-extern "C" void func_0209d5f8(Unk_0209d5f8 *p) {
-    p->unk_11df0 = 2;
+extern "C" void LetterStorage_MarkValid(LetterStorageBlock *p) {
+    p->validMarker = 2;
 }
 
-extern "C" void func_0209d5d4(Unk_0209d4c0_Date *d, Unk_0209d4c0_Time *t) {
-    func_0211d20c(d, t);
+extern "C" void Clock_ReadRtc(RTCDate *d, RTCTime *t) {
+    RTC_GetDateTime(d, t);
     if (d->year == 0 && d->month == 1 && d->day == 1) {
         d->week = 6;
     }
 }
 
-extern "C" void func_0209d4c0(s32 *out) {
-    Unk_0209d4c0_V4 d;
-    Unk_0209d4c0_V3 t;
-    func_0209d5d4((Unk_0209d4c0_Date*)&d, (Unk_0209d4c0_Time*)&t);
-    Unk_0209d4c0_V4 d2 = d;
-    out[0] = d2.v[0]; out[1] = d2.v[1]; out[2] = d2.v[2]; out[3] = d2.v[3];
-    Unk_0209d4c0_V3 t2 = t;
-    out[4] = t2.v[0]; out[5] = t2.v[1]; out[6] = t2.v[2];
+extern "C" void Clock_ReadAdjusted(s32 *out) {
+    RTCDate d;
+    RTCTime t;
+    Clock_ReadRtc(&d, &t);
+    RTCDate d2 = d;
+    out[0] = d2.year; out[1] = d2.month; out[2] = d2.day; out[3] = d2.week;
+    RTCTime t2 = t;
+    out[4] = t2.hour; out[5] = t2.minute; out[6] = t2.second;
     s32 a = *(s32 *)(data_021ed2d0 + 0x34);
     s16 b = *(s16 *)(data_021ed2d0 + 0x38);
-    Unk_0209d4c0_Dt dtl;
-    dtl.unk_05 = d.v[0];
-    dtl.unk_04 = d.v[1];
-    dtl.unk_03 = d.v[2];
-    dtl.unk_02 = t.v[0];
-    dtl.unk_01 = t.v[1];
-    dtl.unk_00 = t.v[2];
+    ZeroedClockDateTime2 dtl;
+    dtl.year = d.year;
+    dtl.month = d.month;
+    dtl.day = d.day;
+    dtl.hour = t.hour;
+    dtl.minute = t.minute;
+    dtl.second = t.second;
     if (a < 0) {
-        func_0209d0e4(&dtl, Unk_0209d0e4_Abs(a));
+        DateTime_SubMinutes(&dtl, Unk_0209d0e4_Abs(a));
     } else {
-        func_0209d258(&dtl, a);
+        DateTime_AddMinutes(&dtl, a);
     }
     if (b < 0) {
         b = Unk_0209d4c0_Abs16(b);
-        func_0209d0a4(&dtl, b);
+        DateTime_SubSeconds(&dtl, b);
     } else {
-        func_0209d224(&dtl, b);
+        DateTime_AddSeconds(&dtl, b);
     }
-    d.v[0] = dtl.unk_05;
-    d.v[1] = dtl.unk_04;
-    d.v[2] = dtl.unk_03;
-    t.v[0] = dtl.unk_02;
-    t.v[1] = dtl.unk_01;
-    t.v[2] = dtl.unk_00;
-    d.v[3] = func_0209ceac((u8)d.v[0], (u8)d.v[1], (u8)d.v[2]);
-    Unk_0209d4c0_V4 d3 = d;
-    out[0] = d3.v[0]; out[1] = d3.v[1]; out[2] = d3.v[2]; out[3] = d3.v[3];
-    Unk_0209d4c0_V3 t3 = t;
-    out[4] = t3.v[0]; out[5] = t3.v[1]; out[6] = t3.v[2];
+    d.year = dtl.year;
+    d.month = dtl.month;
+    d.day = dtl.day;
+    t.hour = dtl.hour;
+    t.minute = dtl.minute;
+    t.second = dtl.second;
+    d.week = Date_GetWeekday((u8)d.year, (u8)d.month, (u8)d.day);
+    RTCDate d3 = d;
+    out[0] = d3.year; out[1] = d3.month; out[2] = d3.day; out[3] = d3.week;
+    RTCTime t3 = t;
+    out[4] = t3.hour; out[5] = t3.minute; out[6] = t3.second;
 }
 
-extern "C" void func_0209d498(Unk_0209d0e4 *p) {
-    s32 *t = data_021d72ec + 4;
-    s32 *d = data_021d72ec;
-    p->unk_05 = d[0];
-    p->unk_04 = d[1];
-    p->unk_03 = d[2];
-    p->unk_02 = t[0];
-    p->unk_01 = t[1];
-    p->unk_00 = t[2];
+extern "C" void Clock_GetDateTime(ClockDateTime *p) {
+    s32 *t = gClock + 4;
+    s32 *d = gClock;
+    p->year = d[0];
+    p->month = d[1];
+    p->day = d[2];
+    p->hour = t[0];
+    p->minute = t[1];
+    p->second = t[2];
 }
 
-extern "C" s32 func_0209d3d0(Unk_0209d0e4 *a, Unk_0209d0e4 *b, u32 mask) {
+extern "C" s32 DateTime_Compare(ClockDateTime *a, ClockDateTime *b, u32 mask) {
     if (mask & 0x20) {
-        if (a->unk_05 < b->unk_05) return -1;
-        if (a->unk_05 > b->unk_05) return 1;
+        if (a->year < b->year) return -1;
+        if (a->year > b->year) return 1;
     }
     if (mask & 0x10) {
-        if (a->unk_04 < b->unk_04) return -1;
-        if (a->unk_04 > b->unk_04) return 1;
+        if (a->month < b->month) return -1;
+        if (a->month > b->month) return 1;
     }
     if (mask & 0x8) {
-        if (a->unk_03 < b->unk_03) return -1;
-        if (a->unk_03 > b->unk_03) return 1;
+        if (a->day < b->day) return -1;
+        if (a->day > b->day) return 1;
     }
     if (mask & 0x4) {
-        if (a->unk_02 < b->unk_02) return -1;
-        if (a->unk_02 > b->unk_02) return 1;
+        if (a->hour < b->hour) return -1;
+        if (a->hour > b->hour) return 1;
     }
     if (mask & 0x2) {
-        if (a->unk_01 < b->unk_01) return -1;
-        if (a->unk_01 > b->unk_01) return 1;
+        if (a->minute < b->minute) return -1;
+        if (a->minute > b->minute) return 1;
     }
     if (mask & 0x1) {
-        if (a->unk_00 < b->unk_00) return -1;
-        if (a->unk_00 > b->unk_00) return 1;
+        if (a->second < b->second) return -1;
+        if (a->second > b->second) return 1;
     }
     return 0;
 }
 
-extern "C" s32 func_0209d3a4(Unk_0209d0e4 *a, Unk_0209d0e4 *b) {
+extern "C" s32 DateTime_DiffDays(ClockDateTime *a, ClockDateTime *b) {
     struct L {
         u8 x[3];
         u8 pad;
         u8 y[3];
     } l;
-    l.x[2] = b->unk_05;
-    l.x[1] = b->unk_04;
-    l.x[0] = b->unk_03;
-    l.y[2] = a->unk_05;
-    l.y[1] = a->unk_04;
-    l.y[0] = a->unk_03;
-    return func_0209cd00((u8 *)&l.x, (u8 *)&l.y);
+    l.x[2] = b->year;
+    l.x[1] = b->month;
+    l.x[0] = b->day;
+    l.y[2] = a->year;
+    l.y[1] = a->month;
+    l.y[0] = a->day;
+    return Date_DaysBetween((u8 *)&l.x, (u8 *)&l.y);
 }
 
-extern "C" s32 func_0209d374(Unk_0209d0e4 *a, Unk_0209d0e4 *b) {
-    s32 days = func_0209d3a4(a, b);
-    s32 t = (b->unk_02 - a->unk_02) * 60 - a->unk_01;
+extern "C" s32 DateTime_DiffMinutes(ClockDateTime *a, ClockDateTime *b) {
+    s32 days = DateTime_DiffDays(a, b);
+    s32 t = (b->hour - a->hour) * 60 - a->minute;
     t += days * 0x5a0;
-    return t + b->unk_01;
+    return t + b->minute;
 }
 
-extern "C" void func_0209d338(Unk_0209d0e4 *p, Unk_0209d0e4 *q) {
+extern "C" void DateTime_GetWeekStart(ClockDateTime *p, ClockDateTime *q) {
     if (q) {
-        s32 dow = func_0209ceac((u8)p->unk_05, (u8)p->unk_04, (u8)p->unk_03);
+        s32 dow = Date_GetWeekday((u8)p->year, (u8)p->month, (u8)p->day);
         if (q != p) {
-            func_02116048(p, q, 8);
+            MI_CpuCopy8(p, q, 8);
         }
-        func_0209d164(q, dow);
-        q->unk_02 = 0;
-        q->unk_01 = 0;
-        q->unk_00 = 0;
+        DateTime_SubDays(q, dow);
+        q->hour = 0;
+        q->minute = 0;
+        q->second = 0;
     }
 }
 
-extern "C" void func_0209d328(Unk_0209d0e4 *p, s32 n) {
-    s32 y = p->unk_05 + n;
+extern "C" void DateTime_AddYears(ClockDateTime *p, s32 n) {
+    s32 y = p->year + n;
     if (y > 99) {
         y -= 100;
     }
-    p->unk_05 = y;
+    p->year = y;
 }
 
-extern "C" void func_0209d2f4(Unk_0209d0e4 *p, s32 n) {
-    s32 s = p->unk_04 + n;
+extern "C" void DateTime_AddMonths(ClockDateTime *p, s32 n) {
+    s32 s = p->month + n;
     if (s > 12) {
-        func_0209d328(p, s / 12);
+        DateTime_AddYears(p, s / 12);
         s = s % 12;
     }
-    p->unk_04 = s;
+    p->month = s;
 }
 
-extern "C" void func_0209d2c0(Unk_0209d0e4 *p, s32 n) {
-    s32 dim = func_0209ce48(p->unk_05, p->unk_04);
-    s32 d = p->unk_03 + n;
+extern "C" void DateTime_AddDays(ClockDateTime *p, s32 n) {
+    s32 dim = Date_GetDaysInMonth(p->year, p->month);
+    s32 d = p->day + n;
     while (d > dim) {
         d -= dim;
-        func_0209d2f4(p, 1);
-        dim = func_0209ce48(p->unk_05, p->unk_04);
+        DateTime_AddMonths(p, 1);
+        dim = Date_GetDaysInMonth(p->year, p->month);
     }
-    p->unk_03 = d;
+    p->day = d;
 }
 
-extern "C" void func_0209d28c(Unk_0209d0e4 *p, s32 n) {
-    s32 s = p->unk_02 + n;
+extern "C" void DateTime_AddHours(ClockDateTime *p, s32 n) {
+    s32 s = p->hour + n;
     if (s >= 24) {
-        func_0209d2c0(p, s / 24);
+        DateTime_AddDays(p, s / 24);
         s = s % 24;
     }
-    p->unk_02 = s;
+    p->hour = s;
 }
 
-extern "C" void func_0209d258(Unk_0209d0e4 *p, s32 n) {
-    s32 s = p->unk_01 + n;
+extern "C" void DateTime_AddMinutes(ClockDateTime *p, s32 n) {
+    s32 s = p->minute + n;
     if (s >= 60) {
-        func_0209d28c(p, s / 60);
+        DateTime_AddHours(p, s / 60);
         s = s % 60;
     }
-    p->unk_01 = s;
+    p->minute = s;
 }
 
-extern "C" void func_0209d224(Unk_0209d0e4 *p, s32 n) {
-    s32 s = p->unk_00 + n;
+extern "C" void DateTime_AddSeconds(ClockDateTime *p, s32 n) {
+    s32 s = p->second + n;
     if (s >= 60) {
-        func_0209d258(p, s / 60);
+        DateTime_AddMinutes(p, s / 60);
         s = s % 60;
     }
-    p->unk_00 = s;
+    p->second = s;
 }
 
-extern "C" void func_0209d214(Unk_0209d0e4 *p, s32 n) {
-    s32 y = p->unk_05 - n;
+extern "C" void DateTime_SubYears(ClockDateTime *p, s32 n) {
+    s32 y = p->year - n;
     if (y < 0) {
         y += 100;
     }
-    p->unk_05 = y;
+    p->year = y;
 }
 
-extern "C" void func_0209d1d0(Unk_0209d0e4 *p, s32 n) {
-    s32 m = p->unk_04 - n;
+extern "C" void DateTime_SubMonths(ClockDateTime *p, s32 n) {
+    s32 m = p->month - n;
     if (m < 1) {
         s32 k;
         if (m == 0) {
@@ -416,18 +400,18 @@ extern "C" void func_0209d1d0(Unk_0209d0e4 *p, s32 n) {
             k = m / 12 + 1;
             m = 12 - m % 12;
         }
-        func_0209d214(p, k);
+        DateTime_SubYears(p, k);
     }
-    p->unk_04 = m;
+    p->month = m;
 }
 
-extern "C" void func_0209d164(Unk_0209d0e4 *p, s32 n) {
-    s32 d = p->unk_03;
+extern "C" void DateTime_SubDays(ClockDateTime *p, s32 n) {
+    s32 d = p->day;
     s32 dim;
-    if (p->unk_04 == 1) {
-        dim = func_0209ce48(p->unk_05, 12);
+    if (p->month == 1) {
+        dim = Date_GetDaysInMonth(p->year, 12);
     } else {
-        dim = func_0209ce48(p->unk_05, (u8)(p->unk_04 - 1));
+        dim = Date_GetDaysInMonth(p->year, (u8)(p->month - 1));
     }
     d -= n;
     while (d <= 0) {
@@ -436,18 +420,18 @@ extern "C" void func_0209d164(Unk_0209d0e4 *p, s32 n) {
         } else {
             d += dim;
         }
-        func_0209d1d0(p, 1);
-        if (p->unk_04 == 1) {
-            dim = func_0209ce48(p->unk_05, 12);
+        DateTime_SubMonths(p, 1);
+        if (p->month == 1) {
+            dim = Date_GetDaysInMonth(p->year, 12);
         } else {
-            dim = func_0209ce48(p->unk_05, (u8)(p->unk_04 - 1));
+            dim = Date_GetDaysInMonth(p->year, (u8)(p->month - 1));
         }
     }
-    p->unk_03 = d;
+    p->day = d;
 }
 
-extern "C" void func_0209d124(Unk_0209d0e4 *p, s32 n) {
-    s32 r = p->unk_02 - n;
+extern "C" void DateTime_SubHours(ClockDateTime *p, s32 n) {
+    s32 r = p->hour - n;
     if (r < 0) {
         s32 q;
         r = Unk_0209d0e4_Abs(r);
@@ -457,13 +441,13 @@ extern "C" void func_0209d124(Unk_0209d0e4 *p, s32 n) {
             r = 0;
             q--;
         }
-        func_0209d164(p, q);
+        DateTime_SubDays(p, q);
     }
-    p->unk_02 = r;
+    p->hour = r;
 }
 
-extern "C" void func_0209d0e4(Unk_0209d0e4 *p, s32 n) {
-    s32 r = p->unk_01 - n;
+extern "C" void DateTime_SubMinutes(ClockDateTime *p, s32 n) {
+    s32 r = p->minute - n;
     if (r < 0) {
         s32 q;
         r = Unk_0209d0e4_Abs(r);
@@ -473,13 +457,13 @@ extern "C" void func_0209d0e4(Unk_0209d0e4 *p, s32 n) {
             r = 0;
             q--;
         }
-        func_0209d124(p, q);
+        DateTime_SubHours(p, q);
     }
-    p->unk_01 = r;
+    p->minute = r;
 }
 
-extern "C" void func_0209d0a4(Unk_0209d0e4 *t, u32 sub) {
-    s32 r5 = t->unk_00 - sub;
+extern "C" void DateTime_SubSeconds(ClockDateTime *t, u32 sub) {
+    s32 r5 = t->second - sub;
     s32 r4;
     if (r5 < 0) {
         if (r5 < 0) {
@@ -491,21 +475,21 @@ extern "C" void func_0209d0a4(Unk_0209d0e4 *t, u32 sub) {
             r5 = 0;
             r4 = r4 - 1;
         }
-        func_0209d0e4(t, r4);
+        DateTime_SubMinutes(t, r4);
     }
-    t->unk_00 = r5;
+    t->second = r5;
 }
 
-extern "C" void func_0209d064(Unk_0209d0e4 *t, u8 *p) {
-    func_0209d0a4(t, p[0]);
-    func_0209d0e4(t, p[1]);
-    func_0209d124(t, p[2]);
-    func_0209d164(t, p[3]);
-    func_0209d1d0(t, p[4]);
-    func_0209d214(t, p[5]);
+extern "C" void DateTime_Sub(ClockDateTime *t, u8 *p) {
+    DateTime_SubSeconds(t, p[0]);
+    DateTime_SubMinutes(t, p[1]);
+    DateTime_SubHours(t, p[2]);
+    DateTime_SubDays(t, p[3]);
+    DateTime_SubMonths(t, p[4]);
+    DateTime_SubYears(t, p[5]);
 }
 
-extern "C" BOOL func_0209d020(u8 *p) {
+extern "C" BOOL DateTime_IsInvalid(u8 *p) {
     BOOL bad = FALSE;
     BOOL ok = FALSE;
     if (p[0] < 0x3c && p[1] < 0x3c && p[2] < 0x18 && p[3] >= 1 && p[3] <= 0x1f && p[4] >= 1 && p[4] <= 0xc) {
@@ -522,7 +506,7 @@ extern "C" BOOL func_0209d020(u8 *p) {
     return FALSE;
 }
 
-extern "C" void func_0209cffc(u8 *out, u8 *in, u8 a, u8 b, u8 c) {
+extern "C" void DateTime_Make(u8 *out, u8 *in, u8 a, u8 b, u8 c) {
     out[5] = in[2];
     out[4] = in[1];
     out[3] = in[0];
@@ -531,53 +515,53 @@ extern "C" void func_0209cffc(u8 *out, u8 *in, u8 a, u8 b, u8 c) {
     out[0] = c;
 }
 
-extern "C" void func_0209cfe4() {
-    func_0211d45c();
-    func_0209d4c0(data_021d72ec);
+extern "C" void Clock_Init() {
+    RTC_Init();
+    Clock_ReadAdjusted(gClock);
 }
 
-extern "C" void func_0209cfc8(u32 x) {
-    func_0209d4c0(data_021d72ec);
+extern "C" void Clock_Update(u32 x) {
+    Clock_ReadAdjusted(gClock);
     if (x == 0) {
-        func_0204605c();
+        Town_CheckDayChange();
     }
 }
 
-extern "C" void func_0209cfb8(u8 *out) {
-    out[0] = data_021d72ec[2];
-    out[1] = data_021d72ec[1];
+extern "C" void Clock_GetDayMonth(u8 *out) {
+    out[0] = gClock[2];
+    out[1] = gClock[1];
 }
 
-extern "C" void func_0209cfa0(u8 *out) {
-    out[0] = data_021d72ec[3];
-    out[1] = data_021d72ec[4];
-    out[2] = data_021d72ec[2];
-    out[3] = data_021d72ec[1];
+extern "C" void Clock_GetCalendarKey(u8 *out) {
+    out[0] = gClock[3];
+    out[1] = gClock[4];
+    out[2] = gClock[2];
+    out[3] = gClock[1];
 }
 
-extern "C" void func_0209cf88(u8 *out) {
-    out[0] = data_021d72ec[2];
-    out[1] = data_021d72ec[1];
-    out[2] = data_021d72ec[0];
+extern "C" void Clock_GetDate(u8 *out) {
+    out[0] = gClock[2];
+    out[1] = gClock[1];
+    out[2] = gClock[0];
     out[3] = 0;
 }
 
-extern "C" void func_0209cf5c(u8 *out) {
-    s32 *const q = data_021d72ec + 4;
+extern "C" void Clock_GetDateTimeCleared(u8 *out) {
+    s32 *const q = gClock + 4;
     *(u32 *)out = 0;
     *(u32 *)(out + 4) = 0;
-    out[5] = data_021d72ec[0];
-    out[4] = data_021d72ec[1];
-    out[3] = data_021d72ec[2];
+    out[5] = gClock[0];
+    out[4] = gClock[1];
+    out[3] = gClock[2];
     out[2] = q[0];
     out[1] = q[1];
     out[0] = q[2];
 }
 
-extern "C" void func_0209cf28(u8 *out) {
+extern "C" void Clock_GetRtcDateTime(u8 *out) {
     s32 a[4];
     s32 b[4];
-    func_0209d5d4((Unk_0209d4c0_Date *)a, (Unk_0209d4c0_Time *)b);
+    Clock_ReadRtc((RTCDate *)a, (RTCTime *)b);
     *(u32 *)out = 0;
     *(u32 *)(out + 4) = 0;
     out[5] = a[0];
@@ -588,44 +572,44 @@ extern "C" void func_0209cf28(u8 *out) {
     out[0] = b[2];
 }
 
-extern "C" void func_0209cf18(u8 *out) {
-    s32 *const p = data_021d72ec + 4;
+extern "C" void Clock_GetMinuteHour(u8 *out) {
+    s32 *const p = gClock + 4;
     out[0] = p[1];
     out[1] = p[0];
 }
 
-extern "C" u32 func_0209cf0c() {
-    return data_021d72ec[0];
+extern "C" u32 Clock_GetYear() {
+    return gClock[0];
 }
 
-extern "C" u32 func_0209cf00() {
-    return data_021d72ec[6];
+extern "C" u32 Clock_GetSecond() {
+    return gClock[6];
 }
 
-extern "C" s32 func_0209cef4() {
-    return data_021d72ec[3];
+extern "C" s32 Clock_GetWeekday() {
+    return gClock[3];
 }
 
-extern "C" s32 func_0209ceac(u32 a, u32 b, u32 c) {
+extern "C" s32 Date_GetWeekday(u32 a, u32 b, u32 c) {
     u8 l1[4];
     u8 l2[4];
     l1[2] = a;
     l1[1] = b;
     l1[0] = c;
-    func_0209cf88(l2);
-    s32 v = func_0209cd00(l1, l2);
+    Clock_GetDate(l2);
+    s32 v = Date_DaysBetween(l1, l2);
     s32 m = (v < 0 ? -v : v) % 7;
     if (v < 0) {
         m = 7 - m;
     }
-    s32 e = func_0209cef4();
+    s32 e = Clock_GetWeekday();
     return (e + m) % 7;
 }
 
-extern "C" s32 func_0209ce68(u32 a, u32 b, s32 c, s32 d) {
+extern "C" s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d) {
     s32 r = -1;
     s32 x;
-    s32 w = func_0209ceac(a, b, 1);
+    s32 w = Date_GetWeekday(a, b, 1);
     s32 y;
     if (c < w) {
         y = c - w + 8;
@@ -633,31 +617,31 @@ extern "C" s32 func_0209ce68(u32 a, u32 b, s32 c, s32 d) {
         y = c + 1 - w;
     }
     x = y + (d - 1) * 7;
-    if (x < func_0209ce48(a, b)) {
+    if (x < Date_GetDaysInMonth(a, b)) {
         r = x;
     }
     return r;
 }
 
-extern "C" s32 func_0209ce48(u32 y, u32 m) {
+extern "C" s32 Date_GetDaysInMonth(u32 y, u32 m) {
     if ((y & 3) == 0) {
-        return data_020d0660[m - 1];
+        return sDaysInMonthLeap[m - 1];
     }
-    return data_020d066c[m - 1];
+    return sDaysInMonth[m - 1];
 }
 
-extern "C" void func_0209cdf8(Unk_0209cdf8_T a, Unk_0209cdf8_T b, u16 *out) {
-    Unk_0209cdf8_T t = a;
-    t.unk_00 += b.unk_00;
-    t.unk_01 += b.unk_01;
-    while (t.unk_00 >= 0x3c) {
-        t.unk_01++;
-        t.unk_00 -= 0x3c;
+extern "C" void Time_AddHourMinute(MinuteHour a, MinuteHour b, u16 *out) {
+    MinuteHour t = a;
+    t.minute += b.minute;
+    t.hour += b.hour;
+    while (t.minute >= 0x3c) {
+        t.hour++;
+        t.minute -= 0x3c;
     }
     Unk_0209cdf8_Norm(&t, out);
 }
 
-extern "C" s32 func_0209cdc0(u8 *a, u8 *b) {
+extern "C" s32 Date_IsAfterOrEqual(u8 *a, u8 *b) {
     BOOL r = TRUE;
     u32 y = b[2];
     u32 x = a[2];
@@ -679,7 +663,7 @@ extern "C" s32 func_0209cdc0(u8 *a, u8 *b) {
     return r;
 }
 
-extern "C" s32 func_0209cd00(u8 *a, u8 *b) {
+extern "C" s32 Date_DaysBetween(u8 *a, u8 *b) {
     s32 sign;
     s32 rem;
     s32 ex;
@@ -691,9 +675,9 @@ extern "C" s32 func_0209cd00(u8 *a, u8 *b) {
     s32 y0;
     s32 y1;
     s32 days;
-    const u16 (*tbl)[13] = (const u16 (*)[13])data_020d06d0;
+    const u16 (*tbl)[13] = (const u16 (*)[13])sDaysBeforeMonth;
     sign = 1;
-    if (func_0209cdc0(a, b)) {
+    if (Date_IsAfterOrEqual(a, b)) {
         d0 = b[0];
         m0 = b[1];
         y0 = b[2];
@@ -721,9 +705,9 @@ extern "C" s32 func_0209cd00(u8 *a, u8 *b) {
     return days * sign;
 }
 
-extern "C" s32 func_0209ccd0() {
+extern "C" s32 Clock_GetTimeOfDay() {
     u8 t[4];
-    func_0209cf18(t);
+    Clock_GetMinuteHour(t);
     u32 h = t[1];
     if (h < 5) {
         return 3;
@@ -737,17 +721,17 @@ extern "C" s32 func_0209ccd0() {
     return 2;
 }
 
-extern "C" s32 func_0209cc98(Unk_0209cc08_T *p) {
+extern "C" s32 Date_GetSeasonPeriod(ClockDateInit *p) {
     u8 s[2];
     u16 v;
     s32 r;
     const u16 *pt;
     s32 i;
     r = 0;
-    s[1] = p->unk_01;
-    s[0] = p->unk_00;
+    s[1] = p->month;
+    s[0] = p->day;
     v = *(u16 *)s;
-    pt = data_020d06a0;
+    pt = sSeasonPeriodEnds;
     i = r;
     for (; i < 0x17; pt++, i++) {
         if (v <= *pt) {
@@ -758,25 +742,25 @@ extern "C" s32 func_0209cc98(Unk_0209cc08_T *p) {
     return r;
 }
 
-extern "C" s32 func_0209cc6c(u8 *p) {
-    Unk_0209cc08_T t;
-    t.unk_02 = p[5];
-    t.unk_01 = p[4];
-    t.unk_00 = p[3];
-    return func_0209cc98(&t);
+extern "C" s32 DateTime_GetSeasonPeriod(u8 *p) {
+    ClockDateInit t;
+    t.year = p[5];
+    t.month = p[4];
+    t.day = p[3];
+    return Date_GetSeasonPeriod(&t);
 }
 
-extern "C" s32 func_0209cc34(Unk_0209cc08_T *p) {
+extern "C" s32 Date_GetWeatherPeriod(ClockDateInit *p) {
     u8 s[2];
     u16 v;
     s32 r;
     const u16 *pt;
     s32 i;
     r = 0;
-    s[1] = p->unk_01;
-    s[0] = p->unk_00;
+    s[1] = p->month;
+    s[0] = p->day;
     v = *(u16 *)s;
-    pt = data_020d0678;
+    pt = sWeatherPeriodEnds;
     i = r;
     for (; i < 0x13; pt++, i++) {
         if (v <= *pt) {
@@ -787,65 +771,65 @@ extern "C" s32 func_0209cc34(Unk_0209cc08_T *p) {
     return r;
 }
 
-extern "C" s32 func_0209cc08(u8 *p) {
-    Unk_0209cc08_T t;
-    t.unk_02 = p[5];
-    t.unk_01 = p[4];
-    t.unk_00 = p[3];
-    return func_0209cc34(&t);
+extern "C" s32 DateTime_GetWeatherPeriod(u8 *p) {
+    ClockDateInit t;
+    t.year = p[5];
+    t.month = p[4];
+    t.day = p[3];
+    return Date_GetWeatherPeriod(&t);
 }
 
-extern "C" u32 func_0209cbe0() {
-    s32 *const a = data_021d72ec + 4;
-    return a[1] | ((data_021d72ec[2] << 8) | ((a[2] << 24) | (a[0] << 16)));
+extern "C" u32 Clock_GetTimeSeed() {
+    s32 *const a = gClock + 4;
+    return a[1] | ((gClock[2] << 8) | ((a[2] << 24) | (a[0] << 16)));
 }
 
-extern "C" void func_0209cbd8(Unk_0209cbd8 *t) {
-    t->unk_00 = 0;
-    t->unk_04 = 0;
+extern "C" void ClockOffset_Clear(ClockOffset *t) {
+    t->minutes = 0;
+    t->seconds = 0;
 }
 
-extern "C" s32 func_0209cb9c(void *unused, u64 *b) {
+extern "C" s32 ClockOffset_CalcMinutes(void *unused, u64 *b) {
     Unk_0209cf28_T t;
-    func_0209cf28((u8 *)&t);
+    Clock_GetRtcDateTime((u8 *)&t);
     if (*(u64 *)&t < *b) {
-        return func_0209d374((Unk_0209d0e4 *)&t, (Unk_0209d0e4 *)b);
+        return DateTime_DiffMinutes((ClockDateTime *)&t, (ClockDateTime *)b);
     }
-    return -func_0209d374((Unk_0209d0e4 *)b, (Unk_0209d0e4 *)&t);
+    return -DateTime_DiffMinutes((ClockDateTime *)b, (ClockDateTime *)&t);
 }
 
-extern "C" s32 func_0209cb74(void *unused, u8 *b) {
+extern "C" s32 ClockOffset_CalcSeconds(void *unused, u8 *b) {
     Unk_0209cf28_T t;
-    func_0209cf28((u8 *)&t);
+    Clock_GetRtcDateTime((u8 *)&t);
     return (s16)(b[0] - *(u8 *)&t);
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern const u8 data_020d066c[12];
-extern const u8 data_020d0660[12];
-extern const u16 data_020d0678[20];
-extern const u16 data_020d06a0[24];
-extern const u16 data_020d06d0[26];
-extern s32 data_021d72ec[7];
+extern const u8 sDaysInMonth[12];
+extern const u8 sDaysInMonthLeap[12];
+extern const u16 sWeatherPeriodEnds[20];
+extern const u16 sSeasonPeriodEnds[24];
+extern const u16 sDaysBeforeMonth[26];
+extern s32 gClock[7];
 
-const u8 data_020d066c[12] = { 0x1f, 0x1c, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f };
+const u8 sDaysInMonth[12] = { 0x1f, 0x1c, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f };
 
-const u8 data_020d0660[12] = { 0x1f, 0x1d, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f };
+const u8 sDaysInMonthLeap[12] = { 0x1f, 0x1d, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f, 0x1f, 0x1e, 0x1f, 0x1e, 0x1f };
 
-const u16 data_020d0678[20] = {
+const u16 sWeatherPeriodEnds[20] = {
     0x0104, 0x0217, 0x0218, 0x031f, 0x0408, 0x060f, 0x0716, 0x071f, 0x081f, 0x090f,
     0x091e, 0x0b0e, 0x0b18, 0x0b19, 0x0c09, 0x0c0a, 0x0c17, 0x0c1e, 0x0c1f, 0
 };
 
-const u16 data_020d06a0[24] = {
+const u16 sSeasonPeriodEnds[24] = {
     0x0203, 0x0211, 0x0218, 0x031f, 0x0403, 0x0408, 0x0716, 0x090f, 0x091e, 0x0a04, 0x0a0a, 0x0a10,
     0x0a14, 0x0a19, 0x0a1e, 0x0b02, 0x0b09, 0x0b0d, 0x0b13, 0x0b19, 0x0c01, 0x0c0a, 0x0c1f, 0
 };
 
-const u16 data_020d06d0[26] = {
+const u16 sDaysBeforeMonth[26] = {
     0x0000, 0x001f, 0x003b, 0x005a, 0x0078, 0x0097, 0x00b5, 0x00d4, 0x00f3, 0x0111, 0x0130, 0x014e, 0x016d,
     0x0000, 0x001f, 0x003c, 0x005b, 0x0079, 0x0098, 0x00b6, 0x00d5, 0x00f4, 0x0112, 0x0131, 0x014f, 0x016e
 };
 
-// bss: 0x1c-byte object; data_021d72fc is data_021d72ec + 0x10
-s32 data_021d72ec[7];
+// bss: 0x1c-byte object; data_021d72fc is gClock + 0x10
+s32 gClock[7];

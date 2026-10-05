@@ -32,70 +32,70 @@ struct RS {
     u8 padb4[0x24];
     u8 *mat_d8;        // 0xd8
 };
-extern void func_01ff8bd0(u32, void *, u32);
-extern void func_02105e5c(void *, void *);
-extern s8 data_02135d5c[];
-extern void func_02111110(void);
-extern void func_02104338(void);
-extern void func_01ff8ccc(void);
-extern BOOL func_02110e5c(void *);
-extern BOOL func_02110e14(void *);
-extern void func_01ffbf6c(void *, void *);
-extern void func_02106054(void *, u32, void *);
-extern void func_0210609c(void *, u32, void *);
-extern void func_021060e4(void *, u32, void *);
-extern void func_0210612c(void *, u32, void *);
+extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
+extern void NNS_G3dGetCurrentMtx(void *, void *);
+extern const s8 data_02135d5c[256];
+extern void G3X_Init(void);
+extern void NNS_G3dGlbInit(void);
+extern void NNS_G3dGeFlushBuffer(void);
+extern BOOL G3X_GetClipMtx(void *);
+extern BOOL G3X_GetVectorMtx(void *);
+extern void MTX_Copy44To43_(void *, void *);
+extern void NNS_G3dMdlSetMdlAlpha(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlPolygonID(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlLightEnableFlag(void *, u32, void *);
+extern void NNS_G3dMdlSetMdlEmi(void *, u32, void *);
 
 // NNS_G3dMdl*All: apply a per-material setter to all materials of a model (count at +0x18)
-void func_02105fd8(u8 *m, void *x)
+void NNS_G3dMdlSetMdlEmiAll(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
-        func_0210612c(m, i, x);
+        NNS_G3dMdlSetMdlEmi(m, i, x);
     }
 }
 
-void func_02105f90(u8 *m, void *x)
+void NNS_G3dMdlSetMdlLightEnableFlagAll(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
-        func_021060e4(m, i, x);
+        NNS_G3dMdlSetMdlLightEnableFlag(m, i, x);
     }
 }
 
-void func_02105f48(u8 *m, void *x)
+void NNS_G3dMdlSetMdlPolygonIDAll(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
-        func_0210609c(m, i, x);
+        NNS_G3dMdlSetMdlPolygonID(m, i, x);
     }
 }
 
-void func_02105f00(u8 *m, void *x)
+void NNS_G3dMdlSetMdlAlphaAll(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
-        func_02106054(m, i, x);
+        NNS_G3dMdlSetMdlAlpha(m, i, x);
     }
 }
 
 // NNS_G3dGetCurrentMtx(pos, nrm): reads the current position/normal matrices back from the geometry engine (projection matrix saved/cleared around it)
-void func_02105e5c(void *a, void *b)
+void NNS_G3dGetCurrentMtx(void *a, void *b)
 {
     s32 buf[16];
     s32 *p;
-    func_01ff8ccc();
+    NNS_G3dGeFlushBuffer();
     *(volatile u32 *)0x04000440 = 0;
     *(volatile u32 *)0x04000444 = 0;
     *(volatile u32 *)0x04000454 = 0;
     if (a != NULL) {
         p = buf;
-        while (func_02110e5c(p) != 0) {
+        while (G3X_GetClipMtx(p) != 0) {
         }
-        func_01ffbf6c(buf, a);
+        MTX_Copy44To43_(buf, a);
     }
     if (b != NULL) {
-        while (func_02110e14(b) != 0) {
+        while (G3X_GetVectorMtx(b) != 0) {
         }
     }
     *(volatile u32 *)0x04000448 = 1;
@@ -103,7 +103,7 @@ void func_02105e5c(void *a, void *b)
 }
 
 // restores matrix stack slot of node entry idx (stack id 31 = none) and optionally reads back the current matrices
-BOOL func_02105dcc(RS *rs, void *a, void *b, u32 idx)
+BOOL NNS_G3dGetResultMtx(RS *rs, void *a, void *b, u32 idx)
 {
     u8 *base = (u8 *)rs->obj + 0x40;
     u8 *dict = base + *(u16 *)(base + 6);
@@ -111,9 +111,9 @@ BOOL func_02105dcc(RS *rs, void *a, void *b, u32 idx)
     u32 kind = (u32)(*(u16 *)(base + *(u32 *)(ent + 4)) & 0xf800) >> 11;
     if (kind != 31) {
         u32 id = kind;
-        func_01ff8bd0(0x14, &id, 1);
+        NNS_G3dGeBufferOP_N(0x14, &id, 1);
         if (a != NULL || b != NULL) {
-            func_02105e5c(a, b);
+            NNS_G3dGetCurrentMtx(a, b);
         }
         return 1;
     }
@@ -122,16 +122,16 @@ BOOL func_02105dcc(RS *rs, void *a, void *b, u32 idx)
 
 
 // NNS_G3dInit
-void func_02105d98(void)
+void NNS_G3dInit(void)
 {
-    func_02111110();
-    func_02104338();
+    G3X_Init();
+    NNS_G3dGlbInit();
     *(volatile u32 *)0x04000600 = (*(volatile u32 *)0x04000600 & ~0xc0000000) | 0x80000000;
 }
 
 // byte length of an SBC command (table data_02135d5c, 0 = variable length for opcode 9, -1 = invalid)
 // NNS_G3dSbcCmdLen-like: byte length of an SBC command, -1 if unknown
-s32 func_02105d50(u8 *c)
+s32 NNS_G3dGetSbcCmdLen(u8 *c)
 {
     u32 cmd = *c;
     s32 n = data_02135d5c[cmd];
@@ -146,3 +146,23 @@ s32 func_02105d50(u8 *c)
     }
     return n;
 }
+
+// ---- file-scope objects (.rodata 0x02135d5c-0x02135e5c): byte length of each SBC command
+const s8 data_02135d5c[256] = {
+    1, 1, 3, 2, 2, 2, 4, 2, 2, 0, 9, 1, 3, 3, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, 2, -1, 5, 3, 3, 0, -1, 1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, 2, -1, 5, 3, 3, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, 6, 4, 4, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+};

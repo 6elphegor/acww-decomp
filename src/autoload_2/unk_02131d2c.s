@@ -29,10 +29,10 @@ _fls:
 	bx lr
 
 ; float compare, x in r0, y in r1: x <= y (_fleq; unordered -> 0).
-	.global func_02131d68
-	.type func_02131d68, @function
-	.size func_02131d68, 0x3c
-func_02131d68:
+	.global _fleq
+	.type _fleq, @function
+	.size _fleq, 0x3c
+_fleq:
 	mov r3, #0xff000000
 	cmp r3, r0, lsl #1
 	cmpcs r3, r1, lsl #1

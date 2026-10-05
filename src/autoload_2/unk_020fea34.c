@@ -30,15 +30,15 @@ typedef struct { u64 a; u64 b; u16 f16; u16 f18; } S;
 typedef struct { u32 year, month, day; s32 week; } Date;
 typedef struct { u32 hour, minute, second; } Time;
 
-extern void func_02115fb4(void *dst, u32 val, u32 len);
-extern u32 func_02127588(void *table, u32 poly);
-extern u32 func_021274a4(void *table, void *data, u32 len);
-extern u64 func_01ffa6b4(void);
+extern void MI_CpuFill8(void *dst, u32 val, u32 len);
+extern u32 MATHi_CRC32InitTableRev(void *table, u32 poly);
+extern u32 MATH_CalcCRC32(void *table, void *data, u32 len);
+extern u64 OS_GetTick(void);
 extern u64 func_02133100(u64 a, u64 b);
-extern void func_0212769c(void *table, u32 poly);
-extern s32 func_02127510(void *table, void *data, u32 len);
-extern void func_02000b44(void *p);
-extern s32 func_02113088(char *buf, u32 size, const char *fmt, ...);
+extern void MATHi_CRC8InitTable(void *table, u32 poly);
+extern s32 MATH_CalcCRC8(void *table, void *data, u32 len);
+extern void OSi_ReferSymbol(void *p);
+extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 
 extern const u32 data_0213bba8[];
 extern const u8 data_02135ca8[];
@@ -50,18 +50,18 @@ extern u16 data_021f5c50;
 extern u32 data_021f5c54;
 extern u8 data_021f5c80[];
 extern const u8 data_02135c9c[];
-extern s32 func_02128930(const void *a, const void *b, u32 n);
-extern s32 func_02117e8c(u32 tag, u32 x);
-extern void func_02117eb4(u32 tag, void *cb);
-extern void func_021145b0(void *p, u32 n);
-extern void func_02114594(void *p, u32 n);
-extern void func_02115e30(u16 v, void *dst, u32 n);
-extern u16 func_021274dc(void *table, void *data, u32 len);
-extern void func_02127614(void *table, u32 poly);
+extern s32 memcmp(const void *a, const void *b, u32 n);
+extern s32 PXI_IsCallbackReady(u32 tag, u32 x);
+extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
+extern void DC_StoreRange(void *p, u32 n);
+extern void DC_InvalidateRange(void *p, u32 n);
+extern void MIi_CpuClear16(u16 v, void *dst, u32 n);
+extern u16 MATH_CalcCRC16(void *table, void *data, u32 len);
+extern void MATHi_CRC16InitTableRev(void *table, u32 poly);
 extern void WaitByLoop(u32 n);
-extern s32 func_02117dd8(u32 tag, u32 data, s32 err);
-extern void func_0206d49c(void);
-extern void func_02116048(const void *src, void *dst, u32 len);
+extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
+extern void Fatal_Trap(void);
+extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
 extern const char data_0213bbdc[];
 extern const char data_0213bbec[];
 #define PXI_FIFO_TAG_NVRAM 4
@@ -79,7 +79,7 @@ extern const char data_0213bbec[];
 
 static inline BOOL SPI_NvramWriteEnable(void)
 {
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_START_BIT | SPI_PXI_END_BIT | (0 << SPI_PXI_INDEX_SHIFT) | (SPI_PXI_COMMAND_NVRAM_WREN << 8), 0))
     {
         return FALSE;
@@ -89,7 +89,7 @@ static inline BOOL SPI_NvramWriteEnable(void)
 
 static inline BOOL SPI_NvramWriteDisable(void)
 {
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_START_BIT | SPI_PXI_END_BIT | (0 << SPI_PXI_INDEX_SHIFT) | (SPI_PXI_COMMAND_NVRAM_WRDI << 8), 0))
     {
         return FALSE;
@@ -99,16 +99,16 @@ static inline BOOL SPI_NvramWriteDisable(void)
 
 static inline BOOL SPI_NvramReadStatusRegister(u8 *pData)
 {
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_START_BIT | (0 << SPI_PXI_INDEX_SHIFT) | (SPI_PXI_COMMAND_NVRAM_RDSR << 8) | ((u32)pData >> 24), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM, (1 << SPI_PXI_INDEX_SHIFT) | (((u32)pData >> 8) & 0x0000ffff), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << SPI_PXI_INDEX_SHIFT) | (((u32)pData >> 8) & 0x0000ffff), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_END_BIT | (2 << SPI_PXI_INDEX_SHIFT) | (((u32)pData << 8) & 0x0000ff00), 0))
     {
         return FALSE;
@@ -118,28 +118,28 @@ static inline BOOL SPI_NvramReadStatusRegister(u8 *pData)
 
 static inline BOOL SPI_NvramReadDataBytes(u32 address, u32 size, u8 *pData)
 {
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_START_BIT | (0 << SPI_PXI_INDEX_SHIFT) | (SPI_PXI_COMMAND_NVRAM_READ << 8) | ((address >> 16) & 0x000000ff), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM, (1 << SPI_PXI_INDEX_SHIFT) | (address & 0x0000ffff), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << SPI_PXI_INDEX_SHIFT) | (address & 0x0000ffff), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM, (2 << SPI_PXI_INDEX_SHIFT) | ((size >> 16) & 0x0000ffff), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (2 << SPI_PXI_INDEX_SHIFT) | ((size >> 16) & 0x0000ffff), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM, (3 << SPI_PXI_INDEX_SHIFT) | (size & 0x0000ffff), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (3 << SPI_PXI_INDEX_SHIFT) | (size & 0x0000ffff), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM, (4 << SPI_PXI_INDEX_SHIFT) | ((u32)pData >> 16), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (4 << SPI_PXI_INDEX_SHIFT) | ((u32)pData >> 16), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_END_BIT | (5 << SPI_PXI_INDEX_SHIFT) | ((u32)pData & 0x0000ffff), 0))
     {
         return FALSE;
@@ -149,24 +149,24 @@ static inline BOOL SPI_NvramReadDataBytes(u32 address, u32 size, u8 *pData)
 
 static inline BOOL SPI_NvramPageWrite(u32 address, u16 size, const u8 *pData)
 {
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_START_BIT | (0 << SPI_PXI_INDEX_SHIFT) | (SPI_PXI_COMMAND_NVRAM_PW << 8) | ((address >> 16) & 0x000000ff), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM, (1 << SPI_PXI_INDEX_SHIFT) | (address & 0x0000ffff), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << SPI_PXI_INDEX_SHIFT) | (address & 0x0000ffff), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM, (2 << SPI_PXI_INDEX_SHIFT) | size, 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (2 << SPI_PXI_INDEX_SHIFT) | size, 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM, (3 << SPI_PXI_INDEX_SHIFT) | ((u32)pData >> 16), 0))
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (3 << SPI_PXI_INDEX_SHIFT) | ((u32)pData >> 16), 0))
     {
         return FALSE;
     }
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_END_BIT | (4 << SPI_PXI_INDEX_SHIFT) | ((u32)pData & 0x0000ffff), 0))
     {
         return FALSE;
@@ -176,7 +176,7 @@ static inline BOOL SPI_NvramPageWrite(u32 address, u16 size, const u8 *pData)
 
 static inline BOOL SPI_NvramSoftwareReset(void)
 {
-    if (0 > func_02117dd8(PXI_FIFO_TAG_NVRAM,
+    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM,
                           SPI_PXI_START_BIT | SPI_PXI_END_BIT | (0 << SPI_PXI_INDEX_SHIFT) | (SPI_PXI_COMMAND_NVRAM_SR << 8), 0))
     {
         return FALSE;
@@ -186,7 +186,7 @@ static inline BOOL SPI_NvramSoftwareReset(void)
 
 // NVRAM access state machine (PXI tag 4): sends the SPI NVRAM command words through the NitroSDK-style
 // SPI_Nvram* inline helpers, then polls the PXI result flag / status register.
-u32 func_020fea34(u32 cmd, u32 address, u16 size, u32 data)
+u32 NVRAMm_ExecuteCommand(u32 cmd, u32 address, u16 size, u32 data)
 {
     BOOL result = FALSE;
     u64 start;
@@ -202,7 +202,7 @@ u32 func_020fea34(u32 cmd, u32 address, u16 size, u32 data)
                 break;
             case 3:
                 result = SPI_NvramPageWrite(address, size, (const u8 *)data);
-                start = func_01ffa6b4();
+                start = OS_GetTick();
                 break;
             case 4:
             case 5:
@@ -231,7 +231,7 @@ u32 func_020fea34(u32 cmd, u32 address, u16 size, u32 data)
                 break;
             case 4:
             case 5:
-                func_02114594(data_021f5c80, 1);
+                DC_InvalidateRange(data_021f5c80, 1);
                 if (cmd == 4) {
                     if (data_021f5c80[0] & 2) {
                         cmd = 3;
@@ -242,7 +242,7 @@ u32 func_020fea34(u32 cmd, u32 address, u16 size, u32 data)
                     if ((data_021f5c80[0] & 1) == 0) {
                         return TRUE;
                     }
-                    if ((data_021f5c80[0] & 0x20) != 0 || 4000 < ((func_01ffa6b4() - start) << 6) / 0x82ea) {
+                    if ((data_021f5c80[0] & 0x20) != 0 || 4000 < ((OS_GetTick() - start) << 6) / 0x82ea) {
                         cmd = 6;
                     } else {
                         WaitByLoop(0x4000);

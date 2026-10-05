@@ -10,12 +10,12 @@ typedef short s16;
 typedef signed char s8;
 
 typedef struct { s32 rest; char *cur; char *base; } VsnCtx; // dst_string { len, cur, base }
-void func_021131c8(VsnCtx *ctx, char c);               // string_put_char
-void func_02113160(VsnCtx *ctx, char c, s32 n);        // string_fill_char
-void func_02113100(VsnCtx *ctx, const char *s, s32 n); // string_put_string
+void string_put_char(VsnCtx *ctx, char c);               // string_put_char
+void string_fill_char(VsnCtx *ctx, char c, s32 n);        // string_fill_char
+void string_put_string(VsnCtx *ctx, const char *s, s32 n); // string_put_string
 
 // OS_VSNPrintf
-int func_021127c0(char *dst, int len, const char *fmt, char *vl) {
+int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
     char prefix[2];
     char digits[26];
     VsnCtx ctx;
@@ -35,15 +35,15 @@ int func_021127c0(char *dst, int len, const char *fmt, char *vl) {
     while (*fmt) {
         c = *(s8 *)fmt;
         if ((u32)(((u8)c ^ 0x20) - 0xa1) < 0x3c) {
-            func_021131c8(&ctx, c);
+            string_put_char(&ctx, c);
             c = *++fmt;
             if (c != 0) {
                 fmt++;
-                func_021131c8(&ctx, c);
+                string_put_char(&ctx, c);
             }
         } else if (c != '%') {
             fmt++;
-            func_021131c8(&ctx, c);
+            string_put_char(&ctx, c);
         } else {
             flags = 0;
             prec = -1;
@@ -140,11 +140,11 @@ int func_021127c0(char *dst, int len, const char *fmt, char *vl) {
                 } else {
                     s32 ch = *(s32 *)((vl += 4) - 4);
                     if (flags & 8) {
-                        func_021131c8(&ctx, ch);
-                        func_02113160(&ctx, ' ', width - 1);
+                        string_put_char(&ctx, ch);
+                        string_fill_char(&ctx, ' ', width - 1);
                     } else {
-                        func_02113160(&ctx, (flags & 16) ? '0' : ' ', width - 1);
-                        func_021131c8(&ctx, ch);
+                        string_fill_char(&ctx, (flags & 16) ? '0' : ' ', width - 1);
+                        string_put_char(&ctx, ch);
                     }
                     fmt++;
                 }
@@ -170,11 +170,11 @@ int func_021127c0(char *dst, int len, const char *fmt, char *vl) {
                 }
                 width -= sl;
                 if (flags & 8) {
-                    func_02113100(&ctx, s, sl);
-                    func_02113160(&ctx, ' ', width);
+                    string_put_string(&ctx, s, sl);
+                    string_fill_char(&ctx, ' ', width);
                 } else {
-                    func_02113160(&ctx, (flags & 16) ? '0' : ' ', width);
-                    func_02113100(&ctx, s, sl);
+                    string_fill_char(&ctx, (flags & 16) ? '0' : ' ', width);
+                    string_put_string(&ctx, s, sl);
                 }
                 fmt++;
                 continue;
@@ -196,13 +196,13 @@ int func_021127c0(char *dst, int len, const char *fmt, char *vl) {
             }
             case '%':
                 if (start + 1 == fmt) {
-                    func_021131c8(&ctx, *fmt++);
+                    string_put_char(&ctx, *fmt++);
                     continue;
                 }
                 goto deflt;
             default:
             deflt:
-                func_02113100(&ctx, start, fmt - start);
+                string_put_string(&ctx, start, fmt - start);
                 continue;
             case 'x':
             hex:
@@ -319,17 +319,17 @@ int func_021127c0(char *dst, int len, const char *fmt, char *vl) {
                 }
                 width -= plen + n;
                 if (!(flags & 8)) {
-                    func_02113160(&ctx, ' ', width);
+                    string_fill_char(&ctx, ' ', width);
                 }
                 while (plen > 0) {
-                    func_021131c8(&ctx, prefix[--plen]);
+                    string_put_char(&ctx, prefix[--plen]);
                 }
-                func_02113160(&ctx, '0', pad);
+                string_fill_char(&ctx, '0', pad);
                 while (n > 0) {
-                    func_021131c8(&ctx, digits[--n]);
+                    string_put_char(&ctx, digits[--n]);
                 }
                 if (flags & 8) {
-                    func_02113160(&ctx, ' ', width);
+                    string_fill_char(&ctx, ' ', width);
                 }
             }
             fmt++;

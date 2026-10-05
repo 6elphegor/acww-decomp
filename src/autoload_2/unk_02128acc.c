@@ -18,7 +18,7 @@ unsigned char *q;                                                 \
     } while (0)
 
 // qsort (MSL qsort.c, heap sort)
-void func_02128acc(void *table_base, size_t num_members, size_t member_size, _compare_function compare_members) {
+void qsort(void *table_base, size_t num_members, size_t member_size, _compare_function compare_members) {
     size_t l, r, j;
     char *lp;
     char *rp;

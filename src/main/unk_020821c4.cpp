@@ -1,264 +1,199 @@
 #include "types.h"
+#include "npc/NpcResPool.h"
+#include "player/AnimSlotRef.h"
+#include "actor/CharaClothTexRef.h"
+#include "actor/CharaFaceAnimRef.h"
+#include "actor/CharaFaceAnimWorkRef.h"
+#include "npc/SpNpcAnimHeapRefSlot.h"
+#include "npc/VillagerAnimHeapRefSlot.h"
+#include "npc/NpcBodyAnimSlot.h"
+#include "npc/VillagerAnimHeapRefPool.h"
+#include "player/HeldItemModel.h"
 
-struct Unk_02082d68 {
-    u8 unk_00;
-    Unk_02082d68();
-    ~Unk_02082d68();
-};
 
-struct Unk_020e085c {
-    s32 unk_04;
-    Unk_020e085c(s32 n);
-    virtual ~Unk_020e085c();
-    virtual void vfunc_08(u32 i) = 0;
-    virtual void vfunc_0c(u32 i);
-    virtual Unk_02082d68 *vfunc_10(u32 i) = 0;
-    s32 func_02082cb0();
-    void func_02082d04();
-};
 
 extern "C" {
-void func_0205e274(void *);
-void func_0205e310(void *, u32, u32, u16 *, u32, u32);
-void _ZN12Unk_0205d1f813func_0205d20cEj(void *);
-void _ZN12Unk_0205ce0c13func_0205cf84Ej(void *);
-void _ZN12Unk_0205ca9413func_0205cba8Ev(void *);
-void _ZN12Unk_0205ca9413func_0205cbb0Ej(void *);
-void func_02077b84(void *);
-void func_02077ad8(void *);
-void func_02077b18(void *);
-void func_0205c384(void *);
-struct Unk_020829b0;
-void _ZN12Unk_020829b013func_020829b0Ev(Unk_020829b0 *, u32);
+void HeldItemModel_Release(void *);
+void HeldItemModel_Setup(void *, u32, u32, u16 *, u32, u32);
+void _ZN20CharaFaceAnimWorkRef6assignEj(void *);
+void _ZN16CharaFaceAnimRef6assignEj(void *);
+void _ZN16CharaClothTexRef7releaseEv(void *);
+void _ZN16CharaClothTexRef6assignEj(void *);
+void NpcTexPatBufRef_Assign(void *);
+void SpNpcAnimHeapRef_Assign(void *);
+void VillagerAnimHeapRef_Assign(void *);
+void AnimSlotRef_Assign(void *);
+struct SpNpcAnimHeapRefSlot;
+void _ZN20SpNpcAnimHeapRefSlot6assignEv(SpNpcAnimHeapRefSlot *, u32);
 }
 
-struct Unk_0205e66c {
-    u32 pad[26];
-    Unk_0205e66c();
-    ~Unk_0205e66c();
-};
-struct Unk_0205d1f8 {
-    u8 pad;
-    Unk_0205d1f8();
-    ~Unk_0205d1f8();
-};
-struct Unk_0205ce0c {
-    u8 pad;
-    Unk_0205ce0c();
-    ~Unk_0205ce0c();
-};
-struct Unk_02077b8c {
+struct NpcTexPatBufRef {
     u32 pad;
-    Unk_02077b8c();
-    ~Unk_02077b8c();
-};
-struct Unk_0205ca94 {
-    u8 pad;
-    Unk_0205ca94();
-    ~Unk_0205ca94();
-};
-struct Unk_02077af8 {
-    u32 unk_00;
-    Unk_02077af8();
-    ~Unk_02077af8();
-};
-struct Unk_02077b38 {
-    u32 unk_00;
-    Unk_02077b38();
-    ~Unk_02077b38();
-};
-struct Unk_0205c3a4 {
-    Unk_0205c3a4();
-    ~Unk_0205c3a4();
+    NpcTexPatBufRef();
+    ~NpcTexPatBufRef();
 };
 
 // ---- 0x020e077c
-struct Unk_020825b4 : Unk_02082d68 {
-    Unk_020825b4();
-    ~Unk_020825b4();
-    Unk_0205ce0c unk_01;
-    void func_020825b4(u32 id);
+struct NpcFaceAnimSlot : NpcResSlot {
+    NpcFaceAnimSlot();
+    ~NpcFaceAnimSlot();
+    CharaFaceAnimRef faceAnim;
+    void assign(u32 id);
 };
 
-struct Unk_020e077c : Unk_020e085c {
-    Unk_020825b4 unk_08[5];
-    Unk_020e077c();
-    virtual ~Unk_020e077c();
-    virtual void vfunc_08(u32 i);
-    virtual Unk_020825b4 *vfunc_10(u32 i);
-    Unk_0205ce0c *func_020824b8(u32 i);
+struct NpcFaceAnimPool : NpcResPool {
+    NpcFaceAnimSlot slots[5];
+    NpcFaceAnimPool();
+    virtual ~NpcFaceAnimPool();
+    virtual void occupySlot(u32 i);
+    virtual NpcFaceAnimSlot *getSlot(u32 i);
+    CharaFaceAnimRef *getFaceAnim(u32 i);
 };
 
-extern Unk_020e077c data_021cd324;
-extern "C" Unk_020e077c *func_02082514();
+extern NpcFaceAnimPool sNpcFaceAnimPool;
+extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get();
 
 // ---- 0x020e0798
-struct Unk_02082af0 : Unk_02082d68 {
-    Unk_02082af0();
-    ~Unk_02082af0();
-    Unk_02077b38 unk_04;
-    void func_02082af0(u32 x);
-};
 
-struct Unk_020e0798 : Unk_020e085c {
-    Unk_02082af0 unk_08[8];
-    Unk_020e0798();
-    virtual ~Unk_020e0798();
-    virtual void vfunc_08(u32 i);
-    virtual Unk_02082af0 *vfunc_10(u32 i);
-    Unk_02077b38 *func_020829f4(u32 i);
-};
 
-extern Unk_020e0798 data_021cd3d4;
-extern "C" Unk_020e0798 *func_02082a50();
+extern VillagerAnimHeapRefPool sVillagerAnimHeapRefPool;
+extern "C" VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();
 
 // ---- 0x020e07b4
-struct Unk_020826f4 : Unk_02082d68 {
-    Unk_020826f4();
-    ~Unk_020826f4();
-    Unk_02077b8c unk_04;
-    void func_020826f4(u32 id);
+struct NpcTexPatBufRefSlot : NpcResSlot {
+    NpcTexPatBufRefSlot();
+    ~NpcTexPatBufRefSlot();
+    NpcTexPatBufRef bufRef;
+    void assign(u32 id);
 };
 
-struct Unk_020e07b4 : Unk_020e085c {
-    Unk_020826f4 unk_08[5];
-    Unk_020e07b4();
-    virtual ~Unk_020e07b4();
-    virtual void vfunc_08(u32 i);
-    virtual Unk_020826f4 *vfunc_10(u32 i);
-    Unk_02077b8c *func_020825f8(u32 i);
+struct NpcTexPatBufRefPool : NpcResPool {
+    NpcTexPatBufRefSlot slots[5];
+    NpcTexPatBufRefPool();
+    virtual ~NpcTexPatBufRefPool();
+    virtual void occupySlot(u32 i);
+    virtual NpcTexPatBufRefSlot *getSlot(u32 i);
+    NpcTexPatBufRef *getBufRef(u32 i);
 };
 
-extern Unk_020e07b4 data_021cd3a4;
-extern "C" Unk_020e07b4 *func_02082654();
+extern NpcTexPatBufRefPool sNpcTexPatBufRefPool;
+extern "C" NpcTexPatBufRefPool *NpcTexPatBufRefPool_Get();
 
 // ---- 0x020e07d0
-struct Unk_0208285c : Unk_02082d68 {
-    Unk_0208285c();
-    ~Unk_0208285c();
-    Unk_0205ca94 unk_01;
-    void func_02082870(u32 id);
-    void func_0208285c();
+struct NpcClothTexSlot : NpcResSlot {
+    NpcClothTexSlot();
+    ~NpcClothTexSlot();
+    CharaClothTexRef clothTex;
+    void assign(u32 id);
+    void release();
 };
 
-struct Unk_020e07d0 : Unk_020e085c {
-    Unk_0208285c unk_08[5];
-    Unk_020e07d0();
-    virtual ~Unk_020e07d0();
-    virtual void vfunc_08(u32 i);
-    virtual void vfunc_0c(u32 i);
-    virtual Unk_0208285c *vfunc_10(u32 i);
-    Unk_0205ca94 *func_02082738(u32 i);
+struct NpcClothTexPool : NpcResPool {
+    NpcClothTexSlot slots[5];
+    NpcClothTexPool();
+    virtual ~NpcClothTexPool();
+    virtual void occupySlot(u32 i);
+    virtual void releaseSlot(u32 i);
+    virtual NpcClothTexSlot *getSlot(u32 i);
+    CharaClothTexRef *getClothTex(u32 i);
 };
 
-extern Unk_020e07d0 data_021cd338;
-extern "C" Unk_020e07d0 *func_020827bc();
+extern NpcClothTexPool sNpcClothTexPool;
+extern "C" NpcClothTexPool *NpcClothTexPool_Get();
 
 // ---- 0x020e07ec
-struct Unk_02082314 : Unk_02082d68 {
-    Unk_02082314();
-    ~Unk_02082314();
-    Unk_0205e66c unk_04;
-    void func_02082314();
-    void func_02082328(u32 id, u16 *p);
+struct NpcHeldItemModelSlot : NpcResSlot {
+    NpcHeldItemModelSlot();
+    ~NpcHeldItemModelSlot();
+    HeldItemModel model;
+    void unload();
+    void load(u32 id, u16 *p);
 };
 
-struct Unk_020e07ec : Unk_020e085c {
-    Unk_02082314 unk_08[5];
-    Unk_020e07ec();
-    virtual ~Unk_020e07ec();
-    virtual void vfunc_08(u32 i);
-    virtual void vfunc_0c(u32 i);
-    virtual Unk_02082314 *vfunc_10(u32 i);
-    Unk_0205e66c *func_020821c4(u32 i);
-    BOOL func_020821fc(u32 i, u16 *p);
+struct NpcHeldItemModelPool : NpcResPool {
+    NpcHeldItemModelSlot slots[5];
+    NpcHeldItemModelPool();
+    virtual ~NpcHeldItemModelPool();
+    virtual void occupySlot(u32 i);
+    virtual void releaseSlot(u32 i);
+    virtual NpcHeldItemModelSlot *getSlot(u32 i);
+    HeldItemModel *getModel(u32 i);
+    BOOL loadItem(u32 i, u16 *p);
 };
 
-extern Unk_020e07ec data_021cd41c;
-extern "C" Unk_020e07ec *func_02082274();
+extern NpcHeldItemModelPool sNpcHeldItemModelPool;
+extern "C" NpcHeldItemModelPool *NpcHeldItemModelPool_Get();
 
 // ---- 0x020e0808
-struct Unk_020829b0 : Unk_02082d68 {
-    Unk_02077af8 unk_04;
-    void func_020829b0();
-    Unk_020829b0();
-    ~Unk_020829b0();
+
+struct SpNpcAnimHeapRefPool : NpcResPool {
+    SpNpcAnimHeapRefSlot slots[4];
+    SpNpcAnimHeapRefPool();
+    virtual ~SpNpcAnimHeapRefPool();
+    virtual void occupySlot(u32 i);
+    virtual SpNpcAnimHeapRefSlot *getSlot(u32 i);
+    SpNpcAnimHeapRef *getHeapRef(u32 i);
 };
 
-struct Unk_020e0808 : Unk_020e085c {
-    Unk_020829b0 unk_08[4];
-    Unk_020e0808();
-    virtual ~Unk_020e0808();
-    virtual void vfunc_08(u32 i);
-    virtual Unk_020829b0 *vfunc_10(u32 i);
-    Unk_02077af8 *func_020828b4(u32 i);
-};
-
-extern Unk_020e0808 data_021cd37c;
-extern "C" Unk_020e0808 *func_02082910();
+extern SpNpcAnimHeapRefPool sSpNpcAnimHeapRefPool;
+extern "C" SpNpcAnimHeapRefPool *SpNpcAnimHeapRefPool_Get();
 
 // ---- 0x020e0824
-struct Unk_02082474 : Unk_02082d68 {
-    Unk_02082474();
-    ~Unk_02082474();
-    Unk_0205d1f8 unk_01;
-    void func_02082474(u32 id);
+struct NpcTexPatHeapSlot : NpcResSlot {
+    NpcTexPatHeapSlot();
+    ~NpcTexPatHeapSlot();
+    CharaFaceAnimWorkRef workRef;
+    void assign(u32 id);
 };
 
-struct Unk_020e0824 : Unk_020e085c {
-    Unk_02082474 unk_08[5];
-    Unk_020e0824();
-    virtual ~Unk_020e0824();
-    virtual void vfunc_08(u32 i);
-    virtual Unk_02082474 *vfunc_10(u32 i);
-    Unk_0205d1f8 *func_02082378(u32 i);
+struct NpcTexPatHeapPool : NpcResPool {
+    NpcTexPatHeapSlot slots[5];
+    NpcTexPatHeapPool();
+    virtual ~NpcTexPatHeapPool();
+    virtual void occupySlot(u32 i);
+    virtual NpcTexPatHeapSlot *getSlot(u32 i);
+    CharaFaceAnimWorkRef *getHeapRef(u32 i);
 };
 
-extern Unk_020e0824 data_021cd34c;
-extern "C" Unk_020e0824 *func_020823d4();
+extern NpcTexPatHeapPool sNpcTexPatHeapPool;
+extern "C" NpcTexPatHeapPool *NpcTexPatHeapPool_Get();
 
 // ---- 0x020e0840
-struct Unk_02082c54 : Unk_02082d68 {
-    Unk_02082c54();
-    ~Unk_02082c54();
-    Unk_0205c3a4 unk_01[3];
-    void func_02082c54(s32 a, s32 i);
+
+struct NpcBodyAnimPool : NpcResPool {
+    NpcBodyAnimSlot slots[5];
+    NpcBodyAnimPool();
+    virtual ~NpcBodyAnimPool();
+    virtual NpcBodyAnimSlot *getSlot(u32 i);
+    virtual void occupySlot(u32 i);
+    AnimSlotRef *getLayer(u32 i, u32 off);
 };
 
-struct Unk_020e0840 : Unk_020e085c {
-    Unk_02082c54 unk_08[5];
-    Unk_020e0840();
-    virtual ~Unk_020e0840();
-    virtual Unk_02082c54 *vfunc_10(u32 i);
-    virtual void vfunc_08(u32 i);
-    Unk_0205c3a4 *func_02082b34(u32 i, u32 off);
-};
+extern NpcBodyAnimPool sNpcBodyAnimPool;
+extern "C" NpcBodyAnimPool *NpcBodyAnimPool_Get();
 
-extern Unk_020e0840 data_021cd360;
-extern "C" Unk_020e0840 *func_02082bb4();
+extern const s32 sNpcBodyAnimLayerIdBases[];
+const s32 sNpcBodyAnimLayerIdBases[3] = {4, 0xd, 0x12};
 
-extern const s32 data_020cf1bc[];
-const s32 data_020cf1bc[3] = {4, 0xd, 0x12};
-
-void Unk_020e085c::func_02082d04() {
-    for (s32 i = 0; i < unk_04; i++) {
-        Unk_02082d68 *p = vfunc_10(i);
-        if (p) p->unk_00 = 0;
+void NpcResPool::clearAllSlots() {
+    for (s32 i = 0; i < numSlots; i++) {
+        NpcResSlot *p = getSlot(i);
+        if (p) p->inUse = 0;
     }
 }
 
-void Unk_020e085c::vfunc_0c(u32 i) {
-    if (i < (u32)unk_04) {
-        Unk_02082d68 *p = vfunc_10(i);
-        if (p) p->unk_00 = 0;
+void NpcResPool::releaseSlot(u32 i) {
+    if (i < (u32)numSlots) {
+        NpcResSlot *p = getSlot(i);
+        if (p) p->inUse = 0;
     }
 }
 
-s32 Unk_020e085c::func_02082cb0() {
+s32 NpcResPool::findFreeSlot() {
     s32 r = -1;
-    for (s32 i = 0; i < unk_04; i++) {
-        Unk_02082d68 *p = vfunc_10(i);
-        if (p && p->unk_00 == 0) {
+    for (s32 i = 0; i < numSlots; i++) {
+        NpcResSlot *p = getSlot(i);
+        if (p && p->inUse == 0) {
             r = i;
             break;
         }
@@ -266,358 +201,358 @@ s32 Unk_020e085c::func_02082cb0() {
     return r;
 }
 
-Unk_02082c54::Unk_02082c54() {}
+NpcBodyAnimSlot::NpcBodyAnimSlot() {}
 
-Unk_02082c54::~Unk_02082c54() {}
+NpcBodyAnimSlot::~NpcBodyAnimSlot() {}
 
-void Unk_02082c54::func_02082c54(s32 a, s32 i) {
-    func_0205c384(&unk_01[i]);
+void NpcBodyAnimSlot::assignLayer(s32 a, s32 i) {
+    AnimSlotRef_Assign(&layers[i]);
 }
 
-Unk_020e0840::Unk_020e0840() : Unk_020e085c(5) {}
+NpcBodyAnimPool::NpcBodyAnimPool() : NpcResPool(5) {}
 
-Unk_020e0840::~Unk_020e0840() {}
+NpcBodyAnimPool::~NpcBodyAnimPool() {}
 
-extern "C" Unk_020e0840 *func_02082bb4() { return &data_021cd360; }
+extern "C" NpcBodyAnimPool *NpcBodyAnimPool_Get() { return &sNpcBodyAnimPool; }
 
-void Unk_020e0840::vfunc_08(u32 i) {
-    if (i < (u32)unk_04) {
+void NpcBodyAnimPool::occupySlot(u32 i) {
+    if (i < (u32)numSlots) {
         for (s32 k = 0; k < 3; k++) {
-            func_02082bb4()->unk_08[i].func_02082c54(i + data_020cf1bc[k], k);
-            Unk_02082c54 *a = func_02082bb4()->unk_08;
+            NpcBodyAnimPool_Get()->slots[i].assignLayer(i + sNpcBodyAnimLayerIdBases[k], k);
+            NpcBodyAnimSlot *a = NpcBodyAnimPool_Get()->slots;
             *(u8 *)(i * 4 + (u32)a) = 1;
         }
     }
 }
 
-Unk_02082c54 *Unk_020e0840::vfunc_10(u32 i) {
-    Unk_02082c54 *r = 0;
-    if (i < (u32)unk_04) r = &unk_08[i];
+NpcBodyAnimSlot *NpcBodyAnimPool::getSlot(u32 i) {
+    NpcBodyAnimSlot *r = 0;
+    if (i < (u32)numSlots) r = &slots[i];
     return r;
 }
 
-Unk_0205c3a4 *Unk_020e0840::func_02082b34(u32 i, u32 off) {
-    Unk_0205c3a4 *r = 0;
-    if (i < (u32)unk_04) r = (Unk_0205c3a4 *)((u8 *)&func_02082bb4()->unk_08[i] + 1 + off);
+AnimSlotRef *NpcBodyAnimPool::getLayer(u32 i, u32 off) {
+    AnimSlotRef *r = 0;
+    if (i < (u32)numSlots) r = (AnimSlotRef *)((u8 *)&NpcBodyAnimPool_Get()->slots[i] + 1 + off);
     return r;
 }
 
-Unk_02082af0::Unk_02082af0() {}
+VillagerAnimHeapRefSlot::VillagerAnimHeapRefSlot() {}
 
-Unk_02082af0::~Unk_02082af0() {}
+VillagerAnimHeapRefSlot::~VillagerAnimHeapRefSlot() {}
 
-void Unk_02082af0::func_02082af0(u32 x) {
-    func_02077b18(&unk_04);
-    unk_00 = 1;
+void VillagerAnimHeapRefSlot::assign(u32 x) {
+    VillagerAnimHeapRef_Assign(&heapRef);
+    inUse = 1;
 }
 
-Unk_020e0798::Unk_020e0798() : Unk_020e085c(8) {}
+VillagerAnimHeapRefPool::VillagerAnimHeapRefPool() : NpcResPool(8) {}
 
-Unk_020e0798::~Unk_020e0798() {}
+VillagerAnimHeapRefPool::~VillagerAnimHeapRefPool() {}
 
-extern "C" Unk_020e0798 *func_02082a50() { return &data_021cd3d4; }
+extern "C" VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get() { return &sVillagerAnimHeapRefPool; }
 
-void Unk_020e0798::vfunc_08(u32 i) {
-    if (i < (u32)unk_04) {
+void VillagerAnimHeapRefPool::occupySlot(u32 i) {
+    if (i < (u32)numSlots) {
         u32 t = 0;
         t += i;
-        func_02082a50()->unk_08[i].func_02082af0(t);
+        VillagerAnimHeapRefPool_Get()->slots[i].assign(t);
     }
 }
 
-Unk_02082af0 *Unk_020e0798::vfunc_10(u32 i) {
-    Unk_02082af0 *r = 0;
-    if (i < (u32)unk_04) r = &unk_08[i];
+VillagerAnimHeapRefSlot *VillagerAnimHeapRefPool::getSlot(u32 i) {
+    VillagerAnimHeapRefSlot *r = 0;
+    if (i < (u32)numSlots) r = &slots[i];
     return r;
 }
 
-Unk_02077b38 *Unk_020e0798::func_020829f4(u32 i) {
-    Unk_02077b38 *r = 0;
-    if (i < (u32)unk_04) {
-        Unk_02082af0 *e = &func_02082a50()->unk_08[i];
-        r = &e->unk_04;
+VillagerAnimHeapRef *VillagerAnimHeapRefPool::getHeapRef(u32 i) {
+    VillagerAnimHeapRef *r = 0;
+    if (i < (u32)numSlots) {
+        VillagerAnimHeapRefSlot *e = &VillagerAnimHeapRefPool_Get()->slots[i];
+        r = &e->heapRef;
     }
     return r;
 }
 
-Unk_020829b0::Unk_020829b0() {}
+SpNpcAnimHeapRefSlot::SpNpcAnimHeapRefSlot() {}
 
-Unk_020829b0::~Unk_020829b0() {}
+SpNpcAnimHeapRefSlot::~SpNpcAnimHeapRefSlot() {}
 
-void Unk_020829b0::func_020829b0() {
-    func_02077ad8(&unk_04);
-    unk_00 = 1;
+void SpNpcAnimHeapRefSlot::assign() {
+    SpNpcAnimHeapRef_Assign(&heapRef);
+    inUse = 1;
 }
 
-Unk_020e0808::Unk_020e0808() : Unk_020e085c(4) {}
+SpNpcAnimHeapRefPool::SpNpcAnimHeapRefPool() : NpcResPool(4) {}
 
-Unk_020e0808::~Unk_020e0808() {}
+SpNpcAnimHeapRefPool::~SpNpcAnimHeapRefPool() {}
 
-extern "C" Unk_020e0808 *func_02082910() { return &data_021cd37c; }
+extern "C" SpNpcAnimHeapRefPool *SpNpcAnimHeapRefPool_Get() { return &sSpNpcAnimHeapRefPool; }
 
-void Unk_020e0808::vfunc_08(u32 i) {
-    if (i < (u32)unk_04) {
+void SpNpcAnimHeapRefPool::occupySlot(u32 i) {
+    if (i < (u32)numSlots) {
         u32 id = 0;
         id += i;
-        _ZN12Unk_020829b013func_020829b0Ev(&func_02082910()->unk_08[i], id);
+        _ZN20SpNpcAnimHeapRefSlot6assignEv(&SpNpcAnimHeapRefPool_Get()->slots[i], id);
     }
 }
 
-Unk_020829b0 *Unk_020e0808::vfunc_10(u32 i) {
-    Unk_020829b0 *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
-    }
-    return r;
-}
-
-Unk_02077af8 *Unk_020e0808::func_020828b4(u32 i) {
-    Unk_02077af8 *r = 0;
-    if (i < (u32)unk_04) {
-        Unk_020829b0 *e = &func_02082910()->unk_08[i];
-        r = &e->unk_04;
+SpNpcAnimHeapRefSlot *SpNpcAnimHeapRefPool::getSlot(u32 i) {
+    SpNpcAnimHeapRefSlot *r = 0;
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
-Unk_0208285c::Unk_0208285c() {}
-
-Unk_0208285c::~Unk_0208285c() {}
-
-void Unk_0208285c::func_02082870(u32 id) {
-    _ZN12Unk_0205ca9413func_0205cbb0Ej(&unk_01);
-    unk_00 = 1;
+SpNpcAnimHeapRef *SpNpcAnimHeapRefPool::getHeapRef(u32 i) {
+    SpNpcAnimHeapRef *r = 0;
+    if (i < (u32)numSlots) {
+        SpNpcAnimHeapRefSlot *e = &SpNpcAnimHeapRefPool_Get()->slots[i];
+        r = &e->heapRef;
+    }
+    return r;
 }
 
-void Unk_0208285c::func_0208285c() {
-    _ZN12Unk_0205ca9413func_0205cba8Ev(&unk_01);
-    unk_00 = 0;
+NpcClothTexSlot::NpcClothTexSlot() {}
+
+NpcClothTexSlot::~NpcClothTexSlot() {}
+
+void NpcClothTexSlot::assign(u32 id) {
+    _ZN16CharaClothTexRef6assignEj(&clothTex);
+    inUse = 1;
 }
 
-Unk_020e07d0::Unk_020e07d0() : Unk_020e085c(5) {}
+void NpcClothTexSlot::release() {
+    _ZN16CharaClothTexRef7releaseEv(&clothTex);
+    inUse = 0;
+}
 
-Unk_020e07d0::~Unk_020e07d0() {}
+NpcClothTexPool::NpcClothTexPool() : NpcResPool(5) {}
 
-extern "C" Unk_020e07d0 *func_020827bc() { return &data_021cd338; }
+NpcClothTexPool::~NpcClothTexPool() {}
 
-void Unk_020e07d0::vfunc_08(u32 i) {
-    if (i < (u32)unk_04) {
+extern "C" NpcClothTexPool *NpcClothTexPool_Get() { return &sNpcClothTexPool; }
+
+void NpcClothTexPool::occupySlot(u32 i) {
+    if (i < (u32)numSlots) {
         u32 id = 5;
         id += i;
-        func_020827bc()->unk_08[i].func_02082870(id);
+        NpcClothTexPool_Get()->slots[i].assign(id);
     }
 }
 
-void Unk_020e07d0::vfunc_0c(u32 i) {
-    Unk_020e085c::vfunc_0c(i);
-    if (i < (u32)unk_04) {
-        func_020827bc()->unk_08[i].func_0208285c();
+void NpcClothTexPool::releaseSlot(u32 i) {
+    NpcResPool::releaseSlot(i);
+    if (i < (u32)numSlots) {
+        NpcClothTexPool_Get()->slots[i].release();
     }
 }
 
-Unk_0208285c *Unk_020e07d0::vfunc_10(u32 i) {
-    Unk_0208285c *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
-    }
-    return r;
-}
-
-Unk_0205ca94 *Unk_020e07d0::func_02082738(u32 i) {
-    Unk_0205ca94 *r = 0;
-    if (i < (u32)unk_04) {
-        Unk_0208285c *e = &func_020827bc()->unk_08[i];
-        r = &e->unk_01;
+NpcClothTexSlot *NpcClothTexPool::getSlot(u32 i) {
+    NpcClothTexSlot *r = 0;
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
-Unk_020826f4::Unk_020826f4() {}
-
-Unk_020826f4::~Unk_020826f4() {}
-
-void Unk_020826f4::func_020826f4(u32 id) {
-    func_02077b84(&unk_04);
-    unk_00 = 1;
+CharaClothTexRef *NpcClothTexPool::getClothTex(u32 i) {
+    CharaClothTexRef *r = 0;
+    if (i < (u32)numSlots) {
+        NpcClothTexSlot *e = &NpcClothTexPool_Get()->slots[i];
+        r = &e->clothTex;
+    }
+    return r;
 }
 
-Unk_020e07b4::Unk_020e07b4() : Unk_020e085c(5) {}
+NpcTexPatBufRefSlot::NpcTexPatBufRefSlot() {}
 
-Unk_020e07b4::~Unk_020e07b4() {}
+NpcTexPatBufRefSlot::~NpcTexPatBufRefSlot() {}
 
-extern "C" Unk_020e07b4 *func_02082654() { return &data_021cd3a4; }
+void NpcTexPatBufRefSlot::assign(u32 id) {
+    NpcTexPatBufRef_Assign(&bufRef);
+    inUse = 1;
+}
 
-void Unk_020e07b4::vfunc_08(u32 i) {
-    if (i < (u32)unk_04) {
+NpcTexPatBufRefPool::NpcTexPatBufRefPool() : NpcResPool(5) {}
+
+NpcTexPatBufRefPool::~NpcTexPatBufRefPool() {}
+
+extern "C" NpcTexPatBufRefPool *NpcTexPatBufRefPool_Get() { return &sNpcTexPatBufRefPool; }
+
+void NpcTexPatBufRefPool::occupySlot(u32 i) {
+    if (i < (u32)numSlots) {
         u32 id = 0;
         id += i;
-        func_02082654()->unk_08[i].func_020826f4(id);
+        NpcTexPatBufRefPool_Get()->slots[i].assign(id);
     }
 }
 
-Unk_020826f4 *Unk_020e07b4::vfunc_10(u32 i) {
-    Unk_020826f4 *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
-    }
-    return r;
-}
-
-Unk_02077b8c *Unk_020e07b4::func_020825f8(u32 i) {
-    Unk_02077b8c *r = 0;
-    if (i < (u32)unk_04) {
-        Unk_020826f4 *e = &func_02082654()->unk_08[i];
-        r = &e->unk_04;
+NpcTexPatBufRefSlot *NpcTexPatBufRefPool::getSlot(u32 i) {
+    NpcTexPatBufRefSlot *r = 0;
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
-Unk_020825b4::Unk_020825b4() {}
-
-Unk_020825b4::~Unk_020825b4() {}
-
-void Unk_020825b4::func_020825b4(u32 id) {
-    _ZN12Unk_0205ce0c13func_0205cf84Ej(&unk_01);
-    unk_00 = 1;
+NpcTexPatBufRef *NpcTexPatBufRefPool::getBufRef(u32 i) {
+    NpcTexPatBufRef *r = 0;
+    if (i < (u32)numSlots) {
+        NpcTexPatBufRefSlot *e = &NpcTexPatBufRefPool_Get()->slots[i];
+        r = &e->bufRef;
+    }
+    return r;
 }
 
-Unk_020e077c::Unk_020e077c() : Unk_020e085c(5) {}
+NpcFaceAnimSlot::NpcFaceAnimSlot() {}
 
-Unk_020e077c::~Unk_020e077c() {}
+NpcFaceAnimSlot::~NpcFaceAnimSlot() {}
 
-extern "C" Unk_020e077c *func_02082514() { return &data_021cd324; }
+void NpcFaceAnimSlot::assign(u32 id) {
+    _ZN16CharaFaceAnimRef6assignEj(&faceAnim);
+    inUse = 1;
+}
 
-void Unk_020e077c::vfunc_08(u32 i) {
-    if (i < (u32)unk_04) {
+NpcFaceAnimPool::NpcFaceAnimPool() : NpcResPool(5) {}
+
+NpcFaceAnimPool::~NpcFaceAnimPool() {}
+
+extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get() { return &sNpcFaceAnimPool; }
+
+void NpcFaceAnimPool::occupySlot(u32 i) {
+    if (i < (u32)numSlots) {
         u32 id = 4;
         id += i;
-        func_02082514()->unk_08[i].func_020825b4(id);
+        NpcFaceAnimPool_Get()->slots[i].assign(id);
     }
 }
 
-Unk_020825b4 *Unk_020e077c::vfunc_10(u32 i) {
-    Unk_020825b4 *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
-    }
-    return r;
-}
-
-Unk_0205ce0c *Unk_020e077c::func_020824b8(u32 i) {
-    Unk_0205ce0c *r = 0;
-    if (i < (u32)unk_04) {
-        Unk_020825b4 *e = &func_02082514()->unk_08[i];
-        r = &e->unk_01;
+NpcFaceAnimSlot *NpcFaceAnimPool::getSlot(u32 i) {
+    NpcFaceAnimSlot *r = 0;
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
-Unk_02082474::Unk_02082474() {}
-
-Unk_02082474::~Unk_02082474() {}
-
-void Unk_02082474::func_02082474(u32 id) {
-    _ZN12Unk_0205d1f813func_0205d20cEj(&unk_01);
-    unk_00 = 1;
+CharaFaceAnimRef *NpcFaceAnimPool::getFaceAnim(u32 i) {
+    CharaFaceAnimRef *r = 0;
+    if (i < (u32)numSlots) {
+        NpcFaceAnimSlot *e = &NpcFaceAnimPool_Get()->slots[i];
+        r = &e->faceAnim;
+    }
+    return r;
 }
 
-Unk_020e0824::Unk_020e0824() : Unk_020e085c(5) {}
+NpcTexPatHeapSlot::NpcTexPatHeapSlot() {}
 
-Unk_020e0824::~Unk_020e0824() {}
+NpcTexPatHeapSlot::~NpcTexPatHeapSlot() {}
 
-extern "C" Unk_020e0824 *func_020823d4() { return &data_021cd34c; }
+void NpcTexPatHeapSlot::assign(u32 id) {
+    _ZN20CharaFaceAnimWorkRef6assignEj(&workRef);
+    inUse = 1;
+}
 
-void Unk_020e0824::vfunc_08(u32 i) {
-    if (i < (u32)unk_04) {
+NpcTexPatHeapPool::NpcTexPatHeapPool() : NpcResPool(5) {}
+
+NpcTexPatHeapPool::~NpcTexPatHeapPool() {}
+
+extern "C" NpcTexPatHeapPool *NpcTexPatHeapPool_Get() { return &sNpcTexPatHeapPool; }
+
+void NpcTexPatHeapPool::occupySlot(u32 i) {
+    if (i < (u32)numSlots) {
         u32 id = 4;
         id += i;
-        func_020823d4()->unk_08[i].func_02082474(id);
+        NpcTexPatHeapPool_Get()->slots[i].assign(id);
     }
 }
 
-Unk_02082474 *Unk_020e0824::vfunc_10(u32 i) {
-    Unk_02082474 *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
-    }
-    return r;
-}
-
-Unk_0205d1f8 *Unk_020e0824::func_02082378(u32 i) {
-    Unk_0205d1f8 *r = 0;
-    if (i < (u32)unk_04) {
-        Unk_02082474 *e = &func_020823d4()->unk_08[i];
-        r = &e->unk_01;
+NpcTexPatHeapSlot *NpcTexPatHeapPool::getSlot(u32 i) {
+    NpcTexPatHeapSlot *r = 0;
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
-Unk_02082314::Unk_02082314() {}
-
-Unk_02082314::~Unk_02082314() {}
-
-void Unk_02082314::func_02082328(u32 id, u16 *p) {
-    func_0205e310(&unk_04, id, 0, p, 0, 0);
-    unk_00 = 1;
+CharaFaceAnimWorkRef *NpcTexPatHeapPool::getHeapRef(u32 i) {
+    CharaFaceAnimWorkRef *r = 0;
+    if (i < (u32)numSlots) {
+        NpcTexPatHeapSlot *e = &NpcTexPatHeapPool_Get()->slots[i];
+        r = &e->workRef;
+    }
+    return r;
 }
 
-void Unk_02082314::func_02082314() {
-    func_0205e274(&unk_04);
-    unk_00 = 0;
+NpcHeldItemModelSlot::NpcHeldItemModelSlot() {}
+
+NpcHeldItemModelSlot::~NpcHeldItemModelSlot() {}
+
+void NpcHeldItemModelSlot::load(u32 id, u16 *p) {
+    HeldItemModel_Setup(&model, id, 0, p, 0, 0);
+    inUse = 1;
 }
 
-Unk_020e07ec::Unk_020e07ec() : Unk_020e085c(5) {}
+void NpcHeldItemModelSlot::unload() {
+    HeldItemModel_Release(&model);
+    inUse = 0;
+}
 
-Unk_020e07ec::~Unk_020e07ec() {}
+NpcHeldItemModelPool::NpcHeldItemModelPool() : NpcResPool(5) {}
 
-extern "C" Unk_020e07ec *func_02082274() { return &data_021cd41c; }
+NpcHeldItemModelPool::~NpcHeldItemModelPool() {}
 
-void Unk_020e07ec::vfunc_08(u32 i) {
+extern "C" NpcHeldItemModelPool *NpcHeldItemModelPool_Get() { return &sNpcHeldItemModelPool; }
+
+void NpcHeldItemModelPool::occupySlot(u32 i) {
     u16 t = 0xfff1;
-    func_020821fc(i, &t);
+    loadItem(i, &t);
 }
 
-void Unk_020e07ec::vfunc_0c(u32 i) {
-    Unk_020e085c::vfunc_0c(i);
-    if (i < (u32)unk_04) {
-        func_02082274()->unk_08[i].func_02082314();
+void NpcHeldItemModelPool::releaseSlot(u32 i) {
+    NpcResPool::releaseSlot(i);
+    if (i < (u32)numSlots) {
+        NpcHeldItemModelPool_Get()->slots[i].unload();
     }
 }
 
-BOOL Unk_020e07ec::func_020821fc(u32 i, u16 *p) {
+BOOL NpcHeldItemModelPool::loadItem(u32 i, u16 *p) {
     BOOL r = FALSE;
-    if (i < (u32)unk_04) {
+    if (i < (u32)numSlots) {
         u32 id = 4;
         id += i;
-        func_02082274()->unk_08[i].func_02082328(id, p);
+        NpcHeldItemModelPool_Get()->slots[i].load(id, p);
         r = TRUE;
     }
     return r;
 }
 
-Unk_02082314 *Unk_020e07ec::vfunc_10(u32 i) {
-    Unk_02082314 *r = 0;
-    if (i < (u32)unk_04) {
-        r = &unk_08[i];
+NpcHeldItemModelSlot *NpcHeldItemModelPool::getSlot(u32 i) {
+    NpcHeldItemModelSlot *r = 0;
+    if (i < (u32)numSlots) {
+        r = &slots[i];
     }
     return r;
 }
 
 // ---- 0x020e07ec functions
-Unk_0205e66c *Unk_020e07ec::func_020821c4(u32 i) {
-    if (i < (u32)unk_04) {
-        Unk_02082314 *e = &func_02082274()->unk_08[i];
-        return &e->unk_04;
+HeldItemModel *NpcHeldItemModelPool::getModel(u32 i) {
+    if (i < (u32)numSlots) {
+        NpcHeldItemModelSlot *e = &NpcHeldItemModelPool_Get()->slots[i];
+        return &e->model;
     }
     return 0;
 }
 
 // bss, in the original __sinit construction order
-Unk_020e0840 data_021cd360;
-Unk_020e0798 data_021cd3d4;
-Unk_020e0808 data_021cd37c;
-Unk_020e07d0 data_021cd338;
-Unk_020e07b4 data_021cd3a4;
-Unk_020e077c data_021cd324;
-Unk_020e0824 data_021cd34c;
-Unk_020e07ec data_021cd41c;
+NpcBodyAnimPool sNpcBodyAnimPool;
+VillagerAnimHeapRefPool sVillagerAnimHeapRefPool;
+SpNpcAnimHeapRefPool sSpNpcAnimHeapRefPool;
+NpcClothTexPool sNpcClothTexPool;
+NpcTexPatBufRefPool sNpcTexPatBufRefPool;
+NpcFaceAnimPool sNpcFaceAnimPool;
+NpcTexPatHeapPool sNpcTexPatHeapPool;
+NpcHeldItemModelPool sNpcHeldItemModelPool;

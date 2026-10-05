@@ -1,3 +1,4 @@
+#include "nitro/mtx.h"
 // mwcc-flags: -nothumb -O4,p
 // I003c: itcm 0x01ffbf00-0x01ffbf40, NitroSDK FX 4x3 matrix C (MTX_ScaleApply43), 1 function. ARM, mwcc 1.2/base, -O4,p.
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
@@ -29,11 +30,6 @@ typedef s64 fx64c;
 
 typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
 typedef struct VecFx16 { fx16 x, y, z; } VecFx16;
-typedef struct MtxFx33 {
-    fx32 _00, _01, _02;
-    fx32 _10, _11, _12;
-    fx32 _20, _21, _22;
-} MtxFx33;
 typedef struct MtxFx43 {
     fx32 _00, _01, _02;
     fx32 _10, _11, _12;
@@ -127,15 +123,15 @@ static inline u32 CP_GetSqrtResult32(void) {
     return reg_CP_SQRT_RESULT;
 }
 
-extern void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z); // MTX_ScaleApply33 (I003a)
+extern void MTX_ScaleApply33(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z); // MTX_ScaleApply33 (I003a)
 /* PROTOS */
-void func_01ffbf00(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z);
+void MTX_ScaleApply43(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z);
 
 /* END PROTOS */
 
 // MTX_ScaleApply43
-void func_01ffbf00(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z) {
-    func_01ffb708((const MtxFx33 *)pSrc, (MtxFx33 *)pDst, x, y, z);
+void MTX_ScaleApply43(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z) {
+    MTX_ScaleApply33((const MtxFx33 *)pSrc, (MtxFx33 *)pDst, x, y, z);
     pDst->_30 = pSrc->_30;
     pDst->_31 = pSrc->_31;
     pDst->_32 = pSrc->_32;

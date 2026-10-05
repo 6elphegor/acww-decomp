@@ -5,7 +5,7 @@
 ; Evidence: msr cpsr (mode switches, stack setup), mcr/mrc p15 (cache flush, protection unit, TCM setup), the
 ; conditional single-register `stmltia r1!, {r0}` fill loop, ldmdb, hand-allocated registers, `bx` into NitroMain
 ; with lr set by hand to HW_RESET_VECTOR.
-; Not here: 0x02000b44 func_02000b44 (OSi_ReferSymbol, C), 0x02000b48 BuildInfo (_start_ModuleParams, data).
+; Not here: 0x02000b44 OSi_ReferSymbol (OSi_ReferSymbol, C), 0x02000b48 BuildInfo (_start_ModuleParams, data).
 ; Assembled with mwasmarm (tools/configure.py, rule mwasm).
 
 	.text
@@ -14,10 +14,10 @@
 	.extern NitroMain
 	.extern SDK_IRQ_STACKSIZE
 	.extern data_027e0000
-	.extern func_01ffd50c
-	.extern func_020b0a80
-	.extern func_02133acc
-	.extern func_02135310
+	.extern OS_IrqHandler
+	.extern NitroStartUp
+	.extern _fp_init
+	.extern __call_static_initializers
 	.arm
 
 ; _start
@@ -27,7 +27,7 @@
 Entry:
 	mov r12, #0x04000000
 	str r12, [r12, #0x208] ; REG_IME = 0
-	bl func_02000a5c ; init_cp15
+	bl init_cp15 ; init_cp15
 	mov r0, #0x13 ; SVC mode
 	msr cpsr_c, r0
 	ldr r0, L_020008fc
@@ -47,19 +47,19 @@ Entry:
 	mov r0, #0
 	ldr r1, L_020008fc
 	mov r2, #0x4000
-	bl func_02000920 ; clear DTCM
+	bl INITi_CpuClear32 ; clear DTCM
 	mov r0, #0
 	ldr r1, L_02000904 ; HW_PLTT
 	mov r2, #0x400
-	bl func_02000920
+	bl INITi_CpuClear32
 	mov r0, #0x200
 	ldr r1, L_02000908 ; HW_OAM
 	mov r2, #0x400
-	bl func_02000920
+	bl INITi_CpuClear32
 	ldr r1, L_0200090c
 	ldr r0, [r1, #0x14] ; compressed static end
-	bl func_02000934 ; MIi_UncompressBackward
-	bl func_020009e0 ; do_autoload
+	bl MIi_UncompressBackward ; MIi_UncompressBackward
+	bl do_autoload ; do_autoload
 	ldr r0, L_0200090c
 	ldr r1, [r0, #0xc] ; static bss start
 	ldr r2, [r0, #0x10] ; static bss end
@@ -84,9 +84,9 @@ L_020008b0: ; flush_bss
 	add r1, r1, #0x3c ; DTCM + 0x3ffc: IRQ handler vector
 	ldr r0, L_02000914
 	str r0, [r1, #0]
-	bl func_02133acc
-	blx func_020b0a80 ; NitroStartUp (Thumb)
-	bl func_02135310
+	bl _fp_init
+	blx NitroStartUp ; NitroStartUp (Thumb)
+	bl __call_static_initializers
 	ldr r1, L_02000918
 	ldr lr, L_0200091c ; HW_RESET_VECTOR
 	bx r1
@@ -103,17 +103,17 @@ L_0200090c:
 L_02000910:
 	.word 0x027fff9c
 L_02000914:
-	.word func_01ffd50c
+	.word OS_IrqHandler
 L_02000918:
 	.word NitroMain
 L_0200091c:
 	.word 0xffff0000
 
 ; INITi_CpuClear32
-	.global func_02000920
-	.type func_02000920, @function
-	.size func_02000920, 0x14
-func_02000920:
+	.global INITi_CpuClear32
+	.type INITi_CpuClear32, @function
+	.size INITi_CpuClear32, 0x14
+INITi_CpuClear32:
 	add r12, r1, r2
 L_02000924: ; loop
 	cmp r1, r12
@@ -122,10 +122,10 @@ L_02000924: ; loop
 	bx lr
 
 ; MIi_UncompressBackward
-	.global func_02000934
-	.type func_02000934, @function
-	.size func_02000934, 0xac
-func_02000934:
+	.global MIi_UncompressBackward
+	.type MIi_UncompressBackward, @function
+	.size MIi_UncompressBackward, 0xac
+MIi_UncompressBackward:
 	cmp r0, #0
 	beq L_020009dc
 	stmfd sp!, {r4, r5, r6, r7}
@@ -179,10 +179,10 @@ L_020009dc: ; done
 	bx lr
 
 ; do_autoload
-	.global func_020009e0
-	.type func_020009e0, @function
-	.size func_020009e0, 0x78
-func_020009e0:
+	.global do_autoload
+	.type do_autoload, @function
+	.size do_autoload, 0x78
+do_autoload:
 	ldr r0, L_02000a54
 	ldr r1, [r0, #0] ; autoload list
 	ldr r2, [r0, #4] ; autoload list end
@@ -228,10 +228,10 @@ AutoloadCallback:
 	bx lr
 
 ; init_cp15
-	.global func_02000a5c
-	.type func_02000a5c, @function
-	.size func_02000a5c, 0xe8
-func_02000a5c:
+	.global init_cp15
+	.type init_cp15, @function
+	.size init_cp15, 0xe8
+init_cp15:
 	mrc p15, 0, r0, c1, c0, 0
 	ldr r1, L_02000b14
 	bic r0, r0, r1

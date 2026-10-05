@@ -12,9 +12,9 @@ typedef int BOOL;
 
 #define R32(a) (*(volatile u32 *)(a))
 
-extern s32 func_01ffc5a4(s32 numer, s32 denom); // FX_Div
-extern s32 func_01ffc464(void);                 // FX_GetDivResult
-extern s64 func_01ffc4a0(void);                 // FX_GetDivResultFx64c
+extern s32 FX_Div(s32 numer, s32 denom); // FX_Div
+extern s32 FX_GetDivResult(void);                 // FX_GetDivResult
+extern s64 FX_GetDivResultFx64c(void);                 // FX_GetDivResultFx64c
 
 static inline s32 FX_Mul32x64c(s32 v32, s64 v64c) {
     s64 tmp = v64c * v32 + 0x80000000LL;
@@ -26,11 +26,11 @@ static inline s32 FX_Mul(s32 v1, s32 v2) {
 }
 
 // G3i_PerspectiveW_ (registers: 0x04000290 DIV_NUMER, 0x04000298 DIV_DENOM, 0x04000440 MTX_MODE, 0x04000458 MTX_LOAD_4x4)
-void func_02111404(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, s32 scale, BOOL load, s32 *mtx) {
+void G3i_PerspectiveW_(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, s32 scale, BOOL load, s32 *mtx) {
     s32 cot, a, m22, m32, t;
     s64 inv;
     volatile u32 *fifo;
-    cot = func_01ffc5a4(fovyCos, fovySin);
+    cot = FX_Div(fovyCos, fovySin);
     if (scale != 0x1000) cot = cot * scale / 0x1000;
     *(volatile u64 *)0x04000290 = (u64)cot << 32;
     *(volatile u64 *)0x04000298 = (u32)aspect;
@@ -52,7 +52,7 @@ void func_02111404(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, s32 
         mtx[13] = 0;
         mtx[15] = 0;
     }
-    a = func_01ffc464();
+    a = FX_GetDivResult();
     *(volatile u64 *)0x04000290 = (u64)0x1000 << 32;
     *(volatile u64 *)0x04000298 = (u32)(near - far);
     if (load) {
@@ -71,7 +71,7 @@ void func_02111404(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, s32 
         mtx[0] = a;
         mtx[5] = cot;
     }
-    inv = func_01ffc4a0();
+    inv = FX_GetDivResultFx64c();
     if (scale != 0x1000) inv = inv * scale / 0x1000;
     m22 = FX_Mul32x64c(far + near, inv);
     m32 = FX_Mul32x64c(FX_Mul(near << 1, far), inv);

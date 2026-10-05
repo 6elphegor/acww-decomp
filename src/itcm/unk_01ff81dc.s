@@ -7,14 +7,14 @@
 
 	.text
 
-	.extern func_01ff806c
+	.extern CP_SaveContext
 	.arm
 
 ; OS_SaveContext(context): returns 0 now and 1 when resumed by OS_LoadContext (r0 is saved as 1)
-	.global func_01ff81dc
-	.type func_01ff81dc, @function
-	.size func_01ff81dc, 0x4c
-func_01ff81dc:
+	.global OS_SaveContext
+	.type OS_SaveContext, @function
+	.size OS_SaveContext, 0x4c
+OS_SaveContext:
 	stmfd sp!, {r0, lr}
 	add r0, r0, #0x48
 	ldr r1, L_01ff8224
@@ -34,4 +34,4 @@ func_01ff81dc:
 	mov r0, #0
 	bx lr
 L_01ff8224:
-	.word func_01ff806c
+	.word CP_SaveContext

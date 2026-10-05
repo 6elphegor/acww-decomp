@@ -9,10 +9,10 @@
 	.arm
 
 ; MIi_CpuClear16(data, dest, size)
-	.global func_02115e30
-	.type func_02115e30, @function
-	.size func_02115e30, 0x18
-func_02115e30:
+	.global MIi_CpuClear16
+	.type MIi_CpuClear16, @function
+	.size MIi_CpuClear16, 0x18
+MIi_CpuClear16:
 	mov r3, #0
 L_02115e34: ; loop
 	cmp r3, r2
@@ -22,10 +22,10 @@ L_02115e34: ; loop
 	bx lr
 
 ; MIi_CpuCopy16(src, dest, size)
-	.global func_02115e48
-	.type func_02115e48, @function
-	.size func_02115e48, 0x1c
-func_02115e48:
+	.global MIi_CpuCopy16
+	.type MIi_CpuCopy16, @function
+	.size MIi_CpuCopy16, 0x1c
+MIi_CpuCopy16:
 	mov ip, #0
 L_02115e4c: ; loop
 	cmp ip, r2
@@ -36,10 +36,10 @@ L_02115e4c: ; loop
 	bx lr
 
 ; MIi_CpuClear32(data, dest, size)
-	.global func_02115e64
-	.type func_02115e64, @function
-	.size func_02115e64, 0x14
-func_02115e64:
+	.global MIi_CpuClear32
+	.type MIi_CpuClear32, @function
+	.size MIi_CpuClear32, 0x14
+MIi_CpuClear32:
 	add ip, r1, r2
 L_02115e68: ; loop
 	cmp r1, ip
@@ -48,10 +48,10 @@ L_02115e68: ; loop
 	bx lr
 
 ; MIi_CpuCopy32(src, dest, size)
-	.global func_02115e78
-	.type func_02115e78, @function
-	.size func_02115e78, 0x18
-func_02115e78:
+	.global MIi_CpuCopy32
+	.type MIi_CpuCopy32, @function
+	.size MIi_CpuCopy32, 0x18
+MIi_CpuCopy32:
 	add ip, r1, r2
 L_02115e7c: ; loop
 	cmp r1, ip
@@ -61,10 +61,10 @@ L_02115e7c: ; loop
 	bx lr
 
 ; MIi_CpuSend32(src, dest, size): every word goes to the same destination address
-	.global func_02115e90
-	.type func_02115e90, @function
-	.size func_02115e90, 0x18
-func_02115e90:
+	.global MIi_CpuSend32
+	.type MIi_CpuSend32, @function
+	.size MIi_CpuSend32, 0x18
+MIi_CpuSend32:
 	add ip, r0, r2
 L_02115e94: ; loop
 	cmp r0, ip
@@ -74,10 +74,10 @@ L_02115e94: ; loop
 	bx lr
 
 ; MIi_CpuClearFast(data, dest, size): 32-byte stm bursts, then words
-	.global func_02115ea8
-	.type func_02115ea8, @function
-	.size func_02115ea8, 0x4c
-func_02115ea8:
+	.global MIi_CpuClearFast
+	.type MIi_CpuClearFast, @function
+	.size MIi_CpuClearFast, 0x4c
+MIi_CpuClearFast:
 	stmfd sp!, {r4, r5, r6, r7, r8, r9}
 	add r9, r1, r2
 	mov ip, r2, lsr #5
@@ -101,10 +101,10 @@ L_02115ee0: ; loop4
 	bx lr
 
 ; MIi_CpuCopyFast(src, dest, size): 32-byte ldm/stm bursts, then words
-	.global func_02115ef4
-	.type func_02115ef4, @function
-	.size func_02115ef4, 0x38
-func_02115ef4:
+	.global MIi_CpuCopyFast
+	.type MIi_CpuCopyFast, @function
+	.size MIi_CpuCopyFast, 0x38
+MIi_CpuCopyFast:
 	stmfd sp!, {r4, r5, r6, r7, r8, r9, r10}
 	add r10, r1, r2
 	mov ip, r2, lsr #5
@@ -123,10 +123,10 @@ L_02115f14: ; loop4
 	bx lr
 
 ; MI_Copy32B(src, dest)
-	.global func_02115f2c
-	.type func_02115f2c, @function
-	.size func_02115f2c, 0x1c
-func_02115f2c:
+	.global MI_Copy32B
+	.type MI_Copy32B, @function
+	.size MI_Copy32B, 0x1c
+MI_Copy32B:
 	ldmia r0!, {r2, r3, ip}
 	stmia r1!, {r2, r3, ip}
 	ldmia r0!, {r2, r3, ip}
@@ -136,10 +136,10 @@ func_02115f2c:
 	bx lr
 
 ; MI_Copy36B(src, dest)
-	.global func_02115f48
-	.type func_02115f48, @function
-	.size func_02115f48, 0x1c
-func_02115f48:
+	.global MI_Copy36B
+	.type MI_Copy36B, @function
+	.size MI_Copy36B, 0x1c
+MI_Copy36B:
 	ldmia r0!, {r2, r3, ip}
 	stmia r1!, {r2, r3, ip}
 	ldmia r0!, {r2, r3, ip}
@@ -149,10 +149,10 @@ func_02115f48:
 	bx lr
 
 ; MI_Copy48B(src, dest)
-	.global func_02115f64
-	.type func_02115f64, @function
-	.size func_02115f64, 0x24
-func_02115f64:
+	.global MI_Copy48B
+	.type MI_Copy48B, @function
+	.size MI_Copy48B, 0x24
+MI_Copy48B:
 	ldmia r0!, {r2, r3, ip}
 	stmia r1!, {r2, r3, ip}
 	ldmia r0!, {r2, r3, ip}
@@ -164,10 +164,10 @@ func_02115f64:
 	bx lr
 
 ; MI_Copy64B(src, dest): the last ldm loads into its own base register
-	.global func_02115f88
-	.type func_02115f88, @function
-	.size func_02115f88, 0x2c
-func_02115f88:
+	.global MI_Copy64B
+	.type MI_Copy64B, @function
+	.size MI_Copy64B, 0x2c
+MI_Copy64B:
 	ldmia r0!, {r2, r3, ip}
 	stmia r1!, {r2, r3, ip}
 	ldmia r0!, {r2, r3, ip}
@@ -181,10 +181,10 @@ func_02115f88:
 	bx lr
 
 ; MI_CpuFill8(dest, data, size): byte fill through halfword/word stores
-	.global func_02115fb4
-	.type func_02115fb4, @function
-	.size func_02115fb4, 0x94
-func_02115fb4:
+	.global MI_CpuFill8
+	.type MI_CpuFill8, @function
+	.size MI_CpuFill8, 0x94
+MI_CpuFill8:
 	cmp r2, #0
 	bxeq lr
 	tst r0, #1
@@ -229,10 +229,10 @@ L_02116028: ; tail1
 	bx lr
 
 ; MI_CpuCopy8(src, dest, size): byte copy through halfword/word accesses
-	.global func_02116048
-	.type func_02116048, @function
-	.size func_02116048, 0x130
-func_02116048:
+	.global MI_CpuCopy8
+	.type MI_CpuCopy8, @function
+	.size MI_CpuCopy8, 0x130
+MI_CpuCopy8:
 	cmp r2, #0
 	bxeq lr
 	tst r1, #1

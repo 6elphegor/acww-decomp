@@ -1,5 +1,11 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "gfx/ToonTable.h"
+#include "gfx/Mtx43.h"
+#include "actor/ActorListNode.h"
+#include "gfx/AbAllObjGfx.h"
+#include "npc/VillagerId.h"
+#include "actor/Actor.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -10,7 +16,7 @@ typedef volatile u32 vu32;
 
 
 extern "C" {
-extern u16 data_020d47e4[32];
+extern u16 sDefaultToonTable[32];
 }
 
 
@@ -19,19 +25,19 @@ extern u8 data_02135934[];
 }
 
 extern "C" {
-extern u32 data_020d5d44[];
+extern u32 sAbAllObjCharPath[];
 }
 
 extern "C" {
-extern u32 data_020d5d60[];
+extern u32 sAbAllObjPalettePath[];
 }
 
 extern "C" {
-extern u32 data_020d5dfc[];
+extern u32 sPersonalityFileNameFmt[];
 }
 
 extern "C" {
-extern u32 data_020d5de4[];
+extern u32 sPersonalityPrefixes[];
 }
 
 extern "C" {
@@ -39,139 +45,138 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern u32 **data_021f59e4;
+extern u32 **gProfileTable;
 }
 
 extern "C" {
-extern u32 data_021d7352;
+extern u32 gSaveTownId;
 }
 
 extern "C" {
-extern u32 data_020c6140[];
+extern u32 sPersonalityVoiceTypes[];
 }
 
 extern "C" {
-extern void *data_021eda68;
+extern void *gActorDefaultParent;
 }
 
 extern "C" {
-extern u8 data_021ef414[];
+extern u8 gViewFrustum[];
 }
 
 extern "C" {
-extern u8 data_0213c874[];
 }
 
 extern "C" {
-extern void *data_0213c870;
+extern void *sActorSpawnPos;
 }
 
 extern "C" {
-extern void *data_0213c86c;
+extern void *sActorSpawnRot;
 }
 
 extern "C" {
-void func_02110db8(u16 a, u32 b, u32 c, u32 d, u32 e);
+void G3X_SetClearColor(u16 a, u32 b, u32 c, u32 d, u32 e);
 }
 
 extern "C" {
-void func_021145cc(void *p, u32 n);
+void DC_FlushRange(void *p, u32 n);
 }
 
 extern "C" {
-void func_02110de8(void *p);
+void G3X_SetToonTable(void *p);
 }
 
 extern "C" {
-void func_01ffbb6c(void *a, void *b);
+void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
-void func_02111088(void);
+void G3X_Reset(void);
 }
 
 extern "C" {
-void func_0210fcb8(u32 a);
+void GX_SetBankForTex(u32 a);
 }
 
 extern "C" {
-void func_0210fbc4(u32 a);
+void GX_SetBankForTexPltt(u32 a);
 }
 
 extern "C" {
-void func_02114b00(void);
+void OS_EnableDTCM(void);
 }
 
 extern "C" {
-void func_02111110(void);
+void G3X_Init(void);
 }
 
 extern "C" {
-void func_02110d00(void);
+void G3X_InitTable(void);
 }
 
 extern "C" {
-void func_02110fa4(void);
+void G3X_InitMtxStack(void);
 }
 
 extern "C" {
-void func_02111404(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
+void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 }
 
 extern "C" {
-void func_02105d98(void);
+void NNS_G3dInit(void);
 }
 
 extern "C" {
-void func_02111c6c(void *p, u32 a, u32 b);
+void GX_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111c0c(void *p, u32 a, u32 b);
+void GXS_LoadOBJ(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111df8(void *p, u32 a, u32 b);
+void GX_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02111d90(void *p, u32 a, u32 b);
+void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 }
 
 extern "C" {
-void *func_020641d8(void *p);
+void *File_Load(void *p);
 }
 
 extern "C" {
-void func_02119d78(void *p);
+void FS_InitFile(void *p);
 }
 
 extern "C" {
-void func_020e79a0(void *list, void *node);
+void List_Remove(void *list, void *node);
 }
 
 extern "C" {
-void func_020e7968(void *list, void *node);
+void List_PushBack(void *list, void *node);
 }
 
 extern "C" {
-void func_020e8388(void *m, s32 a, s32 b, s32 c);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void func_020e8434(void *m, s32 a);
+void Mtx43_RotateX(void *m, s32 a);
 }
 
 extern "C" {
-void func_020e8404(void *m, s32 a);
+void Mtx43_RotateY(void *m, s32 a);
 }
 
 extern "C" {
-void func_020e7b98(s32 a, s32 b);
+void Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {
@@ -179,43 +184,43 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_01ffca8c(void *a, void *b, void *c);
+void VEC_Add(void *a, void *b, void *c);
 }
 
 extern "C" {
-void func_02063990(void *p, void *s);
+void TownId_Assign(void *p, void *s);
 }
 
 extern "C" {
-u32 func_02063954(void *p);
+u32 TownId_IsValid(void *p);
 }
 
 extern "C" {
-void func_020639a0(void *p);
+void TownId_Clear(void *p);
 }
 
 extern "C" {
-u32 func_02081550(u32 a, u32 b);
+u32 Villager_GetSpeciesName(u32 a, u32 b);
 }
 
 extern "C" {
-void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
+void Str_SPrintf(void *buf, void *fmt, u32 a, u32 b);
 }
 
 extern "C" {
-void func_02115fb4(void *p, u32 v, u32 n);
+void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
-void *func_020ed4bc(void *list, u32 id, void *p);
+void *ProcList_FindByProfile(void *list, u32 id, void *p);
 }
 
 extern "C" {
-void *func_020ed508(void *list, u32 id);
+void *ProcList_FindById(void *list, u32 id);
 }
 
 extern "C" {
-void func_0202e880(void *a, void *b, void *c, u32 d);
+void GameProc_CreateChild(void *a, void *b, void *c, u32 d);
 }
 
 extern "C" {
@@ -226,206 +231,96 @@ extern "C" {
 void func_020030b4_dummy(void);
 }
 
-struct Unk_02002804_Buf {
-    u16 unk_00[32];
-};
 
-// 0x30-byte record copied around by func_02002848 and func_02002898
-struct Unk_02002848_Data {
-    u32 unk_00[12];
-};
 
-extern Unk_02002848_Data data_02135934_;
+extern Mtx43 data_02135934_;
 
-u16 data_0213c7a8;
-u32 data_0213c7ac;
-u8 data_0213c7b0[0x30];
-Unk_02002848_Data data_0213c7e0;
+u16 sGfx3dClearColor;
+u32 sGfx3dClearDepth;
+u8 gViewMtxInv[0x30];
+Mtx43 gViewMtx;
 
-// Object with two heap pointers at +0x48 and +0x4c, first method func_020029e8
-class Unk_020029e8 {
-public:
-    Unk_020029e8();
-    ~Unk_020029e8();
-    void func_020029e8();
-    void func_02002a14();
-    void func_02002a3c();
-    void func_02002a54();
-    BOOL func_02002a6c();
-    BOOL func_02002a8c();
 
-    /* 0x00 */ u8 unk_00[0x48];
-    /* 0x48 */ void *unk_48;
-    /* 0x4c */ void *unk_4c;
-};
+extern AbAllObjGfx sAbAllObjGfx;
 
-extern Unk_020029e8 data_0213c81c;
 
-struct Unk_02002f14_Node {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ void *unk_04;
-    /* 0x08 */ void *unk_08;
-};
 
-struct Unk_02002cb0_Vec {
-    /* 0x00 */ u8 unk_00[0x10];
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-};
 
-struct Unk_02002f14_S16Vec {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
-};
 
-struct Unk_02002f14_S32Vec {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-};
 
-class Unk_020d5d84 : public Unk_020d8c7c {
-public:
-    Unk_020d5d84();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84();
 
-    void func_02002b84(void *out);
-    void func_02002bf4(Unk_02002cb0_Vec *v);
-    void func_02002c10();
-    void func_02002cb0(Unk_02002cb0_Vec *v);
-    void func_02002ce0(s32 a, s32 b, s32 c);
-    static void func_02002cf8(void *a, void *b, void *c, void *d, void *e);
-    static void func_02002d28(void *a, void *b);
-    static void *func_02002d3c(u32 id, Unk_020d5d84 *o);
-    static void *func_02002d74(u32 id);
+extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
+extern "C" u32 Villager_PersonalityToGender(u32 t);
+extern "C" u32 VillagerId_IsValidSpecies(u32 id);
+extern "C" u32 Villager_PersonalityToVoiceType(u32 t);
+extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
 
-    /* 0x50 */ Unk_02002f14_Node unk_50;
-    /* 0x5c */ s32 unk_5c;
-    /* 0x60 */ s32 unk_60;
-    /* 0x64 */ s32 unk_64;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ s32 unk_6c;
-    /* 0x70 */ s32 unk_70;
-    /* 0x74 */ u8 unk_74[0x18];
-    /* 0x8c */ s16 unk_8c;
-    /* 0x8e */ s16 unk_8e;
-    /* 0x90 */ s16 unk_90;
-    /* 0x92 */ s16 unk_92;
-    /* 0x94 */ u16 unk_94;
-    /* 0x96 */ s16 unk_96;
-    /* 0x98 */ s32 unk_98;
-    /* 0x9c */ s32 unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ s32 unk_a8;
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ u32 unk_b0;
-    /* 0xb4 */ s32 unk_b4;
-    /* 0xb8 */ s32 unk_b8;
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ u32 unk_c0;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
-    /* 0xd0 */ u16 unk_d0;
-};
+extern "C" void Gfx3d_InitEngine(void);
+extern "C" void Gfx3d_LoadDefaultToonTable(void);
 
-// Class with a type byte at +0x0a and an id byte at +0x0b (base class unknown, 0xc bytes in total)
-class Unk_02002fc8 {
-public:
-    u32 func_02002fc8(u32 arg);
-    void func_0200301c(void *buf, u32 size, u32 arg);
-    u32 func_02003070();
-    void func_0200309c(u32 id, u32 type, void *s);
-    u32 func_020030b4();
-
-    /* 0x00 */ u8 unk_00[0xa];
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
-};
-
-extern "C" u32 func_02003098(Unk_02002fc8 *o);
-extern "C" u32 func_02003084(u32 t);
-extern "C" u32 func_02002fec(u32 id);
-extern "C" u32 func_02003008(u32 t);
-extern "C" void func_0200303c(void *buf, u32 size, u32 arg, u32 idx);
-
-extern "C" void func_02002918(void);
-extern "C" void func_02002804(void);
-
-extern "C" void func_02002918(void) {
-    func_02111110();
-    func_02110d00();
-    func_02110fa4();
+extern "C" void Gfx3d_InitEngine(void) {
+    G3X_Init();
+    G3X_InitTable();
+    G3X_InitMtxStack();
     *(vu16 *)0x4000060 &= 0xffffcffd;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 0x10;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;
     *(vu16 *)0x4000060 &= 0xcfdf;
     *(vu32 *)0x4000580 = 0xbfff0000;
-    func_02111404(0x579, 0xf09, 0x1555, 0x1000, 0x3e8000, 0x1000, 1, 0);
+    G3i_PerspectiveW_(0x579, 0xf09, 0x1555, 0x1000, 0x3e8000, 0x1000, 1, 0);
     *(vu32 *)0x400044c = 0;
     *(vu32 *)0x4000540 = 3;
-    func_02105d98();
-    func_02002804();
-    func_02110db8(0, 0, 0x7fff, 0x3f, 1);
-    data_0213c7a8 = 0;
-    data_0213c7ac = 0x7fff;
+    NNS_G3dInit();
+    Gfx3d_LoadDefaultToonTable();
+    G3X_SetClearColor(0, 0, 0x7fff, 0x3f, 1);
+    sGfx3dClearColor = 0;
+    sGfx3dClearDepth = 0x7fff;
 }
 
-extern "C" void func_02002898(void) {
-    func_02002918();
-    func_0210fcb8(6);
-    func_0210fbc4(0x10);
-    func_02114b00();
+extern "C" void Gfx3d_Init(void) {
+    Gfx3d_InitEngine();
+    GX_SetBankForTex(6);
+    GX_SetBankForTexPltt(0x10);
+    OS_EnableDTCM();
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 4;
     *(vu16 *)0x4000340 = 0;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;
-    func_02110db8(0, 0, 0x7fff, 0, 1);
-    data_0213c7e0 = *(Unk_02002848_Data *)data_02135934;
-    func_01ffbb6c(&data_0213c7e0, data_0213c7b0);
+    G3X_SetClearColor(0, 0, 0x7fff, 0, 1);
+    gViewMtx = *(Mtx43 *)data_02135934;
+    MTX_Inverse43(&gViewMtx, gViewMtxInv);
 }
 
-extern "C" void func_02002870(void) {
-    func_02111088();
+extern "C" void Gfx3d_BeginFrame(void) {
+    G3X_Reset();
     *(vu32 *)0x4000440 = 3;
     *(vu32 *)0x4000454 = 0;
     *(vu32 *)0x4000440 = 2;
 }
 
-extern "C" void func_02002848(Unk_02002848_Data *src) {
-    data_0213c7e0 = *src;
-    func_01ffbb6c(&data_0213c7e0, data_0213c7b0);
+extern "C" void Gfx3d_SetViewMatrix(Mtx43 *src) {
+    gViewMtx = *src;
+    MTX_Inverse43(&gViewMtx, gViewMtxInv);
 }
 
-extern "C" void func_02002804(void) {
-    Unk_02002804_Buf buf = *(Unk_02002804_Buf *)data_020d47e4;
-    func_021145cc(&buf, 0x40);
+extern "C" void Gfx3d_LoadDefaultToonTable(void) {
+    ToonTable buf = *(ToonTable *)sDefaultToonTable;
+    DC_FlushRange(&buf, 0x40);
     vu16 *reg = (vu16 *)0x4000060;
     *reg = *reg & 0xffffcffd;
-    func_02110de8(&buf);
+    G3X_SetToonTable(&buf);
 }
 
-extern "C" void func_020027f8(u32 v) { data_0213c7ac = v; }
+extern "C" void Gfx3d_SetClearDepth(u32 v) { sGfx3dClearDepth = v; }
 
-extern "C" void func_020027ec(u16 v) { data_0213c7a8 = v; }
+extern "C" void Gfx3d_SetClearColor(u16 v) { sGfx3dClearColor = v; }
 
-extern "C" void func_020027c4(void) {
-    func_02110db8(data_0213c7a8, 0, data_0213c7ac, 0x3f, 1);
+extern "C" void Gfx3d_ApplyClearColor(void) {
+    G3X_SetClearColor(sGfx3dClearColor, 0, sGfx3dClearDepth, 0x3f, 1);
 }
 
 // mwcc 1.2 emits functions in reverse order, but symbol lookup doesn't care
 
-extern "C" BOOL func_020027b4(u32 x) {
+extern "C" BOOL Gfx2d_IsMainScreenLayer(u32 x) {
     if (x <= 2 || x == 7) return TRUE;
     return FALSE;
 }
