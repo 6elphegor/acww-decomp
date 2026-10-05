@@ -72,9 +72,9 @@ s32 DwcFriend_HandleGpResult();
 s32 DwcFriend_GetBuddyStatus(void *, GPBuddyStatus *);
 s32 NasBase64_Decode(const char *, s32, char *, u32);
 s32 NasBase64_Encode(void *, s32, void *, u32);
-s32 DwcMatch_HandleGt2Result();
+s32 DwcMatch_HandleGt2Result(s32 a);
 s32 DwcMatch_HandleNnResult(s32, s32);
-s32 DwcMatch_HandleNnStartResult();
+s32 DwcMatch_HandleNnStartResult(s32 a);
 s32 DwcMatch_SendNnRequest(void *);
 s32 DwcMatch_Fail(s32, s32);
 u64 DwcNet_GetTimeMs();
@@ -261,17 +261,17 @@ s32 DwcMatch_CloseAllConnections(void);
 s32 DwcMatch_CloseProfileConnection(s32);
 s32 DwcMatch_SendCancelSyncCommand(s32, s32);
 s32 DwcMatch_SendSyncPacket(s32, s32);
-s32 DwcMatch_ResetState(void);
-s32 DwcFriend_FindIndexByProfileId(...);
+void DwcMatch_ResetState(u32 a);
+s32 DwcFriend_FindIndexByProfileId(s32);
 s32 DwcMatch_StartServerQuery(s32);
-s32 DwcMatch_HandleSbResult(void);
-s32 DwcMatch_HandleGpResult(void);
+s32 DwcMatch_HandleSbResult(s32 a);
+s32 DwcMatch_HandleGpResult(s32 a);
 s32 DwcMatch_Cleanup(void);
 s32 DwcMatch_UpdateServerStatus(void);
 s32 DwcFriend_SetOwnStatus(s32, void *, s32);
 s32 gpIsBuddy(u32, u32);
 s32 DwcMatch_SendCommand(s32, u32, u32, u32, void *, s32);
-s32 DwcMatch_HandleResult(void);
+s32 DwcMatch_HandleResult(s32 a);
 s32 DwcMatch_Fail(s32, s32);
 s32 qr2_send_statechanged(u32);
 s32 ServerBrowserFree(u32);
@@ -346,7 +346,7 @@ s32 DwcFriend_FindIndexByProfileId(s32);
 s32 DwcMatch_TryNextFriend(...);
 s32 DwcMatch_AreAllBuddies(void *, u32);
 s32 DwcMatch_StartNatNegotiation(s32, u32, u32);
-s32 DwcMatch_HandleNnStartResult(void);
+s32 DwcMatch_HandleNnStartResult(s32 a);
 s32 DwcMatch_StartServerQuery(u32);
 s32 DwcMatch_BeginSearch(void);
 s32 gt2CloseAllConnectionsHard(u32);
@@ -422,7 +422,7 @@ s32 gpSendBuddyMessageA(u32, u32, char *);
 s32 gt2AddressToString(u32, u32, s32);
 s32 ServerBrowserSendMessageToServerA(u32, s32, u32, void *, s32);
 s32 ServerBrowserSendNatNegotiateCookieToServerA(u32, s32, u32, u32);
-s32 DwcMatch_HandleSbResult(void);
+s32 DwcMatch_HandleSbResult(s32 a);
 s32 gt2GetRemoteIP(u32);
 s32 gt2GetLocalPort(u32);
 s32 NNBeginNegotiationWithSocket(s32, u32, u32, void *, void *, void *);
@@ -510,7 +510,7 @@ void DwcMatch_ClearUserKeys(void);
 s32 GsUtil_FormatKeyValue(const char *, char *, char *, s32);
 s32 GsUtil_AppendKeyValue(const char *, char *, char *, s32);
 s32 DwcFriend_SetOwnStatus(s32, void *, s32);
-s32 DwcFriend_FindIndexByProfileId(void);
+s32 DwcFriend_FindIndexByProfileId(s32);
 s32 DwcMatch_CancelNewClient(...);
 s32 DwcCore_GetState(void);
 s32 NNCancel(u32);
@@ -529,7 +529,7 @@ s32 DwcMatch_GetArgField(char *, const char *, s32);
 s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
 s32 gt2AddressToString(u32, u32, s32);
 s32 gt2Connect(u32, s32, s32, char *, s32, s32, s32, s32);
-s32 DwcMatch_HandleGt2Result(void);
+s32 DwcMatch_HandleGt2Result(s32 a);
 s32 DwcConn_FindFreeSlot(void);
 u32 *DwcConn_GetSlot(s32);
 DwcConnInfo *DwcConn_GetConnInfo(s32);
@@ -605,10 +605,10 @@ s32 qr2_think(void *);
 s32 gt2Think(u32);
 s32 DwcMatch_BeginSearch(void);
 s32 DwcMatch_SendReservation(u32, u32);
-s32 DwcMatch_HandleResult(void);
+s32 DwcMatch_HandleResult(s32 a);
 s32 DwcMatch_Fail(s32, s32);
 s32 DwcMatch_StartServerQuery(u32);
-s32 DwcMatch_HandleSbResult(...);
+s32 DwcMatch_HandleSbResult(s32 a);
 s32 DwcMatch_RestartAfterNnFailure(u32);
 s32 DwcMatch_SendCommand(s32, u32, u32, u32, void *, u32);
 s32 DwcMatch_ClearPendingCommand(void);
@@ -625,7 +625,7 @@ s32 DwcMatch_ProcessServerSync(void);
 s32 DwcMatch_Init(s32, u32, u32, u32);
 s32 ServerBrowserNewA(u32, u32, u32, u32, u32, u32, u32, void *, u32);
 s32 DwcFriend_SetOwnStatus(s32, void *, s32);
-s32 DwcMatch_HandleGpResult(void);
+s32 DwcMatch_HandleGpResult(s32 a);
 s32 DwcMatch_UpdateServerStatus(void);
 s32 DwcMatch_OnServerBrowserEvent(void);
 s32 gt2GetRemoteIP(u32);
@@ -645,7 +645,7 @@ s32 DwcMatch_OnQr2PublicAddress(void);
 s32 DwcMatch_OnQr2NnRequest(void);
 s32 DwcMatch_OnQr2ClientMessage(void);
 s32 DwcMatch_ClearUserKeys(void);
-s32 DwcMatch_ResetState(u32);
+void DwcMatch_ResetState(u32);
 s32 DwcMatch_StartQr2(u32 a);
 
 s32 DwcMatch_OnUnrecognizedPacket(s32 a0, u32 ip, s32 port, char *name, void *arg);
@@ -915,8 +915,7 @@ void DwcMatch_StartGameServer(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
     g->numValidClients = 0;
     sDwcMatchServerLock.isLocked = 0;
     g->matchState = 10;
-    DwcMatch_UpdateServerStatus();
-    if (DwcMatch_HandleGpResult() == 0) {
+    if (DwcMatch_HandleGpResult(DwcMatch_UpdateServerStatus()) == 0) {
         if (g->qr2Object == 0) {
             DwcMatch_StartQr2(g->profileId);
         }
@@ -948,8 +947,7 @@ s32 DwcMatch_StartClient(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
             return r;
         }
     }
-    DwcFriend_SetOwnStatus(5, (char *)"", 0);
-    r = DwcMatch_HandleGpResult();
+    r = DwcMatch_HandleGpResult(DwcFriend_SetOwnStatus(5, (char *)"", 0));
     if (r != 0) {
         return r;
     }
@@ -959,8 +957,7 @@ s32 DwcMatch_StartClient(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
             return r;
         }
     }
-    DwcMatch_SendReservation(g->memberProfileIds[0], 0);
-    r = DwcMatch_HandleResult();
+    r = DwcMatch_HandleResult(DwcMatch_SendReservation(g->memberProfileIds[0], 0));
     if (r != 0) {
         return r;
     }
@@ -1009,8 +1006,7 @@ void DwcMatch_Process(u32 a) {
                                 DwcMatch_Fail(6, -0x13a2e);
                                 return;
                             }
-                            DwcMatch_SendReservation(g->memberProfileIds[0], 0);
-                            if (DwcMatch_HandleResult() != 0) {
+                            if (DwcMatch_HandleResult(DwcMatch_SendReservation(g->memberProfileIds[0], 0)) != 0) {
                                 return;
                             }
                         } else {
@@ -1026,8 +1022,7 @@ void DwcMatch_Process(u32 a) {
                 }
                 { u32 t = c->numClients * 3000; r5 = t + 3000; }
                 if (((OS_GetTick() - *(u64 *)&c->reservationRetryTick) << 6) / 0x82ea >= (u64)r5) {
-                    DwcMatch_SendReservation(c->memberProfileIds[0], 0);
-                    if (DwcMatch_HandleResult() != 0) {
+                    if (DwcMatch_HandleResult(DwcMatch_SendReservation(c->memberProfileIds[0], 0)) != 0) {
                         return;
                     }
                 }
@@ -1046,8 +1041,7 @@ void DwcMatch_Process(u32 a) {
                     r5 = 3000;
                 }
                 if ((u64)r5 < ((OS_GetTick() - *(u64 *)&c->queryRetryTick) << 6) / 0x82ea) {
-                    DwcMatch_StartServerQuery(c->serverProfileId);
-                    if (DwcMatch_HandleSbResult() != 0) {
+                    if (DwcMatch_HandleSbResult(DwcMatch_StartServerQuery(c->serverProfileId)) != 0) {
                         return;
                     }
                     g->queryRetryMode = 0;
@@ -1076,8 +1070,7 @@ void DwcMatch_Process(u32 a) {
                                 return;
                             }
                         } else {
-                            DwcMatch_SendCommand(6, c->cmdProfileId, c->cmdIp, c->cmdPort, c->cmdArgs, c->cmdArgCount);
-                            if (DwcMatch_HandleResult() != 0) {
+                            if (DwcMatch_HandleResult(DwcMatch_SendCommand(6, c->cmdProfileId, c->cmdIp, c->cmdPort, c->cmdArgs, c->cmdArgCount)) != 0) {
                                 return;
                             }
                         }
@@ -1134,8 +1127,7 @@ void DwcMatch_Process(u32 a) {
                                 DwcMatch_AbortAndRestart();
                             }
                         } else {
-                            DwcMatch_SendCommand(8, c->cmdProfileId, c->cmdIp, c->cmdPort, c->cmdArgs, c->cmdArgCount);
-                            if (DwcMatch_HandleResult() == 0) {
+                            if (DwcMatch_HandleResult(DwcMatch_SendCommand(8, c->cmdProfileId, c->cmdIp, c->cmdPort, c->cmdArgs, c->cmdArgCount)) == 0) {
                                 break;
                             }
                             return;
@@ -1321,7 +1313,7 @@ void DwcMatch_OnGt2Connected(u32 a, u32 b) {
         s32 r0 = gt2AddressToString(c->memberConnectIps[c->numPlayers], c->memberConnectPorts[c->numPlayers], 0);
         s32 r = gt2Connect(g->transportSocketPtr->transportSocket, 0, r0, buf, -1, 0x1388, c->transportCallbacks, 0);
         if (r == 1) {
-            DwcMatch_HandleGt2Result();
+            DwcMatch_HandleGt2Result(r);
             return;
         } else if (r != 0) {
             if (DwcMatch_CancelNewClient(g->memberProfileIds[g->numPlayers]) == 0) {
@@ -1418,7 +1410,7 @@ void DwcMatch_Fail(s32 a, s32 b) {
         } else {
             y = FALSE;
         }
-        s32 t = DwcFriend_FindIndexByProfileId();
+        s32 t = DwcFriend_FindIndexByProfileId(c->resultProfileId);
         g->matchCallback(a, 0, y, x, t, c->matchCallbackParam);
         DwcMatch_Cleanup();
     }
@@ -2079,8 +2071,7 @@ s32 DwcMatch_SendNnRequest(DwcNnRequest *p) {
     s32 i;
     s32 r;
     if (p->clientIndex == 0) {
-        ServerBrowserSendNatNegotiateCookieToServerA(G->serverBrowser, gt2AddressToString(p->peerIp, 0, 0), p->peerPort, p->cookie);
-        if (DwcMatch_HandleSbResult() != 0) {
+        if (DwcMatch_HandleSbResult(ServerBrowserSendNatNegotiateCookieToServerA(G->serverBrowser, gt2AddressToString(p->peerIp, 0, 0), p->peerPort, p->cookie)) != 0) {
             return 2;
         }
     }
@@ -2326,8 +2317,7 @@ s32 DwcMatch_HandleCommand(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
                     }
                 }
                 sDwcMatch->matchState = 6;
-                DwcMatch_StartNatNegotiation(0, 0, ServerBrowserGetServer(sDwcMatch->serverBrowser, 0));
-                if (DwcMatch_HandleNnStartResult() == 0) {
+                if (DwcMatch_HandleNnStartResult(DwcMatch_StartNatNegotiation(0, 0, ServerBrowserGetServer(sDwcMatch->serverBrowser, 0))) == 0) {
                     break;
                 }
                 return 0;
@@ -2953,11 +2943,9 @@ s32 DwcMatch_BeginSearch(void) {
     *(u64 *)&c->reservationTick = t;
     if (c->matchType == 0) {
         c->matchState = 3;
-        DwcMatch_StartServerQuery(0);
-        if (DwcMatch_HandleSbResult() != 0) return FALSE;
+        if (DwcMatch_HandleSbResult(DwcMatch_StartServerQuery(0)) != 0) return FALSE;
     } else if (c->matchType == 1) {
-        DwcMatch_TryNextFriend(0, 0);
-        if (DwcMatch_HandleResult() != 0) return FALSE;
+        if (DwcMatch_HandleResult(DwcMatch_TryNextFriend(0, 0)) != 0) return FALSE;
     } else if (c->matchType == 3) {
         DwcMatch_Fail(6, -0x13a1a);
         return FALSE;
@@ -3144,7 +3132,7 @@ void DwcMatch_AdvanceConnect(s32 a) {
         if (g->matchState != 0x10) {
             DwcMatchControl *c = g;
             u32 n = c->numClients;
-            if (DwcMatch_SendCommand(8, c->memberProfileIds[n], c->memberIps[n], c->memberPorts[n], args, kind), DwcMatch_HandleResult() != 0) return;
+            if (DwcMatch_HandleResult(DwcMatch_SendCommand(8, c->memberProfileIds[n], c->memberIps[n], c->memberPorts[n], args, kind)) != 0) return;
             g->cmdRetryCount = 0;
         }
         break;
@@ -3162,8 +3150,7 @@ void DwcMatch_AdvanceConnect(s32 a) {
         if (g->numClients > 1) {
             DwcMatchControl *c = g;
             u32 args2 = (u32)&c->memberProfileIds[c->numClients - 1];
-            DwcMatch_SendCommand(9, c->memberProfileIds[0], c->memberIps[0], c->memberPorts[0], (void *)args2, 1);
-            if (DwcMatch_HandleResult() != 0) return;
+            if (DwcMatch_HandleResult(DwcMatch_SendCommand(9, c->memberProfileIds[0], c->memberIps[0], c->memberPorts[0], (void *)args2, 1)) != 0) return;
         }
         break;
     case 3:
@@ -3176,9 +3163,10 @@ void DwcMatch_AdvanceConnect(s32 a) {
         {
             DwcMatchControl *c = g;
             BOOL r;
-            if (c->resultProfileId == 0) r = TRUE;
+            u32 v = c->resultProfileId;
+            if (v == 0) r = TRUE;
             else r = FALSE;
-            g->matchCallback(0, 0, r, 0, DwcFriend_FindIndexByProfileId(), c->matchCallbackParam);
+            g->matchCallback(0, 0, r, 0, DwcFriend_FindIndexByProfileId(v), c->matchCallbackParam);
         }
         if (g->matchType == 0 || g->matchType == 1) {
             DwcMatch_Cleanup();
@@ -3189,8 +3177,7 @@ void DwcMatch_AdvanceConnect(s32 a) {
             }
             NNFreeNegotiateList();
             if (g->matchType == 2) {
-                DwcMatch_UpdateServerStatus();
-                if (DwcMatch_HandleGpResult() != 0) return;
+                if (DwcMatch_HandleGpResult(DwcMatch_UpdateServerStatus()) != 0) return;
                 if (sDwcMatchServerLock[0] == 1) sDwcMatchServerLock[1] = 1;
                 g->matchState = 10;
             } else {
@@ -3234,8 +3221,7 @@ void DwcMatch_FinishCancelled(void) {
     s32 v;
     DwcMatchControl *c;
     BOOL r6, r5;
-    DwcFriend_SetOwnStatus(1, (char *)"", 0);
-    if (DwcMatch_HandleGpResult() == 0) {
+    if (DwcMatch_HandleGpResult(DwcFriend_SetOwnStatus(1, (char *)"", 0)) == 0) {
         DwcMatch_Cleanup();
         c = g;
         v = c->resultProfileId;
@@ -3262,16 +3248,15 @@ void DwcMatch_Restart(s32 a) {
     if (a == 0) {
         DwcMatch_FinishCancelled();
     } else {
-        DwcMatch_ResetState();
+        DwcMatch_ResetState(a);
         c = g;
         if (c->matchType == 2 || c->matchType == 3) {
             if (c->resultProfileId == 0) r = TRUE;
             else r = FALSE;
-            g->matchCallback(0, 1, r, 0, DwcFriend_FindIndexByProfileId(), c->matchCallbackParam);
+            g->matchCallback(0, 1, r, 0, DwcFriend_FindIndexByProfileId(c->resultProfileId), c->matchCallbackParam);
         } else if (c->matchType == 0) {
             if (a == 1) {
-                DwcMatch_StartServerQuery(0);
-                if (DwcMatch_HandleSbResult() != 0) return;
+                if (DwcMatch_HandleSbResult(DwcMatch_StartServerQuery(0)) != 0) return;
             }
         } else if (c->matchType == 1) {
             if (a == 1) {
@@ -4571,7 +4556,7 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, SockAddrIn *c, DwcNnRequest *d) {
                                         gt2AddressToString(sDwcMatch->memberConnectIps[idx], sDwcMatch->memberConnectPorts[idx], 0),
                                         buf, -1, 0x1388, sDwcMatch->transportCallbacks, 0);
             if (r == 1) {
-                DwcMatch_HandleGt2Result();
+                DwcMatch_HandleGt2Result(r);
                 return;
             }
             if (r == 0) {
@@ -4615,8 +4600,7 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, SockAddrIn *c, DwcNnRequest *d) {
                 return;
             }
             d->retryCount++;
-            DwcMatch_SendNnRequest(d);
-            if (DwcMatch_HandleNnStartResult() != 0) {
+            if (DwcMatch_HandleNnStartResult(DwcMatch_SendNnRequest(d)) != 0) {
                 return;
             }
             return;

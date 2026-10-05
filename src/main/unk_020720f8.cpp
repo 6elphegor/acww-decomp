@@ -254,7 +254,7 @@ extern "C" {
 u32 Comm_GetMemberMask(u32);
 }
 extern "C" {
-u32 _ZN11CommManager15getSendQueueLenEv();
+u32 _ZN11CommManager15getSendQueueLenEv(CommManager *);
 }
 extern "C" {
 u32 _ZN11CommManager14getDeferredLenEv(CommManager *);
@@ -527,7 +527,7 @@ extern "C" u32 Comm_CollectRecordsFor(u8 *dst, u32 id) {
     CommManager *o;
     u8 a[8];
     o = gCommManager;
-    size = _ZN11CommManager15getSendQueueLenEv();
+    size = _ZN11CommManager15getSendQueueLenEv(o);
     u8 *r5 = (u8 *)_ZN11CommManager15getSendQueueBufEv(o);
     u32 r6 = 0;
     while (r6 < size) {
@@ -1549,7 +1549,7 @@ extern "C" {
 u32 CommSyncVar_GetVarOffset(u32 a);
 }
 extern "C" {
-u32 CommSyncVar_GetVarSize();
+u32 CommSyncVar_GetVarSize(u32 i);
 }
 extern "C" {
 u32 Comm_AidToPeerIndex(s32 a);
@@ -1684,7 +1684,7 @@ void CommManager::processReceived() {
                 j = (u16)(j + 1);
                 cc = c;
                 if (cc >= 0x46) break;
-                n = CommSyncVar_GetVarSize();
+                n = CommSyncVar_GetVarSize(c);
                 MI_CpuCopy8(p, getSyncVar(cc), n);
                 p += n;
                 j = (u16)(j + n);

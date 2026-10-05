@@ -33,7 +33,7 @@ s32 OS_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 }
 
 extern "C" {
-s32 memcmp();
+s32 memcmp(const void *src1, const void *src2, u32 n);
 }
 
 extern "C" {
@@ -256,7 +256,7 @@ extern "C" u32 Random_GlobalBelow2(u32 n);
 extern "C" s32 Math_EaseRampProgress(s32 x, s32 lo, s32 hi, s32 a, s32 b);
 extern "C" void G3dRes_CopyTexByName(void *a, void *b, s32 c, s32 d);
 extern "C" void G3dRes_CopyPlttByName(void *a, void *b, s32 c, s32 d);
-extern "C" BOOL Mem_Differs();
+extern "C" BOOL Mem_Differs(const void *a, const void *b, u32 n);
 extern "C" s32 Str_SPrintf(char *buf, const char *fmt, ...);
 extern "C" s32 Str_VSPrintf(char *buf, const char *fmt, va_list va);
 extern "C" s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
@@ -472,8 +472,8 @@ extern "C" void G3dRes_CopyPlttByName(void *a, void *b, s32 c, s32 d) {
     MI_CpuCopy8(p, q, n);
 }
 
-extern "C" BOOL Mem_Differs() {
-    if (memcmp()) return TRUE;
+extern "C" BOOL Mem_Differs(const void *a, const void *b, u32 n) {
+    if (memcmp(a, b, n)) return TRUE;
     return FALSE;
 }
 

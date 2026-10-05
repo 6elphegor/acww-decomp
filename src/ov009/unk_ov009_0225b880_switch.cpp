@@ -164,7 +164,7 @@ void TalkAutoAdvance_start(void *, u32);
 void BuildingOccupancy_Leave(u32, u32);
 void HouseVisitor_ClearPresent();
 void *Scene_GetWarpRequest();
-void Scene_ResetTownReturnPos();
+void Scene_ResetTownReturnPos(s32 unused);
 s32 Math_AngleDiffAbs(s32, s32);
 s32 Vec_DistXZ(void *, void *);
 s32 *PlayerActor_GetBodyPos(u32);
@@ -328,8 +328,7 @@ void BuildingActor::onInteractionEvent(u32 a, u8 b) {
     case 6:
         BuildingOccupancy_Leave(itemId, 0);
         HouseVisitor_ClearPresent();
-        Scene_GetWarpRequest();
-        Scene_ResetTownReturnPos();
+        Scene_ResetTownReturnPos((s32)Scene_GetWarpRequest()); // unused by Scene_ResetTownReturnPos
         exitDelay = 1;
         break;
     case 0:

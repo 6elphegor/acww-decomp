@@ -37,7 +37,7 @@ void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
-void Letter_MarkRead();
+void Letter_MarkRead(LetterView *self);
 void Letter_Copy(void *dst, void *src);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
@@ -446,7 +446,7 @@ void PocketLettersMenu::transitionAct04() {
 
 void PocketLettersMenu::transitionAct05() {
     s32 t = getSlotLetter(selectedSlot);
-    Letter_MarkRead();
+    Letter_MarkRead((LetterView *)t);
     letterView.show((LetterView *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);

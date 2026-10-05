@@ -999,7 +999,7 @@ void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
 s32 _ZN12ErrandRecord8setExtraEh(void *p, s32 v);
 s32 ErrandRecord_GetTime(void *p);
 s32 _ZN12VillagerPlan8getStateEv(void *p);
-s32 _ZN12VillagerPlan9rollTrendEii(void *p);
+s32 _ZN12VillagerPlan9rollTrendEii(void *p, s32 a, s32 flag);
 s32 _ZN12VillagerPlan5clearEv(void *p);
 s32 _ZN12VillagerPlanD1Ev(void *p);
 s32 _ZN12VillagerPlanC1Ev(void *p);
@@ -1098,7 +1098,7 @@ extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self);
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Construct(PlayerErrandSlot *self);
 extern "C" u8 *VillagerPlanBlock_GetErrand(u8 *p);
 extern "C" void *VillagerPlanBlock_GetPlan(void *p);
-extern "C" s32 VillagerPlanBlock_RollTrend(void *p);
+extern "C" s32 VillagerPlanBlock_RollTrend(void *p, s32 a, s32 flag);
 extern "C" void VillagerPlanBlock_Clear(u8 *p);
 extern "C" u8 *VillagerPlanBlock_Destruct(u8 *p);
 extern "C" u8 *VillagerPlanBlock_Construct(u8 *p);
@@ -1421,8 +1421,8 @@ extern "C" void VillagerPlanBlock_Clear(u8 *p) {
     PlanErrand_Clear(p + 0x24);
 }
 
-extern "C" s32 VillagerPlanBlock_RollTrend(void *p) {
-    _ZN12VillagerPlan9rollTrendEii(p);
+extern "C" s32 VillagerPlanBlock_RollTrend(void *p, s32 a, s32 flag) {
+    _ZN12VillagerPlan9rollTrendEii(p, a, flag);
     return _ZN12VillagerPlan8getStateEv(p);
 }
 

@@ -146,7 +146,7 @@ void FieldPos_FromBlockUnitCenter(VecFx32Ctor *, s32, s32, s32, s32);
 void *Heap_Alloc(void *, s32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
-s32 Ground_SetWaveLevel();
+void Ground_SetWaveLevel(s32 v);
 s32 FX_Div(s32 a, s32 b);
 s32 TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, s32 x, s32 y, s32 flag);
 
@@ -198,8 +198,7 @@ extern "C" void FieldGround_OnBeachMaterial(NNSG3dRS *rs) {
         u8 b = rs->c[1]; // material id of the SBC MAT command
         if (blk != 0) {
             if (blk->beachMatIdx == b) {
-                FX_Div(rs->pMatAnmResult->transT + 0xda2, 0xda2);
-                Ground_SetWaveLevel();
+                Ground_SetWaveLevel(FX_Div(rs->pMatAnmResult->transT + 0xda2, 0xda2));
                 data_ov003_02235494 = 1;
             }
         }

@@ -228,12 +228,12 @@ void _ZN8MapBlock4initEiP7VecFx32iiiP11BgAcreModeljiij(u32 h, u32 a, VecFx32 *v,
 u32 _ZN12MapBlockAcre9getAcreIdEv(u32 h);
 u32 BgModel_LoadBcl(u32 a, u32 b);
 s32 _ZN8MapBlock6bindBgEP11BgAcreModeljj(u32 h, s32 a, u32 b, u32 c);
-u32 _ZN9HouseData13getRoomAcreIdEi(u32 *a);
+u32 _ZN9HouseData13getRoomAcreIdEi(u32 *a, s32 x);
 void _ZN12MapBlockAcre9setAcreIdEj(u32 h, s32 i);
 void RoomBclHeap_Destroy();
-void RoomBclHeap_Create();
+void RoomBclHeap_Create(s32 x);
 u32 SceneId_GetHouseRoom(u32 v);
-s32 HouseData_IsValidRoomIndex();
+s32 HouseData_IsValidRoomIndex(s32 i);
 u16 *_ZN7TownMap12getAcreItemsEP4Vec2(void *t, s32 *idx);
 void _ZN7TownMap5clearEv(void *t);
 void Town_GenerateAcres(void *t);
@@ -249,7 +249,7 @@ s32 FX_Div(s32 a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
 void MapBlock_Init(void *a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 *i, s32 j);
 s32 TownBclHeap_Destroy();
-void TownBclHeap_Create();
+void TownBclHeap_Create(s32 x);
 void func_02004b60();
 void func_0203442c();
 void CollisionMap_Select(s32 v);
@@ -1329,7 +1329,7 @@ void TownBlockMap::clear() {
 
 extern "C" BOOL TownBlockMap_Create(void *heap) {
     BOOL r = TRUE;
-    TownBclHeap_Create();
+    TownBclHeap_Create((s32)heap);
     if (!gTownBlockMap) {
         gTownBlockMap = (TownBlockMap *)Ns_0204d560::Heap_Alloc(heap, 0x20);
         if (gTownBlockMap) {
@@ -1556,7 +1556,7 @@ extern "C" void HouseRoomMap_Clear(RoomBlockMap *p) {
 
 extern "C" RoomBlockMap *HouseRoomMaps_Get(s32 i) {
     RoomBlockMap *r = 0;
-    if (HouseData_IsValidRoomIndex()) r = gHouseRoomMaps[i];
+    if (HouseData_IsValidRoomIndex(i)) r = gHouseRoomMaps[i];
     return r;
 }
 
@@ -1571,7 +1571,7 @@ extern "C" RoomBlockMap *HouseRoomMaps_GetForScene(s32 a) {
 extern "C" BOOL HouseRoomMaps_Create(void *heap) {
     BOOL r = TRUE;
     s32 i;
-    RoomBclHeap_Create();
+    RoomBclHeap_Create((s32)heap);
     for (i = 0; i < 5; i++) {
         RoomBlockMap **e = &gHouseRoomMaps[i];
         if (!*e) {
@@ -1614,7 +1614,7 @@ extern "C" void HouseRoomMaps_UpdateAll() {
 }
 
 extern "C" void HouseRoomMap_Update(RoomBlockMap *p, s32 i) {
-    u32 v = _ZN9HouseData13getRoomAcreIdEi(&Ns_0204cc48::gSaveHouse);
+    u32 v = _ZN9HouseData13getRoomAcreIdEi(&Ns_0204cc48::gSaveHouse, i);
     if (p->blocks) _ZN12MapBlockAcre9setAcreIdEj(p->blocks, v);
 }
 

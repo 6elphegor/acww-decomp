@@ -59,7 +59,7 @@ void OS_CreateThread(void *, void (*)(), void *, void *, u32, u32);
 void OS_WakeupThreadDirect(void *);
 void OS_InitMutex(void *);
 
-void DwcHttp_Abort();
+void DwcHttp_Abort(DwcHttp *c);
 void NasAuth_Abort();
 s32 DwcHttp_Init(DwcHttp *c, DwcHttpParams *r);
 s32 DwcHttp_FinishHeaders(DwcHttp *c);
@@ -157,7 +157,7 @@ void NetCheck_StartThread() {
 void NetCheck_Abort() {
     if (sNetCheck != 0) {
         if (sNetCheckHttp != 0) {
-            DwcHttp_Abort();
+            DwcHttp_Abort(sNetCheckHttp);
         }
         NasAuth_Abort();
         if (sNetCheck->threadId != 0) {

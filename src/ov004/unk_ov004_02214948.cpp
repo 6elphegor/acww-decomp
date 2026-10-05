@@ -143,7 +143,7 @@ s32 NpcRegistry_GetSlotCount();
 s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 void *MenuCtrl_GetIndex();
-u16 Pocket_GetItem();
+u16 Pocket_GetItem(s32 i);
 s32 Item_GetPrice(u16 *);
 void Pocket_RemoveItem(void *);
 void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
@@ -507,7 +507,7 @@ void BirthdayHostVillagerTalk::update() {
                 villager->changeAct(6);
             } else {
                 void *r6 = MenuCtrl_GetIndex();
-                x = Pocket_GetItem();
+                x = Pocket_GetItem((s32)r6);
                 s32 r4 = Item_GetPrice(&x);
                 Pocket_RemoveItem(r6);
                 ActorTalkRequest_setItemNameSlot(this, &x, 0, 7);

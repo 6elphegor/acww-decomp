@@ -16,7 +16,7 @@ void *NNS_G3dGetTex(void *h);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
 s32 PlayerHeadModelHeap_Destroy(void);
-s32 PlayerHeadModelHeap_Create(void);
+void PlayerHeadModelHeap_Create(void *parent);
 void _ZN10FishBobber9isInWaterEv(void *p);
 s32 ItemInfo_TestFlag2(u16 *p);
 s32 Item_IsFlowerItem(u16 *p);
@@ -97,7 +97,7 @@ extern const u8 sHatModelIds[0x48];
 extern char sPlayerHeadPathBuf[0x14];
 
 void HeldItemModel_IsBobberLanded(u8 *p);
-void PlayerHeadBank_Init(void);
+void PlayerHeadBank_Init(void *parent);
 void PlayerHeadBank_Destroy(void);
 char *PlayerHead_GetModelPath(u32 a);
 u32 PlayerHead_GetHairModelId(u32 i);
@@ -150,8 +150,8 @@ extern "C" void HeldItemModel_IsBobberLanded(u8 *p) {
     _ZN10FishBobber9isInWaterEv(p + 0x28);
 }
 
-extern "C" void PlayerHeadBank_Init(void) {
-    PlayerHeadModelHeap_Create();
+extern "C" void PlayerHeadBank_Init(void *parent) {
+    PlayerHeadModelHeap_Create(parent);
     MGR->setup();
     if (gPlayerHeadModelHeap != 0)
         Heap_adjust();

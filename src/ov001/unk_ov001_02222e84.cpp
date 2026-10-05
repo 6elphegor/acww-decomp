@@ -56,7 +56,7 @@ u32 WM_GetNextTgid();
 void DWCi_BACKUPlRead(void *);
 
 s32 WfcMoveMb_FindAidByMac(s32);
-s32 WfcMoveMb_GetChildInfo();
+s32 WfcMoveMb_GetChildInfo(u32 id);
 s32 WfcMoveMb_GetState();
 s32 WfcMoveMb_GetChildMask(s32);
 s32 WfcMoveMb_IsAllBootable();
@@ -436,7 +436,7 @@ extern "C" s32 WfcMove_TryEnd() {
 extern "C" s32 WfcMove_JudgeChild(s32 a) {
     s32 r = WfcMoveMb_FindAidByMac(a + 10);
     if (r == 0) return 0;
-    sWfcMove->childInfos[r - 1] = WfcMoveMb_GetChildInfo();
+    sWfcMove->childInfos[r - 1] = WfcMoveMb_GetChildInfo(r);
     return 1;
 }
 
