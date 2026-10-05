@@ -141,6 +141,10 @@ static inline const FSROMTable *GetOVT(int target) {
     return (target == 0) ? (const FSROMTable *)0x027ffe50 : (const FSROMTable *)0x027ffe58;
 }
 
+#ifdef MODERN
+void Modern_OverlayStarted(u32 id, u32 start, u32 end);  // modern/ds/overlays.c
+#endif
+
 // FSi_StartOverlay
 void FS_StartOverlay(FSOverlayInfoHeader *h) {
     u32 size = FSi_GetOverlayBinarySize(h);
@@ -160,6 +164,9 @@ void FS_StartOverlay(FSOverlayInfoHeader *h) {
     }
     if (h->flag & 1) MIi_UncompressBackward(h->ram_address + size);
     DC_FlushRange(h->ram_address, h->ram_size);
+#ifdef MODERN
+    Modern_OverlayStarted(h->id, h->ram_address, h->ram_address + h->ram_size + h->bss_size);
+#endif
     it = h->sinit_init;
     end = h->sinit_init_end;
     for (; it < end; it++) {

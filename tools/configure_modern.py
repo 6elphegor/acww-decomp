@@ -144,7 +144,7 @@ def main():
         n.rule("ldscript", f"{PYTHON} tools/modern_link.py --config {config_path} --lcf {matching_build}/arm9.lcf "
                            f"--order-lcf {matching_build}/arm9_force_active.lcf --objects $objects --nm {NM} -o $out",
                description="LDSCRIPT $out")
-        n.rule("link", f"{CC} -nostdlib -nostartfiles -mcpu=arm946e-s -mthumb-interwork -T $ldscript @$objects "
+        n.rule("link", f"{CC} -nostdlib -nostartfiles -mcpu=arm946e-s -mthumb-interwork -T $ldscript @$objects @$wrap "
                        f"-lgcc -Wl,--no-check-sections -Wl,--orphan-handling=error -Wl,--no-warn-rwx-segments -Wl,-Map,$out.map -o $out", description="LINK $out")
         n.rule("rom", f"{PYTHON} tools/modern_rom.py --elf $in --config {config_path} --build {build_path} "
                       f"--objcopy {OBJCOPY} --dsd {DSD} --baserom $baserom -o $out", description="ROM $out")
@@ -178,12 +178,26 @@ def main():
         objects_file = build_path / "objects.txt"
         build_path.mkdir(parents=True, exist_ok=True)
         objects_file.write_text("".join(f"{o}\n" for o in objects))
-        ldscript = str(build_path / "arm9.ld")
-        n.build(ldscript, "ldscript", objects, implicit=["tools/modern_link.py", str(objects_file)],
+
+        # thunks for calls to addresses that several overlays share (tools/modern_shared.py)
+        shared_s, shared_o = str(build_path / "shared.s"), str(build_path / "shared.o")
+        wrap_file = str(build_path / "wrap.txt")
+        n.rule("shared", f"{PYTHON} tools/modern_shared.py --nm {NM} --objects $objects --config {config_path} "
+                         f"--asm {shared_s} --wrap {wrap_file} > {build_path / 'shared.log'}", description="SHARED")
+        n.build([shared_s, wrap_file], "shared", objects, implicit=["tools/modern_shared.py", str(objects_file)],
                 variables={"objects": str(objects_file)})
+        n.rule("as_plain", f"{AS} -mcpu=arm946e-s -mthumb-interwork $in -o $out", description="AS $in")
+        n.build(shared_o, "as_plain", shared_s)
+        link_objects = objects + [shared_o]
+        link_file = build_path / "objects_link.txt"
+        link_file.write_text("".join(f"{o}\n" for o in link_objects))
+
+        ldscript = str(build_path / "arm9.ld")
+        n.build(ldscript, "ldscript", link_objects, implicit=["tools/modern_link.py", str(link_file)],
+                variables={"objects": str(link_file)})
         elf = str(build_path / "arm9.elf")
-        n.build(elf, "link", objects, implicit=[ldscript, str(objects_file)],
-                variables={"ldscript": ldscript, "objects": str(objects_file)})
+        n.build(elf, "link", link_objects, implicit=[ldscript, str(link_file), wrap_file],
+                variables={"ldscript": ldscript, "objects": str(link_file), "wrap": wrap_file})
         rom = f"acww_{args.version}_modern.nds"
         n.build(rom, "rom", elf, implicit=["tools/modern_rom.py", "tools/fix_header.py"],
                 variables={"baserom": f"extract/baserom_acww_{args.version}.nds"})

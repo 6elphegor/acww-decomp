@@ -137,7 +137,14 @@ void FS_ClearOverlayImage(FSOverlayInfoHeader *h);
 u32 FSi_GetOverlayBinarySize(const FSOverlayInfoHeader *h);
 
 // FSi_UnloadOverlayImage (run and drop destructors in the image)
+#ifdef MODERN
+void Modern_OverlayEnded(u32 id);  // modern/ds/overlays.c
+#endif
+
 void FS_EndOverlay(FSOverlayInfo *p) {
+#ifdef MODERN
+    Modern_OverlayEnded(p->header.id);
+#endif
     for (;;) {
         DtorEntry *found = 0;
         DtorEntry *found_tail = 0;
