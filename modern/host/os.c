@@ -67,6 +67,12 @@ void host_deliver_irqs(void) {
 
 void OS_IrqHandler(void) { host_deliver_irqs(); }
 
+// entered through irq_entry.S from an interrupted game context (hw.c host_irq_inject)
+void host_irq_entry(void) {
+    host_deliver_irqs();
+}
+int host_irq_ready(void) { return !sIrqDisabled && !sInIrq && host_irq_pending(); }
+
 // SIGALRM (hw.c): the game is spinning on memory that an interrupt handler changes (no I/O, no wait, so virtual
 // time stands still): let time pass and deliver what's due.
 int host_async_tick(void) {

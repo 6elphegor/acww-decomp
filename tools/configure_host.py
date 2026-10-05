@@ -81,6 +81,7 @@ def main():
         n.rule("hostcc", f"{args.cc} {HOST_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
         n.rule("provides", "python3 tools/host_provides.py $in $out", description="PROVIDES $out")
+        n.rule("hostas_S", f"{args.cc} -m32 -c $in -o $out", description="AS $in")
         n.rule("hostcxx", f"g++ {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
         n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects $provides {MELON_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
@@ -91,9 +92,10 @@ def main():
             fl = source_flags(s)
             n.build(o, "cxx" if s.suffix == ".cpp" else "cc", str(s), variables={"flags": " ".join(fl)} if fl else None)
             objs.append(o)
-        for s in sources(Path("modern/host"), (".c", ".cpp")):
+        for s in sources(Path("modern/host"), (".c", ".cpp", ".S")):
             o = str(build / s.with_suffix(".o"))
-            n.build(o, "hostcxx" if s.suffix == ".cpp" else "hostcc", str(s))
+            rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
+            n.build(o, rule, str(s))
             objs.append(o)
         n.rule("gaps", "python3 tools/host_gaps.py $in $out", description="GAPS $out")
         gaps_c = str(build / "gaps.c")
@@ -111,6 +113,16 @@ def main():
         host_objs = [o for o in objs if o not in game_objs]
         game_list = build / "game_objects.txt"
         build.mkdir(parents=True, exist_ok=True)
+        # labels around the game's code (hw.c injects interrupts only there): the partial link concatenates .text
+        # in input order
+        for edge in ("start", "end"):
+            asm = build / f"game_text_{edge}.s"
+            asm.write_text(f".text\n.globl host_game_text_{edge}\nhost_game_text_{edge}:\n"
+                           '.section .note.GNU-stack,"",@progbits\n')
+        n.rule("markeras", f"{args.cc} -m32 -c $in -o $out", description="AS $in")
+        n.build(str(build / "game_text_start.o"), "markeras", str(build / "game_text_start.s"))
+        n.build(str(build / "game_text_end.o"), "markeras", str(build / "game_text_end.s"))
+        game_objs = [str(build / "game_text_start.o")] + game_objs + [str(build / "game_text_end.o")]
         game_list.write_text("".join(f"{o}\n" for o in game_objs))
         # thunks for calls to addresses several overlays share (tools/modern_shared.py; ld --wrap in the partial
         # link, where the references are still undefined)

@@ -436,6 +436,10 @@ extern "C" ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d) {
     gProcCreateStep = 3;
     ProcBase *r = (ProcBase *)gProfileTable[a]->create();
 #ifdef HOST
+    {
+        extern void host_log_proc(u32 profile, void *create, void *obj);
+        host_log_proc(a, (void *)gProfileTable[a]->create, r);
+    }
     if (r != NULL && (*(u32 *)r < 0x08048000 || *(u32 *)r >= 0x0c000000)) {  // a vtable outside the program image
         extern void host_bad_object(u32 profile, void *create, void *obj);
         host_bad_object(a, (void *)gProfileTable[a]->create, r);

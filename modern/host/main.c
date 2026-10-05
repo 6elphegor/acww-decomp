@@ -16,6 +16,12 @@ void host_fatal(const char *msg) {
     exit(2);
 }
 
+void host_log_proc(u32 profile, void *create, void *obj) {
+    static int on = -1;
+    if (on < 0) on = getenv("ACWW_PROCLOG") != 0;
+    if (on) fprintf(stderr, "proc: frame %llu profile %u create %p -> %p\n", (unsigned long long)host_frame(), profile, create, obj);
+}
+
 void host_bad_object(u32 profile, void *create, void *obj) {
     fprintf(stderr, "host: profile %u: create %p returned %p without a vtable\n", profile, create, obj);
 }

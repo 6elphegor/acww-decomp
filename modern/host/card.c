@@ -43,6 +43,11 @@ void card_control_written(u32 ctrl) {
     host_card_dma();
 }
 
+// CARDi_ReadCard's fast path (HOST): a 512-byte page straight from the image
+void host_card_read(u32 addr, void *dst, u32 n) {
+    for (u32 i = 0; i < n; i++) ((u8 *)dst)[i] = addr + i < sRomSize ? sRom[addr + i] : 0xff;
+}
+
 u32 card_read_data(void) {
     u32 v = 0xffffffff;
     if (sLeft) {

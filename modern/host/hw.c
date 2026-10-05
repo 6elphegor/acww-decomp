@@ -57,7 +57,11 @@ void pxi7_run_due(void);
 static u32 sIF;
 void host_irq_raise(u32 m) { sIF |= m; }
 void host_irq_ack(u32 m) { sIF &= ~m; }
-u32 host_irq_pending(void) { return (R32(0x04000208) & 1) ? (R32(0x04000210) & sIF) : 0; }
+int melon_gx_fifo_irq_level(void);
+u32 host_irq_pending(void) {
+    u32 lines = sIF | (melon_gx_fifo_irq_level() ? 1u << 21 : 0);  // the GX FIFO line is level-triggered
+    return (R32(0x04000208) & 1) ? (R32(0x04000210) & lines) : 0;
+}
 
 // ---- timers (0x04000100 + 4n: counter/reload u16, control u16)
 typedef struct { u64 start; u16 reload; int shift; int on; int irq; int cascade; } Timer;
@@ -133,7 +137,15 @@ void host_advance_to_next_event(void) {
 }
 static u64 sLastTimerCheck[4];
 static void dma_on_vblank(void);
+static int sInEvents;
+static void run_events_body(void);
 static void run_events(void) {
+    if (sInEvents) return;  // a signal arrived while events were being handled
+    sInEvents = 1;
+    run_events_body();
+    sInEvents = 0;
+}
+static void run_events_body(void) {
     pxi7_run_due();
     while (sCycles >= sNextVblank) {
         u16 st = R16(0x04000004);
@@ -149,6 +161,10 @@ static void run_events(void) {
             fprintf(stderr, "stats: frame %llu dispcnt %08x/%08x bright %04x/%04x pal %d banks", (unsigned long long)host_frame(),
                     R32(0x04000000), R32(0x04001000), R16(0x0400006c), R16(0x0400106c), pal);
             for (int b = 0; b < 9; b++) { int nz = 0; u8 *p = host_vram_bank(b); for (u32 i = 0; i < host_vram_bank_size(b); i++) nz += p[i] != 0; fprintf(stderr, " %d", nz); }
+            fprintf(stderr, " game bld %08x %08x/%08x %08x bg %08x %08x", R32(0x04000050), R32(0x04000054), R32(0x04001050), R32(0x04001054), R32(0x04000008), R32(0x0400000c));
+            extern u32 gScreenTransition[];
+            fprintf(stderr, " transition");
+            for (int i = 0; i < 12; i++) fprintf(stderr, " %x", gScreenTransition[i]);
             extern void melon_debug(void);
             melon_debug();
             fprintf(stderr, " vramcnt %08x %08x ime %x ie %08x if %08x cpu %x\n", R32(0x04000240), R32(0x04000244), R32(0x04000208), R32(0x04000210), sIF, host_irq_state());
@@ -199,6 +215,8 @@ static void square_root(void) {
     R32(0x040002b4) = (u32)r;
 }
 
+static void io_write(u32 a, u32 old);
+
 // ---- DMA (0x040000b0 + 12n: source, destination, control)
 void gx_fifo_write(u32 addr, u32 value);
 static void dma_run(int ch) {
@@ -217,8 +235,10 @@ static void dma_run(int ch) {
         else if (is_io(src)) v = w == 4 ? R32(src) : R16(src);
         else v = w == 4 ? *(volatile u32 *)(uintptr_t)src : *(volatile u16 *)(uintptr_t)src;
         if (is_io(dst)) {
-            if (dst >= 0x04000400 && dst < 0x04000700) gx_fifo_write(dst, v);
-            else if (w == 4) R32(dst) = v; else R16(dst) = (u16)v;
+            // as a CPU write would be (the display registers go to the renderer)
+            u32 old = R32(dst & ~3u);
+            if (w == 4) R32(dst) = v; else R16(dst) = (u16)v;
+            io_write(dst, old);
         } else if (w == 4) *(volatile u32 *)(uintptr_t)dst = v;
         else *(volatile u16 *)(uintptr_t)dst = (u16)v;
         if (sc == 0) src += w; else if (sc == 1) src -= w;
@@ -298,6 +318,9 @@ static int is_display(u32 w) {
 
 static void io_write(u32 a, u32 old) {
     u32 w = a & ~3u;
+    static long logw = -2;
+    if (logw == -2) logw = getenv("ACWW_IOLOG") ? strtol(getenv("ACWW_IOLOG"), 0, 16) : -1;
+    if ((long)w == logw) fprintf(stderr, "io: frame %llu [%08x] %08x -> %08x\n", (unsigned long long)host_frame(), w, old, R32(w));
     if (is_display(w)) { forward_display(w, old); return; }
     switch (w) {
     case 0x04000214: { u32 v = R32(w); sIF &= ~v; R32(w) = sIF; break; }
@@ -326,6 +349,8 @@ static void io_write(u32 a, u32 old) {
     }
 }
 
+static void host_irq_inject(ucontext_t *uc);
+
 // ---- the fault handler
 static u32 sFaultAddr;
 static int sFaultWrite;
@@ -348,10 +373,31 @@ static void host_backtrace(u32 *bp, u32 sp) {
     }
 }
 
+// ---- data write-watch for debugging: ACWW_WATCH=addr:len protects the page and logs the writes in the range
+static u32 sWatchLo, sWatchHi, sWatchPage, sWatchStep, sWatchEip;
+static u8 sWatchOld[64];
+static void watch_init(void) {
+    const char *w = getenv("ACWW_WATCH");
+    if (!w) return;
+    unsigned a, n;
+    if (sscanf(w, "%x:%x", &a, &n) != 2) return;
+    sWatchLo = a; sWatchHi = a + (n > 64 ? 64 : n); sWatchPage = a & ~(PAGE - 1);
+    mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ);
+}
+
 static void on_segv(int sig, siginfo_t *si, void *ctx) {
     (void)sig;
     ucontext_t *uc = ctx;
     u32 a = (u32)(uintptr_t)si->si_addr;
+    if (sWatchPage && (a & ~(PAGE - 1)) == sWatchPage) {
+        memcpy(sWatchOld, (void *)(uintptr_t)sWatchLo, sWatchHi - sWatchLo);
+        sWatchEip = (u32)uc->uc_mcontext.gregs[REG_EIP];
+        sWatchStep = 1;
+        mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ | PROT_WRITE);
+        uc->uc_mcontext.gregs[REG_EFL] |= 0x100;
+        sigaddset(&uc->uc_sigmask, SIGALRM);
+        return;
+    }
     if (!is_io(a)) {
         fprintf(stderr, "host: segfault at %08x, eip %08x, ebp %08x\n", a, (u32)uc->uc_mcontext.gregs[REG_EIP],
                 (u32)uc->uc_mcontext.gregs[REG_EBP]);
@@ -375,17 +421,73 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
 static void on_trap(int sig, siginfo_t *si, void *ctx) {
     (void)sig; (void)si;
     ucontext_t *uc = ctx;
+    if (sWatchStep) {
+        sWatchStep = 0;
+        uc->uc_mcontext.gregs[REG_EFL] &= ~0x100;
+        sigdelset(&uc->uc_sigmask, SIGALRM);
+        if (memcmp(sWatchOld, (void *)(uintptr_t)sWatchLo, sWatchHi - sWatchLo)) {
+            fprintf(stderr, "watch: frame %llu eip %08x:", (unsigned long long)host_frame(), sWatchEip);
+            for (u32 i = 0; i < sWatchHi - sWatchLo; i += 4) fprintf(stderr, " %08x", *(u32 *)(uintptr_t)(sWatchLo + i));
+            fprintf(stderr, "\n");
+        }
+        mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ);
+        return;
+    }
     uc->uc_mcontext.gregs[REG_EFL] &= ~0x100;
     sigdelset(&uc->uc_sigmask, SIGALRM);
     mprotect(page_of(sFaultAddr), PAGE, PROT_NONE);
     if (sFaultWrite) io_write(sFaultAddr, sFaultOld);
+    host_irq_inject(uc);
+}
+
+// ---- profiling: ACWW_PROFILE=1 samples the interrupted EIP (SIGPROF); the counts are printed on SIGINT
+#define PROF_SLOTS 65536
+static u32 sProfAddr[PROF_SLOTS], sProfCount[PROF_SLOTS];
+static void on_prof(int sig, siginfo_t *si, void *ctx) {
+    (void)sig; (void)si;
+    u32 eip = (u32)((ucontext_t *)ctx)->uc_mcontext.gregs[REG_EIP];
+    u32 h = (eip >> 2) * 2654435761u >> 16;
+    for (int i = 0; i < 16; i++, h = (h + 1) & (PROF_SLOTS - 1)) {
+        if (sProfAddr[h] == eip || !sProfAddr[h]) { sProfAddr[h] = eip; sProfCount[h]++; return; }
+    }
+}
+static void prof_dump(void) {
+    FILE *f = fopen("acww_profile.txt", "w");
+    if (!f) return;
+    for (int i = 0; i < PROF_SLOTS; i++) if (sProfCount[i]) fprintf(f, "%u %08x\n", sProfCount[i], sProfAddr[i]);
+    fclose(f);
+    fprintf(stderr, "host: profile in acww_profile.txt\n");
+}
+
+// interrupt injection: an interrupted context inside the game's code with an interrupt due goes to
+// host_irq_stub (irq_entry.S) first, like an IRQ exception. Not in the runtime's or the libraries' code.
+extern char host_game_text_start[], host_game_text_end[];
+void host_irq_stub(void);
+int host_irq_ready(void);
+static void host_irq_inject(ucontext_t *uc) {
+    u32 eip = (u32)uc->uc_mcontext.gregs[REG_EIP];
+    if (eip < (u32)(uintptr_t)host_game_text_start || eip >= (u32)(uintptr_t)host_game_text_end) return;
+    if (uc->uc_mcontext.gregs[REG_EFL] & 0x100) return;  // single-stepping an I/O access
+    if (!host_irq_ready()) return;
+    u32 *sp = (u32 *)uc->uc_mcontext.gregs[REG_ESP];
+    *--sp = eip;
+    uc->uc_mcontext.gregs[REG_ESP] = (greg_t)(uintptr_t)sp;
+    uc->uc_mcontext.gregs[REG_EIP] = (greg_t)(uintptr_t)host_irq_stub;
 }
 
 int host_async_tick(void);
 static u64 sTickCycles;
-static void on_alarm(int sig) {
-    (void)sig;
-    if (sCycles == sTickCycles) host_async_tick();
+static void on_alarm(int sig, siginfo_t *si, void *ctx) {
+    (void)sig; (void)si;
+    ucontext_t *uc = ctx;
+    u32 eip = (u32)uc->uc_mcontext.gregs[REG_EIP];
+    int in_game = eip >= (u32)(uintptr_t)host_game_text_start && eip < (u32)(uintptr_t)host_game_text_end;
+    if (sCycles == sTickCycles && in_game) {
+        // the game spinning on memory: let time pass, then take the interrupts it raised. (Never in the runtime's
+        // or a library's code: the renderer may be in the middle of a frame there.)
+        host_advance_to_next_event();
+        host_irq_inject(uc);
+    }
     sTickCycles = sCycles;
 }
 
@@ -397,6 +499,7 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
         struct IoLog *l = &sRing[(sRingPos + i) & 15];
         fprintf(stderr, "  %s %08x at %08x\n", l->write ? "write" : "read ", l->addr, l->eip);
     }
+    prof_dump();
     fprintf(stderr, "host: interrupted at frame %llu, eip %08x\n", (unsigned long long)host_frame(),
             (u32)uc->uc_mcontext.gregs[REG_EIP]);
     host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
@@ -445,9 +548,17 @@ void host_map_memory(void) {
     // SIGALRM is blocked while an I/O access is being single-stepped (the handlers' sa_mask) and inside itself
     struct sigaction al;
     memset(&al, 0, sizeof al);
-    al.sa_handler = on_alarm;
+    al.sa_flags = SA_SIGINFO;
+    al.sa_sigaction = on_alarm;
     sigaction(SIGALRM, &al, 0);
     struct itimerval it = {{0, 2000}, {0, 2000}};
     setitimer(ITIMER_REAL, &it, 0);
+    if (getenv("ACWW_PROFILE")) {
+        sa.sa_sigaction = on_prof;
+        sigaction(SIGPROF, &sa, 0);
+        struct itimerval pt = {{0, 1000}, {0, 1000}};
+        setitimer(ITIMER_PROF, &pt, 0);
+    }
     R16(0x04000130) = 0x3ff;
+    watch_init();
 }

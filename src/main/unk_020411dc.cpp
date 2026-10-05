@@ -179,7 +179,13 @@ extern "C" void IrisWipe_SetupLayers() {
 
 extern "C" void IrisWipe_Begin() {
     volatile u16 z = 0;
+#ifdef MODERN
+    // the two tables are cleared together (they are adjacent in the original)
+    MIi_CpuClear16(z, (u32)sIrisWipeTableA, sizeof sIrisWipeTableA);
+    MIi_CpuClear16(z, (u32)sIrisWipeTableB, sizeof sIrisWipeTableB);
+#else
     MIi_CpuClear16(z, (u32)sIrisWipeTableA, 0x180);
+#endif
     sIrisWipeActiveTable = sIrisWipeTableA;
     IrisWipe_SetupLayers();
     if (HBlank_Add(sIrisWipeHBlankTask, (void *)IrisWipe_HBlank, (void *)IrisWipe_VBlankRegs, 0) != 0) {
@@ -211,7 +217,13 @@ extern "C" void IrisWipe_Update() {
         MIi_CpuClear16(c, (u32)p, 0xc0);
     } else if (v == 0x1000) {
         volatile u16 c = 0x8080;
-        MIi_CpuClear16(c, (u32)sIrisWipeTableA, 0x180);
+#ifdef MODERN
+    // the two tables are cleared together (they are adjacent in the original)
+    MIi_CpuClear16(c, (u32)sIrisWipeTableA, sizeof sIrisWipeTableA);
+    MIi_CpuClear16(c, (u32)sIrisWipeTableB, sizeof sIrisWipeTableB);
+#else
+    MIi_CpuClear16(c, (u32)sIrisWipeTableA, 0x180);
+#endif
     } else {
         s32 h = ((0x1000 - v) * 160) >> 12;
         s32 h2 = (h * h) << 12;

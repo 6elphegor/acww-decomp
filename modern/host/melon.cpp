@@ -38,12 +38,23 @@ extern "C" void melon_write16(u32 addr, u16 v) {
         fprintf(stderr, "melon: %08x = %04x\n", addr, v);
     sNds->ARM9IOWrite16(addr, v);
 }
+static void gx_fifo_irq(void);
 static u32 sGxFifo, sGxPort;
 extern "C" void melon_write32(u32 addr, u32 v) {
     if (addr == 0x04000400) sGxFifo++; else if (addr >= 0x04000440 && addr < 0x04000600) sGxPort++;
     sNds->ARM9IOWrite32(addr, v);
     if (addr >= 0x04000400 && addr < 0x04000600) sNds->GPU.GPU3D.HostDrain();
+    if (addr >= 0x04000400 && addr <= 0x04000600) gx_fifo_irq();
 }
+// the GX FIFO interrupt (IRQ 21) is level-triggered: GXSTAT bits 30-31 choose "less than half full" or "empty", and
+// the FIFO is always empty here (commands run at once), so the line is up whenever one of them is selected
+static int sGxFifoLevel;
+static void gx_fifo_irq(void) {
+    u32 mode = sNds->GPU.GPU3D.Read32(0x04000600) >> 30;
+    sGxFifoLevel = mode == 1 || mode == 2;
+}
+extern "C" int melon_gx_fifo_irq_level(void) { return sGxFifoLevel; }
+
 extern "C" u32 melon_read32(u32 addr) {
     sNds->GPU.GPU3D.HostDrain();
     return sNds->ARM9IORead32(addr);
@@ -79,8 +90,20 @@ extern "C" const u32 *melon_screen(int screen) {
     return sNds->GPU.Framebuffer[sNds->GPU.FrontBuffer][screen].get();
 }
 
+static u64 fnv(const u8 *p, u32 n) { u64 h = 1469598103934665603ull; while (n--) h = (h ^ *p++) * 1099511628211ull; return h; }
 extern "C" void melon_debug(void) {
     GPU &g = sNds->GPU;
+    fprintf(stderr, "melon: bank hashes");
+    for (int b = 0; b < 9; b++) fprintf(stderr, " %c:%016llx", 'A' + b, (unsigned long long)fnv(g.VRAM[b], host_vram_bank_size(b)));
+    fprintf(stderr, " pal:%016llx", (unsigned long long)fnv(g.Palette, 2048));
+    for (int fb = 0; fb < 2; fb++) for (int s = 0; s < 2; s++) {
+        int nz = 0; const u32 *p = g.Framebuffer[fb][s].get();
+        for (int i = 0; i < 256 * 192; i++) nz += (p[i] & 0xffffff) != 0;
+        fprintf(stderr, " fb%d.%d:%d", fb, s, nz);
+    }
+    fprintf(stderr, " bld %08x %08x/%08x %08x bg %08x %08x", sNds->ARM9IORead32(0x04000050), sNds->ARM9IORead32(0x04000054),
+            sNds->ARM9IORead32(0x04001050), sNds->ARM9IORead32(0x04001054), sNds->ARM9IORead32(0x04000008), sNds->ARM9IORead32(0x0400000c));
+    fprintf(stderr, " front %d bright %04x/%04x\n", g.FrontBuffer, g.GPU2D_A.MasterBrightness, g.GPU2D_B.MasterBrightness);
     fprintf(stderr, "melon: gx fifo %u port %u gxstat %08x ", sGxFifo, sGxPort, sNds->ARM9IORead32(0x04000600));
     sGxFifo = sGxPort = 0;
     fprintf(stderr, "polys %u/%u dispcnt %08x/%08x vramcnt %02x %02x %02x %02x %02x %02x %02x %02x %02x powcnt %04x\n",
