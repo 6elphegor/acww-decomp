@@ -220,7 +220,7 @@ extern "C" void _ZN6Camera13initModeFocusEv();
 extern "C" void _ZN6Camera11updateMode1Ev();
 extern "C" void _ZN6Camera9initMode1Ev();
 extern "C" void _ZN6Camera17updateModeDefaultEv();
-extern "C" void SslCert_MatchHostName();
+extern "C" void _ZN16CameraEventModes20initModeFollowTargetEv();  // ov068 (0x02266b24, shared with ov065)
 extern "C" void Camera_UpdateMode15();
 extern "C" void _ZN16CameraEventModes22updateModeFollowTargetEv();
 extern "C" void Camera_UpdateMode11();
@@ -1560,7 +1560,7 @@ void *data_020d9350[2] = { (void *)_ZN6Camera13initModeFocusEv, 0 };
 void *data_020d9358[2] = { (void *)_ZN6Camera11updateMode1Ev, 0 };
 void *data_020d9360[2] = { (void *)_ZN6Camera9initMode1Ev, 0 };
 void *data_020d9368[2] = { (void *)_ZN6Camera17updateModeDefaultEv, 0 };
-void *data_020d9370[2] = { (void *)SslCert_MatchHostName, 0 };
+void *data_020d9370[2] = { (void *)_ZN16CameraEventModes20initModeFollowTargetEv, 0 };
 void *data_020d9378[2] = { (void *)Camera_UpdateMode15, 0 };
 void *data_020d9380[2] = { (void *)_ZN16CameraEventModes22updateModeFollowTargetEv, 0 };
 void *data_020d9388[2] = { (void *)Camera_UpdateMode11, 0 };
