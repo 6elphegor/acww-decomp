@@ -22,6 +22,8 @@ parser.add_argument("--cc", default="gcc")
 parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"),
                     help="melonDS source tree patched with tools/host/melonds.patch and built for 32-bit x86 in build-core32 "
                          "(the display renderer)")
+parser.add_argument("--sdl2", default=os.path.expanduser("~/acww/toolchains/sdl2-dev"),
+                    help="directory with SDL2 development headers (usr/include/SDL2), for the viewer")
 parser.add_argument("version", nargs="?", default="usa")
 args = parser.parse_args()
 
@@ -93,6 +95,8 @@ def main():
             n.build(o, "cxx" if s.suffix == ".cpp" else "cc", str(s), variables={"flags": " ".join(fl)} if fl else None)
             objs.append(o)
         for s in sources(Path("modern/host"), (".c", ".cpp", ".S")):
+            if "viewer" in s.parts:
+                continue
             o = str(build / s.with_suffix(".o"))
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             n.build(o, rule, str(s))
@@ -145,7 +149,12 @@ def main():
         exe = str(build / "acww")
         n.build(exe, "link", [game_o] + host_objs, implicit=[provides, str(objects_file)],
                 variables={"objects": str(objects_file), "provides": provides})
-        n.default(exe)
+        # the viewer: a 64-bit SDL2 program (SDL2 headers from --sdl2, the system's libSDL2 at run time)
+        n.rule("viewer", f"gcc -O2 -I{args.sdl2}/usr/include -I{args.sdl2}/usr/include/x86_64-linux-gnu $in -o $out "
+                         "-l:libSDL2-2.0.so.0", description="VIEWER $out")
+        viewer = str(build / "acww-viewer")
+        n.build(viewer, "viewer", "modern/host/viewer/viewer.c", implicit=["modern/host/frontend.h"])
+        n.default([exe, viewer])
 
 
 if __name__ == "__main__":

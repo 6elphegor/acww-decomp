@@ -153,6 +153,8 @@ static void run_events_body(void) {
         if (st & 16) host_irq_raise(2);   // HBlank (once per frame: the per-line effects aren't emulated)
         dma_on_vblank();
         melon_frame();
+        extern void frontend_frame(void);
+        frontend_frame();
         host_screenshot();
         if (getenv("ACWW_STATS") && host_frame() % 300 == 0) {
             extern u8 *host_vram_bank(int i);
@@ -284,8 +286,7 @@ static void io_read(u32 a) {
     else if (w >= 0x04000100 && w < 0x04000110) {
         int i = (w - 0x04000100) / 4;
         R16(w) = tm_counter(&sTm[i]);
-    } else if (w == 0x04000130) R16(w) = 0x3ff;           // KEYINPUT: nothing pressed
-    else if (w == 0x04000214) R32(w) = sIF;
+    } else if (w == 0x04000214) R32(w) = sIF;
     else if ((w >= 0x04000600 && w < 0x040006a4) || w == 0x04000320) R32(w) = melon_read32(w);  // 3D status, results
     else if (w == 0x04000184 || w == 0x04000180 || w == IO1) {
         extern void pxi7_prepare_read(u32 a);

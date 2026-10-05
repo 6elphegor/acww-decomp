@@ -66,6 +66,10 @@ int main(int argc, char **argv) {
     *(volatile u16 *)0x027ffc40 = 1;                     // boot type: ROM
     pxi7_init();
     melon_init();
+    extern void frontend_init(const char *argv0);
+    extern void frontend_shutdown(void);
+    frontend_init(argv[0]);
+    atexit(frontend_shutdown);
     NitroStartUp();  // crt0 calls it before the static initialisers; they ran already (host .init_array)
     NitroMain();
     host_fatal("NitroMain returned");

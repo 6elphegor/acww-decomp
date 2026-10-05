@@ -187,18 +187,23 @@ static int sTpAuto;
 static struct { u32 frame, len, x, y; } sTouch[64];
 static int sTouchCount;
 
+int frontend_touch(int *x, int *y);
+// a screen position as the raw ADC sample, through the firmware's calibration points
+static u32 tp_raw(s32 sx, s32 sy) {
+    const u8 *u = sNvram + (sNvramSize ? (sNvram[0x20] | sNvram[0x21] << 8) * 8 : 0) + 0x58;
+    s32 ax1 = u[0] | u[1] << 8, ay1 = u[2] | u[3] << 8, sx1 = u[4], sy1 = u[5];
+    s32 ax2 = u[6] | u[7] << 8, ay2 = u[8] | u[9] << 8, sx2 = u[10], sy2 = u[11];
+    s32 x = sx2 != sx1 ? ax1 + (sx - sx1) * (ax2 - ax1) / (sx2 - sx1) : 0;
+    s32 y = sy2 != sy1 ? ay1 + (sy - sy1) * (ay2 - ay1) / (sy2 - sy1) : 0;
+    return (u32)(x & 0xfff) | (u32)(y & 0xfff) << 12 | 1u << 24;
+}
+
 static void tp_sample(void) {
     u32 f = (u32)host_frame(), raw = 0;
-    for (int i = 0; i < sTouchCount; i++) {
-        if (f >= sTouch[i].frame && f < sTouch[i].frame + sTouch[i].len) {
-            const u8 *u = sNvram + (sNvramSize ? (sNvram[0x20] | sNvram[0x21] << 8) * 8 : 0) + 0x58;
-            s32 ax1 = u[0] | u[1] << 8, ay1 = u[2] | u[3] << 8, sx1 = u[4], sy1 = u[5];
-            s32 ax2 = u[6] | u[7] << 8, ay2 = u[8] | u[9] << 8, sx2 = u[10], sy2 = u[11];
-            s32 x = sx2 != sx1 ? ax1 + ((s32)sTouch[i].x - sx1) * (ax2 - ax1) / (sx2 - sx1) : 0;
-            s32 y = sy2 != sy1 ? ay1 + ((s32)sTouch[i].y - sy1) * (ay2 - ay1) / (sy2 - sy1) : 0;
-            raw = (u32)(x & 0xfff) | (u32)(y & 0xfff) << 12 | 1u << 24;
-        }
-    }
+    int lx, ly;
+    if (frontend_touch(&lx, &ly)) raw = tp_raw(lx, ly);  // the viewer's mouse
+    for (int i = 0; i < sTouchCount; i++)                // ACWW_TOUCH
+        if (f >= sTouch[i].frame && f < sTouch[i].frame + sTouch[i].len) raw = tp_raw((s32)sTouch[i].x, (s32)sTouch[i].y);
     *(volatile u16 *)0x027fffaa = (u16)raw;
     *(volatile u16 *)0x027fffac = (u16)(raw >> 16);
 }
