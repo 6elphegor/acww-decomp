@@ -67,7 +67,7 @@ void NNS_SndArcLoadWaveArc(s32 a, void *b);
 void NNS_SndPlayerCreateHeap(s32 a, void *b, u32 c);
 void NNS_SndPlayerSetPlayerVolume(s32 a, s32 b);
 void NNS_SndPlayerStopSeqByPlayerNo(s32 a, s32 b);
-void SndMgr_StartVolumeFadeIn(void);
+void SndMgr_StartVolumeFadeIn(void *self);
 void SndMgr_UpdateVolumeCurve(Glob *g);
 void SndMgr_SetPlayerVolumes(Glob *g, s32 a, s32 b);
 void SndMgr_LoadBank(Glob *g, s32 v);
@@ -1038,7 +1038,7 @@ void SndScene51::load() {
     createPlayer12Heaps();
     NNS_SndHeapSaveState(Snd_GetHeap());
     gSndMgr.f62 = 0;
-    SndMgr_StartVolumeFadeIn();
+    SndMgr_StartVolumeFadeIn(&gSndMgr);
 }
 
 void SndScene51::fadeOutAll() {

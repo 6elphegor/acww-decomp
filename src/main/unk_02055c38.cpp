@@ -51,7 +51,7 @@ extern "C" u8 *NNSi_G3dGetTexPatAnmFV(u8 *p, s32 z, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *p, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 v);
 extern "C" u32 strlen(const char *s);
-extern "C" void strcpy(void *p);
+extern "C" char *strcpy(char *dst, const char *src);
 void operator delete(void *p);
 extern "C" void Anim_NormalizeVec(VecFx32 *v);
 extern "C" void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t);
@@ -119,7 +119,7 @@ s32 G3dRes_FindDictIdx(void *p, s32 a) {
     buf[1] = 0;
     buf[2] = 0;
     buf[3] = 0;
-    strcpy(buf);
+    strcpy((char *)buf, (const char *)a);
     return NNS_G3dGetResDictIdxByName(p, buf);
 }
 

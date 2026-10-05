@@ -15,14 +15,14 @@
 extern "C" {
 void HeldItemModel_Release(void *);
 void HeldItemModel_Setup(void *, u32, u32, u16 *, u32, u32);
-void _ZN20CharaFaceAnimWorkRef6assignEj(void *);
-void _ZN16CharaFaceAnimRef6assignEj(void *);
+void _ZN20CharaFaceAnimWorkRef6assignEj(void *, u32 x);
+void _ZN16CharaFaceAnimRef6assignEj(void *, u32 x);
 void _ZN16CharaClothTexRef7releaseEv(void *);
-void _ZN16CharaClothTexRef6assignEj(void *);
-void NpcTexPatBufRef_Assign(void *);
-void SpNpcAnimHeapRef_Assign(void *);
-void VillagerAnimHeapRef_Assign(void *);
-void AnimSlotRef_Assign(void *);
+void _ZN16CharaClothTexRef6assignEj(void *, u32 x);
+void NpcTexPatBufRef_Assign(void *, s32 v);
+void SpNpcAnimHeapRef_Assign(void *, s32 x);
+void VillagerAnimHeapRef_Assign(void *, s32 x);
+void AnimSlotRef_Assign(void *, u32 v);
 struct SpNpcAnimHeapRefSlot;
 void _ZN20SpNpcAnimHeapRefSlot6assignEv(SpNpcAnimHeapRefSlot *, u32);
 }
@@ -206,7 +206,7 @@ NpcBodyAnimSlot::NpcBodyAnimSlot() {}
 NpcBodyAnimSlot::~NpcBodyAnimSlot() {}
 
 void NpcBodyAnimSlot::assignLayer(s32 a, s32 i) {
-    AnimSlotRef_Assign(&layers[i]);
+    AnimSlotRef_Assign(&layers[i], a);
 }
 
 NpcBodyAnimPool::NpcBodyAnimPool() : NpcResPool(5) {}
@@ -242,7 +242,7 @@ VillagerAnimHeapRefSlot::VillagerAnimHeapRefSlot() {}
 VillagerAnimHeapRefSlot::~VillagerAnimHeapRefSlot() {}
 
 void VillagerAnimHeapRefSlot::assign(u32 x) {
-    VillagerAnimHeapRef_Assign(&heapRef);
+    VillagerAnimHeapRef_Assign(&heapRef, x);
     inUse = 1;
 }
 
@@ -279,9 +279,10 @@ SpNpcAnimHeapRefSlot::SpNpcAnimHeapRefSlot() {}
 
 SpNpcAnimHeapRefSlot::~SpNpcAnimHeapRefSlot() {}
 
-void SpNpcAnimHeapRefSlot::assign() {
-    SpNpcAnimHeapRef_Assign(&heapRef);
-    inUse = 1;
+// assign takes the slot id: every caller passes it (in r1)
+extern "C" void _ZN20SpNpcAnimHeapRefSlot6assignEv(SpNpcAnimHeapRefSlot *self, u32 id) {
+    SpNpcAnimHeapRef_Assign(&self->heapRef, id);
+    self->inUse = 1;
 }
 
 SpNpcAnimHeapRefPool::SpNpcAnimHeapRefPool() : NpcResPool(4) {}
@@ -320,7 +321,7 @@ NpcClothTexSlot::NpcClothTexSlot() {}
 NpcClothTexSlot::~NpcClothTexSlot() {}
 
 void NpcClothTexSlot::assign(u32 id) {
-    _ZN16CharaClothTexRef6assignEj(&clothTex);
+    _ZN16CharaClothTexRef6assignEj(&clothTex, id);
     inUse = 1;
 }
 
@@ -372,7 +373,7 @@ NpcTexPatBufRefSlot::NpcTexPatBufRefSlot() {}
 NpcTexPatBufRefSlot::~NpcTexPatBufRefSlot() {}
 
 void NpcTexPatBufRefSlot::assign(u32 id) {
-    NpcTexPatBufRef_Assign(&bufRef);
+    NpcTexPatBufRef_Assign(&bufRef, id);
     inUse = 1;
 }
 
@@ -412,7 +413,7 @@ NpcFaceAnimSlot::NpcFaceAnimSlot() {}
 NpcFaceAnimSlot::~NpcFaceAnimSlot() {}
 
 void NpcFaceAnimSlot::assign(u32 id) {
-    _ZN16CharaFaceAnimRef6assignEj(&faceAnim);
+    _ZN16CharaFaceAnimRef6assignEj(&faceAnim, id);
     inUse = 1;
 }
 
@@ -452,7 +453,7 @@ NpcTexPatHeapSlot::NpcTexPatHeapSlot() {}
 NpcTexPatHeapSlot::~NpcTexPatHeapSlot() {}
 
 void NpcTexPatHeapSlot::assign(u32 id) {
-    _ZN20CharaFaceAnimWorkRef6assignEj(&workRef);
+    _ZN20CharaFaceAnimWorkRef6assignEj(&workRef, id);
     inUse = 1;
 }
 

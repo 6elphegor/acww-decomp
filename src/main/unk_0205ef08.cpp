@@ -29,7 +29,7 @@ void Heap_adjust(void *p);
 void *Heap_AllocAligned(void *h, s32 size, s32 align);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 PlayerPaletteHeap_Destroy();
-s32 PlayerPaletteHeap_Create();
+s32 PlayerPaletteHeap_Create(void *parent);
 void PlayerPalettePool_FreeBuffers(u32 *a);
 void PlayerPalettePool_AllocBuffers(u32 *a);
 void NetBuf_WriteU16(void *p, s32 v);
@@ -170,9 +170,9 @@ extern "C" void ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e)
     }
 }
 
-extern "C" void PlayerPalettePool_Create()
+extern "C" void PlayerPalettePool_Create(void *parent)
 {
-    PlayerPaletteHeap_Create();
+    PlayerPaletteHeap_Create(parent);
     PlayerPalettePool_AllocBuffers(sPlayerPalettePool.buffers);
     if (gPlayerPaletteHeap) {
         Heap_adjust(gPlayerPaletteHeap);

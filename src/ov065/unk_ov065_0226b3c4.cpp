@@ -57,7 +57,7 @@ void WifiAp_SetConnectedApType(u32 v);
 s32 WifiAp_SetError(s32 v);
 s32 WifiLink_StartupAsync(void *a, void *b);
 s32 WifiAp_OnLinkNotify(void *a);
-void WifiAp_BuildSearchList(void);
+s32 WifiAp_BuildSearchList(s32 mode);
 void WifiAp_StartScan(void *a, void *b, s32 c, u32 d);
 s32 WifiAp_CheckSearchResult(void *ctx, s32 v);
 s32 WifiAp_StepScanFoundChannels(void *ctx);
@@ -190,7 +190,7 @@ s32 WifiAp_ProcessStartup(void) {
         buf[1] = 0;
         buf[2] = 0;
         buf[3] = 0;
-        WifiAp_BuildSearchList();
+        WifiAp_BuildSearchList(0);
         s32 r = WifiLink_StartupAsync(buf, (void *)WifiAp_OnLinkNotify);
         if (r == 1 || r >= 4) {
             WifiAp_SetError(1);

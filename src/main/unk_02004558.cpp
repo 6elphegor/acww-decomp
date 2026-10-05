@@ -434,7 +434,7 @@ s32 _ZN11PlayerActor13setActionFlagEj(void *p, s32 v);
 s32 _ZN11PlayerActor13clearRequestsEv(void *p);
 s32 _ZN11PlayerActor18isLocomotionActionEj(void *p, s32 v);
 void *_ZN11PlayerActor10getRequestEi(void *p, s32 i);
-s32 _ZN11PlayerActor13loadInputModeEv();
+s32 _ZN11PlayerActor13loadInputModeEv(void *p);
 s32 InputMode_SetTouch();
 s32 InputMode_SetButtons();
 s32 InputMode_Clear();
@@ -1162,7 +1162,11 @@ void _ZN11PlayerActor11calcHandMtxEv(void *);
 void _ZN11PlayerActor18updateShownItemPosEjz(void *, u32 v);
 void _ZN11PlayerActor12turnToCameraEi(void *, u32 v);
 BOOL _ZN11PlayerActor14testActionFlagEj(void *, u32 id);
+#ifdef MODERN
+void _ZN11PlayerActor16pickUpUpdateAnimEP19PlayerActionRequestj(void *, void *item, u32 old);
+#else
 void _ZN11PlayerActor16pickUpUpdateAnimEP19PlayerActionRequestj(void *);
+#endif
 void _ZN11PlayerActor19submitSceneColliderEv(void *);
 void _ZN11PlayerActor16pickUpUpdateItemEv(void *);
 void _ZN11PlayerActor9startAnimEijt(void *, u32 a, u32 b, u32 c);
@@ -1818,7 +1822,7 @@ void CharaClothTexRef_GetBuffer(void *);
 u32 ClothTex_GetTexThunk();
 void _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
-void PlayerPaletteRef_LoadSkin(void *);
+void PlayerPaletteRef_LoadSkin(void *, u32 y);
 void PlayerPaletteRef_LoadHair(void *, s32);
 s32 func_01ffcb0c(s32, s32);
 BOOL _ZN13ActorCollider12isHitByGroupEj(void *, s32);
@@ -1894,7 +1898,7 @@ void _ZN14CollisionStateC1Ev(void *a);
 void _ZN14CollisionStateD1Ev(void *a);
 void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
 void _ZN5Actor12calcVelocityEv(PlayerActor *a);
-void PlayerActor_TurnAngle(void *a);
+void PlayerActor_TurnAngle(void *a, s32 target);
 u32 PlayerActor_GetPlayerData(u32 a);
 u32 PlayerActor_GetTan(u32 a);
 u32 PlayerActor_ParamGetAction(u32 a);
@@ -3341,9 +3345,10 @@ void PlayerActor::setRotX(u16 a) {
     rotX = a;
 }
 
-void PlayerActor::approachRotX() {
+// approachRotX takes the target angle: every caller passes it (in r1)
+extern "C" void _ZN11PlayerActor12approachRotXEv(PlayerActor *self, s32 target) {
     using namespace nS;
-    PlayerActor_TurnAngle((u8 *)&rotX);
+    PlayerActor_TurnAngle((u8 *)&self->rotX, target);
 }
 
 void PlayerActor::setSpeed(u32 *a) {
@@ -3677,7 +3682,7 @@ void PlayerActor::applySkinHairPalette(s32 a, s32 b) {
     }
     r4 = b + ((a << 3) + 0x80);
     if (r1 < 0x80) {
-        PlayerPaletteRef_LoadSkin(&((PlayerActor *)this)->skinHairPalette);
+        PlayerPaletteRef_LoadSkin(&((PlayerActor *)this)->skinHairPalette, r1);
     }
     if (r4 >= 0x80 && r4 < 0xc0) {
         PlayerPaletteRef_LoadHair(&((PlayerActor *)this)->skinHairPalette, r4);
@@ -6490,7 +6495,11 @@ void PlayerActor::pickUpRemoteCheckEnd() {
 
 void PlayerActor::mainPickUp() {
     using namespace nI;
+#ifdef MODERN
+    _ZN11PlayerActor16pickUpUpdateAnimEP19PlayerActionRequestj(this, 0, 0); // unused by pickUpUpdateAnim
+#else
     _ZN11PlayerActor16pickUpUpdateAnimEP19PlayerActionRequestj(this);
+#endif
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot)) {
         _ZN11PlayerActor18updateBodyColliderEv(this);
         _ZN11PlayerActor19submitSceneColliderEv(this);
@@ -8418,7 +8427,7 @@ void Unk_02005e7c::syncInputMode(u32 i) {
             break;
         }
     } else {
-        _ZN11PlayerActor13loadInputModeEv();
+        _ZN11PlayerActor13loadInputModeEv(this);
     }
 }
 

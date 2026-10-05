@@ -108,7 +108,7 @@ void List_Remove(void *, void *);
 }
 
 extern "C" {
-s32 func_01ffcb0c(s32);
+s32 func_01ffcb0c(s32 v1, s32 v2);
 }
 
 extern "C" {
@@ -331,7 +331,7 @@ void Character::attachTalkRequest(s32 a) { Talk_AttachRequestToWindow0(a); }
 
 void Character::detachTalkRequest(s32 a) { Talk_DetachRequest(a); }
 
-void Character::setInteractionRange(s32 v) { interactionRangeSq = func_01ffcb0c(v); }
+void Character::setInteractionRange(s32 v) { interactionRangeSq = func_01ffcb0c(v, v); }
 
 void Character::setTalkStartMode0() {
     clearCharFlags(3);

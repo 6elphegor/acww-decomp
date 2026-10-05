@@ -494,7 +494,7 @@ extern u8 gRandom[];
 extern s16 data_02135f44[];
 extern s32 sRouteDirs[];
 s32 MapBlock_HasAnyAttr(void *, u32);
-void *_ZN12MapBlockAcre8getUnk04Ev();
+void *_ZN12MapBlockAcre8getUnk04Ev(void *self);
 s32 Random_PickSetBit(u32, s32, s32);
 s32 Random_GlobalBelow(u32);
 u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
@@ -603,7 +603,7 @@ static inline BOOL Unk_02013568_IsSet(u32 v, u32 m)
     if (v & m) return TRUE;
     return FALSE;
 }
-void Melody_Play();
+void Melody_Play(u32 a);
 void Camera_FocusOnPair(void* a, void* b);
 void Camera_FocusOnPoint(void* a);
 extern u16 data_020c6cc8;
@@ -629,7 +629,7 @@ s32 _ZN13NpcActionCtrl16requestTalkingOnEv(void *p);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void Melody_Play(void);
+void Melody_Play(u32 a);
 NpcActor *_ZN16ActorTalkRequest15getPartnerActorEv(ActorTalkRequest *o);
 u8 *_ZN16ActorTalkRequest15getSpeakerActorEv(ActorTalkRequest *o);
 void _ZN14NpcSpeechState12stopSpeakingEv(void *p);
@@ -753,7 +753,7 @@ s32 AnimSlotRef_GetAnimId(void *p);
 s32 AnimSlotRef_GetData(void *p);
 s32 AnimSlotRef_Load(void *p, u32 a, u32 b, u32 c);
 s32 CharaAnim_GetJointGroup(u32 a);
-s32 JointGroup_GetRangeCount(void);
+s32 JointGroup_GetRangeCount(u32 i);
 u32 JointGroup_GetRangeFirst(s32 a, u32 b);
 u32 JointGroup_GetRangeLast(s32 a, u32 b);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
@@ -774,7 +774,7 @@ s32 CharaAnim_GetHoldPoseMode(void *p);
 s32 CharaAnim_GetJointGroup(s32 a);
 s32 JointGroup_GetRangeLast(s32 a, s32 b);
 s32 JointGroup_GetRangeFirst(s32 a, s32 b);
-s32 JointGroup_GetRangeCount(void);
+s32 JointGroup_GetRangeCount(u32 i);
 s32 HeldItem_GetHandPose(u16 *p);
 void _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
@@ -5848,7 +5848,7 @@ void NpcAnimCtrl::playHoldItemPose(NpcActor *o, u16 *p, void *q, u16 x) {
                         _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(&o->model, r, x, 0, 0x1000, 0, 0, 0);
                         s32 t = CharaAnim_GetJointGroup(id);
                         if (t < 4) {
-                            u32 n = JointGroup_GetRangeCount();
+                            u32 n = JointGroup_GetRangeCount(t);
                             for (u32 i = 0; i < n; i++) {
                                 s32 a = JointGroup_GetRangeFirst(t, i);
                                 ThreeLayerAnimModel_AssignJointsToLayer2(&o->model, a, JointGroup_GetRangeLast(t, i));
@@ -5904,7 +5904,7 @@ void NpcAnimCtrl::playTalkGesture(NpcActor *scene, u32 a, u32 b) {
         _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(((void *)((u8 *)(scene) + (0xec))), r1, 0, 1, 0x1000, a, b, 0);
         s32 t = CharaAnim_GetJointGroup(0x143);
         if (t < 4) {
-            u32 n = JointGroup_GetRangeCount();
+            u32 n = JointGroup_GetRangeCount(t);
             for (u32 i = 0; i < n; i++) {
                 u32 x = JointGroup_GetRangeFirst(t, i);
                 _ZN19ThreeLayerAnimModel20assignJointsToLayer3Ejj(((void *)((u8 *)(scene) + (0xec))), x, JointGroup_GetRangeLast(t, i));
@@ -7553,7 +7553,8 @@ void NpcTalkCtrl::setupState0(NpcActor *ctx) {
     if (!(ctx->collider.groups & 2)) clearActorFlagOnEnd = 1;
     ctx->collider.groups |= 2;
     if (ctx->canPlayTalkMelody()) {
-        if (ctx->getSpecies() != 0xffff) Melody_Play();
+        u16 species = ctx->getSpecies();
+        if (species != 0xffff) Melody_Play(species);
         ctx->onTalkMelodyPlayed();
     }
     step = 0;
@@ -7650,7 +7651,8 @@ void NpcTalkCtrl::setupState2(NpcActor *ctx) {
     if (!(ctx->collider.groups & 2)) clearActorFlagOnEnd = 1;
     ctx->collider.groups |= 2;
     if (ctx->canPlayTalkMelody()) {
-        if (ctx->getSpecies() != 0xffff) Melody_Play();
+        u16 species = ctx->getSpecies();
+        if (species != 0xffff) Melody_Play(species);
         ctx->onTalkMelodyPlayed();
     }
     step = 0;
@@ -7709,8 +7711,9 @@ void NpcTalkCtrl::setupState1(NpcActor* p) {
     }
     p->collider.groups |= 2;
     if (p->canPlayTalkMelody()) {
-        if (p->getSpecies() != 0xffff) {
-            Melody_Play();
+        u16 species = p->getSpecies();
+        if (species != 0xffff) {
+            Melody_Play(species);
         }
         p->onTalkMelodyPlayed();
     }
@@ -7801,8 +7804,9 @@ void NpcTalkCtrl::setupState3(NpcActor* p) {
     }
     p->collider.groups |= 2;
     if (p->canPlayTalkMelody()) {
-        if (p->getSpecies() != 0xffff) {
-            Melody_Play();
+        u16 species = p->getSpecies();
+        if (species != 0xffff) {
+            Melody_Play(species);
         }
         p->onTalkMelodyPlayed();
     }
@@ -8778,9 +8782,10 @@ extern "C" void VillagerRoute_PickAttr200Target(Vec2 *out, void *self) {
     BlockMap *world = gSceneBlockMap;
     out->x = 0;
     out->y = 0;
-    if (world && BlockMap_FindBlockAllAttr(world, 0x200)) {
+    s32 block;
+    if (world && (block = BlockMap_FindBlockAllAttr(world, 0x200))) {
         Vec2 t;
-        VillagerRoute_PickPathUnitInBlock(&t, self, _ZN12MapBlockAcre8getUnk04Ev(), world);
+        VillagerRoute_PickPathUnitInBlock(&t, self, _ZN12MapBlockAcre8getUnk04Ev((void *)block), world);
         *out = t;
     }
 }
@@ -9016,7 +9021,7 @@ extern "C" void VillagerRoute_PickCoastBlock(Vec2 *out, void *self, VecFx32 *v) 
             MapBlock *c = GetCell(world, idx + 1, 4);
             if (c) {
                 Vec2 t;
-                VillagerRoute_PickPathUnitInBlock(&t, self, _ZN12MapBlockAcre8getUnk04Ev(), world);
+                VillagerRoute_PickPathUnitInBlock(&t, self, _ZN12MapBlockAcre8getUnk04Ev(c), world);
                 *out = t;
             }
         }

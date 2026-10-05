@@ -43,7 +43,7 @@ BOOL SceneId_IsVillagerHouse(u32 a);
 }
 
 extern "C" {
-u32 Ground_GetExitAtPos(void);
+u32 Ground_GetExitAtPos(void *p);
 }
 
 extern "C" {
@@ -532,7 +532,7 @@ extern "C" u32 Footstep_GetSeForAttr(u32 a) {
 }
 
 extern "C" void Footstep_GetSeAtPos(u32 a) {
-    if (Ground_GetExitAtPos() != (u32)-1) {
+    if (Ground_GetExitAtPos((void *)a) != (u32)-1) {
         u32 b = Scene_GetCurrent();
         if (SceneId_IsNookShop(b)) {
             Footstep_GetSeForAttr(5);
