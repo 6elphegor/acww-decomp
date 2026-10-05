@@ -363,7 +363,7 @@ public:
     void begin();
     void setMsgMode(s32 v);
     void update();
-    void pushChar();
+    void pushChar(u32 c);
     void reset(s32 flag);
     void refreshVoiceType();
     void setVoiceType(s32 r);
@@ -631,7 +631,7 @@ public:
     void drawBusyIcon();
     void updateBusyIcon();
     void hideBusyIcon();
-    void showBusyIcon();
+    void showBusyIcon(u32 se);
     BOOL isArrowEndDone();
     BOOL isArrowNextDone();
     BOOL isArrowWaiting();
@@ -2408,10 +2408,10 @@ extern "C" { u32 Catalog_CountFish(); }
 extern "C" { u32 Catalog_CountInsects(); }
 extern "C" { s32 SaveVillagers_Count(void *p); }
 extern "C" { s32 PlayerData_GetCurrent(); }
-extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(); }
-extern "C" { s32 _ZN8PlayerId9getGenderEv(); }
+extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(s32 p); }
+extern "C" { s32 _ZN8PlayerId9getGenderEv(s32 p); }
 extern "C" { s32 Villager_FindMemory(void *p, s32 v); }
-extern "C" { s32 _ZN14VillagerMemory13getFriendshipEv(); }
+extern "C" { s32 _ZN14VillagerMemory13getFriendshipEv(s32 m); }
 extern "C" { s32 Random_GlobalBelow(s32 v); }
 extern "C" { BOOL _ZN13TalkWindowMsg10buildTrendEv(u8 *c); }
 extern "C" { BOOL _ZN13TalkWindowMsg15buildComplimentEv(u8 *c); }
@@ -2609,11 +2609,12 @@ void TalkParserCondTags::tagBranchFriendship() {
     tag.getArgs3(&r[0], &r[2], &r[3]);
     s32 k = 0;
     void *p = (void *)o->getSpeakerData();
-    PlayerData_GetCurrent();
+    s32 pd = PlayerData_GetCurrent();
     if (p) {
-        s32 v = _ZN10PlayerData11getPlayerIdEv();
-        if (Villager_FindMemory(p, v) != 0) {
-            if (_ZN14VillagerMemory13getFriendshipEv() < r[0]) k = 1;
+        s32 v = _ZN10PlayerData11getPlayerIdEv(pd);
+        s32 m;
+        if ((m = Villager_FindMemory(p, v)) != 0) {
+            if (_ZN14VillagerMemory13getFriendshipEv(m) < r[0]) k = 1;
         }
     } else {
         debugPrintMissing(0xd64, data_020dde2c);
@@ -2627,10 +2628,8 @@ void TalkParserCondTags::tagBranchPlayerGender() {
     u8 r[4];
     Sel(window)->onConditionTag(3, 2);
     tag.getArgs2(&r[1], &r[2]);
-    PlayerData_GetCurrent();
-    _ZN10PlayerData11getPlayerIdEv();
     s32 i;
-    if (_ZN8PlayerId9getGenderEv() != 0) i = 1;
+    if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) != 0) i = 1;
     else i = 0;
     u8 *q = &r[1];
     r[0] = q[i];
@@ -2755,7 +2754,7 @@ extern "C" { void _ZN12TalkBusyIcon4initEv(void *p); }
 extern "C" { void _ZN12TalkBusyIconD1Ev(void *p); }
 extern "C" { void _ZN12TalkBusyIconC1Ev(void *p); }
 extern "C" { BOOL Talk_IsAltTextEnabled(void); }
-extern "C" { s32 Villager_GetAnimalKind(void); }
+extern "C" { s32 Villager_GetAnimalKind(s32 a); }
 extern "C" { s32 PlayerData_GetCurrentIndex(void); }
 extern "C" { s32 PlayerData_IsResidentIndex(u32 idx); }
 extern "C" { s32 PlayerDataArray_CountUsed(void *p); }
@@ -2833,7 +2832,7 @@ void TalkTagScanner::tagBranchSpecies() {
     res = m->getSpeakerData();
     i = 0;
     if (res != 0) {
-        s32 c = Villager_GetAnimalKind();
+        s32 c = Villager_GetAnimalKind(res);
         if (c != b[0]) i = 1;
     } else {
         debugPrintMissing(0xeeb, data_020dde24);
@@ -3221,13 +3220,13 @@ extern "C" { void Snd_PlayTalkVoice(s32, s32, u32, u32); }
 extern "C" { void Snd_PlaySe(u32); }
 extern "C" { void _ZN15TalkWindowState15setVoicePlayingEi(void *, s32); }
 extern "C" { void _ZN15TalkWindowState10resetVoiceEv(void *); }
-extern "C" { BOOL Text_AsciiToGameChar(u8 *); }
+extern "C" { BOOL Text_AsciiToGameChar(u8 *out, u32 c); }
 extern "C" { s32 Text_GetCharSortKey(u32); }
 extern "C" { void _ZN12TalkBusyIcon6setPosEii(void *, s32, s32); }
 extern "C" { void _ZN12TalkBusyIcon8callDrawEv(void *); }
 extern "C" { void _ZN12TalkBusyIcon10callUpdateEv(void *); }
 extern "C" { void _ZN12TalkBusyIcon11requestHideEv(void *); }
-extern "C" { void _ZN12TalkBusyIcon11requestShowEj(void *); }
+extern "C" { void _ZN12TalkBusyIcon11requestShowEj(void *p, u32 v); }
 extern "C" { s32 _ZN9TalkArrow8getStateEv(void *); }
 extern "C" { BOOL _ZN9TalkArrow10isAnimDoneEv(void *); }
 extern "C" { void _ZN9TalkArrow9setOffsetEii(void *, s32, s32); }
@@ -3337,10 +3336,10 @@ BOOL TalkFrameView::isArrowEndDone()
     if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 3 && _ZN9TalkArrow10isAnimDoneEv(&arrow)) return TRUE;
     return FALSE;
 }
-void TalkFrameView::showBusyIcon()
+void TalkFrameView::showBusyIcon(u32 se)
 {
     using namespace n8;
-    _ZN12TalkBusyIcon11requestShowEj((u8 *)this + 0x50);
+    _ZN12TalkBusyIcon11requestShowEj((u8 *)this + 0x50, se);
     busyIconTimer = -1;
 }
 void TalkFrameView::hideBusyIcon()
@@ -3403,7 +3402,7 @@ void TalkVoice::reset(s32 flag)
     if (flag != 0) carryCharKey = d;
     numCharKeys = 0;
 }
-void TalkVoice::pushChar()
+void TalkVoice::pushChar(u32 c)
 {
     using namespace n8;
     u32 cur = sCharSortKeyZero;
@@ -3415,7 +3414,7 @@ void TalkVoice::pushChar()
     if (charKey1 == 0x2a) b = 1; else b = 0;
     if (low != 0 || a != 0 || b != 0) {
         u8 buf;
-        if (Text_AsciiToGameChar(&buf)) {
+        if (Text_AsciiToGameChar(&buf, c)) {
             s32 v = Text_GetCharSortKey(buf);
             if (v != cur) {
                 if (v == 0x26 && inWait != 0) v = 0x27;
@@ -3583,7 +3582,7 @@ extern "C" { s32 _ZN11MsgString33C1Ev(void *p); }
 extern "C" { s32 _ZN9MsgString3setEPh(void *p, void *q); }
 extern "C" { s32 _ZN9MsgString12appendStringEPS_(void *p, void *q); }
 extern "C" { s32 _ZN9TalkVoice5resetEi(void *p, s32 a); }
-extern "C" { s32 _ZN9TalkVoice8pushCharEv(void *p, s32 a); }
+extern "C" { s32 _ZN9TalkVoice8pushCharEj(void *p, s32 a); }
 extern "C" { s32 PlayerOptions_IsHiragana(); }
 extern "C" { s32 _ZN9TalkFrame4drawEv(void *p); }
 extern "C" { s32 _ZN10ChoiceMenu4drawEv(void *p); }
@@ -3591,7 +3590,7 @@ extern "C" { s32 _ZN9TalkFrame6updateEv(void *p); }
 extern "C" { s32 _ZN10ChoiceMenu6updateEv(void *p); }
 extern "C" { s32 __cxa_vec_delete(void *p, s32 a, s32 b, void *c); }
 extern "C" { s32 _ZN13TalkFrameView12hideBusyIconEv(void *p); }
-extern "C" { s32 _ZN13TalkFrameView12showBusyIconEv(void *p); }
+extern "C" { s32 _ZN13TalkFrameView12showBusyIconEj(void *p, u32 se); }
 extern "C" { s32 _ZN10ChoiceMenu14setListChoicesEP10ChoiceList(void *p, void *q); }
 extern "C" { s32 _ZN10ChoiceMenu4openEv(void *p); }
 extern "C" { s32 _ZN9MsgString4copyEPS_(void *p, void *q); }
@@ -3722,8 +3721,8 @@ ChoiceList *TalkWindowState::getChoiceList() {
     using namespace n7; return (ChoiceList *)choiceList; }
 u8 TalkWindowState::isVoicePlaying() {
     using namespace n7; return voicePlaying; }
-s32 TalkWindowState::showBusyIcon() {
-    using namespace n7; return _ZN13TalkFrameView12showBusyIconEv(frame); }
+s32 TalkWindowState::showBusyIcon(u32 se) {
+    using namespace n7; return _ZN13TalkFrameView12showBusyIconEj(frame, se); }
 s32 TalkWindowState::hideBusyIcon() {
     using namespace n7; return _ZN13TalkFrameView12hideBusyIconEv(frame); }
 void TalkWindowState::attachRequest(TalkMsgRequest *p) {
@@ -3803,7 +3802,7 @@ extern "C" BOOL Talk_IsAltTextEnabled() {
 }
 s32 TalkWindowState::onCharPrinted(s32 a) {
     using namespace n7;
-    return _ZN9TalkVoice8pushCharEv(voice, a);
+    return _ZN9TalkVoice8pushCharEj(voice, a);
 }
 void TalkWindowState::setVoicePlaying(BOOL v) {
     using namespace n7;

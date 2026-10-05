@@ -56,7 +56,7 @@ s32 Oam_GetObjY(void *p);
 s32 Oam_GetObjX(void *p);
 s32 Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 s32 Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-s32 _ZN8PlayerId9getGenderEv(void);
+s32 _ZN8PlayerId9getGenderEv(s32 p);
 s32 PlayerData_GetCurrent(void);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *a, void *b, s32 c, s32 d, s32 e);
 s32 Heap_Free(u32 heap, void *p);
@@ -71,7 +71,7 @@ void Snd_PlaySe(s32 a);
 void MenuCtrl_SetKeyboardPageMode(s32 a, s32 b);
 void MenuCtrl_SetKeyboardPage(s32 a);
 void _ZN11LabelString12destroyLabelEv(void *a);
-void _ZN10PlayerData11getPlayerIdEv(void);
+s32 _ZN10PlayerData11getPlayerIdEv(s32 p);
 void _ZN10BgVramTask12requestCharsEjhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10BgVramTask6cancelEv(void *a);
 void MI_CpuCopy8(void *a, void *b, s32 c);
@@ -1244,9 +1244,9 @@ void Keyboard_Init(Keyboard *s, s32 a)
     r->tab0Attr2 = (r->tab0Attr2 & ~0x3ff) | 0x103;
     r = (KeyboardTabCells *)s->tabCells;
     r->tab1Attr2 = (r->tab1Attr2 & ~0x3ff) | 0x107;
-    if (PlayerData_GetCurrent() != 0) {
-        _ZN10PlayerData11getPlayerIdEv();
-        if (_ZN8PlayerId9getGenderEv() == 0) {
+    s32 pd;
+    if ((pd = PlayerData_GetCurrent()) != 0) {
+        if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(pd)) == 0) {
             Snd_SetKeySeMode(0);
             return;
         }

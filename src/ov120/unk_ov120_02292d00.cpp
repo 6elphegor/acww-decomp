@@ -42,7 +42,7 @@ void ProcBase_RequestDelete(void *p);
 void func_020b8800(void *p);
 void func_0206fca8(void *p);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void MenuLauncher_onChildClosed();
+void MenuLauncher_onChildClosed(s32 self);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 extern u8 gTouchHeld;
@@ -349,8 +349,7 @@ BOOL MapViewerMenu::onCreate() {
 }
 
 BOOL MapViewerMenu::onDelete() {
-    ProcBase_GetParent(this);
-    MenuLauncher_onChildClosed();
+    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }

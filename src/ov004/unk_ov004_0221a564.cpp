@@ -163,11 +163,11 @@ s32 NpcActor_getPlayerActor(void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void *Villager_FindOrCreateMemory(void *, void *);
 void VillagerMemory_RecordTalk(void *, s32, s32, s32);
-s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
-s32 Item_IsFurnitureOrF031();
+u16 *MapBlock_GetItemPtr(void *, s32, s32, s32);
+s32 Item_IsFurnitureOrF031(u16 *p);
 void Ground_UnlinkUnit(s32, s32);
 void VillagerMood_updateSoundPos(void *, void *);
-s32 func_0202d928();
+s32 func_0202d928(void *self);
 s32 func_0202d948(void *);
 s32 func_0202dab0(void *);
 void NpcFootstepFx_enableFootsteps(void *);
@@ -387,7 +387,7 @@ BOOL SickVillager::onDraw() {
 }
 
 BOOL SickVillager::preDelete() {
-    if (func_0202d928() == 0) {
+    if (func_0202d928(this) == 0) {
         return FALSE;
     }
     sSickVillager = 0;
@@ -411,8 +411,9 @@ void SickVillager::blockFurnitureCells() {
     s32 z = 0;
     for (; y < 16; y++) {
         for (s32 x = 0; x < 16; x++) {
-            if (MapBlock_GetItemPtr(p, x, y, z)) {
-                if (Item_IsFurnitureOrF031()) {
+            u16 *item;
+            if ((item = MapBlock_GetItemPtr(p, x, y, z)) != NULL) {
+                if (Item_IsFurnitureOrF031(item)) {
                     Ground_UnlinkUnit(x, y);
                 }
             }

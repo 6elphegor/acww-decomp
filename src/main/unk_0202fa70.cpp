@@ -47,7 +47,7 @@ extern const GroundAttrEntry sGroundAttrTable[0x7c];
 
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Ground_GetUnitAttr(...);
+s32 Ground_GetUnitAttr(s32 x, s32 y);
 void Vec_Add(void *out, void *a, void *b);
 void VEC_Subtract(void *a, void *b, void *c);
 void Vec_Sub(void *out, void *a, void *b);
@@ -601,7 +601,7 @@ extern "C" s32 Ground_GetHeightAt(VecFx32 *p, u32 *out, u32 flags0);
 extern "C" BOOL Collision_ClampToRect(s32 *p, s32 a, s32 *c, s32 w, s32 h);
 extern "C" u8 Collision_TestSegment(SegmentHitResult *out, VecFx32 *pos, VecFx32 *tgt, u32 flags);
 extern "C" void Collision_Move(CollisionState *self, VecFx32 *pos, VecFx32 *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags);
-extern "C" s32 Ground_GetSpecialPieceKind();
+extern "C" s32 Ground_GetSpecialPieceKind(s32 x, s32 y);
 extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d);
 extern "C" u32 CollisionMap_IsBound(s32 a);
 extern "C" BOOL Ground_IsWaterAt(VecFx32 *pos);
@@ -2710,9 +2710,9 @@ extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d)
     return 4;
 }
 
-extern "C" s32 Ground_GetSpecialPieceKind()
+extern "C" s32 Ground_GetSpecialPieceKind(s32 x, s32 y)
 {
-    s32 r = Ground_GetUnitAttr();
+    s32 r = Ground_GetUnitAttr(x, y);
     if (r >= 0x6f && r <= 0x70) return r - 0x6f;
     return -1;
 }

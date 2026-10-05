@@ -83,8 +83,8 @@ void TownMap_IsPosWalkable(VecFx32 *a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 BOOL Math_CountDownU16(void *a);
 s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
-s32 _ZN15TalkWindowState13getChoiceListEv(void *p);
-s32 _ZN10ChoiceList9getResultEv(void);
+void *_ZN15TalkWindowState13getChoiceListEv(void *p);
+s32 _ZN10ChoiceList9getResultEv(void *p);
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
 void _ZN15TalkWindowState11lockAdvanceEv(void *p);
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
@@ -718,8 +718,7 @@ void SpNpcKatieTalk::onChoice(u32) {
     case 25: case 26: case 27:
     case 34: case 35: case 36: {
         u8 v[2];
-        _ZN15TalkWindowState13getChoiceListEv(window);
-        switch (_ZN10ChoiceList9getResultEv()) {
+        switch (_ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(window))) {
         case 0:
             v[0] = Random_GlobalBelow(3) + 0x1c;
             _ZN15TalkWindowState14setNextMessageEPhPv(window, &v[0], (u32)sSpNpcKatieMsgKey);

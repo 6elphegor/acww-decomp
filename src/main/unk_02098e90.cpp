@@ -333,7 +333,11 @@ namespace n6 {
 namespace n5 {
 extern "C" {
 void _ZN8PlayerIdC1Ev(void *p);
+#ifdef MODERN
+void _ZN8PlayerIdC1EPv(void *p, void *o);
+#else
 void _ZN8PlayerIdC1EPv(void *p);
+#endif
 s32 Clock_GetDateTime(void *p);
 s32 DateTime_AddMinutes(void *p, s32 x);
 s32 DateTime_IsInvalid(void *p);
@@ -965,7 +969,11 @@ void ErrandRecord::setItem(u16 *p) {
 namespace n5 {
 extern "C" void *PlanErrand_Construct(ErrandRecord *self) {
     self->init();
+#ifdef MODERN
+    _ZN8PlayerIdC1EPv((u8 *)self + 0xc, 0); // unused by PlayerId::PlayerId(void *)
+#else
     _ZN8PlayerIdC1EPv((u8 *)self + 0xc);
+#endif
     *(u16 *)((u8 *)self + 0x24) = 0xfff1;
     return self;
 }

@@ -105,7 +105,7 @@ void TownId_GetNameString(void *, void *);
 s32 Random_GlobalBelow(u32 n);
 s32 _ZN10LetterView8getStateEv(void *p);
 void _ZN10LetterView10setPresentEtj(void *, u32, s32);
-void *Letter_GetRecipientVillager(void);
+void *Letter_GetRecipientVillager(Letter *letter);
 void *Letter_GetRecipientPlayer(Letter *self);
 void Letter_ComposeBottleMail(void *a, void *b, void *c);
 s32 Letter_ComposeFromMail(void *, void *, u8 *, void *, void *, void *);
@@ -139,7 +139,11 @@ s32 _ZN18TownExchangeRecord10getUnkFlagEv(void *p);
 s32 _ZN18TownExchangeRecord7isValidEv(void *p);
 void _ZN8PlayerId8copyFromEPS_(void *, void *);
 void _ZN8PlayerIdC1Ev(void *);
+#ifdef MODERN
+void _ZN8PlayerIdC1EPv(void *, void *);
+#else
 void _ZN8PlayerIdC1EPv(void *);
+#endif
 void PlayerActor_Spawn(s32 idx, void *pos, void *rot, u32 flags);
 s32 PlayerActor_GetLocalSessionSlot();
 void PlayerSession_RemovePitfallOnClimbOut(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
@@ -386,7 +390,11 @@ extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *letter) {
     u8 tmp[0x18];
     s32 res;
     if (r4 == 0) return -1;
+#ifdef MODERN
+    _ZN8PlayerIdC1EPv(tmp, 0); // unused by PlayerId::PlayerId(void *)
+#else
     _ZN8PlayerIdC1EPv(tmp);
+#endif
     _ZN8PlayerId8copyFromEPS_(tmp, r4);
     res = PlayerDataArray_FindById(gSavePlayers, tmp);
     if (PlayerData_IsResidentIndex(res)) {
@@ -397,9 +405,9 @@ extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *letter) {
     return -2;
 }
 
-extern "C" s32 LetterDelivery_FindAddresseeVillager(Letter *) {
+extern "C" s32 LetterDelivery_FindAddresseeVillager(Letter *letter) {
     void *r5 = gSaveVillagers;
-    void *r4 = Letter_GetRecipientVillager();
+    void *r4 = Letter_GetRecipientVillager(letter);
     u8 tmp[12];
     s32 res;
     if (r4 == 0) return -1;

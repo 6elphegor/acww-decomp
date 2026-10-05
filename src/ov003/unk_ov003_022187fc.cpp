@@ -96,13 +96,13 @@ s32 Town_FindTownHallFront(s32 k, s32 *a, s32 *b, s32 *c);
 void *TownStyleRecordView_getHouseStyles(void *p);
 s32 TownStyle_GetVillagerHouseStyle(void *p, s32 i);
 void *File_LoadAllocF(void *heap, s32 a, const char *fmt, ...);
-void *NNS_G3dGetTex(...);
+void *NNS_G3dGetTex(void *p);
 s32 Gfx3d_LoadTex(void *p, s32 a);
 void *Gfx3d_CopyTex(void *p, void *heap);
 void Mem_Free(void *p);
 s32 Gfx3d_LoadTexAndPltt(void *p, s32 a);
 void *File_LoadAlloc(const char *s, void *heap, s32 a, s32 b);
-void *func_021065dc();
+void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
 u16 *BuildingActor_getItemId(void *p);
 s32 Item_IsFurniture(u16 *p);
@@ -608,10 +608,8 @@ s32 VillagerHouseTex_Load(VillagerHouseTex *self) {
         Mem_Free(str);
         i = i + 1;
     } while (i < 4);
-    File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0);
-    self->doorInAnim = (u32)func_021065f8(func_021065dc(), 0);
-    File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0);
-    self->doorOutAnim = (u32)func_021065f8(func_021065dc(), 0);
+    self->doorInAnim = (u32)func_021065f8(func_021065dc(File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0)), 0);
+    self->doorOutAnim = (u32)func_021065f8(func_021065dc(File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0)), 0);
     return 1;
 }
 
@@ -720,7 +718,7 @@ s32 PlayerHouseTex_Load(void **out) {
     s32 r3 = Field_GetStructureTexSuffix();
     void *t = File_LoadAllocF(r4, -4, "/str/house_pl/house_pl_%c.nsbtx", r3);
     if (t != 0) {
-        *out = NNS_G3dGetTex();
+        *out = NNS_G3dGetTex(t);
         Gfx3d_LoadPltt(*out, 0);
         *out = Gfx3d_CopyTex(*out, gFieldStructureHeap);
         Mem_Free(t);

@@ -1180,7 +1180,7 @@ void VillagerState_SetRole(void *, s32);
 void VillagerState_SetPresence(void *, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
-void NpcMoveCtrl_setTargetAngle(void *);
+void NpcMoveCtrl_setTargetAngle(void *, s32);
 void VillagerActor_setFlag834(void *);
 void VillagerMood_disableEffects(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
@@ -1256,7 +1256,7 @@ extern u8 gRandom[];
 extern "C" {
 void *PlayerData_GetCurrent();
 s32 PlayerData_testFlag(void *, s32);
-void *Villager_GetState();
+void *Villager_GetState(void *);
 void FieldVillager_StopEmotion(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 void X_func_ov068_0225f630(void *, void *);
@@ -1544,7 +1544,7 @@ s32 VillagerState_GetMood(void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_getEmotionId(void *);
 s32 Emotion_GetEntry(s32);
-void NpcEmotionFx_startEntry(void *, s32);
+void NpcEmotionFx_startEntry(void *, s32, s32);
 s32 TalkRequest_IsTalking();
 s32 VillagerTalk_getEventKind(void *);
 void X_func_ov068_0225f630(void *, void *);
@@ -3295,7 +3295,7 @@ void FieldVillager_StopEmotion(FieldVillager *o) {
             s32 r = Emotion_GetEntry(0);
             if (r != 0) {
                 *(u8 *)((u8 *)o + 0x445) = 0;
-                NpcEmotionFx_startEntry((u8 *)o + 0x420, r);
+                NpcEmotionFx_startEntry((u8 *)o + 0x420, r, 0);
             }
         }
     }
@@ -4516,7 +4516,7 @@ BOOL FieldVillagerAiStates::enterInHouse(FieldVillager *o) {
         r7 = 0;
     }
     void *a = (void *)o->getVillagerData();
-    u8 *r4 = (u8 *)Villager_GetState();
+    u8 *r4 = (u8 *)Villager_GetState(a);
     FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
@@ -4665,7 +4665,7 @@ BOOL FieldVillagerAiLeaveHouse::enterLeaveHouse(FieldVillager *o) {
     FieldPos_FromUnitCenter((u8 *)o + 0x5c, t[0], t[1] + 1);
     *(u16 *)((u8 *)o + 0x8e) = 0;
     *(u16 *)((u8 *)o + 0x94) = 0;
-    NpcMoveCtrl_setTargetAngle((u8 *)o + 0x350);
+    NpcMoveCtrl_setTargetAngle((u8 *)o + 0x350, 0);
     *(s32 *)((u8 *)o + 0x64) += 0x1000;
     VecFx32 *s = (VecFx32 *)((u8 *)o + 0x5c);
     VecFx32 *d = (VecFx32 *)((u8 *)o + 0x68);

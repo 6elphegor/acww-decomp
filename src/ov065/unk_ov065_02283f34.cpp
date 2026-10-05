@@ -218,7 +218,7 @@ s32 memcmp(const void *, const void *, s32);
 
 s32 gti2RejectConnection(Conn *, s32, s32);
 s32 gti2AcceptConnection(Conn *, void *);
-s32 gti2Listen(void *);
+s32 gti2Listen(void *, s32 callback);
 s32 gti2SocketConnectionsThink(Sock *);
 s32 gti2FreeClosedConnections(Sock *);
 s32 gti2SocketError(Sock *);
@@ -940,8 +940,8 @@ void gt2Think(Sock *s) {
 } }
 
 namespace N02284b8c { extern "C" {
-s32 gt2Listen(void *p) {
-    return gti2Listen(p);
+s32 gt2Listen(void *p, s32 callback) {
+    return gti2Listen(p, callback);
 }
 } }
 

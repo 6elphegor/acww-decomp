@@ -59,7 +59,7 @@ struct SaveMenuStateEntry {
 
 extern "C" SaveMenu *SaveMenu_Create();
 extern "C" void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(TalkWindowState *o, TalkMsgRequest *p);
-extern "C" void _ZN15TalkWindowState12showBusyIconEv(TalkWindowState *o, s32 v);
+extern "C" void _ZN15TalkWindowState12showBusyIconEj(TalkWindowState *o, s32 v);
 
 ProcProfile sSaveMenuProfile = {(void *(*)())SaveMenu_Create, 0xd5, 0xd0};
 
@@ -610,7 +610,7 @@ void SaveMenuTalk::onChoice(u32) {
         switch (r) {
         case 0:
             o->lockAdvance();
-            _ZN15TalkWindowState12showBusyIconEv(o, 1);
+            _ZN15TalkWindowState12showBusyIconEj(o, 1);
             ownerMenu->setState(4);
             break;
         case 1: {
@@ -624,7 +624,7 @@ void SaveMenuTalk::onChoice(u32) {
         switch (r) {
         case 0:
             o->lockAdvance();
-            _ZN15TalkWindowState12showBusyIconEv(o, 1);
+            _ZN15TalkWindowState12showBusyIconEj(o, 1);
             ownerMenu->setState(5);
             break;
         case 1:

@@ -625,7 +625,7 @@ void _ZN15TalkWindowState11lockAdvanceEv(void *o);
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *o, void *a, void *b);
 void _ZN15TalkWindowState12hideBusyIconEv(void *o);
 s32 _ZN15TalkWindowState13unlockAdvanceEv(void *o);
-void _ZN15TalkWindowState12showBusyIconEv(void *o, u32 x);
+void _ZN15TalkWindowState12showBusyIconEj(void *o, u32 x);
 s32 Comm_IsConnectionLost(s32 x);
 void Comm_SetLostFlag(void);
 s32 CommCtrl_SendAct14(void);
@@ -3243,9 +3243,9 @@ BOOL SaveManager::func_020a15c8(u32 v) {
     void *o = NF::TalkWindow_Get(0);
     if (((u32 *)o)[1] == 2) {
         if (v != 0) {
-            NF::_ZN15TalkWindowState12showBusyIconEv(o, 1);
+            NF::_ZN15TalkWindowState12showBusyIconEj(o, 1);
         } else {
-            NF::_ZN15TalkWindowState12showBusyIconEv(o, 0);
+            NF::_ZN15TalkWindowState12showBusyIconEj(o, 0);
         }
         return TRUE;
     }

@@ -82,7 +82,7 @@ s32 EventWeekSlots_UpdateToday(s32 v);
 s32 GameStart_IsActive(void);
 s32 PlayerData_GetCurrent();
 s32 _ZN10PlayerData8testFlagEj(s32 p, s32 v);
-s32 EventWeekSlots_IsSeenToday(...);
+s32 EventWeekSlots_IsSeenToday(u32 id);
 s32 DateTime_DiffMinutes(void *a, void *b);
 s32 DateTime_DiffDays(void *a, void *b);
 void Clock_GetDateTime(void *);
@@ -933,7 +933,7 @@ extern "C" s32 Event_GetStateAt(s32 a, u8 *p, s32 c) {
 extern "C" s32 Event_GetState(s32 a, void *b, s32 c) {
     s32 r = 0;
     u8 buf[8];
-    if (EventWeekSlots_IsSeenToday() == 0) {
+    if (EventWeekSlots_IsSeenToday(a) == 0) {
         MI_CpuCopy8(b, buf, 8);
         r = Event_GetStateAt(a, buf, c);
         if (r == 1) {

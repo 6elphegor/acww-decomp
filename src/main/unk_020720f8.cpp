@@ -167,25 +167,25 @@ extern "C" {
 u32 PlayerData_GetCurrent();
 }
 extern "C" {
-void _ZN10PlayerData13getFriendListEv();
+void *_ZN10PlayerData13getFriendListEv(u32 p);
 }
 extern "C" {
-u8 *FriendList_GetEntries();
+u8 *FriendList_GetEntries(void *p);
 }
 extern "C" {
-void FriendEntry_GetFriendData(void *);
+void *FriendEntry_GetFriendData(void *);
 }
 extern "C" {
-void *DwcFriendData_GetBytes();
+void *DwcFriendData_GetBytes(void *p);
 }
 extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
 }
 extern "C" {
-void _ZN10PlayerData11getPlayerIdEv(u32);
+void *_ZN10PlayerData11getPlayerIdEv(u32);
 }
 extern "C" {
-void *_ZN8PlayerId7getNameEv();
+void *_ZN8PlayerId7getNameEv(void *p);
 }
 extern "C" {
 void *TownId_GetName(void *);
@@ -335,10 +335,10 @@ extern "C" {
 void VillagerStates_ResetRuntime();
 }
 extern "C" {
-void TownSessionState_Get();
+void *TownSessionState_Get();
 }
 extern "C" {
-void TownSessionState_Reset();
+void TownSessionState_Reset(void *self);
 }
 extern "C" {
 void RoomFtrState_ResetAll();
@@ -382,8 +382,7 @@ extern "C" s32 Comm_IsSeqAtOrBefore(s32 a, s32 b);
 extern "C" void Comm_ResetPeerState(s32 r4) {
     if (r4 == 4) {
         VillagerStates_ResetRuntime();
-        TownSessionState_Get();
-        TownSessionState_Reset();
+        TownSessionState_Reset(TownSessionState_Get());
     }
     RoomFtrState_ResetAll();
     RoomObjSync_Reset();
@@ -627,15 +626,12 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
         MI_CpuFill8(r5, 0, 0x3e0);
         MI_CpuFill8(r6, 0, 0x50);
         u32 l18 = PlayerData_GetCurrent();
-        _ZN10PlayerData13getFriendListEv();
-        u8 *l1c = FriendList_GetEntries();
+        u8 *l1c = FriendList_GetEntries(_ZN10PlayerData13getFriendListEv(l18));
         for (s32 i = 0; i < 0x20; i++) {
-            FriendEntry_GetFriendData(l1c);
-            MI_CpuCopy8(DwcFriendData_GetBytes(), r5 + i * 12, 12);
+            MI_CpuCopy8(DwcFriendData_GetBytes(FriendEntry_GetFriendData(l1c)), r5 + i * 12, 12);
             l1c += 0x1c;
         }
-        _ZN10PlayerData11getPlayerIdEv(l18);
-        MI_CpuCopy8(_ZN8PlayerId7getNameEv(), r6, 8);
+        MI_CpuCopy8(_ZN8PlayerId7getNameEv(_ZN10PlayerData11getPlayerIdEv(l18)), r6, 8);
         MI_CpuCopy8(TownId_GetName((u8 *)((u32)gSaveData + 2)), r6 + 8, 8);
         _ZN10PlayerData15getWifiUserDataEv(l18);
         MI_CpuCopy8(PlayerWifiData_GetDwcUserData(), r6 + 0x10, 0x40);

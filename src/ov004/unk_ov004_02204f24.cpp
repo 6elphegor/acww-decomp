@@ -422,8 +422,8 @@ s32 Mtx43_RotateY(void *m, s32 a);
 s32 FtrInfo_GetDmaUnk06(s32 i);
 s32 NpcRegistry_GetSlotCount();
 void *NpcRegistry_GetBySlot(s32 i);
-s32 PlayerData_getPlayerId();
-s32 TownId_getTownRelation();
+s32 PlayerData_getPlayerId(s32 p);
+s32 TownId_getTownRelation(s32 id);
 s32 BlendAnimModel_getAnmObj(void *o);
 void BlendAnimModel_stepBlend(void *o);
 s32 AnimFrameCtrl_isFinished(void *o);
@@ -524,8 +524,8 @@ FtrStackedSetView *_ZN13FtrStackedSetC1EP11FtrTileListi(FtrStackedSetView *self,
 FtrActor *_ZN13FtrStackedSet3getEj(FtrStackedSetView *self, u32 i);
 u32 _ZN13FtrStackedSet8getCountEv(FtrStackedSetView *self);
 void _ZN13FtrStackedSetC1Ev(FtrStackedSetView *self);
-BOOL _ZN8FtrActor8isGyroidEv(void);
-BOOL _ZN8FtrActor11isSeatOrBedEv(void);
+BOOL _ZN8FtrActor8isGyroidEv(FtrActor *p);
+BOOL _ZN8FtrActor11isSeatOrBedEv(FtrActor *p);
 s32 FtrMgr_IsSaleMode();
 FtrActor *FtrActorTable_get(void *a, u32 b);
 void _ZN10FtrGlowMatD1Ev(void *);
@@ -560,10 +560,10 @@ void FtrVisNodes_Construct(void *);
 u16 FtrGlowMat_GetBaseEmission();
 BOOL FtrStack_CalcRelPlacement(s32 *idx, VecFx32 *pos, s16 *ang, s32 x, s32 a, s16 b);
 void FtrActor_GetItemId(u16 *out, FtrActor *o);
-s32 FtrActor_PredIsGyroid(void);
-s32 FtrActor_PredIsSeatOrBed(void);
-s32 FtrActor_PredIsStereo(void);
-s32 FtrActor_PredIsLightSource(void);
+s32 FtrActor_PredIsGyroid(FtrActor *p);
+s32 FtrActor_PredIsSeatOrBed(FtrActor *p);
+s32 FtrActor_PredIsStereo(FtrActor *p);
+s32 FtrActor_PredIsLightSource(FtrActor *p);
 void FtrActor_SpawnActorC0(void *a, u32 x);
 s32 FtrActor_GetDragSe(void);
 s32 FtrActor_TestCurSceneUnk();
@@ -1473,9 +1473,10 @@ extern "C" void FtrActor_GetCenter(Self *self, VecFx32 *out) {
 
 // @02208894
 extern "C" BOOL FtrActor_TestPlayerUnk() {
-    if (PlayerData_GetCurrent() != 0) {
-        if (PlayerData_getPlayerId() != 0) {
-            if (TownId_getTownRelation() == 0) {
+    s32 pd, id;
+    if ((pd = PlayerData_GetCurrent()) != 0) {
+        if ((id = PlayerData_getPlayerId(pd)) != 0) {
+            if (TownId_getTownRelation(id) == 0) {
                 return TRUE;
             }
             return FALSE;
@@ -2072,7 +2073,7 @@ extern "C" s32 FtrActor_TestCurSceneUnk() {
 
 // @022077a4
 void FtrActor::initLamp() {
-    if (FtrActor_PredIsLightSource()) {
+    if (FtrActor_PredIsLightSource(this)) {
         void *v = (void *)modelResMdl;
         u32 t = ((FtrSwitch *)(switchState))->isOn();
         ((FtrGlowMat *)(lampMat))->bindMaterial((G3dResAccess *)v, (s32)"lp_m", t);
@@ -2092,7 +2093,7 @@ void FtrActor::initLamp() {
 
 // @02207704
 void FtrActor::updateLamp() {
-    if (FtrActor_PredIsLightSource()) {
+    if (FtrActor_PredIsLightSource(this)) {
         if (FtrActor_TestCurSceneUnk()) {
             u32 b = ((FtrSwitch *)(switchState))->isOn();
             u32 f = lightKind == 1 ? 1 : 0;
@@ -2115,7 +2116,7 @@ void FtrActor::updateLamp() {
 
 // @022076b0
 void FtrActor::releaseRoomLight() {
-    if (FtrActor_PredIsLightSource()) {
+    if (FtrActor_PredIsLightSource(this)) {
         if (FtrActor_TestCurSceneUnk()) {
             if (((FtrSwitch *)(switchState))->isOn()) {
                 if (FtrMgr_CountSwitchedOn((void *)FtrActor_IsLightSource) == 1) {
@@ -2401,23 +2402,23 @@ BOOL FtrActor::isPreview() {
 }
 
 // @02206f84
-extern "C" s32 FtrActor_PredIsLightSource(void) {
-    return ((s32 (*)(void))FtrActor_IsLightSource)();
+extern "C" s32 FtrActor_PredIsLightSource(FtrActor *p) {
+    return FtrActor_IsLightSource(p);
 }
 
 // @02206f7c
-extern "C" s32 FtrActor_PredIsStereo(void) {
-    return ((s32 (*)(void))FtrActor_IsStereo)();
+extern "C" s32 FtrActor_PredIsStereo(FtrActor *p) {
+    return FtrActor_IsStereo(p);
 }
 
 // @02206f74
-extern "C" s32 FtrActor_PredIsSeatOrBed(void) {
-    return _ZN8FtrActor11isSeatOrBedEv();
+extern "C" s32 FtrActor_PredIsSeatOrBed(FtrActor *p) {
+    return _ZN8FtrActor11isSeatOrBedEv(p);
 }
 
 // @02206f6c
-extern "C" s32 FtrActor_PredIsGyroid(void) {
-    return _ZN8FtrActor8isGyroidEv();
+extern "C" s32 FtrActor_PredIsGyroid(FtrActor *p) {
+    return _ZN8FtrActor8isGyroidEv(p);
 }
 
 // @02206f3c
