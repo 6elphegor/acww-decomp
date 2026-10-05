@@ -64,11 +64,11 @@ s32 Sock_Send(s32 a, s32 b, s32 c, u32 d);
 s32 Sock_RecvFrom(s32 a, s32 b, s32 c, u32 d, u8 *sa);
 s32 Sock_Recv(s32 a, s32 b, s32 c, u32 d);
 s32 Sock_Accept(s32 a, u8 *sa);
-s32 Sock_Listen(s32 a, s32 b, s32 c);
+s32 Sock_Listen(s32 a);
 s32 Sock_Connect(s32 a, void *sa);
 s32 Sock_Bind(s32 a, void *sa);
-s32 Sock_Shutdown(s32 a, s32 b, s32 c);
-s32 Sock_Close(s32 a, s32 b, s32 c);
+s32 Sock_Shutdown(s32 a);
+s32 Sock_Close(s32 a);
 s32 Sock_Create(s32 a, s32 b);
 s32 Sock_Poll(GsPollFd *arr, u32 n, s64 timeout);
 s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
@@ -476,16 +476,16 @@ s32 socket(s32 a, s32 b) {
 
 namespace FB {
 extern "C" {
-s32 closesocket(s32 a, s32 b, s32 c) {
-    return CheckRcode(Sock_Close(a, b, c), -1);
+s32 closesocket(s32 a) {
+    return CheckRcode(Sock_Close(a), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 shutdown(s32 a, s32 b, s32 c) {
-    return CheckRcode(Sock_Shutdown(a, b, c), -1);
+s32 shutdown(s32 a, s32 how) { // how: unused by SockCore_Shutdown
+    return CheckRcode(Sock_Shutdown(a), -1);
 }
 }
 }
@@ -517,8 +517,8 @@ s32 connect(s32 a, GsSockAddr *src, u32 len) {
 
 namespace FB {
 extern "C" {
-s32 listen(s32 a, s32 b, s32 c) {
-    return CheckRcode(Sock_Listen(a, b, c), -1);
+s32 listen(s32 a, s32 backlog) { // backlog: unused by SockCore_Listen
+    return CheckRcode(Sock_Listen(a), -1);
 }
 }
 }

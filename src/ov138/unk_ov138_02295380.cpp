@@ -28,7 +28,7 @@ void Gfx2d_ShowLayer(s32 a);
 void MenuCtrl_SetClockEdited();
 s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *p);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
@@ -171,7 +171,7 @@ BOOL DateSelectMenu::onCreate() {
 }
 
 BOOL DateSelectMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
+    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -268,7 +268,7 @@ void DateSelectMenu::stateOpening() {
 }
 
 void DateSelectMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(), 0x44, 1);
+    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), 0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);

@@ -183,7 +183,7 @@ void *PlayerSession_GetSessionFlags();
 void _ZN11PlayerActor11advanceAnimEv(void *);
 void _ZN11PlayerActor14playFootstepSeEv(void *);
 void _ZN11PlayerActor13startAnimOnceEijt(void *, s32, s32, s32);
-void _ZN11PlayerActor15clearActionFlagEj(void *);
+void _ZN11PlayerActor15clearActionFlagEj(void *, u32);
 void *PlayerActor_GetPlayerData(void *);
 void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, s32);
@@ -220,8 +220,8 @@ s32 PlayerActor_LocalRequestDoorEnter(s32, void *, void *, s32);
 s32 PlayerActor_IsScriptedWalking(s32);
 u32 *TalkWindow_Get(s32);
 void _ZN15TalkWindowState13detachRequestEv(void *, u32);
-s32 _ZN10PlayerData11getPlayerIdEv(...);
-s32 _ZN8PlayerId9getGenderEv(...);
+void *_ZN10PlayerData11getPlayerIdEv(void *p);
+s32 _ZN8PlayerId9getGenderEv(void *p);
 void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
 void func_02094030(void *);
 void Npc_GetName(void *, void *);
@@ -241,7 +241,7 @@ void Taxi_ClearLeaving();
 void PlayerActor_SetEventLock(s32);
 BOOL Taxi_IsArriving();
 BOOL Taxi_IsLeaving();
-void Scene_ResetTownReturnPos();
+void Scene_ResetTownReturnPos(s32 unused);
 void _ZN10PlayerData11setHeldItemEPt(void *, u16 *);
 BOOL KappnTaxi_RequestPlayerGetOut();
 void _ZN19PlayerActionRequest6assignEiis(void *, s32, s32, s32);
@@ -277,8 +277,7 @@ BOOL KappnTaxi::initBuilding() {
     carPos.z = position.z;
     if (Taxi_IsArriving()) {
         ownsTaxiFlags = 1;
-        Scene_GetWarpRequest();
-        Scene_ResetTownReturnPos();
+        Scene_ResetTownReturnPos((s32)Scene_GetWarpRequest()); // unused by Scene_ResetTownReturnPos
         setTaxiState(1);
     } else if (Taxi_IsLeaving()) {
         ownsTaxiFlags = 1;
@@ -286,8 +285,7 @@ BOOL KappnTaxi::initBuilding() {
             u16 t = 0xfff1;
             _ZN10PlayerData11setHeldItemEPt(p, &t);
         }
-        Scene_GetWarpRequest();
-        Scene_ResetTownReturnPos();
+        Scene_ResetTownReturnPos((s32)Scene_GetWarpRequest()); // unused by Scene_ResetTownReturnPos
         setTaxiState(0xa);
     } else {
         setTaxiState(0);
@@ -537,7 +535,8 @@ BOOL KappnTaxi::enterTaxiTalk() {
     this->TalkMsgRequest::resetMsg();
     this->setFileName("sp_etc_sequence4");
     BOOL r;
-    if (PlayerData_GetCurrent() != 0 && (_ZN10PlayerData11getPlayerIdEv(), _ZN8PlayerId9getGenderEv() == 1)) {
+    void *c = PlayerData_GetCurrent();
+    if (c != 0 && _ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(c)) == 1) {
         r = TRUE;
     } else {
         r = FALSE;
@@ -830,7 +829,7 @@ void PlayerActTaxiGetOut::setupTaxiGetOut() {
     Unk_ov068_0226a940_Words w;
     _ZN11PlayerActor13startAnimOnceEijt(this, 0x82, 0, 0);
     rotY = 0;
-    _ZN11PlayerActor15clearActionFlagEj(this);
+    _ZN11PlayerActor15clearActionFlagEj(this, 0);
     void *r4 = PlayerActor_GetPlayerData(this);
     if (r4 != 0) {
         Unk_ov068_0226a940_Bits bits;

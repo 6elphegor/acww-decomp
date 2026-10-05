@@ -50,7 +50,7 @@ void Gfx2d_SetWindowRect(s32 a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_SetSubWin1Planes(s32 a, s32 b);
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 void PlayerActor_LocalRequestAct12();
 
@@ -320,7 +320,7 @@ BOOL ConstellationEditorMenu::onCreate() {
 }
 
 BOOL ConstellationEditorMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -490,7 +490,7 @@ void ConstellationEditorMenu::transitionAct01() {
 }
 
 void ConstellationEditorMenu::transitionAct02() {
-    ((MenuLauncher *)ProcBase_GetParent())->setNextRequest(0x44, 1);
+    ((MenuLauncher *)ProcBase_GetParent(this))->setNextRequest(0x44, 1);
     beginSubSlideOut(9, 0, 0, 0x30);
     Gfx2d_SetSubWin1Planes(0x1e, 1);
     updateSlideWindow();

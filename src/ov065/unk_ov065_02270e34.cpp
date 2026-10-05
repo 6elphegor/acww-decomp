@@ -97,7 +97,7 @@ void DWCi_Acc_SetPlayerId(void *, u32);
 void DwcNet_Free(s32, void *, s32);
 void DwcNet_Alloc(void);
 void *DwcNet_AllocAligned(s32, s32, s32);
-s32 DwcFriend_SetOwnStatus(s32, void *);
+s32 DwcFriend_SetOwnStatus(s32, void *, void *);
 s32 DwcConn_CreateGt2Socket(void);
 s32 DwcMatch_StartQr2(u32);
 void DwcCore_Nop(void);
@@ -1183,7 +1183,7 @@ void DwcLogin_OnGpConnected(void *a0, GPConnectResponseArg *x) {
     sDwcLoginControl->gpConnectPending = 0;
     if (x->result == 0) {
         if (sDwcLoginControl->state == 2) {
-            if (Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(DwcFriend_SetOwnStatus(1, (void *)"")) == 0) {
+            if (Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(DwcFriend_SetOwnStatus(1, (void *)"", 0)) == 0) {
                 if (sDwcLoginControl->userData->profileId == x->profile) {
                     if (DwcConn_CreateGt2Socket() == 0) {
                         if (DwcMatch_StartQr2(x->profile) == 0) {

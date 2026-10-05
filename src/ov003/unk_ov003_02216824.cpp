@@ -58,7 +58,7 @@ u32 WorldCurve_ToCurved(void *out, void *in);
 void Mtx43_Translate(void *m, s32 a, s32 b, s32 c);
 void *PlayerData_GetCurrent();
 PlayerMailbox *PlayerData_GetMailbox(void *p);
-BOOL _ZN10LetterView8getStateEv();
+BOOL _ZN10LetterView8getStateEv(void *letter);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 void *Scene_GetTouchPicker();
@@ -234,8 +234,9 @@ s32 Mailbox::countLetters() {
             s32 n = 0;
             u32 i;
             for (i = n; i < 10; i++) {
-                if (p->getLetter(i)) {
-                    if (_ZN10LetterView8getStateEv()) {
+                void *l = p->getLetter(i);
+                if (l) {
+                    if (_ZN10LetterView8getStateEv(l)) {
                         n++;
                     }
                 }

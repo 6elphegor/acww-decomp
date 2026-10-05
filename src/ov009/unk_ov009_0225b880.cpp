@@ -216,9 +216,9 @@ BOOL File_Exists(void *p);
 s32 NNS_FndMountArchive(void *buf, char *name, void *data);
 void *NNS_FndGetArchiveFileByName(void *name);
 void NNS_FndUnmountArchive(void *buf);
-void *func_02106654();
+void *func_02106654(void *p);
 void *func_02106670(void *p, s32 a);
-void *func_02106690();
+void *func_02106690(void *p);
 void *func_021066ac(void *p, s32 a);
 void *NNS_G3dGetTex(void *p);
 void Mem_Free(void *p);
@@ -260,9 +260,9 @@ void NNS_G3dBindMdlTex(void *, s32);
 void func_020548d0(void *);
 void func_020b2034(void *);
 void ModelSlotHandle_Init(void *);
-void *func_021065dc();
+void *func_021065dc(void *p);
 u32 func_021065f8(void *, u32);
-void *NNS_G3dGetMdlSet();
+void *NNS_G3dGetMdlSet(void *p);
 void MTX_MultVec43(s32, s32, VecFx32 *);
 void WorldCurve_FromCurved(void *, VecFx32 *);
 void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
@@ -272,8 +272,8 @@ BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
 BOOL Building_IsNight();
 void BuildingActor_Create();
 BOOL BuildingResources_IsLoaded(BuildingResources *e);
-void *Building_GetFirstAnm(void *unused);
-void *Building_GetFirstMdl(void *unused);
+void *Building_GetFirstAnm(void *res);
+void *Building_GetFirstMdl(void *res);
 void Building_InitModelCallback(NNSG3dRS *o);
 void Building_ModelCallback(struct NNSG3dRS *a);
 }
@@ -391,13 +391,13 @@ extern "C" void Building_InitModelCallback(NNSG3dRS *o) {
     o->cbVecTiming[6] = 2;
 }
 
-extern "C" void *Building_GetFirstMdl(void *unused) {
-    u8 *p = (u8 *)NNS_G3dGetMdlSet();
+extern "C" void *Building_GetFirstMdl(void *res) {
+    u8 *p = (u8 *)NNS_G3dGetMdlSet(res);
     return p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc);
 }
 
-extern "C" void *Building_GetFirstAnm(void *unused) {
-    void *p = func_021065dc();
+extern "C" void *Building_GetFirstAnm(void *res) {
+    void *p = func_021065dc(res);
     return (void *)func_021065f8(p, 0);
 }
 
@@ -780,16 +780,18 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 z1 = i;
                 for (; i < 4; i++) {
                     Str_SPrintf(b1, data_ov009_0225e41c, i);
-                    if (NNS_FndGetArchiveFileByName(b1)) {
-                        e->btaAnims[i] = (s32)func_02106670(func_02106654(), z1);
+                    t = NNS_FndGetArchiveFileByName(b1);
+                    if (t) {
+                        e->btaAnims[i] = (s32)func_02106670(func_02106654(t), z1);
                     }
                 }
                 i = 0;
                 z2 = i;
                 for (; i < 4; i++) {
                     Str_SPrintf(b2, data_ov009_0225e42c, i);
-                    if (NNS_FndGetArchiveFileByName(b2)) {
-                        e->btpAnims[i] = (s32)func_021066ac(func_02106690(), z2);
+                    t = NNS_FndGetArchiveFileByName(b2);
+                    if (t) {
+                        e->btpAnims[i] = (s32)func_021066ac(func_02106690(t), z2);
                     }
                 }
                 e->bmd0 = (s32)Building_GetFirstMdl(NNS_FndGetArchiveFileByName(data_ov009_0225e43c));

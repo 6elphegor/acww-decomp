@@ -35,7 +35,7 @@ void MenuCtrl_SetIndex(u32 a);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete();
+void ProcBase_RequestDelete(void *p);
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
 BOOL MenuKeys_HasDown(void *pad);
@@ -339,7 +339,7 @@ BOOL LetterGiveMenu::execPhase3() { return TRUE; }
 BOOL LetterGiveMenu::execPhase4() { return TRUE; }
 
 BOOL LetterGiveMenu::execClosed() {
-    ProcBase_RequestDelete();
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 

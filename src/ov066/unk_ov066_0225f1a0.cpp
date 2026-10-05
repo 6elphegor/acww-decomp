@@ -464,7 +464,7 @@ void LocalWl_FinishWm(void);
 void LocalWl_InitWm(void);
 void LocalWl_AllocBuffers(void);
 void LocalWl_ResetSessionInfo(void);
-s32 LocalWl_PickChannel(void);
+s32 LocalWl_PickChannel(u32 start);
 void LocalWl_StartMeasureChannels(void);
 void LocalWl_OnMeasureChannel(WMMeasureChannelCallback *m);
 s32 LocalWl_MeasureChannel(u32 a);
@@ -1429,10 +1429,9 @@ void LocalWl_StartMeasureChannels(void) {
 #define LocalWl_Alloc ((void * (*)(s32, s32))LocalWl_Alloc)
 #define LocalWl_ReadBe32 ((u32 (*)(void *))LocalWl_ReadBe32)
 #define LocalWl_StartConnect ((void (*)(void *))LocalWl_StartConnect)
-#define LocalWl_MeasureNextChannel ((s32 (*)(void))LocalWl_MeasureNextChannel)
 
-s32 LocalWl_PickChannel(void) {
-    if (LocalWl_MeasureNextChannel() == 0) {
+s32 LocalWl_PickChannel(u32 start) {
+    if (LocalWl_MeasureNextChannel(start) == 0) {
         if (data_ov066_022647bc != 0) {
             u8 i = 0;
             u32 t = LocalWl_Rand();
@@ -1670,7 +1669,6 @@ void LocalWl_ConnectToBeacon(u8 *p, u32 v) {
 #undef LocalWl_Alloc
 #undef LocalWl_ReadBe32
 #undef LocalWl_StartConnect
-#undef LocalWl_MeasureNextChannel
 
 // ---- unk_02261764
 #define MI_CpuFill8 ((s32 (*)(void *, u32, u32))MI_CpuFill8)

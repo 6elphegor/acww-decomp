@@ -17,8 +17,8 @@ void Heap_Free(void *heap, void *p);
 void String_Load2dMenu(void *o, u32 v);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 s32 PlayerData_GetCurrent();
-void _ZN10PlayerData11getPlayerIdEv();
-s32 _ZN8PlayerId9getGenderEv();
+void *_ZN10PlayerData11getPlayerIdEv(s32 p);
+s32 _ZN8PlayerId9getGenderEv(void *id);
 void Snd_SetKeySeMode(u32 v);
 }
 
@@ -227,9 +227,9 @@ void NumberPad::init(u32 mode, u32 a, u32 b) {
     maxValue = 0;
     topAmount = 0;
     bottomAmount = 0;
-    if (PlayerData_GetCurrent() != 0) {
-        _ZN10PlayerData11getPlayerIdEv();
-        if (_ZN8PlayerId9getGenderEv() == 0) {
+    s32 c = PlayerData_GetCurrent();
+    if (c != 0) {
+        if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(c)) == 0) {
             Snd_SetKeySeMode(0);
             return;
         }

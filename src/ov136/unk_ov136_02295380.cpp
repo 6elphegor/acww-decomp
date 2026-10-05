@@ -30,8 +30,8 @@ void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_ResetLayer(s32 a);
-void *ProcBase_GetParent();
-void ProcBase_RequestDelete();
+void *ProcBase_GetParent(void *p);
+void ProcBase_RequestDelete(void *p);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
@@ -183,7 +183,7 @@ BOOL TimeSelectMenu::onCreate() {
 }
 
 BOOL TimeSelectMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
+    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -245,7 +245,7 @@ BOOL TimeSelectMenu::execPhase3() { return TRUE; }
 BOOL TimeSelectMenu::execPhase4() { return TRUE; }
 
 BOOL TimeSelectMenu::execClosed() {
-    ProcBase_RequestDelete();
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 
@@ -271,7 +271,7 @@ void TimeSelectMenu::stateOpening() {
 }
 
 void TimeSelectMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(), 0x44, 1);
+    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), 0x44, 1);
     beginSubSlideOut(0xa, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);

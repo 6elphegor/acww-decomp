@@ -57,7 +57,7 @@ void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
 void _ZN5Model10drawScaledEPi(void *p, void *q);
 void *Gfx3d_AllocAnmObj(void *a, void *b, void *c);
 extern u8 sJointAnmHeader2[];
-void _ZN9AnimModel12drawAnimatedEPv(void *p);
+void _ZN9AnimModel12drawAnimatedEPv(void *p, void *q);
 void CpuMtx_RestoreFromStack(u32 v);
 void CpuMtx_StoreToStack(u32 v);
 void CpuMtx_MultRotScaledTrans(void *a, void *b, void *c);
@@ -639,7 +639,7 @@ void TwoLayerAnimModel::updateLayers() {
 }
 
 void TwoLayerAnimModel::drawLayered(u32 a) {
-    _ZN9AnimModel12drawAnimatedEPv(this);
+    _ZN9AnimModel12drawAnimatedEPv(this, (void *)a);
     AnimModel_SwitchAnmObj(this, anmObj);
 }
 

@@ -54,7 +54,7 @@ void FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetText();
 void EncodedString_SetRaw(void *, s32, s32);
-s32 ChoiceList_getResult();
+s32 ChoiceList_getResult(void *list);
 s32 NpcActor_CanPlayerPay(void *, s32);
 void NpcActor_ChargePlayer(void *, s32);
 s32 Talk_CheckAndSetPlayerFlag(...);
@@ -596,8 +596,7 @@ void SpNpcKatrinaTalk::onChoice(u32) {
     u8 buf;
     u32 sel;
     s32 st;
-    getChoiceList();
-    st = ChoiceList_getResult();
+    st = ChoiceList_getResult(getChoiceList());
     sel = 0xff;
     switch (msgIndex) {
     case 1:

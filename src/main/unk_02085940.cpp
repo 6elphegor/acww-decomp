@@ -91,7 +91,7 @@ void *_ZN7PatternD1Ev(void *p);
 void *_ZN7PatternC1Ev(void *p);
 s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData18getLostChildRecordEv();
+void *_ZN10PlayerData18getLostChildRecordEv(void *p);
 s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
@@ -491,7 +491,7 @@ void *_ZN7PatternD1Ev(void *p);
 void *_ZN7PatternC1Ev(void *p);
 s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData18getLostChildRecordEv();
+void *_ZN10PlayerData18getLostChildRecordEv(void *p);
 s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
@@ -1132,8 +1132,9 @@ extern "C" void LostChild_AdvanceDays(s32 n) {
 }
 
 extern "C" BOOL LostChild_IsKatieDue() {
-    if (PlayerData_GetCurrent() != 0) {
-        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv();
+    void *c = PlayerData_GetCurrent();
+    if (c != 0) {
+        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv(c);
         if (p->isKaitlinRole() == 0) {
             if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
@@ -1142,8 +1143,9 @@ extern "C" BOOL LostChild_IsKatieDue() {
 }
 
 extern "C" BOOL LostChild_IsKaitlinDue() {
-    if (PlayerData_GetCurrent() != 0) {
-        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv();
+    void *c = PlayerData_GetCurrent();
+    if (c != 0) {
+        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv(c);
         if (p->isKaitlinRole() == 1) {
             if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
@@ -1153,8 +1155,9 @@ extern "C" BOOL LostChild_IsKaitlinDue() {
 
 extern "C" void LostChild_SaveToTown() {
     u8 *const g = gSaveData;
-    if (PlayerData_GetCurrent() != 0 && g != 0) {
-        Ns_02086b7c::MI_CpuCopy8(_ZN10PlayerData18getLostChildRecordEv(), g + 0x15fca, 12);
+    void *c = PlayerData_GetCurrent();
+    if (c != 0 && g != 0) {
+        Ns_02086b7c::MI_CpuCopy8(_ZN10PlayerData18getLostChildRecordEv(c), g + 0x15fca, 12);
     }
 }
 
@@ -1162,7 +1165,7 @@ extern "C" void LostChild_LoadFromTown() {
     u8 *const g = gSaveData;
     void *a = PlayerData_GetCurrent();
     if (a != 0 && g != 0) {
-        void *b = _ZN10PlayerData18getLostChildRecordEv();
+        void *b = _ZN10PlayerData18getLostChildRecordEv(a);
         Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
         if (Ns_02086b7c::Math_IsInRange(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN10PlayerData9clearFlagEj(a, 0x33);
     }
