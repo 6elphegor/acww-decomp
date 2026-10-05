@@ -1,6 +1,9 @@
 #include "types.h"
 #include "actor/CharaFaceAnimWorkRef.h"
 
+extern "C" const u32 data_020cb35c;
+extern "C" const u32 data_020cb360;
+
 struct CharaFaceAnimWorkPool {
     void *ptr[9];
     CharaFaceAnimWorkPool();
@@ -89,3 +92,10 @@ void CharaFaceAnimWorkRef::assign(u32 x) {
 void *CharaFaceAnimWorkRef::getHeap() { return sCharaFaceAnimWorkPool.getHeap(v); }
 
 CharaFaceAnimWorkPool sCharaFaceAnimWorkPool;
+
+
+// Constants shared with other files (loaded through their addresses; defined after the code here, where a visible const would be folded).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const u32 data_020cb35c = 0x40;
+const u32 data_020cb360 = 0xb;

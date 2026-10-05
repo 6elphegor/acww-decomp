@@ -1,5 +1,7 @@
 #include "types.h"
 
+extern "C" const u32 data_020ca638;
+
 extern "C" {
 extern u8 sTextCharWidths[0xe0];
 void MI_CpuFill8(void *dst, u32 value, u32 size);
@@ -197,3 +199,9 @@ extern "C" BOOL Text_EqualsTrimmed(const u8 *a, const u8 *b, s32 len) {
 }
 
 u8 sTextCharWidths[0xe0];
+
+
+// A constant shared with other files (only loaded through its address, so it is defined after the code here: a visible const would be folded).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const u32 data_020ca638 = 0x80000000;

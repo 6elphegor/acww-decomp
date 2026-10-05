@@ -1,8 +1,9 @@
 #ifndef GFX_UNK_0203BD10_DTCM_H
 #define GFX_UNK_0203BD10_DTCM_H
 
-// DTCM block data_027e02c8 (G3D state, also seen as Unk_02037ea0_G): Camera::onDraw writes the look-at eye, up and
-// target vectors to 0x40..0x63 before G3i_LookAt_. Used by unk_0203a0cc.cpp and unk_0203c23c.cpp.
+// DTCM block data_027e02c8 (also seen as Unk_02037ea0_G): the tail of NitroSystem's NNS_G3dGlb (src/dtcm/unk_027e00c8.c)
+// from invCameraProjMtx (+0x200) on; Camera::onDraw writes the look-at vectors camPos, camUp and camTarget
+// (0x40..0x63 here) before G3i_LookAt_. Used by unk_0203a0cc.cpp and unk_0203c23c.cpp.
 #include "types.h"
 
 struct Unk_0203bd10_Dtcm {

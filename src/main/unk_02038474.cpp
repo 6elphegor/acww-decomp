@@ -13,17 +13,13 @@
 #include "talk/MsgString9B.h"
 #include "sys/ProcProfile.h"
 
+extern "C" const s32 data_020c8cb4;
+extern "C" const s32 data_020c8cb8;
+extern "C" const s32 data_020c8cbc;
+extern "C" const s32 data_020c8cc0;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes owned by other units (declarations only, no inline bodies)
-
-
-
-
-
-
-
-
-
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of this unit, in vtable order
@@ -36,7 +32,6 @@ public:
     void shutdown();
     void init();
 };
-
 
 // Text (vtable 0x020d9134), 0x10 bytes
 class ChatBalloonName : public MsgStringBase {
@@ -181,7 +176,6 @@ extern const u8 data_020c8ce4;  // first .rodata object of the next unit
 extern u8 sChatBalloonSyncBuf[0x29];
 extern const u32 sChatBalloonNameSeqs[4];
 
-
 extern "C" {
 extern CommManager *gCommManager;
 extern u16 gPad[];
@@ -315,7 +309,21 @@ void ChatBalloon::draw() {
             Oam_DrawCell(2, h2, x2, y2, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
-}
+}// Declarations for data defined further down (definition order sets the data layout)
+extern const s32 data_020c8cb8;
+extern const s32 data_020c8cbc;
+extern const u32 sChatBalloonNameSeqs[4];
+extern const s32 data_020c8cb4;
+extern const s32 data_020c8cc0;
+extern u8 sChatBalloonSyncBuf[0x29];
+extern ProcProfile sChatBalloonProcProfile;
+extern const u32 sChatBalloonTextSeqs[4];
+extern ChatBalloonList *sChatBalloonList;
+extern s32 sChatQuickMsgCooldown;
+
+const s32 data_020c8cb8 = 0x20000;
+
+const s32 data_020c8cbc = 0x20000;
 
 void ChatBalloon::update() {
     if (cooldown > 0) {
@@ -331,19 +339,9 @@ void ChatBalloon::update() {
         textAnim.update();
     }
 }
-
-// Data creation order: with the record sChatBalloonProcProfile in the unit, the original order needs the definitions in exactly
-// this sequence after vfunc_0c.
-// Data order: this unit is placed object by object (see object_order.txt).
-const u32 sChatBalloonNameSeqs[4] = {7, 7, 8, 9};
-u8 sChatBalloonSyncBuf[0x29];
 extern const u32 sChatBalloonTextSeqs[4];
-const u32 sChatBalloonTextSeqs[4] = {10, 11, 12, 13};
-s32 sChatQuickMsgCooldown;
 // 0x020d90d4: scene registration record of ChatBalloonProc_Create (referenced only from the table word 0x020e2158)
 extern "C" ChatBalloonProc *ChatBalloonProc_Create();
-ProcProfile sChatBalloonProcProfile = {(void *(*)())ChatBalloonProc_Create, 0xcb, 0x8d};
-ChatBalloonList *sChatBalloonList;
 
 void ChatBalloon::updateSlideOffset() {
     s32 a, t, t2;
@@ -1119,3 +1117,24 @@ BOOL ChatBalloonProc::onDelete() {
     return TRUE;
 }
 
+// Data creation order: with the record sChatBalloonProcProfile in the unit, the original order needs the definitions in exactly
+// this sequence after vfunc_0c.
+// Data order: this unit is placed object by object (see object_order.txt).
+const u32 sChatBalloonNameSeqs[4] = {7, 7, 8, 9};
+
+// Constants shared with other files (loaded through their addresses; defined after the code here, where a visible const would be folded).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const s32 data_020c8cb4 = 0x10000;
+
+const s32 data_020c8cc0 = 0x10000;
+
+u8 sChatBalloonSyncBuf[0x29];
+
+ProcProfile sChatBalloonProcProfile = {(void *(*)())ChatBalloonProc_Create, 0xcb, 0x8d};
+
+const u32 sChatBalloonTextSeqs[4] = {10, 11, 12, 13};
+
+ChatBalloonList *sChatBalloonList;
+
+s32 sChatQuickMsgCooldown;

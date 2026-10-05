@@ -3,6 +3,12 @@
 #include "town/TownEventRecord.h"
 #include "town/TownBlockMap.h"
 
+// An 8-byte bss block (used by unk_02041e00.cpp).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+extern "C" { extern u8 data_021c47bc[8]; }
+u8 data_021c47bc[8];
+
 
 struct ItemId {
     u16 v;

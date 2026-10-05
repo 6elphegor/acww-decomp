@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "sys/SceneBase.h"
@@ -37,6 +38,9 @@ public:
 
 extern "C" FieldEntryScene *FieldEntryScene_Create(void) { return new FieldEntryScene; }
 
+// Process profile of FieldEntryScene_Create (gProfileTable entry): factory, execute and draw priorities.
+ProcProfile sFieldEntrySceneProfile = {(void *(*)())FieldEntryScene_Create, 0x5, 0x4};
+
 void FieldEntryScene::waitAreaMove() {
     if (NetArea_GetMoveState() == 0xb) {
         NetArea_SetMoveState(0xc);
@@ -72,7 +76,6 @@ BOOL FieldEntryScene::onDelete() {
 
 BOOL FieldEntryScene::onExecute() {
     typedef void (FieldEntryScene::*Fn)();
-    Fn dead = &FieldEntryScene::waitAreaMove;
     static Fn table[3] = {&FieldEntryScene::waitAreaMove, &FieldEntryScene::requestField, &FieldEntryScene::idle};
     (this->*table[step])();
     return TRUE;

@@ -15,13 +15,13 @@ Every overlay and all of main are built from source, and the build reproduces th
 
 | Module | Code built from source | Data owned by a source file |
 |---|--:|--:|
-| ARM9 main | 100% of functions | 99.6% |
+| ARM9 main | 100% of functions | 99.7% |
 | Overlays (148) | 100% | 100% |
 | ITCM | 97.0% | (code only) |
-| `autoload_2` (libraries) | 99.4% | 99.4% |
+| `autoload_2` (libraries) | 99.4% | 99.5% |
 | `autoload_3` (bss of main and the libraries) | | 99.9% |
-| DTCM | | 9.3% |
-| **Total** | **99.9%** | **99.8%** |
+| DTCM | | 100% |
+| **Total** | **99.9%** | **99.9%** |
 
 The 6 functions still taken from the original image, and the data no source file owns yet, are listed in
 [`docs/unmatched.md`](docs/unmatched.md).

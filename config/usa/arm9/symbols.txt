@@ -12888,8 +12888,6 @@ sDropUnitOrder kind:data(any) addr:0x020ca1c8
 sNativeFruitTrees kind:data(any) addr:0x020ca2e8
 sFgDataFiles kind:data(any) addr:0x020ca2f4
 data_020ca314 kind:data(any) addr:0x020ca314
-data_020ca315 kind:data(any) addr:0x020ca315
-data_020ca316 kind:data(any) addr:0x020ca316
 sFishBaseSizes kind:data(any) addr:0x020ca318
 sBackupGameName kind:data(any) addr:0x020ca478
 sSpecialCharStr6 kind:data(any) addr:0x020ca480

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "game/Unk_0203f3a0_L.h"
 #include "game/EventDayEntry.h"
@@ -320,6 +321,9 @@ extern "C" void EventWeekSlot_MarkAllPlayers(EventWeekSlot *e) {
 extern "C" EventCalendarModule *EventCalendarModule_New() {
     return new EventCalendarModule();
 }
+
+// Process profile of EventCalendarModule_New (gProfileTable entry): factory, execute and draw priorities.
+ProcProfile data_020d96ec = {(void *(*)())EventCalendarModule_New, 0x8c, 0x90};
 
 EventDayList::EventDayList() {
     date[0] = 1;

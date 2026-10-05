@@ -6,6 +6,9 @@
 #include "game/Unk_021e5890_T.h"
 #include "gfx/BgModelCache.h"
 
+extern "C" const u32 data_020c8b9c;
+extern "C" const u32 data_020c8ba0;
+
 extern "C" {
 void func_02133ef8(void *, u32);
 void Bgm_ReleasePriority(u32);
@@ -374,3 +377,10 @@ const u8 sBgHeapSizeByRoom[0x34] = {
 };
 
 BgModelCacheObj gBgModelCache;
+
+
+// Constants shared with other files (loaded through their addresses; defined after the code here, where a visible const would be folded).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const u32 data_020c8b9c = 0x7c8;
+const u32 data_020c8ba0 = 0x3648;

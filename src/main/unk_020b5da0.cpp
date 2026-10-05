@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "sys/SceneBase.h"
 
@@ -19,6 +20,9 @@ public:
 extern "C" DummyScene3 *DummyScene3_Create(void) {
     return new DummyScene3();
 }
+
+// Process profile of DummyScene3_Create (gProfileTable entry): factory, execute and draw priorities.
+ProcProfile sDummyScene3Profile = {(void *(*)())DummyScene3_Create, 0x3, 0x2};
 
 BOOL DummyScene3::onCreate() {
     Snd_CreateScene();

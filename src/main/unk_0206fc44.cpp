@@ -10,6 +10,12 @@
 #include "ui/LabelString.h"
 #include "talk/EncodedString41.h"
 
+// The CPU-side matrix (bss) the matrix-stack code here uses.
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+extern "C" { extern Mtx43 data_021cb69c; }
+Mtx43 data_021cb69c;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
 
@@ -101,7 +107,6 @@ extern GameFontDesc gFontC;
 }
 
 extern "C" {
-extern Mtx43 data_021cb69c;
 }
 
 extern "C" {

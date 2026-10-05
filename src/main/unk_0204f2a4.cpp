@@ -5,6 +5,8 @@
 #include "gfx/Mtx43.h"
 #include "sys/ProcProfile.h"
 
+extern "C" const u8 data_020ca314[4];
+
 struct FishDisplayEntry {
     u8 pad_00[0x40];
     s32 fishId;
@@ -29,7 +31,6 @@ struct FishDisplayRequest {
     u32 posZ;
 };
 
-
 class FishDisplay;
 
 extern "C" {
@@ -45,7 +46,6 @@ void _ZN9AnimModel12drawAnimatedEPv(void *, void *);
 void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e);
 extern s32 sFishDisplayEntryCount;
 extern FishDisplay *gFishDisplay;
-extern u8 data_020ca314[];
 extern u8 gFieldSceneKind;
 void *_ZN13ModelSlotPool7acquireEPt(void *, void *);
 s32 _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(void *, void *, const char *);
@@ -593,9 +593,26 @@ extern "C" u32 Fish_GetSizeClass(u32 x) {
     return data_020ca314[x * 6];
 }
 
-char *sFishShadowMdlPath = sFishShadowMdlFile;
+// Declarations for data defined further down (definition order sets the data layout)
+extern void *sFishShadowAnmPath;
+extern char *sFishShadowMdlPath;
+extern char sFishMdl56File[];
+extern char sFishMdl57File[];
+extern char sFishMdl58File[];
+extern char sFishShadowMdlFile[];
+extern char sFishShadowAnmFile[];
+extern s32 sFishDisplayEntryCount;
+extern ProcProfile sFishDisplayProfile;
+extern char *sFishStaticMdlPaths[3];
+extern FishDisplayRequest sFishDisplayRequests[4];
+extern const u8 sFishBaseSizes[0x160];
+extern Backup gBackup;
+extern FishDisplay *gFishDisplay;
+extern const u8 data_020ca314[4];
 
 void *sFishShadowAnmPath = sFishShadowAnmFile;
+
+char *sFishShadowMdlPath = sFishShadowMdlFile;
 
 // ---------------------------------------------------------------- data
 char sFishMdl56File[] = "/fish/03/fish56.nsbmd";
@@ -646,6 +663,11 @@ const u8 sFishBaseSizes[0x160] = {
     0x00, 0x00, 0x02, 0x02, 0x03, 0x00, 0x00, 0x00, 0x03, 0x02, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
+Backup gBackup;
+
 FishDisplay *gFishDisplay;
 
-Backup gBackup;
+// A byte table shared with other files (loaded through its address; defined after the code here, where a visible const would be folded). Other code uses the addresses of its bytes 1 and 2 (lcf_symbols.txt).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const u8 data_020ca314[4] = {0, 2, 1, 0};

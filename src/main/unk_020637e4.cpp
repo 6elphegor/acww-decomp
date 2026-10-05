@@ -4,6 +4,8 @@
 #include "talk/MsgString.h"
 #include "talk/MsgString9C.h"
 
+extern "C" const u16 data_020cb6f4;
+
 extern "C" {
 void _ZdlPv(void *);
 void MI_CpuCopy8(void *, void *, u32);
@@ -57,3 +59,9 @@ void EncodedString8B::copyBytesTo(void *p, u32 n) { MI_CpuCopy8(text, p, n); }
 
 u8 *EncodedString8B::data() { return text; }
 
+
+
+// A constant shared with other files (only loaded through its address, so it is defined after the code here: a visible const would be folded).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const u16 data_020cb6f4 = 0xffff;

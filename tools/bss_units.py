@@ -35,6 +35,13 @@
 # where it stands, in whatever output section). Nothing else changes; without a placeholder unit the step is not
 # part of the build.
 #
+# DTCM units. NitroSDK places objects in DTCM with `#pragma section DTCM begin` ... `end`; with the one-name section
+# definition `#pragma define_section DTCM ".dtcm" abs32 RWX` mwcc emits them, zero objects included, as `.dtcm`
+# sections (see src/dtcm/unk_027e0000.c). dsd selects a unit's `.data` only, so this step adds the unit's `.dtcm`
+# right after it (`unk_027e0000.o(.data)` is followed by `unk_027e0000.o(.dtcm)`) for every complete unit of
+# config/<version>/arm9/dtcm/delinks.txt. A unit has one or the other; the step also runs when there are DTCM units
+# but no placeholders.
+#
 # Usage:
 #   python3 tools/bss_units.py build/usa/objects.txt build/usa/arm9.lcf --config config/usa/arm9 \
 #       -o build/usa/arm9_bss_units.lcf --objects-out build/usa/objects_bss_units.txt
@@ -73,6 +80,17 @@ def placeholders(config: Path) -> list[tuple[Path, str]]:
                 if placeholder_suffix(source):
                     found.append((delinks, source))
     return found
+
+
+DTCM_MODULE = "dtcm"  # the module whose units may emit `.dtcm` sections
+
+
+def dtcm_units(config: Path) -> list[str]:
+    '''the complete units of the DTCM module'''
+    delinks = config / DTCM_MODULE / "delinks.txt"
+    if not delinks.is_file():
+        return []
+    return [unit for unit, complete in unit_names(delinks).items() if complete]
 
 
 def real_source(placeholder: str) -> str:
@@ -141,6 +159,12 @@ def process(lcf: str, objects: list[str], config: Path) -> tuple[str, list[str]]
                 sys.exit(f"bss_units.py: the linker script has no single '{stem}{suffix}.o({section})' line for "
                          f"{placeholder}")
             lcf = pattern.sub(lambda m: f"{m[1]}{stem}.o({section})", lcf)
+    for source in dtcm_units(config):
+        stem = Path(source).with_suffix("").name
+        pattern = re.compile(r"^([ \t]*)" + re.escape(f"{stem}.o(.data)") + r"[ \t]*$", re.M)
+        if len(pattern.findall(lcf)) != 1:
+            sys.exit(f"bss_units.py: the linker script has no single '{stem}.o(.data)' line for the DTCM unit {source}")
+        lcf = pattern.sub(lambda m: f"{m[1]}{stem}.o(.data)\n{m[1]}{stem}.o(.dtcm)", lcf)
     # dsd lists the placeholder's object under the real object's name or under its own, depending on the version
     kept = []
     for line in objects:

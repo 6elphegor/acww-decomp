@@ -41,7 +41,11 @@ struct Res {
 extern "C" {
 extern u32 data_021f5c3c;
 extern const s16 data_02135f44[];
-extern VecFx16 data_0213bba4;
+// The Y unit vector (0, 1.0) that spl_set_cross_to_axis starts from: a 4-byte object in .data (0x0213bba4-0x0213bba8,
+// followed by the data of the next file, unk_020fedcc.c). The function copies it as a VecFx16, so the copy's z is read
+// from the first halfword of the next object (0), as in the original.
+extern "C" s16 data_0213bba4[2];
+s16 data_0213bba4[2] = {0, 0x1000};
 extern u16 data_021f5c40;
 extern u16 data_021f5c44;
 extern u32 data_021f5c48;
@@ -345,7 +349,7 @@ extern "C" void spl_chld_alp_out(P *p, void *x, s32 t) {
 }
 
 extern "C" void spl_set_cross_to_axis(E *e) {
-    VecFx16 a = data_0213bba4;
+    VecFx16 a = *(VecFx16 *)data_0213bba4;
     VecFx16 b;
     switch (e->res->hdr->f.axis) {
     case 2:

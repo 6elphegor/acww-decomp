@@ -1,13 +1,9 @@
 #include "types.h"
+#include "sys/ProcProfile.h"
 #include "sys/ProcBase.h"
 #include "talk/TalkRequestQueue.h"
 #include "talk/TalkRequestEntry.h"
 #include "actor/Character.h"
-
-
-
-
-
 
 struct TalkRequestList {
     TalkRequestEntry *head;
@@ -974,6 +970,20 @@ extern TalkRequestFn sTalkRequestEndFns[15];
 extern u32 sTalkTargetId;
 extern TalkRequestList sTalkRequestList;
 
+// Declarations for data defined further down (definition order sets the data layout)
+extern ProcProfile data_020d9520;
+extern TalkRequestFn sTalkRequestBeginFns[15];
+extern u32 sTalkRequestFlags;
+extern TalkRequestEntry *gTalkRequestCurrent;
+extern TalkRequestFn sTalkRequestRunFns[15];
+extern TalkRequestFn sTalkRequestStartFns[15];
+extern TalkRequestFn sTalkRequestEndFns[15];
+extern TalkRequestList sTalkRequestList;
+extern u32 sTalkTargetId;
+
+// Process profile of TalkRequestQueue_Create (gProfileTable entry): factory, execute and draw priorities.
+ProcProfile data_020d9520 = {(void *(*)())TalkRequestQueue_Create, 0xd7, 0xd6};
+
 TalkRequestFn sTalkRequestBeginFns[15] = {
     (TalkRequestFn)TalkRequest_StepUnused, (TalkRequestFn)TalkRequest_StepPass, (TalkRequestFn)TalkRequest_BeginTalk,
     (TalkRequestFn)TalkRequest_StepPass, (TalkRequestFn)TalkRequest_StepPass, (TalkRequestFn)TalkRequest_StepPass,
@@ -982,9 +992,9 @@ TalkRequestFn sTalkRequestBeginFns[15] = {
     (TalkRequestFn)TalkRequest_BeginSceneEntryChar, (TalkRequestFn)TalkRequest_StepBlock, (TalkRequestFn)TalkRequest_StepPass
 };
 
-TalkRequestEntry *gTalkRequestCurrent;
-
 u32 sTalkRequestFlags;
+
+TalkRequestEntry *gTalkRequestCurrent;
 
 // ---- data
 TalkRequestFn sTalkRequestRunFns[15] = {
@@ -1011,6 +1021,6 @@ TalkRequestFn sTalkRequestEndFns[15] = {
     (TalkRequestFn)TalkRequest_EndSceneEntryChar, (TalkRequestFn)TalkRequest_StepPass, (TalkRequestFn)TalkRequest_StepPass
 };
 
-u32 sTalkTargetId;
-
 TalkRequestList sTalkRequestList;
+
+u32 sTalkTargetId;

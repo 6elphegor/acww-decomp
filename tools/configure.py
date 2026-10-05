@@ -398,9 +398,10 @@ def add_mwld_and_rom_builds(n: ninja_syntax.Writer, project: Project):
     delink_file = str(project.arm9_delink_yaml())
     elf_file = str(project.arm9_o())
 
-    # Main units that own .bss in autoload_3 are listed there under a placeholder name, see tools/bss_units.py. The
-    # step only exists when a delinks.txt has such a placeholder.
-    if bss_units.placeholders(project.game_config / "arm9"):
+    # Main units that own .bss in autoload_3 are listed there under a placeholder name, and DTCM units emit `.dtcm`
+    # sections, see tools/bss_units.py. The step only exists when a delinks.txt has such a placeholder or there are
+    # DTCM units.
+    if bss_units.placeholders(project.game_config / "arm9") or bss_units.dtcm_units(project.game_config / "arm9"):
         bss_lcf_file = str(project.game_build / "arm9_bss_units.lcf")
         bss_objects_file = str(project.game_build / "objects_bss_units.txt")
         n.build(

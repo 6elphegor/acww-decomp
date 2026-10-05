@@ -1,6 +1,9 @@
 #include "types.h"
+#include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "sys/SceneBase.h"
+
+extern "C" const u8 data_020d0c08;
 
 extern "C" {
 void Gfx2d_SetBrightness(s32 x);
@@ -72,6 +75,9 @@ public:
 };
 
 extern "C" BootLogoScene *BootLogoScene_Create(void) { return new BootLogoScene; }
+
+// Process profile of BootLogoScene_Create (gProfileTable entry): factory, execute and draw priorities.
+ProcProfile data_020e3fd4 = {(void *(*)())BootLogoScene_Create, 0x1, 0x0};
 
 BOOL BootLogoScene::onCreate() {
     gVBlanksPerFrame = 3;
@@ -225,3 +231,9 @@ void BootLogoScene::applyLoadedSave() {
 }
 
 
+
+
+// Constants shared with other files (loaded through their addresses; defined after the code here, where a visible const would be folded).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const u8 data_020d0c08 = 0x11;

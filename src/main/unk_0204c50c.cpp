@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "town/SceneMapInfo.h"
 #include "sys/ClockDate.h"
@@ -243,6 +244,9 @@ extern "C" void Town_ClearBorderTrees(Unk_0204da0c_Map *p);
 extern "C" SceneMapModule *SceneMapModule_New() {
     return new SceneMapModule;
 }
+
+// Process profile of SceneMapModule_New (gProfileTable entry): factory, execute and draw priorities.
+ProcProfile data_020da3c4 = {(void *(*)())SceneMapModule_New, 0xc, 0xf};
 
 extern "C" Unk_0204da0c_Map *BlockMap_GetForArea(s32 a) {
     Unk_0204da0c_Map *r = NULL;

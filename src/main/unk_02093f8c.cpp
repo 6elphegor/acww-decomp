@@ -13,16 +13,9 @@
 #include "talk/MsgString9B.h"
 #include "talk/EncodedString8.h"
 
-
-
-
-
-
-
-
-
-
-
+extern "C" const s32 data_020d03cc;
+extern "C" const s32 data_020d03d0;
+extern "C" const s32 data_020d03d4;
 
 extern "C" {
 extern EffectSlot gEffectManager[];
@@ -129,21 +122,12 @@ s32 EffectCb_InitOneShot(EffectSplEmitter *o);
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffers (see unk_0206c714.cpp for the bases)
 
-
-
-
 class MsgString;
-
-
 
 extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
 
-
-
 // ---------------------------------------------------------------------------------------------------------------------
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14
-
-
 
 extern "C" {
 extern TownId gSaveTownId;
@@ -203,3 +187,16 @@ void EncodedString8::copyTo(void *dst, u32 n) { MI_CpuCopy8(text, dst, n); }
 
 u8 *EncodedString8::data() { return text; }
 
+// Declarations for data defined further down (definition order sets the data layout)
+extern const s32 data_020d03d4;
+extern const s32 data_020d03d0;
+extern const s32 data_020d03cc;
+
+const s32 data_020d03d4 = 0x7ffc;
+
+const s32 data_020d03d0 = 0x7fff;
+
+// Constants shared with other files (loaded through their addresses; defined after the code here, where a visible const would be folded).
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const s32 data_020d03cc = 0x7ffd;

@@ -22,14 +22,14 @@ Data sections owned by a source file:
 
 | Module | Bytes | Owned by a unit | Not owned |
 |---|--:|--:|--:|
-| ARM9 main (`.rodata`, `.data`, `.init`, `.ctor`, `.exception`, `.exceptix`) | 150,004 | 149,360 (99.6%) | 644 |
-| `autoload_2` (`.rodata`, `.data`) | 28,076 | 27,920 (99.4%) | 156 |
-| `autoload_3` (bss of main and the libraries) | 802,752 | 801,752 (99.9%) | 1,000 |
-| DTCM (`.data`) | 1,120 | 104 (9.3%) | 1,016 |
+| ARM9 main (`.rodata`, `.data`, `.init`, `.ctor`, `.exception`, `.exceptix`) | 150,004 | 149,532 (99.7%) | 472 |
+| `autoload_2` (`.rodata`, `.data`) | 28,076 | 27,944 (99.5%) | 132 |
+| `autoload_3` (bss of main and the libraries) | 802,752 | 801,824 (99.9%) | 928 |
+| DTCM (`.data`) | 1,120 | 1,120 (100%) | 0 |
 | Overlays (all sections; 39 overlays are data only) | 505,636 | 505,636 (100%) | 0 |
 
 Data with no code of its own (sprite tables, the crash-screen font, the process-profile table, NitroSDK/NitroSystem/MSL
-tables such as the sine table and the character-class maps, OS_IRQTable) is built by data-only units. Library units
+tables such as the sine table and the character-class maps, OS_IRQTable and all of DTCM) is built by data-only units. Library units
 that were several original files are split by file where their data needed it (each file's data and bss are sorted
 by size on their own, see `tools/pipeline/linking.md`, "Data of library units").
 
@@ -48,8 +48,8 @@ by size on their own, see `tools/pipeline/linking.md`, "Data of library units").
 
 | Address | Size | What it does | Closest attempt / remaining difference |
 |---|--:|---|---|
-| `0x01ffcd50` | 0x168 | Game H-blank handler, main engine (per-line BG3 affine parameters, DISPCNT bits, blending, palette entries) | 20 diff lines, all in the first block: the original loads the table base before the VCOUNT address, the attempt the other way round. Re-tried (M3): the per-line data is `gWeatherManager` +8 (`{s32 x, y; s16 pa}` x 192 x 2 buffers, BG3X/BG3Y/BG3PA), +0x1210 (`u16` BLDALPHA x 192 x 2), +0x1514 (line offset table indexed by +0x151c) and `sSkyGradient` (+0 buffer index, +4 `u16` colours x 192 x 2, +0x304/+0x306 backdrop colours); the backdrop goes through a stack `volatile u16` like `Sky_VBlankMain`. Operand order, statement order, inline `GX_GetVCount`, pointer locals and types do not change the schedule of the first block. |
-| `0x01ffceb8` | 0x108 | Game H-blank handler, sub engine | 50 diff lines: the original keeps the palette pointer and `0x05000000` in r5/r4 from the start and reads VCOUNT first. Re-tried (M3): unlike the main handler, it addresses everything from base registers (`0x04000000`, `0x05000000`, `&sSkyGradient`, `&gWeatherManager` + 8 computed, not pooled); with pointer locals and `(u8 *)w + 8` the instruction multiset matches, only the schedule and two registers differ. |
+| `0x01ffcd50` | 0x168 | Game H-blank handler, main engine (`Sky_HBlankMain`: per-line BG3 affine parameters, DISPCNT bits, blending, palette entries) | 22 diff lines (counted as moved instructions), all in the first block. U4: everything after the first block is the original with `line = off; line += VCOUNT;`, `REG32(DISPCNT) = REG32(DISPCNT) & ~0x200` (not `&=`) in the second branch, and the backdrop colour copied through an address-taken local (`u16 c = sSkyGradient.keyColors[0]; REG16(0x05000400) = *(u16 *)&c;`, or a one-member struct copy): that reproduces the stack round trip without `volatile`. Left: the original evaluates the line offset before the VCOUNT read (the VCOUNT address reuses r0) and hoists `mov r2, #0xc`; mwcc always schedules the VCOUNT load first, whatever the operand order, statement order, temporaries, inline helpers (also taking the offset as an argument), types, volatility of the register accesses, -O level, `-proc` or compiler build (1.2/base..sp4, 2.0, DSi; C and C++). |
+| `0x01ffceb8` | 0x108 | Game H-blank handler, sub engine (`Sky_HBlankSub`) | 50 diff lines: the original materialises `0x05000000` (r4) and `&sSkyGradient` (r5) early and keeps them, and reads VCOUNT first; with base pointer locals and `(u8 *)w + 8` the instruction multiset matches, only the schedule and registers differ. Declaration order, statement order, row/colour temporaries, C instead of C++ and every compiler build tried leave it there. Both handlers are compiler output (pool layout, `lsl/lsr #16` zero extension, stack padding, mwcc's epilogue), not hand-written assembly, so an assembly unit is not an option. Attempts: `pipeline_wip/phase4/U4/attempts`. |
 
 ## Data that no unit owns
 
@@ -61,25 +61,28 @@ by size on their own, see `tools/pipeline/linking.md`, "Data of library units").
 | `.text` 0x02000b6c-0x02000b7c | 0x10 | A 16-byte key; `AxMail_GetDigestKey` (built from source) returns its address |
 | `.text` 0x02000b84-0x02000c2c | 0xa8 | The `.version` block: the middleware tag strings `[SDK+...]` (DWC, BACKUP, Wi-Fi, CPS, SSL) that `OSi_ReferSymbol` callers pass to keep them linked |
 | `.init` 0x020c5fa0-0x020c5fa4, `.ctor` 0x020d1f48-0x020d1f4c | 4 + 4 | An empty ARM static initialiser of a library-area file between the network file (0x020e9a08) and the task manager (0x020ed4bc); probably `ProcBase`'s file (next section) |
-| `.rodata` 13 small ranges between 0x020c8b9c and 0x020d0c0c | 520 | Constants used by several units, not yet assigned to one. The largest, the building records `data_020d0a7c` (0x154, right after the rodata of `unk_020b0e60.cpp`, the only user), fits that file's size order, but adding it reorders the file's bss (no definition order found) |
-| `.data` 11 objects of 8 bytes between units | 88 | Process profiles (`ProcProfile`), each right before the data of the file whose create function it names; adding one reorders that file's bss the same way (tried on `unk_0203d4d8.cpp`) |
-| `.data` 0x020dc520, 0x020ddf8c, 0x020e74ec-0x020e7500 | 28 | `gVBlanksPerFrame`, a word of -1, and 20 zero bytes after the last unit's data |
+| `.rodata` 0x020cbadc-0x020cbae8, 0x020cbf90-0x020cbfa8 | 12 + 24 | Runs of 4-byte constants (3 and 6 objects). They fit neither the size order of the file before (larger objects at its end) nor the one after (`data --apply` finds no order), and no file without `.rodata` lies between |
+| `.rodata` 0x020d0544-0x020d0594 | 80 | Two objects (0x40 and 0x10 bytes), not in ascending order, after the rodata of `unk_02098d20.cpp`; read by an overlay |
+| `.rodata` 0x020d0a7c-0x020d0bd0 | 340 | The building records `data_020d0a7c` (34 `BuildingInfo`), right after the rodata of `unk_020b0e60.cpp`, the only main user. It fits that file's size order, but adding it reorders the file's bss; `linkprep.py data` finds at best 25 of 30 objects in place |
+| `.data` 0x020e1178-0x020e1180 | 8 | The process profile of `EffectSplProc_Create`; adding it to `unk_0208f268.cpp` reorders that file's many 4-byte rodata objects at every definition position |
+
+The other ten process profiles, eight of the small constants (now `extern "C" const` objects defined after the code
+of a file between their neighbours, so that the code still loads them), `gVBlanksPerFrame`, the melody word at
+0x020ddf8c and the alignment padding at the end of `.data` are owned since phase 4 (U4). The overlay digest table
+names `data_020e74ec`/`data_020e74ec_end` (NitroSDK's `SDK_OVERLAY_DIGEST`/`_END`, an empty table at the end of
+`.data`) are linker-script symbols in `config/usa/arm9/lcf_symbols.txt`.
 
 ### Libraries
 
 | Range | Size | Contents |
 |---|--:|---|
-| `autoload_2` `.rodata` 0x0213a740-0x0213a748 | 8 | `__ptmf_null` of the C++ runtime |
 | `autoload_2` `.data` 0x0213b120-0x0213b1a4 | 132 | `ProcBase` (next section) |
-| `autoload_2` `.data` 0x0213bba4 | 4 | A constant of the SPL unit `unk_020fc984.cpp`; the code copies it as a 6-byte `VecFx16`, so its declaration is not the original object |
-| `autoload_2` `.data` 0x0213c6b4-0x0213c6c0 | 12 | Zero bytes after the runtime's data; no reference |
-| `autoload_3` 0x021c1b3c, 0x021c47bc, 0x021c5384, 0x021cb69c, 0x021ce63c, 0x021ef5c8 | 84 | Small bss objects of main between units (BGM clock, `gGfxMainOnTop`, the CPU matrix stack, `gTouchHoldFrames`, ...) |
+| `autoload_3` 0x021c1b3c, 0x021c47c4, 0x021c5384 | 12 | Small bss objects of main between units: the BGM manager pointer (its candidate files declare it inside a namespace or break their bss order), `gSceneBlockMap` and `gGfxMainOnTop` (no definition order found). The other small objects (the CPU matrix, the touch state, ...) are owned since U4 |
 | `autoload_3` 0x021f5974-0x021f5994, 0x021f59e4 | 32 + 4 | `ProcBase`'s factory state; `gProfileTable` (its file is not settled: after the task manager's bss, before the sound system's) |
 | `autoload_3` 0x021f5c50-0x021f5ca0 | 80 | NVRAM / DWC account state: unaligned members shared by `unk_020fe848.c`, `unk_020fea34.c` and `unk_020fedcc.c`; not in one size order |
 | `autoload_3` 0x021feb6c-0x021feb8c, 0x021ff4b8-0x021ff4cc | 32 + 20 | A PM register record and a WM message whose declared types are views, not the objects |
 | `autoload_3` 0x021fff80-0x02200040 | 192 | MB game-info and WM-state bss: not one size order across their units; the WM-state words could not be ordered together with the `.data` of `unk_02124c40.c` |
 | `autoload_3` 0x02200054-0x02200250, 0x0220064c-0x0220066c, 0x02200670-0x02200680 | 508 + 32 + 16 | CTRDG and MSL (`abort`/`exit`) bss of `unk_0212703c.c`, which is several files (it owns the console-stream data); `errno` and the signal table; 16 bytes at the end |
-| DTCM `.data` 0x027e0058-0x027e00b8, 0x027e00c8-0x027e0460 | 96 + 920 | Zero-initialised SDK and game objects placed in DTCM (the IRQ callback records, the sound alarm array, `sMenuWipeLine`/`sMenuWipeEdge`, ...). The original placed them with the SDK's DTCM section pragma, which keeps them in the data image; plain C puts a zero initialiser in `.bss`. `OS_IRQTable` and the callback index table are built (`src/dtcm/`) |
 | ITCM `.text` 0x01ff8ab4-0x01ff8ad4 | 0x20 | A table of the eight NitroSystem texture-SRT functions inside `.text`, right after the code of its file (`src/itcm/unk_01ff8228.c`). mwcc puts a `const` table in `.rodata` even under `#pragma define_section`/`#pragma section` (checked), and the ITCM module has no `.rodata` range, so the C unit cannot emit it in place yet |
 | ITCM `.text` 0x01ffd0b4-0x01ffd0e4 | 0x30 | Six pointer-to-member constants of `ProcBase`'s file (next section) |
 

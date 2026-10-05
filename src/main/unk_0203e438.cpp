@@ -9,6 +9,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 
+extern "C" const s16 data_020c905c;
+
 
 
 
@@ -44,7 +46,6 @@ extern CommManager *volatile gCommManager;
 }
 
 extern "C" {
-extern s16 data_020c905c;
 }
 
 extern "C" {
@@ -342,3 +343,9 @@ void Character::setTalkStartMode1() {
     setCharFlags(2);
 }
 
+
+
+// A shared constant (0x2aaa: 60 degrees as a u16 angle), defined after its use here so that it is loaded, not folded; an overlay reads it too.
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+const s16 data_020c905c = 0x2aaa;

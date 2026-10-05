@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "save/MotherLetterState.h"
 #include "item/Letter.h"
@@ -284,6 +285,9 @@ void MotherLetterState::setBirthdayLetterYear(u32 v) {
 extern "C" LetterDeliveryProc *LetterDeliveryProc_Create() {
     return new LetterDeliveryProc();
 }
+
+// Process profile of LetterDeliveryProc_Create (gProfileTable entry): factory, execute and draw priorities.
+ProcProfile data_020e1da0 = {(void *(*)())LetterDeliveryProc_Create, 0x8d, 0x91};
 
 BOOL LetterDeliveryProc::onCreate() {
     deliveryFlags = 0;

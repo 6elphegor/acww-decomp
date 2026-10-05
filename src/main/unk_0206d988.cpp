@@ -2,7 +2,8 @@
 
 extern "C" {
 extern u8 gSaveTownTune[];
-extern s32 data_020ddf8c;
+// The melody state word (.data 0x020ddf8c): -1 at start, Melody_Init sets it back to -1; ov143 reads it.
+s32 data_020ddf8c = -1;
 
 u8 *Snd_MelodyGetDefaultPattern(void *);
 u8 *Snd_MelodyApplyRandomPattern(void *);

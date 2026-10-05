@@ -32,6 +32,8 @@ data_020c8da0 addr:0x020c8da0 base:sCameraPoseTable
 data_020c8da4 addr:0x020c8da4 base:sCameraPoseTable
 data_020c8da8 addr:0x020c8da8 base:sCameraPoseTable
 data_020c8dac addr:0x020c8dac base:sCameraPoseTable
+data_020ca315 addr:0x020ca315 base:data_020ca314
+data_020ca316 addr:0x020ca316 base:data_020ca314
 data_020cf615 addr:0x020cf615 base:kHudCameraGridDirs
 data_020cf629 addr:0x020cf629 base:kHudCameraGridCells
 data_020d0608 addr:0x020d0608 base:sTopicWordLists
@@ -48,3 +50,5 @@ data_020e09a0 addr:0x020e09a0 base:sVisitorSchedule
 data_020e1918 addr:0x020e1918 base:sEffectKindTable
 data_020e220c addr:0x020e220c base:sErrandKindSetups
 data_020e227c addr:0x020e227c base:sErrandKindSetups
+data_020e74ec addr:0x020e74ec base:ARM9_DATA_START
+data_020e74ec_end addr:0x020e74ec base:ARM9_DATA_START

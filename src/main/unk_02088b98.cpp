@@ -60,6 +60,12 @@ public:
 #include "actor/ActorCollider.h"
 #include "gfx/SpriteAnim.h"
 
+// A bss word of this file, used by other files through its address.
+// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
+// size order (linkprep check); the original file is this one or another file between those neighbours.
+extern "C" { extern u32 data_021ce63c; }
+u32 data_021ce63c;
+
 
 
 

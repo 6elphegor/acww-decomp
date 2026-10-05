@@ -739,8 +739,11 @@ What the data ownership of the library modules (batch M5) found; it applies to m
   check a definition's size against the gap to the next object, and look for an unlabelled thread stack after an
   `OSThread` (its end is the next object's label, which `OS_CreateThread` gets as the stack top).
 * **Details.** `__attribute__((aligned(32)))` reproduces the SDK's `ATTRIBUTE_ALIGN(32)` buffers. Explicit zero
-  initialisers go to `.bss`, so zero data inside an original `.data` range (the DTCM objects) cannot be written as
-  plain C. Two library files were built with string pooling (`-str reuse` in the file's `mwcc-flags` line): MSL's
+  initialisers go to `.bss`, so zero data inside an original `.data` range cannot be written as plain C. The DTCM
+  objects (zero ones included) are placed as in NitroSDK, between `#pragma section DTCM begin`/`end`, with the
+  one-name definition `#pragma define_section DTCM ".dtcm" abs32 RWX`: the DTCM image has no bss, so the game's SDK
+  kept zero DTCM objects in the data image, which mwcc does with the one-name form. `tools/bss_units.py` adds a
+  `unit.o(.dtcm)` selector after each DTCM unit's `.data` (all of `src/dtcm/` are data-only units). Two library files were built with string pooling (`-str reuse` in the file's `mwcc-flags` line): MSL's
   decimal conversion (`unk_0212fa54.c`) and the network file. A static initialiser of a library file is owned with a
   `unk_<start>.main.<ext>` placeholder in main's `delinks.txt` (`.init`, `.ctor`), as before. An ITCM unit's bss is
   owned with the same `.bss` placeholder as an `autoload_2` unit's.

@@ -146,6 +146,7 @@ src/autoload_2/unk_020fac28.cpp:
 src/autoload_2/unk_020fc984.cpp:
     complete
     .text       start:0x020fc984 end:0x020fe4b4
+    .data       start:0x0213bba4 end:0x0213bba8
 
 src/autoload_2/unk_020fe4b4.cpp:
     complete
@@ -1019,6 +1020,10 @@ src/autoload_2/unk_0212dcd0.c:
     .text       start:0x0212dcd0 end:0x0212ef04
     .rodata     start:0x0213a710 end:0x0213a740
 
+src/autoload_2/unk_0213a740.c:
+    complete
+    .rodata     start:0x0213a740 end:0x0213a748
+
 src/autoload_2/unk_0212ef04.c:
     complete
     .text       start:0x0212ef04 end:0x0212f300
@@ -1192,4 +1197,4 @@ src/autoload_2/unk_02134d70.cpp:
 src/autoload_2/unk_0213510c.cpp:
     complete
     .text       start:0x0213510c end:0x02135914
-    .data       start:0x0213c6b0 end:0x0213c6b4
+    .data       start:0x0213c6b0 end:0x0213c6c0

@@ -218,7 +218,7 @@ from:0x02205ad0 kind:load to:0x02205c1d module:overlay(4)
 from:0x02205ae4 kind:thumb_call_arm to:0x02135714 module:autoload(2)
 from:0x02205afc kind:load to:0x02205c1d module:overlay(4)
 from:0x02205b00 kind:load to:0x02205c2d module:overlay(4)
-from:0x02205b10 kind:load to:0x027e0148 module:dtcm
+from:0x02205b10 kind:load to:0x027e00c8 add:0x80 module:dtcm
 from:0x02205b26 kind:thumb_call to:0x020b231c module:main
 from:0x02205b2c kind:thumb_call to:0x020b22ac module:main
 from:0x02205b3c kind:thumb_call_arm to:0x0210622c module:autoload(2)

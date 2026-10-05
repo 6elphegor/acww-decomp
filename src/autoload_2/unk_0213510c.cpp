@@ -4,6 +4,7 @@
 // __register_global_object, terminate/dthandler and the __cxa_vec_* helpers; with thandler (.data) and
 // __global_destructor_chain (bss). C++ with exceptions on: owns main's .exceptix 0x020c2c4c-0x020c2cd0 and
 // .exception 0x020c2b34-0x020c2bb0 (the try/catch tables of the __cxa_vec_* functions).
+// The .data range ends with the 12 zero bytes that align the end of autoload_2's data to 32 bytes (0x0213c6c0).
 #include "types.h"
 
 typedef unsigned long size_t;

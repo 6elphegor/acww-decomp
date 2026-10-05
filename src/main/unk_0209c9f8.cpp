@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 
 extern u32 *gCurrentHeap;
@@ -51,6 +52,9 @@ public:
 extern "C" GameRoot *GameRoot_Create() {
     return new GameRoot();
 }
+
+// Process profile of GameRoot_Create (gProfileTable entry): factory, execute and draw priorities.
+ProcProfile sGameRootProfile = {(void *(*)())GameRoot_Create, 0x0, 0xd7};
 
 extern "C" void GameRoot_Boot() {
     s32 r;
