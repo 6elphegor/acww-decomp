@@ -148,13 +148,13 @@ void _ZN9SceneInfo20createSceneMapModuleEv(void*);
 s32 NetSession_GetLastSyncSlot();
 void NetSession_SetLastSyncSlot(s32);
 BOOL PlayerData_Get(s32);
-void _ZN10PlayerData5resetEv();
+void _ZN10PlayerData5resetEv(void *self);
 s32 BgModelCache_Get();
 void _ZN15BgModelCacheObj5setupEj(s32, s32);
 void FtrInfo_LoadIndoor(s32);
 void ItemInfo_LoadIndoor(s32);
-void _ZN15TouchPickerView5resetEv();
-void _ZN11TouchPicker5resetEv();
+void _ZN15TouchPickerView5resetEv(void *self);
+void _ZN11TouchPicker5resetEv(void *self);
 void CommCaution_Release();
 s32 ResCache_Destroy();
 void ResCache_Init();
@@ -211,14 +211,14 @@ void CharaFaceAnimPool_Destroy();
 void PlayerFaceTexPool_Destroy();
 void CharaClothTexPool_Destroy();
 void CharaAnimCache_Destroy();
-void PatternTexCache_Get();
-void _ZN15PatternTexCache6unloadEv();
+void *PatternTexCache_Get();
+void _ZN15PatternTexCache6unloadEv(void *self);
 void FtrInfo_FreeIndoor();
 void ItemInfo_FreeIndoor();
 void CharaShadow_Unload();
 void ObjShadow_Exit();
-void _ZN12BgModelCache5resetEv();
-void _ZN15PatternTexCache4loadEv();
+void _ZN12BgModelCache5resetEv(void *self);
+void _ZN15PatternTexCache4loadEv(void *self);
 void CharaAnimCache_Create(u32);
 void CharaClothTexPool_Create(u32);
 void PlayerFaceTexPool_Create(u32);
@@ -647,8 +647,7 @@ BOOL FieldSceneSteps::stepEnterScene(u32, u32) {
     sCurSceneId = SceneWarp_GetScene((u8*)&sSceneWarpRequest);
     FieldScene_AcquireOv002();
     gGfxFrameHooks = (u32)&sFieldGfxFrameHooks;
-    Scene_GetTouchPicker();
-    _ZN15TouchPickerView5resetEv();
+    _ZN15TouchPickerView5resetEv(Scene_GetTouchPicker());
     data_021ef2d4 = 0;
     sOverlaySceneId = sCurSceneId;
     FieldScene_AcquireOverlays();
@@ -703,8 +702,7 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
     _ZN15BgModelCacheObj5setupEj(t, gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     FtrInfo_LoadIndoor(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
     ItemInfo_LoadIndoor(gCurSceneInfo->isOutdoor == 1 ? TRUE : FALSE);
-    PatternTexCache_Get();
-    _ZN15PatternTexCache4loadEv();
+    _ZN15PatternTexCache4loadEv(PatternTexCache_Get());
     CharaAnimCache_Create(gCurrentHeap);
     CharaClothTexPool_Create(gCurrentHeap);
     PlayerFaceTexPool_Create(gCurrentHeap);
@@ -792,8 +790,7 @@ BOOL FieldScene::onCreate() {
 
 BOOL FieldScene::onDelete() {
     Bgm_EndSceneBgm();
-    Scene_GetTouchPicker();
-    _ZN11TouchPicker5resetEv();
+    _ZN11TouchPicker5resetEv(Scene_GetTouchPicker());
     gGfxFrameHooks = 0;
     PlayerActorHeap_Destroy();
     NpcResPools_ClearOnSceneDelete();
@@ -811,14 +808,12 @@ BOOL FieldScene::onDelete() {
     PlayerFaceTexPool_Destroy();
     CharaClothTexPool_Destroy();
     CharaAnimCache_Destroy();
-    PatternTexCache_Get();
-    _ZN15PatternTexCache6unloadEv();
+    _ZN15PatternTexCache6unloadEv(PatternTexCache_Get());
     FtrInfo_FreeIndoor();
     ItemInfo_FreeIndoor();
     CharaShadow_Unload();
     ObjShadow_Exit();
-    BgModelCache_Get();
-    _ZN12BgModelCache5resetEv();
+    _ZN12BgModelCache5resetEv((void *)BgModelCache_Get());
     Scene_ShutdownGraphics();
     data_021ce63c = 0;
     if (Scene_GetCurrent() == 6) {
@@ -838,7 +833,8 @@ BOOL FieldScene::onDelete() {
     } else if (Scene_GetCurrent() == 0xe) {
         s32 v = NetSession_GetLastSyncSlot();
         if (v > 0 && v < 4) {
-            if (PlayerData_Get(v + 3)) _ZN10PlayerData5resetEv();
+            void *pd = (void *)PlayerData_Get(v + 3);
+            if (pd) _ZN10PlayerData5resetEv(pd);
             PlayerSession_ClearDataIndex(v);
         }
         NetSession_SetLastSyncSlot(4);

@@ -42,7 +42,7 @@ BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, void *ctx);
 void MenuCtrl_SetResult(u32 v);
 s32 MenuCtrl_GetMode();
 void FriendEntry_Clear(void *p);
-void InventoryBg_DrawSprite();
+void NumberPad_PlayCancelSe();
 s32 MenuCtrl_SetFriendPageFromIndex();
 s32 Net_GetMode();
 s32 MenuCtrl_GetIndex();
@@ -1055,7 +1055,7 @@ BOOL FriendCodeMenu::applyKey(s32 a) {
     case 11:
         if (a) {
             clearCode();
-            InventoryBg_DrawSprite();
+            NumberPad_PlayCancelSe();
         }
         repeatTimer = 0;
         return FALSE;

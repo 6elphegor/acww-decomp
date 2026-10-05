@@ -57,7 +57,7 @@ void Gfx2d_SetMainWin1Rect(s32, s32, s32, s32);
 BOOL Stub_ReturnFalse();
 void MenuCtrl_SetScreenChanging();
 u32 PlayerData_GetCurrent();
-u16 *_ZN10PlayerData22getInventoryBackgroundEv();
+u16 *_ZN10PlayerData22getInventoryBackgroundEv(void *self);
 void *Heap_AllocTail(void *, u32);
 void Heap_Free(void *, void *);
 void ClothTex_LoadItem(void *, void *, u32);
@@ -286,7 +286,7 @@ extern "C" BOOL MenuScreen_LoadBackground(u32 arg) {
     BOOL ok;
     void *heap = *(void **)gCurrentHeap;
     s32 r = PlayerData_GetCurrent();
-    u16 tmp = *_ZN10PlayerData22getInventoryBackgroundEv();
+    u16 tmp = *_ZN10PlayerData22getInventoryBackgroundEv((void *)r);
     void *a = Heap_AllocTail(heap, 0x200);
     if (a == NULL) {
         return FALSE;

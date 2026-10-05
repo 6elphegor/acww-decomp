@@ -36,8 +36,8 @@ void SaveVillagers_PlaceMissingHouses(void *);
 void SaveVillagers_DailyUpdate(void *, s32);
 void SaveVillagers_UpdateOutdoor(void *, s32);
 void SaveVillagers_InitNewTown(void *);
-void TownSessionState_Get(void);
-void *TownSessionState_GetResettiFlag();
+void *TownSessionState_Get(void);
+void *TownSessionState_GetResettiFlag(u8 *p);
 void _ZN13ContestRecord10resetTodayEv(void *);
 void RoostGuestRoll_Init(void *);
 void GulliverQuest_Init(void *);
@@ -102,8 +102,7 @@ void SaveData::setupNoSave() {
     SaveVillagers_UpdateOutdoor(&villagers, 0);
     _ZN11SaveRecord410clearStateEv(&footer);
     Weather_RerollRainSlantAlt();
-    TownSessionState_Get();
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
+    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()));
 }
 
 void SaveData::setupLoaded() {
@@ -116,8 +115,7 @@ void SaveData::setupLoaded() {
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
     Weather_RerollRainSlantAlt2();
-    TownSessionState_Get();
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
+    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()));
     s32 z, i;
     u8 *p = gSaveData;
     i = 0;
@@ -150,8 +148,7 @@ void SaveData::setupMode05() {
     _ZN10PlayerData14setSkyShotHitsEj(a, 0);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    TownSessionState_Get();
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
+    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()));
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 
@@ -172,8 +169,7 @@ void SaveData::setupMode06() {
     _ZN10PlayerData9clearFlagEj(a, 9);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    TownSessionState_Get();
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
+    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag((u8 *)TownSessionState_Get()));
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 

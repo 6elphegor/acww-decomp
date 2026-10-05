@@ -129,7 +129,7 @@ void DwcLogin_Process();
 void DwcFriend_Process();
 void DwcMatch_Process(s32 a);
 void DwcNet_ProcessSend();
-void qr2_shutdown();
+void qr2_shutdown(void *q);
 void gt2CloseConnectionHard(u32 a);
 u32 DwcNet_Rand32(u32 a);
 u32 gt2AddressToString(s32 a, u32 b, s32 c);
@@ -483,7 +483,7 @@ void DwcCore_Process() {
     }
     if (*((u8 *)G + 0x354) == 1) {
         if (*(u32 *)((u8 *)G + 0x34c) != 0) {
-            qr2_shutdown();
+            qr2_shutdown((void *)*(u32 *)((u8 *)G + 0x34c));
             *(u32 *)((u8 *)G + 0x34c) = 0;
         }
         *((u8 *)G + 0x354) = 0;

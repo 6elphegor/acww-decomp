@@ -182,7 +182,7 @@ s32 Scene_GetCurrent();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Ground_GetDefaultY(u32);
 void Scene_SetTownReturnPos(void *, s32, VecFx32 *, u32, s32, u32, u32);
-void Building_SetLastEntranceType();
+void Building_SetLastEntranceType(u32 a);
 
 s32 BuildingOccupancy_GetAnswer(u32);
 void BuildingOccupancy_RequestEnter(u32);
@@ -229,8 +229,8 @@ void *Gfx3d_CopyTex(void *p, void *g);
 u16 Item_MakeBuilding(u32 x);
 s32 BuildingState_Get(u32);
 s32 Field_GetStructureTexSuffix();
-void FieldStructureMgr_GetPlayerHouseTex();
-s32 PlayerHouseTex_Get();
+s32 *FieldStructureMgr_GetPlayerHouseTex();
+s32 PlayerHouseTex_Get(s32 *p);
 void BuildingList_Remove(void *);
 void BuildingList_Add(void *);
 BOOL Model_setResource(void *, void *, s32);
@@ -728,8 +728,7 @@ BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
     BuildingResources *r = getResources();
     if (r != NULL && r->bmd0 != 0) {
         if (Model_setResource(model, (void *)r->bmd0, 0)) {
-            FieldStructureMgr_GetPlayerHouseTex();
-            s32 x = PlayerHouseTex_Get();
+            s32 x = PlayerHouseTex_Get(FieldStructureMgr_GetPlayerHouseTex());
             NNS_G3dBindMdlPltt((void *)r->bmd0, x);
             if (r->tex) {
                 NNS_G3dBindMdlTex((void *)r->bmd0, r->tex);
@@ -1550,8 +1549,7 @@ void BuildingActor::execEntryWarp() {
                 void *o = Scene_GetWarpRequest();
                 s32 k = Scene_GetCurrent();
                 Scene_SetTownReturnPos(o, k, &v, 0xf000000, (s16)(ang + 0x8000), gridX, gridZ);
-                getEntranceType();
-                Building_SetLastEntranceType();
+                Building_SetLastEntranceType(getEntranceType());
                 entryFlags.f0 = 1;
             }
         }

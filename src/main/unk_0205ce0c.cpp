@@ -26,7 +26,7 @@ extern const u8 sCharaFaceAnimKinds[];
 extern u8 sCharaFaceAnimPathBuf[];
 
 void CharaFaceAnimHeap_Destroy();
-void CharaFaceAnimHeap_Create();
+void CharaFaceAnimHeap_Create(void *parent);
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
@@ -46,8 +46,8 @@ u32 CharaFaceAnim_GetAnimSize();
 u8 *CharaFaceAnim_GetPath(u32 x);
 }
 
-extern "C" void CharaFaceAnimPool_Create() {
-    CharaFaceAnimHeap_Create();
+extern "C" void CharaFaceAnimPool_Create(u32 parent) {
+    CharaFaceAnimHeap_Create((void *)parent);
     sCharaFaceAnimPool.allocBuffers();
     if (gCharaFaceAnimHeap) Heap_adjust(gCharaFaceAnimHeap);
 }

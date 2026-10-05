@@ -112,8 +112,8 @@ void Gfx2d_HideLayer(s32 a);
 s32 Gfx2d_GetLayerPlaneMask(s32 a);
 s32 Gfx2d_EndSubObjWinBrightness();
 s32 Gfx2d_BeginSubObjWinBrightness();
-void Gfx2d_GetLayerBlendMask(s32 a);
-void Gfx2d_ExcludeSubBrightnessPlanes();
+u8 Gfx2d_GetLayerBlendMask(s32 a);
+void Gfx2d_ExcludeSubBrightnessPlanes(u8 a);
 s32 Gfx2d_SetSubBrightness(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_SetLayerPriority(s32 a, u32 b);
@@ -596,8 +596,7 @@ void PopupChoice_StepSlideOpen(Self *self) {
     if (self->stateStep == 0) {
         PopupChoice_BuildScreen(self);
         Gfx2d_BeginSubObjWinBrightness();
-        Gfx2d_GetLayerBlendMask(self->layer);
-        Gfx2d_ExcludeSubBrightnessPlanes();
+        Gfx2d_ExcludeSubBrightnessPlanes(Gfx2d_GetLayerBlendMask(self->layer));
         Gfx2d_SetSubBrightness(-6);
         s32 r = Gfx2d_GetLayerPlaneMask(self->layer);
         ((MenuSlideView *)&self->slide)->beginSubSlideIn(r, 5, 0, 0x30);

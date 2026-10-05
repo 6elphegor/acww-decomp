@@ -286,7 +286,7 @@ extern "C" {
 s32 PlayerData_GetCurrent();
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(void *a, void *b);
-s32 FtrInfo_GetDmaUnk05Fx();
+s32 FtrInfo_GetDmaUnk05Fx(s32 i);
 s32 FX_Div(s32 a, s32 b);
 s32 Math_StepS32(s32 *p, s32 target, s32 step);
 void FtrMgr_SetRemovePos(void *p);
@@ -419,7 +419,7 @@ void BoxCollider_Unregister(void *o);
 s32 Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 s32 Mtx43_RotateX(void *m, s32 a);
 s32 Mtx43_RotateY(void *m, s32 a);
-s32 FtrInfo_GetDmaUnk06();
+s32 FtrInfo_GetDmaUnk06(s32 i);
 s32 NpcRegistry_GetSlotCount();
 void *NpcRegistry_GetBySlot(s32 i);
 s32 PlayerData_getPlayerId();
@@ -513,7 +513,7 @@ extern void *gSceneBlockMap;
 extern Mtx43 data_021f47e0;
 BOOL _ZN8FtrActor9isPreviewEv(void *self);
 BOOL _ZN8FtrActor11findOwnTileEPiS0_ii(void *self, s32 *a, s32 *b, s32 c, s32 d);
-BOOL _ZN8FtrActor11canRotateByEi(void *self);
+BOOL _ZN8FtrActor11canRotateByEi(void *self, s32 a);
 void _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(void *self, Unk_ov004_02207854_List *l, void *x, s32 y);
 void _ZN11FtrTileListC1Ev(void *self);
 u32 _ZN11FtrTileList8getCountEv(void *self);
@@ -1603,8 +1603,7 @@ extern "C" void FtrActor_UpdateMtx(Self *self) {
         if (S32(0x780) == 1) {
             Mtx43_Translate(&data_021f47e0, func_01ffcb0c(S32(0x14c), -0x1000), 0, 0);
         }
-        FtrActor_GetFtrIndex(self);
-        s32 y = FtrInfo_GetDmaUnk06() * 100 - 0x258;
+        s32 y = FtrInfo_GetDmaUnk06(FtrActor_GetFtrIndex(self)) * 100 - 0x258;
         Mtx43_Translate(&data_021f47e0, 0, y, 0);
         *(Mtx43 *)PT(0x598) = data_021f47e0;
     } else {
@@ -3502,7 +3501,7 @@ u8 FtrVisNodes::isVisible() { return visible; }
 
 // @02205954
 BOOL FtrActor::startRotate(s32 a) {
-    if (_ZN8FtrActor11canRotateByEi(this)) {
+    if (_ZN8FtrActor11canRotateByEi(this, a)) {
         targetAngle = rotY + a;
         setAct(2);
         PlayerActor_PlayLocalSe(0x4c4);
@@ -3905,8 +3904,7 @@ void FtrActor::execPreview() {
     if (kind != 0x23 && kind != 0x24 && kind != 0x25) {
         rotY += 0x400;
     }
-    FtrActor_GetFtrIndex(this);
-    s32 v = FX_Div(FtrInfo_GetDmaUnk05Fx(), 0x64000) >> 2;
+    s32 v = FX_Div(FtrInfo_GetDmaUnk05Fx(FtrActor_GetFtrIndex(this)), 0x64000) >> 2;
     drawScale = drawScaleY = drawScaleZ = v;
 }
 

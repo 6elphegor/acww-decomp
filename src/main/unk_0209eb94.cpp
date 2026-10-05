@@ -337,7 +337,7 @@ s32 MI_CompressLZ(void *a, u32 b, void *c);
 void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
 s32 _ZN11CommManager17getWifiFriendListEv(void *p);
-s32 _ZN10PlayerData13getFriendListEv(void);
+s32 _ZN10PlayerData13getFriendListEv(void *self);
 u8 *FriendList_GetEntries(void);
 s32 FriendEntry_GetFriendData(u8 *p);
 u8 *DwcFriendData_GetBytes(s32 p);
@@ -526,9 +526,9 @@ void _ZN18TownExchangeRecord15setChecksumByteEj(void *, u32);
 BOOL Backup_Write(void *, u32, void *, u32);
 s32 PlayerData_GetCurrentIndex();
 s32 PlayerData_GetCurrent();
-u8 *_ZN10PlayerData13getFriendListEv();
-void PlayerData_GetResident(void *, s32);
-u8 *_ZN10PlayerData15getWifiUserDataEv();
+u8 *_ZN10PlayerData13getFriendListEv(void *self);
+void *PlayerData_GetResident(void *, s32);
+u8 *_ZN10PlayerData15getWifiUserDataEv(void *self);
 s32 FriendList_GetChecksum(void *);
 void FriendList_SetChecksum(void *, u32);
 s32 PlayerWifiData_GetChecksum(void *);
@@ -4016,8 +4016,7 @@ extern "C" BOOL Save_InvalidateAll() {
 extern "C" BOOL Save_WritePlayerWifiData() {
     u8 *q;
     u32 d;
-    ND::PlayerData_GetResident(ND::gSavePlayers, ND::PlayerData_GetCurrentIndex());
-    q = ND::_ZN10PlayerData15getWifiUserDataEv();
+    q = ND::_ZN10PlayerData15getWifiUserDataEv(ND::PlayerData_GetResident(ND::gSavePlayers, ND::PlayerData_GetCurrentIndex()));
     ND::PlayerWifiData_SetChecksum(q, ND::Save_CalcChecksum(q, 0x50, ND::PlayerWifiData_GetChecksum(q)));
     d = q - ND::gSaveData;
     if (ND::Backup_Write(ND::gBackup, ND::sSaveSlotOffsets[0] + d, q, 0x50) == 1) return TRUE;
@@ -4030,11 +4029,9 @@ extern "C" BOOL Save_WritePlayerFriendList() {
     s32 t = ND::PlayerData_GetCurrentIndex();
     u8 *p;
     u8 *q;
-    ND::PlayerData_GetCurrent();
-    p = ND::_ZN10PlayerData13getFriendListEv();
+    p = ND::_ZN10PlayerData13getFriendListEv((void *)ND::PlayerData_GetCurrent());
     if (t >= 4) t = ND::sSessionResidentIndex;
-    ND::PlayerData_GetResident(base + 0xc, t);
-    q = ND::_ZN10PlayerData13getFriendListEv();
+    q = ND::_ZN10PlayerData13getFriendListEv(ND::PlayerData_GetResident(base + 0xc, t));
     ND::FriendList_SetChecksum(p, ND::Save_CalcChecksum(p, 0x384, ND::FriendList_GetChecksum(p)));
     {
         u32 d = q - base;
@@ -4937,8 +4934,7 @@ extern "C" void SaveManager_StartSequence2Talk(u32 a) {
 
 extern "C" void Wifi_StoreFriendList(void) {
     s32 r6 = NB::_ZN11CommManager17getWifiFriendListEv(NB::gCommManager);
-    NB::PlayerData_GetCurrent();
-    NB::_ZN10PlayerData13getFriendListEv();
+    NB::_ZN10PlayerData13getFriendListEv((void *)NB::PlayerData_GetCurrent());
     u8 *r5 = NB::FriendList_GetEntries();
     s32 i;
     for (i = 0; i < 0x20; i++) {
