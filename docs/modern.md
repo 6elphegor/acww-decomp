@@ -15,8 +15,50 @@ python3 tools/configure_modern.py usa --toolchain <path to the toolchain's bin/>
 ninja -f build_modern.ninja
 ```
 
-The build directory is `build/modern_usa/`. So far the build compiles every source file; linking and building a
-ROM come next.
+The build directory is `build/modern_usa/`; the ROM is `acww_usa_modern.nds`. The modern build needs the matching
+build to have run once (`ninja`): it reuses its linker script (object order, overlay placement) and the delinked gap
+objects (bytes no source file owns yet, `docs/unmatched.md`).
+
+## Linking
+
+`tools/modern_link.py` writes the GNU ld script (`build/modern_usa/arm9.ld`) and `tools/modern_rom.py` turns the
+linked ELF into a ROM with dsd, the same way the matching build does:
+
+- One output section per module, named like the matching build's mwld memory regions (`ARM9`, `ITCM`, `DTCM`,
+  `AUTOLOAD_2`, `AUTOLOAD_3`, `OV001`...), and `<MODULE>_<SECTION>_START/_END` symbols around the sections each
+  module's `delinks.txt` lists: that is what `dsd rom config` reads. Objects go to the module of their source
+  directory; main's and the libraries' bss is in `AUTOLOAD_3`, as in the original.
+- GCC's `.init_array` fills the `.ctor` tables (zero-terminated, at `<MODULE>_CTOR_START`).
+- Overlays start after the modules they are loaded with (the `AFTER()` lists of the matching build's `arm9.lcf`).
+- Names that `symbols.txt` gives to addresses the objects don't name themselves (second names of a function,
+  labels inside data) and the `lcf_symbols.txt` names are `PROVIDE`d relative to their base.
+- Variables the original has at 32-byte aligned addresses are aligned again (NitroSDK's `ATTRIBUTE_ALIGN(32)`
+  buffers: DMA, cache maintenance, PXI addresses passed in 32-byte units). Gap objects keep their original
+  address modulo 32.
+- dsd keeps the autoloads' base addresses from the original ROM; `modern_rom.py` corrects them from the ELF.
+
+## Testing
+
+A headless melonDS runner (not in this repository yet) boots a ROM for N frames and saves screenshots, frame
+hashes, registers and, on an exception, the last 1024 ARM9 instruction addresses; melonDS's GDB stub works with
+`arm-none-eabi-gdb` and `build/modern_usa/arm9.elf`. The original ROM under the same runner is the reference.
+
+## What breaks under GCC (and how it was found)
+
+The decompiled code matches mwcc's output; several things it relies on aren't guaranteed by C/C++ and GCC
+optimises them differently:
+
+| Problem | Symptom | Fix | Finding them |
+|---|---|---|---|
+| A call passes fewer arguments than the function takes; mwcc happened to have the missing value in r1-r3 (or `this` in r0) | wrong argument | pass it explicitly (same mwcc code) | `configure_modern.py --lto-check` + `tools/modern_lto_report.py` |
+| A non-void C++ function falls off its end (the original returns whatever r0 holds) | no epilogue: runs into the next function | `return <expr>`, or `void` if no caller uses it | `-Wreturn-type`; the modern build traps there (`-funreachable-traps`) |
+| A polled flag set by an interrupt, callback or the ARM7 isn't `volatile` | infinite loop | `MODERN_VOLATILE` / volatile declaration under MODERN | `tools/modern_find_spins.py` |
+| A pointer to the end of an array written as the address of the next variable (thread stacks) | the next variables get overwritten | pass `array + size` | boot testing |
+| A stand-in class (a local copy with a placeholder member) | GCC devirtualises to the stand-in's method | use the real header | `-Wodr` in the LTO check |
+| An inline function that other code calls by its mangled name | undefined symbol | `MODERN_EMIT` | link errors |
+| A hardcoded address of game data (arena bounds, DTCM variables) | wrong address | linker symbol under MODERN | grep |
+| A routine that switches stacks (OS_LoadContext) reached by a tail call | the resumed thread's saved registers are overwritten | `noreturn` / `returns_twice` under MODERN | boot testing |
+
 
 ## Rules for source changes
 
