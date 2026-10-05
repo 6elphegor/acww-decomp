@@ -62,7 +62,7 @@ public:
     void detachRequest();
     void attachRequest(TalkMsgRequest *p);
     s32 hideBusyIcon();
-    s32 showBusyIcon();
+    s32 showBusyIcon(u32 se);
     u8 isVoicePlaying();
     ChoiceList *getChoiceList();
     void openChoices(s32 v);

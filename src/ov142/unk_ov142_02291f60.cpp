@@ -74,7 +74,7 @@ BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
 BOOL MenuKeys_HasUp(u32 v);
 void MenuButtons_LoadTextColors(void *p);
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 void Gfx2d_ShowLayer(u32 x);
 void Gfx2d_ResetLayer(u32 x);
@@ -361,7 +361,7 @@ BOOL CatalogMenu::onCreate() {
 }
 
 BOOL CatalogMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -537,7 +537,7 @@ void CatalogMenu::stateOpening() {
 }
 
 void CatalogMenu::stateClose() {
-    ((MenuLauncher *)ProcBase_GetParent())->setNextRequest(0x44, 1);
+    ((MenuLauncher *)ProcBase_GetParent(this))->setNextRequest(0x44, 1);
     beginSubSlideOut(0xa, 0, 0, 0x18);
     updateLayerSlide();
     setTransitionState(3);

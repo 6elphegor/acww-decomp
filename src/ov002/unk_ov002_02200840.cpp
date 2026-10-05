@@ -48,7 +48,7 @@
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define MsgString_append _ZN9MsgString6appendEPh
 #define MsgString_appendString _ZN9MsgString12appendStringEPS_
-#define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEv
+#define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEP9MsgString
 
 extern "C" {
 BOOL _ZN8ProcBase10postDeleteEv(void *self, s32 a);

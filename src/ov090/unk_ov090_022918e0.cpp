@@ -85,7 +85,7 @@ void MenuCtrl_SetSyncMsgMenu();
 void MenuScreen_BeginOpen();
 void Snd_BeginMenuDuck();
 void MenuCtrl_SyncFromInputMode();
-void ProcBase_RequestDelete();
+void ProcBase_RequestDelete(void *p);
 s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 
 extern u32 gCurrentHeap;
@@ -239,7 +239,7 @@ BOOL MenuTabBar::execPhase3() { return TRUE; }
 BOOL MenuTabBar::execPhase4() { return TRUE; }
 
 BOOL MenuTabBar::execClosed() {
-    ProcBase_RequestDelete();
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 

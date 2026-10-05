@@ -105,9 +105,9 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(u32 x);
 void Gfx2d_ShowLayer(u32 x);
 void ProcBase_RequestDelete(void *p);
-s32 ProcBase_GetParent();
+s32 ProcBase_GetParent(void *p);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void MenuLauncher_onChildClosed();
+void MenuLauncher_onChildClosed(s32 self);
 void LabelBalloon_setPos(void *p, s32 a, s32 b);
 void LabelBalloon_showLayer2(void *p);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -306,8 +306,7 @@ BOOL WfcFriendListMenu::onCreate() {
 }
 
 BOOL WfcFriendListMenu::onDelete() {
-    ProcBase_GetParent();
-    MenuLauncher_onChildClosed();
+    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -499,7 +498,7 @@ void WfcFriendListMenu::execSlideIn() {
 }
 
 void WfcFriendListMenu::startClose() {
-    MenuLauncher_setNextRequest(ProcBase_GetParent(), 0x44, 1);
+    MenuLauncher_setNextRequest(ProcBase_GetParent(this), 0x44, 1);
     beginSubSlideOut(0xa, 0, 0, 0x28);
     applySlide();
     setTransitionState(3);

@@ -179,11 +179,7 @@ extern void WfcTask_RequestDelete(s32, s32);
 extern s32 WifiAp_RequestCleanup();
 extern void *DWCi_BACKUPlGetWifi();
 extern void MI_CpuCopy8(void *, void *, s32);
-#ifdef MODERN
-extern void WfcBusyIcon_Delete(u32 task);
-#else
 extern void WfcBusyIcon_Delete();
-#endif
 extern void WfcText_DestroyBgCanvas(s32);
 extern void WfcGx_HidePlanes(s32, s32);
 extern void WfcUtil_SetScreenFlags(s32, s32);
@@ -290,11 +286,7 @@ void WfcConnTest_Exit() {
     if (WifiAp_RequestCleanup() == 0) return;
     MI_CpuCopy8(DWCi_BACKUPlGetWifi(), o + 0xf0, 0xe);
     MI_CpuCopy8(DWCi_BACKUPlGetWifi(), o + 0x1f0, 0xe);
-#ifdef MODERN
-    WfcBusyIcon_Delete(0); // unused by WfcBusyIcon_Delete
-#else
-    WfcBusyIcon_Delete(); // the original leaves r0 = garbage (MI_CpuCopy8's return)
-#endif
+    WfcBusyIcon_Delete();
     WfcText_DestroyBgCanvas(0);
     WfcGx_HidePlanes(0, 0x15);
     if (sWfcConnTestSucceeded == 0) {

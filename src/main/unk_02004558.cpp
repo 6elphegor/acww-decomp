@@ -977,7 +977,7 @@ void PlayerActor_TurnAngle(void *, s32);
 void _ZN11PlayerActor9setAngleYEPs(PlayerActor *, void *);
 void _ZN11PlayerActor17moveWithCollisionEv(PlayerActor *);
 void *RoomEntry_GetRequest();
-s32 RoomEntryRequest_GetDoorKind();
+s32 RoomEntryRequest_GetDoorKind(void *t);
 s32 Ground_GetDefaultY(u32);
 s32 *RoomEntryRequest_GetPos(void *);
 s32 FX_Div(s32, s32);
@@ -1004,8 +1004,8 @@ void PlayerActor_SetHoldableItem(u32, s32);
 void _ZN11PlayerActor12turnToCameraEi(PlayerActor *, u32);
 void _ZN11PlayerActor17applyHeldItemPoseEiPv(PlayerActor *, u32, u32);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
-void PlayerData_GetBySessionSlot(s32);
-u16 *_ZN10PlayerData11getHeldItemEv();
+void *PlayerData_GetBySessionSlot(s32);
+u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 void _ZN11PlayerActor20netSendClothesChangeEjj(PlayerActor *, u32, u32);
 void _ZN11PlayerActor12requestAct10Esji(PlayerActor *, u32, u32, s32);
 BOOL _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, void *msg);
@@ -1199,7 +1199,7 @@ u32 Item_GetFurnitureIndex(void* p);
 void _ZN9Character17attachTalkRequestEi(PlayerActor *a, MsgRequest *b);
 void _ZN9Character17detachTalkRequestEi(PlayerActor *a, MsgRequest *b);
 void _ZN10MsgRequest11setFileNameEPKc(void* p, void* q);
-Unk_02006d14_V3* FtrMgr_PollRemovedPos();
+Unk_02006d14_V3* FtrMgr_PollRemovedPos(s32 idx);
 s32 _s32_div_f(s32 a, s32 b);
 u32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void* p, u32 id);
 u16 NetBuf_ReadU16(void* p);
@@ -1483,7 +1483,7 @@ s32 Scene_GetCurrent();
 s32 PlayerActor_GetSlotPosXZ(u16 *a, s32 *b, s32 *c, s32 d, s32 e);
 BOOL PlayerActor_GetSlotAngle(u16 *a, s32 b, s32 c);
 s32 PlayerData_GetBySessionSlot(s32 a);
-u16 *_ZN10PlayerData11getHeldItemEv();
+u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 void HeldItemModel_SetItem(void *p, u16 *q, s32 r);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -1660,7 +1660,7 @@ s32 _ZN11CommManager11beginRecordEv(CommManager *g);
 s32 _ZN11CommManager11writeRecordEPhj(CommManager *g, void *p, s32 n);
 s32 _ZN11CommManager9endRecordEjj(CommManager *g, s32 a, s32 b);
 s32 PlayerActor_PackClothesChange(u32 *out, u32 a, u32 b);
-s32 WorldCurve_FromCurved(VecFx32 *v);
+s32 WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 BOOL InputMode_IsButtons();
 BOOL InputMode_IsTouch();
 s32 Snd_SeEmitterPlayHeld(void *p, u32 a, s32 b, s32 c);
@@ -1703,8 +1703,8 @@ void *DebugVar_GetPtr(s32 a, s32 b);
 s32 PlayerActor_GetTan(PlayerActor *o);
 BOOL _ZN11PlayerActor16isGuestInSessionEv(PlayerActor *o);
 Unk_0200f17c_Date *PlayerSession_GetLastPlayDate();
-void PlayerActor_GetPlayerData(void *o);
-Unk_0200f17c_Date _ZN10PlayerData15getLastPlayDateEv();
+void *PlayerActor_GetPlayerData(void *o);
+Unk_0200f17c_Date _ZN10PlayerData15getLastPlayDateEv(void *p);
 void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 void DateTime_Compare(void *a, void *b, s32 n);
@@ -1778,7 +1778,7 @@ s32 PlayerActor_RoomInteractAt(void *, s32, s32);
 s32 PlayerActor_FieldInteractAt(void *, s32);
 s32 PlayerActor_RoomUseTool(void *);
 s32 PlayerActor_FieldUseTool(void *);
-s32 Vec_DistXZ(void *);
+s32 Vec_DistXZ(void *a, void *b);
 s32 Math_Atan2(s32, s32);
 s32 Math_AngleDiffAbs(s32, s32);
 void G3dRes_CopyPlttByName(void *, void *, void *, void *);
@@ -1797,9 +1797,9 @@ void _ZN11CachedModel7releaseEv(void *);
 void _ZN11CachedModel11setFromFileEPv(void *, void *);
 s32 PlayerHead_GetModelId(void *, s32);
 void _ZN13MatTexPatAnim7releaseEv(void *);
-void _ZN20CharaFaceAnimWorkRef7getHeapEv(void *);
+void *_ZN20CharaFaceAnimWorkRef7getHeapEv(void *);
 #define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll();
+void Heap_freeAll(void *heap);
 void *_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *);
 void *_ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *);
 void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *, void *, u32, u32, u32, u32);
@@ -1830,12 +1830,12 @@ BOOL _ZN13ActorCollider17isPushedFromAngleEi(void *, s32);
 s32 HeldItem_GetHandPose(u16 *);
 s32 CharaAnim_GetHoldPoseMode(s32);
 void AnimSlotRef_Load(void *, s32, s32, s32);
-void AnimSlotRef_GetData(void *);
-s32 func_021065dc();
+s32 AnimSlotRef_GetData(void *);
+s32 func_021065dc(s32 a);
 s32 func_021065f8(s32, s32);
 void _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(void *, s32, s32, u32, u32, u32, u32, u32);
 s32 CharaAnim_GetJointGroup(s32);
-s32 JointGroup_GetRangeCount();
+s32 JointGroup_GetRangeCount(s32 i);
 s32 JointGroup_GetRangeFirst(s32, s32);
 s32 JointGroup_GetRangeLast(s32, s32);
 void _ZN17TwoLayerAnimModel20assignJointsToLayer2Ejj(void *, s32, s32);
@@ -1910,10 +1910,10 @@ u8 *PlayerSession_GetSessionFlags(void);
 u16 *PlayerSession_GetTanTimer(void);
 void _ZN10PlayerData6setTanEh(u32 a, u32 b);
 void _ZN11PlayerActor10netSendTanEv(u32 a);
-u16 *_ZN10PlayerData11getHeldItemEv(void);
+u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 u32 _ZN10PlayerData11getFaceTypeEv(u32 a);
 BOOL PlayerData_HasStungFace(u32 a);
-u16 *_ZN10PlayerData11getFaceItemEv(void);
+u16 *_ZN10PlayerData11getFaceItemEv(void *p);
 void PlayerActor_GetHeldItem(u16 *out, u32 x);
 u32 PlayerActor_GetFaceTexIndex(u32 x);
 u32 PlayerActor_GetFaceAltFlag(u32 x);
@@ -1927,14 +1927,14 @@ namespace nT {
 extern "C" {
 
 s32 PlayerSession_GetDataIndex(s32 v);
-void *PlayerData_Get(void);
+void *PlayerData_Get(s32 idx);
 s32 _ZN10PlayerData6getTanEv(void *p);
 s32 _ZN10PlayerData12getHairColorEv(void *p);
 s32 _ZN10PlayerData12getHairStyleEv(void *p);
 u16 *_ZN10PlayerData6getHatEv(void *p);
 u16 *_ZN10PlayerData8getShirtEv(void *p);
-s32 _ZN10PlayerData11getPlayerIdEv(void *p);
-s32 _ZN8PlayerId9getGenderEv(void);
+void *_ZN10PlayerData11getPlayerIdEv(void *p);
+s32 _ZN8PlayerId9getGenderEv(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *PlayerActor_GetPlayerData(void *p);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
@@ -1942,8 +1942,8 @@ s32 PlayerActor_ApproachAngle(s16 *p, s32 target, s32 rate, s32 maxstep, s32 min
 void PlayerActor_ApproachValue(s32 *p, s32 target, s32 rate, s32 maxstep, s32 minstep);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
 BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
-BOOL PlayerActor_GetBodyPos(s32 a);
-s32 Ground_GetExitAtPos(void);
+VecFx32 *PlayerActor_GetBodyPos(s32 a);
+s32 Ground_GetExitAtPos(VecFx32 *p);
 void PlayerActor_SetLocalExitId(s32 *p);
 void *Scene_GetWarpRequest(void);
 BOOL SceneExit_GetDoor(void *a, s32 b, s32 *c, s32 *d);
@@ -3024,9 +3024,10 @@ extern "C" void PlayerActor_CheckSceneExit(s32 a) {
     s32 sp0;
     s32 sp4;
     s32 sp8;
+    VecFx32 *pos;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, a) && !PlayerActor_TestSlotFlag(0xb, a) && !PlayerActor_TestSlotFlag(0x13, a) &&
-        !PlayerActor_TestSlotFlag(5, a) && PlayerActor_GetBodyPos(4)) {
-        sp4 = Ground_GetExitAtPos();
+        !PlayerActor_TestSlotFlag(5, a) && (pos = PlayerActor_GetBodyPos(4)) != NULL) {
+        sp4 = Ground_GetExitAtPos(pos);
         if (sp4 != -1) {
             PlayerActor_SetLocalExitId(&sp4);
             if (SceneExit_GetDoor(Scene_GetWarpRequest(), sp4, &sp8, &sp0)) {
@@ -3152,8 +3153,9 @@ extern "C" s32 PlayerActor_DecelerateSkid(s32 a, s32 b) {
 
 namespace nT {
 extern "C" void *PlayerActor_GetPlayerData(void *p) {
-    if (PlayerSession_GetDataIndex(*(s32 *)((u8 *)p + 0x7fc)) < 7) {
-        return PlayerData_Get();
+    s32 i = PlayerSession_GetDataIndex(*(s32 *)((u8 *)p + 0x7fc));
+    if (i < 7) {
+        return PlayerData_Get(i);
     }
     return NULL;
 }
@@ -3164,8 +3166,8 @@ extern "C" BOOL PlayerActor_GetGender(void *p) {
     void *r = PlayerActor_GetPlayerData(p);
     BOOL result = FALSE;
     if (r != NULL) {
-        _ZN10PlayerData11getPlayerIdEv(r);
-        if (_ZN8PlayerId9getGenderEv()) {
+        void *id = _ZN10PlayerData11getPlayerIdEv(r);
+        if (_ZN8PlayerId9getGenderEv(id)) {
             result = TRUE;
         } else {
             result = FALSE;
@@ -3286,8 +3288,8 @@ u32 PlayerActor::calcTan(u32 r7) {
 
 namespace nS {
 extern "C" void PlayerActor_GetFaceItem(u16 *out, u32 x) {
-    PlayerActor_GetPlayerData(x);
-    *out = *_ZN10PlayerData11getFaceItemEv();
+    u32 pd = PlayerActor_GetPlayerData(x);
+    *out = *_ZN10PlayerData11getFaceItemEv((void *)pd);
 }
 }
 
@@ -3321,8 +3323,9 @@ extern "C" u32 PlayerActor_GetFaceTexIndex(u32 x) {
 namespace nS {
 extern "C" void PlayerActor_GetHeldItem(u16 *out, u32 x) {
     *out = 0xfff1;
-    if (PlayerActor_GetPlayerData(x)) {
-        *out = *_ZN10PlayerData11getHeldItemEv();
+    u32 pd;
+    if ((pd = PlayerActor_GetPlayerData(x)) != 0) {
+        *out = *_ZN10PlayerData11getHeldItemEv((void *)pd);
     }
 }
 }
@@ -3631,11 +3634,10 @@ void PlayerActor::applyHoldPose(u16 *p, s32 b, void *c) {
         s32 n, cnt, item;
         s32 i;
         AnimSlotRef_Load(&((PlayerActor *)this)->holdAnimSlot, r6, 1, 0);
-        AnimSlotRef_GetData(&((PlayerActor *)this)->holdAnimSlot);
-        _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(&((PlayerActor *)this)->bodyModel, func_021065f8(func_021065dc(), 0), (s32)c, 0, 0x1000, 0, 0, 0);
+        _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(&((PlayerActor *)this)->bodyModel, func_021065f8(func_021065dc(AnimSlotRef_GetData(&((PlayerActor *)this)->holdAnimSlot)), 0), (s32)c, 0, 0x1000, 0, 0, 0);
         n = CharaAnim_GetJointGroup(r6);
         if (n < 4) {
-            cnt = JointGroup_GetRangeCount();
+            cnt = JointGroup_GetRangeCount(n);
             for (i = 0; (u32)i < (u32)cnt; i++) {
                 item = JointGroup_GetRangeFirst(n, i);
                 _ZN17TwoLayerAnimModel20assignJointsToLayer2Ejj(&((PlayerActor *)this)->bodyModel, item, JointGroup_GetRangeLast(n, i));
@@ -3841,8 +3843,7 @@ void PlayerActor::applyHatChange() {
         u32 q = ((u32)((PlayerActor *)this)->mouthTexAnim.curFrame << 4) >> 16;
         _ZN13MatTexPatAnim7releaseEv(&((PlayerActor *)this)->eyeTexAnim);
         _ZN13MatTexPatAnim7releaseEv(&((PlayerActor *)this)->mouthTexAnim);
-        _ZN20CharaFaceAnimWorkRef7getHeapEv(&((PlayerActor *)this)->faceAnimWork);
-        Heap_freeAll();
+        Heap_freeAll(_ZN20CharaFaceAnimWorkRef7getHeapEv(&((PlayerActor *)this)->faceAnimWork));
         _ZN11PlayerActor13initFaceAnimsEv(this);
         _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&((PlayerActor *)this)->eyeTexAnim, _ZN16CharaFaceAnimRef16getEyeAnimBufferEv(&((PlayerActor *)this)->faceAnimRef), p, 0, ((PlayerActor *)this)->animMode, 0x1000);
         _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&((PlayerActor *)this)->mouthTexAnim, _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(&((PlayerActor *)this)->faceAnimRef), q, 0, ((PlayerActor *)this)->animMode, 0x1000);
@@ -3884,7 +3885,7 @@ void PlayerActor::bindPaletteByName(void *a, void *b, void *c, void *d) {
 
 BOOL PlayerActor::isPosInReach(s32 *pos, u32 idx) {
     using namespace nR;
-    if (Vec_DistXZ(&((PlayerActor *)this)->bodyPos) < (s32)(sPlayerReachDist[idx] << 13) >> 12) {
+    if (Vec_DistXZ(&((PlayerActor *)this)->bodyPos, pos) < (s32)(sPlayerReachDist[idx] << 13) >> 12) {
         s32 a = Math_Atan2(pos[0] - ((PlayerActor *)this)->bodyPos.x, pos[2] - ((PlayerActor *)this)->bodyPos.z);
         if (Math_AngleDiffAbs(a, ((PlayerActor *)this)->rotY) < 0x2aaa) {
             return TRUE;
@@ -4201,8 +4202,7 @@ extern "C" void PlayerActor_CompareLastPlayDateNow(void *o) {
 namespace nQ {
 extern "C" void PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b) {
     Unk_0200f17c_Date d0, d1, d2;
-    PlayerActor_GetPlayerData(o);
-    d0 = _ZN10PlayerData15getLastPlayDateEv();
+    d0 = _ZN10PlayerData15getLastPlayDateEv(PlayerActor_GetPlayerData(o));
     d1 = d0;
     d2 = d1;
     Clock_GetDateTime(a);
@@ -4412,7 +4412,7 @@ BOOL PlayerActor::getHeldItemPos(VecFx32 *out) {
     out->x = a;
     out->y = ((PlayerActor *)this)->itemHandMtx.m[10];
     out->z = ((PlayerActor *)this)->itemHandMtx.m[11];
-    WorldCurve_FromCurved((VecFx32 *)out);
+    WorldCurve_FromCurved((VecFx32 *)out, (VecFx32 *)out);
     return TRUE;
 }
 
@@ -4882,7 +4882,7 @@ void PlayerActor::endInit(u32 a) {
     }
     if (_ZN11PlayerActor14testActionFlagEj(this, 0)) {
         s32 t = PlayerData_GetBySessionSlot(((PlayerActor *)this)->sessionSlot);
-        arr[2] = *_ZN10PlayerData11getHeldItemEv();
+        arr[2] = *_ZN10PlayerData11getHeldItemEv((void *)t);
         HeldItemModel_SetItem(&((PlayerActor *)this)->heldItemModel, &arr[2], t);
         BOOL ok;
         if (Item_IsFurniture(&arr[2])) {
@@ -6435,7 +6435,7 @@ void PlayerActor::pickUpUpdateItem() {
     }
     s = (PlayerPickUpWork *)((PlayerActor *)this)->actionWorkRaw;
     if (s->unk_04.s >= 0) {
-        r = FtrMgr_PollRemovedPos();
+        r = FtrMgr_PollRemovedPos(s->unk_04.s);
         if (r == NULL) {
             return;
         }
@@ -7301,8 +7301,7 @@ s32 PlayerActor::netChangeHeldItem(u32 a) {
 void PlayerActor::endChangeHeldItem() {
     using namespace nG;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot)) {
-        PlayerData_GetBySessionSlot(((PlayerActor *)this)->sessionSlot);
-        u16 *p = _ZN10PlayerData11getHeldItemEv();
+        u16 *p = _ZN10PlayerData11getHeldItemEv(PlayerData_GetBySessionSlot(((PlayerActor *)this)->sessionSlot));
         if (p) _ZN11PlayerActor20netSendClothesChangeEjj(((PlayerActor *)this), 3, *p);
     }
 }
@@ -7485,7 +7484,7 @@ void PlayerActor::walkToMove() {
     if (_ZN11PlayerActor14testActionFlagEj(this, 0x18)) {
         _ZN11PlayerActor17moveWithCollisionEv(((PlayerActor *)this));
         void *r7 = RoomEntry_GetRequest();
-        if (RoomEntryRequest_GetDoorKind() == 1) {
+        if (RoomEntryRequest_GetDoorKind(r7) == 1) {
             s32 *r4 = &((PlayerActor *)this)->position.y;
             s32 r6 = Ground_GetDefaultY(0);
             if (((PlayerActor *)this)->position.y >= r6) {

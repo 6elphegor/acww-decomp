@@ -46,7 +46,7 @@ void Weather_GetLevels(s32 *a, s32 *b);
 s32 Scene_GetPrevious(void);
 s32 Scene_InTownUnk31(void);
 s32 Scene_GetWarpRequest(void);
-s32 SceneWarp_GetScene(void);
+s32 SceneWarp_GetScene(s32 req);
 s32 Snd_SetBgmTrackVariant(s32 a);
 void Snd_FadeInBgmTracks(s32 a);
 void Snd_FadeOutBgmTracks(s32 a);
@@ -291,7 +291,7 @@ void Weather_GetLevels(s32 *a, s32 *b);
 s32 Scene_GetPrevious(void);
 s32 Scene_InTownUnk31(void);
 s32 Scene_GetWarpRequest(void);
-s32 SceneWarp_GetScene(void);
+s32 SceneWarp_GetScene(s32 req);
 s32 Snd_SetBgmTrackVariant(s32 a);
 void Snd_FadeInBgmTracks(s32 a);
 void Snd_FadeOutBgmTracks(s32 a);
@@ -1176,8 +1176,7 @@ extern "C" s32 Bgm_GetSceneBgmId(s32 a) {
 
 extern "C" s32 Bgm_IsSameSceneBgm(void) {
     s32 a = Ns_02035e2c::Scene_GetCurrent();
-    Scene_GetWarpRequest();
-    s32 b = SceneWarp_GetScene();
+    s32 b = SceneWarp_GetScene(Scene_GetWarpRequest());
     s32 x = Bgm_GetSceneBgmId(a);
     s32 y = Bgm_GetSceneBgmId(b);
     if (x == y && x != 0xffff) return TRUE;
@@ -1853,8 +1852,7 @@ BgmTracks::~BgmTracks() {}
 extern "C" void BgmTracks_FadeOutForScene(void) {
     s32 r = Ns_02034ae8::Scene_GetCurrent();
     s32 s;
-    Scene_GetWarpRequest();
-    s = SceneWarp_GetScene();
+    s = SceneWarp_GetScene(Scene_GetWarpRequest());
     s32 a22 = (r == 0x22) ? 1 : 0;
     s32 a25 = (r == 0x25) ? 1 : 0;
     s32 a29 = (r == 0x29) ? 1 : 0;

@@ -79,10 +79,10 @@ BOOL EncodedString_SetRaw(void *, const void *, s32);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *, void *, s32, s32);
 BOOL Math_CountDownU16(void *);
 s32 Math_IsInRange(s32, s32, s32);
-void * _ZN10PlayerData15getWifiUserDataEv(...);
+void * _ZN10PlayerData15getWifiUserDataEv(void *p);
 void * PlayerWifiData_GetOwnFriendData(void *);
 void * DwcFriendData_GetBytes(void *);
-void * PlayerWifiData_GetDwcUserData(...);
+void * PlayerWifiData_GetDwcUserData(void *p);
 BOOL Save_WritePlayerWifiData();
 BOOL Net_CheckUserDataChanged(void *);
 void Net_MakeOwnFriendData(void *, void *);
@@ -95,7 +95,7 @@ s32 MenuCtrl_GetIndex();
 u8 * _ZN11CommManager15getWifiUserDataEv(void *);
 u8 * _ZN11CommManager17getWifiFriendListEv(void *);
 void * PlayerData_GetCurrent();
-s32 _ZN10PlayerData8getIndexEv();
+s32 _ZN10PlayerData8getIndexEv(void *p);
 void GameStats_ApplyDownload();
 void AxMail_ApplyMail();
 void AxMail_ApplyBbs();
@@ -138,11 +138,11 @@ void NetOverlay_Restore();
 void PlayerWifiData_Create(void *);
 s32 Net_IsWifiConfigValid(void *);
 s32 Net_HasWifiUserId(void *);
-s64 Net_GetOwnFriendKey(...);
+s64 Net_GetOwnFriendKey(void *p);
 void _ZN11CommManager12setErrorModeEj(void *, s32);
 s32 _ZN15TalkWindowState12hideBusyIconEv(void *);
 s32 _ZN15TalkWindowState13unlockAdvanceEv(void *);
-s32 _ZN15TalkWindowState12showBusyIconEv(void *, s32);
+s32 _ZN15TalkWindowState12showBusyIconEj(void *, s32);
 s32 CheckInGate_IsOpen();
 s32 CheckInGate_Open();
 s32 Talk_IsInOwnTown();
@@ -173,7 +173,7 @@ void SaveManager_RequestAct17();
 void SaveManager_RequestAct14();
 s32 SceneWarp_RequestAt(void *, s32, VecFx32 *, s32, s32, s32, s32);
 s32 NetSession_GetLastSyncSlot();
-void * PlayerData_GetBySessionSlot();
+void * PlayerData_GetBySessionSlot(s32 slot);
 void _ZN15TalkWindowState13detachRequestEv(void *);
 void SceneWarp_RequestExit(void *, s32);
 void PlayerActor_RequestWalkTo(void *, s32, s32);
@@ -193,7 +193,7 @@ s32 SaveManager_SetGatePassed();
 s32 LostChild_IsKatieDue();
 void * _ZN10PlayerData18getLostChildRecordEv(void *);
 void * _ZN15LostChildRecord9getTownIdEv(void *);
-s32 TownId_IsValid();
+s32 TownId_IsValid(void *p);
 s32 memcmp(void *, void *, u32);
 void _ZN15LostChildRecord14clearEscortingEv(void *);
 BOOL _ZN15LostChildRecord11isEscortingEv(void *);
@@ -249,7 +249,7 @@ BOOL _ZN15KatieVisitState11isFollowingEv(void *);
 void _ZN15LostChildRecord12setEscortingEv(void *);
 s32 NetSession_GetSyncMemberMask();
 BOOL CommSend_PlayerData(void *, s32);
-void Comm_PrepareJoin();
+void Comm_PrepareJoin(u32 a);
 
 }
 s32 NetOverlay_AssertWifi();
@@ -1024,8 +1024,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
     void *r4;
     if (LostChild_IsKatieDue()) {
         r4 = _ZN10PlayerData18getLostChildRecordEv(h);
-        _ZN15LostChildRecord9getTownIdEv(r4);
-        if (TownId_IsValid()) {
+        if (TownId_IsValid(_ZN15LostChildRecord9getTownIdEv(r4))) {
             u16 *q = (u16 *)gSaveTownId;
             u16 *p = (u16 *)_ZN15LostChildRecord9getTownIdEv(r4);
             if (p[0] == q[0]) {
@@ -1363,7 +1362,7 @@ BOOL SpNpcCopper::act09Step1() {
     void *h;
     void *o;
     s32 a = Net_GetJoiningAid();
-    h = PlayerData_GetBySessionSlot();
+    h = PlayerData_GetBySessionSlot(a);
     if (PlayerActor_IsScriptedWalking(a) == 0) {
         o = TalkWindow_Get(0);
         talk.resetMsg();
@@ -1431,8 +1430,7 @@ BOOL SpNpcCopper::act0BStep0() {
     u8 buf[0x1c];
     void *h;
     void *o;
-    NetSession_GetLastSyncSlot();
-    h = PlayerData_GetBySessionSlot();
+    h = PlayerData_GetBySessionSlot(NetSession_GetLastSyncSlot());
     if (Unk_ov048_0225b4e4_Is2()) {
         o = TalkWindow_Get(0);
         talk.resetMsg();
@@ -1464,7 +1462,7 @@ BOOL SpNpcCopper::act0BStep1() {
 
 BOOL SpNpcCopper::act0BStep2() {
     s32 a = NetSession_GetLastSyncSlot();
-    void *b = PlayerData_GetBySessionSlot();
+    void *b = PlayerData_GetBySessionSlot(a);
     if (PlayerActor_IsScriptedWalking(a) == 0) {
         _ZN10PlayerData5resetEv(b);
         return TRUE;
@@ -2068,9 +2066,9 @@ void SpNpcCopperTalk::closeGate() {
 void SpNpcCopperTalk::lockWindow(s32 flag) {
     void *p = window;
     if (flag != 0) {
-        _ZN15TalkWindowState12showBusyIconEv(p, 1);
+        _ZN15TalkWindowState12showBusyIconEj(p, 1);
     } else {
-        _ZN15TalkWindowState12showBusyIconEv(p, 0);
+        _ZN15TalkWindowState12showBusyIconEj(p, 0);
     }
     _ZN15TalkWindowState11lockAdvanceEv(p);
 }
@@ -2812,8 +2810,9 @@ void SpNpcCopperTalk::shutdownWifi() {
         if (t) {
             unlockWindow();
         }
-        if (PlayerData_GetCurrent()) {
-            s32 r = _ZN10PlayerData8getIndexEv();
+        void *pd;
+        if ((pd = PlayerData_GetCurrent()) != NULL) {
+            s32 r = _ZN10PlayerData8getIndexEv(pd);
             if (r >= 0 && r < 4) {
                 u8 b;
                 GameStats_ApplyDownload();
@@ -3010,8 +3009,7 @@ void SpNpcCopperTalk::waitConnected() {
             }
             *(u16 *)((u8 *)owner + 0xe3e) = 200;
             setScript(6);
-            Net_GetMyAid();
-            Comm_PrepareJoin();
+            Comm_PrepareJoin(Net_GetMyAid());
         }
     }
 }
@@ -3116,10 +3114,7 @@ s32 SpNpcCopperTalk::getWifiLoginResultMsg() {
     case 0: {
         NetOverlay_LoadWifi();
         r = 0x26;
-        PlayerData_GetCurrent();
-        _ZN10PlayerData15getWifiUserDataEv();
-        PlayerWifiData_GetDwcUserData();
-        s64 t = Net_GetOwnFriendKey();
+        s64 t = Net_GetOwnFriendKey(PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(PlayerData_GetCurrent())));
         _ZN15SpNpcCopperTalk17setFriendCodeArgsEx(this, (s32)t, (s32)(t >> 32));
         NetOverlay_Restore();
         break;

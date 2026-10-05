@@ -35,7 +35,7 @@ s32 PlayerBank_GetBalance(void *p);
 void PlayerInventory_AddBells(void *p, s32 v, s32 w);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
 s32 PlayerInventory_GetBellsRoom(void *p, s32 v, s32 w);
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *p);
 void String_Load2dMenu(void *self, s32 v);
 s32 File_LoadToBuffer(const char *a, void *b, s32 c);
 s32 BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -179,7 +179,7 @@ BOOL BankMenu::onCreate() {
 }
 
 BOOL BankMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
+    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -263,7 +263,7 @@ void BankMenu::stateOpening() {
 }
 
 void BankMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(), nextMenuId, 1);
+    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), nextMenuId, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);

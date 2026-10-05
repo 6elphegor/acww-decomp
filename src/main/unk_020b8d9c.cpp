@@ -1964,7 +1964,7 @@ extern "C" {
 s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
-s32 PlayerActor_GetBodyPos();
+s32 PlayerActor_GetBodyPos(s32 slot);
 }
 extern "C" {
 void Town_PlaceGulliverShip(s32 a, BOOL b);
@@ -2115,8 +2115,7 @@ void SkySprite::updateUfo()
     } else if (work0 == 4) {
         if (screenPos.y > 0xd0000) {
             EventWeekSlots_MarkTodaySeen(0x44);
-            PlayerActor_GetLocalSessionSlot();
-            s32 obj = PlayerActor_GetBodyPos();
+            s32 obj = PlayerActor_GetBodyPos(PlayerActor_GetLocalSessionSlot());
             Town_PlaceGulliverShip(obj, dir == 0 ? 1 : 0);
             _ZN15SkyShotSequence9onUfoFellEv(data_021f4488);
             state = 3;
@@ -3117,7 +3116,7 @@ extern "C" {
 void _ZN13SkyObjPalette10invalidateEi(SkyObjPalette*, s32);
 }
 extern "C" {
-void _ZN13SkyObjPalette13invalidateForEi(void*, ...);
+void _ZN13SkyObjPalette13invalidateForEi(void*, s32);
 }
 extern "C" {
 void MI_CpuFill8(void*, u32, u32);
@@ -3639,7 +3638,7 @@ extern "C" void SkyObjGfxSlot_Acquire(SkyObjGfxSlot* p, s32 v, void* x) {
     p->refCount++;
     if (v != p->gfxId) {
         p->loaded = 0;
-        _ZN13SkyObjPalette13invalidateForEi(x);
+        _ZN13SkyObjPalette13invalidateForEi(x, v);
         p->gfxId = v;
     }
 }

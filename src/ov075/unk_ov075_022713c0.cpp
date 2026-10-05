@@ -70,7 +70,7 @@ struct SpNpcPeteSidestepPos {
 
 extern "C" {
 void *PlayerData_GetCurrent();
-s32 ChoiceList_getResult();
+s32 ChoiceList_getResult(ChoiceList *p);
 s32 PlayerData_testFlag(void *p, s32 a);
 s32 PlayerData_setFlag(void *p, s32 a);
 s32 Random_GlobalBelow(s32 a);
@@ -703,8 +703,7 @@ void SpNpcPeteTalk::onMessageEnd(u32) {
 }
 
 void SpNpcPeteTalk::onChoice(u32) {
-    getChoiceList();
-    s32 r = ChoiceList_getResult();
+    s32 r = ChoiceList_getResult(getChoiceList());
 }
 
 BOOL SpNpcPete::acceptsInteraction(void *) {

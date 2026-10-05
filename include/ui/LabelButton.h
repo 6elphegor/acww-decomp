@@ -36,7 +36,7 @@ public:
     void setState(s32 v);                       // 0x0208e13c
     void getAnimOffset(s32 *x, s32 *y);         // 0x0208e1fc
     void setPos(s32 x, s32 y);                  // 0x0208e288
-    void setLabelText();                        // 0x0208e290
+    void setLabelText(MsgString *src);          // 0x0208e290
     void showLayer2();                          // 0x0208e2c8
     void hideLayer2();                          // 0x0208e2d0
     void enableObjWindow();                     // 0x0208e2d8

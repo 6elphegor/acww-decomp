@@ -16,7 +16,7 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
 
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
@@ -154,7 +154,7 @@ BOOL FishBookTab::onCreate() {
 }
 
 BOOL FishBookTab::onDelete() {
-    ((MenuTabBar *)ProcBase_GetParent())->onTabMenuClosed();
+    ((MenuTabBar *)ProcBase_GetParent(this))->onTabMenuClosed();
     releaseResources();
     return TRUE;
 }
@@ -246,7 +246,7 @@ BOOL FishBookTab::handleTabSwitch() {
 }
 
 BOOL FishBookTab::requestTab(s32 v) {
-    void *h = ProcBase_GetParent();
+    void *h = ProcBase_GetParent(this);
     if (v != -1 && v != 2) {
         ((MenuTabBar *)h)->selectTab((u8)v);
         transitionState = 2;

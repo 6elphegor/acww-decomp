@@ -40,7 +40,7 @@ void _ZN11CommManager11writeRecordEPhj(void *p, void *q, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL func_020729cc(void *p, s32 h);
-u16 NetBuf_ReadU16();
+u16 NetBuf_ReadU16(void *src);
 void CommRecord_UnpackSource(void *p, u8 *a, u8 *b);
 BOOL SceneId_IsTown(u32 v);
 void *TownBlockMap_Get();
@@ -113,7 +113,7 @@ extern "C" BOOL ItemSync_Apply(u8 *p)
     void *o;
     BOOL r6;
     s32 x, y;
-    u16 id = NetBuf_ReadU16();
+    u16 id = NetBuf_ReadU16(p);
     CommRecord_UnpackSource(p + 2, &l.t[0], &l.t[1]);
     r6 = l.t[1] ? TRUE : FALSE;
     x = *(s8 *)(p + 3);
