@@ -23,7 +23,7 @@ void MenuScreen_Reset();
 void Snd_EndMenuDuck();
 void Snd_BeginMenuDuck();
 void MenuCtrl_SyncFromInputMode();
-void ProcBase_RequestDelete();
+void ProcBase_RequestDelete(void *self);
 extern u8 *data_021c1b3c;
 }
 
@@ -77,7 +77,7 @@ BOOL MenuLauncher::execPhase3() { return TRUE; }
 BOOL MenuLauncher::execPhase4() { return TRUE; }
 
 BOOL MenuLauncher::execClosed() {
-    ProcBase_RequestDelete();
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 

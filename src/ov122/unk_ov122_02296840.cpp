@@ -51,7 +51,7 @@ extern u16 gPad[];
 void Snd_PlaySe(u32 v);
 s32 Text_GetLength(void *p, s32 n);
 void StrBuf_GetBytes(void *p, void *q, u32 n);
-void EncodedString_SetRaw(void *p);
+void EncodedString_SetRaw(void *p, const void *src, s32 len);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *p, void *q, s32 a, s32 b);
 s32 String_CensorTaboo(void *p);
 void _ZN13EncodedString13fromMsgStringEP9MsgString(void *p, void *q);
@@ -2617,7 +2617,7 @@ void LetterWriteMenu::storeLetterDefaults() {
 }
 
 void LetterWriteMenu::censorField(u8 *src, u32 n) {
-    EncodedString_SetRaw(&encodedText);
+    EncodedString_SetRaw(&encodedText, src, n);
     _ZN9MsgString11fromEncodedEP13EncodedStringii(&censorString, &encodedText, 0, 0);
     if (String_CensorTaboo(&censorString)) {
         _ZN13EncodedString13fromMsgStringEP9MsgString(&encodedText, &censorString);

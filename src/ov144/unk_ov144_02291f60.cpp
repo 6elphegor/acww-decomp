@@ -125,16 +125,16 @@ void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
 void MenuScrollKnob_show(void *p);
 void Menu_PlayScrollTickSe(void *p);
 s32 MenuScrollKnob_release(void *p);
-s32 MenuScrollKnob_hitTest(void *p);
+s32 MenuScrollKnob_hitTest(void *p, s32 x, s32 y);
 void MenuErrorMessage_open(void *p, void *q, s32 a, s32 b);
 void MenuProc_restartKeyRepeat(void *p);
 void FtrMgr_BroadcastStereosAct0();
 void ProcBase_RequestDelete(void *p);
-s32 ProcBase_GetParent();
+s32 ProcBase_GetParent(void *self);
 void Gfx2d_ShowLayer(u32 x);
 void Gfx2d_ResetLayer(u32 x);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
-void MenuLauncher_onChildClosed();
+void MenuLauncher_onChildClosed(s32 self);
 void HandCursor_enableObjWindow(void *p);
 BOOL HandCursor_getAnim(void *p);
 BOOL HandCursor_isAnimDone(void *p);
@@ -333,8 +333,7 @@ BOOL MusicMenu::onCreate() {
 }
 
 BOOL MusicMenu::onDelete() {
-    ProcBase_GetParent();
-    MenuLauncher_onChildClosed();
+    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -435,7 +434,7 @@ void C::stateOpening() {
 }
 
 void C::stateClose() {
-    s32 t = ProcBase_GetParent();
+    s32 t = ProcBase_GetParent(this);
     if (testFlags(0x20)) {
         MenuLauncher_setNextRequest(t, 0x23, 1);
     } else {
@@ -800,7 +799,7 @@ void MusicMenu::showMessage(u8 v) {
 }
 
 BOOL MusicMenu::tryGrabKnob(s32 a, s32 b) {
-    if (MenuScrollKnob_hitTest(&scrollKnob)) {
+    if (MenuScrollKnob_hitTest(&scrollKnob, a, b)) {
         knobGrabOffset = knobPos - b;
         MenuScrollKnob_grab(&scrollKnob);
         knobLastTickPos = knobPos;

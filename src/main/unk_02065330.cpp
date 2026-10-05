@@ -32,7 +32,7 @@ struct EncodedString41Storage {
 extern "C" {
 void VillagerId_Construct(void *);
 void VillagerId_Destruct(void *);
-void _ZN8PlayerIdC1EPv(void *);
+void _ZN8PlayerIdC1EPv(void *, void *);
 void _ZN8PlayerIdC1Ev(void *);
 void _ZN11MsgString9BC1Ev(void *);
 void _ZN11MsgString9BD1Ev(void *);
@@ -51,7 +51,11 @@ struct VillagerIdLocal {
 };
 struct PlayerIdLocal {
     u32 v[6];
-    PlayerIdLocal() { _ZN8PlayerIdC1EPv(this); }
+#ifdef MODERN
+    PlayerIdLocal() { _ZN8PlayerIdC1EPv(this, 0); } // o unused by PlayerId::PlayerId (TownId_Construct is empty)
+#else
+    PlayerIdLocal() { ((void (*)(void *))_ZN8PlayerIdC1EPv)(this); } // the original leaves o as whatever r1 holds
+#endif
     ~PlayerIdLocal() { _ZN8PlayerIdC1Ev(this); }
 };
 
@@ -89,8 +93,8 @@ void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 void *_ZN10PlayerData12getInventoryEv(void *);
 u8 *_ZN15PlayerInventory9getUnk988Ev(void *);
-void *PlayerData_GetResident(void *);
-void *SaveVillagers_Get(void *);
+void *PlayerData_GetResident(void *, s32);
+void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 
 void LetterDefaults_Init(LetterDefaults *o);
@@ -237,14 +241,14 @@ extern "C" void Letter_InitBottleDraft(LetterView *self) {
     Letter_LoadTemplate2d(&c, self->greeting, &self->namePos, 0);
 }
 
-extern "C" void Letter_SetRecipientVillager(LetterView *self) {
-    void *r = _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers));
+extern "C" void Letter_SetRecipientVillager(LetterView *self, s32 idx) {
+    void *r = _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, idx));
     self->loadDefaultGreeting();
     LetterParty_SetVillager(&self->recipient, r);
 }
 
-extern "C" void Letter_SetRecipientResident(LetterView *self) {
-    void *r = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetResident(gSavePlayers));
+extern "C" void Letter_SetRecipientResident(LetterView *self, s32 idx) {
+    void *r = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetResident(gSavePlayers, idx));
     self->loadDefaultGreeting();
     LetterParty_SetPlayer(&self->recipient, r);
 }

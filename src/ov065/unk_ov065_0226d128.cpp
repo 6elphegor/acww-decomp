@@ -92,7 +92,7 @@ extern s32 DwcHttp_ParseResponse(void *buf, s32 n, s32 a, void *b);
 extern s32 DwcHttp_Init(u32 a, void *b);
 extern s32 DwcHttp_FinishHeaders(u32 a);
 extern s32 DwcHttp_StartThread(u32 a);
-extern s32 DwcHttp_Abort(void);
+extern s32 DwcHttp_Abort(void *c);
 extern s32 NasBase64_Decode(const char *s, s32 len, char *dst, u32 size);
 
 void NasAuth_SetState(s32 v);
@@ -177,7 +177,7 @@ void NasAuth_Abort(void) {
         sNasAuth->isAborting = 1;
         OS_UnlockMutex(sNasAuth->mutex);
         if (sNasAuth->http) {
-            DwcHttp_Abort();
+            DwcHttp_Abort(sNasAuth->http);
         }
         if (sNasAuth->threadId) {
             OS_JoinThread(sNasAuth->thread);

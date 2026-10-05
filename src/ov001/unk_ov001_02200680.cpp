@@ -161,9 +161,9 @@ u32 Aoss_PickHostAddress(u32 a, u32 b);
 s32 Aoss_RunProtocol(u8 *o);
 s32 Aoss_Run(AossParam *a);
 s32 RTC_GetTime(void *p);
-s32 Sock_Close();
-s32 Sock_Bind();
-s32 Sock_Create();
+s32 Sock_Close(s32 a);
+s32 Sock_Bind(s32 a, void *sa);
+s32 Sock_Create(s32 a, s32 b);
 s32 Sock_SendTo(s32, s32, s32, s32, u8 *);
 s32 Sock_Poll(void *, s32, s64);
 s32 Sock_RecvFrom(s32, s32, s32, s32, u8 *);
@@ -1778,16 +1778,16 @@ extern "C" s32 Aoss_SetSockOpt(s32 s, s32 l, s32 o, void *v, s32 n) {
 }
 
 extern "C" s32 Aoss_SocketCreate(s32 a, s32 b, s32 c) {
-    return Sock_Create();
+    return Sock_Create(a, b);
 }
 
 extern "C" s32 Aoss_SocketBind(s32 a, u8 *b, s32 c) {
     *b = c;
-    return Sock_Bind();
+    return Sock_Bind(a, b);
 }
 
 extern "C" s32 Aoss_SocketClose(s32 s) {
-    return Sock_Close();
+    return Sock_Close(s);
 }
 
 extern "C" u32 Aoss_Htonl(u32 v) {

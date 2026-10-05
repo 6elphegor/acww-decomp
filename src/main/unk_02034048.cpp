@@ -22,8 +22,8 @@ void *RoomShell_GetPrevWallpaper();
 void *RoomShell_SetCarpet(u16 *id, s32 a, s32 b);
 void *RoomShell_SetWallpaper(u16 *id, s32 a, s32 b);
 s32 Item_SetDesign(u16 *out, s32 a, s32 b);
-BOOL PlayerData_GetCurrent();
-u32 _ZN10PlayerData11getPlayerIdEv();
+void *PlayerData_GetCurrent();
+u32 _ZN10PlayerData11getPlayerIdEv(void *);
 u32 PlayerDataArray_FindById(void *a, u32 b);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 Scene_GetCurrent();
@@ -62,8 +62,9 @@ struct RoomWallFloorPacket {
 extern "C" void RoomWallFloor_MakeDesignItem(u16 *out, s32 a) {
     u32 x = a & 7;
     u32 y = 0;
-    if (PlayerData_GetCurrent()) {
-        y = PlayerDataArray_FindById(gSavePlayers, _ZN10PlayerData11getPlayerIdEv()) & 3;
+    void *p = PlayerData_GetCurrent();
+    if (p) {
+        y = PlayerDataArray_FindById(gSavePlayers, _ZN10PlayerData11getPlayerIdEv(p)) & 3;
     }
     Item_SetDesign(out, y, x);
 }

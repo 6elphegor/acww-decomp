@@ -395,7 +395,7 @@ void ActorTalkRequest_setDaySlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setMonthSlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setItemNameSlot(void *self, u16 *p, s32 a, s32 b);
 void ActorTalkRequest_setNumberSlot(void *self, ...);
-s32 ActorTalkRequest_getChoiceList(void *self);
+void *ActorTalkRequest_getChoiceList(void *self);
 NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
 void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
 void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
@@ -462,7 +462,7 @@ s32 TownSessionState_TestFlag(void *p, s32 a);
 s32 TurnipMarket_getPrice(void *p);
 s32 ShopClosingTime_isPastClosingTime(void *p);
 s32 ShopClosingTime_setClosingTimeToday(void *p);
-s32 ShopClosingTime_getTime(void *p);
+u8 *ShopClosingTime_getTime(void *p);
 s32 ShopClosingTime_clearClosingTime(void *p);
 s32 PlayerSpNpcRecord_stampArbeitDate(void *p);
 u8 *PlayerSpNpcRecord_getArbeitDate(void *p);
@@ -517,12 +517,12 @@ s16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Date_DaysBetween(void *o, void *p);
 s32 Clock_GetWeekday();
 void Clock_GetDate(void *o);
-s32 DateTime_IsInvalid();
+s32 DateTime_IsInvalid(u8 *p);
 void SaveData_clearFlag(void *g, s32 a);
 void SaveData_setFlag(void *g, s32 a);
 BOOL SaveData_testFlag(void *g, s32 a);
 s32 NetArea_IsLocalOwner();
-s32 ChoiceList_getResult();
+s32 ChoiceList_getResult(void *self);
 void NookShop_SendCatalogOrder(void *p);
 s32 NookShop_CanTakeCatalogOrder();
 s32 NookShop_IsPurchaseSynced();
@@ -565,7 +565,7 @@ s32 _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 }
 
 #define func_ov050_0225bd54_self _ZN17SpNpcNookShopTalk17checkNotInUniformEP12TalkStartMsg
-extern "C" BOOL func_ov050_0225bd54_self(void *self);
+extern "C" BOOL func_ov050_0225bd54_self(void *self, TalkStartMsg *out);
 
 // ---- ptmf constants (named so their creation order can be set)
 extern "C" void _ZN17SpNpcNookShopTalk18onRoofColorChoice0Ei();
@@ -846,8 +846,7 @@ BOOL SpNpcNookShop::onCreate() {
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         collider.groups |= 2;
         if (NetArea_IsLocalOwner()) {
-            ShopClosingTime_getTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
-            if (DateTime_IsInvalid()) {
+            if (DateTime_IsInvalid(ShopClosingTime_getTime(TownSessionState_GetClosingTime(TownSessionState_Get())))) {
                 ShopClosingTime_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
             }
             rotY = 0;
@@ -858,8 +857,7 @@ BOOL SpNpcNookShop::onCreate() {
         }
         return TRUE;
     }
-    ShopClosingTime_getTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
-    if (DateTime_IsInvalid()) {
+    if (DateTime_IsInvalid(ShopClosingTime_getTime(TownSessionState_GetClosingTime(TownSessionState_Get())))) {
         ShopClosingTime_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
     }
     void *h = TownSessionState_GetClosingTime(TownSessionState_Get());
@@ -2364,7 +2362,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
 }
 
 void SpNpcNookShopTalk::pickArbeitStartMsg10(TalkStartMsg *out) {
-    if (func_ov050_0225bd54_self(this) == 0) {
+    if (func_ov050_0225bd54_self(this, out) == 0) {
         void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->msgIndex = 0x2c;
@@ -2378,7 +2376,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg10(TalkStartMsg *out) {
 }
 
 void SpNpcNookShopTalk::pickArbeitStartMsg11(TalkStartMsg *out) {
-    if (func_ov050_0225bd54_self(this) == 0) {
+    if (func_ov050_0225bd54_self(this, out) == 0) {
         void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->msgIndex = 0x31;
@@ -2392,7 +2390,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg11(TalkStartMsg *out) {
 }
 
 void SpNpcNookShopTalk::pickArbeitStartMsg12(TalkStartMsg *out) {
-    if (func_ov050_0225bd54_self(this) == 0) {
+    if (func_ov050_0225bd54_self(this, out) == 0) {
         void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->msgIndex = 0x33;
@@ -3321,8 +3319,7 @@ extern "C" ActorProfile sSpNpcTimmyProfile = {(void *(*)())SpNpcNookShop_CreateT
 extern "C" ActorProfile sSpNpcTommyProfile = {(void *(*)())SpNpcNookShop_CreateTommy, 0x74, 0x79, 2, 0x5000, 0x5000, 0x3e800};
 
 void SpNpcNookShopTalk::onShopChoice() {
-    ActorTalkRequest_getChoiceList(this);
-    s32 t = ChoiceList_getResult();
+    s32 t = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     nextMsg = 0xff;
     static SpNpcNookShopChoiceHandler tbl[37] = {
         {0x00, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225dee8},
@@ -3520,8 +3517,7 @@ void SpNpcNookShopTalk::onBuyPaintChoice(s32 p) {
             nextMsg = 0x22;
             ownerNpc->purchasePending = 1;
             NpcActor_ChargePlayer(ownerNpc, (s32)price);
-            PlayerData_GetCurrent();
-            PlayerDataArray_FindById(&gSavePlayers, PlayerData_getPlayerId());
+            PlayerDataArray_FindById(&gSavePlayers, PlayerData_getPlayerId(PlayerData_GetCurrent()));
             o = ownerNpc;
             NookShop_BuyAt((void *)o->selectedItemX, (void *)o->selectedItemZ, (void *)price, Scene_GetCurrent());
         }
@@ -3532,7 +3528,7 @@ void SpNpcNookShopTalk::onSafeOfferChoice(s32 p) {
     if (p == 0) {
         if (safeSlot >= 0) {
             u16 v;
-            Pocket_RemoveItem();
+            Pocket_RemoveItem(safeSlot);
             v = 0x36fc;
             ActorTalkRequest_requestTakeItem(this, &v, 0, 5, 0);
         }
@@ -3595,8 +3591,7 @@ void SpNpcNookShopTalk::onRoofColorChoice3(s32 p) {
 }
 
 void SpNpcNookShopTalk::onDrama2Choice() {
-    ActorTalkRequest_getChoiceList(this);
-    s32 t = ChoiceList_getResult();
+    s32 t = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     PlayerData_GetCurrent();
     u8 *g = data_021ed29c;
     s32 lv = msgIndex;
@@ -3673,8 +3668,7 @@ extern "C" void *data_ov050_0225e098[2] = {(void *)_ZN17SpNpcNookShopTalk20onCat
 extern "C" char sSpNpcNookShopSequence5_1Key[] = "sp_etc_sequence5_1";
 
 void SpNpcNookShopTalk::onArbeitChoice() {
-    ActorTalkRequest_getChoiceList(this);
-    s32 t = ChoiceList_getResult();
+    s32 t = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     nextMsg = 0xff;
     static SpNpcNookShopChoiceHandler tbl[1] = {
         {0x22, *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e000},
@@ -3717,8 +3711,7 @@ void SpNpcNookShopTalk::buySelectedItem() {
     ownerNpc->purchasePending = 1;
     NpcActor_ChargePlayer(ownerNpc, (s32)price);
     Pocket_AddItem(&ownerNpc->selectedItem, 0);
-    PlayerData_GetCurrent();
-    PlayerDataArray_FindById(&gSavePlayers, PlayerData_getPlayerId());
+    PlayerDataArray_FindById(&gSavePlayers, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     o = ownerNpc;
     NookShop_BuyAt((void *)o->selectedItemX, (void *)o->selectedItemZ, (void *)price, Scene_GetCurrent());
     VillagerTrend_OnFurnitureBought();

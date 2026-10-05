@@ -206,7 +206,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32
             return TRUE;
         }
     } else {
-        if (_ZN11CommManager11isLocalSlotEj(gCommManager)) {
+        if (_ZN11CommManager11isLocalSlotEj(gCommManager, i)) {
             if (SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 get(pos, rot_, out);
             } else {

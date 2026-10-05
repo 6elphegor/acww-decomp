@@ -65,7 +65,7 @@ void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
 s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void Pocket_AddItem(u16 *, s32);
-void Pocket_RemoveItem();
+void Pocket_RemoveItem(s32 c);
 s32 Pocket_FindEmpty();
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
@@ -389,8 +389,9 @@ void SpNpcPascalTalk::onScallopPicked() {
     SpNpcPascalMsgLocal m;
     m.msgIndex = 5;
     if (MenuCtrl_IsResultOk()) {
-        if (MenuCtrl_GetIndex() >= 0) {
-            Pocket_RemoveItem();
+        s32 i = MenuCtrl_GetIndex();
+        if (i >= 0) {
+            Pocket_RemoveItem(i);
         }
         m.item = 0x1559;
         _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.item, 0, 5, 0);

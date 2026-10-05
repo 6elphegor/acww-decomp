@@ -141,7 +141,7 @@ s32 SBIsNullServer(void *);
 s32 SBServerSetFlags(void *, s32);
 void *SBAllocServer(void *, u32, u32);
 s32 SBServerGetPing(void *);
-s32 StringHash(void *);
+s32 StringHash(void *, s32);
 s32 SBServerListCleanup(void *);
 s32 SBServerListDisconnect(void *);
 s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
@@ -150,7 +150,7 @@ s32 NTSLengthSB(char *, s32);
 s32 SBRefStr(s32, char *);
 s32 SBServerListClear(void *);
 s32 SBFreeDeadList(void *);
-s32 SBServerListNth(void *);
+s32 SBServerListNth(void *, s32);
 s32 SBServerListCount(void *);
 s32 SBServerListRemoveAt(void *, s32);
 s32 SBServerListFindServerByIP(void *, u32, u32);
@@ -174,7 +174,7 @@ s32 SBListThink(void *);
 s32 ProcessLanData(SBServerList *);
 s32 RefStringCompare(char **, char **);
 s32 RefStringFree(void **);
-s32 RefStringHash(void **);
+s32 RefStringHash(void **, s32);
 
 }
 }
@@ -282,8 +282,8 @@ void ServerBrowserClear(_ServerBrowser *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserGetServer(_ServerBrowser *o) {
-    return SBServerListNth(&o->list);
+s32 ServerBrowserGetServer(_ServerBrowser *o, s32 index) {
+    return SBServerListNth(&o->list, index);
 }
 }
 }
@@ -315,8 +315,8 @@ s32 ServerBrowserGetMyPublicIPAddr(_ServerBrowser *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 RefStringHash(void **p) {
-    return StringHash(*p);
+s32 RefStringHash(void **p, s32 numBuckets) {
+    return StringHash(*p, numBuckets);
 }
 }
 }
