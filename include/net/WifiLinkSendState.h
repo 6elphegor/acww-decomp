@@ -14,7 +14,7 @@ struct WifiLinkSendState {
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ u32 unk_08;
     /* 0x0c */ u8 unk_0c[0x18];
-    /* 0x24 */ u32 sendResult;
+    /* 0x24 */ s32 sendResult; // WM_SetDCFData callback errcode
     /* 0x28 */ WifiLinkRecvCallback recvCallback;
 };
 

@@ -5,11 +5,7 @@
 #include "net/SslConnection.h"
 #include "net/SslSession.h"
 #include "net/SslSha1Context.h"
-
-struct Unk_ov065_022672ec_Root {
-    u32 unk_00;
-    u32 cur;
-};
+#include "nitro/os_rtc.h"
 
 struct SslMd5Context {
     u32 st[4];
@@ -19,7 +15,7 @@ struct SslMd5Context {
 };
 
 
-extern u32 data_021fcc2c[];
+extern OSThreadInfo data_021fcc2c;
 
 extern "C" {
 
@@ -28,9 +24,9 @@ void MI_CpuFill8(void *dst, s32 v, s32 n);
 void MI_CpuCopy8(const void *src, void *dst, s32 n);
 s32 strcmp(const void *a, const void *b);
 s32 memcmp(const void *a, const void *b, u32 n);
-void RTC_GetDate(void *);
-void RTC_GetTime(void *);
-u32 RTC_ConvertDateTimeToSecond(void *, void *);
+void RTC_GetDate(RTCDate *);
+void RTC_GetTime(RTCTime *);
+u32 RTC_ConvertDateTimeToSecond(RTCDate *, RTCTime *);
 void SslMd5_Decode(void *dst, const void *src, s32 n);
 void SslMd5_Encode(void *dst, const void *src, s32 n);
 
@@ -205,16 +201,16 @@ SslSession *SslSession_Add(const void *src)
 
 u32 Ssl_GetUnixTime(void)
 {
-    u32 a[4];
-    u32 b[3];
-    RTC_GetDate(a);
-    RTC_GetTime(b);
-    return RTC_ConvertDateTimeToSecond(a, b) + 0x386d4380;
+    RTCDate a;
+    RTCTime b;
+    RTC_GetDate(&a);
+    RTC_GetTime(&b);
+    return RTC_ConvertDateTimeToSecond(&a, &b) + 0x386d4380;
 }
 
 void Ssl_SetRootCaList(void *a, s32 b)
 {
-    IpSocket *q = *(IpSocket **)((u8 *)((Unk_ov065_022672ec_Root *)data_021fcc2c)->cur + 0xa4);
+    IpSocket *q = (IpSocket *)data_021fcc2c.current->specific[0];
     if (q != 0) {
         SslConnection *t = q->sslCtx;
         if (t != 0) {

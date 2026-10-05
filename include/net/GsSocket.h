@@ -3,22 +3,13 @@
 
 #include "types.h"
 
-// Socket types of the GameSpy nonport layer (views of NitroWiFi SOSockAddr / SOHostEnt / SOPollFD used by
-// bind/connect/sendto, getlocalhost and GSISocketSelect in src/ov065/unk_ov065_022789fc.cpp namespace FB and
-// src/ov065/unk_ov065_0227931c.cpp namespace Ng): sockaddr copy, the hostent localhost with its address list
-// and address, poll fd.
+// Socket types of the GameSpy nonport layer (src/ov065/unk_ov065_022789fc.cpp getlocalhost / GSISocketSelect and
+// src/ov065/unk_ov065_0227931c.cpp namespace Ng): the address list of the hostent `localhost` (SockHostEnt) and the
+// address it points to, the poll fd, and the generic socket address as bind / connect / sendto copy it (SOCKADDR:
+// a byte array, so the struct copy is a byte copy; SockAddrIn, word-aligned, compiles to word copies there).
 
 struct GsSockAddr {
     /* 0x0 */ u8 b[8];
-};
-
-// localhost (BSD hostent layout)
-struct GsHostEnt {
-    /* 0x0 */ u32 hostName;
-    /* 0x4 */ u32 aliases;
-    /* 0x8 */ s16 addrType;
-    /* 0xa */ s16 addrLength;
-    /* 0xc */ u32 addrList;
 };
 
 // data_ov065_022910a8 (defined in src/ov065/unk_ov065_022789fc.cpp)

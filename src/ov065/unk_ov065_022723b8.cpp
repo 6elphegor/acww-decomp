@@ -2,22 +2,17 @@
 #include "types.h"
 #include "net/gp.h"
 #include "net/DwcMatchCommandHeader.h"
+#include "nitro/math.h"
 #include "net/DwcNetChannel.h"
 #include "net/DwcFriendControl.h"
 #include "net/DwcMatchControl.h"
 #include "net/DwcConnInfo.h"
 #include "net/DwcMatchUserKey.h"
 #include "net/DwcNetChannelTable.h"
+#include "net/SockAddrIn.h"
 #include "net/qr2.h"
 
 typedef long long s64;
-
-// sockaddr as the NAT negotiation complete callback and DwcMatch_HandleCommand cmd 6 pass it
-struct Unk_ov065_022749f8_Sa {
-    u16 unk_0;
-    u16 port;
-    u32 addr;
-};
 
 extern "C" {
 u8 sDwcMatchServerLock[4];
@@ -105,7 +100,7 @@ s32 DwcMatch_CountNnRetry(s32);
 
 s32 DwcFriend_GetStatusString(void *a, char *b);
 s32 DwcMatch_CountNnRetry(s32 a);
-void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_022749f8_Sa *c, DwcNnRequest *d);
+void DwcMatch_OnNnComplete(s32 a, s32 b, SockAddrIn *c, DwcNnRequest *d);
 void DwcMatch_OnNnProgress();
 void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n);
 }
@@ -679,7 +674,7 @@ extern u8 sDwcMatchServerLock[];
 extern DwcMatchControl *sDwcMatch;
 extern DwcMatchSyncOption *sDwcMatchSyncOption;
 extern DwcNetChannelTable *sDwcNetChannels;
-extern Unk_ov065_022778b0_Rng sDwcNetRandState;
+extern MATHRandContext32 sDwcNetRandState;
 
 void *DwcNet_Alloc(s32, s32);
 u64 DwcNet_GetTimeMs(void);
@@ -2248,7 +2243,7 @@ s32 DwcMatch_HandleCommand(u32 ev, s32 h, u32 p2, u16 p3, u32 *args, s32 n) {
     u8 ub;
     u32 buf[0x41];
     u32 loc1c;
-    Unk_ov065_022749f8_Sa sa;
+    SockAddrIn sa;
     s32 z = 0;
     s32 i;
     DwcMatchControl *g = sDwcMatch;
@@ -4544,7 +4539,7 @@ namespace F02271da0 {
 extern "C" {
 
 
-void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_022749f8_Sa *c, DwcNnRequest *d) {
+void DwcMatch_OnNnComplete(s32 a, s32 b, SockAddrIn *c, DwcNnRequest *d) {
     DwcMatchControl *g;
     if (sDwcMatch->matchState != 6 && sDwcMatch->matchState != 0xb) {
         return;

@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/DwcGsHttpCallbackCtx.h"
+#include "net/WifiApConfig.h"
 
 typedef long long s64;
 
@@ -12,13 +13,6 @@ struct DwcInetControl {
     u16 isConnected;
     u16 apInitParam0;
     u16 apInitParam1;
-};
-
-struct Unk_ov065_02277d68_Args {
-    void *allocFn;
-    void *freeFn;
-    u8 dmaNo;
-    u8 powerMode;
 };
 
 
@@ -53,7 +47,7 @@ void WifiAp_GetLinkLevel();
 s32 WifiAp_RequestCleanup();
 s32 WifiAp_GetStatus();
 void *WifiAp_Process();
-s32 WifiAp_Init(void *);
+s32 WifiAp_Init(WifiApConfig *);
 s32 WifiLink_GetPhase();
 void DwcCore_SetError(s32, s32);
 void NasAuth_SetServerUrl(const char *);
@@ -133,7 +127,7 @@ void DwcInet_SelectAuthServer(s32 x) {
 }
 
 void DwcInet_StartConnect() {
-    Unk_ov065_02277d68_Args l;
+    WifiApConfig l;
     if (sDwcInet != NULL) {
         if (sDwcInet->state == 1) {
             DwcInetControl *s;
@@ -141,8 +135,8 @@ void DwcInet_StartConnect() {
             s = sDwcInet;
             l.dmaNo = s->apInitParam0;
             l.powerMode = s->apInitParam1;
-            l.allocFn = (void *)DwcNet_Alloc;
-            l.freeFn = (void *)DwcNet_Free;
+            l.allocFunc = (WifiApAllocFunc)DwcNet_Alloc;
+            l.freeFunc = (WifiApFreeFunc)DwcNet_Free;
             s->state = 2;
             if (WifiAp_Init(&l) == 0) {
                 DwcCore_SetError(8, -6);

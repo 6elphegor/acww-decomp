@@ -6,13 +6,9 @@
 #include "net/WifiApConfig.h"
 #include "net/WifiApNdwcshapPermTable.h"
 #include "net/WifiApContext.h"
+#include "net/WifiLinkEvent.h"
+#include "net/SockStartupConfig.h"
 
-struct SockStartupConfig {
-    u32 unk_00[18];
-    const char *hostName;
-    u32 unk_4c;
-    u32 unk_50[2];
-};
 
 extern "C" {
 
@@ -25,7 +21,7 @@ char sWifiApSsidUsbConnector[12] = "NWCUSBAP";
 char sWifiApHostName[12] = "NINTENDO-DS";
 
 const SockStartupConfig sWifiApSocketConfigTemplate = {
-    {0x1000000, 0, 0, 1, 0, 0, 0, 0, 0, 0x1000, 0x1000, 0x2e4, 0, 0, 0, 0, 0, 0},
+    0x1000000, NULL, NULL, 1, 0, 0, 0, 0, 0, 0x1000, 0x1000, 0x2e4, 0, {0, 0, 0, 0, 0},
     sWifiApHostName,
     4,
     {0, 0},
@@ -793,13 +789,6 @@ extern "C" {
 
 
 
-struct WifiLinkEvent {
-    s16 request;
-    s16 result;
-    u32 bssDesc;
-    u32 detail;
-};
-
 extern "C" {
 u8 *WifiAp_GetBlock(u32 id);
 s32 WifiAp_GetState(void);
@@ -1225,7 +1214,7 @@ void WifiAp_OnLinkNotify(WifiLinkEvent *m) {
             }
         }
     } else if (m->request == 7) {
-        WifiAp_OnApFound((WMBssDesc *)m->bssDesc);
+        WifiAp_OnApFound(m->bssDesc);
     }
 }
 

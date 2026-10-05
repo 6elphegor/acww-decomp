@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "nitro/math.h"
 #include "net/DwcNetChannel.h"
 #include "net/DwcNetChannelTable.h"
 
@@ -13,7 +14,7 @@ typedef long long s64;
 
 extern "C" {
 DwcNetChannelTable *sDwcNetChannels;
-Unk_ov065_022778b0_Rng sDwcNetRandState;
+MATHRandContext32 sDwcNetRandState;
 
 void *DwcNet_Alloc(s32, s32);
 u64 DwcNet_GetTimeMs(void);
@@ -72,22 +73,22 @@ u32 DwcNet_Rand32(u32 n);
 u32 DwcNet_Rand32(u32 n) {
     u32 hi;
     u32 nn = n;
-    if (sDwcNetRandState.value == 0 && sDwcNetRandState.multiplier == 0 && sDwcNetRandState.increment == 0) {
+    if (sDwcNetRandState.x == 0 && sDwcNetRandState.mul == 0 && sDwcNetRandState.add == 0) {
         u64 s;
         u64 t;
         OS_GetMacAddress(&s);
         t = OS_GetTick();
         s = ((s >> 24) & 0xffffff) | (t << 24);
-        sDwcNetRandState.value = s;
-        sDwcNetRandState.multiplier = 0x5d588b656c078965ULL;
-        sDwcNetRandState.increment = 0x269ec3;
+        sDwcNetRandState.x = s;
+        sDwcNetRandState.mul = 0x5d588b656c078965ULL;
+        sDwcNetRandState.add = 0x269ec3;
     }
     {
-        sDwcNetRandState.value = (u64)((s64)sDwcNetRandState.multiplier * (s64)sDwcNetRandState.value) + sDwcNetRandState.increment;
+        sDwcNetRandState.x = (u64)((s64)sDwcNetRandState.mul * (s64)sDwcNetRandState.x) + sDwcNetRandState.add;
         if (nn == 0) {
-            return (u32)(sDwcNetRandState.value >> 32);
+            return (u32)(sDwcNetRandState.x >> 32);
         } else {
-            return (u32)(((u64)((s64)(sDwcNetRandState.value >> 32) * (s64)nn)) >> 32);
+            return (u32)(((u64)((s64)(sDwcNetRandState.x >> 32) * (s64)nn)) >> 32);
         }
     }
 }

@@ -71,27 +71,7 @@ struct DwcControl {
     /* 0x080 */ s32 closedCallbackArg;
     /* 0x084 */ DwcLoginControl loginControl;
     /* 0x2e8 */ DwcFriendControl friendControl;
-    // 0x33c..0x798 is the DWC match control (sDwcMatch, DwcMatchControl: numClients +0xd, qrHandle +0x10,
-    // numPlayers +0x14, matchType +0x15, maxPlayers +0x16, serverBrowser +0xe4, memberProfileIds +0xf4, state +0x198);
-    // still flat here (follow-up: embed DwcMatchControl; needs the volatile numPlayers/matchType checked in 0226fc18).
-    /* 0x33c */ u8 matchControl[0x349 - 0x33c];
-    /* 0x349 */ u8 numClients;
-    /* 0x34a */ u8 pad_34a[2];
-    /* 0x34c */ void *qr2Object;
-    /* 0x350 */ u8 numPlayers;
-    /* 0x351 */ u8 matchType;
-    /* 0x352 */ u8 maxPlayers;
-    /* 0x353 */ u8 pad_353;
-    /* 0x354 */ u8 qr2ShutdownPending;
-    /* 0x355 */ u8 pad_355[0x420 - 0x355];
-    /* 0x420 */ void *serverBrowser;
-    /* 0x424 */ u8 pad_424[0x430 - 0x424];
-    /* 0x430 */ u32 memberProfileIds[0x29];
-    /* 0x4d4 */ u32 matchState;
-    /* 0x4d8 */ u8 pad_4d8[0x5f4 - 0x4d8];
-    /* 0x5f4 */ u8 aids[0x20];
-    /* 0x614 */ u32 validAidMask;
-    /* 0x618 */ u8 pad_618[0x7a0 - 0x618];
+    /* 0x33c */ DwcMatchControl matchControl; // sDwcMatch points here (DwcMatch_InitControl)
     /* 0x7a0 */ u8 netChannelTable[4];
 };
 

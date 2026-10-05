@@ -10,30 +10,6 @@ struct DwcHttpParamsWords {
     s32 v[8];
 };
 
-struct Unk_ov065_0226e554_Conn {
-    u8 unk_00[0xc];
-    void *sslCtx;
-    u8 unk_10[0x3c - 0x10];
-    s32 rxBufSize;
-    void *rxBuf;
-    u8 unk_44[4];
-    s32 txBufSize;
-    void *txBuf;
-    u8 unk_50[0x64 - 0x50];
-};
-
-struct Unk_ov065_0226e554_Ssl {
-    u8 unk_00[0x7d4];
-    char *hostName;
-    u8 unk_7d8[0x7e4 - 0x7d8];
-    u32 (*unk_7e4)(u32);
-    u8 unk_7e8[0x804 - 0x7e8];
-};
-
-struct Unk_ov065_0226eacc_Tbl {
-    u32 unk_00;
-    u32 currentThread;
-};
 
 extern "C" {
 
@@ -49,7 +25,7 @@ extern char sRootCaVeriSignG3[];
 extern char sRootCaVeriSignClass3[];
 extern char sRootCaRsaSecureServer[];
 extern u32 gOwnIp;
-extern Unk_ov065_0226eacc_Tbl data_021fcc2c;
+extern OSThreadInfo data_021fcc2c;
 
 s32 strlen(const char *s);
 char *strstr(const char *hay, const char *needle);
@@ -60,7 +36,7 @@ s32 atol(const char *s);
 s32 OS_SNPrintf(char *buf, s32 size, const char *fmt, ...);
 void OS_Sleep(s32 ms);
 void OS_GetLowEntropyData(void *p);
-u32 OS_GetThreadPriority(u32 v);
+u32 OS_GetThreadPriority(OSThread *t);
 s32 OS_LockMutex(void *m);
 s32 OS_UnlockMutex(void *m);
 s32 OS_InitMutex(void *m);
@@ -105,7 +81,7 @@ s32 DwcHttp_ParseUrl(DwcHttp *c, char *s);
 s32 DwcHttp_GrowBuffer(DwcHttp *c, DwcHttpBuffer *b, s32 n);
 void DwcHttp_FreeBuffer(DwcHttp *c, DwcHttpBuffer *b);
 s32 DwcHttp_AllocBuffer(DwcHttp *c, DwcHttpBuffer *b, s32 n);
-u32 DwcHttp_CertCallback(u32 v);
+u32 DwcHttp_CertCallback(u32 v, SslConnection *ssl, s32 depth);
 s32 DwcHttp_AppendBody(DwcHttp *c, const char *s);
 s32 DwcHttp_AddFormParam(DwcHttp *c, const char *a1, void *a2, s32 a3);
 s32 DwcHttp_AddHeader(DwcHttp *c, const char *a1, const char *a2);
@@ -163,7 +139,7 @@ s32 DwcHttp_FinishHeaders(DwcHttp *c) {
 }
 
 void DwcHttp_StartThread(DwcHttp *c) {
-    u32 prio = OS_GetThreadPriority(data_021fcc2c.currentThread);
+    u32 prio = OS_GetThreadPriority(data_021fcc2c.current);
     c->isAbortRequested = 0;
     OS_InitMutex(&c->abortMutex);
     OS_InitMutex(&c->responseMutex);
@@ -202,12 +178,12 @@ s32 DwcHttp_CheckNotAborted(DwcHttp *c) {
 
 void DwcHttp_ThreadMain(DwcHttp *c) {
     s32 timeout;
-    Unk_ov065_0226e554_Ssl *ssl;
+    SslConnection *ssl;
     s32 host;
     u64 start;
     u64 mark;
     s32 hdr;
-    Unk_ov065_0226e554_Conn *conn;
+    IpSocket *conn;
     DwcHttpBuffer *rb;
     s32 i, len, r, got;
     u8 tmp[0x20];
@@ -216,8 +192,8 @@ void DwcHttp_ThreadMain(DwcHttp *c) {
     u8 *data;
 
     hdr = 0;
-    conn = (Unk_ov065_0226e554_Conn *)&c->ipSocket;
-    ssl = (Unk_ov065_0226e554_Ssl *)&c->sslCtx;
+    conn = &c->ipSocket;
+    ssl = &c->sslCtx;
     rb = &c->responseBuffer;
     timeout = c->timeoutMs;
     if (timeout <= 0) {
@@ -225,9 +201,9 @@ void DwcHttp_ThreadMain(DwcHttp *c) {
     }
     MI_CpuFill8(conn, 0, 0x64);
     conn->rxBufSize = 0xb68;
-    conn->rxBuf = c->lowRecvBuf;
+    conn->rxBuf = (u8 *)c->lowRecvBuf;
     conn->txBufSize = 0x5ea;
-    conn->txBuf = c->lowSendBuf;
+    conn->txBuf = (u8 *)c->lowSendBuf;
     IpSoc_Use(conn);
     i = 0;
     do {
@@ -246,7 +222,7 @@ void DwcHttp_ThreadMain(DwcHttp *c) {
     u32 port;
     if (c->isHttps == 1) {
         MI_CpuFill8(ssl, 0, 0x804);
-        ssl->unk_7e4 = DwcHttp_CertCallback;
+        ssl->certVerifyCallback = DwcHttp_CertCallback;
         ssl->hostName = c->hostName;
         conn->sslCtx = ssl;
         Ssl_SetRootCaList(sDwcHttpRootCaList, 0xb);
@@ -527,7 +503,7 @@ s32 DwcHttp_AppendBody(DwcHttp *c, const char *s) {
     return 0;
 }
 
-u32 DwcHttp_CertCallback(u32 v) {
+u32 DwcHttp_CertCallback(u32 v, SslConnection *ssl, s32 depth) {
     if (v & 0x8000) {
         v &= ~0x8000;
     }

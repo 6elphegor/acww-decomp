@@ -6,8 +6,8 @@
 // NitroSDK math/rand.h: state of the 64-bit linear congruential generator behind MATH_InitRand32 / MATH_Rand32
 // (x = x * mul + add with mul 0x5d588b656c078965, add 0x269ec3; the result is the high word). Name and fields as in
 // pret pokeheartgold (include/unk_02037C94.h).
-// The ov065 IP stack's sIpRandState (net/IpStackConfig.h IpRandState and its signed views) has this layout and these
-// constants. It folds into this type once ov065 is free (GameSpy rename batches).
+// Instances: the ov065 IP stack's sIpRandState (signed views IpRandStateSigned / IpRandStateSignedStep in
+// net/IpStackConfig.h) and DWC's sDwcNetRandState (src/ov065/unk_ov065_02277140.cpp).
 typedef struct MATHRandContext32 {
     /* 0x00 */ u64 x;
     /* 0x08 */ u64 mul;

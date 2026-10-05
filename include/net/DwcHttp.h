@@ -2,6 +2,8 @@
 #define NET_DWCHTTP_H
 
 #include "types.h"
+#include "net/IpSocket.h"
+#include "net/SslConnection.h"
 
 // DWC HTTP client (DwcHttp_*, src/ov065/unk_ov065_0226de0c.cpp): request parameters, the 0x1a60-byte work it runs on
 // (its own thread, stack at the end) and the key/value field lists of parsed responses / NAS forms.
@@ -46,8 +48,8 @@ struct DwcHttp {
     /* 0x0a8 */ char *hostName;
     /* 0x0ac */ char *path;
     /* 0x0b0 */ s32 isHttps;
-    /* 0x0b4 */ u8 ipSocket[0x118 - 0xb4]; // IpSocket (0x64 bytes, N03)
-    /* 0x118 */ u8 sslCtx[0x91c - 0x118]; // SslConnection (0x804 bytes, N03)
+    /* 0x0b4 */ IpSocket ipSocket;
+    /* 0x118 */ SslConnection sslCtx;
     /* 0x91c */ void *lowRecvBuf;
     /* 0x920 */ void *lowSendBuf;
     /* 0x924 */ s32 numFormParams;

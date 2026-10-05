@@ -2,7 +2,7 @@
 #include "types.h"
 #include "net/SockUdpDropCounters.h"
 #include "net/SockCoreCommand.h"
-#include "net/Unk_ov065_0225faf4_Sess.h"
+#include "net/SockCoreConfig.h"
 #include "net/SockCoreSocket.h"
 
 // ---- types of the former unk_0225f1a0.cpp part (functions 0x0225f5c8..0x0225fa6c)
@@ -20,13 +20,12 @@ struct SockCoreSocket;
 
 
 
-struct Unk_ov065_0225faf4_Sess;
 
 
 
 typedef SockUdpRecvNode Node;
-typedef Unk_ov065_0225faf4_Sess Sess;
-typedef Unk_ov065_0225faf4_Ctx Ctx;
+typedef SockCoreSocket Sess;
+typedef SockRecvPipe Ctx;
 
 
 typedef Unk_ov065_0225faf4_Job Job;
@@ -44,7 +43,7 @@ extern "C" s32 SockCore_IsInvalidHandle(Sess *s);
 
 extern "C" {
 // own data (other TUs of the overlay)
-extern Unk_ov065_0225faf4_Alloc *sSockCoreConfig;
+extern SockCoreConfig *sSockCoreConfig;
 extern Obj *sSockDefaultSocket;
 extern SockCreateParams sSockTcpParams;
 
@@ -148,7 +147,7 @@ s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s)
     u32 irq = OS_DisableInterrupts();
 
     if (c->cap >= c->used + len) {
-        Node *n = sSockCoreConfig->alloc(len + 12);
+        Node *n = (Node *)sSockCoreConfig->alloc(len + 12);
         if (n != NULL) {
             c->used += len;
             n->next = NULL;
@@ -174,7 +173,7 @@ s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s)
     } else {
         sSockUdpDropCount.queueFullDrops++;
     }
-    OS_WakeupThread(c->queue);
+    OS_WakeupThread(&c->waitQueue);
     OS_RestoreInterrupts(irq);
     return 1;
 }
@@ -253,13 +252,13 @@ s32 SockCore_CmdConnect(Job *j)
     s32 err = 0;
     c = s->recvPipe;
 
-    OS_LockMutex(c->mutex);
+    OS_LockMutex(&c->mutex);
     IpSoc_Bind(j->localPort, j->remotePort, j->remoteAddr);
     c->pos = err;
     if (j->sockType == 0 || j->sockType == 4) {
         err = IpSoc_TcpConnect();
     }
-    OS_UnlockMutex(c->mutex);
+    OS_UnlockMutex(&c->mutex);
     if (err) {
         s->flags |= 0x40;
         return -0x4c;
@@ -358,7 +357,7 @@ s32 SockCore_CmdAccept(Msg *m)
     u16 a;
     s32 b;
     s32 r;
-    OS_LockMutex(s->mutex);
+    OS_LockMutex(&s->mutex);
     IpSoc_Bind(m->localPort, 0, 0);
     IpSoc_TcpListen();
     s->pos = 0;
@@ -366,7 +365,7 @@ s32 SockCore_CmdAccept(Msg *m)
     *(u16 *)m->outPort = a;
     *(s32 *)m->outAddr = r;
     o->flags = o->flags | 4;
-    OS_UnlockMutex(s->mutex);
+    OS_UnlockMutex(&s->mutex);
     return 0;
 }
 
@@ -383,13 +382,13 @@ s32 SockCore_Create(SockCreateParams *p)
 s32 SockCore_CmdOpen(Msg *m)
 {
     Obj *o = (Obj *)m->sock;
-    u8 *sub;
+    SockSendPipe *sub;
     IpSoc_Use(o);
-    sub = (u8 *)o->sendPipe;
+    sub = o->sendPipe;
     switch (o->sockType) {
     case 0:
     case 4:
-        IpSoc_ShareWithThread(sub + 0x20);
+        IpSoc_ShareWithThread(&sub->thread);
         IpSoc_Init();
         break;
     case 1:
@@ -453,26 +452,26 @@ u8 *SockCore_InitLayout(Obj *o, SockCreateParams *p)
     u8 *cur;
     o->sockType = p->sockType;
     o->blocking = p->blocking;
-    cur = o->pipeArea;
+    cur = (u8 *)(o + 1);
     if (p->rxBufSize != 0) {
         s1 = (SockRecvPipe *)cur;
         o->recvPipe = s1;
         s1->limit = p->rxConsumeLimit;
-        cur = (u8 *)SockCore_StartCommandThread(s1->threadArea, s1, &p->recvThread);
-        cur = SockCore_CarveBuffer(cur, &o->rxBuffer, p->rxBufSize);
-        cur = SockCore_CarveBuffer(cur, &o->rxAuxBuffer, p->rxAuxBufSize);
+        cur = (u8 *)SockCore_StartCommandThread(s1 + 1, s1, &p->recvThread);
+        cur = SockCore_CarveBuffer(cur, (SockBuffer *)&o->rxBufSize, p->rxBufSize);
+        cur = SockCore_CarveBuffer(cur, (SockBuffer *)&o->rxAuxBufSize, p->rxAuxBufSize);
         s1->cap = p->udpQueueCap;
-        s1->queue = s1->queueTail = 0;
+        s1->waitQueue.head = s1->waitQueue.tail = 0;
     }
     if (p->txBufSize != 0) {
         s2 = (SockSendPipe *)cur;
         o->sendPipe = s2;
         s2->owner = o;
-        cur = (u8 *)SockCore_StartCommandThread(s2->threadArea, s2, &p->sendThread);
-        cur = SockCore_CarveBuffer(cur, &o->txBuffer, p->txBufSize);
-        cur = SockCore_CarveBuffer(cur, &o->pendingTxBuffer, p->pendingTxBufSize);
+        cur = (u8 *)SockCore_StartCommandThread(s2 + 1, s2, &p->sendThread);
+        cur = SockCore_CarveBuffer(cur, (SockBuffer *)&o->txBufSize, p->txBufSize);
+        cur = SockCore_CarveBuffer(cur, (SockBuffer *)&o->pendingTxBufSize, p->pendingTxBufSize);
         cur = SockCore_CarveBuffer(cur, &s2->ring, p->sendRingSize);
-        s2->spaceWaitQueue = s2->spaceWaitQueueTail = 0;
+        s2->spaceWaitQueue.head = s2->spaceWaitQueue.tail = 0;
     } else {
         o->sendPipe = sSockDefaultSocket->sendPipe;
     }
@@ -485,8 +484,8 @@ u8 *SockCore_CarveBuffer(u8 *base, SockBuffer *dst, u32 n)
     if (n == 0) {
         v = NULL;
     }
-    dst->buf = (u32)v;
-    dst->size = (void *)n;
+    dst->buf = v;
+    dst->size = n;
     return base + SockCore_Align4(n);
 }
 

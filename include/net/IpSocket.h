@@ -2,9 +2,11 @@
 #define NET_IPSOCKET_H
 
 #include "types.h"
+#include "sys/OSThread.h"
 
-// IP socket (TCP/UDP endpoint of the ov065 IP stack; OSThread specific[0] points to it), with the OSThread and
-// OSThreadInfo views the TCP/UDP code reads it through (src/ov065/unk_ov065_02261638.cpp).
+// IP socket (TCP/UDP endpoint of the ov065 IP stack). The stack keeps the socket a thread works on in that thread's
+// OSThread specific[0]; the TCP/UDP code finds it through OSi_ThreadInfo (data_021fcc2c: current / list)
+// (src/ov065/unk_ov065_02261638.cpp, unk_ov065_02264d0c.cpp, unk_ov065_022671a0.cpp).
 
 struct IpSocket;
 struct SslConnection;
@@ -12,15 +14,8 @@ struct SslConnection;
 // UDP receive hook (IpSoc_SetUdpCallback); Udp_Input drops the data when it returns non-zero.
 typedef s32 (*IpSocketUdpCallback)(u8 *, u32, IpSocket *);
 
-struct Unk_ov065_02262240_Thr {
-    /* 0x00 */ u8 pad_00[0x68];
-    /* 0x68 */ Unk_ov065_02262240_Thr *next;
-    /* 0x6c */ u8 pad_6c[0xa4 - 0x6c];
-    /* 0xa4 */ IpSocket *ipSocket;
-};
-
 struct IpSocket {
-    /* 0x00 */ Unk_ov065_02262240_Thr *ownerThread;
+    /* 0x00 */ OSThread *ownerThread;
     /* 0x04 */ u32 waitReason;
     /* 0x08 */ u8 state;
     /* 0x09 */ u8 useSsl;
@@ -44,15 +39,11 @@ struct IpSocket {
     /* 0x44 */ u32 rxLen;
     /* 0x48 */ u32 txBufSize;
     /* 0x4c */ u8 *txBuf;
-    /* 0x50 */ u8 pad_50[0x5c - 0x50];
+    /* 0x50 */ u32 rxAuxBufSize; // socket-core buffers (SockCore_InitLayout)
+    /* 0x54 */ u8 *rxAuxBuf;
+    /* 0x58 */ u32 pendingTxBufSize;
     /* 0x5c */ u8 *pendingTx;
     /* 0x60 */ u32 pendingTxLen;
-};
-
-struct Unk_ov065_02262240_Os {
-    /* 0x0 */ u32 unk_00;
-    /* 0x4 */ Unk_ov065_02262240_Thr *cur;
-    /* 0x8 */ Unk_ov065_02262240_Thr *list;
 };
 
 #endif

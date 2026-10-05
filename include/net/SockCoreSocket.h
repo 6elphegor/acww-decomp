@@ -2,10 +2,15 @@
 #define NET_SOCKCORESOCKET_H
 
 #include "types.h"
+#include "sys/OSThread.h"
+#include "sys/OSMessageQueue.h"
+#include "net/IpSocket.h"
 
-// Socket object of the ov065 socket core, its receive/send pipes and creation parameters. Defined in
-// src/ov065/unk_ov065_0225f5c8.cpp (SockCore_Create etc.); also used by src/ov065/unk_ov065_0225f378.cpp and
-// (Params) src/ov065/unk_ov065_0225f1a0.cpp.
+// Socket object of the ov065 socket core (SockCore_*, Sock_*): the IP-stack socket (IpSocket) followed by the
+// socket-core state, its receive / send command pipes (each a message queue + command thread + mutex, carved right
+// after the socket by SockCore_InitLayout), the UDP receive queue node and the creation parameters.
+// Defined in src/ov065/unk_ov065_0225f5c8.cpp (SockCore_Create etc.); also used by unk_ov065_0225f378.cpp,
+// unk_ov065_0225fdf0.cpp and (Params) unk_ov065_0225f1a0.cpp.
 
 struct SockThreadParams {
     /* 0x0 */ u16 stackSize;
@@ -27,55 +32,63 @@ struct SockCreateParams {
     /* 0x14 */ SockThreadParams sendThread;
 };
 
+// {size, buffer} pair filled by SockCore_CarveBuffer (the IpSocket buffers at 0x3c/0x48/0x50/0x58 and the send ring).
 struct SockBuffer {
-    /* 0x0 */ void *size;
-    /* 0x4 */ u32 buf;
+    /* 0x0 */ s32 size;
+    /* 0x4 */ u8 *buf;
+};
+
+// UDP datagram queued on the receive pipe (SockCore_OnUdpReceive).
+struct SockUdpRecvNode {
+    /* 0x0 */ SockUdpRecvNode *next;
+    /* 0x4 */ u16 len;
+    /* 0x6 */ u16 remotePort;
+    /* 0x8 */ u32 remoteAddr;
+    /* 0xc */ u8 data[4];
 };
 
 struct SockCoreSocket;
 
 struct SockRecvPipe {
-    /* 0x00 */ u8 unk_00[0xe0];
-    /* 0xe0 */ u8 mutex[0x18];
-    /* 0xf8 */ u32 pos;
-    /* 0xfc */ u16 limit;
-    /* 0xfe */ u8 unk_fe[0x0c];
+    /* 0x000 */ OSMessageQueue msgQueue;
+    /* 0x020 */ OSThread thread; // specific[0] = the IpSocket the thread works on
+    /* 0x0e0 */ OSMutex mutex;
+    /* 0x0f8 */ s32 pos; // bytes of the TCP receive buffer consumed
+    /* 0x0fc */ u16 limit;
+    /* 0x0fe */ s8 lock;
+    /* 0x0ff */ u8 pad_ff;
+    /* 0x100 */ SockUdpRecvNode *volatile tail;
+    /* 0x104 */ SockUdpRecvNode *head;
+    /* 0x108 */ u16 used;
     /* 0x10a */ u16 cap;
-    /* 0x10c */ u32 queue;
-    /* 0x110 */ u32 queueTail;
-    /* 0x114 */ u8 threadArea[4];
+    /* 0x10c */ OSThreadQueue waitQueue;
+    // 0x114: message array and thread stack (SockCore_StartCommandThread)
 };
 
 struct SockSendPipe {
-    /* 0x00 */ u8 unk_00[0xe0];
-    /* 0xe0 */ u8 unk_e0[0x18];
-    /* 0xf8 */ SockBuffer ring;
-    /* 0x100 */ u8 unk_100[4];
-    /* 0x104 */ u32 spaceWaitQueue;
-    /* 0x108 */ u32 spaceWaitQueueTail;
+    /* 0x000 */ OSMessageQueue msgQueue;
+    /* 0x020 */ OSThread thread;
+    /* 0x0e0 */ OSMutex mutex;
+    /* 0x0f8 */ SockBuffer ring;
+    /* 0x100 */ u16 ringWrite;
+    /* 0x102 */ u16 ringRead;
+    /* 0x104 */ OSThreadQueue spaceWaitQueue;
     /* 0x10c */ SockCoreSocket *owner;
-    /* 0x110 */ u8 threadArea[4];
+    // 0x110: message array and thread stack (SockCore_StartCommandThread)
 };
 
-struct SockCoreSocket {
-    /* 0x00 */ u8 unk_00[4];
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u8 unk_08[0x34];
-    /* 0x3c */ SockBuffer rxBuffer;
-    /* 0x44 */ u8 unk_44[4];
-    /* 0x48 */ SockBuffer txBuffer;
-    /* 0x50 */ SockBuffer rxAuxBuffer;
-    /* 0x58 */ SockBuffer pendingTxBuffer;
-    /* 0x60 */ u8 unk_60[4];
+struct SockCoreSocket : IpSocket {
     /* 0x64 */ SockRecvPipe *recvPipe;
     /* 0x68 */ SockSendPipe *sendPipe;
     /* 0x6c */ s32 result;
-    /* 0x70 */ s16 flags;
+    /* 0x70 */ volatile s16 flags;
     /* 0x72 */ s8 blocking;
     /* 0x73 */ s8 sockType;
     /* 0x74 */ u16 boundPort;
-    /* 0x76 */ u8 unk_76[10];
-    /* 0x80 */ u8 pipeArea[4];
+    /* 0x76 */ u16 peerPort;
+    /* 0x78 */ u32 peerAddr;
+    /* 0x7c */ SockCoreSocket *next; // sSockOpenList / sSockClosedList
+    // 0x80: the pipes and buffers SockCore_InitLayout carves
 };
 
 #endif

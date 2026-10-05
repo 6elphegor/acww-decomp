@@ -40,7 +40,7 @@ struct OSThread {
     u32 stackBottom;        // 0x94
     u32 stackWarningOffset; // 0x98
     OSThreadQueue joinQueue; // 0x9c
-    u32 specific[3];        // 0xa4
+    void *specific[3];      // 0xa4 (ov065 IP stack: specific[0] = the thread's IpSocket)
     void *alarm;            // 0xb0
     void (*destructor)(void *); // 0xb4
     u32 parameter;          // 0xb8

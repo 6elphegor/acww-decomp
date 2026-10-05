@@ -2,23 +2,18 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/IpFragEntry.h"
+#include "nitro/math.h"
 #include "net/IpStackConfig.h"
-#include "net/Unk_ov065_02264c44_Thr.h"
 #include "net/SslConnection.h"
 #include "net/SslSession.h"
 #include "net/IpSocket.h"
+#include "net/SslSha1Context.h"
+#include "nitro/os_rtc.h"
 
 namespace Unk_ov065_0226650c_Ns {
 
 
 // ov065_012: SSL/TLS handshake helpers (PRF, RSA, certificate ASN.1 parse), 0x0226650c..0x02266df4
-
-struct Unk_ov065_02266948_Date {
-    s32 year;
-    s32 month;
-    s32 day;
-    s32 week;
-};
 
 typedef SslConnection Ctx;
 typedef SslRsaPrivateKey Rsa;
@@ -31,11 +26,7 @@ extern u16 sSslCipherSuites[2];
 extern u8 sSslNoSession[];
 extern u32 gSslRsaThreadPriority;
 extern char *sSslCertOidTable[6];
-struct Unk_ov065_02266c90_Os {
-    u32 unk_00;
-    u32 cur;
-};
-extern Unk_ov065_02266c90_Os data_021fcc2c;
+extern OSThreadInfo data_021fcc2c;
 
 // main module
 void MI_CpuCopy8(const void *, void *, u32);
@@ -43,9 +34,9 @@ void MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
 u32 strlen(const char *);
 s32 memcmp(const void *, const void *, u32);
-void RTC_GetDate(Unk_ov065_02266948_Date *);
-u32 OS_GetThreadPriority(u32);
-void OS_SetThreadPriority(u32, u32);
+void RTC_GetDate(RTCDate *);
+u32 OS_GetThreadPriority(OSThread *);
+void OS_SetThreadPriority(OSThread *, u32);
 
 // same overlay, out of range
 void SslSha1_Init(void *);
@@ -297,7 +288,7 @@ s32 SslCert_VerifySignature(Ctx *c, Key *k) {
     SslBigNum_FromBytes(b2, k->exponent, k->exponentLen, n);
     SslBigNum_FromBytes(b3, k->modulus, k->modulusLen, n);
     if (gSslRsaThreadPriority < 0x20) {
-        u32 th = data_021fcc2c.cur;
+        OSThread *th = data_021fcc2c.current;
         u32 pr = OS_GetThreadPriority(th);
         OS_SetThreadPriority(th, gSslRsaThreadPriority);
         SslBigNum_ModExp(buf, b1, b2, n, b3);
@@ -410,7 +401,7 @@ void Ssl_HandleCertificate(Ctx *c, u8 *p) {
     u32 r4;
     s32 i;
     s32 k;
-    Unk_ov065_02266948_Date d;
+    RTCDate d;
     len = (((p[0] << 8) + p[1]) << 8) + p[2];
     p += 3;
     c->peerKeyAlgorithm = -1;
@@ -1125,15 +1116,6 @@ namespace Unk_ov065_02265130_Ns {
 
 // SSL 3.0 client/server handshake helpers (overlay 065)
 
-struct Unk_ov065_02265130_Hash {
-    u8 unk_00[0x5c];
-};
-
-struct Unk_ov065_02265334_Os {
-    u32 unk_00;
-    u32 cur;
-};
-
 typedef IpSocket Sess;
 typedef SslConnection Ctx;
 
@@ -1146,7 +1128,7 @@ extern IpRandStateSigned sIpRandState;
 extern u32 sSslSessionIdCounter;
 extern u8 sSslRandPool[20];
 extern u8 sSslRandSeeded;
-extern Unk_ov065_02265334_Os data_021fcc2c;
+extern OSThreadInfo data_021fcc2c;
 
 // main module
 u32 OS_DisableInterrupts();
@@ -1155,8 +1137,8 @@ void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 _s32_div_f(s32, s32);
 s64 _ll_mul(s64, s64);
-u32 OS_GetThreadPriority(u32);
-void OS_SetThreadPriority(u32, u32);
+u32 OS_GetThreadPriority(OSThread *);
+void OS_SetThreadPriority(OSThread *, u32);
 
 // same overlay, out of range
 s32 Tcp_Connect(Sess *);
@@ -1197,13 +1179,13 @@ void SslRand_GetNonZeroBytes(u8 *, s32);
 void SslRand_GetNonZeroBytes(u8 *out, s32 n) {
     u32 seed;
     u8 buf[20];
-    Unk_ov065_02265130_Hash h;
+    SslSha1Context h;
     s32 i;
     s32 j;
     u32 z;
     if (sSslRandSeeded == 0) {
-        sIpRandState.value = sIpRandState.increment + _ll_mul(sIpRandState.multiplier, sIpRandState.value);
-        seed = (u32)(sIpRandState.value >> 32);
+        sIpRandState.x = sIpRandState.add + _ll_mul(sIpRandState.mul, sIpRandState.x);
+        seed = (u32)(sIpRandState.x >> 32);
         SslRand_AddSeed((u8 *)&seed, 4);
     }
     j = 0x14;
@@ -1244,7 +1226,7 @@ void SslRand_GetNonZeroBytes(u8 *out, s32 n) {
 }
 
 void SslRand_AddSeed(u8 *p, u32 n) {
-    Unk_ov065_02265130_Hash h;
+    SslSha1Context h;
     u32 th;
     SslSha1_Init(&h);
     th = OS_DisableInterrupts();
@@ -1478,7 +1460,7 @@ void Ssl_SendClientKeyExchange(Sess *s) {
     SslBigNum_FromBytes(p2, ctx->peerExponent, ctx->peerExponentLen, cnt);
     SslBigNum_FromBytes(p3, ctx->peerModulus, n, cnt);
     if (gSslRsaThreadPriority < 0x20) {
-        u32 th = data_021fcc2c.cur;
+        OSThread *th = data_021fcc2c.current;
         u32 pr = OS_GetThreadPriority(th);
         OS_SetThreadPriority(th, gSslRsaThreadPriority);
         SslBigNum_ModExp(p0, p1, p2, cnt, p3);
@@ -1657,7 +1639,7 @@ extern u32 sIpStackStatus;
 extern u32 sDnsServers[2];
 extern u32 sDhcpServerId;
 extern u8 sArpCache[];
-extern Unk_ov065_02264c44_Info data_021fcc2c;
+extern OSThreadInfo data_021fcc2c;
 extern IpFragEntry sIpFragTable[8];
 extern void (*sIpFree)(void *);
 extern u32 sIpYieldMode;
@@ -1673,7 +1655,7 @@ extern u32 sRecvRingWrite;
 extern u16 sNextEphemeralPort;
 extern u8 sOwnMac[];
 extern u8 sArpConflict;
-extern IpRandState sIpRandState;
+extern MATHRandContext32 sIpRandState;
 extern u8 sSslRandSeeded[];
 extern u8 sIpRecvThreadStack[];
 
@@ -1891,7 +1873,7 @@ void Ssl_Shutdown(IpSocket *o) {
 
 void Ssl_EnableOnCurrentSocket(u32 v) {
     OSi_ReferSymbol(0x2000c14);
-    IpSocket *s = ((Unk_ov065_02264c44_Thr *)data_021fcc2c.cur)->ipSocket;
+    IpSocket *s = (IpSocket *)data_021fcc2c.current->specific[0];
     if (s != 0) {
         s->useSsl = v;
     }

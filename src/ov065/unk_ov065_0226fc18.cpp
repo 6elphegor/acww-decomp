@@ -362,14 +362,14 @@ void DwcCore_Shutdown(void) {
     if (sDwcControl == NULL) {
         return;
     }
-    if (sDwcControl->qr2Object != NULL) {
-        qr2_shutdown(sDwcControl->qr2Object);
-        sDwcControl->qr2Object = NULL;
+    if (sDwcControl->matchControl.qr2Object != NULL) {
+        qr2_shutdown((void *)sDwcControl->matchControl.qr2Object);
+        sDwcControl->matchControl.qr2Object = NULL;
     }
-    sDwcControl->qr2ShutdownPending = 0;
-    if (sDwcControl->serverBrowser != NULL) {
-        ServerBrowserFree(sDwcControl->serverBrowser);
-        sDwcControl->serverBrowser = NULL;
+    sDwcControl->matchControl.qr2ShutdownPending = 0;
+    if (sDwcControl->matchControl.serverBrowser != NULL) {
+        ServerBrowserFree((void *)sDwcControl->matchControl.serverBrowser);
+        sDwcControl->matchControl.serverBrowser = NULL;
     }
     NNFreeNegotiateList();
     CloseStatsConnection();
@@ -1028,7 +1028,7 @@ void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4) {
     DwcControl *h;
 
     if (a0 == 0 && a1 != 0) {
-        if (sDwcControl->matchState == 0) {
+        if (sDwcControl->matchControl.matchState == 0) {
             DwcMatch_ResetPlayerCounts();
             DwcCore_SetState(3);
         }
@@ -1036,22 +1036,22 @@ void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4) {
         DwcCore_SetState(6);
         i = 0;
         g = sDwcControl;
-        if (i <= *(volatile u8 *)&g->numClients) {
+        if (i <= *(volatile u8 *)&g->matchControl.numClients) {
             h = g;
             do {
-                if (h->ownProfileId == g->memberProfileIds[0]) {
-                sDwcControl->myAid = sDwcControl->aids[i];
+                if (h->ownProfileId == g->matchControl.memberProfileIds[0]) {
+                sDwcControl->myAid = sDwcControl->matchControl.aids[i];
                 break;
                 }
                 g = (DwcControl *)((u8 *)g + 4);
                 i++;
-            } while (i <= *(volatile u8 *)&h->numClients);
+            } while (i <= *(volatile u8 *)&h->matchControl.numClients);
         }
     }
-    sDwcControl->validAidMask = DwcConn_AidListToBitmap(sDwcControl->aids, sDwcControl->numClients + 1);
+    sDwcControl->matchControl.validAidMask = DwcConn_AidListToBitmap(sDwcControl->matchControl.aids, sDwcControl->matchControl.numClients + 1);
     DwcMatch_UpdateValidAidCount();
     g = sDwcControl;
-    if (*(volatile u8 *)&g->matchType == 2 || *(volatile u8 *)&g->matchType == 3) {
+    if (g->matchControl.matchType == 2 || g->matchControl.matchType == 3) {
         sDwcControl->serverMatchCallback(a0, a1, a2, a3, a4, sDwcControl->serverMatchCallbackArg);
     } else {
         g->matchCallback(a0, a1, g->matchCallbackArg);
@@ -1099,7 +1099,7 @@ void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c) {
                             if (g->state != 6) {
                                 goto fin;
                             }
-                            if (*(volatile u8 *)&g->matchType != 2 && *(volatile u8 *)&g->matchType != 3) {
+                            if (g->matchControl.matchType != 2 && g->matchControl.matchType != 3) {
                                 goto fin;
                             }
                         }
@@ -1161,24 +1161,24 @@ void DwcConn_OnGt2Closed(s32 a0, s32 a1) {
             return;
         }
         r5 = et->aid;
-        u32 m = *(volatile u32 *)&sDwcControl->validAidMask;
+        u32 m = *(volatile u32 *)&sDwcControl->matchControl.validAidMask;
         k = TRUE;
         if ((m & (1 << r5)) == 0) {
             k = FALSE;
         }
         DwcNet_ResetChannel(r5);
         g = sDwcControl;
-        if ((g->matchType == 2 && a1 == 0) || (g->matchType == 3 && r5 == 0)) {
+        if ((g->matchControl.matchType == 2 && a1 == 0) || (g->matchControl.matchType == 3 && r5 == 0)) {
             v10 = 1;
         }
         v0c = DwcConn_RemoveAid(r5);
         sDwcConnTable[ent->slotIndex] = 0;
-        sDwcControl->numClients--;
-        sDwcControl->numPlayers--;
+        sDwcControl->matchControl.numClients--;
+        sDwcControl->matchControl.numPlayers--;
     }
     g = sDwcControl;
     if (g->isClosingAll == 0 && g->state == 6 && k == 0) {
-        if (g->matchType == 2 && r4 == 0) {
+        if (g->matchControl.matchType == 2 && r4 == 0) {
             DwcMatch_UpdateServerStatus();
             DwcMatch_OnClientDisconnected(v0c);
             return;
@@ -1194,33 +1194,33 @@ void DwcConn_OnGt2Closed(s32 a0, s32 a1) {
     }
     g = sDwcControl;
     if (g->isClosingAll == 0) {
-        if (*(volatile u8 *)&g->matchType != 2 && *(volatile u8 *)&g->matchType != 3) {
+        if (g->matchControl.matchType != 2 && g->matchControl.matchType != 3) {
             goto skip1;
         }
         DwcControl *h = sDwcControl;
-        u32 n = h->numClients;
+        u32 n = h->matchControl.numClients;
         u32 i = n + 2;
-        if (h->memberProfileIds[i] != 0) {
-            h->aids[n + 1] = h->aids[i];
-            DwcMatch_RemoveMemberAt(sDwcControl->numClients + 1, sDwcControl->numClients + 3);
+        if (h->matchControl.memberProfileIds[i] != 0) {
+            h->matchControl.aids[n + 1] = h->matchControl.aids[i];
+            DwcMatch_RemoveMemberAt(sDwcControl->matchControl.numClients + 1, sDwcControl->matchControl.numClients + 3);
         }
     }
 skip1:
     g = sDwcControl;
-    if (g->matchType == 2) {
+    if (g->matchControl.matchType == 2) {
         if (g->isClosingAll == 0) {
             DwcMatch_UpdateServerStatus();
-        } else if (g->numClients == 0) {
+        } else if (g->matchControl.numClients == 0) {
             DwcFriend_SetOwnStatus(1, (void *)"", 0);
         }
-    } else if (g->numClients == 0) {
+    } else if (g->matchControl.numClients == 0) {
         DwcFriend_SetOwnStatus(1, (void *)"", 0);
     }
     g = sDwcControl;
-    if (*(volatile u8 *)&g->matchType != 0 && *(volatile u8 *)&g->matchType != 1) {
+    if (g->matchControl.matchType != 0 && g->matchControl.matchType != 1) {
     } else {
-        sDwcControl->maxPlayers = sDwcControl->numPlayers;
-        qr2_send_statechanged((u32)sDwcControl->qr2Object);
+        sDwcControl->matchControl.maxPlayers = sDwcControl->matchControl.numPlayers;
+        qr2_send_statechanged(sDwcControl->matchControl.qr2Object);
     }
     g = sDwcControl;
     if (g->closedCallback != 0 && k != 0) {
@@ -1232,10 +1232,10 @@ skip1:
         sDwcControl->closedCallback(r4, a1, v10, r5, DwcFriend_FindIndexByProfileId(v0c), g->closedCallbackArg);
     }
     g = sDwcControl;
-    if (g->isClosingAll == 0 && g->matchType == 2) {
+    if (g->isClosingAll == 0 && g->matchControl.matchType == 2) {
         return;
     }
-    if (g->numClients == 0) {
+    if (g->matchControl.numClients == 0) {
         NNFreeNegotiateList();
         DwcMatch_ResetPlayerCounts();
         DwcCore_SetState(3);

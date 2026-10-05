@@ -2,6 +2,7 @@
 #define NET_DWCNETCHANNEL_H
 
 #include "types.h"
+#include "nitro/math.h"
 
 // DWC per-aid data channel (DwcNet_*): send/receive state, the "DT" frame header and the LCG state
 // (src/ov065/unk_ov065_02277140.cpp, src/ov065/unk_ov065_022723b8.cpp namespace F0227702c).
@@ -29,12 +30,6 @@ struct DwcNetFrameHeader {
     /* 0x0 */ u32 dataSize;
     /* 0x4 */ u16 frameType;
     /* 0x6 */ u8 magic[2];
-};
-
-struct Unk_ov065_022778b0_Rng {
-    /* 0x00 */ u64 value;
-    /* 0x08 */ u64 multiplier;
-    /* 0x10 */ u64 increment;
 };
 
 #endif

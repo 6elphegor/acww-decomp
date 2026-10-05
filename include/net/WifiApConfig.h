@@ -3,12 +3,16 @@
 
 #include "types.h"
 
-// WifiAp_Init config, the WifiAp allocator block (sWifiApAllocator) and two bitfield views of WifiAp context
-// bytes 0xd0b / 0xd0c (src/ov065/unk_ov065_0226ad84.cpp).
+// WifiAp_Init config (src/ov065/unk_ov065_0226ad84.cpp; passed by DwcInet_StartConnect, src/ov065/unk_ov065_02277974.cpp,
+// and the ov001 connection test) and the WifiAp allocator block (sWifiApAllocator). dmaNo / powerMode / apFilter /
+// netCheckMode go to WifiApContext 0xd0a..0xd0c.
+
+typedef void *(*WifiApAllocFunc)(u32, u32);
+typedef void (*WifiApFreeFunc)(u32, void *, u32);
 
 struct WifiApConfig {
-    /* 0x0 */ void *(*unk_00)(u32, u32);
-    /* 0x4 */ void (*unk_04)(u32, void *, u32);
+    /* 0x0 */ WifiApAllocFunc allocFunc;
+    /* 0x4 */ WifiApFreeFunc freeFunc;
     /* 0x8 */ u8 dmaNo;
     /* 0x9 */ u8 powerMode;
     /* 0xa */ u8 apFilter;
@@ -16,18 +20,9 @@ struct WifiApConfig {
 };
 
 struct WifiApAllocator {
-    /* 0x0 */ void *(*unk_00)(u32, u32);
-    /* 0x4 */ void (*unk_04)(u32, void *, u32);
+    /* 0x0 */ WifiApAllocFunc allocFunc;
+    /* 0x4 */ WifiApFreeFunc freeFunc;
     /* 0x8 */ u32 unk_08;
-};
-
-struct Unk_ov065_0226b27c_B0b {
-    /* 0x0 */ u8 lo : 2;
-};
-
-struct Unk_ov065_0226b27c_B0c {
-    /* 0x0 */ u8 lo : 4;
-    /* 0x0 */ u8 mid : 2;
 };
 
 #endif

@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/GsSocket.h"
+#include "net/SockHostEnt.h"
 #include "net/ghttpConnection.h"
 #include "net/gsPlatformUtil.h"
 
@@ -16,7 +17,7 @@ extern const char defaultEncoding[4] = "+/=";
 s32 randomnum = 1;
 s32 GSINitroErrno;
 u8 data_ov065_0229107c[4];
-GsHostEnt localhost;
+SockHostEnt localhost;
 GsHostAddr data_ov065_02291094;
 GsHostAddrList data_ov065_022910a8;
 }
@@ -54,7 +55,7 @@ extern "C" {
 extern s32 GSINitroErrno;
 extern GsHostAddr data_ov065_02291094;
 extern u8 data_0213a410[];
-extern GsHostEnt localhost;
+extern SockHostEnt localhost;
 extern GsHostAddrList data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 void MI_CpuFill8(void *p, s32 v, s32 n);
@@ -411,11 +412,11 @@ s32 CanSendOnSocket(s32 a) {
 namespace FB {
 extern "C" {
 s32 getlocalhost() {
-    localhost.hostName = (u32)"localhost";
-    localhost.aliases = (u32)data_ov065_0229107c;
+    localhost.hostName = (char *)"localhost";
+    localhost.aliases = (char **)data_ov065_0229107c;
     localhost.addrType = 2;
     localhost.addrLength = 0;
-    localhost.addrList = (u32)&data_ov065_022910a8;
+    localhost.addrList = (char **)&data_ov065_022910a8;
     data_ov065_02291094.hostIp = 0;
     IpAddr_StoreBe32(SockCore_GetHostIp(), (u32 *)&data_ov065_02291094);
     if (data_ov065_02291094.hostIp == 0) {

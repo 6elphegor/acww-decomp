@@ -3,6 +3,7 @@
 #include "net/WifiLinkWork.h"
 #include "net/WifiApControl.h"
 #include "net/WifiApConfig.h"
+#include "net/WifiApContext.h"
 
 
 
@@ -66,16 +67,16 @@ s32 WifiAp_Process();
 s32 WifiAp_Init(WifiApConfig *cfg);
 
 s32 WifiAp_Init(WifiApConfig *cfg) {
-    u8 *ec;
+    WifiApContext *ec;
     WifiApAllocator *f8;
     WifiApControl *fc;
     s32 r;
-    fc = (WifiApControl *)cfg->unk_00(1, 0x18);
+    fc = (WifiApControl *)cfg->allocFunc(1, 0x18);
     sWifiApControl = fc;
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApControl, 0x18); }
     fc = sWifiApControl;
-    fc->unk_00 = cfg->unk_00;
-    fc->unk_04 = cfg->unk_04;
+    fc->unk_00 = cfg->allocFunc;
+    fc->unk_04 = cfg->freeFunc;
     fc->state = 1;
     fc->furthestState = 1;
     fc->allocMask = 1;
@@ -87,18 +88,15 @@ s32 WifiAp_Init(WifiApConfig *cfg) {
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApLinkWork, 0x2300); }
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApSocketConfig, 0x58); }
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApAllocator, 0xc); }
-    ec = sWifiApContext;
-    ec[0xd0a] = cfg->dmaNo;
-    ((Unk_ov065_0226b27c_B0b *)(ec + 0xd0b))->lo = cfg->powerMode;
+    ec = (WifiApContext *)sWifiApContext;
+    ec->dmaNo = cfg->dmaNo;
+    ec->powerMode = cfg->powerMode;
     f8 = sWifiApAllocator;
-    f8->unk_00 = cfg->unk_00;
-    f8->unk_04 = cfg->unk_04;
+    f8->allocFunc = cfg->allocFunc;
+    f8->freeFunc = cfg->freeFunc;
     f8->unk_08 = 0;
-    {
-        Unk_ov065_0226b27c_B0c *b = (Unk_ov065_0226b27c_B0c *)(ec + 0xd0c);
-        b->lo = cfg->apFilter;
-        b->mid = cfg->netCheckMode;
-    }
+    ec->apFilter = cfg->apFilter;
+    ec->netCheckMode = cfg->netCheckMode;
     DWCi_BM_GetApInfo(ec);
     r = WifiLink_Init(sWifiApLinkWork, 0x2300);
     if (r == 1 || r >= 4) {

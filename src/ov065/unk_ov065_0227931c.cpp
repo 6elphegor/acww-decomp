@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/GsSocket.h"
+#include "net/SockHostEnt.h"
 #include "net/ghttpConnection.h"
 #include "net/gsPlatformUtil.h"
 
@@ -28,7 +29,7 @@ extern s32 GSINitroErrno;
 extern GsHostAddr data_ov065_02291094;
 extern u8 data_0213a410[];
 
-extern GsHostEnt localhost;
+extern SockHostEnt localhost;
 extern GsHostAddrList data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 
