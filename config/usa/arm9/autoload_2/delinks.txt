@@ -260,6 +260,10 @@ src/autoload_2/unk_02102cbc.c:
     complete
     .text       start:0x02102cbc end:0x02102f38
 
+src/autoload_2/unk_02102f38.c:
+    complete
+    .text       start:0x02102f38 end:0x021030a0
+
 src/autoload_2/unk_021030a0.c:
     complete
     .text       start:0x021030a0 end:0x021030bc

@@ -59,6 +59,9 @@ expanded copy; units that use `.incbin` therefore depend on the extract step.
 * hardware registers (`*(volatile u32 *)0x04000000`, the SDK's register accessors);
 * variables that the SDK itself declares volatile (for example the `vu16 zero` of `MI_CpuClear16` and the
   `vu16`/`vu64` locals of `OS_GetTick`);
+* the fill value of this NitroSDK's `MI_CpuFillFast` inline (a `vu32` local): all 17 `MIi_CpuClearFast` call sites
+  in main, `autoload_2` and ITCM store the value to the stack and reload it, constant zeros included, which mwcc
+  does only for a volatile object (NitroSystem `ClearContinuous` and `ClearChar`, user-approved 2026-10-04);
 * the two words `data_021f5c40` and `data_021f5c44`, which the PXI receive callback at 0x020fe4b4
   (`src/autoload_2/unk_020fe4b4.cpp`) shares with interrupt context.
 

@@ -13,10 +13,10 @@ Code (`.text`) built from source:
 | Module | `.text` bytes | Built from source | Not built | Functions not built |
 |---|--:|--:|--:|--:|
 | ARM9 main | 797,444 | 797,224 (99.97%) | 220 (data inside `.text`, see below) | 0 of 11,879 |
-| `autoload_2` (NitroSDK, NitroSystem, MSL, runtime, in-house library) | 320,532 | 313,492 (97.8%) | 7,040 | 9 of 2,189 |
+| `autoload_2` (NitroSDK, NitroSystem, MSL, runtime, in-house library) | 320,532 | 313,852 (97.9%) | 6,680 | 8 of 2,189 |
 | ITCM | 23,264 | 22,560 (97.0%) | 704 (624 in 2 functions, 80 of data) | 2 of 158 |
 | Overlays (99 with code) | 1,450,796 | 1,450,796 (100%) | 0 | 0 |
-| **Total** | **2,592,036** | **2,584,072 (99.7%)** | **7,964** | **11** |
+| **Total** | **2,592,036** | **2,584,432 (99.7%)** | **7,604** | **10** |
 
 Data sections owned by a source file:
 
@@ -40,7 +40,6 @@ by size on their own, see `tools/pipeline/linking.md`, "Data of library units").
 | Address | Size | Library | What it does | Closest attempt / remaining difference |
 |---|--:|---|---|---|
 | `0x020f4904` | 0x158 | in-house (sound) | Fixed-point distance of a position to the listener, three modes | One instruction-order difference in case 2 (6 diff lines). mwcc's pre-RA scheduler gives one of two orders, neither the original (`ldr x; ldr y; sub x; sub y; asr x; asr y; smull x`): with in-place or forward-substituted shifts the `asr y` comes first and `x >> 3` lands in r0; with `x` fused (`(p->x - K) >> 3`) the registers are right but `sub y; asr y` sink below `smull x`. About 1,700 statement orders, variable splits, struct/array locals, inline helpers and `FX_Mul` spellings (C and C++) give only these two orders. |
-| `0x02102f38` | 0x168 | NitroSystem G2D (CharCanvas) | Fill a pixel rectangle of one character (`ClearChar`) | The whole function matches except the 8x8 fill: the original stores the colour to `[sp]` and reloads it as the first argument of `MIi_CpuClearFast` with registers to spare. Only a `volatile` local reproduces that (an attempt with one matches byte for byte, declaration order searched); plain, address-taken, union, array, struct and inline-pointer forms are all kept in registers. Attempt in `pipeline_wip/phase3/M1/attempts`. |
 | `0x0210ae48` | 0x368 | NitroSystem sound | Start a sound capture (sets up the capture and PCM channels) | 22 diff lines, registers only: the PCM channel timer and the alarm offset (`32 >> !pcm8` times `timer >> 5`) have r5 and fp swapped; everything else, stack slots included, is the original. Needed: `SND_SetupChannelPcm(ch, format, data, ...)` argument order, an enum-typed wave format (`pcm8 ? SND_WAVE_FORMAT_PCM8 : SND_WAVE_FORMAT_PCM16`, a plain `0 : 1` inverts the conditional moves) and the local declaration order `startCh, period, capFmt, alarm, pcm8, first, len, timer, chFmt, c`. Declaration order, types and statement forms do not move the two values; giving the offset a longer live range does, so the original likely differs in where it is used. |
 | `0x0210d174` | 0x8b4 | NitroSystem sound | Wave-stream block reader with IMA-ADPCM decoder | Register allocation; the original spills locals differently; several hundred diff lines. Probably needs the original stream-player source. |
 | `0x0210ea0c` | 0x200 | NitroSystem sound | Capture effect callback (sample processing with a clamp to s16) | 67 diff lines: the original rematerialises -32768 for the compare (`mov #32768; rsb`) but keeps the stored -32768 in r9. An inline clamp `t = x; if (x < -32768) t = -32768; else if (x > 32767) t = 32767; return t;` with `l[j + base]` indexing and `n > base + 24` reproduces that constant handling and the shape of all four loops, but registers and a few instruction orders in the loops differ (130 diff lines; the original keeps `base` in ip and the clamp constants in r8/r9). |
