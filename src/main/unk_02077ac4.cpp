@@ -5778,9 +5778,9 @@ extern "C" void *Villager_GetPlan(VillagerData *a) { return a->planBlock; }
 namespace nL {
 extern "C" s32 Villager_GetTrend(VillagerData *a, s32 b) {
     if ((u32)_ZN12VillagerPlan13getStateGroupEv(VillagerPlanBlock_GetPlan(a->planBlock)) <= 1) {
-        _ZN12VillagerPlan12getTrendNameEi(b, _ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(a->planBlock)));
+        return _ZN12VillagerPlan12getTrendNameEi(b, _ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(a->planBlock)));
     } else {
-        _ZN12VillagerPlan12getTrendNameEi(b, 7);
+        return _ZN12VillagerPlan12getTrendNameEi(b, 7);
     }
 }
 }

@@ -338,7 +338,7 @@ void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
 s32 _ZN11CommManager17getWifiFriendListEv(void *p);
 s32 _ZN10PlayerData13getFriendListEv(void *self);
-u8 *FriendList_GetEntries(void);
+u8 *FriendList_GetEntries(s32 list);
 s32 FriendEntry_GetFriendData(u8 *p);
 u8 *DwcFriendData_GetBytes(s32 p);
 void _ZN11SaveManager9startTalkEPKch(u32 a, void *b, u32 c);
@@ -4934,8 +4934,7 @@ extern "C" void SaveManager_StartSequence2Talk(u32 a) {
 
 extern "C" void Wifi_StoreFriendList(void) {
     s32 r6 = NB::_ZN11CommManager17getWifiFriendListEv(NB::gCommManager);
-    NB::_ZN10PlayerData13getFriendListEv((void *)NB::PlayerData_GetCurrent());
-    u8 *r5 = NB::FriendList_GetEntries();
+    u8 *r5 = NB::FriendList_GetEntries(NB::_ZN10PlayerData13getFriendListEv((void *)NB::PlayerData_GetCurrent()));
     s32 i;
     for (i = 0; i < 0x20; i++) {
         NB::MI_CpuCopy8((u8 *)r6 + i * 12, NB::DwcFriendData_GetBytes(NB::FriendEntry_GetFriendData(r5)), 12);

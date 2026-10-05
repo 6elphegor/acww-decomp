@@ -207,9 +207,9 @@ public:
     void drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal);
     BOOL touchListRow();
     u8 *getListEntries();
-    s32 rebuildList();
+    void rebuildList();
     void setEntryName(void *p, u32 idx);
-    s32 buildEntryLabels(u8 *tbl);
+    void buildEntryLabels(u8 *tbl);
     void layoutListLabels();
     void buildEntryLists();
     void *allocTextLabel();
@@ -954,7 +954,7 @@ void MapViewerMenu::layoutListLabels() {
     }
 }
 
-s32 MapViewerMenu::buildEntryLabels(u8 *tbl) {
+void MapViewerMenu::buildEntryLabels(u8 *tbl) {
     s32 i;
     for (i = 0; i < 0xd; i++) {
         void *w = allocTextLabel();
@@ -990,7 +990,7 @@ void MapViewerMenu::showPlacesList() {
     rebuildList();
 }
 
-s32 MapViewerMenu::rebuildList() {
+void MapViewerMenu::rebuildList() {
     s32 k;
     buildListScreen();
     layoutListLabels();

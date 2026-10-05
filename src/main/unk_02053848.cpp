@@ -57,7 +57,7 @@ void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
 void _ZN5Model10drawScaledEPi(void *p, void *q);
 void *Gfx3d_AllocAnmObj(void *a, void *b, void *c);
 extern u8 sJointAnmHeader2[];
-s32 _ZN9AnimModel12drawAnimatedEPv(void *p);
+void _ZN9AnimModel12drawAnimatedEPv(void *p);
 void CpuMtx_RestoreFromStack(u32 v);
 void CpuMtx_StoreToStack(u32 v);
 void CpuMtx_MultRotScaledTrans(void *a, void *b, void *c);
@@ -321,7 +321,7 @@ void AnimModel::stepAnim()
     anmObj->frame = curFrame;
 }
 
-s32 AnimModel::drawAnimated(void *q)
+void AnimModel::drawAnimated(void *q)
 {
     if (renderJntRecord != 0) {
         renderObj |= 1;
@@ -364,7 +364,7 @@ void BlendAnimModel::initAnim(s32 a, s32 b, s32 c, u16 d, u16 e)
     anmObj->frame = curFrame;
 }
 
-s32 AnimModel::attachAnim()
+void AnimModel::attachAnim()
 {
     NNS_G3dRenderObjAddAnmObj(&renderObj, anmObj);
 }

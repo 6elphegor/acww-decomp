@@ -104,7 +104,7 @@ void *Heap_Alloc(void *heap, u32 size);
 s32 _ZN10MuseumData9isDonatedEPt(void *p, u16 *v);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 _ZN12G3dResAccess11findNodeIdxEi(void *p, char *name);
-s32 _ZN9AnimModel12drawAnimatedEPv(void *p, u32 a);
+void _ZN9AnimModel12drawAnimatedEPv(void *p, u32 a);
 s32 _ZN5Model15setInitCallbackEii(void *p, void *fn, void *self);
 void MuseumDisplay_InitRenderObj(void *p);
 void MuseumDisplay_NodeCallback(NNSG3dRS *o);

@@ -266,7 +266,7 @@ u32 SceneLights_GetMatLightMask2();
 s32 Model_setResourceAndBind(void *self, u32 a, u32 b);
 s32 AnimModel_allocAnmObj(void *self, u32 a);
 s32 BlendAnimModel_initAnim(void *self, u32 a, s32 b, s32 c, s32 d, s32 e);
-s32 AnimModel_attachAnim(void *self);
+void AnimModel_attachAnim(void *self);
 s32 ModelAnim_allocMatAnm(void *self, void *a, u32 b);
 s32 ModelAnim_init(void *self, u32 a, s32 b, s32 c, s32 d);
 u32 Model_getRenderObj(void *self);

@@ -51,7 +51,7 @@ void WfcConnTest_Enter();
 void WfcTestSuccess_CountDown();
 void WfcTestSuccess_Exit();
 void WfcTestSuccess_FadeOut();
-s32 WfcTestSuccess_Idle();
+void WfcTestSuccess_Idle();
 void WfcTestSuccess_Update();
 void WfcTestSuccess_WaitFadeIn();
 void WfcTestSuccess_FadeIn();
@@ -109,7 +109,7 @@ void WfcTestSuccess_Update() {
     WfcTestSuccess_Idle();
 }
 
-s32 WfcTestSuccess_Idle() {
+void WfcTestSuccess_Idle() {
 }
 
 void WfcTestSuccess_FadeOut() {

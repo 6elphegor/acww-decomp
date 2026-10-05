@@ -136,7 +136,7 @@ public:
     void selectLetter(u32 idx);
     void cancelPopupForButtons();
     void openPopup();
-    s32 onPopupChoice();
+    void onPopupChoice();
     void beginSwapAt(u32 v);
     void beginPutDownAt(u32 v);
     void beginMoveFromPopup();
@@ -1212,7 +1212,7 @@ void PocketLettersMenu::beginSwapAt(u32 v) {
     setMainState(0x11);
 }
 
-s32 PocketLettersMenu::onPopupChoice() {
+void PocketLettersMenu::onPopupChoice() {
     switch (popupChoice) {
     case 0:
         beginMoveFromPopup();

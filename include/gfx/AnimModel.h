@@ -18,9 +18,9 @@ public:
     void detachAnim();
     void detachVisAnim();
     void detachJointAnim();
-    s32 attachAnim();
+    void attachAnim();
     void setFrame(s32 v);
-    s32 drawAnimated(void *q);
+    void drawAnimated(void *q);
     void stepAnim();
     BOOL allocAnmObj(void *x);
 };

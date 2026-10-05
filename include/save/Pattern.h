@@ -37,7 +37,7 @@ public:
     void setAuthorToCurrentPlayer();
     void setPalette(u32 v);
     u8 getPalette();
-    void getPaletteData();
+    u8 *getPaletteData();
     BOOL infoEquals(PatternInfo *o);
 };
 

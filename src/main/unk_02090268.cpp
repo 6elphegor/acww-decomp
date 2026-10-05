@@ -1350,7 +1350,7 @@ extern "C" s32 Effect_CreateKind10(s32 a, s32 b, s32 c, s32 d) {
 }
 
 namespace R5 {
-extern "C" s32 EffectKind0E_InitEmitter0(EffectEmitterEntry *p) {
+extern "C" void EffectKind0E_InitEmitter0(EffectEmitterEntry *p) {
     EffectEmitterTagBytes id;
     GroundInfoBase o;
     VecFx32 v;
@@ -2492,7 +2492,7 @@ extern "C" s32 Effect_CreateKind39(s32 a, s32 b, s32 c, s32 d)
 }
 
 namespace R3 {
-extern "C" s32 EffectKind3A_InitEmitter0(EffectEmitterEntry *p)
+extern "C" void EffectKind3A_InitEmitter0(EffectEmitterEntry *p)
 {
     EffectScratchSlot *const e = &(*(EffectScratchSlot *)&gEffectManager[32]);
     EffectEmitterTag i = p->tag;
@@ -2844,7 +2844,7 @@ extern "C" s32 Effect_CreateKind4D(s32 a, s32 b, s32 c, void *d) { return Effect
 }
 
 namespace R2 {
-extern "C" s32 EffectKind4E_InitEmitter0(EffectEmitterEntry *p)
+extern "C" void EffectKind4E_InitEmitter0(EffectEmitterEntry *p)
 {
     EffectSlot *const g = &(*(EffectSlot *)&gEffectManager[32]);
     EffectEmitterTag i = p->tag;
@@ -2854,7 +2854,7 @@ extern "C" s32 EffectKind4E_InitEmitter0(EffectEmitterEntry *p)
 }
 
 namespace R2 {
-extern "C" s32 EffectKind4E_InitEmitter1(EffectEmitterEntry *p)
+extern "C" void EffectKind4E_InitEmitter1(EffectEmitterEntry *p)
 {
     EffectSlot *const g = &(*(EffectSlot *)&gEffectManager[32]);
     EffectEmitterTag i = p->tag;

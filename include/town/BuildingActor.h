@@ -65,7 +65,7 @@ public:
     s32 getViewRangeFront();
     s32 getViewRangeBack();
     BOOL setEntryState(s32 a);
-    BOOL execEntryCheck();
+    void execEntryCheck();
     BOOL enterEntryCheck();
     void execEntryIdle();
     BOOL enterEntryIdle();

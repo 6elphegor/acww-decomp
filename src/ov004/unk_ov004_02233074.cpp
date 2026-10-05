@@ -612,7 +612,7 @@ extern "C" u32 FtrMoveAnim_GetPullAnim(FtrMoveAnim *r);
 extern "C" u32 FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r);
 extern "C" void *TvProgSlot_Construct(TvProgSlot *p);
 extern "C" void *TvProgSlot_Destruct(TvProgSlot *p);
-extern "C" void *TvProgSlot_Init(TvProgSlot *p, u32 a);
+extern "C" void TvProgSlot_Init(TvProgSlot *p, u32 a);
 extern "C" s32 TvWeather_GetName(u32 i);
 extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x);
 extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p);
@@ -4645,7 +4645,7 @@ extern "C" void *TvProgSlot_Destruct(TvProgSlot *p) {
 }
 
 // @0x2233744 unk_0223349c.cpp
-extern "C" void *TvProgSlot_Init(TvProgSlot *p, u32 a) {
+extern "C" void TvProgSlot_Init(TvProgSlot *p, u32 a) {
     p->program = -1;
     p->weather = -1;
     p->heap = FrameHeap_Create(0xe00, gCurrentHeap);

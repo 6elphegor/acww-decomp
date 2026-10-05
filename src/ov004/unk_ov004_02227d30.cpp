@@ -84,8 +84,8 @@ extern u32 gBgHeap;
 s32 RoomObjRes_GetBca(void *, u32);
 s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
 s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
-s32 _ZN9AnimModel10attachAnimEv(void *);
-s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
+void _ZN9AnimModel10attachAnimEv(void *);
+void _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel8stepAnimEv(void *);
 }
 
