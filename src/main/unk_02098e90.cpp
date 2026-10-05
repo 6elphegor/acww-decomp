@@ -67,7 +67,7 @@ public:
     VillagerId *getVillagerId();
     SickVillagerRecord *destructRecord();
     SickVillagerRecord *constructRecord();
-    void getErrand();
+    void *getErrand();
     void resetRecord();
     u8 *getParcelErrand();
 };
@@ -2296,8 +2296,9 @@ void SickVillagerRecord::resetRecord() {
 
 namespace n2 {
 }
-void SickVillagerRecord::getErrand() {
+void *SickVillagerRecord::getErrand() {
     using namespace n2;
+    return this;
 }
 
 

@@ -117,7 +117,7 @@ TexVramSlot *ModelSlot::getVramSlot() {
     return &vramSlot;
 }
 
-// TexVramSlot::alloc is void, but this caller tests its (leftover) return register.
+// TexVramSlot::alloc always returns TRUE.
 extern "C" s32 _ZN11TexVramSlot5allocEPvS0_S0_(TexVramSlot *self, void *a, void *b, void *c);
 
 BOOL ModelSlot::init(void *a, void *b, u32 size, void *extra) {

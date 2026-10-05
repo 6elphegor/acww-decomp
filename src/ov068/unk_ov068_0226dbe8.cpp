@@ -58,7 +58,6 @@
 #define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 #define ErrandRecord_getStep _ZN12ErrandRecord7getStepEv
 #define func_02135558 __register_global_object
-#define Mailbox_execNoMail _ZN7Mailbox10execNoMailEv
 
 
 
@@ -289,7 +288,8 @@ void *Villager_GetState(void *o);
 void VillagerState_ResetRole(void *o);
 void TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
-s32 Mailbox_execNoMail(void *a, void *b, s32 c);
+// The call target 0x02216ba4 is ambiguous (ov003 or ov004); a house visitor runs with ov004 loaded.
+s32 Room_PickRandomWalkTarget(void *a, void *b, s32 c);
 s32 NpcTalkCtrl_isBusy(void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 s32 NpcActionCtrl_getAction(void *);
@@ -1077,7 +1077,7 @@ void HouseVisitVillager::execVisitWander() {
             wanderTimer--;
         }
         if (wanderTimer == 0) {
-            wanderAngle = Mailbox_execNoMail(&walkTargetX, &position, rotY);
+            wanderAngle = Room_PickRandomWalkTarget(&walkTargetX, &position, rotY);
             waypointX = walkTargetX;
             waypointY = walkTargetY;
             waypointZ = walkTargetZ;

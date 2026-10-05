@@ -638,12 +638,12 @@ u8 FtrHeadwear::getActSwitchState(u32 a) {
     return 0;
 }
 
-void FtrHeadwear::syncAct1() {
-    p11::FtrSync_RequestAct((s32)this, 1, 0xff, 1);
+s32 FtrHeadwear::syncAct1() {
+    return p11::FtrSync_RequestAct((s32)this, 1, 0xff, 1);
 }
 
-void FtrHeadwear::syncAct0() {
-    p11::FtrSync_RequestAct((s32)this, 0, 0xff, 1);
+s32 FtrHeadwear::syncAct0() {
+    return p11::FtrSync_RequestAct((s32)this, 0, 0xff, 1);
 }
 
 BOOL FtrHeadwear::isVisible() {
