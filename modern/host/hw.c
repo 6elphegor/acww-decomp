@@ -58,6 +58,23 @@ static u64 tm_next_overflow(Timer *t) {
     return t->start + (done + 1) * p;
 }
 
+// ---- real time: one frame per 1/60 s unless ACWW_FAST is set
+#include <errno.h>
+#include <time.h>
+static int sFast = -1;
+static struct timespec sNextFrame;
+static void host_pace_frame(void) {
+    if (sFast < 0) sFast = getenv("ACWW_FAST") != 0;
+    if (sFast) return;
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    if (sNextFrame.tv_sec == 0) sNextFrame = now;
+    sNextFrame.tv_nsec += 16715000;  // 59.83 Hz
+    if (sNextFrame.tv_nsec >= 1000000000) { sNextFrame.tv_nsec -= 1000000000; sNextFrame.tv_sec++; }
+    if (now.tv_sec > sNextFrame.tv_sec + 1) sNextFrame = now;  // far behind: don't try to catch up
+    while (clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sNextFrame, 0) == EINTR) {}  // SIGALRM interrupts it
+}
+
 // ---- events
 static u64 sNextVblank = 192u * LINE_CYCLES;
 static void run_events(void);
@@ -80,6 +97,9 @@ static void run_events(void) {
         if (st & 8) host_irq_raise(1);    // VBlank
         if (st & 16) host_irq_raise(2);   // HBlank (once per frame: the per-line effects aren't emulated)
         dma_on_vblank();
+        host_pace_frame();
+        extern void pxi7_vblank(void);
+        pxi7_vblank();
         sNextVblank += FRAME_CYCLES;
     }
     for (int i = 0; i < 4; i++) {

@@ -29,6 +29,36 @@ that involves and the choice still open.
    power management, microphone, wireless (WM), FS/card (ROM reads, backup memory = the save file), cartridge.
 4. **A frontend:** window, input (keys, mouse as touch), audio output, save files.
 
+## Status (experimental)
+
+`python3 tools/configure_host.py && ninja -f build_host.ninja` builds `build/host_usa/acww` (needs the 32-bit sysroot,
+see `--sysroot`). Run: `ACWW_FIRMWARE=<firmware image> build/host_usa/acww [-v] <rom.nds>`; `ACWW_SAVE` sets the save
+file (default `<rom>.sav`), `ACWW_TOUCH="frame:frames:x,y;..."` scripts touches, `ACWW_FAST=1` runs unpaced.
+
+It boots: NitroStartUp, Main_InitDwc (NVRAM Wi-Fi settings), the card and RTC set-up, and runs Main_Loop at 60 frames
+per second (boot logo scene onwards), with nothing shown yet. What the runtime (`modern/host/`) does:
+
+- `hw.c`: the memory map; the I/O pages trapped (a fault prepares a register read, the access is single-stepped
+  with the trap flag, the written value is handled after it); virtual time (scanlines, timers, VBlank), DMA, the
+  divider and square root; a SIGALRM tick lets time pass while the game spins on memory; 60 Hz pacing.
+- `os.c`: interrupt masking and dispatch at safe points, thread contexts on `ucontext`, lock ids, BIOS waits.
+- `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (fixed clock), touch panel,
+  card backup (save file), sound (commands taken, nothing played).
+- `card.c`: ROM reads; `sdk.c`: the SDK's assembly routines in C; `gaps_code.c`: the undecompiled functions (stubs).
+
+Differences from the DS that the sources had to handle (under `HOST`):
+
+- The ARM C++ ABI's constructors return `this`, x86's don't: code using a constructor's result (`p = ctor(p)`)
+  keeps the pointer instead.
+- Pointers to virtual member functions are encoded differently (ARM `{offset, 2*adj+1}`, x86 `{offset+1, adj}`):
+  the ones in gap data are re-encoded (tools/host_gaps.py); x86 also needs member functions 2-byte aligned
+  (`-falign-functions=4`, since some are defined as `extern "C"` functions).
+- Pointers sent to the ARM7 in 26-bit PXI messages: host data addresses are reconstructed (pxi7.c).
+- The game's own C library names are made local to the game (tools/host_localize.py).
+
+Not done yet: display (2D/3D rendering), sound, the shared-overlay-address thunks (modern/ds/overlays.c has the
+resolver; the thunks are ARM), resetting an overlay's data when it is loaded again, a window and input.
+
 ## The open choice: how to provide the hardware
 
 | | A. Reuse melonDS's hardware code | B. Write it for the port |

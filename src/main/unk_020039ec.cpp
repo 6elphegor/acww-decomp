@@ -477,6 +477,17 @@ extern "C" {
 void SndMgr_StopSe(void *, u32, u32);
 }
 
+#ifdef HOST
+// the ARM C++ ABI's constructors return `this`; x86's return nothing (docs/host.md)
+#define NEW(sz, ctor)                                    \
+    do {                                                 \
+        void *p = _Znwm(sz);                             \
+        if (p != NULL) {                                 \
+            ctor(p);                                     \
+        }                                                \
+        gSndScene = (SndSceneBase *)p;                   \
+    } while (0)
+#else
 #define NEW(sz, ctor)                                    \
     do {                                                 \
         void *p = _Znwm(sz);                     \
@@ -485,6 +496,7 @@ void SndMgr_StopSe(void *, u32, u32);
         }                                                \
         gSndScene = (SndSceneBase *)p;               \
     } while (0)
+#endif
 
 static inline BOOL Unk_020040cc_check(u32 id, void *buf) {
     if (Event_GetState(id, buf, 0) != 0) {

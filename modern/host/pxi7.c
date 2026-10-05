@@ -46,6 +46,13 @@ void pxi7_sync_written(u32 value) {
     sArm7Sync = ((value >> 8) + 1) & 0xf;
 }
 
+// A pointer sent in a 26-bit message: DS main RAM (0x02000000-0x023fffff) fits; the host's own data (the program
+// image at 0x08000000, well under 32 MB) loses its top bits and gets them back here.
+static void *ptr26(u32 d) {
+    if (d >= 0x2000000 && d < 0x2400000) return (void *)(uintptr_t)d;
+    return (void *)(uintptr_t)(d | 0x08000000);
+}
+
 // ---- NVRAM (tag 4): the firmware flash. Messages: bit 25 start, bit 24 end, bits 16-23 index, bits 0-15 payload;
 // the first carries the command in bits 8-15. The reply's low byte is the result (0: success).
 static u8 sNvram[0x40000];
@@ -90,10 +97,125 @@ static void nvram_word(u32 data) {
     if (data & 0x01000000) nvram_command();
 }
 
+// ---- RTC (tag 5): command in bits 8-14; the ARM7 writes the raw BCD date and time to the system work area. The
+// clock is fixed (2026-04-01 12:00:00, a Wednesday), as in the test emulator: runs are reproducible.
+static void rtc_command(u32 data) {
+    u32 cmd = (data & 0x7f00) >> 8;
+    volatile u32 *raw = (volatile u32 *)0x027ffde8;
+    if (cmd == 0x10 || cmd == 0x11) raw[0] = 0x26 | 0x04 << 8 | 0x01 << 16 | 3u << 24;
+    if (cmd == 0x10 || cmd == 0x12) raw[1] = 0x12 | 0x40 | 0x00 << 8 | 0x00 << 16;
+    pxi7_send(5 | (cmd << 8) << 6);
+}
+
+// ---- card backup (tag 11, messages with the error bit): the save memory. CARDi_Request sends a request id; the
+// first request (0) is followed by the address of the shared command block: result 0x00, source 0x0c,
+// destination 0x10, length 0x14, total size 0x18. The reply is a message with the error bit; the result (0 = OK)
+// is in the block. The save memory is a file (ACWW_SAVE, default <rom>.sav), written back on every change.
+static u32 *sCardBlock;
+static int sCardWantBlock;
+static u8 *sSave;
+static u32 sSaveSize;
+static char sSavePath[1024];
+
+static void save_load(u32 size) {
+    if (sSave && size <= sSaveSize) return;
+    sSave = realloc(sSave, size);
+    memset(sSave + sSaveSize, 0xff, size - sSaveSize);
+    sSaveSize = size;
+    FILE *f = fopen(sSavePath, "rb");
+    if (f) { fread(sSave, 1, size, f); fclose(f); }
+}
+static void save_store(void) {
+    FILE *f = fopen(sSavePath, "wb");
+    if (f) { fwrite(sSave, 1, sSaveSize, f); fclose(f); }
+}
+
+static void card_request(u32 data) {
+    if (sCardWantBlock) { sCardBlock = ptr26(data); sCardWantBlock = 0; pxi7_send(11 | 1u << 5); return; }
+    u32 *b = sCardBlock;
+    if (data == 0) { sCardWantBlock = 1; return; }
+    if (!b) { pxi7_send(11 | 1u << 5); return; }
+    u32 result = 0;
+    if (b[6]) save_load(b[6]);
+    u32 src = b[3], dst = b[4], len = b[5];
+    switch (data) {
+    case 6:  // read
+        for (u32 i = 0; i < len; i++) ((u8 *)(uintptr_t)dst)[i] = src + i < sSaveSize ? sSave[src + i] : 0xff;
+        break;
+    case 7: case 8:  // write, program
+        for (u32 i = 0; i < len && dst + i < sSaveSize; i++) sSave[dst + i] = ((u8 *)(uintptr_t)src)[i];
+        save_store();
+        break;
+    case 9:  // verify
+        for (u32 i = 0; i < len && dst + i < sSaveSize; i++) if (sSave[dst + i] != ((u8 *)(uintptr_t)src)[i]) result = 5;
+        break;
+    case 10: case 11:  // erase page/sector
+        for (u32 i = 0; i < len && dst + i < sSaveSize; i++) sSave[dst + i] = 0xff;
+        save_store();
+        break;
+    default: break;  // identify, read id, ...
+    }
+    b[0] = result;
+    if (gHostVerbose) fprintf(stderr, "pxi7: card %u src %x dst %x len %x -> %u\n", data, src, dst, len, result);
+    pxi7_send(11 | 1u << 5);
+}
+
+// ---- touch panel (tag 6): request type in bits 8-14 (0 one sample, 1 start auto sampling, 2 stop, 3 stability);
+// the reply has the type, result 0 and bit 24. Samples (x:12, y:12, touch:1, validity:2) go to 0x027fffaa as raw
+// ADC values, from screen coordinates through the firmware's calibration points. During auto sampling one sample
+// (type 16) is sent per frame. Touches come from ACWW_TOUCH="frame:frames:x,y;..." for now.
+static int sTpAuto;
+static struct { u32 frame, len, x, y; } sTouch[64];
+static int sTouchCount;
+
+static void tp_sample(void) {
+    u32 f = (u32)host_frame(), raw = 0;
+    for (int i = 0; i < sTouchCount; i++) {
+        if (f >= sTouch[i].frame && f < sTouch[i].frame + sTouch[i].len) {
+            const u8 *u = sNvram + (sNvramSize ? (sNvram[0x20] | sNvram[0x21] << 8) * 8 : 0) + 0x58;
+            s32 ax1 = u[0] | u[1] << 8, ay1 = u[2] | u[3] << 8, sx1 = u[4], sy1 = u[5];
+            s32 ax2 = u[6] | u[7] << 8, ay2 = u[8] | u[9] << 8, sx2 = u[10], sy2 = u[11];
+            s32 x = sx2 != sx1 ? ax1 + ((s32)sTouch[i].x - sx1) * (ax2 - ax1) / (sx2 - sx1) : 0;
+            s32 y = sy2 != sy1 ? ay1 + ((s32)sTouch[i].y - sy1) * (ay2 - ay1) / (sy2 - sy1) : 0;
+            raw = (u32)(x & 0xfff) | (u32)(y & 0xfff) << 12 | 1u << 24;
+        }
+    }
+    *(volatile u16 *)0x027fffaa = (u16)raw;
+    *(volatile u16 *)0x027fffac = (u16)(raw >> 16);
+}
+
+static void tp_command(u32 data) {
+    u32 type = (data & 0x7f00) >> 8;
+    if (type == 0) tp_sample();
+    if (type == 1) sTpAuto = 1;
+    if (type == 2) sTpAuto = 0;
+    pxi7_send(6 | ((type << 8) | 0x1000000) << 6);
+}
+
+void pxi7_vblank(void) {
+    if (sTpAuto && sCount == 0) { tp_sample(); pxi7_send(6 | (16u << 8) << 6); }
+}
+
+// ---- sound (tag 7): the ARM9 sends the address of a command list (Cmd: next, id, arg[4]; 0 just asks to
+// process). The ARM7 runs the commands and counts finished lists in the shared work area (SndWork.f0), set by
+// command 29. Silent for now: commands are taken but not played.
+static volatile u32 *sSndWork;
+static void snd_command(u32 data) {
+    if (data == 0) return;
+    for (u32 *c = ptr26(data); c; c = (u32 *)(uintptr_t)c[0]) {
+        if (c[1] == 29) sSndWork = (volatile u32 *)(uintptr_t)c[2];
+    }
+    if (sSndWork) sSndWork[0]++;
+}
+
 // ---- services
 static void service(u32 tag, u32 data, u32 err) {
     switch (tag) {
     case 4: nvram_word(data); break;
+    case 5: rtc_command(data); break;
+    case 6: tp_command(data); break;
+    case 7: snd_command(data); break;
+    case 11: card_request(data); break;
     case 15:  // WVR: VRAM C/D for the wireless reboot driver; the ARM7 acknowledges at once
         if (data >> 16 == 1) pxi7_send(15 | 0x10000u << 6);
         break;
@@ -106,6 +228,15 @@ static void service(u32 tag, u32 data, u32 err) {
 void pxi7_receive(u32 word) { service(word & 31, word >> 6, word >> 5 & 1); }
 
 void pxi7_init(void) {
+    const char *t = getenv("ACWW_TOUCH");
+    while (t && *t && sTouchCount < 64) {
+        unsigned fr, n, x, y;
+        if (sscanf(t, "%u:%u:%u,%u", &fr, &n, &x, &y) == 4) sTouch[sTouchCount++] = (typeof(sTouch[0])){fr, n, x, y};
+        t = strchr(t, ';');
+        if (t) t++;
+    }
+    const char *sv = getenv("ACWW_SAVE");
+    snprintf(sSavePath, sizeof sSavePath, "%s%s", sv ? sv : gHostRomPath, sv ? "" : ".sav");
     const char *fw = getenv("ACWW_FIRMWARE");
     FILE *f = fw ? fopen(fw, "rb") : 0;
     if (f) { sNvramSize = (u32)fread(sNvram, 1, sizeof sNvram, f); fclose(f); }

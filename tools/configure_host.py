@@ -29,7 +29,7 @@ G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
 
 GAME_FLAGS = " ".join([
     "-m32", "-fno-pie", "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
-    "-fno-strict-aliasing", "-fpcc-struct-return", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer",
+    "-fno-strict-aliasing", "-fpcc-struct-return", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
 ])
 C_FLAGS = "-std=gnu11"

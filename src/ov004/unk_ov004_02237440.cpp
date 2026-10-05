@@ -4224,7 +4224,11 @@ extern "C" void MuseumInsect_InitPlacement(void *m, u8 *s) {
 
 extern "C" void *MuseumInsectRoom_Create() {
     void *m = ProcBase::operator new(0x1a0);
+#ifdef HOST
+    if (m) _ZN16MuseumInsectRoomC1Ev(m);  // x86 constructors don't return `this`
+#else
     if (m) m = _ZN16MuseumInsectRoomC1Ev(m);
+#endif
     return m;
 }
 
