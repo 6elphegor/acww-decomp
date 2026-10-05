@@ -75,7 +75,7 @@
 #define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
 #define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
 #define GeneralMenuHeader_resetFrame _ZN17GeneralMenuHeader10resetFrameEv
-#define FishBookTab_moveCursorTo _ZN11FishBookTab12moveCursorToEii
+#define GeneralMenuHeader_loadObjGfx _ZN17GeneralMenuHeader10loadObjGfxEi
 #define GeneralMenuHeader_drawWithIcon _ZN17GeneralMenuHeader12drawWithIconEii
 #define GeneralMenuHeader_setTitleHighlight _ZN17GeneralMenuHeader17setTitleHighlightEhhjj
 #define GeneralMenuHeader_setTitleText _ZN17GeneralMenuHeader12setTitleTextEPvi
@@ -218,7 +218,7 @@ s32 GeneralMenuHeader_GetStyle(void *p);
 void GeneralMenuHeader_loadBgGfxForStyle(void *p, s32 a);
 void GeneralMenuHeader_drawWithIcon(void *p, s32 a, void *b);
 void GeneralMenuHeader_resetFrame(void *p);
-void FishBookTab_moveCursorTo(void *p, s32 a);
+void GeneralMenuHeader_loadObjGfx(void *p, s32 v);
 void MenuTabBar_requestSaveOnClose(void *p);
 void MenuTabBar_showTabs(void *p);
 s32 MenuTabBar_onTabMenuClosed(void *p);
@@ -906,7 +906,7 @@ void NameEntryMenu::loadBg() {
 
 void NameEntryMenu::loadObjGfx() {
     Keyboard_LoadObjGfx(&keyboard);
-    FishBookTab_moveCursorTo(&header, 6);
+    GeneralMenuHeader_loadObjGfx(&header, 6);
     Gfx2d_LoadPaletteFile("menu/han/obj.bpl", (void *)gCurrentHeap, 8, 5, 5, 5);
     MenuButtons_LoadTextColors(&bottomButtons);
     if (testFlags(0x100)) {
@@ -1898,7 +1898,7 @@ void NameEntryMenu::checkPasswordAnswer() {
 
 void NameEntryMenu::storePlayerName() {
     s32 t = PlayerData_GetCurrent();
-    PlayerData_getPlayerId();
+    PlayerData_getPlayerId(t);
     s32 u = PlayerData_getPlayerId(t);
     s32 n = PlayerDataArray_FindById(gSavePlayers, u);
     s32 i;

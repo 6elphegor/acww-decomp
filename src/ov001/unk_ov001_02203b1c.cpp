@@ -60,7 +60,7 @@ void OS_LockMutex(void *p);
 void OS_CancelAlarm(void *p);
 void OS_CreateAlarm(void *p);
 void OS_SetAlarm(void *p, s32 a, s32 b, void *cb, s32 prio);
-void OS_GetMacAddress();
+void OS_GetMacAddress(void *macAddr);
 s32 memcmp(const void *a, const void *b, u32 n);
 void memset(void *d, s32 v, u32 n);
 void strcpy(void *d, void *s);
@@ -83,13 +83,7 @@ void IpAddr_StoreBe32(u8 *a, u8 *out);
 s32 Sock_SendTo(u8 *a, u8 *d, u32 e, u32 f, SockAddrIn *hdr);
 s32 Sock_Create(s32, s32, s32);
 s32 Sock_Bind(s32, void *);
-#ifdef MODERN
-s32 Sock_Close(s32 a, s32 b, s32 c);
-#define SOCK_CLOSE(h) Sock_Close((h), 0, 0) // b, c unused by Sock_Close (SockCore_Close takes only the socket)
-#else
 s32 Sock_Close(s32);
-#define SOCK_CLOSE(h) Sock_Close(h) // the original leaves b, c as whatever r1, r2 hold
-#endif
 s32 Sock_RecvFrom(s32, void *, s32, s32, void *);
 
 void SimpleStart_NotifyStatus(void);
@@ -124,7 +118,7 @@ s32 SimpleStart_BuildResult();
 s32 SimpleStart_ParseHex(u8 *dst, s8 *src, s32 n);
 s32 SimpleStart_ParseConfigTlvs(u8 *p);
 s32 SimpleStart_BuildSessionId(SimpleStartSessionId *out, void *unused);
-BOOL SimpleStart_GetOwnMac(void *unused);
+BOOL SimpleStart_GetOwnMac(void *mac);
 u32 SimpleStart_BuildHelloPacket(u8 *pkt);
 s32 SimpleStart_RecvPacket(u8 *pkt, s32 type, u8 *dst, u8 *extra);
 BOOL SimpleStart_ParseHelloReply(u8 *pkt, s32 *out);
@@ -1783,8 +1777,8 @@ u32 SimpleStart_BuildHelloPacket(u8 *pkt) {
     return SimpleStart_BuildPacket(pkt, 2, sSimpleStartTlvBuf, (u32)r - (u32)data_ov001_0222a52c + 8, 0);
 }
 
-BOOL SimpleStart_GetOwnMac(void *unused) {
-    OS_GetMacAddress();
+BOOL SimpleStart_GetOwnMac(void *mac) {
+    OS_GetMacAddress(mac);
     return TRUE;
 }
 
@@ -2031,7 +2025,7 @@ s32 SimpleStart_RunProtocol()
             break;
         case 4:
             if (SimpleStart_GetMilliseconds() >= sSimpleStartDeadline) {
-                SOCK_CLOSE(h);
+                Sock_Close(h);
                 result = -3;
                 done = 1;
                 break;
@@ -2055,7 +2049,7 @@ s32 SimpleStart_RunProtocol()
             break;
         case 6:
             if (SimpleStart_GetMilliseconds() >= sSimpleStartDeadline) {
-                SOCK_CLOSE(h);
+                Sock_Close(h);
                 result = -4;
                 done = 1;
                 break;
@@ -2098,7 +2092,7 @@ s32 SimpleStart_RunProtocol()
             if (SimpleStart_GetMilliseconds() >= t40 + 1000) {
                 retries++;
                 if (retries >= 10) {
-                    SOCK_CLOSE(h);
+                    Sock_Close(h);
                     result = -2;
                     done = 1;
                 } else {
@@ -2132,7 +2126,7 @@ s32 SimpleStart_RunProtocol()
             break;
         }
     }
-    if (h != 0) SOCK_CLOSE(h);
+    if (h != 0) Sock_Close(h);
     if (sSimpleStartCancel != 0) result = -8;
     return result;
 }

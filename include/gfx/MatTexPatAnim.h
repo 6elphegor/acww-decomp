@@ -18,8 +18,7 @@ public:
     /* 0x28 */ MatTexPatTrack *tracks;
     MatTexPatAnim();
     virtual ~MatTexPatAnim();
-    void pauseMaterial();
-    BOOL setMaterialTex(s32 unused, u32 x);
+    BOOL setMaterialTex(s32 matName, u32 x);
     void applyFrame();
     void update();
     void setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6);

@@ -36,11 +36,6 @@ typedef SockCoreCommand Msg;
 
 // ---- externals
 
-// the same function is called with and without its argument (0x0225f8dc.. vs 0x0225fbbc..)
-namespace Unk_ov065_0225fbbc_Ns {
-extern "C" s32 SockCore_IsInvalidHandle(Sess *s);
-}
-
 extern "C" {
 // own data (other TUs of the overlay)
 extern SockCoreConfig *sSockCoreConfig;
@@ -65,7 +60,7 @@ void SockCore_CommandThreadMain(void *);
 s32 SockCore_ExecCommand(Obj *, Msg *);
 s32 SockCore_ExecOnRecvSide(Obj *, Msg *);
 Msg *SockCore_AllocMsg(void *, Obj *, s32);
-s32 SockCore_IsInvalidHandle(void);
+s32 SockCore_IsInvalidHandle(Obj *o);
 u32 SockCore_Align4(u32);
 void SockCore_AddToOpenList(void *);
 void IpSoc_Use(void *);
@@ -180,7 +175,7 @@ s32 SockCore_OnUdpReceive(void *data, u32 len, Sess *s)
 
 s32 SockCore_Bind(Sess *s, u16 a)
 {
-    if (Unk_ov065_0225fbbc_Ns::SockCore_IsInvalidHandle(s) != 0) {
+    if (SockCore_IsInvalidHandle(s) != 0) {
         return -0x1c;
     }
     if (!IsValid(s)) {
@@ -199,7 +194,7 @@ s32 SockCore_Bind(Sess *s, u16 a)
 s32 SockCore_Connect(Sess *s, u16 a, u32 b)
 {
     s32 r;
-    if (Unk_ov065_0225fbbc_Ns::SockCore_IsInvalidHandle(s) != 0 || (s->flags & 8) != 0) {
+    if (SockCore_IsInvalidHandle(s) != 0 || (s->flags & 8) != 0) {
         return -0x1c;
     }
     if (!IsValid(s)) {
@@ -269,7 +264,7 @@ s32 SockCore_CmdConnect(Job *j)
 
 s32 SockCore_Listen(Obj *o)
 {
-    if (SockCore_IsInvalidHandle() != 0) {
+    if (SockCore_IsInvalidHandle(o) != 0) {
         return -0x1c;
     }
     if (!Unk_ov065_0225f8dc_IsOpen(o)) {
@@ -290,7 +285,7 @@ s32 SockCore_Listen(Obj *o)
 s32 SockCore_Accept(Obj *o, u32 *x, u32 *y)
 {
     s32 h;
-    if (SockCore_IsInvalidHandle() != 0) {
+    if (SockCore_IsInvalidHandle(o) != 0) {
         return -0x1c;
     }
     if (!Unk_ov065_0225f8dc_IsOpen(o)) {
@@ -323,7 +318,7 @@ s32 SockCore_StartAccept(Obj *o, u32 *x, u32 *y)
 {
     s32 t;
     Msg *m;
-    if (SockCore_IsInvalidHandle() != 0) {
+    if (SockCore_IsInvalidHandle(o) != 0) {
         return -0x1c;
     }
     if (!Unk_ov065_0225f8dc_IsOpen(o)) {

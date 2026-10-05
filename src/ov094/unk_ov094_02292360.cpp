@@ -108,7 +108,7 @@ void func_02094018(void *p);
 void func_02094030(void *p);
 s32 PlayerId_GetTownId(s32 a);
 void PlayerId_getNameString(s32 a, void *p);
-s32 PlayerId_getGender();
+s32 PlayerId_getGender(s32 id);
 s32 PlayerData_GetCurrent();
 s32 PlayerInventory_getTotalBells(s32 a, s32 b);
 void *PlayerInventory_getLetter(s32 a, s32 b);
@@ -365,8 +365,7 @@ void InventoryBg_SetupTextWindows(void *o)
     InventoryBg *p = (InventoryBg *)o;
     u8 buf[0x1c];
     u8 buf2[0x1c];
-    PlayerData_GetCurrent();
-    s32 r = PlayerData_getPlayerId();
+    s32 r = PlayerData_getPlayerId(PlayerData_GetCurrent());
     func_02063888(buf);
     TownId_GetNameString(PlayerId_GetTownId(r), buf);
     String_SetSlot(0, buf);
@@ -462,8 +461,7 @@ void InventoryBg_PaintHighlight1(void *o)
 void InventoryBg_LoadPictureForHeldItem(void *o)
 {
     s32 a = PlayerData_GetCurrent();
-    PlayerData_getPlayerId();
-    s32 b = PlayerId_getGender();
+    s32 b = PlayerId_getGender(PlayerData_getPlayerId(a));
     u16 *pv = PlayerData_getHeldItem(a);
     s32 idx = 0;
     BOOL fl = FALSE;

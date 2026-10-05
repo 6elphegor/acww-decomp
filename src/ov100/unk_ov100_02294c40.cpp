@@ -59,7 +59,7 @@ BOOL MenuKeys_HasDown(void *pad);
 BOOL MenuKeys_HasUp(void *pad);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
-s32 PopupChoice_DecideCancel(void *p);
+s32 PopupChoice_DecideCancel(void *p, s32 x);
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
@@ -88,7 +88,7 @@ s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
 s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
 void InventoryItemGrid_ShowSlotName(void *p, void *q, u32 v);
 u32 InventoryItemGrid_FindBoxSlotAt(void *p, u32 a, u32 b);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p);
+u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
 void InventoryItemGrid_Exit(void *a);
 void InventoryItemGrid_PreUpdate(void *a);
 void InventoryItemGrid_Init(void *a, s32 b);
@@ -344,7 +344,7 @@ BOOL ShopSellMenu::onCreate() {
 }
 
 BOOL ShopSellMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     ShopSellMenu_Exit(this);
     return TRUE;
 }
@@ -1109,7 +1109,7 @@ extern "C" u32 ShopSellMenu_GridToPocketSlot(S *s, u32 a) {
 }
 
 extern "C" u32 ShopSellMenu_FindSlotAt(S *s, u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->itemGrid);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->itemGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
             if (InventoryItemGrid_IsSlotEmpty(&s->itemGrid, t)) return 0x20;
@@ -1474,7 +1474,7 @@ extern "C" void ShopSellMenu_MoveCursorToChoice(S *s)
 extern "C" void ShopSellMenu_PickCancelChoice(S *s)
 {
     s->chosenAction = 1;
-    s->choiceRow = PopupChoice_DecideCancel(&s->choiceMenu);
+    s->choiceRow = PopupChoice_DecideCancel(&s->choiceMenu, 1);
     s32 a = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowY(s->choiceRow);
     ((MenuCursorBase *)&s->cursor)->warpTo(a, b);

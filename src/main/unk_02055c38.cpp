@@ -22,7 +22,7 @@ extern "C" {
 void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t);
 }
 
-extern "C" s32 _ZN12G3dResAccess10findMatIdxEi(void *res, ...);
+extern "C" s32 _ZN12G3dResAccess10findMatIdxEi(void *res, const char *name);
 extern "C" u32 _ZN12G3dResAccess10findTexIdxEi(void *res, ...);
 extern "C" void *_ZN12G3dResAccess10getTexDataEi(void *res, u32 x);
 extern "C" s32 _ZN12G3dResAccess11findPlttIdxEi(u8 *hdr, const char *name);
@@ -1002,9 +1002,9 @@ void MatTexPatAnim::applyFrame() {
     }
 }
 
-BOOL MatTexPatAnim::setMaterialTex(s32 unused, u32 x) {
+BOOL MatTexPatAnim::setMaterialTex(s32 matName, u32 x) {
     BOOL z = FALSE;
-    s32 id = _ZN12G3dResAccess10findMatIdxEi(resMdl);
+    s32 id = _ZN12G3dResAccess10findMatIdxEi(resMdl, (const char *)matName);
     
     if (id == -1) return z;
     u8 v = _ZN12G3dResAccess10findTexIdxEi(resTex, x);
@@ -1026,13 +1026,14 @@ BOOL MatTexPatAnim::setMaterialTex(s32 unused, u32 x) {
     return z;
 }
 
-void MatTexPatAnim::pauseMaterial() {
-    s32 id = _ZN12G3dResAccess10findMatIdxEi(resMdl);
+// Defined under its mangled name so it can take the material name its callers pass (the mangled name has no parameter)
+extern "C" void _ZN13MatTexPatAnim13pauseMaterialEv(MatTexPatAnim *self, const char *matName) {
+    s32 id = _ZN12G3dResAccess10findMatIdxEi(self->resMdl, matName);
     s32 i;
     if (id != -1) {
-        for (i = 0; i < numTracks; i++) {
-            if (id == tracks[i].matIdx) {
-                tracks[i].flags |= 1;
+        for (i = 0; i < self->numTracks; i++) {
+            if (id == self->tracks[i].matIdx) {
+                self->tracks[i].flags |= 1;
                 break;
             }
         }
@@ -1041,7 +1042,7 @@ void MatTexPatAnim::pauseMaterial() {
 
 extern "C" void MatTexPatAnim_ResumeMaterial(MatTexPatAnim *p, void *q) {
     s32 i, r;
-    r = _ZN12G3dResAccess10findMatIdxEi((void *)p->resMdl);
+    r = _ZN12G3dResAccess10findMatIdxEi((void *)p->resMdl, (const char *)q);
     i = 0;
     if (r != -1) {
         u32 n = p->numTracks;

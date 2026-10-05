@@ -36,7 +36,7 @@ extern "C" u8 sAossWepDesc[0x74] = {0};
 extern "C" {
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
-s32 OS_Sleep(s32, s32, s32);
+s32 OS_Sleep(s32);
 s32 OS_ReceiveMessage(void *, void *, s32);
 s32 OS_SendMessage(void *, s32, s32);
 void OS_InitMessageQueue(void *, void *, s32);
@@ -455,8 +455,8 @@ extern "C" s32 Aoss_ConnectAp(AossApConfig *a, void *b) {
     return res;
 }
 
-extern "C" s32 Aoss_Sleep(s32 a, s32 b, s32 c) {
-    return OS_Sleep(a, b, c);
+extern "C" s32 Aoss_Sleep(s32 a) {
+    return OS_Sleep(a);
 }// Declarations for data defined further down (definition order sets the data layout)
 
 

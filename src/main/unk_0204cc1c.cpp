@@ -202,7 +202,7 @@ s32 Scene_InHouseRoom();
 u32 Scene_GetHouseRoom();
 s32 Scene_InVillagerHouse();
 u32 Scene_GetVillagerHouse();
-s32 SceneId_IsHouseRoom();
+s32 SceneId_IsHouseRoom(s32 x);
 void *_ZN7TownMap17buildBlockEntriesEi(void *p, void *heap);
 extern const Unk_020ca2f4_Ent sFgDataFiles[4];
 extern u32 gSaveVillagers;
@@ -1562,7 +1562,7 @@ extern "C" RoomBlockMap *HouseRoomMaps_Get(s32 i) {
 
 extern "C" RoomBlockMap *HouseRoomMaps_GetForScene(s32 a) {
     RoomBlockMap *r = 0;
-    if (SceneId_IsHouseRoom()) {
+    if (SceneId_IsHouseRoom(a)) {
         r = HouseRoomMaps_Get(SceneId_GetHouseRoom(a));
     }
     return r;

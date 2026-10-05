@@ -9,7 +9,7 @@
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 TalkRequestFlags_IsSceneHold();
-s32 _ZN10LetterView8getStateEv();
+s32 _ZN10LetterView8getStateEv(void *);
 void Letter_Clear(void *p);
 }
 
@@ -27,8 +27,8 @@ ReceivedLetterBlock::~ReceivedLetterBlock() {}
 
 extern "C" void ReceivedLetter_Clear(void *p) { Letter_Clear(p); }
 
-extern "C" BOOL ReceivedLetter_HasLetter() {
-    if (_ZN10LetterView8getStateEv()) {
+extern "C" BOOL ReceivedLetter_HasLetter(void *p) {
+    if (_ZN10LetterView8getStateEv(p)) {
         return TRUE;
     }
     return FALSE;

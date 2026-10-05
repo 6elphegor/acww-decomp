@@ -173,7 +173,11 @@ BOOL FishCatch_GetReelTarget(void *a, s32 b);
 s32 HeldInsect_GetStage(...);
 void HeldInsect_Start(s32 a, s32 b);
 void HeldInsect_Release(s32 a, s32 b);
+#ifdef MODERN
+void PlayerActor_LocalReleaseCatch(s32 a, s32 b, s32 c, s32 d);
+#else
 void PlayerActor_LocalReleaseCatch(s32 a);
+#endif
 
 void Inventory_PlayTouchSe();
 BOOL InvItem_IsNotFishInsectOrFlower(s32 a);
@@ -199,7 +203,7 @@ s32 InventoryItemGrid_GetSlotY(void *a, s32 b);
 s32 InventoryItemGrid_GetSlotX(void *a, s32 b);
 void InventoryItemGrid_ShowSlotName(void *a, void *b, s32 c);
 void InventoryItemGrid_LoadPockets(void *p);
-u32 InventoryItemGrid_FindPocketSlotAt(void *a);
+u32 InventoryItemGrid_FindPocketSlotAt(void *a, s32 x, s32 y);
 void InventoryItemGrid_Exit(void *p);
 void InventoryItemGrid_PreUpdate(void *p);
 void InventoryItemGrid_Init(void *p, s32 a);
@@ -249,7 +253,7 @@ void LetterGrid_highlightLetterKinds(void *p, s32 a);
 void LetterGrid_clearCursorSlot(void *p);
 void LetterGrid_updateCursorLift(void *p);
 void LetterGrid_init(void *p, s32 a);
-void MenuLauncher_onChildClosed();
+void MenuLauncher_onChildClosed(s32 self);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
 void BgVramTask_cancel(void *p);
 }
@@ -431,8 +435,7 @@ BOOL PocketsFullMenu::onCreate() {
 }
 
 BOOL PocketsFullMenu::onDelete() {
-    ProcBase_GetParent();
-    MenuLauncher_onChildClosed();
+    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -855,8 +858,7 @@ void PocketsFullMenu::mainAct0F()
 
 void PocketsFullMenu::mainAct12()
 {
-    getLocalPlayerIndex();
-    if (HeldInsect_GetStage() != 3) {
+    if (HeldInsect_GetStage(getLocalPlayerIndex()) != 3) {
         waitTimer = 5;
         setMainState(0x13);
     }
@@ -955,7 +957,7 @@ u32 PocketsFullMenu::toSlotOrNone(s32 a) {
 }
 
 u32 PocketsFullMenu::getSlotAt(s32 a, s32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(&pocketGrid);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&pocketGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
             if (InventoryItemGrid_IsSlotEmpty(&pocketGrid, t)) return 0x10;
@@ -1413,7 +1415,11 @@ void PocketsFullMenu::mainAct10() {
         x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
-        PlayerActor_LocalReleaseCatch(0);
+#ifdef MODERN
+        PlayerActor_LocalReleaseCatch(0, 0, 0, 0); // b, c, d unused by PlayerActor_LocalReleaseCatch
+#else
+        PlayerActor_LocalReleaseCatch(0); // the original leaves b, c, d as whatever r1-r3 hold
+#endif
         sendInsectReleasePacket((u8)r5, t);
         setMainState(0x12);
         storeNewItem();

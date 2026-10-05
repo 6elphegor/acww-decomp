@@ -14,11 +14,11 @@ void RoomEntry_Reset();
 void Clock_Init();
 void HouseRoomMaps_UpdateAll();
 void HouseRoomMaps_BindBg();
-void LooseSnowballs_Get();
-void _ZN14LooseSnowballs5resetEv();
+void *LooseSnowballs_Get();
+void _ZN14LooseSnowballs5resetEv(void *);
 void VillagerStates_SetBirthdayVisitor(s32);
-void TownSessionState_Get();
-void *TownSessionState_GetResettiFlag();
+void *TownSessionState_Get();
+void *TownSessionState_GetResettiFlag(void *);
 void _ZN16ResettiVisitFlag5clearEv(void *);
 void _ZN16ResettiVisitFlag3setEj(void *, u32);
 void SaveVillagers_UpdateAllRoomInfo(void *);
@@ -272,8 +272,7 @@ void SaveData::setupNewTown() {
     void *t = _ZN10PlayerData11getPatternsEv(a);
     _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(t, _ZN10PlayerData11getPlayerIdEv(a));
     SaveData_InitNew((u8 *)this);
-    LooseSnowballs_Get();
-    _ZN14LooseSnowballs5resetEv();
+    _ZN14LooseSnowballs5resetEv(LooseSnowballs_Get());
     _ZN7TownMap18updateGroundSeasonEv(&townMap);
     RoomEntry_Reset();
     _ZN10PlayerData7setFlagEj(a, 1);
@@ -281,8 +280,7 @@ void SaveData::setupNewTown() {
     _ZN10PlayerData9clearFlagEj(a, 9);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    TownSessionState_Get();
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
+    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag(TownSessionState_Get()));
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 
@@ -302,15 +300,13 @@ void SaveData::setupNewResident() {
     SaveVillagers_PlaceMissingHouses(&villagers);
     VillagerStates_ResetErrands();
     SaveVillagers_AssignErrands(&villagers);
-    LooseSnowballs_Get();
-    _ZN14LooseSnowballs5resetEv();
+    _ZN14LooseSnowballs5resetEv(LooseSnowballs_Get());
     _ZN7TownMap18updateGroundSeasonEv(&townMap);
     RoomEntry_Reset();
     _ZN10PlayerData14setSkyShotHitsEj(a, 0);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    TownSessionState_Get();
-    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
+    _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag(TownSessionState_Get()));
     SaveVillagers_UpdateAllRoomInfo(&villagers);
 }
 
@@ -326,8 +322,7 @@ void SaveData::setupContinue() {
     SaveVillagers_PlaceMissingHouses(&villagers);
     VillagerStates_ResetErrands();
     SaveVillagers_AssignErrands(&villagers);
-    LooseSnowballs_Get();
-    _ZN14LooseSnowballs5resetEv();
+    _ZN14LooseSnowballs5resetEv(LooseSnowballs_Get());
     _ZN7TownMap18updateGroundSeasonEv(&townMap);
     RoomEntry_Reset();
     HappyRoom_SendWelcomeLetter();
@@ -347,8 +342,7 @@ void SaveData::setupContinue() {
             if (_ZN10PlayerData8testFlagEj(a, 0x23) == 0) {
                 if (_ZN10PlayerData8testFlagEj(a, 2) != 0) {
                     _ZN17PlayerSpNpcRecord13addResetCountEv(_ZN10PlayerData14getSpNpcRecordEv(a));
-                    TownSessionState_Get();
-                    _ZN16ResettiVisitFlag3setEj(TownSessionState_GetResettiFlag(), 1);
+                    _ZN16ResettiVisitFlag3setEj(TownSessionState_GetResettiFlag(TownSessionState_Get()), 1);
                 }
             }
         }

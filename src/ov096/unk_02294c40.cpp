@@ -127,7 +127,7 @@ s32 _ZN10LetterView8getStateEv(void *obj);
 void _ZN10LetterView10setPresentEtj(void *a, u32 b, u32 c);
 s32 _ZN10LetterView15getPresentFlagsEv(void *a);
 s32 _ZN10LetterView10getPresentEv(void *obj);
-void Letter_MarkRead();
+void Letter_MarkRead(void *self);
 s32 Letter_InitBottleDraft(void *self);
 void Letter_InitDraft(void *p, u8 v);
 void *_ZN6LetterD1Ev(void *p);
@@ -335,7 +335,7 @@ void _ZN10LetterGrid10clearMarksEv(void *p);
 void _ZN10LetterGrid13setCursorSlotEj(void *p, s32 a);
 void _ZN10LetterGrid15clearCursorSlotEv(void *p);
 void _ZN10LetterGrid14showLetterNameEPvi(void *p, void *q, s32 a);
-s32 _ZN10LetterGrid18findPocketLetterAtEii(void *p);
+s32 _ZN10LetterGrid18findPocketLetterAtEii(void *p, s32 a, s32 b);
 void _ZN10LetterGrid16updateCursorLiftEv(void *p);
 void _ZN10LetterGrid4initEi(void *p, s32 a);
 void *PocketMenu_GetLetter(PocketMenu *s, u32 id);
@@ -750,7 +750,7 @@ void PocketMenu::stateWaitSlideOut() {
 
 void PocketMenu::stateOpenLetterView() {
     void *r4 = getActionLetter();
-    Letter_MarkRead();
+    Letter_MarkRead(r4);
     _ZN14LetterRenderer4showEP10LetterViewPvS2_i(unk_2904, r4, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
@@ -2090,7 +2090,7 @@ extern "C" u32 PocketMenu_LetterIndexToTarget(PocketMenu *s, u32 id)
 
 extern "C" u32 PocketMenu_HitLetter(PocketMenu *s, s32 a, s32 b, s32 c)
 {
-    s32 r = _ZN10LetterGrid18findPocketLetterAtEii((u8 *)s + 0xdb8);
+    s32 r = _ZN10LetterGrid18findPocketLetterAtEii((u8 *)s + 0xdb8, a, b);
     if (r != 0x37) {
         if (c && LetterGrid_IsSlotEmpty((u8 *)s + 0xdb8, r)) {
             return 0x26;

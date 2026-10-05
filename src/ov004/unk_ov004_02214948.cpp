@@ -387,8 +387,7 @@ void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
 
 void *BirthdayHostVillagerTalk::getPlayerMemory() {
     if (villager != NULL && villager->villagerData != NULL) {
-        PlayerData_GetCurrent();
-        s32 r = PlayerData_getPlayerId();
+        s32 r = PlayerData_getPlayerId(PlayerData_GetCurrent());
         return Villager_FindOrCreateMemory(villager->villagerData, r);
     }
     return NULL;

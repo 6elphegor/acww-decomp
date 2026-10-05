@@ -15,7 +15,7 @@ void DC_FlushRange(void *p, u32 size);
 void GX_LoadBG3Scr(void *p, u32 a, u32 size);
 void GX_LoadBGPltt(void *p, u32 a, u32 size);
 void GX_LoadBG3Char(void *p, u32 a, u32 size);
-void FS_OpenFile();
+BOOL FS_OpenFile(void *file, const char *path);
 void FS_ReadFile(void *a, void *b, u32 size);
 void FS_CloseFile(void *a);
 void FS_InitFile(void *a);
@@ -152,19 +152,19 @@ extern "C" void TitleBlinkText_LoadGraphics(s32 idx) {
 }
 
 extern "C" void TitleBlinkText_ReadChars(void *a, void *b, void *c) {
-    FS_OpenFile();
+    FS_OpenFile(a, (const char *)b);
     FS_ReadFile(a, c, 0x9e0);
     FS_CloseFile(a);
 }
 
 extern "C" void TitleBlinkText_ReadPalette(void *a, void *b, void *c) {
-    FS_OpenFile();
+    FS_OpenFile(a, (const char *)b);
     FS_ReadFile(a, c, 0x20);
     FS_CloseFile(a);
 }
 
 extern "C" void TitleBlinkText_ReadScreen(void *a, void *b, void *c) {
-    FS_OpenFile();
+    FS_OpenFile(a, (const char *)b);
     FS_ReadFile(a, c, 0x800);
     FS_CloseFile(a);
 }

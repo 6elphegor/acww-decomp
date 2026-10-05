@@ -33,7 +33,7 @@ void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 ClockOffset_CalcMinutes(void *p, void *q);
 u16 ClockOffset_CalcSeconds(void *p, void *q);
 void Clock_Init();
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *self);
 void ProcBase_RequestDelete(void *p);
 void Gfx2d_SetSubBgModeState(s32 a);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
@@ -185,7 +185,7 @@ BOOL ClockAdjustMenu::onCreate() {
 }
 
 BOOL ClockAdjustMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
+    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -275,7 +275,7 @@ void ClockAdjustMenu::stateOpening() {
 }
 
 void ClockAdjustMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(), 0x44, 1);
+    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), 0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);

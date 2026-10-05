@@ -4226,8 +4226,9 @@ extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
 
 // @0x2233ee0 unk_02233dc0.cpp
 extern "C" s32 FtrMgr_GetCurPlayerIndex() {
-    if (PlayerData_GetCurrent() != 0) {
-        return PlayerDataArray_FindById(gSavePlayers, PlayerData_getPlayerId());
+    s32 p = PlayerData_GetCurrent();
+    if (p != 0) {
+        return PlayerDataArray_FindById(gSavePlayers, PlayerData_getPlayerId(p));
     }
     return -1;
 }

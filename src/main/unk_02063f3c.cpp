@@ -11,7 +11,7 @@ s32 OS_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 void Fatal_Panic(const char *fmt, ...);
 void FS_InitFile(void *f);
 BOOL FS_OpenFile(void *f, const char *path);
-BOOL FS_LoadOverlay(void *f);
+BOOL FS_LoadOverlay(s32 target, u32 id);
 BOOL FS_CloseFile(void *f);
 s32 FS_SeekFile(void *f, s32 off, s32 z);
 s32 FS_ReadFile(void *f, void *dst, u32 n);
@@ -39,15 +39,15 @@ void File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...);
 void File_LoadF(const char *fmt, ...);
 void File_LoadAllocF(s32 a, s32 b, const char *fmt, ...);
 void File_Load(u32 a);
-BOOL File_LoadOverlayEx(void *file);
+BOOL File_LoadOverlayEx(s32 target, u32 id);
 s32 File_GetDecodedSize(FSFile *f);
 s32 File_ReadAll(FSFile *f, void *dst, u32 n);
 s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va);
 s32 File_LoadToBuffer(const char *buf, void *a, u32 b);
 }
 
-BOOL File_LoadOverlayEx(void *file) {
-    return FS_LoadOverlay(file);
+BOOL File_LoadOverlayEx(s32 target, u32 id) {
+    return FS_LoadOverlay(target, id);
 }
 
 BOOL File_Open(void *file, const char *path) {
