@@ -1089,7 +1089,7 @@ extern "C" {
 void Heap_Free(void *g, s32 a);
 }
 extern "C" {
-void Heap_AllocAligned(void *g, s32 a, s32 b);
+void *Heap_AllocAligned(void *g, s32 a, s32 b);
 }
 extern "C" {
 void OverlayMgr_GetInfo(void *p, u32 id);
@@ -1143,7 +1143,7 @@ extern "C" {
 s32 Net_IsSameFriendData(void *p, void *q);
 }
 extern "C" {
-void _ZN8BbsBoard12getPostCountEv(void *p);
+u8 _ZN8BbsBoard12getPostCountEv(void *p);
 }
 extern "C" {
 void *_ZN8BbsBoard7addPostEv(void *p);
@@ -1371,7 +1371,7 @@ extern "C" void Bbs_AddPost(void *dst) {
     MI_CpuCopy8(dst, BbsPost_GetText(r), 0xc0);
 }
 
-extern "C" void Bbs_GetPostCount(void) { _ZN8BbsBoard12getPostCountEv(data_021e87d8); }
+extern "C" u8 Bbs_GetPostCount(void) { return _ZN8BbsBoard12getPostCountEv(data_021e87d8); }
 
 extern "C" void _ZN13DwcFriendDataC1Ev(void *) {}
 extern "C" void _ZN13DwcFriendDataD1Ev(void *) {}
@@ -1575,7 +1575,7 @@ extern "C" u32 CommPacket_GetAck(u8 *p) { return *p & 3; }
 
 extern "C" u32 CommPacket_GetType(u8 *p) { return (*p >> 2) & 0x1f; }
 
-extern "C" void NetHeap_Alloc(s32 a, s32 b) { Heap_AllocAligned(gNetHeap, a, b); }
+extern "C" void *NetHeap_Alloc(s32 a, s32 b) { return Heap_AllocAligned(gNetHeap, a, b); }
 
 extern "C" void NetHeap_Free(s32 a) { Heap_Free(gNetHeap, a); }
 
@@ -1595,7 +1595,7 @@ extern "C" BOOL Comm_HasSendCredit(u32 mask) {
     return TRUE;
 }
 
-extern "C" void Comm_HasSendCreditAll(void) { Comm_HasSendCredit(0xf); }
+extern "C" BOOL Comm_HasSendCreditAll(void) { return Comm_HasSendCredit(0xf); }
 
 extern "C" BOOL Comm_IsWifi(void) {
     s32 r = Net_GetMode();
@@ -3283,8 +3283,8 @@ yes:
 fail:
     return FALSE;
 }
-extern "C" void CommSend_PlayerData(u8 *p, u32 v) {
-    CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)), 0x228c, 4, v);
+extern "C" BOOL CommSend_PlayerData(u8 *p, u32 v) {
+    return CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)), 0x228c, 4, v);
 }
 extern "C" void CommSend_SyncVarChunk(u8 *p, u32 v) {
     CommSend_Chunked(p, _ZN11CommManager13getSyncVarBufEv(gCommManager), 0x68c, 0xc, v);

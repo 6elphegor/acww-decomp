@@ -62,7 +62,7 @@ extern "C" void CharaClothTexPool_Destroy() {
     CharaClothTexHeap_Destroy();
 }
 
-extern "C" void CharaClothTexPool_GetOwnRef() { sCharaClothTexPool.getOwnRef(); }
+extern "C" CharaClothTexRef *CharaClothTexPool_GetOwnRef() { return sCharaClothTexPool.getOwnRef(); }
 
 CharaClothTexPool::CharaClothTexPool() {
     for (s32 i = 0; i < 10; i++) id[i].id = 0xfff1;
@@ -227,6 +227,6 @@ extern "C" void CharaClothTexRef_CopyFromSlot(void *pp, s32 x) {
     }
 }
 
-extern "C" void CharaClothTexRef_GetBuffer(u8 *p) { sCharaClothTexPool.getBuffer(*p); }
+extern "C" u32 CharaClothTexRef_GetBuffer(u8 *p) { return sCharaClothTexPool.getBuffer(*p); }
 
 CharaClothTexPool sCharaClothTexPool;

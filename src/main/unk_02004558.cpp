@@ -1712,7 +1712,7 @@ Unk_0200f17c_Date _ZN10PlayerData15getLastPlayDateEv(void *p);
 #endif
 void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
-void DateTime_Compare(void *a, void *b, s32 n);
+s32 DateTime_Compare(void *a, void *b, s32 n);
 void Snd_SeEmitterPlayAlternate(void *a, void *b, s32 c);
 VecFx32 *Footstep_GetSeAtPos(VecFx32 *v);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, s32 id);
@@ -1752,8 +1752,8 @@ static inline void Unk_0200f070_Set(VecFx32 *r, s32 x, s32 y, s32 z)
 }
 void PlayerActor_CalcHandItemPos(VecFx32 *dst, PlayerActor *o, s32 *p);
 void PlayerActor_SetLastPlayDate(PlayerActor *o, s32 a, Unk_0200f17c_Date *d);
-void PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
-void PlayerActor_CompareLastPlayDateNow(void *o);
+s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
+s32 PlayerActor_CompareLastPlayDateNow(void *o);
 void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b);
@@ -4194,18 +4194,18 @@ void PlayerActor::playFootstepSe() {
 }
 
 namespace nQ {
-extern "C" void PlayerActor_CompareLastPlayDateNow(void *o) {
+extern "C" s32 PlayerActor_CompareLastPlayDateNow(void *o) {
     u32 a[4];
     a[0] = 0;
     a[1] = 0;
     a[2] = 0;
     a[3] = 0;
-    PlayerActor_CompareLastPlayDate(o, a, (u8 *)&a[2]);
+    return PlayerActor_CompareLastPlayDate(o, a, (u8 *)&a[2]);
 }
 }
 
 namespace nQ {
-extern "C" void PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b) {
+extern "C" s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b) {
     Unk_0200f17c_Date d0, d1, d2;
 #ifdef MODERN
     {
@@ -4222,7 +4222,7 @@ extern "C" void PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b) {
     b[5] = d2.a;
     b[4] = d2.b;
     b[3] = d2.c;
-    DateTime_Compare(a, b, 0x3f);
+    return DateTime_Compare(a, b, 0x3f);
 }
 }
 

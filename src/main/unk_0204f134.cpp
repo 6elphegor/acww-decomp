@@ -210,7 +210,7 @@ extern "C" s32 FishTable_Pick(u32 *out0, u32 *out1, s32 a, s32 b, s32 c) {
     return 0;
 }
 
-extern "C" void FishTable_PickNow(void *a, void *b, s32 c) {
+extern "C" s32 FishTable_PickNow(void *a, void *b, s32 c) {
     u8 buf[4];
     u32 e;
     u8 x, y;
@@ -219,7 +219,7 @@ extern "C" void FishTable_PickNow(void *a, void *b, s32 c) {
     Clock_GetMinuteHour(&buf[2]);
     y = buf[3];
     e = FishTable_GetPeriod(x);
-    FishTable_Pick((u32 *)a, (u32 *)b, c, e, FishTable_GetHourSlot(y));
+    return FishTable_Pick((u32 *)a, (u32 *)b, c, e, FishTable_GetHourSlot(y));
 }
 
 u8 sFishEntriesSepEarlyDawnDuskFresh[72] = {

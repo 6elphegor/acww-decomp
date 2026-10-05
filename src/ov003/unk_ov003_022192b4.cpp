@@ -262,7 +262,7 @@ s32 FieldItemFxTable_Start(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s3
 }
 // ---- prototypes of this file's functions
 extern "C" s32 FieldItemFx_StartFillHoleWithItem(s32 a, s32 b);
-extern "C" void FieldItemFx_StartPop(s32 a, s32 b, P2 c);
+extern "C" s32 FieldItemFx_StartPop(s32 a, s32 b, P2 c);
 extern "C" void FieldItemFx_StartTreeDrop(s32 a, s32 v, P2 p, V3 q, s16 t, s32 x);
 extern "C" void FieldItemFx_StartTreeDropFloat(s32 a, s32 v, P2 p, V3 q, s32 w);
 extern "C" void FieldItemFx_StartBeeHiveDrop(s32 a, s32 v, P2 p, V3 q);
@@ -270,7 +270,7 @@ extern "C" s32 FieldItemFx_StartDigUpTree(s32 a, s32 b, s32 c);
 extern "C" void FieldItemFx_StartPlant(s32 a, s32 b, P2 c, V3 d);
 extern "C" s32 FieldItemFx_StartHoleShrink(s32 a, s32 b);
 extern "C" void FieldItemFx_StartStrikeShake(s32 a, s32 b, P2 c);
-extern "C" void FieldItemFx_StartBalloonDrop(s32 a, s32 n);
+extern "C" s32 FieldItemFx_StartBalloonDrop(s32 a, s32 n);
 extern "C" s32 FieldItemFx_FindLandingUnit(s32 *p);
 extern "C" void FieldItemFx_StartStrikeEject(s32 a, s32 v, P2 p, V3 q);
 extern "C" s32 FieldItemFx_StartPitfallClose(s32 a, s32 b);
@@ -7479,9 +7479,9 @@ extern "C" s32 FieldItemFx_StartFillHoleWithItem(s32 a, s32 b)
 }
 
 namespace ns_0221927c {
-extern "C" void FieldItemFx_StartPop(s32 a, s32 b, P2 c)
+extern "C" s32 FieldItemFx_StartPop(s32 a, s32 b, P2 c)
 {
-    FieldItemFxTable_Start(sFieldItemFxTable, a, c, V3(0, 0, 0), 4, b, 0, 0);
+    return FieldItemFxTable_Start(sFieldItemFxTable, a, c, V3(0, 0, 0), 4, b, 0, 0);
 }
 }
 
@@ -7605,7 +7605,7 @@ extern "C" void FieldItemFx_StartStrikeShake(s32 a, s32 b, P2 c)
 }
 
 namespace ns_0221927c {
-extern "C" void FieldItemFx_StartBalloonDrop(s32 a, s32 n)
+extern "C" s32 FieldItemFx_StartBalloonDrop(s32 a, s32 n)
 {
     V3 A(0, 0, 0);
     s32 p0 = 0;
@@ -7637,7 +7637,7 @@ extern "C" void FieldItemFx_StartBalloonDrop(s32 a, s32 n)
     } else {
         r = 0;
     }
-    FieldItemFxTable_Start(sFieldItemFxTable, r, P2(p0, p1), V3(A.x, A.y, A.z), 0xc, t, 0, 0);
+    return FieldItemFxTable_Start(sFieldItemFxTable, r, P2(p0, p1), V3(A.x, A.y, A.z), 0xc, t, 0, 0);
 }
 }
 

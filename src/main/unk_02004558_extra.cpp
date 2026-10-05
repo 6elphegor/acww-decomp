@@ -1202,7 +1202,7 @@ Unk_0200f17c_Date *PlayerSession_GetLastPlayDate();
 void PlayerActor_GetPlayerData(void *o);
 void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
-void DateTime_Compare(void *a, void *b, s32 n);
+s32 DateTime_Compare(void *a, void *b, s32 n);
 void Snd_SeEmitterPlayAlternate(void *a, void *b, s32 c);
 VecFx32 *Footstep_GetSeAtPos(VecFx32 *v);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, s32 id);
@@ -1242,8 +1242,8 @@ static inline void Unk_0200f070_Set(VecFx32 *r, s32 x, s32 y, s32 z)
 }
 void PlayerActor_CalcHandItemPos(VecFx32 *dst, PlayerActor *o, s32 *p);
 void PlayerActor_SetLastPlayDate(PlayerActor *o, s32 a, Unk_0200f17c_Date *d);
-void PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
-void PlayerActor_CompareLastPlayDateNow(void *o);
+s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
+s32 PlayerActor_CompareLastPlayDateNow(void *o);
 void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b);
@@ -1313,7 +1313,7 @@ void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
 BOOL _ZN9Character16checkInteractionEPS_(void *, void *);
 void PlayerActor_OffsetByAngle(VecFx32 *, void *, void *, void *, void *);
-void CharaClothTexRef_GetBuffer(void *);
+void *CharaClothTexRef_GetBuffer(void *);
 u32 ClothTex_GetTexThunk();
 void _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
