@@ -4,17 +4,16 @@
 #include "types.h"
 
 // NSBMD/NSBTX resource header view (TEX0 block offsets and dictionaries): material / texture / palette lookups.
-// Members defined in src/main/unk_02055c38.cpp (0x02056fcc-0x02057120).
+// Members defined in src/main/unk_02055c38.cpp (0x02056fcc-0x02057120); findTexData and findPlttData are defined
+// there as extern "C" functions under their mangled names (they take a name argument their symbols don't show).
 class G3dResAccess {
 public:
     u32 findNodeIdx(s32 a);
     u32 getPlttSize(s32 idx);
-    void findPlttData(void);
     void *getPlttData(s32 idx);
     s32 findPlttIdx(s32 a);
     u32 getTexSize(s32 idx);
     void *getTexData(s32 idx);
-    void *findTexData(void);
     s32 findTexIdx(s32 a);
     u32 getTexImageOffset(void);
     s32 findMatIdx(s32 a);

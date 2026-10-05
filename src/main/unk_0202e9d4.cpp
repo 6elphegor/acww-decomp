@@ -267,9 +267,19 @@ BOOL CollisionTriangle::pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32
     }
     result = FALSE;
     if (e < c) {
+#ifdef MODERN
+        // The loop walks the three edges as an array: mwcc has t0..t2 next to each other on the stack.
+        CollisionSegment ts[3] = {
+            CollisionSegment((VecFx32 *)&vertex0, (VecFx32 *)&vertex1),
+            CollisionSegment((VecFx32 *)&vertex1, (VecFx32 *)&vertex2),
+            CollisionSegment((VecFx32 *)&vertex2, (VecFx32 *)&vertex0),
+        };
+        CollisionSegment &t0 = ts[0];
+#else
         CollisionSegment t0((VecFx32 *)&vertex0, (VecFx32 *)&vertex1);
         CollisionSegment t1((VecFx32 *)&vertex1, (VecFx32 *)&vertex2);
         CollisionSegment t2((VecFx32 *)&vertex2, (VecFx32 *)&vertex0);
+#endif
         CollisionSegment *p = &t0;
         for (; p < &t0 + 3; p++) {
             d = p->closestPoint((VecFx32 *)&w, (VecFx32 *)a);

@@ -1187,7 +1187,7 @@ extern s32 sRainParallax[];
 extern "C" {
 extern s32 sRainSideToggle;
 }
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s16 v[1]; } gWeatherManager; } }
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s16 v[0x4c]; } gWeatherManager; } }
 #define data_021f1448 n13::L_021f1448::gWeatherManager.v
 extern "C" {
 extern s16 data_02135f44[];
@@ -1457,7 +1457,8 @@ namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } g
 extern "C" {
 extern u16 sMoonColors[];
 }
-namespace L_021f4254 { extern "C" { extern struct S { u8 p[0x2d74]; SkyMoonPaletteRow v[1]; } gSkySprites; } }
+// One row per hour plus the next-hour row read at 23:00 (its last 4 bytes run past gSkySprites).
+namespace L_021f4254 { extern "C" { extern struct S { u8 p[0x2d74]; SkyMoonPaletteRow v[25]; } gSkySprites; } }
 #define data_021f4254 n12::L_021f4254::gSkySprites.v
 extern "C" {
 extern s16 data_02135f44[];
@@ -3802,7 +3803,7 @@ extern u8 data_021e58a6[];
 extern "C" {
 extern u8 sSkyObjPalOverrideSlots[];
 }
-namespace L_020d18c8 { extern "C" { extern struct S { u8 p[0x1e0]; s8 v[1]; } sSkyObjGfxTable; } }
+namespace L_020d18c8 { extern "C" { extern struct S { u8 p[0x1e0]; s8 v[0x160]; } sSkyObjGfxTable; } }
 #define data_020d18c8 n08::L_020d18c8::sSkyObjGfxTable.v
 extern "C" {
 extern SkyObjGfxDef sSkyObjGfxTable[];
@@ -4396,7 +4397,7 @@ namespace n08 {
 
 // ======== unk_020bc58c.cpp ========
 namespace n07 {
-namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s32 v[1]; } gWeatherManager; } }
+namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; s32 v[0x26]; } gWeatherManager; } }
 #define data_021f1448 n07::L_021f1448::gWeatherManager.v
 extern "C" {
 extern s32 sSkySpriteDefaultGfx[];
@@ -6402,7 +6403,7 @@ namespace n04 {
 extern "C" {
 extern s32 sRainSeIds[];
 }
-namespace L_021ef690 { extern "C" { extern struct S { u8 p[0x8]; u8 v[1]; } sSkyLight; } }
+namespace L_021ef690 { extern "C" { extern struct S { u8 p[0x8]; u8 v[4]; } sSkyLight; } }
 #define data_021ef690 n04::L_021ef690::sSkyLight.v
 extern "C" {
 extern u16 sSkyLight[];

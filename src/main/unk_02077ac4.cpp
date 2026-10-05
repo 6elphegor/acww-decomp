@@ -1751,7 +1751,7 @@ s32 Villager_GetWhereabouts(VillagerData *a);
 s32 Villager_GetState(VillagerData *a);
 s32 Villager_GetIndex(VillagerData *a);
 s32 Villager_FindOwnIndex(VillagerData *a);
-u32 Villager_GetInfo4d();
+u32 Villager_GetInfo4d(VillagerData *a);
 void Villager_SetCarpet(VillagerData *a, u8 b);
 void Villager_SetWallpaper(VillagerData *a, u8 b);
 u32 Villager_GetCarpet(VillagerData *a);
@@ -1791,7 +1791,7 @@ s32 Villager_GetWhereabouts(VillagerData *a);
 s32 Villager_GetState(VillagerData *a);
 s32 Villager_GetIndex(VillagerData *a);
 s32 Villager_FindOwnIndex(VillagerData *a);
-u32 Villager_GetInfo4d();
+u32 Villager_GetInfo4d(VillagerData *a);
 u32 Villager_GetCarpet(VillagerData *a);
 u32 Villager_GetWallpaper(VillagerData *a);
 BOOL Villager_HasShownFurnitureAt(VillagerData *a, u32 *b, u8 *c, s32 d);
@@ -5698,9 +5698,8 @@ extern "C" void Villager_SetCarpet(VillagerData *a, u8 b) { a->carpet = b; }
 }
 
 namespace nL {
-extern "C" u32 Villager_GetInfo4d() {
-    void *u;
-    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(_ZN12VillagerData13getVillagerIdEv(u)));
+extern "C" u32 Villager_GetInfo4d(VillagerData *a) {
+    u8 *p = VillagerInfo_Get(VillagerId_GetSpecies(_ZN12VillagerData13getVillagerIdEv(a)));
     if (p != 0) return p[0x4d];
     return 0;
 }

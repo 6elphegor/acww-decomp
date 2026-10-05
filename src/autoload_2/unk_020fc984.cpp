@@ -349,7 +349,14 @@ extern "C" void spl_chld_alp_out(P *p, void *x, s32 t) {
 }
 
 extern "C" void spl_set_cross_to_axis(E *e) {
+#ifdef MODERN
+    VecFx16 a;
+    a.x = data_0213bba4[0];
+    a.y = data_0213bba4[1];
+    a.z = 0;
+#else
     VecFx16 a = *(VecFx16 *)data_0213bba4;
+#endif
     VecFx16 b;
     switch (e->res->hdr->f.axis) {
     case 2:

@@ -169,10 +169,11 @@ void LetterRenderer::setSignature(u8 *data) {
     signatureLine.setText(&buf);
 }
 
-void LetterRenderer::highlightGreeting(u32 a, u32 b) {
+// highlightGreeting takes a third argument (r3, passed on to setHighlight) its symbol (u32, u32) doesn't show: defined
+// under the mangled name with the parameter spelled out.
+extern "C" void _ZN14LetterRenderer17highlightGreetingEjj(LetterRenderer *self, u32 a, u32 b, u32 c) {
     StackPad4 pad;
-    u32 u;
-    greetingLine.setHighlight(a, b, u);
+    self->greetingLine.setHighlight(a, b, c);
 }
 
 void LetterLayout::highlightBodyRange(u32 a, u32 b, u32 c) {
@@ -197,9 +198,8 @@ void LetterLayout::highlightBodyRange(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void LetterLayout_HighlightSignature(u8 *self, u32 a, u32 b) {
-    u32 u;
-    ((LetterTextLine *)(self + 0x4c))->setHighlight(a, b, u);
+extern "C" void LetterLayout_HighlightSignature(u8 *self, u32 a, u32 b, u32 c) {
+    ((LetterTextLine *)(self + 0x4c))->setHighlight(a, b, c);
 }
 
 extern "C" s32 Text_SplitLines(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);

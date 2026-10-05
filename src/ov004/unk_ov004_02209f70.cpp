@@ -3118,7 +3118,7 @@ s32 Scene_InVillagerHouse();
 u32 Scene_GetVillagerHouse();
 s32 Scene_InHouseRoom();
 s32 SaveVillagers_Get(void *p, u32 a);
-u32 Villager_GetInfo4d();
+u32 Villager_GetInfo4d(void *v);
 void _ZN8ItemNameC1EPt(void *out, u16 *in);
 void _ZN8ItemNameD1Ev(void *p);
 void _ZN15TalkWindowState12setNamedSlotEiPvj(void *a, s32 b, void *c, s32 d);
@@ -3264,8 +3264,9 @@ BOOL FtrStereo::enterTalkAct04() {
     if (p18::Scene_InVillagerHouse()) {
         u32 t = 0;
         u32 r = p18::Scene_GetVillagerHouse();
-        if (p18::SaveVillagers_Get(p18::gSaveVillagers, r)) {
-            t = p18::Villager_GetInfo4d();
+        s32 v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
+        if (v) {
+            t = p18::Villager_GetInfo4d((void *)v);
         }
         l.v = Unk_ov004_0220ec30_Val(t);
         p18::_ZN8ItemNameC1EPt(buf1, &l.v);
@@ -3450,8 +3451,9 @@ BOOL FtrStereo::initModel() {
         if (p18::Scene_InVillagerHouse()) {
             u32 t = 0;
             u32 r = p18::Scene_GetVillagerHouse();
-            if (p18::SaveVillagers_Get(p18::gSaveVillagers, r)) {
-                t = p18::Villager_GetInfo4d();
+            s32 v = p18::SaveVillagers_Get(p18::gSaveVillagers, r);
+            if (v) {
+                t = p18::Villager_GetInfo4d((void *)v);
             }
             BOOL f = FALSE;
             volatile u16 *pg = &p18::sStereoSong;
