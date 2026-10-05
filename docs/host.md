@@ -56,8 +56,11 @@ Differences from the DS that the sources had to handle (under `HOST`):
 - Pointers sent to the ARM7 in 26-bit PXI messages: host data addresses are reconstructed (pxi7.c).
 - The game's own C library names are made local to the game (tools/host_localize.py).
 
-Not done yet: display (2D/3D rendering), sound, the shared-overlay-address thunks (modern/ds/overlays.c has the
-resolver; the thunks are ARM), resetting an overlay's data when it is loaded again, a window and input.
+The shared-overlay-address thunks (docs/modern.md) are generated for x86 too (`modern_shared.py --arch x86`, wrapped
+in the partial link).
+
+Not done yet: display (2D/3D rendering), sound, resetting an overlay's data when it is loaded again, a window and
+input.
 
 ## The open choice: how to provide the hardware
 

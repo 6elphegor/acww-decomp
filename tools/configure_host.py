@@ -101,8 +101,18 @@ def main():
         game_list = build / "game_objects.txt"
         build.mkdir(parents=True, exist_ok=True)
         game_list.write_text("".join(f"{o}\n" for o in game_objs))
-        n.rule("partial", "ld -m elf_i386 -r -o $out @$list", description="LD -r $out")
-        n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list)], variables={"list": str(game_list)})
+        # thunks for calls to addresses several overlays share (tools/modern_shared.py; ld --wrap in the partial
+        # link, where the references are still undefined)
+        n.rule("shared", f"python3 tools/modern_shared.py --arch x86 --nm nm --objects $list --config config/{args.version}/arm9 "
+                         f"--asm {build}/shared.s --wrap {build}/wrap.txt > {build}/shared.log", description="SHARED")
+        n.build([str(build / "shared.s"), str(build / "wrap.txt")], "shared", game_objs,
+                implicit=["tools/modern_shared.py", str(game_list)], variables={"list": str(game_list)})
+        n.rule("hostas", f"{args.cc} -m32 -c $in -o $out", description="AS $in")
+        n.build(str(build / "shared.o"), "hostas", str(build / "shared.s"))
+        host_objs.append(str(build / "shared.o"))
+        n.rule("partial", "ld -m elf_i386 -r -o $out @$list @$wrap", description="LD -r $out")
+        n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), str(build / "wrap.txt")],
+                variables={"list": str(game_list), "wrap": str(build / "wrap.txt")})
         libs = f"{R}/usr/lib32/libc.so.6 {R}/usr/lib32/libm.so.6 {G}/libgcc.a"
         n.rule("localize", f"python3 tools/host_localize.py nm objcopy $in $out {libs}", description="LOCALIZE $out")
         game_o = str(build / "game.o")
