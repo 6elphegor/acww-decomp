@@ -21,7 +21,7 @@ extern u8 sWfcConnTestSucceeded;
 s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
 s32 GX_LoadBG2Scr();
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcUtil_GetEditParams(s32, s32 *);
 s32 WfcUtil_GetStartMode();
 s32 WfcUtil_ShowTopMessage(s32, s32, s32);
@@ -75,7 +75,7 @@ void WfcTestConfirm_Enter();
 void WfcUsbDone_CountDown();
 void WfcUsbDone_Exit();
 void WfcUsbDone_FadeOut();
-s32 WfcUsbDone_Idle();
+void WfcUsbDone_Idle();
 void WfcUsbDone_Update();
 void WfcUsbDone_WaitFadeIn();
 

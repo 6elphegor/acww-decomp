@@ -288,8 +288,8 @@ s32 NetArea_IsLocalOwner();
 s32 NetArea_IsLocalMoving();
 s32 NetArea_FindOwner(u32 a);
 s32 NetArea_ResolveRoute(s32 a, s32 b, u32 c, u8 *d);
-s32 NetArea_SendStateA(s32 a);
-s32 NetArea_SendStateB(s32 a);
+void NetArea_SendStateA(s32 a);
+void NetArea_SendStateB(s32 a);
 s32 NetArea_FindSlotInScene(u32 a);
 void NetArea_SendMoveTarget();
 void NetSession_SetSyncState(s32 a, s32 b);
@@ -457,7 +457,7 @@ fail:
     return 4;
 }
 
-extern "C" s32 NetArea_SendStateA(s32 a) {
+extern "C" void NetArea_SendStateA(s32 a) {
     NetArea_BuildStateA(a);
     CommManager *o = gCommManager;
     o->beginRecord();
@@ -468,7 +468,7 @@ extern "C" s32 NetArea_SendStateA(s32 a) {
     _ZN11CommManager12clearAuxLenAEv(o);
 }
 
-extern "C" s32 NetArea_SendStateB(s32 a) {
+extern "C" void NetArea_SendStateB(s32 a) {
     NetArea_BuildStateB(a);
     CommManager *o = gCommManager;
     o->beginRecord();

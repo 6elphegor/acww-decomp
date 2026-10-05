@@ -56,7 +56,7 @@ extern void WfcConnSelect_Enter();
 extern void WfcConfig_Shutdown();
 extern void WfcConfig_Init();
 extern u8 *WfcUtil_LocalizePath(u8 *);
-extern s32 WfcUtil_LoadFileTo(void *, void *);
+extern void WfcUtil_LoadFileTo(void *, void *);
 extern void WfcCursor_Free();
 extern void WfcCursor_Init();
 extern void WfcHighlight_Free();

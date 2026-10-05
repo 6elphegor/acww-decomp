@@ -19,7 +19,7 @@ s32 WfcSound_Play(s32);
 s32 WfcFade_Start(s32, s32, s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcGx_HidePlanes(s32, s32);
-s32 WfcUtil_LoadFileTo(const char *, void *);
+void WfcUtil_LoadFileTo(const char *, void *);
 s32 WfcText_CreateBgCanvas(s32, s32);
 s32 WfcButtonBar_IsClosed();
 s32 WfcText_DestroyBgCanvas(s32);

@@ -24,9 +24,9 @@ extern void VBlankIntrWait();
 extern void WfcHeap_Free();
 void WfcBoot_Enter();
 void WfcUtil_SetScene(void (*)());
-s32 WfcUtil_InitSystem();
-s32 WfcUtil_InitDisplay();
-s32 WfcUtil_Shutdown();
+void WfcUtil_InitSystem();
+void WfcUtil_InitDisplay();
+void WfcUtil_Shutdown();
 s32 WfcUtil_CheckParams(s32, u32);
 void WfcAoss_Free();
 void *WfcAoss_Alloc(s32);
@@ -125,7 +125,7 @@ s32 WfcUtil_CheckParams(s32 a, u32 b) {
     return 1;
 }
 
-s32 WfcUtil_InitSystem() {
+void WfcUtil_InitSystem() {
     volatile u16 *ime = (volatile u16 *)0x4000208;
     u16 old = *ime;
     *ime = 0;
@@ -152,7 +152,7 @@ s32 WfcUtil_InitSystem() {
     WfcHeap_FreeAndClear(&p);
 }
 
-s32 WfcUtil_InitDisplay() {
+void WfcUtil_InitDisplay() {
     GX_VBlankIntr(0);
     GX_SetBankForBG(1);
     GX_SetBankForOBJ(2);
@@ -204,7 +204,7 @@ s32 WfcUtil_InitDisplay() {
     GX_VBlankIntr(1);
 }
 
-s32 WfcUtil_Shutdown() {
+void WfcUtil_Shutdown() {
     GX_DispOff();
     *(volatile u32 *)0x4001000 &= ~0x10000;
     WfcUtil_RestoreLed();

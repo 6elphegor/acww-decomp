@@ -41,7 +41,7 @@ void List_Remove(void *l, void *t);
 void NetArea_SendStateToNewOwner();
 void NetArea_SendStateToRequester();
 void Scene_CheckExit(void *p);
-void _ZN8ProcBase11postExecuteEv(void *a, u32 b);
+BOOL _ZN8ProcBase11postExecuteEv(void *a, u32 b);
 BOOL TalkRequest_IsActive();
 BOOL _ZN9Character12isAreaSyncedEv(Character *);
 s32 CharInteractSync_CheckArea();
@@ -667,7 +667,7 @@ BOOL TalkRequestQueue::postExecute(u32 b) {
     if (gActorDefaultParent != 0) {
         Scene_CheckExit((void *)gActorDefaultParent);
     }
-    _ZN8ProcBase11postExecuteEv(this, b);
+    return _ZN8ProcBase11postExecuteEv(this, b);
 }
 
 extern "C" BOOL TalkRequest_IsCurrentKind(u32 x) {

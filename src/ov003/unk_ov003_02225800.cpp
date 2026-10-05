@@ -331,7 +331,7 @@ void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
 extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
 extern "C" void InsectSpawn_BuildLightMask(u16 (*arr)[4][16]);
 extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag);
-extern "C" s32 InsectSpawn_CopyMask(void *p, s32 t);
+extern "C" void InsectSpawn_CopyMask(void *p, s32 t);
 extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b);
 extern "C" void FieldInsect_PurgeStale();
 extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out);
@@ -10952,7 +10952,7 @@ InsectMatAnim::~InsectMatAnim() { using namespace s00;}
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225b6c
-extern "C" s32 InsectSpawn_CopyMask(void *p, s32 t)
+extern "C" void InsectSpawn_CopyMask(void *p, s32 t)
 {
     switch (t) {
     case 0:

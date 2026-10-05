@@ -453,7 +453,7 @@ s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f);
 s32 DwcMatch_SendNnRequest(DwcNnRequest *p);
 s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, u32 c);
 void DwcMatch_BuildServerFilter(char *buf, u32 x, u32 y, u32 z);
-void DwcMatch_StartServerQuery(u32 a);
+s32 DwcMatch_StartServerQuery(u32 a);
 void DwcMatch_Cleanup(void);
 void DwcMatch_Init(u32 a, u32 b, u32 c, u32 d);
 void DwcMatch_ResetState(u32 a);
@@ -475,7 +475,7 @@ s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f);
 s32 DwcMatch_SendNnRequest(DwcNnRequest *p);
 s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, u32 c);
 void DwcMatch_BuildServerFilter(char *buf, u32 x, u32 y, u32 z);
-void DwcMatch_StartServerQuery(u32 a);
+s32 DwcMatch_StartServerQuery(u32 a);
 void DwcMatch_Cleanup(void);
 void DwcMatch_Init(u32 a, u32 b, u32 c, u32 d);
 void DwcMatch_ResetState(u32 a);
@@ -961,6 +961,9 @@ s32 DwcMatch_StartClient(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
     if (r != 0) {
         return r;
     }
+#ifdef MODERN
+    return r; // the original returns r (0) left in r0; an explicit return changes mwcc's code
+#endif
 }
 #undef g
 }
@@ -1910,7 +1913,7 @@ namespace F022751b0 {
 extern "C" {
 #define G sDwcMatch
 
-void DwcMatch_StartServerQuery(u32 a) {
+s32 DwcMatch_StartServerQuery(u32 a) {
     char buf[0x100];
     u8 list[0xa8];
     s32 n = 7;
@@ -1959,11 +1962,13 @@ void DwcMatch_StartServerQuery(u32 a) {
         break;
     }
     ServerBrowserClear(G->serverBrowser);
+    s32 r;
     for (k = 0; k < 5; k++) {
-        s32 r = ServerBrowserLimitUpdateA(G->serverBrowser, 1, 0, list, n, buf, 0x10);
+        r = ServerBrowserLimitUpdateA(G->serverBrowser, 1, 0, list, n, buf, 0x10);
         if (r == 0) break;
         if (r != 2) break;
     }
+    return r;
 }
 #undef G
 }

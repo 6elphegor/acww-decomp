@@ -990,7 +990,7 @@ void EventBgm::updateCountdown(BOOL a) {
     }
 }
 
-s32 EventBgm::updateFireworks(BOOL a) {
+void EventBgm::updateFireworks(BOOL a) {
     if (a != 0) {
         if (fireworksBgm != 0x30) {
             stopFireworks();
@@ -2266,7 +2266,7 @@ void BgmManager::updateHourChime() {
     }
 }
 
-s32 BgmManager::postUpdate() {}
+void BgmManager::postUpdate() {}
 
 BgmProc *BgmProc::create() { return new BgmProc(); }
 

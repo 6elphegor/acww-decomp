@@ -309,7 +309,7 @@ void WfcGx_ShowPlanes(s32, s32);
 u32 WfcObj_Create(u32, u32, u32);
 void WfcObj_SetPos(u32, s32, u32, u32);
 void WfcObj_SetPriority(u32, s32, s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Char();
 void GX_LoadBGPltt();
 void GX_LoadBG2Scr();

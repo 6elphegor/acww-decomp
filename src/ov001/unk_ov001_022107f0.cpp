@@ -14,7 +14,7 @@ s32 WfcButtonBar_Close();
 s32 WfcUtil_HideTopMessage();
 s32 WfcUtil_ShowTopMessage(u32 a, s32 b, u32 c);
 s32 WfcUtil_ShowBottomMessage(u32 a);
-s32 WfcUtil_LoadFileTo(void *a, void *b);
+void WfcUtil_LoadFileTo(void *a, void *b);
 s32 WfcUtil_SetScreenFlags(u32 a, u32 b);
 s32 WfcUtil_SetScene(void *p);
 void *WfcTransfer_GetChildUser();

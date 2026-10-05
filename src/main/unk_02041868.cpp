@@ -31,7 +31,7 @@ void Insect_EnableTrashFlies();
 void Heap_Free(u32, u32);
 s32 OS_IsThreadTerminated(void *t);
 void OS_KillThread(u32, u32);
-s32 TownUpdateThread_Kill(TownUpdateThread *p);
+void TownUpdateThread_Kill(TownUpdateThread *p);
 void TownUpdateThread_Destroy();
 void TownJunkInsects_InitFromEval(TownJunkInsectFlags *p);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -268,7 +268,7 @@ extern "C" BOOL TownUpdateThread_PollDone() {
     return r;
 }
 
-extern "C" s32 TownUpdateThread_Kill(TownUpdateThread *p) {
+extern "C" void TownUpdateThread_Kill(TownUpdateThread *p) {
     if (p->started != 0) {
         if (OS_IsThreadTerminated(p) == 0) OS_KillThread((u32)p, 0);
     }

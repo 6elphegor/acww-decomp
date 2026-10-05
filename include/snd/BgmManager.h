@@ -73,7 +73,7 @@ public:
     void playNewYearDay(u32 a);
     void playNewYearNight(u32 a);
     void playNewYearFanfare(u32 a);
-    s32 updateFireworks(BOOL a);
+    void updateFireworks(BOOL a);
     void updateCountdown(BOOL a);
     void updateNewYearDay(BOOL a);
     void updateEvents();
@@ -271,7 +271,7 @@ public:
     void releaseBgm(u16 id);
     void releasePriority(s32 v);
     void push(BgmRequestView *e);
-    s32 postUpdate();
+    void postUpdate();
     void update();
 
     /* 0x000 */ BgmRequest requests[16];

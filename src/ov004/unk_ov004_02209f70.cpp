@@ -3069,7 +3069,7 @@ public:
     void execFtrAct();
     void execTalkAct05();
     BOOL enterTalkAct05();
-    BOOL execTalkAct04();
+    void execTalkAct04();
     BOOL enterTalkAct04();
     BOOL execTalkAct03();
     BOOL enterTalkAct03();
@@ -3233,7 +3233,7 @@ BOOL FtrStereo::enterTalkAct05() {
     return TRUE;
 }
 
-BOOL FtrStereo::execTalkAct04() {
+void FtrStereo::execTalkAct04() {
     if (window != NULL) {
         if (window->state != 0) {
             setTalkAct(5);
@@ -3337,7 +3337,7 @@ void FtrStereo::execTalkAct() {
         (Unk_ov004_0220ead4_Fn)&FtrStereo::execTalkAct01,
         &FtrStereo::execTalkAct02,
         (Unk_ov004_0220ead4_Fn)&FtrStereo::execTalkAct03,
-        (Unk_ov004_0220ead4_Fn)&FtrStereo::execTalkAct04,
+        &FtrStereo::execTalkAct04,
         &FtrStereo::execTalkAct05,
     };
     if (talkAct < 6) {
@@ -3720,27 +3720,27 @@ public:
 
     void execTalkAct0B();
     BOOL enterTalkAct0B();
-    BOOL execTalkAct0A();
+    void execTalkAct0A();
     BOOL enterTalkAct0A();
-    BOOL execTalkAct09();
+    void execTalkAct09();
     BOOL enterTalkAct09();
-    BOOL execTalkAct08();
+    void execTalkAct08();
     BOOL enterTalkAct08();
-    BOOL execTalkAct07();
+    void execTalkAct07();
     BOOL enterTalkAct07();
     BOOL execTalkAct06();
     BOOL enterTalkAct06();
-    BOOL execTalkAct05();
+    void execTalkAct05();
     BOOL enterTalkAct05();
-    BOOL execTalkAct04();
+    void execTalkAct04();
     BOOL enterTalkAct04();
-    BOOL execTalkAct03();
+    void execTalkAct03();
     BOOL enterTalkAct03();
-    BOOL execTalkAct02();
+    void execTalkAct02();
     BOOL enterTalkAct02();
     BOOL execTalkAct01();
     BOOL enterTalkAct01();
-    BOOL execTalkAct00();
+    void execTalkAct00();
     BOOL enterTalkAct00();
     void execTalkAct();
     BOOL setTalkAct(s32 s);
@@ -5483,7 +5483,7 @@ public:
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
-    BOOL execFtrAct01();
+    void execFtrAct01();
     BOOL enterFtrAct01();
     void execFtrAct00();
     BOOL enterFtrAct00();
@@ -5719,7 +5719,7 @@ extern "C" FtrActor *FtrKind03_Create() {
 }
 
 // ================================================================ FtrKind02
-BOOL FtrKind02::execFtrAct01() {
+void FtrKind02::execFtrAct01() {
     u32 t = p24::FtrActor_GetFtrIndex(this);
     if (t != 0xb9 && t != 0xba) goto rest;
     if (((FtrSwitch *)switchState)->isChanging()) {
@@ -5764,7 +5764,7 @@ BOOL FtrKind02::enterFtrAct00() {
 void FtrKind02::execFtrAct() {
     static BOOL (FtrKind02::*tbl[2])() = {
         (BOOL (FtrKind02::*)())&FtrKind02::execFtrAct00,
-        &FtrKind02::execFtrAct01,
+        (BOOL (FtrKind02::*)())&FtrKind02::execFtrAct01,
     };
     u32 i = ftrAct;
     if (i < 2) {
@@ -6095,7 +6095,7 @@ BOOL FtrStorage::enterTalkAct0B() {
     return p19::FtrSync_ChangeAct(this, 3, 0xff, 1);
 }
 
-BOOL FtrStorage::execTalkAct0A() {
+void FtrStorage::execTalkAct0A() {
     if (window && window->state == 0) {
         setTalkAct(11);
     }
@@ -6105,7 +6105,7 @@ BOOL FtrStorage::enterTalkAct0A() {
     return TRUE;
 }
 
-BOOL FtrStorage::execTalkAct09() {
+void FtrStorage::execTalkAct09() {
     if (window && window->state != 0) {
         setTalkAct(10);
     }
@@ -6145,7 +6145,7 @@ BOOL FtrStorage::enterTalkAct09() {
     return TRUE;
 }
 
-BOOL FtrStorage::execTalkAct08() {
+void FtrStorage::execTalkAct08() {
     if (ftrAct == 2) {
         setTalkAct(9);
     }
@@ -6155,7 +6155,7 @@ BOOL FtrStorage::enterTalkAct08() {
     return p19::FtrSync_ChangeAct(this, 1, 0xff, 1);
 }
 
-BOOL FtrStorage::execTalkAct07() {
+void FtrStorage::execTalkAct07() {
     s32 v = getStorageType();
     if (v == -1) {
         setTalkAct(8);
@@ -6184,7 +6184,7 @@ BOOL FtrStorage::enterTalkAct06() {
     return TRUE;
 }
 
-BOOL FtrStorage::execTalkAct05() {
+void FtrStorage::execTalkAct05() {
     if (ftrAct == 0) {
         p19::TalkRequest_SetTargetDone(this);
     }
@@ -6201,7 +6201,7 @@ BOOL FtrStorage::enterTalkAct05() {
     return p19::FtrSync_ChangeAct(this, 3, 0xff, 1);
 }
 
-BOOL FtrStorage::execTalkAct04() {
+void FtrStorage::execTalkAct04() {
     if (p19::MenuCtrl_IsFinished()) {
         setTalkAct(5);
     }
@@ -6214,7 +6214,7 @@ BOOL FtrStorage::enterTalkAct04() {
     return FALSE;
 }
 
-BOOL FtrStorage::execTalkAct03() {
+void FtrStorage::execTalkAct03() {
     if (ftrAct == 2) {
         setTalkAct(4);
     }
@@ -6224,7 +6224,7 @@ BOOL FtrStorage::enterTalkAct03() {
     return p19::FtrSync_ChangeAct(this, 1, 0xff, 1);
 }
 
-BOOL FtrStorage::execTalkAct02() {
+void FtrStorage::execTalkAct02() {
     s32 v = getStorageType();
     if (v == -1) {
         setTalkAct(3);
@@ -6255,7 +6255,7 @@ BOOL FtrStorage::enterTalkAct01() {
     return TRUE;
 }
 
-BOOL FtrStorage::execTalkAct00() {
+void FtrStorage::execTalkAct00() {
 }
 
 BOOL FtrStorage::enterTalkAct00() {
@@ -6265,17 +6265,17 @@ BOOL FtrStorage::enterTalkAct00() {
 void FtrStorage::execTalkAct() {
     typedef BOOL (FtrStorage::*Fn)();
     static Fn tbl[12] = {
-        &FtrStorage::execTalkAct00,
+        (Fn)&FtrStorage::execTalkAct00,
         &FtrStorage::execTalkAct01,
-        &FtrStorage::execTalkAct02,
-        &FtrStorage::execTalkAct03,
-        &FtrStorage::execTalkAct04,
-        &FtrStorage::execTalkAct05,
+        (Fn)&FtrStorage::execTalkAct02,
+        (Fn)&FtrStorage::execTalkAct03,
+        (Fn)&FtrStorage::execTalkAct04,
+        (Fn)&FtrStorage::execTalkAct05,
         &FtrStorage::execTalkAct06,
-        &FtrStorage::execTalkAct07,
-        &FtrStorage::execTalkAct08,
-        &FtrStorage::execTalkAct09,
-        &FtrStorage::execTalkAct0A,
+        (Fn)&FtrStorage::execTalkAct07,
+        (Fn)&FtrStorage::execTalkAct08,
+        (Fn)&FtrStorage::execTalkAct09,
+        (Fn)&FtrStorage::execTalkAct0A,
         (Fn)&FtrStorage::execTalkAct0B,
     };
     s32 s = talkAct;

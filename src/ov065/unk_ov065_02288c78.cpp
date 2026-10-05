@@ -211,6 +211,7 @@ s32 ServerBrowserBeginUpdate2(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s3
             r = ServerBrowserThink(o);
         }
     }
+    return r;
 }
 }
 }

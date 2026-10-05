@@ -40,7 +40,7 @@ s32 WfcText_RequestTransfer(u32 a);
 s32 WfcUtil_HideTopMessage();
 s32 WfcOam_FreeEntry(void *a);
 s32 WfcText_DestroyBgCanvas(u32 a);
-s32 WfcUtil_LoadFileTo(const char *a, void *b);
+void WfcUtil_LoadFileTo(const char *a, void *b);
 s32 WfcGx_HidePlanes(u32 a, u32 b);
 s32 WfcHeap_FreeAndClear(void *a);
 s32 WfcNumPad_Exists();

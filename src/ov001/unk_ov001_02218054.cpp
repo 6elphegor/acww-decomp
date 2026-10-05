@@ -10,7 +10,7 @@ void GX_LoadBG2Char();
 s32 GX_LoadBG2Scr(void *, s32, u32);
 void GX_LoadBGPltt();
 s32 WfcUtil_HideTopMessage();
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcHighlight_SetConnection();
 s32 WfcUtil_SetScreenFlags(s32, s32);
 s32 WfcUtil_SetScene(void *);
