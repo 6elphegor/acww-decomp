@@ -8153,7 +8153,7 @@ extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void _ZN14WeatherManager18getWeatherAtOffsetEi(void *p, u32 x);
+s32 _ZN14WeatherManager18getWeatherAtOffsetEi(void *p, u32 x);
 }
 extern "C" {
 void HBlank_Replace(void *p, void *fn, void *cb);
@@ -8363,7 +8363,7 @@ extern "C" u32 Sky_GetStarScrollX(void);
 extern "C" u32 Sky_GetCurrentPalette(void);
 extern "C" u32 Weather_GetPrecipKind(void);
 extern "C" void Weather_GetLevels(s32 *a, s32 *b);
-extern "C" void Weather_GetCurrent(void);
+extern "C" s32 Weather_GetCurrent(void);
 extern "C" s32 Weather_GetFallingPrecip(void);
 extern "C" void Sky_Disable(void);
 extern "C" BOOL Sky_SetEngine(s32 arg);
@@ -8714,7 +8714,7 @@ extern "C" s32 Weather_GetFallingPrecip(void) {
     }
 }
 
-extern "C" void Weather_GetCurrent(void) { _ZN14WeatherManager18getWeatherAtOffsetEi(&gWeatherManager, 0); }
+extern "C" s32 Weather_GetCurrent(void) { return _ZN14WeatherManager18getWeatherAtOffsetEi(&gWeatherManager, 0); }
 
 extern "C" void Weather_GetLevels(s32 *a, s32 *b) {
     *a = gWeatherManager.level;

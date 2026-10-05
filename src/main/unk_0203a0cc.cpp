@@ -1190,8 +1190,8 @@ extern "C" BOOL Camera_SetModeDefault(void) {
     return _ZN6Camera7setModeEi(gCamera, 0);
 }
 
-extern "C" void Camera_SetMode1(void) {
-    _ZN6Camera7setModeEi(gCamera, 1);
+extern "C" s32 Camera_SetMode1(void) {
+    return _ZN6Camera7setModeEi(gCamera, 1);
 }
 
 extern "C" s32 Camera_CalcPointSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 *d) {
@@ -1312,8 +1312,8 @@ extern "C" void Camera_SetMode3(void) {
     _ZN6Camera7setModeEi(gCamera, 3);
 }
 
-extern "C" void Camera_RestorePrevMode(void) {
-    _ZN6Camera7setModeEi(gCamera, gCamera->prevMode);
+extern "C" s32 Camera_RestorePrevMode(void) {
+    return _ZN6Camera7setModeEi(gCamera, gCamera->prevMode);
 }
 
 extern "C" void Camera_SetMode4(void) {
