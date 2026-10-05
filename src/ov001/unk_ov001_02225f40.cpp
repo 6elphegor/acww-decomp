@@ -4,7 +4,8 @@
 
 #pragma thumb off
 
-// WfcPoint copied as one word (a plain WfcPoint assignment compiles to two halfword copies)
+// WfcPoint copied through a wrapper: both halfwords are loaded before either is stored (a plain WfcPoint assignment
+// interleaves load/store with different registers; same size, different code)
 struct WfcPointCopy {
     WfcPoint p;
 };

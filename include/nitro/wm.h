@@ -219,7 +219,7 @@ typedef struct WMStatus {
     /* 0x0c4 */ u8 _c4[0x30];
     /* 0x0f4 */ u16 ff4;
     /* 0x0f6 */ u8 _f6[0x88];
-    /* 0x17e */ u16 f17e;
+    /* 0x17e */ u16 f17e; // connected AID bitmap
     /* 0x180 */ u8 _180[4];
     /* 0x184 */ u16 f184;
     /* 0x186 */ u8 _186[8];
