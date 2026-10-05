@@ -17,6 +17,25 @@ static u32 sQueue[64];
 static int sHead, sCount;
 static u32 sArm7Sync;
 
+// replies that take time on the DS (the card's SPI transfers): sent when virtual time reaches `due`. The SDK's
+// asynchronous calls rely on not completing before the caller looks at their status.
+static struct { u64 due; u32 word; } sLater[64];
+static int sLaterCount;
+void pxi7_send_after(u32 word, u32 cycles) {
+    if (sLaterCount < 64) sLater[sLaterCount++] = (typeof(sLater[0])){host_cycles() + cycles, word};
+}
+u64 pxi7_next_due(void) {
+    u64 d = ~0ull;
+    for (int i = 0; i < sLaterCount; i++) if (sLater[i].due < d) d = sLater[i].due;
+    return d;
+}
+void pxi7_run_due(void) {
+    for (int i = 0; i < sLaterCount;) {
+        if (sLater[i].due <= host_cycles()) { u32 w = sLater[i].word; sLater[i] = sLater[--sLaterCount]; pxi7_send(w); }
+        else i++;
+    }
+}
+
 void pxi7_send(u32 word) {
     if (sCount == 64) { fprintf(stderr, "pxi7: receive FIFO overflow\n"); return; }
     sQueue[(sHead + sCount++) % 64] = word;
@@ -131,10 +150,10 @@ static void save_store(void) {
 }
 
 static void card_request(u32 data) {
-    if (sCardWantBlock) { sCardBlock = ptr26(data); sCardWantBlock = 0; pxi7_send(11 | 1u << 5); return; }
+    if (sCardWantBlock) { sCardBlock = ptr26(data); sCardWantBlock = 0; pxi7_send_after(11 | 1u << 5, 20000); return; }
     u32 *b = sCardBlock;
     if (data == 0) { sCardWantBlock = 1; return; }
-    if (!b) { pxi7_send(11 | 1u << 5); return; }
+    if (!b) { pxi7_send_after(11 | 1u << 5, 20000); return; }
     u32 result = 0;
     if (b[6]) save_load(b[6]);
     u32 src = b[3], dst = b[4], len = b[5];
@@ -157,7 +176,7 @@ static void card_request(u32 data) {
     }
     b[0] = result;
     if (gHostVerbose) fprintf(stderr, "pxi7: card %u src %x dst %x len %x -> %u\n", data, src, dst, len, result);
-    pxi7_send(11 | 1u << 5);
+    pxi7_send_after(11 | 1u << 5, 20000);
 }
 
 // ---- touch panel (tag 6): request type in bits 8-14 (0 one sample, 1 start auto sampling, 2 stop, 3 stability);

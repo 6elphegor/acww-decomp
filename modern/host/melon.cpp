@@ -38,7 +38,9 @@ extern "C" void melon_write16(u32 addr, u16 v) {
         fprintf(stderr, "melon: %08x = %04x\n", addr, v);
     sNds->ARM9IOWrite16(addr, v);
 }
+static u32 sGxFifo, sGxPort;
 extern "C" void melon_write32(u32 addr, u32 v) {
+    if (addr == 0x04000400) sGxFifo++; else if (addr >= 0x04000440 && addr < 0x04000600) sGxPort++;
     sNds->ARM9IOWrite32(addr, v);
     if (addr >= 0x04000400 && addr < 0x04000600) sNds->GPU.GPU3D.HostDrain();
 }
@@ -75,4 +77,14 @@ extern "C" void melon_frame(void) {
 // screen 0 top, 1 bottom: 256x192 pixels, 0x00RRGGBB
 extern "C" const u32 *melon_screen(int screen) {
     return sNds->GPU.Framebuffer[sNds->GPU.FrontBuffer][screen].get();
+}
+
+extern "C" void melon_debug(void) {
+    GPU &g = sNds->GPU;
+    fprintf(stderr, "melon: gx fifo %u port %u gxstat %08x ", sGxFifo, sGxPort, sNds->ARM9IORead32(0x04000600));
+    sGxFifo = sGxPort = 0;
+    fprintf(stderr, "polys %u/%u dispcnt %08x/%08x vramcnt %02x %02x %02x %02x %02x %02x %02x %02x %02x powcnt %04x\n",
+            g.GPU3D.NumPolygons, g.GPU3D.RenderNumPolygons, g.GPU2D_A.DispCnt, g.GPU2D_B.DispCnt, g.VRAMCNT[0],
+            g.VRAMCNT[1], g.VRAMCNT[2], g.VRAMCNT[3], g.VRAMCNT[4], g.VRAMCNT[5], g.VRAMCNT[6], g.VRAMCNT[7],
+            g.VRAMCNT[8], sNds->PowerControl9);
 }

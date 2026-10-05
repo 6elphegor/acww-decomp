@@ -16,6 +16,10 @@ void host_fatal(const char *msg) {
     exit(2);
 }
 
+void host_bad_object(u32 profile, void *create, void *obj) {
+    fprintf(stderr, "host: profile %u: create %p returned %p without a vtable\n", profile, create, obj);
+}
+
 void host_unimplemented(const char *what) {
     fprintf(stderr, "host: unimplemented: %s\n", what);
 }

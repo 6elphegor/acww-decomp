@@ -49,6 +49,9 @@ void host_vram_control(u32 addr, u8 value);
 #define FRAME_CYCLES (LINE_CYCLES * FRAME_LINES)
 static u64 sCycles;
 u64 host_frame(void) { return sCycles / FRAME_CYCLES; }
+u64 host_cycles(void) { return sCycles; }
+u64 pxi7_next_due(void);
+void pxi7_run_due(void);
 
 // ---- interrupts
 static u32 sIF;
@@ -118,6 +121,7 @@ static u64 sNextVblank = 192u * LINE_CYCLES;
 static void run_events(void);
 void host_advance_to_next_event(void) {
     u64 next = sNextVblank;
+    if (pxi7_next_due() < next) next = pxi7_next_due();
     for (int i = 0; i < 4; i++) {
         if (sTm[i].on && sTm[i].irq && !sTm[i].cascade) {
             u64 o = tm_next_overflow(&sTm[i]);
@@ -130,6 +134,7 @@ void host_advance_to_next_event(void) {
 static u64 sLastTimerCheck[4];
 static void dma_on_vblank(void);
 static void run_events(void) {
+    pxi7_run_due();
     while (sCycles >= sNextVblank) {
         u16 st = R16(0x04000004);
         if (st & 8) host_irq_raise(1);    // VBlank
@@ -144,6 +149,8 @@ static void run_events(void) {
             fprintf(stderr, "stats: frame %llu dispcnt %08x/%08x bright %04x/%04x pal %d banks", (unsigned long long)host_frame(),
                     R32(0x04000000), R32(0x04001000), R16(0x0400006c), R16(0x0400106c), pal);
             for (int b = 0; b < 9; b++) { int nz = 0; u8 *p = host_vram_bank(b); for (u32 i = 0; i < host_vram_bank_size(b); i++) nz += p[i] != 0; fprintf(stderr, " %d", nz); }
+            extern void melon_debug(void);
+            melon_debug();
             fprintf(stderr, " vramcnt %08x %08x ime %x ie %08x if %08x cpu %x\n", R32(0x04000240), R32(0x04000244), R32(0x04000208), R32(0x04000210), sIF, host_irq_state());
         }
         host_pace_frame();
@@ -246,7 +253,11 @@ void gx_fifo_write(u32 addr, u32 value) { melon_write32(addr, value); }
 
 // ---- register reads and writes
 static void io_read(u32 a) {
-    sCycles += 64;
+    // a register read again and again is a polling loop: let time pass faster there (each read costs a trap)
+    static u32 last, repeat;
+    repeat = a == last ? repeat + 1 : 0;
+    last = a;
+    sCycles += repeat > 4 ? 4096 : 64;
     run_events();
     u32 w = a & ~3u;
     if (w == 0x04000004) update_display();

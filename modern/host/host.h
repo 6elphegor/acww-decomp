@@ -24,6 +24,7 @@ void host_irq_ack(u32 mask);
 void host_irq_raise(u32 mask);
 void host_advance_to_next_event(void);
 u64 host_frame(void);
+u64 host_cycles(void);
 
 // os.c
 void host_deliver_irqs(void);
