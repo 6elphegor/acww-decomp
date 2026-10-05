@@ -482,7 +482,7 @@ s32 FtrActor_startPull(void *, s32);
 s32 FtrActor_startPush(void *, s32);
 s32 FtrActor_startRotate(void *, s32);
 void FtrActor_GetItemId(u16 *out, FtrActor *o);
-s32 FtrActor_PredIsSeatOrBed();
+s32 FtrActor_PredIsSeatOrBed(void *);
 BOOL FtrActor_PredIsStereo(FtrActor *);
 s32 FtrActor_canMoveBy(void *, void *);
 s32 FtrActor_canRotateBy(void *, s32);
@@ -4979,7 +4979,7 @@ extern "C" u16 FtrSound_GetSe3(s32 idx) {
 extern "C" void FtrMgr_PlaySeatSound1At(s32 a) {
     void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
-        if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound1(p);
+        if (FtrActor_PredIsSeatOrBed(p)) FtrActor_playSound1(p);
     }
 }
 
@@ -4987,7 +4987,7 @@ extern "C" void FtrMgr_PlaySeatSound1At(s32 a) {
 extern "C" void FtrMgr_PlaySeatSound0At(s32 a) {
     void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
-        if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound0(p);
+        if (FtrActor_PredIsSeatOrBed(p)) FtrActor_playSound0(p);
     }
 }
 
@@ -4995,7 +4995,7 @@ extern "C" void FtrMgr_PlaySeatSound0At(s32 a) {
 extern "C" void FtrMgr_PlaySeatSound2At(s32 a) {
     void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
-        if (FtrActor_PredIsSeatOrBed()) FtrActor_playSound2(p);
+        if (FtrActor_PredIsSeatOrBed(p)) FtrActor_playSound2(p);
     }
 }
 

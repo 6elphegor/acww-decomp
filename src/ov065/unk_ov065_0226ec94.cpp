@@ -27,14 +27,7 @@ struct NetCheckResultPad {
     ~NetCheckResultPad() {}
 };
 
-// the same symbol is called with and without its argument
-namespace Unk_ov065_0226e4dc_A {
-extern "C" void DwcHttp_Destroy();
-}
-namespace Unk_ov065_0226e4dc_B {
 extern "C" s32 DwcHttp_Destroy(DwcHttp *c);
-}
-using Unk_ov065_0226e4dc_B::DwcHttp_Destroy;
 
 extern "C" {
 extern s32 data_0220064c;
@@ -122,7 +115,7 @@ s32 NetCheck_Start(NetCheckParams *cfg) {
 void NetCheck_Destroy() {
     NetCheckWork *g;
     if (sNetCheckHttp != 0) {
-        Unk_ov065_0226e4dc_A::DwcHttp_Destroy();
+        DwcHttp_Destroy(sNetCheckHttp);
         sNetCheck->freeFunc("DWChttp", sNetCheckHttp, 0);
         sNetCheckHttp = 0;
     }
