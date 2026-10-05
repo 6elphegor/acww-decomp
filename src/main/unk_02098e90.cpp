@@ -373,7 +373,7 @@ extern "C" void *PlanErrand_Destruct(ErrandRecord *self);
 extern "C" void *PlanErrand_Construct(ErrandRecord *self);
 extern "C" s32 Errand_GetSubGroup(u32 x);
 extern "C" s32 Errand_GetSlotIndex(u32 x);
-extern "C" void ErrandRecord_GetTime();
+extern "C" void *ErrandRecord_GetTime(void *p);
 extern "C" BOOL Errand_GetGroupIndex(s32 *out, s32 x);
 extern "C" s32 Errand_GetGroup(u32 x);
 extern "C" BOOL Errand_IsValidGroup(u32 x);
@@ -383,7 +383,7 @@ extern "C" BOOL Errand_IsValidClass(u32 x);
 extern "C" BOOL Errand_IsValidKind(u32 x);
 extern "C" void Trend_GetToolItem(u16 *out, s32 idx);
 extern "C" void *VillagerPlan_GetStateDate(void *p);
-extern "C" void VillagerPlan_GetPlanTime();
+extern "C" void *VillagerPlan_GetPlanTime(void *p);
 extern "C" s32 PlanState_GetGroupIndex(u8 *out, s32 x);
 extern "C" s32 PlanState_GetGroup(u32 x);
 extern "C" BOOL Trend_IsValid(u32 x);
@@ -666,7 +666,7 @@ s32 VillagerPlan::getTrendName(s32 x) {
 
 
 namespace n5 {
-extern "C" void VillagerPlan_GetPlanTime() {}
+extern "C" void *VillagerPlan_GetPlanTime(void *p) { return p; }
 
 extern "C" void *VillagerPlan_GetStateDate(void *p) { return (u8 *)p + 8; }
 
@@ -887,7 +887,7 @@ s32 ErrandRecord::setTimeFromNow(s32 x) {
 
 
 namespace n5 {
-extern "C" void ErrandRecord_GetTime() {}
+extern "C" void *ErrandRecord_GetTime(void *p) { return p; }
 
 extern "C" s32 Errand_GetSlotIndex(u32 x) {
     s32 r = 2;

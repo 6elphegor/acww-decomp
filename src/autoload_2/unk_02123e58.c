@@ -164,7 +164,7 @@ extern char data_0213c208[];
 extern u8 AutoloadCallback[];
 extern void *FS_FindArchive(const char *name, int len);
 extern BOOL FS_OpenFileDirect(FSFile *file, void *arc, u32 top, u32 bottom, int id);
-extern void MBi_SendMP(void *p, u32 a, u32 b);
+extern u32 MBi_SendMP(void *p, u32 a, u32 b);
 extern void FS_CloseFile(FSFile *file);
 extern u32 mystrlen(const u16 *s);
 extern BOOL MBi_ReadIconInfo(const char *path, void *dst, u32 isChar);
@@ -190,7 +190,7 @@ extern void MBi_InitSendFixedBeacon(void);
 extern void MBi_SendFixedBeacon(u32 a, u32 b, u32 c);
 extern void MBi_InitSendVolatBeacon(void);
 extern void MBi_SendVolatBeacon(u32 a, u32 b, u32 c);
-extern void MBi_BlockHeaderEnd(u32 a, u32 b, void *c);
+extern u32 MBi_BlockHeaderEnd(u32 a, u32 b, void *c);
 extern u32 MBi_calc_cksum(const u16 *p, int len);
 extern u32 MB_GetSegmentLength(FSFile *file);
 extern BOOL MB_ReadSegment(FSFile *file, u32 *buf, u32 size);
@@ -301,10 +301,10 @@ void MBi_SendVolatBeacon(u32 a, u32 b, u32 c) {
 }
 
 // DC_FlushRange + MB data send helper
-void MBi_BlockHeaderEnd(u32 a, u32 b, void *c) {
+u32 MBi_BlockHeaderEnd(u32 a, u32 b, void *c) {
     DC_FlushRange(c, (a + 31) & ~31);
     DC_WaitWriteBufferEmpty();
-    MBi_SendMP(c, a, b);
+    return MBi_SendMP(c, a, b);
 }
 
 // 16-bit one's complement checksum

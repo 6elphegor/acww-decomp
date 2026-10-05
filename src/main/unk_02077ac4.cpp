@@ -601,7 +601,7 @@ void VillagerTrend_OnInsectCaught(VecFx32 *p);
 void VillagerTrend_OnFishCaught(VecFx32 *p);
 void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p);
 BOOL Villager_IsActorInBox(u16 *h, s32 x0, s32 x1, s32 z0, s32 z1);
-void func_020789a8();
+void *func_020789a8(void *p);
 void *VillagerTransfer_DestructVillager(void *p);
 void *VillagerTransfer_ConstructVillager(void *p);
 s32 VillagerRelations_GetScore(void *a, s32 b, s32 c);
@@ -666,7 +666,7 @@ void VillagerTrend_OnItemDug(VecFx32 *p);
 void VillagerTrend_OnInsectCaught(VecFx32 *p);
 void VillagerTrend_OnFishCaught(VecFx32 *p);
 void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p);
-void func_020789a8();
+void *func_020789a8(void *p);
 void *VillagerTransfer_DestructVillager(void *p);
 void *VillagerTransfer_ConstructVillager(void *p);
 s32 VillagerRelations_GetScore(void *a, s32 b, s32 c);
@@ -1163,8 +1163,8 @@ s32 memcmp(const void *, const void *, u32);
 s32 Random_GlobalBelow(s32);
 void TownId_Assign(void *, void *);
 s32 TownId_IsValid(void *);
-void _ZN18TownExchangeRecord11getVillagerEv(void *);
-void *func_020789a8();
+void *_ZN18TownExchangeRecord11getVillagerEv(void *);
+void *func_020789a8(void *p);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 u8 VillagerId_GetSpecies(void *);
 u32 VillagerId_GetPersonality(void *);
@@ -8029,8 +8029,7 @@ extern "C" void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg) {
     s32 idx;
     void *r4;
 
-    _ZN18TownExchangeRecord11getVillagerEv(data_021e7f8c);
-    r7 = func_020789a8();
+    r7 = func_020789a8(_ZN18TownExchangeRecord11getVillagerEv(data_021e7f8c));
     idx = SaveVillagers_FindMovingOutDue(self, arg);
     r4 = SaveVillagers_Get(self, idx);
     if (((VillagerId *)_ZN12VillagerData13getVillagerIdEv(r7))->isValid() == 0) {
@@ -10266,7 +10265,7 @@ extern "C" void *VillagerTransfer_DestructVillager(void *p) {
 }
 
 namespace nB {
-extern "C" void func_020789a8() {}
+extern "C" void *func_020789a8(void *p) { return p; }
 }
 
 namespace nB {

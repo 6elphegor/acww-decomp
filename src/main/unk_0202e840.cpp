@@ -108,6 +108,6 @@ void GameProc::postCreate(int a) {
     _ZN8ProcBase10postCreateEi(this, a);
 }
 
-extern "C" void GameProc_CreateChild(u32 a, void *b, u32 c, u32 d) { Proc_CreateChild(a, b, c, d); }
+extern "C" s32 GameProc_CreateChild(u32 a, void *b, u32 c, u32 d) { return Proc_CreateChild(a, b, c, d); }
 
 extern "C" void *GameProc_CreateRoot(u32 a, u32 b, u32 c) { return Proc_CreateRoot(a, b, c); }

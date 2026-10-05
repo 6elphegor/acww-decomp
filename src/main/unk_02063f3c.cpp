@@ -35,10 +35,10 @@ void File_OpenOrPanic(void *file, const char *path);
 BOOL File_Open(void *file, const char *path);
 void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize);
 s32 File_GetDecodedSizeByPath(u32 a);
-void File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...);
-void File_LoadF(const char *fmt, ...);
-void File_LoadAllocF(s32 a, s32 b, const char *fmt, ...);
-void File_Load(u32 a);
+s32 File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...);
+void *File_LoadF(const char *fmt, ...);
+void *File_LoadAllocF(s32 a, s32 b, const char *fmt, ...);
+void *File_Load(u32 a);
 BOOL File_LoadOverlayEx(s32 target, u32 id);
 s32 File_GetDecodedSize(FSFile *f);
 s32 File_ReadAll(FSFile *f, void *dst, u32 n);
@@ -132,8 +132,8 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
     return ret;
 }
 
-void File_Load(u32 a) {
-    File_LoadAlloc(a, 0, 4, 0);
+void *File_Load(u32 a) {
+    return File_LoadAlloc(a, 0, 4, 0);
 }
 
 s32 File_LoadToBuffer(const char *buf, void *a, u32 b) {
@@ -203,24 +203,24 @@ s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va) {
     return (s32)File_LoadAlloc((u32)buf, (void *)a, b, (u32 *)c);
 }
 
-void File_LoadAllocF(s32 a, s32 b, const char *fmt, ...) {
+void *File_LoadAllocF(s32 a, s32 b, const char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
-    File_LoadAllocV(a, b, 0, fmt, va);
+    return (void *)File_LoadAllocV(a, b, 0, fmt, va);
 }
 
-void File_LoadF(const char *fmt, ...) {
+void *File_LoadF(const char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
-    File_LoadAllocV(0, 4, 0, fmt, va);
+    return (void *)File_LoadAllocV(0, 4, 0, fmt, va);
 }
 
-void File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...) {
+s32 File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...) {
     char buf[0x80];
     va_list va;
     va_start(va, fmt);
     Str_VSNPrintf(buf, 0x80, fmt, va);
-    File_LoadToBuffer(buf, (void *)a, b);
+    return File_LoadToBuffer(buf, (void *)a, b);
 }
 
 s32 File_GetDecodedSize(FSFile *f) {

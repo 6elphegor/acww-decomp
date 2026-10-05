@@ -119,8 +119,8 @@ void OS_UnlockCartridge(u32 lockID) {
 }
 
 // OS_LockCartridge
-void OS_TryLockCartridge(u32 lockID) {
-    OSi_DoTryLockByWord(lockID, (void *)0x027fffe8, OSi_AllocateCartridgeBus, 1);
+s32 OS_TryLockCartridge(u32 lockID) {
+    return OSi_DoTryLockByWord(lockID, (void *)0x027fffe8, OSi_AllocateCartridgeBus, 1);
 }
 
 // OSi_FreeCartridgeBus (EXMEMCNT &= ~0x80)

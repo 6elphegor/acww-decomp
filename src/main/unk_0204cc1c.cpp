@@ -357,7 +357,7 @@ s32 BlockMap_PutStructure(u32 a, u32 b, u32 c, u32 d);
 TownBlockMap *TownBlockMap_Get();
 s32 TownBlockMap_Destroy(void *heap);
 BOOL TownBlockMap_Create(void *heap);
-void AcreItemGrid_Get();
+void *AcreItemGrid_Get(void *p);
 void ItemGrid_Clear(u16 *p);
 u8 *TownMap_GetAcres(void *p);
 void TownMap_Generate(TownMap *o, s32 arg);
@@ -1316,7 +1316,7 @@ extern "C" void ItemGrid_Clear(u16 *p) {
     for (i = 0; i < 0x100; p++, i++) *p = 0xfff1;
 }
 
-extern "C" void AcreItemGrid_Get() {}
+extern "C" void *AcreItemGrid_Get(void *p) { return p; }
 
 void TownBlockMap::clear() {
     width = 0;

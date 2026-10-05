@@ -81,7 +81,7 @@ void TownExchangeRecord::resetCounter() { counter = 0; }
 
 u32 TownExchangeRecord::getCounter() { return counter; }
 
-extern "C" void TownExchange_GetLetter() {}
+extern "C" void *TownExchange_GetLetter(void *p) { return p; }
 
 void *TownExchangeRecord::getConstellation() { return &unk_0f4; }
 

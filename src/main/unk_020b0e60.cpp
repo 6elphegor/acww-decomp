@@ -206,7 +206,7 @@ public:
 class TownStyleRecordView {
 public:
     u8 *getTownFlag();
-    void getHouseStyles();
+    void *getHouseStyles();
 };
 
 class TownFlag {
@@ -858,7 +858,7 @@ extern "C" void TownStyleRecord_InitNew(u8 *self)
     }
 }
 
-void TownStyleRecordView::getHouseStyles() {}
+void *TownStyleRecordView::getHouseStyles() { return this; }
 
 u8 *TownStyleRecordView::getTownFlag() { return (u8 *)this + 4; }
 

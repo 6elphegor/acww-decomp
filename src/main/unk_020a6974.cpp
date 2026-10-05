@@ -515,7 +515,7 @@ extern "C" BmgMsgAttr *BmgMsgAttr_Init(BmgMsgAttr *s);
 extern "C" void BmgMsgAttr_Fini();
 extern "C" void BmgMsgAttr_Copy(BmgMsgAttr *d, BmgMsgAttr *s);
 extern "C" void BmgMsgAttr_Clear(BmgMsgAttr *s);
-extern "C" void BmgMsgAttr_Get();
+extern "C" void *BmgMsgAttr_Get(void *p);
 extern "C" u8 BmgMsgAttr_GetByte04(BmgMsgAttr *s);
 extern "C" u8 BmgMsgAttr_GetByte05(BmgMsgAttr *s);
 extern "C" u8 BmgMsgAttr_GetByte06(BmgMsgAttr *s);
@@ -1714,7 +1714,7 @@ extern "C" void BmgMsgAttr_Copy(BmgMsgAttr *d, BmgMsgAttr *s) {
 
 extern "C" void BmgMsgAttr_Clear(BmgMsgAttr *s) { MI_CpuFill8(s, 0, 0xc); }
 
-extern "C" void BmgMsgAttr_Get() {}
+extern "C" void *BmgMsgAttr_Get(void *p) { return p; }
 
 extern "C" u8 BmgMsgAttr_GetByte04(BmgMsgAttr *s) { return s->windowStyle; }
 

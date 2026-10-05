@@ -22,7 +22,7 @@ public:
     void clear();
     void postResultNotice();
     void sendResultLetters();
-    void getHolderPlayer();
+    void *getHolderPlayer();
     ContestRecord *destruct();
     ContestRecord *construct();
 

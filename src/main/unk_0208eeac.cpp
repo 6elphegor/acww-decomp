@@ -38,7 +38,7 @@ void TownExchangeRecord::setChecksumByte(u32 v) { unk_0f4 = v; }
 
 u8 TownExchangeRecord::getChecksumByte() { return unk_0f4; }
 
-extern "C" void ReceivedLetter_GetLetter() {}
+extern "C" void *ReceivedLetter_GetLetter(void *p) { return p; }
 
 extern "C" void InputMode_Clear() { sInputModeIcon.inputMode = 0; }
 
