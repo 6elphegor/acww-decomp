@@ -353,10 +353,10 @@ extern V3 sWateringPos;
 
 s32 Unk_02006d14_getTargetWalkSpeed(Obj *o);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
-void PlayerActor_requestWalk(Obj *o, s32 a, s32 b, s32 c);
+BOOL PlayerActor_requestWalk(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
-void Unk_02006d14_tryInteract(Obj *o);
+s32 Unk_02006d14_tryInteract(Obj *o);
 void Unk_020102ec_advanceAnim(Obj *o);
 s32 Unk_02006d14_netFollowTransform(Obj *o);
 void Unk_020102ec_moveWithCollision(Obj *o);
@@ -545,10 +545,10 @@ s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f
 
 s32 PlayerActor_RequestFirework(Obj *o, s32 a, s32 b);
 void PlayerActor_Act80CheckEnd(Obj *o);
-s32 PlayerActor_Act80Update(Obj *o);
+void PlayerActor_Act80Update(Obj *o);
 s32 PlayerActor_RequestAct80(Obj *o, s32 a, s32 b);
 void PlayerActor_BeeStingUpdate(Obj *o);
-s32 PlayerActor_PitfallClimbOutCheckEnd(Obj *o);
+void PlayerActor_PitfallClimbOutCheckEnd(Obj *o);
 s32 PlayerActor_RequestPitfallClimbOut(Obj *o, s32 a, s32 b);
 void PlayerActor_PitfallStruggleInput(Obj *o);
 void PlayerActor_PitfallStruggleUpdate(Obj *o);
@@ -565,7 +565,7 @@ extern "C" void MsgRequest_setFileName(void *self, const char *s);
 extern "C" s32 PlayerActor_RequestFirework(Obj *o, s32 a, s32 b);
 extern "C" void PlayerActor_MainAct80(Obj *o);
 extern "C" void PlayerActor_Act80CheckEnd(Obj *o);
-extern "C" s32 PlayerActor_Act80Update(Obj *o);
+extern "C" void PlayerActor_Act80Update(Obj *o);
 extern "C" void PlayerActor_EndAct80(Obj *o);
 extern "C" s32 PlayerActor_NetAct80(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupAct80(Obj *o);
@@ -576,7 +576,7 @@ extern "C" void PlayerActor_NetBeeSting();
 extern "C" void PlayerActor_SetupBeeSting(Obj *o);
 extern "C" s32 PlayerActor_RequestBeeSting(Obj *o, s32 a, s32 b);
 extern "C" void PlayerActor_MainPitfallClimbOut(Obj *o);
-extern "C" s32 PlayerActor_PitfallClimbOutCheckEnd(Obj *o);
+extern "C" void PlayerActor_PitfallClimbOutCheckEnd(Obj *o);
 extern "C" s32 PlayerActor_NetPitfallClimbOut(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o);
 extern "C" s32 PlayerActor_RequestPitfallClimbOut(Obj *o, s32 a, s32 b);
@@ -665,7 +665,7 @@ s32 FieldItemFx_StartPitfallHole(s32 a, V3 *v);
 void PlayerActor_ResumeWalkOrIdle(Obj *o);
 
 void PlayerActor_EndPitfallStruggle(Obj *o, s32 a);
-s32 PlayerActor_NetPitfallStruggle(Obj *o, s32 a);
+void PlayerActor_NetPitfallStruggle(Obj *o, s32 a);
 void PlayerActor_SetupPitfallStruggle(Obj *o, s32 *a);
 s32 PlayerActor_RequestPitfallStruggle(Obj *o, s32 a, s32 b, s32 c);
 void PlayerActor_MainPitfallFall(Obj *o);
@@ -681,7 +681,7 @@ void PlayerActor_MainAct72(Obj *o);
 void PlayerActor_Act72CheckEnd(Obj *o);
 void PlayerActor_Act72Decelerate(Obj *o);
 s32 PlayerActor_NetAct72(Obj *o, s32 a);
-s32 PlayerActor_SetupAct72(Obj *o);
+void PlayerActor_SetupAct72(Obj *o);
 s32 PlayerActor_RequestAct72(Obj *o, s32 a, s32 b);
 void PlayerActor_MainTrip(Obj *o);
 void PlayerActor_TripUpdate(Obj *o);
@@ -724,7 +724,7 @@ static inline BOOL Range(volatile u16 *p, u32 lo, u32 hi) {
 
 // forward declarations (functions are emitted in descending address order)
 extern "C" void PlayerActor_EndPitfallStruggle(Obj *o, s32 a);
-extern "C" s32 PlayerActor_NetPitfallStruggle(Obj *o, s32 a);
+extern "C" void PlayerActor_NetPitfallStruggle(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupPitfallStruggle(Obj *o, s32 *a);
 extern "C" s32 PlayerActor_RequestPitfallStruggle(Obj *o, s32 a, s32 b, s32 c);
 extern "C" void PlayerActor_MainPitfallFall(Obj *o);
@@ -740,7 +740,7 @@ extern "C" void PlayerActor_MainAct72(Obj *o);
 extern "C" void PlayerActor_Act72CheckEnd(Obj *o);
 extern "C" void PlayerActor_Act72Decelerate(Obj *o);
 extern "C" s32 PlayerActor_NetAct72(Obj *o, s32 a);
-extern "C" s32 PlayerActor_SetupAct72(Obj *o);
+extern "C" void PlayerActor_SetupAct72(Obj *o);
 extern "C" s32 PlayerActor_RequestAct72(Obj *o, s32 a, s32 b);
 extern "C" void PlayerActor_MainTrip(Obj *o);
 extern "C" void PlayerActor_TripUpdate(Obj *o);
@@ -838,7 +838,7 @@ void PlayerActor_MailboxCloseUpdate(Obj *o);
 s32 PlayerActor_RequestMailboxClose(Obj *o, s32 a, s16 b);
 s32 PlayerActor_RequestMailboxWait(Obj *o, s32 a, s16 b);
 void PlayerActor_MailboxOpenMove(Obj *o);
-s32 PlayerActor_MailboxOpenCheckEnd(Obj *o);
+void PlayerActor_MailboxOpenCheckEnd(Obj *o);
 void PlayerActor_MailboxOpenGetNetData(void *a, V3 *v);
 void PlayerActor_MailboxOpenSetNetData(void *a, V3 *v);
 void PlayerActor_MailboxOpenSetWork(V3 *d, V3 v);
@@ -875,7 +875,7 @@ extern "C" void PlayerActor_FaintEffect(Obj *o);
 extern "C" s32 PlayerActor_NetFaint(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupFaint(Obj *o, Msg *m);
 extern "C" s32 PlayerActor_RequestFaint(Obj *o, u32 a, s32 b, s16 c);
-extern "C" s32 PlayerActor_MainMailboxClose(Obj *o);
+extern "C" void PlayerActor_MainMailboxClose(Obj *o);
 extern "C" void PlayerActor_MailboxCloseUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetMailboxClose(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupMailboxClose(Obj *o);
@@ -884,8 +884,8 @@ extern "C" void PlayerActor_MainMailboxWait(Obj *o);
 extern "C" s32 PlayerActor_NetMailboxWait(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupMailboxWait(Obj *o);
 extern "C" s32 PlayerActor_RequestMailboxWait(Obj *o, s32 a, s16 b);
-extern "C" s32 PlayerActor_MainMailboxOpen(Obj *o);
-extern "C" s32 PlayerActor_MailboxOpenCheckEnd(Obj *o);
+extern "C" void PlayerActor_MainMailboxOpen(Obj *o);
+extern "C" void PlayerActor_MailboxOpenCheckEnd(Obj *o);
 extern "C" void PlayerActor_MailboxOpenMove(Obj *o);
 extern "C" void PlayerActor_NetMailboxOpen(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupMailboxOpen(Obj *o, Msg *m);
@@ -2356,76 +2356,76 @@ s32 FieldFish_ScareAround(void *p, s32 a);
 s32 PlayerActor_AxeBrokenMessageUpdate(Obj *o);
 
 void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
-s32 PlayerActor_MainFishHook(Obj *o);
-s32 PlayerActor_FishHookCheckResult(Obj *o);
+void PlayerActor_MainFishHook(Obj *o);
+void PlayerActor_FishHookCheckResult(Obj *o);
 s32 PlayerActor_NetFishHook(Obj *o, s16 a);
-s32 PlayerActor_SetupFishHook(Obj *o);
+void PlayerActor_SetupFishHook(Obj *o);
 s32 PlayerActor_RequestFishHook(Obj *o, s32 a, s16 b);
-s32 PlayerActor_MainFishWait(Obj *o);
-s32 PlayerActor_FishWaitCheckInput(Obj *o);
+void PlayerActor_MainFishWait(Obj *o);
+void PlayerActor_FishWaitCheckInput(Obj *o);
 void PlayerActor_FishWaitOnBobberLand(Obj *o);
 s32 PlayerActor_FishWaitFaceBobber(Obj *o);
 void PlayerActor_FishWaitSyncBobber(Obj *o);
-s32 PlayerActor_EndFishWait(Obj *o, s32 a);
-s32 PlayerActor_NetFishWait(Obj *o, s16 a);
-s32 PlayerActor_SetupFishWait(Obj *o);
+void PlayerActor_EndFishWait(Obj *o, s32 a);
+void PlayerActor_NetFishWait(Obj *o, s16 a);
+void PlayerActor_SetupFishWait(Obj *o);
 void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out);
 s32 PlayerActor_FishWaitSetNetData(void *p, V3 *v, u8 c);
 s32 PlayerActor_RequestFishWait(Obj *o, s32 a, s16 b);
-s32 PlayerActor_MainFishCastFail(Obj *o);
-s32 PlayerActor_FishCastFailCheckEnd(Obj *o);
-s32 PlayerActor_FishCastFailUpdate(Obj *o);
+void PlayerActor_MainFishCastFail(Obj *o);
+void PlayerActor_FishCastFailCheckEnd(Obj *o);
+void PlayerActor_FishCastFailUpdate(Obj *o);
 s32 PlayerActor_NetFishCastFail(Obj *o, s16 a);
 s32 PlayerActor_SetupFishCastFail(Obj *o);
 s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b);
-s32 PlayerActor_MainFishCast(Obj *o);
-s32 PlayerActor_FishCastCheckEnd(Obj *o);
+void PlayerActor_MainFishCast(Obj *o);
+void PlayerActor_FishCastCheckEnd(Obj *o);
 s32 PlayerActor_FishCastTurn(Obj *o);
-s32 PlayerActor_FishCastUpdate(Obj *o);
+void PlayerActor_FishCastUpdate(Obj *o);
 s32 PlayerActor_NetFishCast(Obj *o, s16 a);
-s32 PlayerActor_SetupFishCast(Obj *o, Msg *a);
+void PlayerActor_SetupFishCast(Obj *o, Msg *a);
 s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b);
 s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b);
 s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b);
 void PlayerActor_FishCastSetArgs(P2 *d, V3 *s);
-s32 PlayerActor_MainAxeBrokenMessage(Obj *o);
+void PlayerActor_MainAxeBrokenMessage(Obj *o);
 }
 
 // forward declarations (functions are emitted in descending address order)
 extern "C" void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
-extern "C" s32 PlayerActor_MainFishHook(Obj *o);
-extern "C" s32 PlayerActor_FishHookCheckResult(Obj *o);
+extern "C" void PlayerActor_MainFishHook(Obj *o);
+extern "C" void PlayerActor_FishHookCheckResult(Obj *o);
 extern "C" s32 PlayerActor_NetFishHook(Obj *o, s16 a);
-extern "C" s32 PlayerActor_SetupFishHook(Obj *o);
+extern "C" void PlayerActor_SetupFishHook(Obj *o);
 extern "C" s32 PlayerActor_RequestFishHook(Obj *o, s32 a, s16 b);
-extern "C" s32 PlayerActor_MainFishWait(Obj *o);
-extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o);
+extern "C" void PlayerActor_MainFishWait(Obj *o);
+extern "C" void PlayerActor_FishWaitCheckInput(Obj *o);
 extern "C" void PlayerActor_FishWaitOnBobberLand(Obj *o);
 extern "C" s32 PlayerActor_FishWaitFaceBobber(Obj *o);
 extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o);
-extern "C" s32 PlayerActor_EndFishWait(Obj *o, s32 a);
-extern "C" s32 PlayerActor_NetFishWait(Obj *o, s16 a);
-extern "C" s32 PlayerActor_SetupFishWait(Obj *o);
+extern "C" void PlayerActor_EndFishWait(Obj *o, s32 a);
+extern "C" void PlayerActor_NetFishWait(Obj *o, s16 a);
+extern "C" void PlayerActor_SetupFishWait(Obj *o);
 extern "C" void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out);
 extern "C" s32 PlayerActor_FishWaitSetNetData(void *p, V3 *v, u8 c);
 extern "C" s32 PlayerActor_RequestFishWait(Obj *o, s32 a, s16 b);
-extern "C" s32 PlayerActor_MainFishCastFail(Obj *o);
-extern "C" s32 PlayerActor_FishCastFailCheckEnd(Obj *o);
-extern "C" s32 PlayerActor_FishCastFailUpdate(Obj *o);
+extern "C" void PlayerActor_MainFishCastFail(Obj *o);
+extern "C" void PlayerActor_FishCastFailCheckEnd(Obj *o);
+extern "C" void PlayerActor_FishCastFailUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetFishCastFail(Obj *o, s16 a);
 extern "C" s32 PlayerActor_SetupFishCastFail(Obj *o);
 extern "C" s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b);
-extern "C" s32 PlayerActor_MainFishCast(Obj *o);
-extern "C" s32 PlayerActor_FishCastCheckEnd(Obj *o);
+extern "C" void PlayerActor_MainFishCast(Obj *o);
+extern "C" void PlayerActor_FishCastCheckEnd(Obj *o);
 extern "C" s32 PlayerActor_FishCastTurn(Obj *o);
-extern "C" s32 PlayerActor_FishCastUpdate(Obj *o);
+extern "C" void PlayerActor_FishCastUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetFishCast(Obj *o, s16 a);
-extern "C" s32 PlayerActor_SetupFishCast(Obj *o, Msg *a);
+extern "C" void PlayerActor_SetupFishCast(Obj *o, Msg *a);
 extern "C" s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b);
 extern "C" s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b);
 extern "C" s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b);
 extern "C" void PlayerActor_FishCastSetArgs(P2 *d, V3 *s);
-extern "C" s32 PlayerActor_MainAxeBrokenMessage(Obj *o);
+extern "C" void PlayerActor_MainAxeBrokenMessage(Obj *o);
 }
 
 namespace ns_0220e970 {
@@ -2513,63 +2513,63 @@ s32 Tree_RequestChop(u32 a, P2 *p, s32 b);
 s32 FieldItemFx_StartStrikeResult(P2 *p);
 s32 Snowball_Break(void *q, s32 a);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
-s32 PlayerActor_AxeStrikeUpdate(Obj *o);
+void PlayerActor_AxeStrikeUpdate(Obj *o);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
-s32 PlayerActor_EndAxeBrokenMessage(Obj *o);
+void PlayerActor_EndAxeBrokenMessage(Obj *o);
 void PlayerActor_AxeBrokenMessageUpdate(Obj *o);
 s32 PlayerActor_NetAxeBrokenMessage(Obj *o, s16 a);
-s32 PlayerActor_SetupAxeBrokenMessage(Obj *o);
+void PlayerActor_SetupAxeBrokenMessage(Obj *o);
 void PlayerActor_AxeBrokenMessageInitWork(Rec *r);
 s32 PlayerActor_RequestAxeBrokenMessage(Obj *o, s32 a, s16 b);
-s32 PlayerActor_MainAxeBreak(Obj *o);
+void PlayerActor_MainAxeBreak(Obj *o);
 void PlayerActor_AxeBreakCheckEnd(Obj *o);
 void PlayerActor_AxeBreakUpdate(Obj *o);
 void PlayerActor_EndAxeBreak(Obj *o);
 void PlayerActor_NetAxeBreak(Obj *o, s16 a);
-s32 PlayerActor_SetupAxeBreak(Obj *o, Msg *a);
+void PlayerActor_SetupAxeBreak(Obj *o, Msg *a);
 void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst);
 void PlayerActor_AxeBreakSetNetData(u8 *p, u32 v);
 void PlayerActor_AxeBreakSetWork(Rec *r, u32 c, Pv p);
 s32 PlayerActor_RequestAxeBreak(Obj *o, u32 a, Pv p, s32 c, s16 e);
 void PlayerActor_AxeBreakSetArgs(Rec *r, u32 c, Pv p);
-s32 PlayerActor_MainAxeChop(Obj *o);
+void PlayerActor_MainAxeChop(Obj *o);
 void PlayerActor_AxeChopCheckEnd(Obj *o);
 s32 PlayerActor_AxeChopHit(Obj *o);
-s32 PlayerActor_AxeChopUpdate(Obj *o);
-s32 PlayerActor_EndAxeChop(Obj *o);
+void PlayerActor_AxeChopUpdate(Obj *o);
+void PlayerActor_EndAxeChop(Obj *o);
 void PlayerActor_NetAxeChop(Obj *o);
 s32 PlayerActor_SetupAxeChop(Obj *o, Msg *a);
 void PlayerActor_AxeChopSetWork(Rec *r, u32 a, u32 b, Pv p);
 s32 PlayerActor_RequestAxeChop(Obj *o, u32 a, u32 b, Pv p, s32 c, s16 d);
 void PlayerActor_AxeChopSetArgs(Rec *r, u32 a, u32 b, Pv p);
-s32 PlayerActor_MainAxeStrike(Obj *o);
-s32 PlayerActor_AxeStrikeCheckEnd(Obj *o);
+void PlayerActor_MainAxeStrike(Obj *o);
+void PlayerActor_AxeStrikeCheckEnd(Obj *o);
 void PlayerActor_AxeStrikeHit(Obj *o);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 PlayerActor_EndAxeBrokenMessage(Obj *o);
+extern "C" void PlayerActor_EndAxeBrokenMessage(Obj *o);
 extern "C" void PlayerActor_AxeBrokenMessageUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetAxeBrokenMessage(Obj *o, s16 a);
-extern "C" s32 PlayerActor_SetupAxeBrokenMessage(Obj *o);
+extern "C" void PlayerActor_SetupAxeBrokenMessage(Obj *o);
 extern "C" s32 PlayerActor_RequestAxeBrokenMessage(Obj *o, s32 a, s16 b);
-extern "C" s32 PlayerActor_MainAxeBreak(Obj *o);
+extern "C" void PlayerActor_MainAxeBreak(Obj *o);
 extern "C" void PlayerActor_AxeBreakCheckEnd(Obj *o);
 extern "C" void PlayerActor_AxeBreakUpdate(Obj *o);
 extern "C" void PlayerActor_EndAxeBreak(Obj *o);
 extern "C" void PlayerActor_NetAxeBreak(Obj *o, s16 a);
-extern "C" s32 PlayerActor_SetupAxeBreak(Obj *o, Msg *a);
+extern "C" void PlayerActor_SetupAxeBreak(Obj *o, Msg *a);
 extern "C" s32 PlayerActor_RequestAxeBreak(Obj *o, u32 a, Pv p, s32 c, s16 e);
-extern "C" s32 PlayerActor_MainAxeChop(Obj *o);
+extern "C" void PlayerActor_MainAxeChop(Obj *o);
 extern "C" void PlayerActor_AxeChopCheckEnd(Obj *o);
 extern "C" s32 PlayerActor_AxeChopHit(Obj *o);
-extern "C" s32 PlayerActor_AxeChopUpdate(Obj *o);
-extern "C" s32 PlayerActor_EndAxeChop(Obj *o);
+extern "C" void PlayerActor_AxeChopUpdate(Obj *o);
+extern "C" void PlayerActor_EndAxeChop(Obj *o);
 extern "C" s32 PlayerActor_SetupAxeChop(Obj *o, Msg *a);
 extern "C" s32 PlayerActor_RequestAxeChop(Obj *o, u32 a, u32 b, Pv p, s32 c, s16 d);
-extern "C" s32 PlayerActor_MainAxeStrike(Obj *o);
-extern "C" s32 PlayerActor_AxeStrikeCheckEnd(Obj *o);
+extern "C" void PlayerActor_MainAxeStrike(Obj *o);
+extern "C" void PlayerActor_AxeStrikeCheckEnd(Obj *o);
 extern "C" void PlayerActor_AxeStrikeHit(Obj *o);
 extern "C" void PlayerActor_AxeBrokenMessageInitWork(Rec *r);
 extern "C" void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst);
@@ -2642,36 +2642,36 @@ s32 PlayerActor_RequestAxeBreak(Obj *o, s32 a, s32 *b, s32 c, s32 d);
 s32 PlayerActor_RequestAxeChop(Obj *o, s32 a, s32 b, s32 *c, s32 d, s32 e);
 s32 PlayerActor_AxeStrikeHit(Obj *o);
 
-s32 PlayerActor_AxeStrikeUpdate(Obj *o);
-s32 PlayerActor_EndAxeStrike(Obj *o);
+void PlayerActor_AxeStrikeUpdate(Obj *o);
+void PlayerActor_EndAxeStrike(Obj *o);
 void PlayerActor_NetAxeStrike(Obj *o, s32 a);
-s32 PlayerActor_SetupAxeStrike(Obj *o, Msg *a);
+void PlayerActor_SetupAxeStrike(Obj *o, Msg *a);
 void PlayerActor_AxeStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
 void PlayerActor_AxeStrikeSetNetData(u8 *d, u8 a, u8 b, u8 c, u8 e, u8 f);
 void PlayerActor_AxeStrikeSetWork(u8 *d, u32 x, u32 y, s32 *s);
 s32 PlayerActor_RequestAxeStrike(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e);
 void PlayerActor_AxeStrikeSetArgs(u8 *d, u32 x, u32 y, s32 *s);
-s32 PlayerActor_MainAct48(Obj *o);
-s32 PlayerActor_Act48CheckEnd(Obj *o);
+void PlayerActor_MainAct48(Obj *o);
+void PlayerActor_Act48CheckEnd(Obj *o);
 s32 PlayerActor_Act48Update(Obj *o);
 s32 PlayerActor_NetAct48(Obj *o, s16 b);
 s32 PlayerActor_SetupAct48(Obj *o);
 s32 PlayerActor_RequestAct48(Obj *o, s32 a, s16 b);
-s32 PlayerActor_MainAxeFollowThrough(Obj *o);
+void PlayerActor_MainAxeFollowThrough(Obj *o);
 s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...);
-s32 PlayerActor_AxeFollowThroughTrackTarget(Obj *o);
+void PlayerActor_AxeFollowThroughTrackTarget(Obj *o);
 s32 PlayerActor_NetAxeFollowThrough(Obj *o, s16 b);
 s32 PlayerActor_SetupAxeFollowThrough(Obj *o);
 s32 PlayerActor_RequestAxeFollowThrough(Obj *o, s32 a, s16 b);
 void PlayerActor_MainAxeSwing(Obj *o);
-s32 PlayerActor_AxeSwingCheckEndRemote(Obj *o);
-s32 PlayerActor_AxeSwingCheckEnd(Obj *o);
-s32 PlayerActor_AxeSwingTrackTarget(Obj *o);
+void PlayerActor_AxeSwingCheckEndRemote(Obj *o);
+void PlayerActor_AxeSwingCheckEnd(Obj *o);
+void PlayerActor_AxeSwingTrackTarget(Obj *o);
 s32 PlayerActor_AxeSwingTurn(Obj *o);
 s32 PlayerActor_NetAxeSwing(Obj *o, s32 a);
-s32 PlayerActor_SetupAxeSwing(Obj *o, Msg *a);
+void PlayerActor_SetupAxeSwing(Obj *o, Msg *a);
 void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c);
-s32 PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
+void PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
 void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a);
 s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
 s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b);
@@ -2686,32 +2686,32 @@ static inline BOOL Unk_ov003_0220fa70_Ge(s32 v) {
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" s32 PlayerActor_AxeStrikeUpdate(Obj *o);
-extern "C" s32 PlayerActor_EndAxeStrike(Obj *o);
+extern "C" void PlayerActor_AxeStrikeUpdate(Obj *o);
+extern "C" void PlayerActor_EndAxeStrike(Obj *o);
 extern "C" void PlayerActor_NetAxeStrike(Obj *o, s32 a);
-extern "C" s32 PlayerActor_SetupAxeStrike(Obj *o, Msg *a);
+extern "C" void PlayerActor_SetupAxeStrike(Obj *o, Msg *a);
 extern "C" s32 PlayerActor_RequestAxeStrike(Obj *o, u32 a, u32 b, s32 *c, s32 d, s32 e);
-extern "C" s32 PlayerActor_MainAct48(Obj *o);
-extern "C" s32 PlayerActor_Act48CheckEnd(Obj *o);
+extern "C" void PlayerActor_MainAct48(Obj *o);
+extern "C" void PlayerActor_Act48CheckEnd(Obj *o);
 extern "C" s32 PlayerActor_Act48Update(Obj *o);
 extern "C" s32 PlayerActor_NetAct48(Obj *o, s16 b);
 extern "C" s32 PlayerActor_SetupAct48(Obj *o);
 extern "C" s32 PlayerActor_RequestAct48(Obj *o, s32 a, s16 b);
-extern "C" s32 PlayerActor_MainAxeFollowThrough(Obj *o);
+extern "C" void PlayerActor_MainAxeFollowThrough(Obj *o);
 extern "C" s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...);
-extern "C" s32 PlayerActor_AxeFollowThroughTrackTarget(Obj *o);
+extern "C" void PlayerActor_AxeFollowThroughTrackTarget(Obj *o);
 extern "C" s32 PlayerActor_NetAxeFollowThrough(Obj *o, s16 b);
 extern "C" s32 PlayerActor_SetupAxeFollowThrough(Obj *o);
 extern "C" s32 PlayerActor_RequestAxeFollowThrough(Obj *o, s32 a, s16 b);
 extern "C" void PlayerActor_MainAxeSwing(Obj *o);
-extern "C" s32 PlayerActor_AxeSwingCheckEndRemote(Obj *o);
-extern "C" s32 PlayerActor_AxeSwingCheckEnd(Obj *o);
-extern "C" s32 PlayerActor_AxeSwingTrackTarget(Obj *o);
+extern "C" void PlayerActor_AxeSwingCheckEndRemote(Obj *o);
+extern "C" void PlayerActor_AxeSwingCheckEnd(Obj *o);
+extern "C" void PlayerActor_AxeSwingTrackTarget(Obj *o);
 extern "C" s32 PlayerActor_AxeSwingTurn(Obj *o);
 extern "C" s32 PlayerActor_NetAxeSwing(Obj *o, s32 a);
-extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Msg *a);
+extern "C" void PlayerActor_SetupAxeSwing(Obj *o, Msg *a);
 extern "C" void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c);
-extern "C" s32 PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
+extern "C" void PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
 extern "C" s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
 extern "C" s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b);
 extern "C" void PlayerActor_AxeStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
@@ -2805,54 +2805,54 @@ s32 PlayerActor_StowItemSetWork(void *p, s32 st, u32 bits, s32 x, s32 y, s32 h, 
 s32 PlayerActor_StowItemSetNetData(void *p, u32 bits, s32 x, s32 y, s32 h);
 
 void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
-s32 PlayerActor_MainUmbrellaSpin(Obj *o);
+void PlayerActor_MainUmbrellaSpin(Obj *o);
 void PlayerActor_UmbrellaSpinCheckEnd(Obj *o);
-s32 PlayerActor_UmbrellaSpinEffect(Obj *o);
+void PlayerActor_UmbrellaSpinEffect(Obj *o);
 void PlayerActor_EndUmbrellaSpin(Obj *o);
 s32 PlayerActor_NetUmbrellaSpin(Obj *o, s16 b);
 s32 PlayerActor_SetupUmbrellaSpin(Obj *o);
 void PlayerActor_UmbrellaSpinInitWork(u8 *p);
 s32 PlayerActor_RequestUmbrellaSpin(Obj *o, s32 a, s16 b);
-s32 PlayerActor_MainStowUmbrella(Obj *o);
+void PlayerActor_MainStowUmbrella(Obj *o);
 void PlayerActor_StowUmbrellaCheckEnd(Obj *o);
 void PlayerActor_StowUmbrellaUpdate(Obj *o);
 s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a);
 s32 PlayerActor_SetupStowUmbrella(Obj *o, Msg *a);
-s32 PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
+void PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
 s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
-s32 PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
+void PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
 s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
-s32 PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
-s32 PlayerActor_MainStowItem(Obj *o);
+void PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
+void PlayerActor_MainStowItem(Obj *o);
 void PlayerActor_StowItemUpdate(Obj *o);
-s32 PlayerActor_EndStowItem(Obj *o);
+void PlayerActor_EndStowItem(Obj *o);
 s32 PlayerActor_NetStowItem(Obj *o, s32 a);
 s32 PlayerActor_SetupStowItem(Obj *o, Msg *a);
 }
 
 // forward declarations (functions are emitted in descending address order)
 extern "C" void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
-extern "C" s32 PlayerActor_MainUmbrellaSpin(Obj *o);
+extern "C" void PlayerActor_MainUmbrellaSpin(Obj *o);
 extern "C" void PlayerActor_UmbrellaSpinCheckEnd(Obj *o);
-extern "C" s32 PlayerActor_UmbrellaSpinEffect(Obj *o);
+extern "C" void PlayerActor_UmbrellaSpinEffect(Obj *o);
 extern "C" void PlayerActor_EndUmbrellaSpin(Obj *o);
 extern "C" s32 PlayerActor_NetUmbrellaSpin(Obj *o, s16 b);
 extern "C" s32 PlayerActor_SetupUmbrellaSpin(Obj *o);
 extern "C" void PlayerActor_UmbrellaSpinInitWork(u8 *p);
 extern "C" s32 PlayerActor_RequestUmbrellaSpin(Obj *o, s32 a, s16 b);
-extern "C" s32 PlayerActor_MainStowUmbrella(Obj *o);
+extern "C" void PlayerActor_MainStowUmbrella(Obj *o);
 extern "C" void PlayerActor_StowUmbrellaCheckEnd(Obj *o);
 extern "C" void PlayerActor_StowUmbrellaUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a);
 extern "C" s32 PlayerActor_SetupStowUmbrella(Obj *o, Msg *a);
-extern "C" s32 PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
+extern "C" void PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
 extern "C" s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
-extern "C" s32 PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
+extern "C" void PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
 extern "C" s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
-extern "C" s32 PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
-extern "C" s32 PlayerActor_MainStowItem(Obj *o);
+extern "C" void PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
+extern "C" void PlayerActor_MainStowItem(Obj *o);
 extern "C" void PlayerActor_StowItemUpdate(Obj *o);
-extern "C" s32 PlayerActor_EndStowItem(Obj *o);
+extern "C" void PlayerActor_EndStowItem(Obj *o);
 extern "C" s32 PlayerActor_NetStowItem(Obj *o, s32 a);
 extern "C" s32 PlayerActor_SetupStowItem(Obj *o, Msg *a);
 }
@@ -2931,9 +2931,9 @@ s32 PlayerActor_RequestDoorEntered(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestAct3C(Obj *o, s32 a, s32 b);
 void PlayerActor_DoorExitUpdate(Obj *o);
 void PlayerActor_DoorExitCheckEnd(Obj *o);
-s32 PlayerActor_DoorEnterMove(Obj *o);
+void PlayerActor_DoorEnterMove(Obj *o);
 void PlayerActor_DoorEnterUpdate(Obj *o);
-s32 PlayerActor_DoorEnterCheckEnd(Obj *o);
+void PlayerActor_DoorEnterCheckEnd(Obj *o);
 }
 
 namespace Unk_ov003_022107e0_Ns {
@@ -2962,7 +2962,7 @@ extern "C" void PlayerActor_StowItemSetWork(Rec *p, s32 a, u32 b, s32 c, s32 d, 
 extern "C" s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g);
 extern "C" void PlayerActor_StowItemSetArgs(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e);
 extern "C" void PlayerActor_MainAct3C();
-extern "C" s32 PlayerActor_EndAct3C(Obj *o, s32 a);
+extern "C" void PlayerActor_EndAct3C(Obj *o, s32 a);
 extern "C" s32 PlayerActor_NetAct3C(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupAct3C(Obj *o);
 extern "C" s32 PlayerActor_RequestAct3C(Obj *o, s32 a, s32 b);
@@ -2979,10 +2979,10 @@ extern "C" void PlayerActor_MainDoorEntered();
 extern "C" s32 PlayerActor_NetDoorEntered(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupDoorEntered(Obj *o);
 extern "C" s32 PlayerActor_RequestDoorEntered(Obj *o, s32 a, s32 b);
-extern "C" s32 PlayerActor_MainDoorEnter(Obj *o);
-extern "C" s32 PlayerActor_DoorEnterCheckEnd(Obj *o);
+extern "C" void PlayerActor_MainDoorEnter(Obj *o);
+extern "C" void PlayerActor_DoorEnterCheckEnd(Obj *o);
 extern "C" void PlayerActor_DoorEnterUpdate(Obj *o);
-extern "C" s32 PlayerActor_DoorEnterMove(Obj *o);
+extern "C" void PlayerActor_DoorEnterMove(Obj *o);
 }
 
 namespace ns_02210ef0 {
@@ -4605,7 +4605,7 @@ extern "C" void PlayerActor_NetDoorEnter(Obj *o, s32 x) {
 }
 
 namespace ns_022105bc {
-extern "C" s32 PlayerActor_DoorEnterMove(Obj *o) {
+extern "C" void PlayerActor_DoorEnterMove(Obj *o) {
     Rec3 *r = (Rec3 *)&o->actionWorkRaw[0];
     u8 *p = &r->e;
     if (r->e) {
@@ -4657,7 +4657,7 @@ extern "C" void PlayerActor_DoorEnterUpdate(Obj *o) {
 }
 
 namespace ns_022105bc {
-extern "C" s32 PlayerActor_DoorEnterCheckEnd(Obj *o) {
+extern "C" void PlayerActor_DoorEnterCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         PlayerActor_RequestDoorEntered(o, 6, -1);
     }
@@ -4665,11 +4665,11 @@ extern "C" s32 PlayerActor_DoorEnterCheckEnd(Obj *o) {
 }
 
 namespace ns_022105bc {
-extern "C" s32 PlayerActor_MainDoorEnter(Obj *o) {
+extern "C" void PlayerActor_MainDoorEnter(Obj *o) {
     PlayerActor_DoorEnterMove(o);
     PlayerActor_DoorEnterUpdate(o);
     Unk_020102ec_updateBodyCollider(o);
-    return PlayerActor_DoorEnterCheckEnd(o);
+    PlayerActor_DoorEnterCheckEnd(o);
 }
 }
 
@@ -4969,7 +4969,7 @@ extern "C" s32 PlayerActor_NetAct3C(Obj *o, s32 a) {
 }
 
 namespace ns_022105bc {
-extern "C" s32 PlayerActor_EndAct3C(Obj *o, s32 a) {
+extern "C" void PlayerActor_EndAct3C(Obj *o, s32 a) {
     if (a != 0x3b && a != 0x3d) {
         Unk_02006d14_setActionFlag(o, 0);
     }
@@ -5114,7 +5114,7 @@ extern "C" s32 PlayerActor_NetStowItem(Obj *o, s32 a) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_EndStowItem(Obj *o) {
+extern "C" void PlayerActor_EndStowItem(Obj *o) {
     if ((((RecB *)&o->actionWork)->bits & 3) == 2) {
         o->heldItemModel.scale = 0x1000;
     } else {
@@ -5175,7 +5175,7 @@ extern "C" void PlayerActor_StowItemUpdate(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_MainStowItem(Obj *o) {
+extern "C" void PlayerActor_MainStowItem(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_020102ec_updateBodyCollider(o);
     PlayerActor_StowItemUpdate(o);
@@ -5183,7 +5183,7 @@ extern "C" s32 PlayerActor_MainStowItem(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h) {
+extern "C" void PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h) {
     p->st = st;
     p->bits = bits;
     p->a = x;
@@ -5204,7 +5204,7 @@ extern "C" s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s3
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h) {
+extern "C" void PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h) {
     p->st = st;
     p->bits = bits;
     p->a = x;
@@ -5222,7 +5222,7 @@ extern "C" s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d) {
+extern "C" void PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d) {
     *a = p[7];
     NetBuf_UnpackPair20(p, b, c);
     *d = NetBuf_ReadS16B(p + 5);
@@ -5355,7 +5355,7 @@ extern "C" void PlayerActor_StowUmbrellaCheckEnd(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_MainStowUmbrella(Obj *o) {
+extern "C" void PlayerActor_MainStowUmbrella(Obj *o) {
     PlayerActor_StowUmbrellaUpdate(o);
     Unk_020102ec_updateBodyCollider(o);
     PlayerActor_StowUmbrellaCheckEnd(o);
@@ -5404,7 +5404,7 @@ extern "C" void PlayerActor_EndUmbrellaSpin(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_UmbrellaSpinEffect(Obj *o) {
+extern "C" void PlayerActor_UmbrellaSpinEffect(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     s32 *p = (s32 *)&o->actionWorkRaw[4]; // RecB.a
     V3 v(o->heldItemJointMtx.m[9], o->heldItemJointMtx.m[10], o->heldItemJointMtx.m[11]);
@@ -5433,7 +5433,7 @@ extern "C" void PlayerActor_UmbrellaSpinCheckEnd(Obj *o) {
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_MainUmbrellaSpin(Obj *o) {
+extern "C" void PlayerActor_MainUmbrellaSpin(Obj *o) {
     PlayerActor_UmbrellaSpinEffect(o);
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         Unk_020102ec_moveWithCollision(o);
@@ -5490,7 +5490,7 @@ extern "C" void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c) {
+extern "C" void PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c) {
     NetBuf_PackPair20(p, a, b);
     ((u8 *)p)[5] = c;
 }
@@ -5505,7 +5505,7 @@ extern "C" void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Msg *a) {
+extern "C" void PlayerActor_SetupAxeSwing(Obj *o, Msg *a) {
     struct {
         s32 out;
         V3 v, A, B, C, D;
@@ -5566,7 +5566,7 @@ extern "C" s32 PlayerActor_AxeSwingTurn(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_AxeSwingTrackTarget(Obj *o) {
+extern "C" void PlayerActor_AxeSwingTrackTarget(Obj *o) {
     V3 t;
     V3 *pv = &((AxeSwingWork *)&o->actionWork)->v;
     t.x = pv->x;
@@ -5578,7 +5578,7 @@ extern "C" s32 PlayerActor_AxeSwingTrackTarget(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_AxeSwingCheckEnd(Obj *o) {
+extern "C" void PlayerActor_AxeSwingCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         if (PlayerActor_AxeDispatch(o, 1) == 0) {
             PlayerActor_RequestAxeFollowThrough(o, 6, -1);
@@ -5588,7 +5588,7 @@ extern "C" s32 PlayerActor_AxeSwingCheckEnd(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_AxeSwingCheckEndRemote(Obj *o) {
+extern "C" void PlayerActor_AxeSwingCheckEndRemote(Obj *o) {
     o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         PlayerActor_RequestAxeFollowThrough(o, 6, -1);
@@ -5648,7 +5648,7 @@ extern "C" s32 PlayerActor_NetAxeFollowThrough(Obj *o, s16 b) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_AxeFollowThroughTrackTarget(Obj *o) {
+extern "C" void PlayerActor_AxeFollowThroughTrackTarget(Obj *o) {
     V3 v;
     PlayerActor_GetFrontPoint(&v, o);
     Unk_020102ec_setSubCollider(o, &v, 0xf33, 0x1000);
@@ -5732,7 +5732,7 @@ extern "C" s32 PlayerActor_AxeDispatch(Obj *o, u8 a, ...) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_MainAxeFollowThrough(Obj *o) {
+extern "C" void PlayerActor_MainAxeFollowThrough(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         s32 t;
@@ -5751,7 +5751,7 @@ extern "C" s32 PlayerActor_MainAxeFollowThrough(Obj *o) {
         Unk_020102ec_setSpeed(o, &t2);
         o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     }
-    return PlayerActor_AxeFollowThroughTrackTarget(o);
+    PlayerActor_AxeFollowThroughTrackTarget(o);
 }
 }
 
@@ -5786,7 +5786,7 @@ extern "C" s32 PlayerActor_Act48Update(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_Act48CheckEnd(Obj *o) {
+extern "C" void PlayerActor_Act48CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -5795,10 +5795,10 @@ extern "C" s32 PlayerActor_Act48CheckEnd(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_MainAct48(Obj *o) {
+extern "C" void PlayerActor_MainAct48(Obj *o) {
     PlayerActor_Act48Update(o);
     Unk_020102ec_updateBodyCollider(o);
-    return PlayerActor_Act48CheckEnd(o);
+    PlayerActor_Act48CheckEnd(o);
 }
 }
 
@@ -5854,7 +5854,7 @@ extern "C" void PlayerActor_AxeStrikeGetNetData(u8 *s, u8 *a, u8 *b, u8 *c, u8 *
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_SetupAxeStrike(Obj *o, Msg *a) {
+extern "C" void PlayerActor_SetupAxeStrike(Obj *o, Msg *a) {
     u8 *q = a->unk_0c_b;
     u8 b2 = q[2];
     u8 b3 = q[3];
@@ -5889,7 +5889,7 @@ extern "C" void PlayerActor_NetAxeStrike(Obj *o, s32 a) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_EndAxeStrike(Obj *o) {
+extern "C" void PlayerActor_EndAxeStrike(Obj *o) {
     if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             PlayerActor_AxeStrikeHit(o);
@@ -5899,7 +5899,7 @@ extern "C" s32 PlayerActor_EndAxeStrike(Obj *o) {
 }
 
 namespace ns_0220f314 {
-extern "C" s32 PlayerActor_AxeStrikeUpdate(Obj *o) {
+extern "C" void PlayerActor_AxeStrikeUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&o->bodyModel, 8)) {
         PlayerActor_AxeStrikeHit(o);
@@ -5983,7 +5983,7 @@ extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_AxeStrikeCheckEnd(Obj *o) {
+extern "C" void PlayerActor_AxeStrikeCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -5992,7 +5992,7 @@ extern "C" s32 PlayerActor_AxeStrikeCheckEnd(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_MainAxeStrike(Obj *o) {
+extern "C" void PlayerActor_MainAxeStrike(Obj *o) {
     PlayerActor_AxeStrikeUpdate(o);
     Unk_020102ec_moveWithCollision(o);
     Unk_020102ec_updateBodyCollider(o);
@@ -6001,7 +6001,7 @@ extern "C" s32 PlayerActor_MainAxeStrike(Obj *o) {
     if (v < 0) v = -v;
     s32 t = PlayerActor_Decelerate(v, 0) * -1;
     Unk_020102ec_setSpeed(o, &t);
-    return PlayerActor_AxeStrikeCheckEnd(o);
+    PlayerActor_AxeStrikeCheckEnd(o);
 }
 }
 
@@ -6050,7 +6050,7 @@ extern "C" void PlayerActor_NetAxeChop(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_EndAxeChop(Obj *o) {
+extern "C" void PlayerActor_EndAxeChop(Obj *o) {
     if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         if (Unk_02006d14_testActionFlag(o, 0x1c)) {
             PlayerActor_AxeChopHit(o);
@@ -6060,7 +6060,7 @@ extern "C" s32 PlayerActor_EndAxeChop(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_AxeChopUpdate(Obj *o) {
+extern "C" void PlayerActor_AxeChopUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&o->bodyModel, 8)) {
         PlayerActor_AxeChopHit(o);
@@ -6127,7 +6127,7 @@ extern "C" void PlayerActor_AxeChopCheckEnd(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_MainAxeChop(Obj *o) {
+extern "C" void PlayerActor_MainAxeChop(Obj *o) {
     PlayerActor_AxeChopUpdate(o);
     Unk_020102ec_updateBodyCollider(o);
     Unk_020102ec_submitSceneCollider(o);
@@ -6174,7 +6174,7 @@ extern "C" void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_SetupAxeBreak(Obj *o, Msg *a) {
+extern "C" void PlayerActor_SetupAxeBreak(Obj *o, Msg *a) {
     Rec *r = (Rec *)a->unk_0c_b;
     u32 c = r->b2;
     PlayerActor_AxeBreakSetWork((Rec *)&o->actionWork, c, Pv(r->b0, r->b1));
@@ -6278,7 +6278,7 @@ extern "C" void PlayerActor_AxeBreakCheckEnd(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_MainAxeBreak(Obj *o) {
+extern "C" void PlayerActor_MainAxeBreak(Obj *o) {
     PlayerActor_AxeBreakUpdate(o);
     Unk_020102ec_moveWithCollision(o);
     Unk_020102ec_updateBodyCollider(o);
@@ -6302,7 +6302,7 @@ extern "C" void PlayerActor_AxeBrokenMessageInitWork(Rec *r) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_SetupAxeBrokenMessage(Obj *o) {
+extern "C" void PlayerActor_SetupAxeBrokenMessage(Obj *o) {
     struct Pad { s32 v[2]; Pad() {} ~Pad() {} } pad;
     Unk_020102ec_startAnim(o, 0x48, 3, 0);
     PlayerActor_AxeBrokenMessageInitWork((Rec *)&o->actionWork);
@@ -6357,7 +6357,7 @@ extern "C" void PlayerActor_AxeBrokenMessageUpdate(Obj *o) {
 }
 
 namespace ns_0220e970 {
-extern "C" s32 PlayerActor_EndAxeBrokenMessage(Obj *o) {
+extern "C" void PlayerActor_EndAxeBrokenMessage(Obj *o) {
     if (!CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         PlayerActor_SetHoldableItem(0, o->sessionSlot);
         Unk_02006d14_setActionFlag(o, 0);
@@ -6366,7 +6366,7 @@ extern "C" s32 PlayerActor_EndAxeBrokenMessage(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_MainAxeBrokenMessage(Obj *o) {
+extern "C" void PlayerActor_MainAxeBrokenMessage(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_020102ec_updateBodyCollider(o);
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
@@ -6411,7 +6411,7 @@ extern "C" s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_SetupFishCast(Obj *o, Msg *a) {
+extern "C" void PlayerActor_SetupFishCast(Obj *o, Msg *a) {
     Unk_020102ec_startAnimOnce(o, 0x52, 3, 0);
     HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x15, 3, 0);
     P2 &q = *(P2 *)a->unk_0c_b;
@@ -6443,7 +6443,7 @@ extern "C" s32 PlayerActor_NetFishCast(Obj *o, s16 a) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishCastUpdate(Obj *o) {
+extern "C" void PlayerActor_FishCastUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&o->bodyModel, 0x11)) {
         Unk_02006d14_playSe(o, 0x849);
@@ -6458,7 +6458,7 @@ extern "C" s32 PlayerActor_FishCastTurn(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishCastCheckEnd(Obj *o) {
+extern "C" void PlayerActor_FishCastCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         PlayerActor_RequestFishWait(o, 6, -1);
         if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
@@ -6469,7 +6469,7 @@ extern "C" s32 PlayerActor_FishCastCheckEnd(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_MainFishCast(Obj *o) {
+extern "C" void PlayerActor_MainFishCast(Obj *o) {
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         s32 t;
         PlayerActor_FishCastTurn(o);
@@ -6516,7 +6516,7 @@ extern "C" s32 PlayerActor_NetFishCastFail(Obj *o, s16 a) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishCastFailUpdate(Obj *o) {
+extern "C" void PlayerActor_FishCastFailUpdate(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&o->bodyModel, 0xc)) {
         Unk_02006d14_playSe(o, 0x84a);
@@ -6525,7 +6525,7 @@ extern "C" s32 PlayerActor_FishCastFailUpdate(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishCastFailCheckEnd(Obj *o) {
+extern "C" void PlayerActor_FishCastFailCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         PlayerActor_requestWait(o, 3, 1, -1);
@@ -6534,7 +6534,7 @@ extern "C" s32 PlayerActor_FishCastFailCheckEnd(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_MainFishCastFail(Obj *o) {
+extern "C" void PlayerActor_MainFishCastFail(Obj *o) {
     PlayerActor_FishCastFailUpdate(o);
     if (Unk_02006d14_netFollowTransform(o)) {
         Unk_020102ec_moveWithCollision(o);
@@ -6542,7 +6542,7 @@ extern "C" s32 PlayerActor_MainFishCastFail(Obj *o) {
     Unk_020102ec_updateBodyCollider(o);
     s32 t = PlayerActor_DecreaseClamped(o->speed, 0, 0x171);
     Unk_020102ec_setSpeed(o, &t);
-    return PlayerActor_FishCastFailCheckEnd(o);
+    PlayerActor_FishCastFailCheckEnd(o);
 }
 }
 
@@ -6568,7 +6568,7 @@ extern "C" void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_SetupFishWait(Obj *o) {
+extern "C" void PlayerActor_SetupFishWait(Obj *o) {
     u8 kind;
     V3 pos;
     V3 cur;
@@ -6592,7 +6592,7 @@ extern "C" s32 PlayerActor_SetupFishWait(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_NetFishWait(Obj *o, s16 a) {
+extern "C" void PlayerActor_NetFishWait(Obj *o, s16 a) {
     s32 st = o->action;
     if (st != 0x4d) {
         if (st == 0x4f) {
@@ -6605,7 +6605,7 @@ extern "C" s32 PlayerActor_NetFishWait(Obj *o, s16 a) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_EndFishWait(Obj *o, s32 a) {
+extern "C" void PlayerActor_EndFishWait(Obj *o, s32 a) {
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
         BgmVolumeMixer_endFishDuck(data_021c1b3c + 0x1c4);
     } else if (a != 0x50 && a != 0x51) {
@@ -6685,7 +6685,7 @@ extern "C" void PlayerActor_FishWaitOnBobberLand(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o) {
+extern "C" void PlayerActor_FishWaitCheckInput(Obj *o) {
     PlayerActor_FishWaitOnBobberLand(o);
     if (HeldItemModel_IsBobberLanded((u8 *)&o->heldItemModel)) {
         if (Unk_02006d14_testActionFlag(o, 0xb)) {
@@ -6710,7 +6710,7 @@ extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_MainFishWait(Obj *o) {
+extern "C" void PlayerActor_MainFishWait(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     PlayerActor_FishWaitSyncBobber(o);
     Unk_02006d14_netFollowTransform(o);
@@ -6734,7 +6734,7 @@ extern "C" s32 PlayerActor_RequestFishHook(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_SetupFishHook(Obj *o) {
+extern "C" void PlayerActor_SetupFishHook(Obj *o) {
     Unk_020102ec_startAnim(o, 0x55, 3, 0);
     HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x18, 3, 0);
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
@@ -6750,7 +6750,7 @@ extern "C" s32 PlayerActor_NetFishHook(Obj *o, s16 a) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishHookCheckResult(Obj *o) {
+extern "C" void PlayerActor_FishHookCheckResult(Obj *o) {
     V3 *p = (V3 *)&o->heldItemModel.bobber.pos;
     volatile s32 pad;
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
@@ -6773,11 +6773,11 @@ extern "C" s32 PlayerActor_FishHookCheckResult(Obj *o) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_MainFishHook(Obj *o) {
+extern "C" void PlayerActor_MainFishHook(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     Unk_02006d14_netFollowTransform(o);
     Unk_020102ec_updateBodyCollider(o);
-    return PlayerActor_FishHookCheckResult(o);
+    PlayerActor_FishHookCheckResult(o);
 }
 }
 
@@ -11090,7 +11090,7 @@ extern "C" void PlayerActor_MailboxOpenMove(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 PlayerActor_MailboxOpenCheckEnd(Obj *o) {
+extern "C" void PlayerActor_MailboxOpenCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         PlayerActor_RequestMailboxWait(o, 6, -1);
     }
@@ -11098,11 +11098,11 @@ extern "C" s32 PlayerActor_MailboxOpenCheckEnd(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 PlayerActor_MainMailboxOpen(Obj *o) {
+extern "C" void PlayerActor_MainMailboxOpen(Obj *o) {
     PlayerActor_MailboxOpenMove(o);
     Unk_020102ec_advanceAnim(o);
     Unk_020102ec_updateBodyCollider(o);
-    return PlayerActor_MailboxOpenCheckEnd(o);
+    PlayerActor_MailboxOpenCheckEnd(o);
 }
 }
 
@@ -11176,7 +11176,7 @@ extern "C" void PlayerActor_MailboxCloseUpdate(Obj *o) {
 }
 
 namespace ns_022077c8 {
-extern "C" s32 PlayerActor_MainMailboxClose(Obj *o) {
+extern "C" void PlayerActor_MainMailboxClose(Obj *o) {
     PlayerActor_MailboxCloseUpdate(o);
     Unk_020102ec_updateBodyCollider(o);
 }
@@ -11542,7 +11542,7 @@ extern "C" s32 PlayerActor_RequestAct72(Obj *o, s32 a, s32 b) {
 }
 
 namespace ns_02206e94 {
-extern "C" s32 PlayerActor_SetupAct72(Obj *o) {
+extern "C" void PlayerActor_SetupAct72(Obj *o) {
     Unk_020102ec_startAnimOnce(o, 0x9c, 3, 0);
     if (CommManager_isLocalSlot(gCommManager, o->sessionSlot) != 0) {
         Sky_WishOnShootingStar();
@@ -11799,7 +11799,7 @@ extern "C" void PlayerActor_SetupPitfallStruggle(Obj *o, s32 *a) {
 }
 
 namespace ns_02206e94 {
-extern "C" s32 PlayerActor_NetPitfallStruggle(Obj *o, s32 a) {
+extern "C" void PlayerActor_NetPitfallStruggle(Obj *o, s32 a) {
     s32 st = o->action;
     if (st != 0x73) {
         if (st == 0x74) {
@@ -11978,7 +11978,7 @@ extern "C" s32 PlayerActor_NetPitfallClimbOut(Obj *o, s32 a) {
 }
 
 namespace ns_02206574 {
-extern "C" s32 PlayerActor_PitfallClimbOutCheckEnd(Obj *o) {
+extern "C" void PlayerActor_PitfallClimbOutCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         u16 k = 3;
@@ -12168,7 +12168,7 @@ extern "C" void PlayerActor_EndAct80(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" s32 PlayerActor_Act80Update(Obj *o) {
+extern "C" void PlayerActor_Act80Update(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&o->bodyModel, 0xd)) {
         u16 t[2];
@@ -12636,9 +12636,9 @@ namespace ns_02205c28 {
 extern "C" s32 PlayerActor_ResumeWalkOrIdle(Obj *o) {
     if (Unk_02006d14_getTargetWalkSpeed(o) > 0) {
         o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
-        PlayerActor_requestWalk(o, 0, 1, -1);
+        return PlayerActor_requestWalk(o, 0, 1, -1);
     } else {
-        Unk_02006d14_tryInteract(o);
+        return Unk_02006d14_tryInteract(o);
     }
 }
 }
