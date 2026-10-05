@@ -22,8 +22,8 @@ public:
     void execFtrAct00();
     BOOL enterFtrAct00();
     void execFtrAct();
-    void syncAct1();
-    void syncAct0();
+    s32 syncAct1();
+    s32 syncAct0();
 
     /* 0x840 */ u8 ftrAct;
     /* 0x841 */ u8 alwaysVisible;

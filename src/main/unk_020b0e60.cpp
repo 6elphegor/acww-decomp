@@ -213,7 +213,7 @@ class TownFlag {
 public:
     TownFlag();
     ~TownFlag();
-    void getGateDesign();
+    s32 getGateDesign();
     TownFlag *initDefault();
 
     /* 0x000 */ u8 pattern[0x228];
@@ -806,11 +806,12 @@ TownFlag *TownFlag::initDefault() {
     return (TownFlag *)TownFlagPattern_InitDefault(this);
 }
 
-void TownFlag::getGateDesign() {
+s32 TownFlag::getGateDesign() {
     if (gateDesign >= 3) {
         gateDesign = (u32)gateDesign % 3;
-        getGateDesign();
+        return getGateDesign();
     }
+    return gateDesign;
 }
 
 extern "C" void TownFlag_SetPattern(void *p, void *src) { Pattern_CopyFields(p, src); }

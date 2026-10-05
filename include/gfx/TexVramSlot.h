@@ -26,7 +26,7 @@ public:
     u32 makeKeyWithBase(u32 a, u32 b);
     u32 makeTex4x4Key(u32 a);
     u32 makeTexKey(u32 a);
-    void alloc(void *a, void *b, void *c);
+    BOOL alloc(void *a, void *b, void *c);
 };
 
 #endif

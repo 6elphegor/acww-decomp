@@ -8691,9 +8691,8 @@ void VillagerTalkTopics::selectQ12Full(TalkTopicMsg *out) {
 
 void VillagerTalkTopics::onQ12FullClose() {
     void *p;
-    SaveVillagers_GetUnk3830(gSaveVillagers);
-    p = ((void * (*)())_ZN18SickVillagerRecord9getErrandEv)();
-    if (((s32 (*)())_ZN12ErrandRecord8isActiveEv)() != 0) {
+    p = _ZN18SickVillagerRecord9getErrandEv(SaveVillagers_GetUnk3830(gSaveVillagers));
+    if (_ZN12ErrandRecord8isActiveEv(p) != 0) {
         _ZN12ErrandRecord7setStepEh(p, 1);
     }
 }

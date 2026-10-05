@@ -277,7 +277,7 @@ public:
     void pollFaceItemLoad();
     void applyFaceItemChange();
     s32 tryInteract();
-    void requestShirtTexUpload();
+    BOOL requestShirtTexUpload();
     void setShirtTexture(void *p);
     void applySkinHairPalette(s32 a, s32 b);
     s32 getTargetWalkSpeed();

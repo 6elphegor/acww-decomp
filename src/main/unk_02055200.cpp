@@ -465,7 +465,7 @@ TexVramSlot::TexVramSlot() {
 
 TexVramSlot::~TexVramSlot() {}
 
-void TexVramSlot::alloc(void *a, void *b, void *c) {
+BOOL TexVramSlot::alloc(void *a, void *b, void *c) {
     if (a != NULL) {
         texKeyBase = data_0213bc10((u32)a, 0, 0);
     }
@@ -476,6 +476,7 @@ void TexVramSlot::alloc(void *a, void *b, void *c) {
         plttKeyBase = data_0213bc18((u32)c, 0, 0);
     }
     unk_10 = 1;
+    return TRUE;
 }
 
 u32 TexVramSlot::makeTexKey(u32 a) {
