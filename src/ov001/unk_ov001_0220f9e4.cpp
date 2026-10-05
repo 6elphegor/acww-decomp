@@ -43,7 +43,7 @@ s32 WfcTransferDone_StartExit();
 void WfcTransferDone_HandleResult();
 void WfcTransferDone_Idle();
 void WfcTransferDone_HandleInput();
-s32 WfcTransferDone_Update();
+void WfcTransferDone_Update();
 void WfcTransferDone_WaitButtonBar();
 void WfcTransferDone_WaitFadeIn();
 s32 WfcTransferDone_FadeIn();

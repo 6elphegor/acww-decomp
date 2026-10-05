@@ -199,10 +199,10 @@ extern void *gBgHeap;
 extern u8 data_021ed0a0[];
 u32 _ZN14BlendAnimModel9getAnmResEv(void *);
 s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
-s32 _ZN9AnimModel10attachAnimEv(void *);
+void _ZN9AnimModel10attachAnimEv(void *);
 s32 _ZN9AnimModel11allocAnmObjEPv(void *, void *);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
-s32 _ZN9AnimModel12drawAnimatedEPv(void *, u32);
+void _ZN9AnimModel12drawAnimatedEPv(void *, u32);
 s32 _ZN9AnimModel8stepAnimEv(void *);
 s32 _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
@@ -262,7 +262,7 @@ BOOL CafeCoffeeSet_EnterState09(void);
 void CafeCoffeeSet_UpdateState09(ObjA *o);
 void CafeCoffeeSet_SyncToBrewster(void);
 void CafeCoffeeSet_LoadPart(void *ov, u32 idx, const char *id, const char *x);
-s32 CafeCoffeeSet_ReleasePart(void *ov, u32 idx);
+void CafeCoffeeSet_ReleasePart(void *ov, u32 idx);
 void CafeCoffeeSet_InitPartAnim(void *ov, u32 idx);
 s32 CafeCoffeeSet_SetState00(void);
 s32 CafeCoffeeSet_SetState01(void);
@@ -277,7 +277,7 @@ s32 CafeCoffeeSet_SetState09(void);
 s32 CafeCoffeeSet_GetState(void);
 BOOL CafeCoffeeSet_IsAnim0BAtFrame9(void);
 BOOL CafeCoffeeSet_IsAnim0CDone(void);
-s32 CafeCoffeeSet_SwitchAnim(void *self, u32 id, void *m, void *res, u8 a5, s32 a6, u32 a7, u32 a8);
+void CafeCoffeeSet_SwitchAnim(void *self, u32 id, void *m, void *res, u8 a5, s32 a6, u32 a7, u32 a8);
 void CafeCoffeeSet_StartEffectB(void);
 void CafeCoffeeSet_SetFlagEF8(void);
 }
@@ -851,7 +851,7 @@ void CafeCoffeeSet_LoadPart(void *ov, u32 idx, const char *id, const char *x) {
 }
 
 // @22267a8
-s32 CafeCoffeeSet_ReleasePart(void *ov, u32 idx) {
+void CafeCoffeeSet_ReleasePart(void *ov, u32 idx) {
     ObjA *o = (ObjA *)ov;
     RoomObjRes_Free(&o->partRes[idx]);
     RoomObjTex_Reset(&o->partTex[idx]);
@@ -1000,7 +1000,7 @@ BOOL CafeCoffeeSet_IsAnim0CDone(void) {
 }
 
 // @22264dc
-s32 CafeCoffeeSet_SwitchAnim(void *self, u32 id, void *m, void *res, u8 a5, s32 a6, u32 a7, u32 a8) {
+void CafeCoffeeSet_SwitchAnim(void *self, u32 id, void *m, void *res, u8 a5, s32 a6, u32 a7, u32 a8) {
     u32 t = _ZN14BlendAnimModel9getAnmResEv(m);
     if (t != RoomObjRes_GetBca(res, id)) {
         _ZN14BlendAnimModel8initAnimEiiitt(m, RoomObjRes_GetBca(res, id), a5, a6, *(u16 *)&a7, *(u16 *)&a8);

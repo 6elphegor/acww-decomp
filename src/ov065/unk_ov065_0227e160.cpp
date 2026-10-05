@@ -205,7 +205,7 @@ void GsUtil_Free(void *);
 char *goastrdup(const char *);
 s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, s32, s32);
 void gpiFailedOpCallback(GPConnection *, GPIOperation *);
-s32 gpiDisconnect(GPConnection *, s32);
+void gpiDisconnect(GPConnection *, s32);
 s32 gpiProcess(GPConnection *, s32);
 s32 socket(s32, s32, s32);
 s32 bind(s32, void *, s32);
@@ -760,7 +760,7 @@ s32 gpiDisconnectCleanupProfile(GPConnection *h, GPIProfile *n) {
 
 namespace Na {
 extern "C" {
-s32 gpiDisconnect(GPConnection *h, s32 a) {
+void gpiDisconnect(GPConnection *h, s32 a) {
     GPIConnection *ctx = *h;
     s32 st = ctx->connectState;
     s32 out;

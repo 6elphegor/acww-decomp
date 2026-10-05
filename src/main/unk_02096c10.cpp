@@ -131,7 +131,7 @@ extern "C" Letter *BottleLetterRecord_Destruct(Letter *p) {
     return p;
 }
 
-extern "C" void BottleLetterRecord_GetLetter() {}
+extern "C" void *BottleLetterRecord_GetLetter(void *p) { return p; }
 
 void BottleLetterRecord::clearRecord() {
     Letter_Clear(this);

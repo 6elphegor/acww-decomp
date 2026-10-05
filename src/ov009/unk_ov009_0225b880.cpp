@@ -1403,7 +1403,7 @@ BOOL BuildingActor::setEntryState(s32 a) {
 
 void BuildingActor::updateEntryState() {
     static Unk_ov009_0225c290_Fn tbl[9] = {
-        &BuildingActor::execEntryIdle, (Unk_ov009_0225c290_Fn)&BuildingActor::execEntryCheck,
+        &BuildingActor::execEntryIdle, &BuildingActor::execEntryCheck,
         &BuildingActor::execEntryTalkOpen, &BuildingActor::execEntryTalk,
         &BuildingActor::execEntry04, &BuildingActor::execEntry05,
         &BuildingActor::execEntryWarp, &BuildingActor::execEntry07,
@@ -1427,7 +1427,7 @@ BOOL BuildingActor::enterEntryCheck() {
     return TRUE;
 }
 
-BOOL BuildingActor::execEntryCheck() {
+void BuildingActor::execEntryCheck() {
     if (closedTalk == 0) {
         s32 r = BuildingOccupancy_GetAnswer(itemId);
         if (r != 0) {

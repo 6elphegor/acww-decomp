@@ -137,7 +137,7 @@ public:
     void addItemOptions();
     void cancelOptions();
     void showOptionList();
-    s32 runChosenAction();
+    void runChosenAction();
     void beginSwapAt(u32 v);
     void beginPutDownAt(u32 v);
     void beginMoveFromPopup();
@@ -1158,7 +1158,7 @@ void PocketMenuUnk::beginSwapAt(u32 v) {
     setMainState(0xe);
 }
 
-s32 PocketMenuUnk::runChosenAction() {
+void PocketMenuUnk::runChosenAction() {
     switch (chosenAction) {
     case 0:
         beginMoveFromPopup();

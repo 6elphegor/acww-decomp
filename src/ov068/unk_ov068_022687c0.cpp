@@ -73,7 +73,7 @@ s32 Insect_ClampStepXZ(void *, void *, s32);
 s32 NNS_G3dMdlGetMdlAlpha(s32, s32);
 s32 PlayerActor_LocalFaint(s32);
 s32 _ZN13AnimFrameCtrl5setupEihit(void *, s32, s32, s32, s32);
-s32 Insect_PlaySe(void *, s32, s32);
+void Insect_PlaySe(void *, s32, s32);
 s32 Insect_FadeOut(Insect *, s32);
 s32 Insect_Despawn(Insect *);
 void Math_StepAngle(s16 *, s32, s32);

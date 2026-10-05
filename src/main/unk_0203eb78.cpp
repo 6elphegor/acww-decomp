@@ -166,7 +166,7 @@ s32 EmotionSlots_Get(u8 *p, s32 i);
 }
 
 extern "C" {
-s32 EmotionSlots_Set(u8 *p, s32 i, u32 v);
+void EmotionSlots_Set(u8 *p, s32 i, u32 v);
 }
 
 extern "C" {

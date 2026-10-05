@@ -33,29 +33,29 @@ struct LightSwitch {
 
 struct ThunderSe {
     void schedule(s32 a, s32 b);
-    s32 stopAll();
-    s32 tickAll();
-    s32 clearAll();
-    s32 arm(s32 a, s32 b);
-    s32 stop();
+    void stopAll();
+    void tickAll();
+    void clearAll();
+    void arm(s32 a, s32 b);
+    void stop();
     void tick();
-    s32 clear();
+    void clear();
 
     /* 0x00 */ s32 seIndex;
     /* 0x04 */ s32 delayTimer;
 };
 
 struct FlashLight {
-    s32 stepColorFlash();
-    s32 startColorFlash();
-    s32 updateColorFlash();
-    s32 stepLightning();
-    s32 startLightning();
-    s32 updateLightning();
-    s32 shutdown();
+    void stepColorFlash();
+    void startColorFlash();
+    void updateColorFlash();
+    void stepLightning();
+    void startLightning();
+    void updateLightning();
+    void shutdown();
     void apply(void *m);
     void update();
-    s32 reset();
+    void reset();
 
     /* 0x00 */ s32 flashKind;
     /* 0x04 */ u16 color;
@@ -481,7 +481,7 @@ extern "C" u8 SceneLights_GetLightParam(u32 x) {
     return Sky_GetLightParam(x);
 }
 
-s32 ThunderSe::clear()
+void ThunderSe::clear()
 {
     seIndex = 2;
     delayTimer = 0;
@@ -506,15 +506,15 @@ void ThunderSe::tick()
     }
 }
 
-s32 ThunderSe::stop() {}
+void ThunderSe::stop() {}
 
-s32 ThunderSe::arm(s32 a, s32 b)
+void ThunderSe::arm(s32 a, s32 b)
 {
     seIndex = a;
     delayTimer = b;
 }
 
-s32 ThunderSe::clearAll()
+void ThunderSe::clearAll()
 {
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -522,7 +522,7 @@ s32 ThunderSe::clearAll()
     }
 }
 
-s32 ThunderSe::tickAll()
+void ThunderSe::tickAll()
 {
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -530,7 +530,7 @@ s32 ThunderSe::tickAll()
     }
 }
 
-s32 ThunderSe::stopAll()
+void ThunderSe::stopAll()
 {
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -548,10 +548,10 @@ void ThunderSe::schedule(s32 a, s32 b)
     }
 }
 
-s32 FlashLight::reset()
+void FlashLight::reset()
 {
     flashKind = 9;
-    return thunderSes[0].clearAll();
+    thunderSes[0].clearAll();
 }
 
 void FlashLight::update()
@@ -595,12 +595,12 @@ void FlashLight::apply(void *m)
     }
 }
 
-s32 FlashLight::shutdown()
+void FlashLight::shutdown()
 {
-    return thunderSes[0].stopAll();
+    thunderSes[0].stopAll();
 }
 
-s32 FlashLight::updateLightning()
+void FlashLight::updateLightning()
 {
     switch (flashPhase) {
     case 1:
@@ -612,7 +612,7 @@ s32 FlashLight::updateLightning()
     }
 }
 
-s32 FlashLight::startLightning()
+void FlashLight::startLightning()
 {
     color = 0;
     flashPhase = 2;
@@ -622,7 +622,7 @@ s32 FlashLight::startLightning()
     thunderSes[0].schedule(0, 0xb4);
 }
 
-s32 FlashLight::stepLightning()
+void FlashLight::stepLightning()
 {
     direction.x = 0;
     direction.y = -0x1000;
@@ -644,7 +644,7 @@ s32 FlashLight::stepLightning()
     color = (c << 10) | (c | (c << 5));
 }
 
-s32 FlashLight::updateColorFlash()
+void FlashLight::updateColorFlash()
 {
     switch (flashPhase) {
     case 1:
@@ -656,7 +656,7 @@ s32 FlashLight::updateColorFlash()
     }
 }
 
-s32 FlashLight::startColorFlash()
+void FlashLight::startColorFlash()
 {
     color = 0;
     flashPhase = 2;
@@ -665,7 +665,7 @@ s32 FlashLight::startColorFlash()
     isFalling = 0;
 }
 
-s32 FlashLight::stepColorFlash()
+void FlashLight::stepColorFlash()
 {
     direction.x = 0;
     direction.y = -0x1000;

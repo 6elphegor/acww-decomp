@@ -197,7 +197,7 @@ extern "C" {
 void *PatternTexCache_Get();
 }
 extern "C" {
-void _ZN15PatternTexCache10getPaletteEi(void *p, u32 v);
+u8 *_ZN15PatternTexCache10getPaletteEi(void *p, u32 v);
 }
 extern "C" {
 s32 Fatal_Trap();
@@ -232,10 +232,10 @@ PatternInfo::~PatternInfo() {
     using namespace n4;}
 namespace n4 {
 }
-void PatternInfo::getPaletteData() {
+u8 *PatternInfo::getPaletteData() {
     using namespace n4;
     void *p = PatternTexCache_Get();
-    _ZN15PatternTexCache10getPaletteEi(p, getPalette());
+    return _ZN15PatternTexCache10getPaletteEi(p, getPalette());
 }
 namespace n4 {
 }

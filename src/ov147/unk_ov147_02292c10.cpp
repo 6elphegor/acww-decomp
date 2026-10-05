@@ -32,7 +32,7 @@ void TitleBlinkText_UploadScreen(void *p);
 void TitleBlinkText_UploadPalette(void *p);
 void TitleBlinkText_UploadChars(void *p);
 void *TitleBlinkText_Alloc(u32 size);
-s32 TitleBlinkText_Free(void *p);
+void TitleBlinkText_Free(void *p);
 }
 
 
@@ -118,7 +118,7 @@ extern "C" void *TitleBlinkText_Alloc(u32 size) {
     return Mem_AllocTail(size);
 }
 
-extern "C" s32 TitleBlinkText_Free(void *p) {
+extern "C" void TitleBlinkText_Free(void *p) {
     if (p) {
         Mem_Free(p);
     }

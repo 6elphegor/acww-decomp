@@ -92,7 +92,7 @@ s32 Sock_Close(s32);
 #endif
 s32 Sock_RecvFrom(s32, void *, s32, s32, void *);
 
-s32 SimpleStart_NotifyStatus(void);
+void SimpleStart_NotifyStatus(void);
 s32 SimpleStart_GetResult(void *dst);
 s32 SimpleStart_GetStatus(s32 *out);
 s32 SimpleStart_Stop(void);
@@ -2729,7 +2729,7 @@ s32 SimpleStart_GetResult(void *dst) {
     return TRUE;
 }
 
-s32 SimpleStart_NotifyStatus(void) {
+void SimpleStart_NotifyStatus(void) {
     s32 buf[3];
     SimpleStart_GetStatus(buf);
     sSimpleStartStatusCb(buf);

@@ -1260,7 +1260,7 @@ extern "C" {
 u64 _ll_mul(u64 a, u64 b);
 }
 extern "C" {
-FriendEntry *FriendList_GetEntries(void);
+FriendEntry *FriendList_GetEntries(FriendEntry *p);
 }
 extern "C" {
 u32 DwcFriendData_GetBytes(void *);
@@ -1439,7 +1439,7 @@ extern "C" BOOL DwcFriendData_IsNotFriendKey(void *p) {
     return FALSE;
 }
 
-extern "C" u32 DwcFriendData_GetBytes(void *) {}
+extern "C" u32 DwcFriendData_GetBytes(void *p) { return (u32)p; }
 
 extern "C" void *FriendList_Construct(void *p) {
     __cxa_vec_ctor(p, 0x20, 0x1c, FriendEntry_Construct, FriendEntry_Destruct);
@@ -1458,10 +1458,10 @@ extern "C" void FriendList_Clear(FriendEntry *base) {
     }
 }
 
-extern "C" FriendEntry *FriendList_GetEntries(void) {}
+extern "C" FriendEntry *FriendList_GetEntries(FriendEntry *p) { return p; }
 
-extern "C" void FriendList_Compact(void) {
-    FriendEntry *base = FriendList_GetEntries();
+extern "C" void FriendList_Compact(FriendEntry *list) {
+    FriendEntry *base = FriendList_GetEntries(list);
     s32 i, n;
     n = 0;
     i = n;

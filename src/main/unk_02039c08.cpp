@@ -178,7 +178,7 @@ extern "C" void ChestStorage_Clear(u16 *p) {
     }
 }
 
-extern "C" void ChestStorage_GetItems() {}
+extern "C" u16 *ChestStorage_GetItems(u16 *p) { return p; }
 
 extern "C" void LostAndFound_Construct() {}
 

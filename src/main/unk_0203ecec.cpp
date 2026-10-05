@@ -175,7 +175,7 @@ s32 EmotionSlots_Get(u8 *p, s32 i);
 }
 
 extern "C" {
-s32 EmotionSlots_Set(u8 *p, s32 i, u32 v);
+void EmotionSlots_Set(u8 *p, s32 i, u32 v);
 }
 
 extern "C" {
@@ -267,7 +267,7 @@ static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 // prototypes (test harness)
 extern "C" s32 EmotionSlots_Get(u8 *p, s32 i);
-extern "C" s32 EmotionSlots_Set(u8 *p, s32 i, u32 v);
+extern "C" void EmotionSlots_Set(u8 *p, s32 i, u32 v);
 extern "C" void EmotionSlots_Clear(u8 *p);
 extern "C" s32 Emotion_CountLearned(void);
 extern "C" s32 Emotion_FindFreeSlot(void);
@@ -285,7 +285,7 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in);
 
 extern "C" s32 EmotionSlots_Get(u8 *p, s32 i) { return p[i]; }
 
-extern "C" s32 EmotionSlots_Set(u8 *p, s32 i, u32 v) { p[i] = v; }
+extern "C" void EmotionSlots_Set(u8 *p, s32 i, u32 v) { p[i] = v; }
 
 extern "C" void EmotionSlots_Clear(u8 *p) {
     for (s32 i = 0; i < 4; i++) {

@@ -169,7 +169,7 @@ public:
     virtual void pickArbeitStartMsg12(TalkStartMsg *out);
     virtual void onArbeitMessageEnd();
 
-    s32 buySelectedItem();
+    void buySelectedItem();
     void onArbeitStationeryChoice(s32 p);
     void onArbeitChoice();
     void onDrama2Choice();
@@ -3712,7 +3712,7 @@ void SpNpcNookShopTalk::onArbeitStationeryChoice(s32 p) {
     }
 }
 
-s32 SpNpcNookShopTalk::buySelectedItem() {
+void SpNpcNookShopTalk::buySelectedItem() {
     SpNpcNookShop *o;
     ownerNpc->purchasePending = 1;
     NpcActor_ChargePlayer(ownerNpc, (s32)price);

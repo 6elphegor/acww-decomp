@@ -198,6 +198,9 @@ extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
 }
 
 extern "C" BOOL _ZN8ProcBase15onDeleteRequestEv(ProcBase *self) {
+#ifdef MODERN
+    return 0; // the original returns whatever r0 holds; callers ignore it
+#endif
 }
 
 extern "C" void ProcBase_SetHeap(ProcBase *self, Heap *heap) {

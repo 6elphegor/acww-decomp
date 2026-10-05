@@ -383,7 +383,7 @@ u32 BuildingInfo_MakeKey(BuildingInfo *i, u32 b, u32 c);
 u32 BuildingKey_Make(u32 a, u32 b, u32 c);
 u32 Building_GetDoorAnimParamAt(u32 a);
 BOOL Field_HasExitedBuildingKey(void);
-u32 Field_CacheExitedBuildingKey(void);
+void Field_CacheExitedBuildingKey(void);
 u32 Field_GetExitedBuildingKey(void);
 BOOL Building_RequestState(Obj *o, s32 v);
 u32 SaveVillager_IsAsleepAt(s32 v);
@@ -1439,7 +1439,7 @@ extern "C" BOOL Field_HasExitedBuildingKey(void) {
     return FALSE;
 }
 
-extern "C" u32 Field_CacheExitedBuildingKey(void) {
+extern "C" void Field_CacheExitedBuildingKey(void) {
     sExitedBuildingKey = Field_GetExitedBuildingKey();
 }
 

@@ -411,7 +411,7 @@ s32 FishDisplay_GetRequestPos(VecFx32 *v, s32 *p, u8 i);
 u32 FishDisplay_GetRequestFish(u8 i);
 u32 FishDisplay_GetRequestKind(u8 i);
 void AnimModel_detachJointAnim(void *p);
-s32 AnimModel_drawAnimated(void *p, V3_f3 *v);
+void AnimModel_drawAnimated(void *p, V3_f3 *v);
 s32 AnimModel_stepAnim(void *p);
 void func_020548a0(void *p);
 void func_020548d0(void *p);
@@ -546,7 +546,7 @@ BOOL FishCatch_UpdateRemoteReel(Self_f5 *self, u32 a);
 BOOL FishCatch_StateEnd(Self_f5 *self, s32 a);
 BOOL FishCatch_DetachShadow(Self_f5 *self);
 void FishCatch_Reset(Self_f5 *self, s32 a);
-s32 FishCatch_StartSwimAway(Self_f5 *self, s32 a);
+void FishCatch_StartSwimAway(Self_f5 *self, s32 a);
 void FishCatch_UpdateArc(Self_f5 *self, BOOL flag);
 BOOL FieldFish_StepParabola(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 k, s32 m);
 BOOL FishCatch_UpdateSwimAway(Self_f5 *self, V3_f5 *p);
@@ -566,8 +566,8 @@ void FishCroak_Update(FishCroak *s, Obj_f6 *o);
 void FishCroak_Idle(FishCroak *s, Obj_f6 *o);
 void FishCroak_Listen(FishCroak *s, Obj_f6 *o);
 void FishCroak_Croak(FishCroak *s, Obj_f6 *o);
-s32 FishCroak_Clear(FishCroak *s);
-s32 FishShadow_ResetCroak(Obj_f6 *self);
+void FishCroak_Clear(FishCroak *s);
+void FishShadow_ResetCroak(Obj_f6 *self);
 void FishCatch_Update(FishCatch *self, void *arg);
 s32 FishCatch_StateIdle();
 BOOL FishShadow_BiteHooked(Obj_f7 *o);
@@ -2645,7 +2645,7 @@ extern "C" void FishCroak_Croak(FishCroak *s, Obj_f6 *o)
 
 
 //@ 0x2222764
-extern "C" s32 FishCroak_Clear(FishCroak *s)
+extern "C" void FishCroak_Clear(FishCroak *s)
 {
     s->b0 = 0;
     s->b1 = 0;
@@ -2655,9 +2655,9 @@ extern "C" s32 FishCroak_Clear(FishCroak *s)
 
 
 //@ 0x2222754
-extern "C" s32 FishShadow_ResetCroak(Obj_f6 *self)
+extern "C" void FishShadow_ResetCroak(Obj_f6 *self)
 {
-    return FishCroak_Clear(&self->croak);
+    FishCroak_Clear(&self->croak);
 }
 
 
@@ -2963,7 +2963,7 @@ extern "C" void FishCatch_Reset(Self_f5 *self, s32 a) {
 
 
 //@ 0x2221f40
-extern "C" s32 FishCatch_StartSwimAway(Self_f5 *self, s32 a) {
+extern "C" void FishCatch_StartSwimAway(Self_f5 *self, s32 a) {
     self->state = 1;
     self->swimAwayPending = 0;
     s32 k = self->fishId * 6;
@@ -3584,7 +3584,7 @@ extern "C" void FishShadow_ExecAppear(O_f3 *o, E_f3 *e) {
             e->appearCount = 0;
             FieldFish_SetModelMatrix(o, &e->position, e->model, e->rotY);
             if (e->fishId == 11) {
-                ((s32 (*)(E_f3 *))FishShadow_ResetCroak)(e);
+                ((void (*)(E_f3 *))FishShadow_ResetCroak)(e);
             }
         }
     }
