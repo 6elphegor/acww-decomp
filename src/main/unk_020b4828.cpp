@@ -404,6 +404,102 @@ GfxFrameHooks sFieldGfxFrameHooks;
 
 ViewFrustum gViewFrustum;
 
+#ifdef MODERN
+// The modern build places each overlay's data on its own: every entry names the SceneInfo of the scene's
+// overlay (sSceneOverlayIds), not the shared address the original table holds.
+extern "C" SceneInfo data_ov005_0225b7b4;
+extern "C" SceneInfo data_ov006_0225b79c;
+extern "C" SceneInfo data_ov007_0225b7a8;
+extern "C" SceneInfo data_ov008_0225b79c;
+extern "C" SceneInfo data_ov010_02258a40;
+extern "C" SceneInfo data_ov011_02258a34;
+extern "C" SceneInfo data_ov012_02258a2c;
+extern "C" SceneInfo data_ov013_02258aa8;
+extern "C" SceneInfo data_ov014_02258a84;
+extern "C" SceneInfo data_ov015_02258af8;
+extern "C" SceneInfo data_ov016_02258ab4;
+extern "C" SceneInfo data_ov017_02258a88;
+extern "C" SceneInfo data_ov018_02258acc;
+extern "C" SceneInfo data_ov019_02258aa4;
+extern "C" SceneInfo data_ov020_02258aa8;
+extern "C" SceneInfo data_ov021_02258c4c;
+extern "C" SceneInfo data_ov022_02258b18;
+extern "C" SceneInfo data_ov023_02258ad8;
+extern "C" SceneInfo data_ov024_02258af4;
+extern "C" SceneInfo data_ov025_02258a94;
+extern "C" SceneInfo data_ov026_02258b1c;
+extern "C" SceneInfo data_ov027_02258ad8;
+extern "C" SceneInfo data_ov028_02258aa8;
+extern "C" SceneInfo data_ov029_02258bd0;
+extern "C" SceneInfo data_ov030_02258a44;
+extern "C" SceneInfo data_ov031_02258a94;
+extern "C" SceneInfo data_ov032_02258c34;
+extern "C" SceneInfo data_ov033_02258a94;
+extern "C" SceneInfo data_ov034_02258a94;
+extern "C" SceneInfo data_ov035_02258ad4;
+extern "C" SceneInfo data_ov036_02258a78;
+extern "C" SceneInfo data_ov037_02258ad4;
+extern "C" SceneInfo data_ov038_02258a88;
+extern "C" SceneInfo data_ov039_02258a88;
+extern "C" SceneInfo data_ov040_02258a88;
+extern "C" SceneInfo data_ov041_02258b10;
+extern "C" SceneInfo data_ov042_02258ad0;
+extern "C" SceneInfo data_ov043_02258a88;
+extern "C" SceneInfo data_ov044_02258a88;
+SceneInfo *sSceneInfoTable[51] = {
+    &data_ov005_0225b7b4,
+    &data_ov032_02258c34,
+    &data_ov031_02258a94,
+    &data_ov034_02258a94,
+    &data_ov033_02258a94,
+    &data_ov035_02258ad4,
+    &data_ov011_02258a34,
+    &data_ov012_02258a2c,
+    &data_ov010_02258a40,
+    &data_ov036_02258a78,
+    &data_ov043_02258a88,
+    &data_ov015_02258af8,
+    &data_ov015_02258af8,
+    &data_ov015_02258af8,
+    &data_ov015_02258af8,
+    &data_ov014_02258a84,
+    &data_ov017_02258a88,
+    &data_ov029_02258bd0,
+    &data_ov029_02258bd0,
+    &data_ov029_02258bd0,
+    &data_ov029_02258bd0,
+    &data_ov029_02258bd0,
+    &data_ov029_02258bd0,
+    &data_ov029_02258bd0,
+    &data_ov029_02258bd0,
+    &data_ov029_02258bd0,
+    &data_ov038_02258a88,
+    &data_ov039_02258a88,
+    &data_ov040_02258a88,
+    &data_ov041_02258b10,
+    &data_ov042_02258ad0,
+    &data_ov013_02258aa8,
+    &data_ov021_02258c4c,
+    &data_ov020_02258aa8,
+    &data_ov019_02258aa4,
+    &data_ov022_02258b18,
+    &data_ov023_02258ad8,
+    &data_ov024_02258af4,
+    &data_ov025_02258a94,
+    &data_ov026_02258b1c,
+    &data_ov027_02258ad8,
+    &data_ov028_02258aa8,
+    &data_ov007_0225b7a8,
+    &data_ov008_0225b79c,
+    &data_ov006_0225b79c,
+    &data_ov044_02258a88,
+    &data_ov037_02258ad4,
+    &data_ov016_02258ab4,
+    &data_ov030_02258a44,
+    &data_ov005_0225b7b4,
+    &data_ov018_02258acc,
+};
+#else
 SceneInfo *sSceneInfoTable[51] = {
     (SceneInfo *)data_ov006_0225b7b4,
     (SceneInfo *)(sFishShadows + 0xb08),
@@ -457,6 +553,7 @@ SceneInfo *sSceneInfoTable[51] = {
     (SceneInfo *)data_ov006_0225b7b4,
     (SceneInfo *)(sFishShadows + 0x9a0),
 };
+#endif
 
 s32 sSceneOverlayIds[51] = {
     5, 32, 31, 34, 33, 35, 11, 12,
