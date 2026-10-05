@@ -320,7 +320,7 @@ void AxMail_ApplyBbs(void);
 void Wifi_StoreFriendList(void);
 s32 Save_WritePlayerFriendList(void);
 s32 TalkWindow_Get(s32 a);
-void _ZN15TalkWindowState12hideBusyIconEv(void);
+void _ZN15TalkWindowState12hideBusyIconEv(s32 a);
 void _ZN15TalkWindowState13unlockAdvanceEv(s32 a);
 void _ZN15TalkWindowState14setNextMessageEPhPv(s32 a, u8 *b, void *c);
 void OS_CreateThread(void *a, void *fn, u32 b, void *c, u32 d, u32 e);
@@ -486,9 +486,9 @@ extern u8 sSessionResidentIndex;
 extern u8 data_020e252c[];
 BOOL _ZN11CommManager12isSlotActiveEi(Unk_020cbb18_ff4c *, s32);
 void _ZN11CommManager14setMemberCountEj(Unk_020cbb18_ff4c *, u32);
-void TownExchange_GetForAid(s32);
-void _ZN18TownExchangeRecord18getLostChildRecordEv();
-void _ZN15LostChildRecord5clearEv();
+void *TownExchange_GetForAid(s32);
+void *_ZN18TownExchangeRecord18getLostChildRecordEv(void *);
+void _ZN15LostChildRecord5clearEv(void *);
 void LostChild_TryPair(void *, s32);
 s32 NetSession_GetLastSyncSlot();
 void _ZN11SaveManager15setTransferDestEjh(void *, s32, s32);
@@ -499,7 +499,7 @@ void PlayerSession_ClearDataIndex(s32);
 void PlayerSession_SetDataIndex(s32, s32);
 s32 PlayerSession_GetDataIndex(s32);
 s32 PlayerData_Get(s32);
-void _ZN10PlayerData5resetEv();
+void _ZN10PlayerData5resetEv(s32 p);
 void Clock_Update(s32);
 void SaveData_Setup(void *, s32);
 void SaveData_Apply(void *);
@@ -653,7 +653,7 @@ void _ZN11SaveRecord415markInterruptedEv(void *p);
 u32 Wifi_EndSession(void *p);
 void NetOverlay_Restore(void);
 void SaveManager_RunSessionEnd(void *self, u8 *st, u32 a, u32 b, u32 c, u32 d);
-void Comm_PrepareJoin(void);
+void Comm_PrepareJoin(u32 a);
 void PlayerOptions_Commit(void);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
@@ -804,7 +804,7 @@ BOOL CommSend_VillagerTransfer(u8 *p);
 BOOL PlayerData_IsUsedByIndex(s32 v);
 BOOL SaveManager_IsGatePassed();
 void *PlayerActor_GetActor(u32 v);
-void ProcBase_RequestDelete();
+void ProcBase_RequestDelete(void *p);
 BOOL CommSend_JoinReady();
 u32 Net_GetMyAid();
 u32 PlayerSession_GetDataIndex(u32 v);
@@ -923,7 +923,7 @@ s32 TownState_ClampDate(void *p);
 s32 SaveVillagers_UpdateAllRoomInfo(void *p);
 s32 Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, u32 size);
-s32 _ZN18TownCompressThread4killEv(void);
+s32 _ZN18TownCompressThread4killEv(void *p);
 s32 TownBlockMap_Get(void);
 s32 _ZN12TownBlockMap13updateAcreIdsEv(s32 v);
 s32 _ZN12TownBlockMap6bindBgEv(s32 v);
@@ -1166,7 +1166,7 @@ BOOL SaveManager::onDelete() {
         NJ::gTownTransferBuf = 0;
     }
     if (townCompressThread) {
-        NJ::_ZN18TownCompressThread4killEv();
+        NJ::_ZN18TownCompressThread4killEv(townCompressThread);
         NJ::Heap_Free(bufferHeap, townCompressThread);
         townCompressThread = 0;
     }
@@ -1922,8 +1922,7 @@ extern "C" void SaveManager_ExecAct14(SaveManager *p) {
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else if (NH::SaveManager_IsGatePassed()) {
-            NH::PlayerActor_GetActor(4);
-            NH::ProcBase_RequestDelete();
+            NH::ProcBase_RequestDelete(NH::PlayerActor_GetActor(4));
             p->actStep = 5;
         }
         break;
@@ -3081,8 +3080,7 @@ void SaveManager::execAct1E() {
 }
 
 void SaveManager::enterAct1F() {
-    NF::Net_GetMyAid(NF::_ZN10PlayerData9clearFlagEj(NF::PlayerData_GetCurrent(), 2));
-    NF::Comm_PrepareJoin();
+    NF::Comm_PrepareJoin(NF::Net_GetMyAid(NF::_ZN10PlayerData9clearFlagEj(NF::PlayerData_GetCurrent(), 2)));
     actStep = 0;
 }
 
@@ -4219,7 +4217,8 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
         if (i != s) ND::PlayerSession_ClearDataIndex(i);
     }
     for (i = 2; i >= 0; i--) {
-        if (ND::PlayerData_Get(i + 4)) ND::_ZN10PlayerData5resetEv();
+        s32 p = ND::PlayerData_Get(i + 4);
+        if (p) ND::_ZN10PlayerData5resetEv(p);
     }
     if (c == 0) {
         ND::Clock_Update(0);
@@ -4313,9 +4312,7 @@ extern "C" void LostChild_ResetAndPairLast(void *a) {
     Unk_020cbb18_ff4c *g = ND::gCommManager;
     for (; i >= 0; i--) {
         if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
-            ND::TownExchange_GetForAid(i);
-            ND::_ZN18TownExchangeRecord18getLostChildRecordEv();
-            ND::_ZN15LostChildRecord5clearEv();
+            ND::_ZN15LostChildRecord5clearEv(ND::_ZN18TownExchangeRecord18getLostChildRecordEv(ND::TownExchange_GetForAid(i)));
         }
     }
     ND::LostChild_TryPair(a, ND::NetSession_GetLastSyncSlot());
@@ -5039,7 +5036,7 @@ extern "C" s32 Wifi_EndSession(void) {
                 NB::Wifi_StoreFriendList();
                 if (NB::Save_WritePlayerFriendList() != 0) {
                     s32 t = NB::TalkWindow_Get(0);
-                    NB::_ZN15TalkWindowState12hideBusyIconEv();
+                    NB::_ZN15TalkWindowState12hideBusyIconEv(t);
                     NB::_ZN15TalkWindowState13unlockAdvanceEv(t);
                     u8 b = 2;
                     NB::_ZN15TalkWindowState14setNextMessageEPhPv(t, &b, (u8 *)"sp_npc_gatekeeper");

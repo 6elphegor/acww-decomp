@@ -23,13 +23,7 @@ struct NasAuthParamsWords {
     u32 v[11];
 };
 
-// the same symbol is called with and without its argument
-namespace Unk_ov065_0226e4dc_A {
-extern "C" s32 DwcHttp_Destroy(void);
-}
-namespace Unk_ov065_0226e4dc_B {
 extern "C" s32 DwcHttp_Destroy(void *p);
-}
 
 extern "C" {
 extern S *sNasAuth;
@@ -187,7 +181,7 @@ void NasAuth_Abort(void) {
 void NasAuth_Destroy(void) {
     if (sNasAuth != NULL) {
         if (sNasAuth->http) {
-            Unk_ov065_0226e4dc_A::DwcHttp_Destroy();
+            DwcHttp_Destroy(sNasAuth->http);
         }
         sNasAuth->config.freeFunc("DWCauth", sNasAuth, 0);
         sNasAuth = NULL;
@@ -326,7 +320,7 @@ void NasAuth_ThreadMain(void) {
             OS_UnlockMutex(sNasAuth->mutex);
             OS_Sleep(0x1388);
         }
-        Unk_ov065_0226e4dc_B::DwcHttp_Destroy(sNasAuth->http);
+        DwcHttp_Destroy(sNasAuth->http);
         OS_LockMutex(sNasAuth->mutex);
         sNasAuth->state = NasAuth_SendRequest(flag);
         if (sNasAuth->state != 0) {
