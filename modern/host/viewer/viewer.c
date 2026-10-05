@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
     SDL_RenderSetLogicalSize(ren, 256, 384);
     SDL_Texture *tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_XRGB8888, SDL_TEXTUREACCESS_STREAMING, 256, 384);
     uint32_t keys = 0, last = ~0u;
+    pid_t parent = getppid();
     for (;;) {
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
@@ -79,6 +80,6 @@ int main(int argc, char **argv) {
         SDL_RenderClear(ren);
         SDL_RenderCopy(ren, tex, 0, 0);
         SDL_RenderPresent(ren);
-        if (kill(getppid(), 0) != 0) return 0;  // the game is gone
+        if (getppid() != parent) return 0;  // the game is gone
     }
 }

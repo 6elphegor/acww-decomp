@@ -13,6 +13,8 @@ const char *gHostRomPath;
 
 void host_fatal(const char *msg) {
     fprintf(stderr, "host: fatal: %s (frame %llu)\n", msg, (unsigned long long)host_frame());
+    extern void frontend_shutdown(void);
+    frontend_shutdown();
     exit(2);
 }
 

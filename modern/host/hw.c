@@ -404,6 +404,8 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
                 (u32)uc->uc_mcontext.gregs[REG_EBP]);
         fprintf(stderr, "  [esp] %08x\n", *(u32 *)uc->uc_mcontext.gregs[REG_ESP]);
         host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
+        extern void frontend_shutdown(void);
+        frontend_shutdown();
         _exit(4);
         signal(SIGSEGV, SIG_DFL);
         return;
@@ -501,6 +503,8 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
         fprintf(stderr, "  %s %08x at %08x\n", l->write ? "write" : "read ", l->addr, l->eip);
     }
     prof_dump();
+    extern void frontend_shutdown(void);
+    frontend_shutdown();
     fprintf(stderr, "host: interrupted at frame %llu, eip %08x\n", (unsigned long long)host_frame(),
             (u32)uc->uc_mcontext.gregs[REG_EIP]);
     host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
