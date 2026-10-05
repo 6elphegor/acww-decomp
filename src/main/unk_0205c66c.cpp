@@ -30,7 +30,7 @@ void Heap_freeAll(void *);
 void Heap_adjust(void *);
 s32 File_LoadToBuffer(char *, void *, u32);
 s32 PlayerBodyModelHeap_Destroy();
-s32 PlayerBodyModelHeap_Create();
+s32 PlayerBodyModelHeap_Create(void *parent);
 s32 NNS_G3dGetTex(void *);
 u32 PlayerBodyModel_GetTexVramSize();
 u32 PlayerBodyModel_GetTex4x4VramSize();
@@ -42,8 +42,8 @@ void *PlayerBodyModelRef_GetVramSlot(u8 *p);
 void *PlayerBodyModelRef_GetBuffer(u8 *p);
 }
 
-extern "C" void PlayerBodyModelPool_Create() {
-    PlayerBodyModelHeap_Create();
+extern "C" void PlayerBodyModelPool_Create(void *parent) {
+    PlayerBodyModelHeap_Create(parent);
     sPlayerBodyModelPool.allocBuffers();
     if (gPlayerBodyModelHeap) Heap_adjust(gPlayerBodyModelHeap);
 }

@@ -216,7 +216,7 @@ void Text_SplitLines(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
 BOOL MenuCtrl_IsTouch();
 void Bbs_AddPost(void *p);
 PlayerData *PlayerData_GetCurrent();
-s32 Arbeit_OnBbsPosted();
+s32 Arbeit_OnBbsPosted(void *m);
 u32 Keyboard_HitTestText(void *a, void *b, u32 c, u32 d, u32 e, void *f);
 u32 Keyboard_DeleteRange(void *a, void *b, u32 c, u32 d, u32 e);
 u32 Keyboard_GetTypedRunLength(void *p);
@@ -1525,8 +1525,7 @@ extern "C" void BbsWriteMenu_ConfirmYes(S *s) {
         Bbs_AddPost(s->text);
         Snd_PlaySe(0x27);
         ((BbsWriteMenu *)s)->sendPostToPeers();
-        PlayerData_GetCurrent()->getErrands();
-        Arbeit_OnBbsPosted();
+        Arbeit_OnBbsPosted(PlayerData_GetCurrent()->getErrands());
     }
 }
 

@@ -32,7 +32,7 @@ void _ZN12LabelBalloon11refreshTextEi(void *p, s32 a);
 void _ZN12LabelBalloon16enableCenterTextEv(void *p);
 void _ZN12LabelBalloon7setTextEP6StrBuf(void *p, void *buf);
 s32 _ZN12LabelBalloon6setPosEii(void *p, s32 a, s32 b);
-s32 _ZN10SpriteAnim13getFrameIndexEv(void);
+s32 _ZN10SpriteAnim13getFrameIndexEv(void *self);
 void _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(void *p, void *v);
 void _ZN10SpriteAnim11setPlayOnceEi(void *p, s32 v);
 void _ZN10SpriteAnim8setSpeedEi(void *p, s32 v);
@@ -160,8 +160,7 @@ BOOL FieldInfoLabelBalloon::isBlinkVisible() {
 }
 
 void FieldInfoLabelBalloon::restartMarkerAnim() {
-    _ZN12LabelBalloon7getAnimEv(this);
-    s32 r4 = _ZN10SpriteAnim13getFrameIndexEv();
+    s32 r4 = _ZN10SpriteAnim13getFrameIndexEv(_ZN12LabelBalloon7getAnimEv(this));
     _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&markerAnim, data_020d5d14);
     _ZN10SpriteAnim11setPlayOnceEi(&markerAnim, 1);
     _ZN10SpriteAnim8setSpeedEi(&markerAnim, 0);

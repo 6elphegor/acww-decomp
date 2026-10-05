@@ -15,7 +15,7 @@ void *NNS_G3dGetTex(void *h);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
 s32 PlayerGlassesModelHeap_Destroy();
-s32 PlayerGlassesModelHeap_Create();
+s32 PlayerGlassesModelHeap_Create(void *parent);
 extern void *gPlayerGlassesModelHeap;
 extern u8 *gCommManager;
 }
@@ -56,7 +56,7 @@ extern const u8 sPlayerGlassesFlowerModelIds[0xc];
 extern const u8 sPlayerGlassesAccessoryModelIds[0x40];
 extern char sPlayerGlassesModelPathBuf[0x14];
 
-void PlayerGlassesModelPool_Create();
+void PlayerGlassesModelPool_Create(void *parent);
 void PlayerGlassesModelPool_Destroy();
 char *PlayerGlassesModel_GetPath(s32 x);
 s32 PlayerGlassesModel_GetBufferSize();
@@ -90,8 +90,8 @@ const u8 sPlayerGlassesAccessoryModelIds[0x40] = {
 char sPlayerGlassesModelPathBuf[0x14];
 PlayerGlassesModelPool sPlayerGlassesModelPool;
 
-extern "C" void PlayerGlassesModelPool_Create() {
-    PlayerGlassesModelHeap_Create();
+extern "C" void PlayerGlassesModelPool_Create(void *parent) {
+    PlayerGlassesModelHeap_Create(parent);
     sPlayerGlassesModelPool.allocBuffers();
     if (gPlayerGlassesModelHeap) {
         Heap_adjust(gPlayerGlassesModelHeap);

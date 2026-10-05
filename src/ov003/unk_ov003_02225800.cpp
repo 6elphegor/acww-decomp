@@ -1689,7 +1689,7 @@ void NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 CommSyncVar_GetVarSize(s32 a);
 void MI_CpuCopy8(void *, void *, s32);
 void *__cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
-s32 Insect_GetSeId(s32 a);
+s32 Insect_GetSeId(s32 a, s32 b);
 s32 PlayerActor_GetDigCountdownAt(s32 a, s32 b);
 void Insect_CheckAlarm(Rec *o);
 s32 Insect_TickTimer(Rec *o);
@@ -2325,7 +2325,7 @@ extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
 namespace s14 {
 // 0x222dd54
 extern "C" s32 Insect_PlaySe(Rec *o, s32 a, s32 b) {
-    s32 r = Insect_GetSeId(o->kind);
+    s32 r = Insect_GetSeId(o->kind, a);
     if (r >= 0) {
         if (b != 0) {
             SndEnvChannel_callRequest(&o->seEmitter, r);

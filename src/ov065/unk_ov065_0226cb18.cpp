@@ -112,7 +112,7 @@ extern void OS_JoinThread(void *p);
 extern u64 OS_GetTick(void);
 extern void OS_Sleep(u32 ms);
 
-extern void WifiAp_DeriveUsbApWepKey(void *p);
+extern void WifiAp_DeriveUsbApWepKey(void *p, void *out);
 extern void WifiAp_DecodeNdwcshapSsid(void *in, void *out);
 extern void WifiAp_DeriveNdwcshapWepKey(void *in, void *p);
 extern u8 *WifiLink_GetConnectedBssid(void);
@@ -138,7 +138,7 @@ extern s32 NasAuth_SendRequest(s32 a);
 
 
 
-void WifiAp_GetUsbApWepKey(u8 *p);
+void WifiAp_GetUsbApWepKey(u8 *p, u8 *out);
 s32 WifiAp_IsUsbConnectorAp(void *p);
 void WifiAp_GetNdwcshapApInfo(void *a, void *dst);
 void WifiAp_GetNdwcshapWepKey(void *a, void *b);
@@ -174,8 +174,8 @@ s32 WifiAp_IsUsbConnectorAp(void *p) {
     return FALSE;
 }
 
-void WifiAp_GetUsbApWepKey(u8 *p) {
-    WifiAp_DeriveUsbApWepKey(p + 0xc);
+void WifiAp_GetUsbApWepKey(u8 *p, u8 *out) {
+    WifiAp_DeriveUsbApWepKey(p + 0xc, out);
 }
 
 }
@@ -226,7 +226,7 @@ s32 NetCheck_GetState(void);
 u32 NetCheck_GetErrorCode(void);
 s32 NetCheck_Abort(void);
 s32 NetCheck_Destroy(void);
-s32 NetCheck_Start(void);
+s32 NetCheck_Start(void *cfg);
 s64 OS_GetTick(void);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void DGT_Hash1Reset(void *ctx);
@@ -517,8 +517,7 @@ s32 WifiAp_StepWaitAddress(WifiApContext *c) {
 }
 
 s32 WifiAp_StepStartNetCheck(void) {
-    WifiAp_GetBlock(8);
-    if (NetCheck_Start() != 0) {
+    if (NetCheck_Start(WifiAp_GetBlock(8)) != 0) {
         WifiAp_SetError(3);
         return 0x11;
     }

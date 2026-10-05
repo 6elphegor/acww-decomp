@@ -177,7 +177,11 @@ s32 ProcessInBuffer(char *, s32);
 void ClosePendingCallbacks();
 s32 CanReceiveOnSocket(s32);
 s32 recv(s32, char *, s32, s32);
+#ifdef MODERN
+void shutdown(s32, s32, s32);
+#else
 void shutdown(s32, s32);
+#endif
 void closesocket(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Realloc(void *, s32);
@@ -279,7 +283,11 @@ extern "C" u8 data_ov065_0228df7c[16] = {0x13, 0x1d, 0x01, 0x04, 0x00, 0x00, 0x0
 namespace N022838c4 { extern "C" {
 void CloseStatsConnection() {
     if (sGsPersistSocket != -1) {
-        shutdown(sGsPersistSocket, 2);
+#ifdef MODERN
+        shutdown(sGsPersistSocket, 2, 0); // third argument unused by shutdown (Sock_Shutdown -> SockCore_Shutdown)
+#else
+        shutdown(sGsPersistSocket, 2); // the original leaves r2 = garbage
+#endif
         closesocket(sGsPersistSocket);
     }
     sGsPersistSocket = -1;

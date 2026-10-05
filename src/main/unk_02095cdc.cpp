@@ -92,8 +92,8 @@ void VillagerId_Construct(void *);
 void VillagerId_CopyFrom(void *, void *);
 void Catalog_SetItem(void *a, u16 *b, s32 c, s32 d);
 void MailText_SetSlot(s32, void *);
-void Town_GetUpdater();
-s32 Town_WashUpBottle();
+void *Town_GetUpdater();
+s32 Town_WashUpBottle(void *p);
 TownBlockMap *TownBlockMap_Get();
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
@@ -106,7 +106,7 @@ s32 Random_GlobalBelow(u32 n);
 s32 _ZN10LetterView8getStateEv(void *p);
 void _ZN10LetterView10setPresentEtj(void *, u32, s32);
 void *Letter_GetRecipientVillager(void);
-void *Letter_GetRecipientPlayer(void);
+void *Letter_GetRecipientPlayer(Letter *self);
 void Letter_ComposeBottleMail(void *a, void *b, void *c);
 s32 Letter_ComposeFromMail(void *, void *, u8 *, void *, void *, void *);
 void Letter_MarkReceived(void *);
@@ -381,8 +381,8 @@ extern "C" BOOL LetterDelivery_HasKnownAddressee(Letter *e) {
     return TRUE;
 }
 
-extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *) {
-    void *r4 = Letter_GetRecipientPlayer();
+extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *letter) {
+    void *r4 = Letter_GetRecipientPlayer(letter);
     u8 tmp[0x18];
     s32 res;
     if (r4 == 0) return -1;
@@ -839,8 +839,7 @@ extern "C" s32 BottleLetter_CreateGameLetter(u8 *p) {
 }
 
 extern "C" s32 BottleLetter_PlaceBottle() {
-    Town_GetUpdater();
-    Town_WashUpBottle();
+    return Town_WashUpBottle(Town_GetUpdater());
 }
 
 extern "C" s32 BottleLetter_IsBottleInTown() {

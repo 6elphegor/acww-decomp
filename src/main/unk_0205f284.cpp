@@ -53,7 +53,7 @@ void Heap_freeAll();
 void Heap_adjust();
 void *Heap_AllocAligned(u32 heap, u32 size, u32 align);
 s32 FishBobberHeap_Destroy();
-void FishBobberHeap_Create();
+void FishBobberHeap_Create(void *parent);
 void *func_02060550(void *a, s32 b);
 void func_020607c8(void *a, u16 *b);
 u16 *func_020607d4(void *a);
@@ -173,9 +173,9 @@ char sFishBobberPathBuf[0x14];
 static inline BOOL Unk_0205fbfc_Is2(u8 v) { return v == 2 ? TRUE : FALSE; }
 static inline BOOL Unk_0205fbfc_Is1(u8 v) { return v == 1 ? TRUE : FALSE; }
 
-extern "C" void FishBobberPool_Create()
+extern "C" void FishBobberPool_Create(void *parent)
 {
-    FishBobberHeap_Create();
+    FishBobberHeap_Create(parent);
     sFishBobberPool.allocBuffers();
     if (gFishBobberHeap != 0) {
         Heap_adjust();

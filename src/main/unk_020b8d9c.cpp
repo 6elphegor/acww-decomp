@@ -1041,7 +1041,7 @@ extern "C" {
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
 }
 extern "C" {
-void TownSessionState_Get(void);
+void *TownSessionState_Get(void);
 }
 extern "C" {
 void TownSessionState_GetKatieState(void);
@@ -3729,13 +3729,13 @@ extern "C" {
 s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-void TownSessionState_Get();
+void *TownSessionState_Get();
 }
 extern "C" {
-s32 TownSessionState_GetPeteFall();
+void *TownSessionState_GetPeteFall(void *p);
 }
 extern "C" {
-void _ZN13PeteFallState11pickFallPosEii(s32 a, void* p, u8 b);
+void _ZN13PeteFallState11pickFallPosEii(void *a, void* p, u8 b);
 }
 extern "C" {
 void PlayerActor_LocalEndWatch();
@@ -4223,8 +4223,7 @@ void SkyShotSequence::actPeteFallen() {
     if (timer <= 0) {
         void* p = PlayerActor_GetBodyPos(playerSlot);
         if (p) {
-            TownSessionState_Get();
-            _ZN13PeteFallState11pickFallPosEii(TownSessionState_GetPeteFall(), p, fallDir);
+            _ZN13PeteFallState11pickFallPosEii(TownSessionState_GetPeteFall(TownSessionState_Get()), p, fallDir);
         }
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
@@ -5016,7 +5015,7 @@ extern "C" {
 BOOL NpcRegistry_FindSpNpc(s32);
 }
 extern "C" {
-BOOL _ZN8NpcActor10isUpdatingEv();
+BOOL _ZN8NpcActor10isUpdatingEv(void *self);
 }
 extern "C" {
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *, s32);
@@ -5025,19 +5024,19 @@ extern "C" {
 s32 Weather_GetFallingPrecip();
 }
 extern "C" {
-void TownSessionState_Get();
+void *TownSessionState_Get();
 }
 extern "C" {
-void TownSessionState_GetPeteFall();
+void *TownSessionState_GetPeteFall(void *p);
 }
 extern "C" {
-s32 _ZN13PeteFallState15isVisitorActiveEv();
+s32 _ZN13PeteFallState15isVisitorActiveEv(void *self);
 }
 extern "C" {
-void TownSessionState_GetVisitorFlags();
+void *TownSessionState_GetVisitorFlags(void *p);
 }
 extern "C" {
-s32 _ZN17VisitorSpawnFlags16isVisitorSpawnedEv();
+s32 _ZN17VisitorSpawnFlags16isVisitorSpawnedEv(void *self);
 }
 extern "C" {
 s32 _ZN8SaveData8testFlagEj(void *, s32);
@@ -5796,9 +5795,7 @@ void SkySprites::updateUfo() {
             u32 m = (u32)v % 10;
             if (prevTime.minute != v) {
                 if (m == 2 || m == 7) {
-                    TownSessionState_Get();
-                    TownSessionState_GetVisitorFlags();
-                    if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv()) {
+                    if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv(TownSessionState_GetVisitorFlags(TownSessionState_Get()))) {
                         if (sprites[45].kind != 6) {
                             if (ufoChance == 0) {
                                 ufoChance = Random_GlobalBelow(8) + 1;
@@ -5823,8 +5820,9 @@ namespace n06 {
 void SkySprites::updatePete() {
     using namespace n06;
     if (peteEventToday != 0) {
-        if (NpcRegistry_FindSpNpc(8)) {
-            if (_ZN8NpcActor10isUpdatingEv()) {
+        s32 npc = NpcRegistry_FindSpNpc(8);
+        if (npc) {
+            if (_ZN8NpcActor10isUpdatingEv((void *)npc)) {
                 peteEventToday = 0;
             }
         }
@@ -5835,9 +5833,7 @@ void SkySprites::updatePete() {
             if (r != 1 && r != 2) {
                 if (time.hour != prevTime.hour) {
                     if (time.hour == 9 || time.hour == 0x11) {
-                        TownSessionState_Get();
-                        TownSessionState_GetPeteFall();
-                        if (!_ZN13PeteFallState15isVisitorActiveEv()) {
+                        if (!_ZN13PeteFallState15isVisitorActiveEv(TownSessionState_GetPeteFall(TownSessionState_Get()))) {
                             if (sprites[45].kind != 7) {
                                 spawn(7, 0x2d, 0, 0);
                             }

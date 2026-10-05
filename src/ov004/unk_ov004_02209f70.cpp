@@ -1703,8 +1703,8 @@ s32 _ZN8FtrActornwEm(u32);
 u16 Item_MakeFurniture(u32, s32);
 u32 _ZN12G3dResAccess11findNodeIdxEi(u32, void *);
 s32 PlayerData_Get(s32);
-s32 _ZN10PlayerData11getPlayerIdEv(...);
-s32 _ZN8PlayerId9getGenderEv();
+s32 _ZN10PlayerData11getPlayerIdEv(s32 self);
+s32 _ZN8PlayerId9getGenderEv(s32 self);
 void *PatternTexCache_Get();
 s32 _ZN15PatternTexCache15getPlayerTexKeyEii(void *, u8, u8);
 s32 Model_BindMatTexByIdx(u32, void *, s32, s32, s32);
@@ -1727,7 +1727,7 @@ void _ZN14BlendAnimModel9stepBlendEv(void *);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
 void _ZN11FtrVisNodes10setVisibleEj(void *, s32);
 BOOL _ZN9FtrSwitch10isChangingEv(void *);
-BOOL _ZN11FtrVisNodes7hasNodeEi(void *);
+BOOL _ZN11FtrVisNodes7hasNodeEi(void *, s32);
 void MTX_MultVec43(void *, void *, void *);
 void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *, void *, s32, s32);
 s32 _ZN14GroundInfoBase9getHeightEi(void *, s32);
@@ -1809,9 +1809,9 @@ BOOL FtrMyDesign::initModel() {
     if (t == -1) t = 0;
     hi = (t >> 3) & 3;
     s32 lo = t & 7;
-    if (p14::PlayerData_Get(hi)) {
-        p14::_ZN10PlayerData11getPlayerIdEv();
-        if (p14::_ZN8PlayerId9getGenderEv() == 0) {
+    s32 pd = p14::PlayerData_Get(hi);
+    if (pd) {
+        if (p14::_ZN8PlayerId9getGenderEv(p14::_ZN10PlayerData11getPlayerIdEv(pd)) == 0) {
             hiddenNode = p14::_ZN12G3dResAccess11findNodeIdxEi(modelResMdl, p14::data_ov004_0224bb8c);
         } else {
             hiddenNode = p14::_ZN12G3dResAccess11findNodeIdxEi(modelResMdl, p14::data_ov004_0224bb90);
@@ -2004,7 +2004,7 @@ BOOL FtrCannon::changeAct(u32 a, u8 b) {
 void FtrCannon::onJointCalcPost(s32 a, void *b) {
     VecFx32 v;
     VecFx32 o;
-    if (p14::_ZN11FtrVisNodes7hasNodeEi(visNodes) && ftrAct == 1) {
+    if (p14::_ZN11FtrVisNodes7hasNodeEi(visNodes, a) && ftrAct == 1) {
         VecFx32 *pv = (VecFx32 *)&((NNSG3dRS *)b)->pJntAnmResult->trans;
         v.x = pv->x;
         v.y = pv->y;
@@ -2344,7 +2344,7 @@ s32 _ZN8FtrActor8playAnimEiiij(void *, s32, s32, s32, u16);
 s32 _ZN8FtrActor9initAnimsEiiii(void *, s32, s32, s32, s32);
 s32 _ZN8FtrActor10playSound2Ev(void *);
 s32 _ZN8FtrActor10playSound1Ev(void *);
-s32 FtrSound_GetSe3(void);
+s32 FtrSound_GetSe3(s32 idx);
 s32 FurnitureManager_GetMoveAnim(void);
 s32 FtrMoveAnim_GetHaniwaAnim(s32);
 s32 _ZN13FtrContactSet11findContactEPv(s32, void *);
@@ -2646,8 +2646,7 @@ BOOL FtrGyroid::updateActive() {
 BOOL FtrGyroid::initModel() {
     frameCount = 0;
     actAid = 0xff;
-    p16::FtrActor_GetFtrIndex(this);
-    initSync(p16::FtrSound_GetSe3());
+    initSync(p16::FtrSound_GetSe3(p16::FtrActor_GetFtrIndex(this)));
     p16::_ZN8FtrActor9initAnimsEiiii(this, 0, 1, 0x1000, 0);
     p16::FtrActor_GetHeap(this);
     p16::_ZN11CachedModel16allocJointRecordEPv(model, p16::_ZN9ModelSlot7getHeapEv());
@@ -3803,8 +3802,8 @@ void _ZN15TalkWindowState11openChoicesEi(u32, s32);
 void _ZN9Character17detachTalkRequestEi(void *, void *);
 void TalkRequest_SetTargetDone(void *);
 void ProcBase_RequestDelete(void *);
-u32 FtrActor_MakeSpawnArg(u32, u32, u32, u32, u8, u32);
-BOOL FtrMgr_SpawnFromArg(void);
+void *FtrActor_MakeSpawnArg(u32, u32, u32, u32, u8, u32);
+BOOL FtrMgr_SpawnFromArg(void *self);
 u32 Ftr_GetUnk05(void *);
 u32 Item_GetFurnitureIndex(void *);
 BOOL MenuCtrl_IsFinished(void);
@@ -6404,8 +6403,7 @@ void FtrBed::execFtrAct0C() {
             }
         }
         u32 c = p20::Item_GetFurnitureIndex(&newBedItem);
-        p20::FtrActor_MakeSpawnArg(r4, r6, c, 3, 0, 1);
-        if (p20::FtrMgr_SpawnFromArg()) {
+        if (p20::FtrMgr_SpawnFromArg(p20::FtrActor_MakeSpawnArg(r4, r6, c, 3, 0, 1))) {
             changeAct(0xd, 0xff);
         }
     }

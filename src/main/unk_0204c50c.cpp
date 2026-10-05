@@ -118,7 +118,7 @@ s32 _ZN8BlockMap4freeEi(void *a, void *heap);
 }
 
 extern "C" {
-void _ZN8BlockMap5clearEv();
+void _ZN8BlockMap5clearEv(void *self);
 }
 
 extern "C" {
@@ -173,7 +173,7 @@ u32 Scene_GetVillagerHouse();
 }
 
 extern "C" {
-s32 SceneId_IsHouseRoom();
+s32 SceneId_IsHouseRoom(s32 x);
 }
 
 extern "C" {
@@ -252,7 +252,7 @@ extern "C" Unk_0204da0c_Map *BlockMap_GetForArea(s32 a) {
     Unk_0204da0c_Map *r = NULL;
     if (a == 0) {
         r = TownBlockMap_Get();
-    } else if (SceneId_IsHouseRoom() == 1) {
+    } else if (SceneId_IsHouseRoom(a) == 1) {
         r = HouseRoomMaps_GetForScene(a);
     }
     return r;
@@ -422,7 +422,7 @@ s32 SceneMapModule::buildSceneMap(void *heap) {
     numOwnedGrids = 0;
     if (gSceneBlockMap == NULL) {
         gSceneBlockMap = Heap_Alloc(heap, 0x20);
-        if (gSceneBlockMap != NULL) _ZN8BlockMap5clearEv();
+        if (gSceneBlockMap != NULL) _ZN8BlockMap5clearEv(gSceneBlockMap);
     }
     if (gSceneBlockMap != NULL) {
         info = Scene_GetMapInfo();
