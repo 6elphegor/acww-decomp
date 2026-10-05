@@ -72,7 +72,6 @@ public:
     void placeNookStock();
     BOOL placeItem(u16 *item, s32 code);
     BOOL setupNoShop();
-    u16 *callGetItemAt();
     BOOL setupScene15Shop();
     void placeScene15Stock();
 
@@ -609,8 +608,10 @@ BOOL ShopStockPlacer::setupScene15Shop() {
     return TRUE;
 }
 
-u16 *ShopStockPlacer::callGetItemAt() {
-    return ((u16 *(*)())ShopStock_GetItemAt)();
+// ShopStockPlacer::callGetItemAt(): declared without parameters, but it forwards r0/r1 (callers pass x, y)
+// straight to ShopStock_GetItemAt, so it is defined under its mangled name with the real parameters.
+extern "C" u16 *_ZN15ShopStockPlacer13callGetItemAtEv(s32 x, s32 y) {
+    return ShopStock_GetItemAt(x, y);
 }
 
 BOOL ShopStockPlacer::setupNoShop() {

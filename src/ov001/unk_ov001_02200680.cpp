@@ -919,8 +919,7 @@ extern "C" s32 Aoss_HandleStartReply(s32 a, u8 *b, s32 *cnt, void *c)
         (*cnt)++;
         return a;
     }
-    (u32)Aoss_Ntohs(*(u16 *)(p + 0xc));
-    sAossEncryptFlag = ((s32 (*)())Aoss_IsFlag10Set)();
+    sAossEncryptFlag = Aoss_IsFlag10Set(Aoss_Ntohs(*(u16 *)(p + 0xc)));
     *cnt = 0;
     return 1;
 }

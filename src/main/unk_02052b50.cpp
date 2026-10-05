@@ -612,7 +612,7 @@ u32 Fossil_CountInGroup(u32 v) {
 }
 
 u32 Ftr_GetIndexInSeries(u16 *p) {
-    s32 t = ((s32 (*)())Ftr_GetSeries)();
+    s32 t = Ftr_GetSeries((s32)p);
     u32 cnt = 0;
     s32 i = 0;
     BOOL z0 = FALSE, z8 = FALSE, zc = FALSE;
