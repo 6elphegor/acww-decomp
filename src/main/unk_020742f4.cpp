@@ -1104,13 +1104,13 @@ extern "C" {
 void FS_EndOverlay(void *p);
 }
 extern "C" {
-void Net_IsWifiConfigValid(void);
+s32 Net_IsWifiConfigValid(void *p);
 }
 extern "C" {
-void Net_HasWifiUserId(void);
+s32 Net_HasWifiUserId(void *p);
 }
 extern "C" {
-void Net_GetOwnFriendKey(void);
+s64 Net_GetOwnFriendKey(void *p);
 }
 extern "C" {
 void Net_CreateUserData(void *p, u32 v);
@@ -1522,10 +1522,10 @@ extern "C" void PlayerWifiData_Create(u8 *p) {
     u32 r = DwcFriendData_GetBytes(p + 0x40);
     Net_MakeOwnFriendData(p, r);
 }
-extern "C" void PlayerWifiData_GetFriendCode(void) { Net_GetOwnFriendKey(); }
-extern "C" void PlayerWifiData_HasUserId(void) { Net_HasWifiUserId(); }
+extern "C" s64 PlayerWifiData_GetFriendCode(void *p) { return Net_GetOwnFriendKey(p); }
+extern "C" s32 PlayerWifiData_HasUserId(void *p) { return Net_HasWifiUserId(p); }
 
-extern "C" void PlayerWifiData_IsConfigValid(void) { Net_IsWifiConfigValid(); }
+extern "C" s32 PlayerWifiData_IsConfigValid(void *p) { return Net_IsWifiConfigValid(p); }
 
 extern "C" void PlayerWifiData_GetDwcUserData(void) {}
 
@@ -2292,10 +2292,10 @@ extern "C" {
 s32 _ZN23VillagerDataProfileView8setShirtEPt(void *, u16 *);
 }
 extern "C" {
-void Villager_GetPlan();
+void *Villager_GetPlan(void *p);
 }
 extern "C" {
-void *VillagerPlanBlock_GetErrand();
+void *VillagerPlanBlock_GetErrand(void *p);
 }
 extern "C" {
 void *PlanErrand_GetRecord(void *);
@@ -2313,13 +2313,13 @@ extern "C" {
 s32 CommVillager_UnpackAct3D(u32 *, u8 *, u16 *, s32 *, u8 *, u32 *);
 }
 extern "C" {
-void Villager_GetState(void *);
+void *Villager_GetState(void *);
 }
 extern "C" {
-void VillagerState_GetErrand();
+void *VillagerState_GetErrand(void *p);
 }
 extern "C" {
-void _ZN12ErrandRecord5clearEv();
+void _ZN12ErrandRecord5clearEv(void *self);
 }
 extern "C" {
 void *PlayerData_GetBySessionSlot(void *);
@@ -2448,7 +2448,7 @@ extern "C" {
 s32 Field_IsUnitClearOfOthersForAid(Vec2 *, void *);
 }
 extern "C" {
-PendingUnit *PendingUnit_Get();
+PendingUnit *PendingUnit_Get(u32 i);
 }
 extern "C" {
 s32 FieldAction_HostProcess(void *, BOOL, void *);
@@ -2587,12 +2587,13 @@ extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
                 s32 x2, y2;
                 pt.x = x2 = c2 >> 8;
                 pt.y = y2 = b2 & 0xff;
-                if (PendingUnit_IndexAt(&pt, buf.layer) < 0) {
+                s32 idx = PendingUnit_IndexAt(&pt, buf.layer);
+                if (idx < 0) {
                     pt2.x = x2;
                     pt2.y = y2;
                     if (Field_IsUnitClearOfOthersForAid(&pt2, d) != 0) ok = TRUE;
                 } else {
-                    PendingUnit *q = PendingUnit_Get();
+                    PendingUnit *q = PendingUnit_Get(idx);
                     if (q->aid == buf.aid) {
                         if (q->committed != 0) {
                             if (q->pending == 0) ok = TRUE;
@@ -2716,8 +2717,7 @@ extern "C" void CommRecv_Act3C() {
     CommVillager_UnpackAct3C(&id, &l.a, &l.b, &l.c);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        Villager_GetPlan();
-        u8 *r4 = (u8 *)VillagerPlanBlock_GetErrand();
+        u8 *r4 = (u8 *)VillagerPlanBlock_GetErrand(Villager_GetPlan(r0));
         switch (l.a) {
         case 0:
             if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(r4))) {
@@ -2763,14 +2763,11 @@ extern "C" void CommRecv_Act3D() {
     CommVillager_UnpackAct3D(&id, &l.a, &l.c, &n, &l.b, &buf);
     void *r6 = SaveVillagers_Get(gSaveVillagers, id);
     if (r6 != NULL) {
-        Villager_GetPlan();
-        void *r7 = VillagerPlanBlock_GetErrand();
+        void *r7 = VillagerPlanBlock_GetErrand(Villager_GetPlan(r6));
         void *r4 = NULL;
         BOOL t = l.b ? TRUE : FALSE;
         BOOL r5 = t ? TRUE : FALSE;
-        Villager_GetState(r6);
-        VillagerState_GetErrand();
-        _ZN12ErrandRecord5clearEv();
+        _ZN12ErrandRecord5clearEv(VillagerState_GetErrand(Villager_GetState(r6)));
         if (n < 4) {
             void *q = PlayerData_GetBySessionSlot((void *)n);
             if (q != NULL) {
@@ -2789,8 +2786,7 @@ extern "C" void CommRecv_Act3F() {
     CommVillager_UnpackItem(&id, &l.x, l.y);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        Villager_GetPlan();
-        void *r5 = VillagerPlanBlock_GetErrand();
+        void *r5 = VillagerPlanBlock_GetErrand(Villager_GetPlan(r0));
         void *r4 = PlanErrand_GetRecord(r5);
         if (_ZN12ErrandRecord8isActiveEv(r4)) {
             if (_ZN12ErrandRecord7getKindEv(r4) == 0) {
@@ -2942,7 +2938,7 @@ extern "C" {
 void *SaveManager_GetTownCompressBuf();
 }
 extern "C" {
-u32 _ZN18TownCompressBuffer7getSizeEv();
+u32 _ZN18TownCompressBuffer7getSizeEv(void *self);
 }
 extern "C" {
 BOOL _ZN11CommManager12isSlotActiveEi(void *, s32);
@@ -3217,7 +3213,7 @@ extern "C" BOOL CommSend_Chunked(u8 *p, void *data, u32 size, u32 type, u32 mask
 }
 extern "C" void CommSend_TownChunk(u8 *p, u32 v) {
     void *d = SaveManager_GetTownCompressBuf();
-    u32 n = _ZN18TownCompressBuffer7getSizeEv();
+    u32 n = _ZN18TownCompressBuffer7getSizeEv(d);
     u32 sz;
     if (n == 0) sz = 0x15fe4; else sz = n + 4;
     CommSend_Chunked(p, d, sz, 1, v);

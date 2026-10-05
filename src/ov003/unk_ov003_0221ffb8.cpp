@@ -397,7 +397,7 @@ void GroundInfo_Destruct(void *o);
 void GroundInfo_initAtPos(void *o, void *p, s32 a, s32 b);
 s32 MapBlockAcre_hasPond(void *c);
 void WorldCurve_FromCurved(V3_f5 *a, V3_f5 *b);
-s32 WorldCurve_Apply(V3_f3 *v);
+s32 WorldCurve_Apply(V3_f3 *v, V3_f3 *in);
 s32 FieldAction_FindDropUnit(s32 a, s32 *p, s32 c);
 void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
@@ -458,7 +458,7 @@ s32 Mem_Free(s32 a);
 void SndSeEmitter_dtor(void *p);
 void SndSeEmitter_ctor(void *p);
 s32 func_021065f8(s32 a, s32 b);
-s32 func_02106654();
+s32 func_02106654(s32 a);
 s32 func_02106670(s32 a, s32 b);
 s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
@@ -3676,7 +3676,7 @@ extern "C" void FishShadow_UpdateFin(O_f3 *o, E_f3 *e) {
 extern "C" void FieldFish_SetModelMatrix(O_f3 *a, void *b, void *dstv, s32 ang) {
     u8 *dst = (u8 *)dstv;
     V3_f3 v;
-    s32 r = WorldCurve_Apply(&v);
+    s32 r = WorldCurve_Apply(&v, (V3_f3 *)b);
     Mtx43_SetTranslate(data_021f47e0, v.x, v.y, v.z);
     Mtx43_RotateX(data_021f47e0, r);
     Mtx43_RotateY(data_021f47e0, ang);
@@ -4496,16 +4496,14 @@ extern "C" BOOL FishFinModel_Load(u8 *self, void *a)
         u8 *r4 = self + 0x58;
         Model_setResource(r4, PooledModel_getModel(m), 0);
         void *nm = ((void * (*)(void *))ModelSlot_getHeap)(res);
-        File_LoadAlloc((*(void * *)((u8 *)&sFishFinAnimPath)), nm, 4, 0);
-        s32 v = func_021065f8(((s32 (*)(void))func_021065dc)(), 0);
+        s32 v = func_021065f8(func_021065dc((s32)File_LoadAlloc((*(void * *)((u8 *)&sFishFinAnimPath)), nm, 4, 0)), 0);
         if (AnimModel_allocAnmObj(r4, nm)) {
             BlendAnimModel_initAnim(r4, v, 0, 0x1000, 1, 0);
             AnimModel_attachAnim(r4);
         } else {
             return FALSE;
         }
-        File_LoadAlloc((*(void * *)((u8 *)&sFishFinTexAnimPath)), nm, 4, 0);
-        s32 w = func_02106670(func_02106654(), 0);
+        s32 w = func_02106670(func_02106654((s32)File_LoadAlloc((*(void * *)((u8 *)&sFishFinTexAnimPath)), nm, 4, 0)), 0);
         if (ModelAnim_allocMatAnm(self + 0x11c, *(void **)(r4 + 0x5c), nm)) {
             ModelAnim_init(self + 0x11c, w, 0, 0x1000, 1);
             ModelAnim_addToRenderObj(self + 0x11c, Model_getRenderObj(r4));

@@ -183,7 +183,7 @@ BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 y);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 void *Item_GetFurnitureIndex(void *p);
-BOOL Item_IsFurniture();
+BOOL Item_IsFurniture(u16 *p);
 s32 Random_GlobalBelow(s32 n);
 void *PlayerActor_GetActor(u32 a);
 s32 Vec_DistXZ(void *a, void *b);
@@ -208,7 +208,7 @@ void NNSi_G3dModifyPolygonAttrMask(u32 a, u32 b, u32 c);
 void Model_setAlpha(void *p, u32 v);
 void AnimModel_drawAnimated(void *p, u32 v);
 void AnimModel_stepAnim(void *p);
-void AnimModel_setFrame(void *p);
+void AnimModel_setFrame(void *p, s32 frame);
 void CharaShadow_Draw(void *p, s32 a, s32 b, s32 c);
 BOOL ActorCollider_isHitByGroup(void *p, u32 mask);
 u32 WorldCurve_ToCurved(void *a, void *b);
@@ -366,7 +366,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
         hy = y >> 4;
         cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (cell == 0) goto xn0;
-        if (Item_IsFurniture() != 0) {
+        if (Item_IsFurniture(cell) != 0) {
             u16 tmp = 0xfff1;
             void *a = Item_GetFurnitureIndex(cell);
             void *bb = Item_GetFurnitureIndex(&tmp);
@@ -943,7 +943,7 @@ BOOL HouseRoach::move() {
             p6->y = 3;
             jumpTimer = 0;
             isJumping = 0;
-            AnimModel_setFrame(model);
+            AnimModel_setFrame(model, 0);
         } else {
             jumpTimer = jumpTimer + 1;
             AnimModel_stepAnim(model);

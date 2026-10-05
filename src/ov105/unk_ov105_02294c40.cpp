@@ -38,7 +38,7 @@ typedef LetterStorageMenu S;
 
 // Shared symbols whose real argument lists differ from their mangled names: called by name with the object first
 extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);
-extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self);
+extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
 
 extern "C" {
 void Snd_PlaySe(s32 a);
@@ -417,7 +417,7 @@ void LetterStorageMenu_SetupBgLayers();
 LetterStorageMenu *LetterStorageMenu_Create();
 }
 
-extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self);
+extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
 extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);
 
 static inline BOOL Unk_ov105_0229677c_Both() {
@@ -1676,7 +1676,7 @@ u32 LetterStorageMenu::fromLetterGridIndex(u32 a) {
 }
 
 s32 LetterStorageMenu::getSlotAt(u32 a, u32 b, u32 c) {
-    s32 r = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid);
+    s32 r = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid, a, b);
     if (r == 0x37) {
         r = letterGrid.findLetterAt0A(a, b);
     }

@@ -38,7 +38,7 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void Pocket_SetItem(u16 *p, s32 a, s32 b);
 void *ProcBase_GetParent(void *p);
-void ProcBase_RequestDelete();
+void ProcBase_RequestDelete(void *p);
 
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
@@ -80,7 +80,7 @@ s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
 s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
 void InventoryItemGrid_ShowSlotName(void *p, void *q, s32 a);
 void InventoryItemGrid_LoadPockets(void *p);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p);
+u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
 void InventoryItemGrid_Exit(void *p);
 void InventoryItemGrid_PreUpdate(void *p);
 void InventoryItemGrid_Init(void *p, s32 a);
@@ -349,7 +349,7 @@ BOOL PocketMenuUnk::execPhase3() { return TRUE; }
 BOOL PocketMenuUnk::execPhase4() { return TRUE; }
 
 BOOL PocketMenuUnk::execClosed() {
-    ProcBase_RequestDelete();
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 
@@ -827,7 +827,7 @@ u32 PocketMenuUnk_PocketIndexToTarget(S *s, u32 a) {
 }
 
 u32 PocketMenuUnk_HitPocket(S *s, u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->pocketGrid);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->pocketGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
             if (InventoryItemGrid_IsSlotEmpty(&s->pocketGrid, t)) return 0x1d;

@@ -25,9 +25,9 @@ void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
 s32 strncmp(void *, void *, u32);
 void DWCi_BM_GetApInfo(void *);
-s32 DGT_Hash1GetDigest_R();
-s32 DGT_Hash1SetSource();
-s32 DGT_Hash1Reset();
+void DGT_Hash1GetDigest_R(u8 *out, void *ctx);
+void DGT_Hash1SetSource(void *ctx, const void *data, u32 len);
+void DGT_Hash1Reset(void *ctx);
 
 WifiLinkWork *WifiLink_GetWork();
 s32 WifiLink_Init(void *, u32);
@@ -44,9 +44,9 @@ u32 WifiLink_GetLinkLevel();
 
 s32 WifiAp_GetLinkLevel();
 BOOL WifiAp_MacEquals(u8 *a, u8 *b);
-s32 WifiAp_HashGetDigest();
-s32 WifiAp_HashSetSource();
-s32 WifiAp_HashReset();
+void WifiAp_HashGetDigest(u8 *out, void *ctx);
+void WifiAp_HashSetSource(void *ctx, const void *data, u32 len);
+void WifiAp_HashReset(void *ctx);
 s32 WifiAp_GetConnectResultKind();
 void WifiAp_FreeContext();
 u32 WifiAp_FoldApIndex(u32 x);
@@ -321,16 +321,16 @@ s32 WifiAp_GetConnectResultKind() {
     return 1;
 }
 
-s32 WifiAp_HashReset() {
-    return DGT_Hash1Reset();
+void WifiAp_HashReset(void *ctx) {
+    DGT_Hash1Reset(ctx);
 }
 
-s32 WifiAp_HashSetSource() {
-    return DGT_Hash1SetSource();
+void WifiAp_HashSetSource(void *ctx, const void *data, u32 len) {
+    DGT_Hash1SetSource(ctx, data, len);
 }
 
-s32 WifiAp_HashGetDigest() {
-    return DGT_Hash1GetDigest_R();
+void WifiAp_HashGetDigest(u8 *out, void *ctx) {
+    DGT_Hash1GetDigest_R(out, ctx);
 }
 
 BOOL WifiAp_MacEquals(u8 *a, u8 *b) {

@@ -138,7 +138,7 @@ void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
 void *PlayerData_GetCurrent();
 s32 MenuCtrl_GetIndex();
 void *PlayerData_getPatterns(void *h);
-void PlayerPatterns_getPatternByOrder(void *a, s32 b);
+void *PlayerPatterns_getPatternByOrder(void *a, s32 b);
 void *Pattern_getInfo(...);
 void PatternInfo_setTaste(void *a, u32 b);
 void *TalkWindowState_getChoiceList(void *p);
@@ -151,7 +151,7 @@ BOOL MenuCtrl_IsResultOk();
 void *PlayerData_getErrands(...);
 void *SickVillagerRecord_getParcelErrand(void *p);
 s32 Talk_IsInOwnTown();
-s32 Pocket_GetItem();
+s32 Pocket_GetItem(s32 i);
 void Pocket_RemoveItem(s32 a);
 void ActorTalkRequest_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
 void *ParcelErrand_GetRecord(void *p);
@@ -166,7 +166,7 @@ s32 Item_GetPrice(void *p);
 s32 func_02133150(s32 a, s32 b);
 BOOL NetArea_IsLocalOwner();
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
-void *PlayerPatterns_getPatternOrder();
+void *PlayerPatterns_getPatternOrder(void *self);
 s32 PatternOrder_getSlot(void *, s32);
 BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e);
 BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
@@ -1132,7 +1132,7 @@ s32 SpNpcMabelTalk::getTopic() { return topic; }
 
 void SpNpcMabelTalk::start(TalkStartMsg *out) {
     void *r7 = PlayerData_GetCurrent();
-    void *r6 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands());
+    void *r6 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7));
     u8 buf[4];
     if (GameStart_IsActive() != 0 && getTopic() == 2) {
         out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
@@ -1745,8 +1745,7 @@ void SpNpcMabelTalk::onDisplayPatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        PlayerData_getPatterns(h);
-        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(), a);
+        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(h)), a);
         PatternSrc_Copy(9, t, 4, owner->patternSlot, 1);
         m[0] = 0x24;
         TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
@@ -1762,8 +1761,7 @@ void SpNpcMabelTalk::onTakePatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        PlayerData_getPatterns(h);
-        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(), a);
+        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(h)), a);
         u16 lo, hi;
         PatternSrc_Copy(4, owner->patternSlot, 9, t, 1);
         if (t < 8) {
@@ -1804,8 +1802,7 @@ void SpNpcMabelTalk::onTradePatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        PlayerData_getPatterns(h);
-        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(), a);
+        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(h)), a);
         u16 lo, hi;
         PatternSrc_Swap(9, t, 4, owner->patternSlot, 1);
         if (t < 8) {
@@ -1902,7 +1899,7 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
         hh = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
         if (Talk_IsInOwnTown()) {
             s32 n = (s32)MenuCtrl_GetIndex();
-            v[1] = Pocket_GetItem();
+            v[1] = Pocket_GetItem(n);
             if (n >= 0) {
                 Pocket_RemoveItem(n);
             }
@@ -2059,8 +2056,7 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
 void SpNpcMabel::setDesignConcept(u32 y) {
     void *h = PlayerData_GetCurrent();
     s32 n = MenuCtrl_GetIndex();
-    PlayerPatterns_getPatternByOrder(PlayerData_getPatterns(h), (s32)n);
-    PatternInfo_setTaste(Pattern_getInfo(), y);
+    PatternInfo_setTaste(Pattern_getInfo(PlayerPatterns_getPatternByOrder(PlayerData_getPatterns(h), (s32)n)), y);
 }
 
 BOOL SpNpcMabel::pickShopItemAtPlayer() {

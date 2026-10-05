@@ -68,10 +68,10 @@ void NNS_SndPlayerCreateHeap(s32 a, void *b, u32 c);
 void NNS_SndPlayerSetPlayerVolume(s32 a, s32 b);
 void NNS_SndPlayerStopSeqByPlayerNo(s32 a, s32 b);
 void SndMgr_StartVolumeFadeIn(void *self);
-void SndMgr_UpdateVolumeCurve(Glob *g);
+void SndMgr_UpdateVolumeCurve(Glob *g, u32 a);
 void SndMgr_SetPlayerVolumes(Glob *g, s32 a, s32 b);
 void SndMgr_LoadBank(Glob *g, s32 v);
-void SndMgr_SetVoiceType(Glob *g);
+void SndMgr_SetVoiceType(Glob *g, u32 v);
 #define SndMgr_stopAll _ZN6SndMgr7stopAllEv
 void SndMgr_stopAll(Glob *g);
 #define SndMgr_startOutputEffect _ZN6SndMgr17startOutputEffectEv
@@ -411,7 +411,7 @@ void SndSceneBase::load() {
 }
 
 void SndSceneBase::update(s32 cameraDistance) {
-    return SndMgr_UpdateVolumeCurve(&gSndMgr);
+    return SndMgr_UpdateVolumeCurve(&gSndMgr, cameraDistance);
 }
 
 void SndSceneBase::fadeOutAll() {
@@ -463,7 +463,7 @@ void SndSceneBase::beginTalk(s32 a) {
         r = 135;
         break;
     }
-    SndMgr_SetVoiceType(&gSndMgr);
+    SndMgr_SetVoiceType(&gSndMgr, a);
     SndMgr_LoadBank(&gSndMgr, r);
     f6 = 1;
 }

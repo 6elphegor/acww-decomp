@@ -1365,7 +1365,7 @@ s32 Tcp_SendReset(IpHeader *, TcpHeader *, u32, u16);
 s32 Tcp_SendAck(IpSocket *, u16);
 s32 Tcp_SendFinAck(IpSocket *, u16);
 s32 Tcp_ParseOptions(TcpHeader *, IpSocket *);
-IpSocket *Tcp_FindConnection(IpHeader *);
+IpSocket *Tcp_FindConnection(IpHeader *, TcpHeader *);
 IpSocket *Tcp_FindListener(IpHeader *, TcpHeader *);
 s32 Ip_AreAddrsValid(u32, u32);
 s32 Tcp_AcceptSyn(IpHeader *, TcpHeader *, IpSocket *);
@@ -1390,7 +1390,7 @@ u8 *Ip_Reassemble(IpHeader *p, s32 *out);
 }
 
 s32 Tcp_InputSynExisting(IpHeader *p, TcpHeader *q, u32 r) {
-    IpSocket *s = Tcp_FindConnection(p);
+    IpSocket *s = Tcp_FindConnection(p, q);
     if (s != 0) {
         if (s->state == 1) {
             Tcp_AcceptSyn(p, q, s);
@@ -1422,7 +1422,7 @@ void Tcp_InputSyn(IpHeader *p, TcpHeader *q, u32 r) {
 }
 
 void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r) {
-    IpSocket *s = Tcp_FindConnection(p);
+    IpSocket *s = Tcp_FindConnection(p, q);
     if (s == 0 || s->state != 2) {
         Tcp_SendReset(p, q, r, (u16)((p->b5 << 8) + 5));
         return;
@@ -1441,7 +1441,7 @@ void Tcp_InputSynAck(IpHeader *p, TcpHeader *q, u32 r) {
 }
 
 void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r) {
-    IpSocket *s = Tcp_FindConnection(p);
+    IpSocket *s = Tcp_FindConnection(p, q);
     s32 fl;
     s32 last;
     u32 seq;
@@ -1540,7 +1540,7 @@ void Tcp_InputAck(IpHeader *p, TcpHeader *q, u32 r) {
 }
 
 void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r) {
-    IpSocket *s = Tcp_FindConnection(p);
+    IpSocket *s = Tcp_FindConnection(p, q);
     if (s != 0) {
         switch (s->state) {
         case 7:
@@ -1571,7 +1571,7 @@ void Tcp_InputFin(IpHeader *p, TcpHeader *q, u32 r) {
 }
 
 void Tcp_InputRst(IpHeader *p, TcpHeader *q) {
-    IpSocket *s = Tcp_FindConnection(p);
+    IpSocket *s = Tcp_FindConnection(p, q);
     if (s != 0) {
         OS_YieldThread();
         s->state = 0;

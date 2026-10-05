@@ -79,7 +79,7 @@ struct Unk_ov068_022708fc_Obj {
 extern "C" {
 void RoomObj_LoadResourcesByName(char *s, void *a, void *b, void *c);
 void RoomObj_ReleaseResources(void *a, void *b);
-s32 _ZN12RoomObjActor14storeSyncStateEv(void *self, u32 v);
+s32 _ZN12RoomObjActor14storeSyncStateEh(void *self, u32 v);
 void Math_StepS32(void *dst, s32 v, s32 n);
 void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
 }
@@ -179,7 +179,7 @@ BOOL RoostCafeSet::changeSyncState(u32 v) {
     };
     if (v < 2) {
         if ((this->*tbl[v])()) {
-            if (_ZN12RoomObjActor14storeSyncStateEv(this, v)) {
+            if (_ZN12RoomObjActor14storeSyncStateEh(this, v)) {
                 tex.syncState = v;
                 return TRUE;
             }

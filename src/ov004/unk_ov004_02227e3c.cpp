@@ -168,7 +168,7 @@ void _ZN12TouchPickBoxC2Ev(void *self);
 void _ZN12TouchPickBoxD2Ev(void *self);
 void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
-s32 _ZN12RoomObjActor14storeSyncStateEv(void *self, s32 a);
+s32 _ZN12RoomObjActor14storeSyncStateEh(void *self, s32 a);
 RecycleBox *RecycleBox_Create();
 RecycleBox *RecycleBox_GetInstance();
 }// declarations (definition order below sets the data layout)
@@ -290,7 +290,7 @@ BOOL RecycleBox::changeSyncState(u32 idx) {
     };
     if (idx < 4) {
         if ((this->*tbl[idx])()) {
-            if (_ZN12RoomObjActor14storeSyncStateEv(this, idx)) {
+            if (_ZN12RoomObjActor14storeSyncStateEh(this, idx)) {
                 tex.syncState = idx;
                 return TRUE;
             }
