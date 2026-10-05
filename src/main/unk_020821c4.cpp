@@ -23,8 +23,6 @@ void NpcTexPatBufRef_Assign(void *, s32 v);
 void SpNpcAnimHeapRef_Assign(void *, s32 x);
 void VillagerAnimHeapRef_Assign(void *, s32 x);
 void AnimSlotRef_Assign(void *, u32 v);
-struct SpNpcAnimHeapRefSlot;
-void _ZN20SpNpcAnimHeapRefSlot6assignEv(SpNpcAnimHeapRefSlot *, u32);
 }
 
 struct NpcTexPatBufRef {
@@ -279,10 +277,9 @@ SpNpcAnimHeapRefSlot::SpNpcAnimHeapRefSlot() {}
 
 SpNpcAnimHeapRefSlot::~SpNpcAnimHeapRefSlot() {}
 
-// assign takes the slot id: every caller passes it (in r1)
-extern "C" void _ZN20SpNpcAnimHeapRefSlot6assignEv(SpNpcAnimHeapRefSlot *self, u32 id) {
-    SpNpcAnimHeapRef_Assign(&self->heapRef, id);
-    self->inUse = 1;
+void SpNpcAnimHeapRefSlot::assign(u32 id) {
+    SpNpcAnimHeapRef_Assign(&heapRef, id);
+    inUse = 1;
 }
 
 SpNpcAnimHeapRefPool::SpNpcAnimHeapRefPool() : NpcResPool(4) {}
@@ -295,7 +292,7 @@ void SpNpcAnimHeapRefPool::occupySlot(u32 i) {
     if (i < (u32)numSlots) {
         u32 id = 0;
         id += i;
-        _ZN20SpNpcAnimHeapRefSlot6assignEv(&SpNpcAnimHeapRefPool_Get()->slots[i], id);
+        SpNpcAnimHeapRefPool_Get()->slots[i].assign(id);
     }
 }
 

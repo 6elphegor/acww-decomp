@@ -343,7 +343,7 @@ public:
     void moveNoCollision();
     void moveWithCollision();
     void setSpeed(u32 *a);
-    void approachRotX();
+    void approachRotX(s32 target);
     void setRotX(u16 a);
     void setAngleY(s16 *a);
     u32 getAnimResIndex(u32 *a);

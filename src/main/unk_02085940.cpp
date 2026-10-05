@@ -1180,8 +1180,7 @@ void LostChildRecord::clear() {
 
 u16 *LostChildRecord::getTownId() { return (u16 *)this; }
 
-// setTownId takes the source town id: every caller passes it (in r1)
-extern "C" void _ZN15LostChildRecord9setTownIdEv(LostChildRecord *self, void *src) { TownId_Assign(self, src); }
+void LostChildRecord::setTownId(void *src) { TownId_Assign(this, src); }
 
 u32 LostChildRecord::getDaysLeft() { return daysLeft; }
 

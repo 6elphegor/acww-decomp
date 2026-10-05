@@ -108,13 +108,9 @@ void *_ZN12VillagerData13getVillagerIdEv(void *);
 u8 *_ZN10PlayerData11getBirthdayEv(s32);
 
 void Event_RefreshToday(s32);
-#ifdef MODERN
-// mwcc passes a struct argument as a pointer to a copy; the callers in other files pass the pointer themselves,
-// so under GCC (which would pass the struct in registers) these two take it as a pointer
-extern "C" s32 EventSchedule_CollectDay(EventEntryView *, const ClockDateTimeCopy *, s32);
-#else
-void EventSchedule_CollectDay(EventEntryView *, ClockDateTimeCopy, s32);
-#endif
+// ClockDateTimeCopy has a copy constructor, so both mwcc and GCC pass it as a pointer to a caller-made copy: the
+// callers in other files that pass a pointer to the date get the same code
+s32 EventSchedule_CollectDay(EventEntryView *, ClockDateTimeCopy, s32);
 s32 EventSchedule_Collect(EventEntryView *out, ClockDateTimeCopy d, s32 x, s32 y);
 EventDate EventRule_ResolveStart(Unk_0203f554_Sub *, s32, EventDate, u32);
 EventDate EventRule_ResolveEnd(Unk_0203f554_Sub *, s32, EventDate, u32);
@@ -817,34 +813,20 @@ extern "C" s32 EventSchedule_Collect(EventEntryView *out, ClockDateTimeCopy d, s
     return count;
 }
 
-#ifdef MODERN
-extern "C" s32 EventSchedule_CollectDay(EventEntryView *a, const ClockDateTimeCopy *d, s32 x) {
-    return EventSchedule_Collect(a, *d, 0, x);
-}
-
-extern "C" s32 EventSchedule_CollectDayAll(EventEntryView *a, const ClockDateTimeCopy *d) {
-    return EventSchedule_Collect(a, *d, 1, 0);
-}
-#else
-extern "C" void EventSchedule_CollectDay(EventEntryView *a, ClockDateTimeCopy d, s32 x) {
-    EventSchedule_Collect(a, d, 0, x);
+extern "C" s32 EventSchedule_CollectDay(EventEntryView *a, ClockDateTimeCopy d, s32 x) {
+    return EventSchedule_Collect(a, d, 0, x);
 }
 
 extern "C" s32 EventSchedule_CollectDayAll(EventEntryView *a, ClockDateTimeCopy d) {
     return EventSchedule_Collect(a, d, 1, 0);
 }
-#endif
 
 extern "C" void Event_RefreshToday(s32 x) {
     ClockDateTimeWords d;
     d.words[0] = 0;
     d.words[1] = 0;
     Clock_GetDateTime(&d);
-#ifdef MODERN
-    EventSchedule_CollectDay((EventEntryView *)gTodayEvents.entries, (ClockDateTimeCopy *)&d, x);
-#else
     EventSchedule_CollectDay((EventEntryView *)gTodayEvents.entries, *(ClockDateTimeCopy *)&d, x);
-#endif
     gTodayEvents.date[2] = d.dt.year;
     gTodayEvents.date[1] = d.dt.month;
     gTodayEvents.date[0] = d.dt.day;
