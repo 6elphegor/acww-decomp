@@ -2244,7 +2244,8 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
         }
         if (cell1 && *cell1 != 0xfff1) UNK_OV004_022072B4_FAIL()
         if (!Ground_CanPlaceItem(x, y)) UNK_OV004_022072B4_FAIL()
-        if (FtrActorGrid_getActor(FtrActorGrid_GetInstance(), x, y, 1) && ((BOOL (*)(void))_ZN8FtrActor9isNotIdleEv)()) UNK_OV004_022072B4_FAIL()
+        void *gridActor = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), x, y, 1);
+        if (gridActor && _ZN8FtrActor9isNotIdleEv(gridActor)) UNK_OV004_022072B4_FAIL()
         if (b == 0) {
             if ((obj && obj->noCollision == 0 && obj != this) || Ground_GetExitAtPos(&v2) != -1 || FtrMgr_GetSurfaceHeightAtPos(&v2)) UNK_OV004_022072B4_FAIL()
         }

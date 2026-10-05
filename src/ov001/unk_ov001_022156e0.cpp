@@ -378,7 +378,7 @@ extern "C" BOOL WfcManualSetup_HandleTouch() {
     WfcConfig_GetEdit();
     r = WfcManualSetup_HitTest();
     if (r == 14) return 0;
-    if (((s32 (*)())WfcManualSetup_IsItemEnabled)() == 0) {
+    if (WfcManualSetup_IsItemEnabled(r) == 0) {
         WfcSound_Play(9);
         return 1;
     }
@@ -392,7 +392,7 @@ extern "C" BOOL WfcManualSetup_HandleTouch() {
 }
 
 extern "C" void WfcManualSetup_SelectItem(u32 a) {
-    if (((s32 (*)())WfcManualSetup_IsItemEnabled)() == 0) {
+    if (WfcManualSetup_IsItemEnabled(a) == 0) {
         WfcSound_Play(9);
         return;
     }
