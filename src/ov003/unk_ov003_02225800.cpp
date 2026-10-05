@@ -748,7 +748,7 @@ BOOL AnimModel_allocAnmObj(void *o, void *h);
 void BlendAnimModel_initAnim(void *o, s32 m, s32 a, s32 b, s32 c, s32 d);
 void AnimModel_attachAnim(void *o);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-s32 func_02106654();
+s32 func_02106654(void *p);
 s32 func_02106670(s32 a, s32 b);
 BOOL ModelAnim_allocMatAnm(Rec *e, void *a, void *b);
 void ModelAnim_init(Rec *e, s32 m, s32 a, s32 b, s32 c);
@@ -7871,9 +7871,9 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
         Str_SPrintf(l.path, sInsectTexAnimPathFmt, t4);
         ok = FALSE;
         if (File_Exists(l.path)) {
-            File_LoadAlloc(l.path, h2, 4, 0);
+            void *tex = File_LoadAlloc(l.path, h2, 4, 0);
             if (r7 != 0) {
-                r7 = (void *)func_02106670(func_02106654(), 0);
+                r7 = (void *)func_02106670(func_02106654(tex), 0);
                 if (ModelAnim_allocMatAnm(e, *(void **)(obj + 0x5c), h2)) {
                     ModelAnim_init(e, (s32)r7, 0, 0x1000, 0);
                     ModelAnim_addToRenderObj(e, Model_getRenderObj(obj));

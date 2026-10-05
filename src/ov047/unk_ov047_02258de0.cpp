@@ -88,7 +88,7 @@ s32 TownSessionState_TestFlag(void *p, s32 a);
 void TownSessionState_SetFlag(void *p, s32 a);
 void Effect_End(s32 h);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
-void Effect_SetPosition(s32 h, void *b, void *c);
+void Effect_SetPosition(s32 h, void *b, void *c, void *d);
 void *PlayerData_GetCurrent();
 u16 Pocket_GetItem(s32 a);
 void Pocket_RemoveItem(s32 a);
@@ -115,7 +115,7 @@ void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
 void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, PocketFilterFn cb, u32 a, u32 b);
 void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *self, u16 *p, s32 a, s32 b);
-void _ZN16ActorTalkRequest13getChoiceListEv(void *self);
+void *_ZN16ActorTalkRequest13getChoiceListEv(void *self);
 NpcActor *_ZN16ActorTalkRequest13getTalkPlayerEv(void *self);
 void _ZN16ActorTalkRequest13setTalkPlayerEj(void *self, u32 v);
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
@@ -136,7 +136,7 @@ s32 _ZN10MuseumData9isDonatedEPt(void *g, u16 *p);
 s32 _ZN10MuseumData16getDonationStateEPt(void *g, u16 *p);
 s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *self, void *buf, void *name);
 void _ZN15TalkWindowState7setSlotEiPv(void *self, s32 a, void *obj);
-u32 _ZN10ChoiceList9getResultEv();
+u32 _ZN10ChoiceList9getResultEv(void *self);
 void _ZN10PlayerData7setFlagEj(void *p, u32 v);
 BOOL _ZN10PlayerData8testFlagEj(u32 a, u32 b);
 u32 _ZN10PlayerData10getErrandsEv(...);
@@ -675,7 +675,7 @@ BOOL SpNpcBlathers::mainAct02() {
     if (effectHandle == -1) {
         effectHandle = Effect_Create(0x3c, (u8 *)this + 0x478, &rotY, 0);
     } else {
-        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, &rotY);
+        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, &rotY, 0);
     }
     return TRUE;
 }
@@ -1461,8 +1461,7 @@ void SpNpcBlathersTalk::onChoice(u32 a) {
             *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b348,
         };
         u32 i = 0;
-        PlayerData_GetCurrent();
-        PlayerData_getErrands();
+        PlayerData_getErrands(PlayerData_GetCurrent());
         if (dramaTalk == 1) {
             i = 1;
         }
@@ -1474,8 +1473,7 @@ void SpNpcBlathersTalk::onDramaChoice(s32 a) {
     u8 buf[4];
     a = msgIndex;
     if (a <= 0x15) {
-        ActorTalkRequest_getChoiceList(this);
-        u32 r = ChoiceList_getResult();
+        u32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
         nextMsg = 0xff;
         if (r != 0) {
             if (SaveData_testFlag(gSaveData, 0xc)) {
@@ -1531,8 +1529,7 @@ extern "C" void *data_ov047_0225b3b0[2] = {(void *)_ZN17SpNpcBlathersTalk14dispa
 extern "C" void *data_ov047_0225b3a8[2] = {(void *)_ZN17SpNpcBlathersTalk17onPaintingDonatedEv, 0};
 
 void SpNpcBlathersTalk::dispatchChoice(u32 a) {
-    ActorTalkRequest_getChoiceList(this);
-    u32 arg = ChoiceList_getResult();
+    u32 arg = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     nextMsg = 0xff;
     static SpNpcBlathersChoiceHandler tbl[17] = {
         {0xc, *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b390},

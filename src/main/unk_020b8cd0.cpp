@@ -3,13 +3,13 @@
 #include "gfx/VramTask.h"
 
 extern "C" {
-void NNS_G3dGetTex();
+u8 *NNS_G3dGetTex(u8 *p);
 }
 
 
 
-extern "C" void Wallpaper_GetTex() {
-    NNS_G3dGetTex();
+extern "C" u8 *Wallpaper_GetTex(u8 *p) {
+    return NNS_G3dGetTex(p);
 }
 
 VramTask::VramTask() {

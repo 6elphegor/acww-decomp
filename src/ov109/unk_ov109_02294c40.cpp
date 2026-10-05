@@ -53,7 +53,7 @@ void ChoiceIdList_Add(void *p, u32 a, u32 b);
 void ChoiceIdList_Clear(void *p, u32 v);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_Open(void *p, u32 v);
-u32 PopupChoice_DecideCancel(void *p);
+u32 PopupChoice_DecideCancel(void *p, s32 x);
 BOOL PopupChoice_TickDecideDelay(void *p);
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
@@ -75,7 +75,7 @@ s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
 s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
 void InventoryItemGrid_SetSlotItem(void *p, u32 a, u32 b, u32 c);
 void InventoryItemGrid_RefreshSlot(void *p, u32 a);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p);
+u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
 void Inventory_PlayTouchSe();
 void InventoryItemGrid_LoadPockets(void *p);
 void InventoryItemGrid_Exit(void *p);
@@ -765,7 +765,7 @@ u32 SongPickMenu_PocketToSlot(S *s, u32 a) {
 }
 
 u32 SongPickMenu_HitTestSlot(S *s, u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->pocketGrid);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->pocketGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
             if (InventoryItemGrid_IsSlotEmpty(&s->pocketGrid, t)) return 0x10;
@@ -956,7 +956,7 @@ void SongPickMenu::moveCursorToPopupRow() {
 
 void SongPickMenu::cancelPopup() {
     popupChoice = 1;
-    popupRow = PopupChoice_DecideCancel(&popup);
+    popupRow = PopupChoice_DecideCancel(&popup, 1);
     s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     cursor.warpTo(a, b);

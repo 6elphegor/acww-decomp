@@ -9,7 +9,7 @@
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 #define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust(void);
+void *Heap_adjust(u32 self);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
@@ -154,7 +154,7 @@ extern "C" void PlayerHeadBank_Init(void *parent) {
     PlayerHeadModelHeap_Create(parent);
     MGR->setup();
     if (gPlayerHeadModelHeap != 0)
-        Heap_adjust();
+        Heap_adjust(gPlayerHeadModelHeap);
 }
 
 extern "C" void PlayerHeadBank_Destroy(void) {

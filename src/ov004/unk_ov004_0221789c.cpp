@@ -146,7 +146,7 @@ void *TouchPick_GetTargetObject(void *a, u32 b, u32 c);
 s32 Villager_HasShownFurnitureAt(void *o, s32 *xy, u32 a, u32 b);
 void *ChoiceList_getResult(void *o);
 u32 VillagerId_makeFileName(void *a, void *b, u32 c, const void *d);
-void *FtrActor_GetFtrIndex();
+void *FtrActor_GetFtrIndex(void *self);
 s32 Pocket_FindEmpty();
 void TalkWindowState_setNextMessage(void *a, u8 *b, void *c);
 void Hud_Hide();
@@ -829,7 +829,7 @@ BOOL FleaMarketSellerVillager::checkFurnitureTap() {
     if (c2 == NULL) {
         return FALSE;
     }
-    r[0] = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
+    r[0] = Item_MakeFurniture(FtrActor_GetFtrIndex(c2), 0);
     x2 = hx;
     y2 = hy;
     FtrActor_findOwnTile(c2, &x2, &y2, 0, 0);

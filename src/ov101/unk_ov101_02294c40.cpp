@@ -40,15 +40,15 @@ void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Snd_PlaySe(u32 v);
-void ProcBase_RequestDelete();
-void *ProcBase_GetParent(...);
+void ProcBase_RequestDelete(void *p);
+void *ProcBase_GetParent(void *p);
 
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_Update(void *p);
 void PopupChoice_ForceClose(void *p);
 void PopupChoice_Draw(void *p);
 void MenuButtons_LoadTextColors(void *p);
-u32 PopupChoice_DecideCancel(void *p);
+u32 PopupChoice_DecideCancel(void *p, s32 x);
 void ChoiceIdList_Clear(void *p, u32 v);
 void ChoiceIdList_Add(void *p, u32 a, u32 b);
 void PopupChoice_Open(void *p, u32 v);
@@ -75,7 +75,7 @@ void InventoryItemGrid_SetSlotItem(void *p, u32 a, u32 b, u32 c);
 void InventoryItemGrid_RefreshSlot(void *p, u32 a);
 void InventoryItemGrid_ShowSlotName(void *p, void *q, u32 a);
 void InventoryItemGrid_DisableSlot(void *p, u32 a);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p);
+u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
 void InventoryItemGrid_ClearSlot(void *p, u32 idx);
 void InventoryItemGrid_SetHeldItem(void *p, u32 a, u32 b);
 void InventoryItemGrid_DrawHeldItem(void *p, s32 a, s32 b);
@@ -284,7 +284,7 @@ BOOL PocketItemSelectMenu::onCreate() {
 }
 
 BOOL PocketItemSelectMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -358,7 +358,7 @@ BOOL PocketItemSelectMenu::execPhase3() { return TRUE; }
 BOOL PocketItemSelectMenu::execPhase4() { return TRUE; }
 
 BOOL PocketItemSelectMenu::execClosed() {
-    ProcBase_RequestDelete();
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 
@@ -859,7 +859,7 @@ u32 PocketItemSelectMenu::toSlotOrNone(u32 a) {
 }
 
 u32 PocketItemSelectMenu::getSlotAt(u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(&pocketGrid);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&pocketGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
             if (InventoryItemGrid_IsSlotEmpty(&pocketGrid, t)) return 0x10;
@@ -1092,7 +1092,7 @@ void PocketItemSelectMenu::moveCursorToPopupRow() {
 
 void PocketItemSelectMenu::cancelPopup() {
     popupChoice = 1;
-    popupRow = PopupChoice_DecideCancel(&popup);
+    popupRow = PopupChoice_DecideCancel(&popup, 1);
     s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     cursor.warpTo(a, b);

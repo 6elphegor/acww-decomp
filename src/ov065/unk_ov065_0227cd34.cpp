@@ -77,7 +77,7 @@ s32 gpiSendAuthBuddyRequest(GPConnection *, GPIProfile *);
 void GsUtil_Free(void *);
 s32 gpiCanFreeProfile(GPIProfile *);
 void gpiRemoveProfile(GPConnection *, GPIProfile *);
-s32 gpiGetPeerByProfile(GPConnection *);
+s32 gpiGetPeerByProfile(GPConnection *, s32);
 s32 gpiAddPeer(GPConnection *, s32, s32);
 s32 gpiPeerGetSig(GPConnection *, s32);
 s32 gpiPeerStartConnect(GPConnection *, s32);
@@ -456,7 +456,7 @@ extern "C" {
 s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, s32 t) {
     GPIProfile *n;
     s32 r6;
-    r6 = gpiGetPeerByProfile(h);
+    r6 = gpiGetPeerByProfile(h, id);
     if (r6 == 0) {
         if (!(gpiGetProfile(h, id, &n) != 0 && n->buddyStatus != NULL && n->buddyStatus->port != 0)) {
             return gpiSendServerBuddyMessage(h, id, b, (const char *)t);
