@@ -45,7 +45,7 @@ struct NpcActionCtrl {
     BOOL requestTakeItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2);
     BOOL requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2);
     BOOL requestPlayAnim(s32 a, s32 b, u32 c, u16 s0, u16 s1);
-    void requestStand(u32 a, u16 b);
+    BOOL requestStand(u32 a, u16 b);
     BOOL requestEmotion(s32 a, u8 b, u16 c);
     BOOL requestAct07(s32 a, s32 b, s32 c, s32 d, u16 e);
     BOOL requestAction(u32 a, s32 b, s32 c, s32 s0, s16 s1, s16 s2, s32 s3, s32 s4, u16 s5, u16 s6);

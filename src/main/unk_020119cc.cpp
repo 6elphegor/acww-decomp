@@ -3892,9 +3892,9 @@ BOOL NpcActionCtrl::requestEmotion(s32 a, u8 b, u16 c) {
     return r;
 }
 
-void NpcActionCtrl::requestStand(u32 a, u16 b) {
+BOOL NpcActionCtrl::requestStand(u32 a, u16 b) {
     using namespace nN;
-    requestAction(0, a, 0, 0, 0, 0, 0, 0, b, 0);
+    return requestAction(0, a, 0, 0, 0, 0, 0, 0, b, 0);
 }
 
 BOOL NpcActionCtrl::requestPlayAnim(s32 a, s32 b, u32 c, u16 s0, u16 s1) {
