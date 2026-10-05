@@ -7,3 +7,10 @@ int atexit(void (*func)(void)) {
     (void)func;
     return 0;
 }
+
+// Called through the vtable slot of a pure virtual function (never, unless an object is used during its own
+// construction or destruction)
+void Fatal_Trap(void);
+void __cxa_pure_virtual(void) {
+    Fatal_Trap();
+}

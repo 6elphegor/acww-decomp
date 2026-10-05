@@ -125,6 +125,10 @@ def defined_symbols(nm: str, objects: list[str]) -> set[str]:
 # ATTRIBUTE_ALIGN(32); the decompiled declarations don't say so (the matching build places every object at its
 # original address anyway), and code such as CTRDGi_SendtoPxi passes such addresses in 32-byte units.
 ALIGNED_SECTIONS: dict[str, list[str]] = {}
+# Per object and group (data/bss/rodata): its per-variable sections with the variables' original addresses, in that
+# order. Variables the original has at 32-byte aligned addresses are aligned again: NitroSDK aligns DMA,
+# cache-maintained and PXI buffers with ATTRIBUTE_ALIGN(32).
+ORDERED_SECTIONS: dict[str, dict[str, list[tuple[str, int]]]] = {}
 # Gap objects (bytes no source file owns yet, delinked from the original): original start address modulo 32
 GAP_PHASE: dict[str, int] = {}
 
@@ -154,9 +158,12 @@ def inputs(objs: list[str], group: str, keep: bool = False) -> list[str]:
             phase = GAP_PHASE[o]
             lines.append(f"        . = ALIGN(32) + {phase:#x};" if phase else "        . = ALIGN(32);")
         if group in ("data", "bss", "rodata"):
-            for sec in ALIGNED_SECTIONS.get(o, ()):
-                if sec.startswith(f".{group}.") or (group == "rodata" and sec.startswith(".rodata.")):
-                    lines.append(f'        . = ALIGN(32); "{o}"({sec})')
+            # the object's variables in their original address order: code that reaches one variable from another
+            # (a record split over two variables, a table indexed past its declared end) keeps working as long as
+            # the variables have their original sizes
+            for sec, addr in ORDERED_SECTIONS.get(o, {}).get(group, ()):
+                align = "ALIGN(32)" if addr % 32 == 0 else None
+                lines.append(f'        {". = " + align + "; " if align else ""}"{o}"({sec})')
         lines.append(f'        "{o}"({pats})')
     return lines
 
@@ -193,10 +200,30 @@ def main():
             if len(parts) == 3 and parts[1] in "bBdDrR" and parts[2] in all_symbol_addrs:
                 GAP_PHASE[obj] = (all_symbol_addrs[parts[2]] - int(parts[0], 16)) % 32
                 break
+    module_symbols = {}
+    module_dirs = {"ARM9": args.config, "ITCM": args.config / "itcm", "DTCM": args.config / "dtcm",
+                   "AUTOLOAD_2": args.config / "autoload_2", "AUTOLOAD_3": args.config / "autoload_3"}
+    for o in config["overlays"]:
+        module_dirs[f"OV{o['id']:03}"] = args.config / "overlays" / f"ov{o['id']:03}"
+    for mod, d in module_dirs.items():
+        if (d / "symbols.txt").is_file():
+            module_symbols[mod] = {name: addr for name, kind, addr in read_symbols(d / "symbols.txt")
+                                   if kind.startswith(("data", "bss"))}
     for obj, secs in object_sections(args.nm.replace("-nm", "-objdump"), objects).items():
-        picked = [s for s in secs if s.split(".", 2)[-1] in aligned_names and s.startswith((".bss.", ".data.", ".rodata."))]
-        if picked:
-            ALIGNED_SECTIONS[obj] = picked
+        mod = object_module(obj)
+        tables = [module_symbols.get(mod, {}), module_symbols.get("AUTOLOAD_3", {})]
+        groups = {}
+        for s in secs:
+            for group, prefix in (("bss", ".bss."), ("data", ".data."), ("rodata", ".rodata.")):
+                if s.startswith(prefix):
+                    name = s[len(prefix):]
+                    addr = next((tb[name] for tb in tables if name in tb), None)
+                    if addr is not None:
+                        groups.setdefault(group, []).append((s, addr))
+        for g in groups.values():
+            g.sort(key=lambda e: e[1])
+        if groups:
+            ORDERED_SECTIONS[obj] = groups
 
     modules = {"ARM9": args.config / config["main_module"]["delinks"]}
     for a in config["autoloads"]:
