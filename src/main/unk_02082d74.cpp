@@ -402,8 +402,8 @@ s32 VillagerState_SetMoodTimer(void *p, s32 v);
 s32 VillagerTrend_TickIdle();
 s32 SaveVillagers_UpdatePlans(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
-s32 _ZN12VillagerData13getVillagerIdEv();
-s32 _ZN10VillagerId7isValidEv();
+void *_ZN12VillagerData13getVillagerIdEv(void *p);
+s32 _ZN10VillagerId7isValidEv(void *p);
 void *Villager_GetState(void *p);
 s32 NpcRegistry_FindVillagerByHandle(u16 *p);
 s32 VillagerState_GetMood(void *p);
@@ -447,7 +447,7 @@ extern u8 data_021ed315[];
 extern u8 sDateVisitorTable[];
 extern u8 sDateVisitorChecks[];
 extern u32 sDateVisitorTableCount;
-void _ZN21NpcSpawnerOverlayView21releaseVisitorOverlayEv();
+void _ZN21NpcSpawnerOverlayView21releaseVisitorOverlayEv(void *self);
 void VisitorSchedule_Clear(void *p);
 void VillagerStates_ClearFleaVillager();
 s32 Scene_InTown();
@@ -499,9 +499,9 @@ s32 SaveVillagers_FindIndex(void *p, void *q);
 s32 SaveVillagers_IsValidIndex(s32 v);
 void NetBuf_UnpackPair20(void *a, void *b, void *c);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-s32 SaveVillagers_Find(void *p, void *q);
-s32 Villager_GetState();
-s32 VillagerState_ResetRole();
+void *SaveVillagers_Find(void *p, void *q);
+void *Villager_GetState(void *p);
+void VillagerState_ResetRole(void *e);
 void SaveVillagers_PickFleaMarketBuyerNow(void *p);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 s32 Scene_GetVillagerHouse();
@@ -971,9 +971,9 @@ extern "C" void NpcSpawner_SpawnPlayerHouseVisitor(void *a)
                         }
                     } else {
                         F4::HouseVisitor_ClearPresent();
-                        if (F4::SaveVillagers_Find(F4::gSaveVillagers, r7)) {
-                            F4::Villager_GetState();
-                            F4::VillagerState_ResetRole();
+                        void *f = F4::SaveVillagers_Find(F4::gSaveVillagers, r7);
+                        if (f) {
+                            F4::VillagerState_ResetRole(F4::Villager_GetState(f));
                         }
                     }
                 }
@@ -1085,7 +1085,7 @@ BOOL NpcSpawner::onCreate()
 
 BOOL NpcSpawner::onDelete()
 {
-    F4::_ZN21NpcSpawnerOverlayView21releaseVisitorOverlayEv();
+    F4::_ZN21NpcSpawnerOverlayView21releaseVisitorOverlayEv(this);
     F4::VisitorSchedule_Clear(F4::sVisitorSchedule);
     F4::VillagerStates_ClearFleaVillager();
     if (F4::Scene_InTown()) {
@@ -1122,8 +1122,7 @@ BOOL NpcSpawner::onExecute()
             for (i = 0; i < 8; i++) {
                 a = F3::SaveVillagers_Get(g, i);
                 if (a) {
-                    F3::_ZN12VillagerData13getVillagerIdEv();
-                    if (F3::_ZN10VillagerId7isValidEv()) {
+                    if (F3::_ZN10VillagerId7isValidEv(F3::_ZN12VillagerData13getVillagerIdEv(a))) {
                         b = F3::Villager_GetState(a);
                         if (b) {
                             id = (i & 0xfff) | 0xe000;

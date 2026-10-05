@@ -477,8 +477,8 @@ void _ZN13VillagerRoute8planStepEP7VecFx32(void *self, VecFx32 *p);
 void _ZN13VillagerRoute14clearJunctionsEv(void *self);
 s32 _ZN13VillagerRoute8firstDirEi(void *self, s32 mask);
 s32 _ZN13VillagerRoute9isArrivedEP7VecFx32(void *self, VecFx32 *p);
-s32 _ZN13VillagerRoute16pickAdjacentUnitEP7VecFx32P8BlockMap(void *self);
-void _ZN13VillagerRoute16checkUnitChangedEj(void *self);
+s32 _ZN13VillagerRoute16pickAdjacentUnitEP7VecFx32P8BlockMap(void *self, VecFx32 *v, BlockMap *o);
+void _ZN13VillagerRoute16checkUnitChangedEj(void *self, u32 v);
 void _ZN13VillagerRoute13markUnitUnsetEv(void *self);
 void *_ZN16NpcResHandleView16getHeldItemModelEv(void *);
 s32 HeldItemModel_PlayAnim(void *, u32, u32, u32);
@@ -569,7 +569,7 @@ extern "C" {
 void _ZN13VillagerRoute8planStepEP7VecFx32(void *self, u32 v);
 void _ZN13VillagerRoute14clearJunctionsEv(void *self);
 void _ZN11NpcTalkCtrl7endTalkEP8NpcActor(void *self, NpcActor* p);
-void _ZN11NpcTalkCtrl16startTalkMessageEP8NpcActor(void *self);
+void _ZN11NpcTalkCtrl16startTalkMessageEP8NpcActor(void *self, NpcActor *ctx);
 void _ZN11NpcTalkCtrl18updateSpeakerMouthEP8NpcActor(void *self, NpcActor* p);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN13NpcActionCtrl16requestTalkingOnEv(void *self);
@@ -7725,7 +7725,7 @@ void NpcTalkCtrl::setupState1(NpcActor* p) {
 
 void NpcTalkCtrl::state1Step0(NpcActor* p) {
     using namespace nD;
-    nD::_ZN11NpcTalkCtrl16startTalkMessageEP8NpcActor(this);
+    nD::_ZN11NpcTalkCtrl16startTalkMessageEP8NpcActor(this, p);
     step = 1;
 }
 
@@ -8613,7 +8613,7 @@ void VillagerRoute::planStep(VecFx32 *pos) {
 
 BOOL VillagerRoute::followPathDir(VecFx32 *p, Vec2 *lim, BlockMap *w) {
     using namespace nB;
-    nB::_ZN13VillagerRoute16checkUnitChangedEj(this);
+    nB::_ZN13VillagerRoute16checkUnitChangedEj(this, (u32)p);
     if ((u32)approachDir < 4) {
         Vec2 *tbl = (Vec2 *)sRouteDirs;
         Vec2 *e = &tbl[approachDir];
@@ -8664,7 +8664,7 @@ BOOL VillagerRoute::stepFollowPath(VecFx32 *p) {
 
 BOOL VillagerRoute::advanceOnPath(VecFx32 *p, BlockMap *w) {
     using namespace nB;
-    nB::_ZN13VillagerRoute16checkUnitChangedEj(this);
+    nB::_ZN13VillagerRoute16checkUnitChangedEj(this, (u32)p);
     s32 flag = pathDir;
     if (flag != 0) {
         s32 k = nB::_ZN13VillagerRoute8firstDirEi(this, flag);
@@ -8710,7 +8710,7 @@ BOOL VillagerRoute::stepAlongPath(VecFx32 *p) {
 
 BOOL VillagerRoute::pickAdjacent(VecFx32 *p, BlockMap *w) {
     using namespace nB;
-    nB::_ZN13VillagerRoute16pickAdjacentUnitEP7VecFx32P8BlockMap(this);
+    nB::_ZN13VillagerRoute16pickAdjacentUnitEP7VecFx32P8BlockMap(this, p, w);
     return FALSE;
 }
 
