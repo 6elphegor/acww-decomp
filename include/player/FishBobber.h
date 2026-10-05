@@ -17,7 +17,7 @@ public:
     void setTargetPos(VecFx32 *v);
     void startCatchLift();
     void endCatch();
-    void isCatchLanded();
+    BOOL isCatchLanded();
     void nudge();
     BOOL checkReelResult();
     BOOL tryHook();

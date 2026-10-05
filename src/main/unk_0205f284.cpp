@@ -37,7 +37,7 @@ void GroundInfo_Destruct(GroundInfoBase *p);
 BOOL FishShadow_FleeFromPlayer(void *p);
 void FishCatch_StartLift(void *p, s32 a);
 void FishCatch_EndForShadow(void *p);
-void FishCatch_IsLandedForShadow(void *p);
+BOOL FishCatch_IsLandedForShadow(void *p);
 BOOL FishShadow_CheckReelResult(void *p);
 BOOL FishShadow_TryHook(void *p);
 void *NNS_G3dGetTex(void *p);
@@ -438,9 +438,9 @@ void FishBobber::nudge()
     GroundInfo_Destruct(&buf);
 }
 
-void FishBobber::isCatchLanded()
+BOOL FishBobber::isCatchLanded()
 {
-    FishCatch_IsLandedForShadow(fish);
+    return FishCatch_IsLandedForShadow(fish);
 }
 
 void FishBobber::endCatch()

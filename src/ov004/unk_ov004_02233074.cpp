@@ -260,7 +260,7 @@ public:
     FtrActorHeap();
     ~FtrActorHeap();
     void free(void *p);
-    void alloc();
+    void *alloc();
     void destroy();
     BOOL create(s32 n);
     void reset();
@@ -290,7 +290,7 @@ public:
     void tryInit();
     void *destroy();
     void reset();
-    void getList();
+    u8 *getList();
     u32 checkInitialized();
     u32 isInitialized();
 };
@@ -1032,7 +1032,8 @@ u32 FtrSoundList::checkInitialized() {
 }
 
 // @0x2235990 unk_02235984.cpp
-void FtrSoundList::getList() {
+u8 *FtrSoundList::getList() {
+    return posList;
 }
 
 // @0x223598c unk_02235984.cpp
@@ -1135,8 +1136,8 @@ void FtrActorHeap::destroy() {
 }
 
 // @0x2235860 unk_022350c8.cpp
-void FtrActorHeap::alloc() {
-    Heap_Alloc((void *)heap, 0x8d6);
+void *FtrActorHeap::alloc() {
+    return Heap_Alloc((void *)heap, 0x8d6);
 }
 
 // @0x2235854 unk_022350c8.cpp

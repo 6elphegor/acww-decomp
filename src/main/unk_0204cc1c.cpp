@@ -133,14 +133,14 @@ public:
     void free(s32 heap);
     void clear();
     s32 clearPlantFlag(s32 a, s32 b);
-    void getWalkLinksAtPos(void *a);
+    s32 getWalkLinksAtPos(void *a);
     s32 getWalkLinks(s32 a, s32 b);
     s32 getPlantFlag(s32 a, s32 b);
     s32 getDigKind(s32 a, s32 b);
     s32 isShore(s32 a, s32 b);
     s32 isGrassSurface(s32 a, s32 b);
     s32 isWalkable(s32 a, s32 b);
-    void canPlaceItemAtBlockUnit(s32 a, s32 b, s32 c, s32 d);
+    s32 canPlaceItemAtBlockUnit(s32 a, s32 b, s32 c, s32 d);
     s32 canPlaceItem(s32 a, s32 b);
 };
 
@@ -951,10 +951,10 @@ s32 BlockMap::canPlaceItem(s32 a, s32 b) {
     return r; 
 }
 
-void BlockMap::canPlaceItemAtBlockUnit(s32 a, s32 b, s32 c, s32 d) {
+s32 BlockMap::canPlaceItemAtBlockUnit(s32 a, s32 b, s32 c, s32 d) {
     s32 x = 0, y = 0;
     FieldUnit_FromBlockUnit(&x, &y, a, b, c, d);
-    canPlaceItem(x, y);
+    return canPlaceItem(x, y);
 }
 
 s32 BlockMap::isWalkable(s32 a, s32 b) { 
@@ -999,10 +999,10 @@ s32 BlockMap::getWalkLinks(s32 a, s32 b) {
     return r; 
 }
 
-void BlockMap::getWalkLinksAtPos(void *a) {
+s32 BlockMap::getWalkLinksAtPos(void *a) {
     s32 x = 0, y = 0;
     Ns_0204debc::FieldPos_ToUnit(&x, &y, a);
-    getWalkLinks(x, y);
+    return getWalkLinks(x, y);
 }
 
 s32 BlockMap::clearPlantFlag(s32 a, s32 b) { 
