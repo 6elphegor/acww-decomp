@@ -1200,7 +1200,6 @@ s32 PlayerActor_GetTan(PlayerActor *o);
 BOOL _ZN11PlayerActor16isGuestInSessionEv(PlayerActor *o);
 Unk_0200f17c_Date *PlayerSession_GetLastPlayDate();
 void PlayerActor_GetPlayerData(void *o);
-Unk_0200f17c_Date _ZN10PlayerData15getLastPlayDateEv();
 void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 void DateTime_Compare(void *a, void *b, s32 n);

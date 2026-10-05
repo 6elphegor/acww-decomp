@@ -163,6 +163,10 @@ extern u8 data_020d477c[];
 extern u8 data_020d4784[];
 extern u8 data_020d478c[];
 extern u8 data_020d467c[];
+#ifdef MODERN
+// The sequence table at data_020d467c spans several arrays (src/main/unk_020d467c.cpp)
+extern void *const gSpriteSeqTable[45];
+#endif
 extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
@@ -463,7 +467,11 @@ void HudClock::enterAppearing() {
     state = 1;
     _ZN14HudClockLabels10resetSlideEv(this);
     s32 i = altLayout != 0 ? 0x29 : 4;
+#ifdef MODERN
+    anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[i]);
+#else
     anim.setSeq((SpriteAnimSeq *)((u8 *)data_020d467c + (i << 3)));
+#endif
     anim.setPlayOnce(1);
     anim.restart();
     createLabels();
@@ -489,7 +497,11 @@ void HudClock::updateShown() {
 void HudClock::enterHiding() {
     state = 3;
     s32 i = altLayout != 0 ? 0x2a : 5;
+#ifdef MODERN
+    anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[i]);
+#else
     anim.setSeq((SpriteAnimSeq *)((u8 *)data_020d467c + (i << 3)));
+#endif
     anim.setPlayOnce(1);
     anim.restart();
 }
@@ -986,7 +998,11 @@ void HudCountdown::enterAppearing() {
     _ZN18HudCountdownLabels10resetSlideEv(this);
     s32 i;
     if (altLayout != 0) i = 0x2b; else i = 0x26;
+#ifdef MODERN
+    anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[i]);
+#else
     anim.setSeq((SpriteAnimSeq *)(data_020d467c + i * 8));
+#endif
     anim.setPlayOnce(1);
     anim.restart();
     _ZN18HudCountdownLabels12createLabelsEv(this);
@@ -1009,7 +1025,11 @@ void HudCountdown::enterHiding() {
     state = 3;
     s32 i;
     if (altLayout != 0) i = 0x2c; else i = 0x27;
+#ifdef MODERN
+    anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[i]);
+#else
     anim.setSeq((SpriteAnimSeq *)(data_020d467c + i * 8));
+#endif
     anim.setPlayOnce(1);
     anim.restart();
 }
@@ -1498,7 +1518,11 @@ void HudCameraGridStates::enterOpening() {
     s32 i;
     for (i = 0; i < 9; i++) {
         SpriteAnim *o = &cellAnims[i];
+#ifdef MODERN
+        o->setSeq((SpriteAnimSeq *)gSpriteSeqTable[i + 0xe]);
+#else
         o->setSeq((SpriteAnimSeq *)(data_020d467c + (i + 0xe) * 8));
+#endif
         o->setPlayOnce(one);
         o->restart();
     }
@@ -1549,7 +1573,11 @@ void HudCameraGridStates::enterClosing() {
     s32 i;
     for (i = 0; i < 9; i++) {
         SpriteAnim *o = &cellAnims[i];
+#ifdef MODERN
+        o->setSeq((SpriteAnimSeq *)gSpriteSeqTable[i + 0x17]);
+#else
         o->setSeq((SpriteAnimSeq *)(data_020d467c + (i + 0x17) * 8));
+#endif
         o->setPlayOnce(1);
         o->restart();
     }

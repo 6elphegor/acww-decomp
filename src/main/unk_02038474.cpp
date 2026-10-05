@@ -180,6 +180,10 @@ extern "C" {
 extern CommManager *gCommManager;
 extern u16 gPad[];
 extern u8 data_020d467c[];
+#ifdef MODERN
+// The sequence table at data_020d467c spans several arrays (src/main/unk_020d467c.cpp)
+extern void *const gSpriteSeqTable[45];
+#endif
 extern s32 gGfxMainOnTop;
 
 s32 PlayerActor_GetAction(s32 a);
@@ -537,9 +541,15 @@ void ChatBalloon::execClose() {
 }
 
 void ChatBalloon::initSprites() {
+#ifdef MODERN
+    u8 *t = (u8 *)gSpriteSeqTable[textSeqIndex];
+    if (localIndex != 0) {
+        _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&nameAnim, (u8 *)gSpriteSeqTable[nameSeqIndex]);
+#else
     u8 *t = data_020d467c + textSeqIndex * 8;
     if (localIndex != 0) {
         _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&nameAnim, data_020d467c + nameSeqIndex * 8);
+#endif
         _ZN10SpriteAnim11setPlayOnceEi(&nameAnim, 1);
         _ZN10SpriteAnim8setSpeedEi(&nameAnim, 0);
     }
