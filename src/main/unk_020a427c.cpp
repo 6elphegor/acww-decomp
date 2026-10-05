@@ -301,8 +301,8 @@ void NetSession_SetMemberSyncReply(s32 a, s32 b);
 void NetSession_SetSyncKind(s32 a);
 s32 NetSession_GetSyncKind();
 void NetSession_SetActiveSyncKind(s32 a);
-void NetSession_GetActiveSyncKind();
-void NetSession_GetLastSyncSlot();
+s32 NetSession_GetActiveSyncKind();
+s32 NetSession_GetLastSyncSlot();
 void NetSession_SetLastSyncSlot(s32 a);
 void NetArea_SetMoveState(s32 a);
 s32 NetArea_GetMoveState();
@@ -557,12 +557,12 @@ extern "C" void NetSession_SetActiveSyncKind(s32 a) {
     gNetSessionState.setActiveSyncKind(a);
 }
 
-extern "C" void NetSession_GetActiveSyncKind() {
-    gNetSessionState.getActiveSyncKind();
+extern "C" s32 NetSession_GetActiveSyncKind() {
+    return gNetSessionState.getActiveSyncKind();
 }
 
-extern "C" void NetSession_GetLastSyncSlot() {
-    gNetSessionState.getLastSyncSlot();
+extern "C" s32 NetSession_GetLastSyncSlot() {
+    return gNetSessionState.getLastSyncSlot();
 }
 
 extern "C" void NetSession_SetLastSyncSlot(s32 a) {

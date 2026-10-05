@@ -792,7 +792,7 @@ extern "C" SaveData gSaveData;
 }
 
 extern "C" void TownFlagPattern_InitDefault(void *self);
-extern "C" void TownFlagPattern_GetPattern(void);
+extern "C" void *TownFlagPattern_GetPattern(void *p);
 extern "C" void Pattern_CopyFields(PatternCopyView *dst, PatternCopyView *src);
 extern "C" void *PresetPatternBuffer_Get(void);
 extern "C" void PatternTexCache_ClearDirty(void *p);
@@ -836,7 +836,7 @@ extern "C" void TownFlagPattern_InitDefault(void *self) {
         Mem_Free(buf);
     }
 }
-extern "C" void TownFlagPattern_GetPattern(void) {}
+extern "C" void *TownFlagPattern_GetPattern(void *p) { return p; }
 extern "C" void Pattern_CopyFields(PatternCopyView *dst, PatternCopyView *src) {
     dst->a = src->a;
     dst->b = src->b;

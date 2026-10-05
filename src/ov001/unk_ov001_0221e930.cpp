@@ -23,7 +23,7 @@ void WfcSound_MainTask();
 void WfcSound_Stop();
 void WfcSound_SetTrackPitch(s32 a, s32 b);
 void WfcSound_SetVolume(s32 a);
-void WfcSound_Play(s32 a);
+s32 WfcSound_Play(s32 a);
 void WfcSound_Shutdown();
 void WfcSound_Init();
 }
@@ -48,7 +48,7 @@ void WfcSound_Shutdown()
     WfcHeap_FreeAndClear(&sWfcSound);
 }
 
-void WfcSound_Play(s32 a) { NNS_SndArcPlayerStartSeqArc(sWfcSound + 0x90, 0, a); }
+s32 WfcSound_Play(s32 a) { return NNS_SndArcPlayerStartSeqArc(sWfcSound + 0x90, 0, a); }
 
 void WfcSound_SetVolume(s32 a) { NNS_SndPlayerSetVolume(sWfcSound + 0x90, a); }
 

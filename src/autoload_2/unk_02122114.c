@@ -224,10 +224,10 @@ void MBi_CommParentRecvData(void *arg) {
 }
 
 // (send one message byte, then notify code 6)
-void MBi_CommParentSendMsg(u8 a, u32 b) {
+u32 MBi_CommParentSendMsg(u8 a, u32 b) {
     u8 buf = a;
     MBi_MakeParentSendBuffer(&buf, data_0220001c);
-    MBi_BlockHeaderEnd(6, b, data_0220001c);
+    return MBi_BlockHeaderEnd(6, b, data_0220001c);
 }
 // (pick next peer slot round-robin, build aid bitmask, request record, notify code 0xea)
 u32 MBi_CommParentSendDLFileInfo(void) {

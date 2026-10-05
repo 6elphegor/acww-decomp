@@ -140,7 +140,7 @@ void ContestRecord::setKind(u32 v) { kind = v; }
 
 void ContestRecord::setHolderPlayer(Unk_02085810_Base *src) { holderPlayer = *src; VillagerId_Clear(&holderVillager); }
 
-void ContestRecord::getHolderPlayer() {}
+void *ContestRecord::getHolderPlayer() { return this; }
 
 void ContestRecord::setHolderVillager(VillagerId *src) { holderVillager = *src; _ZN8PlayerId5clearEv(this); }
 

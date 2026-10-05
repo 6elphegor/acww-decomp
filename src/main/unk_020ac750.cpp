@@ -2362,7 +2362,7 @@ extern "C" void NookPoints_Init(NookPoints *p) {
     NookPoints_Reset(p);
 }
 
-extern "C" void NookPoints_GetValuePtr(NookPoints *p) {}
+extern "C" u16 *NookPoints_GetValuePtr(NookPoints *p) { return (u16 *)p; }
 
 extern "C" NookPoints *NookPoints_Construct(NookPoints *p) {
     NookPoints_Clear(p);

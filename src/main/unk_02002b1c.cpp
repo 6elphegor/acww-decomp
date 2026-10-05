@@ -221,7 +221,7 @@ void *ProcList_FindById(void *list, u32 id);
 }
 
 extern "C" {
-void GameProc_CreateChild(void *a, void *b, void *c, u32 d);
+void *GameProc_CreateChild(void *a, void *b, void *c, u32 d);
 }
 
 
@@ -376,11 +376,11 @@ void Actor::setSpawnTransform(void *a, void *b) {
     sActorSpawnRot = b;
 }
 
-void Actor::spawn(void *a, void *b, void *c, void *d, void *e) {
+void *Actor::spawn(void *a, void *b, void *c, void *d, void *e) {
     void *t = e;
     if (t == 0) t = gActorDefaultParent;
     setSpawnTransform(c, d);
-    GameProc_CreateChild(a, t, b, 3);
+    return GameProc_CreateChild(a, t, b, 3);
 }
 
 void Actor::setCullParams(s32 a, s32 b, s32 c) {

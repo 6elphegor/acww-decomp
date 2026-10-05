@@ -207,7 +207,7 @@ extern "C" s32 PlayerActor_Spawn(u32 a, u32 b, u32 c, u32 d);
 extern "C" BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n);
 extern "C" u16 PlayerId_GenerateUniqueId(u16 *arr, s32 n);
 extern "C" u16 PlayerId_GenerateRandomId();
-extern "C" void PlayerId_GetTownId();
+extern "C" void *PlayerId_GetTownId(void *p);
 extern "C" s32 PlayerId_FindResidentIndex(void *x);
 
 extern "C" void PlayerSession_RemovePitfallOnClimbOut(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
@@ -353,7 +353,7 @@ void PlayerId::setNameString(MsgString *x)
     buf.copyTo(playerName, 8);
 }
 
-extern "C" void PlayerId_GetTownId() {}
+extern "C" void *PlayerId_GetTownId(void *p) { return p; }
 
 void TownId::setTown(TownId *o) { TownId_Assign(this, o); }
 

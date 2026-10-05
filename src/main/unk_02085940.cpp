@@ -322,7 +322,7 @@ class ShopClosingTime {
 public:
     BOOL isPastClosingTime();
     void setClosingTimeToday();
-    void getTime();
+    ShopClosingTime *getTime();
     void clearClosingTime();
     void destruct();
     void construct();
@@ -530,7 +530,7 @@ void RoostGuestRoll_Destruct();
 void RoostGuestRoll_Construct();
 void GulliverQuest_Destruct();
 void GulliverQuest_Construct();
-void ReddLastSale_GetBuyer();
+void *ReddLastSale_GetBuyer(void *p);
 void TurnipMarket_Destruct();
 void TurnipMarket_Construct();
 void VisitorPos_Destruct();
@@ -559,7 +559,7 @@ void DramaRecord_Construct();
 void PlayerDailyTalkFlags_Destruct();
 void PlayerDailyTalkFlags_Construct();
 void PlayerSpNpcRecord_SendMissingLetter();
-void PlayerSpNpcRecord_GetInsuranceDate();
+void *PlayerSpNpcRecord_GetInsuranceDate(void *p);
 void PlayerSpNpcRecord_InitNop();
 void PlayerSpNpcRecord_Destruct();
 void PlayerSpNpcRecord_Construct();
@@ -803,7 +803,7 @@ void PlayerSpNpcRecord::setFestivalGift() { unk_10_6 = 1; }
 
 void PlayerSpNpcRecord::clearFestivalGift() { unk_10_6 = 0; }
 
-extern "C" void PlayerSpNpcRecord_GetInsuranceDate() {}
+extern "C" void *PlayerSpNpcRecord_GetInsuranceDate(void *p) { return p; }
 
 void PlayerDailyTalkFlags::stampToday() {
     u8 tmp[3];
@@ -1359,7 +1359,7 @@ void ShopClosingTime::clearClosingTime() {
     raw[1] = 0;
 }
 
-void ShopClosingTime::getTime() {}
+ShopClosingTime *ShopClosingTime::getTime() { return this; }
 
 void ShopClosingTime::setClosingTimeToday() {
     Clock_GetDateTime(this);
@@ -1986,7 +1986,7 @@ extern "C" void ReddLastSale_Clear(ReddLastSale *p) {
     p->clear();
 }
 
-extern "C" void ReddLastSale_GetBuyer() {}
+extern "C" void *ReddLastSale_GetBuyer(void *p) { return p; }
 
 void ReddLastSale::setBuyer(const ReddLastSale *o) {
     townId = o->townId;

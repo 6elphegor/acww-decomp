@@ -1527,7 +1527,7 @@ extern "C" s32 PlayerWifiData_HasUserId(void *p) { return Net_HasWifiUserId(p); 
 
 extern "C" s32 PlayerWifiData_IsConfigValid(void *p) { return Net_IsWifiConfigValid(p); }
 
-extern "C" void PlayerWifiData_GetDwcUserData(void) {}
+extern "C" void *PlayerWifiData_GetDwcUserData(void *p) { return p; }
 
 extern "C" u8 *PlayerWifiData_GetOwnFriendData(u8 *p) { return p + 0x40; }
 

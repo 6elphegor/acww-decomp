@@ -917,8 +917,8 @@ void gti2Send(Conn *o, u8 *a, s32 b, s32 mode) {
 } }
 
 namespace N02284b8c { extern "C" {
-void gt2CreateSocket(s32 a, s32 b, s32 c, s32 d, s32 e) {
-    gti2CreateSocket(a, b, c, d, e);
+s32 gt2CreateSocket(s32 a, s32 b, s32 c, s32 d, s32 e) {
+    return gti2CreateSocket(a, b, c, d, e);
 }
 } }
 

@@ -43,7 +43,7 @@ char GSIACHostname[0x40];
 char __GSIACGamename[0x40];
 extern u32 gSslRsaThreadPriority;
 
-void WifiAp_GetLinkLevel();
+s32 WifiAp_GetLinkLevel();
 s32 WifiAp_RequestCleanup();
 s32 WifiAp_GetStatus();
 void *WifiAp_Process();
@@ -79,7 +79,7 @@ s32 DwcInet_UpdateStatus();
 void DwcInet_WaitDisconnect();
 BOOL DwcInet_Disconnect();
 BOOL DwcInet_IsLinkLost();
-void DwcInet_GetLinkLevel();
+s32 DwcInet_GetLinkLevel();
 void DwcNet_SetAllocator(DwcAllocHookFn a, DwcFreeHookFn b);
 void *DwcNet_Alloc(s32 a, s32 b);
 void *DwcNet_AllocAligned(s32 a, s32 b, s32 c);
@@ -237,8 +237,8 @@ BOOL DwcInet_IsLinkLost() {
     return FALSE;
 }
 
-void DwcInet_GetLinkLevel() {
-    WifiAp_GetLinkLevel();
+s32 DwcInet_GetLinkLevel() {
+    return WifiAp_GetLinkLevel();
 }
 
 void DwcNet_SetAllocator(DwcAllocHookFn a, DwcFreeHookFn b) {

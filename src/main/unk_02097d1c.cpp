@@ -306,7 +306,7 @@ u16 *PlayerData::getBed() { return &bed; }
 
 void PlayerData::setBed(u16 *v) { bed = *v; }
 
-void PlayerData::getPatterns() {}
+void *PlayerData::getPatterns() { return this; }
 
 void *PlayerData::getCatalog() { return &catalog; }
 

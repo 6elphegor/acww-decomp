@@ -80,7 +80,7 @@ public:
     void *getDramaRecord();
     void *getNookPoints();
     void *getCatalog();
-    void getPatterns();
+    void *getPatterns();
     void setBed(u16 *v);
     u16 *getBed();
     void setFaceItem(u16 *v);

@@ -195,7 +195,7 @@ extern "C" Letter *FutureLetter_Destruct(Letter *p) {
     return p;
 }
 
-extern "C" void FutureLetter_GetLetter() {}
+extern "C" void *FutureLetter_GetLetter(void *p) { return p; }
 
 u8 *FutureLetter::getDeliveryDate() {
     return &deliveryDay;

@@ -61,7 +61,7 @@ u32 OS_GetLockID(void);
 u32 OS_ReadOwnerOfLockWord(u32 addr);
 u32 OS_TryLockCartridge(u32 id);
 void OS_UnlockCartridge(u32 id);
-void OS_VSNPrintf(char *dst, u32 len, const char *fmt, va_list ap);
+s32 OS_VSNPrintf(char *dst, u32 len, const char *fmt, va_list ap);
 void OS_CreateAlarm(void *alarm);
 void OS_SetAlarm(void *alarm, u32 tick, u32 period, void (*cb)(void *), void *arg);
 void OS_CancelAlarm(void *alarm);
@@ -69,7 +69,7 @@ void MIi_CpuClear32(u32 data, void *dest, u32 size);
 
 void OS_WakeupThread(OSThreadQueue *q);
 void *OS_SetSwitchThreadCallback(void (*cb)(OSThread *, OSThread *));
-void OS_VSPrintf(char *dst, const char *fmt, va_list ap);
+s32 OS_VSPrintf(char *dst, const char *fmt, va_list ap);
 void OS_SleepThread(OSThreadQueue *q);
 void OSi_RescheduleThread(void);
 void OS_WakeupThreadDirect(OSThread *t);
@@ -476,24 +476,28 @@ void string_put_string(StrBuf *p, const char *s, s32 n) {
 }
 
 // OS_SPrintf
-void OS_SPrintf(char *dst, const char *fmt, ...) {
+s32 OS_SPrintf(char *dst, const char *fmt, ...) {
+    s32 r;
     va_list va;
     va_start(va, fmt);
-    OS_VSPrintf(dst, fmt, va);
+    r = OS_VSPrintf(dst, fmt, va);
     va_end(va);
+    return r;
 }
 
 // OS_VSPrintf
-void OS_VSPrintf(char *dst, const char *fmt, va_list ap) {
-    OS_VSNPrintf(dst, 0x7fffffff, fmt, ap);
+s32 OS_VSPrintf(char *dst, const char *fmt, va_list ap) {
+    return OS_VSNPrintf(dst, 0x7fffffff, fmt, ap);
 }
 
 // OS_SNPrintf
-void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...) {
+s32 OS_SNPrintf(char *dst, u32 len, const char *fmt, ...) {
+    s32 r;
     va_list va;
     va_start(va, fmt);
-    OS_VSNPrintf(dst, len, fmt, va);
+    r = OS_VSNPrintf(dst, len, fmt, va);
     va_end(va);
+    return r;
 }
 
 // ---- file-scope objects (autoload_3 .bss 0x021fcc14-0x021fce84; this definition order gives the original order after mwcc's size
