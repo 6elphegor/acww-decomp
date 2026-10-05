@@ -24,6 +24,7 @@ u32 OS_RestoreInterrupts(u32 state) { u32 old = sIrqDisabled; sIrqDisabled = sta
 u32 OS_DisableInterrupts_IrqAndFiq(void) { return OS_DisableInterrupts(); }
 u32 OS_RestoreInterrupts_IrqAndFiq(u32 state) { return OS_RestoreInterrupts(state); }
 u32 OS_GetProcMode(void) { return sInIrq ? 0x12 : 0x1f; }
+u32 host_irq_state(void) { return sIrqDisabled | sInIrq; }
 
 // ---- dispatch (OS_IrqHandler + OS_IrqHandler_ThreadSwitch)
 extern void (*data_027e0000[])(void);   // OS_IRQTable
@@ -79,7 +80,8 @@ void OSi_ExceptionHandler(void) { host_fatal("OSi_ExceptionHandler"); }
 // ---- thread contexts: one ucontext per OSContext, in a side table
 #define MAX_CTX 64
 #define HOST_STACK (512 * 1024)
-typedef struct { void *key; ucontext_t uc; u8 *stack; u32 pc; int fresh; } HostCtx;
+// irq: the thread's CPSR I bit while it isn't running (each thread has its own, as on the DS)
+typedef struct { void *key; ucontext_t uc; u8 *stack; u32 pc; int fresh; u32 irq; } HostCtx;
 static HostCtx sCtx[MAX_CTX];
 static void *sSaving;  // the thread whose OS_SaveContext is pending
 
@@ -118,6 +120,7 @@ void OS_LoadContext(void *t) {
     HostCtx *next = ctx_of(t);
     if (next->fresh) {
         next->fresh = 0;
+        next->irq = ((u32 *)t)[0] & 0x80;  // OSContext.cpsr
         if (!next->stack) next->stack = malloc(HOST_STACK);
         getcontext(&next->uc);
         next->uc.uc_stack.ss_sp = next->stack;
@@ -128,9 +131,13 @@ void OS_LoadContext(void *t) {
     if (sSaving) {
         HostCtx *cur = ctx_of(sSaving);
         sSaving = 0;
+        cur->irq = sIrqDisabled;
+        sIrqDisabled = next->irq;
         swapcontext(&cur->uc, &next->uc);
-        return;  // resumed: the caller returns as if OS_SaveContext had returned 1
+        return;  // resumed (sIrqDisabled was set by whoever switched back): the caller returns as if OS_SaveContext
+                 // had returned 1
     }
+    sIrqDisabled = next->irq;
     setcontext(&next->uc);
     host_fatal("setcontext failed");
 }

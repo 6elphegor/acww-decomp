@@ -19,6 +19,9 @@ import ninja_syntax
 parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 parser.add_argument("--sysroot", default=os.path.expanduser("~/acww/toolchains/i386-sysroot"))
 parser.add_argument("--cc", default="gcc")
+parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"),
+                    help="melonDS source tree patched with tools/host/melonds.patch and built for 32-bit x86 in build-core32 "
+                         "(the display renderer)")
 parser.add_argument("version", nargs="?", default="usa")
 args = parser.parse_args()
 
@@ -38,7 +41,12 @@ CXX_FLAGS = ("-std=gnu++14 -fno-exceptions -fno-rtti -fno-threadsafe-statics -fn
 HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
               f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude")
 LINK_FLAGS = (f"-m32 -no-pie --sysroot={R} -B{G} -L{G} -Wl,-dynamic-linker,{R}/usr/lib32/ld-linux.so.2 "
-              f"-Wl,-rpath,{R}/usr/lib32 -Wl,--allow-multiple-definition")
+              f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 -Wl,--allow-multiple-definition")
+M = args.melonds
+HOST_CXX_FLAGS = (f"-m32 -fno-pie -O1 -g -std=c++17 --sysroot={R} -isystem {R}/usr/include/x86_64-linux-gnu/c++/15/32 "
+                  f"-idirafter {R}/usr/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include "
+                  f"-I{M}/src -I{M}/build-core32/src -DHOST")
+MELON_LIBS = f"{M}/build-core32/src/libcore.a {M}/build-core32/src/teakra/src/libteakra.a"
 
 MWCC_FLAG_MAP = {("-char", "unsigned"): "-funsigned-char"}
 
@@ -73,16 +81,19 @@ def main():
         n.rule("hostcc", f"{args.cc} {HOST_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
         n.rule("provides", "python3 tools/host_provides.py $in $out", description="PROVIDES $out")
-        n.rule("link", f"{args.cc} {LINK_FLAGS} -o $out @$objects $provides -lm -lc -lgcc", description="LINK $out")
+        n.rule("hostcxx", f"g++ {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
+               description="HOSTCXX $in")
+        n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects $provides {MELON_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
+               description="LINK $out")
         objs = []
         for s in sources(Path("src"), (".c", ".cpp")):
             o = str(build / s.with_suffix(".o"))
             fl = source_flags(s)
             n.build(o, "cxx" if s.suffix == ".cpp" else "cc", str(s), variables={"flags": " ".join(fl)} if fl else None)
             objs.append(o)
-        for s in sources(Path("modern/host"), (".c",)):
+        for s in sources(Path("modern/host"), (".c", ".cpp")):
             o = str(build / s.with_suffix(".o"))
-            n.build(o, "hostcc", str(s))
+            n.build(o, "hostcxx" if s.suffix == ".cpp" else "hostcc", str(s))
             objs.append(o)
         n.rule("gaps", "python3 tools/host_gaps.py $in $out", description="GAPS $out")
         gaps_c = str(build / "gaps.c")
@@ -113,7 +124,7 @@ def main():
         n.rule("partial", "ld -m elf_i386 -r -o $out @$list @$wrap", description="LD -r $out")
         n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), str(build / "wrap.txt")],
                 variables={"list": str(game_list), "wrap": str(build / "wrap.txt")})
-        libs = f"{R}/usr/lib32/libc.so.6 {R}/usr/lib32/libm.so.6 {G}/libgcc.a"
+        libs = f"{R}/usr/lib32/libc.so.6 {R}/usr/lib32/libm.so.6 {G}/libgcc.a {R}/usr/lib32/libstdc++.so.6"
         n.rule("localize", f"python3 tools/host_localize.py nm objcopy $in $out {libs}", description="LOCALIZE $out")
         game_o = str(build / "game.o")
         n.build(game_o, "localize", str(build / "game_all.o"), implicit=["tools/host_localize.py"])

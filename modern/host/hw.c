@@ -10,6 +10,7 @@
 // progress) and jumps to the next event when the game halts or waits.
 
 #define _GNU_SOURCE
+#include <execinfo.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,11 +23,23 @@
 #include "host.h"
 
 #define IO0 0x04000000u
+#define IOB 0x04001000u  // engine B's display registers
 #define IO1 0x04100000u
 #define PAGE 0x1000u
 
-static u8 *sIo0, *sIo1;  // the runtime's views
-u8 *host_io(u32 a) { return (a >= IO1 ? sIo1 + (a - IO1) : sIo0 + (a - IO0)); }
+static u8 *sIo0, *sIoB, *sIo1;  // the runtime's views
+u8 *host_io(u32 a) { return a >= IO1 ? sIo1 + (a - IO1) : a >= IOB ? sIoB + (a - IOB) : sIo0 + (a - IO0); }
+static int is_io(u32 a) { return (a >= IO0 && a < IOB + PAGE) || (a >= IO1 && a < IO1 + PAGE); }
+
+// melon.cpp
+void melon_write8(u32 addr, u8 v);
+void melon_write16(u32 addr, u16 v);
+void melon_write32(u32 addr, u32 v);
+u32 melon_read32(u32 addr);
+void melon_frame(void);
+const u32 *melon_screen(int screen);
+// vram.c
+void host_vram_control(u32 addr, u8 value);
 #define R16(a) (*(u16 *)host_io(a))
 #define R32(a) (*(u32 *)host_io(a))
 
@@ -75,6 +88,31 @@ static void host_pace_frame(void) {
     while (clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &sNextFrame, 0) == EINTR) {}  // SIGALRM interrupts it
 }
 
+// ---- screenshots: ACWW_SHOT="frame:path.ppm;..." (both screens, 256x384)
+static void host_screenshot(void) {
+    static const char *spec;
+    if (!spec) spec = getenv("ACWW_SHOT") ? getenv("ACWW_SHOT") : "";
+    u32 f = (u32)host_frame();
+    for (const char *p = spec; *p;) {
+        unsigned fr; char path[512];
+        if (sscanf(p, "%u:%511[^;]", &fr, path) == 2 && fr == f) {
+            FILE *o = fopen(path, "wb");
+            if (o) {
+                fprintf(o, "P6\n256 384\n255\n");
+                for (int s = 0; s < 2; s++) {
+                    const u32 *px = melon_screen(s);
+                    for (int i = 0; i < 256 * 192; i++) { u8 rgb[3] = {px[i] >> 16, px[i] >> 8, px[i]}; fwrite(rgb, 1, 3, o); }
+                }
+                fclose(o);
+            }
+        }
+        p = strchr(p, ';');
+        if (!p) break;
+        p++;
+    }
+}
+
+u32 host_irq_state(void);
 // ---- events
 static u64 sNextVblank = 192u * LINE_CYCLES;
 static void run_events(void);
@@ -97,6 +135,17 @@ static void run_events(void) {
         if (st & 8) host_irq_raise(1);    // VBlank
         if (st & 16) host_irq_raise(2);   // HBlank (once per frame: the per-line effects aren't emulated)
         dma_on_vblank();
+        melon_frame();
+        host_screenshot();
+        if (getenv("ACWW_STATS") && host_frame() % 300 == 0) {
+            extern u8 *host_vram_bank(int i);
+            extern u32 host_vram_bank_size(int i);
+            int pal = 0; for (int i = 0; i < 0x800; i++) pal += ((u8 *)0x05000000)[i] != 0;
+            fprintf(stderr, "stats: frame %llu dispcnt %08x/%08x bright %04x/%04x pal %d banks", (unsigned long long)host_frame(),
+                    R32(0x04000000), R32(0x04001000), R16(0x0400006c), R16(0x0400106c), pal);
+            for (int b = 0; b < 9; b++) { int nz = 0; u8 *p = host_vram_bank(b); for (u32 i = 0; i < host_vram_bank_size(b); i++) nz += p[i] != 0; fprintf(stderr, " %d", nz); }
+            fprintf(stderr, " vramcnt %08x %08x ime %x ie %08x if %08x cpu %x\n", R32(0x04000240), R32(0x04000244), R32(0x04000208), R32(0x04000210), sIF, host_irq_state());
+        }
         host_pace_frame();
         extern void pxi7_vblank(void);
         pxi7_vblank();
@@ -158,9 +207,9 @@ static void dma_run(int ch) {
     for (u32 i = 0; i < n; i++) {
         u32 v;
         if (src == IO1 + 0x10) v = card_read_data();
-        else if ((src >= IO0 && src < IO0 + PAGE) || (src >= IO1 && src < IO1 + PAGE)) v = w == 4 ? R32(src) : R16(src);
+        else if (is_io(src)) v = w == 4 ? R32(src) : R16(src);
         else v = w == 4 ? *(volatile u32 *)(uintptr_t)src : *(volatile u16 *)(uintptr_t)src;
-        if (dst >= IO0 && dst < IO0 + PAGE) {
+        if (is_io(dst)) {
             if (dst >= 0x04000400 && dst < 0x04000700) gx_fifo_write(dst, v);
             else if (w == 4) R32(dst) = v; else R16(dst) = (u16)v;
         } else if (w == 4) *(volatile u32 *)(uintptr_t)dst = v;
@@ -193,8 +242,7 @@ void host_card_dma(void) {
 }
 
 // ---- the 3D engine: for now a sink; GXSTAT says idle with an empty FIFO
-static u64 sGxWrites;
-void gx_fifo_write(u32 addr, u32 value) { (void)addr; (void)value; sGxWrites++; }
+void gx_fifo_write(u32 addr, u32 value) { melon_write32(addr, value); }
 
 // ---- register reads and writes
 static void io_read(u32 a) {
@@ -207,7 +255,7 @@ static void io_read(u32 a) {
         R16(w) = tm_counter(&sTm[i]);
     } else if (w == 0x04000130) R16(w) = 0x3ff;           // KEYINPUT: nothing pressed
     else if (w == 0x04000214) R32(w) = sIF;
-    else if (w == 0x04000600) R32(w) = 0x06000002;        // GXSTAT: FIFO empty, not busy
+    else if ((w >= 0x04000600 && w < 0x040006a4) || w == 0x04000320) R32(w) = melon_read32(w);  // 3D status, results
     else if (w == 0x04000184 || w == 0x04000180 || w == IO1) {
         extern void pxi7_prepare_read(u32 a);
         pxi7_prepare_read(w);
@@ -216,9 +264,30 @@ static void io_read(u32 a) {
     } else if (w == IO1 + 0x10) R32(w) = card_read_data();
 }
 
+// display registers for the renderer: the 3D command ports in full on every write, the others as changed halves
+static void forward_display(u32 w, u32 old) {
+    u32 v = R32(w);
+    if ((w >= 0x04000400 && w < 0x04000600) || w == 0x04000600) { melon_write32(w, v); return; }
+    if (w >= 0x04000240 && w < 0x0400024c) {
+        for (int i = 0; i < 4; i++) {
+            u8 b = v >> (8 * i), o = old >> (8 * i);
+            if (b != o) { host_vram_control(w + i, b); melon_write8(w + i, b); }
+        }
+        return;
+    }
+    for (int h = 0; h < 2; h++) {
+        u16 n = v >> (16 * h), o = old >> (16 * h);
+        if (n != o) melon_write16(w + 2 * h, n);
+    }
+}
+static int is_display(u32 w) {
+    return (w < 0x04000070 && w != 0x04000004) || (w >= IOB && w < IOB + 0x70) || (w >= 0x04000240 && w < 0x0400024c) ||
+           w == 0x04000304 || (w >= 0x04000320 && w < 0x040006a4);
+}
+
 static void io_write(u32 a, u32 old) {
     u32 w = a & ~3u;
-    if (w >= 0x04000400 && w < 0x04000700 && w != 0x04000600 && w != 0x04000604) { gx_fifo_write(w, R32(w)); return; }
+    if (is_display(w)) { forward_display(w, old); return; }
     switch (w) {
     case 0x04000214: { u32 v = R32(w); sIF &= ~v; R32(w) = sIF; break; }
     case 0x040000b8: dma_control_written(0); break;
@@ -272,7 +341,7 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
     (void)sig;
     ucontext_t *uc = ctx;
     u32 a = (u32)(uintptr_t)si->si_addr;
-    if (!((a >= IO0 && a < IO0 + PAGE) || (a >= IO1 && a < IO1 + PAGE))) {
+    if (!is_io(a)) {
         fprintf(stderr, "host: segfault at %08x, eip %08x, ebp %08x\n", a, (u32)uc->uc_mcontext.gregs[REG_EIP],
                 (u32)uc->uc_mcontext.gregs[REG_EBP]);
         fprintf(stderr, "  [esp] %08x\n", *(u32 *)uc->uc_mcontext.gregs[REG_ESP]);
@@ -320,6 +389,9 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
     fprintf(stderr, "host: interrupted at frame %llu, eip %08x\n", (unsigned long long)host_frame(),
             (u32)uc->uc_mcontext.gregs[REG_EIP]);
     host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
+    void *bt[32];
+    int n = backtrace(bt, 32);
+    backtrace_symbols_fd(bt, n, 2);
     _exit(3);
 }
 
@@ -344,10 +416,10 @@ void host_map_memory(void) {
     map_fixed(0x027ff000, 0x1000);    // shared work area (OS_GetSystemWork)
     map_fixed(0x03000000, 0x10000);   // shared WRAM
     map_fixed(0x05000000, 0x800);     // palettes
-    map_fixed(0x06000000, 0x900000);  // VRAM (all banks' address ranges)
+    map_fixed(0x06000000, 0x900000);  // VRAM: vram.c maps the banks into it
     map_fixed(0x07000000, 0x800);     // OAM
-    map_fixed(0x04001000, 0x1000);    // engine B registers: plain memory
     sIo0 = map_io(IO0);
+    sIoB = map_io(IOB);
     sIo1 = map_io(IO1);
     struct sigaction sa;
     memset(&sa, 0, sizeof sa);

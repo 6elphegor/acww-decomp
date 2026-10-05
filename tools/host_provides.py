@@ -22,6 +22,8 @@ def main():
         t = target.strip('"')
         if re.match(r"^(ARM9|ITCM|DTCM|AUTOLOAD|OV\d+)_", t) or t.startswith(("SDK_", "OVERLAY_")):
             continue
+        if re.match(r'^"?_Z(nw|na|dl|da)', name):
+            continue  # operator new/delete: the host's C++ library has its own (melon.cpp uses them)
         out.append(f"PROVIDE({name} = {target} {off});")
     open(sys.argv[2], "w").write("\n".join(out) + "\n")
 

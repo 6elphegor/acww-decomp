@@ -38,7 +38,9 @@ ABS(SDK_SECTION_ARENA_EX_START, 0x02400000);
 OV(0); OV(1); OV(2); OV(65); OV(66); OV(67); OV(68); OV(69); OV(93); OV(127);
 
 // before the game's static constructors (which may touch DS memory): map it first
-__attribute__((constructor(101))) static void early_init(void) { host_map_memory(); }
+void host_vram_init(void);
+void melon_init(void);
+__attribute__((constructor(101))) static void early_init(void) { host_map_memory(); host_vram_init(); }
 
 int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
@@ -53,6 +55,7 @@ int main(int argc, char **argv) {
     *(volatile u32 *)0x027ffc00 = *(const u32 *)(rom + 0x0c);   // card id stand-in
     *(volatile u16 *)0x027ffc40 = 1;                     // boot type: ROM
     pxi7_init();
+    melon_init();
     NitroStartUp();  // crt0 calls it before the static initialisers; they ran already (host .init_array)
     NitroMain();
     host_fatal("NitroMain returned");
