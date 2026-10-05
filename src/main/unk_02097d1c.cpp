@@ -274,7 +274,7 @@ u32 PlayerData::getFortune() { return hairColorTanFortune.hi; }
 
 void PlayerData::setFortune(u8 v) { hairColorTanFortune.hi = v; }
 
-extern "C" void PlayerData_HasStungFace(void *p) { ((PlayerData *)p)->testFlag(0); }
+extern "C" BOOL PlayerData_HasStungFace(void *p) { return ((PlayerData *)p)->testFlag(0); }
 
 extern "C" void PlayerData_SetStungFace(void *p, u32 flag) {
     if (flag) {

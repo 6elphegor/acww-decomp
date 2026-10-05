@@ -295,7 +295,7 @@ void NetArea_SendMoveTarget();
 void NetSession_SetSyncState(s32 a, s32 b);
 s32 NetSession_GetSyncState(s32 a);
 void NetSession_SetSyncMemberMask(s32 a);
-void NetSession_GetSyncMemberMask();
+u16 NetSession_GetSyncMemberMask();
 void NetSession_SetSyncRequester(s32 a);
 void NetSession_SetMemberSyncReply(s32 a, s32 b);
 void NetSession_SetSyncKind(s32 a);
@@ -533,8 +533,8 @@ extern "C" void NetSession_SetSyncMemberMask(s32 a) {
     _ZN15NetSessionState17setSyncMemberMaskEt(&gNetSessionState, a);
 }
 
-extern "C" void NetSession_GetSyncMemberMask() {
-    gNetSessionState.getSyncMemberMask();
+extern "C" u16 NetSession_GetSyncMemberMask() {
+    return gNetSessionState.getSyncMemberMask();
 }
 
 extern "C" void NetSession_SetSyncRequester(s32 a) {
