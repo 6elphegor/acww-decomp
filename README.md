@@ -24,8 +24,12 @@ Every overlay and all of main are built from source, and the build reproduces th
 | **Total** | **99.6%** | **99.8%** |
 
 The 14 functions still taken from the original image, and the data no source file owns yet, are listed in
-[`docs/unmatched.md`](docs/unmatched.md). Most names are still placeholders (`func_<address>`, `Unk_<address>`);
-naming and documenting the game code is the main open work.
+[`docs/unmatched.md`](docs/unmatched.md).
+
+Names: 29,222 of the 29,319 functions (99.7%) have real names; 97 are still `func_<address>`, mostly library
+functions whose original names could not be proven. About 300 types are still `Unk_<address>` placeholders, most of
+them views or bitfields whose fold would change the generated code. Library code uses the libraries' own names
+(NitroSDK, NitroSystem, MSL, the GameSpy SDK) where the evidence supports them.
 
 ## Documentation
 
