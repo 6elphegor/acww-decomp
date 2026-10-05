@@ -99,6 +99,13 @@ void OS_VSNPrintf(const char *a, u32 b, const char *c, void *d);
 s32 Fatal_Trap(void);
 
 void Fatal_PanicV(const char *a, u32 b, const char *c, void *d) {
+#ifdef HOST
+    {
+        // the message buffer is read-only data in the host build: the runtime prints it
+        extern void host_panic(const char *file, u32 line, const char *fmt, void *args);
+        host_panic(a, b, c, d);
+    }
+#endif
     OS_DisableInterrupts();
     sPanicFile = (u32)a;
     sPanicLine = b;

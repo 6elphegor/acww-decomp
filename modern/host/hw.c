@@ -432,6 +432,7 @@ static void on_trap(int sig, siginfo_t *si, void *ctx) {
             fprintf(stderr, "watch: frame %llu eip %08x:", (unsigned long long)host_frame(), sWatchEip);
             for (u32 i = 0; i < sWatchHi - sWatchLo; i += 4) fprintf(stderr, " %08x", *(u32 *)(uintptr_t)(sWatchLo + i));
             fprintf(stderr, "\n");
+            host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
         }
         mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ);
         return;
@@ -531,7 +532,7 @@ static u8 *map_io(u32 a) {
 void host_map_memory(void) {
     map_fixed(0x01ff8000, 0x8000);    // ITCM
     map_fixed(0x02000000, 0x400000);  // main RAM (the shared work area at its end, 0x027ff000, is a mirror on the DS)
-    map_fixed(0x027e0000, 0x4000);    // DTCM
+    // DTCM (0x027e0000): the program's .dtcm section (the DTCM module's variables), mapped by the loader
     map_fixed(0x027ff000, 0x1000);    // shared work area (OS_GetSystemWork)
     map_fixed(0x03000000, 0x10000);   // shared WRAM
     map_fixed(0x05000000, 0x800);     // palettes

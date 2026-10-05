@@ -28,6 +28,14 @@ void host_bad_object(u32 profile, void *create, void *obj) {
     fprintf(stderr, "host: profile %u: create %p returned %p without a vtable\n", profile, create, obj);
 }
 
+// Fatal_PanicV (HOST): the game's panic message; args points at the format's arguments on the stack
+void host_panic(const char *file, u32 line, const char *fmt, void *args) {
+    char buf[512];
+    vsnprintf(buf, sizeof buf, fmt, *(va_list *)&args);
+    fprintf(stderr, "host: game panic: %s (%s:%u)\n", buf, file ? file : "", line);
+    host_fatal("panic");
+}
+
 void host_unimplemented(const char *what) {
     fprintf(stderr, "host: unimplemented: %s\n", what);
 }

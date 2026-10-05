@@ -34,7 +34,7 @@ G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
 
 GAME_FLAGS = " ".join([
     "-m32", "-fno-pie", "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
-    "-fno-strict-aliasing", "-fpcc-struct-return", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4",
+    "-fno-strict-aliasing", "-fpcc-struct-return", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4", "-fdata-sections",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
 ])
 C_FLAGS = "-std=gnu11"
@@ -43,7 +43,8 @@ CXX_FLAGS = ("-std=gnu++14 -fno-exceptions -fno-rtti -fno-threadsafe-statics -fn
 HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
               f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude")
 LINK_FLAGS = (f"-m32 -no-pie --sysroot={R} -B{G} -L{G} -Wl,-dynamic-linker,{R}/usr/lib32/ld-linux.so.2 "
-              f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 -Wl,--allow-multiple-definition")
+              f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 -Wl,--allow-multiple-definition "
+              "-Wl,--section-start=.dtcm=0x027e0000")
 M = args.melonds
 HOST_CXX_FLAGS = (f"-m32 -fno-pie -O1 -g -std=c++17 --sysroot={R} -isystem {R}/usr/include/x86_64-linux-gnu/c++/15/32 "
                   f"-idirafter {R}/usr/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include "
@@ -114,6 +115,14 @@ def main():
         n.build(provides, "provides", "build/modern_usa/arm9.ld", implicit=["tools/host_provides.py"])
         # the game (and its own C library) in one object with the C library names made local (host_localize.py)
         game_objs = [o for o in objs if "/modern/host/" not in o and not o.endswith("/gaps.o")]
+        # DTCM's variables at their DS address (0x027e0000): the SDK computes DTCM addresses from its first one
+        dtcm_objs = [o for o in game_objs if "/src/dtcm/" in o]
+        game_objs = [o for o in game_objs if o not in dtcm_objs]
+        dtcm_ld = build / "dtcm.ld"
+        dtcm_ld.write_text("SECTIONS {\n    .dtcm : { *(.data .data.*) *(.bss .bss.*) *(COMMON) . = 0x4000; }\n}\n")
+        n.rule("dtcmld", "ld -m elf_i386 -r -T $script -o $out $in", description="LD -r $out")
+        n.build(str(build / "dtcm.o"), "dtcmld", dtcm_objs, implicit=[str(dtcm_ld)], variables={"script": str(dtcm_ld)})
+        game_objs.append(str(build / "dtcm.o"))
         host_objs = [o for o in objs if o not in game_objs]
         game_list = build / "game_objects.txt"
         build.mkdir(parents=True, exist_ok=True)
@@ -137,9 +146,13 @@ def main():
         n.rule("hostas", f"{args.cc} -m32 -c $in -o $out", description="AS $in")
         n.build(str(build / "shared.o"), "hostas", str(build / "shared.s"))
         host_objs.append(str(build / "shared.o"))
-        n.rule("partial", "ld -m elf_i386 -r -o $out @$list @$wrap", description="LD -r $out")
-        n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), str(build / "wrap.txt")],
-                variables={"list": str(game_list), "wrap": str(build / "wrap.txt")})
+        # the variables in their original order (tools/host_order.py)
+        n.rule("order", "python3 tools/host_order.py $in $out", description="ORDER $out")
+        order_ld = str(build / "order.ld")
+        n.build(order_ld, "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
+        n.rule("partial", "ld -m elf_i386 -r -T $order -o $out @$list @$wrap", description="LD -r $out")
+        n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), str(build / "wrap.txt"), order_ld],
+                variables={"list": str(game_list), "wrap": str(build / "wrap.txt"), "order": order_ld})
         libs = f"{R}/usr/lib32/libc.so.6 {R}/usr/lib32/libm.so.6 {G}/libgcc.a {R}/usr/lib32/libstdc++.so.6"
         n.rule("localize", f"python3 tools/host_localize.py nm objcopy $in $out {libs}", description="LOCALIZE $out")
         game_o = str(build / "game.o")
