@@ -2337,7 +2337,7 @@ extern "C" {
 s32 _ZN12ErrandRecord7setStepEh(void *, u32);
 }
 extern "C" {
-s32 PlanErrand_ResetProgress(void *);
+void PlanErrand_ResetProgress(void *);
 }
 extern "C" {
 s32 PlanErrand_AdvanceStep(void *);

@@ -78,7 +78,7 @@ s32 gpiInitSearchData(void *, void *, s32);
 s32 gpiStartSearch(void *, void *, s32, s32, s32);
 s32 gpiStartProfileSearch(void *, void *);
 s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
-s32 CallReqCallback(s32, s32, s32, void *, s32);
+void CallReqCallback(s32, s32, s32, void *, s32);
 }
 
 static inline BOOL Unk_ov065_02283684_B(char *p) {

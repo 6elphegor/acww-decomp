@@ -308,7 +308,7 @@ void _ZN12MuseumInsect10runPerchedEv(void *self);
 void _ZN12MuseumInsect9runSpiderEv(void *self);
 void * _ZN12MuseumInsect5crawlEv(void *self);
 void _ZN12MuseumInsect6scurryEP7VecFx32(void *self, void *v);
-void _ZN16MuseumInsectRoomC1Ev(void *self);
+void *_ZN16MuseumInsectRoomC1Ev(void *self);
 u32 MuseumInsect_GetTimeOfDayBit();
 MuseumInsect *MuseumInsect_FindDungBall();
 MuseumInsect *MuseumInsect_FindScorpion();
@@ -4224,7 +4224,8 @@ extern "C" void MuseumInsect_InitPlacement(void *m, u8 *s) {
 
 extern "C" void *MuseumInsectRoom_Create() {
     void *m = ProcBase::operator new(0x1a0);
-    if (m) _ZN16MuseumInsectRoomC1Ev(m);
+    if (m) m = _ZN16MuseumInsectRoomC1Ev(m);
+    return m;
 }
 
 extern "C" s32 MuseumInsectRoom_FindFreeSlot() {

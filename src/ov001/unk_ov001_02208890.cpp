@@ -16,7 +16,7 @@ extern void *WfcHeap_Alloc(s32, s32);
 extern void WfcTask_RequestDelete(s32, s32);
 extern void WfcTask_Add(s32, void *, s32, s32);
 extern u8 *WfcConfig_GetEdit();
-extern s32 WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
+extern void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
 extern u8 *WfcUtil_LocalizePath(u8 *p);
 s32 WfcHighlight_Set(s32 n);
 void WfcHighlight_TransferTask(s32 a);

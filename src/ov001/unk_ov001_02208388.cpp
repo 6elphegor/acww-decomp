@@ -22,7 +22,7 @@ extern s32 WfcHeader_SetStep(s32);
 extern void *WfcFs_LoadFile(void *, void *, u32);
 extern void WfcFs_FreeFile(void *);
 
-s32 WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
+void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
 u8 *WfcUtil_LocalizePath(u8 *p);
 u32 WfcUtil_GetTextFlags();
 }
@@ -49,7 +49,7 @@ extern "C" u8 *WfcUtil_LocalizePath(u8 *p) {
     return sWfcPathBuf;
 }
 
-extern "C" s32 WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn) {
+extern "C" void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn) {
     u32 sz;
     void *h = WfcFs_LoadFile(WfcUtil_LocalizePath((u8 *)a), &sz, 4);
     DC_FlushRange(h, sz);

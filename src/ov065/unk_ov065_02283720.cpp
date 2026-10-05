@@ -101,7 +101,7 @@ s32 gpiInitSearchData(void *, void *, s32);
 s32 gpiStartSearch(void *, void *, s32, s32, s32);
 s32 gpiStartProfileSearch(void *, void *);
 s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
-s32 CallReqCallback(s32, s32, s32, void *, s32);
+void CallReqCallback(s32, s32, s32, void *, s32);
 }
 
 static inline BOOL Unk_ov065_02283684_B(char *p) {
@@ -191,7 +191,7 @@ void gti2CloseSocket(GTI2Socket *);
 void ProcessPlayerAuth(char *, s32);
 void ProcessGetPid(char *, s32);
 void ProcessGetData(char *, s32);
-s32 ProcessSetData(char *, s32);
+void ProcessSetData(char *, s32);
 s32 FindRequest(s32, s32, s32);
 char *value_for_key_safe(char *, char *);
 char *value_for_key(char *, char *);
@@ -493,7 +493,7 @@ void ProcessGetData(char *s, s32 len) {
 } }
 
 namespace N022838c4 { extern "C" {
-s32 ProcessSetData(char *s, s32 len) {
+void ProcessSetData(char *s, s32 len) {
     s32 a = atol(value_for_key_safe(s, "setpdr"));
     s32 b = atol(value_for_key_safe(s, "pid"));
     s32 c = atol(value_for_key_safe(s, "lid"));
@@ -545,7 +545,7 @@ s32 ProcessInBuffer(char *p, s32 n) {
 } }
 
 namespace N02282f90 { extern "C" {
-s32 CallReqCallback(s32 idx, s32 a, s32 b, void *p3, s32 p4) {
+void CallReqCallback(s32 idx, s32 a, s32 b, void *p3, s32 p4) {
     if (idx >= 0 && idx < ArrayLength(serverreqs)) {
         serverreq_t *e = (serverreq_t *)ArrayNth(serverreqs, idx);
         void *cb = e->callback;

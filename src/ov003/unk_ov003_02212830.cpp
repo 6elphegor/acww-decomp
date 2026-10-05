@@ -151,13 +151,13 @@ BOOL Snowball_CanBuildSnowmanAt(Pos *p);
 BOOL Snowball_PlaceSnowmanAt(void *a, Pos *p, u16 *out);
 BOOL Snowball_PlaceSnowmanNearby(void *a, void *pos, u16 *out);
 BOOL Snowball_DropDisplacedItem(u16 *q);
-void Snowball_Unregister(Obj *o);
+BOOL Snowball_Unregister(Obj *o);
 s32 Snowball_Register(Obj *o);
 BOOL Snowball_IsInBallState(Obj *o);
 void Snowball_InitState(Obj *o);
 void Snowball_RunState(Obj *o);
 void Snowball_UpdateCarry(Obj *o);
-s32 Snowball_UpdateRolling(Obj *o);
+void Snowball_UpdateRolling(Obj *o);
 void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b);
 s32 Snowball_Break(Obj *o, s32 a);
 }
@@ -346,7 +346,7 @@ BOOL Snowball::onDelete() {
         r[i & 1].w = sv;
     }
     _ZN12SndSeEmitter8callStopEv(seEmitter);
-    Snowball_Unregister(this);
+    return Snowball_Unregister(this);
 }
 
 extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
@@ -406,7 +406,7 @@ extern "C" void Snowball_UpdateCarry(Obj *o)
     o->colliderWeight = (func_01ffcb0c(FX_Div(o->radius - 0x800, 0xc00), 0x10cd) + 0xdec) << 2;
 }
 
-extern "C" s32 Snowball_UpdateRolling(Obj *o)
+extern "C" void Snowball_UpdateRolling(Obj *o)
 {
     s32 kind = o->snowballFlags.c != 0 ? 0xb : 0;
     Loc loc;

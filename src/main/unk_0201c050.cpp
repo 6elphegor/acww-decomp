@@ -901,7 +901,7 @@ s32 PlanErrand_GetStep(void *);
 void * PlanErrand_GetRecord(void *);
 void PlanErrand_AdvanceStep(void *);
 void PlanErrand_Assign(void *, s32, void *, s32, s32);
-void * PlanErrand_ResetProgress(void *);
+void PlanErrand_ResetProgress(void *);
 void * Errand_GetSlotIndex(s32);
 s32 ErrandRecord_GetTime(void *);
 s32 Errand_GetGroup(s32);

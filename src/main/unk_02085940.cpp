@@ -1219,7 +1219,7 @@ void BlancaFaceRecord::resetPattern() {
     _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(getPattern()), 0);
 }
 
-void *BlancaFaceRecord::getPattern() {}
+void *BlancaFaceRecord::getPattern() { return pattern; }
 
 void BlancaFaceRecord::setState(u32 v) { visitState = v; }
 

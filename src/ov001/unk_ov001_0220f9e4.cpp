@@ -55,7 +55,7 @@ s32 WfcTransferNotice_StartExit();
 void WfcTransferNotice_HandleResult();
 void WfcTransferNotice_Idle();
 void WfcTransferNotice_HandleInput();
-s32 WfcTransferNotice_Update();
+void WfcTransferNotice_Update();
 void WfcTransferNotice_WaitButtonBar();
 void WfcTransferNotice_WaitFadeIn();
 s32 WfcTransferNotice_FadeIn();
@@ -257,7 +257,7 @@ void WfcTransferNotice_WaitButtonBar() {
     C668(WfcTransferNotice_Update);
 }
 
-s32 WfcTransferNotice_Update() {
+void WfcTransferNotice_Update() {
     WfcTransferNotice_HandleInput();
     WfcTransferNotice_Idle();
     WfcTransferNotice_HandleResult();

@@ -28,7 +28,7 @@ GXOamAttr *sWfcOptionsSprite;
 extern "C" {
 void GX_LoadBG2Scr(void);
 void GX_LoadBG2Char(void);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 void *WfcUtil_LocalizePath(void *);
 void WfcCursor_ShowCorners(u32, u32, u32, u32);
 s32 WfcFade_IsBusy(s32);

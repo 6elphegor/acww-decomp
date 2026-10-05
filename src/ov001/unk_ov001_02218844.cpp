@@ -39,7 +39,7 @@ s32 WfcInput_IsKeyPressed(s32);
 s32 WfcButtonBar_SetResult(s32);
 s32 WfcButtonBar_EnableInput();
 s32 WfcUtil_OpenButtonBar(s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcSetupMethod_Enter();
 s32 WfcSimpleStartDone_Enter();
 void WfcSimpleStartRecv_StartExit();

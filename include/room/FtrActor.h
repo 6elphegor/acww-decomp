@@ -57,9 +57,9 @@ public:
     void execPush();
     BOOL enterPush();
 
-    BOOL execRotate();
+    void execRotate();
     BOOL enterRotate();
-    BOOL execIdle();
+    void execIdle();
     BOOL enterIdle();
     void execAppear();
     BOOL enterAppear();

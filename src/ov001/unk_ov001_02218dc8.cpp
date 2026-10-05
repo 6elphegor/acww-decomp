@@ -17,7 +17,7 @@ s32 WfcUtil_HideTopMessage();
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcFade_Start(s32, s32, s32, s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcTestConfirm_Enter();
 void WfcSimpleStartDone_FadeOut();
 void WfcSimpleStartDone_Exit();

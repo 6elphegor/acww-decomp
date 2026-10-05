@@ -14,7 +14,7 @@ extern void *WfcText_CreateBgCanvas(s32, s32);
 extern void *WfcMsg_GetStringWithDigit(void *, s32, s32, s32);
 extern void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
 extern void WfcText_RequestTransfer(void *);
-s32 WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
+void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
 u32 WfcUtil_GetTextFlags();
 }
 

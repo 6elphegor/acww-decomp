@@ -869,7 +869,7 @@ BOOL FieldScene::onDraw() {
     return TRUE;
 }
 
-BOOL FieldScene::onDeleteRequest() {}
+BOOL FieldScene::onDeleteRequest() { return (BOOL)this; }
 
 extern "C" void Fog_InitDefault(s32 a) {
     Fog_SetTable(a, sDefaultFogTable);

@@ -577,7 +577,7 @@ void FtrActor_ReleaseCollider(Self *self);
 void FtrActor_InitCollider(Self *self);
 void FtrActor_GetBoxSize(Self *self, VecFx32 *out);
 void FtrActor_UpdateMtx(Self *self);
-s32 FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b);
+void FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b);
 u8 FtrActor_GetLayer(Self *self);
 BOOL FtrActor_RequestToggle(Self *self);
 s32 FtrActor_GetFtrIndex(Self *self);
@@ -1563,7 +1563,7 @@ extern "C" u8 FtrActor_GetLayer(Self *self) {
 }
 
 // @0220865c
-extern "C" s32 FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b) {
+extern "C" void FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b) {
     if (((FtrStackLink *)(PT(0x178)))->isAttached()) {
         void *p = FtrActorTable_GetInstance();
         Self *q = FtrActorTable_get(p, ((FtrStackLink *)(PT(0x178)))->getParentIndex());
@@ -2431,10 +2431,12 @@ extern "C" void FtrActor_GetItemId(u16 *out, FtrActor *o) {
 
 // @02206f38
 BOOL FtrActor::onMatCalc(s32 matId, NNSG3dRS *rs) {
+    return (BOOL)this;
 }
 
 // @02206f34
 BOOL FtrActor::onJointCalcPre(s32 nodeId, NNSG3dRS *rs) {
+    return (BOOL)this;
 }
 
 // @02206ef8
@@ -3721,7 +3723,7 @@ void FtrActor::execAppear() {
 BOOL FtrActor::enterIdle() { return TRUE; }
 
 // @022053b8
-BOOL FtrActor::execIdle() {}
+void FtrActor::execIdle() {}
 
 // @022052f4
 BOOL FtrActor::enterRotate() {
@@ -3745,7 +3747,7 @@ BOOL FtrActor::enterRotate() {
 }
 
 // @0220521c
-BOOL FtrActor::execRotate() {
+void FtrActor::execRotate() {
     s32 d = (s16)(targetAngle - rotY);
     BOOL neg;
     if (d < 0) neg = TRUE; else neg = FALSE;

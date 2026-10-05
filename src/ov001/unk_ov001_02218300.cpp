@@ -23,7 +23,7 @@ s32 WfcButtonBar_Close();
 s32 WfcUtil_HideTopMessage();
 s32 WfcUtil_ShowBottomMessage(s32);
 s32 WfcUtil_OpenButtonBar(s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcHighlight_SetConnection();
 s32 WfcUtil_SetScreenFlags(s32, s32);
 s32 WfcUtil_SetScene(void *);

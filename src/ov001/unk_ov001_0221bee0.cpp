@@ -7,7 +7,7 @@ extern "C" {
 s32 GX_LoadBG2Scr();
 s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcHighlight_Set(s32);
 s32 WfcUtil_ShowBottomMessage(s32);
 s32 WfcSound_Play(s32);
@@ -24,7 +24,7 @@ s32 WfcFade_Start(s32, s32, s32, s32);
 void WfcUsbDone_CountDown();
 void WfcUsbDone_Exit();
 void WfcUsbDone_FadeOut();
-s32 WfcUsbDone_Idle();
+void WfcUsbDone_Idle();
 void WfcUsbDone_Update();
 void WfcUsbDone_WaitFadeIn();
 void WfcUsbDone_FadeIn();
@@ -74,7 +74,7 @@ extern "C" void WfcUsbDone_Update() {
     WfcUsbDone_Idle();
 }
 
-extern "C" s32 WfcUsbDone_Idle() {
+extern "C" void WfcUsbDone_Idle() {
 }
 
 extern "C" void WfcUsbDone_FadeOut() {

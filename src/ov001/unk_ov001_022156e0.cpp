@@ -83,7 +83,7 @@ void swprintf(void *, s32, void *, ...);
 s32 WfcUtil_HideTopMessage();
 void WfcUtil_ShowTopMessage(s32, s32, s32);
 void WfcUtil_ShowStepIndicator(s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 u8 * WfcUtil_LocalizePath(void *);
 s32 WfcCursor_Clear();
 void WfcCursor_ShowPair(s32, u32, u32, u32);

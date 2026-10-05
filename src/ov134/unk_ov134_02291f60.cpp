@@ -17,7 +17,7 @@ typedef DateTimePicker S;
 extern "C" {
 void DateTimePicker_AnimCloseWindow(DateTimePicker *self);
 void DateTimePicker_AnimOpenWindow(DateTimePicker *self);
-s32 DateTimePicker_RedrawList(DateTimePicker *self);
+void DateTimePicker_RedrawList(DateTimePicker *self);
 void DateTimePicker_ApplyListScroll(DateTimePicker *self);
 void DateTimePicker_SetListScroll(DateTimePicker *self, s32 a);
 s32 DateTimePicker_HitTestList(DateTimePicker *self, s32 x, s32 y);
@@ -1382,7 +1382,7 @@ extern "C" void DateTimePicker_ApplyListScroll(DateTimePicker *self) {
     Gfx2d_SetLayerOffset(self->listLayer, -self->listOffsetX, -(self->listTop - self->listScroll));
 }
 
-extern "C" s32 DateTimePicker_RedrawList(DateTimePicker *self) {
+extern "C" void DateTimePicker_RedrawList(DateTimePicker *self) {
     u16 *row;
     s32 dx, h, lim, off, i, j, k, t;
     u32 c, ac;

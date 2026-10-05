@@ -28,7 +28,7 @@ s32 WfcFade_IsBusy(s32);
 void WfcUtil_OpenButtonBar(s32);
 void WfcFade_Start(s32, s32, s32, s32);
 void WfcGx_ShowPlanes(s32, s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Scr();
 s32 WfcHighlight_Set(s32);
 void WfcUtil_ShowTopMessage(s32, s32, s32);

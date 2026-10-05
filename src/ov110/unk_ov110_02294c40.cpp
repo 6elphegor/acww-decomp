@@ -164,7 +164,7 @@ public:
     void moveCursorInBox(void *pad, s32 mode);
     void moveCursorInPockets(void *pad, s32 mode);
     void cancelChoiceList();
-    s32 applyChoice();
+    void applyChoice();
     void startExchange(u8 v);
     void startPutDown(u8 v);
     void startPickUp();
@@ -322,7 +322,7 @@ static inline void func_ov110_02294fb8(LostFoundRecycleMenu *s, s32 a) { s->setO
 static inline void func_ov110_02295034(LostFoundRecycleMenu *s) { s->resetTextLabels(); }
 static inline BOOL func_ov110_02295060(LostFoundRecycleMenu *s, u32 a, u32 b) { return s->moveCursorByPad((void *)a, (s32)b); }
 static inline void func_ov110_022953b4(LostFoundRecycleMenu *s) { s->cancelChoiceList(); }
-static inline s32 func_ov110_022953e0(LostFoundRecycleMenu *s) { return s->applyChoice(); }
+static inline void func_ov110_022953e0(LostFoundRecycleMenu *s) { s->applyChoice(); }
 static inline void func_ov110_02295404(LostFoundRecycleMenu *s, u32 v) { s->startExchange((u8)v); }
 static inline void func_ov110_0229544c(LostFoundRecycleMenu *s, u32 v) { s->startPutDown((u8)v); }
 static inline void func_ov110_02295488(LostFoundRecycleMenu *s) { s->startPickUp(); }
@@ -1663,7 +1663,7 @@ void LostFoundRecycleMenu::startExchange(u8 v) {
     setMainState(0xe);
 }
 
-s32 LostFoundRecycleMenu::applyChoice() {
+void LostFoundRecycleMenu::applyChoice() {
     switch (chosenAction) {
     case 0:
         startPickUp();

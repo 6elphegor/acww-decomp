@@ -25,7 +25,7 @@ s32 WfcInput_IsKeyPressed(s32);
 void WfcButtonBar_SetResult(s32);
 void WfcButtonBar_EnableInput();
 void WfcUtil_OpenButtonBar(s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Char();
 void GX_LoadBGPltt();
 void GX_LoadBG2Scr();

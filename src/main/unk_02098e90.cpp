@@ -1063,7 +1063,7 @@ u16 *PlanErrand_GetShownItem(PlanErrand *p);
 void *PlanErrand_GetPlayer(PlanErrand *p);
 s32 PlanErrand_GetStepCount(s32 x);
 void PlanErrand_SetFossilGroup(PlanErrand *p, u32 v);
-s32 PlanErrand_ResetProgress(void *p);
+void PlanErrand_ResetProgress(void *p);
 void PlanErrand_Begin(PlanErrand *p, s32 a, u16 *b);
 void PlanErrand_SetKind(void *p, s32 a, u16 *b);
 void PlanErrand_Clear(void *p);
@@ -1124,7 +1124,7 @@ extern "C" void *PlanErrand_GetRecord(void *p);
 extern "C" void PlanErrand_AdvanceStep(PlanErrand *self);
 extern "C" void PlanErrand_MarkReady(void *p);
 extern "C" void PlanErrand_Assign(PlanErrand *self, s32 a1, u16 *p, void *obj, u8 flag);
-extern "C" s32 PlanErrand_ResetProgress(void *pp);
+extern "C" void PlanErrand_ResetProgress(void *pp);
 extern "C" void PlanErrand_Begin(PlanErrand *self, s32 a, u16 *b);
 extern "C" void PlanErrand_SetKind(void *p, s32 a, u16 *b);
 extern "C" void PlanErrand_Clear(void *pp);
@@ -1150,7 +1150,7 @@ extern "C" void PlanErrand_Begin(PlanErrand *self, s32 a, u16 *b) {
     self->step = 0;
 }
 
-extern "C" s32 PlanErrand_ResetProgress(void *pp) {
+extern "C" void PlanErrand_ResetProgress(void *pp) {
     PlanErrand *self = (PlanErrand *)pp;
     u16 v;
     _ZN12ErrandRecord7setStepEh(PlanErrand_GetRecord(self), 0);
@@ -2207,8 +2207,8 @@ static inline BOOL Unk_02099124_R(u16 *p, u32 lo, u32 hi) {
 }extern "C" {
 void PocketMatches_Init(PocketMatches *p);
 s32 Pocket_FindEmpty();
-s32 Pocket_SetItem(u16 *a, s32 b, s32 c);
-s32 Pocket_SetFoundItem(u16 *a, s32 b);
+void Pocket_SetItem(u16 *a, s32 b, s32 c);
+void Pocket_SetFoundItem(u16 *a, s32 b);
 u16 Item_PickRandomPresent();
 void Quat_ToMtx33(s32 *a, s32 *m);
 }
@@ -2220,9 +2220,9 @@ extern "C" s32 Pocket_FindEmpty();
 extern "C" BOOL Pocket_AddItem(u16 *a, s32 b);
 extern "C" u16 Pocket_GetItem(s32 i);
 extern "C" void Pocket_RemoveItem(s32 c);
-extern "C" s32 Pocket_SetItem(u16 *a, s32 b, s32 c);
+extern "C" void Pocket_SetItem(u16 *a, s32 b, s32 c);
 extern "C" BOOL Pocket_AddFoundItem(u16 *a);
-extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b);
+extern "C" void Pocket_SetFoundItem(u16 *a, s32 b);
 extern "C" u16 Item_PickRandomPresent();
 extern "C" s32 Inventory_GetEmptyLetter();
 extern "C" s32 Inventory_FindEmptyLetter();
@@ -2554,7 +2554,7 @@ extern "C" u16 Item_PickRandomPresent() {
     return out[0];
 }
 
-extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b) {
+extern "C" void Pocket_SetFoundItem(u16 *a, s32 b) {
     u16 v[2];
     BOOL r = FALSE;
     v[0] = 0xfff1;
@@ -2565,7 +2565,7 @@ extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b) {
         Item_FromPlacedForm(&v[1], a);
         v[0] = v[1];
     }
-    return Pocket_SetItem(v, r, b);
+    Pocket_SetItem(v, r, b);
 }
 
 extern "C" BOOL Pocket_AddFoundItem(u16 *a) {
@@ -2577,7 +2577,7 @@ extern "C" BOOL Pocket_AddFoundItem(u16 *a) {
     return TRUE;
 }
 
-extern "C" s32 Pocket_SetItem(u16 *a, s32 b, s32 c) {
+extern "C" void Pocket_SetItem(u16 *a, s32 b, s32 c) {
     void *r6 = PlayerData_GetCurrent();
     if (Pocket_IsValidIndex(c)) {
         if (*a != 0xfff1 && b == 0) {

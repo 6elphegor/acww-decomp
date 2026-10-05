@@ -331,7 +331,7 @@ void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
 extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
 extern "C" void InsectSpawn_BuildLightMask(u16 (*arr)[4][16]);
 extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag);
-extern "C" s32 InsectSpawn_CopyMask(void *p, s32 t);
+extern "C" void InsectSpawn_CopyMask(void *p, s32 t);
 extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b);
 extern "C" void FieldInsect_PurgeStale();
 extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out);
@@ -1028,7 +1028,7 @@ void Crawler_Escape(Rec *o, s16 *p);
 void Insect_HopArc(Rec *o, s16 *p);
 void Insect_GetDirVec(V3 *v, s32 a);
 void Insect_CheckAlarm(Rec *o);
-s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+void Insect_PlaySe(Rec *o, s32 a, s32 b);
 void Insect_UpdateAlarm(Rec *o, s32 *out);
 s32 Insect_FadeOut(Rec *o, s32 a);
 void Insect_FlapWings(Rec *o);
@@ -1280,7 +1280,7 @@ void Insect_UpdateAlarm(Rec *o, s32 *out);
 s32 Insect_FlyAwayArc(Rec *o, s32 v, u8 *p);
 s32 Insect_TickTimer(Rec *o);
 s32 Insect_FlutterFlight(Rec *o);
-s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+void Insect_PlaySe(Rec *o, s32 a, s32 b);
 s32 Insect_CheckDigHit(Rec *o, V3 *p);
 void Insect_SplashIfWater(Rec *o);
 void *Insect_FindNearestPlayer(void *p);
@@ -1352,7 +1352,7 @@ void PillBug_Walk(Rec *o);
 void PillBug_Curled(Rec *o);
 s32 Insect_FlyAwayArc(Rec *o, s32 v);
 void Insect_FlapWings(Rec *o);
-s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+void Insect_PlaySe(Rec *o, s32 a, s32 b);
 s32 Insect_CheckDigHit(Rec *o, V3 *p);
 void Insect_SplashIfWater(Rec *o);
 void Insect_UpdateRest(Rec *o);
@@ -1434,7 +1434,7 @@ s32 Insect_CheckAlarm(Rec *o);
 s32 Insect_FlutterBob(Rec *o, s32 a, s32 b, s32 c);
 s32 Insect_FlutterSteer(Rec *o, s16 *p, s32 a, s32 b, s32 c, s32 d);
 s32 Insect_GetFlutterRange(Rec *o);
-s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+void Insect_PlaySe(Rec *o, s32 a, s32 b);
 void Insect_SplashIfWater(Rec *o);
 void Insect_SetMoveTarget(Rec *o, s32 a, s32 b);
 void Insect_CheckTurnCount(Rec *o, s32 a);
@@ -1700,7 +1700,7 @@ void *func_ov003_02225ed0(void *p);
 }
 
 // prototypes of this segment's own functions
-extern "C" s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+extern "C" void Insect_PlaySe(Rec *o, s32 a, s32 b);
 extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a);
 extern "C" BOOL Insect_SplashIfWater(Rec *o);
 extern "C" BOOL Insect_LikesFlower(s32 a, s32 b);
@@ -2324,7 +2324,7 @@ extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
 #define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222dd54
-extern "C" s32 Insect_PlaySe(Rec *o, s32 a, s32 b) {
+extern "C" void Insect_PlaySe(Rec *o, s32 a, s32 b) {
     s32 r = Insect_GetSeId(o->kind, a);
     if (r >= 0) {
         if (b != 0) {
@@ -10952,7 +10952,7 @@ InsectMatAnim::~InsectMatAnim() { using namespace s00;}
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225b6c
-extern "C" s32 InsectSpawn_CopyMask(void *p, s32 t)
+extern "C" void InsectSpawn_CopyMask(void *p, s32 t)
 {
     switch (t) {
     case 0:

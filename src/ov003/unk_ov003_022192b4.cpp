@@ -767,7 +767,7 @@ extern "C" { void Tree_KeepShaking(s32 id, s32 *pos); }
 extern "C" { void TreeAnim_Init(TreeAnim *o); }
 extern "C" { void TreeAnim_Update(TreeAnim *o); }
 extern "C" { void TreeAnim_Draw(TreeAnim *o); }
-extern "C" { s32 TreeAnim_Release(TreeAnim *o); }
+extern "C" { void TreeAnim_Release(TreeAnim *o); }
 extern "C" { void TreeAnim_Begin(TreeAnim *o, s32 flag); }
 extern "C" { s32 Tree_GetDropSide(TreeAnim *o, VecFx32 *p); }
 extern "C" { void Tree_DropFruit(u16 *cell, s32 id, s32 *pos); }
@@ -5943,7 +5943,7 @@ void TreeAnim_Draw(TreeAnim *o) {
 
 namespace ns_0221b8bc {
 extern "C" {
-s32 TreeAnim_Release(TreeAnim *o) {
+void TreeAnim_Release(TreeAnim *o) {
     TreeAnim_Reset(o);
     CachedModel_release(o->animModel);
     SndSeEmitter_callStop(o->seEmitter);

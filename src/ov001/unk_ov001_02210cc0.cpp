@@ -27,7 +27,7 @@ s32 WfcUtil_OpenButtonBar(s32);
 s32 WfcUtil_SetScene(void *);
 s32 WfcFade_Start(s32, s32, s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcTransfer_Start(void *);
 s32 WfcUtil_ShowBottomMessage(s32);
 s32 WfcBusyIcon_Create(s32);
@@ -158,7 +158,7 @@ extern u8 data_ov001_0222ae28[];
 extern u16 data_ov001_02229ff8[];
 extern u8 GX_LoadBG2Scr[];
 
-s32 WfcUtil_LoadFileTo(void *a, void *b);
+void WfcUtil_LoadFileTo(void *a, void *b);
 s32 WfcUtil_ShowBottomMessage(u32 a);
 s32 WfcUtil_ShowTopMessage(u32 a, s32 b, u32 c);
 s32 WfcUtil_SetScene(void *p);

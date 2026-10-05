@@ -159,7 +159,7 @@ public:
     void moveCursorInBox(void *, s32);
     void moveCursorInPockets(void *, s32);
     void cancelChoiceList();
-    s32 applyChoice();
+    void applyChoice();
     void startExchange(u8);
     void startPutDown(u8);
     void startPickUp();
@@ -1534,7 +1534,7 @@ void ShopSellMenu::startExchange(u8 v) {
     setMainState(0xe);
 }
 
-s32 ShopSellMenu::applyChoice() {
+void ShopSellMenu::applyChoice() {
     switch (chosenAction) {
     case 0:
         startPickUp();

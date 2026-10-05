@@ -35,7 +35,7 @@ s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
 s32 WfcButtonBar_EnableInput();
 s32 WfcUtil_OpenButtonBar(s32);
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcUtil_LocalizePath(void *);
 u32 *WfcFs_LoadFile(s32, s32, s32);
 s32 WfcHighlight_Set(s32);

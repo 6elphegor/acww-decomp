@@ -5,7 +5,7 @@
 
 extern "C" {
 s32 GX_LoadBG2Scr();
-s32 WfcUtil_LoadFileTo(void *, void *);
+void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcUtil_GetEditParams(s32, s32 *);
 s32 WfcUtil_ShowTopMessage(s32, s32, s32);
 s32 WfcHighlight_SetConnection();

@@ -62,7 +62,7 @@ void gti2CloseSocket(GTI2Socket *);
 void ProcessPlayerAuth(char *, s32);
 void ProcessGetPid(char *, s32);
 void ProcessGetData(char *, s32);
-s32 ProcessSetData(char *, s32);
+void ProcessSetData(char *, s32);
 s32 FindRequest(s32, s32, s32);
 char *value_for_key_safe(char *, char *);
 char *value_for_key(char *, char *);
