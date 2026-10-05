@@ -2366,7 +2366,11 @@ s32 RoomFtrState_GetGyroidBeat(s32, s32, s32);
 s32 _ZN14BlendAnimModel9playBlendEiiiitt(void *, s32, u16, s32, s32, s32, s32);
 s32 _ZN14BlendAnimModel9stepBlendEv(void *);
 s32 _ZN14BlendAnimModel15onJointCalcPostEPS_(void *, void *);
+#ifdef MODERN
+void _ZN14BlendAnimModel14onJointCalcPreEPS_(void *, void *);
+#else
 s32 _ZN14BlendAnimModel14onJointCalcPreEPS_(void *, void *);
+#endif
 s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 s32 _ZN11CachedModel16allocJointRecordEPv(void *, s32);
 s32 _ZN11CommManager8isOnlineEv(void *);
@@ -2624,7 +2628,13 @@ void FtrGyroid::onJointCalcPost(s32 idx, void *b) {
 }
 
 BOOL FtrGyroid::onJointCalcPre(s32 nodeId, NNSG3dRS *rs) {
+#ifdef MODERN
+    // BlendAnimModel::onJointCalcPre is void; the original returns whatever it left in r0 (no caller uses it).
+    p16::_ZN14BlendAnimModel14onJointCalcPreEPS_(this->model, rs);
+    return TRUE;
+#else
     return p16::_ZN14BlendAnimModel14onJointCalcPreEPS_(this->model, rs);
+#endif
 }
 
 BOOL FtrGyroid::onDelete() {

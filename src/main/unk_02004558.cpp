@@ -1704,7 +1704,12 @@ s32 PlayerActor_GetTan(PlayerActor *o);
 BOOL _ZN11PlayerActor16isGuestInSessionEv(PlayerActor *o);
 Unk_0200f17c_Date *PlayerSession_GetLastPlayDate();
 void *PlayerActor_GetPlayerData(void *o);
+#ifdef MODERN
+// Defined as s32 PlayerData::getLastPlayDate(); GCC returns the struct through a hidden pointer (-fpcc-struct-return)
+s32 _ZN10PlayerData15getLastPlayDateEv(void *p);
+#else
 Unk_0200f17c_Date _ZN10PlayerData15getLastPlayDateEv(void *p);
+#endif
 void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 void DateTime_Compare(void *a, void *b, s32 n);
@@ -4202,7 +4207,14 @@ extern "C" void PlayerActor_CompareLastPlayDateNow(void *o) {
 namespace nQ {
 extern "C" void PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b) {
     Unk_0200f17c_Date d0, d1, d2;
+#ifdef MODERN
+    {
+        u16 raw = _ZN10PlayerData15getLastPlayDateEv(PlayerActor_GetPlayerData(o));
+        __builtin_memcpy(&d0, &raw, sizeof(d0));
+    }
+#else
     d0 = _ZN10PlayerData15getLastPlayDateEv(PlayerActor_GetPlayerData(o));
+#endif
     d1 = d0;
     d2 = d1;
     Clock_GetDateTime(a);

@@ -4474,17 +4474,16 @@ BOOL MuseumInsectRoom::hasHitBox(u32 id, u8 flag) {
 BOOL MuseumInsectRoom::onExecute() {
     u8 r[6];
     V3_7690 rect[3];
-    u8 obj0[0x9c];
-    u8 obj1[0x9c];
-    u8 obj2[0x9c];
+    // three colliders, indexed as obj[i * 0x9c] (separate arrays in the original stack frame, one after the other)
+    u8 obj[3 * 0x9c];
     u8 n;
     s32 k = 0;
     s32 z = 0;
     u8 i = 0;
     u8 *q;
-    func_02031c48(obj0);
-    func_02031c48(obj1);
-    func_02031c48(obj2);
+    func_02031c48(obj);
+    func_02031c48(obj + 0x9c);
+    func_02031c48(obj + 2 * 0x9c);
     if ((s32)param == 0) {
         rect[0].x = 0x3800;
         rect[0].z = 0x8000;
@@ -4508,9 +4507,9 @@ BOOL MuseumInsectRoom::onExecute() {
     q = &r[3];
     for (i = 0; i < n; i++) {
         if (q[i]) {
-            r[i] = BoxCollider_Register(&obj0[i * 0x9c], 0x4000, 0x1000, 0x6000, &rect[i], k, k);
+            r[i] = BoxCollider_Register(&obj[i * 0x9c], 0x4000, 0x1000, 0x6000, &rect[i], k, k);
         } else {
-            r[i] = BoxCollider_Register(&obj0[i * 0x9c], 0x1000, 0x4000, 0x6000, &rect[i], z, z);
+            r[i] = BoxCollider_Register(&obj[i * 0x9c], 0x1000, 0x4000, 0x6000, &rect[i], z, z);
         }
     }
     MuseumInsect *e = sMuseumInsects;
@@ -4528,12 +4527,12 @@ BOOL MuseumInsectRoom::onExecute() {
     }
     for (i = 0; i < n; i++) {
         if (r[i]) {
-            BoxCollider_Unregister(&obj0[i * 0x9c]);
+            BoxCollider_Unregister(&obj[i * 0x9c]);
         }
     }
-    func_02031c10(obj2);
-    func_02031c10(obj1);
-    func_02031c10(obj0);
+    func_02031c10(obj + 2 * 0x9c);
+    func_02031c10(obj + 0x9c);
+    func_02031c10(obj);
     return TRUE;
 }
 

@@ -146,9 +146,7 @@ typedef struct GfdMan {
     u32 base;       // 0x14
 } GfdMan;
 
-extern GfdMan data_0213bc3c[];
-extern GfdMan data_0213bc54;
-extern GfdMan data_0213bc6c;
+extern GfdMan data_0213bc3c[5];   // the regions by kind (0x0213bc3c-0x0213bcb4)
 extern GfdMan *data_0213bc20[];     // 2 entries: 4x4 compressed textures
 extern GfdMan *data_0213bc28[];     // 5 entries: normal textures
 extern u16 data_021f5cb0;
@@ -222,8 +220,8 @@ void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 static inline u32 Capacity(const GfdMan *m) { return m->end - m->start; }
 static inline GfdMan *GetIdxRegion(const GfdMan *m) {
     switch (m->kind) {
-    case 0: return &data_0213bc54;
-    case 3: return &data_0213bc6c;
+    case 0: return &data_0213bc3c[1];
+    case 3: return &data_0213bc3c[2];
     default: return 0;
     }
 }
@@ -281,14 +279,16 @@ u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, u32 opt) {
 }
 
 // ---- file-scope objects (.data 0x0213bc20-0x0213bcb4, autoload_3 .bss 0x021f5cb0-0x021f5cb4): the frame texture VRAM
-// manager's slot regions and the region lists by texture kind (also used by unk_0210169c.c). This definition order gives
-// the original order after mwcc's size sort.
-extern GfdMan data_0213bc84, data_0213bc9c;
-GfdMan data_0213bc84 = {0xffffffff, 0xffffffff, 0, 0, 3, 0xffff, 262144};
-GfdMan data_0213bc6c = {0xffffffff, 0xffffffff, 0, 1, 2, 0xffff, 196608};
-GfdMan data_0213bc3c[1] = {{0xffffffff, 0xffffffff, 0, 0, 0, 0xffff, 0}};
-GfdMan data_0213bc54 = {0xffffffff, 0xffffffff, 0, 1, 1, 0xffff, 131072};
-GfdMan data_0213bc9c = {0xffffffff, 0xffffffff, 0, 0, 4, 0xffff, 393216};
-GfdMan *data_0213bc28[5] = {&data_0213bc9c, &data_0213bc84, data_0213bc3c, &data_0213bc6c, &data_0213bc54};
-GfdMan *data_0213bc20[2] = {data_0213bc3c, &data_0213bc84};
+// manager's slot regions (one array, indexed by kind: NNSi_GfdSetTexNrmSearchArray and the reset loop in
+// unk_0210169c.c; symbols.txt names each element) and the region lists by texture kind. mwcc's size sort puts the
+// array after the two lists.
+GfdMan data_0213bc3c[5] = {
+    {0xffffffff, 0xffffffff, 0, 0, 0, 0xffff, 0},
+    {0xffffffff, 0xffffffff, 0, 1, 1, 0xffff, 131072},
+    {0xffffffff, 0xffffffff, 0, 1, 2, 0xffff, 196608},
+    {0xffffffff, 0xffffffff, 0, 0, 3, 0xffff, 262144},
+    {0xffffffff, 0xffffffff, 0, 0, 4, 0xffff, 393216},
+};
+GfdMan *data_0213bc28[5] = {&data_0213bc3c[4], &data_0213bc3c[3], &data_0213bc3c[0], &data_0213bc3c[2], &data_0213bc3c[1]};
+GfdMan *data_0213bc20[2] = {&data_0213bc3c[0], &data_0213bc3c[3]};
 u16 data_021f5cb0;

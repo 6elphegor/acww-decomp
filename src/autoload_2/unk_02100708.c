@@ -146,9 +146,7 @@ typedef struct GfdMan {
     u32 base;       // 0x14
 } GfdMan;
 
-extern GfdMan data_0213bc3c[];
-extern GfdMan data_0213bc54;
-extern GfdMan data_0213bc6c;
+extern GfdMan data_0213bc3c[5];   // the regions by kind (0x0213bc3c-0x0213bcb4)
 extern GfdMan *data_0213bc20[];     // 2 entries: 4x4 compressed textures
 extern GfdMan *data_0213bc28[];     // 5 entries: normal textures
 extern u16 data_021f5cb0;

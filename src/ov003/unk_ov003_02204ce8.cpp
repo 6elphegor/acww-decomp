@@ -662,7 +662,7 @@ s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
 s32 FieldItemFx_StartPitfallClose(s32 a, V3 *v);
 s32 FieldItemFx_StartPitfallHole(s32 a, V3 *v);
-void PlayerActor_ResumeWalkOrIdle(Obj *o);
+s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 
 void PlayerActor_EndPitfallStruggle(Obj *o, s32 a);
 void PlayerActor_NetPitfallStruggle(Obj *o, s32 a);
@@ -998,7 +998,7 @@ s32 Math_Atan2(s32 a, s32 b);
 void Tree_KeepShaking(s32 a, Pair p);
 void Tree_RequestShake(s32 a, Pair p, s32 b);
 void FieldItemFx_StartHoleShrink(s32 a, V3 v);
-void PlayerActor_ResumeWalkOrIdle(Obj *o);
+s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void PlayerActor_Act66GetNetData(void *a, Pair *p);
 void PlayerActor_Act66SetNetData(void *a, Pair *p);
 void PlayerActor_Act66SetWork(RecA *r, u32 a, s32 ang, V3 v);

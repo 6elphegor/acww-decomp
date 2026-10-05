@@ -110,7 +110,7 @@ BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
 void *PlayerData_GetCurrent();
 u8 *PlayerData_GetDresser(void *p);
-s32 ChestStorage_GetItems(u8 *p);
+u16 *ChestStorage_GetItems(void *p);
 s32 Str_SPrintf(char *buf, char *fmt, ...);
 BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 void Oam_DrawObj(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);
