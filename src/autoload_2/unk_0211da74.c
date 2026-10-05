@@ -5,7 +5,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 typedef signed int s32;
-typedef long long s64;
+#include "types64.h"
 typedef int BOOL;
 
 typedef struct { u32 head, tail; } OSQ;

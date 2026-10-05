@@ -459,7 +459,7 @@ def main():
                 ".debug_addr", ".debug_macro", ".debug_pubnames", ".debug_pubtypes", ".ARM.attributes"):
         w(f"    {sec} 0 : {{ KEEP(*({sec})) }}")
     w("    /DISCARD/ : { *(.iplt) *(.rel.iplt) *(.igot.plt) *(.rel.dyn) }")
-    w("    /DISCARD/ : { *(.ARM.exidx*) *(.ARM.extab*) *(.fini_array*) *(.comment) *(.note*) }")
+    w("    /DISCARD/ : { *(.ARM.exidx*) *(.ARM.extab*) *(.fini_array*) *(.dtors*) *(.comment) *(.note*) }")
     w("}")
     args.output.write_text("\n".join(lines) + "\n")
     print(f"modern_link.py: {len(objects)} objects, {provides} provided names", file=sys.stderr)

@@ -7,8 +7,7 @@ typedef unsigned int u32;
 typedef signed char s8;
 typedef signed short s16;
 typedef signed int s32;
-typedef long long s64;
-typedef unsigned long long u64;
+#include "types64.h"
 
 typedef struct { u8 pad[20]; } OSMutex;                     // OSMutex (20 bytes)
 typedef struct OSThread { u8 pad[0x6c]; u32 id; } OSThread; // only the id at +0x6c is used

@@ -76,7 +76,7 @@ struct VillagerMemory {
     u8 impression;
     u8 unk_56[2];
     u32 usedTopicMask;
-    long long townTune;
+    s64 townTune;
     struct {
         u16 f0 : 1;
         u16 f1 : 1;

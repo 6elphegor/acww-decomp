@@ -8,8 +8,7 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 typedef u16 wchar_t;
-typedef signed long long s64;
-typedef unsigned long long u64;
+#include "types64.h"
 #define NULL ((void *)0)
 typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)

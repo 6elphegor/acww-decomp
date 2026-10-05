@@ -6,7 +6,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
-typedef long long s64;
+#include "types64.h"
 typedef int BOOL;
 typedef struct VecFx32 { s32 x, y, z; } VecFx32;
 typedef struct RS { u8 pad[0xc4]; u32 isScaleCacheOne[2]; } RS;

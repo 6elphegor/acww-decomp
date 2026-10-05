@@ -27,8 +27,7 @@ s8 *sWifiApUsbKey2Ptr = sWifiApUsbKey2;
 namespace N_d080 {
 extern "C" {
 
-typedef unsigned long long u64;
-typedef long long s64;
+#include "types64.h"
 
 
 

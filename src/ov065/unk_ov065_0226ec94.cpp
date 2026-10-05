@@ -4,8 +4,7 @@
 #include "net/NasAuthParams.h"
 #include "net/NasAuthWork.h"
 
-typedef unsigned long long u64;
-typedef long long s64;
+#include "types64.h"
 
 // Word view of NetCheckParams for the struct copy in NetCheck_Start (a copy of the field-typed struct compiles differently).
 struct NetCheckParamsWords {

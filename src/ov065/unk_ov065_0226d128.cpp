@@ -4,8 +4,7 @@
 #include "net/NasAuthWork.h"
 #include "nitro/os_rtc.h"
 
-typedef unsigned long long u64;
-typedef long long s64;
+#include "types64.h"
 
 
 

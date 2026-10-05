@@ -9,7 +9,7 @@
 #include "net/DwcControl.h"
 #include "net/gpiInfo.h"
 
-typedef long long s64;
+#include "types64.h"
 
 extern "C" {
 void (*sDwcLoginDoneCallback)(void *, void *, u32);

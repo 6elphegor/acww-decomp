@@ -4,7 +4,7 @@
 #include "net/DwcNetChannel.h"
 #include "net/DwcNetChannelTable.h"
 
-typedef long long s64;
+#include "types64.h"
 
 // ov065_039: DWC-like send/receive channel table (0x0227702c..0x022778b0)
 

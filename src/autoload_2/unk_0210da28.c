@@ -6,11 +6,10 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
-typedef unsigned long long u64;
+#include "types64.h"
 typedef signed char s8;
 typedef short s16;
 typedef int s32;
-typedef long long s64;
 typedef int BOOL;
 
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;

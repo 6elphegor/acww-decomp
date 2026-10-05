@@ -22,12 +22,16 @@ parser.add_argument("--toolchain", type=Path, default=None,
 parser.add_argument("--lto-check", action="store_true",
                     help="Write build_modern_lto.ninja instead: compile with -flto and report declarations that don't "
                          "match their definition across files (-Wlto-type-mismatch, -Wodr)")
+parser.add_argument("--warnings", action="store_true",
+                    help="Write build_modern_warn.ninja instead: compile only, with the warnings that point at code relying "
+                         "on mwcc's register allocation or memory layout (uninitialised values, array bounds)")
 parser.add_argument("version", nargs="?", default="usa", help="Game version")
 args = parser.parse_args()
 
 root_path = Path(".")
 src_path = root_path / "src"
-build_path = root_path / "build" / (f"modern_lto_{args.version}" if args.lto_check else f"modern_{args.version}")
+build_path = root_path / "build" / (f"modern_lto_{args.version}" if args.lto_check else
+                                   f"modern_warn_{args.version}" if args.warnings else f"modern_{args.version}")
 
 toolchain = args.toolchain or (Path(os.environ["ARM_TOOLCHAIN"]) if "ARM_TOOLCHAIN" in os.environ else None)
 prefix = str(toolchain / "arm-none-eabi-") if toolchain else "arm-none-eabi-"
@@ -63,6 +67,7 @@ COMMON_FLAGS = " ".join([
     "-funreachable-traps",      # falling off a non-void function (UB in C++) traps instead of running on
     "-DMODERN",
     *(["-flto"] if args.lto_check else []),
+    *(["-Wuninitialized", "-Wmaybe-uninitialized", "-Warray-bounds=2", "-Wstringop-overflow=2"] if args.warnings else []),
     f"-DGAME_VERSION_{args.version.upper()}",
     "-Iinclude",
 ])
@@ -117,6 +122,8 @@ def gap_objects() -> list[str]:
 def main():
     if args.lto_check:
         return lto_check()
+    if args.warnings:
+        return warnings_build()
     with open("build_modern.ninja", "w") as file:
         n = ninja_syntax.Writer(file)
         n.variable("builddir", str(build_path))
@@ -171,6 +178,22 @@ def main():
                 variables={"baserom": f"extract/baserom_acww_{args.version}.nds"})
         n.build("elf", "phony", elf)
         n.default(rom)
+
+
+def warnings_build():
+    with open("build_modern_warn.ninja", "w") as file:
+        n = ninja_syntax.Writer(file)
+        n.variable("builddir", str(build_path))
+        n.rule("cc", f"{CC} {COMMON_FLAGS} {C_FLAGS} $flags -c $in -o $out", description="CC $in")
+        n.rule("cxx", f"{CXX} {COMMON_FLAGS} {CXX_FLAGS} $flags -c $in -o $out", description="CXX $in")
+        outs = []
+        for source in source_files():
+            obj = str(build_path / source.with_suffix(".o"))
+            flags = source_flags(source)
+            n.build(obj, "cxx" if source.suffix == ".cpp" else "cc", str(source),
+                    variables={"flags": " ".join(flags)} if flags else None)
+            outs.append(obj)
+        n.default(outs)
 
 
 def lto_check():

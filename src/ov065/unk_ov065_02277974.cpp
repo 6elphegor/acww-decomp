@@ -3,7 +3,7 @@
 #include "net/DwcGsHttpCallbackCtx.h"
 #include "net/WifiApConfig.h"
 
-typedef long long s64;
+#include "types64.h"
 
 // ov065_040: DWC net helpers: tick->ms, string key lookup, alloc wrappers, WiFi state machine, HTTP-ish task (0x02277974..0x02278250)
 

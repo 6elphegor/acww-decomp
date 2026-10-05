@@ -6,7 +6,7 @@
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned int u32;
-typedef unsigned long long u64;
+#include "types64.h"
 
 #define CHARACTER_WIDTH     8
 #define CHARACTER_HEIGHT    8

@@ -9,7 +9,7 @@
 // ldr r0, [sp]`), which mwcc does only for a volatile object. The other fill of this file (ClearContinuous,
 // src/autoload_2/unk_0210269c.c) and the SDK, G3D and game callers already built write the same volatile.
 typedef unsigned int u32;
-typedef unsigned long long u64;
+#include "types64.h"
 typedef volatile u32 vu32;
 
 #define CHARACTER_WIDTH     8

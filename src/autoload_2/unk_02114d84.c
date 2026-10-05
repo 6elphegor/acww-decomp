@@ -3,7 +3,7 @@
 // the files' bss). ARM code, mwcc 1.2/base.
 typedef unsigned short u16;
 typedef unsigned int u32;
-typedef unsigned long long u64;
+#include "types64.h"
 typedef int s32;
 
 extern void *data_021fce8c; // OSi_UserExceptionHandler

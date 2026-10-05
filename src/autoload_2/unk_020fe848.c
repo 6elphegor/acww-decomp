@@ -11,8 +11,7 @@ typedef short s16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-typedef unsigned long long u64;
-typedef long long s64;
+#include "types64.h"
 
 typedef struct { u32 w0, w1, w2; } FD;               // 12-byte friend/id record
 typedef struct {

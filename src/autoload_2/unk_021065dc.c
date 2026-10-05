@@ -6,7 +6,7 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef short s16;
-typedef long long s64;
+#include "types64.h"
 typedef int BOOL;
 #define NULL 0
 

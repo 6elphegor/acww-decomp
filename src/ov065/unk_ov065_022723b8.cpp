@@ -12,7 +12,7 @@
 #include "net/SockAddrIn.h"
 #include "net/qr2.h"
 
-typedef long long s64;
+#include "types64.h"
 
 extern "C" {
 u8 sDwcMatchServerLock[4];

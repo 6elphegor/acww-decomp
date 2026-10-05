@@ -2,8 +2,7 @@
 #include "types.h"
 #include "net/DwcHttp.h"
 
-typedef unsigned long long u64;
-typedef long long s64;
+#include "types64.h"
 
 // Word view of DwcHttpParams for the struct copy in DwcHttp_Init (a copy of the field-typed struct compiles differently).
 struct DwcHttpParamsWords {

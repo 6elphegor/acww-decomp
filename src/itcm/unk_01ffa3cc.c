@@ -6,11 +6,10 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
-typedef unsigned long long u64;
+#include "types64.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
-typedef signed long long s64;
 typedef volatile u8 vu8;
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;

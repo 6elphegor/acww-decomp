@@ -7,7 +7,7 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef short s16;
-typedef long long s64;
+#include "types64.h"
 typedef struct MatAnmResult {
     u32 flag;               // 0x00
     u32 prm[5];             // 0x04

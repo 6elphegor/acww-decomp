@@ -5,7 +5,7 @@
 #include "net/ghttpConnection.h"
 #include "net/gsPlatformUtil.h"
 
-typedef long long s64;
+#include "types64.h"
 
 // ov065 TU36: GameSpy common (nonport: PRNG/base64/socket wrappers, ghttpBuffer) 0x022789fc..0x0227931c
 

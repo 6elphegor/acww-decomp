@@ -3,7 +3,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
-typedef unsigned long long u64;
+#include "types64.h"
 typedef int s32;
 
 extern u32 data_021fcf54;      // bit mask table state

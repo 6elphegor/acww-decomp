@@ -5,7 +5,7 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef signed short s16;
 typedef signed int s32;
-typedef long long s64;
+#include "types64.h"
 
 typedef void (*TPCallback)(u32 command, u32 result, u32 arg);
 

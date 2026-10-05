@@ -2,7 +2,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
-typedef unsigned long long u64;
+#include "types64.h"
 
 extern u16 data_0213a510[]; // __ctype_map
 extern u8 data_0213a490[];  // __upper_map

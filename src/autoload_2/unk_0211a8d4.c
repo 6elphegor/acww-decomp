@@ -4,7 +4,7 @@
 // the padding byte, then the two tables) is ordered before the next file's, so both parts must be one object.
 typedef unsigned char u8;
 typedef unsigned int u32;
-typedef unsigned long long u64;
+#include "types64.h"
 typedef signed int s32;
 
 typedef struct {

@@ -782,8 +782,7 @@ extern "C" void Visitor_GetTodaysNpc(u16 *out)
 extern "C" void NpcSpawn_FixVillagerPos(void *a, void *vec)
 {
     u32 buf[17];
-    void *u;
-    F4::_ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, u, 0, 0);
+    F4::_ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, vec, 0, 0);
     if (F4::Villager_GetWhereabouts(a) == 0) {
         if (F4::_ZN14GroundInfoBase9getHeightEi(buf, 0)) {
             u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(a);

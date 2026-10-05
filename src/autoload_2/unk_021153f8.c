@@ -6,8 +6,7 @@
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
-typedef unsigned long long u64;
-typedef long long s64;
+#include "types64.h"
 typedef int s32;
 
 // user data block in the shared area (0x027ffc80)
