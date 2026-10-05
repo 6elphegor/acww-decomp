@@ -13,17 +13,17 @@ Code (`.text`) built from source:
 | Module | `.text` bytes | Built from source | Not built | Functions not built |
 |---|--:|--:|--:|--:|
 | ARM9 main | 797,444 | 797,224 (99.97%) | 220 (data inside `.text`, see below) | 0 of 11,879 |
-| `autoload_2` (NitroSDK, NitroSystem, MSL, runtime, in-house library) | 320,532 | 317,464 (99.0%) | 3,068 | 5 of 2,189 |
+| `autoload_2` (NitroSDK, NitroSystem, MSL, runtime, in-house library) | 320,532 | 318,596 (99.4%) | 1,936 | 4 of 2,189 |
 | ITCM | 23,264 | 22,560 (97.0%) | 704 (624 in 2 functions, 80 of data) | 2 of 158 |
 | Overlays (99 with code) | 1,450,796 | 1,450,796 (100%) | 0 | 0 |
-| **Total** | **2,592,036** | **2,588,044 (99.8%)** | **3,992** | **7** |
+| **Total** | **2,592,036** | **2,589,176 (99.9%)** | **2,860** | **6** |
 
 Data sections owned by a source file:
 
 | Module | Bytes | Owned by a unit | Not owned |
 |---|--:|--:|--:|
 | ARM9 main (`.rodata`, `.data`, `.init`, `.ctor`, `.exception`, `.exceptix`) | 150,004 | 149,360 (99.6%) | 644 |
-| `autoload_2` (`.rodata`, `.data`) | 28,076 | 27,888 (99.3%) | 188 |
+| `autoload_2` (`.rodata`, `.data`) | 28,076 | 27,920 (99.4%) | 156 |
 | `autoload_3` (bss of main and the libraries) | 802,752 | 801,752 (99.9%) | 1,000 |
 | DTCM (`.data`) | 1,120 | 104 (9.3%) | 1,016 |
 | Overlays (all sections; 39 overlays are data only) | 505,636 | 505,636 (100%) | 0 |
@@ -40,10 +40,9 @@ by size on their own, see `tools/pipeline/linking.md`, "Data of library units").
 | Address | Size | Library | What it does | Closest attempt / remaining difference |
 |---|--:|---|---|---|
 | `0x020f4904` | 0x158 | in-house (sound) | Fixed-point distance of a position to the listener, three modes | One instruction-order difference in case 2 (6 diff lines). mwcc's pre-RA scheduler gives one of two orders, neither the original (`ldr x; ldr y; sub x; sub y; asr x; asr y; smull x`): with in-place or forward-substituted shifts the `asr y` comes first and `x >> 3` lands in r0; with `x` fused (`(p->x - K) >> 3`) the registers are right but `sub y; asr y` sink below `smull x`. About 1,700 statement orders, variable splits, struct/array locals, inline helpers and `FX_Mul` spellings (C and C++) give only these two orders. Re-tried (U3): a shared `Mag(x, y, z)` / `Mag(const VecFx32 *)` inline for all three cases (mwcc evaluates inline arguments last to first, which breaks cases 0 and 1), case-2-only helpers with every parameter/sum order and split of the subtract/shift between caller and helper, the SDK's `FX_MUL` macro, `register` locals, unsigned subtracts, and 3,000 random case-2 forms: still never below 6 diff lines. |
-| `0x0210f900` | 0xac | NitroSDK GX | `GX_SetBankForSubBG` | Only the compare tree of the switch differs (cases 0, 4, 0x80, 0x180; 4 falls through from 0x180 into 0x80). The original clusters {0, 4} behind a range check and roots the tree at 0x80; every available build (1.2 b56..sp4, 2.0, DSi) roots it at 4. mwcc clusters two cases only when their span max-min+1 is at most 4 ({0, 3} clusters, {0, 4} does not) and three only up to 7, independent of case order, `default`, operand type and -O level; the original's compiler accepts {0, 4} but not {0, 4, 8}. HGSS's SDK (a later compiler) has the same tree, so it is the SDK's compiler, not the source. Bodies, case order and registers are right. |
+| `0x0210f900` | 0xac | NitroSDK GX | `GX_SetBankForSubBG` | Only the compare tree of the switch differs (cases 0, 4, 0x80, 0x180; 4 falls through from 0x180 into 0x80). The original clusters {0, 4} behind a range check and roots the tree at 0x80; every available build (1.2 b56..sp4, 2.0, DSi) roots it at 4. mwcc clusters two cases only when their span max-min+1 is at most 4 ({0, 3} clusters, {0, 4} does not) and three only up to 7, independent of case order, `default`, operand type and -O level; the original's compiler accepts {0, 4} but not {0, 4, 8}. HGSS's SDK (a later compiler) has the same tree, so it is the SDK's compiler, not the source. Bodies, case order and registers are right. Re-checked (U1): the SDK's own form (ntrtwl NitroSDK `gx_vramcnt.c`: enum parameter, `GX_VRAMCNT_SetSubBG_`/`SetARM7_` inline switch) gives the same tree; adding a third empty case inside {0, 4} (e.g. `case 2:`) makes every build cluster it with exactly the original's shape plus one extra compare, which confirms a cluster-density threshold of the original compiler. |
 | `0x0210f9cc` | 0xb8 | NitroSDK GX | `GX_SetBankForARM7` | Same switch-tree difference: cases 0, 4, 8, 12; the original clusters {0, 4} and roots the tree at 8, mwcc roots it at 4. |
-| `0x021239ec` | 0x46c | NitroSDK MB | `MB_ReadSegment`: read a ROM image (from a file or the system ROM header at 0x027ffe00) into the segment buffer, attach it to the cache, patch the autoload callback | 6 diff lines (3 instructions), the last statement only. The rest matches with: `p`/`rest` set from `buf`/`len` and then advanced by 0x160, the ROM size read through an inline helper (so the header base stays in a register), `file = &tmp` before `top`, and the region loop calling an inline `ReadRegion(&info, r)` (the length is loaded twice). Best last statement `*(u32 *)((u8 *)AutoloadCallback - rom->arm9RamAddr + (u32)cache->list[1].ptr) = 0xe12fff1e;` gives `ldr r0,[r6,#0x48]; ldr r3,=K; ... str r3,[r1,r0]` against the original's `ldr r3,[r6,#0x48]; ldr r0,=K; ... str r0,[r3,r1]`: the constant has to be allocated first. ~100 forms of that statement were tried (operand order and casts, temporaries, inline store helpers, `AutoloadCallback` as array or function). |
-| `0x0212d78c` | 0x4d4 | MSL | Wide-character `parse_format` (`wprintf.c` format-string parser) | Only the dispatch of the conversion `switch` differs (56 diff lines, 16 bytes longer); everything else matches with MSL's `parse_format` (the version without `j`/`t`/`z`/`a`, `c >= 0x80 ? 0 : ...` digit test, `f.conversion_char = c; switch (c)`). The original has a table for cases 100..117 guarded by the lower bound only (`subs r0, r3, #0x64; addpl`) plus a separate test for 120; every available build (1.2, 2.0, DSi) splits off 100 and builds a bounds-checked table for 101..120, whatever the case order. Same family as the switch differences in [`assembly.md`](assembly.md) (probably the missing 1.2/sp1). |
+| `0x0212d78c` | 0x4d4 | MSL | Wide-character `parse_format` (`wprintf.c` format-string parser) | Only the dispatch of the conversion `switch` differs (56 diff lines, 16 bytes longer); everything else matches with MSL's `parse_format` (the version without `j`/`t`/`z`/`a`, `c >= 0x80 ? 0 : ...` digit test, `f.conversion_char = c; switch (c)`). The original has a table for cases 100..117 guarded by the lower bound only (`subs r0, r3, #0x64; addpl`) plus a separate test for 120; every available build (1.2, 2.0, DSi) splits off 100 and builds a bounds-checked table for 101..120, whatever the case order. Same family as the switch differences in [`assembly.md`](assembly.md) (probably the missing 1.2/sp1). Re-checked (U1): `-O4,s` (the size matches, 0x4d4) and -O2/-O3, `-opt space/speed`, `-inline auto` give the same dispatch; no available build emits a lower-bound-only (`subs`/`addpl`) table at all, and extra default-mapped case labels inside 'd'..'u' (all 255 subsets of h/j/k/l/m/q/r/t, invisible in the original table) never give it either. |
 
 ### ITCM
 
@@ -70,7 +69,6 @@ by size on their own, see `tools/pipeline/linking.md`, "Data of library units").
 
 | Range | Size | Contents |
 |---|--:|---|
-| `autoload_2` `.rodata` 0x0213a3f8-0x0213a410, `.data` 0x0213c204-0x0213c20c | 24 + 8 | Data of `MB_ReadSegment` (`0x021239ec`, not built): a table and the word pointing to it, and the string `"rom"` |
 | `autoload_2` `.rodata` 0x0213a740-0x0213a748 | 8 | `__ptmf_null` of the C++ runtime |
 | `autoload_2` `.data` 0x0213b120-0x0213b1a4 | 132 | `ProcBase` (next section) |
 | `autoload_2` `.data` 0x0213bba4 | 4 | A constant of the SPL unit `unk_020fc984.cpp`; the code copies it as a 6-byte `VecFx16`, so its declaration is not the original object |

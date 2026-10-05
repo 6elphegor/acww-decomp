@@ -922,6 +922,12 @@ src/autoload_2/unk_02123444.c:
     complete
     .text       start:0x02123444 end:0x021239ec
 
+src/autoload_2/unk_021239ec.c:
+    complete
+    .text       start:0x021239ec end:0x02123e58
+    .rodata     start:0x0213a3f8 end:0x0213a410
+    .data       start:0x0213c204 end:0x0213c20c
+
 src/autoload_2/unk_02123e58.c:
     complete
     .text       start:0x02123e58 end:0x02124408
