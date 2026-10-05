@@ -3,9 +3,8 @@
 #include "net/gpiProfile.h"
 #include "net/gpiCallback.h"
 #include "net/gpiOperation.h"
-#include "net/Unk_ov065_0227d8e0_Ctx.h"
-#include "net/Unk_ov065_0227f00c_Host.h"
-#include "net/Unk_ov065_0227f324_Rec.h"
+#include "net/SockAddrIn.h"
+#include "net/SockHostEnt.h"
 #include "net/gpi.h"
 #include "net/gpiPeer.h"
 
@@ -77,15 +76,15 @@ s32 gpiProfileMap(void *, s32, s32);
 s32 gpiDisconnectCleanupProfile(void);
 
 s32 gpiSendData(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 gpiAppendIntToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, s32);
-s32 gpiAppendStringToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *);
-s32 gpiAppendStringToBufferLen(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *, s32);
-s32 gpiAppendCharToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, char);
-s32 gpiSendOrBufferStringLen(Unk_ov065_0227d8e0_Handle *, GPIPeer *, const char *, s32);
-s32 gpiSendFromBuffer(Unk_ov065_0227d8e0_Handle *, s32, GPIBuffer *, s32 *, s32, const char *);
-s32 gpiCallCallback(Unk_ov065_0227d8e0_Handle *, GPICallbackData *);
-s32 gpiAddCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GPICallbackData *, GPIOperation *, s32);
-void gpiCallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
+s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
+s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+s32 gpiAppendStringToBufferLen(GPConnection *, GPIBuffer *, const char *, s32);
+s32 gpiAppendCharToBuffer(GPConnection *, GPIBuffer *, char);
+s32 gpiSendOrBufferStringLen(GPConnection *, GPIPeer *, const char *, s32);
+s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
+s32 gpiCallCallback(GPConnection *, GPICallbackData *);
+s32 gpiAddCallback(GPConnection *, GPICallbackCopy, GPICallbackData *, GPIOperation *, s32);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
 
 
 
@@ -113,40 +112,6 @@ extern "C" char __GSIACGamename[];
 // ov065_051: DWC/GameSpy-like response parser (0x0227e350..0x0227eb60)
 
 
-struct Unk_ov065_0227e350_Ctx {
-    u8 errorString;
-    u8 pad_001[0xff];
-    s32 infoCaching;
-    s32 infoCachingBuddyOnly;
-    s32 simulation;
-    s32 firewall;
-    char nick[0x1f];
-    char uniqueNick[0x15];
-    char email[0x33];
-    char password[0x21];
-    s32 sessKey;
-    s32 userId;
-    s32 profileId;
-    u8 pad_1a4[0x30];
-    s32 cmSocket;
-    s32 connectState;
-    u8 pad_1dc[0x18];
-    char outputBuffer[0x14];
-    s32 peerPort;
-    u8 pad_20c[0x20c];
-    s32 errorCode;
-    u8 pad_41c[0x50];
-    s32 productId;
-    s32 namespaceId;
-    char loginTicket[0x1c];
-};
-
-
-typedef Unk_ov065_0227e350_Ctx Ctx0227;
-
-typedef GPIConnectData Req0227;
-
-
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
@@ -162,24 +127,24 @@ void Util_RandSeed(u32);
 s32 Util_RandInt(s32, s32);
 void MD5Digest(char *, s32, char *);
 void B64Encode(char *, char *, s32, s32);
-s32 gpiAppendStringToBuffer(Ctx0227 **, char *, const char *);
-s32 gpiAppendIntToBuffer(Ctx0227 **, char *, s32);
-void gpiCallErrorCallback(Ctx0227 **, s32, s32);
-s32 gpiAddCallback(Ctx0227 **, GPICallback, void *, GPIOperation *, s32);
+s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
+s32 gpiAddCallback(GPConnection *, GPICallback, void *, GPIOperation *, s32);
 void randomString(void *, s32);
-void gpiFindProfileByUser(Ctx0227 **, char *, char *, u32 **);
-void gpiRemoveProfile(Ctx0227 **, GPIProfile *);
-void gpiRemoveProfileByID(Ctx0227 **);
-u32 *gpiProfileListAdd(Ctx0227 **, s32);
-void gpiRemoveOperation(Ctx0227 **, GPIOperation *);
-void gpiSetErrorString(Ctx0227 **, const char *);
-void gpiSetError(Ctx0227 **, s32, const void *);
-s32 gpiCheckSocketConnect(Ctx0227 **, s32, s32 *);
+void gpiFindProfileByUser(GPConnection *, char *, char *, u32 **);
+void gpiRemoveProfile(GPConnection *, GPIProfile *);
+void gpiRemoveProfileByID(GPConnection *);
+u32 *gpiProfileListAdd(GPConnection *, s32);
+void gpiRemoveOperation(GPConnection *, GPIOperation *);
+void gpiSetErrorString(GPConnection *, const char *);
+void gpiSetError(GPConnection *, s32, const void *);
+s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
 s32 gpiValueForKey(char *, const char *, char *, s32);
-s32 gpiCheckForError(Ctx0227 **, char *, s32);
+s32 gpiCheckForError(GPConnection *, char *, s32);
 void strzcpy(void *, char *, s32);
-s32 gpiSendNewuser(Ctx0227 **, Req0227 *);
-s32 gpiSendLogin(Ctx0227 **, Req0227 *);
+s32 gpiSendNewuser(GPConnection *, GPIConnectData *);
+s32 gpiSendLogin(GPConnection *, GPIConnectData *);
 
 
 
@@ -191,19 +156,6 @@ s32 gpiSendLogin(Ctx0227 **, Req0227 *);
 
 namespace Nc {
 // ov065_052: DWC/GameSpy GP connection setup helpers (0x0227ee64..0x0227f54c)
-
-
-
-
-
-
-
-
-
-
-typedef GPIConnection Ctx0227;
-
-typedef GPICallback Pair0227;
 
 extern "C" {
 
@@ -242,19 +194,19 @@ extern char data_ov065_0228d748[];
 extern char data_ov065_0228d750[];
 extern u8 data_0213a490[];
 
-s32 gpiReset(Ctx0227 **);
-void gpiSetErrorString(Ctx0227 **, const char *);
-void gpiSetError(Ctx0227 **, s32, const char *);
-void gpiCallErrorCallback(Ctx0227 **, s32, s32);
+s32 gpiReset(GPConnection *);
+void gpiSetErrorString(GPConnection *, const char *);
+void gpiSetError(GPConnection *, s32, const char *);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
 void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
 char *goastrdup(const char *);
-s32 gpiAddOperation(Ctx0227 **, s32, void *, GPIOperation **, s32, s32, s32);
-void gpiFailedOpCallback(Ctx0227 **, GPIOperation *);
-s32 gpiDisconnect(Ctx0227 **, s32);
-s32 gpiProcess(Ctx0227 **, s32);
+s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, s32, s32);
+void gpiFailedOpCallback(GPConnection *, GPIOperation *);
+s32 gpiDisconnect(GPConnection *, s32);
+s32 gpiProcess(GPConnection *, s32);
 s32 socket(s32, s32, s32);
 s32 bind(s32, void *, s32);
 s32 listen(s32, s32);
@@ -262,16 +214,16 @@ s32 getsockname(s32, void *, s32 *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
 s32 SetSockBlocking(s32, s32);
-Unk_ov065_0227f00c_Host *Sock_GetHostByName(char *);
-s32 gpiGetProfile(Ctx0227 **, s32, GPIProfile **);
+SockHostEnt *Sock_GetHostByName(char *);
+s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
 void gpiInfoCacheToArg(s32, void *);
-s32 gpiRemoveOperation(Ctx0227 **, GPIOperation *);
-s32 gpiAddCallback(Ctx0227 **, Pair0227, void *, GPIOperation *, s32);
-s32 gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
-s32 gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
-s32 gpiSendLocalInfo(Ctx0227 **, const char *, const char *);
-s32 gpiSendUserInfo(Ctx0227 **, const char *, const char *);
-s32 gpiSetInfoi(Ctx0227 **, s32, s32);
+s32 gpiRemoveOperation(GPConnection *, GPIOperation *);
+s32 gpiAddCallback(GPConnection *, GPICallback, void *, GPIOperation *, s32);
+s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
+s32 gpiSendLocalInfo(GPConnection *, const char *, const char *);
+s32 gpiSendUserInfo(GPConnection *, const char *, const char *);
+s32 gpiSetInfoi(GPConnection *, s32, s32);
 
 void *memset(void *, s32, u32);
 u32 rand(void);
@@ -279,8 +231,8 @@ s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *STD_CopyString(char *, const char *);
 
-s32 gpiSendGetInfo(Ctx0227 **, s32, s32);
-s32 gpiStartConnect(Ctx0227 **, GPIOperation *);
+s32 gpiSendGetInfo(GPConnection *, s32, s32);
+s32 gpiStartConnect(GPConnection *, GPIOperation *);
 
 #define GP_FAIL(str) \
     { \
@@ -320,11 +272,11 @@ void randomString(char *buf, s32 n) {
 
 namespace Nc {
 extern "C" {
-s32 gpiStartConnect(Ctx0227 **h, GPIOperation *n) {
-    Ctx0227 *ctx = *h;
-    Unk_ov065_0227f00c_Sa sa;
+s32 gpiStartConnect(GPConnection *h, GPIOperation *n) {
+    GPIConnection *ctx = *h;
+    SockAddrIn sa;
     s32 len;
-    Unk_ov065_0227f00c_Host *host;
+    SockHostEnt *host;
     s32 e;
     u32 *w;
     if (ctx->firewall == 0) {
@@ -355,7 +307,7 @@ s32 gpiStartConnect(Ctx0227 **h, GPIOperation *n) {
     w[0] = 0;
     w[1] = 0;
     sa.family = 2;
-    sa.addr = **host->addrList;
+    sa.addr = *(u32 *)*host->addrList;
     sa.port = 0xcc74;
     if (connect(ctx->cmSocket, &sa, 8) == -1) {
         e = GOAGetLastError(ctx->cmSocket);
@@ -370,9 +322,9 @@ s32 gpiStartConnect(Ctx0227 **h, GPIOperation *n) {
 
 namespace Nc {
 extern "C" {
-s32 gpiConnect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, const char *a4, const char *a5,
+s32 gpiConnect(GPConnection *h, const char *a1, const char *a2, const char *a3, const char *a4, const char *a5,
                         const char *a6, const char *a7, s32 mode, s32 a9, s32 a10, s32 a11, s32 a12) {
-    Ctx0227 *ctx = *h;
+    GPIConnection *ctx = *h;
     GPIConnectData *obj;
     GPIOperation *node;
     s32 r;
@@ -441,8 +393,8 @@ s32 gpiConnect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, cons
 
 namespace Nb {
 extern "C" {
-s32 gpiSendLogin(Ctx0227 **h, Req0227 *req) {
-    Ctx0227 *c = *h;
+s32 gpiSendLogin(GPConnection *h, GPIConnectData *req) {
+    GPIConnection *c = *h;
     u32 *out;
     char b1[0x21];
     char b2[0x200];
@@ -458,8 +410,8 @@ s32 gpiSendLogin(Ctx0227 **h, Req0227 *req) {
     MD5Digest(p, STD_GetStringLength(p), req->passwordHash);
     if (req->authtoken[0] != 0) {
         q = req->authtoken;
-    } else if (c->uniqueNick[0] != 0) {
-        q = c->uniqueNick;
+    } else if (c->uniquenick[0] != 0) {
+        q = c->uniquenick;
     } else {
         OS_SPrintf(b3, "%s@%s", c->nick, c->email);
         q = b3;
@@ -469,52 +421,52 @@ s32 gpiSendLogin(Ctx0227 **h, Req0227 *req) {
     if (c->infoCaching != 0) {
         gpiFindProfileByUser(h, c->nick, c->email, &out);
         if (out != NULL) {
-            c->userId = out[1];
-            c->profileId = out[0];
+            c->userid = out[1];
+            c->profileid = out[0];
         }
     }
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\login\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\challenge\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, req->userChallenge);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\login\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\challenge\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, req->userChallenge);
     if (req->authtoken[0] != 0) {
-        gpiAppendStringToBuffer(h, c->outputBuffer, "\\authtoken\\");
-        gpiAppendStringToBuffer(h, c->outputBuffer, req->authtoken);
-    } else if (c->uniqueNick[0] != 0) {
-        gpiAppendStringToBuffer(h, c->outputBuffer, "\\uniquenick\\");
-        gpiAppendStringToBuffer(h, c->outputBuffer, c->uniqueNick);
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\authtoken\\");
+        gpiAppendStringToBuffer(h, &c->outputBuffer, req->authtoken);
+    } else if (c->uniquenick[0] != 0) {
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\uniquenick\\");
+        gpiAppendStringToBuffer(h, &c->outputBuffer, c->uniquenick);
     } else {
-        gpiAppendStringToBuffer(h, c->outputBuffer, "\\user\\");
-        gpiAppendStringToBuffer(h, c->outputBuffer, c->nick);
-        gpiAppendStringToBuffer(h, c->outputBuffer, "@");
-        gpiAppendStringToBuffer(h, c->outputBuffer, c->email);
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\user\\");
+        gpiAppendStringToBuffer(h, &c->outputBuffer, c->nick);
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "@");
+        gpiAppendStringToBuffer(h, &c->outputBuffer, c->email);
     }
-    if (c->userId != 0) {
-        gpiAppendStringToBuffer(h, c->outputBuffer, "\\userid\\");
-        gpiAppendIntToBuffer(h, c->outputBuffer, c->userId);
+    if (c->userid != 0) {
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\userid\\");
+        gpiAppendIntToBuffer(h, &c->outputBuffer, c->userid);
     }
-    if (c->profileId != 0) {
-        gpiAppendStringToBuffer(h, c->outputBuffer, "\\profileid\\");
-        gpiAppendIntToBuffer(h, c->outputBuffer, c->profileId);
+    if (c->profileid != 0) {
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\profileid\\");
+        gpiAppendIntToBuffer(h, &c->outputBuffer, c->profileid);
     }
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\response\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, b1);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\response\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, b1);
     if (c->firewall == 1) {
-        gpiAppendStringToBuffer(h, c->outputBuffer, "\\firewall\\1");
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\firewall\\1");
     }
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\port\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\port\\");
     {
         s32 t = (u16)c->peerPort;
         s32 sw = (s16)(u16)(((t >> 8) & 0xff) | ((t << 8) & 0xff00));
-        gpiAppendIntToBuffer(h, c->outputBuffer, sw);
+        gpiAppendIntToBuffer(h, &c->outputBuffer, sw);
     }
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\productid\\");
-    gpiAppendIntToBuffer(h, c->outputBuffer, c->productId);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\gamename\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, __GSIACGamename);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\namespaceid\\");
-    gpiAppendIntToBuffer(h, c->outputBuffer, c->namespaceId);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\id\\1");
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\productid\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->productID);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\gamename\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, __GSIACGamename);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->namespaceID);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\id\\1");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -522,8 +474,8 @@ s32 gpiSendLogin(Ctx0227 **h, Req0227 *req) {
 
 namespace Nb {
 extern "C" {
-s32 gpiSendNewuser(Ctx0227 **h, Req0227 *req) {
-    Ctx0227 *c = *h;
+s32 gpiSendNewuser(GPConnection *h, GPIConnectData *req) {
+    GPIConnection *c = *h;
     char a1[0x1f];
     char b1[0x2d];
     char a2[0x41];
@@ -545,21 +497,21 @@ s32 gpiSendNewuser(Ctx0227 **h, Req0227 *req) {
     }
     a1[i] = 0;
     B64Encode(a1, b1, len, 1);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\newuser\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\email\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, c->email);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\nick\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, c->nick);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\passwordenc\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, b1);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\productid\\");
-    gpiAppendIntToBuffer(h, c->outputBuffer, c->productId);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\gamename\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, __GSIACGamename);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\namespaceid\\");
-    gpiAppendIntToBuffer(h, c->outputBuffer, c->namespaceId);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\uniquenick\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, c->uniqueNick);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\newuser\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\email\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, c->email);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\nick\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, c->nick);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\passwordenc\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, b1);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\productid\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->productID);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\gamename\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, __GSIACGamename);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->namespaceID);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\uniquenick\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, c->uniquenick);
     if (req->cdkey[0] != 0) {
         len = STD_GetStringLength(req->cdkey);
         Util_RandSeed(0x79707367);
@@ -574,11 +526,11 @@ s32 gpiSendNewuser(Ctx0227 **h, Req0227 *req) {
         }
         a2[i] = 0;
         B64Encode(a2, b2, len, 1);
-        gpiAppendStringToBuffer(h, c->outputBuffer, "\\cdkeyenc\\");
-        gpiAppendStringToBuffer(h, c->outputBuffer, b2);
+        gpiAppendStringToBuffer(h, &c->outputBuffer, "\\cdkeyenc\\");
+        gpiAppendStringToBuffer(h, &c->outputBuffer, b2);
     }
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\id\\1");
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\id\\1");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -586,10 +538,10 @@ s32 gpiSendNewuser(Ctx0227 **h, Req0227 *req) {
 
 namespace Nb {
 extern "C" {
-s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
-    Ctx0227 *c = *h;
-    Req0227 *req;
-    Unk_ov065_0227e0e8_Wrap pr;
+s32 gpiProcessConnect(GPConnection *h, GPIOperation *n, char *line) {
+    GPIConnection *c = *h;
+    GPIConnectData *req;
+    GPICallbackCopy pr;
     char b1[0x21];
     char b2[0x15];
     char b3[0x200];
@@ -598,13 +550,13 @@ s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
     s32 t;
     if (gpiCheckForError(h, line, 0) != 0) {
         t = c->errorCode;
-        if (t == 0x106 && c->profileId != 0) {
+        if (t == 0x106 && c->profileid != 0) {
             gpiRemoveProfileByID(h);
-            c->userId = 0;
-            c->profileId = 0;
+            c->userid = 0;
+            c->profileid = 0;
         } else if (t == 0x201) {
             if (gpiValueForKey(line, "\\pid\\", b3, 0x200) != 0) {
-                c->profileId = atol(b3);
+                c->profileid = atol(b3);
             }
         }
         if (strstr(line, "\\fatal\\") != 0) {
@@ -616,7 +568,7 @@ s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
         gpiCallErrorCallback(h, 4, 0);
         return 4;
     }
-    req = (Req0227 *)n->data;
+    req = (GPIConnectData *)n->data;
     switch (n->state) {
     case 1:
         if (strncmp(line, "\\lc\\1", 5) != 0) {
@@ -654,13 +606,13 @@ s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
             gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->userId = atol(b3);
+        c->userid = atol(b3);
         if (gpiValueForKey(line, "\\profileid\\", b3, 0x200) == 0) {
             gpiSetError(h, 1, "Unexepected data was received from the server.");
             gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->profileId = atol(b3);
+        c->profileid = atol(b3);
         t = gpiSendLogin(h, req);
         if (t != 0) {
             return t;
@@ -684,13 +636,13 @@ s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
             gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->userId = atol(b3);
+        c->userid = atol(b3);
         if (gpiValueForKey(line, "\\profileid\\", b3, 0x200) == 0) {
             gpiSetError(h, 1, "Unexepected data was received from the server.");
             gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->profileId = atol(b3);
+        c->profileid = atol(b3);
         if (gpiValueForKey(line, "\\uniquenick\\", b2, 0x15) == 0) {
             b2[0] = 0;
         }
@@ -699,8 +651,8 @@ s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
         }
         if (req->authtoken[0] != 0) {
             p = req->authtoken;
-        } else if (c->uniqueNick[0] != 0) {
-            p = c->uniqueNick;
+        } else if (c->uniquenick[0] != 0) {
+            p = c->uniquenick;
         } else {
             OS_SPrintf(b4, "%s@%s", c->nick, c->email);
             p = b4;
@@ -718,9 +670,9 @@ s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
             return 3;
         }
         if (c->infoCaching != 0) {
-            u32 *e = gpiProfileListAdd(h, c->profileId);
-            e[0] = c->profileId;
-            e[1] = c->userId;
+            u32 *e = gpiProfileListAdd(h, c->profileid);
+            e[0] = c->profileid;
+            e[1] = c->userid;
         }
         c->connectState = 3;
         pr = n->callback;
@@ -731,7 +683,7 @@ s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
                 return 1;
             }
             memset(q, 0, 0x20);
-            q[1] = c->profileId;
+            q[1] = c->profileid;
             q[0] = 0;
             strzcpy(q + 2, b2, 0x15);
             t = gpiAddCallback(h, pr.p, q, n, 0);
@@ -749,8 +701,8 @@ s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
 
 namespace Nb {
 extern "C" {
-s32 gpiCheckConnect(Ctx0227 **h) {
-    Ctx0227 *c = *h;
+s32 gpiCheckConnect(GPConnection *h) {
+    GPIConnection *c = *h;
     s32 out;
     s32 r = gpiCheckSocketConnect(h, c->cmSocket, &out);
     if (r == 0) {
@@ -772,8 +724,8 @@ s32 gpiCheckConnect(Ctx0227 **h) {
 
 namespace Nb {
 extern "C" {
-s32 gpiDisconnectCleanupProfile(Ctx0227 **h, GPIProfile *n) {
-    Ctx0227 *c = *h;
+s32 gpiDisconnectCleanupProfile(GPConnection *h, GPIProfile *n) {
+    GPIConnection *c = *h;
     if (n->buddyStatus != NULL) {
         if (c->infoCachingBuddyOnly == 0) {
             GsUtil_Free(n->buddyStatus->statusString);
@@ -800,13 +752,13 @@ s32 gpiDisconnectCleanupProfile(Ctx0227 **h, GPIProfile *n) {
 
 namespace Na {
 extern "C" {
-s32 gpiDisconnect(Unk_ov065_0227d8e0_Handle *h, s32 a) {
-    Unk_ov065_0227d8e0_Ctx *ctx = h->connection;
+s32 gpiDisconnect(GPConnection *h, s32 a) {
+    GPIConnection *ctx = *h;
     s32 st = ctx->connectState;
     s32 out;
     void *p;
-    GPICallbackData *n;
-    GPICallbackData *cur;
+    GPIPeer *n;
+    GPIPeer *cur;
     if (st != 4) {
     if (st != 0) {
         if (a != 0 && st == 3) {
@@ -826,27 +778,27 @@ s32 gpiDisconnect(Unk_ov065_0227d8e0_Handle *h, s32 a) {
             ctx->peerSocket = -1;
         }
         ctx->connectState = 4;
-        ctx->userId = 0;
-        ctx->profileId = 0;
+        ctx->userid = 0;
+        ctx->profileid = 0;
     }
-    GsUtil_Free(ctx->recvBuffer);
-    ctx->recvBuffer = NULL;
+    GsUtil_Free(ctx->socketBuffer.buffer);
+    ctx->socketBuffer.buffer = NULL;
     GsUtil_Free(ctx->inputBuffer);
     ctx->inputBuffer = NULL;
     GsUtil_Free(ctx->outputBuffer.buffer);
     ctx->outputBuffer.buffer = NULL;
-    GsUtil_Free(ctx->profileUpdateBuffer);
-    ctx->profileUpdateBuffer = NULL;
-    GsUtil_Free(ctx->userUpdateBuffer);
-    ctx->userUpdateBuffer = NULL;
+    GsUtil_Free(ctx->updateproBuffer.buffer);
+    ctx->updateproBuffer.buffer = NULL;
+    GsUtil_Free(ctx->updateuiBuffer.buffer);
+    ctx->updateuiBuffer.buffer = NULL;
     while (ctx->operationList != NULL) {
         gpiRemoveOperation(h, ctx->operationList);
     }
     ctx->operationList = NULL;
-    n = (GPICallbackData *)ctx->peerList;
+    n = ctx->peerList;
     while (n != NULL) {
         cur = n;
-        n = *(GPICallbackData **)((u8 *)n + 0x3c);
+        n = n->pnext;
         gpiDestroyPeer(h, cur);
     }
     ctx->peerList = NULL;
@@ -859,14 +811,14 @@ s32 gpiDisconnect(Unk_ov065_0227d8e0_Handle *h, s32 a) {
 
 namespace Na {
 extern "C" {
-void gpiCallErrorCallback(Unk_ov065_0227d8e0_Handle *h, s32 a, s32 b) {
-    Unk_ov065_0227d8e0_Ctx *ctx = h->connection;
-    Unk_ov065_0227e0e8_Wrap p;
+void gpiCallErrorCallback(GPConnection *h, s32 a, s32 b) {
+    GPIConnection *ctx = *h;
+    GPICallbackCopy p;
     GPErrorArg *m;
     if (b == 1) {
         ctx->fatalError = 1;
     }
-    p = ctx->callbacks[0];
+    p = *(GPICallbackCopy *)&ctx->callbacks[0];
     if (p.p.callback != 0) {
         m = (GPErrorArg *)GsUtil_Alloc(0x10);
         if (m != NULL) {

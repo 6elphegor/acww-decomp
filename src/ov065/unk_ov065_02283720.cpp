@@ -2,12 +2,11 @@
 
 #include "types.h"
 #include "net/darray.h"
-#include "net/Unk_ov065_02282f90_Ctx.h"
-#include "net/Unk_ov065_022831c0_Host.h"
-#include "net/Unk_ov065_022833b4_Pair.h"
+#include "net/SockAddrIn.h"
+#include "net/SockHostEnt.h"
 #include "net/gpersist.h"
 #include "net/gt2Main.h"
-#include "net/Unk_ov065_022833b4_Src.h"
+#include "net/gpiCallback.h"
 
 extern "C" u8 enc1[16];
 
@@ -69,14 +68,14 @@ s32 gpiProcess(void *, s32);
 void *GsUtil_Alloc(u32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
-Unk_ov065_022831c0_Host *Sock_GetHostByName(const char *);
+SockHostEnt *Sock_GetHostByName(const char *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
 void gpiCallErrorCallback(void *, s32, s32);
 s32 gpiPeerStartTransferMessage(void *, s32, s32, void *);
 s32 gpiSendOrBufferString(void *, s32, char *);
 s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
-s32 gpiAddCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
+s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 void gpiRemoveOperation(void *, void *);
 s32 GSISocketSelect(s32, s32, s32 *, s32 *);
 s32 ArrayLength(void *);
@@ -183,7 +182,6 @@ void closesocket(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Realloc(void *, s32);
 void *GsUtil_Alloc(s32);
-s32 current_time(u8 *);
 void gti2CloseSocket(GTI2Socket *);
 
 void ProcessPlayerAuth(char *, s32);

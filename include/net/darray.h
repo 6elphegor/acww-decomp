@@ -3,10 +3,14 @@
 
 #include "types.h"
 
-// GameSpy darray.c DArrayImplementation (DArray) and its element free callback; the functions (ArrayNew ...)
-// are defined in src/ov065/unk_ov065_02278328.cpp.
+// GameSpy darray.c DArrayImplementation (DArray) and the darray.h callback types; the functions (ArrayNew ...)
+// are defined in src/ov065/unk_ov065_02278328.cpp. ArrayElementFreeFn / ArrayCompareFn also serve as the hashtable.h
+// TableElementFreeFn / TableCompareFn (same shape); GsArrayMapFn is used for both ArrayMapFn (void) and ArrayMapFn2
+// (int) callbacks.
 
 typedef void (*ArrayElementFreeFn)(void *);
+typedef s32 (*ArrayCompareFn)(void *, void *);
+typedef s32 (*GsArrayMapFn)(void *, void *);
 
 struct DArrayImplementation {
     /* 0x00 */ s32 count;

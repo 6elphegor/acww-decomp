@@ -1,7 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/sb_crypt.h"
+#include "net/SockAddrIn.h"
 #include "net/sb_internal.h"
+#include "net/gsPlatformUtil.h"
 
 // ov065_066: GameSpy transport (RC4-like cipher, connection manager) 0x022884fc..0x02288df0
 
@@ -22,8 +24,6 @@ extern u8 data_0213a410[];
 u32 func_0213335c(u32 a, u32 b);
 s32 strstr(void *a, void *b);
 s32 func_02130b04(void *a, void *b);
-
-u32 current_time(void);
 void SocketStartUp(void);
 s32 CanReceiveOnSocket(s32 s);
 s32 recvfrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
@@ -44,7 +44,7 @@ typedef GOACryptState Cipher;
 typedef SBQueryEngine Mgr;
 typedef _SBServer Ent;
 typedef SBServerFIFO List;
-typedef Unk_ov065_02288b60_Sa Sa;
+typedef SockAddrIn Sa;
 
 extern "C" {
 u32 GOADecryptByte(Cipher *c, u32 x);

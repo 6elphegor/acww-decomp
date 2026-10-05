@@ -60,10 +60,15 @@ struct GHIPostState {
     /* 0xc */ s32 fileLength;
 };
 
-// view of GHIConnection::postParts / postPartIndex
-struct Unk_ov065_0227a3f4_List {
-    /* 0x0 */ void *postParts;
-    /* 0x4 */ s32 postPartIndex;
+// GHIConnection's posting state (cf. GameSpy ghttpPost.h GHIPostingState; ACWW's revision ends after param, without
+// waitPostContinue / completed).
+struct GHIPostingState {
+    /* 0x00 */ DArrayImplementation *states;
+    /* 0x04 */ s32 index;
+    /* 0x08 */ s32 bytesPosted;
+    /* 0x0c */ s32 totalBytes;
+    /* 0x10 */ ghttpPostCallback callback;
+    /* 0x14 */ u32 param;
 };
 
 struct GHIConnection {
@@ -113,12 +118,7 @@ struct GHIConnection {
     /* 0x134 */ u32 throttle;
     /* 0x138 */ u32 lastThrottleRecv;
     /* 0x13c */ GHIPost *post;
-    /* 0x140 */ DArrayImplementation *postParts;
-    /* 0x144 */ s32 postPartIndex;
-    /* 0x148 */ s32 postBytesSent;
-    /* 0x14c */ s32 postTotalBytes;
-    /* 0x150 */ ghttpPostCallback postCallback;
-    /* 0x154 */ u32 postCallbackParam;
+    /* 0x140 */ GHIPostingState postingState;
     /* 0x158 */ u32 maxRecvTime;
     /* 0x15c */ char *proxyOverrideServer;
     /* 0x160 */ u16 proxyOverridePort;

@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/GsSocket.h"
 #include "net/ghttpConnection.h"
+#include "net/gsPlatformUtil.h"
 
 typedef long long s64;
 
@@ -622,12 +623,12 @@ u32 GOAGetLastError(void) {
 
 namespace FA {
 extern "C" {
-void time(u32 *out) {
-    u64 t = OS_GetTick();
-    u64 v = (t << 6) / 0x1ff6210;
-    if (out != NULL) {
-        *out = (u32)v;
+s32 time(s32 *timer) {
+    s32 t = (s32)((OS_GetTick() << 6) / 0x1ff6210);
+    if (timer != NULL) {
+        *timer = t;
     }
+    return t;
 }
 }
 }

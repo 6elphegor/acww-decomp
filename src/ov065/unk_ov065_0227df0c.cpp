@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/gpiOperation.h"
-#include "net/Unk_ov065_0227d8e0_Ctx.h"
+#include "net/gpi.h"
 #include "net/gpiPeer.h"
 #include "net/gp.h"
 
@@ -47,26 +47,26 @@ s32 gpiProfileMap(void *, s32, s32);
 s32 gpiDisconnectCleanupProfile(void);
 
 s32 gpiSendData(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 gpiAppendIntToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, s32);
-s32 gpiAppendStringToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *);
-s32 gpiAppendStringToBufferLen(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *, s32);
-s32 gpiAppendCharToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, char);
-s32 gpiSendOrBufferStringLen(Unk_ov065_0227d8e0_Handle *, GPIPeer *, const char *, s32);
-s32 gpiSendFromBuffer(Unk_ov065_0227d8e0_Handle *, s32, GPIBuffer *, s32 *, s32, const char *);
-s32 gpiCallCallback(Unk_ov065_0227d8e0_Handle *, GPICallbackData *);
-s32 gpiAddCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GPICallbackData *, GPIOperation *, s32);
-void gpiCallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
+s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
+s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+s32 gpiAppendStringToBufferLen(GPConnection *, GPIBuffer *, const char *, s32);
+s32 gpiAppendCharToBuffer(GPConnection *, GPIBuffer *, char);
+s32 gpiSendOrBufferStringLen(GPConnection *, GPIPeer *, const char *, s32);
+s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
+s32 gpiCallCallback(GPConnection *, GPICallbackData *);
+s32 gpiAddCallback(GPConnection *, GPICallbackCopy, GPICallbackData *, GPIOperation *, s32);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
 }
 
 extern "C" {
-s32 gpiAddCallback(Unk_ov065_0227d8e0_Handle *h, Unk_ov065_0227e0e8_Wrap p, GPICallbackData *m, GPIOperation *g, s32 k) {
-    Unk_ov065_0227d8e0_Ctx *ctx = h->connection;
+s32 gpiAddCallback(GPConnection *h, GPICallbackCopy p, GPICallbackData *m, GPIOperation *g, s32 k) {
+    GPIConnection *ctx = *h;
     GPICallbackData *node = (GPICallbackData *)GsUtil_Alloc(0x18);
     if (node == NULL) {
         gpiSetErrorString(h, "Out of memory.");
         return 1;
     }
-    *(Unk_ov065_0227e0e8_Wrap *)node = p;
+    *(GPICallbackCopy *)node = p;
     node->arg = m;
     if (g != NULL) {
         node->operationID = (void *)g->id;
@@ -78,19 +78,19 @@ s32 gpiAddCallback(Unk_ov065_0227d8e0_Handle *h, Unk_ov065_0227e0e8_Wrap p, GPIC
     if (ctx->callbackList == NULL) {
         ctx->callbackList = node;
     }
-    if (ctx->callbackListTail != NULL) {
-        ctx->callbackListTail->pnext = node;
+    if (ctx->lastCallback != NULL) {
+        ctx->lastCallback->pnext = node;
     }
-    ctx->callbackListTail = node;
+    ctx->lastCallback = node;
     return 0;
 }
 }
 
 extern "C" {
-s32 gpiCallCallback(Unk_ov065_0227d8e0_Handle *h, GPICallbackData *n) {
+s32 gpiCallCallback(GPConnection *h, GPICallbackData *n) {
     s32 i;
     s32 k;
-    n->unk_00(h, n->arg, n->param);
+    n->callback(h, n->arg, n->param);
     k = n->type;
     if (k == 2) {
         GsUtil_Free(((GPRecvBuddyMessageArg *)n->arg)->message);
@@ -139,8 +139,8 @@ s32 gpiCallCallback(Unk_ov065_0227d8e0_Handle *h, GPICallbackData *n) {
 }
 
 extern "C" {
-s32 gpiProcessCallbacks(Unk_ov065_0227d8e0_Handle *h, void *key) {
-    Unk_ov065_0227d8e0_Ctx *ctx = h->connection;
+s32 gpiProcessCallbacks(GPConnection *h, void *key) {
+    GPIConnection *ctx = *h;
     GPICallbackData *head;
     GPICallbackData *tail;
     GPICallbackData *prev;
@@ -148,10 +148,10 @@ s32 gpiProcessCallbacks(Unk_ov065_0227d8e0_Handle *h, void *key) {
     GPICallbackData *next;
     if (key != NULL) {
         head = ctx->callbackList;
-        tail = ctx->callbackListTail;
+        tail = ctx->lastCallback;
         prev = NULL;
         ctx->callbackList = NULL;
-        ctx->callbackListTail = NULL;
+        ctx->lastCallback = NULL;
         node = head;
         if (node != NULL) {
             do {
@@ -173,11 +173,11 @@ s32 gpiProcessCallbacks(Unk_ov065_0227d8e0_Handle *h, void *key) {
             } while (node != NULL);
         }
         if (ctx->callbackList != NULL) {
-            ctx->callbackListTail->pnext = head;
-            ctx->callbackListTail = tail;
+            ctx->lastCallback->pnext = head;
+            ctx->lastCallback = tail;
         } else {
             ctx->callbackList = head;
-            ctx->callbackListTail = tail;
+            ctx->lastCallback = tail;
         }
         return 0;
     }
@@ -185,7 +185,7 @@ s32 gpiProcessCallbacks(Unk_ov065_0227d8e0_Handle *h, void *key) {
     if (node != NULL) {
         do {
             ctx->callbackList = NULL;
-            ctx->callbackListTail = NULL;
+            ctx->lastCallback = NULL;
             if (node != NULL) {
                 do {
                     next = node->pnext;

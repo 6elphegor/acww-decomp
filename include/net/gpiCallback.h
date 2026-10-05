@@ -11,13 +11,15 @@ struct GPICallback {
     /* 0x4 */ s32 param;
 };
 
-// One-member wrapper of a GPICallback: the code copies callbacks through it (struct copy codegen).
-struct Unk_ov065_0227e0e8_Wrap {
+// One-member wrapper of a GPICallback (not an SDK type): the code copies callbacks through it, and a plain GPICallback
+// copy allocates registers differently (checked in gpiProcessRecvBuddyMessage, gpiProcessRegisterUniqueNick).
+struct GPICallbackCopy {
     /* 0x0 */ GPICallback p;
 };
 
+// GPICallbackData: the SDK has a GPICallback member at 0x00; here it is spelled out as callback / param.
 struct GPICallbackData {
-    /* 0x00 */ void (*unk_00)(void *, void *, s32);
+    /* 0x00 */ void (*callback)(void *, void *, s32);
     /* 0x04 */ s32 param;
     /* 0x08 */ void *arg;
     /* 0x0c */ s32 type;

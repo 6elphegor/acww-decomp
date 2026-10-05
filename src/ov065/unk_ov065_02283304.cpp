@@ -1,10 +1,10 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02282f90_Ctx.h"
-#include "net/Unk_ov065_022831c0_Host.h"
-#include "net/Unk_ov065_022833b4_Pair.h"
+#include "net/gpi.h"
+#include "net/SockAddrIn.h"
+#include "net/SockHostEnt.h"
 #include "net/gpersist.h"
-#include "net/Unk_ov065_022833b4_Src.h"
+#include "net/gpiOperation.h"
 
 // ov065 TU50: GP gpiTransfer/gpiUnique/gpiUtility (0x02283304..0x02283720)
 
@@ -45,14 +45,14 @@ s32 gpiProcess(void *, s32);
 void *GsUtil_Alloc(u32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
-Unk_ov065_022831c0_Host *Sock_GetHostByName(const char *);
+SockHostEnt *Sock_GetHostByName(const char *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
 void gpiCallErrorCallback(void *, s32, s32);
 s32 gpiPeerStartTransferMessage(void *, s32, s32, void *);
 s32 gpiSendOrBufferString(void *, s32, char *);
 s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
-s32 gpiAddCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
+s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 void gpiRemoveOperation(void *, void *);
 s32 GSISocketSelect(s32, s32, s32 *, s32 *);
 s32 ArrayLength(void *);
@@ -113,7 +113,7 @@ extern "C" {
 extern "C" {
 void gpiHandleTransferMessage(void *h, s32 p1, s32 p2, const char *p3);
 s32 gpiSendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt);
-s32 gpiProcessRegisterUniqueNick(void *h, Unk_ov065_022833b4_Src *s, char *str);
+s32 gpiProcessRegisterUniqueNick(void *h, GPIOperation *s, char *str);
 void gpiSetErrorString(void *h, const char *msg);
 void gpiSetError(void *h, s32 code, const char *msg);
 s32 gpiReadKeyAndValue(void *h, char *buf, s32 *pos, char *out1, char *out2);
@@ -126,7 +126,7 @@ s32 gpiCheckForError(void *h, const char *str, s32 flag);
 namespace Na {
 extern "C" {
 s32 gpiCheckForError(void *h, const char *str, s32 flag) {
-    Unk_ov065_02282f90_Ctx *ctx = ((Unk_ov065_02282f90_Handle *)h)->connection;
+    GPIConnection *ctx = *(GPConnection *)h;
     char buf[16];
     if (strncmp(str, "\\error\\", 7) == 0) {
         if (gpiValueForKey(str, "\\err\\", buf, 0x10) != 0) {
@@ -256,7 +256,7 @@ s32 gpiReadKeyAndValue(void *h, char *buf, s32 *pos, char *out1, char *out2) {
 namespace Na {
 extern "C" {
 void gpiSetError(void *h, s32 code, const char *msg) {
-    Unk_ov065_02282f90_Ctx *c = ((Unk_ov065_02282f90_Handle *)h)->connection;
+    GPIConnection *c = *(GPConnection *)h;
     strzcpy(c->errorString, msg, 0x100);
     c->errorCode = code;
 }
@@ -266,15 +266,15 @@ void gpiSetError(void *h, s32 code, const char *msg) {
 namespace Na {
 extern "C" {
 void gpiSetErrorString(void *h, const char *msg) {
-    strzcpy(((Unk_ov065_02282f90_Handle *)h)->connection->errorString, msg, 0x100);
+    strzcpy((*(GPConnection *)h)->errorString, msg, 0x100);
 }
 }
 }
 
 namespace Na {
 extern "C" {
-s32 gpiProcessRegisterUniqueNick(void *h, Unk_ov065_022833b4_Src *s, char *str) {
-    Unk_ov065_022833b4_Pair pr;
+s32 gpiProcessRegisterUniqueNick(void *h, GPIOperation *s, char *str) {
+    GPICallbackCopy pr;
     s32 *p;
     s32 r;
     if (gpiCheckForError(h, str, 1) != 0) {
@@ -286,14 +286,14 @@ s32 gpiProcessRegisterUniqueNick(void *h, Unk_ov065_022833b4_Src *s, char *str) 
         return 3;
     }
     pr = s->callback;
-    if (pr.v[0] != 0) {
+    if (pr.p.callback != 0) {
         p = (s32 *)GsUtil_Alloc(4);
         if (p == NULL) {
             gpiSetErrorString(h, "Out of memory.");
             return 1;
         }
         *p = 0;
-        r = gpiAddCallback(h, pr, p, s, 0);
+        r = gpiAddCallback(h, pr.p, p, s, 0);
         if (r != 0) {
             return r;
         }

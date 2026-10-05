@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/gpiOperation.h"
-#include "net/Unk_ov065_0227d8e0_Ctx.h"
+#include "net/gpi.h"
 #include "net/gpiPeer.h"
 
 // ov065_050: DWC HTTP socket send/recv + growable string buffer + callback list (0x0227d8e0..0x0227e1c8)
@@ -45,20 +45,20 @@ s32 gpiDestroyPeer(void *, void *);
 s32 gpiProfileMap(void *, s32, s32);
 s32 gpiDisconnectCleanupProfile(void);
 
-s32 gpiSendData(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 gpiAppendIntToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, s32);
-s32 gpiAppendStringToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *);
-s32 gpiAppendStringToBufferLen(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *, s32);
-s32 gpiAppendCharToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, char);
-s32 gpiSendOrBufferStringLen(Unk_ov065_0227d8e0_Handle *, GPIPeer *, const char *, s32);
-s32 gpiSendFromBuffer(Unk_ov065_0227d8e0_Handle *, s32, GPIBuffer *, s32 *, s32, const char *);
-s32 gpiCallCallback(Unk_ov065_0227d8e0_Handle *, GPICallbackData *);
-s32 gpiAddCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GPICallbackData *, GPIOperation *, s32);
-void gpiCallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
+s32 gpiSendData(GPConnection *, s32, char *, s32, s32 *, s32 *, const char *);
+s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
+s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+s32 gpiAppendStringToBufferLen(GPConnection *, GPIBuffer *, const char *, s32);
+s32 gpiAppendCharToBuffer(GPConnection *, GPIBuffer *, char);
+s32 gpiSendOrBufferStringLen(GPConnection *, GPIPeer *, const char *, s32);
+s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
+s32 gpiCallCallback(GPConnection *, GPICallbackData *);
+s32 gpiAddCallback(GPConnection *, GPICallbackCopy, GPICallbackData *, GPIOperation *, s32);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
 }
 
 extern "C" {
-s32 gpiAppendCharToBuffer(Unk_ov065_0227d8e0_Handle *h, GPIBuffer *b, char c) {
+s32 gpiAppendCharToBuffer(GPConnection *h, GPIBuffer *b, char c) {
     s32 len = b->len;
     s32 cap = b->size;
     char *data = b->buffer;
@@ -80,7 +80,7 @@ s32 gpiAppendCharToBuffer(Unk_ov065_0227d8e0_Handle *h, GPIBuffer *b, char c) {
 }
 
 extern "C" {
-s32 gpiAppendStringToBufferLen(Unk_ov065_0227d8e0_Handle *h, GPIBuffer *b, const char *s, s32 n) {
+s32 gpiAppendStringToBufferLen(GPConnection *h, GPIBuffer *b, const char *s, s32 n) {
     s32 len;
     s32 cap;
     char *data;
@@ -108,13 +108,13 @@ s32 gpiAppendStringToBufferLen(Unk_ov065_0227d8e0_Handle *h, GPIBuffer *b, const
 }
 
 extern "C" {
-s32 gpiAppendStringToBuffer(Unk_ov065_0227d8e0_Handle *h, GPIBuffer *b, const char *s) {
+s32 gpiAppendStringToBuffer(GPConnection *h, GPIBuffer *b, const char *s) {
     return gpiAppendStringToBufferLen(h, b, s, STD_GetStringLength(s));
 }
 }
 
 extern "C" {
-s32 gpiAppendIntToBuffer(Unk_ov065_0227d8e0_Handle *h, GPIBuffer *b, s32 n) {
+s32 gpiAppendIntToBuffer(GPConnection *h, GPIBuffer *b, s32 n) {
     char tmp[0x14];
     OS_SPrintf(tmp, "%d", n);
     return gpiAppendStringToBuffer(h, b, tmp);
@@ -122,7 +122,7 @@ s32 gpiAppendIntToBuffer(Unk_ov065_0227d8e0_Handle *h, GPIBuffer *b, s32 n) {
 }
 
 extern "C" {
-s32 gpiSendData(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, const char *str) {
+s32 gpiSendData(GPConnection *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, const char *str) {
     s32 n;
     s32 e;
     n = send(fd, buf, len, 0);
@@ -133,7 +133,7 @@ s32 gpiSendData(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, cons
                 return 3;
             }
             gpiSetError(h, 5, "There was an error sending on a socket.");
-            gpiCallErrorCallback((Unk_ov065_0227d8e0_Handle *)h, 3, 0);
+            gpiCallErrorCallback(h, 3, 0);
             return 3;
         }
         *pcnt = 0;
@@ -151,7 +151,7 @@ s32 gpiSendData(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, cons
 }
 
 extern "C" {
-s32 gpiSendOrBufferChar(Unk_ov065_0227d8e0_Handle *h, GPIPeer *c, char ch) {
+s32 gpiSendOrBufferChar(GPConnection *h, GPIPeer *c, char ch) {
     s32 flag;
     s32 cnt;
     s32 r;
@@ -169,7 +169,7 @@ s32 gpiSendOrBufferChar(Unk_ov065_0227d8e0_Handle *h, GPIPeer *c, char ch) {
 }
 
 extern "C" {
-s32 gpiSendOrBufferStringLen(Unk_ov065_0227d8e0_Handle *h, GPIPeer *c, const char *s, s32 n) {
+s32 gpiSendOrBufferStringLen(GPConnection *h, GPIPeer *c, const char *s, s32 n) {
     s32 sent = 0;
     s32 flag;
     s32 cnt;
@@ -200,7 +200,7 @@ s32 gpiSendOrBufferStringLen(Unk_ov065_0227d8e0_Handle *h, GPIPeer *c, const cha
 }
 
 extern "C" {
-s32 gpiSendOrBufferString(Unk_ov065_0227d8e0_Handle *h, GPIPeer *c, const char *s) {
+s32 gpiSendOrBufferString(GPConnection *h, GPIPeer *c, const char *s) {
     return gpiSendOrBufferStringLen(h, c, s, STD_GetStringLength(s));
 }
 }
@@ -214,7 +214,7 @@ __declspec(weak) void Unk_ov065_0227dc00_pool_order(void) {
 }
 
 extern "C" {
-s32 gpiRecvToBuffer(Unk_ov065_0227d8e0_Handle *h, s32 fd, GPIBuffer *b, s32 *pout, s32 *pflag, const char *str) {
+s32 gpiRecvToBuffer(GPConnection *h, s32 fd, GPIBuffer *b, s32 *pout, s32 *pflag, const char *str) {
     char *data = b->buffer;
     s32 len = b->len;
     s32 cap = b->size;
@@ -268,7 +268,7 @@ s32 gpiRecvToBuffer(Unk_ov065_0227d8e0_Handle *h, s32 fd, GPIBuffer *b, s32 *pou
 }
 
 extern "C" {
-s32 gpiSendFromBuffer(Unk_ov065_0227d8e0_Handle *h, s32 fd, GPIBuffer *b, s32 *pout, s32 compact, const char *str) {
+s32 gpiSendFromBuffer(GPConnection *h, s32 fd, GPIBuffer *b, s32 *pout, s32 compact, const char *str) {
     char *data = b->buffer;
     s32 len = b->len;
     s32 pos = b->pos;

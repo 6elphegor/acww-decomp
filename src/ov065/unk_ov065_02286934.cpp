@@ -3,12 +3,12 @@
 #include "types.h"
 #include "net/darray.h"
 #include "net/GsInAddr.h"
+#include "net/SockAddrIn.h"
 #include "net/natneg.h"
-#include "net/Unk_ov065_02286f04_Hostent.h"
-#include "net/Unk_ov065_022871ac_List.h"
-#include "net/Unk_ov065_02287200_Sa.h"
+#include "net/SockHostEnt.h"
 #include "net/qr2.h"
 #include "net/GsBytes.h"
+#include "net/gsPlatformUtil.h"
 
 
 
@@ -58,18 +58,17 @@ char *STD_CopyString(char *dst, const char *src);
 u32 STD_GetStringLength(const char *s);
 
 char *Sock_InetNtoA(GsInAddr a);
-Unk_ov065_02286f04_Hostent *Sock_GetHostByName(const char *name);
+SockHostEnt *Sock_GetHostByName(const char *name);
 s32 ArrayNth(void *list, s32 i);
 s32 ArrayLength(void *list);
 s32 inet_addr(const char *s);
-s32 getsockname(s32 fd, Unk_ov065_02286c74_Sa *sa, s32 *len);
-s32 recvfrom(s32 fd, void *buf, s32 n, s32 flags, Unk_ov065_02286c74_Sa *from, s32 *len);
+s32 getsockname(s32 fd, SockAddrIn *sa, s32 *len);
+s32 recvfrom(s32 fd, void *buf, s32 n, s32 flags, SockAddrIn *from, s32 *len);
 s32 closesocket(s32 fd);
 s32 socket(s32 a, s32 b, s32 c);
-Unk_ov065_022871ac_List *getlocalhost();
+SockHostEnt *getlocalhost();
 s32 IsPrivateIP(void *p);
 s32 CanReceiveOnSocket(s32 fd);
-u32 current_time();
 s32 CheckMagic();
 s32 SendPacket__natneg(s32 fd, u32 addr, u32 port, void *buf, s32 len);
 s32 RemoveNegotiator(_NATNegotiator *ctx);
@@ -85,11 +84,11 @@ u32 ResolveServer(const char *name, const char *s);
 s32 ResolveServers();
 void NNCancel(u32 cookie);
 void NegotiateThink(_NATNegotiator *ctx);
-void SendConnectAck(_NATNegotiator *ctx, Unk_ov065_02286c74_Sa *sa);
-void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void NNProcessData(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa);
+void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa);
+void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);
 }
 
 
@@ -158,7 +157,6 @@ void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 sendto(s32, void *, s32, s32, void *, s32);
 s32 closesocket(s32);
-s32 current_time(void);
 void ArrayFree(Vec *);
 s32 ArrayLength(Vec *);
 void *ArrayNth(Vec *, s32);
@@ -277,7 +275,7 @@ BOOL CheckMagic(void *p) {
 extern "C" { u8 data_ov065_02291548[0x200]; } //@
 namespace N02287200 { extern "C" {
 s32 SendPacket__natneg(s32 sock, u32 ip, s32 port, void *buf, s32 len) {
-    Unk_ov065_02287200_Sa sa;
+    SockAddrIn sa;
     sa.family = 2;
     sa.port = HTONS(port);
     sa.addr = ip;
@@ -288,7 +286,7 @@ s32 SendPacket__natneg(s32 sock, u32 ip, s32 port, void *buf, s32 len) {
 namespace N022868b0 { extern "C" {
 extern "C" u32 GetLocalIP() {
     u32 r = 0;
-    Unk_ov065_022871ac_List *list = getlocalhost();
+    SockHostEnt *list = getlocalhost();
     if (list == NULL) {
         return r;
     }
@@ -315,7 +313,7 @@ extern "C" u32 GetLocalIP() {
 extern "C" u8 NNMagicData[6] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2}; //@
 namespace N022868b0 { extern "C" {
 extern "C" u32 GetLocalPort(s32 fd) {
-    Unk_ov065_02286c74_Sa sa;
+    SockAddrIn sa;
     s32 len = 8;
     s32 r = getsockname(fd, &sa, &len);
     u32 port = 0;
@@ -414,11 +412,11 @@ namespace N022868b0 { extern "C" {
 extern "C" u32 NameToIp(const char *name) {
     u32 r = inet_addr(name);
     if (r == (u32)-1) {
-        Unk_ov065_02286f04_Hostent *h = Sock_GetHostByName(name);
+        SockHostEnt *h = Sock_GetHostByName(name);
         if (h == NULL) {
             return 0;
         }
-        r = **h->addr_list;
+        r = *(u32 *)*h->addrList;
     }
     return r;
 }
@@ -500,9 +498,9 @@ extern "C" void NNCancel(u32 cookie) {
 
 namespace N022868b0 { extern "C" {
 extern "C" void NegotiateThink(_NATNegotiator *ctx) {
-    Unk_ov065_02286c74_Sa from;
+    SockAddrIn from;
     s32 len;
-    Unk_ov065_02286c74_Sa out;
+    SockAddrIn out;
     len = 8;
     if (ctx->state == 4) {
         RemoveNegotiator(ctx);
@@ -571,7 +569,7 @@ extern "C" void NNThink() {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void SendConnectAck(_NATNegotiator *ctx, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa) {
     GsNatNegPacket pkt;
     u8 *d = (u8 *)&pkt;
     const u8 *m = NNMagicData;
@@ -593,7 +591,7 @@ extern "C" void SendConnectAck(_NATNegotiator *ctx, Unk_ov065_02286c74_Sa *sa) {
 
 extern "C" { u32 Matchup2Hostname; } //@
 namespace N022868b0 { extern "C" {
-extern "C" void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa) {
     if (pkt[0x13] == 0) {
         SendConnectAck(ctx, sa);
     }
@@ -622,7 +620,7 @@ extern "C" void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_022
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa) {
     if (ctx->state >= 2) {
         ctx->guessedIP = sa->addr;
         u16 p = sa->port;
@@ -649,7 +647,7 @@ extern "C" void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa) {
     switch (pkt[7]) {
     case 1: {
         u32 i = pkt[0xc];
@@ -676,7 +674,7 @@ extern "C" void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void NNProcessData(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa) {
     GsNatNegConnectPktBuf h;
     GsNatNegReplyPktBuf g;
     if (CheckMagic() == 0) {

@@ -4,6 +4,8 @@
 #include "net/darray.h"
 #include "net/gt2Main.h"
 #include "net/GsBytes.h"
+#include "net/gsPlatformUtil.h"
+#include "net/SockAddrIn.h"
 
 extern "C" { u8 data_ov065_0228e14c[4] = {0xfe, 0xfe, 0, 0}; }
 
@@ -118,7 +120,6 @@ extern void *GsUtil_Alloc(s32);
 extern s32 TableRemove(void *, void *);
 extern s32 ArrayAppend(void *, void *);
 extern s32 TableMapSafe(s32, void *, s32);
-extern s32 current_time();
 extern void msleep(s32);
 extern void memcpy(void *, const void *, s32);
 
@@ -226,7 +227,6 @@ s32 gti2CloseSocket(Conn *);
 s32 gti2CreateSocket(s32, s32, s32, s32, s32);
 s32 gti2UShortToBuffer(u8 *, s32, s32);
 s32 gti2ConnectionSendData(Conn *, u8 *, s32);
-s32 current_time();
 s32 gti2SocketSend(Sock *, s32, s32, u8 *, s32);
 s32 gti2BufferWriteData(Buf *, const u8 *, s32);
 s32 gti2BufferWriteUShort(Buf *, s32);
@@ -288,12 +288,6 @@ s32 gti2SendReject(Conn *, u8 *, s32);
 
 
 
-struct Unk_ov065_022852b8_Addr {
-    u16 unk_00;
-    u16 port;
-    u32 addr;
-};
-
 static inline u16 Swap16(u16 p) {
     return ((p >> 8) & 0xff) | ((p << 8) & 0xff00);
 }
@@ -328,7 +322,6 @@ s32 ArrayNth(void *, s32);
 s32 ArrayLength(void *);
 s32 ArrayDeleteAt(void *, s32);
 s32 ArrayInsertSorted(void *, void *, void *);
-s32 current_time();
 s32 gti2CheckResponse(void *, void *);
 s32 gti2GetResponse(void *, void *);
 s32 gti2GetChallenge(void *);
@@ -558,7 +551,7 @@ s32 gti2HandleConnectionReset(Sock *s, s32 addr, u32 port) {
 
 namespace N02284b8c { extern "C" {
 s32 gti2ReceiveMessages(Sock *s) {
-    Unk_ov065_022852b8_Addr a;
+    SockAddrIn a;
     s32 len;
     u8 buf[0x5dc];
     if (CanReceiveOnSocket(s->socket) != 0) {

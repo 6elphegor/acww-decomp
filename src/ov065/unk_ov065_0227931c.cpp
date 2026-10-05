@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/GsSocket.h"
 #include "net/ghttpConnection.h"
+#include "net/gsPlatformUtil.h"
 
 // ov065 TU37: ghttp (1): ghttpBuffer / connection table / ghttpMain (0x0227931c..0x0227a284)
 
@@ -108,7 +109,6 @@ s32 recv(s32, u8 *, s32, s32);
 s32 GOAGetLastError(s32);
 void shutdown(s32, s32);
 void closesocket(s32);
-u32 current_time();
 BOOL ghiReadDataFromBuffer(void *, u8 *, s32 *);
 void ghiResetBuffer(void *);
 BOOL ghiAppendDataToBuffer(void *, u8 *, s32);
@@ -578,7 +578,7 @@ BOOL ghiFreeConnection(GHIConnection *s) {
     ghiFreeBuffer(&s->recvBuffer);
     ghiFreeBuffer(&s->decodeBuffer);
     ghiFreeBuffer(&s->getFileBuffer);
-    if (s->postParts != 0) {
+    if (s->postingState.states != 0) {
         ghiPostCleanupState(s);
     }
     if (s->post != 0) {
@@ -827,7 +827,7 @@ s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len) {
         return -1;
     }
     if (self->state == 4) {
-        self->postBytesSent += r;
+        self->postingState.bytesPosted += r;
     }
     return r;
 }
@@ -890,9 +890,9 @@ void ghiCallProgressCallback(GHIConnection *self, u32 p1, u32 p2) {
 namespace Nc {
 extern "C" {
 void ghiCallPostCallback(GHIConnection *self) {
-    if (self->postCallback != 0) {
-        u32 a = ArrayLength((u32)self->postParts);
-        self->postCallback(self->request, self->postBytesSent, self->postTotalBytes, self->postPartIndex, a, self->callbackParam);
+    if (self->postingState.callback != 0) {
+        u32 a = ArrayLength((u32)self->postingState.states);
+        self->postingState.callback(self->request, self->postingState.bytesPosted, self->postingState.totalBytes, self->postingState.index, a, self->callbackParam);
     }
 }
 }

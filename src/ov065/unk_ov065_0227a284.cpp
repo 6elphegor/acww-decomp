@@ -3,6 +3,8 @@
 #include "net/SockHostEnt.h"
 #include "net/darray.h"
 #include "net/ghttpConnection.h"
+#include "net/gsPlatformUtil.h"
+#include "net/SockAddrIn.h"
 
 // ov065 TU38: ghttp (2): request post / process / response handlers (0x0227a284..0x0227bd20)
 
@@ -88,10 +90,11 @@ s32 ghiPostStringStateDoPosting(GHIPostState *st, GHIConnection *c);
 }
 
 namespace Na {
-typedef void (*ArrayElementFreeFn)(void *);
 
 
-struct Unk_ov065_0227ae94_Blk {
+// ghiDoReceivingHeaders' local copy of "2147483647" (SDK ghttpProcess.c `char szMaxSize[] = "2147483647";`): copied as
+// one 11-byte block (not an SDK type), since a char array initializer emits a separate .data copy of the string.
+struct GsHttpMaxSizeString {
     char b[11];
 };
 
@@ -110,7 +113,6 @@ DArrayImplementation *ArrayNew(s32, s32, ArrayElementFreeFn);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
 char *goastrdup(const char *);
-s32 current_time(void);
 s32 ghiDoReceive(void *, u8 *, s32 *);
 s32 ghiAppendDataToBuffer(void *, u8 *, s32);
 void ghiResetBuffer(void *);
@@ -165,13 +167,6 @@ void ghiDoReceivingHeaders(GHIConnection *self);
 }
 
 namespace Nb {
-
-struct Unk_ov065_0227b9c4_Addr {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
 
 
 extern "C" {
@@ -397,7 +392,7 @@ void ghiDoHostLookup(GHIConnection *self) {
 namespace Nb {
 extern "C" {
 void ghiDoConnecting(GHIConnection *self) {
-    Unk_ov065_0227b9c4_Addr sa;
+    SockAddrIn sa;
     s32 r;
     s32 w[2];
     if (self->socket == -1) {
@@ -537,7 +532,7 @@ void ghiDoSendingRequest(GHIConnection *self) {
             ghiAppendHeaderToBuffer(b, "Connection", "close");
         }
         if (self->post != 0) {
-            OS_SPrintf(tmp, "%d", self->postTotalBytes);
+            OS_SPrintf(tmp, "%d", self->postingState.totalBytes);
             ghiAppendHeaderToBuffer(b, "Content-Length", tmp);
             ghiAppendHeaderToBuffer(b, "Content-Type", ghiPostGetContentType(self));
         }
@@ -565,13 +560,13 @@ void ghiDoSendingRequest(GHIConnection *self) {
 namespace Nb {
 extern "C" {
 void ghiDoPosting(GHIConnection *self) {
-    s32 old = self->postBytesSent;
+    s32 old = self->postingState.bytesPosted;
     s32 r = ghiPostDoPosting(self);
     if (r == 0) {
         ghiPostCleanupState(self);
         return;
     }
-    if (old != self->postBytesSent) {
+    if (old != self->postingState.bytesPosted) {
         ghiCallPostCallback(self);
     }
     if (r == 1) {
@@ -920,8 +915,8 @@ void ghiDoReceivingHeaders(GHIConnection *self) {
         char *d0;
         s32 dl;
         char *t;
-        Unk_ov065_0227ae94_Blk hb = *(Unk_ov065_0227ae94_Blk *)"2147483647";
-        char *hdr = hb.b;
+        GsHttpMaxSizeString szMaxSize = *(GsHttpMaxSizeString *)"2147483647";
+        char *hdr = szMaxSize.b;
         e = q + 0x10;
         t = e;
         n = STD_GetStringLength(hdr);
@@ -1187,7 +1182,7 @@ s32 ghiPostGetHasFilesContentLength(GHIConnection *self) {
             sum += STD_GetStringLength(r->name);
             sum += STD_GetStringLength(r->data.fileDisk.reportFilename);
             sum += STD_GetStringLength(r->data.fileDisk.contentType);
-            sum += ((GHIPostState *)ArrayNth(self->postParts, i))->fileLength;
+            sum += ((GHIPostState *)ArrayNth(self->postingState.states, i))->fileLength;
         } else if (r->type == 2) {
             sum += data_ov065_022910e0;
             sum += STD_GetStringLength(r->name);
@@ -1271,14 +1266,14 @@ s32 ghiPostInitState(GHIConnection *self) {
     if (self->post == NULL) {
         return 0;
     }
-    self->postPartIndex = 0;
-    self->postBytesSent = 0;
-    self->postTotalBytes = 0;
-    self->postCallback = self->post->callback;
-    self->postCallbackParam = self->post->param;
+    self->postingState.index = 0;
+    self->postingState.bytesPosted = 0;
+    self->postingState.totalBytes = 0;
+    self->postingState.callback = self->post->callback;
+    self->postingState.param = self->post->param;
     n = ArrayLength(self->post->data);
-    self->postParts = ArrayNew(0x10, n, NULL);
-    if (self->postParts == NULL) {
+    self->postingState.states = ArrayNew(0x10, n, NULL);
+    if (self->postingState.states == NULL) {
         return 0;
     }
     i = 0;
@@ -1295,17 +1290,17 @@ s32 ghiPostInitState(GHIConnection *self) {
             item.data = rec;
             if (ghiPostStateInit(pi) == 0) {
                 for (i--; i >= 0; i--) {
-                    ghiPostStateCleanup((GHIPostState *)ArrayNth(self->postParts, i));
+                    ghiPostStateCleanup((GHIPostState *)ArrayNth(self->postingState.states, i));
                 }
-                ArrayFree(self->postParts);
-                self->postParts = NULL;
+                ArrayFree(self->postingState.states);
+                self->postingState.states = NULL;
                 return 0;
             }
-            ArrayAppend(self->postParts, pi);
+            ArrayAppend(self->postingState.states, pi);
             i++;
         } while (i < n);
     }
-    self->postTotalBytes = ghiPostGetContentLength(self);
+    self->postingState.totalBytes = ghiPostGetContentLength(self);
     return 1;
 }
 }
@@ -1314,17 +1309,17 @@ s32 ghiPostInitState(GHIConnection *self) {
 namespace Na {
 extern "C" {
 void ghiPostCleanupState(GHIConnection *self) {
-    if (self->postParts != NULL) {
-        s32 n = ArrayLength(self->postParts);
+    if (self->postingState.states != NULL) {
+        s32 n = ArrayLength(self->postingState.states);
         s32 i = 0;
         if (i < n) {
             do {
-                ghiPostStateCleanup((GHIPostState *)ArrayNth(self->postParts, i));
+                ghiPostStateCleanup((GHIPostState *)ArrayNth(self->postingState.states, i));
                 i++;
             } while (i < n);
         }
-        ArrayFree(self->postParts);
-        self->postParts = NULL;
+        ArrayFree(self->postingState.states);
+        self->postingState.states = NULL;
     }
     if (self->post != NULL) {
         if (self->post->autoFree != 0) {
@@ -1494,8 +1489,8 @@ s32 ghiPostStateDoPosting(GHIPostState *st, GHIConnection *c, s32 first) {
 namespace Nm {
 extern "C" {
 s32 ghiPostDoPosting(GHIConnection *c) {
-    Unk_ov065_0227a3f4_List *l = (Unk_ov065_0227a3f4_List *)&c->postParts;
-    s32 cnt = ArrayLength(l->postParts);
+    GHIPostingState *l = &c->postingState;
+    s32 cnt = ArrayLength(l->states);
     if (c->sendBuffer.len != 0) {
         if (ghiSendBufferedData(c) == 0) {
             return 0;
@@ -1504,13 +1499,13 @@ s32 ghiPostDoPosting(GHIConnection *c) {
             return 2;
         }
         ghiResetBuffer(&c->sendBuffer);
-        if (c->postPartIndex == cnt) {
+        if (c->postingState.index == cnt) {
             return 1;
         }
     }
-    for (; l->postPartIndex < cnt; l->postPartIndex++) {
-        GHIPostState *s = ArrayNth(l->postParts, l->postPartIndex);
-        s32 r = ghiPostStateDoPosting(s, c, l->postPartIndex == 0 ? 1 : 0);
+    for (; l->index < cnt; l->index++) {
+        GHIPostState *s = ArrayNth(l->states, l->index);
+        s32 r = ghiPostStateDoPosting(s, c, l->index == 0 ? 1 : 0);
         if (r == 0) {
             return 0;
         }

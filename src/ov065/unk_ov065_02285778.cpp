@@ -4,8 +4,9 @@
 #include "net/gt2Main.h"
 #include "net/GsInAddr.h"
 #include "net/natneg.h"
-#include "net/Unk_ov065_02286f04_Hostent.h"
-#include "net/Unk_ov065_022871ac_List.h"
+#include "net/SockHostEnt.h"
+#include "net/gsPlatformUtil.h"
+#include "net/SockAddrIn.h"
 
 
 extern "C" { s32 data_ov065_02291504; } //@
@@ -34,7 +35,6 @@ s32 ArrayNth(void *, s32);
 s32 ArrayLength(void *);
 s32 ArrayDeleteAt(void *, s32);
 s32 ArrayInsertSorted(void *, void *, void *);
-s32 current_time();
 s32 gti2CheckResponse(void *, void *);
 s32 gti2GetResponse(void *, void *);
 s32 gti2GetChallenge(void *);
@@ -106,24 +106,9 @@ extern "C" {
 
 // ov065_062: DWC/GameSpy-like UDP reliable-peer table (0x02285f3c..0x022867c0)
 
-struct Unk_ov065_0228627c_Sa {
-    u8 len;
-    u8 family;
-    u16 port;
-    u32 addr;
-};
-
-struct Unk_ov065_022867c0_Host {
-    char *hostName;
-    char **aliases;
-    s16 addrType;
-    s16 length;
-    u32 **addrList;
-};
-
 typedef GTI2Connection Conn062;
 typedef GTI2Socket Sock062;
-typedef Unk_ov065_0228627c_Sa Sa062;
+typedef SockAddrIn Sa062;
 
 
 extern u16 data_0213a510[];
@@ -153,8 +138,7 @@ s32 socket(s32 a, s32 b, s32 c);
 s32 CanSendOnSocket(s32 fd);
 void SocketShutDown();
 void SocketStartUp();
-u32 current_time();
-Unk_ov065_022867c0_Host *Sock_GetHostByName(char *name);
+SockHostEnt *Sock_GetHostByName(char *name);
 s32 gti2BufferShorten(void *p, s32 a, s32 b);
 s32 gti2AllocateBuffer(void *p, u32 n);
 s32 gti2DumpCallback(Sock062 *c, Conn062 *p, u32 ip, u32 port, s32 a, char *buf, s32 len, s32 b);
@@ -270,18 +254,17 @@ char *STD_CopyString(char *dst, const char *src);
 u32 STD_GetStringLength(const char *s);
 
 char *Sock_InetNtoA(GsInAddr a);
-Unk_ov065_02286f04_Hostent *Sock_GetHostByName(const char *name);
+SockHostEnt *Sock_GetHostByName(const char *name);
 s32 ArrayNth(void *list, s32 i);
 s32 ArrayLength(void *list);
 s32 inet_addr(const char *s);
-s32 getsockname(s32 fd, Unk_ov065_02286c74_Sa *sa, s32 *len);
-s32 recvfrom(s32 fd, void *buf, s32 n, s32 flags, Unk_ov065_02286c74_Sa *from, s32 *len);
+s32 getsockname(s32 fd, SockAddrIn *sa, s32 *len);
+s32 recvfrom(s32 fd, void *buf, s32 n, s32 flags, SockAddrIn *from, s32 *len);
 s32 closesocket(s32 fd);
 s32 socket(s32 a, s32 b, s32 c);
-Unk_ov065_022871ac_List *getlocalhost();
+SockHostEnt *getlocalhost();
 s32 IsPrivateIP(void *p);
 s32 CanReceiveOnSocket(s32 fd);
-u32 current_time();
 s32 CheckMagic();
 s32 SendPacket__natneg(s32 fd, u32 addr, u32 port, void *buf, s32 len);
 s32 RemoveNegotiator(_NATNegotiator *ctx);
@@ -297,11 +280,11 @@ u32 ResolveServer(const char *name, const char *s);
 s32 ResolveServers();
 void NNCancel(u32 cookie);
 void NegotiateThink(_NATNegotiator *ctx);
-void SendConnectAck(_NATNegotiator *ctx, Unk_ov065_02286c74_Sa *sa);
-void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void NNProcessData(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa);
+void SendConnectAck(_NATNegotiator *ctx, SockAddrIn *sa);
+void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);
+void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa);
 }
 
 
@@ -398,11 +381,11 @@ BOOL gt2StringToAddress(char *s, u32 *pip, u16 *pport) {
         if (s != 0) {
             ip = inet_addr(s);
             if (ip == -1) {
-                Unk_ov065_022867c0_Host *h = Sock_GetHostByName(s);
+                SockHostEnt *h = Sock_GetHostByName(s);
                 if (h == 0) {
                     return FALSE;
                 }
-                ip = **h->addrList;
+                ip = *(u32 *)*h->addrList;
             }
         }
     }

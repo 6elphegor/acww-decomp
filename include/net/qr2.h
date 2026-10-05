@@ -2,6 +2,7 @@
 #define NET_QR2_H
 
 #include "types.h"
+#include "net/SockAddrIn.h"
 
 // GameSpy qr2 (query and reporting 2; heartbeats to %s.master.gs.nintendowifi.net port 27900): struct
 // qr2_implementation_s (qr2_init_socketA, the default instance static_qr2_rec), its packet and key buffers and the
@@ -15,13 +16,6 @@ struct qr2_buffer_s {
 struct qr2_keybuffer_s {
     /* 0x00 */ u8 keys[0x100];
     /* 0x100 */ s32 numkeys;
-};
-
-struct Unk_ov065_02287fcc_Sa {
-    /* 0x00 */ u8 len;
-    /* 0x01 */ u8 family;
-    /* 0x02 */ u16 port;
-    /* 0x04 */ u32 addr;
 };
 
 // Section 0 (server) key value: (key, buffer, userData).
@@ -63,7 +57,7 @@ struct qr2_implementation_s {
     /* 0xc0 */ s32 qport;
     /* 0xc4 */ s32 read_socket;
     /* 0xc8 */ s32 nat_negotiate;
-    /* 0xcc */ Unk_ov065_02287fcc_Sa hbaddr;
+    /* 0xcc */ SockAddrIn hbaddr;
     /* 0xd4 */ s32 cdkeyprocess;
     /* 0xd8 */ s32 client_message_keys[10];
     /* 0x100 */ s32 cur_message_key;

@@ -2,14 +2,12 @@
 #include "types.h"
 #include "net/darray.h"
 #include "net/gpiInfo.h"
-#include "net/Unk_ov065_02280854_Ctx.h"
-#include "net/Unk_ov065_0227c538_Node.h"
-#include "net/Unk_ov065_0227d8e0_Ctx.h"
 #include "net/gpiPeer.h"
 #include "net/gpiTransfer.h"
-#include "net/Unk_ov065_02280d70_P1.h"
-#include "net/Unk_ov065_02280e7c_Ctx.h"
-#include "net/gp.h"
+#include "net/SockAddrIn.h"
+#include "net/gpiProfile.h"
+#include "net/gpi.h"
+#include "net/gsPlatformUtil.h"
 
 // ov065 TU47: GP gpiPeer.c (0x02280c08..0x0228176c)
 
@@ -47,7 +45,6 @@ s32 OS_SPrintf(char *, const char *, ...);
 s32 gpiSendOrBufferString(void *, void *, const char *);
 s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);
 s32 gpiSendOrBufferChar(void *, void *, s32);
-s32 time(s32);
 s32 gpiAppendStringToBuffer(void *, void *, const char *);
 s32 gpiAppendIntToBuffer(void *, void *, s32);
 s32 gpiAppendStringToBufferLen(void *, void *, const char *, s32);
@@ -73,7 +70,7 @@ s32 gpiIsValidDate(s32 day, s32 mon, s32 year);
 
 
 
-void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
+void gpiDestroyOperation(GPConnection *h, GPIOperation *n);
 
 
 
@@ -105,19 +102,6 @@ namespace Nb {
 // ov065_055: friend/auth connection task list (0x02280e7c..0x0228176c)
 
 
-
-
-
-
-
-
-typedef Unk_ov065_02280e7c_Ctx Ctx0228;
-typedef GPIPeer Node0228;
-typedef GPIProfile Ent0228;
-typedef Unk_ov065_02280e7c_Pair Pair0228;
-typedef GPIMessage Sub0228;
-
-
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
@@ -136,7 +120,6 @@ void *ArrayNth(DArrayImplementation *, s32);
 s32 ArrayLength(DArrayImplementation *);
 void ArrayFree(DArrayImplementation *);
 void MD5Digest(char *, s32, char *);
-s32 time(s32);
 s32 accept(s32, s32, s32);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
@@ -147,37 +130,37 @@ s32 SetSendBufferSize(s32, s32);
 s32 SetReceiveBufferSize(s32, s32);
 s32 SetSockBlocking(s32, s32);
 s32 goastrdup(s32);
-s32 gpiSendBuddyMessage(Ctx0228 **, s32, s32, s32);
-s32 gpiSendServerBuddyMessage(Ctx0228 **, s32, s32, const char *);
-s32 gpiClipBufferToPosition(Ctx0228 **, GPIBuffer *);
-s32 gpiReadMessageFromBuffer(Ctx0228 **, GPIBuffer *, s32 *, s32 *, s32 *);
-s32 gpiSendFromBuffer(Ctx0228 **, s32, GPIBuffer *, s32 *, s32, const char *);
-s32 gpiRecvToBuffer(Ctx0228 **, s32, GPIBuffer *, s32 *, s32 *, const char *);
-s32 gpiAppendIntToBuffer(Ctx0228 **, GPIBuffer *, s32);
-s32 gpiAppendStringToBuffer(Ctx0228 **, GPIBuffer *, const char *);
-s32 gpiAddCallback(Ctx0228 **, Pair0228, void *, s32, s32);
-s32 gpiSendGetInfo(Ctx0228 **, s32, s32);
-s32 gpiAddOperation(Ctx0228 **, s32, s32, GPIOperation **, s32, s32, s32);
-s32 gpiPeerStartConnect(Ctx0228 **, Node0228 *);
-void gpiRemoveProfile(Ctx0228 **, Ent0228 *);
-s32 gpiGetProfile(Ctx0228 **, s32, Ent0228 **);
-s32 gpiHandleTransferMessage(Ctx0228 **, Node0228 *, s32, char *, s32, s32);
-void gpiSetErrorString(Ctx0228 **, const char *);
-s32 gpiCheckSocketConnect(Ctx0228 **, s32, s32 *);
+s32 gpiSendBuddyMessage(GPConnection *, s32, s32, s32);
+s32 gpiSendServerBuddyMessage(GPConnection *, s32, s32, const char *);
+s32 gpiClipBufferToPosition(GPConnection *, GPIBuffer *);
+s32 gpiReadMessageFromBuffer(GPConnection *, GPIBuffer *, s32 *, s32 *, s32 *);
+s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
+s32 gpiRecvToBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32 *, const char *);
+s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
+s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+s32 gpiAddCallback(GPConnection *, GPICallback, void *, s32, s32);
+s32 gpiSendGetInfo(GPConnection *, s32, s32);
+s32 gpiAddOperation(GPConnection *, s32, s32, GPIOperation **, s32, s32, s32);
+s32 gpiPeerStartConnect(GPConnection *, GPIPeer *);
+void gpiRemoveProfile(GPConnection *, GPIProfile *);
+s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
+s32 gpiHandleTransferMessage(GPConnection *, GPIPeer *, s32, char *, s32, s32);
+void gpiSetErrorString(GPConnection *, const char *);
+s32 gpiCheckSocketConnect(GPConnection *, s32, s32 *);
 s32 gpiValueForKey(char *, const char *, char *, s32);
-void gpiDebug(Ctx0228 **, const char *, ...);
+void gpiDebug(GPConnection *, const char *, ...);
 
-s32 gpiCanFreeProfile(Ent0228 *);
-s32 gpiProcessPeerInitiatingConnection(Ctx0228 **, Node0228 *);
-s32 gpiProcessPeerAcceptingConnection(Ctx0228 **, Node0228 *);
-s32 gpiProcessPeerConnected(Ctx0228 **, Node0228 *);
-s32 gpiPeerSendMessages(Ctx0228 **, Node0228 *);
-s32 gpiProcessPeer(Ctx0228 **, Node0228 *);
-void gpiRemovePeer(Ctx0228 **, Node0228 *);
-void gpiDestroyPeer(Ctx0228 **, Node0228 *);
+s32 gpiCanFreeProfile(GPIProfile *);
+s32 gpiProcessPeerInitiatingConnection(GPConnection *, GPIPeer *);
+s32 gpiProcessPeerAcceptingConnection(GPConnection *, GPIPeer *);
+s32 gpiProcessPeerConnected(GPConnection *, GPIPeer *);
+s32 gpiPeerSendMessages(GPConnection *, GPIPeer *);
+s32 gpiProcessPeer(GPConnection *, GPIPeer *);
+void gpiRemovePeer(GPConnection *, GPIPeer *);
+void gpiDestroyPeer(GPConnection *, GPIPeer *);
 void GsGpPeer_SetSocketBuffers(s32);
 void gpiFreeMessage(void *);
-Node0228 *gpiAddPeer(Ctx0228 **, s32, s32);
+GPIPeer *gpiAddPeer(GPConnection *, s32, s32);
 
 
 
@@ -195,30 +178,30 @@ Node0228 *gpiAddPeer(Ctx0228 **, s32, s32);
 
 }
 extern "C" {
-s32 gpiPeerGetSig(Ctx0228 **h, Node0228 *n);
-Node0228 *gpiAddPeer(Ctx0228 **h, s32 a, s32 b);
+s32 gpiPeerGetSig(GPConnection *h, GPIPeer *n);
+GPIPeer *gpiAddPeer(GPConnection *h, s32 a, s32 b);
 void gpiFreeMessage(void *p);
-Node0228 *gpiGetPeerByProfile(Ctx0228 **h, s32 id);
-s32 gpiProcessPeers(Ctx0228 **h);
+GPIPeer *gpiGetPeerByProfile(GPConnection *h, s32 id);
+s32 gpiProcessPeers(GPConnection *h);
 void GsGpPeer_SetSocketBuffers(s32 s);
-void gpiRemovePeer(Ctx0228 **h, Node0228 *n);
-void gpiDestroyPeer(Ctx0228 **h, Node0228 *n);
-s32 gpiProcessPeer(Ctx0228 **h, Node0228 *n);
-s32 gpiProcessPeerConnected(Ctx0228 **h, Node0228 *n);
-s32 gpiPeerSendMessages(Ctx0228 **h, Node0228 *n);
-s32 gpiProcessPeerAcceptingConnection(Ctx0228 **h, Node0228 *n);
-s32 gpiProcessPeerInitiatingConnection(Ctx0228 **h, Node0228 *n);
+void gpiRemovePeer(GPConnection *h, GPIPeer *n);
+void gpiDestroyPeer(GPConnection *h, GPIPeer *n);
+s32 gpiProcessPeer(GPConnection *h, GPIPeer *n);
+s32 gpiProcessPeerConnected(GPConnection *h, GPIPeer *n);
+s32 gpiPeerSendMessages(GPConnection *h, GPIPeer *n);
+s32 gpiProcessPeerAcceptingConnection(GPConnection *h, GPIPeer *n);
+s32 gpiProcessPeerInitiatingConnection(GPConnection *h, GPIPeer *n);
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 gpiProcessPeerInitiatingConnection(Ctx0228 **h, Node0228 *n) {
-    Ctx0228 *c = *h;
+s32 gpiProcessPeerInitiatingConnection(GPConnection *h, GPIPeer *n) {
+    GPIConnection *c = *h;
     s32 out;
     s32 len;
     s32 flag;
-    Ent0228 *e;
+    GPIProfile *e;
     s32 r;
     s32 keep;
     char *p;
@@ -247,14 +230,14 @@ s32 gpiProcessPeerInitiatingConnection(Ctx0228 **h, Node0228 *n) {
             }
             gpiAppendStringToBuffer(h, &n->outputBuffer, "\\auth\\");
             gpiAppendStringToBuffer(h, &n->outputBuffer, "\\pid\\");
-            gpiAppendIntToBuffer(h, &n->outputBuffer, c->profileId);
+            gpiAppendIntToBuffer(h, &n->outputBuffer, c->profileid);
             gpiAppendStringToBuffer(h, &n->outputBuffer, "\\nick\\");
             gpiAppendStringToBuffer(h, &n->outputBuffer, c->nick);
             gpiAppendStringToBuffer(h, &n->outputBuffer, "\\sig\\");
             gpiAppendStringToBuffer(h, &n->outputBuffer, e->peerSig);
             gpiAppendStringToBuffer(h, &n->outputBuffer, "\\final\\");
             {
-                Node0228 *m = c->peerList;
+                GPIPeer *m = c->peerList;
                 while (m != NULL) {
                     if (m->profile == n->profile && m != n && m->state <= 0x67) {
                         keep = 0;
@@ -314,8 +297,8 @@ s32 gpiProcessPeerInitiatingConnection(Ctx0228 **h, Node0228 *n) {
 
 namespace Nb {
 extern "C" {
-s32 gpiProcessPeerAcceptingConnection(Ctx0228 **h, Node0228 *n) {
-    Ctx0228 *c = *h;
+s32 gpiProcessPeerAcceptingConnection(GPConnection *h, GPIPeer *n) {
+    GPIConnection *c = *h;
     s32 len;
     s32 flag;
     char b1[0x10];
@@ -353,7 +336,7 @@ s32 gpiProcessPeerAcceptingConnection(Ctx0228 **h, Node0228 *n) {
                 n->state = 0x6a;
                 return 0;
             }
-            OS_SPrintf(b4, "%s%d%d", c->password, c->profileId, x);
+            OS_SPrintf(b4, "%s%d%d", c->password, c->profileid, x);
             MD5Digest(b4, STD_GetStringLength(b4), b5);
             if (strcmp(b3, b5) != 0) {
                 gpiAppendStringToBuffer(h, &n->outputBuffer, "\\anack\\");
@@ -378,7 +361,7 @@ s32 gpiProcessPeerAcceptingConnection(Ctx0228 **h, Node0228 *n) {
 
 namespace Nb {
 extern "C" {
-s32 gpiPeerSendMessages(Ctx0228 **h, Node0228 *n) {
+s32 gpiPeerSendMessages(GPConnection *h, GPIPeer *n) {
     s32 i;
     s32 flag;
     s32 r;
@@ -388,7 +371,7 @@ s32 gpiPeerSendMessages(Ctx0228 **h, Node0228 *n) {
     if (ArrayLength(n->messages) != 0) {
         i = 0;
         do {
-            Sub0228 *e = (Sub0228 *)ArrayNth(n->messages, i);
+            GPIMessage *e = (GPIMessage *)ArrayNth(n->messages, i);
             r = gpiSendFromBuffer(h, n->sock, &e->buffer, &flag, i, "PR");
             if (flag != 0 || r != 0) {
                 n->state = 0x6a;
@@ -407,11 +390,11 @@ s32 gpiPeerSendMessages(Ctx0228 **h, Node0228 *n) {
 
 namespace Nb {
 extern "C" {
-s32 gpiProcessPeerConnected(Ctx0228 **h, Node0228 *n) {
-    Ctx0228 *c = *h;
+s32 gpiProcessPeerConnected(GPConnection *h, GPIPeer *n) {
+    GPIConnection *c = *h;
     s32 len;
     s32 flag;
-    Unk_ov065_02280e7c_Pair2 pr;
+    GPICallbackCopy pr;
     s32 v;
     s32 type;
     s32 ext;
@@ -448,8 +431,8 @@ s32 gpiProcessPeerConnected(Ctx0228 **h, Node0228 *n) {
         if (v != 0) {
             switch (type) {
             case 1:
-                pr = *(Unk_ov065_02280e7c_Pair2 *)&c->buddyMessageCallback;
-                if (pr.p.func != 0) {
+                pr = *(GPICallbackCopy *)&c->callbacks[3];
+                if (pr.p.callback != 0) {
                     GPRecvBuddyMessageArg *m = (GPRecvBuddyMessageArg *)GsUtil_Alloc(0xc);
                     if (m == NULL) {
                         gpiSetErrorString(h, "Out of memory.");
@@ -503,7 +486,7 @@ __declspec(weak) void Unk_ov065_02281180_pool_order(void) {
 
 namespace Nb {
 extern "C" {
-s32 gpiProcessPeer(Ctx0228 **h, Node0228 *n) {
+s32 gpiProcessPeer(GPConnection *h, GPIPeer *n) {
     s32 r = 0;
     if (n->state != 0x69) {
         if (n->initiated != 0) {
@@ -522,7 +505,7 @@ s32 gpiProcessPeer(Ctx0228 **h, Node0228 *n) {
 
 namespace Nb {
 extern "C" {
-void gpiDestroyPeer(Ctx0228 **h, Node0228 *n) {
+void gpiDestroyPeer(GPConnection *h, GPIPeer *n) {
     shutdown(n->sock, 2);
     closesocket(n->sock);
     GsUtil_Free(n->inputBuffer.buffer);
@@ -540,13 +523,13 @@ void gpiDestroyPeer(Ctx0228 **h, Node0228 *n) {
 
 namespace Nb {
 extern "C" {
-void gpiRemovePeer(Ctx0228 **h, Node0228 *n) {
-    Ctx0228 *c = *h;
-    Node0228 *p = c->peerList;
+void gpiRemovePeer(GPConnection *h, GPIPeer *n) {
+    GPIConnection *c = *h;
+    GPIPeer *p = c->peerList;
     if (p == n) {
         c->peerList = n->pnext;
     } else {
-        Node0228 *q = p->pnext;
+        GPIPeer *q = p->pnext;
         while (q != n) {
             if (q == NULL) {
                 gpiDebug(h, "Tried to remove peer not in list.");
@@ -560,7 +543,7 @@ void gpiRemovePeer(Ctx0228 **h, Node0228 *n) {
     {
         s32 i = 0;
         while (ArrayLength(n->messages) != 0) {
-            Sub0228 *e = (Sub0228 *)ArrayNth(n->messages, i);
+            GPIMessage *e = (GPIMessage *)ArrayNth(n->messages, i);
             if (e->type < 0x64) {
                 gpiSendServerBuddyMessage(h, n->profile, e->type, e->buffer.buffer + e->start);
             }
@@ -591,9 +574,9 @@ void GsGpPeer_SetSocketBuffers(s32 s) {
 
 namespace Nb {
 extern "C" {
-s32 gpiProcessPeers(Ctx0228 **h) {
-    Ctx0228 *c = *h;
-    Node0228 *n;
+s32 gpiProcessPeers(GPConnection *h) {
+    GPIConnection *c = *h;
+    GPIPeer *n;
     s32 s;
     if (c->peerSocket != -1 && CanReceiveOnSocket(c->peerSocket) != 0) {
         s = accept(c->peerSocket, 0, 0);
@@ -610,10 +593,10 @@ s32 gpiProcessPeers(Ctx0228 **h) {
         }
     }
     {
-        Node0228 *m = c->peerList;
-        s32 z = 0;
+        GPIPeer *m = c->peerList;
+        s32 *z = 0;
         while (m != NULL) {
-            Node0228 *next = m->pnext;
+            GPIPeer *next = m->pnext;
             s32 r = gpiProcessPeer(h, m);
             if (m->state == 0x6a || r != 0 || time(z) > m->timeout) {
                 gpiRemovePeer(h, m);
@@ -628,9 +611,9 @@ s32 gpiProcessPeers(Ctx0228 **h) {
 
 namespace Nb {
 extern "C" {
-Node0228 *gpiGetPeerByProfile(Ctx0228 **h, s32 id) {
-    Ctx0228 *c = *h;
-    Node0228 *n = c->peerList;
+GPIPeer *gpiGetPeerByProfile(GPConnection *h, s32 id) {
+    GPIConnection *c = *h;
+    GPIPeer *n = c->peerList;
     while (n != NULL) {
         if (n->profile == id && n->state == 0x69) {
             return n;
@@ -653,9 +636,9 @@ void gpiFreeMessage(void *p) {
 
 namespace Nb {
 extern "C" {
-Node0228 *gpiAddPeer(Ctx0228 **h, s32 a, s32 b) {
-    Ctx0228 *c = *h;
-    Node0228 *n = (Node0228 *)GsUtil_Alloc(0x40);
+GPIPeer *gpiAddPeer(GPConnection *h, s32 a, s32 b) {
+    GPIConnection *c = *h;
+    GPIPeer *n = (GPIPeer *)GsUtil_Alloc(0x40);
     if (n == NULL) {
         return NULL;
     }
@@ -675,7 +658,7 @@ Node0228 *gpiAddPeer(Ctx0228 **h, s32 a, s32 b) {
 
 namespace Nb {
 extern "C" {
-s32 gpiPeerGetSig(Ctx0228 **h, Node0228 *n) {
+s32 gpiPeerGetSig(GPConnection *h, GPIPeer *n) {
     GPIOperation *e;
     s32 r = gpiAddOperation(h, 2, 0, &e, 0, 0, 0);
     if (r != 0) {
@@ -694,7 +677,7 @@ s32 gpiPeerGetSig(Ctx0228 **h, Node0228 *n) {
 namespace Na {
 extern "C" {
 s32 gpiPeerStartConnect(void *h, GPIPeer *n) {
-    Unk_ov065_02280d70_Sa sa;
+    SockAddrIn sa;
     GPIProfile *p;
     s32 e;
     if (gpiGetProfile(h, n->profile, &p) == 0) {
@@ -714,12 +697,12 @@ s32 gpiPeerStartConnect(void *h, GPIPeer *n) {
     }
     GsGpPeer_SetSocketBuffers(n->sock);
     u32 ad = (u32)&sa;
-    ((Unk_ov065_02280d70_Sa *)ad)->unk_00 = 0;
-    ((Unk_ov065_02280d70_Sa *)ad)->addr = 0;
-    ((u8 *)&sa)[1] = 2;
+    ((u32 *)ad)[0] = 0;
+    ((u32 *)ad)[1] = 0;
+    sa.family = 2;
     sa.addr = p->buddyStatus->ip;
-    *(u16 *)((u8 *)&sa + 2) = p->buddyStatus->port;
-    if (connect(n->sock, (Unk_ov065_02280d70_Sa *)ad, 8) == -1) {
+    sa.port = p->buddyStatus->port;
+    if (connect(n->sock, (SockAddrIn *)ad, 8) == -1) {
         e = GOAGetLastError(n->sock);
         if (e != -6 && e != -0x1a && e != -0x4c) {
             gpiSetError(h, 5, "There was an error connecting a socket.");

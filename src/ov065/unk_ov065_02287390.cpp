@@ -1,11 +1,13 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/darray.h"
-#include "net/Unk_ov065_02287200_Sa.h"
 #include "net/GsInAddr.h"
 #include "net/natneg.h"
+#include "net/SockAddrIn.h"
 #include "net/qr2.h"
 #include "net/GsBytes.h"
+#include "net/gsPlatformUtil.h"
+#include "net/SockHostEnt.h"
 
 extern "C" {
 extern qr2_implementation_s static_qr2_rec;
@@ -47,7 +49,6 @@ void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 sendto(s32, void *, s32, s32, void *, s32);
 s32 closesocket(s32);
-s32 current_time(void);
 void ArrayFree(Vec *);
 s32 ArrayLength(Vec *);
 void *ArrayNth(Vec *, s32);
@@ -79,20 +80,6 @@ namespace F02287b18 {
 
 // ov065_065: GameSpy query-and-report (qr2-like) module: response buffer, key lists, base64 / RC4 helpers, heartbeat (0x02287b18..0x02288380)
 
-struct Unk_ov065_02287fcc_Host {
-    u32 hostName;
-    u32 aliases;
-    u32 addrType;
-    u32 **addrList;
-};
-
-struct Unk_ov065_0228804c_List {
-    u32 hostName;
-    u32 aliases;
-    u32 addrType;
-    u8 **addrList;
-};
-
 extern "C" {
 extern const char *qr2_registered_key_list[];
 extern qr2_implementation_s *current_rec;
@@ -114,17 +101,16 @@ s32 rand();
 
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
-Unk_ov065_0228804c_List *getlocalhost();
+SockHostEnt *getlocalhost();
 s32 inet_addr(const char *);
-s32 recvfrom(s32, void *, s32, s32, Unk_ov065_02287fcc_Sa *, s32 *);
+s32 recvfrom(s32, void *, s32, s32, SockAddrIn *, s32 *);
 s32 closesocket(s32);
 s32 CanReceiveOnSocket(s32);
 s32 SocketShutDown();
-u32 current_time();
-Unk_ov065_02287fcc_Host *Sock_GetHostByName(const char *);
+SockHostEnt *Sock_GetHostByName(const char *);
 void send_heartbeat(qr2_implementation_s *, s32);
 void send_keepalive(qr2_implementation_s *);
-s32 qr2_parse_queryA(qr2_implementation_s *, u8 *, s32, Unk_ov065_02287fcc_Sa *);
+s32 qr2_parse_queryA(qr2_implementation_s *, u8 *, s32, SockAddrIn *);
 
 void qr_build_query_reply(qr2_implementation_s *q, qr2_buffer_s *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2);
 void qr_build_partial_query_reply(qr2_implementation_s *q, qr2_buffer_s *b, s32 type, s32 count, u8 *list);
@@ -135,7 +121,7 @@ void gs_encrypt(u8 *key, s32 keylen, u8 *data, s32 datalen);
 void gs_encode(u8 *in, s32 len, u8 *out);
 u8 encode_ct(u8 c);
 void swap_byte(u8 *a, u8 *b);
-s32 get_sockaddrin__qr2(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp);
+s32 get_sockaddrin__qr2(const char *name, u32 port, SockAddrIn *sa, SockHostEnt **hp);
 void enum_local_ips();
 void qr2_buffer_addA(qr2_buffer_s *b, const char *s);
 void qr2_buffer_add_int(qr2_buffer_s *b, s32 v);
@@ -274,7 +260,7 @@ namespace F02287b18 {
 extern "C" {
 void qr2_check_queries(qr2_implementation_s *q) {
     struct {
-        Unk_ov065_02287fcc_Sa sa;
+        SockAddrIn sa;
         s32 len;
     } l;
     s32 z = 0;
@@ -410,13 +396,13 @@ void qr2_buffer_addA(qr2_buffer_s *b, const char *s) {
 namespace F02287b18 {
 extern "C" {
 void enum_local_ips() {
-    Unk_ov065_0228804c_List *l = getlocalhost();
+    SockHostEnt *l = getlocalhost();
     if (l != NULL) {
         num_local_ips = 0;
         s32 t;
         do {
             s32 i = num_local_ips;
-            u8 *e = l->addrList[i];
+            u8 *e = (u8 *)l->addrList[i];
             if (e == NULL) {
                 break;
             }
@@ -431,8 +417,8 @@ void enum_local_ips() {
 
 namespace F02287b18 {
 extern "C" {
-s32 get_sockaddrin__qr2(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp) {
-    Unk_ov065_02287fcc_Host *h = NULL;
+s32 get_sockaddrin__qr2(const char *name, u32 port, SockAddrIn *sa, SockHostEnt **hp) {
+    SockHostEnt *h = NULL;
     s32 v;
     sa->family = 2;
     v = (u16)port;
@@ -448,7 +434,7 @@ s32 get_sockaddrin__qr2(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, U
             if (h == NULL) {
                 return 0;
             }
-            sa->addr = **h->addrList;
+            sa->addr = *(u32 *)*h->addrList;
         }
     }
     if (hp != NULL) {

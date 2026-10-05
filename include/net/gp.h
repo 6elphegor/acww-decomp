@@ -129,20 +129,10 @@ struct GPBuddyStatus {
     /* 0x20c */ s32 port;
 };
 
-// GPConnection: the handle passed to every gp* call (the SDK typedefs it as void *; here a struct holding the
-// connection object pointer) (DwcControl::gpConnection, pointed to by
-// the login and friend controls) and the part of the connection object the friend code reads (last status sent).
-// src/ov065/unk_ov065_0226fc18.cpp, unk_ov065_02270e34.cpp, unk_ov065_022723b8.cpp.
-
-struct Unk_ov065_0229080c_Big {
-    /* 0x000 */ u8 unk_00[0x214];
-    /* 0x214 */ s32 lastStatus;
-    /* 0x218 */ u8 lastStatusString[0x100];
-    /* 0x318 */ u8 lastLocationString[0x100];
-};
-
-struct GPConnection {
-    /* 0x0 */ Unk_ov065_0229080c_Big *connection;
-};
+// GPConnection, the handle every gp*/gpi* function takes as GPConnection * (DwcControl::gpConnection, pointed to by the
+// login and friend controls): the SDK declares it as void * and casts it to GPIConnection * in each function; here it is
+// typed, so GPConnection * is GPIConnection ** (net/gpi.h).
+struct GPIConnection;
+typedef GPIConnection *GPConnection;
 
 #endif

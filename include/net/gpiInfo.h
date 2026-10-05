@@ -36,6 +36,12 @@ struct GPIInfoCache {
     /* 0xec */ s32 conntypeid;
 };
 
+// 0xf0-byte block that gpiSetInfoCache copies a GPIInfoCache through in one go (an 8-byte-aligned element type: a plain
+// GPIInfoCache assignment compiles to a different copy loop). Not an SDK type.
+struct GPIInfoCacheCopy {
+    /* 0x00 */ s64 v[30];
+};
+
 struct GPGetInfoResponseArg {
     /* 0x000 */ s32 result;
     /* 0x004 */ s32 profile;

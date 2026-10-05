@@ -11,7 +11,7 @@ struct GPIOperation {
     /* 0x00 */ s32 type;
     /* 0x04 */ void *data;
     /* 0x08 */ s32 blocking;
-    /* 0x0c */ Unk_ov065_0227e0e8_Wrap callback;
+    /* 0x0c */ GPICallbackCopy callback;
     /* 0x14 */ s32 state;
     /* 0x18 */ s32 id;
     /* 0x1c */ s32 result;

@@ -1,8 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0227bd20_Ctx.h"
-#include "net/Unk_ov065_0227c538_Node.h"
 #include "net/gpi.h"
+#include "net/gpiProfile.h"
+#include "net/gpiInfo.h"
+#include "net/gsPlatformUtil.h"
 
 namespace Nb {
 // ov065_047: DWC HTTP/GHI-like API wrappers (0x0227bbf4..0x0227c4b0)
@@ -31,8 +32,8 @@ s32 gpiAuthBuddyRequest(void *, s32);
 s32 gpiSetInfos(void *, s32, s32);
 s32 gpiGetInfo(void *, s32, s32, s32, s32, s32);
 s32 gpiProfileSearch(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-s32 gpiAppendStringToBuffer(void *, char *, const char *);
-s32 gpiAppendIntToBuffer(void *, char *, s32);
+s32 gpiAppendStringToBuffer(void *, GPIBuffer *, const char *);
+s32 gpiAppendIntToBuffer(void *, GPIBuffer *, s32);
 s32 gpiGetProfile(void *, s32, void *);
 s32 gpiFindBuddy(void *, s32);
 s32 gpiCanFreeProfile(void *);
@@ -43,50 +44,43 @@ void GsUtil_Free(void *);
 
 namespace Nc {
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
-
-
-
-
-
-typedef GPIConnection Ctx0227;
 extern "C" {
 extern s32 __GSIACResult;
 
 
-typedef s32 (*GsGpConnectCallback)(Ctx0227 **, void *, s32);
+typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, s32);
 
-void gpiDisconnect(Ctx0227 **, s32);
-void gpiSetErrorString(Ctx0227 **, const char *);
-s32 gpiConnect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
+void gpiDisconnect(GPConnection *, s32);
+void gpiSetErrorString(GPConnection *, const char *);
+s32 gpiConnect(GPConnection *, const char *, const char *, const char *, const char *, const char *,
                         const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
-s32 gpiCheckConnect(Ctx0227 **);
+s32 gpiCheckConnect(GPConnection *);
 void msleep(s32);
-s32 gpiFindOperationByID(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
-s32 gpiProcessCallbacks(Ctx0227 **, s32);
-s32 gpiProcessPeers(Ctx0227 **);
-s32 gpiProcessSearches(Ctx0227 **);
-void gpiFailedOpCallback(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void gpiRemoveOperation(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void gpiAddLocalInfo(Ctx0227 **, char **);
-s32 gpiSendFromBuffer(Ctx0227 **, s32, char **, s32 *, s32, const char *);
-s32 gpiRecvToBuffer(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
-void gpiSetError(Ctx0227 **, s32, const char *);
-void gpiCallErrorCallback(Ctx0227 **, s32, s32);
-void gpiDebug(Ctx0227 **, const char *, ...);
+s32 gpiFindOperationByID(GPConnection *, GPIOperation **, s32);
+s32 gpiProcessCallbacks(GPConnection *, s32);
+s32 gpiProcessPeers(GPConnection *);
+s32 gpiProcessSearches(GPConnection *);
+void gpiFailedOpCallback(GPConnection *, GPIOperation *);
+void gpiRemoveOperation(GPConnection *, GPIOperation *);
+void gpiAddLocalInfo(GPConnection *, char **);
+s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
+s32 gpiRecvToBuffer(GPConnection *, s32, char **, s32 *, s32 *, const char *);
+void gpiSetError(GPConnection *, s32, const char *);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
+void gpiDebug(GPConnection *, const char *, ...);
 void *GsUtil_Realloc(void *, s32);
-s32 gpiCheckForError(Ctx0227 **, char *, s32);
-s32 gpiProcessRecvBuddyMessage(Ctx0227 **, char *);
-s32 gpiOperationsAreBlocking(Ctx0227 **);
-s32 gpiProcessOperation(Ctx0227 **, Unk_ov065_0227c538_Node *, char *);
-void gpiProfileMap(Ctx0227 **, s32 (*)(Ctx0227 **, Unk_ov065_0227c538_Node *, s32), s32);
-s32 gpiGetProfile(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
-void gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
-void gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
-s32 gpiCanFreeProfile(Unk_ov065_0227c538_Node *);
-void gpiRemoveProfile(Ctx0227 **, Unk_ov065_0227c538_Node *);
-s32 gpiInitProfiles(Ctx0227 **);
+s32 gpiCheckForError(GPConnection *, char *, s32);
+s32 gpiProcessRecvBuddyMessage(GPConnection *, char *);
+s32 gpiOperationsAreBlocking(GPConnection *);
+s32 gpiProcessOperation(GPConnection *, GPIOperation *, char *);
+void gpiProfileMap(GPConnection *, s32 (*)(GPConnection *, GPIProfile *, s32), s32);
+s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
+void gpiAppendStringToBuffer(GPConnection *, char **, const char *);
+void gpiAppendIntToBuffer(GPConnection *, char **, s32);
+s32 gpiCanFreeProfile(GPIProfile *);
+void gpiRemoveProfile(GPConnection *, GPIProfile *);
+s32 gpiInitProfiles(GPConnection *);
 void SocketStartUp();
-void current_time();
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 void TableFree(void *);
@@ -99,19 +93,19 @@ s32 strncmp(const char *, const char *, u32);
 void memset(void *, s32, u32);
 void srand();
 
-s32 gpiReset(Ctx0227 **h);
-s32 gpiDestroy(Ctx0227 **h);
-s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b);
-s32 gpiProcess(Ctx0227 **h, s32 a);
-s32 gpiProcessConnectionManager(Ctx0227 **h);
-s32 gpiResetProfile(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
-s32 gpiFixBuddyIndices(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
+s32 gpiReset(GPConnection *h);
+s32 gpiDestroy(GPConnection *h);
+s32 gpiInitialize(GPConnection *h, s32 a, s32 b);
+s32 gpiProcess(GPConnection *h, s32 a);
+s32 gpiProcessConnectionManager(GPConnection *h);
+s32 gpiResetProfile(GPConnection *h, GPIProfile *n, s32 m);
+s32 gpiFixBuddyIndices(GPConnection *h, GPIProfile *n, s32 m);
 }
 }
 
 namespace Nc {
 extern "C" {
-s32 gpInitialize(Ctx0227 **h, s32 a, s32 b) {
+s32 gpInitialize(GPConnection *h, s32 a, s32 b) {
     if (__GSIACResult != 1) {
         return 2;
     }
@@ -125,7 +119,7 @@ s32 gpInitialize(Ctx0227 **h, s32 a, s32 b) {
 
 namespace Nc {
 extern "C" {
-void gpDestroy(Ctx0227 **h) {
+void gpDestroy(GPConnection *h) {
     if (h != NULL && *h != NULL) {
         gpiDestroy(h);
     }
@@ -135,8 +129,8 @@ void gpDestroy(Ctx0227 **h) {
 
 namespace Nc {
 extern "C" {
-s32 gpProcess(Ctx0227 **h) {
-    Ctx0227 *c;
+s32 gpProcess(GPConnection *h) {
+    GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
@@ -150,8 +144,8 @@ s32 gpProcess(Ctx0227 **h) {
 
 namespace Nc {
 extern "C" {
-s32 gpSetCallback(Ctx0227 **h, s32 i, s32 x, s32 y) {
-    Ctx0227 *c;
+s32 gpSetCallback(GPConnection *h, s32 i, s32 x, s32 y) {
+    GPIConnection *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
@@ -168,8 +162,8 @@ s32 gpSetCallback(Ctx0227 **h, s32 i, s32 x, s32 y) {
 
 namespace Nc {
 extern "C" {
-s32 gpConnectPreAuthenticatedA(Ctx0227 **h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, s32 e) {
-    Ctx0227 *ctx;
+s32 gpConnectPreAuthenticatedA(GPConnection *h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, s32 e) {
+    GPIConnection *ctx;
     if (h == NULL || (ctx = *h) == NULL) {
         return 2;
     }
@@ -196,8 +190,8 @@ s32 gpConnectPreAuthenticatedA(Ctx0227 **h, char *a, char *b, s32 c, s32 d, GsGp
 
 namespace Nc {
 extern "C" {
-void gpDisconnect(Ctx0227 **h) {
-    Ctx0227 *c;
+void gpDisconnect(GPConnection *h) {
+    GPIConnection *c;
     if (h != NULL) {
         c = *h;
         if (c != NULL) {
@@ -213,9 +207,9 @@ void gpDisconnect(Ctx0227 **h) {
 
 namespace Nb {
 extern "C" {
-s32 gpProfileSearchA(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, GPCallback cb, void *arg) {
-    Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpProfileSearchA(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, GPCallback cb, void *arg) {
+    GPIConnection *c;
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (cb == NULL) {
@@ -223,8 +217,8 @@ s32 gpProfileSearchA(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a
         return 2;
     }
     if (c->simulation != 0) {
-        Unk_ov065_0227c4b0_Args l = {{0, 0, 0, 0}};
-        l.v[2] = 0x601;
+        GPProfileSearchResponseArg l = {0, 0, 0, 0};
+        l.more = 0x601;
         cb(h, &l, arg);
         return 0;
     }
@@ -235,9 +229,9 @@ s32 gpProfileSearchA(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a
 
 namespace Nb {
 extern "C" {
-s32 gpGetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, GPCallback cb, void *arg) {
-    Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->connection) == NULL || a1 == 0) {
+s32 gpGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, GPCallback cb, void *arg) {
+    GPIConnection *c;
+    if (h == NULL || (c = *h) == NULL || a1 == 0) {
         return 2;
     }
     if (cb == NULL) {
@@ -245,7 +239,7 @@ s32 gpGetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, GPCallback c
         return 2;
     }
     if (c->simulation != 0) {
-        Unk_ov065_0227c400_Buf b = {{0}};
+        GPGetInfoResponseArg b = {0};
         cb(h, &b, arg);
         return 0;
     }
@@ -260,9 +254,9 @@ s32 gpGetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, GPCallback c
 
 namespace Nb {
 extern "C" {
-s32 gpSetInfosA(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
-    Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpSetInfosA(GPConnection *h, s32 a, s32 b) {
+    GPIConnection *c;
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
@@ -279,11 +273,11 @@ s32 gpSetInfosA(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
 
 namespace Nb {
 extern "C" {
-s32 gpSendBuddyRequestA(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
-    Unk_ov065_0227bd20_Ctx *c;
+s32 gpSendBuddyRequestA(GPConnection *h, s32 v, const char *s) {
+    GPIConnection *c;
     char b[0x401];
     char *p;
-    if (h == NULL || (c = h->connection) == NULL) {
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
@@ -307,14 +301,14 @@ s32 gpSendBuddyRequestA(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
             p++;
         } while (*p != 0);
     }
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\addbuddy\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\sesskey\\");
-    gpiAppendIntToBuffer(h, c->outputBuffer, c->sessKey);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\newprofileid\\");
-    gpiAppendIntToBuffer(h, c->outputBuffer, v);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\reason\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, b);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\addbuddy\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->sessKey);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\newprofileid\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, v);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\reason\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, b);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -322,9 +316,9 @@ s32 gpSendBuddyRequestA(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
 
 namespace Nb {
 extern "C" {
-s32 gpAuthBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
-    Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpAuthBuddyRequest(GPConnection *h, s32 a) {
+    GPIConnection *c;
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
@@ -341,10 +335,10 @@ s32 gpAuthBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 gpDenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
-    Unk_ov065_0227bd20_Ctx *c;
-    s32 *e;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpDenyBuddyRequest(GPConnection *h, s32 a) {
+    GPIConnection *c;
+    GPIProfile *e;
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
@@ -357,10 +351,10 @@ s32 gpDenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
     if (gpiGetProfile(h, a, &e) == 0) {
         return 0;
     }
-    e[5]--;
-    if (c->infoCaching == 0 && e[5] <= 0) {
-        GsUtil_Free((void *)e[4]);
-        e[4] = 0;
+    e->requestCount--;
+    if (c->infoCaching == 0 && e->requestCount <= 0) {
+        GsUtil_Free(e->authSig);
+        e->authSig = 0;
         if (gpiCanFreeProfile(e) != 0) {
             gpiRemoveProfile(h, e);
         }
@@ -372,9 +366,9 @@ s32 gpDenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 gpGetNumBuddies(Unk_ov065_0227bd20_Handle *h, s32 *out) {
-    Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpGetNumBuddies(GPConnection *h, s32 *out) {
+    GPIConnection *c;
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
@@ -389,12 +383,12 @@ s32 gpGetNumBuddies(Unk_ov065_0227bd20_Handle *h, s32 *out) {
 
 namespace Nb {
 extern "C" {
-s32 gpGetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05c_Out *out) {
-    Unk_ov065_0227bd20_Ctx *c;
-    Unk_ov065_0227c05c_Ent *ent;
+s32 gpGetBuddyStatus(GPConnection *h, s32 idx, GPBuddyStatus *out) {
+    GPIConnection *c;
+    GPIProfile *ent;
     GPIBuddyStatus *s;
     s32 n;
-    if (h == NULL || (c = h->connection) == NULL) {
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
@@ -410,13 +404,13 @@ s32 gpGetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05c_O
         gpiSetErrorString(h, "Invalid index.");
         return 2;
     }
-    ent = (Unk_ov065_0227c05c_Ent *)gpiFindBuddy(h, idx);
+    ent = (GPIProfile *)gpiFindBuddy(h, idx);
     if (ent == NULL) {
         gpiSetErrorString(h, "Invalid index.");
         return 2;
     }
     s = ent->buddyStatus;
-    out->profileId = ent->profileId;
+    out->profile = ent->profileId;
     out->status = s->status;
     if (s->statusString != NULL) {
         strzcpy(out->statusString, s->statusString, 0x100);
@@ -437,18 +431,18 @@ s32 gpGetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05c_O
 
 namespace Nb {
 extern "C" {
-s32 gpGetBuddyIndex(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
-    Unk_ov065_0227bd20_Ctx *c;
-    s32 **e;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpGetBuddyIndex(GPConnection *h, s32 a, s32 *out) {
+    GPIConnection *c;
+    GPIProfile *e;
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
         *out = 0;
         return 0;
     }
-    if (gpiGetProfile(h, a, &e) != 0 && e[2] != 0) {
-        *out = *e[2];
+    if (gpiGetProfile(h, a, &e) != 0 && e->buddyStatus != 0) {
+        *out = e->buddyStatus->buddyIndex;
     } else {
         *out = -1;
     }
@@ -459,16 +453,16 @@ s32 gpGetBuddyIndex(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
 
 namespace Nb {
 extern "C" {
-s32 gpIsBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
-    Unk_ov065_0227bd20_Ctx *c;
-    s32 **e;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpIsBuddy(GPConnection *h, s32 a) {
+    GPIConnection *c;
+    GPIProfile *e;
+    if (h == NULL || (c = *h) == NULL) {
         return 0;
     }
     if (c->simulation != 0) {
         return 0;
     }
-    if (gpiGetProfile(h, a, &e) != 0 && e[2] != 0) {
+    if (gpiGetProfile(h, a, &e) != 0 && e->buddyStatus != 0) {
         return 1;
     }
     return 0;
@@ -478,9 +472,9 @@ s32 gpIsBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 gpDeleteBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
-    Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpDeleteBuddy(GPConnection *h, s32 a) {
+    GPIConnection *c;
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
@@ -499,12 +493,12 @@ s32 gpDeleteBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 gpSetStatusA(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const char *s2) {
-    Unk_ov065_0227bd20_Ctx *c;
+s32 gpSetStatusA(GPConnection *h, s32 v, const char *s1, const char *s2) {
+    GPIConnection *c;
     char b1[0x100];
     char b2[0x100];
     char *p;
-    if (h == NULL || (c = h->connection) == NULL) {
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {
@@ -548,15 +542,15 @@ s32 gpSetStatusA(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const char
     c->lastStatus = v;
     strzcpy(c->lastStatusString, b1, 0x100);
     strzcpy(c->lastLocationString, b2, 0x100);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\status\\");
-    gpiAppendIntToBuffer(h, c->outputBuffer, v);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\sesskey\\");
-    gpiAppendIntToBuffer(h, c->outputBuffer, c->sessKey);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\statstring\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, b1);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\locstring\\");
-    gpiAppendStringToBuffer(h, c->outputBuffer, b2);
-    gpiAppendStringToBuffer(h, c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\status\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, v);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->sessKey);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\statstring\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, b1);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\locstring\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, b2);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -564,9 +558,9 @@ s32 gpSetStatusA(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const char
 
 namespace Nb {
 extern "C" {
-s32 gpSendBuddyMessageA(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
-    Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->connection) == NULL) {
+s32 gpSendBuddyMessageA(GPConnection *h, s32 a, s32 b) {
+    GPIConnection *c;
+    if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (c->simulation != 0) {

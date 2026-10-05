@@ -1,15 +1,12 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/gpiInfo.h"
-#include "net/Unk_ov065_02280854_Ctx.h"
 #include "net/gpiSearch.h"
-#include "net/Unk_ov065_0227c538_Node.h"
-#include "net/Unk_ov065_0227d8e0_Ctx.h"
 #include "net/gpi.h"
 #include "net/gp.h"
 #include "net/gpiPeer.h"
 #include "net/gpiTransfer.h"
-#include "net/Unk_ov065_02280d70_P1.h"
+#include "net/gsPlatformUtil.h"
 
 // ov065 TU46: GP gpiOperation.c (0x02280740..0x02280c08)
 
@@ -47,7 +44,6 @@ s32 OS_SPrintf(char *, const char *, ...);
 s32 gpiSendOrBufferString(void *, void *, const char *);
 s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);
 s32 gpiSendOrBufferChar(void *, void *, s32);
-s32 time(s32);
 s32 gpiAppendStringToBuffer(void *, void *, const char *);
 s32 gpiAppendIntToBuffer(void *, void *, s32);
 s32 gpiAppendStringToBufferLen(void *, void *, const char *, s32);
@@ -81,7 +77,7 @@ s32 gpiIsValidDate(s32 day, s32 mon, s32 year);
 
 
 
-void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
+void gpiDestroyOperation(GPConnection *h, GPIOperation *n);
 
 
 
@@ -104,11 +100,11 @@ enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF 
 extern "C" {
 s32 gpiIsValidDate(s32 day, s32 mon, s32 year);
 s32 gpiProcessOperation(void *h, GPIOperation *n, char *x);
-s32 gpiOperationsAreBlocking(Unk_ov065_02280854_H *h);
-s32 gpiFindOperationByID(Unk_ov065_02280854_H *h, GPIOperation **out, s32 id);
-void gpiRemoveOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
-void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
-s32 gpiAddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g);
+s32 gpiOperationsAreBlocking(GPConnection *h);
+s32 gpiFindOperationByID(GPConnection *h, GPIOperation **out, s32 id);
+void gpiRemoveOperation(GPConnection *h, GPIOperation *n);
+void gpiDestroyOperation(GPConnection *h, GPIOperation *n);
+s32 gpiAddOperation(GPConnection *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g);
 s32 gpiFailedOpCallback(void *h, GPIOperation *n);
 }
 }
@@ -117,7 +113,7 @@ namespace Na {
 extern "C" {
 s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
     GPIConnection *c = *(GPIConnection **)h;
-    Unk_ov065_0227e0e8_Wrap w;
+    GPICallbackCopy w;
     s32 r;
     w = n->callback;
     if (w.p.callback != 0) {
@@ -227,8 +223,8 @@ s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
 
 namespace Na {
 extern "C" {
-s32 gpiAddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g) {
-    Unk_ov065_02280854_Ctx *c = h->connection;
+s32 gpiAddOperation(GPConnection *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g) {
+    GPIConnection *c = *h;
     GPIOperation *n = (GPIOperation *)GsUtil_Alloc(0x24);
     if (n == 0) {
         gpiSetErrorString(h, "Out of memory.");
@@ -241,10 +237,10 @@ s32 gpiAddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GPIOperation **out,
     if (a == 0) {
         n->id = 1;
     } else {
-        s32 t = c->nextOperationId++;
+        s32 t = c->nextOperationID++;
         n->id = t;
-        if (c->nextOperationId < 2) {
-            c->nextOperationId = 2;
+        if (c->nextOperationID < 2) {
+            c->nextOperationID = 2;
         }
     }
     n->result = 0;
@@ -260,8 +256,8 @@ s32 gpiAddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GPIOperation **out,
 
 namespace Na {
 extern "C" {
-void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n) {
-    Unk_ov065_02280854_Ctx *c = h->connection;
+void gpiDestroyOperation(GPConnection *h, GPIOperation *n) {
+    GPIConnection *c = *h;
     if (n->type == 3) {
         GPISearchData *s = (GPISearchData *)n->data;
         c->numSearches--;
@@ -281,8 +277,8 @@ void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n) {
 
 namespace Na {
 extern "C" {
-void gpiRemoveOperation(Unk_ov065_02280854_H *h, GPIOperation *n) {
-    Unk_ov065_02280854_Ctx *c = h->connection;
+void gpiRemoveOperation(GPConnection *h, GPIOperation *n) {
+    GPIConnection *c = *h;
     GPIOperation *p = c->operationList;
     GPIOperation *prev = 0;
     for (; p; prev = p, p = p->pnext) {
@@ -302,8 +298,8 @@ void gpiRemoveOperation(Unk_ov065_02280854_H *h, GPIOperation *n) {
 
 namespace Na {
 extern "C" {
-s32 gpiFindOperationByID(Unk_ov065_02280854_H *h, GPIOperation **out, s32 id) {
-    GPIOperation *n = h->connection->operationList;
+s32 gpiFindOperationByID(GPConnection *h, GPIOperation **out, s32 id) {
+    GPIOperation *n = (*h)->operationList;
     for (; n; n = n->pnext) {
         if (n->id == id) {
             if (out) {
@@ -322,8 +318,8 @@ s32 gpiFindOperationByID(Unk_ov065_02280854_H *h, GPIOperation **out, s32 id) {
 
 namespace Na {
 extern "C" {
-s32 gpiOperationsAreBlocking(Unk_ov065_02280854_H *h) {
-    GPIOperation *n = h->connection->operationList;
+s32 gpiOperationsAreBlocking(GPConnection *h) {
+    GPIOperation *n = (*h)->operationList;
     for (; n; n = n->pnext) {
         if (n->blocking != 0 && n->type != 3) {
             return 1;

@@ -3,34 +3,19 @@
 #include "net/gpiProfile.h"
 #include "net/gpiOperation.h"
 #include "net/gpiCallback.h"
-#include "net/Unk_ov065_0227f00c_Host.h"
-#include "net/Unk_ov065_0227f324_Rec.h"
+#include "net/SockAddrIn.h"
+#include "net/SockHostEnt.h"
 #include "net/gpiInfo.h"
-#include "net/Unk_ov065_02280854_Ctx.h"
 #include "net/gp.h"
-#include "net/Unk_ov065_0227c538_Node.h"
 #include "net/gpiTransfer.h"
-#include "net/Unk_ov065_02280d70_P1.h"
 #include "net/gpi.h"
 #include "net/gpiPeer.h"
-#include "net/Unk_ov065_0227d8e0_Ctx.h"
+#include "net/gsPlatformUtil.h"
 
 // ov065 TU45: GP gpiInfo.c (0x0227f2a4..0x02280740)
 
 namespace Na {
 // ov065_052: DWC/GameSpy GP connection setup helpers (0x0227ee64..0x0227f54c)
-
-
-
-
-
-
-
-
-
-
-typedef GPIConnection Ctx0227;
-typedef GPICallback Pair0227;
 
 extern "C" {
 
@@ -48,19 +33,19 @@ extern char data_ov065_0228d564[];
 extern char data_ov065_0228d58c[];
 extern u8 data_0213a490[];
 
-s32 gpiReset(Ctx0227 **);
-void gpiSetErrorString(Ctx0227 **, const char *);
-void gpiSetError(Ctx0227 **, s32, const char *);
-void gpiCallErrorCallback(Ctx0227 **, s32, s32);
+s32 gpiReset(GPConnection *);
+void gpiSetErrorString(GPConnection *, const char *);
+void gpiSetError(GPConnection *, s32, const char *);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
 void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
 char *goastrdup(const char *);
-s32 gpiAddOperation(Ctx0227 **, s32, void *, GPIOperation **, s32, s32, s32);
-void gpiFailedOpCallback(Ctx0227 **, GPIOperation *);
-s32 gpiDisconnect(Ctx0227 **, s32);
-s32 gpiProcess(Ctx0227 **, s32);
+s32 gpiAddOperation(GPConnection *, s32, void *, GPIOperation **, s32, s32, s32);
+void gpiFailedOpCallback(GPConnection *, GPIOperation *);
+s32 gpiDisconnect(GPConnection *, s32);
+s32 gpiProcess(GPConnection *, s32);
 s32 socket(s32, s32, s32);
 s32 bind(s32, void *, s32);
 s32 listen(s32, s32);
@@ -68,16 +53,16 @@ s32 getsockname(s32, void *, s32 *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
 s32 SetSockBlocking(s32, s32);
-Unk_ov065_0227f00c_Host *Sock_GetHostByName(char *);
-s32 gpiGetProfile(Ctx0227 **, s32, GPIProfile **);
+SockHostEnt *Sock_GetHostByName(char *);
+s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
 void gpiInfoCacheToArg(GPIInfoCache *, void *);
-s32 gpiRemoveOperation(Ctx0227 **, GPIOperation *);
-s32 gpiAddCallback(Ctx0227 **, Pair0227, void *, GPIOperation *, s32);
-s32 gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
-s32 gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
-s32 gpiSendLocalInfo(Ctx0227 **, const char *, const char *);
-s32 gpiSendUserInfo(Ctx0227 **, const char *, const char *);
-s32 gpiSetInfoi(Ctx0227 **, s32, s32);
+s32 gpiRemoveOperation(GPConnection *, GPIOperation *);
+s32 gpiAddCallback(GPConnection *, GPICallback, void *, GPIOperation *, s32);
+s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
+s32 gpiSendLocalInfo(GPConnection *, const char *, const char *);
+s32 gpiSendUserInfo(GPConnection *, const char *, const char *);
+s32 gpiSetInfoi(GPConnection *, s32, s32);
 
 void *memset(void *, s32, u32);
 u32 rand(void);
@@ -85,8 +70,8 @@ s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *STD_CopyString(char *, const char *);
 
-s32 gpiSendGetInfo(Ctx0227 **, s32, s32);
-s32 gpiStartConnect(Ctx0227 **, GPIOperation *);
+s32 gpiSendGetInfo(GPConnection *, s32, s32);
+s32 gpiStartConnect(GPConnection *, GPIOperation *);
 
 #define GP_FAIL(str) \
     { \
@@ -112,33 +97,17 @@ s32 gpiStartConnect(Ctx0227 **, GPIOperation *);
 }
 extern "C" {
 void gpiFreeInfoCache(GPIProfile *p);
-s32 gpiSetInfoCache(Ctx0227 **h, GPIProfile *p, GPIInfoCache *q);
-s32 gpiGetInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5);
-s32 gpiSendGetInfo(Ctx0227 **h, s32 a1, s32 a2);
-s32 gpiSetInfos(Ctx0227 **h, s32 cmd, char *val);
+s32 gpiSetInfoCache(GPConnection *h, GPIProfile *p, GPIInfoCache *q);
+s32 gpiGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5);
+s32 gpiSendGetInfo(GPConnection *h, s32 a1, s32 a2);
+s32 gpiSetInfos(GPConnection *h, s32 cmd, char *val);
 }
 }
 
 namespace Nb {
 // ov065_053: DWC/GameSpy-like response builder / parser (0x0227faf8..0x0227ff90)
 
-struct Unk_ov065_0227fe88_Ctx {
-    u8 pad_000[0x198];
-    s32 sessKey;
-    u8 pad_19c[0x2a4];
-    s32 profileUpdateBuffer;
-    s32 profileUpdateBufferCapacity;
-    s32 profileUpdateBufferLength;
-    s32 profileUpdateBufferPos;
-    s32 userUpdateBuffer;
-    s32 userUpdateBufferCapacity;
-    s32 userUpdateBufferLength;
-};
 
-struct Unk_ov065_0227ff90_Req {
-    u8 pad_00[0xc];
-    Unk_ov065_0227e0e8_Wrap callback;
-};
 
 
 extern "C" {
@@ -149,8 +118,8 @@ s32 OS_SPrintf(char *, const char *, ...);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 char *goastrdup(const char *);
-s32 gpiAppendStringToBuffer(void *, char *, const char *);
-s32 gpiAppendIntToBuffer(void *, char *, s32);
+s32 gpiAppendStringToBuffer(void *, GPIBuffer *, const char *);
+s32 gpiAppendIntToBuffer(void *, GPIBuffer *, s32);
 void gpiCallErrorCallback(void *, s32, s32);
 s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 s32 gpiSetInfoCache(void *, u32 *, GPIInfoCache *);
@@ -180,8 +149,8 @@ extern "C" {
 s32 gpiSetInfoi(void *h, s32 code, s32 val);
 s32 gpiSendUserInfo(void *h, char *a, char *b);
 s32 gpiSendLocalInfo(void *h, char *a, char *b);
-s32 gpiAddLocalInfo(void *h, char *p);
-s32 gpiProcessGetInfo(void *h, Unk_ov065_0227ff90_Req *req, char *str);
+s32 gpiAddLocalInfo(void *h, GPIBuffer *p);
+s32 gpiProcessGetInfo(void *h, GPIOperation *req, char *str);
 }
 }
 
@@ -219,7 +188,6 @@ s32 OS_SPrintf(char *, const char *, ...);
 s32 gpiSendOrBufferString(void *, void *, const char *);
 s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);
 s32 gpiSendOrBufferChar(void *, void *, s32);
-s32 time(s32);
 s32 gpiAppendStringToBuffer(void *, void *, const char *);
 s32 gpiAppendIntToBuffer(void *, void *, s32);
 s32 gpiAppendStringToBufferLen(void *, void *, const char *, s32);
@@ -254,7 +222,7 @@ s32 gpiIsValidDate(s32 day, s32 mon, s32 year);
 
 
 
-void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
+void gpiDestroyOperation(GPConnection *h, GPIOperation *n);
 
 
 
@@ -374,11 +342,11 @@ void gpiInfoCacheToArg(GPIInfoCache *s, GPGetInfoResponseArg *d) {
 
 namespace Nb {
 extern "C" {
-s32 gpiProcessGetInfo(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
+s32 gpiProcessGetInfo(void *h, GPIOperation *req, char *str) {
     GPIConnection *ctx = *(GPIConnection **)h;
     struct {
         u32 *e;
-        Unk_ov065_0227e0e8_Wrap p;
+        GPICallbackCopy p;
         char buf[0x40];
         char a[0x1f];
         char b[0x15];
@@ -573,21 +541,21 @@ s32 gpiProcessGetInfo(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
 
 namespace Nb {
 extern "C" {
-s32 gpiAddLocalInfo(void *h, char *p) {
-    Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
-    if (c->profileUpdateBufferLength > 0) {
+s32 gpiAddLocalInfo(void *h, GPIBuffer *p) {
+    GPIConnection *c = *(GPIConnection **)h;
+    if (c->updateproBuffer.len > 0) {
         gpiAppendStringToBuffer(h, p, "\\updatepro\\\\sesskey\\");
         gpiAppendIntToBuffer(h, p, c->sessKey);
-        gpiAppendStringToBuffer(h, p, (const char *)c->profileUpdateBuffer);
+        gpiAppendStringToBuffer(h, p, c->updateproBuffer.buffer);
         gpiAppendStringToBuffer(h, p, "\\final\\");
-        c->profileUpdateBufferLength = 0;
+        c->updateproBuffer.len = 0;
     }
-    if (c->userUpdateBufferLength > 0) {
+    if (c->updateuiBuffer.len > 0) {
         gpiAppendStringToBuffer(h, p, "\\updateui\\\\sesskey\\");
         gpiAppendIntToBuffer(h, p, c->sessKey);
-        gpiAppendStringToBuffer(h, p, (const char *)c->userUpdateBuffer);
+        gpiAppendStringToBuffer(h, p, c->updateuiBuffer.buffer);
         gpiAppendStringToBuffer(h, p, "\\final\\");
-        c->userUpdateBufferLength = 0;
+        c->updateuiBuffer.len = 0;
     }
     return 0;
 }
@@ -597,12 +565,12 @@ s32 gpiAddLocalInfo(void *h, char *p) {
 namespace Nb {
 extern "C" {
 s32 gpiSendLocalInfo(void *h, char *a, char *b) {
-    Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
-    s32 r = gpiAppendStringToBuffer(h, (char *)&c->profileUpdateBuffer, a);
+    GPIConnection *c = *(GPIConnection **)h;
+    s32 r = gpiAppendStringToBuffer(h, &c->updateproBuffer, a);
     if (r != 0) {
         return r;
     }
-    r = gpiAppendStringToBuffer(h, (char *)&c->profileUpdateBuffer, b);
+    r = gpiAppendStringToBuffer(h, &c->updateproBuffer, b);
     if (r != 0) {
         return r;
     }
@@ -614,12 +582,12 @@ s32 gpiSendLocalInfo(void *h, char *a, char *b) {
 namespace Nb {
 extern "C" {
 s32 gpiSendUserInfo(void *h, char *a, char *b) {
-    Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
-    s32 r = gpiAppendStringToBuffer(h, (char *)&c->userUpdateBuffer, a);
+    GPIConnection *c = *(GPIConnection **)h;
+    s32 r = gpiAppendStringToBuffer(h, &c->updateuiBuffer, a);
     if (r != 0) {
         return r;
     }
-    r = gpiAppendStringToBuffer(h, (char *)&c->userUpdateBuffer, b);
+    r = gpiAppendStringToBuffer(h, &c->updateuiBuffer, b);
     if (r != 0) {
         return r;
     }
@@ -796,8 +764,8 @@ s32 gpiSetInfoi(void *h, s32 code, s32 val) {
 
 namespace Na {
 extern "C" {
-s32 gpiSetInfos(Ctx0227 **h, s32 cmd, char *val) {
-    Ctx0227 *ctx = *h;
+s32 gpiSetInfos(GPConnection *h, s32 cmd, char *val) {
+    GPIConnection *ctx = *h;
     char buf[0x100];
     s32 r;
     char ch;
@@ -988,8 +956,8 @@ __declspec(weak) void Unk_ov065_0227f54c_pool_order(void) {
 
 namespace Na {
 extern "C" {
-s32 gpiSendGetInfo(Ctx0227 **h, s32 a1, s32 a2) {
-    Ctx0227 *ctx = *h;
+s32 gpiSendGetInfo(GPConnection *h, s32 a1, s32 a2) {
+    GPIConnection *ctx = *h;
     gpiAppendStringToBuffer(h, &ctx->outputBuffer, "\\getprofile\\\\sesskey\\");
     gpiAppendIntToBuffer(h, &ctx->outputBuffer, ctx->sessKey);
     gpiAppendStringToBuffer(h, &ctx->outputBuffer, "\\profileid\\");
@@ -1004,13 +972,13 @@ s32 gpiSendGetInfo(Ctx0227 **h, s32 a1, s32 a2) {
 
 namespace Na {
 extern "C" {
-s32 gpiGetInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
+s32 gpiGetInfo(GPConnection *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
     void *m;
     GPIProfile *n;
     GPIOperation *out2;
-    Pair0227 pr;
+    GPICallback pr;
     s32 ok;
-    Ctx0227 *ctx;
+    GPIConnection *ctx;
     ctx = *h;
     out2 = 0;
     ok = 0;
@@ -1067,7 +1035,7 @@ s32 gpiGetInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
 
 namespace Na {
 extern "C" {
-s32 gpiSetInfoCache(Ctx0227 **h, GPIProfile *p, GPIInfoCache *q) {
+s32 gpiSetInfoCache(GPConnection *h, GPIProfile *p, GPIInfoCache *q) {
     GPIInfoCache *d;
     if ((*h)->infoCaching == 0) {
         return 1;
@@ -1076,7 +1044,7 @@ s32 gpiSetInfoCache(Ctx0227 **h, GPIProfile *p, GPIInfoCache *q) {
     p->cache = (GPIInfoCache *)GsUtil_Alloc(0xf0);
     d = p->cache;
     if (d != 0) {
-        *(Unk_ov065_0227f324_Copy *)d = *(Unk_ov065_0227f324_Copy *)q;
+        *(GPIInfoCacheCopy *)d = *(GPIInfoCacheCopy *)q;
         p->cache->nick = goastrdup(q->nick);
         p->cache->uniquenick = goastrdup(q->uniquenick);
         p->cache->email = goastrdup(q->email);

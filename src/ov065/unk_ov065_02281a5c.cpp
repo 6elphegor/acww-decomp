@@ -1,15 +1,12 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0227c538_Node.h"
-#include "net/Unk_ov065_0227d8e0_Ctx.h"
-#include "net/Unk_ov065_02281790_Ctx.h"
-#include "net/gp.h"
-#include "net/Unk_ov065_02282f90_Ctx.h"
+#include "net/gpiSearch.h"
+#include "net/gpiProfile.h"
+#include "net/gpi.h"
 #include "net/gpiOperation.h"
-#include "net/Unk_ov065_022831c0_Host.h"
-#include "net/Unk_ov065_022833b4_Pair.h"
+#include "net/SockAddrIn.h"
+#include "net/SockHostEnt.h"
 #include "net/gpersist.h"
-#include "net/Unk_ov065_022833b4_Src.h"
 
 // ov065 TU49: GP gpiSearch.c (0x02281a5c..0x02283304)
 
@@ -35,14 +32,14 @@ s32 gpiProcess(void *, s32);
 void *GsUtil_Alloc(u32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
-Unk_ov065_022831c0_Host *Sock_GetHostByName(const char *);
+SockHostEnt *Sock_GetHostByName(const char *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
 void gpiCallErrorCallback(void *, s32, s32);
 s32 gpiPeerStartTransferMessage(void *, s32, s32, void *);
 s32 gpiSendOrBufferString(void *, s32, char *);
 s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
-s32 gpiAddCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
+s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 void gpiRemoveOperation(void *, void *);
 s32 GSISocketSelect(s32, s32, s32 *, s32 *);
 s32 ArrayLength(void *);
@@ -77,20 +74,10 @@ namespace Na {
 
 
 
-
-
-
-
-typedef Unk_ov065_02281790_Ctx Ctx0228;
-typedef GPIProfile Elem0228;
-typedef GPISearchData Conn0228;
-
-
-
 extern "C" {
 extern char __GSIACGamename[];
 
-typedef s32 (*gpiProfileMapFunc)(Ctx0228 **, GPIProfile *, void *);
+typedef s32 (*gpiProfileMapFunc)(GPConnection *, GPIProfile *, void *);
 
 s32 TableMapSafe2(void *, s32 (*)(void *, void *), void *);
 s32 TableRemove(void *, void *);
@@ -99,42 +86,42 @@ s32 TableEnter(void *, void *);
 void *TableNew(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-void gpiSetErrorString(Ctx0228 **, const char *);
-void gpiSetError(Ctx0228 **, s32, const char *);
-s32 gpiCheckForError(Ctx0228 **, char *, s32);
+void gpiSetErrorString(GPConnection *, const char *);
+void gpiSetError(GPConnection *, s32, const char *);
+s32 gpiCheckForError(GPConnection *, char *, s32);
 s32 gpiValueForKey(char *, const char *, void *, s32);
-s32 gpiCheckSocketConnect(Ctx0228 **, s32, void *);
-void gpiCallErrorCallback(Ctx0228 **, s32, s32);
-s32 gpiAddCallback(Ctx0228 **, GPICallback, void *, void *, s32);
-void gpiRemoveOperation(Ctx0228 **, GPIOperation *);
+s32 gpiCheckSocketConnect(GPConnection *, s32, void *);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
+s32 gpiAddCallback(GPConnection *, GPICallback, void *, void *, s32);
+void gpiRemoveOperation(GPConnection *, GPIOperation *);
 void gpiFreeInfoCache(void *);
 s32 strncmp(const char *, const char *, s32);
 s32 strcmp(const char *, const char *);
 s32 atol(void *);
 
-s32 gpiProcessSearch(Ctx0228 **, GPIOperation *);
-s32 gpiCheckForBuddy(Ctx0228 **, GPIProfile *, void *);
+s32 gpiProcessSearch(GPConnection *, GPIOperation *);
+s32 gpiCheckForBuddy(GPConnection *, GPIProfile *, void *);
 s32 gpiProfileMapCallback(GPIProfile *, void *);
-s32 gpiCheckProfileForUser(Ctx0228 **, GPIProfile *, void *);
-s32 gpiGetProfile(Ctx0228 **, s32, void *);
+s32 gpiCheckProfileForUser(GPConnection *, GPIProfile *, void *);
+s32 gpiGetProfile(GPConnection *, s32, void *);
 void gpiProfilesTableFree(void *);
-s32 gpiProfileMap(Ctx0228 **, gpiProfileMapFunc, void *);
+s32 gpiProfileMap(GPConnection *, gpiProfileMapFunc, void *);
 s32 gpiProfilesTableCompare(s32 *, s32 *);
 s32 gpiProfilesTableHash(s32 *, s32);
 
 
-s32 gpiReadKeyAndValue(Ctx0228 **, char *, s32 *, char *, char *);
-void gpiAppendStringToBuffer(Ctx0228 **, char **, const char *);
-void gpiAppendIntToBuffer(Ctx0228 **, char **, s32);
-s32 gpiSendFromBuffer(Ctx0228 **, s32, char **, s32 *, s32, const char *);
-s32 gpiRecvToBuffer(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
+s32 gpiReadKeyAndValue(GPConnection *, char *, s32 *, char *, char *);
+void gpiAppendStringToBuffer(GPConnection *, char **, const char *);
+void gpiAppendIntToBuffer(GPConnection *, char **, s32);
+s32 gpiSendFromBuffer(GPConnection *, s32, char **, s32 *, s32, const char *);
+s32 gpiRecvToBuffer(GPConnection *, s32, char **, s32 *, s32 *, const char *);
 void *GsUtil_Realloc(void *, s32);
 void strzcpy(char *, const char *, s32);
 void *memset(void *, s32, s32);
 char *STD_CopyString(char *, const char *);
 char *strstr(const char *, const char *);
 void msleep(s32);
-s32 gpiProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
+s32 gpiProfileSearch(GPConnection *, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 
 
 
@@ -161,11 +148,11 @@ char data_ov065_0228dadc[0x40] = "gpsp.gs.nintendowifi.net";
 namespace Nb {
 extern "C" {
 s32 gpiStartProfileSearch(void *h0, void *o0) {
-    Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
+    GPConnection *h = (GPConnection *)h0;
     GPIOperation *o = (GPIOperation *)o0;
     GPISearchData *s = (GPISearchData *)o->data;
-    Unk_ov065_022831c0_Host *ent;
-    Unk_ov065_022831c0_Addr sa;
+    SockHostEnt *ent;
+    SockAddrIn sa;
     s32 r;
     s32 m;
     s->inputBufferCapacity = 0x1000;
@@ -195,7 +182,7 @@ s32 gpiStartProfileSearch(void *h0, void *o0) {
     w[0] = 0;
     w[1] = 0;
     sa.family = 2;
-    sa.addr = **ent->addrList;
+    sa.addr = *(u32 *)*ent->addrList;
     sa.port = 0xcd74;
     if (connect(s->sock, &sa, 8) == -1) {
         r = GOAGetLastError(s->sock);
@@ -211,7 +198,7 @@ s32 gpiStartProfileSearch(void *h0, void *o0) {
 
 s32 gpiInitSearchData(void *h0, void *out, s32 p2) {
     GPISearchData *cn;
-    Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
+    GPConnection *h = (GPConnection *)h0;
     cn = (GPISearchData *)GsUtil_Alloc(0x144);
     if (cn == NULL) {
         gpiSetErrorString(h, "Out of memory.");
@@ -239,10 +226,10 @@ s32 gpiInitSearchData(void *h0, void *out, s32 p2) {
 }
 
 s32 gpiStartSearch(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
-    Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
+    GPConnection *h = (GPConnection *)h0;
     GPIOperation *o;
     s32 r;
-    *(s32 *)((u8 *)h->connection + 0x210) += 1;
+    (*h)->numSearches += 1;
     r = gpiAddOperation(h, 3, cn, &o, p2, p3, p4);
     if (r != 0) {
         return r;
@@ -260,7 +247,7 @@ s32 gpiStartSearch(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
     return 0;
 }
 
-s32 gpiProfileSearch(Unk_ov065_02282f90_Handle *h, char *a, char *b, char *c, char *d, char *e, s32 f, s32 g, s32 p8, s32 p9, s32 p10) {
+s32 gpiProfileSearch(GPConnection *h, char *a, char *b, char *c, char *d, char *e, s32 f, s32 g, s32 p8, s32 p9, s32 p10) {
     GPISearchData *cn;
     s32 r;
     if ((a == NULL || *a == 0) && (c == NULL || *c == 0) && (d == NULL || *d == 0) && (e == NULL || *e == 0) && f == 0 && (b == NULL || *b == 0)) {
@@ -314,21 +301,21 @@ s32 gpiProfileSearch(Unk_ov065_02282f90_Handle *h, char *a, char *b, char *c, ch
 
 namespace Na {
 extern "C" {
-s32 gpiProcessSearch(Ctx0228 **h, GPIOperation *node) {
+s32 gpiProcessSearch(GPConnection *h, GPIOperation *node) {
     s32 done, save1;
-    Ctx0228 *ctx = *h;
+    GPIConnection *ctx = *h;
     s32 done2;
     GPFindPlayersResponseArg *p4;
     GPGetReverseBuddiesResponseArg *p7;
     s32 cnt;
     s32 retry;
-    Conn0228 *c = (Conn0228 *)node->data;
+    GPISearchData *c = (GPISearchData *)node->data;
     s32 r;
     s32 v8c;
     s32 pos;
-    Unk_ov065_0227e0e8_Wrap pr1;
+    GPICallbackCopy pr1;
     s32 vv[2];
-    Unk_ov065_0227e0e8_Wrap pr8, pr7, pr6, pr5, pr4, pr3, pr2;
+    GPICallbackCopy pr8, pr7, pr6, pr5, pr4, pr3, pr2;
     GPProfileSearchResponseArg s1;
     char tok[0x200];
     char buf[0x200];
@@ -361,9 +348,9 @@ again:
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
             gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->sessKey);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\profileid\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileid);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
             if (c->nick[0] != 0) {
                 gpiAppendStringToBuffer(h, &c->outputBuffer, "\\nick\\");
                 gpiAppendStringToBuffer(h, &c->outputBuffer, c->nick);
@@ -403,13 +390,13 @@ again:
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\pass\\");
             gpiAppendStringToBuffer(h, &c->outputBuffer, c->password);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
         } else if (c->type == 4) {
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\pmatch\\");
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
             gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->sessKey);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\profileid\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileid);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\productid\\");
             gpiAppendIntToBuffer(h, &c->outputBuffer, c->productID);
         } else if (c->type == 5) {
@@ -429,9 +416,9 @@ again:
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\pass\\");
             gpiAppendStringToBuffer(h, &c->outputBuffer, c->password);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\productID\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->productId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->productID);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\uniquenick\\");
             gpiAppendStringToBuffer(h, &c->outputBuffer, c->uniquenick);
             if (c->cdkey[0] != 0) {
@@ -443,15 +430,15 @@ again:
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
             gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->sessKey);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\profileid\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->profileid);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
         } else if (c->type == 8) {
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\uniquesearch\\");
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\preferrednick\\");
             gpiAppendStringToBuffer(h, &c->outputBuffer, c->uniquenick);
             gpiAppendStringToBuffer(h, &c->outputBuffer, "\\namespaceid\\");
-            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceId);
+            gpiAppendIntToBuffer(h, &c->outputBuffer, ctx->namespaceID);
         }
         gpiAppendStringToBuffer(h, &c->outputBuffer, "\\gamename\\");
         gpiAppendStringToBuffer(h, &c->outputBuffer, __GSIACGamename);
@@ -535,7 +522,7 @@ again:
             s32 t = s1.more;
             pr1 = node->callback;
             if (pr1.p.callback != 0) {
-                ((void (*)(Ctx0228 **, void *, s32))pr1.p.callback)(h, &s1, pr1.p.param);
+                ((void (*)(GPConnection *, void *, s32))pr1.p.callback)(h, &s1, pr1.p.param);
             }
             if (t == 0x600 && s1.more == 0x600) {
                 r = gpiProfileSearch(h, c->nick, c->uniquenick, c->email, c->firstname, c->lastname, c->icquin, s1.numMatches + c->skip, node->blocking, node->callback.p.callback, node->callback.p.param);
@@ -835,8 +822,8 @@ endchk:
     return 0;
 }
 
-s32 gpiProcessSearches(Ctx0228 **h) {
-    Ctx0228 *c = *h;
+s32 gpiProcessSearches(GPConnection *h) {
+    GPIConnection *c = *h;
     s32 n = 0;
     s32 i;
     GPIOperation **arr;
@@ -849,9 +836,9 @@ s32 gpiProcessSearches(Ctx0228 **h) {
             return 1;
         }
         for (nd = c->operationList; nd != 0; nd = nd->pnext) {
-            if (nd->type == 3 && nd->state != 5 && ((Conn0228 *)nd->data)->processing == 0) {
+            if (nd->type == 3 && nd->state != 5 && ((GPISearchData *)nd->data)->processing == 0) {
                 arr[n++] = nd;
-                ((Conn0228 *)nd->data)->processing = 1;
+                ((GPISearchData *)nd->data)->processing = 1;
             }
         }
         for (i = 0; i < n; i++) {
@@ -861,7 +848,7 @@ s32 gpiProcessSearches(Ctx0228 **h) {
             }
         }
         for (i = 0; i < n; i++) {
-            Conn0228 *s = (Conn0228 *)arr[i]->data;
+            GPISearchData *s = (GPISearchData *)arr[i]->data;
             s->processing = z;
             if (s->remove != 0) {
                 gpiRemoveOperation(h, arr[i]);
@@ -881,7 +868,7 @@ s32 gpiProfilesTableCompare(s32 *a, s32 *b) {
 }
 
 void gpiProfilesTableFree(void *p) {
-    Elem0228 *e = (Elem0228 *)p;
+    GPIProfile *e = (GPIProfile *)p;
     if (e->buddyStatus != 0) {
         GsUtil_Free(e->buddyStatus->statusString);
         e->buddyStatus->statusString = 0;
@@ -897,8 +884,8 @@ void gpiProfilesTableFree(void *p) {
     e->peerSig = 0;
 }
 
-s32 gpiInitProfiles(Ctx0228 **h) {
-    Ctx0228 *c = *h;
+s32 gpiInitProfiles(GPConnection *h) {
+    GPIConnection *c = *h;
     c->numBuddies = 0;
     c->numProfiles = 0;
     c->profileTable = TableNew(0x1c, 4, gpiProfilesTableHash, gpiProfilesTableCompare, gpiProfilesTableFree);

@@ -2,17 +2,11 @@
 #define NET_NATNEG_H
 
 #include "types.h"
+#include "net/SockAddrIn.h"
 
 // GameSpy natneg (NAT negotiation; servers natneg1/natneg2.gs.nintendowifi.net port 27901): struct _NATNegotiator
 // (elements of negotiateList), its callbacks, the packets it sends and the receive copies; used by
 // unk_ov065_02285778.cpp, unk_ov065_02286934.cpp and unk_ov065_02287390.cpp.
-
-struct Unk_ov065_02286c74_Sa {
-    /* 0x00 */ u8 len;
-    /* 0x01 */ u8 family;
-    /* 0x02 */ u16 port;
-    /* 0x04 */ u32 addr;
-};
 
 // Called when the negotiator's state advances (state, userData).
 typedef void (*NegotiateProgressFunc)(s32 state, void *user);

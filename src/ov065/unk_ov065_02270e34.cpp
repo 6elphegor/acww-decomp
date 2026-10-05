@@ -2,7 +2,7 @@
 #include "types.h"
 #include "net/NasAuthParams.h"
 #include "net/NasAuthResult.h"
-#include "net/gp.h"
+#include "net/gpi.h"
 #include "net/DwcMatchCommandHeader.h"
 #include "net/DwcFriendControl.h"
 #include "net/DwcMatchControl.h"
@@ -444,7 +444,7 @@ void DwcFriend_Process() {
         DwcFriend_Fail(6, -0x1194a);
         return;
     }
-    if (sDwcFriendControl->gpConnection != NULL && sDwcFriendControl->gpConnection->connection != NULL) {
+    if (sDwcFriendControl->gpConnection != NULL && *sDwcFriendControl->gpConnection != NULL) {
         DwcFriend_Tick();
         if (DwcFriend_HandleGpResult() != 0) {
             return;
@@ -591,13 +591,13 @@ s32 DwcFriend_SetOwnStatus(s32 a, char *b, char *c) {
     }
     s = sDwcFriendControl->gpConnection;
     if (a == -1) {
-        a = s->connection->lastStatus;
+        a = (*s)->lastStatus;
     }
     if (b == NULL) {
-        b = (char *)s->connection->lastStatusString;
+        b = (*s)->lastStatusString;
     }
     if (c == NULL) {
-        c = (char *)s->connection->lastLocationString;
+        c = (*s)->lastLocationString;
     }
     return gpSetStatusA(s, a, b, c);
 }
@@ -1067,7 +1067,7 @@ void DwcLogin_Process(void)
             case 4: {
                 GPConnection *in = sDwcLoginControl->gpConnection;
                 if (in != NULL) {
-                    if (in->connection != NULL) {
+                    if (*in != NULL) {
                         gpProcess(in);
                     }
                 }

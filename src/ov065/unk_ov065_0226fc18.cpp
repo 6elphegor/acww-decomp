@@ -308,7 +308,7 @@ void DwcCore_Init(DwcControl *g, DwcUserData *a1, void *a2, const char *a3, cons
     sDwcControl->gt2PingCallback = (void *)DwcConn_OnGt2Ping;
     sDwcControl->gt2SendBufferSize = a5 != NULL ? a5 : (void *)0x2000;
     sDwcControl->gt2RecvBufferSize = a6 != NULL ? a6 : (void *)0x2000;
-    sDwcControl->gpConnection.connection = NULL;
+    sDwcControl->gpConnection = NULL;
     sDwcControl->userData = a1;
     sDwcControl->state = 0;
     sDwcControl->prevState = 0;
@@ -373,14 +373,14 @@ void DwcCore_Shutdown(void) {
     }
     NNFreeNegotiateList();
     CloseStatsConnection();
-    if (sDwcControl->gpConnection.connection != NULL) {
+    if (sDwcControl->gpConnection != NULL) {
         gpSetCallback(&sDwcControl->gpConnection, 0, 0, 0);
         gpSetCallback(&sDwcControl->gpConnection, 3, 0, 0);
         gpSetCallback(&sDwcControl->gpConnection, 1, 0, 0);
         gpSetCallback(&sDwcControl->gpConnection, 2, 0, 0);
         gpProcess(&sDwcControl->gpConnection);
         gpDestroy(&sDwcControl->gpConnection);
-        sDwcControl->gpConnection.connection = NULL;
+        sDwcControl->gpConnection = NULL;
     }
     DwcLogin_Shutdown();
     DwcFriend_ClearControl();

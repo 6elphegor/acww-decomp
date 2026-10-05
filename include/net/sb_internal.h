@@ -3,18 +3,12 @@
 
 #include "types.h"
 #include "net/sb_crypt.h"
+#include "net/SockAddrIn.h"
 
 // GameSpy serverbrowsing (sb_internal.h): servers (struct _SBServer) and their FIFOs, the query engine
 // (SBQueryEngine), the master server list connection (SBServerList, %s.ms%d.gs.nintendowifi.net port 28910),
 // the browser object (struct _ServerBrowser) and the callback types; used by unk_ov065_02288510.cpp,
 // unk_ov065_02288c78.cpp and unk_ov065_02289444.cpp.
-
-struct Unk_ov065_02288b60_Sa {
-    /* 0x00 */ u8 len;
-    /* 0x01 */ u8 family;
-    /* 0x02 */ u16 port;
-    /* 0x04 */ u32 addr;
-};
 
 struct _SBServer {
     /* 0x00 */ u32 publicip;

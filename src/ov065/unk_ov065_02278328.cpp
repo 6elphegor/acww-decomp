@@ -1,42 +1,19 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/darray.h"
+#include "net/hashtable.h"
+#include "net/gsPlatformUtil.h"
+#include "net/SockAddrIn.h"
+#include "net/SockHostEnt.h"
 
 // ov065_041: generic vector / hash table / base64 / md5 hex / PRNG (0x022782f4..0x02278c14)
-
-typedef s32 (*ArrayCompareFn)(void *, void *);
-typedef s32 (*GsArrayMapFn)(void *, void *);
-typedef void (*ArrayElementFreeFn)(void *);
-typedef s32 (*TableHashFn)(void *, s32);
-
-
-struct HashImplementation {
-    DArrayImplementation **buckets;
-    s32 nbuckets;
-    ArrayElementFreeFn freefn;
-    TableHashFn hashfn;
-    ArrayCompareFn compfn;
-};
-
-struct Unk_ov065_02278328_Addr {
-    u8 unk_00;
-    u8 family;
-    u16 port;
-    volatile s32 addr;
-};
-
-struct Unk_ov065_02278328_Host {
-    u8 unk_00[0xc];
-    s32 **addrList;
-};
 
 extern "C" {
 extern u32 GSINitroErrno;
 extern s32 randomnum;
 
 s32 sendto(s32, void *, s32, s32, void *, s32);
-s32 current_time(void);
-Unk_ov065_02278328_Host *Sock_GetHostByName(s32);
+SockHostEnt *Sock_GetHostByName(s32);
 void *GsUtil_Alloc(s32);
 void *GsUtil_Realloc(void *, s32);
 void GsUtil_Free(void *);
@@ -102,7 +79,7 @@ void *ArrayMapBackwards2(DArrayImplementation *v, GsArrayMapFn cb, void *arg);
 void ArrayClear(DArrayImplementation *v);
 u8 *mylsearch(void *key, u8 *base, s32 n, s32 size, ArrayCompareFn cmp);
 u8 *mybsearch(void *key, u8 *base, s32 n, s32 size, ArrayCompareFn cmp, s32 *found);
-s32 get_sockaddrin(s32 a, u32 port, Unk_ov065_02278328_Addr *out);
+s32 get_sockaddrin(s32 a, u32 port, SockAddrIn *out);
 }
 
 extern "C" {
@@ -430,18 +407,18 @@ u8 *mybsearch(void *key, u8 *base, s32 n, s32 size, ArrayCompareFn cmp, s32 *fou
     return base + lo * size;
 }
 
-s32 get_sockaddrin(s32 a, u32 port, Unk_ov065_02278328_Addr *out) {
+s32 get_sockaddrin(s32 a, u32 port, SockAddrIn *out) {
     s32 p;
     out->family = 2;
     p = (u16)port;
     out->port = (u16)(((p >> 8) & 0xff) | ((p << 8) & 0xff00));
     out->addr = inet_addr(a);
     if (out->addr == -1) {
-        Unk_ov065_02278328_Host *h = Sock_GetHostByName(a);
+        SockHostEnt *h = Sock_GetHostByName(a);
         if (h == NULL) {
             return 0;
         }
-        out->addr = **h->addrList;
+        out->addr = *(u32 *)*h->addrList;
     }
     return 1;
 }

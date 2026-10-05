@@ -8,6 +8,7 @@
 #include "net/DwcConnInfo.h"
 #include "net/DwcMatchUserKey.h"
 #include "net/DwcNetChannelTable.h"
+#include "net/qr2.h"
 
 typedef long long s64;
 
@@ -576,11 +577,6 @@ extern "C" {
 
 // ov065_038: DWC connection state machine (0x02276698..0x02276f4c)
 
-
-struct Unk_ov065_02276e44_Obj {
-    u8 unk_00[0xb4];
-    s32 stateChangePending;
-};
 
 struct Unk_ov065_02276f4c_Pad {
     s32 v[1];
@@ -1167,8 +1163,8 @@ void DwcMatch_Process(u32 a) {
             if (g->qr2Object) {
                 qr2_think((void *)g->qr2Object);
                 c = g;
-                Unk_ov065_02276e44_Obj *o = (Unk_ov065_02276e44_Obj *)c->qr2Object;
-                if (o->stateChangePending == 0 && (c->matchType == 0 || c->matchType == 1)) {
+                qr2_implementation_s *o = (qr2_implementation_s *)c->qr2Object;
+                if (o->userstatechangerequested == 0 && (c->matchType == 0 || c->matchType == 1)) {
                     if (c->matchState == 1 || c->matchState == 2 || c->matchState == 3 || c->matchState == 4 || c->matchState == 6 || c->matchState == 0xb) {
                         goto do_kill;
                     }

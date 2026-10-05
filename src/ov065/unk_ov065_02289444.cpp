@@ -3,6 +3,9 @@
 #include "net/GsBytes.h"
 #include "net/darray.h"
 #include "net/sb_internal.h"
+#include "net/gsPlatformUtil.h"
+#include "net/SockHostEnt.h"
+#include "net/SockAddrIn.h"
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
@@ -57,7 +60,6 @@ s32 recvfrom(s32, void *, s32, s32, void *, void *);
 s32 closesocket(s32);
 s32 CanReceiveOnSocket(s32);
 s32 msleep(s32);
-u32 current_time();
 s32 SBQueryEngineRemoveServerFromFIFOs(void *, void *);
 s32 SBQueryEngineAddQueryKey(void *, s32);
 s32 SBQueryEngineThink(void *);
@@ -251,23 +253,6 @@ struct SBRefString {
     s32 refcount;
 };
 
-struct Unk_ov065_0228ab8c_Sa {
-    u8 len;
-    u8 family;
-    u16 port;
-    union {
-        u32 w;
-        GsBytes4 ip;
-    } addr;
-};
-
-struct Unk_ov065_0228ab8c_Host {
-    u32 hostName;
-    u32 aliases;
-    u32 addrType;
-    GsBytes4 **addrList;
-};
-
 typedef SBServerList Ctx070;
 
 static inline void Cp4(GsBytes4 *d, GsBytes4 *s) {
@@ -292,7 +277,7 @@ s32 func_02130b04(const char *a, const char *b);
 void srand(u32 seed);
 
 s32 inet_addr(char *s);
-Unk_ov065_0228ab8c_Host *Sock_GetHostByName(char *name);
+SockHostEnt *Sock_GetHostByName(char *name);
 s32 socket(s32 a, s32 b, s32 c);
 s32 closesocket(s32 fd);
 s32 connect(s32 fd, void *sa, s32 len);
@@ -318,7 +303,6 @@ u32 SBServerGetPublicQueryPortNBO(void *e);
 char *SBServerGetStringValueA(void *rec, char *key, char *dflt);
 double SBServerGetFloatValueA(void *rec, char *key, s32 a, s32 b);
 s32 SBServerGetIntValueA(void *rec, char *key, s32 a);
-u32 current_time();
 void SocketStartUp();
 
 void BufferAddByte(char **p, u8 c, s32 *n);
@@ -684,7 +668,7 @@ namespace F0228ab3c {
 extern "C" {
 s32 ServerListConnect(Ctx070 *c) {
     struct {
-        Unk_ov065_0228ab8c_Sa sa;
+        SockAddrIn sa;
         char host[0x80];
     } l;
     u32 h = StringHash__sb_serverlist(c->queryforgamename, 0x14);
@@ -695,13 +679,13 @@ s32 ServerListConnect(Ctx070 *c) {
     }
     l.sa.family = 2;
     l.sa.port = 0xee70;
-    l.sa.addr.w = inet_addr(l.host);
-    if (l.sa.addr.w == (u32)-1) {
-        Unk_ov065_0228ab8c_Host *ent = Sock_GetHostByName(l.host);
+    l.sa.addr = inet_addr(l.host);
+    if (l.sa.addr == (u32)-1) {
+        SockHostEnt *ent = Sock_GetHostByName(l.host);
         if (ent == NULL) {
             return 2;
         }
-        u8 *d = &l.sa.addr.ip.b[0];
+        u8 *d = (u8 *)&l.sa.addr;
         u8 *s2 = (u8 *)*ent->addrList;
         d[0] = s2[0];
         d[1] = s2[1];
@@ -1877,11 +1861,7 @@ s32 SBSendNatNegotiateCookieToServer(SBServerList *c, u32 a1, u32 a2, u32 ip) {
 namespace F02288e2c {
 extern "C" {
 s32 ProcessLanData(SBServerList *s) {
-    struct Unk_ov065_02289720_Addr {
-        u16 fam;
-        u16 port;
-        u32 ip;
-    } addr;
+    SockAddrIn addr;
     s32 len;
     u8 buf[0x5dc];
     s32 r;
@@ -1891,9 +1871,9 @@ s32 ProcessLanData(SBServerList *s) {
         do {
             r = recvfrom(s->slsocket, buf, 0x5db, 0, &addr, &len);
             if (r != -1) {
-                r = SBServerListFindServerByIP(s, addr.ip, addr.port);
+                r = SBServerListFindServerByIP(s, addr.addr, addr.port);
                 if (r == -1) {
-                    e = SBAllocServer(s, addr.ip, addr.port);
+                    e = SBAllocServer(s, addr.addr, addr.port);
                     if (SBIsNullServer(e) != 0) {
                         return 5;
                     }

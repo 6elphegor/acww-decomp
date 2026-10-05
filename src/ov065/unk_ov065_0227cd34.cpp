@@ -2,57 +2,50 @@
 #include "types.h"
 #include "net/gpiProfile.h"
 #include "net/gpiOperation.h"
-#include "net/Unk_ov065_0227d8e0_Ctx.h"
 #include "net/gpi.h"
 #include "net/gpiPeer.h"
 #include "net/gp.h"
+#include "net/gsPlatformUtil.h"
 
 namespace Nc {
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
-
-
-
-
-
-typedef GPIConnection Ctx0227;
 extern "C" {
 extern s32 __GSIACResult;
 
 
-typedef s32 (*GsGpConnectCallback)(Ctx0227 **, void *, s32);
+typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, s32);
 
-void gpiDisconnect(Ctx0227 **, s32);
-void gpiSetErrorString(Ctx0227 **, const char *);
-s32 gpiConnect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
+void gpiDisconnect(GPConnection *, s32);
+void gpiSetErrorString(GPConnection *, const char *);
+s32 gpiConnect(GPConnection *, const char *, const char *, const char *, const char *, const char *,
                         const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
-s32 gpiCheckConnect(Ctx0227 **);
+s32 gpiCheckConnect(GPConnection *);
 void msleep(s32);
-s32 gpiFindOperationByID(Ctx0227 **, GPIOperation **, s32);
-s32 gpiProcessCallbacks(Ctx0227 **, s32);
-s32 gpiProcessPeers(Ctx0227 **);
-s32 gpiProcessSearches(Ctx0227 **);
-void gpiFailedOpCallback(Ctx0227 **, GPIOperation *);
-void gpiRemoveOperation(Ctx0227 **, GPIOperation *);
-void gpiAddLocalInfo(Ctx0227 **, char **);
-s32 gpiSendFromBuffer(Ctx0227 **, s32, char **, s32 *, s32, const char *);
-s32 gpiRecvToBuffer(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
-void gpiSetError(Ctx0227 **, s32, const char *);
-void gpiCallErrorCallback(Ctx0227 **, s32, s32);
-void gpiDebug(Ctx0227 **, const char *, ...);
+s32 gpiFindOperationByID(GPConnection *, GPIOperation **, s32);
+s32 gpiProcessCallbacks(GPConnection *, s32);
+s32 gpiProcessPeers(GPConnection *);
+s32 gpiProcessSearches(GPConnection *);
+void gpiFailedOpCallback(GPConnection *, GPIOperation *);
+void gpiRemoveOperation(GPConnection *, GPIOperation *);
+void gpiAddLocalInfo(GPConnection *, GPIBuffer *);
+s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
+s32 gpiRecvToBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32 *, const char *);
+void gpiSetError(GPConnection *, s32, const char *);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
+void gpiDebug(GPConnection *, const char *, ...);
 void *GsUtil_Realloc(void *, s32);
-s32 gpiCheckForError(Ctx0227 **, char *, s32);
-s32 gpiProcessRecvBuddyMessage(Ctx0227 **, char *);
-s32 gpiOperationsAreBlocking(Ctx0227 **);
-s32 gpiProcessOperation(Ctx0227 **, GPIOperation *, char *);
-void gpiProfileMap(Ctx0227 **, s32 (*)(Ctx0227 **, GPIProfile *, s32), s32);
-s32 gpiGetProfile(Ctx0227 **, s32, GPIProfile **);
-void gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
-void gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
+s32 gpiCheckForError(GPConnection *, char *, s32);
+s32 gpiProcessRecvBuddyMessage(GPConnection *, char *);
+s32 gpiOperationsAreBlocking(GPConnection *);
+s32 gpiProcessOperation(GPConnection *, GPIOperation *, char *);
+void gpiProfileMap(GPConnection *, s32 (*)(GPConnection *, GPIProfile *, s32), s32);
+s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
+void gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+void gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
 s32 gpiCanFreeProfile(GPIProfile *);
-void gpiRemoveProfile(Ctx0227 **, GPIProfile *);
-s32 gpiInitProfiles(Ctx0227 **);
+void gpiRemoveProfile(GPConnection *, GPIProfile *);
+s32 gpiInitProfiles(GPConnection *);
 void SocketStartUp();
-void current_time();
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 void TableFree(void *);
@@ -65,55 +58,48 @@ s32 strncmp(const char *, const char *, u32);
 void memset(void *, s32, u32);
 void srand();
 
-s32 gpiReset(Ctx0227 **h);
-s32 gpiDestroy(Ctx0227 **h);
-s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b);
-s32 gpiProcess(Ctx0227 **h, s32 a);
-s32 gpiProcessConnectionManager(Ctx0227 **h);
-s32 gpiResetProfile(Ctx0227 **h, GPIProfile *n, s32 m);
-s32 gpiFixBuddyIndices(Ctx0227 **h, GPIProfile *n, s32 m);
+s32 gpiReset(GPConnection *h);
+s32 gpiDestroy(GPConnection *h);
+s32 gpiInitialize(GPConnection *h, s32 a, s32 b);
+s32 gpiProcess(GPConnection *h, s32 a);
+s32 gpiProcessConnectionManager(GPConnection *h);
+s32 gpiResetProfile(GPConnection *h, GPIProfile *n, s32 m);
+s32 gpiFixBuddyIndices(GPConnection *h, GPIProfile *n, s32 m);
 }
 }
 
 namespace Nd {
 // ov065_049: DWC HTTP request setup (0x0227ce44..0x0227d8e0)
-
-
-
-
-
-typedef GPIConnection Ctx0227;
 extern "C" {
-s32 gpiGetProfile(Ctx0227 **, s32, GPIProfile **);
-void gpiSetErrorString(Ctx0227 **, const char *);
-s32 gpiSendAuthBuddyRequest(Ctx0227 **, GPIProfile *);
+s32 gpiGetProfile(GPConnection *, s32, GPIProfile **);
+void gpiSetErrorString(GPConnection *, const char *);
+s32 gpiSendAuthBuddyRequest(GPConnection *, GPIProfile *);
 void GsUtil_Free(void *);
 s32 gpiCanFreeProfile(GPIProfile *);
-void gpiRemoveProfile(Ctx0227 **, GPIProfile *);
-s32 gpiGetPeerByProfile(Ctx0227 **);
-s32 gpiAddPeer(Ctx0227 **, s32, s32);
-s32 gpiPeerGetSig(Ctx0227 **, s32);
-s32 gpiPeerStartConnect(Ctx0227 **, s32);
-s32 gpiPeerAddMessage(Ctx0227 **, s32, s32, s32);
+void gpiRemoveProfile(GPConnection *, GPIProfile *);
+s32 gpiGetPeerByProfile(GPConnection *);
+s32 gpiAddPeer(GPConnection *, s32, s32);
+s32 gpiPeerGetSig(GPConnection *, s32);
+s32 gpiPeerStartConnect(GPConnection *, s32);
+s32 gpiPeerAddMessage(GPConnection *, s32, s32, s32);
 void strzcpy(char *, const char *, s32);
-void gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
-void gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
+void gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+void gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
 s32 gpiValueForKey(const char *, const char *, char *, s32);
-void gpiSetError(Ctx0227 **, s32, const char *);
-void gpiCallErrorCallback(Ctx0227 **, s32, s32);
-s32 time(s32);
+void gpiSetError(GPConnection *, s32, const char *);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
 void *GsUtil_Alloc(s32);
 char *goastrdup(const char *);
-s32 gpiAddCallback(Ctx0227 **, GPICallback, void *, s32, s32);
-GPIProfile *gpiProfileListAdd(Ctx0227 **, s32);
+s32 gpiAddCallback(GPConnection *, GPICallback, void *, s32, s32);
+GPIProfile *gpiProfileListAdd(GPConnection *, s32);
 
 s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *STD_CopyString(char *, const char *);
 char *strstr(const char *, const char *);
 
-s32 gpiSendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s);
-s32 gpiSendBuddyMessage(Ctx0227 **h, s32 id, s32 b, s32 t);
+s32 gpiSendServerBuddyMessage(GPConnection *h, s32 a, s32 b, const char *s);
+s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, s32 t);
 }
 }
 
@@ -160,27 +146,27 @@ s32 gpiProfileMap(void *, s32, s32);
 s32 gpiDisconnectCleanupProfile(void);
 
 s32 gpiSendData(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 gpiAppendIntToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, s32);
-s32 gpiAppendStringToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *);
-s32 gpiAppendStringToBufferLen(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *, s32);
-s32 gpiAppendCharToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, char);
-s32 gpiSendOrBufferStringLen(Unk_ov065_0227d8e0_Handle *, GPIPeer *, const char *, s32);
-s32 gpiSendFromBuffer(Unk_ov065_0227d8e0_Handle *, s32, GPIBuffer *, s32 *, s32, const char *);
-s32 gpiCallCallback(Unk_ov065_0227d8e0_Handle *, GPICallbackData *);
-s32 gpiAddCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GPICallbackData *, GPIOperation *, s32);
-void gpiCallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
+s32 gpiAppendIntToBuffer(GPConnection *, GPIBuffer *, s32);
+s32 gpiAppendStringToBuffer(GPConnection *, GPIBuffer *, const char *);
+s32 gpiAppendStringToBufferLen(GPConnection *, GPIBuffer *, const char *, s32);
+s32 gpiAppendCharToBuffer(GPConnection *, GPIBuffer *, char);
+s32 gpiSendOrBufferStringLen(GPConnection *, GPIPeer *, const char *, s32);
+s32 gpiSendFromBuffer(GPConnection *, s32, GPIBuffer *, s32 *, s32, const char *);
+s32 gpiCallCallback(GPConnection *, GPICallbackData *);
+s32 gpiAddCallback(GPConnection *, GPICallbackCopy, GPICallbackData *, GPIOperation *, s32);
+void gpiCallErrorCallback(GPConnection *, s32, s32);
 }
 }
 
 namespace Nf {
 extern "C" {
-s32 gpiSendAuthBuddyRequest(Unk_ov065_0227d8e0_Handle *h, GPIProfile *a) {
-    Unk_ov065_0227d8e0_Ctx *c = h->connection;
+s32 gpiSendAuthBuddyRequest(GPConnection *h, GPIProfile *a) {
+    GPIConnection *c = *h;
     gpiAppendStringToBuffer(h, &c->outputBuffer, "\\authadd\\");
     gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
     gpiAppendIntToBuffer(h, &c->outputBuffer, c->sessKey);
     gpiAppendStringToBuffer(h, &c->outputBuffer, "\\fromprofileid\\");
-    gpiAppendIntToBuffer(h, &c->outputBuffer, *(s32 *)a);
+    gpiAppendIntToBuffer(h, &c->outputBuffer, a->profileId);
     gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sig\\");
     gpiAppendStringToBuffer(h, &c->outputBuffer, a->authSig);
     gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
@@ -210,15 +196,15 @@ static inline u16 Swap16(u16 x) {
         return 1; \
     } while (0)
 extern "C" {
-s32 gpiProcessRecvBuddyMessage(Ctx0227 **h, const char *s) {
-    Ctx0227 *c = *h;
+s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
+    GPIConnection *c = *h;
     s32 code;
     s32 v;
     s32 w;
-    Unk_ov065_0227e0e8_Wrap p;
-    Unk_ov065_0227e0e8_Wrap p4;
-    Unk_ov065_0227e0e8_Wrap p3;
-    Unk_ov065_0227e0e8_Wrap p2;
+    GPICallbackCopy p;
+    GPICallbackCopy p4;
+    GPICallbackCopy p3;
+    GPICallbackCopy p2;
     char tmp[0x10];
     char buf[0x1000];
     char buf3[0x100];
@@ -239,7 +225,7 @@ s32 gpiProcessRecvBuddyMessage(Ctx0227 **h, const char *s) {
     switch (code) {
     case 1: {
         GPRecvBuddyMessageArg *r5;
-        p = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[3];
+        p = *(GPICallbackCopy *)&c->callbacks[3];
         if (p.p.callback == 0) {
             break;
         }
@@ -287,7 +273,7 @@ s32 gpiProcessRecvBuddyMessage(Ctx0227 **h, const char *s) {
         n->authSig = 0;
         n->authSig = goastrdup(t + 8);
         n->requestCount = n->requestCount + 1;
-        p2 = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[1];
+        p2 = *(GPICallbackCopy *)&c->callbacks[1];
         if (p2.p.callback == 0) {
             break;
         }
@@ -371,7 +357,7 @@ s32 gpiProcessRecvBuddyMessage(Ctx0227 **h, const char *s) {
         } else {
             r5->port = Swap16(atol(tmp));
         }
-        p3 = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[2];
+        p3 = *(GPICallbackCopy *)&c->callbacks[2];
         if (p3.p.callback == 0) {
             break;
         }
@@ -414,7 +400,7 @@ s32 gpiProcessRecvBuddyMessage(Ctx0227 **h, const char *s) {
         } else {
             buf3[0] = 0;
         }
-        p4 = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[4];
+        p4 = *(GPICallbackCopy *)&c->callbacks[4];
         if (p4.p.callback == 0) {
             break;
         }
@@ -447,8 +433,8 @@ s32 gpiProcessRecvBuddyMessage(Ctx0227 **h, const char *s) {
 
 namespace Nd {
 extern "C" {
-s32 gpiSendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s) {
-    Ctx0227 *c = *h;
+s32 gpiSendServerBuddyMessage(GPConnection *h, s32 a, s32 b, const char *s) {
+    GPIConnection *c = *h;
     char buf[0xdad];
     strzcpy(buf, s, 0xdad);
     gpiAppendStringToBuffer(h, &c->outputBuffer, "\\bm\\");
@@ -467,7 +453,7 @@ s32 gpiSendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s) {
 
 namespace Nd {
 extern "C" {
-s32 gpiSendBuddyMessage(Ctx0227 **h, s32 id, s32 b, s32 t) {
+s32 gpiSendBuddyMessage(GPConnection *h, s32 id, s32 b, s32 t) {
     GPIProfile *n;
     s32 r6;
     r6 = gpiGetPeerByProfile(h);
@@ -504,8 +490,8 @@ s32 gpiSendBuddyMessage(Ctx0227 **h, s32 id, s32 b, s32 t) {
 
 namespace Nd {
 extern "C" {
-s32 gpiAuthBuddyRequest(Ctx0227 **h, s32 id) {
-    Ctx0227 *c = *h;
+s32 gpiAuthBuddyRequest(GPConnection *h, s32 id) {
+    GPIConnection *c = *h;
     GPIProfile *n;
     s32 r;
     if (gpiGetProfile(h, id, &n) == 0) {
@@ -537,7 +523,7 @@ s32 gpiAuthBuddyRequest(Ctx0227 **h, s32 id) {
 
 namespace Nc {
 extern "C" {
-s32 gpiFixBuddyIndices(Ctx0227 **h, GPIProfile *n, s32 m) {
+s32 gpiFixBuddyIndices(GPConnection *h, GPIProfile *n, s32 m) {
     GPIBuddyStatus *s = n->buddyStatus;
     if (s != NULL) {
         if (s->buddyIndex > m) {
@@ -551,8 +537,8 @@ s32 gpiFixBuddyIndices(Ctx0227 **h, GPIProfile *n, s32 m) {
 
 namespace Nc {
 extern "C" {
-s32 gpiDeleteBuddy(Ctx0227 **h, s32 x) {
-    Ctx0227 *c = *h;
+s32 gpiDeleteBuddy(GPConnection *h, s32 x) {
+    GPIConnection *c = *h;
     GPIProfile *n;
     if (gpiGetProfile(h, x, &n) == 0) {
         gpiSetErrorString(h, "Invalid profile.");
