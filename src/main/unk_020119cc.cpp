@@ -1221,7 +1221,7 @@ void NpcActor_UpdateMovement(void *a, void *b);
 void NpcActor_PayPlayer(void *self, s32 v);
 s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w);
 void NpcActor_ChargePlayer(void *self, s32 v);
-void NpcActor_CanPlayerPay(void *self, s32 v);
+BOOL NpcActor_CanPlayerPay(void *self, s32 v);
 void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in);
 }
 }
@@ -2541,8 +2541,8 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
 }
 
 namespace nQ {
-extern "C" void NpcActor_CanPlayerPay(void *self, s32 v) {
-    PlayerInventory_CanAddBells(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), -v, 1, 0);
+extern "C" BOOL NpcActor_CanPlayerPay(void *self, s32 v) {
+    return PlayerInventory_CanAddBells(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), -v, 1, 0);
 }
 }
 

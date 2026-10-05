@@ -1099,7 +1099,7 @@ extern "C" s32 PlayerErrandSlot_IsStepDone(void *self);
 extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind);
 extern "C" BOOL Errand_CanOfferInPlanState(s32 a, void *b);
 extern "C" u8 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *p, s32 i);
-extern "C" void PlayerErrandSlot_GetRecord(void);
+extern "C" void *PlayerErrandSlot_GetRecord(void *p);
 extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6, s32 r3);
 extern "C" void PlayerErrandSlot_Clear(PlayerErrandSlot *self);
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self);
@@ -1489,7 +1489,8 @@ extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6,
     return r;
 }
 
-extern "C" void PlayerErrandSlot_GetRecord(void) {
+extern "C" void *PlayerErrandSlot_GetRecord(void *p) {
+    return p;
 }
 
 extern "C" u8 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *p, s32 i) {

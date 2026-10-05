@@ -484,11 +484,21 @@ extern "C" void PlayerActor_GetActor(s32 id)
 
 extern "C" void PlayerActor_GetCharacterNop() {}
 
+#ifdef MODERN
+// the original returns PlayerActor_Get's result: the empty call after it leaves r0 alone
+extern "C" void *PlayerActor_GetCharacter(s32 id)
+{
+    void *r = (void *)PlayerActor_Get(id);
+    PlayerActor_GetCharacterNop();
+    return r;
+}
+#else
 extern "C" void PlayerActor_GetCharacter(s32 id)
 {
     PlayerActor_Get(id);
     PlayerActor_GetCharacterNop();
 }
+#endif
 
 extern "C" u32 PlayerActor_ParamGetSlot(u32 v)
 {

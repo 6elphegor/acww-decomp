@@ -16,9 +16,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from modern_short_calls import strip_comments_strings  # noqa: E402
 
-VOID_DEF = re.compile(r'^(?:extern "C"\s+)?(?:static\s+)?(?:inline\s+)?void\s+((?:[A-Za-z_]\w*::)*)([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{', re.M)
+# (strip_comments_strings turns `extern "C"` into `extern 0`)
+VOID_DEF = re.compile(r'^(?:extern\s+(?:"C"|0)\s+)?(?:static\s+)?(?:inline\s+)?void\s+((?:[A-Za-z_]\w*::)*)([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{', re.M)
 DEFINE = re.compile(r'^\s*#\s*define\s+([A-Za-z_]\w*)\s+([A-Za-z_]\w*)\s*$', re.M)
-NONVOID_DEF = re.compile(r'^(?:extern "C"\s+)?(?:static\s+)?(?:inline\s+)?(?!void\b)[A-Za-z_][\w\s\*<>,]*?[\s\*]((?:[A-Za-z_]\w*::)*)([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{', re.M)
+NONVOID_DEF = re.compile(r'^(?:extern\s+(?:"C"|0)\s+)?(?:static\s+)?(?:inline\s+)?(?!void\b)[A-Za-z_][\w\s\*<>,]*?[\s\*]((?:[A-Za-z_]\w*::)*)([A-Za-z_]\w*)\s*\([^;{}]*\)\s*\{', re.M)
 
 
 def main():
@@ -37,6 +38,8 @@ def main():
                 void_defs.setdefault(m.group(2), str(f))
             qual_void.setdefault(m.group(1) + m.group(2), str(f))
         for m in NONVOID_DEF.finditer(t):
+            if re.search(r"\bvoid\s+(?:[A-Za-z_]\w*::)*" + re.escape(m.group(2)) + r"\s*\(", m.group(0)):
+                continue  # `extern 0 void f(` read as a return type
             if not m.group(1):
                 other_defs.add(m.group(2))
             qual_other.add(m.group(1) + m.group(2))

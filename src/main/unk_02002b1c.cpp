@@ -177,7 +177,7 @@ void Mtx43_RotateY(void *m, s32 a);
 }
 
 extern "C" {
-void Math_Atan2(s32 a, s32 b);
+s16 Math_Atan2(s32 a, s32 b);
 }
 
 extern "C" {
@@ -259,7 +259,7 @@ extern "C" void Gfx3d_InitEngine(void);
 extern "C" u32 VillagerId_GetVoiceType(VillagerId *o);
 extern "C" u32 VillagerId_GetSpecies(VillagerId *o);
 extern "C" u32 VillagerId_IsValidSpecies(u32 id);
-extern "C" void Math_AngleXZ(s32 *a, s32 *b);
+extern "C" s32 Math_AngleXZ(s32 *a, s32 *b);
 
 extern "C" u32 VillagerId_GetVoiceType(VillagerId *o) { return Villager_PersonalityToVoiceType(o->personality); }
 
@@ -421,8 +421,8 @@ void Actor::updatePosition(ActorCollider *v) {
     applyVelocity(v);
 }
 
-extern "C" void Math_AngleXZ(s32 *a, s32 *b) {
-    Math_Atan2(b[0] - a[0], b[2] - a[2]);
+extern "C" s32 Math_AngleXZ(s32 *a, s32 *b) {
+    return Math_Atan2(b[0] - a[0], b[2] - a[2]);
 }
 
 void Actor::calcModelMatrix(void *out) {
