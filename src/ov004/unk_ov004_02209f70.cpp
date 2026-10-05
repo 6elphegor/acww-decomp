@@ -167,7 +167,7 @@ u32 FtrActor_GetFtrIndex(void *);
 u32 FtrSound_GetSe0(u32);
 void *FtrContactSet_GetInstance(void);
 void *_ZN13FtrContactSet11findContactEPv(void *, void *);
-s32 *_ZN10FtrContact22getClampedContactPointEv(void);
+s32 *_ZN10FtrContact22getClampedContactPointEv(void *);
 u32 _ZN10FtrContact12getPushAngleEv(void *);
 
 u32 ItemInfo_IsReady(void);
@@ -265,7 +265,7 @@ void FtrPhone::execTalkAct00() {
     if (p10::_ZN9FtrSwitch10isChangingEv(switchState)) {
         void *a = p10::FtrContactSet_GetInstance();
         void *b = p10::_ZN13FtrContactSet11findContactEPv(a, this);
-        s32 *v = p10::_ZN10FtrContact22getClampedContactPointEv();
+        s32 *v = p10::_ZN10FtrContact22getClampedContactPointEv(b);
         contactPoint = v[0];
         contactPointY = v[1];
         contactPointZ = v[2];
@@ -1718,7 +1718,7 @@ s32 ClothTex_GetTex(s32);
 s32 FtrSync_RequestAct(void *, s32, s32, s32);
 s32 FtrSync_ChangeAct(void *, s32, s32, s32);
 void Item_FromPlacedForm(u16 *, u16 *);
-s32 _ZN9ModelSlot7getHeapEv();
+s32 _ZN9ModelSlot7getHeapEv(u32);
 void *Heap_Alloc(s32, s32);
 void ClothTex_LoadItem(s32, u16 *, s32);
 BOOL _ZN9FtrSwitch4isOnEv(void *);
@@ -1921,8 +1921,8 @@ BOOL FtrShirt::initModel() {
     if (v >= 0x3984 && v <= 0x3d83) r = TRUE;
     if (r) {
         p14::Item_FromPlacedForm(&w, &v);
-        p14::FtrActor_GetHeap(this);
-        clothTex = (s32)p14::Heap_Alloc(p14::_ZN9ModelSlot7getHeapEv(), 0x2c4);
+        u32 h = p14::FtrActor_GetHeap(this);
+        clothTex = (s32)p14::Heap_Alloc(p14::_ZN9ModelSlot7getHeapEv(h), 0x2c4);
         p14::ClothTex_LoadItem(clothTex, &w, 0);
         if (p14::_ZN9FtrSwitch4isOnEv(switchState)) {
             changeAct(0, 0xff);
@@ -2357,7 +2357,7 @@ s32 Snd_BgmSyncSetStartBeat(void *, s32);
 s32 Snd_BgmSyncRelease(void *);
 s32 Snd_BgmSyncUpdate(void *, VecFx32 *);
 s32 Snd_BgmSyncSetState(void *, s32);
-s32 Snd_BgmSyncInit(void *);
+s32 Snd_BgmSyncInit(void *, u32);
 s32 FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 FtrSync_RequestToggleGyroid(s32, void *, s32);
 s32 RoomFtrState_SetGyroidBeat(s32, s32, u32, s32);
@@ -2374,8 +2374,8 @@ s32 _ZN14BlendAnimModel14onJointCalcPreEPS_(void *, void *);
 s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 s32 _ZN11CachedModel16allocJointRecordEPv(void *, s32);
 s32 _ZN11CommManager8isOnlineEv(void *);
-s32 PlayerActor_PlayLocalSe(void);
-s32 _ZN9ModelSlot7getHeapEv(void);
+s32 PlayerActor_PlayLocalSe(u32);
+s32 _ZN9ModelSlot7getHeapEv(s32);
 s32 Scene_GetCurrent(void);
 s32 Scene_InVillagerHouse(void);
 }
@@ -2607,7 +2607,7 @@ s32 FtrGyroid::updateSync(VecFx32 *v) {
 
 void FtrGyroid::initSync(u32 v) {
     if (bgmSyncActive == 0) {
-        p16::Snd_BgmSyncInit(bgmSync);
+        p16::Snd_BgmSyncInit(bgmSync, v);
         bgmSyncActive = 1;
     }
 }
@@ -2658,8 +2658,7 @@ BOOL FtrGyroid::initModel() {
     actAid = 0xff;
     initSync(p16::FtrSound_GetSe3(p16::FtrActor_GetFtrIndex(this)));
     p16::_ZN8FtrActor9initAnimsEiiii(this, 0, 1, 0x1000, 0);
-    p16::FtrActor_GetHeap(this);
-    p16::_ZN11CachedModel16allocJointRecordEPv(model, p16::_ZN9ModelSlot7getHeapEv());
+    p16::_ZN11CachedModel16allocJointRecordEPv(model, p16::_ZN9ModelSlot7getHeapEv(p16::FtrActor_GetHeap(this)));
     if (spawnMode == 1) {
         p16::_ZN9FtrSwitch3setEji(switchState, 0, 0);
         s32 s = p16::Scene_GetCurrent();
@@ -3821,7 +3820,7 @@ u32 Item_GetFurnitureIndex(void *);
 BOOL MenuCtrl_IsFinished(void);
 BOOL MenuCtrl_IsResultOk(void);
 u32 MenuCtrl_GetIndex(void);
-u16 Pocket_GetItem(void);
+u16 Pocket_GetItem(s32);
 void *PlayerData_GetCurrent(void);
 void _ZN10PlayerData6setBedEPt(void *, void *);
 u16 Item_MakeFurniture(u32, u32);
@@ -4091,7 +4090,7 @@ extern void *gCommManager;
 
 s32 MenuCtrl_BuildPocketMask(BOOL (*cb)(void *, s32));
 s32 MenuCtrl_OpenPocketSelect(s32 a, s32 b);
-BOOL Item_IsFurniture(void);
+BOOL Item_IsFurniture(void *);
 s32 Ftr_GetUnk06(void *p);
 void _ZN9Character17detachTalkRequestEi(void *p, TalkMsgRequest *q);
 void _ZN9Character17attachTalkRequestEi(void *p, TalkMsgRequest *q);
@@ -4231,7 +4230,7 @@ public:
 
 extern "C" BOOL FtrBed_IsDma06Is5(void *p, s32 b) {
     if (b == 0) {
-        if (p21::Item_IsFurniture()) {
+        if (p21::Item_IsFurniture(p)) {
             if (p21::Ftr_GetUnk06(p) == 5) {
                 return TRUE;
             }
@@ -6066,8 +6065,9 @@ void FtrCart::onMoveStart(BOOL isPush) {
         }
     }
     if (c == 0) {
-        if (p16::FtrActor_GetDragSe(this) != 0xffff) {
-            p16::PlayerActor_PlayLocalSe();
+        s32 se = p16::FtrActor_GetDragSe(this);
+        if (se != 0xffff) {
+            p16::PlayerActor_PlayLocalSe(se);
         }
     }
 }
@@ -6434,7 +6434,7 @@ void FtrBed::execFtrAct0B() {
             p20::TalkRequest_SetTargetDone(this);
         } else {
             u32 r4 = p20::MenuCtrl_GetIndex();
-            newBedItem = p20::Pocket_GetItem();
+            newBedItem = p20::Pocket_GetItem(r4);
             void *p = p20::PlayerData_GetCurrent();
             if (p) {
                 p20::_ZN10PlayerData6setBedEPt(p, &newBedItem);
