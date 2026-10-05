@@ -417,7 +417,7 @@ s32 _ZN15LostChildRecord11getDaysLeftEv(void *a);
 void *_ZN15LostChildRecord9getTownIdEv(void *a);
 void _ZN15LostChildRecord13isKaitlinRoleEv(void *a);
 void _ZN15LostChildRecord14setKaitlinRoleEh(void *a, u8 b);
-void _ZN15LostChildRecord9setTownIdEv(void *a, void *b);
+void _ZN15LostChildRecord9setTownIdEPv(void *a, void *b);
 void _ZN15LostChildRecord11setDaysLeftEh(void *a, s32 b);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 void _ZN11MsgString9CC2Ev(void *p);
@@ -4383,10 +4383,10 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     }
     s32 r4 = NC::Random_GlobalBelow(2);
     NC::_ZN15LostChildRecord14setKaitlinRoleEh(other2, r4 == 0 ? 1 : 0);
-    NC::_ZN15LostChildRecord9setTownIdEv(other2, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)));
+    NC::_ZN15LostChildRecord9setTownIdEPv(other2, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)));
     NC::_ZN15LostChildRecord11setDaysLeftEh(other2, 0xa);
     NC::_ZN15LostChildRecord14setKaitlinRoleEh(r6, r4 == 1 ? 1 : 0);
-    NC::_ZN15LostChildRecord9setTownIdEv(r6, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(other)));
+    NC::_ZN15LostChildRecord9setTownIdEPv(r6, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(other)));
     NC::_ZN15LostChildRecord11setDaysLeftEh(r6, 0xa);
     NC::LostChild_DebugPrint(self, r6);
     NC::LostChild_DebugPrint(self, other2);

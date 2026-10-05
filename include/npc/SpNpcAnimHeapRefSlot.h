@@ -14,7 +14,7 @@ struct SpNpcAnimHeapRef {
 
 struct SpNpcAnimHeapRefSlot : NpcResSlot {
     /* 0x4 */ SpNpcAnimHeapRef heapRef;
-    void assign();
+    void assign(u32 id);
     SpNpcAnimHeapRefSlot();
     ~SpNpcAnimHeapRefSlot();
 };

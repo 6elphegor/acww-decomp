@@ -14,7 +14,7 @@ public:
     BOOL isKaitlinRole();
     void setDaysLeft(u8 v);
     u32 getDaysLeft();
-    void setTownId();
+    void setTownId(void *src);
     u16 *getTownId();
     void clear();
 

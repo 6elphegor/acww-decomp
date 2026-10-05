@@ -438,7 +438,6 @@ s32 _ZN11PlayerActor13loadInputModeEv(void *p);
 s32 InputMode_SetTouch();
 s32 InputMode_SetButtons();
 s32 InputMode_Clear();
-s32 _ZN11PlayerActor12approachRotXEv(void *p, s32 v);
 s32 _ZN11PlayerActor15requestPickUpAtEP4Vec2ihis(void *p, void *v, s32 a, s32 b, s32 c, s32 d);
 s32 _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(void *p, void *v, s32 a, s32 b, s32 c);
 s32 _ZN11PlayerActor11requestWaitEjjj(void *p, s32 a, s32 b, s32 c);
@@ -1428,7 +1427,6 @@ void PlayerActor_SetArgsWait(u16 *p, u32 v);
 void PlayerActor_SetArgsWalk(u8 *p, u32 v);
 void PlayerActor_SetArgsWait(u16 *p, u32 v);
 void PlayerActor_LevelTiltForAction(void *, s32 a, u32 b);
-void _ZN11PlayerActor12approachRotXEv(void *, s32 a);
 void _ZN11PlayerActor9setAngleYEPs(void *, void *p);
 void _ZN11PlayerActor8setSpeedEPj(void *, void *p);
 void _ZN11PlayerActor10switchAnimEijt(void *, u32 a, u32 b, u32 c);
@@ -3353,10 +3351,9 @@ void PlayerActor::setRotX(u16 a) {
     rotX = a;
 }
 
-// approachRotX takes the target angle: every caller passes it (in r1)
-extern "C" void _ZN11PlayerActor12approachRotXEv(PlayerActor *self, s32 target) {
+void PlayerActor::approachRotX(s32 target) {
     using namespace nS;
-    PlayerActor_TurnAngle((u8 *)&self->rotX, target);
+    PlayerActor_TurnAngle((u8 *)&rotX, target);
 }
 
 void PlayerActor::setSpeed(u32 *a) {
@@ -5408,7 +5405,7 @@ void PlayerActor::walkUpdateLean() {
         }
         s32 a = FX_Div(t, 0x1a3);
         s32 b = func_01ffcb0c(0xc17000, a);
-        _ZN11PlayerActor12approachRotXEv(this, (b << 4) >> 16);
+        ((PlayerActor *)this)->approachRotX((b << 4) >> 16);
     }
 }
 
@@ -8418,7 +8415,7 @@ extern "C" void PlayerActor_LevelTiltForAction(void *p, u32 i, s32 force) {
         v = sPlayerActionLevelsTilt[i];
     }
     if (v != 0) {
-        _ZN11PlayerActor12approachRotXEv(p, 0);
+        ((PlayerActor *)p)->approachRotX(0);
     }
 }
 }
