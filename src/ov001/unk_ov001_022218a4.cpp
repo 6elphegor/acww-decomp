@@ -77,7 +77,7 @@ void MB_CommSetParentStateCallback(void *);
 void WfcMoveMb_ParentStateCallback();
 s32 WM_End(void *);
 s32 WM_StepDataSharing(void *, s32, void *);
-void WM_GetSharedDataAddress(void *, void *, s32);
+void *WM_GetSharedDataAddress(void *, void *, s32);
 u32 WM_GetDispersionBeaconPeriod();
 s32 WM_SetIndCallback(void *);
 s32 WM_Initialize(void *, void *, s32);
@@ -100,7 +100,7 @@ s32 WfcMoveWh_End();
 void DWCi_MOV_WH_Finalize();
 void WfcMoveWh_Reset();
 s32 DWCi_MOV_WH_StepDataSharing(s32 a);
-void WfcMoveWh_GetSharedData(s32 a);
+void *WfcMoveWh_GetSharedData(s32 a);
 void WfcMoveWh_SetJudgeCallback(s32 a);
 s32 WfcMoveWh_ParentConnect(s32 a, u32 b, u32 c);
 void WfcMoveWh_StateOutInitialize(u16 *);
@@ -689,9 +689,9 @@ extern "C" void WfcMoveWh_SetJudgeCallback(s32 a) {
     sWfcMoveWh->judgeAcceptFunc = (WfcMoveWhFunc)a;
 }
 
-extern "C" void WfcMoveWh_GetSharedData(s32 a) {
+extern "C" void *WfcMoveWh_GetSharedData(s32 a) {
     WfcMoveWhWork *g = sWfcMoveWh;
-    WM_GetSharedDataAddress(g->dsInfo, g->dataSet, a);
+    return WM_GetSharedDataAddress(g->dsInfo, g->dataSet, a);
 }
 
 extern "C" s32 DWCi_MOV_WH_StepDataSharing(s32 a) {

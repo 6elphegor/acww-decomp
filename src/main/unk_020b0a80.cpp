@@ -531,23 +531,20 @@ extern "C" u32 Footstep_GetSeForAttr(u32 a) {
     return Footstep_AttrToSe(GroundAttr_ResolveCarpet(a));
 }
 
-extern "C" void Footstep_GetSeAtPos(u32 a) {
+extern "C" u32 Footstep_GetSeAtPos(u32 a) {
     if (Ground_GetExitAtPos((void *)a) != (u32)-1) {
         u32 b = Scene_GetCurrent();
         if (SceneId_IsNookShop(b)) {
-            Footstep_GetSeForAttr(5);
-            return;
+            return Footstep_GetSeForAttr(5);
         }
         if (SceneId_IsHouseRoom(b) || SceneId_IsUnk6To8(b)) {
-            Footstep_GetSeForAttr(6);
-            return;
+            return Footstep_GetSeForAttr(6);
         }
         if (SceneId_IsMuseumRoom(b)) {
-            Footstep_GetSeForAttr(5);
-            return;
+            return Footstep_GetSeForAttr(5);
         }
     }
-    Footstep_GetSeForAttr(GroundAttr_GetAtPos(a));
+    return Footstep_GetSeForAttr(GroundAttr_GetAtPos(a));
 }
 
 extern "C" void Main_InitVBlank(void) {

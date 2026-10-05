@@ -480,8 +480,8 @@ extern "C" s32 Comm_IsSeqAtOrBefore(s32 a, s32 b) {
     }
     return 1;
 }
-extern "C" void Comm_IsSeqConfirmed(s32 a) {
-    Comm_IsSeqAtOrBefore(a, (s32)_ZN11CommManager15getConfirmedSeqEv(gCommManager));
+extern "C" s32 Comm_IsSeqConfirmed(s32 a) {
+    return Comm_IsSeqAtOrBefore(a, (s32)_ZN11CommManager15getConfirmedSeqEv(gCommManager));
 }
 extern "C" void Comm_WriteAckHeaders() {
     s32 i = 3;
@@ -1090,7 +1090,7 @@ extern "C" {
 void NetSession_OnBeginHost();
 }
 extern "C" {
-void NetSession_GetSyncState(s32 a);
+s32 NetSession_GetSyncState(s32 a);
 }
 extern "C" {
 void NetSession_SetSyncState(s32 a, s32 b);
@@ -1144,7 +1144,7 @@ extern "C" {
 void Comm_ClearSyncState();
 }
 extern "C" {
-void Comm_GetSyncState();
+s32 Comm_GetSyncState();
 }
 extern "C" {
 BOOL Comm_RequestSync(u8 a);
@@ -1223,13 +1223,21 @@ extern "C" BOOL Comm_RequestSync(u8 a) {
     }
     return TRUE;
 }
-extern "C" void Comm_GetSyncState() {
+extern "C" s32 Comm_GetSyncState() {
     s32 a = gCommManager->myAid;
+#ifdef MODERN
+    if (!gCommManager->isSlotActive(a)) {
+        return NetSession_GetSyncState(3);
+    }
+    return NetSession_GetSyncState(a);
+#else
+    // mwcc swaps the branches when they return; r0 holds the result either way.
     if (!gCommManager->isSlotActive(a)) {
         NetSession_GetSyncState(3);
     } else {
         NetSession_GetSyncState(a);
     }
+#endif
 }
 extern "C" void Comm_ClearSyncState() {
     s32 a = gCommManager->myAid;

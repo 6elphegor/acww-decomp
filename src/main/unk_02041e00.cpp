@@ -700,7 +700,7 @@ u8 *PendingUnit_GetActivePosOfAid(u32 a);
 PendingUnit *PendingUnit_Get(u32 i);
 s32 PendingUnit_FindBySlot(u32 a, u32 b);
 s32 PendingUnit_FindActiveOfAid(u32 a);
-void PendingUnit_FindFree();
+s32 PendingUnit_FindFree();
 s32 PendingUnit_FindForAid(u32 a, Vec2 *p, s32 b);
 }
 }
@@ -970,7 +970,7 @@ void BlockMap_PlaceItem(void *, s32, s32, s32, s32);
 u16 Flower_GetWateredForm(void *, u16 *, s32);
 void Town_RefreshEvents(void *, s32);
 void Clock_GetDateTime(void *);
-void TownEval_Evaluate(void *, void *);
+s32 TownEval_Evaluate(void *, void *);
 void Town_UpdateEvents(void *, void *, s32, s32, void *, s32);
 s32 Game_IsIntroPeriod();
 s32 PlayerData_GetCurrent();
@@ -1457,7 +1457,7 @@ void TownEval_EvaluateAndCleanAcre(TownEvalAcre *cell, TownBlockMap *b, s32 i, s
 void TownEval_PickAdvice(void *out, Vec2 *p, TownEvalAcre *cell);
 void TownEval_EvaluateAndClean(TownEval *a, TownBlockMap *b, s32 w, s32 h);
 s32 TownEval_GetTownRank(void *a, s32 *p, s32 w, s32 h);
-void TownEval_Evaluate(TownEval *a, TownBlockMap *b);
+s32 TownEval_Evaluate(TownEval *a, TownBlockMap *b);
 void TownEval_EvaluateAndClean(TownEval *a, TownBlockMap *b, s32 w, s32 h);
 struct FlowerHybridEntry {
     s32 weight;
@@ -2839,7 +2839,7 @@ extern "C" void TownEval_EvaluateAndClean(TownEval *a, TownBlockMap *b, s32 w, s
 }
 
 namespace nN {
-extern "C" void TownEval_Evaluate(TownEval *a, TownBlockMap *b) {
+extern "C" s32 TownEval_Evaluate(TownEval *a, TownBlockMap *b) {
     s32 w, h;
     s32 best;
     s32 v;
@@ -2900,7 +2900,9 @@ extern "C" void TownEval_Evaluate(TownEval *a, TownBlockMap *b) {
     pr.x = by;
     pr.y = bx;
     TownEval_PickAdvice(&a->advice, &pr, &a->acres[by][bx]);
-    a->rank = TownEval_GetTownRank(a, nZ::gTownEval.counts, w, h);
+    s32 rank = TownEval_GetTownRank(a, nZ::gTownEval.counts, w, h);
+    a->rank = rank;
+    return rank;
 }
 }
 
@@ -6194,11 +6196,11 @@ extern "C" s32 PendingUnit_FindForAid(u32 a, Vec2 *p, s32 b) {
 }
 
 namespace nF {
-extern "C" void PendingUnit_FindFree() {
+extern "C" s32 PendingUnit_FindFree() {
     Vec2 p;
     p.x = 0xff;
     p.y = 0xff;
-    PendingUnit_Find(&p, 0);
+    return PendingUnit_Find(&p, 0);
 }
 }
 

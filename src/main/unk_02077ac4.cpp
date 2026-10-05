@@ -1261,7 +1261,7 @@ void _ZN14EncodedString8D1Ev(void *);
 void _ZN11MsgString9BD1Ev(void *);
 BOOL SceneId_IsVillagerHouse(u32);
 s32 SceneId_GetVillagerHouse(u32);
-void _ZN23VillagerDataProfileView12findFreeSlotEi(void *, s32);
+s32 _ZN23VillagerDataProfileView12findFreeSlotEi(void *, s32);
 void _ZN12VillagerData5clearEv(void *);
 void VillagerRelations_Clear(void *);
 void OutdoorSchedule_Clear(void *);
@@ -1305,7 +1305,7 @@ void *SaveVillagers_FindBestFriendOf(u8 *base, void *x);
 void *SaveVillagers_PickRandomTalkPartner(u8 *base, void **arr, s32 n);
 s32 Random_PickSetBit(u32 mask, s32 cnt, s32 n);
 void *SaveVillagers_PickRandomExcept(u8 *base, void **arr, s32 n);
-void SaveVillagers_FindFreeSlot(void *self);
+s32 SaveVillagers_FindFreeSlot(void *self);
 void *SaveVillagers_GetByHouseRoom(void *self, u32 x);
 u8 *SaveVillagers_FindByName(u8 *base, u8 *a1, s32 a2, void *a3);
 BOOL Mem_Equal(u8 *a, u8 *b, s32 n);
@@ -7510,8 +7510,8 @@ extern "C" void *SaveVillagers_GetByHouseRoom(void *self, u32 x) {
 }
 
 namespace nH {
-extern "C" void SaveVillagers_FindFreeSlot(void *self) {
-    _ZN23VillagerDataProfileView12findFreeSlotEi(self, 8);
+extern "C" s32 SaveVillagers_FindFreeSlot(void *self) {
+    return _ZN23VillagerDataProfileView12findFreeSlotEi(self, 8);
 }
 }
 

@@ -351,7 +351,7 @@ BOOL Town_FindPlayerHouse(void *a, s32 *pos, s32 *p3, s32 *p4);
 BOOL Town_FindTownHall(void *a, s32 *pos, s32 *p3, s32 *p4);
 void BlockMap_FindStructure(u16 *ret, void *m, s32 *pos, s32 *p4, s32 *p5, u16 a6, u16 a7, s32 a8);
 void BlockMap_FindItem(u16 *ret, void *m, void *pos, s32 *p4, s32 *p5, u16 a6, u16 a7, s32 a8);
-void BlockMap_RemoveStructureAt(u32 a, s32 b, s32 c, s32 d, s32 e, u32 f);
+s32 BlockMap_RemoveStructureAt(u32 a, s32 b, s32 c, s32 d, s32 e, u32 f);
 s32 BlockMap_RemoveStructure(u32 a, u32 b, u32 c, u32 d);
 s32 BlockMap_PutStructure(u32 a, u32 b, u32 c, u32 d);
 TownBlockMap *TownBlockMap_Get();
@@ -1448,10 +1448,10 @@ extern "C" s32 BlockMap_RemoveStructure(u32 a, u32 b, u32 c, u32 d) {
     return _ZN7TownMap15removeStructureEiiPt(a, b, c, d);
 }
 
-extern "C" void BlockMap_RemoveStructureAt(u32 a, s32 b, s32 c, s32 d, s32 e, u32 f) {
+extern "C" s32 BlockMap_RemoveStructureAt(u32 a, s32 b, s32 c, s32 d, s32 e, u32 f) {
     s32 l8 = 0, lc = 0;
     FieldUnit_FromBlockUnit(&l8, &lc, b, c, d, e);
-    BlockMap_RemoveStructure(a, l8, lc, f);
+    return BlockMap_RemoveStructure(a, l8, lc, f);
 }
 
 extern "C" void BlockMap_FindItem(u16 *ret, void *m, void *pos, s32 *p4, s32 *p5, u16 a6, u16 a7, s32 a8) {

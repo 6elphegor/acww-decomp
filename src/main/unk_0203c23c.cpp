@@ -376,8 +376,7 @@ extern "C" BOOL Catalog_AddCreature(u16 *p) {
     return FALSE;
 }
 
-extern "C" void CarpetTex_Init() {
-}
+extern "C" void *CarpetTex_Init(void *p) { return p; }
 
 extern "C" BOOL CarpetTex_Load(u32 a, u16 *p) {
     u16 c = *p;

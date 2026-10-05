@@ -395,8 +395,10 @@ extern "C" s32 NpcRegistry_FindSpNpcByHandle(void *a) {
     return (s32)gNpcActorRegistry.findSpNpcByHandle((u16 *)a);
 }
 
-extern "C" void NpcRegistry_FindAt(void *a, void *b) {
-    if (gNpcActorRegistry.findVillagerAt((s32)a, (s32)b) == 0) gNpcActorRegistry.findSpNpcAt((s32)a, (s32)b);
+extern "C" NpcActor *NpcRegistry_FindAt(void *a, void *b) {
+    NpcActor *r = gNpcActorRegistry.findVillagerAt((s32)a, (s32)b);
+    if (r == 0) r = gNpcActorRegistry.findSpNpcAt((s32)a, (s32)b);
+    return r;
 }
 
 extern "C" s32 NpcRegistry_PickRandomVillager(void *a) {
