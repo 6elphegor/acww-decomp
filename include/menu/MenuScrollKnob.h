@@ -15,7 +15,7 @@ public:
     s32 getGripX();                             // 0x02202e84
     s32 getScreenY();                           // 0x02202ea8
     s32 getScreenX();                           // 0x02202ebc
-    s32 updateRelease();                        // 0x02202ed0
+    void updateRelease();                       // 0x02202ed0
     void release();                             // 0x02202ef4
     void grab();                                // 0x02202f00
     void show();                                // 0x02202f0c

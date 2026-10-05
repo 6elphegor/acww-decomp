@@ -55,7 +55,7 @@ s32 WfcNumPad_Create();
 s32 WfcFade_Start(s32, s32, s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcHeap_AllocClear(s32, s32);
-s32 WfcHighlight_Set(s32);
+void WfcHighlight_Set(s32);
 s32 WfcUtil_ShowTopMessage(s32, s32, s32);
 s32 WfcUtil_ShowStepIndicator(s32);
 s32 WfcText_CreateBgCanvas(s32, s32);

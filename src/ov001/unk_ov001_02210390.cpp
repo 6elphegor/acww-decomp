@@ -17,7 +17,7 @@ s32 WfcUtil_ShowTopMessage(u32 a, s32 b, u32 c);
 s32 WfcUtil_ShowBottomMessage(u32 a);
 s32 WfcUtil_OpenButtonBar(u32 a);
 s32 WfcUtil_LoadFileTo(void *a, void *b);
-s32 WfcHighlight_Set(u32 a);
+void WfcHighlight_Set(u32 a);
 s32 WfcUtil_SetScreenFlags(u32 a, u32 b);
 s32 WfcUtil_SetScene(void *p);
 s32 WfcTransfer_StartSend();

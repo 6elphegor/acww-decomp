@@ -62,7 +62,7 @@ struct NpcActionCtrl {
     // still the view method NpcActionCtrl::act0EStep00, act0EStepNN are defined by their mangled names. The
     // Unk_02006d14 argument is the TU-local NpcActor view of unk_020119cc.cpp, not the player.
     BOOL setupAct15(Unk_02006d14 *o);
-    BOOL postAct14(Unk_02006d14 *o);
+    void postAct14(Unk_02006d14 *o);
     BOOL setupAct14(Unk_02006d14 *o);
     s32 requestAct14(s32 a, u16 *p);
     void postAct13(Unk_02006d14 *o);

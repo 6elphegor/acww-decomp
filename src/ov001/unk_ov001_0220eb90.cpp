@@ -32,7 +32,7 @@ s32 WfcUtil_LoadFileTo(void *, void *);
 void *WfcUtil_LocalizePath(void *);
 void WfcCursor_ShowCorners(u32, u32, u32, u32);
 s32 WfcFade_IsBusy(s32);
-s32 WfcHighlight_Set(s32);
+void WfcHighlight_Set(s32);
 s32 WfcUtil_ShowTopMessage(s32, s32, s32);
 void WfcSysInfo_DrawInfo();
 void WfcUtil_SetScene(void *);

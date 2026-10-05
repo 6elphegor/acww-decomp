@@ -13,7 +13,7 @@ s32 OS_GetOwnerInfo(void *);
 void MIi_CpuClear16(u16, void *, u32);
 void MIi_CpuCopy16(void *, void *, u32);
 s32 WfcUtil_LoadFileTo(void *, void *);
-s32 WfcHighlight_Set(s32);
+void WfcHighlight_Set(s32);
 s32 WfcUtil_ShowBottomMessage(s32);
 s32 WfcUtil_ShowTopMessage(s32, s32, s32);
 s32 WfcUtil_ShowStepIndicator(s32);

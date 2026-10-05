@@ -75,7 +75,7 @@ extern "C" {
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 RoomObjSync_SetState(u32 v);
 s32 RoomObjSync_GetState(u32 v);
-void _ZN5Actor11postExecuteEv(void *o, u32 v);
+BOOL _ZN5Actor11postExecuteEv(void *o, u32 v);
 void _ZN5Model11setResourceEP12NNSG3dResMdlj(void *m, void *r, u32 z);
 void NNS_G3dBindMdlTex(void *a, u32 b);
 void NNS_G3dBindMdlPltt(void *a, u32 b);
@@ -138,7 +138,7 @@ BOOL RoomObjActor::postExecute(u32 a) {
     Vec out;
     getSoundPos(&out);
     se.RoomObj_SetSePos(&out);
-    _ZN5Actor11postExecuteEv(this, a);
+    return _ZN5Actor11postExecuteEv(this, a);
 }
 
 BOOL RoomObjActor::preDelete() {
@@ -5118,7 +5118,7 @@ void PlayerActor_DoorWalkInSetWork(Rec *r, V3 v, s32 a, u32 b, u8 c);
 s32 PlayerActor_RequestDoorWalkIn(Obj *o, V3 *v, u32 a, u32 b);
 void PlayerActor_DoorWalkInSetArgs(V3 *d, V3 v);
 void PlayerActor_DrinkCoffeeCheckEnd(Obj *o);
-s32 PlayerActor_PhoneHangUpCheckEnd(Obj *o);
+void PlayerActor_PhoneHangUpCheckEnd(Obj *o);
 s32 PlayerActor_RequestPhoneHangUp(Obj *o, u32 a, u32 b);
 s32 PlayerActor_RequestPhoneHold(Obj *o, u32 a, u32 b);
 void PlayerActor_PhonePickUpCheckEnd(Obj *o);
@@ -5235,7 +5235,7 @@ extern "C" void PlayerActor_NetPhoneHangUp(Obj *o, u32 a) {
     PlayerActor_RequestPhoneHangUp(o, 6, a);
 }
 
-extern "C" s32 PlayerActor_PhoneHangUpCheckEnd(Obj *o) {
+extern "C" void PlayerActor_PhoneHangUpCheckEnd(Obj *o) {
     if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);

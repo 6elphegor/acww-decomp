@@ -364,7 +364,7 @@ void PopupChoiceMenu::init(s32 a, s32 b, const char *path) {
     flags = 0;
 }
 
-s32 PopupChoiceMenu::placeCentered(s32 a, s32 b) {
+void PopupChoiceMenu::placeCentered(s32 a, s32 b) {
     a += 0x80;
     b += 0x60;
     s32 w = PopupChoice_GetWidth((Self *)this);

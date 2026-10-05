@@ -208,7 +208,7 @@ public:
     void updateAllStarSprites();
     void updateStarSprite(s32 i);
     void markEndCandidates();
-    s32 markOwnLines();
+    void markOwnLines();
     void loadConstellation();
     void markOtherConstellations();
     void clearOwnLineStates();
@@ -1386,7 +1386,7 @@ void ConstellationEditorMenu::loadConstellation() {
     markOwnLines();
 }
 
-s32 ConstellationEditorMenu::markOwnLines() {
+void ConstellationEditorMenu::markOwnLines() {
     s32 i;
     u16 *p = lines;
     for (i = 0; i < 16; p++, i++) {

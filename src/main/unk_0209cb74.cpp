@@ -83,7 +83,7 @@ void NpcSpawn_ResetAll(void);
 void NpcNetRecords_InitVillagers(void);
 void SaveVillagers_ResetMoods(void *);
 void *TownSessionState_Get(void);
-void *TownSessionState_Reset(u8 *self);
+void TownSessionState_Reset(u8 *self);
 void RoomFtrState_ResetAll(void);
 void RoomObjSync_Reset(void);
 void BuildingStates_Reset(void);

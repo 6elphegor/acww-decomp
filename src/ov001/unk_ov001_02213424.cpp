@@ -47,7 +47,7 @@ s32 WfcGx_ShowPlanes(u32 a, u32 b);
 void *WfcHeap_AllocClear(u32 a, u32 b);
 s32 WfcConfig_GetEditSsid(void *a);
 s32 WfcUtil_StrNLen(void *a, u32 b);
-s32 WfcHighlight_Set(u32 a);
+void WfcHighlight_Set(u32 a);
 s32 WfcUtil_ShowTopMessage(u32 a, s32 b, u32 c);
 s32 WfcUtil_ShowStepIndicator(u32 a);
 void *WfcText_CreateBgCanvas(u32 a, u32 b);

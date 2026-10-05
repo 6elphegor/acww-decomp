@@ -159,7 +159,7 @@ public:
     void jumpToSelection();
     u8 selectionToMarker(u32 v);
     u8 selectionToListRow(u32 v);
-    s32 highlightListRow(u32 v);
+    void highlightListRow(u32 v);
     void selectEntry(u8 v);
     u8 findMarkerAt(s32 x, s32 y);
     BOOL touchMarker();
@@ -169,11 +169,11 @@ public:
     s32 getListScrollMax();
     u8 getListCount();
     u8 *getListEntries();
-    s32 rebuildList();
+    void rebuildList();
     void showPlacesList();
     void showResidentsList();
     void setEntryName(LabelString *p, u32 idx);
-    s32 buildEntryLabels(u8 *tbl);
+    void buildEntryLabels(u8 *tbl);
     void layoutListLabels();
     void buildEntryLists();
     LabelString *allocTextLabel();
@@ -197,8 +197,8 @@ public:
     void updateTouch();
     void loadObjGfx();
     void loadMapImage();
-    s32 loadMapStep2();
-    s32 loadMapStep1();
+    void loadMapStep2();
+    void loadMapStep1();
     void loadBgGfx();
     void setupBgLayers();
     void postInputUpdate();
@@ -743,14 +743,14 @@ void MapTab::loadBgGfx() {
     BgScreen_SetRectPalette(listScreenBase, 0x13, 0, 0x1c, 1, 4);
 }
 
-s32 MapTab::loadMapStep1() {
+void MapTab::loadMapStep1() {
     TownMapImage_AllocGlobal();
     TownMapImage_DrawRowGlobal(0);
     TownMapImage_BuildMarkersGlobal(0);
     TownMapImage_BuildMarkersGlobal(1);
 }
 
-s32 MapTab::loadMapStep2() {
+void MapTab::loadMapStep2() {
     TownMapImage_DrawRowGlobal(1);
     TownMapImage_DrawRowGlobal(2);
 }
@@ -1115,7 +1115,7 @@ void MapTab::layoutListLabels() {
     }
 }
 
-s32 MapTab::buildEntryLabels(u8 *tbl) {
+void MapTab::buildEntryLabels(u8 *tbl) {
     s32 i;
     for (i = 0; i < 0xd; i++) {
         LabelString *w = allocTextLabel();
@@ -1151,7 +1151,7 @@ void MapTab::showPlacesList() {
     rebuildList();
 }
 
-s32 MapTab::rebuildList() {
+void MapTab::rebuildList() {
     s32 k;
     buildListScreen();
     layoutListLabels();
@@ -1164,7 +1164,7 @@ s32 MapTab::rebuildList() {
     }
     BgScreen_SetRectPalette(frameScreen, 0x1d, 0xa, 0x1d, 0x15, k);
     setFlags(0x20);
-    return highlightListRow(selectedRow);
+    highlightListRow(selectedRow);
 }
 
 u8 *MapTab::getListEntries() {
@@ -1331,7 +1331,7 @@ void MapTab::selectEntry(u8 v) {
     highlightListRow(selectedRow);
 }
 
-s32 MapTab::highlightListRow(u32 v) {
+void MapTab::highlightListRow(u32 v) {
     setFlags(0x80);
     if (v == 0xe) {
         BgScreen_SetRectPalette(listScreenWork, 0x13, 0, 0x1c, 0x19, 4);

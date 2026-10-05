@@ -8,7 +8,7 @@ s32 GX_LoadBG2Scr();
 s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
 s32 WfcUtil_LoadFileTo(void *, void *);
-s32 WfcHighlight_Set(s32);
+void WfcHighlight_Set(s32);
 s32 WfcUtil_ShowBottomMessage(s32);
 s32 WfcUtil_ShowTopMessage(s32, s32, s32);
 s32 WfcUtil_ShowStepIndicator(s32);

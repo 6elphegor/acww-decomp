@@ -484,9 +484,13 @@ s32 gpDeleteBuddy(GPConnection *h, s32 a) {
         gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    if (gpiDeleteBuddy(h, a) == 0) {
-        return 0;
+    {
+        s32 r = gpiDeleteBuddy(h, a);
+        if (r != 0) {
+            return r;
+        }
     }
+    return 0;
 }
 }
 }

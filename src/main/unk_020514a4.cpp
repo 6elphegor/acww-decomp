@@ -133,7 +133,7 @@ void FtrFootprint_Destruct(Unk_0205242c_Self *p);
 Unk_0205242c_Self *FtrFootprint_Init(Unk_0205242c_Self *p, u16 *q);
 s32 RoomFtrState_RemoveGyroidBeat(s32 a, s32 b, u32 c);
 s32 RoomFtrState_SetGyroidBeat(s32 a, s32 b, s32 c, u32 d);
-s32 RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, u8 d, u8 e);
+void RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, u8 d, u8 e);
 RoomFtrState *RoomFtrState_GetForScene(u32 id);
 BOOL RoomFtrState_ResetScene(u32 v);
 BOOL RoomFtrState_ResetVillagerHouse(u32 idx);
@@ -367,7 +367,7 @@ extern "C" s32 RoomFtrState_GetSwitch(s32 a, s32 b, s32 c, u32 d) {
     return 0;
 }
 
-extern "C" s32 RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, u8 d, u8 e) {
+extern "C" void RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, u8 d, u8 e) {
     RoomFtrState *r = RoomFtrState_GetForScene(e);
     if (r) {
         r->setSwitch(a, b, c, d);
@@ -465,7 +465,7 @@ extern "C" s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool 
     return 1;
 }
 
-extern "C" s32 FtrSync_OnStateRecord(u32 *pp) {
+extern "C" void FtrSync_OnStateRecord(u32 *pp) {
     FtrStateRecord *p = (FtrStateRecord *)pp;
     if (p->n == 1) {
         FtrSync_ApplyState(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
@@ -480,7 +480,7 @@ extern "C" s32 FtrSync_OnStateRecord(u32 *pp) {
     }
 }
 
-extern "C" s32 FtrSync_OnRoomLightRecord(Unk_0205218c_B *p) {
+extern "C" void FtrSync_OnRoomLightRecord(Unk_0205218c_B *p) {
     u32 a = p->a;
     BOOL b = p->b ? 1 : 0;
     if (p->c == 1) {
@@ -497,21 +497,21 @@ extern "C" s32 FtrSync_OnRoomLightRecord(Unk_0205218c_B *p) {
     }
 }
 
-extern "C" s32 FtrSync_OnRemoveRecord(s32 a, Unk_02052134_W *w) {
+extern "C" void FtrSync_OnRemoveRecord(s32 a, Unk_02052134_W *w) {
     u16 t = w->f;
     BOOL e = w->e ? 1 : 0;
     BOOL d = w->d ? 1 : 0;
     FtrSync_RemoveFurniture(a, w->b, w->c, (u8)w->a, e, &t, d, 0);
 }
 
-extern "C" s32 FtrSync_OnPlaceRecord(s32 a, FtrPlaceRecord *w) {
+extern "C" void FtrSync_OnPlaceRecord(s32 a, FtrPlaceRecord *w) {
     u16 t = w->item;
     BOOL j = w->switchOn ? 1 : 0;
     BOOL k = w->isGyroid ? 1 : 0;
     FtrSync_PlaceFurniture(a, w->x, w->y, (u8)w->layer, j, k, (u8)w->beat, &t, 0);
 }
 
-extern "C" s32 FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w) {
+extern "C" void FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w) {
     u16 t = w->c;
     FtrSync_SetTopItem(a, w->a, w->b, &t, 0);
 }
@@ -541,7 +541,7 @@ extern "C" void FtrSync_OnToggleRecord(Unk_02051fcc_W *p) {
     FtrSync_ToggleGyroidAt(p->a, p->c, p->d, p->b, 1);
 }
 
-extern "C" s32 SpotSync_OnReserveRequest(u8 *p, s32 q) {
+extern "C" void SpotSync_OnReserveRequest(u8 *p, s32 q) {
     VecFx32 v;
     v.x = 0;
     v.y = 0;
@@ -687,7 +687,7 @@ extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f,
             FtrFootprint_Destruct(&pk);
             return;
         }
-        ((s32 (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, d, e, a);
+        ((void (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, d, e, a);
         if (f != 0 && e != 0 && idx == 0) {
             RoomFtrState_SetGyroidBeat(x, y, g, a);
         }
@@ -746,9 +746,9 @@ extern "C" void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *
                 return;
             }
         }
-        ((s32 (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, d, e, a);
+        ((void (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, d, e, a);
         if (g != 0 && d == 0) {
-            ((s32 (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, 1, e, a);
+            ((void (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, 1, e, a);
         }
         if (k != 0 && e != 0) {
             RoomFtrState_RemoveGyroidBeat(x, y, a);

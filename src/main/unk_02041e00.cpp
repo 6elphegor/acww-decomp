@@ -545,17 +545,17 @@ s32 Scene_GetCurrent(void);
 s32 ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
-s32 Flower_TrampleAt(VecXZ *p, s32 f);
-s32 Flower_TrampleTile(void *m, VecXZ *p, s32 f);
+void Flower_TrampleAt(VecXZ *p, s32 f);
+void Flower_TrampleTile(void *m, VecXZ *p, s32 f);
 void Flower_SpawnPetalFx(u16 *a, VecXZ *p, s16 c, s32 d);
 u32 FieldPlayer_GetHeldItem(void);
 s32 Field_IsLocalAid(s32 a);
 s32 Field_AidOrZero(s32 a);
 s32 Field_AidOrLocal(s32 a);
-s32 Flower_PlayTrampleFx(VecXZ *p);
+void Flower_PlayTrampleFx(VecXZ *p);
 void Flower_Trample(VecXZ *p);
-s32 Flower_TrampleAt(VecXZ *p, s32 f);
-s32 Flower_TrampleTile(void *m, VecXZ *p, s32 f);
+void Flower_TrampleAt(VecXZ *p, s32 f);
+void Flower_TrampleTile(void *m, VecXZ *p, s32 f);
 void DeadTurnip_SpawnDigFx(VecXZ *p);
 void Weed_SpawnPullFx(u16 *a, VecXZ *p);
 void Flower_SpawnPetalFxAt(u16 *a, VecXZ *p, s16 c, s32 d);
@@ -714,7 +714,7 @@ extern u8 gTownJunkInsectFlags[];
 PendingUnit *PendingUnit_Get(s32 i);
 s32 PendingUnit_FindActiveOfAid(u32 aid);
 s32 PendingUnit_FindFree();
-s32 PendingUnit_Flush(PendingUnit *e);
+void PendingUnit_Flush(PendingUnit *e);
 void PendingUnit_Commit(PendingUnit *e);
 void PendingUnit_CommitForAid(PendingUnit *e);
 s32 PendingUnit_Apply(PendingUnit *e);
@@ -751,7 +751,7 @@ void PendingUnit_CancelAt(Vec2 *pos, s32 flag);
 void PendingUnit_ApplyAtIfAid(Vec2 *pos, u32 v, s32 flag);
 void PendingUnit_ApplyIndex(s32 i);
 void PendingUnit_ApplyAt(Vec2 *pos, s32 flag);
-s32 PendingUnit_Flush(PendingUnit *e);
+void PendingUnit_Flush(PendingUnit *e);
 s32 PendingUnit_Reset(PendingUnit *e);
 void PendingUnit_Commit(PendingUnit *e);
 void PendingUnit_NoteJunk(PendingUnit *e);
@@ -839,12 +839,12 @@ void TownState_UpdateSeasonPeriod();
 s32 Town_IsClockBeforeLastUpdate();
 void Turnips_SpoilAll(void *);
 s32 Scene_GetCurrent();
-s32 Town_RefreshEvents(void *, s32);
+void Town_RefreshEvents(void *, s32);
 void TownState_UpdateSeasonPeriod();
 s32 Town_IsClockBeforeLastUpdate();
 void Turnips_SpoilAll(void *);
 s32 Scene_GetCurrent();
-s32 Town_RefreshEvents(void *, s32);
+void Town_RefreshEvents(void *, s32);
 void Town_UpdateDay(s32);
 s32 FieldActionFx_ClearAll(void *);
 s32 MoneyRock_Init(void *);
@@ -968,7 +968,7 @@ void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 void FieldUnit_FromBlockUnit(void *, void *, s32, s32, s32, s32);
 void BlockMap_PlaceItem(void *, s32, s32, s32, s32);
 u16 Flower_GetWateredForm(void *, u16 *, s32);
-s32 Town_RefreshEvents(void *, s32);
+void Town_RefreshEvents(void *, s32);
 void Clock_GetDateTime(void *);
 void TownEval_Evaluate(void *, void *);
 void Town_UpdateEvents(void *, void *, s32, s32, void *, s32);
@@ -1066,7 +1066,7 @@ static inline BOOL Unk_02046ba8_R(u16 *p, u32 lo, u32 hi) {
 }
 u16 Flower_GetWateredForm(void *a, u16 *q, s32 flag);
 void Town_RefreshEventsOffline();
-s32 Town_RefreshEvents(void *a, s32 b);
+void Town_RefreshEvents(void *a, s32 b);
 struct Unk_02046c80_D {
     u32 a;
     u32 b;
@@ -1218,7 +1218,7 @@ BOOL Town_IsPlantable(void *a, s32 x, s32 y);
 BOOL Town_ConvertRockInAcre(void *a, void *b, TownEvalAcre *cell, s32 d, s32 e, s32 f);
 s32 Town_ConvertRandomRock(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 s32 Town_SpawnRafflesia(void *a, void *b, s32 c, s32 d);
-s32 Town_WitherRafflesia(void *a, void *b);
+void Town_WitherRafflesia(void *a, void *b);
 void Town_SpawnJacobsLadder(void *a, void *b, s32 c, s32 d);
 void Town_PickJacobsLadderAcre(Vec2 *out, void *a, s32 c, s32 d);
 void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d);
@@ -1241,8 +1241,8 @@ static inline u16 *Unk_02047ac0_Get(void *b, TownEval *s, s32 u, s32 v, s32 x, s
 static inline void Unk_02047ac0_Set(void *a, void *b, s32 u, s32 v, s32 x, s32 y) {
     BlockMap_PlaceItemAt(a, b, x + 1, y + 1, u, v, 0x89, 0);
 }
-s32 Town_UpdateRafflesia(void *a, void *b, s32 c, s32 d);
-s32 Town_WitherRafflesia(void *a, void *b);
+void Town_UpdateRafflesia(void *a, void *b, s32 c, s32 d);
+void Town_WitherRafflesia(void *a, void *b);
 s32 Town_SpawnRafflesia(void *a, void *b, s32 c, s32 d);
 void Town_TrySpawnJacobsLadder(void *a, void *b, s32 c, s32 d);
 void Town_SpawnJacobsLadder(void *a, void *b, s32 c, s32 d);
@@ -4289,7 +4289,7 @@ extern "C" s32 Town_SpawnRafflesia(void *a, void *b, s32 c, s32 d) {
 }
 
 namespace nK {
-extern "C" s32 Town_WitherRafflesia(void *a, void *b) {
+extern "C" void Town_WitherRafflesia(void *a, void *b) {
     s32 u, v, x, y;
     u = gTownEval.rafflesiaUnit.x; v = gTownEval.rafflesiaUnit.y; x = gTownEval.rafflesiaBlock.x; y = gTownEval.rafflesiaBlock.y;
     if (BlockMap_GetItemPtr(b, x + 1, y + 1, u, v, 0)) {
@@ -4300,7 +4300,7 @@ extern "C" s32 Town_WitherRafflesia(void *a, void *b) {
 }
 
 namespace nK {
-extern "C" s32 Town_UpdateRafflesia(void *a, void *b, s32 c, s32 d) {
+extern "C" void Town_UpdateRafflesia(void *a, void *b, s32 c, s32 d) {
     s32 x = gTownEval.rank;
     s32 y;
     if (x == 0) {
@@ -4895,7 +4895,7 @@ extern "C" void Town_UpdateEvents(void *a, void *p, s32 x, s32 y, void *c, s32 f
 }
 
 namespace nI {
-extern "C" s32 Town_RefreshEvents(void *a, s32 b) {
+extern "C" void Town_RefreshEvents(void *a, s32 b) {
     TownBlockMap *p = TownBlockMap_Get();
     if (p) {
         ClockDateTimeWords s;
@@ -5911,7 +5911,7 @@ extern "C" s32 PendingUnit_Reset(PendingUnit *e) {
 }
 
 namespace nG {
-extern "C" s32 PendingUnit_Flush(PendingUnit *e) {
+extern "C" void PendingUnit_Flush(PendingUnit *e) {
     if (e->unit.v != 0xffff) {
         switch (e->kind) {
         case 4:
@@ -7113,7 +7113,7 @@ extern "C" void DeadTurnip_SpawnDigFx(VecXZ *p) {
 }
 
 namespace nE {
-extern "C" s32 Flower_TrampleTile(void *m, VecXZ *p, s32 f) {
+extern "C" void Flower_TrampleTile(void *m, VecXZ *p, s32 f) {
     if (Item_IsFlower((u16 *)m)) {
         VecXZ t;
         t.x = p->x;
@@ -7127,7 +7127,7 @@ extern "C" s32 Flower_TrampleTile(void *m, VecXZ *p, s32 f) {
 }
 
 namespace nE {
-extern "C" s32 Flower_TrampleAt(VecXZ *p, s32 f) {
+extern "C" void Flower_TrampleAt(VecXZ *p, s32 f) {
     void *m = TownBlockMap_Get();
     if (m) {
         s32 x = p->x;
@@ -7166,11 +7166,11 @@ extern "C" void Flower_Trample(VecXZ *p) {
 }
 
 namespace nE {
-extern "C" s32 Flower_PlayTrampleFx(VecXZ *p) {
+extern "C" void Flower_PlayTrampleFx(VecXZ *p) {
     VecXZ t;
     t.x = p->x;
     t.z = p->z;
-    return Flower_TrampleAt(&t, 1);
+    Flower_TrampleAt(&t, 1);
 }
 }
 

@@ -149,7 +149,7 @@ public:
     void closeWithSelection();
     void cancelPopupForButtons();
     void openPopup(u32 v);
-    s32 onPopupChoice();
+    void onPopupChoice();
     void beginSwapAt(u32 v);
     void beginPutDownAt(u32 v);
     void pressCloseButton();
@@ -1140,7 +1140,7 @@ void PocketItemSelectMenu::beginSwapAt(u32 v) {
     setMainState(0x10);
 }
 
-s32 PocketItemSelectMenu::onPopupChoice() {
+void PocketItemSelectMenu::onPopupChoice() {
     switch (popupChoice) {
     case 0:
         closeWithSelection();

@@ -345,7 +345,7 @@ public:
     void showMainMenu();
     void startSave();
     BOOL hasFriends();
-    s32 setFriendCodeArgs(s64 v);
+    void setFriendCodeArgs(s64 v);
     void startComm(s32 a, s32 b);
     void endComm();
     s32 getTopic();
@@ -1982,7 +1982,7 @@ void SpNpcCopperTalk::startComm(s32 a, s32 b) {
     Comm_Start(a, 4, b);
 }
 
-s32 SpNpcCopperTalk::setFriendCodeArgs(s64 v) {
+void SpNpcCopperTalk::setFriendCodeArgs(s64 v) {
     s64 q1 = (u64)v / 100000000;
     s64 m1 = q1 * 100000000;
     s64 rem = v - m1;

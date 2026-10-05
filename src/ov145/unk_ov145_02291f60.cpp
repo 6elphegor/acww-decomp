@@ -130,7 +130,7 @@ void Menu_PlayScrollTickSe(void *p);
 void MenuScrollKnob_grab(void *p);
 void MenuScrollKnob_show(void *p);
 void MenuScrollKnob_release(void *p);
-s32 MenuScrollKnob_updateRelease(void *p);
+void MenuScrollKnob_updateRelease(void *p);
 void MenuCursorBase_setPoseRelease(void *p);
 void MenuCursor_setPosePress(void *p);
 void MenuCursorBase_setPoseIdle(void *p);

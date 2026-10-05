@@ -297,7 +297,7 @@ s32 ServerBrowserCount(_ServerBrowser *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserSortA(_ServerBrowser *o, s32 a, char *b, u32 mode) {
+void ServerBrowserSortA(_ServerBrowser *o, s32 a, char *b, u32 mode) {
     GsSrvSortStackPad pad;
     SBServerListSort(&o->list, a, b, mode);
 }

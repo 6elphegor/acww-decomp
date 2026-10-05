@@ -15,6 +15,6 @@ extern "C" CharInteractSyncRecvFn sCharInteractSyncRecvFns[6] = {
     CharInteractSync_OnLockRequest, CharInteractSync_OnReply, CharInteractSync_OnReply, CharInteractSync_OnRelease, CharInteractSync_OnCharMsg, CharInteractSync_OnCharMsg,
 };
 
-extern "C" s32 CharInteractSync_Dispatch(u8 *p, s32 x) {
+extern "C" void CharInteractSync_Dispatch(u8 *p, s32 x) {
     sCharInteractSyncRecvFns[*p](p, x);
 }

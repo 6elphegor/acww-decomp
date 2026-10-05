@@ -154,7 +154,7 @@ s32 Aoss_FindAossAp(AossScanList *p);
 s32 Aoss_IsPrintable(u8 *s, s32 n);
 s32 Aoss_StoreResult(u8 *o);
 s32 Aoss_GetError();
-s32 Aoss_SetError(s32 v);
+void Aoss_SetError(s32 v);
 void Aoss_InitSession(u8 *p);
 void Aoss_FreeScanBuffers();
 u32 Aoss_PickHostAddress(u32 a, u32 b);
@@ -698,7 +698,7 @@ extern "C" void Aoss_InitSession(u8 *p)
     sAossSession.useUnicast = 0;
 }
 
-extern "C" s32 Aoss_SetError(s32 v)
+extern "C" void Aoss_SetError(s32 v)
 {
     sAossError = v;
 }
@@ -1774,6 +1774,7 @@ extern "C" s32 Aoss_SendTo(s32 a, s32 b, s32 c, s32 d, u8 *p, u32 v) {
 }
 
 extern "C" s32 Aoss_SetSockOpt(s32 s, s32 l, s32 o, void *v, s32 n) {
+    return s;
 }
 
 extern "C" s32 Aoss_SocketCreate(s32 a, s32 b, s32 c) {
