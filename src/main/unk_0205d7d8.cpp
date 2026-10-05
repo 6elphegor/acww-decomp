@@ -17,7 +17,7 @@ s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
 s32 PlayerHeadModelHeap_Destroy(void);
 void PlayerHeadModelHeap_Create(void *parent);
-void _ZN10FishBobber9isInWaterEv(void *p);
+BOOL _ZN10FishBobber9isInWaterEv(void *p);
 s32 ItemInfo_TestFlag2(u16 *p);
 s32 Item_IsFlowerItem(u16 *p);
 s32 Item_GetFlowerItemOrdinal(u16 *p);
@@ -96,7 +96,7 @@ extern const u8 sFullHeadwearModelIds[0x20];
 extern const u8 sHatModelIds[0x48];
 extern char sPlayerHeadPathBuf[0x14];
 
-void HeldItemModel_IsBobberLanded(u8 *p);
+BOOL HeldItemModel_IsBobberLanded(u8 *p);
 void PlayerHeadBank_Init(void *parent);
 void PlayerHeadBank_Destroy(void);
 char *PlayerHead_GetModelPath(u32 a);
@@ -146,8 +146,8 @@ PlayerHeadBank sPlayerHeadBank;
 
 #define MGR (&sPlayerHeadBank)
 
-extern "C" void HeldItemModel_IsBobberLanded(u8 *p) {
-    _ZN10FishBobber9isInWaterEv(p + 0x28);
+extern "C" BOOL HeldItemModel_IsBobberLanded(u8 *p) {
+    return _ZN10FishBobber9isInWaterEv(p + 0x28);
 }
 
 extern "C" void PlayerHeadBank_Init(void *parent) {

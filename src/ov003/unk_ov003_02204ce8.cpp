@@ -3302,7 +3302,7 @@ void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 s32 PlayerActor_RequestBuryItem(Obj *o, s32 a, Pair *p, u32 b, s32 c, s32 d);
 s32 PlayerActor_GetFrontUnitCenter(V3 *v, Obj *o);
 void FieldPos_FromUnitCenter(V3 *a, u32 b, u32 c);
-void PlayerActor_TestSlotFlag(s32 a, s32 b);
+BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 }
 
 static inline u16 Unk_ov003_022125ac_A(u32 x) {
@@ -3350,12 +3350,12 @@ extern "C" s32 PlayerActor_IsLocalAct67HitAt(V3 *a);
 extern "C" s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b);
 extern "C" s32 PlayerActor_GetDigCountdownAt(V3 *a, s32 b);
 extern "C" s32 FieldPos_IsSameUnit(V3 *a, V3 *b);
-extern "C" void PlayerActor_TestSlotFlag9(s32 a);
+extern "C" BOOL PlayerActor_TestSlotFlag9(s32 a);
 }
 
 namespace ns_02212140 {
-extern "C" void PlayerActor_TestSlotFlag9(s32 a) {
-    PlayerActor_TestSlotFlag(9, a);
+extern "C" BOOL PlayerActor_TestSlotFlag9(s32 a) {
+    return PlayerActor_TestSlotFlag(9, a);
 }
 }
 

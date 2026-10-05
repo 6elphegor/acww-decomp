@@ -295,7 +295,7 @@ u8 MelodyPlayer_IsPlaying(void *c);
 }
 
 extern "C" {
-void MelodyPlayer_Update(void *c);
+s32 MelodyPlayer_Update(void *c);
 }
 
 extern "C" {
@@ -327,7 +327,7 @@ void MelodyPlayer_SetPattern(void *c, u8 *src);
 }
 
 extern "C" {
-void Melody_GetDefaultPattern();
+u8 *Melody_GetDefaultPattern();
 }
 
 extern "C" {
@@ -371,7 +371,7 @@ void SndMgr_StopAuxSe(void *);
 }
 
 extern "C" {
-void SndMgr_GetBeatState(void *);
+void *SndMgr_GetBeatState(void *);
 }
 
 extern "C" {
@@ -836,7 +836,7 @@ extern "C" void Snd_FadeInBgmTracks(u32 a) { SndMgr_FadeInBgmTracks(gSndMgr, a);
 
 extern "C" void Snd_SetBgmTrackVariant(u32 a) { SndMgr_SetBgmTrackVariant(gSndMgr, a); }
 
-extern "C" void Snd_GetBeatState() { SndMgr_GetBeatState(gSndMgr); }
+extern "C" void *Snd_GetBeatState() { return SndMgr_GetBeatState(gSndMgr); }
 
 extern "C" void Snd_BeginMenuDuck() { SndMgr_BeginMenuDuck(gSndMgr); }
 
@@ -872,7 +872,7 @@ extern "C" void Snd_MelodyStartTrackA(void *c) { MelodyPlayer_StartTrackA(c); }
 
 extern "C" void Snd_MelodyPlayNote(void *c, u32 idx) { MelodyPlayer_PlayNote(c, idx); }
 
-extern "C" void Snd_MelodyUpdate(void *c) { MelodyPlayer_Update(c); }
+extern "C" s32 Snd_MelodyUpdate(void *c) { return MelodyPlayer_Update(c); }
 
 extern "C" u8 Snd_MelodyIsPlaying(void *c) { return MelodyPlayer_IsPlaying(c); }
 
@@ -880,7 +880,7 @@ extern "C" void Snd_MelodyPlayRandom(void *c, u32 v) { MelodyPlayer_PlayRandom(c
 
 extern "C" u8 *Snd_MelodyApplyRandomPattern(void *c) { return MelodyPlayer_ApplyRandomPattern(c); }
 
-extern "C" void Snd_MelodyGetDefaultPattern() { Melody_GetDefaultPattern(); }
+extern "C" u8 *Snd_MelodyGetDefaultPattern() { return Melody_GetDefaultPattern(); }
 
 extern "C" void Snd_BgmSyncInit(void *r, u16 v) { BgmSyncSnd_Init(r, v); }
 

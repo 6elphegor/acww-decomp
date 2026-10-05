@@ -274,7 +274,7 @@ u32 Random_GlobalBelow(...);
 void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
 void Melody_PlayAt(void *p, s32 a);
 void Pattern_CopyFields(void *dst, void *src);
-void TownFlagPattern_GetPattern(void *p);
+void *TownFlagPattern_GetPattern(void *p);
 void *TownFlagPattern_InitDefault(void *p);
 void _ZN15TownFlagPatternD1Ev(void *p);
 void _ZN15TownFlagPatternC1Ev(void *p);
@@ -346,7 +346,7 @@ void TownStyleRecord_ConstructStub(void *p);
 void TownStyle_RollVillagerHouseStyles(u8 *out);
 u32 TownStyle_GetVillagerHouseStyle(u8 *p, u32 idx);
 void TownFlag_SetPattern(void *p, void *src);
-void TownFlag_GetPattern(void *p);
+void *TownFlag_GetPattern(void *p);
 void TownStyleRecord_InitNew(u8 *self);
 u16 Light_GetBaseEmission(void);
 void BuildingStates_Reset(void);
@@ -816,7 +816,7 @@ s32 TownFlag::getGateDesign() {
 
 extern "C" void TownFlag_SetPattern(void *p, void *src) { Pattern_CopyFields(p, src); }
 
-extern "C" void TownFlag_GetPattern(void *p) { TownFlagPattern_GetPattern(p); }
+extern "C" void *TownFlag_GetPattern(void *p) { return TownFlagPattern_GetPattern(p); }
 
 TownStyleRecord::~TownStyleRecord() {
     TownStyleRecord_DestructStub(this);

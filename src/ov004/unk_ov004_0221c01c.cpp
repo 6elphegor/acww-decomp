@@ -142,7 +142,7 @@ void NpcActor_setCollisionRadius(void *self, s32 v);
 void Character_setInteractionRange(void *self, s32 v);
 void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
 void *ActorTalkRequest_getTalkPlayer(void *self);
-void NpcAnimCtrl_getAnimId(void *self, u32 v);
+s32 NpcAnimCtrl_getAnimId(void *self, u32 v);
 void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void NpcMoveCtrl_setTurnMode(void *self, u8 a);
@@ -1025,7 +1025,7 @@ extern "C" void *SpNpcBrewster_GetJointMtxB() { return &sSpNpcBrewster->jointMtx
 
 extern "C" u32 SpNpcBrewster_GetAnimFrame() { return ((u32)sSpNpcBrewster->model.curFrame << 4) >> 16; }
 
-extern "C" void SpNpcBrewster_GetAnimState() { NpcAnimCtrl_getAnimId(&sSpNpcBrewster->animCtrl, 0); }
+extern "C" s32 SpNpcBrewster_GetAnimState() { return NpcAnimCtrl_getAnimId(&sSpNpcBrewster->animCtrl, 0); }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // SpNpcBrewster
