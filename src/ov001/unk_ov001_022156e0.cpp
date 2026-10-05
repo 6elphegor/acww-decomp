@@ -117,9 +117,9 @@ void WfcManualSetup_DrawAddress(u8 *a, s32 b);
 void WfcManualSetup_DrawString(u8 *a, s32 b);
 void WfcManualSetup_SetRowButton(s32 a, s32 b, s32 c);
 s32 WfcManualSetup_IsItemEnabled(s32 idx);
-s32 WfcManualSetup_DrawRowButtons(s32 idx, s32 arg);
+void WfcManualSetup_DrawRowButtons(s32 idx, s32 arg);
 void WfcManualSetup_DrawRowValue(s32 idx, s32 arg);
-s32 WfcManualSetup_Redraw();
+void WfcManualSetup_Redraw();
 void WfcManualSetup_Exit();
 void WfcManualSetup_FadeOut();
 void WfcManualSetup_StartExit();
@@ -602,7 +602,7 @@ extern "C" void WfcManualSetup_Exit() {
     WfcHeap_FreeAndClear(&sWfcManualSetup);
 }
 
-extern "C" s32 WfcManualSetup_Redraw() {
+extern "C" void WfcManualSetup_Redraw() {
     s32 base = FX_DivS32(sWfcManualSetupScroll, 0x1d);
     WfcText_Clear(sWfcManualSetup->textCanvas, 0);
     s32 p, i;
@@ -666,7 +666,7 @@ extern "C" void WfcManualSetup_DrawRowValue(s32 idx, s32 arg) {
     }
 }
 
-extern "C" s32 WfcManualSetup_DrawRowButtons(s32 idx, s32 arg) {
+extern "C" void WfcManualSetup_DrawRowButtons(s32 idx, s32 arg) {
     u8 *p = WfcConfig_GetEdit();
     s32 a, b, c, k;
     switch (idx) {

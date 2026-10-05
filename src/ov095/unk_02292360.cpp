@@ -105,12 +105,12 @@ BOOL Keyboard_TestFlags(Keyboard *s, u32 m);
 void Keyboard_MoveOnPage2(Keyboard *s, void *p);
 void Keyboard_MoveOnPage1(Keyboard *s, void *p);
 void Keyboard_MoveDownToButtons(Keyboard *s);
-s32 Keyboard_MoveDownToMainButton(Keyboard *s);
+void Keyboard_MoveDownToMainButton(Keyboard *s);
 void Keyboard_UpdateCursorPos(Keyboard *s);
 void Keyboard_CalcCursorPosPage3(Keyboard *s);
 void Keyboard_CalcCursorPosPage2(Keyboard *s);
 void Keyboard_CalcCursorPosPage1(Keyboard *s);
-s32 Keyboard_CalcCursorPosPage0(Keyboard *s);
+void Keyboard_CalcCursorPosPage0(Keyboard *s);
 s32 Keyboard_CalcExtraKeyPos(Keyboard *s);
 s32 Keyboard_CalcNameEntryButtonPos(Keyboard *s);
 s32 Keyboard_CalcWriteButtonPos(Keyboard *s);
@@ -1953,7 +1953,7 @@ s32 Keyboard_CalcExtraKeyPos(Keyboard *s)
     return r;
 }
 
-s32 Keyboard_CalcCursorPosPage0(Keyboard *s)
+void Keyboard_CalcCursorPosPage0(Keyboard *s)
 {
 }
 
@@ -2083,7 +2083,7 @@ void Keyboard_UpdateCursorPos(Keyboard *s)
     }
 }
 
-s32 Keyboard_MoveDownToMainButton(Keyboard *s)
+void Keyboard_MoveDownToMainButton(Keyboard *s)
 {
     switch (s->layout) {
     case 1:

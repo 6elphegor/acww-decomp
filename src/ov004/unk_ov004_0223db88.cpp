@@ -376,7 +376,7 @@ extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const MuseumInfoPointDef *d)
     return r;
 }
 
-extern "C" void *MuseumInfoPoint_GetPos(Rec *r) {}
+extern "C" void *MuseumInfoPoint_GetPos(Rec *r) { return r; }
 
 extern "C" s16 MuseumInfoPoint_GetAngle(Rec *r) {
     return r->angle;

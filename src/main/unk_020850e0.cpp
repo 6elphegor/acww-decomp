@@ -467,7 +467,7 @@ TownSessionState::~TownSessionState()
     VisitorPos_Destruct(self + 4);
 }
 
-extern "C" void *TownSessionState_Reset(u8 *self)
+extern "C" void TownSessionState_Reset(u8 *self)
 {
     _ZN15ShopClosingTime16clearClosingTimeEv(self + 0x18);
     MI_CpuFill8(self, 0, 4);

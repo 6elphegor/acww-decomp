@@ -21,7 +21,7 @@ public:
     void placeAbove(s32 a, s32 b);
     void placeAt(s32 a, s32 b);
     void placeNearPoint(s32 a, s32 b);
-    s32 placeCentered(s32 a, s32 b);
+    void placeCentered(s32 a, s32 b);
     void init(s32 a, s32 b, const char *path);
 
     /* 0x04 */ u32 rowCharBase;

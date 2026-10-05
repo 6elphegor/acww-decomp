@@ -319,7 +319,7 @@ void MenuScrollKnob::grab() { setState(2); }
 
 void MenuScrollKnob::release() { setState(3); }
 
-s32 MenuScrollKnob::updateRelease() {
+void MenuScrollKnob::updateRelease() {
     if (getState() == 3) {
         if (areAnimsDone()) {
             show();

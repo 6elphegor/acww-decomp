@@ -143,8 +143,11 @@ extern "C" void Heap_OnThreadSwitch(void *a, void *b) {
 
 extern "C" Heap *Heap_SetCurrent(Heap *heap);
 
-extern "C" Heap *Heap_SetThreadHeap(void *thread, Heap *heap) {
-    if (thread == data_021fcc2c.current) return Heap_SetCurrent(heap);
+extern "C" void Heap_SetThreadHeap(void *thread, Heap *heap) {
+    if (thread == data_021fcc2c.current) {
+        Heap_SetCurrent(heap);
+        return;
+    }
     OS_SetThreadParameter(thread, heap);
 }
 

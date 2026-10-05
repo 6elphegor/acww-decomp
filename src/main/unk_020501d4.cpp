@@ -1046,6 +1046,7 @@ BOOL Text_AsciiToGameChar(u8 *out, u32 c) {
         i++;
         entry++;
     }
+    return (BOOL)out; // not found: the original returns out (nonzero)
 }
 
 const u8 *Text_GetSpecialCharStr1(void) { return (const u8 *)&sSpecialCharStr1; }

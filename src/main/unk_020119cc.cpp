@@ -2400,7 +2400,11 @@ BOOL NpcActor::onDraw() {
 }
 
 BOOL NpcActor::onDeleteRequest() {
-    using namespace nQ;}
+    using namespace nQ;
+#ifdef MODERN
+    return 0; // the original returns whatever r0 holds; callers ignore it
+#endif
+}
 
 BOOL NpcActor::onDelete() {
     using namespace nQ;
@@ -5451,7 +5455,7 @@ BOOL NpcActionCtrl::setupAct14(Unk_02006d14 *o) {
     return TRUE;
 }
 
-BOOL NpcActionCtrl::postAct14(Unk_02006d14 *o) {
+void NpcActionCtrl::postAct14(Unk_02006d14 *o) {
     using namespace nJ;
     NpcActionParams *s = nJ::_ZN13NpcActionCtrl12getCurParamsEv(this);
     if (waitItemAnimEnd(o, &s->item, 6, 0)) {

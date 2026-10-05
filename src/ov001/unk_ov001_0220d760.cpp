@@ -38,7 +38,7 @@ s32 WfcUtil_OpenButtonBar(s32);
 void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcUtil_LocalizePath(void *);
 u32 *WfcFs_LoadFile(s32, s32, s32);
-s32 WfcHighlight_Set(s32);
+void WfcHighlight_Set(s32);
 s32 WfcUtil_ShowTopMessage(s32, s32, s32);
 s32 WfcTop_LoadScreen(s32);
 void WfcUtil_QuitFadeOut();

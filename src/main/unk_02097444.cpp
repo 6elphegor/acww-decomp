@@ -35,7 +35,7 @@ void *_ZN10PlayerDataC1Ev(void *p, s32 f);
 u32 PlayerSession_GetDataIndex(u32 a);
 u32 PlayerData_Get(s32 a);
 u32 PlayerData_GetBySessionSlot(u32 a);
-s32 GuestPlayers_Reset(void *p);
+void GuestPlayers_Reset(void *p);
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *, s32));
 void *__cxa_vec_ctor(void *, u32, u32, void *(*)(void *, s32), void *(*)(void *, s32));
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
@@ -364,7 +364,7 @@ GuestPlayerArray::~GuestPlayerArray() {}
 
 extern "C" u8 *GuestPlayers_Get() { return (u8 *)&gGuestPlayers; }
 
-extern "C" s32 GuestPlayers_Reset(void *p) {
+extern "C" void GuestPlayers_Reset(void *p) {
     s32 i;
     for (i = 0; i < 3; i++) _ZN10PlayerData5resetEv((u8 *)p + i * 0x228c);
 }

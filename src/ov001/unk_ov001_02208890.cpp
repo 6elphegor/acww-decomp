@@ -18,7 +18,7 @@ extern void WfcTask_Add(s32, void *, s32, s32);
 extern u8 *WfcConfig_GetEdit();
 extern void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
 extern u8 *WfcUtil_LocalizePath(u8 *p);
-s32 WfcHighlight_Set(s32 n);
+void WfcHighlight_Set(s32 n);
 void WfcHighlight_TransferTask(s32 a);
 extern void *sWfcHighlightScreens[20];
 extern u8 *sWfcHighlightScreen;
@@ -43,7 +43,7 @@ extern "C" void WfcHighlight_Free() {
     WfcHeap_FreeAndClear(&sWfcHighlightScreen);
 }
 
-extern "C" s32 WfcHighlight_Set(s32 n) {
+extern "C" void WfcHighlight_Set(s32 n) {
     void *h = WfcFs_LoadFile(WfcUtil_LocalizePath((u8 *)sWfcHighlightScreens[n]), 0, 4);
     MIi_CpuCopyFast(h, sWfcHighlightScreen, 0xc0);
     WfcFs_FreeFile(h);

@@ -194,7 +194,7 @@ public:
     virtual void onTaskDone(u32 id);
 
     void attachOwner(SpNpcBlanca *o);
-    BOOL onConceptChosen();
+    void onConceptChosen();
     void onFaceDrawn();
     void setResultHandler(s32 idx);
 
@@ -674,7 +674,7 @@ void SpNpcBlancaTalk::onFaceDrawn() {
     TalkWindowState_setNextMessage(p, buf, ((char *)"sp_npc_mysterycat"));
 }
 
-BOOL SpNpcBlancaTalk::onConceptChosen() {
+void SpNpcBlancaTalk::onConceptChosen() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *p = window;
         u8 *const g = gSaveBlancaFace;
