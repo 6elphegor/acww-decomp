@@ -178,8 +178,8 @@ void _ZN12SndSeEmitter8callStopEv(void *p);
 void _ZN12SndSeEmitter8callInitEv(void *p);
 void _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *p, VecFx32 *v);
 void Math_CountDownU8(void *p);
-void SaveVillagers_Get(void *p, u32 v);
-u32 Villager_GetAnimalKind();
+void *SaveVillagers_Get(void *p, u32 v);
+u32 Villager_GetAnimalKind(u32 a);
 
 // ---- own data (defined below / after the functions) ----
 extern const u8 sHandOverTakeTimeout[4];
@@ -257,8 +257,7 @@ extern "C" u32 HandOverItem_GetFishHoldOffsetSet(ProcBase *o)
     s32 t = (s32)(b & 0xf000) >> 12;
     if (t != 0xd) {
       if (t == 0xe) {
-        SaveVillagers_Get(gSaveVillagers, b & 0xfff);
-        switch (Villager_GetAnimalKind()) {
+        switch (Villager_GetAnimalKind((u32)SaveVillagers_Get(gSaveVillagers, b & 0xfff))) {
         case 0: case 5: case 6: case 10: case 12: case 15: case 16: case 21: case 25: case 31: case 32:
             r = 4; break;
         case 1: case 2: case 4: case 7: case 9: case 13: case 14: case 17: case 19: case 20: case 22: case 23: case 26: case 27: case 29:

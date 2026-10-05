@@ -174,7 +174,7 @@ void Bgm_Release(u32 a);
 void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Bgm_Request(u32 a, u32 b, u32 c, u32 d);
 s32 Random_GlobalBelow(s32 n);
-s32 Talk_CheckAndSetPlayerFlag(...);
+s32 Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 s32 GameStart_IsActive(void);
 s32 NetArea_IsLocalOwner(void);
 s32 CommManager_isOnline(void *p);
@@ -549,7 +549,7 @@ void SpNpcBrewsterTalk::start(TalkStartMsg *arg) {
         void *o = Actor_findByProfile(0x66, 0);
         if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
             out->msgIndex = Random_GlobalBelow(3) + 0x55;
-        } else if (Talk_CheckAndSetPlayerFlag(0x17) != 0) {
+        } else if (Talk_CheckAndSetPlayerFlag(0x17, 0) != 0) {
             if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
                 out->msgIndex = 0x58;
             } else {

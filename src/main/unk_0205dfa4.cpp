@@ -86,9 +86,9 @@ extern CommManager *gCommManager;
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(void *path, void *dst, u32 size);
 void *NNS_G3dGetTex(void *p);
-void *func_02106654(void);
+void *func_02106654(void *p);
 void *func_02106670(void *p, s32 a);
-void *func_021065dc(void);
+void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
@@ -406,16 +406,14 @@ extern "C" s32 HeldItemModels_LoadTexAnim(HeldItemModelBank *self, u32 idx, u32 
 
 extern "C" void HeldItemModels_PlayAnim(HeldItemModelBank *self, u32 idx, u32 x, u32 y, u8 z) {
     HeldItemModels_LoadAnim(&sHeldItemModelBank, idx, x);
-    HeldItemModels_GetAnimBuffer(&sHeldItemModelBank, idx);
-    void *a = func_021065dc();
+    void *a = func_021065dc(HeldItemModels_GetAnimBuffer(&sHeldItemModelBank, idx));
     void *b = func_021065f8(a, 0);
     HeldItemModels_GetModel(&sHeldItemModelBank, idx)->playBlend((s32)b, (s32)y, z, 0x1000, 0, 0);
 }
 
 extern "C" void HeldItemModels_PlayTexAnim(HeldItemModelBank *self, u32 idx, u32 x, u32 y) {
     HeldItemModels_LoadTexAnim(&sHeldItemModelBank, idx, x);
-    HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, idx);
-    void *a = func_02106654();
+    void *a = func_02106654(HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, idx));
     void *b = func_02106670(a, 0);
     ModelAnim *e = HeldItemModels_GetTexAnim(self, idx);
     void *m = ((Model *)HeldItemModels_GetModel(self, idx))->getRenderObj();
@@ -556,8 +554,7 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
             pp->anmObj = 0;
             pp->resMdl = 0;
             HeldItemModels_LoadTexAnim(&sHeldItemModelBank, id, 0);
-            HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, id);
-            u32 q = (u32)func_02106670(func_02106654(), 0);
+            u32 q = (u32)func_02106670(func_02106654(HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, id)), 0);
             u32 w = *(u32 *)(slot + 0x5c);
             _ZN9ModelAnim11allocMatAnmEjPv(p, w, HeldItemModels_GetMatAnmHeap(&sHeldItemModelBank, id));
             _ZN9ModelAnim4initEiiit(p, q, 1, 0x1000, 0);

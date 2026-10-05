@@ -50,7 +50,7 @@ void ActorTalkRequest_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
 BOOL unk_618_func_02014220(void *self);
 void unk_618_func_020141b4(void *self, u32 a, u32 b, u32 c);
 void unk_564_func_020196b4(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-s32 ChoiceList_getResult();
+s32 ChoiceList_getResult(void *self);
 s32 PlayerData_testFlag(void *p, u32 a);
 void PlayerData_setFlag(void *p, u32 a);
 BOOL Pocket_AddItem(u16 *p, u32 a);
@@ -358,8 +358,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
 
 void SpNpcTortimerTalk::onChoice(u32) {
     SpNpcTortimerChoiceLocal buf;
-    getChoiceList();
-    s32 t = ChoiceList_getResult();
+    s32 t = ChoiceList_getResult(getChoiceList());
     void *g = PlayerData_GetCurrent();
     u8 r = 0xff;
     if (massageChairSlot >= 0) {

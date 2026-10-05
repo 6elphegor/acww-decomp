@@ -128,7 +128,7 @@ void HouseVisitor_SetPresent();
 void ActorTalkRequest_setTalkPlayer(void *, s32);
 s32 NpcActor_getPlayerActor(void *, s32);
 void *ActorTalkRequest_getChoiceList(void *);
-s32 ChoiceList_getResult();
+s32 ChoiceList_getResult(void *self);
 void *VillagerData_getVillagerId(void *);
 void VillagerId_makeFileName(void *, const void *, u32, const void *);
 void ActorTalkRequest_setSubSceneKind(void *, s32, s32);
@@ -199,8 +199,8 @@ s32 VillagerMemory_isFleaMarketVisited(s32);
 void NpcActor_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
 s32 FtrInfo_GetUnk05(s32 n);
-void Scene_GetPrevious();
-s32 SceneId_IsTownUnk31();
+u8 Scene_GetPrevious();
+s32 SceneId_IsTownUnk31(u32 scene);
 }
 
 
@@ -471,8 +471,7 @@ BOOL FleaMarketBuyerVillager::onCreate() {
     } else {
         o = 0;
     }
-    Scene_GetPrevious();
-    if (SceneId_IsTownUnk31() != 0 ||
+    if (SceneId_IsTownUnk31(Scene_GetPrevious()) != 0 ||
         (getVillagerData() && o && PlayerId_isValid(o) && Villager_FindMemory(getVillagerData(), o) &&
          VillagerMemory_isFleaMarketVisited(Villager_FindMemory(getVillagerData(), o)))) {
         furnitureCount = (s32)FtrActorTable_countUsed(FtrActorTable_GetInstance());
@@ -740,14 +739,14 @@ BOOL FleaMarketBuyerVillager::mainAct05() {
     s32 r6 = FtrActorGrid_getIndex(FtrActorGrid_GetInstance(), xy[0], xy[1], 1);
     if (isFurnitureForSale(r6)) {
         void *o = FtrActorTable_get(FtrActorTable_GetInstance(), r6);
-        targetItem = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
+        targetItem = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
         FtrActor_GetCenter(o, targetPos);
         setViewDistance(o);
         pushViewedFurniture(r6);
         targetFtrIndex = r6;
     } else if (isFurnitureForSale(r4b)) {
         void *o = FtrActorTable_get(FtrActorTable_GetInstance(), r4b);
-        targetItem = Item_MakeFurniture(FtrActor_GetFtrIndex(), 0);
+        targetItem = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
         FtrActor_GetCenter(o, targetPos);
         setViewDistance(o);
         pushViewedFurniture(r4b);
@@ -1069,8 +1068,7 @@ void FleaMarketBuyerVillagerTalk::onChoice(u32) {
     u16 tmp;
     u32 sel;
     s32 st;
-    ActorTalkRequest_getChoiceList(this);
-    st = ChoiceList_getResult();
+    st = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     sel = 0xff;
     FleaMarketBuyerVillager *b = villager;
     if (b->visitStage == 2) {
@@ -1160,8 +1158,7 @@ void FleaMarketBuyerVillager::onInteractionEvent(u32 cmd, u8 b) {
             changeAct(6);
         }
         if (visitStage == 0) {
-            FtrActorTable_GetInstance();
-            furnitureCount = (s32)FtrActorTable_countUsed();
+            furnitureCount = (s32)FtrActorTable_countUsed(FtrActorTable_GetInstance());
             HouseVisitor_SetPresent();
             Ground_LockExit(0);
             FtrMgr_SetSaleMode();

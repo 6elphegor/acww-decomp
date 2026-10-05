@@ -43,7 +43,7 @@ s32 SockCore_Listen(s32, s32, s32);
 s32 SockCore_Connect(s32, u32, u32);
 s32 SockCore_Bind(s32, u32);
 s32 SockCore_Create(void *);
-s32 SockCore_Close(s32, s32, s32);
+s32 SockCore_Close(s32);
 s32 SockCore_Shutdown(s32, s32, s32);
 s32 SockCore_SendTo(s32, s32, s32, u32, u32, u32);
 s32 SockCore_RecvFrom(s32, s32, s32, u16 *, u32 *, u32);
@@ -145,8 +145,8 @@ s32 Sock_Shutdown(s32 a, s32 b, s32 c) {
     return SockCore_Shutdown(a, b, c);
 }
 
-s32 Sock_Close(s32 a, s32 b, s32 c) {
-    return SockCore_Close(a, b, c);
+s32 Sock_Close(s32 a) {
+    return SockCore_Close(a);
 }
 
 SockHostEnt *Sock_GetHostByName(s32 x) {

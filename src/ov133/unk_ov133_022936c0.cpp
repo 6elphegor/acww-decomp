@@ -48,7 +48,7 @@ s32 Net_GetMode();
 s32 MenuCtrl_GetIndex();
 u32 DwcFriendData_GetBytes(void *p);
 BOOL Net_WifiAddFriend(u32 a, u32 b);
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *self);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasUp(u32 v);
@@ -262,7 +262,7 @@ BOOL FriendCodeMenu::onCreate() {
 }
 
 BOOL FriendCodeMenu::onDelete() {
-    MenuTabBar *p = (MenuTabBar *)ProcBase_GetParent();
+    MenuTabBar *p = (MenuTabBar *)ProcBase_GetParent(this);
     if (p->onTabMenuClosed() == 6) {
         p->showTabs();
     }
@@ -411,7 +411,7 @@ BOOL FriendCodeMenu::execClosed() {
 }
 
 BOOL FriendCodeMenu::notifyParent(u32 v) {
-    ((MenuTabBar *)ProcBase_GetParent())->selectTab((u8)v);
+    ((MenuTabBar *)ProcBase_GetParent(this))->selectTab((u8)v);
     return TRUE;
 }
 

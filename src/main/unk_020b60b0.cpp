@@ -55,7 +55,7 @@ void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void Vec_RotateY(VecFx32 *v, s32 angle);
 void WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
-s32 Collision_CalcTriangleNormal(Plane *p);
+s32 Collision_CalcTriangleNormal(Plane *p, VecFx32 *a, VecFx32 *b, VecFx32 *c);
 BOOL _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(TouchPickTriangle *t, VecFx32 *a, VecFx32 *b, VecFx32 *c, Plane *p);
 }
 
@@ -75,7 +75,7 @@ BOOL TouchPickTriangle::setup(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 d, u8 e) {
 
 BOOL TouchPickTriangle::setupCurved(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 d, u8 e) {
     Plane p;
-    if (Collision_CalcTriangleNormal(&p) != 0) {
+    if (Collision_CalcTriangleNormal(&p, a, b, c) != 0) {
         kind = d;
         index = e;
         return _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(this, a, b, c, &p);

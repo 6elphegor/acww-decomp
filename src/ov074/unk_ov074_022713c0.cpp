@@ -126,8 +126,8 @@ s32 TalkWindowState_setNextMessage(void *self, u8 *b, char *c);
 void TalkWindowState_setSlotFromString(void *self, s32 a, u8 *b, char *c);
 void TalkWindowState_setSlot(void *self, s32 a, void *b);
 u32 BlancaFaceRecord_getConcept(u8 *p);
-s32 ChoiceList_getResult();
-Unk_ov074_02271564_A *Pattern_getInfo();
+s32 ChoiceList_getResult(void *self);
+Unk_ov074_02271564_A *Pattern_getInfo(void *self);
 Unk_ov074_02271564_B *PatternInfo_getAuthor(Unk_ov074_02271564_A *a);
 void PatternInfo_getTitle(Unk_ov074_02271564_A *a, void *b);
 void func_02072064(Unk_ov074_02271564_A *a);
@@ -705,8 +705,7 @@ void SpNpcBlancaTalk::start(TalkStartMsg *out) {
 
     out->msgKey = "sp_npc_mysterycat";
     u8 *const g = gSaveBlancaFace;
-    BlancaFaceRecord_getPattern(g);
-    l = *Pattern_getInfo();
+    l = *Pattern_getInfo(BlancaFaceRecord_getPattern(g));
     m = *PatternInfo_getAuthor(&l);
     if (Random_GlobalBelow(2) == 0 || Talk_CheckAndSetPlayerFlag(0x2b, 0) == 0) {
         out->msgIndex = 3;
@@ -775,10 +774,8 @@ void SpNpcBlancaTalk::onChoice(u32) {
     s32 t;
     s32 r5;
 
-    getChoiceList();
-    r5 = ChoiceList_getResult();
-    BlancaFaceRecord_getPattern(gSaveBlancaFace);
-    l = *Pattern_getInfo();
+    r5 = ChoiceList_getResult(getChoiceList());
+    l = *Pattern_getInfo(BlancaFaceRecord_getPattern(gSaveBlancaFace));
     m = *PatternInfo_getAuthor(&l);
     char *name = ((char *)"sp_npc_mysterycat");
     t = 0xff;

@@ -497,9 +497,9 @@ s32 MapBlock_HasAnyAttr(void *, u32);
 void *_ZN12MapBlockAcre8getUnk04Ev(void *self);
 s32 Random_PickSetBit(u32, s32, s32);
 s32 Random_GlobalBelow(u32);
-u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
+u8 *_ZN20VillagerDataItemView11getHousePosEv(void *self);
 s32 _ZN12VillagerData13getVillagerIdEv(void *);
-s32 SaveVillagers_PickRandomExcept(void *, void *, u32);
+void *SaveVillagers_PickRandomExcept(void *, void *, u32);
 void func_02133ef8(void *, u32);
 void VillagerRoute_PickPathUnitInBlock(Vec2 *out, void *self, void *a, BlockMap *w);
 void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
@@ -695,7 +695,7 @@ BOOL MenuCtrl_OpenNearbyTowns(u32 a, u32 b);
 BOOL MenuCtrl_RequestOpenMenu12(u32 a);
 BOOL MenuCtrl_OpenLauncherWithText(u32 a, u32 b, u32 c);
 u32 TalkRequest_GetPlayerId();
-u32 PlayerActor_GetBodyPos();
+u32 PlayerActor_GetBodyPos(u32 n);
 s32 Math_AngleXZ(u32 a, u8 *b);
 void PlayerActor_SetHeadTilt(u32 a, s16 b, u32 c);
 void PlayerActor_RequestTurnTo(s32 a, u32 b);
@@ -705,7 +705,7 @@ s32 _ZN8NpcActor10getAngleToEPS_(u8 *a, u8 *b);
 s32 _ZN8NpcActor16getAngleToPlayerEj(u8 *a, u32 b);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
 void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(u8 *p, u32 a, u32 b, u8 *c, u8 *d, u32 e, u32 f, u32 g);
-ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv();
+ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void *self);
 }
 }
 
@@ -760,7 +760,7 @@ s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 s0, u32 s1, u32 s2, u32 s3);
 s32 func_021065dc(s32 a);
 s32 func_021065f8(s32 a, s32 b);
-ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void);
+ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void *self);
 s32 TalkRequest_GetPlayerId(void);
 }
 }
@@ -875,7 +875,7 @@ BOOL HandOverItem_IsModeActive(u32 a);
 void HandOverItem_SetNextMode(u32 a, void *p);
 BOOL HandOverItem_SwitchMaster(void *p);
 BOOL PlayerActor_LocalRequestAct37(void);
-BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p);
+BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *p, u32 a);
 BOOL HandOverItem_RequestMode(u32 a, void *p);
 u32 HandOverItem_GetNextMode(void);
@@ -932,7 +932,7 @@ BOOL HandOverItem_IsModeActive(u32 a);
 void HandOverItem_SetNextMode(u32 a, void *p);
 BOOL HandOverItem_SwitchMaster(void *p);
 BOOL PlayerActor_LocalRequestAct37(void);
-BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p);
+BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
 BOOL HandOverItem_RequestMode(u32 a, void *p);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 s32 _ZN13NpcActionCtrl13setActionDoneEi(void *s, u32 a);
@@ -1017,7 +1017,7 @@ u16 NetBuf_ReadU16(void *p);
 void NetBuf_WriteU16(void *p, u16 v);
 void NetBuf_UnpackPair20(void *p, u32 a, u32 b);
 void NetBuf_PackPair20(void *p, u32 a, u32 b);
-void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *p);
+void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *p, void *scene);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *p, void *owner, u32 v);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *p);
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *p, void *v);
@@ -1127,7 +1127,7 @@ s32 _ZN9NpcLookAt16isWithinYawLimitEi(NpcLookAt *self, s32 v);
 BOOL Npc_IsPosBlocked(VecFx32 *pos);
 void Npc_RotateOffsetXZ(VecFx32 *out, VecFx32 *base, VecFx32 *off, u32 ang);
 s32 Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
-s32 WorldCurve_FromCurved(void *v);
+s32 WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 s32 Ground_GetExitAtPos(s32 id);
 BOOL FtrMgr_GetSurfaceHeightAtPos(s32 id);
 void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, s32 id, s32 a, s32 b);
@@ -2986,7 +2986,7 @@ extern "C" s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out) {
         out->x = x;
         out->y = self->headPos.y;
         out->z = self->headPos.z;
-        WorldCurve_FromCurved(out);
+        WorldCurve_FromCurved(out, out);
         r = 1;
     }
     return r;
@@ -4112,7 +4112,7 @@ s32 NpcActionCtrl::setupAct01(u8 *o) {
 
 void NpcActionCtrl::mainAct01(u8 *o) {
     using namespace nN;
-    _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(o + 0x350);
+    _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(o + 0x350, o);
     if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(o + 0x350, o, 0)) {
         if (_ZN11NpcMoveCtrl10hasNextLegEv(o + 0x350)) {
             NpcActionParams *c = getCurParams();
@@ -4144,7 +4144,7 @@ s32 NpcActionCtrl::setupAct02(u8 *o) {
 
 void NpcActionCtrl::mainAct02(u8 *o) {
     using namespace nN;
-    _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(o + 0x350);
+    _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(o + 0x350, o);
     if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(o + 0x350, o, 0)) {
         if (_ZN11NpcMoveCtrl10hasNextLegEv(o + 0x350)) {
             NpcActionParams *c = getCurParams();
@@ -4570,7 +4570,7 @@ s32 NpcActionCtrl::setupAct0A(NpcActor *c) {
 
 void NpcActionCtrl::act0AStep0(NpcActor *c) {
     using namespace nL;
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x78, data_020c6cc8, 1, 0x1000, 0, 0);
         actStep = 1;
     }
@@ -4593,7 +4593,7 @@ void NpcActionCtrl::mainAct0A(NpcActor *c) {
 void NpcActionCtrl::postAct0A(NpcActor *c) {
     using namespace nL;
     if (actStep >= 1) {
-        if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+        if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
             _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
         }
     }
@@ -4619,7 +4619,7 @@ BOOL NpcActionCtrl::setupAct0B(NpcActor *c) {
 
 void NpcActionCtrl::act0BStep0(NpcActor *c) {
     using namespace nL;
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         u32 r = c->getAct0BAnimB();
         u16 v = data_020c6cc8;
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, r, data_020c6cc8, 0, 0x1000, 0, 0);
@@ -4690,7 +4690,7 @@ void NpcActionCtrl::postAct0C(NpcActor *c) {
         break;
     case 1:
     case 3:
-        r = _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl);
+        r = _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c);
         break;
     }
     if (r) {
@@ -4724,7 +4724,7 @@ BOOL NpcActionCtrl::setupAct0D(NpcActor *c) {
 
 void NpcActionCtrl::act0DStep0(NpcActor *c) {
     using namespace nL;
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         if (PlayerActor_RequestAct32()) {
             u16 v = data_020c6cc8;
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
@@ -4873,7 +4873,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14(NpcActionCtrl *s
 
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep02EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         if (HandOverItem_SwitchMaster(c)) {
             if (HandOverItem_RequestMode(3, c)) {
                 s->actStep = 3;
@@ -4902,7 +4902,7 @@ namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
     s16 t;
     s32 v[3];
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         switch (HandOverItem_GetNextMode()) {
         case 6:
             HandOverItem_End(c);
@@ -4958,7 +4958,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s
 
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         u16 v = data_020c6cc8;
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         if (c->curHeldTool) {
@@ -5019,7 +5019,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep06EP12Unk_02006d14(NpcActionCtrl *s
 
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         if (PlayerActor_RequestAct32()) {
             u16 v = data_020c6cc8;
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
@@ -5065,7 +5065,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep10EP12Unk_02006d14(NpcActionCtrl *s
 
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep11EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x2a, 0, 1, 0x1000, 0, 0);
         if (s->itemEffect != -1) {
             Effect_End(s->itemEffect);
@@ -5077,7 +5077,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep11EP12Unk_02006d14(NpcActionCtrl *s
 
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep12EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         u16 v = data_020c6cc8;
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         if (c->curHeldTool) {
@@ -5109,7 +5109,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep14EP12Unk_02006d14(NpcActionCtrl *s
 
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep15EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         if (HandOverItem_SwitchMaster(c)) {
             if (HandOverItem_RequestMode(3, c)) {
                 s->actStep = 0x10;
@@ -5132,7 +5132,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep16EP12Unk_02006d14(NpcActionCtrl *s
 
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         u32 r = HandOverItem_GetNextMode();
         switch (r) {
         case 7:
@@ -5160,7 +5160,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14(NpcActionCtrl *s
 
 namespace nK {
 extern "C" void _ZN13NpcActionCtrl11act0EStep18EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c) {
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&c->animCtrl, c)) {
         if (HandOverItem_RequestMode(2, c)) {
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
             s->actStep = 0x13;
@@ -5269,7 +5269,7 @@ BOOL NpcActionCtrl::setupAct10(Unk_02006d14 *o) {
 
 void NpcActionCtrl::postAct10(Unk_02006d14 *o) {
     using namespace nJ;
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&o->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&o->animCtrl, o)) {
         HandOverItem_End(o);
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 1);
@@ -5293,7 +5293,7 @@ BOOL NpcActionCtrl::setupAct11(Unk_02006d14 *o) {
 
 void NpcActionCtrl::act11Step0(Unk_02006d14 *o) {
     using namespace nJ;
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&o->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&o->animCtrl, o)) {
         if (PlayerActor_RequestAct32()) {
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
             actStep = 1;
@@ -5396,7 +5396,7 @@ BOOL NpcActionCtrl::setupAct13(Unk_02006d14 *o) {
 
 void NpcActionCtrl::act13Step0(Unk_02006d14 *o) {
     using namespace nJ;
-    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&o->animCtrl)) {
+    if (_ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&o->animCtrl, o)) {
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x2a, 0, 1, 0x1000, 0, 0);
         if (itemEffect != -1) {
             Effect_End(itemEffect);
@@ -6173,7 +6173,7 @@ void ActorTalkRequest::setPartnerActor(NpcActor *p) {
     using namespace nH;
     partnerActor = p;
     if (partnerActor != NULL) {
-        ActorTalkRequest *q = _ZN8NpcActor14getTalkRequestEv();
+        ActorTalkRequest *q = _ZN8NpcActor14getTalkRequestEv(partnerActor);
         if (q != NULL) {
             q->resetMsg();
             partnerActor->onJoinTalk();
@@ -6221,7 +6221,7 @@ void ActorTalkRequest::playEmotion(u32 a, u32 b) {
     using namespace nH;
     NpcActor *o = getActor(b);
     if (o != NULL) {
-        ActorTalkRequest *p = _ZN8NpcActor14getTalkRequestEv();
+        ActorTalkRequest *p = _ZN8NpcActor14getTalkRequestEv(o);
         if (p != NULL) {
             if (!p->isItemActionBusy()) {
                 if (p->lastEmotion == a) {
@@ -6417,7 +6417,7 @@ void ActorTalkRequest::onTag09_4() {
     using namespace nG;
     u8 *p5 = nG::_ZN16ActorTalkRequest8getActorEj(this, actionActorIndex);
     if (p5 != NULL) {
-        ActorTalkRequest *h = _ZN8NpcActor14getTalkRequestEv();
+        ActorTalkRequest *h = _ZN8NpcActor14getTalkRequestEv(p5);
         u32 u = TalkRequest_GetPlayerId();
         s32 v = _ZN8NpcActor16getAngleToPlayerEj(p5, u);
         if (h != NULL) {
@@ -6431,7 +6431,7 @@ void ActorTalkRequest::onTag09_4() {
 void ActorTalkRequest::makePlayerLookAt(u8 *p) {
     using namespace nG;
     u32 a = TalkRequest_GetPlayerId();
-    u32 b = PlayerActor_GetBodyPos();
+    u32 b = PlayerActor_GetBodyPos(a);
     if (b != 0) {
         s32 s = Math_AngleXZ(b, p + 0x5c);
         s16 d = s - PlayerActor_GetCharacter(4)->rotY;
@@ -6442,7 +6442,7 @@ void ActorTalkRequest::makePlayerLookAt(u8 *p) {
 void ActorTalkRequest::makePlayerTurnTo(u8 *p) {
     using namespace nG;
     u32 a = TalkRequest_GetPlayerId();
-    u32 b = PlayerActor_GetBodyPos();
+    u32 b = PlayerActor_GetBodyPos(a);
     if (b != 0) {
         s32 s = Math_AngleXZ(b, p + 0x5c);
         PlayerActor_SetHeadTilt(0, 0, a);
@@ -6480,7 +6480,7 @@ void ActorTalkRequest::onTag09_6() {
         case 1: {
             u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
             if (p4 != NULL) {
-                ActorTalkRequest *h = _ZN8NpcActor14getTalkRequestEv();
+                ActorTalkRequest *h = _ZN8NpcActor14getTalkRequestEv(p4);
                 s32 v = _ZN8NpcActor10getAngleToEPS_(p4, p7);
                 onTag09_5();
                 if (h != NULL) {
@@ -6526,7 +6526,7 @@ void ActorTalkRequest::onTag09_8() {
         case 0: {
             u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
             if (p4 != NULL) {
-                ActorTalkRequest *h = _ZN8NpcActor14getTalkRequestEv();
+                ActorTalkRequest *h = _ZN8NpcActor14getTalkRequestEv(p4);
                 s32 v = _ZN8NpcActor10getAngleToEPS_(p4, p7);
                 onTag09_7();
                 if (h != NULL) {
@@ -8818,8 +8818,9 @@ extern "C" void VillagerRoute_PickOtherHouseDoor(Vec2 *out, void *self, u32 unus
         s32 key;
         func_02133ef8(&key, 4);
         key = _ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
-        if (SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) {
-            u8 *p = _ZN20VillagerDataItemView11getHousePosEv();
+        void *v;
+        if ((v = SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) != 0) {
+            u8 *p = _ZN20VillagerDataItemView11getHousePosEv(v);
             s32 z = p[1] + 1;
             out->x = p[0];
             out->y = z;
@@ -8858,8 +8859,9 @@ extern "C" void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unu
         s32 key;
         func_02133ef8(&key, 4);
         key = _ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
-        if (SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) {
-            u8 *p = _ZN20VillagerDataItemView11getHousePosEv();
+        void *v;
+        if ((v = SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) != 0) {
+            u8 *p = _ZN20VillagerDataItemView11getHousePosEv(v);
             Vec2 pos;
             pos.x = 0;
             pos.y = 0;

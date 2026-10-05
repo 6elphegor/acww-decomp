@@ -69,7 +69,7 @@ s32 PlayerActor_IsChangingClothes();
 BOOL PlayerActor_RequestWearShirtAlt(u16 *p);
 BOOL PlayerActor_RequestWearHatAlt(u16 *p);
 void ProcBase_RequestDelete(void *p);
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *self);
 
 // methods of other modules' classes, called with the object first (mangled-name trick)
 void *_ZN15PatternTexCache10getPaletteEi(void *self, s32 a);
@@ -539,7 +539,7 @@ BOOL PatternEditorMenu::onCreate() {
 }
 
 BOOL PatternEditorMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
 }

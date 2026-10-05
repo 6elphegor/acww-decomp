@@ -34,9 +34,9 @@ u8 *Text_GetSpecialCharStr7(void);
 u8 *Text_GetSpecialCharStr4(void);
 u8 *Text_GetSpecialCharStr1(void);
 s32 Text_ToUpper(s32 v);
-BOOL PlayerData_GetCurrent(void);
-s32 _ZN10PlayerData11getPlayerIdEv(void);
-BOOL _ZN8PlayerId9getGenderEv(void);
+void *PlayerData_GetCurrent(void);
+void *_ZN10PlayerData11getPlayerIdEv(void *self);
+BOOL _ZN8PlayerId9getGenderEv(void *self);
 void _ZN12BmgReader512D1Ev(void *);
 void _ZN16MailTextExpanderD1Ev(void *);
 void _ZN16MailTextExpanderC1EP15MailTextBuilder(void *, void *);
@@ -299,9 +299,9 @@ void MailTextExpander::setCapitalizeNext(s32 sel) {
 void MailTextExpander::selectByUnkCondition(s32 sel) {
     char *a, *b;
     tag.getStrings2(&a, &b);
-    if (PlayerData_GetCurrent()) {
-        _ZN10PlayerData11getPlayerIdEv();
-        if (_ZN8PlayerId9getGenderEv() == 0) {
+    void *pd;
+    if ((pd = PlayerData_GetCurrent()) != 0) {
+        if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(pd)) == 0) {
             if (a != 0) {
                 pushText((u8 *)a);
             }

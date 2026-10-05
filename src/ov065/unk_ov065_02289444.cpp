@@ -128,7 +128,7 @@ void memmove(void *, void *, s32);
 s32 ParseServerIPPort(SBServerList *, u8 *, s32, u32 *, u16 *);
 s32 SBServerListFindServerByIP(SBServerList *, u32, u32);
 s32 SBAllocServer(SBServerList *, u32, u32);
-s32 SBIsNullServer();
+s32 SBIsNullServer(s32 server);
 s32 SBServerListNth(SBServerList *, s32);
 s32 SBServerListRemoveAt(SBServerList *, s32);
 s32 ParseServer(SBServerList *, s32, u8 *, s32, s32);
@@ -323,7 +323,7 @@ void SBServerListRemoveAt(Ctx070 *c, s32 i);
 void AddServerToDeadlist(Ctx070 *c, void *x);
 s32 SBServerListFindServerByIP(Ctx070 *c, s32 a, s32 b);
 s32 SBServerListFindServer(Ctx070 *c, u32 key);
-void SBServerListAppendServer(Ctx070 *c, s32 a, s32 b, s32 d);
+void SBServerListAppendServer(Ctx070 *c, s32 a);
 void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode);
 s32 StrNoCaseKeyCompare(void **a, void **b);
 s32 StrCaseKeyCompare(void **a, void **b);
@@ -426,7 +426,7 @@ void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode) {
 
 namespace F0228ab3c {
 extern "C" {
-void SBServerListAppendServer(Ctx070 *c, s32 a, s32 b, s32 d) {
+void SBServerListAppendServer(Ctx070 *c, s32 a) {
     ArrayAppend(c->servers, &a);
     c->ListCallback(c, 0, a, c->instance);
 }
@@ -1679,7 +1679,7 @@ s32 ProcessPushServer(SBServerList *c, u8 *p, s32 n) {
     r4 = SBServerListFindServerByIP(c, a, b);
     if (r4 == -1) {
         r6 = SBAllocServer(c, a, b);
-        if (SBIsNullServer() != 0) {
+        if (SBIsNullServer(r6) != 0) {
             return 5;
         }
     } else {

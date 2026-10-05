@@ -50,11 +50,7 @@ void PlayerActor_LocalRequestThrowBottle();
 BOOL HeldInsect_GetStage(void *p);
 void HeldInsect_Start(u32 a, void *p);
 void HeldInsect_Release(void *p, s32 a);
-#ifdef MODERN
-void PlayerActor_LocalReleaseCatch(u8 a, s32 b, s32 c, s32 d);
-#else
-void PlayerActor_LocalReleaseCatch(s32 a);
-#endif
+void PlayerActor_LocalReleaseCatch(u8 a);
 BOOL FishCatch_StartRelease(void *p, s32 a, void *q);
 BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
 BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
@@ -210,11 +206,7 @@ void PocketMenu::mainAct30() {
             r1 = -1;
         }
         sendFishReleasePacket((u8)r1);
-#ifdef MODERN
-        PlayerActor_LocalReleaseCatch(1, 0, 0, 0); // b, c, d unused by PlayerActor_LocalReleaseCatch
-#else
-        PlayerActor_LocalReleaseCatch(1); // the original leaves r1-r3 = garbage from sendFishReleasePacket
-#endif
+        PlayerActor_LocalReleaseCatch(1);
         PocketMenu_StartRemoveBlink(this);
     }
 }
@@ -260,11 +252,7 @@ void PocketMenu::mainAct2C() {
         x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
-#ifdef MODERN
-        PlayerActor_LocalReleaseCatch(0, 0, 0, 0); // b, c, d unused by PlayerActor_LocalReleaseCatch
-#else
-        PlayerActor_LocalReleaseCatch(0); // the original leaves r1-r3 = garbage from HeldInsect_Release
-#endif
+        PlayerActor_LocalReleaseCatch(0);
         sendInsectReleasePacket((u8)r5, t);
         PocketMenu_StartRemoveBlink(this);
     }

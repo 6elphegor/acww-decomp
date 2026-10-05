@@ -257,7 +257,7 @@ void *PlayerActor_GetActor(s32 a);
 s32 func_02133150(s32 a, s32 b);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 Math_AngleToDir8(s32 a);
-u8 *PendingUnit_Get();
+u8 *PendingUnit_Get(s32 i);
 
 s32 FieldItemFxTable_StartForPlayer(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
 s32 FieldItemFxTable_Start(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
@@ -716,7 +716,7 @@ void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void Vec_Add(VecFx32 *out, VecFx32 *a, void *m);
 void FieldItemFx_StartBeeHiveDrop(TreeAnim *o, s32 id, VecXZ *a, VecFx32 *b);
 s32 PendingUnit_FindBySlot(u8 a, u8 b);
-void *PendingUnit_Get(void);
+void *PendingUnit_Get(s32 i);
 s32 Item_GetFruitTreeFruit(u16 *p);
 void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 void FieldItemFx_StartTreeDrop(s32 a, s32 id, VecXZ *p, VecFx32 *v, s32 f, s32 i);
@@ -1487,7 +1487,7 @@ void Gfx3d_LoadTex(void *a, u32 b);
 u32 Item_GetIconModelName(s32 a, s32 b);
 s32 TownState_GetSeasonPeriod();
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
-void *NNS_G3dGetTex();
+void *NNS_G3dGetTex(void *file);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 void *ModelSlotPool_acquire(void *a, void *b);
 BOOL PooledModel_loadFromSlot(void *a, void *b, void *c);
@@ -3113,7 +3113,7 @@ BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n)
             if (*b == 0) {
                 return FALSE;
             }
-            *a = (u32)NNS_G3dGetTex();
+            *a = (u32)NNS_G3dGetTex((void *)*b);
             Gfx3d_LoadTex((void *)*a, 0);
         } else {
             *a = 0;
@@ -3135,7 +3135,7 @@ BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n)
         if (*b == 0) {
             return FALSE;
         }
-        *a = (u32)NNS_G3dGetTex();
+        *a = (u32)NNS_G3dGetTex((void *)*b);
         Gfx3d_LoadPltt((void *)*a, 0);
     }
     return TRUE;
@@ -6062,7 +6062,7 @@ void Tree_DropFruit(u16 *cell, s32 id, s32 *pos) {
         cur.y = base.y + tbl->y;
         cur.z = base.z + tbl->z;
         if (r >= 0) {
-            u16 v = ((u16 *)PendingUnit_Get())[4];
+            u16 v = ((u16 *)PendingUnit_Get(r))[4];
             col.c = v;
             u16 t = col.c;
             col.b = t;
@@ -7469,8 +7469,9 @@ extern "C" s32 FieldItemFx_StartFillHoleWithItem(s32 a, s32 b)
     VecXZ pos;
     pos.x = p0;
     pos.z = p1;
-    if (PendingUnit_Find(&pos, 0) >= 0) {
-        u8 *c = PendingUnit_Get();
+    s32 k;
+    if ((k = PendingUnit_Find(&pos, 0)) >= 0) {
+        u8 *c = PendingUnit_Get(k);
         if (c != NULL) {
             r = *(u16 *)(c + 0xa);
         }
