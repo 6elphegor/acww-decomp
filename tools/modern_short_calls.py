@@ -21,7 +21,9 @@ from pathlib import Path
 DEF = re.compile(r'^(?:extern "C"\s+)?(?:static\s+)?(?:inline\s+)?[A-Za-z_][\w\s\*:<>,]*?[\s\*]([A-Za-z_]\w*)\s*\(([^;{}]*)\)\s*(?:const\s*)?\{',
                  re.M)
 DEFINE = re.compile(r'^\s*#\s*define\s+([A-Za-z_]\w*)\s+([A-Za-z_]\w*)\s*$', re.M)
-CALL = re.compile(r'(?<![\w.>:])([A-Za-z_]\w*)\s*\(')
+# a call, also through a namespace of local declarations (`F5::Scene_GetMaxSpNpcs()`); `Class::method(` isn't in the
+# definitions table (only free functions are), so qualified member calls don't match
+CALL = re.compile(r'(?<![\w.>])(?:([A-Za-z_]\w*)::)?([A-Za-z_]\w*)\s*\(')
 KEYWORDS = {"if", "while", "for", "switch", "return", "sizeof", "case", "do", "else", "new", "delete", "defined",
             "__attribute__", "asm", "__builtin_offsetof", "offsetof", "static_cast", "reinterpret_cast", "typeof"}
 
@@ -126,13 +128,23 @@ def main():
         is_member = bool(scope) and re.match(r"^[A-Z]", scope.split("::")[-1]) is not None
         demangled[name] = n + (1 if is_member else 0)
 
+    # class names: their constructors (declared in the class, `new X()`) aren't calls of a free function
+    classes = set()
+    for t in texts.values():
+        classes.update(re.findall(r"\b(?:class|struct)\s+([A-Za-z_]\w*)", t))
+    for d in ("include",):
+        for r, _, fs in os.walk(d):
+            for fn in fs:
+                classes.update(re.findall(r"\b(?:class|struct)\s+([A-Za-z_]\w*)",
+                                          (Path(r) / fn).read_text(errors="replace")))
+
     results = []
     for f, t in sorted(texts.items()):
         aliases = {m.group(1): m.group(2) for m in DEFINE.finditer(t)}
         for m in CALL.finditer(t):
-            ident = m.group(1)
-            if ident in KEYWORDS:
-                continue
+            ident = m.group(2)
+            if ident in KEYWORDS or ident in classes or ident == m.group(1):
+                continue  # (X::X( is a constructor)
             # skip declarations/definitions: the identifier is preceded by a type on the same statement
             line_start = t.rfind("\n", 0, m.start()) + 1
             before = t[line_start:m.start()]

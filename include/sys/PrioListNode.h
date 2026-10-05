@@ -12,6 +12,7 @@ public:
     /* 0x8 */ u8 priority;
 
     PrioListNode() : prev(0), next(0), priority(0xff) {}
+    MWCC_LAYOUT
 };
 
 #endif

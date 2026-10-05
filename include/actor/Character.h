@@ -45,6 +45,7 @@ public:
     /* 0xd4 */ CharacterListNode charNode;
     /* 0xe4 */ s32 interactionRangeSq;
     /* 0xe8 */ u16 charFlags;
+    MWCC_LAYOUT
 };
 
 #endif // ACTOR_CHARACTER_H

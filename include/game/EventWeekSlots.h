@@ -16,7 +16,7 @@ struct EventWeekSlots {
     /* 0x10 */ u8 reddWeekday, unk_11;
     /* 0x12 */ u8 todayEventId, todayWeekday;
     /* 0x14 */ EventWeekSlot ent[5];
-    /* 0x34 */ long long weekStart;
+    /* 0x34 */ s64 weekStart;
 };
 
 #endif

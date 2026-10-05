@@ -42,6 +42,24 @@ typedef unsigned long size_t;
 #define MODERN_VOLATILE
 #endif
 
+// mwcc's class layout (docs/modern.md, "Class layout"): a derived class's first member goes after its base's data size
+// (the base's tail padding is reused, POD bases too), and a class's data size ends at its last member's data size.
+// GCC does that only for a non-POD base and a [[no_unique_address]] member. MWCC_LAYOUT, inside a POD class used as a
+// base, makes it non-POD for GCC (an empty protected member; the class stays trivial and an aggregate); MWCC_TAIL
+// marks a class's last member when its type has tail padding. tools/modern_layout_needs.py lists where they go.
+#if defined(MODERN) && defined(__cplusplus)
+struct MwccLayoutEmpty {};
+struct MwccLayout {
+protected:
+    [[no_unique_address]] MwccLayoutEmpty empty_;
+};
+#define MWCC_LAYOUT [[no_unique_address]] MwccLayout mwccLayout_;
+#define MWCC_TAIL [[no_unique_address]]
+#else
+#define MWCC_LAYOUT
+#define MWCC_TAIL
+#endif
+
 typedef int BOOL;
 #define TRUE 1
 #define FALSE 0

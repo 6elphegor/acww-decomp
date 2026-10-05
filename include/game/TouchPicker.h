@@ -24,6 +24,7 @@ struct TouchPickResult {
     /* 0x18 */ u8 targetKind;
     /* 0x19 */ u8 targetIndex;
     /* 0x1a */ u8 enabled;
+    MWCC_LAYOUT
 };
 
 struct TouchPicker : TouchPickResult {

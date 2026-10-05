@@ -18,7 +18,7 @@ public:
     virtual u8 *data() = 0;
     BOOL fromMsgString(MsgString *src);         // 0x020a77f8
 
-    /* 0x04 */ MsgStringAttr attr;
+    /* 0x04 */ MWCC_TAIL MsgStringAttr attr;
 };
 
 #endif

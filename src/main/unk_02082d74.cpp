@@ -568,7 +568,7 @@ void CommRecord_PackSource(void *, s32, s32);
 s32 VisitorSchedule_Clear(void *);
 BOOL _ZN11CommManager12isSlotActiveEi(void *, u32);
 s32 Scene_GetCurrent();
-s32 Scene_GetMaxSpNpcs();
+s32 Scene_GetMaxSpNpcs(u32 i);
 void *TownBlockMap_Get();
 void *MapBlock_GetItemPtr(void *, s32, s32, s32);
 void MapBlock_SetItem(void *, u16 *, s32, s32, s32);
@@ -630,8 +630,7 @@ extern "C" s32 NpcSpawn_GetSpNpcSlotCount()
             return 0;
         }
     }
-    F5::Scene_GetCurrent();
-    return F5::Scene_GetMaxSpNpcs();
+    return F5::Scene_GetMaxSpNpcs(F5::Scene_GetCurrent());
 }
 
 VisitorSchedule::~VisitorSchedule() {}

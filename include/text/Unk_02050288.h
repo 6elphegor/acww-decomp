@@ -21,6 +21,7 @@ struct GameFontDesc {
     /* 0x08 */ u8 *bitmaps; // 1bpp glyph bitmaps
     /* 0x0c */ GameFontDesc *subFont; // secondary font, for glyph indices with bit 31 set
     /* 0x10 */ u8 unk_10;
+    MWCC_LAYOUT
 };
 
 // A byte buffer interface; callers use fixed-size implementations on the stack

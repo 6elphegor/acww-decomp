@@ -27,7 +27,7 @@ public:
     void clear();
 
     /* 0x04 */ u32 length;
-    /* 0x08 */ MsgStringAttr attr;
+    /* 0x08 */ MWCC_TAIL MsgStringAttr attr;
 };
 
 #endif
