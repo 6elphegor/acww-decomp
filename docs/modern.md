@@ -58,6 +58,9 @@ optimises them differently:
 | An inline function that other code calls by its mangled name | undefined symbol | `MODERN_EMIT` | link errors |
 | A hardcoded address of game data (arena bounds, DTCM variables) | wrong address | linker symbol under MODERN | grep |
 | A routine that switches stacks (OS_LoadContext) reached by a tail call | the resumed thread's saved registers are overwritten | `noreturn` / `returns_twice` under MODERN | boot testing |
+| A function defined `void` whose callers use the value it leaves in r0 (the last call's result, an identity stub) | garbage values | `return <last call>;` (same mwcc code) | `tools/modern_void_used.py` |
+| A variable read before it's set: the original had the value in that register | wrong argument | write the value | `configure_modern.py --warnings` |
+| Code that depends on mwcc's class layout | wrong members, heap overruns | see Class layout | `tools/modern_offset_comments.py`, `modern_layout_check.py` |
 
 
 ## Rules for source changes
@@ -85,14 +88,37 @@ optimises them differently:
 
 ### Class layout
 
-mwcc places the members of a derived class in the tail padding of the base class's *last member object*, as if
-the member had no tail padding. GCC (Itanium C++ ABI) only reuses the tail padding of a base class itself. Example:
-`MsgString` ends with an `MsgStringAttr` member (12 bytes, 10 of data), and `LabelButtonText : MsgString` puts its
-first member at 0x12 with mwcc and at 0x14 with GCC. Classes built on such bases are larger in the modern build
-(`LabelButton` 0x70 → 0x74). The size checks that encode the mwcc layout are under `#ifndef MODERN`.
+Measured with mwcc 1.2 against GCC 14:
 
-Code must therefore not depend on the size or offsets of such classes. Save data and file formats are expected to
-be plain structs, which keep their layout; this hasn't been checked yet.
+| | mwcc | GCC (Itanium C++ ABI) |
+|---|---|---|
+| 64-bit integers | aligned to 4 | aligned to 8 (AAPCS) |
+| first member of a derived class | after the base's data size (its tail padding is reused), for any base | the same, for non-POD bases only |
+| data size of a class | ends at its last member's data size, recursively (arrays count whole) | ends at its last member's sizeof |
+| vptr | at offset 0, bases after it | the same |
+
+The decompiled code depends on mwcc's layout everywhere: view classes with padding arrays, `(u8 *)this + 0x824`,
+sizes in allocations and in data tables. The modern build reproduces it:
+
+- `s64`/`u64` are `aligned(4)` typedefs under MODERN (`include/types64.h`; every 64-bit member must use them, not
+  `long long`).
+- `MWCC_LAYOUT` (an empty protected member, inside a POD class used as a base: the class becomes non-POD for GCC
+  but stays trivial and an aggregate) and `MWCC_TAIL` (`[[no_unique_address]]` on the last member when its type has
+  tail padding), both from `include/types.h` and empty for mwcc. `tools/modern_layout_needs.py` lists where they
+  are needed.
+- `tools/modern_offset_comments.py` compares the `/* 0x1c */` offset comments in the headers (mwcc's offsets, kept
+  true by the matching build) with GCC's offsets from DWARF; `tools/modern_layout_check.py` recomputes every class
+  with mwcc's rules. After the annotations the remaining differences are wrong comments and name collisions.
+
+A 64-bit port can't keep these offsets (pointers grow): the view classes and hardcoded offsets will have to become
+real member accesses there.
+
+### Vague linkage and overlays
+
+GCC emits an inline function or a vtable without a key function in every object that uses it, in a COMDAT group,
+and GNU ld keeps the first copy. If that copy is in an overlay, main (or another overlay) calls whatever is loaded
+at that address. `tools/modern_comdat.py` renames, in each overlay object, the weak definitions and the group
+signatures to `<name>.ovNNN`: copies are merged within the overlay and never chosen by another module.
 
 ## Assembly units
 
