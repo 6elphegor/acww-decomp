@@ -248,7 +248,7 @@ void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u
 
 PlayerId *PlayerData::getPlayerId() { return (PlayerId *)&id; }
 
-void PlayerData::getIndex() { PlayerId_FindResidentIndex(getPlayerId()); }
+s32 PlayerData::getIndex() { return PlayerId_FindResidentIndex(getPlayerId()); }
 
 u32 PlayerData::getFaceType() { return faceHair.lo; }
 

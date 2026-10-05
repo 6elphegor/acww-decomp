@@ -16,7 +16,7 @@ public:
     virtual ~ThreeLayerAnimModel();
     void assignJointsToLayer3(u32 a, u32 b);
     void playLayer3FromBase(u32 a, u32 b);
-    void checkLayer3Finished();
+    BOOL checkLayer3Finished();
     void playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
     void updateLayers3();
     BOOL allocLayer3Anims(u32 a);
