@@ -1900,7 +1900,7 @@ u16 *VillagerMemory_GetTownId(void *);
 u32 VillagerMemory_GetPlayerId(void *);
 s32 memcmp(void *, void *, u32);
 void VillagerMemory_InitForPlayer(void *, void *, u32, u32);
-u16 *PlayerId_GetTownId();
+u16 *PlayerId_GetTownId(void *p);
 s32 PlayerDataArray_FindById(u32, u32);
 s32 TownId_IsValid(void *);
 s32 _ZN14VillagerMemory16isLetterReceivedEv(void *);
@@ -2212,7 +2212,11 @@ void _ZN8PlayerId5clearEv(void *p);
 void TownId_Destruct(void *p);
 void TownId_Construct(void *p);
 void _ZN8PlayerIdC1Ev(void *p);
+#ifdef MODERN
+void _ZN8PlayerIdC1EPv(void *p, void *o);
+#else
 void _ZN8PlayerIdC1EPv(void *p);
+#endif
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor);
 void _ZN13VillagerStateD1Ev(void *p);
 s32 VillagerId_IsValidSpecies(u32 x);
@@ -3466,7 +3470,11 @@ extern "C" void HousePos_SetFromUnit(u8 *out, s32 *in) {
 
 namespace nQ {
 extern "C" u8 *VillagerMemory_Construct(u8 *self) {
+#ifdef MODERN
+    _ZN8PlayerIdC1EPv(self, 0); // unused by PlayerId::PlayerId(void *)
+#else
     _ZN8PlayerIdC1EPv(self);
+#endif
     *(s32 *)(self + 0x40) = 0;
     *(s32 *)(self + 0x44) = 0;
     TownId_Construct(self + 0x48);
@@ -4704,7 +4712,7 @@ extern "C" s32 Villager_PickMemoryToReplace(VillagerMemory *t, s32 (*cb)(void *,
 namespace nN {
 extern "C" s32 VillagerMemory_IsFormerResident(u32 a, u16 *p, u32 c) {
     BOOL r = FALSE;
-    u16 *q = PlayerId_GetTownId();
+    u16 *q = PlayerId_GetTownId((void *)a);
     if (p[0] == q[0] && memcmp(p + 1, q + 1, 8) == 0) {
         if (PlayerDataArray_FindById(c, a) == ~r) {
             r = TRUE;
@@ -4722,7 +4730,7 @@ extern "C" s32 Villager_PickFormerResidentMemoryToReplace(VillagerMemory *t) {
 
 namespace nN {
 extern "C" s32 VillagerMemory_IsOtherTown(void *a, u16 *p, void *c) {
-    u16 *q = PlayerId_GetTownId();
+    u16 *q = PlayerId_GetTownId(a);
     if (p[0] != q[0] || memcmp(p + 1, q + 1, 8) != 0) {
         return 1;
     }

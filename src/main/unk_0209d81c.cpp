@@ -50,7 +50,7 @@ void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *);
 void _ZN17PlayerSpNpcRecord15resetAcornCountEv(void *);
 void TownExchange_InitNop(void *);
 void _ZN6TownId7setTownEPS_(void *, void *);
-void *PlayerId_GetTownId(void);
+void *PlayerId_GetTownId(void *p);
 void *PlayerData_GetCurrent(void);
 void *PlayerData_GetResident(void *, s32);
 void _ZN10PlayerData9clearFlagEj(void *, s32);
@@ -173,8 +173,7 @@ void SaveData::setupMode06() {
 void SaveData_InitCurrentPlayer(u8 *p) {
     void *r4 = PlayerData_GetCurrent();
     TownId l;
-    _ZN10PlayerData11getPlayerIdEv(r4);
-    l = *(TownId *)PlayerId_GetTownId();
+    l = *(TownId *)PlayerId_GetTownId(_ZN10PlayerData11getPlayerIdEv(r4));
     Clock_GetDate(_ZN10PlayerData16getDayUpdateDateEv(r4));
     _ZN6TownId7setTownEPS_(_ZN10PlayerData11getPlayerIdEv(r4), p + 2);
     void *r5 = _ZN10PlayerData11getPatternsEv(r4);

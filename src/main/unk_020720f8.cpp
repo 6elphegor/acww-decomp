@@ -191,10 +191,10 @@ extern "C" {
 void *TownId_GetName(void *);
 }
 extern "C" {
-void _ZN10PlayerData15getWifiUserDataEv(u32);
+void *_ZN10PlayerData15getWifiUserDataEv(u32);
 }
 extern "C" {
-void *PlayerWifiData_GetDwcUserData();
+void *PlayerWifiData_GetDwcUserData(void *p);
 }
 extern "C" {
 s32 _Z21NetOverlay_AssertWifiv();
@@ -633,8 +633,7 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
         }
         MI_CpuCopy8(_ZN8PlayerId7getNameEv(_ZN10PlayerData11getPlayerIdEv(l18)), r6, 8);
         MI_CpuCopy8(TownId_GetName((u8 *)((u32)gSaveData + 2)), r6 + 8, 8);
-        _ZN10PlayerData15getWifiUserDataEv(l18);
-        MI_CpuCopy8(PlayerWifiData_GetDwcUserData(), r6 + 0x10, 0x40);
+        MI_CpuCopy8(PlayerWifiData_GetDwcUserData(_ZN10PlayerData15getWifiUserDataEv(l18)), r6 + 0x10, 0x40);
         _Z21NetOverlay_AssertWifiv();
         Net_StartWifi(a, (void *)Comm_OnReceive, (void *)Comm_OnFriendDeletedNop, r6, r5);
     }
