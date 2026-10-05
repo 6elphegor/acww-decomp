@@ -54,6 +54,7 @@ COMMON_FLAGS = " ".join([
     "-ffreestanding",           # No host library: the game ships its own (MSL, NitroSDK)
     "-nostdinc",                # Only the project's headers
     "-fno-strict-aliasing",     # The game reinterprets memory freely
+    "-fpcc-struct-return",      # Structs are returned through a hidden pointer, like mwcc (AAPCS returns small ones in r0)
     "-fno-builtin",             # The game's own memcpy/memset/strlen are the ones to call
     "-ffunction-sections",
     "-fdata-sections",

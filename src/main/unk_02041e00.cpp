@@ -8505,13 +8505,23 @@ extern "C" void FieldActions_Init(u8 *p) {
     for (i = 0; i < 3; i++) {
         FieldAction_Clear((FieldActionRequest *)p, i);
     }
+#ifdef MODERN
+    // the money rock state is the variable that follows sFieldActions in the original (offset 0x46c from p)
+    MoneyRock_Init((MoneyRockState *)nK::data_021c47bc);
+#else
     MoneyRock_Init((MoneyRockState *)(p + 0x46c));
+#endif
 }
 }
 
 namespace nB {
 extern "C" void FieldActions_Update(u8 *p) {
+#ifdef MODERN
+    // the money rock state is the variable that follows sFieldActions in the original (offset 0x46c from p)
+    MoneyRock_Update((MoneyRockState *)nK::data_021c47bc);
+#else
     MoneyRock_Update((MoneyRockState *)(p + 0x46c));
+#endif
 }
 }
 
