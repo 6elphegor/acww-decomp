@@ -112,11 +112,11 @@ void NetSession_SetMemberSyncReply(s32 a, s32 b);
 }
 
 extern "C" {
-void NetSession_GetSyncKind();
+s32 NetSession_GetSyncKind();
 }
 
 extern "C" {
-void NetSession_SetActiveSyncKind();
+void NetSession_SetActiveSyncKind(s32 a);
 }
 
 extern "C" {
@@ -212,7 +212,7 @@ s32 PlayerData_GetCurrent();
 }
 
 extern "C" {
-s32 _ZN10PlayerData14getBankAccountEv();
+s32 _ZN10PlayerData14getBankAccountEv(s32 pd);
 }
 
 extern "C" {
@@ -378,8 +378,9 @@ BOOL SaveMenu::onExecute() {
     s32 r4;
 
     if (*DebugVar_GetPtr(0, 0x4b) != 0) {
-        if (PlayerData_GetCurrent() != 0) {
-            r4 = _ZN10PlayerData14getBankAccountEv();
+        s32 pd = PlayerData_GetCurrent();
+        if (pd != 0) {
+            r4 = _ZN10PlayerData14getBankAccountEv(pd);
             switch (*DebugVar_GetPtr(0, 0x4b)) {
             case 0:
                 break;
@@ -402,8 +403,9 @@ BOOL SaveMenu::onExecute() {
         }
     }
     if (*DebugVar_GetPtr(0, 0x4c) != 0) {
-        if (PlayerData_GetCurrent() != 0) {
-            _ZN10PlayerData14getBankAccountEv();
+        s32 pd = PlayerData_GetCurrent();
+        if (pd != 0) {
+            _ZN10PlayerData14getBankAccountEv(pd);
             if (*DebugVar_GetPtr(0, 0x4c) != 0) {
                 t = *DebugVar_GetPtr(0, 0x4c);
                 if (t < 1) {
@@ -532,8 +534,7 @@ void SaveMenu::updateSaveA() {
         o->unlockAdvance();
         if (r == 5) {
             NetSession_SetMemberSyncReply(0, 6);
-            NetSession_GetSyncKind();
-            NetSession_SetActiveSyncKind();
+            NetSession_SetActiveSyncKind(NetSession_GetSyncKind());
             o->setNextMessage(gTalkMsgIndexEnd, 0);
             SaveManager_SetEndSessionSave(0);
             setState(3);
@@ -561,8 +562,7 @@ void SaveMenu::updateSaveB() {
         o->unlockAdvance();
         if (r == 5) {
             NetSession_SetMemberSyncReply(0, 6);
-            NetSession_GetSyncKind();
-            NetSession_SetActiveSyncKind();
+            NetSession_SetActiveSyncKind(NetSession_GetSyncKind());
             o->setNextMessage(gTalkMsgIndexEnd, 0);
             SaveManager_SetEndSessionSave(1);
             setState(3);

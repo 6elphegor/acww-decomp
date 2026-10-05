@@ -164,7 +164,7 @@ extern void NNS_SndStrmFreeChannel(Ctx *);
 extern BOOL NNS_SndStrmAllocChannel();
 extern void NNS_SndStrmInit(Ctx *);
 extern void NNS_SndCaptureStartEffect();
-extern FSFileID func_0210b48c(void);
+extern void func_0210b48c(FSFileID *out);
 extern s32 NNS_SndArcReadFile();
 extern u32 NNS_SndArcGetFileOffset();
 extern u8 *NNS_SndArcGetStrmPlayerInfo();
@@ -488,7 +488,7 @@ BOOL PrepareStrmCore(Ctx **h, SInfo *info, s32 idx, s32 prio, s32 v144, u32 len,
         FreePlayer(c);
         return 0;
     }
-    fid = func_0210b48c();
+    func_0210b48c(&fid);
     if (FS_OpenFileFast(&c->file, fid) == 0) {
         FreePlayer(c);
         return 0;

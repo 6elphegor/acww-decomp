@@ -40,10 +40,10 @@ void TalkRequestList_FreeAll(TalkRequestList *l);
 void List_Remove(void *l, void *t);
 void NetArea_SendStateToNewOwner();
 void NetArea_SendStateToRequester();
-void Scene_CheckExit();
+void Scene_CheckExit(void *p);
 void _ZN8ProcBase11postExecuteEv(void *a, u32 b);
 BOOL TalkRequest_IsActive();
-BOOL _ZN9Character12isAreaSyncedEv();
+BOOL _ZN9Character12isAreaSyncedEv(Character *);
 s32 CharInteractSync_CheckArea();
 void CharInteractSync_SendEvent(u32 id, u32 v);
 void CharInteractSync_SendQuery(u32 id, u32 v);
@@ -60,7 +60,7 @@ BOOL PlayerActor_IsInterruptible();
 BOOL PlayerActor_IsEventIdle();
 BOOL PlayerActor_CanStartTalk();
 BOOL PlayerActor_RequestAct10();
-void PlayerActor_RequestStowThenAct10();
+void PlayerActor_RequestStowThenAct10(u32 a);
 BOOL PlayerActor_LocalRequestExitWalkOut();
 u32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(u32 a, u32 b);
@@ -246,7 +246,7 @@ extern "C" BOOL TalkRequest_AcquireAreaTarget(TalkRequestEntry *t) {
     case 2:
         if (_ZN11CommManager8isOnlineEv(gCommManager)) {
             Character *o = Character_FindByCharId(t->targetId);
-            if (_ZN9Character12isAreaSyncedEv()) {
+            if (_ZN9Character12isAreaSyncedEv(o)) {
                 if (t->result == 1) {
                     if (!o->acceptsSelfRequestedInteraction(PlayerActor_GetActor(4))) {
                         return FALSE;
@@ -275,8 +275,8 @@ extern "C" BOOL TalkRequest_AcquireAreaTarget(TalkRequestEntry *t) {
 }
 
 extern "C" BOOL TalkRequest_AcquireTarget(TalkRequestEntry *t) {
-    Character_FindByCharId(t->targetId);
-    if (_ZN9Character12isAreaSyncedEv()) {
+    Character *o = Character_FindByCharId(t->targetId);
+    if (_ZN9Character12isAreaSyncedEv(o)) {
         if (!TalkRequest_AcquireAreaTarget(t)) {
             return FALSE;
         }
@@ -289,7 +289,7 @@ extern "C" BOOL TalkRequest_AcquireTarget(TalkRequestEntry *t) {
 }
 
 extern "C" void TalkRequest_NotifyTarget(Character *o, u32 v) {
-    if (_ZN9Character12isAreaSyncedEv()) {
+    if (_ZN9Character12isAreaSyncedEv(o)) {
         if (CharInteractSync_CheckArea() == 1) {
             CharInteractSync_SendEvent(_ZN9Character9getCharIdEv(o), v);
         }
@@ -300,7 +300,7 @@ extern "C" void TalkRequest_NotifyTarget(Character *o, u32 v) {
 extern "C" void TalkRequest_ReleaseTarget(TalkRequestEntry *t, u32 v) {
     Character *o = Character_FindByCharId(t->targetId);
     if (o != NULL) {
-        if (_ZN9Character12isAreaSyncedEv()) {
+        if (_ZN9Character12isAreaSyncedEv(o)) {
             if (CharInteractSync_CheckArea() == 1) {
                 CharInteractSync_SendEvent(t->targetId, v);
             }
@@ -380,7 +380,7 @@ extern "C" BOOL TalkRequest_BeginTalk(TalkRequestEntry *t) {
             TalkRequest_NotifyTarget(o, t->result);
             t->state = 5;
         } else {
-            PlayerActor_RequestStowThenAct10();
+            PlayerActor_RequestStowThenAct10(r);
             t->state = 4;
         }
         return TRUE;
@@ -665,7 +665,7 @@ BOOL TalkRequestQueue::postExecute(u32 b) {
     NetArea_SendStateToNewOwner();
     NetArea_SendStateToRequester();
     if (gActorDefaultParent != 0) {
-        Scene_CheckExit();
+        Scene_CheckExit((void *)gActorDefaultParent);
     }
     _ZN8ProcBase11postExecuteEv(this, b);
 }

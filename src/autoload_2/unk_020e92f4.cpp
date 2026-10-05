@@ -10,7 +10,7 @@
 typedef volatile u64 vu64;
 
 extern "C" {
-void VEC_Normalize(VecFx32 *v); // VEC_Normalize
+void VEC_Normalize(const VecFx32 *pSrc, VecFx32 *pDst); // VEC_Normalize
 void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *out); // VEC_CrossProduct
 s32 FX_Div(s32 a, s32 b); // FX_Div
 s32 Math_Sqrt64(u64 x);
@@ -207,7 +207,7 @@ extern "C" void Vec_CrossCopy(VecFx32 *out, VecFx32 *in, VecFx32 *a, VecFx32 *b)
 }
 
 extern "C" void Vec_NormalizeCopy(VecFx32 *out, VecFx32 *in) {
-    VEC_Normalize(in);
+    VEC_Normalize(in, in);
     *out = *in;
 }
 

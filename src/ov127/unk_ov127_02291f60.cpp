@@ -35,7 +35,7 @@ void _ZN10BgVramTaskC1Ev(void *self);
 ConstellationRecord *Constellation_GetRecordAlt(s32 i);
 ConstellationRecord *Constellation_GetRecord(s32 i);
 s32 Constellation_CellToScreenIndex(s32 x, s32 y);
-void Constellation_SetLinePalette(void *p);
+void Constellation_SetLinePalette(void *p, u32 slot, s32 r);
 void _ZN10BgVramTask6cancelEv(void *self);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e);
 s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
@@ -368,9 +368,9 @@ extern "C" s32 StarSky_ScreenToCellInScope(StarSkyView *s, s32 x, s32 y, s32 *ox
     return 0;
 }
 
-extern "C" void StarSky_RebuildScreen(StarSkyView *s)
+extern "C" void StarSky_RebuildScreen(StarSkyView *s, u32 slot, s32 r)
 {
-    Constellation_SetLinePalette(s->skyScreen);
+    Constellation_SetLinePalette(s->skyScreen, slot, r);
     StarSky_SetFlags(s, 2);
 }
 

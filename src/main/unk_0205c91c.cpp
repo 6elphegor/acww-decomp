@@ -17,7 +17,7 @@ BOOL ClothTex_LoadItemThunk(u32 a, u16 *b, s32 c);
 BOOL ClothTex_LoadPatternThunk(void *, void *);
 u32 ClothTex_GetBufferSize();
 void CharaClothTexHeap_Destroy();
-void CharaClothTexHeap_Create();
+void CharaClothTexHeap_Create(void *parent);
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
@@ -51,8 +51,8 @@ void CharaClothTexPool_GetItem(u16 *out, CharaClothTexPool *t, u32 idx);
 void CharaClothTexRef_CopyFromSlot(void *p, s32 x);
 }
 
-extern "C" void CharaClothTexPool_Create() {
-    CharaClothTexHeap_Create();
+extern "C" void CharaClothTexPool_Create(void *parent) {
+    CharaClothTexHeap_Create(parent);
     sCharaClothTexPool.allocBuffers();
     if (gCharaClothTexHeap) Heap_adjust(gCharaClothTexHeap);
 }

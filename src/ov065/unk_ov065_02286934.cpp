@@ -69,7 +69,7 @@ s32 socket(s32 a, s32 b, s32 c);
 SockHostEnt *getlocalhost();
 s32 IsPrivateIP(void *p);
 s32 CanReceiveOnSocket(s32 fd);
-s32 CheckMagic();
+s32 CheckMagic(void *p);
 s32 SendPacket__natneg(s32 fd, u32 addr, u32 port, void *buf, s32 len);
 s32 RemoveNegotiator(_NATNegotiator *ctx);
 s32 AddNegotiator();
@@ -677,7 +677,7 @@ namespace N022868b0 { extern "C" {
 extern "C" void NNProcessData(u8 *pkt, s32 len, SockAddrIn *sa) {
     GsNatNegConnectPktBuf h;
     GsNatNegReplyPktBuf g;
-    if (CheckMagic() == 0) {
+    if (CheckMagic(pkt) == 0) {
         return;
     }
     u32 type = pkt[7];

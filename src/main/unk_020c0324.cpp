@@ -98,7 +98,7 @@ s32 PlayerData_GetBySessionSlot(s32 a);
 BOOL SaveManager_IsSessionJoined(void);
 void FieldInfoBalloon_ShowPleaseWait(void);
 BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
-s32 _ZN15LostChildRecord13isKaitlinRoleEv(void);
+s32 _ZN15LostChildRecord13isKaitlinRoleEv(s32 rec);
 void _ZN15LostChildRecord5clearEv(s32 a);
 void _ZN15KatieVisitState5clearEv(void *a);
 s32 Scene_GetWarpRequest(void);
@@ -621,7 +621,7 @@ BOOL SpNpcKatie::mainAct08() {
     case 10:
         if (_ZN11CommManager7isMyAidEj(r7, 0)) {
             s32 x = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
-            if (_ZN15LostChildRecord13isKaitlinRoleEv() == 1) {
+            if (_ZN15LostChildRecord13isKaitlinRoleEv(x) == 1) {
                 _ZN15LostChildRecord5clearEv(x);
             }
             _ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 0x39);

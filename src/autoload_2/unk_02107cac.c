@@ -19,8 +19,8 @@ extern void MIi_CpuClear16(u16 data, void *dest, u32 size);
 extern s32 NNS_G3dGetResDictIdxByName(void *dict, void *name);
 extern u8 *NNSi_G3dGetTexPatAnmFV(u8 *, u32, u32);
 extern u32 NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *, u32);
-extern u32 NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *);
-extern u32 *NNS_G3dGetResDataByName(void *);
+extern u32 NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *, u32);
+extern u32 *NNS_G3dGetResDataByName(const void *dict, const void *name);
 extern s32 FX_Div(s32, s32);
 extern void NNS_G3dGeBufferOP_N(u32 cmd, void *args, u32 n);
 
@@ -158,7 +158,7 @@ void NNSi_G3dAnmObjInitNsBtp(u8 *obj, u8 *res, u8 *blk)
 // NNS g3d (texture animation): texture index + tex scale result for the current frame
 s32 SetTexParamaters_(u8 *A, u32 x, u8 *out)
 {
-    u32 *p = NNS_G3dGetResDataByName(A + 60);
+    u32 *p = NNS_G3dGetResDataByName(A + 60, (const void *)x);
     u32 m;
     u32 w, h;
     s32 r;
@@ -191,7 +191,7 @@ s32 SetTexParamaters_(u8 *A, u32 x, u8 *out)
 // NNS g3d (texture animation): palette index result for the current frame
 u32 SetPlttParamaters_(u8 *A, u32 x, u8 *out)
 {
-    u16 *p = (u16 *)NNS_G3dGetResDataByName(A + *(u16 *)(A + 52));
+    u16 *p = (u16 *)NNS_G3dGetResDataByName(A + *(u16 *)(A + 52), (const void *)x);
     u16 w = *(u32 *)(A + 44);
     u16 v;
     u16 f = p[1];
@@ -213,7 +213,7 @@ u32 NNSi_G3dAnmCalcNsBtp(u8 *obj, u32 *a, u32 frame)
     if (e[3] == 0xff) {
         return r;
     }
-    return SetPlttParamaters_((u8 *)a[5], NNSi_G3dGetTexPatAnmPlttNameByIdx(res), obj);
+    return SetPlttParamaters_((u8 *)a[5], NNSi_G3dGetTexPatAnmPlttNameByIdx(res, e[3]), obj);
 }
 
 // NNS g3d animation key fetch for fx32 values (value stored as fx32 or fx16; constant / full / step-2 / step-4 interpolated)

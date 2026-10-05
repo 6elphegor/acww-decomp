@@ -111,14 +111,14 @@ void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcActor_ChargePlayer(void *, s32);
 void Pocket_AddItem(void *, s32);
-void FtrMgr_RemoveActorByIndex(void);
+s32 FtrMgr_RemoveActorByIndex(s32 idx);
 void Villager_RemoveFurnitureAt(void *, void *, s32, s32);
 s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 void FtrMgr_SetSaleMode(void);
 void NpcFootstepFx_enableFootsteps(void *);
-void Scene_GetPrevious(void);
-s32 SceneId_IsTownUnk31(void);
+u8 Scene_GetPrevious(void);
+s32 SceneId_IsTownUnk31(u32 a);
 void Ground_LockExit(u32);
 s32 NpcActor_getNpcIndex(void *);
 s32 FgData_GetVillagerLayout(void *, s32, s32);
@@ -319,8 +319,7 @@ BOOL FleaMarketSellerVillager::onCreate() {
     FtrMgr_SetSaleMode();
     saleItem = 0xfff1;
     NpcFootstepFx_enableFootsteps(&footstepFx);
-    Scene_GetPrevious();
-    if (SceneId_IsTownUnk31()) {
+    if (SceneId_IsTownUnk31(Scene_GetPrevious())) {
         changeAct(4);
     } else {
         changeAct(0);
@@ -592,8 +591,9 @@ void FleaMarketSellerVillagerTalk::sellFurniture() {
         NpcActor_ChargePlayer(villager, salePrice);
         Pocket_AddItem(&villager->saleItem, 0);
         FleaMarketSellerVillager *o = villager;
-        if (FtrActorGrid_getIndex(FtrActorGrid_GetInstance(), o->saleUnitX, o->saleUnitY, 0) != -1) {
-            FtrMgr_RemoveActorByIndex();
+        s32 idx = FtrActorGrid_getIndex(FtrActorGrid_GetInstance(), o->saleUnitX, o->saleUnitY, 0);
+        if (idx != -1) {
+            FtrMgr_RemoveActorByIndex(idx);
             if (villager->getVillagerData()) {
                 FleaMarketSellerVillager *q = villager;
                 Villager_RemoveFurnitureAt(q->getVillagerData(), &q->saleUnitX, q->layoutData, q->layoutSize);

@@ -154,9 +154,9 @@ s32 SBServerListNth(void *);
 s32 SBServerListCount(void *);
 s32 SBServerListRemoveAt(void *, s32);
 s32 SBServerListFindServerByIP(void *, u32, u32);
-s32 SBServerListFindServer(void *);
+s32 SBServerListFindServer(void *c, u32 key);
 s32 SBServerListAppendServer(void *, void *);
-s32 SBServerListSort(void *);
+void SBServerListSort(void *c, s32 a, char *b, u32 mode);
 s32 ProcessIncomingData(void *);
 s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
 s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
@@ -243,8 +243,8 @@ s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, s32 a, u16 b
 
 namespace F02288e2c {
 extern "C" {
-void ServerBrowserRemoveServer(_ServerBrowser *o) {
-    s32 r = SBServerListFindServer(&o->list);
+void ServerBrowserRemoveServer(_ServerBrowser *o, u32 key) {
+    s32 r = SBServerListFindServer(&o->list, key);
     if (r != -1) {
         SBServerListRemoveAt(&o->list, r);
     }
@@ -297,9 +297,9 @@ s32 ServerBrowserCount(_ServerBrowser *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 ServerBrowserSortA(_ServerBrowser *o) {
+s32 ServerBrowserSortA(_ServerBrowser *o, s32 a, char *b, u32 mode) {
     GsSrvSortStackPad pad;
-    SBServerListSort(&o->list);
+    SBServerListSort(&o->list, a, b, mode);
 }
 }
 }

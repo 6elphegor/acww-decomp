@@ -30,7 +30,7 @@ typedef void (MailboxMenu::*Unk_ov106_02298180_Fn)();
 
 
 extern "C" {
-s32 _ZN10LetterGrid18findPocketLetterAtEii(void *self);
+u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
 void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
@@ -63,7 +63,7 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void LetterList_Compact(void *a, s32 b);
 void * PlayerData_GetCurrent();
-s32 PlayerData_GetMailbox();
+s32 PlayerData_GetMailbox(void *p);
 s32 Inventory_FindEmptyLetter();
 void * ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *a);
@@ -523,8 +523,7 @@ BOOL MailboxMenu::execPhase4() {
 BOOL MailboxMenu::execClosed() {
     MenuCtrl_SetResult(1);
     LetterList_Compact(mailboxLetters, 10);
-    PlayerData_GetCurrent();
-    u8 *p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
+    u8 *p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox(PlayerData_GetCurrent()))->getLetter(0);
     s32 i = 0;
     u8 *q = (u8 *)mailboxLetters;
     for (; i < 10; i++) {
@@ -702,8 +701,7 @@ void MailboxMenu::initParts() {
     for (i = 0; i < 10; i++) {
         Letter_Clear((u8 *)mailboxLetters + i * 0xf4);
     }
-    PlayerData_GetCurrent();
-    p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
+    p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox(PlayerData_GetCurrent()))->getLetter(0);
     for (i = 0; i < 10; i++) {
         Letter_Copy((u8 *)mailboxLetters + i * 0xf4, p);
         p += 0xf4;
@@ -1587,7 +1585,7 @@ u8 MailboxMenu::fromLetterGridIndex(u32 a) {
 }
 
 u32 MailboxMenu::getSlotAt(u32 a, s32 b, s32 c) {
-    s32 r4 = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid);
+    s32 r4 = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid, a, b);
     if (r4 == 0x37) {
         r4 = ((LetterGrid *)&letterGrid)->findLetterAt23(a, b);
     }

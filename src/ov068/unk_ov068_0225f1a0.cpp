@@ -669,14 +669,14 @@ s32 VillagerTalk_begin(void *, void *, s32);
 void *NpcActor_getPlayerActor(void *, s32);
 void ActorTalkRequest_setTalkPlayer(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *, void *);
-void TalkRepeat_Count();
+void TalkRepeat_Count(void *t);
 void Villager_ClearTalkUrge(void *);
 s32 Villager_GetWhereabouts(void *);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 s32 VillagerStates_GetBirthdayHost();
 s32 Villager_GetIndex(void *);
-s32 TalkRepeat_StartWindow();
+void TalkRepeat_StartWindow(void *t);
 void Villager_AddTalkUrge(void *, s32);
 s32 Character_setTalkStartMode0(void *);
 s32 func_0201b08c(void *, u32, u32);
@@ -856,7 +856,7 @@ void *HeldToolModel_getModel(void *);
 void AnimFrameCtrl_setup(void *, s32, s32, s32, s32);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void Snd_SeEmitterPlayOneShotAlt(void *, s32, s32, s32);
-void Npc_GetStateHeldItem(void *);
+void Npc_GetStateHeldItem(void *, void *);
 void VillagerActor_setFlag834(void *);
 void VillagerTalk_setSpeakerStateUnk(void *, void *);
 void VillagerMood_disableEffects(void *);
@@ -1173,8 +1173,8 @@ s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 s32 FieldVillagerAi_SetResumeState(void *, s32);
 s32 NpcFootstepFx_playFootstepSe(void *, void *);
 void *Villager_GetState(void *);
-void Villager_GetIndex(void *);
-s32 VillagerHouse_TryOpenDoorForExit();
+s32 Villager_GetIndex(void *);
+s32 VillagerHouse_TryOpenDoorForExit(s32 a);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, s32, s32);
 void VillagerState_SetRole(void *, s32);
 void VillagerState_SetPresence(void *, s32);
@@ -1342,7 +1342,7 @@ void FieldPos_SnapToUnitCenter(void *, void *);
 s32 Vec_DistXZ(void *, void *);
 s32 NpcActor_getNpcIndex(void *);
 s32 FieldAction_RequestPitfallAt(s32, void *);
-s32 FieldAction_PollResult();
+s32 FieldAction_PollResult(s32 idx);
 void FieldAction_Release(s32);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 s32 BlockMap_IsBuriedAtUnit(void *, s32, s32);
@@ -1482,14 +1482,14 @@ s32 VillagerTalk_begin(void *, void *, s32);
 void *NpcActor_getPlayerActor(void *, s32);
 void ActorTalkRequest_setTalkPlayer(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *, void *);
-void TalkRepeat_Count();
+void TalkRepeat_Count(void *t);
 void Villager_ClearTalkUrge(void *);
 s32 Villager_GetWhereabouts(void *);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 s32 VillagerStates_GetBirthdayHost();
 s32 Villager_GetIndex(void *);
-s32 TalkRepeat_StartWindow();
+void TalkRepeat_StartWindow(void *t);
 void Villager_AddTalkUrge(void *, s32);
 s32 Character_setTalkStartMode0(void *);
 s32 func_0201b08c(void *, u32, u32);
@@ -4137,7 +4137,7 @@ BOOL FieldVillagerAi_TryFallInPitfall(void *self, FieldVillager *o) {
             q.y = b;
             s32 idx = FieldAction_RequestPitfallAt((s8)NpcActor_getNpcIndex(o), &q);
             if (idx >= 0) {
-                if (FieldAction_PollResult() == 1) {
+                if (FieldAction_PollResult(idx) == 1) {
                     r = TRUE;
                 }
                 FieldAction_Release(idx);
@@ -4682,8 +4682,7 @@ void FieldVillagerAiLeaveHouse::leaveHouseStep0(FieldVillager *o) {
     using namespace ns_02263600;
     void *ow = o->getVillagerData();
     void *r6 = Villager_GetState(ow);
-    Villager_GetIndex(ow);
-    if (VillagerHouse_TryOpenDoorForExit() != 0) {
+    if (VillagerHouse_TryOpenDoorForExit(Villager_GetIndex(ow)) != 0) {
         NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 2, 0x3d, 1, 1, 0);
         *(Unk_ov068_02263b90_Fn *)((u8 *)o + 0x8ac) = data_ov068_0226f910;
         VillagerState_SetRole(r6, 1);
@@ -6049,7 +6048,7 @@ s32 FieldVillagerAiBirthdayInvite::execBirthdayInvite(FieldVillager *o) {
 BOOL FieldVillagerAiTakeOut::enterTakeOutItem(FieldVillager *o) {
     using namespace ns_02260f90;
     u16 pos[2];
-    Npc_GetStateHeldItem(pos);
+    Npc_GetStateHeldItem(pos, o);
     FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     if (Unk_ov068_02261118_InRange(&pos[0])) {
@@ -6131,7 +6130,7 @@ s32 FieldVillagerAiTakeOut::execTakeOutItem(FieldVillager *o) {
 BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
     using namespace ns_02260f90;
     u16 pos[2];
-    Npc_GetStateHeldItem(pos);
+    Npc_GetStateHeldItem(pos, o);
     FieldVillager_StopEmotion(o);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     if (Unk_ov068_02261118_InRange(&pos[0])) {
@@ -6908,8 +6907,9 @@ void FieldVillager::onInteractionEvent(u32 idx, u8 v) {
             }
         }
         if (talkType == 0) {
-            if (FieldVillager_GetTalkRepeat(this)) {
-                TalkRepeat_Count();
+            s32 rep = FieldVillager_GetTalkRepeat(this);
+            if (rep) {
+                TalkRepeat_Count((void *)rep);
             }
         }
         FieldVillagerAi_ChangeState(&ai, this, 8);
@@ -6981,8 +6981,9 @@ void FieldVillager::onInteractionEvent(u32 idx, u8 v) {
             if (FieldVillagerAi_Resume(&ai, this) == 0) {
                 FieldVillagerAi_ChangeState(&ai, this, 0);
             }
-            if (FieldVillager_GetTalkRepeat(this)) {
-                TalkRepeat_StartWindow();
+            s32 rep = FieldVillager_GetTalkRepeat(this);
+            if (rep) {
+                TalkRepeat_StartWindow((void *)rep);
             }
         }
         Character_setTalkStartMode0(this);
