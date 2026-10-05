@@ -8,6 +8,9 @@ dsd's objects need two fixes before GNU ld links them correctly:
     resolves them to 0 (a `bl` becomes a `nop`, a pointer in a literal pool becomes 0). The copy orders the table
     locals first, sets sh_info, renumbers the relocations, and makes the undefined references strong, so that a
     missing symbol is a link error instead of a silent 0.
+  * the relocations are RELA (addend in the relocation); ARM objects are REL and GNU ld ignores RELA addends
+    there (`gWeatherManager + 0x1000` became `gWeatherManager`). The copy converts them to REL: the addend goes
+    into the word (R_ARM_ABS32) or the branch offset (R_ARM_PC24).
 Usage: modern_gap.py <in.o> <out.o>
 """
 import struct
@@ -57,6 +60,30 @@ def main():
                 r_info, = struct.unpack_from("<I", data, off + 4)
                 sym, typ = r_info >> 8, r_info & 0xff
                 struct.pack_into("<I", data, off + 4, (new_index[sym] << 8) | typ)
+
+    for sec in sections:
+        if sec["type"] != SHT_RELA:
+            continue
+        target = sections[sec["info"]]
+        entries = []
+        for off in range(sec["offset"], sec["offset"] + sec["size"], 12):
+            r_offset, r_info, r_addend = struct.unpack_from("<IIi", data, off)
+            typ = r_info & 0xff
+            where = target["offset"] + r_offset
+            if typ == 2:  # R_ARM_ABS32
+                word, = struct.unpack_from("<I", data, where)
+                struct.pack_into("<I", data, where, (word + r_addend) & 0xffffffff)
+            elif typ == 1:  # R_ARM_PC24
+                insn, = struct.unpack_from("<I", data, where)
+                struct.pack_into("<I", data, where, (insn & 0xff000000) | ((r_addend >> 2) & 0x00ffffff))
+            else:
+                sys.exit(f"modern_gap.py: {sys.argv[1]}: relocation type {typ} not handled")
+            entries.append((r_offset, r_info))
+        for k, (r_offset, r_info) in enumerate(entries):
+            struct.pack_into("<II", data, sec["offset"] + 8 * k, r_offset, r_info)
+        struct.pack_into("<I", data, sec["hdr"] + 4, SHT_REL)
+        struct.pack_into("<I", data, sec["hdr"] + 20, 8 * len(entries))
+        struct.pack_into("<I", data, sec["hdr"] + 36, 8)
 
     Path(sys.argv[2]).parent.mkdir(parents=True, exist_ok=True)
     Path(sys.argv[2]).write_bytes(data)
