@@ -4406,7 +4406,7 @@ BOOL VillagerTalkTopics::selectApNickn() {
     u32 v;
     Clock_GetDate(&v);
     if (unk_128_p != 0 && _ZN14VillagerMemory13getFriendshipEv(unk_128_p) >= 0 && SaveVillagers_IsNicknameCooldownOver(gSaveVillagers, &v)) {
-        Talk_SelectTopicMessage(this, &topicFile, &topicIndex, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(actor->villagerData)), (*(TalkTopic *)&sTalkTopicApNickn).key, (*(TalkTopic *)&sTalkTopicApNickn).variantCount, 0, 0);
+        Talk_SelectTopicMessage(this, &topicFile, &topicIndex, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(actor->villagerData)), (*(TalkTopic *)nZ::sTalkTopicApNickn).key, (*(TalkTopic *)nZ::sTalkTopicApNickn).variantCount, 0, 0);
         ((VillagerTalk *)this)->setTopicFns((VillagerTalkTopicFns *)((u8 *)&nZ::sApSubTopics[6]));
         return TRUE;
     }

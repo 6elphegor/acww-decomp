@@ -7,12 +7,12 @@
 struct LetterView;
 
 // 0x210-byte letter renderer: LetterLayout plus the recipient name metrics. Defined in src/main/unk_0206cbdc.cpp; the
-// constructor/destructor (0x0206d438 / 0x0206d40c) are in src/main/unk_0206d3f4.cpp.
+// constructor/destructor (0x0206d438 / 0x0206d40c) are in src/main/unk_0206d3f4.cpp. highlightGreeting is defined in unk_0206cbdc.cpp as
+// an extern "C" function under its mangled name (it takes a third argument its symbol doesn't show).
 class LetterRenderer : public LetterLayout {
 public:
     LetterRenderer();
     ~LetterRenderer();
-    void highlightGreeting(u32 a, u32 b);
     void setSignature(u8 *data);
     void setBody(u8 *src, BOOL flag);
     void setGreeting(LetterView *src, u8 *out);

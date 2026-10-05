@@ -145,11 +145,7 @@ public:
     u8 pad_82c[0x8b4 - 0x82c];
     Mtx part8Mtx;
     u8 pad_8e4[0xef0 - 0x8e4];
-    u8 partVisible[4];
-    u8 part4Visible;
-    u8 pad_ef5;
-    u8 part6Visible;
-    u8 pad_ef7[2];
+    u8 partVisible[9];
     u8 modelVisible;
     u8 pad_efa[2];
     s32 serveState;
@@ -478,12 +474,12 @@ BOOL CafeCoffeeSet::onExecute() {
     if (o->pourEffect != -1) {
         Effect_SetPosition(o->pourEffect, (u8 *)o + 0xf10, 0, 0);
     }
-    if (o->part4Visible != 0) {
+    if (o->partVisible[4] != 0) {
         if (o->part4Effect == -1) {
             o->part4Effect = Effect_CreateById(0x6b, (u8 *)o + 0xf1c, (u8 *)o + 0xf34, 0);
         }
     }
-    if (o->part6Visible != 0) {
+    if (o->partVisible[6] != 0) {
         if (o->part6Effect == -1) {
             o->part6Effect = Effect_CreateById(0x6b, (u8 *)o + 0xf28, (u8 *)o + 0xf36, 0);
         }
