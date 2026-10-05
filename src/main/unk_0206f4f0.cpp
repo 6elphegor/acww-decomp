@@ -32,8 +32,8 @@ BOOL LetterDelivery_HasFreeOutgoingSlot(void);
 void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
-void BottleLetterRecord_GetLetter(void *p);
-void Letter_Clear();
+void *BottleLetterRecord_GetLetter(void *p);
+void Letter_Clear(void *self);
 void *TownExchange_GetLetter(void *p);
 void Letter_Copy(void *p, void *q);
 void _ZN18TownExchangeRecord12resetCounterEv(void *p);
@@ -146,8 +146,7 @@ extern "C" void CommSub_RecvBottleLetter(u8 *p) {
 }
 
 extern "C" void CommSub_ClearBottleLetter() {
-    BottleLetterRecord_GetLetter(data_021eceac);
-    Letter_Clear();
+    Letter_Clear(BottleLetterRecord_GetLetter(data_021eceac));
 }
 
 extern "C" u8 CommSub_GetPostReply() { return sCommSubPostReply; }

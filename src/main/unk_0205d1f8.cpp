@@ -19,7 +19,7 @@ extern u8 *gCommManager;
 extern CharaFaceAnimWorkPool sCharaFaceAnimWorkPool;
 
 void CharaFaceAnimWorkHeap_Destroy();
-void CharaFaceAnimWorkHeap_Create();
+void CharaFaceAnimWorkHeap_Create(void *parent);
 void *FrameHeap_Create(u32 size, void *heap);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
@@ -33,8 +33,8 @@ u32 CharaFaceAnimWork_GetHeapSize();
 }
 
 
-extern "C" void CharaFaceAnimWorkPool_Create() {
-    CharaFaceAnimWorkHeap_Create();
+extern "C" void CharaFaceAnimWorkPool_Create(void *parent) {
+    CharaFaceAnimWorkHeap_Create(parent);
     sCharaFaceAnimWorkPool.createHeaps();
     if (gCharaFaceAnimWorkHeap) Heap_adjust(gCharaFaceAnimWorkHeap);
 }

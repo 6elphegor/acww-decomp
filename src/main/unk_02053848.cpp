@@ -43,7 +43,7 @@ struct NNSG3dResJntAnm {
 
 extern "C" {
 void MTX_Identity33_(void *p);
-s32 func_01ffcc10(void);
+s32 func_01ffcc10(void *a, void *o);
 void _ZN10JointBlend5startEi(void *p, s32 v);
 s32 _ZN10JointBlend7advanceEv(void *p);
 void _ZN10JointBlend11capturePoseEP8NNSG3dRS(void *p, void *q);
@@ -481,7 +481,7 @@ void BlendAnimModel::captureJointPose(BlendAnimModel *x)
 
 void BlendAnimModel::onJointCalcPre(BlendAnimModel *x)
 {
-    if (func_01ffcc10() == 0) {
+    if (func_01ffcc10(this, x) == 0) {
         captureJointPose(x);
     }
 }
@@ -505,7 +505,7 @@ void BlendAnimModel::applyJointBlend(BlendAnimModel *x)
 
 void BlendAnimModel::onJointCalcPost(BlendAnimModel *x)
 {
-    if (func_01ffcc10() == 0) {
+    if (func_01ffcc10(this, x) == 0) {
         applyJointBlend(x);
     }
 }
@@ -583,7 +583,7 @@ void TwoLayerAnimModel::captureLayer2Pose(NNSG3dRS *m) {
 }
 
 void TwoLayerAnimModel::onJointCalcPreLayer2(NNSG3dRS *m) {
-    if (func_01ffcc10() == 0) {
+    if (func_01ffcc10(this, m) == 0) {
         if (isLayer2Joint(m->c[1])) {
             AnimModel_SwitchAnmObj(this, layer2AnmObj);
             captureLayer2Pose(m);
@@ -606,7 +606,7 @@ void TwoLayerAnimModel::applyLayer2Blend(NNSG3dRS *m) {
 }
 
 void TwoLayerAnimModel::onJointCalcPostLayer2(NNSG3dRS *m) {
-    if (func_01ffcc10() == 0) {
+    if (func_01ffcc10(this, m) == 0) {
         if (isLayer2Joint(m->c[1])) {
             applyLayer2Blend(m);
         } else {
@@ -735,7 +735,7 @@ void ThreeLayerAnimModel::captureLayer3Pose(NNSG3dRS *m) {
 }
 
 void ThreeLayerAnimModel::onJointCalcPreLayer3(NNSG3dRS *m) {
-    if (func_01ffcc10() == 0) {
+    if (func_01ffcc10(this, m) == 0) {
         u32 t = m->c[1];
         u32 v;
         if (t >= 0x20) {
@@ -776,7 +776,7 @@ void ThreeLayerAnimModel::applyLayer3Blend(NNSG3dRS *m) {
 }
 
 void ThreeLayerAnimModel::onJointCalcPostLayer3(NNSG3dRS *m) {
-    if (func_01ffcc10() == 0) {
+    if (func_01ffcc10(this, m) == 0) {
         u32 x = layer3JointMaskHi | (layer3JointMask | (layer2JointMask | layer2JointMaskHi));
         if (x == 0) {
             applyJointBlend((BlendAnimModel *)m);

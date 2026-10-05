@@ -2351,7 +2351,7 @@ s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFishReelIn(Obj *o, s32 a, s32 b, s32 c);
-s32 FishShadow_OnRodPulled();
+s32 FishShadow_OnRodPulled(void *o);
 s32 FieldFish_ScareAround(void *p, s32 a);
 s32 PlayerActor_AxeBrokenMessageUpdate(Obj *o);
 
@@ -6689,8 +6689,9 @@ extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o) {
     PlayerActor_FishWaitOnBobberLand(o);
     if (HeldItemModel_IsBobberLanded((u8 *)&o->heldItemModel)) {
         if (Unk_02006d14_testActionFlag(o, 0xb)) {
-            if (FishBobber_getFish((u8 *)&o->heldItemModel.bobber)) {
-                FishShadow_OnRodPulled();
+            s32 fish = FishBobber_getFish((u8 *)&o->heldItemModel.bobber);
+            if (fish) {
+                FishShadow_OnRodPulled((void *)fish);
             } else {
                 FieldFish_ScareAround((V3 *)&o->heldItemModel.bobber.pos, 0x1000);
             }

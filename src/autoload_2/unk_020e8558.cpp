@@ -42,7 +42,7 @@ public:
     virtual u32 doGetMaxFreeBlockSize();
     virtual u32 vfunc_3c(s32 align);
     virtual u32 getTotalFreeSize();
-    virtual void *changeGroupId();
+    virtual void *changeGroupId(u16 id);
     virtual void *getGroupId();
     virtual void *doAdjust();
 };
@@ -67,7 +67,7 @@ public:
     virtual u32 doGetMaxFreeBlockSize();
     virtual u32 vfunc_3c(s32 align);
     virtual u32 getTotalFreeSize();
-    virtual void *changeGroupId();
+    virtual void *changeGroupId(u16 id);
     virtual void *getGroupId();
     virtual void *doAdjust();
 
@@ -85,12 +85,12 @@ u32 OS_GetProcMode(void); // OS_GetProcMode
 void Fatal_Trap(void); // Thumb, in main: fatal stop
 void *NNS_FndAdjustFrmHeap(void *heap);
 u32 NNS_FndGetGroupIDForExpHeap(void *heap);
-u32 NNS_FndSetGroupIDForExpHeap(void *heap);
+u32 NNS_FndSetGroupIDForExpHeap(void *heap, u16 id);
 u32 NNS_FndGetSizeForMBlockExpHeap(void *p);
 u32 NNS_FndFreeToFrmHeap(void *heap, s32);
 void NNS_FndVisitAllocatedForExpHeap(void *heap, void (*visitor)(void *block, void *heap, u32 param), u32 param);
 void NNS_FndFreeToExpHeap(void *heap, void *p); // NNS_FndFreeToExpHeap
-void *NNS_FndResizeForMBlockFrmHeap(void *heap);
+u32 NNS_FndResizeForMBlockFrmHeap(void *heap, u32 mem, u32 size);
 s32 NNS_FndResizeForMBlockExpHeap(void *heap, void *p, u32 size); // NNS_FndResizeForMBlockExpHeap
 u32 NNS_FndGetAllocatableSizeForFrmHeapEx(void *heap, s32 align); // NNS_FndGetAllocatableSizeForFrmHeapEx
 u32 NNS_FndGetTotalFreeSizeForExpHeap(void *heap); // NNS_FndGetTotalFreeSizeForExpHeap
@@ -442,7 +442,7 @@ s32 ExpHeap::doResize(void *p, u32 size) {
 }
 
 s32 FrameHeap::doResize(void *p, u32 size) {
-    return (s32)NNS_FndResizeForMBlockFrmHeap(heapHandle);
+    return (s32)NNS_FndResizeForMBlockFrmHeap(heapHandle, (u32)p, size);
 }
 
 void Heap::free(void *p) {
@@ -490,11 +490,11 @@ u32 FrameHeap::vfunc_30(void *p) {
     return (u32)-1;
 }
 
-void *ExpHeap::changeGroupId() {
-    return (void *)NNS_FndSetGroupIDForExpHeap(heapHandle);
+void *ExpHeap::changeGroupId(u16 id) {
+    return (void *)NNS_FndSetGroupIDForExpHeap(heapHandle, id);
 }
 
-void *FrameHeap::changeGroupId() {
+void *FrameHeap::changeGroupId(u16 id) {
     return NULL;
 }
 

@@ -190,8 +190,8 @@ extern "C" char data_ov105_02298524[];
 extern "C" const char *sLetterStoragePageChars[3];
 
 extern "C" void InventoryItemGrid_DrawPocketsClipped(void *p, s32 a, s32 b, u32 c);
-extern "C" void _ZN17LetterStorageMenu14dropHeldOnSlotEj(void *self);
-extern "C" void _ZN17LetterStorageMenu14pickUpAndFlyToEjjj(void *self, u32 a, u32 b);
+extern "C" void _ZN17LetterStorageMenu14dropHeldOnSlotEj(void *self, u32 a);
+extern "C" void _ZN17LetterStorageMenu14pickUpAndFlyToEjjj(void *self, u32 a, u32 b, u32 c);
 
 typedef void (LetterStorageMenu::*Unk_ov105_02298594_Fn)();
 
@@ -1073,7 +1073,12 @@ void LetterStorageMenu::mainAct07() {
                             t = s->findFreePocketSlot();
                         }
                         if (t != 0x41) {
-                            _ZN17LetterStorageMenu14pickUpAndFlyToEjjj(s, s->cursorSlot, t);
+#ifdef MODERN
+                            _ZN17LetterStorageMenu14pickUpAndFlyToEjjj(s, s->cursorSlot, t, 0); // c unused by pickUpAndFlyTo
+#else
+                            // the original leaves c as whatever findFree*Slot left in r3
+                            ((void (*)(void *, u32, u32))_ZN17LetterStorageMenu14pickUpAndFlyToEjjj)(s, s->cursorSlot, t);
+#endif
                             s->nameBalloon.hide(1);
                             s->setFlags(0x1000);
                         }
@@ -1266,7 +1271,7 @@ void LetterStorageMenu::mainAct12() {
     if (s->cursor.isGripping() == 0) {
         u32 a = s->targetSlot;
         if (s->cursorSlot == a) {
-            _ZN17LetterStorageMenu14dropHeldOnSlotEj(s);
+            _ZN17LetterStorageMenu14dropHeldOnSlotEj(s, a);
             s->updateBalloonForCursor();
             s->setMainState(7);
             Inventory_PlayPutDownSe();

@@ -52,7 +52,7 @@ void memmove(void *, void *, u32);
 s32 atol(const char *);
 s32 strncmp(const char *, const char *, u32);
 void memset(void *, s32, u32);
-void srand();
+void srand(u32 seed);
 
 s32 gpiReset(GPConnection *h);
 s32 gpiDestroy(GPConnection *h);
@@ -103,8 +103,7 @@ s32 gpiInitialize(GPConnection *h, s32 a, s32 b) {
         }
     }
     SocketStartUp();
-    current_time();
-    srand();
+    srand(current_time());
     *h = c;
     return 0;
 }

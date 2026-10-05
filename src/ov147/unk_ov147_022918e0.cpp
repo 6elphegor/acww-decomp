@@ -137,8 +137,8 @@ void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void TalkRequestFlags_ClearSceneHold();
 void GameStart_SetupSave();
-void PlayerOptions_Get();
-void _ZN13PlayerOptions5resetEv();
+void *PlayerOptions_Get();
+void _ZN13PlayerOptions5resetEv(void *self);
 void TalkRequestFlags_SetSceneHold();
 s32 Main_TakeDwcInitResult();
 s32 Save_CheckBackupError();
@@ -260,8 +260,7 @@ TitleScreen::~TitleScreen() {}
 
 BOOL TitleScreen::onCreate() {
     talk.setOwner(this);
-    PlayerOptions_Get();
-    _ZN13PlayerOptions5resetEv();
+    _ZN13PlayerOptions5resetEv(PlayerOptions_Get());
     TalkRequestFlags_SetSceneHold();
     if (Main_TakeDwcInitResult() == 3) {
         wifiIdErased = 1;

@@ -308,11 +308,11 @@ void *FrameHeap_Create(s32, void *);
 void *Heap_AllocAligned(void *, s32, s32);
 void File_LoadToBuffer(void *, void *, s32);
 void SpNpcAnimPoolHeap_Destroy();
-void SpNpcAnimPoolHeap_Create();
+void SpNpcAnimPoolHeap_Create(void *parent);
 void VillagerAnimPoolHeap_Destroy();
-void VillagerAnimPoolHeap_Create();
+void VillagerAnimPoolHeap_Create(void *parent);
 void NpcTexPatBufHeap_Destroy();
-void NpcTexPatBufHeap_Create();
+void NpcTexPatBufHeap_Create(void *parent);
 void NpcModelHeap_Destroy();
 void NpcModelHeap_Create(void *);
 s32 NpcSpawn_GetSpNpcSlotCount();
@@ -542,7 +542,7 @@ void *VillagerPlanBlock_GetPlan(void *p);
 BOOL _ZN12VillagerPlan20isTrendOlderThanWeekEPv(void *a, void *b);
 void Clock_GetDateTime(void *p);
 void Villager_RecordPlayerActivity(void *o, u32 kind, s32 v);
-VillagerActor *NpcRegistry_FindVillagerByHandle();
+VillagerActor *NpcRegistry_FindVillagerByHandle(void *a);
 BOOL MapBlock_HasAllAttr(void *cell, s32 v);
 void _ZN12VillagerDataD1Ev(void *p);
 void _ZN12VillagerDataC1Ev(void *p);
@@ -986,7 +986,7 @@ BOOL SaveVillagers_ShouldAssignErrands(void *p);
 s32 PlayerData_GetCurrent(void *p);
 s32 Errand_GetClassIndex(u32 *o, u32 v);
 u32 Villager_GetErrandKind(void *b, void *p, s32 a);
-s32 Errand_GetClass();
+s32 Errand_GetClass(u32 x);
 s32 VillagerPlanBlock_GetPlan(s32 p);
 s32 _ZN12VillagerPlan8hasTrendEv(s32 p);
 s32 _ZN12VillagerPlan13getStateGroupEv(s32 p);
@@ -1352,7 +1352,7 @@ s32 _ZN10VillagerId7isValidEv(void *);
 void _ZN6LetterC1Ev(void *);
 void _ZN6LetterD1Ev(void *);
 u32 VillagerId_GetPersonality(void *);
-u32 LetterPaper_PickForPersonality(void);
+u32 LetterPaper_PickForPersonality(u32 i);
 void _ZN10VillagerId12makeFileNameEPvjj(void *, void *, s32, void *);
 void Letter_ComposeVillagerMail(void *, u8 *, void *, u8 *, void *, void *, s32);
 void Letter_ComposeVillagerMailZ(void *, u8 *, u8 *, u8 *, u8 *, void *, u8 *, void *, void *, s32);
@@ -1367,7 +1367,7 @@ void *Villager_FindMemory(void *, void *);
 void *_ZN10PlayerData24getForeignVillagerRecordEv(void *);
 void *_ZN14VillagerMemory13getFriendshipEv(void *);
 s32 _ZN21ForeignVillagerRecord5offerEPviS0_(void *, void *, void *, void *);
-s32 _ZN14VillagerMemory20setFleaMarketVisitedEv(void);
+s32 _ZN14VillagerMemory20setFleaMarketVisitedEv(void *self);
 void Clock_GetDateTime(void *);
 s32 Personality_IsAsleep(u32, void *);
 void _ZN14VillagerMemory16clearTalkedTodayEv(void *);
@@ -1571,7 +1571,7 @@ static inline BOOL Unk_0207d774_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 namespace Unk_0207d67c_Ns {
-extern "C" s32 ImpressionCond_AllFishCaught(void);
+extern "C" s32 ImpressionCond_AllFishCaught(s32 a, s32 b, s32 c);
 }
 static inline BOOL Unk_0207dd24_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 static inline BOOL Unk_0207dd24_Check(u16 *p) {
@@ -1638,7 +1638,7 @@ void *BlockMap_GetItemPtr(void *m, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 extern u8 gSaveVillagers[];
 extern u8 gFieldSceneKind[];
 extern void *gSceneBlockMap;
-BOOL ImpressionCond_HalfFishCaught(void);
+BOOL ImpressionCond_HalfFishCaught(s32 a, s32 b, s32 c);
 s32 ImpressionCond_AllInsectsCaught(void);
 BOOL ImpressionCond_HalfInsectsCaught(s32 a, s32 b, s32 c);
 BOOL ImpressionCond_FriendshipVeryHigh(s32 a, s32 b);
@@ -1910,7 +1910,7 @@ s32 DateTime_DiffMinutes(void *, void *);
 s32 _ZN8PlayerId6equalsEPS_(u32, void *);
 void __register_global_object(void *, void *, void *);
 void _ZN8PlayerIdC1Ev();
-u32 Villager_GetFurnitureTasteIndex();
+u32 Villager_GetFurnitureTasteIndex(VillagerData *self);
 u8 Furniture_ScoreAttribute(u32, u32, u32);
 u32 Date_GetStarSignOf(u8 *);
 u32 SaveVillagers_GetUnk3830Index(u32);
@@ -2198,7 +2198,7 @@ extern u8 gNpcActorRegistry[];
 extern CommManager *gCommManager;
 void _ZN14VillagerMemory13addFriendshipEi(void *p, s32 v);
 void _ZN14VillagerMemory11setTownTuneEPx(void *p, void *q);
-s32 DateTime_IsInvalid();
+s32 DateTime_IsInvalid(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffDays(void *a, void *b);
 void Clock_GetDateTime(void *p);
@@ -3542,7 +3542,7 @@ extern "C" BOOL VillagerMemory_UpdateTalkStreak(VillagerMemory *self, u8 *p) {
     u8 *q = VillagerMemory_GetTalkDate((u8 *)self);
     u16 v = 0;
     BOOL r = 0;
-    if (DateTime_IsInvalid() == 0) {
+    if (DateTime_IsInvalid(q) == 0) {
         if (DateTime_Compare(p, q, 0x3f) == 1) {
             s32 t = DateTime_DiffDays(q, p);
             if (t == 0) {
@@ -4539,7 +4539,7 @@ extern "C" u8 *Villager_GetFurnitureTaste(VillagerMemory *t, u32 i) {
 
 namespace nN {
 extern "C" u8 Villager_GetFurnitureTasteScore(u32 a, u32 b) {
-    u8 *p = Villager_GetFurnitureTaste((VillagerMemory *)a, Villager_GetFurnitureTasteIndex());
+    u8 *p = Villager_GetFurnitureTaste((VillagerMemory *)a, Villager_GetFurnitureTasteIndex((VillagerData *)a));
     if (p != NULL) {
         return Furniture_ScoreAttribute(b, p[0], p[1]);
     }
@@ -6338,8 +6338,8 @@ extern "C" s32 ImpressionCond_AllInsectsCaught(void) { return Catalog_HasAllInse
 }
 
 namespace nK {
-extern "C" BOOL ImpressionCond_HalfFishCaught(void) {
-    if (Unk_0207d67c_Ns::ImpressionCond_AllFishCaught() == 0) {
+extern "C" BOOL ImpressionCond_HalfFishCaught(s32 a, s32 b, s32 c) {
+    if (Unk_0207d67c_Ns::ImpressionCond_AllFishCaught(a, b, c) == 0) {
         s32 h = (u32)Catalog_GetFishTotal() >> 1;
         if (Catalog_CountFish() >= h) return TRUE;
         return FALSE;
@@ -7124,7 +7124,8 @@ extern "C" s32 Villager_IsAsleep(void *a, void *b) {
 
 namespace nI {
 extern "C" void Villager_SetFleaMarketVisited(void *a, void *b) {
-    if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a)) && _ZN8PlayerId7isValidEv(b) && Villager_FindMemory(a, b)) _ZN14VillagerMemory20setFleaMarketVisitedEv();
+    void *m;
+    if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a)) && _ZN8PlayerId7isValidEv(b) && (m = Villager_FindMemory(a, b)) != 0) _ZN14VillagerMemory20setFleaMarketVisitedEv(m);
 }
 }
 
@@ -7156,8 +7157,7 @@ extern "C" s32 Villager_SendLetter4(void *a, u32 b, void *c, void *d, void *e, u
     u32 v1, v2, v3, v4;
     if (_ZN8PlayerId7isValidEv(d) && _ZN10VillagerId7isValidEv(e)) {
         _ZN6LetterC1Ev(obj);
-        VillagerId_GetPersonality(e);
-        buf[0] = LetterPaper_PickForPersonality();
+        buf[0] = LetterPaper_PickForPersonality(VillagerId_GetPersonality(e));
         v1 = b + Random_GlobalBelow((u32)c);
         v2 = b + Random_GlobalBelow((u32)c);
         v3 = b + Random_GlobalBelow((u32)c);
@@ -7188,8 +7188,7 @@ extern "C" s32 Villager_SendLetter(void *a, u32 b, void *c, void *d, u16 *e) {
     u32 obj[0x3d];
     if (_ZN8PlayerId7isValidEv(c) && _ZN10VillagerId7isValidEv(d)) {
         _ZN6LetterC1Ev(obj);
-        VillagerId_GetPersonality(d);
-        buf[0] = LetterPaper_PickForPersonality();
+        buf[0] = LetterPaper_PickForPersonality(VillagerId_GetPersonality(d));
         _ZN10VillagerId12makeFileNameEPvjj(d, sVillagerLetterPath, 0x28, a);
         buf[1] = b;
         Letter_ComposeVillagerMail(obj, &buf[1], sVillagerLetterPath, buf, d, c, 1);
@@ -8618,7 +8617,7 @@ extern "C" void SaveVillagers_AssignErrands(void *bb) {
             if (((VillagerId *)_ZN12VillagerData13getVillagerIdEv(p))->isValid() && Villager_GetResidentStatus(p) == 3 && i != self) {
                 u32 t = Villager_GetErrandKind(b, p, a);
                 if (t < 0x16) {
-                    if (Errand_GetClass() == 1) {
+                    if (Errand_GetClass(t) == 1) {
                         if (Errand_GetClassIndex(&idx, t)) {
                             sErrandVillagerDone[i] = 1;
                             r4--;
@@ -10267,7 +10266,7 @@ extern "C" void func_020789a8() {}
 
 namespace nB {
 extern "C" BOOL Villager_IsActorInBox(u16 *h, s32 x0, s32 x1, s32 z0, s32 z1) {
-    VillagerActor *o = NpcRegistry_FindVillagerByHandle();
+    VillagerActor *o = NpcRegistry_FindVillagerByHandle(h);
     if (o != NULL && o->isPickable()) {
         s32 *pos = &o->position.x;
         BOOL result = FALSE;
@@ -11015,8 +11014,8 @@ extern "C" void _ZN16NpcTexPatBufPoolD1Ev() {}
 }
 
 namespace nA {
-extern "C" void NpcTexPatBufs_Create(void *) {
-    NpcTexPatBufHeap_Create();
+extern "C" void NpcTexPatBufs_Create(void *parent) {
+    NpcTexPatBufHeap_Create(parent);
     NpcTexPatBufPool_Alloc(sNpcTexPatBufPool);
     if (gNpcTexPatBufHeap != 0) {
         Heap_adjust(gNpcTexPatBufHeap);
@@ -11076,8 +11075,8 @@ extern "C" void _ZN20VillagerAnimHeapPoolD1Ev() {}
 }
 
 namespace nA {
-extern "C" void VillagerAnimHeaps_Create(void *) {
-    VillagerAnimPoolHeap_Create();
+extern "C" void VillagerAnimHeaps_Create(void *parent) {
+    VillagerAnimPoolHeap_Create(parent);
     VillagerAnimHeapPool_Alloc(sVillagerAnimHeapPool);
     if (gVillagerAnimPoolHeap != 0) {
         Heap_adjust(gVillagerAnimPoolHeap);
@@ -11139,8 +11138,8 @@ extern "C" void _ZN17SpNpcAnimHeapPoolD1Ev() {}
 }
 
 namespace nA {
-extern "C" void SpNpcAnimHeaps_Create(void *) {
-    SpNpcAnimPoolHeap_Create();
+extern "C" void SpNpcAnimHeaps_Create(void *parent) {
+    SpNpcAnimPoolHeap_Create(parent);
     SpNpcAnimHeapPool_Alloc(sSpNpcAnimHeapPool);
     if (gSpNpcAnimPoolHeap != 0) {
         Heap_adjust(gSpNpcAnimPoolHeap);

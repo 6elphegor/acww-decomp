@@ -371,8 +371,8 @@ void Ground_UnlinkUnit(s32, s32);
 s32 func_0202d928(void *);
 s32 func_0202d948(void *);
 void NpcFootstepFx_enableFootsteps(void *);
-void Scene_GetPrevious();
-s32 SceneId_IsTown();
+u8 Scene_GetPrevious();
+s32 SceneId_IsTown(u32 a);
 void HouseVisitor_SetPresent();
 void RoomScoreEvaluator_Construct(void *);
 void RoomScoreEvaluator_Destruct(void *);
@@ -419,8 +419,7 @@ BOOL HouseVisitVillager::onCreate() {
     stayTimer = -1;
     talksLeft = 3;
     leaveTalkDelay = 0xb0;
-    Scene_GetPrevious();
-    if (SceneId_IsTown() != 0) {
+    if (SceneId_IsTown(Scene_GetPrevious()) != 0) {
         setVisitState(0);
     } else if (HouseVisit_IsCalled(&talk) != 0) {
         u32 buf[6];

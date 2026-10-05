@@ -260,9 +260,9 @@ void *HouseRoomMaps_Get(s32 i);
 void *_ZN9HouseData7getRoomEi(void *p, s32 a);
 u16 *_ZN9HouseRoom12getWallpaperEPi(void *h, s32 i);
 u16 *_ZN9HouseRoom9getCarpetEPi(void *h, s32 i);
-s32 SaveVillagers_Get(void *p, s32 k);
-s32 Villager_GetCarpet();
-s32 Villager_GetWallpaper();
+void *SaveVillagers_Get(void *p, s32 k);
+u32 Villager_GetCarpet(void *a);
+u32 Villager_GetWallpaper(void *a);
 u32 MATH_CountPopulation(u32 v);
 void FtrFootprint_Init(FtrFootprintBuf *b, void *cell);
 u32 FtrFootprint_GetTileCount(FtrFootprintBuf *b);
@@ -527,8 +527,9 @@ extern "C" void *VillagerRoomScoreSource::getRoomMap(s32 i) {
 
 extern "C" void VillagerRoomScoreSource::getWallpaper(s32 a, s32 key) {
     u16 v;
-    if (SaveVillagers_Get(gSaveVillagers, key) != 0) {
-        u32 t = Villager_GetWallpaper();
+    void *vd = SaveVillagers_Get(gSaveVillagers, key);
+    if (vd != 0) {
+        u32 t = Villager_GetWallpaper(vd);
         if (t < 0x44) v = (u16)(t + 0x1100);
         else v = 0x1100;
         *(u16 *)this = v;
@@ -539,8 +540,9 @@ extern "C" void VillagerRoomScoreSource::getWallpaper(s32 a, s32 key) {
 
 extern "C" void VillagerRoomScoreSource::getCarpet(s32 a, s32 key) {
     u16 v;
-    if (SaveVillagers_Get(gSaveVillagers, key) != 0) {
-        u32 t = Villager_GetCarpet();
+    void *vd = SaveVillagers_Get(gSaveVillagers, key);
+    if (vd != 0) {
+        u32 t = Villager_GetCarpet(vd);
         if (t < 0x44) v = (u16)(t + 0x1144);
         else v = 0x1144;
         *(u16 *)this = v;

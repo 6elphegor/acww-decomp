@@ -21,13 +21,13 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData14getBankAccountEv();
+void *_ZN10PlayerData14getBankAccountEv(void *self);
 void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 MenuCtrl_GetMode();
 void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
 s32 MenuCtrl_IsButtons();
-void MenuCtrl_SetAmount();
+void MenuCtrl_SetAmount(u32 v);
 void PlayerBank_SetBalance(void *p, s32 v);
 s32 PlayerBank_GetBalance(void *p);
 void PlayerInventory_AddBells(void *p, s32 v, s32 w);
@@ -437,8 +437,7 @@ BOOL AmountEntryMenu::confirm() {
     setTransitionState(2);
     setMainState(7);
     MenuCtrl_SetResult(1);
-    NumberPad_GetValue(&numberPad);
-    MenuCtrl_SetAmount();
+    MenuCtrl_SetAmount(NumberPad_GetValue(&numberPad));
     commitAmount();
     return TRUE;
 }
@@ -510,7 +509,7 @@ void AmountEntryMenu::setupAmounts() {
     s32 lo;
     s32 m = MenuCtrl_GetMode();
     void *p = PlayerData_GetCurrent();
-    void *q = _ZN10PlayerData14getBankAccountEv();
+    void *q = _ZN10PlayerData14getBankAccountEv(p);
     switch (m) {
     case 0x38:
         hi = 0x98967f;
@@ -568,7 +567,7 @@ void AmountEntryMenu::commitAmount() {
     s32 b = NumberPad_GetTopAmount(&numberPad);
     s32 c = NumberPad_GetBottomAmount(&numberPad);
     void *p = PlayerData_GetCurrent();
-    void *q = _ZN10PlayerData14getBankAccountEv();
+    void *q = _ZN10PlayerData14getBankAccountEv(p);
     s32 m = MenuCtrl_GetMode();
     switch (m) {
     case 0x36:
