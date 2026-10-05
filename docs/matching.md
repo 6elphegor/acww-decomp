@@ -291,6 +291,11 @@ older game sources still declare game data `volatile` to reproduce a reload or a
   of caching them; the compiler then merges exactly what the original merged. for/continue loops, an entry
   pointer declared in the else block, `if (cb) { f = cb; cb = NULL; f(r, arg); }`, block-local BOOL flags and
   goto labels as in the SDK sources fixed several "register allocation" differences at once.
+* **NitroSystem C source**: the decompiled NitroSystem 071126 (github.com/ntrtwl/NitroSystem, `libraries/g2d`,
+  `g3d`, `snd`, `fnd`, ...) is a later version than the game's, but its text is usually the starting point to
+  try before any search. The CharCanvas functions `ClearArea1D` and `LetterChar`, which thousands of
+  declaration orders had not matched, compile to the original as written there; `GetTexSRTAnmSinCosVal_` needed
+  only the older `{sin, cos}` record indexing. pret's pokediamond/pokeheartgold have NitroSystem only as assembly.
 * Hardware-register writes in SDK callers are often `static inline` functions that **return the assigned value**:
   `static inline u32 G3_PolygonAttr(...) { return *(volatile u32 *)0x040004a4 = ...; }`. That reproduces the dead
   `ldr` after the store. The SDK's "Imm" register accessors read through non-volatile pointers.

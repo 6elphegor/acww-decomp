@@ -240,6 +240,10 @@ src/autoload_2/unk_02102340.c:
     complete
     .text       start:0x02102340 end:0x02102480
 
+src/autoload_2/unk_02102480.c:
+    complete
+    .text       start:0x02102480 end:0x0210269c
+
 src/autoload_2/unk_0210269c.c:
     complete
     .text       start:0x0210269c end:0x021028e0
@@ -251,6 +255,10 @@ src/autoload_2/unk_021028e0.c:
 src/autoload_2/unk_02102b04.c:
     complete
     .text       start:0x02102b04 end:0x02102cbc
+
+src/autoload_2/unk_02102cbc.c:
+    complete
+    .text       start:0x02102cbc end:0x02102f38
 
 src/autoload_2/unk_021030a0.c:
     complete
@@ -365,6 +373,10 @@ src/autoload_2/unk_02107634.c:
 src/autoload_2/unk_02107994.c:
     complete
     .text       start:0x02107994 end:0x02107ba0
+
+src/autoload_2/unk_02107ba0.c:
+    complete
+    .text       start:0x02107ba0 end:0x02107cac
 
 src/autoload_2/unk_02107cac.c:
     complete

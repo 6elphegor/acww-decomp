@@ -18,12 +18,12 @@ Every overlay and all of main are built from source, and the build reproduces th
 | ARM9 main | 100% of functions | 99.6% |
 | Overlays (148) | 100% | 100% |
 | ITCM | 97.0% | (code only) |
-| `autoload_2` (libraries) | 97.4% | 98.6% |
+| `autoload_2` (libraries) | 97.8% | 98.6% |
 | `autoload_3` (bss of main and the libraries) | | 99.9% |
 | DTCM | | 9.3% |
-| **Total** | **99.6%** | **99.8%** |
+| **Total** | **99.7%** | **99.8%** |
 
-The 14 functions still taken from the original image, and the data no source file owns yet, are listed in
+The 11 functions still taken from the original image, and the data no source file owns yet, are listed in
 [`docs/unmatched.md`](docs/unmatched.md).
 
 Names: 29,222 of the 29,319 functions (99.7%) have real names; 97 are still `func_<address>`, mostly library
