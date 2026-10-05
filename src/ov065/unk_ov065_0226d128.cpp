@@ -64,7 +64,7 @@ extern void DWCi_BM_GetWiFiInfo(void *p);
 extern void OS_LockMutex(void *m);
 extern void OS_UnlockMutex(void *m);
 extern s32 OS_InitMutex(void *m);
-extern s32 atol(void);
+extern s32 atol(const char *str);
 extern s32 strtol(const char *s, char **end, s32 base);
 extern s32 DWCi_AUTH_UpDateWiFiID(void *p, u32 v);
 extern void DWCi_AUTH_RemakeWiFiID(void *p);
@@ -396,8 +396,7 @@ s32 NasAuth_ParseResponse(void) {
     char *end = 0;
     S *g;
 
-    DwcHttp_FindField(sNasAuth->httpFields, 0x20, "httpresult");
-    s32 st = atol();
+    s32 st = atol(DwcHttp_FindField(sNasAuth->httpFields, 0x20, "httpresult"));
     if (data_0220064c == 0x22) {
         sNasAuth->resultCode = 0x4e85;
         return 0xb;

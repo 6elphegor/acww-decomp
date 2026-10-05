@@ -66,8 +66,8 @@ void Snd_SetSceneBankVariant(s32 a);
 void PlayerActor_RequestAct10();
 void PlayerActor_RequestAct05();
 s32 PlayerActor_IsChangingClothes();
-BOOL PlayerActor_RequestWearShirtAlt();
-BOOL PlayerActor_RequestWearHatAlt();
+BOOL PlayerActor_RequestWearShirtAlt(u16 *p);
+BOOL PlayerActor_RequestWearHatAlt(u16 *p);
 void ProcBase_RequestDelete(void *p);
 void *ProcBase_GetParent();
 
@@ -678,13 +678,11 @@ void PatternEditorMenu::stateRewear() {
     }
     void *p = PlayerData_GetCurrent();
     if (testFlags(0x8000)) {
-        _ZN10PlayerData8getShirtEv(p);
-        if (!PlayerActor_RequestWearShirtAlt()) return;
+        if (!PlayerActor_RequestWearShirtAlt(_ZN10PlayerData8getShirtEv(p))) return;
         clearFlags(0x8000);
     }
     if (testFlags(0x10000)) {
-        _ZN10PlayerData6getHatEv(p);
-        if (!PlayerActor_RequestWearHatAlt()) return;
+        if (!PlayerActor_RequestWearHatAlt(_ZN10PlayerData6getHatEv(p))) return;
         clearFlags(0x8000);
     }
     setTransitionState(3);

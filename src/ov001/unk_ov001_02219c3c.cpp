@@ -329,7 +329,7 @@ extern void WfcApScan_Alloc();
 extern void WfcApScan_Start();
 extern void WfcSound_Play(s32);
 extern void WfcUtil_RequestPaletteLine(void *, s32, s32);
-extern s32 WfcConfig_GetSlotStatus();
+extern u32 WfcConfig_GetSlotStatus(u32 idx);
 extern s32 WfcObj_SetModePalette(void *, s32, s32, s32);
 extern s32 WfcDialog_IsOpen();
 extern void WfcButtonBar_EnableInput();
@@ -530,7 +530,7 @@ void WfcConnSelect_HighlightSelection() {
     u32 v = b.b[sWfcConnSelectCursor];
     WfcUtil_RequestPaletteLine((void *)sWfcConnSelect->paletteFile, v, v);
     if (sWfcConnSelectCursor == 3) return;
-    s32 r = WfcConfig_GetSlotStatus();
+    s32 r = WfcConfig_GetSlotStatus(sWfcConnSelectCursor);
     if (r > 2) r = 3;
     WfcObj_SetModePalette((void *)sWfcConnSelect->slotButtons[sWfcConnSelectCursor], -1, 0, c.b[r]);
 }

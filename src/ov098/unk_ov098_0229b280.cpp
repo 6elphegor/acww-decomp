@@ -43,14 +43,18 @@ extern "C" s16 sBuryHoleAngles[16] = {0, 0x1800, -0x1800, 0};
 // other overlays
 BOOL PlayerActor_ConfirmReleaseCreature();
 BOOL PlayerActor_IsLocalReleaseWaiting();
-BOOL PlayerActor_LocalRequestReleaseCreature();
+BOOL PlayerActor_LocalRequestReleaseCreature(u32 a);
 BOOL BottleThrow_IsActive(void *p);
 void BottleThrow_SetTarget(void *p, void *q);
 void PlayerActor_LocalRequestThrowBottle();
 BOOL HeldInsect_GetStage(void *p);
 void HeldInsect_Start(u32 a, void *p);
 void HeldInsect_Release(void *p, s32 a);
+#ifdef MODERN
+void PlayerActor_LocalReleaseCatch(u8 a, s32 b, s32 c, s32 d);
+#else
 void PlayerActor_LocalReleaseCatch(s32 a);
+#endif
 BOOL FishCatch_StartRelease(void *p, s32 a, void *q);
 BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
 BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
@@ -206,7 +210,11 @@ void PocketMenu::mainAct30() {
             r1 = -1;
         }
         sendFishReleasePacket((u8)r1);
-        PlayerActor_LocalReleaseCatch(1);
+#ifdef MODERN
+        PlayerActor_LocalReleaseCatch(1, 0, 0, 0); // b, c, d unused by PlayerActor_LocalReleaseCatch
+#else
+        PlayerActor_LocalReleaseCatch(1); // the original leaves r1-r3 = garbage from sendFishReleasePacket
+#endif
         PocketMenu_StartRemoveBlink(this);
     }
 }
@@ -252,7 +260,11 @@ void PocketMenu::mainAct2C() {
         x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
-        PlayerActor_LocalReleaseCatch(0);
+#ifdef MODERN
+        PlayerActor_LocalReleaseCatch(0, 0, 0, 0); // b, c, d unused by PlayerActor_LocalReleaseCatch
+#else
+        PlayerActor_LocalReleaseCatch(0); // the original leaves r1-r3 = garbage from HeldInsect_Release
+#endif
         sendInsectReleasePacket((u8)r5, t);
         PocketMenu_StartRemoveBlink(this);
     }
@@ -441,8 +453,7 @@ void PocketMenu::actionAct21() {
 }
 
 void PocketMenu::mainAct35() {
-    PocketMenu_GetItem(this, actionTarget);
-    if (PlayerActor_LocalRequestReleaseCreature()) {
+    if (PlayerActor_LocalRequestReleaseCreature(PocketMenu_GetItem(this, actionTarget))) {
         setMainState(0x36);
     }
 }

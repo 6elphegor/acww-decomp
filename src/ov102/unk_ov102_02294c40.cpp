@@ -108,9 +108,9 @@ s32 Oam_GetObjY(void *p);
 s32 Oam_GetObjX(void *p);
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
-void PlayerData_GetCurrent();
-void PlayerData_GetDresser();
-s32 ChestStorage_GetItems();
+void *PlayerData_GetCurrent();
+u8 *PlayerData_GetDresser(void *p);
+s32 ChestStorage_GetItems(u8 *p);
 s32 Str_SPrintf(char *buf, char *fmt, ...);
 BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
 void Oam_DrawObj(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);
@@ -553,9 +553,7 @@ void ChestMenu::initMembers() {
     heldKind = 0;
     cursorSlot = 0;
     numTextLabels = 0;
-    PlayerData_GetCurrent();
-    PlayerData_GetDresser();
-    MI_CpuCopy8((void *)ChestStorage_GetItems(), storageItems, 0xb4);
+    MI_CpuCopy8((void *)ChestStorage_GetItems(PlayerData_GetDresser(PlayerData_GetCurrent())), storageItems, 0xb4);
     MenuCtrl_BackupPockets();
     currentPage = 0;
 }
@@ -1727,9 +1725,7 @@ void ChestMenu::confirm(s32 v) {
     setMainState(0xf);
     setOkLabel(1);
     MenuCtrl_SetResult(1);
-    PlayerData_GetCurrent();
-    PlayerData_GetDresser();
-    MI_CpuCopy8(storageItems, (u8 *)ChestStorage_GetItems(), 0xb4);
+    MI_CpuCopy8(storageItems, (u8 *)ChestStorage_GetItems(PlayerData_GetDresser(PlayerData_GetCurrent())), 0xb4);
 }
 
 void ChestMenu::drawPageTabs() {

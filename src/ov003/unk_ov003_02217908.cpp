@@ -41,7 +41,7 @@ extern u8 data_0213b91c[];
 extern u8 data_0213b938[];
 
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
-s32 BgMgt_GetCount();
+s32 BgMgt_GetCount(s16 *p);
 }
 Unk_ov003_022179b8_Ent BgMgt_GetEntry(u8 *obj, s32 i);
 extern "C" {
@@ -118,7 +118,7 @@ extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, VecFx32
             obj = (u8 *)FieldGround_GetBlockBgObjects(out, xx, cz + dy);
             if (obj != 0) {
                 u32 i;
-                n = BgMgt_GetCount();
+                n = BgMgt_GetCount((s16 *)obj);
                 for (i = 0; i < n; i++) {
                     Unk_ov003_022179b8_Ent e = BgMgt_GetEntry(obj, i);
                     switch (e.kind) {

@@ -521,7 +521,7 @@ u32 Model_getRenderObj(void *self);
 void ModelAnim_addToRenderObj(void *self, u32 a);
 u32 func_021065dc(u32 a);
 u32 func_021065f8(u32 a, s32 b);
-u32 func_02106654();
+u32 func_02106654(u8 *p);
 u32 func_02106670(u32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_ov004_022378e4(void *m);
@@ -4339,8 +4339,9 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
                         Str_SPrintf(buf3, "/insect/61/bug%d.nsbta", 0x3c);
                         ok = FALSE;
                         if (File_Exists(buf3)) {
-                            if (File_LoadAlloc(buf3, sp10, 4, ok)) {
-                                sp1c = func_02106670(func_02106654(), ok);
+                            s32 file = File_LoadAlloc(buf3, sp10, 4, ok);
+                            if (file) {
+                                sp1c = func_02106670(func_02106654((u8 *)file), ok);
                                 if (ModelAnim_allocMatAnm(s, *(u32 *)(r6 + 0x5c), sp10)) {
                                     ModelAnim_init(s, sp1c, ok, 0x1000, ok);
                                     ModelAnim_addToRenderObj(s, Model_getRenderObj(r6));

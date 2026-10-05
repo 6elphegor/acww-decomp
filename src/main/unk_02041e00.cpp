@@ -540,7 +540,7 @@ s32 _ZN11CommManager7isMyAidEj(void *g, s32 a);
 void *TownBlockMap_Get(void);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Random_GlobalBelow(s32 a);
-s32 Item_IsFlower(void);
+s32 Item_IsFlower(u16 *p);
 s32 Scene_GetCurrent(void);
 s32 ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
@@ -859,7 +859,7 @@ u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
 s32 _ZN15PlayerInventory9setPocketEPtij(void *, void *, s32, s32);
 s32 Random_GlobalBelow(s32);
 s32 Town_SpawnItemInAcre(void *, void *, s32, s32, s32, void *, s32);
-s32 Town_IsSandAt(void *);
+s32 Town_IsSandAt(void *p, s32 x, s32 y);
 s32 Item_RandomSeashell(void *);
 s32 Clock_GetMinuteHour(void *);
 s32 BlockMap_SetItemAtUnit(void *, void *, s32, s32, s32);
@@ -962,7 +962,7 @@ void Town_SpawnSeashellsInAcre(void *, void *, s32);
 Actor *PlayerActor_GetActor(s32);
 void TownEval_EvaluateAcreAt(void *, void *, s32, s32);
 s32 Town_SpawnItemInAcre(void *, void *, s32, s32, u32, void *, s32);
-s32 Town_IsSandAt();
+s32 Town_IsSandAt(void *p, s32 x, s32 y);
 u16 Item_RandomSeashell(void *);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 void FieldUnit_FromBlockUnit(void *, void *, s32, s32, s32, s32);
@@ -1134,7 +1134,7 @@ void Town_ClearObjectFcFdAtPos(void *a, void *b);
 void Town_BuryGyroids(void *a, void *b, s32 c, s32 d, u8 e);
 void Town_SpawnCoconut(void *a, void *b, s32 c);
 void Town_CanBuryAt();
-void Town_GetSandAttr();
+s32 Town_GetSandAttr(void *p, s32 x, s32 y);
 void *TownBlockMap_Get(void *);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 s32 PendingUnit_IndexAt(void *, s32);
@@ -1212,7 +1212,7 @@ s32 Town_SpawnBellTrees(void *a, void *b, s32 c, s32 d);
 void Town_CanSpawnWeedAt();
 void Town_CanBuryAt();
 void Town_CanSpawnCloverAt();
-void Town_IsGrass();
+BOOL Town_IsGrass(void *p, s32 x, s32 y);
 void Town_TryBreedFlowers();
 BOOL Town_IsPlantable(void *a, s32 x, s32 y);
 BOOL Town_ConvertRockInAcre(void *a, void *b, TownEvalAcre *cell, s32 d, s32 e, s32 f);
@@ -1289,10 +1289,10 @@ void BlockMap_SetBuriedAtUnit(void *b, s32 x, s32 y);
 void BlockMap_ClearBuriedAtUnit(void *b, s32 x, s32 y);
 void *Scene_GetCurrent();
 void ItemSync_SetAtUnit(s32 x, s32 y, void *r, u16 id, s32 g);
-s32 _ZN8BlockMap7isShoreEii();
-s32 _ZN8BlockMap10getDigKindEii();
-s32 _ZN8BlockMap12getPlantFlagEii();
-s32 _ZN8BlockMap14isGrassSurfaceEii();
+s32 _ZN8BlockMap7isShoreEii(void *self, s32 x, s32 y);
+s32 _ZN8BlockMap10getDigKindEii(void *self, s32 x, s32 y);
+s32 _ZN8BlockMap12getPlantFlagEii(void *self, s32 x, s32 y);
+s32 _ZN8BlockMap14isGrassSurfaceEii(void *self, s32 x, s32 y);
 s32 Town_IsSaplingBlocker(u16 *t);
 void Town_UpdateSaplings(void *a, void *q, Unk_020485d4_Size *p);
 void Town_ThinSaplings(void *a, void *q, Unk_020485d4_Size *p);
@@ -1319,13 +1319,13 @@ s32 Town_MakeSpecialTree(void *a, void *b, s32 x, s32 y, s32 e);
 BOOL Town_SpawnItemInAcre(void *a, void *b, void *c, s32 d, u16 e, s32 (*f)(void *, s32, s32), s32 g);
 s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Vec2 *arr, u16 e, s32 g);
 s32 Town_CollectFreeUnits(void *a, Vec2 *arr, void *c, s32 d, s32 e, s32 (*fn)(void *, s32, s32));
-BOOL Town_IsSandAt();
-s32 Town_GetSandAttr();
+BOOL Town_IsSandAt(void *p, s32 x, s32 y);
+s32 Town_GetSandAttr(void *p, s32 x, s32 y);
 BOOL Town_CanBuryAt(void *p, s32 x, s32 y);
-BOOL Town_IsPlantable();
-BOOL Town_IsGrass();
+BOOL Town_IsPlantable(void *p, s32 x, s32 y);
+BOOL Town_IsGrass(void *p, s32 x, s32 y);
 BOOL Town_CanSpawnWeedAt(void *p, s32 x, s32 y);
-BOOL Town_IsGrass();
+BOOL Town_IsGrass(void *p, s32 x, s32 y);
 BOOL Town_CanSpawnCloverAt(void *p, s32 x, s32 y);
 void Town_UpdateTrees(void *a, void *q, s32 c, s32 d);
 static inline BOOL Unk_02048634_Check(u16 *p) {
@@ -3788,7 +3788,7 @@ namespace nL {
 extern "C" BOOL Town_CanSpawnCloverAt(void *p, s32 x, s32 y) {
     BOOL r = FALSE;
     s32 bx;
-    if (_ZN8BlockMap14isGrassSurfaceEii() != 0) {
+    if (_ZN8BlockMap14isGrassSurfaceEii(p, x, y) != 0) {
         s32 t = y + 1;
         bx = x >> 4;
         s32 ty = t >> 4;
@@ -3807,9 +3807,9 @@ extern "C" BOOL Town_CanSpawnCloverAt(void *p, s32 x, s32 y) {
 }
 
 namespace nL {
-extern "C" BOOL Town_IsGrass() {
+extern "C" BOOL Town_IsGrass(void *p, s32 x, s32 y) {
     BOOL r = FALSE;
-    if (_ZN8BlockMap12getPlantFlagEii() == 1) r = TRUE;
+    if (_ZN8BlockMap12getPlantFlagEii(p, x, y) == 1) r = TRUE;
     return r;
 }
 }
@@ -3818,7 +3818,7 @@ namespace nL {
 extern "C" BOOL Town_CanSpawnWeedAt(void *p, s32 x, s32 y) {
     BOOL r = FALSE;
     s32 bx;
-    if (Town_IsGrass() != 0) {
+    if (Town_IsGrass(p, x, y) != 0) {
         s32 t = y + 1;
         bx = x >> 4;
         s32 ty = t >> 4;
@@ -3837,9 +3837,9 @@ extern "C" BOOL Town_CanSpawnWeedAt(void *p, s32 x, s32 y) {
 }
 
 namespace nL {
-extern "C" BOOL Town_IsPlantable() {
+extern "C" BOOL Town_IsPlantable(void *p, s32 x, s32 y) {
     BOOL r = FALSE;
-    switch (_ZN8BlockMap12getPlantFlagEii()) {
+    switch (_ZN8BlockMap12getPlantFlagEii(p, x, y)) {
     case 0:
     case 1:
         r = TRUE;
@@ -3852,7 +3852,7 @@ namespace nL {
 extern "C" BOOL Town_CanBuryAt(void *p, s32 x, s32 y) {
     BOOL r = FALSE;
     s32 bx;
-    s32 k = _ZN8BlockMap10getDigKindEii();
+    s32 k = _ZN8BlockMap10getDigKindEii(p, x, y);
     switch (k) {
     case 0:
     case 1: {
@@ -3876,15 +3876,15 @@ extern "C" BOOL Town_CanBuryAt(void *p, s32 x, s32 y) {
 }
 
 namespace nL {
-extern "C" s32 Town_GetSandAttr() {
-    return _ZN8BlockMap7isShoreEii();
+extern "C" s32 Town_GetSandAttr(void *p, s32 x, s32 y) {
+    return _ZN8BlockMap7isShoreEii(p, x, y);
 }
 }
 
 namespace nL {
-extern "C" BOOL Town_IsSandAt() {
+extern "C" BOOL Town_IsSandAt(void *p, s32 x, s32 y) {
     BOOL r = FALSE;
-    if (_ZN8BlockMap7isShoreEii() != 0) r = TRUE;
+    if (_ZN8BlockMap7isShoreEii(p, x, y) != 0) r = TRUE;
     return r;
 }
 }
@@ -7114,7 +7114,7 @@ extern "C" void DeadTurnip_SpawnDigFx(VecXZ *p) {
 
 namespace nE {
 extern "C" s32 Flower_TrampleTile(void *m, VecXZ *p, s32 f) {
-    if (Item_IsFlower()) {
+    if (Item_IsFlower((u16 *)m)) {
         VecXZ t;
         t.x = p->x;
         t.z = p->z;

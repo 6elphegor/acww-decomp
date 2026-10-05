@@ -59,9 +59,9 @@ void Event_RefreshToday(s32);
 void EventWeekSlots_ClearWeek(void *);
 s32 Scene_GetCurrent(void);
 s32 _ZN11CommManager8isOnlineEv(void *);
-s32 TownSessionState_Get(void);
-s32 TownSessionState_GetResettiFlag(void);
-s32 _ZN16ResettiVisitFlag5isSetEv(void);
+void *TownSessionState_Get(void);
+void *TownSessionState_GetResettiFlag(void *p);
+s32 _ZN16ResettiVisitFlag5isSetEv(void *self);
 s32 _ZN11CommManager12isSlotActiveEi(void *, s32);
 void Clock_GetDateTime(void *);
 void *TalkWindow_Get(s32);
@@ -529,9 +529,7 @@ extern "C" void EventAnnounce_Request(s32 a, s32 b, s32 c)
         return;
     }
     if (Scene_GetCurrent() == 0) {
-        TownSessionState_Get();
-        TownSessionState_GetResettiFlag();
-        if (_ZN16ResettiVisitFlag5isSetEv()) {
+        if (_ZN16ResettiVisitFlag5isSetEv(TownSessionState_GetResettiFlag(TownSessionState_Get()))) {
             if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
                 return;
             }

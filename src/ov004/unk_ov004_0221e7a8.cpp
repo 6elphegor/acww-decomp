@@ -870,7 +870,7 @@ Bits16 *PlayerSession_GetLastPlayDate(void);
 u8 *PlayerSession_GetSessionFlags(void);
 u32 PlayerActor_GetPlayerData(Obj *o);
 u32 PlayerActor_GetTan(Obj *o);
-u32 _ZN10PlayerData15getLastPlayDateEv(void);
+u32 _ZN10PlayerData15getLastPlayDateEv(u32 self);
 s32 PlayerActor_CompareLastPlayDateNow(Obj *o);
 u16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Ground_GetDefaultY(u32 a);
@@ -1119,8 +1119,7 @@ extern "C" void PlayerActor_GetOutOfBedCheckEnd(Obj *o) {
             volatile u16 t[2];
             _ZN11PlayerActor12requestAct10Esji(o, 0, 5, -1);
             *PlayerSession_GetTanTimer() = 0x4650;
-            PlayerActor_GetPlayerData(o);
-            t[0] = _ZN10PlayerData15getLastPlayDateEv();
+            t[0] = _ZN10PlayerData15getLastPlayDateEv(PlayerActor_GetPlayerData(o));
             t[1] = t[0];
             *(u16 *)PlayerSession_GetLastPlayDate() = t[1];
             s32 r5 = PlayerActor_CompareLastPlayDateNow(o);
@@ -1470,7 +1469,7 @@ s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 void PendingUnit_ApplyAt(void *p, s32 a);
 
-s32 FtrMgr_PollRemovedPos(void);
+s32 FtrMgr_PollRemovedPos(s32 idx);
 s32 FtrMgr_GetSurfaceHeightAtPos(void *p);
 void FtrMgr_RemoveActor(s32 a, void *b, void *c);
 void FtrMgr_PlaySeatSound1At(V3 *v);
@@ -1901,7 +1900,7 @@ extern "C" void PlayerActor_PickUpItemUpdateScale(Obj *o) {
     if (_ZN11PlayerActor14testActionFlagEj(o, 0xd) == 0) {
         p = &o->actionWork;
         if (*p < 0) return;
-        if (FtrMgr_PollRemovedPos() == 0) return;
+        if (FtrMgr_PollRemovedPos(*p) == 0) return;
         _ZN11PlayerActor13setActionFlagEj(o, 0xd);
         *p = -1;
     }
@@ -2590,11 +2589,11 @@ void NetBuf_WriteS16B(void *a, s32 b);
 
 s32 PlayerActor_RequestFtrHold(Obj *o, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_FtrRotateSetStickFlag(u8 *p, s32 a);
-s32 FtrContactSet_GetInstance(void);
-s32 _ZN13FtrContactSet7canPullEv(void);
-s32 _ZN13FtrContactSet7canPushEv(void);
-s32 _ZN13FtrContactSet9startPullEv(void);
-s32 _ZN13FtrContactSet9startPushEv(void);
+void *FtrContactSet_GetInstance(void);
+s32 _ZN13FtrContactSet7canPullEv(void *self);
+s32 _ZN13FtrContactSet7canPushEv(void *self);
+s32 _ZN13FtrContactSet9startPullEv(void *self);
+s32 _ZN13FtrContactSet9startPushEv(void *self);
 s32 Scene_InHouseRoom(void);
 
 s32 PlayerActor_RequestSitDownFront(Obj *o, u32 a, u32 b);
@@ -2700,8 +2699,7 @@ extern "C" void PlayerActor_FtrPushTryMove(Obj *o) {
     if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
             u8 r4 = 0;
-            FtrContactSet_GetInstance();
-            if (_ZN13FtrContactSet7canPushEv() == 0) {
+            if (_ZN13FtrContactSet7canPushEv(FtrContactSet_GetInstance()) == 0) {
                 r4 = 1;
             }
             if (Scene_InHouseRoom() == 0 || o->sessionSlot != 0) {
@@ -2725,8 +2723,7 @@ extern "C" void PlayerActor_FtrPushTryMove(Obj *o) {
                 PlayerActor_RequestFtrHold(o, 0, 1, 5, -1);
             } else {
                 PlayerActor_RequestFtrPushMove(o, 6, -1);
-                FtrContactSet_GetInstance();
-                _ZN13FtrContactSet9startPushEv();
+                _ZN13FtrContactSet9startPushEv(FtrContactSet_GetInstance());
             }
         } else {
             o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
@@ -2762,8 +2759,7 @@ extern "C" void PlayerActor_FtrPullTryMove(Obj *o) {
     if (_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)o->bodyModel)) {
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->sessionSlot)) {
             u8 r4 = 0;
-            FtrContactSet_GetInstance();
-            if (_ZN13FtrContactSet7canPullEv() == 0) {
+            if (_ZN13FtrContactSet7canPullEv(FtrContactSet_GetInstance()) == 0) {
                 r4 = 1;
             }
             if (Scene_InHouseRoom() == 0 || o->sessionSlot != 0) {
@@ -2787,8 +2783,7 @@ extern "C" void PlayerActor_FtrPullTryMove(Obj *o) {
                 PlayerActor_RequestFtrHold(o, 0, 1, 5, -1);
             } else {
                 PlayerActor_RequestFtrPullMove(o, 6, -1);
-                FtrContactSet_GetInstance();
-                _ZN13FtrContactSet9startPullEv();
+                _ZN13FtrContactSet9startPullEv(FtrContactSet_GetInstance());
             }
         } else {
             o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
@@ -4176,7 +4171,7 @@ void Vec_Sub(V3 *o, V3 *a, V3 *b);
 s32 Vec_MagXZ(V3 *v);
 s32 Vec_DistXZ(V3 *a, V3 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 FX_Div(s32 a);
+s32 FX_Div(s32 a, s32 b);
 void _ZN14CollisionStateC1Ev(void *p);
 void _ZN14CollisionStateD1Ev(void *p);
 void Collision_Move(void *a, V3 *b, V3 *c, s32 d, u32 e, Obj *f, u32 g);
@@ -4477,7 +4472,7 @@ extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
     if ((u32)(m - 1) <= 1) {
         VecFx32Ctor v(r->targetX, p->y, r->targetZ);
         if (Vec_DistXZ((V3 *)&v, p) < 0x1000) {
-            s32 d = FX_Div(0x1000 - Vec_DistXZ((V3 *)&v, p)) * 6;
+            s32 d = FX_Div(0x1000 - Vec_DistXZ((V3 *)&v, p), 0x1000) * 6;
             if (m == 1) {
                 p->y = p->y + (d >> 5);
             } else {

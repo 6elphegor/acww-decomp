@@ -4,7 +4,7 @@
 
 extern "C" {
 s32 NpcBodyAnimPool_Get();
-s32 _ZN10NpcResPool13clearAllSlotsEv();
+s32 _ZN10NpcResPool13clearAllSlotsEv(void *self);
 s32 NpcClothTexPool_Get();
 s32 NpcTexPatBufRefPool_Get();
 s32 NpcFaceAnimPool_Get();
@@ -179,18 +179,12 @@ void *NpcResHandleView::getHeldItemModel() {
 }
 
 extern "C" void NpcResPools_ClearAll() {
-    NpcBodyAnimPool_Get();
-    _ZN10NpcResPool13clearAllSlotsEv();
-    NpcClothTexPool_Get();
-    _ZN10NpcResPool13clearAllSlotsEv();
-    NpcTexPatBufRefPool_Get();
-    _ZN10NpcResPool13clearAllSlotsEv();
-    NpcFaceAnimPool_Get();
-    _ZN10NpcResPool13clearAllSlotsEv();
-    NpcTexPatHeapPool_Get();
-    _ZN10NpcResPool13clearAllSlotsEv();
-    NpcHeldItemModelPool_Get();
-    _ZN10NpcResPool13clearAllSlotsEv();
+    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcBodyAnimPool_Get());
+    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcClothTexPool_Get());
+    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcTexPatBufRefPool_Get());
+    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcFaceAnimPool_Get());
+    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcTexPatHeapPool_Get());
+    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcHeldItemModelPool_Get());
 }
 
 extern "C" void NpcResPools_ClearOnSceneCreate() { NpcResPools_ClearAll(); }
