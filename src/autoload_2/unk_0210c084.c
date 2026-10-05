@@ -6,6 +6,9 @@ typedef signed char s8;
 typedef short s16;
 typedef int s32;
 typedef int BOOL;
+#define NULL 0
+#define TRUE 1
+#define FALSE 0
 
 typedef struct Pair { u32 a; u32 b; } Pair;
 typedef struct InstOut { u8 type; u8 pad; u16 h1; u16 h2; u16 h3; u16 h4; u16 h5; } InstOut;
@@ -62,6 +65,8 @@ extern u32 PopCommandBuffer();
 extern void FreeCommandBuffer();
 extern void RequestNextStrm();
 extern u32 _u32_div_f();
+extern const signed char data_02135e80[16];
+extern const short data_02135e90[89];
 
 extern u8 data_021fbd6c[0x3c];
 extern u32 LoadSingleWaves();
@@ -96,6 +101,411 @@ typedef struct GrpRec { u32 count; GrpEnt ent[1]; } GrpRec;
 typedef struct BankRec { u32 fileId; u16 wa[4]; } BankRec;
 
 
+// ---- NitroSystem sndarc_stream.c: MakeWaveData (0x0210d174), in the shape of SonicRushAdventure-Decomp's matched
+// version, with this older library's direct FS_SeekFile/FS_ReadFile reads (the file offset is added here) and
+// RequestNextStrm for OnDataEnd. Its two ADPCM tables are the file's .rodata (0x02135e80-0x02135f44).
+typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
+typedef struct FSFile { u8 data[0x48]; } FSFile;
+typedef struct OSMutex { u8 data[0x18]; } OSMutex;
+typedef struct NNSSndFader { s32 a, b, c, d; } NNSSndFader;
+typedef enum { NNS_SND_STRM_FORMAT_PCM8, NNS_SND_STRM_FORMAT_PCM16 } NNSSndStrmFormat;
+typedef void (*NNSSndStrmCallback)(s32 status, int numChannels, void *buffer[], u32 len, NNSSndStrmFormat format, void *arg);
+typedef void (*NNSSndArcStrmCallback)(void);
+
+enum { STRM_FORMAT_PCM8, STRM_FORMAT_PCM16, STRM_FORMAT_ADPCM };
+
+typedef struct NNSSndStrmData {
+    u8 fileHeader[0x10];
+    u8 blockHeader[8];
+    u8 format;
+    u8 loopFlag;
+    u8 numChannels;
+    u8 pad_;
+    u16 sampleRate;
+    u16 timer;
+    u32 loopStart;
+    u32 loopEnd;
+    u32 dataOffset;
+    u32 numBlocks;
+    u32 blockSize;
+    u32 blockSamples;
+    u32 lastBlockSize;
+    u32 lastBlockSamples;
+} NNSSndStrmData;
+
+typedef struct AdpcmState {
+    s16 prevSample;
+    u8 prevIndex;
+    u8 padding;
+} AdpcmState;
+
+typedef struct NNSSndStrmPlayer {
+    u8 stream[0x5c];
+    FSFile file;
+    u32 fileOffset;
+    NNSSndStrmData info;
+    NNSSndFader fader;
+    AdpcmState adpcmState[6];
+    BOOL activeFlag : 1;
+    BOOL playFlag : 1;
+    BOOL startFlag : 1;
+    BOOL fadeOutFlag : 1;
+    BOOL dirtyFlag : 1;
+    BOOL finishFlag : 1;
+    BOOL monoFlag : 1;
+    volatile int finishCounter;
+    volatile BOOL prepareFlag;
+    volatile int commandCount;
+    int allocChannelCount;
+    u8 numChannels;
+    u8 padding;
+    u8 chNoList[6];
+    void *buffer;
+    u32 bufSize;
+    NNSSndStrmCallback strmCallback;
+    void *strmCallbackArg;
+    NNSSndArcStrmCallback sndArcStrmCallback;
+    void *sndArcStrmCallbackArg;
+    int strmNo;
+    int playerNo;
+    void *handle;
+    int prio;
+    int initVolume;
+    int volume;
+    u32 curSample;
+} NNSSndStrmPlayer;
+
+typedef struct LoadCommand {
+    NNSFndLink link;
+    NNSSndStrmPlayer *player;
+    s32 status;
+    int numChannels;
+    void *buffer[6];
+    u32 bufLen;
+} LoadCommand;
+
+extern u8 *data_021fbdb0;   // sDecodeBuffer
+extern OSMutex data_021fbdc0; // sDecodeBufferMutex
+#define cAdpcmIndexTable data_02135e80
+#define cAdpcmStepSizeTable data_02135e90
+#define sDecodeBuffer data_021fbdb0
+#define sDecodeBufferMutex data_021fbdc0
+static inline void MI_CpuClear8(void *dest, u32 size) { MI_CpuFill8(dest, 0, size); }
+
+const s8 data_02135e80[16] = { // cAdpcmIndexTable
+    -1, -1, -1, -1, 2, 4, 6, 8, -1, -1, -1, -1, 2, 4, 6, 8,
+};
+
+const s16 data_02135e90[89] = { // cAdpcmStepSizeTable
+    7,     8,     9,     10,    11,    12,    13,    14,    16,    17,    19,    21,    23,    25,    28,
+    31,    34,    37,    41,    45,    50,    55,    60,    66,    73,    80,    88,    97,    107,   118,
+    130,   143,   157,   173,   190,   209,   230,   253,   279,   307,   337,   371,   408,   449,   494,
+    544,   598,   658,   724,   796,   876,   963,   1060,  1166,  1282,  1411,  1552,  1707,  1878,  2066,
+    2272,  2499,  2749,  3024,  3327,  3660,  4026,  4428,  4871,  5358,  5894,  6484,  7132,  7845,  8630,
+    9493,  10442, 11487, 12635, 13899, 15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767,
+};
+
+static inline s16 DecodeAdpcm(int code, AdpcmState *state)
+{
+    int step;
+    int sample;
+    int index;
+    int d;
+
+    sample = state->prevSample;
+    index  = state->prevIndex;
+
+    step = cAdpcmStepSizeTable[index];
+
+    d = step >> 3;
+    if (code & 4)
+        d += step;
+    if (code & 2)
+        d += step >> 1;
+    if (code & 1)
+        d += step >> 2;
+
+    if (code & 8)
+    {
+        sample -= d;
+        if (sample < -32768)
+            sample = -32768;
+    }
+    else
+    {
+        sample += d;
+        if (sample > 32767)
+            sample = 32767;
+    }
+
+    index += cAdpcmIndexTable[code];
+
+    if (index < 0)
+        index = 0;
+    else if (index > 89 - 1)
+        index = 89 - 1;
+
+    state->prevSample = (s16)sample;
+    state->prevIndex  = (u8)index;
+
+    return (s16)sample;
+}
+
+// MakeWaveData
+void MakeWaveData(LoadCommand *command)
+{
+    NNSSndStrmPlayer *player = command->player;
+    BOOL loopFlag;
+    u32 destOffset;
+    u32 restSize;
+    u32 blockNo;
+    u32 blockSize;
+    u32 blockSamples;
+    u32 blockOffsetSample;
+    u32 blockOffset;
+    u32 offset;
+    u32 samples;
+    u32 size;
+    u32 readSize;
+    int ch;
+
+    if (player->finishFlag && player->finishCounter > 0)
+    {
+        player->finishCounter--;
+    }
+
+    destOffset = 0;
+
+    restSize = command->bufLen;
+    while (restSize > 0)
+    {
+        if (player->finishFlag)
+        {
+            for (ch = 0; ch < command->numChannels; ch++)
+            {
+                MI_CpuClear8((u8 *)(command->buffer[ch]) + destOffset, restSize);
+            }
+            break;
+        }
+
+        blockNo = player->curSample / player->info.blockSamples;
+
+        if (blockNo < player->info.numBlocks - 1)
+        {
+            blockSize    = player->info.blockSize;
+            blockSamples = player->info.blockSamples;
+        }
+        else
+        {
+            blockSize    = player->info.lastBlockSize;
+            blockSamples = player->info.lastBlockSamples;
+        }
+
+        blockOffsetSample = player->curSample;
+        blockOffsetSample -= blockNo * player->info.blockSamples;
+
+        samples = restSize;
+        if (player->info.format != STRM_FORMAT_PCM8)
+        {
+            samples >>= 1;
+        }
+
+        if (player->dirtyFlag)
+        {
+            if (blockOffsetSample == 0)
+            {
+                player->dirtyFlag = FALSE;
+            }
+            else
+            {
+                samples           = blockOffsetSample;
+                blockOffsetSample = 0;
+            }
+        }
+
+        loopFlag = FALSE;
+        if (blockOffsetSample + samples >= blockSamples)
+        {
+            samples = blockSamples - blockOffsetSample;
+
+            if (blockNo >= player->info.numBlocks - 1)
+            {
+                if (player->info.loopFlag)
+                {
+                    loopFlag = TRUE;
+                }
+                else
+                {
+                    player->finishFlag = TRUE;
+                }
+            }
+        }
+
+        blockOffset = blockOffsetSample;
+        size        = samples;
+        switch (player->info.format)
+        {
+            case STRM_FORMAT_PCM8:
+                readSize = size;
+                break;
+
+            case STRM_FORMAT_PCM16:
+                blockOffset <<= 1;
+                size <<= 1;
+                readSize = size;
+                break;
+
+            case STRM_FORMAT_ADPCM: {
+                u32 endSample = blockOffsetSample + samples;
+                blockOffset >>= 1;
+                endSample++;
+                endSample >>= 1;
+                readSize = endSample - blockOffset;
+                if (blockOffsetSample == 0)
+                {
+                    readSize += sizeof(AdpcmState);
+                }
+                else
+                {
+                    blockOffset += sizeof(AdpcmState);
+                }
+                size <<= 1;
+
+                break;
+            }
+        }
+
+        offset = blockOffset;
+        offset += blockNo * player->info.blockSize * player->info.numChannels;
+        offset += player->info.dataOffset;
+        offset += player->fileOffset;
+
+        for (ch = 0; ch < command->numChannels; ch++)
+        {
+            void *dest;
+            void *read_dest;
+
+            dest = read_dest = (u8 *)(command->buffer[ch]) + destOffset;
+
+            if (ch < player->info.numChannels)
+            {
+                s32 resultSize;
+
+                if (player->info.format == STRM_FORMAT_ADPCM)
+                {
+                    OS_LockMutex(&sDecodeBufferMutex);
+                    read_dest = sDecodeBuffer;
+                }
+
+                FS_SeekFile(&player->file, (s32)(offset + ch * blockSize), 0);
+                resultSize = FS_ReadFile(&player->file, read_dest, (s32)readSize);
+
+                if (resultSize != readSize)
+                {
+                    size               = 0;
+                    samples            = 0;
+                    loopFlag           = FALSE;
+                    player->finishFlag = TRUE;
+                    if (player->info.format == STRM_FORMAT_ADPCM)
+                    {
+                        OS_UnlockMutex(&sDecodeBufferMutex);
+                    }
+                    break;
+                }
+
+                if (player->info.format == STRM_FORMAT_ADPCM)
+                {
+                    AdpcmState *state = &player->adpcmState[ch];
+                    u8 *srcp          = sDecodeBuffer;
+                    s16 *destp        = dest;
+                    u32 i;
+                    u32 end;
+
+                    if (blockOffsetSample == 0)
+                    {
+                        *state = *((AdpcmState *)srcp)++;
+                    }
+
+                    end = blockOffsetSample + samples;
+
+                    i = blockOffsetSample;
+                    if (i & 0x01)
+                    {
+                        *destp++ = DecodeAdpcm((*srcp >> 4) & 0x0f, state);
+                        i++;
+                        srcp++;
+                    }
+                    while (i < (end & ~0x01))
+                    {
+                        *destp++ = DecodeAdpcm(*srcp & 0x0f, state);
+                        i++;
+                        *destp++ = DecodeAdpcm((*srcp >> 4) & 0x0f, state);
+                        i++;
+                        srcp++;
+                    }
+                    if (i < end)
+                    {
+                        *destp++ = DecodeAdpcm(*srcp & 0x0f, state);
+                        i++;
+                    }
+                    OS_UnlockMutex(&sDecodeBufferMutex);
+                }
+            }
+            else
+            {
+                if (player->monoFlag)
+                {
+                    MI_CpuClear8(dest, size);
+                }
+                else
+                {
+                    MI_CpuCopy8((u8 *)(command->buffer[0]) + destOffset, dest, size);
+                }
+            }
+        }
+
+        if (player->dirtyFlag)
+        {
+            player->dirtyFlag = FALSE;
+            continue;
+        }
+
+        if (loopFlag)
+        {
+            player->curSample = player->info.loopStart;
+        }
+        else
+        {
+            player->curSample += samples;
+        }
+
+        destOffset += size;
+
+        restSize -= size;
+
+        if (player->finishFlag && player->sndArcStrmCallback)
+        {
+            RequestNextStrm(player);
+        }
+    }
+
+    if (player->strmCallback != NULL)
+    {
+        player->strmCallback(command->status, command->numChannels, command->buffer, command->bufLen,
+                             player->info.format == STRM_FORMAT_PCM8 ? NNS_SND_STRM_FORMAT_PCM8 : NNS_SND_STRM_FORMAT_PCM16, player->strmCallbackArg);
+    }
+
+    for (ch = 0; ch < command->numChannels; ch++)
+    {
+        DC_FlushRange(command->buffer[ch], command->bufLen);
+    }
+
+    if (command->status == 0)
+    {
+        player->prepareFlag = TRUE;
+    }
+}
+
 // stream/wave decode thread entry (never returns)
 void StrmThreadProc(u8 *obj)
 {
@@ -113,7 +523,7 @@ void StrmThreadProc(u8 *obj)
                 OS_UnlockMutex(mutex);
                 break;
             }
-            func_0210d174((void *)item);
+            MakeWaveData((void *)item);
             FreeCommandBuffer(item);
             OS_UnlockMutex(mutex);
         }

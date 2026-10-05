@@ -2,7 +2,7 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) sound library tail: sound-archive stream player (NNS_SndArcStrm*: thread, job queue,
 // stream contexts), capture effects (NNS_SndCapture*) and the NNSiSndFader helpers.
-// autoload_2 0x0210da28-0x0210f0c4. ARM, mwcc 1.2/base, -O4,p.
+// autoload_2 0x0210da28-0x0210ec0c (the rest of output_effect.c is unk_0210ec0c.c). ARM, mwcc 1.2/base, -O4,p.
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -193,7 +193,7 @@ void NNS_SndStrmHandleRelease(Ctx **);
 void NNS_SndArcStrmStartPrepared(Ctx **);
 BOOL NNS_SndArcStrmPrepare(Ctx **, s32, s32);
 BOOL SetupStrmPlayers(void *);
-void func_0210ea0c();
+void OutputEffectHeadphone();
 void OutputEffectMono();
 void OutputEffectSurround();
 void OutputEffectNormal(void);
@@ -204,6 +204,67 @@ void NNSi_SndFaderInit(Fader *);
 s32 NNSi_SndFaderGet(Fader *);
 void NNSi_SndFaderSet(Fader *, s32, s32);
 void NNSi_SndFaderUpdate(Fader *);
+
+// HeadphoneProc (NitroSystem output_effect.c, capture effect 2): each channel gets the other one mixed in 24 samples
+// late at a quarter of its level, clamped to s16 (Cut_S32toS16). The `register` local is the library's own.
+static inline s16 Cut_S32toS16(s32 val)
+{
+    if (val < (s16)-0x8000)
+        val = (s16)-0x8000;
+    else if (val > (s16)0x7fff)
+        val = (s16)0x7fff;
+    return (s16)val;
+}
+
+void OutputEffectHeadphone(void *bufferL_p, void *bufferR_p, u32 len, EffCtl *info)
+{
+    s16 *lp = (s16 *)bufferL_p;
+    s16 *rp = (s16 *)bufferR_p;
+    const unsigned long samples = len >> 1;
+    int i;
+    s32 l;
+    s32 r;
+    int offset;
+    unsigned long rest_samples;
+
+    offset = 0;
+    while (samples > 24 + offset) {
+        for (i = 0; i < 24; i++) {
+            const register int x = i + offset;
+
+            l = lp[x] + info->u.e[i].a;
+            r = rp[x] + info->u.e[i].b;
+
+            lp[x] = Cut_S32toS16(l);
+            rp[x] = Cut_S32toS16(r);
+            info->u.e[i].a = (r + 1) >> 2;
+            info->u.e[i].b = (l + 1) >> 2;
+        }
+        offset += 24;
+    }
+
+    rest_samples = samples - offset;
+    for (i = 0; i < rest_samples; i++) {
+        const int x = i + offset;
+
+        l = lp[x] + info->u.e[i].a;
+        r = rp[x] + info->u.e[i].b;
+        lp[x] = Cut_S32toS16(l);
+        rp[x] = Cut_S32toS16(r);
+    }
+
+    for (i = 0; i < 24 - rest_samples; i++) {
+        info->u.e[i].a = info->u.e[i + rest_samples].a;
+        info->u.e[i].b = info->u.e[i + rest_samples].b;
+    }
+
+    for (i = 0; i < rest_samples; i++) {
+        const long x = (long)(i + 24 - rest_samples);
+
+        info->u.e[x].a = (rp[i + offset] + 1) >> 2;
+        info->u.e[x].b = (lp[i + offset] + 1) >> 2;
+    }
+}
 
 // NNSi_SndCaptureEffect mono-mix-like (capture effect 3: average of both channels)
 void OutputEffectMono(s16 *l, s16 *r, u32 len)

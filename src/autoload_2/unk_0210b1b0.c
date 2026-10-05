@@ -1,7 +1,7 @@
 #include "nitro/fs.h"
 // NNS sound library (NitroSystem snd): the end of capture.c (capture thread, main, init, effects), autoload_2
 // 0x0210b1b0-0x0210b448, with the file's bss (autoload_3 0x021fb774-0x021fbd68). The file begins in unk_0210a9c4.c
-// (0x0210aadc..) and NNSi_SndCaptureStart (0x0210ae48) is not built yet. The rest of the former unit (sound archive,
+// (0x0210aadc-0x0210b1b0, with NNSi_SndCaptureStart). The rest of the former unit (sound archive,
 // sound heap) is unk_0210b448.c. ARM, mwcc 1.2/base, -O4,p.
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned char u8;

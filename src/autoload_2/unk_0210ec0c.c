@@ -193,7 +193,7 @@ void NNS_SndStrmHandleRelease(Ctx **);
 void NNS_SndArcStrmStartPrepared(Ctx **);
 BOOL NNS_SndArcStrmPrepare(Ctx **, s32, s32);
 BOOL SetupStrmPlayers(void *);
-void func_0210ea0c();
+void OutputEffectHeadphone();
 void OutputEffectMono();
 void OutputEffectSurround();
 void OutputEffectNormal(void);
@@ -288,7 +288,7 @@ void NNS_SndCaptureChangeOutputEffect(s32 effect)
         data_0213bf10.fn = OutputEffectSurround;
         break;
     case 2:
-        data_0213bf10.fn = func_0210ea0c;
+        data_0213bf10.fn = OutputEffectHeadphone;
         break;
     case 3:
         data_0213bf10.fn = OutputEffectMono;
