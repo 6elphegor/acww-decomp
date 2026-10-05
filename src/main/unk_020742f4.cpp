@@ -1092,7 +1092,7 @@ extern "C" {
 void Heap_AllocAligned(void *g, s32 a, s32 b);
 }
 extern "C" {
-void OverlayMgr_GetInfo(void *p);
+void OverlayMgr_GetInfo(void *p, u32 id);
 }
 extern "C" {
 void FS_LoadOverlayImage(void *p);
@@ -1548,7 +1548,7 @@ extern "C" void OverlayHandle_Unload(OverlayHandleView *s) {
 extern "C" void OverlayHandle_Load(OverlayHandleView *s, s32 v) {
     s->isLoading = 1;
     s->overlayId = v;
-    OverlayMgr_GetInfo(s->info);
+    OverlayMgr_GetInfo(s->info, v);
     FS_LoadOverlayImage(s->info);
     FS_StartOverlay(s->info);
     s->isLoading = 0;

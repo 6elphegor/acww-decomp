@@ -11,7 +11,12 @@ extern IrqCb data_027e0088[]; // OSi_IrqCallbackInfo
 
 // clears two words at 0x027e0450 (DTCM), probably an OS_Init* helper
 void OS_InitIrqTable(void) {
+#ifdef MODERN
+    extern T12 data_027e0450; // OSi_IrqThreadQueue
+    T12 *p = &data_027e0450;
+#else
     T12 *p = (T12 *)0x027e0450;
+#endif
     p->b = 0;
     p->a = 0;
 }

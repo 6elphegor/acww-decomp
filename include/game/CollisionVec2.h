@@ -12,7 +12,7 @@ public:
 
     CollisionVec2() {}
     CollisionVec2(s32 a, s32 b);
-    ~CollisionVec2() {}
+    MODERN_EMIT ~CollisionVec2() {}
     void operator=(const CollisionVec2 &o) { x = o.x; y = o.y; }
     CollisionVec2(const CollisionVec2 &o) { x = o.x; y = o.y; }
     void set(s32 a, s32 b);

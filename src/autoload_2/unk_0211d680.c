@@ -71,7 +71,7 @@ extern u16 data_021feb8c;
 extern CARDCommon data_021fec00;
 extern u32 data_021febb4;
 extern u8 data_021febc0[0x40];
-extern u32 data_021ff220;
+extern u32 data_021fee20[0x100]; // the CARD thread's stack, defined below
 extern RomDev data_021ff240;
 extern u32 data_021fcc2c[];
 extern u32 data_0213c1cc[12];
@@ -196,7 +196,7 @@ void CARDi_InitCommon(void) {
     c->queue.head = c->queue.tail = 0;
     c->tq.head = c->tq.tail = 0;
     c->priority = 4;
-    OS_CreateThread(&c->thread, CARDi_TaskThread, 0, &data_021ff220, 0x400, c->priority);
+    OS_CreateThread(&c->thread, CARDi_TaskThread, 0, data_021fee20 + 0x100, 0x400, c->priority);
     OS_WakeupThreadDirect(&c->thread);
     PXI_SetFifoRecvCallback(11, CARDi_OnFifoRecv);
     if (*(u16 *)0x027ffc40 != 2) CARD_Enable(1);

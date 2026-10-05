@@ -237,7 +237,7 @@ public:
 class FieldObjectShapeQuery : public UnitShapeQueryX {
 public:
     virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
-    virtual ~FieldObjectShapeQuery() {}
+    MODERN_EMIT virtual ~FieldObjectShapeQuery() {}
 };
 
 s32 Math_LerpFx(s32 t, s32 lo, s32 hi);

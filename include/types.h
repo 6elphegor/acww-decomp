@@ -28,6 +28,21 @@ typedef unsigned long size_t;
 #define __builtin__clear(p, n) __builtin_memset((p), 0, (n))
 #endif
 
+// An inline function that other code calls by its symbol name: mwcc emitted it out of line, GCC has to be told to
+#ifdef MODERN
+#define MODERN_EMIT __attribute__((used))
+#else
+#define MODERN_EMIT
+#endif
+
+// A variable that an interrupt handler, a callback or the ARM7 changes while the code polls it. The original
+// declarations aren't volatile and mwcc reloaded them anyway; GCC keeps them in a register (see docs/modern.md).
+#ifdef MODERN
+#define MODERN_VOLATILE volatile
+#else
+#define MODERN_VOLATILE
+#endif
+
 typedef int BOOL;
 #define TRUE 1
 #define FALSE 0

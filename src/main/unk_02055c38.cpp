@@ -52,7 +52,7 @@ extern "C" u8 *NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *p, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 v);
 extern "C" u32 strlen(const char *s);
 extern "C" void strcpy(void *p);
-extern "C" void operator delete(void *p);
+void operator delete(void *p);
 extern "C" void Anim_NormalizeVec(VecFx32 *v);
 extern "C" void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t);
 extern "C" void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t);

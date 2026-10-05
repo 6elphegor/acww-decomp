@@ -5,6 +5,7 @@
 #include "ui/ScrollKnob.h"
 #include "ui/HudUnkIcon.h"
 #include "talk/MsgString.h"
+#include "ui/LabelButton.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -62,42 +63,6 @@ extern const s32 sLabelButtonStatePlayOnce[4];
 
 extern HudUnkIcon sHudUnkIcon;
 
-class LabelButton : public UiWidget {
-public:
-    LabelButton(u32 flag);
-    virtual ~LabelButton();
-    virtual void draw();
-    virtual void update();
-
-    void syncTextColor();
-    void freeLabel();
-    void createLabel();
-    BOOL isAnimDone();
-    s32 getState();
-    void setState(s32 v);
-    void getAnimOffset(s32 *outx, s32 *outy);
-    void setPos(s32 x, s32 y);
-    void setLabelText();
-    void showLayer2();
-    void hideLayer2();
-    void enableObjWindow();
-
-    /* 0x0c */ s32 posX;
-    /* 0x10 */ s32 posY;
-    /* 0x14 */ s32 palette;
-    /* 0x18 */ s32 kind;
-    /* 0x1c */ SpriteAnim layer1;
-    /* 0x30 */ SpriteAnim layer2;
-    /* 0x44 */ s32 state;
-    /* 0x48 */ TextLabel *label;
-    /* 0x4c */ StrBuf text;
-    /* 0x50 */ u32 unk_50[6];
-    /* 0x68 */ u16 textColor;
-    /* 0x6a */ u8 onBufferA;
-    /* 0x6b */ u8 objWindow;
-    /* 0x6c */ u8 layer2Hidden;
-    /* 0x6d */ u8 textColorDirty;
-};
 
 void LabelButton::enableObjWindow() { objWindow = 1; }
 

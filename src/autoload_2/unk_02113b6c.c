@@ -15,7 +15,7 @@ extern OSThreadInfo data_021fcc2c; // OSi_ThreadInfo
 extern OSThread *data_021fcc30;    // OSi_ThreadInfo.current
 extern OSThread data_021fcc3c;     // OSi_IdleThread
 extern OSThread data_021fccfc;     // OSi_LauncherThread
-extern u32 data_021fce84;          // end of the idle thread's stack (200 bytes below)
+extern u32 data_021fcdbc[50];      // OSi_IdleThreadStack (200 bytes; the original passes its end, data_021fce84)
 extern u8 data_027e0000[];         // SDK_AUTOLOAD_DTCM_START (HW_DTCM): a real relocation to the dtcm module
 
 #define data_027fffa0 (*(OSThreadInfo * volatile *)0x027fffa0)
@@ -60,7 +60,7 @@ void OS_InitThread(void) {
     data_021fcc2c.irqDepth = 0;
     data_027fffa0 = &data_021fcc2c;
     OS_SetSwitchThreadCallback(0);
-    OS_CreateThread(&data_021fcc3c, OSi_IdleThreadProc, 0, &data_021fce84, 200, 31);
+    OS_CreateThread(&data_021fcc3c, OSi_IdleThreadProc, 0, data_021fcdbc + 50, 200, 31);
     data_021fcc3c.priority = 32;
     data_021fcc3c.state = 1;
 }

@@ -6,7 +6,7 @@ class ItemId {
 public:
     u16 id;
 
-    ItemId() { id = 0xfff1; }
+    MODERN_EMIT ItemId() { id = 0xfff1; }
     ~ItemId();
 };
 
