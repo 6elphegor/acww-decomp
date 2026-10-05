@@ -243,7 +243,7 @@ struct BoxColliderX {
 
     BoxColliderX();
     ~BoxColliderX();
-    void setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q);
+    BOOL setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q);
     void resetBox();
 };
 extern "C" s64 Vec_DistSq(void* v, void* p);
@@ -2042,7 +2042,7 @@ BoxColliderX::BoxColliderX() {
 
 BoxColliderX::~BoxColliderX() {}
 
-void BoxColliderX::setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q) {
+BOOL BoxColliderX::setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q) {
     size = a;
     sizeY = b;
     sizeZ = c;
@@ -2055,6 +2055,7 @@ void BoxColliderX::setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q) 
     scaleZ = q->z;
     angle = s;
     isActive = 1;
+    return TRUE;
 }
 
 void BoxColliderX::onEdgeContact(CollisionEdge *edge, s32 arg, s32 r) {}

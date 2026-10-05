@@ -104,7 +104,7 @@ public:
     u32 getHairStyle();
     void setFaceType(u8 v);
     u32 getFaceType();
-    void getIndex();
+    s32 getIndex();
     void setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7);
     BOOL isUsed();
     void reset();

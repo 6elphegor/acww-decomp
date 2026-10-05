@@ -50,7 +50,7 @@ void _ZN10JointBlend11capturePoseEP8NNSG3dRS(void *p, void *q);
 void _ZN10JointBlend9blendPoseEP8NNSG3dRS(void *p, void *q);
 void _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, s32 b, s32 c, u32 d);
 s32 _ZN13AnimFrameCtrl4stepEv(void *p);
-void _ZN13AnimFrameCtrl10isFinishedEv(void *p);
+BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 void NNS_G3dAnmObjInit(void *a, s32 b, void *c, s32 d);
 void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
@@ -834,7 +834,7 @@ void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, B
     }
 }
 
-void ThreeLayerAnimModel::checkLayer3Finished() { _ZN13AnimFrameCtrl10isFinishedEv(&layer3Frame); }
+BOOL ThreeLayerAnimModel::checkLayer3Finished() { return _ZN13AnimFrameCtrl10isFinishedEv(&layer3Frame); }
 
 void ThreeLayerAnimModel::playLayer3FromBase(u32 a, u32 b) {
     if (a == 0) {
