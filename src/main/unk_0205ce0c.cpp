@@ -136,9 +136,9 @@ void CharaFaceAnimRef::assign(u32 x) {
 }
 
 void CharaFaceAnimRef::setSlot(u32 x) { v = x; }
-void CharaFaceAnimRef::getAnimBuffer(u32 j) { sCharaFaceAnimPool.getAnimBuffer(v, j); }
-void CharaFaceAnimRef::getEyeAnimBuffer() { getAnimBuffer(0); }
-void CharaFaceAnimRef::getMouthAnimBuffer() { getAnimBuffer(1); }
+u32 CharaFaceAnimRef::getAnimBuffer(u32 j) { return sCharaFaceAnimPool.getAnimBuffer(v, j); }
+u32 CharaFaceAnimRef::getEyeAnimBuffer() { return getAnimBuffer(0); }
+u32 CharaFaceAnimRef::getMouthAnimBuffer() { return getAnimBuffer(1); }
 
 void CharaFaceAnimRef::loadAnim(s32 a, s32 b, s32 c) {
     u32 st = v;
