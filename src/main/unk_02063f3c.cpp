@@ -200,7 +200,7 @@ s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
 s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va) {
     char buf[0x80];
     Str_VSNPrintf(buf, 0x80, fmt, va);
-    File_LoadAlloc((u32)buf, (void *)a, b, (u32 *)c);
+    return (s32)File_LoadAlloc((u32)buf, (void *)a, b, (u32 *)c);
 }
 
 void File_LoadAllocF(s32 a, s32 b, const char *fmt, ...) {

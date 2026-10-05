@@ -227,7 +227,7 @@ void WfcTransferIntro_Exit() {
 s32 WfcTransferNotice_Enter() {
     WfcTransferNotice_SetupBg();
     WfcUtil_ShowBottomMessage(0x5c);
-    C668(WfcTransferNotice_FadeIn);
+    return C668(WfcTransferNotice_FadeIn);
 }
 
 void WfcTransferNotice_SetupBg() {
@@ -241,7 +241,7 @@ void WfcTransferNotice_SetupBg() {
 s32 WfcTransferNotice_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    C668(WfcTransferNotice_WaitFadeIn);
+    return C668(WfcTransferNotice_WaitFadeIn);
 }
 
 void WfcTransferNotice_WaitFadeIn() {
@@ -279,7 +279,7 @@ void WfcTransferNotice_HandleResult() {
 s32 WfcTransferNotice_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    C668(WfcTransferNotice_FadeOut);
+    return C668(WfcTransferNotice_FadeOut);
 }
 
 void WfcTransferNotice_FadeOut() {

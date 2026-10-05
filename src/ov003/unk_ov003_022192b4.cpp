@@ -6201,7 +6201,7 @@ extern "C" s32 TreeAnim_Start(TreeAnim *self, s32 a, P2 p, s32 kind, s32 idx, s3
     self->posZ = t.z;
     self->alpha = 0x1f000;
     self->leafSpawnCount = 0;
-    TreeAnim_Begin(self, last);
+    return TreeAnim_Begin(self, last);
 }
 }
 

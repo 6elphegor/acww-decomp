@@ -517,7 +517,7 @@ BOOL MenuErrorMessage::finishTalk() {
 
 s32 MenuErrorMessage::dimSubScreen() {
     Gfx2d_BeginSubObjWinBrightness();
-    Gfx2d_SetSubBrightness(-10);
+    return Gfx2d_SetSubBrightness(-10);
 }
 
 BOOL MenuErrorMessage::restoreBrightness() { return Gfx2d_EndSubObjWinBrightness(); }

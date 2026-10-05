@@ -495,7 +495,7 @@ BOOL BuildingActor::postExecute(u32 a) {
     }
     colliderFlags &= ~2;
     colliderFlags &= ~4;
-    func_02002dd0(this, a);
+    return func_02002dd0(this, a);
 }
 
 BOOL BuildingActor::preDraw() {

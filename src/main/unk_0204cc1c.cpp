@@ -1347,7 +1347,7 @@ extern "C" s32 TownBlockMap_Destroy(void *heap) {
         Heap_Free(heap, gTownBlockMap);
         gTownBlockMap = 0;
     }
-    TownBclHeap_Destroy();
+    return TownBclHeap_Destroy();
 }
 
 BOOL TownBlockMap::build(void *heap) {
@@ -1440,11 +1440,11 @@ extern "C" TownBlockMap *TownBlockMap_Get() {
 }
 
 extern "C" s32 BlockMap_PutStructure(u32 a, u32 b, u32 c, u32 d) {
-    _ZN7TownMap12putStructureEPtii(a, b, c, d);
+    return _ZN7TownMap12putStructureEPtii(a, b, c, d);
 }
 
 extern "C" s32 BlockMap_RemoveStructure(u32 a, u32 b, u32 c, u32 d) {
-    _ZN7TownMap15removeStructureEiiPt(a, b, c, d);
+    return _ZN7TownMap15removeStructureEiiPt(a, b, c, d);
 }
 
 extern "C" void BlockMap_RemoveStructureAt(u32 a, s32 b, s32 c, s32 d, s32 e, u32 f) {

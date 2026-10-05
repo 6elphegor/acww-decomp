@@ -1774,7 +1774,7 @@ u32 SimpleStart_BuildHelloPacket(u8 *pkt) {
     if (data_ov001_0222c8a0 != 0) {
         r = SimpleStart_PutTlv(r, 4, data_ov001_0222c8d4, 6);
     }
-    SimpleStart_BuildPacket(pkt, 2, sSimpleStartTlvBuf, (u32)r - (u32)data_ov001_0222a52c + 8, 0);
+    return SimpleStart_BuildPacket(pkt, 2, sSimpleStartTlvBuf, (u32)r - (u32)data_ov001_0222a52c + 8, 0);
 }
 
 BOOL SimpleStart_GetOwnMac(void *unused) {

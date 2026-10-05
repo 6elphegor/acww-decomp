@@ -633,12 +633,12 @@ extern "C" BOOL MenuCtrl_IsMenuOnTop() { return MenuCtrl_HasFlags(1); }
 
 extern "C" s32 MenuCtrl_SetTouch() {
     MenuCtrl_ClearFlags(2);
-    InputMode_SetTouch();
+    return InputMode_SetTouch();
 }
 
 extern "C" s32 MenuCtrl_SetButtons() {
     MenuCtrl_SetFlags(2);
-    InputMode_SetButtons();
+    return InputMode_SetButtons();
 }
 
 extern "C" BOOL MenuCtrl_IsTouch() {

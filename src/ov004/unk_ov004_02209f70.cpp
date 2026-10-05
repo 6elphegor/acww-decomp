@@ -2624,7 +2624,7 @@ void FtrGyroid::onJointCalcPost(s32 idx, void *b) {
 }
 
 BOOL FtrGyroid::onJointCalcPre(s32 nodeId, NNSG3dRS *rs) {
-    p16::_ZN14BlendAnimModel14onJointCalcPreEPS_(this->model, rs);
+    return p16::_ZN14BlendAnimModel14onJointCalcPreEPS_(this->model, rs);
 }
 
 BOOL FtrGyroid::onDelete() {
@@ -3418,7 +3418,7 @@ BOOL FtrStereo::onDelete() {
 }
 
 BOOL FtrStereo::updateAppearRemove() {
-    updateActive();
+    return updateActive();
 }
 
 BOOL FtrStereo::updateActive() {

@@ -207,7 +207,7 @@ void PlayerData::reset() {
     _ZN21ForeignVillagerRecord5clearEv(&foreignVillagerRecord);
 }
 
-BOOL PlayerData::isUsed() { _ZN8PlayerId7isValidEv(&id); }
+BOOL PlayerData::isUsed() { return _ZN8PlayerId7isValidEv(&id); }
 
 void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7) {
     Unk_0209865c_Bits bits;

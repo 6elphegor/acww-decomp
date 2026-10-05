@@ -1164,7 +1164,7 @@ s32 MapTab::rebuildList() {
     }
     BgScreen_SetRectPalette(frameScreen, 0x1d, 0xa, 0x1d, 0x15, k);
     setFlags(0x20);
-    highlightListRow(selectedRow);
+    return highlightListRow(selectedRow);
 }
 
 u8 *MapTab::getListEntries() {

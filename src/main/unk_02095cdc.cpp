@@ -840,7 +840,7 @@ extern "C" s32 BottleLetter_CreateGameLetter(u8 *p) {
 
 extern "C" s32 BottleLetter_PlaceBottle() {
     Town_GetUpdater();
-    Town_WashUpBottle();
+    return Town_WashUpBottle();
 }
 
 extern "C" s32 BottleLetter_IsBottleInTown() {

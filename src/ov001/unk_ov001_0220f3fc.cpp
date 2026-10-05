@@ -92,7 +92,7 @@ static inline void Unk_ov001_0220f62c_Bg() {
 s32 WfcTransferDone_Enter() {
     WfcTransferDone_SetupBg();
     WfcUtil_ShowBottomMessage(0x61);
-    C668(WfcTransferDone_FadeIn);
+    return C668(WfcTransferDone_FadeIn);
 }
 
 void WfcTransferDone_SetupBg() {
@@ -106,7 +106,7 @@ void WfcTransferDone_SetupBg() {
 s32 WfcTransferDone_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    C668(WfcTransferDone_WaitFadeIn);
+    return C668(WfcTransferDone_WaitFadeIn);
 }
 
 void WfcTransferDone_WaitFadeIn() {
@@ -143,7 +143,7 @@ void WfcTransferDone_HandleResult() {
 s32 WfcTransferDone_StartExit() {
     WfcButtonBar_DisableInput();
     WfcFade_StartWait(8);
-    C668(WfcTransferDone_FadeOut);
+    return C668(WfcTransferDone_FadeOut);
 }
 
 void WfcTransferDone_FadeOut() {
@@ -166,7 +166,7 @@ s32 WfcTransferSend_Enter() {
     WfcBusyIcon_Create(0);
     WfcLinkIcon_Create(1);
     WfcSound_Play(0xb);
-    C668(WfcTransferSend_FadeIn);
+    return C668(WfcTransferSend_FadeIn);
 }
 
 void WfcTransferSend_LoadBg() {
@@ -177,7 +177,7 @@ void WfcTransferSend_LoadBg() {
 s32 WfcTransferSend_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    C668(WfcTransferSend_WaitFadeIn);
+    return C668(WfcTransferSend_WaitFadeIn);
 }
 
 void WfcTransferSend_WaitFadeIn() {
@@ -197,7 +197,7 @@ void WfcTransferSend_Nop2() {}
 
 s32 WfcTransferSend_FadeOut() {
     WfcFade_Start(3, 0, 0x15, 8);
-    C668(WfcTransferSend_Exit);
+    return C668(WfcTransferSend_Exit);
 }
 
 void WfcTransferSend_Exit() {
@@ -234,6 +234,6 @@ s32 WfcTransferSend_OnResult(s32 a) {
     }
     WfcTransfer_SetCallback(0);
     WfcTransfer_RequestEnd();
-    C668(WfcTransferSend_FadeOut);
+    return C668(WfcTransferSend_FadeOut);
 }
 }

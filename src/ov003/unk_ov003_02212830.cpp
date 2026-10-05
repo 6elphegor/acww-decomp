@@ -263,7 +263,7 @@ BOOL Snowball::onCreate() {
     Snowball_UpdateMatrix(this, 0, 0);
     _ZN12SndSeEmitter8callInitEv(seEmitter);
     clearTalkStartMode();
-    Snowball_Register(this);
+    return Snowball_Register(this);
 }
 
 BOOL Snowball::onExecute() {

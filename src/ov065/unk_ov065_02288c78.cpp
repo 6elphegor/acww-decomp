@@ -299,7 +299,7 @@ namespace F02288e2c {
 extern "C" {
 s32 ServerBrowserSortA(_ServerBrowser *o) {
     GsSrvSortStackPad pad;
-    SBServerListSort(&o->list);
+    return SBServerListSort(&o->list);
 }
 }
 }

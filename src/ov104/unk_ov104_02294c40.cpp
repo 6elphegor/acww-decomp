@@ -534,7 +534,7 @@ BOOL PostOfficeMenu::execClosed() {
 
 BOOL PostOfficeMenu::onExecute() {
     updateOnlineSend();
-    MenuProc::onExecute();
+    return MenuProc::onExecute();
 }
 
 void PostOfficeMenu::transitionAct00() {

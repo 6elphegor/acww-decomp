@@ -91,6 +91,7 @@ extern "C" BOOL _ZN8ProcBase10preExecuteEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase11postExecuteEv(ProcBase *self) {
+    return (BOOL)self; // the original is `bx lr`: it returns its argument (non-zero)
 }
 
 extern "C" BOOL _ZN8ProcBase6onDrawEv(ProcBase *self) {
@@ -105,6 +106,7 @@ extern "C" BOOL _ZN8ProcBase7preDrawEv(ProcBase *self) {
 }
 
 extern "C" BOOL _ZN8ProcBase8postDrawEv(ProcBase *self) {
+    return (BOOL)self; // the original is `bx lr`: it returns its argument (non-zero)
 }
 
 #define ProcBase_taskConnect _ZN8ProcBase11taskConnectEv

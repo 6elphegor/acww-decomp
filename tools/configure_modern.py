@@ -59,6 +59,7 @@ COMMON_FLAGS = " ".join([
     "-fdata-sections",
     "-Os",
     "-g",
+    "-funreachable-traps",      # falling off a non-void function (UB in C++) traps instead of running on
     "-DMODERN",
     *(["-flto"] if args.lto_check else []),
     f"-DGAME_VERSION_{args.version.upper()}",

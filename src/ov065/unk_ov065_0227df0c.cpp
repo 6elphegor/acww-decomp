@@ -134,7 +134,7 @@ s32 gpiCallCallback(GPConnection *h, GPICallbackData *n) {
     }
     GsUtil_Free(n->arg);
     n->arg = NULL;
-    GsUtil_Free(n);
+    return GsUtil_Free(n);
 }
 }
 

@@ -737,7 +737,7 @@ namespace N_09e1c {
 extern "C" {
 s32 WfcTextKb_ToggleCapsLock() {
     WfcTextKb_SetMode(sWfcTextKb->caseMode == 2 ? 0 : 2);
-    WfcSound_Play(1);
+    return WfcSound_Play(1);
 }
 }
 }
@@ -746,7 +746,7 @@ namespace N_09e1c {
 extern "C" {
 s32 WfcTextKb_ToggleShift() {
     WfcTextKb_SetMode(sWfcTextKb->caseMode != 1 ? 1 : 0);
-    WfcSound_Play(1);
+    return WfcSound_Play(1);
 }
 }
 }

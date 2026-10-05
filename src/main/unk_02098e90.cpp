@@ -2565,7 +2565,7 @@ extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b) {
         Item_FromPlacedForm(&v[1], a);
         v[0] = v[1];
     }
-    Pocket_SetItem(v, r, b);
+    return Pocket_SetItem(v, r, b);
 }
 
 extern "C" BOOL Pocket_AddFoundItem(u16 *a) {
@@ -2695,7 +2695,7 @@ extern "C" s32 Pocket_FindItem(u16 *a) {
 
 extern "C" s32 Player_GetDeliveryRecipientName(void *a, void *b) {
     PlayerData *o = PlayerData_GetCurrent();
-    PlayerErrands_GetDeliveryRecipientName(o->getErrands(), a, b);
+    return PlayerErrands_GetDeliveryRecipientName(o->getErrands(), a, b);
 }
 }
 

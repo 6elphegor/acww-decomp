@@ -483,9 +483,9 @@ extern "C" s32 Str_SPrintf(char *buf, const char *fmt, ...) {
     return Str_VSPrintf(buf, fmt, va);
 }
 
-extern "C" s32 Str_VSPrintf(char *buf, const char *fmt, va_list va) { Str_VSNPrintf(buf, 0x7fffffff, fmt, va); }
+extern "C" s32 Str_VSPrintf(char *buf, const char *fmt, va_list va) { return Str_VSNPrintf(buf, 0x7fffffff, fmt, va); }
 
-extern "C" s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va) { OS_VSNPrintf(buf, n, fmt, va); }
+extern "C" s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va) { return OS_VSNPrintf(buf, n, fmt, va); }
 
 extern "C" void TownId_Construct() {}
 

@@ -3193,19 +3193,19 @@ extern "C" void PlayerActor_GetHat(u16 *out, void *p) {
 
 namespace nT {
 extern "C" s32 PlayerActor_GetHairStyle(void *p) {
-    _ZN10PlayerData12getHairStyleEv(PlayerActor_GetPlayerData(p));
+    return _ZN10PlayerData12getHairStyleEv(PlayerActor_GetPlayerData(p));
 }
 }
 
 namespace nT {
 extern "C" s32 PlayerActor_GetHairColor(void *p) {
-    _ZN10PlayerData12getHairColorEv(PlayerActor_GetPlayerData(p));
+    return _ZN10PlayerData12getHairColorEv(PlayerActor_GetPlayerData(p));
 }
 }
 
 namespace nT {
 extern "C" s32 PlayerActor_GetTan(void *p) {
-    _ZN10PlayerData6getTanEv(PlayerActor_GetPlayerData(p));
+    return _ZN10PlayerData6getTanEv(PlayerActor_GetPlayerData(p));
 }
 }
 

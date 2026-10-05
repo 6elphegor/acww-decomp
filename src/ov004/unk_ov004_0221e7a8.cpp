@@ -2294,7 +2294,7 @@ extern "C" s32 PlayerActor_NetFtrGrabApproach(Obj *o, s32 c) {
     s32 x, z;
     s16 h;
     PlayerActor_FtrGrabApproachGetNetData(o->netData.bytes, &x, &z, &h);
-    PlayerActor_RequestFtrGrabApproach(o, x, z, h, 5, c);
+    return PlayerActor_RequestFtrGrabApproach(o, x, z, h, 5, c);
 }
 
 extern "C" void PlayerActor_EndFtrGrabApproach(Obj *o) {

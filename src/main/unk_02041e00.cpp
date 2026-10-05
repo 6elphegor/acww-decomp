@@ -4284,7 +4284,7 @@ namespace nK {
 extern "C" s32 Town_SpawnRafflesia(void *a, void *b, s32 c, s32 d) {
     s32 x = Random_GlobalBelow(c);
     s32 y = Random_GlobalBelow(d);
-    Town_SpawnItemInAcre(a, b, x + 1, y + 1, 0x1b, (void *)Town_CanSpawnWeedAt, 0);
+    return Town_SpawnItemInAcre(a, b, x + 1, y + 1, 0x1b, (void *)Town_CanSpawnWeedAt, 0);
 }
 }
 
@@ -5876,7 +5876,7 @@ extern "C" s32 PendingUnit_Apply(PendingUnit *e) {
     }
     e->unitFlag = (u8)flag;
     PendingUnit_WriteToMap(e);
-    PendingUnit_Clear(e);
+    return PendingUnit_Clear(e);
 }
 }
 

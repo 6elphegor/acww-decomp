@@ -657,7 +657,7 @@ extern "C" s32 EffectCb_PlaceFacing(EffectSplEmitter *o, EffectSlot *e)
     o->axis.x = data_02135f44[idx];
     o->axis.y = 0;
     o->axis.z = data_02135f44[idx + 1];
-    EffectSpl_ApplySceneTint(o);
+    return EffectSpl_ApplySceneTint(o);
 }
 }
 
@@ -680,7 +680,7 @@ extern "C" s32 EffectCb_PlaceFacingBack(EffectSplEmitter *o, EffectSlot *e)
     o->axis.x = data_02135f44[idx];
     o->axis.y = 0;
     o->axis.z = data_02135f44[idx + 1];
-    EffectSpl_ApplySceneTint(o);
+    return EffectSpl_ApplySceneTint(o);
 }
 }
 
@@ -739,7 +739,7 @@ namespace R7 {
 extern "C" s32 EffectCb_InitOneShotOffset(EffectSplEmitter *o, VecFx32 *a, VecFx32 *b)
 {
     EffectCb_PlaceEmitter(o, &(*(EffectScratchSlot *)&gEffectManager[32]), a, b);
-    EffectSpl_ApplySceneTint(o);
+    return EffectSpl_ApplySceneTint(o);
 }
 }
 
@@ -785,7 +785,7 @@ extern "C" s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, Vec
     EffectEmitterTag h = o->tag;
     EffectCb_PlaceEmitter((EffectSplEmitter *)o->emitter, g, a, b);
     EffectSpl_ApplySceneTint(o->emitter);
-    MI_CpuCopy8(g, &gEffectManager[h.poolIndex], 0x1c);
+    return MI_CpuCopy8(g, &gEffectManager[h.poolIndex], 0x1c);
 }
 }
 
@@ -2650,7 +2650,7 @@ extern "C" s32 EffectKind3E_InitEmitter0B(EffectSplEmitter *o)
     o->posX = g->x + o->resource->p_base->pos.x;
     o->posY = g->y + o->resource->p_base->pos.y;
     o->posZ = g->z + o->resource->p_base->pos.z;
-    EffectSpl_ApplySceneTint(o);
+    return EffectSpl_ApplySceneTint(o);
 }
 }
 
@@ -2674,7 +2674,7 @@ extern "C" s32 EffectKind3E_InitEmitter0A(EffectSplEmitter *o)
     o->posY = v.y + o->resource->p_base->pos.y;
     o->posZ = v.z + o->resource->p_base->pos.z;
     o->simpleCollisionY = 0x99a;
-    EffectSpl_ApplySceneTint(o);
+    return EffectSpl_ApplySceneTint(o);
 }
 }
 
@@ -2724,7 +2724,7 @@ extern "C" void EffectKind3F_InitModel(s32 p)
 namespace R2 {
 extern "C" s32 EffectKind3F_UpdateEmitter0(void *p)
 {
-    _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(p, 0x1f, data_020e16d4, 0x1e, data_020e16d4, 0x1e, data_020e16d4, -1, 0);
+    return _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(p, 0x1f, data_020e16d4, 0x1e, data_020e16d4, 0x1e, data_020e16d4, -1, 0);
 }
 }
 
@@ -2946,7 +2946,7 @@ extern "C" s32 EffectKind54_UpdateEmitter0(EffectEmitterEntry *p)
 {
     EffectEmitterTag i = p->tag;
     EffectSlot *r = &gEffectManager[i.poolIndex];
-    EffectCb_FollowTrackedOffset(p, r->param != 3 ? data_020d03b4 : data_020d03c0, data_020d0300);
+    return EffectCb_FollowTrackedOffset(p, r->param != 3 ? data_020d03b4 : data_020d03c0, data_020d0300);
 }
 }
 
