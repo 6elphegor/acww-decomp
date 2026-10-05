@@ -99,34 +99,7 @@ void BgmTempoTracker_ctor(void *p);
 extern "C" Bytes4 data_0213b2c4 = {0x00, 0x02, 0xff, 0x00};
 
 // vtable 0x0213b8e0 (dsd label data_0213b8e8)
-class SndSceneBase {
-public:
-    SndSceneBase();                     // C2 0x020f3078 (C1 unreferenced, dead-stripped)
-    virtual ~SndSceneBase();            // D2 0x020f2fc8, D0 0x020f3000, D1 0x020f3040
-    virtual void vfunc_08();            // 0x020f2fc4
-    virtual void load();            // 0x020f2fc0
-    virtual void update(s32 cameraDistance);            // 0x020f2fac
-    virtual void fadeOutAll();            // 0x020f2f6c
-    virtual void unload();            // 0x020f2e58
-    virtual void beginTalk(s32 a);       // 0x020f2dec
-    virtual void endTalk();            // 0x020f2dcc
-    virtual void setBankVariant(s32 a);       // main SndSceneBase::setBankVariant (empty Thumb function, defined in main)
-    virtual void onBgmChange(u32 a, u32 c); // 0x020f2dc8
-    void stopPlayers(s32 v);              // 0x020f2eac
-    void setupHeaps(u32 a, s32 b);           // 0x020f2cd4
-    void createPlayer4Heap();                   // 0x020f2ca8
-    void createPlayer11Heaps(s32 n);             // 0x020f2c58
-    void createPlayer5Heap();                   // 0x020f2c2c
-    void createPlayer6Heaps();                   // 0x020f2be4
-    void createPlayer17Heaps();                  // 0x020f2b9c
-    void createPlayer18And19Heaps();                  // 0x020f2b60
-    void createPlayer13Heap();                  // 0x020f2b34
-    void createPlayer12Heaps();                  // 0x020f2aec
-
-    /* 0x04 */ s8 id;
-    /* 0x05 */ u8 f5;
-    /* 0x06 */ u8 f6;
-};
+#include "snd/SndSceneBase.h"
 
 // vtable 0x0213b8ac (dsd label data_0213b8b4)
 class SndScene01 : public SndSceneBase {

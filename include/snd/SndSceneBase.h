@@ -4,8 +4,8 @@
 #include "types.h"
 
 // Base of the per-scene sound setups SndScene01..SndScene99 (vtable 0x0213b8e0, dsd label data_0213b8e8; 8 bytes).
-// Defined in autoload_2, unk_020f0fb4.cpp, which keeps its own copy (class declaration order sets that file's vtable
-// order). main's Snd_CreateScene (src/main/unk_020039ec.cpp) creates one per scene into gSndScene (= SndMgr::scene)
+// Defined in autoload_2, unk_020f0fb4.cpp, which includes this header where the class was declared (class declaration order
+// sets that file's vtable order). main's Snd_CreateScene (src/main/unk_020039ec.cpp) creates one per scene into gSndScene (= SndMgr::scene)
 // and drives it through the virtuals; the base setBankVariant is the empty main function SndSceneBase::setBankVariant.
 class SndSceneBase {
 public:

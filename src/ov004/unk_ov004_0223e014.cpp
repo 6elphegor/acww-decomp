@@ -15,10 +15,11 @@
 
 
 
-// gPad (the same PadState as autoload_2 unk_020e7500.cpp; only cur/trig are declared here)
+// gPad (the same PadState as autoload_2 unk_020e7500.cpp)
 struct PadState {
     u16 cur;
     u16 trig;
+    s16 dir;
 };
 
 extern "C" {

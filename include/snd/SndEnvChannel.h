@@ -3,12 +3,7 @@
 
 #include "types.h"
 #include "gfx/VecFx32.h"
-
-
-// sound sequence handle (one word; functions in unk_020ede18.cpp and the NNS sound library, plain C names)
-struct SndSeqHandle {
-    /* 0x0 */ void *p;
-};
+#include "snd/SndSeqHandle.h"
 
 // 0xc-byte sound-environment channel, base vtable 0x0213b914 (dsd label data_0213b91c). Key function vfunc_00 and all
 // virtuals are in autoload_2, unk_020f30fc.cpp; main / ov003 / ov004 construct it with the inline constructor. The derived
