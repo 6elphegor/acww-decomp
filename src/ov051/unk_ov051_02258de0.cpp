@@ -47,7 +47,7 @@ extern "C" {
 void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
 void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *self, u32 a, u32 b, u32 c, u32 d, u32 e);
-void _ZN11NpcAnimCtrl9getAnimIdEj(void *self, s32 a);
+s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, s32 a);
 u32 _ZN8PlayerId9getGenderEv(void *self);
 void _ZN8PlayerId9setGenderEh(void *self, s32 a);
 void *_ZN10PlayerData11getPlayerIdEv(void *self);
@@ -946,8 +946,8 @@ extern "C" u32 SpNpcKappn_GetAnimFrame() {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-extern "C" void SpNpcKappn_GetAnimState() {
-    _ZN11NpcAnimCtrl9getAnimIdEj(&sSpNpcKappnInstance->animCtrl, 0);
+extern "C" s32 SpNpcKappn_GetAnimState() {
+    return _ZN11NpcAnimCtrl9getAnimIdEj(&sSpNpcKappnInstance->animCtrl, 0);
 }
 
 extern "C" void *data_ov051_02259f74[2] = {(void *)_ZN14SpNpcKappnTalk18onTownReasonChoiceEj, 0};

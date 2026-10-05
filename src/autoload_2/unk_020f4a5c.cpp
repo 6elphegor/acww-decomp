@@ -509,9 +509,9 @@ extern "C" void MelodyPlayer_PlayNote(Ctl2 *c, u32 idx) {
 }
 
 // Ctl2: update both Seq2 players, +0x38 = first one is active
-extern "C" void MelodyPlayer_Update(Ctl2 *c) {
+extern "C" s32 MelodyPlayer_Update(Ctl2 *c) {
     c->b38 = MelodyTrack_Update(&c->a) >= 0;
-    MelodyTrack_Update(&c->b);
+    return MelodyTrack_Update(&c->b);
 }
 
 // Ctl2: byte +0x38 (playing flag)

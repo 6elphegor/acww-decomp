@@ -404,9 +404,9 @@ extern "C" BOOL ShopAckCounter_IsDone(Counter *c) {
     if (c->received >= c->needed) return TRUE;
     return FALSE;
 }
-extern "C" void ShopAckCounter_Add(Counter *c) {
+extern "C" BOOL ShopAckCounter_Add(Counter *c) {
     if (c->received < c->needed) c->received++;
-    ShopAckCounter_IsDone(c);
+    return ShopAckCounter_IsDone(c);
 }
 extern "C" void StockList_AddFromPickList(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unused, u8 flag) {
     if (n != 0) {
@@ -1193,7 +1193,7 @@ extern "C" {
 u32 StockList_MarkSold(u32, u32, void*);
 }
 extern "C" {
-void StockList_FindItem(u32, void*, void*, u32);
+s32 StockList_FindItem(u32, void*, void*, u32);
 }
 extern "C" {
 u16* StockList_GetItem(u32, void*, void*, u32, u32);
@@ -1661,8 +1661,8 @@ extern "C" void AbleShop_SetStockDate(S1 *s, void *p) {
 extern "C" u16* AbleShop_GetItem(S1 *s, u32 a, u32 c) {
     return StockList_GetItem(a, s, s->arr, 6, c);
 }
-extern "C" void AbleShop_FindItem(S1 *s, u32 a) {
-    StockList_FindItem(a, s, s->arr, 6);
+extern "C" s32 AbleShop_FindItem(S1 *s, u32 a) {
+    return StockList_FindItem(a, s, s->arr, 6);
 }
 extern "C" u32 AbleShop_MarkSold(S1 *s, u32 a) {
     return StockList_MarkSold(a, 6, s->arr);
@@ -1802,7 +1802,7 @@ extern "C" {
 u32 Item_GetFurnitureIndex(void *p);
 }
 extern "C" {
-void *StockList_FindItem(u32 a, void *b, void *c, u32 d);
+s32 StockList_FindItem(u32 a, void *b, void *c, u32 d);
 }
 extern "C" {
 void *StockList_GetItem(u32 a, void *b, void *c, u32 d, u32 e);
@@ -2335,8 +2335,8 @@ extern "C" void *ReddShop_GetItem(ReddShop *g, u32 a, u32 b) {
     return StockList_GetItem(a, g, g->tbl, 3, b);
 }
 
-extern "C" void ReddShop_FindItem(ReddShop *g, u32 a) {
-    StockList_FindItem(a, g, g->tbl, 3);
+extern "C" s32 ReddShop_FindItem(ReddShop *g, u32 a) {
+    return StockList_FindItem(a, g, g->tbl, 3);
 }
 
 extern "C" NookPoints *NookPoints_Create(NookPoints *p) {
