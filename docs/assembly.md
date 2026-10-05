@@ -68,6 +68,24 @@ expanded copy; units that use `.incbin` therefore depend on the extract step.
 It is not used to make the compiler reload a value, keep a stack slot or pick a register on ordinary game data.
 Some older game sources still contain such declarations; they are not a model for new code.
 
+## `#pragma`
+
+`#pragma` follows the same principle: only the pragmas the original sources used. Besides `#pragma thumb off` /
+`#pragma thumb reset` for ARM functions in Thumb files (see the [matching guide](matching.md)), this is NitroSDK's
+DTCM section pragma:
+
+* The nine data-only units in `src/dtcm/` place their objects between `#pragma section DTCM begin` and
+  `#pragma section DTCM end`, what NitroSDK's `nitro/dtcm_begin.h` / `nitro/dtcm_end.h` expand to (the SDK's
+  `os_irqTable.c` and `os_irqHandler.c` use them for `OS_IRQTable` and `OSi_IrqThreadQueue`).
+* The section is defined with one name, `#pragma define_section DTCM ".dtcm" abs32 RWX`, not the later SDKs'
+  `".dtcm" ".dtcm.bss"`: the game's DTCM image has no bss (0x027e0460-0x027e0460) and its zero objects lie between
+  initialised ones (the zero `OSi_IrqCallbackInfo` records at 0x027e0058, between `OS_IRQTable` and
+  `OSi_IrqCallbackInfoIndex`), which mwcc produces only with the one-name form (with two names a zero object goes to
+  `.dtcm.bss`). The definition is inferred from the image; no SDK source of this version is available.
+* `tools/bss_units.py` adds each DTCM unit's `.dtcm` section to the linker script after its `.data`.
+
+No other section pragma is used; `#pragma` is never used to change the code of a function.
+
 ## Exceptions
 
 ### Four switch routines kept as assembly inside C++ files

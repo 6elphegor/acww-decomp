@@ -66,7 +66,7 @@ by size on their own, see `tools/pipeline/linking.md`, "Data of library units").
 | `.rodata` 0x020d0a7c-0x020d0bd0 | 340 | The building records `data_020d0a7c` (34 `BuildingInfo`), right after the rodata of `unk_020b0e60.cpp`, the only main user. It fits that file's size order, but adding it reorders the file's bss; `linkprep.py data` finds at best 25 of 30 objects in place |
 | `.data` 0x020e1178-0x020e1180 | 8 | The process profile of `EffectSplProc_Create`; adding it to `unk_0208f268.cpp` reorders that file's many 4-byte rodata objects at every definition position |
 
-The other ten process profiles, eight of the small constants (now `extern "C" const` objects defined after the code
+The other ten process profiles, the constants of nine of the thirteen small .rodata ranges (16 objects, 64 bytes; now `extern "C" const` objects defined after the code
 of a file between their neighbours, so that the code still loads them), `gVBlanksPerFrame`, the melody word at
 0x020ddf8c and the alignment padding at the end of `.data` are owned since phase 4 (U4). The overlay digest table
 names `data_020e74ec`/`data_020e74ec_end` (NitroSDK's `SDK_OVERLAY_DIGEST`/`_END`, an empty table at the end of

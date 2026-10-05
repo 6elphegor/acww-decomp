@@ -10,9 +10,9 @@ u8 gTouchPrevHeld;
 extern "C" { extern u8 gTouchPrevChanged; }
 u8 gTouchPrevChanged;
 
-// Touch state (bss): the hold counter here and, above, the previous frame's held and changed flags.
-// Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
-// size order (linkprep check); the original file is this one or another file between those neighbours.
+// Touch state (bss): the hold counter here and, above, the previous frame's held and changed flags. Their user is the
+// touch file unk_020b7d84.cpp (Touch_Update), whose bss follows; defined there, its 16 one-byte objects reach no
+// original order (linkprep data: best 14/16), so they are owned by the only other file between the neighbours.
 extern "C" { extern u8 gTouchHoldFrames; }
 u8 gTouchHoldFrames;
 
