@@ -250,80 +250,80 @@ void *SndScene01_ctor(void *);
 
 extern "C" {
 #define SndPosList_update _ZN10SndPosList6updateEv
-void SndPosList_update();
+void SndPosList_update(void *self);
 }
 
 extern "C" {
 #define SndPosList_init _ZN10SndPosList4initEv
-void SndPosList_init();
+void SndPosList_init(void *self);
 }
 
 extern "C" {
 #define SndPosNode_release _ZN10SndPosNode7releaseEv
-void SndPosNode_release();
+void SndPosNode_release(void *self);
 }
 
 extern "C" {
 #define SndPosNode_setPitch _ZN10SndPosNode8setPitchEi
-void SndPosNode_setPitch();
+void SndPosNode_setPitch(void *self, s32 v);
 }
 
 extern "C" {
 #define SndPosNode_init _ZN10SndPosNode4initEP10SndPosList
-void SndPosNode_init();
+void SndPosNode_init(void *self, void *list);
 }
 
 extern "C" {
 #define SndSeEmitter_playAlternate _ZN12SndSeEmitter13playAlternateEt
-void SndSeEmitter_playAlternate();
+void SndSeEmitter_playAlternate(void *self, u16 s);
 }
 
 extern "C" {
-void MelodyBeat_Start();
+void MelodyBeat_Start(void *self, u16 id);
 }
 
 extern "C" {
-void MelodyBeat_Stop();
+void MelodyBeat_Stop(void *self);
 }
 
 extern "C" {
-void MelodyBeat_Init();
+void MelodyBeat_Init(void *self);
 }
 
 extern "C" {
-void MelodyPlayer_IsPlaying();
+u8 MelodyPlayer_IsPlaying(void *c);
 }
 
 extern "C" {
-void MelodyPlayer_Update();
+void MelodyPlayer_Update(void *c);
 }
 
 extern "C" {
-void MelodyPlayer_PlayNote();
+void MelodyPlayer_PlayNote(void *c, u32 idx);
 }
 
 extern "C" {
-void MelodyPlayer_StartTrackA();
+void MelodyPlayer_StartTrackA(void *c);
 }
 
 extern "C" {
-void MelodyPlayer_ApplyRandomPattern();
+u8 *MelodyPlayer_ApplyRandomPattern(void *c);
 }
 
 extern "C" {
-void MelodyPlayer_PlayRandom();
+void MelodyPlayer_PlayRandom(void *c, u32 v);
 }
 
 extern "C" {
-void MelodyPlayer_Play();
+void MelodyPlayer_Play(void *c, u32 v);
 }
 
 extern "C" {
-void MelodyPlayer_PlayPattern();
+void MelodyPlayer_PlayPattern(void *c, u32 v, u8 *pat);
 }
 
 extern "C" {
-void MelodyPlayer_SetPattern();
+void MelodyPlayer_SetPattern(void *c, u8 *src);
 }
 
 extern "C" {
@@ -331,15 +331,15 @@ void Melody_GetDefaultPattern();
 }
 
 extern "C" {
-void MelodyPlayer_Init();
+void MelodyPlayer_Init(void *c);
 }
 
 extern "C" {
-void BgmSyncSnd_PollStarted();
+s32 BgmSyncSnd_PollStarted(void *r);
 }
 
 extern "C" {
-void BgmSyncSnd_SetStartBeat();
+void BgmSyncSnd_SetStartBeat(void *r, s8 v);
 }
 
 extern "C" {
@@ -347,15 +347,15 @@ void BgmSyncSnd_ReadBeat();
 }
 
 extern "C" {
-void BgmSyncSnd_SetState();
+void BgmSyncSnd_SetState(void *r, u32 mode);
 }
 
 extern "C" {
-void BgmSyncSnd_Release();
+void BgmSyncSnd_Release(void *r);
 }
 
 extern "C" {
-void BgmSyncSnd_Init();
+void BgmSyncSnd_Init(void *r, u16 v);
 }
 
 extern "C" {
@@ -752,17 +752,17 @@ void SndSeEmitter::callUpdateRelativeAlt(VecFx32 *v) {
     }
 }
 
-extern "C" void Snd_SeEmitterPlayAlternate() { SndSeEmitter_playAlternate(); }
+extern "C" void Snd_SeEmitterPlayAlternate(void *e, u16 s) { SndSeEmitter_playAlternate(e, s); }
 
 extern "C" void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playOneShot(a, b, c, d); }
 
 void SndSeEmitter::callStopAlt() { stop(); }
 
-extern "C" void Snd_PosListInit() { SndPosList_init(); }
+extern "C" void Snd_PosListInit(void *l) { SndPosList_init(l); }
 
-extern "C" void Snd_PosListUpdate() { SndPosList_update(); }
+extern "C" void Snd_PosListUpdate(void *l) { SndPosList_update(l); }
 
-extern "C" void Snd_PosNodeInit() { SndPosNode_init(); }
+extern "C" void Snd_PosNodeInit(void *n, void *l) { SndPosNode_init(n, l); }
 
 extern "C" void Snd_PosNodePlay(u32 a, u32 b, VecFx32 *v) {
     VecFx32 t;
@@ -794,9 +794,9 @@ extern "C" void Snd_SetBgmPan(u32 a, VecFx32 *v) {
     }
 }
 
-extern "C" void Snd_PosNodeRelease() { SndPosNode_release(); }
+extern "C" void Snd_PosNodeRelease(void *n) { SndPosNode_release(n); }
 
-extern "C" void Snd_PosNodeSetPitch() { SndPosNode_setPitch(); }
+extern "C" void Snd_PosNodeSetPitch(void *n, s32 v) { SndPosNode_setPitch(n, v); }
 
 extern "C" s32 Snd_PosListCanInit() { return 1; }
 
@@ -850,11 +850,11 @@ extern "C" void Snd_SetPanIfChanged(u32 a) { SndMgr_SetPanIfChanged(gSndMgr, a);
 
 extern "C" void Snd_SetPan(u32 a) { SndMgr_SetPan(gSndMgr, a); }
 
-extern "C" void Snd_MelodyInit() { MelodyPlayer_Init(); }
+extern "C" void Snd_MelodyInit(void *c) { MelodyPlayer_Init(c); }
 
-extern "C" void Snd_MelodySetPattern() { MelodyPlayer_SetPattern(); }
+extern "C" void Snd_MelodySetPattern(void *c, u8 *src) { MelodyPlayer_SetPattern(c, src); }
 
-extern "C" void Snd_MelodyPlayPattern() { MelodyPlayer_PlayPattern(); }
+extern "C" void Snd_MelodyPlayPattern(void *c, u32 v, u8 *pat) { MelodyPlayer_PlayPattern(c, v, pat); }
 
 extern "C" void Snd_MelodyPlayAt(u32 a, VecFx32 *v, u32 c) {
     VecFx32 t;
@@ -866,25 +866,25 @@ extern "C" void Snd_MelodyPlayAt(u32 a, VecFx32 *v, u32 c) {
     }
 }
 
-extern "C" void Snd_MelodyPlay() { MelodyPlayer_Play(); }
+extern "C" void Snd_MelodyPlay(void *c, u32 v) { MelodyPlayer_Play(c, v); }
 
-extern "C" void Snd_MelodyStartTrackA() { MelodyPlayer_StartTrackA(); }
+extern "C" void Snd_MelodyStartTrackA(void *c) { MelodyPlayer_StartTrackA(c); }
 
-extern "C" void Snd_MelodyPlayNote() { MelodyPlayer_PlayNote(); }
+extern "C" void Snd_MelodyPlayNote(void *c, u32 idx) { MelodyPlayer_PlayNote(c, idx); }
 
-extern "C" void Snd_MelodyUpdate() { MelodyPlayer_Update(); }
+extern "C" void Snd_MelodyUpdate(void *c) { MelodyPlayer_Update(c); }
 
-extern "C" void Snd_MelodyIsPlaying() { MelodyPlayer_IsPlaying(); }
+extern "C" u8 Snd_MelodyIsPlaying(void *c) { return MelodyPlayer_IsPlaying(c); }
 
-extern "C" void Snd_MelodyPlayRandom() { MelodyPlayer_PlayRandom(); }
+extern "C" void Snd_MelodyPlayRandom(void *c, u32 v) { MelodyPlayer_PlayRandom(c, v); }
 
-extern "C" void Snd_MelodyApplyRandomPattern() { MelodyPlayer_ApplyRandomPattern(); }
+extern "C" u8 *Snd_MelodyApplyRandomPattern(void *c) { return MelodyPlayer_ApplyRandomPattern(c); }
 
 extern "C" void Snd_MelodyGetDefaultPattern() { Melody_GetDefaultPattern(); }
 
-extern "C" void Snd_BgmSyncInit() { BgmSyncSnd_Init(); }
+extern "C" void Snd_BgmSyncInit(void *r, u16 v) { BgmSyncSnd_Init(r, v); }
 
-extern "C" void Snd_BgmSyncSetState() { BgmSyncSnd_SetState(); }
+extern "C" void Snd_BgmSyncSetState(void *r, u32 mode) { BgmSyncSnd_SetState(r, mode); }
 
 extern "C" s32 Snd_BgmSyncUpdate(u32 a, VecFx32 *v) {
     VecFx32 t;
@@ -904,17 +904,17 @@ extern "C" s32 Snd_BgmSyncUpdate(u32 a, VecFx32 *v) {
     return r;
 }
 
-extern "C" void Snd_BgmSyncRelease() { BgmSyncSnd_Release(); }
+extern "C" void Snd_BgmSyncRelease(void *r) { BgmSyncSnd_Release(r); }
 
-extern "C" void Snd_BgmSyncSetStartBeat() { BgmSyncSnd_SetStartBeat(); }
+extern "C" void Snd_BgmSyncSetStartBeat(void *r, s8 v) { BgmSyncSnd_SetStartBeat(r, v); }
 
 extern "C" void Snd_BgmSyncReadBeat() { BgmSyncSnd_ReadBeat(); }
 
-extern "C" void Snd_BgmSyncPollStarted() { BgmSyncSnd_PollStarted(); }
+extern "C" s32 Snd_BgmSyncPollStarted(void *r) { return BgmSyncSnd_PollStarted(r); }
 
-extern "C" void Snd_MelodyBeatInit() { MelodyBeat_Init(); }
+extern "C" void Snd_MelodyBeatInit(void *s) { MelodyBeat_Init(s); }
 
-extern "C" void Snd_MelodyBeatStart() { MelodyBeat_Start(); }
+extern "C" void Snd_MelodyBeatStart(void *s, u16 id) { MelodyBeat_Start(s, id); }
 
 extern "C" void Snd_MelodyBeatUpdate(u32 a, VecFx32 *v) {
     VecFx32 t;
@@ -930,5 +930,5 @@ extern "C" void Snd_MelodyBeatUpdate(u32 a, VecFx32 *v) {
     }
 }
 
-extern "C" void Snd_MelodyBeatStop() { MelodyBeat_Stop(); }
+extern "C" void Snd_MelodyBeatStop(void *s) { MelodyBeat_Stop(s); }
 

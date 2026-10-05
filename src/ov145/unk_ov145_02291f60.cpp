@@ -117,10 +117,10 @@ BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
 BOOL MenuKeys_HasUp(u32 v);
 void ProcBase_RequestDelete(void *p);
-s32 ProcBase_GetParent();
+s32 ProcBase_GetParent(void *p);
 void BgVramTask_cancel(void *p);
 void Gfx2d_ShowLayer(u32 x);
-void MenuLauncher_onChildClosed();
+void MenuLauncher_onChildClosed(s32 self);
 void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
 void Gfx2d_ResetLayer(u32 x);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -303,8 +303,7 @@ BOOL DonationMenu::onCreate() {
 }
 
 BOOL DonationMenu::onDelete() {
-    ProcBase_GetParent();
-    MenuLauncher_onChildClosed();
+    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -408,7 +407,7 @@ void DonationMenu::stateOpening() {
 }
 
 void DonationMenu::stateClose() {
-    MenuLauncher_setNextRequest(ProcBase_GetParent(), 0x44, 1);
+    MenuLauncher_setNextRequest(ProcBase_GetParent(this), 0x44, 1);
     beginSubSlideOut(0xa, 0, 0, 0x28);
     updateLayerSlide();
     setTransitionState(3);

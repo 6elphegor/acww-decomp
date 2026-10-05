@@ -1137,7 +1137,7 @@ s32 PlayerActor_GetSlotAction(s32 *out, s32 a, u32 b);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 s32 Effect_Create(u32 id, V3 *v, s16 *h, u32 z);
-void Effect_SetPosition(s32 h, V3 *v, u32 z);
+void Effect_SetPosition(s32 h, V3 *v, s16 *a, s16 *b);
 void Effect_End(s32 h);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 s32 Unk_02006d14_startFieldQuery(Obj *o, V3 *v, s32 a, s32 b);
@@ -1862,13 +1862,13 @@ void Camera_SetModeDefault();
 void TalkRequest_FinishPlayerMessage();
 s32 Catalog_HasAllInsects();
 s32 Pocket_FindEmpty();
-s32 FieldAction_FindDropUnit(s32 a, s32 *p);
+s32 FieldAction_FindDropUnit(s32 a, s32 *p, u8 *out);
 void Bgm_Release(s32 a);
 void Bgm_ReleasePriority(s32 a);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-void Hud_GetCountdown();
-void HudCountdown_incCountB();
+void *Hud_GetCountdown();
+void HudCountdown_incCountB(void *self);
 void VillagerTrend_OnInsectCaught(void *p);
 u32 NetBuf_ReadS16B(u8 *p);
 void NetBuf_WriteS16B(u8 *p, u32 a);
@@ -2200,7 +2200,7 @@ void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Bgm_Request(u32 a, u32 b, u32 c, u32 d);
 s32 Catalog_HasAllFish();
 s32 Pocket_FindEmpty();
-s32 FieldAction_FindDropUnit(u32 a, u32 *b);
+s32 FieldAction_FindDropUnit(u32 a, u32 *b, u8 *out);
 void Character_detachTalkRequest(Obj *o, Sec *s);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void TalkRequest_FinishPlayerMessage();
@@ -2213,8 +2213,8 @@ void PlayerActor_RequestFishRelease(Obj *o, void *d, u32 a, u32 b, s32 c);
 void Unk_02006d14_requestAct76(Obj *o, u32 a, u32 b, u32 c, u32 d, s32 e);
 s32 CommManager_isLocalSlot(void *g, u32 a);
 void VillagerTrend_OnFishCaught(void *p);
-void Hud_GetCountdown();
-void HudCountdown_incCountA();
+void *Hud_GetCountdown();
+void HudCountdown_incCountA(void *self);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 void HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
@@ -2777,7 +2777,7 @@ s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_requestAct10(Obj *o, s32 a, s32 b, s32 c);
 s32 WorldCurve_FromCurved(V3 *a, V3 *b);
 s32 Effect_Create(u32 id, V3 *v, s16 *h, u32 z);
-s32 Effect_SetPosition(s32 h, V3 *v, s16 *p);
+s32 Effect_SetPosition(s32 h, V3 *v, s16 *p, s16 *b);
 s32 Effect_End(s32 h);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
@@ -3033,7 +3033,7 @@ s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 Unk_020102ec_startAnimOnce(Obj *o, u32 a, u32 b, u32 c);
-s32 Unk_020102ec_startAnim(Obj *o, u32 a, u32 b);
+s32 Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
@@ -3291,7 +3291,7 @@ s32 PlayerActor_RequestMailboxWait(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestMailboxClose(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestMailboxOpen(Obj *o, V3 v, s32 a, s32 b);
 s32 PlayerActor_RequestDoorExit(Obj *o, s32 a, s32 b);
-s32 Unk_02006d14_getHeldHoldableIndex();
+s32 Unk_02006d14_getHeldHoldableIndex(Obj *o);
 s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Unk_02006d14_setActionFlag(Obj *o, s32 a);
 s32 PlayerActor_RequestDoorEnter(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -3543,7 +3543,7 @@ namespace ns_02212140 {
 extern "C" s32 PlayerActor_LocalRequestDoorApproach(s32 *a, s32 *b, s16 *c) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        if (Unk_02006d14_getHeldHoldableIndex()) {
+        if (Unk_02006d14_getHeldHoldableIndex(o)) {
             return PlayerActor_RequestStowItem(o, 0x38, 0, *a, *b, *c, 6, -1);
         }
         Unk_02006d14_setActionFlag(o, 1);
@@ -3557,7 +3557,7 @@ namespace ns_02212140 {
 extern "C" s32 PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
-        if (Unk_02006d14_getHeldHoldableIndex()) {
+        if (Unk_02006d14_getHeldHoldableIndex(o)) {
             return PlayerActor_RequestStowItem(o, 0x39, ((u32)a << 26) >> 24, *b, *c, d, 6, -1);
         }
         Unk_02006d14_setActionFlag(o, 1);
@@ -4569,7 +4569,7 @@ extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m) {
         break;
     case 2:
         k = 0xc;
-        Unk_020102ec_startAnim(o, z, 3);
+        Unk_020102ec_startAnim(o, z, 3, z);
         break;
     }
     u32 id = p[0xa];
@@ -5412,7 +5412,7 @@ extern "C" void PlayerActor_UmbrellaSpinEffect(Obj *o) {
     if (((RecB *)&o->actionWork)->a == -1) {
         *p = Effect_Create(0x33, &v, &o->rotY, 0);
     } else {
-        Effect_SetPosition(((RecB *)&o->actionWork)->a, &v, &o->rotY);
+        Effect_SetPosition(((RecB *)&o->actionWork)->a, &v, &o->rotY, 0);
     }
 }
 }
@@ -6991,8 +6991,7 @@ extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p) {
             r->fishId = v;
             if (v < 0x38) {
                 VillagerTrend_OnFishCaught((u8 *)o + 0x5c);
-                Hud_GetCountdown();
-                HudCountdown_incCountA();
+                HudCountdown_incCountA(Hud_GetCountdown());
             }
         }
         r->step = 0;
@@ -7104,7 +7103,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         if (c == -1) {
             buf[0] = 0;
             buf[1] = 0;
-            if (FieldAction_FindDropUnit(0x10, buf)) {
+            if (FieldAction_FindDropUnit(0x10, buf, 0)) {
                 *r5 = 3;
                 BOOL in = FALSE;
                 u32 h = o->actionItem;
@@ -7959,8 +7958,7 @@ extern "C" void PlayerActor_SetupInsectShowCatch(Obj *o, Msg *r) {
     } else {
         if (CommManager_isLocalSlot(gCommManager, o->sessionSlot)) {
             Bgm_RequestSilence(0x12, 0, 0);
-            Hud_GetCountdown();
-            HudCountdown_incCountB();
+            HudCountdown_incCountB(Hud_GetCountdown());
             VillagerTrend_OnInsectCaught(&o->position);
         }
         rec->step = 0;
@@ -8148,7 +8146,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         if (Pocket_FindEmpty() == -1) {
             L2.pr[0] = 0;
             L2.pr[1] = 0;
-            if (FieldAction_FindDropUnit(0x10, L2.pr)) {
+            if (FieldAction_FindDropUnit(0x10, L2.pr, 0)) {
                 *st = 4;
                 o->msgStep = 0;
             } else {
@@ -10285,7 +10283,7 @@ extern "C" void PlayerActor_WateringCanUpdate(Obj *o) {
             sWateringPos.y = t.y;
             sWateringPos.z = t.z;
         } else {
-            Effect_SetPosition(*h, &v, 0);
+            Effect_SetPosition(*h, &v, 0, 0);
         }
         switch (k) {
         case 0x14:

@@ -39,7 +39,7 @@ void Gfx2d_ResetLayer(u32 a);
 void File_LoadToBuffer(void *src, void *dst, u32 n);
 void Oam_DrawCell(s32 a, void *src, s32 n, void *dst, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void *Net_GetWifiFriendList();
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
@@ -234,7 +234,7 @@ BOOL DistantTownsMenu::onCreate() {
 }
 
 BOOL DistantTownsMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -357,7 +357,7 @@ void DistantTownsMenu::stateOpening() {
 }
 
 void DistantTownsMenu::stateClose() {
-    ((MenuLauncher *)ProcBase_GetParent())->setNextRequest(0x44, 1);
+    ((MenuLauncher *)ProcBase_GetParent(this))->setNextRequest(0x44, 1);
     beginSubSlideOut(8, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(4);

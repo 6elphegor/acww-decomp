@@ -25,10 +25,10 @@ void Vec_Scale(void *v, s32 s);
 s32 Vec_Distance(void *a, void *b);
 s32 Vec_DistXZ(void *a, void *b);
 s32 _ZN16CollisionSegment10distanceToEP7VecFx32(void *a, void *b);
-void Proc_CreateRoot();
+void *Proc_CreateRoot(u32 a, u32 b, u32 c);
 s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 PM_GetBattery(s32 *out);
-void ProcBase_RequestDelete();
+void ProcBase_RequestDelete(void *self);
 void _ZN8ProcBase10postCreateEi(void *self, int a);
 }
 
@@ -103,11 +103,11 @@ extern "C" void LowBattery_Reset() {
 
 void GameProc::postCreate(int a) {
     if (a == 1) {
-        ProcBase_RequestDelete();
+        ProcBase_RequestDelete(this);
     }
     _ZN8ProcBase10postCreateEi(this, a);
 }
 
 extern "C" void GameProc_CreateChild(u32 a, void *b, u32 c, u32 d) { Proc_CreateChild(a, b, c, d); }
 
-extern "C" void GameProc_CreateRoot() { Proc_CreateRoot(); }
+extern "C" void *GameProc_CreateRoot(u32 a, u32 b, u32 c) { return Proc_CreateRoot(a, b, c); }

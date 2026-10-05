@@ -151,7 +151,7 @@ void _ZN13ContestRecord16setVotedVillagerEP10VillagerId(void *a, void *b);
 void *_ZN13ContestRecord17getHolderVillagerEv(void *a);
 void *_ZN13ContestRecord16getVotedVillagerEv(void *a);
 void *Item_GetSaveData();
-s32 _ZN10PlayerData11getPlayerIdEv(...);
+s32 _ZN10PlayerData11getPlayerIdEv(void *self);
 void *SaveVillagers_FindBestFriendOf(void *p, s32 v);
 void MailText_SetSlot(s32 a, MsgString9B *o);
 void Bbs_PostMsgToday(u32 a, u8 *b);
@@ -397,8 +397,7 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
             MsgString9B o;
             if (_ZN10VillagerId7isValidEv(r) == 0) {
                 void *b = Item_GetSaveData();
-                PlayerData_GetCurrent();
-                void *q = SaveVillagers_FindBestFriendOf((u8 *)b + 0x8a3c, _ZN10PlayerData11getPlayerIdEv());
+                void *q = SaveVillagers_FindBestFriendOf((u8 *)b + 0x8a3c, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
                 if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(q))) {
                     _ZN13ContestRecord17setHolderVillagerEP10VillagerId(gContestRecord, _ZN12VillagerData13getVillagerIdEv(q));
                     r = _ZN13ContestRecord17getHolderVillagerEv(gContestRecord);

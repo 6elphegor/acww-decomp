@@ -24,7 +24,7 @@ extern u8 gTouchChanged;
 extern u8 data_ov113_022936a0[];
 s32 Snd_PlaySe(s32 a);
 u32 Bbs_GetPostCount();
-void *ProcBase_GetParent(...);
+void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 void String_Load2dMenu(void *o, u32 x);
@@ -177,7 +177,7 @@ BOOL BbsReadMenu::onCreate() {
 }
 
 BOOL BbsReadMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
 }

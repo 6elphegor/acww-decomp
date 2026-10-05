@@ -59,7 +59,7 @@ s32 Item_GetSnowmanIndex(u16 *p);
 s32 SnowmanRecords_getInfo(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
 s32 Actor_spawn(u32 a, u32 b, void *c, u32 d, void *e);
 LooseSnowballsView *LooseSnowballs_Get();
-void LooseSnowballs_reset();
+void LooseSnowballs_reset(LooseSnowballsView *self);
 s32 GroundSeason_IsSnow();
 s32 Scene_InTown();
 BOOL SnowmanRecords_isFull(void *o);
@@ -89,8 +89,7 @@ Snowball *sSnowballs[8];
 
 extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
     if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) != 0 || GroundSeason_IsSnow() == 0) {
-        LooseSnowballs_Get();
-        LooseSnowballs_reset();
+        LooseSnowballs_reset(LooseSnowballs_Get());
         return;
     }
     struct {
@@ -108,8 +107,7 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
         }
         if (SnowmanRecords_getInfo(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.snowmanDate[0], &f.l.snowmanDate[1], &f.l.snowmanDate[2]) != 0) {
             if (f.l.snowmanDate[0] == ((u8 *)&f.l)[9] && f.l.snowmanDate[1] == ((u8 *)&f.l)[8] && f.l.snowmanDate[2] == ((u8 *)&f.l)[7]) {
-                LooseSnowballs_Get();
-                LooseSnowballs_reset();
+                LooseSnowballs_reset(LooseSnowballs_Get());
                 return;
             }
         }

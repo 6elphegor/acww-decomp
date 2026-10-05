@@ -41,7 +41,7 @@ TownSessionState gTownSessionState;
 
 extern "C" {
 void *_ZN13ContestRecord17getHolderVillagerEv(void *self);
-void _ZN13ContestRecord15getHolderPlayerEv(void *self);
+void *_ZN13ContestRecord15getHolderPlayerEv(void *self);
 void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *self, void *src);
 void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *self, void *src);
 void _ZN13ContestRecord10resetTodayEv(void *self);
@@ -89,8 +89,8 @@ void _ZN15TownTravelState9constructEv(void *);
 void _ZN13PeteFallState9constructEv(void *);
 void _ZN16ResettiVisitFlag9constructEv(void *);
 void _ZN17VisitorSpawnFlags9constructEv(void *);
-void VillagerId_Clear(...);
-void _ZN8PlayerId5clearEv(...);
+void VillagerId_Clear(void *p);
+void _ZN8PlayerId5clearEv(void *self);
 s32 Random_GlobalBelow(s32);
 s32 Random_PickSetBit(u32, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
@@ -408,10 +408,8 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
     BOOL b = (gFieldSceneKind == 0);
     if (b) {
         grid = *(void **)gSceneBlockMap;
-        _ZN13ContestRecord17getHolderVillagerEv(self);
-        VillagerId_Clear();
-        _ZN13ContestRecord15getHolderPlayerEv(self);
-        _ZN8PlayerId5clearEv();
+        VillagerId_Clear(_ZN13ContestRecord17getHolderVillagerEv(self));
+        _ZN8PlayerId5clearEv(_ZN13ContestRecord15getHolderPlayerEv(self));
         if (grid != NULL) {
             mask = 0;
             best = -1;

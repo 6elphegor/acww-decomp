@@ -33,7 +33,7 @@ s32 PlayerBank_GetBalance(void *p);
 void PlayerInventory_AddBells(void *p, s32 v, s32 w);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
 s32 PlayerInventory_GetBellsRoom(void *p, s32 v, s32 w);
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 
 void _ZN9HouseData7setDebtEi(void *self, s32 v);
@@ -158,7 +158,7 @@ BOOL AmountEntryMenu::onCreate() {
 }
 
 BOOL AmountEntryMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent());
+    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -238,7 +238,7 @@ void AmountEntryMenu::stateOpening() {
 }
 
 void AmountEntryMenu::stateClose() {
-    void *r = ProcBase_GetParent();
+    void *r = ProcBase_GetParent(this);
     _ZN12MenuLauncher14setNextRequestEii(r, 0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();

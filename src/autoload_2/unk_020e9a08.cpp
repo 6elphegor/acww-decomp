@@ -153,7 +153,7 @@ void *LocalWl_GetBeacon(u32 a, u32 b);
 s32 LocalWl_IsBeaconValid(void *p);
 s32 LocalWl_GetBeaconGameInfoSize(void *p);
 s32 LocalWl_GetBeaconGameInfo(void *p);
-s32 LocalWl_SetGameInfo(void);
+s32 LocalWl_SetGameInfo(void *a, u32 n);
 s32 DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(void);
 u32 Net_WifiFindFriend(void);
@@ -227,7 +227,7 @@ void *LocalWl_GetBeacon(u32 a, u32 b);
 s32 LocalWl_IsBeaconValid(void *p);
 s32 LocalWl_GetBeaconGameInfoSize(void *p);
 s32 LocalWl_GetBeaconGameInfo(void *p);
-s32 LocalWl_SetGameInfo(void);
+s32 LocalWl_SetGameInfo(void *a, u32 n);
 s32 DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(u32 *p);
 s32 Net_WifiFindFriend(u32 a);
@@ -1216,8 +1216,8 @@ extern "C" s32 Net_ClearWifiError(void) {
     return DwcCore_ClearError();
 }
 
-extern "C" s32 Net_SetLocalGameInfo(void) {
-    return LocalWl_SetGameInfo();
+extern "C" s32 Net_SetLocalGameInfo(void *a, u32 n) {
+    return LocalWl_SetGameInfo(a, n);
 }
 
 extern "C" s32 Net_GetBeaconGameInfo(void *p) {

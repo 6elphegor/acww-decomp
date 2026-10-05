@@ -520,7 +520,7 @@ s32 _ZN10PlayerData8testFlagEj(void *, s32);
 void _ZN10PlayerData22advanceArbeitTalkCountEv(u32);
 s32 _ZN10PlayerData18getArbeitTalkCountEv(u32);
 void _ZN10PlayerData19setBirthdayTalkYearEj(void *, u32);
-u8 * _ZN10PlayerData11getBirthdayEv();
+u8 * _ZN10PlayerData11getBirthdayEv(void *self);
 void * _ZN10PlayerData10getErrandsEv(void *);
 void * _ZN10PlayerData17getDailyTalkFlagsEv(void *);
 void * _ZN10PlayerData14getDramaRecordEv(void *);
@@ -531,7 +531,7 @@ u16 * _ZN18SickVillagerRecord13getTopVisitorEv(void *);
 s32 _ZN18SickVillagerRecord19isRecentlyRecoveredEP9ClockDate(void *, s32);
 s32 _ZN18SickVillagerRecord10hasVisitorEP8PlayerId(void *, void *);
 void * _ZN18SickVillagerRecord9getErrandEv(void *);
-void _ZN18SickVillagerRecord11resetRecordEv();
+void _ZN18SickVillagerRecord11resetRecordEv(void *self);
 void * _ZN12ErrandRecord7getItemEv(void *);
 void _ZN12ErrandRecord8setExtraEh(void *, u32);
 void * _ZN12ErrandRecord8getExtraEv(void *);
@@ -607,7 +607,7 @@ u16 VillagerId_GetSpecies(void *);
 void Villager_MakePersonalityFileName(void *, s32, u32, u32);
 u8 VillagerId_GetPersonality(void *);
 s32 Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
-void Snd_PlaySe();
+void Snd_PlaySe(u32 a);
 void NpcActor_OnJointCalc();
 void NpcActor_JointCalcLayer3Cb(NNSG3dRS *);
 void * VillagerMood_Destruct(void *);
@@ -750,7 +750,7 @@ void TownId_CopyFrom(void *, u32);
 void Str_SPrintf(u8 *, u8 *);
 s32 Random_GlobalBelow2(s32);
 s32 Random_GlobalBelow(s32);
-void * Letter_GetSenderPlayer();
+void * Letter_GetSenderPlayer(void *self);
 void Letter_FillVillagerToVillager(void *, void *, void *, void *, u32, void *, s32, s32);
 void Letter_Clear(void *);
 void Melody_SaveRandomPattern(void *);
@@ -905,7 +905,7 @@ void PlanErrand_ResetProgress(void *);
 void * Errand_GetSlotIndex(s32);
 s32 ErrandRecord_GetTime(void *);
 s32 Errand_GetGroup(s32);
-s32 Errand_GetClass();
+s32 Errand_GetClass(u32 x);
 s32 PlanState_GetGroup(s32);
 s32 Trend_IsValid(s32);
 u32 TopicWord_PickRandom(u32 *, u32);
@@ -6009,7 +6009,7 @@ s32 VillagerTalkTopics::tryAddActiveRequestChoice(void *a, void *b) {
     if (r4 >= 0x16) {
         goto end;
     }
-    switch (Errand_GetClass()) {
+    switch (Errand_GetClass(r4)) {
     case 0:
         res = tryAddCollectRequestChoice(a, b, r4);
         break;
@@ -8679,8 +8679,7 @@ void VillagerTalkTopics::selectQ12End(TalkTopicMsg *out) {
 }
 
 void VillagerTalkTopics::onQ12EndClose() {
-    SaveVillagers_GetUnk3830(gSaveVillagers);
-    _ZN18SickVillagerRecord11resetRecordEv();
+    _ZN18SickVillagerRecord11resetRecordEv(SaveVillagers_GetUnk3830(gSaveVillagers));
 }
 
 void VillagerTalkTopics::selectQ12Full(TalkTopicMsg *out) {
@@ -10046,7 +10045,7 @@ void *VillagerTalkRumorTopics::pickMemoryLetterFromResident(void **arr, s32 n) {
     void *res = Talk_PickRandomMemory(actor->villagerData, arr, n, Talk_IsMemoryLetterSenderResident);
     if (res != NULL) {
         void *a = _ZN12VillagerData9getLetterEv(actor->villagerData);
-        void *b = Letter_GetSenderPlayer();
+        void *b = Letter_GetSenderPlayer(a);
         TownIdView o;
         TownId_CopyFrom(&o, (u32)b);
         _ZN16ActorTalkRequest15setTownNameSlotEjj(this, (u32)&o, 9);
@@ -12497,8 +12496,7 @@ s32 VillagerTalk::attrOpenBirthdayEntry() {
 
 void VillagerTalk::setConstellationSlots() {
     u8 buf[2];
-    PlayerData_GetCurrent();
-    u8 *p = _ZN10PlayerData11getBirthdayEv();
+    u8 *p = _ZN10PlayerData11getBirthdayEv(PlayerData_GetCurrent());
     u32 r = Date_GetStarSign(p[1], p[0]);
     _ZN16ActorTalkRequest12setMonthSlotEjj(this, p[1], 0);
     _ZN16ActorTalkRequest10setDaySlotEjj(this, p[0], 1);
@@ -12637,7 +12635,7 @@ void VillagerTalk::onMessageEnd(u32 a) {
     volatile u8 v = *((u8 *)((void *)window) + 0x19f7);
     if (runMsgAttrHandler(a) == 0) {
         if (unk_156 != 0) {
-            Snd_PlaySe();
+            Snd_PlaySe(unk_156);
             unk_156 = 0;
         }
         u8 w = v;

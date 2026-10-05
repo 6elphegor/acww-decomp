@@ -52,7 +52,7 @@ s32 ChatBalloon_IsRemoteBusy();
 s32 MenuCtrl_GetTransitionProgressOrFull();
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 PlayerData_GetCurrent();
-s32 _ZN10PlayerData12getInventoryEv();
+s32 _ZN10PlayerData12getInventoryEv(s32 self);
 s32 _ZN15PlayerInventory13getTotalBellsEi(s32 a, s32 b);
 s32 MenuCtrl_GetHandBells();
 void Snd_StopBellRollSe();
@@ -2032,7 +2032,7 @@ extern "C" s32 Hud_GetBells() {
     s32 c = PlayerData_GetCurrent();
     s32 r = 0;
     if (c != 0) {
-        s32 a = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(), 1);
+        s32 a = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(c), 1);
         r = a + MenuCtrl_GetHandBells();
     }
     return r;

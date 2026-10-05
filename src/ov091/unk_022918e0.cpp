@@ -21,7 +21,7 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void Snd_EndMenuDuck();
 void Snd_BeginMenuDuck();
-void ProcBase_RequestDelete();
+void ProcBase_RequestDelete(void *p);
 extern u8 *data_021c1b3c;
 extern u16 gPad[];
 }
@@ -130,7 +130,7 @@ BOOL LetterViewMenu::execPhase3() { return TRUE; }
 BOOL LetterViewMenu::execPhase4() { return TRUE; }
 
 BOOL LetterViewMenu::execClosed() {
-    ProcBase_RequestDelete();
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 

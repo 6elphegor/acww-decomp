@@ -86,7 +86,7 @@ void MI_CpuFill8(void *dst, s32 v, s32 n);
 void EventWeek_SetLyleWeek(s32 a, s32 b);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
-u32 Pocket_GetItem();
+u32 Pocket_GetItem(s32 i);
 BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 void Pocket_RemoveItem(s32 n);
@@ -834,7 +834,7 @@ void SpNpcLyleTalk::onClaimItemChosen() {
     m.msgIndex = 0x24;
     if (MenuCtrl_IsResultOk() != 0) {
         s32 r4 = MenuCtrl_GetIndex();
-        m.item = Pocket_GetItem();
+        m.item = Pocket_GetItem(r4);
         BOOL same;
         if (Item_IsFurniture(&m.item) != 0) {
             m.item2 = 0xfff1;

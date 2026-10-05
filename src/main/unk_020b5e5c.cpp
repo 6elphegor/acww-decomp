@@ -12,9 +12,9 @@ extern "C" s32 Atm_GetInstance(void);
 extern "C" s32 VillagerBoard_Get(s32 a);
 extern "C" s32 FtrActorTable_GetInstance(void);
 extern "C" s32 BuildingList_GetAt(s32 a);
-extern "C" s32 NpcRegistry_FindSpNpc(void);
-extern "C" s32 NpcRegistry_FindVillager(void);
-extern "C" s32 PlayerActor_GetCharacter(void);
+extern "C" s32 NpcRegistry_FindSpNpc(void *a);
+extern "C" s32 NpcRegistry_FindVillager(void *a);
+extern "C" s32 PlayerActor_GetCharacter(s32 id);
 extern "C" BOOL TouchPickKind_HasTarget(u8 v);
 
 
@@ -30,9 +30,9 @@ extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, VecFx32 *out, s32 *a, u8 *b);
 extern "C" s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb);
 extern "C" s32 TouchPick_GetTappedObject(s32 a, s32 *pa, u8 *pb);
 extern "C" s32 TouchTarget_ResolveNone(void);
-extern "C" s32 TouchTarget_ResolvePlayer(void);
-extern "C" s32 TouchTarget_ResolveVillager(void);
-extern "C" s32 TouchTarget_ResolveSpNpc(void);
+extern "C" s32 TouchTarget_ResolvePlayer(s32 a);
+extern "C" s32 TouchTarget_ResolveVillager(s32 a);
+extern "C" s32 TouchTarget_ResolveSpNpc(s32 a);
 extern "C" s32 TouchTarget_ResolveBuilding(s32 a);
 extern "C" s32 TouchTarget_ResolveBuildingAlt(s32 a);
 extern "C" s32 TouchTarget_ResolveFurniture(s32 a);
@@ -98,11 +98,11 @@ extern "C" s32 TouchPick_GetTappedObject(s32 a, s32 *pa, u8 *pb) {
 
 extern "C" s32 TouchTarget_ResolveNone(void) { return 0; }
 
-extern "C" s32 TouchTarget_ResolvePlayer(void) { return PlayerActor_GetCharacter(); }
+extern "C" s32 TouchTarget_ResolvePlayer(s32 a) { return PlayerActor_GetCharacter(a); }
 
-extern "C" s32 TouchTarget_ResolveVillager(void) { return NpcRegistry_FindVillager(); }
+extern "C" s32 TouchTarget_ResolveVillager(s32 a) { return NpcRegistry_FindVillager((void *)a); }
 
-extern "C" s32 TouchTarget_ResolveSpNpc(void) { return NpcRegistry_FindSpNpc(); }
+extern "C" s32 TouchTarget_ResolveSpNpc(s32 a) { return NpcRegistry_FindSpNpc((void *)a); }
 
 extern "C" s32 TouchTarget_ResolveBuilding(s32 a) {
     if (IsMode0()) {
