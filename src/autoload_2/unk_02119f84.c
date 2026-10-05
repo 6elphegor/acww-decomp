@@ -139,6 +139,7 @@ u32 FSi_GetOverlayBinarySize(const FSOverlayInfoHeader *h);
 // FSi_UnloadOverlayImage (run and drop destructors in the image)
 #ifdef MODERN
 void Modern_OverlayEnded(u32 id);  // modern/ds/overlays.c
+void Modern_OverlayStarted(u32 id, u32 start, u32 end);
 #endif
 
 void FS_EndOverlay(FSOverlayInfo *p) {
@@ -195,6 +196,7 @@ BOOL FS_UnloadOverlayImage(FSOverlayInfo *p) {
 // FS_LoadOverlay
 BOOL FS_LoadOverlay(int target, u32 id) {
     FSOverlayInfo info;
+
     if (!FS_LoadOverlayInfo(&info, target, id) || !FS_LoadOverlayImage(&info)) return 0;
     FS_StartOverlay(&info.header);
     return 1;

@@ -46,7 +46,7 @@ u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 e);
 u32 OS_GetProcMode(void);
 u32 OS_IsRunOnEmulator(void);
-#ifdef MODERN
+#if defined(MODERN) && !defined(HOST)
 // OS_LoadContext switches to another thread and never returns; it pushes onto the current stack first, so a caller
 // must not have popped its frame (no tail call). OS_SaveContext returns a second time when the thread resumes.
 __attribute__((noreturn)) void OS_LoadContext(OSThread *t);

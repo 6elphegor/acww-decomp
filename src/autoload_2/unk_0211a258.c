@@ -147,6 +147,12 @@ void Modern_OverlayStarted(u32 id, u32 start, u32 end);  // modern/ds/overlays.c
 
 // FSi_StartOverlay
 void FS_StartOverlay(FSOverlayInfoHeader *h) {
+#ifdef HOST
+    // the host build has every overlay linked in (and its constructors run at start-up): starting one only records
+    // it (modern/host, docs/host.md)
+    Modern_OverlayStarted(h->id, h->ram_address, h->ram_address + h->ram_size + h->bss_size);
+    return;
+#endif
     u32 size = FSi_GetOverlayBinarySize(h);
     void (**it)(void);
     void (**end)(void);
