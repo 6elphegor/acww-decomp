@@ -17,9 +17,9 @@ u32 Msg_DecodeGameChar(u8 *buf, u32 c);
 u8 Msg_MeasureWidth(u8 *buf);
 void *FtrActorGrid_GetInstance();
 u8 *_ZN12FtrActorGrid8getActorEiii(void *p, s32 x, s32 y, s32 z);
-void FtrActor_GetFtrIndex(void *p);
+s32 FtrActor_GetFtrIndex(void *p);
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 FtrInfo_GetDmaUnk04();
+s32 FtrInfo_GetDmaUnk04(s32 n);
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
 s32 func_02072e44(void *p);
@@ -71,8 +71,7 @@ extern "C" BOOL Room_CanDropOnFurnitureAt(s32 x, s32 y) {
             s32 hy = y >> 4;
             u16 code;
             void *o = BlockMap_GetItemPtr(p, hx, hy, x - (hx << 4), y - (hy << 4), 1);
-            FtrActor_GetFtrIndex(q);
-            if (FtrInfo_GetDmaUnk04() == 1 && o != NULL) {
+            if (FtrInfo_GetDmaUnk04(FtrActor_GetFtrIndex(q)) == 1 && o != NULL) {
                 if (Item_IsFurniture(o) != 0) {
                     code = 0xfff1;
                     r = Item_GetFurnitureIndex(o) == Item_GetFurnitureIndex(&code) ? TRUE : FALSE;

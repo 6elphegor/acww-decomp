@@ -105,7 +105,7 @@ void ProcBase_RequestDelete(void *p);
 void Gfx2d_ShowLayer(u32 x);
 s32 MenuCtrl_GetMode();
 void MenuCtrl_GetPocketSelectLabel();
-s32 PendingUnit_ClearActiveOfAid();
+s32 PendingUnit_ClearActiveOfAid(u32 aid);
 BOOL CommManager_isOnline(void *p);
 BOOL CommManager_isSlotActive(void *p, s32 v);
 void CommManager_beginRecord(void *p);
@@ -127,10 +127,10 @@ u32 Random_GlobalBelow(s32 a);
 u16 MenuCtrl_GetPocketsFullItem();
 void Item_FromPlacedForm(void *a, void *b);
 u32 Item_PickRandomPresent();
-void PlayerData_GetCurrent();
-s32 PlayerData_getCatalog();
+void *PlayerData_GetCurrent();
+s32 PlayerData_getCatalog(void *self);
 void Catalog_SetItem(s32 a, void *b, s32 c, s32 d);
-void MenuCtrl_SetPocketsFullItem();
+void MenuCtrl_SetPocketsFullItem(u32 v);
 void MenuCtrl_SetIndex(u32 a);
 void MenuCtrl_SetResult(s32 a);
 void Snd_PlaySe(u32 a);
@@ -1246,10 +1246,8 @@ void PocketsFullMenu::storeNewItem() {
         r6 = Item_PickRandomPresent();
         r4 = 1;
     }
-    PlayerData_GetCurrent();
-    Catalog_SetItem(PlayerData_getCatalog(), &b, 0, 1);
-    getSlotItem(selectedSlot);
-    MenuCtrl_SetPocketsFullItem();
+    Catalog_SetItem(PlayerData_getCatalog(PlayerData_GetCurrent()), &b, 0, 1);
+    MenuCtrl_SetPocketsFullItem(getSlotItem(selectedSlot));
     putItemInSlot(selectedSlot, r6, r4);
 }
 
@@ -1567,7 +1565,7 @@ void PocketsFullMenu::endNewItemAction(BOOL flag) {
         if (flag == 0) {
             break;
         }
-        PendingUnit_ClearActiveOfAid();
+        PendingUnit_ClearActiveOfAid(k);
         if (CommManager_isOnline(gCommManager)) {
             buf[0] = 0x17;
             buf[1] = k;

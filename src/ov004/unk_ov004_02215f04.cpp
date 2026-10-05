@@ -156,7 +156,7 @@ void *VillagerData_getVillagerId(void *);
 s32 VillagerMemory_isTalkedToday(void *);
 void VillagerMemory_setTalkedToday(void *);
 s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
-s32 Item_IsFurnitureOrF031();
+s32 Item_IsFurnitureOrF031(u16 *p);
 void Ground_UnlinkUnit(s32, s32);
 s32 Ground_GetWalkLinks(s32, s32);
 void FieldPos_FromUnitCenter(void *, s32, s32);
@@ -362,8 +362,9 @@ void BirthdayGuestVillager::blockFurnitureCells() {
     volatile s32 z = 0;
     for (; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            if (MapBlock_GetItemPtr(c, x, y, z)) {
-                if (Item_IsFurnitureOrF031()) {
+            s32 it = MapBlock_GetItemPtr(c, x, y, z);
+            if (it) {
+                if (Item_IsFurnitureOrF031((u16 *)it)) {
                     Ground_UnlinkUnit(x, y);
                 }
             }

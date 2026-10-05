@@ -123,7 +123,7 @@ void OS_DestroyThread(void *);
 s32 OS_IsThreadTerminated(void *);
 void OS_WakeupThreadDirect(void *);
 void OS_YieldThread(void);
-void OS_Sleep(void);
+void OS_Sleep(u32 msec);
 void OS_CreateThread(void *, void *, u32, void *, u32, u32);
 void OS_GetMacAddress(void *);
 void *MI_CpuFill8(void *, s32, u32);
@@ -213,7 +213,7 @@ void IpStack_Yield(void) {
     if (sIpYieldMode == 0) {
         OS_YieldThread();
     } else {
-        OS_Sleep();
+        OS_Sleep(sIpYieldMode);
     }
 }
 

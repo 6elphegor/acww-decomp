@@ -538,7 +538,7 @@ void * _ZN12ErrandRecord8getExtraEv(void *);
 void _ZN12ErrandRecord7setStepEh(void *, s32);
 s32 _ZN12ErrandRecord7getStepEv(void *);
 s32 _ZN12ErrandRecord11getSubGroupEv(void *);
-void * _ZN12ErrandRecord12getSlotIndexEv();
+void * _ZN12ErrandRecord12getSlotIndexEv(void *self);
 s32 _ZN12ErrandRecord7getKindEv(void *);
 s32 _ZN12ErrandRecord8getGroupEv(void *);
 s32 _ZN12ErrandRecord13getClassIndexEPi(void *, s32 *);
@@ -564,7 +564,7 @@ void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *, u32, u32);
 void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *, void *, s32, s32);
 void _ZN16ActorTalkRequest13setPocketItemEjjj(void *, void *, s32, s32);
 void _ZN16ActorTalkRequest12openSubSceneEi(void *, s32);
-u32 _ZN16ActorTalkRequest15getSpeakerIndexEv();
+u32 _ZN16ActorTalkRequest15getSpeakerIndexEv(void *self);
 NpcActor *_ZN16ActorTalkRequest14getActionActorEv(void *);
 void _ZN16ActorTalkRequest17setSlotFromStringEjjj(void *, u32, void *, void *, void *);
 s32 _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *, void *, s32, s32);
@@ -2908,7 +2908,7 @@ void *VillagerTalk::getActorByIndex(s32 idx) {
 
 u32 VillagerTalk::getSpeakerData() {
     u32 r = 0;
-    VillagerActor *p = (VillagerActor *)getActorByIndex(_ZN16ActorTalkRequest15getSpeakerIndexEv());
+    VillagerActor *p = (VillagerActor *)getActorByIndex(_ZN16ActorTalkRequest15getSpeakerIndexEv(this));
     if (p) {
         r = (u32)p->villagerData;
     }
@@ -6040,7 +6040,7 @@ BOOL VillagerTalkTopics::tryOfferDeliveryRequest(void *a, void *b) {
     TalkChoiceTable s;
     ClockDateTimeWords k;
     void *r7 = VillagerState_GetErrand(Villager_GetState(a));
-    void *r4 = PlayerErrands_GetSlot((s32)b, _ZN12ErrandRecord12getSlotIndexEv());
+    void *r4 = PlayerErrands_GetSlot((s32)b, _ZN12ErrandRecord12getSlotIndexEv(r7));
     void *r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
     s32 t;
     k.words[0] = 0;

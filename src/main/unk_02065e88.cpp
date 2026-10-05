@@ -2757,7 +2757,7 @@ extern "C" { void _ZN12TalkBusyIconC1Ev(void *p); }
 extern "C" { BOOL Talk_IsAltTextEnabled(void); }
 extern "C" { s32 Villager_GetAnimalKind(void); }
 extern "C" { s32 PlayerData_GetCurrentIndex(void); }
-extern "C" { s32 PlayerData_IsResidentIndex(void); }
+extern "C" { s32 PlayerData_IsResidentIndex(u32 idx); }
 extern "C" { s32 PlayerDataArray_CountUsed(void *p); }
 extern "C" { s32 Weather_GetFallingPrecip(void); }
 extern "C" { void _ZN15TalkCharStepper10startCountEPhih(void *self, u32 a, u32 b, BOOL c); }
@@ -2814,9 +2814,8 @@ void TalkTagScanner::tagBranchVisitor() {
     u8 b[8];
     window->request->onConditionTag(0xc, 2);
     msgTag.getArgs2(&b[1], &b[2]);
-    PlayerData_GetCurrentIndex();
     s32 i;
-    s32 r = PlayerData_IsResidentIndex();
+    s32 r = PlayerData_IsResidentIndex(PlayerData_GetCurrentIndex());
     if (r == 1) i = 0;
     else i = 1;
     b[0] = (&b[1])[i];
@@ -4073,7 +4072,7 @@ extern "C" { s32 strncmp(const char *a, const char *b, u32 n); }
 extern "C" { u32 strlen(const char *s); }
 extern "C" { char *Str_SPrintf(char *buf, const char *fmt, ...); }
 extern "C" { void TownId_GetNameString(void *dst, void *src); }
-extern "C" { void Snd_PlaySe(void); }
+extern "C" { void Snd_PlaySe(u32 a); }
 extern "C" { void _ZN13TalkMsgBuffer5clearEv(void *p); }
 extern "C" { void BmgMsgAttr_Copy(void *dst, void *src); }
 extern "C" { void *Bmg_GetMsgAttr(void *p); }
@@ -4398,7 +4397,7 @@ void TalkWindowMsg::playMessageSe() {
     s32 r0 = BmgMsgAttr_GetByte09(msgAttr);
     if (r0 < 2) {
         if (data_020cba10[r0] != 0) {
-            Snd_PlaySe();
+            Snd_PlaySe(data_020cba10[r0]);
         }
     }
 }

@@ -37,7 +37,7 @@ typedef PostOfficeMenu S;
 
 // Shared symbols whose real argument lists differ from their mangled names: called by name with the object first
 extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);
-extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self);
+extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
 
 extern "C" {
 void Snd_PlaySe(s32 a);
@@ -1348,7 +1348,7 @@ u8 PostOfficeMenu::fromLetterGridIndex(u32 i) {
 }
 
 u8 PostOfficeMenu::getSlotAt(u32 i, s32 a, u32 flag) {
-    u32 r = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid);
+    u32 r = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid, i, a);
     if (r == 0x37) {
         r = letterGrid.findLetterAt2D(i, a);
     }

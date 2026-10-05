@@ -913,7 +913,7 @@ extern u8 *gSceneBlockMap;
 extern u8 *gCamera;
 
 s32 PendingUnit_FindBySlot(u8 a, u8 b);
-PendingUnit *PendingUnit_Get();
+PendingUnit *PendingUnit_Get(u32 i);
 void FieldItemFx_StartStrikeShake(u32 a, u32 b, P2 p);
 void FieldItemFx_StartStrikeEject(u32 a, u32 b, P2 p, V3 v);
 void FieldPos_FromUnitCenter(V3 *out, s32 x, s32 z);
@@ -926,7 +926,7 @@ s32 Item_IsTreeStage0(u16 *c);
 s32 Camera_IsBlockingFocusView(V3 *v, s32 a, s32 b);
 void *Field_AidOrZero(void *o);
 s32 Item_IsTreeGrown(u16 *c);
-void PendingUnit_Apply();
+void PendingUnit_Apply(PendingUnit *e);
 void PendingUnit_ApplyAtIfAid(P2 p, void *a, s32 b);
 void FieldObj_DrawItemModel(void *g, void *o, V3 *a, V3 *b, s32 c, s16 d, s16 e);
 void FieldObj_DrawItemIcon(void *g, void *o, V3 *a, s32 k, V3 *b, s32 c, s16 d, s16 e);
@@ -5018,16 +5018,16 @@ s32 Tree_BeginReaction(void *o, P2 pos) {
                     if (Item_IsTreeGrown(cell) != 0) {
                         s32 i;
                         for (i = 0; i < 3; i++) {
-                            if (PendingUnit_FindBySlot((u32)a, i) >= 0) {
-                                PendingUnit_Get();
-                                PendingUnit_Apply();
+                            s32 idx = PendingUnit_FindBySlot((u32)a, i);
+                            if (idx >= 0) {
+                                PendingUnit_Apply(PendingUnit_Get(idx));
                             }
                         }
                     }
                 } else if ((t >= 0x66 && t <= 0x68) || (t >= 0x6a && t <= 0x6c)) {
-                    if (PendingUnit_FindBySlot((u32)a, 0) >= 0) {
-                        PendingUnit_Get();
-                        PendingUnit_Apply();
+                    s32 idx = PendingUnit_FindBySlot((u32)a, 0);
+                    if (idx >= 0) {
+                        PendingUnit_Apply(PendingUnit_Get(idx));
                     }
                 }
             }
@@ -5113,12 +5113,14 @@ namespace ns_0221cb54 {
 extern "C" {
 void FieldItemFx_StartStrikeResult(P2 pos) {
     u32 t = *(u32 *)(gCommManager + 0x64);
-    if (PendingUnit_FindBySlot(t, 4) >= 0) {
-        PendingUnit *r = PendingUnit_Get();
+    s32 idx = PendingUnit_FindBySlot(t, 4);
+    if (idx >= 0) {
+        PendingUnit *r = PendingUnit_Get(idx);
         FieldItemFx_StartStrikeShake(t, r->item, pos);
     }
-    if (PendingUnit_FindBySlot(t, 3) >= 0) {
-        PendingUnit *r = PendingUnit_Get();
+    idx = PendingUnit_FindBySlot(t, 3);
+    if (idx >= 0) {
+        PendingUnit *r = PendingUnit_Get(idx);
         V3 v;
         FieldPos_FromUnitCenter(&v, pos.x, pos.z);
         Col c;

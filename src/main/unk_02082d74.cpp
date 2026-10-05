@@ -258,7 +258,7 @@ void _ZN15KatieVisitState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN15KatieVisitState12pickKatiePosEv(void *a);
 s32 Random_GlobalBelow(s32 a);
 s32 PlayerData_GetCurrent();
-void *_ZN10PlayerData17getDailyTalkFlagsEv();
+void *_ZN10PlayerData17getDailyTalkFlagsEv(void *self);
 s32 _ZN20PlayerDailyTalkFlags4testEj(void *a, s32 b);
 s32 _ZN11SaveRecord412isDateActiveEv(void *a);
 s32 Scene_GetCurrent();
@@ -453,7 +453,7 @@ void VillagerStates_ClearFleaVillager();
 s32 Scene_InTown();
 void SaveVillagers_UpdatePlansNow(void *p);
 s32 Scene_GetRequestedScene();
-s32 SceneId_IsVillagerHouse();
+s32 SceneId_IsVillagerHouse(u32 a);
 void *SaveVillagers_GetByHouseRoom(void *p, s32 v);
 void *_ZN12VillagerData13getVillagerIdEv(void *p);
 s32 _ZN10VillagerId7isValidEv(void *p);
@@ -1094,7 +1094,7 @@ BOOL NpcSpawner::onDelete()
         void *g = F4::gSaveVillagers;
         F4::SaveVillagers_UpdatePlansNow(g);
         s32 v = F4::Scene_GetRequestedScene();
-        if (F4::SceneId_IsVillagerHouse()) {
+        if (F4::SceneId_IsVillagerHouse(v)) {
             void *r = F4::SaveVillagers_GetByHouseRoom(g, (s8)v);
             if (r) {
                 if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r))) {
@@ -2029,8 +2029,9 @@ extern "C" BOOL Visitor_CheckPete() {
 }
 
 extern "C" BOOL Visitor_CanPascalVisit() {
-    if (F1::PlayerData_GetCurrent()) {
-        if (F1::_ZN20PlayerDailyTalkFlags4testEj(F1::_ZN10PlayerData17getDailyTalkFlagsEv(), 0x18) == 0) return TRUE;
+    s32 p = F1::PlayerData_GetCurrent();
+    if (p) {
+        if (F1::_ZN20PlayerDailyTalkFlags4testEj(F1::_ZN10PlayerData17getDailyTalkFlagsEv((void *)p), 0x18) == 0) return TRUE;
     }
     return FALSE;
 }

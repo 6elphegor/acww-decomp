@@ -104,7 +104,7 @@ u32 ItemInfo_GetHoldableIndex(u16 *p);
 u32 ItemInfo_GetHoldableCount(void);
 void HeldItemAnimHeap_Destroy(void);
 s32 HeldItemModelHeap_Destroy(void);
-void HeldItemModelHeap_Create(void);
+void HeldItemModelHeap_Create(void *parent);
 void HeldItemAnimHeap_Create(u32 x);
 
 void HeldItemModels_OnJointCalcPost(NNSG3dRS *rs);
@@ -205,7 +205,7 @@ char sHeldItemTexAnimPathBuf[0x1c];
 HeldItemModelBank sHeldItemModelBank;
 
 extern "C" void HeldItemModels_Init(u32 x) {
-    HeldItemModelHeap_Create();
+    HeldItemModelHeap_Create((void *)x);
     HeldItemModels_AllocVram(&sHeldItemModelBank);
     if (gHeldItemModelHeap) {
         Heap_adjust(gHeldItemModelHeap);

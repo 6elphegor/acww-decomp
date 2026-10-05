@@ -54,7 +54,7 @@ void NNS_SndPlayerSetTrackPitch(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, u32 a);
 void NNS_SndPlayerSetPlayerVolume(u32 a, u32 b);
-void NNS_SndPlayerStopSeq(void *p);
+void NNS_SndPlayerStopSeq(void *p, s32 frames);
 s32 NNS_SndArcPlayerStartSeq(void *p, u32 a);
 u32 func_0210e648(void *p);
 void *Snd_GetVolumeCurve(void);
@@ -78,7 +78,7 @@ s32 func_0210e5fc(void *p);
 void NNS_SndArcLoadBank(void *a, u32 b);
 u32 Snd_GetHeap(void);
 void NNS_SndPlayerStopSeqBySeqNo(s32 a, s32 b, u32 c);
-void SndMgr_StopBgmSeq(SndMgr *self);
+void SndMgr_StopBgmSeq(SndMgr *self, s32 frames);
 void SndMgr_StartBgmSeq(SndMgr *self, u32 a, u32 b);
 
 void SndMgr_PlayVoice(SndMgr *self, s32 a, u8 b, s32 c);
@@ -235,7 +235,7 @@ extern "C" void SndMgr_StopBgm(SndMgr *self, s32 v) {
         NNS_SndArcStrmStop(&self->strmHandle, v);
         return;
     }
-    SndMgr_StopBgmSeq(self);
+    SndMgr_StopBgmSeq(self, v);
     self->scene->vfunc_28(1, 9999);
 }
 
@@ -445,8 +445,8 @@ extern "C" void SndMgr_StartBgmSeq(SndMgr *self, u32 a, u32 b) {
     NNS_SndPlayerSetVolume(&self->bgmHandle, b);
 }
 
-extern "C" void SndMgr_StopBgmSeq(SndMgr *self) {
-    NNS_SndPlayerStopSeq(&self->bgmHandle);
+extern "C" void SndMgr_StopBgmSeq(SndMgr *self, s32 frames) {
+    NNS_SndPlayerStopSeq(&self->bgmHandle, frames);
 }
 
 extern "C" void SndMgr_UpdateTrackRamps(SndMgr *self) {
