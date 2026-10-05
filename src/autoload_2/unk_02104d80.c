@@ -124,7 +124,13 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
     volatile u32 zero = 0;
     e = c + 3;
     pw = 0;
+#ifdef MODERN
+    // the original clears pos and nrm in one go: they are adjacent on mwcc's stack, not on GCC's
+    MIi_CpuClearFast(zero, pos, sizeof(pos));
+    MIi_CpuClearFast(zero, nrm, sizeof(nrm));
+#else
     MIi_CpuClearFast(zero, pos, 0x54);
+#endif
     NNS_G3dGeFlushBuffer();
     *(volatile u32 *)0x04000440 = 0;
     *(volatile u32 *)0x0400044c = 1;
