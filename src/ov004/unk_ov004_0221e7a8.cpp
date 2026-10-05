@@ -73,7 +73,7 @@ void RoomObj_ActivateSe(void *self);
 extern "C" {
 
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 RoomObjSync_SetState(u32 v);
+s32 RoomObjSync_SetState(u32 v, u8 s);
 s32 RoomObjSync_GetState(u32 v);
 BOOL _ZN5Actor11postExecuteEv(void *o, u32 v);
 void _ZN5Model11setResourceEP12NNSG3dResMdlj(void *m, void *r, u32 z);
@@ -209,9 +209,9 @@ s32 RoomObjActor::getSyncState() {
     return 0;
 }
 
-s32 RoomObjActor::storeSyncState() {
+s32 RoomObjActor::storeSyncState(u8 v) {
     if (syncSlot != 0xff) {
-        return RoomObjSync_SetState(syncSlot);
+        return RoomObjSync_SetState(syncSlot, v);
     }
     return 0;
 }

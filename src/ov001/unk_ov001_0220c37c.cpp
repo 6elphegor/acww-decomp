@@ -16,8 +16,8 @@ extern void Fatal_Trap();
 
 #pragma thumb off
 
-extern void WfcHeap_Free();
-void WfcAoss_Free();
+extern void WfcHeap_Free(void *p);
+void WfcAoss_Free(void *p);
 void *WfcAoss_Alloc(s32);
 extern void *WfcHeap_Alloc(s32, s32);
 extern void *WfcHeap_AllocClear(s32, s32);
@@ -81,8 +81,8 @@ void *WfcAoss_Alloc(s32 a) {
     return WfcHeap_Alloc(a, 0x20);
 }
 
-void WfcAoss_Free() {
-    WfcHeap_Free();
+void WfcAoss_Free(void *p) {
+    WfcHeap_Free(p);
 }
 }
 #pragma thumb reset

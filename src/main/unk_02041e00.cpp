@@ -188,8 +188,8 @@ extern u32 sBbsEventMsgs[];
 void _ZN11MsgString9BC1Ev(MsgString9BStorage *o);
 void _ZN11MsgString9BD1Ev(MsgString9BStorage *o);
 s32 SaveVillagers_Get(void *p, u32 v);
-s32 _ZN12VillagerData13getVillagerIdEv();
-u32 VillagerId_GetSpecies();
+s32 _ZN12VillagerData13getVillagerIdEv(s32 self);
+u32 VillagerId_GetSpecies(s32 id);
 void Villager_GetSpeciesName(MsgString9BStorage *o, u32 v);
 void MailText_SetSlot(s32 a, MsgString9BStorage *o);
 s32 Random_GlobalBelow(s32 v);
@@ -533,8 +533,8 @@ extern u8 data_020da2a8[];
 s32 Flower_GetSpecies(u16 *a);
 s32 Flower_GetColor(u16 *a);
 void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, VecFx32 *v, s16 e);
-void *PlayerData_GetBySessionSlot(void);
-u16 *_ZN10PlayerData11getHeldItemEv(void);
+void *PlayerData_GetBySessionSlot(u32 slot);
+u16 *_ZN10PlayerData11getHeldItemEv(void *self);
 s32 _ZN11CommManager8isOnlineEv(void *g);
 s32 _ZN11CommManager7isMyAidEj(void *g, s32 a);
 void *TownBlockMap_Get(void);
@@ -548,7 +548,7 @@ s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
 void Flower_TrampleAt(VecXZ *p, s32 f);
 void Flower_TrampleTile(void *m, VecXZ *p, s32 f);
 void Flower_SpawnPetalFx(u16 *a, VecXZ *p, s16 c, s32 d);
-u32 FieldPlayer_GetHeldItem(void);
+u32 FieldPlayer_GetHeldItem(u32 slot);
 s32 Field_IsLocalAid(s32 a);
 s32 Field_AidOrZero(s32 a);
 s32 Field_AidOrLocal(s32 a);
@@ -654,7 +654,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 u32 Field_AidOrLocal(u32 a);
 s32 PendingUnit_Reset(void *p);
 s32 PendingUnit_Find(Vec2 *p, s32 a);
-s32 Field_AidOrZero();
+s32 Field_AidOrZero(u32 a);
 s32 PendingUnit_FindByAid(s32 a, Vec2 *p, s32 b);
 BOOL Item_IsTreeGrown(u16 *p);
 BOOL Town_CanReleaseBees();
@@ -1202,8 +1202,8 @@ s32 SaveVillagers_GetUnk3830Index(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
 s32 Villager_IsSettledExcept(void *a, s32 b);
 s32 Villager_GetPlan(void *p);
-s32 VillagerPlanBlock_GetPlan();
-s32 _ZN12VillagerPlan8getStateEv();
+s32 VillagerPlanBlock_GetPlan(s32 block);
+s32 _ZN12VillagerPlan8getStateEv(s32 self);
 u8 *_ZN20VillagerDataItemView11getHousePosEv(void *p);
 s32 HousePos_IsValid(void *p);
 s32 Town_SpawnBeeTrees(void *a, void *b, s32 c, s32 d);
@@ -4138,9 +4138,7 @@ extern "C" void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d) {
         p = SaveVillagers_Get(gSaveVillagers, i);
         if (Villager_IsSettledExcept(p, r)) {
             if (c == 0) {
-                Villager_GetPlan(p);
-                VillagerPlanBlock_GetPlan();
-                if (_ZN12VillagerPlan8getStateEv() != 5) continue;
+                if (_ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(Villager_GetPlan(p))) != 5) continue;
             }
             q = _ZN20VillagerDataItemView11getHousePosEv(p);
             if (HousePos_IsValid(q)) {
@@ -6188,7 +6186,7 @@ extern "C" s32 PendingUnit_FindByAid(s32 aid, Vec2 *pos, s32 flag) {
 namespace nF {
 extern "C" s32 PendingUnit_FindForAid(u32 a, Vec2 *p, s32 b) {
     Vec2 t;
-    s32 x = Field_AidOrZero();
+    s32 x = Field_AidOrZero(a);
     t.x = p->x;
     t.y = p->y;
     return PendingUnit_FindByAid(x, &t, b);
@@ -7204,10 +7202,11 @@ extern "C" s32 Field_IsLocalAid(s32 a) {
 }
 
 namespace nE {
-extern "C" u32 FieldPlayer_GetHeldItem(void) {
+extern "C" u32 FieldPlayer_GetHeldItem(u32 slot) {
     u32 r = 0xfff1;
-    if (PlayerData_GetBySessionSlot()) {
-        u16 *p = _ZN10PlayerData11getHeldItemEv();
+    void *pd = PlayerData_GetBySessionSlot(slot);
+    if (pd) {
+        u16 *p = _ZN10PlayerData11getHeldItemEv(pd);
         if (p) {
             r = *p;
         }
@@ -8774,13 +8773,15 @@ extern "C" void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Da
         case 4:
         case 5:
         case 6:
-        case 7:
-            if (SaveVillagers_Get(gSaveVillagers, ty) != 0 && _ZN12VillagerData13getVillagerIdEv() != 0) {
-                Villager_GetSpeciesName(&obj, VillagerId_GetSpecies());
+        case 7: {
+            s32 vd, id;
+            if ((vd = SaveVillagers_Get(gSaveVillagers, ty)) != 0 && (id = _ZN12VillagerData13getVillagerIdEv(vd)) != 0) {
+                Villager_GetSpeciesName(&obj, VillagerId_GetSpecies(id));
                 MailText_SetSlot(v0c, &obj);
                 t = Random_GlobalBelow(3) + 0x1e;
             }
             break;
+        }
         default:
             if ((s32)ty >= 0x1c && (s32)ty < 0x3a) {
                 MI_CpuCopy8(d, &tmp, 8);

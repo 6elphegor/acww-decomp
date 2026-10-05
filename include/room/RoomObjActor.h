@@ -24,7 +24,7 @@ public:
     virtual void getSoundPos(VecFx32 *out);
 
     void setSyncSlot(u32 v);
-    s32 storeSyncState();
+    s32 storeSyncState(u8 v);
     s32 getSyncState();
     void releaseResources();
     void loadResourcesByName(char *name);

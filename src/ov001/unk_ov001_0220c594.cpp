@@ -21,14 +21,14 @@ extern s32 DWC_BM_Init(u8 *buf);
 extern void VBlankIntrWait();
 
 
-extern void WfcHeap_Free();
+extern void WfcHeap_Free(void *p);
 void WfcBoot_Enter();
 void WfcUtil_SetScene(void (*)());
 void WfcUtil_InitSystem();
 void WfcUtil_InitDisplay();
 void WfcUtil_Shutdown();
 s32 WfcUtil_CheckParams(s32, u32);
-void WfcAoss_Free();
+void WfcAoss_Free(void *p);
 void *WfcAoss_Alloc(s32);
 extern void *WfcHeap_Alloc(s32, s32);
 extern void *WfcHeap_AllocClear(s32, s32);

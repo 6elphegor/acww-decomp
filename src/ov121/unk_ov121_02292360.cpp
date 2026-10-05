@@ -142,8 +142,8 @@ void FieldAction_Release(s32 h);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
-void *ProcBase_GetParent();
-void ProcBase_RequestDelete();
+void *ProcBase_GetParent(void *p);
+void ProcBase_RequestDelete(void *p);
 void MIi_CpuCopy16(s32 a, void *b, s32 c);
 void File_LoadToBuffer(const char *a, void *b, s32 c);
 BOOL Scene_InHouseRoom();
@@ -451,7 +451,7 @@ BOOL DesignTab::onCreate() {
 }
 
 BOOL DesignTab::onDelete() {
-    func_ov090_02291d2c(ProcBase_GetParent());
+    func_ov090_02291d2c(ProcBase_GetParent(this));
     releaseResources();
     return TRUE;
 }
@@ -555,7 +555,7 @@ BOOL DesignTab::execPhase4() {
 }
 
 BOOL DesignTab::execClosed() {
-    ProcBase_RequestDelete();
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 
@@ -596,7 +596,7 @@ BOOL DesignTab::handleTabSwitch() {
 }
 
 BOOL DesignTab::requestTab(s32 a) {
-    void *r = ProcBase_GetParent();
+    void *r = ProcBase_GetParent(this);
     s32 m = -1;
     if (a == m) goto fail;
     if (a == 1) goto fail;

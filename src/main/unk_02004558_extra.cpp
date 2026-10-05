@@ -1083,8 +1083,8 @@ void Bgm_Release(u32 a);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 _ZN15TalkWindowState13getChoiceListEv(TalkWindowState *a);
-s32 _ZN10ChoiceList9getResultEv();
+void *_ZN15TalkWindowState13getChoiceListEv(TalkWindowState *a);
+s32 _ZN10ChoiceList9getResultEv(void *self);
 void _ZN15TalkWindowState14setNextMessageEPhPv(TalkWindowState *a, u8 *b, s32 c);
 void _ZN8ItemNameC1EPt(void *obj, u16 *p);
 void _ZN8ItemNameD1Ev(void *obj);
@@ -1571,8 +1571,7 @@ void PlayerActor::onChoice(u32 attr) {
     case 4: {
         s32 r5;
         u8 b;
-        _ZN15TalkWindowState13getChoiceListEv(((PlayerActor *)this)->window);
-        r5 = _ZN10ChoiceList9getResultEv();
+        r5 = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(((PlayerActor *)this)->window));
         b = gTalkMsgIndexEnd;
         _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &b, 0);
         if (r5 == 0) {

@@ -39,7 +39,7 @@ void NasAuth_Abort();
 void DwcHttp_Destroy();
 void NasAuth_Destroy();
 void NetCheck_ThreadMain();
-s32 gt2GetRemoteIP();
+s32 gt2GetRemoteIP(void *c);
 u32 GOAGetLastError();
 void DwcCore_SetError(s32, s32);
 void DwcNet_OnPing(s32, s32);
@@ -77,7 +77,7 @@ s32 memcmp(void *, void *, u32);
 char *strchr(void *, s32);
 void strncpy(void *, void *, u32);
 s32 strtoul(void *, u32, u32);
-void DwcConn_OnGt2SocketError();
+void DwcConn_OnGt2SocketError(void *socket);
 void DwcConn_OnGt2Ping(s32 a, s32 b);
 void DwcConn_OnGt2Closed(s32 a0, s32 a1);
 void DwcConn_OnGt2Receive(s32 a, s32 b, s32 c, s32 d);
@@ -95,7 +95,7 @@ extern "C" {
 extern DwcControl *sDwcControl;
 extern u32 sDwcConnTable[32];
 extern DwcConnInfo sDwcConnInfo[32];
-void DwcConn_OnGt2SocketError();
+void DwcConn_OnGt2SocketError(void *socket);
 void DwcMatch_OnMatchDone();
 void DwcCore_OnGpError();
 void DwcMatch_OnGpBuddyMessage();
@@ -133,7 +133,7 @@ void qr2_shutdown(void *q);
 void gt2CloseConnectionHard(u32 a);
 u32 DwcNet_Rand32(u32 a);
 u32 gt2AddressToString(s32 a, u32 b, s32 c);
-s32 gt2CreateSocket(void *a, u32 b, u32 c, u32 d, void (*e)());
+s32 gt2CreateSocket(void *a, u32 b, u32 c, u32 d, void (*e)(void *));
 void gt2Listen(u32 a, void (*b)());
 void gt2SetUnrecognizedMessageCallback(u32 a, void (*b)());
 s32 DwcMatch_GetAidList(u8 **out);
@@ -1254,8 +1254,8 @@ void DwcConn_OnGt2Ping(s32 a, s32 b) {
 
 namespace F0226f7c8 {
 extern "C" {
-void DwcConn_OnGt2SocketError() {
-    gt2GetRemoteIP();
+void DwcConn_OnGt2SocketError(void *socket) {
+    gt2GetRemoteIP(socket);
     data_ov065_02290674 = GOAGetLastError();
     DwcCore_SetError(8, -0x17aeb);
     *(u32 *)sDwcControl = 0;

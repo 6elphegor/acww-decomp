@@ -102,7 +102,7 @@ s32 Item_GetFurnitureDirection(void *p);
 s32 FtrInfo_GetUnk05(s32 a);
 void _ZN9HouseData11setRoomFlagEjj(void *p, s32 a, s32 b);
 s32 _ZN9HouseData7getRoomEi(void *p, s32 a);
-RoomFtrState *_ZN9HouseRoom11getFtrStateEv();
+RoomFtrState *_ZN9HouseRoom11getFtrStateEv(s32 self);
 void HouseRoom_ClearSongForScene(s32 a);
 void HouseRoom_SetSongForScene(s32 a, u16 *p);
 s32 SceneId_IsHouseRoom(u32 id);
@@ -348,8 +348,9 @@ BOOL RoomFtrState::removeGyroidBeat(u32 a, u32 b) { return gyroidBeats.remove(a,
 
 extern "C" RoomFtrState *RoomFtrState_GetForScene(u32 id) {
     if (SceneId_IsHouseRoom(id)) {
-        if (_ZN9HouseData7getRoomEi(gSaveHouse, SceneId_GetHouseRoom(id))) {
-            return _ZN9HouseRoom11getFtrStateEv();
+        s32 room = _ZN9HouseData7getRoomEi(gSaveHouse, SceneId_GetHouseRoom(id));
+        if (room) {
+            return _ZN9HouseRoom11getFtrStateEv(room);
         }
     } else if (SceneId_IsVillagerHouse(id)) {
         return &sVillagerHouseFtrStates[SceneId_GetVillagerHouse(id)];

@@ -185,7 +185,7 @@ extern "C" {
 void *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 }
 extern "C" {
-BOOL Item_IsFurnitureOrF031();
+BOOL Item_IsFurnitureOrF031(void *p);
 }
 extern "C" {
 BOOL Item_IsNormalItem(void *p);
@@ -251,10 +251,10 @@ extern "C" {
 void *FtrActorTable_GetInstance();
 }
 extern "C" {
-void _ZN13FtrActorTable7indexOfEPv(void *a, void *b);
+s32 _ZN13FtrActorTable7indexOfEPv(void *a, void *b);
 }
 extern "C" {
-void FtrMgr_RemoveActorByIndex();
+void FtrMgr_RemoveActorByIndex(s32 idx);
 }
 extern "C" {
 void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b);
@@ -495,12 +495,11 @@ extern "C" void Shop_RemoveSoldItemAt(s32 x, s32 y, u32 a, s32 b) {
     s32 by = y >> 4;
     void *o = BlockMap_GetItemPtr(w, bx, by, x - (bx << 4), y - (by << 4), 0);
     if (o == 0) return;
-    if (Item_IsFurnitureOrF031()) {
+    if (Item_IsFurnitureOrF031(o)) {
         void *r = FtrActorGrid_GetInstance();
         void *t = _ZN12FtrActorGrid8getActorEiii(r, x, y, 0);
         if (t != 0) {
-            _ZN13FtrActorTable7indexOfEPv(FtrActorTable_GetInstance(), t);
-            FtrMgr_RemoveActorByIndex();
+            FtrMgr_RemoveActorByIndex(_ZN13FtrActorTable7indexOfEPv(FtrActorTable_GetInstance(), t));
         }
         if (b != 0) Snd_PlaySe(0x2e);
     } else if (Item_IsNormalItem(o)) {
@@ -1225,7 +1224,7 @@ extern "C" {
 void _ZN22DateSeededRandomSource4seedEhhh(void*, u32, u32, u32);
 }
 extern "C" {
-u32 Item_IsFurniture(void);
+u32 Item_IsFurniture(u16 *p);
 }
 extern "C" {
 u32 Item_GetFurnitureIndex(u16*);
@@ -1515,7 +1514,7 @@ extern "C" void NookShop_StockTools(S *s, s32 *p) {
         for (; j < NookShop_GetToolCount(s); j++) {
             u16 *q = &s->str[start + j];
             u32 m;
-            if (Item_IsFurniture()) {
+            if (Item_IsFurniture(q)) {
                 u16 three = 3;
                 u32 a = Item_GetFurnitureIndex(q);
                 m = (a == Item_GetFurnitureIndex(&three)) ? 1 : 0;
@@ -1677,7 +1676,7 @@ extern "C" u32 AbleShop_MarkSoldItem(S1 *s, u16 *key) {
     for (i = 0; i < 6; i++) {
         u16 *p = AbleShop_GetItem(s, i, 0);
         BOOL m;
-        if (Item_IsFurniture()) {
+        if (Item_IsFurniture(p)) {
             m = (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(key)) ? TRUE : FALSE;
         } else {
             m = (*p == *key) ? TRUE : FALSE;
@@ -1801,7 +1800,7 @@ extern "C" {
 void _ZN6ItemIdD1Ev();
 }
 extern "C" {
-u32 Item_IsFurniture();
+u32 Item_IsFurniture(u16 *p);
 }
 extern "C" {
 u32 Item_GetFurnitureIndex(void *p);
@@ -2324,7 +2323,7 @@ extern "C" u32 ReddShop_MarkSoldItem(ReddShop *g, u16 *ptr) {
     for (i = 0; i < 3; i++) {
         u16 *p = (u16 *)ReddShop_GetItem(g, i, 0);
         BOOL eq;
-        if (Item_IsFurniture() != 0) {
+        if (Item_IsFurniture(p) != 0) {
             eq = Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(ptr);
         } else {
             eq = *p == *ptr;

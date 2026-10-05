@@ -53,7 +53,7 @@ void *_ZN11PooledModel8getModelEv(void *);
 void _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, s32);
 void *_ZN9ModelSlot7getHeapEv(void *);
 void *File_LoadAlloc(void *, void *, s32, s32);
-s32 func_021065dc(void);
+s32 func_021065dc(void *p);
 s32 func_021065f8(s32, s32);
 s32 _ZN9AnimModel11allocAnmObjEPv(void *, void *);
 void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
@@ -368,8 +368,7 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
         } else {
             Str_SPrintf(buf, "/fish/0%d/fish%d.nsbca", q, id);
         }
-        File_LoadAlloc(buf, t, 4, 0);
-        s32 u = func_021065f8(func_021065dc(), 0);
+        s32 u = func_021065f8(func_021065dc(File_LoadAlloc(buf, t, 4, 0)), 0);
         s32 flag = 0x1000;
         if (e->animate == 0) flag = 0;
         if (_ZN9AnimModel11allocAnmObjEPv(m, t)) {
@@ -408,8 +407,7 @@ BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
         u8 *m = (u8 *)e + 0x98;
         _ZN5Model11setResourceEP12NNSG3dResMdlj(m, _ZN11PooledModel8getModelEv(y), r);
         void *t = _ZN9ModelSlot7getHeapEv(x);
-        File_LoadAlloc(sFishShadowAnmPath, t, 4, r);
-        s32 u = func_021065f8(func_021065dc(), r);
+        s32 u = func_021065f8(func_021065dc(File_LoadAlloc(sFishShadowAnmPath, t, 4, r)), r);
         if (_ZN9AnimModel11allocAnmObjEPv(m, t)) {
             _ZN14BlendAnimModel8initAnimEiiitt(m, u, r, 0x1000, 1, r);
             _ZN9AnimModel10attachAnimEv(m);

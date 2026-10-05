@@ -167,7 +167,7 @@ void *PlayerData_GetCurrent();
 s32 _ZN10PlayerData8testFlagEj(void *s, s32 a);
 void *Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(void *a);
-s32 NNS_G3dGetTex();
+s32 NNS_G3dGetTex(void *p);
 void func_02135558(void *a, void *b, void *c);
 BOOL File_LoadToBufferF(u32 a, s32 b, void *s, s32 idx);
 void *func_020986c8(void *s);
@@ -304,8 +304,8 @@ void _ZN6Camera8loadPoseEiP10CameraPose(Camera *o, s32 a, s32 b);
 void _ZN6Camera14setBlendPresetEi(Camera *o, s32 a);
 }
 
-extern "C" s32 CarpetTex_GetTex() {
-    return NNS_G3dGetTex();
+extern "C" s32 CarpetTex_GetTex(void *p) {
+    return NNS_G3dGetTex(p);
 }
 
 CameraSetup::~CameraSetup() {}

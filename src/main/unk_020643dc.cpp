@@ -185,7 +185,7 @@ void Snd_PlaySe(u32 a);
 s32 Scene_GetCurrent(void);
 s32 Scene_InHouseRoom(void);
 void VEC_Normalize(void *a, void *b);
-void List_PushBack(void);
+void List_PushBack(List *list, ListNode *node);
 void List_InsertAfter(void *list, void *node, void *prev);
 
 void Light_ClampDir(VecFx32 *in, VecFx32 *out);
@@ -247,8 +247,8 @@ extern "C" BOOL PrioList_Insert(List *list, PrioListNode *node) {
     return TRUE;
 }
 
-extern "C" BOOL PrioList_PushBack(void) {
-    List_PushBack();
+extern "C" BOOL PrioList_PushBack(List *list, ListNode *node) {
+    List_PushBack(list, node);
     return TRUE;
 }
 

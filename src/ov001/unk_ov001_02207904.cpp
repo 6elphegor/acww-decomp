@@ -45,7 +45,7 @@ extern "C" void WfcBusyIcon_Create(u32 idx) {
     sWfcBusyIcon->task = WfcTask_Add(1, WfcBusyIcon_Task, 0, 0x78);
 }
 
-extern "C" void WfcBusyIcon_Delete(u32 task) {
+extern "C" void WfcBusyIcon_Delete(void) {
     WfcTask_Delete(1, sWfcBusyIcon->task);
     WfcOam_FreeEntry(sWfcBusyIcon->oam);
     WfcHeap_FreeAndClear(&sWfcBusyIcon);
