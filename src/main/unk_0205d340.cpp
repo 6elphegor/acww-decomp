@@ -14,7 +14,7 @@ void Heap_adjust(void *p);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(void *path, void *buf, s32 size);
 s32 PlayerFaceTexHeap_Destroy();
-s32 PlayerFaceTexHeap_Create();
+s32 PlayerFaceTexHeap_Create(void *parent);
 s32 PlayerFaceTex_GetBufferSize();
 void *PlayerFaceTex_GetPath(u32 x);
 void PlayerFaceTexPool_AllocBuffers(u32 *arr);
@@ -32,8 +32,8 @@ struct PlayerFaceTexPool {
 char sPlayerFaceTexPathBuf[0x14];
 PlayerFaceTexPool sPlayerFaceTexPool;
 
-extern "C" void PlayerFaceTexPool_Create() {
-    PlayerFaceTexHeap_Create();
+extern "C" void PlayerFaceTexPool_Create(void *parent) {
+    PlayerFaceTexHeap_Create(parent);
     PlayerFaceTexPool_AllocBuffers(sPlayerFaceTexPool.ptr);
     if (gPlayerFaceTexHeap) {
         Heap_adjust(gPlayerFaceTexHeap);

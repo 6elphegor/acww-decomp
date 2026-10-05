@@ -39,7 +39,7 @@ void func_02072824(void *p, s32 a, s32 b);
 BOOL Scene_GetSkyKind(s32 v);
 BOOL Scene_InTown();
 BOOL Taxi_IsArriving();
-void Melody_StartTrackA();
+void Melody_StartTrackA(s32 a);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 s32 Weather_GetPrecipKind(void);
 void Weather_GetLevels(s32 *a, s32 *b);
@@ -279,7 +279,7 @@ void func_02072824(void *p, s32 a, s32 b);
 BOOL Scene_GetSkyKind(s32 v);
 BOOL Scene_InTown();
 BOOL Taxi_IsArriving();
-void Melody_StartTrackA();
+void Melody_StartTrackA(s32 a);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 extern BgmManager *data_021c1b3c;
 s32 _ZN10BgmManager11findPlayingEv(BgmManagerView *o);
@@ -448,7 +448,7 @@ void Bgm_ReleasePriority(u32 a);
 void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Bgm_Release(u32 a);
 void Bgm_ReleaseTransient(u32 a);
-void Bgm_RequestTransient(u32 a);
+void Bgm_RequestTransient(s32 a, s32 b);
 s32 Scene_GetCurrent(void);
 s32 Bgm_GetSceneFade(void);
 s32 Scene_InTown(void);
@@ -1001,7 +1001,7 @@ s32 EventBgm::updateFireworks(BOOL a) {
     }
 }
 
-void EventBgm::playNewYearFanfare(u32 a) { Ns_02035e2c::Bgm_RequestTransient(0x1f); newYearFanfareBgm = a; }
+void EventBgm::playNewYearFanfare(u32 a) { Ns_02035e2c::Bgm_RequestTransient(0x1f, a); newYearFanfareBgm = a; }
 
 void EventBgm::playNewYearNight(u32 a) { Ns_02035e2c::Bgm_Request(0x20, a, 0x7f, 0); newYearNightBgm = a; }
 
@@ -2261,8 +2261,7 @@ void BgmManager::updateHourChime() {
             ok = FALSE;
         }
         if (ok) {
-            clock.hasYearChanged();
-            Melody_StartTrackA();
+            Melody_StartTrackA(clock.hasYearChanged());
         }
     }
 }

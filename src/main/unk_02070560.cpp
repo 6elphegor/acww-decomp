@@ -567,7 +567,7 @@ extern "C" {
 void *BuildingList_FindByItem(u32 a);
 }
 extern "C" {
-void GateHouse_ApplyTownFlag(void);
+void GateHouse_ApplyTownFlag(void *self);
 }
 extern "C" {
 void Mem_Free(void *p);
@@ -1186,7 +1186,8 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
     case 5:
         if (Unk_0207116c_Eq0(gFieldSceneKind)) {
             if (Scene_InTown()) {
-                if (BuildingList_FindByItem(0x500b)) GateHouse_ApplyTownFlag();
+                void *gate = BuildingList_FindByItem(0x500b);
+                if (gate) GateHouse_ApplyTownFlag(gate);
             }
         }
         return TRUE;

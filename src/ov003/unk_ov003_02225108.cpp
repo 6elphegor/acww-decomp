@@ -36,7 +36,7 @@ void func_ov003_02221998(void *p);
 void FieldPos_FromBlockUnitCenter(V3 *out, s32 a, s32 b, s32 c, s32 d);
 void *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-s32 Item_IsBuildingOrOccupied();
+s32 Item_IsBuildingOrOccupied(u16 *p);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
 extern u16 sInsectSpawnMaskLand[];
@@ -121,7 +121,7 @@ void InsectSpawn_BuildMasks()
         hx = wx >> 4;
         c = BlockMap_GetItemPtr(g, hx, hy, wx - (hx << 4), wy - (hy << 4), 0);
         if (c != 0) {
-            if (Item_IsBuildingOrOccupied() != 0 || (xs = xo + tx, Ground_GetWaterKind(xs, wy) == 1)) {
+            if (Item_IsBuildingOrOccupied(c) != 0 || (xs = xo + tx, Ground_GetWaterKind(xs, wy) == 1)) {
                 m = 1 << tx;
                 *rowa |= m;
                 *rowb |= m;

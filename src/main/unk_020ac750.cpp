@@ -619,10 +619,10 @@ extern "C" {
 void NookShop_SetVisitState(int);
 }
 extern "C" {
-void Scene_GetRequestedScene();
+u8 Scene_GetRequestedScene();
 }
 extern "C" {
-int SceneId_IsNookShop();
+int SceneId_IsNookShop(u32 a);
 }
 extern "C" {
 int Scene_GetCurrent();
@@ -1050,8 +1050,7 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
         NookShop_SetVisitState(2);
         return;
     }
-    Scene_GetRequestedScene();
-    if (SceneId_IsNookShop() == 0) {
+    if (SceneId_IsNookShop(Scene_GetRequestedScene()) == 0) {
         int r = Scene_GetCurrent();
         if (r == 0x2c) return;
         if (r == 0x3f) return;
@@ -1262,7 +1261,7 @@ extern "C" {
 u32 MapBlock_GetItemPtr(void*, u32, u32, u32);
 }
 extern "C" {
-u32 Item_IsNookShop(void);
+u32 Item_IsNookShop(u32 p);
 }
 extern "C" {
 u16 Item_MakeNookShop(u32);
@@ -1589,7 +1588,8 @@ extern "C" u32 NookShop_ApplyRenovation(void) {
             if (r7) {
                 for (y = 0; y < 16; y++) {
                     for (x = 0; x < 16; x++) {
-                        if (MapBlock_GetItemPtr(r7, x, y, 0) && Item_IsNookShop()) {
+                        u32 item;
+                        if ((item = MapBlock_GetItemPtr(r7, x, y, 0)) && Item_IsNookShop(item)) {
                             u16 name;
                             u32 a[2];
                             V8 b;
@@ -1759,7 +1759,7 @@ extern "C" {
 void *PlayerData_GetResident(void *p, u32 i);
 }
 extern "C" {
-u32 _ZN10PlayerData6isUsedEv();
+int _ZN10PlayerData6isUsedEv(void *p);
 }
 extern "C" {
 u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
@@ -2263,7 +2263,7 @@ extern "C" void ReddShop_SendPasswordLetters() {
             s32 i;
             for (i = 0; i < 4; i++) {
                 void *p = PlayerData_GetResident(gSavePlayers, i);
-                if (p != NULL && _ZN10PlayerData6isUsedEv() != 0 && _ZN10PlayerData8testFlagEj(p, 12) != 0) {
+                if (p != NULL && _ZN10PlayerData6isUsedEv(p) != 0 && _ZN10PlayerData8testFlagEj(p, 12) != 0) {
                     Letter_ComposeFromMail(&ctx, &r, "sp_npc_foxmail", &data_020e2e44, &data_020e2e48, _ZN10PlayerData11getPlayerIdEv(p));
                     if (LetterDelivery_PutInAddresseeMailbox(&ctx) == 0) {
                         LetterDelivery_QueueOutgoing(&ctx, 0);
@@ -2628,7 +2628,7 @@ extern "C" {
 u16 *ShopStock_GetItemAtTile(u32 a, u32 b);
 }
 extern "C" {
-u16 *ShopStock_GetItemAt(void);
+u16 *ShopStock_GetItemAt(s32 x, s32 y);
 }
 extern "C" {
 u32 ReddShop_FindItem(void *p, u32 v);
@@ -3022,7 +3022,7 @@ extern "C" void NookShop_RecordBuyback(int a) {
 extern "C" void NookShop_BuyAt(u32 a, u32 b, u32 c, u32 d) {
     u16 v[2];
     u32 r;
-    v[0] = *ShopStock_GetItemAt();
+    v[0] = *ShopStock_GetItemAt(a, b);
     if (inRange2(v[0], v[0]) && Scene_GetCurrent() == 0x1d) {
         u32 i;
         v[1] = 0xfff1;

@@ -58,7 +58,7 @@ s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *o, u8 *p, char *s);
 void BuildingOccupancy_Leave(u32 a, u32 b);
 extern u8 data_021ed2c0[];
 ReddPassword *_ZN8ReddShop11getPasswordEv(void *p);
-s32 _ZN12ReddPassword14getAnswerIndexEv();
+s32 _ZN12ReddPassword14getAnswerIndexEv(ReddPassword *self);
 void MenuCtrl_OpenLauncherWithIndex(u32 a, s32 b);
 s32 ReddPassword_CurrentPlayerKnows();
 u32 BuildingOccupancy_GetAnswer(u32 a);
@@ -283,8 +283,7 @@ BOOL ReddTent::enterTentMenuWait() {
 
 void ReddTent::execTentMenuWait() {
     if (window->state == 5) {
-        _ZN8ReddShop11getPasswordEv(data_021ed2c0);
-        MenuCtrl_OpenLauncherWithIndex(0xe, _ZN12ReddPassword14getAnswerIndexEv());
+        MenuCtrl_OpenLauncherWithIndex(0xe, _ZN12ReddPassword14getAnswerIndexEv(_ZN8ReddShop11getPasswordEv(data_021ed2c0)));
         setTentState(5);
     }
 }

@@ -55,9 +55,9 @@ void EncodedString_SetRaw(void *p);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *p, void *q, s32 a, s32 b);
 s32 String_CensorTaboo(void *p);
 void _ZN13EncodedString13fromMsgStringEP9MsgString(void *p, void *q);
-void PlayerData_GetCurrent();
-void _ZN10PlayerData12getInventoryEv();
-void *_ZN15PlayerInventory9getUnk988Ev();
+u32 PlayerData_GetCurrent();
+void *_ZN10PlayerData12getInventoryEv(u32 self);
+void *_ZN15PlayerInventory9getUnk988Ev(void *self);
 void LetterDefaults_Store(void *a, void *b);
 s32 _ZN12LetterLayout16getBodyLineCountEv(void *p);
 void _ZN14MenuCursorBase11setPoseIdleEv(void *p);
@@ -166,7 +166,7 @@ void Keyboard_EnableKey(void *p, s32 a);
 void Keyboard_DisableKey(void *p, s32 a);
 u32 Keyboard_GetTypedRunLength(void *p);
 void ProcBase_RequestDelete(void *p);
-u32 ProcBase_GetParent();
+u32 ProcBase_GetParent(void *self);
 void _ZN10MenuTabBar9selectTabEj(u32 a, u32 b);
 void _ZN10MenuTabBar15onTabMenuClosedEv(u32 a);
 void _ZN10MenuTabBar8showTabsEv(u32 a);
@@ -585,7 +585,7 @@ BOOL LetterWriteMenu::onCreate() {
 }
 
 BOOL LetterWriteMenu::onDelete() {
-    u32 t = ProcBase_GetParent();
+    u32 t = ProcBase_GetParent(this);
     _ZN10MenuTabBar15onTabMenuClosedEv(t);
     _ZN10MenuTabBar8showTabsEv(t);
     releaseResources();
@@ -739,7 +739,7 @@ BOOL LetterWriteMenu::checkForcedClose() {
 }
 
 BOOL LetterWriteMenu::requestTab(s32 a) {
-    u32 r6 = ProcBase_GetParent();
+    u32 r6 = ProcBase_GetParent(this);
     if (a != -1 && a != 8) {
         u32 r7 = MenuCtrl_GetSavedSlot();
         _ZN10MenuTabBar9selectTabEj(r6, (u8)a);
@@ -752,7 +752,7 @@ BOOL LetterWriteMenu::requestTab(s32 a) {
 }
 
 void LetterWriteMenu::forceClose() {
-    _ZN10MenuTabBar9selectTabEj(ProcBase_GetParent(), 7);
+    _ZN10MenuTabBar9selectTabEj(ProcBase_GetParent(this), 7);
     setScrollTarget(0);
     clearFlags(4);
     transitionState = 0xd;
@@ -2613,9 +2613,7 @@ void LetterWriteMenu::closeAddresseeList() {
 }
 
 void LetterWriteMenu::storeLetterDefaults() {
-    PlayerData_GetCurrent();
-    _ZN10PlayerData12getInventoryEv();
-    LetterDefaults_Store(_ZN15PlayerInventory9getUnk988Ev(), letter);
+    LetterDefaults_Store(_ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent())), letter);
 }
 
 void LetterWriteMenu::censorField(u8 *src, u32 n) {

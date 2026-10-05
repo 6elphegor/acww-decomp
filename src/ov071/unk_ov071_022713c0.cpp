@@ -124,7 +124,7 @@ s32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 _ZN8NpcActor13getDistanceToEPS_(void *self, void *p);
 s32 _ZN8NpcActor18getRelativeAngleToEPS_(void *self, void *p);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN10VisitorPos13pickRandomPosEv();
+void _ZN10VisitorPos13pickRandomPosEv(void *self);
 
 void Npc_RotateOffsetXZ(SpNpcLyleSidestepPos *t, void *pos, void *p, s32 ang);
 BOOL Npc_IsPosBlocked(SpNpcLyleSidestepPos *t);
@@ -135,7 +135,7 @@ void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
 BOOL EventAnnounce_IsBusy();
 void *TownSessionState_Get();
-void TownSessionState_GetVisitorPos(void *p);
+void *TownSessionState_GetVisitorPos(void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
 BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x);
 }
@@ -330,8 +330,7 @@ BOOL SpNpcLyle::onDelete() {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
-        TownSessionState_GetVisitorPos(TownSessionState_Get());
-        _ZN10VisitorPos13pickRandomPosEv();
+        _ZN10VisitorPos13pickRandomPosEv(TownSessionState_GetVisitorPos(TownSessionState_Get()));
     }
     return TRUE;
 }

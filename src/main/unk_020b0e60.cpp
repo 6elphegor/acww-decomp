@@ -284,7 +284,7 @@ void _ZN11CommManager11beginRecordEv(void *p);
 BOOL _ZN11CommManager7isMyAidEj(void *p, u32 a);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL SaveVillagers_Get(void *a, u32 b);
-u32 Villager_GetWhereabouts(void);
+u32 Villager_GetWhereabouts(void *a);
 void Town_RemoveShipParts(void);
 void GulliverQuest_Init(void *a);
 void Clock_GetMinuteHour(u8 *out);
@@ -309,7 +309,7 @@ Obj *BuildingList_FindByItem(u32 a);
 Obj *Building_FindNearPos(u32 a);
 BOOL _ZN21FieldObjectShapeQuery12getUnitShapeEPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
 u16 *_ZN13BuildingActor9getItemIdEv(Obj *o);
-BOOL _ZN13BuildingActor15getEntranceTypeEv(void);
+BOOL _ZN13BuildingActor15getEntranceTypeEv(void *self);
 }
 
 
@@ -1417,7 +1417,7 @@ extern "C" u32 Building_GetDoorAnimParamAt(u32 a) {
     }
     o = Building_FindNearPos(a);
     if (o) {
-        if (_ZN13BuildingActor15getEntranceTypeEv() == 1) {
+        if (_ZN13BuildingActor15getEntranceTypeEv(o) == 1) {
             u16 *i = o->vfunc_64();
             if (i) {
                 return i[2];
@@ -1511,8 +1511,9 @@ extern "C" BOOL Building_RequestState(Obj *o, s32 v) {
 }
 
 extern "C" u32 SaveVillager_IsAsleepAt(s32 v) {
-    if (SaveVillagers_Get(&gSaveVillagers, v)) {
-        if (Villager_GetWhereabouts() == 2) {
+    BOOL villager = SaveVillagers_Get(&gSaveVillagers, v);
+    if (villager) {
+        if (Villager_GetWhereabouts((void *)villager) == 2) {
             return TRUE;
         }
         return FALSE;

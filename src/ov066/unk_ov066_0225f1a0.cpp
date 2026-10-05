@@ -330,14 +330,14 @@ s32 WM_StartScan(void *, s32);
 s32 WM_EndParent(void *);
 s32 WM_StartParent(void *);
 s32 WM_SetParentParameter(void *, u32);
-s32 WM_Reset(void);
+s32 WM_Reset(WMCallback cb);
 s32 WM_EndMP(void *);
 s32 WM_SetMPDataToPortEx(void *, u32, u32, u32, u32, u32, u32);
 s32 WM_StartMPEx(void *, u32, u32, u32, u32, u32, u32, s32, s32, s32, s32);
 s32 WM_SetEntry(void *, u32);
 s32 WM_MeasureChannel(void *, s32, s32, u32, s32);
 s32 WM_SetGameInfo(void *, u32, u32, u32, u32, u8);
-u32 MATH_CountPopulation(void);
+u32 MATH_CountPopulation(u32 x);
 u32 func_0213335c(u32 a, u32 b);
 s32 LocalWl_SetEventCallback(void (*fn)(void *));
 void LocalWl_PostEvent(u32 a, u32 b);
@@ -1354,7 +1354,7 @@ void LocalWl_UpdateAllowedChannels(void) {
         return;
     }
     sLocalWlSession->allowedChannelMask = r;
-    r = MATH_CountPopulation();
+    r = MATH_CountPopulation(r);
     sLocalWlSession->numAllowedChannels = r;
 }
 
@@ -3132,7 +3132,7 @@ void LocalWl_OnPowerOff(WMMsg *m) {
 }
 
 void LocalWl_Reset(void *p) {
-    s32 r = WM_Reset();
+    s32 r = WM_Reset((WMCallback)p);
     sLocalWl->flags |= 0x400;
     if (r == 2) {
         return;

@@ -130,7 +130,7 @@ void Keyboard_EndFrame(void *s, s32 a);
 void Keyboard_LoadScreenNow(void *p, s32 v);
 void Keyboard_LoadScreenFile(void *p, void *q);
 void Keyboard_Shutdown(void *p);
-void Keyboard_Init(void *p);
+void Keyboard_Init(void *p, s32 a);
 s32 Keyboard_SetMode(void *s, s32 a, s32 b, s32 c);
 void Keyboard_RestoreLastPage(void *p, s32 v);
 s32 Keyboard_GetKeyCode(void *s, s32 a, u32 b);
@@ -898,7 +898,7 @@ void ChatMenu_Init(S *s) {
     s->emotionTimer = 0;
     ChatMenu_ClearText(s);
     s->textLabel = NULL;
-    Keyboard_Init(&s->keyboard);
+    Keyboard_Init(&s->keyboard, 0);
     Mem_Copy((void *)MenuCtrl_GetChatDraft(), s->text.text, 0x20);
     PlayerActor_OnChatOpenNop();
     if (((MenuTabBar *)ProcBase_GetParent(s))->isJustOpened()) {

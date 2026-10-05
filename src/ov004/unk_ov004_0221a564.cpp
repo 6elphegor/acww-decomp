@@ -151,7 +151,7 @@ void SickVillager_SetCurrentVisitor();
 s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
-s32 Pocket_RemoveItem();
+s32 Pocket_RemoveItem(s32 c);
 void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *);
@@ -504,8 +504,7 @@ void SickVillagerTalk::update() {
                 TalkWindowState_setNextMessage(window, buf, 0);
                 villager->changeAct(4);
             } else {
-                MenuCtrl_GetIndex();
-                Pocket_RemoveItem();
+                Pocket_RemoveItem(MenuCtrl_GetIndex());
                 buf[1] = Random_GlobalBelow(3) + 16;
                 TalkWindowState_setNextMessage(window, &buf[1], 0);
                 *(u16 *)(buf + 2) = 0x155e;

@@ -238,7 +238,7 @@ BOOL SpNpcKatie_IsIdle();
 BOOL TalkRequest_IsActive();
 s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *);
 s32 Net_GetMyAid();
-void Net_SetJoiningAid();
+void Net_SetJoiningAid(u32 v);
 s32 Comm_GetSyncState();
 void Comm_ClearSyncState();
 BOOL Comm_RequestSync(u32);
@@ -1063,7 +1063,7 @@ BOOL SpNpcCopper::setupAct08() {
     talk.subStep = 0;
     _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, talk.homeAngle);
     return TRUE;
-}extern "C" void _ZN15SpNpcCopperTalk18waitGoHomeAcceptedEv();
+}extern "C" void _ZN15SpNpcCopperTalk18waitGoHomeAcceptedEv(void *self);
 extern "C" void _ZN15SpNpcCopperTalk13requestGoHomeEv();
 extern "C" void _ZN15SpNpcCopperTalk16waitJoinAcceptedEv();
 extern "C" void _ZN15SpNpcCopperTalk11requestJoinEv();
@@ -3059,8 +3059,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
                 _ZN11CommManager12setErrorModeEj(gCommManager, 0);
                 NetSession_SetSyncKind(0);
                 NetSession_SetActiveSyncKind(0);
-                Net_GetMyAid();
-                Net_SetJoiningAid();
+                Net_SetJoiningAid(Net_GetMyAid());
                 Comm_ClearSyncState();
                 window->openMode = 0;
                 unlockWindow();

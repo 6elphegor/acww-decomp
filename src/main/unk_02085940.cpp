@@ -77,11 +77,11 @@ void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
-void TownId_Assign(void *p);
+void TownId_Assign(void *dst, void *src);
 s32 TownId_Clear(void *p);
 s32 TownId_Destruct(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
-s32 TownMap_IsUnitWalkable();
+s32 TownMap_IsUnitWalkable(s32 x, s32 y, void *grid);
 u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Item_IsMarker(u16 *p);
 s32 Item_IsTreeStage0(u16 *p);
@@ -477,11 +477,11 @@ s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
-void TownId_Assign(void *p);
+void TownId_Assign(void *dst, void *src);
 s32 TownId_Clear(void *p);
 s32 TownId_Destruct(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
-s32 TownMap_IsUnitWalkable();
+s32 TownMap_IsUnitWalkable(s32 x, s32 y, void *grid);
 u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Item_IsMarker(u16 *p);
 s32 Item_IsTreeStage0(u16 *p);
@@ -1177,7 +1177,8 @@ void LostChildRecord::clear() {
 
 u16 *LostChildRecord::getTownId() { return (u16 *)this; }
 
-void LostChildRecord::setTownId() { TownId_Assign(this); }
+// setTownId takes the source town id: every caller passes it (in r1)
+extern "C" void _ZN15LostChildRecord9setTownIdEv(LostChildRecord *self, void *src) { TownId_Assign(self, src); }
 
 u32 LostChildRecord::getDaysLeft() { return daysLeft; }
 
@@ -1249,7 +1250,7 @@ void KatieVisitState::clear() {
 
 extern "C" BOOL Field_IsClearSpot(s32 x, s32 y, void *map) {
     if (map == 0) goto fail;
-    if (TownMap_IsUnitWalkable() == 0) goto fail;
+    if (TownMap_IsUnitWalkable(x, y, map) == 0) goto fail;
     for (s32 i = 1; i <= 2; i++) {
         s32 ty = y + i;
         s32 hx = x >> 4;

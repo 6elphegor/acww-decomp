@@ -209,7 +209,11 @@ s32 gpiDisconnect(GPConnection *, s32);
 s32 gpiProcess(GPConnection *, s32);
 s32 socket(s32, s32, s32);
 s32 bind(s32, void *, s32);
+#ifdef MODERN
+s32 listen(s32, s32, s32);
+#else
 s32 listen(s32, s32);
+#endif
 s32 getsockname(s32, void *, s32 *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
@@ -288,7 +292,11 @@ s32 gpiStartConnect(GPConnection *h, GPIOperation *n) {
         w[1] = 0;
         sa.family = 2;
         if (bind(ctx->peerSocket, w, 8) == -1) GP_FAIL("There was an error binding a socket.")
+#ifdef MODERN
+        if (listen(ctx->peerSocket, 5, 0) == -1) GP_FAIL("There was an error listening on a socket.") // 0: unused by listen
+#else
         if (listen(ctx->peerSocket, 5) == -1) GP_FAIL("There was an error listening on a socket.")
+#endif
         len = 8;
         if (getsockname(ctx->peerSocket, &sa, &len) == -1) GP_FAIL("There was an error getting a socket's addres.")
         ctx->peerPort = sa.port;
