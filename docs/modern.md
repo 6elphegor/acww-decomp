@@ -37,6 +37,12 @@ linked ELF into a ROM with dsd, the same way the matching build does:
   address modulo 32.
 - dsd keeps the autoloads' base addresses from the original ROM; `modern_rom.py` corrects them from the ELF.
 
+## Status
+
+The modern ROM boots, runs the title screen's attract mode (30000 frames without input, changing demo towns),
+reaches the post-title dialog and plays the intro (Kapp'n's taxi, name entry) the same way as the original under the
+same input. Timing differs slightly (load times), so frame hashes don't match one to one.
+
 ## Testing
 
 A headless melonDS runner (not in this repository yet) boots a ROM for N frames and saves screenshots, frame
@@ -112,6 +118,18 @@ sizes in allocations and in data tables. The modern build reproduces it:
 
 A 64-bit port can't keep these offsets (pointers grow): the view classes and hardcoded offsets will have to become
 real member accesses there.
+
+### Shared overlay addresses
+
+The original's main code holds fixed addresses inside overlays (player action tables, mode tables, callbacks), and
+several overlays are loaded at the same addresses: the same table entry is ov003's function outdoors and ov004's
+indoors. The decompiled code names one of them; the modern build places overlays elsewhere. `tools/modern_shared.py`
+(a build step) finds every reference from one module to a function of another at an address that another overlay
+also uses, and generates a thunk per name (`build/modern_usa/shared.s`) with `ld --wrap`: the thunk calls
+`Modern_SharedResolve` (`modern/ds/overlays.c`), which returns the candidate whose overlay is loaded
+(`FS_StartOverlay`/`FS_EndOverlay` record that under MODERN). References to *data* at shared addresses are listed in
+`build/modern_usa/shared.log`; main's scene table has a MODERN version naming each scene's own overlay.
+`tools/modern_shared_addrs.py` lists the same references for review.
 
 ### Vague linkage and overlays
 
