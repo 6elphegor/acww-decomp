@@ -59,7 +59,7 @@ OV(0); OV(1); OV(2); OV(65); OV(66); OV(67); OV(68); OV(69); OV(93); OV(127);
 
 // before the game's static constructors (which may touch DS memory): map it first
 void host_vram_init(void);
-void melon_init(const char *rom, const char *save, int emu7);
+void melon_init(void);
 __attribute__((constructor(101))) static void early_init(void) { host_map_memory(); host_vram_init(); }
 
 int main(int argc, char **argv) {
@@ -74,14 +74,8 @@ int main(int argc, char **argv) {
     memcpy((void *)0x027ffe00, rom, 0x170);              // ROM header (HW_ROM_HEADER_BUF)
     *(volatile u32 *)0x027ffc00 = *(const u32 *)(rom + 0x0c);   // card id stand-in
     *(volatile u16 *)0x027ffc40 = 1;                     // boot type: ROM
-    extern void host_touch_script_init(void);
-    host_touch_script_init();
-    int emu7 = getenv("ACWW_ARM7") && !strcmp(getenv("ACWW_ARM7"), "emu");
-    if (!emu7) pxi7_init();
-    char save[1024];
-    snprintf(save, sizeof save, "%s%s", getenv("ACWW_SAVE") ? getenv("ACWW_SAVE") : gHostRomPath,
-             getenv("ACWW_SAVE") ? "" : ".sav");
-    melon_init(gHostRomPath, save, emu7);
+    pxi7_init();
+    melon_init();
     extern void frontend_init(const char *argv0);
     extern void frontend_shutdown(void);
     frontend_init(argv[0]);

@@ -198,14 +198,6 @@ static u32 tp_raw(s32 sx, s32 sy) {
     return (u32)(x & 0xfff) | (u32)(y & 0xfff) << 12 | 1u << 24;
 }
 
-// ACWW_TOUCH at the current frame (also for melonDS's touch screen when the ARM7 is emulated)
-int host_scripted_touch(int *x, int *y) {
-    u32 f = (u32)host_frame();
-    for (int i = 0; i < sTouchCount; i++)
-        if (f >= sTouch[i].frame && f < sTouch[i].frame + sTouch[i].len) { *x = (int)sTouch[i].x; *y = (int)sTouch[i].y; return 1; }
-    return 0;
-}
-
 static void tp_sample(void) {
     u32 f = (u32)host_frame(), raw = 0;
     int lx, ly;
@@ -228,17 +220,8 @@ void pxi7_vblank(void) {
     if (sTpAuto && sCount == 0) { tp_sample(); pxi7_send(6 | (16u << 8) << 6); }
 }
 
-// ---- sound (tag 7): the ARM9 sends the address of a command list (Cmd: next, id, arg[4]; 0 just asks to
-// process). The ARM7 runs the commands and counts finished lists in the shared work area (SndWork.f0), set by
-// command 29. Silent for now: commands are taken but not played.
-static volatile u32 *sSndWork;
-static void snd_command(u32 data) {
-    if (data == 0) return;
-    for (u32 *c = ptr26(data); c; c = (u32 *)(uintptr_t)c[0]) {
-        if (c[1] == 29) sSndWork = (volatile u32 *)(uintptr_t)c[2];
-    }
-    if (sSndWork) sSndWork[0]++;
-}
+// ---- sound (tag 7): the native sound driver (snd7/): a command list's address, or 0 = process now
+void snd7_receive(u32 data);
 
 // ---- services
 static void service(u32 tag, u32 data, u32 err) {
@@ -246,7 +229,7 @@ static void service(u32 tag, u32 data, u32 err) {
     case 4: nvram_word(data); break;
     case 5: rtc_command(data); break;
     case 6: tp_command(data); break;
-    case 7: snd_command(data); break;
+    case 7: snd7_receive(data ? (u32)(uintptr_t)ptr26(data) : 0); break;
     case 11: card_request(data); break;
     case 15:  // WVR: VRAM C/D for the wireless reboot driver; the ARM7 acknowledges at once
         if (data >> 16 == 1) pxi7_send(15 | 0x10000u << 6);
@@ -259,8 +242,7 @@ static void service(u32 tag, u32 data, u32 err) {
 
 void pxi7_receive(u32 word) { service(word & 31, word >> 6, word >> 5 & 1); }
 
-// ACWW_TOUCH="frame:frames:x,y;..." (both ARM7 modes)
-void host_touch_script_init(void) {
+void pxi7_init(void) {
     const char *t = getenv("ACWW_TOUCH");
     while (t && *t && sTouchCount < 64) {
         unsigned fr, n, x, y;
@@ -268,9 +250,6 @@ void host_touch_script_init(void) {
         t = strchr(t, ';');
         if (t) t++;
     }
-}
-
-void pxi7_init(void) {
     const char *sv = getenv("ACWW_SAVE");
     snprintf(sSavePath, sizeof sSavePath, "%s%s", sv ? sv : gHostRomPath, sv ? "" : ".sav");
     const char *fw = getenv("ACWW_FIRMWARE");

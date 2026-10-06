@@ -2,9 +2,10 @@
 //
 // The game's memory is mapped at the DS addresses, so hardcoded addresses keep working. The I/O pages
 // (0x04000000, 0x04100000) are mapped twice from one memfd: the game's view has no access, the runtime's view is
-// writable. An access to the game's view faults; the handler prepares the register for a read, opens the page,
-// single-steps the instruction (trap flag) and, after it, handles the written value and closes the page again. No
-// instruction decoding is needed, and every write is seen, even of an unchanged value.
+// writable. An access to the game's view faults. The plain moves (nearly all accesses) are carried out by the
+// handler, which decodes the instruction (emulate_access); for anything else it prepares the register for a
+// read, opens the page, single-steps the instruction (trap flag) and, after it, handles the written value and
+// closes the page again. Every write is seen, even of an unchanged value.
 //
 // Time is virtual: a cycle counter (ARM9 bus clock) that advances a little on every I/O read (so polling loops
 // progress) and jumps to the next event when the game halts or waits.
@@ -58,12 +59,7 @@ static u32 sIF;
 void host_irq_raise(u32 m) { sIF |= m; }
 void host_irq_ack(u32 m) { sIF &= ~m; }
 int melon_gx_fifo_irq_level(void);
-int melon_emu7(void);
-u32 melon_take_arm9_irqs(void);
-u32 melon_io_read32(u32 addr);
-void melon_io_write32(u32 addr, u32 v);
 u32 host_irq_pending(void) {
-    if (melon_emu7()) sIF |= melon_take_arm9_irqs();
     u32 lines = sIF | (melon_gx_fifo_irq_level() ? 1u << 21 : 0);  // the GX FIFO line is level-triggered
     return (R32(0x04000208) & 1) ? (R32(0x04000210) & lines) : 0;
 }
@@ -131,6 +127,8 @@ static void run_events(void);
 void host_advance_to_next_event(void) {
     u64 next = sNextVblank;
     if (pxi7_next_due() < next) next = pxi7_next_due();
+    extern u64 snd7_next_due(void);
+    if (snd7_next_due() < next) next = snd7_next_due();
     for (int i = 0; i < 4; i++) {
         if (sTm[i].on && sTm[i].irq && !sTm[i].cascade) {
             u64 o = tm_next_overflow(&sTm[i]);
@@ -150,9 +148,9 @@ static void run_events(void) {
     run_events_body();
     sInEvents = 0;
 }
-void melon_sync(u64 host_cycles);
+void snd7_run(u64 now);
 static void run_events_body(void) {
-    melon_sync(sCycles);
+    snd7_run(sCycles);
     pxi7_run_due();
     while (sCycles >= sNextVblank) {
         u16 st = R16(0x04000004);
@@ -179,6 +177,14 @@ static void run_events_body(void) {
             extern void melon_debug(void);
             melon_debug();
             fprintf(stderr, " vramcnt %08x %08x ime %x ie %08x if %08x cpu %x\n", R32(0x04000240), R32(0x04000244), R32(0x04000208), R32(0x04000210), sIF, host_irq_state());
+        }
+        if (getenv("ACWW_FPS") && host_frame() % 120 == 0) {  // frames per second of real time, over the last 120
+            static struct timespec last;
+            struct timespec now;
+            clock_gettime(CLOCK_MONOTONIC, &now);
+            double dt = (double)(now.tv_sec - last.tv_sec) + (double)(now.tv_nsec - last.tv_nsec) * 1e-9;
+            if (last.tv_sec) fprintf(stderr, "fps: frame %llu %.1f\n", (unsigned long long)host_frame(), 120 / dt);
+            last = now;
         }
         host_pace_frame();
         extern void pxi7_vblank(void);
@@ -283,14 +289,12 @@ void host_card_dma(void) {
 void gx_fifo_write(u32 addr, u32 value) { melon_write32(addr, value); }
 
 // ---- register reads and writes
-static u32 last, repeat;  // the register read last, and how many times in a row (io_write resets it)
 static void io_read(u32 a) {
     // a register read again and again is a polling loop: let time pass faster there (each read costs a trap)
+    static u32 last, repeat;
     repeat = a == last ? repeat + 1 : 0;
     last = a;
-    // (not for the IPC registers: the ARM7's handshakes have short timeouts)
-    int ipc = (a & ~0xfu) == 0x04000180 || a == IO1;
-    sCycles += repeat > 4 && !ipc ? 4096 : 64;
+    sCycles += repeat > 4 ? 4096 : 64;
     run_events();
     u32 w = a & ~3u;
     if (w == 0x04000004) update_display();
@@ -299,17 +303,7 @@ static void io_read(u32 a) {
         R16(w) = tm_counter(&sTm[i]);
     } else if (w == 0x04000214) R32(w) = sIF;
     else if ((w >= 0x04000600 && w < 0x040006a4) || w == 0x04000320) R32(w) = melon_read32(w);  // 3D status, results
-    else if ((w == 0x04000184 || w == 0x04000180 || w == IO1) && melon_emu7()) {
-        u32 v = melon_io_read32(w);
-        // polled again and again (a handshake, a FIFO wait): run the ARM7 on in small steps until the value changes
-        for (int i = 0; ipc && repeat > 4 && w != IO1 && i < 64; i++) {
-            sCycles += 256;
-            run_events();
-            u32 n = melon_io_read32(w);
-            if (n != v) { v = n; break; }
-        }
-        R32(w) = v;
-    } else if (w == 0x04000184 || w == 0x04000180 || w == IO1) {
+    else if (w == 0x04000184 || w == 0x04000180 || w == IO1) {
         extern void pxi7_prepare_read(u32 a);
         pxi7_prepare_read(w);
     } else if (w == 0x040001a4) {
@@ -340,7 +334,6 @@ static int is_display(u32 w) {
 
 static void io_write(u32 a, u32 old) {
     u32 w = a & ~3u;
-    repeat = 0;  // a write in between: not a pure polling loop
     static long logw = -2;
     if (logw == -2) logw = getenv("ACWW_IOLOG") ? strtol(getenv("ACWW_IOLOG"), 0, 16) : -1;
     if ((long)w == logw) fprintf(stderr, "io: frame %llu [%08x] %08x -> %08x\n", (unsigned long long)host_frame(), w, old, R32(w));
@@ -362,9 +355,9 @@ static void io_write(u32 a, u32 old) {
         tm->on = on; tm->irq = c >> 6 & 1; tm->shift = kTmShift[c & 3]; tm->cascade = i && (c >> 2 & 1);
         break;
     }
-    case 0x04000180: if (melon_emu7()) melon_io_write32(w, R32(w)); else pxi7_sync_written(R32(w)); break;
-    case 0x04000184: if (melon_emu7()) melon_io_write32(w, R32(w)); break;  // FIFO control (pxi7.c reads it)
-    case 0x04000188: if (melon_emu7()) melon_io_write32(w, R32(w)); else pxi7_receive(R32(w)); break;
+    case 0x04000180: pxi7_sync_written(R32(w)); break;
+    case 0x04000184: break;  // FIFO control: pxi7.c reads it
+    case 0x04000188: pxi7_receive(R32(w)); break;
     case 0x040001a4: card_control_written(R32(w)); break;
     case 0x04000280: case 0x04000290: case 0x04000294: case 0x04000298: case 0x0400029c: divide(); break;
     case 0x040002b0: case 0x040002b8: case 0x040002bc: square_root(); break;
@@ -408,6 +401,108 @@ static void watch_init(void) {
     mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ);
 }
 
+static int sNoEmulate;  // ACWW_NOEMULATE: single-step every access (for comparisons)
+static void host_irq_inject(ucontext_t *uc);
+
+// ACWW_IOHIST: which registers are accessed how often, and from where (printed at exit)
+static int sIoHist;
+static struct { u32 addr, eip, write, n; } sHist[4096];
+static void io_hist(u32 a, u32 eip, int write) {
+    u32 h = (a * 2654435761u ^ eip * 40503u ^ (u32)write) & 4095;
+    for (u32 i = 0; i < 4096; i++, h = (h + 1) & 4095) {
+        if (sHist[h].n && (sHist[h].addr != a || sHist[h].eip != eip || sHist[h].write != (u32)write)) continue;
+        sHist[h].addr = a; sHist[h].eip = eip; sHist[h].write = (u32)write; sHist[h].n++;
+        return;
+    }
+}
+static void io_hist_dump(void) {
+    FILE *f = fopen("acww_iohist.txt", "w");
+    if (!f) return;
+    for (int i = 0; i < 4096; i++)
+        if (sHist[i].n) fprintf(f, "%u %08x %08x %c\n", sHist[i].n, sHist[i].addr, sHist[i].eip, sHist[i].write ? 'w' : 'r');
+    fclose(f);
+}
+
+// The common accesses are carried out here instead of single-stepped: the plain moves GCC emits for volatile
+// register accesses (mov of 8/16/32 bits to or from a register, of an immediate, the moffs forms, movzx/movsx).
+// The fault gives the address; the instruction gives the size, the direction and the register. Returns the
+// instruction's length, or 0 for anything else (then: single step).
+static const int kGreg[8] = {REG_EAX, REG_ECX, REG_EDX, REG_EBX, REG_ESP, REG_EBP, REG_ESI, REG_EDI};
+static u32 modrm_len(const u8 *p) {  // ModRM + SIB + displacement, for a memory operand
+    u32 mod = p[0] >> 6, rm = p[0] & 7, n = 1;
+    if (mod == 3) return 0;
+    if (rm == 4) {
+        n++;
+        if (mod == 0 && (p[1] & 7) == 5) n += 4;
+    } else if (mod == 0 && rm == 5) {
+        n += 4;
+    }
+    return n + (mod == 1 ? 1 : mod == 2 ? 4 : 0);
+}
+static u32 get_reg(ucontext_t *uc, u32 r, u32 size) {
+    if (size == 1) return (u32)uc->uc_mcontext.gregs[kGreg[r & 3]] >> (r & 4 ? 8 : 0) & 0xff;
+    return (u32)uc->uc_mcontext.gregs[kGreg[r]] & (size == 2 ? 0xffffu : ~0u);
+}
+static void set_reg(ucontext_t *uc, u32 r, u32 size, u32 v) {
+    greg_t *g = &uc->uc_mcontext.gregs[kGreg[size == 1 ? r & 3 : r]];
+    if (size == 4) *g = (greg_t)v;
+    else if (size == 2) *g = (greg_t)(((u32)*g & 0xffff0000u) | (v & 0xffff));
+    else if (r & 4) *g = (greg_t)(((u32)*g & 0xffff00ffu) | (v & 0xff) << 8);
+    else *g = (greg_t)(((u32)*g & 0xffffff00u) | (v & 0xff));
+}
+static u32 io_load(u32 a, u32 size) {
+    io_read(a);
+    return size == 1 ? *host_io(a) : size == 2 ? *(u16 *)host_io(a) : *(u32 *)host_io(a);
+}
+static void io_store(u32 a, u32 size, u32 v) {
+    u32 old = R32(a & ~3u);
+    if (size == 1) *host_io(a) = (u8)v;
+    else if (size == 2) *(u16 *)host_io(a) = (u16)v;
+    else *(u32 *)host_io(a) = v;
+    io_write(a, old);
+}
+// for the runtime's own register writes (sdk.c): as if the game had written them
+void host_io_store32(u32 a, u32 v) { io_store(a, 4, v); }
+
+static u32 emulate_access(ucontext_t *uc, u32 a) {
+    const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[REG_EIP], *start = p;
+    u32 osize = 4, n;
+    if (*p == 0x66) { osize = 2; p++; }
+    switch (*p) {
+    case 0x88: case 0x89: case 0x8a: case 0x8b: {  // mov m, r / mov r, m
+        u32 size = *p & 1 ? osize : 1, r = p[1] >> 3 & 7;
+        if (!(n = modrm_len(p + 1))) return 0;
+        if (*p & 2) set_reg(uc, r, size, io_load(a, size));
+        else io_store(a, size, get_reg(uc, r, size));
+        return (u32)(p + 1 + n - start);
+    }
+    case 0xc6: case 0xc7: {  // mov m, imm
+        u32 size = *p & 1 ? osize : 1;
+        if ((p[1] >> 3 & 7) != 0 || !(n = modrm_len(p + 1))) return 0;
+        const u8 *imm = p + 1 + n;
+        io_store(a, size, size == 1 ? imm[0] : size == 2 ? *(const u16 *)imm : *(const u32 *)imm);
+        return (u32)(imm + size - start);
+    }
+    case 0xa0: case 0xa1: case 0xa2: case 0xa3: {  // mov al/ax/eax <-> moffs
+        u32 size = *p & 1 ? osize : 1;
+        if (*p & 2) io_store(a, size, get_reg(uc, 0, size));
+        else set_reg(uc, 0, size, io_load(a, size));
+        return (u32)(p + 5 - start);
+    }
+    case 0x0f: {  // movzx / movsx r32, m8 / m16
+        u8 op = p[1];
+        if (osize != 4 || (op != 0xb6 && op != 0xb7 && op != 0xbe && op != 0xbf)) return 0;
+        if (!(n = modrm_len(p + 2))) return 0;
+        u32 size = op & 1 ? 2 : 1, v = io_load(a, size);
+        if (op & 8) v = size == 1 ? (u32)(s32)(int8_t)v : (u32)(s32)(int16_t)v;
+        set_reg(uc, p[2] >> 3 & 7, 4, v);
+        return (u32)(p + 2 + n - start);
+    }
+    default:
+        return 0;
+    }
+}
+
 static void on_segv(int sig, siginfo_t *si, void *ctx) {
     (void)sig;
     ucontext_t *uc = ctx;
@@ -436,6 +531,15 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
     sFaultWrite = (uc->uc_mcontext.gregs[REG_ERR] & 2) != 0;
     sRing[sRingPos++ & 15] = (struct IoLog){a, (u32)uc->uc_mcontext.gregs[REG_EIP], sFaultWrite};
     sIoCount++;
+    if (sIoHist) io_hist(a, (u32)uc->uc_mcontext.gregs[REG_EIP], sFaultWrite);
+    if (!sNoEmulate) {
+        u32 len = emulate_access(uc, a);
+        if (len) {
+            uc->uc_mcontext.gregs[REG_EIP] += len;
+            host_irq_inject(uc);
+            return;
+        }
+    }
     sFaultOld = R32(a & ~3u);
     if (!sFaultWrite) io_read(a);
     mprotect(page_of(a), PAGE, PROT_READ | PROT_WRITE);
@@ -526,6 +630,9 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
         fprintf(stderr, "  %s %08x at %08x\n", l->write ? "write" : "read ", l->addr, l->eip);
     }
     prof_dump();
+    if (sIoHist) io_hist_dump();
+    extern void snd7_output_close(void);
+    snd7_output_close();
     extern void frontend_shutdown(void);
     frontend_shutdown();
     fprintf(stderr, "host: interrupted at frame %llu, eip %08x\n", (unsigned long long)host_frame(),
@@ -614,4 +721,6 @@ void host_map_memory(void) {
     }
     R16(0x04000130) = 0x3ff;
     watch_init();
+    if (getenv("ACWW_IOHIST")) { sIoHist = 1; atexit(io_hist_dump); }
+    sNoEmulate = getenv("ACWW_NOEMULATE") != NULL;
 }

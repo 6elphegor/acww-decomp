@@ -21,85 +21,15 @@ u32 host_vram_bank_size(int i);
 
 static NDS *sNds;
 
-#include "NDSCart.h"
-#include <fstream>
-#include <vector>
-namespace melonDS::Platform { extern std::string gSavePath; }
-extern "C" u8 *host_main_ram(void);
-static bool sEmu7;
-static u64 sOffset;  // melonDS's clock at the host's cycle 0
-static void sync_vram(void);
-extern "C" int melon_emu7(void) { return sEmu7; }
-
-// emu7: the game's own ARM7 program runs in melonDS (sound, touch, RTC, firmware, save memory), on the main RAM
-// the native ARM9 code uses. Otherwise both melonDS CPUs are halted and pxi7.c answers for the ARM7.
-extern "C" void melon_init(const char *rom, const char *save, int emu7) {
+extern "C" void melon_init(void) {
     NDSArgs args{};
     args.Firmware = Firmware(0);
     args.JIT = std::nullopt;
     sNds = new NDS(std::move(args));
     sNds->Reset();
-    sEmu7 = emu7;
-    if (!emu7) {
-        sNds->Start();
-        sNds->ARM9.Halt(1);
-        sNds->ARM7.Halt(1);
-        return;
-    }
-    std::ifstream f(rom, std::ios::binary | std::ios::ate);
-    u32 len = (u32)f.tellg();
-    f.seekg(0);
-    auto data = std::make_unique<u8[]>(len);
-    f.read((char *)data.get(), len);
-    NDSCart::NDSCartArgs cartArgs{};
-    melonDS::Platform::gSavePath = save;
-    std::ifstream s(save, std::ios::binary | std::ios::ate);
-    if (s) {
-        u32 sl = (u32)s.tellg();
-        s.seekg(0);
-        auto sram = std::make_unique<u8[]>(sl);
-        s.read((char *)sram.get(), sl);
-        cartArgs.SRAM = std::move(sram);
-        cartArgs.SRAMLength = sl;
-    }
-    auto cart = NDSCart::ParseROM(std::move(data), len, nullptr, std::move(cartArgs));
-    sNds->SetNDSCart(std::move(cart));
-    sNds->RTC.SetDateTime(2026, 4, 1, 12, 0, 0);  // fixed, as in the test emulator
-    sNds->SetupDirectBoot("acww.nds");
     sNds->Start();
-    // the ARM7 program (0x02380000) and the system area (the last 4 KB) from melonDS's RAM; not the ARM9 program:
-    // the game's own variables are where it would be
-    u8 *ram = host_main_ram();
-    u32 a7 = *(u32 *)&sNds->MainRAM[0x3ffe38] & 0x3fffff, n7 = *(u32 *)&sNds->MainRAM[0x3ffe3c];
-    memcpy(ram + a7, sNds->MainRAM + a7, n7);
-    memcpy(ram + 0x3ff000, sNds->MainRAM + 0x3ff000, 0x1000);
-    sNds->HostSetMainRAM(ram);
     sNds->ARM9.Halt(1);
-    sOffset = sNds->HostTimestamp();
-}
-
-// the IPC registers belong to melonDS's ARM9 side when the ARM7 is emulated
-static int sIpcLog = -1;
-static void ipc_log(const char *what, u32 addr, u32 v) {
-    if (sIpcLog < 0) sIpcLog = getenv("ACWW_IPCLOG") ? 20000 : 0;
-    if (sIpcLog <= 0 || addr != 0x04000180) return;
-    sIpcLog--;
-    fprintf(stderr, "ipc: %s %08x %08x (arm7 sees %04x, pc %08x, t %llu)\n", what, addr, v, sNds->ARM7IORead16(0x04000180),
-            sNds->ARM7.R[15], (unsigned long long)(sNds->HostTimestamp() - sOffset));
-}
-extern "C" u32 melon_io_read32(u32 addr) { u32 v = sNds->ARM9IORead32(addr); ipc_log("read ", addr, v); return v; }
-extern "C" void melon_io_write32(u32 addr, u32 v) { ipc_log("write", addr, v); sNds->ARM9IOWrite32(addr, v); }
-extern "C" void melon_io_write16(u32 addr, u16 v) { sNds->ARM9IOWrite16(addr, v); }
-// interrupts melonDS raised for the ARM9 (IPC sync, send FIFO empty, receive FIFO not empty): taken over
-extern "C" u32 melon_take_arm9_irqs(void) {
-    u32 m = sNds->IF[0] & 0x00070000;
-    sNds->IF[0] &= ~m;
-    return m;
-}
-extern "C" void melon_input(u32 keys, int touch, int x, int y) {
-    sNds->SetKeyMask(~keys & 0xfff);
-    if (touch) sNds->TouchScreen((u16)x, (u16)y);
-    else sNds->ReleaseScreen();
+    sNds->ARM7.Halt(1);
 }
 
 extern "C" void melon_write8(u32 addr, u8 v) { sNds->ARM9IOWrite8(addr, v); }
@@ -149,31 +79,7 @@ static void sync_vram(void) {
     g.HostMarkPaletteOAMDirty();
 }
 
-// emu7: melonDS's clock follows the host's virtual time (both count 33 MHz cycles from the start)
-#include <time.h>
-static u64 sSyncCalls, sSyncNs, sSyncCycles;
-extern "C" void melon_sync(u64 host_cycles) {
-    if (!sEmu7) return;
-    u64 target = host_cycles + sOffset;
-    if (sNds->HostTimestamp() >= target) return;
-    struct timespec a, b;
-    clock_gettime(CLOCK_MONOTONIC, &a);
-    u64 start = sNds->HostTimestamp();
-    while (sNds->HostTimestamp() < target) {
-        if (sNds->HostFrameStarting) sync_vram();  // the game updates VRAM in VBlank: take it at the frame's start
-        sNds->HostRun(target - sNds->HostTimestamp());
-    }
-    clock_gettime(CLOCK_MONOTONIC, &b);
-    sSyncCalls++;
-    sSyncCycles += sNds->HostTimestamp() - start;
-    sSyncNs += (u64)(b.tv_sec - a.tv_sec) * 1000000000ull + (u64)(b.tv_nsec - a.tv_nsec);
-    if (getenv("ACWW_SYNCSTATS") && (sSyncCalls & 0xffff) == 0)
-        fprintf(stderr, "melon: %llu syncs, %llu cycles, %llu ms\n", (unsigned long long)sSyncCalls,
-                (unsigned long long)sSyncCycles, (unsigned long long)(sSyncNs / 1000000));
-}
-
 extern "C" void melon_frame(void) {
-    if (sEmu7) return;  // HostRun renders as it goes
     sync_vram();
     sNds->GPU.GPU3D.HostDrain();
     sNds->RunFrame();
@@ -187,8 +93,6 @@ extern "C" const u32 *melon_screen(int screen) {
 static u64 fnv(const u8 *p, u32 n) { u64 h = 1469598103934665603ull; while (n--) h = (h ^ *p++) * 1099511628211ull; return h; }
 extern "C" void melon_debug(void) {
     GPU &g = sNds->GPU;
-    if (sEmu7) fprintf(stderr, "melon: arm7 pc %08x halted %d ipcsync9 %04x ipcsync7 %04x\n", sNds->ARM7.R[15], sNds->ARM7.Halted,
-                       sNds->ARM9IORead16(0x04000180), sNds->ARM7IORead16(0x04000180));
     fprintf(stderr, "melon: bank hashes");
     for (int b = 0; b < 9; b++) fprintf(stderr, " %c:%016llx", 'A' + b, (unsigned long long)fnv(g.VRAM[b], host_vram_bank_size(b)));
     fprintf(stderr, " pal:%016llx", (unsigned long long)fnv(g.Palette, 2048));

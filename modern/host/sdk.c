@@ -33,7 +33,17 @@ void MIi_CpuClear16(u32 v, void *dst, u32 n) { u16 *d = dst; for (n /= 2; n--;) 
 void MIi_CpuCopy16(const void *src, void *dst, u32 n) { const volatile u16 *s = src; volatile u16 *d = dst; for (n /= 2; n--;) *d++ = *s++; }
 void MIi_CpuClear32(u32 v, void *dst, u32 n) { volatile u32 *d = dst; for (n /= 4; n--;) *d++ = v; }
 void MIi_CpuCopy32(const void *src, void *dst, u32 n) { const volatile u32 *s = src; volatile u32 *d = dst; for (n /= 4; n--;) *d++ = *s++; }
-void MIi_CpuSend32(const void *src, volatile void *dst, u32 n) { const u32 *s = src; volatile u32 *d = dst; for (n /= 4; n--;) *d = *s++; }
+void host_io_store32(u32 a, u32 v);
+void MIi_CpuSend32(const void *src, volatile void *dst, u32 n) {
+    const u32 *s = src;
+    u32 a = (u32)(uintptr_t)dst;
+    if (a >= 0x04000000 && a < 0x05000000) {  // a register (the 3D command FIFO): straight to its handler
+        for (n /= 4; n--;) host_io_store32(a, *s++);
+        return;
+    }
+    volatile u32 *d = dst;
+    for (n /= 4; n--;) *d = *s++;
+}
 void MIi_CpuClearFast(u32 v, void *dst, u32 n) { MIi_CpuClear32(v, dst, n); }
 void MIi_CpuCopyFast(const void *src, void *dst, u32 n) { MIi_CpuCopy32(src, dst, n); }
 void MI_CpuFill8(void *dst, u32 v, u32 n) { u8 *d = dst; while (n--) *d++ = (u8)v; }

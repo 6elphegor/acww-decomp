@@ -32,32 +32,48 @@ that involves and the choice still open.
 ## Status (experimental)
 
 The game runs natively as a 32-bit Linux program: title screen with the 3D town demo, touch to start, the intro
-(Kapp'n's taxi, name entry), with melonDS's renderer drawing both screens (decision 2026-10-05: reuse melonDS's
-hardware code for now, replace it with our own once everything works). No sound yet.
+(Kapp'n's taxi, name entry), with sound, and melonDS's renderer drawing both screens (decision 2026-10-05: reuse
+melonDS's hardware code for now, replace it with our own once everything works; the goal is a fully native port,
+so sound was done natively right away). It holds 60 fps paced (about 95 fps unpaced in the title's 3D scene).
 
 Build: `python3 tools/configure_host.py && ninja -f build_host.ninja` (needs the 32-bit sysroot, SDL2 headers for the
 viewer, and a melonDS tree patched with `tools/host/melonds.patch` and built for 32-bit x86 in `build-core32`; see
 `--sysroot`, `--sdl2`, `--melonds`). Run: `ACWW_FIRMWARE=<firmware image> build/host_usa/acww <rom.nds>`: a window
 (`acww-viewer`, 64-bit SDL2, sharing memory with the game) shows both screens; keys: arrows, X = A, Z = B, S = X,
-A = Y, Q/W = L/R, Enter = Start, Right Shift = Select; the mouse on the bottom screen touches.
+A = Y, Q/W = L/R, Enter = Start, Right Shift = Select; the mouse on the bottom screen touches; M mutes. Sound goes to
+the default audio device (SDL), about 70 ms behind.
 
 Environment: `ACWW_SAVE` (save file, default `<rom>.sav`), `ACWW_HEADLESS=1` (no window), `ACWW_FAST=1` (not paced to
 60 Hz), `ACWW_SHOT="frame:file.ppm;..."`, `ACWW_KEYS="frame:frames:mask;..."`, `ACWW_TOUCH="frame:frames:x,y;..."`;
-debugging: `ACWW_STATS`, `ACWW_IOLOG=addr`, `ACWW_WATCH=addr:len`, `ACWW_PROFILE`, `ACWW_PROCLOG`, `ACWW_HEAPCHECK`.
+`ACWW_WAV=file.wav` (the sound, also headless), `ACWW_MUTE=1`; debugging: `ACWW_STATS`, `ACWW_FPS`, `ACWW_IOLOG=addr`,
+`ACWW_IOHIST` (register accesses by address and code, to `acww_iohist.txt`), `ACWW_NOEMULATE` (single-step every
+access), `ACWW_WATCH=addr:len`, `ACWW_PROFILE`, `ACWW_PROCLOG`, `ACWW_HEAPCHECK`, `ACWW_SNDTRACE` (sound commands),
+`ACWW_SNDSTATE` (the sound driver's players and channels once a second), `ACWW_AUDIO_INFO` (the viewer's audio
+device, underruns).
 
 The runtime (`modern/host/`):
 
-- `hw.c`: the memory map; the I/O pages trapped (a fault prepares a register read, the access is single-stepped
-  with the trap flag, the written value is handled after it); virtual time (scanlines, timers, VBlank), DMA, the
+- `hw.c`: the memory map; the I/O pages trapped: the handler decodes the faulting instruction and carries out the
+  plain moves itself (nearly all accesses), anything else is single-stepped with the trap flag (the register
+  prepared before, the written value handled after); virtual time (scanlines, timers, VBlank), DMA, the
   divider and square root; interrupts injected into the interrupted game code (`irq_entry.S`) like an IRQ
   exception, after I/O accesses and when the game spins on memory; 60 Hz pacing.
 - `vram.c`: VRAM banking with mmap (each VRAMCNT change remaps the banks into the CPU's windows).
 - `melon.cpp`: the display through melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync).
 - `os.c`: interrupt masking per thread, thread contexts on `ucontext`, lock ids, BIOS waits.
 - `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (fixed clock), touch panel,
-  card backup (save file, replies delayed like the DS's), sound (commands taken, nothing played).
+  card backup (save file, replies delayed like the DS's); sound commands go to `snd7/`.
+- `snd7/`: the ARM7's sound driver, native: NitroSDK's driver (commands, sequence player, channel allocation,
+  envelopes, LFOs, alarms; ported from pret/pokediamond's decompilation of the same SDK driver, its command set and
+  shared structures checked against ACWW's ARM9 side, tables from ACWW's ARM7 program) in `driver.c`, `seq.c`,
+  `exchannel.c`, `channel.c`; the sound hardware in software (`spu.c`: 16 channels with PCM8/PCM16/IMA-ADPCM, square
+  waves and noise, the mixer, the two capture units that the game's effect path uses) clocked by the virtual time;
+  `output.c` to the viewer's audio ring and `ACWW_WAV`. Checked against melonDS running the original game: the logo
+  jingle comes out with a waveform correlation of 0.998 at the same level, the title music at 0.97-0.997 once its
+  fade-in (run by the ARM9 per frame) is over.
 - `card.c` (ROM reads), `sdk.c` (the SDK's assembly routines in C), `gaps_code.c` (undecompiled functions),
-  `frontend.c` + `viewer/` (window and input).
+  `frontend.c` + `viewer/` (window, input, sound; the viewer holds its audio queue at a target level by playing up
+  to 0.5% faster or slower).
 
 The build (`tools/configure_host.py`): the game linked as one object, its variables in their original order
 (`tools/host_order.py`, `-fdata-sections -malign-data=abi`), DTCM's variables at 0x027e0000, its C library and
@@ -74,16 +90,11 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 - Reading through NULL is harmless on the DS (address 0 is mapped) but not on the host.
 - Code that ran over one variable into the next (a clear spanning two arrays) needs the original order or a fix.
 
-Experimental (`ACWW_ARM7=emu`): the game's own ARM7 program in melonDS instead of `pxi7.c` - the game's variables
-live in DS main RAM (from 0x02001000) and melonDS's main RAM is that memory, its clock follows the host's virtual
-time (`NDS::HostRun`), the IPC registers are melonDS's, and repeated IPC polls fast-forward the ARM7 until the value
-changes. It boots the ARM7 and runs the first handshake steps; the ARM7 then stays in its BIOS wait loop and the
-ARM9's PXI_InitFifo never completes (open). This is the route to sound.
+Not done yet: resetting an overlay's data when it is loaded again. The game reaches each scene later (in frames)
+than on the DS: the title at about frame 1500 instead of 900 (virtual time passes in waits that the DS doesn't
+have). Runs aren't exactly repeatable: when the game spins on memory, virtual time advances with the real clock.
 
-Not done yet: sound; resetting an overlay's data when it is loaded again; speed (every I/O access is a trap: about
-5-10 µs each).
-
-## The choice: how to provide the hardware (decided: A for now)
+## The choice: how to provide the hardware (decided: A for the display for now, B for sound)
 
 | | A. Reuse melonDS's hardware code | B. Write it for the port |
 |---|---|---|
