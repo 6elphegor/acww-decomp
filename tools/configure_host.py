@@ -34,7 +34,7 @@ G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
 
 GAME_FLAGS = " ".join([
     "-m32", "-fno-pie", "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
-    "-fno-strict-aliasing", "-fpcc-struct-return", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4", "-fdata-sections",
+    "-fno-strict-aliasing", "-fpcc-struct-return", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4", "-fdata-sections", "-malign-data=abi",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
 ])
 C_FLAGS = "-std=gnu11"
@@ -150,7 +150,10 @@ def main():
         n.rule("order", "python3 tools/host_order.py $in $out", description="ORDER $out")
         order_ld = str(build / "order.ld")
         n.build(order_ld, "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
-        n.rule("partial", "ld -m elf_i386 -r -T $order -o $out @$list @$wrap", description="LD -r $out")
+        # the game's operator new/new[] are mwcc's names (unsigned long); its code compiled here calls the x86 names
+        # (unsigned int). Aliases inside the game object (made local with the C library names afterwards).
+        n.rule("partial", "ld -m elf_i386 -r -T $order --defsym=_Znwj=_Znwm --defsym=_Znaj=_Znam -o $out @$list @$wrap",
+               description="LD -r $out")
         n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), str(build / "wrap.txt"), order_ld],
                 variables={"list": str(game_list), "wrap": str(build / "wrap.txt"), "order": order_ld})
         libs = f"{R}/usr/lib32/libc.so.6 {R}/usr/lib32/libm.so.6 {G}/libgcc.a {R}/usr/lib32/libstdc++.so.6"

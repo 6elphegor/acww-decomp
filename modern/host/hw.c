@@ -155,6 +155,8 @@ static void run_events_body(void) {
         melon_frame();
         extern void frontend_frame(void);
         frontend_frame();
+        extern void host_heap_check(void);
+        host_heap_check();
         host_screenshot();
         if (getenv("ACWW_STATS") && host_frame() % 300 == 0) {
             extern u8 *host_vram_bank(int i);

@@ -84,3 +84,33 @@ int main(int argc, char **argv) {
     NitroMain();
     host_fatal("NitroMain returned");
 }
+
+// ACWW_HEAPCHECK=1: walk every NNS expanded heap in DS RAM each frame (hw.c) and report the first broken block
+void host_heap_check(void) {
+    static int on = -1, reported;
+    if (on < 0) on = getenv("ACWW_HEAPCHECK") != 0;
+    if (!on || reported) return;
+    int heaps = 0;
+    for (u32 a = 0x02000000; a < 0x02400000; a += 4) {
+        u32 *h = (u32 *)(uintptr_t)a;
+        if (h[0] != 0x45585048 || h[6] < 0x02000000 || h[6] >= h[7] || h[7] > 0x02400000) continue;  // 'EXPH', start, end
+        heaps++;
+        u32 lists[2] = {h[9], h[11]};  // freeHead, usedHead
+        for (int l = 0; l < 2; l++) {
+            u32 prev = 0, n = 0;
+            for (u32 b = lists[l]; b && n < 100000; n++) {
+                u32 *m = (u32 *)(uintptr_t)b;
+                u16 sig = (u16)m[0];
+                if (b < h[6] || b >= h[7] || sig != (l ? 0x5544 : 0x4652) || m[2] != prev) {
+                    fprintf(stderr, "heapcheck: frame %llu heap %08x %s block %08x bad (sig %04x prev %08x want %08x)\n",
+                            (unsigned long long)host_frame(), a, l ? "used" : "free", b, sig, m[2], prev);
+                    reported = 1;
+                    return;
+                }
+                prev = b;
+                b = m[3];
+            }
+        }
+    }
+    if (host_frame() % 600 == 0) fprintf(stderr, "heapcheck: frame %llu: %d heaps fine\n", (unsigned long long)host_frame(), heaps);
+}

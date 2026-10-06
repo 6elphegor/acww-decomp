@@ -47,10 +47,27 @@ void frontend_init(const char *argv0) {
     }
 }
 
+// scripted keys for headless runs: ACWW_KEYS="frame:frames:mask;..." (mask: the bits of AcwwShm.keys, hex)
+static u32 scripted_keys(void) {
+    static const char *spec;
+    if (!spec) spec = getenv("ACWW_KEYS") ? getenv("ACWW_KEYS") : "";
+    u32 f = (u32)host_frame(), k = 0;
+    for (const char *p = spec; *p;) {
+        unsigned fr, n, m;
+        if (sscanf(p, "%u:%u:%x", &fr, &n, &m) == 3 && f >= fr && f < fr + n) k |= m;
+        p = strchr(p, ';');
+        if (!p) break;
+        p++;
+    }
+    return k;
+}
+
 // at each VBlank: publish the frame, take the input
 void frontend_frame(void) {
     u16 keyinput = 0x3ff;  // KEYINPUT: released bits are 1
-    u16 xy = 0x3;          // the ARM7's X/Y buffer (0x027fffa8): released bits are 1, bit 7 clear = not folded
+    // the ARM7's button word (0x027fffa8), OR-ed into KEYINPUT by PAD_Read: X bit 10, Y bit 11, debug bit 13
+    // (released = 1); bit 15 clear = not folded
+    u16 xy = 0x2c00;
     if (sShm) {
         for (int s = 0; s < 2; s++) memcpy(sShm->pixels + s * 256 * 192, melon_screen(s), 256 * 192 * 4);
         __sync_synchronize();
@@ -58,8 +75,11 @@ void frontend_frame(void) {
         if (sShm->quit) exit(0);
         u32 k = sShm->keys;
         keyinput = (u16)(~k & 0x3ff);
-        xy = (u16)(~(k >> 10) & 3);
+        xy = (u16)(0x2000 | (~k & 0x0c00));
     }
+    u32 sk = scripted_keys();
+    keyinput &= (u16)~(sk & 0x3ff);
+    xy &= (u16)~(sk & 0x0c00);
     *(u16 *)host_io(0x04000130) = keyinput;
     *(volatile u16 *)0x027fffa8 = xy;
 }
