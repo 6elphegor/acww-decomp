@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "town/TownMapMarkers.h"
 #include "game/StrBSizeData.h"
@@ -122,7 +123,7 @@ extern "C" TownMapMarker *TownMapMarkers_Get(TownMapMarkers *s, u32 i) {
         s32 m = -1;
         if (s->e[i].x != m) {
             s = (TownMapMarkers *)((u8 *)s + i * 6);
-            if (*(s16 *)((u8 *)s + 2) != m) return (TownMapMarker *)s;
+            if (*(s16 *)(HOST_AT(s, 2, e[0].y, 0)) != m) return (TownMapMarker *)s;
         }
         return NULL;
     }
@@ -432,9 +433,9 @@ extern "C" void TownMapImage_DrawAcreRow(TownMapImage *o, u32 i) {
 
 extern "C" void TownMapImage_BuildMarkers(TownMapImage *o, u32 sel) {
     if (sel == 0) {
-        TownMapMarkers_AddHouses((TownMapMarkers *)((u8 *)o + 0x2000));
+        TownMapMarkers_AddHouses((TownMapMarkers *)(HOST_AT(o, 0x2000, icons.e[0].x, 0)));
     } else {
-        TownMapMarkers_AddLandmarks((TownMapMarkers *)((u8 *)o + 0x2000));
+        TownMapMarkers_AddLandmarks((TownMapMarkers *)(HOST_AT(o, 0x2000, icons.e[0].x, 0)));
     }
 }
 
@@ -450,7 +451,7 @@ extern "C" void TownMapImage_CopyPixels(void *o, void *a) {
 }
 
 extern "C" TownMapMarkers *TownMapImage_GetMarkers(TownMapImage *o) {
-    return (TownMapMarkers *)((u8 *)o + 0x2000);
+    return (TownMapMarkers *)(HOST_AT(o, 0x2000, icons.e[0].x, 0));
 }
 
 extern "C" void TownMapImage_Build(void *a, TownMapMarkers *b) {

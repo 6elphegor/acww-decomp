@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/TexVramSlot.h"
@@ -103,7 +104,7 @@ void *Gfx3d_CopyModel(u32 *a, void *heap);
 }
 
 void ModelAnim::initFromResource(NNSG3dResMdl *a, void *b, u32 c, u32 d, u16 e) {
-    _ZN13AnimFrameCtrl5setupEihit(this, *(u16 *)((u8 *)a + 4), c, d, e);
+    _ZN13AnimFrameCtrl5setupEihit(this, *(u16 *)(HOST_AT(a, 4, ofsSbc, 0)), c, d, e);
     NNS_G3dAnmObjInit((void *)anmObj, a, resMdl, (u32)b);
     *(u32 *)anmObj = e << 12;
 }

@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "save/TownExchangeRecord.h"
 
@@ -37,15 +38,15 @@ extern "C" void *TownExchange_GetRemote(s32 i);
 
 TownExchangeRecord::TownExchangeRecord() {
     _ZN6LetterC1Ev(this);
-    _ZN19ConstellationRecordC1Ev((u8 *)this + 0xf4);
-    VillagerTransfer_ConstructVillager((u8 *)this + 0x13c);
-    LostChildRecord_Construct((u8 *)this + 0x83e);
+    _ZN19ConstellationRecordC1Ev(HOST_AT(this, 0xf4, unk_0f4, 0));
+    VillagerTransfer_ConstructVillager(HOST_AT(this, 0x13c, villager[0], 0));
+    LostChildRecord_Construct(HOST_AT(this, 0x83e, lostChild[0], 0));
 }
 
 TownExchangeRecord::~TownExchangeRecord() {
-    LostChildRecord_Destruct((u8 *)this + 0x83e);
-    VillagerTransfer_DestructVillager((u8 *)this + 0x13c);
-    _ZN19ConstellationRecordD1Ev((u8 *)this + 0xf4);
+    LostChildRecord_Destruct(HOST_AT(this, 0x83e, lostChild[0], 0));
+    VillagerTransfer_DestructVillager(HOST_AT(this, 0x13c, villager[0], 0));
+    _ZN19ConstellationRecordD1Ev(HOST_AT(this, 0xf4, unk_0f4, 0));
     _ZN6LetterD1Ev(this);
 }
 

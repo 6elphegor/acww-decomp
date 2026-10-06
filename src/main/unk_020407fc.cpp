@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 
 #include "Unk_020d8c7c.h"
@@ -485,7 +486,7 @@ extern "C" void EventAnnounce_RunShowMessage(EventAnnouncer *o)
         TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
         o->msgRequest.resetMsg();
         _ZN10MsgRequest11setFileNameEPKc(&o->msgRequest, (void *)sEventAnnounceMsgFiles[sEventAnnounceState.isEnd]);
-        *((u8 *)o + 0x72) = sEventAnnounceState.msgIndex;
+        *(HOST_AT(o, 0x72, msgRequest.msgIndex, 0)) = sEventAnnounceState.msgIndex;
         _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(p, &o->msgRequest);
         p->nextState = 1;
         sEventAnnounceState.announceState = 6;

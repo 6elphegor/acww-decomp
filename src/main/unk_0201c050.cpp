@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "town/TownBlockCell.h"
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -2619,29 +2620,29 @@ BOOL VillagerActor::onCreate() {
     if (!_ZN8NpcActor8onCreateEv(this)) {
         return FALSE;
     }
-    if (!_ZN19SpNpcAnimHeapHandle22getVillagerAnimHeapRefEv((u8 *)this + 0x824)) {
-        if (!_ZN12NpcResHandle7acquireEv((u8 *)this + 0x824)) {
+    if (!_ZN19SpNpcAnimHeapHandle22getVillagerAnimHeapRefEv(HOST_AT(this, 0x824, animHeapHandle, 0))) {
+        if (!_ZN12NpcResHandle7acquireEv(HOST_AT(this, 0x824, animHeapHandle, 0))) {
             return FALSE;
         }
         if (!this->loadAnimSet()) {
             return FALSE;
         }
     }
-    if (!_ZN11NpcFaceAnim4loadEP8NpcActor((u8 *)this + 0x2ac, this)) {
+    if (!_ZN11NpcFaceAnim4loadEP8NpcActor(HOST_AT(this, 0x2ac, faceAnim.unk_00, 0), this)) {
         return FALSE;
     }
-    if (!_ZN11NpcAnimCtrl12initForActorEP8NpcActori((u8 *)this + 0x334, this, data_020c6cf0)) {
+    if (!_ZN11NpcAnimCtrl12initForActorEP8NpcActori(HOST_AT(this, 0x334, animCtrl.unk_00[0], 0), this, data_020c6cf0)) {
         return FALSE;
     }
-    _ZN13NpcActionCtrl11startActionEPhiiiisii((u8 *)this + 0x564, this, 0, 1, 0, 0, 0, 0, 0);
+    _ZN13NpcActionCtrl11startActionEPhiiiisii(HOST_AT(this, 0x564, actionCtrl.netMoveMode, 0), this, 0, 1, 0, 0, 0, 0, 0);
     if (villagerData) {
         h = *_ZN23VillagerDataProfileView8getShirtEv(villagerData);
     }
-    if (!((VillagerClothModel *)((u8 *)this + 0x64c))->init(this, &h)) {
+    if (!((VillagerClothModel *)(HOST_AT(this, 0x64c, clothModel.matTexTask[0], 0)))->init(this, &h)) {
         return FALSE;
     }
     _ZN19ActorFollowCollider13setupForActorEPviijjjhi((u8 *)this + 0x4cc, this, 0x1000, 0x2000, 8, 0x2fc, 2, (u8)_ZN8NpcActor11getNpcIndexEv(this), 0x1000);
-    if (NpcRegistry_AddVillager(this, (u8 *)this + 0xea)) {
+    if (NpcRegistry_AddVillager(this, HOST_AT(this, 0xea, npcHandle, 0))) {
     } else {
         return FALSE;
     }
@@ -2652,7 +2653,7 @@ BOOL VillagerActor::preDelete() {
     if (!_ZN9Character9preDeleteEv(this)) {
         return FALSE;
     }
-    NpcRegistry_RemoveVillager((u8 *)this + 0xea);
+    NpcRegistry_RemoveVillager(HOST_AT(this, 0xea, npcHandle, 0));
     return TRUE;
 }
 
@@ -2660,9 +2661,9 @@ BOOL VillagerActor::onDelete() {
     if (!_ZN8NpcActor8onDeleteEv(this)) {
         return FALSE;
     }
-    _ZN12NpcResHandle7releaseEv((u8 *)this + 0x824);
-    ((VillagerClothModel *)((u8 *)this + 0x64c))->release();
-    ((VillagerMood *)((u8 *)this + 0x838))->stop();
+    _ZN12NpcResHandle7releaseEv(HOST_AT(this, 0x824, animHeapHandle, 0));
+    ((VillagerClothModel *)(HOST_AT(this, 0x64c, clothModel.matTexTask[0], 0)))->release();
+    ((VillagerMood *)(HOST_AT(this, 0x838, mood.pad_00[0], 0)))->stop();
     return TRUE;
 }
 

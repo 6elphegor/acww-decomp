@@ -2,6 +2,7 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "game/SceneWarp.h"
+#include "game/SceneInfo.h"
 
 // Static warp entries built by __sinit (ctor = main SceneWarp_Init, dtor = main SceneWarp::~SceneWarp).
 
@@ -98,7 +99,12 @@ extern SceneWarp data_ov004_0225893c;
 u8 sKkShowFxActive;
 void *sKkShowFx;
 // {pointer to the first static entry, count}
+#ifdef HOST
+// (a SceneWarpList: the count is the next variable on the DS, the pointer is larger here)
+SceneWarpList sRoomSceneEntryList = {&data_ov004_0225893c, 3};
+#else
 SceneWarp *sRoomSceneEntryList = &data_ov004_0225893c;
+#endif
 extern "C" u32 data_ov004_0224f2d0 = 3;  // unreferenced: kept by its symbols.txt name
 SceneWarp data_ov004_0225893c(1, VecFx32Copy(0xf000, 0x200, 0x1d000), 0x11000000, 0x4000, 2, 2, -0x4000, 2);
 u32 sRoomCommonProfileCount = 0x11;

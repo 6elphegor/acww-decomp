@@ -1,3 +1,4 @@
+#include "uptr.h"
 // ov105: scene overlay (class LetterStorageMenu, vtable 0x02298594). Linked as one unit.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -1026,7 +1027,7 @@ void LetterStorageMenu::mainAct06() {
                 if (testFlags(0x800) && r == 0) {
                 } else {
                     s32 t;
-                    popupChoice = ((u8 *)this + 0x2781)[r];
+                    popupChoice = (HOST_AT(this, 0x2781, choiceList.values[0], 0))[r];
                     t = 1;
                     if (popupChoice == 2) {
                         t = 0;

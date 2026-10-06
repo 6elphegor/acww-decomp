@@ -1,3 +1,4 @@
+#include "uptr.h"
 // ov146: scene overlay (class WfcFriendListMenu, vtable 0x02294080): wi-fi friend list menu.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -1132,12 +1133,12 @@ BOOL WfcFriendListMenu::isFriendSelectable(s32 idx) {
 
 void WfcFriendListMenu::flushVram() {
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen((u8 *)this + 0x1930, (u8 *)this + 0xb8a, 4, 0x800, 0)) {
+        if (BgVramTask_requestScreen((u8 *)this + 0x1930, HOST_AT(this, 0xb8a, listScreen[0], 0), 4, 0x800, 0)) {
             clearFlags(2);
         }
     }
     if (testFlags(8)) {
-        if (BgVramTask_requestPalette((u8 *)this + 0x1954, (u8 *)this + 0x13aa, 4, 7)) {
+        if (BgVramTask_requestPalette((u8 *)this + 0x1954, HOST_AT(this, 0x13aa, rowPalette[0], 0), 4, 7)) {
             clearFlags(8);
         }
     }
@@ -1153,11 +1154,11 @@ void WfcFriendListMenu::setScroll(s32 v) {
 
 void WfcFriendListMenu::buildListScreen() {
     volatile u16 z = 0x10;
-    MIi_CpuClear16(z, (u8 *)this + 0xb8a, 0x800);
+    MIi_CpuClear16(z, HOST_AT(this, 0xb8a, listScreen[0], 0), 0x800);
     for (s32 i = 0; i < 7; i++) {
         s32 v = topRow + i;
         s32 m = v % 7;
-        MIi_CpuCopy16((u8 *)this + 0x38a + ((m * 2 + 7) << 6), (u8 *)this + 0xb8a + ((v & 0xf) << 7), 0x80);
+        MIi_CpuCopy16(HOST_AT(this, 0x38a, listScreenSrc[0], 0) + ((m * 2 + 7) << 6), HOST_AT(this, 0xb8a, listScreen[0], 0) + ((v & 0xf) << 7), 0x80);
     }
     setFlags(2);
 }

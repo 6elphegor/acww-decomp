@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -3414,24 +3415,24 @@ BOOL TalkFrameView::isArrowEndDone()
 void TalkFrameView::showBusyIcon(u32 se)
 {
     using namespace n8;
-    _ZN12TalkBusyIcon11requestShowEj((u8 *)this + 0x50, se);
+    _ZN12TalkBusyIcon11requestShowEj(HOST_AT(this, 0x50, pad_50[0], 0), se);
     busyIconTimer = -1;
 }
 void TalkFrameView::hideBusyIcon()
 {
     using namespace n8;
-    _ZN12TalkBusyIcon11requestHideEv((u8 *)this + 0x50);
+    _ZN12TalkBusyIcon11requestHideEv(HOST_AT(this, 0x50, pad_50[0], 0));
     busyIconTimer = 4;
 }
 void TalkFrameView::updateBusyIcon()
 {
     using namespace n8;
-    _ZN12TalkBusyIcon6setPosEii((u8 *)this + 0x50, scrollX + 0x59, scrollY + 0x4b);
-    _ZN12TalkBusyIcon10callUpdateEv((u8 *)this + 0x50);
+    _ZN12TalkBusyIcon6setPosEii(HOST_AT(this, 0x50, pad_50[0], 0), scrollX + 0x59, scrollY + 0x4b);
+    _ZN12TalkBusyIcon10callUpdateEv(HOST_AT(this, 0x50, pad_50[0], 0));
     if (busyIconTimer > 0) busyIconTimer--;
 }
 void TalkFrameView::drawBusyIcon() {
-    using namespace n8; _ZN12TalkBusyIcon8callDrawEv((u8 *)this + 0x50); }
+    using namespace n8; _ZN12TalkBusyIcon8callDrawEv(HOST_AT(this, 0x50, pad_50[0], 0)); }
 namespace n8 {
 extern "C" u8 Talk_ColorTagToTextColor(u32 x)
 {
@@ -4895,7 +4896,7 @@ u32 MsgString9::capacity() {
     using namespace n3; return 9; }
 // ---- MsgString9 ----
 u8 *MsgString9::data() {
-    using namespace n3; return (u8 *)this + 0x12; }
+    using namespace n3; return HOST_AT(this, 0x12, text[0], 0); }
 TalkMsgRequest::TalkMsgRequest() {
     using namespace n3;
     window = 0;
@@ -4947,7 +4948,7 @@ void TalkMsgRequest::changeSpeakerName(MsgString *p, u32 v) {
 }
 
 // ======== unk_020655e4.cpp ========
-#define unk_04 ((u32 *)((u8 *)this + 4))
+#define unk_04 ((u32 *)(HOST_AT(this, 4, fileName[0], 0)))
 #define data_020ddd68 ((char *)"/script/ENG/message")
 namespace n1 {
 

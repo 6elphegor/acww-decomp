@@ -1,3 +1,22 @@
+#include "sys/ProcProfile.h"
+#include "uptr.h"
+#ifdef HOST64
+#include "gfx/AnimModel.h"
+#include "snd/SndSeEmitter.h"
+#endif
+// the field objects' model heap (0x21400 bytes on the DS; the model objects are larger on 64-bit hosts)
+#ifdef HOST64
+#define FIELDOBJ_MODEL_HEAP_SIZE 0x30000
+#else
+#define FIELDOBJ_MODEL_HEAP_SIZE 0x21400
+#endif
+// the tree / cedar / palm loaders' file buffer slots: u32 arrays (the loaders store the buffers as u32); on the DS
+// the free functions see them as void * (the same 4 bytes), on 64-bit hosts they keep the u32 view
+#ifdef HOST
+typedef u32 FileBufSlot;
+#else
+typedef void *FileBufSlot;
+#endif
 // mwcc-version: 1.2/base
 // ov003 TU22 (field objects, .text 0x02219294-0x0221ffb8): 11 unit files merged; every old file is a namespace
 #include "types.h"
@@ -113,6 +132,34 @@ struct Unk_ov003_0221b8bc_Bits {
 struct TreeAnim {
     /* 0x000 */ s32 active;
     /* 0x004 */ s32 sessionSlot;
+#ifdef HOST64
+    // the AnimModel by its real size; the names at its members (Model::resMdl / resTex / mtx, the AnimFrameCtrl base,
+    // its curFrame and playMode) on 64-bit hosts
+#define TA_AFC ((unsigned long)__builtin_offsetof(AnimModel, numFrames) - (unsigned long)__builtin_offsetof(AnimFrameCtrl, numFrames))
+    union {
+        u8 animModel[sizeof(AnimModel)] HOST_ALIGN8;
+        struct {
+            u8 hm0[__builtin_offsetof(AnimModel, resMdl)];
+            void *resMdl;
+            u32 resTex;
+            u8 hm1[__builtin_offsetof(AnimModel, mtx) - __builtin_offsetof(AnimModel, resTex) - 4];
+            Mtx43 baseMatrix;
+        };
+        struct {
+            u8 hm2[TA_AFC];
+            u8 frameCtrl[sizeof(AnimFrameCtrl)];
+        };
+        struct {
+            u8 hm3[TA_AFC + __builtin_offsetof(AnimFrameCtrl, curFrame)];
+            Unk_ov003_0221b8bc_Bits animFrame;
+        };
+        struct {
+            u8 hm4[TA_AFC + __builtin_offsetof(AnimFrameCtrl, playMode)];
+            u8 playMode;
+        };
+    };
+#undef TA_AFC
+#else
     union {
         /* 0x008 */ u8 animModel[0xb8]; // AnimModel
         struct {
@@ -128,6 +175,7 @@ struct TreeAnim {
             /* 0x0b9 */ u8 pad_0b9[7];
         };
     };
+#endif
     /* 0x0c0 */ s32 posX;
     /* 0x0c4 */ s32 posY;
     /* 0x0c8 */ s32 posZ;
@@ -135,7 +183,11 @@ struct TreeAnim {
     /* 0x0d4 */ s32 animKind;
     /* 0x0d8 */ s32 alpha;
     /* 0x0dc */ s32 leafSpawnCount;
+#ifdef HOST64
+    u8 seEmitter[sizeof(SndSeEmitter)] HOST_ALIGN8;
+#else
     /* 0x0e0 */ u8 seEmitter[0x40];
+#endif
     /* 0x120 */ s32 unk_120[6];
     /* 0x138 */ s32 unk_138[3];
     /* 0x144 */ TreeLeafFxEntry *leafRecord;
@@ -605,7 +657,7 @@ struct Unk_ov003_0221aed4_Fx {
 extern "C" {
 
 extern u8 *gFieldObjectManager;
-extern u32 sTreeAnimPaths[][4];
+extern uptr sTreeAnimPaths[][4];
 extern void *sFieldObjectAnimHeap;
 extern VecFx32 *data_ov003_0223291c[];
 
@@ -1394,10 +1446,10 @@ BOOL FieldObj_LoadFlowerModels(Obj *o, u32 *a, u32 *b);
 s32 FieldObj_LoadFlowerPalettes(Obj *o, void *a, void *b);
 s32 FieldObj_LoadFlowerTextures(Obj *o, void *a, void *b);
 BOOL FieldObj_LoadTrees();
-void FieldObj_FreePalmFileBufs(Obj *o, void **a, void **b, void **c);
-void FieldObj_FreeLitCedarFileBufs(Obj *o, void **a, void **b);
-void FieldObj_FreeCedarFileBufs(Obj *o, void **a, void **b, void **c);
-void FieldObj_FreeTreeFileBufs(Obj *o, void **a, void **b, void **c);
+void FieldObj_FreePalmFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
+void FieldObj_FreeLitCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b);
+void FieldObj_FreeCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
+void FieldObj_FreeTreeFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
 void FieldObj_ClearLitCedarFileBufs(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d);
 void FieldObj_ClearCedarPalmFileBufs(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d, u32 *e, u32 *f);
 void FieldObj_ClearTreeFileBufs(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d, u32 *e, u32 *f);
@@ -1420,10 +1472,10 @@ extern "C" BOOL FieldObj_LoadPalmDeadModel(Obj *o, u32 *a, u32 *b, void *c);
 extern "C" void FieldObj_ClearTreeFileBufs(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d, u32 *e, u32 *f);
 extern "C" void FieldObj_ClearCedarPalmFileBufs(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d, u32 *e, u32 *f);
 extern "C" void FieldObj_ClearLitCedarFileBufs(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d);
-extern "C" void FieldObj_FreeTreeFileBufs(Obj *o, void **a, void **b, void **c);
-extern "C" void FieldObj_FreeCedarFileBufs(Obj *o, void **a, void **b, void **c);
-extern "C" void FieldObj_FreeLitCedarFileBufs(Obj *o, void **a, void **b);
-extern "C" void FieldObj_FreePalmFileBufs(Obj *o, void **a, void **b, void **c);
+extern "C" void FieldObj_FreeTreeFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
+extern "C" void FieldObj_FreeCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
+extern "C" void FieldObj_FreeLitCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b);
+extern "C" void FieldObj_FreePalmFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c);
 extern "C" BOOL FieldObj_LoadTrees();
 extern "C" s32 FieldObj_LoadFlowerTextures(Obj *o, void *a, void *b);
 extern "C" s32 FieldObj_LoadFlowerPalettes(Obj *o, void *a, void *b);
@@ -1463,15 +1515,15 @@ extern void **data_ov003_022328f8[];
 extern void **data_ov003_02232910[];
 extern void **data_ov003_0223294c[];
 extern void **data_ov003_022328e0[];
-extern u32 data_ov003_02232904[];
-extern u32 data_ov003_0223263c[];
-extern u32 data_ov003_02232638[];
-extern u32 data_ov003_02232644[];
-extern u32 data_ov003_02232940[];
-extern u32 data_ov003_022328c8[];
-extern u32 data_ov003_02232640[];
-extern u32 *data_ov003_02232934[];
-extern u32 *data_ov003_022328d4[];
+extern uptr data_ov003_02232904[];
+extern uptr data_ov003_0223263c[];
+extern uptr data_ov003_02232638[];
+extern uptr data_ov003_02232644[];
+extern uptr data_ov003_02232940[];
+extern uptr data_ov003_022328c8[];
+extern uptr data_ov003_02232640[];
+extern uptr *data_ov003_02232934[];
+extern uptr *data_ov003_022328d4[];
 extern void *data_ov003_022328b0[];
 extern void **data_ov003_022328ec[];
 extern void *data_ov003_02234604[];
@@ -1513,16 +1565,16 @@ void *FieldObj_GetTreeModelPath(void *self, s32 a, s32 i);
 u32 FieldObj_GetTreeTexturePaths(void *self, s32 i);
 BOOL FieldObj_LoadStumpModels(FieldObjectManager *self);
 BOOL FieldObj_LoadStoneModels(FieldObjectManager *self);
-BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n);
-BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n);
+BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n);
+BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n);
 u8 *FieldObj_GetShapeRecord(u8 *p);
 u8 *FishShadow_GetActive(s32 i);
 }
 // ---- prototypes of this file's functions
 extern "C" { void *FieldObjectManager_Create(); }
 extern "C" { u8 *FieldObj_GetShapeRecord(u8 *p); }
-extern "C" { BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n); }
-extern "C" { BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n); }
+extern "C" { BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n); }
+extern "C" { BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n); }
 extern "C" { BOOL FieldObj_LoadIconModels(FieldObjectManager *self); }
 extern "C" { BOOL FieldObj_LoadStoneModels(FieldObjectManager *self); }
 extern "C" { BOOL FieldObj_LoadStones(); }
@@ -1572,13 +1624,13 @@ extern "C" char data_ov003_022329b8[0x10];
 extern "C" const u32 data_ov003_0222f1c0[3];
 extern "C" char data_ov003_02233868[0x24];
 extern "C" char data_ov003_02233420[0x20];
-extern "C" u32 data_ov003_022326a8[2];
+extern "C" uptr data_ov003_022326a8[2];
 extern "C" const u32 data_ov003_0222f25c[3];
 extern "C" char data_ov003_022329c8[0x10];
 extern "C" const u32 data_ov003_0222f3b8[3];
-extern "C" u32 data_ov003_02232dcc[6];
+extern "C" uptr data_ov003_02232dcc[6];
 extern "C" char data_ov003_02232cc4[0x18];
-extern "C" u32 data_ov003_022327b0[2];
+extern "C" uptr data_ov003_022327b0[2];
 extern "C" char data_ov003_022338b0[0x24];
 extern "C" char data_ov003_02232f24[0x1c];
 extern "C" char data_ov003_022338d4[0x24];
@@ -1591,15 +1643,15 @@ extern "C" char data_ov003_02232f5c[0x1c];
 extern "C" char data_ov003_02233988[0x24];
 extern "C" char data_ov003_022339ac[0x24];
 extern "C" const u32 data_ov003_0222f418[3];
-extern "C" u32 data_ov003_022327f0[2];
-extern "C" u32 data_ov003_022326c0[2];
+extern "C" uptr data_ov003_022327f0[2];
+extern "C" uptr data_ov003_022326c0[2];
 extern "C" char data_ov003_022343a0[0x28];
 extern "C" const u32 data_ov003_0222f46c[3];
 extern "C" const u32 data_ov003_0222f1d8[3];
-extern "C" u32 data_ov003_02232800[2];
+extern "C" uptr data_ov003_02232800[2];
 extern "C" char data_ov003_02233a18[0x24];
 extern "C" const u32 data_ov003_0222f2b0[3];
-extern "C" u32 data_ov003_022327f8[2];
+extern "C" uptr data_ov003_022327f8[2];
 extern "C" char data_ov003_02233480[0x20];
 extern "C" const u32 data_ov003_0222f534[12];
 extern "C" char data_ov003_02233a84[0x24];
@@ -1607,50 +1659,50 @@ extern "C" const u32 data_ov003_0222f250[3];
 extern "C" char data_ov003_02232cdc[0x18];
 extern "C" const u32 data_ov003_0222f2c8[3];
 extern "C" char data_ov003_02233aa8[0x24];
-extern "C" u32 data_ov003_0223263c[1];
+extern "C" uptr data_ov003_0223263c[1];
 extern "C" const u32 data_ov003_0222f220[3];
 extern "C" char data_ov003_02232f78[0x1c];
 extern "C" char data_ov003_02233af0[0x24];
 extern "C" const u32 data_ov003_0222f2ec[3];
 extern "C" char data_ov003_02233b14[0x24];
-extern "C" u32 data_ov003_02232a28[4];
-extern "C" u32 data_ov003_02232b18[4];
+extern "C" uptr data_ov003_02232a28[4];
+extern "C" uptr data_ov003_02232b18[4];
 extern "C" char data_ov003_0223288c[0xc];
 extern "C" const u32 data_ov003_0222f564[12];
-extern "C" u32 data_ov003_02232660[2];
-extern "C" u32 data_ov003_02232718[2];
+extern "C" uptr data_ov003_02232660[2];
+extern "C" uptr data_ov003_02232718[2];
 extern "C" const u32 data_ov003_0222f22c[3];
 extern "C" char data_ov003_022334a0[0x20];
 extern "C" char data_ov003_02233b80[0x24];
 extern "C" char data_ov003_02233bec[0x24];
 extern "C" char data_ov003_02232f94[0x1c];
 extern "C" char data_ov003_02233c10[0x24];
-extern "C" u32 data_ov003_022326b0[2];
+extern "C" uptr data_ov003_022326b0[2];
 extern "C" const u32 sLandingUnitOffsets[3];
-extern "C" u32 data_ov003_02232768[2];
-extern "C" u32 data_ov003_022327d8[2];
+extern "C" uptr data_ov003_02232768[2];
+extern "C" uptr data_ov003_022327d8[2];
 extern "C" const u32 sTreeFruitIcons[3];
-extern "C" u32 data_ov003_02232630[1];
-extern "C" u32 data_ov003_02232770[2];
-extern "C" u32 data_ov003_02232a58[4];
+extern "C" uptr data_ov003_02232630[1];
+extern "C" uptr data_ov003_02232770[2];
+extern "C" uptr data_ov003_02232a58[4];
 extern "C" const u32 data_ov003_0222f6fc[23];
 extern "C" const u32 sTreeFruitItems[3];
 extern "C" const u32 data_ov003_0222f10c[3];
 extern "C" const u32 data_ov003_0222f118[3];
-extern "C" u32 sTreeAnimPaths[32];
+extern "C" uptr sTreeAnimPaths[32];
 extern "C" char data_ov003_02233c7c[0x24];
-extern "C" u32 data_ov003_02232a78[4];
+extern "C" uptr data_ov003_02232a78[4];
 extern "C" char data_ov003_022329f8[0x10];
 extern "C" char data_ov003_02233004[0x1c];
-extern "C" u32 data_ov003_02232bec[5];
-extern "C" u32 data_ov003_02232910[3];
+extern "C" uptr data_ov003_02232bec[5];
+extern "C" uptr data_ov003_02232910[3];
 extern "C" char data_ov003_02233020[0x1c];
 extern "C" char data_ov003_0223303c[0x1c];
-extern "C" u32 data_ov003_02232a88[4];
+extern "C" uptr data_ov003_02232a88[4];
 extern "C" const u32 data_ov003_0222f238[3];
-extern "C" u32 data_ov003_02232d3c[6];
-extern "C" u32 data_ov003_02232760[2];
-extern "C" u32 data_ov003_02232654[1];
+extern "C" uptr data_ov003_02232d3c[6];
+extern "C" uptr data_ov003_02232760[2];
+extern "C" uptr data_ov003_02232654[1];
 extern "C" char data_ov003_022343f0[0x28];
 extern "C" const u32 data_ov003_0222f0a0[3];
 extern "C" char data_ov003_02233ce8[0x24];
@@ -1661,29 +1713,31 @@ extern "C" char data_ov003_02233500[0x20];
 extern "C" char data_ov003_02234418[0x28];
 extern "C" const u32 data_ov003_0222f328[3];
 extern "C" const u32 data_ov003_0222f244[3];
-extern "C" u32 data_ov003_02232d84[6];
+extern "C" uptr data_ov003_02232d84[6];
 extern "C" char data_ov003_02233100[0x1c];
-extern "C" u32 data_ov003_02232d9c[6];
-extern "C" u32 data_ov003_022327b8[2];
+extern "C" uptr data_ov003_02232d9c[6];
+extern "C" uptr data_ov003_022327b8[2];
+#ifndef HOST
 extern "C" u32 sFieldObjectManagerProfile[2];
+#endif
 extern "C" char data_ov003_02233138[0x1c];
 extern "C" char data_ov003_02234440[0x28];
 extern "C" char data_ov003_02232998[0x10];
 extern "C" char data_ov003_02234468[0x28];
-extern "C" u32 data_ov003_02232a98[4];
-extern "C" u32 data_ov003_02232db4[6];
-extern "C" u32 data_ov003_02232aa8[4];
-extern "C" u32 data_ov003_0223294c[3];
-extern "C" u32 data_ov003_02232c3c[5];
+extern "C" uptr data_ov003_02232a98[4];
+extern "C" uptr data_ov003_02232db4[6];
+extern "C" uptr data_ov003_02232aa8[4];
+extern "C" uptr data_ov003_0223294c[3];
+extern "C" uptr data_ov003_02232c3c[5];
 extern "C" char data_ov003_02233520[0x20];
 extern "C" char data_ov003_02233e2c[0x24];
 extern "C" char data_ov003_02233e50[0x24];
-extern "C" u32 data_ov003_0223264c[1];
-extern "C" u32 data_ov003_02232ac8[4];
+extern "C" uptr data_ov003_0223264c[1];
+extern "C" uptr data_ov003_02232ac8[4];
 extern "C" char data_ov003_02233e74[0x24];
 extern "C" const u32 data_ov003_0222f214[3];
 extern "C" char data_ov003_02233e98[0x24];
-extern "C" u32 data_ov003_022326e0[2];
+extern "C" uptr data_ov003_022326e0[2];
 extern "C" char data_ov003_02233ebc[0x24];
 extern "C" char data_ov003_02233f04[0x24];
 extern "C" char data_ov003_02233f28[0x24];
@@ -1691,19 +1745,19 @@ extern "C" char data_ov003_02232898[0xc];
 extern "C" char data_ov003_02233540[0x20];
 extern "C" char data_ov003_0223285c[0xc];
 extern "C" char data_ov003_02233f70[0x24];
-extern "C" u32 data_ov003_02232a18[4];
-extern "C" u32 data_ov003_02232b28[4];
+extern "C" uptr data_ov003_02232a18[4];
+extern "C" uptr data_ov003_02232b28[4];
 extern "C" const u32 data_ov003_0222f394[3];
 extern "C" const u32 data_ov003_0222f37c[3];
 extern "C" char data_ov003_022331e0[0x1c];
-extern "C" u32 data_ov003_02232dfc[6];
+extern "C" uptr data_ov003_02232dfc[6];
 extern "C" char data_ov003_02233fb8[0x24];
 extern "C" const u32 data_ov003_0222f2a4[3];
 extern "C" const u32 data_ov003_0222f594[12];
 extern "C" char data_ov003_02234024[0x24];
 extern "C" const u32 data_ov003_0222f268[3];
 extern "C" char data_ov003_02233218[0x1c];
-extern "C" u32 data_ov003_02232708[2];
+extern "C" uptr data_ov003_02232708[2];
 extern "C" char data_ov003_02233234[0x1c];
 extern "C" char data_ov003_02234048[0x24];
 extern "C" const u32 data_ov003_0222f364[3];
@@ -1711,7 +1765,7 @@ extern "C" const u32 data_ov003_0222f28c[3];
 extern "C" char data_ov003_02233250[0x1c];
 extern "C" char data_ov003_022344e0[0x28];
 extern "C" char data_ov003_022340d8[0x24];
-extern "C" u32 data_ov003_02232634[1];
+extern "C" uptr data_ov003_02232634[1];
 extern "C" char data_ov003_0223326c[0x1c];
 extern "C" char data_ov003_02233560[0x20];
 extern "C" char data_ov003_022345a8[0x2c];
@@ -1719,42 +1773,42 @@ extern "C" const u32 data_ov003_0222f2f8[3];
 extern "C" char data_ov003_022340fc[0x24];
 extern "C" const u32 data_ov003_0222f304[3];
 extern "C" char data_ov003_02234508[0x28];
-extern "C" u32 data_ov003_02232648[1];
-extern "C" u32 data_ov003_02232798[2];
+extern "C" uptr data_ov003_02232648[1];
+extern "C" uptr data_ov003_02232798[2];
 extern "C" const u32 data_ov003_0222f31c[3];
-extern "C" u32 data_ov003_02232b88[4];
+extern "C" uptr data_ov003_02232b88[4];
 extern "C" const u32 data_ov003_0222f3a0[3];
 extern "C" char data_ov003_022332c0[0x1c];
-extern "C" u32 data_ov003_022326d0[2];
+extern "C" uptr data_ov003_022326d0[2];
 extern "C" char data_ov003_022332dc[0x1c];
 extern "C" char data_ov003_02234120[0x24];
 extern "C" char data_ov003_022332f8[0x1c];
 extern "C" const u32 data_ov003_0222f4e0[6];
 extern "C" char data_ov003_02234530[0x28];
-extern "C" u32 data_ov003_02232738[2];
-extern "C" u32 data_ov003_02232638[1];
+extern "C" uptr data_ov003_02232738[2];
+extern "C" uptr data_ov003_02232638[1];
 extern "C" char data_ov003_02234558[0x28];
 extern "C" const u32 data_ov003_0222f3e8[3];
-extern "C" u32 data_ov003_022328bc[3];
-extern "C" u32 data_ov003_02232928[3];
+extern "C" uptr data_ov003_022328bc[3];
+extern "C" uptr data_ov003_02232928[3];
 extern "C" char data_ov003_0223418c[0x24];
-extern "C" u32 data_ov003_02232728[2];
+extern "C" uptr data_ov003_02232728[2];
 extern "C" const u32 data_ov003_0222f40c[3];
-extern "C" u32 data_ov003_02232688[2];
+extern "C" uptr data_ov003_02232688[2];
 extern "C" const u32 data_ov003_0222f490[3];
 extern "C" u32 data_ov003_022335c0[8];
 extern "C" char data_ov003_022341f8[0x24];
 extern "C" const u32 data_ov003_0222f4a8[4];
 extern "C" char data_ov003_02233384[0x1c];
 extern "C" char data_ov003_0223421c[0x24];
-extern "C" u32 data_ov003_02232788[2];
-extern "C" u32 sFieldObjectLoaders[9];
+extern "C" uptr data_ov003_02232788[2];
+extern "C" uptr sFieldObjectLoaders[9];
 extern "C" const u32 data_ov003_0222f4f8[6];
 extern "C" const u32 data_ov003_0222f1cc[3];
-extern "C" u32 data_ov003_022326f8[2];
+extern "C" uptr data_ov003_022326f8[2];
 extern "C" char data_ov003_02234288[0x28];
-extern "C" u32 data_ov003_022328d4[3];
-extern "C" u32 data_ov003_02232904[3];
+extern "C" uptr data_ov003_022328d4[3];
+extern "C" uptr data_ov003_02232904[3];
 extern "C" char data_ov003_022335e0[0x24];
 extern "C" char data_ov003_02233604[0x24];
 extern "C" char data_ov003_02232978[0x10];
@@ -1770,18 +1824,18 @@ extern "C" char data_ov003_022336b8[0x24];
 extern "C" char data_ov003_02232e60[0x1c];
 extern "C" char data_ov003_02234300[0x28];
 extern "C" char data_ov003_02232e7c[0x1c];
-extern "C" u32 data_ov003_02232680[2];
+extern "C" uptr data_ov003_02232680[2];
 extern "C" const u32 data_ov003_0222f49c[3];
 extern "C" char data_ov003_02233724[0x24];
 extern "C" const u32 data_ov003_0222f2e0[3];
 extern "C" char data_ov003_02233748[0x24];
-extern "C" u32 data_ov003_022327c8[2];
-extern "C" u32 data_ov003_02232c28[5];
+extern "C" uptr data_ov003_022327c8[2];
+extern "C" uptr data_ov003_02232c28[5];
 extern "C" const u32 data_ov003_0222f340[3];
 extern "C" char data_ov003_022337b4[0x24];
-extern "C" u32 data_ov003_02232a48[4];
+extern "C" uptr data_ov003_02232a48[4];
 extern "C" char data_ov003_022337d8[0x24];
-extern "C" u32 data_ov003_02232650[1];
+extern "C" uptr data_ov003_02232650[1];
 extern "C" const u32 data_ov003_0222f3ac[3];
 extern "C" const u32 data_ov003_0222f1e4[3];
 extern "C" const u32 data_ov003_0222f298[3];
@@ -1789,36 +1843,36 @@ extern "C" char data_ov003_02234350[0x28];
 extern "C" char data_ov003_02233440[0x20];
 extern "C" const u32 data_ov003_0222f04c[3];
 extern "C" char data_ov003_0223388c[0x24];
-extern "C" u32 data_ov003_02232808[2];
+extern "C" uptr data_ov003_02232808[2];
 extern "C" char data_ov003_02232f40[0x1c];
 extern "C" const u32 data_ov003_0222f07c[3];
 extern "C" char data_ov003_02233940[0x24];
 extern "C" const u32 data_ov003_0222f1a8[3];
 extern "C" char data_ov003_02233368[0x1c];
-extern "C" u32 data_ov003_02232934[3];
+extern "C" uptr data_ov003_02232934[3];
 extern "C" char data_ov003_022329d8[0x10];
 extern "C" char data_ov003_02233460[0x20];
-extern "C" u32 data_ov003_022326d8[2];
+extern "C" uptr data_ov003_022326d8[2];
 extern "C" char data_ov003_02233a60[0x24];
-extern "C" u32 data_ov003_02232740[2];
+extern "C" uptr data_ov003_02232740[2];
 extern "C" const u32 data_ov003_0222f2d4[3];
 extern "C" char data_ov003_02232a08[0x10];
 extern "C" const u32 data_ov003_0222f388[3];
 extern "C" char data_ov003_02233acc[0x24];
 extern "C" const u32 data_ov003_0222f208[3];
-extern "C" u32 data_ov003_02232ab8[4];
-extern "C" u32 data_ov003_02232a38[4];
-extern "C" u32 data_ov003_02232940[3];
-extern "C" u32 data_ov003_02232d0c[6];
+extern "C" uptr data_ov003_02232ab8[4];
+extern "C" uptr data_ov003_02232a38[4];
+extern "C" uptr data_ov003_02232940[3];
+extern "C" uptr data_ov003_02232d0c[6];
 extern "C" char data_ov003_02233ba4[0x24];
-extern "C" u32 data_ov003_022327c0[2];
+extern "C" uptr data_ov003_022327c0[2];
 extern "C" char data_ov003_022334e0[0x20];
 extern "C" char data_ov003_02233c34[0x24];
-extern "C" u32 data_ov003_02232720[2];
+extern "C" uptr data_ov003_02232720[2];
 extern "C" const u32 data_ov003_0222f100[3];
 extern "C" const u32 data_ov003_0222f484[3];
-extern "C" u32 data_ov003_02232a68[4];
-extern "C" u32 data_ov003_02232758[2];
+extern "C" uptr data_ov003_02232a68[4];
+extern "C" uptr data_ov003_02232758[2];
 extern "C" const u32 data_ov003_0222f040[3];
 extern "C" char data_ov003_02233ca0[0x24];
 extern "C" char data_ov003_022343c8[0x28];
@@ -1827,8 +1881,8 @@ extern "C" const u32 data_ov003_0222f088[3];
 extern "C" char data_ov003_02233074[0x1c];
 extern "C" const u32 data_ov003_0222f19c[3];
 extern "C" const u32 data_ov003_0222f094[3];
-extern "C" u32 data_ov003_02232d54[6];
-extern "C" u32 data_ov003_022328ec[3];
+extern "C" uptr data_ov003_02232d54[6];
+extern "C" uptr data_ov003_022328ec[3];
 extern "C" char data_ov003_022330ac[0x1c];
 extern "C" char data_ov003_02233d54[0x24];
 extern "C" char data_ov003_022330e4[0x1c];
@@ -1840,101 +1894,101 @@ extern "C" char data_ov003_02234490[0x28];
 extern "C" char data_ov003_02232820[0xc];
 extern "C" char data_ov003_0223318c[0x1c];
 extern "C" const u32 data_ov003_0222f424[3];
-extern "C" u32 data_ov003_022326e8[2];
+extern "C" uptr data_ov003_022326e8[2];
 extern "C" char data_ov003_022331a8[0x1c];
 extern "C" char data_ov003_022344b8[0x28];
 extern "C" char data_ov003_02233ee0[0x24];
 extern "C" char data_ov003_02233f4c[0x24];
 extern "C" const u32 data_ov003_0222f0c4[3];
-extern "C" u32 data_ov003_02232b08[4];
+extern "C" uptr data_ov003_02232b08[4];
 extern "C" const u32 data_ov003_0222f43c[3];
 extern "C" char data_ov003_02233f94[0x24];
 extern "C" const u32 data_ov003_0222f34c[3];
-extern "C" u32 data_ov003_02232b48[4];
+extern "C" uptr data_ov003_02232b48[4];
 extern "C" char data_ov003_02234000[0x24];
-extern "C" u32 data_ov003_022327d0[2];
-extern "C" u32 data_ov003_02232778[2];
+extern "C" uptr data_ov003_022327d0[2];
+extern "C" uptr data_ov003_02232778[2];
 extern "C" char data_ov003_0223406c[0x24];
-extern "C" u32 data_ov003_02232e14[6];
-extern "C" u32 data_ov003_02232818[2];
+extern "C" uptr data_ov003_02232e14[6];
+extern "C" uptr data_ov003_02232818[2];
 extern "C" const u32 data_ov003_0222f758[46];
 extern "C" const u32 data_ov003_0222f2bc[3];
-extern "C" u32 data_ov003_02232810[2];
+extern "C" uptr data_ov003_02232810[2];
 extern "C" char data_ov003_022332a4[0x1c];
-extern "C" u32 data_ov003_02232b68[4];
-extern "C" u32 data_ov003_02232e2c[6];
+extern "C" uptr data_ov003_02232b68[4];
+extern "C" uptr data_ov003_02232e2c[6];
 extern "C" const u32 data_ov003_0222f4c8[6];
-extern "C" u32 data_ov003_02232b98[4];
+extern "C" uptr data_ov003_02232b98[4];
 extern "C" char data_ov003_02234144[0x24];
-extern "C" u32 data_ov003_022328b0[3];
-extern "C" u32 data_ov003_02232bb8[4];
+extern "C" uptr data_ov003_022328b0[3];
+extern "C" uptr data_ov003_02232bb8[4];
 extern "C" char data_ov003_022335a0[0x20];
 extern "C" const u32 data_ov003_0222f3d0[3];
-extern "C" u32 data_ov003_02232bc8[4];
-extern "C" u32 data_ov003_022326b8[2];
+extern "C" uptr data_ov003_02232bc8[4];
+extern "C" uptr data_ov003_022326b8[2];
 extern "C" char data_ov003_022341b0[0x24];
 extern "C" char data_ov003_022341d4[0x24];
-extern "C" u32 data_ov003_02232c50[5];
+extern "C" uptr data_ov003_02232c50[5];
 extern "C" char data_ov003_02234580[0x28];
 extern "C" const u32 data_ov003_0222f460[3];
 extern "C" const u32 data_ov003_0222f510[9];
-extern "C" u32 data_ov003_02232bd8[5];
+extern "C" uptr data_ov003_02232bd8[5];
 extern "C" char data_ov003_02232958[0x10];
 extern "C" char data_ov003_02232968[0x10];
 extern "C" char data_ov003_022342b0[0x28];
 extern "C" char data_ov003_0223364c[0x24];
 extern "C" char data_ov003_02233670[0x24];
 extern "C" const u32 data_ov003_0222f190[3];
-extern "C" u32 data_ov003_0223291c[3];
+extern "C" uptr data_ov003_0223291c[3];
 extern "C" const u32 data_ov003_0222f6a0[23];
-extern "C" u32 data_ov003_022327a8[2];
+extern "C" uptr data_ov003_022327a8[2];
 extern "C" char data_ov003_02232e98[0x1c];
 extern "C" const u32 data_ov003_0222f058[3];
 extern "C" const u32 data_ov003_0222f070[3];
 extern "C" char data_ov003_02232838[0xc];
 extern "C" char data_ov003_02232eec[0x1c];
-extern "C" u32 data_ov003_022328a4[3];
-extern "C" u32 data_ov003_02232b78[4];
-extern "C" u32 data_ov003_02232c14[5];
+extern "C" uptr data_ov003_022328a4[3];
+extern "C" uptr data_ov003_02232b78[4];
+extern "C" uptr data_ov003_02232c14[5];
 extern "C" const u32 data_ov003_0222f454[3];
-extern "C" u32 data_ov003_022326a0[2];
+extern "C" uptr data_ov003_022326a0[2];
 extern "C" char data_ov003_02233964[0x24];
 extern "C" const u32 data_ov003_0222f3f4[3];
 extern "C" char data_ov003_022339f4[0x24];
-extern "C" u32 data_ov003_022328f8[3];
+extern "C" uptr data_ov003_022328f8[3];
 extern "C" const u32 data_ov003_0222f274[3];
 extern "C" const u32 data_ov003_0222f0b8[3];
-extern "C" u32 data_ov003_02232af8[4];
+extern "C" uptr data_ov003_02232af8[4];
 extern "C" char data_ov003_02233b38[0x24];
-extern "C" u32 data_ov003_02232cf4[6];
+extern "C" uptr data_ov003_02232cf4[6];
 extern "C" char data_ov003_022330c8[0x1c];
 extern "C" const u32 data_ov003_0222f184[3];
 extern "C" char data_ov003_02232fb0[0x1c];
 extern "C" char data_ov003_02232fcc[0x1c];
 extern "C" char data_ov003_02232fe8[0x1c];
-extern "C" u32 data_ov003_02232d24[6];
+extern "C" uptr data_ov003_02232d24[6];
 extern "C" const u32 data_ov003_0222f064[3];
 extern "C" char data_ov003_02233cc4[0x24];
 extern "C" const u32 data_ov003_0222f3dc[3];
 extern "C" const u32 data_ov003_0222f1f0[3];
-extern "C" u32 data_ov003_02232d6c[6];
+extern "C" uptr data_ov003_02232d6c[6];
 extern "C" const u32 data_ov003_0222f0f4[3];
 extern "C" char data_ov003_02233dc0[0x24];
 extern "C" char data_ov003_02233154[0x1c];
 extern "C" char data_ov003_02233e08[0x24];
 extern "C" const u32 data_ov003_0222f1fc[3];
-extern "C" u32 data_ov003_022327e8[2];
+extern "C" uptr data_ov003_022327e8[2];
 extern "C" const u32 sFieldObjShapeTable[197];
-extern "C" u32 data_ov003_02232de4[6];
-extern "C" u32 data_ov003_02232b38[4];
+extern "C" uptr data_ov003_02232de4[6];
+extern "C" uptr data_ov003_02232b38[4];
 extern "C" char data_ov003_02233fdc[0x24];
 extern "C" char data_ov003_022331fc[0x1c];
 extern "C" char data_ov003_02234090[0x24];
-extern "C" u32 data_ov003_02232790[2];
-extern "C" u32 data_ov003_02232780[2];
+extern "C" uptr data_ov003_02232790[2];
+extern "C" uptr data_ov003_02232780[2];
 extern "C" const u32 sItemPopScaleY[17];
 extern "C" char data_ov003_02233580[0x20];
-extern "C" u32 data_ov003_022327a0[2];
+extern "C" uptr data_ov003_022327a0[2];
 extern "C" const u32 data_ov003_0222f370[3];
 extern "C" const u32 data_ov003_0222f0e8[3];
 extern "C" char data_ov003_02233314[0x1c];
@@ -1946,32 +2000,32 @@ extern "C" const u32 data_ov003_0222f16c[3];
 extern "C" char data_ov003_02232880[0xc];
 extern "C" char data_ov003_02232844[0xc];
 extern "C" char data_ov003_022336dc[0x24];
-extern "C" u32 data_ov003_022326f0[2];
+extern "C" uptr data_ov003_022326f0[2];
 extern "C" char data_ov003_0223376c[0x24];
 extern "C" const u32 data_ov003_0222f310[3];
-extern "C" u32 data_ov003_022328c8[3];
+extern "C" uptr data_ov003_022328c8[3];
 extern "C" char data_ov003_02233844[0x24];
 extern "C" char data_ov003_022338f8[0x24];
 extern "C" char data_ov003_022339d0[0x24];
 extern "C" const u32 data_ov003_0222f0ac[3];
-extern "C" u32 data_ov003_022328e0[3];
+extern "C" uptr data_ov003_022328e0[3];
 extern "C" char data_ov003_02233b5c[0x24];
-extern "C" u32 data_ov003_02232710[2];
+extern "C" uptr data_ov003_02232710[2];
 extern "C" char data_ov003_02232690[0x8];
 extern "C" char data_ov003_02233c58[0x24];
 extern "C" char data_ov003_02233058[0x1c];
 extern "C" const u32 data_ov003_0222f154[3];
-extern "C" u32 data_ov003_02232644[1];
+extern "C" uptr data_ov003_02232644[1];
 extern "C" char data_ov003_0223311c[0x1c];
 extern "C" char data_ov003_02233de4[0x24];
-extern "C" u32 data_ov003_02232678[2];
-extern "C" u32 data_ov003_02232ae8[4];
+extern "C" uptr data_ov003_02232678[2];
+extern "C" uptr data_ov003_02232ae8[4];
 extern "C" const u32 data_ov003_0222f478[3];
-extern "C" u32 data_ov003_02232698[2];
-extern "C" u32 data_ov003_02232700[2];
-extern "C" u32 data_ov003_02232730[2];
-extern "C" u32 data_ov003_02232658[2];
-extern "C" u32 data_ov003_022326c8[2];
+extern "C" uptr data_ov003_02232698[2];
+extern "C" uptr data_ov003_02232700[2];
+extern "C" uptr data_ov003_02232730[2];
+extern "C" uptr data_ov003_02232658[2];
+extern "C" uptr data_ov003_022326c8[2];
 extern "C" char data_ov003_02233330[0x1c];
 extern "C" char data_ov003_02234240[0x24];
 extern "C" char data_ov003_022342d8[0x28];
@@ -1982,26 +2036,26 @@ extern "C" char data_ov003_02233170[0x1c];
 extern "C" char data_ov003_022329e8[0x10];
 extern "C" const u32 data_ov003_0222f280[3];
 extern "C" char data_ov003_02233bc8[0x24];
-extern "C" u32 data_ov003_02232748[2];
+extern "C" uptr data_ov003_02232748[2];
 extern "C" char data_ov003_02233d78[0x24];
 extern "C" char data_ov003_0223282c[0xc];
 extern "C" char data_ov003_022331c4[0x1c];
-extern "C" u32 data_ov003_02232b58[4];
+extern "C" uptr data_ov003_02232b58[4];
 extern "C" char data_ov003_022340b4[0x24];
 extern "C" char data_ov003_02234168[0x24];
-extern "C" u32 data_ov003_02232670[2];
+extern "C" uptr data_ov003_02232670[2];
 extern "C" char data_ov003_022333a0[0x20];
-extern "C" u32 data_ov003_022327e0[2];
+extern "C" uptr data_ov003_022327e0[2];
 extern "C" char data_ov003_02234378[0x28];
 extern "C" char data_ov003_022334c0[0x20];
 extern "C" const u32 data_ov003_0222f334[3];
-extern "C" u32 data_ov003_02232ad8[4];
+extern "C" uptr data_ov003_02232ad8[4];
 extern "C" const u32 data_ov003_0222f810[69];
-extern "C" u32 data_ov003_02232ba8[4];
-extern "C" u32 data_ov003_02234604[12];
+extern "C" uptr data_ov003_02232ba8[4];
+extern "C" uptr data_ov003_02234604[12];
 extern "C" char data_ov003_02233a3c[0x24];
-extern "C" u32 data_ov003_02232640[1];
-extern "C" u32 data_ov003_02232750[2];
+extern "C" uptr data_ov003_02232640[1];
+extern "C" uptr data_ov003_02232750[2];
 extern "C" char data_ov003_022333e0[0x20];
 extern "C" void TreeLeafFx_OnEffectUpdate();
 extern "C" void TreeLeafFx_OnEffectStep();
@@ -2055,8 +2109,8 @@ extern "C" const u32 data_ov003_0222f1c0[3] = {
 };
 extern "C" char data_ov003_02233868[0x24] = "/fg/tree/palm_mdl/palm_02w.nsbmd";
 extern "C" char data_ov003_02233420[0x20] = "/fg/eff_tree/shakeS_04.nsbca";
-extern "C" u32 data_ov003_022326a8[2] = {
-    (u32)data_ov003_0222f43c, (u32)data_ov003_0222f088,
+extern "C" uptr data_ov003_022326a8[2] = {
+    (uptr)data_ov003_0222f43c, (uptr)data_ov003_0222f088,
 };
 extern "C" const u32 data_ov003_0222f25c[3] = {
     0x1a, 0x10001b, 0x8f,
@@ -2065,13 +2119,13 @@ extern "C" char data_ov003_022329c8[0x10] = "tree01_stamp";
 extern "C" const u32 data_ov003_0222f3b8[3] = {
     0x1a, 0x200008, 0xa4,
 };
-extern "C" u32 data_ov003_02232dcc[6] = {
-    (u32)data_ov003_02234048, (u32)data_ov003_02233aa8, (u32)data_ov003_02233acc, (u32)data_ov003_02233af0,
-    (u32)data_ov003_02233b14, (u32)data_ov003_0223406c,
+extern "C" uptr data_ov003_02232dcc[6] = {
+    (uptr)data_ov003_02234048, (uptr)data_ov003_02233aa8, (uptr)data_ov003_02233acc, (uptr)data_ov003_02233af0,
+    (uptr)data_ov003_02233b14, (uptr)data_ov003_0223406c,
 };
 extern "C" char data_ov003_02232cc4[0x18] = "/fg/grass/clover.nsbmd";
-extern "C" u32 data_ov003_022327b0[2] = {
-    (u32)data_ov003_0222f2c8, (u32)data_ov003_0222f1e4,
+extern "C" uptr data_ov003_022327b0[2] = {
+    (uptr)data_ov003_0222f2c8, (uptr)data_ov003_0222f1e4,
 };
 extern "C" char data_ov003_022338b0[0x24] = "/fg/tree/palm_mdl/palm_04w.nsbmd";
 extern "C" char data_ov003_02232f24[0x1c] = "/fg/eff_tree/cutL_02.nsbca";
@@ -2091,11 +2145,11 @@ extern "C" char data_ov003_022339ac[0x24] = "/fg/tree/tree_tex/tree_02w.nsbtx";
 extern "C" const u32 data_ov003_0222f418[3] = {
     3, 0xe0001, 0x2cd,
 };
-extern "C" u32 data_ov003_022327f0[2] = {
-    (u32)data_ov003_0222f250, (u32)data_ov003_0222f478,
+extern "C" uptr data_ov003_022327f0[2] = {
+    (uptr)data_ov003_0222f250, (uptr)data_ov003_0222f478,
 };
-extern "C" u32 data_ov003_022326c0[2] = {
-    (u32)data_ov003_0222f04c, 0,
+extern "C" uptr data_ov003_022326c0[2] = {
+    (uptr)data_ov003_0222f04c, 0,
 };
 extern "C" char data_ov003_022343a0[0x28] = "/fg/tree/cedar_tex/cedar_deadw.nsbtx";
 extern "C" const u32 data_ov003_0222f46c[3] = {
@@ -2104,15 +2158,15 @@ extern "C" const u32 data_ov003_0222f46c[3] = {
 extern "C" const u32 data_ov003_0222f1d8[3] = {
     0x12, 0xa000a, 0xe1,
 };
-extern "C" u32 data_ov003_02232800[2] = {
-    (u32)data_ov003_0222f430, (u32)data_ov003_0222f424,
+extern "C" uptr data_ov003_02232800[2] = {
+    (uptr)data_ov003_0222f430, (uptr)data_ov003_0222f424,
 };
 extern "C" char data_ov003_02233a18[0x24] = "/fg/tree/tree_tex/tree_01f.nsbtx";
 extern "C" const u32 data_ov003_0222f2b0[3] = {
     0x13, 0xb0006, 0x28f,
 };
-extern "C" u32 data_ov003_022327f8[2] = {
-    (u32)data_ov003_0222f0ac, (u32)data_ov003_0222f190,
+extern "C" uptr data_ov003_022327f8[2] = {
+    (uptr)data_ov003_0222f0ac, (uptr)data_ov003_0222f190,
 };
 extern "C" char data_ov003_02233480[0x20] = "/fg/eff_tree/shakeS_01.nsbca";
 extern "C" const u32 data_ov003_0222f534[12] = {
@@ -2127,8 +2181,8 @@ extern "C" const u32 data_ov003_0222f2c8[3] = {
     3, 0xe0001, 0x23d,
 };
 extern "C" char data_ov003_02233aa8[0x24] = "/fg/tree/tree_tex/tree_01s.nsbtx";
-extern "C" u32 data_ov003_0223263c[1] = {
-    (u32)data_ov003_02234580,
+extern "C" uptr data_ov003_0223263c[1] = {
+    (uptr)data_ov003_02234580,
 };
 extern "C" const u32 data_ov003_0222f220[3] = {
     2, 0xa0001, 0x19a,
@@ -2139,21 +2193,21 @@ extern "C" const u32 data_ov003_0222f2ec[3] = {
     0x12, 0x7001b, 0xa4,
 };
 extern "C" char data_ov003_02233b14[0x24] = "/fg/tree/tree_tex/tree_04s.nsbtx";
-extern "C" u32 data_ov003_02232a28[4] = {
-    (u32)data_ov003_022333c0, (u32)data_ov003_022333e0, (u32)data_ov003_022334c0, (u32)data_ov003_02232eb4,
+extern "C" uptr data_ov003_02232a28[4] = {
+    (uptr)data_ov003_022333c0, (uptr)data_ov003_022333e0, (uptr)data_ov003_022334c0, (uptr)data_ov003_02232eb4,
 };
-extern "C" u32 data_ov003_02232b18[4] = {
-    (u32)data_ov003_02233170, (u32)data_ov003_0223318c, (u32)data_ov003_022331a8, (u32)data_ov003_022331c4,
+extern "C" uptr data_ov003_02232b18[4] = {
+    (uptr)data_ov003_02233170, (uptr)data_ov003_0223318c, (uptr)data_ov003_022331a8, (uptr)data_ov003_022331c4,
 };
 extern "C" char data_ov003_0223288c[0xc] = "obj_stnCw";
 extern "C" const u32 data_ov003_0222f564[12] = {
     0x1800, 0x2000, 0x2e66, 0x3c00, 0x1666, 0x2333, 0x2e66, 0x3c00, 0x1400, 0x1c00, 0x299a, 0x3333,
 };
-extern "C" u32 data_ov003_02232660[2] = {
-    (u32)data_ov003_0222f37c, (u32)data_ov003_0222f460,
+extern "C" uptr data_ov003_02232660[2] = {
+    (uptr)data_ov003_0222f37c, (uptr)data_ov003_0222f460,
 };
-extern "C" u32 data_ov003_02232718[2] = {
-    (u32)data_ov003_0222f2f8, 0,
+extern "C" uptr data_ov003_02232718[2] = {
+    (uptr)data_ov003_0222f2f8, 0,
 };
 extern "C" const u32 data_ov003_0222f22c[3] = {
     0x12, 0x8000f, 0x8f,
@@ -2163,29 +2217,29 @@ extern "C" char data_ov003_02233b80[0x24] = "/fg/tree/palm_tex/palm_02w.nsbtx";
 extern "C" char data_ov003_02233bec[0x24] = "/fg/tree/tree_mdl/tree_01f.nsbmd";
 extern "C" char data_ov003_02232f94[0x1c] = "/fg/eff_tree/cutR_02.nsbca";
 extern "C" char data_ov003_02233c10[0x24] = "/fg/tree/palm_tex/palm_01s.nsbtx";
-extern "C" u32 data_ov003_022326b0[2] = {
-    (u32)data_ov003_0222f238, (u32)data_ov003_0222f124,
+extern "C" uptr data_ov003_022326b0[2] = {
+    (uptr)data_ov003_0222f238, (uptr)data_ov003_0222f124,
 };
 extern "C" const u32 sLandingUnitOffsets[3] = {
     0x78878988, 0x77997998, 0x97,
 };
-extern "C" u32 data_ov003_02232768[2] = {
-    (u32)data_ov003_0222f3a0, 0,
+extern "C" uptr data_ov003_02232768[2] = {
+    (uptr)data_ov003_0222f3a0, 0,
 };
-extern "C" u32 data_ov003_022327d8[2] = {
-    (u32)data_ov003_0222f040, (u32)data_ov003_0222f484,
+extern "C" uptr data_ov003_022327d8[2] = {
+    (uptr)data_ov003_0222f040, (uptr)data_ov003_0222f484,
 };
 extern "C" const u32 sTreeFruitIcons[3] = {
     0x15191518, 0x151b151a, 0x151c,
 };
-extern "C" u32 data_ov003_02232630[1] = {
-    (u32)data_ov003_02233004,
+extern "C" uptr data_ov003_02232630[1] = {
+    (uptr)data_ov003_02233004,
 };
-extern "C" u32 data_ov003_02232770[2] = {
-    (u32)data_ov003_0222f1f0, (u32)data_ov003_0222f2d4,
+extern "C" uptr data_ov003_02232770[2] = {
+    (uptr)data_ov003_0222f1f0, (uptr)data_ov003_0222f2d4,
 };
-extern "C" u32 data_ov003_02232a58[4] = {
-    (u32)data_ov003_02232800, (u32)data_ov003_022327d8, (u32)data_ov003_022327a8, (u32)data_ov003_022326a8,
+extern "C" uptr data_ov003_02232a58[4] = {
+    (uptr)data_ov003_02232800, (uptr)data_ov003_022327d8, (uptr)data_ov003_022327a8, (uptr)data_ov003_022326a8,
 };
 extern "C" const u32 data_ov003_0222f6fc[23] = {
     3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 2, 3,
@@ -2199,46 +2253,46 @@ extern "C" const u32 data_ov003_0222f10c[3] = {
 extern "C" const u32 data_ov003_0222f118[3] = {
     0x12, 0x7001b, 0x29,
 };
-extern "C" u32 sTreeAnimPaths[32] = {
-    (u32)data_ov003_02233330, (u32)data_ov003_0223334c, (u32)data_ov003_02233368, (u32)data_ov003_02233384,
-    (u32)data_ov003_02233480, (u32)data_ov003_022333a0, (u32)data_ov003_02233400, (u32)data_ov003_02233420,
-    (u32)data_ov003_02233330, (u32)data_ov003_022334e0, (u32)data_ov003_02233500, (u32)data_ov003_02233520,
-    (u32)data_ov003_02233330, (u32)data_ov003_02233580, (u32)data_ov003_02233540, (u32)data_ov003_02233560,
-    (u32)data_ov003_02232f08, (u32)data_ov003_02232f24, (u32)data_ov003_02232f40, (u32)data_ov003_02232f5c,
-    (u32)data_ov003_02232f78, (u32)data_ov003_02232f94, (u32)data_ov003_02232fcc, (u32)data_ov003_02232ed0,
-    (u32)data_ov003_02232f08, (u32)data_ov003_02233628, (u32)data_ov003_022336dc, (u32)data_ov003_022337fc,
-    (u32)data_ov003_02232f78, (u32)data_ov003_02233820, (u32)data_ov003_02233964, (u32)data_ov003_02233b38,
+extern "C" uptr sTreeAnimPaths[32] = {
+    (uptr)data_ov003_02233330, (uptr)data_ov003_0223334c, (uptr)data_ov003_02233368, (uptr)data_ov003_02233384,
+    (uptr)data_ov003_02233480, (uptr)data_ov003_022333a0, (uptr)data_ov003_02233400, (uptr)data_ov003_02233420,
+    (uptr)data_ov003_02233330, (uptr)data_ov003_022334e0, (uptr)data_ov003_02233500, (uptr)data_ov003_02233520,
+    (uptr)data_ov003_02233330, (uptr)data_ov003_02233580, (uptr)data_ov003_02233540, (uptr)data_ov003_02233560,
+    (uptr)data_ov003_02232f08, (uptr)data_ov003_02232f24, (uptr)data_ov003_02232f40, (uptr)data_ov003_02232f5c,
+    (uptr)data_ov003_02232f78, (uptr)data_ov003_02232f94, (uptr)data_ov003_02232fcc, (uptr)data_ov003_02232ed0,
+    (uptr)data_ov003_02232f08, (uptr)data_ov003_02233628, (uptr)data_ov003_022336dc, (uptr)data_ov003_022337fc,
+    (uptr)data_ov003_02232f78, (uptr)data_ov003_02233820, (uptr)data_ov003_02233964, (uptr)data_ov003_02233b38,
 };
 extern "C" char data_ov003_02233c7c[0x24] = "/fg/tree/palm_tex/palm_04s.nsbtx";
-extern "C" u32 data_ov003_02232a78[4] = {
-    (u32)data_ov003_02232658, (u32)data_ov003_022326f8, (u32)data_ov003_02232738, (u32)data_ov003_02232798,
+extern "C" uptr data_ov003_02232a78[4] = {
+    (uptr)data_ov003_02232658, (uptr)data_ov003_022326f8, (uptr)data_ov003_02232738, (uptr)data_ov003_02232798,
 };
 extern "C" char data_ov003_022329f8[0x10] = "cedar02_stamp";
 extern "C" char data_ov003_02233004[0x1c] = "/fg/hole/obj_crack_pl.nsbtx";
-extern "C" u32 data_ov003_02232bec[5] = {
-    (u32)data_ov003_02232898, (u32)data_ov003_02232850, (u32)data_ov003_02232838, (u32)data_ov003_02232820,
-    (u32)data_ov003_02232868,
+extern "C" uptr data_ov003_02232bec[5] = {
+    (uptr)data_ov003_02232898, (uptr)data_ov003_02232850, (uptr)data_ov003_02232838, (uptr)data_ov003_02232820,
+    (uptr)data_ov003_02232868,
 };
-extern "C" u32 data_ov003_02232910[3] = {
-    (u32)data_ov003_02232d3c, (u32)data_ov003_02232d54, (u32)data_ov003_02232d54,
+extern "C" uptr data_ov003_02232910[3] = {
+    (uptr)data_ov003_02232d3c, (uptr)data_ov003_02232d54, (uptr)data_ov003_02232d54,
 };
 extern "C" char data_ov003_02233020[0x1c] = "/fg/grass/redTurnip_s.nsbmd";
 extern "C" char data_ov003_0223303c[0x1c] = "/fg/eff_tree/anm_t01w.nsbmd";
-extern "C" u32 data_ov003_02232a88[4] = {
-    (u32)data_ov003_02232740, (u32)data_ov003_02232758, (u32)data_ov003_02232688, (u32)data_ov003_022326d8,
+extern "C" uptr data_ov003_02232a88[4] = {
+    (uptr)data_ov003_02232740, (uptr)data_ov003_02232758, (uptr)data_ov003_02232688, (uptr)data_ov003_022326d8,
 };
 extern "C" const u32 data_ov003_0222f238[3] = {
     2, 0xc0001, 0x571,
 };
-extern "C" u32 data_ov003_02232d3c[6] = {
-    (u32)data_ov003_022342d8, (u32)data_ov003_02233e08, (u32)data_ov003_02233e2c, (u32)data_ov003_02233e50,
-    (u32)data_ov003_02233e74, (u32)data_ov003_02234300,
+extern "C" uptr data_ov003_02232d3c[6] = {
+    (uptr)data_ov003_022342d8, (uptr)data_ov003_02233e08, (uptr)data_ov003_02233e2c, (uptr)data_ov003_02233e50,
+    (uptr)data_ov003_02233e74, (uptr)data_ov003_02234300,
 };
-extern "C" u32 data_ov003_02232760[2] = {
-    (u32)data_ov003_0222f418, (u32)data_ov003_0222f2bc,
+extern "C" uptr data_ov003_02232760[2] = {
+    (uptr)data_ov003_0222f418, (uptr)data_ov003_0222f2bc,
 };
-extern "C" u32 data_ov003_02232654[1] = {
-    (u32)data_ov003_02232eec,
+extern "C" uptr data_ov003_02232654[1] = {
+    (uptr)data_ov003_02232eec,
 };
 extern "C" char data_ov003_022343f0[0x28] = "/fg/tree/cedar_tex/cedar_deads.nsbtx";
 extern "C" const u32 data_ov003_0222f0a0[3] = {
@@ -2249,7 +2303,7 @@ extern "C" char data_ov003_02233ce8[0x24] = "/fg/tree/tree_pal/tree_setC.nsbtx";
 FieldItemFxTable sFieldItemFxTable;   // __sinit: vector ctor + registered destructor
 extern "C" char data_ov003_02233d0c[0x24] = "/fg/flower/rose/rose_palette.nsbtx";
 extern "C" char data_ov003_02233d30[0x24] = "/fg/tree/tree_mdl/tree_babyw.nsbmd";
-u8 sFieldObjectModelHeap[0x4];
+u8 sFieldObjectModelHeap[HOST_SIZED(0x4, void *)] HOST_ALIGN8;  // (a heap pointer)
 extern "C" char data_ov003_02233090[0x1c] = "/fg/eff_tree/anm_t01f.nsbmd";
 extern "C" char data_ov003_02233500[0x20] = "/fg/eff_tree/shakeL_03_1.nsbca";
 extern "C" char data_ov003_02234418[0x28] = "/fg/tree/cedar_tex/obj_x_cedar.nsbtx";
@@ -2259,58 +2313,64 @@ extern "C" const u32 data_ov003_0222f328[3] = {
 extern "C" const u32 data_ov003_0222f244[3] = {
     0x13, 0x210006, 0x28f,
 };
-extern "C" u32 data_ov003_02232d84[6] = {
-    (u32)data_ov003_02233f70, (u32)data_ov003_022338d4, (u32)data_ov003_022338f8, (u32)data_ov003_0223391c,
-    (u32)data_ov003_02233940, (u32)data_ov003_02233f94,
+extern "C" uptr data_ov003_02232d84[6] = {
+    (uptr)data_ov003_02233f70, (uptr)data_ov003_022338d4, (uptr)data_ov003_022338f8, (uptr)data_ov003_0223391c,
+    (uptr)data_ov003_02233940, (uptr)data_ov003_02233f94,
 };
 extern "C" char data_ov003_02233100[0x1c] = "/fg/eff_tree/anm_t02s.nsbmd";
-extern "C" u32 data_ov003_02232d9c[6] = {
-    (u32)data_ov003_02233fb8, (u32)data_ov003_02233988, (u32)data_ov003_022339ac, (u32)data_ov003_022339d0,
-    (u32)data_ov003_022339f4, (u32)data_ov003_02233fdc,
+extern "C" uptr data_ov003_02232d9c[6] = {
+    (uptr)data_ov003_02233fb8, (uptr)data_ov003_02233988, (uptr)data_ov003_022339ac, (uptr)data_ov003_022339d0,
+    (uptr)data_ov003_022339f4, (uptr)data_ov003_02233fdc,
 };
-extern "C" u32 data_ov003_022327b8[2] = {
-    (u32)data_ov003_0222f34c, 0,
+extern "C" uptr data_ov003_022327b8[2] = {
+    (uptr)data_ov003_0222f34c, 0,
 };
+#ifdef HOST
+// (a ProcProfile: the create function is a pointer, larger on 64-bit hosts)
+extern "C" ProcProfile sFieldObjectManagerProfile_p __asm__("sFieldObjectManagerProfile");
+ProcProfile sFieldObjectManagerProfile_p = {(void *(*)(void))FieldObjectManager_Create, 0x8a, 0xb};
+#else
 extern "C" u32 sFieldObjectManagerProfile[2] = {
     (u32)FieldObjectManager_Create, 0xb008a,
 };
+#endif
 extern "C" char data_ov003_02233138[0x1c] = "/fg/eff_tree/anm_t04s.nsbmd";
 extern "C" char data_ov003_02234440[0x28] = "/fg/tree/cedar_mdl/obj_x_cedar.nsbmd";
 extern "C" char data_ov003_02232998[0x10] = "palm04_stamp";
 extern "C" char data_ov003_02234468[0x28] = "/fg/flower/tulip/tulip_palette.nsbtx";
-extern "C" u32 data_ov003_02232a98[4] = {
-    0, (u32)data_ov003_02232808, (u32)data_ov003_022327e0, (u32)data_ov003_02232768,
+extern "C" uptr data_ov003_02232a98[4] = {
+    0, (uptr)data_ov003_02232808, (uptr)data_ov003_022327e0, (uptr)data_ov003_02232768,
 };
-extern "C" u32 data_ov003_02232db4[6] = {
-    (u32)data_ov003_02234000, (u32)data_ov003_02233a18, (u32)data_ov003_02233a3c, (u32)data_ov003_02233a60,
-    (u32)data_ov003_02233a84, (u32)data_ov003_02234024,
+extern "C" uptr data_ov003_02232db4[6] = {
+    (uptr)data_ov003_02234000, (uptr)data_ov003_02233a18, (uptr)data_ov003_02233a3c, (uptr)data_ov003_02233a60,
+    (uptr)data_ov003_02233a84, (uptr)data_ov003_02234024,
 };
-extern "C" u32 data_ov003_02232aa8[4] = {
-    (u32)data_ov003_0223303c, (u32)data_ov003_02233058, (u32)data_ov003_02233314, (u32)data_ov003_02233074,
+extern "C" uptr data_ov003_02232aa8[4] = {
+    (uptr)data_ov003_0223303c, (uptr)data_ov003_02233058, (uptr)data_ov003_02233314, (uptr)data_ov003_02233074,
 };
-extern "C" u32 data_ov003_0223294c[3] = {
-    (u32)data_ov003_02232aa8, (u32)data_ov003_02232ab8, (u32)data_ov003_02232ac8,
+extern "C" uptr data_ov003_0223294c[3] = {
+    (uptr)data_ov003_02232aa8, (uptr)data_ov003_02232ab8, (uptr)data_ov003_02232ac8,
 };
-extern "C" u32 data_ov003_02232c3c[5] = {
-    (u32)data_ov003_02232ad8, (u32)data_ov003_02232b38, (u32)data_ov003_02232a88, (u32)data_ov003_02232ba8,
-    (u32)data_ov003_02232a58,
+extern "C" uptr data_ov003_02232c3c[5] = {
+    (uptr)data_ov003_02232ad8, (uptr)data_ov003_02232b38, (uptr)data_ov003_02232a88, (uptr)data_ov003_02232ba8,
+    (uptr)data_ov003_02232a58,
 };
 extern "C" char data_ov003_02233520[0x20] = "/fg/eff_tree/shakeL_04_1.nsbca";
 extern "C" char data_ov003_02233e2c[0x24] = "/fg/tree/cedar_mdl/cedar_02w.nsbmd";
 extern "C" char data_ov003_02233e50[0x24] = "/fg/tree/cedar_mdl/cedar_03w.nsbmd";
-extern "C" u32 data_ov003_0223264c[1] = {
-    (u32)data_ov003_02234440,
+extern "C" uptr data_ov003_0223264c[1] = {
+    (uptr)data_ov003_02234440,
 };
-extern "C" u32 data_ov003_02232ac8[4] = {
-    (u32)data_ov003_02232fe8, (u32)data_ov003_02233100, (u32)data_ov003_0223311c, (u32)data_ov003_02233138,
+extern "C" uptr data_ov003_02232ac8[4] = {
+    (uptr)data_ov003_02232fe8, (uptr)data_ov003_02233100, (uptr)data_ov003_0223311c, (uptr)data_ov003_02233138,
 };
 extern "C" char data_ov003_02233e74[0x24] = "/fg/tree/cedar_mdl/cedar_04w.nsbmd";
 extern "C" const u32 data_ov003_0222f214[3] = {
     0x13, 0xe0004, 0x2e1,
 };
 extern "C" char data_ov003_02233e98[0x24] = "/fg/tree/cedar_mdl/cedar_01s.nsbmd";
-extern "C" u32 data_ov003_022326e0[2] = {
-    (u32)data_ov003_0222f2b0, (u32)data_ov003_0222f244,
+extern "C" uptr data_ov003_022326e0[2] = {
+    (uptr)data_ov003_0222f2b0, (uptr)data_ov003_0222f244,
 };
 extern "C" char data_ov003_02233ebc[0x24] = "/fg/tree/cedar_mdl/cedar_02s.nsbmd";
 extern "C" char data_ov003_02233f04[0x24] = "/fg/tree/cedar_mdl/cedar_04s.nsbmd";
@@ -2319,11 +2379,11 @@ extern "C" char data_ov003_02232898[0xc] = "obj_stnAs";
 extern "C" char data_ov003_02233540[0x20] = "/fg/eff_tree/shakeL_03_2.nsbca";
 extern "C" char data_ov003_0223285c[0xc] = "tanpopo_w";
 extern "C" char data_ov003_02233f70[0x24] = "/fg/tree/palm_mdl/palm_babys.nsbmd";
-extern "C" u32 data_ov003_02232a18[4] = {
-    (u32)data_ov003_02234468, (u32)data_ov003_02234490, (u32)data_ov003_022344b8, (u32)data_ov003_02233d0c,
+extern "C" uptr data_ov003_02232a18[4] = {
+    (uptr)data_ov003_02234468, (uptr)data_ov003_02234490, (uptr)data_ov003_022344b8, (uptr)data_ov003_02233d0c,
 };
-extern "C" u32 data_ov003_02232b28[4] = {
-    (u32)data_ov003_02233250, (u32)data_ov003_02233154, (u32)data_ov003_0223326c, (u32)data_ov003_02233288,
+extern "C" uptr data_ov003_02232b28[4] = {
+    (uptr)data_ov003_02233250, (uptr)data_ov003_02233154, (uptr)data_ov003_0223326c, (uptr)data_ov003_02233288,
 };
 extern "C" const u32 data_ov003_0222f394[3] = {
     0x1a, 0x280008, 0x15c,
@@ -2332,12 +2392,12 @@ extern "C" const u32 data_ov003_0222f37c[3] = {
     2, 0xb0001, 0x200,
 };
 extern "C" char data_ov003_022331e0[0x1c] = "/fg/eff_tree/anm_c01s.nsbmd";
-extern "C" u32 data_ov003_02232dfc[6] = {
-    (u32)data_ov003_022343c8, (u32)data_ov003_02234120, (u32)data_ov003_02234144, (u32)data_ov003_02234168,
-    (u32)data_ov003_0223418c, (u32)data_ov003_022343f0,
+extern "C" uptr data_ov003_02232dfc[6] = {
+    (uptr)data_ov003_022343c8, (uptr)data_ov003_02234120, (uptr)data_ov003_02234144, (uptr)data_ov003_02234168,
+    (uptr)data_ov003_0223418c, (uptr)data_ov003_022343f0,
 };
 extern "C" char data_ov003_02233fb8[0x24] = "/fg/tree/tree_tex/tree_babyw.nsbtx";
-u8 gFieldObjectManager[0x4];
+u8 gFieldObjectManager[HOST_SIZED(0x4, void *)] HOST_ALIGN8;  // (a pointer)
 extern "C" const u32 data_ov003_0222f2a4[3] = {
     3, 0xe0001, 0x19a,
 };
@@ -2349,8 +2409,8 @@ extern "C" const u32 data_ov003_0222f268[3] = {
     2, 0xb0001, 0x171,
 };
 extern "C" char data_ov003_02233218[0x1c] = "/fg/eff_tree/anm_c03s.nsbmd";
-extern "C" u32 data_ov003_02232708[2] = {
-    (u32)data_ov003_0222f064, (u32)data_ov003_0222f19c,
+extern "C" uptr data_ov003_02232708[2] = {
+    (uptr)data_ov003_0222f064, (uptr)data_ov003_0222f19c,
 };
 extern "C" char data_ov003_02233234[0x1c] = "/fg/eff_tree/anm_c04s.nsbmd";
 extern "C" char data_ov003_02234048[0x24] = "/fg/tree/tree_tex/tree_babys.nsbtx";
@@ -2363,8 +2423,8 @@ extern "C" const u32 data_ov003_0222f28c[3] = {
 extern "C" char data_ov003_02233250[0x1c] = "/fg/eff_tree/anm_p01w.nsbmd";
 extern "C" char data_ov003_022344e0[0x28] = "/fg/tree/tree_pal/tree_baby_setA.nsbtx";
 extern "C" char data_ov003_022340d8[0x24] = "/fg/tree/cedar_tex/cedar_03w.nsbtx";
-extern "C" u32 data_ov003_02232634[1] = {
-    (u32)data_ov003_02232cdc,
+extern "C" uptr data_ov003_02232634[1] = {
+    (uptr)data_ov003_02232cdc,
 };
 extern "C" char data_ov003_0223326c[0x1c] = "/fg/eff_tree/anm_p03w.nsbmd";
 extern "C" char data_ov003_02233560[0x20] = "/fg/eff_tree/shakeL_04_2.nsbca";
@@ -2377,17 +2437,17 @@ extern "C" const u32 data_ov003_0222f304[3] = {
     0x1a, 0x18000a, 0x8f,
 };
 extern "C" char data_ov003_02234508[0x28] = "/fg/tree/tree_pal/tree_baby_setB.nsbtx";
-extern "C" u32 data_ov003_02232648[1] = {
-    (u32)data_ov003_02232e7c,
+extern "C" uptr data_ov003_02232648[1] = {
+    (uptr)data_ov003_02232e7c,
 };
-extern "C" u32 data_ov003_02232798[2] = {
-    (u32)data_ov003_0222f184, (u32)data_ov003_0222f394,
+extern "C" uptr data_ov003_02232798[2] = {
+    (uptr)data_ov003_0222f184, (uptr)data_ov003_0222f394,
 };
 extern "C" const u32 data_ov003_0222f31c[3] = {
     0x12, 0x8000f, 0xa4,
 };
-extern "C" u32 data_ov003_02232b88[4] = {
-    0, (u32)data_ov003_022326c0, (u32)data_ov003_02232810, (u32)data_ov003_02232718,
+extern "C" uptr data_ov003_02232b88[4] = {
+    0, (uptr)data_ov003_022326c0, (uptr)data_ov003_02232810, (uptr)data_ov003_02232718,
 };
 // (registration node 0x2235954 is created with the object below)
 FxVec3 sBalloonSplashPos;   // __sinit: registered destructor
@@ -2395,8 +2455,8 @@ extern "C" const u32 data_ov003_0222f3a0[3] = {
     8, 0xe0005, 0x15c,
 };
 extern "C" char data_ov003_022332c0[0x1c] = "/fg/eff_tree/anm_p02s.nsbmd";
-extern "C" u32 data_ov003_022326d0[2] = {
-    (u32)data_ov003_0222f454, (u32)data_ov003_0222f40c,
+extern "C" uptr data_ov003_022326d0[2] = {
+    (uptr)data_ov003_0222f454, (uptr)data_ov003_0222f40c,
 };
 extern "C" char data_ov003_022332dc[0x1c] = "/fg/eff_tree/anm_p03s.nsbmd";
 extern "C" char data_ov003_02234120[0x24] = "/fg/tree/cedar_tex/cedar_01s.nsbtx";
@@ -2405,32 +2465,32 @@ extern "C" const u32 data_ov003_0222f4e0[6] = {
     0xffffef00, 0x2800, 0xffffff00, 0x1100, 0x3000, 0xfffff800,
 };
 extern "C" char data_ov003_02234530[0x28] = "/fg/tree/tree_pal/tree_baby_setC.nsbtx";
-extern "C" u32 data_ov003_02232738[2] = {
-    (u32)data_ov003_0222f1d8, (u32)data_ov003_0222f448,
+extern "C" uptr data_ov003_02232738[2] = {
+    (uptr)data_ov003_0222f1d8, (uptr)data_ov003_0222f448,
 };
-extern "C" u32 data_ov003_02232638[1] = {
-    (u32)data_ov003_02234240,
+extern "C" uptr data_ov003_02232638[1] = {
+    (uptr)data_ov003_02234240,
 };
-u8 sFieldObjectModelHeapBuf[0x21400];
+u8 sFieldObjectModelHeapBuf[FIELDOBJ_MODEL_HEAP_SIZE] HOST_ALIGN8;
 extern "C" char data_ov003_02234558[0x28] = "/fg/tree/cedar_pal/cedar_baby_set.nsbtx";
 extern "C" const u32 data_ov003_0222f3e8[3] = {
     2, 0x1c0001, 0x266,
 };
-extern "C" u32 data_ov003_022328bc[3] = {
-    (u32)data_ov003_02232b28, (u32)data_ov003_02232b58, (u32)data_ov003_02232b58,
+extern "C" uptr data_ov003_022328bc[3] = {
+    (uptr)data_ov003_02232b28, (uptr)data_ov003_02232b58, (uptr)data_ov003_02232b58,
 };
-extern "C" u32 data_ov003_02232928[3] = {
-    (u32)data_ov003_02232c50, (u32)data_ov003_02232c28, (u32)data_ov003_02232c3c,
+extern "C" uptr data_ov003_02232928[3] = {
+    (uptr)data_ov003_02232c50, (uptr)data_ov003_02232c28, (uptr)data_ov003_02232c3c,
 };
 extern "C" char data_ov003_0223418c[0x24] = "/fg/tree/cedar_tex/cedar_04s.nsbtx";
-extern "C" u32 data_ov003_02232728[2] = {
-    (u32)data_ov003_0222f148, (u32)data_ov003_0222f328,
+extern "C" uptr data_ov003_02232728[2] = {
+    (uptr)data_ov003_0222f148, (uptr)data_ov003_0222f328,
 };
 extern "C" const u32 data_ov003_0222f40c[3] = {
     0x13, 0x230004, 0x214,
 };
-extern "C" u32 data_ov003_02232688[2] = {
-    (u32)data_ov003_0222f274, (u32)data_ov003_0222f304,
+extern "C" uptr data_ov003_02232688[2] = {
+    (uptr)data_ov003_0222f274, (uptr)data_ov003_0222f304,
 };
 extern "C" const u32 data_ov003_0222f490[3] = {
     0x13, 0x1c0006, 0x28f,
@@ -2444,13 +2504,13 @@ extern "C" const u32 data_ov003_0222f4a8[4] = {
 };
 extern "C" char data_ov003_02233384[0x1c] = "/fg/eff_tree/shake_04.nsbca";
 extern "C" char data_ov003_0223421c[0x24] = "/fg/tree/palm_tex/palm_deads.nsbtx";
-extern "C" u32 data_ov003_02232788[2] = {
-    (u32)data_ov003_02232e98, (u32)data_ov003_02233020,
+extern "C" uptr data_ov003_02232788[2] = {
+    (uptr)data_ov003_02232e98, (uptr)data_ov003_02233020,
 };
-extern "C" u32 sFieldObjectLoaders[9] = {
-    (u32)FieldObj_LoadTrees, (u32)FieldObj_LoadFlowers, (u32)FieldObj_LoadGrass, (u32)FieldObj_LoadStones,
-    (u32)FieldObj_LoadHoles, (u32)FieldObj_LoadCracks, (u32)FieldObj_LoadStumps, (u32)FieldObj_LoadTurnips,
-    (u32)FieldObj_LoadDesigns,
+extern "C" uptr sFieldObjectLoaders[9] = {
+    (uptr)FieldObj_LoadTrees, (uptr)FieldObj_LoadFlowers, (uptr)FieldObj_LoadGrass, (uptr)FieldObj_LoadStones,
+    (uptr)FieldObj_LoadHoles, (uptr)FieldObj_LoadCracks, (uptr)FieldObj_LoadStumps, (uptr)FieldObj_LoadTurnips,
+    (uptr)FieldObj_LoadDesigns,
 };
 extern "C" const u32 data_ov003_0222f4f8[6] = {
     0xfffff900, 0x2633, 0xfffffe33, 0x480, 0x20b3, 0xffffff80,
@@ -2458,15 +2518,15 @@ extern "C" const u32 data_ov003_0222f4f8[6] = {
 extern "C" const u32 data_ov003_0222f1cc[3] = {
     1, 0x80001, 0x8f,
 };
-extern "C" u32 data_ov003_022326f8[2] = {
-    (u32)data_ov003_0222f22c, (u32)data_ov003_0222f10c,
+extern "C" uptr data_ov003_022326f8[2] = {
+    (uptr)data_ov003_0222f22c, (uptr)data_ov003_0222f10c,
 };
 extern "C" char data_ov003_02234288[0x28] = "/fg/flower/rafflesia/rafflesia.nsbtx";
-extern "C" u32 data_ov003_022328d4[3] = {
-    (u32)data_ov003_02232de4, (u32)data_ov003_02232dfc, (u32)data_ov003_02232dfc,
+extern "C" uptr data_ov003_022328d4[3] = {
+    (uptr)data_ov003_02232de4, (uptr)data_ov003_02232dfc, (uptr)data_ov003_02232dfc,
 };
-extern "C" u32 data_ov003_02232904[3] = {
-    (u32)data_ov003_02232d9c, (u32)data_ov003_02232db4, (u32)data_ov003_02232dcc,
+extern "C" uptr data_ov003_02232904[3] = {
+    (uptr)data_ov003_02232d9c, (uptr)data_ov003_02232db4, (uptr)data_ov003_02232dcc,
 };
 extern "C" char data_ov003_022335e0[0x24] = "/fg/flower/suzuran/suzuran.nsbtx";
 extern "C" char data_ov003_02233604[0x24] = "/fg/flower/suzuran/suzuran.nsbmd";
@@ -2489,8 +2549,8 @@ extern "C" char data_ov003_022336b8[0x24] = "/fg/tree/tree_mdl/tree_04w.nsbmd";
 extern "C" char data_ov003_02232e60[0x1c] = "/fg/stone/obj_stns.nsbmd";
 extern "C" char data_ov003_02234300[0x28] = "/fg/tree/cedar_mdl/cedar_deadw.nsbmd";
 extern "C" char data_ov003_02232e7c[0x1c] = "/fg/hole/obj_crack.nsbmd";
-extern "C" u32 data_ov003_02232680[2] = {
-    (u32)data_ov003_0222f400, (u32)data_ov003_0222f358,
+extern "C" uptr data_ov003_02232680[2] = {
+    (uptr)data_ov003_0222f400, (uptr)data_ov003_0222f358,
 };
 extern "C" const u32 data_ov003_0222f49c[3] = {
     4, 0x1e0001, 0x666,
@@ -2500,23 +2560,23 @@ extern "C" const u32 data_ov003_0222f2e0[3] = {
     0x1a, 0xf001b, 0xa4,
 };
 extern "C" char data_ov003_02233748[0x24] = "/fg/tree/tree_mdl/tree_04f.nsbmd";
-extern "C" u32 data_ov003_022327c8[2] = {
-    (u32)data_ov003_0222f31c, (u32)data_ov003_0222f310,
+extern "C" uptr data_ov003_022327c8[2] = {
+    (uptr)data_ov003_0222f31c, (uptr)data_ov003_0222f310,
 };
-extern "C" u32 data_ov003_02232c28[5] = {
-    (u32)data_ov003_02232a98, (u32)data_ov003_02232bb8, (u32)data_ov003_02232b98, (u32)data_ov003_02232a38,
-    (u32)data_ov003_02232a68,
+extern "C" uptr data_ov003_02232c28[5] = {
+    (uptr)data_ov003_02232a98, (uptr)data_ov003_02232bb8, (uptr)data_ov003_02232b98, (uptr)data_ov003_02232a38,
+    (uptr)data_ov003_02232a68,
 };
 extern "C" const u32 data_ov003_0222f340[3] = {
     0x13, 0xb0006, 0x1ec,
 };
 extern "C" char data_ov003_022337b4[0x24] = "/fg/tree/tree_mdl/tree_03s.nsbmd";
-extern "C" u32 data_ov003_02232a48[4] = {
-    (u32)data_ov003_022345a8, (u32)data_ov003_022345d4, 0, 0,
+extern "C" uptr data_ov003_02232a48[4] = {
+    (uptr)data_ov003_022345a8, (uptr)data_ov003_022345d4, 0, 0,
 };
 extern "C" char data_ov003_022337d8[0x24] = "/fg/tree/tree_mdl/tree_04s.nsbmd";
-extern "C" u32 data_ov003_02232650[1] = {
-    (u32)data_ov003_022334a0,
+extern "C" uptr data_ov003_02232650[1] = {
+    (uptr)data_ov003_022334a0,
 };
 extern "C" const u32 data_ov003_0222f3ac[3] = {
     2, 0xa0001, 0x200,
@@ -2533,8 +2593,8 @@ extern "C" const u32 data_ov003_0222f04c[3] = {
     1, 0x80001, 0x8f,
 };
 extern "C" char data_ov003_0223388c[0x24] = "/fg/tree/palm_mdl/palm_03w.nsbmd";
-extern "C" u32 data_ov003_02232808[2] = {
-    (u32)data_ov003_0222f1cc, 0,
+extern "C" uptr data_ov003_02232808[2] = {
+    (uptr)data_ov003_0222f1cc, 0,
 };
 extern "C" char data_ov003_02232f40[0x1c] = "/fg/eff_tree/cutL_03.nsbca";
 extern "C" const u32 data_ov003_0222f07c[3] = {
@@ -2545,17 +2605,17 @@ extern "C" const u32 data_ov003_0222f1a8[3] = {
     8, 0xa0005, 0xe1,
 };
 extern "C" char data_ov003_02233368[0x1c] = "/fg/eff_tree/shake_03.nsbca";
-extern "C" u32 data_ov003_02232934[3] = {
-    (u32)data_ov003_02232e14, (u32)data_ov003_02232e2c, (u32)data_ov003_02232e2c,
+extern "C" uptr data_ov003_02232934[3] = {
+    (uptr)data_ov003_02232e14, (uptr)data_ov003_02232e2c, (uptr)data_ov003_02232e2c,
 };
 extern "C" char data_ov003_022329d8[0x10] = "cedar03_stamp";
 extern "C" char data_ov003_02233460[0x20] = "/fg/flower/pansy/pansy.nsbtx";
-extern "C" u32 data_ov003_022326d8[2] = {
-    (u32)data_ov003_0222f0d0, (u32)data_ov003_0222f3b8,
+extern "C" uptr data_ov003_022326d8[2] = {
+    (uptr)data_ov003_0222f0d0, (uptr)data_ov003_0222f3b8,
 };
 extern "C" char data_ov003_02233a60[0x24] = "/fg/tree/tree_tex/tree_03f.nsbtx";
-extern "C" u32 data_ov003_02232740[2] = {
-    (u32)data_ov003_0222f118, (u32)data_ov003_0222f280,
+extern "C" uptr data_ov003_02232740[2] = {
+    (uptr)data_ov003_0222f118, (uptr)data_ov003_0222f280,
 };
 extern "C" const u32 data_ov003_0222f2d4[3] = {
     0x13, 0x12000a, 0x1ec,
@@ -2568,27 +2628,27 @@ extern "C" char data_ov003_02233acc[0x24] = "/fg/tree/tree_tex/tree_02s.nsbtx";
 extern "C" const u32 data_ov003_0222f208[3] = {
     2, 0x190001, 0x171,
 };
-extern "C" u32 data_ov003_02232ab8[4] = {
-    (u32)data_ov003_02233090, (u32)data_ov003_022330ac, (u32)data_ov003_022330c8, (u32)data_ov003_022330e4,
+extern "C" uptr data_ov003_02232ab8[4] = {
+    (uptr)data_ov003_02233090, (uptr)data_ov003_022330ac, (uptr)data_ov003_022330c8, (uptr)data_ov003_022330e4,
 };
-extern "C" u32 data_ov003_02232a38[4] = {
-    0, (u32)data_ov003_022326f0, (u32)data_ov003_02232678, (u32)data_ov003_022327d0,
+extern "C" uptr data_ov003_02232a38[4] = {
+    0, (uptr)data_ov003_022326f0, (uptr)data_ov003_02232678, (uptr)data_ov003_022327d0,
 };
-extern "C" u32 data_ov003_02232940[3] = {
-    (u32)data_ov003_02233ca0, (u32)data_ov003_02233cc4, (u32)data_ov003_02233ce8,
+extern "C" uptr data_ov003_02232940[3] = {
+    (uptr)data_ov003_02233ca0, (uptr)data_ov003_02233cc4, (uptr)data_ov003_02233ce8,
 };
-extern "C" u32 data_ov003_02232d0c[6] = {
-    (u32)data_ov003_02233d78, (u32)data_ov003_02233bec, (u32)data_ov003_02233700, (u32)data_ov003_02233724,
-    (u32)data_ov003_02233748, (u32)data_ov003_02233d9c,
+extern "C" uptr data_ov003_02232d0c[6] = {
+    (uptr)data_ov003_02233d78, (uptr)data_ov003_02233bec, (uptr)data_ov003_02233700, (uptr)data_ov003_02233724,
+    (uptr)data_ov003_02233748, (uptr)data_ov003_02233d9c,
 };
 extern "C" char data_ov003_02233ba4[0x24] = "/fg/tree/palm_tex/palm_03w.nsbtx";
-extern "C" u32 data_ov003_022327c0[2] = {
-    (u32)data_ov003_0222f2a4, (u32)data_ov003_0222f3c4,
+extern "C" uptr data_ov003_022327c0[2] = {
+    (uptr)data_ov003_0222f2a4, (uptr)data_ov003_0222f3c4,
 };
 extern "C" char data_ov003_022334e0[0x20] = "/fg/eff_tree/shakeL_02_1.nsbca";
 extern "C" char data_ov003_02233c34[0x24] = "/fg/tree/palm_tex/palm_02s.nsbtx";
-extern "C" u32 data_ov003_02232720[2] = {
-    (u32)data_ov003_02232690, (u32)data_ov003_0223285c,
+extern "C" uptr data_ov003_02232720[2] = {
+    (uptr)data_ov003_02232690, (uptr)data_ov003_0223285c,
 };
 extern "C" const u32 data_ov003_0222f100[3] = {
     2, 0xb0001, 0x266,
@@ -2596,11 +2656,11 @@ extern "C" const u32 data_ov003_0222f100[3] = {
 extern "C" const u32 data_ov003_0222f484[3] = {
     3, 0x190001, 0x59a,
 };
-extern "C" u32 data_ov003_02232a68[4] = {
-    (u32)data_ov003_02232708, (u32)data_ov003_02232730, (u32)data_ov003_02232780, (u32)data_ov003_02232750,
+extern "C" uptr data_ov003_02232a68[4] = {
+    (uptr)data_ov003_02232708, (uptr)data_ov003_02232730, (uptr)data_ov003_02232780, (uptr)data_ov003_02232750,
 };
-extern "C" u32 data_ov003_02232758[2] = {
-    (u32)data_ov003_0222f1b4, (u32)data_ov003_0222f388,
+extern "C" uptr data_ov003_02232758[2] = {
+    (uptr)data_ov003_0222f1b4, (uptr)data_ov003_0222f388,
 };
 extern "C" const u32 data_ov003_0222f040[3] = {
     3, 0xc0001, 0x59a,
@@ -2620,12 +2680,12 @@ extern "C" const u32 data_ov003_0222f19c[3] = {
 extern "C" const u32 data_ov003_0222f094[3] = {
     4, 0x230001, 0x63d,
 };
-extern "C" u32 data_ov003_02232d54[6] = {
-    (u32)data_ov003_02234328, (u32)data_ov003_02233e98, (u32)data_ov003_02233ebc, (u32)data_ov003_02233ee0,
-    (u32)data_ov003_02233f04, (u32)data_ov003_02234350,
+extern "C" uptr data_ov003_02232d54[6] = {
+    (uptr)data_ov003_02234328, (uptr)data_ov003_02233e98, (uptr)data_ov003_02233ebc, (uptr)data_ov003_02233ee0,
+    (uptr)data_ov003_02233f04, (uptr)data_ov003_02234350,
 };
-extern "C" u32 data_ov003_022328ec[3] = {
-    (u32)data_ov003_02232c14, (u32)data_ov003_02232bec, (u32)data_ov003_02232bec,
+extern "C" uptr data_ov003_022328ec[3] = {
+    (uptr)data_ov003_02232c14, (uptr)data_ov003_02232bec, (uptr)data_ov003_02232bec,
 };
 extern "C" char data_ov003_022330ac[0x1c] = "/fg/eff_tree/anm_t02f.nsbmd";
 extern "C" char data_ov003_02233d54[0x24] = "/fg/tree/tree_mdl/tree_deadw.nsbmd";
@@ -2646,8 +2706,8 @@ extern "C" char data_ov003_0223318c[0x1c] = "/fg/eff_tree/anm_c02w.nsbmd";
 extern "C" const u32 data_ov003_0222f424[3] = {
     2, 0x140001, 0x51f,
 };
-extern "C" u32 data_ov003_022326e8[2] = {
-    (u32)data_ov003_02233604, (u32)data_ov003_022342b0,
+extern "C" uptr data_ov003_022326e8[2] = {
+    (uptr)data_ov003_02233604, (uptr)data_ov003_022342b0,
 };
 extern "C" char data_ov003_022331a8[0x1c] = "/fg/eff_tree/anm_c03w.nsbmd";
 extern "C" char data_ov003_022344b8[0x28] = "/fg/flower/cosmos/cosmos_palette.nsbtx";
@@ -2656,8 +2716,8 @@ extern "C" char data_ov003_02233f4c[0x24] = "/fg/tree/palm_mdl/palm_deadw.nsbmd"
 extern "C" const u32 data_ov003_0222f0c4[3] = {
     0x13, 0x250004, 0x2e1,
 };
-extern "C" u32 data_ov003_02232b08[4] = {
-    0, (u32)data_ov003_02232680, (u32)data_ov003_022326e0, (u32)data_ov003_02232710,
+extern "C" uptr data_ov003_02232b08[4] = {
+    0, (uptr)data_ov003_02232680, (uptr)data_ov003_022326e0, (uptr)data_ov003_02232710,
 };
 extern "C" const u32 data_ov003_0222f43c[3] = {
     5, 0xe0001, 0x6e1,
@@ -2666,23 +2726,23 @@ extern "C" char data_ov003_02233f94[0x24] = "/fg/tree/palm_mdl/palm_deads.nsbmd"
 extern "C" const u32 data_ov003_0222f34c[3] = {
     8, 0xc0005, 0x15c,
 };
-extern "C" u32 data_ov003_02232b48[4] = {
-    (u32)TreeLeafFx_OnEffectInit, (u32)TreeLeafFx_OnEffectStep, (u32)TreeLeafFx_OnEffectInit, (u32)TreeLeafFx_OnEffectUpdate,
+extern "C" uptr data_ov003_02232b48[4] = {
+    (uptr)TreeLeafFx_OnEffectInit, (uptr)TreeLeafFx_OnEffectStep, (uptr)TreeLeafFx_OnEffectInit, (uptr)TreeLeafFx_OnEffectUpdate,
 };
 extern "C" char data_ov003_02234000[0x24] = "/fg/tree/tree_tex/tree_babyf.nsbtx";
-extern "C" u32 data_ov003_022327d0[2] = {
-    (u32)data_ov003_0222f1c0, (u32)data_ov003_0222f0c4,
+extern "C" uptr data_ov003_022327d0[2] = {
+    (uptr)data_ov003_0222f1c0, (uptr)data_ov003_0222f0c4,
 };
-extern "C" u32 data_ov003_02232778[2] = {
-    (u32)data_ov003_022335e0, (u32)data_ov003_02234288,
+extern "C" uptr data_ov003_02232778[2] = {
+    (uptr)data_ov003_022335e0, (uptr)data_ov003_02234288,
 };
 extern "C" char data_ov003_0223406c[0x24] = "/fg/tree/tree_tex/tree_deads.nsbtx";
-extern "C" u32 data_ov003_02232e14[6] = {
-    (u32)data_ov003_022341b0, (u32)data_ov003_02233b5c, (u32)data_ov003_02233b80, (u32)data_ov003_02233ba4,
-    (u32)data_ov003_02233bc8, (u32)data_ov003_022341d4,
+extern "C" uptr data_ov003_02232e14[6] = {
+    (uptr)data_ov003_022341b0, (uptr)data_ov003_02233b5c, (uptr)data_ov003_02233b80, (uptr)data_ov003_02233ba4,
+    (uptr)data_ov003_02233bc8, (uptr)data_ov003_022341d4,
 };
-extern "C" u32 data_ov003_02232818[2] = {
-    (u32)data_ov003_0222f340, (u32)data_ov003_0222f334,
+extern "C" uptr data_ov003_02232818[2] = {
+    (uptr)data_ov003_0222f340, (uptr)data_ov003_0222f334,
 };
 extern "C" const u32 data_ov003_0222f758[46] = {
     0x13, 0x16, 0x14, 0x16, 0x15, 0x16, 0, 0x16, 1, 0x16, 2, 0x16, 3, 0x16, 4, 0x16, 5, 0x16, 6, 0x16, 7, 0x16, 8,
@@ -2692,46 +2752,46 @@ extern "C" const u32 data_ov003_0222f758[46] = {
 extern "C" const u32 data_ov003_0222f2bc[3] = {
     3, 0x250001, 0x2cd,
 };
-extern "C" u32 data_ov003_02232810[2] = {
-    (u32)data_ov003_0222f1a8, 0,
+extern "C" uptr data_ov003_02232810[2] = {
+    (uptr)data_ov003_0222f1a8, 0,
 };
 extern "C" char data_ov003_022332a4[0x1c] = "/fg/eff_tree/anm_p01s.nsbmd";
-extern "C" u32 data_ov003_02232b68[4] = {
-    (u32)data_ov003_022326b0, (u32)data_ov003_02232700, (u32)data_ov003_022327f0, (u32)data_ov003_022327f8,
+extern "C" uptr data_ov003_02232b68[4] = {
+    (uptr)data_ov003_022326b0, (uptr)data_ov003_02232700, (uptr)data_ov003_022327f0, (uptr)data_ov003_022327f8,
 };
-extern "C" u32 data_ov003_02232e2c[6] = {
-    (u32)data_ov003_022341f8, (u32)data_ov003_02233c10, (u32)data_ov003_02233c34, (u32)data_ov003_02233c58,
-    (u32)data_ov003_02233c7c, (u32)data_ov003_0223421c,
+extern "C" uptr data_ov003_02232e2c[6] = {
+    (uptr)data_ov003_022341f8, (uptr)data_ov003_02233c10, (uptr)data_ov003_02233c34, (uptr)data_ov003_02233c58,
+    (uptr)data_ov003_02233c7c, (uptr)data_ov003_0223421c,
 };
 extern "C" const u32 data_ov003_0222f4c8[6] = {
     0x10101, 0, 0, 0, 0, 0x10000,
 };
-extern "C" u32 data_ov003_02232b98[4] = {
-    (u32)data_ov003_022327a0, (u32)data_ov003_022327c8, (u32)data_ov003_02232728, (u32)data_ov003_022326b8,
+extern "C" uptr data_ov003_02232b98[4] = {
+    (uptr)data_ov003_022327a0, (uptr)data_ov003_022327c8, (uptr)data_ov003_02232728, (uptr)data_ov003_022326b8,
 };
-u8 sFieldObjectAnimHeap[0x4];
+u8 sFieldObjectAnimHeap[HOST_SIZED(0x4, void *)] HOST_ALIGN8;  // (a heap pointer)
 extern "C" char data_ov003_02234144[0x24] = "/fg/tree/cedar_tex/cedar_02s.nsbtx";
-extern "C" u32 data_ov003_022328b0[3] = {
-    (u32)data_ov003_02232e44, (u32)data_ov003_02232e60, (u32)data_ov003_02232e60,
+extern "C" uptr data_ov003_022328b0[3] = {
+    (uptr)data_ov003_02232e44, (uptr)data_ov003_02232e60, (uptr)data_ov003_02232e60,
 };
-extern "C" u32 data_ov003_02232bb8[4] = {
-    0, (u32)data_ov003_022326c8, (u32)data_ov003_02232748, (u32)data_ov003_02232760,
+extern "C" uptr data_ov003_02232bb8[4] = {
+    0, (uptr)data_ov003_022326c8, (uptr)data_ov003_02232748, (uptr)data_ov003_02232760,
 };
 extern "C" char data_ov003_022335a0[0x20] = "/fg/flower/cosmos/cosmos.nsbtx";
 extern "C" const u32 data_ov003_0222f3d0[3] = {
     1, 0x60001, 0x8f,
 };
-extern "C" u32 data_ov003_02232bc8[4] = {
-    (u32)data_ov003_02233440, (u32)data_ov003_02233460, (u32)data_ov003_022335a0, (u32)data_ov003_02232fb0,
+extern "C" uptr data_ov003_02232bc8[4] = {
+    (uptr)data_ov003_02233440, (uptr)data_ov003_02233460, (uptr)data_ov003_022335a0, (uptr)data_ov003_02232fb0,
 };
-extern "C" u32 data_ov003_022326b8[2] = {
-    (u32)data_ov003_0222f370, (u32)data_ov003_0222f0dc,
+extern "C" uptr data_ov003_022326b8[2] = {
+    (uptr)data_ov003_0222f370, (uptr)data_ov003_0222f0dc,
 };
 extern "C" char data_ov003_022341b0[0x24] = "/fg/tree/palm_tex/palm_babyw.nsbtx";
 extern "C" char data_ov003_022341d4[0x24] = "/fg/tree/palm_tex/palm_deadw.nsbtx";
-extern "C" u32 data_ov003_02232c50[5] = {
-    (u32)data_ov003_02232b88, (u32)data_ov003_02232ae8, (u32)data_ov003_02232a78, (u32)data_ov003_02232b08,
-    (u32)data_ov003_02232b68,
+extern "C" uptr data_ov003_02232c50[5] = {
+    (uptr)data_ov003_02232b88, (uptr)data_ov003_02232ae8, (uptr)data_ov003_02232a78, (uptr)data_ov003_02232b08,
+    (uptr)data_ov003_02232b68,
 };
 extern "C" char data_ov003_02234580[0x28] = "/fg/tree/cedar_pal/obj_x_cedar_pl.nsbtx";
 extern "C" const u32 data_ov003_0222f460[3] = {
@@ -2740,9 +2800,9 @@ extern "C" const u32 data_ov003_0222f460[3] = {
 extern "C" const u32 data_ov003_0222f510[9] = {
     0xffffef00, 0x2800, 0xffffff00, 0x1100, 0x3000, 0xfffff800, 0xfffffd00, 0x3e00, 0xfffff100,
 };
-extern "C" u32 data_ov003_02232bd8[5] = {
-    (u32)data_ov003_02232c64, (u32)data_ov003_02232c7c, (u32)data_ov003_02232c94, (u32)data_ov003_02232cac,
-    (u32)data_ov003_02232cc4,
+extern "C" uptr data_ov003_02232bd8[5] = {
+    (uptr)data_ov003_02232c64, (uptr)data_ov003_02232c7c, (uptr)data_ov003_02232c94, (uptr)data_ov003_02232cac,
+    (uptr)data_ov003_02232cc4,
 };
 extern "C" char data_ov003_02232958[0x10] = "palm01_stamp";
 extern "C" char data_ov003_02232968[0x10] = "tree04_stamp";
@@ -2752,14 +2812,14 @@ extern "C" char data_ov003_02233670[0x24] = "/fg/tree/tree_mdl/tree_02w.nsbmd";
 extern "C" const u32 data_ov003_0222f190[3] = {
     5, 0x280001, 0x852,
 };
-extern "C" u32 data_ov003_0223291c[3] = {
-    (u32)data_ov003_0222f510, (u32)data_ov003_0222f4e0, (u32)data_ov003_0222f4f8,
+extern "C" uptr data_ov003_0223291c[3] = {
+    (uptr)data_ov003_0222f510, (uptr)data_ov003_0222f4e0, (uptr)data_ov003_0222f4f8,
 };
 extern "C" const u32 data_ov003_0222f6a0[23] = {
     9, 9, 9, 0, 1, 1, 1, 2, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9,
 };
-extern "C" u32 data_ov003_022327a8[2] = {
-    (u32)data_ov003_0222f094, (u32)data_ov003_0222f0a0,
+extern "C" uptr data_ov003_022327a8[2] = {
+    (uptr)data_ov003_0222f094, (uptr)data_ov003_0222f0a0,
 };
 extern "C" char data_ov003_02232e98[0x1c] = "/fg/grass/redTurnip.nsbmd";
 extern "C" const u32 data_ov003_0222f058[3] = {
@@ -2770,29 +2830,29 @@ extern "C" const u32 data_ov003_0222f070[3] = {
 };
 extern "C" char data_ov003_02232838[0xc] = "obj_stnCs";
 extern "C" char data_ov003_02232eec[0x1c] = "/fg/hole/obj_hole_pl.nsbtx";
-extern "C" u32 data_ov003_022328a4[3] = {
-    (u32)data_ov003_02232d6c, (u32)data_ov003_02232d84, (u32)data_ov003_02232d84,
+extern "C" uptr data_ov003_022328a4[3] = {
+    (uptr)data_ov003_02232d6c, (uptr)data_ov003_02232d84, (uptr)data_ov003_02232d84,
 };
-extern "C" u32 data_ov003_02232b78[4] = {
-    (u32)TreeLeafFx_OnEffectInit, (u32)TreeLeafFx_OnEffectStep, (u32)TreeLeafFx_OnEffectInit, (u32)TreeLeafFx_OnEffectUpdate,
+extern "C" uptr data_ov003_02232b78[4] = {
+    (uptr)TreeLeafFx_OnEffectInit, (uptr)TreeLeafFx_OnEffectStep, (uptr)TreeLeafFx_OnEffectInit, (uptr)TreeLeafFx_OnEffectUpdate,
 };
-extern "C" u32 data_ov003_02232c14[5] = {
-    (u32)data_ov003_02232880, (u32)data_ov003_02232844, (u32)data_ov003_0223288c, (u32)data_ov003_02232874,
-    (u32)data_ov003_0223282c,
+extern "C" uptr data_ov003_02232c14[5] = {
+    (uptr)data_ov003_02232880, (uptr)data_ov003_02232844, (uptr)data_ov003_0223288c, (uptr)data_ov003_02232874,
+    (uptr)data_ov003_0223282c,
 };
 extern "C" const u32 data_ov003_0222f454[3] = {
     0x13, 0xe0004, 0x214,
 };
-extern "C" u32 data_ov003_022326a0[2] = {
-    (u32)data_ov003_0222f0f4, (u32)data_ov003_0222f160,
+extern "C" uptr data_ov003_022326a0[2] = {
+    (uptr)data_ov003_0222f0f4, (uptr)data_ov003_0222f160,
 };
 extern "C" char data_ov003_02233964[0x24] = "/fg/eff_tree/cutR_03_1unit.nsbca";
 extern "C" const u32 data_ov003_0222f3f4[3] = {
     0x12, 0x7001b, 0x8f,
 };
 extern "C" char data_ov003_022339f4[0x24] = "/fg/tree/tree_tex/tree_04w.nsbtx";
-extern "C" u32 data_ov003_022328f8[3] = {
-    (u32)data_ov003_02232b18, (u32)data_ov003_02232af8, (u32)data_ov003_02232af8,
+extern "C" uptr data_ov003_022328f8[3] = {
+    (uptr)data_ov003_02232b18, (uptr)data_ov003_02232af8, (uptr)data_ov003_02232af8,
 };
 extern "C" const u32 data_ov003_0222f274[3] = {
     0x12, 0xa000a, 0x8f,
@@ -2800,13 +2860,13 @@ extern "C" const u32 data_ov003_0222f274[3] = {
 extern "C" const u32 data_ov003_0222f0b8[3] = {
     5, 0x1e0001, 0x733,
 };
-extern "C" u32 data_ov003_02232af8[4] = {
-    (u32)data_ov003_022331e0, (u32)data_ov003_022331fc, (u32)data_ov003_02233218, (u32)data_ov003_02233234,
+extern "C" uptr data_ov003_02232af8[4] = {
+    (uptr)data_ov003_022331e0, (uptr)data_ov003_022331fc, (uptr)data_ov003_02233218, (uptr)data_ov003_02233234,
 };
 extern "C" char data_ov003_02233b38[0x24] = "/fg/eff_tree/cutR_04_1unit.nsbca";
-extern "C" u32 data_ov003_02232cf4[6] = {
-    (u32)data_ov003_02233d30, (u32)data_ov003_0223364c, (u32)data_ov003_02233670, (u32)data_ov003_02233694,
-    (u32)data_ov003_022336b8, (u32)data_ov003_02233d54,
+extern "C" uptr data_ov003_02232cf4[6] = {
+    (uptr)data_ov003_02233d30, (uptr)data_ov003_0223364c, (uptr)data_ov003_02233670, (uptr)data_ov003_02233694,
+    (uptr)data_ov003_022336b8, (uptr)data_ov003_02233d54,
 };
 extern "C" char data_ov003_022330c8[0x1c] = "/fg/eff_tree/anm_t03f.nsbmd";
 extern "C" const u32 data_ov003_0222f184[3] = {
@@ -2815,9 +2875,9 @@ extern "C" const u32 data_ov003_0222f184[3] = {
 extern "C" char data_ov003_02232fb0[0x1c] = "/fg/flower/rose/rose.nsbtx";
 extern "C" char data_ov003_02232fcc[0x1c] = "/fg/eff_tree/cutR_03.nsbca";
 extern "C" char data_ov003_02232fe8[0x1c] = "/fg/eff_tree/anm_t01s.nsbmd";
-extern "C" u32 data_ov003_02232d24[6] = {
-    (u32)data_ov003_02233dc0, (u32)data_ov003_0223376c, (u32)data_ov003_02233790, (u32)data_ov003_022337b4,
-    (u32)data_ov003_022337d8, (u32)data_ov003_02233de4,
+extern "C" uptr data_ov003_02232d24[6] = {
+    (uptr)data_ov003_02233dc0, (uptr)data_ov003_0223376c, (uptr)data_ov003_02233790, (uptr)data_ov003_022337b4,
+    (uptr)data_ov003_022337d8, (uptr)data_ov003_02233de4,
 };
 extern "C" const u32 data_ov003_0222f064[3] = {
     2, 0xc0001, 0x4cd,
@@ -2829,9 +2889,9 @@ extern "C" const u32 data_ov003_0222f3dc[3] = {
 extern "C" const u32 data_ov003_0222f1f0[3] = {
     0x13, 0xa000a, 0x1ec,
 };
-extern "C" u32 data_ov003_02232d6c[6] = {
-    (u32)data_ov003_02233f28, (u32)data_ov003_02233844, (u32)data_ov003_02233868, (u32)data_ov003_0223388c,
-    (u32)data_ov003_022338b0, (u32)data_ov003_02233f4c,
+extern "C" uptr data_ov003_02232d6c[6] = {
+    (uptr)data_ov003_02233f28, (uptr)data_ov003_02233844, (uptr)data_ov003_02233868, (uptr)data_ov003_0223388c,
+    (uptr)data_ov003_022338b0, (uptr)data_ov003_02233f4c,
 };
 extern "C" const u32 data_ov003_0222f0f4[3] = {
     2, 0xa0001, 0x171,
@@ -2842,8 +2902,8 @@ extern "C" char data_ov003_02233e08[0x24] = "/fg/tree/cedar_mdl/cedar_01w.nsbmd"
 extern "C" const u32 data_ov003_0222f1fc[3] = {
     0x13, 0x14000a, 0x28f,
 };
-extern "C" u32 data_ov003_022327e8[2] = {
-    (u32)data_ov003_0222f3d0, 0,
+extern "C" uptr data_ov003_022327e8[2] = {
+    (uptr)data_ov003_0222f3d0, 0,
 };
 extern "C" const u32 sFieldObjShapeTable[197] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x6101000, 0, 0, 0, 0, 0, 0, 0, 0x600, 0x6201006,
@@ -2860,28 +2920,28 @@ extern "C" const u32 sFieldObjShapeTable[197] = {
     0x10041010, 0x10100410, 0x4101004, 0x10041010, 0x10100410, 0x4101004, 0x10041010, 0x10100410, 0x4101004,
     0x10020410, 0x204, 0x6101000, 0x10061010, 0x10100610, 6, 4, 4,
 };
-extern "C" u32 data_ov003_02232de4[6] = {
-    (u32)data_ov003_02234378, (u32)data_ov003_02234090, (u32)data_ov003_022340b4, (u32)data_ov003_022340d8,
-    (u32)data_ov003_022340fc, (u32)data_ov003_022343a0,
+extern "C" uptr data_ov003_02232de4[6] = {
+    (uptr)data_ov003_02234378, (uptr)data_ov003_02234090, (uptr)data_ov003_022340b4, (uptr)data_ov003_022340d8,
+    (uptr)data_ov003_022340fc, (uptr)data_ov003_022343a0,
 };
-extern "C" u32 data_ov003_02232b38[4] = {
-    0, (u32)data_ov003_022326a0, (u32)data_ov003_02232698, (u32)data_ov003_022327c0,
+extern "C" uptr data_ov003_02232b38[4] = {
+    0, (uptr)data_ov003_022326a0, (uptr)data_ov003_02232698, (uptr)data_ov003_022327c0,
 };
 extern "C" char data_ov003_02233fdc[0x24] = "/fg/tree/tree_tex/tree_deadw.nsbtx";
 extern "C" char data_ov003_022331fc[0x1c] = "/fg/eff_tree/anm_c02s.nsbmd";
 extern "C" char data_ov003_02234090[0x24] = "/fg/tree/cedar_tex/cedar_01w.nsbtx";
-extern "C" u32 data_ov003_02232790[2] = {
-    (u32)data_ov003_0222f3ac, (u32)data_ov003_0222f13c,
+extern "C" uptr data_ov003_02232790[2] = {
+    (uptr)data_ov003_0222f3ac, (uptr)data_ov003_0222f13c,
 };
-extern "C" u32 data_ov003_02232780[2] = {
-    (u32)data_ov003_0222f07c, (u32)data_ov003_0222f49c,
+extern "C" uptr data_ov003_02232780[2] = {
+    (uptr)data_ov003_0222f07c, (uptr)data_ov003_0222f49c,
 };
 extern "C" const u32 sItemPopScaleY[17] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x1600, 0x1100, 0xc00, 0xe00, 0x1000,
 };
 extern "C" char data_ov003_02233580[0x20] = "/fg/eff_tree/shakeL_02_2.nsbca";
-extern "C" u32 data_ov003_022327a0[2] = {
-    (u32)data_ov003_0222f2ec, (u32)data_ov003_0222f2e0,
+extern "C" uptr data_ov003_022327a0[2] = {
+    (uptr)data_ov003_0222f2ec, (uptr)data_ov003_0222f2e0,
 };
 extern "C" const u32 data_ov003_0222f370[3] = {
     0x12, 0xe0008, 0x15c,
@@ -2906,15 +2966,15 @@ extern "C" const u32 data_ov003_0222f16c[3] = {
 extern "C" char data_ov003_02232880[0xc] = "obj_stnAw";
 extern "C" char data_ov003_02232844[0xc] = "obj_stnBw";
 extern "C" char data_ov003_022336dc[0x24] = "/fg/eff_tree/cutL_03_1unit.nsbca";
-extern "C" u32 data_ov003_022326f0[2] = {
-    (u32)data_ov003_0222f46c, (u32)data_ov003_0222f1fc,
+extern "C" uptr data_ov003_022326f0[2] = {
+    (uptr)data_ov003_0222f46c, (uptr)data_ov003_0222f1fc,
 };
 extern "C" char data_ov003_0223376c[0x24] = "/fg/tree/tree_mdl/tree_01s.nsbmd";
 extern "C" const u32 data_ov003_0222f310[3] = {
     0x1a, 0x14000f, 0xa4,
 };
-extern "C" u32 data_ov003_022328c8[3] = {
-    (u32)data_ov003_022344e0, (u32)data_ov003_02234508, (u32)data_ov003_02234530,
+extern "C" uptr data_ov003_022328c8[3] = {
+    (uptr)data_ov003_022344e0, (uptr)data_ov003_02234508, (uptr)data_ov003_02234530,
 };
 extern "C" char data_ov003_02233844[0x24] = "/fg/tree/palm_mdl/palm_01w.nsbmd";
 extern "C" char data_ov003_022338f8[0x24] = "/fg/tree/palm_mdl/palm_02s.nsbmd";
@@ -2922,12 +2982,12 @@ extern "C" char data_ov003_022339d0[0x24] = "/fg/tree/tree_tex/tree_03w.nsbtx";
 extern "C" const u32 data_ov003_0222f0ac[3] = {
     5, 0xe0001, 0x852,
 };
-extern "C" u32 data_ov003_022328e0[3] = {
-    (u32)data_ov003_02232cf4, (u32)data_ov003_02232d0c, (u32)data_ov003_02232d24,
+extern "C" uptr data_ov003_022328e0[3] = {
+    (uptr)data_ov003_02232cf4, (uptr)data_ov003_02232d0c, (uptr)data_ov003_02232d24,
 };
 extern "C" char data_ov003_02233b5c[0x24] = "/fg/tree/palm_tex/palm_01w.nsbtx";
-extern "C" u32 data_ov003_02232710[2] = {
-    (u32)data_ov003_0222f214, (u32)data_ov003_0222f3dc,
+extern "C" uptr data_ov003_02232710[2] = {
+    (uptr)data_ov003_0222f214, (uptr)data_ov003_0222f3dc,
 };
 extern "C" char data_ov003_02232690[0x8] = "tanpopo";
 extern "C" char data_ov003_02233c58[0x24] = "/fg/tree/palm_tex/palm_03s.nsbtx";
@@ -2935,34 +2995,34 @@ extern "C" char data_ov003_02233058[0x1c] = "/fg/eff_tree/anm_t02w.nsbmd";
 extern "C" const u32 data_ov003_0222f154[3] = {
     0x13, 0xb0006, 0x28f,
 };
-extern "C" u32 data_ov003_02232644[1] = {
-    (u32)data_ov003_02234558,
+extern "C" uptr data_ov003_02232644[1] = {
+    (uptr)data_ov003_02234558,
 };
 extern "C" char data_ov003_0223311c[0x1c] = "/fg/eff_tree/anm_t03s.nsbmd";
 extern "C" char data_ov003_02233de4[0x24] = "/fg/tree/tree_mdl/tree_deads.nsbmd";
-extern "C" u32 data_ov003_02232678[2] = {
-    (u32)data_ov003_0222f154, (u32)data_ov003_0222f490,
+extern "C" uptr data_ov003_02232678[2] = {
+    (uptr)data_ov003_0222f154, (uptr)data_ov003_0222f490,
 };
-extern "C" u32 data_ov003_02232ae8[4] = {
-    0, (u32)data_ov003_02232790, (u32)data_ov003_02232660, (u32)data_ov003_022327b0,
+extern "C" uptr data_ov003_02232ae8[4] = {
+    0, (uptr)data_ov003_02232790, (uptr)data_ov003_02232660, (uptr)data_ov003_022327b0,
 };
 extern "C" const u32 data_ov003_0222f478[3] = {
     4, 0x230001, 0x70a,
 };
-extern "C" u32 data_ov003_02232698[2] = {
-    (u32)data_ov003_0222f268, (u32)data_ov003_0222f208,
+extern "C" uptr data_ov003_02232698[2] = {
+    (uptr)data_ov003_0222f268, (uptr)data_ov003_0222f208,
 };
-extern "C" u32 data_ov003_02232700[2] = {
-    (u32)data_ov003_0222f058, (u32)data_ov003_0222f070,
+extern "C" uptr data_ov003_02232700[2] = {
+    (uptr)data_ov003_0222f058, (uptr)data_ov003_0222f070,
 };
-extern "C" u32 data_ov003_02232730[2] = {
-    (u32)data_ov003_0222f16c, (u32)data_ov003_0222f178,
+extern "C" uptr data_ov003_02232730[2] = {
+    (uptr)data_ov003_0222f16c, (uptr)data_ov003_0222f178,
 };
-extern "C" u32 data_ov003_02232658[2] = {
-    (u32)data_ov003_0222f3f4, (u32)data_ov003_0222f25c,
+extern "C" uptr data_ov003_02232658[2] = {
+    (uptr)data_ov003_0222f3f4, (uptr)data_ov003_0222f25c,
 };
-extern "C" u32 data_ov003_022326c8[2] = {
-    (u32)data_ov003_0222f220, (u32)data_ov003_0222f28c,
+extern "C" uptr data_ov003_022326c8[2] = {
+    (uptr)data_ov003_0222f220, (uptr)data_ov003_0222f28c,
 };
 extern "C" char data_ov003_02233330[0x1c] = "/fg/eff_tree/shake_01.nsbca";
 extern "C" char data_ov003_02234240[0x24] = "/fg/tree/cedar_pal/cedar_set.nsbtx";
@@ -2976,50 +3036,50 @@ extern "C" const u32 data_ov003_0222f280[3] = {
     0x1a, 0xc001b, 0x29,
 };
 extern "C" char data_ov003_02233bc8[0x24] = "/fg/tree/palm_tex/palm_04w.nsbtx";
-extern "C" u32 data_ov003_02232748[2] = {
-    (u32)data_ov003_0222f100, (u32)data_ov003_0222f3e8,
+extern "C" uptr data_ov003_02232748[2] = {
+    (uptr)data_ov003_0222f100, (uptr)data_ov003_0222f3e8,
 };
 extern "C" char data_ov003_02233d78[0x24] = "/fg/tree/tree_mdl/tree_babyf.nsbmd";
 extern "C" char data_ov003_0223282c[0xc] = "obj_stnEw";
 extern "C" char data_ov003_022331c4[0x1c] = "/fg/eff_tree/anm_c04w.nsbmd";
-extern "C" u32 data_ov003_02232b58[4] = {
-    (u32)data_ov003_022332a4, (u32)data_ov003_022332c0, (u32)data_ov003_022332dc, (u32)data_ov003_022332f8,
+extern "C" uptr data_ov003_02232b58[4] = {
+    (uptr)data_ov003_022332a4, (uptr)data_ov003_022332c0, (uptr)data_ov003_022332dc, (uptr)data_ov003_022332f8,
 };
 extern "C" char data_ov003_022340b4[0x24] = "/fg/tree/cedar_tex/cedar_02w.nsbtx";
 extern "C" char data_ov003_02234168[0x24] = "/fg/tree/cedar_tex/cedar_03s.nsbtx";
-extern "C" u32 data_ov003_02232670[2] = {
-    (u32)data_ov003_0222f364, 0,
+extern "C" uptr data_ov003_02232670[2] = {
+    (uptr)data_ov003_0222f364, 0,
 };
 extern "C" char data_ov003_022333a0[0x20] = "/fg/eff_tree/shakeS_02.nsbca";
-extern "C" u32 data_ov003_022327e0[2] = {
-    (u32)data_ov003_0222f0e8, 0,
+extern "C" uptr data_ov003_022327e0[2] = {
+    (uptr)data_ov003_0222f0e8, 0,
 };
 extern "C" char data_ov003_02234378[0x28] = "/fg/tree/cedar_tex/cedar_babyw.nsbtx";
 extern "C" char data_ov003_022334c0[0x20] = "/fg/flower/cosmos/cosmos.nsbmd";
 extern "C" const u32 data_ov003_0222f334[3] = {
     0x13, 0x190006, 0x1ec,
 };
-extern "C" u32 data_ov003_02232ad8[4] = {
-    0, (u32)data_ov003_022327e8, (u32)data_ov003_02232670, (u32)data_ov003_022327b8,
+extern "C" uptr data_ov003_02232ad8[4] = {
+    0, (uptr)data_ov003_022327e8, (uptr)data_ov003_02232670, (uptr)data_ov003_022327b8,
 };
 extern "C" const u32 data_ov003_0222f810[69] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 1, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0,
 };
-extern "C" u32 data_ov003_02232ba8[4] = {
-    0, (u32)data_ov003_02232770, (u32)data_ov003_02232818, (u32)data_ov003_022326d0,
+extern "C" uptr data_ov003_02232ba8[4] = {
+    0, (uptr)data_ov003_02232770, (uptr)data_ov003_02232818, (uptr)data_ov003_022326d0,
 };
-extern "C" u32 data_ov003_02234604[12] = {
-    (u32)data_ov003_022329c8, (u32)data_ov003_022329a8, (u32)data_ov003_022329b8, (u32)data_ov003_02232968,
-    (u32)data_ov003_022329e8, (u32)data_ov003_022329f8, (u32)data_ov003_022329d8, (u32)data_ov003_02232a08,
-    (u32)data_ov003_02232958, (u32)data_ov003_02232978, (u32)data_ov003_02232988, (u32)data_ov003_02232998,
+extern "C" uptr data_ov003_02234604[12] = {
+    (uptr)data_ov003_022329c8, (uptr)data_ov003_022329a8, (uptr)data_ov003_022329b8, (uptr)data_ov003_02232968,
+    (uptr)data_ov003_022329e8, (uptr)data_ov003_022329f8, (uptr)data_ov003_022329d8, (uptr)data_ov003_02232a08,
+    (uptr)data_ov003_02232958, (uptr)data_ov003_02232978, (uptr)data_ov003_02232988, (uptr)data_ov003_02232998,
 };
 extern "C" char data_ov003_02233a3c[0x24] = "/fg/tree/tree_tex/tree_02f.nsbtx";
-extern "C" u32 data_ov003_02232640[1] = {
-    (u32)data_ov003_02234418,
+extern "C" uptr data_ov003_02232640[1] = {
+    (uptr)data_ov003_02234418,
 };
-extern "C" u32 data_ov003_02232750[2] = {
-    (u32)data_ov003_0222f130, (u32)data_ov003_0222f0b8,
+extern "C" uptr data_ov003_02232750[2] = {
+    (uptr)data_ov003_0222f130, (uptr)data_ov003_0222f0b8,
 };
 extern "C" char data_ov003_022333e0[0x20] = "/fg/flower/pansy/pansy.nsbmd";
 // vtable at 0x2234634 (compiler generated)
@@ -3101,7 +3161,7 @@ BOOL FieldObjectShapeQuery::getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z) {
 
 namespace ns_0221f798 {
 extern "C" {
-BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n)
+BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n)
 {
     void *heap = gCurrentHeap;
     s32 i;
@@ -3124,7 +3184,7 @@ BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n)
 
 namespace ns_0221f798 {
 extern "C" {
-BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n)
+BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n)
 {
     void *heap = gCurrentHeap;
     s32 i;
@@ -3302,7 +3362,7 @@ BOOL FieldObj_LoadTreeTextures(void *self, u32 *a, u32 *b)
         if (*d == 0) {
             u32 *pa = a + t * 6;
             u32 *pb = b + t * 6;
-            if (!FieldObj_LoadTextureFiles(self, pa, pb, (u32 *)FieldObj_GetTreeTexturePaths(self, t), 6)) {
+            if (!FieldObj_LoadTextureFiles(self, pa, pb, (uptr *)(uptr)FieldObj_GetTreeTexturePaths(self, t), 6)) {
                 return FALSE;
             }
             *d = 1;
@@ -3404,7 +3464,7 @@ BOOL FieldObj_LoadTreeSaplingModels(FieldObjectManager *self, u32 *a, u32 *b, u3
     for (i = 0; i < 3; i++) {
         s32 t = FieldObj_GetSeasonSet(self, i);
         void *n = FieldObj_GetTreeModelPath(self, i, 0);
-        if (!CachedModel_loadWithTex((u8 *)self + 0x174 + i * 0x3a8, n, sFieldObjectModelHeap, (void *)a[t * 6], b[i], c, ok)) {
+        if (!CachedModel_loadWithTex(HOST_AT(self, 0x174, treeModels[0], 0) + i * 0x3a8, n, sFieldObjectModelHeap, (void *)a[t * 6], b[i], c, ok)) {
             ok = FALSE;
             break;
         }
@@ -3612,25 +3672,25 @@ extern "C" void FieldObj_ClearLitCedarFileBufs(Obj *o, u32 *a, u32 *b, u32 *c, u
 }
 
 namespace ns_0221ede8 {
-extern "C" void FieldObj_FreeTreeFileBufs(Obj *o, void **a, void **b, void **c)
+extern "C" void FieldObj_FreeTreeFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c)
 {
     void *heap = gCurrentHeap;
     s32 j, i;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 6; a++, j++) {
             if (*a) {
-                Heap_Free(heap, *a);
+                Heap_Free(heap, (void *)(uptr)*a);
                 *a = 0;
             }
         }
     }
     for (i = 0; i < 3; b++, c++, i++) {
         if (*b) {
-            Heap_Free(heap, *b);
+            Heap_Free(heap, (void *)(uptr)*b);
             *b = 0;
         }
         if (*c) {
-            Heap_Free(heap, *c);
+            Heap_Free(heap, (void *)(uptr)*c);
             *c = 0;
         }
     }
@@ -3638,59 +3698,59 @@ extern "C" void FieldObj_FreeTreeFileBufs(Obj *o, void **a, void **b, void **c)
 }
 
 namespace ns_0221ede8 {
-extern "C" void FieldObj_FreeCedarFileBufs(Obj *o, void **a, void **b, void **c)
+extern "C" void FieldObj_FreeCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c)
 {
     void *heap = gCurrentHeap;
     s32 i;
     for (i = 0; i < 6; a++, i++) {
         if (*a) {
-            Heap_Free(heap, *a);
+            Heap_Free(heap, (void *)(uptr)*a);
             *a = 0;
         }
     }
     if (*b) {
-        Heap_Free(heap, *b);
+        Heap_Free(heap, (void *)(uptr)*b);
         *b = 0;
     }
     if (*c) {
-        Heap_Free(heap, *c);
+        Heap_Free(heap, (void *)(uptr)*c);
         *c = 0;
     }
 }
 }
 
 namespace ns_0221ede8 {
-extern "C" void FieldObj_FreeLitCedarFileBufs(Obj *o, void **a, void **b)
+extern "C" void FieldObj_FreeLitCedarFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b)
 {
     void *heap = gCurrentHeap;
     if (*a) {
-        Heap_Free(heap, *a);
+        Heap_Free(heap, (void *)(uptr)*a);
         *a = 0;
     }
     if (*b) {
-        Heap_Free(heap, *b);
+        Heap_Free(heap, (void *)(uptr)*b);
         *b = 0;
     }
 }
 }
 
 namespace ns_0221ede8 {
-extern "C" void FieldObj_FreePalmFileBufs(Obj *o, void **a, void **b, void **c)
+extern "C" void FieldObj_FreePalmFileBufs(Obj *o, FileBufSlot *a, FileBufSlot *b, FileBufSlot *c)
 {
     void *heap = gCurrentHeap;
     s32 i;
     for (i = 0; i < 6; a++, i++) {
         if (*a) {
-            Heap_Free(heap, *a);
+            Heap_Free(heap, (void *)(uptr)*a);
             *a = 0;
         }
     }
     if (*b) {
-        Heap_Free(heap, *b);
+        Heap_Free(heap, (void *)(uptr)*b);
         *b = 0;
     }
     if (*c) {
-        Heap_Free(heap, *c);
+        Heap_Free(heap, (void *)(uptr)*c);
         *c = 0;
     }
 }
@@ -3738,7 +3798,7 @@ extern "C" BOOL FieldObj_LoadTrees()
             }
         }
     }
-    FieldObj_FreeTreeFileBufs(gFieldObjectManager, (void **)l_114, (void **)l_48, (void **)l_60);
+    FieldObj_FreeTreeFileBufs(gFieldObjectManager, (FileBufSlot *)l_114, (FileBufSlot *)l_48, (FileBufSlot *)l_60);
     FieldObj_ClearCedarPalmFileBufs(gFieldObjectManager, l_6c, l_84, l_c, l_10, l_14, l_18);
     if (FieldObj_LoadCedarTextures(gFieldObjectManager, l_6c, l_84)) {
         if (FieldObj_LoadCedarPalettes(gFieldObjectManager, l_c, l_10, l_14, l_18)) {
@@ -3751,7 +3811,7 @@ extern "C" BOOL FieldObj_LoadTrees()
             }
         }
     }
-    FieldObj_FreeCedarFileBufs(gFieldObjectManager, (void **)l_84, (void **)l_10, (void **)l_18);
+    FieldObj_FreeCedarFileBufs(gFieldObjectManager, (FileBufSlot *)l_84, (FileBufSlot *)l_10, (FileBufSlot *)l_18);
     FieldObj_ClearLitCedarFileBufs(gFieldObjectManager, l_1c, l_20, l_24, l_28);
     if (FieldObj_LoadLitCedarTexture(gFieldObjectManager, l_1c, l_20)) {
         if (FieldObj_LoadLitCedarPalette(gFieldObjectManager, l_24, l_28)) {
@@ -3760,7 +3820,7 @@ extern "C" BOOL FieldObj_LoadTrees()
             }
         }
     }
-    FieldObj_FreeLitCedarFileBufs(gFieldObjectManager, (void **)l_20, (void **)l_28);
+    FieldObj_FreeLitCedarFileBufs(gFieldObjectManager, (FileBufSlot *)l_20, (FileBufSlot *)l_28);
     FieldObj_ClearCedarPalmFileBufs(gFieldObjectManager, l_9c, l_b4, l_2c, l_30, l_34, l_38);
     if (FieldObj_LoadPalmTextures(gFieldObjectManager, l_9c, l_b4)) {
         if (FieldObj_LoadCedarPalettes(gFieldObjectManager, l_2c, l_30, l_34, l_38)) {
@@ -3773,7 +3833,7 @@ extern "C" BOOL FieldObj_LoadTrees()
             }
         }
     }
-    FieldObj_FreePalmFileBufs(gFieldObjectManager, (void **)l_b4, (void **)l_30, (void **)l_38);
+    FieldObj_FreePalmFileBufs(gFieldObjectManager, (FileBufSlot *)l_b4, (FileBufSlot *)l_30, (FileBufSlot *)l_38);
     if (r7 && r4 && r6) {
         return TRUE;
     }
@@ -4141,7 +4201,7 @@ extern "C" {
 BOOL _ZN18FieldObjectManager8onCreateEv(Obj *o) {
     BOOL r = FALSE;
     if (sFieldObjectModelHeap == NULL) {
-        sFieldObjectModelHeap = ExpHeap_CreateInPlace(sFieldObjectModelHeapBuf, (u32)(sFieldObjectModelHeapBuf + 0x21400) - (u32)sFieldObjectModelHeapBuf);
+        sFieldObjectModelHeap = ExpHeap_CreateInPlace(sFieldObjectModelHeapBuf, (u32)(sFieldObjectModelHeapBuf + FIELDOBJ_MODEL_HEAP_SIZE) - (u32)sFieldObjectModelHeapBuf);
     }
     if (sFieldObjectAnimHeap == NULL) {
         sFieldObjectAnimHeap = ExpHeap_Create(0x8c00, gCurrentHeap);
@@ -4800,11 +4860,11 @@ s32 _ZN18FieldObjectManager6onDrawEv(u8 *self) {
     u8 *a = gSceneBlockMap;
     u8 *b = gCamera;
     if (a != 0 && b != 0) {
-        s32 *cnt = (s32 *)(self + 0x6a6c);
+        s32 *cnt = (s32 *)(HOST_AT((FieldObjectManager *)(self), 0x6a6c, frameCounter, 0));
         *cnt = (*cnt + 1) % 60;
         FieldObj_DrawUnits((O *)self, a);
         FieldItemFxTable_Draw(sFieldItemFxTable);
-        TreeAnimSet_Draw(self + 0x4b20);
+        TreeAnimSet_Draw(HOST_AT((FieldObjectManager *)(self), 0x4b20, treeAnimSet, 0));
     }
     return 1;
 }
@@ -4823,11 +4883,11 @@ BOOL FieldObjectManager::onDelete() {
     using ns_0221cb54::TreeAnimSet_Release;
     u8 *self = (u8 *)this;
 
-    ModelSet_Release(self + 0x4ae0);
-    ModelSet_Release(self + 0x4af0);
-    ModelSet_Release(self + 0x4b00);
-    ModelSet_Release(self + 0x4b10);
-    TreeAnimSet_Release(self + 0x4b20);
+    ModelSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4ae0, iconModelSet, 0));
+    ModelSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4af0, dandelionModelSet, 0));
+    ModelSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4b00, stoneModelSet, 0));
+    ModelSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4b10, stumpModelSet, 0));
+    TreeAnimSet_Release(HOST_AT((FieldObjectManager *)(self), 0x4b20, treeAnimSet, 0));
     FieldItemFxTable_Release(sFieldItemFxTable);
     PendingUnits_Flush();
     if (sFieldObjectModelHeap != 0) {
@@ -5041,7 +5101,7 @@ namespace ns_0221cb54 {
 extern "C" {
 void Tree_RequestShake(void *o, P2 pos, s32 mode) {
     if (Tree_BeginReaction(o, pos)) {
-        TreeAnimSet_Request(gFieldObjectManager + 0x4b20, o, pos, mode, 0);
+        TreeAnimSet_Request(HOST_AT((FieldObjectManager *)(gFieldObjectManager), 0x4b20, treeAnimSet, 0), o, pos, mode, 0);
     }
 }
 }
@@ -5101,7 +5161,7 @@ void Tree_RequestChop(void *o, P2 pos, s32 mode) {
             }
             break;
         }
-        TreeAnimSet_Request(gFieldObjectManager + 0x4b20, o, pos, mode, 1);
+        TreeAnimSet_Request(HOST_AT((FieldObjectManager *)(gFieldObjectManager), 0x4b20, treeAnimSet, 0), o, pos, mode, 1);
     }
 }
 }
@@ -5471,10 +5531,10 @@ Elem2 *TreeAnim_Construct(Elem2 *self) {
 namespace ns_0221c220 {
 extern "C" {
 Big *TreeAnimSet_Construct(Big *self) {
-    func_02135714(self, 12, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
-    func_02135714(self->cedarAnims, 4, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
-    func_02135714(self->litCedarAnims, 3, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
-    func_02135714(self->palmAnims, 4, 0x14c, (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self, 12, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self->cedarAnims, 4, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self->litCedarAnims, 3, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
+    func_02135714(self->palmAnims, 4, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Construct, (void *)TreeAnim_Destruct);
     {
         TreeAnimRequest *s = self->requests;
         do {
@@ -5491,10 +5551,10 @@ Big *TreeAnimSet_Construct(Big *self) {
 namespace ns_0221c220 {
 extern "C" {
 Big *_ZN11TreeAnimSetD1Ev(Big *self) {
-    func_021355f0(self->palmAnims, 4, 0x14c, (void *)TreeAnim_Destruct);
-    func_021355f0(self->litCedarAnims, 3, 0x14c, (void *)TreeAnim_Destruct);
-    func_021355f0(self->cedarAnims, 4, 0x14c, (void *)TreeAnim_Destruct);
-    func_021355f0(self, 12, 0x14c, (void *)TreeAnim_Destruct);
+    func_021355f0(self->palmAnims, 4, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Destruct);
+    func_021355f0(self->litCedarAnims, 3, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Destruct);
+    func_021355f0(self->cedarAnims, 4, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Destruct);
+    func_021355f0(self, 12, HOST_SIZED(0x14c, ::TreeAnim), (void *)TreeAnim_Destruct);
     return self;
 }
 }
@@ -5578,6 +5638,23 @@ void TreeAnimSet_Release(Big *self) {
 
 namespace ns_0221c220 {
 extern "C" {
+#ifdef HOST
+// (by the members of TreeAnimSet: the animations are larger on 64-bit hosts)
+u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
+    ::TreeAnimSet *s = (::TreeAnimSet *)self;
+    BOOL f = FALSE;
+    u32 t = *p;
+    if (t >= 0x2f && t <= 0x56) f = TRUE;
+    if (f) return (u8 *)(&s->treeAnims[2][0] + a);
+    if (t >= 0x57 && t <= 0x5b) return (u8 *)(&s->treeAnims[b][0] + a);
+    if (t == 0x69) return (u8 *)(&s->treeAnims[2][0] + a);
+    if (t >= 0x6a && t <= 0x6c) return (u8 *)(s->cedarAnims + a);
+    if (t == 0x6d) return (u8 *)(s->cedarAnims + a);
+    if (t >= 0x5d && t <= 0x61) return (u8 *)(s->cedarAnims + a);
+    if (t >= 0xc8 && t <= 0xcf) return (u8 *)(s->palmAnims + a);
+    return (u8 *)(&s->treeAnims[b][0] + a);
+}
+#else
 u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
     BOOL f = FALSE;
     u32 t = *p;
@@ -5591,6 +5668,7 @@ u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
     if (t >= 0xc8 && t <= 0xcf) return (u8 *)self + 0x18a4 + a * 0x14c;
     return (u8 *)self + b * 0x530 + a * 0x14c;
 }
+#endif
 }
 }
 
@@ -5753,7 +5831,7 @@ void Tree_KeepShaking(s32 id, s32 *pos) {
             }
             n = Item_GetTreeStage(cell);
             if (n > 0 && n <= 4) {
-                e = TreeAnimSet_GetInstance(gFieldObjectManager + 0x4b20, cell, n - 1, (pos[0] ^ pos[1]) & 1);
+                e = TreeAnimSet_GetInstance(HOST_AT((FieldObjectManager *)(gFieldObjectManager), 0x4b20, treeAnimSet, 0), cell, n - 1, (pos[0] ^ pos[1]) & 1);
                 if (e != 0 && pos[0] == e->unit.x && pos[1] == e->unit.z && id == e->sessionSlot) {
                     e->playMode = 0;
                 }

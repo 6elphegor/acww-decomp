@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "sys/CardCommon.h"
 #include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
@@ -145,8 +146,8 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
         }
         if (m->id == 8 || m->id == 12) {
             if (m->id == 8) {
-                r5 = (u8 *)m + 10;
-                r4 = (u8 *)m + 20;
+                r5 = HOST_AT(m, 10, f08, 2);
+                r4 = HOST_AT(m, 20, _14[0], 0);
                 r8 = m->f08w;
                 r7 = m->f10;
                 r6 = 0;
@@ -155,7 +156,7 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
                 r8 = m->f08w;
                 r6 = m->f10;
                 r4 = (u8 *)r7;
-                r5 = (u8 *)m + 10;
+                r5 = HOST_AT(m, 10, f08, 2);
             }
             if (r8 == 7 || r8 == 9) {
                 u16 i;

@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -3395,7 +3396,7 @@ extern "C" void FishShadow_Despawn(void *a, s32 idx) {
         } else if (s->spawnState == 1) {
             s->spawnState = 4;
         }
-        s32 *p208 = (s32 *)((u8 *)s + 0x208);
+        s32 *p208 = (s32 *)(HOST_AT(s, 0x208, spawnBlock.x, 0));
         p208[0] = idx;
         p208[1] = 0;
         if (s->bobber != 0) {
@@ -3452,10 +3453,10 @@ BOOL FieldFishManager::onCreate() {
         s32 *p208 = &s->spawnBlock.x;
         p208[0] = i;
         p208[1] = z;
-        *((u8 *)s + 0x211) = i;
-        *(u16 *)((u8 *)s + 0x212) = i * 0x190 + 0x960;
+        *(HOST_AT(s, 0x211, slotIndex, 0)) = i;
+        *(u16 *)(HOST_AT(s, 0x212, respawnTimer, 0)) = i * 0x190 + 0x960;
         SndSeEmitter_callInit(s);
-        SndEnvChannel_callReset((u8 *)s + 0x40);
+        SndEnvChannel_callReset(HOST_AT(s, 0x40, envChannel[0], 0));
         s++;
         i++;
     } while (i < 6);

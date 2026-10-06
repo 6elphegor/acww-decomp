@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "player/PlayerErrandsInviteView.h"
@@ -1064,7 +1065,7 @@ void HouseVisitVillager::execVisitWander() {
     if (pv != NULL) {
         d = Vec_DistXZ(pv, &position);
     }
-    if ((*((u8 *)this + 0x508)) != 0 || (visitState != 6 && d < 0x2334)) {
+    if ((*(HOST_AT(this, 0x508, collider.isHit, 0))) != 0 || (visitState != 6 && d < 0x2334)) {
         if (NpcActionCtrl_getAction(&actionCtrl) == 1 || visitState == 3) {
             if (NpcActionCtrl_requestStand(&actionCtrl, 2, data_020c6cc8)) {
                 setVisitWalkSpeed();
@@ -1197,12 +1198,12 @@ void HouseVisitVillager::execVisitLeave() {
 
 void HouseVisitVillager::onTalkMelodyPlayed() {
     using namespace sA;
-    (*((u8 *)this + 0x893)) = 1;
+    (*(HOST_AT(this, 0x893, mood.severeSickness, 0))) = 1;
 }
 
 BOOL HouseVisitVillager::canPlayTalkMelody() {
     using namespace sA;
-    if ((*((u8 *)this + 0x893)) == 0) {
+    if ((*(HOST_AT(this, 0x893, mood.severeSickness, 0))) == 0) {
         return TRUE;
     }
     return FALSE;

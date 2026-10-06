@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/sp2
 // ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
 // (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
@@ -271,14 +272,14 @@ extern "C" ActorProfile sRoomTelephoneProfile = { (void *(*)())RoomTelephone_Cre
 extern "C" void RoomTelephone_PlayAnimHold() {
     RoomTelephone *g = sRoomTelephone;
     if (g) {
-        BlendAnimModel_initAnim(&sRoomTelephone->model, RoomObjRes_GetBca(&g->res, 0), 1, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
+        BlendAnimModel_initAnim(&sRoomTelephone->model, RoomObjRes_GetBca(&g->res, 0), 1, 0x1000, ((Unk_ov004_02229660_Bits *)(HOST_AT(g, 0x18c, model.numFrames, 0)))->mid, 0);
     }
 }
 
 extern "C" void RoomTelephone_PlayAnimHangUp() {
     RoomTelephone *g = sRoomTelephone;
     if (g) {
-        BlendAnimModel_initAnim(&sRoomTelephone->model, RoomObjRes_GetBca(&g->res, 0), 3, 0x1000, ((Unk_ov004_02229660_Bits *)((u8 *)g + 0x18c))->mid, 0);
+        BlendAnimModel_initAnim(&sRoomTelephone->model, RoomObjRes_GetBca(&g->res, 0), 3, 0x1000, ((Unk_ov004_02229660_Bits *)(HOST_AT(g, 0x18c, model.numFrames, 0)))->mid, 0);
     }
 }
 

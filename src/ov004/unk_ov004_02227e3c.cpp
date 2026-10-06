@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "game/BoxCollider.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
@@ -467,8 +468,8 @@ void RecycleBox::onMessageEnd(u32) {
 void RecycleBox::onChoice(u32 a) {}
 
 void RecycleBox::initCollision() {
-    BoxCollider_Register(collider, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
-    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (VecFx32 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
+    BoxCollider_Register(collider, 0x2000, 0x4000, 0x2000, HOST_AT(this, 0x5c, position.x, 0), 0, 0);
+    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (VecFx32 *)(HOST_AT(this, 0x5c, position.x, 0)), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
 }
 
 void RecycleBox::removeCollision() {

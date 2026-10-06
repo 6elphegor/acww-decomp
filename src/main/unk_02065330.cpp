@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "talk/EncodedString.h"
 #include "talk/MsgString33B.h"
@@ -149,7 +150,7 @@ extern "C" void LetterParty_GetNameBytes(LetterParty *self, void *out) {
         break;
     case 1:
     case 2:
-        Mem_Copy((u8 *)self + 0xc, out, 8);
+        Mem_Copy(HOST_AT(self, 0xc, unk_04[8], 0), out, 8);
         break;
     case 3:
         VillagerId_CopyFrom(&c, self);
@@ -573,7 +574,7 @@ u32 EncodedString128::capacity() {
 // ---- EncodedString128 (vtable owner)
 
 u8 *EncodedString128::data() {
-    return (u8 *)this + 0xe;
+    return HOST_AT(this, 0xe, text[0], 0);
 }
 
 // ---- bss (in __sinit construction order)

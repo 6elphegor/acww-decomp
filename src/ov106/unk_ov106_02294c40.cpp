@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
@@ -895,7 +896,7 @@ void MailboxMenu::mainAct06() {
                 if (t >= 0) {
                     if (testFlags(0x10000) == 0 || t != 0) {
                         u32 r;
-                        popupChoice = ((u8 *)this + 0x2595)[t];
+                        popupChoice = (HOST_AT(this, 0x2595, choiceList.values[0], 0))[t];
                         r = 1;
                         if (popupChoice == 2) {
                             r = 0;
@@ -1053,7 +1054,7 @@ void MailboxMenu::mainAct0B() {
 void MailboxMenu::mainAct0C() {
     if (((HandCursor *)&cursor)->isAnimDone()) {
         u32 r;
-        popupChoice = ((u8 *)this + 0x2595)[popupRow];
+        popupChoice = (HOST_AT(this, 0x2595, choiceList.values[0], 0))[popupRow];
         r = 1;
         if (popupChoice == 2) {
             r = 0;

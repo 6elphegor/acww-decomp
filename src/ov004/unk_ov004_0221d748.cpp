@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 
 
@@ -111,7 +112,7 @@ extern u16 data_020c6cc8;
 extern u8 gSaveVillagers[];
 extern u8 *sSpNpcBookerModelPath;
 extern u8 *sSpNpcBookerTexturePath;
-extern u32 sSpNpcBookerMsgFiles[];
+extern uptr sSpNpcBookerMsgFiles[];
 extern SpNpcBookerTalkScript sSpNpcBookerTalkScripts[];
 extern SpNpcBookerActEntry sSpNpcBookerActTable[];
 // 0x02250b58 is a label inside the 0x70-byte table (second ptmf of entry 0)
@@ -745,7 +746,7 @@ extern "C" void _ZN11SpNpcBooker9mainAct06Ev();
 extern "C" u8 data_ov004_0224d1e0[19] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'g', 'a', 't', 'e', 'k', 'e', 'e', 'p', 'e', 'r', '2', 0};
 extern "C" u8 data_ov004_0224d1f4[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'l', 'a', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 data_ov004_0224d224[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'l', 'a', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" u32 sSpNpcBookerMsgFiles[1] = {(u32)data_ov004_0224d1e0};
+extern "C" uptr sSpNpcBookerMsgFiles[1] = {(uptr)data_ov004_0224d1e0};
 extern "C" u8 *sSpNpcBookerModelPath = data_ov004_0224d1f4;
 extern "C" u8 *sSpNpcBookerTexturePath = data_ov004_0224d224;
 extern "C" ActorProfile sSpNpcBookerProfile = {(void *(*)())SpNpcBooker_Create, 0x73, 0x78, 2, 0x5000, 0x5000, 0x3e800};

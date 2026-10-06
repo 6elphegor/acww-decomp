@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/EncodedString.h"
@@ -47,7 +48,7 @@ MsgString9C::~MsgString9C() {}
 
 u32 MsgString9C::capacity() { return 9; }
 
-u8 *MsgString9C::data() { return (u8 *)this + 0x12; }
+u8 *MsgString9C::data() { return HOST_AT(this, 0x12, text[0], 0); }
 
 EncodedString8B::EncodedString8B() {}
 

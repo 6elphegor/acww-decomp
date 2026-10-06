@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "sys/ClockDateTime.h"
 #include "game/Unk_020702ec_Date.h"
@@ -113,15 +114,15 @@ u8 *MuseumData::getEntry(u16 *id, s32 *out) {
     }
     if (v >= 0x3894 && v <= 0x38e3) {
         if (out) *out = (v >= 0x3894 && v <= 0x38e3) ? (v - 0x3894) >> 2 : -1;
-        return (u8 *)this + 0x55;
+        return HOST_AT(this, 0x55, paintingDonors[0], 0);
     }
     if (v >= 0x12b0 && v <= 0x12e7) {
         if (out) *out = (v >= 0x12b0 && v <= 0x12e7) ? v - 0x12b0 : -1;
-        return (u8 *)this + 0x38;
+        return HOST_AT(this, 0x38, insectDonors[0], 0);
     }
     if (v >= 0x12e8 && v <= 0x131f) {
         if (out) *out = (v >= 0x12e8 && v <= 0x131f) ? v - 0x12e8 : -1;
-        return (u8 *)this + 0x1b;
+        return HOST_AT(this, 0x1b, fishDonors[0], 0);
     }
     return 0;
 }

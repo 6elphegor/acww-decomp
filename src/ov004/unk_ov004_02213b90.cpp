@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/sp2
 // ov004 TU05: .text 0x02213b90-0x02214948 (class MuseumExhibitInfo). The switch function
 // MuseumExhibitInfo::buildItemList needs mwcc 1.2/base and is in the _switch file (object order).
@@ -406,8 +407,8 @@ void MuseumExhibitInfo::onInteractionEvent(u32 a, u8 b) {
 BOOL MuseumExhibitInfo::acceptsInteraction(void *a0) {
     Actor *a = (Actor *)a0;
     if (a) {
-        if (Vec_DistXZ(&a->position, (u8 *)this + 0x5c) < 0x2333) {
-            if (Math_AngleDiffAbs((s16)(*(s16 *)((u8 *)this + 0x8e) + 0x8000), a->rotY) < facingArc) {
+        if (Vec_DistXZ(&a->position, HOST_AT(this, 0x5c, position.x, 0)) < 0x2333) {
+            if (Math_AngleDiffAbs((s16)(*(s16 *)(HOST_AT(this, 0x8e, rotY, 0)) + 0x8000), a->rotY) < facingArc) {
                 return TRUE;
             }
         }

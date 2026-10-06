@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "sys/StackPad.h"
@@ -891,7 +892,7 @@ BOOL Snowball::acceptsInteraction(void *a) {
     clearTalkStartMode();
     lim = func_01ffcb0c(0x2000, FX_Div(0x7d000, 0x64000));
     if (a) {
-        if (Vec_DistXZ((u8 *)a + 0x5c, (u8 *)this + 0x5c) < lim) {
+        if (Vec_DistXZ((u8 *)a + 0x5c, HOST_AT(this, 0x5c, position.x, 0)) < lim) {
             if (snowballState == 11) return TRUE;
         }
     }

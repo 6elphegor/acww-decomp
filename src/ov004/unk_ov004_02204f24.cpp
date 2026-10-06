@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -965,7 +966,11 @@ FtrActor::~FtrActor() {
 // @02209578
 BOOL FtrActor::onCreate() {
     FtrSpawnArgBuf l;
+#ifdef HOST
+    *(u32 *)&l = param;  // (ProcBase::param: the spawn parameter)
+#else
     *(u32 *)&l = *(u32 *)((u8 *)this + 8);
+#endif
     u32 t = l.mode;
     spawnMode = t;
     FtrActorTable_add(FtrActorTable_GetInstance(), this);
@@ -1101,7 +1106,7 @@ BOOL FtrActor::postDelete(s32 a) {
             }
         }
         ((FtrModelRes *)(modelRes))->release();
-        ModelSlotPool_release(sFtrMgrPool, (u8 *)this + 0x12e);
+        ModelSlotPool_release(sFtrMgrPool, HOST_AT(this, 0x12e, modelSlot, 0));
         if (isRemoving()) {
             s32 x, y;
             findOwnTile(&x, &y, 0, 0);
@@ -2764,7 +2769,7 @@ void FtrCollider::slideOwnerForWideFtr(Actor *b) {
     FtrActor *o;
     VecFx32Ctor tmp[2];
     o = (FtrActor *)owner;
-    if (*(s32 *)((u8 *)o + 0x780) == 1) {
+    if (*(s32 *)(HOST_AT(o, 0x780, footprint, 0)) == 1) {
         static FxVec3 tbl0[2] = {FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0)};
         static FxVec3 tbl1[2] = {FxVec3(0, 0, 0), FxVec3(0x2000, 0, 0)};
         static FxVec3 one(0x2000, 0, 0);

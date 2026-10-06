@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/NetCheck.h"
@@ -473,7 +474,7 @@ void DwcCore_Process() {
         DwcNet_ProcessSend();
         DwcFriend_Process();
         s = G;
-        if (*(volatile u8 *)((u8 *)s + 0x351) == 2 || *(volatile u8 *)((u8 *)s + 0x351) == 3) {
+        if (*(volatile u8 *)(HOST_AT(s, 0x351, matchControl.matchType, 0)) == 2 || *(volatile u8 *)(HOST_AT(s, 0x351, matchControl.matchType, 0)) == 3) {
             DwcMatch_Process(1);
         } else if (s->transportSocket != 0) {
             DwcMatch_Process(0);
@@ -599,7 +600,7 @@ s32 DwcConn_CloseAllConnections() {
     if (G == 0 || DwcCore_HasError() != 0 || (s = G, s->state != 5 && s->state != 6)) {
         return -1;
     }
-    if (*((u8 *)s + 0x349) == 0) {
+    if (*(HOST_AT(s, 0x349, matchControl.numClients, 0)) == 0) {
         DwcFriend_SetOwnStatus(1, (void *)"", 0);
         NNFreeNegotiateList();
         DwcCore_SetState(3);
@@ -719,7 +720,7 @@ s32 DwcConn_CreateGt2Socket() {
     }
     h = (u16)(DwcNet_Rand32(0x4000) + 0xc000);
     s = G;
-    r = gt2CreateSocket(G, gt2AddressToString(0, h, 0), *(u32 *)((u8 *)s + 0x14), *(u32 *)((u8 *)s + 0x18), DwcConn_OnGt2SocketError);
+    r = gt2CreateSocket(G, gt2AddressToString(0, h, 0), *(u32 *)(HOST_AT(s, 0x14, gt2SendBufferSize, 0)), *(u32 *)(HOST_AT(s, 0x18, gt2RecvBufferSize, 0)), DwcConn_OnGt2SocketError);
     if (DwcConn_HandleGt2Result(r) != 0) {
         return r;
     }
@@ -1043,7 +1044,7 @@ void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4) {
                 sDwcControl->myAid = sDwcControl->matchControl.aids[i];
                 break;
                 }
-                g = (DwcControl *)((u8 *)g + 4);
+                g = (DwcControl *)(HOST_AT(g, 4, gt2ConnectedCallback, 0));
                 i++;
             } while (i <= *(volatile u8 *)&h->matchControl.numClients);
         }

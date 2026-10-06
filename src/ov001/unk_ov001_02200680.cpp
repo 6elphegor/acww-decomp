@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/SockAddrIn.h"
@@ -513,7 +514,7 @@ again:
         goto again;
     }
     len48 = 8;
-    r = Aoss_RecvFrom(sAossSocket, (s32)((u8 *)buf + 0xc), 0x5dc, z, (u8 *)sa40, &len48);
+    r = Aoss_RecvFrom(sAossSocket, (s32)(HOST_AT(buf, 0xc, unk_0c[0], 0)), 0x5dc, z, (u8 *)sa40, &len48);
     buf->sock = sAossSocket;
     buf->recvLength = (u32)Aoss_Ntohs((u16)r);
     res = Aoss_HandleRecvPacket(state, (u8 *)buf, &tries, st64, sAossSocket);

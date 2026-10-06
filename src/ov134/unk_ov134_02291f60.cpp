@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "ui/ScrollKnob.h"
@@ -159,14 +160,14 @@ extern "C" const u32 sFieldLeftDefault[6];
 extern "C" const u32 sFieldLeftTime[6];
 extern "C" const u32 sFieldTopBirthday[6];
 extern "C" const u32 sFieldTopTime[6];
-extern "C" u32 sObjVariantFiles[1];
+extern "C" uptr sObjVariantFiles[1];
 extern "C" u32 data_ov134_02294d44[2];
 extern "C" u32 data_ov134_02294d4c[2];
 extern "C" u32 data_ov134_02294d54[4];
-extern "C" u32 sBgPaletteFiles[4];
+extern "C" uptr sBgPaletteFiles[4];
 extern "C" u32 data_ov134_02294d74[4];
 extern "C" u32 data_ov134_02294d84[4];
-extern "C" u32 sFieldScreenFiles[4];
+extern "C" uptr sFieldScreenFiles[4];
 extern "C" u32 data_ov134_02294da4[4];
 extern "C" u32 data_ov134_02294db4[4];
 extern "C" u32 data_ov134_02294dc4[4];
@@ -179,15 +180,15 @@ extern "C" char data_ov134_02294e3c[22];
 extern "C" char data_ov134_02294e54[22];
 extern "C" char data_ov134_02294e6c[22];
 extern "C" u32 data_ov134_02294e84[6];
-extern "C" u32 data_ov134_02294e9c[6];
+extern "C" uptr data_ov134_02294e9c[6];
 extern "C" u32 data_ov134_02294eb4[6];
 extern "C" u32 data_ov134_02294ecc[6];
 extern "C" u32 data_ov134_02294ee4[6];
 extern "C" u32 data_ov134_02294efc[6];
-extern "C" u32 data_ov134_02294f14[6];
-extern "C" u32 data_ov134_02294f2c[6];
+extern "C" uptr data_ov134_02294f14[6];
+extern "C" uptr data_ov134_02294f2c[6];
 extern "C" u32 data_ov134_02294f44[6];
-extern "C" u32 data_ov134_02294f5c[6];
+extern "C" uptr data_ov134_02294f5c[6];
 extern "C" char data_ov134_02294f74[30];
 extern "C" u32 data_ov134_02294f94[8];
 extern "C" u32 data_ov134_02294fb4[8];
@@ -1957,11 +1958,11 @@ void DateTimePicker::clearFlags(u32 m) {
 
 extern "C" u32 data_ov134_02294dc4[4] = {0x80004000, 0x50cb, 0x208000, 0xffff50cf};
 extern "C" u32 data_ov134_02294fb4[8] = {0x81e84004, 0x6554, 0x41e84014, 0x6594, 0x81c84004, 0x6554, 0x41c84014, 0xffff6594};
-extern "C" u32 sObjVariantFiles[1] = {(u32)data_ov134_02294f74};
+extern "C" uptr sObjVariantFiles[1] = {(uptr)data_ov134_02294f74};
 extern "C" char data_ov134_02294e3c[22] = "menu/clock/bgb_us.bsc";
 extern "C" u32 data_ov134_02294d44[2] = {0xc19800b3, 0xffff44c0};
 extern "C" u32 data_ov134_02294d4c[2] = {0x80004000, 0xffff50cb};
-extern "C" u32 data_ov134_02294f5c[6] = {(u32)data_ov134_02294d4c, (u32)data_ov134_02294d84, (u32)data_ov134_02294dc4, (u32)data_ov134_02294da4, (u32)data_ov134_02294da4, (u32)data_ov134_02294ee4};
+extern "C" uptr data_ov134_02294f5c[6] = {(uptr)data_ov134_02294d4c, (uptr)data_ov134_02294d84, (uptr)data_ov134_02294dc4, (uptr)data_ov134_02294da4, (uptr)data_ov134_02294da4, (uptr)data_ov134_02294ee4};
 extern "C" u32 data_ov134_02294fd4[8] = {0x80004004, 0x6554, 0x40004014, 0x6594, 0x800f4004, 0x6554, 0x400f4014, 0xffff6594};
 extern "C" char data_ov134_02294e6c[22] = "menu/clock/bgd_us.bsc";
 extern "C" u32 data_ov134_02294ff4[8] = {0x90264024, 0x6552, 0x50264034, 0x6592, 0x80084024, 0x6552, 0x40084034, 0xffff6592};
@@ -1973,8 +1974,8 @@ extern "C" u32 data_ov134_02294d54[4] = {0x80444023, 0x65b2, 0x40640023, 0xffff6
 extern "C" u32 data_ov134_02294db4[4] = {0x8044402b, 0x65b2, 0x4064002b, 0xffff65b6};
 extern "C" u32 data_ov134_02295204[28] = {0x268000, 0x84ca, 0x1e88000, 0x84ca, 0x81c740fc, 0x8554, 0x41c7400c, 0x8594, 0x81e740fc, 0x8554, 0x41e7400c, 0x8594, 0x801740fc, 0x8554, 0x4017400c, 0x8594, 0x81f740fc, 0x8554, 0x41f7400c, 0x8594, 0x903740fc, 0x8552, 0x5037400c, 0x8592, 0x81a740fc, 0x8552, 0x41a7400c, 0xffff8592};
 extern "C" u32 data_ov134_02295194[12] = {0x800040e8, 0x6108, 0x800a40e8, 0x610c, 0x402800e8, 0x6110, 0x400040f8, 0x6148, 0x400a40f8, 0x614c, 0x2840f8, 0xffff6150};
-extern "C" u32 data_ov134_02294f2c[6] = {(u32)data_ov134_02294efc, (u32)data_ov134_02295054, (u32)data_ov134_02294ecc, (u32)data_ov134_02294eb4, (u32)data_ov134_02294eb4, (u32)data_ov134_02294eb4};
-extern "C" u32 data_ov134_02294f14[6] = {(u32)data_ov134_02295194, (u32)data_ov134_022951c4, (u32)data_ov134_02295164, (u32)data_ov134_02295134, (u32)data_ov134_02295134, (u32)data_ov134_02295134};
+extern "C" uptr data_ov134_02294f2c[6] = {(uptr)data_ov134_02294efc, (uptr)data_ov134_02295054, (uptr)data_ov134_02294ecc, (uptr)data_ov134_02294eb4, (uptr)data_ov134_02294eb4, (uptr)data_ov134_02294eb4};
+extern "C" uptr data_ov134_02294f14[6] = {(uptr)data_ov134_02295194, (uptr)data_ov134_022951c4, (uptr)data_ov134_02295164, (uptr)data_ov134_02295134, (uptr)data_ov134_02295134, (uptr)data_ov134_02295134};
 extern "C" u32 data_ov134_02294efc[6] = {0x80004000, 0x6168, 0x800a4000, 0x616c, 0x40280000, 0xffff6170};
 extern "C" const u32 sFieldTopTime[6] = {0x0, 0xc, 0xc, 0x10, 0x10, 0xc};
 extern "C" u32 data_ov134_02294eb4[6] = {0x80004000, 0x6168, 0x80184000, 0x616c, 0x40380000, 0xffff6170};
@@ -1991,9 +1992,9 @@ extern "C" char data_ov134_02294e54[22] = "menu/clock/bgc_us.bsc";
 extern "C" u32 data_ov134_02295014[8] = {0x9024401c, 0x6552, 0x5024402c, 0x6592, 0x800c401c, 0x6552, 0x400c402c, 0xffff6592};
 extern "C" const u8 sFieldNameTextIds[6] = {0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xaa};
 extern "C" u32 data_ov134_02295134[12] = {0x800040e8, 0x6108, 0x801840e8, 0x610c, 0x403800e8, 0x6110, 0x400040f8, 0x6148, 0x401840f8, 0x614c, 0x3840f8, 0xffff6150};
-extern "C" u32 sBgPaletteFiles[4] = {(u32)data_ov134_02294dd4, (u32)data_ov134_02294de8, (u32)data_ov134_02294dfc, (u32)data_ov134_02294e10};
+extern "C" uptr sBgPaletteFiles[4] = {(uptr)data_ov134_02294dd4, (uptr)data_ov134_02294de8, (uptr)data_ov134_02294dfc, (uptr)data_ov134_02294e10};
 extern "C" u32 data_ov134_02295164[12] = {0x800040e8, 0x6108, 0x801040e8, 0x610c, 0x403000e8, 0x6110, 0x400040f8, 0x6148, 0x401040f8, 0x614c, 0x3040f8, 0xffff6150};
-extern "C" u32 data_ov134_02294e9c[6] = {(u32)data_ov134_02295074, (u32)data_ov134_02294fb4, (u32)data_ov134_02294fd4, (u32)data_ov134_022950a4, (u32)data_ov134_02294ff4, (u32)data_ov134_02294f94};
+extern "C" uptr data_ov134_02294e9c[6] = {(uptr)data_ov134_02295074, (uptr)data_ov134_02294fb4, (uptr)data_ov134_02294fd4, (uptr)data_ov134_022950a4, (uptr)data_ov134_02294ff4, (uptr)data_ov134_02294f94};
 extern "C" const u32 sFieldLeftBirthday[6] = {0x0, 0x8, 0x12, 0x0, 0x0, 0x0};
 extern "C" u32 data_ov134_02294d74[4] = {0x800a40ee, 0x61aa, 0x802a40ee, 0xffff61ae};
 extern "C" u32 data_ov134_02294ee4[6] = {0x80004000, 0x50cb, 0x40200000, 0x50cf, 0x308000, 0xffff50d1};
@@ -2011,4 +2012,4 @@ extern "C" char data_ov134_02294e10[19] = "menu/clock/bg3.bpl";
 extern "C" u32 data_ov134_02294f44[6] = {0x2e8008, 0x64ca, 0x78008, 0x64ca, 0x1c88008, 0xffff64ca};
 extern "C" const u32 sFieldTopDefault[6] = {0xd, 0xd, 0xd, 0x11, 0x11, 0xd};
 extern "C" char data_ov134_02294de8[19] = "menu/clock/bg1.bpl";
-extern "C" u32 sFieldScreenFiles[4] = {(u32)data_ov134_02294e3c, (u32)data_ov134_02294e54, (u32)data_ov134_02294e6c, (u32)data_ov134_02294e24};
+extern "C" uptr sFieldScreenFiles[4] = {(uptr)data_ov134_02294e3c, (uptr)data_ov134_02294e54, (uptr)data_ov134_02294e6c, (uptr)data_ov134_02294e24};

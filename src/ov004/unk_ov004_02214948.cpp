@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 // ov004 TU06: .text 0x02214948-0x02215f04 (classes BirthdayHostVillager and its member BirthdayHostVillagerTalk)
 #include "types.h"
@@ -354,17 +355,17 @@ void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
     v.y = v.y + 0x2000;
     switch (a) {
     case 3:
-        *((u8 *)this + 0x560) = b;
+        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
         changeAct(4);
         break;
     case 0:
-        *((u8 *)this + 0x560) = b;
+        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
         ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         Camera_FocusOnPoint(&v);
         changeAct(5);
         break;
     case 1:
-        *((u8 *)this + 0x560) = b;
+        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
         ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
         Camera_FocusOnPoint(&v);
         changeAct(8);

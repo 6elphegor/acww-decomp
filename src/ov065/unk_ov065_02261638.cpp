@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
@@ -1631,7 +1632,7 @@ void Udp_Input(IpHeader *p, TcpHeader *q, u32 c) {
             c -= 8;
             if (c > m) k->rxLen = m;
             else k->rxLen = c;
-            MI_CpuCopy8((u8 *)q + 8, k->rxBuf, k->rxLen);
+            MI_CpuCopy8(HOST_AT(q, 8, ackHi, 0), k->rxBuf, k->rxLen);
             if (k->waitReason == 3) {
                 k->waitReason = 0;
                 OS_WakeupThreadDirect(k->ownerThread);

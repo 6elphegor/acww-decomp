@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -2455,9 +2456,9 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
     s32 z0, z1, z2, z3;
     *out = *in;
     g = gSceneBlockMap;
-    m0 = _ZN8BlockMap17getWalkLinksAtPosEPv(g, (V3 *)((u8 *)self + 0x5c));
+    m0 = _ZN8BlockMap17getWalkLinksAtPosEPv(g, (V3 *)(HOST_AT(self, 0x5c, position.x, 0)));
     m1 = _ZN8BlockMap17getWalkLinksAtPosEPv(g, in);
-    FieldPos_SnapToUnitCenter(&a, (V3 *)((u8 *)self + 0x5c));
+    FieldPos_SnapToUnitCenter(&a, (V3 *)(HOST_AT(self, 0x5c, position.x, 0)));
     FieldPos_SnapToUnitCenter(&b, in);
     best = 0;
     a.y = 0;
@@ -2468,7 +2469,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         for (i1 = i1; i1 < 4; i1++) {
             Vec_Add(&t1, &a, (V3 *)(data_020c6dcc + i1 * 12));
             cand1 = t1;
-            d1 = Vec_DistXZ((V3 *)((u8 *)self + 0x5c), &cand1);
+            d1 = Vec_DistXZ((V3 *)(HOST_AT(self, 0x5c, position.x, 0)), &cand1);
             if (_ZN8BlockMap17getWalkLinksAtPosEPv(g, &cand1) && TownMap_IsPosWalkable(&cand1, z0)) {
                 if (bestDist == 0 || bestDist > d1) {
                     bestDist = d1;
@@ -2486,7 +2487,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         best2 = best;
         d0 = Vec_DistXZ(in, &a);
         func_02133ef8(arr, 0x30);
-        u32 ang = *(u16 *)((u8 *)self + 0x8e);
+        u32 ang = *(u16 *)(HOST_AT(self, 0x8e, rotY, 0));
         if (ang >= 0xe000 || ang < 0x2000) {
             dir0 = 2;
             dir1 = 0;
@@ -2533,7 +2534,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
             }
         }
         if (m1 == 0 && best2 > d0) {
-            *out = *(V3 *)((u8 *)self + 0x5c);
+            *out = *(V3 *)(HOST_AT(self, 0x5c, position.x, 0));
         } else {
             Vec_Add(&t4, &a, (V3 *)(data_020c6dcc + best * 12));
             *out = t4;
@@ -2976,7 +2977,7 @@ void NpcMoveCtrl::storeHeadMtx(Unk_02006d14 *p) {
     using namespace nP;
     if (p != 0) {
         Unk_02006d14_TalkBase &s = *p;
-        Model_GetJointWorldMtx(&s, (u8 *)this + 0x2c, 0xf);
+        Model_GetJointWorldMtx(&s, HOST_AT(this, 0x2c, speedPresets[2].z, 0), 0xf);
     }
 }
 
@@ -4828,7 +4829,7 @@ void NpcActionCtrl::act0EStep00(NpcActor *c) {
     using namespace nL;
     if (HandOverItem_IsModeActive(2)) {
         NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-        if (Unk_02017d74_Is((u16 *)((u8 *)c + 0xea), 0xd00c) || HandOverItem_CanTake(c)) {
+        if (Unk_02017d74_Is((u16 *)(HOST_AT(c, 0xea, npcHandle, 0)), 0xd00c) || HandOverItem_CanTake(c)) {
             u16 v = data_020c6cc8;
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
             if (c->curHeldTool) {
@@ -4909,7 +4910,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s
         case 6:
             HandOverItem_End(c);
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
-            Effect_PlayById2(0x61, (u8 *)c + 0x5c, 0, 0);
+            Effect_PlayById2(0x61, HOST_AT(c, 0x5c, position.x, 0), 0, 0);
             Snd_SeEmitterPlayOneShotAlt(&c->seEmitter, 0x76, 0x7f, 0);
             s->actStep = 6;
             break;
@@ -4930,7 +4931,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14(NpcActionCtrl *s
             if (HandOverItem_RequestMode(10, c)) {
                 _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
                 _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x139, 0, 0, 0x1000, 0, 1);
-                ThreeLayerAnimModel_AssignJointsToLayer2((u8 *)c + 0xec, 9, 14);
+                ThreeLayerAnimModel_AssignJointsToLayer2(HOST_AT(c, 0xec, model, 0), 9, 14);
                 _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
                 s->actStep = 0x14;
             }
@@ -4994,12 +4995,12 @@ extern "C" BOOL _ZN13NpcActionCtrl15waitItemAnimEndEP12Unk_02006d14Ptjj(NpcActio
                 c->setShirt((u16 *)p, b);
                 break;
             case 0xd:
-                Effect_Create(0x22, (u8 *)c + 0x5c, 0, 0);
+                Effect_Create(0x22, HOST_AT(c, 0x5c, position.x, 0), 0, 0);
                 break;
             case 3: {
                 s16 t = c->rotY;
-                Effect_Create(0x28, (u8 *)c + 0x490, &t, 0);
-                Effect_Create(0x28, (u8 *)c + 0x484, &t, 0);
+                Effect_Create(0x28, HOST_AT(c, 0x490, jointPos[2].x, 0), &t, 0);
+                Effect_Create(0x28, HOST_AT(c, 0x484, jointPos[1].x, 0), &t, 0);
                 break;
             }
             }
@@ -7388,7 +7389,7 @@ BOOL ActorTalkRequest::switchSpeakerSwap() {
     if (q != 0 && q->state == 5) {
         if (Camera_IsBlending() == 0 || Camera_GetBlendFramesLeft() < 0x11) {
             NpcActor *e = _ZN16ActorTalkRequest9getActorBEj(this, speakerIndex);
-            if (e) _ZN14NpcSpeechState12stopSpeakingEv((u8 *)e + 0x418);
+            if (e) _ZN14NpcSpeechState12stopSpeakingEv(HOST_AT(e, 0x418, speechState.speaking, 0));
             speakerIndex = (speakerIndex + 1) & 1;
             NpcActor *n = _ZN16ActorTalkRequest9getActorBEj(this, speakerIndex);
             if (n != 0) {

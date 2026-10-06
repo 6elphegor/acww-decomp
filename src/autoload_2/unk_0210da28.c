@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) sound library tail: sound-archive stream player (NNS_SndArcStrm*: thread, job queue,
@@ -610,7 +611,7 @@ void FreeChannel(Ctx *c)
 // NNS_SndArcStrmThread create-like (OS_CreateThread + job list, mutex, queue)
 void CreateStrmThread(ThreadInfo *t, u32 prio)
 {
-    OS_CreateThread(t, StrmThreadProc, t, (u8 *)t + 0x4c0, 0x400, prio);
+    OS_CreateThread(t, StrmThreadProc, t, HOST_AT(t, 0x4c0, queue[0], 0), 0x400, prio);
     NNS_FndInitList(&t->list, 0);
     OS_InitMutex(&t->mutex);
     t->queue[1] = 0;

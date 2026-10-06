@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "talk/TalkStartMsg.h"
@@ -1213,7 +1214,7 @@ void SpNpcMabelTalk::onMessageEnd(u32 a) {
         char *s = sSpNpcMabelMsgKeys[0];
         u32 n = strlen(s);
         BOOL r;
-        if (strncmp((u8 *)this + 4, s, n) != 0) {
+        if (strncmp(HOST_AT(this, 4, fileName[0], 0), s, n) != 0) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -1390,7 +1391,7 @@ void SpNpcMabelTalk::onChoice(u32 a) {
         char *s = sSpNpcMabelMsgKeys[0];
         u32 n = strlen(s);
         BOOL r;
-        if (strncmp((u8 *)this + 4, s, n) != 0) {
+        if (strncmp(HOST_AT(this, 4, fileName[0], 0), s, n) != 0) {
             r = TRUE;
         } else {
             r = FALSE;

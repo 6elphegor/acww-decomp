@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "text/Unk_02050288.h"
@@ -483,7 +484,7 @@ LabelString::~LabelString() { destroyLabel(); }
 
 u32 LabelString::capacity() { return 0x2a; }
 
-u8 *LabelString::data() { return (u8 *)this + 0x12; }
+u8 *LabelString::data() { return HOST_AT(this, 0x12, text[0], 0); }
 
 void LabelString::destroyLabel() {
     if (label != NULL) {

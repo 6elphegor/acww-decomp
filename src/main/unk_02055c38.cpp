@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -157,7 +158,7 @@ u32 G3dResAccess::getTexImageOffset(void) {
 }
 
 s32 G3dResAccess::findTexIdx(s32 a) {
-    return G3dRes_FindDictIdx((u8 *)this + 0x3c, a);
+    return G3dRes_FindDictIdx(HOST_AT(this, 0x3c, unk_3c[0], 0), a);
 }
 
 // findTexData and findPlttData take the name to look up (r1, passed through to findTexIdx/findPlttIdx), although
@@ -172,7 +173,7 @@ extern "C" void *_ZN12G3dResAccess11findTexDataEv(G3dResAccess *self, s32 name) 
 }
 
 void *G3dResAccess::getTexData(s32 idx) {
-    u8 *base = (u8 *)this + 0x3c;
+    u8 *base = HOST_AT(this, 0x3c, unk_3c[0], 0);
     u32 off = texDictEntryOffset;
     u8 *list = base + off;
     u8 *data = (u8 *)this + texDataOffset;
@@ -185,7 +186,7 @@ u32 G3dResAccess::getTexSize(s32 idx) {
     if (idx == -1) {
         return 0;
     }
-    u8 *base = (u8 *)this + 0x3c;
+    u8 *base = HOST_AT(this, 0x3c, unk_3c[0], 0);
     u32 off = texDictEntryOffset;
     u8 *list = base + off;
     u32 stride = *(u16 *)(base + off);
@@ -247,7 +248,7 @@ u32 G3dResAccess::getPlttSize(s32 idx) {
 }
 
 u32 G3dResAccess::findNodeIdx(s32 a) {
-    return G3dRes_FindDictIdx((u8 *)this + 0x40, a);
+    return G3dRes_FindDictIdx(HOST_AT(this, 0x40, unk_3c[4], 0), a);
 }
 
 TexPatVramTasks::TexPatVramTasks() {

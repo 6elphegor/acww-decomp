@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "talk/EncodedString16Buf.h"
 #include "talk/LabelBalloonText.h"
 // ov125: scene overlay (class PatternSelectMenu, vtable 0x02298478, 0x6bc bytes).
@@ -665,29 +666,29 @@ void PatternSelectMenu::updateNameLabel() {
 }
 
 void PatternSelectMenu::setPopupChoices() {
-    ChoiceIdList_Clear((u8 *)this + 0x41c, 1);
+    ChoiceIdList_Clear(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 1);
     switch (MenuCtrl_GetMode()) {
     case 5:
     case 8:
     case 9:
-        ChoiceIdList_Add((u8 *)this + 0x41c, 0x91, 0);
+        ChoiceIdList_Add(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 0x91, 0);
         break;
     case 4:
     case 7:
     case 10:
-        ChoiceIdList_Add((u8 *)this + 0x41c, 0x72, 0);
+        ChoiceIdList_Add(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 0x72, 0);
         break;
     default:
-        ChoiceIdList_Add((u8 *)this + 0x41c, 0x28, 0);
+        ChoiceIdList_Add(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 0x28, 0);
         break;
     }
-    ChoiceIdList_Add((u8 *)this + 0x41c, 2, 1);
+    ChoiceIdList_Add(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0), 2, 1);
 }
 
 u32 PatternSelectMenu::getPopupRowValue(u32 i) { return *((u8 *)this + i + 0x421); }
 
 void PatternSelectMenu::openPopup() {
-    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)((u8 *)this + 0x41c), 0);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)(HOST_AT(this, 0x41c, choiceList.msgIds[0], 0)), 0);
     s32 a = getSlotX(selectedSlot) - 0x18;
     s32 b = getSlotY(selectedSlot) - 0x10;
     popup.placeAbove(a, b);

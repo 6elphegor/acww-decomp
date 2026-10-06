@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -634,7 +635,7 @@ BOOL SpNpcLyle::steerAroundObstacle() {
 }
 
 BOOL SpNpcLyle::tryAvoidObstacle() {
-    if (*(u32 *)((u8 *)this + 0x98) != 0 && steerAroundObstacle()) {
+    if (*(u32 *)(HOST_AT(this, 0x98, speed, 0)) != 0 && steerAroundObstacle()) {
         return TRUE;
     }
     return FALSE;

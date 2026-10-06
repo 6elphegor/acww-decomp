@@ -1,3 +1,4 @@
+#include "uptr.h"
 // ov111: scene overlay (class ChatMenu, vtable 0x02298a48, 0x3e58 bytes): a character/name entry screen.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -38,7 +39,7 @@ extern u8 gTouchChanged;
 extern u16 gPad[];
 extern u32 gCommManager;
 extern u32 gCurrentHeap;
-extern u32 sChatSendAnimScreens[];
+extern uptr sChatSendAnimScreens[];
 extern char data_ov111_022989c8[];
 
 void Gfx2d_ShowLayer(s32 v);
@@ -347,7 +348,7 @@ extern "C" char data_ov111_022989c8[];
 extern "C" char data_ov111_022989e0[];
 extern "C" char data_ov111_022989f8[];
 extern "C" char data_ov111_02298a10[];
-extern "C" u32 sChatSendAnimScreens[4];
+extern "C" uptr sChatSendAnimScreens[4];
 
 // Scene registration entry read by main: factory, then two ids
 extern "C" ProcProfile data_ov111_02298920 = {(void *(*)())ChatMenu_Create, 0x9e, 0xa2};
@@ -1579,7 +1580,7 @@ void ChatMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 
 u32 EncodedString32::capacity() { return 0x20; }
 
-u8 *EncodedString32::data() { return (u8 *)this + 0xe; }
+u8 *EncodedString32::data() { return HOST_AT(this, 0xe, text[0], 0); }
 
 // Data definition order is chosen so mwcc emits the objects in the original order
 extern "C" char data_ov111_022989c8[] = "menu/chat2/b_cht.bsc";
@@ -1590,4 +1591,4 @@ extern "C" char data_ov111_022989f8[] = "menu/chat2/b_cht_1.bsc";
 
 extern "C" char data_ov111_02298a10[] = "menu/chat2/b_cht_2.bsc";
 
-extern "C" u32 sChatSendAnimScreens[4] = {(u32)data_ov111_022989c8, (u32)data_ov111_022989e0, (u32)data_ov111_022989f8, (u32)data_ov111_02298a10};
+extern "C" uptr sChatSendAnimScreens[4] = {(uptr)data_ov111_022989c8, (uptr)data_ov111_022989e0, (uptr)data_ov111_022989f8, (uptr)data_ov111_02298a10};

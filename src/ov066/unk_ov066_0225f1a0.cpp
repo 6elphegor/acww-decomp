@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p
 #include "types.h"
 
@@ -735,7 +736,7 @@ u16 LocalWlMp_PutSendRecord(LocalWlMpRecord *rec) {
     src = base + off;
     if (off == 0) {
         rec->type = 0;
-        dst = (u8 *)rec + 8;
+        dst = HOST_AT(rec, 8, data[0], 0);
         rec->destMask = sLocalWlMp->sendDestMask;
         rec->totalSizeLo = sLocalWlMp->sendSize;
         rec->totalSizeHi = sLocalWlMp->sendSize >> 16;
@@ -748,7 +749,7 @@ u16 LocalWlMp_PutSendRecord(LocalWlMpRecord *rec) {
         ret = (len + 9) & ~1;
     } else {
         rec->type = 1;
-        dst = (u8 *)rec + 2;
+        dst = HOST_AT(rec, 2, destMask, 0);
         g = sLocalWlMp;
         n = rem;
         if (n > (u32)(g->recordSize - 2)) {
@@ -899,9 +900,9 @@ s32 LocalWlMp_MergeFrame(LocalWlMpFrame *dst, LocalWlMpFrame *src) {
     if (mask != 0) {
         u32 t;
         sz = sLocalWlMp->recordSize;
-        rd = (u8 *)src + 0x24;
+        rd = HOST_AT(src, 0x24, payload.records[0], 0);
         total = 4;
-        rp = (u8 *)dst + 0x24;
+        rp = HOST_AT(dst, 0x24, payload.records[0], 0);
         dst->payload.aidMask = mask;
         t = sLocalWlMp->lastFrameId;
         sLocalWlMp->lastFrameId = t + 1;
@@ -1050,7 +1051,7 @@ void LocalWlMp_StoreChildPacket(u32 idx, void *src, u32 size) {
         return;
     }
     e = sLocalWlMp->recvCursors[idx];
-    MI_CpuCopy8(src, (u8 *)e + 0x24 + idx * sLocalWlMp->recordSize, size);
+    MI_CpuCopy8(src, HOST_AT(e, 0x24, payload.records[0], 0) + idx * sLocalWlMp->recordSize, size);
     e->payload.aidMask = e->payload.aidMask | (1 << idx);
     sLocalWlMp->recvCursors[idx] = e->next;
 }
@@ -1481,7 +1482,7 @@ void LocalWl_ResetSessionInfo(void) {
     LocalWlSession *e = sLocalWlSession;
     for (i = 0; i < 16; i++) {
         e->memberMacs[0] = *(LocalWlMacAddr *)buf; // walks memberMacs by moving the base 6 bytes per entry
-        e = (LocalWlSession *)((u8 *)e + 6);
+        e = (LocalWlSession *)(HOST_AT(e, 6, wmBuf, 2));
     }
 }
 

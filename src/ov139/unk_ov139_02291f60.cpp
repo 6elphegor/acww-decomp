@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -61,7 +62,7 @@ extern "C" u32 data_ov139_022926a0[12];
 extern "C" u32 data_ov139_022926d0[84];
 
 
-extern "C" u32 sTownListCellLists[8] = {(u32)data_ov139_022926d0, (u32)data_ov139_022926a0, (u32)data_ov139_022925c0, (u32)data_ov139_022925e0, (u32)data_ov139_02292620, (u32)data_ov139_02292640, (u32)data_ov139_02292600, (u32)data_ov139_02292660};
+extern "C" uptr sTownListCellLists[8] = {(uptr)data_ov139_022926d0, (uptr)data_ov139_022926a0, (uptr)data_ov139_022925c0, (uptr)data_ov139_022925e0, (uptr)data_ov139_02292620, (uptr)data_ov139_02292640, (uptr)data_ov139_02292600, (uptr)data_ov139_02292660};
 extern "C" u32 data_ov139_022925c0[8] = {0x81bf4047, 0x00008893, 0x41df0047, 0x00008897, 0x81d50040, 0x00008882, 0x81b90040, 0xffff8880};
 extern "C" u32 data_ov139_022925e0[8] = {0x80114047, 0x0000888d, 0x40310047, 0x00008891, 0x80270040, 0x00008882, 0x800b0040, 0xffff8880};
 extern "C" u32 data_ov139_02292600[8] = {0x81e44048, 0x00008893, 0x40040048, 0x00008897, 0x81fa0041, 0x00008882, 0x81de0041, 0xffff8880};

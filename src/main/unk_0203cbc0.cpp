@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "game/Unk_0203ce24_Elem.h"
 #include "talk/MsgTag.h"
@@ -59,8 +60,8 @@ void _ZN16MailTextExpander10insertSlotEv();
 void _ZN16MailTextExpander16handleGrammarTagEv();
 void _ZN16MailTextExpander14insertGlyphTagEv();
 }
-extern const u32 sMailFolderDirs[3];
-extern const u32 sMailPartDirs[8];
+extern const uptr sMailFolderDirs[3];
+extern const uptr sMailPartDirs[8];
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Vtable 0x020d94b8 (message request), derived from MsgRequest
@@ -484,9 +485,9 @@ MsgString *MailMsgRequest::getDest() { return dest; }
 u32 *MailMsgRequest::getNamePosOut() { return namePosOut; }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern const u32 sMailPartDirs[8];
+extern const uptr sMailPartDirs[8];
 extern char data_020d943c[];
-extern const u32 sMailFolderDirs[3];
+extern const uptr sMailFolderDirs[3];
 extern char data_020d9440[];
 extern char data_020d9448[];
 extern char data_020d9450[];
@@ -501,12 +502,12 @@ extern char data_020d949c[];
 extern char data_020d9434[];
 extern MailTextBuilder gMailTextBuilder;
 
-const u32 sMailPartDirs[8] = {0, (u32)data_020d9450, (u32)data_020d943c, (u32)data_020d9434, (u32)data_020d9458, (u32)data_020d9448, (u32)data_020d9440, (u32)data_020d9438};
+const uptr sMailPartDirs[8] = {0, (uptr)data_020d9450, (uptr)data_020d943c, (uptr)data_020d9434, (uptr)data_020d9458, (uptr)data_020d9448, (uptr)data_020d9440, (uptr)data_020d9438};
 
 char data_020d943c[] = "msg";
 
 // ---- data
-const u32 sMailFolderDirs[3] = {(u32)data_020d9488, (u32)data_020d949c, (u32)data_020d9478};
+const uptr sMailFolderDirs[3] = {(uptr)data_020d9488, (uptr)data_020d949c, (uptr)data_020d9478};
 
 char data_020d9440[] = "msgb";
 

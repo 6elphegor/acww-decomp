@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "text/Unk_02050288.h"
@@ -232,7 +233,7 @@ CautionMsgString256::~CautionMsgString256() {}
 
 u32 CautionMsgString256::capacity() { return 0x100; }
 
-u8 *CautionMsgString256::data() { return (u8 *)this + 0x12; }
+u8 *CautionMsgString256::data() { return HOST_AT(this, 0x12, text[0], 0); }
 
 CautionMsgString64::CautionMsgString64() { clear(); }
 
@@ -244,7 +245,7 @@ u32 CautionMsgString64::capacity() {
 }
 
 u8 *CautionMsgString64::data() {
-    return (u8 *)this + 0x12;
+    return HOST_AT(this, 0x12, text[0], 0);
 }
 
 CautionMsgString128::CautionMsgString128() {
@@ -259,7 +260,7 @@ u32 CautionMsgString128::capacity() {
 }
 
 u8 *CautionMsgString128::data() {
-    return (u8 *)this + 0x12;
+    return HOST_AT(this, 0x12, text[0], 0);
 }
 
 extern "C" void CommCaution_SaveErrorCode() {

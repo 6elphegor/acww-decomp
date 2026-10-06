@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "item/Letter.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -321,7 +322,7 @@ extern "C" void TalkRequestEntry_Free(TalkRequestEntry *e) {
 extern "C" void TalkRequestList_FreeAll(TalkRequestList *l) {
     TalkRequestEntry *p = l->head;
     while (p) {
-        TalkRequestEntry *next = *(TalkRequestEntry **)((u8 *)p + 4);
+        TalkRequestEntry *next = *(TalkRequestEntry **)(HOST_AT(p, 4, next, 0));
         List_Remove(l, p);
         TalkRequestEntry_Free(p);
         p = next;

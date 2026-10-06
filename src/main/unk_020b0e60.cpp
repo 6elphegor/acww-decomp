@@ -204,6 +204,9 @@ public:
     /* 0x18 */ LampLights lampLights;
     /* 0x34 */ WindowLight windowLight;
 };
+#ifdef HOST64
+static_assert(sizeof(BuildingLights) <= 0x40, "BuildingActor::lights (include/town/BuildingActor.h)");
+#endif
 
 class TownStyleRecordView {
 public:

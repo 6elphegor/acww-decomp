@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "item/ItemName.h"
 #include "types.h"
 #include "nitro/gxoam.h"
@@ -474,7 +475,7 @@ MsgString406::~MsgString406() {}
 
 u32 MsgString406::capacity() { return 0x196; }
 
-u8 *MsgString406::data() { return (u8 *)this + 0x12; }
+u8 *MsgString406::data() { return HOST_AT(this, 0x12, unk_14[0], 0); }
 
 void CreatureBook_LoadDescription(CreatureBookPanel *s)
 {
@@ -505,9 +506,9 @@ u8 CreatureBook_CountDescPages(CreatureBookPanel *s)
     s32 n = 0;
     s32 k = n;
     for (; n < 5; n++) {
-        s32 a = Msg_SkipLines(((u8 *)s + 0x81a), k);
-        s32 b = Msg_SkipLines(((u8 *)s + 0x81a), k + 1);
-        s32 c = Msg_SkipLines(((u8 *)s + 0x81a), k + 2);
+        s32 a = Msg_SkipLines((HOST_AT(s, 0x81a, descText.unk_14[0], 0)), k);
+        s32 b = Msg_SkipLines((HOST_AT(s, 0x81a, descText.unk_14[0], 0)), k + 1);
+        s32 c = Msg_SkipLines((HOST_AT(s, 0x81a, descText.unk_14[0], 0)), k + 2);
         k += 3;
         if (a == 0 && b == 0 && c == 0) {
             return (u8)n;
@@ -530,7 +531,7 @@ void CreatureBook_ShowDescPage(CreatureBookPanel *s)
     y = 0xbb;
     i = 0;
     do {
-        s32 t = Msg_SkipLines(((u8 *)s + 0x81a), k);
+        s32 t = Msg_SkipLines((HOST_AT(s, 0x81a, descText.unk_14[0], 0)), k);
         void *ob;
         if (t != 0) {
             ob = o[i];
@@ -689,7 +690,7 @@ void CreatureBook_DrawRows(CreatureBookPanel *s, s32 a)
             t14 = 4;
         }
         Oam_DrawObj(1, src, rowY, x, m1, 2, z18);
-        if (*(u8 *)((u8 *)s + 0x1295) == s->firstVisibleEntry + i) {
+        if (*(u8 *)(HOST_AT(s, 0x1295, selectedEntry, 0)) == s->firstVisibleEntry + i) {
             Oam_DrawObj(1, data_ov114_022965a0, rowY, x, m1, 2, z1c);
         }
         Oam_DrawObj(1, data_ov114_02296598, rowY, x, t14, 2, z20);

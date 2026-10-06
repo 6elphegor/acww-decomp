@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "talk/MsgString33.h"
 #include "talk/MsgString9B.h"
 #include "types.h"
@@ -477,7 +478,7 @@ void VillagerPlan::rollTrend(s32 a, s32 flag) {
         scores.resetAndHalve(planState);
     }
     Clock_GetDateTime(this);
-    Clock_GetDateTime((u8 *)this + 8);
+    Clock_GetDateTime(HOST_AT(this, 8, stateTime, 0));
 }
 
 
@@ -537,7 +538,7 @@ void VillagerPlan::startTrendChange() {
     }
     setState(8);
     Clock_GetDateTime(this);
-    MI_CpuCopy8(this, (u8 *)this + 8, 8);
+    MI_CpuCopy8(this, HOST_AT(this, 8, stateTime, 0), 8);
 }
 
 
@@ -552,7 +553,7 @@ void VillagerPlan::enterState0B() {
     }
     setState(0xb);
     Clock_GetDateTime(this);
-    MI_CpuCopy8(this, (u8 *)this + 8, 8);
+    MI_CpuCopy8(this, HOST_AT(this, 8, stateTime, 0), 8);
 }
 
 
@@ -609,7 +610,7 @@ s32 VillagerPlan::finishTrendChange() {
             scores.resetAndHalve(i);
             flags.state2Flag = 0;
             Clock_GetDateTime(this);
-            MI_CpuCopy8(this, (u8 *)this + 8, 8);
+            MI_CpuCopy8(this, HOST_AT(this, 8, stateTime, 0), 8);
             return i;
         }
     }
@@ -621,14 +622,14 @@ namespace n5 {
 }
 s32 VillagerPlan::leaveState0B(VillagerPlan *o) {
     using namespace n5;
-    if (planState == 0xb && *((u8 *)o + 3) != *((u8 *)this + 3)) {
+    if (planState == 0xb && *(HOST_AT(o, 3, planTime, 3)) != *(HOST_AT(this, 3, planTime, 3))) {
         u32 i = scores.pickTop();
         if (Trend_IsValid(i)) {
             setState(i);
             scores.resetAndHalve(i);
             flags.state2Flag = 0;
             Clock_GetDateTime(this);
-            MI_CpuCopy8(this, (u8 *)this + 8, 8);
+            MI_CpuCopy8(this, HOST_AT(this, 8, stateTime, 0), 8);
             return i;
         }
     }
@@ -648,7 +649,7 @@ s32 VillagerPlan::finishMovingIn(void *x) {
                 scores.resetAndHalve(i);
                 flags.state2Flag = 0;
                 Clock_GetDateTime(this);
-                MI_CpuCopy8(this, (u8 *)this + 8, 8);
+                MI_CpuCopy8(this, HOST_AT(this, 8, stateTime, 0), 8);
                 return i;
             }
         }
@@ -2249,7 +2250,7 @@ extern "C" s32 Threshold_FindIndex(u32 v, u8 *tbl, s32 n);
 }
 u8 *SickVillagerRecord::getParcelErrand() {
     using namespace n2;
-    return (u8 *)this + 0x78;
+    return HOST_AT(this, 0x78, visitors[4].townName[6], 0);
 }
 
 

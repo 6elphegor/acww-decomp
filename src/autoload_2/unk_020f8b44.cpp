@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // RC_020f8b44 (companion of RC_020f7a5c): G011b without its first ten functions (the Rb state machine 0x020f86c0-0x020f8b44, now in the BGM file RC_020f7a5c).
 // autoload_2 0x020f8b44-0x020f92d4 (10 functions), PARTIAL, code unchanged from G011b: particle manager (emit, update);
@@ -407,7 +408,7 @@ extern "C" void func_020f8b44(Mgr *m, Entry *e, Fx3 *v) {
     e->px = v->x + ((ResInfo *)e->res->p0)->w4;
     e->py = v->y + e->res->p0->w8;
     e->pz = v->z + e->res->p0->wc;
-    func_020f9690(e, (u8 *)m + 20);
+    func_020f9690(e, HOST_AT(m, 20, p10[4], 0));
 }
 
 // ---- file-scope objects (autoload_3 .bss 0x021f5c38-0x021f5c3c)

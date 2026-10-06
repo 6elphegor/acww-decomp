@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "net/CommManager.h"
 #include "net/NetSessionParts.h"
@@ -621,7 +622,7 @@ extern "C" void NetArea_OnStateAReceived() {
 
 extern "C" void NetArea_ApplyStateB() {
     CommManager *o = gCommManager;
-    if (o->isSlotActive(*(s32 *)((u8 *)o + 0x64))) {
+    if (o->isSlotActive(*(s32 *)(HOST_AT(o, 0x64, myAid, 0)))) {
         if (_ZN11CommManager10getAuxLenBEv(o)) {
             NetArea_ParseStateB();
         }

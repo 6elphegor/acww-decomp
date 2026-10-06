@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "sys/ClockDateTime.h"
 #include "gfx/VecFx32.h"
@@ -6815,7 +6816,7 @@ extern "C" void SkySprites_Update(SkySprites *obj) {
         }
     }
     _ZN10SkySprites12loadDirtyGfxEv(obj);
-    _ZN15SkyShotSequence6updateEv((u8 *)obj + 0x2fa8);
+    _ZN15SkyShotSequence6updateEv(HOST_AT(obj, 0x2fa8, shotSeq.state, 0));
     _ZN11SkySePlayer6updateEv((u8 *)obj + 0x2fcc);
 }
 

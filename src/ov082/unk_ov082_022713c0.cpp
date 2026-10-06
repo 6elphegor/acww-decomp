@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Unk_0202368c_Obj.h"
@@ -422,15 +423,15 @@ void SpNpcTortimerBugOffTalk::start(TalkStartMsg *out_) {
         massageChairSlot = Pocket_FindItem(&x[1]);
         if (massageChairSlot >= 0) {
             out->a = (u32)"sp_npc_turtle";
-            *((u8 *)out + 4) = 0;
+            *(HOST_AT(out, 4, b, 0)) = 0;
             return;
         }
     }
     u8 t = *((u8 *)&rec + 2);
     if (!(t >= 0xc && t < 0x12)) {
-        *((u8 *)out + 4) = 2;
+        *(HOST_AT(out, 4, b, 0)) = 2;
     } else {
-        *((u8 *)out + 4) = 3;
+        *(HOST_AT(out, 4, b, 0)) = 3;
         PlayerActor_GetSlotHeldItem(&x[0], PlayerActor_GetLocalSessionSlot());
         if (!Talk_CheckAndSetPlayerFlag(0x1c, 0)) {
             x[2] = 0x1376;
@@ -440,9 +441,9 @@ void SpNpcTortimerBugOffTalk::start(TalkStartMsg *out_) {
                     if (Unk_ov082_Neg(Pocket_FindItem(&x[3]))) {
                         if (!Unk_ov082_InRange(&x[0], 0x1377, 0x1377)) {
                             if (Pocket_FindEmpty() >= 0) {
-                                *((u8 *)out + 4) = 1;
+                                *(HOST_AT(out, 4, b, 0)) = 1;
                             } else {
-                                *((u8 *)out + 4) = 0;
+                                *(HOST_AT(out, 4, b, 0)) = 0;
                             }
                             return;
                         }
@@ -451,7 +452,7 @@ void SpNpcTortimerBugOffTalk::start(TalkStartMsg *out_) {
             }
         }
         if (Talk_CheckAndSetPlayerFlag(0x1c, 1)) {
-            *((u8 *)out + 4) = 8;
+            *(HOST_AT(out, 4, b, 0)) = 8;
         }
     }
 }

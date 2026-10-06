@@ -1,3 +1,4 @@
+#include "uptr.h"
 // ov103: scene overlay (class PocketLettersMenu, vtable 0x02296da0, 0x2b04 bytes). Linked unit.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -632,7 +633,7 @@ void PocketLettersMenu::mainAct04() {
             s32 t = ((PopupChoiceMenuBody *)&popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (t >= 0) {
                 PopupChoice_DecideRow(&popup, t, 1);
-                popupChoice = ((u8 *)this + 0x2569)[t];
+                popupChoice = (HOST_AT(this, 0x2569, choiceList.values[0], 0))[t];
                 setMainState(0x15);
             }
         }
@@ -732,7 +733,7 @@ void PocketLettersMenu::mainAct09() {
 void PocketLettersMenu::mainAct0A() {
     if (cursor.isAnimDone()) {
         PopupChoice_DecideRow(&popup, popupRow, 1);
-        popupChoice = ((u8 *)this + 0x2569)[popupRow];
+        popupChoice = (HOST_AT(this, 0x2569, choiceList.values[0], 0))[popupRow];
         setMainState(0x15);
     }
 }

@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/wm.h"
@@ -75,7 +76,7 @@ s32 WfcUsbScan_Start(void (*cb)(s32))
         do {
             WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
             g = sWfcUsbScan;
-        } while (((WMStatus *)((u8 *)g + 0x13b8))->state != 2);
+        } while (((WMStatus *)(HOST_AT(g, 0x13b8, pad_13b8[0], 0)))->state != 2);
         *(WfcUsbScanParamCopy *)&g->scanParam = *(const WfcUsbScanParamCopy *)sWfcUsbScanParam;
         g->scanParam.scanBuf = (WMBssDesc *)g->scanBuf;
         u16 v = WM_GetDispersionScanPeriod();

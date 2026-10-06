@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
@@ -342,14 +343,14 @@ BOOL SpNpcKatrina::updateAct() {
     }
     if (effectHandle == -1) {
         if (t == 0x21 && ((((u32)model.curFrame << 4) >> 16)) >= 0x12) {
-            effectHandle = Effect_Create(0x3d, (u8 *)this + 0x478, 0, 0);
+            effectHandle = Effect_Create(0x3d, HOST_AT(this, 0x478, jointPos[0].x, 0), 0, 0);
             effectTimer = 0x16;
         }
     } else if (Math_CountDownU8(&effectTimer) == 0) {
         Effect_End(effectHandle);
         effectHandle = -1;
     } else {
-        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, 0, 0);
+        Effect_SetPosition(effectHandle, HOST_AT(this, 0x478, jointPos[0].x, 0), 0, 0);
     }
     BOOL r = FALSE;
     if (sSpNpcKatrinaActTable[act].exit) {
@@ -791,7 +792,7 @@ KatrinaMsgString17::~KatrinaMsgString17() {}
 
 u32 KatrinaMsgString17::capacity() { return 0x11; }
 
-u8 *KatrinaMsgString17::data() { return (u8 *)this + 0x12; }
+u8 *KatrinaMsgString17::data() { return HOST_AT(this, 0x12, unk_12[0], 0); }
 
 KatrinaEncodedString16::KatrinaEncodedString16() {}
 
@@ -802,5 +803,5 @@ KatrinaEncodedString16::~KatrinaEncodedString16() {}
 
 u32 KatrinaEncodedString16::capacity() { return 0x10; }
 
-u8 *KatrinaEncodedString16::data() { return (u8 *)this + 0xe; }
+u8 *KatrinaEncodedString16::data() { return HOST_AT(this, 0xe, unk_0e[0], 0); }
 

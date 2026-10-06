@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -1469,7 +1470,7 @@ void FtrCompass::onJointCalcPost(s32 a, void *b) {
             s32 e = act->rotY;
             ang = (s16)(r - (e + p13::_ZN12FtrStackLink11getRelAngleEv(stackLink)));
         } else {
-            ang = (s16)(r - *(s16 *)((u8 *)this + 0x8e));
+            ang = (s16)(r - *(s16 *)(HOST_AT(this, 0x8e, rotY, 0)));
         }
         s32 idx = ((u16)ang >> 4) * 2;
         Mtx33 mtx;

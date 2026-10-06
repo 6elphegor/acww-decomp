@@ -115,10 +115,20 @@ void Fatal_PanicV(const char *a, u32 b, const char *c, void *d) {
     Fatal_Trap();
 }
 
+#ifdef HOST
+// (the arguments by the host's convention: a va_list)
+void Fatal_Panic(const char *fmt, ...) {
+    extern void host_panic_v(const char *file, u32 line, const char *fmt, __builtin_va_list *args);
+    __builtin_va_list ap;
+    __builtin_va_start(ap, fmt);
+    host_panic_v("", 0, fmt, &ap);
+}
+#else
 void Fatal_Panic(const char *fmt, ...) {
     u32 *ap = (u32 *)(((u32)&fmt) & ~3) + 1;
     Fatal_PanicV("", 0, fmt, ap);
 }
+#endif
 
 BOOL CrashScreen_IsValidAddress(u32 addr, u32 len) {
     u32 end = addr + len;

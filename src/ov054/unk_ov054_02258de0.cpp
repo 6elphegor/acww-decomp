@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
@@ -1551,7 +1552,7 @@ void SpNpcPellyPhyllisTalk::onMessageEnd(u32 a_) {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b790,
     };
     char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
-    s32 r = strncmp((u8 *)this + 4, s, strlen(s));
+    s32 r = strncmp(HOST_AT(this, 4, fileName[0], 0), s, strlen(s));
     s32 i;
     if (GameStart_IsActive()) {
         i = 2;
@@ -1793,7 +1794,7 @@ void SpNpcPellyPhyllisTalk::onChoice(u32 a_) {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b768,
     };
     char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
-    s32 r = strncmp((u8 *)this + 4, s, strlen(s));
+    s32 r = strncmp(HOST_AT(this, 4, fileName[0], 0), s, strlen(s));
     s32 i;
     if (GameStart_IsActive()) {
         i = 2;

@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
@@ -253,7 +254,7 @@ ChatBalloonText::~ChatBalloonText() {}
 
 u32 ChatBalloonText::capacity() { return 0x21; }
 
-u8 *ChatBalloonText::data() { return (u8 *)this + 0x12; }
+u8 *ChatBalloonText::data() { return HOST_AT(this, 0x12, text[0], 0); }
 
 EncodedStringRef::EncodedStringRef(u8 *data, u32 size) : buffer(data), bufferSize(size) {}
 
@@ -269,7 +270,7 @@ ChatBalloonName::~ChatBalloonName() {}
 
 u32 ChatBalloonName::capacity() { return 9; }
 
-u8 *ChatBalloonName::data() { return (u8 *)this + 4; }
+u8 *ChatBalloonName::data() { return HOST_AT(this, 4, text[0], 0); }
 
 EncodedStringBaseRef::EncodedStringBaseRef(u8 *data, u32 size) : buffer(data), bufferSize(size) {}
 

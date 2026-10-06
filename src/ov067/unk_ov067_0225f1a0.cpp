@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "nitro/wm.h"
@@ -924,11 +925,11 @@ extern "C" void WlxWm_SendMpData(WlxWmWork *s) {
     if (s->aid == 0) {
         v = s->parentParam->parentMaxSize;
     } else {
-        v = *(u16 *)((u8 *)s + 0x516e);
+        v = *(u16 *)(HOST_AT(s, 0x516e, bssChildMaxSize, 0));
     }
     u16 fl = s->connectedMask;
     l.e = v;
-    l.d = (void *)((u8 *)s + 0x4ee0);
+    l.d = (void *)(HOST_AT(s, 0x4ee0, mpSendData[0], 0));
     l.f = fl;
     if (s->eventCallback != NULL) {
         s->eventCallback(7, &l.d);
@@ -1265,7 +1266,7 @@ extern "C" void WlxWm_StartParentStep(WlxWmMsg *m) {
         if (c->parentParam->CS_Flag == 0) {
             b = TRUE;
         }
-        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_StartParentStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
+        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_StartParentStep, HOST_AT(c, 0x1120, pad_0000[4384], 0), c->recvBufSize, HOST_AT(c, 0xf00, pad_0000[3840], 0), c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
     if (m->apiid != 0xe) {
@@ -1315,13 +1316,13 @@ extern "C" void WlxWm_ConnectStep(WlxWmMsg *m) {
     }
     if (m == NULL) {
         c->state = 1;
-        WlxWm_CheckApiCall(c, 0xc, WM_StartConnectEx(WlxWm_OnChildEvent, (u8 *)c + 0x5120, 0, 1, 0));
+        WlxWm_CheckApiCall(c, 0xc, WM_StartConnectEx(WlxWm_OnChildEvent, HOST_AT(c, 0x5120, pad_510c[20], 0), 0, 1, 0));
         return;
     }
     if (m->apiid == 0xc) {
         c->aid = m->myAid;
         BOOL b = c->parentParam->CS_Flag == 0 ? TRUE : FALSE;
-        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_ConnectStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
+        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_ConnectStep, HOST_AT(c, 0x1120, pad_0000[4384], 0), c->recvBufSize, HOST_AT(c, 0xf00, pad_0000[3840], 0), c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
     if (m->apiid != 0xe) {
@@ -1383,7 +1384,7 @@ extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
     }
     if (m->apiid == 0x26) {
         if (m->state == 5) {
-            DC_InvalidateRange((u8 *)c + 0x51e0, 0x400);
+            DC_InvalidateRange(HOST_AT(c, 0x51e0, pad_5170[112], 0), 0x400);
             c->numBeacons = m->numBeacons;
         }
         WlxWm_CheckApiCall(c, 0xb, WM_EndScan(WlxWm_ScanStep));
@@ -1395,7 +1396,7 @@ extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
     BOOL found = FALSE;
     if (c->requestedState == 5) {
         s32 i;
-        u8 *p = (u8 *)c + 0x51e0;
+        u8 *p = HOST_AT(c, 0x51e0, pad_5170[112], 0);
         WlxDebug_Printf("found:%d beacons\n", c->numBeacons);
         i = 0;
         if (c->numBeacons > 0) {
@@ -1409,7 +1410,7 @@ extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
                     }
                     if (found) {
                         WlxDebug_Printf("     -> matched!\n");
-                        MI_CpuCopy8(p, (u8 *)c + 0x5120, 0xc0);
+                        MI_CpuCopy8(p, HOST_AT(c, 0x5120, pad_510c[20], 0), 0xc0);
                         break;
                     }
                 }

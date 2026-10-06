@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
@@ -1155,7 +1156,7 @@ s32 gti2StartConnectionAttempt(GTI2Connection *c, s32 msg, s32 len, GsTransportC
         *(GsTransportConnCallbacks *)&c->connectedCallback = *x;
     }
     gti2GetChallenge(&buf);
-    gti2GetResponse((u8 *)c + 0x68, &buf);
+    gti2GetResponse(HOST_AT(c, 0x68, response[0], 0), &buf);
     gti2SendClientChallenge(c, &buf);
     c->state = 0;
     return FALSE;

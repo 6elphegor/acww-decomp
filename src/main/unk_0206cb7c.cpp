@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -97,5 +98,5 @@ MsgString25B::~MsgString25B() {}
 
 u32 MsgString25B::capacity() { return 0x19; }
 
-u8 *MsgString25B::data() { return (u8 *)this + 0x12; }
+u8 *MsgString25B::data() { return HOST_AT(this, 0x12, text[0], 0); }
 

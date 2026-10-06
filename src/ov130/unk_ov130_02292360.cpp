@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
@@ -46,7 +47,7 @@ extern "C" const u32 sKeyX1Table[11];
 extern "C" const u32 sKeyRowTable[11];
 extern "C" const u32 sNumberPadCursorYTable[13];
 extern "C" const u32 sNumberPadCursorXTable[13];
-extern "C" u32 sTitleObjCharFiles[2];
+extern "C" uptr sTitleObjCharFiles[2];
 extern "C" char data_ov130_02293368[20];
 extern "C" char data_ov130_0229337c[20];
 extern "C" u16 sNumberPadKeySeIds[10];
@@ -60,8 +61,8 @@ extern "C" char data_ov130_0229341c[20];
 extern "C" char data_ov130_02293430[20];
 extern "C" char data_ov130_02293444[20];
 extern "C" char data_ov130_02293458[23];
-extern "C" u32 sKeyScreenFiles[6];
-extern "C" u32 sMainScreenFiles[6];
+extern "C" uptr sKeyScreenFiles[6];
+extern "C" uptr sMainScreenFiles[6];
 extern "C" char data_ov130_022934a0[25];
 extern "C" char data_ov130_022934bc[25];
 extern "C" u32 data_ov130_022934d8[8];
@@ -86,8 +87,8 @@ extern "C" u32 sSeparatorCells[8] = {0x2800d8, 0x5180, 0x1000d8, 0x5180, 0x2800f
 extern "C" u32 data_ov130_02293518[8] = {0x819c009c, 0x415a, 0x81bc809c, 0x415e, 0x819c40bc, 0x41da, 0x41bc00bc, 0xffff41de};
 extern "C" char data_ov130_022934a0[] = "menu/bank/ten0_0_obj.bch";
 extern "C" char data_ov130_022934bc[] = "menu/bank/ten0_1_obj.bch";
-extern "C" u32 sKeyScreenFiles[6] = {(u32)data_ov130_02293430, (u32)data_ov130_02293444, (u32)data_ov130_022933cc, (u32)data_ov130_022933b8, (u32)data_ov130_02293458, (u32)data_ov130_022933a4};
-extern "C" u32 sMainScreenFiles[6] = {(u32)data_ov130_022933e0, (u32)data_ov130_02293368, (u32)data_ov130_022933f4, (u32)data_ov130_0229337c, (u32)data_ov130_02293408, (u32)data_ov130_0229341c};
+extern "C" uptr sKeyScreenFiles[6] = {(uptr)data_ov130_02293430, (uptr)data_ov130_02293444, (uptr)data_ov130_022933cc, (uptr)data_ov130_022933b8, (uptr)data_ov130_02293458, (uptr)data_ov130_022933a4};
+extern "C" uptr sMainScreenFiles[6] = {(uptr)data_ov130_022933e0, (uptr)data_ov130_02293368, (uptr)data_ov130_022933f4, (uptr)data_ov130_0229337c, (uptr)data_ov130_02293408, (uptr)data_ov130_0229341c};
 extern "C" const u32 sDigitColumnTable[6] = {0x16, 0x16, 0x17, 0x17, 0x14, 0x17};
 extern "C" const u32 sDigitRowTable[6] = {0x2, 0x6, 0x2, 0x6, 0x7, 0x8};
 extern "C" char data_ov130_02293458[] = "menu/bank/f1_bg_us.bsc";
@@ -111,7 +112,7 @@ extern "C" const u8 sNumberPadTouchKeyMap[12] = {0x07, 0x08, 0x09, 0x04, 0x05, 0
 extern "C" const u8 sValueLabelTextIds[8] = {0x55, 0x58, 0x61, 0x5a, 0x5b, 0x5d, 0x52, 0x00};
 extern "C" const u8 sBalanceLabelTextIds[8] = {0x56, 0x59, 0x54, 0x00, 0x00, 0x00, 0x00, 0x00};
 extern "C" const u8 sTitleTextIds[8] = {0x57, 0x57, 0x57, 0x5e, 0x5b, 0x5c, 0x62, 0x00};
-extern "C" u32 sTitleObjCharFiles[2] = {(u32)data_ov130_022934a0, (u32)data_ov130_022934bc};
+extern "C" uptr sTitleObjCharFiles[2] = {(uptr)data_ov130_022934a0, (uptr)data_ov130_022934bc};
 
 struct Ov130S {
     u16 flags;
@@ -690,7 +691,7 @@ extern "C" void NumberPad_ReleaseLabels(Ov130S *s) {
 }
 
 extern "C" void *NumberPad_AllocLabel(Ov130S *s) {
-    if (s->labelCount >= 5) return (u8 *)s + 0x12c;
+    if (s->labelCount >= 5) return HOST_AT(s, 0x12c, slots[256], 0);
     s->labelCount++;
     return s->slots[s->labelCount - 1];
 }

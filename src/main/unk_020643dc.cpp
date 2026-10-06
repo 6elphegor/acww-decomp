@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -397,8 +398,8 @@ extern "C" s16 SceneLights_GetFlashColor(void) {
     volatile s16 v = 0;
     SceneLights *o = gSceneLights;
     if (o != NULL) {
-        if (*(s32 *)((u8 *)o + 0x124) != 9) {
-            v = *(u16 *)((u8 *)o + 0x128);
+        if (*(s32 *)(HOST_AT(o, 0x124, flashLight.flashKind, 0)) != 9) {
+            v = *(u16 *)(HOST_AT(o, 0x128, flashLight.color, 0));
         }
     }
     return v;
@@ -697,7 +698,7 @@ extern "C" void SceneLights_StartFlash(u32 v)
 {
     SceneLights *g = gSceneLights;
     if (g != 0) {
-        u32 *p = (u32 *)((u8 *)g + 0x124);
+        u32 *p = (u32 *)(HOST_AT(g, 0x124, flashLight.flashKind, 0));
         p[0] = v;
         p[5] = 1;
     }

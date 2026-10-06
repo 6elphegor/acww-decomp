@@ -27,4 +27,12 @@ typedef signed int sptr;
 #define HOST_ALIGN8
 #endif
 
+// A member reached by its DS offset ((u8 *)p + off): on hosts the member itself (tools/host_this_offsets.py), plus
+// rem bytes into it.
+#ifdef HOST
+#define HOST_AT(p, off, m, rem) ((u8 *)&(p)->m + (rem))
+#else
+#define HOST_AT(p, off, m, rem) ((u8 *)(p) + (off))
+#endif
+
 #endif

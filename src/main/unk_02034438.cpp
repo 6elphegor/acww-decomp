@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "game/GroundInfo.h"
@@ -609,7 +610,7 @@ BOOL BgmClock::isTimeInRange(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f)
 
 BOOL BgmClock::hasHourChanged()
 {
-    if (*((u8 *)this + 0x13) != hour) {
+    if (*(HOST_AT(this, 0x13, prevMinuteHour, 1)) != hour) {
         return TRUE;
     }
     return FALSE;

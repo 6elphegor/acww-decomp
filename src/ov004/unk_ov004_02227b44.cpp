@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/DebugColor.h"
@@ -195,7 +196,7 @@ MuseumDisplay::~MuseumDisplay() {}
 BOOL MuseumDisplay::onCreate() {
     const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
     loadResources((char *)r->arcPath, (char *)r->texPath);
-    _ZN5Model15setInitCallbackEii((u8 *)this + 0xec, (void *)MuseumDisplay_InitRenderObj, this);
+    _ZN5Model15setInitCallbackEii(HOST_AT(this, 0xec, model, 0), (void *)MuseumDisplay_InitRenderObj, this);
     selectNodes();
     return TRUE;
 }
@@ -205,7 +206,7 @@ BOOL MuseumDisplay::onExecute() {
 }
 
 BOOL MuseumDisplay::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv((u8 *)this + 0xec, 0);
+    _ZN9AnimModel12drawAnimatedEPv(HOST_AT(this, 0xec, model, 0), 0);
     return TRUE;
 }
 

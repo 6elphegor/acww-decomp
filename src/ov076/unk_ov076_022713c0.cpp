@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -322,12 +323,12 @@ BOOL SpNpcPascal::mainAct04() {
         _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&animCtrl, this)) {
         changeAct(5);
     } else {
-        if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0xb) {
-            *((u8 *)this + 0x511) = 0;
-            *((u8 *)this + 0x510) = 0;
+        if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)(HOST_AT(this, 0x190, model.curFrame, 0)))->mid == 0xb) {
+            *(HOST_AT(this, 0x511, shadowEnabled, 0)) = 0;
+            *(HOST_AT(this, 0x510, collisionEnabled, 0)) = 0;
         }
         Math_StepAngle(&rotY, 0, spinSpeed);
-        if (((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0x1b) {
+        if (((Unk_ov076_02271a3c_Bits *)(HOST_AT(this, 0x190, model.curFrame, 0)))->mid == 0x1b) {
             VecFx32 *pv = (VecFx32 *)&position;
             v.x = pv->x;
             v.y = pv->y;

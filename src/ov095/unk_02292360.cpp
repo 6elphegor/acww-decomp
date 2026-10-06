@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "nitro/gxoam.h"
@@ -1109,17 +1110,17 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
     if (s->mode == mode && c != 0) {
         goto end;
     }
-    File_LoadToBuffer((void *)sKeyboardModeCharFiles[mode], (u8 *)s + 0x34, 0x22c0);
+    File_LoadToBuffer((void *)sKeyboardModeCharFiles[mode], HOST_AT(s, 0x34, unk_34[0], 0), 0x22c0);
     if (Keyboard_TestFlags(s, 4) != 0) {
         h = (s32)sKeyboardModeScreensChat[mode];
     } else {
         h = (s32)sKeyboardModeScreens[mode];
     }
     h = File_LoadAlloc(h, g, -4, 0);
-    MI_CpuCopy8((void *)(h + 0x240), (u8 *)s + 0x25fc, 0x380);
+    MI_CpuCopy8((void *)(h + 0x240), HOST_AT(s, 0x25fc, screenBuf[576], 0), 0x380);
     Keyboard_MarkScreenDirty(s);
     Heap_Free(g, (void *)h);
-    _ZN10BgVramTask12requestCharsEjhjjj((u8 *)s + 0x22f4, (u8 *)s + 0x34, a, 0x1ea, 0x1ea, 0x2ff);
+    _ZN10BgVramTask12requestCharsEjhjjj((u8 *)s + 0x22f4, HOST_AT(s, 0x34, unk_34[0], 0), a, 0x1ea, 0x1ea, 0x2ff);
     s->mode = mode;
     switch (s->mode) {
     case 0:
@@ -1275,19 +1276,19 @@ void Keyboard_LoadLetterChars(Keyboard *s, s32 a)
 
 void Keyboard_LoadScreenFile(Keyboard *s, s32 a)
 {
-    File_LoadToBuffer((void *)a, (u8 *)s + 0x23bc, 0x800);
+    File_LoadToBuffer((void *)a, HOST_AT(s, 0x23bc, screenBuf[0], 0), 0x800);
 }
 
 void Keyboard_LoadScreenNow(Keyboard *s, s32 a)
 {
-    Gfx2d_LoadScreen((u8 *)s + 0x23bc, a, 0x800, 0);
+    Gfx2d_LoadScreen(HOST_AT(s, 0x23bc, screenBuf[0], 0), a, 0x800, 0);
     Keyboard_ClearFlags(s, 1);
 }
 
 void Keyboard_EndFrame(Keyboard *s, s32 a)
 {
     if (Keyboard_TestFlags(s, 1) != 0) {
-        if (_ZN10BgVramTask13requestScreenEjhjj((u8 *)s + 0x2318, (u8 *)s + 0x23bc, a, 0x800, 0) != 0) {
+        if (_ZN10BgVramTask13requestScreenEjhjj((u8 *)s + 0x2318, HOST_AT(s, 0x23bc, screenBuf[0], 0), a, 0x800, 0) != 0) {
             Keyboard_ClearFlags(s, 1);
         }
     }

@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "game/Unk_0203c92c_Bits.h"
 #include "game/Unk_0203ce24_Elem.h"
@@ -50,11 +51,11 @@ extern u8 *data_020d9514[];
 }
 
 extern "C" {
-extern u32 sMailPartDirs[];
+extern uptr sMailPartDirs[];
 }
 
 extern "C" {
-extern u32 sMailFolderDirs[];
+extern uptr sMailFolderDirs[];
 }
 
 extern "C" {

@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/sp2
 // ov003 TU07 (helper 02214e04 + actor 022312f4): .text 0x02214dfc-0x022150ec
 #include "types.h"
@@ -114,7 +115,7 @@ char data_ov003_02235204[0x24];
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" ActorProfile sGateHouseProfile;
 extern "C" char data_ov003_022312a4[12];
-extern "C" u32 sGateHouseModelNames[3];
+extern "C" uptr sGateHouseModelNames[3];
 extern "C" char data_ov003_022312b0[12];
 extern "C" char data_ov003_022312bc[12];
 
@@ -218,7 +219,7 @@ void GateHouseFlagTexture::cancelUpload() {
     vramTask.cancel();
 }
 
-extern "C" u32 sGateHouseModelNames[3] = { (u32)data_ov003_022312bc, (u32)data_ov003_022312b0, (u32)data_ov003_022312a4 };
+extern "C" uptr sGateHouseModelNames[3] = { (uptr)data_ov003_022312bc, (uptr)data_ov003_022312b0, (uptr)data_ov003_022312a4 };
 extern "C" char data_ov003_022312a4[12] = "obj_check2";
 extern "C" char data_ov003_022312b0[12] = "obj_check1";
 extern "C" char data_ov003_022312bc[12] = "obj_check0";

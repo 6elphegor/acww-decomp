@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -46,7 +47,7 @@ u32 LabelBalloonText::capacity() { return 0x21; }
 // ---------------------------------------------------------------------------------------------------------------------
 // LabelBalloonText and UiWidget members
 
-u8 *LabelBalloonText::data() { return (u8 *)this + 4; }
+u8 *LabelBalloonText::data() { return HOST_AT(this, 4, unk_04[0], 0); }
 
 LabelBalloon::LabelBalloon(s32 flag)
     : state(0), animTimer(0), x(0), posY(0), priority(-1), popOffsetX(0), popOffsetY(0), clampOffsetX(0), openRequest(0),

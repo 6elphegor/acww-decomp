@@ -1,3 +1,4 @@
+#include "uptr.h"
 // ov104: scene overlay (class PostOfficeMenu, vtable 0x02298170). Linked as one unit.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -868,7 +869,7 @@ void PostOfficeMenu::mainAct06() {
                 if (t >= 0) {
                     if (testFlags(0x8000) == 0 || t != 0) {
                         u32 r;
-                        popupChoice = ((u8 *)this + 0x277d)[t];
+                        popupChoice = (HOST_AT(this, 0x277d, choiceList.values[0], 0))[t];
                         r = 1;
                         if (popupChoice == 2) {
                             r = 0;
@@ -1011,7 +1012,7 @@ void PostOfficeMenu::mainAct0B() {
 void PostOfficeMenu::mainAct0C() {
     if (cursor.isAnimDone()) {
         u32 r;
-        popupChoice = ((u8 *)this + 0x277d)[popupRow];
+        popupChoice = (HOST_AT(this, 0x277d, choiceList.values[0], 0))[popupRow];
         r = 1;
         if (popupChoice == 2) {
             r = 0;

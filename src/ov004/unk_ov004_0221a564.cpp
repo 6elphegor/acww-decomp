@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -347,7 +348,7 @@ BOOL SickVillager::preCreate() {
     NpcActor_setTalkRequest(this, &talk);
     talk.attachOwner(this);
     u8 *p = (u8 *)SaveVillagers_GetUnk3830(gSaveVillagers);
-    *((u8 *)this + 0xa3c) = p[0x8e];
+    *(HOST_AT(this, 0xa3c, talk.sickStage, 0)) = p[0x8e];
     if (talk.getSickStage() > 1) {
         NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xea);
         NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xe9);
@@ -710,7 +711,7 @@ void SickVillager::mainAct00() {
             walkTimer--;
         }
         if (walkTimer == 0) {
-            walkAngle = Room_PickRandomWalkTarget(&walkTarget, (u8 *)this + 0x5c, rotY);
+            walkAngle = Room_PickRandomWalkTarget(&walkTarget, HOST_AT(this, 0x5c, position.x, 0), rotY);
             waypoint.x = walkTarget.x;
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
@@ -756,7 +757,7 @@ void SickVillager::mainAct00() {
                 if (Vec_NotEqual(&waypoint, &walkTarget) != 0) {
                     waypoint = walkTarget;
                     NpcMoveCtrl_setWaypoint(&moveCtrl, &walkTarget);
-                } else if (Vec_DistXZ(&walkTarget, (u8 *)this + 0x5c) < 0x200) {
+                } else if (Vec_DistXZ(&walkTarget, HOST_AT(this, 0x5c, position.x, 0)) < 0x200) {
                     changeAct(1);
                 }
                 break;

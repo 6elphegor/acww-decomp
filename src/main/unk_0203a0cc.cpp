@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -458,8 +459,8 @@ BOOL Camera::onDraw() {
     s32 i = fovy >> 5;
     s32 k = i * 2;
     G3i_PerspectiveW_(data_02135f44[k], data_02135f44[k + 1], aspect, nearClip, farClip, 0x1000, 1, 0);
-    G3i_LookAt_(&lookEye, &lookUp, &lookTarget, 1, (u8 *)this + 0x50);
-    MTX_Inverse43((u8 *)this + 0x50, (u8 *)this + 0xcc);
+    G3i_LookAt_(&lookEye, &lookUp, &lookTarget, 1, HOST_AT(this, 0x50, pad_00[0], 0));
+    MTX_Inverse43(HOST_AT(this, 0x50, pad_00[0], 0), HOST_AT(this, 0xcc, invViewMtx[0], 0));
     s32 j = (s16)(fovy + fovyOffset) >> 5;
     s32 m = j * 2;
     G3i_PerspectiveW_(data_02135f44[m], data_02135f44[m + 1], aspect, nearClip + nearOffset, farClip + farOffset, 0x1000, 0,
@@ -502,7 +503,7 @@ void Camera::resetOffsets() {
 }
 
 V3 *Camera::getEye() {
-    return (V3 *)((u8 *)this + 0x168);
+    return (V3 *)(HOST_AT(this, 0x168, eye, 0));
 }
 
 s16 Camera::getEyeCurveAngle() {

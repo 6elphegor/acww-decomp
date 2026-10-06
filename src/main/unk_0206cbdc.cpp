@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "sys/StackPad.h"
@@ -77,8 +78,8 @@ void LetterRenderer::show(LetterView *src, void *a, void *b, s32 c) {
     Gfx2d_SetLayerControl(a, 0, 0, 0);
     loadRecipientName(src);
     setGreeting(src, 0);
-    setBody((u8 *)src + 0x4c, 0);
-    setSignature((u8 *)src + 0xcc);
+    setBody(HOST_AT(src, 0x4c, body[0], 0), 0);
+    setSignature(HOST_AT(src, 0xcc, signature[0], 0));
     loadLetterScreen((u32)a);
     redraw();
     Gfx2d_SetLayerOffset(a, 0, 0);
@@ -265,7 +266,7 @@ void LetterLayout::redrawAll() {
 }
 
 u32 EncodedString40::capacity() { return 0x28; }
-u8 *EncodedString40::data() { return (u8 *)this + 0xe; }
+u8 *EncodedString40::data() { return HOST_AT(this, 0xe, text[0], 0); }
 
 LetterTextLine::LetterTextLine() {
     clear();
@@ -288,7 +289,7 @@ void LetterTextLine::setTarget(u16 v, u32 x) {
     bgIndex = Gfx2d_GetLayerBgIndex(x);
 }
 
-u8 *LetterTextLine::data() { return (u8 *)this + 0x12; }
+u8 *LetterTextLine::data() { return HOST_AT(this, 0x12, text[0], 0); }
 
 void LetterTextLine::freeLabel() {
     if (textLabel != NULL) {

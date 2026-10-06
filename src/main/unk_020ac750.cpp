@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -1911,7 +1912,7 @@ namespace n2 {
 
 u8 *ReddPasswordString::data() {
     using namespace n2;
-    return (u8 *)this + 0x12;
+    return HOST_AT(this, 0x12, text[0], 0);
 }
 namespace n2 {
 }

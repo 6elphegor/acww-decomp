@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/NasAuthParams.h"
@@ -957,7 +958,7 @@ void DwcFriend_OnBuddyRequestInfo(void *x, GPGetInfoResponseArg *p)
             if (DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 1) {
                 u8 buf[24];
                 DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i], buf);
-                if (strcmp(buf, (u8 *)p + 0x8e) == 0) {
+                if (strcmp(buf, HOST_AT(p, 0x8e, lastname[0], 0)) == 0) {
                     gpAuthBuddyRequest(x, p->profile);
                     DWC_SetGsProfileId(&sDwcFriendControl->friendList[i], p->profile);
                     found = 1;
@@ -994,7 +995,7 @@ void DwcFriend_OnAuthorizedInfo(void *x, GPGetInfoResponseArg *p)
         for (; i < sDwcFriendControl->numFriends; i++) {
             if (DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 1) {
                 DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i], buf);
-                if (strcmp(buf, (u8 *)p + 0x8e) == 0) {
+                if (strcmp(buf, HOST_AT(p, 0x8e, lastname[0], 0)) == 0) {
                     DWC_SetGsProfileId(&sDwcFriendControl->friendList[i], p->profile);
                     DWCi_SetBuddyFriendData(&sDwcFriendControl->friendList[i]);
                     found = 1;

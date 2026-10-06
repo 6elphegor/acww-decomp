@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 
 // U126: communication manager CommManager (singleton gCommManagerInstance, reached through the constant pointer
@@ -2403,7 +2404,7 @@ u8 *CommManager::getWifiFriendList() {
 namespace n1 {
 }
 u8 *CommManager::getWifiUserData() {
-    using namespace n1; return (u8 *)this + 0x514; }
+    using namespace n1; return HOST_AT(this, 0x514, wifiUserData[0], 0); }
 namespace n1 {
 }
 void NetOverlay_AssertWifi() {

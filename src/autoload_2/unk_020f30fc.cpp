@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // RC_020f30fc: autoload_2 0x020f30fc-0x020f44f0 (52 functions) + .data 0x0213b914-0x0213b9d8 (7 vtables) + bss 0x021f5bf8 (autoload_3).
 // mwcc 1.2/base, C++, ARM, -O4,p.
@@ -280,7 +281,7 @@ SndSeEmitterKind1::SndSeEmitterKind1() {
 
 void SndSeEmitterKind1::onVolume(SndHandle *h, s32 idx) {
     if (gSndMgr.f60 == 0) return;
-    void *slot = (u8 *)h + 8 + idx * 12;
+    void *slot = HOST_AT(h, 8, pad00[8], 0) + idx * 12;
     SndSeEmitterKind1 *o = static_cast<SndSeEmitterKind1 *>(h);
     NNS_SndPlayerSetVolume(slot, o->volume * 40 / 100);
 }

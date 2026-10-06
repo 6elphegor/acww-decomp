@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/Unk_ov001_02221734_D.h"
@@ -106,7 +107,7 @@ s32 WfcMoveMb_RegisterFile(s32 *p) {
     }
     if (MB_GetSegmentLength(q) != 0) {
         WfcMoveMbWork *g = sWfcMoveMb;
-        g->segmentBuffer = (u8 *)g + 0x2c;
+        g->segmentBuffer = HOST_AT(g, 0x2c, pad_0e[30], 0);
         if (sWfcMoveMb->segmentBuffer != 0) {
             if (MB_ReadSegment(q, sWfcMoveMb->segmentBuffer, 0x10000) != 0) {
                 if (MB_RegisterFile(p, sWfcMoveMb->segmentBuffer) != 0) r = 1;
@@ -409,7 +410,7 @@ u8 *WfcMoveMb_GetChildInfo(u32 id)
 {
     WfcMoveMbWork *s = sWfcMoveMb;
     if (s->childMasks[0] & (1 << id)) {
-        return (u8 *)s + 0xe + (id - 1) * 0x1e;
+        return HOST_AT(s, 0xe, pad_0e[0], 0) + (id - 1) * 0x1e;
     }
     return 0;
 }
@@ -421,7 +422,7 @@ u32 WfcMoveMb_FindAidByMac(u8 *mac)
     u16 mask = s->childMasks[0];
     for (i = 1; i < 2; i++) {
         if (mask & (1 << i)) {
-            u8 *e = (u8 *)s + 0x24 + (i - 1) * 0x1e;
+            u8 *e = HOST_AT(s, 0x24, pad_0e[22], 0) + (i - 1) * 0x1e;
             if (mac[0] == e[0] && mac[1] == e[1] && mac[2] == e[2] && mac[3] == e[3] && mac[4] == e[4] && mac[5] == e[5]) {
                 return *(u16 *)((u8 *)s + (i - 1) * 0x1e + 0x2a);
             }

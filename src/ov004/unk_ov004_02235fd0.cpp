@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 // ov004 TU33: .text 0x02235fd0-0x02237440 (actor 0224ebec "bug" scene object + scene objects 0224eb9c)
 #include "types.h"
@@ -291,7 +292,7 @@ BOOL HouseRoachManager::onExecute() {
                         last = (s8)i;
                         break;
                     }
-                    s32 d = Vec_DistXZ(q, (u8 *)o + 0x5c);
+                    s32 d = Vec_DistXZ(q, HOST_AT(o, 0x5c, position.x, 0));
                     if (best > d) {
                         best = d;
                         last = (s8)i;

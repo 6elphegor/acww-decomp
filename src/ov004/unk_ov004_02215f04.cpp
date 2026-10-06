@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 // ov004 TU07: .text 0x02215f04-0x02216ccc (classes BirthdayGuestVillager and its member BirthdayGuestVillagerTalk)
 #include "types.h"
@@ -400,11 +401,11 @@ void BirthdayGuestVillager::onInteractionEvent(u32 a, u8 b) {
     v.y += 0x2000;
     switch (a) {
     case 3:
-        *((u8 *)this + 0x560) = b;
+        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
         changeAct(4);
         break;
     case 0:
-        *((u8 *)this + 0x560) = b;
+        *(HOST_AT(this, 0x560, partnerPlayer, 0)) = b;
         Camera_FocusOnPoint(&v);
         changeAct(5);
         break;
@@ -481,7 +482,7 @@ void BirthdayGuestVillagerTalk::start(TalkStartMsg *arg) {
         break;
     }
     o = villager;
-    if (*(void **)((u8 *)o + 0x8d4)) {
+    if (*(void **)(HOST_AT(o, 0x8d4, talk.window, 0))) {
         u8 *const g = gSaveData;
         void *p = Scene_GetVillagerHouse();
         if (SaveVillagers_IsOccupied(gSaveVillagers, p)) {
@@ -769,18 +770,18 @@ void BirthdayGuestVillager::mainAct05() { changeAct(6); }
 BOOL BirthdayGuestVillager::setupAct06() { return TRUE; }
 
 void BirthdayGuestVillager::mainAct06() {
-    void *p = *(void **)((u8 *)this + 0x8d4);
+    void *p = *(void **)(HOST_AT(this, 0x8d4, talk.window, 0));
     if (p != NULL && *(u32 *)((u8 *)p + 4) == 0) {
         TalkRequest_SetTargetDone(this);
     }
 }
 
 void BirthdayGuestVillager::onTalkMelodyPlayed() {
-    *((u8 *)this + 0x893) = 1;
+    *(HOST_AT(this, 0x893, mood.severeSickness, 0)) = 1;
 }
 
 BOOL BirthdayGuestVillager::canPlayTalkMelody() {
-    if (*((u8 *)this + 0x893) == 0) {
+    if (*(HOST_AT(this, 0x893, mood.severeSickness, 0)) == 0) {
         return TRUE;
     }
     return FALSE;

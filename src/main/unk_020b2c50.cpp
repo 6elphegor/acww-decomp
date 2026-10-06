@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "talk/MsgStringBase.h"
@@ -231,7 +232,7 @@ MsgString25::~MsgString25() {}
 
 u32 MsgString25::capacity() { return 0x19; }
 
-u8 *MsgString25::data() { return (u8 *)this + 0x12; }
+u8 *MsgString25::data() { return HOST_AT(this, 0x12, attr, 10); }
 
 MsgString256::MsgString256() { clear(); }
 
@@ -239,7 +240,7 @@ MsgString256::~MsgString256() {}
 
 u32 MsgString256::capacity() { return 0x100; }
 
-u8 *MsgString256::data() { return (u8 *)this + 0x12; }
+u8 *MsgString256::data() { return HOST_AT(this, 0x12, unk_14[0], 0); }
 
 extern "C" MsgString256 *String_GetTabooScratch(void) {
     static MsgString256 inst;
@@ -255,7 +256,7 @@ u32 ArticleCacheEntry::capacity() {
 }
 
 u8 *ArticleCacheEntry::data() {
-    return (u8 *)this + 0x12;
+    return HOST_AT(this, 0x12, text[0], 0);
 }
 
 BmgReader1K::BmgReader1K() : BmgReader(0) {}

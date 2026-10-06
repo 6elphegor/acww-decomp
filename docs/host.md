@@ -106,6 +106,44 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
   the remainder; x86 traps (hw.c gives the DS's result and reports the site), arm64 gives 0. The game does it (e.g.
   `spl_scl_in_out` at the end of a particle animation).
 
+### 64-bit hosts (in progress)
+
+`python3 tools/configure_host.py --arch x86_64 && ninja -f build_host64.ninja` builds `build/host64_usa/acww`, a
+native x86-64 program (status: boots through the logo into the first field scene). For now everything stays below
+4 GB: the DS memory at its DS addresses, the program at 0x10000000 (`-Wl,-Ttext-segment`), the threads' stacks
+(`host_stack_alloc`, MAP_32BIT) - so a pointer stored in 32 bits still works while the code is made clean. Moving the
+DS memory above 4 GB (macOS arm64) comes after.
+
+What changes with 64-bit pointers, and how the sources handle it (the DS build unchanged, every step checked with the
+matching build and with the i386 build's screenshots and sound staying bit-identical):
+
+- Integers holding pointers: `uptr` / `sptr` (`include/uptr.h`; u32 on the DS). `typedef unsigned long u32`-style
+  typedefs and fx32 became int under HOST (long is 64-bit). `HOST64` marks layouts for the 64-bit host only.
+- Objects sized by their DS size: `HOST_SIZED(n, type)` (n on the DS, at least the real size on the host),
+  `HOST_ALIGN8`. Tools find the sites: `tools/host_alloc_sizes.py` (`(T *)Heap_Alloc(h, N)`, `count * N`),
+  `tools/host_ctor_buffers.py` (buffers, also members, built by a mangled constructor call),
+  `tools/host_placement_sizes.py` (`p = Heap_Alloc(h, N); new (p) T`). Strides and offsets written as numbers
+  (`cell += 0x28`, `heap + 0x24`, `(u8 *)task + 0x1c`) get names (`MAPBLOCK_SIZE`, the member's offset).
+- One object, two declarations (a typed class and a DS-offset view): the views agree on the DS only.
+  `tools/host_view_conflicts.py` finds shared variables (and with `--types`, same-named types) whose views disagree;
+  `tools/host_view_layout.py` generates the 64-bit layout of a view from the class it views (DWARF of both builds:
+  each member at the place of the same byte in the real class) with `static_assert` checks
+  (example: `TalkWindowState`).
+- Linker labels inside variables (`PROVIDE(x = base + off)`): `tools/host_relayout.py` moves them by the DWARF
+  member path (needs the 32-bit build's `game_all.o`). Gap data is emitted as assembly (`host_gaps.py --x86-64`),
+  pointers to member functions as 16-byte objects.
+- SDK objects the sources kept as byte blobs (OSThread, OSMutex, FSFile, FSArchive, NNSFndArchive, sound handles,
+  the NNS G3D render / animation objects: `include/nnsys/g3d_rt.h`) have their real types on the host.
+- Data in the ROM's file formats keeps its 32-bit slots (the sound banks' wave archive links, offsets in G3D
+  resources).
+- Hand-written varargs: `DS_VA_ARG` (`include/ds_stdarg.h`).
+- A C-style cast from a base pointer to a derived class is a static downcast (it subtracts the base's offset):
+  converting a derived pointer to its base subobject's address needs `reinterpret_cast` after the `static_cast`.
+
+Debugging: gdb works directly (`handle SIGALRM nostop noprint pass`); SIGINT prints every game thread's backtrace. Most
+crashes so far were heap blocks overwritten past their end: walk the heap's free list at the crash, then watch the
+damaged block header from `Main_Init` on to find the writer.
+
 Not done yet: resetting an overlay's data when it is loaded again. The game reaches each scene later (in frames)
 than on the DS: the title at about frame 1500 instead of 900 (virtual time passes in waits that the DS doesn't
 have).

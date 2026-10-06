@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/TitleBlinkText.h"
@@ -398,17 +399,17 @@ void TitleScreen::updateOpenMenu() {
         talk.resetMsg();
         if (wifiIdErased != 0) {
             talk.setFileName(sTitleTalkFilePtr);
-            *((u8 *)this + 0x72) = 0x32;
+            *(HOST_AT(this, 0x72, talk.msgIndex, 0)) = 0x32;
             wifiIdErased = 0;
         } else if (backupError != 0) {
             talk.setFileName("sp_etc_sequence2");
-            *((u8 *)this + 0x72) = 9;
+            *(HOST_AT(this, 0x72, talk.msgIndex, 0)) = 9;
         } else if (gSaveData.testFlag(0x12)) {
             talk.setFileName(sTitleTalkFilePtr);
-            *((u8 *)this + 0x72) = 0x24;
+            *(HOST_AT(this, 0x72, talk.msgIndex, 0)) = 0x24;
         } else {
             talk.setFileName(sTitleTalkFilePtr);
-            *((u8 *)this + 0x72) = talk.getGreetingMsg();
+            *(HOST_AT(this, 0x72, talk.msgIndex, 0)) = talk.getGreetingMsg();
         }
         r->attachRequest(&talk);
         r->nextState = 1;

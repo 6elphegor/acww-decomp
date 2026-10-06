@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -181,7 +182,7 @@ u8 data_ov003_02235490;
 s32 data_ov003_02235494;
 char data_ov003_022323f4[0xc] = "m_grd_riv";
 char data_ov003_02232400[0x10] = "m_grd_sea085";
-u32 sWaterMatNames[2] = {(u32)data_ov003_022323f4, (u32)data_ov003_02232400};
+uptr sWaterMatNames[2] = {(uptr)data_ov003_022323f4, (uptr)data_ov003_02232400};
 ProcProfile sFieldGroundProfile = {(void *(*)())FieldGround_Create, 0xd, 0x9};
 }
 

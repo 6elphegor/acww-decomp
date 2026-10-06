@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "item/Letter.h"
 #include "player/PlayerId.h"
 #include "talk/EncodedString8.h"
@@ -3369,7 +3370,7 @@ u32 MsgString11::capacity() {
     using namespace nQ; return 0xb; }
 
 u8 *MsgString11::data() {
-    using namespace nQ; return (u8 *)this + 0x12; }
+    using namespace nQ; return HOST_AT(this, 0x12, text[0], 0); }
 
 EncodedString10::EncodedString10() {
     using namespace nQ;}
@@ -3383,11 +3384,11 @@ u32 EncodedString10::capacity() {
 void EncodedString10::copyTo(void *dst, s32 n) {
     using namespace nQ;
     if (n >= 10) n = 10;
-    MI_CpuCopy8((u8 *)this + 0xe, dst, n);
+    MI_CpuCopy8(HOST_AT(this, 0xe, text[0], 0), dst, n);
 }
 
 u8 *EncodedString10::data() {
-    using namespace nQ; return (u8 *)this + 0xe; }
+    using namespace nQ; return HOST_AT(this, 0xe, text[0], 0); }
 
 MsgString17::MsgString17() {
     using namespace nQ;}
@@ -3399,7 +3400,7 @@ u32 MsgString17::capacity() {
     using namespace nQ; return 0x11; }
 
 u8 *MsgString17::data() {
-    using namespace nQ; return (u8 *)this + 0x12; }
+    using namespace nQ; return HOST_AT(this, 0x12, text[0], 0); }
 
 EncodedString16::EncodedString16() {
     using namespace nQ;}
@@ -3411,7 +3412,7 @@ u32 EncodedString16::capacity() {
     using namespace nQ; return 0x10; }
 
 u8 *EncodedString16::data() {
-    using namespace nQ; return (u8 *)this + 0xe; }
+    using namespace nQ; return HOST_AT(this, 0xe, text[0], 0); }
 
 MsgString17B::MsgString17B() {
     using namespace nQ;}
@@ -3423,7 +3424,7 @@ u32 MsgString17B::capacity() {
     using namespace nQ; return 0x11; }
 
 u8 *MsgString17B::data() {
-    using namespace nQ; return (u8 *)this + 0x12; }
+    using namespace nQ; return HOST_AT(this, 0x12, text[0], 0); }
 
 EncodedString16B::EncodedString16B() {
     using namespace nQ;}
@@ -3435,7 +3436,7 @@ u32 EncodedString16B::capacity() {
     using namespace nQ; return 0x10; }
 
 u8 *EncodedString16B::data() {
-    using namespace nQ; return (u8 *)this + 0xe; }
+    using namespace nQ; return HOST_AT(this, 0xe, text[0], 0); }
 
 namespace nQ {
 extern "C" u8 *_ZN8HousePosC1Ev(u8 *p) {
@@ -5550,7 +5551,7 @@ extern "C" void Villager_DropRandomFurniture(VillagerData *a) {
                             s32 r7 = tbl.v[i];
                             if (_ZN20VillagerDataItemView21isValidFurnitureIndexEi(a, r7) != 0) {
                                 if (r6 == 0) {
-                                    u16 *q = (u16 *)((u8 *)a + 0x6ac) + r7;
+                                    u16 *q = (u16 *)(HOST_AT(a, 0x6ac, furniture[0], 0)) + r7;
                                     if (*q != 0xfff1) Villager_DiscardItem(q);
                                     *q = 0xfff1;
                                     break;

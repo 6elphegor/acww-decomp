@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -24,7 +25,7 @@ LabelButtonText::~LabelButtonText() {}
 // ---- LabelButtonText ----
 u32 LabelButtonText::capacity() { return 9; }
 
-u8 *LabelButtonText::data() { return (u8 *)this + 0x12; }
+u8 *LabelButtonText::data() { return HOST_AT(this, 0x12, unk_12[0], 0); }
 
 LabelButton::LabelButton(u8 a, s32 b) : posX(0), posY(0), palette(-1), kind(b), state(0), label(0) {
     textColor = 0x50c0;

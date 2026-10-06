@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 
@@ -92,7 +93,7 @@ extern VecFx32 gVec3Zero;
 extern const u8 sSpNpcSableDramaMsgs[];
 extern const u8 sSpNpcSableWeekdayMsgs[];
 extern const u8 sSpNpcSableTalkMsgs[];
-extern u32 sSpNpcSableMsgFiles[];
+extern uptr sSpNpcSableMsgFiles[];
 
 s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
 BOOL NpcActor_isNetOwner(void *self);
@@ -586,7 +587,7 @@ extern "C" const u8 sSpNpcSableTalkMsgs[0x60] = {0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0
 extern "C" u8 data_ov004_0224cd04[14] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'd', 'r', 'a', 'm', 'a', '3', 0};
 extern "C" u8 data_ov004_0224cd14[15] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'o', 's', 'i', 's', 't', 'e', 'r', 0};
 extern "C" u8 data_ov004_0224cd24[17] = {'s', 'p', '_', 'e', 't', 'c', '_', 's', 'e', 'q', 'u', 'e', 'n', 'c', 'e', '4', 0};
-extern "C" u32 sSpNpcSableMsgFiles[3] = {(u32)data_ov004_0224cd14, (u32)data_ov004_0224cd04, (u32)data_ov004_0224cd24};
+extern "C" uptr sSpNpcSableMsgFiles[3] = {(uptr)data_ov004_0224cd14, (uptr)data_ov004_0224cd04, (uptr)data_ov004_0224cd24};
 extern "C" u8 sSpNpcSableModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'h', 'g', 's', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcSableTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'h', 'g', 's', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 extern "C" ActorProfile sSpNpcSableProfile = {(void *(*)())SpNpcSable_Create, 0x77, 0x7c, 2, 0x5000, 0x5000, 0x3e800};

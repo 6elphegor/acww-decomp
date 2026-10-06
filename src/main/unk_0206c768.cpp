@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -86,7 +87,7 @@ MsgString513::~MsgString513() {}
 
 u32 MsgString513::capacity() { return 0x201; }
 
-u8 *MsgString513::data() { return (u8 *)this + 0x12; }
+u8 *MsgString513::data() { return HOST_AT(this, 0x12, text[0], 0); }
 
 extern "C" BOOL String_LoadByIndexB(MsgString *buf, const char *name, u32 key) {
     u8 k = key;
@@ -100,7 +101,7 @@ EncodedString512::~EncodedString512() {}
 
 u32 EncodedString512::capacity() { return 0x200; }
 
-u8 *EncodedString512::data() { return (u8 *)this + 0xe; }
+u8 *EncodedString512::data() { return HOST_AT(this, 0xe, text[0], 0); }
 
 extern "C" void MailCheck_LoadWordList() {
     MsgString513 src;

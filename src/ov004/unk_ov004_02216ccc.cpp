@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/ActorProfile.h"
@@ -358,7 +359,7 @@ BOOL HouseOwnerAi::findStepTarget(s32 *o1, s32 *o2, HouseOwnerVillager *o) {
     x = 0;
     y = 0;
     u8 dir = (o->rotY >> 14) & 3;
-    FieldPos_ToUnit(&x, &y, (u8 *)o + 0x5c);
+    FieldPos_ToUnit(&x, &y, HOST_AT(o, 0x5c, position.x, 0));
     s32 px = x;
     s32 py = y;
     px += sHouseOwnerStepDirs[dir].dx;

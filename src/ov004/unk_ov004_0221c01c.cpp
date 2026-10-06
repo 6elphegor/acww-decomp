@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 
@@ -117,7 +118,7 @@ extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern VecFx32 gVec3Zero;
-extern u32 sSpNpcBrewsterMsgFiles[];
+extern uptr sSpNpcBrewsterMsgFiles[];
 extern u8 data_ov004_0224cec8[];
 extern u8 sSpNpcBrewsterModelPath[];
 extern u8 sSpNpcBrewsterTexturePath[];
@@ -399,7 +400,7 @@ BOOL SpNpcBrewster::mainAct00() {
             lookAtTimer = -1;
         }
     } else if (lookAtTimer == 0) {
-        if (*(s16 *)((u8 *)this + 0x3d2) > 0x2000) {
+        if (*(s16 *)(HOST_AT(this, 0x3d2, lookAt.yaw, 0)) > 0x2000) {
             lookAtTimer = 1;
         }
     }
@@ -1061,7 +1062,7 @@ extern "C" u8 sSpNpcBrewsterTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/'
 extern "C" ActorProfile sSpNpcBrewsterProfile = {(void *(*)())SpNpcBrewster_Create, 0x63, 0x6a, 0, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov004_0224cf0c[2] = {(void *)_ZN13SpNpcBrewster10setupAct05Ev, 0};
 extern "C" void *data_ov004_0224cf5c[2] = {(void *)_ZN13SpNpcBrewster10setupAct00Ev, 0};
-extern "C" u32 sSpNpcBrewsterMsgFiles[2] = {(u32)data_ov004_0224cf6c, (u32)data_ov004_0224cf78};
+extern "C" uptr sSpNpcBrewsterMsgFiles[2] = {(uptr)data_ov004_0224cf6c, (uptr)data_ov004_0224cf78};
 extern "C" void *data_ov004_0224cf4c[2] = {(void *)_ZN13SpNpcBrewster10setupAct01Ev, 0};
 extern "C" void *data_ov004_0224cf44[2] = {(void *)_ZN13SpNpcBrewster9mainAct01Ev, 0};
 extern "C" void *data_ov004_0224cf3c[2] = {(void *)_ZN13SpNpcBrewster10setupAct02Ev, 0};

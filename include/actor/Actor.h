@@ -2,6 +2,7 @@
 #define ACTOR_ACTOR_H
 
 #include "types.h"
+#include "uptr.h"
 #include "sys/ProcBase.h"
 #include "gfx/VecFx32.h"
 #include "actor/ActorListNode.h"
@@ -11,8 +12,8 @@ extern "C" void List_Remove(void *list, void *node);
 
 // gActorList head (8 bytes, zeroed by an inline constructor: the __sinit of src/main/unk_02002b1c.cpp)
 struct ActorList {
-    u32 head;
-    u32 tail;
+    uptr head;  // (a List: ListNode pointers - uptr for their size on 64-bit hosts)
+    uptr tail;
     ActorList() {
         head = 0;
         tail = 0;

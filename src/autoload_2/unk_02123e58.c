@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MB (multiboot parent) helpers, autoload_2 0x02123e58-0x02124408. ARM code, mwcc 1.2/base.
@@ -208,7 +209,7 @@ void MBi_InitSendFixedBeacon(void) {
         data_021fff8c.p8 = c;
     } else {
         data_021fff8c.p10 = 4;
-        data_021fff8c.p8 = (u8 *)c + 0x220;
+        data_021fff8c.p8 = HOST_AT(c, 0x220, f220[0], 0);
     }
     data_021fff8c.state = 3;
 }

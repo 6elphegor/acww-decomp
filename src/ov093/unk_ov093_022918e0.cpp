@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString193.h"
@@ -295,7 +296,7 @@ s8 *StaffRoll::getLine(s32 i)
     s32 q = i / 6;
     u8 b = q;
     String_Load((u8 *)&staffText + 0, &b, "st_staffroll");
-    return Msg_SkipLines((u8 *)this + 0x183a, i - q * 6);
+    return Msg_SkipLines(HOST_AT(this, 0x183a, staffText.text[0], 0), i - q * 6);
 }
 
 void StaffRoll::fillNextRow(s32 a, StaffRollLayer *s)

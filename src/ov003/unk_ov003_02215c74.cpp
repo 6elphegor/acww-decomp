@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/sp2
 // ov003 TU10 (actor 022318e8): .text 0x02215c74-0x02216430
 #include "types.h"
@@ -222,7 +223,15 @@ BOOL VillagerHouse::initBuilding() {
                 s32 d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 lightUpAnim.initWithTex(c, d, 0, 0x1000, 0);
                 lightUpAnim.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&lightUpModel));
-                *(Mtx43 *)((u8 *)this + 0x314) = baseMatrix;
+#ifdef HOST
+                lightUpModel.mtx = baseMatrix;  // (the members by name: they move on 64-bit hosts)
+#else
+        #ifdef HOST
+        lightUpModel.mtx = baseMatrix;
+#else
+        *(Mtx43 *)(HOST_AT(this, 0x314, lightUpModel.mtx.m[0], 0)) = baseMatrix;
+#endif
+#endif
             }
         }
     }
@@ -231,10 +240,14 @@ BOOL VillagerHouse::initBuilding() {
 
 BOOL VillagerHouse::onExecute() {
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
-        *(Mtx43 *)((u8 *)this + 0x314) = baseMatrix;
+        *(Mtx43 *)(HOST_AT(this, 0x314, lightUpModel.mtx.m[0], 0)) = baseMatrix;
         if ((colliderFlags & 1) == 0) {
             lightUpAnim.step();
-            **(u32 **)((u8 *)this + 0x380) = *(u32 *)((u8 *)this + 0x370);
+#ifdef HOST
+            *(u32 *)(uptr)lightUpAnim.anmObj = lightUpAnim.curFrame;  // (the frame of the anm object)
+#else
+            **(u32 **)(HOST_AT(this, 0x380, lightUpAnim.anmObj, 0)) = *(u32 *)(HOST_AT(this, 0x370, lightUpAnim.curFrame, 0));
+#endif
         }
     }
     return TRUE;

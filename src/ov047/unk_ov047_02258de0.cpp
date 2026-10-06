@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -673,9 +674,9 @@ BOOL SpNpcBlathers::setupAct02() {
 
 BOOL SpNpcBlathers::mainAct02() {
     if (effectHandle == -1) {
-        effectHandle = Effect_Create(0x3c, (u8 *)this + 0x478, &rotY, 0);
+        effectHandle = Effect_Create(0x3c, HOST_AT(this, 0x478, jointPos[0].x, 0), &rotY, 0);
     } else {
-        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, &rotY, 0);
+        Effect_SetPosition(effectHandle, HOST_AT(this, 0x478, jointPos[0].x, 0), &rotY, 0);
     }
     return TRUE;
 }

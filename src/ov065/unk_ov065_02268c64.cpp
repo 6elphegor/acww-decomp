@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/WifiLinkSendState.h"
@@ -305,8 +306,8 @@ s32 WifiLink_SendFrame(u32 a, void *b, u32 c)
         OS_RestoreInterrupts(e);
         return -4;
     }
-    MI_CpuCopy8(b, (u8 *)s + 0xf00, c);
-    switch (WM_SetDCFData((void *)WifiLink_OnSendDone, (void *)a, (u8 *)s + 0xf00, (u16)c)) {
+    MI_CpuCopy8(b, HOST_AT(s, 0xf00, sendBuf[0], 0), c);
+    switch (WM_SetDCFData((void *)WifiLink_OnSendDone, (void *)a, HOST_AT(s, 0xf00, sendBuf[0], 0), (u16)c)) {
     case 0:
     case 1:
     case 3:
@@ -482,7 +483,7 @@ WifiApListEntry *WifiApList_AllocEntry(void)
             s32 i = 0;
             for (i = 0; (u32)i < n; i++) {
                 u32 off = i * sz;
-                u8 *base = (u8 *)list + 0xc;
+                u8 *base = HOST_AT(list, 0xc, nodes[0].inUse, 0);
                 r = (WifiApListEntry *)(base + off);
                 if (base[off] == 0) {
                     break;

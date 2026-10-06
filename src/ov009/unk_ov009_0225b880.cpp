@@ -429,7 +429,11 @@ BOOL BuildingActor::onCreate() {
     gridX = position.x >> 13;
     gridZ = position.z >> 13;
     Character_setCharId(this, (u16)(((gridZ & 0xff) << 8) | (gridX & 0xff)));
+#ifdef HOST
+    itemId = param;  // (ProcBase::param: the spawn parameter)
+#else
     itemId = *(u32 *)((u8 *)this + 8);
+#endif
     buildingIndex = itemId & 0xfff;
     char *a = getArcPath();
     char *bb = getTexPath();
@@ -918,7 +922,11 @@ void BuildingActor::createShadows(Mtx43 *m) {
             zero = i;
             for (; i < n; p++, i++) {
                 if (p != NULL) {
+#ifdef HOST
+                    p->func_020ac1e0();  // (the constructor: it returns this on ARM only)
+#else
                     p = p->func_020ac1e0();
+#endif
                 }
                 BuildingShadowEntry *it = e->shadowTable->getEntry(i);
                 VecFx32Ctor v(it->offsetX, zero, it->offsetZ);

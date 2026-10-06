@@ -1,3 +1,4 @@
+#include "uptr.h"
 // ov142: scene overlay (class CatalogMenu, vtable 0x02294da8, 0x2e10 bytes): item catalog list.
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -1282,18 +1283,18 @@ void CatalogMenu::buildGyroidList() {
 }
 
 void CatalogMenu::buildFossilList() {
-    *(u16 *)((u8 *)this + 0xe6) = 0;
+    *(u16 *)(HOST_AT(this, 0xe6, tabTotalCounts[8], 0)) = 0;
     s32 n = collectCataloguedFurniture(fossilItems, 0x450c, 0x34, 8);
-    *(u16 *)((u8 *)this + 0xd4) = n;
+    *(u16 *)(HOST_AT(this, 0xd4, tabOwnedCounts[8], 0)) = n;
 }
 
 void CatalogMenu::buildHeadwearList() {
-    *(u16 *)((u8 *)this + 0xe0) = 0;
+    *(u16 *)(HOST_AT(this, 0xe0, tabTotalCounts[5], 0)) = 0;
     s32 a = collectCataloguedFurniture(headwearItems, 0x3fa4, 0x40, 5);
     s32 b = collectCataloguedFurniture(headwearItems + a, 0x40a4, 0x20, 5);
     a += b;
     s32 c = collectCataloguedFurniture(headwearItems + a, 0x4124, 0x40, 5);
-    *(u16 *)((u8 *)this + 0xce) = a + c;
+    *(u16 *)(HOST_AT(this, 0xce, tabOwnedCounts[5], 0)) = a + c;
 }
 
 s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off) {
@@ -1351,9 +1352,9 @@ extern "C" void *data_ov142_02294ca8[2] = {(void *)_ZN11CatalogMenu14updateKnobK
 
 u16 *CatalogMenu::getTabItemPtr(s32 idx) {
     static u16 *tbl[9] = {
-        (u16 *)((u8 *)this + 0x708), (u16 *)((u8 *)this + 0xf08), (u16 *)((u8 *)this + 0xf90),
-        (u16 *)((u8 *)this + 0x1018), (u16 *)((u8 *)this + 0x1218), (u16 *)((u8 *)this + 0x1258),
-        (u16 *)((u8 *)this + 0x1398), (u16 *)((u8 *)this + 0x1418), (u16 *)((u8 *)this + 0x1516)
+        (u16 *)(HOST_AT(this, 0x708, furnitureItems[0], 0)), (u16 *)(HOST_AT(this, 0xf08, wallpaperItems[0], 0)), (u16 *)(HOST_AT(this, 0xf90, carpetItems[0], 0)),
+        (u16 *)(HOST_AT(this, 0x1018, shirtItems[0], 0)), (u16 *)(HOST_AT(this, 0x1218, umbrellaItems[0], 0)), (u16 *)(HOST_AT(this, 0x1258, headwearItems[0], 0)),
+        (u16 *)(HOST_AT(this, 0x1398, paperItems[0], 0)), (u16 *)(HOST_AT(this, 0x1418, gyroidItems[0], 0)), (u16 *)(HOST_AT(this, 0x1516, fossilItems[0], 0))
     };
     if (idx < 0) {
         idx = 0;
@@ -1369,7 +1370,7 @@ void CatalogMenu::composeListScreen() {
     MIi_CpuClear16(fill, listScreen, 0x800);
     s32 z = 0;
     for (s32 n = 0; n < 9; n++) {
-        MIi_CpuCopy16((u8 *)this + 0x1590 + i * 0x80, listScreen + j * 0x80, 0x80);
+        MIi_CpuCopy16(HOST_AT(this, 0x1590, rowTemplateScreen[0], 0) + i * 0x80, listScreen + j * 0x80, 0x80);
         i++;
         if (i >= 9) {
             i = z;

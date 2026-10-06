@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "gfx/MatTexVramTask.h"
 #include "gfx/ModelAnim.h"
 #include "item/DateSeededRandomSource.h"
@@ -315,7 +316,7 @@ BOOL SewingMachine::enterState02() {
 }
 
 void SewingMachine::updateState02() {
-    s32 t = ((Unk_ov004_022288c0_Bits *)((u8 *)this + 0x334))->mid;
+    s32 t = ((Unk_ov004_022288c0_Bits *)(HOST_AT(this, 0x334, partModel[41], 0)))->mid;
     u32 q = (u16)(t / 0x38);
     if (Math_IsInRange((u16)(t - q * 0x38), 0x11, 0x34)) {
         if (!MenuCtrl_IsMenuOpen()) {
@@ -377,7 +378,7 @@ extern "C" void SewingMachine_SetFrame(u32 x) {
 extern "C" u32 SewingMachine_GetFrame() {
     SewingMachine *g = sSewingMachine;
     if (g) {
-        return ((Unk_ov004_022288c0_Bits *)((u8 *)g + 0x334))->mid;
+        return ((Unk_ov004_022288c0_Bits *)(HOST_AT(g, 0x334, partModel[41], 0)))->mid;
     }
     return 0;
 }

@@ -55,12 +55,12 @@ def main():
             if not decls:
                 # a member of the class (an array member constructed in place): its declaration in a class / struct body
                 decls = list(re.finditer(r"^(\s+)(?:/\*[^*]*\*/\s*)?(u8|s8|char|u16|s16|u32|s32|int)\s+" + re.escape(var) +
-                                         r"\s*\[\s*(0x[0-9a-fA-F]+|\d+)\s*\]\s*;", t, re.M))
+                                         r"\s*\[\s*((?:0x[0-9a-fA-F]+|\d+)(?:\s*[-+]\s*(?:0x[0-9a-fA-F]+|\d+))*)\s*\]\s*;", t, re.M))
                 decls = [d for d in decls if in_type_body(t, d.start())]
                 if len(decls) != 1:
                     continue
                 d = decls[0]
-                elem, count = d.group(2), int(d.group(3), 0)
+                elem, count = d.group(2), eval(d.group(3))  # (numbers, + and - only)
                 if cls not in headers and not re.search(r"^(?:class|struct) %s\b[^;]*\{" % re.escape(cls), t, re.M):
                     print(f"{f}: {cls} ({var}): no header with the class, skipped")
                     continue

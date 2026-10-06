@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 // ov004 TU34: .text 0x02237440-0x0223db88 (bug-actor manager 0224ec80 + 0x2d8-byte slot state functions; slot array
 // sMuseumInsects[0x20], tables sMuseumInsectParams (0xe4) / sMuseumInsectBehaviors (0x1c8), insect path strings)
@@ -2918,7 +2919,7 @@ void MuseumInsect::scurry(VecFx32 *v) {
     s32 res = crawl();
     s16 ang = yaw;
     VecFx32 d1;
-    Vec_Sub(&d1, v, (VecFx32 *)((u8 *)this + 0x2c8));
+    Vec_Sub(&d1, v, (VecFx32 *)(HOST_AT(this, 0x2c8, position.x, 0)));
     VecFx32 d0;
     MuseumInsect_MakeStepDir(&d0, ang);
     Vec_SafeNormalize(&d0);

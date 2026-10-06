@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
@@ -342,7 +343,7 @@ void NameLabelBalloonView::createLabel() {
         if (o != NULL) {
             o->vramLoader = 4;
             MsgTextLabel *p = textLabel;
-            p->textStart = (u32)((MsgString *)((u8 *)this + 0x38))->data();
+            p->textStart = (u32)((MsgString *)(HOST_AT(this, 0x38, pad_10[10], 0)))->data();
             textLabel->copyMode = 2;
             textLabel->rowStride1K = 1;
             textLabel->bgColor = t;

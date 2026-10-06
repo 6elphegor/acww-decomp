@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "town/TownBlockCell.h"
 #include "types.h"
 #include "player/PlayerErrandsInviteView.h"
@@ -1148,11 +1149,11 @@ extern "C" BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, 
     if (i < 8) {
         NpcNetRecord *r = &F3::sVillagerNetRecords[i];
         r->isSet = 1;
-        F3::CommRecord_PackSource((u8 *)r + 3, b, 0);
-        F3::NetBuf_PackPair20((u8 *)r + 4, v->x, v->z);
-        F3::MI_CpuCopy8(&c, (u8 *)r + 9, 2);
-        F3::MI_CpuCopy8(d, (u8 *)r + 0xf, 0xf);
-        F3::MI_CpuCopy8(e, (u8 *)r + 0xb, 4);
+        F3::CommRecord_PackSource(HOST_AT(r, 3, pad[0], 0), b, 0);
+        F3::NetBuf_PackPair20(HOST_AT(r, 4, pad[1], 0), v->x, v->z);
+        F3::MI_CpuCopy8(&c, HOST_AT(r, 9, pad[6], 0), 2);
+        F3::MI_CpuCopy8(d, HOST_AT(r, 0xf, pad[12], 0), 0xf);
+        F3::MI_CpuCopy8(e, HOST_AT(r, 0xb, pad[8], 0), 4);
         return TRUE;
     }
     return FALSE;
@@ -1201,11 +1202,11 @@ extern "C" BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 
     if (i < 0x26) {
         NpcNetRecord *r = &F3::sSpNpcNetRecords[i];
         r->isSet = 1;
-        F3::CommRecord_PackSource((u8 *)r + 3, b, 0);
-        F3::NetBuf_PackPair20((u8 *)r + 4, v->x, v->z);
-        F3::MI_CpuCopy8(&c, (u8 *)r + 9, 2);
-        F3::MI_CpuCopy8(d, (u8 *)r + 0xf, 0xf);
-        F3::MI_CpuCopy8(e, (u8 *)r + 0xb, 4);
+        F3::CommRecord_PackSource(HOST_AT(r, 3, pad[0], 0), b, 0);
+        F3::NetBuf_PackPair20(HOST_AT(r, 4, pad[1], 0), v->x, v->z);
+        F3::MI_CpuCopy8(&c, HOST_AT(r, 9, pad[6], 0), 2);
+        F3::MI_CpuCopy8(d, HOST_AT(r, 0xf, pad[12], 0), 0xf);
+        F3::MI_CpuCopy8(e, HOST_AT(r, 0xb, pad[8], 0), 4);
         return TRUE;
     }
     return FALSE;

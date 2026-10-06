@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/CharacterListNode.h"
@@ -148,9 +149,9 @@ BOOL RoostCafeSet::onExecute() {
     if (alpha != targetAlpha) {
         Math_StepS32(&alpha, targetAlpha, 2);
     }
-    u32 n = (*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148))->numMat;
+    u32 n = (*(Unk_ov068_022708fc_Obj **)(HOST_AT(this, 0x148, model.resMdl, 0)))->numMat;
     for (u32 i = 0; i < n; i++) {
-        NNS_G3dMdlSetMdlAlpha(*(Unk_ov068_022708fc_Obj **)((u8 *)this + 0x148), i, (u8)alpha);
+        NNS_G3dMdlSetMdlAlpha(*(Unk_ov068_022708fc_Obj **)(HOST_AT(this, 0x148, model.resMdl, 0)), i, (u8)alpha);
     }
     return TRUE;
 }

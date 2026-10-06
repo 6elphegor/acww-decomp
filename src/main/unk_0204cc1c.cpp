@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "town/TownBlockCell.h"
 #include "types.h"
 #include "sys/StackPad.h"
@@ -1159,7 +1160,7 @@ void *TownMap::getAcreItems(Vec2 *in) {
     b.x = in->x;
     b.y = in->y;
     if (toTownAcreIndex(&a, &b)) {
-        r = Ns_0204debc::AcreItemGrid_Get((u8 *)this + 0x24 + a.y * 0x800 + a.x * 0x200);
+        r = Ns_0204debc::AcreItemGrid_Get(HOST_AT(this, 0x24, items[0].e[0].id, 0) + a.y * 0x800 + a.x * 0x200);
     }
     return r;
 }
@@ -1172,7 +1173,7 @@ void *TownMap::getAcreBuried(Vec2 *in) {
     b.x = in->x;
     b.y = in->y;
     if (toTownAcreIndex(&a, &b)) {
-        r = (u8 *)this + 0x2024 + a.y * 0x80 + a.x * 0x20;
+        r = HOST_AT(this, 0x2024, buried[0].data[0], 0) + a.y * 0x80 + a.x * 0x20;
     }
     return r;
 }

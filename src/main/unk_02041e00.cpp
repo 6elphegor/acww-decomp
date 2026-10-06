@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "sys/StackPad.h"
 #include "sys/ClockDateTime.h"
@@ -4204,7 +4205,7 @@ extern "C" void Town_BreedFlowers(void *a, TownBlockMap *b, s32 c, s32 d) {
                 }
                 if (cnt > 0) {
                     k = Random_GlobalBelow(cnt);
-                    Vec2 *bp = (Vec2 *)((u8 *)b + 4);
+                    Vec2 *bp = (Vec2 *)(HOST_AT(b, 4, width, 0));
                     s32 fx = bp->x << 4;
                     s32 fy = bp->y << 4;
                     to.x = arr[k].x;
@@ -6257,7 +6258,7 @@ extern "C" u8 *PendingUnit_GetActivePosOfAid(u32 a) {
     e = nZ::sPendingUnits.entries;
     for (i = 0; i < 20; e++, i++) {
         if (a == e->aid && e->committed) {
-            r = (u8 *)e + 8;
+            r = HOST_AT(e, 8, unit.b.z, 0);
             break;
         }
     }

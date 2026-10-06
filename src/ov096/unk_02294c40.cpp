@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -1596,15 +1597,15 @@ extern "C" void _ZN10PocketMenu9mainAct25Ev(PocketMenu *s)
     if (_ZN10PocketMenu18requestUseOnPlayerEit(s, r4, s->handItem)) {
         _ZN8MenuProc12setMainStateEh(s, 0x26);
         s->handItem = _ZN10PocketMenu12swapEquippedEit(s, r4, s->handItem);
-        InventoryBg_StartBlink((u8 *)s + 0xde0, 1);
+        InventoryBg_StartBlink(HOST_AT(s, 0xde0, m_de0.shownBells, 0), 1);
     }
 }
 
 extern "C" void _ZN10PocketMenu9mainAct26Ev(PocketMenu *s)
 {
-    if (InventoryBg_UpdateBlink((u8 *)s + 0xde0)) {
+    if (InventoryBg_UpdateBlink(HOST_AT(s, 0xde0, m_de0.shownBells, 0))) {
         _ZN10PocketMenu9clearHandEv(s);
-        InventoryBg_LoadPictureForHeldItem((u8 *)s + 0xde0);
+        InventoryBg_LoadPictureForHeldItem(HOST_AT(s, 0xde0, m_de0.shownBells, 0));
         if (s->handItem != 0xfff1) {
             if (_ZN10PocketMenu9testFlagsEj(s, 0x8000)) {
                 PocketMenu_FlyItemTo(s, 0x24, s->handSource, s->handItem, 0);
@@ -1622,7 +1623,7 @@ extern "C" void _ZN10PocketMenu9mainAct27Ev(PocketMenu *s)
 {
     if (_ZN10PocketMenu17isUseOnPlayerBusyEi(s, s->useOnPlayerKind) == 0) {
         _ZN10PocketMenu9clearHandEv(s);
-        InventoryBg_StopBlink((u8 *)s + 0xde0);
+        InventoryBg_StopBlink(HOST_AT(s, 0xde0, m_de0.shownBells, 0));
         PocketMenu_ReturnToIdle(s);
     }
 }

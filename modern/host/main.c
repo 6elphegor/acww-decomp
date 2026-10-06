@@ -37,6 +37,14 @@ void host_panic(const char *file, u32 line, const char *fmt, void *args) {
     host_fatal("panic");
 }
 
+// Fatal_Panic (HOST): the arguments as a va_list
+void host_panic_v(const char *file, u32 line, const char *fmt, va_list *args) {
+    char buf[512];
+    vsnprintf(buf, sizeof buf, fmt, *args);
+    fprintf(stderr, "host: game panic: %s (%s:%u)\n", buf, file ? file : "", line);
+    host_fatal("panic");
+}
+
 void host_unimplemented(const char *what) {
     fprintf(stderr, "host: unimplemented: %s\n", what);
 }

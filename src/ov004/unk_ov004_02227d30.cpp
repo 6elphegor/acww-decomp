@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/ActorProfile.h"
@@ -102,22 +103,22 @@ BarberPole::~BarberPole() {}
 
 BOOL BarberPole::onCreate() {
     loadResourcesByName("obj_b_pole");
-    if (RoomObjRes_GetBca((u8 *)this + 0x1a4, 0) != 0) {
-        if (_ZN9AnimModel11allocAnmObjEPv((u8 *)this + 0xec, gBgHeap) != 0) {
-            _ZN14BlendAnimModel8initAnimEiiitt((u8 *)this + 0xec, RoomObjRes_GetBca((u8 *)this + 0x1a4, 0), 0, 0x1000, 0, 0);
-            _ZN9AnimModel10attachAnimEv((u8 *)this + 0xec);
+    if (RoomObjRes_GetBca(HOST_AT(this, 0x1a4, res.archive, 0), 0) != 0) {
+        if (_ZN9AnimModel11allocAnmObjEPv(HOST_AT(this, 0xec, model, 0), gBgHeap) != 0) {
+            _ZN14BlendAnimModel8initAnimEiiitt(HOST_AT(this, 0xec, model, 0), RoomObjRes_GetBca(HOST_AT(this, 0x1a4, res.archive, 0), 0), 0, 0x1000, 0, 0);
+            _ZN9AnimModel10attachAnimEv(HOST_AT(this, 0xec, model, 0));
         }
     }
     return TRUE;
 }
 
 BOOL BarberPole::onExecute() {
-    _ZN9AnimModel8stepAnimEv((u8 *)this + 0xec);
+    _ZN9AnimModel8stepAnimEv(HOST_AT(this, 0xec, model, 0));
     return TRUE;
 }
 
 BOOL BarberPole::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv((u8 *)this + 0xec, 0);
+    _ZN9AnimModel12drawAnimatedEPv(HOST_AT(this, 0xec, model, 0), 0);
     return TRUE;
 }
 

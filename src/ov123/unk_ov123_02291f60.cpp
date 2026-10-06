@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
@@ -878,8 +879,8 @@ void PatternEditorMenu::setupBgLayers() {
 void PatternEditorMenu::loadBgGfx() {
     void *p = gCurrentHeap;
     Gfx2d_LoadPaletteFile((void *)"menu/edit/bg.bpl", p, 6, 4, 4, 0xe);
-    File_LoadToBuffer((void *)"menu/edit/a.bsc", (u8 *)this + 0x204, 0x800);
-    Gfx2d_LoadScreen((u8 *)this + 0x204, 6, 0x800, 0);
+    File_LoadToBuffer((void *)"menu/edit/a.bsc", HOST_AT(this, 0x204, buttonScreen[0], 0), 0x800);
+    Gfx2d_LoadScreen(HOST_AT(this, 0x204, buttonScreen[0], 0), 6, 0x800, 0);
     Gfx2d_LoadScreenFile((void *)"menu/edit/b.bsc", p, 4);
     Gfx2d_LoadScreenFile((void *)"menu/edit/c.bsc", p, 3);
     Gfx2d_LoadCharFile((void *)"menu/edit/bg1.bch", p, 6, 0x120, 0x120, 0x1ff);

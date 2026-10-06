@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "item/ItemIconCache.h"
 #include "menu/InventoryGridTypes.h"
@@ -369,14 +370,14 @@ void InventoryBg_SetupTextWindows(void *o)
     func_02063888(buf);
     TownId_GetNameString(PlayerId_GetTownId(r), buf);
     String_SetSlot(0, buf);
-    LabelString_createLabel((u8 *)p + 0xe0, p->bgId, 0x11, 0xa, 0xf, 0xc, 0);
-    String_Load2dMenu((u8 *)p + 0xe0, 0x66);
-    LabelString_redrawAligned((u8 *)p + 0xe0, 1, 0);
+    LabelString_createLabel(HOST_AT(p, 0xe0, textWindows[0], 0), p->bgId, 0x11, 0xa, 0xf, 0xc, 0);
+    String_Load2dMenu(HOST_AT(p, 0xe0, textWindows[0], 0), 0x66);
+    LabelString_redrawAligned(HOST_AT(p, 0xe0, textWindows[0], 0), 1, 0);
     func_02094030(buf2);
     PlayerId_getNameString(r, buf2);
-    LabelString_createLabel((u8 *)p + 0x120, p->bgId, 0x25, 8, 0xf, 0xc, 0);
-    MsgString_copy((u8 *)p + 0x120, buf2);
-    LabelString_redrawAligned((u8 *)p + 0x120, 1, 0);
+    LabelString_createLabel(HOST_AT(p, 0x120, textWindows[64], 0), p->bgId, 0x25, 8, 0xf, 0xc, 0);
+    MsgString_copy(HOST_AT(p, 0x120, textWindows[64], 0), buf2);
+    LabelString_redrawAligned(HOST_AT(p, 0x120, textWindows[64], 0), 1, 0);
     func_02094018(buf2);
     func_02063870(buf);
 }
@@ -436,7 +437,7 @@ void InventoryBg_UploadScreen(void *o)
 {
     InventoryBg *p = (InventoryBg *)o;
     if (InventoryBg_IsDirty(p, 1)) {
-        if (BgVramTask_requestScreen((u8 *)p + 0x38, (u8 *)p + 0x160, p->bgId, 0x800, 0)) {
+        if (BgVramTask_requestScreen(HOST_AT(p, 0x38, vramTasks[0], 0), HOST_AT(p, 0x160, screenData[0], 0), p->bgId, 0x800, 0)) {
             InventoryBg_ClearDirty(p, 1);
         }
     }
@@ -496,7 +497,7 @@ void InventoryBg_LoadPicture(void *o, s32 a, s32 b)
     } else {
         Str_SPrintf(buf, data_ov094_022948a4, a);
     }
-    File_LoadToBuffer(buf, (u8 *)p + 0x960, 0xc80);
+    File_LoadToBuffer(buf, HOST_AT(p, 0x960, screenData[2048], 0), 0xc80);
     p->pictureIndex = a;
     InventoryBg_SetDirty(p, 4);
 }
@@ -505,7 +506,7 @@ void InventoryBg_UploadPicture(void *o)
 {
     InventoryBg *p = (InventoryBg *)o;
     if (InventoryBg_IsDirty(p, 4)) {
-        if (BgVramTask_requestChars((u8 *)p + 0x70, (u8 *)p + 0x960, p->bgId, 0x35, 0x35, 0x98)) {
+        if (BgVramTask_requestChars(HOST_AT(p, 0x70, vramTasks[56], 0), HOST_AT(p, 0x960, screenData[2048], 0), p->bgId, 0x35, 0x35, 0x98)) {
             InventoryBg_ClearDirty(p, 4);
         }
     }
@@ -608,7 +609,7 @@ void InventoryBg_SetBellsPanelMode(void *o, u32 n)
         z = 8;
         break;
     }
-    BgScreen_SetRectPalette((u8 *)p + 0x160, x, 10, 11, 11, z);
+    BgScreen_SetRectPalette(HOST_AT(p, 0x160, screenData[0], 0), x, 10, 11, 11, z);
     InventoryBg_SetDirty(p, 8);
     switch (n) {
     case 0:
@@ -660,7 +661,7 @@ void InventoryBg_UpdateBells(void *o)
     if (InventoryBg_IsDirty(p, 2)) {
         s32 v = p->shownBells;
         InventoryBg_SetDirty(p, 1);
-        u16 *q = (u16 *)((u8 *)p + 0x3f6);
+        u16 *q = (u16 *)(HOST_AT(p, 0x3f6, screenData[662], 0));
         s32 i;
         for (i = 0; i < 5; i++) {
             s32 base;

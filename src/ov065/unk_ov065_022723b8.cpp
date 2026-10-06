@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/gp.h"
@@ -2906,7 +2907,7 @@ s32 DwcMatch_TryNextFriend(s32 a, s32 b) {
         c = *gp;
         n = c->numClients;
         if (n >= 1) {
-            u32 *p = (u32 *)((u8 *)c + 4);
+            u32 *p = (u32 *)(HOST_AT(c, 4, transportSocketPtr, 0));
             do {
                 if (x == *(u32 *)((u8 *)p + 0xf4)) break;
                 p++;
@@ -3366,8 +3367,8 @@ u32 DwcMatch_DropUnresponsiveClients(u32 mask) {
     i = 1;
     g = G;
     if (i <= g->numClients) {
-        q = (u8 *)g + 1;
-        r = (u8 *)g + 4;
+        q = HOST_AT(g, 1, gpConnection, 1);
+        r = HOST_AT(g, 4, transportSocketPtr, 0);
         do {
             if (mask & (1 << q[0x2b8])) {
                 b[n1] = *(u32 *)(r + 0xf4);

@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
@@ -936,7 +937,7 @@ ChoiceString::~ChoiceString() {}
 
 u32 ChoiceString::capacity() { return 0x21; }
 
-u8 *ChoiceString::data() { return (u8 *)this + 0x12; }
+u8 *ChoiceString::data() { return HOST_AT(this, 0x12, unk_14[0], 0); }
 
 BOOL ChoiceString::loadFromBmg(const char *path, void *entry, BmgMsgAttr *out) {
     u8 *d = data();

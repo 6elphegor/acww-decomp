@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "gfx/ModelSlotPool.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -292,11 +293,11 @@ BOOL FishDisplay::onExecute() {
         }
         case 3:
             if (e->fishId == 0x3b) {
-                _ZN9AnimModel8stepAnimEv((u8 *)e + 0x98);
-                NNS_G3dMdlSetMdlAlpha(_ZN11PooledModel8getModelEv((u8 *)e + 0x4c), v0, *(u32 *)((u8 *)e + 0x164));
+                _ZN9AnimModel8stepAnimEv(HOST_AT(e, 0x98, model[0], 0));
+                NNS_G3dMdlSetMdlAlpha(_ZN11PooledModel8getModelEv(HOST_AT(e, 0x4c, pooledModel[0], 0)), v0, *(u32 *)(HOST_AT(e, 0x164, alpha, 0)));
             } else if (e->fishId == 0x38 || e->fishId == 0x39 || e->fishId == 0x3a) {
             } else {
-                _ZN9AnimModel8stepAnimEv((u8 *)e + 0x98);
+                _ZN9AnimModel8stepAnimEv(HOST_AT(e, 0x98, model[0], 0));
                 if (e->playSound != 0) {
                     VecFx32 *p = &e->pos;
                     VecFx32 t;
@@ -304,7 +305,7 @@ BOOL FishDisplay::onExecute() {
                     t.y = p->y;
                     t.z = p->z;
                     _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(e, &t);
-                    if (_ZN13AnimFrameCtrl14hasPassedFrameEi((u8 *)e + 0x134, 1)) {
+                    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(HOST_AT(e, 0x134, model[156], 0), 1)) {
                         Snd_SeEmitterPlayOneShot(e, 0x84d, 0x7f, v4);
                     }
                 }
@@ -320,7 +321,7 @@ BOOL FishDisplay::onExecute() {
 }
 
 void FishDisplay::updateTransform(FishDisplayEntry *e) {
-    u8 *m = (u8 *)e + 0x98;
+    u8 *m = HOST_AT(e, 0x98, model[0], 0);
     s32 id = e->fishId;
     VecFx32 v;
     VecFx32 o;
@@ -351,9 +352,9 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
     char buf[0x18];
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->fishId;
-    void *x = _ZN13ModelSlotPool7acquireEPt(p, (u8 *)e + 0x48);
+    void *x = _ZN13ModelSlotPool7acquireEPt(p, HOST_AT(e, 0x48, modelSlot[0], 0));
     void *t;
-    void *y = (u8 *)e + 0x4c;
+    void *y = HOST_AT(e, 0x4c, pooledModel[0], 0);
     s32 q = id / 16;
     if (id < 10) {
         Str_SPrintf(buf, "/fish/0%d/fish0%d.nsbmd", q, id);
@@ -361,7 +362,7 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
         Str_SPrintf(buf, "/fish/0%d/fish%d.nsbmd", q, id);
     }
     if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, buf)) {
-        u8 *m = (u8 *)e + 0x98;
+        u8 *m = HOST_AT(e, 0x98, model[0], 0);
         _ZN5Model11setResourceEP12NNSG3dResMdlj(m, _ZN11PooledModel8getModelEv(y), 0);
         t = _ZN9ModelSlot7getHeapEv(x);
         if (id < 10) {
@@ -387,10 +388,10 @@ BOOL FishDisplay::loadStaticModel(void *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->fishId;
-    void *x = _ZN13ModelSlotPool7acquireEPt(p, (u8 *)e + 0x48);
-    void *y = (u8 *)e + 0x4c;
+    void *x = _ZN13ModelSlotPool7acquireEPt(p, HOST_AT(e, 0x48, modelSlot[0], 0));
+    void *y = HOST_AT(e, 0x4c, pooledModel[0], 0);
     if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, sFishStaticMdlPaths[id - 0x38])) {
-        _ZN5Model11setResourceEP12NNSG3dResMdlj((u8 *)e + 0x98, _ZN11PooledModel8getModelEv(y), r);
+        _ZN5Model11setResourceEP12NNSG3dResMdlj(HOST_AT(e, 0x98, model[0], 0), _ZN11PooledModel8getModelEv(y), r);
         e->entryState = 3;
         updateTransform(e);
         r = TRUE;
@@ -402,10 +403,10 @@ BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->fishId;
-    void *x = _ZN13ModelSlotPool7acquireEPt(p, (u8 *)e + 0x48);
-    void *y = (u8 *)e + 0x4c;
+    void *x = _ZN13ModelSlotPool7acquireEPt(p, HOST_AT(e, 0x48, modelSlot[0], 0));
+    void *y = HOST_AT(e, 0x4c, pooledModel[0], 0);
     if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, sFishShadowMdlPath)) {
-        u8 *m = (u8 *)e + 0x98;
+        u8 *m = HOST_AT(e, 0x98, model[0], 0);
         _ZN5Model11setResourceEP12NNSG3dResMdlj(m, _ZN11PooledModel8getModelEv(y), r);
         void *t = _ZN9ModelSlot7getHeapEv(x);
         s32 u = func_021065f8(func_021065dc(File_LoadAlloc(sFishShadowAnmPath, t, 4, r)), r);
@@ -433,7 +434,7 @@ BOOL FishDisplay::onDraw() {
             v.x = e->scale.x;
             v.y = e->scale.y;
             v.z = e->scale.z;
-            _ZN9AnimModel12drawAnimatedEPv((u8 *)e + 0x98, &v);
+            _ZN9AnimModel12drawAnimatedEPv(HOST_AT(e, 0x98, model[0], 0), &v);
         }
     }
     return TRUE;
@@ -576,7 +577,7 @@ extern "C" BOOL FishDisplay_HasPassedFrame(s32 idx, s32 unused) {
         FishDisplayEntry *e = &gFishDisplay->entries[idx];
         s32 t = e->fishId;
         if (t < 0 || t >= 0x38) return FALSE;
-        if (_ZN13AnimFrameCtrl14hasPassedFrameEi((u8 *)e + 0x134, unused)) r = TRUE;
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(HOST_AT(e, 0x134, model[156], 0), unused)) r = TRUE;
     }
     return r;
 }

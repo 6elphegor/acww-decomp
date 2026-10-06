@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "sys/ClockDateTime.h"
 #include "gfx/VecFx32.h"
@@ -128,7 +129,7 @@ extern s32 gGfxMainOnTop;
 
 extern u8 gSaveData[];
 
-extern u32 sContestResultBbsFiles[4];
+extern uptr sContestResultBbsFiles[4];
 
 extern u8 gSavePlayers[];
 
@@ -2219,7 +2220,7 @@ void ContestRecord::sendResultLetters() {
             else ok = _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(r7);
         } else {
             u16 *p = _ZN10PlayerData11getPlayerIdEv(r4);
-            if ((holderPlayer.townId == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
+            if ((holderPlayer.townId == p[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
                 l.letterVariant = Random_GlobalBelow(3);
                 _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
                 _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(r7);
@@ -2230,7 +2231,7 @@ void ContestRecord::sendResultLetters() {
         if (ok == 0) continue;
         if ((u8)(kind + 0xff) <= 1) {
             u16 *q = _ZN10PlayerData11getPlayerIdEv(r4);
-            if (holderPlayer.townId == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
+            if (holderPlayer.townId == q[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
                 l.letterVariant = Random_GlobalBelow(3);
             } else {
                 l.letterVariant = Random_GlobalBelow(3) + 3;
@@ -2241,7 +2242,7 @@ void ContestRecord::sendResultLetters() {
         u16 *w = _ZN10PlayerData11getPlayerIdEv(r4);
         Letter_ComposeFromMail(&buf, &l, sContestResultMailFiles[kind], data_020e0c50, data_020e0c48, w);
         u16 *x = _ZN10PlayerData11getPlayerIdEv(r4);
-        if ((holderPlayer.townId == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || kind == 3) {
+        if ((holderPlayer.townId == x[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || kind == 3) {
             l.trophy = 0x3878;
             if (kind == 2) l.trophy = 0x387c;
             else if (kind == 3) l.trophy = 0x3880;
@@ -2288,7 +2289,7 @@ extern const VecXZ sGulliverSpotOffsets[3];
 extern u8 data_020e0c50[4];
 extern char data_020e0c58[];
 extern char data_020e0c98[];
-extern u32 sContestResultBbsFiles[4];
+extern uptr sContestResultBbsFiles[4];
 extern void *sContestResultMailFiles[4];
 extern char data_020e0c70[];
 extern u8 data_020e0c48[4];
@@ -2365,7 +2366,7 @@ char data_020e0c58[] = "ev_insect";
 
 char data_020e0c98[] = "bbs_gardening";
 
-u32 sContestResultBbsFiles[4] = {(u32)data_020e0c7c, (u32)data_020e0c7c, (u32)data_020e0c64, (u32)data_020e0c98};
+uptr sContestResultBbsFiles[4] = {(uptr)data_020e0c7c, (uptr)data_020e0c7c, (uptr)data_020e0c64, (uptr)data_020e0c98};
 
 void *sContestResultMailFiles[4] = {data_020e0c70, data_020e0c70, data_020e0c58, data_020e0c88};
 

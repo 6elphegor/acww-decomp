@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "actor/CharacterListNode.h"
@@ -284,7 +285,7 @@ BOOL Character::isInFacingArcOf(Character *other, s16 lo, s16 hi) {
     VecFx32 a, b;
     a = *other->getInteractionPos();
     b = *getInteractionPos();
-    s16 d = Math_AngleXZ(&a, &b) - *(s16 *)((u8 *)other + 0x8e);
+    s16 d = Math_AngleXZ(&a, &b) - *(s16 *)(HOST_AT(other, 0x8e, rotY, 0));
     if (d >= lo && d <= hi) {
         return TRUE;
     }

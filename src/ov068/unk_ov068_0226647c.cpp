@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -131,7 +132,7 @@ BOOL CameraEventModes::initModeFollowTarget() {
 
 void CameraEventModes::updateModeFollowTarget() {
     VecFx32 d;
-    Actor *o = *(Actor **)((u8 *)this + 0x21c); // the followed villager (Camera::modeParam, set by main for mode 7)
+    Actor *o = *(Actor **)(HOST_AT(this, 0x21c, townTour.holdTimer, 0)); // the followed villager (Camera::modeParam, set by main for mode 7)
     d.x = 0;
     d.y = 0;
     d.z = 0;

@@ -374,7 +374,7 @@ void Pattern::fill(u32 v) {
     u8 b = v | (v << 4);
     u32 w = (b << 24) | ((b << 16) | (b | (b << 8)));
     u32 *p = (u32 *)this;
-    u32 *end = (u32 *)((u8 *)this + 0x200);
+    u32 *end = (u32 *)(HOST_AT(this, 0x200, info.townId, 0));
     while (p < end) *p++ = w;
 }
 namespace n4 {

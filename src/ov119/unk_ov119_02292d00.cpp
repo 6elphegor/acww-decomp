@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "talk/EncodedString8B.h"
 #include "talk/MsgString9B.h"
 #include "talk/MsgString9C.h"
@@ -1736,7 +1737,7 @@ void FriendRosterTab::drawFriendCodeHelp() {
     String_Load2d(&helpText, &ch, 0);
     for (i = 0; i < 3; i++) {
         void *o = allocTextLabel();
-        MsgString_setLine(o, Msg_SkipLines((u8 *)this + 0x8ae, i));
+        MsgString_setLine(o, Msg_SkipLines(HOST_AT(this, 0x8ae, helpText.text[0], 0), i));
         LabelString_createLabel(o, 4, i * 0x28 + 0x8a, 0x14, 0xf, 0, 0);
         LabelString_redrawAligned(o, 0, 0);
     }
@@ -1926,7 +1927,7 @@ void FriendRosterTab::onPopupChoice() {
 }
 
 void FriendRosterTab::openPopup(u32 x) {
-    PopupChoiceMenuBody_setRowsFromIds(&popup, (u8 *)this + 0x3d0, x);
+    PopupChoiceMenuBody_setRowsFromIds(&popup, HOST_AT(this, 0x3d0, choiceList.msgIds[0], 0), x);
     u32 r;
     if (focus == 0x16) {
         r = 0x9c;

@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "sys/CardCommon.h"
 #include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
@@ -121,7 +122,7 @@ WMOtherElements WM_GetOtherElements(WMBssDesc *b) {
     elems.count = (u8)b->otherElementCount;
     if (elems.count == 0) return elems;
     if (elems.count > 16) elems.count = 16;
-    p_elem = (u8 *)b + 64;
+    p_elem = HOST_AT(b, 64, gameInfo.magicNumber, 0);
     elems_len = (u8)((*(u16 *)b * sizeof(u16)) - 64);
     cal_elems_len = 0;
     for (i = 0; i < elems.count; ++i) {

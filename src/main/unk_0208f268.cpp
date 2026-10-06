@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -267,7 +268,7 @@ extern const u32 sEffectRes5AEmitterIds[5];
 extern char sPathMpLoveNsbca[19];
 extern char sPathMpLoveNsbma[19];
 extern char sPathMpLoveNsbmd[19];
-extern u32 sEffectModelFiles[4];
+extern uptr sEffectModelFiles[4];
 extern const u32 sEffectRes01EmitterIds[4];
 extern const u32 sEffectRes05EmitterIds[4];
 extern const u32 sEffectRes10EmitterIds[4];
@@ -596,7 +597,7 @@ const u32 sEffectRes5AEmitterIds[5] = {0xac, 0xab, 0xaa, 0xad, 0xae};
 char sPathMpLoveNsbca[] = "/spl/mp_love.nsbca";
 char sPathMpLoveNsbma[] = "/spl/mp_love.nsbma";
 char sPathMpLoveNsbmd[] = "/spl/mp_love.nsbmd";
-u32 sEffectModelFiles[4] = {(u32)sPathMpSiturenNsbmd, (u32)sPathMpLoveNsbmd, (u32)sPathEfWaterColNsbmd, (u32)sPathCraRibbon1Nsbmd};
+uptr sEffectModelFiles[4] = {(uptr)sPathMpSiturenNsbmd, (uptr)sPathMpLoveNsbmd, (uptr)sPathEfWaterColNsbmd, (uptr)sPathCraRibbon1Nsbmd};
 const u32 sEffectRes01EmitterIds[4] = {0x42, 0x43, 0x44, 0x45};
 const u32 sEffectRes05EmitterIds[4] = {0x1e, 0x20, 0x1f, 0x21};
 const u32 sEffectRes10EmitterIds[4] = {0x30, 0x31, 0x32, 0x33};
@@ -1049,7 +1050,7 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCb
         return 0;
     }
     pool = (EffectSplPool *)sEffectSplProc;
-    pool = (EffectSplPool *)((u8 *)pool + 0x58);
+    pool = (EffectSplPool *)(HOST_AT(pool, 0x58, entries[3].emitter, 0));
     row = &sEffectResTable[idx];
     count = row->emitterCount;
     ids = row->emitterIds;

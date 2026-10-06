@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/WifiLinkSendState.h"
@@ -186,7 +187,7 @@ s32 WifiAp_ProcessStartup(void) {
     WifiApContext *c = (WifiApContext *)WifiAp_GetBlock(0x10);
     if (a == 1) {
         u32 buf[4];
-        buf[0] = *((u8 *)c + 0xd0a);
+        buf[0] = *(HOST_AT(c, 0xd0a, dmaNo, 0));
         buf[1] = 0;
         buf[2] = 0;
         buf[3] = 0;
@@ -1094,7 +1095,7 @@ u32 WifiAp_SelectApType(WifiApContext *ctx) {
         if (n > 0) {
             u8 *p = (u8 *)ctx;
             WifiApSearchEntry *e;
-            l.d = (u8 *)ctx + 0x304;
+            l.d = HOST_AT(ctx, 0x304, searchEntries[0].ssid[0], 0);
             e = ctx->searchEntries;
             do {
                 u32 pr = l.rec->ssidLength;
@@ -1240,7 +1241,7 @@ void WifiAp_OnApFound(WMBssDesc *rec) {
     case 5:
         r6 = WifiAp_MatchSearchEntry(rec, 1, ctx->searchEntries + ctx->searchIndex);
         if (r6 >= 0) {
-            ((WifiApSearchEntry *)((u8 *)ctx + 0x300) + ctx->searchIndex)->lo = 1;
+            ((WifiApSearchEntry *)(HOST_AT(ctx, 0x300, searchEntries[0], 0)) + ctx->searchIndex)->lo = 1;
         }
         break;
     default:

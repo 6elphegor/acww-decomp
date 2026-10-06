@@ -1742,7 +1742,7 @@ MsgString33::~MsgString33() {}
 
 u32 MsgString33::capacity() { return 0x21; }
 
-u8 *MsgString33::data() { return (u8 *)this + 0x12; }
+u8 *MsgString33::data() { return HOST_AT(this, 0x12, text[0], 0); }
 
 void MsgString33::initEmpty() { clear(); }
 
