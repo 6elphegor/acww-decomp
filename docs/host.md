@@ -31,38 +31,53 @@ that involves and the choice still open.
 
 ## Status (experimental)
 
-`python3 tools/configure_host.py && ninja -f build_host.ninja` builds `build/host_usa/acww` (needs the 32-bit sysroot,
-see `--sysroot`). Run: `ACWW_FIRMWARE=<firmware image> build/host_usa/acww [-v] <rom.nds>`; `ACWW_SAVE` sets the save
-file (default `<rom>.sav`), `ACWW_TOUCH="frame:frames:x,y;..."` scripts touches, `ACWW_FAST=1` runs unpaced.
+The game runs natively as a 32-bit Linux program: title screen with the 3D town demo, touch to start, the intro
+(Kapp'n's taxi, name entry), with melonDS's renderer drawing both screens (decision 2026-10-05: reuse melonDS's
+hardware code for now, replace it with our own once everything works). No sound yet.
 
-It boots: NitroStartUp, Main_InitDwc (NVRAM Wi-Fi settings), the card and RTC set-up, and runs Main_Loop at 60 frames
-per second (boot logo scene onwards), with nothing shown yet. What the runtime (`modern/host/`) does:
+Build: `python3 tools/configure_host.py && ninja -f build_host.ninja` (needs the 32-bit sysroot, SDL2 headers for the
+viewer, and a melonDS tree patched with `tools/host/melonds.patch` and built for 32-bit x86 in `build-core32`; see
+`--sysroot`, `--sdl2`, `--melonds`). Run: `ACWW_FIRMWARE=<firmware image> build/host_usa/acww <rom.nds>`: a window
+(`acww-viewer`, 64-bit SDL2, sharing memory with the game) shows both screens; keys: arrows, X = A, Z = B, S = X,
+A = Y, Q/W = L/R, Enter = Start, Right Shift = Select; the mouse on the bottom screen touches.
+
+Environment: `ACWW_SAVE` (save file, default `<rom>.sav`), `ACWW_HEADLESS=1` (no window), `ACWW_FAST=1` (not paced to
+60 Hz), `ACWW_SHOT="frame:file.ppm;..."`, `ACWW_KEYS="frame:frames:mask;..."`, `ACWW_TOUCH="frame:frames:x,y;..."`;
+debugging: `ACWW_STATS`, `ACWW_IOLOG=addr`, `ACWW_WATCH=addr:len`, `ACWW_PROFILE`, `ACWW_PROCLOG`, `ACWW_HEAPCHECK`.
+
+The runtime (`modern/host/`):
 
 - `hw.c`: the memory map; the I/O pages trapped (a fault prepares a register read, the access is single-stepped
   with the trap flag, the written value is handled after it); virtual time (scanlines, timers, VBlank), DMA, the
-  divider and square root; a SIGALRM tick lets time pass while the game spins on memory; 60 Hz pacing.
-- `os.c`: interrupt masking and dispatch at safe points, thread contexts on `ucontext`, lock ids, BIOS waits.
+  divider and square root; interrupts injected into the interrupted game code (`irq_entry.S`) like an IRQ
+  exception, after I/O accesses and when the game spins on memory; 60 Hz pacing.
+- `vram.c`: VRAM banking with mmap (each VRAMCNT change remaps the banks into the CPU's windows).
+- `melon.cpp`: the display through melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync).
+- `os.c`: interrupt masking per thread, thread contexts on `ucontext`, lock ids, BIOS waits.
 - `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (fixed clock), touch panel,
-  card backup (save file), sound (commands taken, nothing played).
-- `card.c`: ROM reads; `sdk.c`: the SDK's assembly routines in C; `gaps_code.c`: the undecompiled functions (stubs).
+  card backup (save file, replies delayed like the DS's), sound (commands taken, nothing played).
+- `card.c` (ROM reads), `sdk.c` (the SDK's assembly routines in C), `gaps_code.c` (undecompiled functions),
+  `frontend.c` + `viewer/` (window and input).
 
-Differences from the DS that the sources had to handle (under `HOST`):
+The build (`tools/configure_host.py`): the game linked as one object, its variables in their original order
+(`tools/host_order.py`, `-fdata-sections -malign-data=abi`), DTCM's variables at 0x027e0000, its C library and
+operator new/delete names made local (`tools/host_localize.py`), the shared-overlay-address thunks for x86, gap data
+as C (`tools/host_gaps.py`).
 
-- The ARM C++ ABI's constructors return `this`, x86's don't: code using a constructor's result (`p = ctor(p)`)
-  keeps the pointer instead.
-- Pointers to virtual member functions are encoded differently (ARM `{offset, 2*adj+1}`, x86 `{offset+1, adj}`):
-  the ones in gap data are re-encoded (tools/host_gaps.py); x86 also needs member functions 2-byte aligned
-  (`-falign-functions=4`, since some are defined as `extern "C"` functions).
-- Pointers sent to the ARM7 in 26-bit PXI messages: host data addresses are reconstructed (pxi7.c).
-- The game's own C library names are made local to the game (tools/host_localize.py).
+Differences from the DS that the sources handle under `HOST` (or MODERN):
 
-The shared-overlay-address thunks (docs/modern.md) are generated for x86 too (`modern_shared.py --arch x86`, wrapped
-in the partial link).
+- The ARM C++ ABI's constructors return `this`, x86's don't: code using a constructor's result keeps the pointer;
+  `void X_Create() { new X; }` create functions return the object.
+- Pointers to virtual member functions: ARM `{offset, 2*adj+1}`, x86 `{offset+1, adj}` (gap data re-encoded); member
+  functions defined as `extern "C"` must be 2-byte aligned (`-falign-functions=4`).
+- Pointers in 26-bit PXI messages: host data addresses are reconstructed.
+- Reading through NULL is harmless on the DS (address 0 is mapped) but not on the host.
+- Code that ran over one variable into the next (a clear spanning two arrays) needs the original order or a fix.
 
-Not done yet: display (2D/3D rendering), sound, resetting an overlay's data when it is loaded again, a window and
-input.
+Not done yet: sound; resetting an overlay's data when it is loaded again; speed (every I/O access is a trap: about
+5-10 µs each).
 
-## The open choice: how to provide the hardware
+## The choice: how to provide the hardware (decided: A for now)
 
 | | A. Reuse melonDS's hardware code | B. Write it for the port |
 |---|---|---|
