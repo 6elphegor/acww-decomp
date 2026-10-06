@@ -204,7 +204,11 @@ void FreeHead(HeapHead *heap);
 void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
+#ifdef HOST
+void *NNS_FndGetArchiveFileByName(const char *path);
+#else
 u32 NNS_FndGetArchiveFileByName(const char *path);
+#endif
 BOOL NNS_FndUnmountArchive(void *arc);
 BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc);
 BOOL func_0210149c(u32 *narc);
@@ -236,6 +240,10 @@ BOOL func_0210149c(u32 *narc) {
     return *(u16 *)((u8 *)narc + 6) == 0x100;
 }
 
+#ifdef HOST
+#include "sys/NNSFndArchive.h"
+#include "uptr.h"
+#endif
 // NNS_FndMountArchive
 BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc) {
     u8 *fat;
@@ -258,10 +266,18 @@ BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc) {
         chunk = (u32 *)((u8 *)chunk + chunk[1]);
     }
     FS_InitArchive(arc);
+#ifdef HOST
+    // (by the type: the members move on 64-bit hosts)
+    ((struct NNSFndArchive *)arc)->arcBinary = narc;
+    ((struct NNSFndArchive *)arc)->fatData = fat;
+    base = (u32)(uptr)img + 8;
+    ((struct NNSFndArchive *)arc)->fileImage = img + 8;
+#else
     arc[23] = (u32)narc;
     arc[24] = (u32)fat;
     base = (u32)img + 8;
     arc[25] = base;
+#endif
     if (FS_RegisterArchiveName(arc, name, strlen(name)) == 0) return 0;
     if (FS_LoadArchive(arc, base, (u32)fat + 12 - base, ((u32 *)fat)[1] - 12, (u32)fnt + 8 - base, ((u32 *)fnt)[1] - 8, 0, 0) != 0) return 1;
     FS_ReleaseArchiveName(arc);
@@ -277,14 +293,14 @@ BOOL NNS_FndUnmountArchive(void *arc) {
 
 // ROM address of a file (arc base + file top)
 #ifdef HOST
-#include "sys/NNSFndArchive.h"
 // (by the types: the file and the archive are larger on 64-bit hosts)
-u32 NNS_FndGetArchiveFileByName(const char *path) {
+// (a pointer: the callers declare it returning void * - on x86-64 a u32 result leaves the upper half undefined)
+void *NNS_FndGetArchiveFileByName(const char *path) {
     FSFile file;
-    u32 result = 0;
+    u8 *result = 0;
     FS_InitFile(&file);
     if (FS_OpenFile(&file, path)) {
-        result = (u32)(uptr)((struct NNSFndArchive *)file.arc)->fileImage + file.prop.file.start;
+        result = (u8 *)((struct NNSFndArchive *)file.arc)->fileImage + file.prop.file.start;
         FS_CloseFile(&file);
     }
     return result;

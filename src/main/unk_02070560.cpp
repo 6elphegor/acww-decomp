@@ -1,3 +1,4 @@
+#include "town/TownBlockCell.h"
 #include "types.h"
 #include "save/PatternOrder.h"
 #include "game/Unk_020702ec_Date.h"
@@ -1563,7 +1564,7 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
         for (y = 1; y < g->height - 1; y++) {
             for (x = 1; x < g->width - 1; x++) {
                 if ((u32)x < (u32)g->width && (u32)y < (u32)g->height && g->blocks != NULL) {
-                    cell = g->blocks + (y * g->width + x) * 0x28;
+                    cell = g->blocks + (y * g->width + x) * MAPBLOCK_SIZE;
                 } else {
                     cell = NULL;
                 }

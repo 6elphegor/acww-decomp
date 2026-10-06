@@ -1,3 +1,4 @@
+#include "town/TownBlockCell.h"
 #include "types.h"
 #include "player/PlayerErrandsInviteView.h"
 #include "gfx/VecFx32.h"
@@ -588,7 +589,7 @@ extern "C" void Town_RemoveShipParts()
                 u8 *cell;
                 u16 *p;
                 if ((u32)x < g->width && (u32)y < g->height && g->blocks != NULL) {
-                    cell = g->blocks + (y * g->width + x) * 0x28;
+                    cell = g->blocks + (y * g->width + x) * MAPBLOCK_SIZE;
                 } else {
                     cell = NULL;
                 }

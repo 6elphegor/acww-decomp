@@ -1,3 +1,4 @@
+#include "town/TownBlockCell.h"
 #pragma opt_loop_invariants off
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -75,7 +76,7 @@ BottleThrow *func_ov003_02224d90(BottleThrow *p);
 static inline u8 *Unk_ov003_02225238_Cell(Unk_ov003_02225238_Grid *g, u32 x, u32 y)
 {
     if (x < g->w && y < g->h && g->cells != 0) {
-        return g->cells + (y * g->w + x) * 0x28;
+        return g->cells + (y * g->w + x) * MAPBLOCK_SIZE;
     }
     return 0;
 }

@@ -1,3 +1,4 @@
+#include "town/TownBlockCell.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "sys/ClockDateTime.h"
@@ -1535,7 +1536,7 @@ static inline BOOL Unk_0202cb34_Check(u16 *p) {
 
 static inline u8 *Unk_0202cb34_Cell(TownBlockMap *g, s32 x, s32 y) {
     if ((u32)x < (u32)g->width && (u32)y < (u32)g->height && g->blocks != NULL) {
-        return g->blocks + (y * g->width + x) * 0x28;
+        return g->blocks + (y * g->width + x) * MAPBLOCK_SIZE;
     }
     return NULL;
 }
@@ -9838,7 +9839,7 @@ BOOL VillagerTalkRumorTopics::selectTsuSpot() {
             u32 x = pp->x >> 17;
             u8 *cell;
             if (x < map->w && y < map->h && map->cells != NULL) {
-                cell = map->cells + (x + y * map->w) * 0x28;
+                cell = map->cells + (x + y * map->w) * MAPBLOCK_SIZE;
             } else {
                 cell = NULL;
             }

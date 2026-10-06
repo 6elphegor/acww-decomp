@@ -1,3 +1,4 @@
+#include "town/TownBlockCell.h"
 #include "sys/NNSFndArchive.h"
 #include "types.h"
 #include "town/BuildingInfo.h"
@@ -840,7 +841,7 @@ extern "C" void TownStyleRecord_InitNew(u8 *self)
     for (u32 y = 1; y <= 4; y++) {
         for (u32 x = 1; x <= 4; x++) {
             if (x < m->w && y < m->h && m->data) {
-                cell = m->data + (x + y * m->w) * 0x28;
+                cell = m->data + (x + y * m->w) * MAPBLOCK_SIZE;
             } else {
                 cell = NULL;
             }
@@ -1159,7 +1160,7 @@ extern "C" u16 *Town_GetEventPlotItem(s32 *outX, s32 *outY)
             u8 *cell;
             FieldUnit_FromBlockUnit(outX, outY, x, y, 10, 9);
             if ((u32)x < m->w && (u32)y < m->h && m->data) {
-                cell = m->data + (x + y * m->w) * 0x28;
+                cell = m->data + (x + y * m->w) * MAPBLOCK_SIZE;
             } else {
                 cell = NULL;
             }

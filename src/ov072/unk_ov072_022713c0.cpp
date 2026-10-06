@@ -1,3 +1,4 @@
+#include "town/TownBlockCell.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "item/ItemPickSpec.h"
@@ -208,7 +209,7 @@ const TalkStartMsg sSpNpcGulliverTopicMsgs[8] = {
 
 static inline void *Unk_ov072_02271a58_Cell(Unk_02071a58_Grid *g, u32 x, u32 y) {
     if (x < g->w && y < g->h && g->cells != NULL) {
-        return g->cells + (y * g->w + x) * 0x28;
+        return g->cells + (y * g->w + x) * MAPBLOCK_SIZE;
     }
     return NULL;
 }

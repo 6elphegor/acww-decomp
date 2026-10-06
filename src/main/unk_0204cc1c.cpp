@@ -1,3 +1,4 @@
+#include "town/TownBlockCell.h"
 #include "types.h"
 #include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
@@ -1106,7 +1107,7 @@ BOOL BlockMap::build(MapBlockEntry *e, BlockMapSize *sz, s32 heap) {
                 w = l.v;
                 u32 h = _ZN12BgModelCache7getAcreEi(BgModelCache_Get(), e->acreId);
                 Ns_0204debc::MapBlock_Init(buf, e->acreId, &w, (void *)e->layers[0], e->layers[1], (void *)e->buried, h, 0, (void *)&l, 0);
-                buf += 0x28;
+                buf += MAPBLOCK_SIZE;
                 e++;
             }
         }
@@ -1378,7 +1379,7 @@ BOOL TownBlockMap::build(void *heap) {
                 l.w.y = l.v.y;
                 l.w.z = l.v.z;
                 MapBlock_Init(cell, q[0], &l.w, q[1], q[2], q[3], 0, 0, (s32 *)l.xy, mapSlot);
-                cell += 0x28;
+                cell += MAPBLOCK_SIZE;
                 q += 4;
             }
         }
@@ -1403,7 +1404,7 @@ void TownBlockMap::updateAcreIds() {
         for (y = 0; y < height; y++) {
             for (x = 0; x < width; x++) {
                 if (c) Ns_0204d560::_ZN12MapBlockAcre9setAcreIdEj(c, *p);
-                c += 0x28;
+                c += MAPBLOCK_SIZE;
                 p++;
             }
         }
@@ -1418,7 +1419,7 @@ void TownBlockMap::bindBg() {
         for (x = 0; x < width; x++) {
             u8 *c;
             if ((u32)x < (u32)width && (u32)y < (u32)height && blocks) {
-                c = blocks + (x + y * width) * 0x28;
+                c = blocks + (x + y * width) * MAPBLOCK_SIZE;
             } else {
                 c = 0;
             }

@@ -5,6 +5,7 @@
 // 0x24, src/main/unk_020af514.cpp walks the cells for MapBlock_GetItemPtr). View of the TU-local class MapBlock
 // (src/main/unk_02037358.cpp): bgModel at 0x20 is MapBlock::bgModel (the ov004 RoomShell reads the room model from it).
 #include "types.h"
+#include "uptr.h"
 
 struct BgAcreModel;
 
@@ -13,5 +14,8 @@ struct TownBlockCell {
     /* 0x20 */ BgAcreModel *bgModel;
     /* 0x24 */ u16 *buriedFlags;
 };
+
+// a cell's size (0x28 on the DS; larger on 64-bit hosts)
+#define MAPBLOCK_SIZE HOST_SIZED(0x28, TownBlockCell)
 
 #endif

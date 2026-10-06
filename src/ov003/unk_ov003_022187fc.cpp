@@ -1,3 +1,4 @@
+#include "town/TownBlockCell.h"
 #include "sys/NNSFndArchive.h"
 // mwcc-version: 1.2/base
 #include "types.h"
@@ -259,7 +260,7 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
     for (y = 0; y < gh; y++) {
         for (x = 0; x < gw; x++) {
             if (x < g->w && y < g->h && g->cells != 0) {
-                cell = g->cells + (x + y * g->w) * 0x28;
+                cell = g->cells + (x + y * g->w) * MAPBLOCK_SIZE;
             } else {
                 cell = 0;
             }
