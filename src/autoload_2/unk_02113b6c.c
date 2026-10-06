@@ -39,7 +39,7 @@ void OS_InitThread(void) {
     void *stackLo;
     if (data_021fcc28) return;
     data_021fcc28 = 1;
-    data_021fcc24 = &data_021fcc30;
+    data_021fcc24 = &data_021fcc2c.current;  // (data_021fcc30: its DS address)
     data_021fccfc.priority = 16;
     data_021fccfc.id = 0;
     data_021fccfc.state = 1;

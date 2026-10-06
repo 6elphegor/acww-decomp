@@ -76,10 +76,9 @@ void VramTask::dequeueTex(void) {
     List_Remove(&sVramQueueTex, (PrioListNode *)this);
 }
 
+// the queue links the tasks' PrioListNode base (after the vtable pointer): back to the task
 static inline VramTask *Unk_020b8340_First(void **l) {
-    VramTask *t = (VramTask *)*l;
-    if (t != 0) t = (VramTask *)((u8 *)t - 4);
-    return t;
+    return static_cast<VramTask *>((PrioListNode *)*l);
 }
 
 extern "C" void VramQueueTex_Run(void) {

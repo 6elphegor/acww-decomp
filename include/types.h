@@ -13,8 +13,11 @@ typedef volatile u8 vu8;
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
 
-// mwcc's size_t is unsigned long; GCC's (ARM EABI) is unsigned int. Both are 32 bits.
-#ifdef MODERN
+#include "uptr.h"
+
+// mwcc's size_t is unsigned long; GCC's (ARM EABI) is unsigned int. Both are 32 bits. (HOST alone: the host runtime
+// including a game header.)
+#if defined(MODERN) || defined(HOST)
 typedef __SIZE_TYPE__ size_t;
 #else
 typedef unsigned long size_t;

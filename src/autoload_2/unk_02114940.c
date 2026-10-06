@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK OS arena (os_arena.c): autoload_2 0x02114940-0x02114b00. ARM code, mwcc 1.2/base.
+#include "uptr.h"
 typedef unsigned int u32;
 typedef int s32;
 
@@ -34,8 +35,9 @@ void OS_InitArena(void);
 void OS_InitArenaEx(void);
 
 // OS_GetArenaLo / OS_GetArenaHi / OS_SetArenaLo / OS_SetArenaHi
-#define ARENA_LO(id) (((void **)0x027ffda0)[id])
-#define ARENA_HI(id) (((void **)0x027ffdc4)[id])
+// the arena bounds in the system area (OSSystemWork): 32-bit addresses
+#define ARENA_LO(id) (((u32 *)0x027ffda0)[id])
+#define ARENA_HI(id) (((u32 *)0x027ffdc4)[id])
 
 // OS_InitArena
 void OS_InitArena(void) {
@@ -66,12 +68,12 @@ void OS_InitArenaEx(void) {
 
 // OS_GetArenaHi
 void *OS_GetArenaHi(s32 id) {
-    return ARENA_HI(id);
+    return (void *)(uptr)ARENA_HI(id);
 }
 
 // OS_GetArenaLo
 void *OS_GetArenaLo(s32 id) {
-    return ARENA_LO(id);
+    return (void *)(uptr)ARENA_LO(id);
 }
 
 // ---- file-scope objects (autoload_3 .bss 0x021fce84-0x021fce8c; this definition order gives the original order after mwcc's size

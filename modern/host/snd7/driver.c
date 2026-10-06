@@ -124,7 +124,7 @@ static const struct SNDWaveData *wave_data_address(const struct SNDWaveArc *arc,
 }
 
 static const struct SNDWaveData *wave_data(const struct SNDBankData *bank, s32 waveArc, s32 wave) {
-    const struct SNDWaveArc *arc = bank->waveArcLinks[waveArc].waveArc;
+    const struct SNDWaveArc *arc = dsptr_get(bank->waveArcLinks[waveArc].waveArc);
     if (arc == NULL || (u32)wave >= arc->waveCount) return NULL;
     return wave_data_address(arc, wave);
 }
@@ -251,9 +251,45 @@ static void stop_timer(u32 channelMask, u32 captureMask, u32 alarmMask, s32 hold
     update_shared_work();
 }
 
+// READ_DRIVER_INFO: the driver's state in the DS layout. Its pointers to the driver's own objects (a track's
+// channels, a channel's next) are relative to workPtr, a stand-in DS address (the ARM9 only subtracts it); the
+// others (wave data, banks, sequence positions) are the ARM9's own addresses.
+#define DS_WORK 0x03800000u
+static dsptr ds_channel(const struct SNDExChannel *c) { return c ? DS_WORK + (u32)(c - snd7_work.channels) * 0x54 : 0; }
+static void put32(u8 *p, u32 v) { memcpy(p, &v, 4); }
+static void write_ds_work(u8 *w) {
+    for (int i = 0; i < SND_CHANNEL_COUNT; i++) {
+        const struct SNDExChannel *c = &snd7_work.channels[i];
+        u8 *d = w + i * 0x54;
+        memcpy(d, c, 0x44);  // up to the wave pointer: the same layout
+        put32(d + 0x44, c->type == SND_CHN_TYPE_PCM ? dsptr_of(c->waveDataPtr) : (u32)c->dutyCycle);
+        put32(d + 0x48, dsptr_of((const void *)(uintptr_t)c->callback));
+        put32(d + 0x4c, dsptr_of(c->callbackUserData));
+        put32(d + 0x50, ds_channel(c->channelLLNext));
+    }
+    for (int i = 0; i < SND_PLAYER_COUNT; i++) {
+        const struct SNDPlayer *p = &snd7_work.players[i];
+        u8 *d = w + 0x540 + i * 0x24;
+        memcpy(d, p, 0x20);
+        put32(d + 0x20, dsptr_of(p->bank));
+    }
+    for (int i = 0; i < SND_TRACK_COUNT; i++) {
+        const struct SNDTrack *t = &snd7_work.tracks[i];
+        u8 *d = w + 0x780 + i * 0x40;
+        memcpy(d, t, 0x24);  // up to the sequence pointers
+        put32(d + 0x24, dsptr_of(t->base));
+        put32(d + 0x28, dsptr_of(t->cur));
+        for (int k = 0; k < SND_TRACK_MAX_CALL; k++) put32(d + 0x2c + 4 * k, dsptr_of(t->posCallStack[k]));
+        memcpy(d + 0x38, t->loopCount, SND_TRACK_MAX_CALL);
+        d[0x3b] = t->callStackDepth;
+        put32(d + 0x3c, ds_channel(t->channelLLHead));
+    }
+    memcpy(w + 0xf80, snd7_work.alarms, sizeof snd7_work.alarms);
+}
+
 static void read_driver_info(struct SNDDriverInfo *info) {
-    memcpy(&info->work, &snd7_work, sizeof snd7_work);
-    info->workPtr = &snd7_work;
+    write_ds_work(info->work);
+    info->workPtr = DS_WORK;
     for (int i = 0; i < SND_CHANNEL_COUNT; i++) info->channelControls[i] = snd7_get_channel_control(i);
     info->lockedChannels = snd7_get_locked_channel(0);
 }

@@ -7,8 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 #include "coro.h"
 #include "host.h"
+#include "sys/OSThread.h"  // the game's thread structures (their layout differs on 64-bit hosts: no fixed offsets)
 
 // ---- interrupt masking (the CPSR I bit)
 static u32 sIrqDisabled = 0x80;  // as at reset: disabled until OS_EnableInterrupts
@@ -27,8 +29,8 @@ u32 host_irq_state(void) { return sIrqDisabled | sInIrq; }
 
 // ---- dispatch (OS_IrqHandler + OS_IrqHandler_ThreadSwitch)
 extern void (*data_027e0000[])(void);   // OS_IRQTable
-extern u8 data_021fcc2c[];              // OSThreadInfo: isNeedRescheduling u16 at 0, current at 4, list at 8
-extern u32 data_027e0450[];             // OSi_IrqThreadQueue: head, tail
+extern OSThreadInfo data_021fcc2c;      // OSi_ThreadInfo
+extern OSThreadQueue data_027e0450;     // OSi_IrqThreadQueue
 void OSi_RescheduleThread(void);
 
 void host_deliver_irqs(void) {
@@ -44,22 +46,22 @@ void host_deliver_irqs(void) {
         sIrqDisabled = 0;
         sInIrq = 0;
         // wake the threads waiting for an interrupt (OS_WaitIrq)
-        u8 *t = (u8 *)data_027e0450[0];
+        OSThread *t = data_027e0450.head;
         if (t) {
             while (t) {
-                u8 *next = *(u8 **)(t + 0x80);
-                *(u32 *)(t + 0x64) = 1;
-                *(u32 *)(t + 0x78) = 0;
-                *(u32 *)(t + 0x7c) = 0;
-                *(u32 *)(t + 0x80) = 0;
+                OSThread *next = t->linkNext;
+                t->state = 1;  // ready
+                t->queue = 0;
+                t->linkPrev = 0;
+                t->linkNext = 0;
                 t = next;
             }
-            data_027e0450[0] = data_027e0450[1] = 0;
-            *(u16 *)data_021fcc2c = 1;
+            data_027e0450.head = data_027e0450.tail = 0;
+            data_021fcc2c.isNeedRescheduling = 1;
         }
     }
-    if (*(u16 *)data_021fcc2c) {
-        *(u16 *)data_021fcc2c = 0;
+    if (data_021fcc2c.isNeedRescheduling) {
+        data_021fcc2c.isNeedRescheduling = 0;
         OSi_RescheduleThread();
     }
 }
@@ -92,6 +94,17 @@ typedef struct { void *key; void *sp; u8 *stack; u32 pc; int fresh; u32 irq; } H
 static HostCtx sCtx[MAX_CTX];
 static void *sSaving;  // the thread whose OS_SaveContext is pending
 
+// A stack for the game's code. On 64-bit Linux below 4 GB: the game keeps addresses in 32-bit fields (for now:
+// docs/host.md, 64-bit), its locals' among them.
+void *host_stack_alloc(size_t n) {
+#if defined(__x86_64__) && defined(__linux__)
+    void *p = mmap(0, n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_32BIT, -1, 0);
+    return p == MAP_FAILED ? 0 : p;
+#else
+    return malloc(n);
+#endif
+}
+
 static HostCtx *ctx_of(void *key) {
     HostCtx *free_ = 0;
     for (int i = 0; i < MAX_CTX; i++) {
@@ -104,18 +117,18 @@ static HostCtx *ctx_of(void *key) {
 }
 
 static void trampoline(void *key) {
-    u32 *c = key;  // OSContext: cpsr, r[0..14], pc_plus4...
+    OSContext *c = key;
     HostCtx *h = ctx_of(key);
-    void (*f)(u32) = (void (*)(u32))h->pc;
-    f(c[1]);
-    ((void (*)(void))c[15])();  // r14: OS_ExitThread
+    void (*f)(uptr) = (void (*)(uptr))(uptr)h->pc;
+    f(c->r[0]);
+    ((void (*)(void))(uptr)c->r[14])();  // lr: OS_ExitThread
     host_fatal("thread returned past its exit function");
 }
 
-void OS_InitContext(u32 *c, u32 pc, u32 sp) {
+void OS_InitContext(OSContext *c, u32 pc, u32 sp) {
     HostCtx *h = ctx_of(c);
-    memset(c, 0, 0x64);
-    c[14] = sp;  // r13
+    memset(c, 0, sizeof *c);
+    c->r[13] = sp;
     h->pc = pc;
     h->fresh = 1;
     (void)sp;
@@ -127,8 +140,8 @@ void OS_LoadContext(void *t) {
     HostCtx *next = ctx_of(t);
     if (next->fresh) {
         next->fresh = 0;
-        next->irq = ((u32 *)t)[0] & 0x80;  // OSContext.cpsr
-        if (!next->stack) next->stack = malloc(HOST_STACK);
+        next->irq = ((OSContext *)t)->cpsr & 0x80;
+        if (!next->stack) next->stack = host_stack_alloc(HOST_STACK);
         if (!next->stack) host_fatal("no memory for a thread stack");
         next->sp = host_coro_prepare(next->stack, HOST_STACK, trampoline, t);
     }

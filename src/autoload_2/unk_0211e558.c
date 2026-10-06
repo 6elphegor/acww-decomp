@@ -170,14 +170,25 @@ BOOL CARDi_Request(CardCommon *c, u32 arg, int retry) {
     return *c->result == 0;
 }
 
+// the ROM reader's state (RomDev in unk_0211dc4c.c): the cached page's address and the page
+typedef struct {
+    void (*fn)(void *);
+    u32 f4;
+    u32 page;       // 0x8
+    u32 fc;
+    u32 f10, f14, f18, f1c;
+    u32 buf[128];   // 0x20
+} RomCache;
+
 BOOL CARDi_ReadFromCache(u8 *cache) {
     CardCommon *c = &data_021fec00;
+    RomCache *rc = (RomCache *)cache;
     u32 base = c->src & -512;
-    if (base == *(u32 *)(cache + 8)) {
+    if (base == rc->page) {
         u32 off = c->src - base;
         u32 n = 512 - off;
         if (n > c->len) n = c->len;
-        MI_CpuCopy8(cache + 0x20 + off, (void *)c->dst, n);
+        MI_CpuCopy8((u8 *)rc->buf + off, (void *)c->dst, n);
         c->src += n;
         c->dst += n;
         c->len -= n;

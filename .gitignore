@@ -25,3 +25,4 @@ acww_*_modern.nds
 build_modern_lto.ninja
 build_modern_warn.ninja
 build_host.ninja
+build_host64.ninja

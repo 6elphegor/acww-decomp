@@ -23,6 +23,21 @@
 
 #include "host.h"
 
+// the interrupted context's registers (signal handlers)
+#if defined(__x86_64__)
+#define R_PC REG_RIP
+#define R_SP REG_RSP
+#define R_BP REG_RBP
+#define R_AX REG_RAX
+#define R_DX REG_RDX
+#else
+#define R_PC REG_EIP
+#define R_SP REG_ESP
+#define R_BP REG_EBP
+#define R_AX REG_EAX
+#define R_DX REG_EDX
+#endif
+
 #define IO0 0x04000000u
 #define IOB 0x04001000u  // engine B's display registers
 #define IO1 0x04100000u
@@ -380,12 +395,12 @@ static u64 sIoCount;
 
 // frame-pointer walk, staying within 1 MB above the stack pointer (host stacks are 512 KB, the main one is the
 // process stack)
-static void host_backtrace(u32 *bp, u32 sp) {
+static void host_backtrace(uintptr_t *bp, uintptr_t sp) {
     for (int i = 0; i < 24; i++) {
-        if ((u32)(uintptr_t)bp < sp || (u32)(uintptr_t)bp > sp + 0x100000 || ((uintptr_t)bp & 3)) break;
-        fprintf(stderr, "  from %08x\n", bp[1]);
-        sp = (u32)(uintptr_t)bp;
-        bp = (u32 *)(uintptr_t)bp[0];
+        if ((uintptr_t)bp < sp || (uintptr_t)bp > sp + 0x100000 || ((uintptr_t)bp & (sizeof *bp - 1))) break;
+        fprintf(stderr, "  from %08lx\n", (unsigned long)bp[1]);
+        sp = (uintptr_t)bp;
+        bp = (uintptr_t *)bp[0];
     }
 }
 
@@ -427,7 +442,7 @@ static void io_hist_dump(void) {
 // register accesses (mov of 8/16/32 bits to or from a register, of an immediate, the moffs forms, movzx/movsx).
 // The fault gives the address; the instruction gives the size, the direction and the register. Returns the
 // instruction's length, or 0 for anything else (then: single step).
-static const int kGreg[8] = {REG_EAX, REG_ECX, REG_EDX, REG_EBX, REG_ESP, REG_EBP, REG_ESI, REG_EDI};
+// ModRM + SIB + displacement of a memory operand (also RIP-relative on x86-64: the same length)
 static u32 modrm_len(const u8 *p) {  // ModRM + SIB + displacement, for a memory operand
     u32 mod = p[0] >> 6, rm = p[0] & 7, n = 1;
     if (mod == 3) return 0;
@@ -439,6 +454,8 @@ static u32 modrm_len(const u8 *p) {  // ModRM + SIB + displacement, for a memory
     }
     return n + (mod == 1 ? 1 : mod == 2 ? 4 : 0);
 }
+#if defined(__i386__)
+static const int kGreg[8] = {REG_EAX, REG_ECX, REG_EDX, REG_EBX, REG_ESP, REG_EBP, REG_ESI, REG_EDI};
 static u32 get_reg(ucontext_t *uc, u32 r, u32 size) {
     if (size == 1) return (u32)uc->uc_mcontext.gregs[kGreg[r & 3]] >> (r & 4 ? 8 : 0) & 0xff;
     return (u32)uc->uc_mcontext.gregs[kGreg[r]] & (size == 2 ? 0xffffu : ~0u);
@@ -450,6 +467,7 @@ static void set_reg(ucontext_t *uc, u32 r, u32 size, u32 v) {
     else if (r & 4) *g = (greg_t)(((u32)*g & 0xffff00ffu) | (v & 0xff) << 8);
     else *g = (greg_t)(((u32)*g & 0xffffff00u) | (v & 0xff));
 }
+#endif
 static u32 io_load(u32 a, u32 size) {
     io_read(a);
     return size == 1 ? *host_io(a) : size == 2 ? *(u16 *)host_io(a) : *(u32 *)host_io(a);
@@ -494,8 +512,9 @@ unsigned long long HostIo_Write(unsigned int a, unsigned int size, unsigned long
     return v;
 }
 
+#if defined(__i386__)
 static u32 emulate_access(ucontext_t *uc, u32 a) {
-    const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[REG_EIP], *start = p;
+    const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[R_PC], *start = p;
     u32 osize = 4, n;
     if (*p == 0x66) { osize = 2; p++; }
     switch (*p) {
@@ -532,6 +551,10 @@ static u32 emulate_access(ucontext_t *uc, u32 a) {
         return 0;
     }
 }
+#else
+// (the decoding above is for i386; elsewhere every missed access is single-stepped)
+static u32 emulate_access(ucontext_t *uc, u32 a) { (void)uc; (void)a; return 0; }
+#endif
 
 static void on_segv(int sig, siginfo_t *si, void *ctx) {
     (void)sig;
@@ -539,7 +562,7 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
     u32 a = (u32)(uintptr_t)si->si_addr;
     if (sWatchPage && (a & ~(PAGE - 1)) == sWatchPage) {
         memcpy(sWatchOld, (void *)(uintptr_t)sWatchLo, sWatchHi - sWatchLo);
-        sWatchEip = (u32)uc->uc_mcontext.gregs[REG_EIP];
+        sWatchEip = (u32)uc->uc_mcontext.gregs[R_PC];
         sWatchStep = 1;
         mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ | PROT_WRITE);
         uc->uc_mcontext.gregs[REG_EFL] |= 0x100;
@@ -547,10 +570,10 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
         return;
     }
     if (!is_io(a)) {
-        fprintf(stderr, "host: segfault at %08x, eip %08x, ebp %08x\n", a, (u32)uc->uc_mcontext.gregs[REG_EIP],
-                (u32)uc->uc_mcontext.gregs[REG_EBP]);
-        fprintf(stderr, "  [esp] %08x\n", *(u32 *)uc->uc_mcontext.gregs[REG_ESP]);
-        host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
+        fprintf(stderr, "host: segfault at %08x, eip %08x, ebp %08x\n", a, (u32)uc->uc_mcontext.gregs[R_PC],
+                (u32)uc->uc_mcontext.gregs[R_BP]);
+        fprintf(stderr, "  [sp] %08lx\n", (unsigned long)*(uintptr_t *)uc->uc_mcontext.gregs[R_SP]);
+        host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
         extern void frontend_shutdown(void);
         frontend_shutdown();
         _exit(4);
@@ -559,13 +582,13 @@ static void on_segv(int sig, siginfo_t *si, void *ctx) {
     }
     sFaultAddr = a;
     sFaultWrite = (uc->uc_mcontext.gregs[REG_ERR] & 2) != 0;
-    sRing[sRingPos++ & 15] = (struct IoLog){a, (u32)uc->uc_mcontext.gregs[REG_EIP], sFaultWrite};
+    sRing[sRingPos++ & 15] = (struct IoLog){a, (u32)uc->uc_mcontext.gregs[R_PC], sFaultWrite};
     sIoCount++;
-    if (sIoHist) io_hist(a, (u32)uc->uc_mcontext.gregs[REG_EIP], sFaultWrite);
+    if (sIoHist) io_hist(a, (u32)uc->uc_mcontext.gregs[R_PC], sFaultWrite);
     if (!sNoEmulate) {
         u32 len = emulate_access(uc, a);
         if (len) {
-            uc->uc_mcontext.gregs[REG_EIP] += len;
+            uc->uc_mcontext.gregs[R_PC] += len;
             host_irq_inject(uc);
             return;
         }
@@ -588,7 +611,7 @@ static void on_trap(int sig, siginfo_t *si, void *ctx) {
             fprintf(stderr, "watch: frame %llu eip %08x:", (unsigned long long)host_frame(), sWatchEip);
             for (u32 i = 0; i < sWatchHi - sWatchLo; i += 4) fprintf(stderr, " %08x", *(u32 *)(uintptr_t)(sWatchLo + i));
             fprintf(stderr, "\n");
-            host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
+            host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
         }
         mprotect((void *)(uintptr_t)sWatchPage, PAGE, PROT_READ);
         return;
@@ -605,7 +628,7 @@ static void on_trap(int sig, siginfo_t *si, void *ctx) {
 static u32 sProfAddr[PROF_SLOTS], sProfCount[PROF_SLOTS];
 static void on_prof(int sig, siginfo_t *si, void *ctx) {
     (void)sig; (void)si;
-    u32 eip = (u32)((ucontext_t *)ctx)->uc_mcontext.gregs[REG_EIP];
+    u32 eip = (u32)((ucontext_t *)ctx)->uc_mcontext.gregs[R_PC];
     u32 h = (eip >> 2) * 2654435761u >> 16;
     for (int i = 0; i < 16; i++, h = (h + 1) & (PROF_SLOTS - 1)) {
         if (sProfAddr[h] == eip || !sProfAddr[h]) { sProfAddr[h] = eip; sProfCount[h]++; return; }
@@ -626,14 +649,14 @@ extern char host_game_text_start[], host_game_text_end[];
 void host_irq_stub(void);
 int host_irq_ready(void);
 static void host_irq_inject(ucontext_t *uc) {
-    u32 eip = (u32)uc->uc_mcontext.gregs[REG_EIP];
+    u32 eip = (u32)uc->uc_mcontext.gregs[R_PC];
     if (eip < (u32)(uintptr_t)host_game_text_start || eip >= (u32)(uintptr_t)host_game_text_end) return;
     if (uc->uc_mcontext.gregs[REG_EFL] & 0x100) return;  // single-stepping an I/O access
     if (!host_irq_ready()) return;
-    u32 *sp = (u32 *)uc->uc_mcontext.gregs[REG_ESP];
-    *--sp = eip;
-    uc->uc_mcontext.gregs[REG_ESP] = (greg_t)(uintptr_t)sp;
-    uc->uc_mcontext.gregs[REG_EIP] = (greg_t)(uintptr_t)host_irq_stub;
+    uintptr_t *sp = (uintptr_t *)uc->uc_mcontext.gregs[R_SP];  // (x86-64: the game has no red zone)
+    *--sp = (uintptr_t)uc->uc_mcontext.gregs[R_PC];
+    uc->uc_mcontext.gregs[R_SP] = (greg_t)(uintptr_t)sp;
+    uc->uc_mcontext.gregs[R_PC] = (greg_t)(uintptr_t)host_irq_stub;
 }
 
 int host_async_tick(void);
@@ -652,7 +675,7 @@ static void spin_dump(void) {
 static void on_alarm(int sig, siginfo_t *si, void *ctx) {
     (void)sig; (void)si;
     ucontext_t *uc = ctx;
-    u32 eip = (u32)uc->uc_mcontext.gregs[REG_EIP];
+    u32 eip = (u32)uc->uc_mcontext.gregs[R_PC];
     int in_game = eip >= (u32)(uintptr_t)host_game_text_start && eip < (u32)(uintptr_t)host_game_text_end;
     // The game spinning on memory (waiting for an interrupt handler without touching a register, so virtual time
     // stands still): after 100 ms of that, let time pass and take the interrupts it raised. Only a hang guard:
@@ -690,8 +713,8 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
     extern void frontend_shutdown(void);
     frontend_shutdown();
     fprintf(stderr, "host: interrupted at frame %llu, eip %08x\n", (unsigned long long)host_frame(),
-            (u32)uc->uc_mcontext.gregs[REG_EIP]);
-    host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
+            (u32)uc->uc_mcontext.gregs[R_PC]);
+    host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
     void *bt[32];
     int n = backtrace(bt, 32);
     backtrace_symbols_fd(bt, n, 2);
@@ -703,17 +726,21 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
 // (e.g. spl_scl_in_out at the end of an animation), so the x86 div/idiv gets the DS's result. Each site is
 // reported once.
 static int emulate_div_by_zero(ucontext_t *uc) {
-    const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[REG_EIP], *start = p;
-    int o16 = 0;
+    const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[R_PC], *start = p;
+    int o16 = 0, w64 = 0;
     if (*p == 0x66) { o16 = 1; p++; }
+#if defined(__x86_64__)
+    if ((*p & 0xf0) == 0x40) { w64 = *p & 8; p++; }  // REX
+#endif
     if ((*p != 0xf7 && *p != 0xf6) || ((p[1] >> 3 & 7) != 6 && (p[1] >> 3 & 7) != 7)) return 0;
     u32 n = (p[1] >> 6) == 3 ? 1 : modrm_len(p + 1);
     if (!n) return 0;
-    greg_t *eax = &uc->uc_mcontext.gregs[REG_EAX], *edx = &uc->uc_mcontext.gregs[REG_EDX];
-    if (*p == 0xf6) *eax = (greg_t)((u32)*eax & 0xffff00ffu);                         // AL = AL, AH = 0
-    else if (o16) *edx = (greg_t)((u32)*edx & 0xffff0000u);                            // AX = AX, DX = 0
-    else *edx = 0;                                                                      // EAX = EAX, EDX = 0
-    u32 eip = (u32)uc->uc_mcontext.gregs[REG_EIP];
+    greg_t *eax = &uc->uc_mcontext.gregs[R_AX], *edx = &uc->uc_mcontext.gregs[R_DX];
+    if (*p == 0xf6) *eax = (greg_t)(((uintptr_t)*eax & ~(uintptr_t)0xff00));           // AL = AL, AH = 0
+    else if (o16) *edx = (greg_t)((uintptr_t)*edx & ~(uintptr_t)0xffff);               // AX = AX, DX = 0
+    else if (w64) *edx = 0;                                                             // RAX = RAX, RDX = 0
+    else { *eax = (greg_t)(u32)*eax; *edx = 0; }                                        // EAX = EAX, EDX = 0
+    u32 eip = (u32)uc->uc_mcontext.gregs[R_PC];
     static u32 seen[64];
     static int nseen;
     int known = 0;
@@ -722,7 +749,7 @@ static int emulate_div_by_zero(ucontext_t *uc) {
         seen[nseen++] = eip;
         fprintf(stderr, "host: division by zero at %08x (frame %llu): the DS's result\n", eip, (unsigned long long)host_frame());
     }
-    uc->uc_mcontext.gregs[REG_EIP] += (greg_t)(p + 1 + n - start);
+    uc->uc_mcontext.gregs[R_PC] += (greg_t)(p + 1 + n - start);
     return 1;
 }
 
@@ -731,8 +758,8 @@ static void on_fatal_signal(int sig, siginfo_t *si, void *ctx) {
     ucontext_t *uc = ctx;
     if (sig == SIGFPE && si->si_code == FPE_INTDIV && emulate_div_by_zero(uc)) return;
     fprintf(stderr, "host: signal %d (%s) at frame %llu, eip %08x, address %p\n", sig, strsignal(sig),
-            (unsigned long long)host_frame(), (u32)uc->uc_mcontext.gregs[REG_EIP], si->si_addr);
-    host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
+            (unsigned long long)host_frame(), (u32)uc->uc_mcontext.gregs[R_PC], si->si_addr);
+    host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
     extern void frontend_shutdown(void);
     frontend_shutdown();
     _exit(5);

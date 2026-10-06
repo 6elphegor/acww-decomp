@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "coro.h"
 #include "host.h"
 
 int gHostVerbose;
@@ -62,6 +63,13 @@ void host_vram_init(void);
 void melon_init(void);
 __attribute__((constructor(101))) static void early_init(void) { host_map_memory(); host_vram_init(); }
 
+static void game_main(void *arg) {
+    (void)arg;
+    NitroStartUp();  // crt0 calls it before the static initialisers; they ran already (host .init_array)
+    NitroMain();
+    host_fatal("NitroMain returned");
+}
+
 int main(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-v")) gHostVerbose = 1;
@@ -80,9 +88,13 @@ int main(int argc, char **argv) {
     extern void frontend_shutdown(void);
     frontend_init(argv[0]);
     atexit(frontend_shutdown);
-    NitroStartUp();  // crt0 calls it before the static initialisers; they ran already (host .init_array)
-    NitroMain();
-    host_fatal("NitroMain returned");
+    // the game's main thread on a stack of its own (os.c: below 4 GB on 64-bit Linux)
+    static void *host_sp;
+    enum { MAIN_STACK = 1024 * 1024 };
+    void *stack = host_stack_alloc(MAIN_STACK);
+    if (!stack) host_fatal("no memory for the main thread's stack");
+    host_coro_switch(&host_sp, host_coro_prepare(stack, MAIN_STACK, game_main, 0));
+    host_fatal("the game's main thread returned");
 }
 
 // ACWW_HEAPCHECK=1: walk every NNS expanded heap in DS RAM each frame (hw.c) and report the first broken block

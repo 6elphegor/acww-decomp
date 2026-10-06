@@ -4,10 +4,11 @@
 // same NitroSDK driver; the command set and the shared structures checked against ACWW's ARM9 side) and spu.c
 // mixes the channels in software. See docs/host.md.
 //
-// The structures the ARM9 sees keep the DS layout: SNDSharedWork (in ARM9 memory, written here), SNDWork (copied
-// to the ARM9 by READ_DRIVER_INFO) and the player / track fields the ARM9 sets by offset (SNDi_SetPlayerParam,
-// SNDi_SetTrackParam). DS addresses are host addresses (modern/host/hw.c), so the driver follows the ARM9's
-// pointers (sequence data, banks, wave archives) as they are.
+// What the ARM9 sees keeps the DS layout: SNDSharedWork (in ARM9 memory, written here), the sound files it links
+// (banks, wave archives: their pointer slots are 32 bits, `dsptr`), the copy of the driver's state that
+// READ_DRIVER_INFO writes (serialized field by field, driver.c) and the player / track fields the ARM9 sets by
+// offset (SNDi_SetPlayerParam, SNDi_SetTrackParam: all before the first pointer). The driver's own structures use
+// host pointers. The ARM9's pointers (commands, sequence data, banks, waves) are DS addresses = host addresses.
 #ifndef HOST_SND7_H
 #define HOST_SND7_H
 
@@ -17,8 +18,14 @@
 
 typedef int8_t s8;
 typedef int16_t s16;
-typedef int64_t s64;
+typedef signed long long s64;
 typedef int BOOL;
+
+// a pointer in a 32-bit field (the DS's files and messages); valid while the game's memory is below 4 GB (it is on
+// the Linux hosts: docs/host.md, 64-bit)
+typedef u32 dsptr;
+static inline void *dsptr_get(dsptr v) { return (void *)(uintptr_t)v; }
+static inline dsptr dsptr_of(const void *p) { return (dsptr)(uintptr_t)p; }
 #define TRUE 1
 #define FALSE 0
 
@@ -221,10 +228,11 @@ struct SNDSharedWork {
     s16 globalVars[16];           // 0x260
 };
 
+// in ARM9 memory (READ_DRIVER_INFO): the SNDWork in the DS layout, then
 struct SNDDriverInfo {
-    struct SNDWork work;                      // 0x0000
+    u8 work[0x1180];                          // 0x0000 SNDWork, DS layout (driver.c)
     u32 channelControls[SND_CHANNEL_COUNT];   // 0x1180
-    struct SNDWork *workPtr;                  // 0x11C0
+    dsptr workPtr;                            // 0x11C0 the address the pointers in `work` are relative to
     u32 lockedChannels;                       // 0x11C4
     u8 unk_XXX[24];                           // 0x11C8
 };
@@ -278,8 +286,8 @@ struct SNDDrumSet {
 
 struct SNDWaveArc;
 struct SNDWaveArcLink {
-    struct SNDWaveArc *waveArc;               // 0x0
-    struct SNDWaveArcLink *waveArcLLnext;     // 0x4
+    dsptr waveArc;        // 0x0 struct SNDWaveArc *
+    dsptr waveArcLLnext;  // 0x4 struct SNDWaveArcLink *
 };
 
 struct SNDBankData {
@@ -293,7 +301,7 @@ struct SNDBankData {
 struct SNDWaveArc {
     struct SNDBinaryFileHeader fileHeader;    // 0x00
     struct SNDBinaryBlockHeader blockHeader;  // 0x10
-    struct SNDWaveArcLink *waveArcLLHead;     // 0x18
+    dsptr waveArcLLHead;                      // 0x18 struct SNDWaveArcLink *
     u8 unk_1C[28];                            // 0x1C
     u32 waveCount;                            // 0x38
     u32 waveOffsets[];                        // 0x3C
@@ -304,15 +312,21 @@ struct SNDWaveData {
     u8 sampleData[];            // 0xC
 };
 
-_Static_assert(sizeof(struct SNDExChannel) == 0x54, "SNDExChannel");
+// the parts the ARM9 reaches by offset, on every host
 _Static_assert(offsetof(struct SNDExChannel, waveParam) == 0x38, "SNDExChannel.waveParam");
-_Static_assert(sizeof(struct SNDPlayer) == 0x24, "SNDPlayer");
 _Static_assert(offsetof(struct SNDPlayer, tempoRatio) == 0x1a, "SNDPlayer.tempoRatio");
+_Static_assert(offsetof(struct SNDPlayer, bank) >= 0x20, "SNDPlayer: the ARM9's fields come first");
+_Static_assert(offsetof(struct SNDTrack, wait) == 0x20, "SNDTrack.wait");
+_Static_assert(sizeof(struct SNDAlarm) == 0x40, "SNDAlarm");
+_Static_assert(sizeof(struct SNDSharedWork) == 0x280, "SNDSharedWork");
+_Static_assert(sizeof(struct SNDWaveArcLink) == 8, "SNDWaveArcLink");
+#if UINTPTR_MAX == 0xffffffffu  // with 32-bit pointers the driver's own structures are the DS's too
+_Static_assert(sizeof(struct SNDExChannel) == 0x54, "SNDExChannel");
+_Static_assert(sizeof(struct SNDPlayer) == 0x24, "SNDPlayer");
 _Static_assert(sizeof(struct SNDTrack) == 0x40, "SNDTrack");
 _Static_assert(offsetof(struct SNDTrack, channelLLHead) == 0x3c, "SNDTrack.channelLLHead");
-_Static_assert(sizeof(struct SNDAlarm) == 0x40, "SNDAlarm");
 _Static_assert(sizeof(struct SNDWork) == 0x1180, "SNDWork");
-_Static_assert(sizeof(struct SNDSharedWork) == 0x280, "SNDSharedWork");
+#endif
 _Static_assert(sizeof(struct SNDDriverInfo) == 0x11e0, "SNDDriverInfo");
 _Static_assert(offsetof(struct SNDDriverInfo, workPtr) == 0x11c0, "SNDDriverInfo.workPtr");
 _Static_assert(sizeof(struct SNDInstData) == 0xc, "SNDInstData");

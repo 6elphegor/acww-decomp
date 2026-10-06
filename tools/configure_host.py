@@ -24,33 +24,57 @@ parser.add_argument("--melonds", default=os.path.expanduser("~/acww/ref/melonDS"
                          "(the display renderer)")
 parser.add_argument("--sdl2", default=os.path.expanduser("~/acww/toolchains/sdl2-dev"),
                     help="directory with SDL2 development headers (usr/include/SDL2), for the viewer")
+parser.add_argument("--arch", choices=["i386", "x86_64"], default="i386",
+                    help="i386: build_host.ninja, build/host_<v> (the working build); x86_64: build_host64.ninja, "
+                         "build/host64_<v> (64-bit, in progress: docs/host.md)")
 parser.add_argument("version", nargs="?", default="usa")
 args = parser.parse_args()
 
 root = Path(__file__).resolve().parent.parent
-build = Path("build") / f"host_{args.version}"
+X64 = args.arch == "x86_64"
+build = Path("build") / (f"host64_{args.version}" if X64 else f"host_{args.version}")
+NINJA_FILE = "build_host64.ninja" if X64 else "build_host.ninja"
 R = args.sysroot
 G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
+M_FLAG = "-m64" if X64 else "-m32"
+LD_EMU = "elf_x86_64" if X64 else "elf_i386"
 
 GAME_FLAGS = " ".join([
-    "-m32", "-fno-pie", "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
+    M_FLAG, "-fno-pie", "-fno-short-enums", "-fsigned-char", "-fshort-wchar", "-ffreestanding", "-nostdinc",
     "-fno-strict-aliasing", "-fpcc-struct-return", "-fno-builtin", "-O1", "-g", "-w", "-fno-omit-frame-pointer", "-falign-functions=4", "-fdata-sections", "-malign-data=abi",
     "-DMODERN", "-DHOST", f"-DGAME_VERSION_{args.version.upper()}", "-Iinclude",
 ])
 C_FLAGS = "-std=gnu11"
 CXX_FLAGS = ("-std=gnu++14 -fno-exceptions -fno-rtti -fno-threadsafe-statics -fno-use-cxa-atexit "
              "-fno-sized-deallocation")
-HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
-              f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude")
-LINK_FLAGS = (f"-m32 -no-pie --sysroot={R} -B{G} -L{G} -Wl,-dynamic-linker,{R}/usr/lib32/ld-linux.so.2 "
-              f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 -Wl,--allow-multiple-definition "
-              "-Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
-              "-Wl,--section-start=gbss=0x02040000")
+if X64:
+    # no red zone: hw.c's interrupt injection pushes a return address just below the game's stack pointer
+    GAME_FLAGS += " -mno-red-zone"
+    # for now: the game's pointer-to-u32 casts are warnings (its memory is mapped below 4 GB, so they don't lose
+    # anything yet; docs/host.md, 64-bit)
+    CXX_FLAGS += " -fpermissive"
+SECTIONS = ("-Wl,--allow-multiple-definition -Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
+            "-Wl,--section-start=gbss=0x02040000")
 M = args.melonds
-HOST_CXX_FLAGS = (f"-m32 -fno-pie -O1 -g -std=c++17 --sysroot={R} -isystem {R}/usr/include/x86_64-linux-gnu/c++/15/32 "
-                  f"-idirafter {R}/usr/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include "
-                  f"-I{M}/src -I{M}/build-core32/src -DHOST")
-MELON_LIBS = f"{M}/build-core32/src/libcore.a {M}/build-core32/src/teakra/src/libteakra.a"
+if X64:
+    # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
+    HOST_FLAGS = "-m64 -fno-pie -O1 -g -Wall -std=gnu11 -DHOST -Iinclude"
+    # the program above the DS's address space (0x02000000-0x08000000), still below 4 GB
+    LINK_FLAGS = f"-m64 -no-pie -Wl,-Ttext-segment=0x10000000 {SECTIONS}"
+    HOST_CXX_FLAGS = (f"-m64 -fno-pie -O1 -g -std=c++17 -I{M}/src -I{M}/build-core/src -DJIT_ENABLED -DGDBSTUB_ENABLED "
+                      "-DHOST")
+    MELON_LIBS = f"{M}/build-core/src/libcore.a {M}/build-core/src/teakra/src/libteakra.a"
+    LIBDIR, LIBGCC = "/usr/lib/x86_64-linux-gnu", "/usr/lib/gcc/x86_64-linux-gnu/15/libgcc.a"
+else:
+    HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
+                  f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude")
+    LINK_FLAGS = (f"-m32 -no-pie --sysroot={R} -B{G} -L{G} -Wl,-dynamic-linker,{R}/usr/lib32/ld-linux.so.2 "
+                  f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 {SECTIONS}")
+    HOST_CXX_FLAGS = (f"-m32 -fno-pie -O1 -g -std=c++17 --sysroot={R} -isystem {R}/usr/include/x86_64-linux-gnu/c++/15/32 "
+                      f"-idirafter {R}/usr/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include "
+                      f"-I{M}/src -I{M}/build-core32/src -DHOST")
+    MELON_LIBS = f"{M}/build-core32/src/libcore.a {M}/build-core32/src/teakra/src/libteakra.a"
+    LIBDIR, LIBGCC = f"{R}/usr/lib32", f"{G}/libgcc.a"
 
 MWCC_FLAG_MAP = {("-char", "unsigned"): "-funsigned-char"}
 
@@ -76,7 +100,7 @@ def sources(base: Path, suffixes):
 
 def main():
     os.chdir(root)
-    with open("build_host.ninja", "w") as file:
+    with open(NINJA_FILE, "w") as file:
         n = ninja_syntax.Writer(file)
         n.rule("cc", f"{args.cc} {GAME_FLAGS} {C_FLAGS} $flags -MMD -MF $out.d -c $in -o $out",
                depfile="$out.d", deps="gcc", description="CC $in")
@@ -85,7 +109,7 @@ def main():
         n.rule("hostcc", f"{args.cc} {HOST_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCC $in")
         n.rule("provides", "python3 tools/host_provides.py $in $out", description="PROVIDES $out")
-        n.rule("hostas_S", f"{args.cc} -m32 -c $in -o $out", description="AS $in")
+        n.rule("hostas_S", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
         n.rule("hostcxx", f"g++ {HOST_CXX_FLAGS} -MMD -MF $out.d -c $in -o $out", depfile="$out.d", deps="gcc",
                description="HOSTCXX $in")
         n.rule("link", f"g++ {LINK_FLAGS} -o $out @$objects $provides {MELON_LIBS} -lstdc++ -lpthread -lm -lc -lgcc",
@@ -103,7 +127,7 @@ def main():
             rule = {".cpp": "hostcxx", ".S": "hostas_S"}.get(s.suffix, "hostcc")
             n.build(o, rule, str(s))
             objs.append(o)
-        n.rule("gaps", "python3 tools/host_gaps.py $in $out", description="GAPS $out")
+        n.rule("gaps", f"python3 tools/host_gaps.py {'--x86-64 ' if X64 else ''}$in $out", description="GAPS $out")
         gaps_c = str(build / "gaps.c")
         n.build(gaps_c, "gaps", "build/usa/objects_aliases.txt", implicit=["tools/host_gaps.py"])
         n.build(str(build / "gaps.o"), "hostcc", gaps_c)
@@ -119,9 +143,10 @@ def main():
         # DTCM's variables at their DS address (0x027e0000): the SDK computes DTCM addresses from its first one
         dtcm_objs = [o for o in game_objs if "/src/dtcm/" in o]
         game_objs = [o for o in game_objs if o not in dtcm_objs]
+        build.mkdir(parents=True, exist_ok=True)
         dtcm_ld = build / "dtcm.ld"
         dtcm_ld.write_text("SECTIONS {\n    .dtcm : { *(.data .data.*) *(.bss .bss.*) *(COMMON) . = 0x4000; }\n}\n")
-        n.rule("dtcmld", "ld -m elf_i386 -r -T $script -o $out $in", description="LD -r $out")
+        n.rule("dtcmld", f"ld -m {LD_EMU} -r -T $script -o $out $in", description="LD -r $out")
         n.build(str(build / "dtcm.o"), "dtcmld", dtcm_objs, implicit=[str(dtcm_ld)], variables={"script": str(dtcm_ld)})
         game_objs.append(str(build / "dtcm.o"))
         host_objs = [o for o in objs if o not in game_objs]
@@ -133,18 +158,18 @@ def main():
             asm = build / f"game_text_{edge}.s"
             asm.write_text(f".text\n.globl host_game_text_{edge}\nhost_game_text_{edge}:\n"
                            '.section .note.GNU-stack,"",@progbits\n')
-        n.rule("markeras", f"{args.cc} -m32 -c $in -o $out", description="AS $in")
+        n.rule("markeras", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
         n.build(str(build / "game_text_start.o"), "markeras", str(build / "game_text_start.s"))
         n.build(str(build / "game_text_end.o"), "markeras", str(build / "game_text_end.s"))
         game_objs = [str(build / "game_text_start.o")] + game_objs + [str(build / "game_text_end.o")]
         game_list.write_text("".join(f"{o}\n" for o in game_objs))
         # thunks for calls to addresses several overlays share (tools/modern_shared.py; ld --wrap in the partial
         # link, where the references are still undefined)
-        n.rule("shared", f"python3 tools/modern_shared.py --arch x86 --nm nm --objects $list --config config/{args.version}/arm9 "
+        n.rule("shared", f"python3 tools/modern_shared.py --arch {'x86_64' if X64 else 'x86'} --nm nm --objects $list --config config/{args.version}/arm9 "
                          f"--asm {build}/shared.s --wrap {build}/wrap.txt > {build}/shared.log", description="SHARED")
         n.build([str(build / "shared.s"), str(build / "wrap.txt")], "shared", game_objs,
                 implicit=["tools/modern_shared.py", str(game_list)], variables={"list": str(game_list)})
-        n.rule("hostas", f"{args.cc} -m32 -c $in -o $out", description="AS $in")
+        n.rule("hostas", f"{args.cc} {M_FLAG} -c $in -o $out", description="AS $in")
         n.build(str(build / "shared.o"), "hostas", str(build / "shared.s"))
         host_objs.append(str(build / "shared.o"))
         # the variables in their original order (tools/host_order.py)
@@ -153,16 +178,24 @@ def main():
         n.build(order_ld, "order", f"config/{args.version}/arm9", implicit=["tools/host_order.py"])
         # the game's operator new/new[] are mwcc's names (unsigned long); its code compiled here calls the x86 names
         # (unsigned int). Aliases inside the game object (made local with the C library names afterwards).
-        n.rule("partial", "ld -m elf_i386 -r -T $order --defsym=_Znwj=_Znwm --defsym=_Znaj=_Znam -o $out @$list @$wrap",
+        n.rule("partial", f"ld -m {LD_EMU} -r -T $order --defsym=_Znwj=_Znwm --defsym=_Znaj=_Znam -o $out @$list @$wrap",
                description="LD -r $out")
         n.build(str(build / "game_all.o"), "partial", game_objs, implicit=[str(game_list), str(build / "wrap.txt"), order_ld],
                 variables={"list": str(game_list), "wrap": str(build / "wrap.txt"), "order": order_ld})
-        libs = f"{R}/usr/lib32/libc.so.6 {R}/usr/lib32/libm.so.6 {G}/libgcc.a {R}/usr/lib32/libstdc++.so.6"
+        libs = f"{LIBDIR}/libc.so.6 {LIBDIR}/libm.so.6 {LIBGCC} {LIBDIR}/libstdc++.so.6"
         n.rule("localize", f"python3 tools/host_localize.py nm objcopy $in $out {libs}", description="LOCALIZE $out")
         game_o = str(build / "game.o")
         n.build(game_o, "localize", str(build / "game_all.o"), implicit=["tools/host_localize.py"])
         objects_file = build / "objects.txt"
         objects_file.write_text("".join(f"{o}\n" for o in [game_o] + host_objs))
+        if X64:
+            # the labels inside data at their 64-bit offsets (tools/host_relayout.py; needs the 32-bit build's
+            # game object for the DS layout: build build_host.ninja first)
+            n.rule("relayout", "python3 tools/host_relayout.py $in $out", description="RELAYOUT $out")
+            relaid = str(build / "provides64.ld")
+            n.build(relaid, "relayout", [provides, f"build/host_{args.version}/game_all.o", str(build / "game_all.o")],
+                    implicit=["tools/host_relayout.py"])
+            provides = relaid
         exe = str(build / "acww")
         n.build(exe, "link", [game_o] + host_objs, implicit=[provides, str(objects_file)],
                 variables={"objects": str(objects_file), "provides": provides})

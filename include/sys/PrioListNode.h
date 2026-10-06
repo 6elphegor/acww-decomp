@@ -7,8 +7,8 @@
 // key. Base of VramTask; inline constructor only.
 class PrioListNode {
 public:
-    /* 0x0 */ u32 prev;
-    /* 0x4 */ u32 next;
+    /* 0x0 */ uptr prev;  // (a ListNode: List_Insert / List_Remove)
+    /* 0x4 */ uptr next;
     /* 0x8 */ u8 priority;
 
     PrioListNode() : prev(0), next(0), priority(0xff) {}

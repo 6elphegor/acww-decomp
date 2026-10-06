@@ -365,7 +365,7 @@ void snd7_set_track_param(int player, u32 trackMask, u32 offset, u32 data, int s
 
 static void SeqCacheFetch(const u8 *addr)
 {
-    addr = (const u8 *)((u32)addr & ~3);
+    addr = (const u8 *)((uintptr_t)addr & ~(uintptr_t)3);
     sSeqCache.begin = addr;
     sSeqCache.end = sSeqCache.begin + 16;
 
@@ -382,7 +382,7 @@ static u8 SeqReadByte(const u8 *addr)
     if (addr < sSeqCache.begin || addr >= sSeqCache.end)
         SeqCacheFetch(addr);
 
-    return sSeqCache.buf[(u32)addr - (u32)sSeqCache.begin];
+    return sSeqCache.buf[addr - sSeqCache.begin];
 }
 
 static inline u8 TrackReadU8(struct SNDTrack *track)
