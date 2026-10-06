@@ -1,4 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -98,13 +99,13 @@ void NNSi_G3dFuncSbc_PRJMAP(Rs *rs)
                 NNS_G3dGeBufferOP_N(25, m1, 12);
             }
             NNS_G3dGeFlushBuffer();
-            *(volatile u32 *)0x04000440 = 0;
-            *(volatile u32 *)0x04000444 = 0;
-            *(volatile u32 *)0x04000454 = 0;
+            IO_W((volatile u32 *)0x04000440, 0);
+            IO_W((volatile u32 *)0x04000444, 0);
+            IO_W((volatile u32 *)0x04000454, 0);
             do {
             } while (G3X_GetClipMtx(m2) != 0);
-            *(volatile u32 *)0x04000448 = 1;
-            *(volatile u32 *)0x04000440 = 3;
+            IO_W((volatile u32 *)0x04000448, 1);
+            IO_W((volatile u32 *)0x04000440, 3);
             NNS_G3dGeBufferOP_N(22, m2, 16);
             {
                 s32 px = (s32)m2[12] >> 4;

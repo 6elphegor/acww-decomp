@@ -1,6 +1,7 @@
 // ov147 second translation unit (0x02292c10..0x022930bc): the object at scene+0xac and its helpers.
 #include "types.h"
 #include "menu/TitleBlinkText.h"
+#include "nitro/io_access.h"
 
 extern "C" {
 extern s16 data_02135f44[];
@@ -186,9 +187,9 @@ extern "C" void TitleBlinkText_UploadScreen(void *p) {
 
 extern "C" void TitleBlinkText_SetupBg3() {
     volatile u16 *r = (volatile u16 *)0x400000e;
-    *r = (*r & ~3) | 1;
-    *r = (*r & 0x43) | 0x700;
-    *r = *r & ~0x40;
+    IO_W(r, (IO_R(r) & ~3) | 1);
+    IO_W(r, (IO_R(r) & 0x43) | 0x700);
+    IO_W(r, IO_R(r) & ~0x40);
     Gfx2d_SetMainBg3Offset(0, 0);
 }
 
@@ -197,7 +198,7 @@ extern "C" void TitleBlinkText_ShowBg3() { Gfx2d_ShowMainPlanes(8); }
 extern "C" void TitleBlinkText_HideBg3() {
     volatile u32 *r = (volatile u32 *)0x4000000;
     u32 v = Gfx2d_GetMainPlanes(Gfx2d_HideMainPlanes(8));
-    *r = (*r & 0xffffe0ff) | (v << 8);
+    IO_W(r, (IO_R(r) & 0xffffe0ff) | (v << 8));
 }
 
 void TitleBlinkText::applyBlendAlpha() {

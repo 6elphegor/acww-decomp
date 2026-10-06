@@ -3,6 +3,7 @@
 // data_021fcbd8 is the 13-halfword VRAM bank state (index: 0 lcdc, 1 bg, 2 obj, 3 arm7, 4 tex, 5 texPltt,
 // 6 clearImage, 7 bgExtPltt, 8 objExtPltt, 9 subBg, 10 subObj, 11 subBgExtPltt, 12 subObjExtPltt); the game and
 // the delinked callers also refer to its members by their own symbols (data_021fcbda ... data_021fcbf0).
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -75,8 +76,8 @@ void GX_SetBankForSubOBJ(u32 bank) {
     data_021fcbd8[10] = bank;
     switch (bank) {
     case 0: break;
-    case 8: VRAMCNT(3) = 0x84; break;
-    case 0x100: VRAMCNT(9) = 0x82; break;
+    case 8: IO_W(&VRAMCNT(3), 0x84); break;
+    case 0x100: IO_W(&VRAMCNT(9), 0x82); break;
     }
     GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
 }
@@ -87,11 +88,11 @@ void GX_SetBankForSubBGExtPltt(u32 bank) {
     data_021fcbd8[11] = bank;
     switch (bank) {
     case 0x80:
-        reg_GXS_DB_DISPCNT |= 0x40000000;
-        VRAMCNT(8) = 0x82;
+        IO_OR(&reg_GXS_DB_DISPCNT, 0x40000000);
+        IO_W(&VRAMCNT(8), 0x82);
         break;
     case 0:
-        reg_GXS_DB_DISPCNT &= ~0x40000000;
+        IO_AND(&reg_GXS_DB_DISPCNT, ~0x40000000);
         break;
     }
     GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
@@ -103,11 +104,11 @@ void GX_SetBankForSubOBJExtPltt(u32 bank) {
     data_021fcbd8[12] = bank;
     switch (bank) {
     case 0x100:
-        reg_GXS_DB_DISPCNT |= 0x80000000;
-        VRAMCNT(9) = 0x83;
+        IO_OR(&reg_GXS_DB_DISPCNT, 0x80000000);
+        IO_W(&VRAMCNT(9), 0x83);
         break;
     case 0:
-        reg_GXS_DB_DISPCNT &= ~0x80000000;
+        IO_AND(&reg_GXS_DB_DISPCNT, ~0x80000000);
         break;
     }
     GX_VRAMCNT_SetLCDC_(data_021fcbd8[0]);
@@ -132,15 +133,15 @@ u32 GX_ResetBankForTexPltt(void) { return resetBankForX_(&data_021fcbe2); }
 u32 disableBankForX_(u16 *p) {
     u32 v = *p;
     *p = 0;
-    if (v & 1) VRAMCNT(0) = 0;
-    if (v & 2) VRAMCNT(1) = 0;
-    if (v & 4) VRAMCNT(2) = 0;
-    if (v & 8) VRAMCNT(3) = 0;
-    if (v & 0x10) VRAMCNT(4) = 0;
-    if (v & 0x20) VRAMCNT(5) = 0;
-    if (v & 0x40) VRAMCNT(6) = 0;
-    if (v & 0x80) VRAMCNT(8) = 0;
-    if (v & 0x100) VRAMCNT(9) = 0;
+    if (v & 1) IO_W(&VRAMCNT(0), 0);
+    if (v & 2) IO_W(&VRAMCNT(1), 0);
+    if (v & 4) IO_W(&VRAMCNT(2), 0);
+    if (v & 8) IO_W(&VRAMCNT(3), 0);
+    if (v & 0x10) IO_W(&VRAMCNT(4), 0);
+    if (v & 0x20) IO_W(&VRAMCNT(5), 0);
+    if (v & 0x40) IO_W(&VRAMCNT(6), 0);
+    if (v & 0x80) IO_W(&VRAMCNT(8), 0);
+    if (v & 0x100) IO_W(&VRAMCNT(9), 0);
     OSi_UnlockVram(v, data_021fcbd0);
     return v;
 }
@@ -153,13 +154,13 @@ u32 GX_DisableBankForOBJ(void) { return disableBankForX_(&data_021fcbdc); }
 
 // GX_DisableBankForBGExtPltt
 u32 GX_DisableBankForBGExtPltt(void) {
-    reg_GX_DISPCNT &= ~0x40000000;
+    IO_AND(&reg_GX_DISPCNT, ~0x40000000);
     return disableBankForX_(&data_021fcbe6);
 }
 
 // GX_DisableBankForOBJExtPltt
 u32 GX_DisableBankForOBJExtPltt(void) {
-    reg_GX_DISPCNT &= ~0x80000000;
+    IO_AND(&reg_GX_DISPCNT, ~0x80000000);
     return disableBankForX_(&data_021fcbe8);
 }
 
@@ -186,13 +187,13 @@ u32 GX_DisableBankForSubOBJ(void) { return disableBankForX_(&data_021fcbec); }
 
 // GX_DisableBankForSubBGExtPltt
 u32 GX_DisableBankForSubBGExtPltt(void) {
-    reg_GXS_DB_DISPCNT &= ~0x40000000;
+    IO_AND(&reg_GXS_DB_DISPCNT, ~0x40000000);
     return disableBankForX_(&data_021fcbee);
 }
 
 // GX_DisableBankForSubOBJExtPltt
 u32 GX_DisableBankForSubOBJExtPltt(void) {
-    reg_GXS_DB_DISPCNT &= ~0x80000000;
+    IO_AND(&reg_GXS_DB_DISPCNT, ~0x80000000);
     return disableBankForX_(&data_021fcbf0);
 }
 
@@ -232,18 +233,18 @@ void GX_InitGXState(void) {
     data_021fcbd8[10] = 0;
     data_021fcbd8[11] = 0;
     data_021fcbd8[12] = 0;
-    *(volatile u32 *)0x04000240 = 0;
-    *(volatile u8 *)0x04000244 = 0;
-    *(volatile u8 *)0x04000245 = 0;
-    *(volatile u8 *)0x04000246 = 0;
-    *(volatile u16 *)0x04000248 = 0;
+    IO_W((volatile u32 *)0x04000240, 0);
+    IO_W((volatile u8 *)0x04000244, 0);
+    IO_W((volatile u8 *)0x04000245, 0);
+    IO_W((volatile u8 *)0x04000246, 0);
+    IO_W((volatile u16 *)0x04000248, 0);
 }
 
 // GX_Init
 void GX_Init(void) {
-    reg_GX_POWCNT |= 0x8000;
-    reg_GX_POWCNT = (u16)((reg_GX_POWCNT & 0xfffffdf1) | 0x20e);
-    reg_GX_POWCNT |= 1;
+    IO_OR(&reg_GX_POWCNT, 0x8000);
+    IO_W(&reg_GX_POWCNT, (u16)((IO_R(&reg_GX_POWCNT) & 0xfffffdf1) | 0x20e));
+    IO_OR(&reg_GX_POWCNT, 1);
     GX_InitGXState();
     if (data_021fcbd0 == 0) {
         do {
@@ -252,55 +253,55 @@ void GX_Init(void) {
             data_021fcbd0 = (u16)id;
         } while (data_021fcbd0 == 0);
     }
-    reg_GX_DISPSTAT = 0;
-    reg_GX_DISPCNT = 0;
+    IO_W(&reg_GX_DISPSTAT, 0);
+    IO_W(&reg_GX_DISPCNT, 0);
     if (data_0213bfec != (u32)-1) {
         MI_DmaFill32(data_0213bfec, (void *)0x04000008, 0, 0x60);
-        *(volatile u16 *)0x0400006c = 0;
+        IO_W((volatile u16 *)0x0400006c, 0);
         MI_DmaFill32(data_0213bfec, (void *)0x04001000, 0, 0x70);
     } else {
         volatile u32 tmp = 0;
         MIi_CpuClear32(tmp, (void *)0x04000008, 0x60);
-        *(volatile u16 *)0x0400006c = 0;
+        IO_W((volatile u16 *)0x0400006c, 0);
         {
             volatile u32 tmp2 = 0;
             MIi_CpuClear32(tmp2, (void *)0x04001000, 0x70);
         }
     }
-    *(volatile u16 *)0x04000020 = 0x100;
-    *(volatile u16 *)0x04000026 = 0x100;
-    *(volatile u16 *)0x04000030 = 0x100;
-    *(volatile u16 *)0x04000036 = 0x100;
-    *(volatile u16 *)0x04001020 = 0x100;
-    *(volatile u16 *)0x04001026 = 0x100;
-    *(volatile u16 *)0x04001030 = 0x100;
-    *(volatile u16 *)0x04001036 = 0x100;
+    IO_W((volatile u16 *)0x04000020, 0x100);
+    IO_W((volatile u16 *)0x04000026, 0x100);
+    IO_W((volatile u16 *)0x04000030, 0x100);
+    IO_W((volatile u16 *)0x04000036, 0x100);
+    IO_W((volatile u16 *)0x04001020, 0x100);
+    IO_W((volatile u16 *)0x04001026, 0x100);
+    IO_W((volatile u16 *)0x04001030, 0x100);
+    IO_W((volatile u16 *)0x04001036, 0x100);
 }
 
 // GX_HBlankIntr
 BOOL GX_HBlankIntr(BOOL enable) {
     volatile u16 *p = &reg_GX_DISPSTAT;
-    BOOL pre = *p & 0x10;
-    if (enable) *p |= 0x10;
-    else *p &= ~0x10;
+    BOOL pre = IO_R(p) & 0x10;
+    if (enable) IO_OR(p, 0x10);
+    else IO_AND(p, ~0x10);
     return pre;
 }
 
 // GX_VBlankIntr
 BOOL GX_VBlankIntr(BOOL enable) {
     volatile u16 *p = &reg_GX_DISPSTAT;
-    BOOL pre = *p & 0x8;
-    if (enable) *p |= 0x8;
-    else *p &= ~0x8;
+    BOOL pre = IO_R(p) & 0x8;
+    if (enable) IO_OR(p, 0x8);
+    else IO_AND(p, ~0x8);
     return pre;
 }
 
 // GX_DispOff
 void GX_DispOff(void) {
-    u32 cnt = reg_GX_DISPCNT;
+    u32 cnt = IO_R(&reg_GX_DISPCNT);
     data_0213bfe8 = 0;
     data_021fcbd4 = (u16)((cnt & 0x30000) >> 16);
-    reg_GX_DISPCNT = cnt & ~0x30000;
+    IO_W(&reg_GX_DISPCNT, cnt & ~0x30000);
 }
 
 // GX_DispOn
@@ -309,9 +310,9 @@ void GX_DispOn(void) {
     data_0213bfe8 = 1;
     mode = data_021fcbd4;
     if (mode != 0) {
-        reg_GX_DISPCNT = (reg_GX_DISPCNT & ~0x30000) | (mode << 16);
+        IO_W(&reg_GX_DISPCNT, (IO_R(&reg_GX_DISPCNT) & ~0x30000) | (mode << 16));
     } else {
-        reg_GX_DISPCNT |= 0x10000;
+        IO_OR(&reg_GX_DISPCNT, 0x10000);
     }
 }
 

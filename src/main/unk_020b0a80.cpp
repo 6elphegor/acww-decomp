@@ -1,4 +1,5 @@
 #include "types.h"
+#include "nitro/io_access.h"
 inline void *operator new(size_t, void *p) { return p; }
 
 extern "C" {
@@ -566,8 +567,8 @@ extern "C" void Main_Init(void) {
     Main_InitVBlank();
     OS_SetIrqFunction(2, HBlank_Handler);
     OS_EnableIrqMask(3);
-    *(vu16 *)0x4000208;
-    *(vu16 *)0x4000208 = 1;
+    IO_R((vu16 *)0x4000208);
+    IO_W((vu16 *)0x4000208, 1);
     OS_EnableInterrupts();
     GX_VBlankIntr(1);
     GX_HBlankIntr(1);
@@ -587,10 +588,10 @@ extern "C" void Main_Init(void) {
     gProfileTable = (u32)sProfileTableMain;
     Main_EmptyInitStub();
     Random_SeedGlobal();
-    *(vu32 *)0x40004c8 = 0x296a5800;
-    *(vu32 *)0x40004cc = 0x7fff;
-    *(vu32 *)0x40004c0 = 0x7fff;
-    *(vu32 *)0x40004c4 = 0;
+    IO_W((vu32 *)0x40004c8, 0x296a5800);
+    IO_W((vu32 *)0x40004cc, 0x7fff);
+    IO_W((vu32 *)0x40004c0, 0x7fff);
+    IO_W((vu32 *)0x40004c4, 0);
     Main_InitNop();
     GameRoot_Boot();
     OverlayHandle_Load(gOverlayHandle, OVERLAY_68_ID);
@@ -632,16 +633,16 @@ extern "C" void NitroStartUp(void) {
     zero = 0;
     MIi_CpuClearFast(zero, 0x6800000, 0x20000);
     GX_DisableBankForLCDC();
-    old = *ime;
-    *ime = 1;
+    old = IO_R(ime);
+    IO_W(ime, 1);
     r5 = OS_EnableInterrupts();
     sWvrStartUpDone = 0;
     WVR_StartUpAsync(8, Startup_OnWvrStartUp, 0);
     while (sWvrStartUpDone == 0) {
     }
     OS_RestoreInterrupts(r5);
-    *ime;
-    *ime = old;
+    IO_R(ime);
+    IO_W(ime, old);
     Startup_SetupMainArena();
     Startup_SetCardPulledOutCallback();
     FS_Init(2);

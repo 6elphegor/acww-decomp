@@ -5,6 +5,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef signed short s16;
 typedef signed int s32;
 typedef int BOOL;
@@ -352,10 +353,10 @@ u32 PMi_SetLCDPower(u32 mode, u32 target, u32 noWait, u32 sync) {
                 PMi_SetLEDAsync(target, 0, 0);
             }
         }
-        *(volatile u16 *)0x04000304 |= 1;
+        IO_OR((volatile u16 *)0x04000304, 1);
         break;
     case 0:
-        *(volatile u16 *)0x04000304 &= ~1;
+        IO_AND((volatile u16 *)0x04000304, ~1);
         data_021feb3c = *(volatile u32 *)0x027ffc3c;
         if (target != 0) {
             if (sync != 0) {
@@ -379,7 +380,7 @@ u32 PM_SetLCDPower(u32 a) {
 
 // PM_GetLCDPower? (REG_POWCNT1 bit 0)
 BOOL PM_GetLCDPower(void) {
-    return (*(volatile u16 *)0x04000304 & 1) != 0;
+    return (IO_R((volatile u16 *)0x04000304) & 1) != 0;
 }
 
 // PM command 0x66 | (u8)a (async)
@@ -641,14 +642,14 @@ void TP_SetCalibrateParam(TPCalibrateParam *p) {
     e = OS_DisableInterrupts();
     dot = p->xDotSize;
     if (dot != 0) {
-        *(volatile u16 *)0x04000280 = 0;
-        *(volatile u32 *)0x04000290 = 0x10000000;
-        *(volatile u64 *)0x04000298 = (u64)(u32)dot;
+        IO_W((volatile u16 *)0x04000280, 0);
+        IO_W((volatile u32 *)0x04000290, 0x10000000);
+        IO_W((volatile u64 *)0x04000298, (u64)(u32)dot);
         data_021feaf4.x0 = p->x0;
         data_021feaf4.xDot = p->xDotSize;
-        while (*(volatile u16 *)0x04000280 & 0x8000) {
+        while (IO_R((volatile u16 *)0x04000280) & 0x8000) {
         }
-        data_021feaf4.xRatio = *(volatile u32 *)0x040002a0;
+        data_021feaf4.xRatio = IO_R((volatile u32 *)0x040002a0);
     } else {
         data_021feaf4.x0 = 0;
         data_021feaf4.xDot = 0;
@@ -656,14 +657,14 @@ void TP_SetCalibrateParam(TPCalibrateParam *p) {
     }
     dot = p->yDotSize;
     if (dot != 0) {
-        *(volatile u16 *)0x04000280 = 0;
-        *(volatile u32 *)0x04000290 = 0x10000000;
-        *(volatile u64 *)0x04000298 = (u64)(u32)dot;
+        IO_W((volatile u16 *)0x04000280, 0);
+        IO_W((volatile u32 *)0x04000290, 0x10000000);
+        IO_W((volatile u64 *)0x04000298, (u64)(u32)dot);
         data_021feaf4.y0 = p->y0;
         data_021feaf4.yDot = p->yDotSize;
-        while (*(volatile u16 *)0x04000280 & 0x8000) {
+        while (IO_R((volatile u16 *)0x04000280) & 0x8000) {
         }
-        data_021feaf4.yRatio = *(volatile u32 *)0x040002a0;
+        data_021feaf4.yRatio = IO_R((volatile u32 *)0x040002a0);
     } else {
         data_021feaf4.y0 = 0;
         data_021feaf4.yDot = 0;

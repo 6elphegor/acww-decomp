@@ -6,6 +6,7 @@
 #include "snd/SndBgmViews.h"
 #include "gfx/SplEmitterViews.h"
 #include "snd/SndBgmHd.h"
+#include "nitro/io_access.h"
 
 
 
@@ -367,7 +368,7 @@ extern "C" void SPL_Calc(Mgr *m) {
 
 extern "C" void SPL_Draw(Mgr *m, u32 a1, u32 a2) {
     Entry *e;
-    *(vu16 *)0x04000060 = (u16)((*(vu16 *)0x04000060 & ~0x3000) | 8);
+    IO_W((vu16 *)0x04000060, (u16)((IO_R((vu16 *)0x04000060) & ~0x3000) | 8));
     m->w38 = a1;
     e = m->act;
     if (e == 0) return;

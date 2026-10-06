@@ -6,6 +6,7 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "game/FxVec3.h"
+#include "nitro/io_access.h"
 
 typedef volatile u64 vu64;
 
@@ -80,15 +81,15 @@ extern u32 data_021f48a8;
 extern u32 data_021f48e4;
 extern char data_0213b098[];
 }extern "C" s32 Math_Sqrt64(u64 x) {
-    *(vu16 *)0x040002b0 = 1;
-    *(vu64 *)0x040002b8 = x << 2;
-    while (*(vu16 *)0x040002b0 & 0x8000) {
+    IO_W((vu16 *)0x040002b0, 1);
+    IO_W((vu64 *)0x040002b8, x << 2);
+    while (IO_R((vu16 *)0x040002b0) & 0x8000) {
     }
-    return ((s32)*(vu32 *)0x040002b4 + 1) >> 1;
+    return ((s32)IO_R((vu32 *)0x040002b4) + 1) >> 1;
 }
 
 extern "C" void Math_InitSqrt64(void) {
-    *(vu16 *)0x040002b0 = 1;
+    IO_W((vu16 *)0x040002b0, 1);
 }
 
 extern "C" void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b) {

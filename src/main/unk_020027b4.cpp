@@ -6,6 +6,7 @@
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"
 #include "actor/Actor.h"
+#include "nitro/io_access.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -262,14 +263,14 @@ extern "C" void Gfx3d_InitEngine(void) {
     G3X_Init();
     G3X_InitTable();
     G3X_InitMtxStack();
-    *(vu16 *)0x4000060 &= 0xffffcffd;
-    *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 0x10;
-    *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;
-    *(vu16 *)0x4000060 &= 0xcfdf;
-    *(vu32 *)0x4000580 = 0xbfff0000;
+    IO_AND((vu16 *)0x4000060, 0xffffcffd);
+    IO_W((vu16 *)0x4000060, (IO_R((vu16 *)0x4000060) & 0xffffcfff) | 0x10);
+    IO_W((vu16 *)0x4000060, (IO_R((vu16 *)0x4000060) & 0xffffcfff) | 8);
+    IO_AND((vu16 *)0x4000060, 0xcfdf);
+    IO_W((vu32 *)0x4000580, 0xbfff0000);
     G3i_PerspectiveW_(0x579, 0xf09, 0x1555, 0x1000, 0x3e8000, 0x1000, 1, 0);
-    *(vu32 *)0x400044c = 0;
-    *(vu32 *)0x4000540 = 3;
+    IO_W((vu32 *)0x400044c, 0);
+    IO_W((vu32 *)0x4000540, 3);
     NNS_G3dInit();
     Gfx3d_LoadDefaultToonTable();
     G3X_SetClearColor(0, 0, 0x7fff, 0x3f, 1);
@@ -282,9 +283,9 @@ extern "C" void Gfx3d_Init(void) {
     GX_SetBankForTex(6);
     GX_SetBankForTexPltt(0x10);
     OS_EnableDTCM();
-    *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 4;
-    *(vu16 *)0x4000340 = 0;
-    *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;
+    IO_W((vu16 *)0x4000060, (IO_R((vu16 *)0x4000060) & 0xffffcfff) | 4);
+    IO_W((vu16 *)0x4000340, 0);
+    IO_W((vu16 *)0x4000060, (IO_R((vu16 *)0x4000060) & 0xffffcfff) | 8);
     G3X_SetClearColor(0, 0, 0x7fff, 0, 1);
     gViewMtx = *(Mtx43 *)data_02135934;
     MTX_Inverse43(&gViewMtx, gViewMtxInv);
@@ -292,9 +293,9 @@ extern "C" void Gfx3d_Init(void) {
 
 extern "C" void Gfx3d_BeginFrame(void) {
     G3X_Reset();
-    *(vu32 *)0x4000440 = 3;
-    *(vu32 *)0x4000454 = 0;
-    *(vu32 *)0x4000440 = 2;
+    IO_W((vu32 *)0x4000440, 3);
+    IO_W((vu32 *)0x4000454, 0);
+    IO_W((vu32 *)0x4000440, 2);
 }
 
 extern "C" void Gfx3d_SetViewMatrix(Mtx43 *src) {
@@ -306,7 +307,7 @@ extern "C" void Gfx3d_LoadDefaultToonTable(void) {
     ToonTable buf = *(ToonTable *)sDefaultToonTable;
     DC_FlushRange(&buf, 0x40);
     vu16 *reg = (vu16 *)0x4000060;
-    *reg = *reg & 0xffffcffd;
+    IO_W(reg, IO_R(reg) & 0xffffcffd);
     G3X_SetToonTable(&buf);
 }
 

@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MI (mi_dma.c, mi_dma_gxcommand.c): autoload_2 0x02115bac-0x02115e30.
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -66,13 +67,13 @@ void MI_DmaFill32(u32 dmaNo, u32 dest, u32 data, u32 size) {
     u32 e;
     if (size == 0) return;
     dmaCntp = &((vu32 *)0x040000b0)[dmaNo * 3 + 2];
-    while (*dmaCntp & 0x80000000)
+    while (IO_R(dmaCntp) & 0x80000000)
         ;
     e = OS_DisableInterrupts();
-    ((vu32 *)0x040000e0)[dmaNo] = data;
+    IO_W(&((vu32 *)0x040000e0)[dmaNo], data);
     MIi_DmaSetParams_wait_noInt(dmaNo, (u32)&((vu32 *)0x040000e0)[dmaNo], dest, (size >> 2) | 0x85000000);
     OS_RestoreInterrupts(e);
-    while (*dmaCntp & 0x80000000)
+    while (IO_R(dmaCntp) & 0x80000000)
         ;
 }
 
@@ -82,10 +83,10 @@ void MI_DmaCopy32(u32 dmaNo, u32 src, u32 dest, u32 size) {
     MIi_CheckDma0SourceAddress(dmaNo, src, size, 0);
     if (size == 0) return;
     dmaCntp = &((vu32 *)0x040000b0)[dmaNo * 3 + 2];
-    while (*dmaCntp & 0x80000000)
+    while (IO_R(dmaCntp) & 0x80000000)
         ;
     MIi_DmaSetParams_wait(dmaNo, src, dest, (size >> 2) | 0x84000000);
-    while (*dmaCntp & 0x80000000)
+    while (IO_R(dmaCntp) & 0x80000000)
         ;
 }
 
@@ -95,9 +96,9 @@ void MI_DmaCopy16(u32 dmaNo, u32 src, u32 dest, u32 size) {
     if (size == 0) return;
     MIi_CheckDma0SourceAddress(dmaNo, src, size, 0);
     dmaCntp = &((vu32 *)0x040000b0)[dmaNo * 3 + 2];
-    while (*dmaCntp & 0x80000000)
+    while (IO_R(dmaCntp) & 0x80000000)
         ;
     MIi_DmaSetParams_wait(dmaNo, src, dest, (size >> 1) | 0x80000000);
-    while (*dmaCntp & 0x80000000)
+    while (IO_R(dmaCntp) & 0x80000000)
         ;
 }

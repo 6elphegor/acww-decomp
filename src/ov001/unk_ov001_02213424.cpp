@@ -2,6 +2,7 @@
 #include "types.h"
 #include "nitro/gxoam.h"
 #include "ui/WfcTextEdit.h"
+#include "nitro/io_access.h"
 
 
 
@@ -122,11 +123,11 @@ void WfcTextEdit_LoadBg() {
     WfcUtil_LoadFileTo("char/jbBgStep3.ncg.l", GX_LoadBG2Char);
     WfcUtil_LoadFileTo("char/ybBgStep3.ncl.l", GX_LoadBGPltt);
     WfcUtil_LoadFileTo("char/xb4Edit.nsc.l", GX_LoadBG2Scr);
-    *(volatile u16 *)0x4001008 = (*(volatile u16 *)0x4001008 & ~3) | 3;
-    *(volatile u16 *)0x400100a = (*(volatile u16 *)0x400100a & ~3) | 3;
-    *(volatile u16 *)0x4000008 = (*(volatile u16 *)0x4000008 & ~3) | 2;
-    *(volatile u16 *)0x400000a = (*(volatile u16 *)0x400000a & ~3) | 3;
-    *(volatile u16 *)0x400000c = (*(volatile u16 *)0x400000c & ~3) | 3;
+    IO_W((volatile u16 *)0x4001008, (IO_R((volatile u16 *)0x4001008) & ~3) | 3);
+    IO_W((volatile u16 *)0x400100a, (IO_R((volatile u16 *)0x400100a) & ~3) | 3);
+    IO_W((volatile u16 *)0x4000008, (IO_R((volatile u16 *)0x4000008) & ~3) | 2);
+    IO_W((volatile u16 *)0x400000a, (IO_R((volatile u16 *)0x400000a) & ~3) | 3);
+    IO_W((volatile u16 *)0x400000c, (IO_R((volatile u16 *)0x400000c) & ~3) | 3);
 }
 
 void WfcTextEdit_FadeIn() {

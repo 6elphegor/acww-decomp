@@ -8,6 +8,7 @@
 #include "gfx/SplViews.h"
 #include "gfx/SplPt.h"
 #include "gfx/SplNode.h"
+#include "nitro/io_access.h"
 
 
 
@@ -71,7 +72,7 @@ static inline s32 FxMul(s32 a, s32 b) {
 }
 
 static inline u32 G3_PolygonAttr(u32 light, u32 mode, u32 cull, u32 id, u32 alpha, u32 misc) {
-    return *(volatile u32 *)0x040004a4 = light | (mode << 4) | (cull << 6) | (id << 24) | (alpha << 16) | (misc << 8);
+    return IO_W((volatile u32 *)0x040004a4, light | (mode << 4) | (cull << 6) | (id << 24) | (alpha << 16) | (misc << 8));
 }
 
 extern "C" {
@@ -90,22 +91,22 @@ typedef void (*DrawFn)(Mc *, Node *, u32);
 
 
 static inline void G3_MtxMode(u32 m) {
-    *(volatile u32 *)0x04000440 = m;
+    IO_W((volatile u32 *)0x04000440, m);
 }
 static inline void G3_Identity(void) {
-    *(volatile u32 *)0x04000454 = 0;
+    IO_W((volatile u32 *)0x04000454, 0);
 }
 static inline void G3_Scale(s32 x, s32 y, s32 z) {
-    *(volatile u32 *)0x0400046c = x;
-    *(volatile u32 *)0x0400046c = y;
-    *(volatile u32 *)0x0400046c = z;
+    IO_W((volatile u32 *)0x0400046c, x);
+    IO_W((volatile u32 *)0x0400046c, y);
+    IO_W((volatile u32 *)0x0400046c, z);
 }
 
 
 static inline void G3_Translate(s32 x, s32 y, s32 z) {
-    *(volatile u32 *)0x04000470 = x;
-    *(volatile u32 *)0x04000470 = y;
-    *(volatile u32 *)0x04000470 = z;
+    IO_W((volatile u32 *)0x04000470, x);
+    IO_W((volatile u32 *)0x04000470, y);
+    IO_W((volatile u32 *)0x04000470, z);
 }
 
 
@@ -154,10 +155,10 @@ typedef enum { GX_TEXPLTTCOLOR0_USE = 0 } GXTexPlttColor0;
     ((u32)(((addr) >> 3) | ((texFmt) << 26) | ((texGen) << 30) | ((sSize) << 20) | ((tSize) << 23) | ((repeat) << 16) | ((flip) << 18) | ((pltt0) << 29)))
 #define GX_PACK_TEXPLTTBASE_PARAM(addr, texFmt) ((u32)((addr) >> (4 - ((texFmt) == GX_TEXFMT_PLTT4))))
 static inline void G3_TexImageParam(GXTexFmt texFmt, GXTexGen texGen, GXTexSizeS sSize, GXTexSizeT tSize, GXTexRepeat repeat, GXTexFlip flip, GXTexPlttColor0 pltt0, u32 addr) {
-    *(volatile u32 *)0x040004a8 = GX_PACK_TEXIMAGE_PARAM(texFmt, texGen, sSize, tSize, repeat, flip, pltt0, addr);
+    IO_W((volatile u32 *)0x040004a8, GX_PACK_TEXIMAGE_PARAM(texFmt, texGen, sSize, tSize, repeat, flip, pltt0, addr));
 }
 static inline void G3_TexPlttBase(u32 addr, GXTexFmt texfmt) {
-    *(volatile u32 *)0x040004ac = GX_PACK_TEXPLTTBASE_PARAM(addr, texfmt);
+    IO_W((volatile u32 *)0x040004ac, GX_PACK_TEXPLTTBASE_PARAM(addr, texfmt));
 }
 extern "C" void spl_set_tex(void *p) {
     TexEnt *e = (TexEnt *)p;

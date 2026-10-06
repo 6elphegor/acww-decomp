@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcRect.h"
+#include "nitro/io_access.h"
 
 #pragma thumb off
 
@@ -136,7 +137,7 @@ void WfcDialog_Open(s32 a, s32 b, s32 c, s32 d, s32 e)
     WfcDialog_SetY(0xc0);
     {
         volatile u32 *reg = (volatile u32 *)0x4000000;
-        *reg = (*reg & ~0xe000) | 0x6000;
+        IO_W(reg, (IO_R(reg) & ~0xe000) | 0x6000);
     }
     if (c != 0) {
         sWfcDialog->task = (u32)WfcTask_Add(1, (void *)WfcDialog_DimTask, 0, 0x78);
@@ -341,7 +342,7 @@ void WfcDialog_UndimTask(s32 a)
 void WfcDialog_DestroyTask(s32 a)
 {
     s32 i;
-    *(volatile u32 *)0x4000000 &= ~0xe000;
+    IO_AND((volatile u32 *)0x4000000, ~0xe000);
     WfcObj_Free(sWfcDialog->frameObj);
     WfcObj_Free(sWfcDialog->textObj);
     for (i = 0; i < sWfcDialogButtonCounts[sWfcDialog->style]; i++) {

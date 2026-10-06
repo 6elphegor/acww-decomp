@@ -4,6 +4,7 @@
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef int s32;
 
 extern void *data_021fce8c; // OSi_UserExceptionHandler
@@ -30,9 +31,9 @@ void OS_InitTick(void) {
     data_021fcf1c = 1;
     OSi_SetTimerReserved(0);
     data_021fcf24 = 0;
-    reg_OS_TM0CNT_H = 0;
-    reg_OS_TM0CNT_L = 0;
-    reg_OS_TM0CNT_H = 0xc1;
+    IO_W(&reg_OS_TM0CNT_H, 0);
+    IO_W(&reg_OS_TM0CNT_L, 0);
+    IO_W(&reg_OS_TM0CNT_H, 0xc1);
     OS_SetIrqFunction(8, OSi_CountUpTick);
     OS_EnableIrqMask(8);
     data_021fcf20 = 0;
@@ -47,9 +48,9 @@ u16 OS_IsTickAvailable(void) {
 void OSi_CountUpTick(void) {
     data_021fcf24++;
     if (data_021fcf20) {
-        reg_OS_TM0CNT_H = 0;
-        reg_OS_TM0CNT_L = 0;
-        reg_OS_TM0CNT_H = 0xc1;
+        IO_W(&reg_OS_TM0CNT_H, 0);
+        IO_W(&reg_OS_TM0CNT_L, 0);
+        IO_W(&reg_OS_TM0CNT_H, 0xc1);
         data_021fcf20 = 0;
     }
     OSi_EnterTimerCallback(0, OSi_CountUpTick, 0);
@@ -57,7 +58,7 @@ void OSi_CountUpTick(void) {
 
 // OS_GetTick (low 16 bits)
 u16 OS_GetTickLo(void) {
-    return reg_OS_TM0CNT_L;
+    return IO_R(&reg_OS_TM0CNT_L);
 }
 
 // OSi_SetTimerReserved

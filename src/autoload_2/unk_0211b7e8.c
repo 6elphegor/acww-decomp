@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // H7_0211b7e8: autoload_2 0x0211b7e8-0x0211ba58 (one function), NitroSDK TP (touch panel) TP_CalcCalibrateParam.
 // C, mwcc 1.2/base, -nothumb -O4,p. Hardware divider accessed through the SDK CP_* inlines (volatile = registers only).
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -16,17 +17,17 @@ extern void OS_RestoreInterrupts(u32 e);             // OS_RestoreInterrupts
 
 // REG_DIVCNT 0x04000280, REG_DIV_NUMER 0x04000290, REG_DIV_DENOM 0x04000298, REG_DIV_RESULT 0x040002a0
 static inline void CP_SetDiv32_32(u32 numer, u32 denom) {
-    *(volatile u16 *)0x04000280 = 0;
-    *(volatile u32 *)0x04000290 = numer;
-    *(volatile unsigned long long *)0x04000298 = denom;
+    IO_W((volatile u16 *)0x04000280, 0);
+    IO_W((volatile u32 *)0x04000290, numer);
+    IO_W((volatile unsigned long long *)0x04000298, denom);
 }
 static inline void CP_WaitDiv(void) {
-    while (*(volatile u16 *)0x04000280 & 0x8000) {
+    while (IO_R((volatile u16 *)0x04000280) & 0x8000) {
     }
 }
 static inline s32 CP_GetDivResult32(void) {
     CP_WaitDiv();
-    return *(volatile s32 *)0x040002a0;
+    return IO_R((volatile s32 *)0x040002a0);
 }
 // TP_CalcCalibrateParam(calibrate, raw_x1, raw_y1, dx1, dy1, raw_x2, raw_y2, dx2, dy2)
 // returns 0 on success, 1 on a parameter error; the origin terms are (s16)(... >> 7) as in the SDK

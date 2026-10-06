@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK pxi_fifo.c: PXI_InitFifo, PXI_SetFifoRecvCallback, PXI_IsCallbackReady,
 // autoload_2 0x02117e8c-0x0211802c. ARM code, mwcc 1.2/base.
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -43,19 +44,19 @@ void PXI_InitFifo(void) {
         for (i = 0; i < 32; i++) {
             data_027e0394[i] = 0;
         }
-        REG_PXI_FIFO_CNT = 0xc408;
+        IO_W(&REG_PXI_FIFO_CNT, 0xc408);
         OS_ResetRequestIrqMask(0x40000);
         OS_SetIrqFunction(0x40000, PXIi_HandlerRecvFifoNotEmpty);
         OS_EnableIrqMask(0x40000);
         for (i = 0;; i++) {
             s32 timeout;
             s32 status;
-            status = REG_PXI_SUBPINTF & 0xf;
-            REG_PXI_SUBPINTF = (u16)(status << 8);
+            status = IO_R(&REG_PXI_SUBPINTF) & 0xf;
+            IO_W(&REG_PXI_SUBPINTF, (u16)(status << 8));
             if (status == 0 && i > 4) {
                 break;
             }
-            for (timeout = 1000; (REG_PXI_SUBPINTF & 0xf) == status; timeout--) {
+            for (timeout = 1000; (IO_R(&REG_PXI_SUBPINTF) & 0xf) == status; timeout--) {
                 if (timeout <= 0) {
                     i = 0;
                     break;

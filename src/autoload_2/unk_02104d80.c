@@ -9,6 +9,7 @@ typedef signed char s8;
 typedef short s16;
 typedef int s32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef int BOOL;
 #define NULL 0
 
@@ -131,10 +132,10 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
     MIi_CpuClearFast(zero, pos, 0x54);
 #endif
     NNS_G3dGeFlushBuffer();
-    *(volatile u32 *)0x04000440 = 0;
-    *(volatile u32 *)0x0400044c = 1;
-    *(volatile u32 *)0x04000454 = 0;
-    *(volatile u32 *)0x04000440 = 2;
+    IO_W((volatile u32 *)0x04000440, 0);
+    IO_W((volatile u32 *)0x0400044c, 1);
+    IO_W((volatile u32 *)0x04000454, 0);
+    IO_W((volatile u32 *)0x04000440, 2);
     for (i = 0; i < n; i++) {
         idx = e[1];
         off = idx * 100;
@@ -142,8 +143,8 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
         cur = (MtxEnt *)((u8 *)data_021f70c4 + off);
         if (had == 0) {
             BitVecSet(((RSBits *)rs)->bits, idx);
-            *(volatile u32 *)0x04000450 = e[0];
-            *(volatile u32 *)0x04000440 = 1;
+            IO_W((volatile u32 *)0x04000450, e[0]);
+            IO_W((volatile u32 *)0x04000440, 1);
             G3_MultMtx43(inv + idx * 0x54);
         }
         if (i != 0) {
@@ -160,7 +161,7 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
         if (had == 0) {
             while (G3X_GetClipMtx(cur) != 0) {
             }
-            *(volatile u32 *)0x04000440 = 2;
+            IO_W((volatile u32 *)0x04000440, 2);
             G3_MultMtx33(inv + idx * 0x54 + 0x30);
         }
         prev = (MtxEnt *)((u8 *)data_021f7104 + off);
@@ -194,12 +195,12 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
     ACC(nrm[7], pw, prev->m[7]);
     ACC(nrm[8], pw, prev->m[8]);
     G3_LoadMtx43(nrm);
-    *(volatile u32 *)0x04000440 = 1;
+    IO_W((volatile u32 *)0x04000440, 1);
     G3_LoadMtx43(pos);
-    *(volatile u32 *)0x04000440 = 0;
-    *(volatile u32 *)0x04000450 = 1;
-    *(volatile u32 *)0x04000440 = 2;
-    *(volatile u32 *)0x0400044c = rs->c[1];
+    IO_W((volatile u32 *)0x04000440, 0);
+    IO_W((volatile u32 *)0x04000450, 1);
+    IO_W((volatile u32 *)0x04000440, 2);
+    IO_W((volatile u32 *)0x0400044c, rs->c[1]);
     rs->c += (rs->c[2] + 1) * 3;
 }
 

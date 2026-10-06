@@ -8,6 +8,7 @@ typedef signed char s8;
 typedef short s16;
 typedef int s32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef int BOOL;
 #define NULL 0
 
@@ -84,9 +85,9 @@ void NNS_G3dGetCurrentMtx(void *a, void *b)
     s32 buf[16];
     s32 *p;
     NNS_G3dGeFlushBuffer();
-    *(volatile u32 *)0x04000440 = 0;
-    *(volatile u32 *)0x04000444 = 0;
-    *(volatile u32 *)0x04000454 = 0;
+    IO_W((volatile u32 *)0x04000440, 0);
+    IO_W((volatile u32 *)0x04000444, 0);
+    IO_W((volatile u32 *)0x04000454, 0);
     if (a != NULL) {
         p = buf;
         while (G3X_GetClipMtx(p) != 0) {
@@ -97,8 +98,8 @@ void NNS_G3dGetCurrentMtx(void *a, void *b)
         while (G3X_GetVectorMtx(b) != 0) {
         }
     }
-    *(volatile u32 *)0x04000448 = 1;
-    *(volatile u32 *)0x04000440 = 2;
+    IO_W((volatile u32 *)0x04000448, 1);
+    IO_W((volatile u32 *)0x04000440, 2);
 }
 
 // restores matrix stack slot of node entry idx (stack id 31 = none) and optionally reads back the current matrices
@@ -125,7 +126,7 @@ void NNS_G3dInit(void)
 {
     G3X_Init();
     NNS_G3dGlbInit();
-    *(volatile u32 *)0x04000600 = (*(volatile u32 *)0x04000600 & ~0xc0000000) | 0x80000000;
+    IO_W((volatile u32 *)0x04000600, (IO_R((volatile u32 *)0x04000600) & ~0xc0000000) | 0x80000000);
 }
 
 // byte length of an SBC command (table data_02135d5c, 0 = variable length for opcode 9, -1 = invalid)

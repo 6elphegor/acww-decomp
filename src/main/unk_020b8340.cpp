@@ -5,6 +5,7 @@
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
 #include "gfx/BgVramTask.h"
+#include "nitro/io_access.h"
 
 extern "C" {
 void List_Remove(void *list, void *node);
@@ -84,7 +85,7 @@ static inline VramTask *Unk_020b8340_First(void **l) {
 extern "C" void VramQueueTex_Run(void) {
     VramTask *r5;
     for (r5 = Unk_020b8340_First((void **)&sVramQueueTex); r5 != 0; r5 = Unk_020b8340_First((void **)&sVramQueueTex)) {
-        if (*(u16 *)0x4000006 + r5->cost > 0xd4) break;
+        if (IO_R((u16 *)0x4000006) + r5->cost > 0xd4) break;
         BOOL ready = (r5->state == 1) ? TRUE : FALSE;
         if (ready) {
             if (r5->execute() != 0) {
@@ -95,8 +96,8 @@ extern "C" void VramQueueTex_Run(void) {
         List_Remove(&sVramQueueTex, r5);
     }
     volatile u16 *vc = (volatile u16 *)0x4000006;
-    if (*vc <= 0xd5) {
-        u16 t = *vc;
+    if (IO_R(vc) <= 0xd5) {
+        u16 t = IO_R(vc);
     }
 }
 
@@ -119,7 +120,7 @@ extern "C" void VramQueue2d_Dequeue(VramTask *p) {
 extern "C" void VramQueue2d_Run(void) {
     VramTask *r5;
     for (r5 = Unk_020b8340_First((void **)&sVramQueue2d); r5 != 0; r5 = Unk_020b8340_First((void **)&sVramQueue2d)) {
-        if (*(u16 *)0x4000006 + r5->cost > 0x104) break;
+        if (IO_R((u16 *)0x4000006) + r5->cost > 0x104) break;
         BOOL ready = (r5->state == 1) ? TRUE : FALSE;
         if (ready) {
             if (r5->execute() != 0) {

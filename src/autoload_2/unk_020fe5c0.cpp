@@ -10,6 +10,7 @@
 #include "gfx/P.h"
 #include "nitro/mtx.h"
 #include "gfx/SplEmitterE.h"
+#include "nitro/io_access.h"
 
 struct P;
 
@@ -107,7 +108,7 @@ extern "C" s32 WVR_StartUpAsync(u32 cmd, void (*cb)(u32, u32), u32 arg) {
             return 6;
         }
         data_021f5c44 = 4;
-        *(volatile u8 *)0x04000242 = 0x82;
+        IO_W((volatile u8 *)0x04000242, 0x82);
         break;
     case 8:
         if (OSi_TryLockVram(8, data_021f5c40) == 0) {
@@ -115,7 +116,7 @@ extern "C" s32 WVR_StartUpAsync(u32 cmd, void (*cb)(u32, u32), u32 arg) {
             return 6;
         }
         data_021f5c44 = 8;
-        *(volatile u8 *)0x04000243 = 0x82;
+        IO_W((volatile u8 *)0x04000243, 0x82);
         break;
     case 12:
         if (OSi_TryLockVram(12, data_021f5c40) == 0) {
@@ -123,8 +124,8 @@ extern "C" s32 WVR_StartUpAsync(u32 cmd, void (*cb)(u32, u32), u32 arg) {
             return 6;
         }
         data_021f5c44 = 12;
-        *(volatile u8 *)0x04000242 = 0x82;
-        *(volatile u8 *)0x04000243 = 0x8a;
+        IO_W((volatile u8 *)0x04000242, 0x82);
+        IO_W((volatile u8 *)0x04000243, 0x8a);
         break;
     default:
         OS_RestoreInterrupts(old);

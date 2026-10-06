@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
@@ -53,14 +54,14 @@ extern u16 data_027e00b8[];               // OSi_IrqCallbackInfoIndex
 extern u8 data_027e0000[];                // DTCM start (SDK_AUTOLOAD_DTCM_START)
 
 static inline BOOL OS_DisableIrq(void) {
-    u16 prep = reg_OS_IME;
-    reg_OS_IME = 0;
+    u16 prep = IO_R(&reg_OS_IME);
+    IO_W(&reg_OS_IME, 0);
     return (BOOL)prep;
 }
 
 static inline BOOL OS_RestoreIrq(BOOL enable) {
-    u16 prep = reg_OS_IME;
-    reg_OS_IME = (u16)enable;
+    u16 prep = IO_R(&reg_OS_IME);
+    IO_W(&reg_OS_IME, (u16)enable);
     return (BOOL)prep;
 }
 
@@ -334,22 +335,22 @@ extern MIGXDmaParams data_027e0414;
 #define reg_G3X_GXSTAT (*(vu32 *)0x04000600)
 
 static inline u32 G3X_GetCommandFifoStatus(void) {
-    return (reg_G3X_GXSTAT & 0x07000000) >> 24;
+    return (IO_R(&reg_G3X_GXSTAT) & 0x07000000) >> 24;
 }
 
 static inline void G3X_SetFifoIntrCond(u32 cond) {
-    reg_G3X_GXSTAT = ((reg_G3X_GXSTAT & ~0xc0000000) | (cond << 30));
+    IO_W(&reg_G3X_GXSTAT, ((IO_R(&reg_G3X_GXSTAT) & ~0xc0000000) | (cond << 30)));
 }
 
 typedef enum { GX_FIFOINTR_COND_DISABLE = 0, GX_FIFOINTR_COND_UNDERHALF = 1, GX_FIFOINTR_COND_EMPTY = 2 } GXFifoIntrCond;
 
 static inline void G3X_SetFifoIntrCond2(GXFifoIntrCond cond) {
-    reg_G3X_GXSTAT = ((reg_G3X_GXSTAT & ~0xc0000000) | (cond << 30));
+    IO_W(&reg_G3X_GXSTAT, ((IO_R(&reg_G3X_GXSTAT) & ~0xc0000000) | (cond << 30)));
 }
 
 static inline void G3X_SetFifoIntrCond3(u32 cond) {
-    u32 v = reg_G3X_GXSTAT & ~0xc0000000;
-    reg_G3X_GXSTAT = v | (cond << 30);
+    u32 v = IO_R(&reg_G3X_GXSTAT) & ~0xc0000000;
+    IO_W(&reg_G3X_GXSTAT, v | (cond << 30));
 }
 
 static inline void MIi_CallCallback(void (*callback)(void *), void *arg) {
@@ -427,8 +428,8 @@ void OS_IrqDummy(void) {
 // OS_EnableIrqMask
 u32 OS_EnableIrqMask(u32 intr) {
     BOOL ime = OS_DisableIrq();
-    u32 prep = reg_OS_IE;
-    reg_OS_IE = prep | intr;
+    u32 prep = IO_R(&reg_OS_IE);
+    IO_W(&reg_OS_IE, prep | intr);
     (void)OS_RestoreIrq(ime);
     return prep;
 }
@@ -436,29 +437,29 @@ u32 OS_EnableIrqMask(u32 intr) {
 // OS_DisableIrqMask
 u32 OS_DisableIrqMask(u32 intr) {
     BOOL ime = OS_DisableIrq();
-    u32 prep = reg_OS_IE;
-    reg_OS_IE = prep & ~intr;
+    u32 prep = IO_R(&reg_OS_IE);
+    IO_W(&reg_OS_IE, prep & ~intr);
     (void)OS_RestoreIrq(ime);
     return prep;
 }
 
 // CP_SaveContext
 void CP_SaveContext(CPContext *context) {
-    context->div_numer = reg_CP_DIV_NUMER;
-    context->div_denom = reg_CP_DIV_DENOM;
-    context->div_mode = (u16)(reg_CP_DIVCNT & 3);
-    context->sqrt = reg_CP_SQRT_PARAM;
-    context->sqrt_mode = (u16)(reg_CP_SQRTCNT & 1);
+    context->div_numer = IO_R(&reg_CP_DIV_NUMER);
+    context->div_denom = IO_R(&reg_CP_DIV_DENOM);
+    context->div_mode = (u16)(IO_R(&reg_CP_DIVCNT) & 3);
+    context->sqrt = IO_R(&reg_CP_SQRT_PARAM);
+    context->sqrt_mode = (u16)(IO_R(&reg_CP_SQRTCNT) & 1);
 }
 
 /* END PROTOS */
 
 // CPi_RestoreContext
 void CPi_RestoreContext(const CPContext *context) {
-    reg_CP_DIV_NUMER = context->div_numer;
-    reg_CP_DIV_DENOM = context->div_denom;
-    reg_CP_DIVCNT = context->div_mode;
-    reg_CP_SQRT_PARAM = context->sqrt;
-    reg_CP_SQRTCNT = context->sqrt_mode;
+    IO_W(&reg_CP_DIV_NUMER, context->div_numer);
+    IO_W(&reg_CP_DIV_DENOM, context->div_denom);
+    IO_W(&reg_CP_DIVCNT, context->div_mode);
+    IO_W(&reg_CP_SQRT_PARAM, context->sqrt);
+    IO_W(&reg_CP_SQRTCNT, context->sqrt_mode);
 }
 

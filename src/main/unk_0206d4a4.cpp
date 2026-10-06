@@ -1,6 +1,7 @@
 #include "types.h"
 #include "game/Random.h"
 #include "gfx/DebugColor.h"
+#include "nitro/io_access.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -47,8 +48,8 @@ extern "C" void Main_DwcFree(u32 a, void *p) {
 extern "C" void Main_RunWifiUtility(void) {
     u32 ime = OS_DisableInterrupts();
     volatile u16 *reg = (volatile u16 *)0x4000208;
-    u16 old = *reg;
-    *reg = 0;
+    u16 old = IO_R(reg);
+    IO_W(reg, 0);
     OS_DisableIrqMask(7);
     OS_ResetRequestIrqMask(7);
     OverlayHandle_Load(gOverlayHandle, (s32)OVERLAY_65_ID);
@@ -59,8 +60,8 @@ extern "C" void Main_RunWifiUtility(void) {
     Mem_Free(p);
     OverlayMgr_Release((u32)OVERLAY_1_ID);
     OverlayHandle_Unload(gOverlayHandle);
-    *reg;
-    *reg = old;
+    IO_R(reg);
+    IO_W(reg, old);
     OS_RestoreInterrupts(ime);
 }
 

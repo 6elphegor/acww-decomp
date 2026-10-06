@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
@@ -53,14 +54,14 @@ extern u16 data_027e00b8[];               // OSi_IrqCallbackInfoIndex
 extern u8 data_027e0000[];                // DTCM start (SDK_AUTOLOAD_DTCM_START)
 
 static inline BOOL OS_DisableIrq(void) {
-    u16 prep = reg_OS_IME;
-    reg_OS_IME = 0;
+    u16 prep = IO_R(&reg_OS_IME);
+    IO_W(&reg_OS_IME, 0);
     return (BOOL)prep;
 }
 
 static inline BOOL OS_RestoreIrq(BOOL enable) {
-    u16 prep = reg_OS_IME;
-    reg_OS_IME = (u16)enable;
+    u16 prep = IO_R(&reg_OS_IME);
+    IO_W(&reg_OS_IME, (u16)enable);
     return (BOOL)prep;
 }
 
@@ -334,22 +335,22 @@ extern MIGXDmaParams data_027e0414;
 #define reg_G3X_GXSTAT (*(vu32 *)0x04000600)
 
 static inline u32 G3X_GetCommandFifoStatus(void) {
-    return (reg_G3X_GXSTAT & 0x07000000) >> 24;
+    return (IO_R(&reg_G3X_GXSTAT) & 0x07000000) >> 24;
 }
 
 static inline void G3X_SetFifoIntrCond(u32 cond) {
-    reg_G3X_GXSTAT = ((reg_G3X_GXSTAT & ~0xc0000000) | (cond << 30));
+    IO_W(&reg_G3X_GXSTAT, ((IO_R(&reg_G3X_GXSTAT) & ~0xc0000000) | (cond << 30)));
 }
 
 typedef enum { GX_FIFOINTR_COND_DISABLE = 0, GX_FIFOINTR_COND_UNDERHALF = 1, GX_FIFOINTR_COND_EMPTY = 2 } GXFifoIntrCond;
 
 static inline void G3X_SetFifoIntrCond2(GXFifoIntrCond cond) {
-    reg_G3X_GXSTAT = ((reg_G3X_GXSTAT & ~0xc0000000) | (cond << 30));
+    IO_W(&reg_G3X_GXSTAT, ((IO_R(&reg_G3X_GXSTAT) & ~0xc0000000) | (cond << 30)));
 }
 
 static inline void G3X_SetFifoIntrCond3(u32 cond) {
-    u32 v = reg_G3X_GXSTAT & ~0xc0000000;
-    reg_G3X_GXSTAT = v | (cond << 30);
+    u32 v = IO_R(&reg_G3X_GXSTAT) & ~0xc0000000;
+    IO_W(&reg_G3X_GXSTAT, v | (cond << 30));
 }
 
 static inline void MIi_CallCallback(void (*callback)(void *), void *arg) {
@@ -445,9 +446,9 @@ void MIi_FIFOCallback(void) {
 void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
     u32 enabled = OS_DisableInterrupts();
     vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
-    *p = src;
-    *(p + 1) = dest;
-    *(p + 2) = ctrl;
+    IO_W(p, src);
+    IO_W((p + 1), dest);
+    IO_W((p + 2), ctrl);
     (void)OS_RestoreInterrupts(enabled);
 }
 
@@ -487,13 +488,13 @@ void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir) {
 void MI_WaitDma(u32 dmaNo) {
     u32 enabled = OS_DisableInterrupts();
     vu32 *dmaCntp = &((vu32 *)0x040000b0)[dmaNo * 3 + 2];
-    while (*dmaCntp & 0x80000000) {
+    while (IO_R(dmaCntp) & 0x80000000) {
     }
     if (dmaNo == 0) {
         vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
-        *p = 0;
-        *(p + 1) = 0;
-        *(p + 2) = 0x81400001;
+        IO_W(p, 0);
+        IO_W((p + 1), 0);
+        IO_W((p + 2), 0x81400001);
     }
     (void)OS_RestoreInterrupts(enabled);
 }
@@ -520,9 +521,9 @@ void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (
     MI_WaitDma(dmaNo);
     {
         u32 enabled = OS_DisableInterrupts();
-        data_027e0414.fifoCond = (reg_G3X_GXSTAT & 0xc0000000) >> 30;
+        data_027e0414.fifoCond = (IO_R(&reg_G3X_GXSTAT) & 0xc0000000) >> 30;
         data_027e0414.fifoFunc = OS_GetIrqFunction(0x200000);
-        reg_G3X_GXSTAT = (reg_G3X_GXSTAT & ~0xc0000000) | (1 << 30);
+        IO_W(&reg_G3X_GXSTAT, (IO_R(&reg_G3X_GXSTAT) & ~0xc0000000) | (1 << 30));
         OS_SetIrqFunction(0x200000, MIi_FIFOCallback);
         (void)OS_EnableIrqMask(0x200000);
         MIi_FIFOCallback();

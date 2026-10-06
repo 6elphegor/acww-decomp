@@ -4,6 +4,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
@@ -32,7 +33,7 @@ typedef vu16 REGType16v;
 
 // NitroSDK nitro/cp/sqrt.h: the Imm accessor reads through a NON-volatile REGType32 pointer
 static inline s32 CP_IsSqrtBusy(void) {
-    return (reg_CP_SQRTCNT & REG_CP_SQRTCNT_BUSY_MASK);
+    return (IO_R(&reg_CP_SQRTCNT) & REG_CP_SQRTCNT_BUSY_MASK);
 }
 
 static inline void CP_WaitSqrt(void) {
@@ -41,7 +42,7 @@ static inline void CP_WaitSqrt(void) {
 }
 
 static inline u32 CP_GetSqrtResultImm32(void) {
-    return (u32)(*((REGType32 *)REG_SQRT_RESULT_ADDR));
+    return (u32)(IO_R(((REGType32 *)REG_SQRT_RESULT_ADDR)));
 }
 
 static inline u32 CP_GetSqrtResult32(void) {

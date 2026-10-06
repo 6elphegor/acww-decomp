@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 extern "C" {
 extern u8 GX_LoadBG2Scr[];
@@ -78,10 +79,10 @@ void WfcTransferCancelled_LoadBg() {
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x400000a;
     volatile u16 *r4 = (volatile u16 *)0x400000c;
-    *r1 = (*r1 & ~3) | 3;
-    *r2 = (*r2 & ~3) | 3;
-    *r3 = (*r3 & ~3) | 3;
-    *r4 = (*r4 & ~3) | 3;
+    IO_W(r1, (IO_R(r1) & ~3) | 3);
+    IO_W(r2, (IO_R(r2) & ~3) | 3);
+    IO_W(r3, (IO_R(r3) & ~3) | 3);
+    IO_W(r4, (IO_R(r4) & ~3) | 3);
 }
 
 void WfcTransferCancelled_FadeIn() {

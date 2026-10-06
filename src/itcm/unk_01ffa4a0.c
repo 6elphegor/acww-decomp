@@ -7,6 +7,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
@@ -262,32 +263,32 @@ typedef union PXIFifoMessage {
 
 static inline int PXIi_RecvWordByFifo(PXIFifoMessage *data) {
     u32 enabled;
-    if (reg_PXI_FIFO_CNT & 0x4000) {
-        reg_PXI_FIFO_CNT |= 0xc000;
+    if (IO_R(&reg_PXI_FIFO_CNT) & 0x4000) {
+        IO_OR(&reg_PXI_FIFO_CNT, 0xc000);
         return -3;
     }
     enabled = OS_DisableInterrupts();
-    if (reg_PXI_FIFO_CNT & 0x100) {
+    if (IO_R(&reg_PXI_FIFO_CNT) & 0x100) {
         OS_RestoreInterrupts(enabled);
         return -4;
     }
-    data->raw = reg_PXI_RECV_FIFO;
+    data->raw = IO_R(&reg_PXI_RECV_FIFO);
     OS_RestoreInterrupts(enabled);
     return 0;
 }
 
 static inline int PXIi_SendWordByFifo(u32 data) {
     u32 enabled;
-    if (reg_PXI_FIFO_CNT & 0x4000) {
-        reg_PXI_FIFO_CNT |= 0xc000;
+    if (IO_R(&reg_PXI_FIFO_CNT) & 0x4000) {
+        IO_OR(&reg_PXI_FIFO_CNT, 0xc000);
         return -3;
     }
     enabled = OS_DisableInterrupts();
-    if (reg_PXI_FIFO_CNT & 2) {
+    if (IO_R(&reg_PXI_FIFO_CNT) & 2) {
         OS_RestoreInterrupts(enabled);
         return -1;
     }
-    reg_PXI_SEND_FIFO = data;
+    IO_W(&reg_PXI_SEND_FIFO, data);
     OS_RestoreInterrupts(enabled);
     return 0;
 }
@@ -576,9 +577,9 @@ BOOL NNSi_G3dAnmBlendJnt(JntAnm *pResult, const AnmObj *pAnmObj, u32 dataIdx) {
 // OS_GetTick
 u64 OS_GetTick(void) {
     u32 enabled = OS_DisableInterrupts();
-    vu16 countL = *(vu16 *)0x04000100;
+    vu16 countL = IO_R((vu16 *)0x04000100);
     vu64 countH = data_021fcf24 & 0x0000ffffffffffffULL;
-    if ((reg_OS_IF & 8) && !(countL & 0x8000)) {
+    if ((IO_R(&reg_OS_IF) & 8) && !(countL & 0x8000)) {
         countH++;
     }
     OS_RestoreInterrupts(enabled);

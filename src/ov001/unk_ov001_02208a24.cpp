@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "ui/WfcLinkIcon.h"
+#include "nitro/io_access.h"
 
 extern "C" {
 extern void WfcCell_Copy(s32, u32, u32);
@@ -45,12 +46,12 @@ extern "C" void WfcLinkIcon_Delete() {
 
 extern "C" void WfcLinkIcon_Task() {
     volatile u16 *ime = (volatile u16 *)0x4000208;
-    u16 saved = *ime;
+    u16 saved = IO_R(ime);
     u32 x = 0;
-    *ime = 0;
+    IO_W(ime, 0);
     if (WM_GetAllowedChannel() != 0x8000) x = WM_GetLinkLevel();
-    *ime;
-    *ime = saved;
+    IO_R(ime);
+    IO_W(ime, saved);
     const u8 *q = (const u8 *)data_ov001_02229bd0 + sWfcLinkIcon->iconSet * 4;
     WfcCell_Copy(0, q[x], (u32)sWfcLinkIcon->oam);
     const u16 *p = data_ov001_02229bcc;

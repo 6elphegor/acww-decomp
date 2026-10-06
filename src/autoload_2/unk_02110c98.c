@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK graphics (G2/G3/GX), autoload_2 0x02110c98-0x02111404. ARM code, mwcc 1.2/base with -O4,p.
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -46,25 +47,25 @@ void G3i_LookAt_(const VecFx32 *pos, const VecFx32 *up, const VecFx32 *target, B
     VEC_Normalize(&vRight, &vRight);
     VEC_CrossProduct(&vLook, &vRight, &vUp);
     if (send) {
-        R32(0x04000440) = 2;
+        IO_W(&R32(0x04000440), 2);
         fifo = (volatile u32 *)0x0400045c;
-        *fifo = vRight.x;
-        *fifo = vUp.x;
-        *fifo = vLook.x;
-        *fifo = vRight.y;
-        *fifo = vUp.y;
-        *fifo = vLook.y;
-        *fifo = vRight.z;
-        *fifo = vUp.z;
-        *fifo = vLook.z;
+        IO_W(fifo, vRight.x);
+        IO_W(fifo, vUp.x);
+        IO_W(fifo, vLook.x);
+        IO_W(fifo, vRight.y);
+        IO_W(fifo, vUp.y);
+        IO_W(fifo, vLook.y);
+        IO_W(fifo, vRight.z);
+        IO_W(fifo, vUp.z);
+        IO_W(fifo, vLook.z);
     }
     tx = -VEC_DotProduct(pos, &vRight);
     ty = -VEC_DotProduct(pos, &vUp);
     tz = -VEC_DotProduct(pos, &vLook);
     if (send) {
-        *fifo = tx;
-        *fifo = ty;
-        *fifo = tz;
+        IO_W(fifo, tx);
+        IO_W(fifo, ty);
+        IO_W(fifo, tz);
     }
     if (mtx) {
         mtx->m[0][0] = vRight.x;
@@ -84,100 +85,100 @@ void G3i_LookAt_(const VecFx32 *pos, const VecFx32 *up, const VecFx32 *target, B
 // G3X_Init
 void G3X_Init(void) {
     G3X_ClearFifo();
-    R32(0x04000504) = 0;
-    while (R32(0x04000600) & 0x08000000) {
+    IO_W(&R32(0x04000504), 0);
+    while (IO_R(&R32(0x04000600)) & 0x08000000) {
     }
-    R16(0x04000060) = 0;
-    R32(0x04000600) = 0;
-    R32(0x04000010) = 0;
-    R16(0x04000060) |= 0x2000;
-    R16(0x04000060) |= 0x1000;
-    R16(0x04000060) &= ~0x3002;
-    R16(0x04000060) = (R16(0x04000060) & ~0x3000) | 0x10;
-    R16(0x04000060) &= 0xcffb;
-    R32(0x04000600) |= 0x8000;
-    R32(0x04000600) = (R32(0x04000600) & ~0xc0000000) | 0x80000000;
+    IO_W(&R16(0x04000060), 0);
+    IO_W(&R32(0x04000600), 0);
+    IO_W(&R32(0x04000010), 0);
+    IO_OR(&R16(0x04000060), 0x2000);
+    IO_OR(&R16(0x04000060), 0x1000);
+    IO_AND(&R16(0x04000060), ~0x3002);
+    IO_W(&R16(0x04000060), (IO_R(&R16(0x04000060)) & ~0x3000) | 0x10);
+    IO_AND(&R16(0x04000060), 0xcffb);
+    IO_OR(&R32(0x04000600), 0x8000);
+    IO_W(&R32(0x04000600), (IO_R(&R32(0x04000600)) & ~0xc0000000) | 0x80000000);
     G3X_InitMtxStack();
-    R32(0x04000350) = 0;
-    R16(0x04000354) = 0x7fff;
-    R16(0x04000356) = 0;
-    R32(0x04000358) = 0;
-    R16(0x0400035c) = 0;
-    R16(0x04000008) &= ~3;
+    IO_W(&R32(0x04000350), 0);
+    IO_W(&R16(0x04000354), 0x7fff);
+    IO_W(&R16(0x04000356), 0);
+    IO_W(&R32(0x04000358), 0);
+    IO_W(&R16(0x0400035c), 0);
+    IO_AND(&R16(0x04000008), ~3);
     G3X_InitTable();
-    R32(0x040004a4) = 0x1f0080;
-    R32(0x040004a8) = 0;
-    R32(0x040004ac) = 0;
+    IO_W(&R32(0x040004a4), 0x1f0080);
+    IO_W(&R32(0x040004a8), 0);
+    IO_W(&R32(0x040004ac), 0);
 }
 // G3X_InitMtxStack-style helper (waits for GXSTAT busy, clears the error flags, resets the stacks, default polygon attr)
 void G3X_Reset(void) {
-    while (R32(0x04000600) & 0x08000000) {
+    while (IO_R(&R32(0x04000600)) & 0x08000000) {
     }
-    R32(0x04000600) |= 0x8000;
-    R16(0x04000060) |= 0x2000;
-    R16(0x04000060) |= 0x1000;
+    IO_OR(&R32(0x04000600), 0x8000);
+    IO_OR(&R16(0x04000060), 0x2000);
+    IO_OR(&R16(0x04000060), 0x1000);
     G3X_ResetMtxStack();
-    R32(0x040004a4) = 0x1f0080;
-    R32(0x040004a8) = 0;
-    R32(0x040004ac) = 0;
+    IO_W(&R32(0x040004a4), 0x1f0080);
+    IO_W(&R32(0x040004a8), 0);
+    IO_W(&R32(0x040004ac), 0);
 }
 // G3X_ClearFifo-style (GXi_NopClearFifo128_ then wait for the geometry engine)
 void G3X_ClearFifo(void) {
     GXi_NopClearFifo128_((void *)0x04000400);
-    while (R32(0x04000600) & 0x08000000) {
+    while (IO_R(&R32(0x04000600)) & 0x08000000) {
     }
 }
 // G3X_ResetMtxStack-style helper (variant with an extra identity load)
 void G3X_InitMtxStack(void) {
     u32 a, b;
-    R32(0x04000600) |= 0x8000;
+    IO_OR(&R32(0x04000600), 0x8000);
     while (G3X_GetMtxStackLevelPV(&a) != 0) {
     }
     while (G3X_GetMtxStackLevelPJ(&b) != 0) {
     }
-    R32(0x04000440) = 3;
-    R32(0x04000454) = 0;
-    R32(0x04000440) = 0;
-    if (b != 0) R32(0x04000448) = b;
-    R32(0x04000454) = 0;
-    R32(0x04000440) = 2;
-    R32(0x04000448) = a;
-    R32(0x04000454) = 0;
+    IO_W(&R32(0x04000440), 3);
+    IO_W(&R32(0x04000454), 0);
+    IO_W(&R32(0x04000440), 0);
+    if (b != 0) IO_W(&R32(0x04000448), b);
+    IO_W(&R32(0x04000454), 0);
+    IO_W(&R32(0x04000440), 2);
+    IO_W(&R32(0x04000448), a);
+    IO_W(&R32(0x04000454), 0);
 }
 // G3X_ResetMtxStack-style helper (pops the position/vector and projection stacks)
 void G3X_ResetMtxStack(void) {
     u32 a, b;
-    R32(0x04000600) |= 0x8000;
+    IO_OR(&R32(0x04000600), 0x8000);
     while (G3X_GetMtxStackLevelPV(&a) != 0) {
     }
     while (G3X_GetMtxStackLevelPJ(&b) != 0) {
     }
-    R32(0x04000440) = 3;
-    R32(0x04000454) = 0;
-    R32(0x04000440) = 0;
-    if (b != 0) R32(0x04000448) = b;
-    R32(0x04000440) = 2;
-    R32(0x04000448) = a;
-    R32(0x04000454) = 0;
+    IO_W(&R32(0x04000440), 3);
+    IO_W(&R32(0x04000454), 0);
+    IO_W(&R32(0x04000440), 0);
+    if (b != 0) IO_W(&R32(0x04000448), b);
+    IO_W(&R32(0x04000440), 2);
+    IO_W(&R32(0x04000448), a);
+    IO_W(&R32(0x04000454), 0);
 }
 // G3X_SetFog
 void G3X_SetFog(s32 enable, s32 mode, s32 shift, s32 offset) {
     if (enable != 0) {
-        R16(0x0400035c) = offset;
-        R16(0x04000060) = (u16)((R16(0x04000060) & ~0x3f40) | ((shift << 8) | (mode << 6) | 0x80));
+        IO_W(&R16(0x0400035c), offset);
+        IO_W(&R16(0x04000060), (u16)((IO_R(&R16(0x04000060)) & ~0x3f40) | ((shift << 8) | (mode << 6) | 0x80)));
     } else {
-        R16(0x04000060) &= 0xcf7f;
+        IO_AND(&R16(0x04000060), 0xcf7f);
     }
 }
 // G3X_GetClipMtx
 s32 G3X_GetClipMtx(void *dst) {
-    if (R32(0x04000600) & 0x08000000) return -1;
+    if (IO_R(&R32(0x04000600)) & 0x08000000) return -1;
     MI_Copy64B((void *)0x04000640, dst);
     return 0;
 }
 // G3X_GetVectorMtx
 s32 G3X_GetVectorMtx(void *dst) {
-    if (R32(0x04000600) & 0x08000000) return -1;
+    if (IO_R(&R32(0x04000600)) & 0x08000000) return -1;
     MI_Copy36B((void *)0x04000680, dst);
     return 0;
 }
@@ -193,8 +194,8 @@ void G3X_SetToonTable(const void *t) {
 void G3X_SetClearColor(u32 rgb, u32 alpha, u32 depth, u32 polyId, u32 fog) {
     u32 c = rgb | (alpha << 16) | (polyId << 24);
     if (fog) c |= 0x8000;
-    R32(0x04000350) = c;
-    R16(0x04000354) = depth;
+    IO_W(&R32(0x04000350), c);
+    IO_W(&R16(0x04000354), depth);
 }
 // G3X_InitTable
 void G3X_InitTable(void) {
@@ -212,21 +213,21 @@ void G3X_InitTable(void) {
             MIi_CpuClear32(z, (void *)0x04000360, 96);
         }
     }
-    for (i = 0; i < 32; i++) R32(0x040004d0) = 0;
+    for (i = 0; i < 32; i++) IO_W(&R32(0x040004d0), 0);
 }
 // G3X_GetMtxStackLevelPV
 s32 G3X_GetMtxStackLevelPV(u32 *p) {
-    if (R32(0x04000600) & 0x4000) return -1;
-    *p = (R32(0x04000600) & 0x1f00) >> 8;
+    if (IO_R(&R32(0x04000600)) & 0x4000) return -1;
+    *p = (IO_R(&R32(0x04000600)) & 0x1f00) >> 8;
     return 0;
 }
 // G3X_GetMtxStackLevelPJ
 s32 G3X_GetMtxStackLevelPJ(u32 *p) {
-    if (R32(0x04000600) & 0x4000) return -1;
-    *p = (R32(0x04000600) & 0x2000) >> 13;
+    if (IO_R(&R32(0x04000600)) & 0x4000) return -1;
+    *p = (IO_R(&R32(0x04000600)) & 0x2000) >> 13;
     return 0;
 }
 // writes REG_BG0OFS (0x04000010)
 void G3X_SetHOffset(u32 v) {
-    R32(0x04000010) = v;
+    IO_W(&R32(0x04000010), v);
 }

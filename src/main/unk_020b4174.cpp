@@ -2,6 +2,7 @@
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
 #include "sys/SceneBase.h"
+#include "nitro/io_access.h"
 
 extern "C" const u8 data_020d0c08;
 
@@ -170,11 +171,11 @@ void BootLogoScene::setupGraphics() {
     Gfx_DisableAllBanks();
     GX_SetBankForBG(0x20);
     GX_SetBankForSubBG(0x80);
-    *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xffcfffef;
-    *(volatile u32 *)0x4001000 = *(volatile u32 *)0x4001000 & 0xffcfffef;
+    IO_W((volatile u32 *)0x4000000, IO_R((volatile u32 *)0x4000000) & 0xffcfffef);
+    IO_W((volatile u32 *)0x4001000, IO_R((volatile u32 *)0x4001000) & 0xffcfffef);
     Gfx2d_SetMainBgMode(0);
     Gfx2d_SetSubBgMode(0);
-    *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xc7ffffff;
+    IO_W((volatile u32 *)0x4000000, IO_R((volatile u32 *)0x4000000) & 0xc7ffffff);
     Gfx2d_SetLayerControl(6, 0, 0, 0);
     Gfx2d_SetLayerControl(2, 0, 0, 0);
     void *heap = gCurrentHeap;

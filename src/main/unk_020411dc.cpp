@@ -1,5 +1,6 @@
 #include "types.h"
 #include "snd/BgmSceneFade.h"
+#include "nitro/io_access.h"
 
 
 struct ScreenTransitionType {
@@ -127,22 +128,22 @@ extern "C" void ScreenFade_VBlank() {
 
 extern "C" void IrisWipe_HBlank() {
     volatile u16 *r = (volatile u16 *)0x4000000;
-    u32 line = r[3];
+    u32 line = IO_R(&r[3]);
     if ((s32)line < 0xc0) {
         if ((s32)line >= 0x60) line = 0xbf - line;
         u16 v = sIrisWipeActiveTable[line];
-        if (*(volatile u16 *)0x4000004 & 2) {
-            *(volatile u16 *)((u8 *)r + 0x40) = v;
-            *(volatile u16 *)((u8 *)r + 0x1040) = v;
+        if (IO_R((volatile u16 *)0x4000004) & 2) {
+            IO_W((volatile u16 *)((u8 *)r + 0x40), v);
+            IO_W((volatile u16 *)((u8 *)r + 0x1040), v);
         }
     }
 }
 
 extern "C" void IrisWipe_VBlankRegs() {
-    *(volatile u16 *)0x4000040 = *sIrisWipeActiveTable;
-    *(volatile u16 *)0x4001040 = *sIrisWipeActiveTable;
-    *(volatile u16 *)0x4000044 = 0xc0;
-    *(volatile u16 *)0x4001044 = 0xc0;
+    IO_W((volatile u16 *)0x4000040, *sIrisWipeActiveTable);
+    IO_W((volatile u16 *)0x4001040, *sIrisWipeActiveTable);
+    IO_W((volatile u16 *)0x4000044, 0xc0);
+    IO_W((volatile u16 *)0x4001044, 0xc0);
 }
 
 extern "C" void IrisWipe_SetupLayers() {
@@ -162,15 +163,15 @@ extern "C" void IrisWipe_SetupLayers() {
         Gfx2d_SetSubWin0Rect(0, 0, 0, 0);
     }
     r = (volatile u16 *)0x400000c;
-    *r &= ~3;
-    *r = (*r & 0x43) | 0x600;
+    IO_AND(r, ~3);
+    IO_W(r, (IO_R(r) & 0x43) | 0x600);
     Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000000, 4);
     Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
-    *r &= ~3;
-    *r = (*r & 0x43) | 0xe04;
+    IO_AND(r, ~3);
+    IO_W(r, (IO_R(r) & 0x43) | 0xe04);
     Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000400, 4);

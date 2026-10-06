@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/BgVramTask.h"
+#include "nitro/io_access.h"
 
 
 extern "C" {
@@ -138,7 +139,7 @@ extern "C" void MenuScreen_WipeInVBlank(void) {
         HBlank_Remove(sMenuWipeHBlankTask);
         sMenuScreenWipeFlags.v &= ~1;
         Gfx2d_SetMainWin1Rect(0, 0, 255, 192);
-        *(volatile u16 *)0x4000042 = 0xff;
+        IO_W((volatile u16 *)0x4000042, 0xff);
         sMenuWipePos.v = 0;
     }
     i = 0;
@@ -153,7 +154,7 @@ extern "C" void MenuScreen_WipeInVBlank(void) {
             sMenuWipeEdge[i] = t;
         }
     }
-    *(volatile u16 *)0x4000042 = ((sMenuWipeEdge[0] << 8) & 0xff00) | 0xff;
+    IO_W((volatile u16 *)0x4000042, ((sMenuWipeEdge[0] << 8) & 0xff00) | 0xff);
 }
 
 extern "C" void MenuScreen_WipeOutVBlank(void) {
@@ -164,7 +165,7 @@ extern "C" void MenuScreen_WipeOutVBlank(void) {
         HBlank_Remove(sMenuWipeHBlankTask);
         sMenuScreenWipeFlags.v &= ~1;
         sMenuWipePos.v = 0xfe;
-        *(volatile u16 *)0x4000042 = 0xfeff;
+        IO_W((volatile u16 *)0x4000042, 0xfeff);
     }
     i = 0;
     b = sMenuWipePos.v;

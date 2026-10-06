@@ -3,6 +3,7 @@
 #include "sys/ProcBase.h"
 #include "sys/QNode.h"
 #include "sys/OSThread.h"
+#include "nitro/io_access.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -258,15 +259,15 @@ void CrashScreen_Clear(void) {
 
 void CrashScreen_InitDisplay(void) {
     Gfx_ResetDisplayRegs();
-    *(vu16 *)0x4000304 |= 1;
-    *(vu16 *)0x4000050 = 0;
-    *(vu16 *)0x4001050 = 0;
+    IO_OR((vu16 *)0x4000304, 1);
+    IO_W((vu16 *)0x4000050, 0);
+    IO_W((vu16 *)0x4001050, 0);
     GX_SetBankForBG(0x40);
     GX_SetBankForSubBG(0x80);
-    *(vu32 *)0x4000000 = (*(vu32 *)0x4000000 & 0xffffe0ff) | 0x200;
-    *(vu32 *)0x4001000 = (*(vu32 *)0x4001000 & 0xffffe0ff) | 0x200;
-    *(vu16 *)0x400000a = (*(vu16 *)0x400000a & 0x43) | 0x400;
-    *(vu16 *)0x400100a = (*(vu16 *)0x400100a & 0x43) | 0x400;
+    IO_W((vu32 *)0x4000000, (IO_R((vu32 *)0x4000000) & 0xffffe0ff) | 0x200);
+    IO_W((vu32 *)0x4001000, (IO_R((vu32 *)0x4001000) & 0xffffe0ff) | 0x200);
+    IO_W((vu16 *)0x400000a, (IO_R((vu16 *)0x400000a) & 0x43) | 0x400);
+    IO_W((vu16 *)0x400100a, (IO_R((vu16 *)0x400100a) & 0x43) | 0x400);
     GX_LoadBG1Char(sCrashFontChars, 0, 0x1000);
     GXS_LoadBG1Char(sCrashFontChars, 0, 0x1000);
     GX_LoadBGPltt(sCrashFontPalette, 0x1a0, 0x60);
@@ -279,19 +280,19 @@ void CrashScreen_InitDisplay(void) {
     sCrashScreenSub = G2S_GetBG1ScrPtr();
     CrashScreen_Clear();
     GX_DispOn();
-    *(vu32 *)0x4001000 |= 0x10000;
+    IO_OR((vu32 *)0x4001000, 0x10000);
 }
 
 void CrashScreen_WaitVBlank(void) {
-    while ((s32)*(vu16 *)0x4000006 >= 0xc0) {
+    while ((s32)IO_R((vu16 *)0x4000006) >= 0xc0) {
     }
-    while ((s32)*(vu16 *)0x4000006 < 0xc0) {
+    while ((s32)IO_R((vu16 *)0x4000006) < 0xc0) {
     }
 }
 
 void CrashScreen_Frame(void) {
     u32 state = sCrashScreenState;
-    u32 keys = (*(vu16 *)0x4000130 | *(vu16 *)0x27fffa8);
+    u32 keys = (IO_R((vu16 *)0x4000130) | *(vu16 *)0x27fffa8);
     u32 trig, prev, held;
     keys = (keys ^ 0x2fff) & 0x2fff;
     keys = (u16)keys & 0x3ff;
@@ -368,8 +369,8 @@ void CrashScreen_Frame(void) {
 void CrashScreen_Run(void) {
     vu16 *ime = (vu16 *)0x4000208;
     u64 t;
-    (void)*ime;
-    *ime = 0;
+    (void)IO_R(ime);
+    IO_W(ime, 0);
     t = OS_GetTick();
     sCrashTimeMs = (u32)((t << 6) / 0x82ea);
     for (;;) {
@@ -397,15 +398,15 @@ void NitroMain(void) {
     OS_InitThread();
     OS_SetUserExceptionHandler(Fatal_ExceptionCallback, data_021fccfc);
     ime = (vu16 *)0x4000208;
-    (void)*ime;
-    *ime = 1;
+    (void)IO_R(ime);
+    IO_W(ime, 1);
     OS_EnableInterrupts();
     Main_InitDwc();
     if (*(u32 *)0x27ffc20 == 1) {
         Main_RunWifiUtility();
         ime = (vu16 *)0x4000208;
-        (void)*ime;
-        *ime = 1;
+        (void)IO_R(ime);
+        IO_W(ime, 1);
         OS_ResetSystem(2);
     }
     Main_Init();

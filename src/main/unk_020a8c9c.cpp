@@ -13,6 +13,7 @@
 #include "talk/ChoiceString.h"
 #include "talk/ChoiceList.h"
 #include "talk/ChoiceMenu.h"
+#include "nitro/io_access.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files
@@ -535,9 +536,9 @@ void ChoiceWindow::setWidth(s32 v) {
 
 void ChoiceWindow::setupBgControl() {
     u16 *reg = (u16 *)0x400000a;
-    *reg &= ~3;
-    *reg = (*reg & 0x43) | 0x500;
-    *reg &= ~0x40;
+    IO_AND(reg, ~3);
+    IO_W(reg, (IO_R(reg) & 0x43) | 0x500);
+    IO_AND(reg, ~0x40);
 }
 
 void ChoiceWindow::uploadBg() {

@@ -34,7 +34,14 @@ that involves and the choice still open.
 The game runs natively as a 32-bit Linux program: title screen with the 3D town demo, touch to start, the intro
 (Kapp'n's taxi, name entry), with sound, and melonDS's renderer drawing both screens (decision 2026-10-05: reuse
 melonDS's hardware code for now, replace it with our own once everything works; the goal is a fully native port,
-so sound was done natively right away). It holds 60 fps paced (about 95 fps unpaced in the title's 3D scene).
+so sound was done natively right away). It holds 60 fps paced (160-200 fps unpaced).
+
+Register accesses are explicit: the game's sources access hardware registers only through `IO_R` / `IO_W` /
+`IO_OR` ... (`include/nitro/io_access.h`; rewritten by `tools/host_io_rewrite.py`), which are the plain volatile
+accesses on the DS (the matching build is unchanged) and calls to `HostIo_Read` / `HostIo_Write` (hw.c) on the
+host. Nothing traps in normal play any more (`ACWW_IOHIST` lists any access that still does); the fault handler
+stays as a safety net on Linux. This is the first step toward macOS / 64-bit hosts (plan: register calls,
+portable threads, 64-bit-clean game code, own renderer).
 
 Build: `python3 tools/configure_host.py && ninja -f build_host.ninja` (needs the 32-bit sysroot, SDL2 headers for the
 viewer, and a melonDS tree patched with `tools/host/melonds.patch` and built for 32-bit x86 in `build-core32`; see
@@ -89,6 +96,9 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 - Pointers in 26-bit PXI messages: host data addresses are reconstructed.
 - Reading through NULL is harmless on the DS (address 0 is mapped) but not on the host.
 - Code that ran over one variable into the next (a clear spanning two arrays) needs the original order or a fix.
+- Integer division by zero: the DS's division routine (`_s32_div_f`) gives the dividend as the quotient and 0 as
+  the remainder; x86 traps (hw.c gives the DS's result and reports the site), arm64 gives 0. The game does it (e.g.
+  `spl_scl_in_out` at the end of a particle animation).
 
 Not done yet: resetting an overlay's data when it is loaded again. The game reaches each scene later (in frames)
 than on the DS: the title at about frame 1500 instead of 900 (virtual time passes in waits that the DS doesn't

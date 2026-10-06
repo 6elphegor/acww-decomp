@@ -1,4 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -40,8 +41,8 @@ void OS_InitLock(void) {
         volatile u32 zero = 0;
         MIi_CpuClear32(zero, (void *)0x027fffc0, 0x28);
     }
-    *(volatile u16 *)0x04000204 |= 0x800;
-    *(volatile u16 *)0x04000204 |= 0x80;
+    IO_OR((volatile u16 *)0x04000204, 0x800);
+    IO_OR((volatile u16 *)0x04000204, 0x80);
     OS_UnlockByWord(0x7e, (void *)0x027ffff0, 0);
     OS_LockByWord(0x7f, (void *)0x027ffff0, 0);
 }
@@ -125,12 +126,12 @@ s32 OS_TryLockCartridge(u32 lockID) {
 
 // OSi_FreeCartridgeBus (EXMEMCNT &= ~0x80)
 void OSi_AllocateCartridgeBus(void) {
-    *(volatile u16 *)0x04000204 &= ~0x80;
+    IO_AND((volatile u16 *)0x04000204, ~0x80);
 }
 
 // OSi_AllocateCartridgeBus (EXMEMCNT |= 0x80)
 void OSi_FreeCartridgeBus(void) {
-    *(volatile u16 *)0x04000204 |= 0x80;
+    IO_OR((volatile u16 *)0x04000204, 0x80);
 }
 
 // OS_LockCard
@@ -145,12 +146,12 @@ void OS_UnlockCard(u32 lockID) {
 
 // OSi_FreeCardBus (EXMEMCNT &= ~0x800)
 void OSi_AllocateCardBus(void) {
-    *(volatile u16 *)0x04000204 &= ~0x800;
+    IO_AND((volatile u16 *)0x04000204, ~0x800);
 }
 
 // OSi_AllocateCardBus (EXMEMCNT |= 0x800)
 void OSi_FreeCardBus(void) {
-    *(volatile u16 *)0x04000204 |= 0x800;
+    IO_OR((volatile u16 *)0x04000204, 0x800);
 }
 
 // returns the owner id halfword (+4) of a lock word

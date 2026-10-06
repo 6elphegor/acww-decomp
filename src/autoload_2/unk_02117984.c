@@ -3,6 +3,7 @@
 // 0x02117984-0x02117e8c. ARM code, mwcc 1.2/base, -O4,p.
 // (The former unit 0x02116c0c-0x02117e8c, split into its files by their bss and rodata.)
 // PXI_InitFifo (PXI_Init) is outside this unit; it is only called (tail call) from PXI_Init.
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -175,16 +176,16 @@ s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err) {
     m.b.tag = tag;
     m.b.err = err;
     m.b.data = data;
-    if (reg_IPCFIFOCNT & 0x4000) {
-        reg_IPCFIFOCNT |= 0xc000;
+    if (IO_R(&reg_IPCFIFOCNT) & 0x4000) {
+        IO_OR(&reg_IPCFIFOCNT, 0xc000);
         return -1;
     }
     e = OS_DisableInterrupts();
-    if (reg_IPCFIFOCNT & 2) {
+    if (IO_R(&reg_IPCFIFOCNT) & 2) {
         OS_RestoreInterrupts(e);
         return -2;
     }
-    reg_IPCFIFOSEND = m.raw;
+    IO_W(&reg_IPCFIFOSEND, m.raw);
     OS_RestoreInterrupts(e);
     return 0;
 }

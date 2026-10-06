@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/WfcConfigSlot.h"
 #include "nitro/gxoam.h"
+#include "nitro/io_access.h"
 
 #pragma thumb off
 
@@ -253,10 +254,10 @@ extern "C" void WfcManualSetup_LoadBg() {
     lc = *(WfcManualSetupPalettePathCopy *)data_ov001_0222b060;
     ld = *(WfcManualSetupPalette2PathCopy *)data_ov001_0222b078;
     {
-        u32 t = *(volatile u16 *)0x400000c;
+        u32 t = IO_R((volatile u16 *)0x400000c);
         t &= 0x43;
         t |= 0xe18;
-        *(volatile u16 *)0x400000c = t;
+        IO_W((volatile u16 *)0x400000c, t);
     }
     WfcUtil_LoadFileTo((void *)"char/ybObjKb.ncl.l", (void *)GX_LoadOBJPltt);
     WfcUtil_LoadFileTo((void *)"char/jbBgStep2.ncg.l", (void *)GX_LoadBG3Char);
@@ -546,9 +547,9 @@ extern "C" void WfcManualSetup_Exit() {
     WfcUtil_LoadFileTo((void *)"char/ybObjMain.ncl.l", (void *)GX_LoadOBJPltt);
     WfcGx_HidePlanes(1, 1);
     WfcGx_HidePlanes(0, 0x1d);
-    *(volatile u32 *)0x4000010 = 0;
-    *(volatile u32 *)0x4000018 = 0;
-    *(volatile u16 *)0x400000c = (*(volatile u16 *)0x400000c & 0x43) | 0xe10;
+    IO_W((volatile u32 *)0x4000010, 0);
+    IO_W((volatile u32 *)0x4000018, 0);
+    IO_W((volatile u16 *)0x400000c, (IO_R((volatile u16 *)0x400000c) & 0x43) | 0xe10);
     u32 t = sWfcManualSetup->selectedItem;
     switch (t) {
     case 0:
@@ -971,8 +972,8 @@ extern "C" void WfcManualSetup_ScrollBgTask() {
     q = FX_DivS32(sWfcManualSetupScroll, 0x1d);
     r = FX_ModS32(sWfcManualSetupScroll, 0x1d);
     ip = r - 0x33;
-    *(volatile u32 *)0x4000010 = 0x1ff0000 & (ip << 16);
-    *(volatile u32 *)0x4000018 = 0x1ff0000 & ((ip + data_ov001_0222a0d8[q]) << 16);
+    IO_W((volatile u32 *)0x4000010, 0x1ff0000 & (ip << 16));
+    IO_W((volatile u32 *)0x4000018, 0x1ff0000 & ((ip + data_ov001_0222a0d8[q]) << 16));
     sWfcManualSetup->bgScrollPending = 0;
 }
 

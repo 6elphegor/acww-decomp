@@ -10,6 +10,7 @@
 #include "gfx/SplTex.h"
 #include "gfx/SplViews.h"
 #include "gfx/SplNode.h"
+#include "nitro/io_access.h"
 
 
 
@@ -73,7 +74,7 @@ static inline s32 FxMul(s32 a, s32 b) {
 }
 
 static inline u32 G3_PolygonAttr(u32 light, u32 mode, u32 cull, u32 id, u32 alpha, u32 misc) {
-    return *(volatile u32 *)0x040004a4 = light | (mode << 4) | (cull << 6) | (id << 24) | (alpha << 16) | (misc << 8);
+    return IO_W((volatile u32 *)0x040004a4, light | (mode << 4) | (cull << 6) | (id << 24) | (alpha << 16) | (misc << 8));
 }
 
 extern "C" {
@@ -83,9 +84,9 @@ void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb);
 
 
 static inline void G3_Translate(s32 x, s32 y, s32 z) {
-    *(volatile u32 *)0x04000470 = x;
-    *(volatile u32 *)0x04000470 = y;
-    *(volatile u32 *)0x04000470 = z;
+    IO_W((volatile u32 *)0x04000470, x);
+    IO_W((volatile u32 *)0x04000470, y);
+    IO_W((volatile u32 *)0x04000470, z);
 }
 
 extern "C" void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb) {
@@ -132,7 +133,7 @@ extern "C" void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb) {
         v.y = p->w12 + p->w60 - m->cur->res->p0->w8;
         v.z = p->w16 + p->w64 - m->cur->res->p0->w12;
         r = cb(&v, v);
-        *(volatile u32 *)0x04000454 = 0;
+        IO_W((volatile u32 *)0x04000454, 0);
         G3_Translate(m->cur->res->p0->w4, m->cur->res->p0->w8, m->cur->res->p0->w12);
         G3_MultMtx43((Mt *)m->mt);
     }
@@ -146,7 +147,7 @@ extern "C" void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb) {
     {
         s32 dd = m->cur->h90;
         s32 cc = p->h54;
-        *(volatile u32 *)0x04000480 = (u16)((((cc & 0x1f) * (dd & 0x1f)) >> 5) | (((cc & 0x3e0) * (dd & 0x3e0)) >> 15 << 5) | (((cc & 0x7c00) * (dd & 0x7c00)) >> 25 << 10));
+        IO_W((volatile u32 *)0x04000480, (u16)((((cc & 0x1f) * (dd & 0x1f)) >> 5) | (((cc & 0x3e0) * (dd & 0x3e0)) >> 15 << 5) | (((cc & 0x7c00) * (dd & 0x7c00)) >> 25 << 10)));
     }
     data_0213bb94[m->cur->res->p0->k19](m->cur->s96, m->cur->s98, m->cur->res->p0->s76, m->cur->res->p0->s78);
 }
@@ -195,7 +196,7 @@ extern "C" void spl_draw_chld_pol(Mg2 *m, Nd *p, PosCb cb) {
         v.y = p->w12 + p->w60 - m->cur->res->p0->w8;
         v.z = p->w16 + p->w64 - m->cur->res->p0->w12;
         r = cb(&v, v);
-        *(volatile u32 *)0x04000454 = 0;
+        IO_W((volatile u32 *)0x04000454, 0);
         G3_Translate(m->cur->res->p0->w4, m->cur->res->p0->w8, m->cur->res->p0->w12);
         G3_MultMtx43((Mt *)m->mt);
     }
@@ -209,7 +210,7 @@ extern "C" void spl_draw_chld_pol(Mg2 *m, Nd *p, PosCb cb) {
     {
         s32 dd = m->cur->h90;
         s32 cc = p->h54;
-        *(volatile u32 *)0x04000480 = (u16)((((cc & 0x1f) * (dd & 0x1f)) >> 5) | (((cc & 0x3e0) * (dd & 0x3e0)) >> 15 << 5) | (((cc & 0x7c00) * (dd & 0x7c00)) >> 25 << 10));
+        IO_W((volatile u32 *)0x04000480, (u16)((((cc & 0x1f) * (dd & 0x1f)) >> 5) | (((cc & 0x3e0) * (dd & 0x3e0)) >> 15 << 5) | (((cc & 0x7c00) * (dd & 0x7c00)) >> 25 << 10)));
     }
     data_0213bb94[m->cur->res->p14->k11](m->cur->s100, m->cur->s102, 0, 0);
 }

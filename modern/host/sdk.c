@@ -28,19 +28,46 @@ void OS_SetProtectionRegion2(u32 v) { (void)v; }
 void OS_EnableDTCM(void) {}
 u32 OS_GetDTCMAddress(void) { return 0x027e0000; }
 
-// ---- MI: fills and copies (sizes in bytes; the 16/32-bit versions move whole units)
-void MIi_CpuClear16(u32 v, void *dst, u32 n) { u16 *d = dst; for (n /= 2; n--;) *d++ = (u16)v; }
-void MIi_CpuCopy16(const void *src, void *dst, u32 n) { const volatile u16 *s = src; volatile u16 *d = dst; for (n /= 2; n--;) *d++ = *s++; }
-void MIi_CpuClear32(u32 v, void *dst, u32 n) { volatile u32 *d = dst; for (n /= 4; n--;) *d++ = v; }
-void MIi_CpuCopy32(const void *src, void *dst, u32 n) { const volatile u32 *s = src; volatile u32 *d = dst; for (n /= 4; n--;) *d++ = *s++; }
-void host_io_store32(u32 a, u32 v);
-void MIi_CpuSend32(const void *src, volatile void *dst, u32 n) {
-    const u32 *s = src;
-    u32 a = (u32)(uintptr_t)dst;
-    if (a >= 0x04000000 && a < 0x05000000) {  // a register (the 3D command FIFO): straight to its handler
-        for (n /= 4; n--;) host_io_store32(a, *s++);
-        return;
+// ---- MI: fills and copies (sizes in bytes; the 16/32-bit versions move whole units). A register on either side
+// (the 3D command FIFO, the matrix results, a DMA's registers) goes through the register model, unit by unit.
+unsigned long long HostIo_Read(unsigned int addr, unsigned int size);
+unsigned long long HostIo_Write(unsigned int addr, unsigned int size, unsigned long long value);
+static int is_reg(const volatile void *p) { u32 a = (u32)(uintptr_t)p; return a >= 0x04000000 && a < 0x05000000; }
+static void units(const volatile void *src, volatile void *dst, u32 n, u32 size, int fill, u32 v, int fixed_dst) {
+    u32 s = (u32)(uintptr_t)src, d = (u32)(uintptr_t)dst;
+    for (n /= size; n--; d += fixed_dst ? 0 : size) {
+        u32 x = fill ? v : is_reg(src) ? (u32)HostIo_Read(s, size) : size == 2 ? *(const volatile u16 *)(uintptr_t)s : *(const volatile u32 *)(uintptr_t)s;
+        if (!fill) s += size;
+        if (is_reg(dst)) HostIo_Write(d, size, x);
+        else if (size == 2) *(volatile u16 *)(uintptr_t)d = (u16)x;
+        else *(volatile u32 *)(uintptr_t)d = x;
     }
+}
+void MIi_CpuClear16(u32 v, void *dst, u32 n) {
+    if (is_reg(dst)) { units(0, dst, n, 2, 1, v, 0); return; }
+    u16 *d = dst;
+    for (n /= 2; n--;) *d++ = (u16)v;
+}
+void MIi_CpuCopy16(const void *src, void *dst, u32 n) {
+    if (is_reg(src) || is_reg(dst)) { units(src, dst, n, 2, 0, 0, 0); return; }
+    const u16 *s = src;
+    u16 *d = dst;
+    for (n /= 2; n--;) *d++ = *s++;
+}
+void MIi_CpuClear32(u32 v, void *dst, u32 n) {
+    if (is_reg(dst)) { units(0, dst, n, 4, 1, v, 0); return; }
+    u32 *d = dst;
+    for (n /= 4; n--;) *d++ = v;
+}
+void MIi_CpuCopy32(const void *src, void *dst, u32 n) {
+    if (is_reg(src) || is_reg(dst)) { units(src, dst, n, 4, 0, 0, 0); return; }
+    const u32 *s = src;
+    u32 *d = dst;
+    for (n /= 4; n--;) *d++ = *s++;
+}
+void MIi_CpuSend32(const void *src, volatile void *dst, u32 n) {
+    if (is_reg(dst)) { units(src, dst, n, 4, 0, 0, 1); return; }  // the 3D command FIFO: every word to one port
+    const u32 *s = src;
     volatile u32 *d = dst;
     for (n /= 4; n--;) *d = *s++;
 }

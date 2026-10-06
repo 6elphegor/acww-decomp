@@ -7,6 +7,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef int s32;
 
 // user data block in the shared area (0x027ffc80)
@@ -68,7 +69,7 @@ void OSi_SetTimer(OSAlarm *alarm) {
     s64 delta;
     u16 cnt;
     u64 tick = OS_GetTick();
-    reg_OS_TM1CNT_H = 0;
+    IO_W(&reg_OS_TM1CNT_H, 0);
     delta = (s64)(alarm->fire - tick);
     OSi_EnterTimerCallback(1, OSi_AlarmHandler, 0);
     cnt = 0;
@@ -77,8 +78,8 @@ void OSi_SetTimer(OSAlarm *alarm) {
     } else if (delta < 0x10000) {
         cnt = (u16)~delta;
     }
-    reg_OS_TM1CNT_L = cnt;
-    reg_OS_TM1CNT_H = 0xc1;
+    IO_W(&reg_OS_TM1CNT_L, cnt);
+    IO_W(&reg_OS_TM1CNT_H, 0xc1);
     OS_EnableIrqMask(0x10);
 }
 
@@ -189,7 +190,7 @@ void OSi_ArrangeTimer(void) {
     u64 tick;
     OSAlarm *next;
     u32 *dtcm = (u32 *)0x027e0000;
-    reg_OS_TM1CNT_H = 0;
+    IO_W(&reg_OS_TM1CNT_H, 0);
     OS_DisableIrqMask(0x10);
     dtcm[0x3ff8 / 4] |= 0x10;
     tick = OS_GetTick();

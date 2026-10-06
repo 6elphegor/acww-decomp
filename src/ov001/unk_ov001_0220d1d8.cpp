@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 struct SimpleStartStatus {
     s32 v[3];
@@ -113,9 +114,9 @@ void WfcBoot_Enter() {
     }
     volatile u16 *r1 = (volatile u16 *)0x400100a;
     volatile u16 *r2 = (volatile u16 *)0x400000a;
-    *r1 = (*r1 & ~3) | 3;
-    *r2 = (*r2 & ~3) | 3;
-    *r2 = (*r2 & ~3) | 3;
+    IO_W(r1, (IO_R(r1) & ~3) | 3);
+    IO_W(r2, (IO_R(r2) & ~3) | 3);
+    IO_W(r2, (IO_R(r2) & ~3) | 3);
     WfcGx_ShowPlanes(1, 2);
     WfcGx_ShowPlanes(0, 2);
     WfcUtil_SetScene((void *)WfcBoot_FadeIn);

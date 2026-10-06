@@ -7,6 +7,7 @@
 #include "sys/SceneBase.h"
 #include "save/TownId.h"
 #include "sys/ProcProfile.h"
+#include "nitro/io_access.h"
 
 
 
@@ -1636,10 +1637,10 @@ extern "C" void SceneBase_SetupGraphics(void) {
     GX_SetBankForBGExtPltt(0x40);
     GX_SetBankForTex(6);
     GX_SetBankForTexPltt(0x10);
-    *(volatile u32 *)0x40004c8 = 0x20000000;
-    *(volatile u32 *)0x40004cc = 0x7fff;
-    *(volatile u32 *)0x40004c0 = 0x7fff;
-    *(volatile u32 *)0x40004c4 = 0;
+    IO_W((volatile u32 *)0x40004c8, 0x20000000);
+    IO_W((volatile u32 *)0x40004cc, 0x7fff);
+    IO_W((volatile u32 *)0x40004c0, 0x7fff);
+    IO_W((volatile u32 *)0x40004c4, 0);
     Gfx3d_InitEngine();
 }
 

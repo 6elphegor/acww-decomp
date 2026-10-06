@@ -29,6 +29,7 @@
 #include "ui/TalkArrow.h"
 #include "nitro/fs.h"
 #include "net/CommManager.h"
+#include "nitro/io_access.h"
 
 class MsgRequest;
 class MsgString;
@@ -3255,9 +3256,9 @@ extern "C" void TalkFrame_FreeBuffers(TalkFrame *p)
 extern "C" void TalkFrame_SetupBgControl()
 {
     volatile u16 *r = (volatile u16 *)0x400000c;
-    *r = (*r & ~3) | 1;
-    *r = (*r & 0x43) | 0x600;
-    *r = *r & ~0x40;
+    IO_W(r, (IO_R(r) & ~3) | 1);
+    IO_W(r, (IO_R(r) & 0x43) | 0x600);
+    IO_W(r, IO_R(r) & ~0x40);
     Gfx2d_SetMainWin0Planes(0x1f);
     Gfx2d_SetMainWinOutPlanes(0x1b);
 }

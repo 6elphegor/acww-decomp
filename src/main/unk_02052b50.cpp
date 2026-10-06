@@ -1,6 +1,7 @@
 #include "types.h"
 #include "sys/RecordFile.h"
 #include "game/InfoTableSet.h"
+#include "nitro/io_access.h"
 
 extern "C" {
 extern u32 data_0213bfec;
@@ -106,24 +107,24 @@ void Gfx_ResetDisplayRegs()
 {
     volatile u16 *r = (volatile u16 *)0x4000000;
     u8 *b = (u8 *)r;
-    *(volatile u16 *)(b + 0x304) |= 0x820e;
+    IO_OR((volatile u16 *)(b + 0x304), 0x820e);
     Gfx_DisableAllBanks();
-    *(volatile u32 *)b = *(volatile u32 *)b & 0xf000f;
+    IO_W((volatile u32 *)b, IO_R((volatile u32 *)b) & 0xf000f);
     MI_DmaFill32(data_0213bfec, b + 8, 0, 0x48);
     MI_DmaFill32(data_0213bfec, b + 0x60, 0, 8);
-    *(volatile u16 *)(b + 0x6c) = 0;
-    *(volatile u32 *)(b + 0x1000) = *(volatile u32 *)(b + 0x1000) & 0x10000;
+    IO_W((volatile u16 *)(b + 0x6c), 0);
+    IO_W((volatile u32 *)(b + 0x1000), IO_R((volatile u32 *)(b + 0x1000)) & 0x10000);
     MI_DmaFill32(data_0213bfec, b + 0x1008, 0, 0x48);
-    *(volatile u16 *)(b + 0x106c) = 0;
+    IO_W((volatile u16 *)(b + 0x106c), 0);
     u16 v = 0x100;
-    *(volatile u16 *)(b + 0x20) = v;
-    *(volatile u16 *)(b + 0x26) = v;
-    *(volatile u16 *)(b + 0x30) = v;
-    *(volatile u16 *)(b + 0x36) = v;
-    *(volatile u16 *)(b + 0x1020) = v;
-    *(volatile u16 *)(b + 0x1026) = v;
-    *(volatile u16 *)(b + 0x1030) = v;
-    *(volatile u16 *)(b + 0x1036) = v;
+    IO_W((volatile u16 *)(b + 0x20), v);
+    IO_W((volatile u16 *)(b + 0x26), v);
+    IO_W((volatile u16 *)(b + 0x30), v);
+    IO_W((volatile u16 *)(b + 0x36), v);
+    IO_W((volatile u16 *)(b + 0x1020), v);
+    IO_W((volatile u16 *)(b + 0x1026), v);
+    IO_W((volatile u16 *)(b + 0x1030), v);
+    IO_W((volatile u16 *)(b + 0x1036), v);
 }
 
 }

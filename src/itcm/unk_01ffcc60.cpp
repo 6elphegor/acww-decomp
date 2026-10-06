@@ -2,6 +2,7 @@
 // I004b: itcm 0x01ffcc60-0x01ffcd50 (3 ARM functions): the vblank work callback, the window-edge animation step and an empty
 // function. mwcc 1.2/base, C++, ARM, -O4,p. The two H-blank handlers behind it (0x01ffcd50, 0x01ffceb8) are UNMATCHED, see notes.txt.
 #include "types.h"
+#include "nitro/io_access.h"
 
 extern "C" {
 extern s32 sVBlankCount;
@@ -28,8 +29,8 @@ extern "C" void MenuScreen_WipeHBlank(void) {
     u32 w = sMenuWipeEdge[j];
     vu16 *reg = (vu16 *)0x04000000;
     u32 v = ((w << 8) & 0xff00) | 0xff;
-    if (reg[2] & 2) {
-        reg[0x21] = v;
+    if (IO_R(&reg[2]) & 2) {
+        IO_W(&reg[0x21], v);
     }
     i++;
     if (i >= 48) {

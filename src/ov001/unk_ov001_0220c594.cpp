@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 struct WfcParamBits {
     u32 startMode : 4;
@@ -127,10 +128,10 @@ s32 WfcUtil_CheckParams(s32 a, u32 b) {
 
 void WfcUtil_InitSystem() {
     volatile u16 *ime = (volatile u16 *)0x4000208;
-    u16 old = *ime;
-    *ime = 0;
+    u16 old = IO_R(ime);
+    IO_W(ime, 0);
     GX_DispOff();
-    *(volatile u32 *)0x4001000 &= ~0x10000;
+    IO_AND((volatile u32 *)0x4001000, ~0x10000);
     if (OS_IsTickAvailable() == 0) Fatal_Trap();
     if (OS_IsAlarmAvailable() == 0) Fatal_Trap();
     GX_VBlankIntr(0);
@@ -139,7 +140,7 @@ void WfcUtil_InitSystem() {
     TP_Init();
     RTC_Init();
     GX_DispOff();
-    *(volatile u32 *)0x4001000 &= ~0x10000;
+    IO_AND((volatile u32 *)0x4001000, ~0x10000);
     WfcGx_SaveVramBanks();
     WfcHeap_Init(sWfcWorkArea);
     WfcIrq_Init();
@@ -157,56 +158,56 @@ void WfcUtil_InitDisplay() {
     GX_SetBankForBG(1);
     GX_SetBankForOBJ(2);
     GX_SetGraphicsMode(1, 0, 0);
-    *(volatile u32 *)0x4000000 &= ~0x1f00;
-    *(volatile u32 *)0x4000000 &= ~0xe000;
+    IO_AND((volatile u32 *)0x4000000, ~0x1f00);
+    IO_AND((volatile u32 *)0x4000000, ~0xe000);
     GXx_SetMasterBrightness_(0x400006c, 0);
-    *(volatile u32 *)0x4000000 = (*(volatile u32 *)0x4000000 & 0xffcfffef) | 0x200010;
-    *(volatile u16 *)0x4000008 &= ~0x40;
-    *(volatile u16 *)0x400000a &= ~0x40;
-    *(volatile u16 *)0x400000c &= ~0x40;
-    *(volatile u16 *)0x400000e &= ~0x40;
-    *(volatile u32 *)0x4000010 = 0;
-    *(volatile u32 *)0x4000014 = 0;
-    *(volatile u32 *)0x4000018 = 0;
-    *(volatile u32 *)0x400001c = 0;
+    IO_W((volatile u32 *)0x4000000, (IO_R((volatile u32 *)0x4000000) & 0xffcfffef) | 0x200010);
+    IO_AND((volatile u16 *)0x4000008, ~0x40);
+    IO_AND((volatile u16 *)0x400000a, ~0x40);
+    IO_AND((volatile u16 *)0x400000c, ~0x40);
+    IO_AND((volatile u16 *)0x400000e, ~0x40);
+    IO_W((volatile u32 *)0x4000010, 0);
+    IO_W((volatile u32 *)0x4000014, 0);
+    IO_W((volatile u32 *)0x4000018, 0);
+    IO_W((volatile u32 *)0x400001c, 0);
     G2x_SetBlendBrightness_(0x4000050, 0x3f, 0x10);
     GX_SetBankForSubBG(0x80);
     GX_SetBankForSubOBJ(0x100);
     GXS_SetGraphicsMode(0);
-    *(volatile u32 *)0x4001000 &= ~0x1f00;
-    *(volatile u32 *)0x4001000 &= ~0xe000;
+    IO_AND((volatile u32 *)0x4001000, ~0x1f00);
+    IO_AND((volatile u32 *)0x4001000, ~0xe000);
     GXx_SetMasterBrightness_(0x400106c, 0);
-    *(volatile u32 *)0x4001000 = (*(volatile u32 *)0x4001000 & 0xffcfffef) | 0x10;
-    *(volatile u16 *)0x4001008 &= ~0x40;
-    *(volatile u16 *)0x400100a &= ~0x40;
-    *(volatile u16 *)0x400100c &= ~0x40;
-    *(volatile u16 *)0x400100e &= ~0x40;
-    *(volatile u32 *)0x4001010 = 0;
-    *(volatile u32 *)0x4001014 = 0;
-    *(volatile u32 *)0x4001018 = 0;
-    *(volatile u32 *)0x400101c = 0;
+    IO_W((volatile u32 *)0x4001000, (IO_R((volatile u32 *)0x4001000) & 0xffcfffef) | 0x10);
+    IO_AND((volatile u16 *)0x4001008, ~0x40);
+    IO_AND((volatile u16 *)0x400100a, ~0x40);
+    IO_AND((volatile u16 *)0x400100c, ~0x40);
+    IO_AND((volatile u16 *)0x400100e, ~0x40);
+    IO_W((volatile u32 *)0x4001010, 0);
+    IO_W((volatile u32 *)0x4001014, 0);
+    IO_W((volatile u32 *)0x4001018, 0);
+    IO_W((volatile u32 *)0x400101c, 0);
     G2x_SetBlendBrightness_(0x4001050, 0x3f, 0x10);
-    *(volatile u16 *)0x4000008 = (*(volatile u16 *)0x4000008 & 0x43) | 0xc00;
-    *(volatile u16 *)0x400000a = (*(volatile u16 *)0x400000a & 0x43) | 0xd08;
-    *(volatile u16 *)0x400000c = (*(volatile u16 *)0x400000c & 0x43) | 0xe10;
-    *(volatile u16 *)0x400000e = (*(volatile u16 *)0x400000e & 0x43) | 0xf10;
-    *(volatile u16 *)0x4001008 = (*(volatile u16 *)0x4001008 & 0x43) | 0xc00;
-    *(volatile u16 *)0x400100a = (*(volatile u16 *)0x400100a & 0x43) | 0xd00;
-    *(volatile u16 *)0x400100c = (*(volatile u16 *)0x400100c & 0x43) | 0xe00;
-    *(volatile u16 *)0x400100e = (*(volatile u16 *)0x400100e & 0x43) | 0xf00;
-    *(volatile u16 *)0x4000304 &= ~0x8000;
+    IO_W((volatile u16 *)0x4000008, (IO_R((volatile u16 *)0x4000008) & 0x43) | 0xc00);
+    IO_W((volatile u16 *)0x400000a, (IO_R((volatile u16 *)0x400000a) & 0x43) | 0xd08);
+    IO_W((volatile u16 *)0x400000c, (IO_R((volatile u16 *)0x400000c) & 0x43) | 0xe10);
+    IO_W((volatile u16 *)0x400000e, (IO_R((volatile u16 *)0x400000e) & 0x43) | 0xf10);
+    IO_W((volatile u16 *)0x4001008, (IO_R((volatile u16 *)0x4001008) & 0x43) | 0xc00);
+    IO_W((volatile u16 *)0x400100a, (IO_R((volatile u16 *)0x400100a) & 0x43) | 0xd00);
+    IO_W((volatile u16 *)0x400100c, (IO_R((volatile u16 *)0x400100c) & 0x43) | 0xe00);
+    IO_W((volatile u16 *)0x400100e, (IO_R((volatile u16 *)0x400100e) & 0x43) | 0xf00);
+    IO_AND((volatile u16 *)0x4000304, ~0x8000);
     WfcText_Init();
     WfcOam_Init();
     WfcVram_Init();
     WfcObj_Init();
     GX_DispOn();
-    *(volatile u32 *)0x4001000 |= 0x10000;
+    IO_OR((volatile u32 *)0x4001000, 0x10000);
     GX_VBlankIntr(1);
 }
 
 void WfcUtil_Shutdown() {
     GX_DispOff();
-    *(volatile u32 *)0x4001000 &= ~0x10000;
+    IO_AND((volatile u32 *)0x4001000, ~0x10000);
     WfcUtil_RestoreLed();
     WfcInput_Shutdown();
     WfcIrq_Restore();

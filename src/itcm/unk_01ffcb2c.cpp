@@ -5,6 +5,7 @@
 #include "town/TownBlockCell.h"
 #include "gfx/Camera.h"
 #include "gfx/HBlankTask.h"
+#include "nitro/io_access.h"
 
 struct Chunk {
     /* 0x00 */ u8 *attrs;
@@ -49,7 +50,7 @@ static inline Chunk *At(s32 x, s32 z) {
 }
 
 extern "C" void HBlank_Handler(void) {
-    if (*(vu16 *)0x04000006 < 192) {
+    if (IO_R((vu16 *)0x04000006) < 192) {
         HBlankTask *n = sHBlankListHead;
         if (n != 0) {
             do {

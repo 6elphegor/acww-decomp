@@ -5,6 +5,7 @@
 #include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcProfile.h"
+#include "nitro/io_access.h"
 
 
 class EventAnnouncer : public GameProc {
@@ -147,15 +148,15 @@ static inline void Unk_02041104_Fill(u16 v, u32 dst, u32 size) {
 extern "C" void ScreenTransition_ShowCover() {
     volatile u16 *r;
     r = (volatile u16 *)0x400000c;
-    *r &= ~3;
-    *r = (*r & 0x43) | 0x600;
+    IO_AND(r, ~3);
+    IO_W(r, (IO_R(r) & 0x43) | 0x600);
     Unk_02041104_Fill(0, G2_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000000, 4);
     Gfx2d_ShowMainPlanes(4);
     r = (volatile u16 *)0x400100c;
-    *r &= ~3;
-    *r = (*r & 0x43) | 0xe04;
+    IO_AND(r, ~3);
+    IO_W(r, (IO_R(r) & 0x43) | 0xe04);
     Unk_02041104_Fill(0, G2S_GetBG2ScrPtr(), 0x800);
     Unk_02041104_Fill(0x1111, G2S_GetBG2CharPtr(), 0x20);
     Unk_02041104_Fill(0x8000, 0x5000400, 4);

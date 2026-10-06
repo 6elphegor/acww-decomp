@@ -8,6 +8,7 @@
 #include "gfx/SplViews.h"
 #include "gfx/SplPt.h"
 #include "gfx/SplNode.h"
+#include "nitro/io_access.h"
 
 
 
@@ -72,7 +73,7 @@ static inline s32 FxMul(s32 a, s32 b) {
 }
 
 static inline u32 G3_PolygonAttr(u32 light, u32 mode, u32 cull, u32 id, u32 alpha, u32 misc) {
-    return *(volatile u32 *)0x040004a4 = light | (mode << 4) | (cull << 6) | (id << 24) | (alpha << 16) | (misc << 8);
+    return IO_W((volatile u32 *)0x040004a4, light | (mode << 4) | (cull << 6) | (id << 24) | (alpha << 16) | (misc << 8));
 }
 
 extern "C" {
@@ -91,28 +92,28 @@ typedef void (*DrawFn)(Mc *, Node *, u32);
 
 
 static inline void G3_TexImageParam(u32 fmt, u32 texgen, u32 s, u32 t, u32 rep, u32 flip, u32 c0, u32 addr) {
-    *(volatile u32 *)0x040004a8 = (addr >> 3) | (fmt << 26) | (texgen << 30) | (s << 20) | (t << 23) | (rep << 16) | (flip << 18) | (c0 << 29);
+    IO_W((volatile u32 *)0x040004a8, (addr >> 3) | (fmt << 26) | (texgen << 30) | (s << 20) | (t << 23) | (rep << 16) | (flip << 18) | (c0 << 29));
 }
 static inline void G3_TexPlttBase(u32 addr, u32 fmt) {
-    *(volatile u32 *)0x040004ac = addr >> (4 - (fmt == 2 ? 1 : 0));
+    IO_W((volatile u32 *)0x040004ac, addr >> (4 - (fmt == 2 ? 1 : 0)));
 }
 static inline void G3_MtxMode(u32 m) {
-    *(volatile u32 *)0x04000440 = m;
+    IO_W((volatile u32 *)0x04000440, m);
 }
 static inline void G3_Identity(void) {
-    *(volatile u32 *)0x04000454 = 0;
+    IO_W((volatile u32 *)0x04000454, 0);
 }
 static inline void G3_Scale(s32 x, s32 y, s32 z) {
-    *(volatile u32 *)0x0400046c = x;
-    *(volatile u32 *)0x0400046c = y;
-    *(volatile u32 *)0x0400046c = z;
+    IO_W((volatile u32 *)0x0400046c, x);
+    IO_W((volatile u32 *)0x0400046c, y);
+    IO_W((volatile u32 *)0x0400046c, z);
 }
 
 
 static inline void G3_Translate(s32 x, s32 y, s32 z) {
-    *(volatile u32 *)0x04000470 = x;
-    *(volatile u32 *)0x04000470 = y;
-    *(volatile u32 *)0x04000470 = z;
+    IO_W((volatile u32 *)0x04000470, x);
+    IO_W((volatile u32 *)0x04000470, y);
+    IO_W((volatile u32 *)0x04000470, z);
 }
 
 

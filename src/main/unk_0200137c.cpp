@@ -2,6 +2,7 @@
 #include "sys/DebugText.h"
 #include "sys/OSThread.h"
 #include "sys/QNode.h"
+#include "nitro/io_access.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -630,25 +631,25 @@ extern "C" s32 Gfx2d_LoadCharRange(u8 *dst, u32 n, s32 a, s32 b, s32 c) {
 
 extern "C" void Gfx2d_SetLayerPriority(u32 n, u32 v) {
     switch (n) {
-    case 0: *(vu16 *)0x0400000a = (*(vu16 *)0x0400000a & ~3) | v; break;
-    case 1: *(vu16 *)0x0400000c = (*(vu16 *)0x0400000c & ~3) | v; break;
-    case 2: *(vu16 *)0x0400000e = (*(vu16 *)0x0400000e & ~3) | v; break;
-    case 3: *(vu16 *)0x04001008 = (*(vu16 *)0x04001008 & ~3) | v; break;
-    case 4: *(vu16 *)0x0400100a = (*(vu16 *)0x0400100a & ~3) | v; break;
-    case 5: *(vu16 *)0x0400100c = (*(vu16 *)0x0400100c & ~3) | v; break;
-    case 6: *(vu16 *)0x0400100e = (*(vu16 *)0x0400100e & ~3) | v; break;
+    case 0: IO_W((vu16 *)0x0400000a, (IO_R((vu16 *)0x0400000a) & ~3) | v); break;
+    case 1: IO_W((vu16 *)0x0400000c, (IO_R((vu16 *)0x0400000c) & ~3) | v); break;
+    case 2: IO_W((vu16 *)0x0400000e, (IO_R((vu16 *)0x0400000e) & ~3) | v); break;
+    case 3: IO_W((vu16 *)0x04001008, (IO_R((vu16 *)0x04001008) & ~3) | v); break;
+    case 4: IO_W((vu16 *)0x0400100a, (IO_R((vu16 *)0x0400100a) & ~3) | v); break;
+    case 5: IO_W((vu16 *)0x0400100c, (IO_R((vu16 *)0x0400100c) & ~3) | v); break;
+    case 6: IO_W((vu16 *)0x0400100e, (IO_R((vu16 *)0x0400100e) & ~3) | v); break;
     }
 }
 
 extern "C" void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c) {
     switch (n) {
-    case 0: *(vu16 *)0x0400000a = (c << 2) | ((b << 7) | ((*(vu16 *)0x0400000a & 0x43) | (a << 14)) | 0x500); break;
-    case 1: *(vu16 *)0x0400000c = (c << 2) | ((b << 7) | ((*(vu16 *)0x0400000c & 0x43) | (a << 14)) | 0x600); break;
-    case 2: *(vu16 *)0x0400000e = (c << 2) | ((b << 7) | ((*(vu16 *)0x0400000e & 0x43) | (a << 14)) | 0x700); break;
-    case 3: *(vu16 *)0x04001008 = (c << 2) | ((b << 7) | ((*(vu16 *)0x04001008 & 0x43) | (a << 14)) | 0xc00); break;
-    case 4: *(vu16 *)0x0400100a = (c << 2) | ((b << 7) | ((*(vu16 *)0x0400100a & 0x43) | (a << 14)) | 0xd00); break;
-    case 5: *(vu16 *)0x0400100c = (c << 2) | ((b << 7) | ((*(vu16 *)0x0400100c & 0x43) | (a << 14)) | 0xe00); break;
-    case 6: *(vu16 *)0x0400100e = (c << 2) | ((b << 7) | ((*(vu16 *)0x0400100e & 0x43) | (a << 14)) | 0xf00); break;
+    case 0: IO_W((vu16 *)0x0400000a, (c << 2) | ((b << 7) | ((IO_R((vu16 *)0x0400000a) & 0x43) | (a << 14)) | 0x500)); break;
+    case 1: IO_W((vu16 *)0x0400000c, (c << 2) | ((b << 7) | ((IO_R((vu16 *)0x0400000c) & 0x43) | (a << 14)) | 0x600)); break;
+    case 2: IO_W((vu16 *)0x0400000e, (c << 2) | ((b << 7) | ((IO_R((vu16 *)0x0400000e) & 0x43) | (a << 14)) | 0x700)); break;
+    case 3: IO_W((vu16 *)0x04001008, (c << 2) | ((b << 7) | ((IO_R((vu16 *)0x04001008) & 0x43) | (a << 14)) | 0xc00)); break;
+    case 4: IO_W((vu16 *)0x0400100a, (c << 2) | ((b << 7) | ((IO_R((vu16 *)0x0400100a) & 0x43) | (a << 14)) | 0xd00)); break;
+    case 5: IO_W((vu16 *)0x0400100c, (c << 2) | ((b << 7) | ((IO_R((vu16 *)0x0400100c) & 0x43) | (a << 14)) | 0xe00)); break;
+    case 6: IO_W((vu16 *)0x0400100e, (c << 2) | ((b << 7) | ((IO_R((vu16 *)0x0400100e) & 0x43) | (a << 14)) | 0xf00)); break;
     }
 }
 
@@ -841,34 +842,34 @@ extern "C" void Gfx2d_BeginFrame() {}
 extern "C" void Gfx2d_ApplyDisplayControl() {
     GX_SetGraphicsMode(1, sGfx2dDispCtrl.mainBgMode, 1);
     GXS_SetGraphicsMode(sGfx2dDispCtrl.subBgMode);
-    *(volatile u32*)0x4000000 = (*(volatile u32*)0x4000000 & 0xffffe0ff) | (sGfx2dDispCtrl.mainPlanes << 8);
-    *(volatile u32*)0x4001000 = (*(volatile u32*)0x4001000 & 0xffffe0ff) | (sGfx2dDispCtrl.subPlanes << 8);
-    *(volatile u32*)0x4000000 = (*(volatile u32*)0x4000000 & 0xffff1fff) | (sGfx2dDispCtrl.mainWindows << 13);
-    *(volatile u32*)0x4001000 = (*(volatile u32*)0x4001000 & 0xffff1fff) | (sGfx2dDispCtrl.subWindows << 13);
-    *(volatile u16*)0x400004a = (*(volatile u16*)0x400004a & ~0x3f) | sGfx2dDispCtrl.mainWinOutPlanes | 0x20;
-    *(volatile u16*)0x400104a = (*(volatile u16*)0x400104a & ~0x3f) | sGfx2dDispCtrl.subWinOutPlanes | 0x20;
-    *(volatile u16*)0x400004a = (*(volatile u16*)0x400004a & 0xffffc0ff) | (sGfx2dDispCtrl.mainObjWinPlanes << 8);
-    *(volatile u16*)0x400104a = (*(volatile u16*)0x400104a & 0xffffc0ff) | (sGfx2dDispCtrl.subObjWinPlanes << 8);
+    IO_W((volatile u32*)0x4000000, (IO_R((volatile u32*)0x4000000) & 0xffffe0ff) | (sGfx2dDispCtrl.mainPlanes << 8));
+    IO_W((volatile u32*)0x4001000, (IO_R((volatile u32*)0x4001000) & 0xffffe0ff) | (sGfx2dDispCtrl.subPlanes << 8));
+    IO_W((volatile u32*)0x4000000, (IO_R((volatile u32*)0x4000000) & 0xffff1fff) | (sGfx2dDispCtrl.mainWindows << 13));
+    IO_W((volatile u32*)0x4001000, (IO_R((volatile u32*)0x4001000) & 0xffff1fff) | (sGfx2dDispCtrl.subWindows << 13));
+    IO_W((volatile u16*)0x400004a, (IO_R((volatile u16*)0x400004a) & ~0x3f) | sGfx2dDispCtrl.mainWinOutPlanes | 0x20);
+    IO_W((volatile u16*)0x400104a, (IO_R((volatile u16*)0x400104a) & ~0x3f) | sGfx2dDispCtrl.subWinOutPlanes | 0x20);
+    IO_W((volatile u16*)0x400004a, (IO_R((volatile u16*)0x400004a) & 0xffffc0ff) | (sGfx2dDispCtrl.mainObjWinPlanes << 8));
+    IO_W((volatile u16*)0x400104a, (IO_R((volatile u16*)0x400104a) & 0xffffc0ff) | (sGfx2dDispCtrl.subObjWinPlanes << 8));
 }
 
 extern "C" void Gfx2d_FlushRegisters() {
     if (sGfx2dDispCtrl.offsetDirty != 0) {
         if (sGfx2dDispCtrl.offsetDirty & 1) {
-            if ((*(volatile u32*)0x4000000 & 8) == 0) {
-                *(volatile u32*)0x4000010 = (sGfx2dBgScroll.mainBg0OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg0OffsetY << 16) & 0x1ff0000);
+            if ((IO_R((volatile u32*)0x4000000) & 8) == 0) {
+                IO_W((volatile u32*)0x4000010, (sGfx2dBgScroll.mainBg0OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg0OffsetY << 16) & 0x1ff0000));
             } else {
                 G3X_SetHOffset(sGfx2dBgScroll.mainBg0OffsetX);
             }
         }
         if (sGfx2dDispCtrl.offsetDirty & 2) {
-            *(volatile u32*)0x4000014 = (sGfx2dBgScroll.mainBg1OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg1OffsetY << 16) & 0x1ff0000);
+            IO_W((volatile u32*)0x4000014, (sGfx2dBgScroll.mainBg1OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg1OffsetY << 16) & 0x1ff0000));
         }
         if (sGfx2dDispCtrl.offsetDirty & 4) {
             if (sGfx2dDispCtrl.affineMask & 1) {
                 G2x_SetBGyAffine_(0x4000020, (Gfx2dAffine *)&sGfx2dBgScroll.mainBg2Mtx, sGfx2dBgScroll.mainBg2CenterX, sGfx2dBgScroll.mainBg2CenterY,
                               sGfx2dBgScroll.mainBg2OffsetX, sGfx2dBgScroll.mainBg2OffsetY);
             } else {
-                *(volatile u32*)0x4000018 = (sGfx2dBgScroll.mainBg2OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg2OffsetY << 16) & 0x1ff0000);
+                IO_W((volatile u32*)0x4000018, (sGfx2dBgScroll.mainBg2OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg2OffsetY << 16) & 0x1ff0000));
             }
         }
         if (sGfx2dDispCtrl.offsetDirty & 8) {
@@ -876,21 +877,21 @@ extern "C" void Gfx2d_FlushRegisters() {
                 G2x_SetBGyAffine_(0x4000030, (Gfx2dAffine *)&sGfx2dBgScroll.mainBg3Mtx, sGfx2dBgScroll.mainBg3CenterX, sGfx2dBgScroll.mainBg3CenterY,
                               sGfx2dBgScroll.mainBg3OffsetX, sGfx2dBgScroll.mainBg3OffsetY);
             } else {
-                *(volatile u32*)0x400001c = (sGfx2dBgScroll.mainBg3OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg3OffsetY << 16) & 0x1ff0000);
+                IO_W((volatile u32*)0x400001c, (sGfx2dBgScroll.mainBg3OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg3OffsetY << 16) & 0x1ff0000));
             }
         }
         if (sGfx2dDispCtrl.offsetDirty & 0x10) {
-            *(volatile u32*)0x4001010 = (sGfx2dBgScroll.subBg0OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg0OffsetY << 16) & 0x1ff0000);
+            IO_W((volatile u32*)0x4001010, (sGfx2dBgScroll.subBg0OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg0OffsetY << 16) & 0x1ff0000));
         }
         if (sGfx2dDispCtrl.offsetDirty & 0x20) {
-            *(volatile u32*)0x4001014 = (sGfx2dBgScroll.subBg1OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg1OffsetY << 16) & 0x1ff0000);
+            IO_W((volatile u32*)0x4001014, (sGfx2dBgScroll.subBg1OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg1OffsetY << 16) & 0x1ff0000));
         }
         if (sGfx2dDispCtrl.offsetDirty & 0x40) {
             if (sGfx2dDispCtrl.affineMask & 4) {
                 G2x_SetBGyAffine_(0x4001020, (Gfx2dAffine *)&sGfx2dBgScroll.subBg2Mtx, sGfx2dBgScroll.subBg2CenterX, sGfx2dBgScroll.subBg2CenterY,
                               sGfx2dBgScroll.subBg2OffsetX, sGfx2dBgScroll.subBg2OffsetY);
             } else {
-                *(volatile u32*)0x4001018 = (sGfx2dBgScroll.subBg2OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg2OffsetY << 16) & 0x1ff0000);
+                IO_W((volatile u32*)0x4001018, (sGfx2dBgScroll.subBg2OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg2OffsetY << 16) & 0x1ff0000));
             }
         }
         if (sGfx2dDispCtrl.offsetDirty & 0x80) {
@@ -898,57 +899,57 @@ extern "C" void Gfx2d_FlushRegisters() {
                 G2x_SetBGyAffine_(0x4001030, (Gfx2dAffine *)sGfx2dSubBg3Mtx, sGfx2dDispCtrl.subBg3CenterX, sGfx2dDispCtrl.subBg3CenterY,
                               sGfx2dDispCtrl.subBg3OffsetX, sGfx2dDispCtrl.subBg3OffsetY);
             } else {
-                *(volatile u32*)0x400101c = (sGfx2dDispCtrl.subBg3OffsetX & 0x1ff) | ((sGfx2dDispCtrl.subBg3OffsetY << 16) & 0x1ff0000);
+                IO_W((volatile u32*)0x400101c, (sGfx2dDispCtrl.subBg3OffsetX & 0x1ff) | ((sGfx2dDispCtrl.subBg3OffsetY << 16) & 0x1ff0000));
             }
         }
         sGfx2dDispCtrl.offsetDirty = 0;
     }
     if (sGfx2dDispCtrl.windowDirty != 0) {
         if (sGfx2dDispCtrl.windowDirty & 0x1) {
-            *(volatile u16*)0x4000048 = (*(volatile u16*)0x4000048 & ~0x3f) | sGfx2dWindowBlend.mainWin0Planes | 0x20;
+            IO_W((volatile u16*)0x4000048, (IO_R((volatile u16*)0x4000048) & ~0x3f) | sGfx2dWindowBlend.mainWin0Planes | 0x20);
         }
         if (sGfx2dDispCtrl.windowDirty & 0x2) {
-            *(volatile u16*)0x4000048 = (*(volatile u16*)0x4000048 & 0xffffc0ff) | (sGfx2dWindowBlend.mainWin1Planes << 8) | 0x2000;
+            IO_W((volatile u16*)0x4000048, (IO_R((volatile u16*)0x4000048) & 0xffffc0ff) | (sGfx2dWindowBlend.mainWin1Planes << 8) | 0x2000);
         }
         if (sGfx2dDispCtrl.windowDirty & 0x4) {
-            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & ~0x3f) | sGfx2dWindowBlend.subWin0Planes | 0x20;
+            IO_W((volatile u16*)0x4001048, (IO_R((volatile u16*)0x4001048) & ~0x3f) | sGfx2dWindowBlend.subWin0Planes | 0x20);
         }
         if (sGfx2dDispCtrl.windowDirty & 0x100) {
-            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & ~0x3f) | sGfx2dWindowBlend.subWin0Planes;
+            IO_W((volatile u16*)0x4001048, (IO_R((volatile u16*)0x4001048) & ~0x3f) | sGfx2dWindowBlend.subWin0Planes);
         }
         if (sGfx2dDispCtrl.windowDirty & 0x8) {
-            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & 0xffffc0ff) | (sGfx2dWindowBlend.subWin1Planes << 8) | 0x2000;
+            IO_W((volatile u16*)0x4001048, (IO_R((volatile u16*)0x4001048) & 0xffffc0ff) | (sGfx2dWindowBlend.subWin1Planes << 8) | 0x2000);
         }
         if (sGfx2dDispCtrl.windowDirty & 0x200) {
-            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & 0xffffc0ff) | (sGfx2dWindowBlend.subWin1Planes << 8);
+            IO_W((volatile u16*)0x4001048, (IO_R((volatile u16*)0x4001048) & 0xffffc0ff) | (sGfx2dWindowBlend.subWin1Planes << 8));
         }
         if (sGfx2dDispCtrl.windowDirty & 0x10) {
             u32 d = sGfx2dWindowBlend.mainWin0Bottom;
             u32 b = sGfx2dDispCtrl.mainWin0Top;
             u32 a = sGfx2dDispCtrl.mainWin0Left;
-            *(volatile u16*)0x4000040 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.mainWin0Right & 0xff);
-            *(volatile u16*)0x4000044 = ((b << 8) & 0xff00) | (d & 0xff);
+            IO_W((volatile u16*)0x4000040, ((a << 8) & 0xff00) | (sGfx2dWindowBlend.mainWin0Right & 0xff));
+            IO_W((volatile u16*)0x4000044, ((b << 8) & 0xff00) | (d & 0xff));
         }
         if (sGfx2dDispCtrl.windowDirty & 0x20) {
             u32 d = sGfx2dWindowBlend.mainWin1Bottom;
             u32 b = sGfx2dWindowBlend.mainWin1Top;
             u32 a = sGfx2dWindowBlend.mainWin1Left;
-            *(volatile u16*)0x4000042 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.mainWin1Right & 0xff);
-            *(volatile u16*)0x4000046 = ((b << 8) & 0xff00) | (d & 0xff);
+            IO_W((volatile u16*)0x4000042, ((a << 8) & 0xff00) | (sGfx2dWindowBlend.mainWin1Right & 0xff));
+            IO_W((volatile u16*)0x4000046, ((b << 8) & 0xff00) | (d & 0xff));
         }
         if (sGfx2dDispCtrl.windowDirty & 0x40) {
             u32 d = sGfx2dWindowBlend.subWin0Bottom;
             u32 b = sGfx2dWindowBlend.subWin0Top;
             u32 a = sGfx2dWindowBlend.subWin0Left;
-            *(volatile u16*)0x4001040 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.subWin0Right & 0xff);
-            *(volatile u16*)0x4001044 = ((b << 8) & 0xff00) | (d & 0xff);
+            IO_W((volatile u16*)0x4001040, ((a << 8) & 0xff00) | (sGfx2dWindowBlend.subWin0Right & 0xff));
+            IO_W((volatile u16*)0x4001044, ((b << 8) & 0xff00) | (d & 0xff));
         }
         if (sGfx2dDispCtrl.windowDirty & 0x80) {
             u32 d = sGfx2dWindowBlend.subWin1Bottom;
             u32 b = sGfx2dWindowBlend.subWin1Top;
             u32 a = sGfx2dWindowBlend.subWin1Left;
-            *(volatile u16*)0x4001042 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.subWin1Right & 0xff);
-            *(volatile u16*)0x4001046 = ((b << 8) & 0xff00) | (d & 0xff);
+            IO_W((volatile u16*)0x4001042, ((a << 8) & 0xff00) | (sGfx2dWindowBlend.subWin1Right & 0xff));
+            IO_W((volatile u16*)0x4001046, ((b << 8) & 0xff00) | (d & 0xff));
         }
         sGfx2dDispCtrl.windowDirty = 0;
     }

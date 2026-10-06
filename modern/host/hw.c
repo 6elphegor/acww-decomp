@@ -461,8 +461,38 @@ static void io_store(u32 a, u32 size, u32 v) {
     else *(u32 *)host_io(a) = v;
     io_write(a, old);
 }
-// for the runtime's own register writes (sdk.c): as if the game had written them
-void host_io_store32(u32 a, u32 v) { io_store(a, 4, v); }
+// the game's register accesses (include/nitro/io_access.h): as a trapped access would be handled, then the
+// interrupts that became due are taken, as host_irq_inject does after a trapped access
+int host_irq_ready(void);
+static inline void io_access_done(void) {
+    if (host_irq_ready()) host_deliver_irqs();
+}
+#define io_check_addr(a) io_check_addr_(a, __builtin_return_address(0))
+static void io_check_addr_(u32 a, void *caller) {
+    if (!is_io(a)) {
+        fprintf(stderr, "host: register access to %08x (not an I/O register) from %p\n", a, caller);
+        host_fatal("bad register address");
+    }
+}
+unsigned long long HostIo_Read(unsigned int a, unsigned int size) {
+    io_check_addr(a);
+    sIoCount++;
+    unsigned long long v = size == 8 ? io_load(a, 4) | (unsigned long long)io_load(a + 4, 4) << 32 : io_load(a, size);
+    io_access_done();
+    return v;
+}
+unsigned long long HostIo_Write(unsigned int a, unsigned int size, unsigned long long v) {
+    io_check_addr(a);
+    sIoCount++;
+    if (size == 8) {
+        io_store(a, 4, (u32)v);
+        io_store(a + 4, 4, (u32)(v >> 32));
+    } else {
+        io_store(a, size, (u32)v);
+    }
+    io_access_done();
+    return v;
+}
 
 static u32 emulate_access(ucontext_t *uc, u32 a) {
     const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[REG_EIP], *start = p;
@@ -582,6 +612,7 @@ static void on_prof(int sig, siginfo_t *si, void *ctx) {
     }
 }
 static void prof_dump(void) {
+    if (!getenv("ACWW_PROFILE")) return;
     FILE *f = fopen("acww_profile.txt", "w");
     if (!f) return;
     for (int i = 0; i < PROF_SLOTS; i++) if (sProfCount[i]) fprintf(f, "%u %08x\n", sProfCount[i], sProfAddr[i]);
@@ -642,6 +673,46 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
     int n = backtrace(bt, 32);
     backtrace_symbols_fd(bt, n, 2);
     _exit(3);
+}
+
+// Integer division by zero: the DS has no divide instruction, the compiler's routine (_s32_div_f, _u32_div_f)
+// returns the dividend as the quotient and 0 as the remainder; x86 traps. The game does divide by zero in places
+// (e.g. spl_scl_in_out at the end of an animation), so the x86 div/idiv gets the DS's result. Each site is
+// reported once.
+static int emulate_div_by_zero(ucontext_t *uc) {
+    const u8 *p = (const u8 *)(uintptr_t)uc->uc_mcontext.gregs[REG_EIP], *start = p;
+    int o16 = 0;
+    if (*p == 0x66) { o16 = 1; p++; }
+    if ((*p != 0xf7 && *p != 0xf6) || ((p[1] >> 3 & 7) != 6 && (p[1] >> 3 & 7) != 7)) return 0;
+    u32 n = (p[1] >> 6) == 3 ? 1 : modrm_len(p + 1);
+    if (!n) return 0;
+    greg_t *eax = &uc->uc_mcontext.gregs[REG_EAX], *edx = &uc->uc_mcontext.gregs[REG_EDX];
+    if (*p == 0xf6) *eax = (greg_t)((u32)*eax & 0xffff00ffu);                         // AL = AL, AH = 0
+    else if (o16) *edx = (greg_t)((u32)*edx & 0xffff0000u);                            // AX = AX, DX = 0
+    else *edx = 0;                                                                      // EAX = EAX, EDX = 0
+    u32 eip = (u32)uc->uc_mcontext.gregs[REG_EIP];
+    static u32 seen[64];
+    static int nseen;
+    int known = 0;
+    for (int i = 0; i < nseen; i++) known |= seen[i] == eip;
+    if (!known && nseen < 64) {
+        seen[nseen++] = eip;
+        fprintf(stderr, "host: division by zero at %08x (frame %llu): the DS's result\n", eip, (unsigned long long)host_frame());
+    }
+    uc->uc_mcontext.gregs[REG_EIP] += (greg_t)(p + 1 + n - start);
+    return 1;
+}
+
+// a crash in the game (division by zero, ...): where
+static void on_fatal_signal(int sig, siginfo_t *si, void *ctx) {
+    ucontext_t *uc = ctx;
+    if (sig == SIGFPE && si->si_code == FPE_INTDIV && emulate_div_by_zero(uc)) return;
+    fprintf(stderr, "host: signal %d (%s) at frame %llu, eip %08x, address %p\n", sig, strsignal(sig),
+            (unsigned long long)host_frame(), (u32)uc->uc_mcontext.gregs[REG_EIP], si->si_addr);
+    host_backtrace((u32 *)uc->uc_mcontext.gregs[REG_EBP], (u32)uc->uc_mcontext.gregs[REG_ESP]);
+    extern void frontend_shutdown(void);
+    frontend_shutdown();
+    _exit(5);
 }
 
 // ---- the memory map
@@ -705,6 +776,10 @@ void host_map_memory(void) {
     sigaction(SIGTRAP, &sa, 0);
     sa.sa_sigaction = on_int;
     sigaction(SIGINT, &sa, 0);
+    sa.sa_sigaction = on_fatal_signal;
+    sigaction(SIGFPE, &sa, 0);
+    sigaction(SIGILL, &sa, 0);
+    sigaction(SIGBUS, &sa, 0);
     // SIGALRM is blocked while an I/O access is being single-stepped (the handlers' sa_mask) and inside itself
     struct sigaction al;
     memset(&al, 0, sizeof al);

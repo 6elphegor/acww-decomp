@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
@@ -53,14 +54,14 @@ extern u16 data_027e00b8[];               // OSi_IrqCallbackInfoIndex
 extern u8 data_027e0000[];                // DTCM start (SDK_AUTOLOAD_DTCM_START)
 
 static inline BOOL OS_DisableIrq(void) {
-    u16 prep = reg_OS_IME;
-    reg_OS_IME = 0;
+    u16 prep = IO_R(&reg_OS_IME);
+    IO_W(&reg_OS_IME, 0);
     return (BOOL)prep;
 }
 
 static inline BOOL OS_RestoreIrq(BOOL enable) {
-    u16 prep = reg_OS_IME;
-    reg_OS_IME = (u16)enable;
+    u16 prep = IO_R(&reg_OS_IME);
+    IO_W(&reg_OS_IME, (u16)enable);
     return (BOOL)prep;
 }
 
@@ -334,22 +335,22 @@ extern MIGXDmaParams data_027e0414;
 #define reg_G3X_GXSTAT (*(vu32 *)0x04000600)
 
 static inline u32 G3X_GetCommandFifoStatus(void) {
-    return (reg_G3X_GXSTAT & 0x07000000) >> 24;
+    return (IO_R(&reg_G3X_GXSTAT) & 0x07000000) >> 24;
 }
 
 static inline void G3X_SetFifoIntrCond(u32 cond) {
-    reg_G3X_GXSTAT = ((reg_G3X_GXSTAT & ~0xc0000000) | (cond << 30));
+    IO_W(&reg_G3X_GXSTAT, ((IO_R(&reg_G3X_GXSTAT) & ~0xc0000000) | (cond << 30)));
 }
 
 typedef enum { GX_FIFOINTR_COND_DISABLE = 0, GX_FIFOINTR_COND_UNDERHALF = 1, GX_FIFOINTR_COND_EMPTY = 2 } GXFifoIntrCond;
 
 static inline void G3X_SetFifoIntrCond2(GXFifoIntrCond cond) {
-    reg_G3X_GXSTAT = ((reg_G3X_GXSTAT & ~0xc0000000) | (cond << 30));
+    IO_W(&reg_G3X_GXSTAT, ((IO_R(&reg_G3X_GXSTAT) & ~0xc0000000) | (cond << 30)));
 }
 
 static inline void G3X_SetFifoIntrCond3(u32 cond) {
-    u32 v = reg_G3X_GXSTAT & ~0xc0000000;
-    reg_G3X_GXSTAT = v | (cond << 30);
+    u32 v = IO_R(&reg_G3X_GXSTAT) & ~0xc0000000;
+    IO_W(&reg_G3X_GXSTAT, v | (cond << 30));
 }
 
 static inline void MIi_CallCallback(void (*callback)(void *), void *arg) {
@@ -960,7 +961,7 @@ void NNS_G3dGeBufferOP_N(u32 op, const u32 *args, u32 num) {
             NNS_G3dGeWaitSendDL();
         }
     }
-    reg_G3X_GXFIFO = op;
+    IO_W(&reg_G3X_GXFIFO, op);
     MIi_CpuSend32(args, &reg_G3X_GXFIFO, num << 2);
 }
 

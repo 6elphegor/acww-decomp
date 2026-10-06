@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "ui/WfcApList.h"
+#include "nitro/io_access.h"
 
 #pragma thumb off
 
@@ -85,10 +86,10 @@ void WfcAossDone_Enter() {
 
 void WfcAossDone_LoadBg() {
     WfcUtil_LoadFileTo((void *)"char/xb4Multi.nsc.l", GX_LoadBG2Scr);
-    *(volatile u16 *)0x4001008 = (*(volatile u16 *)0x4001008 & ~3) | 3;
-    *(volatile u16 *)0x400100a = (*(volatile u16 *)0x400100a & ~3) | 3;
-    *(volatile u16 *)0x400000a = (*(volatile u16 *)0x400000a & ~3) | 3;
-    *(volatile u16 *)0x400000c = (*(volatile u16 *)0x400000c & ~3) | 3;
+    IO_W((volatile u16 *)0x4001008, (IO_R((volatile u16 *)0x4001008) & ~3) | 3);
+    IO_W((volatile u16 *)0x400100a, (IO_R((volatile u16 *)0x400100a) & ~3) | 3);
+    IO_W((volatile u16 *)0x400000a, (IO_R((volatile u16 *)0x400000a) & ~3) | 3);
+    IO_W((volatile u16 *)0x400000c, (IO_R((volatile u16 *)0x400000c) & ~3) | 3);
 }
 
 void WfcAossDone_FadeIn() {

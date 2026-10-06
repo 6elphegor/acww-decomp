@@ -8,6 +8,7 @@
 #include "game/InfoTableSet.h"
 #include "talk/EncodedString40.h"
 #include "ui/LetterRenderer.h"
+#include "nitro/io_access.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -597,7 +598,7 @@ extern "C" void Main_PostTaskUpdate(u32 r) {
     Comm_Update(r);
     Gfx_PostTaskUpdate();
     gFrameCounter++;
-    *(volatile u32 *)0x4000540 = 3;
+    IO_W((volatile u32 *)0x4000540, 3);
 }
 
 extern "C" void Main_PostFrameUpdate(void) {
@@ -626,7 +627,7 @@ extern "C" void Main_Loop(void) {
     u32 r;
     s32 b;
     GX_DispOn();
-    *(volatile u32 *)0x4001000 |= 0x10000;
+    IO_OR((volatile u32 *)0x4001000, 0x10000);
     LidSleep_Init();
     u32 v = gCommManager;
     u16 *flag = &gMainWaitingFrame;

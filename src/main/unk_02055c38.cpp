@@ -10,6 +10,7 @@
 #include "gfx/TexPatVramAnim.h"
 #include "gfx/NNSG3dRenderObj.h"
 #include "gfx/NNSG3dRS.h"
+#include "nitro/io_access.h"
 
 
 
@@ -787,16 +788,16 @@ extern "C" void Anim_NormalizeVec(VecFx32 *v) {
     sum += (s64)v->z * v->z;
     if (sum != 0) {
         volatile u16 *divcnt = (volatile u16 *)0x4000280;
-        *divcnt = 2;
-        *(volatile s64 *)0x4000290 = (s64)0x1000000 << 32;
-        *(volatile s64 *)0x4000298 = sum;
+        IO_W(divcnt, 2);
+        IO_W((volatile s64 *)0x4000290, (s64)0x1000000 << 32);
+        IO_W((volatile s64 *)0x4000298, sum);
         volatile u16 *sqrtcnt = (volatile u16 *)0x40002b0;
-        *sqrtcnt = 1;
-        *(volatile s64 *)0x40002b8 = sum << 2;
-        while (*sqrtcnt & 0x8000) {}
-        s32 sq = *(volatile s32 *)0x40002b4;
-        while (*divcnt & 0x8000) {}
-        s64 inv = *(volatile s64 *)0x40002a0;
+        IO_W(sqrtcnt, 1);
+        IO_W((volatile s64 *)0x40002b8, sum << 2);
+        while (IO_R(sqrtcnt) & 0x8000) {}
+        s32 sq = IO_R((volatile s32 *)0x40002b4);
+        while (IO_R(divcnt) & 0x8000) {}
+        s64 inv = IO_R((volatile s64 *)0x40002a0);
         s64 q = inv * sq;
         v->x = (s32)((q * v->x + ((s64)0x1000 << 32)) >> 45);
         v->y = (s32)((q * v->y + ((s64)0x1000 << 32)) >> 45);

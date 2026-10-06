@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK mi_dma.c: MI_DmaFill32Async, autoload_2 0x02115ad4-0x02115bac. ARM code, mwcc 1.2/base.
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -23,7 +24,7 @@ static inline void MIi_CallCallback(MIDmaCallback callback, void *arg) {
 static inline void MIi_DmaSetParams_src32(u32 dmaNo, u32 data, u32 dest, u32 ctrl) {
     u32 enabled = OS_DisableInterrupts();
     vu32 *p = &MIi_DMA_CLEAR_DATA(dmaNo);
-    *p = data;
+    IO_W(p, data);
     MIi_DmaSetParams_noInt(dmaNo, (u32)p, dest, ctrl);
     OS_RestoreInterrupts(enabled);
 }

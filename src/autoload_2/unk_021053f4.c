@@ -8,6 +8,7 @@ typedef signed char s8;
 typedef short s16;
 typedef int s32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef int BOOL;
 #define NULL 0
 
@@ -126,9 +127,9 @@ void NNSi_G3dFuncSbc_BB(RS *rs, u32 opt)
         s32 m2[16];
         s32 m3[16];
         NNS_G3dGeFlushBuffer();
-        *(volatile u32 *)0x04000400 = 0x00151110;
-        *(volatile u32 *)0x04000400 = 0;
-        *(volatile u32 *)0x04000400 = 0;
+        IO_W((volatile u32 *)0x04000400, 0x00151110);
+        IO_W((volatile u32 *)0x04000400, 0);
+        IO_W((volatile u32 *)0x04000400, 0);
         while (G3X_GetClipMtx(m) != 0) {
         }
         if (data_027e00c8.n.flag & 1) {
@@ -145,16 +146,16 @@ void NNSi_G3dFuncSbc_BB(RS *rs, u32 opt)
         scale[1] = VEC_Mag(&m[4]);
         scale[2] = VEC_Mag(&m[8]);
         if (data_027e00c8.n.flag & 1) {
-            *(volatile u32 *)0x04000400 = 0x00171012;
+            IO_W((volatile u32 *)0x04000400, 0x00171012);
             MIi_CpuSend32(data_0213bdc4, (void *)0x04000400, 8);
             MIi_CpuSend32(NNS_G3dGlbGetInvWV(), (void *)0x04000400, 0x30);
-            *(volatile u32 *)0x04000400 = 0x1b19;
+            IO_W((volatile u32 *)0x04000400, 0x1b19);
             MIi_CpuSend32(data_0213bdcc, (void *)0x04000400, 0x3c);
         } else if (data_027e00c8.n.flag & 2) {
-            *(volatile u32 *)0x04000400 = 0x00171012;
+            IO_W((volatile u32 *)0x04000400, 0x00171012);
             MIi_CpuSend32(data_0213bdc4, (void *)0x04000400, 8);
             MIi_CpuSend32(NNS_G3dGlbGetInvV(), (void *)0x04000400, 0x30);
-            *(volatile u32 *)0x04000400 = 0x1b19;
+            IO_W((volatile u32 *)0x04000400, 0x1b19);
             MIi_CpuSend32(data_0213bdcc, (void *)0x04000400, 0x3c);
         } else {
             MIi_CpuSend32(data_0213bdc0, (void *)0x04000400, 0x48);
@@ -214,9 +215,9 @@ void NNSi_G3dFuncSbc_BBY(RS *rs, u32 opt)
         s32 m2[16];
         s32 m3[16];
         NNS_G3dGeFlushBuffer();
-        *(volatile u32 *)0x04000400 = 0x00151110;
-        *(volatile u32 *)0x04000400 = 0;
-        *(volatile u32 *)0x04000400 = 0;
+        IO_W((volatile u32 *)0x04000400, 0x00151110);
+        IO_W((volatile u32 *)0x04000400, 0);
+        IO_W((volatile u32 *)0x04000400, 0);
         while (G3X_GetClipMtx(m) != 0) {
         }
         if (data_027e00c8.n.flag & 1) {
@@ -242,16 +243,16 @@ void NNSi_G3dFuncSbc_BBY(RS *rs, u32 opt)
             rot[4] = rot[8];
         }
         if (data_027e00c8.n.flag & 1) {
-            *(volatile u32 *)0x04000400 = 0x00171012;
+            IO_W((volatile u32 *)0x04000400, 0x00171012);
             MIi_CpuSend32(data_0213be0c, (void *)0x04000400, 8);
             MIi_CpuSend32(NNS_G3dGlbGetInvWV(), (void *)0x04000400, 0x30);
-            *(volatile u32 *)0x04000400 = 0x1b19;
+            IO_W((volatile u32 *)0x04000400, 0x1b19);
             MIi_CpuSend32(data_0213be14, (void *)0x04000400, 0x3c);
         } else if (data_027e00c8.n.flag & 2) {
-            *(volatile u32 *)0x04000400 = 0x00171012;
+            IO_W((volatile u32 *)0x04000400, 0x00171012);
             MIi_CpuSend32(data_0213be0c, (void *)0x04000400, 8);
             MIi_CpuSend32(NNS_G3dGlbGetInvV(), (void *)0x04000400, 0x30);
-            *(volatile u32 *)0x04000400 = 0x1b19;
+            IO_W((volatile u32 *)0x04000400, 0x1b19);
             MIi_CpuSend32(data_0213be14, (void *)0x04000400, 0x3c);
         } else {
             MIi_CpuSend32(data_0213be08, (void *)0x04000400, 0x48);

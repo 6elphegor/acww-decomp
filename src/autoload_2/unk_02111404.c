@@ -7,6 +7,7 @@ typedef unsigned int u32;
 typedef signed short s16;
 typedef signed int s32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef int BOOL;
 
 #define R32(a) (*(volatile u32 *)(a))
@@ -31,10 +32,10 @@ void G3i_PerspectiveW_(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, 
     volatile u32 *fifo;
     cot = FX_Div(fovyCos, fovySin);
     if (scale != 0x1000) cot = cot * scale / 0x1000;
-    *(volatile u64 *)0x04000290 = (u64)cot << 32;
-    *(volatile u64 *)0x04000298 = (u32)aspect;
+    IO_W((volatile u64 *)0x04000290, (u64)cot << 32);
+    IO_W((volatile u64 *)0x04000298, (u32)aspect);
     if (load) {
-        R32(0x04000440) = 0;
+        IO_W(&R32(0x04000440), 0);
         fifo = (volatile u32 *)0x04000458;
     }
     if (mtx) {
@@ -52,19 +53,19 @@ void G3i_PerspectiveW_(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, 
         mtx[15] = 0;
     }
     a = FX_GetDivResult();
-    *(volatile u64 *)0x04000290 = (u64)0x1000 << 32;
-    *(volatile u64 *)0x04000298 = (u32)(near - far);
+    IO_W((volatile u64 *)0x04000290, (u64)0x1000 << 32);
+    IO_W((volatile u64 *)0x04000298, (u32)(near - far));
     if (load) {
-        *fifo = a;
-        *fifo = 0;
-        *fifo = 0;
-        *fifo = 0;
-        *fifo = 0;
-        *fifo = cot;
-        *fifo = 0;
-        *fifo = 0;
-        *fifo = 0;
-        *fifo = 0;
+        IO_W(fifo, a);
+        IO_W(fifo, 0);
+        IO_W(fifo, 0);
+        IO_W(fifo, 0);
+        IO_W(fifo, 0);
+        IO_W(fifo, cot);
+        IO_W(fifo, 0);
+        IO_W(fifo, 0);
+        IO_W(fifo, 0);
+        IO_W(fifo, 0);
     }
     if (mtx) {
         mtx[0] = a;
@@ -75,12 +76,12 @@ void G3i_PerspectiveW_(s32 fovySin, s32 fovyCos, s32 aspect, s32 near, s32 far, 
     m22 = FX_Mul32x64c(far + near, inv);
     m32 = FX_Mul32x64c(FX_Mul(near << 1, far), inv);
     if (load) {
-        *fifo = m22;
-        *fifo = -scale;
-        *fifo = 0;
-        *fifo = 0;
-        *fifo = m32;
-        *fifo = 0;
+        IO_W(fifo, m22);
+        IO_W(fifo, -scale);
+        IO_W(fifo, 0);
+        IO_W(fifo, 0);
+        IO_W(fifo, m32);
+        IO_W(fifo, 0);
     }
     if (mtx) {
         mtx[10] = m22;

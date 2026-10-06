@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/ThreeLayerAnimModel.h"
 #include "gfx/GfxFrameHooks.h"
+#include "nitro/io_access.h"
 
 extern "C" {
 extern volatile u32 gGfxMainOnTop;
@@ -46,7 +47,7 @@ extern "C" void Gfx_Init()
     Gfx_ResetScene();
     ScreenTransition_Init();
     u16 *p = (u16 *)0x4000304;
-    *p = (*p & 0xfffffdf1) | 0x20e;
+    IO_W(p, (IO_R(p) & 0xfffffdf1) | 0x20e);
     GX_SetBankForLCDC(0x1f7);
     a = 0;
     MIi_CpuClearFast(a, (void *)0x6800000, 0x84000);
@@ -99,7 +100,7 @@ extern "C" void Gfx_VBlankFlush()
 {
     u32 v = gGfxMainOnTop;
     u16 *p = (u16 *)0x4000304;
-    *p = (*p & 0xffff7fff) | (v << 15);
+    IO_W(p, (IO_R(p) & 0xffff7fff) | (v << 15));
     Oam_FlushBuffers();
     Oam_LoadBuffers();
     ScreenTransition_VBlank();

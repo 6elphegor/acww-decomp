@@ -9,6 +9,7 @@
 #include "sys/ProcProfile.h"
 #include "gfx/DebugColor.h"
 #include "gfx/Rgb555.h"
+#include "nitro/io_access.h"
 
 
 
@@ -585,8 +586,8 @@ void FlashLight::update()
 void FlashLight::apply(void *m)
 {
     if (flashKind != 9) {
-        *(volatile s32 *)0x4000440 = 2;
-        *(volatile s32 *)0x4000454 = 0;
+        IO_W((volatile s32 *)0x4000440, 2);
+        IO_W((volatile s32 *)0x4000454, 0);
         G3_MultMtx33(m);
         NNS_G3dGlbLightVector(2, (s16)direction.x, (s16)direction.y, (s16)direction.z);
         NNS_G3dGlbLightColor(2, color);
@@ -919,8 +920,8 @@ void SceneLight::update()
 void SceneLight::apply(void *m)
 {
     s32 id = lightId;
-    *(volatile s32 *)0x4000440 = 2;
-    *(volatile s32 *)0x4000454 = 0;
+    IO_W((volatile s32 *)0x4000440, 2);
+    IO_W((volatile s32 *)0x4000454, 0);
     G3_MultMtx33(m);
     NNS_G3dGlbLightVector(id, (s16)direction.x, (s16)direction.y, (s16)direction.z);
     NNS_G3dGlbLightColor(id, color);

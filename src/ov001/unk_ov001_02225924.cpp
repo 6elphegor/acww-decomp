@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/WfcRect.h"
 #include "sys/StackPad.h"
+#include "nitro/io_access.h"
 
 #pragma thumb off
 
@@ -89,21 +90,21 @@ void WfcHeap_Free(void *p) {
 
 void WfcGx_ShowPlanes(u32 eng, u32 m) {
     if (eng == 1) {
-        u32 t = (*(vu32 *)0x4001000 & 0x1f00) >> 8;
-        *(vu32 *)0x4001000 = (*(vu32 *)0x4001000 & ~0x1f00) | ((m | t) << 8);
+        u32 t = (IO_R((vu32 *)0x4001000) & 0x1f00) >> 8;
+        IO_W((vu32 *)0x4001000, (IO_R((vu32 *)0x4001000) & ~0x1f00) | ((m | t) << 8));
     } else {
-        u32 t = (*(vu32 *)0x4000000 & 0x1f00) >> 8;
-        *(vu32 *)0x4000000 = (*(vu32 *)0x4000000 & ~0x1f00) | ((m | t) << 8);
+        u32 t = (IO_R((vu32 *)0x4000000) & 0x1f00) >> 8;
+        IO_W((vu32 *)0x4000000, (IO_R((vu32 *)0x4000000) & ~0x1f00) | ((m | t) << 8));
     }
 }
 
 void WfcGx_HidePlanes(u32 eng, u32 m) {
     if (eng == 1) {
-        u32 t = (*(vu32 *)0x4001000 & 0x1f00) >> 8;
-        *(vu32 *)0x4001000 = (*(vu32 *)0x4001000 & ~0x1f00) | ((~m & t) << 8);
+        u32 t = (IO_R((vu32 *)0x4001000) & 0x1f00) >> 8;
+        IO_W((vu32 *)0x4001000, (IO_R((vu32 *)0x4001000) & ~0x1f00) | ((~m & t) << 8));
     } else {
-        u32 t = (*(vu32 *)0x4000000 & 0x1f00) >> 8;
-        *(vu32 *)0x4000000 = (*(vu32 *)0x4000000 & ~0x1f00) | ((~m & t) << 8);
+        u32 t = (IO_R((vu32 *)0x4000000) & 0x1f00) >> 8;
+        IO_W((vu32 *)0x4000000, (IO_R((vu32 *)0x4000000) & ~0x1f00) | ((~m & t) << 8));
     }
 }
 
@@ -129,46 +130,46 @@ void WfcGx_SetWindowPlanes(u32 eng, u32 which, u32 v, u32 on) {
     case 0:
         if (eng == 1) {
             vu16 *r = (vu16 *)0x4001048;
-            u32 t = (*r & ~0x3f) | v;
+            u32 t = (IO_R(r) & ~0x3f) | v;
             if (on != 0) t |= 0x20;
-            *(vu16 *)0x4001048 = t;
+            IO_W((vu16 *)0x4001048, t);
         } else {
-            u32 t = (*(vu16 *)0x4000048 & ~0x3f) | v;
+            u32 t = (IO_R((vu16 *)0x4000048) & ~0x3f) | v;
             if (on != 0) t |= 0x20;
-            *(vu16 *)0x4000048 = t;
+            IO_W((vu16 *)0x4000048, t);
         }
         break;
     case 1:
         if (eng == 1) {
-            u32 t = (*(vu16 *)0x4001048 & ~0x3f00) | (v << 8);
+            u32 t = (IO_R((vu16 *)0x4001048) & ~0x3f00) | (v << 8);
             if (on != 0) t |= 0x2000;
-            *(vu16 *)0x4001048 = t;
+            IO_W((vu16 *)0x4001048, t);
         } else {
-            u32 t = (*(vu16 *)0x4000048 & ~0x3f00) | (v << 8);
+            u32 t = (IO_R((vu16 *)0x4000048) & ~0x3f00) | (v << 8);
             if (on != 0) t |= 0x2000;
-            *(vu16 *)0x4000048 = t;
+            IO_W((vu16 *)0x4000048, t);
         }
         break;
     case 2:
         if (eng == 1) {
-            u32 t = (*(vu16 *)0x400104a & ~0x3f00) | (v << 8);
+            u32 t = (IO_R((vu16 *)0x400104a) & ~0x3f00) | (v << 8);
             if (on != 0) t |= 0x2000;
-            *(vu16 *)0x400104a = t;
+            IO_W((vu16 *)0x400104a, t);
         } else {
-            u32 t = (*(vu16 *)0x400004a & ~0x3f00) | (v << 8);
+            u32 t = (IO_R((vu16 *)0x400004a) & ~0x3f00) | (v << 8);
             if (on != 0) t |= 0x2000;
-            *(vu16 *)0x400004a = t;
+            IO_W((vu16 *)0x400004a, t);
         }
         break;
     case 3:
         if (eng == 1) {
-            u32 t = (*(vu16 *)0x400104a & ~0x3f) | v;
+            u32 t = (IO_R((vu16 *)0x400104a) & ~0x3f) | v;
             if (on != 0) t |= 0x20;
-            *(vu16 *)0x400104a = t;
+            IO_W((vu16 *)0x400104a, t);
         } else {
-            u32 t = (*(vu16 *)0x400004a & ~0x3f) | v;
+            u32 t = (IO_R((vu16 *)0x400004a) & ~0x3f) | v;
             if (on != 0) t |= 0x20;
-            *(vu16 *)0x400004a = t;
+            IO_W((vu16 *)0x400004a, t);
         }
         break;
     }

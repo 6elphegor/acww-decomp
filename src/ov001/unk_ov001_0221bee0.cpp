@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 #pragma thumb off
 
@@ -51,11 +52,11 @@ extern "C" void WfcUsbDone_LoadBg() {
     volatile u16 *r3 = (volatile u16 *)0x4000008;
     volatile u16 *r4 = (volatile u16 *)0x400000a;
     volatile u16 *r5 = (volatile u16 *)0x400000c;
-    *r1 = (*r1 & ~3) | 3;
-    *r2 = (*r2 & ~3) | 3;
-    *r3 = (*r3 & ~3) | 3;
-    *r4 = (*r4 & ~3) | 3;
-    *r5 = (*r5 & ~3) | 3;
+    IO_W(r1, (IO_R(r1) & ~3) | 3);
+    IO_W(r2, (IO_R(r2) & ~3) | 3);
+    IO_W(r3, (IO_R(r3) & ~3) | 3);
+    IO_W(r4, (IO_R(r4) & ~3) | 3);
+    IO_W(r5, (IO_R(r5) & ~3) | 3);
 }
 
 extern "C" void WfcUsbDone_FadeIn() {

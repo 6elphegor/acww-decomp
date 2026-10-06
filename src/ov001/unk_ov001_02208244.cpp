@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 typedef void (*WfcLoadFunc)(void *, s32, u32);
 
@@ -28,7 +29,7 @@ extern "C" s32 WfcUtil_ShowTopMessage(s32 a, s32 b, s32 c) {
     void *r4, *r5;
     if (sWfcTopMessageShown != 0) return 0;
     WfcUtil_LoadFileTo((void *)"char/jtNull.nsc.l", GXS_LoadBG0Scr);
-    *(volatile u32 *)0x4001010 = 0x1920000;
+    IO_W((volatile u32 *)0x4001010, 0x1920000);
     r4 = WfcText_CreateBgCanvas(1, 0);
     r5 = WfcMsg_GetStringWithDigit(gWfcMsgBank, a, b, c);
     u32 t = WfcUtil_GetTextFlags();

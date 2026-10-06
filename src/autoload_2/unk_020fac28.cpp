@@ -2,6 +2,7 @@
 #include "types.h"
 #include "gfx/SplRes.h"
 #include "gfx/V3.h"
+#include "nitro/io_access.h"
 
 static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
@@ -105,9 +106,9 @@ static inline u16 mulRGB(u16 a, u16 b) {
 }
 
 static inline void Trans(s32 x, s32 y, s32 z) {
-    *(vu32 *)0x04000470 = x;
-    *(vu32 *)0x04000470 = y;
-    *(vu32 *)0x04000470 = z;
+    IO_W((vu32 *)0x04000470, x);
+    IO_W((vu32 *)0x04000470, y);
+    IO_W((vu32 *)0x04000470, z);
 }
 
 static inline u32 rnd() {
@@ -174,31 +175,31 @@ extern "C" void spl_gen_child(Part *a, Emit *b, void *list) {
 
 // Same quad in the XY plane.
 extern "C" void drawXYPlane(s32 a, s32 b, s32 c, s32 d) {
-    *(vu32 *)0x04000500 = 1;
-    *(vu32 *)0x04000488 = 0;
-    *(vu32 *)0x04000490 = vtxb(d + 0x1000, c - 0x1000);
-    *(vu32 *)0x04000488 = (u16)(a >> 8);
-    *(vu32 *)0x04000490 = vtxb(d + 0x1000, c + 0x1000);
-    *(vu32 *)0x04000488 = (u16)(a >> 8) | ((u16)(b >> 8) << 16);
-    *(vu32 *)0x04000490 = vtxb(d - 0x1000, c + 0x1000);
-    *(vu32 *)0x04000488 = (u16)(b >> 8) << 16;
-    *(vu32 *)0x04000490 = vtxb(d - 0x1000, c - 0x1000);
-    *(vu32 *)0x04000504 = 0;
+    IO_W((vu32 *)0x04000500, 1);
+    IO_W((vu32 *)0x04000488, 0);
+    IO_W((vu32 *)0x04000490, vtxb(d + 0x1000, c - 0x1000));
+    IO_W((vu32 *)0x04000488, (u16)(a >> 8));
+    IO_W((vu32 *)0x04000490, vtxb(d + 0x1000, c + 0x1000));
+    IO_W((vu32 *)0x04000488, (u16)(a >> 8) | ((u16)(b >> 8) << 16));
+    IO_W((vu32 *)0x04000490, vtxb(d - 0x1000, c + 0x1000));
+    IO_W((vu32 *)0x04000488, (u16)(b >> 8) << 16);
+    IO_W((vu32 *)0x04000490, vtxb(d - 0x1000, c - 0x1000));
+    IO_W((vu32 *)0x04000504, 0);
 }
 
 // Emits one textured quad in the XZ plane: BEGIN_VTXS 1 (0x04000500), TEXCOORD (0x04000488), VTX_10 (0x04000490), END_VTXS (0x04000504).
 // (a, b) = texture size in 8.8, (c, d) = centre.
 extern "C" void drawXZPlane(s32 a, s32 b, s32 c, s32 d) {
-    *(vu32 *)0x04000500 = 1;
-    *(vu32 *)0x04000488 = 0;
-    *(vu32 *)0x04000490 = vtx(c - 0x1000, 0, d + 0x1000);
-    *(vu32 *)0x04000488 = (u16)(a >> 8);
-    *(vu32 *)0x04000490 = vtx(c + 0x1000, 0, d + 0x1000);
-    *(vu32 *)0x04000488 = (u16)(a >> 8) | ((u16)(b >> 8) << 16);
-    *(vu32 *)0x04000490 = vtx(c + 0x1000, 0, d - 0x1000);
-    *(vu32 *)0x04000488 = (u16)(b >> 8) << 16;
-    *(vu32 *)0x04000490 = vtx(c - 0x1000, 0, d - 0x1000);
-    *(vu32 *)0x04000504 = 0;
+    IO_W((vu32 *)0x04000500, 1);
+    IO_W((vu32 *)0x04000488, 0);
+    IO_W((vu32 *)0x04000490, vtx(c - 0x1000, 0, d + 0x1000));
+    IO_W((vu32 *)0x04000488, (u16)(a >> 8));
+    IO_W((vu32 *)0x04000490, vtx(c + 0x1000, 0, d + 0x1000));
+    IO_W((vu32 *)0x04000488, (u16)(a >> 8) | ((u16)(b >> 8) << 16));
+    IO_W((vu32 *)0x04000490, vtx(c + 0x1000, 0, d - 0x1000));
+    IO_W((vu32 *)0x04000488, (u16)(b >> 8) << 16);
+    IO_W((vu32 *)0x04000490, vtx(c - 0x1000, 0, d - 0x1000));
+    IO_W((vu32 *)0x04000504, 0);
 }
 
 // Builds a 3x4 hue-rotation colour matrix from (sin, 1 - cos style) factors: 1/3 and 1/sqrt(3) (0x555, 0x93d) terms.
@@ -256,8 +257,8 @@ extern "C" void spl_draw_bb(Mg *self, Part *p, DrawCb fp) {
     s32 sn;
     s32 cs;
     alpha = (p->b46.lo * (p->b46.mid + 1)) >> 5;
-    *(vu32 *)0x040004a4 = (p->b46.hi << 24) | (self->w48 | 0xc0) | (alpha << 16);
-    (void)*(vu32 *)0x040004a4;
+    IO_W((vu32 *)0x040004a4, (p->b46.hi << 24) | (self->w48 | 0xc0) | (alpha << 16));
+    (void)IO_R((vu32 *)0x040004a4);
     if (alpha == 0) return;
     sy = p->w48;
     sx = FX_Mul(sy, sc);
@@ -289,7 +290,7 @@ extern "C" void spl_draw_bb(Mg *self, Part *p, DrawCb fp) {
         m[9] = 0;
         m[10] = 0;
         m[11] = 0;
-        *(vu32 *)0x04000454 = 0;
+        IO_W((vu32 *)0x04000454, 0);
     } else {
         v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->w4;
         v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->w8;
@@ -310,7 +311,7 @@ extern "C" void spl_draw_bb(Mg *self, Part *p, DrawCb fp) {
         m[9] = 0;
         m[10] = 0;
         m[11] = 0;
-        *(vu32 *)0x04000454 = 0;
+        IO_W((vu32 *)0x04000454, 0);
         Trans(self->cur->res->p0->w4, self->cur->res->p0->w8, self->cur->res->p0->w12);
     }
     Trans(v.v[0], v.v[1], v.v[2]);
@@ -320,7 +321,7 @@ extern "C" void spl_draw_bb(Mg *self, Part *p, DrawCb fp) {
     }
     G3_MultMtx43(m);
     {
-        *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
+        IO_W((vu32 *)0x04000480, (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10)));
     }
     drawXYPlane(self->cur->h96, self->cur->h98, self->cur->res->p0->s76, self->cur->res->p0->s78);
 }
@@ -339,8 +340,8 @@ extern "C" void spl_draw_chld_bb(Mg *self, Part *p, DrawCb fp) {
     s32 sn;
     s32 cs;
     alpha = (p->b46.lo * (p->b46.mid + 1)) >> 5;
-    *(vu32 *)0x040004a4 = (p->b46.hi << 24) | (self->w48 | 0xc0) | (alpha << 16);
-    (void)*(vu32 *)0x040004a4;
+    IO_W((vu32 *)0x040004a4, (p->b46.hi << 24) | (self->w48 | 0xc0) | (alpha << 16));
+    (void)IO_R((vu32 *)0x040004a4);
     if (alpha == 0) return;
     sy = p->w48;
     sx = FX_Mul(sy, sc);
@@ -376,7 +377,7 @@ extern "C" void spl_draw_chld_bb(Mg *self, Part *p, DrawCb fp) {
         m[9] = 0;
         m[10] = 0;
         m[11] = 0;
-        *(vu32 *)0x04000454 = 0;
+        IO_W((vu32 *)0x04000454, 0);
     } else {
         v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->w4;
         v.v[1] = p->pos.v[1] + p->v56.v[1] - self->cur->res->p0->w8;
@@ -397,7 +398,7 @@ extern "C" void spl_draw_chld_bb(Mg *self, Part *p, DrawCb fp) {
         m[9] = 0;
         m[10] = 0;
         m[11] = 0;
-        *(vu32 *)0x04000454 = 0;
+        IO_W((vu32 *)0x04000454, 0);
         Trans(self->cur->res->p0->w4, self->cur->res->p0->w8, self->cur->res->p0->w12);
     }
     Trans(v.v[0], v.v[1], v.v[2]);
@@ -409,7 +410,7 @@ extern "C" void spl_draw_chld_bb(Mg *self, Part *p, DrawCb fp) {
     {
         u16 c1 = p->h54;
         u16 c2 = self->cur->h90;
-        *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
+        IO_W((vu32 *)0x04000480, (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10)));
     }
     drawXYPlane(self->cur->h100, self->cur->h102, 0, 0);
 }
@@ -431,8 +432,8 @@ extern "C" void spl_draw_dbb(Mg *self, Part *p, DrawCb fp) {
     s32 dot;
     s32 t;
     alpha = (p->b46.lo * (p->b46.mid + 1)) >> 5;
-    *(vu32 *)0x040004a4 = (p->b46.hi << 24) | (self->w48 | 0xc0) | (alpha << 16);
-    (void)*(vu32 *)0x040004a4;
+    IO_W((vu32 *)0x040004a4, (p->b46.hi << 24) | (self->w48 | 0xc0) | (alpha << 16));
+    (void)IO_R((vu32 *)0x040004a4);
     if (alpha == 0) return;
     sy = p->w48;
     sx = FX_Mul(sy, sc);
@@ -481,7 +482,7 @@ extern "C" void spl_draw_dbb(Mg *self, Part *p, DrawCb fp) {
         m[5] = 0;
         m[8] = 0x1000;
         m[11] = v.v[2];
-        *(vu32 *)0x04000454 = 0;
+        IO_W((vu32 *)0x04000454, 0);
         G3_MultMtx43(m);
     } else {
         v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->w4;
@@ -516,7 +517,7 @@ extern "C" void spl_draw_dbb(Mg *self, Part *p, DrawCb fp) {
         m[5] = 0;
         m[8] = 0x1000;
         m[11] = v.v[2];
-        *(vu32 *)0x04000454 = 0;
+        IO_W((vu32 *)0x04000454, 0);
         Trans(self->cur->res->p0->w4, self->cur->res->p0->w8, self->cur->res->p0->w12);
         G3_MultMtx43(m);
     }
@@ -527,7 +528,7 @@ extern "C" void spl_draw_dbb(Mg *self, Part *p, DrawCb fp) {
     {
         u16 c1 = p->h54;
         u16 c2 = self->cur->h90;
-        *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
+        IO_W((vu32 *)0x04000480, (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10)));
     }
     drawXYPlane(self->cur->h96, self->cur->h98, self->cur->res->p0->s76, self->cur->res->p0->s78);
 }
@@ -552,8 +553,8 @@ extern "C" void spl_draw_chld_dbb(Mg *self, Part *p, DrawCb fp) {
     s32 dot;
     s32 t;
     alpha = (p->b46.lo * (p->b46.mid + 1)) >> 5;
-    *(vu32 *)0x040004a4 = (p->b46.hi << 24) | (self->w48 | 0xc0) | (alpha << 16);
-    (void)*(vu32 *)0x040004a4;
+    IO_W((vu32 *)0x040004a4, (p->b46.hi << 24) | (self->w48 | 0xc0) | (alpha << 16));
+    (void)IO_R((vu32 *)0x040004a4);
     if (alpha == 0) return;
     sy = p->w48;
     sx = FX_Mul(sy, sc);
@@ -602,7 +603,7 @@ extern "C" void spl_draw_chld_dbb(Mg *self, Part *p, DrawCb fp) {
         m[5] = 0;
         m[8] = 0x1000;
         m[11] = v.v[2];
-        *(vu32 *)0x04000454 = 0;
+        IO_W((vu32 *)0x04000454, 0);
         G3_MultMtx43(m);
     } else {
         v.v[0] = p->pos.v[0] + p->v56.v[0] - self->cur->res->p0->w4;
@@ -637,7 +638,7 @@ extern "C" void spl_draw_chld_dbb(Mg *self, Part *p, DrawCb fp) {
         m[5] = 0;
         m[8] = 0x1000;
         m[11] = v.v[2];
-        *(vu32 *)0x04000454 = 0;
+        IO_W((vu32 *)0x04000454, 0);
         Trans(self->cur->res->p0->w4, self->cur->res->p0->w8, self->cur->res->p0->w12);
         G3_MultMtx43(m);
     }
@@ -648,7 +649,7 @@ extern "C" void spl_draw_chld_dbb(Mg *self, Part *p, DrawCb fp) {
     {
         u16 c1 = p->h54;
         u16 c2 = self->cur->h90;
-        *(vu32 *)0x04000480 = (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10));
+        IO_W((vu32 *)0x04000480, (u16)((((c1 & 31) * (c2 & 31)) >> 5) | (((((c1 & 0x3e0) * (c2 & 0x3e0)) >> 15)) << 5) | ((((c1 & 0x7c00) * (c2 & 0x7c00)) >> 25) << 10)));
     }
     drawXYPlane(self->cur->h100, self->cur->h102, 0, 0);
 }

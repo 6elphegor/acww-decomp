@@ -10,6 +10,7 @@
 #include "game/SceneInfo.h"
 #include "net/CommManager.h"
 #include "sys/ProcProfile.h"
+#include "nitro/io_access.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -838,7 +839,7 @@ BOOL FieldSceneSteps::stepRunSceneEntries(u32 a, u32 b) {
 BOOL FieldSceneSteps::stepFinish(u32, u32) {
     Fog_InitDefault((s32)this);
     Effect_ResetAll();
-    reg_4000008 = (reg_4000008 & ~3) | 2;
+    IO_W(&reg_4000008, (IO_R(&reg_4000008) & ~3) | 2);
     ActorCollider_InitList();
     data_021ce63c = 0;
     SceneWarp_Clear((u8*)&sSceneWarpRequest);
@@ -984,7 +985,7 @@ extern "C" void Fog_InitDefault(s32 a) {
 extern "C" void Fog_Apply(s32 unused) {
     S394* a = &sFogState;
     G3X_SetFog(a->m20, 1, a->m21, a->h22);
-    reg_4000358 = a->h24 | (a->m26 << 16);
+    IO_W(&reg_4000358, a->h24 | (a->m26 << 16));
     G3X_SetFogTable(a);
 }
 
@@ -999,11 +1000,11 @@ extern "C" void Scene_SetupGraphics(void) {
     GX_SetBankForOBJ(0x40);
     GX_SetBankForSubBG(0x80);
     GX_SetBankForSubOBJ(0x100);
-    *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xffcfffef;
-    *(volatile u32 *)0x4001000 = *(volatile u32 *)0x4001000 & 0xffcfffef;
+    IO_W((volatile u32 *)0x4000000, IO_R((volatile u32 *)0x4000000) & 0xffcfffef);
+    IO_W((volatile u32 *)0x4001000, IO_R((volatile u32 *)0x4001000) & 0xffcfffef);
     Gfx2d_SetMainBgMode(0);
     Gfx2d_SetSubBgMode(1);
-    *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xc7ffffff;
+    IO_W((volatile u32 *)0x4000000, IO_R((volatile u32 *)0x4000000) & 0xc7ffffff);
     TexVram_InitManagers();
     Gfx2d_ShowMainPlanes(0x11);
     Gfx2d_ShowSubPlanes(0x10);

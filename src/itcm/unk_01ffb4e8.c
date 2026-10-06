@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
@@ -70,56 +71,56 @@ static inline fx32 FX_Mul32x64c(fx64c v64c, fx32 v32) {
 }
 
 static inline void CP_SetDiv32_32(u32 numer, u32 denom) {
-    reg_CP_DIVCNT = CP_DIV_32_32_MODE;
-    reg_CP_DIV_NUMER_L = numer;
-    reg_CP_DIV_DENOM = (u64)denom;
+    IO_W(&reg_CP_DIVCNT, CP_DIV_32_32_MODE);
+    IO_W(&reg_CP_DIV_NUMER_L, numer);
+    IO_W(&reg_CP_DIV_DENOM, (u64)denom);
 }
 
 static inline void CP_SetDiv64_32(u64 numer, u32 denom) {
-    reg_CP_DIVCNT = CP_DIV_64_32_MODE;
-    reg_CP_DIV_NUMER = numer;
-    reg_CP_DIV_DENOM = (u64)denom;
+    IO_W(&reg_CP_DIVCNT, CP_DIV_64_32_MODE);
+    IO_W(&reg_CP_DIV_NUMER, numer);
+    IO_W(&reg_CP_DIV_DENOM, (u64)denom);
 }
 
 static inline void CP_SetDiv64_64(u64 numer, u64 denom) {
-    reg_CP_DIVCNT = CP_DIV_64_64_MODE;
-    reg_CP_DIV_NUMER = numer;
-    reg_CP_DIV_DENOM = denom;
+    IO_W(&reg_CP_DIVCNT, CP_DIV_64_64_MODE);
+    IO_W(&reg_CP_DIV_NUMER, numer);
+    IO_W(&reg_CP_DIV_DENOM, denom);
 }
 
 static inline void CP_WaitDiv(void) {
-    while (reg_CP_DIVCNT & CP_DIV_BUSY) {
+    while (IO_R(&reg_CP_DIVCNT) & CP_DIV_BUSY) {
     }
 }
 
 static inline u32 CP_GetDivResult32(void) {
     CP_WaitDiv();
-    return (u32)reg_CP_DIV_RESULT_L;
+    return (u32)IO_R(&reg_CP_DIV_RESULT_L);
 }
 
 static inline u32 CP_GetDivRemResult32(void) {
     CP_WaitDiv();
-    return (u32)reg_CP_DIVREM_RESULT_L;
+    return (u32)IO_R(&reg_CP_DIVREM_RESULT_L);
 }
 
 static inline u64 CP_GetDivResult64(void) {
     CP_WaitDiv();
-    return reg_CP_DIV_RESULT;
+    return IO_R(&reg_CP_DIV_RESULT);
 }
 
 static inline void CP_SetSqrt64(u64 param) {
-    reg_CP_SQRTCNT = CP_SQRT_64_MODE;
-    reg_CP_SQRT_PARAM = param;
+    IO_W(&reg_CP_SQRTCNT, CP_SQRT_64_MODE);
+    IO_W(&reg_CP_SQRT_PARAM, param);
 }
 
 static inline void CP_WaitSqrt(void) {
-    while (reg_CP_SQRTCNT & CP_SQRT_BUSY) {
+    while (IO_R(&reg_CP_SQRTCNT) & CP_SQRT_BUSY) {
     }
 }
 
 static inline u32 CP_GetSqrtResult32(void) {
     CP_WaitSqrt();
-    return reg_CP_SQRT_RESULT;
+    return IO_R(&reg_CP_SQRT_RESULT);
 }
 
 /* PROTOS */

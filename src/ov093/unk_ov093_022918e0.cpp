@@ -3,6 +3,7 @@
 #include "talk/MsgString193.h"
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
+#include "nitro/io_access.h"
 
 
 
@@ -111,7 +112,7 @@ void StaffRoll::init()
     Gfx2d_HideLayer(0);
     Gfx2d_SetLayerControl(4, 0, 0, 0);
     vu16 *r = (vu16 *)0x400000a;
-    *r = (*r & 0x43) | 0x700;
+    IO_W(r, (IO_R(r) & 0x43) | 0x700);
     state = 0;
     loadTemplate();
 }
@@ -244,7 +245,7 @@ void StaffRoll::startLogo()
     Gfx2d_HideLayer(0);
     s32 v = Gfx2d_GetMainPlanes();
     vu32 *r = (vu32 *)0x4000000;
-    *r = (*r & ~0x1f00) | (v << 8);
+    IO_W(r, (IO_R(r) & ~0x1f00) | (v << 8));
     Gfx2d_EnableMainWindows(1);
     Gfx2d_SetMainWin0Planes(0x1f);
     Gfx2d_SetMainWinOutPlanes(0x1d);

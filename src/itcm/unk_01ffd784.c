@@ -5,6 +5,7 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef signed char s8;
 typedef signed short s16;
 typedef signed long s32;
@@ -30,15 +31,15 @@ void OSi_ReloadRomData(void);
 void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
     u32 enabled = OS_DisableInterrupts();
     vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
-    *p = src;
-    *(p + 1) = dest;
-    *(p + 2) = ctrl;
-    (void)*(vu32 *)0x040000b0;
-    (void)*(vu32 *)0x040000b0;
+    IO_W(p, src);
+    IO_W((p + 1), dest);
+    IO_W((p + 2), ctrl);
+    (void)IO_R((vu32 *)0x040000b0);
+    (void)IO_R((vu32 *)0x040000b0);
     if (dmaNo == 0) {
-        *p = 0;
-        *(p + 1) = 0;
-        *(p + 2) = 0x81400001;
+        IO_W(p, 0);
+        IO_W((p + 1), 0);
+        IO_W((p + 2), 0x81400001);
     }
     (void)OS_RestoreInterrupts(enabled);
 }
@@ -46,33 +47,33 @@ void MIi_DmaSetParams_wait(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
 // MIi_DmaSetParams_noInt
 void MIi_DmaSetParams_noInt(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
     vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
-    *p = src;
-    *(p + 1) = dest;
-    *(p + 2) = ctrl;
+    IO_W(p, src);
+    IO_W((p + 1), dest);
+    IO_W((p + 2), ctrl);
 }
 
 // MIi_DmaSetParams_wait_noInt
 void MIi_DmaSetParams_wait_noInt(u32 dmaNo, u32 src, u32 dest, u32 ctrl) {
     vu32 *p = (vu32 *)(0x040000b0 + dmaNo * 12);
-    *p = src;
-    *(p + 1) = dest;
-    *(p + 2) = ctrl;
-    (void)*(vu32 *)0x040000b0;
-    (void)*(vu32 *)0x040000b0;
+    IO_W(p, src);
+    IO_W((p + 1), dest);
+    IO_W((p + 2), ctrl);
+    (void)IO_R((vu32 *)0x040000b0);
+    (void)IO_R((vu32 *)0x040000b0);
     if (dmaNo == 0) {
-        *p = 0;
-        *(p + 1) = 0;
-        *(p + 2) = 0x81400001;
+        IO_W(p, 0);
+        IO_W((p + 1), 0);
+        IO_W((p + 2), 0x81400001);
     }
-    (void)*(vu32 *)0x040000b0;
-    (void)*(vu32 *)0x040000b0;
+    (void)IO_R((vu32 *)0x040000b0);
+    (void)IO_R((vu32 *)0x040000b0);
 }
 
 // OSi_DoResetSystem
 void OSi_DoResetSystem(void) {
     while (data_021fcf50 == 0) {
     }
-    *(vu16 *)0x04000208 = 0;
+    IO_W((vu16 *)0x04000208, 0);
     OSi_ReloadRomData();
     OSi_DoBoot();
 }
@@ -113,28 +114,28 @@ void OSi_ReloadRomData(void) {
 void OSi_ReadCardRom32(u32 src, void *dst, s32 len) {
     u32 ctrl = (*(vu32 *)0x027ffe60 & ~0x07000000) | 0xa1000000;
     s32 i = -(s32)(src & 0x1ff);
-    while (*(vu32 *)0x040001a4 & 0x80000000) {
+    while (IO_R((vu32 *)0x040001a4) & 0x80000000) {
     }
-    *(vu8 *)0x040001a1 = 0x80;
+    IO_W((vu8 *)0x040001a1, 0x80);
     src += i;
     if (i >= len) {
         return;
     }
     do {
         u32 w;
-        *(vu8 *)0x040001a8 = 0xb7;
-        *(vu8 *)0x040001a9 = (u8)(src >> 24);
-        *(vu8 *)0x040001aa = (u8)(src >> 16);
-        *(vu8 *)0x040001ab = (u8)(src >> 8);
-        *(vu8 *)0x040001ac = (u8)src;
-        *(vu8 *)0x040001ad = 0;
-        *(vu8 *)0x040001ae = 0;
-        *(vu8 *)0x040001af = 0;
-        *(vu32 *)0x040001a4 = ctrl;
+        IO_W((vu8 *)0x040001a8, 0xb7);
+        IO_W((vu8 *)0x040001a9, (u8)(src >> 24));
+        IO_W((vu8 *)0x040001aa, (u8)(src >> 16));
+        IO_W((vu8 *)0x040001ab, (u8)(src >> 8));
+        IO_W((vu8 *)0x040001ac, (u8)src);
+        IO_W((vu8 *)0x040001ad, 0);
+        IO_W((vu8 *)0x040001ae, 0);
+        IO_W((vu8 *)0x040001af, 0);
+        IO_W((vu32 *)0x040001a4, ctrl);
         do {
-            w = *(vu32 *)0x040001a4;
+            w = IO_R((vu32 *)0x040001a4);
             if (w & 0x00800000) {
-                u32 d = *(vu32 *)0x04100010;
+                u32 d = IO_R((vu32 *)0x04100010);
                 if (i >= 0 && i < len) {
                     *(u32 *)((u32)dst + i) = d;
                 }

@@ -7,6 +7,7 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef signed int s32;
 #include "types64.h"
+#include "nitro/io_access.h"
 typedef int BOOL;
 
 typedef struct { u32 head, tail; } OSQ;
@@ -161,12 +162,12 @@ void CARDi_ReadCard(void *p) {
         }
 #else
         CARDi_SetRomOp((page >> 8) | 0xb7000000, page << 24);
-        REG_MCCNT1 = d->f4;
+        IO_W(&REG_MCCNT1, d->f4);
         n = 0;
         do {
-            st = REG_MCCNT1;
+            st = IO_R(&REG_MCCNT1);
             if (st & 0x800000) {
-                u32 v = REG_MCD1;
+                u32 v = IO_R(&REG_MCD1);
                 if (n < 512) dst[n++] = v;
             }
         } while (st & 0x80000000);

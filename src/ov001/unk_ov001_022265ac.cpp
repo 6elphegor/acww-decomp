@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 extern "C" {
 extern u8 data_027e0000[];
@@ -23,21 +24,21 @@ extern "C" u32 sWfcSavedIrqMask = 0;
 
 void WfcIrq_Init()
 {
-    sWfcSavedIrqMask = *(volatile u32 *)0x4000210;
+    sWfcSavedIrqMask = IO_R((volatile u32 *)0x4000210);
     OS_SetIrqMask(0x40018);
     OS_EnableIrqMask(1);
     sWfcSavedVBlankHandler = OS_GetIrqFunction(1);
     OS_SetIrqFunction(1, (void *)WfcIrq_VBlank);
     OS_ResetRequestIrqMask(1);
-    u16 t = *(volatile u16 *)0x4000208;
-    *(volatile u16 *)0x4000208 = 1;
+    u16 t = IO_R((volatile u16 *)0x4000208);
+    IO_W((volatile u16 *)0x4000208, 1);
     OS_EnableInterrupts(1);
 }
 
 void WfcIrq_Restore()
 {
-    u16 t = *(volatile u16 *)0x4000208;
-    *(volatile u16 *)0x4000208 = 0;
+    u16 t = IO_R((volatile u16 *)0x4000208);
+    IO_W((volatile u16 *)0x4000208, 0);
     OS_SetIrqMask(sWfcSavedIrqMask);
     OS_SetIrqFunction(1, (void *)sWfcSavedVBlankHandler);
 }

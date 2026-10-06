@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK-era library code, autoload_2 0x0212703c-0x02128030. ARM code, mwcc 1.2/base, -O4,p.
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -612,17 +613,17 @@ void CTRDGi_InitModuleInfo(void) {
     Buf *b;
     if (data_02200058) return;
     data_02200058 = 1;
-    if ((REG300 & 1) == 0) return;
+    if ((IO_R(&REG300) & 1) == 0) return;
     irq = OS_SetIrqMask(0x40000);
-    ime = REG208;
-    REG208 = 1;
+    ime = IO_R(&REG208);
+    IO_W(&REG208, 1);
     CTRDGi_LockByProcessor(data_02200054[1], saved);
-    ex = (REG204 & 0x8000) >> 15;
+    ex = (IO_R(&REG204) & 0x8000) >> 15;
     CTRDGi_ChangeLatestAccessCycle(&cyc);
-    REG204 = (u16)(REG204 & ~0x8000);
+    IO_W(&REG204, (u16)(IO_R(&REG204) & ~0x8000));
     DC_InvalidateRange((u8 *)&data_02200080 + 0x80, 0x40);
     MI_DmaCopy16(1, 0x08000080, (u8 *)&data_02200080 + 0x80, 0x40);
-    REG204 = (u16)((REG204 & ~0x8000) | (ex << 15));
+    IO_W(&REG204, (u16)((IO_R(&REG204) & ~0x8000) | (ex << 15)));
     CTRDGi_RestoreAccessCycle(&cyc);
     CTRDGi_UnlockByProcessor(data_02200054[1], saved);
     b = &data_02200080;
@@ -639,8 +640,8 @@ void CTRDGi_InitModuleInfo(void) {
     while (data_02200054[0] != 1) {
         WaitByLoop(1);
     }
-    (void)REG208;
-    REG208 = (u16)ime;
+    (void)IO_R(&REG208);
+    IO_W(&REG208, (u16)ime);
     OS_SetIrqMask(irq);
 }
 
@@ -680,16 +681,16 @@ void CTRDGi_InitCommon(void) {
 
 // CTRDG: read cartridge ROM access cycles (EXMEMCNT 0x04000204 bits 2-4) into *p, then reset them to the slowest setting
 void CTRDGi_ChangeLatestAccessCycle(Cycle *p) {
-    p->c1 = (REG204 & 0xc) >> 2;
-    p->c2 = (REG204 & 0x10) >> 4;
-    REG204 = (u16)((REG204 & ~0xc) | 0xc);
-    REG204 = (u16)(REG204 & ~0x10);
+    p->c1 = (IO_R(&REG204) & 0xc) >> 2;
+    p->c2 = (IO_R(&REG204) & 0x10) >> 4;
+    IO_W(&REG204, (u16)((IO_R(&REG204) & ~0xc) | 0xc));
+    IO_W(&REG204, (u16)(IO_R(&REG204) & ~0x10));
 }
 
 // CTRDG_SetROMCycle-like: EXMEMCNT (0x04000204) ROM access cycles
 void CTRDGi_RestoreAccessCycle(Cycle *p) {
-    REG204 = (u16)((p->c1 << 2) | (REG204 & ~0xc));
-    REG204 = (u16)((p->c2 << 4) | (REG204 & ~0x10));
+    IO_W(&REG204, (u16)((p->c1 << 2) | (IO_R(&REG204) & ~0xc)));
+    IO_W(&REG204, (u16)((p->c2 << 4) | (IO_R(&REG204) & ~0x10)));
 }
 
 // ---- file-scope objects (.data 0x0213c238-0x0213c31c): __files, the console streams stdin, stdout and stderr (handles

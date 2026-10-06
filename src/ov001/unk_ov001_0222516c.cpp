@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 #pragma thumb off
 
@@ -163,12 +164,12 @@ WfcTextCanvas *WfcText_CreateBgCanvas(u32 idx, u32 slot) {
     o->charBuffer = WfcHeap_Alloc((w * h) << 5, 0x20);
     if (idx == 1) {
         volatile u16 *reg = (volatile u16 *)0x4001008;
-        *reg = *reg & ~0x40;
-        *reg = (*reg & 0x43) | 0xc00;
+        IO_W(reg, IO_R(reg) & ~0x40);
+        IO_W(reg, (IO_R(reg) & 0x43) | 0xc00);
     } else {
         volatile u16 *reg = (volatile u16 *)0x4000008;
-        *reg = *reg & ~0x40;
-        *reg = (*reg & 0x43) | 0xc00;
+        IO_W(reg, IO_R(reg) & ~0x40);
+        IO_W(reg, (IO_R(reg) & 0x43) | 0xc00);
     }
     NNS_G2dCharCanvasInitForBG(o, o->charBuffer, w, h, 4);
     void *ent = &sWfcText->fonts[slot * 0xc];

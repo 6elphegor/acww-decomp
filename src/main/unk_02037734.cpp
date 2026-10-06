@@ -9,6 +9,7 @@
 #include "talk/MsgString25.h"
 #include "gfx/CachedModel.h"
 #include "sys/ProcBase.h"
+#include "nitro/io_access.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
@@ -409,13 +410,13 @@ void CommCautionWindow::draw() {
 void CommCautionWindow::updateBlendRegs() {
     if (blendRegsDirty) {
         if (planesHidden) {
-            savedMainBldCnt = *(volatile u16 *)0x4000050;
-            savedSubBldCnt = *(volatile u16 *)0x4001050;
-            *(volatile u16 *)0x4000050 = 0;
-            *(volatile u16 *)0x4001050 = 0;
+            savedMainBldCnt = IO_R((volatile u16 *)0x4000050);
+            savedSubBldCnt = IO_R((volatile u16 *)0x4001050);
+            IO_W((volatile u16 *)0x4000050, 0);
+            IO_W((volatile u16 *)0x4001050, 0);
         } else {
-            *(volatile u16 *)0x4000050 = savedMainBldCnt;
-            *(volatile u16 *)0x4001050 = savedSubBldCnt;
+            IO_W((volatile u16 *)0x4000050, savedMainBldCnt);
+            IO_W((volatile u16 *)0x4001050, savedSubBldCnt);
         }
         blendRegsDirty = 0;
     }

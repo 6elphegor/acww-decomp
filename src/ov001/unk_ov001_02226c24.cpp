@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 struct WfcVramBankState {
     u32 bg, obj, bgExtPltt, objExtPltt, tex, texPltt, clearImage, subBg, subObj, subBgExtPltt, subObjExtPltt, arm7, lcdc;
@@ -84,16 +85,16 @@ void WfcGx_RestoreVramBanks() {
     GX_SetBankForSubBGExtPltt(sWfcSavedVramBanks.subBgExtPltt);
     GX_SetBankForSubOBJExtPltt(sWfcSavedVramBanks.subObjExtPltt);
     GX_SetBankForLCDC(sWfcSavedVramBanks.lcdc);
-    *(volatile u16 *)0x4000050 = 0;
-    *(volatile u16 *)0x4001050 = 0;
-    *(volatile u32 *)0x4000010 = 0;
-    *(volatile u32 *)0x4000014 = 0;
-    *(volatile u32 *)0x4000018 = 0;
-    *(volatile u32 *)0x400001c = 0;
-    *(volatile u32 *)0x4001010 = 0;
-    *(volatile u32 *)0x4001014 = 0;
-    *(volatile u32 *)0x4001018 = 0;
-    *(volatile u32 *)0x400101c = 0;
+    IO_W((volatile u16 *)0x4000050, 0);
+    IO_W((volatile u16 *)0x4001050, 0);
+    IO_W((volatile u32 *)0x4000010, 0);
+    IO_W((volatile u32 *)0x4000014, 0);
+    IO_W((volatile u32 *)0x4000018, 0);
+    IO_W((volatile u32 *)0x400001c, 0);
+    IO_W((volatile u32 *)0x4001010, 0);
+    IO_W((volatile u32 *)0x4001014, 0);
+    IO_W((volatile u32 *)0x4001018, 0);
+    IO_W((volatile u32 *)0x400101c, 0);
     PM_SetLCDPower(1);
 }
 

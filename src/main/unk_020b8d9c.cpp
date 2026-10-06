@@ -22,6 +22,7 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "talk/SpNpcKatieTalk.h"
 #include "npc/SpNpcKatie.h"
+#include "nitro/io_access.h"
 
 // ======== class types (global scope) ========
 class SkyProc;
@@ -7978,26 +7979,26 @@ extern "C" void Sky_VBlankSub()
     v2 = n00::sSkyGradient.keyColors[1];
     REG16(0x5000000) = v2;
     SkyLineAffine *e = n00::gWeatherManager.lineAffine[n00::gWeatherManager.lineBufferIndex];
-    REG16(0x4001030) = e->pa;
-    REG32(0x4001038) = e->x;
-    REG32(0x400103c) = e->y;
+    IO_W(&REG16(0x4001030), e->pa);
+    IO_W(&REG32(0x4001038), e->x);
+    IO_W(&REG32(0x400103c), e->y);
     Clock_GetMinuteHour(t);
     if (t[1] >= 6 && t[1] < 0x12) {
-        REG32(0x4001000) = REG32(0x4001000) & 0xfffffdff;
+        IO_W(&REG32(0x4001000), IO_R(&REG32(0x4001000)) & 0xfffffdff);
         if (MenuCtrl_IsMenuOnTop() == 0) Gfx2d_HideSubPlanes(2);
     } else {
-        REG32(0x4001000) |= 0x200;
+        IO_OR(&REG32(0x4001000), 0x200);
         if (MenuCtrl_IsMenuOnTop() == 0) Gfx2d_ShowSubPlanes(2);
     }
     if (n00::gSkySprites.rainbowStrength != 0) {
-        REG16(0x4001050) = 0x2040;
+        IO_W(&REG16(0x4001050), 0x2040);
     } else {
-        REG16(0x4001050) = 0x2042;
+        IO_W(&REG16(0x4001050), 0x2042);
     }
     u16 s = y + n00::gWeatherManager.starScrollY;
     if (s > 0x100) s = 0x100;
-    REG16(0x4001016) = s;
-    REG16(0x4001014) = n00::gWeatherManager.starScrollX;
+    IO_W(&REG16(0x4001016), s);
+    IO_W(&REG16(0x4001014), n00::gWeatherManager.starScrollX);
 }
 
 extern "C" void Sky_VBlankMain()
@@ -8010,33 +8011,33 @@ extern "C" void Sky_VBlankMain()
     v2 = n00::sSkyGradient.keyColors[0];
     REG16(0x5000000) = v2;
     SkyLineAffine *e = n00::gWeatherManager.lineAffine[n00::gWeatherManager.lineBufferIndex];
-    REG16(0x4000030) = e->pa;
-    REG32(0x4000038) = e->x;
-    REG32(0x400003c) = e->y;
+    IO_W(&REG16(0x4000030), e->pa);
+    IO_W(&REG32(0x4000038), e->x);
+    IO_W(&REG32(0x400003c), e->y);
     Clock_GetMinuteHour(t);
     if (t[1] >= 6 && t[1] < 0x12) {
-        REG32(0x4000000) = REG32(0x4000000) & 0xfffffdff;
+        IO_W(&REG32(0x4000000), IO_R(&REG32(0x4000000)) & 0xfffffdff);
         Gfx2d_HideMainPlanes(2);
     } else {
-        REG32(0x4000000) |= 0x200;
+        IO_OR(&REG32(0x4000000), 0x200);
         Gfx2d_ShowMainPlanes(2);
     }
     s32 r;
     if (y > 0xa8) {
-        REG32(0x4000000) = REG32(0x4000000) & 0xfffff5ff;
+        IO_W(&REG32(0x4000000), IO_R(&REG32(0x4000000)) & 0xfffff5ff);
         Gfx2d_HideMainPlanes(0xa);
-        REG16(0x4000050) = 0x2040;
+        IO_W(&REG16(0x4000050), 0x2040);
     } else {
-        REG32(0x4000000) |= 0x800;
+        IO_OR(&REG32(0x4000000), 0x800);
         Gfx2d_ShowMainPlanes(8);
         if (y > 0x97) {
-            REG32(0x4000000) = REG32(0x4000000) & 0xfffffdff;
+            IO_W(&REG32(0x4000000), IO_R(&REG32(0x4000000)) & 0xfffffdff);
             Gfx2d_HideMainPlanes(2);
-            REG16(0x4000050) = 0x2048;
+            IO_W(&REG16(0x4000050), 0x2048);
         } else if (n00::gSkySprites.rainbowStrength != 0) {
-            REG16(0x4000050) = 0x2040;
+            IO_W(&REG16(0x4000050), 0x2040);
         } else {
-            REG16(0x4000050) = 0x2042;
+            IO_W(&REG16(0x4000050), 0x2042);
         }
     }
     r = 0xc0 - y;
@@ -8044,8 +8045,8 @@ extern "C" void Sky_VBlankMain()
     else if (r > 0xc0) r = 0xc0;
     u16 s = y + n00::gWeatherManager.starScrollY;
     if (s > 0x100) s = 0x100;
-    REG16(0x4000016) = s;
-    REG16(0x4000014) = n00::gWeatherManager.starScrollX;
+    IO_W(&REG16(0x4000016), s);
+    IO_W(&REG16(0x4000014), n00::gWeatherManager.starScrollX);
     Gfx2d_EnableMainWindows(1);
     Gfx2d_SetMainWin0Planes(0x15);
     Gfx2d_SetMainWinOutPlanes(0x1f);
@@ -8380,7 +8381,7 @@ void Sky_VBlankDisabled(void) {
     t = n00::sSkyGradient.keyColors[0];
     *(vu16 *)0x5000400 = t;
     *(vu16 *)0x5000000 = n00::sSkyGradient.lineColors[0][0xbf];
-    *(vu32 *)0x4000000 = *(vu32 *)0x4000000 & 0xfffff5ff;
+    IO_W((vu32 *)0x4000000, IO_R((vu32 *)0x4000000) & 0xfffff5ff);
 }
 
 void Sky_FrameOutdoor(void) {
@@ -8649,10 +8650,10 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
         Gfx2d_ShowSubPlanes(8);
         vu16 *ra = (vu16 *)0x400100a;
         vu16 *rb = (vu16 *)0x400100e;
-        *ra = (*ra & ~3) | 3;
-        *rb = (*rb & ~3) | 2;
-        *ra = (*ra & 0x43) | 0x4c00;
-        *rb = (*rb & 0x43) | 0x6f00;
+        IO_W(ra, (IO_R(ra) & ~3) | 3);
+        IO_W(rb, (IO_R(rb) & ~3) | 2);
+        IO_W(ra, (IO_R(ra) & 0x43) | 0x4c00);
+        IO_W(rb, (IO_R(rb) & 0x43) | 0x6f00);
         HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankSub, (void *)Sky_VBlankSub);
     } else {
         Gfx2d_SetMainBgModeState(1);
@@ -8666,10 +8667,10 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
         Gfx2d_ShowMainPlanes(8);
         vu16 *ra = (vu16 *)0x400000a;
         vu16 *rb = (vu16 *)0x400000e;
-        *ra = (*ra & ~3) | 3;
-        *rb = (*rb & ~3) | 2;
-        *ra = (*ra & 0x43) | 0x4400;
-        *rb = (*rb & 0x43) | 0x6700;
+        IO_W(ra, (IO_R(ra) & ~3) | 3);
+        IO_W(rb, (IO_R(rb) & ~3) | 2);
+        IO_W(ra, (IO_R(ra) & 0x43) | 0x4400);
+        IO_W(rb, (IO_R(rb) & 0x43) | 0x6700);
         HBlank_Replace(sSkyHBlankTask, (void *)Sky_HBlankMain, (void *)Sky_VBlankMain);
     }
     if (arg != gWeatherManager.engine || arg == 1) {

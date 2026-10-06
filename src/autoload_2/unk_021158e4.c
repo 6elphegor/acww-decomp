@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MI (mi_dma.c): autoload_2 0x021158e4-0x02115ad4.
+#include "nitro/io_access.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -55,16 +56,16 @@ void MI_StopDma(u32 dmaNo) {
     u32 e = OS_DisableInterrupts();
     u32 tmp;
     dmaCntp = &((vu16 *)0x040000b0)[dmaNo * 6 + 5];
-    *dmaCntp &= ~0x3a00;
-    *dmaCntp &= ~0x8000;
-    tmp = *dmaCntp;
-    tmp = *dmaCntp;
+    IO_AND(dmaCntp, ~0x3a00);
+    IO_AND(dmaCntp, ~0x8000);
+    tmp = IO_R(dmaCntp);
+    tmp = IO_R(dmaCntp);
     if (dmaNo == 0) {
         vu32 *p;
         p = (vu32 *)(0x040000b0 + dmaNo * 12);
-        ((vu32 *)(0x04000000 + dmaNo * 12))[0xb0 / 4] = 0;
-        p[1] = 0;
-        p[2] = 0x81400001;
+        IO_W(&((vu32 *)(0x04000000 + dmaNo * 12))[0xb0 / 4], 0);
+        IO_W(&p[1], 0);
+        IO_W(&p[2], 0x81400001);
     }
     OS_RestoreInterrupts(e);
 }
@@ -77,7 +78,7 @@ void MIi_CheckAnotherAutoDMA(u32 dmaNo, u32 mode) {
         u32 cnt;
         u32 cur;
         if (i == dmaNo) continue;
-        cnt = *p;
+        cnt = IO_R(p);
         if (!(cnt & 0x80000000)) continue;
         cur = cnt & 0x38000000;
         if (cur == mode) continue;
@@ -92,5 +93,5 @@ void MIi_CheckAnotherAutoDMA(u32 dmaNo, u32 mode) {
 
 // MI_SetWramBank (WRAMCNT, REG 0x04000247)
 void MI_SetWramBank(u32 v) {
-    *(vu8 *)0x04000247 = (u8)v;
+    IO_W((vu8 *)0x04000247, (u8)v);
 }

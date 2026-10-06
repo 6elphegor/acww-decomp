@@ -1,5 +1,6 @@
 #include "sys/CardCommon.h"
 #include "nitro/wm.h"
+#include "nitro/io_access.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK CARD (card_rom.c, end: DMA / cache / task thread), autoload_2 0x0211e558-0x0211ea4c. The former unit
 // 0x0211e558-0x0211eeec is split into its files by their bss. ARM code, mwcc 1.2/base.
@@ -185,16 +186,16 @@ BOOL CARDi_ReadFromCache(u8 *cache) {
 }
 
 void CARDi_SetRomOp(u32 hi, u32 lo) {
-    while (*(volatile u32 *)0x040001a4 & 0x80000000) {}
-    *(volatile u8 *)0x040001a1 = 0xc0;
-    *(volatile u8 *)0x040001a8 = hi >> 24;
-    *(volatile u8 *)0x040001a9 = hi >> 16;
-    *(volatile u8 *)0x040001aa = hi >> 8;
-    *(volatile u8 *)0x040001ab = hi;
-    *(volatile u8 *)0x040001ac = lo >> 24;
-    *(volatile u8 *)0x040001ad = lo >> 16;
-    *(volatile u8 *)0x040001ae = lo >> 8;
-    *(volatile u8 *)0x040001af = lo;
+    while (IO_R((volatile u32 *)0x040001a4) & 0x80000000) {}
+    IO_W((volatile u8 *)0x040001a1, 0xc0);
+    IO_W((volatile u8 *)0x040001a8, hi >> 24);
+    IO_W((volatile u8 *)0x040001a9, hi >> 16);
+    IO_W((volatile u8 *)0x040001aa, hi >> 8);
+    IO_W((volatile u8 *)0x040001ab, hi);
+    IO_W((volatile u8 *)0x040001ac, lo >> 24);
+    IO_W((volatile u8 *)0x040001ad, lo >> 16);
+    IO_W((volatile u8 *)0x040001ae, lo >> 8);
+    IO_W((volatile u8 *)0x040001af, lo);
 }
 
 void CARDi_SetCardDma(void) {
@@ -203,7 +204,7 @@ void CARDi_SetCardDma(void) {
     u32 dst = c->dst;
     MIi_CardDmaCopy32(dma, 0x04100010, dst, 512);
     CARDi_SetRomOp(0xb7000000 | (c->src >> 8), c->src << 24);
-    *(volatile u32 *)0x040001a4 = data_021ff240[1];
+    IO_W((volatile u32 *)0x040001a4, data_021ff240[1]);
 }
 
 void CARDi_OnReadCard(void) {

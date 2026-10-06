@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/io_access.h"
 
 #pragma thumb off
 
@@ -81,10 +82,10 @@ extern "C" void WfcTopMenu_LoadBg() {
     WfcUtil_LoadFileTo((void *)"char/jbBgStep1.ncl.l", (void *)GX_LoadBGPltt);
     WfcUtil_LoadFileTo((void *)"char/jb2Menu.nsc.l", (void *)GX_LoadBG2Scr);
     sWfcTopMenuPalette = WfcFs_LoadFile(WfcUtil_LocalizePath(l), 0, 4);
-    *(volatile u16 *)0x4001008 = (*(volatile u16 *)0x4001008 & ~3) | 3;
-    *(volatile u16 *)0x400100a = (*(volatile u16 *)0x400100a & ~3) | 3;
-    *(volatile u16 *)0x400000a = (*(volatile u16 *)0x400000a & ~3) | 3;
-    *(volatile u16 *)0x400000c = (*(volatile u16 *)0x400000c & ~3) | 3;
+    IO_W((volatile u16 *)0x4001008, (IO_R((volatile u16 *)0x4001008) & ~3) | 3);
+    IO_W((volatile u16 *)0x400100a, (IO_R((volatile u16 *)0x400100a) & ~3) | 3);
+    IO_W((volatile u16 *)0x400000a, (IO_R((volatile u16 *)0x400000a) & ~3) | 3);
+    IO_W((volatile u16 *)0x400000c, (IO_R((volatile u16 *)0x400000c) & ~3) | 3);
 }
 
 extern "C" void WfcTopMenu_FadeIn() {

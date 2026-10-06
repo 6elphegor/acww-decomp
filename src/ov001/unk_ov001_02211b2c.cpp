@@ -3,6 +3,7 @@
 #include "nitro/gxoam.h"
 #include "ui/WfcApList.h"
 #include "ui/WfcTextEdit.h"
+#include "nitro/io_access.h"
 
 #pragma thumb off
 
@@ -507,8 +508,8 @@ void WfcApList_Exit() {
     WfcFs_FreeFile(sWfcApList->paletteFile);
     WfcGx_HidePlanes(1, 1);
     WfcGx_HidePlanes(0, 0x1d);
-    *(volatile u32 *)0x4000010 = 0;
-    *(volatile u32 *)0x4000018 = 0;
+    IO_W((volatile u32 *)0x4000010, 0);
+    IO_W((volatile u32 *)0x4000018, 0);
     if (sWfcApList->isConfirmed == 0) {
         WfcApScan_Free();
         WfcConfig_BeginEdit(WfcConfig_GetEdit()[0xf4]);
@@ -710,8 +711,8 @@ void WfcApList_ApplyBgScrollTask() {
     if (sWfcApList->bgScrollPending == 0) return;
     u32 v = FX_ModS32(sWfcApListScroll, 0x1c) - 0x32;
     v = (v << 16) & 0x1ff0000;
-    *(volatile u32 *)0x4000010 = v;
-    *(volatile u32 *)0x4000018 = v;
+    IO_W((volatile u32 *)0x4000010, v);
+    IO_W((volatile u32 *)0x4000018, v);
     sWfcApList->bgScrollPending = 0;
 }
 

@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MI (mi_dma_gxcommand.c): autoload_2 0x02116224-0x021162b0 (single function).
+#include "nitro/io_access.h"
 typedef unsigned int u32;
 typedef volatile u32 vu32;
 
@@ -14,7 +15,7 @@ void MIi_CardDmaCopy32(u32 dmaNo, u32 src, u32 dest, u32 size) {
     MIi_CheckDma0SourceAddress(dmaNo, src, size, 0x1000000);
     if (size == 0) return;
     dmaCntp = &((vu32 *)0x040000b0)[dmaNo * 3 + 2];
-    while (*dmaCntp & 0x80000000)
+    while (IO_R(dmaCntp) & 0x80000000)
         ;
     MIi_DmaSetParams(dmaNo, src, dest, 0xaf000001);
 }

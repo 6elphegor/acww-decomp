@@ -12,6 +12,7 @@
 #include "gfx/Vec3Z.h"
 #include "gfx/Mtx43.h"
 #include "gfx/ObjShadowStrip.h"
+#include "nitro/io_access.h"
 
 
 
@@ -348,15 +349,15 @@ void ObjShadowStrip::draw(VecFx32 *pos) {
         u8 lvl = ObjShadow_GetObjAlpha(pos, cullExtent);
         if (lvl > 1) {
             NNS_G3dGeFlushBuffer();
-            REG(0x40004a8) = texture->texImageParam;
-            REG(0x40004ac) = texture->plttBase;
-            REG(0x4000440) = 1;
+            IO_W(&REG(0x40004a8), texture->texImageParam);
+            IO_W(&REG(0x40004ac), texture->plttBase);
+            IO_W(&REG(0x4000440), 1);
             G3_LoadMtx43(sObjShadowViewMtx);
-            REG(0x40004a4) = (lvl << 16) | ((texture->polygonId << 24) | 0x8080);
+            IO_W(&REG(0x40004a4), (lvl << 16) | ((texture->polygonId << 24) | 0x8080));
             s32 *p7 = rowDepths;
             s32 *p28 = rowTexT;
             VecFx32 *vp = rowVertices;
-            REG(0x4000500) = 3;
+            IO_W(&REG(0x4000500), 3);
             s32 e1 = rowDepths[1];
             u32 i = 0;
             s32 lo, hi, neg;
@@ -386,21 +387,21 @@ void ObjShadowStrip::draw(VecFx32 *pos) {
                 }
                 c0 = SceneLights_GetRoomColor();
                 c1 = c0;
-                REG(0x4000480) = c1.v;
-                REG(0x4000488) = (u16)((texLeftS << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16);
+                IO_W(&REG(0x4000480), c1.v);
+                IO_W(&REG(0x4000488), (u16)((texLeftS << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16));
                 s16 zz = vp->z;
-                REG(0x400048c) = (u16)((lo << 11) >> 16) | ((u16)(s16)vp->y << 16);
-                REG(0x400048c) = (u16)zz;
-                REG(0x4000488) = (u16)((texRightS << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16);
+                IO_W(&REG(0x400048c), (u16)((lo << 11) >> 16) | ((u16)(s16)vp->y << 16));
+                IO_W(&REG(0x400048c), (u16)zz);
+                IO_W(&REG(0x4000488), (u16)((texRightS << 8) >> 16) | ((u16)((*p28 << 8) >> 16) << 16));
                 zz = vp->z;
-                REG(0x400048c) = (u16)((hi << 11) >> 16) | ((u16)(s16)vp->y << 16);
-                REG(0x400048c) = (u16)zz;
+                IO_W(&REG(0x400048c), (u16)((hi << 11) >> 16) | ((u16)(s16)vp->y << 16));
+                IO_W(&REG(0x400048c), (u16)zz);
                 p7++;
                 p28++;
                 vp++;
             }
-            REG(0x4000504) = 0;
-            REG(0x4000448) = 1;
+            IO_W(&REG(0x4000504), 0);
+            IO_W(&REG(0x4000448), 1);
             cachedZ = pos->z;
         }
     }
