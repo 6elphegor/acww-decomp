@@ -43,6 +43,12 @@ host. Nothing traps in normal play any more (`ACWW_IOHIST` lists any access that
 stays as a safety net on Linux. This is the first step toward macOS / 64-bit hosts (plan: register calls,
 portable threads, 64-bit-clean game code, own renderer).
 
+Threads switch stacks with `coro_switch.S` (i386, x86-64, arm64; `coro.h`), not `ucontext`. Interrupts are
+delivered at register accesses, when the game enables interrupts, halts or waits - no signal is needed for that.
+Two signal-based pieces remain, Linux-only safety nets: the fault handler (a register access the rewrite missed)
+and the hang guard (SIGALRM: the game spinning on memory for 100 ms without virtual time moving; it reports the
+site, and hasn't fired in testing). With them idle, runs are exactly repeatable (same screenshots and sound).
+
 Build: `python3 tools/configure_host.py && ninja -f build_host.ninja` (needs the 32-bit sysroot, SDL2 headers for the
 viewer, and a melonDS tree patched with `tools/host/melonds.patch` and built for 32-bit x86 in `build-core32`; see
 `--sysroot`, `--sdl2`, `--melonds`). Run: `ACWW_FIRMWARE=<firmware image> build/host_usa/acww <rom.nds>`: a window
@@ -67,7 +73,7 @@ The runtime (`modern/host/`):
   exception, after I/O accesses and when the game spins on memory; 60 Hz pacing.
 - `vram.c`: VRAM banking with mmap (each VRAMCNT change remaps the banks into the CPU's windows).
 - `melon.cpp`: the display through melonDS's GPU (register forwarding, 3D commands run at once, VRAM sync).
-- `os.c`: interrupt masking per thread, thread contexts on `ucontext`, lock ids, BIOS waits.
+- `os.c`: interrupt masking per thread, thread contexts (a host stack each, `coro.h`), lock ids, BIOS waits.
 - `pxi7.c`: the ARM7 services - start-up handshake, WVR, NVRAM (firmware image), RTC (fixed clock), touch panel,
   card backup (save file, replies delayed like the DS's); sound commands go to `snd7/`.
 - `snd7/`: the ARM7's sound driver, native: NitroSDK's driver (commands, sequence player, channel allocation,
@@ -102,7 +108,7 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 
 Not done yet: resetting an overlay's data when it is loaded again. The game reaches each scene later (in frames)
 than on the DS: the title at about frame 1500 instead of 900 (virtual time passes in waits that the DS doesn't
-have). Runs aren't exactly repeatable: when the game spins on memory, virtual time advances with the real clock.
+have).
 
 ## The choice: how to provide the hardware (decided: A for the display for now, B for sound)
 

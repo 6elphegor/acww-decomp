@@ -7,8 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ucontext.h>
-
+#include "coro.h"
 #include "host.h"
 
 // ---- interrupt masking (the CPSR I bit)
@@ -83,11 +82,13 @@ int host_async_tick(void) {
 }
 void OSi_ExceptionHandler(void) { host_fatal("OSi_ExceptionHandler"); }
 
-// ---- thread contexts: one ucontext per OSContext, in a side table
+// ---- thread contexts: a host stack per OSContext (coro.h), in a side table. The game's thread stacks (in DS
+// memory) aren't used for the host code; each thread runs on its own host stack.
 #define MAX_CTX 64
 #define HOST_STACK (512 * 1024)
-// irq: the thread's CPSR I bit while it isn't running (each thread has its own, as on the DS)
-typedef struct { void *key; ucontext_t uc; u8 *stack; u32 pc; int fresh; u32 irq; } HostCtx;
+// sp: the suspended stack (host_coro_switch); irq: the thread's CPSR I bit while it isn't running (each thread
+// has its own, as on the DS)
+typedef struct { void *key; void *sp; u8 *stack; u32 pc; int fresh; u32 irq; } HostCtx;
 static HostCtx sCtx[MAX_CTX];
 static void *sSaving;  // the thread whose OS_SaveContext is pending
 
@@ -102,9 +103,9 @@ static HostCtx *ctx_of(void *key) {
     return free_;
 }
 
-static void trampoline(u32 key) {
-    u32 *c = (u32 *)key;  // OSContext: cpsr, r[0..14], pc_plus4...
-    HostCtx *h = ctx_of((void *)key);
+static void trampoline(void *key) {
+    u32 *c = key;  // OSContext: cpsr, r[0..14], pc_plus4...
+    HostCtx *h = ctx_of(key);
     void (*f)(u32) = (void (*)(u32))h->pc;
     f(c[1]);
     ((void (*)(void))c[15])();  // r14: OS_ExitThread
@@ -128,24 +129,23 @@ void OS_LoadContext(void *t) {
         next->fresh = 0;
         next->irq = ((u32 *)t)[0] & 0x80;  // OSContext.cpsr
         if (!next->stack) next->stack = malloc(HOST_STACK);
-        getcontext(&next->uc);
-        next->uc.uc_stack.ss_sp = next->stack;
-        next->uc.uc_stack.ss_size = HOST_STACK;
-        next->uc.uc_link = 0;
-        makecontext(&next->uc, (void (*)(void))trampoline, 1, (u32)t);
+        if (!next->stack) host_fatal("no memory for a thread stack");
+        next->sp = host_coro_prepare(next->stack, HOST_STACK, trampoline, t);
     }
     if (sSaving) {
         HostCtx *cur = ctx_of(sSaving);
         sSaving = 0;
         cur->irq = sIrqDisabled;
         sIrqDisabled = next->irq;
-        swapcontext(&cur->uc, &next->uc);
+        host_coro_switch(&cur->sp, next->sp);
         return;  // resumed (sIrqDisabled was set by whoever switched back): the caller returns as if OS_SaveContext
                  // had returned 1
     }
+    // the current thread is gone (exited, destroyed): its stack isn't kept
+    static void *discarded;
     sIrqDisabled = next->irq;
-    setcontext(&next->uc);
-    host_fatal("setcontext failed");
+    host_coro_switch(&discarded, next->sp);
+    host_fatal("a discarded thread was resumed");
 }
 
 // ---- lock ids (ARM9: 0x40..0x7f)

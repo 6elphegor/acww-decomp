@@ -638,18 +638,40 @@ static void host_irq_inject(ucontext_t *uc) {
 
 int host_async_tick(void);
 static u64 sTickCycles;
+// where the game was found spinning (printed on SIGINT)
+static u32 sSpinEip[256], sSpinN[256];
+static void spin_log(u32 eip) {
+    for (int i = 0; i < 256; i++) {
+        if (sSpinEip[i] == eip || !sSpinEip[i]) { sSpinEip[i] = eip; sSpinN[i]++; return; }
+    }
+}
+static void spin_dump(void) {
+    for (int i = 0; i < 256 && sSpinEip[i]; i++) fprintf(stderr, "spin: %08x %u\n", sSpinEip[i], sSpinN[i]);
+}
+
 static void on_alarm(int sig, siginfo_t *si, void *ctx) {
     (void)sig; (void)si;
     ucontext_t *uc = ctx;
     u32 eip = (u32)uc->uc_mcontext.gregs[REG_EIP];
     int in_game = eip >= (u32)(uintptr_t)host_game_text_start && eip < (u32)(uintptr_t)host_game_text_end;
-    if (sCycles == sTickCycles && in_game) {
-        // the game spinning on memory: let time pass, then take the interrupts it raised. (Never in the runtime's
-        // or a library's code: the renderer may be in the middle of a frame there.)
+    // The game spinning on memory (waiting for an interrupt handler without touching a register, so virtual time
+    // stands still): after 100 ms of that, let time pass and take the interrupts it raised. Only a hang guard:
+    // the game reaches registers or waits far more often, and acting sooner would make runs depend on the real
+    // clock. Each site is reported (it wants an explicit wait). Never in the runtime's or a library's code.
+    static u32 still;
+    still = sCycles == sTickCycles ? still + 1 : 0;
+    sTickCycles = sCycles;
+    if (still >= 50 && in_game) {
+        still = 0;
+        spin_log(eip);
+        static u32 reported[16];
+        int known = 0;
+        for (int i = 0; i < 16; i++) known |= reported[i] == eip;
+        for (int i = 0; !known && i < 16; i++) if (!reported[i]) { reported[i] = eip; break; }
+        if (!known) fprintf(stderr, "host: the game spins without progress at %08x (frame %llu)\n", eip, (unsigned long long)host_frame());
         host_advance_to_next_event();
         host_irq_inject(uc);
     }
-    sTickCycles = sCycles;
 }
 
 static void on_int(int sig, siginfo_t *si, void *ctx) {
@@ -661,6 +683,7 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
         fprintf(stderr, "  %s %08x at %08x\n", l->write ? "write" : "read ", l->addr, l->eip);
     }
     prof_dump();
+    spin_dump();
     if (sIoHist) io_hist_dump();
     extern void snd7_output_close(void);
     snd7_output_close();
