@@ -229,7 +229,7 @@ static inline u32 GetOffsetFromPtr(const void *start, const void *end) { return 
 static inline void *GetMemPtr(MBlock *b) { return AddU32ToPtr(b, 16); }
 static inline void *GetEndAddr(MBlock *b) { return AddU32ToPtr(GetMemPtr(b), b->size); }
 static inline MBlock *GetMBlockHeadPtr(void *mem) { return (MBlock *)SubU32ToPtr(mem, 16); }
-static inline ExpHead *GetExpHead(HeapHead *h) { return (ExpHead *)AddU32ToPtr(h, 0x24); }
+static inline ExpHead *GetExpHead(HeapHead *h) { return (ExpHead *)AddU32ToPtr(h, (u32)&((HeapHead *)0)->u); }  // (0x24 on the DS)
 static inline void FillAlloc(HeapHead *h, void *dst, u32 size) {
     if (GetOptFlag(h) & 1) {
         volatile u32 zero = 0;

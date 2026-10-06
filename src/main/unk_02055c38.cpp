@@ -65,7 +65,7 @@ extern "C" void *gCurrentHeap;
 class MatTexPatTrack {
 public:
     void *patData;
-    u8 vramTask[0x1c];
+    u8 vramTask[HOST_SIZED(0x1c, TexVramTask) / 1] HOST_ALIGN8;
     u8 texIdx;
     u8 keyIdx;
     u8 matIdx;
@@ -86,8 +86,17 @@ public:
 
 
 
+#ifdef HOST
+#define TEXPAT_TASK1(t) ((u8 *)&(t)[1])
+#else
+#define TEXPAT_TASK1(t) ((u8 *)(t) + 0x1c)
+#endif
 struct TexPatVramUploader {
+#ifdef HOST
+    TexVramTask tasks[2];  // (the TexPatVramTasks: by its type on 64-bit hosts)
+#else
     u32 tasks[14];
+#endif
     BOOL uploadByName(u8 *hdr, const char *n1, const char *n2, u8 *x, s32 a, s32 b);
     BOOL uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b);
 };
@@ -286,7 +295,7 @@ BOOL TexPatVramUploader::uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s3
             s32 bb = b;
             u8 *t = _ZN12G3dResAccess11getPlttDataEi(x, bb);
             s32 r3 = _ZN12G3dResAccess11getPlttSizeEi(x, bb);
-            if (!_ZN11TexVramTask11requestPlttEjjjh((u8 *)tasks + 0x1c, t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
+            if (!_ZN11TexVramTask11requestPlttEjjjh(TEXPAT_TASK1(tasks), t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
                 _ZN11TexVramTask6cancelEv(this);
                 return FALSE;
             }

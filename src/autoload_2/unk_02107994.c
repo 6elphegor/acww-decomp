@@ -55,6 +55,28 @@ void GetTexSRTAnm_(u8 *res, u32 idx, u32 frame, u32 *out)
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitMatAnm-like): bind a material animation block to the model, build the material -> animation index table
+#ifdef HOST
+#include "nnsys/g3d_rt.h"
+// (by the members: include/nnsys/g3d_rt.h)
+void NNSi_G3dAnmObjInitNsBta(u8 *obj_, u8 *res, u8 *blk)
+{
+    G3dAnmObj *obj = (G3dAnmObj *)obj_;
+    u8 *dict = blk + *(u32 *)(blk + 8);
+    u32 i;
+    volatile u16 zero;
+    obj->funcAnm = (void *)(__UINTPTR_TYPE__)data_0213bcc0;
+    obj->numMapData = blk[24];
+    zero = 0;
+    MIi_CpuClear16(zero, obj->mapData, obj->numMapData * 2);
+    for (i = 0; i < res[9]; i++) {
+        u8 *d = res + 8 + *(u16 *)(res + 14);
+        s32 r = NNS_G3dGetResDictIdxByName(dict + 4, d + *(u16 *)(d + 2) + i * 16);
+        if (r >= 0) {
+            obj->mapData[r] = i | 0x100;
+        }
+    }
+}
+#else
 void NNSi_G3dAnmObjInitNsBta(u8 *obj, u8 *res, u8 *blk)
 {
     u8 *dict = blk + *(u32 *)(blk + 8);
@@ -72,6 +94,7 @@ void NNSi_G3dAnmObjInitNsBta(u8 *obj, u8 *res, u8 *blk)
         }
     }
 }
+#endif
 
 // NNS g3d (material animation, NNSi_G3dAnmObj*): evaluate one material at a frame (calls GetTexSRTAnm_), mark result as valid
 void NNSi_G3dAnmCalcNsBta(u32 *obj, s32 *a, u32 frame)

@@ -83,7 +83,7 @@ public:
     BOOL enterState01();
     BOOL enterState00();
 
-    /* 0x2d4 */ u32 collider[0x27]; // a BoxCollider (ctor/dtor called by hand: the original destroys it with D2)
+    /* 0x2d4 */ u32 collider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8; // a BoxCollider (ctor/dtor called by hand: the original destroys it with D2)
     /* 0x370 */ u8 isStartedLocally;
 };
 

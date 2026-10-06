@@ -1,3 +1,5 @@
+#include "gfx/MatTexVramTask.h"
+#include "gfx/ModelAnim.h"
 #include "item/DateSeededRandomSource.h"
 // mwcc-version: 1.2/base
 #include "types.h"
@@ -105,11 +107,11 @@ public:
     BOOL enterState00();
     void updateState();
 
-    /* 0x290 */ u32 partModel[0x2e];  // a AnimModel (ctor C1 / dtor D1 by hand)
-    /* 0x348 */ u32 partRes[0x29];  // a RoomObjRes (C1 / D1 by hand)
+    /* 0x290 */ u32 partModel[HOST_SIZED(0xb8, AnimModel) / 4] HOST_ALIGN8;  // a AnimModel (ctor C1 / dtor D1 by hand)
+    /* 0x348 */ u32 partRes[HOST_SIZED(0xa4, RoomObjRes) / 4] HOST_ALIGN8;  // a RoomObjRes (C1 / D1 by hand)
     /* 0x3ec */ u32 partTex;        // helper with plain ctor/dtor functions 02224d60 / 02224d5c
-    /* 0x3f0 */ u8 clothTexTask[0x28];   // a MatTexVramTask (C1 by hand)
-    /* 0x418 */ u32 matAnim[0xa];   // a ModelAnim (C1 / D1 by hand)
+    /* 0x3f0 */ u8 clothTexTask[HOST_SIZED(0x28, MatTexVramTask) / 1] HOST_ALIGN8;   // a MatTexVramTask (C1 by hand)
+    /* 0x418 */ u32 matAnim[HOST_SIZED(0x28, ModelAnim) / 4] HOST_ALIGN8;   // a ModelAnim (C1 / D1 by hand)
 };
 
 #define F(T, off) (*(T *)((u8 *)this + off))

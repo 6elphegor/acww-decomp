@@ -232,7 +232,7 @@ BOOL FieldGround::onCreate() {
     Unk_0204e858_Grid *g = gSceneBlockMap;
     numBlocksX = g->width;
     numBlocksZ = g->height;
-    blocks = (FieldGroundBlock *)Heap_Alloc(gBgHeap, numBlocksZ * (numBlocksX * 0xec));
+    blocks = (FieldGroundBlock *)Heap_Alloc(gBgHeap, numBlocksZ * (numBlocksX * HOST_SIZED(0xec, FieldGroundBlock)));
     {
         FieldGroundBlock *e = blocks;
         for (; e < blocks + numBlocksX * numBlocksZ; e++) {

@@ -1,3 +1,4 @@
+#include "game/BoxCollider.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -208,8 +209,8 @@ public:
     /* 0x0128 */ RoomWallpaper wallpaper;
     /* 0x1228 */ RoomCarpet carpet;
     /* 0x3328 */ RoomEntranceColliders entranceColliders;
-    /* 0x3460 */ u8 scene0ACollider[0x9c];  // BoxCollider (C1 / D2 called by hand, as the original does)
-    /* 0x34fc */ u8 scene22Shape[0x24];  // RoomScene22Shape
+    /* 0x3460 */ u8 scene0ACollider[HOST_SIZED(0x9c, BoxCollider) / 1] HOST_ALIGN8;  // BoxCollider (C1 / D2 called by hand, as the original does)
+    /* 0x34fc */ u8 scene22Shape[HOST_SIZED(0x24, RoomScene22Shape) / 1] HOST_ALIGN8;  // RoomScene22Shape
     /* 0x3520 */ s8 hourHandNode;
     /* 0x3521 */ s8 minuteHandNode;
     /* 0x3522 */ s8 roomSize;

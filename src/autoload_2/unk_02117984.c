@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK SND: snd_bank.c (wave data / instrument access) and the PXI init / FIFO send, autoload_2
 // 0x02117984-0x02117e8c. ARM code, mwcc 1.2/base, -O4,p.
@@ -196,6 +197,108 @@ void PXI_Init(void) {
 }
 
 // SND_... slot attach
+#ifdef HOST
+// The wave archive links live in the bank and wave archive files (SNDBankData / SNDWaveArc): 32-bit slots, also on
+// 64-bit hosts (the files' layout, the ARM7 side reads them too). The functions through 32-bit accessors.
+typedef struct Slot32 {
+    u32 a;
+    u32 next;
+} Slot32;
+typedef struct Obj32 {
+    u8 pad[0x18];
+    Slot32 s[4];
+} Obj32;
+#define P32(v) ((void *)(uptr)(v))
+#define U32(p) ((u32)(uptr)(p))
+
+void SND_AssignWaveArc(Obj *p_, s32 i, Obj *item_) {
+    Obj32 *p = (Obj32 *)p_, *item = (Obj32 *)item_;
+    Obj32 *old;
+    SNDi_LockMutex();
+    old = (Obj32 *)P32(p->s[i].a);
+    if (old != 0) {
+        Slot32 *q;
+        if (item == old) {
+            SNDi_UnlockMutex();
+            return;
+        }
+        q = (Slot32 *)P32(old->s[0].a);
+        if (&p->s[i] == q) {
+            old->s[0].a = p->s[i].next;
+            DC_StoreRange(P32(p->s[i].a), 0x3c);
+        } else {
+            if (q != 0) {
+                Slot32 *n;
+                do {
+                    n = (Slot32 *)P32(q->next);
+                    if (&p->s[i] == n) {
+                        break;
+                    }
+                    q = n;
+                } while (n != 0);
+            }
+            q->next = p->s[i].next;
+            DC_StoreRange(q, 8);
+        }
+    }
+    {
+        u32 prev = item->s[0].a;
+        item->s[0].a = U32(&p->s[i]);
+        p->s[i].next = prev;
+        p->s[i].a = U32(item);
+    }
+    SNDi_UnlockMutex();
+    DC_StoreRange(p, 0x3c);
+    DC_StoreRange(item, 0x3c);
+}
+
+void SND_DestroyBank(Obj *p_) {
+    Obj32 *p = (Obj32 *)p_;
+    s32 i;
+    SNDi_LockMutex();
+    for (i = 0; i < 4; i++) {
+        Obj32 *o = (Obj32 *)P32(p->s[i].a);
+        if (o != 0) {
+            Slot32 *q = (Slot32 *)P32(o->s[0].a);
+            if (&p->s[i] == q) {
+                o->s[0].a = p->s[i].next;
+                DC_StoreRange(o, 0x3c);
+            } else {
+                if (q != 0) {
+                    Slot32 *n;
+                    do {
+                        n = (Slot32 *)P32(q->next);
+                        if (&p->s[i] == n) {
+                            break;
+                        }
+                        q = n;
+                    } while (n != 0);
+                }
+                q->next = p->s[i].next;
+                DC_StoreRange(q, 8);
+            }
+        }
+    }
+    SNDi_UnlockMutex();
+}
+
+void SND_DestroyWaveArc(Obj *p_) {
+    Obj32 *p = (Obj32 *)p_;
+    Slot32 *n;
+    SNDi_LockMutex();
+    n = (Slot32 *)P32(p->s[0].a);
+    if (n != 0) {
+        do {
+            Slot32 *nx = (Slot32 *)P32(n->next);
+            n->a = 0;
+            n->next = 0;
+            DC_StoreRange(n, 8);
+            n = nx;
+        } while (n != 0);
+    }
+    SNDi_UnlockMutex();
+}
+#else
 void SND_AssignWaveArc(Obj *p, s32 i, Obj *item) {
     Obj *old;
     SNDi_LockMutex();
@@ -281,6 +384,8 @@ void SND_DestroyWaveArc(Obj *p) {
     }
     SNDi_UnlockMutex();
 }
+
+#endif
 
 void SND_GetFirstInstDataPos(Pair *p) {
     Pair t;

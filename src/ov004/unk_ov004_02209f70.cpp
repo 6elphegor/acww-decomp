@@ -1655,7 +1655,7 @@ public:
     s32 syncAct1();
 
     /* 0x840 */ s32 clothTex;
-    /* 0x844 */ u8 f_844[0x28];
+    /* 0x844 */ u8 f_844[HOST_SIZED(0x28, MatTexVramTask) / 1] HOST_ALIGN8;
     /* 0x86c */ u8 unk_86c;
     /* 0x86d */ u8 unk_86d;
     /* 0x86e */ u8 pad_86e;

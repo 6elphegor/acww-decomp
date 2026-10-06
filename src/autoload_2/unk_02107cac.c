@@ -115,6 +115,21 @@ void NNSi_G3dGetJointScaleBasic(u32 *obj, s32 *src, u8 *info, u32 flags)
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitVisAnm-like): bind a visibility animation block to the model
+#ifdef HOST
+#include "nnsys/g3d_rt.h"
+// (by the members: include/nnsys/g3d_rt.h)
+void NNSi_G3dAnmObjInitNsBva(u8 *out_, u32 res, u8 *blk)
+{
+    G3dAnmObj *out = (G3dAnmObj *)out_;
+    u32 i = 0;
+    out->funcAnm = (void *)(__UINTPTR_TYPE__)data_0213bcb8;
+    out->numMapData = blk[23];
+    out->resAnm = (void *)(__UINTPTR_TYPE__)res;
+    for (; i < out->numMapData; i++) {
+        out->mapData[i] = i | 0x100;
+    }
+}
+#else
 void NNSi_G3dAnmObjInitNsBva(u8 *out, u32 res, u8 *blk)
 {
     u32 i = 0;
@@ -125,6 +140,7 @@ void NNSi_G3dAnmObjInitNsBva(u8 *out, u32 res, u8 *blk)
         ((View *)out)->anm[i] = i | 0x100;
     }
 }
+#endif
 
 // NNS g3d (visibility animation, NNSi_G3dAnmCalcVis-like): look up the visibility bit for a joint at a frame
 void NNSi_G3dAnmCalcNsBva(u32 *out, u32 *a, u32 frame)
@@ -136,6 +152,27 @@ void NNSi_G3dAnmCalcNsBva(u32 *out, u32 *a, u32 frame)
 }
 
 // NNS g3d (NNSi_G3dAnmObjInitTexPatAnm-like): bind a texture pattern animation block to the model
+#ifdef HOST
+void NNSi_G3dAnmObjInitNsBtp(u8 *obj_, u8 *res, u8 *blk)
+{
+    G3dAnmObj *obj = (G3dAnmObj *)obj_;
+    u8 *dict = blk + *(u32 *)(blk + 8);
+    u32 i;
+    volatile u16 zero;
+    obj->funcAnm = (void *)(__UINTPTR_TYPE__)data_0213bcc4;
+    obj->numMapData = blk[24];
+    obj->resAnm = res;
+    zero = 0;
+    MIi_CpuClear16(zero, obj->mapData, obj->numMapData * 2);
+    for (i = 0; i < res[13]; i++) {
+        u8 *d = res + 12 + *(u16 *)(res + 18);
+        s32 r = NNS_G3dGetResDictIdxByName(dict + 4, d + *(u16 *)(d + 2) + i * 16);
+        if (r >= 0) {
+            obj->mapData[r] = i | 0x100;
+        }
+    }
+}
+#else
 void NNSi_G3dAnmObjInitNsBtp(u8 *obj, u8 *res, u8 *blk)
 {
     u8 *dict = blk + *(u32 *)(blk + 8);
@@ -154,6 +191,7 @@ void NNSi_G3dAnmObjInitNsBtp(u8 *obj, u8 *res, u8 *blk)
         }
     }
 }
+#endif
 
 // NNS g3d (texture animation): texture index + tex scale result for the current frame
 s32 SetTexParamaters_(u8 *A, u32 x, u8 *out)

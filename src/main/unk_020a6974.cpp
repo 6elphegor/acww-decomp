@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "Unk_020d8c7c.h"
@@ -1043,7 +1044,7 @@ void MsgRenderProcessor::onTag(u8 *p) {
 // ---- MsgTextLabel
 extern "C" MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c) {
     BOOL ok = FALSE;
-    void *mem = Heap_Alloc(gTextHeap, 0x84);
+    void *mem = Heap_Alloc(gTextHeap, HOST_SIZED(0x84, MsgTextLabel));
     MsgTextLabel *obj = NULL;
     if (mem != NULL) {
         obj = new (mem) MsgTextLabel(a, b, c);
@@ -1057,7 +1058,7 @@ extern "C" MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c) {
 
 extern "C" MsgTextLabel *MsgTextLabel_CreateBuffer(s32 a, s32 b, s32 c) {
     BOOL ok = FALSE;
-    void *mem = Heap_Alloc(gTextHeap, 0x84);
+    void *mem = Heap_Alloc(gTextHeap, HOST_SIZED(0x84, MsgTextLabel));
     MsgTextLabel *obj = NULL;
     if (mem != NULL) {
         obj = new (mem) MsgTextLabel(a, b, c);

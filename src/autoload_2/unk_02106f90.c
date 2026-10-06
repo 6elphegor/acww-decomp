@@ -18,6 +18,18 @@ typedef struct RS {
     void (*fn)(void *, void *, void *, void *);   // 0xe8
 } RS;
 
+#ifdef HOST
+// NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h: the pointers move the later members on 64-bit hosts)
+typedef struct TexObj {
+    u32 pad0, pad4;
+    u8 *res;                 // resAnm
+    __UINTPTR_TYPE__ w0c;    // funcAnm
+    void *next_, *resTex_;
+    u8 prio_;
+    u8 cnt;                  // numMapData
+    u16 tbl[1];              // mapData
+} TexObj;
+#else
 typedef struct TexObj {
     u32 pad0, pad4;
     u8 *res;         // 0x08
@@ -26,6 +38,7 @@ typedef struct TexObj {
     u8 cnt;          // 0x19
     u16 tbl[1];      // 0x1a
 } TexObj;
+#endif
 
 typedef struct JOut {
     u32 flags;

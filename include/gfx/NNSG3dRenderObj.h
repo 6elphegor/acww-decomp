@@ -2,6 +2,7 @@
 #define GFX_NNSG3DRENDEROBJ_H
 
 #include "types.h"
+#include "uptr.h"
 #include "gfx/Mtx33.h"
 #include "gfx/VecFx32.h"
 
@@ -37,11 +38,24 @@ struct NNSG3dMatAnmResult {
     /* 0x34 */ s32 magH;
 };
 
+#ifdef HOST
+// (the members before ptrUser: pointers - include/nnsys/g3d_rt.h, G3dRenderObj)
+struct NNSG3dRenderObj {
+    u32 flag;
+    void *pad_04[8];        // resMdl .. cbFunc
+    u8 pad_24[4];           // cbCmd, cbTiming
+    void *pad_28;           // cbInitFunc
+    uptr ptrUser;
+    u8 *ptrUserSbc;
+    NNSG3dJntAnmResult *recJntAnm;
+};
+#else
 struct NNSG3dRenderObj {
     /* 0x00 */ u8 pad_00[0x2c];
     /* 0x2c */ u32 ptrUser;
     /* 0x30 */ u8 *ptrUserSbc;
     /* 0x34 */ NNSG3dJntAnmResult *recJntAnm;
 };
+#endif
 
 #endif

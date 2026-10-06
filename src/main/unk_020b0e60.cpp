@@ -120,7 +120,7 @@ static inline BOOL func_020b2768_is_flag() {
 
 static inline u8 *GetCell(Grid *g, s32 x, s32 y) {
     if (x < g->w && y < g->h && g->data) {
-        return g->data + (x + y * g->w) * 0x28;
+        return g->data + (x + y * g->w) * MAPBLOCK_SIZE;
     }
     return NULL;
 }

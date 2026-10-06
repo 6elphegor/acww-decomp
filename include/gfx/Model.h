@@ -3,6 +3,10 @@
 
 #include "types.h"
 #include "gfx/Mtx43.h"
+#include "uptr.h"
+#ifdef HOST
+#include "nnsys/g3d_rt.h"
+#endif
 
 // 3D model instance (0x98 bytes): an NNS G3D render object at 0x08, the model resource at 0x5c, its texture/palette
 // key, a 4x3 base matrix at 0x64 and the texture VRAM slot. Defined in src/main/unk_02055200.cpp (ctor 0x02055704);
@@ -41,6 +45,27 @@ public:
 
     /* 0x04 */ u16 modelFlags;
     /* 0x06 */ u16 unk_06;
+#ifdef HOST
+    // the render object by its real layout (include/nnsys/g3d_rt.h: pointers), the names at its members
+    union {
+        u8 unk_08[sizeof(G3dRenderObj)];
+        G3dRenderObj ro;
+        struct {
+            u32 renderObj;              // flag
+            u8 *renderResMdl;           // resMdl
+            void *pad_10[2];            // anmMat, funcBlendMat
+            NNSG3dAnmObj *renderAnmJnt; // anmJnt
+            sptr unk_1c;                // funcBlendJnt
+            NNSG3dAnmObj *renderAnmVis; // anmVis
+            void *pad_24[2];            // funcBlendVis, cbFunc
+            u8 pad_24b[4];              // cbCmd, cbTiming
+            void *pad_28;               // cbInitFunc
+            sptr renderUserPtr;         // ptrUser
+            u8 *pad_30;                 // ptrUserSbc
+            void *renderJntRecord;      // recJntAnm
+        };
+    };
+#else
     union {
         /* 0x08 */ u8 unk_08[0x2c]; // NNSG3dRenderObj (0x54 bytes, up to 0x5c)
         struct {
@@ -62,6 +87,7 @@ public:
             /* 0x40 */ u8 pad_40[0x1c];
         };
     };
+#endif
     /* 0x5c */ NNSG3dResMdl *resMdl;
     /* 0x60 */ u32 resTex;
     union {

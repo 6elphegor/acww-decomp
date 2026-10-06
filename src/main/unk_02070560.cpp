@@ -1,3 +1,7 @@
+#include "gfx/TexPatVramAnim.h"
+#include "uptr.h"
+// a TexPatVramTasks (0x38 on the DS)
+#define TEXPAT_TASKS_SIZE HOST_SIZED(0x38, TexPatVramTasks)
 #include "town/TownBlockCell.h"
 #include "types.h"
 #include "save/PatternOrder.h"
@@ -926,24 +930,24 @@ void PatternTexCache::load() {
     u8 *a, *b, *c, *d;
     u32 i, j;
     sPlayerPatternTexWork = (u8 *)Heap_Alloc(h, 0x1620);
-    b = (u8 *)Heap_Alloc(h, 0x1c0);
+    b = (u8 *)Heap_Alloc(h, 8 * TEXPAT_TASKS_SIZE);
     sPlayerPatternVramTasks = b;
     a = sPlayerPatternTexWork;
     for (i = 0; i < 8; i++) {
         if (a != 0) ClothTex_Construct(a);
         if (b != 0) _ZN15TexPatVramTasksC1Ev(b);
         a += 0x2c4;
-        b += 0x38;
+        b += TEXPAT_TASKS_SIZE;
     }
     sAblePatternTexWork = (u8 *)Heap_Alloc(h, 0x1620);
-    d = (u8 *)Heap_Alloc(h, 0x1c0);
+    d = (u8 *)Heap_Alloc(h, 8 * TEXPAT_TASKS_SIZE);
     sAblePatternVramTasks = d;
     c = sAblePatternTexWork;
     for (j = 0; j < 8; j++) {
         if (c != 0) ClothTex_Construct(c);
         if (d != 0) _ZN15TexPatVramTasksC1Ev(d);
         c += 0x2c4;
-        d += 0x38;
+        d += TEXPAT_TASKS_SIZE;
     }
 }
 namespace n3 {
@@ -1020,7 +1024,11 @@ void PatternPaletteFile::unload() {
     clear();
 }
 namespace n3 {
+#ifdef HOST
+extern "C" u8 *PatternPaletteFile_GetPalette(u8 **self, s32 i) { return ((PatternPaletteFile *)self)->palettes[i & 15]; }
+#else
 extern "C" u8 *PatternPaletteFile_GetPalette(u8 **self, s32 i) { return *(u8 **)((u8 *)self + ((i & 15) << 2) + 4); }
+#endif
 }
 PatternTexKeys::PatternTexKeys() {
     using namespace n3; PatternTexKeys_Clear(this); }
@@ -1906,7 +1914,7 @@ extern "C" BOOL PatternTex_UploadPlayer(u32 a, u32 b) {
         void *q = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(PlayerData_GetResident(gSavePlayers, x)), y);
         s32 off = y * 0x2c4;
         ClothTex_LoadPattern(sPlayerPatternTexWork + off, (s32)q);
-        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sPlayerPatternVramTasks + y * 0x38, t, 0, 0, ClothTex_GetTex(sPlayerPatternTexWork + off), 0, 0);
+        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sPlayerPatternVramTasks + y * TEXPAT_TASKS_SIZE, t, 0, 0, ClothTex_GetTex(sPlayerPatternTexWork + off), 0, 0);
         return TRUE;
     }
     return FALSE;
@@ -1917,7 +1925,7 @@ extern "C" BOOL PatternTex_UploadAble(u32 x) {
     if (t && sAblePatternTexWork && sAblePatternVramTasks) {
         s32 off = i * 0x2c4;
         ClothTex_LoadPattern(sAblePatternTexWork + off, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, x));
-        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sAblePatternVramTasks + i * 0x38, t, 0, 0, ClothTex_GetTex(sAblePatternTexWork + off), 0, 0);
+        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sAblePatternVramTasks + i * TEXPAT_TASKS_SIZE, t, 0, 0, ClothTex_GetTex(sAblePatternTexWork + off), 0, 0);
         return TRUE;
     }
     return FALSE;

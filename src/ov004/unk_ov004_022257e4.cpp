@@ -1,3 +1,4 @@
+#include "game/BoxCollider.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -69,9 +70,9 @@ public:
 
     /* 0x290 */ ModelAnim matAnim; // curFrame (0x298) and anmObj (0x2a8) are read through F()
     /* 0x2b0 */ u32 matIdx[3];      // material indices of m_lt / m_ltdoor / m_open (read through F())
-    /* 0x2bc */ u32 doorCollider[0x27];    // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
-    /* 0x358 */ u32 leftCollider[0x27];
-    /* 0x3f4 */ u32 rightCollider[0x27];
+    /* 0x2bc */ u32 doorCollider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8;    // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
+    /* 0x358 */ u32 leftCollider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8;
+    /* 0x3f4 */ u32 rightCollider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8;
     /* 0x490 */ u8 pad_490[8];
 };
 

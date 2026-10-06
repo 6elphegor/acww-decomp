@@ -1,3 +1,4 @@
+#include "game/BoxCollider.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -85,7 +86,7 @@ public:
     void initCollision();
 
     /* 0x130 */ s32 talkAct;
-    /* 0x134 */ u8 collider[0x9c]; // BoxCollider (ctor C1 / dtor D2 called by hand, as the original does)
+    /* 0x134 */ u8 collider[HOST_SIZED(0x9c, BoxCollider) / 1] HOST_ALIGN8; // BoxCollider (ctor C1 / dtor D2 called by hand, as the original does)
     /* 0x1d0 */ u32 touchBox[0x2a8 / 4]; // a TouchPickBox (ctor C2 / dtor D2 called by hand)
 };
 

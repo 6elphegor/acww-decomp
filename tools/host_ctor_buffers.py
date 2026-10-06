@@ -25,6 +25,16 @@ def class_headers():
     return out
 
 
+def in_type_body(t, pos):
+    """whether the line at pos is inside a class / struct definition (scanning back to its opening line)"""
+    for line in reversed(t[:pos].split("\n")[:-1]):
+        if re.match(r"(?:typedef\s+)?(?:class|struct|union)\b[^;()]*\{\s*$", line):
+            return True
+        if re.match(r"\S", line) and not line.startswith(("#", "//", "public:", "private:", "protected:")):
+            return False
+    return False
+
+
 def main():
     check = "--check" in sys.argv
     files = [a for a in sys.argv[1:] if a != "--check"]
@@ -43,6 +53,26 @@ def main():
             region = before[fn_start if fn_start >= 0 else 0:]
             decls = list(re.finditer(r"\b(u8|s8|char|u16|s16|u32|s32|int)\s+" + re.escape(var) + r"\s*\[\s*(0x[0-9a-fA-F]+|\d+)\s*\]", region))
             if not decls:
+                # a member of the class (an array member constructed in place): its declaration in a class / struct body
+                decls = list(re.finditer(r"^(\s+)(?:/\*[^*]*\*/\s*)?(u8|s8|char|u16|s16|u32|s32|int)\s+" + re.escape(var) +
+                                         r"\s*\[\s*(0x[0-9a-fA-F]+|\d+)\s*\]\s*;", t, re.M))
+                decls = [d for d in decls if in_type_body(t, d.start())]
+                if len(decls) != 1:
+                    continue
+                d = decls[0]
+                elem, count = d.group(2), int(d.group(3), 0)
+                if cls not in headers and not re.search(r"^(?:class|struct) %s\b[^;]*\{" % re.escape(cls), t, re.M):
+                    print(f"{f}: {cls} ({var}): no header with the class, skipped")
+                    continue
+                byte_size = count * ELEM[elem]
+                s0 = d.start(2)
+                e0 = d.end() - 1  # before the ';'
+                new = f"{elem} {var}[HOST_SIZED({byte_size:#x}, {cls}) / {ELEM[elem]}] HOST_ALIGN8"
+                if (s0, e0, new) not in edits:
+                    edits.append((s0, e0, new))
+                    if cls in headers:
+                        need.add(headers[cls])
+                    print(f"{f}: member {t[s0:e0]} -> {new}  ({cls})")
                 continue
             d = decls[-1]
             elem, count = d.group(1), int(d.group(2), 0)

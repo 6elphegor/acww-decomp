@@ -8,7 +8,16 @@ typedef int s32;
 typedef int BOOL;
 #define NULL 0
 
+#ifdef HOST
+// NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h; next and priority move on 64-bit hosts)
+#include "nnsys/g3d_rt.h"
+typedef struct Node { int frame, ratio; void *resAnm; void *funcAnm; struct Node *next; void *resTex; u8 prio; } Node;
+#define NODE_RES_KIND(n) (*(u8 *)(n)->resAnm)
+#define RO(o) ((G3dRenderObj *)(o))
+#else
 typedef struct Node { u8 pad[0x10]; struct Node *next; u8 pad14[4]; u8 prio; } Node;
+#define NODE_RES_KIND(n) (*(u8 *)((u32 *)(n))[2])
+#endif
 
 typedef struct TexData {
     u32 sig;            // 0x00
@@ -44,6 +53,21 @@ extern void GX_LoadTex(void *, u32, u32);    // GX_LoadTexPltt
 extern void GX_EndLoadTex(void);                // GX_EndLoadTexPltt
 void addLink_(Node **head, Node *n);
 
+#ifdef HOST
+// (by the members; the default blend functions are pointers - unk_02104000.c defines them void *)
+void NNS_G3dRenderObjInit(u32 *o, u32 x)
+{
+    extern void *data_0213bcd4_p __asm__("data_0213bcd4");
+    extern void *data_0213bcd0_p __asm__("data_0213bcd0");
+    extern void *data_0213bccc_p __asm__("data_0213bccc");
+    volatile u32 zero = 0;
+    MIi_CpuClear32(zero, o, sizeof(G3dRenderObj));
+    RO(o)->funcBlendMat = data_0213bcd4_p;
+    RO(o)->funcBlendJnt = data_0213bcd0_p;
+    RO(o)->funcBlendVis = data_0213bccc_p;
+    RO(o)->resMdl = (void *)(__UINTPTR_TYPE__)x;
+}
+#else
 void NNS_G3dRenderObjInit(u32 *o, u32 x)
 {
     volatile u32 zero = 0;
@@ -53,6 +77,7 @@ void NNS_G3dRenderObjInit(u32 *o, u32 x)
     o[7] = data_0213bccc;
     o[1] = x;
 }
+#endif
 
 // insert a node (chain) into a list sorted by priority
 void addLink_(Node **head, Node *n)

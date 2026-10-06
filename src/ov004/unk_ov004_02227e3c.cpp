@@ -1,3 +1,4 @@
+#include "game/BoxCollider.h"
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -131,8 +132,8 @@ public:
     BOOL enterState00();
     void updateState();
 
-    /* 0x2d4 */ u32 collider[0x27]; // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
-    /* 0x370 */ u32 touchBox[0xaa]; // a TouchPickBox (ctor C2 / dtor D2 by hand)
+    /* 0x2d4 */ u32 collider[HOST_SIZED(0x9c, BoxCollider) / 4] HOST_ALIGN8; // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
+    /* 0x370 */ u32 touchBox[HOST_SIZED(0x2a8, TouchPickBox) / 4] HOST_ALIGN8; // a TouchPickBox (ctor C2 / dtor D2 by hand)
     /* 0x618 */ s32 act;
 };
 

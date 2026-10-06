@@ -8,7 +8,16 @@ typedef int s32;
 typedef int BOOL;
 #define NULL 0
 
+#ifdef HOST
+// NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h; next and priority move on 64-bit hosts)
+#include "nnsys/g3d_rt.h"
+typedef struct Node { int frame, ratio; void *resAnm; void *funcAnm; struct Node *next; void *resTex; u8 prio; } Node;
+#define NODE_RES_KIND(n) (*(u8 *)(n)->resAnm)
+#define RO(o) ((G3dRenderObj *)(o))
+#else
 typedef struct Node { u8 pad[0x10]; struct Node *next; u8 pad14[4]; u8 prio; } Node;
+#define NODE_RES_KIND(n) (*(u8 *)((u32 *)(n))[2])
+#endif
 
 typedef struct TexData {
     u32 sig;            // 0x00
@@ -64,6 +73,25 @@ BOOL removeLink_(Node **head, Node *n)
 }
 
 // remove a node from any of the three lists
+#ifdef HOST
+// (the members by name; the callers pass the callbacks as u32: the program is below 4 GB)
+void NNS_G3dRenderObjRemoveAnmObj(u8 *o, Node *n)
+{
+    if (removeLink_((Node **)&RO(o)->anmMat, n) || removeLink_((Node **)&RO(o)->anmJnt, n) ||
+        removeLink_((Node **)&RO(o)->anmVis, n)) {
+        RO(o)->flag |= 0x10;
+    }
+}
+
+void NNS_G3dRenderObjSetCallBack(u8 *o, u32 a, u32 b, u32 c, u32 d)
+{
+    RO(o)->cbFunc = (void *)(__UINTPTR_TYPE__)a;
+    RO(o)->cbCmd = c;
+    RO(o)->cbTiming = d;
+}
+
+void NNS_G3dRenderObjSetInitFunc(u8 *o, u32 v) { RO(o)->cbInitFunc = (void *)(__UINTPTR_TYPE__)v; }
+#else
 void NNS_G3dRenderObjRemoveAnmObj(u8 *o, Node *n)
 {
     if (removeLink_((Node **)(o + 8), n) || removeLink_((Node **)(o + 16), n) || removeLink_((Node **)(o + 24), n)) {
@@ -79,6 +107,7 @@ void NNS_G3dRenderObjSetCallBack(u8 *o, u32 a, u32 b, u32 c, u32 d)
 }
 
 void NNS_G3dRenderObjSetInitFunc(u8 *o, u32 v) { *(u32 *)(o + 0x28) = v; }
+#endif
 
 // palette size in bytes
 u32 NNS_G3dTexGetRequiredSize(TexData *o) { return o->plttSize << 3; }

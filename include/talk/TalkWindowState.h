@@ -2,6 +2,7 @@
 #define TALK_TALKWINDOWSTATE_H
 
 #include "types.h"
+#include "uptr.h"
 
 class TalkMsgRequest;
 class ChoiceList;
@@ -76,6 +77,80 @@ public:
     void setNextMessage(u8 *src, void *s);
     BOOL setNextMessageIfUnset(u8 *src, void *s);
 
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in TalkWindow)
+    u32 index;  // DS +0x0
+    s32 state;  // DS +0x4
+    s32 nextState;  // DS +0x8
+    s32 stateStep;  // DS +0xc
+    u32 unk_10;  // DS +0x10
+    s32 openMode;  // DS +0x14
+    u8 choicePending;  // DS +0x18
+    u8 pad_19[0x7];  // DS +0x19 [0x3]
+    u8 frame[0x90];  // DS +0x1c [0x80]
+    s32 scrollY;  // DS +0x9c
+    s16 shakeAngle;  // DS +0xa0
+    u8 pad_a2[0x2];  // DS +0xa2 [0x2]
+    s32 shakeAmplitude;  // DS +0xa4
+    s32 shakeDecay;  // DS +0xa8
+    s32 shakeScaleX;  // DS +0xac
+    s32 shakeScaleY;  // DS +0xb0
+    u8 choiceMenu[0x330];  // DS +0xb4 [0x260]
+    u8 choiceList[0x300];  // DS +0x314 [0x278]
+    u8 textBox[0x4e0];  // DS +0x58c [0x490]
+    u8 msgBuffer[0x8a8];  // DS +0xa1c [0x8a4]
+    u8 parser[0x44];  // DS +0x12c0 [0x30]
+    s32 parserPrintStatus;  // DS +0x12f0
+    u8 pad_12f4[0xe0];  // DS +0x12f4 [0xa4]
+    u8 parserChoiceDeferred;  // DS +0x1398
+    u8 pad_1399[0x17];  // DS +0x1399 [0xb]
+    u8 runner[0x18];  // DS +0x13a4 [0xc]
+    TalkMsgRequest * request;  // DS +0x13b0
+    u8 msgAttr[0x10];  // DS +0x13b4 [0xc]
+    u8 slots[0x2c0];  // DS +0x13c0 [0x23c]
+    u8 namedSlots[0x100];  // DS +0x15fc [0xd0]
+    uptr namedSlotColors[0x4];  // DS +0x16cc [0x10] (pointers)
+    u8 voice[0x38];  // DS +0x16dc [0x2c]
+    s32 year;  // DS +0x1708
+    u8 day;  // DS +0x170c
+    u8 month;  // DS +0x170d
+    u8 minute;  // DS +0x170e
+    u8 hour;  // DS +0x170f
+    s32 weekday;  // DS +0x1710
+    s32 second;  // DS +0x1714
+    s32 timeOfDay;  // DS +0x1718
+    u8 hpad_0[0x4];
+    u8 yearText[0x38];  // DS +0x171c [0x2c]
+    u8 monthText[0x40];  // DS +0x1748 [0x34]
+    u8 dayText[0x38];  // DS +0x177c [0x2c]
+    u8 weekdayText[0x40];  // DS +0x17a8 [0x34]
+    u8 hourText[0x38];  // DS +0x17dc [0x2c]
+    u8 minuteText[0x38];  // DS +0x1808 [0x2c]
+    u8 secondText[0x38];  // DS +0x1834 [0x2c]
+    u8 catchphrase[0x30];  // DS +0x1860 [0x20]
+    u8 townName[0x28];  // DS +0x1880 [0x1c]
+    u8 playerName[0x28];  // DS +0x189c [0x1c]
+    u8 friendName[0x28];  // DS +0x18b8 [0x1c]
+    u8 enemyName[0x28];  // DS +0x18d4 [0x1c]
+    u8 randomVillagerName[0x28];  // DS +0x18f0 [0x1c]
+    u8 otherResidentName[0x28];  // DS +0x190c [0x1c]
+    u8 trend[0x40];  // DS +0x1928 [0x34]
+    u8 impression[0x40];  // DS +0x195c [0x34]
+    u8 nickname[0x28];  // DS +0x1990 [0x1c]
+    u8 compliment[0x30];  // DS +0x19ac [0x24]
+    u8 greeting[0x33];  // DS +0x19d0 [0x27]
+    u8 nextMsgIndex;  // DS +0x19f7
+    u8 nextFileName[0x1a];  // DS +0x19f8 [0x1a]
+    u8 advancePending;  // DS +0x1a12
+    u8 advanceLocked;  // DS +0x1a13
+    u8 pad_1a14[0x2];  // DS +0x1a14 [0x2]
+    u8 choiceNotifyPending;  // DS +0x1a16
+    u8 voicePlaying;  // DS +0x1a17
+    u8 inputDisabled;  // DS +0x1a18
+    u8 noOpenSe;  // DS +0x1a19
+    u8 silent;  // DS +0x1a1a
+    u8 pad_1a1b;  // DS +0x1a1b
+#else
     /* 0x0000 */ u32 index;
     /* 0x0004 */ s32 state;
     /* 0x0008 */ s32 nextState;
@@ -146,6 +221,7 @@ public:
     /* 0x1a19 */ u8 noOpenSe;
     /* 0x1a1a */ u8 silent;
     u8 pad_1a1b;
+#endif
 };
 
 #endif // TALK_TALKWINDOWSTATE_H

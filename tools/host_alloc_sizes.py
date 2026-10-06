@@ -97,6 +97,14 @@ def main():
                 if N % S:
                     continue
                 new_arg = f"HOST_SIZED({a}, {T})" if N == S else f"HOST_SIZED({a}, {T}[{N // S}])"
+            elif re.fullmatch(r"[\w\s*()>.-]+", a) and "*" in a and not re.search(r"[+/]", a):
+                # a product (any nesting): its one literal equal to T's size
+                lits = [x for x in re.finditer(r"\b(0x[0-9a-fA-F]+|\d+)\b", a)]
+                hits = [x for x in lits if int(x.group(1), 0) == sizes[T]]
+                if len(hits) != 1 or len(lits) != 1:
+                    continue
+                x = hits[0]
+                new_arg = a[:x.start()] + f"HOST_SIZED({x.group(1)}, {T})" + a[x.end():]
             else:
                 continue
             # replace the k-th argument in the source text

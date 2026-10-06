@@ -65,6 +65,15 @@ typedef struct SndHeapBlk {
     u32 arg1;               // 0x14
     u8 pad[8];
 } SndHeapBlk;
+// the heap's and a block's header sizes (16 and 32 on the DS; the structures are larger on 64-bit hosts, the block
+// header stays a multiple of the blocks' 32-byte alignment)
+#ifdef HOST
+#define SNDHEAP_HDR ((sizeof(SndHeap) + 3) & ~3)
+#define SNDHEAP_BLK_HDR ((sizeof(SndHeapBlk) + 31) & ~31)
+#else
+#define SNDHEAP_HDR 16
+#define SNDHEAP_BLK_HDR 32
+#endif
 
 extern Cap data_021fb7b4;
 extern void NNS_FndInitList(NNSFndList *, u16);
@@ -129,10 +138,10 @@ SndHeap *NNS_SndHeapCreate(u32 start, u32 size)
         return 0;
     }
     avail = end - (u32)h;
-    if (avail < 16) {
+    if (avail < SNDHEAP_HDR) {
         return 0;
     }
-    heap = NNS_FndCreateFrmHeapEx((u32)h + 16, avail - 16, 0);
+    heap = NNS_FndCreateFrmHeapEx((u32)h + SNDHEAP_HDR, avail - SNDHEAP_HDR, 0);
     if (heap == 0) {
         return 0;
     }
@@ -162,7 +171,7 @@ void NNS_SndHeapClear(SndHeap *h)
             b = NNS_FndGetPrevListObject(lv, 0);
             while (b != 0) {
                 if (b->cb != 0) {
-                    b->cb((void *)((u8 *)b + 32), b->size, b->arg0, b->arg1);
+                    b->cb((void *)((u8 *)b + SNDHEAP_BLK_HDR), b->size, b->arg0, b->arg1);
                     called = 1;
                 }
                 b = NNS_FndGetPrevListObject(lv, b);
@@ -181,7 +190,7 @@ void NNS_SndHeapClear(SndHeap *h)
 // NNS_SndHeapAlloc
 void *NNS_SndHeapAlloc(SndHeap *h, u32 size, void (*cb)(void *, u32, void *, u32), void *a, u32 b)
 {
-    SndHeapBlk *blk = NNS_FndAllocFromFrmHeapEx(h->heap, ((size + 31) & ~31) + 32, 32);
+    SndHeapBlk *blk = NNS_FndAllocFromFrmHeapEx(h->heap, ((size + 31) & ~31) + SNDHEAP_BLK_HDR, 32);
     NNSFndList *lv;
     if (blk == 0) {
         return 0;
@@ -192,7 +201,7 @@ void *NNS_SndHeapAlloc(SndHeap *h, u32 size, void (*cb)(void *, u32, void *, u32
     blk->arg0 = a;
     blk->arg1 = b;
     NNS_FndAppendListObject(lv, blk);
-    return (u8 *)blk + 32;
+    return (u8 *)blk + SNDHEAP_BLK_HDR;
 }
 
 // NNS_SndHeapSaveState
@@ -224,7 +233,7 @@ void NNS_SndHeapLoadState(SndHeap *h, s32 level)
             b = NNS_FndGetPrevListObject(lv, b);
             while (b != 0) {
                 if (b->cb != 0) {
-                    b->cb((void *)((u8 *)b + 32), b->size, b->arg0, b->arg1);
+                    b->cb((void *)((u8 *)b + SNDHEAP_BLK_HDR), b->size, b->arg0, b->arg1);
                     called = 1;
                 }
                 b = NNS_FndGetPrevListObject(lv, b);
@@ -262,7 +271,11 @@ BOOL InitHeap(SndHeap *h, void *heap)
 // NNS_SndHeapCreateLevel (push a state)
 BOOL NewSection(SndHeap *h)
 {
+#ifdef HOST
+    NNSFndList *lv = NNS_FndAllocFromFrmHeapEx(h->heap, sizeof(NNSFndList) + sizeof(NNSFndLink), 8);  // a section: list, link
+#else
     NNSFndList *lv = NNS_FndAllocFromFrmHeapEx(h->heap, 20, 4);
+#endif
     if (lv == 0) {
         return 0;
     }

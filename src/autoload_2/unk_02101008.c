@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) foundation library: list.c, heap.c, expheap.c, frmheap.c, an archive helper and the
 // graphics-foundation VRAM manager (gfd). UNMATCHED functions of N001 (best C; see the .diff files). ARM code, mwcc 1.2/base, -O4,p.
@@ -219,7 +220,7 @@ void NNS_GfdResetFrmTexVramState(void);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
-static inline FrmHead *GetFrmHead(HeapHead *h) { return (FrmHead *)((u32)h + 0x24); }
+static inline FrmHead *GetFrmHead(HeapHead *h) { return (FrmHead *)((uptr)h + (u32)&((HeapHead *)0)->u); }  // (0x24 on the DS)
 static inline u32 GetOffsetFromPtr(const void *start, const void *end) { return (u32)end - (u32)start; }
 #define RoundUpPtr(p, a) ((void *)(~((a) - 1) & (((a) - 1) + (u32)(p))))
 u32 NNS_FndGetAllocatableSizeForFrmHeapEx(HeapHead *heap, s32 alignment) {

@@ -1,3 +1,4 @@
+#include "gfx/ModelSlotPool.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -121,7 +122,7 @@ public:
     BOOL loadFishModel(void *, FishDisplayEntry *);
 
     FishDisplayEntry entries[4];
-    u8 modelPool[0x18];
+    u8 modelPool[HOST_SIZED(0x18, ModelSlotPool) / 1] HOST_ALIGN8;
 };
 
 extern "C" {

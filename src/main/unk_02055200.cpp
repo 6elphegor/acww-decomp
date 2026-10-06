@@ -452,7 +452,11 @@ void Model::setAlpha(u32 v) {
 }
 
 extern "C" BOOL Model_GetJointWorldMtx(u8 *p, void *a, s32 b) {
+#ifdef HOST
+    if (!NNS_G3dGetResultMtx((u8 *)((Model *)p)->getRenderObj(), a, 0, b)) {  // (the render object's offset)
+#else
     if (!NNS_G3dGetResultMtx(p + 8, a, 0, b)) {
+#endif
         return FALSE;
     }
     MTX_Concat43(a, NNS_G3dGlbGetInvV(), a);

@@ -14,6 +14,18 @@ extern u32 data_0213bcc8;
 extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
 extern s32 NNS_G3dGetResDictIdxByName(u8 *, u8 *);          // NNS_G3dGetResDictIdxByName (dict, name)
 
+#ifdef HOST
+// NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h: the pointers move the later members on 64-bit hosts)
+typedef struct TexObj {
+    u32 pad0, pad4;
+    u8 *res;                 // resAnm
+    __UINTPTR_TYPE__ w0c;    // funcAnm
+    void *next_, *resTex_;
+    u8 prio_;
+    u8 cnt;                  // numMapData
+    u16 tbl[1];              // mapData
+} TexObj;
+#else
 typedef struct TexObj {
     u32 pad0, pad4;
     u8 *res;         // 0x08
@@ -22,6 +34,7 @@ typedef struct TexObj {
     u8 cnt;          // 0x19
     u16 tbl[1];      // 0x1a
 } TexObj;
+#endif
 
 // packed u16 (RGB555-aware) animation array reader (frame, const / 1:1 / 1:2 / 1:4 rate with interpolation)
 u16 GetMatColAnmValue_(u8 *base, u32 info, u32 idx)

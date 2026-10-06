@@ -36,6 +36,11 @@ typedef struct HeapBlk {
     Seq *seq;               // 0x0c
     s32 playerNo;           // 0x10
 } HeapBlk;
+#ifdef HOST
+#define HEAPBLK_SIZE ((sizeof(HeapBlk) + 3) & ~3)  // (20 on the DS)
+#else
+#define HEAPBLK_SIZE 20
+#endif
 
 struct Seq {
     Handle *handle;         // 0x00
@@ -231,14 +236,14 @@ BOOL NNS_SndPlayerCreateHeap(s32 playerNo, void *heap, u32 size)
 {
     HeapBlk *b;
     void *h;
-    b = NNS_SndHeapAlloc(heap, size + 20, PlayerHeapDisposeCallback, 0, 0);
+    b = NNS_SndHeapAlloc(heap, size + HEAPBLK_SIZE, PlayerHeapDisposeCallback, 0, 0);
     if (b == 0) {
         return 0;
     }
     b->seq = 0;
     b->playerNo = playerNo;
     b->heap = 0;
-    h = NNS_SndHeapCreate((u8 *)b + 20, size);
+    h = NNS_SndHeapCreate((u8 *)b + HEAPBLK_SIZE, size);
     if (h == 0) {
         return 0;
     }

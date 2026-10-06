@@ -14,6 +14,11 @@ typedef signed int sptr;
 
 // A buffer for an object the code keeps opaque (a stack buffer for an SDK object, say): n bytes on the DS, at least
 // the real type's size in the host build, where pointers make it larger. HOST_ALIGN8: their alignment there.
+// HOST64: a 64-bit host build (layouts generated for it: tools/host_view_layout.py)
+#if defined(HOST) && __SIZEOF_POINTER__ == 8
+#define HOST64 1
+#endif
+
 #ifdef HOST
 #define HOST_SIZED(n, type) (sizeof(type) > (n) ? sizeof(type) : (n))
 #define HOST_ALIGN8 __attribute__((aligned(8)))
