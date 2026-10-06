@@ -1448,20 +1448,36 @@ extern "C" {
 void *PlayerActor_GetActor(s32);
 }
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f3010 (*(decltype(&n12::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f3010 n12::L_021f3010::gSkySprites.v
+#endif
 namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f4488 (*(decltype(&n12::L_021f4488::gSkySprites.v))((u8 *)&::n00::gSkySprites.shotSeq.state + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f4488 n12::L_021f4488::gSkySprites.v
+#endif
 extern "C" {
 extern u32 gFrameCounter;
 }
 namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f4398 (*(decltype(&n12::L_021f4398::gSkySprites.v))((u8 *)&::n00::gSkySprites.palette.balloonColor + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f4398 n12::L_021f4398::gSkySprites.v
+#endif
 extern "C" {
 extern u16 sMoonColors[];
 }
 // One row per hour plus the next-hour row read at 23:00 (its last 4 bytes run past gSkySprites).
 namespace L_021f4254 { extern "C" { extern struct S { u8 p[0x2d74]; SkyMoonPaletteRow v[25]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f4254 (*(decltype(&n12::L_021f4254::gSkySprites.v))((u8 *)&::n00::gSkySprites.loader.unk_00[4616] + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f4254 n12::L_021f4254::gSkySprites.v
+#endif
 extern "C" {
 extern s16 data_02135f44[];
 }
@@ -1979,9 +1995,17 @@ extern "C" {
 s32 SkySprite_GetFireworkPalIndex(s32 a, s32 flag);
 }
 namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; SkyObjPalette v; } gSkySprites; } }
+#ifdef HOST
+#define data_021f4398 (*(decltype(&n11::L_021f4398::gSkySprites.v))((u8 *)&::n00::gSkySprites.palette.balloonColor + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f4398 n11::L_021f4398::gSkySprites.v
+#endif
 namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f4488 (*(decltype(&n11::L_021f4488::gSkySprites.v))((u8 *)&::n00::gSkySprites.shotSeq.state + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f4488 n11::L_021f4488::gSkySprites.v
+#endif
 extern "C" {
 extern u8 gSaveData[];
 }
@@ -2022,7 +2046,11 @@ extern "C" {
 extern s16 data_02135f44[];
 }
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f3010 (*(decltype(&n11::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f3010 n11::L_021f3010::gSkySprites.v
+#endif
 extern "C" {
 SkySprite *_ZN10SkySprites5spawnEiiP7VecFx32i(void *tab, s32 a, s32 b, void *pos, s32 c);
 }
@@ -2523,7 +2551,11 @@ extern "C" {
 extern s32 gCameraLookAt[];
 }
 namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f44ac (*(decltype(&n10::L_021f44ac::gSkySprites.v))((u8 *)&::n00::gSkySprites.se.channels[0] + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f44ac n10::L_021f44ac::gSkySprites.v
+#endif
 extern "C" {
 extern u8 gVec3Zero[];
 }
@@ -3096,7 +3128,11 @@ extern "C" {
 extern u16 sSkyObjPalDefaultColor;
 }
 namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f4398 (*(decltype(&n09::L_021f4398::gSkySprites.v))((u8 *)&::n00::gSkySprites.palette.balloonColor + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f4398 n09::L_021f4398::gSkySprites.v
+#endif
 extern "C" {
 void MI_CpuCopy8(void*, void*, u32);
 }
@@ -3160,7 +3196,11 @@ extern "C" {
 extern const char* sSkyObjCharFiles[];
 }
 namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f44ac (*(decltype(&n09::L_021f44ac::gSkySprites.v))((u8 *)&::n00::gSkySprites.se.channels[0] + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f44ac n09::L_021f44ac::gSkySprites.v
+#endif
 extern "C" {
 void _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(void*, s32, s32, void*);
 }
@@ -3213,7 +3253,11 @@ extern "C" {
 void SkySprite_ProjectWorldPos(SkySprite*, VecFx32*, s32);
 }
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f3010 (*(decltype(&n09::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f3010 n09::L_021f3010::gSkySprites.v
+#endif
 extern "C" {
 extern SkySpriteAnimDef sSkySpriteAnimSeqs[];
 }
@@ -3714,7 +3758,11 @@ extern "C" {
 void* __cxa_vec_ctor(void* array, u32 count, u32 size, void* (*ctor)(void*), void* (*dtor)(void*, s32));
 }
 namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; SkySePlayer v; } gSkySprites; } }
+#ifdef HOST
+#define data_021f44ac (*(decltype(&n08::L_021f44ac::gSkySprites.v))((u8 *)&::n00::gSkySprites.se.channels[0] + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f44ac n08::L_021f44ac::gSkySprites.v
+#endif
 extern "C" {
 void Math_StepAngle(s16* p, s32 target, s32 step);
 }
@@ -6738,11 +6786,11 @@ extern "C" void SkySprites_OnStarWish(SkySprites *obj) {
 
 extern "C" void SkySprites_Start(SkySprites *obj) {
     _ZN10SkySprites5startEv(obj);
-    _ZN11SkySePlayer8resetAllEv((u8 *)obj + 0x2fcc);
+    _ZN11SkySePlayer8resetAllEv(HOST_AT(obj, 0x2fcc, se, 0));
 }
 
 extern "C" void SkySprites_Stop(SkySprites *obj) {
-    _ZN11SkySePlayer10releaseAllEv((u8 *)obj + 0x2fcc);
+    _ZN11SkySePlayer10releaseAllEv(HOST_AT(obj, 0x2fcc, se.channels[0], 0));
     _ZN10SkySprites4stopEv(obj);
 }
 
@@ -6817,7 +6865,7 @@ extern "C" void SkySprites_Update(SkySprites *obj) {
     }
     _ZN10SkySprites12loadDirtyGfxEv(obj);
     _ZN15SkyShotSequence6updateEv(HOST_AT(obj, 0x2fa8, shotSeq.state, 0));
-    _ZN11SkySePlayer6updateEv((u8 *)obj + 0x2fcc);
+    _ZN11SkySePlayer6updateEv(HOST_AT(obj, 0x2fcc, se.channels[0], 0));
 }
 
 extern "C" void SkySprites_UpdateIndoor(SkySprites *obj) {
@@ -7140,7 +7188,7 @@ extern "C" {
 extern s32 sSkyPaletteSetByLevel[];
 }
 extern "C" {
-extern u32 sSkyPaletteFiles[2][2];
+extern uptr sSkyPaletteFiles[2][2];  // (pointers)
 }
 
 extern "C" s32 Sky_LoadPalettes(s32 x);
@@ -8075,14 +8123,26 @@ extern "C" {
 extern u8 data_021efc18[];
 }
 namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f4398 (*(decltype(&n01::L_021f4398::gSkySprites.v))((u8 *)&::n00::gSkySprites.palette.balloonColor + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f4398 n01::L_021f4398::gSkySprites.v
+#endif
 namespace L_021f304c { extern "C" { extern struct S { u8 p[0x1b6c]; u8 v[1]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f304c (*(decltype(&n01::L_021f304c::gSkySprites.v))((u8 *)&::n00::gSkySprites.loader.unk_00[0] + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f304c n01::L_021f304c::gSkySprites.v
+#endif
 extern "C" {
 extern u8 sSkyBlackBackdrop[];
 }
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[5]; } gSkySprites; } }
+#ifdef HOST
+#define data_021f3010 (*(decltype(&n01::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
+#else
 #define data_021f3010 n01::L_021f3010::gSkySprites.v
+#endif
 extern "C" {
 extern void *gCurrentHeap;
 }
@@ -8434,7 +8494,7 @@ BOOL SkyProc::onCreate() {
         }
     }
     if (r4 != 0) {
-        RainSe_Init((u8 *)this + 0x50);
+        RainSe_Init(HOST_AT(this, 0x50, envSndChannel, 0));
     }
     return r4;
 }
@@ -8452,7 +8512,7 @@ BOOL SkyProc::onExecute() {
         SkySprites_UpdateIndoor(gSkySprites);
     }
     _ZN14WeatherManager12updateHourlyEv(&gWeatherManager);
-    RainSe_Update((u8 *)this + 0x50);
+    RainSe_Update(HOST_AT(this, 0x50, envSndChannel, 0));
     return TRUE;
 }
 namespace n01 {
@@ -8512,7 +8572,7 @@ BOOL SkyProc::onDelete() {
         SkySprites_Stop(gSkySprites);
     }
     StarTwinkle_Stop(data_021efc18);
-    RainSe_Release((u8 *)this + 0x50);
+    RainSe_Release(HOST_AT(this, 0x50, envSndChannel, 0));
     return saved;
 }
 namespace n01 {

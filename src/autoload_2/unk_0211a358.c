@@ -140,6 +140,12 @@ BOOL FS_LoadOverlayImage(FSOverlayInfo *p) {
     FSFile file;
     FSFileID id;
     u32 len;
+#ifdef HOST
+    // the overlays are linked into the host program (their data initialised at start-up, docs/host.md): the image
+    // isn't read to its DS address, where the host's variables can lie
+    (void)file; (void)id; (void)len;
+    return 1;
+#endif
     FS_InitFile(&file);
     id = FS_GetOverlayFileID(&p->header);
     if (!FS_OpenFileFast(&file, id)) return 0;

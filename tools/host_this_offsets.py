@@ -42,6 +42,10 @@ def enclosing_class(text, pos, var):
         return None
     fn = head.rfind("\n}")
     region = head[fn if fn >= 0 else 0:]
+    # an alias: u8 *var = (u8 *)other;  -> other's type
+    al = list(re.finditer(r"\bu8\s*\*\s*" + re.escape(var) + r"\s*=\s*\(u8 \*\)\s*(\w+)\s*;", region))
+    if al and al[-1].group(1) != var:
+        return enclosing_class(text, pos, al[-1].group(1))
     m = list(re.finditer(r"\b(\w+)\s*\*\s*" + re.escape(var) + r"\b\s*[=;,)]", region))
     if not m:
         return None
@@ -71,6 +75,9 @@ def main():
                 skipped += 1
                 continue
             path, rem = hv.path_at_c(die, off, obj)
+            # a member object's start (its vtable pointer / base at offset 0 in it): the member itself
+            while path and rem == 0 and path[-1][0] == "m" and path[-1][1].startswith(("_vptr", "<base:")):
+                path = path[:-1]
             if not path or any(k == "m" and v.startswith("_vptr") for k, v in path):
                 print(f"{f}:{t[:m.start()].count(chr(10)) + 1}: {cls}+{off:#x}: {path} (base / padding), skipped")
                 skipped += 1
@@ -88,11 +95,54 @@ def main():
                 skipped += 1
                 continue
 
-            new = f"HOST_AT({var}, {m.group(2)}, {mem}, {rem})"
+            if re.search(r"\bu8\s*\*\s*" + re.escape(var) + r"\s*=\s*\(u8 \*\)", t[:m.start()][t[:m.start()].rfind("\n}"):]):
+                # (an alias of a typed pointer: the DS expression stays `(u8 *)a + N`)
+                new = f"(u8 *)HOST_AT_A({var}, {cls}, {m.group(2)}, {mem}, {rem})"
+            else:
+                new = f"HOST_AT({var}, {m.group(2)}, {mem}, {rem})"
             out.append(t[last:m.start()] + new)
             last = m.end()
             n += 1
             print(f"{f}:{t[:m.start()].count(chr(10)) + 1}: {m.group(0)} -> {new}")
+        t = "".join(out) + t[last:]
+        # aliases: u8 *a = (u8 *)this; ... a + N (no cast) within the function
+        alias_n = 0
+        for am in list(re.finditer(r"\bu8\s*\*\s*(\w+)\s*=\s*\(u8 \*\)\s*(\w+)\s*;", t))[::-1]:
+            a, src_var = am.group(1), am.group(2)
+            end = t.find("\n}", am.end())
+            end = len(t) if end < 0 else end
+            cls = enclosing_class(t, am.start(), src_var)
+            die = None
+            if cls:
+                die = dies.get((cu[0] if cu else "", cls)) or next((d for (c, nm), d in dies.items() if nm == cls and c.endswith(f)), None)
+            if die is None:
+                continue
+            seg = t[am.end():end]
+            pieces, plast = [], 0
+            for um in re.finditer(r"(?<![\w)])(?<!\(u8 \*\))" + re.escape(a) + r" \+ (0x[0-9a-fA-F]+|\d+)\b", seg):
+                off = int(um.group(1), 0)
+                path, rem = hv.path_at_c(die, off, obj)
+                while path and rem == 0 and path[-1][0] == "m" and path[-1][1].startswith(("_vptr", "<base:")):
+                    path = path[:-1]
+                mem = ""
+                for k, v in path:
+                    if k == "m" and (v == "?" or v.startswith("<base:")):
+                        continue
+                    if k == "m" and v.startswith("_vptr"):
+                        mem = ""
+                        break
+                    mem += f"[{v}]" if k == "i" else (("." if mem else "") + v)
+                if not mem:
+                    skipped += 1
+                    continue
+                pieces.append(seg[plast:um.start()] + f"HOST_AT_A({a}, {cls}, {um.group(1)}, {mem}, {rem})")
+                plast = um.end()
+                alias_n += 1
+                print(f"{f}: {a} + {um.group(1)} ({cls}) -> {mem} + {rem}")
+            if pieces:
+                t = t[:am.end()] + "".join(pieces) + seg[plast:] + t[end:]
+        n += alias_n
+        out, last = [t], len(t)
         if n and not check:
             t2 = "".join(out) + t[last:]
             if '"uptr.h"' not in t2:

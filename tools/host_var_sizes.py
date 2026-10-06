@@ -48,6 +48,9 @@ def main():
         defs_ = [s for s, d in cus.values() if d]
         if only_small and not (defs_ and max(s for s, _ in cus.values()) > min(defs_)):
             continue
+        decls_ = [s for s, d in cus.values() if not d]
+        if "--small-decls" in sys.argv and not (defs_ and decls_ and min(decls_) < max(defs_)):
+            continue  # (declarations smaller than the definition: readers with a narrower view, a u32 table of pointers)
         if len(sizes) > 1:
             defs = [f"{c} {s:#x}{' (def)' if d else ''}" for c, (s, d) in sorted(cus.items(), key=lambda x: -x[1][1])]
             print(f"{name}: " + "; ".join(defs[:4]) + (" ..." if len(defs) > 4 else ""))

@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "npc/VillagerId.h"
 #include "save/Unk_02085810_Rec.h"
@@ -444,25 +445,25 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
 TownSessionState::TownSessionState()
 {
     u8 *self = (u8 *)this;
-    VisitorPos_Construct(self + 4);
-    _ZN15KatieVisitState9constructEv(self + 0xc);
-    _ZN15ShopClosingTime9constructEv(self + 0x18);
-    _ZN15TownTravelState9constructEv(self + 0x20);
-    _ZN13PeteFallState9constructEv(self + 0x24);
-    _ZN16ResettiVisitFlag9constructEv(self + 0x30);
-    _ZN17VisitorSpawnFlags9constructEv(self + 0x31);
+    VisitorPos_Construct(HOST_AT_A(self, TownSessionState, 4, unk_00[4], 0));
+    _ZN15KatieVisitState9constructEv(HOST_AT_A(self, TownSessionState, 0xc, unk_00[12], 0));
+    _ZN15ShopClosingTime9constructEv(HOST_AT_A(self, TownSessionState, 0x18, unk_00[24], 0));
+    _ZN15TownTravelState9constructEv(HOST_AT_A(self, TownSessionState, 0x20, unk_00[32], 0));
+    _ZN13PeteFallState9constructEv(HOST_AT_A(self, TownSessionState, 0x24, unk_00[36], 0));
+    _ZN16ResettiVisitFlag9constructEv(HOST_AT_A(self, TownSessionState, 0x30, unk_00[48], 0));
+    _ZN17VisitorSpawnFlags9constructEv(HOST_AT_A(self, TownSessionState, 0x31, unk_00[49], 0));
 }
 
 TownSessionState::~TownSessionState()
 {
     u8 *self = (u8 *)this;
-    _ZN17VisitorSpawnFlags8destructEv(self + 0x31);
-    _ZN16ResettiVisitFlag8destructEv(self + 0x30);
-    _ZN13PeteFallState8destructEv(self + 0x24);
-    _ZN15TownTravelState8destructEv(self + 0x20);
-    _ZN15ShopClosingTime8destructEv(self + 0x18);
-    _ZN15KatieVisitState8destructEv(self + 0xc);
-    VisitorPos_Destruct(self + 4);
+    _ZN17VisitorSpawnFlags8destructEv(HOST_AT_A(self, TownSessionState, 0x31, unk_00[49], 0));
+    _ZN16ResettiVisitFlag8destructEv(HOST_AT_A(self, TownSessionState, 0x30, unk_00[48], 0));
+    _ZN13PeteFallState8destructEv(HOST_AT_A(self, TownSessionState, 0x24, unk_00[36], 0));
+    _ZN15TownTravelState8destructEv(HOST_AT_A(self, TownSessionState, 0x20, unk_00[32], 0));
+    _ZN15ShopClosingTime8destructEv(HOST_AT_A(self, TownSessionState, 0x18, unk_00[24], 0));
+    _ZN15KatieVisitState8destructEv(HOST_AT_A(self, TownSessionState, 0xc, unk_00[12], 0));
+    VisitorPos_Destruct(HOST_AT_A(self, TownSessionState, 4, unk_00[4], 0));
 }
 
 extern "C" void TownSessionState_Reset(u8 *self)

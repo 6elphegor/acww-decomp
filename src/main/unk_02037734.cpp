@@ -617,7 +617,7 @@ void CommCautionWindow::enterPrepare() {
 
 void CommCautionWindow::execPrepare() {
     _ZN9MsgString4copyEPS_(&message, &sCommCautionLagMsg);
-    _ZN9MsgString4copyEPS_((u8 *)this + 0x1fc, &sCommCautionSecondsMsg);
+    _ZN9MsgString4copyEPS_(HOST_AT(this, 0x1fc, secondsText, 0), &sCommCautionSecondsMsg);
     enterCountdown();
 }
 

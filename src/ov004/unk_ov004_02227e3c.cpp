@@ -328,7 +328,7 @@ BOOL RecycleBox::enterState01() {
 }
 
 void RecycleBox::updateState01() {
-    if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(HOST_AT(this, 0x188, model, 0))) {
         changeSyncState(2);
     } else {
         _ZN9AnimModel8stepAnimEv(&model);
@@ -349,7 +349,7 @@ BOOL RecycleBox::enterState03() {
 }
 
 void RecycleBox::updateState03() {
-    if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)this + 0x188)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(HOST_AT(this, 0x188, model, 0))) {
         changeSyncState(0);
     } else {
         _ZN9AnimModel8stepAnimEv(&model);

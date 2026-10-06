@@ -21,7 +21,11 @@ typedef signed int sptr;
 
 #ifdef HOST
 #define HOST_SIZED(n, type) (sizeof(type) > (n) ? sizeof(type) : (n))
+#if __SIZEOF_POINTER__ == 8
 #define HOST_ALIGN8 __attribute__((aligned(8)))
+#else
+#define HOST_ALIGN8  // (4-byte pointers: the DS's alignment - members keep their DS offsets on 32-bit hosts)
+#endif
 #else
 #define HOST_SIZED(n, type) (n)
 #define HOST_ALIGN8
@@ -33,6 +37,12 @@ typedef signed int sptr;
 #define HOST_AT(p, off, m, rem) ((u8 *)&(p)->m + (rem))
 #else
 #define HOST_AT(p, off, m, rem) ((u8 *)(p) + (off))
+#endif
+// The same through a u8 * alias a of a T * (u8 *a = (u8 *)this): `a + off` on the DS, as written.
+#ifdef HOST
+#define HOST_AT_A(a, T, off, m, rem) ((u8 *)&((T *)(a))->m + (rem))
+#else
+#define HOST_AT_A(a, T, off, m, rem) ((a) + (off))
 #endif
 
 #endif

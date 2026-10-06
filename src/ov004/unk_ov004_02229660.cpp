@@ -451,7 +451,7 @@ void RoomTelephone::execAct06() {}
 void RoomTelephone::enterAct06() {}
 
 void RoomTelephone::execAct05() {
-    if (AnimFrameCtrl_isFinished((u8 *)this + 0x188)) {
+    if (AnimFrameCtrl_isFinished(HOST_AT(this, 0x188, model, 0))) {
         Character_detachTalkRequest(this, this);
         TalkRequest_SetTargetDone(this);
         changeAct(6);
@@ -504,7 +504,7 @@ void RoomTelephone::enterAct02() {
 }
 
 void RoomTelephone::execAct01() {
-    if (AnimFrameCtrl_isFinished((u8 *)this + 0x188)) {
+    if (AnimFrameCtrl_isFinished(HOST_AT(this, 0x188, model, 0))) {
         changeAct(2);
     }
 }

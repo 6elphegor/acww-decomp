@@ -1361,7 +1361,7 @@ void PatternEditorMenu::loadCanvasChars()
 
 void PatternEditorMenu::requestCanvasUpload()
 {
-    _ZN10BgVramTask12requestCharsEjhjjj((u8 *)this + 0x130, canvasChars, 6, 0x20, 0x20, 0x11f);
+    _ZN10BgVramTask12requestCharsEjhjjj(HOST_AT(this, 0x130, bgTasks[1], 0), canvasChars, 6, 0x20, 0x20, 0x11f);
 }
 
 void PatternEditorMenu::flushCanvasGfx()

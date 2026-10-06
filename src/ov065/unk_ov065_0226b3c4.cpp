@@ -272,14 +272,14 @@ void WifiAp_RescanForState(u32 r) {
         *(s64 *)&c->stepStartTick = t;
         u32 idx = c->searchIndex * 0x24;
         u8 *q = cb + idx;
-        WifiAp_StartScan(gWifiLinkAnyBssid, cb + 0x304 + idx, q[0x302], 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, HOST_AT_A(cb, WifiApContext, 0x304, searchEntries[0].ssid[0], 0) + idx, q[0x302], 0x300000);
         break;
     }
     case 5: {
         s64 t = OS_GetTick();
         *(s64 *)&c->stepStartTick = t;
         u32 idx = c->searchIndex * 0x24;
-        WifiAp_StartScan(gWifiLinkAnyBssid, cb + 0x304 + idx, c->scanChannel, 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, HOST_AT_A(cb, WifiApContext, 0x304, searchEntries[0].ssid[0], 0) + idx, c->scanChannel, 0x300000);
         break;
     }
     }
@@ -1165,8 +1165,8 @@ BOOL WifiAp_GetWepSetting(WifiApContext *ctx, u32 idx, u8 *out) {
     case 1:
         c += 0x100;
     case 0:
-        out[0] = ((WifiApWepModeBits *)(c + 0xe6))->v;
-        MI_CpuCopy8(c + 0x80, out + 2, 0x50);
+        out[0] = ((WifiApWepModeBits *)(HOST_AT_A(c, WifiApContext, 0xe6, pad000[230], 0)))->v;
+        MI_CpuCopy8(HOST_AT_A(c, WifiApContext, 0x80, pad000[128], 0), out + 2, 0x50);
         break;
     case 5:
         c += 0x100;
@@ -1174,7 +1174,7 @@ BOOL WifiAp_GetWepSetting(WifiApContext *ctx, u32 idx, u8 *out) {
         c += 0x100;
     case 3:
         out[0] = 1;
-        MI_CpuCopy8(c + 0xd1, out + 2, 0x14);
+        MI_CpuCopy8(HOST_AT_A(c, WifiApContext, 0xd1, pad000[209], 0), out + 2, 0x14);
         out[0x16] = 0;
         break;
     case 6:

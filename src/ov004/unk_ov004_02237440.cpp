@@ -228,7 +228,7 @@ public:
     /* 0x196 */ s8 insectIndex;
     /* 0x197 */ u8 pad_197;
     /* 0x198 */ s32 loadState;
-    /* 0x19c */ u8 hitBox[0x4c]; // StaticCollider
+    /* 0x19c */ u8 hitBox[HOST_SIZED(0x4c, StaticCollider)] HOST_ALIGN8; // StaticCollider
     /* 0x1e8 */ u8 cachedModel[0x284 - 0x1e8];
     /* 0x284 */ u8 modelSlot[4];
     /* 0x288 */ u8 pooledModel[0x2c8 - 0x288];

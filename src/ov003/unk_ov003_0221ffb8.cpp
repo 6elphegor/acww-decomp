@@ -1,3 +1,4 @@
+#include "snd/SndSeEmitter.h"
 #include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
@@ -107,7 +108,7 @@ typedef FishShadow E_f3;
 struct FishCatch {
     FishCatch();
     ~FishCatch();
-    /* 0x00 */ u8 seEmitter[0x40]; // SndSeEmitter (built by the constructor)
+    /* 0x00 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8; // SndSeEmitter (built by the constructor)
     /* 0x40 */ s32 state;
     /* 0x44 */ s32 displayHandle;
     /* 0x48 */ s32 mode;
@@ -2295,7 +2296,7 @@ extern "C" BOOL FishShadow_Land(Obj_f6 *self, u32 k)
     if (idx == -1) {
         return z;
     }
-    e = (Ent_f6 *)((u8 *)((Ent_f6 *)(sFishCatches)) + idx * 0xa4);
+    e = (Ent_f6 *)((u8 *)((Ent_f6 *)(sFishCatches)) + idx * HOST_SIZED(0xa4, FishCatch));
     e->state = 1;
     e->mode = 1;
     pv = (V3_f6 *)&self->position;
@@ -3262,28 +3263,28 @@ FishShadow::FishShadow()
 {
     u8 *a = (u8 *)this;
     SndSeEmitter_ctor(a);
-    *(volatile u8 **)(a + 0x40) = data_0213b91c;
-    *(volatile u8 **)(a + 0x40) = data_0213b954;
-    _ZN14CollisionStateC1Ev(a + 0x4c);
-    ModelSlotHandle_Init(a + 0x7c);
-    _ZN11CachedModelC1Ev(a + 0x84);
-    _ZN9AnimModelC1Ev(a + 0x144);
-    *(u32 *)(a + 0x208) = 0;
-    *(u32 *)(a + 0x20c) = 0;
-    FishCroak_Init(a + 0x248);
-    *(s8 *)(a + 0x7e) = -1;
-    *(s32 *)(a + 0x244) = -1;
-    *(s32 *)(a + 0x80) = 0;
+    *(volatile u8 **)(HOST_AT_A(a, FishShadow, 0x40, envChannel[0], 0)) = data_0213b91c;
+    *(volatile u8 **)(HOST_AT_A(a, FishShadow, 0x40, envChannel[0], 0)) = data_0213b954;
+    _ZN14CollisionStateC1Ev(HOST_AT_A(a, FishShadow, 0x4c, collisionState[0], 0));
+    ModelSlotHandle_Init(HOST_AT_A(a, FishShadow, 0x7c, modelSlot[0], 0));
+    _ZN11CachedModelC1Ev(HOST_AT_A(a, FishShadow, 0x84, cachedModel[0], 0));
+    _ZN9AnimModelC1Ev(HOST_AT_A(a, FishShadow, 0x144, model[0], 0));
+    *(u32 *)(HOST_AT_A(a, FishShadow, 0x208, spawnBlock.x, 0)) = 0;
+    *(u32 *)(HOST_AT_A(a, FishShadow, 0x20c, spawnBlock.y, 0)) = 0;
+    FishCroak_Init(HOST_AT_A(a, FishShadow, 0x248, croak.b0, 0));
+    *(s8 *)(HOST_AT_A(a, FishShadow, 0x7e, fishId, 0)) = -1;
+    *(s32 *)(HOST_AT_A(a, FishShadow, 0x244, despawnTimer, 0)) = -1;
+    *(s32 *)(HOST_AT_A(a, FishShadow, 0x80, state, 0)) = 0;
     a[0x1fc] = 2;
     a[0x201] = 0;
-    *(s32 *)(a + 0x204) = -1;
-    *(s8 *)(a + 0x227) = -1;
-    *(s32 *)(a + 0x22c) = 0;
+    *(s32 *)(HOST_AT_A(a, FishShadow, 0x204, effectHandle, 0)) = -1;
+    *(s8 *)(HOST_AT_A(a, FishShadow, 0x227, playerIdx, 0)) = -1;
+    *(s32 *)(HOST_AT_A(a, FishShadow, 0x22c, bobber, 0)) = 0;
     a[0x224] = 0;
     a[0x23c] = 0;
-    *(s32 *)(a + 0x120) = 0x1000;
-    *(s32 *)(a + 0x124) = 0x1000;
-    *(s32 *)(a + 0x128) = 0x1000;
+    *(s32 *)(HOST_AT_A(a, FishShadow, 0x120, position.x, 0)) = 0x1000;
+    *(s32 *)(HOST_AT_A(a, FishShadow, 0x124, position.y, 0)) = 0x1000;
+    *(s32 *)(HOST_AT_A(a, FishShadow, 0x128, position.z, 0)) = 0x1000;
 }
 
 
@@ -3291,11 +3292,11 @@ FishShadow::FishShadow()
 FishShadow::~FishShadow()
 {
     u8 *a = (u8 *)this;
-    FishCroak_Destroy(a + 0x248);
-    _ZN9AnimModelD1Ev(a + 0x144);
-    _ZN11CachedModelD1Ev(a + 0x84);
-    ModelSlotHandle_Destroy(a + 0x7c);
-    _ZN14CollisionStateD1Ev(a + 0x4c);
+    FishCroak_Destroy(HOST_AT_A(a, FishShadow, 0x248, croak.b0, 0));
+    _ZN9AnimModelD1Ev(HOST_AT_A(a, FishShadow, 0x144, model[0], 0));
+    _ZN11CachedModelD1Ev(HOST_AT_A(a, FishShadow, 0x84, cachedModel[0], 0));
+    ModelSlotHandle_Destroy(HOST_AT_A(a, FishShadow, 0x7c, modelSlot[0], 0));
+    _ZN14CollisionStateD1Ev(HOST_AT_A(a, FishShadow, 0x4c, collisionState[0], 0));
     SndSeEmitter_dtor(a);
 }
 
@@ -3437,14 +3438,14 @@ extern "C" void FishFinModel_Release(u8 *a) {
 //@ 0x2221524
 BOOL FieldFishManager::onCreate() {
     u8 *a = (u8 *)this;
-    ModelSlotPool_init(a + 0x50, 6, 0, 0, 0x800, (void *)FishShadowHeap_Create, (void *)FishShadowHeap_Destroy, (void *)"fish_sdw");
-    ModelSlotPool_init(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)FishFinHeap_Create, (void *)FishFinHeap_Destroy, (void *)"fish_fin");
-    *(s32 *)(a + 0x80) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&sFishShadowAnimPath)), gCurrentHeap, 4, 0);
+    ModelSlotPool_init(HOST_AT_A(a, FieldFishManager, 0x50, shadowModelPool.lastFreed, 0), 6, 0, 0, 0x800, (void *)FishShadowHeap_Create, (void *)FishShadowHeap_Destroy, (void *)"fish_sdw");
+    ModelSlotPool_init(HOST_AT_A(a, FieldFishManager, 0x68, finModelPool.lastFreed, 0), 1, 0x400, 0x80, 0x800, (void *)FishFinHeap_Create, (void *)FishFinHeap_Destroy, (void *)"fish_fin");
+    *(s32 *)(HOST_AT_A(a, FieldFishManager, 0x80, shadowAnimFile, 0)) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&sFishShadowAnimPath)), gCurrentHeap, 4, 0);
     FishShadow *s = ((FishShadow *)(sFishShadows));
     s32 i = 0;
     s32 z = 0;
     do {
-        ((void (*)(void *, s32, void *))FishShadow_LoadModel)(s, *(s32 *)(a + 0x80), a + 0x50);
+        ((void (*)(void *, s32, void *))FishShadow_LoadModel)(s, *(s32 *)(HOST_AT_A(a, FieldFishManager, 0x80, shadowAnimFile, 0)), HOST_AT_A(a, FieldFishManager, 0x50, shadowModelPool.lastFreed, 0));
         if (i < 3) {
             s->spawnState = 3;
         } else if (i < 6) {
@@ -3468,7 +3469,7 @@ BOOL FieldFishManager::onCreate() {
             ((void (*)(u8, s32, s32, s32, s32))FishDisplay_PostRequest)(k, 6, -1, z, z);
         }
         SndSeEmitter_callInit(q);
-        q += 0xa4;
+        q += HOST_SIZED(0xa4, FishCatch);
     }
     return TRUE;
 }
@@ -3710,9 +3711,9 @@ extern "C" void FieldFishManager_UpdatePlayers(O_f3 *o) {
     u8 *q = ((u8 *)(sBottleThrows));
     for (i = 0; i < 4; i++) {
         ((s32 (*)(void *, u8))FishCatch_Update)(p, i);
-        p += 0xa4;
+        p += HOST_SIZED(0xa4, FishCatch);
         ((s32 (*)(void *, void *))BottleThrow_Run)(((u8 *)((u8 *)&sBottleThrowStateOwner)), q);
-        q += 0x60;
+        q += HOST_SIZED(0x60, BottleThrow);
     }
 }
 
@@ -3793,7 +3794,7 @@ extern "C" void FieldFishManager_FreeCatches(s32 a) {
     for (i = 0; i < 4; i++) {
         ((s32 (*)(void *, u8))FishCatch_StateEnd)(p, i);
         SndSeEmitter_callStop(p);
-        p += 0xa4;
+        p += HOST_SIZED(0xa4, FishCatch);
     }
 }
 
@@ -3803,9 +3804,14 @@ extern "C" void FieldFishManager_ResetBottles(s32 a) {
     u8 *p = ((u8 *)(sBottleThrows));
     s32 i;
     for (i = 0; i < 4; i++) {
+#ifdef HOST
+        ((BottleThrow *)p)->state = 0;  // (by the members)
+        ((BottleThrow *)p)->stateTimer = 0;
+#else
         p[0x30] = 0;
         *(s32 *)(p + 0x58) = 0;
-        p += 0x60;
+#endif
+        p += HOST_SIZED(0x60, BottleThrow);
     }
 }
 

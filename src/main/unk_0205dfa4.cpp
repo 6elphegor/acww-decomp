@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -447,9 +448,9 @@ extern "C" u16 *HeldItemModels_GetItem(HeldItemModelBank *self, u32 idx) {
 extern "C" void HeldItemModels_CancelTexUpload(HeldItemModelBank *self, u32 idx) {
     u32 off = idx * 0x1c;
     if (Unk_0205e6e4_Is(*((u8 *)self + off + 0x19d), 1)) {
-        ((TexVramTask *)((u8 *)self + 0x190 + off))->cancel();
+        ((TexVramTask *)(HOST_AT(self, 0x190, texTasks[0], 0) + off))->cancel();
     } else {
-        ((TexVramTask *)((u8 *)self + 0x190 + off))->clear();
+        ((TexVramTask *)(HOST_AT(self, 0x190, texTasks[0], 0) + off))->clear();
     }
 }
 

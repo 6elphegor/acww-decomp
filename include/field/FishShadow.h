@@ -1,5 +1,15 @@
 #ifndef FIELD_FISHSHADOW_H
 #define FIELD_FISHSHADOW_H
+#include "uptr.h"
+#include "gfx/CachedModel.h"
+#ifdef HOST64
+#include "gfx/AnimModel.h"
+#endif
+#include "game/CollisionState.h"
+#include "gfx/ModelSlotPool.h"
+#include "snd/SndEnvChannel.h"
+#include "snd/SndSeEmitter.h"
+#include "uptr.h"
 
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -19,14 +29,14 @@ struct FishCroak {
 struct FishShadow {
     FishShadow();
     ~FishShadow();
-    /* 0x000 */ u8 seEmitter[0x40];      // SndSeEmitter
-    /* 0x040 */ u8 envChannel[0xc];      // SndEnvChannel (vtable 0x0213b954)
-    /* 0x04c */ u8 collisionState[0x30]; // CollisionState
-    /* 0x07c */ u8 modelSlot[2];         // ModelSlotHandle
+    /* 0x000 */ u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;      // SndSeEmitter
+    /* 0x040 */ u8 envChannel[HOST_SIZED(0xc, SndEnvChannel)] HOST_ALIGN8;      // SndEnvChannel (vtable 0x0213b954)
+    /* 0x04c */ u8 collisionState[HOST_SIZED(0x30, CollisionState)] HOST_ALIGN8; // CollisionState
+    /* 0x07c */ u8 modelSlot[HOST_SIZED(0x2, ModelSlotHandle)] HOST_ALIGN8;         // ModelSlotHandle
     /* 0x07e */ s8 fishId;
     /* 0x07f */ u8 hasFin;
     /* 0x080 */ s32 state;
-    /* 0x084 */ u8 cachedModel[0x9c];    // CachedModel
+    /* 0x084 */ u8 cachedModel[HOST_SIZED(0x9c, CachedModel)] HOST_ALIGN8;    // CachedModel
     /* 0x120 */ VecFx32Ctor position;
     /* 0x12c */ s32 spawnPos, spawnPosY, spawnPosZ;
     /* 0x138 */ s16 rotY;
@@ -34,6 +44,26 @@ struct FishShadow {
     /* 0x13c */ s32 stateTimer;
     /* 0x140 */ u16 cruiseTimer;
     /* 0x142 */ s16 wobblePhase;
+#ifdef HOST64
+    // the AnimModel by its real size; the names at its members on 64-bit hosts
+#define FS_AFC ((unsigned long)__builtin_offsetof(AnimModel, numFrames) - (unsigned long)__builtin_offsetof(AnimFrameCtrl, numFrames))
+    union {
+        u8 model[sizeof(AnimModel)] HOST_ALIGN8;
+        struct {
+            u8 hm0[__builtin_offsetof(AnimModel, resMdl)];
+            void *modelResMdl;
+        };
+        struct {
+            u8 hm1[FS_AFC];
+            u8 animFrameCtrl[sizeof(void *)];
+            u32 animNumFrames;
+            s32 animFrame;
+            u8 hm2[__builtin_offsetof(AnimFrameCtrl, frameStep) - __builtin_offsetof(AnimFrameCtrl, curFrame) - 4];
+            s32 animFrameStep;
+        };
+    };
+#undef FS_AFC
+#else
     union {
         /* 0x144 */ u8 model[0xb8];      // AnimModel
         struct {
@@ -48,6 +78,7 @@ struct FishShadow {
             /* 0x1f4 */ u8 pad_1f4[8];
         };
     };
+#endif
     /* 0x1fc */ u8 spawnState;
     /* 0x1fd */ u8 alpha;
     /* 0x1fe */ u8 habitat;

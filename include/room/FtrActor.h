@@ -1,5 +1,14 @@
 #ifndef ROOM_FTRACTOR_H
 #define ROOM_FTRACTOR_H
+#include "game/TouchPickTriangle.h"
+#include "room/FtrCollider.h"
+#include "room/FtrGlowMat.h"
+#include "room/FtrModelRes.h"
+#include "room/FtrStackLink.h"
+#include "room/FtrSwitch.h"
+#include "room/FtrTopItems.h"
+#include "room/FtrVisNodes.h"
+#include "uptr.h"
 
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -129,8 +138,8 @@ public:
     /* 0x168 */ s16 targetAngle;
     /* 0x16a */ u8 pad_16a[2];
     /* 0x16c */ s32 targetPos[3];
-    /* 0x178 */ u8 stackLink[0x10];   // FtrStackLink
-    /* 0x188 */ u8 topItems[0x44];   // FtrTopItems
+    /* 0x178 */ u8 stackLink[HOST_SIZED(0x10, FtrStackLink)] HOST_ALIGN8;   // FtrStackLink
+    /* 0x188 */ u8 topItems[HOST_SIZED(0x44, FtrTopItems)] HOST_ALIGN8;   // FtrTopItems
     /* 0x1cc */ u8 topItemCylinders[0x80];   // 4 x TouchPickCylinder (0x20)
     union {
         /* 0x24c */ u8 moveFlag[0x34];   // move-animation state (FtrMoveAnim_*)
@@ -143,7 +152,7 @@ public:
     /* 0x284 */ u8 mapLayer;
     /* 0x285 */ u8 isSetUp;         // setupFromSpawnArg done
     /* 0x286 */ u8 pad_286[2];
-    /* 0x288 */ u8 touchBox[0x2a8];  // TouchPickBox
+    /* 0x288 */ u8 touchBox[HOST_SIZED(0x2a8, TouchPickBox)] HOST_ALIGN8;  // TouchPickBox
     /* 0x530 */ s32 baseAct;
     /* 0x534 */ u8 model[0x590 - 0x534]; // BlendAnimModel
     /* 0x590 */ u32 modelResMdl;
@@ -156,15 +165,15 @@ public:
     /* 0x5dc */ u8 pad_5dc[4];
     /* 0x5e0 */ s32 animFrameStep;
     /* 0x5e4 */ u8 pad_5e4[0x628 - 0x5e4];
-    /* 0x628 */ u8 collider[0xa0];   // FtrCollider
-    /* 0x6c8 */ u8 modelRes[0x74];   // FtrModelRes
-    /* 0x73c */ u8 switchState[2];      // FtrSwitch
+    /* 0x628 */ u8 collider[HOST_SIZED(0xa0, FtrCollider)] HOST_ALIGN8;   // FtrCollider
+    /* 0x6c8 */ u8 modelRes[HOST_SIZED(0x74, FtrModelRes)] HOST_ALIGN8;   // FtrModelRes
+    /* 0x73c */ u8 switchState[HOST_SIZED(0x2, FtrSwitch)] HOST_ALIGN8;      // FtrSwitch
     /* 0x73e */ s8 clockHands;         // FtrClockHands (3 bytes)
     /* 0x73f */ s8 clockHandsMinJnt;
     /* 0x740 */ u8 clockHandsValid;
     /* 0x741 */ u8 pad_741[3];
-    /* 0x744 */ u8 lampMat[0x1c];   // FtrGlowMat
-    /* 0x760 */ u8 visNodes[8];      // FtrVisNodes
+    /* 0x744 */ u8 lampMat[HOST_SIZED(0x1c, FtrGlowMat)] HOST_ALIGN8;   // FtrGlowMat
+    /* 0x760 */ u8 visNodes[HOST_SIZED(0x8, FtrVisNodes)] HOST_ALIGN8;      // FtrVisNodes
     /* 0x768 */ s32 spawnMode;
     /* 0x76c */ u16 actFrame;
     /* 0x76e */ u8 pad_76e[2];

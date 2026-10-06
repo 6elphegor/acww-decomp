@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // G004d: autoload_2 0x020ede18-0x020ee98c (35 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined,
 // every function is extern "C" under its symbols.txt name. Sound player object (Player) start/stop, and the "Group" of
@@ -216,6 +217,22 @@ extern "C" void SndSeGroup_SetEnabled(Group *g, s32 x) {
     SndSeGroup_SetFlag(g, 0, x);
 }
 
+#ifdef HOST
+// (by the members: the voices are larger on 64-bit hosts)
+extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
+    s32 i;
+    s32 n = g->numVoices;
+    for (i = 0; i < n; i++) {
+        if (g->voices[i].handle == NULL && (g->voices[i].flags & 2) == 0) return i;
+    }
+    return n;
+}
+#ifdef HOST64
+#include "snd/SndSeEmitter.h"
+static_assert(sizeof(SndHandle) == sizeof(Group), "SndHandle views Group");
+static_assert(__builtin_offsetof(SndHandle, volCb) == __builtin_offsetof(Group, applyParamsFn), "SndHandle::volCb");
+#endif
+#else
 extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
     s32 i;
     s32 n = g->numVoices;
@@ -223,13 +240,14 @@ extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
     i = 0;
     if (n > 0) {
         do {
-            if (*(void **)(p + 8) == NULL && (p[17] & 2) == 0) return i;
+            if (*(void **)(HOST_AT_A(p, Group, 8, voices[0].handle, 0)) == NULL && (p[17] & 2) == 0) return i;
             i++;
             p += 12;
         } while (i < n);
     }
     return n;
 }
+#endif
 
 extern "C" void SndSeGroup_Init(Group *g) {
     s32 i;

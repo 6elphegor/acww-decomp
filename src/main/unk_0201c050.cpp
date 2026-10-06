@@ -2641,7 +2641,7 @@ BOOL VillagerActor::onCreate() {
     if (!((VillagerClothModel *)(HOST_AT(this, 0x64c, clothModel.matTexTask[0], 0)))->init(this, &h)) {
         return FALSE;
     }
-    _ZN19ActorFollowCollider13setupForActorEPviijjjhi((u8 *)this + 0x4cc, this, 0x1000, 0x2000, 8, 0x2fc, 2, (u8)_ZN8NpcActor11getNpcIndexEv(this), 0x1000);
+    _ZN19ActorFollowCollider13setupForActorEPviijjjhi(HOST_AT(this, 0x4cc, collider, 0), this, 0x1000, 0x2000, 8, 0x2fc, 2, (u8)_ZN8NpcActor11getNpcIndexEv(this), 0x1000);
     if (NpcRegistry_AddVillager(this, HOST_AT(this, 0xea, npcHandle, 0))) {
     } else {
         return FALSE;

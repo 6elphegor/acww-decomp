@@ -787,13 +787,13 @@ BOOL CafeCoffeeSet_EnterState08(ObjA *o) {
 
 // @2226914
 void CafeCoffeeSet_UpdateState08(ObjA *o) {
-    if (_ZN14BlendAnimModel9getAnmResEv(M1) == RoomObjRes_GetBca(R1, 6) && _ZN13AnimFrameCtrl10isFinishedEv((u8 *)o + 0x3e4)) {
+    if (_ZN14BlendAnimModel9getAnmResEv(M1) == RoomObjRes_GetBca(R1, 6) && _ZN13AnimFrameCtrl10isFinishedEv(HOST_AT(o, 0x3e4, partModels[1], 0))) {
         UP(9, M1, R1, 1, 0);
         UP(7, M2, R2, 1, 0);
-    } else if (_ZN14BlendAnimModel9getAnmResEv(M1) == RoomObjRes_GetBca(R1, 9) && _ZN13AnimFrameCtrl10isFinishedEv((u8 *)o + 0x3e4)) {
+    } else if (_ZN14BlendAnimModel9getAnmResEv(M1) == RoomObjRes_GetBca(R1, 9) && _ZN13AnimFrameCtrl10isFinishedEv(HOST_AT(o, 0x3e4, partModels[1], 0))) {
         UP(0xa, M1, R1, 1, 0);
         UP(8, M2, R2, 1, 0);
-    } else if (_ZN14BlendAnimModel9getAnmResEv(M1) == RoomObjRes_GetBca(R1, 0xa) && _ZN13AnimFrameCtrl10isFinishedEv((u8 *)o + 0x3e4)) {
+    } else if (_ZN14BlendAnimModel9getAnmResEv(M1) == RoomObjRes_GetBca(R1, 0xa) && _ZN13AnimFrameCtrl10isFinishedEv(HOST_AT(o, 0x3e4, partModels[1], 0))) {
         Camera_MuteSe();
         Camera_SetMode4();
         UP(0xb, M1, R1, 1, 0);
@@ -818,7 +818,7 @@ BOOL CafeCoffeeSet_EnterState09(void) {
 
 void CafeCoffeeSet_UpdateState09(ObjA *o) {
     if (_ZN14BlendAnimModel9getAnmResEv(M1) == RoomObjRes_GetBca(R1, 0xb)) {
-        if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)o + 0x3e4)) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv(HOST_AT(o, 0x3e4, partModels[1], 0))) {
             UP(0xc, M1, R1, 1, 0);
             UP(0xa, M2, R2, 1, 0);
         }
@@ -837,12 +837,12 @@ void CafeCoffeeSet_SyncToBrewster(void) {
 void CafeCoffeeSet_LoadPart(void *ov, u32 idx, const char *id, const char *x) {
     ObjA *o = (ObjA *)ov;
     u8 *b = (u8 *)o;
-    void *r = b + 0x908 + idx * 0xa4;
+    void *r = HOST_AT_A(b, ObjA, 0x908, partRes[0].archive, 0) + idx * 0xa4;
     void *q;
     RoomObjRes_Load(r, id);
-    q = b + 0xecc + idx * 4;
+    q = HOST_AT_A(b, ObjA, 0xecc, partTex[0], 0) + idx * 4;
     RoomObjTex_Load(q, x);
-    _ZN5Model11setResourceEP12NNSG3dResMdlj(b + 0x290 + idx * 0xb8, RoomObjRes_GetModel(r), 0);
+    _ZN5Model11setResourceEP12NNSG3dResMdlj(HOST_AT_A(b, ObjA, 0x290, partModels[0], 0) + idx * 0xb8, RoomObjRes_GetModel(r), 0);
     NNS_G3dBindMdlTex(RoomObjRes_GetModel(r), RoomObjTex_Get(q));
     NNS_G3dBindMdlPltt(RoomObjRes_GetModel(r), RoomObjTex_Get(q));
 }

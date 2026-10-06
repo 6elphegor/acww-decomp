@@ -974,8 +974,8 @@ extern "C" void ChatBalloon_PackSyncVar(u8 *a, void *b, ChatBalloon *c) {
     EncodedStringBaseRef s((sChatBalloonSyncBuf + 1), 8);
     StrBuf_ClearAlt(&buf);
     StrBuf_ClearAlt(&s);
-    buf.fromMsgString((MsgString *)((u8 *)c + 0x54));
-    StrBuf_AsciiToGame(&s, (u8 *)c + 0x88);
+    buf.fromMsgString((MsgString *)(HOST_AT(c, 0x54, text, 0)));
+    StrBuf_AsciiToGame(&s, HOST_AT(c, 0x88, name, 0));
     sChatBalloonSyncBuf[0] = 1;
     MI_CpuCopy8(sChatBalloonSyncBuf, a, CommSyncVar_GetVarSize(b));
 }

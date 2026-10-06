@@ -1120,7 +1120,7 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
     MI_CpuCopy8((void *)(h + 0x240), HOST_AT(s, 0x25fc, screenBuf[576], 0), 0x380);
     Keyboard_MarkScreenDirty(s);
     Heap_Free(g, (void *)h);
-    _ZN10BgVramTask12requestCharsEjhjjj((u8 *)s + 0x22f4, HOST_AT(s, 0x34, unk_34[0], 0), a, 0x1ea, 0x1ea, 0x2ff);
+    _ZN10BgVramTask12requestCharsEjhjjj(HOST_AT(s, 0x22f4, bgTasks[0], 0), HOST_AT(s, 0x34, unk_34[0], 0), a, 0x1ea, 0x1ea, 0x2ff);
     s->mode = mode;
     switch (s->mode) {
     case 0:
@@ -1257,10 +1257,10 @@ void Keyboard_Init(Keyboard *s, s32 a)
 
 void Keyboard_Shutdown(Keyboard *s)
 {
-    _ZN10BgVramTask6cancelEv((u8 *)s + 0x22f4);
-    _ZN10BgVramTask6cancelEv((u8 *)s + 0x2318);
-    _ZN11LabelString12destroyLabelEv((u8 *)s + 0x233c);
-    _ZN11LabelString12destroyLabelEv((u8 *)s + 0x237c);
+    _ZN10BgVramTask6cancelEv(HOST_AT(s, 0x22f4, bgTasks[0], 0));
+    _ZN10BgVramTask6cancelEv(HOST_AT(s, 0x2318, bgTasks[1], 0));
+    _ZN11LabelString12destroyLabelEv(HOST_AT(s, 0x233c, labels[0], 0));
+    _ZN11LabelString12destroyLabelEv(HOST_AT(s, 0x237c, labels[1], 0));
     MenuCtrl_SetKeyboardPage(s->page);
 }
 
@@ -1288,7 +1288,7 @@ void Keyboard_LoadScreenNow(Keyboard *s, s32 a)
 void Keyboard_EndFrame(Keyboard *s, s32 a)
 {
     if (Keyboard_TestFlags(s, 1) != 0) {
-        if (_ZN10BgVramTask13requestScreenEjhjj((u8 *)s + 0x2318, HOST_AT(s, 0x23bc, screenBuf[0], 0), a, 0x800, 0) != 0) {
+        if (_ZN10BgVramTask13requestScreenEjhjj(HOST_AT(s, 0x2318, bgTasks[1], 0), HOST_AT(s, 0x23bc, screenBuf[0], 0), a, 0x800, 0) != 0) {
             Keyboard_ClearFlags(s, 1);
         }
     }

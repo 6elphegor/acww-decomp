@@ -1927,18 +1927,18 @@ void DateTimePicker::stepListScroll() {
 
 void DateTimePicker::blendListPalette(s32 t) {
     u8 *p = (u8 *)this;
-    MIi_CpuCopy16(p + 0x2584, p + 0x25a4, 0x20);
-    s32 c1 = *(u16 *)(p + 0x25a0);
+    MIi_CpuCopy16(HOST_AT_A(p, DateTimePicker, 0x2584, listPalette[0], 0), HOST_AT_A(p, DateTimePicker, 0x25a4, listPaletteWork[0], 0), 0x20);
+    s32 c1 = *(u16 *)(HOST_AT_A(p, DateTimePicker, 0x25a0, listPalette[28], 0));
     u8 r = c1 & 0x1f;
     u8 g = (c1 & 0x3e0) >> 5;
     u8 b = (c1 & 0x7c00) >> 10;
     s32 w = 3 - t;
-    s32 c2 = *(u16 *)(p + 0x25a2);
+    s32 c2 = *(u16 *)(HOST_AT_A(p, DateTimePicker, 0x25a2, listPalette[30], 0));
     r = ((u8)(c2 & 0x1f) * t + r * w) / 3;
     g = ((u8)((c2 & 0x3e0) >> 5) * t + g * w) / 3;
     b = ((u8)((c2 & 0x7c00) >> 10) * t + b * w) / 3;
-    *(u16 *)(p + 0x25c2) = r | (g << 5) | (b << 10);
-    ((BgVramTask *)(p + 0x560))->requestPalette((u32)(p + 0x25a4), listLayer, 9);
+    *(u16 *)(HOST_AT_A(p, DateTimePicker, 0x25c2, listPaletteWork[30], 0)) = r | (g << 5) | (b << 10);
+    ((BgVramTask *)(HOST_AT_A(p, DateTimePicker, 0x560, listPaletteTask, 0)))->requestPalette((u32)(HOST_AT_A(p, DateTimePicker, 0x25a4, listPaletteWork[0], 0)), listLayer, 9);
 }
 
 BOOL DateTimePicker::testFlags(u32 m) {

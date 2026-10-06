@@ -1133,12 +1133,12 @@ BOOL WfcFriendListMenu::isFriendSelectable(s32 idx) {
 
 void WfcFriendListMenu::flushVram() {
     if (testFlags(2)) {
-        if (BgVramTask_requestScreen((u8 *)this + 0x1930, HOST_AT(this, 0xb8a, listScreen[0], 0), 4, 0x800, 0)) {
+        if (BgVramTask_requestScreen(HOST_AT(this, 0x1930, vramTasks[0], 0), HOST_AT(this, 0xb8a, listScreen[0], 0), 4, 0x800, 0)) {
             clearFlags(2);
         }
     }
     if (testFlags(8)) {
-        if (BgVramTask_requestPalette((u8 *)this + 0x1954, HOST_AT(this, 0x13aa, rowPalette[0], 0), 4, 7)) {
+        if (BgVramTask_requestPalette(HOST_AT(this, 0x1954, vramTasks[1], 0), HOST_AT(this, 0x13aa, rowPalette[0], 0), 4, 7)) {
             clearFlags(8);
         }
     }
@@ -1411,7 +1411,7 @@ void WfcFriendListMenu::targetFromCursorY() {
 
 void WfcFriendListMenu::cancelVramTasks() {
     s32 i = 0;
-    u8 *p = (u8 *)this + 0x1930;
+    u8 *p = HOST_AT(this, 0x1930, vramTasks[0], 0);
     for (; i < 2; i++) {
         BgVramTask_cancel(p + i * 0x24);
     }

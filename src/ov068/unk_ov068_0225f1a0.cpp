@@ -4759,7 +4759,7 @@ BOOL FieldVillagerAiTalk::enterTalk(FieldVillager *o) {
         NpcTalkCtrl_requestTalk(HOST_AT(o, 0x618, talkCtrl.act07Variant, 0), 0, 0);
         X_func_ov068_0225f5f4(HOST_AT(o, 0x894, look.isLocked, 0), o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     } else {
-        void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
+        void *p = ActorTalkRequest_getTalkPlayer(HOST_AT(o, 0x680, villagerTalk, 0));
         s32 v = 0;
         if (p != 0) {
             v = NpcActor_getAngleTo(o, p);
@@ -5720,7 +5720,7 @@ void FieldVillagerAiPlayerStates::approachStep0(FieldVillager *o) {
             h = *(s16 *)(HOST_AT(o, 0x8e, rotY, 0));
             FieldVillagerApproachFx *e = &sApproachAnimFx[Random_GlobalBelow(2)];
             Effect_Create(e->effectId, &v, &h, 0);
-            Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, e->seIndex + 0x84, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), e->seIndex + 0x84, 0x7f, 0);
         }
     } else {
         FieldVillagerAi_ChangeState(this, o, 0);
@@ -5986,7 +5986,7 @@ s32 FieldVillagerAiBirthdayWait::execBirthdayWait(FieldVillager *o) {
 
 BOOL FieldVillagerAiBirthdayInvite::enterBirthdayInvite(FieldVillager *o) {
     using namespace ns_02260f90;
-    void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
+    void *p = ActorTalkRequest_getTalkPlayer(HOST_AT(o, 0x680, villagerTalk, 0));
     s32 v = 0;
     if (p != 0) {
         v = NpcActor_getAngleTo(o, p);
@@ -6069,7 +6069,7 @@ BOOL FieldVillagerAiTakeOut::enterTakeOutItem(FieldVillager *o) {
         step = 0;
     }
     VillagerActor_setFlag834(o);
-    Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x4f, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x4f, 0x7f, 0);
     VillagerMood_disableEffects(HOST_AT(o, 0x838, mood.pad_00[0], 0));
     return TRUE;
 }
@@ -6109,7 +6109,7 @@ void FieldVillagerAiTakeOut::takeOutItemStep1(FieldVillager *o) {
             }
         } else if (((*(u32 *)(HOST_AT(o, 0x190, model.curFrame, 0)) << 4) >> 16) == 7) {
             *(HOST_AT(o, 0x9ec, heldTool.visible, 0)) = 1;
-            Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x857, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x857, 0x7f, 0);
         }
     }
 }
@@ -6145,7 +6145,7 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
             AnimFrameCtrl_setup((u8 *)p + 0x9c, bits, 3, 0x1000, (u16)(bits - 1));
         }
         HeldToolModel_setAnimSpeed(HOST_AT(o, 0x9b0, heldTool.heldItem, 0), 0x1000);
-        Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x858, 0x7f, 0);
+        Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x858, 0x7f, 0);
         step = 1;
     } else {
         u16 w = data_020c6cc8;
@@ -6156,7 +6156,7 @@ BOOL FieldVillagerAiPutAway::enterPutAwayItem(FieldVillager *o) {
         step = 0;
     }
     VillagerActor_setFlag834(o);
-    Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x4f, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x4f, 0x7f, 0);
     pos[1] = 0xfff1;
     VillagerTalk_setSpeakerStateUnk(o, &pos[1]);
     VillagerMood_disableEffects(HOST_AT(o, 0x838, mood.pad_00[0], 0));
@@ -6228,7 +6228,7 @@ BOOL FieldVillagerAiStates::enterPitfall(FieldVillager *o) {
     *(u32 *)(HOST_AT(o, 0x4e8, collider.groups, 0)) |= 2;
     VillagerActor_setFlag834(o);
     NpcFootstepFx_disableFootsteps(HOST_AT(o, 0x558, footstepFx.footstepsEnabled, 0));
-    Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x7ee, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x7ee, 0x7f, 0);
     VillagerMood_disableEffects(HOST_AT(o, 0x838, mood.pad_00[0], 0));
     return TRUE;
 }
@@ -6286,7 +6286,7 @@ void FieldVillagerAiStates::pitfallStep0(FieldVillager *o) {
         FieldVillager_StepToward(&pp->z, loc.z, 0xe66, 0x1ec, 0x31);
         *(u8 *)(HOST_AT(o, 0x19c, model.playMode, 0)) = 1;
         if (pp->x == loc.x && pp->z == loc.z) {
-            if (AnimFrameCtrl_isFinished((u8 *)o + 0x188) != 0) {
+            if (AnimFrameCtrl_isFinished(HOST_AT(o, 0x188, model, 0)) != 0) {
                 pitfallStep1(o);
             } else {
                 step = 1;
@@ -6298,7 +6298,7 @@ void FieldVillagerAiStates::pitfallStep0(FieldVillager *o) {
 void FieldVillagerAiStates::pitfallStep1(FieldVillager *o) {
     using namespace ns_022605f4;
     if (NpcAnimCtrl_getAnimId(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0), 0) == 0x127) {
-        if (AnimFrameCtrl_isFinished((u8 *)o + 0x188) != 0) {
+        if (AnimFrameCtrl_isFinished(HOST_AT(o, 0x188, model, 0)) != 0) {
             u32 t = data_020c6cc8;
             NpcActionCtrl_requestPlayAnim(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0), 1, 0x128, 1, t, 0);
             FieldVillager *ow = o;
@@ -6320,7 +6320,7 @@ void FieldVillagerAiStates::pitfallStep1(FieldVillager *o) {
             } else {
                 Effect_PlayById(0x8e, &v, 0, 0);
             }
-            Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x7e8, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x7e8, 0x7f, 0);
             HeldToolModel_playPitfallHoleAnim(HOST_AT(o, 0x9b0, heldTool.heldItem, 0), t, 1);
             NpcAnimCtrl_playHoldItemPose(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0), o, HOST_AT(o, 0x9b0, heldTool.heldItem, 0), 0x128, 3);
             step = 2;
@@ -6400,7 +6400,7 @@ void FieldVillagerAiStates::pitfallStep3(FieldVillager *o) {
             } else {
                 Effect_PlayById(0x90, &v, 0, 0);
             }
-            Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x7e9, 0x7f, 0);
+            Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x7e9, 0x7f, 0);
             step = 4;
             GroundInfo_Destruct(obj);
         } else {
@@ -6488,7 +6488,7 @@ BOOL FieldVillagerAiStates::enterPitfallClimbOut(FieldVillager *o) {
     } else {
         Effect_PlayById(0x90, &v, 0, 0);
     }
-    Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, 0x7e9, 0x7f, 0);
+    Snd_SeEmitterPlayOneShotAlt(HOST_AT(o, 0x514, seEmitter, 0), 0x7e9, 0x7f, 0);
     VillagerMood_disableEffects(HOST_AT(o, 0x838, mood.pad_00[0], 0));
     GroundInfo_Destruct(obj);
     return TRUE;
@@ -6666,7 +6666,7 @@ BOOL FieldVillagerAiStates::enterHitTalk(FieldVillager *o) {
     using namespace ns_0225fc60;
     NpcActor_resetLastTaughtEmotion(o);
     if (NpcAnimCtrl_getAnimId(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0), 0) != 0xec || NpcActionCtrl_isActionDone(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)) != 0) {
-        void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
+        void *p = ActorTalkRequest_getTalkPlayer(HOST_AT(o, 0x680, villagerTalk, 0));
         s32 v = 0;
         if (p != 0) {
             v = NpcActor_getAngleTo(o, p);
@@ -6683,7 +6683,7 @@ BOOL FieldVillagerAiStates::enterHitTalk(FieldVillager *o) {
 void FieldVillagerAiStates::hitTalkStep0(FieldVillager *o) {
     using namespace ns_0225fc60;
     if (NpcAnimCtrl_getAnimId(HOST_AT(o, 0x334, animCtrl.unk_00[0], 0), 0) != 0xec || NpcActionCtrl_isActionDone(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)) != 0) {
-        void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
+        void *p = ActorTalkRequest_getTalkPlayer(HOST_AT(o, 0x680, villagerTalk, 0));
         s32 v = 0;
         if (p != 0) {
             v = NpcActor_getAngleTo(o, p);
@@ -6731,7 +6731,7 @@ s32 FieldVillagerAiStates::execHitTalk(FieldVillager *o) {
 
 BOOL FieldVillagerAiStates::enterPushTalk(FieldVillager *o) {
     using namespace ns_0225fc60;
-    void *p = ActorTalkRequest_getTalkPlayer((u8 *)o + 0x680);
+    void *p = ActorTalkRequest_getTalkPlayer(HOST_AT(o, 0x680, villagerTalk, 0));
     s32 v = 0;
     NpcActor_resetLastTaughtEmotion(o);
     if (p != 0) {

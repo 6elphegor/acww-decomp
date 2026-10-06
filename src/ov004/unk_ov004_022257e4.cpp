@@ -537,9 +537,9 @@ void CheckInGate::updateState01() {
     v = F(s32, 0x494);
     Math_ApproachS32Max(&v, -0x2000, 0x100, 0x1000);
     setDoorOffset(v);
-    if (_ZN13AnimFrameCtrl10isFinishedEv(((u8 *)this + 0x188))) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv((HOST_AT(this, 0x188, model, 0)))) {
         changeSyncState(2);
-    } else if (_ZN13AnimFrameCtrl14hasPassedFrameEi(((u8 *)this + 0x188), 0x3a)) {
+    } else if (_ZN13AnimFrameCtrl14hasPassedFrameEi((HOST_AT(this, 0x188, model, 0)), 0x3a)) {
         Snd_PlaySe(0x4ed);
     }
 }
@@ -576,7 +576,7 @@ BOOL CheckInGate::enterState03() {
 // @22257e4
 void CheckInGate::updateState03() {
     model.stepAnim();
-    _ZN13AnimFrameCtrl4stepEv((u8 *)this + 0x290);
+    _ZN13AnimFrameCtrl4stepEv(HOST_AT(this, 0x290, matAnim, 0));
     *(u32 *)*(u32 *)(HOST_AT(this, 0x2a8, matAnim.anmObj, 0)) = *(u32 *)(HOST_AT(this, 0x298, matAnim.curFrame, 0));
     u32 t = F(s32, 0x494);
     Math_ApproachS32Max((s32 *)&t, 0, 0x100, 0x1000);

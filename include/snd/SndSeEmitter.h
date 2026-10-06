@@ -6,11 +6,20 @@
 
 
 // sound handle (functions in unk_020ede18.cpp, plain C names): the non-polymorphic second base of SndSeEmitter, at +4
+#ifdef HOST64
+// (the 64-bit layout of the group it views: Group in include/snd/SndSeGroup.h, checked in unk_020ede18.cpp)
+struct SndHandle {
+    u8 pad00[0x40];
+    void (*volCb)(SndHandle *h, s32 idx);  // Group::applyParamsFn
+    u8 pad34[8];
+};
+#else
 struct SndHandle {
     /* 0x00 */ u8 pad00[0x30];
     /* 0x30 */ void (*volCb)(SndHandle *h, s32 idx);
     /* 0x34 */ u8 pad34[4];
 };
+#endif
 
 // 0x40-byte sound-effect emitter (channel object base), vtable 0x0213b9a0 (dsd label data_0213b9a8).
 // Defined in autoload_2, unk_020f30fc.cpp (key function ~SndSeEmitter); main / ov003 / ov004 / ov068 call its C1 and D1
