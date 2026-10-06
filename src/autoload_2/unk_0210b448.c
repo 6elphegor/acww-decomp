@@ -254,7 +254,7 @@ void InitHeapSection(NNSFndList *l)
 // NNS_SndHeapCreate
 BOOL InitHeap(SndHeap *h, void *heap)
 {
-    NNS_FndInitList(&h->list, 12);
+    NNS_FndInitList(&h->list, sizeof(NNSFndList));  // a section: its block list, then its link (12 on the DS)
     h->heap = heap;
     return NewSection(h) != 0;
 }

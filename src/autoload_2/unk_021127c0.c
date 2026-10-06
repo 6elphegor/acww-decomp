@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK os_printf.c: OS_VSNPrintf, autoload_2 0x021127c0-0x02113088. ARM code, mwcc 1.2/base.
+#include "ds_stdarg.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -14,7 +15,7 @@ void string_fill_char(VsnCtx *ctx, char c, s32 n);        // string_fill_char
 void string_put_string(VsnCtx *ctx, const char *s, s32 n); // string_put_string
 
 // OS_VSNPrintf
-int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
+int OS_VSNPrintf(char *dst, int len, const char *fmt, DS_VA_LIST vl) {
     char prefix[2];
     char digits[26];
     VsnCtx ctx;
@@ -72,7 +73,7 @@ int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
                 break;
             }
             if (c == '*') {
-                width = *(s32 *)((vl += 4) - 4);
+                width = DS_VA_ARG(vl, s32, 4);
                 fmt++;
                 if (width < 0) {
                     width = -width;
@@ -88,7 +89,7 @@ int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
                 c = *++fmt;
                 prec = 0;
                 if (c == '*') {
-                    prec = *(s32 *)((vl += 4) - 4);
+                    prec = DS_VA_ARG(vl, s32, 4);
                     fmt++;
                     if (prec < 0) {
                         prec = -1;
@@ -137,7 +138,7 @@ int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
                 if (prec >= 0) {
                     goto deflt;
                 } else {
-                    s32 ch = *(s32 *)((vl += 4) - 4);
+                    s32 ch = DS_VA_ARG(vl, s32, 4);
                     if (flags & 8) {
                         string_put_char(&ctx, ch);
                         string_fill_char(&ctx, ' ', width - 1);
@@ -155,7 +156,7 @@ int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
                 s32 sl;
                 char *s;
                 sl = 0;
-                s = *(char **)((vl += 4) - 4);
+                s = DS_VA_ARG(vl, char *, 4);
                 if (prec < 0) {
                     if (s[0] != 0) {
                         do {
@@ -182,12 +183,12 @@ int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
                 s32 count = ctx.cur - ctx.base;
                 if (!(flags & 0x100)) {
                     if (flags & 0x40) {
-                        **(s16 **)((vl += 4) - 4) = count;
+                        *DS_VA_ARG(vl, s16 *, 4) = count;
                     } else if (flags & 0x80) {
-                        s64 *p = *(s64 **)((vl += 4) - 4);
+                        s64 *p = DS_VA_ARG(vl, s64 *, 4);
                         *p = count;
                     } else {
-                        **(s32 **)((vl += 4) - 4) = count;
+                        *DS_VA_ARG(vl, s32 *, 4) = count;
                     }
                 }
                 fmt++;
@@ -220,13 +221,13 @@ int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
             }
             if (flags & 0x1000) {
                 if (flags & 0x100) {
-                    v = *(u8 *)((vl += 4) - 4);
+                    v = DS_VA_ARG(vl, u8, 4);
                 } else if (flags & 0x40) {
-                    v = *(u16 *)((vl += 4) - 4);
+                    v = DS_VA_ARG(vl, u16, 4);
                 } else if (flags & 0x80) {
-                    v = *(u64 *)((vl += 8) - 8);
+                    v = DS_VA_ARG(vl, u64, 8);
                 } else {
-                    v = *(u32 *)((vl += 4) - 4);
+                    v = DS_VA_ARG(vl, u32, 4);
                 }
                 flags &= ~3;
                 if (flags & 4) {
@@ -244,13 +245,13 @@ int OS_VSNPrintf(char *dst, int len, const char *fmt, char *vl) {
             } else {
                 s64 sv;
                 if (flags & 0x100) {
-                    sv = *(s8 *)((vl += 4) - 4);
+                    sv = DS_VA_ARG(vl, s8, 4);
                 } else if (flags & 0x40) {
-                    sv = *(s16 *)((vl += 4) - 4);
+                    sv = DS_VA_ARG(vl, s16, 4);
                 } else if (flags & 0x80) {
-                    sv = *(s64 *)((vl += 8) - 8);
+                    sv = DS_VA_ARG(vl, s64, 8);
                 } else {
-                    sv = *(s32 *)((vl += 4) - 4);
+                    sv = DS_VA_ARG(vl, s32, 4);
                 }
                 v = sv;
                 if ((v >> 32) & 0x80000000) {

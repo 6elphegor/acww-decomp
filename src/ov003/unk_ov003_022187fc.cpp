@@ -1,3 +1,4 @@
+#include "sys/NNSFndArchive.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -655,7 +656,7 @@ void HouseLightUpDeco_Clear(HouseLightUpDeco *o) {
 }
 
 s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
-    u32 buf[0x6c / 4];
+    u32 buf[HOST_SIZED(0x6c, NNSFndArchive) / 4] HOST_ALIGN8;
     u32 i;
     BOOL z;
     HouseLightUpDeco_Clear(r);

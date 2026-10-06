@@ -8,10 +8,14 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 
+#ifdef HOST
+#include "ds_stdarg.h"
+#else
 typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
 #define va_arg(ap, t) (*(t *)((ap += 4) - 4))
 #define va_end(ap)
+#endif
 
 typedef struct CardCommon CardCommon;
 

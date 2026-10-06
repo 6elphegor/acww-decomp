@@ -229,18 +229,18 @@ int FSi_SeekDirDirect(FSFile *file, u32 id) {
 
 int FSi_ReadFileCommand(FSFile *file) {
     u32 pos = file->prop.file.pos;
-    u32 len = file->arg.w.w38;
+    u32 len = file->arg.readfile.len;
     FSArc *arc = file->arc;
-    void *dst = (void *)file->arg.w.w30;
+    void *dst = file->arg.readfile.dst;
     file->prop.file.pos = pos + len;
     return arc->read_orig(arc, dst, pos, len);
 }
 
 int FSi_WriteFileCommand(FSFile *file) {
     u32 pos = file->prop.file.pos;
-    u32 len = file->arg.w.w38;
+    u32 len = file->arg.readfile.len;
     FSArc *arc = file->arc;
-    void *dst = (void *)file->arg.w.w30;
+    void *dst = file->arg.readfile.dst;
     file->prop.file.pos = pos + len;
     return arc->write(arc, dst, pos, len);
 }
@@ -267,7 +267,7 @@ int FSi_SeekDirCommand(FSFile *file) {
 }
 
 int FSi_ReadDirCommand(FSFile *file) {
-    FSEntry *ent = (FSEntry *)file->arg.w.w30;
+    FSEntry *ent = file->arg.rdent.ent;
     u8 b;
     u16 id;
     FSStream s;
@@ -277,7 +277,7 @@ int FSi_ReadDirCommand(FSFile *file) {
     ent->name_len = b & 0x7f;
     ent->is_dir = (b >> 7) & 1;
     if (ent->name_len == 0) return 1;
-    if (file->arg.w.w34) {
+    if (file->arg.rdent.skip) {
         s.pos += ent->name_len;
     } else {
         FSi_ReadTable(&s, ent->name, ent->name_len);

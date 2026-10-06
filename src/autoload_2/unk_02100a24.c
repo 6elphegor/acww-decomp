@@ -63,7 +63,7 @@ extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
 
-#define HH(e) ((HeapHead *)((u8 *)(e) - 0x24))
+#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
 #define EXP(h) ((ExpHead *)&(h)->u)
 
 static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
@@ -84,7 +84,7 @@ static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
     b->attr.raw &= ~0xff;
     b->attr.raw |= e->groupID & 0xff;
 }
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + 16); }
+static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
 static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
 static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     if (GetOptFlag(h) & 1) {
@@ -231,7 +231,7 @@ void *AllocFromHead__ExpHeap(HeapHead *heap, u32 size, s32 alignment) {
     foundAddr = 0;
     foundSize = -1;
     for (; b != 0; b = b->next) {
-        u32 mblock = (u32)b + 16;
+        u32 mblock = (u32)b + sizeof(MBlock);
         u32 req = (alignment - 1 + mblock) & ~(alignment - 1);
         u32 off = req - mblock;
         if (b->size >= size + off && foundSize > b->size) {
@@ -259,7 +259,7 @@ void *AllocFromTail__ExpHeap(HeapHead *heap, u32 size, s32 alignment) {
     b = e->freeTail;
     foundAddr = 0;
     for (; b != 0; b = b->prev) {
-        u32 mblock = (u32)b + 16;
+        u32 mblock = (u32)b + sizeof(MBlock);
         u32 req = (b->size + mblock - size) & ~(alignment - 1);
         if ((s32)(req - mblock) >= 0 && foundSize > b->size) {
             found = b;

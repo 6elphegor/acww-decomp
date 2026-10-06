@@ -180,7 +180,11 @@ extern "C" void CmdSeq_Undo(CmdSeq *o) {
 // gSndSeSystem sits between this file's 4-byte and 0x90-byte objects, so it is this file's object although only other
 // units use it.
 void *gSndHeap;
+#ifdef HOST
+u8 gSndDefaultHandle[sizeof(void *)] __attribute__((aligned(8)));  // NNSSndHandle: a pointer
+#else
 u8 gSndDefaultHandle[4]; // NNSSndHandle
+#endif
 void *gSndCaptureBuffer;
 Player gSndSeSystem;
 u8 data_021f5a1c[0x90];

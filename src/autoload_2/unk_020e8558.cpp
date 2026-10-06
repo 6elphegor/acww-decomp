@@ -19,6 +19,17 @@
 #include "sys/Heap.h"
 #include "sys/OSThread.h"
 
+// The NitroSystem heap headers in front of a heap's memory (its HeapHead + ExpHead + a block header, HeapHead +
+// FrmHead; src/autoload_2/unk_02100234.c): they hold pointers, so on a 64-bit host they're larger - these are
+// generous there (an overestimate only leaves a few bytes unused).
+#ifdef HOST
+#define NNS_EXPHEAP_OVERHEAD (0x4c * 2)
+#define NNS_FRMHEAP_OVERHEAD (0x30 * 2)
+#else
+#define NNS_EXPHEAP_OVERHEAD 0x4c
+#define NNS_FRMHEAP_OVERHEAD 0x30
+#endif
+
 
 inline void *operator new(size_t, void *p) {
     return p;
@@ -212,8 +223,8 @@ FrameHeap::~FrameHeap() {
 }
 
 extern "C" ExpHeap *ExpHeap_CreateInPlace(void *p, u32 n) {
-    u32 region = n - 0x30;
-    void *q = (u8 *)p + 0x30;
+    u32 region = n - sizeof(ExpHeap);
+    void *q = (u8 *)p + sizeof(ExpHeap);
     void *h = NNS_FndCreateExpHeapEx(q, region, gHeapCreateOption);
     if (h != NULL) {
         new (p) ExpHeap(q, region, NULL, h);
@@ -231,15 +242,15 @@ extern "C" ExpHeap *ExpHeap_Create(u32 size, Heap *parent) {
     if (parent == NULL) parent = gCurrentHeap;
     if (size == 0xffffffff) {
         total = parent->maxAlloc(4);
-        if (total < 0x7c) return NULL;
-        region = total - 0x30;
+        if (total < sizeof(ExpHeap) + NNS_EXPHEAP_OVERHEAD) return NULL;
+        region = total - sizeof(ExpHeap);
     } else {
-        region = ((size + 3) & ~3) + 0x4c;
-        total = region + 0x30;
+        region = ((size + 3) & ~3) + NNS_EXPHEAP_OVERHEAD;
+        total = region + sizeof(ExpHeap);
     }
     p = (ExpHeap *)parent->alloc(total, 4);
     if (p != NULL) {
-        q = (u8 *)p + 0x30;
+        q = (u8 *)p + sizeof(ExpHeap);
         h = NNS_FndCreateExpHeapEx(q, region, gHeapCreateOption);
         if (h == NULL) {
             parent->free(p);
@@ -260,15 +271,15 @@ extern "C" FrameHeap *FrameHeap_Create(u32 size, Heap *parent) {
     if (parent == NULL) parent = gCurrentHeap;
     if (size == 0xffffffff) {
         total = parent->maxAlloc(4);
-        if (total < 0x48) return NULL;
-        region = total - 0x18;
+        if (total < sizeof(FrameHeap) + NNS_FRMHEAP_OVERHEAD) return NULL;
+        region = total - sizeof(FrameHeap);
     } else {
-        region = ((size + 3) & ~3) + 0x30;
-        total = region + 0x18;
+        region = ((size + 3) & ~3) + NNS_FRMHEAP_OVERHEAD;
+        total = region + sizeof(FrameHeap);
     }
     p = (FrameHeap *)parent->alloc(total, 4);
     if (p != NULL) {
-        q = (u8 *)p + 0x18;
+        q = (u8 *)p + sizeof(FrameHeap);
         h = NNS_FndCreateFrmHeapEx(q, region, gHeapCreateOption);
         if (h == NULL) {
             parent->free(p);
@@ -526,7 +537,7 @@ void *FrameHeap::doAdjust() {
     void *state = NNS_FndAdjustFrmHeap(heapHandle);
     void *p;
     if (state == NULL) return NULL;
-    p = (u8 *)state + 0x18;
+    p = (u8 *)state + sizeof(FrameHeap);
     if (parentHeap->resize(this, (u32)p) < 0) return NULL;
     regionSize = (u32)state;
     return p;

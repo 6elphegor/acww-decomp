@@ -19,10 +19,16 @@ class ProcBase;
 
 
 
+#ifdef HOST
+// the dispatcher's pointer-to-member type: two pointers on the host (the arguments are passed as such on x86-64)
+class ProcBase;
+typedef BOOL (ProcBase::*P2)();
+#else
 struct P2 {
     u32 a;
     u32 b;
 };
+#endif
 
 
 
@@ -440,7 +446,8 @@ extern "C" ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d) {
         extern void host_log_proc(u32 profile, void *create, void *obj);
         host_log_proc(a, (void *)gProfileTable[a]->create, r);
     }
-    if (r != NULL && (*(u32 *)r < 0x08048000 || *(u32 *)r >= 0x0c000000)) {  // a vtable outside the program image
+    extern char __executable_start[], _end[];  // the program image (linker symbols)
+    if (r != NULL && (*(uptr *)r < (uptr)__executable_start || *(uptr *)r >= (uptr)_end)) {  // a vtable outside it
         extern void host_bad_object(u32 profile, void *create, void *obj);
         host_bad_object(a, (void *)gProfileTable[a]->create, r);
     }

@@ -473,8 +473,8 @@ void NNSi_SndPlayerInit(void)
     s32 i;
     Seq *s;
     Player *p;
-    NNS_FndInitList(&data_021fadd8, 20);
-    NNS_FndInitList(&data_021fadcc, 20);
+    NNS_FndInitList(&data_021fadd8, (u32)&((Seq *)0)->glink);  // (20 on the DS)
+    NNS_FndInitList(&data_021fadcc, (u32)&((Seq *)0)->glink);
     s = data_021fade4;
     for (i = 0; i < 16; i++, s++) {
         s->status = 0;
@@ -483,7 +483,7 @@ void NNSi_SndPlayerInit(void)
     }
     p = data_021fb224;
     for (i = 0; i < 32; i++, p++) {
-        NNS_FndInitList(&p->seqList, 12);
+        NNS_FndInitList(&p->seqList, (u32)&((Seq *)0)->plink);  // (12 on the DS)
         NNS_FndInitList(&p->heapList, 0);
         p->vol = 127;
         p->playable = 1;

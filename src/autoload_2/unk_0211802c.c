@@ -106,23 +106,23 @@ int FSi_OpenFileFastCommand(FSFile *file) {
     u32 out[2];
     FSStream s;
     FSArc *arc = file->arc;
-    u32 id = file->arg.w.w34;
+    u32 id = file->arg.openfilefast.id.file_id;
     u32 off = id << 3;
     if (off >= arc->fat_size) return 1;
     s.arc = arc;
     s.pos = arc->fat + off;
     FSi_ReadTable(&s, out, 8);
-    file->arg.w.w30 = out[0];
-    file->arg.w.w34 = out[1];
-    file->arg.w.w38 = id;
+    file->arg.openfiledirect.top = out[0];
+    file->arg.openfiledirect.bottom = out[1];
+    file->arg.openfiledirect.index = id;
     return FSi_TranslateCommand(file, 7);
 }
 
 int FSi_OpenFileDirectCommand(FSFile *file) {
-    file->prop.file.start = file->arg.w.w30;
-    file->prop.file.pos = file->arg.w.w30;
-    file->prop.file.end = file->arg.w.w34;
-    file->prop.file.own_id = file->arg.w.w38;
+    file->prop.file.start = file->arg.openfiledirect.top;
+    file->prop.file.pos = file->arg.openfiledirect.top;
+    file->prop.file.end = file->arg.openfiledirect.bottom;
+    file->prop.file.own_id = file->arg.openfiledirect.index;
     return 0;
 }
 

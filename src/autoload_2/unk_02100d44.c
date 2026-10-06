@@ -63,7 +63,7 @@ extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
 
-#define HH(e) ((HeapHead *)((u8 *)(e) - 0x24))
+#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
 #define EXP(h) ((ExpHead *)&(h)->u)
 
 static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
@@ -84,7 +84,7 @@ static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
     b->attr.raw &= ~0xff;
     b->attr.raw |= e->groupID & 0xff;
 }
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + 16); }
+static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
 static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
 static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     if (GetOptFlag(h) & 1) {
@@ -224,7 +224,7 @@ BOOL NNS_FndRecordStateForFrmHeap(HeapHead *heap, u32 tag) {
     FrmHead *f = FRM(heap);
     FrmState *st;
     oldHead = f->head;
-    st = (FrmState *)AllocFromHead__FrameHeap(f, 16, 4);
+    st = (FrmState *)AllocFromHead__FrameHeap(f, sizeof(FrmState), 4);
     if (st == 0) return 0;
     st->tag = tag;
     st->head = oldHead;
@@ -283,7 +283,7 @@ u32 NNS_FndResizeForMBlockFrmHeap(HeapHead *heap, u32 mem, u32 size) {
 // GetRegionOfMBlock
 void GetRegionOfMBlock(Region *rgn, MBlock *blk) {
     rgn->start = (u32)blk - (u16)((blk->attr.raw >> 8) & 0x7f);
-    rgn->end = blk->size + ((u32)blk + 16);
+    rgn->end = blk->size + ((u32)blk + sizeof(MBlock));
 }
 
 // RemoveMBlock
@@ -321,7 +321,7 @@ MBlock *InitMBlock(Region *rgn, u16 sig) {
     MBlock *b = (MBlock *)rgn->start;
     b->sig = sig;
     b->attr.raw = 0;
-    b->size = rgn->end - ((u32)b + 16);
+    b->size = rgn->end - ((u32)b + sizeof(MBlock));
     b->prev = 0;
     b->next = 0;
     return b;

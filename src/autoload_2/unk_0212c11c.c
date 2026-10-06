@@ -10,9 +10,14 @@ typedef int BOOL;
 typedef u16 wchar_t;
 #include "types64.h"
 #define NULL ((void *)0)
+#ifdef HOST
+#include "ds_stdarg.h"
+#else
 typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
 #define va_end(ap)
+#endif
+#include "ds_stdarg.h"  // DS_VA_ARG_C (both builds)
 
 /* MSL C FILE (layout recovered from the code, see S020a) */
 typedef struct {
@@ -439,7 +444,15 @@ wchar_t *float2str__wide(double num, wchar_t *buff, print_format format) {
 }
 
 // __wpformatter
+#ifdef HOST
+// (a va_list parameter is a pointer on 64-bit hosts: the function works on a local copy, as parse_format__wide takes
+// its address)
+s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteProcArg, const wchar_t *format_str, va_list arg_in) {
+    va_list arg;
+    __builtin_va_copy(arg, arg_in);
+#else
 s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteProcArg, const wchar_t *format_str, va_list arg) {
+#endif
     s32 num_chars, chars_written, field_width;
     const wchar_t *format_ptr;
     const wchar_t *curr_format;
@@ -474,11 +487,11 @@ s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
         case 'd':
         case 'i':
             if (format.argument_options == long_argument) {
-                long_num = *(s32 *)(arg += 4, arg - 4);
+                long_num = DS_VA_ARG_C(arg, s32, 4);
             } else if (format.argument_options == long_long_argument) {
-                long_long_num = *(s64 *)(arg += 8, arg - 8);
+                long_long_num = DS_VA_ARG_C(arg, s64, 8);
             } else {
-                long_num = *(s32 *)(arg += 4, arg - 4);
+                long_num = DS_VA_ARG_C(arg, s32, 4);
             }
             if (format.argument_options == short_argument) long_num = (s16)long_num;
             if (format.argument_options == long_long_argument) {
@@ -493,11 +506,11 @@ s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
         case 'x':
         case 'X':
             if (format.argument_options == long_argument) {
-                long_num = *(s32 *)(arg += 4, arg - 4);
+                long_num = DS_VA_ARG_C(arg, s32, 4);
             } else if (format.argument_options == long_long_argument) {
-                long_long_num = *(s64 *)(arg += 8, arg - 8);
+                long_long_num = DS_VA_ARG_C(arg, s64, 8);
             } else {
-                long_num = *(s32 *)(arg += 4, arg - 4);
+                long_num = DS_VA_ARG_C(arg, s32, 4);
             }
             if (format.argument_options == short_argument) long_num = (u16)long_num;
             if (format.argument_options == long_long_argument) {
@@ -514,16 +527,16 @@ s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
         case 'g':
         case 'G':
             if (format.argument_options == long_double_argument) {
-                long_double_num = *(long double *)(arg += 8, arg - 8);
+                long_double_num = DS_VA_ARG_C(arg, long double, 8);
             } else {
-                long_double_num = *(double *)(arg += 8, arg - 8);
+                long_double_num = DS_VA_ARG_C(arg, double, 8);
             }
             if (!(buff_ptr = float2str__wide(long_double_num, buff + 512, format))) goto conversion_error;
             num_chars = buff + 511 - buff_ptr;
             break;
         case 's':
             if (format.argument_options == wchar_argument) {
-                buff_ptr = *(wchar_t **)(arg += 4, arg - 4);
+                buff_ptr = DS_VA_ARG_C(arg, wchar_t *, 4);
                 if (buff_ptr == 0) buff_ptr = L"";
                 if (format.alternate_form) {
                     num_chars = (u8)*buff_ptr++;
@@ -535,7 +548,7 @@ s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
                     num_chars = wcslen(buff_ptr);
                 }
             } else {
-                s = *(char **)(arg += 4, arg - 4);
+                s = DS_VA_ARG_C(arg, char *, 4);
                 if (s == 0) s = "";
                 if (format.alternate_form) {
                     n = (u8)*buff_ptr;
@@ -551,7 +564,7 @@ s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
             }
             break;
         case 'n':
-            buff_ptr = *(wchar_t **)(arg += 4, arg - 4);
+            buff_ptr = DS_VA_ARG_C(arg, wchar_t *, 4);
             switch (format.argument_options) {
             case normal_argument: *(s32 *)buff_ptr = chars_written; break;
             case short_argument: *(s16 *)buff_ptr = chars_written; break;
@@ -563,9 +576,9 @@ s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
             buff_ptr = buff;
             if (format.argument_options == wchar_argument) {
                 num_chars = 1;
-                *buff_ptr = *(s32 *)(arg += 4, arg - 4);
+                *buff_ptr = DS_VA_ARG_C(arg, s32, 4);
             } else {
-                cc = *(s32 *)(arg += 4, arg - 4);
+                cc = DS_VA_ARG_C(arg, s32, 4);
                 num_chars = mbtowc(buff_ptr, &cc, 1);
             }
             break;

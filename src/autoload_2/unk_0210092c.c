@@ -64,7 +64,7 @@ extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
 
-#define HH(e) ((HeapHead *)((u8 *)(e) - 0x24))
+#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
 #define EXP(h) ((ExpHead *)&(h)->u)
 
 static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
@@ -85,7 +85,7 @@ static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
     b->attr.raw &= ~0xff;
     b->attr.raw |= e->groupID & 0xff;
 }
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + 16); }
+static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
 static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
 static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     if (GetOptFlag(h) & 1) {
@@ -220,7 +220,7 @@ void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
 // NNSi_FndRecycleRegion (expheap)
-static inline void *GetMemPtr(MBlock *b) { return (void *)((u32)b + 16); }
+static inline void *GetMemPtr(MBlock *b) { return (void *)((u32)b + sizeof(MBlock)); }
 static inline void *GetEndAddr(MBlock *b) { return (void *)((u32)GetMemPtr(b) + b->size); }
 BOOL RecycleRegion(ExpHead *e, Region *rgn) {
     Region nr = *rgn;
@@ -232,7 +232,7 @@ BOOL RecycleRegion(ExpHead *e, Region *rgn) {
             continue;
         }
         if ((u32)b == rgn->end) {
-            nr.end = b->size + ((u32)b + 16);
+            nr.end = b->size + ((u32)b + sizeof(MBlock));
             RemoveMBlock(&e->freeHead, b);
         }
         break;
@@ -241,7 +241,7 @@ BOOL RecycleRegion(ExpHead *e, Region *rgn) {
         nr.start = (u32)prev;
         prev = RemoveMBlock(&e->freeHead, prev);
     }
-    if (nr.end - nr.start < 16) return 0;
+    if (nr.end - nr.start < sizeof(MBlock)) return 0;
     b = InitMBlock(&nr, 0x4652);
     InsertMBlock(&e->freeHead, b, prev);
     return 1;

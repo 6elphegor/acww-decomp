@@ -164,7 +164,7 @@ BOOL FSi_SendCommand(FSFile *file, u32 cmd) {
 
 // FS_InitArchive
 void FS_InitArchive(FSArc *arc) {
-    MI_CpuFill8(arc, 0, 0x5c);
+    MI_CpuFill8(arc, 0, sizeof(FSArc));  // (0x5c on the DS)
     arc->queue.tail = 0;
     arc->queue.head = arc->queue.tail;
     arc->queue2.tail = 0;

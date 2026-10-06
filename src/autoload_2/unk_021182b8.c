@@ -111,8 +111,8 @@ typedef struct {
     char name[128];
 } FSDirEntry2;
 int FSi_FindPathCommand(FSFile *file) {
-    const u8 *path = (const u8 *)file->arg.w.w3c;
-    const BOOL find_directory = file->arg.w.w40;
+    const u8 *path = (const u8 *)file->arg.findpath.path;
+    const BOOL find_directory = file->arg.findpath.find_directory;
     FSi_TranslateCommand(file, 2);
     for (; *path; path += (*path ? 1 : 0)) {
         u32 is_directory;
@@ -153,14 +153,14 @@ int FSi_FindPathCommand(FSFile *file) {
                     break;
                 } else {
                     if (find_directory) return 1;
-                    *(FSFileID *)file->arg.w.w44 = etr.u.file_id;
+                    *(FSFileID *)file->arg.findpath.result = etr.u.file_id;
                     return 0;
                 }
             }
         }
     }
     if (!find_directory) return 1;
-    *file->arg.w.w44 = file->prop.dir.pos;
+    *(FSDirPos *)file->arg.findpath.result = file->prop.dir.pos;
     return 0;
 }
 

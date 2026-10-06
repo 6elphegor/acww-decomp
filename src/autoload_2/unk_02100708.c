@@ -64,7 +64,7 @@ extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
 
-#define HH(e) ((HeapHead *)((u8 *)(e) - 0x24))
+#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
 #define EXP(h) ((ExpHead *)&(h)->u)
 
 static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
@@ -85,7 +85,7 @@ static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
     b->attr.raw &= ~0xff;
     b->attr.raw |= e->groupID & 0xff;
 }
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + 16); }
+static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
 static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
 static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     if (GetOptFlag(h) & 1) {
@@ -245,7 +245,7 @@ u32 NNS_FndResizeForMBlockExpHeap(HeapHead *heap, void *memBlock, u32 size) {
         for (block = e->freeHead; block; block = block->next) {
             if (block == crUsedEnd) break;
         }
-        if (!block || size > b->size + 16 + block->size) return 0;
+        if (!block || size > b->size + sizeof(MBlock) + block->size) return 0;
         {
             PRegion rgn;
             void *oldEnd;
@@ -254,9 +254,9 @@ u32 NNS_FndResizeForMBlockExpHeap(HeapHead *heap, void *memBlock, u32 size) {
             prev = RemoveMBlock(&e->freeHead, block);
             oldEnd = rgn.start;
             rgn.start = AddU32ToPtr(memBlock, size);
-            if (GetOffsetFromPtr(rgn.start, rgn.end) < 16) rgn.start = rgn.end;
+            if (GetOffsetFromPtr(rgn.start, rgn.end) < sizeof(MBlock)) rgn.start = rgn.end;
             b->size = GetOffsetFromPtr(memBlock, rgn.start);
-            if (GetOffsetFromPtr(rgn.start, rgn.end) >= 16) {
+            if (GetOffsetFromPtr(rgn.start, rgn.end) >= sizeof(MBlock)) {
                 InsertMBlock(&e->freeHead, InitMBlock((Region *)&rgn, 0x4652), prev);
             }
             FillAlloc(heap, oldEnd, GetOffsetFromPtr(oldEnd, rgn.start));

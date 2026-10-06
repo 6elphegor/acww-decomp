@@ -12,4 +12,14 @@ typedef unsigned int uptr;
 typedef signed int sptr;
 #endif
 
+// A buffer for an object the code keeps opaque (a stack buffer for an SDK object, say): n bytes on the DS, at least
+// the real type's size in the host build, where pointers make it larger. HOST_ALIGN8: their alignment there.
+#ifdef HOST
+#define HOST_SIZED(n, type) (sizeof(type) > (n) ? sizeof(type) : (n))
+#define HOST_ALIGN8 __attribute__((aligned(8)))
+#else
+#define HOST_SIZED(n, type) (n)
+#define HOST_ALIGN8
+#endif
+
 #endif

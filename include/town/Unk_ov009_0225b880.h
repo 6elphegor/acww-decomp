@@ -2,6 +2,7 @@
 #define TOWN_UNK_OV009_0225B880_H
 
 #include "types.h"
+#include "sys/NNSFndArchive.h"
 #include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
 #include "gfx/NNSG3dRS.h"
@@ -29,7 +30,7 @@ struct BuildingShadowEntry {
 };
 
 struct Unk_ov009_0225d2a4_Obj {
-    /* 0x00 */ u32 pad[0x6c / 4];
+    /* 0x00 */ u32 pad[HOST_SIZED(0x6c, NNSFndArchive) / 4] HOST_ALIGN8;  // an NNSFndArchive
 };
 
 #endif

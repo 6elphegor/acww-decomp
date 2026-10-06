@@ -1,3 +1,4 @@
+#include "sys/NNSFndArchive.h"
 #include "types.h"
 #include "town/BuildingInfo.h"
 #include "gfx/Mtx33.h"
@@ -616,7 +617,7 @@ void StrBSizeData::getSolidBounds(s32 *outX, s32 *outY, s32 *outW, s32 *outH) {
 
 extern "C" void StrBSize_Load(void) {
     char name[0x20];
-    u8 file[0x6c];
+    u8 file[HOST_SIZED(0x6c, NNSFndArchive)] HOST_ALIGN8;
     u32 i;
     void *p;
     p = File_LoadAlloc("/str/bsize.arc", gCurrentHeap, 4, 0);

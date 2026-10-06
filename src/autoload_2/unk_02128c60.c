@@ -13,8 +13,12 @@ typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
 #define va_end(ap)
 
+#ifdef HOST
+#include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
+#else
 typedef struct { u8 pad[20]; } OSMutex;
 typedef struct OSThread { u8 pad[0x6c]; u32 id; } OSThread;
+#endif
 
 typedef struct scan_format {
     u8 suppress_assignment;
@@ -33,7 +37,11 @@ extern const u16 data_0213a510[];         // __ctype_map
 extern OSMutex data_02200324;             // signal-table mutex (data_02200298[7])
 extern u32 data_02200250[];
 extern s32 data_02200274[];
-extern struct { u32 a; u32 b; OSThread *cur; } data_021fcc2c;
+#ifdef HOST
+extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)
+#else
+extern struct { u32 a; u32 b; OSThread *list; } data_021fcc2c;
+#endif
 extern u32 data_02200650[];               // signal handler table
 
 int OS_TryLockMutex(OSMutex *);
@@ -101,13 +109,13 @@ int raise(int sig) {
     OSThread *t;
     if (sig < 1 || sig > 7) return -1;
     if (OS_TryLockMutex(&data_02200324) == 0) {
-        data_02200250[7] = data_021fcc2c.cur->id;
+        data_02200250[7] = data_021fcc2c.list->id;
         data_02200274[7] = 1;
-    } else if (data_02200250[7] == (t = data_021fcc2c.cur)->id) {
+    } else if (data_02200250[7] == (t = data_021fcc2c.list)->id) {
         data_02200274[7]++;
     } else {
         OS_LockMutex(&data_02200324);
-        data_02200250[7] = data_021fcc2c.cur->id;
+        data_02200250[7] = data_021fcc2c.list->id;
         data_02200274[7] = 1;
     }
     handler = (void (*)(int))data_02200650[sig - 1];

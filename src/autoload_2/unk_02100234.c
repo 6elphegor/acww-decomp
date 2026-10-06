@@ -63,7 +63,7 @@ extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
 
-#define HH(e) ((HeapHead *)((u8 *)(e) - 0x24))
+#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
 #define EXP(h) ((ExpHead *)&(h)->u)
 
 static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
@@ -84,7 +84,7 @@ static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
     b->attr.raw &= ~0xff;
     b->attr.raw |= e->groupID & 0xff;
 }
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + 16); }
+static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
 static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
 static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     if (GetOptFlag(h) & 1) {
@@ -221,7 +221,7 @@ void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 // NNS_FndFreeToExpHeap
 void NNS_FndFreeToExpHeap(HeapHead *heap, u32 mem) {
     ExpHead *e = EXP(heap);
-    MBlock *b = (MBlock *)(mem - 16);
+    MBlock *b = (MBlock *)(mem - sizeof(MBlock));
     Region region;
     GetRegionOfMBlock(&region, b);
     RemoveMBlock(&e->usedHead, b);
@@ -246,7 +246,7 @@ u32 NNS_FndGetAllocatableSizeForExpHeapEx(HeapHead *heap, s32 alignment) {
         maxSize = 0;
         offsetMin = -1;
         for (b = heap->u.exp.freeHead; b != 0; b = b->next) {
-            u32 mblock = (u32)b + 16;
+            u32 mblock = (u32)b + sizeof(MBlock);
             u32 start = (alignment - 1 + mblock) & ~(alignment - 1);
             u32 end = b->size + mblock;
             if (start < end) {
@@ -281,13 +281,13 @@ void NNS_FndVisitAllocatedForExpHeap(HeapHead *heap, void (*visitor)(void *, Hea
     MBlock *next;
     for (b = heap->u.exp.usedHead; b != 0; b = next) {
         next = b->next;
-        visitor((u8 *)b + 16, heap, param);
+        visitor((u8 *)b + sizeof(MBlock), heap, param);
     }
 }
 
 // NNS_FndGetSizeForMBlockExpHeap
 u32 NNS_FndGetSizeForMBlockExpHeap(u32 memBlock) {
-    return ((MBlock *)(memBlock - 16))->size;
+    return ((MBlock *)(memBlock - sizeof(MBlock)))->size;
 }
 
 // NNSi_FndFindContainHeap
@@ -319,9 +319,9 @@ void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt) 
     heap->attr.raw = 0;
     heap->attr.raw &= ~0xff;
     heap->attr.raw |= opt & 0xff;
-    NNS_FndInitList(&heap->childList, 4);
+    NNS_FndInitList(&heap->childList, (u32)&((HeapHead *)0)->link);  // (4 on the DS)
     if (data_021f5ca0 == 0) {
-        NNS_FndInitList(&data_021f5ca4, 4);
+        NNS_FndInitList(&data_021f5ca4, (u32)&((HeapHead *)0)->link);
         data_021f5ca0 = 1;
     }
     NNS_FndAppendListObject(FindListContainHeap(heap), heap);

@@ -63,7 +63,7 @@ extern u32 data_021f5ca0;               // sRootListInitialized
 extern NNSFndList data_021f5ca4;        // sRootList
 
 
-#define HH(e) ((HeapHead *)((u8 *)(e) - 0x24))
+#define HH(e) ((HeapHead *)((u8 *)(e) - (u32)&((HeapHead *)0)->u))  // from its ExpHead / FrmHead part (0x24 on the DS)
 #define EXP(h) ((ExpHead *)&(h)->u)
 
 static inline u16 GetOptFlag(HeapHead *h) { return (u16)(h->attr.raw & 0xff); }
@@ -84,7 +84,7 @@ static inline void SetGroupIDFrom(MBlock *b, ExpHead *e) {
     b->attr.raw &= ~0xff;
     b->attr.raw |= e->groupID & 0xff;
 }
-static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + 16); }
+static inline u32 GetMBlockEnd(MBlock *b) { return b->size + ((u32)b + sizeof(MBlock)); }
 static inline u32 RoundUp(u32 v, u32 a) { return (v + (a - 1)) & ~(a - 1); }
 static inline void ClearMem(HeapHead *h, u32 dst, u32 size) {
     if (GetOptFlag(h) & 1) {
@@ -276,6 +276,20 @@ BOOL NNS_FndUnmountArchive(void *arc) {
 }
 
 // ROM address of a file (arc base + file top)
+#ifdef HOST
+#include "sys/NNSFndArchive.h"
+// (by the types: the file and the archive are larger on 64-bit hosts)
+u32 NNS_FndGetArchiveFileByName(const char *path) {
+    FSFile file;
+    u32 result = 0;
+    FS_InitFile(&file);
+    if (FS_OpenFile(&file, path)) {
+        result = (u32)(uptr)((struct NNSFndArchive *)file.arc)->fileImage + file.prop.file.start;
+        FS_CloseFile(&file);
+    }
+    return result;
+}
+#else
 u32 NNS_FndGetArchiveFileByName(const char *path) {
     u32 file[19];
     u32 result = 0;
@@ -286,6 +300,7 @@ u32 NNS_FndGetArchiveFileByName(const char *path) {
     }
     return result;
 }
+#endif
 
 // frmheap: create (NNS_FndCreateFrmHeapEx tail)
 HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt) {

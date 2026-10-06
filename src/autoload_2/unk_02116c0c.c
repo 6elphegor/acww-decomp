@@ -3,6 +3,7 @@
 // autoload_3 .bss 0x021fcf6c-0x021fcf88. ARM code, mwcc 1.2/base, -O4,p.
 // (The former unit 0x02116c0c-0x02117e8c, split into its files by their bss and rodata.)
 // PXI_InitFifo (PXI_Init) is outside this unit; it is only called (tail call) from PXI_Init.
+#include "sys/OSThread.h"
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -114,7 +115,7 @@ extern s32 data_021fcfa4;
 extern u32 data_021fcfa8;
 extern Cmd *data_021fcfac[];
 extern u32 data_021fcf6c;
-extern u32 data_021fcf70[6];
+extern u32 data_021fcf70[];
 extern SndWork data_021fcfe0;
 extern SndWork *data_021fea60;
 extern const u8 data_0213a0b4[724];
@@ -207,4 +208,8 @@ void SND_SetPlayerTempoRatio(u32 a, u32 b) {
 
 // ---- file-scope objects (autoload_3 .bss 0x021fcf6c-0x021fcf88)
 u32 data_021fcf6c; // initialised flag
+#ifdef HOST
+u32 data_021fcf70[sizeof(OSMutex) / 4] __attribute__((aligned(8)));  // OSMutex (its size on 64-bit hosts)
+#else
 u32 data_021fcf70[6]; // OSMutex
+#endif

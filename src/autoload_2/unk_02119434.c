@@ -184,14 +184,14 @@ BOOL FSi_FindPath(FSFile *file, const char *path, FSFileID *id, FSDirPos *dirpos
         }
     }
     file->arc = pos.arc;
-    file->arg.w.w3c = (u32)path;
-    *(FSDirPos *)&file->arg.w.w30 = pos;
+    file->arg.findpath.path = path;
+    file->arg.findpath.pos = pos;
     if (dirpos) {
-        file->arg.w.w40 = 1;
-        file->arg.w.w44 = dirpos;
+        file->arg.findpath.find_directory = 1;
+        file->arg.findpath.result = dirpos;
     } else {
-        file->arg.w.w40 = 0;
-        file->arg.w.w44 = (FSDirPos *)id;
+        file->arg.findpath.find_directory = 0;
+        file->arg.findpath.result = id;
     }
     return FSi_SendCommand(file, 4);
 }
@@ -201,11 +201,11 @@ s32 FSi_ReadFileCore(FSFile *file, void *dst, s32 len, BOOL async) {
     s32 pos = file->prop.file.pos;
     s32 rest = file->prop.file.end - pos;
     s32 len_org = len;
-    file->arg.w.w30 = (u32)dst;
+    file->arg.readfile.dst = dst;
     if (len > rest) len = rest;
     if (len < 0) len = 0;
-    file->arg.w.w34 = len_org;
-    file->arg.w.w38 = len;
+    file->arg.readfile.len_org = len_org;
+    file->arg.readfile.len = len;
     if (!async) file->stat |= 4;
     FSi_SendCommand(file, 0);
     if (!async) {
@@ -224,9 +224,9 @@ BOOL FS_ConvertPathToFileID(FSFileID *id, const char *path) {
 // FS_OpenFileDirect
 BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id) {
     file->arc = arc;
-    file->arg.w.w38 = id;
-    file->arg.w.w30 = start;
-    file->arg.w.w34 = end;
+    file->arg.openfiledirect.index = id;
+    file->arg.openfiledirect.top = start;
+    file->arg.openfiledirect.bottom = end;
     if (!FSi_SendCommand(file, 7)) return 0;
     file->stat |= 0x10;
     file->stat &= ~0x20;
@@ -237,7 +237,7 @@ BOOL FS_OpenFileDirect(FSFile *file, FSArc *arc, u32 start, u32 end, int id) {
 BOOL FS_OpenFileFast(FSFile *file, FSFileID id) {
     if (id.arc == 0) return 0;
     file->arc = id.arc;
-    *(FSFileID *)&file->arg.w.w30 = id;
+    file->arg.openfilefast.id = id;
     if (!FSi_SendCommand(file, 6)) return 0;
     file->stat |= 0x10;
     file->stat &= ~0x20;

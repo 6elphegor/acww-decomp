@@ -98,7 +98,7 @@ extern char sGameFontPartAttr[];
 extern ProcProfile sTextSystemModuleProfile;
 extern u16 sCharSortKeyTable[0xe0];
 extern void *gTextHeap;
-extern u8 gTextLabelList[0xc];
+extern u8 gTextLabelList[];
 extern u8 gTextTileBuffer[0x400];
 }
 extern GameFont gFontASub;
@@ -181,7 +181,11 @@ const u16 sSpecialCharStr7 = 7;
 
 const u16 sSpecialCharStr1 = 1;
 
+#ifdef HOST
+u8 gTextLabelList[2 * sizeof(void *) + 4] HOST_ALIGN8;  // an NNSFndList (pointers: 64-bit hosts)
+#else
 u8 gTextLabelList[0xc];
+#endif
 
 void *gTextHeap;
 
@@ -585,7 +589,7 @@ extern "C" void Text_InitSystem(void) {
     heap = ExpHeap_Create(0x1800, gCurrentHeap);
     gTextHeap = heap;
     if (heap != NULL) {
-        NNS_FndInitList(gTextLabelList, 8);
+        NNS_FndInitList(gTextLabelList, (u32)&((TextLabel *)0)->listLink);  // (8 on the DS)
     }
 }
 

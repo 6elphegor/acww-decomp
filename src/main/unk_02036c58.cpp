@@ -1,3 +1,4 @@
+#include "sys/NNSFndArchive.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -186,7 +187,7 @@ void BgModelCache::loadGroundTexture()
 
 void BgModelCache::loadGroundAnims()
 {
-    u8 file[0x68];
+    u8 file[HOST_SIZED(0x68, NNSFndArchive)] HOST_ALIGN8;
     void *p = BgModel_LoadFile((void *)"/bg/grd_anm.arc", 0);
     if (NNS_FndMountArchive(file, "BG", p)) {
         groundMatAnm = (s32)func_02106634(func_02106618(NNS_FndGetArchiveFileByName("BG:a/grd_set.nsbma")), 0);
@@ -202,7 +203,7 @@ void BgModelCache::loadGroundAnims()
 void *BgModel_LoadBcl(s32 id, void *heap)
 {
     u8 buf[0x20];
-    u8 file[0x68];
+    u8 file[HOST_SIZED(0x68, NNSFndArchive)] HOST_ALIGN8;
     void *p, *r, *t;
     Str_SPrintf(buf, "/bg/a%d/%04x.arc", id >> 4, id);
     p = File_LoadAlloc(buf, gCurrentHeap, -4, 0);
@@ -254,7 +255,7 @@ BgAcreModel *BgModelCache::getAcre(s32 id)
 {
     void *heap = gBgHeap;
     BgAcreModel *e = acres;
-    struct { s32 tmp; u8 buf[0x20]; u8 file[0x68]; } l;
+    struct { s32 tmp; u8 buf[0x20]; u8 file[HOST_SIZED(0x68, NNSFndArchive)] HOST_ALIGN8; } l;
     u32 i;
     for (i = 0; i < 0x1f; e++, i++) {
         if (e->arc == 0) {

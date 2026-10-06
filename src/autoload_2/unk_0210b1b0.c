@@ -4,6 +4,7 @@
 // (0x0210aadc-0x0210b1b0, with NNSi_SndCaptureStart). The rest of the former unit (sound archive,
 // sound heap) is unk_0210b448.c. ARM, mwcc 1.2/base, -O4,p.
 // mwcc-flags: -nothumb -O4,p
+#include "sys/OSThread.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -76,10 +77,10 @@ extern u32 SND_FlushCommand(u32);
 extern u32 data_027e038c;
 extern s32 data_027e0390;
 static u64 sCaptureThreadStack[128]; // the capture thread's stack (0x021fb968-0x021fbd68)
-extern u32 data_021fb774[8]; // OSMessageQueue
+extern u32 data_021fb774[]; // OSMessageQueue
 extern void SND_SetChannelVolume(u32, u32, u32);
 extern u32 data_021fb794[8]; // OSMessage[8]
-extern u32 data_021fb8a8[0x30]; // OSThread
+extern u32 data_021fb8a8[]; // OSThread
 extern void NNSi_SndFaderUpdate(void *);
 extern u32 NNSi_SndFaderIsFinished(void *);
 extern s32 NNSi_SndFaderGet(void *);
@@ -209,9 +210,17 @@ void NNSi_SndCaptureMain(void)
 
 // ---- file-scope objects (autoload_3 .bss 0x021fb774-0x021fbd68; this definition order gives the original order after
 // mwcc's size sort)
+#ifdef HOST  // the real sizes (pointers: 64-bit hosts)
+u32 data_021fb774[(2 * sizeof(OSThreadQueue) + sizeof(void *) + 3 * 4 + 7) / 4] __attribute__((aligned(8)));  // OSMessageQueue
+#else
 u32 data_021fb774[8]; // OSMessageQueue
+#endif
 u32 data_021fb794[8]; // OSMessage[8]
 Cap data_021fb7b4;
 u32 data_021fb808[40]; // CapMsg[8] (used by unk_0210a9c4.c)
+#ifdef HOST
+u32 data_021fb8a8[sizeof(OSThread) / 4] __attribute__((aligned(8)));  // OSThread
+#else
 u32 data_021fb8a8[0x30]; // OSThread
+#endif
 static u64 sCaptureThreadStack[128];

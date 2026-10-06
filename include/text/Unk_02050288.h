@@ -33,8 +33,8 @@ public:
 };
 
 // A nested aggregate: a flat struct { u32 a, b; } is copied with interleaved loads and stores instead
-struct Unk_02050288_08 {
-    u32 unk_00[2];
+struct Unk_02050288_08 {  // an NNSFndLink (gTextLabelList)
+    uptr unk_00[2];
 };
 
 // Text drawn into the 4bpp tile buffer gTextTileBuffer with one of the fonts, then copied to VRAM

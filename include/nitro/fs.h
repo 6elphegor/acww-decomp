@@ -101,6 +101,27 @@ struct FSFile {
             /* 0x44 */ FSDirPos *w44;
         } w;
         FSDirPos pos;
+        // the commands' own arguments (NitroSDK's FSFile.arg): with pointers in them, their layouts differ from the
+        // words above on 64-bit hosts, so a command's writer and reader use the same one
+        struct {
+            void *dst;    // 0x30
+            u32 len_org;  // 0x34
+            u32 len;      // 0x38
+        } readfile;
+        struct {
+            FSDirPos pos;         // 0x30
+            const char *path;     // 0x3c
+            u32 find_directory;   // 0x40
+            void *result;         // 0x44 FSFileID * or FSDirPos *
+        } findpath;
+        struct {
+            FSFileID id;  // 0x30
+        } openfilefast;
+        struct {
+            u32 top;      // 0x30
+            u32 bottom;   // 0x34
+            u32 index;    // 0x38
+        } openfiledirect;
         struct {
             void *buf;
             u32 buf_size;
