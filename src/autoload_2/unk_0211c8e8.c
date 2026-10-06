@@ -1,6 +1,7 @@
 #include "sys/PMCbInfo.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK TP (touch panel) / PM (power management) / RTC, ARM9 side: autoload_2 0x0211c8e8-0x0211cbd0. mwcc 1.2/base.
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -72,10 +73,10 @@ typedef union {
     } b;
 } TPRaw;
 
-typedef struct {
+typedef struct {  // PMRegInfo (unk_0211c870.c): pad2 is a pointer there
     volatile u16 flag;
     u16 pad;
-    u32 pad2;
+    uptr pad2;
 } PMFlag;
 typedef struct {
     u16 *ptr;

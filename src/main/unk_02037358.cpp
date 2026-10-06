@@ -53,7 +53,7 @@ public:
     VecFx32 pos;
     s32 layers[2];
     BgAcreModel *bgModel;
-    s32 buried;
+    uptr buried;  // the buried-item mask (u16 *: TownBlockCell::buriedFlags)
 };
 
 extern "C" u32 AcreAttr_GetType(u32 i);

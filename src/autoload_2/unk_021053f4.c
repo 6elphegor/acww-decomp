@@ -52,12 +52,16 @@ extern Glb data_027e00c8;
 extern u8 data_027e0114[], data_027e0184[];
 extern void NNS_G3dGeFlushBuffer(void);
 extern BOOL G3X_GetClipMtx(void *);
-typedef struct Cb {
-    u8 pad0[0x10];
+typedef struct Cb {  // NNSG3dAnmObj (all its fields: the pointers are larger on 64-bit hosts)
+    s32 frame;          // 0x00
+    s32 ratio;          // 0x04
+    void *resAnm;       // 0x08
+    void *funcAnm;      // 0x0c
     struct Cb *next;    // 0x10
-    u8 pad14[5];
-    u8 n;               // 0x19
-    u16 tbl[1];         // 0x1a
+    const void *resTex; // 0x14
+    u8 priority;        // 0x18
+    u8 n;               // 0x19 numMapData
+    u16 tbl[1];         // 0x1a mapData
 } Cb;
 extern u8 *NNS_G3dGlbGetWV(void);
 extern u8 *NNS_G3dGlbGetInvWV(void);

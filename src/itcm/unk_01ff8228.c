@@ -4,12 +4,20 @@
 // NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
 typedef unsigned char u8;
 typedef unsigned short u16;
+#ifdef HOST
+typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
+#else
 typedef unsigned long u32;
+#endif
 #include "types64.h"
 #include "nitro/io_access.h"
 typedef signed char s8;
 typedef signed short s16;
+#ifdef HOST
+typedef signed int s32;  // (long is 64 bits on 64-bit hosts)
+#else
 typedef signed long s32;
+#endif
 typedef volatile u8 vu8;
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;

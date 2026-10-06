@@ -4,6 +4,7 @@
 // (autoload_3 0x021feb8c-0x021febb4). The former unit 0x0211d20c-0x0211da74 is split into rtc.c and the CARD part
 // (unk_0211d680.c) by the files' bss. ARM code, mwcc 1.2/base -O4,p.
 // Functions are in reverse address order (mwcc emits in reverse source order).
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -11,15 +12,16 @@ typedef signed int s32;
 #include "types64.h"
 typedef int BOOL;
 
-typedef struct { u32 head, tail; } OSQ;
-typedef struct { u32 w[0x30]; } OST;
+#include "sys/OSThread.h"  // the real types: a thread and its queues are larger on 64-bit hosts
+typedef OSThreadQueue OSQ;
+typedef OSThread OST;
 
-typedef struct {
+typedef struct {  // RTCWork (unk_0211cbe8.c): f4..f10 and f1c are pointers there
     u32 lock;
-    u32 f4, f8, fc, f10;
+    uptr f4, f8, fc, f10;
     u32 command;
     u32 f18;
-    u32 f1c;
+    uptr f1c;
     u32 result;
 } RTCWork;
 
@@ -74,7 +76,7 @@ extern u32 data_021febb4;
 extern u8 data_021febc0[];
 extern u32 data_021ff220;
 extern RomDev data_021ff240;
-extern u32 data_021fcc2c[];
+extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
 extern u32 data_0213c1cc[12];
 
 u32 OS_DisableInterrupts(void);
@@ -214,7 +216,7 @@ u32 RTC_GetDateAsync(u32 a, void (*cb)(void), u32 arg) {
     data_021feb90.command = 0;
     data_021feb90.f18 = 0;
     data_021feb90.f8 = a;
-    data_021feb90.f4 = (u32)cb;
+    data_021feb90.f4 = (uptr)cb;
     data_021feb90.f10 = arg;
     return RTCi_ReadRawDateAsync() ? 0 : 3;
 }
@@ -239,7 +241,7 @@ u32 RTC_GetTimeAsync(u32 a, void (*cb)(void), u32 arg) {
     data_021feb90.command = 1;
     data_021feb90.f18 = 0;
     data_021feb90.f8 = a;
-    data_021feb90.f4 = (u32)cb;
+    data_021feb90.f4 = (uptr)cb;
     data_021feb90.f10 = arg;
     return RTCi_ReadRawTimeAsync() ? 0 : 3;
 }
@@ -265,7 +267,7 @@ u32 RTC_GetDateTimeAsync(u32 a, u32 b, void (*cb)(void), u32 arg) {
     data_021feb90.f18 = 0;
     data_021feb90.f8 = a;
     data_021feb90.fc = b;
-    data_021feb90.f4 = (u32)cb;
+    data_021feb90.f4 = (uptr)cb;
     data_021feb90.f10 = arg;
     return RTCi_ReadRawDateTimeAsync() ? 0 : 3;
 }

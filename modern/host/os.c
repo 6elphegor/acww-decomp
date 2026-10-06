@@ -161,6 +161,26 @@ void OS_LoadContext(void *t) {
     host_fatal("a discarded thread was resumed");
 }
 
+// for the interrupt handler (hw.c): where each suspended game thread is (a frame-pointer walk from the frame
+// host_coro_switch left: the callee-saved registers, ebp / rbp among them)
+void host_dump_threads(void (*backtrace)(uintptr_t *bp, uintptr_t sp)) {
+    for (int i = 0; i < MAX_CTX; i++) {
+        if (!sCtx[i].key || !sCtx[i].sp) continue;
+        OSThread *t = sCtx[i].key;
+        uintptr_t *sp = sCtx[i].sp;
+#if defined(__x86_64__)
+        uintptr_t bp = sp[5];  // r15 r14 r13 r12 rbx rbp
+#elif defined(__i386__)
+        uintptr_t bp = sp[3];  // edi esi ebx ebp
+#else
+        uintptr_t bp = sp[10];  // x19..x28, x29
+#endif
+        fprintf(stderr, "thread %p (id %u, state %u, priority %u, queue %p, sp %p bp %p):\n", (void *)t, (unsigned)t->id, (unsigned)t->state,
+                (unsigned)t->priority, (void *)t->queue, (void *)sp, (void *)bp);
+        backtrace((uintptr_t *)bp, (uintptr_t)sp);
+    }
+}
+
 // ---- lock ids (ARM9: 0x40..0x7f)
 static u64 sLockIds;
 u32 OS_GetLockID(void) {

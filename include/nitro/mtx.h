@@ -5,7 +5,11 @@
 // Self-contained (no types.h): the itcm C units define s32 as `signed long` and fx32 must stay `long` there.
 // The union carries the spellings the units use: _00.._22, a[9] (and the SDK's m[3][3]).
 
+#ifdef HOST
+typedef signed int fx32;  // (long is 64 bits on 64-bit hosts)
+#else
 typedef signed long fx32;
+#endif
 
 typedef union MtxFx33 {
     struct {

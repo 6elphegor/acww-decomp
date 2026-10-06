@@ -3,6 +3,7 @@
 // NitroSDK CARD (card_common.c), autoload_2 0x0211d680-0x0211da74, with its bss (autoload_3 0x021febb4-0x021ff220).
 // Split from unk_0211d20c.c (rtc.c) by the files' bss. ARM code, mwcc 1.2/base -O4,p.
 // Functions are in reverse address order (mwcc emits in reverse source order).
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -10,15 +11,16 @@ typedef signed int s32;
 #include "types64.h"
 typedef int BOOL;
 
-typedef struct { u32 head, tail; } OSQ;
-typedef struct { u32 w[0x30]; } OST;
+#include "sys/OSThread.h"  // the real types: a thread and its queues are larger on 64-bit hosts
+typedef OSThreadQueue OSQ;
+typedef OSThread OST;
 
-typedef struct {
+typedef struct {  // RTCWork (unk_0211cbe8.c): f4..f10 and f1c are pointers there
     u32 lock;
-    u32 f4, f8, fc, f10;
+    uptr f4, f8, fc, f10;
     u32 command;
     u32 f18;
-    u32 f1c;
+    uptr f1c;
     u32 result;
 } RTCWork;
 
@@ -73,7 +75,7 @@ extern u32 data_021febb4;
 extern u8 data_021febc0[0x40];
 extern u32 data_021fee20[0x100]; // the CARD thread's stack, defined below
 extern RomDev data_021ff240;
-extern u32 data_021fcc2c[];
+extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
 extern u32 data_0213c1cc[12];
 
 u32 OS_DisableInterrupts(void);

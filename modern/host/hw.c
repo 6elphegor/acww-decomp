@@ -715,6 +715,8 @@ static void on_int(int sig, siginfo_t *si, void *ctx) {
     fprintf(stderr, "host: interrupted at frame %llu, eip %08x\n", (unsigned long long)host_frame(),
             (u32)uc->uc_mcontext.gregs[R_PC]);
     host_backtrace((uintptr_t *)uc->uc_mcontext.gregs[R_BP], (uintptr_t)uc->uc_mcontext.gregs[R_SP]);
+    extern void host_dump_threads(void (*)(uintptr_t *, uintptr_t));
+    host_dump_threads(host_backtrace);
     void *bt[32];
     int n = backtrace(bt, 32);
     backtrace_symbols_fd(bt, n, 2);

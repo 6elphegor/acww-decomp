@@ -2,6 +2,7 @@
 #include "nitro/os_rtc.h"
 // NitroSDK RTC (rtc.c) + CARD common/rom (card_common.c, card_rom.c), autoload_2 0x0211dc4c-0x0211e3fc. ARM code, mwcc 1.2/base -O4,p.
 // Functions are in reverse address order (mwcc emits in reverse source order).
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -10,15 +11,16 @@ typedef signed int s32;
 #include "nitro/io_access.h"
 typedef int BOOL;
 
-typedef struct { u32 head, tail; } OSQ;
-typedef struct { u32 w[0x30]; } OST;
+#include "sys/OSThread.h"  // the real types: a thread and its queues are larger on 64-bit hosts
+typedef OSThreadQueue OSQ;
+typedef OSThread OST;
 
-typedef struct {
+typedef struct {  // RTCWork (unk_0211cbe8.c): f4..f10 and f1c are pointers there
     u32 lock;
-    u32 f4, f8, fc, f10;
+    uptr f4, f8, fc, f10;
     u32 command;
     u32 f18;
-    u32 f1c;
+    uptr f1c;
     u32 result;
 } RTCWork;
 
@@ -73,7 +75,7 @@ extern u32 data_021febb4;
 extern u8 data_021febc0[];
 extern u32 data_021ff220;
 extern RomDev data_021ff240;
-extern u32 data_021fcc2c[];
+extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
 extern u32 data_0213c1c8[];
 
 u32 OS_DisableInterrupts(void);
@@ -230,7 +232,7 @@ void CARDi_ReadRom(u32 cmd, u32 off, u32 dst, u32 len, void (*cb)(void *), void 
         CARDi_SetTask(CARDi_ReadRomSyncCore);
         return;
     }
-    c->curThread = (OST *)data_021fcc2c[1];
+    c->curThread = data_021fcc2c.current;
     CARDi_ReadRomSyncCore(c);
 }
 
@@ -331,7 +333,7 @@ BOOL CARDi_RequestStreamCommand(u32 a, u32 b, u32 len, void (*cb)(void *), void 
         CARDi_SetTask(CARDi_RequestStreamCommandCore);
         return 1;
     }
-    data_021fec00.curThread = (OST *)data_021fcc2c[1];
+    data_021fec00.curThread = data_021fcc2c.current;
     CARDi_RequestStreamCommandCore(c);
     return c->cmd->result == 0;
 }
@@ -357,7 +359,7 @@ BOOL CARD_IdentifyBackup(u32 op) {
     c->cbArg = 0;
     OS_RestoreInterrupts(irq);
     CARDi_IdentifyBackupCore(op);
-    data_021fec00.curThread = (OST *)data_021fcc2c[1];
+    data_021fec00.curThread = data_021fcc2c.current;
     CARDi_Request(c, 2, 1);
     c->cmd->srcBuf = 0;
     c->cmd->dstBuf = (u32)c->buf;

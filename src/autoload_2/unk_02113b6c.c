@@ -1,6 +1,7 @@
 #include "sys/OSThread.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK os_thread.c: OS_InitThread, autoload_2 0x02113b6c-0x02113cc8. ARM code, mwcc 1.2/base.
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -18,7 +19,7 @@ extern OSThread data_021fccfc;     // OSi_LauncherThread
 extern u32 data_021fcdbc[50];      // OSi_IdleThreadStack (200 bytes; the original passes its end, data_021fce84)
 extern u8 data_027e0000[];         // SDK_AUTOLOAD_DTCM_START (HW_DTCM): a real relocation to the dtcm module
 
-#define data_027fffa0 (*(OSThreadInfo * volatile *)0x027fffa0)
+#define data_027fffa0 (*(volatile u32 *)0x027fffa0)  // the system area: a 32-bit address (OSThreadInfo *)
 
 // Absolute symbols of the linker script (config/usa/arm9/abs_symbols.txt)
 extern u8 SDK_SYS_STACKSIZE[];            // 0x2000
@@ -58,7 +59,7 @@ void OS_InitThread(void) {
     data_021fccfc.joinQueue.head = 0;
     data_021fcc2c.isNeedRescheduling = 0;
     data_021fcc2c.irqDepth = 0;
-    data_027fffa0 = &data_021fcc2c;
+    data_027fffa0 = (u32)(uptr)&data_021fcc2c;
     OS_SetSwitchThreadCallback(0);
     OS_CreateThread(&data_021fcc3c, OSi_IdleThreadProc, 0, data_021fcdbc + 50, 200, 31);
     data_021fcc3c.priority = 32;

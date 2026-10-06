@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // autoload_2 0x02125c94-0x0212703c: wireless helper (WH-like) state callback, job-queue thread, chunk reassembly. mwcc 1.2/base, -O4,p.
+#include "sys/OSThread.h"
 typedef unsigned char u8;
 typedef signed char s8;
 typedef unsigned short u16;
@@ -32,7 +33,7 @@ struct WJob {
 };
 #define HEAD(sys) ((sys)->head)
 typedef struct {
-    u8 thread[0xc0];
+    OSThread thread;  // (the real type: larger on 64-bit hosts)
     WJob *volatile head;
     WJob sentinel;
 } WSys;

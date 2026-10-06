@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "sys/OSThread.h"
 
 // Town update thread context (0x10ec bytes, allocated by TownUpdateThread_Create): the OS thread (0..0xc0), the caller's
 // thread / heap, the Town_AdvanceDays arguments, the 0x1000-byte thread stack between the two guard words and the
@@ -10,11 +11,15 @@
 // unk_02041e00.cpp).
 
 struct TownUpdateThread {
-    /* 0x0000 */ u8 pad00[0x64];
-    /* 0x0064 */ s32 threadState;
-    /* 0x0068 */ u8 pad68[0xc0 - 0x68];
-    /* 0x00c0 */ u32 callerThread;
-    /* 0x00c4 */ u32 heap;
+    union {
+        /* 0x0000 */ OSThread thread;  // (the real type: larger on 64-bit hosts)
+        struct {
+            /* 0x0000 */ u8 pad00[0x64];
+            /* 0x0064 */ s32 threadState;  // thread.state
+        };
+    };
+    /* 0x00c0 */ uptr callerThread;  // OSThread *
+    /* 0x00c4 */ uptr heap;          // Heap *
     /* 0x00c8 */ u8 lastDate[8];
     /* 0x00d0 */ u8 curDate[8];
     /* 0x00d8 */ u32 elapsedDays;

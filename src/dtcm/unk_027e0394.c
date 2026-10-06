@@ -5,7 +5,11 @@
 // SDK's DTCM section pragma (see unk_027e0000.c).
 #pragma define_section DTCM ".dtcm" abs32 RWX
 
+#ifdef HOST
+typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
+#else
 typedef unsigned long u32;
+#endif
 typedef int BOOL;
 typedef void (*PXIFifoCallback)(u32 tag, u32 data, BOOL err);
 

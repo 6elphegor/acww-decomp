@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/os_rtc.h"
 // NitroSDK CARD (card_common.c): CARDi_IdentifyBackupCore (CARDi_IdentifyBackupCore), autoload_2 0x0211da74-0x0211dc4c. ARM, mwcc 1.2/base -O4,p.
+#include "uptr.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -8,15 +9,16 @@ typedef signed int s32;
 #include "types64.h"
 typedef int BOOL;
 
-typedef struct { u32 head, tail; } OSQ;
-typedef struct { u32 w[0x30]; } OST;
+#include "sys/OSThread.h"  // the real types: a thread and its queues are larger on 64-bit hosts
+typedef OSThreadQueue OSQ;
+typedef OSThread OST;
 
-typedef struct {
+typedef struct {  // RTCWork (unk_0211cbe8.c): f4..f10 and f1c are pointers there
     u32 lock;
-    u32 f4, f8, fc, f10;
+    uptr f4, f8, fc, f10;
     u32 command;
     u32 f18;
-    u32 f1c;
+    uptr f1c;
     u32 result;
 } RTCWork;
 
@@ -71,7 +73,7 @@ extern u32 data_021febb4;
 extern u8 data_021febc0[];
 extern u32 data_021ff220;
 extern RomDev data_021ff240;
-extern u32 data_021fcc2c[];
+extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
 extern u32 data_0213c1c8[];
 
 u32 OS_DisableInterrupts(void);

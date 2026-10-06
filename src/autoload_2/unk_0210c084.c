@@ -105,8 +105,8 @@ typedef struct BankRec { u32 fileId; u16 wa[4]; } BankRec;
 // version, with this older library's direct FS_SeekFile/FS_ReadFile reads (the file offset is added here) and
 // RequestNextStrm for OnDataEnd. Its two ADPCM tables are the file's .rodata (0x02135e80-0x02135f44).
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
-typedef struct FSFile { u8 data[0x48]; } FSFile;
-typedef struct OSMutex { u8 data[0x18]; } OSMutex;
+#include "nitro/fs.h"       // the real FSFile and OSMutex: larger on 64-bit hosts
+#include "sys/OSThread.h"
 typedef struct NNSSndFader { s32 a, b, c, d; } NNSSndFader;
 typedef enum { NNS_SND_STRM_FORMAT_PCM8, NNS_SND_STRM_FORMAT_PCM16 } NNSSndStrmFormat;
 typedef void (*NNSSndStrmCallback)(s32 status, int numChannels, void *buffer[], u32 len, NNSSndStrmFormat format, void *arg);

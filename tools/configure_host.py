@@ -58,7 +58,7 @@ SECTIONS = ("-Wl,--allow-multiple-definition -Wl,--section-start=.dtcm=0x027e000
 M = args.melonds
 if X64:
     # the system's own 64-bit libraries; melonDS's 64-bit core (build-core, configured with the JIT and the GDB stub)
-    HOST_FLAGS = "-m64 -fno-pie -O1 -g -Wall -std=gnu11 -DHOST -Iinclude"
+    HOST_FLAGS = "-m64 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 -DHOST -Iinclude"
     # the program above the DS's address space (0x02000000-0x08000000), still below 4 GB
     LINK_FLAGS = f"-m64 -no-pie -Wl,-Ttext-segment=0x10000000 {SECTIONS}"
     HOST_CXX_FLAGS = (f"-m64 -fno-pie -O1 -g -std=c++17 -I{M}/src -I{M}/build-core/src -DJIT_ENABLED -DGDBSTUB_ENABLED "
@@ -66,7 +66,7 @@ if X64:
     MELON_LIBS = f"{M}/build-core/src/libcore.a {M}/build-core/src/teakra/src/libteakra.a"
     LIBDIR, LIBGCC = "/usr/lib/x86_64-linux-gnu", "/usr/lib/gcc/x86_64-linux-gnu/15/libgcc.a"
 else:
-    HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
+    HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -fno-omit-frame-pointer -Wall -std=gnu11 --sysroot={R} -isystem {R}/usr/include "
                   f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude")
     LINK_FLAGS = (f"-m32 -no-pie --sysroot={R} -B{G} -L{G} -Wl,-dynamic-linker,{R}/usr/lib32/ld-linux.so.2 "
                   f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 {SECTIONS}")

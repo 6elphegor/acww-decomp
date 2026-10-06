@@ -8,11 +8,11 @@
 struct TownJunkInsectFlags { u8 spawnFlies; u8 spawnAnts; u8 pad[2]; };
 
 
-extern u32 data_021fcc2c[];
+extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
 
 extern CommManager *gCommManager;
 extern TownUpdater gTownUpdater;
-extern u32 gCurrentHeap;
+extern uptr gCurrentHeap;  // Heap *
 extern u8 sAntSpawnEnabled;
 extern volatile u32 gTownEval[];
 extern u8 gSaveData[];
@@ -55,13 +55,13 @@ void TownBbs_PostDayEvents(void *o, EventDayEntry *z, Unk_02042104_Date *d);
 void TownUpdateThread_Main(u8 *arg);
 void OS_ExitThread();
 u32 DC_FlushAll();
-void Heap_SetThreadHeap(u32 a, u32 b);
+void Heap_SetThreadHeap(uptr a, uptr b);
 void Town_AdvanceDays(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 TownUpdateThread_StartCtx(TownUpdateThread *p);
 void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);
 void TownUpdateThread_Init(TownUpdateThread *p);
-void *Heap_Alloc(u32 heap, u32 size);
+void *Heap_Alloc(uptr heap, u32 size);
 void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void OS_WakeupThreadDirect(void *th);
 }
@@ -203,12 +203,12 @@ extern "C" void TownUpdateThread_Init(TownUpdateThread *p) {
     p->hasArgs = 0;
     p->done = 0;
     p->started = 0;
-    MI_CpuFill8(p, 0, 0xc0);
+    MI_CpuFill8(p, 0, sizeof(p->thread));
     p->threadState = 2;
 }
 
 extern "C" void TownUpdateThread_Create() {
-    gTownUpdater.updateThread = (TownUpdateThread *)Heap_Alloc(gCurrentHeap, 0x10ec);
+    gTownUpdater.updateThread = (TownUpdateThread *)Heap_Alloc(gCurrentHeap, sizeof(TownUpdateThread));
     if (gTownUpdater.updateThread != 0) {
         TownUpdateThread_Init(gTownUpdater.updateThread);
     }
@@ -237,10 +237,10 @@ extern "C" s32 TownUpdateThread_StartCtx(TownUpdateThread *p) {
     p->done = 0;
     p->started = 1;
     OS_CreateThread(p, (void *)TownUpdateThread_Main, p->lastDate, &p->stackGuardHigh, 0x1000, 0x1e);
-    p->callerThread = data_021fcc2c[1];
+    p->callerThread = (uptr)data_021fcc2c.current;
     p->heap = gCurrentHeap;
     Heap_SetThreadHeap(p->callerThread, 0);
-    Heap_SetThreadHeap((u32)p, p->heap);
+    Heap_SetThreadHeap((uptr)p, p->heap);
     OS_WakeupThreadDirect(p);
     return 1;
 }

@@ -64,7 +64,9 @@ struct BlockMap {
 // unk_02011ec0.cpp
 // Opaque 0x28-byte block cell of the scene block map (class MapBlock in src/main/unk_02037358.cpp).
 struct MapBlock {
-    u8 data[0x28];
+    u8 data[0x20];
+    void *bgModel;  // 0x20 (the pointers: their size on 64-bit hosts)
+    uptr buried;    // 0x24
 };
 
 

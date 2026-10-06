@@ -8,7 +8,10 @@ structure type declared in several compile units this maps each view's members f
 host build's debug information) to their 64-bit offset (the 64-bit build's) and reports where two views put the
 same DS byte at different places. Arrays of scalars (padding) count byte by byte.
 
-Usage: host_view_conflicts.py <game_all.o, 32-bit> <game_all.o, 64-bit> [--json out.json]
+--types: the same for named structure types (a type declared in several units: heap objects too). Types of the
+same name and the same 32-bit size are compared; unrelated types sharing a name can show up.
+
+Usage: host_view_conflicts.py <game_all.o, 32-bit> <game_all.o, 64-bit> [--types] [--json out.json]
 """
 import json
 import sys
@@ -50,6 +53,28 @@ def leaves(die, base=0, path=(), out=None, depth=0):
     return out
 
 
+def type_views(path):
+    """structure type name -> {compile unit name: type DIE} (named, complete structure / class types)"""
+    f = open(path, "rb")
+    elf = ELFFile(f)
+    out = defaultdict(dict)
+    for cu in elf.get_dwarf_info().iter_CUs():
+        top = cu.get_top_DIE()
+        cu_name = top.attributes["DW_AT_name"].value.decode() if "DW_AT_name" in top.attributes else "?"
+        for die in top.iter_children():
+            name, t = None, None
+            if die.tag in ("DW_TAG_structure_type", "DW_TAG_class_type") and "DW_AT_name" in die.attributes \
+                    and "DW_AT_declaration" not in die.attributes:
+                name, t = die.attributes["DW_AT_name"].value.decode(), die
+            elif die.tag == "DW_TAG_typedef" and "DW_AT_type" in die.attributes:
+                s = strip(die.get_DIE_from_attribute("DW_AT_type"))
+                if s is not None and s.tag in ("DW_TAG_structure_type", "DW_TAG_class_type") and "DW_AT_declaration" not in s.attributes:
+                    name, t = die.attributes["DW_AT_name"].value.decode(), s
+            if name and name not in out or (name and cu_name not in out[name]):
+                out[name][cu_name] = t
+    return out, f
+
+
 def views(path):
     """variable name -> {compile unit name: type DIE} (structure / array types only)"""
     f = open(path, "rb")
@@ -81,8 +106,12 @@ def views(path):
 def main():
     o32, o64 = sys.argv[1], sys.argv[2]
     js = sys.argv[sys.argv.index("--json") + 1] if "--json" in sys.argv else None
-    v32, f32 = views(o32)
-    v64, f64 = views(o64)
+    if "--types" in sys.argv:
+        v32, f32 = type_views(o32)
+        v64, f64 = type_views(o64)
+    else:
+        v32, f32 = views(o32)
+        v64, f64 = views(o64)
     conflicts = []
     for name, cus64 in sorted(v64.items()):
         cus = [c for c in cus64 if c in v32.get(name, {})]
@@ -90,6 +119,12 @@ def main():
             continue
         # each view: DS byte -> 64-bit byte
         maps = {}
+        if "--types" in sys.argv:  # only same-sized types (by name): likely the same thing
+            sizes = {c: size_of(v32[name][c]) for c in cus}
+            common = max(set(sizes.values()), key=list(sizes.values()).count)
+            cus = [c for c in cus if sizes[c] == common]
+            if len(cus) < 2:
+                continue
         for c in cus:
             l32 = leaves(v32[name][c])
             l64 = leaves(cus64[c])

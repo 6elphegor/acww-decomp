@@ -506,7 +506,9 @@ namespace nB {
 extern "C" {
 
 struct MapBlock {
-    u8 pad_00[0x28];
+    u8 pad_00[0x20];
+    void *bgModel;  // 0x20 (the pointers: their size on 64-bit hosts)
+    uptr buried;    // 0x24
 };
 struct BlockMap {
     MapBlock *blocks;

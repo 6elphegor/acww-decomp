@@ -130,7 +130,7 @@ void CARDi_TaskThread(void) {
     for (;;) {
         irq = OS_DisableInterrupts();
         while ((c->flag & 8) == 0) {
-            c->waiter = (u8 *)c + 0x44;
+            c->waiter = &c->thread;
             OS_SleepThread(0);
         }
         OS_RestoreInterrupts(irq);
@@ -236,8 +236,8 @@ void CARDi_OnReadCard(void) {
             arg = c->callbackArg;
             irq = OS_DisableInterrupts();
             c->flag &= ~0x4c;
-            OS_WakeupThread((u8 *)c + 0x10c);
-            if ((c->flag & 0x10) != 0) OS_WakeupThreadDirect((u8 *)c + 0x44);
+            OS_WakeupThread(&c->queue);
+            if ((c->flag & 0x10) != 0) OS_WakeupThreadDirect(&c->thread);
             OS_RestoreInterrupts(irq);
             if (cb != 0) cb(arg);
         }
