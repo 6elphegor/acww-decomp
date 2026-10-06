@@ -1,3 +1,6 @@
+#include "item/Letter.h"
+#include "talk/MsgString25.h"
+#include "talk/MsgString33.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/HBlankTask.h"
@@ -1414,10 +1417,10 @@ void RoomScoreEvaluator::collectLuckyItems(void *grid)
 
 extern "C" BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 n)
 {
-    u32 objA[0xb];
+    u32 objA[HOST_SIZED(0x2c, MsgString25) / 4] HOST_ALIGN8;
     u32 objB[9];
-    u32 objC[0xd];
-    u32 objD[0x3e];
+    u32 objC[HOST_SIZED(0x34, MsgString33) / 4] HOST_ALIGN8;
+    u32 objD[HOST_SIZED(0xf8, Letter) / 4] HOST_ALIGN8;
     u8 by[2];
     s32 i;
     s32 z = 0;
@@ -1473,7 +1476,7 @@ extern "C" void HappyRoom_SendPrizeLetter(void *self, s32 n)
         s32 zero = 0;
         for (i = 0; i < 4; i++) {
             void *p = PlayerData_GetResident(gSavePlayers, i);
-            u32 obj[0x3e];
+            u32 obj[HOST_SIZED(0xf8, Letter) / 4] HOST_ALIGN8;
             u8 b;
             if (p && _ZN10PlayerData6isUsedEv(p) && _ZN10PlayerData8testFlagEj(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
                 _ZN6LetterC1Ev(obj);
@@ -1524,7 +1527,7 @@ extern "C" BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, void *gri
 
 extern "C" BOOL HappyRoom_SendWelcomeLetter()
 {
-    u32 obj[0x3d];
+    u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
     u8 b;
     void *p = PlayerData_GetCurrent();
     if (p && _ZN10PlayerData8testFlagEj(p, 3) && !_ZN10PlayerData8testFlagEj(p, 0xe)) {
@@ -1545,7 +1548,7 @@ extern "C" BOOL Villager_SendLetterWithPaper(const void *r0, u8 r1, s32 r2, s32 
 {
     if (SaveVillagers_Find(gSaveVillagers, r3)) {
         u8 buf[2];
-        u32 obj[0x3d];
+        u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
         _ZN10VillagerId12makeFileNameEPvjj(r3, sVillagerLetterWithPaperPath, 0x28, (s32)r0);
         buf[0] = r1;
         buf[1] = LetterPaper_PickForPersonality(VillagerId_GetPersonality(r3));

@@ -112,7 +112,7 @@ void WfcDialog_Open(s32 a, s32 b, s32 c, s32 d, s32 e)
     s32 i;
 
     v = WfcMsg_GetStringWithDigit(*gWfcMsgBank, a, d, e);
-    g = (WfcDialogWork *)WfcHeap_AllocClear(0x20, 4);
+    g = (WfcDialogWork *)WfcHeap_AllocClear(HOST_SIZED(0x20, WfcDialogWork), 4);
     sWfcDialog = g;
     g->style = b;
     sWfcDialog->result = -2;

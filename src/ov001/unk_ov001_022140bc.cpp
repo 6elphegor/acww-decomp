@@ -116,7 +116,7 @@ void WfcAddrEdit_Enter() {
     WfcAddrEditLoadFuncTable fns = *(WfcAddrEditLoadFuncTable *)sWfcAddrEditLoadFuncs;
     WfcAddrEditTitleMsgIds ids = *(WfcAddrEditTitleMsgIds *)sWfcAddrEditTitleMsgs;
     s32 idx;
-    sWfcAddrEdit = (WfcAddrEdit *)WfcHeap_AllocClear(0x18, 4);
+    sWfcAddrEdit = (WfcAddrEdit *)WfcHeap_AllocClear(HOST_SIZED(0x18, WfcAddrEdit), 4);
     WfcUtil_GetEditParams(&idx, 0);
     fns.v[idx](sWfcAddrEdit->name);
     WfcAddrEdit *o = sWfcAddrEdit;

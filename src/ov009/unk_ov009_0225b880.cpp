@@ -910,7 +910,7 @@ void BuildingActor::createShadows(Mtx43 *m) {
         if (e->shadowTable != NULL) {
             void *heap = gFieldStructureHeap;
             u32 n = e->shadowTable->getCount();
-            shadows = (ObjShadowStrip *)Heap_Alloc(heap, n * 0x34);
+            shadows = (ObjShadowStrip *)Heap_Alloc(heap, n * HOST_SIZED(0x34, ObjShadowStrip));
             ObjShadowStrip *p = shadows;
             u32 i;
             s32 zero;
@@ -973,8 +973,8 @@ void BuildingActor::createColliders(Mtx43 *m) {
             VecFx32 a, b, c;
             VecFx32 wa, wb, wc;
             VecFx32 la, lb, lc;
-            collisionShapes = (TouchPickTriangle *)Heap_Alloc(gFieldStructureHeap, colliderCount * 0x44);
-            colliders = (BuildingCollider *)Heap_Alloc(gFieldStructureHeap, colliderCount * 0x54);
+            collisionShapes = (TouchPickTriangle *)Heap_Alloc(gFieldStructureHeap, colliderCount * HOST_SIZED(0x44, TouchPickTriangle));
+            colliders = (BuildingCollider *)Heap_Alloc(gFieldStructureHeap, colliderCount * HOST_SIZED(0x54, BuildingCollider));
             e4 = colliders;
             e6 = collisionShapes;
             k = BuildingList_IndexOf(this);

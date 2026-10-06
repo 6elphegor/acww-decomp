@@ -153,7 +153,7 @@ s32 qr2_init_socketA(qr2_implementation_s **out, s32 fd, s32 a2, const char *nam
     if (out == NULL) {
         q = &static_qr2_rec;
     } else {
-        *out = (qr2_implementation_s *)GsUtil_Alloc(0x110);
+        *out = (qr2_implementation_s *)GsUtil_Alloc(HOST_SIZED(0x110, qr2_implementation_s));
         q = *out;
     }
     srand(current_time());

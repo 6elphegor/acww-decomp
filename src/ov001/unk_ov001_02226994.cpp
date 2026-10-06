@@ -49,7 +49,7 @@ void WfcVram_Init()
 #define Unk_ov001_02226b60_R (*(WfcVramHeap *)((u8 *)sWfcVram + off))
     s32 i;
     u32 off;
-    sWfcVram = (WfcVramWork *)WfcHeap_AllocClear(0x340, 4);
+    sWfcVram = (WfcVramWork *)WfcHeap_AllocClear(HOST_SIZED(0x340, WfcVramWork), 4);
     for (i = 0, off = 0; i < 2; i++, off += 0x1a0) {
         Unk_ov001_02226b60_R.nodePool = WfcPool_CreateFrom(0x20, &Unk_ov001_02226b60_R, 0xc);
         Unk_ov001_02226b60_R.list = WfcList_Create();

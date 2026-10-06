@@ -250,7 +250,7 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
         p = p + *(u16 *)(hdr2 + 0xe);
         MI_CpuCopy8(p + *(u16 *)(p + 2), t->modelNames, size);
     }
-    t->models = (CachedModel *)Heap_Alloc(heap, t->numModels * 0x9c);
+    t->models = (CachedModel *)Heap_Alloc(heap, t->numModels * HOST_SIZED(0x9c, CachedModel));
     for (i = 0; i < t->numModels; i++) {
         new (&t->models[i]) CachedModel();
     }

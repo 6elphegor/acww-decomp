@@ -209,7 +209,7 @@ extern "C" void WfcManualSetup_Enter() {
     s32 i;
     BOOL z = FALSE;
     u32 b;
-    sWfcManualSetup = (WfcManualSetupWork *)WfcHeap_AllocClear(0x48, 4);
+    sWfcManualSetup = (WfcManualSetupWork *)WfcHeap_AllocClear(HOST_SIZED(0x48, WfcManualSetupWork), 4);
     sWfcManualSetup->savedAutoDns = p[0xf6];
     sWfcManualSetup->lastBottomItem = 0xc;
     WfcManualSetup_ResetCursor();

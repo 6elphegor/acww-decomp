@@ -1,3 +1,4 @@
+#include "game/CollisionState.h"
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -4455,7 +4456,7 @@ extern "C" void PlayerActor_LeaveRoomUpdateAnim(Obj *o) {
 
 extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
     V3 *p = (V3 *)&o->position;
-    u8 loc[0x30];
+    u8 loc[HOST_SIZED(0x30, CollisionState) / 1] HOST_ALIGN8;
     _ZN14CollisionStateC1Ev(loc);
     s32 ang = o->rotY;
     void *sel;

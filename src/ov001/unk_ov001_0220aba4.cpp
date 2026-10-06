@@ -256,7 +256,7 @@ void WfcNumPad_Create() {
     s32 i, j, k;
     pos = *(WfcPosSize *)data_ov001_0222aa58;
     pos.size = *(WfcPoint *)data_ov001_02229ea4;
-    sWfcNumPad = (WfcNumPad *)WfcHeap_AllocClear(0x6c, 4);
+    sWfcNumPad = (WfcNumPad *)WfcHeap_AllocClear(HOST_SIZED(0x6c, WfcNumPad), 4);
     sWfcNumPad->inputKey = 0x1f;
     sWfcNumPad->cursorKey = 0;
     sWfcNumPad->deleteEnabled = 1;

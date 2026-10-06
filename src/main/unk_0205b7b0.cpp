@@ -1,3 +1,4 @@
+#include "sys/Heap.h"
 #include "types.h"
 #include "net/CommManager.h"
 
@@ -817,7 +818,7 @@ extern "C" void PlayerActorHeap_Destroy(void) {
 extern "C" void TownBclHeap_Create(s32 x) {
     Unk_0205b7cc_Zero z = UNK_0205B7CC_ZERO;
     u32 s = (data_020c8ba0 + 3) & ~3;
-    s = (s + 0x4b) & ~3;
+    s = (s + FRAMEHEAP_OVERHEAD_ROUNDED) & ~3;
     gTownBclHeap = FrameHeap_Create(z + s, (void *)x, s, z);
 }
 
@@ -830,7 +831,7 @@ extern "C" void RoomBclHeap_Create(s32 x) {
     s32 a = x;
     Unk_0205b7cc_Zero z = UNK_0205B7CC_ZERO;
     u32 s = (data_020c8b9c + 3) & ~3;
-    s = (s + 0x4b) & ~3;
+    s = (s + FRAMEHEAP_OVERHEAD_ROUNDED) & ~3;
     u32 e = z + s;
     gRoomBclHeap = FrameHeap_Create(e, (void *)a, s, z);
 }

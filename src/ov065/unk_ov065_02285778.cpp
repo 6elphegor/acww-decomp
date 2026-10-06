@@ -471,7 +471,7 @@ s32 gti2CreateSocket(Sock062 **out, char *addr, u32 rsz, u32 ssz, s32 arg) {
     if (gt2StringToAddress(addr, (u32 *)&l.ip, &l.port) == 0) {
         return 4;
     }
-    c = (Sock062 *)GsUtil_Alloc(0x44);
+    c = (Sock062 *)GsUtil_Alloc(HOST_SIZED(0x44, Sock062));
     if (c == 0) {
         return 1;
     }

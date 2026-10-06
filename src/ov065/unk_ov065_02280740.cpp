@@ -120,7 +120,7 @@ s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
         {
             switch (n->type) {
             case 0: {
-                GPConnectResponseArg *m = (GPConnectResponseArg *)GsUtil_Alloc(0x20);
+                GPConnectResponseArg *m = (GPConnectResponseArg *)GsUtil_Alloc(HOST_SIZED(0x20, GPConnectResponseArg));
                 if (m == 0) {
                     gpiSetErrorString(h, "Out of memory.");
                     return 1;
@@ -225,7 +225,7 @@ namespace Na {
 extern "C" {
 s32 gpiAddOperation(GPConnection *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g) {
     GPIConnection *c = *h;
-    GPIOperation *n = (GPIOperation *)GsUtil_Alloc(0x24);
+    GPIOperation *n = (GPIOperation *)GsUtil_Alloc(HOST_SIZED(0x24, GPIOperation));
     if (n == 0) {
         gpiSetErrorString(h, "Out of memory.");
         return 1;

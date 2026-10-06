@@ -65,7 +65,7 @@ extern "C" const u8 sWfcScrollBarThumbCells[4] = { 0x10, 0x0f, 0x0e, 0x00 };
 WfcScrollBar *sWfcScrollBar;
 
 void WfcScrollBar_Create(u32 a, u32 b, s32 c, s32 d, u32 e) {
-    sWfcScrollBar = (WfcScrollBar *)WfcHeap_AllocClear(0x20, 4);
+    sWfcScrollBar = (WfcScrollBar *)WfcHeap_AllocClear(HOST_SIZED(0x20, WfcScrollBar), 4);
     sWfcScrollBar->thumbSize = a;
     sWfcScrollBar->trackLength = b;
     sWfcScrollBar->thumbPos = e;

@@ -3812,7 +3812,7 @@ extern "C" s32 MuseumAquarium_CreateSeaFish(Mgr *o) {
         case 13: {
             u32 off = i << 2;
             p = &sAquariumFish[i];
-            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, 0x1fc);
+            *(R **)((u8 *)sAquariumFish + off) = (R *)Heap_Alloc(heap, HOST_SIZED(0x1fc, R));
             if (*(R **)((u8 *)sAquariumFish + off)) func_ov004_022327b8(*(R **)((u8 *)sAquariumFish + off));
             break;
         }

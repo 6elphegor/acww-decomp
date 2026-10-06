@@ -2874,7 +2874,7 @@ extern "C" void NookPoints_SendMemberLetters(void) {
                 for (i = 0; i < n; i++) {
                     u32 j = i + 0x1c;
                     if (i < 4 && !_ZN10PlayerData8testFlagEj(r5, j)) {
-                        u32 obj[0x3d];
+                        u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
                         u8 ib;
                         _ZN6LetterC1Ev(obj);
                         ib = i;
@@ -3057,7 +3057,7 @@ extern "C" BOOL NookShop_SendCatalogOrder(void *name) {
         u16 id;
         u8 by;
         u32 s1[9];
-        u32 obj[0x3d];
+        u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
         Item_FromPlacedForm(&id, name);
         _ZN8ItemNameC1EPt(s1, &id);
         MailText_SetSlot(1, s1);

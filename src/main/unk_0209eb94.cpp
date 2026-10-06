@@ -1,3 +1,5 @@
+#include "talk/MsgString9B.h"
+#include "talk/MsgString9C.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -1515,7 +1517,7 @@ void SaveManager::execAct05() {
 void SaveManager::enterAct06() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     u8 *d = NI::gSaveData;
-    u8 buf[0x1c];
+    u8 buf[HOST_SIZED(0x1c, MsgString9B) / 1] HOST_ALIGN8;
     s32 h = NI::PlayerData_GetResident(NI::gSavePlayers, NI::sEraseResidentSlot);
     NI::_ZN11MsgString9BC1Ev(buf);
     NI::_ZN8PlayerId13getNameStringEP9MsgString(NI::_ZN10PlayerData11getPlayerIdEv(h), buf);
@@ -4339,7 +4341,7 @@ extern "C" void LostChild_DebugPrint(SaveManager *p, void *q) {}
 extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     void *r7 = NC::PlayerData_GetBySessionSlot(idx);
     if (r7 == 0) return;
-    u32 sa[7];
+    u32 sa[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sa);
     NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)), sa);
     void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r7);
@@ -4351,7 +4353,7 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     s32 found = 4;
     void *other = 0;
     void *other2 = 0;
-    u32 sb[7];
+    u32 sb[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sb);
     s32 i = 0;
     CommManager *o = NC::gCommManager;
@@ -4394,7 +4396,7 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     void *h5 = NC::_ZN11SaveManager15getTransferDestEj(self, found);
     void *c4 = NC::PlayerData_GetBySessionSlot((s32)h7);
     void *m7 = NC::TownExchange_GetForAid((s32)h7);
-    u32 sc[7];
+    u32 sc[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sc);
     if (c4) {
         NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sc);
@@ -4402,7 +4404,7 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     NC::MI_CpuCopy8(r6, NC::_ZN18TownExchangeRecord18getLostChildRecordEv(m7), 0xc);
     c4 = NC::PlayerData_GetBySessionSlot((s32)h5);
     void *m5 = NC::TownExchange_GetForAid((s32)h5);
-    u32 sd[7];
+    u32 sd[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sd);
     if (c4) {
         NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sd);
@@ -4432,12 +4434,12 @@ extern "C" BOOL Wifi_IsInFriendList(SaveManager *self, void *a, void *b) {
 extern "C" void LostChild_ApplyReceived(SaveManager *self) {
     void *p5 = NC::TownExchange_GetForAid(4);
     void *r4 = NC::PlayerData_GetCurrent();
-    u32 s1[7];
+    u32 s1[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(s1);
     NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r4)), s1);
     void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r4);
     void *q = NC::_ZN18TownExchangeRecord18getLostChildRecordEv(p5);
-    u32 s2[7];
+    u32 s2[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(s2);
     NC::TownId_GetNameString(NC::_ZN15LostChildRecord9getTownIdEv(q), s2);
     if (NC::_ZN15LostChildRecord11getDaysLeftEv(q)) {

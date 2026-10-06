@@ -1,3 +1,4 @@
+#include "talk/ConstellationEncodedString16.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "game/SceneInfo.h"
@@ -269,7 +270,7 @@ void Constellation_CopyName(u8 *dst, s32 idx) {
 }
 
 BOOL Constellation_GetName(void *self, s32 idx) {
-    u32 buf[9];
+    u32 buf[HOST_SIZED(0x24, ConstellationEncodedString16) / 4] HOST_ALIGN8;
     Entry *e;
     if (!ConstellationStore_IsUsed(Constellation_GetData(), idx)) {
         return FALSE;

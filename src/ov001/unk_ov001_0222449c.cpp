@@ -59,7 +59,7 @@ static inline void Unk_ov001_02224558_SetPos(GXOamAttr *e, s32 x, s32 y) {
 }
 
 void WfcObj_Init() {
-    sWfcObj = (WfcObjList *)WfcHeap_AllocClear(0x450, 4);
+    sWfcObj = (WfcObjList *)WfcHeap_AllocClear(HOST_SIZED(0x450, WfcObjList[2]), 4);
     s32 i = 0;
     s32 off = i;
     for (; i < 2; off += 0x228, i++) {

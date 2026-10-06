@@ -64,7 +64,7 @@ extern "C" WfcTaskList *sWfcTaskLists = 0;
 void WfcTask_Init() {
     s32 i;
     const u8 *pa;
-    sWfcTaskLists = (WfcTaskList *)WfcHeap_Alloc(0x80, 4);
+    sWfcTaskLists = (WfcTaskList *)WfcHeap_Alloc(HOST_SIZED(0x80, WfcTaskList[2]), 4);
     pa = sWfcTaskListSizes;
     for (i = 0; i < 2; i++) {
         sWfcTaskLists[i].capacity = *pa;

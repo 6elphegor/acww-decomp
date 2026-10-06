@@ -165,7 +165,7 @@ void WfcUtil_Quit() {
 }
 
 void WfcSimpleStart_Begin() {
-    sWfcSimpleStartStatus = (SimpleStartStatus *)WfcHeap_AllocClear(0xc, -4);
+    sWfcSimpleStartStatus = (SimpleStartStatus *)WfcHeap_AllocClear(HOST_SIZED(0xc, SimpleStartStatus), -4);
     if (SimpleStart_Start(0xf, 0x40, (void *)WfcSimpleStart_StatusCallback, (void *)WfcSimpleStart_Alloc, (void *)WfcSimpleStart_Free, 0x800) != 1) Fatal_Trap();
     OS_Sleep(10);
 }

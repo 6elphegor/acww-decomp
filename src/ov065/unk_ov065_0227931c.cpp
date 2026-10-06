@@ -460,7 +460,7 @@ s32 ghiFindFreeSlot() {
     ghiConnections = (GHIConnection **)p;
     i = base;
     for (; i < end; i++) {
-        ghiConnections[i] = (GHIConnection *)GsUtil_Alloc(0x184);
+        ghiConnections[i] = (GHIConnection *)GsUtil_Alloc(HOST_SIZED(0x184, GHIConnection));
         if (ghiConnections[i] == 0) {
             for (i--; i >= base; i--) {
                 GsUtil_Free(ghiConnections[i]);

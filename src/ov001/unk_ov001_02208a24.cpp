@@ -29,7 +29,7 @@ extern "C" void WfcLinkIcon_Create(s32 a) {
     if (sWfcLinkIcon != NULL) {
         return;
     }
-    sWfcLinkIcon = (WfcLinkIcon *)WfcHeap_Alloc(0xc, 4);
+    sWfcLinkIcon = (WfcLinkIcon *)WfcHeap_Alloc(HOST_SIZED(0xc, WfcLinkIcon), 4);
     sWfcLinkIcon->iconSet = a;
     sWfcLinkIcon->oam = WfcObj_CreateSingle(0, data_ov001_02229bd0[a][0]);
     sWfcLinkIcon->oam->attr01 = (sWfcLinkIcon->oam->attr01 & 0xfe00ff00) | (data_ov001_02229bcc[1] & 0xff) | ((data_ov001_02229bcc[0] & 0x1ff) << 16);

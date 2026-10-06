@@ -95,7 +95,7 @@ void WfcApList_LoadBg();
 void WfcApList_Enter();
 void WfcApList_Enter() {
     s32 x;
-    sWfcApList = (WfcApList *)WfcHeap_AllocClear(0x5c, 4);
+    sWfcApList = (WfcApList *)WfcHeap_AllocClear(HOST_SIZED(0x5c, WfcApList), 4);
     WfcUtil_GetEditParams(&x, 0);
     if (x == 0) {
         sWfcApListCursor = 0;

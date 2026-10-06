@@ -1,3 +1,4 @@
+#include "item/DateSeededRandomSource.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/ActorProfile.h"
@@ -217,7 +218,7 @@ BOOL SewingMachine::onCreate() {
         F(u32, 0x33c) = 0;
     }
     {
-        u32 x[3];
+        u32 x[HOST_SIZED(0xc, DateSeededRandomSource) / 4] HOST_ALIGN8;
         u32 y[2];
         u16 z;
         _ZN22DateSeededRandomSourceC2Ev(x);

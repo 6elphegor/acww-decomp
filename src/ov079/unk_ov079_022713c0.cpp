@@ -1,3 +1,4 @@
+#include "item/ItemName.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -819,7 +820,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
             }
         }
         void *h = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(g), r6);
-        u32 obj[9];
+        u32 obj[HOST_SIZED(0x24, ItemName) / 4] HOST_ALIGN8;
         _ZN8ItemNameC1Ev(obj);
         _ZN11PatternInfo8getTitleEPv(_ZN7Pattern7getInfoEv(h), obj);
         window->setNamedSlot(1, obj, 7);

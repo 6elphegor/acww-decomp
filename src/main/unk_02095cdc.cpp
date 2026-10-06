@@ -1,3 +1,4 @@
+#include "player/PlayerId.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -387,7 +388,7 @@ extern "C" BOOL LetterDelivery_HasKnownAddressee(Letter *e) {
 
 extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *letter) {
     void *r4 = Letter_GetRecipientPlayer(letter);
-    u8 tmp[0x18];
+    u8 tmp[HOST_SIZED(0x18, PlayerId) / 1] HOST_ALIGN8;
     s32 res;
     if (r4 == 0) return -1;
 #ifdef MODERN

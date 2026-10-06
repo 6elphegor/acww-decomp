@@ -26,7 +26,7 @@ extern void *WfcHeap_Alloc(s32, s32);
 #pragma thumb off
 
 void WfcMsg_InitPool() {
-    WfcMsgPool *m = (WfcMsgPool *)WfcHeap_Alloc(0x64, 4);
+    WfcMsgPool *m = (WfcMsgPool *)WfcHeap_Alloc(HOST_SIZED(0x64, WfcMsgPool), 4);
     sWfcMsgPool = m;
     sWfcMsgPool->pool = WfcPool_CreateFrom(8, m, 0xc);
 }

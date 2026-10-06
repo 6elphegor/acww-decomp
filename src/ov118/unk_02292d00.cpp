@@ -1,3 +1,4 @@
+#include "talk/MsgString9C.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -587,7 +588,7 @@ void MapTab::stateBuildList() {
 }
 
 void MapTab::stateOpen() {
-    u32 buf[8];
+    u32 buf[HOST_SIZED(0x20, MsgString9C) / 4] HOST_ALIGN8;
     loadObjGfx();
     _ZN11MsgString9CC2Ev(buf);
     TownId_GetNameString(gSaveTownId, buf);

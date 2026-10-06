@@ -45,7 +45,7 @@ extern "C" WfcOamBuffer *sWfcOamBuf = 0;
 void WfcOam_Init()
 {
     volatile u32 v;
-    WfcOamBuffer *b = (WfcOamBuffer *)WfcHeap_Alloc(0x80c, 4);
+    WfcOamBuffer *b = (WfcOamBuffer *)WfcHeap_Alloc(HOST_SIZED(0x80c, WfcOamBuffer), 4);
     s32 i;
     sWfcOamBuf = b;
     v = 0x200;
@@ -91,7 +91,7 @@ u8 *WfcOam_GetEntry(s32 a, s32 b)
 
 WfcListNode *WfcList_Create()
 {
-    WfcListNode *n = (WfcListNode *)WfcHeap_Alloc(0x10, 4);
+    WfcListNode *n = (WfcListNode *)WfcHeap_Alloc(HOST_SIZED(0x10, WfcListNode[2]), 4);
     n[0].prev = 0;
     n[0].next = &n[1];
     n[1].prev = n;

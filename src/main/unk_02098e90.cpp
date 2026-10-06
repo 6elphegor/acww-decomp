@@ -1,3 +1,5 @@
+#include "talk/MsgString33.h"
+#include "talk/MsgString9B.h"
 #include "types.h"
 #include "item/PocketMatches.h"
 #include "item/ItemId.h"
@@ -1565,8 +1567,8 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
     u8 b[5];
     u32 cnt;
     u8 buf[0x1e];
-    u32 X[7];
-    u32 Y[13];
+    u32 X[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
+    u32 Y[HOST_SIZED(0x34, MsgString33) / 4] HOST_ALIGN8;
     s32 i;
     s32 r;
     if (_ZN10VillagerId7isValidEv(&self->villagers[0]) && _ZN10VillagerId7isValidEv(&self->villagers[1])) {

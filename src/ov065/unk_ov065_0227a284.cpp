@@ -1032,7 +1032,7 @@ void ghiPostDataFree(GHIPostData *r) {
 namespace Na {
 extern "C" {
 GHIPost *ghiNewPost(void) {
-    GHIPost *t = (GHIPost *)GsUtil_Alloc(0x14);
+    GHIPost *t = (GHIPost *)GsUtil_Alloc(HOST_SIZED(0x14, GHIPost));
     u8 *p;
     u32 i;
     u8 *q;

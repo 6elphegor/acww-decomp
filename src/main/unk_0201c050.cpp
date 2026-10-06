@@ -10092,7 +10092,7 @@ BOOL VillagerTalkTopics::selectTsuMemory() {
     u8 buf[2];
     u8 flags[5];
     u32 arr[8];
-    u32 obj[7];
+    u32 obj[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
     if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->myAid) != 0) {
         return FALSE;
     }

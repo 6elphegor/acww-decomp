@@ -32,7 +32,7 @@ void WfcBusyIcon_Task(u32 task);
 #pragma thumb off
 
 extern "C" void WfcBusyIcon_Create(u32 idx) {
-    WfcBusyIcon *n = (WfcBusyIcon *)WfcHeap_AllocClear(0xc, 4);
+    WfcBusyIcon *n = (WfcBusyIcon *)WfcHeap_AllocClear(HOST_SIZED(0xc, WfcBusyIcon), 4);
     sWfcBusyIcon = n;
     n->paletteKind = idx;
     sWfcBusyIcon->oam = (GXOamAttr *)WfcObj_CreateSingle(0, 0x47);

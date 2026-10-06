@@ -433,7 +433,7 @@ s32 gpiProcessPeerConnected(GPConnection *h, GPIPeer *n) {
             case 1:
                 pr = *(GPICallbackCopy *)&c->callbacks[3];
                 if (pr.p.callback != 0) {
-                    GPRecvBuddyMessageArg *m = (GPRecvBuddyMessageArg *)GsUtil_Alloc(0xc);
+                    GPRecvBuddyMessageArg *m = (GPRecvBuddyMessageArg *)GsUtil_Alloc(HOST_SIZED(0xc, GPRecvBuddyMessageArg));
                     if (m == NULL) {
                         gpiSetErrorString(h, "Out of memory.");
                         return 1;
@@ -638,7 +638,7 @@ namespace Nb {
 extern "C" {
 GPIPeer *gpiAddPeer(GPConnection *h, s32 a, s32 b) {
     GPIConnection *c = *h;
-    GPIPeer *n = (GPIPeer *)GsUtil_Alloc(0x40);
+    GPIPeer *n = (GPIPeer *)GsUtil_Alloc(HOST_SIZED(0x40, GPIPeer));
     if (n == NULL) {
         return NULL;
     }

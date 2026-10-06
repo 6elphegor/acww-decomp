@@ -107,7 +107,7 @@ extern "C" char data_ov001_0222b894[] = "msg/lc_m.NFTR.l";
 extern "C" char data_ov001_0222b8a4[] = "msg/lc_s.NFTR.l";
 
 void WfcText_Init() {
-    WfcTextWork *g = (WfcTextWork *)WfcHeap_Alloc(0x798, 4);
+    WfcTextWork *g = (WfcTextWork *)WfcHeap_Alloc(HOST_SIZED(0x798, WfcTextWork), 4);
     sWfcText = g;
     void *pool = WfcPool_CreateFrom(0x20, &g->fonts[0x18], 0x38);
     sWfcText->objCanvasPool = pool;

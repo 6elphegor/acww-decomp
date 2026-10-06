@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 // mwcc-flags: -nothumb -O4,p
 // G004c: autoload_2 0x020ed8cc-0x020edd58 (18 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined,
 // every function is extern "C" under its symbols.txt name. End of the command sequence object (CmdSeq), then the
@@ -187,5 +188,15 @@ u8 gSndDefaultHandle[4]; // NNSSndHandle
 #endif
 void *gSndCaptureBuffer;
 Player gSndSeSystem;
+#ifdef HOST
+u8 data_021f5a1c[0x34 + sizeof(FSFile) + sizeof(FSFileID) + 3 * sizeof(void *)] HOST_ALIGN8;  // a sound archive too
+#else
 u8 data_021f5a1c[0x90];
+#endif
+#ifdef HOST
+// the sound archive (Arc in unk_0210b448.c: a 0x34-byte header, an FSFile, its file id and three pointers): the
+// real size on 64-bit hosts
+u8 data_021f5aac[0x34 + sizeof(FSFile) + sizeof(FSFileID) + 3 * sizeof(void *)] HOST_ALIGN8;
+#else
 u8 data_021f5aac[0x90];
+#endif

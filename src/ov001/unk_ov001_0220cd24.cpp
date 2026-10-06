@@ -51,7 +51,7 @@ void WfcTransfer_EndTask(s32 a);
 #pragma thumb off
 
 void WfcTransfer_Start(WfcTransferCallback a) {
-    sWfcTransfer = (WfcTransferWork *)WfcHeap_Alloc(0x1e2a4, 0x20);
+    sWfcTransfer = (WfcTransferWork *)WfcHeap_Alloc(HOST_SIZED(0x1e2a4, WfcTransferWork), 0x20);
     sWfcTransfer->callback = a;
     sWfcTransfer->hasPendingEvent = 0;
     sWfcTransfer->isCancelled = 0;

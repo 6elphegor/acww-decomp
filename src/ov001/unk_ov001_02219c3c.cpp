@@ -107,7 +107,7 @@ void WfcSetupMethod_Exit();
 #define BGCNT(a, v) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | (v))
 
 void WfcConnSelect_Enter() {
-    sWfcConnSelect = (WfcConnSelectWork *)WfcHeap_AllocClear(0x20, 4);
+    sWfcConnSelect = (WfcConnSelectWork *)WfcHeap_AllocClear(HOST_SIZED(0x20, WfcConnSelectWork), 4);
     sWfcConnSelect->exitAction = 0;
     WfcConnSelect_LoadBg();
     WfcHighlight_Set(1);

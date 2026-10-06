@@ -1,3 +1,4 @@
+#include "item/ItemName.h"
 #include "types.h"
 #include "nitro/gxoam.h"
 #include "item/ItemIconCache.h"
@@ -639,7 +640,7 @@ void *CreatureBook_AllocLabel(CreatureBookPanel *s)
 
 void CreatureBook_SetNameLabel(CreatureBookPanel *s, u32 a)
 {
-    u32 obj[9];
+    u32 obj[HOST_SIZED(0x24, ItemName) / 4] HOST_ALIGN8;
     u16 col;
     u32 v;
     _ZN8ItemNameC1Ev(obj);

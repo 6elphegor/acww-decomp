@@ -96,7 +96,7 @@ void WfcTextEdit_Enter() {
     u32 idx[2];
     b[0] = sWfcTextEditTitleMsgs[0];
     b[1] = sWfcTextEditTitleMsgs[1];
-    sWfcTextEdit = (WfcTextEdit *)WfcHeap_AllocClear(0x2c, 4);
+    sWfcTextEdit = (WfcTextEdit *)WfcHeap_AllocClear(HOST_SIZED(0x2c, WfcTextEdit), 4);
     WfcUtil_GetEditParams(&idx[0], &idx[1]);
     if (idx[0] == 0) {
         WfcConfig_GetEditSsid(sWfcTextEdit->text);

@@ -229,7 +229,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
         if (p.p.callback == 0) {
             break;
         }
-        r5 = (GPRecvBuddyMessageArg *)GsUtil_Alloc(0xc);
+        r5 = (GPRecvBuddyMessageArg *)GsUtil_Alloc(HOST_SIZED(0xc, GPRecvBuddyMessageArg));
         if (r5 == NULL) {
             ERR1();
         }
@@ -278,7 +278,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
             break;
         }
         {
-            GPRecvBuddyRequestArg *r5 = (GPRecvBuddyRequestArg *)GsUtil_Alloc(0x40c);
+            GPRecvBuddyRequestArg *r5 = (GPRecvBuddyRequestArg *)GsUtil_Alloc(HOST_SIZED(0x40c, GPRecvBuddyRequestArg));
             if (r5 == NULL) {
                 ERR1();
             }
@@ -304,7 +304,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
         if (n->buddyStatus == NULL) {
             u8 *q;
             u8 *k;
-            n->buddyStatus = (GPIBuddyStatus *)GsUtil_Alloc(0x18);
+            n->buddyStatus = (GPIBuddyStatus *)GsUtil_Alloc(HOST_SIZED(0x18, GPIBuddyStatus));
             if (n->buddyStatus == NULL) {
                 ERR1();
             }
@@ -362,7 +362,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
             break;
         }
         {
-            GPRecvBuddyStatusArg *m = (GPRecvBuddyStatusArg *)GsUtil_Alloc(0xc);
+            GPRecvBuddyStatusArg *m = (GPRecvBuddyStatusArg *)GsUtil_Alloc(HOST_SIZED(0xc, GPRecvBuddyStatusArg));
             if (m == NULL) {
                 ERR1();
             }
@@ -404,7 +404,7 @@ s32 gpiProcessRecvBuddyMessage(GPConnection *h, const char *s) {
         if (p4.p.callback == 0) {
             break;
         }
-        r5 = (GPRecvGameInviteArg *)GsUtil_Alloc(0x108);
+        r5 = (GPRecvGameInviteArg *)GsUtil_Alloc(HOST_SIZED(0x108, GPRecvGameInviteArg));
         if (r5 == NULL) {
             ERR1();
         }

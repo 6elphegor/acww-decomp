@@ -1,3 +1,4 @@
+#include "town/TownAcreGrid.h"
 #include "types.h"
 
 // TU178: 0x0209b598-0x0209b5d4. One setting word in .data (0x020e22cc) and the function that applies it to a
@@ -18,7 +19,7 @@ extern "C" void Town_SetGenGateMode(s32 v) {
 }
 
 extern "C" void Town_GenerateAcres(s32 arg) {
-    u32 buf[0x50];
+    u32 buf[HOST_SIZED(0x140, TownAcreGenerator) / 4] HOST_ALIGN8;
     _ZN17TownAcreGeneratorC1Ev(buf);
     _ZN17TownAcreGenerator8generateEi(buf, sTownGenGateMode);
     _ZN17TownAcreGenerator12writeAcreIdsEPh(buf, arg);

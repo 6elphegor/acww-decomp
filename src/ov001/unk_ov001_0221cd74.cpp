@@ -32,7 +32,7 @@ extern "C" WfcBgMap *sWfcBgMap = 0;
 extern "C" WfcPaletteCopy sWfcPaletteCopy = {0, 0};
 
 extern "C" void WfcBgMap_Create(void *a) {
-    WfcBgMap *p = (WfcBgMap *)WfcHeap_AllocClear(0x608, 4);
+    WfcBgMap *p = (WfcBgMap *)WfcHeap_AllocClear(HOST_SIZED(0x608, WfcBgMap), 4);
     sWfcBgMap = p;
     MIi_CpuCopyFast(a, p->screen, 0x600);
     sWfcBgMap->task = WfcTask_Add(1, (void *)WfcBgMap_TransferTask, 0, 0x78);

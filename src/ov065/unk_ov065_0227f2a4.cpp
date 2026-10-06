@@ -1041,7 +1041,7 @@ s32 gpiSetInfoCache(GPConnection *h, GPIProfile *p, GPIInfoCache *q) {
         return 1;
     }
     gpiFreeInfoCache(p);
-    p->cache = (GPIInfoCache *)GsUtil_Alloc(0xf0);
+    p->cache = (GPIInfoCache *)GsUtil_Alloc(HOST_SIZED(0xf0, GPIInfoCache));
     d = p->cache;
     if (d != 0) {
         *(GPIInfoCacheCopy *)d = *(GPIInfoCacheCopy *)q;

@@ -949,7 +949,7 @@ BOOL Snowball::setupTalk() {
     msgIndex = r;
     ((TalkWindowState *)window)->nextState = 1;
     u8 c = 0x26;
-    u32 buf[0x46];
+    u32 buf[HOST_SIZED(0x118, MsgString256) / 4] HOST_ALIGN8;
     _ZN12MsgString256C1Ev(buf);
     String_Load(buf, &c, "st_spnpc_name");
     static_cast<TalkMsgRequest &>(*this).setSpeakerName(((MsgString256 *)buf)->data(), 0);

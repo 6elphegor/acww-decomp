@@ -1,3 +1,4 @@
+#include "game/CollisionState.h"
 // mwcc-version: 1.2/sp2
 // Translation unit 0x02004558-0x0201106c (the player object, class PlayerActor). Built by two compilers:
 // this file (thunks need mwcc 1.2/sp2) and unk_02004558_extra.cpp (14 functions need 1.2/base); the
@@ -3364,7 +3365,7 @@ void PlayerActor::setSpeed(u32 *a) {
 
 void PlayerActor::moveWithCollision() {
     using namespace nS;
-    u8 tmp[0x34];
+    u8 tmp[HOST_SIZED(0x34, CollisionState) / 1] HOST_ALIGN8;
     u8 *p = (u8 *)&position;
     _ZN5Actor13applyVelocityEP13ActorCollider(this, (u8 *)&bodyCollider);
     _ZN14CollisionStateC1Ev(tmp);
@@ -6198,7 +6199,7 @@ extern "C" void PlayerActor_SetArgsPickUp(PlayerPickUpArgs* out, Vec2* pos, s32 
 
 s32 PlayerActor::requestPickUpAt(Vec2* pos, s32 a, u8 b, s32 c, s16 d) {
     using namespace nJ;
-    u32 obj[7];
+    u32 obj[HOST_SIZED(0x1c, PlayerActionRequest) / 4] HOST_ALIGN8;
     Vec2 p;
     s32 r;
     _ZN19PlayerActionRequestC1Ev(obj);
@@ -6213,7 +6214,7 @@ s32 PlayerActor::requestPickUpAt(Vec2* pos, s32 a, u8 b, s32 c, s16 d) {
 
 s32 PlayerActor::requestPickUpWithItem(Vec2* pos, u16 a, u8 b, s32 c, s16 d) {
     using namespace nJ;
-    u32 obj[7];
+    u32 obj[HOST_SIZED(0x1c, PlayerActionRequest) / 4] HOST_ALIGN8;
     Vec2 p;
     s32 r;
     _ZN19PlayerActionRequestC1Ev(obj);

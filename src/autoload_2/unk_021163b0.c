@@ -98,14 +98,21 @@ void SNDi_SetTrackParam(u32 a, u32 b, u32 c, u32 d, u32 e) { PushCommand_impl(7,
 
 void SND_SetSurroundDecay(u32 a) { PushCommand_impl(22, a, 0, 0, 0); }
 
+// SNDCommand: the link is a pointer (larger on 64-bit hosts, the ARM7 side reads the same structure)
+typedef struct SndCommand {
+    struct SndCommand *next;
+    u32 id;
+    u32 arg[4];
+} SndCommand;
+
 void PushCommand_impl(u32 cmd, u32 a, u32 b, u32 c, u32 d) {
-    u32 *p = (u32 *)SND_AllocCommand(1);
+    SndCommand *p = (SndCommand *)SND_AllocCommand(1);
     if (p == 0) return;
-    p[1] = cmd;
-    p[2] = a;
-    p[3] = b;
-    p[4] = c;
-    p[5] = d;
+    p->id = cmd;
+    p->arg[0] = a;
+    p->arg[1] = b;
+    p->arg[2] = c;
+    p->arg[3] = d;
     SND_PushCommand(p);
 }
 

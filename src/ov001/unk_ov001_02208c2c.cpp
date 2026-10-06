@@ -410,7 +410,7 @@ void WfcTextKb_Create() {
     s32 i, idx, j, k;
     l.ps[0].width = data_ov001_02229bf4[0];
     l.ps[0].height = data_ov001_02229bf4[1];
-    sWfcTextKb = (WfcTextKb *)WfcHeap_AllocClear(0x128, 4);
+    sWfcTextKb = (WfcTextKb *)WfcHeap_AllocClear(HOST_SIZED(0x128, WfcTextKb), 4);
     sWfcTextKb->inputKey = 0xff;
     sWfcTextKb->cursorKey = 0;
     sWfcTextKb->deleteEnabled = 1;

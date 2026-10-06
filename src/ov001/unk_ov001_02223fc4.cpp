@@ -62,7 +62,7 @@ extern "C" void WfcFs_MountArchive() {
     FSFile o;
     char path[0x80];
     u32 r4;
-    sWfcFs = (WfcFsWork *)WfcHeap_AllocClear(0xe8, 4);
+    sWfcFs = (WfcFsWork *)WfcHeap_AllocClear(HOST_SIZED(0xe8, WfcFsWork), 4);
     FS_InitFile(&o);
     if (FS_OpenFile(&o, (void *)"rom:/dwc/utility.bin") == 0) {
         Fatal_Trap();

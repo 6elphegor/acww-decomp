@@ -1,3 +1,5 @@
+#include "talk/EncodedString16Buf.h"
+#include "talk/LabelBalloonText.h"
 // ov125: scene overlay (class PatternSelectMenu, vtable 0x02298478, 0x6bc bytes).
 #include "types.h"
 #include "Unk_020d8c7c.h"
@@ -635,8 +637,8 @@ u32 PatternSelectMenu::findTouchedSlot() {
 }
 
 void PatternSelectMenu::refreshNameLabel() {
-    u8 a[0x20];
-    u8 b[0x28];
+    u8 a[HOST_SIZED(0x20, EncodedString16Buf) / 1] HOST_ALIGN8;
+    u8 b[HOST_SIZED(0x28, LabelBalloonText) / 1] HOST_ALIGN8;
     s32 x = getSlotY(balloonSlot);
     x -= 0x84;
     if (MenuCtrl_IsButtons()) {

@@ -1,3 +1,6 @@
+#include "talk/EncodedString8B.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString9C.h"
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
@@ -1268,7 +1271,7 @@ void FriendRosterTab::openRegisterChoices()
     if (CommManager_isOnline(g)) {
         s32 skip = g->myAid;
         s32 i = 0;
-        u32 tmp[7];
+        u32 tmp[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
         _ZN11MsgString9BC1Ev(tmp);
         for (; i < 4; i++) {
             if (skip != i) {
@@ -1654,8 +1657,8 @@ void FriendRosterTab::drawPresentPage() {
     g = gCommManager;
     cur = g->myAid;
     s32 n = 0;
-    u32 A[7];
-    u32 B[7];
+    u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
+    u32 B[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
     _ZN11MsgString9CC2Ev(A);
     _ZN11MsgString9BC1Ev(B);
     for (i = 0; i < 8; i++) {
@@ -1701,7 +1704,7 @@ void FriendRosterTab::drawPresentPage() {
 void FriendRosterTab::drawOwnCodePage() {
     void *g = PlayerData_getPlayerId(PlayerData_GetCurrent());
     void *a = allocTextLabel();
-    u32 A[7];
+    u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     _ZN11MsgString9CC2Ev(A);
     TownId_GetNameString(PlayerId_GetTownId(g), &A);
     String_SetSlot(0, &A);
@@ -1709,7 +1712,7 @@ void FriendRosterTab::drawOwnCodePage() {
     LabelString_createLabel(a, 4, 0x102, 10, 0xf, 0, 0);
     LabelString_redrawAligned(a, 0, 0);
     void *b = allocTextLabel();
-    u32 B[7];
+    u32 B[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
     _ZN11MsgString9BC1Ev(B);
     PlayerId_getNameString(g, &B);
     MsgString_copy(b, &B);
@@ -1769,8 +1772,8 @@ void FriendRosterTab::drawRosterPage() {
     s32 x = 0x1ce;
     s32 y = 0x14e;
     s32 pos = 0xc3;
-    u32 A[7];
-    u32 B[6];
+    u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
+    u32 B[HOST_SIZED(0x18, EncodedString8B) / 4] HOST_ALIGN8;
     _ZN11MsgString9CC2Ev(A);
     _ZN15EncodedString8BC2Ev(B);
     for (i = 0; i < 8; i++) {

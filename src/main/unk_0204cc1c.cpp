@@ -52,7 +52,7 @@ struct Unk_0204d0f4_Info {
 };
 
 struct RoomBlockMap {
-    u32 blocks;
+    uptr blocks;    // a pointer
     u32 width;
     u32 height;
     u32 unitsX;
@@ -60,7 +60,7 @@ struct RoomBlockMap {
     u32 worldWidth;
     u32 worldHeight;
     u32 mapSlot;
-    u32 itemGrid;
+    uptr itemGrid;  // a pointer
 };
 
 
@@ -560,7 +560,7 @@ extern "C" MapBlockEntry::MapBlockEntry() {
 }
 
 extern "C" MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap) {
-    MapBlockEntry *p = (MapBlockEntry *)Ns_0204e858::Heap_AllocTail(heap, n * 16);
+    MapBlockEntry *p = (MapBlockEntry *)Ns_0204e858::Heap_AllocTail(heap, n * HOST_SIZED(16, MapBlockEntry));
     if (p != NULL) {
         for (s32 i = 0; i < n; i++) {
             new (&p[i]) MapBlockEntry;
@@ -1332,7 +1332,7 @@ extern "C" BOOL TownBlockMap_Create(void *heap) {
     BOOL r = TRUE;
     TownBclHeap_Create((s32)heap);
     if (!gTownBlockMap) {
-        gTownBlockMap = (TownBlockMap *)Ns_0204d560::Heap_Alloc(heap, 0x20);
+        gTownBlockMap = (TownBlockMap *)Ns_0204d560::Heap_Alloc(heap, HOST_SIZED(0x20, TownBlockMap));
         if (gTownBlockMap) {
             if (gTownBlockMap) gTownBlockMap->clear();
             r = gTownBlockMap->build(heap);
@@ -1576,7 +1576,8 @@ extern "C" BOOL HouseRoomMaps_Create(void *heap) {
     for (i = 0; i < 5; i++) {
         RoomBlockMap **e = &gHouseRoomMaps[i];
         if (!*e) {
-            *e = (RoomBlockMap *)Heap_Alloc(heap, 0x20);
+            // (0x20 on the DS, though the record is 0x24: itemGrid lies past the allocation there)
+            *e = (RoomBlockMap *)Heap_Alloc(heap, HOST_SIZED(0x20, RoomBlockMap));
             if (*e) {
                 if (*e) HouseRoomMap_Clear(*e);
                 if (!HouseRoomMap_Init(*e, i, heap)) {
@@ -1759,7 +1760,7 @@ extern "C" BOOL VillagerRoomMap_Init(RoomBlockMap *p, u32 a, void *heap) {
 extern "C" RoomBlockMap *VillagerRoomMap_Create(u32 a, void *heap) {
     RoomBlockMap *r = 0;
     if (!gVillagerRoomMap) {
-        gVillagerRoomMap = (RoomBlockMap *)Heap_AllocTail(heap, 0x24);
+        gVillagerRoomMap = (RoomBlockMap *)Heap_AllocTail(heap, HOST_SIZED(0x24, RoomBlockMap));
         if (gVillagerRoomMap) {
             if (gVillagerRoomMap) VillagerRoomMap_Clear(gVillagerRoomMap);
             if (VillagerRoomMap_Init(gVillagerRoomMap, a, heap)) {
@@ -1803,7 +1804,7 @@ extern "C" void FgData_ClearIndices(FgDataIndex *t) {
 extern "C" BOOL FgData_Load(void *heap) {
     BOOL r = FALSE;
     if (!gFgDataIndex) {
-        gFgDataIndex = (FgDataIndex *)Heap_Alloc(heap, 0x20);
+        gFgDataIndex = (FgDataIndex *)Heap_Alloc(heap, HOST_SIZED(0x20, FgDataIndex[4]));
         if (gFgDataIndex) {
             if (gFgDataIndex) FgData_ClearIndices(gFgDataIndex);
             if (FgData_LoadIndices(gFgDataIndex, heap)) {

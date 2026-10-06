@@ -1,3 +1,6 @@
+#include "talk/MsgString33.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString9C.h"
 #include "types.h"
 #include "player/PlayerData.h"
 #include "item/ItemId.h"
@@ -594,9 +597,9 @@ void PlayerData::sendForeignVillagerLetter()
             u8 *r7 = foreignVillagerRecord + 0xa;
             s32 a;
             u8 *l10 = foreignVillagerRecord + 0x16;
-            u8 o20[0x1c];
-            u8 o3c[0x1c];
-            u8 o58[0x34];
+            u8 o20[HOST_SIZED(0x1c, MsgString9B) / 1] HOST_ALIGN8;
+            u8 o3c[HOST_SIZED(0x1c, MsgString9C) / 1] HOST_ALIGN8;
+            u8 o58[HOST_SIZED(0x34, MsgString33) / 1] HOST_ALIGN8;
             s32 b, t;
             u8 c;
             _ZN11MsgString9BC1Ev(o20);

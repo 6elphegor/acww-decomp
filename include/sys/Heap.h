@@ -50,4 +50,13 @@ public:
     /* 0x14 */ void *heapHandle; // NNS_Fnd heap handle
 };
 
+// What a frame heap takes besides its memory: the FrameHeap object, NitroSystem's header, rounding (the callers that
+// size a frame heap for a given content: RoomBclHeap_Create). Pointers make it larger on 64-bit hosts: generous
+// there.
+#ifdef HOST
+#define FRAMEHEAP_OVERHEAD_ROUNDED (0x4b * 2)
+#else
+#define FRAMEHEAP_OVERHEAD_ROUNDED 0x4b
+#endif
+
 #endif

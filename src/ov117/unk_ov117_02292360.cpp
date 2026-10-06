@@ -466,7 +466,7 @@ extern "C" void TownMapImage_Build(void *a, TownMapMarkers *b) {
 
 extern "C" void TownMapImage_AllocGlobal() {
     if (sTownMapImage == NULL) {
-        sTownMapImage = (TownMapImage *)Mem_Alloc(0x2066);
+        sTownMapImage = (TownMapImage *)Mem_Alloc(HOST_SIZED(0x2066, TownMapImage));
         if (sTownMapImage != NULL) {
             new (sTownMapImage) TownMapImage();
         }

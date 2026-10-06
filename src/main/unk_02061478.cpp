@@ -383,16 +383,16 @@ s32 ItemInfoTables_Open(void *o) {
         ItemInfo_CountFlowerItems();
         ItemInfo_CountClass1dHeadwear();
     }
-    ok = (ok | _ZN10RecordFile4openEPvii((u8 *)o + 0x54, "/item_info/series.bin", 0x14, 0x80)) ? TRUE : FALSE;
+    ok = (ok | _ZN10RecordFile4openEPvii(&((ItemInfoTables *)o)->series, "/item_info/series.bin", 0x14, 0x80)) ? TRUE : FALSE;
     if (ok) {
-        _ZN10RecordFile7loadAllEv((u8 *)o + 0x54);
+        _ZN10RecordFile7loadAllEv(&((ItemInfoTables *)o)->series);
     }
     return ok;
 }
 
 s32 ItemInfoTables_Close(void *o) {
     _ZN12InfoTableSet5closeEv(o);
-    return _ZN10RecordFile5closeEv((u8 *)o + 0x54);
+    return _ZN10RecordFile5closeEv(&((ItemInfoTables *)o)->series);
 }
 
 void ItemInfoTables_LoadIndoor(void *p, s32 x) { _ZN12InfoTableSet10loadIndoorEi(p, x); }

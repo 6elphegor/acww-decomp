@@ -941,7 +941,7 @@ BOOL MatTexPatAnim::init(void *r1, void *r2, u32 r3, void *heap) {
     }
     resTex = NNS_G3dGetTex(r2);
     numTracks = r3;
-    tracks = (MatTexPatTrack *)Heap_Alloc(heap, numTracks * 0x28);
+    tracks = (MatTexPatTrack *)Heap_Alloc(heap, numTracks * HOST_SIZED(0x28, MatTexPatTrack));
     if (tracks == NULL) {
         return FALSE;
     }

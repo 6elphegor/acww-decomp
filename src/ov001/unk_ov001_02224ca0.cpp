@@ -55,7 +55,7 @@ extern "C" u8 sWfcFadeEndValues[4] = {0x00, 0xf0, 0x00, 0x10};
 extern "C" WfcFadeLevelTable sWfcFadeStartValues = {{0xf0, 0x00, 0x10, 0x00}};
 
 void WfcFade_Init() {
-    sWfcFade = (WfcFadeState *)WfcHeap_AllocClear(0x18, 4);
+    sWfcFade = (WfcFadeState *)WfcHeap_AllocClear(HOST_SIZED(0x18, WfcFadeState[2]), 4);
     G2x_SetBlendBrightness_((void *)0x4000050, 0x3f, 0x10);
     G2x_SetBlendBrightness_((void *)0x4001050, 0x3f, 0x10);
 }

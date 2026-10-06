@@ -204,7 +204,7 @@ BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, ModelSlotAllocFunc a
     mem = 0;
     numInUse = 0;
     if (size) mem = allocFunc(total, 0);
-    slots = (ModelSlot *)Mem_Alloc(numSlots * 0x1c);
+    slots = (ModelSlot *)Mem_Alloc(numSlots * HOST_SIZED(0x1c, ModelSlot));
     ModelSlot *e = slots;
     if (e) {
         u32 i;

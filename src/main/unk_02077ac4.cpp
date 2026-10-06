@@ -1,3 +1,9 @@
+#include "item/Letter.h"
+#include "player/PlayerId.h"
+#include "talk/EncodedString8.h"
+#include "talk/MsgString25.h"
+#include "talk/MsgString33.h"
+#include "talk/MsgString9C.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -3625,7 +3631,7 @@ void VillagerMemory::setLetterReceived() {
 
 void VillagerMemory::getNickname(void *out) {
     using namespace nP;
-    u32 tmp[7];
+    u32 tmp[HOST_SIZED(0x1c, EncodedString8) / 4] HOST_ALIGN8;
     _ZN14EncodedString8C1Ev(tmp);
     getNicknameEncoded(tmp);
     _ZN9MsgString11fromEncodedEP13EncodedStringii(out, tmp, 0, 0);
@@ -3640,7 +3646,7 @@ void VillagerMemory::getNicknameEncoded(void *out) {
 
 void VillagerMemory::setNicknameFromMsg(void *out) {
     using namespace nP;
-    u32 tmp[7];
+    u32 tmp[HOST_SIZED(0x1c, EncodedString8) / 4] HOST_ALIGN8;
     _ZN14EncodedString8C1Ev(tmp);
     _ZN13EncodedString13fromMsgStringEP9MsgString(tmp, out);
     _ZN14EncodedString86copyToEPvj(tmp, nickname, 8);
@@ -3876,7 +3882,7 @@ void VillagerData::setup(u32 id, u32 a, u32 b, u8 c) {
     using namespace nP;
     VillagerInfo *rec = (VillagerInfo *)VillagerInfo_Get(id);
     u32 t = 0;
-    u32 tmp[7];
+    u32 tmp[HOST_SIZED(0x1c, EncodedString10) / 4] HOST_ALIGN8;
     _ZN15EncodedString10C1Ev(tmp);
     if (rec) t = rec->personality;
     _ZN10VillagerId3setEjjPv(villagerId, id, t, b);
@@ -3918,7 +3924,7 @@ void *VillagerData::getLetter() {
 s32 VillagerData::receiveLetterFrom(u32 id) {
     using namespace nP;
     VillagerMemory *e = 0;
-    u32 buf[6];
+    u32 buf[HOST_SIZED(0x18, PlayerId) / 4] HOST_ALIGN8;
     volatile u16 v[2];
     void *p = Letter_GetSenderPlayer(id);
     BOOL r = FALSE;
@@ -3955,7 +3961,7 @@ s32 VillagerData::receiveLetterFrom(u32 id) {
 
 BOOL VillagerDataProfileView::hasLetterFrom(u16 *p) {
     using namespace nO;
-    u16 o[12];
+    u16 o[HOST_SIZED(0x18, PlayerId) / 2] HOST_ALIGN8;
     void *m;
     void *r6 = Letter_GetSenderPlayer(letter);
     if (_ZN8PlayerId7isValidEv(p) && r6) {
@@ -3977,8 +3983,8 @@ void VillagerDataProfileView::replyToLetter(void *p, void *q) {
     u8 c;
     u16 res, ha, hb, hc, hd;
     u32 v30;
-    u32 o[7];
-    u32 str80[13];
+    u32 o[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
+    u32 str80[HOST_SIZED(0x34, MsgString33) / 4] HOST_ALIGN8;
     u32 t1[2], t3[2], t5[2], t2[2], t4[2], t6[2];
     r = _ZN12VillagerData13getVillagerIdEv(this);
     if (p == 0) return;
@@ -4136,7 +4142,7 @@ namespace nO {
 extern "C" void Villager_SendNewYearLetter(void *t, void *p, void *q) {
     u32 buf[2];
     u8 buf2[8];
-    u32 str[12];
+    u32 str[HOST_SIZED(0x30, MsgString25) / 4] HOST_ALIGN8;
     void *r7 = _ZN12VillagerData13getVillagerIdEv(t);
     if (!p) {
         p = PlayerData_GetCurrent();
@@ -4196,7 +4202,7 @@ void VillagerDataProfileView::sendNewYearLetters(void *a) {
 
 namespace nO {
 extern "C" void Villager_SendByeLetter(void *t, void *p) {
-    u32 obj[8];
+    u32 obj[HOST_SIZED(0x20, MsgString9C) / 4] HOST_ALIGN8;
     void *r6 = _ZN12VillagerData13getVillagerIdEv(t);
     if (_ZN10VillagerId7isValidEv(r6)) {
         if (p) {
@@ -4241,7 +4247,7 @@ void VillagerDataProfileView::updateMemoriesFromPlayers() {
 
 s32 VillagerDataProfileView::findLetterSenderMemory() {
     using namespace nO;
-    u32 obj[7];
+    u32 obj[HOST_SIZED(0x1c, PlayerId) / 4] HOST_ALIGN8;
     void *p = Letter_GetSenderPlayer(letter);
     if (p) {
         _ZN8PlayerIdC1ERKS_(obj, p);
@@ -4371,7 +4377,7 @@ void VillagerDataProfileView::clearCatchphrase() {
 
 void VillagerDataProfileView::getCatchphrase(void *dst, void *flag) {
     using namespace nO;
-    u32 buf[7];
+    u32 buf[HOST_SIZED(0x1c, EncodedString10) / 4] HOST_ALIGN8;
     u8 b;
     _ZN15EncodedString10C1Ev(buf);
     _ZN9MsgString5clearEv(dst);
@@ -7162,7 +7168,7 @@ extern "C" s32 Villager_UpdateVisitorRecord(void *a, void *b) {
 namespace nI {
 extern "C" s32 Villager_SendLetter4(void *a, u32 b, void *c, void *d, void *e, u16 *f) {
     u8 buf[5];
-    u32 obj[0x3d];
+    u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
     u32 v1, v2, v3, v4;
     if (_ZN8PlayerId7isValidEv(d) && _ZN10VillagerId7isValidEv(e)) {
         _ZN6LetterC1Ev(obj);
@@ -7194,7 +7200,7 @@ extern "C" s32 Villager_SendLetter4(void *a, u32 b, void *c, void *d, void *e, u
 namespace nI {
 extern "C" s32 Villager_SendLetter(void *a, u32 b, void *c, void *d, u16 *e) {
     u8 buf[2];
-    u32 obj[0x3d];
+    u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
     if (_ZN8PlayerId7isValidEv(c) && _ZN10VillagerId7isValidEv(d)) {
         _ZN6LetterC1Ev(obj);
         buf[0] = LetterPaper_PickForPersonality(VillagerId_GetPersonality(d));
@@ -7466,8 +7472,8 @@ extern "C" u8 *SaveVillagers_FindByName(u8 *base, u8 *a1, s32 a2, void *a3) {
     s32 n;
     s32 i;
     void *t;
-    u32 objA[7];
-    u32 objB[7];
+    u32 objA[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
+    u32 objB[HOST_SIZED(0x1c, EncodedString8) / 4] HOST_ALIGN8;
     p = SaveVillagers_Get(base, 0);
     _ZN11MsgString9BC1Ev(objA);
     _ZN14EncodedString8C1Ev(objB);

@@ -59,7 +59,7 @@ extern "C" void WfcButtonBar_Create(u32 idx) {
     s32 n = data_ov001_02229b44[idx];
     s32 i;
     const u8 *q;
-    sWfcButtonBar = (WfcButtonBar *)WfcHeap_AllocClear(0x1c, 4);
+    sWfcButtonBar = (WfcButtonBar *)WfcHeap_AllocClear(HOST_SIZED(0x1c, WfcButtonBar), 4);
     sWfcButtonBar->result = -2;
     sWfcButtonBar->kind = idx;
     i = 0;

@@ -103,7 +103,7 @@ void MapBlock::bindBg(BgAcreModel *s, u32 t, u32 u) {
 }
 
 extern "C" MapBlock *MapBlock_NewArray(s32 n, void *heap, s32 x) {
-    MapBlock *p = (MapBlock *)Heap_AllocAligned(heap, n * 0x28, x);
+    MapBlock *p = (MapBlock *)Heap_AllocAligned(heap, n * HOST_SIZED(0x28, MapBlock), x);
     if (p != 0) {
         s32 i;
         for (i = 0; i < n; i++) {

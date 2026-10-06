@@ -23,11 +23,20 @@ struct LetterDefaults {
     /* 0x51 */ u8 futureSelfNamePos;
 };
 
+#ifdef HOST
+// the object's real size and layout (its vtable pointer and fields move on 64-bit hosts): text through the class
+struct EncodedString41Storage {
+    u8 raw[sizeof(EncodedString41)] __attribute__((aligned(8)));
+};
+#define ES41_TEXT(s) (((EncodedString41 *)&(s))->text)
+#else
 struct EncodedString41Storage {
     /* 0x00 */ u32 unk_00[3];
     /* 0x0c */ u8 unk_0c[2];
     /* 0x0e */ u8 text[0x2e];
 };
+#define ES41_TEXT(s) ((s).text)
+#endif
 
 extern "C" {
 void VillagerId_Construct(void *);
@@ -511,7 +520,7 @@ extern "C" void LetterDefaults_Store(LetterDefaults *a, LetterView *b) {
 }
 
 extern "C" void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) {
-    u32 src[16];
+    u32 src[HOST_SIZED(0x40, LabelString) / 4] HOST_ALIGN8;
     EncodedString41Storage out;
     s32 n;
     s32 m;
@@ -519,10 +528,10 @@ extern "C" void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) 
     _ZN15EncodedString41C1Ev(&out);
     String_Load2d(src, code, NULL);
     _ZN13EncodedString13fromMsgStringEP9MsgString(&out, src);
-    n = Text_GetLineEnd(out.text, 0x29, 0);
+    n = Text_GetLineEnd(ES41_TEXT(out), 0x29, 0);
     *lenOut = n;
     if (n != 0) {
-        Mem_Copy(out.text, dst, n);
+        Mem_Copy(ES41_TEXT(out), dst, n);
     }
     m = n;
     if (extra != NULL) {
@@ -530,9 +539,9 @@ extern "C" void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) 
         Mem_Copy(extra, dst + n, t);
         m = n + t;
     }
-    if (out.text[n] == 0x86) {
+    if (ES41_TEXT(out)[n] == 0x86) {
         s32 off = n + 1;
-        u8 *p = out.text + off;
+        u8 *p = ES41_TEXT(out) + off;
         s32 k = Text_GetLineEnd(p, 0x29 - off, 0);
         if (k != 0) {
             Mem_Copy(p, dst + m, k);

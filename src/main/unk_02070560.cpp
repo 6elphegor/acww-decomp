@@ -1037,8 +1037,8 @@ extern "C" void PatternTexKeys_Clear(void *p) {
 }
 void PatternTexCache::createTextures() {
     using namespace n3;
-    ClothTexStorage *a = (ClothTexStorage *)Mem_Alloc(0x2c4);
-    ClothTexStorage *b = (ClothTexStorage *)Mem_Alloc(0x2c4);
+    ClothTexStorage *a = (ClothTexStorage *)Mem_Alloc(HOST_SIZED(0x2c4, ClothTexStorage));
+    ClothTexStorage *b = (ClothTexStorage *)Mem_Alloc(HOST_SIZED(0x2c4, ClothTexStorage));
     if (a != 0) {
         if (b != 0) {
             u8 i, j;

@@ -821,7 +821,7 @@ void PlayerSpNpcRecord::addInsuranceClaim() {
 }
 
 extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
-    u8 big[0xf4];
+    u8 big[HOST_SIZED(0xf4, Letter) / 1] HOST_ALIGN8;
     MissingLetterLocals l;
     u8 obj[8];
     void *r4 = PlayerData_GetCurrent();
@@ -844,7 +844,7 @@ extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
 }
 
 BOOL PlayerSpNpcRecord::sendInsuranceLetter(s32 idx, u16 *v) {
-    u32 big[0x3d];
+    u32 big[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
     u8 c;
     BOOL r;
     _ZN6LetterC1Ev(big);
@@ -863,8 +863,8 @@ BOOL PlayerSpNpcRecord::sendInsuranceLetter(s32 idx, u16 *v) {
 }
 
 void PlayerSpNpcRecord::sendInsuranceLetters() {
-    u32 bufA[11];
-    u32 bufB[8];
+    u32 bufA[HOST_SIZED(0x2c, MsgString25) / 4] HOST_ALIGN8;
+    u32 bufB[HOST_SIZED(0x20, MsgString9B) / 4] HOST_ALIGN8;
     u16 h[3];
     s32 r6;
     _ZN11MsgString25C1Ev(bufA);

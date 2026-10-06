@@ -859,7 +859,7 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
     TalkWindowState *o = window;
     constellationSlot = listSlots[idx];
     if (constellationSlot >= 0) {
-        u32 buf[9];
+        u32 buf[HOST_SIZED(0x24, ConstellationMsgString17) / 4] HOST_ALIGN8;
         _ZN24ConstellationMsgString17C1Ev(buf);
         Constellation_GetName(buf, constellationSlot);
         window->setSlot(6, buf);
@@ -985,7 +985,7 @@ void SpNpcCelesteTalk::onFullMenuChoice(s32 a) {
 }
 
 void SpNpcCelesteTalk::onEraseConfirmChoice(s32 a) {
-    u32 buf[9];
+    u32 buf[HOST_SIZED(0x24, ConstellationMsgString17) / 4] HOST_ALIGN8;
     listStart = 0;
     if (a == 0) {
         if (constellationSlot >= 0) {

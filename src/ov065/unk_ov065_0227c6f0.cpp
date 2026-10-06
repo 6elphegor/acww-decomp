@@ -67,7 +67,7 @@ extern "C" {
 s32 gpiInitialize(GPConnection *h, s32 a, s32 b) {
     GPIConnection *c;
     *h = 0;
-    c = (GPIConnection *)GsUtil_Alloc(0x490);
+    c = (GPIConnection *)GsUtil_Alloc(HOST_SIZED(0x490, GPIConnection));
     if (c == NULL) {
         return 1;
     }

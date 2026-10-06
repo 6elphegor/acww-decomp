@@ -1,3 +1,5 @@
+#include "talk/MsgString25.h"
+#include "talk/MsgString9C.h"
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "item/Letter.h"
@@ -105,7 +107,7 @@ extern "C" void PlayerBank_PayInterest(s32 n) {
                     PlayerBank_SetBalance((PlayerBank *)o, t);
                     Letter e;
                     u8 ch;
-                    u32 buf[11];
+                    u32 buf[HOST_SIZED(0x2c, MsgString25) / 4] HOST_ALIGN8;
                     ch = 0;
                     _ZN11MsgString25C1Ev(buf);
                     String_FormatNumber(buf, n, 10, 1, 0, 0);
@@ -145,7 +147,7 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 u8 ch;
                 ch = k + 0x15;
                 Letter e;
-                u32 buf[7];
+                u32 buf[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
                 _ZN11MsgString9CC2Ev(buf);
                 TownId_GetNameString(gSaveTownId, buf);
                 MailText_SetSlot(0, buf);
