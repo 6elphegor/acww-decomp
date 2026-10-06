@@ -198,6 +198,14 @@ static u32 tp_raw(s32 sx, s32 sy) {
     return (u32)(x & 0xfff) | (u32)(y & 0xfff) << 12 | 1u << 24;
 }
 
+// ACWW_TOUCH at the current frame (also for melonDS's touch screen when the ARM7 is emulated)
+int host_scripted_touch(int *x, int *y) {
+    u32 f = (u32)host_frame();
+    for (int i = 0; i < sTouchCount; i++)
+        if (f >= sTouch[i].frame && f < sTouch[i].frame + sTouch[i].len) { *x = (int)sTouch[i].x; *y = (int)sTouch[i].y; return 1; }
+    return 0;
+}
+
 static void tp_sample(void) {
     u32 f = (u32)host_frame(), raw = 0;
     int lx, ly;
@@ -251,7 +259,8 @@ static void service(u32 tag, u32 data, u32 err) {
 
 void pxi7_receive(u32 word) { service(word & 31, word >> 6, word >> 5 & 1); }
 
-void pxi7_init(void) {
+// ACWW_TOUCH="frame:frames:x,y;..." (both ARM7 modes)
+void host_touch_script_init(void) {
     const char *t = getenv("ACWW_TOUCH");
     while (t && *t && sTouchCount < 64) {
         unsigned fr, n, x, y;
@@ -259,6 +268,9 @@ void pxi7_init(void) {
         t = strchr(t, ';');
         if (t) t++;
     }
+}
+
+void pxi7_init(void) {
     const char *sv = getenv("ACWW_SAVE");
     snprintf(sSavePath, sizeof sSavePath, "%s%s", sv ? sv : gHostRomPath, sv ? "" : ".sav");
     const char *fw = getenv("ACWW_FIRMWARE");

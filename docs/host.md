@@ -74,6 +74,12 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 - Reading through NULL is harmless on the DS (address 0 is mapped) but not on the host.
 - Code that ran over one variable into the next (a clear spanning two arrays) needs the original order or a fix.
 
+Experimental (`ACWW_ARM7=emu`): the game's own ARM7 program in melonDS instead of `pxi7.c` - the game's variables
+live in DS main RAM (from 0x02001000) and melonDS's main RAM is that memory, its clock follows the host's virtual
+time (`NDS::HostRun`), the IPC registers are melonDS's, and repeated IPC polls fast-forward the ARM7 until the value
+changes. It boots the ARM7 and runs the first handshake steps; the ARM7 then stays in its BIOS wait loop and the
+ARM9's PXI_InitFifo never completes (open). This is the route to sound.
+
 Not done yet: sound; resetting an overlay's data when it is loaded again; speed (every I/O access is a trap: about
 5-10 µs each).
 

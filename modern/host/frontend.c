@@ -47,6 +47,8 @@ void frontend_init(const char *argv0) {
     }
 }
 
+int frontend_touch(int *x, int *y);
+
 // scripted keys for headless runs: ACWW_KEYS="frame:frames:mask;..." (mask: the bits of AcwwShm.keys, hex)
 static u32 scripted_keys(void) {
     static const char *spec;
@@ -81,10 +83,19 @@ void frontend_frame(void) {
     keyinput &= (u16)~(sk & 0x3ff);
     xy &= (u16)~(sk & 0x0c00);
     *(u16 *)host_io(0x04000130) = keyinput;
-    *(volatile u16 *)0x027fffa8 = xy;
+    extern int melon_emu7(void);
+    extern void melon_input(u32 keys, int touch, int x, int y);
+    extern int host_scripted_touch(int *x, int *y);
+    if (melon_emu7()) {
+        // the ARM7 writes the X/Y word and samples the touch screen itself
+        int tx = 0, ty = 0, t = frontend_touch(&tx, &ty) || host_scripted_touch(&tx, &ty);
+        melon_input((u32)(~keyinput & 0x3ff) | ((u32)(~xy >> 10) & 3) << 10, t, tx, ty);
+    } else {
+        *(volatile u16 *)0x027fffa8 = xy;
+    }
 }
 
-// for the touch panel service (pxi7.c): the viewer's mouse on the bottom screen
+// for the touch panel service (pxi7.c) and melonDS: the viewer's mouse on the bottom screen
 int frontend_touch(int *x, int *y) {
     if (!sShm || !sShm->touch_down) return 0;
     *x = sShm->touch_x;

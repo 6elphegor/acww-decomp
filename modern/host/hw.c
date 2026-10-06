@@ -58,7 +58,12 @@ static u32 sIF;
 void host_irq_raise(u32 m) { sIF |= m; }
 void host_irq_ack(u32 m) { sIF &= ~m; }
 int melon_gx_fifo_irq_level(void);
+int melon_emu7(void);
+u32 melon_take_arm9_irqs(void);
+u32 melon_io_read32(u32 addr);
+void melon_io_write32(u32 addr, u32 v);
 u32 host_irq_pending(void) {
+    if (melon_emu7()) sIF |= melon_take_arm9_irqs();
     u32 lines = sIF | (melon_gx_fifo_irq_level() ? 1u << 21 : 0);  // the GX FIFO line is level-triggered
     return (R32(0x04000208) & 1) ? (R32(0x04000210) & lines) : 0;
 }
@@ -145,7 +150,9 @@ static void run_events(void) {
     run_events_body();
     sInEvents = 0;
 }
+void melon_sync(u64 host_cycles);
 static void run_events_body(void) {
+    melon_sync(sCycles);
     pxi7_run_due();
     while (sCycles >= sNextVblank) {
         u16 st = R16(0x04000004);
@@ -276,12 +283,14 @@ void host_card_dma(void) {
 void gx_fifo_write(u32 addr, u32 value) { melon_write32(addr, value); }
 
 // ---- register reads and writes
+static u32 last, repeat;  // the register read last, and how many times in a row (io_write resets it)
 static void io_read(u32 a) {
     // a register read again and again is a polling loop: let time pass faster there (each read costs a trap)
-    static u32 last, repeat;
     repeat = a == last ? repeat + 1 : 0;
     last = a;
-    sCycles += repeat > 4 ? 4096 : 64;
+    // (not for the IPC registers: the ARM7's handshakes have short timeouts)
+    int ipc = (a & ~0xfu) == 0x04000180 || a == IO1;
+    sCycles += repeat > 4 && !ipc ? 4096 : 64;
     run_events();
     u32 w = a & ~3u;
     if (w == 0x04000004) update_display();
@@ -290,7 +299,17 @@ static void io_read(u32 a) {
         R16(w) = tm_counter(&sTm[i]);
     } else if (w == 0x04000214) R32(w) = sIF;
     else if ((w >= 0x04000600 && w < 0x040006a4) || w == 0x04000320) R32(w) = melon_read32(w);  // 3D status, results
-    else if (w == 0x04000184 || w == 0x04000180 || w == IO1) {
+    else if ((w == 0x04000184 || w == 0x04000180 || w == IO1) && melon_emu7()) {
+        u32 v = melon_io_read32(w);
+        // polled again and again (a handshake, a FIFO wait): run the ARM7 on in small steps until the value changes
+        for (int i = 0; ipc && repeat > 4 && w != IO1 && i < 64; i++) {
+            sCycles += 256;
+            run_events();
+            u32 n = melon_io_read32(w);
+            if (n != v) { v = n; break; }
+        }
+        R32(w) = v;
+    } else if (w == 0x04000184 || w == 0x04000180 || w == IO1) {
         extern void pxi7_prepare_read(u32 a);
         pxi7_prepare_read(w);
     } else if (w == 0x040001a4) {
@@ -321,6 +340,7 @@ static int is_display(u32 w) {
 
 static void io_write(u32 a, u32 old) {
     u32 w = a & ~3u;
+    repeat = 0;  // a write in between: not a pure polling loop
     static long logw = -2;
     if (logw == -2) logw = getenv("ACWW_IOLOG") ? strtol(getenv("ACWW_IOLOG"), 0, 16) : -1;
     if ((long)w == logw) fprintf(stderr, "io: frame %llu [%08x] %08x -> %08x\n", (unsigned long long)host_frame(), w, old, R32(w));
@@ -342,9 +362,9 @@ static void io_write(u32 a, u32 old) {
         tm->on = on; tm->irq = c >> 6 & 1; tm->shift = kTmShift[c & 3]; tm->cascade = i && (c >> 2 & 1);
         break;
     }
-    case 0x04000180: pxi7_sync_written(R32(w)); break;
-    case 0x04000184: break;  // FIFO control: pxi7.c reads it
-    case 0x04000188: pxi7_receive(R32(w)); break;
+    case 0x04000180: if (melon_emu7()) melon_io_write32(w, R32(w)); else pxi7_sync_written(R32(w)); break;
+    case 0x04000184: if (melon_emu7()) melon_io_write32(w, R32(w)); break;  // FIFO control (pxi7.c reads it)
+    case 0x04000188: if (melon_emu7()) melon_io_write32(w, R32(w)); else pxi7_receive(R32(w)); break;
     case 0x040001a4: card_control_written(R32(w)); break;
     case 0x04000280: case 0x04000290: case 0x04000294: case 0x04000298: case 0x0400029c: divide(); break;
     case 0x040002b0: case 0x040002b8: case 0x040002bc: square_root(); break;
