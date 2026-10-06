@@ -44,7 +44,8 @@ HOST_FLAGS = (f"-m32 -fno-pie -O1 -g -Wall -std=gnu11 --sysroot={R} -isystem {R}
               f"-isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -DHOST -Iinclude")
 LINK_FLAGS = (f"-m32 -no-pie --sysroot={R} -B{G} -L{G} -Wl,-dynamic-linker,{R}/usr/lib32/ld-linux.so.2 "
               f"-Wl,--disable-new-dtags -Wl,-rpath,{R}/usr/lib32 -Wl,--allow-multiple-definition "
-              "-Wl,--section-start=.dtcm=0x027e0000")
+              "-Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
+              "-Wl,--section-start=gbss=0x02040000")
 M = args.melonds
 HOST_CXX_FLAGS = (f"-m32 -fno-pie -O1 -g -std=c++17 --sysroot={R} -isystem {R}/usr/include/x86_64-linux-gnu/c++/15/32 "
                   f"-idirafter {R}/usr/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include "

@@ -522,6 +522,32 @@ static void map_fixed(u32 a, u32 n) {
     void *p = mmap((void *)(uintptr_t)a, n, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED_NOREPLACE, -1, 0);
     if (p != (void *)(uintptr_t)a) { fprintf(stderr, "host: can't map %08x\n", a); exit(1); }
 }
+// main RAM: a memfd mapped at 0x02000000 and mirrored up to 0x02ffffff, as on the DS (the system work area at
+// 0x027ff000 is main RAM's last pages). The program's .gdata/.gbss (the game's variables) were placed at
+// 0x02000000 by the loader: they are copied into the memfd before it replaces them.
+extern char __stop_gdata[], __start_gbss[], __stop_gbss[];
+static u8 *sMainRam;
+u8 *host_main_ram(void) { return sMainRam; }
+static void map_main_ram(void) {
+    int fd = memfd_create("dsram", 0);
+    if (fd < 0 || ftruncate(fd, 0x400000) < 0) host_fatal("main RAM memfd");
+    sMainRam = mmap(0, 0x400000, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (sMainRam == MAP_FAILED) host_fatal("main RAM map");
+    // the loaded pages: the one with the ELF headers and gdata from 0x02000000, gbss from 0x02040000
+    u32 gdata_end = ((u32)(uintptr_t)__stop_gdata + 0xfff) & ~0xfffu;
+    memcpy(sMainRam, (void *)0x02000000, gdata_end - 0x02000000);
+    memcpy(sMainRam + ((u32)(uintptr_t)__start_gbss - 0x02000000), __start_gbss, __stop_gbss - __start_gbss);
+    // DTCM (0x027e0000-0x027e3fff, the program's .dtcm) takes precedence over the mirror there, as on the DS
+    static const struct { u32 at, n, off; } kMaps[] = {
+        {0x02000000, 0x400000, 0}, {0x02400000, 0x3e0000, 0}, {0x027e4000, 0x1c000, 0x3e4000},
+        {0x02800000, 0x400000, 0}, {0x02c00000, 0x400000, 0},
+    };
+    for (unsigned i = 0; i < sizeof kMaps / sizeof kMaps[0]; i++)
+        if (mmap((void *)(uintptr_t)kMaps[i].at, kMaps[i].n, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_FIXED, fd,
+                 kMaps[i].off) == MAP_FAILED)
+            host_fatal("main RAM mirror");
+}
+
 static u8 *map_io(u32 a) {
     int fd = memfd_create("dsio", 0);
     if (fd < 0 || ftruncate(fd, PAGE) < 0) host_fatal("memfd");
@@ -533,9 +559,8 @@ static u8 *map_io(u32 a) {
 
 void host_map_memory(void) {
     map_fixed(0x01ff8000, 0x8000);    // ITCM
-    map_fixed(0x02000000, 0x400000);  // main RAM (the shared work area at its end, 0x027ff000, is a mirror on the DS)
+    map_main_ram();                   // main RAM, 4 MB at 0x02000000 and its mirrors (the game's data is in it)
     // DTCM (0x027e0000): the program's .dtcm section (the DTCM module's variables), mapped by the loader
-    map_fixed(0x027ff000, 0x1000);    // shared work area (OS_GetSystemWork)
     map_fixed(0x03000000, 0x10000);   // shared WRAM
     map_fixed(0x05000000, 0x800);     // palettes
     map_fixed(0x06000000, 0x900000);  // VRAM: vram.c maps the banks into it
