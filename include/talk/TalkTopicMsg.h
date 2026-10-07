@@ -10,7 +10,7 @@
 // because the villager code stores the key as a word; folding it into TalkStartMsg is a FOLLOWUPS item.
 
 struct TalkTopicMsg {
-    /* 0x0 */ u32 fileName;
+    /* 0x0 */ const char *fileName;
     /* 0x4 */ u8 msgIndex;
 };
 

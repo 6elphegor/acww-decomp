@@ -54,8 +54,8 @@ public:
     BOOL hasPartner();
     u8 isInvitedByPartner();
     void setInvitedByPartner(u8 v);
-    u32 getPartner();
-    void setPartner(u32 v);
+    VillagerActor *getPartner();
+    void setPartner(VillagerActor *v);
     void setupChoiceMenu(void *t_);
     void clearChoiceValues();
     s32 runMsgAttrHandler(u32 idx);
@@ -78,8 +78,8 @@ public:
     s32 attrPlayMemoryTune();
     s32 attrShowLetter();
     s32 attrGiveItem();
-    u32 getUnk150();
-    void setUnk150(u32 v);
+    void *getUnk150();
+    void setUnk150(void *v);
     void *getActorByIndex(s32 idx);
     void setChoiceFn(Unk_020d8938_Fn fn);
     void setTopicFns(VillagerTalkTopicFns *t);
@@ -112,8 +112,8 @@ public:
     /* 0x134 */ union { s32 unk_134; u8 *unk_134_p; };
     /* 0x138 */ u8 unk_138;
     /* 0x139 */ u8 pad_139[3];
-    /* 0x13c */ s32 choiceValues[5];
-    /* 0x150 */ u32 errandRecord;
+    /* 0x13c */ VillagerTalkTopicFns *choiceValues[5];
+    /* 0x150 */ void *errandRecord;  // ErrandRecord
     /* 0x154 */ u8 unk_154;
     /* 0x155 */ u8 unk_155;
     /* 0x156 */ u16 unk_156;

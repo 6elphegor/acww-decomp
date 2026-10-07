@@ -1,6 +1,7 @@
 #include "uptr.h"
 #include "types.h"
 #include "sys/ClockDateTime.h"
+#include "save/DramaPart.h"
 #include "gfx/VecFx32.h"
 #include "player/PlayerSpNpcRecord.h"
 #include "npc/VillagerId.h"
@@ -375,12 +376,6 @@ public:
 // ---- 0x02087224: big singleton (gSaveData)
 
 // ---- 0x020872fc: flag byte at +0xa
-
-struct Unk_020874e8_Bits {
-    u8 a : 2;
-    u8 b : 3;
-    u8 c : 3;
-};
 
 struct DramaScheduleEntry {
     u8 a;
