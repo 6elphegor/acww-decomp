@@ -334,7 +334,7 @@ extern u8 data_020e159c[];
 
 extern u8 data_020e14c0[];
 
-extern u8 data_020e15fc[];
+extern void *data_020e15fc[];
 
 extern u8 sEffectDefaultOneShotCbs[];
 
@@ -2003,7 +2003,7 @@ extern "C" s32 EffectKind2E_Start(s32 a, s32 b, s32 c, s32 d, s32 e) {
     ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
     if (EffectSpl_CreateOneShot(e, b, c, data_020e14c0) != 0) {
         for (s32 i = 0; i < 3; i++) {
-            if (EffectSpl_CreateOneShot(0x54, b, c, data_020e15fc + i * 4) == 0) {
+            if (EffectSpl_CreateOneShot(0x54, b, c, data_020e15fc + i) == 0) {
                 return 3;
             }
         }

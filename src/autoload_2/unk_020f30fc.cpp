@@ -35,6 +35,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "sys/FndList.h"
 #include "snd/SndSeEmitter.h"
+#include "snd/SndSeGroup.h"
 
 
 // sound manager gSndMgr (SndMgr, unk_020f0dec.cpp): only the fields read here
@@ -283,7 +284,8 @@ SndSeEmitterKind1::SndSeEmitterKind1() {
 
 void SndSeEmitterKind1::onVolume(SndHandle *h, s32 idx) {
     if (gSndMgr.f60 == 0) return;
-    void *slot = HOST_AT(h, 8, pad00[8], 0) + idx * 12;
+    // the handle viewed as its voice group (include/snd/SndSeGroup.h): voice idx's sound handle
+    void *slot = &reinterpret_cast<Group *>(h)->voices[idx].handle;
     SndSeEmitterKind1 *o = static_cast<SndSeEmitterKind1 *>(h);
     NNS_SndPlayerSetVolume(slot, o->volume * 40 / 100);
 }

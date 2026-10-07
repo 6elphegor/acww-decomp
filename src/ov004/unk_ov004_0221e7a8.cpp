@@ -4862,7 +4862,7 @@ extern "C" void PlayerActor_EndHaircutFinish(Obj *o) {
 extern "C" void PlayerActor_HaircutFinishUpdate(Obj *o) {
     (o)->advanceAnim();
     if (((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->bodyModel))->hasPassedFrame(10)) {
-        EffectSpl_CreateOneShot(0x60, &o->headTopPos, NULL, (u32 *)gEffectSplDefaultInitCbs);
+        EffectSpl_CreateOneShot(0x60, &o->headTopPos, NULL, gEffectSplDefaultInitCbs);
     }
     if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 0xb) {
         Rec *r = (Rec *)&o->actionWork;

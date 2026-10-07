@@ -138,7 +138,9 @@ struct Mgr {
     u32 w8;  // DS +0x8
     u8 hpad_0[0x4];
     Entry * fr;  // DS +0xc
-    u8 p10[0x18];  // DS +0x10 [0xc]
+    u32 frCount;  // DS +0x10
+    u8 hpad_1[0x4];
+    SplRealPtclList freePtcl;  // DS +0x14
     u8 * tab;  // DS +0x1c
     u8 p20[0x18];  // DS +0x20 [0x14]
     Entry * cur;  // DS +0x34
@@ -148,7 +150,8 @@ struct Mgr {
     Entry *act;
     u32 w8;
     Entry *fr;
-    u8 p10[0xc];
+    u32 frCount;
+    SplRealPtclList freePtcl;
     u8 *tab;
     u8 p20[0x14];
     Entry *cur;
@@ -485,7 +488,7 @@ extern "C" void func_020f8b44(Mgr *m, Entry *e, Fx3 *v) {
     e->px = v->x + ((ResInfo *)e->res->p0)->w4;
     e->py = v->y + e->res->p0->w8;
     e->pz = v->z + e->res->p0->wc;
-    func_020f9690(e, HOST_AT(m, 20, p10[4], 0));
+    func_020f9690(e, &m->freePtcl);
 }
 
 // ---- file-scope objects (autoload_3 .bss 0x021f5c38-0x021f5c3c)
@@ -512,7 +515,8 @@ static_assert(__builtin_offsetof(Mgr, w0) == 0x0, "Mgr.w0");
 static_assert(__builtin_offsetof(Mgr, act) == 0x8, "Mgr.act");
 static_assert(__builtin_offsetof(Mgr, w8) == 0x10, "Mgr.w8");
 static_assert(__builtin_offsetof(Mgr, fr) == 0x18, "Mgr.fr");
-static_assert(__builtin_offsetof(Mgr, p10) == 0x20, "Mgr.p10");
+static_assert(__builtin_offsetof(Mgr, frCount) == 0x20, "Mgr.frCount");
+static_assert(__builtin_offsetof(Mgr, freePtcl) == __builtin_offsetof(SplRealManager, freeParticles), "Mgr.freePtcl");
 static_assert(__builtin_offsetof(Mgr, tab) == 0x38, "Mgr.tab");
 static_assert(__builtin_offsetof(Mgr, p20) == 0x40, "Mgr.p20");
 static_assert(__builtin_offsetof(Mgr, cur) == 0x58, "Mgr.cur");
