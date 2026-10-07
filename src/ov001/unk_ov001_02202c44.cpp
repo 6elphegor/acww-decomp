@@ -1,5 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/os_alarm.h"
+#include "uptr.h"
 #include "net/AossParam.h"
 #include "nitro/wm.h"
 
@@ -260,7 +262,7 @@ extern "C" s32 Aoss_ScanAps(void **out) {
     void *buf;
     u8 *r4;
     s32 msg;
-    u32 thr[11];
+    u32 thr[HOST_SIZED(44, OSAlarm) / 4] HOST_ALIGN8;  // OSAlarm (64 bytes on 64-bit hosts)
     if (sAossAllocFunc == 0 || sAossFreeFunc == 0) {
         return -1;
     }
@@ -389,7 +391,7 @@ extern "C" s32 Aoss_ConnectAp(AossApConfig *a, void *b) {
     WifiLink_ClearApList();
     if (Aoss_WcmStartSearch(0, a->ssid, a->ssidLength, 0x30bffe)) {
         s32 msg;
-        u32 thr[12];
+        u32 thr[HOST_SIZED(48, OSAlarm) / 4] HOST_ALIGN8;  // OSAlarm (64 bytes on 64-bit hosts)
         cnt = 0;
         OS_CreateAlarm(thr);
         OS_SetAlarm(thr, 0x3fec42, 0, (void *)Aoss_PostAlarmMsg, 0x12);

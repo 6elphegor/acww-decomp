@@ -140,7 +140,11 @@ s32 NasAuth_Start(NasAuthParams *cfg, u32 a) {
     sNasAuth->http = (DwcHttp *)a;
     MI_CpuFill8(&sNasAuth->resultCode, 0, 0x1c4);
     sNasAuth->resultCode = -1;
+#ifdef HOST
+    sNasAuth->config = *(NasAuthParams *)cfg;  // (allocFunc / freeFunc: pointers, wider on 64-bit hosts)
+#else
     *(NasAuthParamsWords *)&sNasAuth->config = *(NasAuthParamsWords *)cfg;
+#endif
     *((u8 *)sNasAuth + 0x1e0) = 0;
     *((u8 *)sNasAuth + 0x1e1) = 0;
     *((u8 *)sNasAuth + 0x1ed) = 0;

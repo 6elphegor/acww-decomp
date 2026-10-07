@@ -1,4 +1,6 @@
 #include "types.h"
+#include "uptr.h"
+#include "nitro/fs.h"
 #include "gfx/VecFx32.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "sys/OverlaySlot.h"
@@ -268,7 +270,7 @@ extern "C" void OverlayMgr_UnloadOverlay(u32 id) {
 }
 
 extern "C" void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id) {
-    u32 buf[11];
+    u32 buf[HOST_SIZED(44, FSOverlayInfo) / 4] HOST_ALIGN8;  // FSOverlayInfo (56 bytes on 64-bit hosts)
     OverlayMgr_GetInfo(buf, id);
     OverlayMgr_LoadOverlay(id);
     e->overlayId = id;
@@ -279,7 +281,7 @@ extern "C" void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id) {
 }
 
 extern "C" void OverlayMgr_UnloadSlot(OverlaySlot *e) {
-    u32 buf[11];
+    u32 buf[HOST_SIZED(44, FSOverlayInfo) / 4] HOST_ALIGN8;  // FSOverlayInfo (56 bytes on 64-bit hosts)
     u32 id = e->overlayId;
     OverlayMgr_UnloadOverlay(id);
     OverlayMgr_GetInfo(buf, id);
@@ -294,8 +296,8 @@ extern "C" void OverlayMgr_Acquire(u32 id) {
     OverlaySlot *free = NULL;
     s32 i;
     u32 lo, hi;
-    u8 buf[8];
-    u32 info[11];
+    u8 buf[HOST_SIZED(8, FSFileID)] HOST_ALIGN8;  // FSFileID
+    u32 info[HOST_SIZED(44, FSOverlayInfo) / 4] HOST_ALIGN8;  // FSOverlayInfo
     for (i = 0; (u32)i < 12; i++) {
         OverlaySlot *e = &sOverlaySlots[i];
         if (e->overlayId == id) {

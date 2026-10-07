@@ -27,13 +27,18 @@ parser.add_argument("--sdl2", default=os.path.expanduser("~/acww/toolchains/sdl2
 parser.add_argument("--arch", choices=["i386", "x86_64"], default="i386",
                     help="i386: build_host.ninja, build/host_<v> (the working build); x86_64: build_host64.ninja, "
                          "build/host64_<v> (64-bit, in progress: docs/host.md)")
+parser.add_argument("--extra-cflags", default="",
+                    help="more compiler flags for the game code (a debugging build, e.g. -fstack-protector-all; "
+                         "use with --suffix)")
+parser.add_argument("--suffix", default="",
+                    help="a separate build: build_host64<suffix>.ninja, build/host64<suffix>_<v>")
 parser.add_argument("version", nargs="?", default="usa")
 args = parser.parse_args()
 
 root = Path(__file__).resolve().parent.parent
 X64 = args.arch == "x86_64"
-build = Path("build") / (f"host64_{args.version}" if X64 else f"host_{args.version}")
-NINJA_FILE = "build_host64.ninja" if X64 else "build_host.ninja"
+build = Path("build") / (f"host64{args.suffix}_{args.version}" if X64 else f"host{args.suffix}_{args.version}")
+NINJA_FILE = f"build_host64{args.suffix}.ninja" if X64 else f"build_host{args.suffix}.ninja"
 R = args.sysroot
 G = f"{R}/usr/lib/gcc/x86_64-linux-gnu/15/32"
 M_FLAG = "-m64" if X64 else "-m32"
@@ -56,6 +61,8 @@ if X64:
 # every unit with the full class definitions, in both builds: the layout tools (tools/host_view_layout.py) read the
 # types from the 32-bit and the 64-bit debug information (debug information only: the code is the same)
 CXX_FLAGS += " -femit-class-debug-always"
+if args.extra_cflags:
+    GAME_FLAGS += " " + args.extra_cflags
 SECTIONS = ("-Wl,--allow-multiple-definition -Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
             "-Wl,--section-start=gbss=0x02040000")
 M = args.melonds

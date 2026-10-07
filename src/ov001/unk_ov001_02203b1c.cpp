@@ -1,6 +1,8 @@
 // mwcc-flags: -O4,p
 #pragma opt_dead_assignments off
 #include "types.h"
+#include "nitro/os_alarm.h"
+#include "uptr.h"
 #include "net/SockAddrIn.h"
 #include "nitro/wm.h"
 
@@ -1323,7 +1325,7 @@ s32 SimpleStart_ConnectAp(void) {
     s32 cont = 1;
     s32 res = -2;
     u8 *p = data_ov001_0222c8ac + data_ov001_0222c868 * 0xc0;
-    u32 alarm[11];
+    u32 alarm[HOST_SIZED(44, OSAlarm) / 4] HOST_ALIGN8;  // OSAlarm (64 bytes on 64-bit hosts)
     if (p == 0) {
         return 0;
     }
