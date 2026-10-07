@@ -43,7 +43,6 @@ class CafeVillager;
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
@@ -62,7 +61,6 @@ extern CafeVillagerActEntry sCafeVillagerActTable[3];
 void *VillagerData_getVillagerId(void *o);
 void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);
 void ActorTalkRequest_setTalkPlayer(void *o, s32 a);
-s32 NpcActor_getPlayerActor(void *o, s32 a);
 s32 NpcTalkCtrl_isBusy(void *o);
 void TalkRequest_SetTargetDone(void *o);
 void *ActorTalkRequest_getTalkPlayer(void *o);

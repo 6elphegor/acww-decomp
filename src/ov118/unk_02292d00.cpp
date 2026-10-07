@@ -40,6 +40,7 @@
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov118/unk_02292d00.h"
+#include "player/PlayerData.h"
 
 extern "C" {
 extern u16 gPad[];
@@ -1114,7 +1115,7 @@ void MapTab::setEntryName(LabelString *p, u32 idx) {
     if (idx == 0) {
         ((MsgString *)(p))->clear();
     } else if (idx == 1) {
-        PopupChoice_CopyPlayerIdName(p, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+        PopupChoice_CopyPlayerIdName(p, PlayerData_GetCurrent()->getPlayerId());
     } else if (idx >= 2 && idx < 6) {
         PopupChoice_CopyResidentName(p, idx - 2);
     } else if (idx >= 6 && idx < 0xe) {

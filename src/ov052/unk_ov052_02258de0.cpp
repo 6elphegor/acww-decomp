@@ -660,7 +660,7 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
                         (_ZN12ReddLastSale12copyItemFromEPKS_(&b, data_021ed284), !Unk_ov052_022595dc_Eq(&b, &k2))) {
                         _ZN12ReddLastSale12copyItemFromEPKS_(&c, data_021ed284);
                         ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&c), 0, 7);
-                        u16 *r6 = (u16 *)((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+                        u16 *r6 = (u16 *)PlayerData_GetCurrent()->getPlayerId();
                         u16 *r7 = (u16 *)ReddLastSale_GetBuyer(data_021ed284);
                         if (!(r7[0] == r6[0] && memcmp(r7 + 1, r6 + 1, 8) == 0 && ((PlayerId *)(r7))->equals((PlayerId *)(r6)) != 0)) {
                             ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(ReddLastSale_GetBuyer(data_021ed284)), 1);
@@ -844,7 +844,7 @@ void SpNpcReddTalk::completePurchase() {
     Pocket_AddItem(&owner->selectedItem, 0);
     ReddShop_BuyAt(owner->selectedItemX, owner->selectedItemZ, 0xf);
     u8 *const g = data_021ed284;
-    _ZN12ReddLastSale8setBuyerEPKS_(g, ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId());
+    _ZN12ReddLastSale8setBuyerEPKS_(g, PlayerData_GetCurrent()->getPlayerId());
     _ZN12ReddLastSale7setItemEPKS_(g, &owner->selectedItem);
     ((ActorTalkRequest *)(this))->setNumberSlot(price, 2, 10, 1, 0);
     owner->selectedItem = 0xfff1;

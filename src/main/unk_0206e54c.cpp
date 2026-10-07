@@ -544,7 +544,7 @@ extern "C" u32 MenuCtrl_GetSavedSlot() { return sMenuSavedSlot; }
 extern "C" void MenuCtrl_BackupPockets() {
     void *p;
     s32 i;
-    p = ((PlayerData *)(PlayerData_GetCurrent()))->getInventory();
+    p = PlayerData_GetCurrent()->getInventory();
     for (i = 0; i < 15; i++) {
         sPocketBackupItems[i] = *((PlayerInventory *)(p))->getPocket(i);
         sPocketBackupFlags[i] = (u32)_ZN15PlayerInventory14getPocketFlagsEi(p, i);
@@ -554,7 +554,7 @@ extern "C" void MenuCtrl_BackupPockets() {
 extern "C" void MenuCtrl_RestorePockets() {
     u16 tmp[1];
     s32 i;
-    ((PlayerData *)(PlayerData_GetCurrent()))->getInventory();
+    PlayerData_GetCurrent()->getInventory();
     tmp[0] = 0xfff1;
     for (i = 0; i < 15; i++) {
         tmp[0] = sPocketBackupItems[i];
@@ -616,12 +616,12 @@ extern "C" BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b) {
 }
 
 extern "C" u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, void *)) {
-    u32 a = PlayerData_GetCurrent();
-    u16 *p = ((PlayerInventory *)(((PlayerData *)(a))->getInventory()))->getPocket(0);
+    PlayerData *a = PlayerData_GetCurrent();
+    u16 *p = ((PlayerInventory *)(a->getInventory()))->getPocket(0);
     s32 i;
     u16 mask = 0;
     for (i = 0; i < 15; i++) {
-        if (cb(p + i, _ZN15PlayerInventory14getPocketFlagsEi(((PlayerData *)(a))->getInventory(), i))) {
+        if (cb(p + i, _ZN15PlayerInventory14getPocketFlagsEi(a->getInventory(), i))) {
             mask |= 1 << i;
         }
     }
@@ -647,7 +647,7 @@ extern "C" void MenuCtrl_SetFutureLetter(void *a) {
 }
 
 extern "C" void MenuCtrl_StoreFutureLetter(void) {
-    u32 a = PlayerData_GetCurrent();
+    PlayerData *a = PlayerData_GetCurrent();
     void *p = FutureLetter_GetLetter(PlayerData_GetFutureLetter(a));
     u8 *q;
     Letter_Copy(p, &sFutureLetter);

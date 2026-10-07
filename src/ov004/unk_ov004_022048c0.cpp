@@ -150,7 +150,7 @@ BOOL Atm::releaseCollision() {
 
 void Atm::setPointTexts() {
     if (window) {
-        u16 *p = NookPoints_GetValuePtr(((PlayerData *)(PlayerData_GetCurrent()))->getNookPoints());
+        u16 *p = NookPoints_GetValuePtr(PlayerData_GetCurrent()->getNookPoints());
         u8 buf[2];
         MsgString25 obj;
         String_FormatNumber(&obj, *p, 10, 1, 0, 0);
@@ -271,7 +271,7 @@ void Atm::onMessageEnd(u32) {
     switch (msgIndex) {
     case 1:
     case 2:
-        if (NookPoints_GetRank(*NookPoints_GetValuePtr(((PlayerData *)(PlayerData_GetCurrent()))->getNookPoints())) == 4) {
+        if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_GetCurrent()->getNookPoints())) == 4) {
             buf[0] = 5;
             window->setNextMessage(&buf[0], sAtmMsgFilePtr);
         } else {
@@ -290,7 +290,7 @@ void Atm::onChoice(u32) {
     if (st == 0 || st == 7) {
         switch (v) {
         case 0:
-            if (NookPoints_GetRank(*NookPoints_GetValuePtr(((PlayerData *)(PlayerData_GetCurrent()))->getNookPoints())) == 0) {
+            if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_GetCurrent()->getNookPoints())) == 0) {
                 buf[0] = 1;
                 window->setNextMessage(&buf[0], sAtmMsgFilePtr);
             } else {

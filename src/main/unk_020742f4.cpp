@@ -120,6 +120,7 @@ public:
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov003/unk_ov003_0222e5e0.h"
+#include "save/TownCompress.h"
 
 // ======== unk_02077a54.cpp ========
 namespace n7 {
@@ -2500,7 +2501,7 @@ extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, u32 d) {
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
-            void *r1 = ((PlayerData *)(PlayerData_GetBySessionSlot(d)))->getPlayerId();
+            void *r1 = PlayerData_GetBySessionSlot(d)->getPlayerId();
             VillagerMemory_InitForPlayer(r5, r1, gSaveTownId, 0);
         }
     }
@@ -2515,7 +2516,7 @@ extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, u32 d) {
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
-            void *r1 = ((PlayerData *)(PlayerData_GetBySessionSlot(d)))->getPlayerId();
+            void *r1 = PlayerData_GetBySessionSlot(d)->getPlayerId();
             VillagerMemory_RecordTalk(r5, r1, gSaveTownId, 0);
         }
     }
@@ -2791,7 +2792,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-u32 _ZN18TownCompressBuffer7getSizeEv(void *self);
 }
 extern "C" {
 BOOL _ZN11CommManager12isSlotActiveEi(void *, s32);
@@ -3030,8 +3030,8 @@ extern "C" BOOL CommSend_Chunked(u8 *p, void *data, u32 size, u32 type, u32 mask
     return FALSE;
 }
 extern "C" void CommSend_TownChunk(u8 *p, u32 v) {
-    void *d = SaveManager_GetTownCompressBuf();
-    u32 n = _ZN18TownCompressBuffer7getSizeEv(d);
+    TownCompressBuffer *d = SaveManager_GetTownCompressBuf();
+    u32 n = d->getSize();
     u32 sz;
     if (n == 0) sz = 0x15fe4; else sz = n + 4;
     CommSend_Chunked(p, d, sz, 1, v);
@@ -3258,10 +3258,8 @@ void _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager *, u32, u8);
 extern "C" {
 }
 extern "C" {
-s32 _ZN18TownCompressBuffer7getSizeEv(s32);
 }
 extern "C" {
-s32 _ZN18TownCompressThread5startEj(s32, s32);
 }
 extern "C" {
 }
@@ -3408,7 +3406,7 @@ extern "C" s32 CommCtrl_SendAct14() {
     return 0;
 }
 extern "C" s32 CommSend_PlayerDataToHost(u8 *a) {
-    s32 r = PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot));
+    PlayerData *r = PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot));
     return CommSend_Chunked(a, r, 0x228c, 0x15, 1);
 }
 extern "C" s32 CommSend_LetterStorageToHost(u8 *a) {
@@ -3438,9 +3436,9 @@ extern "C" void CommCtrl_RecvTownChunk(u8 *a, s32 b) {
     u32 n;
     if (Scene_GetCurrent() == 0xc) {
         MI_CpuCopy8(a, &n, 4);
-        s32 p = SaveManager_GetTownCompressBuf();
-        MI_CpuCopy8(a + 4, (void *)(p + n), b - 4);
-        s32 r = _ZN18TownCompressBuffer7getSizeEv(p);
+        TownCompressBuffer *p = SaveManager_GetTownCompressBuf();
+        MI_CpuCopy8(a + 4, (u8 *)p + n, b - 4);
+        s32 r = p->getSize();
         u32 lim;
         if (r == 0) {
             lim = 0x15fe4;
@@ -3448,7 +3446,7 @@ extern "C" void CommCtrl_RecvTownChunk(u8 *a, s32 b) {
             lim = r + 4;
         }
         if (n + (b - 4) >= lim) {
-            _ZN18TownCompressThread5startEj(SaveManager_GetTownCompressThread(), 0);
+            SaveManager_GetTownCompressThread()->start(0);
         }
     }
 }
@@ -3485,8 +3483,8 @@ extern "C" void CommCtrl_RecvVisitorPlayerData(u8 *a, s32 b, s32 c) {
     u32 n;
     MI_CpuCopy8(a, &n, 4);
     s32 t = c + 3;
-    s32 q = PlayerData_Get(t);
-    MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
+    u8 *q = (u8 *)PlayerData_Get(t);
+    MI_CpuCopy8(a + 4, q + n, b - 4);
     PlayerSession_SetDataIndex(c, t);
 }
 extern "C" void CommCtrl_RecvNetState(u8 *a, s32 b, s32 c) {
@@ -3605,8 +3603,8 @@ extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
             CommManager *g = gCommManager;
             g->localSlot = 0;
             PlayerSession_SetDataIndex(g->localSlot, r);
-            s32 q = PlayerData_GetCurrent();
-            MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
+            u8 *q = (u8 *)PlayerData_GetCurrent();
+            MI_CpuCopy8(a + 4, q + n, b - 4);
         }
     }
 }

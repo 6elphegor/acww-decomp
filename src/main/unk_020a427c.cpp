@@ -213,7 +213,7 @@ void TalkRequest_EndNetSyncHold(void);
 BOOL TalkRequest_BeginNetSyncHold(void);
 s32 TalkRequestQueue_Reset(void);
 void Field_UpdateActions(void);
-LostChildRecord *_ZN10PlayerData18getLostChildRecordEv(s32 a);
+LostChildRecord *_ZN10PlayerData18getLostChildRecordEv(PlayerData *a);
 void NetArea_BuildStateB(s32 a);
 void NetArea_BuildStateA(s32 a);
 void NetSyncMsg_Fini(void *p);
@@ -1471,7 +1471,7 @@ void NetSessionState::updateSyncClient() {
         Net_SetJoiningAid(getSyncRequester());
         Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
         if (getSyncKind() == 0) {
-            s32 x = PlayerData_Get(getSyncRequester() + 3);
+            PlayerData *x = PlayerData_Get(getSyncRequester() + 3);
             u16 *p;
             u8 *idb = (u8 *)&gSaveTownId;
             if (x != 0 && _ZN10PlayerData18getLostChildRecordEv(x)->isEscorting() && (p = _ZN10PlayerData18getLostChildRecordEv(x)->getTownId(), p[0] == *(u16 *)idb) &&

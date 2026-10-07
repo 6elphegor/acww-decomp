@@ -42,7 +42,6 @@
 #define PROTO_LOCAL_Net_PollConnected  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_0203c92c.h"
@@ -273,7 +272,6 @@ struct SpNpcPellyPhyllisActEntry {
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcMoveCtrl_setTurnMode _ZN11NpcMoveCtrl11setTurnModeEh
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define HouseData_getDebt _ZN9HouseData7getDebtEv
 #define func_02063818 _ZN15EncodedString8BD1Ev
 #define func_02063830 _ZN15EncodedString8BC1Ev
@@ -317,7 +315,6 @@ s32 CommManager_isOnline(void *g);
 s32 CommManager_isSlotActive(void *g, s32 v);
 BOOL Talk_IsInOwnTown(...);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
-void *PlayerData_GetCurrent();
 void *PlayerData_getBankAccount(void *g);
 s32 Donation_GetTotal(void *h);
 void PlayerData_setFlag(void *g, s32 v);
@@ -336,7 +333,6 @@ void Talk_AdvanceDrama(void *o, void *b);
 void TalkWindowState_openChoices(void *o, s32 v);
 void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
 s32 NpcTalkCtrl_isBusy(void *self);
-s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 
 s32 strlen(const char *s);
 s32 strncmp(const void *a, const char *b, s32 n);
@@ -885,7 +881,7 @@ BOOL SpNpcPellyPhyllis::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == gCommManager->myAid && a == b) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && a == gCommManager->myAid && a == b) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             talk.resetMsg();
             ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
@@ -904,7 +900,7 @@ BOOL SpNpcPellyPhyllis::mainAct0A() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner()) {
                     netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -1120,7 +1116,7 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
         v[1] = 0x149b;
         ((ActorTalkRequest *)(this))->requestTakeItem(&v[1], 0, 5, 1);
         setScript(10);
-        donationBefore = Donation_GetTotal(((PlayerData *)(PlayerData_GetCurrent()))->getBankAccount());
+        donationBefore = Donation_GetTotal(PlayerData_GetCurrent()->getBankAccount());
         Donation_SetTotal(donationBefore + r4);
     } else {
         r6 = 0x1c;
@@ -1212,7 +1208,7 @@ void SpNpcPellyPhyllisTalk::onSavingsDone() {
     s32 r4;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
-        s32 r6 = PlayerBank_GetBalance(((PlayerData *)(PlayerData_GetCurrent()))->getBankAccount());
+        s32 r6 = PlayerBank_GetBalance(PlayerData_GetCurrent()->getBankAccount());
         ((ActorTalkRequest *)(this))->setNumberSlot(r6, 5, 10, 1, 0);
         ((ActorTalkRequest *)(this))->setNumberSlot(func_02133150(r6, 200), 6, 10, 1, 0);
         r4 = 0x17;
@@ -1252,7 +1248,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
     s32 r4 = 0x51;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
-        p = SickVillagerRecord_getParcelErrand(((PlayerData *)(PlayerData_GetCurrent()))->getErrands());
+        p = SickVillagerRecord_getParcelErrand(PlayerData_GetCurrent()->getErrands());
         if (Talk_IsInOwnTown(p)) {
             BOOL same;
             s32 r5 = MenuCtrl_GetIndex();
@@ -2003,7 +1999,7 @@ void SpNpcPellyPhyllis::onInteractionEvent(u32 cmd, u8 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+                if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         changeAct(2);

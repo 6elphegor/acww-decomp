@@ -44,8 +44,6 @@ extern s32 data_020e1e04;
 extern s32 data_020e1e08;
 extern s32 data_020e1e0c;
 
-s32 _ZN10PlayerData14getBankAccountEv(s32);
-s32 _ZN10PlayerData11getPlayerIdEv(s32);
 void _ZN11MsgString9CC2Ev(void *);
 void TownId_GetNameString(void *, void *);
 void _ZN11MsgString25C1Ev(void *);
@@ -94,11 +92,11 @@ extern "C" u32 PlayerBank_GetDonationLevel(PlayerBank *p) { return p->donationLe
 extern "C" void PlayerBank_SetDonationLevel(PlayerBank *p, u32 v) { p->donationLevel = v; }
 
 extern "C" void PlayerBank_PayInterest(s32 n) {
-    s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN10PlayerData14getBankAccountEv(s);
+    PlayerData *s = PlayerData_GetCurrent();
+    PlayerBank *o = s->getBankAccount();
     if (MenuCtrl_IsClockMovedForward() == 0) {
         if (n > 0) {
-            s32 m = PlayerBank_GetBalance((PlayerBank *)o);
+            s32 m = PlayerBank_GetBalance(o);
             s32 q = _s32_div_f(m, 2000);
             n = q * n * 10;
             if (n > 99999) {
@@ -110,7 +108,7 @@ extern "C" void PlayerBank_PayInterest(s32 n) {
                     if (t > 999999999) {
                         t = 999999999;
                     }
-                    PlayerBank_SetBalance((PlayerBank *)o, t);
+                    PlayerBank_SetBalance(o, t);
                     Letter e;
                     u8 ch;
                     u32 buf[HOST_SIZED(0x2c, MsgString25) / 4] HOST_ALIGN8;
@@ -118,7 +116,7 @@ extern "C" void PlayerBank_PayInterest(s32 n) {
                     _ZN11MsgString25C1Ev(buf);
                     String_FormatNumber(buf, n, 10, 1, 0, 0);
                     MailText_SetSlot(1, buf);
-                    Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e08, &data_020e1e04, _ZN10PlayerData11getPlayerIdEv(s));
+                    Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e08, &data_020e1e04, s->getPlayerId());
                     LetterDelivery_PutInAddresseeMailbox(&e);
                     _ZN11MsgString25D1Ev(buf);
                 }
@@ -128,10 +126,10 @@ extern "C" void PlayerBank_PayInterest(s32 n) {
 }
 
 extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
-    s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN10PlayerData14getBankAccountEv(s);
+    PlayerData *s = PlayerData_GetCurrent();
+    PlayerBank *o = s->getBankAccount();
     if (n > 0) {
-        s32 m = PlayerBank_GetBalance((PlayerBank *)o);
+        s32 m = PlayerBank_GetBalance(o);
         if (m >= 1000000) {
             u32 col = 0x37dc;
             s32 k = 0;
@@ -149,7 +147,7 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 col = 0x3700;
             }
             s32 bit = k + 0x11;
-            if (((PlayerData *)(s))->testFlag(bit) == 0) {
+            if (s->testFlag(bit) == 0) {
                 u8 ch;
                 ch = k + 0x15;
                 Letter e;
@@ -157,10 +155,10 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 _ZN11MsgString9CC2Ev(buf);
                 TownId_GetNameString(gSaveTownId, buf);
                 MailText_SetSlot(0, buf);
-                Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
+                Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, s->getPlayerId());
                 ((LetterView *)(&e))->setPresent(col, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(&e)) {
-                    ((PlayerData *)(s))->setFlag(bit);
+                    s->setFlag(bit);
                 }
                 ((MsgString9C *)(buf))->MsgString9C::~MsgString9C();
             }
@@ -174,16 +172,16 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
 
 
 extern "C" void PlayerBank_SendDonationLetter(s32 n) {
-    s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN10PlayerData14getBankAccountEv(s);
+    PlayerData *s = PlayerData_GetCurrent();
+    PlayerBank *o = s->getBankAccount();
     if (n > 0) {
-        if (((PlayerData *)(s))->testFlag(0x16)) {
-            s32 id = PlayerBank_GetDonationLevel((PlayerBank *)o);
+        if (s->testFlag(0x16)) {
+            s32 id = PlayerBank_GetDonationLevel(o);
             Letter e;
             u8 ch;
             ch = id;
             u32 v;
-            Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1df8, &data_020e1e0c, _ZN10PlayerData11getPlayerIdEv(s));
+            Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1df8, &data_020e1e0c, s->getPlayerId());
             v = 0xfff1;
             if (id > 13) goto hi;
             if (id >= 13) goto c13;
@@ -218,7 +216,7 @@ extern "C" void PlayerBank_SendDonationLetter(s32 n) {
                 ((LetterView *)(&e))->setPresent(v, 1);
             }
             if (LetterDelivery_PutInAddresseeMailbox(&e)) {
-                ((PlayerData *)(s))->clearFlag(0x16);
+                s->clearFlag(0x16);
             }
         }
     }

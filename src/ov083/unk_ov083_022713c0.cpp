@@ -232,7 +232,7 @@ void SpNpcTortimerFlowerFestTalk::attachOwner(SpNpcTortimerFlowerFest *owner) {
 void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
     u16 h;
     u32 w[2];
-    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+    PlayerData_GetCurrent()->getErrands();
     out->msgKey = "sp_npc_turtle3";
     if (massageChairSlot == -1) {
         h = 0x37e0;
@@ -290,7 +290,7 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
     } else {
         if (msgIndex == 5 || msgIndex == 6 || msgIndex == 9) {
             if (!Talk_CheckAndSetPlayerFlag(0x1d, 1)) {
-                ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->setFestivalGift();
+                ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->setFestivalGift();
                 if (Pocket_FindEmpty() >= 0) {
                     msg = 7;
                     NookShop_PickFlowerBag(&h3);

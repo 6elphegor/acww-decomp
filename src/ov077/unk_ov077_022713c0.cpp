@@ -577,7 +577,7 @@ void SpNpcResettiTalk::onSignalTag(s32 a) {
 }
 
 void SpNpcResettiTalk::start(TalkStartMsg *out) {
-    s32 t = ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->getResetCount() - 1;
+    s32 t = ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->getResetCount() - 1;
     if (t < 0) {
         t = 0;
     } else if (t > 5) {

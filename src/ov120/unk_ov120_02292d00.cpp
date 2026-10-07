@@ -35,6 +35,7 @@
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov120/unk_ov120_02292d00.h"
+#include "player/PlayerData.h"
 
 #define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
 #define func_02063870 _ZN11MsgString9CD1Ev
@@ -964,7 +965,7 @@ void MapViewerMenu::setEntryName(void *p, u32 idx) {
     if (idx == 0) {
         ((MsgString *)(p))->clear();
     } else if (idx == 1) {
-        PopupChoice_CopyPlayerIdName(p, PlayerData_getPlayerId(PlayerData_GetCurrent()));
+        PopupChoice_CopyPlayerIdName(p, PlayerData_GetCurrent()->getPlayerId());
     } else if (idx >= 2 && idx < 6) {
         PopupChoice_CopyResidentName(p, idx - 2);
     } else if (idx >= 6 && idx < 0xe) {

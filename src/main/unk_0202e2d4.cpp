@@ -42,7 +42,7 @@ s32 sSpNpcWalkAnimSpeedScale = data_020c6cf0 - 0x8000;
 extern "C" {
 s32 PM_GetBattery(s32 *out);
 s32 SpNpc_GetInfoByte0(u16 *p);
-void Npc_GetName(u32 a, u16 *p);
+BOOL Npc_GetName(MsgString *buf, u16 *p);
 }
 
 // ---- SpNpcActor (scene object derived from NpcActor) ----
@@ -153,7 +153,7 @@ BOOL SpNpcActor::onDelete() {
     return TRUE;
 }
 
-void SpNpcActor::getName(u32 a) { Npc_GetName(a, &npcHandle); }
+void SpNpcActor::getName(MsgString *out) { Npc_GetName(out, &npcHandle); }
 
 u32 SpNpcActor::getGender() { return SpNpc_GetInfoByte0(&npcHandle); }
 

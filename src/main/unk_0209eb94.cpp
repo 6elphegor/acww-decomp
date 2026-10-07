@@ -29,10 +29,6 @@
 #define PROTO_LOCAL_Net_GameStatsUpload  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GetBrid  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerDataArray_CreateResident  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_Get  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetBySessionSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerWifiData_GetOwnFriendData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_GetName  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
@@ -67,6 +63,7 @@
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_02000b7c.h"
 #include "proto/main/unk_02065e88.h"
+#include "save/TownCompress.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
@@ -217,8 +214,8 @@ public:
     /* 0xb8 */ void *playerDataCopy;
     /* 0xbc */ void *villagerTransferBackup;
     /* 0xc0 */ u8 *letterStorage;
-    /* 0xc4 */ void *townCompressBuf;
-    /* 0xc8 */ void *townCompressThread;
+    /* 0xc4 */ TownCompressBuffer *townCompressBuf;
+    /* 0xc8 */ TownCompressThread *townCompressThread;
     /* 0xcc */ u16 hostWaitTimer;   // frames the host waits alone before giving up (enterAct1D: 0x258)
     /* 0xce */ u16 memberMask;
     /* 0xd0 */ u16 hostMemberMask;
@@ -288,30 +285,6 @@ void AxBbsNotice_Destruct(void *p);
 
 // ---- unk_0209ecf8.cpp
 
-struct TownCompressThread {
-    u8 thread[0x64];
-    s32 threadState;
-    u8 pad_68[0xc0 - 0x68];
-    u32 stackGuardLow;
-    u8 pad_c4[0x10c4 - 0xc4];
-    u32 stackGuardHigh;
-    u8 done;
-
-    u8 isDone();
-    void start(u32 a);
-    void kill();
-    void init();
-};
-
-struct TownCompressBuffer {
-    u32 size;
-    u8 data[4];
-    u8 dataBody[4];
-
-    u32 getSize();
-    void decompress();
-    void compress();
-};
 
 
 namespace NB {
@@ -341,7 +314,6 @@ s32 _ZN8SaveData8testFlagEj(void *p, u32 n);
 void Net_GetBrid(char *p);
 s32 Net_GameStatsDownload(void *a, void *b, u32 c, u32 d);
 s32 Net_GameStatsUpload(void *a, void *b, u32 c, u32 d);
-s32 PlayerData_GetCurrent(void);
 void _ZN15TalkWindowState12hideBusyIconEv(s32 a);
 void _ZN15TalkWindowState13unlockAdvanceEv(s32 a);
 void _ZN15TalkWindowState14setNextMessageEPhPv(s32 a, u8 *b, void *c);
@@ -396,8 +368,6 @@ void MI_CpuCopy8(void *dst, void *src, u32 n);
 void _ZN11MsgString9CC2Ev(void *p);
 void TownId_GetNameString(void *a, void *b);
 void *_ZN10PlayerData11getPlayerIdEv(void *a);
-void *PlayerData_GetCurrent();
-void *PlayerData_GetBySessionSlot(s32 i);
 void *_ZN10PlayerData15getWifiUserDataEv(void *a);
 void *_ZN10PlayerData13getFriendListEv(void *a);
 void *PlayerWifiData_GetOwnFriendData(void *a);
@@ -436,7 +406,6 @@ extern u8 gBackup[];
 extern const u32 sSaveSlotOffsets[];
 void *_ZN18TownExchangeRecord18getLostChildRecordEv(void *);
 void _ZN15LostChildRecord5clearEv(void *);
-s32 PlayerData_Get(s32);
 void _ZN10PlayerData5resetEv(s32 p);
 void Clock_Update(s32);
 void SaveData_Setup(void *, s32);
@@ -450,16 +419,14 @@ void HouseRoomMaps_BindBg();
 void Town_OnLoad();
 u16 *PlayerSession_GetLastPlayDate();
 void Clock_GetDateTime(void *);
-void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(s32, LastPlayDateRaw);
+void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(PlayerData *, LastPlayDateRaw);
 void _ZN8SaveData5resetEv(void *);
-void PlayerDataArray_CreateResident(void *, void *, s32, s32);
 s32 _ZN18TownExchangeRecord11getChecksumEv(void *);
 u32 Save_CalcChecksum(void *, u32, u32);
 void _ZN18TownExchangeRecord11setChecksumEj(void *, u32);
 s32 _ZN18TownExchangeRecord15getChecksumByteEv(void *);
 void _ZN18TownExchangeRecord15setChecksumByteEj(void *, u32);
 BOOL Backup_Write(void *, u32, void *, u32);
-s32 PlayerData_GetCurrent();
 u8 *_ZN10PlayerData13getFriendListEv(void *self);
 u8 *_ZN10PlayerData15getWifiUserDataEv(void *self);
 void _ZN11SaveRecord410clearStateEv(void *);
@@ -527,8 +494,6 @@ void _ZN15TalkWindowState14setNextMessageEPhPv(void *o, void *a, void *b);
 void _ZN15TalkWindowState12hideBusyIconEv(void *o);
 s32 _ZN15TalkWindowState13unlockAdvanceEv(void *o);
 u32 _Z20NetOverlay_AssertAnyv(void);
-void *PlayerData_GetCurrent(void);
-u32 PlayerData_Get(u32 x);
 s32 _ZN10PlayerData9clearFlagEj(void *p, u32 x);
 void *_ZN10PlayerData5resetEv(void *p);
 void SaveData_Apply(void *p);
@@ -599,15 +564,11 @@ void _ZN11SaveManager8setStateEi(SaveManager *p, s32 v);
 void _ZN11SaveManager12runSendAct10EPhj(SaveManager *p, u8 *st, u32 a);
 BOOL _ZN11SaveManager18isTransferReceivedEj(SaveManager *p, s32 v);
 void _ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(SaveManager *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
-void *PlayerData_GetCurrent();
 void _ZN10PlayerData7setFlagEj(void *p, s32 v);
 BOOL NetSession_GetCtrl07Received();
 BOOL CommSend_SyncVarChunk(u8 *p, u32 v);
-void _ZN18TownCompressThread5startEj(u32 a, s32 b);
-BOOL _ZN18TownCompressThread6isDoneEv(u32 a);
 void DC_FlushAll();
 BOOL CommSend_TownChunk(u8 *p, u32 v);
-void *PlayerData_Get(u32 v);
 u32 ClockOffset_CalcMinutes(u32 *a, void *b);
 u32 ClockOffset_CalcSeconds(u32 *a, void *b);
 TownBlockMap *TownBlockMap_Get();
@@ -652,8 +613,7 @@ void VillagerStates_Init();
 void SaveData_Setup(void *p, s32 n);
 void SaveData_Apply(void *p);
 void VillagerStates_Destroy();
-s32 PlayerData_GetCurrent(void *p);
-void _ZN10PlayerData9clearFlagEj(s32 a, s32 b);
+void _ZN10PlayerData9clearFlagEj(PlayerData *a, s32 b);
 void Clock_Init();
 void SaveVillagers_DailyUpdate(void *p, s32 n);
 s32 TownUpdateThread_Start();
@@ -686,7 +646,6 @@ s32 _ZN11SaveManager15verifySlotsStepEv(void *p);
 s32 _ZN11SaveManager12saveSlotStepEi(void *p, u32 v);
 s32 _ZN11SaveManager18showSequence2Msg0AEv(void *p);
 s32 _ZN11SaveManager13func_020a15f8Ev(void *p);
-void *PlayerData_GetCurrent(void);
 s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 s32 TownState_ClampDate(void *p);
 s32 SaveVillagers_UpdateAllRoomInfo(void *p);
@@ -814,9 +773,9 @@ BOOL SaveManager::onCreate() {
         villagerTransferBackup = Heap_Alloc(bufferHeap, 0x84c);
     }
     if (sSaveManagerRequest == 0x14 || sSaveManagerRequest == 0x15) {
-        townCompressBuf = Heap_Alloc(bufferHeap, 0x15fe4);
-        townCompressThread = Heap_Alloc(bufferHeap, 0x10cc);
-        ((TownCompressThread *)(townCompressThread))->init();
+        townCompressBuf = (TownCompressBuffer *)Heap_Alloc(bufferHeap, 0x15fe4);
+        townCompressThread = (TownCompressThread *)Heap_Alloc(bufferHeap, 0x10cc);
+        townCompressThread->init();
     }
     if (sSaveManagerRequest == 0x14) {
         void *p = Heap_Alloc(bufferHeap, 0x15fe0);
@@ -849,7 +808,7 @@ BOOL SaveManager::onDelete() {
         gTownTransferBuf = 0;
     }
     if (townCompressThread) {
-        ((TownCompressThread *)(townCompressThread))->kill();
+        townCompressThread->kill();
         Heap_Free(bufferHeap, townCompressThread);
         townCompressThread = 0;
     }
@@ -914,7 +873,7 @@ void SaveManager::execAct00() {
 }
 
 void SaveManager::enterAct01() {
-    void *r5 = NJ::PlayerData_GetCurrent();
+    void *r5 = PlayerData_GetCurrent();
     NJ::_ZN11SaveManager9startTalkEPKch(this, (char *)"sp_etc_sequence2", 1);
     MenuCtrl_ClearClockChangeFlags();
     NJ::_ZN10PlayerData9clearFlagEj(r5, 2);
@@ -976,7 +935,7 @@ void SaveManager::execAct01() {
 }
 
 void SaveManager::enterAct02() {
-    void *r5 = NJ::PlayerData_GetCurrent();
+    void *r5 = PlayerData_GetCurrent();
     NJ::_ZN11SaveManager9startTalkEPKch(this, (char *)"sp_npc_gatekeeper", 0x66);
     MenuCtrl_ClearClockChangeFlags();
     NJ::_ZN10PlayerData9clearFlagEj(r5, 2);
@@ -1508,7 +1467,7 @@ void SaveManager::execAct12() {
 }
 
 void SaveManager::enterAct13() {
-    NI::_ZN10PlayerData9clearFlagEj(NI::PlayerData_GetCurrent(this), 2);
+    NI::_ZN10PlayerData9clearFlagEj(PlayerData_GetCurrent(), 2);
     actStep = 0;
 }
 
@@ -1582,7 +1541,7 @@ extern "C" void SaveManager_ExecAct14(SaveManager *p) {
     case 3:
         if (Comm_IsConnectionLost(1)) {
             Comm_SetLostFlag();
-        } else if (NH::_ZN18TownCompressThread6isDoneEv((u32)p->townCompressThread)) {
+        } else if (p->townCompressThread->isDone()) {
             BOOL r6 = TRUE;
             s32 r5 = 3;
             for (; r5 >= 0; r5--) {
@@ -1625,8 +1584,8 @@ extern "C" void SaveManager_ExecAct14(SaveManager *p) {
             u32 r7 = Net_GetMyAid();
             CommManager *r5 = NH::gCommManager;
             r5->myAid = r7;
-            void *r6 = NH::PlayerData_Get(PlayerSession_GetDataIndex(r5->localSlot));
-            NH::MI_CpuCopy8(r6, NH::PlayerData_Get(r5->myAid + 3), 0x228c);
+            void *r6 = PlayerData_Get(PlayerSession_GetDataIndex(r5->localSlot));
+            NH::MI_CpuCopy8(r6, PlayerData_Get(r5->myAid + 3), 0x228c);
             sSessionResidentIndex = PlayerSession_GetDataIndex(r5->localSlot);
             r5->localSlot = r7;
             u32 cnt = 0;
@@ -1771,7 +1730,7 @@ extern "C" void SaveManager_ExecAct15(SaveManager *p) {
         if (Comm_IsConnectionLost(Comm_GetRemoteMask())) {
             Comm_SetLostFlag();
         } else if (CommSend_SlotStatusAll(sJoiningAid)) {
-            NH::_ZN18TownCompressThread5startEj((u32)p->townCompressThread, 1);
+            p->townCompressThread->start(1);
             p->sendChunk = 0;
             p->actStep = 8;
         }
@@ -1779,7 +1738,7 @@ extern "C" void SaveManager_ExecAct15(SaveManager *p) {
     case 8:
         if (Comm_IsConnectionLost(Comm_GetRemoteMask())) {
             Comm_SetLostFlag();
-        } else if (NH::_ZN18TownCompressThread6isDoneEv((u32)p->townCompressThread)) {
+        } else if (p->townCompressThread->isDone()) {
             NH::DC_FlushAll();
             if (NH::CommSend_TownChunk(&p->sendChunk, (u16)(1 << sJoiningAid))) {
                 p->actStep = 9;
@@ -1857,7 +1816,7 @@ extern "C" void SaveManager_ExecAct16(SaveManager *p) {
 
 extern "C" void SaveManager_EnterAct17(SaveManager *p) {
     SaveManager_StartGatekeeperTalk(p, 0);
-    NH::_ZN10PlayerData7setFlagEj(NH::PlayerData_GetCurrent(), 2);
+    NH::_ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 2);
     NetSession_SetLastSyncSlot(NH::gCommManager->myAid);
 }
 
@@ -2763,7 +2722,7 @@ void SaveManager::execAct1E() {
 }
 
 void SaveManager::enterAct1F() {
-    NF::_ZN10PlayerData9clearFlagEj(NF::PlayerData_GetCurrent(), 2);
+    NF::_ZN10PlayerData9clearFlagEj(PlayerData_GetCurrent(), 2);
     Comm_PrepareJoin(Net_GetMyAid());
     actStep = 0;
 }
@@ -2805,8 +2764,8 @@ void SaveManager::execAct1F() {
             Comm_SetLostFlag();
         } else if ((NF::_Z20NetOverlay_AssertAnyv(), Net_IsReadyToSend())) {
             ((HudWallet *)Hud_GetWallet())->freezeValue();
-            NF::MI_CpuCopy8(NF::PlayerData_GetCurrent(), playerDataCopy, 0x228c);
-            NF::_ZN10PlayerData5resetEv(NF::PlayerData_GetCurrent());
+            NF::MI_CpuCopy8(PlayerData_GetCurrent(), playerDataCopy, 0x228c);
+            NF::_ZN10PlayerData5resetEv(PlayerData_GetCurrent());
             ((SaveData *)(NF::gSaveData))->resetPlayer(PlayerData_GetCurrentIndex());
             actStep = 5;
         }
@@ -2862,7 +2821,7 @@ void SaveManager::execAct1F() {
         if (Wifi_EndSession()) {
             NetOverlay_Restore();
         }
-        NF::MI_CpuCopy8(playerDataCopy, NF::PlayerData_GetCurrent(), 0x228c);
+        NF::MI_CpuCopy8(playerDataCopy, PlayerData_GetCurrent(), 0x228c);
         ((HudWallet *)Hud_GetWallet())->unfreezeValue();
         actStep = 0x16;
         break;
@@ -2970,8 +2929,8 @@ void SaveManagerTalk::onChoice(u32) {
 }
 
 extern "C" void Save_StoreCurrentPlayerToResident(void) {
-    void *o = NF::PlayerData_GetCurrent();
-    NF::MI_CpuCopy8(o, (void *)NF::PlayerData_Get(sSessionResidentIndex), 0x228c);
+    void *o = PlayerData_GetCurrent();
+    NF::MI_CpuCopy8(o, (void *)PlayerData_Get(sSessionResidentIndex), 0x228c);
 }
 
 void SaveManager::backupVillagerTransfer() {
@@ -3723,7 +3682,7 @@ extern "C" BOOL Save_WritePlayerFriendList() {
     s32 t = PlayerData_GetCurrentIndex();
     u8 *p;
     u8 *q;
-    p = ND::_ZN10PlayerData13getFriendListEv((void *)ND::PlayerData_GetCurrent());
+    p = ND::_ZN10PlayerData13getFriendListEv((void *)PlayerData_GetCurrent());
     if (t >= 4) t = sSessionResidentIndex;
     q = ND::_ZN10PlayerData13getFriendListEv(PlayerData_GetResident(base + 0xc, t));
     FriendList_SetChecksum(p, ND::Save_CalcChecksum(p, 0x384, FriendList_GetChecksum(p)));
@@ -3760,12 +3719,12 @@ extern "C" void GameStart_SetupSave() {
             g->localSlot = 0;
             PlayerSession_SetDataIndex(g->localSlot, 0);
         } else {
-            void *p = ND::gSavePlayers;
+            u8 *p = ND::gSavePlayers;
             s32 t = PlayerDataArray_FindUnused(p);
             CommManager *g = ND::gCommManager;
             g->localSlot = 0;
             PlayerSession_SetDataIndex(g->localSlot, t);
-            ND::PlayerDataArray_CreateResident(p, data_020e252c, 0, t);
+            PlayerDataArray_CreateResident(p, data_020e252c, 0, t);
         }
     }
 }
@@ -3792,12 +3751,12 @@ extern "C" u8 *SaveManager_GetLetterStorage() {
     return gSaveManager->letterStorage;
 }
 
-extern "C" void *SaveManager_GetTownCompressBuf() {
+extern "C" TownCompressBuffer *SaveManager_GetTownCompressBuf() {
     if (gSaveManager == NULL) return NULL;
     return gSaveManager->townCompressBuf;
 }
 
-extern "C" void *SaveManager_GetTownCompressThread() {
+extern "C" TownCompressThread *SaveManager_GetTownCompressThread() {
     if (gSaveManager == NULL) return NULL;
     return gSaveManager->townCompressThread;
 }
@@ -3892,7 +3851,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
     CommManager *g;
     s32 s;
     s32 t;
-    s32 r5;
+    PlayerData *r5;
     u8 *r4;
     struct { LastPlayDateRaw packed; u32 d[2]; } l;
     Comm_ResetNetSession();
@@ -3913,8 +3872,8 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
         if (i != s) PlayerSession_ClearDataIndex(i);
     }
     for (i = 2; i >= 0; i--) {
-        s32 p = ND::PlayerData_Get(i + 4);
-        if (p) ((PlayerData *)(p))->reset();
+        PlayerData *p = PlayerData_Get(i + 4);
+        if (p) p->reset();
     }
     if (c == 0) {
         ND::Clock_Update(0);
@@ -3934,7 +3893,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
     if (c == 0) {
         t = PlayerSession_GetDataIndex(0);
         if (t < 7) {
-            r5 = ND::PlayerData_Get(t);
+            r5 = PlayerData_Get(t);
             r4 = PlayerSession_GetSessionFlags();
             if (*r4 & 6) {
                 l.d[0] = 0;
@@ -4033,7 +3992,7 @@ extern "C" void LostChild_ResetAndPairAll(SaveManager *self) {
 extern "C" void LostChild_DebugPrint(SaveManager *p, void *q) {}
 
 extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
-    void *r7 = NC::PlayerData_GetBySessionSlot(idx);
+    void *r7 = PlayerData_GetBySessionSlot(idx);
     if (r7 == 0) return;
     u32 sa[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sa);
@@ -4054,7 +4013,7 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     for (; i < 4; i++) {
         if (i == idx) continue;
         if (!o->isSlotActive(i)) continue;
-        other = NC::PlayerData_GetBySessionSlot(i);
+        other = PlayerData_GetBySessionSlot(i);
         if (!other) continue;
         NC::TownId_GetNameString(PlayerId_GetTownId(((PlayerData *)(other))->getPlayerId()), sb);
         other2 = ((PlayerData *)(other))->getLostChildRecord();
@@ -4088,7 +4047,7 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     LostChild_DebugPrint(self, other2);
     u32 h7 = NC::_ZN11SaveManager15getTransferDestEj(self, idx);
     u32 h5 = NC::_ZN11SaveManager15getTransferDestEj(self, found);
-    void *c4 = NC::PlayerData_GetBySessionSlot((s32)h7);
+    void *c4 = PlayerData_GetBySessionSlot((s32)h7);
     void *m7 = TownExchange_GetForAid(h7);
     u32 sc[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sc);
@@ -4096,7 +4055,7 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
         NC::TownId_GetNameString(PlayerId_GetTownId(((PlayerData *)(c4))->getPlayerId()), sc);
     }
     NC::MI_CpuCopy8(r6, ((TownExchangeRecord *)(m7))->getLostChildRecord(), 0xc);
-    c4 = NC::PlayerData_GetBySessionSlot((s32)h5);
+    c4 = PlayerData_GetBySessionSlot((s32)h5);
     void *m5 = TownExchange_GetForAid(h5);
     u32 sd[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sd);
@@ -4127,7 +4086,7 @@ extern "C" BOOL Wifi_IsInFriendList(SaveManager *self, void *a, void *b) {
 
 extern "C" void LostChild_ApplyReceived(SaveManager *self) {
     void *p5 = TownExchange_GetForAid(4);
-    void *r4 = NC::PlayerData_GetCurrent();
+    void *r4 = PlayerData_GetCurrent();
     u32 s1[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(s1);
     NC::TownId_GetNameString(PlayerId_GetTownId(((PlayerData *)(r4))->getPlayerId()), s1);
@@ -4612,22 +4571,22 @@ extern "C" void SaveManager_StartGatekeeperTalk(SaveManager *a, u32 b) {
     if (b == 0) {
         a->startTalk((const char *)((u8 *)"sp_npc_gatekeeper"), 0x69);
     }
-    ((PlayerData *)(NB::PlayerData_GetCurrent()))->clearFlag(2);
+    PlayerData_GetCurrent()->clearFlag(2);
     ((HudCountdown *)(Hud_GetCountdown()))->start(0, 1);
 }
 
 extern "C" void SaveManager_StartSequence2Talk(SaveManager *a) {
     a->startTalk((const char *)((u8 *)"sp_etc_sequence2"), 7);
-    ((PlayerData *)(NB::PlayerData_GetCurrent()))->clearFlag(2);
+    PlayerData_GetCurrent()->clearFlag(2);
     if (SaveManager_IsEndSessionSave() != 0) {
         ((HudCountdown *)(Hud_GetCountdown()))->start(0, 1);
-        ((PlayerData *)(NB::PlayerData_GetCurrent()))->setFlag(2);
+        PlayerData_GetCurrent()->setFlag(2);
     }
 }
 
 extern "C" void Wifi_StoreFriendList(void) {
     s32 r6 = NB::_ZN11CommManager17getWifiFriendListEv(NB::gCommManager);
-    u8 *r5 = NB::FriendList_GetEntries(NB::_ZN10PlayerData13getFriendListEv((void *)NB::PlayerData_GetCurrent()));
+    u8 *r5 = NB::FriendList_GetEntries(PlayerData_GetCurrent()->getFriendList());
     s32 i;
     for (i = 0; i < 0x20; i++) {
         NB::MI_CpuCopy8((u8 *)r6 + i * 12, NB::DwcFriendData_GetBytes(NB::FriendEntry_GetFriendData(r5)), 12);
@@ -4684,11 +4643,11 @@ u32 TownCompressBuffer::getSize() {
 extern "C" void TownCompressThread_Main(s32 a) {
     BOOL r = a != 0 ? TRUE : FALSE;
     if (r) {
-        ((TownCompressBuffer *)SaveManager_GetTownCompressBuf())->compress();
+        SaveManager_GetTownCompressBuf()->compress();
     } else {
-        ((TownCompressBuffer *)SaveManager_GetTownCompressBuf())->decompress();
+        SaveManager_GetTownCompressBuf()->decompress();
     }
-    ((TownCompressThread *)SaveManager_GetTownCompressThread())->done = 1;
+    SaveManager_GetTownCompressThread()->done = 1;
     OS_ExitThread();
 }
 
@@ -4722,9 +4681,9 @@ extern "C" s32 Wifi_EndSession(void) {
     }
     s32 r5 = Comm_End();
     if (r4) {
-        s32 h = NB::PlayerData_GetCurrent();
-        if (h != 0) {
-            s32 q = ((PlayerData *)(h))->getIndex();
+        PlayerData *h = PlayerData_GetCurrent();
+        if (h != NULL) {
+            s32 q = h->getIndex();
             if (q >= 0 && q < 4) {
                 GameStats_ApplyDownload();
                 AxMail_ApplyMail();

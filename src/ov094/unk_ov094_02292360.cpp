@@ -262,7 +262,7 @@ void InventoryBg_SetupTextWindows(void *o)
     InventoryBg *p = (InventoryBg *)o;
     u8 buf[0x1c];
     u8 buf2[0x1c];
-    s32 r = PlayerData_getPlayerId(PlayerData_GetCurrent());
+    PlayerId *r = PlayerData_GetCurrent()->getPlayerId();
     new (buf) MsgString9C();
     TownId_GetNameString(PlayerId_GetTownId(r), buf);
     String_SetSlot(0, buf);
@@ -270,7 +270,7 @@ void InventoryBg_SetupTextWindows(void *o)
     String_Load2dMenu(HOST_AT(p, 0xe0, textWindows[0], 0), 0x66);
     ((LabelString *)(HOST_AT(p, 0xe0, textWindows[0], 0)))->redrawAligned(1, 0);
     new (buf2) MsgString9B();
-    ((PlayerId *)(r))->getNameString((MsgString *)(buf2));
+    r->getNameString((MsgString *)(buf2));
     ((LabelString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->createLabel(p->bgId, 0x25, 8, 0xf, 0xc, 0);
     ((MsgString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->copy((MsgString *)(buf2));
     ((LabelString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->redrawAligned(1, 0);
@@ -357,9 +357,9 @@ void InventoryBg_PaintHighlight1(void *o)
 
 void InventoryBg_LoadPictureForHeldItem(void *o)
 {
-    s32 a = PlayerData_GetCurrent();
-    s32 b = ((PlayerId *)(((PlayerData *)(a))->getPlayerId()))->getGender();
-    u16 *pv = ((PlayerData *)(a))->getHeldItem();
+    PlayerData *a = PlayerData_GetCurrent();
+    s32 b = ((PlayerId *)(a->getPlayerId()))->getGender();
+    u16 *pv = a->getHeldItem();
     s32 idx = 0;
     BOOL fl = FALSE;
     u32 v = *pv;
@@ -522,7 +522,7 @@ void InventoryBg_SetBellsPanelMode(void *o, u32 n)
 
 s32 InventoryBg_GetTotalBells()
 {
-    return ((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getTotalBells(0);
+    return ((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getTotalBells(0);
 }
 
 void InventoryBg_ResetBells(void *o)

@@ -420,7 +420,7 @@ void SpNpcTortimerFishingTourneyTalk::start(TalkStartMsg *out) {
         u16 h[5];
         SpNpcTortimerFishingTourneyDateTime o;
     } l;
-    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+    PlayerData_GetCurrent()->getErrands();
     out->msgKey = "sp_npc_turtle1";
     l.o.w[0] = 0;
     l.o.w[1] = 0;
@@ -508,7 +508,7 @@ s32 SpNpcTortimerFishingTourneyTalk::getRecordHolder() {
             ((ActorTalkRequest *)(this))->setFixedPointSlot(((ContestRecord *)(g))->getSize(), 0, 1);
             if (((PlayerId *)(r6))->isValid() != 0) {
                 ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(((ContestRecord *)(g))->getHolderPlayer()), 1);
-                p4 = (u16 *)((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+                p4 = (u16 *)PlayerData_GetCurrent()->getPlayerId();
                 p5 = (u16 *)((ContestRecord *)(g))->getHolderPlayer();
                 if (p5[0] == p4[0] && memcmp(p5 + 1, p4 + 1, 8) == 0 && ((PlayerId *)(p5))->equals((PlayerId *)(p4)) != 0) {
                     goto ret0;
@@ -559,7 +559,7 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd(u32) {
             switch (msgIndex) {
             case 0xd:
                 ((ActorTalkRequest *)(this))->requestKeepItem();
-                ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->setEnteredFishingTourney(1);
+                ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->setEnteredFishingTourney(1);
                 if (((ownerNpc->entrySize * 10) >> 12) > ((((ContestRecord *)(g))->getSize() * 10) >> 12)) {
                     msg = 0x10;
                 } else if (getRecordHolder() == 0) {
@@ -585,7 +585,7 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd(u32) {
                 }
                 ContestRecord_SetItem(g, &entryItem);
                 ((ContestRecord *)(g))->setSize(ownerNpc->entrySize);
-                ((ContestRecord *)(g))->setHolderPlayer((Unk_02085810_Base *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()));
+                ((ContestRecord *)(g))->setHolderPlayer((Unk_02085810_Base *)(PlayerData_GetCurrent()->getPlayerId()));
                 ((ContestRecord *)(g))->setKind(1);
                 ((SaveData *)(gSaveData))->setFlag(0xf);
                 ((ItemPickSpec *)(void *)(&o))->set(0, 0);

@@ -23,7 +23,7 @@
 #include "npc/NpcTalkCtrl.h"
 
 class ActorTalkRequest;
-
+class MsgString;
 // Base of all NPC actors (villagers and special NPCs; 0x640 bytes). Methods and vtable in src/main/unk_020119cc.cpp
 // (0x0201b084..0x0201be04, D0 0x020119cc / D1 0x02011a98, inline destructor defined there and in 0202e2d4 / 0201c050,
 // whose derived destructors inline it); the constructor is inline.
@@ -45,7 +45,7 @@ public:
     /* 0x68 */ virtual BOOL updateAct();
     /* 0x6c */ virtual u8 *getTexturePath() = 0;
     /* 0x70 */ virtual u8 *getModelPath() = 0;
-    /* 0x74 */ virtual void getName(u32 a) = 0;
+    /* 0x74 */ virtual void getName(MsgString *out) = 0;
     /* 0x78 */ virtual u32 getGender() = 0;
     /* 0x7c */ virtual BOOL canPlayTalkMelody() = 0;
     /* 0x80 */ virtual void onTalkMelodyPlayed() = 0;
@@ -66,7 +66,7 @@ public:
     void setNetUserBytes(void *dst, s32 n);
     BOOL getNetUserBytes(u8 *src, u32 n);
     BOOL netIsTalkLocked();
-    s32 netGetSlots(s32 a, s32 b);
+    s32 netGetSlots(s32 *a, s32 *b);
     void netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...);
     void netSetSlots(s32 a, s32 b, s32 c);
     BOOL isNetOwner();
@@ -75,7 +75,7 @@ public:
     s32 getSpeakerGender();
     ActorTalkRequest *getTalkRequest();
     void setTalkRequest(ActorTalkRequest *p);
-    u32 getPlayerActor(u32 id);
+    Character *getPlayerActor(u32 id);
     s16 getRelativeAngleTo(NpcActor *other);
     s32 getAngleToPlayer(u32 id);
     s32 getAngleTo(NpcActor *other);

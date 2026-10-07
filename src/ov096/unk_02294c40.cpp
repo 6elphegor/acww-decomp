@@ -2708,11 +2708,11 @@ BOOL PocketMenu::isHoldingMoneyBag(s32 flag) {
 }
 
 s32 PocketMenu::getWalletBells() {
-    return ((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getTotalBells(0);
+    return ((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getTotalBells(0);
 }
 
 void PocketMenu::setWalletBells(s32 v) {
-    PlayerInventory_SetWallet(((PlayerData *)(PlayerData_GetCurrent()))->getInventory(), v, 0);
+    PlayerInventory_SetWallet(PlayerData_GetCurrent()->getInventory(), v, 0);
     InventoryBg_StartBellRoll(unk_de0 + 0, 0);
 }
 

@@ -8,6 +8,7 @@
 #include "player/PlayerInventory.h"
 #include "types.h"
 class GuestPlayerArray;
+class PlayerData;
 #endif
 
 #ifdef __cplusplus
@@ -59,10 +60,10 @@ BOOL PlayerInventory_CanAddBells(u8 *p, s32 v, s32 a, s32 b);
 void PlayerInventory_AddBells(u8 *p, s32 v, s32 mode);
 #endif
 #ifndef PROTO_LOCAL_PlayerData_GetFutureLetter
-u8 *PlayerData_GetFutureLetter(u8 *p);
+u8 *PlayerData_GetFutureLetter(PlayerData *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerData_GetMotherLetterState
-u8 *PlayerData_GetMotherLetterState(u8 *p);
+u8 *PlayerData_GetMotherLetterState(PlayerData *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerData_GetLetterStorage
 u8 *PlayerData_GetLetterStorage(void *p);
@@ -104,7 +105,7 @@ s32 PlayerDataArray_FindUnused(void *p);
 s32 PlayerDataArray_FindById(u8 *base, u16 *p);
 #endif
 #ifndef PROTO_LOCAL_PlayerDataArray_CreateResident
-u8 *PlayerDataArray_CreateResident(u8 *base, s32 a1, s32 a2, u32 idx);
+u8 *PlayerDataArray_CreateResident(u8 *base, void *name, s32 a2, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_GuestPlayers_Get
 u8 *GuestPlayers_Get();
@@ -116,16 +117,16 @@ s32 PlayerData_IsGuestIndex(s32 idx);
 s32 PlayerData_GetGuestSlot(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerData_GetBySessionSlot
-u32 PlayerData_GetBySessionSlot(u32 a);
+PlayerData *PlayerData_GetBySessionSlot(u32 a);
 #endif
 #ifndef PROTO_LOCAL_PlayerData_GetCurrent
-u32 PlayerData_GetCurrent();
+PlayerData *PlayerData_GetCurrent();
 #endif
 #ifndef PROTO_LOCAL_PlayerData_GetCurrentIndex
 u32 PlayerData_GetCurrentIndex();
 #endif
 #ifndef PROTO_LOCAL_PlayerData_Get
-u32 PlayerData_Get(s32 idx);
+PlayerData *PlayerData_Get(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_PlayerData_IsUsedByIndex
 s32 PlayerData_IsUsedByIndex(s32 idx);

@@ -58,7 +58,6 @@ class SickVillager;
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
@@ -66,7 +65,6 @@ class SickVillager;
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerMood_playMood3Effect _ZN12VillagerMood15playMood3EffectEP12VillagerTalk
 #define VillagerMood_updateSoundPos _ZN12VillagerMood14updateSoundPosEP12VillagerTalk
@@ -161,7 +159,6 @@ void SickVillagerRecord_setTodaysVisitor(void *, void *);
 s32 SickVillagerRecord_hasTodaysVisitor(void *);
 void VillagerTalk_begin(void *, void *, u32);
 void ActorTalkRequest_setTalkPlayer(void *, s32);
-s32 NpcActor_getPlayerActor(void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void *Villager_FindOrCreateMemory(void *, void *);
 void VillagerMemory_RecordTalk(void *, s32, s32, s32);
@@ -178,7 +175,6 @@ void NpcActor_setTalkRequest(void *, void *);
 s32 NpcMoveAnimSet_setWalkAnim(void *, s32);
 s32 NpcMoveAnimSet_setStandAnim(void *, s32);
 void NpcMoveCtrl_setSpeedPreset(void *, s32, s32, s32, s32);
-void NpcLookAt_setTarget(void *, s32, s32, s32, void *, s32, s32, s32);
 s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 }
@@ -481,7 +477,7 @@ extern "C" BOOL SickVillager_HasCurrentVisitor(void *o) {
 
 extern "C" void SickVillager_SetCurrentVisitor() {
     void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
-    SickVillagerRecord_setTodaysVisitor(p, ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId());
+    SickVillagerRecord_setTodaysVisitor(p, PlayerData_GetCurrent()->getPlayerId());
 }
 
 void SickVillagerTalk::attachOwner(SickVillager *owner) {

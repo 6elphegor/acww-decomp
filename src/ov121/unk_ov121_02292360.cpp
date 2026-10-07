@@ -1253,7 +1253,7 @@ BOOL DesignTab::dropHeldOnTarget() {
 
 void DesignTab::swapPatternSlots(u32 a, u32 b) {
     if (a != b) {
-        ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(PlayerData_GetCurrent()))->getPatterns()))->getPatternOrder()))->swap(a, b);
+        ((PatternOrder *)(((PlayerPatterns *)(PlayerData_GetCurrent()->getPatterns()))->getPatternOrder()))->swap(a, b);
         u8 t = slotIcons[a];
         slotIcons[a] = slotIcons[b];
         slotIcons[b] = t;
@@ -1261,7 +1261,7 @@ void DesignTab::swapPatternSlots(u32 a, u32 b) {
 }
 
 u32 DesignTab::getSlotPattern(u32 i) {
-    return ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(PlayerData_GetCurrent()))->getPatterns()))->getPatternOrder()))->getSlot(i);
+    return ((PatternOrder *)(((PlayerPatterns *)(PlayerData_GetCurrent()->getPatterns()))->getPatternOrder()))->getSlot(i);
 }
 
 void DesignTab::setPopupChoices(u32 i) {
@@ -1458,7 +1458,7 @@ void DesignTab::placeDesignInRoom() {
 }
 
 void DesignTab::placeDesignItem() {
-    s32 t = ((PlayerData *)(PlayerData_GetCurrent()))->getIndex();
+    s32 t = PlayerData_GetCurrent()->getIndex();
     u32 u = getSlotPattern(heldSlot);
     u32 x = sDesignItemBase[t];
     x += u;
@@ -1542,7 +1542,7 @@ void DesignTab::refreshNameLabel() {
     }
     ((LabelBalloon *)(&nameBalloon))->setPos(getSlotX(balloonSlot) - 0x78, x);
     new (a) EncodedString16Buf();
-    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(((PlayerData *)(PlayerData_GetCurrent()))->getPatterns()))->getPatternByOrder(balloonSlot)))->getInfo()))->getTitleEncoded((EncodedString16Buf *)(a));
+    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(PlayerData_GetCurrent()->getPatterns()))->getPatternByOrder(balloonSlot)))->getInfo()))->getTitleEncoded((EncodedString16Buf *)(a));
     new (b) LabelBalloonText();
     StrBuf_GameToAscii(b, a);
     ((LabelBalloon *)(&nameBalloon))->setText((StrBuf *)(b));

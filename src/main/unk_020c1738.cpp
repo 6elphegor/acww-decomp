@@ -37,7 +37,6 @@ extern "C" {
 s32 Scene_GetCurrent(void);
 void Npc_RotateOffsetXZ(void *out, void *pos, void *a, s32 b);
 s32 Math_AngleXZ(void *pos, void *v);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Math_CountDownU8(void *p);
 u32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -189,7 +188,7 @@ BOOL SpNpcKaitlin::onCreate() {
     changeAct(0);
     if (Scene_GetCurrent() == 0x2f) {
         collisionEnabled = 0;
-        _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+        lookAt.setTarget(0, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         position.x = 0x10000;
         position.z = 0x16800;
     }
@@ -322,7 +321,7 @@ void SpNpcKaitlin::onJoinTalk() {
 }
 
 void SpNpcKaitlin::onLeaveTalk() {
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     changeAct(0);
 }
 
@@ -431,7 +430,7 @@ void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
 }
 
 void SpNpcKaitlinTalk::onMessageStart(u32) {
-    void *r4 = ((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord();
+    void *r4 = PlayerData_GetCurrent()->getLostChildRecord();
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 0);
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 1);
 }
@@ -445,7 +444,7 @@ BOOL SpNpcKaitlin::setupAct07() {
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    lookAt.setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     return TRUE;
 }
 

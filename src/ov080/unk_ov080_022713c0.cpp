@@ -167,7 +167,7 @@ BOOL SpNpcTortimer::onCreate() {
     ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
-    if (((PlayerData *)(PlayerData_GetCurrent()))->testFlag(1) == 0) {
+    if (PlayerData_GetCurrent()->testFlag(1) == 0) {
         TalkRequestFlags_SetEventWarpBlock();
     }
     return TRUE;

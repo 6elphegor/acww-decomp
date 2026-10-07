@@ -61,6 +61,7 @@
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov002/unk_ov002_022025cc.h"
 #include "proto/ov002/unk_ov002_02202fac.h"
+#include "player/PlayerData.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -753,7 +754,7 @@ void PopupChoice_CopyPlayerIdName(s32 a, s32 b) {
 }
 
 void PopupChoice_CopyResidentName(s32 x, s32 y) {
-    PopupChoice_CopyPlayerIdName(x, PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, y)));
+    PopupChoice_CopyPlayerIdName(x, ((PlayerData *)(PlayerData_GetResident(gSavePlayers, y)))->getPlayerId());
 }
 
 void PopupChoice_CopyVillagerIdName(s32 a, s32 b) {
@@ -797,7 +798,7 @@ void PopupChoiceMenuBody::buildAddresseeList()
     for (i = 0; i < 0x19; i++) {
         addresseeIds[i] = 0;
     }
-    g = PlayerData_getPlayerId(PlayerData_GetCurrent());
+    g = PlayerData_GetCurrent()->getPlayerId();
     t = PlayerDataArray_FindById(gSavePlayers, g);
     n = 0;
     k = 1;

@@ -88,11 +88,9 @@ struct SpNpcBookerActEntry {
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
-#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
@@ -133,10 +131,8 @@ extern SpNpcBookerActEntry sSpNpcBookerActTable[];
 void func_0201b08c(void *self, u32 a, u32 b);
 s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
 BOOL NpcActor_isNetOwner(void *self);
-s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 BOOL NpcActor_netIsTalkLocked(void *self);
 void NpcActor_setTalkRequest(void *self, void *p);
-u32 NpcActor_getPlayerActor(void *self, u32 id);
 s32 NpcActor_getAngleTo(void *self, void *p);
 void NpcActor_setCollisionRadius(void *self, s32 v);
 void NpcMoveAnimSet_setWalkAnim(void *self, s32 a);
@@ -369,7 +365,7 @@ BOOL SpNpcBooker::mainAct04() {
     if (((NpcActor *)(this))->isNetOwner()) {
         a = 4;
         b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
             s32 av = a;
             s32 g = gCommManager->myAid;
             if (av == g && av == b) {
@@ -393,7 +389,7 @@ BOOL SpNpcBooker::mainAct05() {
     if (((NpcActor *)(this))->isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == 4 && NetArea_IsLocalOwner()) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(3);
         }
@@ -463,7 +459,7 @@ void SpNpcBookerTalk::onChoice(u32) {
             CommManager *s = gCommManager;
             if (((CommManager *)(s))->isSlotActive(s->myAid) != 0) {
                 if (((CommManager *)(s))->isOnline() != 0) {
-                    s32 q = PlayerData_GetBySessionSlot(JoinHistory_GetLatest());
+                    PlayerData *q = PlayerData_GetBySessionSlot(JoinHistory_GetLatest());
                     if (q != 0) {
                         ActorTalkRequest_setPlayerNameSlot(this, (s32)PlayerData_getPlayerId(q), 1);
                     }
@@ -705,7 +701,7 @@ void SpNpcBooker::onInteractionEvent(u32 cmd, u8 arg) {
             if (((NpcActor *)(this))->isNetOwner() != 0) {
                 a = 4;
                 b = 4;
-                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
+                if (((NpcActor *)(this))->netGetSlots(&a, &b) != 0) {
                     if ((arg != 4 && arg == (u32)b) || arg == 4) {
                         ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         changeAct(0);

@@ -4592,8 +4592,8 @@ void PlayerActor::endInit(u32 a) {
         }
     }
     if (((PlayerActor *)(this))->testActionFlag(0)) {
-        s32 t = PlayerData_GetBySessionSlot(((PlayerActor *)this)->sessionSlot);
-        arr.item[0] = *((PlayerData *)((void *)t))->getHeldItem();
+        PlayerData *t = PlayerData_GetBySessionSlot(((PlayerActor *)this)->sessionSlot);
+        arr.item[0] = *t->getHeldItem();
         HeldItemModel_SetItem(&((PlayerActor *)this)->heldItemModel, &arr.item[0], t);
         BOOL ok;
         if (Item_IsFurniture(&arr.item[0])) {
@@ -5116,7 +5116,7 @@ void Unk_02007694::walkCheckEnd(s16 *p) {
     BOOL c = gFieldSceneKind == 0;
     if (c && ((Unk_02007694 *)this)->tripCooldown == 0 && ((Unk_02007694 *)this)->speed == 0x6e2) {
         u16 t;
-        if (((PlayerData *)(PlayerData_GetCurrent()))->getFortune() == 2 || (PlayerActor_GetHat(&t, ((Unk_02007694 *)this)), t == 0x13c3)) {
+        if (PlayerData_GetCurrent()->getFortune() == 2 || (PlayerActor_GetHat(&t, ((Unk_02007694 *)this)), t == 0x13c3)) {
             if (Random_GlobalBelow(0x17a) == 0) {
                 PlayerActor_RequestTrip(((Unk_02007694 *)this), 6, -1);
                 return;
@@ -7008,7 +7008,7 @@ s32 PlayerActor::netChangeHeldItem(u32 a) {
 void PlayerActor::endChangeHeldItem() {
     using namespace nG;
     if (((CommManager *)(gCommManager))->isLocalSlot(((PlayerActor *)this)->sessionSlot)) {
-        u16 *p = ((PlayerData *)(PlayerData_GetBySessionSlot(((PlayerActor *)this)->sessionSlot)))->getHeldItem();
+        u16 *p = PlayerData_GetBySessionSlot(((PlayerActor *)this)->sessionSlot)->getHeldItem();
         if (p) (((PlayerActor *)this))->netSendClothesChange(3, *p);
     }
 }

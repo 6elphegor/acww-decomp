@@ -33,7 +33,6 @@
 #define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_ov122_0229a180  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
@@ -50,6 +49,7 @@
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov095/unk_02292360.h"
 #include "proto/ov122/unk_ov122_02296840.h"
+#include "proto/main/unk_02097444.h"
 
 class EncodedString;
 
@@ -80,7 +80,6 @@ extern "C" {
 extern u16 gPad[];
 void StrBuf_GetBytes(void *p, void *q, u32 n);
 void EncodedString_SetRaw(void *p, const void *src, s32 len);
-u32 PlayerData_GetCurrent();
 void LetterDefaults_Store(void *a, void *b);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_OpenAddresseePage(void *p, u32 a, u32 b);
@@ -2492,7 +2491,7 @@ void LetterWriteMenu::closeAddresseeList() {
 }
 
 void LetterWriteMenu::storeLetterDefaults() {
-    LetterDefaults_Store(((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getUnk988(), letter);
+    LetterDefaults_Store(((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getUnk988(), letter);
 }
 
 void LetterWriteMenu::censorField(u8 *src, u32 n) {

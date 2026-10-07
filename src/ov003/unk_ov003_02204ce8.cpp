@@ -4554,7 +4554,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
     case 3:
         if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
             TownSessionState_ClearFlag(TownSessionState_Get(), 5);
-            PlayerData_clearFlag(PlayerData_GetCurrent(), 1);
+            PlayerData_GetCurrent()->clearFlag(1);
             TownBbs_UpdateDaily();
         }
         (o)->requestAct76(3, 0, 0, 6, -1);
@@ -5834,7 +5834,7 @@ extern "C" void PlayerActor_NetAxeBreak(Obj *o, s16 a) {
 namespace ns_0220e970 {
 extern "C" void PlayerActor_EndAxeBreak(Obj *o) {
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-        u16 *r = PlayerData_getHeldItem(PlayerData_GetBySessionSlot(o->sessionSlot));
+        u16 *r = PlayerData_GetBySessionSlot(o->sessionSlot)->getHeldItem();
         if (r) {
             (o)->netSendClothesChange(3, *r);
         }
@@ -11701,13 +11701,13 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
         if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->isFinished()) {
             (o)->playSe(0x817);
             (o)->startAnimOnce(0x74, 0, 0);
-            s32 r5 = PlayerData_GetCurrent();
+            PlayerData *r5 = PlayerData_GetCurrent();
             if (r5) {
                 PlayerData_SetStungFace(r5, 1);
-                u8 *q = PlayerData_getFaceType(r5) + 0x10;
+                u8 *q = r5->getFaceType() + 0x10;
                 ((PlayerFaceTexRef *)((u8 *)&o->faceTex))->load((u32)(q));
-                if (((PlayerData *)(r5))->testFlag(0x17)) {
-                    ((PlayerData *)(r5))->setFlag(0x19);
+                if (r5->testFlag(0x17)) {
+                    r5->setFlag(0x19);
                 }
             }
         }
@@ -11797,7 +11797,7 @@ extern "C" s32 PlayerActor_NetAct80(Obj *o, s32 a) {
 namespace ns_02206574 {
 extern "C" void PlayerActor_EndAct80(Obj *o) {
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-        u16 *r = ((PlayerData *)(PlayerData_GetBySessionSlot(o->sessionSlot)))->getHeldItem();
+        u16 *r = PlayerData_GetBySessionSlot(o->sessionSlot)->getHeldItem();
         if (r) {
             (o)->netSendClothesChange(3, *r);
         }
@@ -11810,9 +11810,9 @@ extern "C" void PlayerActor_Act80Update(Obj *o) {
     (o)->advanceAnim();
     if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(0xd)) {
         u16 t[2];
-        s32 r = PlayerData_GetBySessionSlot(o->sessionSlot);
+        PlayerData *r = PlayerData_GetBySessionSlot(o->sessionSlot);
         t[0] = 0xfff1;
-        ((PlayerData *)(r))->setHeldItem(&t[0]);
+        r->setHeldItem(&t[0]);
         t[1] = 0xfff1;
         HeldItemModel_SetItem(&o->heldItemModel, &t[1], 0);
         (o)->playSe(0x850);
@@ -11892,7 +11892,7 @@ extern "C" s32 PlayerActor_NetFirework(Obj *o, s32 a) {
 namespace ns_02205c28 {
 extern "C" void PlayerActor_EndFirework(Obj *o) {
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-        u16 *r = ((PlayerData *)(PlayerData_GetBySessionSlot(o->sessionSlot)))->getHeldItem();
+        u16 *r = PlayerData_GetBySessionSlot(o->sessionSlot)->getHeldItem();
         if (r) {
             (o)->netSendClothesChange(3, *r);
         }
@@ -11967,9 +11967,9 @@ extern "C" void PlayerActor_FireworkCheckEnd(Obj *o) {
             }
             if (*r2 == 0) {
                 u16 t[2];
-                s32 r = PlayerData_GetBySessionSlot(o->sessionSlot);
+                PlayerData *r = PlayerData_GetBySessionSlot(o->sessionSlot);
                 t[0] = 0xfff1;
-                ((PlayerData *)(r))->setHeldItem(&t[0]);
+                r->setHeldItem(&t[0]);
                 t[1] = 0xfff1;
                 HeldItemModel_SetItem(&o->heldItemModel, &t[1], 0);
                 o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
@@ -12016,7 +12016,7 @@ extern "C" s32 PlayerActor_NetAct82(Obj *o, s32 a) {
 namespace ns_02205c28 {
 extern "C" void PlayerActor_EndAct82(Obj *o) {
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-        u16 *r = ((PlayerData *)(PlayerData_GetBySessionSlot(o->sessionSlot)))->getHeldItem();
+        u16 *r = PlayerData_GetBySessionSlot(o->sessionSlot)->getHeldItem();
         if (r) {
             (o)->netSendClothesChange(3, *r);
         }
@@ -12043,9 +12043,9 @@ extern "C" void PlayerActor_Act82Update(Obj *o) {
     }
     if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(0x18)) {
         u16 t[2];
-        s32 r = PlayerData_GetBySessionSlot(o->sessionSlot);
+        PlayerData *r = PlayerData_GetBySessionSlot(o->sessionSlot);
         t[0] = 0xfff1;
-        ((PlayerData *)(r))->setHeldItem(&t[0]);
+        r->setHeldItem(&t[0]);
         t[1] = 0xfff1;
         HeldItemModel_SetItem(&o->heldItemModel, &t[1], 0);
     }

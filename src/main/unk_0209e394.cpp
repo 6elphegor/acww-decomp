@@ -202,7 +202,6 @@ extern "C" {
 }
 
 extern "C" {
-s32 _ZN10PlayerData14getBankAccountEv(s32 pd);
 }
 
 extern "C" {
@@ -215,7 +214,6 @@ extern "C" {
 }
 
 extern "C" {
-s32 _ZN10PlayerData12getInventoryEv(s32 v);
 }
 
 extern "C" {
@@ -356,13 +354,13 @@ BOOL SaveMenu::onDelete() {
 BOOL SaveMenu::onExecute() {
     s16 *p;
     s32 t;
-    s32 r6;
+    PlayerData *r6;
     s32 r4;
 
     if (*DebugVar_GetPtr(0, 0x4b) != 0) {
-        s32 pd = PlayerData_GetCurrent();
+        PlayerData *pd = PlayerData_GetCurrent();
         if (pd != 0) {
-            r4 = _ZN10PlayerData14getBankAccountEv(pd);
+            r4 = pd->getBankAccount();
             switch (*DebugVar_GetPtr(0, 0x4b)) {
             case 0:
                 break;
@@ -385,9 +383,9 @@ BOOL SaveMenu::onExecute() {
         }
     }
     if (*DebugVar_GetPtr(0, 0x4c) != 0) {
-        s32 pd = PlayerData_GetCurrent();
+        PlayerData *pd = PlayerData_GetCurrent();
         if (pd != 0) {
-            ((PlayerData *)(pd))->getBankAccount();
+            pd->getBankAccount();
             if (*DebugVar_GetPtr(0, 0x4c) != 0) {
                 t = *DebugVar_GetPtr(0, 0x4c);
                 if (t < 1) {
@@ -405,14 +403,14 @@ BOOL SaveMenu::onExecute() {
     }
     if (*DebugVar_GetPtr(0, 0x48) != 0) {
         r6 = PlayerData_GetCurrent();
-        r4 = ((PlayerInventory *)(((PlayerData *)(r6))->getInventory()))->getTotalBells(1);
+        r4 = ((PlayerInventory *)(r6->getInventory()))->getTotalBells(1);
         r4 += *DebugVar_GetPtr(0, 0x48);
         if (r4 < 0) {
             r4 = 0;
         } else if (r4 > 0x1869f) {
             r4 = 0x1869f;
         }
-        PlayerInventory_SetWallet(_ZN10PlayerData12getInventoryEv(r6), r4, 1);
+        PlayerInventory_SetWallet(r6->getInventory(), r4, 1);
         *DebugVar_GetPtr(0, 0x48) = 0;
     }
     if (sSaveMenuStates[saveMenuState].update != 0) {

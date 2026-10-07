@@ -719,7 +719,7 @@ void SpNpcHarrietTalk::onTalkEnd() {
     if (t == 0xe || t == 0x37) {
         if ((t == 0xe && haircutTalkStep == 1) || (t == 0x37 && haircutTalkStep == 2)) {
             PlayerActor_LocalRequestSit();
-            ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->addHaircutCount(1);
+            ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->addHaircutCount(1);
         }
         haircutTalkStep = haircutTalkStep + 1;
     }

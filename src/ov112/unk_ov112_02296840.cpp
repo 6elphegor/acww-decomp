@@ -30,7 +30,6 @@
 #define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_FromEncodedBytesEx  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_data_ov112_02299ad8  // declared below: the shared prototype conflicts with the calls here
@@ -54,6 +53,7 @@
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov095/unk_02292360.h"
 #include "proto/ov112/unk_ov112_02296840.h"
+#include "proto/main/unk_02097444.h"
 
 // The extern "C" helpers reach the scene object as S.
 class BbsWriteMenu;
@@ -232,7 +232,6 @@ extern "C" u32 data_ov112_02299ad8[];
 extern "C" {
 void Math_StepU8(void *p, u32 v, u32 n);
 void String_FromEncodedBytesEx(void *p, void *q, u32 n, u32 a, u32 b);
-PlayerData *PlayerData_GetCurrent();
 s32 Arbeit_OnBbsPosted(void *m);
 void Menu_PlayScrollTickSe(void *p);
 void Keyboard_PlayPasteSe(void *p);

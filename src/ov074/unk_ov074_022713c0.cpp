@@ -92,7 +92,6 @@ struct Unk_ov074_02271e54_V {
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
 #define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
 #define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
@@ -178,7 +177,6 @@ void Npc_RotateOffsetXZ(void *out, void *pos, s32 x, s32 y);
 s32 Npc_IsPosBlocked(void *p);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
-void NpcLookAt_setTarget(void *p, s32 a, s32 b, s32 c, s32 *d, s32 e, s32 f, s32 g);
 }
 
 

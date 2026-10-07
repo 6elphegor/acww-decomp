@@ -508,7 +508,7 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
             void *r5;
             sel = 0x10;
             kind = owner->getFortuneKind();
-            arg = ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+            arg = PlayerData_GetCurrent()->getPlayerId();
             switch (owner->readingMode) {
             case 0:
                 ((PlayerData *)(h))->setFortune(kind);

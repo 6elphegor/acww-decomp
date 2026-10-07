@@ -68,12 +68,10 @@ struct Unk_ov004_0221b6d4_Bits {
 // Real symbol names of the callees outside this unit (all are called as free functions taking the object first).
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
-#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
 #define NpcActor_setNetUserBytes _ZN8NpcActor15setNetUserBytesEPvi
 #define NpcActor_getNetUserBytes _ZN8NpcActor15getNetUserBytesEPhj
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
 #define func_0201b08c _ZN8NpcActor18onInteractionEventEi
@@ -81,7 +79,6 @@ struct Unk_ov004_0221b6d4_Bits {
 #define SpNpcActor_setColliderSize _ZN10SpNpcActor15setColliderSizeEii
 #define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
@@ -107,12 +104,10 @@ extern const u8 sSpNpcSableTalkMsgs[];
 
 s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
 BOOL NpcActor_isNetOwner(void *self);
-s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 BOOL NpcActor_netIsTalkLocked(void *self);
 void NpcActor_setNetUserBytes(void *self, void *p, s32 n);
 BOOL NpcActor_getNetUserBytes(void *self, u8 *p, u32 n);
 void NpcActor_setTalkRequest(void *self, void *p);
-u32 NpcActor_getPlayerActor(void *self, u32 id);
 s32 NpcActor_getAngleTo(void *self, void *p);
 void NpcActor_setCollisionRadius(void *self, s32 v);
 void func_0201b08c(void *self, u32 a, u32 b);
@@ -120,7 +115,6 @@ void Character_setInteractionRange(void *self, s32 v);
 void SpNpcActor_setColliderSize(void *self, s32 a, s32 b);
 void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
 NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
-void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
@@ -347,7 +341,7 @@ BOOL SpNpcSable::mainAct04() {
     if (((NpcActor *)(this))->isNetOwner()) {
         a = 4;
         b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
             s32 av = a;
             s32 g = gCommManager->myAid;
             if (av == g && av == b) {
@@ -387,7 +381,7 @@ BOOL SpNpcSable::mainAct05() {
     if (((NpcActor *)(this))->isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == 4 && NetArea_IsLocalOwner()) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0);
         }
@@ -544,7 +538,7 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
             if (((NpcActor *)(this))->isNetOwner() != 0) {
                 s32 a = 4;
                 s32 b = 4;
-                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
+                if (((NpcActor *)(this))->netGetSlots(&a, &b) != 0) {
                     if (v == 4) {
                         goto chk;
                     }
@@ -567,11 +561,11 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
 }
 
 extern "C" u32 SpNpcSable_GetTalkCount(void *unused) {
-    return ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->getSableTalkCount();
+    return ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->getSableTalkCount();
 }
 
 extern "C" void SpNpcSable_SetTalkCount(void *unused, u32 a) {
-    ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->setSableTalkCount(a);
+    ((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->setSableTalkCount(a);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

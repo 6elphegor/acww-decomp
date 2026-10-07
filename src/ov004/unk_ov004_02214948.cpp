@@ -42,6 +42,7 @@
 #include "proto/main/unk_02098e90.h"
 #include "proto/ov004/unk_ov004_02214948.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "player/PlayerData.h"
 
 extern "C" {
 }
@@ -85,12 +86,10 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
@@ -127,7 +126,6 @@ s32 NpcActor_getAngleTo(void *, void *);
 s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 s32 NpcActionCtrl_requestStand(void *, s32, u32);
 s32 Math_Atan2(s32, s32);
-s32 NpcLookAt_setTarget(void *, s32, s32, void *, void *, s32, s32, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActor_findAvoidPos(void *, void *);
 s32 Vec_NotEqual(void *, void *);
@@ -164,7 +162,6 @@ s32 func_0202d928(void *self);
 void NpcFootstepFx_enableFootsteps(void *p);
 void Vec_Add(VecFx32 *out, void *a, void *b);
 void NpcActor_setTalkRequest(void *self, void *p);
-void *NpcActor_getPlayerActor(void *self, s32 n);
 void ActorTalkRequest_setTalkPlayer(void *p, void *q);
 void Camera_FocusOnPoint(void *p);
 void Camera_SetModeDefault();
@@ -328,7 +325,7 @@ BOOL BirthdayHostVillager::updateAct() {
 void BirthdayHostVillager::recordPlayerTalk() {
     void *o = PlayerData_GetCurrent();
     if (o != NULL && villagerData != NULL) {
-        s32 r = PlayerData_getPlayerId(o);
+        s32 r = ((PlayerData *)(o))->getPlayerId();
         void *p = Villager_FindOrCreateMemory(villagerData, r);
         VillagerMemory_RecordTalk(p, 0, 0, 0);
     }
@@ -392,7 +389,7 @@ void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
 
 void *BirthdayHostVillagerTalk::getPlayerMemory() {
     if (villager != NULL && villager->villagerData != NULL) {
-        s32 r = PlayerData_getPlayerId(PlayerData_GetCurrent());
+        s32 r = PlayerData_GetCurrent()->getPlayerId();
         return Villager_FindOrCreateMemory(villager->villagerData, r);
     }
     return NULL;
@@ -620,7 +617,7 @@ extern "C" u16 BirthdayHost_PickReturnGift(s32 n) {
             return r;
         }
     }
-    ItemPick_FtrWallCarpetByClass(&w0, PlayerData_GetCurrent(), 0);
+    ItemPick_FtrWallCarpetByClass(&w0, (u8 *)PlayerData_GetCurrent(), 0);
     if (w0 == 0xfff1) {
         u32 o[2];
         ((ItemPickSpec *)(o))->set(0, 0);
@@ -760,7 +757,7 @@ void BirthdayHostVillager::execAct() {
 
 BOOL BirthdayHostVillager::setupAct00() {
     if (((NpcActionCtrl *)((u8 *)&actionCtrl))->requestStand(1, data_020c6cc8)) {
-        ((NpcLookAt *)((u8 *)&lookAt))->setTarget(1, 0, (s32)(0), (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+        ((NpcLookAt *)((u8 *)&lookAt))->setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;
@@ -833,7 +830,7 @@ BOOL BirthdayHostVillager::setupAct01() {
         s32 dz = o->position.z - position.z;
         s32 ang = Math_Atan2(dx, dz);
         ((NpcActionCtrl *)(m))->requestAction(3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
-        ((NpcLookAt *)((u8 *)&lookAt))->setTarget(2, 0, (s32)(o), (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+        ((NpcLookAt *)((u8 *)&lookAt))->setTarget(2, 0, (Character *)o, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;

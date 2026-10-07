@@ -57,7 +57,6 @@ struct Unk_ov076_02271a3c_Bits {
 
 
 extern "C" {
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
@@ -289,7 +288,7 @@ BOOL SpNpcPascal::setupAct04() {
         t = -t;
     }
     spinSpeed = t;
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, (s32)&gVec3Zero, 4, data_020c6d1c, 1);
+    lookAt.setTarget(0, 0, NULL, (VecFx32 *)(&gVec3Zero), 4, data_020c6d1c, 1);
     diveStartZ = position.z;
     return TRUE;
 }

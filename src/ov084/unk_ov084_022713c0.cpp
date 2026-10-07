@@ -265,7 +265,7 @@ void SpNpcTortimerFireworksTalk::attachOwner(SpNpcTortimerFireworks *owner) {
 void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
     u16 h[4];
     u32 loc[2];
-    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+    PlayerData_GetCurrent()->getErrands();
     out->msgKey = "sp_npc_turtle4";
     if (massageChairSlot == -1) {
         h[1] = 0x37e0;
@@ -383,10 +383,10 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
             }
         after:
             if (r5 >= 0) {
-                void *g2 = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
+                void *g2 = PlayerData_GetCurrent()->getSpNpcRecord();
                 if (((PlayerSpNpcRecord *)(g2))->getFireworksGiven() < 10) {
                     ((PlayerSpNpcRecord *)(g2))->addFireworksGiven();
-                    s32 r = ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender();
+                    s32 r = ((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getGender();
                     ((ActorTalkRequest *)(this))->requestGiveItem(&h[0], 0, 5, 0);
                     Pocket_AddItem(&h[0], 0);
                     ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h[0]), 0, 7);

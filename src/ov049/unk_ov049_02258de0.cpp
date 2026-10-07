@@ -70,7 +70,6 @@
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
@@ -203,7 +202,6 @@ void ActorTalkRequest_setTownNameSlot(void *self, void *a, s32 n);
 void func_020942c8(PlayerIdInlineCopy *p);
 void func_0206267c(ItemNameStorage *p);
 void func_0206260c(ItemNameStorage *p);
-void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
@@ -953,7 +951,7 @@ BOOL SpNpcMabel::mainAct08() {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
             ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
@@ -993,7 +991,7 @@ BOOL SpNpcMabel::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == 4 && NetArea_IsLocalOwner()) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0xa);
         }
@@ -1457,9 +1455,9 @@ void SpNpcMabelTalk::onMenuChoice(u32 a) {
         }
     }
     if (((CommManager *)(g))->isOnline() == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
-        s32 r = NpcRegistry_FindSpNpc(5);
-        if (r != 0) {
-            ((ActorTalkRequest *)(this))->setPartnerActor((NpcActor *)(r));
+        NpcActor *r = NpcRegistry_FindSpNpc(5);
+        if (r != NULL) {
+            ((ActorTalkRequest *)(this))->setPartnerActor(r);
         }
     }
 }
@@ -1674,9 +1672,9 @@ void SpNpcMabelTalk::onDramaMenuChoice() {
     }
     if (!((CommManager *)(gCommManager))->isOnline()) {
         if (*DebugVar_GetPtr(0, 0x4a) == 0) {
-            s32 r = NpcRegistry_FindSpNpc(5);
+            NpcActor *r = NpcRegistry_FindSpNpc(5);
             if (r) {
-                ((ActorTalkRequest *)(this))->setPartnerActor((NpcActor *)(r));
+                ((ActorTalkRequest *)(this))->setPartnerActor(r);
             }
         }
     }
@@ -1878,7 +1876,7 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
     u16 v[3];
     ParcelErrand *hh;
     if (MenuCtrl_IsResultOk()) {
-        hh = SickVillagerRecord_getParcelErrand(((PlayerData *)(PlayerData_GetCurrent()))->getErrands());
+        hh = SickVillagerRecord_getParcelErrand(PlayerData_GetCurrent()->getErrands());
         if (Talk_IsInOwnTown()) {
             s32 n = (s32)MenuCtrl_GetIndex();
             v[1] = Pocket_GetItem(n);
@@ -2019,7 +2017,7 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+                if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
                     if (arg == 4) goto x4;
                     if (arg == b) goto y4;
                 x4:

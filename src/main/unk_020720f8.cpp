@@ -575,15 +575,15 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
         u8 *r6 = (u8 *)(p)->getWifiUserData();
         MI_CpuFill8(r5, 0, 0x3e0);
         MI_CpuFill8(r6, 0, 0x50);
-        u32 l18 = PlayerData_GetCurrent();
-        u8 *l1c = FriendList_GetEntries(((PlayerData *)(l18))->getFriendList());
+        PlayerData *l18 = PlayerData_GetCurrent();
+        u8 *l1c = FriendList_GetEntries(l18->getFriendList());
         for (s32 i = 0; i < 0x20; i++) {
             MI_CpuCopy8(DwcFriendData_GetBytes(FriendEntry_GetFriendData(l1c)), r5 + i * 12, 12);
             l1c += 0x1c;
         }
-        MI_CpuCopy8(((PlayerId *)(((PlayerData *)(l18))->getPlayerId()))->getName(), r6, 8);
+        MI_CpuCopy8(((PlayerId *)(l18->getPlayerId()))->getName(), r6, 8);
         MI_CpuCopy8(TownId_GetName((u8 *)((u32)gSaveData + 2)), r6 + 8, 8);
-        MI_CpuCopy8(PlayerWifiData_GetDwcUserData(((PlayerData *)(l18))->getWifiUserData()), r6 + 0x10, 0x40);
+        MI_CpuCopy8(PlayerWifiData_GetDwcUserData(l18->getWifiUserData()), r6 + 0x10, 0x40);
         _Z21NetOverlay_AssertWifiv();
         Net_StartWifi(a, (void *)Comm_OnReceive, (void *)Comm_OnFriendDeletedNop, r6, r5);
     }

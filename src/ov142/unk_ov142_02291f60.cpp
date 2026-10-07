@@ -1202,7 +1202,7 @@ void CatalogMenu::buildFurnitureList() {
     s32 n = 0;
     u32 cur;
     u16 id;
-    u32 h;
+    PlayerData *h;
     s32 i;
     tabOwnedCounts[0] = 0;
     tabTotalCounts[0] = 0;
@@ -1234,7 +1234,7 @@ void CatalogMenu::buildFurnitureList() {
         if (r) goto next;
         if (Item_TestInfoFlag3(&id)) {
             tabTotalCounts[0] = tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(((PlayerData *)(h))->getCatalog(), &id)) {
+            if (Catalog_HasItem(h->getCatalog(), &id)) {
                 *(u16 *)((u8 *)this + n * 2 + 0x708) = cur;
                 n++;
             }
@@ -1292,7 +1292,7 @@ void CatalogMenu::buildHeadwearList() {
 
 s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off) {
     s32 cnt = 0;
-    u32 p = PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     u16 tmp = 0xfff1;
     s32 i = 0;
     CatalogMenu *q = (CatalogMenu *)((u8 *)this + off * 2);
@@ -1300,7 +1300,7 @@ s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off)
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
             q->tabTotalCounts[0] = q->tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(((PlayerData *)(p))->getCatalog(), &tmp)) {
+            if (Catalog_HasItem(p->getCatalog(), &tmp)) {
                 out[cnt] = start;
                 cnt++;
             }
@@ -1313,14 +1313,14 @@ s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off)
 s32 CatalogMenu::collectCatalogued(u16 *out, u16 start, s32 n, s32 off) {
     s32 cnt = 0;
     u16 tmp = 0xfff1;
-    u32 p = PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     s32 i = 0;
     CatalogMenu *q = (CatalogMenu *)((u8 *)this + off * 2);
     for (; i < n; i++) {
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
             q->tabTotalCounts[0] = q->tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(((PlayerData *)(p))->getCatalog(), &tmp)) {
+            if (Catalog_HasItem(p->getCatalog(), &tmp)) {
                 out[cnt] = start;
                 cnt++;
             }

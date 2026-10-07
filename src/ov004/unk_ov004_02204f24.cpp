@@ -146,6 +146,7 @@ typedef FtrActor Self;
 #include "proto/ov004/unk_ov004_0222bed0.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_02235fd0.h"
+#include "player/PlayerData.h"
 
 
 
@@ -1406,9 +1407,10 @@ extern "C" void FtrActor_GetCenter(Self *self, VecFx32 *out) {
 
 // @02208894
 extern "C" BOOL FtrActor_TestPlayerUnk() {
-    s32 pd, id;
-    if ((pd = PlayerData_GetCurrent()) != 0) {
-        if ((id = PlayerData_getPlayerId(pd)) != 0) {
+    PlayerData *pd;
+    s32 id;
+    if ((pd = PlayerData_GetCurrent()) != NULL) {
+        if ((id = pd->getPlayerId()) != 0) {
             if (((TownId *)(id))->getTownRelation() == 0) {
                 return TRUE;
             }

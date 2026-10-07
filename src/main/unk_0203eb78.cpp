@@ -270,10 +270,10 @@ extern "C" u8 *AxMail_GetDigest(u8 *p) { return p + 0xf6; }
 extern "C" BOOL AxMail_Deliver(u8 *p) {
     u8 l[HOST_SIZED(0xf8, Letter) / 1] HOST_ALIGN8;
     new (l) Letter();
-    s32 h = PlayerData_GetCurrent();
+    PlayerData *h = PlayerData_GetCurrent();
     if (*(u16 *)(p + 0xf4) != PlayerData_GetLastWifiMailId(h)) {
         Letter_Copy(l, p);
-        s32 q = ((PlayerData *)(h))->getIndex();
+        s32 q = h->getIndex();
         Letter_SetRecipientResident(l, q);
         Letter_MarkReceived(l);
         if (LetterDelivery_PutInMailbox(l, q, 0)) {

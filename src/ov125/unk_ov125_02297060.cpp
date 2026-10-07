@@ -378,7 +378,7 @@ void PatternSelectMenu::loadHeaderBg() {
 extern "C" void PatternSelect_LoadPatternIcons() {
     void *heap = gCurrentHeap;
     void *buf = Heap_AllocTail(heap, 0x1000);
-    void *obj = ((PlayerData *)(PlayerData_GetCurrent()))->getPatterns();
+    void *obj = PlayerData_GetCurrent()->getPatterns();
     u8 i = 0;
     do {
         void *t = ((PlayerPatterns *)(obj))->getPatternByOrder(i);
@@ -622,7 +622,7 @@ void PatternSelectMenu::refreshNameLabel() {
     }
     ((LabelBalloon *)(&nameBalloon))->setPos(getSlotX(balloonSlot) - 0x78, x);
     new (a) EncodedString16Buf();
-    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(((PlayerData *)(PlayerData_GetCurrent()))->getPatterns()))->getPatternByOrder(balloonSlot)))->getInfo()))->getTitleEncoded((EncodedString16Buf *)(a));
+    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(PlayerData_GetCurrent()->getPatterns()))->getPatternByOrder(balloonSlot)))->getInfo()))->getTitleEncoded((EncodedString16Buf *)(a));
     new (b) LabelBalloonText();
     StrBuf_GameToAscii(b, a);
     ((LabelBalloon *)(&nameBalloon))->setText((StrBuf *)(b));

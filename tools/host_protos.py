@@ -121,6 +121,26 @@ def usable(r):
     return True
 
 
+def forward_types():
+    """Types the generated headers declare ahead instead of including their headers, where the prototypes use them
+    only through pointers (include/proto/.forward: classes whose headers pull in types that some units define their
+    own copies of)."""
+    if not os.path.exists('include/proto/.forward'):
+        return set()
+    return set(l.split('#')[0].strip() for l in open('include/proto/.forward')) - {''}
+
+
+FORWARD = forward_types()
+
+
+def forward_ok(r, name, kind, qual):
+    if name not in FORWARD or qual != name or kind not in ('STRUCT_DECL', 'CLASS_DECL'):
+        return ()
+    p = r.get('proto') or ''
+    uses = re.findall(r'\b%s\b(\s*\**)' % re.escape(name), p)
+    return (name,) if uses and all('*' in u for u in uses) else ()
+
+
 def make_headers(defs, only=None):
     by_file = {}
     for r in defs.values():
@@ -138,6 +158,12 @@ def make_headers(defs, only=None):
             cpp = not r.get('c_linkage') or bool(r.get('ns')) and not r.get('c_linkage')
             for name, kind, f, qual in r.get('types', []):
                 if f is None:
+                    continue
+                if f.startswith('include/') and name in forward_ok(r, name, kind, qual):
+                    # declared ahead instead of its header (include/proto/.forward)
+                    tag = {'STRUCT_DECL': 'struct', 'CLASS_DECL': 'class'}[kind]
+                    fwd_cpp.add(f'{tag} {name};')
+                    cpp = True
                     continue
                 if f.startswith('include/'):
                     hh = f[len('include/'):]

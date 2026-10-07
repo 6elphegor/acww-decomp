@@ -5986,7 +5986,7 @@ void Tree_DropBeeHive(s32 aid, s32 *p) {
     Unk_ov003_0221b8bc_V3D c;
     VecFx32 e;
     VecFx32 d;
-    if (CommManager_isOnline(gCommManager) == 0 && ((PlayerData *)(PlayerData_GetCurrent()))->testFlag(1) == 0) {
+    if (CommManager_isOnline(gCommManager) == 0 && PlayerData_GetCurrent()->testFlag(1) == 0) {
         FieldPos_FromUnitCenter(&b, p[0], p[1]);
         VecFx32 *t = data_ov003_0223291c[0];
         t = t + Tree_GetDropSide(aid, &b);
@@ -6970,7 +6970,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                 Sky_EndBalloonDrop();
                 if (self->timer == 0) {
                     if (self->item == 0x137b) {
-                        ((PlayerData *)(PlayerData_GetCurrent()))->setFlag(0x30);
+                        PlayerData_GetCurrent()->setFlag(0x30);
                     }
                     Field_SetUnitItem(self->unitX, self->unitZ, self->item, 0);
                 }

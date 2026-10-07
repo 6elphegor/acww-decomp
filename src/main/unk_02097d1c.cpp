@@ -209,9 +209,9 @@ void PlayerData::reset() {
 
 BOOL PlayerData::isUsed() { return ((PlayerId *)(&id))->isValid(); }
 
-void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7) {
+void PlayerData::setupNew(void *name, u32 p2, u32 p3, TownId *town, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7) {
     Unk_0209865c_Bits bits;
-    ((PlayerId *)(&id))->set((void *)(p1), p2, p3, (TownId *)(s0));
+    ((PlayerId *)(&id))->set(name, p2, p3, town);
     setFaceType(s1);
     setHairStyle(s2);
     setHairColor(s3);
@@ -469,17 +469,17 @@ u8 *PlayerData::getDayUpdateDate()
     return dayUpdateDate;
 }
 
-void *PlayerData::getBankAccount()
+PlayerBank *PlayerData::getBankAccount()
 {
-    return bank;
+    return (PlayerBank *)bank;
 }
 
-void *PlayerData::getEmotions()
+u8 *PlayerData::getEmotions()
 {
     return emotions;
 }
 
-void *PlayerData::getBirthday()
+u8 *PlayerData::getBirthday()
 {
     return birthday;
 }
@@ -508,7 +508,7 @@ u32 PlayerData::getBirthdayTalkYear()
 extern "C" void PlayerData_UpdateDay()
 {
     u8 *g = gSaveData;
-    PlayerData *p = (PlayerData *)PlayerData_GetCurrent();
+    PlayerData *p = PlayerData_GetCurrent();
     if (p) {
         Unk_020981f8_Pos loc;
         Clock_GetDate(&loc);

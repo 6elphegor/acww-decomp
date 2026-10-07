@@ -104,14 +104,10 @@ u32 strlen(const char *s);
 
 // methods of other modules, called as free functions with the object first (mangled-name trick)
 NpcActor *_ZN16ActorTalkRequest13getTalkPlayerEv(void *self);
-BOOL _ZN10PlayerData8testFlagEj(u32 a, u32 b);
-u32 _ZN10PlayerData10getErrandsEv(...);
 u32 _ZN18SickVillagerRecord15getParcelErrandEv(u32 a);
 void _ZN12ErrandRecord7setStepEh(u32 a, s32 b);
 }
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define PlayerData_testFlag _ZN10PlayerData8testFlagEj
-#define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
 #define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
 #define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 
@@ -638,7 +634,7 @@ BOOL SpNpcBlathers::mainAct06() {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
             ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
@@ -660,7 +656,7 @@ BOOL SpNpcBlathers::mainAct07() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == 4 && NetArea_IsLocalOwner()) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0);
         }
@@ -847,7 +843,7 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
     void *o = window;
     Unk_ov047_0225a3e4_Msg m;
     m.msgIndex = 0xe8;
-    u32 r7 = (u32)PlayerData_GetCurrent();
+    PlayerData *r7 = PlayerData_GetCurrent();
     if (MenuCtrl_IsResultOk() && Talk_IsInOwnTown()) {
         s32 r5 = MenuCtrl_GetIndex();
         m.item = Pocket_GetItem(r5);
@@ -857,7 +853,7 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
         if (!Unk_ov047_0225a3e4_Same(&m.item, &m.cmpItem)) {
             ((ActorTalkRequest *)(this))->requestTakeItem(&m.item, 2, 5, 0);
         }
-        ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7))), 1);
+        ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(r7->getErrands())), 1);
         m.msgIndex = 0xe7;
     }
     ((TalkWindowState *)(o))->setNextMessage((u8 *)(&m), sSpNpcBlathersKey);
@@ -910,7 +906,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
         return;
     }
     out->msgKey = (const char *)sSpNpcBlathersKey;
-    u32 r7 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
+    u32 r7 = SickVillagerRecord_getParcelErrand(PlayerData_GetCurrent()->getErrands());
     void *g = gCommManager;
     SpNpcBlathersStartLocal l;
     if (!((CommManager *)(g))->isOnline() && *DebugVar_GetPtr(0, 0x4a) == 0) {
@@ -1383,7 +1379,7 @@ void SpNpcBlathersTalk::onChoice(u32 a) {
             *(SpNpcBlathersTalk::Fn1 *)data_ov047_0225b348,
         };
         u32 i = 0;
-        ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+        PlayerData_GetCurrent()->getErrands();
         if (dramaTalk == 1) {
             i = 1;
         }
@@ -1533,10 +1529,10 @@ void SpNpcBlathersTalk::onMainMenuChoice(s32 a) {
         break;
     case 1: {
         appraisalFlow = 0;
-        u32 r = (u32)PlayerData_GetCurrent();
+        PlayerData *r = PlayerData_GetCurrent();
         if (MenuCtrl_BuildPocketMask(SpNpcBlathers_IsUnidentifiedFossil) == 0) {
             nextMsg = 0x18;
-        } else if (((PlayerData *)(r))->testFlag(0x35) == 0) {
+        } else if (r->testFlag(0x35) == 0) {
             appraisalFlow = 1;
             nextMsg = 0x17;
         } else {
@@ -1609,7 +1605,7 @@ void SpNpcBlathersTalk::onAppraiseAnotherChoice(u32 a) {
 
 void SpNpcBlathersTalk::onAppraiseDonatedFossilChoice(u32 a) {
     if (a == 0) {
-        if (PlayerData_testFlag((u32)PlayerData_GetCurrent(), 0x35) == 0) {
+        if (PlayerData_GetCurrent()->testFlag(0x35) == 0) {
             nextMsg = 0x4b;
         } else {
             nextMsg = 0x19;
@@ -1712,7 +1708,7 @@ void SpNpcBlathers::onInteractionEvent(u32 cmd, u8 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+                if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         changeAct(0);

@@ -70,7 +70,6 @@ class FleaMarketBuyerVillager;
 #define NpcLookAt_disable _ZN9NpcLookAt7disableEv
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
@@ -134,7 +133,6 @@ s32 TalkRequest_IsActive();
 void Clock_GetDateTime(void *);
 s32 DateTime_DiffMinutes(void *, void *);
 void ActorTalkRequest_setTalkPlayer(void *, s32);
-s32 NpcActor_getPlayerActor(void *, s32);
 void *ActorTalkRequest_getChoiceList(void *);
 s32 ChoiceList_getResult(void *self);
 void *VillagerData_getVillagerId(void *);
@@ -460,7 +458,7 @@ BOOL FleaMarketBuyerVillager::onCreate() {
     ((NpcLookAt *)(&lookAt))->disable();
     void *o;
     if (PlayerData_GetCurrent()) {
-        o = ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+        o = PlayerData_GetCurrent()->getPlayerId();
     } else {
         o = 0;
     }
@@ -864,7 +862,7 @@ void FleaMarketBuyerVillagerTalk::offerPrice() {
             if (!Unk_ov004_0221946c_Chk(p, &buf[1])) {
                 offerAmount = Item_GetPrice(&villager->targetItem);
                 if (PlayerData_GetCurrent()) {
-                    r6 = Villager_FindMemory(villager->villagerData, (void *)((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId());
+                    r6 = Villager_FindMemory(villager->villagerData, (void *)PlayerData_GetCurrent()->getPlayerId());
                 }
                 if (r6) {
                     r4 = VillagerMemory_getFriendship(r6);
@@ -923,7 +921,7 @@ void FleaMarketBuyerVillagerTalk::completePurchase() {
 void FleaMarketBuyerVillagerTalk::start(TalkStartMsg *arg) {
     TalkTopicMsg *out = (TalkTopicMsg *)arg;
     u16 tmp;
-    void *q = ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+    void *q = PlayerData_GetCurrent()->getPlayerId();
     void *o = Villager_FindOrCreateMemory(villager->villagerData, q);
     if (o != 0) {
         VillagerMemory_RecordTalk(o, 0, 0, 0);
@@ -1013,7 +1011,7 @@ void FleaMarketBuyerVillagerTalk::onMessageEnd(u32) {
             } else if (st == 0) {
                 void *q;
                 if (PlayerData_GetCurrent() != 0) {
-                    q = ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
+                    q = PlayerData_GetCurrent()->getPlayerId();
                 } else {
                     q = 0;
                 }
@@ -1087,7 +1085,7 @@ void FleaMarketBuyerVillagerTalk::onChoice(u32) {
         case 13:
             ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((void *)(void *)(data_ov004_022507d8), 0x28, (u32)("ev_fmarket3"));
             if (st == 0) {
-                void *r7 = ((PlayerData *)(PlayerData_GetCurrent()))->getInventory();
+                void *r7 = PlayerData_GetCurrent()->getInventory();
                 st = NpcActor_CheckPayoutFits(villager, (void *)offerAmount, 0);
                 tmp = Item_FindMoneyBagForAmount((void *)offerAmount, 0, 0);
                 if (tmp == 0xfff1) {

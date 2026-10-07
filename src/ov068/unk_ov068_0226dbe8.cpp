@@ -46,6 +46,7 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov068/unk_ov068_0226dbe8.h"
+#include "player/PlayerData.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -55,7 +56,6 @@
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define func_0201b138 _ZN8NpcActor6onDrawEv
 #define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
@@ -280,7 +280,6 @@ extern s32 data_020c8cb8;
 extern u8 gVec3Zero[];
 
 s32 NpcActionCtrl_requestStand(void *, s32, u32);
-void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
 void Ground_LockExit(s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
@@ -466,7 +465,7 @@ void HouseVisitVillager::recordTalkWithPlayer() {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         if (villagerData != NULL) {
-            VillagerMemory_RecordTalk(Villager_FindOrCreateMemory(villagerData, PlayerData_getPlayerId(p)), 0, 0, 0);
+            VillagerMemory_RecordTalk(Villager_FindOrCreateMemory(villagerData, ((PlayerData *)(p))->getPlayerId()), 0, 0, 0);
         }
     }
 }
@@ -688,7 +687,7 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
         } else {
             out->msgIndex = Random_GlobalBelow(2) + 6;
         }
-        ((Unk_ov068_02270a6c_Bits *)((u8 *)PlayerData_getErrands(PlayerData_GetCurrent()) + 0xa8))->lo = n;
+        ((Unk_ov068_02270a6c_Bits *)((u8 *)PlayerData_GetCurrent()->getErrands() + 0xa8))->lo = n;
     } else if (rnd < 70) {
         ownerVillager->talkTopic = 0;
         setTopicFns((VillagerTalkTopicFns *)sHouseVisitTsuTopicTable);
@@ -979,7 +978,7 @@ void HouseVisitVillager::execVisitStay() {
 BOOL HouseVisitVillager::enterVisitWander() {
     using namespace sB;
     if (NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8)) {
-        NpcLookAt_setTarget(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         Ground_LockExit(0);
         return TRUE;
     }

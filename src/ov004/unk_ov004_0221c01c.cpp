@@ -97,17 +97,14 @@ struct SpNpcBrewsterActEntry {
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
-#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
-#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
 #define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
 #define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcMoveCtrl_setTurnMode _ZN11NpcMoveCtrl11setTurnModeEh
 #define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
@@ -148,17 +145,14 @@ extern const u32 sSpNpcBrewsterGuestSpawnPos[];
 void func_0201b08c(void *self, u32 a, u32 b);
 s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
 BOOL NpcActor_isNetOwner(void *self);
-s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 BOOL NpcActor_netIsTalkLocked(void *self);
 void NpcActor_setTalkRequest(void *self, void *p);
-u32 NpcActor_getPlayerActor(void *self, u32 id);
 s32 NpcActor_getAngleTo(void *self, void *p);
 void NpcActor_setCollisionRadius(void *self, s32 v);
 void Character_setInteractionRange(void *self, s32 v);
 void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
 void *ActorTalkRequest_getTalkPlayer(void *self);
 s32 NpcAnimCtrl_getAnimId(void *self, u32 v);
-void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void NpcMoveCtrl_setTurnMode(void *self, u8 a);
 void NpcMoveAnimSet_setRunAnim(void *self, s32 a);
@@ -399,7 +393,7 @@ BOOL SpNpcBrewster::mainAct00() {
 BOOL SpNpcBrewster::setupAct01() {
     void *p = ((ActorTalkRequest *)(&talk))->getTalkPlayer();
     s32 r = 0;
-    ((NpcLookAt *)(&lookAt))->setTarget(1, r, r, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, r, NULL, &gVec3Zero, 4, data_020c6d1c, 1);
     if (p != 0) {
         r = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
@@ -464,10 +458,10 @@ BOOL SpNpcBrewster::mainAct05() {
     if (((NpcActor *)(this))->isNetOwner() != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0 && a == (s32)gCommManager->myAid && a == b) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) != 0 && a == (s32)gCommManager->myAid && a == b) {
             ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             ((ActorTalkRequest *)&talk)->resetMsg();
-            s32 r = ((NpcActor *)(this))->getPlayerActor(4);
+            Character *r = getPlayerActor(4);
             ((ActorTalkRequest *)(&talk))->setTalkPlayer(r);
             changeAct(1);
         } else if (NetArea_IsLocalOwner() != 0 && b == 4) {
@@ -487,7 +481,7 @@ BOOL SpNpcBrewster::mainAct06() {
     if (((NpcActor *)(this))->isNetOwner() != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
+        if (((NpcActor *)(this))->netGetSlots(&a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
                     ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -521,7 +515,7 @@ void SpNpcBrewsterTalk::attachOwner(s32 v) {
 
 void SpNpcBrewsterTalk::start(TalkStartMsg *arg) {
     TalkTopicMsg *out = (TalkTopicMsg *)arg;
-    void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
+    void *h = PlayerData_GetCurrent()->getSpNpcRecord();
     if (GameStart_IsActive() != 0) {
         out->fileName = sSpNpcBrewsterMsgFiles[1];
         out->msgIndex = 0x1f;
@@ -555,7 +549,7 @@ void SpNpcBrewsterTalk::start(TalkStartMsg *arg) {
 }
 
 void SpNpcBrewsterTalk::onMessageEnd(u32) {
-    void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
+    void *h = PlayerData_GetCurrent()->getSpNpcRecord();
     TalkWindowState *o = window;
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
@@ -593,7 +587,7 @@ void SpNpcBrewsterTalk::onMessageEnd(u32) {
 }
 
 void SpNpcBrewsterTalk::onChoice(u32) {
-    void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
+    void *h = PlayerData_GetCurrent()->getSpNpcRecord();
     s32 t = getChoiceList()->getResult();
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
@@ -656,7 +650,7 @@ void SpNpcBrewsterTalk::setScript(s32 v) {
 
 void SpNpcBrewsterTalk::runCoffeeScript() {
     TalkWindowState *r6 = window;
-    u8 r7 = (u8)((((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->getCafeVisits() >> 2) + 0x24);
+    u8 r7 = (u8)((((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->getCafeVisits() >> 2) + 0x24);
     void *r5 = &owner->actionCtrl;
     u8 buf;
     switch (scriptStep) {
@@ -787,7 +781,7 @@ void SpNpcBrewsterTalk::runDrinkScript() {
             Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e3, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x46) {
-            if (((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender() == 0) {
+            if (((PlayerId *)(PlayerData_GetCurrent()->getPlayerId()))->getGender() == 0) {
                 Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e4, 0x7f, 0);
             } else {
                 Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e5, 0x7f, 0);
@@ -808,7 +802,7 @@ void SpNpcBrewsterTalk::runDrinkScript() {
             ((TalkWindowState *)(r6))->setNextMessage((u8 *)(&buf), (void *)(sSpNpcBrewsterMsgFiles[0]));
             r6->nextState = 1;
             Talk_CheckAndSetPlayerFlag(0x17, 1);
-            void *p = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
+            void *p = PlayerData_GetCurrent()->getSpNpcRecord();
             if (Random_GlobalBelow(0xa) < 5) {
                 ((PlayerSpNpcRecord *)(p))->setCafeVisits(((PlayerSpNpcRecord *)(p))->getCafeVisits() + 1);
             }
@@ -827,7 +821,7 @@ void SpNpcBrewsterTalk::onWindowClose() {
 
 void SpNpcBrewsterTalk::runScript03() {
     TalkWindowState *r6 = window;
-    u8 r7 = (u8)((((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->getCafeVisits() >> 2) + 0x51);
+    u8 r7 = (u8)((((PlayerSpNpcRecord *)(PlayerData_GetCurrent()->getSpNpcRecord()))->getCafeVisits() >> 2) + 0x51);
     void *r5 = &owner->actionCtrl;
     u8 buf;
     switch (scriptStep) {
@@ -977,7 +971,7 @@ void SpNpcBrewster::onInteractionEvent(u32 cmd, u8 arg) {
         if (((NpcActor *)(this))->netIsTalkLocked() && ((NpcActor *)(this))->isNetOwner()) {
             a = 4;
             b = 4;
-            if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
+            if (((NpcActor *)(this))->netGetSlots(&a, &b)) {
                 if (arg != 4) {
                     if (arg == b) {
                         goto body;

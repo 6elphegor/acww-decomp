@@ -570,7 +570,7 @@ void _ZN10RecordFileC1Ev(void *);
 extern "C" {
 }
 extern "C" {
-s32 _ZN10PlayerData8getIndexEv(s32 p);
+s32 _ZN10PlayerData8getIndexEv(PlayerData *p);
 }
 extern "C" {
 }
@@ -1144,7 +1144,7 @@ extern "C" BOOL PatternSrc_OnChanged(s32 cmd, s32 x) {
     switch (cmd) {
     case 0:
     case 9: {
-        s32 t = PlayerData_GetBySessionSlot(0);
+        PlayerData *t = PlayerData_GetBySessionSlot(0);
         if (t != 0) {
             s32 v = _ZN10PlayerData8getIndexEv(t);
             if (v != -1) PatternTex_UploadPlayer((u8)(v & 3), x);

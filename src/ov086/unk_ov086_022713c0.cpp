@@ -259,7 +259,7 @@ void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
     TortimerCountdownDateLocals a;
     TortimerCountdownTimeLocals t;
     BOOL f;
-    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
+    PlayerData_GetCurrent()->getErrands();
     out->msgKey = "sp_npc_turtle6";
     if (massageChairSlot == -1) {
         h = 0x37e0;

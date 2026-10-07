@@ -38,7 +38,6 @@ extern u8 gSaveTownFlag[];
 extern s32 (*sPatternSourceGetters[])(s32);
 
 s32 FX_Div(s32 a, s32 b);
-s32 _ZN10PlayerData11getPlayerIdEv(void *p);
 void Clock_GetDateTime(void *p);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
 s32 func_02071b00(void *p, s32 i);
@@ -167,7 +166,7 @@ BOOL MuseumData::sendCompletionLetters() {
         if (p && ((PlayerData *)(p))->isUsed()) {
             Letter big;
             b = 0;
-            Letter_ComposeFromMail(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, _ZN10PlayerData11getPlayerIdEv(p));
+            Letter_ComposeFromMail(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, ((PlayerData *)(p))->getPlayerId());
             ((LetterView *)(&big))->setPresent(0x3870, 1);
             if (LetterDelivery_PutInAddresseeMailbox(&big)) r = TRUE;
         }

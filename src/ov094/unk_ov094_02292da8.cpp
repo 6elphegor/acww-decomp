@@ -367,14 +367,14 @@ void InventoryItemGrid_LoadSlotIcon(InventoryItemGrid *o, s32 k, u16 *p, s32 a)
 
 void InventoryItemGrid_LoadPockets(InventoryItemGrid *o)
 {
-    s32 h = PlayerData_getInventory(PlayerData_GetCurrent());
-    s32 base = (s32)PlayerInventory_getPocket(h, 0);
+    PlayerInventory *h = (PlayerInventory *)PlayerData_GetCurrent()->getInventory();
+    u16 *base = h->getPocket(0);
     s32 i;
     s32 k;
     k = 0;
     i = 0;
     do {
-        InventoryItemGrid_LoadSlotIcon(o, k, (u16 *)(base + i * 2), ((PlayerInventory *)(h))->getPocketFlags(i));
+        InventoryItemGrid_LoadSlotIcon(o, k, base + i, h->getPocketFlags(i));
         k++;
         i++;
     } while (i < 0xf);
@@ -507,9 +507,9 @@ void InventoryItemGrid_MarkSlot(InventoryItemGrid *s, s32 i) {
 }
 
 u16 InventoryItemGrid_GetSlotItem(InventoryItemGrid *s, s32 i) {
-    s32 t = PlayerData_getInventory(PlayerData_GetCurrent());
+    PlayerInventory *t = (PlayerInventory *)PlayerData_GetCurrent()->getInventory();
     if (i >= 0 && i <= 0xe) {
-        return ((PlayerInventory *)(t))->getPocket(0)[i];
+        return t->getPocket(0)[i];
     }
     if (i >= 0xf && i <= 0x1d) {
         u16 *p = s->boxItems;
@@ -522,7 +522,7 @@ u16 InventoryItemGrid_GetSlotItem(InventoryItemGrid *s, s32 i) {
 
 u32 InventoryItemGrid_GetSlotFlags(InventoryItemGrid *s, s32 i) {
     if (i >= 0 && i <= 0xe) {
-        return (u8)((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getPocketFlags(i);
+        return (u8)((PlayerInventory *)(PlayerData_GetCurrent()->getInventory()))->getPocketFlags(i);
     }
     return 0;
 }

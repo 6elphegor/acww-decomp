@@ -302,7 +302,7 @@ BOOL SpNpcWendell::setupAct02() {
     ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
-    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, (s32)(NULL), (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, NULL, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     return TRUE;
 }
 
