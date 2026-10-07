@@ -1911,7 +1911,7 @@ extern "C" void MuseumInsect_MoleCricketCheckEmerge(MuseumInsect *self)
         }
         if ((s32)idx > self->alertThreshold) {
             self->moveState = 5;
-            EffectSpl_CreateOneShot(0x80, v, NULL, (u32 *)gEffectSplDefaultInitCbs);
+            EffectSpl_CreateOneShot(0x80, v, NULL, gEffectSplDefaultInitCbs);
             self->subCounter = (Random_GlobalBelow(11) + 5) * 20;
             self->yaw = Math_AngleXZ(&o.playerPos.x, &v->x);
             NNS_G3dMdlSetMdlAlpha(((PooledModel *)(self->pooledModel))->getModel(), 0, 31);
@@ -1969,7 +1969,7 @@ extern "C" void MuseumInsect_MoleCricketCrawl(MuseumInsect *self, s16 *p)
                 }
             }
         } else if (*q == 5) {
-            EffectSpl_CreateOneShot(0x80, &self->position, NULL, (u32 *)gEffectSplDefaultInitCbs);
+            EffectSpl_CreateOneShot(0x80, &self->position, NULL, gEffectSplDefaultInitCbs);
         }
     } else {
         self->moveState = 16;

@@ -50,7 +50,7 @@ void EffectCb_InitAtPos(EffectEmitterEntry *e);
 s32 EffectCb_UpdateTint(EffectEmitterEntry *e);
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_CreateOneShot
-s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3);
+s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, void (**p3)(EffectSplEmitter *));
 #endif
 #ifndef PROTO_LOCAL_EffectSpl_CreateTracked
 s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCbs *p3);

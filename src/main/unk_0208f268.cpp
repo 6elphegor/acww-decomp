@@ -52,7 +52,7 @@ void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);
 #define Heap_destroy _ZN4Heap7destroyEv
 void Heap_destroy(void *);
 void *SPL_Create(void *, s32, s32);
-void *SPL_CreateWithInitialize(void *, u32, u32);
+void *SPL_CreateWithInitialize(void *, u32, void (*)(EffectSplEmitter *));
 Unk_0209002c_Handle *SPL_Init(void *, s32, s32, s32, s32, s32);
 void func_020f8b44(void *, void *, s32);
 void SPL_Draw(void *, void *, void *);
@@ -908,7 +908,7 @@ extern "C" s32 EffectCb_UpdateTint(EffectEmitterEntry *e)
     return 1;
 }
 
-extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
+extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, void (**p3)(EffectSplEmitter *))
 {
     EffectSplPool *pool;
     EffectSplProc *mgr;
