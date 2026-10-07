@@ -13,20 +13,146 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov095_022965bc
+extern GXOamAttr data_ov095_022965bc[60];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022963e4
+extern GXOamAttr data_ov095_022963e4[59];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02296214
+extern GXOamAttr data_ov095_02296214[58];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022960dc
+extern GXOamAttr data_ov095_022960dc[39];
+#endif
 #ifndef PROTO_LOCAL_sLengthGaugeCells
-extern void *sLengthGaugeCells[32];
+extern GXOamAttr *sLengthGaugeCells[32];
 #endif
 #ifndef PROTO_LOCAL_data_ov095_02295e48
 extern GXOamAttr data_ov095_02295e48[12];
 #endif
+#ifndef PROTO_LOCAL_data_ov095_02295d44
+extern GXOamAttr data_ov095_02295d44[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295d74
+extern GXOamAttr data_ov095_02295d74[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295da4
+extern GXOamAttr data_ov095_02295da4[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295dd4
+extern GXOamAttr data_ov095_02295dd4[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295c7c
+extern GXOamAttr data_ov095_02295c7c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295ca4
+extern GXOamAttr data_ov095_02295ca4[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295ccc
+extern GXOamAttr data_ov095_02295ccc[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295cf4
+extern GXOamAttr data_ov095_02295cf4[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295d1c
+extern GXOamAttr data_ov095_02295d1c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295c2c
+extern GXOamAttr data_ov095_02295c2c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229586c
+extern GXOamAttr data_ov095_0229586c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295894
+extern GXOamAttr data_ov095_02295894[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022958bc
+extern GXOamAttr data_ov095_022958bc[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295b8c
+extern GXOamAttr data_ov095_02295b8c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022958e4
+extern GXOamAttr data_ov095_022958e4[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229590c
+extern GXOamAttr data_ov095_0229590c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295934
+extern GXOamAttr data_ov095_02295934[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295aec
+extern GXOamAttr data_ov095_02295aec[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229595c
+extern GXOamAttr data_ov095_0229595c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295984
+extern GXOamAttr data_ov095_02295984[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022959ac
+extern GXOamAttr data_ov095_022959ac[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022959d4
+extern GXOamAttr data_ov095_022959d4[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022959fc
+extern GXOamAttr data_ov095_022959fc[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295a24
+extern GXOamAttr data_ov095_02295a24[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295a4c
+extern GXOamAttr data_ov095_02295a4c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295a74
+extern GXOamAttr data_ov095_02295a74[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295a9c
+extern GXOamAttr data_ov095_02295a9c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295ac4
+extern GXOamAttr data_ov095_02295ac4[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295b14
+extern GXOamAttr data_ov095_02295b14[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295b3c
+extern GXOamAttr data_ov095_02295b3c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295b64
+extern GXOamAttr data_ov095_02295b64[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295bb4
+extern GXOamAttr data_ov095_02295bb4[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295bdc
+extern GXOamAttr data_ov095_02295bdc[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295c04
+extern GXOamAttr data_ov095_02295c04[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295c54
+extern GXOamAttr data_ov095_02295c54[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022957ac
+extern GXOamAttr data_ov095_022957ac[4];
+#endif
 #ifndef PROTO_LOCAL_sKeyboardModeCharFiles
-extern void *sKeyboardModeCharFiles[8];
+extern char *sKeyboardModeCharFiles[8];
 #endif
 #ifndef PROTO_LOCAL_sKeyboardModeScreensChat
-extern void *sKeyboardModeScreensChat[8];
+extern char *sKeyboardModeScreensChat[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229580c
+extern GXOamAttr data_ov095_0229580c[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229582c
+extern GXOamAttr data_ov095_0229582c[4];
 #endif
 #ifndef PROTO_LOCAL_sKeyboardModeScreens
-extern void *sKeyboardModeScreens[8];
+extern char *sKeyboardModeScreens[8];
 #endif
 #ifndef PROTO_LOCAL_data_ov095_02295704
 extern char data_ov095_02295704[24];
@@ -92,7 +218,16 @@ extern char data_ov095_022955d0[20];
 extern char data_ov095_022955e4[20];
 #endif
 #ifndef PROTO_LOCAL_sKeyboardPageCells
-extern void *sKeyboardPageCells[4];
+extern GXOamAttr *sKeyboardPageCells[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295590
+extern GXOamAttr data_ov095_02295590[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295588
+extern GXOamAttr data_ov095_02295588[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295580
+extern GXOamAttr data_ov095_02295580[1];
 #endif
 #ifndef PROTO_LOCAL_Keyboard_PlayCopySe
 void Keyboard_PlayCopySe();
@@ -106,18 +241,6 @@ void Keyboard_PlayPasteSe();
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_data_ov095_022965bc
-extern u32 data_ov095_022965bc[120];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_022963e4
-extern u32 data_ov095_022963e4[118];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02296214
-extern u32 data_ov095_02296214[116];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_022960dc
-extern u32 data_ov095_022960dc[78];
-#endif
 #ifndef PROTO_LOCAL_sKeyCodesPage3
 extern s16 sKeyCodesPage3[56];
 #endif
@@ -133,134 +256,11 @@ extern s16 sKeyCodesPage1Alt[54];
 #ifndef PROTO_LOCAL_sKeyCodesPage2
 extern s16 sKeyCodesPage2[34];
 #endif
-#ifndef PROTO_LOCAL_data_ov095_02295d44
-extern u32 data_ov095_02295d44[12];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295d74
-extern u32 data_ov095_02295d74[12];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295da4
-extern u32 data_ov095_02295da4[12];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295dd4
-extern u32 data_ov095_02295dd4[12];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295c7c
-extern u32 data_ov095_02295c7c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295ca4
-extern u32 data_ov095_02295ca4[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295ccc
-extern u32 data_ov095_02295ccc[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295cf4
-extern u32 data_ov095_02295cf4[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295d1c
-extern u32 data_ov095_02295d1c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295c2c
-extern u32 data_ov095_02295c2c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_0229586c
-extern u32 data_ov095_0229586c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295894
-extern u32 data_ov095_02295894[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_022958bc
-extern u32 data_ov095_022958bc[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295b8c
-extern u32 data_ov095_02295b8c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_022958e4
-extern u32 data_ov095_022958e4[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_0229590c
-extern u32 data_ov095_0229590c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295934
-extern u32 data_ov095_02295934[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295aec
-extern u32 data_ov095_02295aec[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_0229595c
-extern u32 data_ov095_0229595c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295984
-extern u32 data_ov095_02295984[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_022959ac
-extern u32 data_ov095_022959ac[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_022959d4
-extern u32 data_ov095_022959d4[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_022959fc
-extern u32 data_ov095_022959fc[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295a24
-extern u32 data_ov095_02295a24[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295a4c
-extern u32 data_ov095_02295a4c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295a74
-extern u32 data_ov095_02295a74[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295a9c
-extern u32 data_ov095_02295a9c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295ac4
-extern u32 data_ov095_02295ac4[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295b14
-extern u32 data_ov095_02295b14[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295b3c
-extern u32 data_ov095_02295b3c[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295b64
-extern u32 data_ov095_02295b64[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295bb4
-extern u32 data_ov095_02295bb4[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295bdc
-extern u32 data_ov095_02295bdc[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295c04
-extern u32 data_ov095_02295c04[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295c54
-extern u32 data_ov095_02295c54[10];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_022957ac
-extern u32 data_ov095_022957ac[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_0229580c
-extern u32 data_ov095_0229580c[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_0229582c
-extern u32 data_ov095_0229582c[8];
-#endif
 #ifndef PROTO_LOCAL_data_ov095_0229560c
 extern s32 data_ov095_0229560c[5];
 #endif
 #ifndef PROTO_LOCAL_data_ov095_02295634
 extern s32 data_ov095_02295634[5];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295590
-extern u32 data_ov095_02295590[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295588
-extern u32 data_ov095_02295588[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov095_02295580
-extern u32 data_ov095_02295580[2];
 #endif
 #ifndef PROTO_LOCAL_Keyboard_IsSlotDisabled
 BOOL Keyboard_IsSlotDisabled(Keyboard *s, s32 i);
@@ -400,9 +400,6 @@ void Keyboard_SetAltWriteLayout(Keyboard *s);
 #ifndef PROTO_LOCAL_Keyboard_LoadLetterChars
 void Keyboard_LoadLetterChars(Keyboard *s, s32 a);
 #endif
-#ifndef PROTO_LOCAL_Keyboard_LoadScreenFile
-void Keyboard_LoadScreenFile(Keyboard *s, s32 a);
-#endif
 #ifndef PROTO_LOCAL_Keyboard_LoadScreenNow
 void Keyboard_LoadScreenNow(Keyboard *s, s32 a);
 #endif
@@ -429,9 +426,6 @@ void Keyboard_UpdateModifierKeys(Keyboard *s, s32 a);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_IsControlCode
 BOOL Keyboard_IsControlCode(Keyboard *s, s32 a);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_CanInsert
-BOOL Keyboard_CanInsert(Keyboard *s, u8 *a, void *b, s32 c, s32 d, s32 e);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_InsertAt
 BOOL Keyboard_InsertAt(Keyboard *s, u8 *a, s32 b, s32 c, s32 d, s32 e);
@@ -484,15 +478,6 @@ void Keyboard_LoadObjGfx(Keyboard *s);
 #ifndef PROTO_LOCAL_Keyboard_LoadEmotionIcons
 void Keyboard_LoadEmotionIcons(Keyboard *s);
 #endif
-#ifndef PROTO_LOCAL_Keyboard_Draw
-s32 Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_DrawPageKeys
-s32 Keyboard_DrawPageKeys(Keyboard *s, s32 x, s32 y);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_GetPageCells
-void *Keyboard_GetPageCells(Keyboard *s);
-#endif
 #ifndef PROTO_LOCAL_Keyboard_DrawEmotionKeys
 void Keyboard_DrawEmotionKeys(Keyboard *s, s32 x, s32 y);
 #endif
@@ -525,12 +510,6 @@ void Keyboard_DrawCopyPasteKeysChat(Keyboard *s, s32 x, s32 y);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_DrawCopyPasteKeys
 void Keyboard_DrawCopyPasteKeys(Keyboard *s, s32 x, s32 y);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_DrawLengthGauge
-s32 Keyboard_DrawLengthGauge(void *s, s32 x, s32 y, s32 idx);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_DrawLengthGaugeAt
-s32 Keyboard_DrawLengthGaugeAt(void *s, s32 x, s32 y, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_GetTabKeyX
 s32 Keyboard_GetTabKeyX(Keyboard *s, s32 a);
@@ -574,15 +553,6 @@ void Keyboard_MoveDownToMainButton(Keyboard *s);
 #ifndef PROTO_LOCAL_Keyboard_MoveDownToButtons
 void Keyboard_MoveDownToButtons(Keyboard *s);
 #endif
-#ifndef PROTO_LOCAL_Keyboard_MoveOnPage1
-void Keyboard_MoveOnPage1(Keyboard *s, void *p);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_MoveOnPage2
-void Keyboard_MoveOnPage2(Keyboard *s, void *p);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_MoveOnPage3
-void Keyboard_MoveOnPage3(Keyboard *s, void *p);
-#endif
 #ifndef PROTO_LOCAL_Keyboard_MoveAboveTabRow
 void Keyboard_MoveAboveTabRow(Keyboard *s);
 #endif
@@ -607,21 +577,6 @@ void Keyboard_SelectSendKey(Keyboard *s);
 #ifndef PROTO_LOCAL_Keyboard_EnterTabRowAtX
 void Keyboard_EnterTabRowAtX(Keyboard *s, s32 a);
 #endif
-#ifndef PROTO_LOCAL_Keyboard_MoveOnTabRow
-BOOL Keyboard_MoveOnTabRow(Keyboard *s, void *p);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_MoveOnChatKeys
-BOOL Keyboard_MoveOnChatKeys(Keyboard *s, void *p);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_MoveOnWriteButtons
-BOOL Keyboard_MoveOnWriteButtons(Keyboard *s, void *p);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_MoveOnNameEntryButtons
-BOOL Keyboard_MoveOnNameEntryButtons(Keyboard *s, void *p);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_MoveOnExtraKeys
-BOOL Keyboard_MoveOnExtraKeys(Keyboard *s, void *p);
-#endif
 #ifndef PROTO_LOCAL_Keyboard_GetCursorX
 s32 Keyboard_GetCursorX(Keyboard *s);
 #endif
@@ -633,9 +588,6 @@ void Keyboard_SetTextFieldPos(Keyboard *s, s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_ResetCursor
 void Keyboard_ResetCursor(Keyboard *s);
-#endif
-#ifndef PROTO_LOCAL_Keyboard_MoveCursor
-s32 Keyboard_MoveCursor(Keyboard *s, void *p);
 #endif
 #ifndef PROTO_LOCAL_Keyboard_PressCursorKey
 s32 Keyboard_PressCursorKey(Keyboard *s);
@@ -653,6 +605,54 @@ void Keyboard_SetFlags(Keyboard *s, u32 m);
 void Keyboard_ClearFlags(Keyboard *s, u32 m);
 #endif
 }
+#ifndef PROTO_LOCAL_Keyboard_LoadScreenFile
+void Keyboard_LoadScreenFile(Keyboard *s, const char *a);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_CanInsert
+BOOL Keyboard_CanInsert(Keyboard *s, u8 *a, s32 b, s32 c, s32 d, s32 e);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_Draw
+void Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_DrawPageKeys
+void Keyboard_DrawPageKeys(Keyboard *s, s32 x, s32 y);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_GetPageCells
+GXOamAttr *Keyboard_GetPageCells(Keyboard *s);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_DrawLengthGauge
+void Keyboard_DrawLengthGauge(void *s, s32 x, s32 y, s32 idx);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_DrawLengthGaugeAt
+void Keyboard_DrawLengthGaugeAt(void *s, s32 x, s32 y, s32 idx);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveOnPage1
+void Keyboard_MoveOnPage1(Keyboard *s, u32 p);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveOnPage2
+void Keyboard_MoveOnPage2(Keyboard *s, u32 p);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveOnPage3
+void Keyboard_MoveOnPage3(Keyboard *s, u32 p);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveOnTabRow
+BOOL Keyboard_MoveOnTabRow(Keyboard *s, u32 p);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveOnChatKeys
+BOOL Keyboard_MoveOnChatKeys(Keyboard *s, u32 p);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveOnWriteButtons
+BOOL Keyboard_MoveOnWriteButtons(Keyboard *s, u32 p);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveOnNameEntryButtons
+BOOL Keyboard_MoveOnNameEntryButtons(Keyboard *s, u32 p);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveOnExtraKeys
+BOOL Keyboard_MoveOnExtraKeys(Keyboard *s, u32 p);
+#endif
+#ifndef PROTO_LOCAL_Keyboard_MoveCursor
+s32 Keyboard_MoveCursor(Keyboard *s, u32 p);
+#endif
 #endif
 
 #endif

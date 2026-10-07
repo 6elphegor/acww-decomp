@@ -1,4 +1,5 @@
 #include "types.h"
+#include "nitro/fs.h"
 #include "net/CommManager.h"
 #include "npc/VillagerState.h"
 #include "talk/MsgStringBase.h"
@@ -43,7 +44,7 @@ struct OverlayHandleView {
     s32 overlayId;
     u8 isLoading;
     u8 pad[3];
-    u8 info[4];
+    FSOverlayInfo info;
 };
 
 struct Unk_02076fc8_D {
@@ -82,72 +83,17 @@ public:
 #include "gfx/VecFx32.h"
 #include "player/PlayerData.h"
 #include "save/TownExchangeRecord.h"
-#define PROTO_LOCAL_BbsPost_SetTextFromMsg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BuildingOccupancy_OnEnterRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Building_ApplyStateRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommBlock_ParseAll  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommCtrl_RecvStateBlocks  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_Act08  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_Act0C  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_Act25  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_Act3C  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_Act3D  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_BuildingEnter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_BuildingState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_FurniturePlace  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_FurnitureRemove  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_FurnitureState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_ObjectUseRelease  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_ObjectUseReply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_ObjectUseRequest  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_RoomItemSet  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_VillagerMemoryInit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommRecv_VillagerMemorySetPlayer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_PackVar18  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_PackVar19  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_PackVar1A  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_PackVar1B  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_PackVar1C  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_PackVar1D  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_PackVar1E  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_PackVar1F  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommVillager_UnpackAct3C  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommVillager_UnpackAct3D  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommVillager_UnpackHeader  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FS_EndOverlay  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FS_StartOverlay  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrSync_OnPlaceRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrSync_OnRemoveRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrSync_OnStateRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrSync_OnTopItemRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Heap_AllocAligned  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_InsectNetSync_PackVar  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetHeap_Alloc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetHeap_Free  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSceneMsg_Fini  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSceneMsg_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSyncMsg_Fini  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSyncMsg_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetSyncMsg_Unpack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlanErrand_SetFlag  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlanErrand_SetFossilGroup  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomEntry_RecvEnterReply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomEntry_RecvEnterRequest  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomEntry_RecvLeave  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomObjSync_OnRecv  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gNetHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_02119f84.h"
+#include "proto/autoload_2/unk_0211a258.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/main/unk_02038474.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_0203eb60.h"
 #include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02051218.h"
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_0205b7b0.h"
@@ -164,6 +110,8 @@ public:
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209c390.h"
+#include "proto/main/unk_0209c4a8.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020a6388.h"
@@ -171,6 +119,7 @@ public:
 #include "proto/main/unk_020a6914.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/ov003/unk_ov003_0222e5e0.h"
 
 // ======== unk_02077a54.cpp ========
 namespace n7 {
@@ -200,7 +149,6 @@ extern "C" {
 extern void *gSceneBlockMap;
 }
 extern "C" {
-extern void *gCurrentHeap;
 }
 extern "C" {
 BOOL _ZN11CommManager8isOnlineEv(void *);
@@ -254,7 +202,6 @@ void Heap_adjust(void *);
 extern "C" {
 }
 extern "C" {
-void *Heap_AllocAligned(void *, s32, s32);
 }
 extern "C" {
 }
@@ -390,7 +337,6 @@ void func_0207ff14(void *, s32);
 extern "C" {
 }
 extern "C" {
-void CommVillager_UnpackHeader(s32 *a, s32 *b, u8 *p);
 }
 extern "C" {
 }
@@ -588,7 +534,6 @@ extern void *gCommManager;
 extern "C" {
 }
 extern "C" {
-void CommVillager_UnpackHeader(u32 *o0, u32 *o1, u8 *src);
 }
 extern "C" {
 }
@@ -712,7 +657,7 @@ extern "C" void CommVillager_PackReceivedItem(u8 *out, s32 a, s32 b, u16 *c) {
     NetBuf_WriteU16(out, *c);
 }
 
-extern "C" void CommVillager_UnpackReceivedItem(u32 *o0, u32 *o1, u16 *o2, u8 *src) {
+extern "C" void CommVillager_UnpackReceivedItem(s32 *o0, s32 *o1, u16 *o2, u8 *src) {
     CommVillager_UnpackHeader(o0, o1, src + 2);
     *o2 = NetBuf_ReadU16(src);
 }
@@ -910,7 +855,7 @@ namespace n6 {
 
 
 // ---------------------------------------------------------------------------
-extern "C" u8 *BbsPost_GetText(u8 *p) { return p; }}
+extern "C" u8 *BbsPost_GetText(BbsPost *p) { return p->text; }}
 
 void BbsPost::init(u8 *src) {
     using namespace n6;
@@ -1079,7 +1024,6 @@ namespace n6 {
 // ======== unk_020767f8.cpp ========
 namespace n5 {
 struct Unk_02076f28_T;
-struct BbsMsgString193Local;
 extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
 }
@@ -1116,7 +1060,6 @@ extern "C" {
 extern u8 *gCommManager;
 }
 extern "C" {
-extern u8 *gNetHeap;
 }
 extern "C" {
 }
@@ -1131,10 +1074,8 @@ BOOL _ZN11CommManager7isMyAidEj(void *g, s32 i);
 extern "C" {
 }
 extern "C" {
-void Heap_Free(void *g, s32 a);
 }
 extern "C" {
-void *Heap_AllocAligned(void *g, s32 a, s32 b);
 }
 extern "C" {
 }
@@ -1142,10 +1083,8 @@ extern "C" {
 void FS_LoadOverlayImage(void *p);
 }
 extern "C" {
-void FS_StartOverlay(void *p);
 }
 extern "C" {
-void FS_EndOverlay(void *p);
 }
 extern "C" {
 }
@@ -1216,7 +1155,6 @@ extern "C" {
 void _ZN9MsgString5clearEv(void *p);
 }
 extern "C" {
-void StrBuf_GetBytes(void *p, void *q, u32 n);
 }
 extern "C" {
 }
@@ -1259,7 +1197,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-BOOL BbsPost_SetTextFromMsg(void *self, void *p);
 }
 extern "C" {
 }
@@ -1289,18 +1226,13 @@ struct Unk_02076f28_T {
     ~Unk_02076f28_T() { _ZN13DwcFriendDataD1Ev(this); }
 };
 
-struct BbsMsgString193Local {
-    u32 pad[(0xd8 + 0x40) / 4] __attribute__((aligned(8)));  // MsgString193 (larger on hosts)
-    BbsMsgString193Local() { new (this) MsgString193(); }
-    ~BbsMsgString193Local() { ((MsgString193 *)(this))->MsgString193::~MsgString193(); }
-};
 
 
 
-extern "C" void Bbs_LoadMsg(void *a, u32 b, u32 c) {
+extern "C" void Bbs_LoadMsg(MsgString *a, u32 b, const char *c) {
     volatile u8 v = *gU8None;
     v = (u8)b;
-    MailText_LoadBbs(a, (void *)&v, c);
+    MailText_LoadBbs(a, (u8 *)&v, c);
 }}
 
 
@@ -1324,18 +1256,18 @@ u8 *EncodedString192::data() {
 namespace n5 {
 
 
-extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
+extern "C" BOOL BbsPost_SetTextFromMsg(BbsPost *self, MsgString193 *r1) {
     LabelString o1;
     EncodedString41 o2;
     u8 *buf = BbsPost_GetText(self);
     s32 n = 0;
     s32 i = n;
     for (; i < 6; i++) {
-        void *e = Msg_SkipLines(((MsgString193 *)r1)->text, i);
+        void *e = Msg_SkipLines(r1->text, i);
         if (e != NULL) {
             ((MsgString *)(&o1))->setLine((u8 *)(e));
             ((EncodedString *)(&o2))->fromMsgString((MsgString *)(&o1));
-            StrBuf_GetBytes(&o2, buf + n, 0x28);
+            StrBuf_GetBytes((StrBuf *)&o2, buf + n, 0x28);
             n = n + ((EncodedString41 *)(&o2))->getLength();
             buf[n] = 0x86;
             n = n + 1;
@@ -1348,19 +1280,19 @@ extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
     return TRUE;
 }
 
-extern "C" void Bbs_PostMsgDated(u32 a, u32 b, u32 c, u32 d, u8 e) {
-    BbsMsgString193Local o;
+extern "C" void Bbs_PostMsgDated(u32 a, const char *b, u32 c, u32 d, u8 e) {
+    MsgString193 o;
     u8 l[3];
     Bbs_LoadMsg(&o, a, b);
-    void *r = ((BbsBoard *)(data_021e87d8))->addPost();
+    BbsPost *r = ((BbsBoard *)(data_021e87d8))->addPost();
     l[2] = c;
     l[1] = d;
     l[0] = e;
-    ((BbsPost *)(r))->init((u8 *)(l));
+    r->init(l);
     BbsPost_SetTextFromMsg(r, &o);
 }
 
-extern "C" void Bbs_PostMsgToday(u32 a, u32 b) {
+extern "C" void Bbs_PostMsgToday(u32 a, const char *b) {
     Unk_02076fc8_D d;
     Clock_GetDate(&d);
     Bbs_PostMsgDated(a, b, d.c, d.b, d.a);
@@ -1368,10 +1300,10 @@ extern "C" void Bbs_PostMsgToday(u32 a, u32 b) {
 
 extern "C" void Bbs_AddPost(void *dst) {
     u32 loc;
-    void *r = ((BbsBoard *)(data_021e87d8))->addPost();
+    BbsPost *r = ((BbsBoard *)(data_021e87d8))->addPost();
     Clock_GetDate(&loc);
-    ((BbsPost *)(r))->init((u8 *)(&loc));
-    ((BbsPost *)(r))->markFreeText();
+    r->init((u8 *)(&loc));
+    r->markFreeText();
     MI_CpuCopy8(dst, BbsPost_GetText(r), 0xc0);
 }
 
@@ -1443,7 +1375,7 @@ extern "C" BOOL DwcFriendData_IsNotFriendKey(void *p) {
     return FALSE;
 }
 
-extern "C" u32 DwcFriendData_GetBytes(void *p) { return (u32)p; }
+extern "C" void *DwcFriendData_GetBytes(void *p) { return p; }
 
 extern "C" void *FriendList_Construct(void *p) {
     __cxa_vec_ctor(p, 0x20, 0x1c, FriendEntry_Construct, FriendEntry_Destruct);
@@ -1523,7 +1455,7 @@ extern "C" u8 *PlayerWifiData_Destruct(u8 *p) {
 
 extern "C" void PlayerWifiData_Create(u8 *p) {
     Net_CreateUserData(p, 0x41444d45);
-    u32 r = DwcFriendData_GetBytes(p + 0x40);
+    void *r = DwcFriendData_GetBytes(p + 0x40);
     Net_MakeOwnFriendData(p, r);
 }
 extern "C" s64 PlayerWifiData_GetFriendCode(void *p) { return Net_GetOwnFriendKey(p); }
@@ -1544,16 +1476,16 @@ OverlayHandle::~OverlayHandle() {}
 namespace n5 {
 
 extern "C" void OverlayHandle_Unload(OverlayHandleView *s) {
-    FS_EndOverlay(s->info);
+    FS_EndOverlay(&s->info);
     s->overlayId = -1;
 }
 
 extern "C" void OverlayHandle_Load(OverlayHandleView *s, s32 v) {
     s->isLoading = 1;
     s->overlayId = v;
-    OverlayMgr_GetInfo(s->info, v);
-    FS_LoadOverlayImage(s->info);
-    FS_StartOverlay(s->info);
+    OverlayMgr_GetInfo(&s->info, v);
+    FS_LoadOverlayImage(&s->info);
+    FS_StartOverlay(&s->info.header);
     s->isLoading = 0;
 }
 
@@ -1579,9 +1511,9 @@ extern "C" u32 CommPacket_GetAck(u8 *p) { return *p & 3; }
 
 extern "C" u32 CommPacket_GetType(u8 *p) { return (*p >> 2) & 0x1f; }
 
-extern "C" void *NetHeap_Alloc(s32 a, s32 b) { return Heap_AllocAligned(gNetHeap, a, b); }
+extern "C" void *NetHeap_Alloc(s32 a, s32 b) { return Heap_AllocAligned((Heap *)gNetHeap, a, b); }  // (gNetHeap: a Heap, declared void * in unk_0205b7b0.cpp)
 
-extern "C" void NetHeap_Free(s32 a) { Heap_Free(gNetHeap, a); }
+extern "C" void NetHeap_Free(void *a) { Heap_Free((Heap *)gNetHeap, a); }
 
 extern "C" BOOL Comm_HasSendCredit(u32 mask) {
     s32 i = 3;
@@ -1762,7 +1694,6 @@ extern u8 gFieldSceneKind;
 extern "C" {
 }
 extern "C" {
-extern void *gCurrentHeap;
 }
 extern "C" {
 extern void (*sCommBlockWriters[])(u32);
@@ -1780,7 +1711,7 @@ extern "C" {
 extern void (*sCommSyncVarInitHandlers[])(void *);
 }
 extern "C" {
-extern void (*sCommSyncVarPackHandlers[])(void *, u32, u32);
+extern void (*sCommSyncVarPackHandlers[])(void *, void *, u32);
 }
 extern "C" {
 s32 _ZN11CommManager10readRecordEPhj(CommManager *g, void *out, u32 idx);
@@ -1814,15 +1745,12 @@ extern "C" {
 void Shop_OnPurchaseRecord(void *p, u32 a);
 }
 extern "C" {
-void RoomObjSync_OnRecv(void *p);
 }
 extern "C" {
 }
 extern "C" {
-void BuildingOccupancy_OnEnterRecord(void *p, u32 a);
 }
 extern "C" {
-void Building_ApplyStateRecord(void *p);
 }
 extern "C" {
 }
@@ -1834,26 +1762,21 @@ extern "C" {
 void FtrSync_OnToggleRecord(void *p);
 }
 extern "C" {
-void FtrSync_OnPlaceRecord(u32 a, void *p);
 }
 extern "C" {
-void FtrSync_OnRemoveRecord(u32 a, void *p);
 }
 extern "C" {
-void FtrSync_OnTopItemRecord(u32 a, void *p);
 }
 extern "C" {
 void FtrSync_OnRoomLightRecord(void *p);
 }
 extern "C" {
-void FtrSync_OnStateRecord(void *p);
 }
 extern "C" {
 }
 extern "C" {
 }
 extern "C" {
-void Heap_Free(void *g, void *p);
 }
 extern "C" {
 }
@@ -1864,7 +1787,6 @@ extern "C" {
 void RoomWallFloor_ApplyRecv(void *p);
 }
 extern "C" {
-void *NetHeap_Alloc(u32 a, u32 b);
 }
 extern "C" {
 void _ZN11CommManager13setSyncVarBufEPh(CommManager *g, void *p);
@@ -1888,7 +1810,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void InsectNetSync_PackVar(u32 a, u32 b, u32 c);
 }
 extern "C" {
 }
@@ -1902,7 +1823,7 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-s32 _ZN11CommManager10getSendBufEi(CommManager *g, u32 n);
+u8 *_ZN11CommManager10getSendBufEi(CommManager *g, s32 n);
 }
 extern "C" {
 }
@@ -1975,14 +1896,14 @@ extern "C" void CommBlock_ParseAll(u8 *p, u32 n) {
 }
 extern "C" u32 CommSyncVar_GetVarSize(u32 i) { return sCommSyncVarVarSizes[i]; }
 extern "C" u32 CommSyncVar_GetVarOffset(u32 i) { return sCommSyncVarVarOffsets[i]; }
-extern "C" void CommSyncVar_InitVillager0(u32 a) { NpcNetRecord_InitVillagerVar(a, 0xc); }
-extern "C" void CommSyncVar_InitVillager1(u32 a) { NpcNetRecord_InitVillagerVar(a, 0xd); }
-extern "C" void CommSyncVar_InitVillager2(u32 a) { NpcNetRecord_InitVillagerVar(a, 0xe); }
-extern "C" void CommSyncVar_InitVillager3(u32 a) { NpcNetRecord_InitVillagerVar(a, 0xf); }
-extern "C" void CommSyncVar_InitVillager4(u32 a) { NpcNetRecord_InitVillagerVar(a, 0x10); }
-extern "C" void CommSyncVar_InitVillager5(u32 a) { NpcNetRecord_InitVillagerVar(a, 0x11); }
-extern "C" void CommSyncVar_InitVillager6(u32 a) { NpcNetRecord_InitVillagerVar(a, 0x12); }
-extern "C" void CommSyncVar_InitVillager7(u32 a) { NpcNetRecord_InitVillagerVar(a, 0x13); }
+extern "C" void CommSyncVar_InitVillager0(void *a) { NpcNetRecord_InitVillagerVar(a, 0xc); }
+extern "C" void CommSyncVar_InitVillager1(void *a) { NpcNetRecord_InitVillagerVar(a, 0xd); }
+extern "C" void CommSyncVar_InitVillager2(void *a) { NpcNetRecord_InitVillagerVar(a, 0xe); }
+extern "C" void CommSyncVar_InitVillager3(void *a) { NpcNetRecord_InitVillagerVar(a, 0xf); }
+extern "C" void CommSyncVar_InitVillager4(void *a) { NpcNetRecord_InitVillagerVar(a, 0x10); }
+extern "C" void CommSyncVar_InitVillager5(void *a) { NpcNetRecord_InitVillagerVar(a, 0x11); }
+extern "C" void CommSyncVar_InitVillager6(void *a) { NpcNetRecord_InitVillagerVar(a, 0x12); }
+extern "C" void CommSyncVar_InitVillager7(void *a) { NpcNetRecord_InitVillagerVar(a, 0x13); }
 extern "C" void CommSyncVar_InitVar(u32 i) {
     void (*f)(void *) = sCommSyncVarInitHandlers[i];
     if (f) {
@@ -1990,79 +1911,79 @@ extern "C" void CommSyncVar_InitVar(u32 i) {
         f(o);
     }
 }
-extern "C" void CommSyncVar_PackPos(u32 a, s32 *b) { NetBuf_PackPair20(a, b[0], b[2]); }
-extern "C" void CommSyncVar_PackPlayerPos0(u32 a, s32 *b) { CommSyncVar_PackPos(a, b); }
-extern "C" void CommSyncVar_PackPlayerPos1(u32 a, s32 *b) { CommSyncVar_PackPos(a, b); }
-extern "C" void CommSyncVar_PackPlayerPos2(u32 a, s32 *b) { CommSyncVar_PackPos(a, b); }
-extern "C" void CommSyncVar_PackPlayerPos3(u32 a, s32 *b) { CommSyncVar_PackPos(a, b); }
-extern "C" void CommSyncVar_PackAngle(u32 a, s16 *b) { NetBuf_WriteS16B(a, *b); }
-extern "C" void CommSyncVar_PackPlayerAngle0(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
-extern "C" void CommSyncVar_PackPlayerAngle1(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
-extern "C" void CommSyncVar_PackPlayerAngle2(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
-extern "C" void CommSyncVar_PackPlayerAngle3(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
-extern "C" void CommSyncVar_PackVar08(u32 a) { PlayerActor_PackNetState(a, 0x8); }
-extern "C" void CommSyncVar_PackVar09(u32 a) { PlayerActor_PackNetState(a, 0x9); }
-extern "C" void CommSyncVar_PackVar0A(u32 a) { PlayerActor_PackNetState(a, 0xa); }
-extern "C" void CommSyncVar_PackVar0B(u32 a) { PlayerActor_PackNetState(a, 0xb); }
-extern "C" void CommSyncVar_PackVillager0(u32 a) { NpcNetRecord_PackVillager(a, 0xc); }
-extern "C" void CommSyncVar_PackVillager1(u32 a) { NpcNetRecord_PackVillager(a, 0xd); }
-extern "C" void CommSyncVar_PackVillager2(u32 a) { NpcNetRecord_PackVillager(a, 0xe); }
-extern "C" void CommSyncVar_PackVillager3(u32 a) { NpcNetRecord_PackVillager(a, 0xf); }
-extern "C" void CommSyncVar_PackVillager4(u32 a) { NpcNetRecord_PackVillager(a, 0x10); }
-extern "C" void CommSyncVar_PackVillager5(u32 a) { NpcNetRecord_PackVillager(a, 0x11); }
-extern "C" void CommSyncVar_PackVillager6(u32 a) { NpcNetRecord_PackVillager(a, 0x12); }
-extern "C" void CommSyncVar_PackVillager7(u32 a) { NpcNetRecord_PackVillager(a, 0x13); }
-extern "C" void CommSyncVar_PackPlayerMsg0(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x14, b); }
-extern "C" void CommSyncVar_PackPlayerMsg1(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x15, b); }
-extern "C" void CommSyncVar_PackPlayerMsg2(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x16, b); }
-extern "C" void CommSyncVar_PackPlayerMsg3(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x17, b); }
-extern "C" void CommSyncVar_PackVar18(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x18, b); }
-extern "C" void CommSyncVar_PackVar19(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x19, b); }
-extern "C" void CommSyncVar_PackVar1A(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1a, b); }
-extern "C" void CommSyncVar_PackVar1B(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1b, b); }
-extern "C" void CommSyncVar_PackVar1C(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1c, b); }
-extern "C" void CommSyncVar_PackVar1D(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1d, b); }
-extern "C" void CommSyncVar_PackVar1E(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1e, b); }
-extern "C" void CommSyncVar_PackVar1F(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1f, b); }
-extern "C" void CommSyncVar_PackSpNpc00(u32 a) { NpcNetRecord_PackSpNpc(a, 0x20); }
-extern "C" void CommSyncVar_PackSpNpc01(u32 a) { NpcNetRecord_PackSpNpc(a, 0x21); }
-extern "C" void CommSyncVar_PackSpNpc02(u32 a) { NpcNetRecord_PackSpNpc(a, 0x22); }
-extern "C" void CommSyncVar_PackSpNpc03(u32 a) { NpcNetRecord_PackSpNpc(a, 0x23); }
-extern "C" void CommSyncVar_PackSpNpc04(u32 a) { NpcNetRecord_PackSpNpc(a, 0x24); }
-extern "C" void CommSyncVar_PackSpNpc05(u32 a) { NpcNetRecord_PackSpNpc(a, 0x25); }
-extern "C" void CommSyncVar_PackSpNpc06(u32 a) { NpcNetRecord_PackSpNpc(a, 0x26); }
-extern "C" void CommSyncVar_PackSpNpc07(u32 a) { NpcNetRecord_PackSpNpc(a, 0x27); }
-extern "C" void CommSyncVar_PackSpNpc08(u32 a) { NpcNetRecord_PackSpNpc(a, 0x28); }
-extern "C" void CommSyncVar_PackSpNpc09(u32 a) { NpcNetRecord_PackSpNpc(a, 0x29); }
-extern "C" void CommSyncVar_PackSpNpc0A(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2a); }
-extern "C" void CommSyncVar_PackSpNpc0B(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2b); }
-extern "C" void CommSyncVar_PackSpNpc0C(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2c); }
-extern "C" void CommSyncVar_PackSpNpc0D(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2d); }
-extern "C" void CommSyncVar_PackSpNpc0E(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2e); }
-extern "C" void CommSyncVar_PackSpNpc0F(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2f); }
-extern "C" void CommSyncVar_PackSpNpc10(u32 a) { NpcNetRecord_PackSpNpc(a, 0x30); }
-extern "C" void CommSyncVar_PackSpNpc11(u32 a) { NpcNetRecord_PackSpNpc(a, 0x31); }
-extern "C" void CommSyncVar_PackSpNpc12(u32 a) { NpcNetRecord_PackSpNpc(a, 0x32); }
-extern "C" void CommSyncVar_PackSpNpc13(u32 a) { NpcNetRecord_PackSpNpc(a, 0x33); }
-extern "C" void CommSyncVar_PackSpNpc14(u32 a) { NpcNetRecord_PackSpNpc(a, 0x34); }
-extern "C" void CommSyncVar_PackSpNpc15(u32 a) { NpcNetRecord_PackSpNpc(a, 0x35); }
-extern "C" void CommSyncVar_PackSpNpc16(u32 a) { NpcNetRecord_PackSpNpc(a, 0x36); }
-extern "C" void CommSyncVar_PackSpNpc17(u32 a) { NpcNetRecord_PackSpNpc(a, 0x37); }
-extern "C" void CommSyncVar_PackSpNpc18(u32 a) { NpcNetRecord_PackSpNpc(a, 0x38); }
-extern "C" void CommSyncVar_PackSpNpc19(u32 a) { NpcNetRecord_PackSpNpc(a, 0x39); }
-extern "C" void CommSyncVar_PackSpNpc1A(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3a); }
-extern "C" void CommSyncVar_PackSpNpc1B(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3b); }
-extern "C" void CommSyncVar_PackSpNpc1C(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3c); }
-extern "C" void CommSyncVar_PackSpNpc1D(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3d); }
-extern "C" void CommSyncVar_PackSpNpc1E(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3e); }
-extern "C" void CommSyncVar_PackSpNpc1F(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3f); }
-extern "C" void CommSyncVar_PackSpNpc20(u32 a) { NpcNetRecord_PackSpNpc(a, 0x40); }
-extern "C" void CommSyncVar_PackSpNpc21(u32 a) { NpcNetRecord_PackSpNpc(a, 0x41); }
-extern "C" void CommSyncVar_PackSpNpc22(u32 a) { NpcNetRecord_PackSpNpc(a, 0x42); }
-extern "C" void CommSyncVar_PackSpNpc23(u32 a) { NpcNetRecord_PackSpNpc(a, 0x43); }
-extern "C" void CommSyncVar_PackSpNpc24(u32 a) { NpcNetRecord_PackSpNpc(a, 0x44); }
-extern "C" void CommSyncVar_PackSpNpc25(u32 a) { NpcNetRecord_PackSpNpc(a, 0x45); }
-extern "C" void CommSyncVar_SetVar(u32 a, u32 b, u32 c, s32 d) {
+extern "C" void CommSyncVar_PackPos(u8 *a, s32 *b) { NetBuf_PackPair20(a, b[0], b[2]); }
+extern "C" void CommSyncVar_PackPlayerPos0(u8 *a, s32 *b) { CommSyncVar_PackPos(a, b); }
+extern "C" void CommSyncVar_PackPlayerPos1(u8 *a, s32 *b) { CommSyncVar_PackPos(a, b); }
+extern "C" void CommSyncVar_PackPlayerPos2(u8 *a, s32 *b) { CommSyncVar_PackPos(a, b); }
+extern "C" void CommSyncVar_PackPlayerPos3(u8 *a, s32 *b) { CommSyncVar_PackPos(a, b); }
+extern "C" void CommSyncVar_PackAngle(void *a, s16 *b) { NetBuf_WriteS16B(a, *b); }
+extern "C" void CommSyncVar_PackPlayerAngle0(void *a, s16 *b) { CommSyncVar_PackAngle(a, b); }
+extern "C" void CommSyncVar_PackPlayerAngle1(void *a, s16 *b) { CommSyncVar_PackAngle(a, b); }
+extern "C" void CommSyncVar_PackPlayerAngle2(void *a, s16 *b) { CommSyncVar_PackAngle(a, b); }
+extern "C" void CommSyncVar_PackPlayerAngle3(void *a, s16 *b) { CommSyncVar_PackAngle(a, b); }
+extern "C" void CommSyncVar_PackVar08(void *a) { PlayerActor_PackNetState(a, 0x8); }
+extern "C" void CommSyncVar_PackVar09(void *a) { PlayerActor_PackNetState(a, 0x9); }
+extern "C" void CommSyncVar_PackVar0A(void *a) { PlayerActor_PackNetState(a, 0xa); }
+extern "C" void CommSyncVar_PackVar0B(void *a) { PlayerActor_PackNetState(a, 0xb); }
+extern "C" void CommSyncVar_PackVillager0(void *a) { NpcNetRecord_PackVillager(a, 0xc); }
+extern "C" void CommSyncVar_PackVillager1(void *a) { NpcNetRecord_PackVillager(a, 0xd); }
+extern "C" void CommSyncVar_PackVillager2(void *a) { NpcNetRecord_PackVillager(a, 0xe); }
+extern "C" void CommSyncVar_PackVillager3(void *a) { NpcNetRecord_PackVillager(a, 0xf); }
+extern "C" void CommSyncVar_PackVillager4(void *a) { NpcNetRecord_PackVillager(a, 0x10); }
+extern "C" void CommSyncVar_PackVillager5(void *a) { NpcNetRecord_PackVillager(a, 0x11); }
+extern "C" void CommSyncVar_PackVillager6(void *a) { NpcNetRecord_PackVillager(a, 0x12); }
+extern "C" void CommSyncVar_PackVillager7(void *a) { NpcNetRecord_PackVillager(a, 0x13); }
+extern "C" void CommSyncVar_PackPlayerMsg0(u8 *a, ChatBalloon *b) { ChatBalloon_PackSyncVar(a, 0x14, b); }
+extern "C" void CommSyncVar_PackPlayerMsg1(u8 *a, ChatBalloon *b) { ChatBalloon_PackSyncVar(a, 0x15, b); }
+extern "C" void CommSyncVar_PackPlayerMsg2(u8 *a, ChatBalloon *b) { ChatBalloon_PackSyncVar(a, 0x16, b); }
+extern "C" void CommSyncVar_PackPlayerMsg3(u8 *a, ChatBalloon *b) { ChatBalloon_PackSyncVar(a, 0x17, b); }
+extern "C" void CommSyncVar_PackVar18(void *a, void *b) { InsectNetSync_PackVar(a, 0x18); }
+extern "C" void CommSyncVar_PackVar19(void *a, void *b) { InsectNetSync_PackVar(a, 0x19); }
+extern "C" void CommSyncVar_PackVar1A(void *a, void *b) { InsectNetSync_PackVar(a, 0x1a); }
+extern "C" void CommSyncVar_PackVar1B(void *a, void *b) { InsectNetSync_PackVar(a, 0x1b); }
+extern "C" void CommSyncVar_PackVar1C(void *a, void *b) { InsectNetSync_PackVar(a, 0x1c); }
+extern "C" void CommSyncVar_PackVar1D(void *a, void *b) { InsectNetSync_PackVar(a, 0x1d); }
+extern "C" void CommSyncVar_PackVar1E(void *a, void *b) { InsectNetSync_PackVar(a, 0x1e); }
+extern "C" void CommSyncVar_PackVar1F(void *a, void *b) { InsectNetSync_PackVar(a, 0x1f); }
+extern "C" void CommSyncVar_PackSpNpc00(void *a) { NpcNetRecord_PackSpNpc(a, 0x20); }
+extern "C" void CommSyncVar_PackSpNpc01(void *a) { NpcNetRecord_PackSpNpc(a, 0x21); }
+extern "C" void CommSyncVar_PackSpNpc02(void *a) { NpcNetRecord_PackSpNpc(a, 0x22); }
+extern "C" void CommSyncVar_PackSpNpc03(void *a) { NpcNetRecord_PackSpNpc(a, 0x23); }
+extern "C" void CommSyncVar_PackSpNpc04(void *a) { NpcNetRecord_PackSpNpc(a, 0x24); }
+extern "C" void CommSyncVar_PackSpNpc05(void *a) { NpcNetRecord_PackSpNpc(a, 0x25); }
+extern "C" void CommSyncVar_PackSpNpc06(void *a) { NpcNetRecord_PackSpNpc(a, 0x26); }
+extern "C" void CommSyncVar_PackSpNpc07(void *a) { NpcNetRecord_PackSpNpc(a, 0x27); }
+extern "C" void CommSyncVar_PackSpNpc08(void *a) { NpcNetRecord_PackSpNpc(a, 0x28); }
+extern "C" void CommSyncVar_PackSpNpc09(void *a) { NpcNetRecord_PackSpNpc(a, 0x29); }
+extern "C" void CommSyncVar_PackSpNpc0A(void *a) { NpcNetRecord_PackSpNpc(a, 0x2a); }
+extern "C" void CommSyncVar_PackSpNpc0B(void *a) { NpcNetRecord_PackSpNpc(a, 0x2b); }
+extern "C" void CommSyncVar_PackSpNpc0C(void *a) { NpcNetRecord_PackSpNpc(a, 0x2c); }
+extern "C" void CommSyncVar_PackSpNpc0D(void *a) { NpcNetRecord_PackSpNpc(a, 0x2d); }
+extern "C" void CommSyncVar_PackSpNpc0E(void *a) { NpcNetRecord_PackSpNpc(a, 0x2e); }
+extern "C" void CommSyncVar_PackSpNpc0F(void *a) { NpcNetRecord_PackSpNpc(a, 0x2f); }
+extern "C" void CommSyncVar_PackSpNpc10(void *a) { NpcNetRecord_PackSpNpc(a, 0x30); }
+extern "C" void CommSyncVar_PackSpNpc11(void *a) { NpcNetRecord_PackSpNpc(a, 0x31); }
+extern "C" void CommSyncVar_PackSpNpc12(void *a) { NpcNetRecord_PackSpNpc(a, 0x32); }
+extern "C" void CommSyncVar_PackSpNpc13(void *a) { NpcNetRecord_PackSpNpc(a, 0x33); }
+extern "C" void CommSyncVar_PackSpNpc14(void *a) { NpcNetRecord_PackSpNpc(a, 0x34); }
+extern "C" void CommSyncVar_PackSpNpc15(void *a) { NpcNetRecord_PackSpNpc(a, 0x35); }
+extern "C" void CommSyncVar_PackSpNpc16(void *a) { NpcNetRecord_PackSpNpc(a, 0x36); }
+extern "C" void CommSyncVar_PackSpNpc17(void *a) { NpcNetRecord_PackSpNpc(a, 0x37); }
+extern "C" void CommSyncVar_PackSpNpc18(void *a) { NpcNetRecord_PackSpNpc(a, 0x38); }
+extern "C" void CommSyncVar_PackSpNpc19(void *a) { NpcNetRecord_PackSpNpc(a, 0x39); }
+extern "C" void CommSyncVar_PackSpNpc1A(void *a) { NpcNetRecord_PackSpNpc(a, 0x3a); }
+extern "C" void CommSyncVar_PackSpNpc1B(void *a) { NpcNetRecord_PackSpNpc(a, 0x3b); }
+extern "C" void CommSyncVar_PackSpNpc1C(void *a) { NpcNetRecord_PackSpNpc(a, 0x3c); }
+extern "C" void CommSyncVar_PackSpNpc1D(void *a) { NpcNetRecord_PackSpNpc(a, 0x3d); }
+extern "C" void CommSyncVar_PackSpNpc1E(void *a) { NpcNetRecord_PackSpNpc(a, 0x3e); }
+extern "C" void CommSyncVar_PackSpNpc1F(void *a) { NpcNetRecord_PackSpNpc(a, 0x3f); }
+extern "C" void CommSyncVar_PackSpNpc20(void *a) { NpcNetRecord_PackSpNpc(a, 0x40); }
+extern "C" void CommSyncVar_PackSpNpc21(void *a) { NpcNetRecord_PackSpNpc(a, 0x41); }
+extern "C" void CommSyncVar_PackSpNpc22(void *a) { NpcNetRecord_PackSpNpc(a, 0x42); }
+extern "C" void CommSyncVar_PackSpNpc23(void *a) { NpcNetRecord_PackSpNpc(a, 0x43); }
+extern "C" void CommSyncVar_PackSpNpc24(void *a) { NpcNetRecord_PackSpNpc(a, 0x44); }
+extern "C" void CommSyncVar_PackSpNpc25(void *a) { NpcNetRecord_PackSpNpc(a, 0x45); }
+extern "C" void CommSyncVar_SetVar(u32 a, void *b, u32 c, s32 d) {
     CommManager *g = gCommManager;
     s32 r = (g)->isSyncVarDirty(a);
     u32 sz = CommSyncVar_GetVarSize(a);
@@ -2100,8 +2021,8 @@ extern "C" void CommRecv_PatternMove(u32 a) {
     PatternSrc_ApplyNetMove(buf);
 }
 extern "C" void CommRecv_SubCommand(u32 a, u32 b, u32 c, u32 d) {
-    void *g = gCurrentHeap;
-    void *r = Heap_AllocTail(g, a);
+    Heap *g = gCurrentHeap;
+    u8 *r = (u8 *)Heap_AllocTail(g, a);
     _ZN11CommManager10readRecordEPhj(gCommManager, r, a);
     CommSub_Dispatch(r, d);
     Heap_Free(g, r);
@@ -2112,7 +2033,7 @@ extern "C" void CommRecv_CharInteract(u32 a, u32 b, u32 c, u32 d) {
     CharInteractSync_Dispatch(buf, d);
 }
 extern "C" void CommRecv_FurnitureState(u32 a) {
-    u8 buf[4];
+    u32 buf[1];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     FtrSync_OnStateRecord(buf);
 }
@@ -2124,17 +2045,17 @@ extern "C" void CommRecv_HouseRoomFlag(u32 a) {
 extern "C" void CommRecv_RoomItemSet(u32 a, u32 b, u32 c) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
-    FtrSync_OnTopItemRecord(c, buf);
+    FtrSync_OnTopItemRecord(c, (Unk_020520a8_W *)buf);  // (the received record)
 }
 extern "C" void CommRecv_FurnitureRemove(u32 a, u32 b, u32 c) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
-    FtrSync_OnRemoveRecord(c, buf);
+    FtrSync_OnRemoveRecord(c, (Unk_02052134_W *)buf);  // (the received record)
 }
 extern "C" void CommRecv_FurniturePlace(u32 a, u32 b, u32 c) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
-    FtrSync_OnPlaceRecord(c, buf);
+    FtrSync_OnPlaceRecord(c, (FtrPlaceRecord *)buf);  // (the received record)
 }
 extern "C" void CommRecv_FurnitureUseRequest(u32 a) {
     u8 buf[4];
@@ -2150,14 +2071,14 @@ extern "C" void CommRecv_SpotReserveGranted() { SpotSync_OnReserveReply(1); }
 extern "C" void CommRecv_SpotReserveDenied() { SpotSync_OnReserveReply(0); }
 extern "C" void CommRecv_SpotRelease(u32 a, u32 b, u32 c, u32 d) { SpotSync_OnRelease(d); }
 extern "C" void CommRecv_BuildingState(u32 a) {
-    u8 buf[4];
+    u16 buf[2];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     Building_ApplyStateRecord(buf);
 }
 extern "C" void CommRecv_BuildingEnter(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    BuildingOccupancy_OnEnterRecord(buf, d);
+    BuildingOccupancy_OnEnterRecord((Flags1 *)buf, d);  // (the received record)
 }
 extern "C" void CommRecv_BuildingLeave(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
@@ -2165,7 +2086,7 @@ extern "C" void CommRecv_BuildingLeave(u32 a, u32 b, u32 c, u32 d) {
     BuildingOccupancy_OnLeaveRecord(buf, d);
 }
 extern "C" void CommRecv_Act25(u32 a) {
-    u8 buf[4];
+    NibblePair buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
     RoomObjSync_OnRecv(buf);
 }
@@ -2275,7 +2196,6 @@ s32 _ZN12ErrandRecord7getKindEv(void *);
 extern "C" {
 }
 extern "C" {
-s32 CommVillager_UnpackAct3D(u32 *, u8 *, u16 *, s32 *, u8 *, u32 *);
 }
 extern "C" {
 void *Villager_GetState(void *);
@@ -2293,7 +2213,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void CommVillager_UnpackAct3C(u32 *, u8 *, u8 *, u16 *);
 }
 extern "C" {
 s32 _ZN12ErrandRecord7setStepEh(void *, u32);
@@ -2304,10 +2223,8 @@ extern "C" {
 s32 PlanErrand_AdvanceStep(void *);
 }
 extern "C" {
-s32 PlanErrand_SetFossilGroup(void *, u32);
 }
 extern "C" {
-s32 PlanErrand_SetFlag(void *, u32);
 }
 extern "C" {
 }
@@ -2321,7 +2238,6 @@ extern "C" {
 s32 _ZN14VillagerMemory15setReceivedItemEPt(void *, u16 *);
 }
 extern "C" {
-void CommVillager_UnpackHeader(u32 *, u32 *, void *);
 }
 extern "C" {
 s32 _ZN14VillagerMemory13setFriendshipEa(void *, s32);
@@ -2336,13 +2252,10 @@ extern "C" {
 s32 VillagerMemory_InitForPlayer(void *, void *, u8 *, s32);
 }
 extern "C" {
-s32 RoomEntry_RecvLeave(void *, s32);
 }
 extern "C" {
-s32 RoomEntry_RecvEnterReply(void *);
 }
 extern "C" {
-s32 RoomEntry_RecvEnterRequest(void *, s32);
 }
 extern "C" {
 s32 FieldAction_OnNetResult(void *, s32);
@@ -2393,13 +2306,13 @@ extern "C" {
 s32 PendingUnit_IndexAt(Vec2 *, u32);
 }
 extern "C" {
-s32 Field_IsUnitClearOfOthersForAid(Vec2 *, void *);
+BOOL Field_IsUnitClearOfOthersForAid(Vec2 *, u32);
 }
 extern "C" {
 PendingUnit *PendingUnit_Get(u32 i);
 }
 extern "C" {
-s32 FieldAction_HostProcess(void *, BOOL, void *);
+void FieldAction_HostProcess(FieldActionRequestMsg *, u8, s32);
 }
 extern "C" {
 extern void *gCommManager;
@@ -2453,7 +2366,7 @@ extern "C" void CommRecv_FishDisplay(s32 n, s32 b, s32 c, s32 d) {
     FishDisplay_OnNetPacket(buf, d);
 }
 
-extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, u32 d) {
     u16 h, v;
     u8 buf[4];
     u32 k;
@@ -2486,7 +2399,7 @@ extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
     }
 }
 
-extern "C" void CommRecv_HairChange(s32 n, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_HairChange(s32 n, s32 b, s32 c, u32 d) {
     u8 buf[3];
     ((CommManager *)(gCommManager))->readRecord((u8 *)(buf), n);
     PlayerActor_UnpackHair(&buf[0], &buf[1], &buf[2]);
@@ -2507,7 +2420,7 @@ extern "C" void CommRecv_TanChange(s32 n, s32 b, s32 c, s32 d) {
     PlayerActor_SetTan(buf[0], d);
 }
 
-extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, u32 d) {
     void *grid;
     volatile u16 c1, b1, c2, b2, a1, a2;
     FieldActionRequestMsg buf;
@@ -2561,27 +2474,28 @@ extern "C" void CommRecv_ItemActionResult(s32 a, s32 b, s32 c) {
 }
 
 extern "C" void CommRecv_ObjectUseRequest(s32 a, s32 b, s32 c, s32 d) {
-    u32 buf;
-    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 1);
-    RoomEntry_RecvEnterRequest(&buf, d);
+    u8 buf[4];
+    ((CommManager *)(gCommManager))->readRecord(buf, 1);
+    RoomEntry_RecvEnterRequest(buf, d);
 }
 
 extern "C" void CommRecv_ObjectUseReply() {
-    u32 buf;
-    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 1);
-    RoomEntry_RecvEnterReply(&buf);
+    u8 buf[4];
+    ((CommManager *)(gCommManager))->readRecord(buf, 1);
+    RoomEntry_RecvEnterReply(buf);
 }
 
 extern "C" void CommRecv_ObjectUseRelease(s32 a, s32 b, s32 c, s32 d) {
-    u32 buf;
-    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 1);
-    RoomEntry_RecvLeave(&buf, d);
+    u8 buf[4];
+    ((CommManager *)(gCommManager))->readRecord(buf, 1);
+    RoomEntry_RecvLeave(buf, d);
 }
 
-extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {
-    u32 buf, id, x;
-    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), n);
-    CommVillager_UnpackHeader(&id, &x, &buf);
+extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, u32 d) {
+    u8 buf[4];
+    s32 id, x;
+    ((CommManager *)(gCommManager))->readRecord(buf, n);
+    CommVillager_UnpackHeader(&id, &x, buf);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
@@ -2592,10 +2506,11 @@ extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {
     }
 }
 
-extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, void *d) {
-    u32 buf, id, x;
-    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), n);
-    CommVillager_UnpackHeader(&id, &x, &buf);
+extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, u32 d) {
+    u8 buf[4];
+    s32 id, x;
+    ((CommManager *)(gCommManager))->readRecord(buf, n);
+    CommVillager_UnpackHeader(&id, &x, buf);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
@@ -2608,7 +2523,7 @@ extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, void *d) {
 
 extern "C" void CommRecv_VillagerImpression() {
     u8 b[2];
-    u32 id, x;
+    s32 id, x;
     void *r5 = gCommManager;
     ((CommManager *)(r5))->readRecord((u8 *)(b), 1);
     CommVillager_UnpackHeader(&id, &x, b);
@@ -2624,10 +2539,10 @@ extern "C" void CommRecv_VillagerImpression() {
 
 extern "C" void CommRecv_VillagerFriendship() {
     s8 b[2];
-    u32 id, x;
+    s32 id, x;
     void *r5 = gCommManager;
     ((CommManager *)(r5))->readRecord((u8 *)(b), 1);
-    CommVillager_UnpackHeader(&id, &x, b);
+    CommVillager_UnpackHeader(&id, &x, (u8 *)b);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
@@ -2640,8 +2555,8 @@ extern "C" void CommRecv_VillagerFriendship() {
 
 extern "C" void CommRecv_VillagerReceivedItem() {
     struct { u16 x; u8 y[3]; } l;
-    u32 id;
-    u32 k;
+    s32 id;
+    s32 k;
     l.x = 0xfff1;
     ((CommManager *)(gCommManager))->readRecord((u8 *)(l.y), 3);
     CommVillager_UnpackReceivedItem(&id, &k, &l.x, l.y);
@@ -2657,15 +2572,15 @@ extern "C" void CommRecv_VillagerReceivedItem() {
 }
 
 extern "C" void CommRecv_Act3C() {
-    struct { u8 a; u8 b; u16 c; } l;
-    u32 id;
+    struct { u8 a; u8 b; u8 c[2]; } l;
+    s32 id;
     l.a = 6;
     l.b = 0;
-    ((CommManager *)(gCommManager))->readRecord((u8 *)(&l.c), 2);
-    CommVillager_UnpackAct3C(&id, &l.a, &l.b, &l.c);
+    ((CommManager *)(gCommManager))->readRecord(l.c, 2);
+    CommVillager_UnpackAct3C(&id, &l.a, &l.b, l.c);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        u8 *r4 = (u8 *)VillagerPlanBlock_GetErrand(Villager_GetPlan(r0));
+        PlanErrand *r4 = (PlanErrand *)VillagerPlanBlock_GetErrand((u8 *)Villager_GetPlan(r0));
         switch (l.a) {
         case 0:
             if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(r4))) {
@@ -2691,7 +2606,7 @@ extern "C" void CommRecv_Act3C() {
             }
         case 5:
             if (_ZN12ErrandRecord8isActiveEv(PlanErrand_GetRecord(r4))) {
-                *(r4 + 0x26) = l.b;
+                *((u8 *)r4 + 0x26) = l.b;  // (PlanErrand::count; PlanErrand is local to unk_02098e90.cpp)
             }
             break;
         }
@@ -2700,24 +2615,24 @@ extern "C" void CommRecv_Act3C() {
 
 extern "C" void CommRecv_Act3D() {
     struct { u8 a; u8 b; u16 c; } l;
-    u32 buf;
-    u32 id;
+    u8 buf[4];
+    s32 id;
     s32 n;
     l.a = 0x16;
     l.c = 0xfff1;
     n = 4;
     l.b = 0;
-    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 4);
-    CommVillager_UnpackAct3D(&id, &l.a, &l.c, &n, &l.b, &buf);
+    ((CommManager *)(gCommManager))->readRecord(buf, 4);
+    CommVillager_UnpackAct3D(&id, &l.a, &l.c, &n, &l.b, buf);
     void *r6 = SaveVillagers_Get(gSaveVillagers, id);
     if (r6 != NULL) {
-        void *r7 = VillagerPlanBlock_GetErrand(Villager_GetPlan(r6));
+        PlanErrand *r7 = (PlanErrand *)VillagerPlanBlock_GetErrand((u8 *)Villager_GetPlan(r6));  // (VillagerPlanBlock_GetErrand: u8 * in unk_02098e90.cpp)
         void *r4 = NULL;
         BOOL t = l.b ? TRUE : FALSE;
         BOOL r5 = t ? TRUE : FALSE;
         _ZN12ErrandRecord5clearEv(VillagerState_GetErrand(Villager_GetState(r6)));
         if (n < 4) {
-            void *q = PlayerData_GetBySessionSlot((void *)n);
+            void *q = PlayerData_GetBySessionSlot(n);
             if (q != NULL) {
                 r4 = ((PlayerData *)(q))->getPlayerId();
             }
@@ -2728,13 +2643,13 @@ extern "C" void CommRecv_Act3D() {
 
 extern "C" void CommRecv_Act3F() {
     struct { u16 x; u8 y[4]; } l;
-    u32 id;
+    s32 id;
     l.x = 0xfff1;
     ((CommManager *)(gCommManager))->readRecord((u8 *)(l.y), 4);
     CommVillager_UnpackItem(&id, &l.x, l.y);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
-        void *r5 = VillagerPlanBlock_GetErrand(Villager_GetPlan(r0));
+        PlanErrand *r5 = (PlanErrand *)VillagerPlanBlock_GetErrand((u8 *)Villager_GetPlan(r0));
         void *r4 = PlanErrand_GetRecord(r5);
         if (_ZN12ErrandRecord8isActiveEv(r4)) {
             if (_ZN12ErrandRecord7getKindEv(r4) == 0) {
@@ -2753,7 +2668,7 @@ extern "C" void CommRecv_Act3F() {
 
 extern "C" void CommRecv_VillagerShirt() {
     struct { u16 x; u8 y[3]; } l;
-    u32 id;
+    s32 id;
     VillagerShirtRecvStackPad pad;
     l.x = 0xfff1;
     ((CommManager *)(gCommManager))->readRecord((u8 *)(l.y), 3);
@@ -2766,7 +2681,7 @@ extern "C" void CommRecv_VillagerShirt() {
 }
 
 extern "C" void CommRecv_VillagerItems() {
-    u32 id;
+    s32 id;
     u16 arr[4];
     u8 buf[9];
     void *r5;
@@ -2788,7 +2703,7 @@ extern "C" void CommRecv_VillagerItems() {
     }
 }
 
-extern "C" void CommRecv_PeerNetState(s32 a, s32 b, s32 c, void *d) {
+extern "C" void CommRecv_PeerNetState(s32 a, s32 b, s32 c, u32 d) {
     u8 v;
     ((CommManager *)(gCommManager))->readRecord((u8 *)(&v), 1);
     NetSession_SetSyncState(d, v);
@@ -2798,7 +2713,7 @@ extern "C" void CommRecv_OwnNetState() {
     CommManager *o = (CommManager *)gCommManager;
     u8 b;
     ((CommManager *)(o))->readRecord((u8 *)(&b), 1);
-    NetSession_SetSyncState((void *)o->myAid, b);
+    NetSession_SetSyncState(o->myAid, b);
 }
 
 extern "C" void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d) {
@@ -2850,7 +2765,7 @@ u8 *_ZN11CommManager10getSendBufEi(void *, s32);
 extern "C" {
 }
 extern "C" {
-BOOL _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(void *, void *, u32, u32, u32, u32, u32, u32, u32, u32);
+BOOL _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(void *, u8 *, u32, u32, u8 *, u32, u16, u8 *, u32, u16);
 }
 extern "C" {
 }
@@ -2912,19 +2827,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void NetSyncMsg_Init(void *);
-}
-extern "C" {
-void NetSyncMsg_Unpack(void *, void *, void *, void *);
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-}
-extern "C" {
-void NetSyncMsg_Fini(void *);
 }
 extern "C" {
 }
@@ -2945,14 +2847,22 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void NetSceneMsg_Init(void *);
 }
 extern "C" {
 }
 extern "C" {
 }
 extern "C" {
-void NetSceneMsg_Fini(void *);
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
+}
+extern "C" {
 }
 extern "C" {
 s32 Scene_GetCurrent();
@@ -2990,14 +2900,14 @@ extern "C" void CommRecv_Act07() {
 }
 extern "C" void CommRecv_Act08(u32 a, u32 b, u32 c, u32 d) {
     u8 t[2];
-    NetSceneMsg_Init(t);
+    NetSceneMsg_Init();
     _ZN11CommManager10readRecordEPhj(gCommManager, t, 1);
     NetSceneMsg_Get(t, t + 1);
     NetArea_QueueMoveRequest(d, t[1]);
-    NetSceneMsg_Fini(t);
+    NetSceneMsg_Fini();
 }
 extern "C" void CommRecv_SlotStatus() {
-    struct { u8 t[4]; u32 pad; u32 w1; u32 w2; } l;
+    struct { u8 t[4]; u32 pad; s32 w1; s32 w2; } l;
     NetStatusMsg_Init(l.t + 3);
     _ZN11CommManager10readRecordEPhj(gCommManager, l.t + 3, 2);
     NetStatusMsg_Unpack(l.t + 3, &l.w1, l.t, l.t + 1, l.t + 2, &l.w2);
@@ -3010,7 +2920,7 @@ extern "C" void CommRecv_Act0A(u32 a, u32 b, u32 c, u32 d) {
     NetArea_SetMoveReady(d, t[0]);
 }
 extern "C" void CommRecv_Act0B(u32 a, u32 b, u32 c, u32 d) {
-    struct { u8 t[4]; u32 pad; u32 w; } l;
+    struct { u8 t[4]; u32 pad; s32 w; } l;
     NetStatusUpdateMsg_Init(l.t + 3);
     _ZN11CommManager10readRecordEPhj(gCommManager, l.t + 3, 2);
     NetStatusUpdateMsg_Unpack(l.t + 3, l.t, l.t + 1, l.t + 2, &l.w);
@@ -3018,29 +2928,30 @@ extern "C" void CommRecv_Act0B(u32 a, u32 b, u32 c, u32 d) {
     NetStatusUpdateMsg_Fini(l.t + 3);
 }
 extern "C" void CommRecv_Act0C(u32 a, u32 b, u32 c, u32 d) {
-    s32 v[5];
-    NetSyncMsg_Init(v);
+    u8 msg[4];
+    s32 v[4];
+    NetSyncMsg_Init();
     CommManager *g = gCommManager;
-    ((CommManager *)(g))->readRecord((u8 *)(v), 1);
-    NetSyncMsg_Unpack(v, v + 1, v + 2, v + 3);
+    ((CommManager *)(g))->readRecord(msg, 1);
+    NetSyncMsg_Unpack(msg, v + 1, v + 2, v + 3);
     if (d == 0) NetSession_SetMemberSyncReply(g->myAid, v[1]);
     else NetSession_SetMemberSyncReply(d, v[1]);
     if (v[2] < 4) NetSession_SetSyncKind(v[2]);
     if (v[3] < 4) NetSession_SetSyncRequester(v[3]);
-    NetSyncMsg_Fini(v);
+    NetSyncMsg_Fini();
 }
 extern "C" void CommRecv_Act0D(u32 a, u32 b, u32 c, u32 d) { NetArea_SetMemberAck(d, 1); }
 extern "C" void CommRecv_Act0E(u32 a, u32 b, u32 c, u32 d) { NetArea_SetStateRequester(d); }
 extern "C" void CommRecv_Act0F(u32 n) {
     void *g = gCommManager;
     ((CommManager *)(g))->readRecord((u8 *)((void *)((CommManager *)(g))->getAuxBufA()), n);
-    ((CommManager *)(g))->setAuxLenA((u32)((void *)n));
+    ((CommManager *)(g))->setAuxLenA(n);
     NetArea_OnStateAReceived();
 }
 extern "C" void CommRecv_Act10(u32 n) {
     void *g = gCommManager;
     ((CommManager *)(g))->readRecord((u8 *)((void *)((CommManager *)(g))->getAuxBufB()), n);
-    ((CommManager *)(g))->setAuxLenB((u32)((void *)n));
+    ((CommManager *)(g))->setAuxLenB(n);
 }
 extern "C" void CommRecv_Act11() { NetArea_SetOwnerAck(1); }
 extern "C" void CommRecv_ItemSet(u32 n) {
@@ -3140,9 +3051,9 @@ extern "C" BOOL CommSend_VillagerTransfer(u8 *p) {
     }
     return FALSE;
 }
-extern "C" BOOL CommSend_VillagerTransferReply(s32 a, void *b, s32 c, void *d, s32 e, void *f) {
+extern "C" BOOL CommSend_VillagerTransferReply(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
     s32 vals[3];
-    void *ptrs[3];
+    s32 aids[3];
     u8 *bufs[3];
     s32 offs[3];
     u16 masks[3];
@@ -3152,7 +3063,7 @@ extern "C" BOOL CommSend_VillagerTransferReply(s32 a, void *b, s32 c, void *d, s
     _Z20NetOverlay_AssertAnyv();
     if (!Net_IsReadyToSend()) goto fail;
     vals[0] = a; vals[1] = c; vals[2] = e;
-    ptrs[0] = b; ptrs[1] = d; ptrs[2] = f;
+    aids[0] = b; aids[1] = d; aids[2] = f;
     func_02133ef8(bufs, 0xc);
     func_02133ef8(offs, 0xc);
     func_02133ef8(masks, 6);
@@ -3172,7 +3083,7 @@ extern "C" BOOL CommSend_VillagerTransferReply(s32 a, void *b, s32 c, void *d, s
                 bb[1] = 1;
                 offs[i] = offs[i] + 1;
             } else {
-                MI_CpuCopy8(TownExchange_GetForAid((u32)ptrs[i]), bb + 1, 0x84c);
+                MI_CpuCopy8(TownExchange_GetForAid(aids[i]), bb + 1, 0x84c);
                 offs[i] = offs[i] + 0x84c;
             }
             masks[i] = 1 << (i + 1);
@@ -3182,7 +3093,7 @@ extern "C" BOOL CommSend_VillagerTransferReply(s32 a, void *b, s32 c, void *d, s
         if (e == 3) goto yes;
     }
     if (Comm_HasSendCredit((u16)(masks[0] | masks[1] | masks[2]))) {
-        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, bufs[0], offs[0], masks[0], (u32)bufs[1], offs[1], masks[1], (u32)bufs[2], offs[2], masks[2]);
+        return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, bufs[0], offs[0], masks[0], bufs[1], offs[1], masks[1], bufs[2], offs[2], masks[2]);
     }
     return FALSE;
 yes:
@@ -3302,7 +3213,7 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-s32 _ZN15SaveManagerTalk13func_020a148cEv(s32);
+u32 _ZN15SaveManagerTalk13func_020a148cEv(SaveManager *);
 }
 extern "C" {
 }
@@ -3321,7 +3232,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void CommBlock_ParseAll(void *, s32, s32);
 }
 extern "C" {
 s32 _ZN11CommManager13getSyncVarBufEv(CommManager *);
@@ -3343,7 +3253,7 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-s32 _ZN15SaveManagerTalk19setTransferReceivedEjh(s32, s32, s32);
+void _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager *, u32, u8);
 }
 extern "C" {
 }
@@ -3370,12 +3280,12 @@ extern "C" {
 s32 _ZN11CommManager7isMyAidEj(CommManager *, s32);
 }
 extern "C" {
-s32 _ZN11CommManager10getSendBufEi(CommManager *, s32);
+u8 *_ZN11CommManager10getSendBufEi(CommManager *, s32);
 }
 extern "C" {
 }
 extern "C" {
-s32 _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(CommManager *, s32, u32, u32, s32, s32, s32, s32, s32, s32);
+BOOL _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(CommManager *, u8 *, u32, u32, u8 *, u32, u16, u8 *, u32, u16);
 }
 extern "C" {
 }
@@ -3395,8 +3305,8 @@ extern "C" s32 CommSend_DateTime(u32 a) {
     if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(a) != 0) {
         CommManager *g = gCommManager;
         (g)->isMyAid(0);
-        u8 *p = (u8 *)_ZN11CommManager10getSendBufEi(g, 4);
-        CommPacket_SetHeader((s32)p, 0, 0xa);
+        u8 *p = _ZN11CommManager10getSendBufEi(g, 4);
+        CommPacket_SetHeader(p, 0, 0xa);
         u32 t[2];
         t[0] = 0;
         t[1] = 0;
@@ -3411,8 +3321,8 @@ extern "C" s32 CommCtrl_SendAct0E(u8 a, u32 b) {
         _Z20NetOverlay_AssertAnyv();
         if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(b) != 0) {
             CommManager *g = gCommManager;
-            u8 *p = (u8 *)_ZN11CommManager10getSendBufEi(g, 4);
-            CommPacket_SetHeader((s32)p, 0, 0xe);
+            u8 *p = _ZN11CommManager10getSendBufEi(g, 4);
+            CommPacket_SetHeader(p, 0, 0xe);
             p[1] = a;
             return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 2, b, 0, 0, 0, 0, 0, 0);
         }
@@ -3424,10 +3334,10 @@ extern "C" s32 CommSend_SlotStatusAll(s32 a) {
     u16 m = 1 << a;
     _Z20NetOverlay_AssertAnyv();
     if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(m) != 0) {
-        u8 *p = (u8 *)_ZN11CommManager10getSendBufEi(gCommManager, 4);
+        u8 *p = _ZN11CommManager10getSendBufEi(gCommManager, 4);
         u32 len = 0;
         u32 j;
-        CommPacket_SetHeader((s32)p, 0, 0xf);
+        CommPacket_SetHeader(p, 0, 0xf);
         p++;
         len++;
         for (j = 0; j < 4; j++) {
@@ -3497,12 +3407,12 @@ extern "C" s32 CommCtrl_SendAct14() {
     }
     return 0;
 }
-extern "C" s32 CommSend_PlayerDataToHost(void *a) {
+extern "C" s32 CommSend_PlayerDataToHost(u8 *a) {
     s32 r = PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot));
     return CommSend_Chunked(a, r, 0x228c, 0x15, 1);
 }
-extern "C" s32 CommSend_LetterStorageToHost(void *a) {
-    s32 r = PlayerData_GetLetterStorage(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)));
+extern "C" s32 CommSend_LetterStorageToHost(u8 *a) {
+    u8 *r = PlayerData_GetLetterStorage(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)));
     return CommSend_Chunked(a, r, 0x477c, 0x16, 1);
 }
 extern "C" s32 CommCtrl_SendAct17() {
@@ -3546,7 +3456,7 @@ extern "C" void CommCtrl_RecvVillagerTransfer(u8 *a, s32 b, s32 c) {
     u32 n;
     if (b != 0) {
         MI_CpuCopy8(a, &n, 4);
-        s32 q = TownExchange_GetForAid(c);
+        u8 *q = (u8 *)TownExchange_GetForAid(c);
         MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
     } else {
         TownExchange_Clear(TownExchange_GetForAid(c));
@@ -3624,12 +3534,12 @@ extern "C" void CommCtrl_RecvSyncVarChunk(u8 *a, s32 b) {
     s32 q = _ZN11CommManager13getSyncVarBufEv(gCommManager);
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
 }
-extern "C" void CommCtrl_RecvStateBlocks(void *a, s32 b, s32 c) {
-    CommBlock_ParseAll(a, b, c);
+extern "C" void CommCtrl_RecvStateBlocks(u8 *a, s32 b, s32 c) {
+    CommBlock_ParseAll(a, b);
 }
 extern "C" void CommCtrl_Act0E(u8 *a, s32 b, s32 c) {
     if (Scene_GetCurrent() == 0x2e || Scene_GetCurrent() == 9) {
-        s32 p = SaveManager_Get();
+        SaveManager *p = SaveManager_Get();
         if (p != 0) {
             if (Net_GetMyAid() == 0) {
                 SaveManager_SetCtrlAct0E(p, c, *a);
@@ -3644,7 +3554,7 @@ extern "C" void CommCtrl_RecvSlotStatusAll(u8 *a) {
         u8 r, g, b;
         u8 col[2];
     } l;
-    u32 out;
+    s32 out;
     u32 i;
     for (i = 0; i < 4; i++) {
         NetStatusUpdateMsg_Init(l.col);
@@ -3703,7 +3613,7 @@ extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
 extern "C" void CommCtrl_RecvLetterStorageToHost(u8 *a, s32 b) {
     u32 n;
     MI_CpuCopy8(a, &n, 4);
-    s32 q = PlayerData_GetLetterStorage(PlayerData_GetCurrent());
+    u8 *q = PlayerData_GetLetterStorage(PlayerData_GetCurrent());
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
 }
 extern "C" void CommCtrl_Act17() {
@@ -3726,32 +3636,7 @@ typedef void (*FPT_data_020cbb24)(u8 *, u32);
 typedef void (*FPT_data_020cbb74)(void *, s32, s32);
 typedef void (*FPT_data_020cbc60)(u32, u32, u32, u32);
 typedef void (*FPT_data_020cbd60)(void *);
-typedef void (*FPT_data_020cbe78)(void *, u32, u32);
-void CommCtrl_RecvStateBlocks(void);
-void CommRecv_Act0C(void);
-void CommRecv_Act08(void);
-void CommRecv_Act3D(void);
-void CommRecv_Act3C(void);
-void CommRecv_VillagerMemorySetPlayer(void);
-void CommRecv_VillagerMemoryInit(void);
-void CommRecv_ObjectUseRelease(void);
-void CommRecv_ObjectUseReply(void);
-void CommRecv_ObjectUseRequest(void);
-void CommRecv_Act25(void);
-void CommRecv_BuildingEnter(void);
-void CommRecv_BuildingState(void);
-void CommRecv_FurniturePlace(void);
-void CommRecv_FurnitureRemove(void);
-void CommRecv_RoomItemSet(void);
-void CommRecv_FurnitureState(void);
-void CommSyncVar_PackVar1F(void);
-void CommSyncVar_PackVar1E(void);
-void CommSyncVar_PackVar1D(void);
-void CommSyncVar_PackVar1C(void);
-void CommSyncVar_PackVar1B(void);
-void CommSyncVar_PackVar1A(void);
-void CommSyncVar_PackVar19(void);
-void CommSyncVar_PackVar18(void);
+typedef void (*FPT_data_020cbe78)(void *, void *, u32);
 }
 }
 namespace n0 {

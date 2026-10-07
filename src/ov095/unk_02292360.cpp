@@ -6,28 +6,6 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "ui/LabelString.h"
-#define PROTO_LOCAL_Keyboard_CalcChatKeyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_DrawCopyPasteKeys  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_DrawCopyPasteKeysChat  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_DrawEmotionKeys  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_DrawLengthGauge  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_DrawPageKeys  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_GetEmotionKeyX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_GetPageCells  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Keyboard_GetTabKeyX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov095_02295588  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov095_02295894  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov095_022958bc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov095_02295da4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov095_02295dd4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov095_02295e48  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sLengthGaugeCells  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -39,6 +17,8 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02087e0c.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
@@ -46,104 +26,25 @@
 #include "proto/ov095/unk_02292360.h"
 
 
-struct KeyboardTabCells {
-    u16 tab0Attr0;
-    u16 tab0Attr1;
-    u16 tab0Attr2;
-    u16 tab0Attr3;
-    u16 tab1Attr0;
-    u16 tab1Attr1;
-    u16 tab1Attr2;
-};
-
-struct KeyboardKeyCell {
-    u32 attr01;
-    u32 lo : 12;
-    u32 pal : 4;
-    u32 hi : 16;
-};
-
 extern "C" {
 extern volatile u16 sCharSortKeyZero;
-extern u32 gCurrentHeap;
-s32 Oam_GetObjY(void *p);
-s32 Oam_GetObjX(void *p);
-s32 Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-s32 Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *a, void *b, s32 c, s32 d, s32 e);
 s32 _s32_div_f(s32 a, s32 b);
 void _ZN10BgVramTask12requestCharsEjhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10BgVramTask6cancelEv(void *a);
 void MI_CpuCopy8(void *a, void *b, s32 c);
 
-s32 Keyboard_CalcChatKeyPos(Keyboard *s);
-s32 Keyboard_GetEmotionKeyX(Keyboard *s, s32 a);
-s32 Keyboard_GetTabKeyX(Keyboard *s, s32 a);
-s32 Keyboard_DrawLengthGauge(void *s, s32 x, s32 y, s32 idx);
-void Keyboard_DrawCopyPasteKeys(Keyboard *s, s32 x, s32 y);
-void Keyboard_DrawCopyPasteKeysChat(Keyboard *s, s32 x, s32 y);
-void Keyboard_DrawEmotionKeys(Keyboard *s, s32 x, s32 y);
-s32 Keyboard_DrawPageKeys(Keyboard *s, s32 x, s32 y);
-s32 Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z);
-void *Keyboard_GetPageCells(Keyboard *s);
 }
 
-extern "C" u32 data_ov095_022965bc[];
-extern "C" u32 data_ov095_022963e4[];
-extern "C" u32 data_ov095_02296214[];
-extern "C" u32 data_ov095_022960dc[];
-extern "C" void *sLengthGaugeCells[];
 extern "C" s16 sKeyCodesPage3[];
 extern "C" s16 sKeyCodesPage1Lower[];
 extern "C" s16 sKeyCodesPage1Upper[];
 extern "C" s16 sKeyCodesPage1Alt[];
-extern "C" GXOamAttr data_ov095_02295e48[];
 extern "C" s16 sKeyCodesPage2[];
 extern "C" const s32 data_ov095_02295494[];
 extern "C" const s32 data_ov095_022954cc[];
 extern "C" const s32 data_ov095_02295504[];
 extern "C" const s32 data_ov095_0229553c[];
-extern "C" u32 data_ov095_02295d44[];
-extern "C" u32 data_ov095_02295d74[];
-extern "C" u32 data_ov095_02295da4[];
-extern "C" u32 data_ov095_02295dd4[];
-extern "C" u32 data_ov095_02295c7c[];
-extern "C" u32 data_ov095_02295ca4[];
-extern "C" u32 data_ov095_02295ccc[];
-extern "C" u32 data_ov095_02295cf4[];
-extern "C" u32 data_ov095_02295d1c[];
-extern "C" u32 data_ov095_02295c2c[];
-extern "C" u32 data_ov095_0229586c[];
-extern "C" u32 data_ov095_02295894[];
-extern "C" u32 data_ov095_022958bc[];
-extern "C" u32 data_ov095_02295b8c[];
-extern "C" u32 data_ov095_022958e4[];
-extern "C" u32 data_ov095_0229590c[];
-extern "C" u32 data_ov095_02295934[];
-extern "C" u32 data_ov095_02295aec[];
-extern "C" u32 data_ov095_0229595c[];
-extern "C" u32 data_ov095_02295984[];
-extern "C" u32 data_ov095_022959ac[];
-extern "C" u32 data_ov095_022959d4[];
-extern "C" u32 data_ov095_022959fc[];
-extern "C" u32 data_ov095_02295a24[];
-extern "C" u32 data_ov095_02295a4c[];
-extern "C" u32 data_ov095_02295a74[];
-extern "C" u32 data_ov095_02295a9c[];
-extern "C" u32 data_ov095_02295ac4[];
-extern "C" u32 data_ov095_02295b14[];
-extern "C" u32 data_ov095_02295b3c[];
-extern "C" u32 data_ov095_02295b64[];
-extern "C" u32 data_ov095_02295bb4[];
-extern "C" u32 data_ov095_02295bdc[];
-extern "C" u32 data_ov095_02295c04[];
-extern "C" u32 data_ov095_02295c54[];
-extern "C" u32 data_ov095_022957ac[];
-extern "C" void *sKeyboardModeCharFiles[];
-extern "C" void *sKeyboardModeScreensChat[];
-extern "C" u32 data_ov095_0229580c[];
-extern "C" u32 data_ov095_0229582c[];
-extern "C" void *sKeyboardModeScreens[];
 extern "C" char data_ov095_02295704[];
 extern "C" char data_ov095_0229574c[];
 extern "C" char data_ov095_022956d4[];
@@ -167,20 +68,16 @@ extern "C" char data_ov095_022955d0[];
 extern "C" char data_ov095_022955e4[];
 extern "C" s32 data_ov095_0229560c[];
 extern "C" s32 data_ov095_02295634[];
-extern "C" void *sKeyboardPageCells[];
 extern "C" const s32 data_ov095_02295474[];
 extern "C" const s32 data_ov095_02295454[];
 extern "C" const s32 data_ov095_02295484[];
 extern "C" const s32 data_ov095_02295464[];
-extern "C" u32 data_ov095_02295590[];
-extern "C" u32 data_ov095_02295588[];
-extern "C" u32 data_ov095_02295580[];
 
-extern "C" u32 data_ov095_022965bc[120] = {0x81884000, 0x0000c58b, 0x819c4000, 0x0000c58b, 0x81b04000, 0x0000c58b, 0x81c44000, 0x0000c58b, 0x81d84000, 0x0000c58b, 0x81ec4000, 0x0000c58b, 0x80004000, 0x0000c58b, 0x80144000, 0x0000c58b, 0x80284000, 0x0000c58b, 0x803c4000, 0x0000c58b, 0x80504000, 0x0000c58b, 0x80644000, 0x0000c58f, 0x80644008, 0x0000c5cf, 0x81884010, 0x0000c58b, 0x819c4010, 0x0000c58b, 0x81b04010, 0x0000c58b, 0x81c44010, 0x0000c58b, 0x81d84010, 0x0000c58b, 0x81ec4010, 0x0000c58b, 0x80004010, 0x0000c58b, 0x80144010, 0x0000c58b, 0x80284010, 0x0000c58b, 0x803c4010, 0x0000c58b, 0x80504010, 0x0000c58b, 0x80644018, 0x0000c58f, 0x80640020, 0x0000c58f, 0x81884020, 0x0000c58b, 0x819c4020, 0x0000c58b, 0x81b04020, 0x0000c58b, 0x81c44020, 0x0000c58b, 0x81d84020, 0x0000c58b, 0x81ec4020, 0x0000c58b, 0x80004020, 0x0000c58b, 0x80144020, 0x0000c58b, 0x80284020, 0x0000c58b, 0x803c4020, 0x0000c58b, 0x80504020, 0x0000c58b, 0x81884030, 0x0000c58b, 0x819c4030, 0x0000c58b, 0x81b04030, 0x0000c58b, 0x81c44030, 0x0000c58b, 0x81d84030, 0x0000c58b, 0x81ec4030, 0x0000c58b, 0x80004030, 0x0000c58b, 0x80144030, 0x0000c58b, 0x80284030, 0x0000c58b, 0x803c4030, 0x0000c58b, 0x80504030, 0x0000c58b, 0x81884040, 0x0000c58b, 0x819c4040, 0x0000c58b, 0x81b04040, 0x0000c58b, 0x81c44040, 0x0000c58b, 0x81d84040, 0x0000c58b, 0x81ec4040, 0x0000c58b, 0x80004040, 0x0000c58b, 0x80144040, 0x0000c58b, 0x40280040, 0x0000c5cb, 0x80384040, 0x0000c4c5, 0x80504040, 0x0000c4c5, 0x406b0040, 0xffffc5cd};
-extern "C" u32 data_ov095_022963e4[118] = {0x81884000, 0x0000c58b, 0x81884010, 0x0000c58b, 0x81884020, 0x0000c58b, 0x81884030, 0x0000c58b, 0x81884040, 0x0000c58b, 0x819c4000, 0x0000c58b, 0x819c4010, 0x0000c58b, 0x819c4020, 0x0000c58b, 0x819c4030, 0x0000c58b, 0x819c4040, 0x0000c58b, 0x81b04000, 0x0000c58b, 0x81b04010, 0x0000c58b, 0x81b04020, 0x0000c58b, 0x81b04030, 0x0000c58b, 0x81b04040, 0x0000c58b, 0x81c44000, 0x0000c58b, 0x81c44010, 0x0000c58b, 0x81c44020, 0x0000c58b, 0x81c44030, 0x0000c58b, 0x81c44040, 0x0000c58b, 0x81d84000, 0x0000c58b, 0x81d84010, 0x0000c58b, 0x81d84020, 0x0000c58b, 0x81d84030, 0x0000c58b, 0x81d84040, 0x0000c58b, 0x81ec4000, 0x0000c58b, 0x81ec4010, 0x0000c58b, 0x81ec4020, 0x0000c58b, 0x81ec4030, 0x0000c58b, 0x81ec4040, 0x0000c58b, 0x80004000, 0x0000c58b, 0x80004010, 0x0000c58b, 0x80004020, 0x0000c58b, 0x80004030, 0x0000c58b, 0x80004040, 0x0000c58b, 0x80144000, 0x0000c58b, 0x80144010, 0x0000c58b, 0x80144020, 0x0000c58b, 0x80144030, 0x0000c58b, 0x80144040, 0x0000c58b, 0x80284000, 0x0000c58b, 0x80284010, 0x0000c58b, 0x80284020, 0x0000c58b, 0x80284030, 0x0000c58b, 0x80284040, 0x0000c58b, 0x803c4000, 0x0000c58b, 0x803c4010, 0x0000c58b, 0x803c4020, 0x0000c58b, 0x803c4030, 0x0000c58b, 0x803c4040, 0x0000c58b, 0x80504000, 0x0000c58b, 0x80504010, 0x0000c58b, 0x80504020, 0x0000c58b, 0x80504030, 0x0000c58b, 0x80504040, 0x0000c58b, 0x80644000, 0x0000c58b, 0x80644010, 0x0000c58b, 0x80640020, 0x0000c58f, 0x80644040, 0xffffc58b};
-extern "C" u32 data_ov095_02296214[116] = {0x81844000, 0x0000c58b, 0x81984000, 0x0000c58b, 0x81ac4000, 0x0000c58b, 0x81c04000, 0x0000c58b, 0x81d44000, 0x0000c58b, 0x81e84000, 0x0000c58b, 0x81fc4000, 0x0000c58b, 0x80104000, 0x0000c58b, 0x80244000, 0x0000c58b, 0x80384000, 0x0000c58b, 0x804c4000, 0x0000c58b, 0x80604000, 0x0000c58b, 0x818c4010, 0x0000c58b, 0x81a04010, 0x0000c58b, 0x81b44010, 0x0000c58b, 0x81c84010, 0x0000c58b, 0x81dc4010, 0x0000c58b, 0x81f04010, 0x0000c58b, 0x80044010, 0x0000c58b, 0x80184010, 0x0000c58b, 0x802c4010, 0x0000c58b, 0x80404010, 0x0000c58b, 0x40540010, 0x0000c5cb, 0x805f4010, 0x0000c5cb, 0x81834020, 0x0000c58b, 0x81974020, 0x0000c58b, 0x81ab4020, 0x0000c58b, 0x81bf4020, 0x0000c58b, 0x81d34020, 0x0000c58b, 0x81e74020, 0x0000c58b, 0x81fb4020, 0x0000c58b, 0x800f4020, 0x0000c58b, 0x80234020, 0x0000c58b, 0x80374020, 0x0000c58b, 0x404b0020, 0x0000c5cb, 0x804e4020, 0x0000c4c5, 0x805f4020, 0x0000c5cb, 0x81834030, 0x0000c5cb, 0x81a04030, 0x0000c58b, 0x81b44030, 0x0000c58b, 0x81c84030, 0x0000c58b, 0x81dc4030, 0x0000c58b, 0x81f04030, 0x0000c58b, 0x80044030, 0x0000c58b, 0x80184030, 0x0000c58b, 0x802c4030, 0x0000c58b, 0x80404030, 0x0000c58b, 0x80544030, 0x0000c58b, 0x81984040, 0x0000c58b, 0x81ac4040, 0x0000c58b, 0x41c00040, 0x0000c5cb, 0x81d04040, 0x0000c0c5, 0x81f04040, 0x0000c0c5, 0x800d4040, 0x0000c0c5, 0x801f4040, 0x0000c0c5, 0x403f0040, 0x0000c5cd, 0x804c4040, 0x0000c58b, 0x80604040, 0xffffc58b};
-extern "C" u32 data_ov095_022960dc[78] = {0x81884008, 0x0000c58b, 0x819c4008, 0x0000c58b, 0x81b04008, 0x0000c58b, 0x81c44008, 0x0000c58b, 0x81d84008, 0x0000c58b, 0x81ec4008, 0x0000c58b, 0x80004008, 0x0000c58b, 0x80144008, 0x0000c58b, 0x80284008, 0x0000c58b, 0x803c4008, 0x0000c58b, 0x80504008, 0x0000c58b, 0x80644008, 0x0000c58b, 0x81884018, 0x0000c58b, 0x819c4018, 0x0000c58b, 0x81b04018, 0x0000c58b, 0x81c44018, 0x0000c58b, 0x81d84018, 0x0000c58b, 0x81ec4018, 0x0000c58b, 0x80004018, 0x0000c58b, 0x80144018, 0x0000c58b, 0x80284018, 0x0000c58b, 0x803c4018, 0x0000c58b, 0x80688018, 0x0000c595, 0x80500018, 0x0000c593, 0x81884028, 0x0000c58b, 0x819c4028, 0x0000c58b, 0x81b04028, 0x0000c58b, 0x81c44028, 0x0000c58b, 0x81d84028, 0x0000c58b, 0x81ec4028, 0x0000c58b, 0x80004028, 0x0000c58b, 0x80144028, 0x0000c58b, 0x80284028, 0x0000c58b, 0x803c4028, 0x0000c58b, 0x41d00038, 0x0000c5cb, 0x81e04038, 0x0000c4c5, 0x80004038, 0x0000c4c5, 0x80084038, 0x0000c4c5, 0x40230038, 0xffffc5cd};
-extern "C" void *sLengthGaugeCells[32] = {data_ov095_022957ac, data_ov095_022958e4, data_ov095_02295cf4, data_ov095_0229590c, data_ov095_02295934, data_ov095_0229595c, data_ov095_0229586c, data_ov095_02295984, data_ov095_022959ac, data_ov095_022959d4, data_ov095_02295d1c, data_ov095_022959fc, data_ov095_02295a24, data_ov095_02295a4c, data_ov095_02295a74, data_ov095_0229580c, data_ov095_02295a9c, data_ov095_02295ac4, data_ov095_02295aec, data_ov095_02295b14, data_ov095_02295b3c, data_ov095_02295b64, data_ov095_02295b8c, data_ov095_02295bb4, data_ov095_02295bdc, data_ov095_02295c04, data_ov095_02295c2c, data_ov095_02295c54, data_ov095_02295c7c, data_ov095_02295ca4, data_ov095_02295ccc, data_ov095_0229582c};
+extern "C" GXOamAttr data_ov095_022965bc[60] = {{0x81884000, 0x18b, 1, 0xc, 0x0}, {0x819c4000, 0x18b, 1, 0xc, 0x0}, {0x81b04000, 0x18b, 1, 0xc, 0x0}, {0x81c44000, 0x18b, 1, 0xc, 0x0}, {0x81d84000, 0x18b, 1, 0xc, 0x0}, {0x81ec4000, 0x18b, 1, 0xc, 0x0}, {0x80004000, 0x18b, 1, 0xc, 0x0}, {0x80144000, 0x18b, 1, 0xc, 0x0}, {0x80284000, 0x18b, 1, 0xc, 0x0}, {0x803c4000, 0x18b, 1, 0xc, 0x0}, {0x80504000, 0x18b, 1, 0xc, 0x0}, {0x80644000, 0x18f, 1, 0xc, 0x0}, {0x80644008, 0x1cf, 1, 0xc, 0x0}, {0x81884010, 0x18b, 1, 0xc, 0x0}, {0x819c4010, 0x18b, 1, 0xc, 0x0}, {0x81b04010, 0x18b, 1, 0xc, 0x0}, {0x81c44010, 0x18b, 1, 0xc, 0x0}, {0x81d84010, 0x18b, 1, 0xc, 0x0}, {0x81ec4010, 0x18b, 1, 0xc, 0x0}, {0x80004010, 0x18b, 1, 0xc, 0x0}, {0x80144010, 0x18b, 1, 0xc, 0x0}, {0x80284010, 0x18b, 1, 0xc, 0x0}, {0x803c4010, 0x18b, 1, 0xc, 0x0}, {0x80504010, 0x18b, 1, 0xc, 0x0}, {0x80644018, 0x18f, 1, 0xc, 0x0}, {0x80640020, 0x18f, 1, 0xc, 0x0}, {0x81884020, 0x18b, 1, 0xc, 0x0}, {0x819c4020, 0x18b, 1, 0xc, 0x0}, {0x81b04020, 0x18b, 1, 0xc, 0x0}, {0x81c44020, 0x18b, 1, 0xc, 0x0}, {0x81d84020, 0x18b, 1, 0xc, 0x0}, {0x81ec4020, 0x18b, 1, 0xc, 0x0}, {0x80004020, 0x18b, 1, 0xc, 0x0}, {0x80144020, 0x18b, 1, 0xc, 0x0}, {0x80284020, 0x18b, 1, 0xc, 0x0}, {0x803c4020, 0x18b, 1, 0xc, 0x0}, {0x80504020, 0x18b, 1, 0xc, 0x0}, {0x81884030, 0x18b, 1, 0xc, 0x0}, {0x819c4030, 0x18b, 1, 0xc, 0x0}, {0x81b04030, 0x18b, 1, 0xc, 0x0}, {0x81c44030, 0x18b, 1, 0xc, 0x0}, {0x81d84030, 0x18b, 1, 0xc, 0x0}, {0x81ec4030, 0x18b, 1, 0xc, 0x0}, {0x80004030, 0x18b, 1, 0xc, 0x0}, {0x80144030, 0x18b, 1, 0xc, 0x0}, {0x80284030, 0x18b, 1, 0xc, 0x0}, {0x803c4030, 0x18b, 1, 0xc, 0x0}, {0x80504030, 0x18b, 1, 0xc, 0x0}, {0x81884040, 0x18b, 1, 0xc, 0x0}, {0x819c4040, 0x18b, 1, 0xc, 0x0}, {0x81b04040, 0x18b, 1, 0xc, 0x0}, {0x81c44040, 0x18b, 1, 0xc, 0x0}, {0x81d84040, 0x18b, 1, 0xc, 0x0}, {0x81ec4040, 0x18b, 1, 0xc, 0x0}, {0x80004040, 0x18b, 1, 0xc, 0x0}, {0x80144040, 0x18b, 1, 0xc, 0x0}, {0x40280040, 0x1cb, 1, 0xc, 0x0}, {0x80384040, 0xc5, 1, 0xc, 0x0}, {0x80504040, 0xc5, 1, 0xc, 0x0}, {0x406b0040, 0x1cd, 1, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_022963e4[59] = {{0x81884000, 0x18b, 1, 0xc, 0x0}, {0x81884010, 0x18b, 1, 0xc, 0x0}, {0x81884020, 0x18b, 1, 0xc, 0x0}, {0x81884030, 0x18b, 1, 0xc, 0x0}, {0x81884040, 0x18b, 1, 0xc, 0x0}, {0x819c4000, 0x18b, 1, 0xc, 0x0}, {0x819c4010, 0x18b, 1, 0xc, 0x0}, {0x819c4020, 0x18b, 1, 0xc, 0x0}, {0x819c4030, 0x18b, 1, 0xc, 0x0}, {0x819c4040, 0x18b, 1, 0xc, 0x0}, {0x81b04000, 0x18b, 1, 0xc, 0x0}, {0x81b04010, 0x18b, 1, 0xc, 0x0}, {0x81b04020, 0x18b, 1, 0xc, 0x0}, {0x81b04030, 0x18b, 1, 0xc, 0x0}, {0x81b04040, 0x18b, 1, 0xc, 0x0}, {0x81c44000, 0x18b, 1, 0xc, 0x0}, {0x81c44010, 0x18b, 1, 0xc, 0x0}, {0x81c44020, 0x18b, 1, 0xc, 0x0}, {0x81c44030, 0x18b, 1, 0xc, 0x0}, {0x81c44040, 0x18b, 1, 0xc, 0x0}, {0x81d84000, 0x18b, 1, 0xc, 0x0}, {0x81d84010, 0x18b, 1, 0xc, 0x0}, {0x81d84020, 0x18b, 1, 0xc, 0x0}, {0x81d84030, 0x18b, 1, 0xc, 0x0}, {0x81d84040, 0x18b, 1, 0xc, 0x0}, {0x81ec4000, 0x18b, 1, 0xc, 0x0}, {0x81ec4010, 0x18b, 1, 0xc, 0x0}, {0x81ec4020, 0x18b, 1, 0xc, 0x0}, {0x81ec4030, 0x18b, 1, 0xc, 0x0}, {0x81ec4040, 0x18b, 1, 0xc, 0x0}, {0x80004000, 0x18b, 1, 0xc, 0x0}, {0x80004010, 0x18b, 1, 0xc, 0x0}, {0x80004020, 0x18b, 1, 0xc, 0x0}, {0x80004030, 0x18b, 1, 0xc, 0x0}, {0x80004040, 0x18b, 1, 0xc, 0x0}, {0x80144000, 0x18b, 1, 0xc, 0x0}, {0x80144010, 0x18b, 1, 0xc, 0x0}, {0x80144020, 0x18b, 1, 0xc, 0x0}, {0x80144030, 0x18b, 1, 0xc, 0x0}, {0x80144040, 0x18b, 1, 0xc, 0x0}, {0x80284000, 0x18b, 1, 0xc, 0x0}, {0x80284010, 0x18b, 1, 0xc, 0x0}, {0x80284020, 0x18b, 1, 0xc, 0x0}, {0x80284030, 0x18b, 1, 0xc, 0x0}, {0x80284040, 0x18b, 1, 0xc, 0x0}, {0x803c4000, 0x18b, 1, 0xc, 0x0}, {0x803c4010, 0x18b, 1, 0xc, 0x0}, {0x803c4020, 0x18b, 1, 0xc, 0x0}, {0x803c4030, 0x18b, 1, 0xc, 0x0}, {0x803c4040, 0x18b, 1, 0xc, 0x0}, {0x80504000, 0x18b, 1, 0xc, 0x0}, {0x80504010, 0x18b, 1, 0xc, 0x0}, {0x80504020, 0x18b, 1, 0xc, 0x0}, {0x80504030, 0x18b, 1, 0xc, 0x0}, {0x80504040, 0x18b, 1, 0xc, 0x0}, {0x80644000, 0x18b, 1, 0xc, 0x0}, {0x80644010, 0x18b, 1, 0xc, 0x0}, {0x80640020, 0x18f, 1, 0xc, 0x0}, {0x80644040, 0x18b, 1, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02296214[58] = {{0x81844000, 0x18b, 1, 0xc, 0x0}, {0x81984000, 0x18b, 1, 0xc, 0x0}, {0x81ac4000, 0x18b, 1, 0xc, 0x0}, {0x81c04000, 0x18b, 1, 0xc, 0x0}, {0x81d44000, 0x18b, 1, 0xc, 0x0}, {0x81e84000, 0x18b, 1, 0xc, 0x0}, {0x81fc4000, 0x18b, 1, 0xc, 0x0}, {0x80104000, 0x18b, 1, 0xc, 0x0}, {0x80244000, 0x18b, 1, 0xc, 0x0}, {0x80384000, 0x18b, 1, 0xc, 0x0}, {0x804c4000, 0x18b, 1, 0xc, 0x0}, {0x80604000, 0x18b, 1, 0xc, 0x0}, {0x818c4010, 0x18b, 1, 0xc, 0x0}, {0x81a04010, 0x18b, 1, 0xc, 0x0}, {0x81b44010, 0x18b, 1, 0xc, 0x0}, {0x81c84010, 0x18b, 1, 0xc, 0x0}, {0x81dc4010, 0x18b, 1, 0xc, 0x0}, {0x81f04010, 0x18b, 1, 0xc, 0x0}, {0x80044010, 0x18b, 1, 0xc, 0x0}, {0x80184010, 0x18b, 1, 0xc, 0x0}, {0x802c4010, 0x18b, 1, 0xc, 0x0}, {0x80404010, 0x18b, 1, 0xc, 0x0}, {0x40540010, 0x1cb, 1, 0xc, 0x0}, {0x805f4010, 0x1cb, 1, 0xc, 0x0}, {0x81834020, 0x18b, 1, 0xc, 0x0}, {0x81974020, 0x18b, 1, 0xc, 0x0}, {0x81ab4020, 0x18b, 1, 0xc, 0x0}, {0x81bf4020, 0x18b, 1, 0xc, 0x0}, {0x81d34020, 0x18b, 1, 0xc, 0x0}, {0x81e74020, 0x18b, 1, 0xc, 0x0}, {0x81fb4020, 0x18b, 1, 0xc, 0x0}, {0x800f4020, 0x18b, 1, 0xc, 0x0}, {0x80234020, 0x18b, 1, 0xc, 0x0}, {0x80374020, 0x18b, 1, 0xc, 0x0}, {0x404b0020, 0x1cb, 1, 0xc, 0x0}, {0x804e4020, 0xc5, 1, 0xc, 0x0}, {0x805f4020, 0x1cb, 1, 0xc, 0x0}, {0x81834030, 0x1cb, 1, 0xc, 0x0}, {0x81a04030, 0x18b, 1, 0xc, 0x0}, {0x81b44030, 0x18b, 1, 0xc, 0x0}, {0x81c84030, 0x18b, 1, 0xc, 0x0}, {0x81dc4030, 0x18b, 1, 0xc, 0x0}, {0x81f04030, 0x18b, 1, 0xc, 0x0}, {0x80044030, 0x18b, 1, 0xc, 0x0}, {0x80184030, 0x18b, 1, 0xc, 0x0}, {0x802c4030, 0x18b, 1, 0xc, 0x0}, {0x80404030, 0x18b, 1, 0xc, 0x0}, {0x80544030, 0x18b, 1, 0xc, 0x0}, {0x81984040, 0x18b, 1, 0xc, 0x0}, {0x81ac4040, 0x18b, 1, 0xc, 0x0}, {0x41c00040, 0x1cb, 1, 0xc, 0x0}, {0x81d04040, 0xc5, 0, 0xc, 0x0}, {0x81f04040, 0xc5, 0, 0xc, 0x0}, {0x800d4040, 0xc5, 0, 0xc, 0x0}, {0x801f4040, 0xc5, 0, 0xc, 0x0}, {0x403f0040, 0x1cd, 1, 0xc, 0x0}, {0x804c4040, 0x18b, 1, 0xc, 0x0}, {0x80604040, 0x18b, 1, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_022960dc[39] = {{0x81884008, 0x18b, 1, 0xc, 0x0}, {0x819c4008, 0x18b, 1, 0xc, 0x0}, {0x81b04008, 0x18b, 1, 0xc, 0x0}, {0x81c44008, 0x18b, 1, 0xc, 0x0}, {0x81d84008, 0x18b, 1, 0xc, 0x0}, {0x81ec4008, 0x18b, 1, 0xc, 0x0}, {0x80004008, 0x18b, 1, 0xc, 0x0}, {0x80144008, 0x18b, 1, 0xc, 0x0}, {0x80284008, 0x18b, 1, 0xc, 0x0}, {0x803c4008, 0x18b, 1, 0xc, 0x0}, {0x80504008, 0x18b, 1, 0xc, 0x0}, {0x80644008, 0x18b, 1, 0xc, 0x0}, {0x81884018, 0x18b, 1, 0xc, 0x0}, {0x819c4018, 0x18b, 1, 0xc, 0x0}, {0x81b04018, 0x18b, 1, 0xc, 0x0}, {0x81c44018, 0x18b, 1, 0xc, 0x0}, {0x81d84018, 0x18b, 1, 0xc, 0x0}, {0x81ec4018, 0x18b, 1, 0xc, 0x0}, {0x80004018, 0x18b, 1, 0xc, 0x0}, {0x80144018, 0x18b, 1, 0xc, 0x0}, {0x80284018, 0x18b, 1, 0xc, 0x0}, {0x803c4018, 0x18b, 1, 0xc, 0x0}, {0x80688018, 0x195, 1, 0xc, 0x0}, {0x80500018, 0x193, 1, 0xc, 0x0}, {0x81884028, 0x18b, 1, 0xc, 0x0}, {0x819c4028, 0x18b, 1, 0xc, 0x0}, {0x81b04028, 0x18b, 1, 0xc, 0x0}, {0x81c44028, 0x18b, 1, 0xc, 0x0}, {0x81d84028, 0x18b, 1, 0xc, 0x0}, {0x81ec4028, 0x18b, 1, 0xc, 0x0}, {0x80004028, 0x18b, 1, 0xc, 0x0}, {0x80144028, 0x18b, 1, 0xc, 0x0}, {0x80284028, 0x18b, 1, 0xc, 0x0}, {0x803c4028, 0x18b, 1, 0xc, 0x0}, {0x41d00038, 0x1cb, 1, 0xc, 0x0}, {0x81e04038, 0xc5, 1, 0xc, 0x0}, {0x80004038, 0xc5, 1, 0xc, 0x0}, {0x80084038, 0xc5, 1, 0xc, 0x0}, {0x40230038, 0x1cd, 1, 0xc, 0xffff}};
+extern "C" GXOamAttr *sLengthGaugeCells[32] = {data_ov095_022957ac, data_ov095_022958e4, data_ov095_02295cf4, data_ov095_0229590c, data_ov095_02295934, data_ov095_0229595c, data_ov095_0229586c, data_ov095_02295984, data_ov095_022959ac, data_ov095_022959d4, data_ov095_02295d1c, data_ov095_022959fc, data_ov095_02295a24, data_ov095_02295a4c, data_ov095_02295a74, data_ov095_0229580c, data_ov095_02295a9c, data_ov095_02295ac4, data_ov095_02295aec, data_ov095_02295b14, data_ov095_02295b3c, data_ov095_02295b64, data_ov095_02295b8c, data_ov095_02295bb4, data_ov095_02295bdc, data_ov095_02295c04, data_ov095_02295c2c, data_ov095_02295c54, data_ov095_02295c7c, data_ov095_02295ca4, data_ov095_02295ccc, data_ov095_0229582c};
 extern "C" s16 sKeyCodesPage3[56] = {102, 103, 104, 106, 110, 111, 112, 113, 114, 115, 116, 117, 120, 121, 122, 124, 68, 126, 127, 128, 129, 109, 119, 101, 71, 72, 73, 75, 79, 80, 81, 82, 83, 84, 85, 86, 89, 90, 91, 93, 65, 95, 96, 97, 98, 78, 88, 187, 217, 167, 188, 189, 256, 134, 133, 0};
 extern "C" s16 sKeyCodesPage1Lower[54] = {54, 55, 56, 57, 58, 59, 60, 61, 62, 53, 179, 177, 43, 49, 31, 44, 46, 51, 47, 35, 41, 42, 256, 288, 27, 45, 30, 32, 33, 34, 36, 37, 38, 134, 287, 52, 50, 29, 48, 28, 40, 39, 146, 148, 209, 142, 143, 291, 133, 289, 290, 135, 155, 0};
 extern "C" s16 sKeyCodesPage1Upper[54] = {220, 221, 222, 223, 147, 145, 140, 156, 166, 153, 218, 219, 17, 23, 5, 18, 20, 25, 21, 9, 15, 16, 256, 288, 1, 19, 4, 6, 7, 8, 10, 11, 12, 134, 287, 26, 24, 3, 22, 2, 14, 13, 152, 154, 161, 157, 159, 291, 133, 289, 290, 150, 151, 0};
@@ -191,47 +88,47 @@ extern "C" const s32 data_ov095_02295494[14] = {92, 226, 226, 226, 226, 226, 81,
 extern "C" const s32 data_ov095_022954cc[14] = {144, 226, 226, 226, 226, 226, 143, 226, 226, 226, 226, 219, 220, 226};
 extern "C" const s32 data_ov095_02295504[14] = {199, 226, 226, 226, 226, 226, 198, 226, 226, 226, 226, 219, 220, 226};
 extern "C" const s32 data_ov095_0229553c[14] = {57, 50, 51, 52, 53, 54, 56, 226, 226, 226, 226, 219, 220, 226};
-extern "C" u32 data_ov095_02295d44[12] = {0x41b700eb, 0x0000a101, 0x41c900eb, 0x0000a103, 0x41db00eb, 0x0000a105, 0x41b700ed, 0x00001101, 0x41c900ed, 0x00001103, 0x41db00ed, 0xffff1105};
-extern "C" u32 data_ov095_02295d74[12] = {0x41b700e3, 0x0000a101, 0x41c900e3, 0x0000a103, 0x41db00e3, 0x0000a105, 0x41b700e5, 0x00001101, 0x41c900e5, 0x00001103, 0x41db00e5, 0xffff1105};
-extern "C" u32 data_ov095_02295da4[12] = {0x018500ea, 0x0000c0fc, 0x418d40ea, 0x0000c0d8, 0x418100e8, 0x0000c118, 0x419d00e8, 0x0000c11c, 0x01ad80e8, 0x0000c11e, 0x419100e8, 0xffffc11c};
-extern "C" u32 data_ov095_02295dd4[12] = {0x007300ea, 0x0000e0fd, 0x405340ea, 0x0000e0f8, 0x506f00e8, 0x0000e118, 0x505300e8, 0x0000e11c, 0x104b80e8, 0x0000e11e, 0x506100e8, 0xffffe11c};
-extern "C" u32 data_ov095_02295c7c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002340b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295ca4[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002240b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295ccc[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002140b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295cf4[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002d40b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295d1c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002540b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295c2c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002540b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_0229586c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002940b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295894[10] = {0x418d40f2, 0x0000c0d8, 0x418100f0, 0x0000c118, 0x419d00f0, 0x0000c11c, 0x01ad80f0, 0x0000c11e, 0x419100f0, 0xffffc11c};
-extern "C" u32 data_ov095_022958bc[10] = {0x405340f2, 0x0000e0f8, 0x506f00f0, 0x0000c118, 0x505300f0, 0x0000c11c, 0x104b80f0, 0x0000c11e, 0x506100f0, 0xffffc11c};
-extern "C" u32 data_ov095_02295b8c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002940b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_022958e4[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002e40b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_0229590c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002c40b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295934[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002b40b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295aec[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002d40b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_0229595c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002a40b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295984[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002840b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_022959ac[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002740b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_022959d4[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002640b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_022959fc[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002440b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295a24[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002340b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295a4c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002240b8, 0x0000e1a0, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295a74[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002040b8, 0x0000e1a0, 0x002140b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295a9c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002f40b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x002140b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295ac4[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002f40b8, 0x0000c1a2, 0x001e40b8, 0x0000e1a0, 0x002140b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295b14[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002c40b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295b3c[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002b40b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295b64[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002a40b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295bb4[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002840b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295bdc[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002740b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295c04[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002640b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_02295c54[10] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002440b8, 0x0000c1a2, 0x001f40b8, 0x0000e1a0, 0x003040b8, 0xffffc1a2};
-extern "C" u32 data_ov095_022957ac[8] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002f40b8, 0x0000e1a0, 0x002040b8, 0xffffe1a0};
-extern "C" void *sKeyboardModeCharFiles[8] = {data_ov095_02295648, data_ov095_022955e4, data_ov095_022955f8, data_ov095_022955d0, data_ov095_02295620, data_ov095_02295620, data_ov095_022955a8, data_ov095_022955bc};
-extern "C" void *sKeyboardModeScreensChat[8] = {data_ov095_0229565c, data_ov095_0229571c, data_ov095_0229577c, data_ov095_02295734, data_ov095_02295764, data_ov095_02295764, data_ov095_0229574c, data_ov095_02295794};
-extern "C" u32 data_ov095_0229580c[8] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002040b8, 0x0000e1a0, 0x002f40b8, 0xffffc1a2};
-extern "C" u32 data_ov095_0229582c[8] = {0x800f40b5, 0x0000c184, 0x802540b5, 0x0000c187, 0x002040b8, 0x0000c1a2, 0x003040b8, 0xffffc1a2};
-extern "C" void *sKeyboardModeScreens[8] = {data_ov095_0229568c, data_ov095_022956a4, data_ov095_02295674, data_ov095_022956bc, data_ov095_022956d4, data_ov095_022956d4, data_ov095_022956ec, data_ov095_02295704};
+extern "C" GXOamAttr data_ov095_02295d44[6] = {{0x41b700eb, 0x101, 0, 0xa, 0x0}, {0x41c900eb, 0x103, 0, 0xa, 0x0}, {0x41db00eb, 0x105, 0, 0xa, 0x0}, {0x41b700ed, 0x101, 0, 0x1, 0x0}, {0x41c900ed, 0x103, 0, 0x1, 0x0}, {0x41db00ed, 0x105, 0, 0x1, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295d74[6] = {{0x41b700e3, 0x101, 0, 0xa, 0x0}, {0x41c900e3, 0x103, 0, 0xa, 0x0}, {0x41db00e3, 0x105, 0, 0xa, 0x0}, {0x41b700e5, 0x101, 0, 0x1, 0x0}, {0x41c900e5, 0x103, 0, 0x1, 0x0}, {0x41db00e5, 0x105, 0, 0x1, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295da4[6] = {{0x018500ea, 0xfc, 0, 0xc, 0x0}, {0x418d40ea, 0xd8, 0, 0xc, 0x0}, {0x418100e8, 0x118, 0, 0xc, 0x0}, {0x419d00e8, 0x11c, 0, 0xc, 0x0}, {0x01ad80e8, 0x11e, 0, 0xc, 0x0}, {0x419100e8, 0x11c, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295dd4[6] = {{0x007300ea, 0xfd, 0, 0xe, 0x0}, {0x405340ea, 0xf8, 0, 0xe, 0x0}, {0x506f00e8, 0x118, 0, 0xe, 0x0}, {0x505300e8, 0x11c, 0, 0xe, 0x0}, {0x104b80e8, 0x11e, 0, 0xe, 0x0}, {0x506100e8, 0x11c, 0, 0xe, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295c7c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002340b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295ca4[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002240b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295ccc[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002140b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295cf4[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002d40b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295d1c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002540b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295c2c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002540b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_0229586c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002940b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295894[5] = {{0x418d40f2, 0xd8, 0, 0xc, 0x0}, {0x418100f0, 0x118, 0, 0xc, 0x0}, {0x419d00f0, 0x11c, 0, 0xc, 0x0}, {0x01ad80f0, 0x11e, 0, 0xc, 0x0}, {0x419100f0, 0x11c, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_022958bc[5] = {{0x405340f2, 0xf8, 0, 0xe, 0x0}, {0x506f00f0, 0x118, 0, 0xc, 0x0}, {0x505300f0, 0x11c, 0, 0xc, 0x0}, {0x104b80f0, 0x11e, 0, 0xc, 0x0}, {0x506100f0, 0x11c, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295b8c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002940b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_022958e4[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002e40b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_0229590c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002c40b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295934[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002b40b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295aec[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002d40b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_0229595c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002a40b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295984[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002840b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_022959ac[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002740b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_022959d4[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002640b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_022959fc[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002440b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295a24[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002340b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295a4c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002240b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295a74[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002140b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295a9c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x002140b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295ac4[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0x0}, {0x001e40b8, 0x1a0, 0, 0xe, 0x0}, {0x002140b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295b14[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002c40b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295b3c[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002b40b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295b64[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002a40b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295bb4[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002840b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295bdc[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002740b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295c04[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002640b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295c54[5] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002440b8, 0x1a2, 0, 0xc, 0x0}, {0x001f40b8, 0x1a0, 0, 0xe, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_022957ac[4] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002f40b8, 0x1a0, 0, 0xe, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0xffff}};
+extern "C" char *sKeyboardModeCharFiles[8] = {data_ov095_02295648, data_ov095_022955e4, data_ov095_022955f8, data_ov095_022955d0, data_ov095_02295620, data_ov095_02295620, data_ov095_022955a8, data_ov095_022955bc};
+extern "C" char *sKeyboardModeScreensChat[8] = {data_ov095_0229565c, data_ov095_0229571c, data_ov095_0229577c, data_ov095_02295734, data_ov095_02295764, data_ov095_02295764, data_ov095_0229574c, data_ov095_02295794};
+extern "C" GXOamAttr data_ov095_0229580c[4] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002040b8, 0x1a0, 0, 0xe, 0x0}, {0x002f40b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_0229582c[4] = {{0x800f40b5, 0x184, 0, 0xc, 0x0}, {0x802540b5, 0x187, 0, 0xc, 0x0}, {0x002040b8, 0x1a2, 0, 0xc, 0x0}, {0x003040b8, 0x1a2, 0, 0xc, 0xffff}};
+extern "C" char *sKeyboardModeScreens[8] = {data_ov095_0229568c, data_ov095_022956a4, data_ov095_02295674, data_ov095_022956bc, data_ov095_022956d4, data_ov095_022956d4, data_ov095_022956ec, data_ov095_02295704};
 extern "C" char data_ov095_02295704[24] = "menu/chat2/b_key8.bsc";
 extern "C" char data_ov095_0229574c[24] = "menu/chat2/b_chtk9.bsc";
 extern "C" char data_ov095_022956d4[24] = "menu/chat2/b_key4.bsc";
@@ -255,14 +152,14 @@ extern "C" char data_ov095_022955d0[20] = "menu/chat2/key7.bch";
 extern "C" char data_ov095_022955e4[20] = "menu/chat2/key1.bch";
 extern "C" s32 data_ov095_0229560c[5] = {59, 71, 82, 93, 104};
 extern "C" s32 data_ov095_02295634[5] = {70, 81, 92, 103, 111};
-extern "C" void *sKeyboardPageCells[4] = {data_ov095_022963e4, data_ov095_02296214, data_ov095_022960dc, data_ov095_022965bc};
+extern "C" GXOamAttr *sKeyboardPageCells[4] = {data_ov095_022963e4, data_ov095_02296214, data_ov095_022960dc, data_ov095_022965bc};
 extern "C" const s32 data_ov095_02295474[4] = {0, 59, 112, 146};
 extern "C" const s32 data_ov095_02295454[4] = {45, 70, 121, 156};
 extern "C" const s32 data_ov095_02295484[4] = {28, 4, 8, 8};
 extern "C" const s32 data_ov095_02295464[4] = {55, 81, 121, 198};
-extern "C" u32 data_ov095_02295590[2] = {0x01ff8000, 0xffffc100};
-extern "C" u32 data_ov095_02295588[2] = {0x805400cb, 0xffff60d4};
-extern "C" u32 data_ov095_02295580[2] = {0x805400ce, 0xffff10d4};
+extern "C" GXOamAttr data_ov095_02295590[1] = {{0x01ff8000, 0x100, 0, 0xc, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295588[1] = {{0x805400cb, 0xd4, 0, 0x6, 0xffff}};
+extern "C" GXOamAttr data_ov095_02295580[1] = {{0x805400ce, 0xd4, 0, 0x1, 0xffff}};
 
 BOOL Keyboard_IsSlotDisabled(Keyboard *s, s32 i) {
     u32 v = s->disabledSlots;
@@ -370,13 +267,13 @@ BOOL Keyboard_IsTooWide(Keyboard *s)
 
 void Keyboard_ResetKeyPalettes(Keyboard *s)
 {
-    KeyboardKeyCell *p;
+    GXOamAttr *p;
     s32 i;
-    p = (KeyboardKeyCell *)Keyboard_GetPageCells(s);
+    p = Keyboard_GetPageCells(s);
     if (p != NULL) {
         for (i = 0; i < 0x64; i++) {
-            p[i].pal = 0xc;
-            if (p[i].hi == 0xffff) {
+            p[i].cParam = 0xc;
+            if (p[i]._3 == 0xffff) {
                 i = 0x64;
             }
         }
@@ -422,14 +319,14 @@ void Keyboard_UpdateShiftKey(Keyboard *s)
 
 void Keyboard_SetPage0KeyPalette(Keyboard *s, s32 a, s32 b)
 {
-    KeyboardKeyCell *p;
+    GXOamAttr *p;
     if (Keyboard_SetCopyPastePalette(s, a, b) != 0) {
         return;
     }
     if (a < 0 || a > 0x3a) {
         return;
     }
-    p = (KeyboardKeyCell *)Keyboard_GetPageCells(s);
+    p = Keyboard_GetPageCells(s);
     if (a >= 0 && a <= 0x31) {
         a += 5;
     } else if (a >= 0x32 && a <= 0x36) {
@@ -438,12 +335,12 @@ void Keyboard_SetPage0KeyPalette(Keyboard *s, s32 a, s32 b)
     } else {
         return;
     }
-    p[a].pal = b;
+    p[a].cParam = b;
 }
 
 void Keyboard_SetPage1KeyPalette(Keyboard *s, s32 a, s32 b)
 {
-    KeyboardKeyCell *p;
+    GXOamAttr *p;
     s32 i;
     if (Keyboard_SetCopyPastePalette(s, a, b) != 0) {
         return;
@@ -451,42 +348,42 @@ void Keyboard_SetPage1KeyPalette(Keyboard *s, s32 a, s32 b)
     if (a < 0x3b || a > 0x6f) {
         return;
     }
-    p = (KeyboardKeyCell *)Keyboard_GetPageCells(s);
+    p = Keyboard_GetPageCells(s);
     if (a >= 0x3b && a <= 0x46) {
         i = a - 0x3b;
     } else if (a >= 0x47 && a <= 0x50) {
         i = a - 0x3b;
     } else if (a == 0x51) {
         i = 0x16;
-        p[23].pal = b;
+        p[23].cParam = b;
     } else if (a >= 0x52 && a <= 0x5b) {
         i = a - 0x3a;
     } else if (a == 0x5c) {
         i = 0x22;
-        p[35].pal = b;
-        p[36].pal = b;
+        p[35].cParam = b;
+        p[36].cParam = b;
     } else if (a >= 0x5d && a <= 0x67) {
         i = a - 0x38;
     } else if (a >= 0x68 && a <= 0x69) {
         i = a - 0x38;
     } else if (a == 0x6b) {
         i = 0x32;
-        p[51].pal = b;
-        p[52].pal = b;
-        p[53].pal = b;
-        p[54].pal = b;
-        p[55].pal = b;
+        p[51].cParam = b;
+        p[52].cParam = b;
+        p[53].cParam = b;
+        p[54].cParam = b;
+        p[55].cParam = b;
     } else if (a >= 0x6e && a <= 0x6f) {
         i = a - 0x36;
     } else {
         return;
     }
-    p[i].pal = b;
+    p[i].cParam = b;
 }
 
 void Keyboard_SetPage2KeyPalette(Keyboard *s, s32 a, s32 b)
 {
-    KeyboardKeyCell *p;
+    GXOamAttr *p;
     s32 i;
     if (Keyboard_SetCopyPastePalette(s, a, b) != 0) {
         return;
@@ -494,7 +391,7 @@ void Keyboard_SetPage2KeyPalette(Keyboard *s, s32 a, s32 b)
     if (a < 0x70 || a > 0x91) {
         return;
     }
-    p = (KeyboardKeyCell *)Keyboard_GetPageCells(s);
+    p = Keyboard_GetPageCells(s);
     if (a >= 0x70 && a <= 0x79) {
         i = a - 0x70;
     } else if (a >= 0x7a && a <= 0x83) {
@@ -512,25 +409,25 @@ void Keyboard_SetPage2KeyPalette(Keyboard *s, s32 a, s32 b)
             break;
         case 2:
             i = 0x16;
-            p[23].pal = b;
+            p[23].cParam = b;
             break;
         case 3:
             i = 0x22;
-            p[35].pal = b;
-            p[36].pal = b;
-            p[37].pal = b;
-            p[38].pal = b;
+            p[35].cParam = b;
+            p[36].cParam = b;
+            p[37].cParam = b;
+            p[38].cParam = b;
             break;
         default:
             return;
         }
     }
-    p[i].pal = b;
+    p[i].cParam = b;
 }
 
 void Keyboard_SetPage3KeyPalette(Keyboard *s, s32 a, s32 b)
 {
-    KeyboardKeyCell *p;
+    GXOamAttr *p;
     s32 i;
     if (Keyboard_SetCopyPastePalette(s, a, b) != 0) {
         return;
@@ -538,7 +435,7 @@ void Keyboard_SetPage3KeyPalette(Keyboard *s, s32 a, s32 b)
     if (a < 0x92 || a > 0xc8) {
         return;
     }
-    p = (KeyboardKeyCell *)Keyboard_GetPageCells(s);
+    p = Keyboard_GetPageCells(s);
     if (a >= 0x92 && a <= 0x9c) {
         i = a - 0x92;
     } else if (a >= 0x9d && a <= 0xa7) {
@@ -553,23 +450,23 @@ void Keyboard_SetPage3KeyPalette(Keyboard *s, s32 a, s32 b)
         switch (a) {
         case 0xc6:
             i = 0xb;
-            p[12].pal = b;
+            p[12].cParam = b;
             break;
         case 0xc7:
             i = 0x18;
-            p[25].pal = b;
+            p[25].cParam = b;
             break;
         case 0xc8:
             i = 0x38;
-            p[57].pal = b;
-            p[58].pal = b;
-            p[59].pal = b;
+            p[57].cParam = b;
+            p[58].cParam = b;
+            p[59].cParam = b;
             break;
         default:
             return;
         }
     }
-    p[i].pal = b;
+    p[i].cParam = b;
 }
 
 s32 Keyboard_SetCopyPastePalette(Keyboard *s, s32 a, s32 b)
@@ -968,8 +865,9 @@ void Keyboard_RestoreLastPage(Keyboard *s, s32 a)
 
 void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
 {
-    s32 g;
-    s32 h;
+    Heap *g;
+    u8 *h;
+    char *path;
     if (mode == 8) {
         mode = MenuCtrl_GetKeyboardPageMode(s->page);
     }
@@ -980,23 +878,23 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
     }
     g = gCurrentHeap;
     if (c == 0) {
-        Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_bg.bpl", g, a, 1, 1, 4);
-        Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_bg.bpl", g, a, 1, 7, 7);
-        Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_bg.bpl", g, a, 1, 9, 9);
+        Gfx2d_LoadPaletteFile("menu/chat2/b_cht_bg.bpl", g, a, 1, 1, 4);
+        Gfx2d_LoadPaletteFile("menu/chat2/b_cht_bg.bpl", g, a, 1, 7, 7);
+        Gfx2d_LoadPaletteFile("menu/chat2/b_cht_bg.bpl", g, a, 1, 9, 9);
     }
     if (s->mode == mode && c != 0) {
         goto end;
     }
-    File_LoadToBuffer((void *)sKeyboardModeCharFiles[mode], HOST_AT(s, 0x34, unk_34[0], 0), 0x22c0);
+    File_LoadToBuffer(sKeyboardModeCharFiles[mode], s->unk_34, 0x22c0);
     if (Keyboard_TestFlags(s, 4) != 0) {
-        h = (s32)sKeyboardModeScreensChat[mode];
+        path = sKeyboardModeScreensChat[mode];
     } else {
-        h = (s32)sKeyboardModeScreens[mode];
+        path = sKeyboardModeScreens[mode];
     }
-    h = File_LoadAlloc(h, g, -4, 0);
-    MI_CpuCopy8((void *)(h + 0x240), HOST_AT(s, 0x25fc, screenBuf[576], 0), 0x380);
+    h = (u8 *)File_LoadAlloc(path, g, -4, 0);
+    MI_CpuCopy8(h + 0x240, &s->screenBuf[576], 0x380);
     Keyboard_MarkScreenDirty(s);
-    Heap_Free(g, (void *)h);
+    Heap_Free(g, h);
     _ZN10BgVramTask12requestCharsEjhjjj(HOST_AT(s, 0x22f4, bgTasks[0], 0), HOST_AT(s, 0x34, unk_34[0], 0), a, 0x1ea, 0x1ea, 0x2ff);
     s->mode = mode;
     switch (s->mode) {
@@ -1097,7 +995,6 @@ void Keyboard_EndOneShotShift(Keyboard *s, s32 a)
 
 void Keyboard_Init(Keyboard *s, s32 a)
 {
-    KeyboardTabCells *r;
     s->disabledSlots = 0;
     s->mode = 8;
     s->pressedKey = -1;
@@ -1110,18 +1007,16 @@ void Keyboard_Init(Keyboard *s, s32 a)
     Keyboard_ResetTypedRun(s);
     if (a == 0) {
         Keyboard_SetFlags(s, 4);
-        s->tabCells = (u8 *)data_ov095_02295d44;
+        s->tabCells = data_ov095_02295d44;
     } else {
-        s->tabCells = (u8 *)data_ov095_02295d74;
+        s->tabCells = data_ov095_02295d74;
     }
     s->layout = a;
     s->copyKeyPalette = 0xc;
     s->pasteKeyPalette = 0xc;
     s->page = 1;
-    r = (KeyboardTabCells *)s->tabCells;
-    r->tab0Attr2 = (r->tab0Attr2 & ~0x3ff) | 0x103;
-    r = (KeyboardTabCells *)s->tabCells;
-    r->tab1Attr2 = (r->tab1Attr2 & ~0x3ff) | 0x107;
+    s->tabCells[0].attr2 = (s->tabCells[0].attr2 & ~0x3ff) | 0x103;
+    s->tabCells[1].attr2 = (s->tabCells[1].attr2 & ~0x3ff) | 0x107;
     s32 pd;
     if ((pd = PlayerData_GetCurrent()) != 0) {
         if (((PlayerId *)(((PlayerData *)(pd))->getPlayerId()))->getGender() == 0) {
@@ -1148,12 +1043,12 @@ void Keyboard_SetAltWriteLayout(Keyboard *s)
 
 void Keyboard_LoadLetterChars(Keyboard *s, s32 a)
 {
-    Gfx2d_LoadCharFile((void *)"menu/letter/b_ltr.bch", gCurrentHeap, a, 0x13d, 0x1eb, 0x1f0);
+    Gfx2d_LoadCharFile("menu/letter/b_ltr.bch", gCurrentHeap, a, 0x13d, 0x1eb, 0x1f0);
 }
 
-void Keyboard_LoadScreenFile(Keyboard *s, s32 a)
+void Keyboard_LoadScreenFile(Keyboard *s, const char *a)
 {
-    File_LoadToBuffer((void *)a, HOST_AT(s, 0x23bc, screenBuf[0], 0), 0x800);
+    File_LoadToBuffer(a, s->screenBuf, 0x800);
 }
 
 void Keyboard_LoadScreenNow(Keyboard *s, s32 a)
@@ -1248,7 +1143,7 @@ BOOL Keyboard_IsControlCode(Keyboard *s, s32 a)
     return FALSE;
 }
 
-BOOL Keyboard_CanInsert(Keyboard *s, u8 *a, void *b, s32 c, s32 d, s32 e)
+BOOL Keyboard_CanInsert(Keyboard *s, u8 *a, s32 b, s32 c, s32 d, s32 e)
 {
     s32 n;
     if (d == c) {
@@ -1280,7 +1175,7 @@ BOOL Keyboard_CanInsert(Keyboard *s, u8 *a, void *b, s32 c, s32 d, s32 e)
 BOOL Keyboard_InsertAt(Keyboard *s, u8 *a, s32 b, s32 c, s32 d, s32 e)
 {
     s32 i;
-    if (Keyboard_CanInsert(s, a, (void *)b, c, d, e) == 0) {
+    if (Keyboard_CanInsert(s, a, b, c, d, e) == 0) {
         return FALSE;
     }
     for (i = d - 1; i > c; i--) {
@@ -1316,7 +1211,7 @@ BOOL Keyboard_InsertCharMultiline(Keyboard *s, void *p1, s32 p2, u8 *p3, s32 a4,
     s32 o28;
     struct Pad { s32 v[6]; Pad() {} ~Pad() {} } pad;
     u8 saved = s->typedRunLength;
-    u32 heap = gCurrentHeap;
+    Heap *heap = gCurrentHeap;
     void *buf = Heap_AllocTail(heap, 0xc0);
     if (buf == NULL) {
         return FALSE;
@@ -1506,10 +1401,10 @@ void Keyboard_EndPaste(Keyboard *s)
 
 void Keyboard_LoadObjGfx(Keyboard *s)
 {
-    u32 h = gCurrentHeap;
-    Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_obj.bpl", h, 8, 4, 4, 0xe);
-    Gfx2d_LoadCharFile((void *)"menu/chat2/b_cht_obj_0.bch", h, 8, 0xc0, 0xc0, 0x13f);
-    Gfx2d_LoadCharFile((void *)"menu/chat2/b_cht_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
+    Heap *h = gCurrentHeap;
+    Gfx2d_LoadPaletteFile("menu/chat2/b_cht_obj.bpl", h, 8, 4, 4, 0xe);
+    Gfx2d_LoadCharFile("menu/chat2/b_cht_obj_0.bch", h, 8, 0xc0, 0xc0, 0x13f);
+    Gfx2d_LoadCharFile("menu/chat2/b_cht_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
     String_Load2dMenu(s->labels, 0x9c);
     ((LabelString *)(s->labels))->createSmallLabel(8, 0xd8, 4, 0xa, 0, 0);
     ((LabelString *)(s->labels))->redrawAligned(1, 0);
@@ -1528,7 +1423,7 @@ void Keyboard_LoadEmotionIcons(Keyboard *s)
     for (i = 0; i < s->emotionCount; i++) {
         s->emotionSlots[i] = Emotion_GetSlot(i);
     }
-    File_LoadToBuffer((void *)"menu/chat2/ten0.bch", s->emotionIconBuf, 0x1000);
+    File_LoadToBuffer("menu/chat2/ten0.bch", s->emotionIconBuf, 0x1000);
     for (i = 0; i < s->emotionCount; i++) {
         v = s->emotionSlots[i] - 1;
         off = ((v & 0xf) << 6) + ((v >> 4) << 11);
@@ -1538,10 +1433,9 @@ void Keyboard_LoadEmotionIcons(Keyboard *s)
     }
 }
 
-s32 Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z)
+void Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z)
 {
     s32 sel = 0;
-    volatile s32 A, B;
     s32 i;
     switch (s->page) {
     case 1:
@@ -1553,29 +1447,26 @@ s32 Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z)
         sel = 1;
         break;
     }
-    i = 0;
-    B = i;
-    A = i;
-    for (; i < 3; i++) {
+    for (i = 0; i < 3; i++) {
         if (sel == i) {
-            Oam_DrawObj(1, s->tabCells + (i << 3), x, y + 2, 0xb, z, A);
+            Oam_DrawObj(1, (u32 *)&s->tabCells[i], x, y + 2, 0xb, z, NULL);
         } else {
-            Oam_DrawObj(1, s->tabCells + (i << 3), x, y, 0xa, z, B);
+            Oam_DrawObj(1, (u32 *)&s->tabCells[i], x, y, 0xa, z, NULL);
         }
     }
-    Oam_DrawCell(1, s->tabCells + 0x18, x, y, -1, z, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, &s->tabCells[3], x, y, -1, z, 0x1000, 0x1000, 0, -1, 0, 0);
     if (Keyboard_TestFlags(s, 4) == 0) {
         y -= 8;
     }
-    return Keyboard_DrawPageKeys(s, x, y);
+    Keyboard_DrawPageKeys(s, x, y);
 }
 
-s32 Keyboard_DrawPageKeys(Keyboard *s, s32 x, s32 y)
+void Keyboard_DrawPageKeys(Keyboard *s, s32 x, s32 y)
 {
-    return Oam_DrawCell(1, Keyboard_GetPageCells(s), x, y, -1, 3, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, Keyboard_GetPageCells(s), x, y, -1, 3, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
-void *Keyboard_GetPageCells(Keyboard *s)
+GXOamAttr *Keyboard_GetPageCells(Keyboard *s)
 {
     u32 i = s->page;
     if (i >= 4) {
@@ -1588,8 +1479,6 @@ void Keyboard_DrawEmotionKeys(Keyboard *s, s32 x, s32 y)
 {
     s32 i;
     s32 t10, t14;
-    s32 z[3];
-    z[0] = 0; z[1] = 0; z[2] = 0;
     for (i = 0; i < s->emotionCount; i++) {
         t10 = -1;
         t14 = y;
@@ -1597,16 +1486,16 @@ void Keyboard_DrawEmotionKeys(Keyboard *s, s32 x, s32 y)
             t10 = 0xb;
             t14 = y + 2;
         }
-        Oam_DrawObj(1, &data_ov095_02295e48[i], x, t14, -1, 2, z[0]);
-        Oam_DrawObj(1, &data_ov095_02295e48[i + 4], x, t14, t10, 2, z[1]);
-        Oam_DrawObj(1, &data_ov095_02295e48[i + 8], x, y, -1, 2, z[2]);
+        Oam_DrawObj(1, (u32 *)&data_ov095_02295e48[i], x, t14, -1, 2, NULL);
+        Oam_DrawObj(1, (u32 *)&data_ov095_02295e48[i + 4], x, t14, t10, 2, NULL);
+        Oam_DrawObj(1, (u32 *)&data_ov095_02295e48[i + 8], x, y, -1, 2, NULL);
     }
 }
 
 void Keyboard_DrawSendKey(void *s, s32 x, s32 y, s32 z, s32 w)
 {
-    Oam_DrawObj(1, data_ov095_02295588, x, y + w, z, 2, 0);
-    Oam_DrawObj(1, data_ov095_02295580, x, y, -1, 2, 0);
+    Oam_DrawObj(1, (u32 *)data_ov095_02295588, x, y + w, z, 2, NULL);
+    Oam_DrawObj(1, (u32 *)data_ov095_02295580, x, y, -1, 2, NULL);
 }
 
 BOOL Keyboard_TouchSendKey()
@@ -1673,7 +1562,7 @@ s32 Keyboard_GetSelectedEmotion(Keyboard *s)
 
 void Keyboard_DrawCaret(void *s, s32 x, s32 y, s32 z)
 {
-    Oam_DrawObj(1, data_ov095_02295590, x, y, -1, z, 0);
+    Oam_DrawObj(1, (u32 *)data_ov095_02295590, x, y, -1, z, NULL);
 }
 
 void Keyboard_DrawCopyPasteKeysChat(Keyboard *s, s32 x, s32 y)
@@ -1688,14 +1577,14 @@ void Keyboard_DrawCopyPasteKeys(Keyboard *s, s32 x, s32 y)
     Oam_DrawCell(1, data_ov095_02295dd4, x, y, s->pasteKeyPalette, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
-s32 Keyboard_DrawLengthGauge(void *s, s32 x, s32 y, s32 idx)
+void Keyboard_DrawLengthGauge(void *s, s32 x, s32 y, s32 idx)
 {
-    return Oam_DrawCell(1, (void *)sLengthGaugeCells[idx], x, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, sLengthGaugeCells[idx], x, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
-s32 Keyboard_DrawLengthGaugeAt(void *s, s32 x, s32 y, s32 idx)
+void Keyboard_DrawLengthGaugeAt(void *s, s32 x, s32 y, s32 idx)
 {
-    return Keyboard_DrawLengthGauge(s, x - 0x20, y + 0x32, idx);
+    Keyboard_DrawLengthGauge(s, x - 0x20, y + 0x32, idx);
 }
 
 s32 Keyboard_GetTabKeyX(Keyboard *s, s32 a)
@@ -1705,7 +1594,7 @@ s32 Keyboard_GetTabKeyX(Keyboard *s, s32 a)
     case 0xca:
     case 0xcb:
     case 0xcc:
-        r = Oam_GetObjX(s->tabCells + ((a - 0xca) << 3)) + 0x88;
+        r = Oam_GetObjX(&s->tabCells[a - 0xca].attr01) + 0x88;
         break;
     default:
         r = 0x80;
@@ -1721,7 +1610,7 @@ s32 Keyboard_CalcTabRowKeyPos(Keyboard *s)
     case 0xcb:
     case 0xcc:
         s->cursorX = Keyboard_GetTabKeyX(s, v);
-        s->cursorY = Oam_GetObjY(s->tabCells + (v - 0xca) * 8) + 0x68;
+        s->cursorY = Oam_GetObjY((s8 *)&s->tabCells[v - 0xca]) + 0x68;
         return 1;
     case 0xdb:
         s->cursorX = 0x18;
@@ -1744,7 +1633,7 @@ s32 Keyboard_CalcTabRowKeyPos(Keyboard *s)
 s32 Keyboard_GetEmotionKeyX(Keyboard *s, s32 a)
 {
     if (a >= 0xde && a <= 0xe1) {
-        return Oam_GetObjX((u8 *)data_ov095_02295e48 + (a - 0xde) * 8) + 0x88;
+        return Oam_GetObjX(&data_ov095_02295e48[a - 0xde].attr01) + 0x88;
     }
     return 0x80;
 }
@@ -1753,13 +1642,13 @@ s32 Keyboard_CalcChatKeyPos(Keyboard *s)
 {
     s32 v = s->cursorKey;
     if (v == 0xc9) {
-        s->cursorX = Oam_GetObjX(data_ov095_02295588) + 0x98;
-        s->cursorY = Oam_GetObjY(data_ov095_02295588) + 0x70;
+        s->cursorX = Oam_GetObjX(&data_ov095_02295588[0].attr01) + 0x98;
+        s->cursorY = Oam_GetObjY((s8 *)&data_ov095_02295588[0]) + 0x70;
         return 1;
     }
     if (v >= 0xde && v <= 0xe1) {
         s->cursorX = Keyboard_GetEmotionKeyX(s, v);
-        s->cursorY = Oam_GetObjY(data_ov095_02295e48) + 0x68;
+        s->cursorY = Oam_GetObjY((s8 *)&data_ov095_02295e48[0]) + 0x68;
         return 1;
     }
     if (Keyboard_IsMenuTabKey(s, v) != 0) {
@@ -1997,7 +1886,7 @@ void Keyboard_MoveDownToButtons(Keyboard *s)
     }
 }
 
-void Keyboard_MoveOnPage1(Keyboard *s, void *p)
+void Keyboard_MoveOnPage1(Keyboard *s, u32 p)
 {
     s32 c, st, lo, hi, lo2, hi2, hc, v;
     if (Keyboard_MoveOnExtraKeys(s, p) != 0) {
@@ -2172,7 +2061,7 @@ common:
     }
 }
 
-void Keyboard_MoveOnPage2(Keyboard *s, void *p)
+void Keyboard_MoveOnPage2(Keyboard *s, u32 p)
 {
     s32 r7, v;
     if (Keyboard_MoveOnExtraKeys(s, p) != 0) {
@@ -2303,7 +2192,7 @@ void Keyboard_MoveOnPage2(Keyboard *s, void *p)
     }
 }
 
-void Keyboard_MoveOnPage3(Keyboard *s, void *p)
+void Keyboard_MoveOnPage3(Keyboard *s, u32 p)
 {
     s32 st, lo;
     if (p == NULL) return;
@@ -2534,7 +2423,7 @@ void Keyboard_EnterTabRowAtX(Keyboard *s, s32 a)
     Keyboard_UpdateCursorPos(s);
 }
 
-BOOL Keyboard_MoveOnTabRow(Keyboard *s, void *p)
+BOOL Keyboard_MoveOnTabRow(Keyboard *s, u32 p)
 {
     switch (s->cursorKey) {
     case 0xca:
@@ -2616,7 +2505,7 @@ BOOL Keyboard_MoveOnTabRow(Keyboard *s, void *p)
     return FALSE;
 }
 
-BOOL Keyboard_MoveOnChatKeys(Keyboard *s, void *p)
+BOOL Keyboard_MoveOnChatKeys(Keyboard *s, u32 p)
 {
     if (s->cursorKey == 0xc9) {
         if (MenuKeys_HasDown(p) != 0) {
@@ -2650,7 +2539,7 @@ BOOL Keyboard_MoveOnChatKeys(Keyboard *s, void *p)
     return FALSE;
 }
 
-BOOL Keyboard_MoveOnWriteButtons(Keyboard *s, void *p)
+BOOL Keyboard_MoveOnWriteButtons(Keyboard *s, u32 p)
 {
     s32 st = s->cursorKey;
     if (st == 0xd5) {
@@ -2733,7 +2622,7 @@ BOOL Keyboard_MoveOnWriteButtons(Keyboard *s, void *p)
     }
 }
 
-BOOL Keyboard_MoveOnNameEntryButtons(Keyboard *s, void *p)
+BOOL Keyboard_MoveOnNameEntryButtons(Keyboard *s, u32 p)
 {
     if (s->cursorKey == 0xd9) {
         if (MenuKeys_HasUp(p) != 0) {
@@ -2781,7 +2670,7 @@ BOOL Keyboard_MoveOnNameEntryButtons(Keyboard *s, void *p)
     return FALSE;
 }
 
-BOOL Keyboard_MoveOnExtraKeys(Keyboard *s, void *p)
+BOOL Keyboard_MoveOnExtraKeys(Keyboard *s, u32 p)
 {
     BOOL r;
     if (Keyboard_MoveOnTabRow(s, p) != 0) {
@@ -2863,7 +2752,7 @@ void Keyboard_ResetCursor(Keyboard *s)
     }
 }
 
-s32 Keyboard_MoveCursor(Keyboard *s, void *p)
+s32 Keyboard_MoveCursor(Keyboard *s, u32 p)
 {
     s32 old = s->cursorKey;
     s->cursorWrap = 0;

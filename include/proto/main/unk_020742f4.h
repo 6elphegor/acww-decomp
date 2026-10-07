@@ -7,8 +7,12 @@
 #include "types64.h"
 struct OverlayHandleView;
 #ifdef __cplusplus
+#include "proto/main/unk_02038474.h"
+#include "save/BbsPost.h"
 #include "sys/OverlayHandle.h"
+#include "talk/MsgString.h"
 #include "types.h"
+class MsgString193;
 #endif
 
 #ifdef __cplusplus
@@ -28,6 +32,9 @@ void *DwcFriendData_Copy(void *p, void *q);
 #endif
 #ifndef PROTO_LOCAL_DwcFriendData_Clear
 void DwcFriendData_Clear(void *p);
+#endif
+#ifndef PROTO_LOCAL_DwcFriendData_GetBytes
+void *DwcFriendData_GetBytes(void *p);
 #endif
 #ifndef PROTO_LOCAL_FriendList_Construct
 void *FriendList_Construct(void *p);
@@ -56,6 +63,9 @@ s64 PlayerWifiData_GetFriendCode(void *p);
 #ifndef PROTO_LOCAL_PlayerWifiData_GetDwcUserData
 void *PlayerWifiData_GetDwcUserData(void *p);
 #endif
+#ifndef PROTO_LOCAL_NetHeap_Free
+void NetHeap_Free(void *a);
+#endif
 #ifndef PROTO_LOCAL_CommBlock_WriteAct00
 void CommBlock_WriteAct00(void);
 #endif
@@ -64,6 +74,204 @@ void CommBlock_WriteAct01(void);
 #endif
 #ifndef PROTO_LOCAL_CommBlock_ReadAct00
 void CommBlock_ReadAct00(void);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_InitVillager0
+void CommSyncVar_InitVillager0(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_InitVillager1
+void CommSyncVar_InitVillager1(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_InitVillager2
+void CommSyncVar_InitVillager2(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_InitVillager3
+void CommSyncVar_InitVillager3(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_InitVillager4
+void CommSyncVar_InitVillager4(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_InitVillager5
+void CommSyncVar_InitVillager5(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_InitVillager6
+void CommSyncVar_InitVillager6(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_InitVillager7
+void CommSyncVar_InitVillager7(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar08
+void CommSyncVar_PackVar08(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar09
+void CommSyncVar_PackVar09(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar0A
+void CommSyncVar_PackVar0A(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar0B
+void CommSyncVar_PackVar0B(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVillager0
+void CommSyncVar_PackVillager0(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVillager1
+void CommSyncVar_PackVillager1(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVillager2
+void CommSyncVar_PackVillager2(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVillager3
+void CommSyncVar_PackVillager3(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVillager4
+void CommSyncVar_PackVillager4(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVillager5
+void CommSyncVar_PackVillager5(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVillager6
+void CommSyncVar_PackVillager6(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVillager7
+void CommSyncVar_PackVillager7(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar18
+void CommSyncVar_PackVar18(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar19
+void CommSyncVar_PackVar19(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar1A
+void CommSyncVar_PackVar1A(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar1B
+void CommSyncVar_PackVar1B(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar1C
+void CommSyncVar_PackVar1C(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar1D
+void CommSyncVar_PackVar1D(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar1E
+void CommSyncVar_PackVar1E(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackVar1F
+void CommSyncVar_PackVar1F(void *a, void *b);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc00
+void CommSyncVar_PackSpNpc00(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc01
+void CommSyncVar_PackSpNpc01(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc02
+void CommSyncVar_PackSpNpc02(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc03
+void CommSyncVar_PackSpNpc03(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc04
+void CommSyncVar_PackSpNpc04(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc05
+void CommSyncVar_PackSpNpc05(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc06
+void CommSyncVar_PackSpNpc06(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc07
+void CommSyncVar_PackSpNpc07(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc08
+void CommSyncVar_PackSpNpc08(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc09
+void CommSyncVar_PackSpNpc09(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0A
+void CommSyncVar_PackSpNpc0A(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0B
+void CommSyncVar_PackSpNpc0B(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0C
+void CommSyncVar_PackSpNpc0C(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0D
+void CommSyncVar_PackSpNpc0D(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0E
+void CommSyncVar_PackSpNpc0E(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0F
+void CommSyncVar_PackSpNpc0F(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc10
+void CommSyncVar_PackSpNpc10(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc11
+void CommSyncVar_PackSpNpc11(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc12
+void CommSyncVar_PackSpNpc12(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc13
+void CommSyncVar_PackSpNpc13(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc14
+void CommSyncVar_PackSpNpc14(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc15
+void CommSyncVar_PackSpNpc15(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc16
+void CommSyncVar_PackSpNpc16(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc17
+void CommSyncVar_PackSpNpc17(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc18
+void CommSyncVar_PackSpNpc18(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc19
+void CommSyncVar_PackSpNpc19(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1A
+void CommSyncVar_PackSpNpc1A(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1B
+void CommSyncVar_PackSpNpc1B(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1C
+void CommSyncVar_PackSpNpc1C(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1D
+void CommSyncVar_PackSpNpc1D(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1E
+void CommSyncVar_PackSpNpc1E(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1F
+void CommSyncVar_PackSpNpc1F(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc20
+void CommSyncVar_PackSpNpc20(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc21
+void CommSyncVar_PackSpNpc21(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc22
+void CommSyncVar_PackSpNpc22(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc23
+void CommSyncVar_PackSpNpc23(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc24
+void CommSyncVar_PackSpNpc24(void *a);
+#endif
+#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc25
+void CommSyncVar_PackSpNpc25(void *a);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_Init
 void CommSyncVar_Init();
@@ -177,7 +385,7 @@ void VillagerSync_Friendship(u32 a, u32 b, u32 c);
 void CommVillager_PackReceivedItem(u8 *out, s32 a, s32 b, u16 *c);
 #endif
 #ifndef PROTO_LOCAL_CommVillager_UnpackReceivedItem
-void CommVillager_UnpackReceivedItem(u32 *o0, u32 *o1, u16 *o2, u8 *src);
+void CommVillager_UnpackReceivedItem(s32 *o0, s32 *o1, u16 *o2, u8 *src);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerReceivedItem
 void CommSend_VillagerReceivedItem(u32 a, u32 b, u32 c);
@@ -258,19 +466,19 @@ void CommSend_VillagerItems(u32 a, u16 *b);
 void VillagerSync_Items(u32 a, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_BbsPost_GetText
-u8 *BbsPost_GetText(u8 *p);
+u8 *BbsPost_GetText(BbsPost *p);
 #endif
 #ifndef PROTO_LOCAL_Bbs_LoadMsg
-void Bbs_LoadMsg(void *a, u32 b, u32 c);
+void Bbs_LoadMsg(MsgString *a, u32 b, const char *c);
 #endif
 #ifndef PROTO_LOCAL_BbsPost_SetTextFromMsg
-BOOL BbsPost_SetTextFromMsg(void *self, void *r1);
+BOOL BbsPost_SetTextFromMsg(BbsPost *self, MsgString193 *r1);
 #endif
 #ifndef PROTO_LOCAL_Bbs_PostMsgDated
-void Bbs_PostMsgDated(u32 a, u32 b, u32 c, u32 d, u8 e);
+void Bbs_PostMsgDated(u32 a, const char *b, u32 c, u32 d, u8 e);
 #endif
 #ifndef PROTO_LOCAL_Bbs_PostMsgToday
-void Bbs_PostMsgToday(u32 a, u32 b);
+void Bbs_PostMsgToday(u32 a, const char *b);
 #endif
 #ifndef PROTO_LOCAL_Bbs_GetPostCount
 u8 Bbs_GetPostCount(void);
@@ -289,9 +497,6 @@ BOOL DwcFriendData_ToCodeDigits(u32 a, u8 *buf);
 #endif
 #ifndef PROTO_LOCAL_DwcFriendData_IsNotFriendKey
 BOOL DwcFriendData_IsNotFriendKey(void *p);
-#endif
-#ifndef PROTO_LOCAL_DwcFriendData_GetBytes
-u32 DwcFriendData_GetBytes(void *p);
 #endif
 #ifndef PROTO_LOCAL_FriendList_SetChecksum
 void FriendList_SetChecksum(u8 *p, u16 v);
@@ -352,9 +557,6 @@ u32 CommPacket_GetType(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_NetHeap_Alloc
 void *NetHeap_Alloc(s32 a, s32 b);
-#endif
-#ifndef PROTO_LOCAL_NetHeap_Free
-void NetHeap_Free(s32 a);
 #endif
 #ifndef PROTO_LOCAL_Comm_HasSendCredit
 BOOL Comm_HasSendCredit(u32 mask);
@@ -428,251 +630,53 @@ u32 CommSyncVar_GetVarSize(u32 i);
 #ifndef PROTO_LOCAL_CommSyncVar_GetVarOffset
 u32 CommSyncVar_GetVarOffset(u32 i);
 #endif
-#ifndef PROTO_LOCAL_CommSyncVar_InitVillager0
-void CommSyncVar_InitVillager0(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_InitVillager1
-void CommSyncVar_InitVillager1(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_InitVillager2
-void CommSyncVar_InitVillager2(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_InitVillager3
-void CommSyncVar_InitVillager3(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_InitVillager4
-void CommSyncVar_InitVillager4(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_InitVillager5
-void CommSyncVar_InitVillager5(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_InitVillager6
-void CommSyncVar_InitVillager6(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_InitVillager7
-void CommSyncVar_InitVillager7(u32 a);
-#endif
 #ifndef PROTO_LOCAL_CommSyncVar_InitVar
 void CommSyncVar_InitVar(u32 i);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPos
-void CommSyncVar_PackPos(u32 a, s32 *b);
+void CommSyncVar_PackPos(u8 *a, s32 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerPos0
-void CommSyncVar_PackPlayerPos0(u32 a, s32 *b);
+void CommSyncVar_PackPlayerPos0(u8 *a, s32 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerPos1
-void CommSyncVar_PackPlayerPos1(u32 a, s32 *b);
+void CommSyncVar_PackPlayerPos1(u8 *a, s32 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerPos2
-void CommSyncVar_PackPlayerPos2(u32 a, s32 *b);
+void CommSyncVar_PackPlayerPos2(u8 *a, s32 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerPos3
-void CommSyncVar_PackPlayerPos3(u32 a, s32 *b);
+void CommSyncVar_PackPlayerPos3(u8 *a, s32 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackAngle
-void CommSyncVar_PackAngle(u32 a, s16 *b);
+void CommSyncVar_PackAngle(void *a, s16 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerAngle0
-void CommSyncVar_PackPlayerAngle0(u32 a, s16 *b);
+void CommSyncVar_PackPlayerAngle0(void *a, s16 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerAngle1
-void CommSyncVar_PackPlayerAngle1(u32 a, s16 *b);
+void CommSyncVar_PackPlayerAngle1(void *a, s16 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerAngle2
-void CommSyncVar_PackPlayerAngle2(u32 a, s16 *b);
+void CommSyncVar_PackPlayerAngle2(void *a, s16 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerAngle3
-void CommSyncVar_PackPlayerAngle3(u32 a, s16 *b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar08
-void CommSyncVar_PackVar08(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar09
-void CommSyncVar_PackVar09(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar0A
-void CommSyncVar_PackVar0A(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar0B
-void CommSyncVar_PackVar0B(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVillager0
-void CommSyncVar_PackVillager0(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVillager1
-void CommSyncVar_PackVillager1(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVillager2
-void CommSyncVar_PackVillager2(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVillager3
-void CommSyncVar_PackVillager3(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVillager4
-void CommSyncVar_PackVillager4(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVillager5
-void CommSyncVar_PackVillager5(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVillager6
-void CommSyncVar_PackVillager6(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVillager7
-void CommSyncVar_PackVillager7(u32 a);
+void CommSyncVar_PackPlayerAngle3(void *a, s16 *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerMsg0
-void CommSyncVar_PackPlayerMsg0(u32 a, u32 b);
+void CommSyncVar_PackPlayerMsg0(u8 *a, ChatBalloon *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerMsg1
-void CommSyncVar_PackPlayerMsg1(u32 a, u32 b);
+void CommSyncVar_PackPlayerMsg1(u8 *a, ChatBalloon *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerMsg2
-void CommSyncVar_PackPlayerMsg2(u32 a, u32 b);
+void CommSyncVar_PackPlayerMsg2(u8 *a, ChatBalloon *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_PackPlayerMsg3
-void CommSyncVar_PackPlayerMsg3(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar18
-void CommSyncVar_PackVar18(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar19
-void CommSyncVar_PackVar19(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar1A
-void CommSyncVar_PackVar1A(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar1B
-void CommSyncVar_PackVar1B(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar1C
-void CommSyncVar_PackVar1C(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar1D
-void CommSyncVar_PackVar1D(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar1E
-void CommSyncVar_PackVar1E(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackVar1F
-void CommSyncVar_PackVar1F(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc00
-void CommSyncVar_PackSpNpc00(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc01
-void CommSyncVar_PackSpNpc01(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc02
-void CommSyncVar_PackSpNpc02(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc03
-void CommSyncVar_PackSpNpc03(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc04
-void CommSyncVar_PackSpNpc04(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc05
-void CommSyncVar_PackSpNpc05(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc06
-void CommSyncVar_PackSpNpc06(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc07
-void CommSyncVar_PackSpNpc07(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc08
-void CommSyncVar_PackSpNpc08(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc09
-void CommSyncVar_PackSpNpc09(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0A
-void CommSyncVar_PackSpNpc0A(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0B
-void CommSyncVar_PackSpNpc0B(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0C
-void CommSyncVar_PackSpNpc0C(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0D
-void CommSyncVar_PackSpNpc0D(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0E
-void CommSyncVar_PackSpNpc0E(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc0F
-void CommSyncVar_PackSpNpc0F(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc10
-void CommSyncVar_PackSpNpc10(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc11
-void CommSyncVar_PackSpNpc11(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc12
-void CommSyncVar_PackSpNpc12(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc13
-void CommSyncVar_PackSpNpc13(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc14
-void CommSyncVar_PackSpNpc14(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc15
-void CommSyncVar_PackSpNpc15(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc16
-void CommSyncVar_PackSpNpc16(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc17
-void CommSyncVar_PackSpNpc17(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc18
-void CommSyncVar_PackSpNpc18(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc19
-void CommSyncVar_PackSpNpc19(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1A
-void CommSyncVar_PackSpNpc1A(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1B
-void CommSyncVar_PackSpNpc1B(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1C
-void CommSyncVar_PackSpNpc1C(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1D
-void CommSyncVar_PackSpNpc1D(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1E
-void CommSyncVar_PackSpNpc1E(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc1F
-void CommSyncVar_PackSpNpc1F(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc20
-void CommSyncVar_PackSpNpc20(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc21
-void CommSyncVar_PackSpNpc21(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc22
-void CommSyncVar_PackSpNpc22(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc23
-void CommSyncVar_PackSpNpc23(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc24
-void CommSyncVar_PackSpNpc24(u32 a);
-#endif
-#ifndef PROTO_LOCAL_CommSyncVar_PackSpNpc25
-void CommSyncVar_PackSpNpc25(u32 a);
+void CommSyncVar_PackPlayerMsg3(u8 *a, ChatBalloon *b);
 #endif
 #ifndef PROTO_LOCAL_CommSyncVar_SetVar
-void CommSyncVar_SetVar(u32 a, u32 b, u32 c, s32 d);
+void CommSyncVar_SetVar(u32 a, void *b, u32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_RoomWallFloor
 void CommRecv_RoomWallFloor(u32 a);
@@ -744,10 +748,10 @@ void CommRecv_FieldActorRemove(u32 n);
 void CommRecv_FishDisplay(s32 n, s32 b, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_ClothesChange
-void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d);
+void CommRecv_ClothesChange(s32 n, s32 b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_HairChange
-void CommRecv_HairChange(s32 n, s32 b, s32 c, void *d);
+void CommRecv_HairChange(s32 n, s32 b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_FaceChange
 void CommRecv_FaceChange(s32 n, s32 b, s32 c, s32 d);
@@ -756,7 +760,7 @@ void CommRecv_FaceChange(s32 n, s32 b, s32 c, s32 d);
 void CommRecv_TanChange(s32 n, s32 b, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_ItemActionRequest
-void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d);
+void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_ItemActionResult
 void CommRecv_ItemActionResult(s32 a, s32 b, s32 c);
@@ -768,13 +772,13 @@ void CommRecv_ObjectUseRequest(s32 a, s32 b, s32 c, s32 d);
 void CommRecv_ObjectUseRelease(s32 a, s32 b, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_VillagerMemoryInit
-void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d);
+void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_VillagerMemorySetPlayer
-void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, void *d);
+void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_PeerNetState
-void CommRecv_PeerNetState(s32 a, s32 b, s32 c, void *d);
+void CommRecv_PeerNetState(s32 a, s32 b, s32 c, u32 d);
 #endif
 #ifndef PROTO_LOCAL_CommRecv_Act02
 void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d);
@@ -831,7 +835,7 @@ void CommSend_TownChunk(u8 *p, u32 v);
 BOOL CommSend_VillagerTransfer(u8 *p);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerTransferReply
-BOOL CommSend_VillagerTransferReply(s32 a, void *b, s32 c, void *d, s32 e, void *f);
+BOOL CommSend_VillagerTransferReply(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 #endif
 #ifndef PROTO_LOCAL_CommSend_PlayerData
 BOOL CommSend_PlayerData(u8 *p, u32 v);
@@ -879,10 +883,10 @@ s32 CommCtrl_SendAct13();
 s32 CommCtrl_SendAct14();
 #endif
 #ifndef PROTO_LOCAL_CommSend_PlayerDataToHost
-s32 CommSend_PlayerDataToHost(void *a);
+s32 CommSend_PlayerDataToHost(u8 *a);
 #endif
 #ifndef PROTO_LOCAL_CommSend_LetterStorageToHost
-s32 CommSend_LetterStorageToHost(void *a);
+s32 CommSend_LetterStorageToHost(u8 *a);
 #endif
 #ifndef PROTO_LOCAL_CommCtrl_SendAct17
 s32 CommCtrl_SendAct17();
@@ -915,7 +919,7 @@ void CommCtrl_Act08(u8 *a);
 void CommCtrl_RecvSyncVarChunk(u8 *a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_CommCtrl_RecvStateBlocks
-void CommCtrl_RecvStateBlocks(void *a, s32 b, s32 c);
+void CommCtrl_RecvStateBlocks(u8 *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_CommCtrl_Act0E
 void CommCtrl_Act0E(u8 *a, s32 b, s32 c);
