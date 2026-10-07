@@ -241,10 +241,10 @@ public:
     /* 0x3060 */ CachedModel *dandelionModels[2];
     /* 0x3068 */ CachedModel designModels[0x20];
     /* 0x43e8 */ CachedModel grassModels[5];
-    /* 0x46f4 */ u32 stoneModels[5];
+    /* 0x46f4 */ uptr stoneModels[5];
     /* 0x4708 */ CachedModel holeModels[2];
     /* 0x4840 */ CachedModel crackModels[2];
-    /* 0x4978 */ u32 stumpModels[12];
+    /* 0x4978 */ uptr stumpModels[12];
     /* 0x49a8 */ CachedModel turnipModels[2];
     /* 0x4ae0 */ ModelSet iconModelSet;
     /* 0x4af0 */ ModelSet dandelionModelSet;
@@ -1135,14 +1135,22 @@ class TreeAnimSet {
 public:
     TreeAnimSet();
     ~TreeAnimSet();
+#ifdef HOST
+    u8 pad[sizeof(::TreeAnimSet)];
+#else
     u32 pad[4];
+#endif
 };
 class FieldObjectManager : public GameProc {
 public:
     FieldObjectManager();
     virtual ~FieldObjectManager();
 
+#ifdef HOST
+    CachedModel *iconModels[0x49];
+#else
     /* 0x050 */ u8 pad_050[0x174 - 0x50];
+#endif
     /* 0x174 */ CachedModel treeModels[0x12];
     /* 0xc6c */ CachedModel cedarModels[6];
     /* 0x1014 */ CachedModel litCedarModels[3];
@@ -1163,9 +1171,23 @@ public:
     /* 0x4b00 */ ModelSet stoneModelSet;
     /* 0x4b10 */ ModelSet stumpModelSet;
     /* 0x4b20 */ TreeAnimSet treeAnimSet;
+#ifndef HOST
     /* 0x4b30 */ u8 pad_4b30[0x6a6c - 0x4b30];
+#endif
     /* 0x6a6c */ s32 frameCounter;
 };
+#ifdef HOST
+// the same object as ::FieldObjectManager (above)
+static_assert(__builtin_offsetof(FieldObjectManager, treeModels) == __builtin_offsetof(::FieldObjectManager, treeModels), "treeModels");
+static_assert(__builtin_offsetof(FieldObjectManager, designModels) == __builtin_offsetof(::FieldObjectManager, designModels), "designModels");
+static_assert(__builtin_offsetof(FieldObjectManager, stoneModels) == __builtin_offsetof(::FieldObjectManager, stoneModels), "stoneModels");
+static_assert(__builtin_offsetof(FieldObjectManager, stumpModels) == __builtin_offsetof(::FieldObjectManager, stumpModels), "stumpModels");
+static_assert(__builtin_offsetof(FieldObjectManager, turnipModels) == __builtin_offsetof(::FieldObjectManager, turnipModels), "turnipModels");
+static_assert(__builtin_offsetof(FieldObjectManager, iconModelSet) == __builtin_offsetof(::FieldObjectManager, iconModelSet), "iconModelSet");
+static_assert(__builtin_offsetof(FieldObjectManager, treeAnimSet) == __builtin_offsetof(::FieldObjectManager, treeAnimSet), "treeAnimSet");
+static_assert(__builtin_offsetof(FieldObjectManager, frameCounter) == __builtin_offsetof(::FieldObjectManager, frameCounter), "frameCounter");
+static_assert(sizeof(FieldObjectManager) == sizeof(::FieldObjectManager), "size");
+#endif
 typedef FieldObjectManager O;
 typedef CachedModel M;
 extern "C" {
@@ -3235,7 +3257,7 @@ BOOL FieldObj_LoadStoneModels(FieldObjectManager *self)
         void *h = &self->stoneModelSet;
         s32 i;
         for (i = 0; i < 5; i++) {
-            self->stoneModels[i] = (u32)ModelSet_Find(h, *p);
+            self->stoneModels[i] = (uptr)ModelSet_Find(h, *p);
             p++;
         }
         ok = TRUE;
@@ -3262,7 +3284,7 @@ BOOL FieldObj_LoadStumpModels(FieldObjectManager *self)
     if (ModelSet_Load(&self->stumpModelSet, (char *)"/fg/tree/stamp/stamp.nsbmd", sFieldObjectModelHeap)) {
         s32 i;
         for (i = 0; i < 12; i++) {
-            self->stumpModels[i] = (u32)ModelSet_Find(&self->stumpModelSet, data_ov003_02234604[i]);
+            self->stumpModels[i] = (uptr)ModelSet_Find(&self->stumpModelSet, data_ov003_02234604[i]);
         }
         ok = TRUE;
     }
