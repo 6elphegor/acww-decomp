@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-flags: -nothumb -O4,p
 // RC_020e8558: the in-house HEAP source file as REAL C++ classes. mwcc 1.2/base, C++, ARM, -O4,p.
 // autoload_2 .text 0x020e8558-0x020e92f4 (83 functions), .data 0x0213af4c-0x0213b058 (gHeapCreateOption + 3 vtables), autoload_3 .bss
@@ -180,6 +181,10 @@ extern "C" ExpHeap *Heap_CreateRootHeap(void *p, u32 n) {
     return h;
 }
 
+#ifdef HOST64
+extern "C" void *host_root_heap_region(unsigned int *size);  // modern/host/main.c
+#endif
+
 // heap start-up: arena id 0 (main); size = OS_GetArenaHi(id) - round32(OS_GetArenaLo(id)) unless preset
 extern "C" void Heap_InitSystem(void) {
     u32 size;
@@ -191,6 +196,17 @@ extern "C" void Heap_InitSystem(void) {
         size = OS_GetArenaLo(0);
         size = OS_GetArenaHi(sRootHeapArenaId) - ((size + 31) & ~31);
     }
+#ifdef HOST64
+    {
+        // a larger block of its own (modern/host/main.c: the game's objects are larger on 64-bit hosts)
+        unsigned int hs;
+        void *p = host_root_heap_region(&hs);
+        if (p != NULL) {
+            if (Heap_CreateRootHeap(p, hs) != NULL) Heap_InstallThreadSwitchCallback();
+            return;
+        }
+    }
+#endif
     if (Heap_CreateRootHeap(OS_AllocFromArenaLo(sRootHeapArenaId, size, 32), size) != NULL) Heap_InstallThreadSwitchCallback();
 }
 
@@ -245,6 +261,12 @@ extern "C" ExpHeap *ExpHeap_Create(u32 size, Heap *parent) {
         if (total < sizeof(ExpHeap) + NNS_EXPHEAP_OVERHEAD) return NULL;
         region = total - sizeof(ExpHeap);
     } else {
+#ifdef HOST64
+        // the game sizes its heaps for the DS's objects; on 64-bit hosts they are larger (pointers): twice the room
+        // (nested heaps stay consistent: a heap's own overhead here is under twice the DS's, so a parent sized for
+        // its children on the DS holds them doubled)
+        size *= 2;
+#endif
         region = ((size + 3) & ~3) + NNS_EXPHEAP_OVERHEAD;
         total = region + sizeof(ExpHeap);
     }
@@ -274,6 +296,12 @@ extern "C" FrameHeap *FrameHeap_Create(u32 size, Heap *parent) {
         if (total < sizeof(FrameHeap) + NNS_FRMHEAP_OVERHEAD) return NULL;
         region = total - sizeof(FrameHeap);
     } else {
+#ifdef HOST64
+        // the game sizes its heaps for the DS's objects; on 64-bit hosts they are larger (pointers): twice the room
+        // (nested heaps stay consistent: a heap's own overhead here is under twice the DS's, so a parent sized for
+        // its children on the DS holds them doubled)
+        size *= 2;
+#endif
         region = ((size + 3) & ~3) + NNS_FRMHEAP_OVERHEAD;
         total = region + sizeof(FrameHeap);
     }

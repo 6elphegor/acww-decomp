@@ -9768,7 +9768,11 @@ BOOL VillagerTalkRumorTopics::selectTsuFriend() {
     c[0] = data_020d7860[0];
     c[1] = data_020d7860[1];
     VillagerId *d[2];
+#ifdef HOST
+    func_02133ef8(d, sizeof(d));
+#else
     func_02133ef8(d, 8);
+#endif
     x = 0;
     y = 0;
     d[0] = ((VillagerId *)_ZN12VillagerData13getVillagerIdEv(actor->villagerData));
@@ -12788,8 +12792,8 @@ void VillagerMood::setMoodAnimation(VillagerTalk *s, u32 mode) {
             mode = 2;
         }
     }
-    _ZN14NpcMoveAnimSet12setStandAnimEi(((void *)((u8 *)(s) + (0x2a0))), sMoodAnimIds[mode]);
-    _ZN14NpcMoveAnimSet11setWalkAnimEi(((void *)((u8 *)(s) + (0x2a0))), sMoodAnimNextIds[mode]);
+    _ZN14NpcMoveAnimSet12setStandAnimEi(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x2a0, moveAnimSet.standAnim, 0))), sMoodAnimIds[mode]);
+    _ZN14NpcMoveAnimSet11setWalkAnimEi(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x2a0, moveAnimSet.standAnim, 0))), sMoodAnimNextIds[mode]);
 }
 
 void VillagerMood::clearPending() {
@@ -12821,10 +12825,10 @@ void VillagerMood::playMoodEffect(VillagerTalk *s, u32 a, u32 b) {
     if (effectsEnabled()) {
         u32 v[3];
         s16 h;
-        v[0] = *(u32 *)((void *)((u8 *)(s) + (0x478)));
-        v[1] = *(u32 *)((void *)((u8 *)(s) + (0x47c)));
-        v[2] = *(u32 *)((void *)((u8 *)(s) + (0x480)));
-        h = *(s16 *)((void *)((u8 *)(s) + (0x8e)));
+        v[0] = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x478, jointPos[0].x, 0)));
+        v[1] = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x47c, jointPos[0].y, 0)));
+        v[2] = *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x480, jointPos[0].z, 0)));
+        h = *(s16 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x8e, rotY, 0)));
         Snd_SeEmitterPlayOneShot(this, b, 0x7f, 0);
         Effect_Create(a, v, &h, 0);
     }
@@ -12832,7 +12836,7 @@ void VillagerMood::playMoodEffect(VillagerTalk *s, u32 a, u32 b) {
 
 void VillagerMood::updateSoundPos(VillagerTalk *s) {
     VecFx32 v;
-    VecFx32 *p = (VecFx32 *)((void *)((u8 *)(s) + (0x5c)));
+    VecFx32 *p = (VecFx32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x5c, position.x, 0)));
     v = *p;
     _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(this, &v);
 }
@@ -12849,7 +12853,7 @@ BOOL VillagerMood::effectsEnabled() {
 }
 
 BOOL VillagerMood::isMoodAnim(VillagerTalk *s) {
-    s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
+    s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x334, animCtrl.unk_00[0], 0))), 0);
     const u32 *p = sMoodAnimIds;
     const u32 *q = sMoodAnimNextIds;
     for (s32 i = 0; i < 5; p++, q++, i++) {
@@ -12925,7 +12929,7 @@ void VillagerMood::updateMood3Effects(VillagerTalk *s) {
 }
 
 BOOL VillagerMood::isMoodAnimStart(VillagerTalk *s) {
-    s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
+    s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x334, animCtrl.unk_00[0], 0))), 0);
     const u32 *p = sMoodAnimIds;
     for (s32 i = 0; i < 5; p++, i++) {
         if (v == *p) {
@@ -13119,7 +13123,7 @@ void VillagerMood::updateMoodAnim(VillagerTalk *s, s32 next) {
         effectFn = *(Unk_0201c078_State *)__ptmf_null;
         effectMood = 5;
     } else if (!effectFn) {
-        switch (_ZN11NpcAnimCtrl9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0) - 0xe5) {
+        switch (_ZN11NpcAnimCtrl9getAnimIdEj(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x334, animCtrl.unk_00[0], 0))), 0) - 0xe5) {
         case 0:
         case 1:
             if (next == 1) {
@@ -13152,11 +13156,11 @@ void VillagerMood::updateMoodAnim(VillagerTalk *s, s32 next) {
 }
 
 void VillagerMood::update(VillagerTalk *s) {
-    void *a = Villager_GetState((void *)(*(u32 *)((void *)((u8 *)(s) + (0x82c)))));
+    void *a = Villager_GetState((void *)(*(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x82c, villagerData, 0)))));
     u32 b = VillagerState_GetMood(a);
     if (isActive()) {
         if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->myAid) == 0) {
-            if (_ZN11NpcTalkCtrl6isBusyEv(((void *)((u8 *)(s) + (0x618))))) {
+            if (_ZN11NpcTalkCtrl6isBusyEv(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x618, talkCtrl.act07Variant, 0))))) {
                 b = 0;
                 setMoodAnimation(s, b);
             } else {
@@ -13183,10 +13187,10 @@ void VillagerMood::update(VillagerTalk *s) {
                 }
                 setMoodAnimation(s, b);
             }
-            s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)((u8 *)(s) + (0x334))), 0);
-            if (v != _ZN11NpcAnimCtrl13resolveAnimIdEiPv(((void *)((u8 *)(s) + (0x334))), 0, ((void *)((u8 *)(s) + (0x2a0))))) {
+            s32 v = _ZN11NpcAnimCtrl9getAnimIdEj(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x334, animCtrl.unk_00[0], 0))), 0);
+            if (v != _ZN11NpcAnimCtrl13resolveAnimIdEiPv(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x334, animCtrl.unk_00[0], 0))), 0, ((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x2a0, moveAnimSet.standAnim, 0))))) {
                 if (isMoodAnimStart(s)) {
-                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(((void *)((u8 *)(s) + (0x564))), 0, *(u32 *)((void *)((u8 *)(s) + (0x578))), 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x564, actionCtrl.netMoveMode, 0))), 0, *(u32 *)((void *)(HOST_AT_A((u8 *)(s), VillagerActor, 0x578, actionCtrl.priority, 0))), 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
             }
             updateMoodAnim(s, b);

@@ -2,6 +2,8 @@
 #define NPC_NPCANIMCTRL_H
 
 #include "types.h"
+#include "uptr.h"
+#include "npc/NpcResHandleView.h"
 
 class NpcActor;
 
@@ -9,7 +11,7 @@ class NpcActor;
 // unk_02015fe0.cpp part; C1 0x02016350, D1 0x02016340); a by-value member of every NPC actor.
 class NpcAnimCtrl {
 public:
-    /* 0x00 */ u8 unk_00[8];
+    /* 0x00 */ u8 unk_00[HOST_SIZED(8, NpcBodyAnimHandle)] HOST_ALIGN8;  // NpcBodyAnimHandle (constructed in place)
     /* 0x08 */ s32 animSpeed;
     /* 0x0c */ s32 talkGestureVariant;
     /* 0x10 */ u8 talkGestureActive;

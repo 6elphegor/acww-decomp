@@ -2,6 +2,8 @@
 #define NPC_VILLAGERMOOD_H
 
 #include "types.h"
+#include "uptr.h"
+#include "snd/SndSeEmitter.h"
 
 class VillagerMood;
 class VillagerTalk;
@@ -44,7 +46,7 @@ public:
     void start();
     void reset();
 
-    /* 0x00 */ u8 pad_00[0x40];
+    /* 0x00 */ u8 pad_00[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter (VillagerMood_Construct)
     /* 0x40 */ u8 currentMood;
     /* 0x44 */ s32 effectMood;
     /* 0x48 */ u8 effectFrame;

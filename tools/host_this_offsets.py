@@ -54,10 +54,11 @@ def enclosing_class(text, pos, var):
 
 
 def assumed_pass(t, f, assumes, dies, cu, obj):
-    """`u8 *b` parameters known to point at a T (--assume file function var T): b + N and b[N] in the function"""
+    """parameters known to point at a T (--assume file function var T): b + N and b[N] in the function (a u8 *b),
+    (u8 *)b + N (a typed b, e.g. a base class pointer to a T)"""
     n = 0
     for func, var, cls in assumes:
-        m = re.search(r"\b" + re.escape(func) + r"\s*\([^)]*\bu8\s*\*\s*" + re.escape(var) + r"\b[^)]*\)\s*\{", t)
+        m = re.search(r"\b" + re.escape(func) + r"\s*\([^)]*\b\w+\s*\*\s*" + re.escape(var) + r"\b[^)]*\)\s*\{", t)
         if not m:
             print(f"{f}: {func}({var}): not found")
             continue
@@ -69,8 +70,15 @@ def assumed_pass(t, f, assumes, dies, cu, obj):
             continue
         seg = t[start:end]
         pieces, plast = [], 0
-        for um in re.finditer(r"(?<![\w.>])" + re.escape(var) + r"(?: \+ (0x[0-9a-fA-F]+|\d+)\b|\[(0x[0-9a-fA-F]+|\d+)\])", seg):
-            num = um.group(1) or um.group(2)
+        # var + N / var[N] with a u8 * var, or (u8 *)var + N with a typed one (the base class's pointer to a
+        # derived object: the member is the derived class's)
+        # (and the macro-expanded form ((u8 *)(var) + (N)))
+        for um in re.finditer(r"(?<![\w.>])(?:(\(u8 \*\))?" + re.escape(var) + r"(?: \+ (0x[0-9a-fA-F]+|\d+)\b|\[(0x[0-9a-fA-F]+|\d+)\])"
+                              r"|\(\(u8 \*\)\(" + re.escape(var) + r"\) \+ \((0x[0-9a-fA-F]+|\d+)\)\))", seg):
+            cast, g1, g2 = um.group(1), um.group(2), um.group(3)
+            if um.group(4):
+                cast, g1 = "(u8 *)", um.group(4)
+            num = g1 or g2
             off = int(num, 0)
             path, rem = hv.path_at_c(die, off, obj)
             while path and rem == 0 and path[-1][0] == "m" and path[-1][1].startswith(("_vptr", "<base:")):
@@ -86,8 +94,8 @@ def assumed_pass(t, f, assumes, dies, cu, obj):
             if not mem:
                 print(f"{f}: {func}: {var}+{off:#x}: {path}, skipped")
                 continue
-            e = f"HOST_AT_A({var}, {cls}, {num}, {mem}, {rem})"
-            pieces.append(seg[plast:um.start()] + (e if um.group(1) else f"(*{e})"))
+            e = f"HOST_AT_A({'(u8 *)' if cast else ''}{var}, {cls}, {num}, {mem}, {rem})"
+            pieces.append(seg[plast:um.start()] + (e if g1 else f"(*{e})"))
             plast = um.end()
             n += 1
         t = t[:start] + "".join(pieces) + seg[plast:] + t[end:]

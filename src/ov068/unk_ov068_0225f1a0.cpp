@@ -247,7 +247,7 @@ public:
     /* 0x1d */ u8 pad_1d[3];
     /* 0x20 */ s32 stateTimer;
     /* 0x24 */ s32 cooldown;
-    /* 0x28 */ s32 chatTarget;
+    /* 0x28 */ sptr chatTarget;
     /* 0x2c */ s16 pitfallTimer;
     /* 0x2e */ u8 pad_2e[6];
     /* 0x34 */ s16 activityTimer;
@@ -255,7 +255,11 @@ public:
     /* 0x38 */ u8 hitCount;
     /* 0x39 */ u8 pad_39;
     /* 0x3a */ u16 hitResetTimer;
+#ifdef HOST64
+    u8 route[VILLAGER_ROUTE_HOST_SIZE] __attribute__((aligned(8)));  // VillagerRoute (src/main/unk_020119cc.cpp)
+#else
     /* 0x3c */ u8 route[0xd8 - 0x3c];
+#endif
     /* 0xd8 */ s16 routeTimeout;
     /* 0xda */ s16 routeStepTimer;
     /* 0xdc */ s16 lookStopTimer;
@@ -325,6 +329,33 @@ public:
 
 class FieldVillagerAiStates {
 public:
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in FieldVillagerAi)
+    u8 pad_00[0x24];  // DS +0x0 [0x1c]
+    u8 step;  // DS +0x1c
+    u8 pad_1d[0x3];  // DS +0x1d [0x3]
+    s32 stateTimer;  // DS +0x20
+    u8 pad_24[0x4];  // DS +0x24 [0x4]
+    u8 * chatTarget;  // DS +0x28
+    s16 pitfallTimer;  // DS +0x2c
+    u8 pad_2e[0x2];  // DS +0x2e [0x2]
+    s32 pitfallAnimSpeed;  // DS +0x30
+    s16 activityTimer;  // DS +0x34
+    s16 heldItemCheckTimer;  // DS +0x36
+    u8 hitCount;  // DS +0x38
+    u8 pad_39;  // DS +0x39
+    u16 hitResetTimer;  // DS +0x3a
+    u8 route[0xa0];  // DS +0x3c [0x9c]
+    s16 routeTimeout;  // DS +0xd8
+    s16 routeStepTimer;  // DS +0xda
+    s16 lookStopTimer;  // DS +0xdc
+    s16 lookStopCooldown;  // DS +0xde
+    u8 isAdmiringCatch;  // DS +0xe0
+    u8 pad_e1[0x13];  // DS +0xe1 [0x13]
+    u32 seekPlayerCooldown;  // DS +0xf4
+    u32 talkUrgeTimer;  // DS +0xf8
+    u8 hpad_0[0x4];
+#else
     /* 0x00 */ u8 pad_00[0x1c];
     /* 0x1c */ u8 step;
     /* 0x1d */ u8 pad_1d[3];
@@ -348,6 +379,7 @@ public:
     /* 0xe1 */ u8 pad_e1[0xf4 - 0xe1];
     /* 0xf4 */ u32 seekPlayerCooldown;
     /* 0xf8 */ u32 talkUrgeTimer;
+#endif
 
     s32 execAdmireCatch(FieldVillager *o);
     void admireCatchStep1(FieldVillager *o);
@@ -7343,3 +7375,30 @@ void FieldVillagerLook::update(FieldVillager *o) {
         }
     }
 }
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_00) == 0x0, "FieldVillagerAiStates.pad_00");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, step) == 0x24, "FieldVillagerAiStates.step");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_1d) == 0x25, "FieldVillagerAiStates.pad_1d");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, stateTimer) == 0x28, "FieldVillagerAiStates.stateTimer");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_24) == 0x2c, "FieldVillagerAiStates.pad_24");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, chatTarget) == 0x30, "FieldVillagerAiStates.chatTarget");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, pitfallTimer) == 0x38, "FieldVillagerAiStates.pitfallTimer");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_2e) == 0x3a, "FieldVillagerAiStates.pad_2e");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, pitfallAnimSpeed) == 0x3c, "FieldVillagerAiStates.pitfallAnimSpeed");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, activityTimer) == 0x40, "FieldVillagerAiStates.activityTimer");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, heldItemCheckTimer) == 0x42, "FieldVillagerAiStates.heldItemCheckTimer");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, hitCount) == 0x44, "FieldVillagerAiStates.hitCount");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_39) == 0x45, "FieldVillagerAiStates.pad_39");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, hitResetTimer) == 0x46, "FieldVillagerAiStates.hitResetTimer");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, route) == 0x48, "FieldVillagerAiStates.route");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, routeTimeout) == 0xe8, "FieldVillagerAiStates.routeTimeout");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, routeStepTimer) == 0xea, "FieldVillagerAiStates.routeStepTimer");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, lookStopTimer) == 0xec, "FieldVillagerAiStates.lookStopTimer");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, lookStopCooldown) == 0xee, "FieldVillagerAiStates.lookStopCooldown");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, isAdmiringCatch) == 0xf0, "FieldVillagerAiStates.isAdmiringCatch");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_e1) == 0xf1, "FieldVillagerAiStates.pad_e1");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, seekPlayerCooldown) == 0x104, "FieldVillagerAiStates.seekPlayerCooldown");
+static_assert(__builtin_offsetof(FieldVillagerAiStates, talkUrgeTimer) == 0x108, "FieldVillagerAiStates.talkUrgeTimer");
+static_assert(sizeof(FieldVillagerAiStates) == sizeof(FieldVillagerAi), "FieldVillagerAiStates: regenerate (tools/host_view_layout.py --remove)");
+#endif

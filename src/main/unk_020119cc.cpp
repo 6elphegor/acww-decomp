@@ -175,6 +175,9 @@ struct VillagerRoute {
     void reset();
     VillagerRoute* resetTarget();
 };
+#ifdef HOST64
+static_assert(sizeof(VillagerRoute) == VILLAGER_ROUTE_HOST_SIZE, "VILLAGER_ROUTE_HOST_SIZE (include/uptr.h)");
+#endif
 
 
 // unk_020131a4.cpp
@@ -2684,7 +2687,7 @@ void NpcMoveCtrl::applyMovement(Character *scene) {
             }
         }
     }
-    _ZN5Actor14updatePositionEP13ActorCollider(scene, (u8 *)scene + 0x4cc);
+    _ZN5Actor14updatePositionEP13ActorCollider(scene, HOST_AT_A((u8 *)scene, NpcActor, 0x4cc, collider, 0));
 }
 
 void NpcMoveCtrl::setMoveMode(Character *scene, s32 mode, s16 ang, u16 extra) {
@@ -2704,10 +2707,10 @@ void NpcMoveCtrl::setMoveMode(Character *scene, s32 mode, s16 ang, u16 extra) {
     }
     arriveDistance = e->arriveDistance;
     if (mode != 4) {
-        if ((keepAnimFrame == 1 && e->keepAnimFrame == 1) || _ZN11NpcAnimCtrl13isPlayingAnimEiPv((u8 *)scene + 0x334, e->animKind, (u8 *)scene + 0x2a0)) {
-            _ZN11NpcAnimCtrl17playAnimKeepFrameEP8NpcActorjjj((u8 *)scene + 0x334, scene, e->animKind, extra, 0);
+        if ((keepAnimFrame == 1 && e->keepAnimFrame == 1) || _ZN11NpcAnimCtrl13isPlayingAnimEiPv(HOST_AT_A((u8 *)scene, NpcActor, 0x334, animCtrl.unk_00[0], 0), e->animKind, HOST_AT_A((u8 *)scene, NpcActor, 0x2a0, moveAnimSet.standAnim, 0))) {
+            _ZN11NpcAnimCtrl17playAnimKeepFrameEP8NpcActorjjj(HOST_AT_A((u8 *)scene, NpcActor, 0x334, animCtrl.unk_00[0], 0), scene, e->animKind, extra, 0);
         } else {
-            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti((u8 *)scene + 0x334, scene, e->animKind, extra, 0, 0x1000, 0, 0);
+            _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(HOST_AT_A((u8 *)scene, NpcActor, 0x334, animCtrl.unk_00[0], 0), scene, e->animKind, extra, 0, 0x1000, 0, 0);
         }
     }
     moveMode = mode;
@@ -2778,7 +2781,7 @@ void NpcMoveCtrl::updateTurn(Character *scene) {
         scene->moveAngleY = targetAngle;
     } else {
         stepAngle(&scene->moveAngleY, targetAngle, turnSpeed, turnMode);
-        *(s16 *)((u8 *)scene + 0x8e) = scene->moveAngleY;
+        *(s16 *)(HOST_AT(scene, 0x8e, rotY, 0)) = scene->moveAngleY;
     }
 }
 
@@ -2928,7 +2931,7 @@ void NpcObstacleProbe::probe(Character *scene) {
     using namespace nP;
     for (s32 i = 0; i < 2; i++) {
         VecFx32 v;
-        Npc_RotateOffsetXZ(&v, (VecFx32 *)&scene->position, &sNpcObstacleProbeOffsets[i], *(s16 *)((u8 *)scene + 0x94));
+        Npc_RotateOffsetXZ(&v, (VecFx32 *)&scene->position, &sNpcObstacleProbeOffsets[i], *(s16 *)(HOST_AT(scene, 0x94, moveAngleY, 0)));
         if (Npc_IsPosBlocked(&v)) {
             blockedBits |= 1 << i;
         }
@@ -3722,10 +3725,10 @@ void NpcFaceAnim::update(u8 *o) {
         } else {
             _ZN13MatTexPatAnim6updateEv(&eyeTexAnim);
         }
-        if (_ZN14NpcSpeechState12getMouthTypeEv(o + 0x418) < 2) {
-            if (_ZN14NpcSpeechState10isSpeakingEv(o + 0x418)) {
+        if (_ZN14NpcSpeechState12getMouthTypeEv(HOST_AT_A(o, NpcActor, 0x418, speechState.speaking, 0)) < 2) {
+            if (_ZN14NpcSpeechState10isSpeakingEv(HOST_AT_A(o, NpcActor, 0x418, speechState.speaking, 0))) {
                 if (!isTalkMouthAnim(mouthAnimId)) {
-                    startTalkMouth(_ZN14NpcSpeechState12getMouthTypeEv(o + 0x418));
+                    startTalkMouth(_ZN14NpcSpeechState12getMouthTypeEv(HOST_AT_A(o, NpcActor, 0x418, speechState.speaking, 0)));
                     randomizeTalkMouth();
                 } else if (isMouthCycleDone()) {
                     randomizeTalkMouth();
@@ -4075,13 +4078,13 @@ void NpcActionCtrl::postUpdate(u8 *arg) {
 s32 NpcActionCtrl::setupAct00(u8 *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
-    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(o + 0x350, o, 0, 0, c->blendFrames);
-    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(o + 0x350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(o + 0x350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setTargetAngleEs(o + 0x350, *(s16 *)(o + 0x8e));
-    _ZN12Unk_0201acf813func_0201acf8Et(o + 0x3aa, -2);
-    if (*(u32 *)(o + 0x628) != 0) {
-        ((HeldToolModel *)*(u32 *)(o + 0x628))->playIdleAnim(data_020c6cc8, 0);
+    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), o, 0, 0, c->blendFrames);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), gVec3Zero);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), *(s16 *)(HOST_AT_A(o, NpcActor, 0x8e, rotY, 0)));
+    _ZN12Unk_0201acf813func_0201acf8Et(HOST_AT_A(o, NpcActor, 0x3aa, unk_3aa.unk_00, 0), -2);
+    if (*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)) != 0) {
+        ((HeldToolModel *)*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)))->playIdleAnim(data_020c6cc8, 0);
     }
     netAction = action;
     netPriority = priority;
@@ -4099,12 +4102,12 @@ s32 NpcActionCtrl::setupAct01(u8 *o) {
     NpcActionParams *c = getCurParams();
     VecFx32Ctor v0(c->waypointX, 0, c->waypointZ);
     VecFx32Ctor v1(c->destX, 0, c->destZ);
-    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(o + 0x350, &v0);
-    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(o + 0x350, &v1);
-    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(o + 0x350, o, 1, c->turnSpeed, c->blendFrames);
-    _ZN12Unk_0201acf813func_0201acf8Et(o + 0x3aa, 1);
-    if (*(u32 *)(o + 0x628) != 0) {
-        ((HeldToolModel *)*(u32 *)(o + 0x628))->playWalkAnim(data_020c6cc8, 0);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), &v0);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), &v1);
+    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), o, 1, c->turnSpeed, c->blendFrames);
+    _ZN12Unk_0201acf813func_0201acf8Et(HOST_AT_A(o, NpcActor, 0x3aa, unk_3aa.unk_00, 0), 1);
+    if (*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)) != 0) {
+        ((HeldToolModel *)*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)))->playWalkAnim(data_020c6cc8, 0);
     }
     netAction = action;
     netPriority = priority;
@@ -4115,9 +4118,9 @@ s32 NpcActionCtrl::setupAct01(u8 *o) {
 
 void NpcActionCtrl::mainAct01(u8 *o) {
     using namespace nN;
-    _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(o + 0x350, o);
-    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(o + 0x350, o, 0)) {
-        if (_ZN11NpcMoveCtrl10hasNextLegEv(o + 0x350)) {
+    _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), o);
+    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), o, 0)) {
+        if (_ZN11NpcMoveCtrl10hasNextLegEv(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0))) {
             NpcActionParams *c = getCurParams();
             requestAction(1, 1, c->waypointX, c->waypointZ, 0, 0, 0, 0, data_020c6cc8, 0);
         } else {
@@ -4131,12 +4134,12 @@ s32 NpcActionCtrl::setupAct02(u8 *o) {
     NpcActionParams *c = getCurParams();
     VecFx32Ctor v0(c->waypointX, 0, c->waypointZ);
     VecFx32Ctor v1(c->destX, 0, c->destZ);
-    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(o + 0x350, &v0);
-    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(o + 0x350, &v1);
-    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(o + 0x350, o, 2, c->turnSpeed, c->blendFrames);
-    _ZN12Unk_0201acf813func_0201acf8Et(o + 0x3aa, 1);
-    if (*(u32 *)(o + 0x628) != 0) {
-        ((HeldToolModel *)*(u32 *)(o + 0x628))->playWalkAnim(data_020c6cc8, 0);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), &v0);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), &v1);
+    _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), o, 2, c->turnSpeed, c->blendFrames);
+    _ZN12Unk_0201acf813func_0201acf8Et(HOST_AT_A(o, NpcActor, 0x3aa, unk_3aa.unk_00, 0), 1);
+    if (*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)) != 0) {
+        ((HeldToolModel *)*(u32 *)(HOST_AT_A(o, NpcActor, 0x628, curHeldTool, 0)))->playWalkAnim(data_020c6cc8, 0);
     }
     netAction = action;
     netPriority = priority;
@@ -4147,9 +4150,9 @@ s32 NpcActionCtrl::setupAct02(u8 *o) {
 
 void NpcActionCtrl::mainAct02(u8 *o) {
     using namespace nN;
-    _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(o + 0x350, o);
-    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(o + 0x350, o, 0)) {
-        if (_ZN11NpcMoveCtrl10hasNextLegEv(o + 0x350)) {
+    _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), o);
+    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0), o, 0)) {
+        if (_ZN11NpcMoveCtrl10hasNextLegEv(HOST_AT_A(o, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0))) {
             NpcActionParams *c = getCurParams();
             requestAction(1, 1, c->waypointX, c->waypointZ, 0, 0, 0, 0, data_020c6cc8, 0);
         } else {
@@ -5908,13 +5911,13 @@ void NpcAnimCtrl::playTalkGesture(NpcActor *scene, u32 a, u32 b) {
     using namespace nH;
     u32 r1 = getTalkGestureData();
     if (r1 != 0) {
-        _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(((void *)((u8 *)(scene) + (0xec))), r1, 0, 1, 0x1000, a, b, 0);
+        _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0)), r1, 0, 1, 0x1000, a, b, 0);
         s32 t = CharaAnim_GetJointGroup(0x143);
         if (t < 4) {
             u32 n = JointGroup_GetRangeCount(t);
             for (u32 i = 0; i < n; i++) {
                 u32 x = JointGroup_GetRangeFirst(t, i);
-                _ZN19ThreeLayerAnimModel20assignJointsToLayer3Ejj(((void *)((u8 *)(scene) + (0xec))), x, JointGroup_GetRangeLast(t, i));
+                _ZN19ThreeLayerAnimModel20assignJointsToLayer3Ejj(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0)), x, JointGroup_GetRangeLast(t, i));
             }
         } else {
             stopTalkGesture(scene);
@@ -5926,7 +5929,7 @@ void NpcAnimCtrl::playTalkGesture(NpcActor *scene, u32 a, u32 b) {
 
 void NpcAnimCtrl::stopTalkGesture(NpcActor *scene) {
     using namespace nH;
-    _ZN19ThreeLayerAnimModel18playLayer3FromBaseEjj(((void *)((u8 *)(scene) + (0xec))), 0, 0);
+    _ZN19ThreeLayerAnimModel18playLayer3FromBaseEjj(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0)), 0, 0);
 }
 
 void NpcAnimCtrl::setAnimSpeedFixed(u8 v) {
@@ -5936,12 +5939,12 @@ void NpcAnimCtrl::setAnimSpeedFixed(u8 v) {
 
 void NpcAnimCtrl::playAnimKeepFrame(NpcActor *scene, u32 c, u32 d, u32 e) {
     using namespace nH;
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(this, scene, c, d, 0, *(u32 *)((void *)((u8 *)(scene) + (0x198))), (*(u32 *)((void *)((u8 *)(scene) + (0x190))) << 4) >> 16, e);
+    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(this, scene, c, d, 0, *(u32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x198, model.frameStep, 0)), (*(u32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x190, model.curFrame, 0)) << 4) >> 16, e);
 }
 
 BOOL NpcAnimCtrl::isAnimFinished(NpcActor *scene) {
     using namespace nH;
-    if (_ZN13AnimFrameCtrl10isFinishedEv(((void *)((u8 *)(scene) + (0x188)))) != 0) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x188, model, 0))) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -5957,16 +5960,16 @@ s32 NpcAnimCtrl::getAnimId(u32 idx) {
 
 void NpcAnimCtrl::updateAnimSpeed(NpcActor *scene) {
     using namespace nH;
-    s32 v = *(s32 *)((void *)((u8 *)(scene) + (0x98)));
+    s32 v = *(s32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x98, speed, 0));
     if (v == 0) {
         animSpeed = 0x1000;
-    } else if (*_ZN11NpcMoveCtrl17getCurSpeedPresetEv(((void *)((u8 *)(scene) + (0x350)))) == 0) {
+    } else if (*_ZN11NpcMoveCtrl17getCurSpeedPresetEv(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0))) == 0) {
         animSpeed = 0x1000;
     } else {
         animSpeed = func_01ffcb0c(v, animSpeedScale);
     }
-    if (animSpeed <= *(s32 *)((void *)((u8 *)(scene) + (0x18c)))) {
-        *(s32 *)((void *)((u8 *)(scene) + (0x198))) = animSpeed;
+    if (animSpeed <= *(s32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x18c, model.numFrames, 0))) {
+        *(s32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x198, model.frameStep, 0)) = animSpeed;
     }
 }
 
@@ -5991,10 +5994,10 @@ s32 NpcAnimCtrl::getTalkGestureEnd(u32 k) {
 void NpcAnimCtrl::update(NpcActor *scene) {
     using namespace nH;
     if (hasTalkGesture()) {
-        if (_ZN14NpcSpeechState12getMouthTypeEv(((void *)((u8 *)(scene) + (0x418)))) < 2) {
-            if (_ZN14NpcSpeechState10isSpeakingEv(((void *)((u8 *)(scene) + (0x418))))) {
+        if (_ZN14NpcSpeechState12getMouthTypeEv(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x418, speechState.speaking, 0))) < 2) {
+            if (_ZN14NpcSpeechState10isSpeakingEv(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x418, speechState.speaking, 0)))) {
                 if (talkGestureActive != 0) {
-                    if (_ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(((void *)((u8 *)(scene) + (0xec)))) == 0) {
+                    if (_ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0))) == 0) {
                         goto tail;
                     }
                 }
@@ -6004,7 +6007,7 @@ void NpcAnimCtrl::update(NpcActor *scene) {
                 playTalkGesture(scene, a, b);
                 talkGestureActive = 1;
             } else if (talkGestureActive == 1) {
-                if (_ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(((void *)((u8 *)(scene) + (0xec)))) != 0) {
+                if (_ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0xec, model, 0))) != 0) {
                     stopTalkGesture(scene);
                     talkGestureActive = 0;
                 }
@@ -6118,7 +6121,7 @@ void NpcAnimCtrl::syncMouthType(NpcActor *scene) {
         k = 1;
         break;
     }
-    _ZN14NpcSpeechState12setMouthTypeEi(((void *)((u8 *)(scene) + (0x418))), k);
+    _ZN14NpcSpeechState12setMouthTypeEi(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x418, speechState.speaking, 0)), k);
 }
 
 ActorTalkRequest::ActorTalkRequest() {
@@ -8818,9 +8821,13 @@ extern "C" void VillagerRoute_PickOtherHouseDoor(Vec2 *out, void *self, u32 unus
     out->x = 0;
     out->y = 0;
     if (obj->getVillagerData()) {
+#ifdef HOST
+        uptr key;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
+#else
         s32 key;
+#endif
         func_02133ef8(&key, 4);
-        key = _ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
+        key = (uptr)_ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
         void *v;
         if ((v = SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) != 0) {
             u8 *p = _ZN20VillagerDataItemView11getHousePosEv(v);
@@ -8859,9 +8866,13 @@ extern "C" void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unu
     out->x = 0;
     out->y = 0;
     if (world && obj->getVillagerData()) {
+#ifdef HOST
+        uptr key;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
+#else
         s32 key;
+#endif
         func_02133ef8(&key, 4);
-        key = _ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
+        key = (uptr)_ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
         void *v;
         if ((v = SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) != 0) {
             u8 *p = _ZN20VillagerDataItemView11getHousePosEv(v);
@@ -9065,7 +9076,11 @@ BOOL HeldToolModel::attach(u32 a, u16 *b, u32 c, u16 d) {
     void *p = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (p) {
         HeldItemModel_SetItem(p, b, 0);
+#ifdef HOST
+        _ZN11NpcAnimCtrl16playHoldItemPoseEP8NpcActorPtPvt((void *)&((NpcActor *)(uptr)a)->animCtrl, a, b, c, d);
+#else
         _ZN11NpcAnimCtrl16playHoldItemPoseEP8NpcActorPtPvt((void *)(a + 0x334), a, b, c, d);
+#endif
         heldItem = *b;
         return TRUE;
     }

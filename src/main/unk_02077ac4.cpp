@@ -5907,9 +5907,13 @@ extern "C" void Villager_GetEnemyName(u32 a, u32 b) {
 
 namespace nK {
 extern "C" void Villager_GetRandomOtherName(u32 a, u32 b) {
+#ifdef HOST
+    uptr v;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
+#else
     u32 v;
+#endif
     func_02133ef8(&v, 4);
-    v = (u32)_ZN12VillagerData13getVillagerIdEv((void *)a);
+    v = (uptr)_ZN12VillagerData13getVillagerIdEv((void *)a);
     void *r = SaveVillagers_PickRandomExcept(gSaveVillagers, &v, 1);
     if (r) {
         if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(r))) {

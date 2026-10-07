@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/mman.h>
 
 #include "coro.h"
 #include "host.h"
@@ -133,4 +134,20 @@ void host_heap_check(void) {
         }
     }
     if (host_frame() % 600 == 0) fprintf(stderr, "heapcheck: frame %llu: %d heaps fine\n", (unsigned long long)host_frame(), heaps);
+}
+
+// The root heap's memory on 64-bit hosts (Heap_InitSystem): the game's objects are larger there (pointers), so the
+// DS's main RAM arena (about 1.4 MB for the root heap) runs out; the heap gets a larger block of its own instead.
+// Below 4 GB: the game keeps heap addresses in 32-bit words.
+void *host_root_heap_region(unsigned int *size) {
+    const unsigned int kSize = 8u << 20;
+    void *want = (void *)(uintptr_t)0x50000000;
+    void *p = mmap(want, kSize, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    if (p == MAP_FAILED) return 0;
+    if ((uintptr_t)p + kSize > 0xffffffffu) {
+        munmap(p, kSize);
+        return 0;
+    }
+    *size = kSize;
+    return p;
 }
