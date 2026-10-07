@@ -109,14 +109,22 @@ extern "C" void VramQueue2d_Init(void) {
 }
 
 extern "C" BOOL VramQueue2d_Enqueue(VramTask *p) {
+#ifdef HOST
+    void *n = p != 0 ? (void *)static_cast<PrioListNode *>(p) : 0;  // (the node base: where the queue links it)
+#else
     u8 *n = (u8 *)p;
     if (n != 0) n = n + 4;
+#endif
     return PrioList_Insert(&sVramQueue2d, n);
 }
 
 extern "C" void VramQueue2d_Dequeue(VramTask *p) {
+#ifdef HOST
+    void *n = p != 0 ? (void *)static_cast<PrioListNode *>(p) : 0;  // (the node base: where the queue links it)
+#else
     u8 *n = (u8 *)p;
     if (n != 0) n = n + 4;
+#endif
     List_Remove(&sVramQueue2d, n);
 }
 
