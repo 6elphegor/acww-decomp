@@ -1,4 +1,7 @@
 #include "types.h"
+#ifdef HOST
+extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
+#endif
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "ui/HandCursor.h"
@@ -55,7 +58,7 @@ void HandCursor::setAnim(s32 idx) {
     }
     anim = idx;
 #ifdef HOST
-    layer1.setSeq((SpriteAnimSeq *)data_020d5b0c + a); // (the records grow on 64-bit hosts)
+    layer1.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[a]); // (the block of tables: src/main/unk_020d5d34.cpp)
 #else
     layer1.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
 #endif
@@ -64,7 +67,7 @@ void HandCursor::setAnim(s32 idx) {
     hasLayer2 = sHandCursorAnimHasLayer2[idx];
     if (hasLayer2 != 0) {
 #ifdef HOST
-        layer2.setSeq((SpriteAnimSeq *)data_020d5b0c + n); // (the records grow on 64-bit hosts)
+        layer2.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[n]); // (the block of tables: src/main/unk_020d5d34.cpp)
 #else
         layer2.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
 #endif

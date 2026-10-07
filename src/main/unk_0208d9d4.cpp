@@ -1,4 +1,7 @@
 #include "types.h"
+#ifdef HOST
+extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
+#endif
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "ui/ScrollKnob.h"
@@ -44,14 +47,14 @@ void ScrollKnob::setState(s32 idx) {
     f = sScrollKnobPlayOnce[idx];
     state = idx;
 #ifdef HOST
-    layerAnim1.setSeq((SpriteAnimSeq *)data_020d5b0c + a); // (the records grow on 64-bit hosts)
+    layerAnim1.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[a]); // (the block of tables: src/main/unk_020d5d34.cpp)
 #else
     layerAnim1.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
 #endif
     layerAnim1.setPlayOnce(f);
     layerAnim1.restart();
 #ifdef HOST
-    priority.setSeq((SpriteAnimSeq *)data_020d5b0c + n); // (the records grow on 64-bit hosts)
+    priority.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[n]); // (the block of tables: src/main/unk_020d5d34.cpp)
 #else
     priority.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
 #endif
