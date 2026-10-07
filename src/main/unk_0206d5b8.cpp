@@ -1,3 +1,4 @@
+#include "uptr.h"
 #include "types.h"
 #include "sys/StackPad.h"
 #include "nitro/fs.h"
@@ -515,7 +516,7 @@ u8 *RecordFile::getRecord(u32 idx) {
 
 void RecordFile::loadPage(u32 idx) {
     u32 blk = idx >> 3;
-    u8 file[0x4c];
+    u8 file[HOST_SIZED(0x4c, FSFile)];
     Backup_GetStatus(gBackup);
     FS_InitFile(file);
     if (FS_OpenFileFast(file, fileId)) {

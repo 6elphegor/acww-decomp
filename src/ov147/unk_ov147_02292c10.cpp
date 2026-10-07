@@ -1,3 +1,5 @@
+#include "uptr.h"
+#include "nitro/fs.h"
 // ov147 second translation unit (0x02292c10..0x022930bc): the object at scene+0xac and its helpers.
 #include "types.h"
 #include "menu/TitleBlinkText.h"
@@ -129,7 +131,7 @@ extern "C" void TitleBlinkText_LoadGraphics(s32 idx) {
     char ncg[28] = "/a_mes/a_mes_ttl_bg_ncg.bin";
     const char *paths[2] = { "/a_mes/a_mes_ttl_a0_bg_nsc.bin", "/a_mes/a_mes_ttl_b0_bg_nsc.bin" };
     char ncl[28] = "/a_mes/a_mes_ttl_bg_ncl.bin";
-    u32 file[19];
+    u32 file[HOST_SIZED(0x4c, FSFile) / 4];
     void *m;
     FS_InitFile(file);
     m = TitleBlinkText_Alloc(0x9e0);

@@ -115,8 +115,48 @@ void MI_UncompressLZ8(const void *srcp, void *dstp) {
 // the overlay "backward" compression of the ROM; overlays aren't compressed on the host
 void MIi_UncompressBackward(u32 bottom) { (void)bottom; }
 
-// streaming LZ8 (MI_ReadUncompLZ8 is the SDK's MI_ReadUncompLZ8 step); not used at boot
-s32 MI_ReadUncompLZ8(void *st, const void *p, s32 n) { (void)st; (void)p; (void)n; extern void host_unimplemented(const char *); host_unimplemented("MI_ReadUncompLZ8"); return -1; }
+// streaming LZ8: the assembly decoder (src/autoload_2/unk_021162b0.s) in C. The context is the one
+// MI_InitUncompContextLZ (src/autoload_2/unk_021163b0.c) sets up: destination, remaining count, the current flag
+// byte and its remaining bits, a reference's first byte and whether it has been read. Returns the remaining count
+// (0: done); File_LoadAlloc feeds it the file a heap-sized piece at a time when the whole file doesn't fit.
+typedef struct {
+    u8 *destp;
+    int destCount;
+    u16 u8_;
+    u8 u10;
+    u8 flags, flagIndex, length, lengthFlg;
+} HostUncompContextLZ;
+
+s32 MI_ReadUncompLZ8(void *st, const void *p, s32 n) {
+    HostUncompContextLZ *c = st;
+    const u8 *s = p;
+    u8 *d = c->destp;
+    int count = c->destCount;
+    while (count > 0) {
+        if (c->flagIndex == 0) {
+            if (n == 0) break;
+            c->flags = *s++; n--;
+            c->flagIndex = 8;
+            continue;
+        }
+        if (n == 0) break;
+        if (!(c->flags & 0x80)) {
+            *d++ = *s++; n--; count--;
+        } else {
+            if (!c->lengthFlg) { c->length = *s++; n--; c->lengthFlg = 1; }
+            if (n == 0) break;
+            u32 off = ((c->length & 0xf) << 8 | *s++) + 1; n--;
+            c->lengthFlg = 0;
+            for (s32 len = (c->length >> 4) + 3; len > 0; len--) { *d = d[-(s32)off]; d++; count--; }
+        }
+        if (count == 0) break;
+        c->flags <<= 1;
+        c->flagIndex--;
+    }
+    c->destp = d;
+    c->destCount = count;
+    return count;
+}
 
 // ---- matrices (fx32, 1.0 = 0x1000): 33 = 3x3, 43 = 3x3 + translation row, 44 = 4x4 (row-major)
 #define ONE 0x1000

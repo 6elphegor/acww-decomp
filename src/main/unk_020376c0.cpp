@@ -1,3 +1,5 @@
+#include "uptr.h"
+#include "nitro/fs.h"
 #include "types.h"
 
 extern "C" {
@@ -36,7 +38,7 @@ void CommCautionWindowView::execReset() {
 }
 
 extern "C" void Main_LoadBuildTime() {
-    u8 buf[0x4c];
+    u8 buf[HOST_SIZED(0x4c, FSFile)];
     FS_InitFile(buf);
     if (FS_OpenFile(buf, "/BUILDTIME") == 1) {
         FS_ReadFile(buf, gBuildTime, 0x20);

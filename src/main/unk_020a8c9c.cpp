@@ -1,3 +1,4 @@
+#include "nitro/fs.h"
 #include "uptr.h"
 #include "types.h"
 #include "text/Unk_02050288.h"
@@ -417,7 +418,7 @@ BOOL ChoiceWindow::loadBgFile(void *file) {
 
 BOOL ChoiceWindow::loadBg() {
     BOOL r = FALSE;
-    u8 file[0x4c];
+    u8 file[HOST_SIZED(0x4c, FSFile)];
     FS_InitFile(file);
     if (loadBgFile(file)) {
         r = TRUE;

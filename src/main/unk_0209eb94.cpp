@@ -4975,7 +4975,11 @@ void TownCompressBuffer::compress() {
 void TownCompressBuffer::decompress() {
     void *dst = NB::SaveManager_GetTownTransferBuf();
     if (size != 0) {
+#ifdef HOST
+        u8 ctx[0x20]; // the LZ streaming context: pointer-sized destination on hosts
+#else
         u8 ctx[0x10];
+#endif
         NB::MI_InitUncompContextLZ(ctx, dst, data);
         NB::MI_ReadUncompLZ8(ctx, dataBody, size - 4);
     } else {

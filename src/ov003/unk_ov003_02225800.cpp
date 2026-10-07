@@ -7875,7 +7875,11 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
             void *tex = File_LoadAlloc(l.path, h2, 4, 0);
             if (r7 != 0) {
                 r7 = (void *)func_02106670(func_02106654(tex), 0);
+#ifdef HOST
+                if (ModelAnim_allocMatAnm(e, ((Model *)obj)->resMdl, h2)) {
+#else
                 if (ModelAnim_allocMatAnm(e, *(void **)(obj + 0x5c), h2)) {
+#endif
                     ModelAnim_init(e, (s32)r7, 0, 0x1000, 0);
                     ModelAnim_addToRenderObj(e, Model_getRenderObj(obj));
                     ok = TRUE;
@@ -9834,7 +9838,11 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
     }
     if (o->rotY != 0) Mtx43_RotateY(&data_021f47e0, o->rotY);
     if (o->rotZ != 0) Mtx43_RotateZ(&data_021f47e0, o->rotZ);
+#ifdef HOST
+    pb = (u8 *)&((Model *)pb)->mtx;
+#else
     pb += 0x64;
+#endif
     *(Blk *)pb = data_021f47e0;
     if (flag && o->kind == 0x39) {
         Blk m = data_021f47e0;

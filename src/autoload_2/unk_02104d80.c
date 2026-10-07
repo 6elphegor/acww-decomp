@@ -115,7 +115,11 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
     u32 idx;
     s32 w;
     u32 off;
+#ifdef HOST
+    u8 *mdl = *(u8 **)((u8 *)rs->obj + sizeof(void *)); // the render object's resMdl, after its u32 flag
+#else
     u8 *mdl = *(u8 **)((u8 *)rs->obj + 4);
+#endif
     u8 *c = rs->c;
     u8 *inv = mdl + *(u32 *)(mdl + 0x10);
     u32 n = c[2];
