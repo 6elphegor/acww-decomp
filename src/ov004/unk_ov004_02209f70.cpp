@@ -3868,7 +3868,7 @@ void FtrStorage::execFtrAct00() {
             v.x = 0;
             v.y = 0;
             v.z = 0x2000;
-            p20::Vec_RotateY(&v, *(s16 *)((u8 *)this + 0x8e));
+            p20::Vec_RotateY(&v, rotY);
             volatile Vec2 p;
             p.x = 0;
             p.y = 0;
@@ -4859,7 +4859,7 @@ BOOL FtrSeat::updateActive() {
                 }
                 if (p22::_ZN10FtrContact15getStepDistanceEv(r6) > 0x200) {
                     if (pushFrames >= 7) {
-                        p22::PlayerActor_LocalRequestSeatApproach(&pos, &pos.z, (u8 *)this + 0x8e, &mode);
+                        p22::PlayerActor_LocalRequestSeatApproach(&pos, &pos.z, &rotY, &mode);
                         pushFrames = 0;
                     }
                 }

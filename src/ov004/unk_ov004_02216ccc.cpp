@@ -248,8 +248,8 @@ BOOL HouseOwnerVillager::onCreate() {
     } else {
         ai.changeState(this, 3);
     }
-    u32 *g = (u32 *)gCommManager;
-    if (!((CommManager *)(g))->isSlotActive(g[0x64 / 4])) {
+    CommManager *g = gCommManager;
+    if (!g->isSlotActive(g->myAid)) {
         if (getVillagerData()) {
             if (VillagerState_GetRole(Villager_GetState(getVillagerData())) == 1) {
                 VillagerState_SetRole(Villager_GetState(getVillagerData()), 0);

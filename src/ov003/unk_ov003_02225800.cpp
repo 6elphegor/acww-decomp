@@ -7728,8 +7728,8 @@ BOOL InsectManager::onCreate() { using namespace s05;
     ((ModelSlotPool *)(&fieldInsectPool))->init(8, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)FieldInsectHeap_Create), (ModelSlotFreeFunc)((void *)FieldInsectHeap_Destroy));
     ((ModelSlotPool *)(&specialInsectPool))->init(2, (void *)(0x400), (void *)(0x40), 0x6e8, (ModelSlotAllocFunc)((void *)SpecialInsectHeap_Create), (ModelSlotFreeFunc)((void *)SpecialInsectHeap_Destroy));
     ((ModelSlotPool *)(&heldInsectPool))->init(4, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)HeldInsectHeap_Create), (ModelSlotFreeFunc)((void *)HeldInsectHeap_Destroy));
-    u32 *g = gCommManager[0];
-    if (((CommManager *)(g))->isSlotActive(g[0x64 / 4]) == 0) {
+    CommManager *g = (CommManager *)gCommManager[0];
+    if (g->isSlotActive(g->myAid) == 0) {
         allocSpecialInsect(0x3a, 0);
         allocSpecialInsect(0x3b, 1);
     }

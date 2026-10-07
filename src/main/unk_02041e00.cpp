@@ -8078,7 +8078,7 @@ extern "C" s32 FieldAction_FindDropUnit(void *self, Vec2 *p, u8 *out) {
                 q2.y = y;
                 if (PendingUnit_IndexAt(&q2, z) < 0) {
                     Vec2 q3;
-                    s32 k = *(s32 *)(g + 0x68);
+                    s32 k = ((CommManager *)g)->localSlot;
                     q3.x = x;
                     q3.y = y;
                     if (Field_IsUnitClearOfOthers(&q3, k)) {

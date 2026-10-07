@@ -409,11 +409,6 @@ void *FriendEntry_GetFriendData(void *a);
 
 // ---- unk_0209ff4c.cpp
 
-struct Unk_020cbb18_ff4c {
-    u8 pad_00[0x68];
-    volatile s32 localSlot;
-};
-
 
 class SaveRecord4 {
 public:
@@ -431,7 +426,7 @@ public:
 
 namespace ND {
 extern "C" {
-extern Unk_020cbb18_ff4c *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gSaveData[];
 extern u8 gSavePlayers[];
 extern u8 data_021e7f8c[];
@@ -439,7 +434,6 @@ extern u8 data_021ecfa8[];
 extern u8 gSaveFooter[];
 extern u8 gBackup[];
 extern const u32 sSaveSlotOffsets[];
-BOOL _ZN11CommManager12isSlotActiveEi(Unk_020cbb18_ff4c *, s32);
 void *_ZN18TownExchangeRecord18getLostChildRecordEv(void *);
 void _ZN15LostChildRecord5clearEv(void *);
 s32 PlayerData_Get(s32);
@@ -3762,13 +3756,13 @@ extern "C" void GameStart_SetupSave() {
     if (!GameStart_IsMode4()) {
         if (GameStart_IsNewTown()) ((SaveData *)(ND::gSaveData))->reset();
         if (GameStart_IsMode3()) {
-            Unk_020cbb18_ff4c *g = ND::gCommManager;
+            CommManager *g = ND::gCommManager;
             g->localSlot = 0;
             PlayerSession_SetDataIndex(g->localSlot, 0);
         } else {
             void *p = ND::gSavePlayers;
             s32 t = PlayerDataArray_FindUnused(p);
-            Unk_020cbb18_ff4c *g = ND::gCommManager;
+            CommManager *g = ND::gCommManager;
             g->localSlot = 0;
             PlayerSession_SetDataIndex(g->localSlot, t);
             ND::PlayerDataArray_CreateResident(p, data_020e252c, 0, t);
@@ -3895,7 +3889,7 @@ extern "C" void SaveManager_SetCtrlAct17(SaveManager *p, u32 v) { p->ctrlAct17 =
 
 extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
     s32 i;
-    Unk_020cbb18_ff4c *g;
+    CommManager *g;
     s32 s;
     s32 t;
     s32 r5;
@@ -3909,7 +3903,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
         g->localSlot = 0;
     }
     g = ND::gCommManager;
-    ((CommManager *)(void *)(g))->setMemberCount(1);
+    g->setMemberCount(1);
     if (b < 7) {
         PlayerSession_SetDataIndex(g->localSlot, b);
     }
@@ -3961,7 +3955,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
 
 extern "C" void VillagerTransfer_PlanSwap(void *a) {
     s32 list[4];
-    Unk_020cbb18_ff4c *g;
+    CommManager *g;
     s32 n;
     s32 i;
     s32 cur = NetSession_GetLastSyncSlot();
@@ -3970,13 +3964,13 @@ extern "C" void VillagerTransfer_PlanSwap(void *a) {
     i = 3;
     g = ND::gCommManager;
     for (; i >= 0; i--) {
-        if (i != cur && ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
+        if (i != cur && g->isSlotActive(i)) {
             list[n] = i;
             n++;
         }
     }
     for (i = 3; i >= 0; i--) {
-        if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
+        if (g->isSlotActive(i)) {
             ((SaveManager *)(a))->setTransferDest(i, i);
         } else {
             ((SaveManager *)(a))->setTransferDest(i, 4);
@@ -3991,9 +3985,9 @@ extern "C" void VillagerTransfer_PlanRotate(void *a) {
     s32 list[4];
     s32 n = 0;
     s32 i = 3, j;
-    Unk_020cbb18_ff4c *g = ND::gCommManager;
+    CommManager *g = ND::gCommManager;
     for (; i >= 0; i--) {
-        if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
+        if (g->isSlotActive(i)) {
             list[n] = i;
             n++;
         }
@@ -4011,9 +4005,9 @@ extern "C" void VillagerTransfer_PlanRotate(void *a) {
 
 extern "C" void LostChild_ResetAndPairLast(SaveManager *a) {
     s32 i = 3;
-    Unk_020cbb18_ff4c *g = ND::gCommManager;
+    CommManager *g = ND::gCommManager;
     for (; i >= 0; i--) {
-        if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
+        if (g->isSlotActive(i)) {
             ((LostChildRecord *)(((TownExchangeRecord *)(TownExchange_GetForAid(i)))->getLostChildRecord()))->clear();
         }
     }

@@ -153,11 +153,7 @@ BOOL Scene_InUnk6Or7();
 BOOL Scene_InTown();
 void Vec_RotateY(VecFx32 *, s32);
 
-struct Data020cbb18 {
-    u8 pad[0x64];
-    u32 myAid;
-};
-extern Data020cbb18 *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gSavePlayers[];
 }
 
@@ -187,7 +183,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
         if (idx < 4 && PlayerDataArray_IsUsed(gSavePlayers, PlayerSession_GetDataIndex(i))) {
-            if (!((CommManager *)(gCommManager))->isLocalSlot(i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
+            if (!gCommManager->isLocalSlot(i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
                 VecFx32 *v = SceneWarp_GetPos(Scene_GetWarpRequest());
@@ -203,7 +199,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32
             return TRUE;
         }
     } else {
-        if (((CommManager *)(gCommManager))->isLocalSlot(i)) {
+        if (gCommManager->isLocalSlot(i)) {
             if (SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 get(pos, rot_, out);
             } else {
@@ -239,7 +235,7 @@ BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
     ScenePlayerSpawn *items = (ScenePlayerSpawn *)list;
     if (items != NULL && Scene_GetCurrent() != 0xd && Scene_GetCurrent() != 0xe && Scene_GetCurrent() != 0x2f) {
         if (Scene_InUnk6Or7()) {
-            ((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid);
+            gCommManager->isSlotActive(gCommManager->myAid);
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
                 u32 v;

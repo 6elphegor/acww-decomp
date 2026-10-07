@@ -21,7 +21,7 @@
 
 
 extern "C" {
-extern u8 *gCommManager;
+extern CommManager *gCommManager;
 extern s16 data_02135f44[];
 extern u8 sFishBobberPool[];
 
@@ -195,7 +195,7 @@ PlayerPalettePool::~PlayerPalettePool() {}
 extern "C" void PlayerPalettePool_AllocBuffers(u32 *out)
 {
     void *h = gPlayerPaletteHeap;
-    u32 n = gCommManager[0x6c];
+    u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
         out[i] = (u32)Heap_AllocAligned(h, PlayerPalette_GetSlotSize(), 4);

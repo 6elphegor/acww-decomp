@@ -798,7 +798,7 @@ void SpNpcCelesteTalk::onChoice(u32) {
     goto test;
 loop:
     {
-        u32 id = *(u32 *)((u8 *)tbl + i * 12);
+        u32 id = tbl[i].id;
         u32 cur = *pe;
         if (id == cur) {
             (this->*tbl[i].fn)(t);

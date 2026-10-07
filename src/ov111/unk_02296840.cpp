@@ -1,6 +1,7 @@
 #include "uptr.h"
 // ov111: scene overlay (class ChatMenu, vtable 0x02298a48, 0x3e58 bytes): a character/name entry screen.
 #include "types.h"
+#include "net/CommManager.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
 #include "ui/UiWidget.h"
@@ -58,7 +59,7 @@ typedef ChatMenu S;
 extern "C" {
 extern u8 gU8None;
 extern u16 gPad[];
-extern u32 gCommManager;
+extern CommManager *gCommManager;
 extern u32 gCurrentHeap;
 
 void ChatBalloon_Post(s32 a, void *p, void *q);
@@ -941,13 +942,13 @@ void ChatMenu_SendText(S *s) {
     MsgString9B buf;
     ((PlayerId *)r->getPlayerId())->getNameString((MsgString *)&buf);
     String_CensorTaboo(&s->balloonText);
-    ChatBalloon_Post(*(s32 *)(gCommManager + 0x64), &buf, &s->balloonText);
+    ChatBalloon_Post(gCommManager->myAid, &buf, &s->balloonText);
     ChatMenu_ClearText(s);
     ChatMenu_RedrawText(s);
 }
 
 void ChatMenu_BeginSend(S *s) {
-    ChatBalloon_Dismiss(*(s32 *)(gCommManager + 0x64));
+    ChatBalloon_Dismiss(gCommManager->myAid);
 }
 
 BOOL ChatMenu_InsertChar(S *s, u32 a) {

@@ -614,7 +614,7 @@ void NameEntryMenu::transitionAct03() {
             } else {
                 ((MenuTabBar *)(r6))->selectTab(6);
                 MenuCtrl_SetFriendPageFromIndex();
-                if (((CommManager *)(gCommManager))->isSlotActive(((s32 *)gCommManager)[0x64 / 4])) {
+                if (((CommManager *)(gCommManager))->isSlotActive(((CommManager *)(gCommManager))->myAid)) {
                     s32 t = Net_GetMode();
                     if (t == 3) goto yes;
                     if (t == 4) {

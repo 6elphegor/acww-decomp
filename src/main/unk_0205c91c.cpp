@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 #include "sys/StackPad.h"
 #include "actor/CharaClothTexRef.h"
 #include "item/ItemId.h"
@@ -14,7 +15,7 @@
 struct CharaClothTexPool;
 
 extern "C" {
-extern u8 *gCommManager;
+extern CommManager *gCommManager;
 
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -67,7 +68,7 @@ CharaClothTexPool::~CharaClothTexPool() {}
 
 void CharaClothTexPool::allocBuffers() {
     void *heap = gCharaClothTexHeap;
-    u32 n = gCommManager[0x6c];
+    u32 n = gCommManager->memberCount;
     u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
     u32 i;
     if (n < m) m = n;

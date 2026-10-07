@@ -186,7 +186,15 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
   an untyped pointer is `ACTOR_POS_AT(p)`; views of whole objects are generated (`tools/host_view_layout.py
   --remove` regenerates one after the real class changed; a size check fails the build when a layout is stale).
 - Tables of pointers to member functions: an entry is 16 bytes on x86-64; code that reads the second member at the
-  DS offset `+ 8` (state tables: title screen, NPC behaviour, talk scripts) reads half of the first.
+  DS offset `+ 8` (state tables: title screen, NPC behaviour, talk scripts) reads half of the first. The same for
+  `{id, member function}` handler tables walked with the DS stride (`(u32)tbl + i * 12`: the special NPCs' talk
+  handlers): index the array.
+- Records that start with a smaller record: an actor's profile (`ActorProfile`) is a `ProcProfile` (16 bytes on
+  x86-64) followed by the actor flags and cull box; read through `u32 *` (`e[2]`) it gives the priorities instead
+  (the actor culled away: Kapp'n missing in the taxi).
+- The communication manager (`CommManager`) reached by DS offsets (`gCommManager + 0x64` for `myAid`, `0x68`
+  `localSlot`, `0x6c` `memberCount`, views padded to them): on x86-64 these land in other members (the intro's
+  player was never spawned: `localSlot` stayed 4).
 - Heaps are sized for the DS's objects: on 64-bit hosts every heap the game creates with a size is twice that
   (`ExpHeap_Create` / `FrameHeap_Create`), and the root heap is a block of its own (`host_root_heap_region`,
   8 MB below 4 GB) instead of the DS's main RAM arena.

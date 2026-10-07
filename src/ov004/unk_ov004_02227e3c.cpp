@@ -255,7 +255,7 @@ BOOL RecycleBox::acceptsInteraction(void *a) {
     Character *o = (Character *)a;
     if (o) {
         if (Vec_DistXZ(&o->position.x, &position.x) < 0x299a) {
-            if (Math_AngleDiffAbs((s16)(F(s16, 0x8e) + 0x8000), *(s16 *)((u8 *)o + 0x8e)) < 0x1200) {
+            if (Math_AngleDiffAbs((s16)(rotY + 0x8000), o->rotY) < 0x1200) {
                 return TRUE;
             }
         }

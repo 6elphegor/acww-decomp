@@ -173,7 +173,7 @@ struct PopupChoiceIdList;
 class FriendRosterTab;
 typedef void (FriendRosterTab::*Unk_ov119_02295840_Fn)();
 
-#define U3D0 ((u8 *)this + 0x3d0)
+#define U3D0 ((u8 *)&choiceList)
 extern "C" {
 void _ZN15FriendRosterTab11updateTouchEv();
 void _ZN15FriendRosterTab9mainAct01Ev();

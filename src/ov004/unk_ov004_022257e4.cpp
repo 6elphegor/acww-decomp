@@ -194,7 +194,7 @@ BOOL CheckInGate::onCreate() {
     v = Scene_GetCurrent();
     switch (v) {
     case 0xb:
-        if (((CommManager *)(gCommManager))->isSlotActive(*(u32 *)((u8 *)gCommManager + 0x64))) {
+        if (((CommManager *)(gCommManager))->isSlotActive(((CommManager *)(gCommManager))->myAid)) {
             changeSyncState(2);
         } else {
             changeSyncState(0);

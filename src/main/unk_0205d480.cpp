@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 #include "sys/PrioListNode.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexTransfer.h"
@@ -17,7 +18,7 @@ void Heap_adjust(void *p);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
-extern u8 *gCommManager;
+extern CommManager *gCommManager;
 }
 
 
@@ -110,7 +111,7 @@ PlayerGlassesModelPool::PlayerGlassesModelPool() {
 PlayerGlassesModelPool::~PlayerGlassesModelPool() {}
 
 void PlayerGlassesModelPool::allocBuffers(void) {
-    u32 n = *(u8 *)(gCommManager + 0x6c);
+    u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
         vramSlots[i].alloc((void *)PlayerGlassesModel_GetTexVramSize(), (void *)PlayerGlassesModel_GetTex4x4VramSize(), (void *)PlayerGlassesModel_GetPlttVramSize());

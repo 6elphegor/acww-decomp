@@ -11,6 +11,7 @@
 #include "npc/VillagerId.h"
 #include "actor/Actor.h"
 #define PROTO_LOCAL_sPersonalityPrefixes  // declared below: the shared prototype conflicts with the calls here
+#include "actor/ActorProfile.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02105d50.h"
 #include "proto/autoload_2/unk_0210fa84.h"
@@ -69,7 +70,7 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern u32 **gProfileTable;
+extern ProcProfile **gProfileTable;
 }
 
 extern "C" {
@@ -280,9 +281,9 @@ Actor::Actor() {
         moveAngleY = x->y;
         moveAngleZ = x->z;
     }
-    u32 *e = gProfileTable[profile];
-    actorFlags = e[2];
-    setCullParams(e[3], e[4], e[5]);
+    ActorProfile *e = (ActorProfile *)gProfileTable[profile];  // an actor's profile is an ActorProfile (ProcProfile first)
+    actorFlags = e->actorFlags;
+    setCullParams(e->cullHeight, e->cullRadius, e->cullDepth);
 }
 
 BOOL Actor::preCreate() {

@@ -678,18 +678,11 @@ void SpNpcKappnTalk::onMessageEnd(u32) {
         {0x31, *(Fn *)data_ov051_02259fdc},
         {0x32, *(Fn *)data_ov051_02259fd4},
     };
-    u32 i = 0;
-    u8 *idp = &msgIndex;
-    goto test0;
-loop0:
-    u32 id;
-    id = tbl[i].id;
-    if (id == *idp) {
-        (this->*((SpNpcKappnMessageEndHandler *)((u32)tbl + i * 12))->fn)();
+    for (u32 i = 0; i < 0x20; i++) {
+        if (tbl[i].id == msgIndex) {
+            (this->*tbl[i].fn)();
+        }
     }
-    i++;
-test0:
-    if (i < 0x20) goto loop0;
 }
 
 void SpNpcKappnTalk::onTownNameConfirmChoice(u32 sel) {
@@ -903,21 +896,12 @@ void SpNpcKappnTalk::onChoice(u32) {
         {0x12, *(FnU *)data_ov051_02259f8c},
         {0x30, *(FnU *)data_ov051_0225a00c},
     };
-    u32 i = 0;
-    u8 *idp = &msgIndex;
-    goto test0;
-loop0:
-    u32 off;
-    off = i * 12;
-    u32 id;
-    id = *(u32 *)((u8 *)tbl + off);
-    if (id == *idp) {
-        u32 arg = window->getChoiceList()->getResult();
-        (this->*((SpNpcKappnChoiceHandler *)((u32)tbl + off))->fn)(arg);
+    for (u32 i = 0; i < 0xe; i++) {
+        if (tbl[i].id == msgIndex) {
+            u32 arg = window->getChoiceList()->getResult();
+            (this->*tbl[i].fn)(arg);
+        }
     }
-    i++;
-test0:
-    if (i < 0xe) goto loop0;
 }
 
 extern "C" u32 SpNpcKappn_GetAnimFrame() {

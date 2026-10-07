@@ -244,7 +244,7 @@ BOOL Character::preExecute() {
 u32 Character::getCharId() { return charNode.charId; }
 
 void Character::setCharId(u32 a) {
-    charNode.charId = a | (*(u16 *)((u8 *)this + 0xc) << 16);
+    charNode.charId = a | (profile << 16);
 }
 
 extern "C" Character *Character_FindByCharId(u32 id) {

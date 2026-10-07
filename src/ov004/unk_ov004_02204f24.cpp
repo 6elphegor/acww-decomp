@@ -808,7 +808,7 @@ BOOL FtrActor::isStereoOn() {
 
 // @02209c88
 BOOL FtrActor::isTvOn() {
-    u32 v = *(u16 *)((u8 *)this + 0xc);
+    u32 v = profile;
     BOOL a;
     BOOL b;
     BOOL r;
@@ -824,7 +824,7 @@ BOOL FtrActor::isTvOn() {
 // @02209c58
 BOOL FtrActor::isSeatOrBed() {
     BOOL r = TRUE;
-    u32 v = *(u16 *)((u8 *)this + 0xc);
+    u32 v = profile;
     BOOL a;
     if (v == 0x36) a = TRUE; else a = FALSE;
     if (a == 0) {
@@ -1033,7 +1033,7 @@ BOOL FtrActor::preDraw() {
         }
     }
     if (isPreview() == 0) {
-        ((FtrTopItems *)((u8 *)this + 0x188))->drawAll(this);
+        ((FtrTopItems *)topItems)->drawAll(this);
     }
     return TRUE;
 }
@@ -3481,7 +3481,7 @@ BOOL FtrActor::startPush(s16 a) {
         targetPos[2] = w.z;
         targetAngle = a;
         setAct(3);
-        if (!Unk_ov004_02205820_Is3d(*(u16 *)((u8 *)this + 0xc))) {
+        if (!Unk_ov004_02205820_Is3d(profile)) {
             u32 t = ((s32 (*)(void *))FtrActor_GetDragSe)(this);
             if (t != 0xffff) PlayerActor_PlayLocalSe(t);
         }
@@ -3505,7 +3505,7 @@ BOOL FtrActor::startPull(s16 a) {
         targetPos[2] = w.z;
         targetAngle = a;
         setAct(4);
-        if (!Unk_ov004_02205820_Is3d(*(u16 *)((u8 *)this + 0xc))) {
+        if (!Unk_ov004_02205820_Is3d(profile)) {
             u32 t = ((s32 (*)(void *))FtrActor_GetDragSe)(this);
             if (t != 0xffff) PlayerActor_PlayLocalSe(t);
         }
