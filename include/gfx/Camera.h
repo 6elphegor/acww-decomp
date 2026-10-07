@@ -7,6 +7,7 @@
 // ov004 reads the 4-word mode parameter block at 0x21c as its own struct (by cast), main as {len, ang, vel}, ov068's
 // sway mode as CameraSwayState.
 #include "types.h"
+#include "uptr.h"
 #include "gfx/VecFx32.h"
 #include "sys/CameraBase.h"
 #include "gfx/FxMtx43.h"
@@ -106,7 +107,7 @@ public:
     /* 0x1f8 */ s32 mode, prevMode, startMode;
     /* 0x204 */ s32 restoreFocus, restoreFocusY, restoreFocusZ, restoreEye, restoreEyeY, restoreEyeZ;
     /* 0x21c */ union {
-        s32 modeParam;
+        sptr modeParam;  // (a pointer in some modes: the followed actor)
         CameraSwayState sway; // ov068 sway mode
     };
     /* 0x228 */ u8 pad_228[0x234 - 0x228];

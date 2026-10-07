@@ -321,7 +321,8 @@ def main():
 
     # the view's declarations in the source (the DS branch)
     text_full = open(src).read()
-    text = re.sub(r"#ifdef HOST64\n.*?#else\n", "", text_full, flags=re.S)
+    # (a generated branch: #ifdef HOST64 ... #else with no #endif between; other HOST64 blocks stay)
+    text = re.sub(r"#ifdef HOST64\n(?:(?!#endif\n)(?!#ifdef)(?!#ifndef).)*?#else\n", "", text_full, flags=re.S)
     m = re.search(r"(?:class|struct) %s\b[^;{]*\{" % re.escape(view), text)
     body = text[m.end():]
     depth, k = 1, 0
@@ -377,7 +378,17 @@ def main():
             continue
         if ent[0] == "base":
             _, name, loc, t = ent
-            cur = map64(loc + tsize(t, o32))  # (the members start after it, where the real structure's do)
+            # the base as the 64-bit build lays it out (its offset and size in the view's 64-bit definition): the
+            # members after it start there at the earliest; padding up to where the real structure's are
+            cur = map64(loc + tsize(t, o32))
+            try:
+                v64d, _f2 = find_type(o64, view)
+                for e64 in view_members(v64d):
+                    if e64[0] == "base" and e64[1] == name:
+                        cur = e64[2] + (tsize(e64[3], o64) or tsize(t, o32) or 0)
+                        break
+            except SystemExit:
+                pass
             continue
         _, name, loc, t = ent
         s = tsize(t, o32)

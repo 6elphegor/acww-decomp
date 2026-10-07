@@ -64,12 +64,24 @@ public:
     void updateModeFollowTarget();
     BOOL initModeFollowTarget();
 
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in Camera)
+    u8 pad_00[0x150];  // DS +0x0 [0x110]
+    s32 targetFocus;  // DS +0x110
+    s32 targetFocusY;  // DS +0x114
+    s32 targetFocusZ;  // DS +0x118
+    u8 pad_11c[0xe0];  // DS +0x11c [0xe0]
+    s32 prevMode;  // DS +0x1fc
+    u8 pad_200[0x20];  // DS +0x200 [0x1c]
+    CameraTownTourState townTour;  // DS +0x21c
+#else
     u8 pad_00[0x110];
     s32 targetFocus, targetFocusY, targetFocusZ;
     u8 pad_11c[0x1fc - 0x11c];
     s32 prevMode;
     u8 pad_200[0x21c - 0x200];
     CameraTownTourState townTour;
+#endif
 };
 
 extern "C" {
@@ -362,3 +374,16 @@ extern "C" s32 Camera_UpdateSway(Camera *c) {
     }
     return 0;
 }
+
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(CameraEventModes, pad_00) == 0x0, "CameraEventModes.pad_00");
+static_assert(__builtin_offsetof(CameraEventModes, targetFocus) == 0x150, "CameraEventModes.targetFocus");
+static_assert(__builtin_offsetof(CameraEventModes, targetFocusY) == 0x154, "CameraEventModes.targetFocusY");
+static_assert(__builtin_offsetof(CameraEventModes, targetFocusZ) == 0x158, "CameraEventModes.targetFocusZ");
+static_assert(__builtin_offsetof(CameraEventModes, pad_11c) == 0x15c, "CameraEventModes.pad_11c");
+static_assert(__builtin_offsetof(CameraEventModes, prevMode) == 0x23c, "CameraEventModes.prevMode");
+static_assert(__builtin_offsetof(CameraEventModes, pad_200) == 0x240, "CameraEventModes.pad_200");
+static_assert(__builtin_offsetof(CameraEventModes, townTour) == 0x260, "CameraEventModes.townTour");
+static_assert(sizeof(CameraEventModes) == sizeof(Camera), "CameraEventModes: regenerate (tools/host_view_layout.py --remove)");
+#endif

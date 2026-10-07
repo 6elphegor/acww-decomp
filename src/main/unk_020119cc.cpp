@@ -267,6 +267,16 @@ struct Unk_02016a44_S0ec { u8 pad[4]; };
 
 // unk_02016a44.cpp
 struct Unk_02006d14_Prim {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in NpcActor)
+    u8 pad_000[0xa8];  // DS +0x0 [0x5c]
+    s32 position;  // DS +0x5c
+    u8 pad_060[0x4];  // DS +0x60 [0x4]
+    s32 positionZ;  // DS +0x64
+    u8 pad_068[0x26];  // DS +0x68 [0x26]
+    s16 rotY;  // DS +0x8e
+    u8 pad_090[0x6c];  // DS +0x90 [0x5c]
+#else
     u8 pad_000[0x5c];
     s32 position;
     u8 pad_060[4];
@@ -274,6 +284,7 @@ struct Unk_02006d14_Prim {
     u8 pad_068[0x8e - 0x68];
     s16 rotY;
     u8 pad_090[0xec - 0x90];
+#endif
 };
 // NpcActor view (also passed for the player by HeldToolModel): the model at +0xec, reached as a secondary base
 struct Unk_02006d14_TalkBase {
@@ -281,6 +292,23 @@ struct Unk_02006d14_TalkBase {
 };
 class Unk_02006d14 : public Unk_02006d14_Prim, public Unk_02006d14_TalkBase {
 public:
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in NpcActor)
+    u8 hpad_0[0x4];
+    u8 pad_0f0[0xf4];  // DS +0xf0 [0xa8]
+    u32 modelAnimFrameStep;  // DS +0x198
+    u8 pad_19c[0x220];  // DS +0x19c [0x198]
+    NpcAnimCtrl animCtrl;  // DS +0x334
+    NpcMoveCtrl moveCtrl;  // DS +0x350
+    u8 pad_3a8[0xd8];  // DS +0x3a8 [0xd0]
+    s32 headTopPosX;  // DS +0x478
+    s32 headTopPosY;  // DS +0x47c
+    s32 headTopPosZ;  // DS +0x480
+    u8 pad_484[0xac];  // DS +0x484 [0x90]
+    SndSeEmitterKind1 seEmitter;  // DS +0x514
+    u8 pad_558[0xe0];  // DS +0x558 [0xd0]
+    void * curHeldTool;  // DS +0x628
+#else
     u8 pad_0f0[0x198 - 0xf0];
     u32 modelAnimFrameStep;
     u8 pad_19c[0x334 - 0x19c];
@@ -294,6 +322,7 @@ public:
     SndSeEmitterKind1 seEmitter;
     u8 pad_558[0x628 - 0x558];
     void *curHeldTool;
+#endif
 };
 
 
@@ -5963,7 +5992,12 @@ void NpcAnimCtrl::updateAnimSpeed(NpcActor *scene) {
     s32 v = *(s32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x98, speed, 0));
     if (v == 0) {
         animSpeed = 0x1000;
+#ifdef HOST
+    // (getCurSpeedPreset is empty: on the DS its "result" is its argument, still in r0; not so on hosts)
+    } else if (scene->moveCtrl.curSpeedPreset.x == 0) {
+#else
     } else if (*_ZN11NpcMoveCtrl17getCurSpeedPresetEv(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0))) == 0) {
+#endif
         animSpeed = 0x1000;
     } else {
         animSpeed = func_01ffcb0c(v, animSpeedScale);
@@ -9242,3 +9276,30 @@ void *data_020d74a4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP7VecFx32, 0};
 Unk_021be028_Dir sRouteDirs[4] = {Unk_021be028_Dir(0, -1), Unk_021be028_Dir(-1, 0), Unk_021be028_Dir(0, 1), Unk_021be028_Dir(1, 0)};
 }
 }
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Unk_02006d14_Prim, pad_000) == 0x0, "Unk_02006d14_Prim.pad_000");
+static_assert(__builtin_offsetof(Unk_02006d14_Prim, position) == 0xa8, "Unk_02006d14_Prim.position");
+static_assert(__builtin_offsetof(Unk_02006d14_Prim, pad_060) == 0xac, "Unk_02006d14_Prim.pad_060");
+static_assert(__builtin_offsetof(Unk_02006d14_Prim, positionZ) == 0xb0, "Unk_02006d14_Prim.positionZ");
+static_assert(__builtin_offsetof(Unk_02006d14_Prim, pad_068) == 0xb4, "Unk_02006d14_Prim.pad_068");
+static_assert(__builtin_offsetof(Unk_02006d14_Prim, rotY) == 0xda, "Unk_02006d14_Prim.rotY");
+static_assert(__builtin_offsetof(Unk_02006d14_Prim, pad_090) == 0xdc, "Unk_02006d14_Prim.pad_090");
+#endif
+
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(Unk_02006d14, pad_0f0) == 0x150, "Unk_02006d14.pad_0f0");
+static_assert(__builtin_offsetof(Unk_02006d14, modelAnimFrameStep) == 0x244, "Unk_02006d14.modelAnimFrameStep");
+static_assert(__builtin_offsetof(Unk_02006d14, pad_19c) == 0x248, "Unk_02006d14.pad_19c");
+static_assert(__builtin_offsetof(Unk_02006d14, animCtrl) == 0x468, "Unk_02006d14.animCtrl");
+static_assert(__builtin_offsetof(Unk_02006d14, moveCtrl) == 0x490, "Unk_02006d14.moveCtrl");
+static_assert(__builtin_offsetof(Unk_02006d14, pad_3a8) == 0x4e8, "Unk_02006d14.pad_3a8");
+static_assert(__builtin_offsetof(Unk_02006d14, headTopPosX) == 0x5c0, "Unk_02006d14.headTopPosX");
+static_assert(__builtin_offsetof(Unk_02006d14, headTopPosY) == 0x5c4, "Unk_02006d14.headTopPosY");
+static_assert(__builtin_offsetof(Unk_02006d14, headTopPosZ) == 0x5c8, "Unk_02006d14.headTopPosZ");
+static_assert(__builtin_offsetof(Unk_02006d14, pad_484) == 0x5cc, "Unk_02006d14.pad_484");
+static_assert(__builtin_offsetof(Unk_02006d14, seEmitter) == 0x678, "Unk_02006d14.seEmitter");
+static_assert(__builtin_offsetof(Unk_02006d14, pad_558) == 0x6d8, "Unk_02006d14.pad_558");
+static_assert(__builtin_offsetof(Unk_02006d14, curHeldTool) == 0x7b8, "Unk_02006d14.curHeldTool");
+#endif

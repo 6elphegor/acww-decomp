@@ -551,12 +551,17 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
             HeldItemModels_SetMatAnmHeap(&sHeldItemModelBank, id, (u32)a1);
             Heap_AllocAligned(a1, 0x1c, 4);
             u32 *p = (u32 *)HeldItemModels_GetTexAnim(&sHeldItemModelBank, id);
+#ifdef HOST
+            ((ModelAnim *)p)->anmObj = 0;  // (the members after the frame control's vtable pointer)
+            ((ModelAnim *)p)->resMdl = 0;
+#else
             Unk_0205e310_P *pp = (Unk_0205e310_P *)p;
             pp->anmObj = 0;
             pp->resMdl = 0;
+#endif
             HeldItemModels_LoadTexAnim(&sHeldItemModelBank, id, 0);
             u32 q = (u32)func_02106670(func_02106654(HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, id)), 0);
-            u32 w = *(u32 *)(slot + 0x5c);
+            u32 w = MODEL_AT_RESMDL(slot);
             _ZN9ModelAnim11allocMatAnmEjPv(p, w, HeldItemModels_GetMatAnmHeap(&sHeldItemModelBank, id));
             _ZN9ModelAnim4initEiiit(p, q, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(p, (u32)((Model *)slot)->getRenderObj());
@@ -673,7 +678,7 @@ extern "C" void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src) {
     u32 id = o->slot;
     if (*HeldItemModels_GetItem(&sHeldItemModelBank, id) != 0xfff1) {
         u8 *slot = (u8 *)HeldItemModels_GetModel(&sHeldItemModelBank, id);
-        *(Mtx43 *)(slot + 0x64) = *src;
+        MODEL_AT_MTX(slot) = *src;
         u32 t0 = o->scale;
         A.x = t0;
         A.y = t0;
