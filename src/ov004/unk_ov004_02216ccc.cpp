@@ -24,6 +24,9 @@
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
 #include "net/CommManager.h"
+#include "npc/VillagerId.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/VillagerTalk.h"
 
 class HouseOwnerVillager;
 
@@ -213,14 +216,14 @@ BOOL HouseOwnerVillager::preCreate() {
     if (!VillagerActor::preCreate()) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &villagerTalk);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&villagerTalk));
     villagerTalk.resetMsg();
     RoomFreeUnitMap_Build(&freeUnitMap);
     talkKind = 0;
     talkMelodyPlayed = 0;
     void *p = getVillagerData();
     if (p) {
-        if (VillagerId_isValid(VillagerData_getVillagerId(p))) {
+        if (((VillagerId *)(VillagerData_getVillagerId(p)))->isValid()) {
             void *t = Villager_GetState(p);
             if (t) {
                 TalkRepeat_Reset(VillagerState_GetTalkRepeat(t));
@@ -235,15 +238,15 @@ BOOL HouseOwnerVillager::onCreate() {
         return FALSE;
     }
     drawFn = &HouseOwnerVillager::drawModel;
-    NpcFootstepFx_enableFootsteps(&footstepFx);
-    if (NpcActor_isNetOwner(this)) {
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    if (((NpcActor *)(this))->isNetOwner()) {
         ai.changeState(this, 0);
-        VillagerActor_updateCatchPlans(this, data_ov004_02240094, data_ov004_02240090, 0);
+        ((VillagerActor *)(this))->updateCatchPlans((u8 *)(void *)(data_ov004_02240094), (void *)(void *)(data_ov004_02240090), 0);
     } else {
         ai.changeState(this, 3);
     }
     u32 *g = (u32 *)gCommManager;
-    if (!CommManager_isSlotActive(g, g[0x64 / 4])) {
+    if (!((CommManager *)(g))->isSlotActive(g[0x64 / 4])) {
         if (getVillagerData()) {
             if (VillagerState_GetRole(Villager_GetState(getVillagerData())) == 1) {
                 VillagerState_SetRole(Villager_GetState(getVillagerData()), 0);
@@ -279,11 +282,11 @@ void HouseOwnerVillager::onTalkMelodyPlayed() { talkMelodyPlayed = 1; }
 
 BOOL HouseOwnerVillager::updateAct() {
     ai.update(this);
-    if (CommManager_isOnline(gCommManager)) {
-        if (NpcAnimCtrl_getAnimId(&animCtrl, 0) != 6) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
+        if (((NpcAnimCtrl *)(&animCtrl))->getAnimId(0) != 6) {
             if (getVillagerData()) {
                 u16 *p = (u16 *)VillagerDataProfileView_getShirt(getVillagerData());
-                u16 *q = VillagerClothModel_getItem(&clothModel);
+                u16 *q = ((VillagerClothModel *)(&clothModel))->getItem();
                 BOOL eq;
                 if (Item_IsFurniture(q)) {
                     eq = Item_GetFurnitureIndex(q) == Item_GetFurnitureIndex(p) ? TRUE : FALSE;
@@ -298,13 +301,13 @@ BOOL HouseOwnerVillager::updateAct() {
                         in = TRUE;
                     }
                     if (in) {
-                        VillagerClothModel_change(&clothModel, this, (u16 *)VillagerDataProfileView_getShirt(getVillagerData()));
+                        ((VillagerClothModel *)(&clothModel))->change((VillagerActor *)(this), (u16 *)VillagerDataProfileView_getShirt(getVillagerData()));
                     }
                 }
             }
         }
     }
-    VillagerMood_update(&mood, this);
+    ((VillagerMood *)(&mood))->update((VillagerTalk *)(this));
     return TRUE;
 }
 
@@ -394,7 +397,7 @@ extern "C" HouseOwnerStepDir sHouseOwnerStepDirs[4] = {
 
 BOOL HouseOwnerAi::enterState00(HouseOwnerVillager *o) {
     o->drawFn = &HouseOwnerVillager::drawModel;
-    NpcActionCtrl_requestAction(&o->actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&o->actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     timer = 0;
     return TRUE;
 }
@@ -402,7 +405,7 @@ BOOL HouseOwnerAi::enterState00(HouseOwnerVillager *o) {
 BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
     u8 *sub = (u8 *)&o->actionCtrl;
     s32 a, b;
-    if (NpcActionCtrl_isActionDone(sub) != 0) {
+    if (((NpcActionCtrl *)(sub))->isActionDone() != 0) {
         a = 0;
         b = 0;
         if (Random_GlobalBelow(7) == 0) {
@@ -411,43 +414,43 @@ BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
                 if (v == o->rotY) {
                     v = (s16)(v + 0x4000);
                 }
-                NpcActionCtrl_requestAction(sub, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(sub))->requestAction(3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
             } else {
                 if (Random_GlobalBelow(3) != 0 && findStepTarget(&a, &b, o) != 0) {
-                    NpcActionCtrl_requestAction(sub, 1, 1, a, b, 0, 0, 0, 0, data_020c6cc8, 0);
+                    ((NpcActionCtrl *)(sub))->requestAction(1, 1, a, b, 0, 0, 0, 0, data_020c6cc8, 0);
                     timer = 0x3c;
                 } else {
                     s32 v = (s32)(Random_GlobalBelow(4) << 30) >> 16;
                     if (v == o->rotY) {
                         v = (s16)(v + 0x4000);
                     }
-                    NpcActionCtrl_requestAction(sub, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
+                    ((NpcActionCtrl *)(sub))->requestAction(3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
                 }
             }
         } else {
-            NpcActionCtrl_requestAction(sub, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(sub))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (timer == 0 && NpcActionCtrl_getAction(sub) == 1) {
-            NpcActionCtrl_requestAction(sub, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (timer == 0 && ((NpcActionCtrl *)(sub))->getAction() == 1) {
+            ((NpcActionCtrl *)(sub))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return FALSE;
 }
 
 BOOL HouseOwnerAi::enterState01(HouseOwnerVillager *o) {
-    void *t = ActorTalkRequest_getTalkPlayer(&o->villagerTalk);
+    void *t = ((ActorTalkRequest *)(&o->villagerTalk))->getTalkPlayer();
     s32 r = 0;
     if (t != 0) {
-        r = NpcActor_getAngleTo(o, t);
+        r = ((NpcActor *)(o))->getAngleTo((NpcActor *)(t));
     }
-    NpcTalkCtrl_requestTurnAndTalk(&o->talkCtrl, 0, r, 0);
+    ((NpcTalkCtrl *)(&o->talkCtrl))->requestTurnAndTalk(0, r, 0);
     return TRUE;
 }
 
 void HouseOwnerAi::updateState01Step00(HouseOwnerVillager *o) {
-    if (NpcTalkCtrl_isBusy(&o->talkCtrl) == 0) {
-        VillagerMood_requestApply(&o->mood);
+    if (((NpcTalkCtrl *)(&o->talkCtrl))->isBusy() == 0) {
+        ((VillagerMood *)(&o->mood))->requestApply();
         TalkRequest_SetTargetDone(o);
         step = 1;
     }
@@ -464,16 +467,16 @@ BOOL HouseOwnerAi::updateState01(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerAi::enterState02(HouseOwnerVillager *o) {
-    s32 t = NpcActor_getAngleToPlayer(o, o->partnerPlayer);
-    NpcActionCtrl_requestAction(&o->actionCtrl, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
+    s32 t = ((NpcActor *)(o))->getAngleToPlayer(o->partnerPlayer);
+    ((NpcActionCtrl *)(&o->actionCtrl))->requestAction(3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     step = 0;
     return TRUE;
 }
 
 void HouseOwnerAi::updateState02Step00(HouseOwnerVillager *o) {
-    if (NpcActionCtrl_getAction(&o->actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&o->actionCtrl) != 0) {
-            NpcActionCtrl_requestStand(&o->actionCtrl, 2, data_020c6cc8);
+    if (((NpcActionCtrl *)(&o->actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&o->actionCtrl))->isActionDone() != 0) {
+            ((NpcActionCtrl *)(&o->actionCtrl))->requestStand(2, data_020c6cc8);
             step = 1;
         }
     }
@@ -492,25 +495,25 @@ BOOL HouseOwnerAi::enterState03(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
-    if (NpcActor_isNetOwner(o) != 0) {
+    if (((NpcActor *)(o))->isNetOwner() != 0) {
         s32 a = 4;
         s32 b = 4;
         s32 la;
         void *w = o->villagerData;
         s32 g;
-        if (NpcActor_netGetSlots(o, &a, &b) != 0 && ((la = a), la == (g = gCommManager->myAid)) && la == b) {
-            NpcActor_netSetSlotsIfOwner(o, 1, g, g);
+        if (((NpcActor *)(o))->netGetSlots((s32)(&a), (s32)(&b)) != 0 && ((la = a), la == (g = gCommManager->myAid)) && la == b) {
+            ((NpcActor *)(o))->netSetSlotsIfOwner(1, g, g);
             if (w != 0 && Villager_GetResidentStatus(w) != 3) {
                 o->talkKind = 12;
             } else {
                 o->talkKind = 0;
             }
-            VillagerTalk_begin(&o->villagerTalk, o, o->talkKind);
-            ActorTalkRequest_setTalkPlayer(&o->villagerTalk, NpcActor_getPlayerActor(o, 4));
+            ((VillagerTalk *)(&o->villagerTalk))->begin((VillagerActor *)(o), o->talkKind);
+            ((ActorTalkRequest *)(&o->villagerTalk))->setTalkPlayer(((NpcActor *)(o))->getPlayerActor(4));
             o->ai.changeState(o, 1);
         } else {
             if (NetArea_IsLocalOwner() != 0 && b == 4) {
-                NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->myAid, 4);
+                ((NpcActor *)(o))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                 if (o->ai.applyPendingState(o) == 0) {
                     o->ai.changeState(o, 0);
                 }
@@ -525,13 +528,13 @@ BOOL HouseOwnerAi::enterState04(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
-    if (NpcActor_isNetOwner(o) != 0) {
+    if (((NpcActor *)(o))->isNetOwner() != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(o, &a, &b) != 0) {
+        if (((NpcActor *)(o))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
-                    NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->myAid, 4);
+                    ((NpcActor *)(o))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                     if (o->ai.applyPendingState(o) == 0) {
                         o->ai.changeState(o, 0);
                     }
@@ -543,7 +546,7 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerVillager::acceptsInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || ((NpcActor *)(this))->netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -554,18 +557,18 @@ void HouseOwnerVillager::onInteractionEvent(u32 idx, u8 v) {
     case 3:
         partnerPlayer = v;
         if (v != 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, v);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, v);
             ai.changeState(this, 2);
         } else {
-            if (NpcActor_isNetOwner(this) == 0) {
+            if (((NpcActor *)(this))->isNetOwner() == 0) {
                 return;
             }
             s32 g = gCommManager->myAid;
-            NpcActor_netSetSlotsIfOwner(this, 1, g, g);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
             if (villagerData != 0 && Villager_GetResidentStatus(villagerData) != 3) {
                 talkKind = 12;
             } else {
-                switch (VillagerTalk_getEventKind(this)) {
+                switch (((VillagerTalk *)(this))->getEventKind()) {
                 case 1:
                     talkKind = 3;
                     break;
@@ -587,14 +590,14 @@ void HouseOwnerVillager::onInteractionEvent(u32 idx, u8 v) {
     case 0:
         partnerPlayer = v;
         if (v != 4 && v != gCommManager->myAid) {
-            NpcActor_netSetSlotsIfOwner(this, 1, v, v);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, v, v);
             ai.changeState(this, 4);
         } else {
-            if (NpcActor_isNetOwner(this) != 0) {
+            if (((NpcActor *)(this))->isNetOwner() != 0) {
                 s32 g = gCommManager->myAid;
-                NpcActor_netSetSlotsIfOwner(this, 1, g, g);
-                VillagerTalk_begin(&villagerTalk, this, talkKind);
-                ActorTalkRequest_setTalkPlayer(&villagerTalk, NpcActor_getPlayerActor(this, 4));
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
+                ((VillagerTalk *)(&villagerTalk))->begin((VillagerActor *)(this), talkKind);
+                ((ActorTalkRequest *)(&villagerTalk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
                 ai.changeState(this, 1);
                 talkKind = 0;
             }
@@ -603,22 +606,22 @@ void HouseOwnerVillager::onInteractionEvent(u32 idx, u8 v) {
     case 8:
         if (v == 4) {
             if (NetArea_IsLocalOwner() != 0) {
-                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                 if (ai.applyPendingState(this) == 0) {
                     ai.changeState(this, 0);
                 }
             } else {
-                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->myAid);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, 4, gCommManager->myAid);
                 ai.changeState(this, 3);
             }
         }
         break;
     case 4:
-        if (NpcActor_netIsTalkLocked(this) != 0) {
-            if (NpcActor_isNetOwner(this) != 0) {
+        if (((NpcActor *)(this))->netIsTalkLocked() != 0) {
+            if (((NpcActor *)(this))->isNetOwner() != 0) {
                 s32 a = 4;
                 s32 b = 4;
-                if (NpcActor_netGetSlots(this, &a, &b) != 0) {
+                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
                     if (v == 4) {
                         goto chk;
                     }
@@ -630,7 +633,7 @@ void HouseOwnerVillager::onInteractionEvent(u32 idx, u8 v) {
                         break;
                     }
                 body:
-                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                    ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                     if (ai.applyPendingState(this) == 0) {
                         ai.changeState(this, 0);
                     }

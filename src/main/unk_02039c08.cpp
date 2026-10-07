@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gfx/ViewFrustum.h"
+#include "item/ItemPickSpec.h"
 
 struct ItemPickSpecPod {
     u32 listIndex;
@@ -8,7 +9,6 @@ struct ItemPickSpecPod {
 
 extern "C" {
 s32 Random_GlobalBelow(s32 n);
-void _ZN12ItemPickSpec3setEii(ItemPickSpecPod *o, s32 a, s32 b);
 void ItemPickSpec_Destruct(ItemPickSpecPod *o);
 void ItemPick_One(u16 *a, ItemPickSpecPod *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 BOOL Item_GetIfNotCreature(u16 *a, u16 *b);
@@ -195,7 +195,7 @@ extern "C" void LostAndFound_InitRandom(u16 *p) {
         s32 tbl[3] = {1, 0, 2};
         u16 out[2];
         ItemPickSpecPod o1;
-        _ZN12ItemPickSpec3setEii(&o1, tbl[Random_GlobalBelow(3)], 0);
+        ((ItemPickSpec *)(void *)(&o1))->set(tbl[Random_GlobalBelow(3)], 0);
         ItemPick_One(out, &o1, 0, 0, 1, 1, 0);
         ItemPickSpec_Destruct(&o1);
         p[i] = out[0];
@@ -234,7 +234,7 @@ extern "C" void LostAndFound_AddDailyItems(u16 *arr, s32 n) {
                     idx = 2;
                 }
                 if (idx != 0xff) {
-                    _ZN12ItemPickSpec3setEii(&o1, tbl[idx], 0);
+                    ((ItemPickSpec *)(void *)(&o1))->set(tbl[idx], 0);
                     ItemPick_One((u16 *)&out, &o1, 0, 0, 1, 1, 0);
                     ItemPickSpec_Destruct(&o1);
                     *e = *(u16 *)&out;

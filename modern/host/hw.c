@@ -182,6 +182,38 @@ static void run_events_body(void) {
         extern void host_heap_check(void);
         host_heap_check();
         host_screenshot();
+        {   // ACWW_RAMHASH=<file>: "frame hash" of main RAM (0x02000000, 4 MB: the game's data and heaps on 32-bit
+            // hosts) every frame - two runs' first differing frame; ACWW_RAMDUMP=<frame>:<file>: main RAM at a frame
+            // (ACWW_RAMDUMP="f1,f2,...:prefix": prefix-<frame>.bin at each frame)
+            static FILE *hf; static int hinit; static const char *ramList, *ramTo;
+            if (!hinit) {
+                hinit = 1;
+                if (getenv("ACWW_RAMHASH")) hf = fopen(getenv("ACWW_RAMHASH"), "w");
+                ramList = getenv("ACWW_RAMDUMP");
+                ramTo = ramList && strchr(ramList, ':') ? strchr(ramList, ':') + 1 : 0;
+            }
+            if (hf) {
+                const u64 *p = (const u64 *)0x02000000;
+                u64 h = 0x9e3779b97f4a7c15ull;
+                for (u32 i = 0; i < 0x400000 / 8; i++) h = (h ^ p[i]) * 0x100000001b3ull;
+                fprintf(hf, "%llu %016llx\n", (unsigned long long)host_frame(), (unsigned long long)h);
+                fflush(hf);
+            }
+            if (ramTo) {
+                for (const char *q = ramList; q && q < ramTo; ) {
+                    char *end;
+                    long at = strtol(q, &end, 10);
+                    if (end == q) break;
+                    if ((long)host_frame() == at) {
+                        char name[512];
+                        snprintf(name, sizeof name, "%s-%ld.bin", ramTo, at);
+                        FILE *df = fopen(name, "wb");
+                        if (df) { fwrite((u8 *)0x02000000, 1, 0x400000, df); fclose(df); }
+                    }
+                    q = end + (*end == ',');
+                }
+            }
+        }
         {   // ACWW_VRAMDUMP=<frame>:<file>: the 9 VRAM banks, palettes (0x800), OAM (0x800), I/O 0x04000000-0x04001100
             static long dumpAt = -2; static const char *dumpTo;
             if (dumpAt == -2) {

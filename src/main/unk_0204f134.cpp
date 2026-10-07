@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 struct FishSpawnEntry {
     u8 fishIndex, habitat, weight;
@@ -11,7 +12,6 @@ struct FishSpawnRow {
 
 extern "C" {
 u32 Random_GlobalBelow(u32);
-s32 _ZN11CommManager8isOnlineEv(void *);
 void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
 u8 FishTable_GetPeriod(u8 r);
@@ -188,7 +188,7 @@ extern "C" s32 FishTable_Pick(u32 *out0, u32 *out1, s32 a, s32 b, s32 c) {
     s32 res = -1;
     s32 off;
     s32 i;
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         off = 3;
         lim = Random_GlobalBelow(0x60);
     } else {

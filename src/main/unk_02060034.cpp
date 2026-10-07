@@ -5,10 +5,8 @@
 #include "room/RoomFtrState.h"
 #include "room/HouseRoom.h"
 #include "room/HouseData.h"
+#include "save/SaveData.h"
 
-inline void *operator new(size_t, void *p) {
-    return p;
-}
 
 
 
@@ -25,8 +23,6 @@ extern void *gInsectSpawnTables[];
 extern u8 gSaveData[];
 s32 SceneId_GetHouseRoom(u32 x);
 s32 SceneId_IsHouseRoom(u32 x);
-s32 _ZN8SaveData8testFlagEj(void *p, s32 v);
-void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void HouseRoomMaps_UpdateAll();
 void HouseRoomMaps_BindBg();
 void *TownBlockMap_Get();
@@ -230,7 +226,7 @@ void HouseData::applyPendingWork() {
             status.c = status.d;
             HouseRoomMaps_UpdateAll();
             HouseRoomMaps_BindBg();
-            _ZN8SaveData7setFlagEj(gSaveData, 13);
+            ((SaveData *)(gSaveData))->setFlag(13);
         }
     }
 }
@@ -345,7 +341,7 @@ void HouseData::startLoan() {
 s32 HouseData::isUpgradePaidOff() {
     if (status.b == getLevel()) {
         if (getDebt() == 0) {
-            return _ZN8SaveData8testFlagEj(gSaveData, 13);
+            return ((SaveData *)(gSaveData))->testFlag(13);
         }
     }
     return 0;

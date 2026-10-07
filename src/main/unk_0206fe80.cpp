@@ -5,6 +5,10 @@
 #include "save/MuseumData.h"
 #include "item/Letter.h"
 #include "talk/MsgString9C.h"
+#include "item/LetterView.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "save/SaveData.h"
 
 
 extern u32 data_020e0498;
@@ -29,17 +33,12 @@ extern s32 (*sPatternSourceGetters[])(s32);
 s32 FX_Div(s32 a, s32 b);
 void *PlayerData_GetResident(void *a, s32 i);
 s32 _ZN10PlayerData11getPlayerIdEv(void *p);
-void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, s32 b);
 s32 PlayerData_GetCurrentIndex();
 s32 PlayerData_IsResidentIndex(s32 t);
 void Clock_GetDateTime(void *p);
-s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
-void _ZN8SaveData7setFlagEj(void *p, s32 i);
-s32 _ZN10PlayerData6isUsedEv(void *p);
 s32 LetterDelivery_PutInAddresseeMailbox(void *p);
 void TownId_GetNameString(void *a, void *b);
 void MailText_SetSlot(s32 i, void *p);
-void _ZN10LetterView10setPresentEtj(void *p, u32 a, s32 b);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
 void PatternSrc_Swap(u32 a, u8 b, u32 c, u8 d, s32 e);
 void PatternSrc_Copy(u32 a, u8 b, u32 c, u8 d, s32 e);
@@ -149,14 +148,14 @@ BOOL MuseumData::isDonated(u16 *id) {
 }
 
 void MuseumData::checkCompletionLetters() {
-    if (_ZN8SaveData8testFlagEj(gSaveData, 3) == 0) {
+    if (((SaveData *)(gSaveData))->testFlag(3) == 0) {
         if (isComplete()) {
             ClockDateTime t;
             ((u32 *)&t)[0] = 0;
             ((u32 *)&t)[1] = 0;
             Clock_GetDateTime(&t);
             if (completeYear != t.year || completeMonth != t.month || completeDay != t.day) {
-                if (sendCompletionLetters()) _ZN8SaveData7setFlagEj(gSaveData, 3);
+                if (sendCompletionLetters()) ((SaveData *)(gSaveData))->setFlag(3);
             }
         }
     }
@@ -171,11 +170,11 @@ BOOL MuseumData::sendCompletionLetters() {
     u8 b;
     for (; i < 4; i++) {
         void *p = PlayerData_GetResident(gSavePlayers, i);
-        if (p && _ZN10PlayerData6isUsedEv(p)) {
+        if (p && ((PlayerData *)(p))->isUsed()) {
             Letter big;
             b = 0;
             Letter_ComposeFromMail(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, _ZN10PlayerData11getPlayerIdEv(p));
-            _ZN10LetterView10setPresentEtj(&big, 0x3870, 1);
+            ((LetterView *)(&big))->setPresent(0x3870, 1);
             if (LetterDelivery_PutInAddresseeMailbox(&big)) r = TRUE;
         }
     }
@@ -229,7 +228,7 @@ BOOL MuseumData::getDonorName(s32 x, u16 *id) {
         s32 q = (getDonor(id) - 1) & 3;
         void *p = PlayerData_GetResident(gSavePlayers, q);
         if (p) {
-            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), x);
+            ((PlayerId *)(((PlayerData *)(p))->getPlayerId()))->getNameString((MsgString *)(x));
             return TRUE;
         }
     }

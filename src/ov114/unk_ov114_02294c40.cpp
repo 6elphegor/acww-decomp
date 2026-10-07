@@ -10,6 +10,8 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/CreatureBookPanel.h"
+#include "player/PlayerData.h"
+#include "ui/ScrollKnob.h"
 
 // Icon row object of the creature book list: OAM cell entry (charName = icon tiles, palette per icon) + cached icon id.
 struct CreatureBookIconObj {
@@ -36,17 +38,13 @@ extern u32 *gCurrentHeap;
 extern u16 gPad;
 
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData10getCatalogEv(void *p);
 BOOL Catalog_HasItem(void *p, u16 *v);
 void Snd_PlaySe(s32 v);
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
 BOOL MenuKeys_HasDown(void *pad);
 BOOL MenuKeys_HasUp(void *pad);
-void _ZN14MenuScrollKnob4grabEv(void *p);
 void Menu_PlayScrollGrabSe(void *p);
-s32 _ZN14MenuScrollKnob8getGripYEv(void *p);
-s32 _ZN14MenuScrollKnob8getGripXEv(void *p);
 s32 MenuTabBar_GetTabX(s32 v);
 s32 _s32_div_f(s32 a, s32 b);
 void Gfx2d_ShowLayer(u32 v);
@@ -59,26 +57,12 @@ void Gfx2d_LoadPaletteFileSlot(const char *buf, u32 *font, u32 a, u8 b, s32 c);
 s32 Item_GetInfoUnk02(u32 v);
 void *Oam_GetObjY(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
-void _ZN14BgVramTaskPair15requestCharPairEjjhjjjj(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h);
-void *_ZN13ItemIconCache12getIconCharsEi(CreatureBookPanel *s, s32 v);
 s32 InventoryItemGrid_GetIconPalette(CreatureBookPanel *s, s32 v);
 
 void Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void _ZN8ItemNameC1Ev(void *p);
-void _ZN8ItemNameD1Ev(void *p);
-void _ZN8ItemName11setFromItemEPt(void *p, u16 *c);
-void _ZN9MsgString5clearEv(void *p);
-void _ZN9MsgString4copyEPS_(void *p, void *q);
-void _ZN9MsgString7setLineEPh(void *p, s32 v);
 s32 Msg_SkipLines(void *p, s32 i);
-void _ZN11LabelString11createLabelEjjjhhi(void *p, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN11LabelString13redrawAlignedEii(void *p, s32 a, s32 b);
-void _ZN11LabelString12destroyLabelEv(void *p);
 void _ZN10BgVramTask6cancelEv(void *p);
 void String_Load(void *p, u8 *q, const char *name);
-BOOL _ZN10ScrollKnob12areAnimsDoneEv(void *p);
-void _ZN14MenuScrollKnob4showEv(void *p);
-void _ZN14MenuScrollKnob7releaseEv(void *p);
 void Menu_PlayScrollTickSe(void *p);
 void Math_StepS32(void *p, s32 a, s32 b);
 
@@ -90,7 +74,6 @@ s32 Gfx2d_GetLayerBlendMask(u32 v);
 s32 _ZN10BgVramTask14requestPaletteEjhj(void *a, void *b, s32 c, s32 d);
 void func_020b8800(void *p);
 void func_020b85f8(void *p);
-void _ZN10ScrollKnob6moveToEii(void *a, u32 b, u32 c);
 void File_LoadToBuffer(const void *src, void *dst, s32 n);
 void MIi_CpuCopy16(void *, void *, u32);
 void func_0206fcc8(void *p);
@@ -189,7 +172,7 @@ void CreatureBookPanel::init(u8 a, u8 b, u8 c, u8 d) {
     u8 *p = &pageButtonFlashTimers[1];
     *p = 0;
     pageButtonFlashTimers[0] = *p;
-    _ZN9MsgString5clearEv(&descText);
+    ((MsgString *)(&descText))->clear();
     touchTarget = 4;
 }
 
@@ -290,7 +273,7 @@ void CreatureBookPanel::drawScrollKnob() {
 }
 
 void CreatureBookPanel::placeScrollKnob(s32 x) {
-    _ZN10ScrollKnob6moveToEii(&scrollKnob, knobPos - 0x4e, x + 0x4a);
+    ((ScrollKnob *)(&scrollKnob))->moveTo(knobPos - 0x4e, x + 0x4a);
 }
 
 void CreatureBookPanel::syncKnobToScroll() {
@@ -370,7 +353,7 @@ void CreatureBook_UpdateScrollTouch(CreatureBookPanel *s, s32 a)
 void CreatureBook_EndScrollTouch(CreatureBookPanel *s)
 {
     if (s->touchTarget == 2) {
-        _ZN14MenuScrollKnob7releaseEv(&s->scrollKnob);
+        ((MenuScrollKnob *)(&s->scrollKnob))->release();
     }
     s->touchTarget = 4;
 }
@@ -378,7 +361,7 @@ void CreatureBook_EndScrollTouch(CreatureBookPanel *s)
 s32 CreatureBook_WaitScrollHoldStart(CreatureBookPanel *s)
 {
     if (s->touchTarget == 2) {
-        return _ZN10ScrollKnob12areAnimsDoneEv(&s->scrollKnob);
+        return ((ScrollKnob *)(&s->scrollKnob))->areAnimsDone();
     }
     CreatureBook_UpdateScrollHold(s);
     return TRUE;
@@ -419,15 +402,15 @@ void CreatureBook_UpdateScrollHold(CreatureBookPanel *s)
 void CreatureBook_ReleaseKnob(CreatureBookPanel *s)
 {
     if (s->touchTarget == 2) {
-        _ZN14MenuScrollKnob7releaseEv(&s->scrollKnob);
+        ((MenuScrollKnob *)(&s->scrollKnob))->release();
     }
 }
 
 BOOL CreatureBook_FinishScrollHold(CreatureBookPanel *s)
 {
     if (s->touchTarget == 2) {
-        if (_ZN10ScrollKnob12areAnimsDoneEv(&s->scrollKnob)) {
-            _ZN14MenuScrollKnob4showEv(&s->scrollKnob);
+        if (((ScrollKnob *)(&s->scrollKnob))->areAnimsDone()) {
+            ((MenuScrollKnob *)(&s->scrollKnob))->show();
             s->touchTarget = 4;
             return TRUE;
         }
@@ -490,7 +473,7 @@ void CreatureBook_LoadDescription(CreatureBookPanel *s)
         break;
     }
     if (v == 0xff) {
-        _ZN9MsgString5clearEv(&s->descText);
+        ((MsgString *)(&s->descText))->clear();
         s->descPageCount = 1;
     } else {
         u8 key = v;
@@ -535,13 +518,13 @@ void CreatureBook_ShowDescPage(CreatureBookPanel *s)
         void *ob;
         if (t != 0) {
             ob = o[i];
-            _ZN9MsgString7setLineEPh(ob, t);
+            ((MsgString *)(ob))->setLine((u8 *)(t));
         } else {
             ob = o[i];
-            _ZN9MsgString5clearEv(ob);
+            ((MsgString *)(ob))->clear();
         }
-        _ZN11LabelString11createLabelEjjjhhi(ob, s->mainLayer, y, 0xd, 2, 3, z10);
-        _ZN11LabelString13redrawAlignedEii(ob, z14, z14);
+        ((LabelString *)(ob))->createLabel(s->mainLayer, y, 0xd, 2, 3, z10);
+        ((LabelString *)(ob))->redrawAligned(z14, z14);
         k++;
         y += 0x1a;
         i++;
@@ -624,7 +607,7 @@ void CreatureBook_ClearLabels(CreatureBookPanel *s)
     s->labelCount = 0;
     u8 *b = (u8 *)s->labels;
     for (i = 0; i < 4; i++) {
-        _ZN11LabelString12destroyLabelEv(b + (i << 6));
+        ((LabelString *)(b + (i << 6)))->destroyLabel();
     }
 }
 
@@ -644,9 +627,9 @@ void CreatureBook_SetNameLabel(CreatureBookPanel *s, u32 a)
     u32 obj[HOST_SIZED(0x24, ItemName) / 4] HOST_ALIGN8;
     u16 col;
     u32 v;
-    _ZN8ItemNameC1Ev(obj);
+    new (obj) ItemName();
     if (a == 0xff) {
-        _ZN9MsgString5clearEv(obj);
+        ((MsgString *)(obj))->clear();
     } else {
         switch (s->mode) {
         case 0:
@@ -656,17 +639,17 @@ void CreatureBook_SetNameLabel(CreatureBookPanel *s, u32 a)
             v = a < 0x38 ? (u16)(a + 0x12b0) : 0x12b0;
             break;
         default:
-            _ZN8ItemNameD1Ev(obj);
+            ((ItemName *)(obj))->ItemName::~ItemName();
             return;
         }
         col = v;
-        _ZN8ItemName11setFromItemEPt(obj, &col);
+        ((ItemName *)(obj))->setFromItem(&col);
     }
     void *t = CreatureBook_AllocLabel(s);
-    _ZN9MsgString4copyEPS_(t, obj);
-    _ZN11LabelString11createLabelEjjjhhi(t, s->mainLayer, 0xa1, 0xd, 1, 3, 0);
-    _ZN11LabelString13redrawAlignedEii(t, 1, 0);
-    _ZN8ItemNameD1Ev(obj);
+    ((MsgString *)(t))->copy((MsgString *)(obj));
+    ((LabelString *)(t))->createLabel(s->mainLayer, 0xa1, 0xd, 1, 3, 0);
+    ((LabelString *)(t))->redrawAligned(1, 0);
+    ((ItemName *)(obj))->ItemName::~ItemName();
 }
 
 void CreatureBook_DrawRows(CreatureBookPanel *s, s32 a)
@@ -813,13 +796,13 @@ void CreatureBook_SetRowIcon(CreatureBookPanel *s, u32 a, s32 idx) {
     if (key != e->iconId) {
         e->iconId = key;
         u32 lo = e->cell.charNo;
-        void *dst = _ZN13ItemIconCache12getIconCharsEi(s, key);
+        void *dst = ((ItemIconCache *)(void *)(s))->getIconChars(key);
         s32 n = CreatureBook_AllocIconTask(s);
         u8 *src = s->iconUploadChars[n].top;
         u8 *src2 = src + 0x40;
         MI_CpuCopy8(dst, src, 0x40);
         MI_CpuCopy8((u8 *)dst + 0x400, src2, 0x40);
-        _ZN14BgVramTaskPair15requestCharPairEjjhjjjj(&s->rowIconTasks[n], src, src2, 8, lo, lo + 1, lo + 0x20, lo + 0x21);
+        ((BgVramTaskPair *)(&s->rowIconTasks[n]))->requestCharPair((u32)(src), (u32)(src2), 8, lo, lo + 1, lo + 0x20, lo + 0x21);
         e->cell.cParam = InventoryItemGrid_GetIconPalette(s, key);
     }
 }
@@ -911,7 +894,7 @@ s32 CreatureBook_GetFocusX(CreatureBookPanel *s) {
     } else {
         u32 t = s->focus;
         if (t == 4) {
-            r = _ZN14MenuScrollKnob8getGripXEv(&s->scrollKnob);
+            r = ((MenuScrollKnob *)(&s->scrollKnob))->getGripX();
         } else if (t < 4) {
             r = data_ov114_02296554[t];
         } else {
@@ -928,7 +911,7 @@ s32 CreatureBook_GetFocusY(CreatureBookPanel *s) {
     }
     u32 t = s->focus;
     if (t == 4) {
-        return _ZN14MenuScrollKnob8getGripYEv(&s->scrollKnob);
+        return ((MenuScrollKnob *)(&s->scrollKnob))->getGripY();
     }
     if (t < 4) {
         r = data_ov114_02296564[t];
@@ -1098,7 +1081,7 @@ BOOL CreatureBook_ActivateFocus(CreatureBookPanel *s) {
             return TRUE;
         case 4:
             s->touchTarget = 2;
-            _ZN14MenuScrollKnob4grabEv(&s->scrollKnob);
+            ((MenuScrollKnob *)(&s->scrollKnob))->grab();
             Menu_PlayScrollGrabSe(&s->scrollKnob);
             return TRUE;
         default:
@@ -1118,14 +1101,14 @@ void CreatureBook_BuildCaughtMask(CreatureBookPanel *s) {
     if (s->mode == 0) {
         for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
-            if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), &v)) {
+            if (Catalog_HasItem(((PlayerData *)(p))->getCatalog(), &v)) {
                 s->caughtMask[i >> 5] |= 1 << (i & 0x1f);
             }
         }
     } else {
         for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12b0) : 0x12b0;
-            if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), &v)) {
+            if (Catalog_HasItem(((PlayerData *)(p))->getCatalog(), &v)) {
                 s->caughtMask[i >> 5] |= 1 << (i & 0x1f);
             }
         }

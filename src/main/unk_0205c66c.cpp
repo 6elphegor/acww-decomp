@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
+#include "sys/Heap.h"
 
 
 
@@ -45,7 +46,7 @@ void *PlayerBodyModelRef_GetBuffer(u8 *p);
 extern "C" void PlayerBodyModelPool_Create(void *parent) {
     PlayerBodyModelHeap_Create(parent);
     sPlayerBodyModelPool.allocBuffers();
-    if (gPlayerBodyModelHeap) Heap_adjust(gPlayerBodyModelHeap);
+    if (gPlayerBodyModelHeap) ((Heap *)(gPlayerBodyModelHeap))->adjust();
 }
 
 extern "C" void PlayerBodyModelPool_Destroy() {
@@ -84,7 +85,7 @@ void PlayerBodyModelPool::freeBuffers() {
     for (s32 i = 0; i < 4; i++) vramSlots[i].clear();
     s32 j;
     for (j = 0; j < 4; j++) buffers[j] = 0;
-    if (gPlayerBodyModelHeap) Heap_freeAll(gPlayerBodyModelHeap);
+    if (gPlayerBodyModelHeap) ((Heap *)(gPlayerBodyModelHeap))->freeAll();
 }
 
 u32 PlayerBodyModelPool::getBuffer(s32 i) { return buffers[i]; }

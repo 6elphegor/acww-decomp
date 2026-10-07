@@ -45,11 +45,9 @@ u32 func_02072970(CommManager *p, u32 v);
 }
 
 extern "C" {
-u32 _ZN11CommManager12isSlotActiveEi(CommManager *p, s32 v);
 }
 
 extern "C" {
-u32 _ZN11CommManager7isMyAidEj(CommManager *p, s32 v);
 }
 
 extern "C" {
@@ -320,7 +318,7 @@ BOOL PlayerNetSync::onExecute() {
     g = gCommManager;
     m1 = -1;
     do {
-        if (_ZN11CommManager12isSlotActiveEi(g, i) && !_ZN11CommManager7isMyAidEj(g, i)) {
+        if ((g)->isSlotActive(i) && !(g)->isMyAid(i)) {
             idx = i;
             c = NetArea_GetSlotScene(i);
             p8 = PlayerSession_GetLastAction(idx);
@@ -346,7 +344,7 @@ BOOL PlayerNetSync::onExecute() {
         }
         i--;
     } while (i >= 0);
-    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
         Actor *o = PlayerActor_GetActor(4);
         if (o) {
             s32 n = g->localSlot;

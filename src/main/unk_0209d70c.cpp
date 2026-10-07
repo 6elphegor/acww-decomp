@@ -1,6 +1,18 @@
 #include "uptr.h"
 #include "types.h"
 #include "save/SaveData.h"
+#include "game/NookShop.h"
+#include "game/ReddShop.h"
+#include "item/LetterOutbox.h"
+#include "item/ReceivedLetterBlock.h"
+#include "room/HouseData.h"
+#include "save/BbsBoard.h"
+#include "save/BlancaFaceRecord.h"
+#include "save/ContestRecord.h"
+#include "save/MuseumData.h"
+#include "save/Pattern.h"
+#include "save/SaveRecord4.h"
+#include "save/TownExchangeRecord.h"
 
 extern "C" {
 s32 ClockOffset_Clear(void *p);
@@ -12,25 +24,13 @@ void MI_CpuCopy8(void *src, void *dst, u32 size);
 }
 
 extern "C" void _ZN7TownMapC1Ev(void *);
-extern "C" void _ZN9HouseDataC1Ev(void *);
 extern "C" void _ZN15ItemClassOrdersC2Ev(void *);
-extern "C" void _ZN10MuseumData9constructEv(void *);
-extern "C" void _ZN19AbleSistersPatternsC1Ev(void *);
-extern "C" void _ZN8BbsBoardC1Ev(void *);
-extern "C" void _ZN13ContestRecord9constructEv(void *);
 extern "C" void _ZN12ReddLastSaleC1Ev(void *);
-extern "C" void _ZN16BlancaFaceRecord9constructEv(void *);
-extern "C" void _ZN19ReceivedLetterBlockC1Ev(void *);
-extern "C" void _ZN18TownExchangeRecordC1Ev(void *);
-extern "C" void _ZN12LetterOutboxC1Ev(void *);
 extern "C" void _ZN13PlayerMailboxC1Ev(void *);
 extern "C" void _ZN13PlayerMailboxD1Ev(void *);
-extern "C" void _ZN11SaveRecord49constructEv(void *);
 extern "C" void _ZN14SnowmanRecordsC1Ev(void *);
 extern "C" void _ZN18ConstellationStoreC2Ev(void *);
 extern "C" void _ZN15TownStyleRecordD2Ev(void *);
-extern "C" void _ZN8ReddShopC1Ev(void *);
-extern "C" void _ZN8NookShopC1Ev(void *);
 extern "C" void RecycleBin_Construct(void *);
 extern "C" void LostAndFound_Construct(void *);
 extern "C" void ChestStorage_Destruct(void *);
@@ -63,36 +63,36 @@ inline SaveData::SaveData() {
     _ZN7TownMapC1Ev(HOST_AT_A(p, SaveData, 0xc330, townMap[0], 0));
     GulliverQuest_Construct(HOST_AT_A(p, SaveData, 0xe556, gulliverQuest[0], 0));
     RoostGuestRoll_Construct(HOST_AT_A(p, SaveData, 0xe557, roostGuestRoll[0], 0));
-    _ZN9HouseDataC1Ev(HOST_AT_A(p, SaveData, 0xe558, house[0], 0));
-    _ZN19AbleSistersPatternsC1Ev(HOST_AT_A(p, SaveData, 0xfafc, ableSistersPatterns[0], 0));
-    _ZN18TownExchangeRecordC1Ev(HOST_AT_A(p, SaveData, 0x10c3c, townExchange[0], 0));
-    _ZN8BbsBoardC1Ev(HOST_AT_A(p, SaveData, 0x11488, bbsBoard[0], 0));
+    new (HOST_AT_A(p, SaveData, 0xe558, house[0], 0)) HouseData();
+    new (HOST_AT_A(p, SaveData, 0xfafc, ableSistersPatterns[0], 0)) AbleSistersPatterns();
+    new (HOST_AT_A(p, SaveData, 0x10c3c, townExchange[0], 0)) TownExchangeRecord();
+    new (HOST_AT_A(p, SaveData, 0x11488, bbsBoard[0], 0)) BbsBoard();
     __cxa_vec_ctor(HOST_AT_A(p, SaveData, 0x1200c, mailboxes[0], 0), 4, 0x98c, (void *)_ZN13PlayerMailboxC1Ev, (void *)_ZN13PlayerMailboxD1Ev);
-    _ZN12LetterOutboxC1Ev(HOST_AT_A(p, SaveData, 0x1463c, letterOutbox[0], 0));
+    new (HOST_AT_A(p, SaveData, 0x1463c, letterOutbox[0], 0)) LetterOutbox();
     _ZN18ConstellationStoreC2Ev(HOST_AT_A(p, SaveData, 0x14fcc, constellations[0], 0));
     __cxa_vec_ctor(HOST_AT_A(p, SaveData, 0x15430, dressers[0], 0), 4, 0xb4, (void *)ChestStorage_Construct, (void *)ChestStorage_Destruct);
-    _ZN16BlancaFaceRecord9constructEv(HOST_AT_A(p, SaveData, 0x15700, blancaFace[0], 0));
+    ((BlancaFaceRecord *)(HOST_AT_A(p, SaveData, 0x15700, blancaFace[0], 0)))->construct();
     _ZN15TownStyleRecordD2Ev(HOST_AT_A(p, SaveData, 0x1592c, townStyle[0], 0));
     BottleLetterRecord_Construct(HOST_AT_A(p, SaveData, 0x15b5c, bottleLetter[0], 0));
-    _ZN19ReceivedLetterBlockC1Ev(HOST_AT_A(p, SaveData, 0x15c58, receivedLetters[0], 0));
-    _ZN10MuseumData9constructEv(HOST_AT_A(p, SaveData, 0x15d50, museum[0], 0));
-    _ZN8NookShopC1Ev(HOST_AT_A(p, SaveData, 0x15db4, nookShop[0], 0));
+    new (HOST_AT_A(p, SaveData, 0x15c58, receivedLetters[0], 0)) ReceivedLetterBlock();
+    ((MuseumData *)(HOST_AT_A(p, SaveData, 0x15d50, museum[0], 0)))->construct();
+    new (HOST_AT_A(p, SaveData, 0x15db4, nookShop[0], 0)) NookShop();
     EventWeekSlots_Construct(HOST_AT_A(p, SaveData, 0x15e18, eventWeekSlots[0], 0));
     TownState_Construct(HOST_AT_A(p, SaveData, 0x15e54, townState[0], 0));
     LostAndFound_Construct(HOST_AT_A(p, SaveData, 0x15ec0, lostAndFound[0], 0));
     RecycleBin_Construct(HOST_AT_A(p, SaveData, 0x15ede, recycleBin[0], 0));
-    _ZN13ContestRecord9constructEv(HOST_AT_A(p, SaveData, 0x15efc, contestRecord[0], 0));
+    ((ContestRecord *)(HOST_AT_A(p, SaveData, 0x15efc, contestRecord[0], 0)))->construct();
     _ZN12ReddLastSaleC1Ev(HOST_AT_A(p, SaveData, 0x15f34, reddLastSale[0], 0));
     TurnipMarket_Construct(HOST_AT_A(p, SaveData, 0x15f4c, turnipMarket[0], 0));
     Weather_Construct(HOST_AT_A(p, SaveData, 0x15f66, weather[0], 0));
-    _ZN8ReddShopC1Ev(HOST_AT_A(p, SaveData, 0x15f70, reddShop[0], 0));
+    new (HOST_AT_A(p, SaveData, 0x15f70, reddShop[0], 0)) ReddShop();
     AbleShop_Construct(HOST_AT_A(p, SaveData, 0x15f84, ableShop[0], 0));
     _ZN14SnowmanRecordsC1Ev(HOST_AT_A(p, SaveData, 0x15f96, snowmen[0], 0));
     HappyRoomDate_Construct(HOST_AT_A(p, SaveData, 0x15fb0, happyRoomDate[0], 0));
     _ZN15ItemClassOrdersC2Ev(HOST_AT_A(p, SaveData, 0x15fbc, itemClassOrders[0], 0));
     SaveData_ConstructDateRecord(HOST_AT_A(p, SaveData, 0x15fc5, unk_15fc5[0], 0));
     LostChildRecord_Construct(HOST_AT_A(p, SaveData, 0x15fca, lostChild[0], 0));
-    _ZN11SaveRecord49constructEv(HOST_AT_A(p, SaveData, 0x15fdc, footer[0], 0));
+    ((SaveRecord4 *)(HOST_AT_A(p, SaveData, 0x15fdc, footer[0], 0)))->construct();
 }
 
 SaveData gSaveData;

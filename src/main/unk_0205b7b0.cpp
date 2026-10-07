@@ -276,7 +276,7 @@ enum Unk_0205b7cc_Zero { UNK_0205B7CC_ZERO = 0 };
 extern "C" void CharaAnimCache_Create(void *parent) {
     CharaAnimHeap_Create(parent);
     sCharaAnimCache.allocBuffers();
-    if (sCharaAnimHeap) Heap_adjust(sCharaAnimHeap);
+    if (sCharaAnimHeap) ((Heap *)(sCharaAnimHeap))->adjust();
 }
 
 extern "C" void CharaAnimCache_Destroy() {
@@ -350,7 +350,7 @@ void CharaAnimCache::freeBuffers() {
         animIds[i] = 0x144;
         dataSizes[i] = 0;
     }
-    if (sCharaAnimHeap) Heap_freeAll(sCharaAnimHeap);
+    if (sCharaAnimHeap) ((Heap *)(sCharaAnimHeap))->freeAll();
 }
 
 u32 CharaAnimCache::getBuffer(s32 i) { return buffers[i]; }
@@ -436,24 +436,24 @@ extern "C" u32 AnimSlotRef_GetAnimId(u8 *p) { return sCharaAnimCache.getAnimId(*
 
 extern "C" void NetHeap_Create(u32 size, void *parent) { gNetHeap = ExpHeap_Create(size, parent); }
 
-extern "C" void NetHeap_Destroy() { Heap_destroy2(gNetHeap); gNetHeap = 0; }
+extern "C" void NetHeap_Destroy() { ((Heap *)(gNetHeap))->destroy2(); gNetHeap = 0; }
 
 extern "C" void ModelCacheHeap_Create(u32 size, void *parent) { gModelCacheHeap = ExpHeap_Create(size, parent); }
 
-extern "C" void ModelCacheHeap_Destroy() { Heap_destroy2(gModelCacheHeap); gModelCacheHeap = 0; }
+extern "C" void ModelCacheHeap_Destroy() { ((Heap *)(gModelCacheHeap))->destroy2(); gModelCacheHeap = 0; }
 
 extern "C" void MenuHeap_Create(u32 size, void *parent) { gMenuHeap = ExpHeap_Create(size, parent); }
 
-extern "C" void MenuHeap_Destroy() { Heap_destroy2(gMenuHeap); gMenuHeap = 0; }
+extern "C" void MenuHeap_Destroy() { ((Heap *)(gMenuHeap))->destroy2(); gMenuHeap = 0; }
 
 extern "C" void BgHeap_Create(u32 size, void *parent) { gBgHeap = ExpHeap_Create(size, parent); }
 
-extern "C" void BgHeap_Destroy() { Heap_destroy2(gBgHeap); gBgHeap = 0; }
+extern "C" void BgHeap_Destroy() { ((Heap *)(gBgHeap))->destroy2(); gBgHeap = 0; }
 
 extern "C" void FurnitureHeap_Create(u32 size, void *parent) { sFurnitureHeap = ExpHeap_Create(size, parent); }
 
 extern "C" void FurnitureHeap_Destroy(void) {
-    Heap_destroy2(sFurnitureHeap);
+    ((Heap *)(sFurnitureHeap))->destroy2();
     sFurnitureHeap = NULL;
 }
 
@@ -462,7 +462,7 @@ extern "C" void FieldStructureHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void FieldStructureHeap_Destroy(void) {
-    Heap_destroy2(gFieldStructureHeap);
+    ((Heap *)(gFieldStructureHeap))->destroy2();
     gFieldStructureHeap = NULL;
 }
 
@@ -471,7 +471,7 @@ extern "C" void SpecialInsectHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void SpecialInsectHeap_Destroy(void) {
-    Heap_destroy2(sSpecialInsectHeap);
+    ((Heap *)(sSpecialInsectHeap))->destroy2();
     sSpecialInsectHeap = NULL;
 }
 
@@ -480,7 +480,7 @@ extern "C" void HeldInsectHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void HeldInsectHeap_Destroy(void) {
-    Heap_destroy2(sHeldInsectHeap);
+    ((Heap *)(sHeldInsectHeap))->destroy2();
     sHeldInsectHeap = NULL;
 }
 
@@ -489,7 +489,7 @@ extern "C" void FieldInsectHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void FieldInsectHeap_Destroy(void) {
-    Heap_destroy2(sFieldInsectHeap);
+    ((Heap *)(sFieldInsectHeap))->destroy2();
     sFieldInsectHeap = NULL;
 }
 
@@ -498,7 +498,7 @@ extern "C" void MuseumInsectHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void MuseumInsectHeap_Destroy(void) {
-    Heap_destroy2(sMuseumInsectHeap);
+    ((Heap *)(sMuseumInsectHeap))->destroy2();
     sMuseumInsectHeap = NULL;
 }
 
@@ -507,7 +507,7 @@ extern "C" void FishShadowHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void FishShadowHeap_Destroy(void) {
-    Heap_destroy2(sFishShadowHeap);
+    ((Heap *)(sFishShadowHeap))->destroy2();
     sFishShadowHeap = NULL;
 }
 
@@ -516,7 +516,7 @@ extern "C" void FishFinHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void FishFinHeap_Destroy(void) {
-    Heap_destroy2(sFishFinHeap);
+    ((Heap *)(sFishFinHeap))->destroy2();
     sFishFinHeap = NULL;
 }
 
@@ -525,7 +525,7 @@ extern "C" void FishDisplayHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void FishDisplayHeap_Destroy(void) {
-    Heap_destroy2(sFishDisplayHeap);
+    ((Heap *)(sFishDisplayHeap))->destroy2();
     sFishDisplayHeap = NULL;
 }
 
@@ -534,7 +534,7 @@ extern "C" void MuseumAquariumHeap_Create(u32 size, void *parent) {
 }
 
 extern "C" void MuseumAquariumHeap_Destroy(void) {
-    Heap_destroy2(sMuseumAquariumHeap);
+    ((Heap *)(sMuseumAquariumHeap))->destroy2();
     sMuseumAquariumHeap = NULL;
 }
 
@@ -559,7 +559,7 @@ extern "C" void CharaAnimHeap_Create(void *parent) {
 }
 
 extern "C" void CharaAnimHeap_Destroy(void) {
-    Heap_destroy2(sCharaAnimHeap);
+    ((Heap *)(sCharaAnimHeap))->destroy2();
     sCharaAnimHeap = NULL;
 }
 
@@ -573,7 +573,7 @@ extern "C" void CharaClothTexHeap_Create(void *parent) {
 }
 
 extern "C" void CharaClothTexHeap_Destroy(void) {
-    Heap_destroy2(gCharaClothTexHeap);
+    ((Heap *)(gCharaClothTexHeap))->destroy2();
     gCharaClothTexHeap = NULL;
 }
 
@@ -586,7 +586,7 @@ extern "C" void PlayerFaceTexHeap_Create(void *parent) {
 }
 
 extern "C" void PlayerFaceTexHeap_Destroy(void) {
-    Heap_destroy2(gPlayerFaceTexHeap);
+    ((Heap *)(gPlayerFaceTexHeap))->destroy2();
     gPlayerFaceTexHeap = NULL;
 }
 
@@ -600,7 +600,7 @@ extern "C" void CharaFaceAnimHeap_Create(void *parent) {
 }
 
 extern "C" void CharaFaceAnimHeap_Destroy(void) {
-    Heap_destroy2(gCharaFaceAnimHeap);
+    ((Heap *)(gCharaFaceAnimHeap))->destroy2();
     gCharaFaceAnimHeap = NULL;
 }
 
@@ -613,7 +613,7 @@ extern "C" void PlayerBodyModelHeap_Create(void *parent) {
 }
 
 extern "C" void PlayerBodyModelHeap_Destroy(void) {
-    Heap_destroy2(gPlayerBodyModelHeap);
+    ((Heap *)(gPlayerBodyModelHeap))->destroy2();
     gPlayerBodyModelHeap = NULL;
 }
 
@@ -626,7 +626,7 @@ extern "C" void PlayerHeadModelHeap_Create(void *parent) {
 }
 
 extern "C" void PlayerHeadModelHeap_Destroy(void) {
-    Heap_destroy2(gPlayerHeadModelHeap);
+    ((Heap *)(gPlayerHeadModelHeap))->destroy2();
     gPlayerHeadModelHeap = NULL;
 }
 
@@ -639,7 +639,7 @@ extern "C" void PlayerPaletteHeap_Create(void *parent) {
 }
 
 extern "C" void PlayerPaletteHeap_Destroy(void) {
-    Heap_destroy2(gPlayerPaletteHeap);
+    ((Heap *)(gPlayerPaletteHeap))->destroy2();
     gPlayerPaletteHeap = NULL;
 }
 
@@ -652,7 +652,7 @@ extern "C" void PlayerGlassesModelHeap_Create(void *parent) {
 }
 
 extern "C" void PlayerGlassesModelHeap_Destroy(void) {
-    Heap_destroy2(gPlayerGlassesModelHeap);
+    ((Heap *)(gPlayerGlassesModelHeap))->destroy2();
     gPlayerGlassesModelHeap = NULL;
 }
 
@@ -666,7 +666,7 @@ extern "C" void HeldItemModelHeap_Create(void *parent) {
 }
 
 extern "C" void HeldItemModelHeap_Destroy(void) {
-    Heap_destroy2(gHeldItemModelHeap);
+    ((Heap *)(gHeldItemModelHeap))->destroy2();
     gHeldItemModelHeap = NULL;
 }
 
@@ -680,7 +680,7 @@ extern "C" void CharaFaceAnimWorkHeap_Create(void *parent) {
 }
 
 extern "C" void CharaFaceAnimWorkHeap_Destroy(void) {
-    Heap_destroy2(gCharaFaceAnimWorkHeap);
+    ((Heap *)(gCharaFaceAnimWorkHeap))->destroy2();
     gCharaFaceAnimWorkHeap = NULL;
 }
 
@@ -693,7 +693,7 @@ extern "C" void PlayerBodyAnimHeap_Create(void *parent) {
 }
 
 extern "C" void PlayerBodyAnimHeap_Destroy(void) {
-    Heap_destroy2(gPlayerBodyAnimHeap);
+    ((Heap *)(gPlayerBodyAnimHeap))->destroy2();
     gPlayerBodyAnimHeap = NULL;
 }
 
@@ -707,7 +707,7 @@ extern "C" void HeldItemAnimHeap_Create(void *parent) {
 }
 
 extern "C" void HeldItemAnimHeap_Destroy(void) {
-    Heap_destroy2(gHeldItemAnimHeap);
+    ((Heap *)(gHeldItemAnimHeap))->destroy2();
     gHeldItemAnimHeap = NULL;
 }
 
@@ -721,7 +721,7 @@ extern "C" void FishBobberHeap_Create(void *parent) {
 }
 
 extern "C" void FishBobberHeap_Destroy(void) {
-    Heap_destroy2(gFishBobberHeap);
+    ((Heap *)(gFishBobberHeap))->destroy2();
     gFishBobberHeap = NULL;
 }
 
@@ -740,7 +740,7 @@ extern "C" void NpcTexPatBufHeap_Create(void *parent) {
 }
 
 extern "C" void NpcTexPatBufHeap_Destroy(void) {
-    Heap_destroy2(gNpcTexPatBufHeap);
+    ((Heap *)(gNpcTexPatBufHeap))->destroy2();
     gNpcTexPatBufHeap = NULL;
 }
 
@@ -755,7 +755,7 @@ extern "C" void VillagerAnimPoolHeap_Create(void *parent) {
 }
 
 extern "C" void VillagerAnimPoolHeap_Destroy(void) {
-    Heap_destroy2(gVillagerAnimPoolHeap);
+    ((Heap *)(gVillagerAnimPoolHeap))->destroy2();
     gVillagerAnimPoolHeap = NULL;
 }
 
@@ -771,7 +771,7 @@ extern "C" void SpNpcAnimPoolHeap_Create(void *parent) {
 }
 
 extern "C" void SpNpcAnimPoolHeap_Destroy(void) {
-    Heap_destroy2(gSpNpcAnimPoolHeap);
+    ((Heap *)(gSpNpcAnimPoolHeap))->destroy2();
     gSpNpcAnimPoolHeap = NULL;
 }
 
@@ -796,7 +796,7 @@ extern "C" void *NpcModelHeap_Create(void *parent) {
 
 extern "C" void NpcModelHeap_Destroy(void) {
     if (gNpcModelHeap) {
-        Heap_destroy2(gNpcModelHeap);
+        ((Heap *)(gNpcModelHeap))->destroy2();
     }
     gNpcModelHeap = NULL;
 }
@@ -811,7 +811,7 @@ extern "C" void PlayerActorHeap_Create(void *parent) {
 }
 
 extern "C" void PlayerActorHeap_Destroy(void) {
-    Heap_destroy2(gPlayerActorHeap);
+    ((Heap *)(gPlayerActorHeap))->destroy2();
     gPlayerActorHeap = NULL;
 }
 
@@ -823,7 +823,7 @@ extern "C" void TownBclHeap_Create(s32 x) {
 }
 
 extern "C" void TownBclHeap_Destroy() {
-    Heap_destroy2(gTownBclHeap);
+    ((Heap *)(gTownBclHeap))->destroy2();
     gTownBclHeap = NULL;
 }
 
@@ -837,7 +837,7 @@ extern "C" void RoomBclHeap_Create(s32 x) {
 }
 
 extern "C" void RoomBclHeap_Destroy() {
-    Heap_destroy2(gRoomBclHeap);
+    ((Heap *)(gRoomBclHeap))->destroy2();
     gRoomBclHeap = NULL;
 }
 

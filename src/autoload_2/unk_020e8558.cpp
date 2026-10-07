@@ -27,9 +27,6 @@
 #define NNS_FRMHEAP_OVERHEAD (0x30 * 2)
 
 
-inline void *operator new(size_t, void *p) {
-    return p;
-}
 
 
 // frame heap (vtable 0x0213afa8), 0x18 bytes

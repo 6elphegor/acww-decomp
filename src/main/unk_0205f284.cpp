@@ -12,6 +12,8 @@
 #include "gfx/TexVramTask.h"
 #include "player/FishBobberStates.h"
 #include "actor/Character.h"
+#include "gfx/Model.h"
+#include "sys/Heap.h"
 
 
 
@@ -33,7 +35,6 @@ extern u8 gSaveHouse[];
 
 s32 Effect_End(s32 h);
 s32 Effect_Create(u32 id, void *a, u32 b, u32 c);
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(GroundInfoBase *p, VecFx32 *v, s32 a, s32 b);
 void GroundInfo_Destruct(GroundInfoBase *p);
 BOOL FishShadow_FleeFromPlayer(void *p);
 void FishCatch_StartLift(void *p, s32 a);
@@ -79,7 +80,6 @@ void func_020728d4(void *p);
 void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
 BOOL func_02072e44(void *p);
-BOOL _ZN11CommManager7isMyAidEj(void *p, s32 h);
 u16 NetBuf_ReadU16();
 void CommRecord_UnpackSource(void *p, u8 *a, u8 *b);
 BOOL SceneId_IsTown(u32 v);
@@ -102,7 +102,6 @@ void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void FieldFish_StartCastSplash();
 void WorldCurve_FromCurved(void *p, VecFx32 *v);
 void WorldCurve_ToCurved(VecFx32 *a, VecFx32 *b);
-void _ZN5Model10drawScaledEPi(void *e, s32 a);
 BOOL Fishing_StepArc(VecFx32 *a, s32 k, VecFx32 *b, s32 *c, u8 flag);
 void Fishing_CalcArcSpeed(VecFx32 *a, VecFx32 *b, s32 *c, s32 *d, u8 mode);
 }
@@ -179,7 +178,7 @@ extern "C" void FishBobberPool_Create(void *parent)
     FishBobberHeap_Create(parent);
     sFishBobberPool.allocBuffers();
     if (gFishBobberHeap != 0) {
-        Heap_adjust(gFishBobberHeap);
+        ((Heap *)(gFishBobberHeap))->adjust();
     }
 }
 
@@ -268,7 +267,7 @@ void FishBobberPool::freeBuffers()
         bobbers[i] = 0;
     }
     if (gFishBobberHeap != 0) {
-        Heap_freeAll(gFishBobberHeap);
+        ((Heap *)(gFishBobberHeap))->freeAll();
     }
 }
 
@@ -432,7 +431,7 @@ BOOL FishBobber::checkReelResult()
 void FishBobber::nudge()
 {
     GroundInfoBase buf;
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(&buf, &pos, 1, 1);
+    ((GroundInfo *)(void *)(&buf))->initAtPos(&pos, 1, 1);
     if (buf.waterKind != 0) {
         pos.y = buf.waterSurfaceY + 0xcd;
     }
@@ -487,7 +486,7 @@ void FishBobber::setState(s32 state)
     old = curState;
     curState = state;
     stateTimer = 0;
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(&buf, &pos, 1, 1);
+    ((GroundInfo *)(void *)(&buf))->initAtPos(&pos, 1, 1);
     switch (state) {
     case 1:
         if (fish != 0) {
@@ -621,7 +620,7 @@ extern "C" void FishBobber_Draw(u8 *self, Mtx43 *m, s32 arg)
             mt = tmp;
         }
         *(Mtx43 *)(e + 0x64) = mt;
-        _ZN5Model10drawScaledEPi(e, arg);
+        ((Model *)(e))->drawScaled((s32 *)(arg));
     }
 }
 
@@ -668,7 +667,7 @@ void FishBobberStates::updateCast()
         c.y = targetPos.y;
         c.z = targetPos.z;
         Fishing_StepArc(&c, gravity, &pos, &ySpeed, 0);
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii((GroundInfoBase *)&o, &pos, 1, 1);
+        ((GroundInfo *)(void *)((GroundInfoBase *)&o))->initAtPos(&pos, 1, 1);
         if (o.waterKind != 0) {
             s32 y = o.waterSurfaceY;
             if (y >= pos.y) {
@@ -697,7 +696,7 @@ void FishBobberStates::updateFloat()
     base.x = pb->x;
     base.y = pb->y;
     base.z = pb->z;
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii((GroundInfoBase *)&o, &pos, 0, 1);
+    ((GroundInfo *)(void *)((GroundInfoBase *)&o))->initAtPos(&pos, 0, 1);
     ang = 0;
     if (o.waterKind != 0) {
                 Vec_ShiftRightTo(&w, (VecFx32 *)&o.flowDir, 5);
@@ -761,7 +760,7 @@ void FishBobberStates::updateFloat()
 void FishBobberStates::updateBite()
 {
     GroundInfo o;
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii((GroundInfoBase *)&o, &pos, 1, 1);
+        ((GroundInfo *)(void *)((GroundInfoBase *)&o))->initAtPos(&pos, 1, 1);
     if (o.waterKind != 0) {
         s32 lim = o.waterSurfaceY - 0x333;
         if (pos.y > lim) {
@@ -775,12 +774,12 @@ void FishBobberStates::updateBite()
 void FishBobberStates::updateHooked()
 {
     if (fish == 0) {
-        if (_ZN11CommManager7isMyAidEj((void *)gCommManager, ownerAid)) {
+        if (((CommManager *)((void *)gCommManager))->isMyAid(ownerAid)) {
             setState(4);
             return;
         }
         GroundInfo o;
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii((GroundInfoBase *)&o, &pos, 1, 1);
+        ((GroundInfo *)(void *)((GroundInfoBase *)&o))->initAtPos(&pos, 1, 1);
         if (o.waterKind != 0) {
             VecFx32 v;
             v.x = pos.x;
@@ -795,7 +794,7 @@ void FishBobberStates::updateHooked()
         }
     } else {
         GroundInfo o;
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii((GroundInfoBase *)&o, &pos, 1, 1);
+        ((GroundInfo *)(void *)((GroundInfoBase *)&o))->initAtPos(&pos, 1, 1);
         if (o.waterKind != 0) {
             s32 lim = o.waterSurfaceY + 0x4cd;
             if (pos.y < lim) {

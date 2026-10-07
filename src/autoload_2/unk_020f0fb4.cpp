@@ -100,6 +100,7 @@ extern "C" Bytes4 data_0213b2c4 = {0x00, 0x02, 0xff, 0x00};
 
 // vtable 0x0213b8e0 (dsd label data_0213b8e8)
 #include "snd/SndSceneBase.h"
+#include "snd/SndMgr.h"
 
 // vtable 0x0213b8ac (dsd label data_0213b8b4)
 class SndScene01 : public SndSceneBase {
@@ -418,7 +419,7 @@ void SndSceneBase::unload() {
     SndSeSystem_Shutdown(&gSndSeSystem, 1);
     if (gSndMgr.f62 != 0) return;
     NNS_SndHeapLoadState(t, 1);
-    SndMgr_stopAll(&gSndMgr);
+    ((SndMgr *)(void *)(&gSndMgr))->stopAll();
 }
 
 void SndSceneBase::beginTalk(s32 a) {
@@ -452,7 +453,7 @@ void SndSceneBase::onBgmChange(u32 a, u32 c) {
 void SndSceneBase::setupHeaps(u32 a, s32 b) {
     void *t = Snd_GetHeap();
     if (gSndMgr.f62 == 0) {
-        SndMgr_startOutputEffect(&gSndMgr);
+        ((SndMgr *)(void *)(&gSndMgr))->startOutputEffect();
         NNS_SndPlayerCreateHeap(0, t, a);
         NNS_SndHeapSaveState(t);
     }

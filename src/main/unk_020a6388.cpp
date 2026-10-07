@@ -8,7 +8,6 @@ extern CommManager *gCommManager;
 
 
 
-extern "C" void _ZN16NetPendingStatus9setMaskedEhhhj(void *self, u32 a, u32 b, u32 c, u32 mask);
 
 
 extern NetSlotStatus gNetSessionState[];
@@ -56,5 +55,5 @@ extern "C" void NetArea_SetSlotStatus(s32 idx, u32 b, u32 c, u32 d, u32 e) {
 extern "C" void NetArea_SetMoveReady(s32 idx, u32 v) { ((NetMoveReady *)data_021edac0)[idx].set(v); }
 
 extern "C" void NetArea_SetPendingStatus(u32 idx, u32 a, u32 b, u32 c, u32 d) {
-    _ZN16NetPendingStatus9setMaskedEhhhj(&((NetPendingStatus *)data_021edad0)[idx], a, b, c, d);
+    ((NetPendingStatus *)(&((NetPendingStatus *)data_021edad0)[idx]))->setMasked(a, b, c, d);
 }

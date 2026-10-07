@@ -43,7 +43,6 @@ TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 extern "C" {
 void MsgTextLabel_Destroy(TextLabel *obj);
 // MsgString::copy called with only `this`: the source string is the caller's second argument, still in r1
-void _ZN9MsgString4copyEPS_(MsgString *self, MsgString *other);
 }
 
 
@@ -72,7 +71,7 @@ void LabelButton::hideLayer2() { layer2Hidden = 1; }
 void LabelButton::showLayer2() { layer2Hidden = 0; }
 
 void LabelButton::setLabelText(MsgString *src) {
-    _ZN9MsgString4copyEPS_((MsgString *)&text, src);
+    ((MsgString *)&text)->copy(src);
     TextLabel *o = label;
     if (o != NULL) {
         o->textStart = (u32)text.data();

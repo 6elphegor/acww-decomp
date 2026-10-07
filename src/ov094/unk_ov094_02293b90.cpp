@@ -4,6 +4,13 @@
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
+#include "item/LetterView.h"
+#include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
+#include "talk/LabelBalloonText.h"
+#include "talk/MsgString9B.h"
+#include "ui/LabelBalloon.h"
+#include "ui/LabelString.h"
 
 
 
@@ -383,11 +390,11 @@ void LetterGrid::setBalloonLetterText(void *out, void *o) {
     u32 b1[0x1c / 4];
     u32 b2[0x28 / 4];
     u32 b3[0x28 / 4];
-    s32 t = LetterView_getState(o);
-    func_0206fcc8(b0);
-    func_02094030(b1);
-    func_02089f44(b2);
-    func_02089f44(b3);
+    s32 t = ((LetterView *)(o))->getState();
+    new (b0) LabelString();
+    new (b1) MsgString9B();
+    new (b2) LabelBalloonText();
+    new (b3) LabelBalloonText();
     s32 k = Letter_GetKind(o);
     if (k == 0x11) {
         Letter_GetSenderName(o, b1);
@@ -407,10 +414,10 @@ void LetterGrid::setBalloonLetterText(void *out, void *o) {
     StrBuf_Copy(b3, b0);
     if (Letter_IsBottle(o) != 0) {
         u32 b4[0x40 / 4];
-        func_0206fcc8(b4);
+        new (b4) LabelString();
         String_Load2dMenu(b4, 0x43);
         String_SetSlot(0, b4);
-        func_0206fca8(b4);
+        ((LabelString *)(b4))->LabelString::~LabelString();
     } else {
         Letter_GetRecipientName(o, b1);
         String_SetSlot(0, b1);
@@ -422,16 +429,16 @@ void LetterGrid::setBalloonLetterText(void *out, void *o) {
     case 4:
     case 7:
     case 8:
-        LabelBalloon_setText(out, b2);
+        ((LabelBalloon *)(out))->setText((StrBuf *)(b2));
         break;
     default:
-        LabelBalloon_setText(out, b3);
+        ((LabelBalloon *)(out))->setText((StrBuf *)(b3));
         break;
     }
-    func_02089f30(b3);
-    func_02089f30(b2);
-    func_02094018(b1);
-    func_0206fca8(b0);
+    ((LabelBalloonText *)(b3))->LabelBalloonText::~LabelBalloonText();
+    ((LabelBalloonText *)(b2))->LabelBalloonText::~LabelBalloonText();
+    ((MsgString9B *)(b1))->MsgString9B::~MsgString9B();
+    ((LabelString *)(b0))->LabelString::~LabelString();
 }
 
 void LetterGrid::showLetterName(void *out, s32 idx) {
@@ -471,7 +478,7 @@ void LetterGrid::markSlot(s32 i) {
 }
 
 void *LetterGrid::getLetter(s32 i) {
-    void *r = (void *)PlayerData_getInventory(PlayerData_GetCurrent());
+    void *r = (void *)((PlayerData *)(PlayerData_GetCurrent()))->getInventory();
     if (i >= 0 && i <= 9) {
         return PlayerInventory_getLetter((s32)r, i);
     }
@@ -507,7 +514,7 @@ void LetterGrid::highlightLetterKinds(u32 flags) {
     f2 = flags & 2;
     f4 = flags & 4;
     do {
-        s32 t = LetterView_getState(getLetter(i));
+        s32 t = ((LetterView *)(getLetter(i)))->getState();
         switch (t) {
         case 1:
             if (f1 != 0) {
@@ -557,7 +564,7 @@ void LetterGrid::setHighlighted(s32 i) {
 }
 
 void LetterGrid::drawPocketLetters(s32 a, s32 b) {
-    u8 *rec = (u8 *)PlayerInventory_getLetter(PlayerData_getInventory(PlayerData_GetCurrent()), 0);
+    u8 *rec = (u8 *)((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getLetter(0);
     s32 idx = 0;
     s32 i = idx;
     for (; i < 10; i++) {
@@ -666,7 +673,7 @@ void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0)
                 x += w;
                 y += w;
             }
-            if (((LetterGrid *)o)->isHighlighted((u8)idx) != 0 && LetterView_getState((void *)a1) == 4) {
+            if (((LetterGrid *)o)->isHighlighted((u8)idx) != 0 && ((LetterView *)((void *)a1))->getState() == 4) {
                 t = 0xe;
             } else {
                 t = ((LetterGrid *)o)->getLetterPalette((void *)a1);
@@ -796,12 +803,12 @@ void LetterGrid_SetLetterArray(LetterGrid *o, u8 *p, s32 m, s32 n)
 
 s32 LetterGrid_GetIconIndex(void *o, s32 h)
 {
-    s32 r = LetterView_getState((void *)h);
+    s32 r = ((LetterView *)((void *)h))->getState();
     if (r == 0) {
         return -1;
     }
     s32 t = (r - 1) * 2;
-    if (LetterView_getPresent(h) != 0xfff1) {
+    if (((LetterView *)(h))->getPresent() != 0xfff1) {
         t = t + 1;
     }
     return t;

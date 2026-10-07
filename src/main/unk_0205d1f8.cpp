@@ -1,5 +1,6 @@
 #include "types.h"
 #include "actor/CharaFaceAnimWorkRef.h"
+#include "sys/Heap.h"
 
 extern "C" const u32 data_020cb35c;
 extern "C" const u32 data_020cb360;
@@ -36,7 +37,7 @@ u32 CharaFaceAnimWork_GetHeapSize();
 extern "C" void CharaFaceAnimWorkPool_Create(void *parent) {
     CharaFaceAnimWorkHeap_Create(parent);
     sCharaFaceAnimWorkPool.createHeaps();
-    if (gCharaFaceAnimWorkHeap) Heap_adjust(gCharaFaceAnimWorkHeap);
+    if (gCharaFaceAnimWorkHeap) ((Heap *)(gCharaFaceAnimWorkHeap))->adjust();
 }
 
 extern "C" void CharaFaceAnimWorkPool_Destroy() {
@@ -71,11 +72,11 @@ void CharaFaceAnimWorkPool::destroyHeaps() {
     for (s32 i = 0; i < 9; i++) {
         void **p = &ptr[i];
         if (ptr[i]) {
-            Heap_freeAll(ptr[i]);
+            ((Heap *)(ptr[i]))->freeAll();
             *p = NULL;
         }
     }
-    if (gCharaFaceAnimWorkHeap) Heap_freeAll(gCharaFaceAnimWorkHeap);
+    if (gCharaFaceAnimWorkHeap) ((Heap *)(gCharaFaceAnimWorkHeap))->freeAll();
 }
 
 void *CharaFaceAnimWorkPool::getHeap(u32 idx) { return ptr[idx]; }
@@ -85,7 +86,7 @@ CharaFaceAnimWorkRef::CharaFaceAnimWorkRef() { v = 9; }
 CharaFaceAnimWorkRef::~CharaFaceAnimWorkRef() {}
 
 void CharaFaceAnimWorkRef::assign(u32 x) {
-    Heap_freeAll(sCharaFaceAnimWorkPool.getHeap(x));
+    ((Heap *)(sCharaFaceAnimWorkPool.getHeap(x)))->freeAll();
     v = x;
 }
 

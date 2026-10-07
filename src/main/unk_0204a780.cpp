@@ -2,6 +2,7 @@
 #include "town/TownState.h"
 #include "town/TownEventRecord.h"
 #include "town/TownBlockMap.h"
+#include "net/CommManager.h"
 
 // An 8-byte bss block (used by unk_02041e00.cpp).
 // Owned here by position: it lies between the data of the neighbouring files in link order and fits this file's
@@ -345,7 +346,6 @@ s32 Clock_GetDate(ClockDate *d);
 s32 Date_DaysBetween(ClockDate *a, ClockDate *b);
 s32 Clock_GetYear();
 void Event_GetRange(s32 *a, s32 *b, u32 c);
-s32 _ZN11CommManager8isOnlineEv(void *p);
 s32 _s32_div_f(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
@@ -608,7 +608,7 @@ extern "C" u32 TownState_GetSeasonPeriod() { return data_021ed1b0.seasonPeriod; 
 
 namespace nC {
 extern "C" void TownState_SetSeasonPeriod(u32 n) {
-    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (!((CommManager *)(gCommManager))->isOnline()) {
         if (n >= 0x17) n = 0x16;
         data_021ed1b0.seasonPeriod = n;
     }

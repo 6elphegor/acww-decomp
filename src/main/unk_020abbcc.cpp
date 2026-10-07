@@ -6,6 +6,7 @@
 #include "gfx/Mtx43.h"
 #include "gfx/Model.h"
 #include "gfx/CachedModel.h"
+#include "game/GroundInfo.h"
 
 
 
@@ -22,8 +23,6 @@ void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
 s32 Ground_GetDefaultY(s32 a);
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(GroundInfoBase *p, VecFx32 *pos, s32 a, s32 b);
-s32 _ZN14GroundInfoBase9getHeightEi(GroundInfoBase *p, s32 a);
 void GroundInfo_Destruct(GroundInfoBase *p);
 BOOL Scene_InMuseumRoom(void);
 s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
@@ -93,15 +92,15 @@ extern "C" void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c) {
     s32 lvl = ObjShadow_GetCharaAlpha(pos, a);
     off = 0;
     if (gFieldSceneKind == 0 ? 1 : off) {
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii(&buf1, pos, 0, 0);
-        off = _ZN14GroundInfoBase9getHeightEi(&buf1, 0);
+        ((GroundInfo *)(void *)(&buf1))->initAtPos(pos, 0, 0);
+        off = (&buf1)->getHeight(0);
         if (off > 0) {
             off = 0;
         }
         GroundInfo_Destruct(&buf1);
     } else if (Scene_InMuseumRoom()) {
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii(&buf2, pos, 0, 0);
-        off = _ZN14GroundInfoBase9getHeightEi(&buf2, 0);
+        ((GroundInfo *)(void *)(&buf2))->initAtPos(pos, 0, 0);
+        off = (&buf2)->getHeight(0);
         GroundInfo_Destruct(&buf2);
     }
     d = pos->y - off;

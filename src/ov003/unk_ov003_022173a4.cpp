@@ -9,6 +9,7 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "game/Unk_02095774_Ent.h"
+#include "item/ItemName.h"
 
 
 
@@ -27,8 +28,6 @@ extern SaveTownStateView data_021ed150;
 
 void ObjShadow_DrawSign(void *p);
 s32 Field_GetSpawnedKind1Count();
-void _ZN8ItemNameC1EPt(void *self, u16 *p);
-void _ZN8ItemNameD1Ev(void *self);
 }
 
 
@@ -79,9 +78,9 @@ void TownSign::setupTalkMsg() {
         w = 0x1518;
     }
     v[1] = w;
-    _ZN8ItemNameC1EPt(obj, &v[1]);
+    new (obj) ItemName(&v[1]);
     window->setSlot(1, obj);
-    _ZN8ItemNameD1Ev(obj);
+    ((ItemName *)(obj))->ItemName::~ItemName();
 }
 
 BOOL TownSign::isOpen() {

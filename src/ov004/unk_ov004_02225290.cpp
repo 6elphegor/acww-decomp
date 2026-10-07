@@ -15,6 +15,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "room/RoomObjActor.h"
+#include "gfx/TwoLayerAnimModel.h"
 
 
 
@@ -56,7 +57,6 @@ void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
 s32 RoomObjRes_GetBca(void *o, u32 i);
 void RoomObj_PlaySe(void *o, s32 v);
-void _ZN14BlendAnimModel8initAnimEiiitt(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
 }
 
 
@@ -126,7 +126,7 @@ BOOL BarberMachine::onCreate() {
     if (RoomObjRes_GetBca(&res, 0) != 0) {
         if (model.allocAnmObj(gBgHeap) != 0) {
             s32 r = RoomObjRes_GetBca(&res, 0);
-            _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
+            ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
             model.attachAnim();
         }
     }
@@ -193,7 +193,7 @@ void BarberMachine::updateState() {
 // @222548c
 BOOL BarberMachine::enterState00() {
     s32 r = RoomObjRes_GetBca(&res, 0);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -204,7 +204,7 @@ void BarberMachine::updateState00() {
 // @2225440
 BOOL BarberMachine::enterState01() {
     s32 r = RoomObjRes_GetBca(&res, 0);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     RoomObj_PlaySe(&se, 0x4d8);
     return TRUE;
 }
@@ -225,7 +225,7 @@ void BarberMachine::updateState01() {
 // @22253c4
 BOOL BarberMachine::enterState02() {
     s32 r = RoomObjRes_GetBca(&res, 1);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -245,7 +245,7 @@ void BarberMachine::updateState02() {
 // @222532c
 BOOL BarberMachine::enterState03() {
     s32 r = RoomObjRes_GetBca(&res, 2);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
     RoomObj_PlaySe(&se, 0x4d9);
     isStartedLocally = 0;
     return TRUE;

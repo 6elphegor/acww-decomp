@@ -5,6 +5,8 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern const u8 sDateSelectCursorLeftTable[5];
@@ -33,11 +35,7 @@ BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
 BOOL MenuKeys_HasUp(u32 v);
-BOOL _ZN10HandCursor7getAnimEv(void *self);
-BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
 void MenuButtons_LoadTextColors(void *self);
-void _ZN12MenuLauncher14setNextRequestEii(void *self, s32 a, s32 b);
-void _ZN12MenuLauncher13onChildClosedEv(void *self);
 
 // ov134 library object (plain functions; first argument is the DateTimePicker object)
 void DateTimePicker_GetDateTime(void *self, void *out);
@@ -171,7 +169,7 @@ BOOL DateSelectMenu::onCreate() {
 }
 
 BOOL DateSelectMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -268,7 +266,7 @@ void DateSelectMenu::stateOpening() {
 }
 
 void DateSelectMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), 0x44, 1);
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->setNextRequest(0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);
@@ -489,7 +487,7 @@ void DateSelectMenu::updateCursorMove() {
 }
 
 void DateSelectMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         if (testFlags(2)) {
             if (picker.grabKnobByCursor()) {
                 setMainState(6);
@@ -513,7 +511,7 @@ void DateSelectMenu::updateCursorPress() {
 }
 
 void DateSelectMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(returnState);
     }
@@ -521,7 +519,7 @@ void DateSelectMenu::updateCursorRelease() {
 
 void DateSelectMenu::stateExit() {
     if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+        if (((HandCursor *)(&cursor))->getAnim()) {
             s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
             s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
             s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);

@@ -53,8 +53,6 @@ s32 ChatBalloon_IsRemoteBusy();
 s32 MenuCtrl_GetTransitionProgressOrFull();
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 PlayerData_GetCurrent();
-s32 _ZN10PlayerData12getInventoryEv(s32 self);
-s32 _ZN15PlayerInventory13getTotalBellsEi(s32 a, s32 b);
 s32 MenuCtrl_GetHandBells();
 void Snd_StopBellRollSe();
 void Snd_StartBellRollSe();
@@ -106,53 +104,6 @@ void Hud_Hide();
 s32 Hud_GetBells();
 
 // functions of the unit that other classes of the unit call (symbols.txt names)
-void _ZN19HudControllerStates17updateInputLayoutEv(void *p);
-void _ZN19HudControllerStates16enterModeForRoomEv(void *p);
-void _ZN19HudControllerStates11enterHiddenEv(void *p);
-void _ZN19HudCameraGridStates11enterClosedEv(void *p);
-void _ZN19HudCameraGridStates14setPosFromCellEv(void *p);
-void _ZN18HudCountdownLabels10resetSlideEv(void *p);
-void _ZN18HudCountdownLabels11updateSlideEv(void *p);
-void _ZN18HudCountdownLabels15updateRemainingEv(void *p);
-void _ZN18HudCountdownLabels13refreshLabelsEv(void *p);
-void _ZN18HudCountdownLabels10freeLabelsEv(void *p);
-void _ZN18HudCountdownLabels12createLabelsEv(void *p);
-void _ZN14HudClockLabels10resetSlideEv(void *p);
-void _ZN14HudClockLabels11updateSlideEv(void *p);
-void _ZN14HudClockLabels12pollDateTimeEv(void *p);
-void _ZN14HudClockLabels13refreshLabelsEv(void *p);
-void _ZN13HudController14enterCountdownEv(void *p);
-void _ZN13HudController10enterClockEv(void *p);
-void _ZN13HudController8enterOffEv(void *p);
-BOOL _ZN9HudWallet8isHiddenEv(void *p);
-void _ZN9HudWallet4hideEv(void *p);
-void _ZN9HudWallet4showEv(void *p);
-BOOL _ZN12HudCountdown7canShowEv(void *p);
-BOOL _ZN12HudCountdown10isFinishedEv(void *p);
-BOOL _ZN12HudCountdown8isHiddenEv(void *p);
-void _ZN12HudCountdown4hideEv(void *p);
-void _ZN12HudCountdown4showEv(void *p);
-void _ZN12HudCountdown8callDrawEv(void *p);
-void _ZN12HudCountdown10callUpdateEv(void *p);
-void _ZN12HudCountdown7releaseEv(void *p);
-void _ZN12HudCountdown5resetEv(void *p);
-BOOL _ZN15HudCameraButton8isHiddenEv(void *p);
-void _ZN15HudCameraButton7disableEv(void *p);
-void _ZN15HudCameraButton6enableEv(void *p);
-void _ZN15HudCameraButton8callDrawEv(void *p);
-void _ZN15HudCameraButton10callUpdateEv(void *p);
-void _ZN15HudCameraButton7releaseEv(void *p);
-void _ZN15HudCameraButton5resetEv(void *p);
-BOOL _ZN13HudCameraGrid15pickCellByTouchEv(void *p);
-BOOL _ZN13HudCameraGrid22isOtherDeviceTriggeredEv(void *p);
-s32 _ZN8HudClock7canShowEv(void *p);
-BOOL _ZN8HudClock8isHiddenEv(void *p);
-void _ZN8HudClock4hideEv(void *p);
-void _ZN8HudClock4showEv(void *p);
-void _ZN8HudClock8callDrawEv(void *p);
-void _ZN8HudClock10callUpdateEv(void *p);
-void _ZN8HudClock7releaseEv(void *p);
-void _ZN8HudClock5resetEv(void *p);
 }
 
 extern u8 gFieldSceneKind;
@@ -392,6 +343,8 @@ public:
 
 #include "ui/HudProc.h"
 #include "sys/ProcProfile.h"
+#include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
 extern "C" HudProc *HudProc_Create();
 
 
@@ -484,10 +437,10 @@ void HudClock::update() {
     static Unk_020e0f64_Fn tbl[4] = {(Unk_020e0f64_Fn)&HudClock::updateHidden, (Unk_020e0f64_Fn)&HudClock::updateAppearing,
                                      (Unk_020e0f64_Fn)&HudClock::updateShown, (Unk_020e0f64_Fn)&HudClock::updateHiding};
     (this->*tbl[state])();
-    _ZN14HudClockLabels12pollDateTimeEv(this);
-    _ZN14HudClockLabels13refreshLabelsEv(this);
+    ((HudClockLabels *)(this))->pollDateTime();
+    ((HudClockLabels *)(this))->refreshLabels();
     if (state != 0) {
-        _ZN14HudClockLabels11updateSlideEv(this);
+        ((HudClockLabels *)(this))->updateSlide();
     }
 }
 
@@ -543,7 +496,7 @@ void HudClock::updateHidden() {
 
 void HudClock::enterAppearing() {
     state = 1;
-    _ZN14HudClockLabels10resetSlideEv(this);
+    ((HudClockLabels *)(this))->resetSlide();
     s32 i = altLayout != 0 ? 0x29 : 4;
     anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[i]);
     anim.setPlayOnce(1);
@@ -902,7 +855,7 @@ void HudClockLabels::pollDateTime() {
 
 void HudClockLabels::updateSlide() {
     s32 a = ChatBalloon_IsOwnBusy();
-    s32 b = _ZN8HudClock7canShowEv(this);
+    s32 b = ((HudClock *)(this))->canShow();
     s32 t;
     if (a != 0 && b != 0) t = -0x14000; else t = 0;
     slideSpeed = slideSpeed + 0xa00;
@@ -972,12 +925,12 @@ void HudCountdown::draw() {
 }
 
 void HudCountdown::update() {
-    _ZN18HudCountdownLabels15updateRemainingEv(this);
+    ((HudCountdownLabels *)(this))->updateRemaining();
     static Unk_020e0f10_Fn tbl[4] = {(Unk_020e0f10_Fn)&HudCountdown::updateHidden, (Unk_020e0f10_Fn)&HudCountdown::updateAppearing,
                                      (Unk_020e0f10_Fn)&HudCountdown::updateShown, (Unk_020e0f10_Fn)&HudCountdown::updateHiding};
     (this->*tbl[state])();
-    _ZN18HudCountdownLabels13refreshLabelsEv(this);
-    if (state != 0) _ZN18HudCountdownLabels11updateSlideEv(this);
+    ((HudCountdownLabels *)(this))->refreshLabels();
+    if (state != 0) ((HudCountdownLabels *)(this))->updateSlide();
 }
 
 void HudCountdown::reset() {
@@ -986,7 +939,7 @@ void HudCountdown::reset() {
 }
 
 void HudCountdown::release() {
-    _ZN18HudCountdownLabels10freeLabelsEv(this);
+    ((HudCountdownLabels *)(this))->freeLabels();
 }
 
 void HudCountdown::callUpdate() {
@@ -1065,13 +1018,13 @@ void HudCountdown::updateHidden() {
 
 void HudCountdown::enterAppearing() {
     state = 1;
-    _ZN18HudCountdownLabels10resetSlideEv(this);
+    ((HudCountdownLabels *)(this))->resetSlide();
     s32 i;
     if (altLayout != 0) i = 0x2b; else i = 0x26;
     anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable[i]);
     anim.setPlayOnce(1);
     anim.restart();
-    _ZN18HudCountdownLabels12createLabelsEv(this);
+    ((HudCountdownLabels *)(this))->createLabels();
 }
 
 void HudCountdown::updateAppearing() {
@@ -1099,7 +1052,7 @@ void HudCountdown::enterHiding() {
 void HudCountdown::updateHiding() {
     anim.update();
     if (anim.isFinished() != 0) {
-        _ZN18HudCountdownLabels10freeLabelsEv(this);
+        ((HudCountdownLabels *)(this))->freeLabels();
         enterHidden();
     }
 }
@@ -1340,7 +1293,7 @@ void HudCountdownLabels::updateRemaining() {
 
 void HudCountdownLabels::updateSlide() {
     BOOL a = ChatBalloon_IsOwnBusy();
-    BOOL b = _ZN12HudCountdown7canShowEv(this);
+    BOOL b = ((HudCountdown *)(this))->canShow();
     s32 t;
     s32 c4;
     if (a && b) {
@@ -1422,7 +1375,7 @@ void HudCameraGrid::reset() {
     cellX = 0;
     cellY = 0;
     activeCell = 0;
-    _ZN19HudCameraGridStates11enterClosedEv(this);
+    ((HudCameraGridStates *)(this))->enterClosed();
 }
 
 void HudCameraGrid::resetCellAnims() {
@@ -1494,7 +1447,7 @@ BOOL HudCameraGrid::pickCellByTouch() {
         if (Input_IsTouchTrigInRect(a, a + 0x10, b, b + 0x10)) {
             r = TRUE;
             cell = i;
-            _ZN19HudCameraGridStates14setPosFromCellEv(this);
+            ((HudCameraGridStates *)(this))->setPosFromCell();
             break;
         }
     }
@@ -1609,10 +1562,10 @@ void HudCameraGridStates::enterOpen() {
 void HudCameraGridStates::updateOpen() {
     if (visible == 0) {
         enterClosing();
-    } else if (!_ZN13HudCameraGrid22isOtherDeviceTriggeredEv(this)) {
+    } else if (!((HudCameraGrid *)(this))->isOtherDeviceTriggered()) {
         BOOL f = FALSE;
         if (Input_IsTouchMode()) {
-            if (_ZN13HudCameraGrid15pickCellByTouchEv(this)) {
+            if (((HudCameraGrid *)(this))->pickCellByTouch()) {
                 f = TRUE;
             }
         } else if (Input_IsButtonMode()) {
@@ -2114,7 +2067,7 @@ extern "C" s32 Hud_GetBells() {
     s32 c = PlayerData_GetCurrent();
     s32 r = 0;
     if (c != 0) {
-        s32 a = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(c), 1);
+        s32 a = ((PlayerInventory *)(((PlayerData *)(c))->getInventory()))->getTotalBells(1);
         r = a + MenuCtrl_GetHandBells();
     }
     return r;
@@ -2193,19 +2146,19 @@ extern "C" void *Hud_GetWallet() { return &gHud.wallet; }
 void HudController::init() {
     Hud_Show();
     Hud_ClearHideB();
-    _ZN19HudControllerStates16enterModeForRoomEv(this);
-    _ZN8HudClock5resetEv(&clock);
-    _ZN12HudCountdown5resetEv(&countdown);
-    _ZN15HudCameraButton5resetEv(&cameraButton);
+    ((HudControllerStates *)(this))->enterModeForRoom();
+    ((HudClock *)(&clock))->reset();
+    ((HudCountdown *)(&countdown))->reset();
+    ((HudCameraButton *)(&cameraButton))->reset();
     wallet.reset();
     buttonLayout = 0;
 }
 
 void HudController::exit() {
     wallet.release();
-    _ZN15HudCameraButton7releaseEv(&cameraButton);
-    _ZN12HudCountdown7releaseEv(&countdown);
-    _ZN8HudClock7releaseEv(&clock);
+    ((HudCameraButton *)(&cameraButton))->release();
+    ((HudCountdown *)(&countdown))->release();
+    ((HudClock *)(&clock))->release();
 }
 
 void HudController::update() {
@@ -2214,17 +2167,17 @@ void HudController::update() {
         (Fn)&HudControllerStates::updateCameraButton, (Fn)&HudControllerStates::updateWallet, (Fn)&HudControllerStates::updateHidden,
     };
     (this->*tbl[state])();
-    _ZN8HudClock10callUpdateEv(&clock);
-    _ZN12HudCountdown10callUpdateEv(&countdown);
-    _ZN15HudCameraButton10callUpdateEv(&cameraButton);
+    ((HudClock *)(&clock))->callUpdate();
+    ((HudCountdown *)(&countdown))->callUpdate();
+    ((HudCameraButton *)(&cameraButton))->callUpdate();
     wallet.callUpdate();
-    _ZN19HudControllerStates17updateInputLayoutEv(this);
+    ((HudControllerStates *)(this))->updateInputLayout();
 }
 
 void HudController::draw() {
-    _ZN8HudClock8callDrawEv(&clock);
-    _ZN12HudCountdown8callDrawEv(&countdown);
-    _ZN15HudCameraButton8callDrawEv(&cameraButton);
+    ((HudClock *)(&clock))->callDraw();
+    ((HudCountdown *)(&countdown))->callDraw();
+    ((HudCameraButton *)(&cameraButton))->callDraw();
     wallet.callDraw();
 }
 
@@ -2234,7 +2187,7 @@ void HudController::enterOff() {
 
 void HudController::updateOff() {
     if (hideRequest != 0 || hideRequestB != 0) {
-        _ZN19HudControllerStates11enterHiddenEv(this);
+        ((HudControllerStates *)(this))->enterHidden();
     }
 }
 
@@ -2250,18 +2203,18 @@ void HudController::updateClock() {
     } else {
         a = FALSE;
     }
-    b = _ZN12HudCountdown10isFinishedEv(&countdown) == 0 ? TRUE : FALSE;
+    b = ((HudCountdown *)(&countdown))->isFinished() == 0 ? TRUE : FALSE;
     if (a || b) {
-        _ZN8HudClock4hideEv(&clock);
-        if (_ZN8HudClock8isHiddenEv(&clock) != 0) {
+        ((HudClock *)(&clock))->hide();
+        if (((HudClock *)(&clock))->isHidden() != 0) {
             if (a) {
-                _ZN19HudControllerStates11enterHiddenEv(this);
+                ((HudControllerStates *)(this))->enterHidden();
             } else {
                 enterCountdown();
             }
         }
     } else {
-        _ZN8HudClock4showEv(&clock);
+        ((HudClock *)(&clock))->show();
     }
 }
 
@@ -2278,20 +2231,20 @@ void HudControllerStates::updateCountdown() {
     } else {
         r5 = FALSE;
     }
-    BOOL r0 = _ZN12HudCountdown10isFinishedEv(&countdown);
+    BOOL r0 = ((HudCountdown *)(&countdown))->isFinished();
     if (r5 || r0) {
-        _ZN12HudCountdown4hideEv(&countdown);
-        if (_ZN12HudCountdown8isHiddenEv(&countdown)) {
+        ((HudCountdown *)(&countdown))->hide();
+        if (((HudCountdown *)(&countdown))->isHidden()) {
             if (r5) {
                 enterHidden();
             } else {
                 HudObjGfx_SetCountdownVariant(0);
                 HudObjGfx_LoadKind(4, 1);
-                _ZN13HudController10enterClockEv(this);
+                ((HudController *)(this))->enterClock();
             }
         }
     } else {
-        _ZN12HudCountdown4showEv(&countdown);
+        ((HudCountdown *)(&countdown))->show();
     }
 }
 
@@ -2299,12 +2252,12 @@ void HudControllerStates::enterCameraButton() { state = 3; }
 
 void HudControllerStates::updateCameraButton() {
     if (hideRequest != 0 || hideRequestB != 0) {
-        _ZN15HudCameraButton7disableEv(&cameraButton);
-        if (_ZN15HudCameraButton8isHiddenEv(&cameraButton)) {
+        ((HudCameraButton *)(&cameraButton))->disable();
+        if (((HudCameraButton *)(&cameraButton))->isHidden()) {
             enterHidden();
         }
     } else {
-        _ZN15HudCameraButton6enableEv(&cameraButton);
+        ((HudCameraButton *)(&cameraButton))->enable();
     }
     updateSharedPanels();
 }
@@ -2312,7 +2265,7 @@ void HudControllerStates::updateCameraButton() {
 void HudControllerStates::enterWallet() { state = 4; }
 
 void HudControllerStates::updateWallet() {
-    _ZN9HudWallet4showEv(&wallet);
+    ((HudWallet *)(&wallet))->show();
     updateSharedPanels();
 }
 
@@ -2323,10 +2276,10 @@ void HudControllerStates::enterHidden() {
 
 void HudControllerStates::updateHidden() {
     if (hideRequest != 0 || hideRequestB != 0) {
-        _ZN9HudWallet4showEv(&wallet);
+        ((HudWallet *)(&wallet))->show();
     } else {
-        _ZN9HudWallet4hideEv(&wallet);
-        if (_ZN9HudWallet8isHiddenEv(&wallet)) {
+        ((HudWallet *)(&wallet))->hide();
+        if (((HudWallet *)(&wallet))->isHidden()) {
             HudObjGfx_LoadKind(4, 1);
             enterModeForRoom();
         }
@@ -2337,15 +2290,15 @@ void HudControllerStates::updateHidden() {
 void HudControllerStates::updateSharedPanels() {
     if (Hud_GetSceneHudKind() != 0) {
         if (Unk_0208a150_IsOne(gFieldSceneKind)) {
-            if (_ZN12HudCountdown10isFinishedEv(&countdown)) {
-                _ZN12HudCountdown4hideEv(&countdown);
-                if (_ZN12HudCountdown8isHiddenEv(&countdown)) {
-                    _ZN8HudClock4showEv(&clock);
+            if (((HudCountdown *)(&countdown))->isFinished()) {
+                ((HudCountdown *)(&countdown))->hide();
+                if (((HudCountdown *)(&countdown))->isHidden()) {
+                    ((HudClock *)(&clock))->show();
                 }
             } else {
-                _ZN8HudClock4hideEv(&clock);
-                if (_ZN8HudClock8isHiddenEv(&clock)) {
-                    _ZN12HudCountdown4showEv(&countdown);
+                ((HudClock *)(&clock))->hide();
+                if (((HudClock *)(&clock))->isHidden()) {
+                    ((HudCountdown *)(&countdown))->show();
                 }
             }
         }
@@ -2356,16 +2309,16 @@ void HudControllerStates::enterModeForRoom() {
     s32 r = Hud_GetSceneHudKind();
     if (r == 1) {
         if (HudObjGfx_GetCountdownVariant()) {
-            _ZN13HudController14enterCountdownEv(this);
+            ((HudController *)(this))->enterCountdown();
         } else {
-            _ZN13HudController10enterClockEv(this);
+            ((HudController *)(this))->enterClock();
         }
     } else if (r == 2) {
         enterCameraButton();
     } else if (r == 3) {
         enterWallet();
     } else {
-        _ZN13HudController8enterOffEv(this);
+        ((HudController *)(this))->enterOff();
     }
 }
 

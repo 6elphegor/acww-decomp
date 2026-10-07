@@ -20,6 +20,7 @@
 #include "actor/Character.h"
 #include "room/RoomObjActor.h"
 #include "game/TouchPickTriangle.h"
+#include "gfx/TwoLayerAnimModel.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -156,21 +157,12 @@ s32 MenuCtrl_IsFinished(void);
 s32 MenuCtrl_OpenLauncher(u32);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
-s32 _ZN9AnimModel8stepAnimEv(void *);
-void _ZN9AnimModel12drawAnimatedEPv(void *, u32);
-void _ZN9AnimModel10attachAnimEv(void *);
-s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
-s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
 s32 RoomObjRes_GetBca(void *, u32);
 void RoomObj_PlaySe(void *, s32);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12TouchPickBoxC2Ev(void *self);
 void _ZN12TouchPickBoxD2Ev(void *self);
-void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
-s32 _ZN12RoomObjActor14storeSyncStateEh(void *self, s32 a);
 RecycleBox *RecycleBox_Create();
 RecycleBox *RecycleBox_GetInstance();
 }// declarations (definition order below sets the data layout)
@@ -231,9 +223,9 @@ BOOL RecycleBox::onCreate() {
     loadResourcesByName("obj_r_box");
     initCollision();
     if (RoomObjRes_GetBca(&res, 0)) {
-        if (_ZN9AnimModel11allocAnmObjEPv(&model, gBgHeap)) {
-            _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
-            _ZN9AnimModel10attachAnimEv(&model);
+        if (((AnimModel *)(&model))->allocAnmObj((void *)(gBgHeap))) {
+            ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
+            ((AnimModel *)(&model))->attachAnim();
         }
     }
     changeAct(0);
@@ -249,7 +241,7 @@ BOOL RecycleBox::onExecute() {
 }
 
 BOOL RecycleBox::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv(&model, 0);
+    ((AnimModel *)(&model))->drawAnimated((void *)(0));
     return TRUE;
 }
 
@@ -292,7 +284,7 @@ BOOL RecycleBox::changeSyncState(u32 idx) {
     };
     if (idx < 4) {
         if ((this->*tbl[idx])()) {
-            if (_ZN12RoomObjActor14storeSyncStateEh(this, idx)) {
+            if (((RoomObjActor *)(this))->storeSyncState(idx)) {
                 tex.syncState = idx;
                 return TRUE;
             }
@@ -315,44 +307,44 @@ void RecycleBox::updateState() {
 }
 
 BOOL RecycleBox::enterState00() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void RecycleBox::updateState00() {}
 
 BOOL RecycleBox::enterState01() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 0), 1, 0x1000, 0, 0);
     RoomObj_PlaySe(&se, 0x4d6);
     return TRUE;
 }
 
 void RecycleBox::updateState01() {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(HOST_AT(this, 0x188, model, 0))) {
+    if (((AnimFrameCtrl *)(HOST_AT(this, 0x188, model, 0)))->isFinished()) {
         changeSyncState(2);
     } else {
-        _ZN9AnimModel8stepAnimEv(&model);
+        ((AnimModel *)(&model))->stepAnim();
     }
 }
 
 BOOL RecycleBox::enterState02() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 1), 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 1), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
 void RecycleBox::updateState02() {}
 
 BOOL RecycleBox::enterState03() {
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 1), 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 1), 1, 0x1000, 0, 0);
     RoomObj_PlaySe(&se, 0x4d7);
     return TRUE;
 }
 
 void RecycleBox::updateState03() {
-    if (_ZN13AnimFrameCtrl10isFinishedEv(HOST_AT(this, 0x188, model, 0))) {
+    if (((AnimFrameCtrl *)(HOST_AT(this, 0x188, model, 0)))->isFinished()) {
         changeSyncState(0);
     } else {
-        _ZN9AnimModel8stepAnimEv(&model);
+        ((AnimModel *)(&model))->stepAnim();
     }
 }
 
@@ -396,7 +388,7 @@ void RecycleBox::execAct00() {}
 
 BOOL RecycleBox::enterAct01() {
     RecycleBoxStackPad pad;
-    _ZN9Character17attachTalkRequestEi(this, (TalkMsgRequest *)this);
+    ((Character *)(this))->attachTalkRequest((s32)((TalkMsgRequest *)this));
     MsgRequest::setFileName(sRecycleBoxMsgFilePtr);
     MsgRequest::msgIndex = 0;
     TalkMsgRequest::window->nextState = 1;
@@ -418,7 +410,7 @@ BOOL RecycleBox::enterAct02() {
 void RecycleBox::execAct02() {
     if (TalkMsgRequest::window != 0) {
         if (TalkMsgRequest::window->state == 0) {
-            _ZN9Character17detachTalkRequestEi(this, (TalkMsgRequest *)this);
+            ((Character *)(this))->detachTalkRequest((s32)((TalkMsgRequest *)this));
             changeAct(3);
         }
     }

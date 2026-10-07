@@ -17,6 +17,15 @@
 #include "gfx/NNSG3dResMatData.h"
 #include "gfx/BgModelCache.h"
 #include "town/Unk_0204e858_Grid.h"
+#include "game/GroundInfo.h"
+#include "game/GroundInfoBase.h"
+#include "game/TouchPicker.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "room/HouseData.h"
+#include "room/HouseRoom.h"
+#include "snd/SndEnvChannel.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -87,8 +96,6 @@ void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *ctor, void *dtor);
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *dtor);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
-void _ZN16RoomScene22ShapeC1Ev(void *self);
-void _ZN16RoomScene22ShapeD1Ev(void *self);
 }
 
 
@@ -352,13 +359,13 @@ extern "C" RoomShell *RoomShell_Create() {
 
 RoomShell::RoomShell() {
     _ZN11BoxColliderC1Ev(scene0ACollider);
-    _ZN16RoomScene22ShapeC1Ev(scene22Shape);
+    new (scene22Shape) RoomScene22Shape();
     clockSe = data_0213b91c;
     hourHandNode = minuteHandNode = wdMatIdx = -1;
 }
 
 RoomShell::~RoomShell() {
-    _ZN16RoomScene22ShapeD1Ev(scene22Shape);
+    ((RoomScene22Shape *)(scene22Shape))->~RoomScene22Shape();
     _ZN11BoxColliderD2Ev(scene0ACollider);
 }
 
@@ -372,33 +379,33 @@ BOOL RoomShell::onCreate() {
     setMatLightFlags((u8 *)model.resMdl);
     storeBaseMtx();
     initWallAndFloor();
-    hourHandNode = G3dResAccess_findNodeIdx((u8 *)model.resMdl, "kh_j");
-    minuteHandNode = G3dResAccess_findNodeIdx((u8 *)model.resMdl, "km_j");
-    hasuNode = G3dResAccess_findNodeIdx((u8 *)model.resMdl, "hasu1");
-    wdMatIdx = G3dResAccess_findMatIdx((u8 *)model.resMdl, "wd");
-    Model_setInitCallback(&model, (void *)RoomShell_InitRenderObj, this);
+    hourHandNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx((s32)("kh_j"));
+    minuteHandNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx((s32)("km_j"));
+    hasuNode = ((G3dResAccess *)((u8 *)model.resMdl))->findNodeIdx((s32)("hasu1"));
+    wdMatIdx = ((G3dResAccess *)((u8 *)model.resMdl))->findMatIdx((s32)("wd"));
+    ((Model *)(&model))->setInitCallback((s32)((void *)RoomShell_InitRenderObj), (s32)(this));
     RoomShell_SpawnBoardSigns(this);
-    SndEnvChannel_callReset(&clockSe);
+    ((SndEnvChannel *)(&clockSe))->callReset();
     return TRUE;
 }
 
 BOOL RoomShell::onExecute() {
-    if (BlendAnimModel_getAnmObj(&model)) {
-        AnimModel_stepAnim(&model);
+    if (((BlendAnimModel *)(&model))->getAnmObj()) {
+        ((AnimModel *)(&model))->stepAnim();
     }
     RoomShellMatAnim *e = matAnim;
     if (RoomShellMatAnim_GetAnmObj(e)) {
-        AnimFrameCtrl_step(e);
+        ((AnimFrameCtrl *)(e))->step();
         *(u32 *)matAnim[0].anmObj = matAnim[0].curFrame;
     }
     if (clockPos.x != 0) {
         s32 id = FtrMgr_GetCycleCounter(clockPos.x);
         if (id == 9 || id == 0x1d) {
-            SndEnvChannel_callRequestSustained(&clockSe, 0x4d1);
+            ((SndEnvChannel *)(&clockSe))->callRequestSustained((void *)(0x4d1));
         }
     }
     VecFx32 v = clockPos;
-    SndEnvChannel_callUpdateRelative(&clockSe, &v);
+    ((SndEnvChannel *)(&clockSe))->callUpdateRelative(&v);
     ((RoomScene22Shape *)scene22Shape)->update();
     data_021ce63c = 0;
     return TRUE;
@@ -413,7 +420,7 @@ BOOL RoomShell::onDraw() {
         t.b = t.a;
         NNS_G3dMdlSetMdlDiff((u8 *)model.resMdl, wdMatIdx, t.b);
     }
-    AnimModel_drawAnimated(&model, 0);
+    ((AnimModel *)(&model))->drawAnimated((void *)(0));
     return TRUE;
 }
 
@@ -423,9 +430,9 @@ BOOL RoomShell::onDelete() {
     ((RoomEntranceColliders *)&scene0ACollider)->releaseScene0A();
     carpet.release();
     entranceColliders.release();
-    Model_clearResource(&model);
+    ((Model *)(&model))->clearResource();
     sRoomShell = 0;
-    SndEnvChannel_callRelease(&clockSe);
+    ((SndEnvChannel *)(&clockSe))->callRelease();
     return TRUE;
 }
 
@@ -434,8 +441,8 @@ void RoomShell::calcRoomSize() {
     s32 cnt = 0;
     s32 i;
     for (i = 0; i < 16; i++) {
-        GroundInfo_initAtUnit(buf, i, 10, 0, 0);
-        if (GroundInfoBase_getHeight(buf, 0) == 0) {
+        ((GroundInfo *)(buf))->initAtUnit(i, 10, 0, 0);
+        if (((GroundInfoBase *)(buf))->getHeight(0) == 0) {
             cnt++;
         }
         GroundInfo_Destruct(buf);
@@ -464,10 +471,10 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
     *d = 0;
     *b = *d;
     if (SceneId_IsHouseRoom(r)) {
-        void *o = HouseData_getRoom(gSaveHouse, SceneId_GetHouseRoom(r));
+        void *o = ((HouseData *)(gSaveHouse))->getRoom(SceneId_GetHouseRoom(r));
         if (o != NULL) {
-            *a = *HouseRoom_getWallpaper(o, b);
-            *c = *HouseRoom_getCarpet(o, d);
+            *a = *((HouseRoom *)(o))->getWallpaper(b);
+            *c = *((HouseRoom *)(o))->getCarpet(d);
         }
     } else if (SceneId_IsVillagerHouse(r)) {
         void *o = SaveVillagers_Get(gSaveVillagers, SceneId_GetVillagerHouse(r));
@@ -550,13 +557,13 @@ void RoomShell::initAnims() {
     BgAcreModel *r = c->bgModel;
     Model_setResourceAndBind(&model, (u32)r->mdl, (u32)r->tex);
     if (r->jntAnm != 0) {
-        if (AnimModel_allocAnmObj(&model, gBgHeap)) {
+        if (((AnimModel *)(&model))->allocAnmObj((void *)(gBgHeap))) {
             BlendAnimModel_initAnim(&model, (u32)r->jntAnm, 0, 0x1000, 0, 0);
-            AnimModel_attachAnim(&model);
+            ((AnimModel *)(&model))->attachAnim();
         }
     }
     if (r->texSrtAnm != 0) {
-        if (ModelAnim_allocMatAnm(matAnim, (u8 *)model.resMdl, gBgHeap)) {
+        if (((ModelAnim *)(matAnim))->allocMatAnm((u32)((u8 *)model.resMdl), (void *)(gBgHeap))) {
             ModelAnim_init(matAnim, (u32)r->texSrtAnm, 0, 0x1000, 0);
             ModelAnim_addToRenderObj(matAnim, Model_getRenderObj(&model));
         }
@@ -610,7 +617,7 @@ u32 RoomWallpaper::getDesignKey() {
 
 BOOL RoomWallpaper::bindMaterial(u8 *a, u32 b) {
     if (b != 0) {
-        MatTexBinder_setMaterialByName(&matBinder, a, sRoomWallpaperMatNameStr);
+        ((MatTexBinder *)(&matBinder))->setMaterialByName(a, sRoomWallpaperMatNameStr);
         texRes = (u8 *)b;
         return TRUE;
     }
@@ -624,16 +631,16 @@ void RoomWallpaper::applyDefault(u16 v, void *a, s32 b) {
 
 extern "C" void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b) {
     if (Scene_InHouseRoom()) {
-        void *r = HouseData_getRoom(gSaveHouse, Scene_GetHouseRoom());
+        void *r = ((HouseData *)(gSaveHouse))->getRoom(Scene_GetHouseRoom());
         if (r != NULL) {
-            HouseRoom_setWallpaper(r, a, b);
+            ((HouseRoom *)(r))->setWallpaper(a, b);
         }
     }
 }
 
 BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
-    if (G3dResAccess_findMatIdx(a, sRoomWallpaperMatName) == -1) return FALSE;
+    if (((G3dResAccess *)(a))->findMatIdx((s32)(sRoomWallpaperMatName)) == -1) return FALSE;
     if (Item_IsFurniture(&item) != 0) {
         u32 x = Item_GetFurnitureIndex(&item);
         u32 y = Item_GetFurnitureIndex(q);
@@ -653,7 +660,7 @@ BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
         if (in != FALSE) {
             if (Wallpaper_LoadTexture(&texBuf, q) == 0) goto fail;
             if (Scene_InNookShop() == 0) {
-                MatTexBinder_bindByName(&matBinder, texRes, "dummy_wall", "dummy_wall_pl");
+                ((MatTexBinder *)(&matBinder))->bindByName(texRes, "dummy_wall", "dummy_wall_pl");
             }
             void *r = Wallpaper_GetTex(&texBuf);
             if (MatTexVramTask_request(&texTask, a, (u32)sRoomWallpaperMatName, r, 0, 0) == 0) goto fail;
@@ -667,7 +674,7 @@ BOOL RoomWallpaper::setWallpaper(u16 *q, G3dResAccess *a, s32 key) {
             u32 t8 = Item_GetDesignSlot(q);
             u32 h = PatternTexCache_Get();
             u8 *idx = PatternTexCache_getPlayerTexKey(h, (u8)t7, (u8)t8);
-            MatTexBinder_bindByIdx(&matBinder, idx, 0, 0);
+            ((MatTexBinder *)(&matBinder))->bindByIdx(idx, 0, 0);
             prevItem = item;
             item = *q;
             designKey = key;
@@ -688,7 +695,7 @@ done:
 }
 
 void RoomWallpaper::release() {
-    MatTexVramTask_cancel(&texTask);
+    ((MatTexVramTask *)(&texTask))->cancel();
 }
 
 // ---- dummy floor object (manager + 0x1228)
@@ -715,7 +722,7 @@ u32 RoomCarpet::getDesignKey() {
 
 BOOL RoomCarpet::bindMaterial(u8 *buf, u8 *p) {
     if (p != 0) {
-        MatTexBinder_setMaterialByName(&matBinder, buf, sRoomCarpetMatNameStr);
+        ((MatTexBinder *)(&matBinder))->setMaterialByName(buf, sRoomCarpetMatNameStr);
         texRes = p;
         return TRUE;
     }
@@ -730,16 +737,16 @@ BOOL RoomCarpet::applyDefault(u16 v, G3dResAccess *a, s32 key) {
 void RoomCarpet::saveToHouseRoom(u16 *q, u32 key) {
     if (Scene_InHouseRoom() != 0) {
         u32 t = Scene_GetHouseRoom();
-        void *o = HouseData_getRoom(gSaveHouse, t);
+        void *o = ((HouseData *)(gSaveHouse))->getRoom(t);
         if (o != 0) {
-            HouseRoom_setCarpet(o, q, key);
+            ((HouseRoom *)(o))->setCarpet(q, key);
         }
     }
 }
 
 BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
     BOOL same;
-    if (G3dResAccess_findMatIdx(a, sRoomCarpetMatName) == -1) return FALSE;
+    if (((G3dResAccess *)(a))->findMatIdx((s32)(sRoomCarpetMatName)) == -1) return FALSE;
     if (Item_IsFurniture(&item) != 0) {
         u32 x = Item_GetFurnitureIndex(&item);
         u32 y = Item_GetFurnitureIndex(q);
@@ -759,7 +766,7 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
         if (in != FALSE) {
             if (CarpetTex_Load(&texBuf, q) == 0) goto fail;
             if (Scene_InNookShop() == 0) {
-                MatTexBinder_bindByName(&matBinder, texRes, "dummy_floor", "dummy_floor_pl");
+                ((MatTexBinder *)(&matBinder))->bindByName(texRes, "dummy_floor", "dummy_floor_pl");
             }
             void *r = CarpetTex_GetTex(&texBuf);
             if (MatTexVramTask_request(&texTask, a, (u32)sRoomCarpetMatName, r, 0, 0) == 0) goto fail;
@@ -773,7 +780,7 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
             u32 t8 = Item_GetDesignSlot(q);
             u32 h = PatternTexCache_Get();
             u8 *idx = PatternTexCache_getPlayerTexKey(h, (u8)t7, (u8)t8);
-            MatTexBinder_bindByIdx(&matBinder, idx, 0, 0);
+            ((MatTexBinder *)(&matBinder))->bindByIdx(idx, 0, 0);
             prevItem = item;
             item = *q;
             designKey = key;
@@ -794,7 +801,7 @@ done:
 }
 
 void RoomCarpet::release() {
-    MatTexVramTask_cancel(&texTask);
+    ((MatTexVramTask *)(&texTask))->cancel();
 }
 
 // ---- element of the manager's 0x20-byte array
@@ -887,13 +894,13 @@ void RoomScene22Shape::init() {
         v.x = 0x108f6;
         v.y = 0;
         v.z = 0x1351e;
-        TouchPicker_addCylinder(Scene_GetTouchPicker(), this, &v, 0xf33, 0x6000, 0x16, 0xff);
+        ((TouchPicker *)(Scene_GetTouchPicker()))->addCylinder((TouchPickCylinder *)(this), (VecFx32 *)(&v), (VecFx32 *)(0xf33), (VecFx32 *)(0x6000), 0x16, 0xff);
     }
 }
 
 void RoomScene22Shape::update() {
     if (isActive != 0) {
-        TouchPicker_pushCylinder(Scene_GetTouchPicker(), this);
+        ((TouchPicker *)(Scene_GetTouchPicker()))->pushCylinder((TouchPickCylinder *)(this));
     }
 }
 
@@ -1018,12 +1025,12 @@ void RoomShell::onMatCallback(s32 idx, NNSG3dRS *o) {
     BOOL a;
     BOOL b;
     s32 v8, vc, v10;
-    if (idx == MatTexBinder_getMaterial(&wallpaper.matBinder)) {
+    if (idx == ((MatTexBinder *)(&wallpaper.matBinder))->getMaterial()) {
         a = TRUE;
     } else {
         a = FALSE;
     }
-    if (idx == MatTexBinder_getMaterial(&carpet.matBinder)) {
+    if (idx == ((MatTexBinder *)(&carpet.matBinder))->getMaterial()) {
         b = TRUE;
     } else {
         b = FALSE;

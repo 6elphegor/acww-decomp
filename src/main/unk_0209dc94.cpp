@@ -1,5 +1,24 @@
 #include "types.h"
 #include "save/SaveData.h"
+#include "game/ReddShop.h"
+#include "game/Unk_020aec00.h"
+#include "item/BottleLetterRecord.h"
+#include "item/LetterOutbox.h"
+#include "item/LetterStorage.h"
+#include "item/PlayerMailbox.h"
+#include "item/ReceivedLetterBlock.h"
+#include "player/PlayerData.h"
+#include "player/PlayerSpNpcRecord.h"
+#include "room/HouseData.h"
+#include "save/BbsBoard.h"
+#include "save/BlancaFaceRecord.h"
+#include "save/ContestRecord.h"
+#include "save/LostChildRecord.h"
+#include "save/MuseumData.h"
+#include "save/Pattern.h"
+#include "save/SaveRecord4.h"
+#include "save/TownExchangeRecord.h"
+#include "save/TownId.h"
 
 
 extern "C" {
@@ -8,8 +27,6 @@ void SaveData_RefreshTownBlockMap(void *);
 void SaveData_InitNew(u8 *p);
 void SaveData_InitCurrentPlayer(u8 *p);
 void *PlayerData_GetCurrent();
-void _ZN10PlayerData7setFlagEj(void *, s32);
-void _ZN10PlayerData9clearFlagEj(void *, s32);
 void RoomEntry_Reset();
 void Clock_Init();
 void HouseRoomMaps_UpdateAll();
@@ -29,10 +46,7 @@ void VillagerStates_ResetErrands();
 void SaveVillagers_AssignErrands(void *);
 void _ZN7TownMap18updateGroundSeasonEv(void *);
 void TownMap_Generate(void *, u32);
-void _ZN11SaveRecord412setDateTodayEPv(void *, s32);
-s32 _ZN11SaveRecord412isStateValidEv(void *);
 s32 Scene_GetCurrent();
-void _ZN10PlayerData14setSkyShotHitsEj(void *, s32);
 void HappyRoom_SendWelcomeLetter();
 s32 PlayerOptions_IsStereo();
 void Snd_SetOutputMode(void *);
@@ -46,21 +60,10 @@ void Sky_RequestBirds();
 void _ZN12TurnipMarket12spoilOnResetEv(void *);
 void SaveVillagers_PickPlayerBirthdayVisitor(void *, s32);
 s32 VillagerStates_GetBirthdayVisitor();
-s32 _ZN10PlayerData8testFlagEj(void *, s32);
-void *_ZN10PlayerData14getSpNpcRecordEv(void *);
-void _ZN17PlayerSpNpcRecord13addResetCountEv(void *self);
-void _ZN10PlayerData25sendForeignVillagerLetterEv(void *);
-void *_ZN10PlayerData11getPlayerIdEv(void *);
-void _ZN6TownId7setTownEPS_(void *, void *);
-void *_ZN10PlayerData11getPatternsEv(void *);
-void _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(void *, void *);
-void _ZN13PlayerMailbox5clearEv(void *);
 void ChestStorage_Clear(void *);
-void _ZN10MuseumData22releasePlayerDonationsEj(void *, s32);
 void Pattern_RemovePlayerItems(s32);
 void ReddPassword_ForgetResident(u32);
 void *SaveManager_GetLetterStorage();
-void _ZN13LetterStorage5clearEv(void *);
 void MI_CpuFill8(void *, s32, u32);
 void __cxa_vec_cleanup(void *, u32, u32, void (*)(void *));
 void ChestStorage_Destruct(void *);
@@ -70,27 +73,19 @@ void PlayerDataArray_ResetAll(void *);
 void AbleShop_Reset(void *);
 void ReddShop_Reset(void *);
 void _ZN7TownMap5clearEv(void *);
-void _ZN8BbsBoard5clearEv(void *);
-void _ZN9HouseData5resetEv(void *);
 void TownState_Reset(void *);
 void Weather_SetDateToday(void *);
 void NookShop_Clear(void *);
-void _ZN16BlancaFaceRecord5resetEv(void *);
 void _ZN12TurnipMarket5clearEv(void *);
 void _ZN12ReddLastSale5clearEv(void *);
 void GulliverQuest_Clear(void *);
-void _ZN13ContestRecord5clearEv(void *);
-void _ZN12LetterOutbox5clearEv(void *);
 void LostAndFound_Clear(void *);
 void RecycleBin_Clear(void *);
 void ConstellationStore_Clear(void *);
-void _ZN18BottleLetterRecord11clearRecordEv(void *);
 void ReceivedLetter_Clear(void *);
 void HappyRoomDate_SetToday(void *);
-void _ZN11SaveRecord49resetDateEv(void *);
 void _ZN14SnowmanRecords8clearAllEv(void *);
 void EventWeekSlots_Reset(void *);
-void _ZN15LostChildRecord5clearEv(void *);
 void _ZN14RoostGuestRoll5clearEv(void *);
 void TownExchange_Clear(void *);
 void PlayerDataArray_Destruct(void *);
@@ -102,28 +97,16 @@ void EventWeekSlots_Destruct(void *);
 void TownState_Destruct(void *);
 void _ZN7TownMapD1Ev(void *);
 void HappyRoomDate_Destruct(void *);
-void _ZN9HouseDataD1Ev(void *);
 void _ZN15ItemClassOrdersD2Ev(void *);
-void _ZN10MuseumData8destructEv(void *);
-void _ZN19AbleSistersPatternsD1Ev(void *);
-void _ZN8BbsBoardD1Ev(void *);
 void SaveVillagers_Destruct(void *);
-void _ZN13ContestRecord8destructEv(void *);
 void RoostGuestRoll_Destruct(void *);
 void GulliverQuest_Destruct(void *);
 void _ZN12ReddLastSaleD1Ev(void *);
 void TurnipMarket_Destruct(void *);
-void _ZN16BlancaFaceRecord8destructEv(void *);
 void LostChildRecord_Destruct(void *);
-void _ZN19ReceivedLetterBlockD1Ev(void *);
-void _ZN18TownExchangeRecordD1Ev(void *);
 void BottleLetterRecord_Destruct(void *);
-void _ZN12LetterOutboxD1Ev(void *);
 void SaveData_DestructDateRecord(void *);
-void _ZN11SaveRecord48destructEv(void *);
-void _ZN8ReddShopD1Ev(void *);
 void AbleShop_Destruct(void *);
-void _ZN12Unk_020aec00C1Ev(void *);
 void _ZN14SnowmanRecordsD1Ev(void *);
 void _ZN18ConstellationStoreD1Ev(void *);
 void _ZN15TownStyleRecordC2Ev(void *);
@@ -137,36 +120,36 @@ const u32 sSndOutputModeTable[2] = {1, 0};
 
 
 SaveData::~SaveData() {
-    _ZN11SaveRecord48destructEv(&footer);
+    ((SaveRecord4 *)(&footer))->destruct();
     LostChildRecord_Destruct(&lostChild);
     SaveData_DestructDateRecord(&unk_15fc5);
     _ZN15ItemClassOrdersD2Ev(&itemClassOrders);
     HappyRoomDate_Destruct(&happyRoomDate);
     _ZN14SnowmanRecordsD1Ev(&snowmen);
     AbleShop_Destruct(&ableShop);
-    _ZN8ReddShopD1Ev(&reddShop);
+    ((ReddShop *)(&reddShop))->~ReddShop();
     Weather_Destruct(&weather);
     TurnipMarket_Destruct(&turnipMarket);
     _ZN12ReddLastSaleD1Ev(&reddLastSale);
-    _ZN13ContestRecord8destructEv(&contestRecord);
+    ((ContestRecord *)(&contestRecord))->destruct();
     RecycleBin_Destruct(&recycleBin);
     LostAndFound_Destruct(&lostAndFound);
     TownState_Destruct(&townState);
     EventWeekSlots_Destruct(&eventWeekSlots);
-    _ZN12Unk_020aec00C1Ev(&nookShop);
-    _ZN10MuseumData8destructEv(&museum);
-    _ZN19ReceivedLetterBlockD1Ev(&receivedLetters);
+    new (&nookShop) Unk_020aec00();
+    ((MuseumData *)(&museum))->destruct();
+    ((ReceivedLetterBlock *)(&receivedLetters))->~ReceivedLetterBlock();
     BottleLetterRecord_Destruct(&bottleLetter);
     _ZN15TownStyleRecordC2Ev(&townStyle);
-    _ZN16BlancaFaceRecord8destructEv(&blancaFace);
+    ((BlancaFaceRecord *)(&blancaFace))->destruct();
     __cxa_vec_cleanup(&dressers, 4, 0xb4, ChestStorage_Destruct);
     _ZN18ConstellationStoreD1Ev(&constellations);
-    _ZN12LetterOutboxD1Ev(&letterOutbox);
+    ((LetterOutbox *)(&letterOutbox))->~LetterOutbox();
     __cxa_vec_cleanup(&mailboxes, 4, 0x98c, _ZN13PlayerMailboxD1Ev);
-    _ZN8BbsBoardD1Ev(&bbsBoard);
-    _ZN18TownExchangeRecordD1Ev(&townExchange);
-    _ZN19AbleSistersPatternsD1Ev(&ableSistersPatterns);
-    _ZN9HouseDataD1Ev(&house);
+    ((BbsBoard *)(&bbsBoard))->~BbsBoard();
+    ((TownExchangeRecord *)(&townExchange))->~TownExchangeRecord();
+    ((AbleSistersPatterns *)(&ableSistersPatterns))->~AbleSistersPatterns();
+    ((HouseData *)(&house))->~HouseData();
     RoostGuestRoll_Destruct(&roostGuestRoll);
     GulliverQuest_Destruct(&gulliverQuest);
     _ZN7TownMapD1Ev(&townMap);
@@ -177,7 +160,7 @@ SaveData::~SaveData() {
 
 BOOL SaveData::isValid() {
     if (marker == 0x8a) {
-        if (_ZN11SaveRecord412isStateValidEv(&footer) != 0) return TRUE;
+        if (((SaveRecord4 *)(&footer))->isStateValid() != 0) return TRUE;
     }
     return FALSE;
 }
@@ -227,39 +210,39 @@ void SaveData::reset() {
     AbleShop_Reset(&ableShop);
     ReddShop_Reset(&reddShop);
     _ZN7TownMap5clearEv(&townMap);
-    _ZN8BbsBoard5clearEv(&bbsBoard);
-    _ZN9HouseData5resetEv(&house);
+    ((BbsBoard *)(&bbsBoard))->clear();
+    ((HouseData *)(&house))->reset();
     TownState_Reset(&townState);
     Weather_SetDateToday(&weather);
     NookShop_Clear(&nookShop);
-    _ZN16BlancaFaceRecord5resetEv(&blancaFace);
+    ((BlancaFaceRecord *)(&blancaFace))->reset();
     _ZN12TurnipMarket5clearEv(&turnipMarket);
     _ZN12ReddLastSale5clearEv(&reddLastSale);
     GulliverQuest_Clear(&gulliverQuest);
-    _ZN13ContestRecord5clearEv(&contestRecord);
-    _ZN12LetterOutbox5clearEv(&letterOutbox);
+    ((ContestRecord *)(&contestRecord))->clear();
+    ((LetterOutbox *)(&letterOutbox))->clear();
     LostAndFound_Clear(&lostAndFound);
     RecycleBin_Clear(&recycleBin);
     ConstellationStore_Clear(&constellations);
-    _ZN18BottleLetterRecord11clearRecordEv(&bottleLetter);
+    ((BottleLetterRecord *)(&bottleLetter))->clearRecord();
     ReceivedLetter_Clear(&receivedLetters);
     HappyRoomDate_SetToday(&happyRoomDate);
-    _ZN11SaveRecord49resetDateEv(&unk_15fc5);
+    ((SaveRecord4 *)(&unk_15fc5))->resetDate();
     _ZN14SnowmanRecords8clearAllEv(&snowmen);
     EventWeekSlots_Reset(&eventWeekSlots);
-    _ZN15LostChildRecord5clearEv(&lostChild);
+    ((LostChildRecord *)(&lostChild))->clear();
     _ZN14RoostGuestRoll5clearEv(&roostGuestRoll);
     TownExchange_Clear(&townExchange);
 }
 
 void SaveData::resetPlayer(s32 i) {
-    _ZN13PlayerMailbox5clearEv(&mailboxes[i]);
+    ((PlayerMailbox *)(&mailboxes[i]))->clear();
     ChestStorage_Clear(&dressers[i]);
-    _ZN10MuseumData22releasePlayerDonationsEj(&museum, i);
+    ((MuseumData *)(&museum))->releasePlayerDonations(i);
     Pattern_RemovePlayerItems(i);
     ReddPassword_ForgetResident((u8)i);
     u8 *r = (u8 *)SaveManager_GetLetterStorage();
-    if (r) _ZN13LetterStorage5clearEv(r + i * 0x477c);
+    if (r) ((LetterStorage *)(r + i * 0x477c))->clear();
 }
 
 void SaveData::setupNewTown() {
@@ -267,17 +250,17 @@ void SaveData::setupNewTown() {
     SaveData_SyncClockOffset(this);
     TownMap_Generate(&townMap, gCurrentHeap);
     SaveData_RefreshTownBlockMap(this);
-    _ZN11SaveRecord412setDateTodayEPv(&unk_15fc5, 0);
-    _ZN6TownId7setTownEPS_(_ZN10PlayerData11getPlayerIdEv(a), &townId);
-    void *t = _ZN10PlayerData11getPatternsEv(a);
-    _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(t, _ZN10PlayerData11getPlayerIdEv(a));
+    ((SaveRecord4 *)(&unk_15fc5))->setDateToday((void *)(0));
+    ((TownId *)(((PlayerData *)(a))->getPlayerId()))->setTown((TownId *)(&townId));
+    void *t = ((PlayerData *)(a))->getPatterns();
+    ((PlayerPatterns *)(t))->initDefaultPatterns((Unk_020942c8 *)(((PlayerData *)(a))->getPlayerId()));
     SaveData_InitNew((u8 *)this);
     _ZN14LooseSnowballs5resetEv(LooseSnowballs_Get());
     _ZN7TownMap18updateGroundSeasonEv(&townMap);
     RoomEntry_Reset();
-    _ZN10PlayerData7setFlagEj(a, 1);
-    _ZN10PlayerData7setFlagEj(a, 0x23);
-    _ZN10PlayerData9clearFlagEj(a, 9);
+    ((PlayerData *)(a))->setFlag(1);
+    ((PlayerData *)(a))->setFlag(0x23);
+    ((PlayerData *)(a))->clearFlag(9);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
     _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag(TownSessionState_Get()));
@@ -290,12 +273,12 @@ void SaveData::setupNewResident() {
     HouseRoomMaps_UpdateAll();
     HouseRoomMaps_BindBg();
     Clock_Init();
-    _ZN6TownId7setTownEPS_(_ZN10PlayerData11getPlayerIdEv(a), &townId);
-    void *t = _ZN10PlayerData11getPatternsEv(a);
-    _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(t, _ZN10PlayerData11getPlayerIdEv(a));
-    _ZN10PlayerData7setFlagEj(a, 1);
-    _ZN10PlayerData7setFlagEj(a, 0x23);
-    _ZN10PlayerData9clearFlagEj(a, 9);
+    ((TownId *)(((PlayerData *)(a))->getPlayerId()))->setTown((TownId *)(&townId));
+    void *t = ((PlayerData *)(a))->getPatterns();
+    ((PlayerPatterns *)(t))->initDefaultPatterns((Unk_020942c8 *)(((PlayerData *)(a))->getPlayerId()));
+    ((PlayerData *)(a))->setFlag(1);
+    ((PlayerData *)(a))->setFlag(0x23);
+    ((PlayerData *)(a))->clearFlag(9);
     SaveVillagers_DailyUpdate(&villagers, 0);
     SaveVillagers_PlaceMissingHouses(&villagers);
     VillagerStates_ResetErrands();
@@ -303,7 +286,7 @@ void SaveData::setupNewResident() {
     _ZN14LooseSnowballs5resetEv(LooseSnowballs_Get());
     _ZN7TownMap18updateGroundSeasonEv(&townMap);
     RoomEntry_Reset();
-    _ZN10PlayerData14setSkyShotHitsEj(a, 0);
+    ((PlayerData *)(a))->setSkyShotHits(0);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
     _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag(TownSessionState_Get()));
@@ -339,16 +322,16 @@ void SaveData::setupContinue() {
     SaveVillagers_UpdateOutdoor(&villagers, 1);
     if (Scene_GetCurrent() == 6) {
         if (VillagerStates_GetBirthdayVisitor() == -1) {
-            if (_ZN10PlayerData8testFlagEj(a, 0x23) == 0) {
-                if (_ZN10PlayerData8testFlagEj(a, 2) != 0) {
-                    _ZN17PlayerSpNpcRecord13addResetCountEv(_ZN10PlayerData14getSpNpcRecordEv(a));
+            if (((PlayerData *)(a))->testFlag(0x23) == 0) {
+                if (((PlayerData *)(a))->testFlag(2) != 0) {
+                    ((PlayerSpNpcRecord *)(((PlayerData *)(a))->getSpNpcRecord()))->addResetCount();
                     _ZN16ResettiVisitFlag3setEj(TownSessionState_GetResettiFlag(TownSessionState_Get()), 1);
                 }
             }
         }
     }
-    _ZN10PlayerData7setFlagEj(a, 2);
-    _ZN10PlayerData25sendForeignVillagerLetterEv(a);
+    ((PlayerData *)(a))->setFlag(2);
+    ((PlayerData *)(a))->sendForeignVillagerLetter();
     if (Scene_GetCurrent() != 6) {
         SaveVillagers_UpdateAllRoomInfo(&villagers);
     }

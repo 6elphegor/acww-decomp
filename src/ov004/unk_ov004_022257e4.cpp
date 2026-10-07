@@ -18,6 +18,9 @@
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
 #include "gfx/ModelAnim.h"
+#include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "net/CommManager.h"
 
 
 
@@ -93,21 +96,9 @@ void RoomObjTex_Reset(void *);
 void RoomObjRes_Free(void *);
 void CheckInGate_SetInstance(Cls *c);
 
-void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, u16, u16);
-void *_ZN5Model12getRenderObjEv(void *);
 void _ZN9ModelAnim7replaceEiiiit(void *, s32, s32, s32, s32, u16);
-void _ZN9ModelAnim4initEiiit(void *, s32, s32, s32, s32);
-void _ZN9ModelAnim14addToRenderObjEj(void *, void *);
-BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *, u32, u32);
 void Snd_PlaySe(u32);
-void _ZN9AnimModel8stepAnimEv(void *);
-void _ZN13AnimFrameCtrl4stepEv(void *);
-BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
-BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 void Math_ApproachS32Max(s32 *, s32, s32, s32);
-s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
-void _ZN9AnimModel10attachAnimEv(void *);
-void _ZN9AnimModel12drawAnimatedEPv(void *, s32);
 s32 _ZN12G3dResAccess10findMatIdxEi(void *, u32);
 s32 BoxCollider_Unregister(void *);
 s32 BoxCollider_Register(void *, s32, s32, s32, void *, s32, s32);
@@ -122,9 +113,6 @@ void *_ZN12BgModelCache12getGroundTexEv(void *);
 s32 TownSessionState_Get(void);
 s32 TownSessionState_GetTravelState(s32);
 s32 _ZN15TownTravelState7getModeEv(s32);
-s32 _ZN11CommManager12isSlotActiveEi(void *, u32);
-void _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, s32);
-void _ZN5Model15setInitCallbackEii(void *, void *, void *);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
 }
@@ -195,11 +183,11 @@ BOOL CheckInGate::onCreate() {
     s32 s = TownSessionState_GetTravelState(TownSessionState_Get());
     RoomObjRes_Load(&res, "/roomObj/obj_check_in.arc");
     RoomObjTex_Load(&tex, "/roomObj/obj_check_in.nsbtx");
-    _ZN5Model11setResourceEP12NNSG3dResMdlj(&model, RoomObjRes_GetModel(&res), 0);
+    ((Model *)(&model))->setResource((NNSG3dResMdl *)(RoomObjRes_GetModel(&res)), 0);
     F(u32, 0x2b0) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_lt");
     F(u32, 0x2b4) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_ltdoor");
     F(u32, 0x2b8) = _ZN12G3dResAccess10findMatIdxEi(RoomObjRes_GetModel(&res), (u32)"m_open");
-    _ZN5Model15setInitCallbackEii(&model, (void *)CheckInGate_InitRenderObj, this);
+    ((Model *)(&model))->setInitCallback((s32)((void *)CheckInGate_InitRenderObj), (s32)(this));
     bindTextures();
     setGroundMatFlags();
     initBodyAnim();
@@ -207,7 +195,7 @@ BOOL CheckInGate::onCreate() {
     v = Scene_GetCurrent();
     switch (v) {
     case 0xb:
-        if (_ZN11CommManager12isSlotActiveEi(gCommManager, *(u32 *)((u8 *)gCommManager + 0x64))) {
+        if (((CommManager *)(gCommManager))->isSlotActive(*(u32 *)((u8 *)gCommManager + 0x64))) {
             changeSyncState(2);
         } else {
             changeSyncState(0);
@@ -245,7 +233,7 @@ BOOL CheckInGate::onExecute() {
 
 // @2226128
 BOOL CheckInGate::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv(&model, 0);
+    ((AnimModel *)(&model))->drawAnimated((void *)(0));
     return TRUE;
 }
 
@@ -297,9 +285,9 @@ void CheckInGate::setGroundMatFlags() {
 
 // @2225f88
 BOOL CheckInGate::initBodyAnim() {
-    if (RoomObjRes_GetBca(&res, 0) != 0 && _ZN9AnimModel11allocAnmObjEPv(&model, gBgHeap) != 0) {
-        _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
-        _ZN9AnimModel10attachAnimEv(&model);
+    if (RoomObjRes_GetBca(&res, 0) != 0 && ((AnimModel *)(&model))->allocAnmObj((void *)(gBgHeap)) != 0) {
+        ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
+        ((AnimModel *)(&model))->attachAnim();
         return TRUE;
     }
     return FALSE;
@@ -307,9 +295,9 @@ BOOL CheckInGate::initBodyAnim() {
 
 // @2225f10
 BOOL CheckInGate::initMatAnim() {
-    if (RoomObjRes_GetBma(&res, 0) != 0 && _ZN9ModelAnim11allocMatAnmEjPv(&matAnim, F(u32, 0x148), gBgHeap)) {
-        _ZN9ModelAnim4initEiiit(&matAnim, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(&model));
+    if (RoomObjRes_GetBma(&res, 0) != 0 && ((ModelAnim *)(&matAnim))->allocMatAnm(F(u32, 0x148), (void *)(gBgHeap))) {
+        ((ModelAnim *)(&matAnim))->init(RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
+        ((ModelAnim *)(&matAnim))->addToRenderObj((u32)(((Model *)(&model))->getRenderObj()));
         return TRUE;
     }
     return FALSE;
@@ -504,16 +492,16 @@ void CheckInGate::updateState() {
 // @2225abc
 BOOL CheckInGate::enterState00() {
     s32 r = RoomObjRes_GetBca(&res, 0);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 0, 0x1000, 0, 0);
-    void *o = _ZN5Model12getRenderObjEv(&model);
+    ((BlendAnimModel *)(&model))->initAnim(r, 0, 0x1000, 0, 0);
+    void *o = ((Model *)(&model))->getRenderObj();
     _ZN9ModelAnim7replaceEiiiit(&matAnim, (s32)o, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
     return TRUE;
 }
 
 // @2225a84
 void CheckInGate::updateState00() {
-    _ZN9AnimModel8stepAnimEv(&model);
-    _ZN13AnimFrameCtrl4stepEv(&matAnim);
+    ((AnimModel *)(&model))->stepAnim();
+    ((AnimFrameCtrl *)(&matAnim))->step();
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     setDoorOffset(0);
 }
@@ -521,8 +509,8 @@ void CheckInGate::updateState00() {
 // @2225a14
 BOOL CheckInGate::enterState01() {
     s32 r = RoomObjRes_GetBca(&res, 1);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
-    void *o = _ZN5Model12getRenderObjEv(&model);
+    ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
+    void *o = ((Model *)(&model))->getRenderObj();
     _ZN9ModelAnim7replaceEiiiit(&matAnim, (s32)o, RoomObjRes_GetBma(&res, 1), 1, 0x1000, 0);
     Snd_PlaySe(0x4eb);
     return TRUE;
@@ -531,15 +519,15 @@ BOOL CheckInGate::enterState01() {
 // @2225984
 void CheckInGate::updateState01() {
     s32 v;
-    _ZN9AnimModel8stepAnimEv(&model);
-    _ZN13AnimFrameCtrl4stepEv(&matAnim);
+    ((AnimModel *)(&model))->stepAnim();
+    ((AnimFrameCtrl *)(&matAnim))->step();
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     v = F(s32, 0x494);
     Math_ApproachS32Max(&v, -0x2000, 0x100, 0x1000);
     setDoorOffset(v);
-    if (_ZN13AnimFrameCtrl10isFinishedEv((HOST_AT(this, 0x188, model, 0)))) {
+    if (((AnimFrameCtrl *)((HOST_AT(this, 0x188, model, 0))))->isFinished()) {
         changeSyncState(2);
-    } else if (_ZN13AnimFrameCtrl14hasPassedFrameEi((HOST_AT(this, 0x188, model, 0)), 0x3a)) {
+    } else if (((AnimFrameCtrl *)((HOST_AT(this, 0x188, model, 0))))->hasPassedFrame(0x3a)) {
         Snd_PlaySe(0x4ed);
     }
 }
@@ -547,16 +535,16 @@ void CheckInGate::updateState01() {
 // @2225924
 BOOL CheckInGate::enterState02() {
     s32 r = RoomObjRes_GetBca(&res, 2);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 0, 0x1000, 0, 0);
-    void *o = _ZN5Model12getRenderObjEv(&model);
+    ((BlendAnimModel *)(&model))->initAnim(r, 0, 0x1000, 0, 0);
+    void *o = ((Model *)(&model))->getRenderObj();
     _ZN9ModelAnim7replaceEiiiit(&matAnim, (s32)o, RoomObjRes_GetBma(&res, 2), 0, 0x1000, 0);
     return TRUE;
 }
 
 // @22258e0
 void CheckInGate::updateState02() {
-    _ZN9AnimModel8stepAnimEv(&model);
-    _ZN13AnimFrameCtrl4stepEv(&matAnim);
+    ((AnimModel *)(&model))->stepAnim();
+    ((AnimFrameCtrl *)(&matAnim))->step();
     *F(u32 *, 0x2a8) = F(u32, 0x298);
     if (Scene_GetCurrent() == 0xb) {
         setDoorOffset(-0x2000);
@@ -566,8 +554,8 @@ void CheckInGate::updateState02() {
 // @2225870
 BOOL CheckInGate::enterState03() {
     s32 r = RoomObjRes_GetBca(&res, 3);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, r, 1, 0x1000, 0, 0);
-    void *o = _ZN5Model12getRenderObjEv(&model);
+    ((BlendAnimModel *)(&model))->initAnim(r, 1, 0x1000, 0, 0);
+    void *o = ((Model *)(&model))->getRenderObj();
     _ZN9ModelAnim7replaceEiiiit(&matAnim, (s32)o, RoomObjRes_GetBma(&res, 3), 1, 0x1000, 0);
     Snd_PlaySe(0x4ec);
     return TRUE;
@@ -576,7 +564,7 @@ BOOL CheckInGate::enterState03() {
 // @22257e4
 void CheckInGate::updateState03() {
     model.stepAnim();
-    _ZN13AnimFrameCtrl4stepEv(HOST_AT(this, 0x290, matAnim, 0));
+    ((AnimFrameCtrl *)(HOST_AT(this, 0x290, matAnim, 0)))->step();
     *(u32 *)*(u32 *)(HOST_AT(this, 0x2a8, matAnim.anmObj, 0)) = *(u32 *)(HOST_AT(this, 0x298, matAnim.curFrame, 0));
     u32 t = F(s32, 0x494);
     Math_ApproachS32Max((s32 *)&t, 0, 0x100, 0x1000);

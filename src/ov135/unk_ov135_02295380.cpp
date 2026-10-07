@@ -6,6 +6,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
 
 extern "C" {
 extern const u8 sClockAdjustCursorLeftTable[7];
@@ -45,8 +46,6 @@ BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
 BOOL MenuKeys_HasUp(u32 v);
 void MenuButtons_LoadTextColors(void *self);
-void _ZN12MenuLauncher13onChildClosedEv(void *self);
-void _ZN12MenuLauncher14setNextRequestEii(void *self, s32 a, s32 b);
 
 // ov134 library object (DateTimePicker) plain functions; first argument is the object
 u32 DateTimePicker_HitTestList(void *self, u8 a, u8 b);
@@ -185,7 +184,7 @@ BOOL ClockAdjustMenu::onCreate() {
 }
 
 BOOL ClockAdjustMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -275,7 +274,7 @@ void ClockAdjustMenu::stateOpening() {
 }
 
 void ClockAdjustMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), 0x44, 1);
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->setNextRequest(0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);

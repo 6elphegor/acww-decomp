@@ -3,6 +3,8 @@
 #include "Unk_020d8c7c.h"
 #include "sys/SceneBase.h"
 #include "nitro/io_access.h"
+#include "save/SaveData.h"
+#include "save/SaveRecord4.h"
 
 extern "C" const u8 data_020d0c08;
 
@@ -28,8 +30,6 @@ void VillagerStates_Destroy(void);
 void GuestPlayers_ResetAll(void);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
-void _ZN8SaveData5resetEv(void *p);
-BOOL _ZN11SaveRecord412isStateUnsetEv(void *p);
 void SaveManager_SetSaveCorrupted(u32 x);
 void Save_InvalidateLetterStorage(void);
 u32 Save_SlotStampsMatch(void);
@@ -216,10 +216,10 @@ void BootLogoScene::applyLoadedSave() {
     BgHeap_Create(0x5000, 0);
     if (loadResult == 4 || loadResult == 1) {
         if (loadResult == 4) {
-            if (!_ZN11SaveRecord412isStateUnsetEv(&gSaveFooter)) SaveManager_SetSaveCorrupted(1);
+            if (!((SaveRecord4 *)(&gSaveFooter))->isStateUnset()) SaveManager_SetSaveCorrupted(1);
         }
         if (loadResult == 4) Save_InvalidateLetterStorage();
-        _ZN8SaveData5resetEv(&gSaveData);
+        ((SaveData *)(&gSaveData))->reset();
         GuestPlayers_ResetAll();
         VillagerStates_Init();
         SaveData_Setup(&gSaveData, 3);

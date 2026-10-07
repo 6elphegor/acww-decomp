@@ -8,6 +8,7 @@
 #include "talk/EncodedString.h"
 #include "talk/ConstellationMsgString17.h"
 #include "talk/ConstellationEncodedString16.h"
+#include "player/PlayerId.h"
 extern u16 sConstellationLineCells[0x718];
 extern char *sStarTwinklePalettePaths[5];
 extern char sStarPalPathB4[0x14];
@@ -21,8 +22,6 @@ void _ZN10BgVramTask19requestPaletteRangeEjhjh(void *p, void *q, u32 a, u32 b, u
 void _ZN10BgVramTaskC1Ev(void *p);
 void Mem_Clear(void *p, u32 n);
 u32 _ZN8PlayerId5clearEv(void *p);
-void _ZN8PlayerIdC1Ev(void *p);
-void _ZN8PlayerIdC1EPv(void *p);
 }
 
 
@@ -46,11 +45,11 @@ void *_ZN10BgVramTask6cancelEv(void *p);
 }
 
 ConstellationRecord::ConstellationRecord() {
-    _ZN8PlayerIdC1EPv(this);
+    new (this) PlayerId();
 }
 
 ConstellationRecord::~ConstellationRecord() {
-    _ZN8PlayerIdC1Ev(this);
+    new (this) PlayerId();
 }
 
 extern "C" {

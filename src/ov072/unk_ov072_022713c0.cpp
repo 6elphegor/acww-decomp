@@ -28,6 +28,7 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
+#include "npc/NpcMoveAnimSet.h"
 
 
 class ActorTalkRequest;
@@ -61,10 +62,6 @@ void _ZN13GulliverQuest5startEv(void *self);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *p);
 void EventWeekSlots_MarkPlayer(s32 a);
-void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, u32 a);
-void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 s32 Pocket_FindItem(u16 *p);
 void Pocket_RemoveItem(s32 a);
 void Pocket_AddItem(u16 *p, s32 a);
@@ -79,12 +76,6 @@ u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 BOOL Item_IsMarker(void *p);
 BOOL Item_IsTreeStage0(void *p);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-void _ZN11NpcTalkCtrl11requestTalkEhh(void *self, u32 a, u32 b);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u32 a, u32 b, u32 c, u32 *d, u32 e, u32 f, u32 g);
 void SpNpcGulliver_ScatterShipParts();
 BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g);
 BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, void *g);
@@ -335,9 +326,9 @@ extern "C" s32 SpNpcGulliver_TickTimer(void *self, s32 *p) {
 }
 
 BOOL SpNpcGulliver::setupAct00() {
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, (u32 *)gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(void *)((u32 *)gVec3Zero), 4, data_020c6d1c, 1);
     actionCtrl.requestPlayAnim(1, 0xef, 1, data_020c6cc8, 0);
-    _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xef);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xef);
     return TRUE;
 }
 
@@ -346,8 +337,8 @@ BOOL SpNpcGulliver::mainAct00() {
 }
 
 BOOL SpNpcGulliver::setupAct01() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, (u32 *)gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(void *)((u32 *)gVec3Zero), 4, data_020c6d1c, 1);
     if (repairing != 0) {
         gestureDelay = 0x190;
         gestureDelay += Random_GlobalBelow(0x258);
@@ -362,7 +353,7 @@ BOOL SpNpcGulliver::mainAct01() {
             return TRUE;
         }
         if (gestureTimer == 1) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             return TRUE;
         }
         if (SpNpcGulliver_TickTimer(this, &gestureDelay) == 0) {
@@ -527,14 +518,14 @@ BOOL SpNpcGulliver::setupAct02() {
             void *p = talk.getTalkPlayer();
             s32 x = rotY;
             if (p != NULL) {
-                x = _ZN8NpcActor10getAngleToEPS_(this, p);
+                x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
             }
-            _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+            ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
         } else {
             actionCtrl.requestEmotion(1, 0, data_020c6cc8);
         }
     } else {
-        _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 0, 0);
+        ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(0, 0);
     }
     return TRUE;
 }
@@ -544,12 +535,12 @@ BOOL SpNpcGulliver::mainAct02() {
         void *p = talk.getTalkPlayer();
         s32 x = rotY;
         if (p != NULL) {
-            x = _ZN8NpcActor10getAngleToEPS_(this, p);
+            x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
         }
-        _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+        ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
         gestureTimer = 0;
     }
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(3);
     }
@@ -587,14 +578,14 @@ void SpNpcGulliverTalk::scriptWakeUp() {
     case 0:
         if (window->state == 5) {
             ownerNpc->actionCtrl.requestPlayAnim(2, 0xd5, 1, data_020c6cc8, 0);
-            _ZN14NpcMoveAnimSet12setStandAnimEi(&ownerNpc->moveAnimSet, 0);
+            ((NpcMoveAnimSet *)(&ownerNpc->moveAnimSet))->setStandAnim(0);
             scriptStep = scriptStep + 1;
         }
         break;
     case 1:
-        if (_ZN11NpcAnimCtrl9getAnimIdEj(&ownerNpc->animCtrl, 0) == 0xd5) {
+        if (((NpcAnimCtrl *)(&ownerNpc->animCtrl))->getAnimId(0) == 0xd5) {
             if (ownerNpc->actionCtrl.isActionDone()) {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(&ownerNpc->actionCtrl, 3, 2, 0, 0, 0, ownerNpc->getAngleToPlayer(4), 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(&ownerNpc->actionCtrl))->requestAction(3, 2, 0, 0, 0, ownerNpc->getAngleToPlayer(4), 0, 0, data_020c6cc8, 0);
                 scriptStep = scriptStep + 1;
             }
         }
@@ -706,7 +697,7 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
     case 0x14:
     case 0x15:
         h1 = 0x1568;
-        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h1, 0, 5, 0);
+        ((ActorTalkRequest *)(this))->requestTakeItem(&h1, 0, 5, 0);
         r = 0x16;
         break;
     case 0x16:
@@ -724,7 +715,7 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
         ItemPick_One(&h2, &o, 0, 0, 1, 1, 0);
         h0 = h2;
     }
-        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
+        ((ActorTalkRequest *)(this))->requestGiveItem(&h0, 0, 5, 0);
         Pocket_AddItem(&h0, 0);
         r = 0x19;
         break;
@@ -744,7 +735,7 @@ void SpNpcGulliverTalk::onChoice(u32) {
 
 BOOL SpNpcGulliver::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

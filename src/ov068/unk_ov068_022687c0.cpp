@@ -3,6 +3,11 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "field/Insect.h"
+#include "game/StrBSizeData.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/AnimModel.h"
+#include "gfx/PooledModel.h"
+#include "town/BuildingActor.h"
 
 #pragma opt_loop_invariants off
 
@@ -73,7 +78,6 @@ s32 VEC_Add(void *, void *, void *);
 s32 Insect_ClampStepXZ(void *, void *, s32);
 s32 NNS_G3dMdlGetMdlAlpha(s32, s32);
 s32 PlayerActor_LocalFaint(s32);
-s32 _ZN13AnimFrameCtrl5setupEihit(void *, s32, s32, s32, s32);
 void Insect_PlaySe(void *, s32, s32);
 s32 Insect_FadeOut(Insect *, s32);
 s32 Insect_Despawn(Insect *);
@@ -105,17 +109,11 @@ void Bgm_ReleasePriority(s32);
 void Bgm_Request(s32, s32, s32, s32);
 void PlayerActor_SetSlotFlag(s32, s32);
 void Bgm_RequestSilence(s32, s32, s32);
-void _ZN9AnimModel8setFrameEi(void *, s32);
 s32 Insect_ApproachFlower(Insect *, s16 *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 u16 Item_MakeBuilding(u32);
 void *StrBSize_Get(u16 *);
-u32 _ZN12StrBSizeData17getLightUnitCountEv(void *);
-s32 _ZN12StrBSizeData12getLightUnitEPiS0_j(void *, s32 *, s32 *, u32);
 void *BuildingList_FindByItem(u32);
-s32 _ZN13BuildingActor9callIsLitEv(void *);
-s32 _ZN13BuildingActor8getGridXEv(void *);
-s32 _ZN13BuildingActor8getGridZEv(void *);
 void Vec_Sub(void *, void *, void *);
 void Vec_RotateY(void *, s32);
 void Insect_SetAnimSpeed(void *, s32);
@@ -556,19 +554,19 @@ s32 Moth_FindNearestLight(Insect *o, V3 *out) {
         u16 id = Item_MakeBuilding(i);
         void *obj = StrBSize_Get(&id);
         if (obj != 0) {
-            u32 cnt = _ZN12StrBSizeData17getLightUnitCountEv(obj);
+            u32 cnt = ((StrBSizeData *)(obj))->getLightUnitCount();
             s32 px = zp, pz = zp;
             if (cnt != 0) {
                 void *q = BuildingList_FindByItem(id);
                 if (q != 0) {
                     u32 j;
                     for (j = zj; j < cnt; j++) {
-                        if (_ZN12StrBSizeData12getLightUnitEPiS0_j(obj, &px, &pz, j) != 0 && _ZN13BuildingActor9callIsLitEv(q) == 1) {
+                        if (((StrBSizeData *)(obj))->getLightUnit(&px, &pz, j) != 0 && ((BuildingActor *)(q))->callIsLit() == 1) {
                             V3 t;
                             MothLightStackPad pad;
                             s32 d;
-                            s32 tx = px + _ZN13BuildingActor8getGridXEv(q);
-                            s32 tz = pz + _ZN13BuildingActor8getGridZEv(q);
+                            s32 tx = px + ((BuildingActor *)(q))->getGridX();
+                            s32 tz = pz + ((BuildingActor *)(q))->getGridZ();
                             t.x = tx;
                             t.y = zt;
                             t.z = tz;
@@ -685,12 +683,12 @@ void Insect::dungBeetlePushSnowball() {
         }
         if (Snowball_TrySetPos(a, w) == 0) {
             state = 5;
-            _ZN9AnimModel8setFrameEi(&model, 0);
+            ((AnimModel *)(&model))->setFrame(0);
             auxTimer = Random_GlobalBelow(0x14) + 0x28;
         }
     } else {
         state = 5;
-        _ZN9AnimModel8setFrameEi(&model, 0);
+        ((AnimModel *)(&model))->setFrame(0);
         auxTimer = Random_GlobalBelow(0x14) + 0x28;
     }
 }
@@ -827,7 +825,7 @@ void Insect::beeEnterSwarm() {
     if (tp != 0) {
         rotY = Math_AngleXZ(&position, tp + 0x5c);
     }
-    NNS_G3dMdlSetMdlAlpha(_ZN11PooledModel8getModelEv(&pooledModel), 0, 0x1f);
+    NNS_G3dMdlSetMdlAlpha(((PooledModel *)(&pooledModel))->getModel(), 0, 0x1f);
     state = 2;
     v[0] = 1;
     v[1] = 1;
@@ -956,16 +954,16 @@ void Bee_UpdateSwarmAnim(V3 *a, AnimModel *b, s32 d) {
     if (t > 0x38e) {
         Bee_StretchSwarm((s32 *)a, 0);
         if (d > 0) {
-            _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)*b, 0, 3, 0x4000, (u16)ang);
+            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*b))->setup(0, 3, 0x4000, (u16)ang);
         } else {
-            _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)*b, 0x5a, 1, 0x4000, (u16)ang);
+            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*b))->setup(0x5a, 1, 0x4000, (u16)ang);
         }
     } else {
         Bee_StretchSwarm((s32 *)a, 1);
         if (ang > 0x2d) {
-            _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)*b, 0x2e, 3, 0x4000, (u16)ang);
+            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*b))->setup(0x2e, 3, 0x4000, (u16)ang);
         } else {
-            _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)*b, 0x2e, 1, 0x4000, (u16)ang);
+            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*b))->setup(0x2e, 1, 0x4000, (u16)ang);
         }
     }
 }
@@ -1030,7 +1028,7 @@ void Bee_StingAndLeave(Insect *o) {
             z->z = 0;
             o->behaviorWork = 0;
             Town_ClearBeesReleased();
-            NNS_G3dMdlSetMdlAlpha((void *)_ZN11PooledModel8getModelEv(&o->pooledModel), 0, 0);
+            NNS_G3dMdlSetMdlAlpha((void *)((PooledModel *)(&o->pooledModel))->getModel(), 0, 0);
         }
     }
 }
@@ -1150,9 +1148,9 @@ s32 Stinger_Threaten(Insect *o, u32 mode, u32 q) {
         } else {
             s32 b = (s32)s->curFrame >> 12;
             if ((u16)b < 4 && (u16)a < 0xb) {
-                _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)*s, 0xb, 1, 0x1000, 4);
+                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*s))->setup(0xb, 1, 0x1000, 4);
             } else if ((u16)a == 0xb && (u16)b == 0xa) {
-                _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)*s, 0xe, 0, 0x1000, 10);
+                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*s))->setup(0xe, 0, 0x1000, 10);
             }
         }
     }
@@ -1169,7 +1167,7 @@ s32 Stinger_TryAttack(Insect *o, u32 mode, u32 q, s16 *p) {
                 if (PlayerActor_LocalFaint(o->kind == 0x37 ? 1 : 0)) {
                     o->state = 0x13;
                     o->unk_24c = 1;
-                    _ZN13AnimFrameCtrl5setupEihit(&(AnimFrameCtrl &)o->model, 0, 2, 0x1000, (u32)(o->model.curFrame << 4) >> 16);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(0, 2, 0x1000, (u32)(o->model.curFrame << 4) >> 16);
                 } else {
                     s32 t = *pp;
                     if (t > 0 && o->kind == 0x36) {
@@ -1378,6 +1376,6 @@ void Insect::insectFleeFrom(s32 *p) {
 }
 
 void Insect::antsAppear() {
-    NNS_G3dMdlSetMdlAlpha(_ZN11PooledModel8getModelEv(&pooledModel), 0, 0x1f);
+    NNS_G3dMdlSetMdlAlpha(((PooledModel *)(&pooledModel))->getModel(), 0, 0x1f);
     state = 0x12;
 }

@@ -28,6 +28,10 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "npc/NpcMoveAnimSet.h"
+#include "player/PlayerData.h"
+#include "save/Pattern.h"
+#include "save/PatternOrder.h"
 
 
 class ActorTalkRequest;
@@ -253,11 +257,11 @@ BOOL SpNpcBooker::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
-    NpcActor_setCollisionRadius(this, 0x100);
-    NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xd9);
-    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xd8);
+    ((NpcActor *)(this))->setCollisionRadius(0x100);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0xd9);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xd8);
     if (Scene_GetCurrent() != 0xb) {
         netSyncOff = 1;
     }
@@ -270,8 +274,8 @@ BOOL SpNpcBooker::onCreate() {
     }
     homeAngle = rotY;
     collider.groups |= 2;
-    if (CommManager_isOnline(gCommManager) && Scene_GetCurrent() == 0xb) {
-        if (NpcActor_isNetOwner(this)) {
+    if (((CommManager *)(gCommManager))->isOnline() && Scene_GetCurrent() == 0xb) {
+        if (((NpcActor *)(this))->isNetOwner()) {
             changeAct(0);
         } else {
             changeAct(4);
@@ -287,7 +291,7 @@ BOOL SpNpcBooker::onDelete() {
         return FALSE;
     }
     CommManager *g = gCommManager;
-    if (CommManager_isSlotActive(g, g->myAid) && !CommManager_isOnline(g)) {
+    if (((CommManager *)(g))->isSlotActive(g->myAid) && !((CommManager *)(g))->isOnline()) {
         void *p = gSaveVillagers;
         if (SaveVillagers_GetUnk3830Index(p) != -1) {
             SickVillagerRecord_resetRecord(SaveVillagers_GetUnk3830(p));
@@ -319,7 +323,7 @@ void SpNpcBooker::changeAct(s32 state) {
 }
 
 BOOL SpNpcBooker::setupAct00() {
-    NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
+    ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, data_020c6cc8);
     return TRUE;
 }
 
@@ -328,21 +332,21 @@ BOOL SpNpcBooker::mainAct00() { return TRUE; }
 BOOL SpNpcBooker::setupAct01() {
     ActorTalkRequest *p = &talk;
     p->resetMsg();
-    ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
-    void *q = ActorTalkRequest_getTalkPlayer(&talk);
+    ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
+    void *q = ((ActorTalkRequest *)(&talk))->getTalkPlayer();
     s32 r = 0;
     if (q) {
-        r = NpcActor_getAngleTo(this, q);
+        r = ((NpcActor *)(this))->getAngleTo((NpcActor *)(q));
     }
-    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcBooker::mainAct01() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         return TRUE;
     }
-    if (!NpcTalkCtrl_isBusy(&talkCtrl)) {
+    if (!((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -354,13 +358,13 @@ BOOL SpNpcBooker::setupAct02() { return TRUE; }
 BOOL SpNpcBooker::mainAct02() { return TRUE; }
 
 BOOL SpNpcBooker::setupAct03() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcBooker::mainAct03() {
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(0);
         }
     }
@@ -371,20 +375,20 @@ BOOL SpNpcBooker::setupAct04() { return TRUE; }
 
 BOOL SpNpcBooker::mainAct04() {
     s32 a, b;
-    if (NpcActor_isNetOwner(this)) {
+    if (((NpcActor *)(this))->isNetOwner()) {
         a = 4;
         b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b)) {
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
             s32 av = a;
             s32 g = gCommManager->myAid;
             if (av == g && av == b) {
-                NpcActor_netSetSlotsIfOwner(this, 1, g, g);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
                 changeAct(1);
                 goto end;
             }
         }
         if (NetArea_IsLocalOwner() && b == 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0);
         }
     }
@@ -395,11 +399,11 @@ end:
 BOOL SpNpcBooker::setupAct05() { return TRUE; }
 
 BOOL SpNpcBooker::mainAct05() {
-    if (NpcActor_isNetOwner(this)) {
+    if (((NpcActor *)(this))->isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == 4 && NetArea_IsLocalOwner()) {
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(3);
         }
     }
@@ -431,9 +435,9 @@ void SpNpcBookerTalk::start(TalkStartMsg *arg) {
     void *g = PlayerData_GetCurrent();
     if (Talk_IsInOwnTown() == 0 || GameStart_IsActive() != 0) {
         out->msgIndex = Random_GlobalBelow(3) + 8;
-    } else if (PlayerData_testFlag(g, 0x1b) == 0) {
+    } else if (((PlayerData *)(g))->testFlag(0x1b) == 0) {
         out->msgIndex = 0;
-        PlayerData_setFlag(g, 0x1b);
+        ((PlayerData *)(g))->setFlag(0x1b);
     } else {
         out->msgIndex = Random_GlobalBelow(4) + 4;
     }
@@ -443,13 +447,13 @@ void SpNpcBookerTalk::start(TalkStartMsg *arg) {
 void SpNpcBookerTalk::onMessageEnd(u32) {
     switch (msgIndex) {
     case 0x1a:
-        ActorTalkRequest_setSubSceneKind(this, 0x1f, 0);
-        ActorTalkRequest_openSubScene(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(0x1f, 0);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         setScript(3);
         break;
     case 0x17:
-        ActorTalkRequest_setSubSceneKind(this, 9, 0);
-        ActorTalkRequest_openSubScene(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(9, 0);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         setScript(2);
         break;
     }
@@ -459,15 +463,15 @@ void SpNpcBookerTalk::onChoice(u32) {
     u8 c;
     u16 x;
     void *o = window;
-    s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(o));
+    s32 t = ((ChoiceList *)(((TalkWindowState *)(o))->getChoiceList()))->getResult();
     u32 d = sSpNpcBookerMsgFiles[0];
     u32 r = 0xff;
     switch (msgIndex) {
     case 0xf:
         if (t == 0) {
             CommManager *s = gCommManager;
-            if (CommManager_isSlotActive(s, s->myAid) != 0) {
-                if (CommManager_isOnline(s) != 0) {
+            if (((CommManager *)(s))->isSlotActive(s->myAid) != 0) {
+                if (((CommManager *)(s))->isOnline() != 0) {
                     s32 q = PlayerData_GetBySessionSlot(JoinHistory_GetLatest());
                     if (q != 0) {
                         ActorTalkRequest_setPlayerNameSlot(this, (s32)PlayerData_getPlayerId(q), 1);
@@ -519,7 +523,7 @@ void SpNpcBookerTalk::onChoice(u32) {
             }
         } else if (t == 1) {
             if (LostAndFound_HasAny() != 0) {
-                ActorTalkRequest_setNumberSlot(this, LostAndFound_Count(), 0, 2, 0, 0);
+                ((ActorTalkRequest *)(this))->setNumberSlot(LostAndFound_Count(), 0, 2, 0, 0);
                 r = 0x1a;
             } else {
                 r = 0x1b;
@@ -528,15 +532,15 @@ void SpNpcBookerTalk::onChoice(u32) {
         break;
     case 0x16:
         if (t == 0) {
-            ActorTalkRequest_setSubSceneKind(this, 6, 0);
-            ActorTalkRequest_openSubScene(this, 2);
+            ((ActorTalkRequest *)(this))->setSubSceneKind(6, 0);
+            ((ActorTalkRequest *)(this))->openSubScene(2);
             setScript(1);
         }
         break;
     }
     if (r != 0xff) {
         c = r;
-        TalkWindowState_setNextMessage(o, &c, d);
+        ((TalkWindowState *)(o))->setNextMessage((u8 *)(&c), (void *)(d));
     }
 }
 
@@ -568,14 +572,14 @@ void SpNpcBookerTalk::runScript01() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *g = PlayerData_GetCurrent();
         u32 idx = MenuCtrl_GetIndex();
-        s32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
+        s32 t = ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(g))->getPatterns()))->getPatternOrder()))->getSlot(idx);
         PatternSrc_Copy(9, t, 5, 0, 1);
         Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x50, 0x7f, 0);
         buf[0] = 0x18;
-        TalkWindowState_setNextMessage(window, buf, sSpNpcBookerMsgFiles[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(buf), (void *)(sSpNpcBookerMsgFiles[0]));
     } else {
         buf[1] = 1;
-        TalkWindowState_setNextMessage(window, &buf[1], sSpNpcBookerMsgFiles[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf[1]), (void *)(sSpNpcBookerMsgFiles[0]));
     }
 }
 
@@ -589,7 +593,7 @@ void SpNpcBookerTalk::runScript02() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *g = PlayerData_GetCurrent();
         u32 idx = MenuCtrl_GetIndex();
-        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
+        u32 t = ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(g))->getPatterns()))->getPatternOrder()))->getSlot(idx);
         PatternSrc_Swap(9, t, 5, 0, 1);
         Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x50, 0x7f, 0);
         u32 x;
@@ -604,25 +608,25 @@ void SpNpcBookerTalk::runScript02() {
         } else {
             y = 0x1429;
         }
-        u32 p1 = *PlayerData_getShirt(g);
-        u32 p2 = *PlayerData_getHat(g);
+        u32 p1 = *((PlayerData *)(g))->getShirt();
+        u32 p2 = *((PlayerData *)(g))->getHat();
         if (x == p1) {
-            if (ItemIdRange::Chk(PlayerData_getShirt(g), 0x12a8, 0x12af)) {
+            if (ItemIdRange::Chk(((PlayerData *)(g))->getShirt(), 0x12a8, 0x12af)) {
                 m.a = x;
                 PlayerActor_RequestWearShirtAlt(&m.a);
             }
         }
         if (y == p2) {
-            if (ItemIdRange::Chk(PlayerData_getHat(g), 0x1429, 0x1430)) {
+            if (ItemIdRange::Chk(((PlayerData *)(g))->getHat(), 0x1429, 0x1430)) {
                 m.b = y;
                 PlayerActor_RequestWearHatAlt(&m.b);
             }
         }
         m.c0 = 0x19;
-        TalkWindowState_setNextMessage(window, &m, sSpNpcBookerMsgFiles[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m), (void *)(sSpNpcBookerMsgFiles[0]));
     } else {
         m.c1 = 1;
-        TalkWindowState_setNextMessage(window, &m.c1, sSpNpcBookerMsgFiles[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m.c1), (void *)(sSpNpcBookerMsgFiles[0]));
     }
 }
 
@@ -639,15 +643,15 @@ void SpNpcBookerTalk::runScript03() {
             c = 0x1c;
         } else {
             v = *MenuCtrl_GetChosenItems();
-            ActorTalkRequest_setItemNameSlot(this, &v, 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&v), 0, 7);
             c = 0x1e;
         }
     }
-    TalkWindowState_setNextMessage(o, &c, sSpNpcBookerMsgFiles[0]);
+    ((TalkWindowState *)(o))->setNextMessage((u8 *)(&c), (void *)(sSpNpcBookerMsgFiles[0]));
 }
 
 BOOL SpNpcBooker::acceptsInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || ((NpcActor *)(this))->netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -657,7 +661,7 @@ BOOL SpNpcBooker::acceptsSelfRequestedInteraction(void *p) {
     if (netSyncOff != 0) {
         return TRUE;
     }
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || ((NpcActor *)(this))->netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -670,12 +674,12 @@ void SpNpcBooker::onInteractionEvent(u32 cmd, u8 arg) {
     case 3:
         partnerPlayer = arg;
         if (arg != 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, arg);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, arg);
             changeAct(6);
             break;
         }
-        if (NpcActor_isNetOwner(this) != 0) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, gCommManager->myAid);
+        if (((NpcActor *)(this))->isNetOwner() != 0) {
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             changeAct(6);
         }
         break;
@@ -685,34 +689,34 @@ void SpNpcBooker::onInteractionEvent(u32 cmd, u8 arg) {
     case 0:
         partnerPlayer = arg;
         if (arg != 4 && arg != gCommManager->myAid) {
-            NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, arg, arg);
             changeAct(5);
             break;
         }
-        if (NpcActor_isNetOwner(this) != 0) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, gCommManager->myAid);
+        if (((NpcActor *)(this))->isNetOwner() != 0) {
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             changeAct(1);
         }
         break;
     case 8:
         if (arg == 4) {
             if (NetArea_IsLocalOwner() != 0) {
-                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                 changeAct(3);
             } else {
-                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->myAid);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, 4, gCommManager->myAid);
                 changeAct(4);
             }
         }
         break;
     case 4:
-        if (NpcActor_netIsTalkLocked(this) != 0) {
-            if (NpcActor_isNetOwner(this) != 0) {
+        if (((NpcActor *)(this))->netIsTalkLocked() != 0) {
+            if (((NpcActor *)(this))->isNetOwner() != 0) {
                 a = 4;
                 b = 4;
-                if (NpcActor_netGetSlots(this, &a, &b) != 0) {
+                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
                     if ((arg != 4 && arg == (u32)b) || arg == 4) {
-                        NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                        ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         changeAct(0);
                     }
                 }

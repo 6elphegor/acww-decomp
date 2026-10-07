@@ -11,6 +11,8 @@
 #include "gfx/CachedModel.h"
 #include "sys/ProcBase.h"
 #include "nitro/io_access.h"
+#include "gfx/Model.h"
+#include "net/CommManager.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
@@ -55,7 +57,6 @@ public:
 
 
 extern "C" {
-void _ZN5Model10drawScaledEPi(void *self, void *p);
 void LidSleep_KeepSoundOff();
 s32 Snd_VolumeOff();
 void Gfx2d_SetMainPlanes(u32 v);
@@ -83,8 +84,6 @@ void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void G3i_PerspectiveW_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 s32 func_01ffcb0c(s32 a, s32 b);
-void _ZN11CachedModel7releaseEv(void *p);
-void _ZN11CachedModel10loadCachedEPvS0_(void *p, u32 a, void *b);
 void String_Load2d(void *o, u8 *p, u32 x);
 void Str_SPrintf(void *buf, void *fmt, u32 a);
 void CommCaution_CopyString(void *a, void *b);
@@ -188,15 +187,10 @@ extern "C" {
 s32 Scene_GetCurrent(void);
 void OS_ResetSystem(s32);
 s32 Net_GetMode(void);
-s32 _ZN11CommManager12getErrorModeEv(void *);
 s32 Net_GetError(void);
-u32 _ZN11CommManager13getErrorFlagsEv(void *);
-void _ZN11CommManager13setErrorFlagsEj(void *, s32);
 void CommCaution_SaveErrorCode(void);
 void Backup_CancelAndWait(void);
 void Comm_Shutdown(void);
-s32 _ZN11CommManager20getLatchedErrorFlagsEv(void *);
-void _ZN9MsgString4copyEPS_(void *, void *);
 s32 _s32_div_f(s32, s32);
 }
 extern void *gCommManager;
@@ -223,8 +217,8 @@ static inline BOOL Unk_02038058_IsOne(u8 v) {
 
 extern "C" void Comm_SetShutdownErrorFlag() {
     void *g = gCommManager;
-    u32 v = _ZN11CommManager13getErrorFlagsEv(g) | 0x20;
-    _ZN11CommManager13setErrorFlagsEj(g, v);
+    u32 v = ((CommManager *)(g))->getErrorFlags() | 0x20;
+    ((CommManager *)(g))->setErrorFlags(v);
 }
 
 CautionMsgString256::CautionMsgString256() { clear(); }
@@ -355,7 +349,7 @@ void CommCautionWindow::init() {
     }
     clearPlaneState();
     if (a || b) {
-        _ZN11CachedModel10loadCachedEPvS0_(&model, 0x43617557, (void *)"caution/caution_window.nsbmd");
+        ((CachedModel *)(&model))->loadCached((void *)(0x43617557), (void *)"caution/caution_window.nsbmd");
         setupModelMatrix();
         lineIndex = 0;
         modelVisible = 0;
@@ -367,7 +361,7 @@ void CommCautionWindow::init() {
 
 void CommCautionWindow::release() {
     if (state != 0) {
-        _ZN11CachedModel7releaseEv(&model);
+        ((CachedModel *)(&model))->release();
         state = 0;
     }
 }
@@ -404,7 +398,7 @@ void CommCautionWindow::draw() {
         d.x = r;
         d.y = r;
         d.z = 0x1000;
-        _ZN5Model10drawScaledEPi(&model, &d);
+        ((Model *)(&model))->drawScaled((s32 *)(&d));
     }
 }
 
@@ -557,13 +551,13 @@ void CommCautionWindow::muteSound() {
 void CommCautionWindow::checkNetError() {
     s32 s = Net_GetMode();
     if (s != 0 && s != 6) {
-        s32 r4 = _ZN11CommManager12getErrorModeEv(gCommManager);
+        s32 r4 = ((CommManager *)(gCommManager))->getErrorMode();
         s32 v = Net_GetError();
         if ((r4 == 0 && v != 0 && v != 0x800c && v != 0x400b) ||
             (r4 == 1 && v != 0 && v != 0x80ff && v != 0x800c && v != 0x4006 && v != 0x400a && v != 0x400b)) {
             void *o = gCommManager;
-            u32 f = _ZN11CommManager13getErrorFlagsEv(o) | 0x10;
-            _ZN11CommManager13setErrorFlagsEj(o, f);
+            u32 f = ((CommManager *)(o))->getErrorFlags() | 0x10;
+            ((CommManager *)(o))->setErrorFlags(f);
         }
     }
 }
@@ -582,7 +576,7 @@ void CommCautionWindow::enterWatch() {
 
 void CommCautionWindow::execWatch() {
     if (errorPending != 0) {
-        if ((_ZN11CommManager20getLatchedErrorFlagsEv(gCommManager) & 0x7c) != 0) {
+        if ((((CommManager *)(gCommManager))->getLatchedErrorFlags() & 0x7c) != 0) {
             hidePlanes();
             enterShutdown();
         } else {
@@ -616,8 +610,8 @@ void CommCautionWindow::enterPrepare() {
 }
 
 void CommCautionWindow::execPrepare() {
-    _ZN9MsgString4copyEPS_(&message, &sCommCautionLagMsg);
-    _ZN9MsgString4copyEPS_(HOST_AT(this, 0x1fc, secondsText, 0), &sCommCautionSecondsMsg);
+    ((MsgString *)(&message))->copy((MsgString *)(&sCommCautionLagMsg));
+    ((MsgString *)(HOST_AT(this, 0x1fc, secondsText, 0)))->copy((MsgString *)(&sCommCautionSecondsMsg));
     enterCountdown();
 }
 
@@ -670,7 +664,7 @@ void CommCautionWindow::enterShutdown() {
 }
 
 void CommCautionWindow::execShutdown() {
-    _ZN9MsgString4copyEPS_(&message, &sCommCautionEndedMsg);
+    ((MsgString *)(&message))->copy((MsgString *)(&sCommCautionEndedMsg));
     enterEnded();
 }
 

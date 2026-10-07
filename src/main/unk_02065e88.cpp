@@ -31,6 +31,9 @@
 #include "nitro/fs.h"
 #include "net/CommManager.h"
 #include "nitro/io_access.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "snd/BgmVolumeMixer.h"
 
 class MsgRequest;
 class MsgString;
@@ -1180,7 +1183,7 @@ void TalkRenderProcessor::selectByPlayerGender() {
     using namespace n17;
     char *p0, *p1;
     tag.getStrings2(&p0, &p1);
-    if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0) {
+    if (((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender() == 0) {
         if (p0 != 0) pushText((u8 *)p0);
     } else {
         if (p1 != 0) {
@@ -1699,7 +1702,7 @@ void TalkCharStepper::onChar(u32 c) {
         remaining = remaining - 1;
         if (remaining <= 0) stop();
     } else if (mode == 2) {
-        _ZN15TalkWindowState13onCharPrintedEi(window, c);
+        ((TalkWindowState *)(window))->onCharPrinted(c);
     }
 }
 void TalkCharStepper::onTag(u8 *) {
@@ -1767,7 +1770,7 @@ void TalkParser::onBegin() {
     printVars.waitTimer = 0;
     textBox->clear();
     textBox->beginLine((u32)cursor);
-    _ZN15TalkWindowState10resetVoiceEv(window);
+    ((TalkWindowState *)(window))->resetVoice();
     capitalizeNext = 0;
     selectEnd = 0;
     articleMode = 0;
@@ -1793,7 +1796,7 @@ void TalkParser::onChar(u32 c) {
         lineCount++;
         if (lineCount >= 3) printStatus = 2;
     }
-    _ZN15TalkWindowState13onCharPrintedEi(window, c);
+    ((TalkWindowState *)(window))->onCharPrinted(c);
     window->unk_16fa = 0;
     if (!sp && !nl) printVars.charCount++;
     if (cursor == selectEnd) {
@@ -1960,8 +1963,8 @@ void TalkParser::selectBySlotForm(u8 *p) {
 }
 void TalkParser::jumpToMessage(u8 *p) {
     using namespace n15;
-    _ZN15TalkWindowState14setNextMessageEPhPv(window, p, 0);
-    _ZN15TalkWindowState17setAdvancePendingEv(window);
+    ((TalkWindowState *)(window))->setNextMessage(p, (void *)(0));
+    ((TalkWindowState *)(window))->setAdvancePending();
 }
 // ---------------------------------------------------------------------------
 void TalkParser::dispatchTag() {
@@ -2303,7 +2306,7 @@ void TalkParserVarTags::tagGreeting() {
     u8 *base = cursor;
     u8 *p = Msg_FindTag(base, 1, 7);
     if (p != 0) {
-        if (_ZN13TalkWindowMsg13buildGreetingEv(window) != 0) {
+        if (((TalkWindowMsg *)(window))->buildGreeting() != 0) {
             skip(p - base);
             pushText(window->greeting.data());
         }
@@ -2314,17 +2317,17 @@ void TalkParserVarTags::tagGreetingEnd() {
 void TalkParserVarTags::tagShakeSmall() {
     using namespace n13;
     Snd_PlaySe(6);
-    _ZN15TalkWindowState10startShakeEiiii(window, 0x6000, 0x666, 0x4cc, 0x1199);
+    ((TalkWindowState *)(window))->startShake(0x6000, 0x666, 0x4cc, 0x1199);
 }
 void TalkParserVarTags::tagShakeMedium() {
     using namespace n13;
     Snd_PlaySe(7);
-    _ZN15TalkWindowState10startShakeEiiii(window, 0xa000, 0x800, 0x800, 0x1333);
+    ((TalkWindowState *)(window))->startShake(0xa000, 0x800, 0x800, 0x1333);
 }
 void TalkParserVarTags::tagShakeLarge() {
     using namespace n13;
     Snd_PlaySe(8);
-    _ZN15TalkWindowState10startShakeEiiii(window, 0x11000, 0xa66, 0xccc, 0x1000);
+    ((TalkWindowState *)(window))->startShake(0x11000, 0xa66, 0xccc, 0x1000);
 }
 void TalkParserVarTags::tagSignal0() {
     using namespace n13;
@@ -2360,11 +2363,11 @@ void TalkParserVarTags::tagAutoAdvance() {
     using namespace n13;
     u8 v[4];
     tag.getArgs1(v);
-    _ZN15TalkAutoAdvance5startEi(window, v[0]);
+    ((TalkAutoAdvance *)(window))->start(v[0]);
 }
 void TalkParserVarTags::tagChoice2() {
     using namespace n13;
-    ChoiceList *l = _ZN15TalkWindowState13getChoiceListEv(window);
+    ChoiceList *l = ((TalkWindowState *)(window))->getChoiceList();
     ChoiceEntry *a = l->getEntry(0);
     ChoiceEntry *b = l->getEntry(1);
     l->clear();
@@ -2380,7 +2383,7 @@ void TalkParserVarTags::tagChoice2() {
 }
 void TalkParserVarTags::tagChoice3() {
     using namespace n13;
-    ChoiceList *l = _ZN15TalkWindowState13getChoiceListEv(window);
+    ChoiceList *l = ((TalkWindowState *)(window))->getChoiceList();
     ChoiceEntry *a = l->getEntry(0);
     ChoiceEntry *b = l->getEntry(1);
     ChoiceEntry *c = l->getEntry(2);
@@ -2399,7 +2402,7 @@ void TalkParserVarTags::tagChoice3() {
 }
 void TalkParserVarTags::tagChoice4() {
     using namespace n13;
-    ChoiceList *l = _ZN15TalkWindowState13getChoiceListEv(window);
+    ChoiceList *l = ((TalkWindowState *)(window))->getChoiceList();
     ChoiceEntry *a = l->getEntry(0);
     ChoiceEntry *b = l->getEntry(1);
     ChoiceEntry *c = l->getEntry(2);
@@ -2421,7 +2424,7 @@ void TalkParserVarTags::tagChoice4() {
 }
 void TalkParserVarTags::tagChoice5() {
     using namespace n13;
-    ChoiceList *l = _ZN15TalkWindowState13getChoiceListEv(window);
+    ChoiceList *l = ((TalkWindowState *)(window))->getChoiceList();
     ChoiceEntry *a = l->getEntry(0);
     ChoiceEntry *b = l->getEntry(1);
     ChoiceEntry *c = l->getEntry(2);
@@ -2447,22 +2450,22 @@ void TalkParserVarTags::tagChoice5() {
 void TalkParserVarTags::tagChoice2B() {
     using namespace n13;
     tagChoice2();
-    _ZN15TalkWindowState13getChoiceListEv(window)->setCancelToLast();
+    ((TalkWindowState *)(window))->getChoiceList()->setCancelToLast();
 }
 void TalkParserVarTags::tagChoice3B() {
     using namespace n13;
     tagChoice3();
-    _ZN15TalkWindowState13getChoiceListEv(window)->setCancelToLast();
+    ((TalkWindowState *)(window))->getChoiceList()->setCancelToLast();
 }
 void TalkParserVarTags::tagChoice4B() {
     using namespace n13;
     tagChoice4();
-    _ZN15TalkWindowState13getChoiceListEv(window)->setCancelToLast();
+    ((TalkWindowState *)(window))->getChoiceList()->setCancelToLast();
 }
 void TalkParserVarTags::tagChoice5B() {
     using namespace n13;
     tagChoice5();
-    _ZN15TalkWindowState13getChoiceListEv(window)->setCancelToLast();
+    ((TalkWindowState *)(window))->getChoiceList()->setCancelToLast();
 }
 void TalkParserVarTags::tagAction0() {
     using namespace n13;
@@ -2500,7 +2503,7 @@ void TalkParserVarTags::tagAction4() {
 }
 void TalkParserVarTags::tagPlayerName() {
     using namespace n13;
-    _ZN13TalkWindowMsg15buildPlayerNameEv(window);
+    ((TalkWindowMsg *)(window))->buildPlayerName();
     pushText(Msg_GetColorTag(textColor));
     pushText(window->playerName.data());
     pushText(Msg_GetColorTag(5));
@@ -2562,12 +2565,12 @@ static inline MsgString *At(u8 *ctx, u32 off) { return (MsgString *)(ctx + off);
 }
 void TalkParserCondTags::tagCatchphrase() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg16buildCatchphraseEv(window)) debugPrintMissing(0xb58, data_020ddea4);
+    if (!((TalkWindowMsg *)(window))->buildCatchphrase()) debugPrintMissing(0xb58, data_020ddea4);
     pushText(At(window, 0x1860)->data());
 }
 void TalkParserCondTags::tagTownName() {
     using namespace n12;
-    _ZN13TalkWindowMsg13buildTownNameEv(window);
+    ((TalkWindowMsg *)(window))->buildTownName();
     pushText(Msg_GetColorTag(textColor));
     pushText(At(window, 0x1880)->data());
     pushText(Msg_GetColorTag(8));
@@ -2588,28 +2591,28 @@ void TalkParserCondTags::tagNumber1714() {
     using namespace n12; pushText(_ZN15TalkWindowState17getNumber1714TextEv(window)->data()); }
 void TalkParserCondTags::tagFriendName() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg15buildFriendNameEv(window)) debugPrintMissing(0xbbd, data_020dde94);
+    if (!((TalkWindowMsg *)(window))->buildFriendName()) debugPrintMissing(0xbbd, data_020dde94);
     pushText(Msg_GetColorTag(textColor));
     pushText(At(window, 0x18b8)->data());
     pushText(Msg_GetColorTag(6));
 }
 void TalkParserCondTags::tagEnemyName() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg14buildEnemyNameEv(window)) debugPrintMissing(0xbcd, data_020dde84);
+    if (!((TalkWindowMsg *)(window))->buildEnemyName()) debugPrintMissing(0xbcd, data_020dde84);
     pushText(Msg_GetColorTag(textColor));
     pushText(At(window, 0x18d4)->data());
     pushText(Msg_GetColorTag(6));
 }
 void TalkParserCondTags::tagRandomVillagerName() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg23buildRandomVillagerNameEv(window)) debugPrintMissing(0xbdd, data_020dde74);
+    if (!((TalkWindowMsg *)(window))->buildRandomVillagerName()) debugPrintMissing(0xbdd, data_020dde74);
     pushText(Msg_GetColorTag(textColor));
     pushText(At(window, 0x18f0)->data());
     pushText(Msg_GetColorTag(6));
 }
 void TalkParserCondTags::tagOtherResidentName() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg22buildOtherResidentNameEv(window)) debugPrintMissing(0xbee, data_020dde64);
+    if (!((TalkWindowMsg *)(window))->buildOtherResidentName()) debugPrintMissing(0xbee, data_020dde64);
     pushText(Msg_GetColorTag(textColor));
     pushText(At(window, 0x190c)->data());
     s32 k = 5;
@@ -2648,12 +2651,12 @@ void TalkParserCondTags::tagNamedSlot3() {
     using namespace n12; expandNamedSlot(3); }
 void TalkParserCondTags::tagImpression() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg15buildImpressionEv(window)) debugPrintMissing(0xc7d, data_020dde5c);
+    if (!((TalkWindowMsg *)(window))->buildImpression()) debugPrintMissing(0xc7d, data_020dde5c);
     pushText(At(window, 0x195c)->data());
 }
 void TalkParserCondTags::tagNickname() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg13buildNicknameEv(window)) debugPrintMissing(0xc8b, data_020dde4c);
+    if (!((TalkWindowMsg *)(window))->buildNickname()) debugPrintMissing(0xc8b, data_020dde4c);
     pushText(Msg_GetColorTag(textColor));
     pushText(At(window, 0x1990)->data());
     pushText(Msg_GetColorTag(5));
@@ -2662,14 +2665,14 @@ void TalkParserCondTags::tagNop0420() {
     using namespace n12;}
 void TalkParserCondTags::tagCompliment() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg15buildComplimentEv(window)) debugPrintMissing(0xca4, data_020dde40);
+    if (!((TalkWindowMsg *)(window))->buildCompliment()) debugPrintMissing(0xca4, data_020dde40);
     pushText(Msg_GetColorTag(textColor));
     pushText(At(window, 0x19ac)->data());
     pushText(Msg_GetColorTag(2));
 }
 void TalkParserCondTags::tagTrend() {
     using namespace n12;
-    if (!_ZN13TalkWindowMsg10buildTrendEv(window)) debugPrintMissing(0xcb5, data_020dde38);
+    if (!((TalkWindowMsg *)(window))->buildTrend()) debugPrintMissing(0xcb5, data_020dde38);
     pushText(At(window, 0x1928)->data());
 }
 void TalkParserCondTags::tagChoiceSlots() {
@@ -3121,8 +3124,8 @@ void TalkTagScanner::tagNamedSlotForm3() {
 void TalkTagScanner::tagColor() {
     using namespace n10;
     textColor = msgTag.getArgU8();
-    _ZN11TalkTextBox9appendTagEPv(unk_28, &msgTag);
-    _ZN11TalkTextBox22setRemainingLineColorsEj(unk_28, textColor);
+    ((TalkTextBox *)(unk_28))->appendTag(&msgTag);
+    ((TalkTextBox *)(unk_28))->setRemainingLineColors(textColor);
     window->voice.textColor = textColor;
 }
 void TalkTagScanner::tagAltText() {
@@ -3140,7 +3143,7 @@ TalkTagScanner::TalkTagScanner(TalkWindow *owner) {
     using namespace n10;
     window = owner;
     unk_28 = 0;
-    _ZN6MsgTagC1Ev(SUB2C);
+    new (SUB2C) MsgTag();
 }
 TalkTagScanner::~TalkTagScanner() {
     using namespace n10;}
@@ -3165,7 +3168,7 @@ void TalkTagScanner::onTag(u8 *p) {
 void TalkTagScanner::resetScan() {
     using namespace n10;
     unk_28 = 0;
-    _ZN6MsgTagC1Ev(SUB2C);
+    new (SUB2C) MsgTag();
 }
 // ---- TalkTagScanner
 void TalkTagScanner::reportTag() {
@@ -3179,12 +3182,12 @@ TalkFrame *TalkFrame::construct() {
     screenData = NULL;
     paletteData = NULL;
     charData = NULL;
-    _ZN9TalkArrowC1Eh(arrow, 1);
+    new (arrow) TalkArrow(1);
     _ZN12TalkBusyIconC1Ev(busyIcon);
     scrollX = 0;
     scrollY = 0;
     busyIconTimer = 0;
-    _ZN9TalkArrow11setAltStyleEv(arrow);
+    ((TalkArrow *)(arrow))->setAltStyle();
     _ZN12TalkBusyIcon4initEv(busyIcon);
     return this;
 }
@@ -3193,7 +3196,7 @@ TalkFrame *TalkFrame::destruct() {
     _ZN12TalkBusyIcon4exitEv(busyIcon);
     freeBuffers();
     _ZN12TalkBusyIconD1Ev(busyIcon);
-    _ZN9TalkArrowD1Ev(arrow);
+    ((TalkArrow *)(arrow))->TalkArrow::~TalkArrow();
     return this;
 }
 void TalkFrame::update() {
@@ -3417,17 +3420,17 @@ void TalkFrameView::setScroll(s32 a, s32 b)
     Gfx2d_SetMainWin0Rect(lo, 0x3c, hi, 0xc0);
 }
 void TalkFrameView::hideArrow() {
-    using namespace n8; _ZN9TalkArrow8setStateEi(&arrow, 0); }
+    using namespace n8; ((TalkArrow *)(&arrow))->setState(0); }
 void TalkFrameView::showArrowWait() {
-    using namespace n8; _ZN9TalkArrow8setStateEi(&arrow, 1); }
+    using namespace n8; ((TalkArrow *)(&arrow))->setState(1); }
 void TalkFrameView::showArrowNext() {
-    using namespace n8; _ZN9TalkArrow8setStateEi(&arrow, 2); }
+    using namespace n8; ((TalkArrow *)(&arrow))->setState(2); }
 void TalkFrameView::showArrowEnd() {
-    using namespace n8; _ZN9TalkArrow8setStateEi(&arrow, 3); }
+    using namespace n8; ((TalkArrow *)(&arrow))->setState(3); }
 void TalkFrameView::updateArrow()
 {
     using namespace n8;
-    _ZN9TalkArrow9setOffsetEii(&arrow, scrollX + 0x55, scrollY + 0x47);
+    ((TalkArrow *)(&arrow))->setOffset(scrollX + 0x55, scrollY + 0x47);
     arrow.update();
 }
 void TalkFrameView::drawArrow() {
@@ -3435,25 +3438,25 @@ void TalkFrameView::drawArrow() {
 BOOL TalkFrameView::isArrowHidden()
 {
     using namespace n8;
-    if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 0) return TRUE;
+    if (busyIconTimer == 0 && ((TalkArrow *)(&arrow))->getState() == 0) return TRUE;
     return FALSE;
 }
 BOOL TalkFrameView::isArrowWaiting()
 {
     using namespace n8;
-    if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 1) return TRUE;
+    if (busyIconTimer == 0 && ((TalkArrow *)(&arrow))->getState() == 1) return TRUE;
     return FALSE;
 }
 BOOL TalkFrameView::isArrowNextDone()
 {
     using namespace n8;
-    if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 2 && _ZN9TalkArrow10isAnimDoneEv(&arrow)) return TRUE;
+    if (busyIconTimer == 0 && ((TalkArrow *)(&arrow))->getState() == 2 && ((TalkArrow *)(&arrow))->isAnimDone()) return TRUE;
     return FALSE;
 }
 BOOL TalkFrameView::isArrowEndDone()
 {
     using namespace n8;
-    if (busyIconTimer == 0 && _ZN9TalkArrow8getStateEv(&arrow) == 3 && _ZN9TalkArrow10isAnimDoneEv(&arrow)) return TRUE;
+    if (busyIconTimer == 0 && ((TalkArrow *)(&arrow))->getState() == 3 && ((TalkArrow *)(&arrow))->isAnimDone()) return TRUE;
     return FALSE;
 }
 void TalkFrameView::showBusyIcon(u32 se)
@@ -3585,9 +3588,9 @@ void TalkVoice::update()
                     flag = 1;
             }
         }
-        _ZN15TalkWindowState15setVoicePlayingEi(window, flag);
+        ((TalkWindowState *)(window))->setVoicePlaying(flag);
     }
-    if (inWait != 0) _ZN15TalkWindowState10resetVoiceEv(window);
+    if (inWait != 0) ((TalkWindowState *)(window))->resetVoice();
 }
 void TalkVoice::setMsgMode(s32 v) {
     using namespace n8; msgMode = v; }
@@ -3756,38 +3759,38 @@ extern "C" { extern TalkWindowState *gTalkWindows; }
 }
 TalkWindowState::~TalkWindowState() {
     using namespace n7;
-    _ZN13TalkWindowMsg16destroyNameLabelEv(this);
+    ((TalkWindowMsg *)(this))->destroyNameLabel();
     detachRequest();
-    _ZN12MsgString17BD1Ev(greeting);
-    _ZN11MsgString17D1Ev(compliment);
-    _ZN11MsgString9BD1Ev(nickname);
-    _ZN11MsgString33D1Ev(impression);
-    _ZN11MsgString33D1Ev(trend);
-    _ZN11MsgString9BD1Ev(otherResidentName);
-    _ZN11MsgString9BD1Ev(randomVillagerName);
-    _ZN11MsgString9BD1Ev(enemyName);
-    _ZN11MsgString9BD1Ev(friendName);
-    _ZN11MsgString9BD1Ev(playerName);
-    _ZN11MsgString9CD1Ev(townName);
+    ((MsgString17B *)(greeting))->MsgString17B::~MsgString17B();
+    ((MsgString17 *)(compliment))->MsgString17::~MsgString17();
+    ((MsgString9B *)(nickname))->MsgString9B::~MsgString9B();
+    ((MsgString33 *)(impression))->MsgString33::~MsgString33();
+    ((MsgString33 *)(trend))->MsgString33::~MsgString33();
+    ((MsgString9B *)(otherResidentName))->MsgString9B::~MsgString9B();
+    ((MsgString9B *)(randomVillagerName))->MsgString9B::~MsgString9B();
+    ((MsgString9B *)(enemyName))->MsgString9B::~MsgString9B();
+    ((MsgString9B *)(friendName))->MsgString9B::~MsgString9B();
+    ((MsgString9B *)(playerName))->MsgString9B::~MsgString9B();
+    ((MsgString9C *)(townName))->MsgString9C::~MsgString9C();
     _ZN11MsgString11D1Ev(catchphrase);
     _ZN11MsgString25D1Ev(secondText);
     _ZN11MsgString25D1Ev(minuteText);
     _ZN11MsgString25D1Ev(hourText);
-    _ZN11MsgString33D1Ev(weekdayText);
+    ((MsgString33 *)(weekdayText))->MsgString33::~MsgString33();
     _ZN11MsgString25D1Ev(dayText);
-    _ZN11MsgString33D1Ev(monthText);
+    ((MsgString33 *)(monthText))->MsgString33::~MsgString33();
     _ZN11MsgString25D1Ev(yearText);
-    _ZN9TalkVoiceD1Ev(voice);
+    ((TalkVoice *)(voice))->TalkVoice::~TalkVoice();
     __cxa_vec_cleanup(namedSlots, 4, 0x34, (void *)_ZN11MsgString33D1Ev);
     __cxa_vec_cleanup(slots, 0xb, 0x34, (void *)_ZN11MsgString33D1Ev);
     BmgMsgAttr_Fini(msgAttr);
     MsgRunner_DtorStub(runner);
-    _ZN10TalkParserD1Ev(parser);
-    _ZN13TalkBmgReaderD1Ev(msgBuffer);
-    _ZN11TalkTextBoxD1Ev(textBox);
-    _ZN10ChoiceListD1Ev(choiceList);
-    _ZN10ChoiceMenuD1Ev(choiceMenu);
-    _ZN9TalkFrame8destructEv(frame);
+    ((TalkParser *)(parser))->TalkParser::~TalkParser();
+    ((TalkBmgReader *)(msgBuffer))->TalkBmgReader::~TalkBmgReader();
+    ((TalkTextBox *)(textBox))->~TalkTextBox();
+    ((ChoiceList *)(choiceList))->~ChoiceList();
+    ((ChoiceMenu *)(choiceMenu))->~ChoiceMenu();
+    ((TalkFrame *)(frame))->destruct();
 }
 BOOL TalkWindowState::setNextMessageIfUnset(u8 *src, void *s) {
     using namespace n7;
@@ -3817,7 +3820,7 @@ void TalkWindowState::clearAdvancePending() {
     using namespace n7; advancePending = 0; }
 s32 TalkWindowState::setSlot(s32 idx, void *p) {
     using namespace n7;
-    return _ZN9MsgString4copyEPS_(slots + idx * 0x34, p);
+    return ((MsgString *)(slots + idx * 0x34))->copy((MsgString *)(p));
 }
 void TalkWindowState::setSlotFromString(s32 idx, s32 a, s32 b) {
     using namespace n7;
@@ -3825,7 +3828,7 @@ void TalkWindowState::setSlotFromString(s32 idx, s32 a, s32 b) {
 }
 void TalkWindowState::setNamedSlot(s32 idx, void *p, u32 val) {
     using namespace n7;
-    _ZN9MsgString4copyEPS_(namedSlots + idx * 0x34, p);
+    ((MsgString *)(namedSlots + idx * 0x34))->copy((MsgString *)(p));
     namedSlotColors[idx] = val;
 }
 void TalkWindowState::openChoices(s32 v) {
@@ -3833,8 +3836,8 @@ void TalkWindowState::openChoices(s32 v) {
     if (v) {
         choicePending = 1;
     } else {
-        _ZN10ChoiceMenu14setListChoicesEP10ChoiceList(choiceMenu, choiceList);
-        _ZN10ChoiceMenu4openEv(choiceMenu);
+        ((ChoiceMenu *)(choiceMenu))->setListChoices((ChoiceList *)(choiceList));
+        ((ChoiceMenu *)(choiceMenu))->open();
     }
 }
 ChoiceList *TalkWindowState::getChoiceList() {
@@ -3905,14 +3908,14 @@ void TalkWindowState::update() {
     (this->*tbl[state])();
     applyStateChange();
     updateShake();
-    _ZN9TalkFrame6updateEv(frame);
-    _ZN10ChoiceMenu6updateEv(choiceMenu);
+    ((TalkFrame *)(frame))->update();
+    ((ChoiceMenu *)(choiceMenu))->update();
     if (state != 0 && state != 5) storeInputMode();
 }
 void TalkWindowState::draw() {
     using namespace n7;
-    _ZN9TalkFrame4drawEv(frame);
-    _ZN10ChoiceMenu4drawEv(choiceMenu);
+    ((TalkFrame *)(frame))->draw();
+    ((ChoiceMenu *)(choiceMenu))->draw();
 }
 namespace n7 {
 extern "C" BOOL Talk_IsAltTextEnabled() {
@@ -3941,8 +3944,8 @@ void *TalkWindowState::getYearText() {
     using namespace n7;
     MsgString33 t;
     String_FormatNumber(&t, year, 2, 6, 0, 0);
-    _ZN9MsgString3setEPh(yearText, data_020dddb8);
-    _ZN9MsgString12appendStringEPS_(yearText, &t);
+    ((MsgString *)(yearText))->set((u8 *)(data_020dddb8));
+    ((MsgString *)(yearText))->appendString((MsgString *)(&t));
     return yearText;
 }
 void *TalkWindowState::getMonthText() {
@@ -4028,8 +4031,8 @@ void TalkWindowState::refreshNameColor() {
             *p = v;
         x++; } while (x <= 14);
     }
-    _ZN13TalkWindowMsg16destroyNameLabelEv(this);
-    _ZN13TalkWindowMsg15createNameLabelEv(this);
+    ((TalkWindowMsg *)(this))->destroyNameLabel();
+    ((TalkWindowMsg *)(this))->createNameLabel();
 }
 void TalkWindowState::loadInputMode() {
     using namespace n7;
@@ -4098,7 +4101,7 @@ void TalkWindowState::updateShake() {
             s32 ang = shakeAngle;
             a = func_01ffcb0c(data_02135f44[(((u16)(s16)(ang + 0x2000)) >> 4) * 2 + 1], a);
             b = func_01ffcb0c(data_02135f44[(((u16)(s16)(ang * 2 - 0x4000)) >> 4) * 2], b);
-            _ZN13TalkFrameView9setScrollEii(frame, -(a >> 12), scrollY + (b >> 12));
+            ((TalkFrameView *)(frame))->setScroll(-(a >> 12), scrollY + (b >> 12));
         } else {
             s32 zero = 0;
             shakeAngle = zero;
@@ -4106,7 +4109,7 @@ void TalkWindowState::updateShake() {
             shakeDecay = zero;
             shakeScaleX = zero;
             shakeScaleY = zero;
-            _ZN13TalkFrameView9setScrollEii(frame, zero, scrollY);
+            ((TalkFrameView *)(frame))->setScroll(zero, scrollY);
         }
     }
 }
@@ -4121,7 +4124,7 @@ void TalkWindowState::captureClock() {
 }
 void TalkWindowState::resetPrint() {
     using namespace n7;
-    _ZN10TalkParser16clearFastForwardEv(parser);
+    ((TalkParser *)(parser))->clearFastForward();
     stopAutoAdvance();
 }
 void TalkWindowState::finish() {
@@ -4132,8 +4135,8 @@ void TalkWindowState::finish() {
 }
 void TalkWindowState::stopText() {
     using namespace n7;
-    _ZN10TalkParser4stopEv(parser);
-    _ZN11TalkTextBox11clearLabelsEv(textBox);
+    ((TalkParser *)(parser))->stop();
+    ((TalkTextBox *)(textBox))->clearLabels();
     finish();
 }
 #undef data_020dddb8
@@ -4157,18 +4160,18 @@ extern "C" { s32 _ZN13TalkWindowMsg13clearGreetingEv(void *p); }
 void TalkWindowState::resetTextVars() {
     using namespace n6;
     ((TalkParser *)parser)->resetColor();
-    _ZN13TalkWindowMsg23clearRandomVillagerNameEv(this);
-    _ZN13TalkWindowMsg22clearOtherResidentNameEv(this);
-    _ZN13TalkWindowMsg16clearCatchphraseEv(this);
-    _ZN13TalkWindowMsg13clearTownNameEv(this);
-    _ZN13TalkWindowMsg15clearPlayerNameEv(this);
-    _ZN13TalkWindowMsg15clearFriendNameEv(this);
-    _ZN13TalkWindowMsg14clearEnemyNameEv(this);
-    _ZN13TalkWindowMsg10clearTrendEv(this);
-    _ZN13TalkWindowMsg15clearImpressionEv(this);
-    _ZN13TalkWindowMsg13clearNicknameEv(this);
-    _ZN13TalkWindowMsg15clearComplimentEv(this);
-    _ZN13TalkWindowMsg13clearGreetingEv(this);
+    ((TalkWindowMsg *)(this))->clearRandomVillagerName();
+    ((TalkWindowMsg *)(this))->clearOtherResidentName();
+    ((TalkWindowMsg *)(this))->clearCatchphrase();
+    ((TalkWindowMsg *)(this))->clearTownName();
+    ((TalkWindowMsg *)(this))->clearPlayerName();
+    ((TalkWindowMsg *)(this))->clearFriendName();
+    ((TalkWindowMsg *)(this))->clearEnemyName();
+    ((TalkWindowMsg *)(this))->clearTrend();
+    ((TalkWindowMsg *)(this))->clearImpression();
+    ((TalkWindowMsg *)(this))->clearNickname();
+    ((TalkWindowMsg *)(this))->clearCompliment();
+    ((TalkWindowMsg *)(this))->clearGreeting();
     stopText();
 }
 
@@ -4238,7 +4241,7 @@ extern "C" { TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c); }
 }
 void TalkWindowMsg::resetVars() {
     using namespace n5;
-    _ZN15TalkWindowState13resetTextVarsEv(this);
+    ((TalkWindowState *)(this))->resetTextVars();
     noOpenSe = 0;
 }
 void TalkWindowMsg::reset() {
@@ -4246,30 +4249,30 @@ void TalkWindowMsg::reset() {
     resetVars();
     clearSlots();
     clearNamedSlots();
-    _ZN15TalkWindowState13unlockAdvanceEv(this);
+    ((TalkWindowState *)(this))->unlockAdvance();
 }
 void TalkWindowMsg::clearSlots() {
     using namespace n5;
     s32 i;
     for (i = 0; i < 11; i++) {
-        _ZN11MsgString339initEmptyEv(&slots[i]);
+        ((MsgString33 *)(&slots[i]))->initEmpty();
     }
 }
 void TalkWindowMsg::clearNamedSlots() {
     using namespace n5;
     s32 i;
     for (i = 0; i < 4; i++) {
-        _ZN11MsgString339initEmptyEv(&namedSlots[i]);
+        ((MsgString33 *)(&namedSlots[i]))->initEmpty();
         namedSlotColors[i] = 7;
     }
 }
 void TalkWindowMsg::clearCatchphrase() {
-    using namespace n5; _ZN9MsgString5clearEv(catchphrase); }
+    using namespace n5; ((MsgString *)(catchphrase))->clear(); }
 BOOL TalkWindowMsg::buildCatchphrase() {
     using namespace n5;
     void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN9MsgString5clearEv(catchphrase);
+    ((MsgString *)(catchphrase))->clear();
     if (r6 != 0) {
         _ZN23VillagerDataProfileView14getCatchphraseEPvS0_(r6, catchphrase, 1);
         r4 = TRUE;
@@ -4277,29 +4280,29 @@ BOOL TalkWindowMsg::buildCatchphrase() {
     return r4;
 }
 void TalkWindowMsg::clearTownName() {
-    using namespace n5; _ZN9MsgString5clearEv(townName); }
+    using namespace n5; ((MsgString *)(townName))->clear(); }
 BOOL TalkWindowMsg::buildTownName() {
     using namespace n5;
-    _ZN9MsgString5clearEv(townName);
+    ((MsgString *)(townName))->clear();
     TownId_GetNameString((u8 *)((u32)gSaveData + 2), townName);
     return TRUE;
 }
 void TalkWindowMsg::clearPlayerName() {
-    using namespace n5; _ZN9MsgString5clearEv(playerName); }
+    using namespace n5; ((MsgString *)(playerName))->clear(); }
 BOOL TalkWindowMsg::buildPlayerName() {
     using namespace n5;
     void *r4 = PlayerData_GetCurrent();
-    _ZN9MsgString5clearEv(playerName);
+    ((MsgString *)(playerName))->clear();
     _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), playerName);
     return TRUE;
 }
 void TalkWindowMsg::clearFriendName() {
-    using namespace n5; _ZN9MsgString5clearEv(friendName); }
+    using namespace n5; ((MsgString *)(friendName))->clear(); }
 BOOL TalkWindowMsg::buildFriendName() {
     using namespace n5;
     void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN9MsgString5clearEv(friendName);
+    ((MsgString *)(friendName))->clear();
     if (r6 != 0) {
         Villager_GetFriendName(r6, friendName);
         r4 = TRUE;
@@ -4307,12 +4310,12 @@ BOOL TalkWindowMsg::buildFriendName() {
     return r4;
 }
 void TalkWindowMsg::clearEnemyName() {
-    using namespace n5; _ZN9MsgString5clearEv(enemyName); }
+    using namespace n5; ((MsgString *)(enemyName))->clear(); }
 BOOL TalkWindowMsg::buildEnemyName() {
     using namespace n5;
     void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN9MsgString5clearEv(enemyName);
+    ((MsgString *)(enemyName))->clear();
     if (r6 != 0) {
         Villager_GetEnemyName(r6, enemyName);
         r4 = TRUE;
@@ -4322,14 +4325,14 @@ BOOL TalkWindowMsg::buildEnemyName() {
 void TalkWindowMsg::clearRandomVillagerName() {
     using namespace n5;
     randomVillagerNameBuilt = 0;
-    _ZN9MsgString5clearEv(randomVillagerName);
+    ((MsgString *)(randomVillagerName))->clear();
 }
 BOOL TalkWindowMsg::buildRandomVillagerName() {
     using namespace n5;
     BOOL r4 = TRUE;
     if (randomVillagerNameBuilt == 0) {
         void *r6 = (void *)OWNER->getSpeakerData();
-        _ZN9MsgString5clearEv(randomVillagerName);
+        ((MsgString *)(randomVillagerName))->clear();
         if (r6 != 0) {
             Villager_GetRandomOtherName(r6, randomVillagerName);
         } else {
@@ -4343,15 +4346,15 @@ void TalkWindowMsg::clearOtherResidentName() {
     using namespace n5;
     otherResidentNameBuilt = 0;
     otherResidentIsVillager = 0;
-    _ZN9MsgString5clearEv(otherResidentName);
+    ((MsgString *)(otherResidentName))->clear();
 }
 BOOL TalkWindowMsg::buildOtherResidentName() {
     using namespace n5;
     BOOL r4 = TRUE;
     if (otherResidentNameBuilt == 0) {
         void *g = PlayerData_GetCurrent();
-        _ZN9MsgString5clearEv(otherResidentName);
-        if (_ZN10PlayerData20getOtherResidentNameEPv(g, otherResidentName) == 0) {
+        ((MsgString *)(otherResidentName))->clear();
+        if (((PlayerData *)(g))->getOtherResidentName(otherResidentName) == 0) {
             void *r0 = (void *)OWNER->getSpeakerData();
             if (r0 != 0) {
                 Villager_GetRandomOtherName(r0, otherResidentName);
@@ -4365,12 +4368,12 @@ BOOL TalkWindowMsg::buildOtherResidentName() {
     return r4;
 }
 void TalkWindowMsg::clearTrend() {
-    using namespace n5; _ZN9MsgString5clearEv(trend); }
+    using namespace n5; ((MsgString *)(trend))->clear(); }
 BOOL TalkWindowMsg::buildTrend() {
     using namespace n5;
     void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN9MsgString5clearEv(trend);
+    ((MsgString *)(trend))->clear();
     if (r6 != 0) {
         if (Villager_GetTrend(r6, trend) != 0) {
             r4 = TRUE;
@@ -4379,12 +4382,12 @@ BOOL TalkWindowMsg::buildTrend() {
     return r4;
 }
 void TalkWindowMsg::clearImpression() {
-    using namespace n5; _ZN9MsgString5clearEv(impression); }
+    using namespace n5; ((MsgString *)(impression))->clear(); }
 BOOL TalkWindowMsg::buildImpression() {
     using namespace n5;
     void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN9MsgString5clearEv(impression);
+    ((MsgString *)(impression))->clear();
     if (r6 != 0) {
         Villager_GetImpressionText(r6, impression, 0);
         r4 = TRUE;
@@ -4392,12 +4395,12 @@ BOOL TalkWindowMsg::buildImpression() {
     return r4;
 }
 void TalkWindowMsg::clearNickname() {
-    using namespace n5; _ZN9MsgString5clearEv(nickname); }
+    using namespace n5; ((MsgString *)(nickname))->clear(); }
 BOOL TalkWindowMsg::buildNickname() {
     using namespace n5;
     void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN9MsgString5clearEv(nickname);
+    ((MsgString *)(nickname))->clear();
     if (r6 != 0) {
         void *g = PlayerData_GetCurrent();
         Villager_GetNicknameFor(r6, nickname, _ZN10PlayerData11getPlayerIdEv(g));
@@ -4406,12 +4409,12 @@ BOOL TalkWindowMsg::buildNickname() {
     return r4;
 }
 void TalkWindowMsg::clearCompliment() {
-    using namespace n5; _ZN9MsgString5clearEv(compliment); }
+    using namespace n5; ((MsgString *)(compliment))->clear(); }
 BOOL TalkWindowMsg::buildCompliment() {
     using namespace n5;
     void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN9MsgString5clearEv(compliment);
+    ((MsgString *)(compliment))->clear();
     if (r6 != 0) {
         void *g = PlayerData_GetCurrent();
         _ZN20VillagerDataItemView16getComplimentForEPvS0_(r6, compliment, _ZN10PlayerData11getPlayerIdEv(g));
@@ -4420,12 +4423,12 @@ BOOL TalkWindowMsg::buildCompliment() {
     return r4;
 }
 void TalkWindowMsg::clearGreeting() {
-    using namespace n5; _ZN9MsgString5clearEv(greeting); }
+    using namespace n5; ((MsgString *)(greeting))->clear(); }
 BOOL TalkWindowMsg::buildGreeting() {
     using namespace n5;
     void *r6 = (void *)OWNER->getSpeakerData();
     BOOL r4 = FALSE;
-    _ZN9MsgString5clearEv(greeting);
+    ((MsgString *)(greeting))->clear();
     if (r6 != 0) {
         void *g = PlayerData_GetCurrent();
         if (_ZN20VillagerDataItemView14getGreetingForEPvS0_(r6, greeting, _ZN10PlayerData11getPlayerIdEv(g)) != 0) {
@@ -4474,7 +4477,7 @@ void TalkWindowMsg::createNameLabel() {
     if (nameLabel != 0) {
         nameLabel->copyMode = 2;
         nameLabel->bgColor = 0xe;
-        MsgString9 *o = _ZN14TalkMsgRequest14getSpeakerNameEv(request);
+        MsgString9 *o = ((TalkMsgRequest *)(request))->getSpeakerName();
         TextLabel *t = nameLabel;
         t->textStart = (u32)o->data();
         nameLabel->alignCenter();
@@ -4507,7 +4510,7 @@ void TalkWindowMsg::notifyMessageEnd() {
 void TalkWindowMsg::notifyChoice() {
     using namespace n5;
     if (choiceNotifyPending != 0) {
-        OWNER->onChoice(BmgMsgAttr_GetByte07(_ZN10ChoiceList13getResultAttrEv(choiceList)));
+        OWNER->onChoice(BmgMsgAttr_GetByte07(((ChoiceList *)(choiceList))->getResultAttr()));
         choiceNotifyPending = 0;
     }
 }
@@ -4526,20 +4529,20 @@ void TalkWindowMsg::startMessage() {
     endNotifyPending = 1;
     startNotifyPending = 1;
     choiceNotifyPending = 0;
-    _ZN11TalkTextBox11setCenteredEh(textBox, BmgMsgAttr_LookupUnkC(msgAttr) == 1 ? 1 : 0);
+    ((TalkTextBox *)(textBox))->setCentered(BmgMsgAttr_LookupUnkC(msgAttr) == 1 ? 1 : 0);
     s32 r4 = BmgMsgAttr_LookupUnkB(msgAttr);
-    _ZN10TalkParser12setPrintModeEi(parser, r4);
+    ((TalkParser *)(parser))->setPrintMode(r4);
     voiceInstantByMsg = r4 == 1 ? 1 : 0;
     BmgMsgAttr_GetByte08(&loc, msgAttr);
-    _ZN15TalkWindowState14setNextMessageEPhPv(this, &loc, 0);
+    ((TalkWindowState *)(this))->setNextMessage(&loc, (void *)(0));
     notifyMessageStart();
     playMessageSe();
-    _ZN9MsgRunner5resetEv(runner);
-    _ZN9MsgRunner5startEPh(runner, M->getBuffer());
+    ((MsgRunner *)(runner))->reset();
+    ((MsgRunner *)(runner))->start((u8 *)(M->getBuffer()));
 }
 void TalkWindowMsg::scanMessageTags() {
     using namespace n5;
-    ChoiceString *o = _ZN10ChoiceList13getResultTextEv(choiceList);
+    ChoiceString *o = ((ChoiceList *)(choiceList))->getResultText();
     TalkTagScannerView loc(this);
     ((TalkTagScannerView *)&loc)->scan((u32)o->data());
 }
@@ -4591,7 +4594,7 @@ const char *TalkWindowMsg::matchSubdirPrefix(const char *s) {
 }
 void TalkWindowMsg::loadMessageAttr() {
     using namespace n5;
-    _ZN13TalkMsgBuffer5clearEv(msgBuffer);
+    ((TalkMsgBuffer *)(msgBuffer))->clear();
     if (M->open(buildMessagePath(0, 0))) {
         M->loadMessage(&((MsgRequest *)request)->msgIndex);
     }
@@ -4621,10 +4624,10 @@ void TalkWindowState::loadNextMessage() {
     if (nextFileNameByte != 0) {
         request->setFileName((const char *)&nextFileNameByte);
     }
-    _ZN15TalkWindowState14setNextMessageEPhPv(this, &gTalkMsgIndexNone, 0);
-    _ZN13TalkWindowMsg15loadMessageAttrEv(this);
-    _ZN13TalkWindowMsg12startMessageEv(this);
-    _ZN15TalkWindowState12captureClockEv(this);
+    ((TalkWindowState *)(this))->setNextMessage(&gTalkMsgIndexNone, 0);
+    ((TalkWindowMsg *)(this))->loadMessageAttr();
+    ((TalkWindowMsg *)(this))->startMessage();
+    ((TalkWindowState *)(this))->captureClock();
 }
 #undef nextFileNameByte
 
@@ -4697,19 +4700,19 @@ typedef void (TalkWindowState::*Unk_020660f8_Fn)();
 }
 void TalkWindowState::reloadMessage() {
     using namespace n3;
-    _ZN13TalkWindowMsg15loadMessageAttrEv(this);
-    _ZN13TalkWindowMsg12startMessageEv(this);
-    _ZN15TalkWindowState12captureClockEv(this);
+    ((TalkWindowMsg *)(this))->loadMessageAttr();
+    ((TalkWindowMsg *)(this))->startMessage();
+    ((TalkWindowState *)(this))->captureClock();
 }
 void TalkWindowState::onChoiceDone() {
     using namespace n3;
     s32 a = _ZN10ChoiceList14getResultValueEv(choiceList);
     s32 b = _ZN10ChoiceList13getResultNameEv(choiceList);
-    _ZN15TalkWindowState14setNextMessageEPhPv(this, a, b);
-    _ZN15TalkWindowState17setAdvancePendingEv(this);
+    ((TalkWindowState *)(this))->setNextMessage((u8 *)(a), (void *)(b));
+    ((TalkWindowState *)(this))->setAdvancePending();
     choiceNotifyPending = 1;
-    _ZN13TalkWindowMsg15scanMessageTagsEv(this);
-    _ZN13TalkWindowMsg12notifyChoiceEv(this);
+    ((TalkWindowMsg *)(this))->scanMessageTags();
+    ((TalkWindowMsg *)(this))->notifyChoice();
 }
 namespace n0 {
 extern "C" { extern const s8 sTalkFriendshipDeltas[0x21]; const s8 sTalkFriendshipDeltas[0x21] = {0, 40, 35, 30, 25, 20, 15, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -15, -20, -25, -30, -35, -40}; }
@@ -4739,9 +4742,9 @@ void TalkWindowState::execIdle() {
     using namespace n3;}
 void TalkWindowState::enterOpening() {
     using namespace n3;
-    _ZN15TalkWindowState13loadInputModeEv(this);
+    ((TalkWindowState *)(this))->loadInputMode();
     BOOL c = openMode != 4 ? TRUE : FALSE;
-    if (c) _ZN15TalkWindowState15loadNextMessageEv(this);
+    if (c) ((TalkWindowState *)(this))->loadNextMessage();
     else reloadMessage();
     s32 r6 = BmgMsgAttr_LookupUnkA(msgAttr);
     TalkMsgRequest *o = request;
@@ -4750,22 +4753,22 @@ void TalkWindowState::enterOpening() {
     BOOL r7 = request->getSpeakerData() == 0 ? TRUE : FALSE;
     u32 r2 = request->isNoSpeakerName();
     if (r2 == 0 && r6 == 0 && *(s8 *)p == 0) r6 = 5;
-    _ZN9TalkFrame4loadEijih(frame, r6, r2, v8, r7);
-    _ZN9TalkVoice10setMsgModeEi(voice, r6);
+    ((TalkFrame *)(frame))->load(r6, r2, v8, r7);
+    ((TalkVoice *)(voice))->setMsgMode(r6);
     TalkFrame_SetupBgControl(frame);
     TalkFrame_UploadBg(frame);
     TalkFrame_ShowBg(frame);
     TalkFrame_FreeBuffers(frame);
     stateStep = 5;
     scrollY = sTalkWindowOpenOffsets[stateStep];
-    _ZN13TalkFrameView10setScrollYEi(frame, scrollY);
-    _ZN13TalkFrameView9hideArrowEv(frame);
-    _ZN13TalkWindowMsg15createNameLabelEv(this);
-    _ZN11TalkTextBox12createLabelsEv(textBox);
+    ((TalkFrameView *)(frame))->setScrollY(scrollY);
+    ((TalkFrameView *)(frame))->hideArrow();
+    ((TalkWindowMsg *)(this))->createNameLabel();
+    ((TalkTextBox *)(textBox))->createLabels();
     if (gCommManager) ChatBalloon_Dismiss(gCommManager->myAid);
     if (noOpenSe == 0) Snd_PlaySe(9);
     if (inputDisabled == 0) {
-        if (openMode != 1 && openMode != 2 && openMode != 3) _ZN14BgmVolumeMixer13startTalkDuckEv(data_021c1b3c + 0x1c4);
+        if (openMode != 1 && openMode != 2 && openMode != 3) ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->startTalkDuck();
     }
     if (c) openMode = 4;
 }
@@ -4775,59 +4778,59 @@ void TalkWindowState::execOpening() {
     if (stateStep > 0) stateStep = stateStep - 1;
     else done = TRUE;
     scrollY = sTalkWindowOpenOffsets[stateStep];
-    _ZN13TalkFrameView10setScrollYEi(frame, scrollY);
+    ((TalkFrameView *)(frame))->setScrollY(scrollY);
     if (done) {
-        if (inputDisabled == 0) _ZN9TalkVoice5beginEv(voice);
+        if (inputDisabled == 0) ((TalkVoice *)(voice))->begin();
         nextState = 3;
     }
 }
 void TalkWindowState::enterWaitInput() {
-    using namespace n3; _ZN13TalkFrameView9hideArrowEv(frame); }
+    using namespace n3; ((TalkFrameView *)(frame))->hideArrow(); }
 void TalkWindowState::execWaitInput() {
     using namespace n3;
-    _ZN9MsgRunner7advanceEv(runner);
+    ((MsgRunner *)(runner))->advance();
     s32 st = parserPrintStatus;
     BOOL a = st == 2 ? TRUE : FALSE;
     BOOL b = st == 3 ? TRUE : FALSE;
     BOOL c = st == 4 ? TRUE : FALSE;
     BOOL d = st == 5 ? TRUE : FALSE;
-    if (_ZN10ChoiceMenu11justDecidedEv(choiceMenu) != 0) onChoiceDone();
+    if (((ChoiceMenu *)(choiceMenu))->justDecided() != 0) onChoiceDone();
     if (a || b || c) {
-        if (advanceLocked == 0 && _ZN10ChoiceMenu6isIdleEv(choiceMenu) != 0) {
+        if (advanceLocked == 0 && ((ChoiceMenu *)(choiceMenu))->isIdle() != 0) {
             if (advancePending != 0) {
                 advance();
-            } else if (_ZN13TalkFrameView13isArrowHiddenEv(frame) != 0) {
-                _ZN13TalkFrameView13showArrowWaitEv(frame);
-            } else if (_ZN13TalkFrameView14isArrowWaitingEv(frame) != 0) {
-                if (_ZN15TalkWindowState18isAdvanceTriggeredEv(this) != 0 || _ZN15TalkAutoAdvance4tickEv(this) != 0) {
-                    _ZN13TalkFrameView13showArrowNextEv(frame);
+            } else if (((TalkFrameView *)(frame))->isArrowHidden() != 0) {
+                ((TalkFrameView *)(frame))->showArrowWait();
+            } else if (((TalkFrameView *)(frame))->isArrowWaiting() != 0) {
+                if (((TalkWindowState *)(this))->isAdvanceTriggered() != 0 || ((TalkAutoAdvance *)(this))->tick() != 0) {
+                    ((TalkFrameView *)(frame))->showArrowNext();
                     if (silent == 0) Snd_PlaySe(0x10);
                     if (choicePending != 0 || parserChoiceDeferred != 0) Snd_PlaySe(0x13);
                 }
-            } else if (_ZN13TalkFrameView15isArrowNextDoneEv(frame) != 0) {
-                _ZN13TalkFrameView12showArrowEndEv(frame);
-            } else if (_ZN13TalkFrameView14isArrowEndDoneEv(frame) != 0) {
+            } else if (((TalkFrameView *)(frame))->isArrowNextDone() != 0) {
+                ((TalkFrameView *)(frame))->showArrowEnd();
+            } else if (((TalkFrameView *)(frame))->isArrowEndDone() != 0) {
                 advance();
             }
         } else {
-            if (_ZN13TalkFrameView13isArrowHiddenEv(frame) == 0) _ZN13TalkFrameView9hideArrowEv(frame);
+            if (((TalkFrameView *)(frame))->isArrowHidden() == 0) ((TalkFrameView *)(frame))->hideArrow();
         }
     } else if (d) {
-        if (_ZN10ChoiceMenu6isIdleEv(choiceMenu) != 0) advance();
+        if (((ChoiceMenu *)(choiceMenu))->isIdle() != 0) advance();
     }
 }
 void TalkWindowState::enterPrinting() {
     using namespace n3;
-    _ZN13TalkFrameView9hideArrowEv(frame);
+    ((TalkFrameView *)(frame))->hideArrow();
     stateStep = 1;
 }
 void TalkWindowState::execPrinting() {
     using namespace n3;
-    if (_ZN15TalkWindowState10isSkipHeldEv(this) != 0) _ZN10TalkParser14setFastForwardEv(parser);
-    _ZN9TalkVoice5resetEi(voice, 0);
-    _ZN9MsgRunner7advanceEv(runner);
-    _ZN11TalkTextBox11redrawLinesEv(textBox);
-    if (inputDisabled == 0) _ZN9TalkVoice6updateEv(voice);
+    if (((TalkWindowState *)(this))->isSkipHeld() != 0) ((TalkParser *)(parser))->setFastForward();
+    ((TalkVoice *)(voice))->reset(0);
+    ((MsgRunner *)(runner))->advance();
+    ((TalkTextBox *)(textBox))->redrawLines();
+    if (inputDisabled == 0) ((TalkVoice *)(voice))->update();
     s32 st = parserPrintStatus;
     BOOL b3 = st == 3 ? TRUE : FALSE;
     BOOL b2 = st == 2 ? TRUE : FALSE;
@@ -4839,19 +4842,19 @@ void TalkWindowState::execPrinting() {
     if (!z && !b2 && !b4 && !b5 && !b0) go = FALSE;
     if (b3) stateStep = 0;
     if (go) {
-        if (z) _ZN13TalkWindowMsg16notifyMessageEndEv(this);
+        if (z) ((TalkWindowMsg *)(this))->notifyMessageEnd();
         nextState = 2;
-        _ZN15TalkWindowState10resetVoiceEv(this);
+        ((TalkWindowState *)(this))->resetVoice();
     }
 }
 void TalkWindowState::enterClosing() {
     using namespace n3;
-    _ZN13TalkFrameView9hideArrowEv(frame);
+    ((TalkFrameView *)(frame))->hideArrow();
     stateStep = 4;
     scrollY = sTalkWindowCloseOffsets[stateStep];
     if (inputDisabled == 0) {
-        _ZN9TalkVoice3endEv(voice);
-        if (openMode != 1 && openMode != 2 && openMode != 3) _ZN14BgmVolumeMixer11endTalkDuckEv(data_021c1b3c + 0x1c4);
+        ((TalkVoice *)(voice))->end();
+        if (openMode != 1 && openMode != 2 && openMode != 3) ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->endTalkDuck();
     }
     if (silent == 0) Snd_PlaySe(10);
     request->onWindowClose();
@@ -4862,10 +4865,10 @@ void TalkWindowState::execClosing() {
     if (stateStep > 0) stateStep = stateStep - 1;
     else done = TRUE;
     scrollY = sTalkWindowCloseOffsets[stateStep];
-    _ZN13TalkFrameView10setScrollYEi(frame, scrollY);
+    ((TalkFrameView *)(frame))->setScrollY(scrollY);
     if (done) {
-        _ZN13TalkWindowMsg16destroyNameLabelEv(this);
-        _ZN11TalkTextBox13destroyLabelsEv(textBox);
+        ((TalkWindowMsg *)(this))->destroyNameLabel();
+        ((TalkTextBox *)(textBox))->destroyLabels();
         if (openMode != 4) {
             nextState = 5;
         } else {
@@ -4893,7 +4896,7 @@ void TalkWindowState::advance() {
     TalkAdvanceStackPad pad;
     if (choicePending != 0) {
         choicePending = 0;
-        _ZN15TalkWindowState11openChoicesEi(this, 0);
+        ((TalkWindowState *)(this))->openChoices(0);
     } else if (a || b || c) {
         r7 = 1;
         r6 = 3;
@@ -4917,19 +4920,19 @@ void TalkWindowState::advance() {
         }
     }
     if (flag != 0) {
-        _ZN15TalkWindowState15loadNextMessageEv(this);
+        ((TalkWindowState *)(this))->loadNextMessage();
         r7 = 1;
         r6 = 3;
     }
     if (r7 != 6) parserPrintStatus = r7;
     if (r6 != 6) {
         nextState = r6;
-        if (act == 1) _ZN15TalkWindowState10resetPrintEv(this);
-        else if (act == 2) _ZN15TalkWindowState6finishEv(this);
-        else if (act == 3) _ZN15TalkWindowState8stopTextEv(this);
-        else if (act == 4) _ZN15TalkWindowState13resetTextVarsEv(this);
-        else if (act == 5) _ZN13TalkWindowMsg9resetVarsEv(this);
-        else if (act == 6) _ZN13TalkWindowMsg5resetEv(this);
+        if (act == 1) ((TalkWindowState *)(this))->resetPrint();
+        else if (act == 2) ((TalkWindowState *)(this))->finish();
+        else if (act == 3) ((TalkWindowState *)(this))->stopText();
+        else if (act == 4) ((TalkWindowState *)(this))->resetTextVars();
+        else if (act == 5) ((TalkWindowMsg *)(this))->resetVars();
+        else if (act == 6) ((TalkWindowMsg *)(this))->reset();
     }
 }
 MsgString9::MsgString9() {

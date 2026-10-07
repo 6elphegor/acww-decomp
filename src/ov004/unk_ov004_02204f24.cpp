@@ -118,6 +118,13 @@ class TexVramSlot;
 class FtrActor;
 typedef FtrActor Self;
 #include "room/FtrActor.h"
+#include "game/TouchPicker.h"
+#include "gfx/AnimModel.h"
+#include "gfx/Model.h"
+#include "gfx/ModelSlotPool.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "room/FtrActorTable.h"
+#include "save/TownId.h"
 
 
 
@@ -507,44 +514,16 @@ struct Unk_ov004_027e0148 { u8 pad[0x18]; u32 unk_18; };
 extern Unk_ov004_027e0148 data_027e0148;
 extern void *gSceneBlockMap;
 extern Mtx43 data_021f47e0;
-BOOL _ZN8FtrActor9isPreviewEv(void *self);
-BOOL _ZN8FtrActor11findOwnTileEPiS0_ii(void *self, s32 *a, s32 *b, s32 c, s32 d);
-BOOL _ZN8FtrActor11canRotateByEi(void *self, s32 a);
-void _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(void *self, Unk_ov004_02207854_List *l, void *x, s32 y);
-void _ZN11FtrTileListC1Ev(void *self);
-u32 _ZN11FtrTileList8getCountEv(void *self);
-Unk_ov004_02206520_Ent *_ZN11FtrTileList3getEi(void *self, s32 i);
 void _ZN11FtrTileList7releaseEv(void *self);
-BOOL _ZN11FtrTileList3addEjj(void *self, u32 a, u32 b);
-FtrStackedSetView *_ZN13FtrStackedSetC1EP11FtrTileListi(FtrStackedSetView *self, void *l, s32 flag);
-FtrActor *_ZN13FtrStackedSet3getEj(FtrStackedSetView *self, u32 i);
-u32 _ZN13FtrStackedSet8getCountEv(FtrStackedSetView *self);
-void _ZN13FtrStackedSetC1Ev(FtrStackedSetView *self);
-BOOL _ZN8FtrActor8isGyroidEv(FtrActor *p);
-BOOL _ZN8FtrActor11isSeatOrBedEv(FtrActor *p);
 s32 FtrMgr_IsSaleMode();
 FtrActor *FtrActorTable_get(void *a, u32 b);
-void _ZN10FtrGlowMatD1Ev(void *);
-void _ZN13FtrClockHandsD1Ev(void *);
-void _ZN9FtrSwitchD1Ev(void *);
-void _ZN11FtrModelResD1Ev(void *);
 void *_ZN11FtrColliderD1Ev(void *);
-void _ZN11FtrTopItemsD1Ev(void *);
-void _ZN12FtrStackLinkD1Ev(void *);
 void _ZN12FtrModelAnimD1Ev(void *);
 void _ZN12FtrModelAnimC1Ev(void *);
-void _ZN12FtrStackLink5clearEv(void *);
-void _ZN11FtrTopItemsC1Ev(void *);
-void _ZN11FtrColliderC1Ev(void *);
-void _ZN11FtrModelResC1Ev(void *);
-void _ZN9FtrSwitch5clearEv(void *);
-void _ZN13FtrClockHands5clearEv(void *);
-void _ZN10FtrGlowMatC1Ev(void *);
 typedef void (*FtrArrayElemFn)(void *);
 void *__cxa_vec_ctor(void *, s32, s32, FtrArrayElemFn, FtrArrayElemFn);
 void __cxa_vec_cleanup(void *, s32, s32, FtrArrayElemFn);
 BOOL _ZN8FtrActor9isNotIdleEv(void *self);
-void _ZN13FtrStackedSet5clearEv(void *self);
 void _ZN11BoxColliderD1Ev(void *self);
 extern u32 _ZTV11FtrCollider[];
 }
@@ -928,17 +907,17 @@ BOOL FtrActor::initModel() {
 // @022099a0
 FtrActor::FtrActor() {
     ModelSlotHandle_Init(&modelSlot);
-    _ZN12FtrStackLink5clearEv(stackLink);
-    _ZN11FtrTopItemsC1Ev(topItems);
+    ((FtrStackLink *)(stackLink))->clear();
+    new (topItems) FtrTopItems();
     __cxa_vec_ctor(topItemCylinders, 4, 0x20, func_020b6a0c, func_020b69fc);
     FtrMoveFlag_Init(moveFlag);
     func_020b6e10(touchBox);
-    func_02054514(model);
-    _ZN11FtrColliderC1Ev(collider);
-    _ZN11FtrModelResC1Ev(modelRes);
-    _ZN9FtrSwitch5clearEv(switchState);
-    _ZN13FtrClockHands5clearEv(&clockHands);
-    _ZN10FtrGlowMatC1Ev(lampMat);
+    new (model) BlendAnimModel();
+    new (collider) FtrCollider();
+    new (modelRes) FtrModelRes();
+    ((FtrSwitch *)(switchState))->clear();
+    ((FtrClockHands *)(&clockHands))->clear();
+    new (lampMat) FtrGlowMat();
     FtrVisNodes_Construct(visNodes);
     FtrSoundEmitter_resetAttached(soundEmitter);
     __cxa_vec_ctor(anims, 4, 0x20, _ZN12FtrModelAnimC1Ev, _ZN12FtrModelAnimD1Ev);
@@ -949,17 +928,17 @@ FtrActor::~FtrActor() {
     __cxa_vec_cleanup(anims, 4, 0x20, _ZN12FtrModelAnimD1Ev);
     FtrSoundEmitter_Destroy(soundEmitter);
     FtrVisNodes_Destruct(visNodes);
-    _ZN10FtrGlowMatD1Ev(lampMat);
-    _ZN13FtrClockHandsD1Ev(&clockHands);
-    _ZN9FtrSwitchD1Ev(switchState);
-    _ZN11FtrModelResD1Ev(modelRes);
+    ((FtrGlowMat *)(lampMat))->~FtrGlowMat();
+    ((FtrClockHands *)(&clockHands))->~FtrClockHands();
+    ((FtrSwitch *)(switchState))->~FtrSwitch();
+    ((FtrModelRes *)(modelRes))->~FtrModelRes();
     _ZN11FtrColliderD1Ev(collider);
-    func_020544d8(model);
+    ((BlendAnimModel *)(model))->BlendAnimModel::~BlendAnimModel();
     func_020b6df4(touchBox);
     FtrMoveFlag_Destroy(moveFlag);
     __cxa_vec_cleanup(topItemCylinders, 4, 0x20, func_020b69fc);
-    _ZN11FtrTopItemsD1Ev(topItems);
-    _ZN12FtrStackLinkD1Ev(stackLink);
+    ((FtrTopItems *)(topItems))->~FtrTopItems();
+    ((FtrStackLink *)(stackLink))->~FtrStackLink();
     ModelSlotHandle_Destroy(&modelSlot);
 }
 
@@ -969,16 +948,16 @@ BOOL FtrActor::onCreate() {
     *(u32 *)&l = param;  // (ProcBase::param: the spawn parameter)
     u32 t = l.mode;
     spawnMode = t;
-    FtrActorTable_add(FtrActorTable_GetInstance(), this);
-    void *r = ModelSlotPool_acquire(sFtrMgrPool, &modelSlot);
+    ((FtrActorTable *)(FtrActorTable_GetInstance()))->add(this);
+    void *r = ((ModelSlotPool *)(sFtrMgrPool))->acquire((u16 *)(&modelSlot));
     setupFromSpawnArg();
-    if (Character_getCharId(this) == 0) {
-        Character_setCharId(this, makeCharId(0, 0));
+    if (((Character *)(this))->getCharId() == 0) {
+        ((Character *)(this))->setCharId(makeCharId(0, 0));
     }
     if (spawnMode == 0) {
         ((FtrModelRes *)(modelRes))->loadSync(r, ftrIndex, needsTexCopy());
         void *p = ((FtrModelRes *)(modelRes))->getModel();
-        Model_setResource(model, p, ((FtrModelRes *)(modelRes))->getTexture());
+        ((Model *)(model))->setResource((NNSG3dResMdl *)(p), (u32)(((FtrModelRes *)(modelRes))->getTexture()));
         isInitializing = 1;
         setupModel();
         if (initModel()) {
@@ -989,7 +968,7 @@ BOOL FtrActor::onCreate() {
     } else {
         if (((FtrModelRes *)(modelRes))->loadAsync(r, ftrIndex, needsTexCopy()) != 0) {
             void *p = ((FtrModelRes *)(modelRes))->getModel();
-            Model_setResource(model, p, ((FtrModelRes *)(modelRes))->getTexture());
+            ((Model *)(model))->setResource((NNSG3dResMdl *)(p), (u32)(((FtrModelRes *)(modelRes))->getTexture()));
             isInitializing = 1;
             setupModel();
             if (initModel()) {
@@ -1007,7 +986,7 @@ void FtrActor::postCreate(s32 a) {
     if (a == 2) {
         initLamp();
     }
-    Character_postCreate(this, a);
+    ((Character *)(this))->Character::postCreate(a);
 }
 
 // @02209480
@@ -1067,7 +1046,7 @@ BOOL FtrActor::preDraw() {
                 *(u32 *)(q + 0xa8) = (i << 30) | 0x7fff;
             }
         }
-        AnimModel_drawAnimated(model, &drawScale);
+        ((AnimModel *)(model))->drawAnimated(&drawScale);
         if (isPreview()) {
             for (i = 0; i < 4; i++) {
                 u32 o = i << 2;
@@ -1102,7 +1081,7 @@ BOOL FtrActor::postDelete(s32 a) {
             }
         }
         ((FtrModelRes *)(modelRes))->release();
-        ModelSlotPool_release(sFtrMgrPool, HOST_AT(this, 0x12e, modelSlot, 0));
+        ((ModelSlotPool *)(sFtrMgrPool))->release((u16 *)(HOST_AT(this, 0x12e, modelSlot, 0)));
         if (isRemoving()) {
             s32 x, y;
             findOwnTile(&x, &y, 0, 0);
@@ -1119,7 +1098,7 @@ BOOL FtrActor::postDelete(s32 a) {
             }
             spawnActorC0AtCenter();
         }
-        FtrActorTable_remove(FtrActorTable_GetInstance(), this);
+        ((FtrActorTable *)(FtrActorTable_GetInstance()))->remove(this);
     }
     return func_02002ec0(this, a);
 }
@@ -1274,37 +1253,37 @@ void FtrActor::initAnims(s32 a, s32 b, s32 c, s32 d) {
     u32 i = a & 1;
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(i)) {
         u32 t = modelResMdl;
-        if (ModelAnim_allocJointAnm(&anims[3], t, ModelSlot_getHeap((void *)m))) {
-            ModelAnim_init(&anims[3], ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(i), b, c, d);
+        if (((ModelAnim *)(&anims[3]))->allocJointAnm(t, (void *)(ModelSlot_getHeap((void *)m)))) {
+            ((ModelAnim *)(&anims[3]))->init((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(i)), b, c, d);
             ModelAnim_addToRenderObj(&anims[3], Model_getRenderObj(model));
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i)) {
         u32 t = modelResMdl;
-        if (ModelAnim_allocMatAnm(anims, t, ModelSlot_getHeap((void *)m))) {
-            ModelAnim_init(anims, ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i), b, c, d);
+        if (((ModelAnim *)(anims))->allocMatAnm(t, (void *)(ModelSlot_getHeap((void *)m)))) {
+            ((ModelAnim *)(anims))->init((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBma(i)), b, c, d);
             ModelAnim_addToRenderObj(anims, Model_getRenderObj(model));
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i)) {
         u32 t = modelResMdl;
-        if (ModelAnim_allocMatAnm(&anims[1], t, ModelSlot_getHeap((void *)m))) {
-            ModelAnim_init(&anims[1], ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i), b, c, d);
+        if (((ModelAnim *)(&anims[1]))->allocMatAnm(t, (void *)(ModelSlot_getHeap((void *)m)))) {
+            ((ModelAnim *)(&anims[1]))->init((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBta(i)), b, c, d);
             ModelAnim_addToRenderObj(&anims[1], Model_getRenderObj(model));
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i)) {
         u32 t = modelResMdl;
-        if (ModelAnim_allocMatAnm(&anims[2], t, ModelSlot_getHeap((void *)m))) {
+        if (((ModelAnim *)(&anims[2]))->allocMatAnm(t, (void *)(ModelSlot_getHeap((void *)m)))) {
             NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBtp(i);
-            ModelAnim_initWithTex(&anims[2], rec, ((FtrModelRes *)(modelRes))->getTexture(), b, c, d);
+            ((ModelAnim *)(&anims[2]))->initWithTex((s32)(rec), (s32)(((FtrModelRes *)(modelRes))->getTexture()), b, c, d);
             ModelAnim_addToRenderObj(&anims[2], Model_getRenderObj(model));
         }
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i)) {
-        if (AnimModel_allocAnmObj(model, ModelSlot_getHeap((void *)m))) {
-            BlendAnimModel_initAnim(model, ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i), b, c, d, 0);
-            AnimModel_attachAnim(model);
+        if (((AnimModel *)(model))->allocAnmObj((void *)(ModelSlot_getHeap((void *)m)))) {
+            ((BlendAnimModel *)(model))->initAnim((s32)(((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i)), b, c, d, 0);
+            ((AnimModel *)(model))->attachAnim();
         }
     }
 }
@@ -1355,7 +1334,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
             v = (u16)(d >= n ? n - 1 : d);
         }
         u32 p = Model_getRenderObj(model);
-        ModelAnim_replaceWithTex(&anims[2], p, rec, ((FtrModelRes *)(modelRes))->getTexture(), b, c, v);
+        ((ModelAnim *)(&anims[2]))->replaceWithTex(p, (s32)(rec), (s32)(((FtrModelRes *)(modelRes))->getTexture()), b, c, v);
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i)) {
         NNSG3dResAnmCommon *rec = ((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBca(i);
@@ -1369,7 +1348,7 @@ void FtrActor::playAnim(s32 a, s32 b, s32 c, u32 d) {
             }
             v = (u16)d;
         }
-        BlendAnimModel_initAnim(model, rec, b, c, v, 0);
+        ((BlendAnimModel *)(model))->initAnim((s32)(rec), b, c, v, 0);
     }
 }
 
@@ -1393,11 +1372,11 @@ extern "C" void FtrActor_PlayAnimsFromLastFrame(Self *self, u32 a, s32 b, s32 c)
         u32 obj;
         q = ((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBtp(k);
         obj = Model_getRenderObj(PT(0x534));
-        ModelAnim_replaceWithTex(PT(0x800), obj, q, ((FtrModelRes *)(PT(0x6c8)))->getTexture(), b, c, (u16)(q->numFrame - 1));
+        ((ModelAnim *)(PT(0x800)))->replaceWithTex(obj, (s32)(q), (s32)(((FtrModelRes *)(PT(0x6c8)))->getTexture()), b, c, (u16)(q->numFrame - 1));
     }
     if (((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBca(k)) {
         q = ((FtrAnimSet *)(((FtrModelRes *)(PT(0x6c8)))->getAnimSet()))->getBca(k);
-        BlendAnimModel_initAnim(PT(0x534), q, b, c, (u16)(q->numFrame - 1), 0);
+        ((BlendAnimModel *)(PT(0x534)))->initAnim((s32)(q), b, c, (u16)(q->numFrame - 1), 0);
     }
 }
 
@@ -1408,18 +1387,18 @@ extern "C" BOOL FtrActor_StepAnims(Self *self) {
     BOOL z = FALSE;
     u32 i;
     void *p;
-    if (BlendAnimModel_getAnmObj(PT(0x534))) {
-        BlendAnimModel_stepBlend(PT(0x534));
-        if (!AnimFrameCtrl_isFinished(PT(0x5d0))) {
+    if (((BlendAnimModel *)(PT(0x534)))->getAnmObj()) {
+        ((BlendAnimModel *)(PT(0x534)))->stepBlend();
+        if (!((AnimFrameCtrl *)(PT(0x5d0)))->isFinished()) {
             r4 = FALSE;
         }
     }
     for (i = z; i < 4; i++) {
         if (((FtrModelAnim *)(&self->anims[i]))->getAnmObj()) {
             p = (FtrModelAnimView *)PT(0x7c0) + i;
-            AnimFrameCtrl_step(p);
+            ((AnimFrameCtrl *)(p))->step();
             *self->anims[i].anmObj = self->anims[i].curFrame;
-            if (!AnimFrameCtrl_isFinished(p)) {
+            if (!((AnimFrameCtrl *)(p))->isFinished()) {
                 k = z;
             }
         }
@@ -1472,7 +1451,7 @@ extern "C" BOOL FtrActor_TestPlayerUnk() {
     s32 pd, id;
     if ((pd = PlayerData_GetCurrent()) != 0) {
         if ((id = PlayerData_getPlayerId(pd)) != 0) {
-            if (TownId_getTownRelation(id) == 0) {
+            if (((TownId *)(id))->getTownRelation() == 0) {
                 return TRUE;
             }
             return FALSE;
@@ -1523,7 +1502,7 @@ extern "C" BOOL FtrActor_IsPosClearOfCharacters(Self *self, s32 a, s32 b, s32 c,
 extern "C" Self *FtrActor_GetParent(Self *self) {
     if (((FtrStackLink *)(PT(0x178)))->isAttached()) {
         void *p = FtrActorTable_GetInstance();
-        return FtrActorTable_get(p, ((FtrStackLink *)(PT(0x178)))->getParentIndex());
+        return ((FtrActorTable *)(p))->get(((FtrStackLink *)(PT(0x178)))->getParentIndex());
     }
     return 0;
 }
@@ -1563,7 +1542,7 @@ extern "C" u8 FtrActor_GetLayer(Self *self) {
 extern "C" void FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b) {
     if (((FtrStackLink *)(PT(0x178)))->isAttached()) {
         void *p = FtrActorTable_GetInstance();
-        Self *q = FtrActorTable_get(p, ((FtrStackLink *)(PT(0x178)))->getParentIndex());
+        Self *q = ((FtrActorTable *)(p))->get(((FtrStackLink *)(PT(0x178)))->getParentIndex());
         s32 r4, r6;
         if (a != 0 || b != 0) {
             FtrActor_CalcWorldMtx(q, a, b);
@@ -1661,10 +1640,10 @@ extern "C" void FtrActor_InitCollider(Self *self) {
             void *r4;
             ((FtrCollider *)(PT(0x628)))->setOwner(self);
             r4 = FtrActorTable_GetInstance();
-            FtrActorTable_get(r4, ((FtrStackLink *)(PT(0x178)))->getParentIndex());
+            ((FtrActorTable *)(r4))->get(((FtrStackLink *)(PT(0x178)))->getParentIndex());
             BoxCollider_Register(PT(0x628), a.x, a.z, 0x4000, &c, S16(0x8e), b);
         }
-        r6 = (u8)FtrActorTable_indexOf(FtrActorTable_GetInstance(), self);
+        r6 = (u8)((FtrActorTable *)(FtrActorTable_GetInstance()))->indexOf(self);
         a.x = func_01ffcb0c(a.x, 0xc00);
         a.z = func_01ffcb0c(a.z, 0xc00);
         if (Scene_InUnk6To8() != 0) {
@@ -1672,7 +1651,7 @@ extern "C" void FtrActor_InitCollider(Self *self) {
         } else {
             k = 8;
         }
-        TouchPicker_addBox(Scene_GetTouchPicker(), PT(0x288), &c, a.x, a.z, a.y, S16(0x8e), k, r6);
+        ((TouchPicker *)(Scene_GetTouchPicker()))->addBox((TouchPickBox *)(PT(0x288)), (VecFx32 *)(&c), a.x, a.z, a.y, S16(0x8e), k, r6);
     }
 }
 
@@ -1711,16 +1690,16 @@ extern "C" void FtrActor_UpdateBox(Self *self) {
         a.x = func_01ffcb0c(a.x, 0xc00);
         a.z = func_01ffcb0c(a.z, 0xc00);
         if (r4 != 0) {
-            u32 r6 = (u8)FtrActorTable_indexOf(FtrActorTable_GetInstance(), self);
+            u32 r6 = (u8)((FtrActorTable *)(FtrActorTable_GetInstance()))->indexOf(self);
             s32 k;
             if (Scene_InUnk6To8() != 0) {
                 k = 0xf;
             } else {
                 k = 8;
             }
-            TouchPicker_addBox(Scene_GetTouchPicker(), PT(0x288), &c, a.x, a.z, a.y, S16(0x8e), k, r6);
+            ((TouchPicker *)(Scene_GetTouchPicker()))->addBox((TouchPickBox *)(PT(0x288)), (VecFx32 *)(&c), a.x, a.z, a.y, S16(0x8e), k, r6);
         } else {
-            TouchPicker_pushBox(Scene_GetTouchPicker(), PT(0x288));
+            ((TouchPicker *)(Scene_GetTouchPicker()))->pushBox((TouchPickBox *)(PT(0x288)));
         }
     }
 }
@@ -1732,12 +1711,12 @@ extern "C" void FtrActor_UpdateTopItemBoxes(Self *self) {
         VecFx32 v;
         void *grid;
         u32 i;
-        _ZN11FtrTileListC1Ev(&l);
+        new (&l) FtrTileList();
         ((FtrActor *)(self))->getTiles(&l, 0, 0);
         grid = gSceneBlockMap;
-        for (i = 0; i < _ZN11FtrTileList8getCountEv(&l); i++) {
-            s32 x = _ZN11FtrTileList3getEi(&l, i)->x;
-            s32 y = _ZN11FtrTileList3getEi(&l, i)->y;
+        for (i = 0; i < ((FtrTileList *)(&l))->getCount(); i++) {
+            s32 x = ((FtrTileList *)(&l))->get(i)->x;
+            s32 y = ((FtrTileList *)(&l))->get(i)->y;
             s32 hx = x >> 4;
             s32 hy = y >> 4;
             u16 *c = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 1);
@@ -1745,11 +1724,11 @@ extern "C" void FtrActor_UpdateTopItemBoxes(Self *self) {
                 if (Item_IsNormalItem(c)) {
                     FieldPos_FromUnitCenter(&v, x, y);
                     v.y = FtrMgr_GetSurfaceHeight(x, y);
-                    TouchPicker_addCylinder(Scene_GetTouchPicker(), HOST_AT(self, 0x1cc, topItemCylinders[0], 0) + i * 0x20, &v, 0xccd, 0x100, 10, 0xff);
+                    ((TouchPicker *)(Scene_GetTouchPicker()))->addCylinder((TouchPickCylinder *)(HOST_AT(self, 0x1cc, topItemCylinders[0], 0) + i * 0x20), (VecFx32 *)(&v), (VecFx32 *)(0xccd), (VecFx32 *)(0x100), 10, 0xff);
                 }
             }
         }
-        _ZN11FtrTileList7releaseEv(&l);
+        ((FtrTileList *)(&l))->release();
     }
 }
 
@@ -1855,9 +1834,9 @@ void FtrActor::setupModel() {
 
 // @02207e14
 void FtrActor::applyPolygonId() {
-    s32 r = FtrActorTable_indexOf(FtrActorTable_GetInstance(), this);
+    s32 r = ((FtrActorTable *)(FtrActorTable_GetInstance()))->indexOf(this);
     if (r != -1) {
-        Model_setPolygonId(model, sFtrPolygonIds[r]);
+        ((Model *)(model))->setPolygonId(sFtrPolygonIds[r]);
     }
 }
 
@@ -1895,7 +1874,7 @@ void FtrActor::getTiles(Unk_ov004_02207854_List *l, void *x, s32 y) {
             MTX_MultVec43(&s, &data_021f47e0, &d);
         }
         FieldPos_ToUnit(&ox, &oy, &d);
-        _ZN11FtrTileList3addEjj(l, ox, oy);
+        ((FtrTileList *)(l))->add(ox, oy);
         break;
     case 1: {
         if (x != 0 || y != 0) {
@@ -1910,7 +1889,7 @@ void FtrActor::getTiles(Unk_ov004_02207854_List *l, void *x, s32 y) {
             e.z = arr[i].z;
             MTX_MultVec43(&e, &data_021f47e0, &d);
             FieldPos_ToUnit(&ox, &oy, &d);
-            _ZN11FtrTileList3addEjj(l, ox, oy);
+            ((FtrTileList *)(l))->add(ox, oy);
         }
         break;
     }
@@ -1918,10 +1897,10 @@ void FtrActor::getTiles(Unk_ov004_02207854_List *l, void *x, s32 y) {
         d.x = c.x - 0x1000;
         d.z = c.z - 0x1000;
         FieldPos_ToUnit(&ox, &oy, &d);
-        _ZN11FtrTileList3addEjj(l, ox, oy);
-        _ZN11FtrTileList3addEjj(l, ox + 1, oy);
-        _ZN11FtrTileList3addEjj(l, ox, oy + 1);
-        _ZN11FtrTileList3addEjj(l, ox + 1, oy + 1);
+        ((FtrTileList *)(l))->add(ox, oy);
+        ((FtrTileList *)(l))->add(ox + 1, oy);
+        ((FtrTileList *)(l))->add(ox, oy + 1);
+        ((FtrTileList *)(l))->add(ox + 1, oy + 1);
         break;
     }
 }
@@ -1952,7 +1931,7 @@ void FtrActor::clearTiles(s32 a, s32 b) {
         Unk_ov004_02207854_List l;
         void *grid;
         u32 i;
-        _ZN11FtrTileListC1Ev(&l);
+        new (&l) FtrTileList();
         getTiles(&l, 0, 0);
         grid = (void *)gSceneBlockMap;
         {
@@ -1960,9 +1939,9 @@ void FtrActor::clearTiles(s32 a, s32 b) {
             tmp[0] = 0xfff1;
             ((void (*)(u32))FtrMgr_IsSaleMode)(Scene_GetCurrent());
             i = 0;
-            for (; i < _ZN11FtrTileList8getCountEv(&l); i++) {
-                s32 x = _ZN11FtrTileList3getEi(&l, i)->x;
-                s32 y = _ZN11FtrTileList3getEi(&l, i)->y;
+            for (; i < ((FtrTileList *)(&l))->getCount(); i++) {
+                s32 x = ((FtrTileList *)(&l))->get(i)->x;
+                s32 y = ((FtrTileList *)(&l))->get(i)->y;
                 s32 hx = x >> 4;
                 s32 hy = y >> 4;
                 void *p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), mapLayer);
@@ -1979,7 +1958,7 @@ void FtrActor::clearTiles(s32 a, s32 b) {
                 }
             }
         }
-        _ZN11FtrTileList7releaseEv(&l);
+        ((FtrTileList *)(&l))->release();
     }
 }
 
@@ -1991,7 +1970,7 @@ void FtrActor::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
         u32 r7;
         s32 v18;
         u32 i;
-        _ZN11FtrTileListC1Ev(&l);
+        new (&l) FtrTileList();
         getTiles(&l, x, y);
         a = 0xfff1;
         if (mapLayer == 1) {
@@ -2014,26 +1993,26 @@ void FtrActor::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
             r7 = ((u32 (*)(void *))FtrActor_PredIsGyroid)(this);
         }
         v18 = getActAid();
-        for (i = 0; i < _ZN11FtrTileList8getCountEv(&l); i++) {
+        for (i = 0; i < ((FtrTileList *)(&l))->getCount(); i++) {
             if (i == 0) {
                 u32 s = ((FtrSwitch *)(switchState))->isOn();
                 s32 t = Scene_GetCurrent();
-                Unk_ov004_02206520_Ent *p1 = _ZN11FtrTileList3getEi(&l, i);
-                Unk_ov004_02206520_Ent *p2 = _ZN11FtrTileList3getEi(&l, i);
+                Unk_ov004_02206520_Ent *p1 = ((FtrTileList *)(&l))->get(i);
+                Unk_ov004_02206520_Ent *p2 = ((FtrTileList *)(&l))->get(i);
                 FtrSync_PlaceFurniture(t, p1->x, p2->y, mapLayer, s, r7, v18, &a, 1);
             }
             void *o = FtrActorGrid_GetInstance();
-            Unk_ov004_02206520_Ent *p3 = _ZN11FtrTileList3getEi(&l, i);
-            Unk_ov004_02206520_Ent *p4 = _ZN11FtrTileList3getEi(&l, i);
+            Unk_ov004_02206520_Ent *p3 = ((FtrTileList *)(&l))->get(i);
+            Unk_ov004_02206520_Ent *p4 = ((FtrTileList *)(&l))->get(i);
             FtrActorGrid_setCell(o, this, p3->x, p4->y, mapLayer);
         }
         if (flag != 0) {
             u32 r = makeCharId((s32)x, y);
-            if (r != Character_getCharId(this)) {
-                Character_setCharId(this, r);
+            if (r != ((Character *)(this))->getCharId()) {
+                ((Character *)(this))->setCharId(r);
             }
         }
-        _ZN11FtrTileList7releaseEv(&l);
+        ((FtrTileList *)(&l))->release();
     }
 }
 
@@ -2042,19 +2021,19 @@ void FtrActor::moveTiles(void *a, s32 b) {
     Unk_ov004_02207854_List l;
     FtrStackedSetView set;
     u32 i;
-    _ZN11FtrTileListC1Ev(&l);
+    new (&l) FtrTileList();
     getTiles(&l, 0, 0);
-    _ZN13FtrStackedSetC1EP11FtrTileListi(&set, &l, mapLayer);
+    new (&set) FtrStackedSet((FtrTileList *)(&l), mapLayer);
     clearTiles(1, 1);
     writeTiles(1, a, b, 1);
-    for (i = 0; i < _ZN13FtrStackedSet8getCountEv(&set); i++) {
-        FtrActor *o = _ZN13FtrStackedSet3getEj(&set, i);
+    for (i = 0; i < ((FtrStackedSet *)(void *)(&set))->getCount(); i++) {
+        FtrActor *o = ((FtrStackedSet *)(void *)(&set))->get(i);
         if (o != 0) {
             o->writeTiles(1, a, b, 1);
         }
     }
-    _ZN13FtrStackedSetC1Ev(&set);
-    _ZN11FtrTileList7releaseEv(&l);
+    new (&set) FtrStackedSet();
+    ((FtrTileList *)(&l))->release();
 }
 
 // @0220784c
@@ -2144,24 +2123,24 @@ extern "C" s32 FtrActor_GetDragSe(void) {
 // @022075b0
 BOOL FtrActor::hasItemOnTop() {
     Unk_ov004_02207854_List c;
-    _ZN11FtrTileListC1Ev(&c);
+    new (&c) FtrTileList();
     ((FtrActor *)(this))->getTiles(&c, 0, 0);
     void *grid = gSceneBlockMap;
     if (mapLayer == 0 && hasTopSurface == 1) {
         u32 i;
-        for (i = 0; i < _ZN11FtrTileList8getCountEv(&c); i++) {
-            s32 y = _ZN11FtrTileList3getEi(&c, i)->y;
-            s32 x = _ZN11FtrTileList3getEi(&c, i)->x;
+        for (i = 0; i < ((FtrTileList *)(&c))->getCount(); i++) {
+            s32 y = ((FtrTileList *)(&c))->get(i)->y;
+            s32 x = ((FtrTileList *)(&c))->get(i)->x;
             s32 hx = x >> 4;
             s32 hy = y >> 4;
             u16 *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 1);
             if (cell && *cell != 0xfff1) {
-                _ZN11FtrTileList7releaseEv(&c);
+                ((FtrTileList *)(&c))->release();
                 return TRUE;
             }
         }
     }
-    _ZN11FtrTileList7releaseEv(&c);
+    ((FtrTileList *)(&c))->release();
     return FALSE;
 }
 
@@ -2223,21 +2202,21 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
     FieldPos_ToUnit(&x1, &y1, &v2);
     obj = (FtrActor *)FtrActorGrid_getActor(FtrActorGrid_GetInstance(), x1, y1, 0);
     ((FtrActor *)(this))->clearTiles(0, 0);
-    _ZN11FtrTileListC1Ev(&c1);
+    new (&c1) FtrTileList();
     ((FtrActor *)(this))->getTiles(&c1, (void *)a, b);
-    _ZN11FtrTileListC1Ev(&c2);
+    new (&c2) FtrTileList();
     ((FtrActor *)(this))->getTiles(&c2, (void *)a, b >> 1);
     u32 i;
-    for (i = 0; i < _ZN11FtrTileList8getCountEv(&c1); i++) {
-        x = _ZN11FtrTileList3getEi(&c1, i)->x;
-        y = _ZN11FtrTileList3getEi(&c1, i)->y;
+    for (i = 0; i < ((FtrTileList *)(&c1))->getCount(); i++) {
+        x = ((FtrTileList *)(&c1))->get(i)->x;
+        y = ((FtrTileList *)(&c1))->get(i)->y;
         s32 hx = x >> 4;
         s32 hy = y >> 4;
         cell1 = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (a == 0 && x0 == x && y0 == y) UNK_OV004_022072B4_FAIL()
         if (a == 0) {
-            y2 = _ZN11FtrTileList3getEi(&c2, i)->y;
-            x2 = _ZN11FtrTileList3getEi(&c2, i)->x;
+            y2 = ((FtrTileList *)(&c2))->get(i)->y;
+            x2 = ((FtrTileList *)(&c2))->get(i)->x;
             s32 hx2 = x2 >> 4;
             s32 hy2 = y2 >> 4;
             u16 *cell2 = BlockMap_GetItemPtr(grid, hx2, hy2, x2 - (hx2 << 4), y2 - (hy2 << 4), 0);
@@ -2252,8 +2231,8 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
         }
     }
     ((FtrActor *)(this))->writeTiles(0, 0, 0, 0);
-    _ZN11FtrTileList7releaseEv(&c2);
-    _ZN11FtrTileList7releaseEv(&c1);
+    ((FtrTileList *)(&c2))->release();
+    ((FtrTileList *)(&c1))->release();
     return TRUE;
 }
 
@@ -2263,7 +2242,7 @@ u16 FtrActor::makeCharId(s32 a, s32 b) {
     s32 x;
     s32 y;
     if (Scene_InUnk6To8() != 0 || isPreview()) {
-        (*(u16 *)&p) = ((*(u16 *)&p) & 0xfffffe00) | ((u16)FtrActorTable_indexOf(FtrActorTable_GetInstance(), this) & 0x1ff);
+        (*(u16 *)&p) = ((*(u16 *)&p) & 0xfffffe00) | ((u16)((FtrActorTable *)(FtrActorTable_GetInstance()))->indexOf(this) & 0x1ff);
         (*(u16 *)&p) = ((*(u16 *)&p) & 0xffff01ff) | ((Scene_GetCurrent() & 0x7f) << 9);
         return (*(u16 *)&p);
     } else {
@@ -2281,29 +2260,29 @@ u16 FtrActor::makeCharId(s32 a, s32 b) {
 // @0220711c
 BOOL FtrActor::findOwnTile(s32 *ox, s32 *oy, s32 a, s32 b) {
     Unk_ov004_02207854_List c;
-    _ZN11FtrTileListC1Ev(&c);
+    new (&c) FtrTileList();
     ((FtrActor *)(this))->getTiles(&c, (void *)a, *(s16 *)&b);
     void *grid = gSceneBlockMap;
     u32 i;
-    for (i = 0; i < _ZN11FtrTileList8getCountEv(&c); i++) {
+    for (i = 0; i < ((FtrTileList *)(&c))->getCount(); i++) {
         s32 y, x, hx, hy;
         u8 layer;
         layer = mapLayer;
-        y = _ZN11FtrTileList3getEi(&c, i)->y;
-        x = _ZN11FtrTileList3getEi(&c, i)->x;
+        y = ((FtrTileList *)(&c))->get(i)->y;
+        x = ((FtrTileList *)(&c))->get(i)->x;
         hx = x >> 4;
         hy = y >> 4;
         u16 *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
         if (cell) {
             if (Item_IsFurniture(cell)) {
-                *ox = _ZN11FtrTileList3getEi(&c, i)->x;
-                *oy = _ZN11FtrTileList3getEi(&c, i)->y;
-                _ZN11FtrTileList7releaseEv(&c);
+                *ox = ((FtrTileList *)(&c))->get(i)->x;
+                *oy = ((FtrTileList *)(&c))->get(i)->y;
+                ((FtrTileList *)(&c))->release();
                 return TRUE;
             }
         }
     }
-    _ZN11FtrTileList7releaseEv(&c);
+    ((FtrTileList *)(&c))->release();
     return FALSE;
 }
 
@@ -2323,16 +2302,16 @@ void FtrActor::spawnActorC0AtTile(s32 a) {
         Unk_ov004_02207854_List c;
         VecFx32 v1;
         VecFx32 v2;
-        _ZN11FtrTileListC1Ev(&c);
+        new (&c) FtrTileList();
         ((FtrActor *)(this))->getTiles(&c, 0, 0);
         s32 hi = 0;
         s32 hiIdx = ~hi;
         s32 loIdx = hiIdx;
         s32 lo = data_020c8cbc;
         u32 i;
-        for (i = 0; i < _ZN11FtrTileList8getCountEv(&c); i++) {
-            Unk_ov004_02206520_Ent *e1 = _ZN11FtrTileList3getEi(&c, i);
-            Unk_ov004_02206520_Ent *e2 = _ZN11FtrTileList3getEi(&c, i);
+        for (i = 0; i < ((FtrTileList *)(&c))->getCount(); i++) {
+            Unk_ov004_02206520_Ent *e1 = ((FtrTileList *)(&c))->get(i);
+            Unk_ov004_02206520_Ent *e2 = ((FtrTileList *)(&c))->get(i);
             FieldPos_FromUnitCenter(&v1, e1->x, e2->y);
             s32 d = Vec_DistXZ(cam, &v1);
             if (d > hi) {
@@ -2348,12 +2327,12 @@ void FtrActor::spawnActorC0AtTile(s32 a) {
             hiIdx = loIdx;
         }
         if (hiIdx != -1) {
-            Unk_ov004_02206520_Ent *p = _ZN11FtrTileList3getEi(&c, hiIdx);
-            Unk_ov004_02206520_Ent *q = _ZN11FtrTileList3getEi(&c, hiIdx);
+            Unk_ov004_02206520_Ent *p = ((FtrTileList *)(&c))->get(hiIdx);
+            Unk_ov004_02206520_Ent *q = ((FtrTileList *)(&c))->get(hiIdx);
             FieldPos_FromUnitCenter(&v2, p->x, q->y);
             FtrActor_SpawnActorC0(&v2, (u32)Math_AngleXZ(&v2, cam));
         }
-        _ZN11FtrTileList7releaseEv(&c);
+        ((FtrTileList *)(&c))->release();
     }
 }
 
@@ -2410,12 +2389,12 @@ extern "C" s32 FtrActor_PredIsStereo(FtrActor *p) {
 
 // @02206f74
 extern "C" s32 FtrActor_PredIsSeatOrBed(FtrActor *p) {
-    return _ZN8FtrActor11isSeatOrBedEv(p);
+    return (p)->isSeatOrBed();
 }
 
 // @02206f6c
 extern "C" s32 FtrActor_PredIsGyroid(FtrActor *p) {
-    return _ZN8FtrActor8isGyroidEv(p);
+    return (p)->isGyroid();
 }
 
 // @02206f3c
@@ -2730,7 +2709,7 @@ void FtrCollider::onEdgeContact(CollisionEdge *a, Actor *b, s32 c) {
                                     w2.z = r7;
                                 }
                                 slideOwnerForWideFtr(b);
-                                t18 = (s32)FtrActorTable_indexOf(FtrActorTable_GetInstance(), owner);
+                                t18 = (s32)((FtrActorTable *)(FtrActorTable_GetInstance()))->indexOf(owner);
                                 r5 = (s16)(t20 - ((FtrActor *)owner)->rotY);
                                 if (FtrActor_GetLayer((Self *)owner) == 1) {
                                     void *q;
@@ -2852,13 +2831,13 @@ void FtrStackedSet::collect(FtrTileList *l, s32 flag) {
 
 // @02206494
 FtrStackedSet::FtrStackedSet(FtrTileList *l, s32 flag) {
-    _ZN13FtrStackedSet5clearEv(this);
+    ((FtrStackedSet *)(this))->clear();
     collect(l, flag);
 }
 
 // @02206484
 FtrStackedSet::FtrStackedSet() {
-    _ZN13FtrStackedSet5clearEv(this);
+    ((FtrStackedSet *)(this))->clear();
 }
 
 // @02206480
@@ -3106,7 +3085,7 @@ BOOL FtrTopItems::add(u16 *id, VecFx32 *pos) {
 // @0220607c
 BOOL FtrTopItems::canPickUp(FtrActor *o) {
     FtrTileList list;
-    _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(o, (Unk_ov004_02207854_List *)&list, 0, 0);
+    ((FtrActor *)(o))->getTiles((Unk_ov004_02207854_List *)&list, 0, 0);
     void *grid = gSceneBlockMap;
     u32 i;
     for (i = 0; i < list.getCount(); i++) {
@@ -3131,7 +3110,7 @@ BOOL FtrTopItems::pickUpAll(FtrActor *o) {
     static ItemId dflt(0xfff1);
     BOOL res = TRUE;
     FtrTileList list;
-    _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(o, (Unk_ov004_02207854_List *)&list, 0, 0);
+    ((FtrActor *)(o))->getTiles((Unk_ov004_02207854_List *)&list, 0, 0);
     void *grid = gSceneBlockMap;
     if (canPickUp(o)) {
         clearAll();
@@ -3256,7 +3235,7 @@ BOOL FtrStackLink::attachAt(s32 x, s32 y, s16 z) {
 extern "C" BOOL FtrStack_CalcRelPlacement(s32 *idx, VecFx32 *pos, s16 *ang, s32 x, s32 a, s16 b) {
     void *mgr = FtrActorGrid_GetInstance();
     FtrActor *e = FtrActorGrid_getActor(mgr, x, a, 0);
-    s32 i = FtrActorTable_indexOf(FtrActorTable_GetInstance(), e);
+    s32 i = ((FtrActorTable *)(FtrActorTable_GetInstance()))->indexOf(e);
     if (e != NULL && i != -1) {
         VecFx32 t;
         VecFx32 d;
@@ -3310,14 +3289,14 @@ FtrSwitch::~FtrSwitch() {
 void FtrSwitch::loadFromMap(FtrActor *o) {
     s32 r = 0;
     s32 x, y;
-    if (o->spawnMode == 1 || _ZN8FtrActor9isPreviewEv(o) != 0) {
+    if (o->spawnMode == 1 || ((FtrActor *)(o))->isPreview() != 0) {
         if (o->startsOff == 0) {
             r = 1;
         } else {
             r = 0;
         }
     } else {
-        if (_ZN8FtrActor11findOwnTileEPiS0_ii(o, &x, &y, r, r)) {
+        if (((FtrActor *)(o))->findOwnTile(&x, &y, r, r)) {
             u32 mgr = Scene_GetCurrent();
             r = RoomFtrState_GetSwitch(x, y, o->mapLayer, mgr);
         }
@@ -3327,16 +3306,16 @@ void FtrSwitch::loadFromMap(FtrActor *o) {
 
 // @02205cc4
 void FtrSwitch::commit(FtrActor *o) {
-    if (_ZN8FtrActor9isPreviewEv(o) == 0) {
+    if (((FtrActor *)(o))->isPreview() == 0) {
         cur = next;
     }
 }
 
 // @02205c80
 void FtrSwitch::saveToMap(FtrActor *o) {
-    if (_ZN8FtrActor9isPreviewEv(o) == 0) {
+    if (((FtrActor *)(o))->isPreview() == 0) {
         s32 x, y;
-        if (_ZN8FtrActor11findOwnTileEPiS0_ii(o, &x, &y, 0, 0)) {
+        if (((FtrActor *)(o))->findOwnTile(&x, &y, 0, 0)) {
             RoomFtrState_SetSwitch(x, y, o->mapLayer, next, Scene_GetCurrent());
         }
     }
@@ -3401,8 +3380,8 @@ BOOL FtrGlowMat::setLit(BOOL on, s32 a, s32 b) {
 // @02205b14
 void FtrGlowMat::updateEmission() {
     if (matIdx != -1) {
-        LightLevel_update(this);
-        s32 x = LightLevel_getLevel(this);
+        ((LightLevel *)(this))->update();
+        s32 x = ((LightLevel *)(this))->getLevel();
         if (x) {
             NNSi_G3dModifyMatFlag(resMdl, 1, 0x400);
             s32 col = FtrGlowMat_GetBaseEmission();
@@ -3501,7 +3480,7 @@ u8 FtrVisNodes::isVisible() { return visible; }
 
 // @02205954
 BOOL FtrActor::startRotate(s32 a) {
-    if (_ZN8FtrActor11canRotateByEi(this, a)) {
+    if (((FtrActor *)(this))->canRotateBy(a)) {
         targetAngle = rotY + a;
         setAct(2);
         PlayerActor_PlayLocalSe(0x4c4);

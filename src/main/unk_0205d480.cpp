@@ -4,6 +4,7 @@
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
 #include "gfx/TexVramTask.h"
+#include "sys/Heap.h"
 
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
@@ -94,7 +95,7 @@ extern "C" void PlayerGlassesModelPool_Create(void *parent) {
     PlayerGlassesModelHeap_Create(parent);
     sPlayerGlassesModelPool.allocBuffers();
     if (gPlayerGlassesModelHeap) {
-        Heap_adjust(gPlayerGlassesModelHeap);
+        ((Heap *)(gPlayerGlassesModelHeap))->adjust();
     }
 }
 
@@ -153,7 +154,7 @@ void PlayerGlassesModelPool::freeBuffers(void) {
         buffers[i] = NULL;
     }
     if (gPlayerGlassesModelHeap) {
-        Heap_freeAll(gPlayerGlassesModelHeap);
+        ((Heap *)(gPlayerGlassesModelHeap))->freeAll();
     }
     for (i = 0; i < 4; i++) {
         modelIds[i] = 0x4b;

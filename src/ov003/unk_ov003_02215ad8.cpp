@@ -60,12 +60,8 @@
 extern "C" {
 void Clock_GetDateTime(void *p);
 void Npc_GetName(void *p, void *q);
-void _ZN11MsgString9BC1Ev(void *p);
-void _ZN11MsgString9BD1Ev(void *p);
 void *KatrinaTent_Create();
 }
-#define func_02094030 _ZN11MsgString9BC1Ev
-#define func_02094018 _ZN11MsgString9BD1Ev
 
 
 
@@ -120,10 +116,10 @@ void KatrinaTent::setupTalkMsg() {
     }
     u32 buf[7];
     u16 v[2];
-    func_02094030(buf);
+    new (buf) MsgString9B();
     v[1] = 0xd00a;
     Npc_GetName(buf, &v[1]);
     setSpeakerName(((MsgString9B *)buf)->data(), 1);
-    func_02094018(buf);
+    ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
 }
 

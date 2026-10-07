@@ -4,6 +4,8 @@
 #include "types.h"
 #include "item/Letter.h"
 #include "save/SaveData.h"
+#include "item/LetterView.h"
+#include "player/PlayerData.h"
 
 
 struct PlayerBank {
@@ -27,19 +29,14 @@ extern s32 data_020e1e0c;
 s32 PlayerData_GetCurrent(void);
 s32 _ZN10PlayerData14getBankAccountEv(s32);
 s32 _ZN10PlayerData11getPlayerIdEv(s32);
-s32 _ZN10PlayerData8testFlagEj(s32, s32);
-s32 _ZN10PlayerData9clearFlagEj(s32, s32);
-s32 _ZN10PlayerData7setFlagEj(s32, s32);
 s32 MenuCtrl_IsClockMovedForward(void);
 void _ZN11MsgString9CC2Ev(void *);
-void _ZN11MsgString9CD1Ev(void *);
 void TownId_GetNameString(void *, void *);
 void MailText_SetSlot(s32, void *);
 void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 s32 _s32_div_f(s32, s32);
-u32 _ZN10LetterView10setPresentEtj(void *, u32, u32);
 void Letter_ComposeFromMail(void *, void *, void *, void *, void *, s32);
 BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
 void CARD_SetPulledOutCallback(s32 (*f)());
@@ -143,7 +140,7 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 col = 0x3700;
             }
             s32 bit = k + 0x11;
-            if (_ZN10PlayerData8testFlagEj(s, bit) == 0) {
+            if (((PlayerData *)(s))->testFlag(bit) == 0) {
                 u8 ch;
                 ch = k + 0x15;
                 Letter e;
@@ -152,11 +149,11 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 TownId_GetNameString(gSaveTownId, buf);
                 MailText_SetSlot(0, buf);
                 Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
-                _ZN10LetterView10setPresentEtj(&e, col, 1);
+                ((LetterView *)(&e))->setPresent(col, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(&e)) {
-                    _ZN10PlayerData7setFlagEj(s, bit);
+                    ((PlayerData *)(s))->setFlag(bit);
                 }
-                _ZN11MsgString9CD1Ev(buf);
+                ((MsgString9C *)(buf))->MsgString9C::~MsgString9C();
             }
         }
     }
@@ -171,7 +168,7 @@ extern "C" void PlayerBank_SendDonationLetter(s32 n) {
     s32 s = PlayerData_GetCurrent();
     s32 o = _ZN10PlayerData14getBankAccountEv(s);
     if (n > 0) {
-        if (_ZN10PlayerData8testFlagEj(s, 0x16)) {
+        if (((PlayerData *)(s))->testFlag(0x16)) {
             s32 id = PlayerBank_GetDonationLevel((PlayerBank *)o);
             Letter e;
             u8 ch;
@@ -209,10 +206,10 @@ extern "C" void PlayerBank_SendDonationLetter(s32 n) {
         c20: v = 0x1404;
         done:
             if (v != 0xfff1) {
-                _ZN10LetterView10setPresentEtj(&e, v, 1);
+                ((LetterView *)(&e))->setPresent(v, 1);
             }
             if (LetterDelivery_PutInAddresseeMailbox(&e)) {
-                _ZN10PlayerData9clearFlagEj(s, 0x16);
+                ((PlayerData *)(s))->clearFlag(0x16);
             }
         }
     }

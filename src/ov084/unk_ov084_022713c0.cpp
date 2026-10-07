@@ -25,6 +25,9 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "player/PlayerSpNpcRecord.h"
 
 #pragma opt_loop_invariants off
 
@@ -37,19 +40,13 @@ struct TalkStartMsg;
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData10getErrandsEv(void *p);
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
 s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 Random_GlobalBelow(u32 n);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
@@ -62,11 +59,7 @@ void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u8 gContestRecord[];
 extern u8 gSaveData[];
 }
@@ -135,16 +128,11 @@ struct SpNpcTortimerFireworksFortuneLine {
 
 
 extern "C" {
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void String_Load(void *o, u8 *c, s32 a);
 void MailText_SetSlot(void *p, void *o);
 void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
 u32 Item_MakePaper(u32 a, u32 b);
-void *_ZN10PlayerData10getCatalogEv(void *p);
 void Catalog_AddItem(void *p, u16 *q, s32 a);
-u32 _ZN17PlayerSpNpcRecord17getFireworksGivenEv(void *p);
-void _ZN17PlayerSpNpcRecord17addFireworksGivenEv(void *p);
-s32 _ZN8PlayerId9getGenderEv(void *p);
 u32 Net_GetJoiningAid();
 void PlayerActor_GetSlotHeldItem(u16 *out, u32 v);
 s32 Date_GetNthWeekdayDay(u32 a, u32 b, s32 c, s32 d);
@@ -211,7 +199,7 @@ BOOL SpNpcTortimerFireworks::onCreate() {
     }
     changeAct(0);
     ContestRecord_BeginContestDay(gContestRecord, 0);
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
+    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     u8 buf[8];
@@ -246,7 +234,7 @@ void SpNpcTortimerFireworks::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerFireworks::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -256,14 +244,14 @@ BOOL SpNpcTortimerFireworks::setupAct01() {
     void *p = talk.getTalkPlayer();
     s32 x = 0;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerFireworks::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -287,7 +275,7 @@ void SpNpcTortimerFireworksTalk::attachOwner(SpNpcTortimerFireworks *owner) {
 void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
     u16 h[4];
     u32 loc[2];
-    _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
+    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
     out->msgKey = "sp_npc_turtle4";
     if (massageChairSlot == -1) {
         h[1] = 0x37e0;
@@ -361,7 +349,7 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             h[1] = 0x1559;
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[1], 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&h[1], 0, 5, 0);
             h[2] = 0x1559;
             Pocket_AddItem(&h[2], 0);
             b = 4;
@@ -405,13 +393,13 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
             }
         after:
             if (r5 >= 0) {
-                void *g2 = _ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent());
-                if (_ZN17PlayerSpNpcRecord17getFireworksGivenEv(g2) < 10) {
-                    _ZN17PlayerSpNpcRecord17addFireworksGivenEv(g2);
-                    s32 r = _ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
-                    _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
+                void *g2 = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
+                if (((PlayerSpNpcRecord *)(g2))->getFireworksGiven() < 10) {
+                    ((PlayerSpNpcRecord *)(g2))->addFireworksGiven();
+                    s32 r = ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender();
+                    ((ActorTalkRequest *)(this))->requestGiveItem(&h[0], 0, 5, 0);
                     Pocket_AddItem(&h[0], 0);
-                    _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
+                    ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h[0]), 0, 7);
                     if (r == 0) {
                         msg = 3;
                     } else {
@@ -421,14 +409,14 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
                     msg = 0xb;
                 }
             } else {
-                _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
+                ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h[0]), 0, 7);
                 msg = 5;
             }
             break;
         }
         case 9:
             h[6] = 0x1565;
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[6], 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&h[6], 0, 5, 0);
             msg = 0xa;
             break;
         }
@@ -453,7 +441,7 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
                 if (massageChairSlot >= 0) {
                     Pocket_RemoveItem(massageChairSlot);
                     h[0] = 0x37e0;
-                    _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h[0], 0, 5, 0);
+                    ((ActorTalkRequest *)(this))->requestTakeItem(&h[0], 0, 5, 0);
                 }
                 msg = 2;
             }
@@ -488,10 +476,10 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
                     if (i < 4) goto loop0;
                     buf[0] = 1;
                     Letter_ComposeFromMail(obj, &buf[0], (u8 *)"ev_fortune", &data_ov084_02271d44, &data_ov084_02271d40,
-                                  _ZN10PlayerData11getPlayerIdEv(g));
+                                  ((PlayerData *)(g))->getPlayerId());
                     if (g != NULL) {
                         h[1] = Item_MakePaper(0x1d, 4);
-                        Catalog_AddItem(_ZN10PlayerData10getCatalogEv(g), &h[1], 0);
+                        Catalog_AddItem(((PlayerData *)(g))->getCatalog(), &h[1], 0);
                     }
                     TownSessionState_SetFlag(TownSessionState_Get(), 3);
                 }
@@ -506,7 +494,7 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
 
 BOOL SpNpcTortimerFireworks::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

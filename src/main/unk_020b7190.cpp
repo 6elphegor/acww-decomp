@@ -6,6 +6,8 @@
 #include "ui/FieldInfoLabelBalloon.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString33.h"
+#include "gfx/Camera.h"
+#include "item/ItemName.h"
 
 struct Vec {
     s32 x, y, z;
@@ -24,21 +26,6 @@ struct Mat {
 
 extern "C" {
 // Other files
-void *_ZN12LabelBalloon7getAnimEv(void *p);
-s32 _ZN12LabelBalloon8getStateEv(void *p);
-void _ZN12LabelBalloon12requestCloseEv(void *p);
-BOOL _ZN12LabelBalloon11requestOpenEv(void *p);
-void _ZN12LabelBalloon11refreshTextEi(void *p, s32 a);
-void _ZN12LabelBalloon16enableCenterTextEv(void *p);
-void _ZN12LabelBalloon7setTextEP6StrBuf(void *p, void *buf);
-s32 _ZN12LabelBalloon6setPosEii(void *p, s32 a, s32 b);
-s32 _ZN10SpriteAnim13getFrameIndexEv(void *self);
-void _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(void *p, void *v);
-void _ZN10SpriteAnim11setPlayOnceEi(void *p, s32 v);
-void _ZN10SpriteAnim8setSpeedEi(void *p, s32 v);
-void _ZN10SpriteAnim8setFrameEii(void *p, s32 a, s32 b);
-void _ZN10SpriteAnim6updateEv(void *p);
-void _ZN12LabelBalloon5resetEv(void *p);
 void func_02089b18(void *p);
 
 extern u8 data_020d5d14[];
@@ -47,13 +34,10 @@ extern u8 gFieldSceneKind;
 extern Mat data_021f47e0;
 
 void String_Load2d(MsgString33 *buf, u8 *str, s32 n);
-void _ZN8ItemNameC1EPt(void *a, void *b);
-void _ZN8ItemNameD1Ev(void *p);
 Mat *Camera_GetViewMatrix(void);
 Vec *PlayerActor_GetBodyPos(s32 a);
 void WorldCurve_Apply(void *a, void *b);
 void MTX_MultVec43(void *a, void *b, void *c);
-u32 _ZN6Camera9getFovTanEv(u32 a);
 s32 FX_Div(s32 a, s32 b);
 void Vec_Scale(void *a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
@@ -132,7 +116,7 @@ void FieldInfoLabelBalloon::requestMarker() {
 }
 
 void FieldInfoLabelBalloon::resetBalloon() {
-    _ZN12LabelBalloon5resetEv(this);
+    ((LabelBalloon *)(this))->reset();
     markerRequest = 0;
     markerShown = 0;
     blinkFrame = 0;
@@ -160,17 +144,17 @@ BOOL FieldInfoLabelBalloon::isBlinkVisible() {
 }
 
 void FieldInfoLabelBalloon::restartMarkerAnim() {
-    s32 r4 = _ZN10SpriteAnim13getFrameIndexEv(_ZN12LabelBalloon7getAnimEv(this));
-    _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&markerAnim, data_020d5d14);
-    _ZN10SpriteAnim11setPlayOnceEi(&markerAnim, 1);
-    _ZN10SpriteAnim8setSpeedEi(&markerAnim, 0);
-    _ZN10SpriteAnim8setFrameEii(&markerAnim, r4, 0);
-    _ZN10SpriteAnim6updateEv(&markerAnim);
+    s32 r4 = ((SpriteAnim *)(((LabelBalloon *)(this))->getAnim()))->getFrameIndex();
+    ((SpriteAnim *)(&markerAnim))->setSeq((SpriteAnimSeq *)(data_020d5d14));
+    ((SpriteAnim *)(&markerAnim))->setPlayOnce(1);
+    ((SpriteAnim *)(&markerAnim))->setSpeed(0);
+    ((SpriteAnim *)(&markerAnim))->setFrame(r4, 0);
+    ((SpriteAnim *)(&markerAnim))->update();
 }
 
 void FieldInfoLabelBalloon::updateBlink() {
     if (markerShown) {
-        s32 r = _ZN12LabelBalloon8getStateEv(this);
+        s32 r = ((LabelBalloon *)(this))->getState();
         if (r == 0) {
             markerRequest = 0;
             markerShown = 0;
@@ -284,7 +268,7 @@ extern "C" void FieldInfoBalloon_Draw() { sFieldInfoBalloon.draw(); }
 
 void FieldInfoBalloon::init() {
     state = 0;
-    _ZN12LabelBalloon16enableCenterTextEv(&balloon);
+    ((LabelBalloon *)(&balloon))->enableCenterText();
     facingItem = 0;
     lastFacingItem = 0xfff1;
     netMsg = 0;
@@ -340,30 +324,30 @@ void FieldInfoBalloon::placeOverPlayer() {
         v.y += 0x3c00;
         WorldCurve_Apply(&w, &v);
         MTX_MultVec43(&w, &data_021f47e0, &x);
-        s32 d = _ZN6Camera9getFovTanEv(gCamera);
+        s32 d = ((Camera *)(gCamera))->getFovTan();
         s32 q = FX_Div(0x60000, d);
         s32 r = FX_Div(-q, x.z);
         Vec_Scale(&x, r);
-        _ZN12LabelBalloon6setPosEii(&balloon, x.x >> 12, -x.y >> 12);
+        ((LabelBalloon *)(&balloon))->setPos(x.x >> 12, -x.y >> 12);
     }
 }
 
-void FieldInfoBalloon::placeTimerMsg() { _ZN12LabelBalloon6setPosEii(&balloon, 0, -0x30); }
+void FieldInfoBalloon::placeTimerMsg() { ((LabelBalloon *)(&balloon))->setPos(0, -0x30); }
 
-void FieldInfoBalloon::placeNetMsg() { _ZN12LabelBalloon6setPosEii(&balloon, 0x12, -0x30); }
+void FieldInfoBalloon::placeNetMsg() { ((LabelBalloon *)(&balloon))->setPos(0x12, -0x30); }
 
 void FieldInfoBalloon::setItemNameText() {
     u32 obj[10];
-    _ZN8ItemNameC1EPt(obj, facingItem);
-    _ZN12LabelBalloon7setTextEP6StrBuf(&balloon, obj);
-    _ZN8ItemNameD1Ev(obj);
+    new (obj) ItemName((u16 *)(facingItem));
+    ((LabelBalloon *)(&balloon))->setText((StrBuf *)(obj));
+    ((ItemName *)(obj))->ItemName::~ItemName();
 }
 
 void FieldInfoBalloon::setTimerMsgText() {
     u8 v = sFieldInfoBalloonTimerMsgs[timerMsg];
     MsgString33 buf;
     String_Load2d(&buf, &v, 0);
-    _ZN12LabelBalloon7setTextEP6StrBuf(&balloon, &buf);
+    ((LabelBalloon *)(&balloon))->setText((StrBuf *)(&buf));
 }
 
 void FieldInfoBalloon::setNetMsgText(s32 a) {
@@ -388,9 +372,9 @@ void FieldInfoBalloon::setNetMsgText(s32 a) {
             else if (is2) v = 0x94;
         }
         String_Load2d(&buf, &v, 0);
-        _ZN12LabelBalloon7setTextEP6StrBuf(&balloon, &buf);
+        ((LabelBalloon *)(&balloon))->setText((StrBuf *)(&buf));
         if (a == 0) {
-            _ZN12LabelBalloon11refreshTextEi(&balloon, 1);
+            ((LabelBalloon *)(&balloon))->refreshText(1);
             balloon.restartMarkerAnim();
         }
     }
@@ -431,28 +415,28 @@ void FieldInfoBalloon::updateIdle() {
         placeNetMsg();
         setNetMsgText(1);
         applyNetMsgBlink();
-        if (_ZN12LabelBalloon11requestOpenEv(&balloon)) enterNetMsg();
+        if (((LabelBalloon *)(&balloon))->requestOpen()) enterNetMsg();
     } else if (hasTimerMsg()) {
         placeTimerMsg();
         setTimerMsgText();
         balloon.setBlink(0);
-        if (_ZN12LabelBalloon11requestOpenEv(&balloon)) enterTimerMsg();
+        if (((LabelBalloon *)(&balloon))->requestOpen()) enterTimerMsg();
     } else if (facingItem != 0) {
         placeOverPlayer();
         setItemNameText();
         balloon.setBlink(0);
-        if (_ZN12LabelBalloon11requestOpenEv(&balloon)) enterItemName();
+        if (((LabelBalloon *)(&balloon))->requestOpen()) enterItemName();
     }
 }
 
 void FieldInfoBalloon::enterItemName() { state = 1; }
 
 void FieldInfoBalloon::updateItemName() {
-    if (_ZN12LabelBalloon8getStateEv(&balloon) == 0) {
+    if (((LabelBalloon *)(&balloon))->getState() == 0) {
         enterIdle();
     } else if (facingItem == 0 || (lastFacingItem != 0xfff1 && lastFacingItem != *facingItem) || hasNetMsg() != 0 ||
                hasTimerMsg() != 0) {
-        _ZN12LabelBalloon12requestCloseEv(&balloon);
+        ((LabelBalloon *)(&balloon))->requestClose();
     } else {
         placeOverPlayer();
     }
@@ -462,10 +446,10 @@ void FieldInfoBalloon::enterTimerMsg() { state = 2; }
 
 void FieldInfoBalloon::updateTimerMsg() {
     if (msgFrames > 0) msgFrames--;
-    if (_ZN12LabelBalloon8getStateEv(&balloon) == 0) {
+    if (((LabelBalloon *)(&balloon))->getState() == 0) {
         enterIdle();
     } else if (hasNetMsg() != 0 || hasTimerMsg() == 0 || timerMsgRestarted != 0) {
-        _ZN12LabelBalloon12requestCloseEv(&balloon);
+        ((LabelBalloon *)(&balloon))->requestClose();
     }
 }
 
@@ -476,10 +460,10 @@ void FieldInfoBalloon::enterNetMsg() {
 
 void FieldInfoBalloon::updateNetMsg() {
     if (msgFrames > 0) msgFrames--;
-    if (_ZN12LabelBalloon8getStateEv(&balloon) == 0) {
+    if (((LabelBalloon *)(&balloon))->getState() == 0) {
         enterIdle();
     } else if (hasNetMsg() == 0) {
-        if (balloon.isBlinkVisible() == 0) _ZN12LabelBalloon12requestCloseEv(&balloon);
+        if (balloon.isBlinkVisible() == 0) ((LabelBalloon *)(&balloon))->requestClose();
     } else if (balloon.isBlinkCycleEnd() != 0) {
         setNetMsgText(0);
     }

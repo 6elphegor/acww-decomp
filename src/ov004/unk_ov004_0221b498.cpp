@@ -30,6 +30,9 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "npc/NpcLookAt.h"
+#include "player/PlayerData.h"
+#include "player/PlayerSpNpcRecord.h"
 
 
 class ActorTalkRequest;
@@ -214,11 +217,11 @@ BOOL SpNpcSable::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
-    SpNpcActor_setColliderSize(this, 0x119a, 0x2000);
-    NpcActor_setCollisionRadius(this, 0);
-    Character_setInteractionRange(this, 0x3000);
+    ((SpNpcActor *)(this))->setColliderSize(0x119a, 0x2000);
+    ((NpcActor *)(this))->setCollisionRadius(0);
+    ((Character *)(this))->setInteractionRange(0x3000);
     return TRUE;
 }
 
@@ -229,11 +232,11 @@ BOOL SpNpcSable::onCreate() {
     }
     homeAngle = rotY;
     collider.groups |= 2;
-    if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner()) {
             changeAct(0);
         } else {
-            NpcActor_getNetUserBytes(this, &sewCycle, 1);
+            ((NpcActor *)(this))->getNetUserBytes(&sewCycle, 1);
             changeAct(4);
         }
     } else {
@@ -251,7 +254,7 @@ u8 *SpNpcSable::getModelPath() { return sSpNpcSableModelPath; }
 
 BOOL SpNpcSable::updateAct() {
     sewCycle = SewingMachine_GetFrame() / 0x38;
-    NpcActor_setNetUserBytes(this, &sewCycle, 1);
+    ((NpcActor *)(this))->setNetUserBytes(&sewCycle, 1);
     BOOL r = FALSE;
     if (sSpNpcSableActTable[act].exit) {
         r = (this->*sSpNpcSableActTable[act].exit)();
@@ -270,8 +273,8 @@ void SpNpcSable::changeAct(s32 state) {
 }
 
 BOOL SpNpcSable::setupAct00() {
-    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xe4, 0, data_020c6cc8, resumeFrame);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xe4, 0, data_020c6cc8, resumeFrame);
     return TRUE;
 }
 
@@ -280,7 +283,7 @@ BOOL SpNpcSable::mainAct00() {
         changeAct(3);
         return TRUE;
     }
-    if (NpcAnimCtrl_isPlayingAnim(&animCtrl, 0xe4, &moveAnimSet)) {
+    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0xe4, &moveAnimSet)) {
         if (SewingMachine_IsStopped()) {
             SewingMachine_Start();
             u32 t = sewCycle * 0x38;
@@ -292,27 +295,27 @@ BOOL SpNpcSable::mainAct00() {
 
 BOOL SpNpcSable::setupAct01() {
     if (SpNpcSable_GetTalkCount(this) >= 6) {
-        NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+        ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     }
     SewingMachine_Stop();
     if (SpNpcSable_GetTalkCount(this) < 6) {
-        NpcTalkCtrl_requestTalk(&talkCtrl, 1, 0);
+        ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(1, 0);
     } else {
         NpcActor *p = ActorTalkRequest_getTalkPlayer(&talk);
         s32 r = 0;
         if (p) {
-            r = NpcActor_getAngleTo(this, p);
+            r = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
         }
-        NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
+        ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r, 0);
     }
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct01() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         return TRUE;
     }
-    if (!CommManager_isOnline(gCommManager) && !Talk_CheckAndSetPlayerFlag(0x11, 1)) {
+    if (!((CommManager *)(gCommManager))->isOnline() && !Talk_CheckAndSetPlayerFlag(0x11, 1)) {
         u32 t = (u8)(SpNpcSable_GetTalkCount(this) + 1);
         if (t > 0xf) {
             t = 0xf;
@@ -329,13 +332,13 @@ BOOL SpNpcSable::setupAct02() { return TRUE; }
 BOOL SpNpcSable::mainAct02() { return TRUE; }
 
 BOOL SpNpcSable::setupAct03() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct03() {
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(0);
         }
     }
@@ -343,33 +346,33 @@ BOOL SpNpcSable::mainAct03() {
 }
 
 BOOL SpNpcSable::setupAct04() {
-    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct04() {
     s32 a, b;
-    if (NpcActor_isNetOwner(this)) {
+    if (((NpcActor *)(this))->isNetOwner()) {
         a = 4;
         b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b)) {
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
             s32 av = a;
             s32 g = gCommManager->myAid;
             if (av == g && av == b) {
-                NpcActor_netSetSlotsIfOwner(this, 1, g, g);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
                 ActorTalkRequest *p = &talk;
                 p->resetMsg();
-                ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+                ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
                 changeAct(1);
                 goto end;
             }
         }
         if (NetArea_IsLocalOwner() && b == 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0);
         }
     } else if (!NetArea_IsLocalOwner()) {
-        if (NpcAnimCtrl_isPlayingAnim(&animCtrl, 0xe4, &moveAnimSet)) {
+        if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0xe4, &moveAnimSet)) {
             if (SewingMachine_IsStopped()) {
                 SewingMachine_Start();
                 u32 t = sewCycle * 0x38;
@@ -384,16 +387,16 @@ end:
 }
 
 BOOL SpNpcSable::setupAct05() {
-    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcSable::mainAct05() {
-    if (NpcActor_isNetOwner(this)) {
+    if (((NpcActor *)(this))->isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == 4 && NetArea_IsLocalOwner()) {
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0);
         }
     }
@@ -409,7 +412,7 @@ BOOL SpNpcSable::setupAct06() {
 BOOL SpNpcSable::mainAct06() { return TRUE; }
 
 void SpNpcSable::onLeaveTalk() {
-    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
 }
 
 SpNpcSableTalk::SpNpcSableTalk() {}
@@ -425,7 +428,7 @@ void SpNpcSableTalk::start(TalkStartMsg *out_) {
     TalkTopicMsg *out = (TalkTopicMsg *)out_;
     u32 idx = SpNpcSable_GetTalkCount(owner);
     void *g = gCommManager;
-    if (CommManager_isOnline(g) != 0 || *(s16 *)DebugVar_GetPtr(0, 0x4a) != 0) {
+    if (((CommManager *)(g))->isOnline() != 0 || *(s16 *)DebugVar_GetPtr(0, 0x4a) != 0) {
         idx = 0;
         out->msgIndex = 0x57;
     } else if (GameStart_IsActive() != 0) {
@@ -463,7 +466,7 @@ void SpNpcSableTalk::start(TalkStartMsg *out_) {
         }
     }
     out->fileName = sSpNpcSableMsgFiles[idx];
-    if (CommManager_isOnline(g) == 0 && *(s16 *)DebugVar_GetPtr(0, 0x4a) == 0 && idx == 0) {
+    if (((CommManager *)(g))->isOnline() == 0 && *(s16 *)DebugVar_GetPtr(0, 0x4a) == 0 && idx == 0) {
         switch (out->msgIndex) {
         case 2:
         case 5:
@@ -484,7 +487,7 @@ void SpNpcSableTalk::start(TalkStartMsg *out_) {
         case 43: {
             void *r = NpcRegistry_FindSpNpc(4);
             if (r) {
-                ActorTalkRequest_setPartnerActor(this, r);
+                ((ActorTalkRequest *)(this))->setPartnerActor((NpcActor *)(r));
             }
             break;
         }
@@ -497,7 +500,7 @@ void SpNpcSableTalk::onMessageEnd(u32) {}
 void SpNpcSableTalk::onChoice(u32) {}
 
 BOOL SpNpcSable::acceptsInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || ((NpcActor *)(this))->netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -508,12 +511,12 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
     case 3:
         partnerPlayer = v;
         if (v != 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, v);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, v);
             changeAct(6);
         } else {
-            if (NpcActor_isNetOwner(this) != 0) {
+            if (((NpcActor *)(this))->isNetOwner() != 0) {
                 s32 g = gCommManager->myAid;
-                NpcActor_netSetSlotsIfOwner(this, 1, g, g);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
                 changeAct(6);
             }
         }
@@ -521,14 +524,14 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
     case 0:
         partnerPlayer = v;
         if (v != 4 && v != gCommManager->myAid) {
-            NpcActor_netSetSlotsIfOwner(this, 1, v, v);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, v, v);
             changeAct(5);
         } else {
-            if (NpcActor_isNetOwner(this) != 0) {
+            if (((NpcActor *)(this))->isNetOwner() != 0) {
                 s32 g = gCommManager->myAid;
-                NpcActor_netSetSlotsIfOwner(this, 1, g, g);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
                 talk.resetMsg();
-                ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+                ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
                 changeAct(1);
             }
         }
@@ -536,20 +539,20 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
     case 8:
         if (v == 4) {
             if (NetArea_IsLocalOwner() != 0) {
-                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                 changeAct(3);
             } else {
-                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->myAid);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, 4, gCommManager->myAid);
                 changeAct(4);
             }
         }
         break;
     case 4:
-        if (NpcActor_netIsTalkLocked(this) != 0) {
-            if (NpcActor_isNetOwner(this) != 0) {
+        if (((NpcActor *)(this))->netIsTalkLocked() != 0) {
+            if (((NpcActor *)(this))->isNetOwner() != 0) {
                 s32 a = 4;
                 s32 b = 4;
-                if (NpcActor_netGetSlots(this, &a, &b) != 0) {
+                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
                     if (v == 4) {
                         goto chk;
                     }
@@ -561,7 +564,7 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
                         break;
                     }
                 body:
-                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                    ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                     changeAct(0);
                 }
             }
@@ -572,11 +575,11 @@ void SpNpcSable::onInteractionEvent(u32 idx, u8 v) {
 }
 
 extern "C" u32 SpNpcSable_GetTalkCount(void *unused) {
-    return PlayerSpNpcRecord_getSableTalkCount(PlayerData_getSpNpcRecord(PlayerData_GetCurrent()));
+    return ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->getSableTalkCount();
 }
 
 extern "C" void SpNpcSable_SetTalkCount(void *unused, u32 a) {
-    PlayerSpNpcRecord_setSableTalkCount(PlayerData_getSpNpcRecord(PlayerData_GetCurrent()), a);
+    ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->setSableTalkCount(a);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

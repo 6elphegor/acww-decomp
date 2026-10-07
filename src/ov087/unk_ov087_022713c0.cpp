@@ -25,6 +25,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "player/PlayerData.h"
+#include "player/PlayerSpNpcRecord.h"
 
 #pragma opt_loop_invariants off
 
@@ -37,19 +39,13 @@ struct TalkStartMsg;
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData10getErrandsEv(void *p);
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
 s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 BOOL Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 Random_GlobalBelow(u32 n);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
@@ -62,11 +58,7 @@ void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u8 gContestRecord[];
 extern u8 gSaveData[];
 }
@@ -130,24 +122,15 @@ struct Unk_ov087_02271cc4_Ent {
 
 
 extern "C" {
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void String_Load(void *o, u8 *c, s32 a);
 void MailText_SetSlot(void *p, void *o);
 void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
 u32 Item_MakePaper(u32 a, u32 b);
-void *_ZN10PlayerData10getCatalogEv(void *p);
 void Catalog_AddItem(void *p, u16 *q, s32 a);
 u32 Pocket_GetItem(s32 i);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL MenuCtrl_BuildPocketMask(u32 cb);
-BOOL _ZN10PlayerData8testFlagEj(void *p, u32 n);
-void _ZN10PlayerData7setFlagEj(void *p, u32 n);
-u32 _ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(void *p);
-u32 _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(void *p);
-void _ZN17PlayerSpNpcRecord18addAcornsDeliveredEi(void *p, s32 n);
-void _ZN17PlayerSpNpcRecord21advanceAcornPrizeStepEv(void *p);
-void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m);
 s32 Inventory_FindEmptyLetter();
 void *Inventory_GetEmptyLetter();
@@ -257,7 +240,7 @@ BOOL SpNpcCornimer::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
+    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     ContestRecord_BeginFestival(gContestRecord, 2);
@@ -287,7 +270,7 @@ void SpNpcCornimer::changeAct(s32 state) {
 }
 
 BOOL SpNpcCornimer::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -297,14 +280,14 @@ BOOL SpNpcCornimer::setupAct01() {
     void *p = talk.getTalkPlayer();
     u32 x = 0;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcCornimer::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -324,11 +307,11 @@ void SpNpcCornimerTalk::attachOwner(SpNpcCornimer *owner) {
 
 void SpNpcCornimerTalk::start(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
-    _ZN10PlayerData10getErrandsEv(g);
+    ((PlayerData *)(g))->getErrands();
     out->msgKey = "sp_npc_acorn";
-    if (_ZN10PlayerData8testFlagEj(g, 0xf) == 0) {
+    if (((PlayerData *)(g))->testFlag(0xf) == 0) {
         out->msgIndex = 0;
-        _ZN10PlayerData7setFlagEj(g, 0xf);
+        ((PlayerData *)(g))->setFlag(0xf);
         Talk_CheckAndSetPlayerFlag(0x19, 1);
     } else if (Talk_CheckAndSetPlayerFlag(0x19, 1) == 0) {
         out->msgIndex = 2;
@@ -353,7 +336,7 @@ extern "C" BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m) {
 
 void SpNpcCornimerTalk::onMessageEnd(u32) {
     CornimerMsgEndLocals buf;
-    void *g = _ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent());
+    void *g = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
     u32 k;
     buf.v[0] = 0xfff1;
     k = 0xff;
@@ -370,16 +353,16 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
                 }
                 i++;
             }
-            _ZN16ActorTalkRequest13setNumberSlotEijiii(this, cnt, 2, 3, 0, 0);
+            ((ActorTalkRequest *)(this))->setNumberSlot(cnt, 2, 3, 0, 0);
             k = 5;
-        } else if (_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) >= 12) {
+        } else if (((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() >= 12) {
             k = 0x17;
         } else {
-            u32 a = _ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g);
-            u32 b = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
+            u32 a = ((PlayerSpNpcRecord *)(g))->getAcornPrizeStep();
+            u32 b = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
             s32 d = (sSpNpcCornimerPrizeTable + 2)[a * 4] - b;
             if (d > 0) {
-                _ZN16ActorTalkRequest13setNumberSlotEijiii(this, d, 1, 3, 0, 0);
+                ((ActorTalkRequest *)(this))->setNumberSlot(d, 1, 3, 0, 0);
                 k = 4;
             } else {
                 k = 0x16;
@@ -389,43 +372,43 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
     case 7:
     case 8:
     case 9:
-        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g), 0, 3, 0, 0);
-        if (_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) >= 12) {
+        ((ActorTalkRequest *)(this))->setNumberSlot(((PlayerSpNpcRecord *)(g))->getAcornsDelivered(), 0, 3, 0, 0);
+        if (((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() >= 12) {
             k = 0x16;
         } else {
             k = 0xa;
         }
         break;
     case 10: {
-        u32 t = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
-        if (t >= (sSpNpcCornimerPrizeTable + 2)[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4]) {
-            buf.v[1] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &buf.v[1], 0, 7);
+        u32 t = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
+        if (t >= (sSpNpcCornimerPrizeTable + 2)[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4]) {
+            buf.v[1] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
+            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&buf.v[1]), 0, 7);
             k = 0xb;
         } else {
-            u32 a = _ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g);
-            u32 b = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
+            u32 a = ((PlayerSpNpcRecord *)(g))->getAcornPrizeStep();
+            u32 b = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
             s32 d = (sSpNpcCornimerPrizeTable + 2)[a * 4];
             d -= b;
-            _ZN16ActorTalkRequest13setNumberSlotEijiii(this, d, 1, 3, 0, 0);
+            ((ActorTalkRequest *)(this))->setNumberSlot(d, 1, 3, 0, 0);
             k = 0xf;
         }
         break;
     }
     case 11:
     case 13:
-        buf.v[2] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
+        buf.v[2] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
         if (Unk_ov087_02271670_Z(Pocket_AddItem(&buf.v[2], 0))) {
             k = 0xc;
         } else {
-            _ZN17PlayerSpNpcRecord21advanceAcornPrizeStepEv(g);
-            buf.v[3] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &buf.v[3], 0, 5, 0);
-            if (_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) < 12) {
-                u32 b = _ZN17PlayerSpNpcRecord18getAcornsDeliveredEv(g);
-                if (b >= (sSpNpcCornimerPrizeTable + 2)[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4]) {
-                    buf.v[4] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN17PlayerSpNpcRecord17getAcornPrizeStepEv(g) * 4];
-                    _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &buf.v[4], 0, 7);
+            ((PlayerSpNpcRecord *)(g))->advanceAcornPrizeStep();
+            buf.v[3] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
+            ((ActorTalkRequest *)(this))->requestGiveItem(&buf.v[3], 0, 5, 0);
+            if (((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() < 12) {
+                u32 b = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
+                if (b >= (sSpNpcCornimerPrizeTable + 2)[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4]) {
+                    buf.v[4] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
+                    ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&buf.v[4]), 0, 7);
                     k = 0xd;
                     break;
                 }
@@ -435,7 +418,7 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
         break;
     case 20:
         buf.v[5] = 0x1565;
-        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &buf.v[5], 0, 5, 0);
+        ((ActorTalkRequest *)(this))->requestGiveItem(&buf.v[5], 0, 5, 0);
         k = 0x15;
         break;
     }
@@ -454,7 +437,7 @@ void SpNpcCornimerTalk::onChoice(u32) {
     switch (msgIndex) {
     case 5:
         if (t5 == 0) {
-            void *g = _ZN10PlayerData14getSpNpcRecordEv(g8);
+            void *g = ((PlayerData *)(g8))->getSpNpcRecord();
             s32 cntB;
             s32 cntA;
             buf.s[0] = 0xfff1;
@@ -477,7 +460,7 @@ void SpNpcCornimerTalk::onChoice(u32) {
                 k = (u8)(Random_GlobalBelow(3) + 7);
                 cntA = 1;
                 while (cntB > 0) {
-                    _ZN17PlayerSpNpcRecord18addAcornsDeliveredEi(g, cntA);
+                    ((PlayerSpNpcRecord *)(g))->addAcornsDelivered(cntA);
                     cntB--;
                 }
             } else if (cntB != 0) {
@@ -486,7 +469,7 @@ void SpNpcCornimerTalk::onChoice(u32) {
             } else {
                 k = 0x19;
             }
-            _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &buf.s[0], 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestTakeItem(&buf.s[0], 0, 5, 0);
         }
         break;
     case 16:
@@ -514,10 +497,10 @@ void SpNpcCornimerTalk::onChoice(u32) {
                     if (i < 4) goto loop16;
                     buf.a = 2;
                     Letter_ComposeFromMail(obj, &buf.a, (u8 *)"ev_fortune", &data_ov087_02271d84, &data_ov087_02271d80,
-                                  _ZN10PlayerData11getPlayerIdEv(g8));
+                                  ((PlayerData *)(g8))->getPlayerId());
                     if (g8 != NULL) {
                         buf.s[1] = Item_MakePaper(0x1d, 4);
-                        Catalog_AddItem(_ZN10PlayerData10getCatalogEv(g8), &buf.s[1], 0);
+                        Catalog_AddItem(((PlayerData *)(g8))->getCatalog(), &buf.s[1], 0);
                     }
                     Talk_CheckAndSetPlayerFlag(0x1a, 1);
                 }
@@ -533,7 +516,7 @@ void SpNpcCornimerTalk::onChoice(u32) {
 
 BOOL SpNpcCornimer::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

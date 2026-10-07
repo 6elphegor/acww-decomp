@@ -16,6 +16,9 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
+#include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "item/ItemPickSpec.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -129,38 +132,18 @@ void RoomObjTex_Reset(void *);
 s32 RoomObjRes_GetBca(void *, u32);
 s32 RoomObjRes_GetBta(void *, u32);
 void RoomObj_PlaySeHeld(void *, u32);
-void _ZN9AnimModel12drawAnimatedEPv(void *, u32);
-s32 _ZN9AnimModel8stepAnimEv(void *);
-s32 _ZN13AnimFrameCtrl4stepEv(void *);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
-s32 _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
-s32 _ZN9AnimModel11allocAnmObjEPv(void *, void *);
-s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
-void _ZN9AnimModel10attachAnimEv(void *);
-s32 _ZN9ModelAnim11allocMatAnmEjPv(void *, u32, void *);
-s32 _ZN9ModelAnim4initEiiit(void *, u32, u32, u32, u32);
-void *_ZN5Model12getRenderObjEv(void *);
-s32 _ZN9ModelAnim14addToRenderObjEj(void *, void *);
 void _ZN22DateSeededRandomSourceC2Ev(void *);
 void _ZN22DateSeededRandomSourceD2Ev(void *);
-void _ZN12ItemPickSpec3setEii(void *, s32, s32);
 void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *out, void *p, u32 a, void *q, u32 b, u32 c, u32 d);
 s32 ClothTex_LoadItem(void *p, void *q, u32 a);
 void *ClothTex_GetTex(void *p);
-s32 _ZN14MatTexVramTask7requestEPvjS0_jj(void *p, u32 a, const char *b, void *c, u32 d, u32 e);
 s32 Math_EaseRampProgress(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Math_IsInRange(s32 a, s32 b, s32 c);
 BOOL MenuCtrl_IsMenuOpen();
-void _ZN9AnimModelC1Ev(void *);
-void _ZN9AnimModelD1Ev(void *);
-void _ZN10RoomObjResC1Ev(void *);
-void _ZN10RoomObjResD1Ev(void *);
-void _ZN14MatTexVramTaskC1Ev(void *);
-void _ZN9ModelAnimC1Ev(void *);
-void _ZN9ModelAnimD1Ev(void *);
 SewingMachine *SewingMachine_Create();
 }
 
@@ -177,18 +160,18 @@ extern "C" SewingMachine *SewingMachine_Create() {
 }
 
 SewingMachine::SewingMachine() {
-    _ZN9AnimModelC1Ev(partModel);
-    _ZN10RoomObjResC1Ev(partRes);
+    new (partModel) AnimModel();
+    new (partRes) RoomObjRes();
     RoomObjTex_Construct(&partTex);
-    _ZN14MatTexVramTaskC1Ev(clothTexTask);
-    _ZN9ModelAnimC1Ev(matAnim);
+    new (clothTexTask) MatTexVramTask();
+    new (matAnim) ModelAnim();
 }
 
 SewingMachine::~SewingMachine() {
-    _ZN9ModelAnimD1Ev(matAnim);
+    ((ModelAnim *)(matAnim))->ModelAnim::~ModelAnim();
     RoomObjTex_Destruct(&partTex);
-    _ZN10RoomObjResD1Ev(partRes);
-    _ZN9AnimModelD1Ev(partModel);
+    ((RoomObjRes *)(partRes))->~RoomObjRes();
+    ((AnimModel *)(partModel))->AnimModel::~AnimModel();
 }
 
 BOOL SewingMachine::onCreate() {
@@ -196,7 +179,7 @@ BOOL SewingMachine::onCreate() {
     loadResources("/roomObj/obj_tailor1.arc", "/roomObj/obj_tailor1.nsbtx");
     RoomObjRes_Load(partRes, "/roomObj/obj_tailor2.arc");
     RoomObjTex_Load(&partTex, "/roomObj/obj_tailor2.nsbtx");
-    _ZN5Model11setResourceEP12NNSG3dResMdlj(partModel, RoomObjRes_GetModel(partRes), 0);
+    ((Model *)(partModel))->setResource((NNSG3dResMdl *)(RoomObjRes_GetModel(partRes)), 0);
     {
         void *a = RoomObjRes_GetModel(partRes);
         NNS_G3dBindMdlTex(a, RoomObjTex_Get(&partTex));
@@ -205,19 +188,19 @@ BOOL SewingMachine::onCreate() {
         void *a = RoomObjRes_GetModel(partRes);
         NNS_G3dBindMdlPltt(a, RoomObjTex_Get(&partTex));
     }
-    if (RoomObjRes_GetBca(&res, 0) && _ZN9AnimModel11allocAnmObjEPv(&model, gBgHeap)) {
-        _ZN14BlendAnimModel8initAnimEiiitt(&model, RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
-        _ZN9AnimModel10attachAnimEv(&model);
+    if (RoomObjRes_GetBca(&res, 0) && ((AnimModel *)(&model))->allocAnmObj(gBgHeap)) {
+        ((BlendAnimModel *)(&model))->initAnim(RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
+        ((AnimModel *)(&model))->attachAnim();
         F(u32, 0x198) = 0;
     }
-    if (_ZN9ModelAnim11allocMatAnmEjPv(matAnim, F(u32, 0x148), gBgHeap)) {
-        _ZN9ModelAnim4initEiiit(matAnim, RoomObjRes_GetBta(&res, 0), 0, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(matAnim, _ZN5Model12getRenderObjEv(&model));
+    if (((ModelAnim *)(matAnim))->allocMatAnm(F(u32, 0x148), gBgHeap)) {
+        ((ModelAnim *)(matAnim))->init(RoomObjRes_GetBta(&res, 0), 0, 0x1000, 0);
+        ((ModelAnim *)(matAnim))->addToRenderObj((u32)(((Model *)(&model))->getRenderObj()));
         F(u32, 0x428) = 0;
     }
-    if (RoomObjRes_GetBca(partRes, 0) && _ZN9AnimModel11allocAnmObjEPv(partModel, gBgHeap)) {
-        _ZN14BlendAnimModel8initAnimEiiitt(partModel, RoomObjRes_GetBca(partRes, 0), 0, 0x1000, 0, 0);
-        _ZN9AnimModel10attachAnimEv(partModel);
+    if (RoomObjRes_GetBca(partRes, 0) && ((AnimModel *)(partModel))->allocAnmObj(gBgHeap)) {
+        ((BlendAnimModel *)(partModel))->initAnim(RoomObjRes_GetBca(partRes, 0), 0, 0x1000, 0, 0);
+        ((AnimModel *)(partModel))->attachAnim();
         F(u32, 0x33c) = 0;
     }
     {
@@ -225,13 +208,13 @@ BOOL SewingMachine::onCreate() {
         u32 y[2];
         u16 z;
         _ZN22DateSeededRandomSourceC2Ev(x);
-        _ZN12ItemPickSpec3setEii(y, 2, 0);
+        ((ItemPickSpec *)(y))->set(2, 0);
         ItemPick_One(&z, y, 0, x, 1, 1, 0);
         ItemPickSpec_Destruct(y);
         ClothTex_LoadItem(&sSewingMachineCloth, &z, 0);
         u32 r5 = F(u32, 0x2ec);
         void *t = ClothTex_GetTex(&sSewingMachineCloth);
-        _ZN14MatTexVramTask7requestEPvjS0_jj(clothTexTask, r5, "w", t, 0, 0);
+        ((MatTexVramTask *)(clothTexTask))->request((void *)(r5), (u32)("w"), t, 0, 0);
         enterState00();
         _ZN22DateSeededRandomSourceD2Ev(x);
     }
@@ -239,9 +222,9 @@ BOOL SewingMachine::onCreate() {
 }
 
 BOOL SewingMachine::onExecute() {
-    _ZN9AnimModel8stepAnimEv(&model);
-    _ZN9AnimModel8stepAnimEv(partModel);
-    _ZN13AnimFrameCtrl4stepEv(matAnim);
+    ((AnimModel *)(&model))->stepAnim();
+    ((AnimModel *)(partModel))->stepAnim();
+    ((AnimFrameCtrl *)(matAnim))->step();
     *F(u32 *, 0x430) = F(u32, 0x420);
     Mtx43_SetTranslate(&data_021f47e0, position.x, position.y, position.z);
     F(Mtx43, 0xec + 0x64) = data_021f47e0;
@@ -251,8 +234,8 @@ BOOL SewingMachine::onExecute() {
 }
 
 BOOL SewingMachine::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv(&model, 0);
-    _ZN9AnimModel12drawAnimatedEPv(partModel, 0);
+    ((AnimModel *)(&model))->drawAnimated((void *)(0));
+    ((AnimModel *)(partModel))->drawAnimated((void *)(0));
     return TRUE;
 }
 

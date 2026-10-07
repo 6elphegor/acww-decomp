@@ -20,6 +20,9 @@
 #include "actor/VillagerActor.h"
 #include "sys/ProcProfile.h"
 #include "field/Insect.h"
+#include "game/StrBSizeData.h"
+#include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -27,8 +30,6 @@
 
 extern "C" {
 void *_ZN10GroundInfo9initAtPosEP7VecFx32ii(void *self, VecFx32 *v, s32 a, s32 b);
-s32 _ZN14GroundInfoBase9getHeightEi(void *self, s32 a);
-void _ZN10GroundInfoD1Ev(void *self);
 }
 
 // ---- main-module classes (declarations only)
@@ -1979,7 +1980,7 @@ extern "C" BOOL Insect_SetMoveTarget(Rec *o, u32 ang, s32 d) {
         return Insect_SetGroundMoveTarget(o, ang, (u8)(d >> 12));
     case 0xc: case 0xd:
     case 0x1b: case 0x1c: case 0x1d:
-        if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+        if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
             return Insect_SetGroundMoveTarget(o, ang, (u8)(d >> 12));
         }
     default:
@@ -2131,16 +2132,16 @@ extern "C" void Insect_UpdateRest(Rec *o) {
     if (Insect_TickTimer(o) == 0) {
         s32 st = o->kind;
         if (st == 0xa || st == 0x33) {
-            if ((((u32)o->model.curFrame << 4) >> 16) != 0) AnimModel_setFrame(&o->model, 0);
+            if ((((u32)o->model.curFrame << 4) >> 16) != 0) ((AnimModel *)(&o->model))->setFrame(0);
             Crawler_Wander(o);
         } else if (st == 0x33) {
         } else {
             if (Insect_IsOnFlower(&o->position) == 0) o->alarm = 0xfe;
             if (((o->model.numFrames << 4) >> 16) < 0xc) {
-                AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 0x11, 1, 0x1000, 9);
+                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(0x11, 1, 0x1000, 9);
             } else if ((((u32)o->model.curFrame << 4) >> 16) == 0x10) {
                 if (Random_GlobalBelow(100) > 0x5f) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 0x11, 1, 0x1000, 9);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(0x11, 1, 0x1000, 9);
                 }
             }
         }
@@ -2150,9 +2151,9 @@ extern "C" void Insect_UpdateRest(Rec *o) {
         o->waitTimer = (Random_GlobalBelow(6) + 7) * 20;
         s32 st = o->kind;
         if (st != 0xa && st != 0x33) {
-            AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 9, 0, o->behaviorWork, 0);
+            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(9, 0, o->behaviorWork, 0);
         } else {
-            AnimModel_setFrame(&o->model, 1);
+            ((AnimModel *)(&o->model))->setFrame(1);
         }
     }
 }
@@ -2242,7 +2243,7 @@ extern "C" BOOL Insect_SplashIfWater(Rec *o) {
     g.initAtPos((VecFx32 *)(&v), 0, 1);
     if (g.waterKind != 0) {
         v.y = g.waterSurfaceY + 0x100;
-        SndEnvChannel_callRequestSustained(&o->seEmitter, 0x7e5);
+        ((SndEnvChannel *)(&o->seEmitter))->callRequestSustained((void *)(0x7e5));
         switch (o->kind) {
         case 0xc:
         case 0xd:
@@ -2288,7 +2289,7 @@ extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
     s8 i;
     s8 *p = &o->hitCountdown;
     if (*p <= 0) {
-        if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+        if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
             for (i = 0; i < 4; i++) {
                 *p = PlayerActor_GetDigCountdownAt(a, i);
                 if (*p > 0) break;
@@ -2329,9 +2330,9 @@ extern "C" void Insect_PlaySe(Rec *o, s32 a, s32 b) {
     s32 r = Insect_GetSeId(o->kind, a);
     if (r >= 0) {
         if (b != 0) {
-            SndEnvChannel_callRequest(&o->seEmitter, r);
+            ((SndEnvChannel *)(&o->seEmitter))->callRequest((void *)(r));
         } else {
-            SndEnvChannel_callRequestSustained(&o->seEmitter, r);
+            ((SndEnvChannel *)(&o->seEmitter))->callRequestSustained((void *)(r));
         }
     }
 }
@@ -2632,7 +2633,7 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
     {
         s32 k = Insect_GetFlutterTargetSpeed(self);
         if (Math_ApproachVecXZ(r6, r10, 0x28, k + 0x19a, Insect_GetFlutterTargetSpeed(self)) == 0) {
-            if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+            if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
                 if (NetArea_IsLocalOwner() == 0) {
                     return;
                 }
@@ -2644,7 +2645,7 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
                 *r6 = *r4;
                 if (self->isAlarmed != 0) {
                     void *e2;
-                    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+                    if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
                         e2 = (void *)Insect_FindNearestPlayer(r4);
                     } else {
                         e2 = PlayerActor_GetActor(4);
@@ -2708,10 +2709,10 @@ namespace s13 {
 extern "C" s32 Insect_CheckAlarm(Rec *self) {
     VecFx32Ctor v;
     s32 r = Insect_UpdateAlarm(self, &v);
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
         Insect_FleeIfAlarmed(self, &v);
     } else {
-        Insect_insectFleeFrom(self, &v);
+        (self)->insectFleeFrom((s32 *)(void *)(&v));
     }
     return r;
 }
@@ -2764,9 +2765,9 @@ namespace s13 {
 // 0x222d674
 extern "C" void Insect_FlapWings(Rec *self) {
     if ((((u32)self->model.curFrame << 4) >> 16) == 1) {
-        AnimModel_setFrame(&self->model, 2);
+        ((AnimModel *)(&self->model))->setFrame(2);
     } else {
-        AnimModel_setFrame(&self->model, 1);
+        ((AnimModel *)(&self->model))->setFrame(1);
     }
 }
 }
@@ -2804,7 +2805,7 @@ extern "C" void Butterfly_Update(Rec *self) {
     case 9:
     case 11:
         if (((self->model.numFrames << 4) >> 16) > 9) {
-            AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 9, 0, 0x1000, 0);
+            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)self->model))->setup(9, 0, 0x1000, 0);
         }
         Insect_FlyAwayArc(self, 0x1ccd);
         break;
@@ -2866,7 +2867,7 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
     r7 = &self->position;
     r4 = &self->stateTimer;
     if (self->kind != 8 && ((self->model.numFrames << 4) >> 16) > 9) {
-        AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 9, 0, self->behaviorWork, 0);
+        ((AnimFrameCtrl *)(&(AnimFrameCtrl &)self->model))->setup(9, 0, self->behaviorWork, 0);
     }
     if (Insect_CheckAlarm(self) == 2) {
         if (self->kind != 8) {
@@ -2900,7 +2901,7 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
             if (self->behaviorWork != self->model.frameStep) {
                 Insect_SetAnimSpeed(self, self->behaviorWork);
             }
-            if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) == 0) {
+            if ((gCommManager)->isSlotActive(gCommManager->myAid) == 0) {
                 Insect_ApproachFlower(self, &ang);
             }
         }
@@ -2916,7 +2917,7 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
     Insect_FlutterAltitude(self, r4);
     r7->y = r7->y + r6;
     if (self->kind == 8) {
-        Insect_insectWanderSteer(self, &ang, 0xaaa, 0x14, 0x3c, self->moveSpeed << 12);
+        (self)->insectWanderSteer(&ang, 0xaaa, 0x14, 0x3c, self->moveSpeed << 12);
     } else {
         Insect_FlutterSteer(self, &ang, 0x38e, 0x14, 0x3c, self->moveSpeed << 12);
     }
@@ -3058,9 +3059,9 @@ extern "C" void Dragonfly_Update(Rec *self) {
         if (self->frameCounter % 0x14 == 0) {
             s32 r = Random_GlobalBelow(100);
             if ((((u32)self->model.curFrame << 4) >> 16) == 0 && r > 0x5c) {
-                AnimModel_setFrame(&self->model, 2);
+                ((AnimModel *)(&self->model))->setFrame(2);
             } else if (r > 0x32) {
-                AnimModel_setFrame(&self->model, 0);
+                ((AnimModel *)(&self->model))->setFrame(0);
             }
         } else if ((((u32)self->model.curFrame << 4) >> 16) != 0) {
             Insect_FlapWings(self);
@@ -3153,7 +3154,7 @@ namespace s12 {
 extern "C" void Dragonfly_Hover(Rec *self, s16 *cnt) {
     V3 *p = &self->position;
     s32 r = Random_GlobalBelow(100);
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) != 0 && NetArea_IsLocalOwner() == 0) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid) != 0 && NetArea_IsLocalOwner() == 0) {
         V3 *q = &self->targetPos;
         if (q->x != p->x || q->z != p->z) {
             self->state = 4;
@@ -3231,7 +3232,7 @@ extern "C" void Dragonfly_FlyToTarget(Rec *self) {
     } else {
         s32 x, y;
         self->rotY = Math_AngleXZ(p, q);
-        if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) != 0) {
+        if ((gCommManager)->isSlotActive(gCommManager->myAid) != 0) {
             if (NetArea_IsLocalOwner() == 0) {
                 FieldPos_ToUnit(&x, &y, p);
                 if (x < 0x10 || x > 0x4f || y < 0x10) {
@@ -3496,7 +3497,7 @@ extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out) {
     s14 = o->alarm;
     r4 = o->alarmThreshold;
     out[0] = 0;
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
         if (NetArea_IsLocalOwner() == 0) {
             flagC = r;
         }
@@ -3582,7 +3583,7 @@ extern "C" void Hopper_Update(Rec *o) {
     case 0x13:
         Cricket_Chirp(o);
         if ((((u32)o->model.curFrame << 4) >> 16) != 0) {
-            AnimModel_setFrame(HOST_AT(o, 0x50, model, 0), 0);
+            ((AnimModel *)(HOST_AT(o, 0x50, model, 0)))->setFrame(0);
         }
         if (Hopper_CheckObstacle(o, p) == 0) {
             Hopper_Rest(o, p);
@@ -3624,7 +3625,7 @@ namespace s11 {
 // 0x222c668
 extern "C" void Hopper_Rest(Rec *o, s16 *p) {
     *p = *p + 1;
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) && !NetArea_IsLocalOwner()) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid) && !NetArea_IsLocalOwner()) {
         V3 *a = &o->position;
         V3 *b = &o->targetPos;
         if (a->x != b->x || a->z != b->z) {
@@ -3739,7 +3740,7 @@ extern "C" void Hopper_Jump(Rec *o) {
         if (!Math_ApproachS32(HOST_AT(src, 4, y, 0), v, q, 0x1000, 0x266) && flag != 0 && st != 0xb && st != 9) {
             o->auxTimer = (Random_GlobalBelow(9) + 2) * 0x14;
             o->state = 0x13;
-            AnimModel_setFrame(HOST_AT(o, 0x50, model, 0), 0);
+            ((AnimModel *)(HOST_AT(o, 0x50, model, 0)))->setFrame(0);
             if (v < 0) {
                 Insect_SplashIfWater(o);
                 o->stateTimer = 0;
@@ -3910,7 +3911,7 @@ extern "C" void Mosquito_Update(Rec *o) {
     s16 *p = &o->stateTimer;
     switch (o->state) {
     case 0:
-        Insect_mosquitoChase(o, (V3 *)p);
+        (o)->mosquitoChase((s16 *)(void *)((V3 *)p));
         break;
     case 0xf: {
         s16 t = o->rotY;
@@ -4034,11 +4035,11 @@ extern "C" void Bee_Update(Rec *o) {
     switch (o->state) {
     case 0:
         Insect_PlaySe(o, 0, 1);
-        Insect_beeChasePlayer(o);
+        (o)->beeChasePlayer();
         break;
     case 2:
         Insect_PlaySe(o, 0, 1);
-        Insect_beeSwarmDescend(o);
+        (o)->beeSwarmDescend();
         break;
     case 3:
     case 7:
@@ -4052,7 +4053,7 @@ extern "C" void Bee_Update(Rec *o) {
         Insect_FlyAwayArc(o, 0x1333);
         break;
     case 4:
-        Insect_beeEnterSwarm(o);
+        (o)->beeEnterSwarm();
         break;
     case 1:
     case 5:
@@ -4089,7 +4090,7 @@ namespace s10 {
 extern "C" void Hoverer_Update(Rec *self) {
     switch (self->state) {
     case 0:
-        Insect_hovererFly(self);
+        (self)->hovererFly();
         break;
     case 6:
         Crawler_Wander(self);
@@ -4136,7 +4137,7 @@ extern "C" void Ant_Update(Rec *self) {
     case 7:
     case 8:
         if (Insect_FadeOut(self, 4)) {
-            NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(&self->pooledModel), 0, 0);
+            NNS_G3dMdlSetMdlAlpha((void *)((PooledModel *)(&self->pooledModel))->getModel(), 0, 0);
             self->state = 0x13;
             V3 *p = &self->position;
             p->x = 0;
@@ -4218,7 +4219,7 @@ extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt) {
         if (o != 0) {
             s32 a = Math_AngleXZ(pos, ACTOR_POS_AT(o));
             self->state = 5;
-            NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(&self->pooledModel), 0, 0x1f);
+            NNS_G3dMdlSetMdlAlpha((void *)((PooledModel *)(&self->pooledModel))->getModel(), 0, 0x1f);
             self->rotY = a + 0x8000;
             *cnt = 0;
         }
@@ -4309,17 +4310,17 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
                 } else if (self->kind == 0x31) {
                     self->auxTimer = 0;
                     if ((((u32)self->model.curFrame << 4) >> 16) != 1) {
-                        AnimModel_setFrame(&self->model, 1);
+                        ((AnimModel *)(&self->model))->setFrame(1);
                     }
                 }
                 self->state = 9;
             } else {
                 self->state = 4;
                 if (self->kind == 0x31) {
-                    AnimModel_setFrame(&self->model, 1);
+                    ((AnimModel *)(&self->model))->setFrame(1);
                 }
                 if (self->kind == 0x31 || self->kind == 0x1e) {
-                    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) && NetArea_IsLocalOwner()) {
+                    if ((gCommManager)->isSlotActive(gCommManager->myAid) && NetArea_IsLocalOwner()) {
                         Insect_SetMoveTarget(self, self->rotY, 0xc000);
                     }
                 }
@@ -4431,7 +4432,7 @@ namespace s10 {
 // 0x222b838
 extern "C" void MoleCricket_Burrow(Rec *self, s16 *cnt) {
     s32 r4 = self->auxTimer;
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
         if (Insect_GroundWalkNet(self) != 0) {
             return;
         }
@@ -4535,7 +4536,7 @@ extern "C" void PillBug_Update(Rec *self) {
         break;
     case 11:
         if ((((u32)self->model.curFrame << 4) >> 16) == 1) {
-            AnimModel_setFrame(&self->model, 0);
+            ((AnimModel *)(&self->model))->setFrame(0);
         }
     case 5:
         Insect_HopArc(self, cnt);
@@ -4549,7 +4550,7 @@ extern "C" void PillBug_Update(Rec *self) {
     case 19:
         Insect_CheckRockStrike(self, cnt);
         if ((((u32)self->model.curFrame << 4) >> 16) != 0) {
-            AnimModel_setFrame(&self->model, 0);
+            ((AnimModel *)(&self->model))->setFrame(0);
         }
         break;
     }
@@ -4585,10 +4586,10 @@ extern "C" void PillBug_Curled(Rec *self) {
             self->auxTimer = r4 - 1;
             if (self->alarm < self->alarmThreshold) {
                 self->state = 4;
-                AnimModel_setFrame(&self->model, 1);
+                ((AnimModel *)(&self->model))->setFrame(1);
                 s32 a = Math_AngleXZ(pos, &out);
                 self->rotY = a + 0x8000;
-                if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) && NetArea_IsLocalOwner()) {
+                if ((gCommManager)->isSlotActive(gCommManager->myAid) && NetArea_IsLocalOwner()) {
                     Insect_SetMoveTarget(self, self->rotY, 0xc000);
                 }
             }
@@ -4614,7 +4615,7 @@ namespace s09 {
 extern "C" void PillBug_Walk(Rec *self) {
     V3 *pos = &self->position;
     s32 r4 = self->auxTimer;
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
         if (Insect_GroundWalkNet(self) != 0) {
             return;
         }
@@ -4626,11 +4627,11 @@ extern "C" void PillBug_Walk(Rec *self) {
     V3 out;
     Insect_UpdateAlarm(self, &out.x);
     if (self->alarm >= self->alarmThreshold &&
-        (CommManager_isSlotActive(gCommManager, gCommManager->myAid) == 0 || NetArea_IsLocalOwner() != 0 ||
+        ((gCommManager)->isSlotActive(gCommManager->myAid) == 0 || NetArea_IsLocalOwner() != 0 ||
          (self->targetPos.x == self->position.x && self->targetPos.z == self->position.z))) {
         self->state = 7;
-        AnimModel_setFrame(&self->model, 0);
-        if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) && NetArea_IsLocalOwner()) {
+        ((AnimModel *)(&self->model))->setFrame(0);
+        if ((gCommManager)->isSlotActive(gCommManager->myAid) && NetArea_IsLocalOwner()) {
             V3 *src = &self->position;
             V3 *dst = &self->targetPos;
             dst->x = src->x;
@@ -4668,7 +4669,7 @@ extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out) {
     s8 *p = &self->hitCountdown;
     V3 *sub = &self->position;
     if (*p <= 0) {
-        if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+        if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
             s8 i;
             for (i = 0; i < 4; i++) {
                 *p = PlayerActor_GetStrikeCountdownAt(sub, i);
@@ -4689,7 +4690,7 @@ extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out) {
             if (o) {
                 s32 v = Math_AngleXZ(sub, ACTOR_POS_AT(o));
                 self->state = 5;
-                NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(&self->pooledModel), 0, 0x1f);
+                NNS_G3dMdlSetMdlAlpha((void *)((PooledModel *)(&self->pooledModel))->getModel(), 0, 0x1f);
                 self->rotY = v + 0x8000;
                 *out = 0;
                 return TRUE;
@@ -4864,9 +4865,9 @@ extern "C" void Stinger_Update(Rec *self) {
             if (self->kind == 0x37 && r == 0) {
                 u32 m = ((u32)sub->curFrame << 4) >> 16;
                 if (m > 3) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)*sub, 3, 3, 0x1000, m);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*sub))->setup(3, 3, 0x1000, m);
                 } else if (m == 3) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)*sub, 3, 0, 0x1000, 0);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)*sub))->setup(3, 0, 0x1000, 0);
                 }
             }
         }
@@ -4940,17 +4941,17 @@ namespace s09 {
 extern "C" void DungBeetle_Update(Rec *self) {
     switch (self->state) {
     case 4:
-        Insect_dungBeetlePushSnowball(self);
+        (self)->dungBeetlePushSnowball();
         break;
     case 5:
-        Insect_dungBeetleWalk(self);
+        (self)->dungBeetleWalk();
         break;
     case 9:
     case 11:
         TreeBug_FlyOff(self, &self->stateTimer);
         break;
     case 0x13:
-        AnimModel_setFrame(&self->model, 3);
+        ((AnimModel *)(&self->model))->setFrame(3);
         self->state = 4;
         break;
     }
@@ -4975,7 +4976,7 @@ extern "C" BOOL Insect_FadeOut(Rec *self, s32 a) {
     u8 *p = (u8 *)&self->pooledModel;
     s32 t = NNS_G3dMdlGetMdlAlpha((void *)PooledModel_getModel(p), 0);
     if (t > 7) {
-        NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(p), 0, t - a);
+        NNS_G3dMdlSetMdlAlpha((void *)((PooledModel *)(p))->getModel(), 0, t - a);
     } else {
         return TRUE;
     }
@@ -5080,14 +5081,14 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
     s16 *cnt = &self->stateTimer;
     s32 ret = 0;
     Unk_ov003_0222abc0_Obj o;
-    GroundInfo_initAtPos(&o, pos, ret, 1);
+    ((GroundInfo *)(void *)(&o))->initAtPos((VecFx32 *)(void *)(pos), ret, 1);
     V3 *vel = &self->targetPos;
     V3 dir;
     Insect_GetDirVec(&dir, self->rotY);
     s32 nang;
     if (NetArea_IsLocalOwner() != 0 || self->state == 0x11) {
         if (o.waterKind != 0) {
-            if (GroundInfoBase_isBelowWaterSurface(&o, pos->y) != 0) {
+            if (((GroundInfoBase *)(void *)(&o))->isBelowWaterSurface(pos->y) != 0) {
                 Insect_Despawn(self);
                 Insect_SplashIfWater(self);
                 ret = 2;
@@ -5270,17 +5271,17 @@ extern "C" void Spider_Update(Rec *self) {
         Insect_EscapeRun(self, cnt);
         break;
     case 0x12:
-        if (Insect_spiderSway(self)) {
+        if ((self)->spiderSway()) {
             self->rotY = 0;
             self->state = 2;
-            AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 0x39, 1, 0x1000, 0x20);
+            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)self->model))->setup(0x39, 1, 0x1000, 0x20);
         }
         break;
     case 0x13:
-        if (Insect_spiderCheckPlayerHit(self)) {
+        if ((self)->spiderCheckPlayerHit()) {
             self->state = 1;
             self->alarm = 0;
-            AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 0x21, 1, 0x1000, 0);
+            ((AnimFrameCtrl *)(&(AnimFrameCtrl &)self->model))->setup(0x21, 1, 0x1000, 0);
             NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&self->pooledModel), 0, 0x1f);
         } else {
             self->model.playMode = 1;
@@ -5405,11 +5406,11 @@ extern "C" void TreeBug_Idle(Rec *self, s16 *cnt) {
         if (self->kind == 9) {
             u32 st = ((u32)self->model.curFrame << 4) >> 16;
             if (st == 0xd || st < 9) {
-                AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 9, 1, 0, 9);
+                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)self->model))->setup(9, 1, 0, 9);
             }
             if (*cnt > 0x50) {
                 if (rnd > 0x5c && st < 0xa) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 0xe, 1, 0x1000, 9);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)self->model))->setup(0xe, 1, 0x1000, 9);
                 }
                 if (*cnt > 0xa0) {
                     *cnt = 0;
@@ -5617,16 +5618,16 @@ extern "C" void TreeBug_FlyOff(Rec *self, s16 *cnt) {
     (*cnt)++;
     if (mode == 0x14) {
         if (((*(u32 *)(s + 0xa0) << 4) >> 16) < 0x18) {
-            AnimFrameCtrl_setup(s + 0x9c, 0x1a, 0, 0x1000, 0x18);
+            ((AnimFrameCtrl *)(s + 0x9c))->setup(0x1a, 0, 0x1000, 0x18);
         } else if (((*(u32 *)(s + 0xa4) << 4) >> 16) < 0x18) {
             *(u32 *)(s + 0xa4) = 0x18000;
         }
     } else if (self->kind == 9) {
         if (*(u8 *)(s + 0xb0) != 0) {
-            AnimFrameCtrl_setup(s + 0x9c, 9, 0, 0x1000, 0);
+            ((AnimFrameCtrl *)(s + 0x9c))->setup(9, 0, 0x1000, 0);
         }
     } else {
-        AnimModel_setFrame(s, st == 1 ? 2 : 1);
+        ((AnimModel *)(s))->setFrame(st == 1 ? 2 : 1);
     }
     if (Insect_FadeOut(self, 1)) {
         Insect_Despawn(self);
@@ -5671,7 +5672,7 @@ extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p) {
         }
         if (st == 0x14) {
             if (((o->model.numFrames << 4) >> 16) < 0x18) {
-                AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 0x1a, 0, 0x1000, 0x18);
+                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(0x1a, 0, 0x1000, 0x18);
             } else if ((((u32)o->model.curFrame << 4) >> 16) < 0x18) {
                 *(u32 *)&o->model.curFrame = 0x18000;
             }
@@ -5739,17 +5740,17 @@ extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p) {
             o->rotX = 0xd55;
             o->state = 7;
             o->isAlarmed = 1;
-            AnimModel_setFrame(&o->model, 1);
+            ((AnimModel *)(&o->model))->setFrame(1);
             s32 z = 0;
             *p = z;
             Insect_PlaySe(o, 1, z);
             if (o->kind == 9) {
-                AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 9, 0, 0x1000, 0);
+                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(9, 0, 0x1000, 0);
             }
         } else if (o->kind == 0x14) {
             if (n * 2 >= lim || o->cooldownTimer != 0) {
                 if ((((u32)o->model.curFrame << 4) >> 16) == 0) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 4, 1, 0x1000, 0);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(4, 1, 0x1000, 0);
                     o->cooldownTimer = 0x3c;
                 } else if (o->cooldownTimer != 0) {
                     o->cooldownTimer--;
@@ -5757,7 +5758,7 @@ extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p) {
             } else {
                 s32 m = (s32)(*(u32 *)&o->model.curFrame) >> 12;
                 if ((u16)m != 0 || ((o->model.numFrames << 4) >> 16) != 0) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 0, 3, 0x1000, (u16)m);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(0, 3, 0x1000, (u16)m);
                 }
             }
         }
@@ -5889,39 +5890,39 @@ extern "C" void Crawler_Watch(Rec *o, s16 *p) {
             *p = 0;
         } else if (st = o->kind, (u8)(s8)(st - 0xe) <= 1) {
             if (n > 0x14) {
-                AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 9, 1, 0x1000, (((u32)o->model.curFrame << 4) >> 16));
+                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(9, 1, 0x1000, (((u32)o->model.curFrame << 4) >> 16));
                 o->cooldownTimer = 0x3c;
             } else if (o->cooldownTimer != 0) {
                 o->cooldownTimer--;
             } else if (d < o->disturbRadius) {
                 u32 m = (((u32)o->model.curFrame << 4) >> 16);
                 if (m == 0) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 4, 1, 0x1000, 0);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(4, 1, 0x1000, 0);
                 } else if (m > 4) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 4, 3, 0x1000, m);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(4, 3, 0x1000, m);
                 }
             } else {
                 u32 m = (((u32)o->model.curFrame << 4) >> 16);
                 if (m != 0) {
-                    AnimFrameCtrl_setup(&(AnimFrameCtrl &)o->model, 0, 3, 0x1000, m);
+                    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)o->model))->setup(0, 3, 0x1000, m);
                 }
             }
         } else if (st == 0x1a) {
             if (n > 0x14) {
                 u32 m = (((u32)o->model.curFrame << 4) >> 16);
                 if (m == 2) {
-                    AnimModel_setFrame(&o->model, 1);
+                    ((AnimModel *)(&o->model))->setFrame(1);
                 } else if (m == 1) {
-                    AnimModel_setFrame(&o->model, 0);
+                    ((AnimModel *)(&o->model))->setFrame(0);
                     o->state = 0x13;
                     o->cooldownTimer = 0x3c;
                 }
             } else {
                 s32 t = (s32)(*(u32 *)&o->model.curFrame) >> 12;
                 if ((u16)t == 0 && o->cooldownTimer == 0) {
-                    AnimModel_setFrame(&o->model, 1);
+                    ((AnimModel *)(&o->model))->setFrame(1);
                 } else if ((u16)t == 1) {
-                    AnimModel_setFrame(&o->model, 2);
+                    ((AnimModel *)(&o->model))->setFrame(2);
                 } else if (o->cooldownTimer != 0) {
                     o->cooldownTimer--;
                 }
@@ -6105,7 +6106,7 @@ extern "C" void Crawler_Escape(Rec *self, s16 *pp) {
         v.y = t * ((t + 0xc) * 2);
         if ((u8)(s8)(self->kind - 0xe) <= 1) {
             if (((self->model.numFrames << 4) >> 16) != 0xb) {
-                AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, 0xb, 0, 0x1000, 9);
+                ((AnimFrameCtrl *)(&(AnimFrameCtrl &)self->model))->setup(0xb, 0, 0x1000, 9);
             } else if ((((u32)self->model.curFrame << 4) >> 16) < 9) {
                 *(u32 *)&self->model.curFrame = 0x9000;
             }
@@ -6123,9 +6124,9 @@ extern "C" void Crawler_Escape(Rec *self, s16 *pp) {
         Insect_EscapeRun(self, pp);
         u32 m = (((u32)self->model.curFrame << 4) >> 16);
         if (m == 0) {
-            AnimModel_setFrame(HOST_AT(self, 0x50, model, 0), 1);
+            ((AnimModel *)(HOST_AT(self, 0x50, model, 0)))->setFrame(1);
         } else if (m == 1) {
-            AnimModel_setFrame(HOST_AT(self, 0x50, model, 0), 2);
+            ((AnimModel *)(HOST_AT(self, 0x50, model, 0)))->setFrame(2);
         }
     }
 }
@@ -6144,7 +6145,7 @@ namespace s06 {
 extern "C" void Insect_InitBehavior(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5) {
     Buf b;
     VecFx32Ctor *p = &self->position;
-    GroundInfo_initAtPos(&b, p, 0, 0);
+    ((GroundInfo *)(void *)(&b))->initAtPos((VecFx32 *)(p), 0, 0);
     VecFx32Ctor *q = &self->scale;
     s32 r6 = FX_Div(s2 << 12, 0x10000);
     s32 r0 = FX_Div(a3 << 12, 0x10000);
@@ -6478,7 +6479,7 @@ extern "C" void Insect_InitTreeBug(Rec *self) {
     case 9:
         Insect_PlaceOnTrunk(self, 0x96, 0x46, 0x18, 0x3e8);
         self->moveSpeed = 0xa;
-        AnimFrameCtrl_setup(&(AnimFrameCtrl &)self->model, ((self->model.numFrames << 4) >> 16), 1, 0x1000, 0);
+        ((AnimFrameCtrl *)(&(AnimFrameCtrl &)self->model))->setup(((self->model.numFrames << 4) >> 16), 1, 0x1000, 0);
         break;
     case 0x10:
         Insect_PlaceOnTrunk(self, 0x64, 0x50, 0x19, 0x3e8);
@@ -6805,11 +6806,11 @@ extern "C" void Insect_InitCrawler(Insect *a) {
         break;
     case 0xe:
         Insect_InitOnPlant(a, 0x96, 0x32, 0x18, 0x71c);
-        AnimFrameCtrl_setup(&(AnimFrameCtrl &)a->model, 0, 3, 0x1000, 1);
+        ((AnimFrameCtrl *)(&(AnimFrameCtrl &)a->model))->setup(0, 3, 0x1000, 1);
         break;
     case 0xf:
         Insect_InitOnPlant(a, 0x96, 0x32, 0x18, 0x71c);
-        AnimFrameCtrl_setup(&(AnimFrameCtrl &)a->model, 0, 3, 0x1000, 1);
+        ((AnimFrameCtrl *)(&(AnimFrameCtrl &)a->model))->setup(0, 3, 0x1000, 1);
         break;
     }
 }
@@ -7273,7 +7274,7 @@ namespace s05 {
 extern "C" void Insect_InitScorpion(Insect *a) {
     Insect_InitBehavior(a, 0, 0x64, 0x50, 0, 0, 0, 0, 5, 0);
     a->unk_24c = 0;
-    AnimFrameCtrl_setup(&(AnimFrameCtrl &)a->model, 3, 0, 0x1000, 0);
+    ((AnimFrameCtrl *)(&(AnimFrameCtrl &)a->model))->setup(3, 0, 0x1000, 0);
 }
 }
 #undef SndEnvChannel_callRelease
@@ -7566,8 +7567,8 @@ BOOL InsectManager::allocHeldInsect(Insect *e) { using namespace s05;
         pv->z = w.z;
     }
     e->lifeState = 2;
-    ModelSlotPool_acquire(&heldInsectPool, &e->modelSlot);
-    PooledModel_reset(&e->pooledModel);
+    ((ModelSlotPool *)(&heldInsectPool))->acquire((u16 *)(&e->modelSlot));
+    ((PooledModel *)(&e->pooledModel))->reset();
     e->inView = 1;
     return TRUE;
 }
@@ -7596,8 +7597,8 @@ BOOL InsectManager::allocHeldInsect(Insect *e) { using namespace s05;
 BOOL InsectManager::allocSpecialInsect(s32 id, s32 idx) { using namespace s05;
     Insect *e = &sSpecialInsects[idx];
     if (e->lifeState == 0) {
-        ModelSlotPool_acquire(&specialInsectPool, &e->modelSlot);
-        PooledModel_reset(&e->pooledModel);
+        ((ModelSlotPool *)(&specialInsectPool))->acquire((u16 *)(&e->modelSlot));
+        ((PooledModel *)(&e->pooledModel))->reset();
         e->inView = 1;
         e->matAnim.anmObj = 0;
         e->matAnim.resMdl = 0;
@@ -7632,8 +7633,8 @@ BOOL InsectManager::allocSpecialInsect(s32 id, s32 idx) { using namespace s05;
 BOOL InsectManager::allocFieldInsect(Insect *e) { using namespace s05;
     if (e->lifeState == 0) {
         e->lifeState = 2;
-        ModelSlotPool_acquire(&fieldInsectPool, &e->modelSlot);
-        PooledModel_reset(&e->pooledModel);
+        ((ModelSlotPool *)(&fieldInsectPool))->acquire((u16 *)(&e->modelSlot));
+        ((PooledModel *)(&e->pooledModel))->reset();
         e->inView = 0;
         return TRUE;
     }
@@ -7668,11 +7669,11 @@ void InsectManager::freeInsect(Insect *e, s32 mode) { using namespace s05;
         TownJunkInsects_Refresh();
     }
     if (e->kind >= 0) {
-        AnimModel_detachAnim(&e->model);
+        ((AnimModel *)(&e->model))->detachAnim();
     }
     e->lifeState = 0;
     e->behaviorWork = 0;
-    SndEnvChannel_callRelease(&e->seEmitter);
+    ((SndEnvChannel *)(&e->seEmitter))->callRelease();
     p->x = 1;
     p->y = 1;
     p->z = 1;
@@ -7686,18 +7687,18 @@ void InsectManager::freeInsect(Insect *e, s32 mode) { using namespace s05;
     e->rotY = 0;
     e->stateTimer = 0;
     e->state = 0x13;
-    PooledModel_unload(&e->pooledModel);
+    ((PooledModel *)(&e->pooledModel))->unload();
     e->matAnim.anmObj = 0;
     e->matAnim.resMdl = 0;
     e->alarm = 0;
     e->isAlarmed = 0;
     e->despawnTimer = 0;
     if (mode == 1) {
-        ModelSlotPool_release(&fieldInsectPool, &e->modelSlot);
+        ((ModelSlotPool *)(&fieldInsectPool))->release((u16 *)(&e->modelSlot));
     } else if (mode == 2) {
-        ModelSlotPool_release(&specialInsectPool, &e->modelSlot);
+        ((ModelSlotPool *)(&specialInsectPool))->release((u16 *)(&e->modelSlot));
     } else {
-        ModelSlotPool_release(&heldInsectPool, &e->modelSlot);
+        ((ModelSlotPool *)(&heldInsectPool))->release((u16 *)(&e->modelSlot));
     }
     e->updateFn = 0;
 }
@@ -7724,11 +7725,11 @@ void InsectManager::freeInsect(Insect *e, s32 mode) { using namespace s05;
 #define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x2228710
 BOOL InsectManager::onCreate() { using namespace s05;
-    ModelSlotPool_init(&fieldInsectPool, 8, 0x400, 0x40, 0x9c4, (void *)FieldInsectHeap_Create, (void *)FieldInsectHeap_Destroy, 0);
-    ModelSlotPool_init(&specialInsectPool, 2, 0x400, 0x40, 0x6e8, (void *)SpecialInsectHeap_Create, (void *)SpecialInsectHeap_Destroy, 0);
-    ModelSlotPool_init(&heldInsectPool, 4, 0x400, 0x40, 0x9c4, (void *)HeldInsectHeap_Create, (void *)HeldInsectHeap_Destroy, 0);
+    ((ModelSlotPool *)(&fieldInsectPool))->init(8, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)FieldInsectHeap_Create), (ModelSlotFreeFunc)((void *)FieldInsectHeap_Destroy));
+    ((ModelSlotPool *)(&specialInsectPool))->init(2, (void *)(0x400), (void *)(0x40), 0x6e8, (ModelSlotAllocFunc)((void *)SpecialInsectHeap_Create), (ModelSlotFreeFunc)((void *)SpecialInsectHeap_Destroy));
+    ((ModelSlotPool *)(&heldInsectPool))->init(4, (void *)(0x400), (void *)(0x40), 0x9c4, (ModelSlotAllocFunc)((void *)HeldInsectHeap_Create), (ModelSlotFreeFunc)((void *)HeldInsectHeap_Destroy));
     u32 *g = gCommManager[0];
-    if (CommManager_isSlotActive(g, g[0x64 / 4]) == 0) {
+    if (((CommManager *)(g))->isSlotActive(g[0x64 / 4]) == 0) {
         allocSpecialInsect(0x3a, 0);
         allocSpecialInsect(0x3b, 1);
     }
@@ -7813,14 +7814,14 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
     }
     void *h;
     if (mode == 0) {
-        h = ModelSlotPool_acquire(&a->fieldInsectPool, &e->modelSlot);
+        h = ((ModelSlotPool *)(&a->fieldInsectPool))->acquire((u16 *)(&e->modelSlot));
     } else if (mode == 1) {
-        h = ModelSlotPool_acquire(&a->specialInsectPool, &e->modelSlot);
+        h = ((ModelSlotPool *)(&a->specialInsectPool))->acquire((u16 *)(&e->modelSlot));
     } else {
-        h = ModelSlotPool_acquire(&a->heldInsectPool, &e->modelSlot);
+        h = ((ModelSlotPool *)(&a->heldInsectPool))->acquire((u16 *)(&e->modelSlot));
     }
     p130 = &e->pooledModel;
-    if (!PooledModel_loadFromSlot(p130, h, l.path)) {
+    if (!((PooledModel *)(p130))->loadFromSlot((ModelSlot *)(h), (const char *)(l.path))) {
         return;
     }
     obj = (u8 *)&e->model;
@@ -7855,7 +7856,7 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
     } else {
         m = func_021065f8(func_021065dc(r7), 0);
     }
-    if (!AnimModel_allocAnmObj(obj, h2)) {
+    if (!((AnimModel *)(obj))->allocAnmObj(h2)) {
         return;
     }
     ok = TRUE;
@@ -7863,10 +7864,10 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
     if (t4 == 0x35 || t4 == 9) {
         sc = 0;
     }
-    BlendAnimModel_initAnim(obj, m, 0, sc, 0, 0);
-    AnimModel_attachAnim(obj);
+    ((BlendAnimModel *)(obj))->initAnim(m, 0, sc, 0, 0);
+    ((AnimModel *)(obj))->attachAnim();
     if (t4 == 9) {
-        AnimFrameCtrl_setup(&(AnimFrameCtrl &)e->model, 9, 1, 0, 9);
+        ((AnimFrameCtrl *)(&(AnimFrameCtrl &)e->model))->setup(9, 1, 0, 9);
     }
     if ((u32)(t4 - 0x3a) <= 1) {
         Str_SPrintf(l.path, sInsectTexAnimPathFmt, t4);
@@ -7875,9 +7876,9 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
             void *tex = File_LoadAlloc(l.path, h2, 4, 0);
             if (r7 != 0) {
                 r7 = (void *)func_02106670(func_02106654(tex), 0);
-                if (ModelAnim_allocMatAnm(e, ((Model *)obj)->resMdl, h2)) {
+                if (((ModelAnim *)(void *)(e))->allocMatAnm((u32)(((Model *)obj)->resMdl), h2)) {
                     ModelAnim_init(e, (s32)r7, 0, 0x1000, 0);
-                    ModelAnim_addToRenderObj(e, Model_getRenderObj(obj));
+                    ((ModelAnim *)(void *)(e))->addToRenderObj((u32)(((Model *)(obj))->getRenderObj()));
                     ok = TRUE;
                 }
             }
@@ -7886,7 +7887,7 @@ extern "C" void Insect_LoadModel(InsectManager *a, Rec *e, s32 mode) {
     if (ok) {
         VecFx32Ctor *pv = &e->scale;
         VecFx32 sv = *(VecFx32 *)pv; // plain-struct copy (an extra stack temp)
-        SndEnvChannel_callReset(&e->seEmitter);
+        ((SndEnvChannel *)(&e->seEmitter))->callReset();
         sInsectBehaviors[t4].init(e);
         e->updateFn = (void (*)(Rec *))sInsectBehaviors[t4].update;
         e->lifeState = 3;
@@ -8136,13 +8137,13 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
             if (kind == 3) {
                 {
                     struct { u8 b[0x44]; } w;
-                    _ZN10GroundInfo9initAtPosEP7VecFx32ii(&w, (VecFx32 *)(&e->position), 0, 0);
-                    if (_ZN14GroundInfoBase9getHeightEi(&w, 0) > 0x4000) {
+                    ((GroundInfo *)(&w))->initAtPos((VecFx32 *)(&e->position), 0, 0);
+                    if (((GroundInfoBase *)(&w))->getHeight(0) > 0x4000) {
                         big = TRUE;
                     } else {
                         big = FALSE;
                     }
-                    _ZN10GroundInfoD1Ev(&w);
+                    ((GroundInfo *)(&w))->~GroundInfo();
                 }
                 if (big) {
                     Collision_Move(&e->collisionState, &e->position, &v1, e->rotY, sInsectModelParams[t4].collisionRadius, 0, 0xa);
@@ -8170,20 +8171,20 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
     }
 L226:
     if (sInsectModelParams[t4].hasVisAnim == 0) {
-        AnimModel_stepAnim(&e->model);
+        ((AnimModel *)(&e->model))->stepAnim();
         if ((u8)(s8)(t4 - 0x3a) <= 1) {
-            AnimFrameCtrl_step(e);
+            ((AnimFrameCtrl *)(e))->step();
             *(s32 *)e->matAnim.anmObj = e->matAnim.curFrame;
         }
     }
     goto L268;
 L258:
     if (t4 == 0x14 || t4 == 0x37) {
-        AnimModel_stepAnim(&e->model);
+        ((AnimModel *)(&e->model))->stepAnim();
     }
 L268:
     if (t7 == 0xa) {
-        func_ov003_022287c8(a, e, kind);
+        ((InsectManager *)(a))->freeInsect(e, kind);
         return;
     }
     if (kind == 3 && t7 == 0x10) {
@@ -8197,7 +8198,7 @@ L268:
         v3.x = pv->x;
         v3.y = pv->y;
         v3.z = pv->z;
-        SndEnvChannel_callUpdateRelative(&e->seEmitter, &v3);
+        ((SndEnvChannel *)(&e->seEmitter))->callUpdateRelative((VecFx32 *)(&v3));
     }
 }
 }
@@ -8270,7 +8271,7 @@ L268:
 BOOL InsectManager::onExecute() { using namespace s04;
     void *self = this;
     FieldInsect_UpdateAll(self);
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) == 0) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid) == 0) {
         SpecialInsect_UpdateAll(self);
     }
     HeldInsect_UpdateAll(self);
@@ -8348,7 +8349,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
     VillagerActor *o;
     u8 ok;
     s32 px, py;
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) != 0) {
+    if ((gCommManager)->isSlotActive(gCommManager->myAid) != 0) {
         if (NetArea_IsLocalOwner() != 0) {
             u8 i;
             s32 z0 = 0, z1 = 0;
@@ -8736,7 +8737,7 @@ extern "C" void Insect_UpdateSpawning(void *self) {
             b[3] = -1;
             if (Insect_PickSpecialSpawn(&b[2], &b[3], 0)) {
 if (Insect_Spawn(self, b[2], (u8)b[3], 2)) {
-                    Insect_antsAppear(&data_ov003_022595b0);
+                    ((Insect *)(&data_ov003_022595b0))->antsAppear();
                     sAntSpawnEnabled = 0;
                 }
             }
@@ -8815,7 +8816,7 @@ loop0:
         k = o->lifeState;
         V3 *p204;
         V3 *p1d4;
-        if (CommManager_isSlotActive(g, g->myAid)) {
+        if ((g)->isSlotActive(g->myAid)) {
             p204 = &o->position;
             p1d4 = &o->targetPos;
             l.netKind = neg;
@@ -8848,7 +8849,7 @@ loop0:
                                 u32 st = o->state;
                                 if (st == 9 || st == 0x11) goto sw0;
                             }
-                            func_ov003_022287c8(a, o, 1);
+                            ((InsectManager *)(a))->freeInsect(o, 1);
                         } else {
                             if (p1d4->x == v18 && p1d4->z == v1c) {
                             } else {
@@ -8870,7 +8871,7 @@ loop0:
         case 2:
             if (NetArea_IsLocalOwner() == 0 && CommManager_isSlotActive(g, g->myAid)) {
                 if (l.netKind != o->kind && v18 > 0) {
-                    func_ov003_022287c8(a, o, 1);
+                    ((InsectManager *)(a))->freeInsect(o, 1);
                 } else {
                     if (Insect_IsTreeStillThere(a, o)) Insect_LoadModel(a, o, 0);
                 }
@@ -8879,11 +8880,11 @@ loop0:
             }
             break;
         case 3:
-            if (CommManager_isSlotActive(g, g->myAid)) {
+            if ((g)->isSlotActive(g->myAid)) {
                 if (NetArea_IsLocalOwner() == 0) {
                     if (Insect_IsNetKindMismatch(a, o, l.netKind, v18, v1c)) {
                         o->state = 10;
-                        func_ov003_022287c8(a, o, 1);
+                        ((InsectManager *)(a))->freeInsect(o, 1);
                     }
                 }
                 s32 kind = o->kind;
@@ -8896,16 +8897,16 @@ loop0:
             Insect_Update(a, o, l.index, 1);
             break;
         case 4:
-            if (CommManager_isSlotActive(g, g->myAid) == 0) {
+            if ((g)->isSlotActive(g->myAid) == 0) {
                 o->state = 10;
-                func_ov003_022287c8(a, o, 1);
+                ((InsectManager *)(a))->freeInsect(o, 1);
             } else if (NetArea_IsLocalOwner()) {
                 s16 *cnt = &o->stateTimer;
                 V3 *pv = &o->position;
                 t1.x = pv->x;
                 t1.y = pv->y;
                 t1.z = pv->z;
-                SndEnvChannel_callUpdateRelative(&o->seEmitter, &t1);
+                ((SndEnvChannel *)(&o->seEmitter))->callUpdateRelative((VecFx32 *)(void *)(&t1));
                 if (o->alarm != 0xff) {
                     o->alarm = 0xff;
                     l.index |= 0x10;
@@ -8917,23 +8918,23 @@ loop0:
                     o->position.x = 1;
                     q2->y = 1;
                     q2->z = 1;
-                    CommManager_beginRecord(g);
-                    CommManager_writeRecord(g, &l.index, 1);
-                    CommManager_endRecord(g, 0x30, 7);
+                    (g)->beginRecord();
+                    (g)->writeRecord((u8 *)(&l.index), 1);
+                    (g)->endRecord(0x30, 7);
                 }
                 *cnt = *cnt + 1;
                 if (*cnt > 0xc8) {
                     o->state = 10;
-                    func_ov003_022287c8(a, o, 1);
+                    ((InsectManager *)(a))->freeInsect(o, 1);
                 }
             } else {
                 V3 *pw = &o->position;
                 t2.x = pw->x;
                 t2.y = pw->y;
                 t2.z = pw->z;
-                SndEnvChannel_callUpdateRelative(&o->seEmitter, &t2);
+                ((SndEnvChannel *)(&o->seEmitter))->callUpdateRelative((VecFx32 *)(void *)(&t2));
                 if (o->alarm == 0xff) o->state = 10;
-                if (o->state == 10) func_ov003_022287c8(a, o, 1);
+                if (o->state == 10) ((InsectManager *)(a))->freeInsect(o, 1);
             }
             break;
         }
@@ -9041,7 +9042,7 @@ extern "C" void SpecialInsect_UpdateAll(void *a) {
             break;
         case 4:
             o->state = 10;
-            func_ov003_022287c8(a, o, 2);
+            ((InsectManager *)(a))->freeInsect(o, 2);
             break;
         }
         o++;
@@ -9081,13 +9082,13 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
                 Effect_End(o->effectHandle);
                 o->effectHandle = neg;
             }
-            func_ov003_022287c8(a, o, 3);
+            ((InsectManager *)(a))->freeInsect(o, 3);
         } else {
             switch (o->lifeState) {
             case 0:
                 break;
             case 1:
-                func_ov003_0222898c(a, o);
+                ((InsectManager *)(a))->allocHeldInsect(o);
                 break;
             case 2:
                 Insect_LoadModel(a, o, 2);
@@ -9098,7 +9099,7 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
                 break;
             case 4:
                 o->state = 10;
-                func_ov003_022287c8(a, o, 3);
+                ((InsectManager *)(a))->freeInsect(o, 3);
                 break;
             }
         }
@@ -9132,7 +9133,7 @@ extern "C" BOOL Insect_UsesCollisionMove(void *a, Rec *o) {
     if (st == 9 || st == 0xb) goto yes;
     if (t != 0x3a && t != 0x3b) {
         CommManager *g = gCommManager;
-        if (CommManager_isSlotActive(g, g->myAid) == 0) goto cont;
+        if ((g)->isSlotActive(g->myAid) == 0) goto cont;
         if (NetArea_IsLocalOwner() != 0) goto cont;
     }
     return FALSE;
@@ -9511,11 +9512,11 @@ namespace s02 {
 extern "C" void HeldInsect_Remove(u8 id, s32 flag) {
     Obj *o = &sHeldInsects[id];
     CommManager *g = gCommManager;
-    if (CommManager_isSlotActive(g, g->myAid) && flag && CommManager_isMyAid(g, id)) {
+    if (((CommManager *)(g))->isSlotActive(g->myAid) && flag && ((CommManager *)(g))->isMyAid(id)) {
         CommManager *g2 = gCommManager;
-        CommManager_beginRecord(g2);
-        CommManager_writeRecord(g2, &id, 1);
-        CommManager_endRecord(g2, 0x30, 4);
+        ((CommManager *)(g2))->beginRecord();
+        ((CommManager *)(g2))->writeRecord((u8 *)(&id), 1);
+        ((CommManager *)(g2))->endRecord(0x30, 4);
     }
     if (o->effectHandle != -1) {
         Effect_End(o->effectHandle);
@@ -9550,11 +9551,11 @@ extern "C" s32 Insect_FinishCatch(u8 id) {
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     o->stateTimer = 0;
     o->lifeState = 4;
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+    if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
         CommManager *g = gCommManager;
-        CommManager_beginRecord(g);
-        CommManager_writeRecord(g, &id, 1);
-        CommManager_endRecord(g, 0x30, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(&id), 1);
+        ((CommManager *)(g))->endRecord(0x30, 4);
     }
     s32 c = o->kind;
     switch (c) {
@@ -9598,7 +9599,7 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
     else r = 1;
     if (o == 0) r = 1;
     if (r != 1) {
-        if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+        if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
             if (!NetArea_IsLocalOwner()) r = sInsectCatchResult;
         }
     }
@@ -9606,12 +9607,12 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
         u8 b;
         Insect_CancelCatch(id);
         b = id;
-        if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+        if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
             if (!NetArea_IsLocalOwner()) {
                 CommManager *g = gCommManager;
-                CommManager_beginRecord(g);
-                CommManager_writeRecord(g, &b, 1);
-                CommManager_endRecord(g, 0x2f, 4);
+                ((CommManager *)(g))->beginRecord();
+                ((CommManager *)(g))->writeRecord((u8 *)(&b), 1);
+                ((CommManager *)(g))->endRecord(0x2f, 4);
             }
         }
     }
@@ -9685,13 +9686,13 @@ extern "C" s32 Insect_TryCatch(u8 id) {
         NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->pooledModel), 0, 0);
         o->state = 0x10;
     }
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+    if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
         if (!NetArea_IsLocalOwner()) {
             sInsectCatchResult = 2;
             CommManager *g = gCommManager;
-            CommManager_beginRecord(g);
-            CommManager_writeRecord(g, &id, 1);
-            CommManager_endRecord(g, 0x28, 6);
+            ((CommManager *)(g))->beginRecord();
+            ((CommManager *)(g))->writeRecord((u8 *)(&id), 1);
+            ((CommManager *)(g))->endRecord(0x28, 6);
         }
     }
     return 1;
@@ -9757,7 +9758,7 @@ extern "C" void Insect_Draw(void *a, Obj *o) {
         r = (31 - r) << 1;
         if (r > 31) c = 0;
         else c = 31 - r;
-        AnimModel_drawAnimated(&o->model, p);
+        ((AnimModel *)(&o->model))->drawAnimated(p);
         if (Insect_HasShadow(a, o)) {
             CharaShadow_DrawFaded(&o->position, data_ov003_02234b06[o->kind].a, 0x9000, (u8)c);
         }
@@ -9936,24 +9937,24 @@ BOOL InsectManager::onDelete() { using namespace s01;
     Rec *pc = sHeldInsects;
     s32 i, j, k;
     for (i = 0; i < 8; i++) {
-        func_ov003_022287c8(obj, pa++, 1);
+        ((InsectManager *)(obj))->freeInsect(pa++, 1);
     }
     j = 0;
     for (i = 0; i < 2; i++) {
         Rec *q = pb;
         pb++;
-        func_ov003_022287c8(obj, q, 2);
+        ((InsectManager *)(obj))->freeInsect(q, 2);
         Mem_Free(obj->specialAnimFiles[i]);
         obj->specialAnimFiles[i] = 0;
     }
     for (k = 0; k < 4; k++) {
         Rec *q = pc;
         pc++;
-        func_ov003_022287c8(obj, q, 3);
+        ((InsectManager *)(obj))->freeInsect(q, 3);
     }
-    ModelSlotPool_destroy(&obj->fieldInsectPool);
-    ModelSlotPool_destroy(&obj->specialInsectPool);
-    ModelSlotPool_destroy(&obj->heldInsectPool);
+    ((ModelSlotPool *)(&obj->fieldInsectPool))->destroy();
+    ((ModelSlotPool *)(&obj->specialInsectPool))->destroy();
+    ((ModelSlotPool *)(&obj->heldInsectPool))->destroy();
     Town_ClearBeesReleased();
     return TRUE;
 }
@@ -10018,7 +10019,7 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
             }
             u32 t = e->inView;
             if (t == 0 && r == 4) {
-                func_ov003_022287c8((void *)obj, e, flag);
+                ((InsectManager *)((void *)obj))->freeInsect(e, flag);
             } else if (x0 < p->x && x1 > p->x && z0 < p->z && z1 > p->z) {
                 if (t == 0) {
                     e->inView = 1;
@@ -10086,7 +10087,7 @@ extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag) {
                 VecFx32Ctor *p = &e->position;
                 s32 r = Insect_GetWeatherReaction(e->kind, h);
                 if (e->inView == 0 && r == 4) {
-                    func_ov003_022287c8((void *)obj, e, flag);
+                    ((InsectManager *)((void *)obj))->freeInsect(e, flag);
                 } else {
                     if (r == 5) {
                         e->canSing = 0;
@@ -10191,7 +10192,7 @@ extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag) {
     VecFx32Ctor *q;
     q = (VecFx32Ctor *)PlayerActor_GetActor(4);
     if (q != 0 && flag == 1 && kind != 0x33) {
-        if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
+        if ((gCommManager)->isSlotActive(gCommManager->myAid)) {
             s32 k;
             u8 b0;
             s32 px, pz;
@@ -10233,7 +10234,7 @@ extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag) {
                         cur->kind = kind;
                         cur->inView = 0;
                         cur->behaviorWork = j;
-                        func_ov003_022288dc((void *)obj, cur);
+                        ((InsectManager *)((void *)obj))->allocFieldInsect(cur);
                         return TRUE;
                     }
                 }
@@ -10253,7 +10254,7 @@ extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag) {
         d->y = s->y;
         d->z = s->z;
         if (flag == 1) {
-            func_ov003_022288dc((void *)obj, cur);
+            ((InsectManager *)((void *)obj))->allocFieldInsect(cur);
         }
         return TRUE;
     }
@@ -10398,20 +10399,20 @@ extern "C" BOOL HeldInsect_SetHandMatrix(s32 idx, s16 *p, Mtx43 *q, s32 flag) {
             if (e->lifeState == 3) {
                 u8 *s = (u8 *)&e->model;
                 if (t == 0x14 && ((*(u32 *)(s + 0xa4) << 4) >> 16) == 0) {
-                    AnimFrameCtrl_setup(s + 0x9c, 4, 1, 0x1000, 0);
+                    ((AnimFrameCtrl *)(s + 0x9c))->setup(4, 1, 0x1000, 0);
                     *(u32 *)(s + 0xa4) = 0x4000;
                 } else if ((u16)(s16)(t - 10) <= 1) {
                     if (((*(u32 *)(s + 0xa4) << 4) >> 16) == 0) {
-                        AnimModel_setFrame(s, 1);
+                        ((AnimModel *)(s))->setFrame(1);
                     } else {
-                        AnimModel_setFrame(s, 0);
+                        ((AnimModel *)(s))->setFrame(0);
                     }
                 } else if (t == 0x37) {
                     s32 w = *(s32 *)(s + 0xa0) >> 12;
                     if ((u16)w == 0xe && ((*(u32 *)(s + 0xa4) << 4) >> 16) == 0xd) {
                         *(u32 *)(s + 0xa4) = 0xa000;
                     } else if ((u16)w != 0xe) {
-                        AnimFrameCtrl_setup(s + 0x9c, 0xe, 0, 0x1000, 0xa);
+                        ((AnimFrameCtrl *)(s + 0x9c))->setup(0xe, 0, 0x1000, 0xa);
                     }
                 }
             }
@@ -10502,7 +10503,7 @@ namespace s01 {
 // 0x222612c
 extern "C" BOOL Insect_IsBeeSwarmOut(void) {
     CommManager *p = gCommManager;
-    if (CommManager_isSlotActive(p, p->myAid) == 0) {
+    if ((p)->isSlotActive(p->myAid) == 0) {
         Rec *e = sSpecialInsects;
         if (NNS_G3dMdlGetMdlAlpha(PooledModel_getModel(data_ov003_02259484), 0) > 0x1e && e->lifeState == 3 && e->kind != 0x13) {
             return TRUE;
@@ -10757,7 +10758,7 @@ namespace s00 {
 extern "C" BOOL Insect_IsAllowedOnline(s32 a)
 {
     CommManager *p = gCommManager;
-    if (!CommManager_isSlotActive(p, p->myAid)) {
+    if (!((CommManager *)(p))->isSlotActive(p->myAid)) {
         return TRUE;
     }
     switch (a) {
@@ -11156,14 +11157,14 @@ extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16])
         id = Item_MakeBuilding(i);
         p = StrBSize_Get(&id);
         if (p != 0) {
-            n = StrBSizeData_getLightUnitCount(p);
+            n = ((StrBSizeData *)(p))->getLightUnitCount();
             if (n != 0) {
                 o = BuildingList_FindByItem(id);
                 if (o != 0) {
                     u32 j;
                     for (j = 0; j < n; j++) {
                         s32 xy[2];
-                        if (StrBSizeData_getLightUnit(p, &xy[0], &xy[1], j)) {
+                        if (((StrBSizeData *)(p))->getLightUnit(&xy[0], &xy[1], j)) {
                             if (o->callIsLit() == 1) {
                                 s32 px = xy[0] + o->getGridX();
                                 s32 py = xy[1] + o->getGridZ();

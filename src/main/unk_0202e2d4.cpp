@@ -13,6 +13,12 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
+#include "actor/ActorFollowCollider.h"
+#include "gfx/CachedModel.h"
+#include "gfx/ThreeLayerAnimModel.h"
+#include "net/CommManager.h"
+#include "npc/NpcActionCtrl.h"
+#include "npc/NpcFaceAnim.h"
 
 // The NpcActor destructor (and its seEmitter member's) is inlined into the derived destructor in this file.
 inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
@@ -50,22 +56,10 @@ extern "C" void SndSeEmitter_dtorBase(void *p);
 
 extern "C" {
 void NpcRegistry_RemoveSpNpc(void *p);
-BOOL _ZN11CommManager8isOnlineEv(u32 v);
 BOOL NetArea_IsLocalOwner();
 BOOL Vec_NotEqual(void *a, void *b);
-void *_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(void *p);
-BOOL _ZN12NpcResHandle7acquireEv(void *p);
-void _ZN12NpcResHandle7releaseEv(void *p);
-BOOL _ZN11NpcFaceAnim4loadEP8NpcActor(void *p, void *q);
-BOOL _ZN11NpcAnimCtrl12initForActorEP8NpcActori(void *p, void *q, s32 r);
-void _ZN13NpcActionCtrl11startActionEPhiiiisii(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void _ZN19ActorFollowCollider13setupForActorEPviijjjhi(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, u32 f, s32 g);
 BOOL NpcRegistry_AddSpNpc(void *p, void *q);
-void _ZN13NpcFootstepFx15enableFootstepsEv(void *p);
-s32 _ZN8NpcActor15netReadPositionEPiPh(void *self, void *a, void *b);
 s32 SpNpcAnimHeapRef_GetHeap(void *p);
-BOOL _ZN11CachedModel16allocJointRecordEPv(void *p, s32 v);
-BOOL _ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(void *p, s32 v);
 }
 
 static inline BOOL Unk_0202e318_IsOne(u8 v) {
@@ -79,11 +73,11 @@ static inline BOOL Unk_0202e318_IsOne(u8 v) {
 SpNpcActor::~SpNpcActor() {}
 
 BOOL SpNpcActor::loadAnimSet() {
-    void *p = _ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(&animHeapHandle);
-    if (!_ZN11CachedModel16allocJointRecordEPv(&model, SpNpcAnimHeapRef_GetHeap(p))) {
+    void *p = ((NpcClothTexHandle *)(&animHeapHandle))->getSpNpcAnimHeapRef();
+    if (!((CachedModel *)(&model))->allocJointRecord((void *)(SpNpcAnimHeapRef_GetHeap(p)))) {
         return FALSE;
     }
-    if (_ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(&model, SpNpcAnimHeapRef_GetHeap(p))) {
+    if (((ThreeLayerAnimModel *)(&model))->allocLayer3Anims(SpNpcAnimHeapRef_GetHeap(p))) {
         return TRUE;
     }
     return FALSE;
@@ -107,14 +101,14 @@ BOOL SpNpcActor::onCreate() {
     if (!NpcActor::onCreate()) {
         return FALSE;
     }
-    if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !netSyncOff) {
+    if (!NetArea_IsLocalOwner() && ((CommManager *)(gCommManager))->isOnline() && !netSyncOff) {
         VecFx32 v;
         s16 s;
         v.x = 0;
         v.y = 0;
         v.z = 0;
         s = 0;
-        if (_ZN8NpcActor15netReadPositionEPiPh(this, &v, &s) && Vec_NotEqual(&v, &gVec3Zero)) {
+        if (((NpcActor *)(this))->netReadPosition((s32 *)(&v), (u8 *)(&s)) && Vec_NotEqual(&v, &gVec3Zero)) {
             VecFx32 *p = (VecFx32 *)&position;
             p->x = v.x;
             p->y = v.y;
@@ -123,26 +117,26 @@ BOOL SpNpcActor::onCreate() {
             moveAngleY = s;
         }
     }
-    if (!_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(&animHeapHandle)) {
-        if (!_ZN12NpcResHandle7acquireEv(&animHeapHandle)) {
+    if (!((NpcClothTexHandle *)(&animHeapHandle))->getSpNpcAnimHeapRef()) {
+        if (!((NpcResHandle *)(&animHeapHandle))->acquire()) {
             return FALSE;
         }
         if (!loadAnimSet()) {
             return FALSE;
         }
     }
-    if (!_ZN11NpcFaceAnim4loadEP8NpcActor(&faceAnim, this)) {
+    if (!((NpcFaceAnim *)(&faceAnim))->load((NpcActor *)(this))) {
         return FALSE;
     }
-    if (!_ZN11NpcAnimCtrl12initForActorEP8NpcActori(&animCtrl, this, getWalkAnimSpeedScale())) {
+    if (!((NpcAnimCtrl *)(&animCtrl))->initForActor((NpcActor *)(this), getWalkAnimSpeedScale())) {
         return FALSE;
     }
-    _ZN13NpcActionCtrl11startActionEPhiiiisii(&actionCtrl, this, 0, 1, 0, 0, 0, 0, 0);
-    _ZN19ActorFollowCollider13setupForActorEPviijjjhi(&collider, this, colliderRadius, colliderHeight, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
+    ((NpcActionCtrl *)(&actionCtrl))->startAction((u8 *)(this), 0, 1, 0, 0, 0, 0, 0);
+    ((ActorFollowCollider *)(&collider))->setupForActor(this, colliderRadius, colliderHeight, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
     if (!NpcRegistry_AddSpNpc(this, &npcHandle)) {
         return FALSE;
     }
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     return TRUE;
 }
 
@@ -158,7 +152,7 @@ BOOL SpNpcActor::onDelete() {
     if (!NpcActor::onDelete()) {
         return FALSE;
     }
-    _ZN12NpcResHandle7releaseEv(&animHeapHandle);
+    ((NpcResHandle *)(&animHeapHandle))->release();
     return TRUE;
 }
 

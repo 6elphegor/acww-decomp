@@ -12,6 +12,7 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
+#include "gfx/TwoLayerAnimModel.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -83,11 +84,6 @@ public:
 extern "C" {
 extern u32 gBgHeap;
 s32 RoomObjRes_GetBca(void *, u32);
-s32 _ZN9AnimModel11allocAnmObjEPv(void *, u32);
-s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
-void _ZN9AnimModel10attachAnimEv(void *);
-void _ZN9AnimModel12drawAnimatedEPv(void *, u32);
-s32 _ZN9AnimModel8stepAnimEv(void *);
 }
 
 extern "C" BarberPole *BarberPole_Create();
@@ -104,21 +100,21 @@ BarberPole::~BarberPole() {}
 BOOL BarberPole::onCreate() {
     loadResourcesByName("obj_b_pole");
     if (RoomObjRes_GetBca(HOST_AT(this, 0x1a4, res.archive, 0), 0) != 0) {
-        if (_ZN9AnimModel11allocAnmObjEPv(HOST_AT(this, 0xec, model, 0), gBgHeap) != 0) {
-            _ZN14BlendAnimModel8initAnimEiiitt(HOST_AT(this, 0xec, model, 0), RoomObjRes_GetBca(HOST_AT(this, 0x1a4, res.archive, 0), 0), 0, 0x1000, 0, 0);
-            _ZN9AnimModel10attachAnimEv(HOST_AT(this, 0xec, model, 0));
+        if (((AnimModel *)(HOST_AT(this, 0xec, model, 0)))->allocAnmObj((void *)(gBgHeap)) != 0) {
+            ((BlendAnimModel *)(HOST_AT(this, 0xec, model, 0)))->initAnim(RoomObjRes_GetBca(HOST_AT(this, 0x1a4, res.archive, 0), 0), 0, 0x1000, 0, 0);
+            ((AnimModel *)(HOST_AT(this, 0xec, model, 0)))->attachAnim();
         }
     }
     return TRUE;
 }
 
 BOOL BarberPole::onExecute() {
-    _ZN9AnimModel8stepAnimEv(HOST_AT(this, 0xec, model, 0));
+    ((AnimModel *)(HOST_AT(this, 0xec, model, 0)))->stepAnim();
     return TRUE;
 }
 
 BOOL BarberPole::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv(HOST_AT(this, 0xec, model, 0), 0);
+    ((AnimModel *)(HOST_AT(this, 0xec, model, 0)))->drawAnimated((void *)(0));
     return TRUE;
 }
 

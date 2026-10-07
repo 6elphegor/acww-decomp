@@ -9,34 +9,33 @@
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
 #include "item/ItemPickSpec.h"
+#include "item/FutureLetter.h"
+#include "item/LetterView.h"
+#include "npc/VillagerId.h"
+#include "player/PlayerId.h"
+#include "player/PlayerSpNpcRecord.h"
+#include "save/LostChildRecord.h"
+#include "save/MotherLetterState.h"
+#include "save/SaveData.h"
+#include "talk/MsgString.h"
 
 class PlayerData;
 
 extern "C" {
 s32 Item_GetPrice(u16 *p);
-BOOL _ZN10LetterView8getStateEv(void *p);
 void Letter_Clear(void *p);
 void LetterDefaults_Init(void *p);
 s32 Date_DaysBetween(void *a, void *b);
 void PlayerBank_PayInterest(s32 v);
 void PlayerBank_SendMilestoneLetter(s32 v);
 void PlayerBank_SendDonationLetter(s32 v);
-void _ZN17PlayerSpNpcRecord20sendInsuranceLettersEv(void *p);
 void PlayerSpNpcRecord_SendMissingLetter(void *p);
 void _ZN20PlayerDailyTalkFlags8clearAllEv(void *p);
-void _ZN17PlayerSpNpcRecord19resetFireworksGivenEv(void *p);
-void _ZN15LostChildRecord5clearEv(void *p);
-void _ZN8SaveData9clearFlagEj(void *p, s32 v);
 extern u8 gSaveData[];
 extern u8 data_020e1e20[];
 extern u8 gSavePlayers[];
 void *_ZN11MsgString9CC2Ev(void *p);
-void _ZN11MsgString9CD1Ev(void *p);
-void *_ZN11MsgString33C1Ev(void *p);
-void _ZN11MsgString33D1Ev(void *p);
 void MailText_SetSlot(s32 a, void *b);
-void _ZN9MsgString5clearEv(void *p);
-void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 TopicWord_PickRandom(s32 *p, s32 i);
 void String_LoadResolveAltText(void *a, u8 *b, s32 c);
 void TownId_GetNameString(void *a, void *b);
@@ -53,15 +52,8 @@ s32 Item_GetFurnitureIndex(void *p);
 void ItemPick_FromRange(void *a, s32 b, s32 c, s32 d, s32 e, void *f, s32 g, s32 h, s32 i, s32 j);
 void _ZN12ItemPickSpec3setEii(void *a, s32 b, s32 c);
 void ItemPickSpec_Destruct(void *a);
-void _ZN8PlayerId3setEPvtaP6TownId(void *, u32, u32, u32, u32);
-void _ZN8PlayerId5clearEv(void *);
-void _ZN8PlayerIdC1Ev(void *);
-void _ZN8PlayerIdC1EPv(void *);
-void _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(void *, void *);
 void NookPoints_Init(void *);
 void Catalog_Init(void *);
-void _ZN12FutureLetter17clearFutureLetterEv(void *);
-void _ZN17MotherLetterState5clearEv(void *);
 void PlayerWifiData_Create(void *);
 void FriendList_Clear(void *);
 void PlayerSpNpcRecord_InitNop(void *);
@@ -122,15 +114,10 @@ void _ZN21ForeignVillagerRecordC1Ev(void *);
 void _ZN21ForeignVillagerRecordD1Ev(void *);
 void *PlayerData_GetCurrent();
 void PlayerInventory_SetWallet(void *p, s32 a, s32 b);
-void *_ZN11MsgString9BC1Ev(void *p);
-void _ZN11MsgString9BD1Ev(void *p);
-void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
 BOOL _ZN21ForeignVillagerRecord5isSetEv(void *p);
 void _ZN21ForeignVillagerRecord5clearEv(void *p);
 s32 PlayerId_FindResidentIndex(void *id);
-BOOL _ZN8PlayerId7isValidEv(void *self);
 void Clock_GetDate(void *out);
-void *_ZN10PlayerData11getPlayerIdEv(void *self);
 }
 
 
@@ -173,11 +160,11 @@ PlayerData::PlayerData() {
     LostChildRecord_Construct(&lostChildRecord);
     MotherLetterState_Construct(&motherLetterState);
     _ZN21ForeignVillagerRecordC1Ev(&foreignVillagerRecord);
-    _ZN8PlayerIdC1EPv(&id);
+    new (&id) PlayerId();
 }
 
 PlayerData::~PlayerData() {
-    _ZN8PlayerIdC1Ev(&id);
+    new (&id) PlayerId();
     _ZN21ForeignVillagerRecordD1Ev(&foreignVillagerRecord);
     MotherLetterState_Destruct(&motherLetterState);
     LostChildRecord_Destruct(&lostChildRecord);
@@ -198,7 +185,7 @@ void PlayerData::fillZero() { MI_CpuFill8(this, 0, 0x228c); }
 
 void PlayerData::reset() {
     fillZero();
-    _ZN8PlayerId5clearEv(&id);
+    ((PlayerId *)(&id))->clear();
     ((PlayerInventory *)&inventory)->clear();
     Catalog_Clear(&catalog);
     PlayerErrands_Clear(&errands);
@@ -210,11 +197,11 @@ void PlayerData::reset() {
     _ZN21ForeignVillagerRecord5clearEv(&foreignVillagerRecord);
 }
 
-BOOL PlayerData::isUsed() { return _ZN8PlayerId7isValidEv(&id); }
+BOOL PlayerData::isUsed() { return ((PlayerId *)(&id))->isValid(); }
 
 void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7) {
     Unk_0209865c_Bits bits;
-    _ZN8PlayerId3setEPvtaP6TownId(&id, p1, p2, p3, s0);
+    ((PlayerId *)(&id))->set((void *)(p1), p2, p3, (TownId *)(s0));
     setFaceType(s1);
     setHairStyle(s2);
     setHairColor(s3);
@@ -224,11 +211,11 @@ void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u
     ((PlayerInventory *)&inventory)->clear();
     PlayerInventory_SetWallet(&inventory, s6, 1);
     heldItem = *s7;
-    _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(this, &id);
+    ((PlayerPatterns *)(this))->initDefaultPatterns((Unk_020942c8 *)(&id));
     NookPoints_Init(&nookPoints);
     Catalog_Init(&catalog);
-    _ZN12FutureLetter17clearFutureLetterEv(&futureLetter);
-    _ZN17MotherLetterState5clearEv(&motherLetterState);
+    ((FutureLetter *)(&futureLetter))->clearFutureLetter();
+    ((MotherLetterState *)(&motherLetterState))->clear();
     PlayerWifiData_Create(&wifiUserData);
     FriendList_Clear(&friendList);
     bed = 0x3884;
@@ -415,7 +402,7 @@ void PlayerData::resetForNewTown()
         }
         u8 *e = (u8 *)r7->getLetter(0);
         for (i = 0; i < 10; i++) {
-            if ((u8)(_ZN10LetterView8getStateEv(e) + 0xf9) <= 1) {
+            if ((u8)(((LetterView *)(e))->getState() + 0xf9) <= 1) {
                 Letter_Clear(e);
             }
             e += 0xf4;
@@ -445,7 +432,7 @@ BOOL PlayerData::getOtherResidentName(void *q)
     if (PlayerId_FindResidentIndex(id) != -1) {
         s32 o;
         if ((o = pickOtherResident()) != 0) {
-            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv((void *)o), q);
+            ((PlayerId *)(((PlayerData *)((void *)o))->getPlayerId()))->getNameString((MsgString *)(q));
             r = TRUE;
         }
     }
@@ -521,7 +508,7 @@ extern "C" void PlayerData_UpdateDay()
         PlayerBank_PayInterest(t);
         PlayerBank_SendMilestoneLetter(r4);
         PlayerBank_SendDonationLetter(r4);
-        _ZN17PlayerSpNpcRecord20sendInsuranceLettersEv(((PlayerData *)p)->getSpNpcRecord());
+        ((PlayerSpNpcRecord *)(((PlayerData *)p)->getSpNpcRecord()))->sendInsuranceLetters();
         PlayerSpNpcRecord_SendMissingLetter(((PlayerData *)p)->getSpNpcRecord());
         if (r4) {
             p->rerollFlaggedPocketItems();
@@ -532,12 +519,12 @@ extern "C" void PlayerData_UpdateDay()
         if (r4) {
             _ZN20PlayerDailyTalkFlags8clearAllEv(((PlayerData *)p)->getDailyTalkFlags());
             ((PlayerData *)p)->setFortune(0);
-            _ZN17PlayerSpNpcRecord19resetFireworksGivenEv(((PlayerData *)p)->getSpNpcRecord());
-            _ZN8SaveData9clearFlagEj(gSaveData, 16);
+            ((PlayerSpNpcRecord *)(((PlayerData *)p)->getSpNpcRecord()))->resetFireworksGiven();
+            ((SaveData *)(gSaveData))->clearFlag(16);
         }
         if (r4 < 0) {
-            _ZN15LostChildRecord5clearEv(((PlayerData *)p)->getLostChildRecord());
-            _ZN15LostChildRecord5clearEv(g + 0x15fca);
+            ((LostChildRecord *)(((PlayerData *)p)->getLostChildRecord()))->clear();
+            ((LostChildRecord *)(g + 0x15fca))->clear();
         }
         Clock_GetDate(p->getDayUpdateDate());
     }
@@ -592,7 +579,7 @@ void *PlayerData::getForeignVillagerRecord()
 void PlayerData::sendForeignVillagerLetter()
 {
     void *r8 = getPlayerId();
-    if (_ZN8PlayerId7isValidEv(r8)) {
+    if (((PlayerId *)(r8))->isValid()) {
         if (_ZN21ForeignVillagerRecord5isSetEv(foreignVillagerRecord)) {
             u8 *r7 = foreignVillagerRecord + 0xa;
             s32 a;
@@ -602,9 +589,9 @@ void PlayerData::sendForeignVillagerLetter()
             u8 o58[HOST_SIZED(0x34, MsgString33) / 1] HOST_ALIGN8;
             s32 b, t;
             u8 c;
-            _ZN11MsgString9BC1Ev(o20);
+            new (o20) MsgString9B();
             _ZN11MsgString9CC2Ev(o3c);
-            _ZN11MsgString33C1Ev(o58);
+            new (o58) MsgString33();
             a = 0;
             b = 10;
             t = 0;
@@ -612,15 +599,15 @@ void PlayerData::sendForeignVillagerLetter()
                 a = 10;
                 b = 5;
             }
-            _ZN8PlayerId13getNameStringEP9MsgString(r8, o20);
+            ((PlayerId *)(r8))->getNameString((MsgString *)(o20));
             MailText_SetSlot(0, o20);
-            _ZN9MsgString5clearEv(o20);
-            _ZN10VillagerId7getNameEj(r7, o20);
+            ((MsgString *)(o20))->clear();
+            ((VillagerId *)(r7))->getName((u32)(o20));
             MailText_SetSlot(1, o20);
             s32 i;
             for (i = 0; i < 6; i++) {
                 s32 r = TopicWord_PickRandom(&t, i);
-                _ZN9MsgString5clearEv(o58);
+                ((MsgString *)(o58))->clear();
                 c = t;
                 String_LoadResolveAltText(o58, &c, r);
                 MailText_SetSlot(i + 2, o58);
@@ -630,9 +617,9 @@ void PlayerData::sendForeignVillagerLetter()
             if (Villager_SendLetter4("re_foreign", a, b, r8, r7, l10)) {
                 _ZN21ForeignVillagerRecord5clearEv(foreignVillagerRecord);
             }
-            _ZN11MsgString33D1Ev(o58);
-            _ZN11MsgString9CD1Ev(o3c);
-            _ZN11MsgString9BD1Ev(o20);
+            ((MsgString33 *)(o58))->MsgString33::~MsgString33();
+            ((MsgString9C *)(o3c))->MsgString9C::~MsgString9C();
+            ((MsgString9B *)(o20))->MsgString9B::~MsgString9B();
         }
     }
 }
@@ -775,7 +762,7 @@ s32 PlayerInventory::findEmptyLetter()
     u8 *p = (u8 *)getLetter(0);
     s32 i;
     for (i = 0; i < 10; i++) {
-        if (!_ZN10LetterView8getStateEv(p)) {
+        if (!((LetterView *)(p))->getState()) {
             return i;
         }
         p += 0xf4;

@@ -16,6 +16,10 @@
 #include "gfx/P.h"
 #include "gfx/SPLResource.h"
 #include "gfx/Rgb555.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/CachedModel.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "sys/Heap.h"
 
 struct Unk_0209002c_Handle;
 
@@ -27,21 +31,8 @@ s32 func_02106634(s32 a, s32 b);
 s32 func_02106788(void *p);
 s32 func_021067a4(s32 a, s32 b);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, u32 b);
-void _ZN11CachedModel7releaseEv(void *p);
-void _ZN11CachedModel16allocJointRecordEPv(void *p, void *h);
-void _ZN9AnimModel11allocAnmObjEPv(void *p, void *h);
-void _ZN9AnimModel10attachAnimEv(void *p);
-void _ZN9AnimModel12drawAnimatedEPv(void *p, s32 q);
-void _ZN9AnimModel8stepAnimEv(void *p);
-void _ZN14BlendAnimModel8initAnimEiiitt(void *p, s32 a, s32 b, s32 c, u16 d, u16 e);
-BOOL _ZN11CachedModel10loadCachedEPvS0_(void *p, u32 a, u32 b);
-void _ZN9ModelAnim4initEiiit(void *p, s32 a, s32 b, s32 c, u16 e);
-void _ZN9ModelAnim11allocMatAnmEjPv(void *p, void *a, void *c);
-void _ZN9ModelAnim13allocJointAnmEjPv(void *p, void *a, void *c);
 void _ZN9ModelAnim14addToRenderObjEj(void *p, u32 a);
 u32 _ZN5Model12getRenderObjEv(void *p);
-s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
-void _ZN13AnimFrameCtrl4stepEv(void *p);
 s32 WorldCurve_ToCurved(void *out, void *in);
 s32 SceneLights_GetRoomColor();
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
@@ -219,17 +210,6 @@ extern u32 gViewMtx[];
 extern u8 data_021f47e0[];
 void *EffectSpl_Alloc(u32 size);
 
-void _ZN11EffectModel5startEP16EffectModelGroupPFvPS_E(EffectModel *, EffectModelGroup *, void (*)(EffectModel *));
-s32 _ZN11EffectModel6unloadEv(EffectModel *);
-s32 _ZN11EffectModel4drawEv(EffectModel *);
-s32 _ZN11EffectModel6updateEv(EffectModel *);
-s32 _ZN11EffectModel4loadEP16EffectModelGroup(EffectModel *, EffectModelGroup *);
-s32 _ZN20EffectModelAnimFiles4freeEv(void *);
-s32 _ZN20EffectModelAnimFiles4loadEP16EffectModelGroup(void *, EffectModelGroup *);
-s32 _ZN19EffectSplEmitterMap10releaseAllEv(void *);
-s32 _ZN19EffectSplEmitterMap8clearAllEv(void *);
-s32 _ZN19EffectSplEmitterMap4findEi(void *, u32);
-s32 _ZN19EffectSplEmitterMap3addEii(void *, u32, void *);
 void EffectSplEntry_Release(EffectEmitterEntry *);
 s32 EffectSplEntry_Start(EffectEmitterEntry *, s32, s32, s32, EffectEmitterCbs *, EffectEmitterTag);
 void EffectModels_DrawAll(EffectModelGroup *);
@@ -869,7 +849,7 @@ BOOL EffectSplProc::onCreate()
     } else {
         MI_CpuFill8(modelGroups, 0, 0x14c0);
         EffectModels_LoadAll(modelGroups);
-        _ZN19EffectSplEmitterMap8clearAllEv(emitterMap);
+        ((EffectSplEmitterMap *)(emitterMap))->clearAll();
     }
     return result;
 }
@@ -907,7 +887,7 @@ BOOL EffectSplProc::onDelete()
         sEffectSplHeapMem = NULL;
     }
     EffectModels_UnloadAll(modelGroups);
-    _ZN19EffectSplEmitterMap10releaseAllEv(emitterMap);
+    ((EffectSplEmitterMap *)(emitterMap))->releaseAll();
     sEffectSplProc = NULL;
     return TRUE;
 }
@@ -1011,11 +991,11 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
         zero18 = 0;
         zero14 = 0;
         for (; i < count; i++) {
-            o = (EffectSplEmitter *)_ZN19EffectSplEmitterMap4findEi(ctx, *ids);
+            o = (EffectSplEmitter *)((EffectSplEmitterMap *)(ctx))->find(*ids);
             if (o == NULL) {
                 h = (EffectSplEmitter *)SPL_CreateWithInitialize(sEffectSplProc->splManager, *ids, *p3);
                 if (h != NULL) {
-                    if (_ZN19EffectSplEmitterMap3addEii(ctx, *ids, h) != 0) {
+                    if (((EffectSplEmitterMap *)(ctx))->add(*ids, (s32)(h)) != 0) {
                         h->stateFlags |= 2;
                         func_020f8b44(sEffectSplProc->splManager, h, p1);
                         sub = (P *)h->particles;
@@ -1294,7 +1274,7 @@ extern "C" void EffectModels_UnloadAll(EffectModelGroup *b)
         EffectModelGroup_Unload(&b[i]);
     }
     if (sEffectModelHeap != NULL) {
-        Heap_destroy(sEffectModelHeap);
+        ((Heap *)(sEffectModelHeap))->destroy();
         sEffectModelHeap = NULL;
     }
 }
@@ -1308,9 +1288,9 @@ extern "C" void EffectModelGroup_Load(EffectModelGroup *b, s32 a)
 {
     s32 i;
     b->modelIndex = a;
-    _ZN20EffectModelAnimFiles4loadEP16EffectModelGroup(b->animFiles, b);
+    ((EffectModelAnimFiles *)(b->animFiles))->load(b);
     for (i = 0; i < 4; i++) {
-        _ZN11EffectModel4loadEP16EffectModelGroup(&b->models[i], b);
+        (&b->models[i])->load(b);
     }
 }
 
@@ -1318,7 +1298,7 @@ extern "C" void EffectModelGroup_Update(EffectModelGroup *b)
 {
     s32 i;
     for (i = 0; i < 4; i++) {
-        _ZN11EffectModel6updateEv(&b->models[i]);
+        (&b->models[i])->update();
     }
 }
 
@@ -1326,16 +1306,16 @@ extern "C" void EffectModelGroup_Draw(EffectModelGroup *b)
 {
     s32 i;
     for (i = 0; i < 4; i++) {
-        _ZN11EffectModel4drawEv(&b->models[i]);
+        (&b->models[i])->draw();
     }
 }
 
 extern "C" void EffectModelGroup_Unload(EffectModelGroup *b)
 {
     s32 i;
-    _ZN20EffectModelAnimFiles4freeEv(b->animFiles);
+    ((EffectModelAnimFiles *)(b->animFiles))->free();
     for (i = 0; i < 4; i++) {
-        _ZN11EffectModel6unloadEv(&b->models[i]);
+        (&b->models[i])->unload();
     }
 }
 
@@ -1345,7 +1325,7 @@ extern "C" void EffectModelGroup_Start(EffectModelGroup *b, void (*a)(EffectMode
     EffectModel *c = b->models;
     for (i = 0; i < 4; i++) {
         if (c->active == 0) {
-            _ZN11EffectModel5startEP16EffectModelGroupPFvPS_E(c, b, a);
+            (c)->start(b, a);
             break;
         }
         c++;
@@ -1377,7 +1357,7 @@ void EffectModelAnimFiles::free() {
 
 BOOL EffectModel::loadModel(s32 idx) {
     BOOL r = TRUE;
-    if (!_ZN11CachedModel10loadCachedEPvS0_(&model, idx + 0x6d656666, sEffectModelFiles[idx])) {
+    if (!((CachedModel *)(&model))->loadCached((void *)(idx + 0x6d656666), (void *)(sEffectModelFiles[idx]))) {
         r = FALSE;
     }
     return r;
@@ -1389,18 +1369,18 @@ void EffectModel::load(EffectModelGroup *src) {
     if (loadModel(idx)) {
         u32 *r = src->animFiles;
         if (r[0] != 0) {
-            _ZN11CachedModel16allocJointRecordEPv(&model, sEffectModelHeap);
-            _ZN9AnimModel11allocAnmObjEPv(&model, sEffectModelHeap);
+            ((CachedModel *)(&model))->allocJointRecord(sEffectModelHeap);
+            ((AnimModel *)(&model))->allocAnmObj(sEffectModelHeap);
             s32 t = func_021065f8(func_021065dc((void *)r[0]), 0);
-            _ZN14BlendAnimModel8initAnimEiiitt(&model, t, 1, 0x1000, 0, 0);
-            _ZN9AnimModel10attachAnimEv(&model);
+            ((BlendAnimModel *)(&model))->initAnim(t, 1, 0x1000, 0, 0);
+            ((AnimModel *)(&model))->attachAnim();
         }
         if (r[1] != 0) {
             hasMatAnim = 1;
             ModelAnim *e = &anims[1];
-            _ZN9ModelAnim11allocMatAnmEjPv(e, model.resMdl, sEffectModelHeap);
+            ((ModelAnim *)(e))->allocMatAnm((u32)(model.resMdl), sEffectModelHeap);
             s32 u = func_02106634(func_02106618((void *)r[1]), 0);
-            _ZN9ModelAnim4initEiiit(e, u, 1, 0x1000, 0);
+            ((ModelAnim *)(e))->init(u, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&model));
         } else {
             hasMatAnim = 0;
@@ -1408,9 +1388,9 @@ void EffectModel::load(EffectModelGroup *src) {
         if (r[2] != 0) {
             hasJointAnim = 1;
             ModelAnim *e = &anims[2];
-            _ZN9ModelAnim13allocJointAnmEjPv(e, model.resMdl, sEffectModelHeap);
+            ((ModelAnim *)(e))->allocJointAnm((u32)(model.resMdl), sEffectModelHeap);
             s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
-            _ZN9ModelAnim4initEiiit(e, u, 1, 0x1000, 0);
+            ((ModelAnim *)(e))->init(u, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&model));
         } else {
             hasJointAnim = 0;
@@ -1420,15 +1400,15 @@ void EffectModel::load(EffectModelGroup *src) {
 
 void EffectModel::update() {
     if (active != 0) {
-        _ZN9AnimModel8stepAnimEv(&model);
+        ((AnimModel *)(&model))->stepAnim();
         s32 i;
         for (i = 1; i < 3; i++) {
             if ((&animSlot0Used)[i] != 0) {
-                _ZN13AnimFrameCtrl4stepEv(&anims[i]);
+                ((AnimFrameCtrl *)(&anims[i]))->step();
                 *(u32 *)anims[i].anmObj = anims[i].curFrame;
             }
         }
-        if (_ZN13AnimFrameCtrl10isFinishedEv((AnimFrameCtrl *)&model) != 0) {
+        if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->isFinished() != 0) {
             active = 0;
         }
     }
@@ -1443,7 +1423,7 @@ void EffectModel::draw() {
         Mtx43_RotateXYZ(data_021f47e0, rotX, rotY, rotZ);
         Mtx43_Scale(data_021f47e0, scaleX, scaleY, scaleZ);
         model.mtx = *(Mtx43 *)data_021f47e0;
-        _ZN9AnimModel12drawAnimatedEPv(&model, 0);
+        ((AnimModel *)(&model))->drawAnimated((void *)(0));
         volatile u16 a, b;
         a = SceneLights_GetRoomColor();
         b = a;
@@ -1452,7 +1432,7 @@ void EffectModel::draw() {
 }
 
 void EffectModel::unload() {
-    _ZN11CachedModel7releaseEv(&model);
+    ((CachedModel *)(&model))->release();
 }
 
 void EffectModel::start(EffectModelGroup *src, void (*cb)(EffectModel *)) {
@@ -1465,14 +1445,14 @@ void EffectModel::start(EffectModelGroup *src, void (*cb)(EffectModel *)) {
     rotZ = 0;
     u32 *r = src->animFiles;
     s32 t = func_021065f8(func_021065dc((void *)r[0]), 0);
-    _ZN14BlendAnimModel8initAnimEiiitt(&model, t, 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&model))->initAnim(t, 1, 0x1000, 0, 0);
     if (hasMatAnim != 0) {
         s32 u = func_02106634(func_02106618((void *)r[1]), 0);
-        _ZN9ModelAnim4initEiiit(&anims[1], u, 1, 0x1000, 0);
+        ((ModelAnim *)(&anims[1]))->init(u, 1, 0x1000, 0);
     }
     if (hasJointAnim != 0) {
         s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
-        _ZN9ModelAnim4initEiiit(&anims[2], u, 1, 0x1000, 0);
+        ((ModelAnim *)(&anims[2]))->init(u, 1, 0x1000, 0);
     }
     cb(this);
 }

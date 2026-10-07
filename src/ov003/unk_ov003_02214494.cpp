@@ -14,6 +14,7 @@
 #include "town/BuildingActor.h"
 #include "town/ReddTent.h"
 #include "gfx/DebugColor.h"
+#include "game/ReddShop.h"
 
 extern "C" void *ReddTent_Create();
 extern "C" DebugColor data_ov003_02235144(0x1f, 0x14, 0x14, 0x1f);
@@ -41,8 +42,6 @@ extern "C" {
 BOOL MenuCtrl_IsFinished();
 BOOL TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
-void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 BOOL PlayerActor_IsStowFinished();
 BOOL PlayerActor_IsEnteringDoor();
 void PlayerActor_RequestStowThenAct10(u32 a);
@@ -54,11 +53,9 @@ s32 Ground_GetDefaultY(u32 a);
 BOOL PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
 BOOL MenuCtrl_IsResultOk();
 s32 ReddPassword_LearnCurrentPlayer();
-s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *o, u8 *p, char *s);
 void BuildingOccupancy_Leave(u32 a, u32 b);
 extern u8 data_021ed2c0[];
 ReddPassword *_ZN8ReddShop11getPasswordEv(void *p);
-s32 _ZN12ReddPassword14getAnswerIndexEv(ReddPassword *self);
 void MenuCtrl_OpenLauncherWithIndex(u32 a, s32 b);
 s32 ReddPassword_CurrentPlayerKnows();
 u32 BuildingOccupancy_GetAnswer(u32 a);
@@ -70,7 +67,6 @@ extern u8 data_021ed2c0[];
 void _ZN18ReddPasswordStringC1Ev(void *);
 void _ZN18ReddPasswordStringD1Ev(void *);
 ReddPassword *_ZN8ReddShop11getPasswordEv(void *);
-void _ZN15TalkWindowState7setSlotEiPv(void *, s32, void *);
 void Clock_GetDateTime(void *);
 s32 Scene_GetCurrent();
 }
@@ -128,8 +124,8 @@ void ReddTent::onMessageStart(u32) {
     if (msgIndex == 2) {
         u32 obj[0x38 / 4];
         _ZN18ReddPasswordStringC1Ev(obj);
-        if (_ZN8ReddShop11getPasswordEv(data_021ed2c0)->getPromptText(obj)) {
-            _ZN15TalkWindowState7setSlotEiPv(window, 0, obj);
+        if (((ReddShop *)(data_021ed2c0))->getPassword()->getPromptText(obj)) {
+            ((TalkWindowState *)(window))->setSlot(0, obj);
         }
         _ZN18ReddPasswordStringD1Ev(obj);
     }
@@ -228,7 +224,7 @@ void ReddTent::execTentCheck() {
 
 BOOL ReddTent::enterTentTalkOpen() {
     StackPad8 pad;
-    _ZN9Character17attachTalkRequestEi(this, this);
+    ((Character *)(this))->attachTalkRequest((s32)(this));
     setFileName("sp_npc_fox");
     if (isOpen() == 0) {
         msgIndex = 0x34;
@@ -269,7 +265,7 @@ void ReddTent::execTentTalk() {
     TalkWindowState *t = window;
     if (t) {
         if (t->state == 0) {
-            _ZN9Character17detachTalkRequestEi(this, this);
+            ((Character *)(this))->detachTalkRequest((s32)(this));
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -283,7 +279,7 @@ BOOL ReddTent::enterTentMenuWait() {
 
 void ReddTent::execTentMenuWait() {
     if (window->state == 5) {
-        MenuCtrl_OpenLauncherWithIndex(0xe, _ZN12ReddPassword14getAnswerIndexEv(_ZN8ReddShop11getPasswordEv(data_021ed2c0)));
+        MenuCtrl_OpenLauncherWithIndex(0xe, (((ReddShop *)(data_021ed2c0))->getPassword())->getAnswerIndex());
         setTentState(5);
     }
 }
@@ -300,12 +296,12 @@ void ReddTent::execTentMenu() {
         if (MenuCtrl_IsResultOk()) {
             ReddPassword_LearnCurrentPlayer();
             r[0] = 3;
-            _ZN15TalkWindowState14setNextMessageEPhPv(window, &r[0], "sp_npc_fox");
+            ((TalkWindowState *)(window))->setNextMessage(&r[0], (void *)("sp_npc_fox"));
             window->nextState = 1;
             setTentState(3);
         } else {
             r[1] = 4;
-            _ZN15TalkWindowState14setNextMessageEPhPv(window, &r[1], "sp_npc_fox");
+            ((TalkWindowState *)(window))->setNextMessage(&r[1], (void *)("sp_npc_fox"));
             window->nextState = 1;
             setTentState(3);
             BuildingOccupancy_Leave(itemId, 0);
@@ -338,7 +334,7 @@ BOOL ReddTent::enterTentEntry07() {
 void ReddTent::execTentEntry07() {
     if (PlayerActor_IsStowFinished()) {
         if (setTentState(8)) {
-            _ZN9Character17detachTalkRequestEi(this, this);
+            ((Character *)(this))->detachTalkRequest((s32)(this));
         }
     }
 }

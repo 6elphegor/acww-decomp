@@ -1,7 +1,6 @@
 #include "types.h"
 #include "gfx/ViewFrustum.h"
 
-extern "C" void _ZN11ViewFrustum10calcPlanesEv(ViewFrustum *o);
 
 ViewFrustum::ViewFrustum() {
     setPerspective(0x1555, 0xe38, 0x1000, 0x1388000);
@@ -12,5 +11,5 @@ void ViewFrustum::setPerspective(s32 a, u16 b, s32 c, s32 d) {
     fovy = b;
     nearClip = c;
     farClip = d;
-    _ZN11ViewFrustum10calcPlanesEv(this);
+    (this)->calcPlanes();
 }

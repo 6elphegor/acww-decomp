@@ -6,10 +6,6 @@
 
 extern "C" {
 // TownAcreGenerator (0x140 bytes), called by its symbols.txt names
-void _ZN17TownAcreGeneratorC1Ev(void *self);
-void _ZN17TownAcreGenerator8generateEi(void *self, s32 v);
-void _ZN17TownAcreGenerator12writeAcreIdsEPh(void *self, s32 arg);
-void _ZN17TownAcreGeneratorD1Ev(void *self);
 }
 
 s32 sTownGenGateMode = 3;
@@ -20,8 +16,8 @@ extern "C" void Town_SetGenGateMode(s32 v) {
 
 extern "C" void Town_GenerateAcres(s32 arg) {
     u32 buf[HOST_SIZED(0x140, TownAcreGenerator) / 4] HOST_ALIGN8;
-    _ZN17TownAcreGeneratorC1Ev(buf);
-    _ZN17TownAcreGenerator8generateEi(buf, sTownGenGateMode);
-    _ZN17TownAcreGenerator12writeAcreIdsEPh(buf, arg);
-    _ZN17TownAcreGeneratorD1Ev(buf);
+    new (buf) TownAcreGenerator();
+    ((TownAcreGenerator *)(buf))->generate(sTownGenGateMode);
+    ((TownAcreGenerator *)(buf))->writeAcreIds((u8 *)(arg));
+    ((TownAcreGenerator *)(buf))->~TownAcreGenerator();
 }

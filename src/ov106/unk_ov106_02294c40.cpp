@@ -31,8 +31,6 @@ typedef void (MailboxMenu::*Unk_ov106_02298180_Fn)();
 
 
 extern "C" {
-u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
-void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gTouchCurX;
@@ -1586,7 +1584,7 @@ u8 MailboxMenu::fromLetterGridIndex(u32 a) {
 }
 
 u32 MailboxMenu::getSlotAt(u32 a, s32 b, s32 c) {
-    s32 r4 = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid, a, b);
+    s32 r4 = ((LetterGrid *)(&letterGrid))->findPocketLetterAt(a, b);
     if (r4 == 0x37) {
         r4 = ((LetterGrid *)&letterGrid)->findLetterAt23(a, b);
     }
@@ -1923,7 +1921,7 @@ void MailboxMenu::openPopup(u32 x) {
     s32 a = getSlotX(selectedSlot);
     s32 b = getSlotY(selectedSlot);
     if (x != 0) {
-        _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(&popup, &nameBalloon, b);
+        ((PopupChoiceMenu *)(&popup))->placeAboveBalloon((LabelBalloon *)(&nameBalloon));
     } else {
         ((PopupChoiceMenu *)&popup)->placeNearPoint(a, b);
     }

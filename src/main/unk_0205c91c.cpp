@@ -2,6 +2,7 @@
 #include "sys/StackPad.h"
 #include "actor/CharaClothTexRef.h"
 #include "item/ItemId.h"
+#include "sys/Heap.h"
 
 
 
@@ -54,7 +55,7 @@ void CharaClothTexRef_CopyFromSlot(void *p, s32 x);
 extern "C" void CharaClothTexPool_Create(void *parent) {
     CharaClothTexHeap_Create(parent);
     sCharaClothTexPool.allocBuffers();
-    if (gCharaClothTexHeap) Heap_adjust(gCharaClothTexHeap);
+    if (gCharaClothTexHeap) ((Heap *)(gCharaClothTexHeap))->adjust();
 }
 
 extern "C" void CharaClothTexPool_Destroy() {
@@ -96,7 +97,7 @@ void CharaClothTexPool::freeBuffers() {
         ptr[i] = 0;
         id[i].id = 0xfff1;
     }
-    if (gCharaClothTexHeap) Heap_freeAll(gCharaClothTexHeap);
+    if (gCharaClothTexHeap) ((Heap *)(gCharaClothTexHeap))->freeAll();
 }
 
 u32 CharaClothTexPool::getBuffer(u32 idx) { return ptr[idx]; }

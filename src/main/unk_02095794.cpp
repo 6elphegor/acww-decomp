@@ -38,7 +38,6 @@ extern u8 data_020e1d68[];
 extern SaveTownStateView data_021ed150;
 
 extern "C" {
-BOOL _ZN11CommManager11isLocalSlotEj(CommManager *p, s32 v);
 }
 
 extern "C" {
@@ -46,7 +45,6 @@ u32 func_02072970(CommManager *p, u32 v);
 }
 
 extern "C" {
-u32 _ZN11CommManager12isSlotActiveEi(CommManager *p, s32 v);
 }
 
 extern "C" {
@@ -368,12 +366,12 @@ BOOL RemotePlayerSpawner::onExecute() {
         PlayerActor_Spawn(mode, &p1, lr1, 0x4000000);
         goto ret1;
     }
-    if (!_ZN11CommManager12isSlotActiveEi(g, mode)) goto ret1;
+    if (!(g)->isSlotActive(mode)) goto ret1;
     if (!PlayerActor_GetActor(4)) goto ret1;
     ob = PlayerActor_GetLocalSessionSlot();
     i = 0;
     do {
-        if (!_ZN11CommManager11isLocalSlotEj(g, i) && _ZN11CommManager12isSlotActiveEi(g, i) && !PlayerActor_GetActor(i)) {
+        if (!(g)->isLocalSlot(i) && (g)->isSlotActive(i) && !PlayerActor_GetActor(i)) {
             if (PlayerActor_GetSlotAction(&lv1, -1, i) && lv1 < 0x93 && PlayerActor_GetSlotPosXZ(&la, &lx1, &ly1, -1, i) &&
                 la == Scene_GetCurrent() && PlayerActor_GetSlotAngle(&lc, -1, i)) {
                 p2.x = lx1;
@@ -400,7 +398,7 @@ BOOL RemotePlayerSpawner::onExecute() {
     } while ((u32)i < 4);
     j = 0;
     do {
-        if (!_ZN11CommManager11isLocalSlotEj(g, j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
+        if (!(g)->isLocalSlot(j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
             Actor *e = PlayerActor_GetActor(j);
             if (e) {
                 if (!Unk_0209579c_IsTwo(((ProcBase *)e)->state)) {

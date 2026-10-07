@@ -29,6 +29,12 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "gfx/JointBlend.h"
+#include "npc/NpcLookAt.h"
+#include "npc/NpcMoveAnimSet.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "player/PlayerSpNpcRecord.h"
 
 
 class ActorTalkRequest;
@@ -289,14 +295,14 @@ BOOL SpNpcBrewster::preCreate() {
     if (SpNpcActor::preCreate() == 0) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner((s32)this);
-    NpcActor_setCollisionRadius(this, 0x100);
-    Character_setInteractionRange(this, 0x5000);
-    NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x166, 0xcc, 0x133);
-    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xf2);
-    NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xf4);
-    NpcMoveAnimSet_setRunAnim(&moveAnimSet, 0xf4);
+    ((NpcActor *)(this))->setCollisionRadius(0x100);
+    ((Character *)(this))->setInteractionRange(0x5000);
+    ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(2, 0x166, 0xcc, 0x133);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xf2);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0xf4);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setRunAnim(0xf4);
     return TRUE;
 }
 
@@ -307,7 +313,7 @@ BOOL SpNpcBrewster::onCreate() {
     sSpNpcBrewster = this;
     homeAngle = rotY;
     collider.groups |= 2;
-    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner() != 0) {
             changeAct(0);
         } else {
@@ -316,8 +322,8 @@ BOOL SpNpcBrewster::onCreate() {
     } else {
         changeAct(0);
     }
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) == 0) {
-        Actor_spawn(0x66, 0xd01d, sSpNpcBrewsterGuestSpawnPos, data_ov004_02240120, 0);
+    if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid) == 0) {
+        Actor::spawn((void *)(0x66), (void *)(0xd01d), (void *)(void *)(sSpNpcBrewsterGuestSpawnPos), (void *)(void *)(data_ov004_02240120), (void *)(0));
     }
     return TRUE;
 }
@@ -357,7 +363,7 @@ BOOL SpNpcBrewster::updateAct() {
     if (Math_IsInRange(Bgm_GetCurrent(), 0x63, 0xab) != 0) {
         if (beatSyncStarted == 0) {
             if ((((u32)model.curFrame << 4) >> 16) != 0) {
-                JointBlend_start((JointBlend *)&model, 10);
+                ((JointBlend *)((JointBlend *)&model))->start(10);
             }
             beatSyncStarted = 1;
         }
@@ -366,7 +372,7 @@ BOOL SpNpcBrewster::updateAct() {
             if ((s8)q[3] != 1) {
                 model.curFrame = 0;
                 model.frameStep = *(u32 *)(q + 0x10);
-                ThreeLayerAnimModel_updateLayers3(&model);
+                ((ThreeLayerAnimModel *)(&model))->updateLayers3();
                 model.frameStep = 0;
             }
         }
@@ -388,7 +394,7 @@ void SpNpcBrewster::changeAct(s32 idx) {
 
 BOOL SpNpcBrewster::setupAct00() {
     lookAtTimer = 0;
-    NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -396,7 +402,7 @@ BOOL SpNpcBrewster::mainAct00() {
     if (lookAtTimer > 0) {
         lookAtTimer++;
         if (lookAtTimer > 0x14) {
-            NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             lookAtTimer = -1;
         }
     } else if (lookAtTimer == 0) {
@@ -404,7 +410,7 @@ BOOL SpNpcBrewster::mainAct00() {
             lookAtTimer = 1;
         }
     }
-    if (CommManager_isOnline(gCommManager) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
+    if (((CommManager *)(gCommManager))->isOnline() == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
         if (PlayerActor_IsInAction(0x27, 4) != 0) {
             TalkRequest_AddPlayerTalk7(this, 0);
         }
@@ -417,25 +423,25 @@ BOOL SpNpcBrewster::mainAct00() {
 }
 
 BOOL SpNpcBrewster::setupAct01() {
-    void *p = ActorTalkRequest_getTalkPlayer(&talk);
+    void *p = ((ActorTalkRequest *)(&talk))->getTalkPlayer();
     s32 r = 0;
-    NpcLookAt_setTarget(&lookAt, 1, r, r, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, r, r, &gVec3Zero, 4, data_020c6d1c, 1);
     if (p != 0) {
-        r = NpcActor_getAngleTo(this, p);
+        r = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcBrewster::mainAct01() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
-        if (CommManager_isOnline(gCommManager) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
+        if (((CommManager *)(gCommManager))->isOnline() == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
             if (PlayerActor_IsInAction(0x28, 4) != 0) {
                 PlayerActor_LocalRequestStandUp(2);
             }
             Hud_Show();
         }
-        NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+        ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -451,13 +457,13 @@ BOOL SpNpcBrewster::mainAct02() {
 }
 
 BOOL SpNpcBrewster::setupAct03() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 2, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 2, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcBrewster::mainAct03() {
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl) != 0) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone() != 0) {
             changeAct(0);
         }
     }
@@ -476,22 +482,22 @@ BOOL SpNpcBrewster::mainAct04() {
 }
 
 BOOL SpNpcBrewster::setupAct05() {
-    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcBrewster::mainAct05() {
-    if (NpcActor_isNetOwner(this) != 0) {
+    if (((NpcActor *)(this))->isNetOwner() != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b) != 0 && a == (s32)gCommManager->myAid && a == b) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, gCommManager->myAid);
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0 && a == (s32)gCommManager->myAid && a == b) {
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             ((ActorTalkRequest *)&talk)->resetMsg();
-            s32 r = NpcActor_getPlayerActor(this, 4);
-            ActorTalkRequest_setTalkPlayer(&talk, r);
+            s32 r = ((NpcActor *)(this))->getPlayerActor(4);
+            ((ActorTalkRequest *)(&talk))->setTalkPlayer(r);
             changeAct(1);
         } else if (NetArea_IsLocalOwner() != 0 && b == 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0);
         }
     }
@@ -499,18 +505,18 @@ BOOL SpNpcBrewster::mainAct05() {
 }
 
 BOOL SpNpcBrewster::setupAct06() {
-    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcBrewster::mainAct06() {
-    if (NpcActor_isNetOwner(this) != 0) {
+    if (((NpcActor *)(this))->isNetOwner() != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b) != 0) {
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
-                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                    ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                     changeAct(0);
                 }
             }
@@ -541,47 +547,47 @@ void SpNpcBrewsterTalk::attachOwner(s32 v) {
 
 void SpNpcBrewsterTalk::start(TalkStartMsg *arg) {
     TalkTopicMsg *out = (TalkTopicMsg *)arg;
-    void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
+    void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
     if (GameStart_IsActive() != 0) {
         out->fileName = sSpNpcBrewsterMsgFiles[1];
         out->msgIndex = 0x1f;
     } else {
         out->fileName = sSpNpcBrewsterMsgFiles[0];
-        void *o = Actor_findByProfile(0x66, 0);
-        if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+        void *o = Actor::findByProfile(0x66, (Actor *)(0));
+        if (((CommManager *)(gCommManager))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
             out->msgIndex = Random_GlobalBelow(3) + 0x55;
         } else if (Talk_CheckAndSetPlayerFlag(0x17, 0) != 0) {
             if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
                 out->msgIndex = 0x58;
             } else {
-                s32 c = PlayerSpNpcRecord_getCafeVisits(h) >> 2;
+                s32 c = ((PlayerSpNpcRecord *)(h))->getCafeVisits() >> 2;
                 out->msgIndex = data_ov004_0224cec8[c] + Random_GlobalBelow(3);
             }
         } else if (PlayerActor_IsInAction(0x28, 4) == 0) {
             if (Talk_CheckAndSetPlayerFlag(0x16, 1) == 0) {
-                out->msgIndex = PlayerSpNpcRecord_getCafeVisits(h) >> 1;
+                out->msgIndex = ((PlayerSpNpcRecord *)(h))->getCafeVisits() >> 1;
             } else if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
                 out->msgIndex = 0x58;
             } else {
-                out->msgIndex = (PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x49;
+                out->msgIndex = (((PlayerSpNpcRecord *)(h))->getCafeVisits() >> 2) + 0x49;
             }
         } else {
             if (Talk_CheckAndSetPlayerFlag(0x17, 0) == 0) {
                 Hud_Hide();
             }
-            out->msgIndex = (PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x14;
+            out->msgIndex = (((PlayerSpNpcRecord *)(h))->getCafeVisits() >> 2) + 0x14;
         }
     }
 }
 
 void SpNpcBrewsterTalk::onMessageEnd(u32) {
-    void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
+    void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
     TalkWindowState *o = window;
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
     if (GameStart_IsActive() == 0) {
         if ((s32)msgIndex >= 0x1c && (s32)msgIndex <= 0x23) {
-            if ((u32)PlayerSpNpcRecord_getCafeVisits(h) >= 5) {
+            if ((u32)((PlayerSpNpcRecord *)(h))->getCafeVisits() >= 5) {
                 if (Random_GlobalBelow(3) == 0) {
                     r = 0x2c;
                     goto next0;
@@ -607,19 +613,19 @@ void SpNpcBrewsterTalk::onMessageEnd(u32) {
         if (r != 0xff) {
             u8 buf;
             buf = r;
-            TalkWindowState_setNextMessage(window, &buf, d);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf), (void *)(d));
         }
     }
 }
 
 void SpNpcBrewsterTalk::onChoice(u32) {
-    void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
+    void *h = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
     s32 t = getChoiceList()->getResult();
     u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
     if ((s32)msgIndex >= 0x24 && (s32)msgIndex <= 0x2b) {
         if (t != 0) {
-            r = (u8)((PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x28);
+            r = (u8)((((PlayerSpNpcRecord *)(h))->getCafeVisits() >> 2) + 0x28);
         } else {
             window->openMode = 0;
             setScript(2);
@@ -636,17 +642,17 @@ void SpNpcBrewsterTalk::onChoice(u32) {
             } else {
                 NpcActor_ChargePlayer((s32)owner, 200);
                 r = Random_GlobalBelow(2);
-                r = (u8)(r + (((PlayerSpNpcRecord_getCafeVisits(h) >> 2) << 1) + 0x1c));
+                r = (u8)(r + (((((PlayerSpNpcRecord *)(h))->getCafeVisits() >> 2) << 1) + 0x1c));
             }
         } else {
-            r = (u8)((PlayerSpNpcRecord_getCafeVisits(h) >> 2) + 0x18);
+            r = (u8)((((PlayerSpNpcRecord *)(h))->getCafeVisits() >> 2) + 0x18);
         }
         break;
     }
     if (r != 0xff) {
         u8 buf;
         buf = r;
-        TalkWindowState_setNextMessage(window, &buf, d);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf), (void *)(d));
     }
 }
 
@@ -676,24 +682,24 @@ void SpNpcBrewsterTalk::setScript(s32 v) {
 
 void SpNpcBrewsterTalk::runCoffeeScript() {
     TalkWindowState *r6 = window;
-    u8 r7 = (u8)((PlayerSpNpcRecord_getCafeVisits(PlayerData_getSpNpcRecord(PlayerData_GetCurrent())) >> 2) + 0x24);
+    u8 r7 = (u8)((((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->getCafeVisits() >> 2) + 0x24);
     void *r5 = &owner->actionCtrl;
     u8 buf;
     switch (scriptStep) {
     case 0:
         if (r6->state == 5) {
-            NpcLookAt_setTarget(&owner->lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-            NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcLookAt *)(&owner->lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            ((NpcActionCtrl *)(r5))->requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             scriptStep = 1;
         }
         break;
     case 1:
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcActionCtrl_requestPlayAnim(r5, 1, 0xf6, 1, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcActionCtrl *)(r5))->requestPlayAnim(1, 0xf6, 1, data_020c6cc8, 0);
             CafeCoffeeSet_SetState03();
-            NpcMoveAnimSet_setStandAnim(&owner->moveAnimSet, 0xf3);
-            NpcMoveAnimSet_setWalkAnim(&owner->moveAnimSet, 0xf5);
-            NpcMoveAnimSet_setRunAnim(&owner->moveAnimSet, 0xf5);
+            ((NpcMoveAnimSet *)(&owner->moveAnimSet))->setStandAnim(0xf3);
+            ((NpcMoveAnimSet *)(&owner->moveAnimSet))->setWalkAnim(0xf5);
+            ((NpcMoveAnimSet *)(&owner->moveAnimSet))->setRunAnim(0xf5);
             scriptStep = 2;
             owner->scriptFrame = 0;
         }
@@ -703,29 +709,29 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
         if (owner->scriptFrame == 5) {
             Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4db, 0x7f, 0);
         }
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcMoveCtrl_setTurnMode(&owner->moveCtrl, 2);
-            NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, (s16)0x8000, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcMoveCtrl *)(&owner->moveCtrl))->setTurnMode(2);
+            ((NpcActionCtrl *)(r5))->requestAction(3, 1, 0, 0, 0, (s16)0x8000, 0, 0, data_020c6cc8, 0);
             CafeCoffeeSet_SetState01();
             scriptStep = 3;
         }
         break;
     case 3:
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcActionCtrl_requestAction(r5, 2, 1, 0x19700, 0x14000, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcActionCtrl *)(r5))->requestAction(2, 1, 0x19700, 0x14000, 0, 0, 0, 0, data_020c6cc8, 0);
             scriptStep = 4;
         }
         break;
     case 4:
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcMoveCtrl_setTurnMode(&owner->moveCtrl, 0);
-            NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcMoveCtrl *)(&owner->moveCtrl))->setTurnMode(0);
+            ((NpcActionCtrl *)(r5))->requestAction(3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
             scriptStep = 5;
         }
         break;
     case 5:
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcActionCtrl_requestPlayAnim(r5, 1, 0xf7, 1, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcActionCtrl *)(r5))->requestPlayAnim(1, 0xf7, 1, data_020c6cc8, 0);
             CafeCoffeeSet_SetState04();
             scriptStep = 6;
             owner->scriptFrame = 0;
@@ -742,28 +748,28 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
         if (owner->scriptFrame == 0x46) {
             Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4de, 0x7f, 0);
         }
-        if (NpcActionCtrl_isActionDone(r5)) {
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
             CafeCoffeeSet_SetState02();
-            NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(r5))->requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             scriptStep = 7;
         }
         break;
     case 7:
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcActionCtrl_requestAction(r5, 2, 1, 0x19700, 0x15000, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcActionCtrl *)(r5))->requestAction(2, 1, 0x19700, 0x15000, 0, 0, 0, 0, data_020c6cc8, 0);
             scriptStep = 8;
         }
         break;
     case 8:
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcActionCtrl *)(r5))->requestAction(3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
             scriptStep = 9;
         }
         break;
     case 9:
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcLookAt_setTarget(&owner->lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-            NpcActionCtrl_requestPlayAnim(r5, 1, 0xf8, 1, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcLookAt *)(&owner->lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            ((NpcActionCtrl *)(r5))->requestPlayAnim(1, 0xf8, 1, data_020c6cc8, 0);
             CafeCoffeeSet_SetState05();
             scriptStep = 10;
             owner->scriptFrame = 0;
@@ -777,9 +783,9 @@ void SpNpcBrewsterTalk::runCoffeeScript() {
         if (owner->scriptFrame == 0x1e) {
             Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e0, 0x7f, 0);
         }
-        if (NpcActionCtrl_isActionDone(r5)) {
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
             buf = r7;
-            TalkWindowState_setNextMessage(r6, &buf, sSpNpcBrewsterMsgFiles[0]);
+            ((TalkWindowState *)(r6))->setNextMessage((u8 *)(&buf), (void *)(sSpNpcBrewsterMsgFiles[0]));
             r6->nextState = 1;
             setScript(0);
         }
@@ -807,7 +813,7 @@ void SpNpcBrewsterTalk::runDrinkScript() {
             Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e3, 0x7f, 0);
         }
         if (owner->scriptFrame == 0x46) {
-            if (PlayerId_getGender(PlayerData_getPlayerId(PlayerData_GetCurrent())) == 0) {
+            if (((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender() == 0) {
                 Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e4, 0x7f, 0);
             } else {
                 Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e5, 0x7f, 0);
@@ -825,12 +831,12 @@ void SpNpcBrewsterTalk::runDrinkScript() {
             Bgm_RequestSilence(0xc, 0, 0xa);
             Bgm_Request(0xd, 0x3e, 0x7f, 1);
             buf = r4;
-            TalkWindowState_setNextMessage(r6, &buf, sSpNpcBrewsterMsgFiles[0]);
+            ((TalkWindowState *)(r6))->setNextMessage((u8 *)(&buf), (void *)(sSpNpcBrewsterMsgFiles[0]));
             r6->nextState = 1;
             Talk_CheckAndSetPlayerFlag(0x17, 1);
-            void *p = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
+            void *p = ((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord();
             if (Random_GlobalBelow(0xa) < 5) {
-                PlayerSpNpcRecord_setCafeVisits(p, PlayerSpNpcRecord_getCafeVisits(p) + 1);
+                ((PlayerSpNpcRecord *)(p))->setCafeVisits(((PlayerSpNpcRecord *)(p))->getCafeVisits() + 1);
             }
             setScript(0);
         }
@@ -847,7 +853,7 @@ void SpNpcBrewsterTalk::onWindowClose() {
 
 void SpNpcBrewsterTalk::runScript03() {
     TalkWindowState *r6 = window;
-    u8 r7 = (u8)((PlayerSpNpcRecord_getCafeVisits(PlayerData_getSpNpcRecord(PlayerData_GetCurrent())) >> 2) + 0x51);
+    u8 r7 = (u8)((((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->getCafeVisits() >> 2) + 0x51);
     void *r5 = &owner->actionCtrl;
     u8 buf;
     switch (scriptStep) {
@@ -869,8 +875,8 @@ void SpNpcBrewsterTalk::runScript03() {
         }
         if (CafeCoffeeSet_IsAnim0CDone()) {
             Camera_UnmuteSe();
-            NpcLookAt_setTarget(&owner->lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-            NpcActionCtrl_requestPlayAnim(r5, 4, 0xf8, 3, data_020c6cc8, 0);
+            ((NpcLookAt *)(&owner->lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            ((NpcActionCtrl *)(r5))->requestPlayAnim(4, 0xf8, 3, data_020c6cc8, 0);
             CafeCoffeeSet_SetState06();
             scriptStep = 2;
             owner->scriptFrame = 0;
@@ -884,19 +890,19 @@ void SpNpcBrewsterTalk::runScript03() {
         if (owner->scriptFrame == 0x2d) {
             Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4e9, 0x7f, 0);
         }
-        if (NpcActionCtrl_isActionDone(r5)) {
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
             CafeCoffeeSet_SetState01();
-            NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(r5))->requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             scriptStep = 3;
         }
         break;
     case 3:
-        if (NpcActionCtrl_isActionDone(r5)) {
-            NpcActionCtrl_requestPlayAnim(r5, 1, 0xf6, 3, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
+            ((NpcActionCtrl *)(r5))->requestPlayAnim(1, 0xf6, 3, data_020c6cc8, 0);
             CafeCoffeeSet_SetState07();
-            NpcMoveAnimSet_setStandAnim(&owner->moveAnimSet, 0xf2);
-            NpcMoveAnimSet_setWalkAnim(&owner->moveAnimSet, 0xf4);
-            NpcMoveAnimSet_setRunAnim(&owner->moveAnimSet, 0xf4);
+            ((NpcMoveAnimSet *)(&owner->moveAnimSet))->setStandAnim(0xf2);
+            ((NpcMoveAnimSet *)(&owner->moveAnimSet))->setWalkAnim(0xf4);
+            ((NpcMoveAnimSet *)(&owner->moveAnimSet))->setRunAnim(0xf4);
             scriptStep = 4;
             owner->scriptFrame = 0;
         }
@@ -906,17 +912,17 @@ void SpNpcBrewsterTalk::runScript03() {
         if (owner->scriptFrame == 0xa) {
             Snd_SeEmitterPlayOneShotAlt(&owner->seEmitter, 0x4ea, 0x7f, 0);
         }
-        if (NpcActionCtrl_isActionDone(r5)) {
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
             CafeCoffeeSet_SetState00();
-            NpcLookAt_setTarget(&owner->lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
-            NpcActionCtrl_requestAction(r5, 3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
+            ((NpcLookAt *)(&owner->lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+            ((NpcActionCtrl *)(r5))->requestAction(3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
             scriptStep = 5;
         }
         break;
     case 5:
-        if (NpcActionCtrl_isActionDone(r5)) {
+        if (((NpcActionCtrl *)(r5))->isActionDone()) {
             buf = r7;
-            TalkWindowState_setNextMessage(r6, &buf, sSpNpcBrewsterMsgFiles[0]);
+            ((TalkWindowState *)(r6))->setNextMessage((u8 *)(&buf), (void *)(sSpNpcBrewsterMsgFiles[0]));
             r6->nextState = 1;
             setScript(0);
             useMsg30 = 0;
@@ -929,7 +935,7 @@ void SpNpcBrewsterTalk::runScript03() {
 // SpNpcBrewsterTalk
 
 BOOL SpNpcBrewster::acceptsInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || ((NpcActor *)(this))->netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -941,27 +947,27 @@ void SpNpcBrewster::onInteractionEvent(u32 cmd, u8 arg) {
     case 3:
         partnerPlayer = arg;
         if (arg != 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, arg);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, arg);
             changeAct(7);
-        } else if (NpcActor_isNetOwner(this)) {
+        } else if (((NpcActor *)(this))->isNetOwner()) {
             s32 g = gCommManager->myAid;
-            NpcActor_netSetSlotsIfOwner(this, 1, g, g);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
             changeAct(7);
         }
         break;
     case 1:
         partnerPlayer = arg;
         if (arg != 4 && arg != gCommManager->myAid) {
-            NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, arg, arg);
             changeAct(6);
-        } else if (NpcActor_isNetOwner(this)) {
+        } else if (((NpcActor *)(this))->isNetOwner()) {
             CommManager *gl = gCommManager;
             s32 g = gl->myAid;
-            NpcActor_netSetSlotsIfOwner(this, 1, g, g);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
             ActorTalkRequest *p = &talk;
             p->resetMsg();
-            ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
-            if (CommManager_isOnline(gl) || *DebugVar_GetPtr(0, 0x4a) != 0) {
+            ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
+            if (((CommManager *)(gl))->isOnline() || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 changeAct(1);
             } else {
                 changeAct(4);
@@ -971,33 +977,33 @@ void SpNpcBrewster::onInteractionEvent(u32 cmd, u8 arg) {
     case 0:
         partnerPlayer = arg;
         if (arg != 4 && arg != gCommManager->myAid) {
-            NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, arg, arg);
             changeAct(6);
-        } else if (NpcActor_isNetOwner(this)) {
+        } else if (((NpcActor *)(this))->isNetOwner()) {
             s32 g = gCommManager->myAid;
-            NpcActor_netSetSlotsIfOwner(this, 1, g, g);
+            ((NpcActor *)(this))->netSetSlotsIfOwner(1, g, g);
             ActorTalkRequest *p = &talk;
             p->resetMsg();
-            ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+            ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
             changeAct(1);
         }
         break;
     case 8:
         if (arg == 4) {
             if (NetArea_IsLocalOwner()) {
-                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                 changeAct(3);
             } else {
-                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->myAid);
+                ((NpcActor *)(this))->netSetSlotsIfOwner(1, 4, gCommManager->myAid);
                 changeAct(5);
             }
         }
         break;
     case 4:
-        if (NpcActor_netIsTalkLocked(this) && NpcActor_isNetOwner(this)) {
+        if (((NpcActor *)(this))->netIsTalkLocked() && ((NpcActor *)(this))->isNetOwner()) {
             a = 4;
             b = 4;
-            if (NpcActor_netGetSlots(this, &a, &b)) {
+            if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
                 if (arg != 4) {
                     if (arg == b) {
                         goto body;
@@ -1005,7 +1011,7 @@ void SpNpcBrewster::onInteractionEvent(u32 cmd, u8 arg) {
                 }
                 if (arg == 4) {
                 body:
-                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
+                    ((NpcActor *)(this))->netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                     changeAct(0);
                 }
             }
@@ -1026,7 +1032,7 @@ extern "C" void *SpNpcBrewster_GetJointMtxB() { return &sSpNpcBrewster->jointMtx
 
 extern "C" u32 SpNpcBrewster_GetAnimFrame() { return ((u32)sSpNpcBrewster->model.curFrame << 4) >> 16; }
 
-extern "C" s32 SpNpcBrewster_GetAnimState() { return NpcAnimCtrl_getAnimId(&sSpNpcBrewster->animCtrl, 0); }
+extern "C" s32 SpNpcBrewster_GetAnimState() { return ((NpcAnimCtrl *)(&sSpNpcBrewster->animCtrl))->getAnimId(0); }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // SpNpcBrewster

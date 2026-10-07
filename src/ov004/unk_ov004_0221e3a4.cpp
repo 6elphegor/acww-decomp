@@ -27,6 +27,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "npc/NpcMoveAnimSet.h"
 
 
 class ActorTalkRequest;
@@ -113,7 +114,7 @@ BOOL SpNpcTortimer2::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xff);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xff);
     return TRUE;
 }
 
@@ -159,7 +160,7 @@ void SpNpcTortimer2::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimer2::setupAct00() {
-    NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     idleLoops = 0xa;
     return TRUE;
 }
@@ -174,15 +175,15 @@ BOOL SpNpcTortimer2::mainAct00() {
 }
 
 BOOL SpNpcTortimer2::setupAct01() {
-    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x100, 1, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x100, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimer2::mainAct01() {
-    if (NpcAnimCtrl_isPlayingAnim(&animCtrl, 0x100, &moveAnimSet) && NpcActionCtrl_isActionDone(&actionCtrl)) {
-        NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x101, 1, data_020c6cc8, 0);
+    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0x100, &moveAnimSet) && ((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+        ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x101, 1, data_020c6cc8, 0);
     }
-    if (NpcAnimCtrl_isPlayingAnim(&animCtrl, 0x101, &moveAnimSet) && NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0x101, &moveAnimSet) && ((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
         changeAct(0);
     }
     return TRUE;
@@ -194,7 +195,7 @@ BOOL SpNpcTortimer2::mainAct01() {
 extern "C" BOOL SpNpcTortimer2_IsIdle() {
     SpNpcTortimer2 *y = sSpNpcTortimer2;
     if (y) {
-        if (NpcAnimCtrl_isPlayingAnim(&y->animCtrl, 0xff, &y->moveAnimSet) && sSpNpcTortimer2->act == 0) {
+        if (((NpcAnimCtrl *)(&y->animCtrl))->isPlayingAnim(0xff, &y->moveAnimSet) && sSpNpcTortimer2->act == 0) {
             return TRUE;
         }
         return FALSE;

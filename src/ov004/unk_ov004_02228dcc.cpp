@@ -13,6 +13,9 @@
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
 #include "room/FtrActorParts.h"
+#include "gfx/Model.h"
+#include "gfx/ModelAnim.h"
+#include "gfx/TwoLayerAnimModel.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -125,29 +128,16 @@ void *RoomObjRes_GetModel(void *);
 u32 RoomObjTex_Get(void *);
 s32 RoomObjRes_GetBca(void *, u32);
 s32 RoomObjRes_GetBta(void *, u32);
-void _ZN9AnimModel12drawAnimatedEPv(void *, u32);
-s32 _ZN9AnimModel8stepAnimEv(void *);
-s32 _ZN13AnimFrameCtrl4stepEv(void *);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
-s32 _ZN5Model11setResourceEP12NNSG3dResMdlj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
-s32 _ZN9AnimModel11allocAnmObjEPv(void *, void *);
-s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, u32, u32, u32, u32, u32);
-void _ZN9AnimModel10attachAnimEv(void *);
 s32 _ZN9ModelAnim11allocMatAnmEjPv(void *, u32, void *);
-s32 _ZN9ModelAnim4initEiiit(void *, u32, u32, u32, u32);
-void *_ZN5Model12getRenderObjEv(void *);
-s32 _ZN9ModelAnim14addToRenderObjEj(void *, void *);
-s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
 s32 SpNpcKatrina_GetAnimFrame(void);
 Mtx43 *SpNpcKatrina_GetJointMtx(void);
 void *_ZN9AnimModelC1Ev(void *, s32);
 void *_ZN9AnimModelD1Ev(void *, s32);
 void *_ZN10RoomObjResC1Ev(void *, s32);
 void *_ZN10RoomObjResD1Ev(void *, s32);
-void _ZN9ModelAnimC1Ev(void *);
-void _ZN9ModelAnimD1Ev(void *);
 TarotProps *TarotProps_Create();
 }
 
@@ -163,11 +153,11 @@ extern "C" TarotProps *TarotProps_Create() {
 
 TarotProps::TarotProps() {
     __cxa_vec_ctor(partTex, 3, 4, (void *(*)(void *))RoomObjTex_Construct, (void *(*)(void *, s32))RoomObjTex_Destruct);
-    _ZN9ModelAnimC1Ev(&part1MatAnim);
+    new (&part1MatAnim) ModelAnim();
 }
 
 TarotProps::~TarotProps() {
-    _ZN9ModelAnimD1Ev(&part1MatAnim);
+    ((ModelAnim *)(&part1MatAnim))->ModelAnim::~ModelAnim();
     __cxa_vec_cleanup(partTex, 3, 4, (void *(*)(void *, s32))RoomObjTex_Destruct);
 }
 
@@ -178,15 +168,15 @@ BOOL TarotProps::onCreate() {
     loadPart(1, (void *)"/roomObj/obj_tarot3.arc", (void *)"/roomObj/obj_tarot3.nsbtx");
     loadPart(2, (void *)"/roomObj/obj_tarot4.arc", (void *)"/roomObj/obj_tarot4.nsbtx");
     if (RoomObjRes_GetBca(&partRes[2], 0)) {
-        if (_ZN9AnimModel11allocAnmObjEPv(&partModels[2], gBgHeap)) {
-            _ZN14BlendAnimModel8initAnimEiiitt(&partModels[2], RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
-            _ZN9AnimModel10attachAnimEv(&partModels[2]);
+        if (((AnimModel *)(&partModels[2]))->allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)(&partModels[2]))->initAnim(RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
+            ((AnimModel *)(&partModels[2]))->attachAnim();
             partModels[2].frameStep = 0;
         }
     }
     if (_ZN9ModelAnim11allocMatAnmEjPv(&part1MatAnim, (u32)partModels[1].resMdl, gBgHeap)) {
-        _ZN9ModelAnim4initEiiit(&part1MatAnim, RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&part1MatAnim, _ZN5Model12getRenderObjEv(&partModels[1]));
+        ((ModelAnim *)(&part1MatAnim))->init(RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
+        ((ModelAnim *)(&part1MatAnim))->addToRenderObj((u32)(((Model *)(&partModels[1]))->getRenderObj()));
         part1MatAnim.frameStep = 0;
     }
     changeAct(0);
@@ -194,8 +184,8 @@ BOOL TarotProps::onCreate() {
 }
 
 BOOL TarotProps::onExecute() {
-    _ZN9AnimModel8stepAnimEv(&partModels[2]);
-    _ZN13AnimFrameCtrl4stepEv(&part1MatAnim);
+    ((AnimModel *)(&partModels[2]))->stepAnim();
+    ((AnimFrameCtrl *)(&part1MatAnim))->step();
     *part1MatAnim.anmObj = part1MatAnim.curFrame;
     Mtx43_SetTranslate(&data_021f47e0, position.x, position.y, position.z);
     partModels[1].mtx = data_021f47e0;
@@ -215,11 +205,11 @@ void TarotProps::drawAtKatrina() {
     F(Mtx43, 0xec + 0x64) = data_021f47e0;
     partModels[0].mtx = data_021f47e0;
     if (modelVisible) {
-        _ZN9AnimModel12drawAnimatedEPv(&model, 0);
+        ((AnimModel *)(&model))->drawAnimated((void *)(0));
     }
     for (i = 0; i < 3; i++) {
         if (partVisible[i]) {
-            _ZN9AnimModel12drawAnimatedEPv(&partModels[i], 0);
+            ((AnimModel *)(&partModels[i]))->drawAnimated((void *)(0));
         }
     }
 }
@@ -269,8 +259,8 @@ BOOL TarotProps::enterAct01() {
     partVisible[0] = 0;
     partVisible[1] = 1;
     partVisible[2] = 0;
-    _ZN14BlendAnimModel8initAnimEiiitt(&partModels[2], RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
-    _ZN9ModelAnim4initEiiit(&part1MatAnim, RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
+    ((BlendAnimModel *)(&partModels[2]))->initAnim(RoomObjRes_GetBca(&partRes[2], 0), 1, 0x1000, 0, 0);
+    ((ModelAnim *)(&part1MatAnim))->init(RoomObjRes_GetBta(&partRes[1], 0), 1, 0x1000, 0);
     return TRUE;
 }
 
@@ -304,8 +294,8 @@ BOOL TarotProps::enterAct03() {
     partVisible[0] = 1;
     partVisible[1] = 1;
     partVisible[2] = 1;
-    _ZN14BlendAnimModel8initAnimEiiitt(&partModels[2], RoomObjRes_GetBca(&partRes[2], 1), 1, 0x1000, 0, 0);
-    _ZN9ModelAnim4initEiiit(&part1MatAnim, RoomObjRes_GetBta(&partRes[1], 1), 1, 0x1000, 0);
+    ((BlendAnimModel *)(&partModels[2]))->initAnim(RoomObjRes_GetBca(&partRes[2], 1), 1, 0x1000, 0, 0);
+    ((ModelAnim *)(&part1MatAnim))->init(RoomObjRes_GetBta(&partRes[1], 1), 1, 0x1000, 0);
     return TRUE;
 }
 
@@ -322,7 +312,7 @@ void TarotProps::execAct03() {
     if (SpNpcKatrina_GetAnimFrame() == 0x25) {
         modelVisible = 0;
     }
-    if (_ZN13AnimFrameCtrl10isFinishedEv((AnimFrameCtrl *)&partModels[2])) {
+    if (((AnimFrameCtrl *)((AnimFrameCtrl *)&partModels[2]))->isFinished()) {
         changeAct(0);
     }
 }
@@ -359,7 +349,7 @@ void TarotProps::loadPart(s32 i, void *a, void *b) {
     RoomObjRes_Load(t1, (const char *)a);
     u32 *t2 = &partTex[i];
     RoomObjTex_Load(t2, (const char *)b);
-    _ZN5Model11setResourceEP12NNSG3dResMdlj(&partModels[i], RoomObjRes_GetModel(t1), 0);
+    ((Model *)(&partModels[i]))->setResource((NNSG3dResMdl *)(RoomObjRes_GetModel(t1)), 0);
     {
         void *x = RoomObjRes_GetModel(t1);
         NNS_G3dBindMdlTex(x, RoomObjTex_Get(t2));

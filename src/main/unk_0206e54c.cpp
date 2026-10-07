@@ -2,6 +2,9 @@
 #include "Unk_020d8c7c.h"
 #include "item/Letter.h"
 #include "sys/ProcProfile.h"
+#include "item/FutureLetter.h"
+#include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
 
 
 // 8-byte list head sOpenMenuList: inline constructor, no destructor
@@ -86,9 +89,6 @@ void Letter_MarkSent(void *);
 u32 PlayerData_GetCurrent(void);
 void *PlayerData_GetFutureLetter(u32);
 void *FutureLetter_GetLetter(void *);
-u8 *_ZN12FutureLetter15getDeliveryDateEv(void *);
-void *_ZN10PlayerData12getInventoryEv(u32);
-u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
 void *_ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
 void Pocket_SetItem(u16 *, u32, u32);
 void Text_BuildCharWidthTable();
@@ -768,9 +768,9 @@ extern "C" u32 MenuCtrl_GetSavedSlot() { return sMenuSavedSlot; }
 extern "C" void MenuCtrl_BackupPockets() {
     void *p;
     s32 i;
-    p = _ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent());
+    p = ((PlayerData *)(PlayerData_GetCurrent()))->getInventory();
     for (i = 0; i < 15; i++) {
-        sPocketBackupItems[i] = *_ZN15PlayerInventory9getPocketEi(p, i);
+        sPocketBackupItems[i] = *((PlayerInventory *)(p))->getPocket(i);
         sPocketBackupFlags[i] = (u32)_ZN15PlayerInventory14getPocketFlagsEi(p, i);
     }
 }
@@ -778,7 +778,7 @@ extern "C" void MenuCtrl_BackupPockets() {
 extern "C" void MenuCtrl_RestorePockets() {
     u16 tmp[1];
     s32 i;
-    _ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent());
+    ((PlayerData *)(PlayerData_GetCurrent()))->getInventory();
     tmp[0] = 0xfff1;
     for (i = 0; i < 15; i++) {
         tmp[0] = sPocketBackupItems[i];
@@ -841,11 +841,11 @@ extern "C" BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b) {
 
 extern "C" u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, void *)) {
     u32 a = PlayerData_GetCurrent();
-    u16 *p = _ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(a), 0);
+    u16 *p = ((PlayerInventory *)(((PlayerData *)(a))->getInventory()))->getPocket(0);
     s32 i;
     u16 mask = 0;
     for (i = 0; i < 15; i++) {
-        if (cb(p + i, _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData12getInventoryEv(a), i))) {
+        if (cb(p + i, _ZN15PlayerInventory14getPocketFlagsEi(((PlayerData *)(a))->getInventory(), i))) {
             mask |= 1 << i;
         }
     }
@@ -876,7 +876,7 @@ extern "C" void MenuCtrl_StoreFutureLetter(void) {
     u8 *q;
     Letter_Copy(p, &sFutureLetter);
     Letter_MarkSent(p);
-    q = _ZN12FutureLetter15getDeliveryDateEv(PlayerData_GetFutureLetter(a));
+    q = ((FutureLetter *)(PlayerData_GetFutureLetter(a)))->getDeliveryDate();
     q[0] = 1;
     q[1] = 1;
     q[2] = 0;

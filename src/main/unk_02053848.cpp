@@ -4,7 +4,6 @@
 #include "gfx/JointBlend.h"
 #include "gfx/NNSG3dRS.h"
 
-inline void *operator new(size_t, void *p) { return p; }
 
 
 
@@ -33,6 +32,7 @@ struct NNSG3dResJntAnm {
 #include "gfx/AnimModel.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "gfx/Model.h"
 
 
 
@@ -44,20 +44,11 @@ struct NNSG3dResJntAnm {
 extern "C" {
 void MTX_Identity33_(void *p);
 s32 func_01ffcc10(void *a, void *o);
-void _ZN10JointBlend5startEi(void *p, s32 v);
-s32 _ZN10JointBlend7advanceEv(void *p);
-void _ZN10JointBlend11capturePoseEP8NNSG3dRS(void *p, void *q);
-void _ZN10JointBlend9blendPoseEP8NNSG3dRS(void *p, void *q);
-void _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, s32 b, s32 c, u32 d);
-s32 _ZN13AnimFrameCtrl4stepEv(void *p);
-BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 void NNS_G3dAnmObjInit(void *a, s32 b, void *c, s32 d);
 void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
-void _ZN5Model10drawScaledEPi(void *p, void *q);
 void *Gfx3d_AllocAnmObj(void *a, void *b, void *c);
 extern u8 sJointAnmHeader2[];
-void _ZN9AnimModel12drawAnimatedEPv(void *p, void *q);
 void CpuMtx_RestoreFromStack(u32 v);
 void CpuMtx_StoreToStack(u32 v);
 void CpuMtx_MultRotScaledTrans(void *a, void *b, void *c);
@@ -76,7 +67,6 @@ void MI_CpuCopy8(void *src, void *dst, u32 size);
 void Gfx3d_LoadTexAndPltt(void *a, void *b);
 void *Gfx3d_CopyTex(void *a, void *heap);
 void *Gfx3d_CopyModel(void *a, void *heap);
-void _ZN5Model18setResourceAndBindEP12NNSG3dResMdlj(void *a, void *b, void *c);
 void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
 void NNS_G3dForceBindMdlTex(void *a, void *b, s32 c, s32 d);
@@ -264,7 +254,7 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
         u32 st = *(u16 *)(p + off);
         u8 *q = h + *(s32 *)(p + off + st * i + 4);
         void *r = Gfx3d_CopyModel(q, heap);
-        _ZN5Model18setResourceAndBindEP12NNSG3dResMdlj(&t->models[i], r, hdr);
+        ((Model *)(&t->models[i]))->setResourceAndBind((NNSG3dResMdl *)(r), (u32)(hdr));
     }
     Heap_Free(fileHeap, res);
     return TRUE;
@@ -317,7 +307,7 @@ BOOL AnimModel::allocAnmObj(void *x)
 void AnimModel::stepAnim()
 {
     AnimFrameCtrl &r = *this;
-    _ZN13AnimFrameCtrl4stepEv(&r);
+    ((AnimFrameCtrl *)(&r))->step();
     anmObj->frame = curFrame;
 }
 
@@ -326,7 +316,7 @@ void AnimModel::drawAnimated(void *q)
     if (renderJntRecord != 0) {
         renderObj |= 1;
     }
-    _ZN5Model10drawScaledEPi(this, q);
+    ((Model *)(this))->drawScaled((s32 *)(q));
 }
 
 void AnimModel::setFrame(s32 v)
@@ -359,7 +349,7 @@ void BlendAnimModel::initAnim(s32 a, s32 b, s32 c, u16 d, u16 e)
         e = Anim_GetFrameCountForMode(b, (NNSG3dResJntAnm *)a);
     }
     AnimFrameCtrl &r = *this;
-    _ZN13AnimFrameCtrl5setupEihit(&r, e, b, c, d);
+    ((AnimFrameCtrl *)(&r))->setup(e, b, c, d);
     NNS_G3dAnmObjInit(anmObj, a, resMdl, 0);
     anmObj->frame = curFrame;
 }
@@ -475,7 +465,7 @@ void BlendAnimModel::captureJointPose(BlendAnimModel *x)
 {
     if (blendStep != 0) {
         JointBlend &r = *this;
-        _ZN10JointBlend11capturePoseEP8NNSG3dRS(&r, x);
+        ((JointBlend *)(&r))->capturePose((NNSG3dRS *)(x));
     }
 }
 
@@ -499,7 +489,7 @@ void BlendAnimModel::applyJointBlend(BlendAnimModel *x)
     }
     if (blendStep != 0) {
         JointBlend &r = *this;
-        _ZN10JointBlend9blendPoseEP8NNSG3dRS(&r, x);
+        ((JointBlend *)(&r))->blendPose((NNSG3dRS *)(x));
     }
 }
 
@@ -513,14 +503,14 @@ void BlendAnimModel::onJointCalcPost(BlendAnimModel *x)
 void BlendAnimModel::stepBlend()
 {
     JointBlend &r = *this;
-    _ZN10JointBlend7advanceEv(&r);
+    ((JointBlend *)(&r))->advance();
     stepAnim();
 }
 
 void BlendAnimModel::playBlend(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f)
 {
     JointBlend &r = *this;
-    _ZN10JointBlend5startEi(&r, b);
+    ((JointBlend *)(&r))->start(b);
     initAnim(a, c, d, e, f);
 }
 
@@ -578,7 +568,7 @@ BOOL TwoLayerAnimModel::isLayer2Joint(u32 i) {
 
 void TwoLayerAnimModel::captureLayer2Pose(NNSG3dRS *m) {
     if (layer2Blend.blendStep != 0) {
-        _ZN10JointBlend11capturePoseEP8NNSG3dRS(&layer2Blend, m);
+        ((JointBlend *)(&layer2Blend))->capturePose((NNSG3dRS *)(m));
     }
 }
 
@@ -601,7 +591,7 @@ void TwoLayerAnimModel::applyLayer2Blend(NNSG3dRS *m) {
         m->pJntAnmResult->trans.z = 0;
     }
     if (layer2Blend.blendStep != 0) {
-        _ZN10JointBlend9blendPoseEP8NNSG3dRS(&layer2Blend, m);
+        ((JointBlend *)(&layer2Blend))->blendPose((NNSG3dRS *)(m));
     }
 }
 
@@ -629,17 +619,17 @@ BOOL TwoLayerAnimModel::allocLayerAnims(u32 a) {
 void TwoLayerAnimModel::updateLayers() {
     stepBlend();
     if (layer2JointMask != 0 || layer2JointMaskHi != 0) {
-        if (_ZN10JointBlend7advanceEv(&layer2Blend) != 0 && (modelFlags & 0x4000) != 0) {
+        if (((JointBlend *)(&layer2Blend))->advance() != 0 && (modelFlags & 0x4000) != 0) {
             clearLayer2Mask();
             modelFlags = modelFlags & 0xffffbfff;
         }
-        _ZN13AnimFrameCtrl4stepEv(&layer2Frame);
+        ((AnimFrameCtrl *)(&layer2Frame))->step();
         *(u32 *)layer2AnmObj = layer2Frame.curFrame;
     }
 }
 
 void TwoLayerAnimModel::drawLayered(u32 a) {
-    _ZN9AnimModel12drawAnimatedEPv(this, (void *)a);
+    ((AnimModel *)(this))->drawAnimated((void *)a);
     AnimModel_SwitchAnmObj(this, anmObj);
 }
 
@@ -648,11 +638,11 @@ extern "C" void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, 
 }
 
 void TwoLayerAnimModel::playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
-    _ZN10JointBlend5startEi(&layer2Blend, b);
+    ((JointBlend *)(&layer2Blend))->start(b);
     if (*(u16 *)&f == 0) {
         *(u16 *)&f = Anim_GetFrameCountForMode(c, (NNSG3dResJntAnm *)a);
     }
-    _ZN13AnimFrameCtrl5setupEihit(&layer2Frame, *(u16 *)&f, c, d, *(u16 *)&e);
+    ((AnimFrameCtrl *)(&layer2Frame))->setup(*(u16 *)&f, c, d, *(u16 *)&e);
     NNS_G3dAnmObjInit(layer2AnmObj, a, resMdl, 0);
     if (g != 0) {
         modelFlags = modelFlags | 0x4000;
@@ -730,7 +720,7 @@ BOOL ThreeLayerAnimModel::isLayer3Joint(u32 i) {
 
 void ThreeLayerAnimModel::captureLayer3Pose(NNSG3dRS *m) {
     if (layer3Blend.blendStep != 0) {
-        _ZN10JointBlend11capturePoseEP8NNSG3dRS(&layer3Blend, m);
+        ((JointBlend *)(&layer3Blend))->capturePose((NNSG3dRS *)(m));
     }
 }
 
@@ -771,7 +761,7 @@ void ThreeLayerAnimModel::applyLayer3Blend(NNSG3dRS *m) {
         m->pJntAnmResult->trans.z = 0;
     }
     if (layer3Blend.blendStep != 0) {
-        _ZN10JointBlend9blendPoseEP8NNSG3dRS(&layer3Blend, m);
+        ((JointBlend *)(&layer3Blend))->blendPose((NNSG3dRS *)(m));
     }
 }
 
@@ -809,11 +799,11 @@ BOOL ThreeLayerAnimModel::allocLayer3Anims(u32 a) {
 void ThreeLayerAnimModel::updateLayers3() {
     updateLayers();
     if (layer3JointMask != 0 || layer3JointMaskHi != 0) {
-        if (_ZN10JointBlend7advanceEv(&layer3Blend) != 0 && (modelFlags & 0x8000) != 0) {
+        if (((JointBlend *)(&layer3Blend))->advance() != 0 && (modelFlags & 0x8000) != 0) {
             ThreeLayerAnimModel_ClearLayer3Mask(this);
             modelFlags = modelFlags & 0xffff7fff;
         }
-        _ZN13AnimFrameCtrl4stepEv(&layer3Frame);
+        ((AnimFrameCtrl *)(&layer3Frame))->step();
         *(u32 *)layer3AnmObj = layer3Frame.curFrame;
     }
 }
@@ -821,11 +811,11 @@ void ThreeLayerAnimModel::updateLayers3() {
 extern "C" void BlendAnimModel_Play2(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) { BlendAnimModel_Play(p, a, b, c, d, e, f); }
 
 void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
-    _ZN10JointBlend5startEi(&layer3Blend, b);
+    ((JointBlend *)(&layer3Blend))->start(b);
     if (*(u16 *)&f == 0) {
         *(u16 *)&f = Anim_GetFrameCountForMode(c, (NNSG3dResJntAnm *)a);
     }
-    _ZN13AnimFrameCtrl5setupEihit(&layer3Frame, *(u16 *)&f, c, d, *(u16 *)&e);
+    ((AnimFrameCtrl *)(&layer3Frame))->setup(*(u16 *)&f, c, d, *(u16 *)&e);
     NNS_G3dAnmObjInit(layer3AnmObj, a, resMdl, 0);
     if (g != 0) {
         modelFlags = modelFlags | 0x8000;
@@ -834,7 +824,7 @@ void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, B
     }
 }
 
-BOOL ThreeLayerAnimModel::checkLayer3Finished() { return _ZN13AnimFrameCtrl10isFinishedEv(&layer3Frame); }
+BOOL ThreeLayerAnimModel::checkLayer3Finished() { return ((AnimFrameCtrl *)(&layer3Frame))->isFinished(); }
 
 void ThreeLayerAnimModel::playLayer3FromBase(u32 a, u32 b) {
     if (a == 0) {

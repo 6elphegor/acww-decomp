@@ -3,6 +3,8 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/NumberPad.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
 
 extern "C" {
 extern void *gCurrentHeap;
@@ -18,8 +20,6 @@ void Heap_Free(void *heap, void *p);
 void String_Load2dMenu(void *o, u32 v);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 s32 PlayerData_GetCurrent();
-void *_ZN10PlayerData11getPlayerIdEv(s32 p);
-s32 _ZN8PlayerId9getGenderEv(void *id);
 void Snd_SetKeySeMode(u32 v);
 }
 
@@ -138,7 +138,6 @@ struct Ov130S {
 };
 
 extern "C" {
-void _ZN11LabelString12destroyLabelEv(void *p);
 void Snd_PlaySe(s32 v);
 void Snd_PlayKeySe(u32 a);
 s32 Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -230,7 +229,7 @@ void NumberPad::init(u32 mode, u32 a, u32 b) {
     bottomAmount = 0;
     s32 c = PlayerData_GetCurrent();
     if (c != 0) {
-        if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(c)) == 0) {
+        if (((PlayerId *)(((PlayerData *)(c))->getPlayerId()))->getGender() == 0) {
             Snd_SetKeySeMode(0);
             return;
         }
@@ -687,7 +686,7 @@ extern "C" void NumberPad_PutSmallDigit(Ov130S *s, s32 idx, s32 x, s32 y) {
 extern "C" void NumberPad_ReleaseLabels(Ov130S *s) {
     s32 i;
     s->labelCount = 0;
-    for (i = 0; i < 5; i++) _ZN11LabelString12destroyLabelEv(s->slots[i]);
+    for (i = 0; i < 5; i++) ((LabelString *)(s->slots[i]))->destroyLabel();
 }
 
 extern "C" void *NumberPad_AllocLabel(Ov130S *s) {

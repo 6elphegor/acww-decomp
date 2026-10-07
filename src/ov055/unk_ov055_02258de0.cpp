@@ -24,6 +24,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "npc/NpcActionCtrl.h"
+#include "talk/ChoiceList.h"
 
 
 
@@ -60,7 +62,6 @@ extern u8 sSpNpcRoverModelPath[];
 extern u8 sSpNpcRoverTexturePath[];
 extern SpNpcRover *sSpNpcRoverInstance;
 
-s32 _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
 TownExchangeRecord *TownExchange_GetForAid(s32 i);
@@ -77,18 +78,10 @@ void Net_StartOv067(void *a, void *b, u32 n);
 void Snd_PlaySe(s32 v);
 void Comm_EndOv067Mode();
 void Comm_StartOv067Mode();
-void _ZN15TalkWindowState14setNextMessageEPhPv(void *self, void *m, const void *x);
-void _ZN15TalkWindowState13unlockAdvanceEv(void *self);
-void _ZN15TalkWindowState11lockAdvanceEv(void *self);
-void *_ZN15TalkWindowState13getChoiceListEv(void *self);
-s32 _ZN10ChoiceList9getResultEv(void *self);
-void _ZN16ActorTalkRequest13setTalkPlayerEj(void *self, u32 v);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
-void _ZN11NpcTalkCtrl11requestTalkEhh(void *self, u8 a, u8 b);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
 void Camera_SetMode20At(void *p);
 }
 void *NetOverlay_AssertOv067();
@@ -293,7 +286,7 @@ void SpNpcRover::changeAct(s32 state) {
 }
 
 BOOL SpNpcRover::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -305,12 +298,12 @@ BOOL SpNpcRover::mainAct00() {
 }
 
 BOOL SpNpcRover::setupAct01() {
-    _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 0, 1);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(0, 1);
     return TRUE;
 }
 
 BOOL SpNpcRover::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
         changeAct(2);
     }
@@ -343,7 +336,7 @@ void SpNpcRoverTalk::onMessageEnd(u32) {
         if (Net_WlxIsReady(NetOverlay_AssertOv067()) == 0) {
             if (ownerNpc->saveFailed != 0) {
                 m[0] = 0x36;
-                _ZN15TalkWindowState14setNextMessageEPhPv(r6, &m[0], sSpNpcRoverMsgKey);
+                ((TalkWindowState *)(r6))->setNextMessage((u8 *)(&m[0]), (void *)(void *)(sSpNpcRoverMsgKey));
                 break;
             }
             Comm_StartOv067Mode();
@@ -354,7 +347,7 @@ void SpNpcRoverTalk::onMessageEnd(u32) {
             Net_WlxStartExchange(NetOverlay_AssertOv067());
         }
         Net_WlxStartExchange(NetOverlay_AssertOv067());
-        _ZN15TalkWindowState11lockAdvanceEv(r6);
+        ((TalkWindowState *)(r6))->lockAdvance();
         setScript(1);
         break;
     case 0x3c:
@@ -367,7 +360,7 @@ void SpNpcRoverTalk::onMessageEnd(u32) {
 }
 
 void SpNpcRoverTalk::onChoice(u32) {
-    s32 t = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(window));
+    s32 t = ((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult();
     if (msgIndex == 0x3a && t == 1) {
         Comm_EndOv067Mode();
     }
@@ -411,7 +404,7 @@ void SpNpcRoverTalk::runTagMode() {
     if (Net_WlxIsExchangeDone(NetOverlay_AssertOv067())) {
         Comm_EndOv067Mode();
         m[0] = 0x3c;
-        _ZN15TalkWindowState14setNextMessageEPhPv(window, &m[0], sSpNpcRoverMsgKey);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[0]), (void *)(void *)(sSpNpcRoverMsgKey));
         setScript(2);
     } else {
         if ((gPad[1] & 1) == 0 && !Unk_ov055_0225915c_Both() && r5 == 0) {
@@ -419,7 +412,7 @@ void SpNpcRoverTalk::runTagMode() {
         }
         Net_WlxStopExchange(NetOverlay_AssertOv067());
         m[1] = 0x3a;
-        _ZN15TalkWindowState14setNextMessageEPhPv(window, &m[1], sSpNpcRoverMsgKey);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), (void *)(void *)(sSpNpcRoverMsgKey));
         setScript(3);
     }
 }
@@ -427,7 +420,7 @@ void SpNpcRoverTalk::runTagMode() {
 void SpNpcRoverTalk::waitLidOpen() {
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
         Snd_PlaySe(0x69);
-        _ZN15TalkWindowState13unlockAdvanceEv(window);
+        ((TalkWindowState *)(window))->unlockAdvance();
         setScript(0);
     }
 }
@@ -442,14 +435,14 @@ void SpNpcRoverTalk::waitTagModeStop() {
             Snd_PlaySe(0x69);
             Comm_EndOv067Mode();
             u8 m = 0x3c;
-            _ZN15TalkWindowState14setNextMessageEPhPv(window, &m, sSpNpcRoverMsgKey);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m), (void *)(void *)(sSpNpcRoverMsgKey));
         } else {
             if (Net_WlxIsReady(NetOverlay_AssertOv067()) != 1) {
                 Net_WlxStopExchange(NetOverlay_AssertOv067());
                 return;
             }
         }
-        _ZN15TalkWindowState13unlockAdvanceEv(r4);
+        ((TalkWindowState *)(r4))->unlockAdvance();
         setScript(0);
     }
 }
@@ -472,14 +465,14 @@ void SpNpcRover::restoreOwnTransfer() {
 }
 
 BOOL SpNpcRover::acceptsInteraction(void *) {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcRover::acceptsSelfRequestedInteraction(void *) {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -489,12 +482,12 @@ void SpNpcRover::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        _ZN16ActorTalkRequest13setTalkPlayerEj(&talk, getPlayerActor(4));
+        ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 1:
         talk.resetMsg();
-        _ZN16ActorTalkRequest13setTalkPlayerEj(&talk, getPlayerActor(4));
+        ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

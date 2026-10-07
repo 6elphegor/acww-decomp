@@ -5,6 +5,9 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
+#include "player/PlayerData.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern const u8 sBirthdayCursorRightTable[4];
@@ -22,7 +25,6 @@ extern u8 gTouchCurX;
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 void *PlayerData_GetCurrent();
-void _ZN10PlayerData11setBirthdayEjj(void *p, u32 a, u32 b);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
@@ -34,11 +36,7 @@ void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
-void _ZN12MenuLauncher13onChildClosedEv(void *self);
-void _ZN12MenuLauncher14setNextRequestEii(void *self, s32 a, s32 b);
 
-BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
-BOOL _ZN10HandCursor7getAnimEv(void *self);
 void MenuButtons_LoadTextColors(void *self);
 
 // ov134 library object (class DateTimePicker): plain functions take the object first
@@ -167,7 +165,7 @@ BOOL BirthdayMenu::onCreate() {
 }
 
 BOOL BirthdayMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -274,7 +272,7 @@ void BirthdayMenu::stateOpening() {
 }
 
 void BirthdayMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), 0x44, 1);
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->setNextRequest(0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);
@@ -483,7 +481,7 @@ void BirthdayMenu::updateCursorMove() {
 }
 
 void BirthdayMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         if (testFlags(2)) {
             if (picker.grabKnobByCursor()) {
                 setMainState(6);
@@ -503,7 +501,7 @@ void BirthdayMenu::updateCursorPress() {
 }
 
 void BirthdayMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(returnState);
     }
@@ -511,7 +509,7 @@ void BirthdayMenu::updateCursorRelease() {
 
 void BirthdayMenu::stateExit() {
     if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+        if (((HandCursor *)(&cursor))->getAnim()) {
             s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
             s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
             s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
@@ -569,7 +567,7 @@ void BirthdayMenu::confirm() {
     w[0] = 0;
     w[1] = 0;
     DateTimePicker_GetDateTime(&picker, w);
-    _ZN10PlayerData11setBirthdayEjj(obj, ((u8 *)w)[4], ((u8 *)w)[3]);
+    ((PlayerData *)(obj))->setBirthday(((u8 *)w)[4], ((u8 *)w)[3]);
 }
 
 void BirthdayMenu::openFieldList(u32 a) {

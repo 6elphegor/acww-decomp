@@ -5,6 +5,12 @@
 #include "types.h"
 #include "gfx/HBlankTask.h"
 #include "item/ItemPickSpec.h"
+#include "item/ItemName.h"
+#include "item/LetterView.h"
+#include "player/PlayerData.h"
+#include "room/HouseData.h"
+#include "room/HouseRoom.h"
+#include "save/SaveData.h"
 
 
 struct ItemPickResult {
@@ -203,31 +209,18 @@ s32 Random_GlobalBelow(s32 n);
 void _ZN10VillagerId12makeFileNameEPvjj(s32 a, void *b, s32 c, s32 d);
 u32 VillagerId_GetPersonality(s32 a);
 s32 LetterPaper_PickForPersonality(u32 i);
-void _ZN6LetterC1Ev(void *obj);
-void _ZN6LetterD1Ev(void *obj);
 void Letter_ComposeVillagerMail(void *obj, u8 *b, void *fmt, u8 *c, s32 a, s32 b2, s32 c2);
-void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 f);
 s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
 void *PlayerData_GetCurrent();
-s32 _ZN10PlayerData8testFlagEj(void *p, s32 v);
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void Letter_ComposeFromMail(void *obj, u8 *b, const void *fmt, void *s, void *s2, void *p);
-s32 _ZN10PlayerData7setFlagEj(void *p, s32 v);
 s32 _ZN8BlockMap12canPlaceItemEii(void *grid, s32 x, s32 y);
-s32 _ZN8SaveData8testFlagEj(void *tbl, s32 v);
-void _ZN8SaveData7setFlagEj(void *tbl, s32 v);
 void *PlayerData_GetResident(void *tbl, s32 i);
-s32 _ZN10PlayerData6isUsedEv(void *p);
 s32 LetterDelivery_IsMailboxFull(s32 i);
 void _ZN11MsgString25C1Ev(void *o);
 void _ZN11MsgString25D1Ev(void *o);
 s32 String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void MailText_SetSlot(s32 slot, void *o);
-void _ZN8ItemNameC1Ei(void *o, s32 a);
-void _ZN8ItemNameD1Ev(void *o);
-void _ZN11MsgString33C1Ev(void *o);
-void _ZN11MsgString33D1Ev(void *o);
 void String_LoadResolveAltText(void *o, u8 *b, const void *fmt);
 s16 *DebugVar_GetPtr(s32 a, s32 b);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
@@ -242,7 +235,6 @@ s32 Ftr_GetFlagPairA(u16 *p);
 s32 Ftr_GetFlagPairB(u16 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 FX_Div(s32 a, s32 b);
-s32 _ZN9HouseData8getLevelEv(void *p);
 void Debug_SetHappyRoomScore(s32 v);
 void Debug_SetHappyRoomBonusFlags(u32 v);
 void MIi_CpuClearFast(u32 v, void *dst, u32 n);
@@ -260,9 +252,6 @@ s32 ItemInfo_GetSeries(u16 *p);
 void *VillagerRoomMap_Create(s32 a, void *heap);
 void VillagerRoomMap_Destroy(void *heap);
 void *HouseRoomMaps_Get(s32 i);
-void *_ZN9HouseData7getRoomEi(void *p, s32 a);
-u16 *_ZN9HouseRoom12getWallpaperEPi(void *h, s32 i);
-u16 *_ZN9HouseRoom9getCarpetEPi(void *h, s32 i);
 void *SaveVillagers_Get(void *p, s32 k);
 u32 Villager_GetCarpet(void *a);
 u32 Villager_GetWallpaper(void *a);
@@ -511,13 +500,13 @@ extern "C" void *HouseRoomScoreSource::getRoomMap(s32 i) {
 }
 
 extern "C" void HouseRoomScoreSource::getWallpaper(s32 a, s32 key) {
-    void *h = _ZN9HouseData7getRoomEi(gSaveHouse, key);
-    *(u16 *)this = *_ZN9HouseRoom12getWallpaperEPi(h, 0);
+    void *h = ((HouseData *)(gSaveHouse))->getRoom(key);
+    *(u16 *)this = *((HouseRoom *)(h))->getWallpaper((s32 *)(0));
 }
 
 extern "C" void HouseRoomScoreSource::getCarpet(s32 a, s32 key) {
-    void *h = _ZN9HouseData7getRoomEi(gSaveHouse, key);
-    *(u16 *)this = *_ZN9HouseRoom9getCarpetEPi(h, 0);
+    void *h = ((HouseData *)(gSaveHouse))->getRoom(key);
+    *(u16 *)this = *((HouseRoom *)(h))->getCarpet((s32 *)(0));
 }
 
 extern "C" VillagerRoomScoreSource::VillagerRoomScoreSource() {}
@@ -588,10 +577,10 @@ extern "C" u32 HappyRoom_RateMainRoom(RoomScoreEvaluator *p, s32 *out) {
         RoomMap_GetFloorBounds((s32 *)p, (s32 *)&p->maxX, (s32 *)&p->minZ, (s32 *)&p->maxZ, m);
         p->wallpaper = 0x1100;
         p->carpet = 0x1144;
-        h = _ZN9HouseData7getRoomEi(gSaveHouse, 0);
+        h = ((HouseData *)(gSaveHouse))->getRoom(0);
         if (h != NULL) {
-            p->wallpaper = *_ZN9HouseRoom12getWallpaperEPi(h, 0);
-            p->carpet = *_ZN9HouseRoom9getCarpetEPi(h, 0);
+            p->wallpaper = *((HouseRoom *)(h))->getWallpaper((s32 *)(0));
+            p->carpet = *((HouseRoom *)(h))->getCarpet((s32 *)(0));
         }
         fl[0] = 0;
         fl[1] = 0;
@@ -797,7 +786,7 @@ test0:
             if (*DebugVar_GetPtr(0, 0x22) == 0) goto end;
         }
         {
-            x = _ZN9HouseData8getLevelEv(gSaveHouse);
+            x = ((HouseData *)(gSaveHouse))->getLevel();
             u16 b;
             s32 nb;
             u32 q;
@@ -1427,28 +1416,28 @@ extern "C" BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 
     _ZN11MsgString25C1Ev(objA);
     if (String_FormatNumber(objA, b, 10, 1, 0, 0)) {
         MailText_SetSlot(1, objA);
-        _ZN8ItemNameC1Ei(objB, c);
+        new (objB) ItemName(c);
         MailText_SetSlot(2, objB);
         if (n < 4) {
-            _ZN11MsgString33C1Ev(objC);
+            new (objC) MsgString33();
             by[1] = n;
             String_LoadResolveAltText(objC, &by[1], "st_furniture_letter");
             MailText_SetSlot(3, objC);
-            _ZN11MsgString33D1Ev(objC);
+            ((MsgString33 *)(objC))->MsgString33::~MsgString33();
         }
         for (i = 0; i < 4; i++) {
             void *p = PlayerData_GetResident(gSavePlayers, i);
-            if (p && _ZN10PlayerData6isUsedEv(p)) {
-                if (DebugVar_GetPtr(z, 0x22)[0] != 0 || _ZN10PlayerData8testFlagEj(p, 0xe)) {
-                    _ZN6LetterC1Ev(objD);
+            if (p && ((PlayerData *)(p))->isUsed()) {
+                if (DebugVar_GetPtr(z, 0x22)[0] != 0 || ((PlayerData *)(p))->testFlag(0xe)) {
+                    new (objD) Letter();
                     by[0] = a;
-                    Letter_ComposeFromMail(objD, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, _ZN10PlayerData11getPlayerIdEv(p));
+                    Letter_ComposeFromMail(objD, &by[0], "ev_happyroom", data_020dc088, data_020dc07c, ((PlayerData *)(p))->getPlayerId());
                     LetterDelivery_PutInAddresseeMailbox(objD);
-                    _ZN6LetterD1Ev(objD);
+                    ((Letter *)(objD))->Letter::~Letter();
                 }
             }
         }
-        _ZN8ItemNameD1Ev(objB);
+        ((ItemName *)(objB))->ItemName::~ItemName();
         _ZN11MsgString25D1Ev(objA);
         return TRUE;
     }
@@ -1464,11 +1453,11 @@ extern "C" void HappyRoom_SendPrizeLetter(void *self, s32 n)
     id = -1;
     t = 1;
     off = 0xfff1;
-    if (_ZN8SaveData8testFlagEj(gSaveData, 1) == 0) {
+    if (((SaveData *)(gSaveData))->testFlag(1) == 0) {
         if (n >= 0x11170) { id = 0x18; t = 1; off = 0x3854; }
-    } else if (_ZN8SaveData8testFlagEj(gSaveData, 2) == 0) {
+    } else if (((SaveData *)(gSaveData))->testFlag(2) == 0) {
         if (n >= 0x186a0) { id = 0x19; t = 2; off = 0x3858; }
-    } else if (_ZN8SaveData8testFlagEj(gSaveData, 0xb) == 0) {
+    } else if (((SaveData *)(gSaveData))->testFlag(0xb) == 0) {
         if (n >= 0x249f0) { id = 0x1a; t = 0xb; off = 0x385c; }
     }
     if (id != -1) {
@@ -1478,22 +1467,22 @@ extern "C" void HappyRoom_SendPrizeLetter(void *self, s32 n)
             void *p = PlayerData_GetResident(gSavePlayers, i);
             u32 obj[HOST_SIZED(0xf8, Letter) / 4] HOST_ALIGN8;
             u8 b;
-            if (p && _ZN10PlayerData6isUsedEv(p) && _ZN10PlayerData8testFlagEj(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
-                _ZN6LetterC1Ev(obj);
+            if (p && ((PlayerData *)(p))->isUsed() && ((PlayerData *)(p))->testFlag(0xe) && !LetterDelivery_IsMailboxFull(i)) {
+                new (obj) Letter();
                 b = id;
-                Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, _ZN10PlayerData11getPlayerIdEv(p));
-                _ZN10LetterView10setPresentEtj(obj, off, 1);
+                Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, ((PlayerData *)(p))->getPlayerId());
+                ((LetterView *)(obj))->setPresent(off, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(obj)) {
-                    _ZN8SaveData7setFlagEj(gSaveData, t);
-                    _ZN6LetterD1Ev(obj);
+                    ((SaveData *)(gSaveData))->setFlag(t);
+                    ((Letter *)(obj))->Letter::~Letter();
                     break;
                 }
                 if (LetterDelivery_QueueOutgoing(obj, zero)) {
-                    _ZN8SaveData7setFlagEj(gSaveData, t);
-                    _ZN6LetterD1Ev(obj);
+                    ((SaveData *)(gSaveData))->setFlag(t);
+                    ((Letter *)(obj))->Letter::~Letter();
                     break;
                 }
-                _ZN6LetterD1Ev(obj);
+                ((Letter *)(obj))->Letter::~Letter();
             }
         }
     }
@@ -1530,16 +1519,16 @@ extern "C" BOOL HappyRoom_SendWelcomeLetter()
     u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
     u8 b;
     void *p = PlayerData_GetCurrent();
-    if (p && _ZN10PlayerData8testFlagEj(p, 3) && !_ZN10PlayerData8testFlagEj(p, 0xe)) {
-        _ZN6LetterC1Ev(obj);
+    if (p && ((PlayerData *)(p))->testFlag(3) && !((PlayerData *)(p))->testFlag(0xe)) {
+        new (obj) Letter();
         b = 0x1b;
-        Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc080, data_020dc090, _ZN10PlayerData11getPlayerIdEv(p));
+        Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc080, data_020dc090, ((PlayerData *)(p))->getPlayerId());
         if (LetterDelivery_PutInAddresseeMailbox(obj)) {
-            _ZN10PlayerData7setFlagEj(p, 0xe);
-            _ZN6LetterD1Ev(obj);
+            ((PlayerData *)(p))->setFlag(0xe);
+            ((Letter *)(obj))->Letter::~Letter();
             return TRUE;
         }
-        _ZN6LetterD1Ev(obj);
+        ((Letter *)(obj))->Letter::~Letter();
     }
     return FALSE;
 }
@@ -1553,18 +1542,18 @@ extern "C" BOOL Villager_SendLetterWithPaper(const void *r0, u8 r1, s32 r2, s32 
         buf[0] = r1;
         buf[1] = LetterPaper_PickForPersonality(VillagerId_GetPersonality(r3));
         if (v != -1) buf[1] = v;
-        _ZN6LetterC1Ev(obj);
+        new (obj) Letter();
         Letter_ComposeVillagerMail(obj, buf, sVillagerLetterWithPaperPath, &buf[1], r3, r2, 1);
-        if (p) _ZN10LetterView10setPresentEtj(obj, *p, 1);
+        if (p) ((LetterView *)(obj))->setPresent(*p, 1);
         if (LetterDelivery_PutInAddresseeMailbox(obj)) {
-            _ZN6LetterD1Ev(obj);
+            ((Letter *)(obj))->Letter::~Letter();
             return TRUE;
         }
         if (LetterDelivery_QueueOutgoing(obj, 0)) {
-            _ZN6LetterD1Ev(obj);
+            ((Letter *)(obj))->Letter::~Letter();
             return TRUE;
         }
-        _ZN6LetterD1Ev(obj);
+        ((Letter *)(obj))->Letter::~Letter();
     }
     return FALSE;
 }

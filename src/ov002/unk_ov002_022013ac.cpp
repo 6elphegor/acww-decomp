@@ -34,6 +34,9 @@
 #include "menu/PopupChoiceMenu.h"
 #include "talk/TalkMsgRequest.h"
 #include "menu/MenuErrorMessage.h"
+#include "npc/VillagerId.h"
+#include "player/PlayerId.h"
+#include "talk/MsgString9B.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -810,10 +813,10 @@ BOOL PopupChoice_MoveCursor(Self *self, s32 p, u8 *pos, u32 n) {
 
 void PopupChoice_CopyPlayerIdName(s32 a, s32 b) {
     u32 buf[7];
-    func_02094030(buf);
-    PlayerId_getNameString(b, buf);
-    MsgString_copy((void *)a, buf);
-    func_02094018(buf);
+    new (buf) MsgString9B();
+    ((PlayerId *)(b))->getNameString((MsgString *)(buf));
+    ((MsgString *)((void *)a))->copy((MsgString *)(buf));
+    ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
 }
 
 void PopupChoice_CopyResidentName(s32 x, s32 y) {
@@ -822,10 +825,10 @@ void PopupChoice_CopyResidentName(s32 x, s32 y) {
 
 void PopupChoice_CopyVillagerIdName(s32 a, s32 b) {
     u32 buf[7];
-    func_02094030(buf);
-    VillagerId_getName(b, buf);
-    MsgString_copy((void *)a, buf);
-    func_02094018(buf);
+    new (buf) MsgString9B();
+    ((VillagerId *)(b))->getName((u32)(buf));
+    ((MsgString *)((void *)a))->copy((MsgString *)(buf));
+    ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
 }
 
 void PopupChoice_CopyVillagerName(s32 x, s32 y) {
@@ -997,7 +1000,7 @@ s32 PopupChoiceMenuBody::addCustomRow(PopupChoiceIdList *r, void *s, u32 v)
     for (i = 0; i < 5; i++) {
         u8 *q = &r->msgIds[i];
         if (r->msgIds[i] == 0xff) {
-            MsgString_copy(&rows[i], s);
+            ((MsgString *)(&rows[i]))->copy((MsgString *)(s));
             r->values[i] = v;
             r->customMask |= 1 << i;
             q[0] = 0xfe;
@@ -1053,18 +1056,18 @@ void PopupChoiceMenuBody::loadAddresseePage(PopupChoiceIdList *r)
     buf[3] = 0;
     u32 a[16];
     u32 b[16];
-    func_0206fcc8(a);
-    func_0206fcc8(b);
+    new (a) LabelString();
+    new (b) LabelString();
     String_FromEncodedBytes(b, buf, 2);
-    MsgString_copy(a, b);
-    MsgString_append(a, "/");
+    ((MsgString *)(a))->copy((MsgString *)(b));
+    ((MsgString *)(a))->append((u8 *)(void *)("/"));
     String_FromEncodedBytes(b, buf + 2, 2);
-    MsgString_appendString(a, b);
-    LabelButton_setLabelText(&pageButton, a);
+    ((MsgString *)(a))->appendString((MsgString *)(b));
+    ((LabelButton *)(&pageButton))->setLabelText((MsgString *)(a));
     pageButton.update();
     addresseePage = r->msgIds[0];
-    func_0206fca8(b);
-    func_0206fca8(a);
+    ((LabelString *)(b))->LabelString::~LabelString();
+    ((LabelString *)(a))->LabelString::~LabelString();
 }
 
 s32 PopupChoiceMenuBody::hitTestRowOr(s32 x, s32 y, s32 d)

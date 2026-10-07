@@ -23,6 +23,10 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "npc/NpcMoveAnimSet.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "save/SaveData.h"
 
 
 class SpNpcKappn;
@@ -44,22 +48,8 @@ struct Unk_ov051_02258e68_Rec {
 
 
 extern "C" {
-void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
-void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
-void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *self, u32 a, u32 b, u32 c, u32 d, u32 e);
-s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, s32 a);
 u32 _ZN8PlayerId9getGenderEv(void *self);
-void _ZN8PlayerId9setGenderEh(void *self, s32 a);
 void *_ZN10PlayerData11getPlayerIdEv(void *self);
-void _ZN10PlayerData11setFaceTypeEh(void *self, u32 a);
-void _ZN10PlayerData12setHairColorEh(void *self, u32 a);
-void _ZN10PlayerData12setHairStyleEh(void *self, u32 a);
-void _ZN10PlayerData8setShirtEPt(void *self, u16 *p);
-void _ZN8SaveData9clearFlagEj(void *self, s32 a);
-void _ZN11NpcTalkCtrl11requestTalkEhh(void *self, u32 a, u32 b);
-void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, s32 c, u32 d, s32 e);
-void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
-void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, void *p, void *q);
 void *PlayerData_GetCurrent();
 TalkWindowState *TalkWindow_Get(s32 a);
 BOOL GameStart_IsNewTown();
@@ -318,7 +308,7 @@ BOOL SpNpcKappn::preCreate() {
     }
     setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
-    _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xfb);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xfb);
     return TRUE;
 }
 
@@ -352,7 +342,7 @@ BOOL SpNpcKappn::updateAct() {
         r = (this->*sSpNpcKappnActTable[act].exit)();
     }
     if (Math_CountDownU8(&animTimer) == 1) {
-        _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x8f, 1, data_020c6cc8, 0);
+        ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x8f, 1, data_020c6cc8, 0);
     }
     return r;
 }
@@ -383,7 +373,7 @@ BOOL SpNpcKappn::mainAct00() {
 }
 
 BOOL SpNpcKappn::setupAct01() {
-    _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 1, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(1, 0);
     return TRUE;
 }
 
@@ -419,7 +409,7 @@ BOOL SpNpcKappn::mainAct03() {
             SaveData_Setup(gSaveData, 1);
             SaveData_Apply(gSaveData);
         }
-        _ZN8SaveData9clearFlagEj(gSaveData, 0x12);
+        ((SaveData *)(gSaveData))->clearFlag(0x12);
         Town_FindTownHallFront(TownBlockMap_Get(), &l.v, 0, 0);
         SceneWarp_RequestAt(Scene_GetWarpRequest(), 0, &l.v, 0x400000, 0xffff8000, 3, 2);
         changeAct(2);
@@ -526,7 +516,7 @@ void SpNpcKappnTalk::onMessageStart(u32) {
             r4 = 0x1a;
         }
         l.msg = r4;
-        _ZN15TalkWindowState17setSlotFromStringEiii(h, 0, &l.msg, (void *)"st_general");
+        ((TalkWindowState *)(h))->setSlotFromString(0, (s32)(&l.msg), (s32)((void *)"st_general"));
         u32 t = ((u8 *)l.w)[2];
         if (t >= 0xc) {
             t -= 0xc;
@@ -534,25 +524,25 @@ void SpNpcKappnTalk::onMessageStart(u32) {
         if (t == 0) {
             t = 0xc;
         }
-        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, t, 1, 2, 0, 0);
+        ((ActorTalkRequest *)(this))->setNumberSlot(t, 1, 2, 0, 0);
     }
 }
 
 void SpNpcKappnTalk::openClockSetting() {
-    _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0x30, 0);
-    _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(0x30, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setResultHandler(2);
 }
 
 void SpNpcKappnTalk::openPlayerNameEntry() {
-    _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0xf, 0);
-    _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(0xf, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setResultHandler(1);
 }
 
 void SpNpcKappnTalk::openTownNameEntry() {
-    _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0x10, 0);
-    _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(0x10, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setResultHandler(0);
 }
 
@@ -624,7 +614,7 @@ void SpNpcKappnTalk::announceArrival() {
 void SpNpcKappnTalk::applyFaceFromAnswers() {
     if (GameStart_IsNewResident() || GameStart_IsNewTown()) {
         void *h = PlayerData_GetCurrent();
-        u32 res = _ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(h));
+        u32 res = ((PlayerId *)(((PlayerData *)(h))->getPlayerId()))->getGender();
         u32 off4;
         u32 v;
         u32 r1;
@@ -640,11 +630,11 @@ void SpNpcKappnTalk::applyFaceFromAnswers() {
         u8 *base = data_020d0544 + (v << 3);
         Unk_ov051_02258e68_Rec *e = (Unk_ov051_02258e68_Rec *)(base + off4);
         u16 c;
-        _ZN10PlayerData11setFaceTypeEh(h, r1);
-        _ZN10PlayerData12setHairColorEh(h, e->b);
-        _ZN10PlayerData12setHairStyleEh(h, base[off4]);
+        ((PlayerData *)(h))->setFaceType(r1);
+        ((PlayerData *)(h))->setHairColor(e->b);
+        ((PlayerData *)(h))->setHairStyle(base[off4]);
         c = e->c;
-        _ZN10PlayerData8setShirtEPt(h, &c);
+        ((PlayerData *)(h))->setShirt(&c);
     }
     window->setNextMessage(gTalkMsgIndexEnd, 0);
     ownerNpc->changeAct(4);
@@ -735,7 +725,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
+        ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->setGender(0);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
@@ -745,7 +735,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
         }
         break;
     case 1:
-        _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
+        ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->setGender(1);
         msg[2] = 0xe;
         window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
@@ -756,7 +746,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
+        ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->setGender(1);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             window->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
@@ -766,7 +756,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
         }
         break;
     case 1:
-        _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
+        ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->setGender(0);
         msg[2] = 0xd;
         window->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
@@ -824,7 +814,7 @@ void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
     if (GameStart_IsNewTown()) {
         v = genderMsg(sSpNpcKappnMoneyReplyMsgs[sel]);
     } else if (sel == 0) {
-        if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0) {
+        if (((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender() == 0) {
             v = 0x21;
         } else {
             v = 0x2f;
@@ -840,7 +830,7 @@ void SpNpcKappnTalk::onMoneyChoice(u32 sel) {
 }
 
 u8 SpNpcKappnTalk::genderMsg(u32 v) {
-    u8 r = (u8)_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+    u8 r = (u8)((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender();
     return (u8)(v + r);
 }
 
@@ -947,7 +937,7 @@ extern "C" u32 SpNpcKappn_GetAnimFrame() {
 // ---------------------------------------------------------------------------------------------------------------------
 
 extern "C" s32 SpNpcKappn_GetAnimState() {
-    return _ZN11NpcAnimCtrl9getAnimIdEj(&sSpNpcKappnInstance->animCtrl, 0);
+    return ((NpcAnimCtrl *)(&sSpNpcKappnInstance->animCtrl))->getAnimId(0);
 }
 
 extern "C" void *data_ov051_02259f74[2] = {(void *)_ZN14SpNpcKappnTalk18onTownReasonChoiceEj, 0};

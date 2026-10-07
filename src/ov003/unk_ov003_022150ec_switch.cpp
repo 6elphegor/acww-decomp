@@ -47,7 +47,6 @@ void CountdownSign_ModelCallback(void *p);
 s32 _ZN5Model12getRenderObjEv(void *p);
 void _ZN9ModelAnim7replaceEiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
 BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *m, s32 a, s32 b);
-void _ZN9ModelAnim4initEiiit(void *m, s32 a, s32 b, s32 c, s32 d);
 void _ZN9ModelAnim14addToRenderObjEj(void *m, s32 a);
 void Clock_GetDateTime(void *p);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
@@ -89,7 +88,7 @@ BOOL CountdownDigit::initBuilding() {
     setCharId(digitIndex);
     if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, (s32)modelRes, gFieldStructureHeap)) {
         s32 r1 = (s32)getBtaAnim(0);
-        _ZN9ModelAnim4initEiiit(&matAnim, r1, 1, 0x1000, 0);
+        ((ModelAnim *)(&matAnim))->init(r1, 1, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(model));
     }
     isCounting = 1;

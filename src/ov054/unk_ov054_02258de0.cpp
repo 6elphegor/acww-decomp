@@ -24,6 +24,15 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "item/FutureLetter.h"
+#include "npc/NpcActionCtrl.h"
+#include "npc/NpcMoveCtrl.h"
+#include "player/PlayerData.h"
+#include "room/HouseData.h"
+#include "save/SaveData.h"
+#include "talk/ChoiceList.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString9C.h"
 
 
 class ActorTalkRequest;
@@ -695,7 +704,7 @@ BOOL SpNpcPellyPhyllis::preCreate() {
             vec.x = sSpNpcPellyPhyllisCounterPos[0].a;
             vec.y = sSpNpcPellyPhyllisCounterPos[0].b;
             vec.z = sSpNpcPellyPhyllisCounterPos[0].c;
-            Actor_spawn(0x7a, sSpNpcPellyPhyllisHandles[1], &vec, &l.spawnRot[0], this);
+            Actor::spawn((void *)(0x7a), (void *)(sSpNpcPellyPhyllisHandles[1]), &vec, &l.spawnRot[0], this);
         } else {
             sister = 1;
             window = 0;
@@ -712,7 +721,7 @@ BOOL SpNpcPellyPhyllis::preCreate() {
                 sister = 1;
             }
         }
-        NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0xcc, 0x133);
+        ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(2, 0x399, 0xcc, 0x133);
         l.npcHandle = sSpNpcPellyPhyllisHandles[sister];
         setNpcHandle(&l.npcHandle);
         npcHandle = sSpNpcPellyPhyllisHandles[sister];
@@ -734,7 +743,7 @@ BOOL SpNpcPellyPhyllis::onCreate() {
             changeAct(9);
         }
     } else {
-        if (GameStart_IsActive() && PlayerData_testFlag(r, 9) == 0) {
+        if (GameStart_IsActive() && ((PlayerData *)(r))->testFlag(9) == 0) {
             changeAct(0);
         } else {
             changeAct(2);
@@ -850,7 +859,7 @@ BOOL SpNpcPellyPhyllis::mainAct01() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct02() {
-    NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
+    ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, standBlend);
     dramaTimer = 0xff;
     if (dramaShown == 0) {
         s32 v;
@@ -866,7 +875,7 @@ BOOL SpNpcPellyPhyllis::mainAct02() {
     if (!isOnline()) {
         if (updateWindow()) {
             changeAct(3);
-            NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[window]);
+            ((NpcMoveCtrl *)(&moveCtrl))->setTurnMode(data_ov054_0225b348[window]);
         }
         if (dramaTimer != 0xff) {
             if (!Math_CountDownU16(&dramaTimer)) {
@@ -879,7 +888,7 @@ BOOL SpNpcPellyPhyllis::mainAct02() {
 
 BOOL SpNpcPellyPhyllis::setupAct03() {
     u32 i = window * 12;
-    NpcActionCtrl_requestAction(&actionCtrl, 6, 1, *(s32 *)((u8 *)sSpNpcPellyPhyllisCounterPos + i), *(s32 *)(data_ov054_0225b3b4 + i), 0x800, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(6, 1, *(s32 *)((u8 *)sSpNpcPellyPhyllisCounterPos + i), *(s32 *)(data_ov054_0225b3b4 + i), 0x800, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -887,11 +896,11 @@ BOOL SpNpcPellyPhyllis::mainAct03() {
     isOnline();
     if (updateWindow()) {
         changeAct(3);
-        NpcMoveCtrl_setTurnMode(&moveCtrl, data_ov054_0225b348[window]);
+        ((NpcMoveCtrl *)(&moveCtrl))->setTurnMode(data_ov054_0225b348[window]);
         return TRUE;
     }
-    if (NpcActionCtrl_getAction(&actionCtrl) == 6) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 6) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(6);
         }
     }
@@ -899,12 +908,12 @@ BOOL SpNpcPellyPhyllis::mainAct03() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct04() {
-    NpcTalkCtrl_requestTalk(&talkCtrl, 1, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(1, 0);
     return TRUE;
 }
 
 BOOL SpNpcPellyPhyllis::mainAct04() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(5);
     }
@@ -916,8 +925,8 @@ BOOL SpNpcPellyPhyllis::setupAct05() { return TRUE; }
 BOOL SpNpcPellyPhyllis::mainAct05() { return TRUE; }
 
 BOOL SpNpcPellyPhyllis::setupAct06() {
-    NpcMoveCtrl_setTurnMode(&moveCtrl, 0);
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
+    ((NpcMoveCtrl *)(&moveCtrl))->setTurnMode(0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -927,8 +936,8 @@ BOOL SpNpcPellyPhyllis::mainAct06() {
         changeAct(3);
         return TRUE;
     }
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(2);
         }
     }
@@ -936,7 +945,7 @@ BOOL SpNpcPellyPhyllis::mainAct06() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct07() {
-    NpcActionCtrl_requestAction(&actionCtrl, 10, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(10, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -947,8 +956,8 @@ BOOL SpNpcPellyPhyllis::mainAct07() {
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    if (NpcActionCtrl_getAction(&actionCtrl) == 10) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 10) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             standBlend = 0x18;
             changeAct(2);
         }
@@ -981,10 +990,10 @@ BOOL SpNpcPellyPhyllis::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b) && a == gCommManager->myAid && a == b) {
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == gCommManager->myAid && a == b) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             talk.resetMsg();
-            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+            ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
             changeAct(4);
         } else if (NetArea_IsLocalOwner() && b == 4) {
             netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -1000,7 +1009,7 @@ BOOL SpNpcPellyPhyllis::mainAct0A() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b)) {
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner()) {
                     netSetSlotsIfOwner(1, gCommManager->myAid, 4);
@@ -1034,7 +1043,7 @@ void SpNpcPellyPhyllisTalk::endComm() {
 void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
     void *g0 = PlayerData_GetCurrent();
     s32 r4 = 0;
-    void *g1 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(g0));
+    void *g1 = SickVillagerRecord_getParcelErrand(((PlayerData *)(g0))->getErrands());
     BOOL r7 = r4;
     u16 v[3];
     if (owner->isOnline()) {
@@ -1042,13 +1051,13 @@ void SpNpcPellyPhyllisTalk::start(TalkStartMsg *out) {
         goto end;
     }
     if (GameStart_IsActive()) {
-        if (!PlayerData_testFlag(g0, 9)) {
+        if (!((PlayerData *)(g0))->testFlag(9)) {
             if (GameStart_IsNewTown() || GameStart_IsNewResident()) {
                 out->msgIndex = 0x12;
             } else {
                 out->msgIndex = 0x20;
             }
-            PlayerData_setFlag(g0, 9);
+            ((PlayerData *)(g0))->setFlag(9);
         } else {
             out->msgIndex = 7;
         }
@@ -1116,7 +1125,7 @@ u32 SpNpcPellyPhyllisTalk::getMailAcceptedMsg() {
 void SpNpcPellyPhyllisTalk::giveBackLetters() {
     if (lettersGivenBack == 0) {
         u16 v = 0x1565;
-        ActorTalkRequest_requestGiveItem(this, &v, 0, 5, 1);
+        ((ActorTalkRequest *)(this))->requestGiveItem(&v, 0, 5, 1);
         lettersGivenBack = 1;
     }
 }
@@ -1174,15 +1183,15 @@ void SpNpcPellyPhyllisTalk::onMailLettersDone() {
             break;
         }
         v[1] = 0x1565;
-        ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
+        ((ActorTalkRequest *)(this))->requestTakeItem(&v[1], 0, 5, 1);
         setScript(10);
     } else {
         r4 = 3;
-        ActorTalkRequest_requestReopenWindow(this);
+        ((ActorTalkRequest *)(this))->requestReopenWindow();
         setScript(0);
     }
     *(u8 *)v = r4;
-    TalkWindowState_setNextMessage(m, v, cb);
+    ((TalkWindowState *)(m))->setNextMessage((u8 *)(v), (void *)(cb));
 }
 
 void SpNpcPellyPhyllisTalk::onLetterStorageDone() {
@@ -1196,7 +1205,7 @@ void SpNpcPellyPhyllisTalk::onLetterStorageDone() {
         r1 = 0x53;
     }
     buf[0] = r1;
-    TalkWindowState_setNextMessage(m, buf, cb);
+    ((TalkWindowState *)(m))->setNextMessage((u8 *)(buf), (void *)(cb));
     setScript(0);
 }
 
@@ -1207,24 +1216,24 @@ void SpNpcPellyPhyllisTalk::onDonationEntered() {
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
         r4 = MenuCtrl_GetAmount();
-        ActorTalkRequest_setNumberSlot(this, r4, 7, 10, 1, 0);
+        ((ActorTalkRequest *)(this))->setNumberSlot(r4, 7, 10, 1, 0);
         if (r4 >= 0x1388) {
             r6 = 0x1d;
         } else {
             r6 = 0x1e;
         }
         v[1] = 0x149b;
-        ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
+        ((ActorTalkRequest *)(this))->requestTakeItem(&v[1], 0, 5, 1);
         setScript(10);
-        donationBefore = Donation_GetTotal(PlayerData_getBankAccount(PlayerData_GetCurrent()));
+        donationBefore = Donation_GetTotal(((PlayerData *)(PlayerData_GetCurrent()))->getBankAccount());
         Donation_SetTotal(donationBefore + r4);
     } else {
         r6 = 0x1c;
-        ActorTalkRequest_requestReopenWindow(this);
+        ((ActorTalkRequest *)(this))->requestReopenWindow();
         setScript(0);
     }
     *(u8 *)v = r6;
-    TalkWindowState_setNextMessage(m, v, cb);
+    ((TalkWindowState *)(m))->setNextMessage((u8 *)(v), (void *)(cb));
 }
 
 void SpNpcPellyPhyllisTalk::onTownTuneDone() {
@@ -1247,7 +1256,7 @@ void SpNpcPellyPhyllisTalk::onTownTuneDone() {
     }
     setScript(0);
     buf[0] = r4;
-    TalkWindowState_setNextMessage(m, buf, cb);
+    ((TalkWindowState *)(m))->setNextMessage((u8 *)(buf), (void *)(cb));
 }
 
 void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
@@ -1263,16 +1272,16 @@ void SpNpcPellyPhyllisTalk::onFutureLetterDateEntered() {
         u8 *q = (u8 *)&l;
         u32 b8 = q[8];
         u32 b7 = q[7];
-        ActorTalkRequest_setNumberSlot(this, q[9] + 0x7d0, 1, 4, 0, 0);
-        ActorTalkRequest_setMonthSlot(this, b8, 2);
-        ActorTalkRequest_setDaySlot(this, b7, 3);
+        ((ActorTalkRequest *)(this))->setNumberSlot(q[9] + 0x7d0, 1, 4, 0, 0);
+        ((ActorTalkRequest *)(this))->setMonthSlot(b8, 2);
+        ((ActorTalkRequest *)(this))->setDaySlot(b7, 3);
     } else {
         r4 = 0xe;
         MenuCtrl_ReturnFutureLetter();
     }
     setScript(0);
     l.id = r4;
-    TalkWindowState_setNextMessage(m, &l, cb[0]);
+    ((TalkWindowState *)(m))->setNextMessage((u8 *)(&l), (void *)(cb[0]));
 }
 
 void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
@@ -1281,25 +1290,25 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
     s32 r5;
     u16 v[2];
     if (MenuCtrl_IsResultOk()) {
-        r5 = HouseData_getDebt(gSaveHouse);
-        ActorTalkRequest_setNumberSlot(this, r5, 4, 10, 1, 0);
+        r5 = ((HouseData *)(gSaveHouse))->getDebt();
+        ((ActorTalkRequest *)(this))->setNumberSlot(r5, 4, 10, 1, 0);
         if (r5 == 0) {
             r5 = 0x15;
             TownSessionState_SetFlag(TownSessionState_Get(), 0);
-            SaveData_clearFlag(gSaveData, 0x10);
+            ((SaveData *)(gSaveData))->clearFlag(0x10);
         } else {
             r5 = 0x14;
         }
         v[1] = 0x149b;
-        ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
+        ((ActorTalkRequest *)(this))->requestTakeItem(&v[1], 0, 5, 1);
         setScript(10);
     } else {
         r5 = 0x13;
-        ActorTalkRequest_requestReopenWindow(this);
+        ((ActorTalkRequest *)(this))->requestReopenWindow();
         setScript(0);
     }
     *(u8 *)v = r5;
-    TalkWindowState_setNextMessage(m, v, cb);
+    ((TalkWindowState *)(m))->setNextMessage((u8 *)(v), (void *)(cb));
 }
 
 void SpNpcPellyPhyllisTalk::onSavingsDone() {
@@ -1308,25 +1317,25 @@ void SpNpcPellyPhyllisTalk::onSavingsDone() {
     s32 r4;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
-        s32 r6 = PlayerBank_GetBalance(PlayerData_getBankAccount(PlayerData_GetCurrent()));
-        ActorTalkRequest_setNumberSlot(this, r6, 5, 10, 1, 0);
-        ActorTalkRequest_setNumberSlot(this, func_02133150(r6, 200), 6, 10, 1, 0);
+        s32 r6 = PlayerBank_GetBalance(((PlayerData *)(PlayerData_GetCurrent()))->getBankAccount());
+        ((ActorTalkRequest *)(this))->setNumberSlot(r6, 5, 10, 1, 0);
+        ((ActorTalkRequest *)(this))->setNumberSlot(func_02133150(r6, 200), 6, 10, 1, 0);
         r4 = 0x17;
         if (r6 > savingsBefore) {
             v[1] = 0x149b;
-            ActorTalkRequest_requestTakeItem(this, &v[1], 0, 5, 1);
+            ((ActorTalkRequest *)(this))->requestTakeItem(&v[1], 0, 5, 1);
         } else {
             v[2] = 0x149b;
-            ActorTalkRequest_requestGiveItem(this, &v[2], 0, 5, 1);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&v[2], 0, 5, 1);
         }
         setScript(10);
     } else {
         r4 = 0x18;
-        ActorTalkRequest_requestReopenWindow(this);
+        ((ActorTalkRequest *)(this))->requestReopenWindow();
         setScript(0);
     }
     *(u8 *)v = r4;
-    TalkWindowState_setNextMessage(m, v, cb);
+    ((TalkWindowState *)(m))->setNextMessage((u8 *)(v), (void *)(cb));
 }
 
 extern "C" BOOL SpNpcPellyPhyllis_IsDeliveryItem(u16 *p, s32 k) {
@@ -1348,7 +1357,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
     s32 r4 = 0x51;
     u16 v[3];
     if (MenuCtrl_IsResultOk()) {
-        p = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
+        p = SickVillagerRecord_getParcelErrand(((PlayerData *)(PlayerData_GetCurrent()))->getErrands());
         if (Talk_IsInOwnTown(p)) {
             BOOL same;
             s32 r5 = MenuCtrl_GetIndex();
@@ -1372,7 +1381,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
                 }
             }
             if (!same) {
-                ActorTalkRequest_requestTakeItem(this, &v[1], 2, 5, 1);
+                ((ActorTalkRequest *)(this))->requestTakeItem(&v[1], 2, 5, 1);
                 if (!ParcelErrand_IsFor(p, &owner->npcHandle)) {
                     r4 = 0x57;
                 } else {
@@ -1384,7 +1393,7 @@ void SpNpcPellyPhyllisTalk::onDeliveryItemPicked() {
     }
     setScript(0);
     *(u8 *)v = r4;
-    TalkWindowState_setNextMessage(m, v, cb);
+    ((TalkWindowState *)(m))->setNextMessage((u8 *)(v), (void *)(cb));
 }
 
 void SpNpcPellyPhyllisTalk::startMailboxSave() {
@@ -1398,20 +1407,20 @@ void SpNpcPellyPhyllisTalk::waitMailboxSave() {
     void *m = window;
     if (SaveManager_HasAct12Failed()) {
         u8 buf[1];
-        TalkWindowState_hideBusyIcon(m);
-        TalkWindowState_unlockAdvance(m);
+        ((TalkWindowState *)(m))->hideBusyIcon();
+        ((TalkWindowState *)(m))->unlockAdvance();
         buf[0] = 2;
-        TalkWindowState_setNextMessage(m, buf, sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
+        ((TalkWindowState *)(m))->setNextMessage((u8 *)(buf), (void *)(sSpNpcPellyPhyllisMsgKeys[owner->sister][0]));
         setScript(0);
     } else if (SaveManager_IsIdle()) {
-        TalkWindowState_hideBusyIcon(m);
-        TalkWindowState_unlockAdvance(m);
+        ((TalkWindowState *)(m))->hideBusyIcon();
+        ((TalkWindowState *)(m))->unlockAdvance();
         setScript(0);
     }
 }
 
 void SpNpcPellyPhyllisTalk::endHandItem() {
-    ActorTalkRequest_requestReopenWindow(this);
+    ((ActorTalkRequest *)(this))->requestReopenWindow();
     setScript(0);
 }
 
@@ -1430,12 +1439,12 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
         endComm();
         buf[0] = 0x37;
         TalkWindowState_setNextMessage(ctx, buf, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
-        TalkWindowState_hideBusyIcon(ctx);
-        TalkWindowState_unlockAdvance(ctx);
+        ((TalkWindowState *)(ctx))->hideBusyIcon();
+        ((TalkWindowState *)(ctx))->unlockAdvance();
         setScript(0);
     } else if (n > 0) {
         v[0] = Net_GetScanResults(NetOverlay_AssertWireless());
-        func_02063888(A);
+        new (A) MsgString9C();
         func_02063830(B);
         for (i = 0; i < n; i++) {
             v[1] = ((void **)v[0])[i];
@@ -1449,8 +1458,8 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
                         u32 m = 0x38;
                         if (buf[11] == 0) {
                             EncodedString_SetRaw(B, &buf[3], 8);
-                            MsgString_fromEncoded(A, B, 0, 0);
-                            TalkWindowState_setSlot(ctx, 8, A);
+                            ((MsgString *)(A))->fromEncoded((EncodedString *)(B), 0, 0);
+                            ((TalkWindowState *)(ctx))->setSlot(8, A);
                             m = 0x39;
                         }
                         buf[1] = m;
@@ -1463,8 +1472,8 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
                             endComm();
                             buf[2] = 0x37;
                             TalkWindowState_setNextMessage(ctx, &buf[2], (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
-                            TalkWindowState_hideBusyIcon(ctx);
-                            TalkWindowState_unlockAdvance(ctx);
+                            ((TalkWindowState *)(ctx))->hideBusyIcon();
+                            ((TalkWindowState *)(ctx))->unlockAdvance();
                             setScript(0);
                             break;
                         }
@@ -1473,7 +1482,7 @@ void SpNpcPellyPhyllisTalk::scanForMoveTarget() {
             }
         }
         func_02063818(B);
-        func_02063870(A);
+        ((MsgString9C *)(A))->MsgString9C::~MsgString9C();
     }
 }
 
@@ -1484,12 +1493,12 @@ void SpNpcPellyPhyllisTalk::waitMoveConnected() {
         endComm();
         msg = 0x37;
         TalkWindowState_setNextMessage(ctx, &msg, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
-        TalkWindowState_hideBusyIcon(ctx);
-        TalkWindowState_unlockAdvance(ctx);
+        ((TalkWindowState *)(ctx))->hideBusyIcon();
+        ((TalkWindowState *)(ctx))->unlockAdvance();
         setScript(0);
     } else if (Net_PollConnected(NetOverlay_AssertAny())) {
-        TalkWindowState_hideBusyIcon(ctx);
-        TalkWindowState_unlockAdvance(ctx);
+        ((TalkWindowState *)(ctx))->hideBusyIcon();
+        ((TalkWindowState *)(ctx))->unlockAdvance();
         setScript(0);
     }
 }
@@ -1507,8 +1516,8 @@ void SpNpcPellyPhyllisTalk::waitMoveSave() {
         setScript(0);
     } else if (SaveManager_IsIdleAfterAct1F()) {
         u8 msg;
-        TalkWindowState_hideBusyIcon(ctx);
-        TalkWindowState_unlockAdvance(ctx);
+        ((TalkWindowState *)(ctx))->hideBusyIcon();
+        ((TalkWindowState *)(ctx))->unlockAdvance();
         msg = 0x3c;
         TalkWindowState_setNextMessage(ctx, &msg, (u32)*(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12));
         setScript(0);
@@ -1517,12 +1526,12 @@ void SpNpcPellyPhyllisTalk::waitMoveSave() {
 
 void SpNpcPellyPhyllisTalk::onMessageStart(u32) {
     if (msgIndex == 0xf) {
-        u8 *p = FutureLetter_getDeliveryDate(PlayerData_GetFutureLetter(PlayerData_GetCurrent()));
+        u8 *p = ((FutureLetter *)(PlayerData_GetFutureLetter(PlayerData_GetCurrent())))->getDeliveryDate();
         u32 b1 = p[1];
         u32 b0 = p[0];
-        ActorTalkRequest_setNumberSlot(this, (s32)(p[2] + 0x7d0), 1, 4, 0, 0);
-        ActorTalkRequest_setMonthSlot(this, b1, 2);
-        ActorTalkRequest_setDaySlot(this, b0, 3);
+        ((ActorTalkRequest *)(this))->setNumberSlot((s32)(p[2] + 0x7d0), 1, 4, 0, 0);
+        ((ActorTalkRequest *)(this))->setMonthSlot(b1, 2);
+        ((ActorTalkRequest *)(this))->setDaySlot(b0, 3);
     }
     if (GameStart_IsActive()) {
         u32 id = msgIndex;
@@ -1567,7 +1576,7 @@ void SpNpcPellyPhyllisTalk::onMessageEnd(u32 a_) {
 void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     void *ctx = window;
     void *h = PlayerData_GetCurrent();
-    void *hd = PlayerData_getBankAccount(h);
+    void *hd = ((PlayerData *)(h))->getBankAccount();
     char *tbl = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
     s32 r5 = 0;
     u8 msg;
@@ -1575,7 +1584,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     u16 half1;
     switch (msgIndex) {
     case 0x02:
-        TalkWindowState_lockAdvance(ctx);
+        ((TalkWindowState *)(ctx))->lockAdvance();
         break;
     case 0x00:
     case 0x52:
@@ -1618,19 +1627,19 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
     case 0x0b:
     case 0x0d:
     case 0x11:
-        ActorTalkRequest_setSubSceneKind(this, 0x33, r5);
-        ActorTalkRequest_openSubScene(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(0x33, r5);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         setScript(5);
         break;
     case 0x12:
-        ActorTalkRequest_setSubSceneKind(this, 0x34, 1);
-        ActorTalkRequest_openSubScene(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(0x34, 1);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         setScript(6);
         break;
     case 0x16:
         savingsBefore = PlayerBank_GetBalance(hd);
-        ActorTalkRequest_setSubSceneKind(this, 0x3b, 1);
-        ActorTalkRequest_openSubScene(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(0x3b, 1);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         setScript(7);
         break;
     case 0x13:
@@ -1641,19 +1650,19 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         r5 = 0x52;
         break;
     case 0x55:
-        TalkWindowState_lockAdvance(ctx);
-        TalkWindowState_showBusyIcon(ctx, r5);
+        ((TalkWindowState *)(ctx))->lockAdvance();
+        ((TalkWindowState *)(ctx))->showBusyIcon(r5);
         setScript(8);
         break;
     case 0x19:
     case 0x1b:
-        ActorTalkRequest_setSubSceneKind(this, 0x37, 1);
-        ActorTalkRequest_openSubScene(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(0x37, 1);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         setScript(3);
         break;
     case 0x49:
-        ActorTalkRequest_setSubSceneKind(this, 0x3f, r5);
-        ActorTalkRequest_openSubScene(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(0x3f, r5);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         setScript(4);
         break;
     case 0x1d:
@@ -1661,8 +1670,8 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         updateDonationLevel(a);
         break;
     case 0x36:
-        TalkWindowState_lockAdvance(ctx);
-        TalkWindowState_showBusyIcon(ctx, 1);
+        ((TalkWindowState *)(ctx))->lockAdvance();
+        ((TalkWindowState *)(ctx))->showBusyIcon(1);
         NetOverlay_LoadWireless();
         Comm_Start(2, 2, r5);
         netTimer = 0x258;
@@ -1691,7 +1700,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         }
         break;
     case 0x3e:
-        if (PlayerData_testFlag(h, 0x20)) {
+        if (((PlayerData *)(h))->testFlag(0x20)) {
             r5 = 0x4b;
             break;
         }
@@ -1735,12 +1744,12 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMsgEnd(s32 a) {
         break;
     case 0x4e:
         half1 = 0x1379;
-        ActorTalkRequest_requestGiveItem(this, &half1, r5, 5, 1);
-        PlayerData_setFlag(h, 0x20);
+        ((ActorTalkRequest *)(this))->requestGiveItem(&half1, r5, 5, 1);
+        ((PlayerData *)(h))->setFlag(0x20);
         break;
     case 0x3b:
-        TalkWindowState_lockAdvance(ctx);
-        TalkWindowState_showBusyIcon(ctx, r5);
+        ((TalkWindowState *)(ctx))->lockAdvance();
+        ((TalkWindowState *)(ctx))->showBusyIcon(r5);
         setScript(0xe);
         break;
     case 0x3c:
@@ -1768,8 +1777,8 @@ void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
     case 0x24:
     case 0x25:
     case 0x26:
-        ActorTalkRequest_setSubSceneKind(this, 0x2f, 0);
-        ActorTalkRequest_openSubScene(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(0x2f, 0);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         break;
     case 0x13:
         r4 = PlayerDataArray_CountUsed(gSavePlayers);
@@ -1812,15 +1821,15 @@ void SpNpcPellyPhyllisTalk::onChoice(u32 a_) {
 // compare tree rooted at 0x52, the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39).
 void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     TalkWindowState *o = window;
-    s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
+    s32 r = ((ChoiceList *)(((ActorTalkRequest *)(this))->getChoiceList()))->getResult();
     void *g = PlayerData_GetCurrent();
     u32 id = 0xff;
     u8 m;
     switch (msgIndex) {
     case 0x5f:
         if (r == 0) {
-            ActorTalkRequest_setPocketFilter(this, (void *)SpNpcPellyPhyllis_IsDeliveryItem, 0xd, 0);
-            ActorTalkRequest_openSubScene(this, 0);
+            ((ActorTalkRequest *)(this))->setPocketFilter((u32)((void *)SpNpcPellyPhyllis_IsDeliveryItem), 0xd, 0);
+            ((ActorTalkRequest *)(this))->openSubScene(0);
             setScript(0xb);
         } else if (r == 1) {
             id = data_ov054_0225b344[owner->window];
@@ -1835,7 +1844,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     case 3:
     case 9:
         if (r == 0) {
-            ActorTalkRequest_openSubScene(this, 1);
+            ((ActorTalkRequest *)(this))->openSubScene(1);
             setScript(1);
         }
         break;
@@ -1859,14 +1868,14 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     case 0x5d:
     case 0x5e:
         if (r == 2) {
-            if (PlayerData_testFlag(g, 4) == 0) {
+            if (((PlayerData *)(g))->testFlag(4) == 0) {
                 id = 0x1a;
-                PlayerData_setFlag(g, 4);
+                ((PlayerData *)(g))->setFlag(4);
             } else {
                 id = 0x19;
             }
         } else if (r == 3) {
-            if (PlayerData_testFlag(g, 1) != 0) {
+            if (((PlayerData *)(g))->testFlag(1) != 0) {
                 id = 0x60;
             } else {
                 id = 0x35;
@@ -1885,13 +1894,13 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     }
     if (id != 0xff) {
         m = id;
-        TalkWindowState_setNextMessage(o, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
+        ((TalkWindowState *)(o))->setNextMessage((u8 *)(&m), (void *)((u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]));
     }
 }
 
 void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
     TalkWindowState *o = window;
-    s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
+    s32 r = ((ChoiceList *)(((ActorTalkRequest *)(this))->getChoiceList()))->getResult();
     u32 id = 0xff;
     u32 k = 1;
     u8 m[2];
@@ -1912,7 +1921,7 @@ void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
 }
 
 void SpNpcPellyPhyllisTalk::onSequence4Choice(s32 a) {
-    s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
+    s32 r = ((ChoiceList *)(((ActorTalkRequest *)(this))->getChoiceList()))->getResult();
     PlayerData_GetCurrent();
     if (msgIndex == 0x12) {
         switch (r) {
@@ -1933,7 +1942,7 @@ void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
     menuKind = 0;
     if (!Talk_IsInOwnTown()) {
         menuKind = 2;
-    } else if (PlayerData_testFlag(g, 1) == 0 && HouseData_getDebt(gSaveHouse) != 0) {
+    } else if (((PlayerData *)(g))->testFlag(1) == 0 && ((HouseData *)(gSaveHouse))->getDebt() != 0) {
         if (owner->isLocalSlotActive()) {
             menuKind = 4;
         } else {
@@ -1946,11 +1955,11 @@ void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
     }
     s32 n = sSpNpcPellyPhyllisMenuSizes[menuKind];
     TalkChoiceList_SetIndices(this, sSpNpcPellyPhyllisMenus[menuKind], n, n - 1);
-    TalkWindowState_openChoices(o, 1);
+    ((TalkWindowState *)(o))->openChoices(1);
 }
 
 void SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice(s32 a) {
-    s32 idx = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
+    s32 idx = ((ChoiceList *)(((ActorTalkRequest *)(this))->getChoiceList()))->getResult();
     static Fn a1[2] = {*(Fn *)data_ov054_0225b850, *(Fn *)data_ov054_0225b880};
     static Fn a2[4] = {*(Fn *)data_ov054_0225b7d8, *(Fn *)data_ov054_0225b6a0, *(Fn *)data_ov054_0225b7b0,
                        *(Fn *)data_ov054_0225b6c0};
@@ -1967,30 +1976,30 @@ void SpNpcPellyPhyllisTalk::onPostOfficeMenuChoice(s32 a) {
 }
 
 void SpNpcPellyPhyllisTalk::startMailLetters() {
-    ActorTalkRequest_openSubScene(this, 1);
+    ((ActorTalkRequest *)(this))->openSubScene(1);
     setScript(1);
 }
 
 void SpNpcPellyPhyllisTalk::showGoodbye() {
     u8 m = 1;
-    TalkWindowState_setNextMessage(window, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
+    ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m), (void *)((u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]));
 }
 
 void SpNpcPellyPhyllisTalk::openLetterStorage() {
-    ActorTalkRequest_setSubSceneKind(this, 0x26, 0);
-    ActorTalkRequest_openSubScene(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(0x26, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setScript(2);
 }
 
 void SpNpcPellyPhyllisTalk::askLoanPayment() {
-    ActorTalkRequest_setNumberSlot(this, HouseData_getDebt(gSaveHouse), 4, 10, 1, 0);
+    ((ActorTalkRequest *)(this))->setNumberSlot(((HouseData *)(gSaveHouse))->getDebt(), 4, 10, 1, 0);
     u8 m = 0x12;
-    TalkWindowState_setNextMessage(window, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
+    ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m), (void *)((u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]));
 }
 
 void SpNpcPellyPhyllisTalk::askSavings() {
     u8 m = 0x16;
-    TalkWindowState_setNextMessage(window, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
+    ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m), (void *)((u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]));
 }
 
 void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
@@ -2000,7 +2009,7 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
     void *name;
     name = (void *)sSpNpcPellyPhyllisMsgKeys[owner->sister][0];
     g = PlayerData_GetCurrent();
-    h = PlayerData_getBankAccount(g);
+    h = ((PlayerData *)(g))->getBankAccount();
     s32 pos = Donation_GetTotal(h);
     u8 v = PlayerBank_GetDonationLevel(h) + 0x1f;
     s32 i;
@@ -2009,7 +2018,7 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
         if (pos >= t && pos < sSpNpcPellyPhyllisDonationLevels[i + 1]) {
             PlayerBank_SetDonationLevel(h, i);
             if (donationBefore < t) {
-                PlayerData_setFlag(g, 0x16);
+                ((PlayerData *)(g))->setFlag(0x16);
                 v = i + 0x1f;
             } else {
                 v = i + 0x1f;
@@ -2040,7 +2049,7 @@ BOOL SpNpcPellyPhyllis::acceptsInteraction(void *other) {
     dst.y = pd->y;
     dst.z = pd->z;
     FieldPos_ToUnit(&cx, &cy, &dst);
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked()) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || netIsTalkLocked()) {
         return FALSE;
     }
     if (act == 2 || act == 0 || act == 9) {
@@ -2067,7 +2076,7 @@ void SpNpcPellyPhyllis::onInteractionEvent(u32 cmd, u8 arg) {
         break;
     case 1:
         talk.resetMsg();
-        ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+        ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
         changeAct(1);
         break;
     case 0:
@@ -2079,7 +2088,7 @@ void SpNpcPellyPhyllis::onInteractionEvent(u32 cmd, u8 arg) {
             u32 t = gCommManager->myAid;
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
-            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+            ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
             changeAct(4);
         }
         break;
@@ -2099,7 +2108,7 @@ void SpNpcPellyPhyllis::onInteractionEvent(u32 cmd, u8 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (NpcActor_netGetSlots(this, &a, &b)) {
+                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         changeAct(2);
@@ -2119,11 +2128,11 @@ BOOL SpNpcPellyPhyllis::canStartSave() {
 }
 
 s32 SpNpcPellyPhyllis::isLocalSlotActive() {
-    return CommManager_isSlotActive(gCommManager, gCommManager->myAid);
+    return ((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid);
 }
 
 s32 SpNpcPellyPhyllis::isOnline() {
-    return CommManager_isOnline(gCommManager);
+    return ((CommManager *)(gCommManager))->isOnline();
 }
 
 // Data, second part (see the note at the first part)

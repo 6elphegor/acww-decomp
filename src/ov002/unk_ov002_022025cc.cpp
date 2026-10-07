@@ -162,8 +162,6 @@ void *_ZN10HandCursorC2Ei(void *self, s32 flag);
 void *_ZN10HandCursorD2Ev(void *self);
 void *_ZN9KeyRepeatC1Ev(void *self);
 void *_ZN9MenuSlideC1Ev(void *self);
-void *_ZN12CursorMotionC1Ev(void *self);
-void *_ZN12CursorMotionD1Ev(void *self);
 void _ZN10HandCursor4drawEv();
 void _ZN14MenuCursorBase6updateEv();
 void _ZN8UiWidget9setOriginEii();
@@ -310,7 +308,7 @@ extern "C" void Menu_LoadPaperBg(s32 a, void *b) {
 extern "C" void *_ZN10MenuCursorC1Ei(MenuCursor *self, BOOL flag) {
     _ZN10HandCursorC2Ei(self, flag);
     *(void **)self = &_ZTV10MenuCursor[2];
-    _ZN12CursorMotionC1Ev(&self->motion);
+    new (&self->motion) CursorMotion();
     self->setAnim(0);
     self->motion.reset();
     self->priority = 0;
@@ -320,14 +318,14 @@ extern "C" void *_ZN10MenuCursorC1Ei(MenuCursor *self, BOOL flag) {
 
 extern "C" void *_ZN10MenuCursorD1Ev(MenuCursor *self) {
     *(void **)self = &_ZTV10MenuCursor[2];
-    _ZN12CursorMotionD1Ev(&self->motion);
+    ((CursorMotion *)(&self->motion))->CursorMotion::~CursorMotion();
     _ZN10HandCursorD2Ev(self);
     return self;
 }
 
 extern "C" void *_ZN10MenuCursorD0Ev(MenuCursor *self) {
     *(void **)self = &_ZTV10MenuCursor[2];
-    _ZN12CursorMotionD1Ev(&self->motion);
+    ((CursorMotion *)(&self->motion))->CursorMotion::~CursorMotion();
     _ZN10HandCursorD2Ev(self);
     operator delete(self);
     return self;
@@ -335,7 +333,7 @@ extern "C" void *_ZN10MenuCursorD0Ev(MenuCursor *self) {
 
 extern "C" void *_ZN10MenuCursorD2Ev(MenuCursor *self) {
     *(void **)self = &_ZTV10MenuCursor[2];
-    _ZN12CursorMotionD1Ev(&self->motion);
+    ((CursorMotion *)(&self->motion))->CursorMotion::~CursorMotion();
     _ZN10HandCursorD2Ev(self);
     return self;
 }

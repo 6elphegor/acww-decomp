@@ -18,14 +18,8 @@
 #include "actor/SpNpcActor.h"
 
 extern "C" {
-u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
-s32 _ZN8NpcActor6isNearEPS_i(void *p, void *q, s32 n);
 BOOL TalkRequest_SetTargetDone(void *p);
-void _ZN8NpcActor12setNpcHandleEPt(void *p, u16 *q);
-u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(void *p, void *q);
 extern u16 data_020c6cc8;
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 }
 
 
@@ -308,8 +302,8 @@ BOOL SpNpcTest::preCreate() {
         return FALSE;
     }
     v = 0xd000;
-    _ZN8NpcActor12setNpcHandleEPt(this, &v);
-    _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setNpcHandle(&v);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner((u32)this);
     return TRUE;
 }
@@ -370,9 +364,9 @@ BOOL SpNpcTest::setupAct01() {
     void *p = talk.getTalkPlayer();
     x = 0;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     talk.setPhase(0);
     return TRUE;
 }
@@ -458,7 +452,7 @@ void SpNpcTestTalk::onMessageEnd(u32 a_) {
 
 BOOL SpNpcTest::acceptsInteraction(void *p) {
     BOOL r = FALSE;
-    if (_ZN8NpcActor6isNearEPS_i(this, p, 0x2000) == 1) {
+    if (((NpcActor *)(this))->isNear((NpcActor *)(p), 0x2000) == 1) {
         r = TRUE;
     }
     return r;
@@ -468,7 +462,7 @@ void SpNpcTest::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        talk.setTalkPlayer(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         changeAct(1);
         break;
     case 8:

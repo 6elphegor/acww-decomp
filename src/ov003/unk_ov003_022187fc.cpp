@@ -6,6 +6,9 @@
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
 #include "town/BuildingActor.h"
+#include "actor/Actor.h"
+#include "game/StrBSizeData.h"
+#include "net/CommManager.h"
 
 // TU21 of ov003: house models, scene 0x022324ec (0x022187fc-0x02219294)
 // mwcc samples optimiser pragmas at the end of the file, so this applies to the whole TU
@@ -335,7 +338,7 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
         }
     }
     if (Scene_InTown()) {
-        if (!CommManager_isSlotActive(gCommManager, gCommManager[0x64 / 4])) {
+        if (!((CommManager *)(gCommManager))->isSlotActive(gCommManager[0x64 / 4])) {
             s32 k = TownBlockMap_Get();
             if (Taxi_IsArriving() != 0 || Taxi_IsLeaving() != 0) {
                 if (Town_FindTownHallFront(k, &tl.cx, &bx, &by)) {
@@ -373,7 +376,7 @@ s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag) 
         q = data_020d0a7c;
     }
     BuildingInfo_Copy(obj, q);
-    if (Actor_spawn(BuildingInfo_GetProfile(obj), (void *)*pv, &vec, 0, 0) != 0) {
+    if (Actor::spawn((void *)(BuildingInfo_GetProfile(obj)), (void *)*pv, &vec, 0, 0) != 0) {
         if (flag != 0) {
             TownMap_placeStructure(gSceneBlockMap, pv, x, y, 0);
             FieldStructureMgr_ApplyFootprint((s32)self, pv, x, y);
@@ -389,10 +392,10 @@ s32 FieldStructureMgr_ApplyFootprint(s32 a, u16 *b, s32 x, s32 y) {
     s32 va, vb, vc;
     void *p = StrBSize_Get((s32)b);
     if (p != 0) {
-        u32 n = StrBSizeData_getSolidUnitCount(p);
+        u32 n = ((StrBSizeData *)(p))->getSolidUnitCount();
         u32 i;
         for (i = 0; i < n; i++) {
-            if (StrBSizeData_getSolidUnit(p, &vc, &va, &vb, i)) {
+            if (((StrBSizeData *)(p))->getSolidUnit(&vc, &va, &vb, i)) {
                 Ground_SetQuadrantsBlocked(x + va, y + vb, (u8)vc);
             }
         }
@@ -421,7 +424,7 @@ void Field_SetDoorExitMode(u32 v) { sDoorExitMode = v; }
 s32 Building_OpenDoorForEntryAt(s32 a) {
     void *r = Building_FindNearPos(a);
     if (r != 0) {
-        return BuildingActor_openDoorForEntry(r);
+        return ((BuildingActor *)(r))->openDoorForEntry();
     }
     return 0;
 }
@@ -429,7 +432,7 @@ s32 Building_OpenDoorForEntryAt(s32 a) {
 s32 Building_OpenDoorForExitAt(s32 a) {
     void *r = Building_FindNearPos(a);
     if (r != 0) {
-        return BuildingActor_openDoorForExit(r);
+        return ((BuildingActor *)(r))->openDoorForExit();
     }
     return 0;
 }
@@ -437,7 +440,7 @@ s32 Building_OpenDoorForExitAt(s32 a) {
 s32 VillagerHouse_TryOpenDoorForEntry(s32 a) {
     void *r = BuildingList_FindByItem((u16)(a + 0x5001));
     if (r != 0) {
-        return BuildingActor_tryOpenDoorForEntry(r);
+        return ((BuildingActor *)(r))->tryOpenDoorForEntry();
     }
     return 0;
 }
@@ -445,7 +448,7 @@ s32 VillagerHouse_TryOpenDoorForEntry(s32 a) {
 s32 VillagerHouse_TryOpenDoorForExit(s32 a) {
     void *r = BuildingList_FindByItem((u16)(a + 0x5001));
     if (r != 0) {
-        return BuildingActor_tryOpenDoorForExit(r);
+        return ((BuildingActor *)(r))->tryOpenDoorForExit();
     }
     return 0;
 }
@@ -527,7 +530,7 @@ void *BuildingList_FindByItem(u32 id) {
     for (i = 0; (u32)i < 0x20; i++) {
         BuildingActor *e = sBuildingList[i];
         if (e != 0) {
-            u16 *r = BuildingActor_getItemId(e);
+            u16 *r = ((BuildingActor *)(e))->getItemId();
             BOOL ok;
             if (Item_IsFurniture(r) != 0) {
                 u16 tmp;

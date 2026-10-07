@@ -3,6 +3,8 @@
 #include "gfx/Mtx43.h"
 #include "game/GroundInfo.h"
 #include "player/FishBobberStates.h"
+#include "net/CommManager.h"
+#include "sys/Heap.h"
 
 
 
@@ -35,10 +37,6 @@ void PlayerPalettePool_AllocBuffers(u32 *a);
 void NetBuf_WriteU16(void *p, s32 v);
 void CommRecord_PackSource(void *p, s32 a, u8 b);
 BOOL NetArea_IsLocalOwner();
-void _ZN11CommManager11beginRecordEv(void *p);
-void _ZN11CommManager11writeRecordEPhj(void *p, void *q, s32 n);
-void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
-BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL func_020729cc(void *p, s32 h);
 u16 NetBuf_ReadU16(void *src);
 void CommRecord_UnpackSource(void *p, u8 *a, u8 *b);
@@ -144,11 +142,11 @@ extern "C" BOOL ItemSync_Apply(u8 *p)
 extern "C" void ItemSync_ApplyAndBroadcast(u8 *p)
 {
     if (ItemSync_Apply(p)) {
-        if (_ZN11CommManager8isOnlineEv((void *)gCommManager)) {
+        if (((CommManager *)((void *)gCommManager))->isOnline()) {
             void *q = (void *)gCommManager;
-            _ZN11CommManager11beginRecordEv(q);
-            _ZN11CommManager11writeRecordEPhj(q, p, 5);
-            _ZN11CommManager9endRecordEjj(q, 0x12, 4);
+            ((CommManager *)(q))->beginRecord();
+            ((CommManager *)(q))->writeRecord((u8 *)(p), 5);
+            ((CommManager *)(q))->endRecord(0x12, 4);
         }
     }
 }
@@ -164,9 +162,9 @@ extern "C" void ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e)
         ItemSync_ApplyAndBroadcast(buf);
     } else {
         void *q = (void *)gCommManager;
-        _ZN11CommManager11beginRecordEv(q);
-        _ZN11CommManager11writeRecordEPhj(q, buf, 5);
-        _ZN11CommManager9endRecordEjj(q, 0x13, 6);
+        ((CommManager *)(q))->beginRecord();
+        ((CommManager *)(q))->writeRecord((u8 *)(buf), 5);
+        ((CommManager *)(q))->endRecord(0x13, 6);
     }
 }
 
@@ -175,7 +173,7 @@ extern "C" void PlayerPalettePool_Create(void *parent)
     PlayerPaletteHeap_Create(parent);
     PlayerPalettePool_AllocBuffers(sPlayerPalettePool.buffers);
     if (gPlayerPaletteHeap) {
-        Heap_adjust(gPlayerPaletteHeap);
+        ((Heap *)(gPlayerPaletteHeap))->adjust();
     }
 }
 
@@ -229,7 +227,7 @@ extern "C" void PlayerPalettePool_FreeBuffers(u32 *a)
         a[i] = z;
     }
     if (gPlayerPaletteHeap) {
-        Heap_freeAll(gPlayerPaletteHeap);
+        ((Heap *)(gPlayerPaletteHeap))->freeAll();
     }
 }
 

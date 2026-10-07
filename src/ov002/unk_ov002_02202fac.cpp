@@ -52,7 +52,6 @@
 extern "C" {
 BOOL _ZN8ProcBase10postDeleteEv(void *self, s32 a);
 void _ZN8GameProc10postCreateEv(void *self, s32 a);
-void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
 void VillagerId_getName(s32 a, void *buf);
 s32 VillagerData_getVillagerId(void *self);
 void func_02094018(void *p);
@@ -582,7 +581,7 @@ BOOL MenuLabelButton::stepAnim() {
 void MenuLabelButton::setLabel2d(s32 v) {
     LabelString s;
     String_Load2dMenu(&s, v);
-    LabelButton_setLabelText(this, &s);
+    ((LabelButton *)(this))->setLabelText((MsgString *)(&s));
 }
 
 void MenuLabelButton::showDefault(s32 v) {
@@ -888,7 +887,7 @@ void MenuBottomButtons::setLayoutConfirmAnd06(u8 v) {
 
 void MenuBottomButtonsBody::setLayoutYesNo07(s32 x) {
     title.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 4);
+    ((MenuTitleBalloon *)(&title))->showText(x, 0x80, 4);
     title.hideLayer2();
     buttons[0].setup(sButtonCellsW4B, 4, 1);
     buttons[0].setLabelWithShadow(4);
@@ -899,7 +898,7 @@ void MenuBottomButtonsBody::setLayoutYesNo07(s32 x) {
 
 void MenuBottomButtonsBody::setLayoutYesNo08(s32 x) {
     title.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x11);
+    ((MenuTitleBalloon *)(&title))->showText(x, 0x80, 0x11);
     title.hideLayer2();
     buttons[0].setup(sButtonCellsW4B, 4, 1);
     buttons[0].setLabelWithShadow(4);
@@ -917,7 +916,7 @@ void MenuBottomButtonsBody::setYesNoButtons() {
 
 void MenuBottomButtonsBody::setLayoutYesNo09(s32 x) {
     title.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 4);
+    ((MenuTitleBalloon *)(&title))->showText(x, 0x80, 4);
     title.hideLayer2();
     setYesNoButtons();
     layout = 9;
@@ -933,7 +932,7 @@ void MenuBottomButtonsBody::setLayoutTossKeep() {
 
 void MenuBottomButtonsBody::setLayoutYesNo0B(s32 x) {
     title.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x22);
+    ((MenuTitleBalloon *)(&title))->showText(x, 0x80, 0x22);
     title.hideLayer2();
     setYesNoButtons();
     layout = 0xb;
@@ -941,7 +940,7 @@ void MenuBottomButtonsBody::setLayoutYesNo0B(s32 x) {
 
 void MenuBottomButtonsBody::setLayoutYesNo0C(s32 x) {
     title.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x2a);
+    ((MenuTitleBalloon *)(&title))->showText(x, 0x80, 0x2a);
     title.showLayer2();
     setYesNoButtons();
     layout = 0xc;
@@ -949,7 +948,7 @@ void MenuBottomButtonsBody::setLayoutYesNo0C(s32 x) {
 
 void MenuBottomButtonsBody::setLayoutYesNo0D(s32 x) {
     title.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x12);
+    ((MenuTitleBalloon *)(&title))->showText(x, 0x80, 0x12);
     title.showLayer2();
     setYesNoButtons();
     layout = 0xd;

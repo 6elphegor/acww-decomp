@@ -63,7 +63,7 @@ extern "C" void FieldCamera_UpdateFocusZoom(Camera *cam) {
     }
     u32 q = FX_Div(v - 0x4800, 0x6800);
     cam->closeUpFactorTarget = 0x1000 - q;
-    Camera_lerpPoses(cam, 0xa, 0, q);
+    ((Camera *)(cam))->lerpPoses(0xa, 0, q);
 }
 
 extern "C" SnowballSpawner *SnowballSpawner_Create() {

@@ -13,6 +13,9 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
 #include "sys/ProcProfile.h"
+#include "player/PlayerData.h"
+#include "save/Pattern.h"
+#include "ui/LabelBalloon.h"
 
 struct PopupChoiceIdList;
 
@@ -30,12 +33,6 @@ void *ProcBase_GetParent(void *p);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData11getPatternsEv(void *a);
-void *_ZN14PlayerPatterns17getPatternByOrderEj(void *o, u32 i);
-void *_ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(void *a, void *b);
-void *_ZN7Pattern9getPixelsEv(void *o);
-void *_ZN7Pattern7getInfoEv(void *o);
-void *_ZN11PatternInfo14getPaletteDataEv(void *o);
 void Gfx2d_LinearToTilesInRow32(void *a, void *b, u32 c, u32 d, u32 e);
 void Gfx2d_LoadCharRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
@@ -54,12 +51,6 @@ BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void StrBuf_GameToAscii(void *p, void *q);
 
-void _ZN18EncodedString16BufC1Ev(void *p);
-void _ZN18EncodedString16BufD1Ev(void *p);
-void _ZN16LabelBalloonTextC1Ev(void *p);
-void _ZN16LabelBalloonTextD1Ev(void *p);
-void _ZN12LabelBalloon6setPosEii(void *self, s32 x, s32 y);
-void _ZN12LabelBalloon7setTextEP6StrBuf(void *self, void *b);
 
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
@@ -403,11 +394,11 @@ void PatternSelectMenu::loadHeaderBg() {
 extern "C" void PatternSelect_LoadPatternIcons() {
     void *heap = gCurrentHeap;
     void *buf = Heap_AllocTail(heap, 0x1000);
-    void *obj = _ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent());
+    void *obj = ((PlayerData *)(PlayerData_GetCurrent()))->getPatterns();
     u8 i = 0;
     do {
-        void *t = _ZN14PlayerPatterns17getPatternByOrderEj(obj, i);
-        t = _ZN7Pattern9getPixelsEv(t);
+        void *t = ((PlayerPatterns *)(obj))->getPatternByOrder(i);
+        t = ((Pattern *)(t))->getPixels();
         Gfx2d_LinearToTilesInRow32(t, buf, i * 4, 4, 4);
         i++;
     } while (i < 8);
@@ -417,9 +408,9 @@ extern "C" void PatternSelect_LoadPatternIcons() {
     s32 off = 0;
     u8 k = 0;
     do {
-        void *t = _ZN14PlayerPatterns17getPatternByOrderEj(obj, k);
-        t = _ZN7Pattern7getInfoEv(t);
-        t = _ZN11PatternInfo14getPaletteDataEv(t);
+        void *t = ((PlayerPatterns *)(obj))->getPatternByOrder(k);
+        t = ((Pattern *)(t))->getInfo();
+        t = ((PatternInfo *)(t))->getPaletteData();
         MIi_CpuCopy16(t, (u8 *)buf2 + off * 2, 0x20);
         off += 0x10;
         k++;
@@ -645,14 +636,14 @@ void PatternSelectMenu::refreshNameLabel() {
     if (MenuCtrl_IsButtons()) {
         x -= 0xa;
     }
-    _ZN12LabelBalloon6setPosEii(&nameBalloon, getSlotX(balloonSlot) - 0x78, x);
-    _ZN18EncodedString16BufC1Ev(a);
-    _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(_ZN7Pattern7getInfoEv(_ZN14PlayerPatterns17getPatternByOrderEj(_ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent()), balloonSlot)), a);
-    _ZN16LabelBalloonTextC1Ev(b);
+    ((LabelBalloon *)(&nameBalloon))->setPos(getSlotX(balloonSlot) - 0x78, x);
+    new (a) EncodedString16Buf();
+    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(((PlayerData *)(PlayerData_GetCurrent()))->getPatterns()))->getPatternByOrder(balloonSlot)))->getInfo()))->getTitleEncoded((EncodedString16Buf *)(a));
+    new (b) LabelBalloonText();
     StrBuf_GameToAscii(b, a);
-    _ZN12LabelBalloon7setTextEP6StrBuf(&nameBalloon, b);
-    _ZN16LabelBalloonTextD1Ev(b);
-    _ZN18EncodedString16BufD1Ev(a);
+    ((LabelBalloon *)(&nameBalloon))->setText((StrBuf *)(b));
+    ((LabelBalloonText *)(b))->LabelBalloonText::~LabelBalloonText();
+    ((EncodedString16Buf *)(a))->EncodedString16Buf::~EncodedString16Buf();
 }
 
 void PatternSelectMenu::updateNameLabel() {

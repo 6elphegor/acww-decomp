@@ -9,6 +9,9 @@
 #include "talk/MsgString.h"
 #include "talk/MsgRequest.h"
 #include "talk/MailMsgRequest.h"
+#include "gfx/G3dResAccess.h"
+#include "player/PlayerData.h"
+#include "save/Pattern.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 
@@ -149,35 +152,27 @@ void *NNS_G3dGetTex(void *p);
 }
 
 extern "C" {
-void *_ZN12G3dResAccess11getPlttDataEi(void *p, s32 v);
 }
 
 extern "C" {
-void *_ZN12G3dResAccess10getTexDataEi(void *p, s32 v);
 }
 
 extern "C" {
-void *_ZN7Pattern9getPixelsEv(void *p);
 }
 
 extern "C" {
-void *_ZN7Pattern7getInfoEv(void *p);
 }
 
 extern "C" {
-void *_ZN11PatternInfo14getPaletteDataEv(void *self);
 }
 
 extern "C" {
-void *_ZN19AbleSistersPatterns10getPatternEh(void *tbl, u32 i);
 }
 
 extern "C" {
-void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 i);
 }
 
 extern "C" {
-void *_ZN10PlayerData11getPatternsEv(void *p);
 }
 
 extern "C" {
@@ -215,24 +210,24 @@ extern "C" BOOL ClothTex_LoadItem(void *self, u16 *p, void *q) {
         else i1 = -1;
         res = FALSE;
         if (i1 != -1) {
-            if (q == 0) res = ClothTex_LoadPattern(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i1));
-            else res = ClothTex_LoadPattern(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(q), (u8)i1));
+            if (q == 0) res = ClothTex_LoadPattern(self, ((AbleSistersPatterns *)(gSaveAbleSistersPatterns))->getPattern((u8)i1));
+            else res = ClothTex_LoadPattern(self, ((PlayerPatterns *)(((PlayerData *)(q))->getPatterns()))->getPattern((u8)i1));
         }
     } else if (*p >= 0x1429 && *p <= 0x1430) {
         if (*p >= 0x1429 && *p <= 0x1430) i2 = *p - 0x1429;
         else i2 = -1;
         res = FALSE;
         if (i2 != -1) {
-            if (q == 0) res = ClothTex_LoadPattern(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i2));
-            else res = ClothTex_LoadPattern(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(q), (u8)i2));
+            if (q == 0) res = ClothTex_LoadPattern(self, ((AbleSistersPatterns *)(gSaveAbleSistersPatterns))->getPattern((u8)i2));
+            else res = ClothTex_LoadPattern(self, ((PlayerPatterns *)(((PlayerData *)(q))->getPatterns()))->getPattern((u8)i2));
         }
     } else if (*p >= 0x13a0 && *p <= 0x13a7) {
         if (*p >= 0x13a0 && *p <= 0x13a7) i3 = *p - 0x13a0;
         else i3 = -1;
         res = FALSE;
         if (i3 != -1) {
-            if (q == 0) res = ClothTex_LoadPattern(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i3));
-            else res = ClothTex_LoadPattern(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(q), (u8)i3));
+            if (q == 0) res = ClothTex_LoadPattern(self, ((AbleSistersPatterns *)(gSaveAbleSistersPatterns))->getPattern((u8)i3));
+            else res = ClothTex_LoadPattern(self, ((PlayerPatterns *)(((PlayerData *)(q))->getPatterns()))->getPattern((u8)i3));
         }
     } else {
         if (*p >= 0x11a8 && *p <= 0x12a7) i4 = *p - 0x11a8;
@@ -253,9 +248,9 @@ extern "C" BOOL ClothTex_LoadPattern(void *a, void *b) {
     u16 id = 0x11a8;
     if (ClothTex_LoadItem(a, &id, 0)) {
         if (b != 0) {
-            void *dst = _ZN7Pattern9getPixelsEv(b);
+            void *dst = ((Pattern *)(b))->getPixels();
             MI_CpuCopy8(dst, ClothTex_GetTexData(a), 0x200);
-            void *dst2 = _ZN11PatternInfo14getPaletteDataEv(_ZN7Pattern7getInfoEv(b));
+            void *dst2 = ((PatternInfo *)(((Pattern *)(b))->getInfo()))->getPaletteData();
             MI_CpuCopy8(dst2, ClothTex_GetPlttData(a), 0x20);
             return TRUE;
         }
@@ -264,9 +259,9 @@ extern "C" BOOL ClothTex_LoadPattern(void *a, void *b) {
     return FALSE;
 }
 
-extern "C" void *ClothTex_GetTexData(void *tex) { return _ZN12G3dResAccess10getTexDataEi(ClothTex_GetTex(tex), 0); }
+extern "C" void *ClothTex_GetTexData(void *tex) { return ((G3dResAccess *)(ClothTex_GetTex(tex)))->getTexData(0); }
 
-extern "C" void *ClothTex_GetPlttData(void *tex) { return _ZN12G3dResAccess11getPlttDataEi(ClothTex_GetTex(tex), 0); }
+extern "C" void *ClothTex_GetPlttData(void *tex) { return ((G3dResAccess *)(ClothTex_GetTex(tex)))->getPlttData(0); }
 
 extern "C" void *ClothTex_GetTex(void *tex) { return NNS_G3dGetTex(tex); }
 

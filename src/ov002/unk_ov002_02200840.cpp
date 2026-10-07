@@ -160,8 +160,6 @@ void *_ZN8ProcBaseC2Ev(void *self);
 void *_ZN11LabelButtonC2Ehi(void *self, u8 a, s32 b);
 void *_ZN10HandCursorC2Ei(void *self, s32 flag);
 void *_ZN10HandCursorD2Ev(void *self);
-void *_ZN9KeyRepeatC1Ev(void *self);
-void *_ZN9MenuSlideC1Ev(void *self);
 void *_ZN12CursorMotionC1Ev(void *self);
 void *_ZN12CursorMotionD1Ev(void *self);
 void _ZN10HandCursor4drawEv();
@@ -716,10 +714,10 @@ extern "C" void *_ZN8MenuProcC2Ev(MenuProc *self) {
     _ZN8ProcBaseC2Ev(self);
     *(void *volatile *)self = _ZTV8GameProc + 8;
     *(void **)self = _ZTV8MenuProc + 8;
-    _ZN9KeyRepeatC1Ev(&self->keyRepeat);
+    new (&self->keyRepeat) KeyRepeat();
     self->openMenuPrev = 0;
     self->openMenuNext = 0;
-    _ZN9MenuSlideC1Ev(&self->slide);
+    new (&self->slide) MenuSlide();
     return self;
 }
 

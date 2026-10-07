@@ -1,5 +1,6 @@
 #include "types.h"
 #include "actor/CharaFaceAnimRef.h"
+#include "sys/Heap.h"
 
 
 struct CharaFaceAnimPool {
@@ -49,7 +50,7 @@ u8 *CharaFaceAnim_GetPath(u32 x);
 extern "C" void CharaFaceAnimPool_Create(u32 parent) {
     CharaFaceAnimHeap_Create((void *)parent);
     sCharaFaceAnimPool.allocBuffers();
-    if (gCharaFaceAnimHeap) Heap_adjust(gCharaFaceAnimHeap);
+    if (gCharaFaceAnimHeap) ((Heap *)(gCharaFaceAnimHeap))->adjust();
 }
 
 extern "C" void CharaFaceAnimPool_Destroy() {
@@ -100,7 +101,7 @@ void CharaFaceAnimPool::freeBuffers() {
             a[j][i] = 0;
         }
     }
-    if (gCharaFaceAnimHeap) Heap_freeAll(gCharaFaceAnimHeap);
+    if (gCharaFaceAnimHeap) ((Heap *)(gCharaFaceAnimHeap))->freeAll();
 }
 
 u32 CharaFaceAnimPool::getAnimBuffer(u32 i, u32 j) {

@@ -2,6 +2,7 @@
 #include "nitro/fs.h"
 
 #include "ds_stdarg.h"
+#include "gfx/G3dResAccess.h"
 
 
 struct FileLzHeader {
@@ -40,15 +41,12 @@ void *_ZN12G3dResAccess12findPlttDataEv(void *a, s32 b);
 }
 
 extern "C" {
-s32 _ZN12G3dResAccess11findPlttIdxEi(void *a, s32 b);
 }
 
 extern "C" {
-void *_ZN12G3dResAccess11getPlttDataEi(void *a, s32 b);
 }
 
 extern "C" {
-u32 _ZN12G3dResAccess11getPlttSizeEi(void *a, s32 b);
 }
 
 extern "C" {
@@ -56,15 +54,12 @@ void *_ZN12G3dResAccess11findTexDataEv(void *a, s32 b);
 }
 
 extern "C" {
-s32 _ZN12G3dResAccess10findTexIdxEi(void *a, s32 b);
 }
 
 extern "C" {
-void *_ZN12G3dResAccess10getTexDataEi(void *a, s32 b);
 }
 
 extern "C" {
-u32 _ZN12G3dResAccess10getTexSizeEi(void *a, s32 b);
 }
 
 extern "C" {
@@ -457,17 +452,17 @@ extern "C" s32 Math_EaseRampProgress(s32 x, s32 lo, s32 hi, s32 a, s32 b) {
 
 extern "C" void G3dRes_CopyTexByName(void *a, void *b, s32 c, s32 d) {
     void *p = _ZN12G3dResAccess11findTexDataEv(a, c);
-    s32 i = _ZN12G3dResAccess10findTexIdxEi(b, d);
-    void *q = _ZN12G3dResAccess10getTexDataEi(b, i);
-    u32 n = _ZN12G3dResAccess10getTexSizeEi(b, i);
+    s32 i = ((G3dResAccess *)(b))->findTexIdx(d);
+    void *q = ((G3dResAccess *)(b))->getTexData(i);
+    u32 n = ((G3dResAccess *)(b))->getTexSize(i);
     MI_CpuCopy8(p, q, n);
 }
 
 extern "C" void G3dRes_CopyPlttByName(void *a, void *b, s32 c, s32 d) {
     void *p = _ZN12G3dResAccess12findPlttDataEv(a, c);
-    s32 i = _ZN12G3dResAccess11findPlttIdxEi(b, d);
-    void *q = _ZN12G3dResAccess11getPlttDataEi(b, i);
-    u32 n = _ZN12G3dResAccess11getPlttSizeEi(b, i);
+    s32 i = ((G3dResAccess *)(b))->findPlttIdx(d);
+    void *q = ((G3dResAccess *)(b))->getPlttData(i);
+    u32 n = ((G3dResAccess *)(b))->getPlttSize(i);
     MI_CpuCopy8(p, q, n);
 }
 

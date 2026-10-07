@@ -26,7 +26,6 @@ extern "C" {
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 _ZN5Actor8findByIdEj(s32 v);
-u32 _ZN19ActorFollowCollider10getOwnerIdEv(void *p);
 void ActorCollider_ClearList(void);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 FX_Div(s32 a, s32 b);
@@ -68,7 +67,7 @@ u32 StaticCollider::getOwnerId() { return FALSE; }
 
 VecFx32 *StaticCollider::getPos() { return &position; }
 
-u32 ActorPlacedCollider::getOwnerId() { return _ZN19ActorFollowCollider10getOwnerIdEv(this); }
+u32 ActorPlacedCollider::getOwnerId() { return ((ActorFollowCollider *)(this))->ActorFollowCollider::getOwnerId(); }
 
 VecFx32 *ActorPlacedCollider::getPos() { return &position; }
 

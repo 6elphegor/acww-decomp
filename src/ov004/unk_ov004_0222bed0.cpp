@@ -8,6 +8,7 @@
 #include "actor/Actor.h"
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
+#include "snd/SndSeEmitter.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 
@@ -169,7 +170,7 @@ void RoomItemIcons::drawIconModel(Model *model, Mtx43 m) {
     if (model != NULL) {
         volatile u16 tmp[2];
         model->mtx = m;
-        Model_drawShapesDirect(model, 0);
+        ((Model *)(model))->drawShapesDirect((s32 *)(0));
         tmp[0] = SceneLights_GetRoomColor();
         tmp[1] = tmp[0];
         NNS_G3dMdlSetMdlEmi(model->resMdl, 0, tmp[1]);
@@ -274,7 +275,7 @@ extern "C" BOOL ItemDrop_StartFromLocalPlayer(u16 *p, VecFx32Copy *v) {
     if (g != NULL && o != NULL) {
         CommManager *c = gCommManager;
         s32 a;
-        if (CommManager_isOnline(c)) {
+        if (((CommManager *)(c))->isOnline()) {
             a = c->myAid;
         } else {
             a = 0;
@@ -441,7 +442,7 @@ extern "C" void ItemDropList_Init(RoomItemDrop *e) {
         e->state = 0;
         e->item = 0xfff1;
         e->landItem = 0xfff1;
-        SndSeEmitter_callInit(e->seEmitter);
+        ((SndSeEmitter *)(e->seEmitter))->callInit();
     }
 }
 
@@ -457,7 +458,7 @@ extern "C" void ItemDropList_Update(RoomItemDrop *e) {
             v.x = e->pos.x;
             v.y = e->pos.y;
             v.z = e->pos.z;
-            SndSeEmitter_callUpdateRelative(e->seEmitter, &v);
+            ((SndSeEmitter *)(e->seEmitter))->callUpdateRelative((VecFx32 *)(&v));
         }
     }
 }
@@ -496,7 +497,7 @@ extern "C" void ItemDropList_Release(RoomItemDrop *e) {
     s32 i;
     for (i = 0; i < 15; e++, i++) {
         if (e->state != 0) ItemDrop_Clear(e);
-        SndSeEmitter_callStop(e->seEmitter);
+        ((SndSeEmitter *)(e->seEmitter))->callStop();
     }
 }
 

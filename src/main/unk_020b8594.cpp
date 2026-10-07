@@ -4,17 +4,16 @@
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
 #include "gfx/MatTexVramTask.h"
+#include "gfx/G3dResAccess.h"
 
 extern "C" {
 // Other files
 void Gfx2d_LoadPaletteRange(u32 a, u32 b, u32 c, u32 d, u32 e);
 void Gfx2d_LoadScreen(u32 a, u32 b, u32 c, u32 d);
 void Gfx2d_LoadCharRange(u32 a, u32 b, u32 c, u32 d, u32 e);
-u32 _ZN12G3dResAccess10findMatIdxEi(void *res, u32 idx);
 u32 _ZN12G3dResAccess10getTexDataEi(void *p, u32 x);
 u32 _ZN12G3dResAccess11getPlttDataEi(void *p, u32 x);
 u32 _ZN10G3dMatData10getTexSizeEv(void *p);
-u32 _ZN12G3dResAccess11getPlttSizeEi(void *p, u32 x);
 u32 _ZN10G3dMatData10getTexAddrEv(void *p);
 u32 _ZN10G3dMatData11getPlttAddrEv(void *p);
 void DC_FlushRange(void *p, u32 x);
@@ -328,7 +327,7 @@ void MatTexVramTask::prepare(void) {
 BOOL MatTexVramTask::request(void *a, u32 b, void *c, u32 d, u32 e) {
     prepare();
     u8 *base = (u8 *)a + *(u32 *)((u8 *)a + 8);
-    u32 idx = _ZN12G3dResAccess10findMatIdxEi(a, b);
+    u32 idx = ((G3dResAccess *)(a))->findMatIdx(b);
     u8 *tbl = base + 4;
     u16 off = *(u16 *)(base + 0xa);
     u8 *ent = tbl + off;
@@ -337,7 +336,7 @@ BOOL MatTexVramTask::request(void *a, u32 b, void *c, u32 d, u32 e) {
     u32 v1 = _ZN12G3dResAccess10getTexDataEi(c, d);
     u32 v2 = _ZN12G3dResAccess11getPlttDataEi(c, e);
     u32 v3 = _ZN10G3dMatData10getTexSizeEv(rec);
-    u32 v4 = _ZN12G3dResAccess11getPlttSizeEi(c, e);
+    u32 v4 = ((G3dResAccess *)(c))->getPlttSize(e);
     kind = 3;
     texXfer.set(_ZN10G3dMatData10getTexAddrEv(rec), v1, v3);
     plttXfer.set(_ZN10G3dMatData11getPlttAddrEv(rec), v2, v4);

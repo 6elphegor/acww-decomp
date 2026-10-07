@@ -18,6 +18,9 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "gfx/Mtx43.h"
 #include "gfx/NNSG3dRS.h"
+#include "actor/CharaClothTexRef.h"
+#include "gfx/AnimModel.h"
+#include "sys/Heap.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -113,34 +116,18 @@ void HeldItemModel_Update(HeldItemModel *o);
 void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs);
 
 void Model_GetJointWorldMtx(void *slot, Mtx43 *out, u32 a);
-void _ZN9AnimModel12drawAnimatedEPv(void *slot, VecFx32 *v);
 void FishBobber_Draw(void *sub, Mtx43 *o, VecFx32 *v);
 void WorldCurve_FromCurved(VecFx32 *o, VecFx32 *v);
-void _ZN10FishBobber12setTargetPosEP7VecFx32(void *sub, VecFx32 *v);
-void _ZN13AnimFrameCtrl4stepEv(void *p);
-void _ZN10FishBobber6updateEv(void *p);
-void _ZN14BlendAnimModel9stepBlendEv(void *slot);
-void _ZN10FishBobber8setStateEi(void *p, u32 k);
-void _ZN10FishBobber6detachEv(void *p);
-void _ZN9AnimModel15detachJointAnimEv(void *slot);
-void _ZN14BlendAnimModel15onJointCalcPostEPS_(void *slot, void *o);
 u32 CharaClothTexPool_GetOwnRef(void);
-void _ZN16CharaClothTexRef8loadItemEPtiii(u32 a, u16 *code, u32 b, u32 c, u32 d);
 u32 CharaClothTexRef_GetBuffer(u32 a);
 void HeldItemModel_GetJointMtx(Mtx43 *out, HeldItemModel *o, u32 a);
 void G3dRes_CopyTexByName(u32 a, u32 b, char *c, char *d);
 void G3dRes_CopyPlttByName(u32 a, u32 b, char *c, char *d);
-void _ZN11CachedModel11setFromFileEPv(void *slot, u32 a);
 void _ZN9AnimModel11allocAnmObjEPv(void *slot, u32 a);
 void _ZN11CachedModel16allocJointRecordEPv(void *slot, u32 a);
 #define Heap_getFreeSize _ZN4Heap11getFreeSizeEv
 u32 Heap_getFreeSize(u32 a);
-void _ZN9ModelAnim11allocMatAnmEjPv(u32 *p, u32 a, u32 b);
-void _ZN9ModelAnim4initEiiit(u32 *p, u32 a, u32 b, u32 c, u32 d);
 void _ZN9ModelAnim14addToRenderObjEj(u32 *p, u32 a);
-void _ZN9AnimModel10attachAnimEv(void *slot);
-void _ZN5Model11setCallbackEiiiii(void *slot, void (*fn)(void *), u32 a, u32 b, void *o, u32 c);
-void _ZN10FishBobber6attachEjP9Characterj(void *p, u32 id, u32 x, u32 k);
 
 u32 HeldItem_GetPlttVramSize(void);
 u32 HeldItem_GetTex4x4VramSize(void);
@@ -209,12 +196,12 @@ extern "C" void HeldItemModels_Init(u32 x) {
     HeldItemModelHeap_Create((void *)x);
     HeldItemModels_AllocVram(&sHeldItemModelBank);
     if (gHeldItemModelHeap) {
-        Heap_adjust(gHeldItemModelHeap);
+        ((Heap *)(gHeldItemModelHeap))->adjust();
     }
     HeldItemAnimHeap_Create(x);
     HeldItemModels_CreateAnimHeaps(&sHeldItemModelBank);
     if (gHeldItemAnimHeap) {
-        Heap_adjust(gHeldItemAnimHeap);
+        ((Heap *)(gHeldItemAnimHeap))->adjust();
     }
 }
 
@@ -331,7 +318,7 @@ extern "C" void HeldItemModels_ReleaseAll(HeldItemModelBank *self) {
     }
     for (j = 0; j < 9; j++) {
         if (self->animHeaps[j]) {
-            Heap_freeAll(self->animHeaps[j]);
+            ((Heap *)(self->animHeaps[j]))->freeAll();
             self->animHeaps[j] = 0;
             self->animBuffers[j] = 0;
             self->animBufferSizes[j] = 0;
@@ -341,13 +328,13 @@ extern "C" void HeldItemModels_ReleaseAll(HeldItemModelBank *self) {
         }
     }
     if (gHeldItemAnimHeap) {
-        Heap_freeAll(gHeldItemAnimHeap);
+        ((Heap *)(gHeldItemAnimHeap))->freeAll();
     }
     for (k = 0; k < 9; k++) {
         self->modelBuffers[k] = 0;
     }
     if (gHeldItemModelHeap) {
-        Heap_freeAll(gHeldItemModelHeap);
+        ((Heap *)(gHeldItemModelHeap))->freeAll();
     }
 }
 
@@ -503,7 +490,7 @@ extern "C" void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs) {
 extern "C" void HeldItemModels_OnJointCalcPost(NNSG3dRS *rs) {
     NNSG3dRenderObj *p = rs->pRenderObj;
     if (p->ptrUser != 0) {
-        _ZN14BlendAnimModel15onJointCalcPostEPS_(HeldItemModels_GetModel(&sHeldItemModelBank, ((HeldItemModel *)p->ptrUser)->slot), rs);
+        ((BlendAnimModel *)(HeldItemModels_GetModel(&sHeldItemModelBank, ((HeldItemModel *)p->ptrUser)->slot)))->onJointCalcPost((BlendAnimModel *)(rs));
     }
     rs->cbVecFunc[6] = (void *)HeldItemModels_OnJointCalcPre;
     rs->cbVecTiming[6] = 1;
@@ -528,7 +515,7 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
         if (flag == 0) {
             if (Unk_0205ddc8_In(code, 0x13a0, 0x13a7)) {
                 u32 f = CharaClothTexPool_GetOwnRef();
-                _ZN16CharaClothTexRef8loadItemEPtiii(f, code, a5, 0, 0);
+                ((CharaClothTexRef *)(f))->loadItem(code, a5, 0, 0);
                 u32 h = (u32)NNS_G3dGetTex((void *)CharaClothTexRef_GetBuffer(f));
                 u32 h2 = (u32)NNS_G3dGetTex((void *)s);
                 G3dRes_CopyTexByName(h, h2, (char *)"cloth", (char *)"myD");
@@ -538,7 +525,7 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
         HeldItemModels_RelocateTexture(&sHeldItemModelBank, id);
         u8 *slot;
         slot = (u8 *)HeldItemModels_GetModel(&sHeldItemModelBank, id);
-        _ZN11CachedModel11setFromFileEPv(slot, s);
+        ((CachedModel *)(slot))->setFromFile((void *)(s));
         s32 kind;
         kind = HeldItem_GetAnimId(code);
         if (kind == 0x2b)
@@ -556,8 +543,8 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
             HeldItemModels_LoadTexAnim(&sHeldItemModelBank, id, 0);
             u32 q = (u32)func_02106670(func_02106654(HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, id)), 0);
             u32 w = MODEL_AT_RESMDL(slot);
-            _ZN9ModelAnim11allocMatAnmEjPv(p, w, HeldItemModels_GetMatAnmHeap(&sHeldItemModelBank, id));
-            _ZN9ModelAnim4initEiiit(p, q, 1, 0x1000, 0);
+            ((ModelAnim *)(void *)(p))->allocMatAnm(w, (void *)(HeldItemModels_GetMatAnmHeap(&sHeldItemModelBank, id)));
+            ((ModelAnim *)(void *)(p))->init(q, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(p, (u32)((Model *)slot)->getRenderObj());
         }
         void *a2;
@@ -566,39 +553,39 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
         n = Heap_getFreeSize((u32)a2);
         ((void (*)(HeldItemModelBank *, u32, void *, u32))HeldItemModels_SetAnimBuffer)(&sHeldItemModelBank, id, Heap_AllocAligned(a2, n, 4), n);
         HeldItemModels_PlayAnim(&sHeldItemModelBank, id, kind, 0, 0);
-        _ZN9AnimModel10attachAnimEv(slot);
+        ((AnimModel *)(slot))->attachAnim();
         if (flag == 0)
-            _ZN5Model11setCallbackEiiiii(slot, (void (*)(void *))HeldItemModels_OnJointCalcPre, 6, 1, o, 0);
+            ((Model *)(slot))->setCallback((s32)((void (*)(void *))HeldItemModels_OnJointCalcPre), 6, 1, (s32)(o), 0);
         goto done;
     err:
         *HeldItemModels_GetItem(&sHeldItemModelBank, id) = 0xfff1;
     }
 done:
     if (Unk_0205ddc8_In(code, 0x1375, 0x1375)) {
-        _ZN10FishBobber6attachEjP9Characterj(&o->bobber, id, x, 1);
+        ((FishBobber *)(&o->bobber))->attach(id, (Character *)(x), 1);
     } else if (*code >= 0x1374 && *code <= 0x1374) {
-        _ZN10FishBobber6attachEjP9Characterj(&o->bobber, id, x, 0);
+        ((FishBobber *)(&o->bobber))->attach(id, (Character *)(x), 0);
     } else if ((*code >= 0x137a && *code <= 0x137a) || (*code >= 0x137b && *code <= 0x137b)) {
-        _ZN10FishBobber6attachEjP9Characterj(&o->bobber, id, x, 2);
+        ((FishBobber *)(&o->bobber))->attach(id, (Character *)(x), 2);
     } else {
-        _ZN10FishBobber6attachEjP9Characterj(&o->bobber, id, x, 3);
+        ((FishBobber *)(&o->bobber))->attach(id, (Character *)(x), 3);
     }
     if (Unk_0205ddc8_In(code, 0x1374, 0x1374) || (*code >= 0x1375 && *code <= 0x1375))
-        _ZN10FishBobber8setStateEi(&o->bobber, 1);
+        ((FishBobber *)(&o->bobber))->setState(1);
 }
 
 extern "C" void HeldItemModel_Release(HeldItemModel *o) {
-    _ZN10FishBobber6detachEv(&o->bobber);
+    ((FishBobber *)(&o->bobber))->detach();
     u32 id = o->slot;
     if (HeldItem_GetAnimId(HeldItemModels_GetItem(&sHeldItemModelBank, id)) != 0x2b) {
-        _ZN9AnimModel15detachJointAnimEv(HeldItemModels_GetModel(&sHeldItemModelBank, id));
+        ((AnimModel *)(HeldItemModels_GetModel(&sHeldItemModelBank, id)))->detachJointAnim();
         o->texAnim.anmObj = 0;
         o->texAnim.resMdl = 0;
     }
     HeldItemModels_SetTexAnim(&sHeldItemModelBank, id, 0);
     HeldItemModels_GetModel(&sHeldItemModelBank, id)->release();
     HeldItemModels_CancelTexUpload(&sHeldItemModelBank, id);
-    Heap_freeAll(HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id));
+    ((Heap *)(HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id)))->freeAll();
     HeldItemModels_SetAnimBuffer(&sHeldItemModelBank, id, 0, 0);
     HeldItemModels_SetTexAnimBuffer(&sHeldItemModelBank, id, 0, 0);
     HeldItemModels_SetMatAnmHeap(&sHeldItemModelBank, id, 0);
@@ -616,23 +603,23 @@ extern "C" void HeldItemModel_PlayAnim(HeldItemModel *o, s32 a, u32 b, u32 c) {
     ((void (*)(HeldItemModelBank *, u32, u32, u32, u32))HeldItemModels_PlayAnim)(&sHeldItemModelBank, o->slot, a, b, c);
     switch (a) {
     case 0x13:
-        _ZN10FishBobber8setStateEi(&o->bobber, 1);
+        ((FishBobber *)(&o->bobber))->setState(1);
         break;
     case 0x15:
-        _ZN10FishBobber8setStateEi(&o->bobber, 3);
+        ((FishBobber *)(&o->bobber))->setState(3);
         break;
     case 0x16:
-        _ZN10FishBobber8setStateEi(&o->bobber, 2);
+        ((FishBobber *)(&o->bobber))->setState(2);
         break;
     case 0x18:
-        _ZN10FishBobber8setStateEi(&o->bobber, 6);
+        ((FishBobber *)(&o->bobber))->setState(6);
         break;
     case 0x19:
     case 0x1b:
-        _ZN10FishBobber8setStateEi(&o->bobber, 7);
+        ((FishBobber *)(&o->bobber))->setState(7);
         break;
     case 0x1a:
-        _ZN10FishBobber8setStateEi(&o->bobber, 8);
+        ((FishBobber *)(&o->bobber))->setState(8);
         break;
     case 0x28:
         HeldItemModels_PlayTexAnim(&sHeldItemModelBank, o->slot, 1, c);
@@ -651,14 +638,14 @@ extern "C" void HeldItemModel_Update(HeldItemModel *o) {
         HeldItemModels_PollTexUpload(&sHeldItemModelBank, id);
         s32 t = HeldItem_GetAnimId(HeldItemModels_GetItem(&sHeldItemModelBank, id));
         if (t != 0x2b) {
-            _ZN14BlendAnimModel9stepBlendEv(HeldItemModels_GetModel(&sHeldItemModelBank, id));
+            ((BlendAnimModel *)(HeldItemModels_GetModel(&sHeldItemModelBank, id)))->stepBlend();
             if (t == 0x27) {
-                _ZN13AnimFrameCtrl4stepEv(&o->texAnim);
+                ((AnimFrameCtrl *)(&o->texAnim))->step();
                 *(u32 *)o->texAnim.anmObj = o->texAnim.curFrame;
             }
         }
     }
-    _ZN10FishBobber6updateEv(&o->bobber);
+    ((FishBobber *)(&o->bobber))->update();
 }
 
 extern "C" void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src) {
@@ -677,7 +664,7 @@ extern "C" void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src) {
         A.x = t0;
         A.y = t0;
         A.z = t0;
-        _ZN9AnimModel12drawAnimatedEPv(slot, &A);
+        ((AnimModel *)(slot))->drawAnimated((void *)(void *)(&A));
         if (Unk_0205ddc8_In(HeldItemModels_GetItem(&sHeldItemModelBank, id), 0x1374, 0x1374) ||
             Unk_0205ddc8_In(HeldItemModels_GetItem(&sHeldItemModelBank, id), 0x1375, 0x1375)) {
             HeldItemModel_GetJointMtx(&D, o, 2);
@@ -697,7 +684,7 @@ extern "C" void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src) {
             G.x = C.x;
             G.y = C.y;
             G.z = C.z;
-            _ZN10FishBobber12setTargetPosEP7VecFx32(&o->bobber, &G);
+            ((FishBobber *)(&o->bobber))->setTargetPos(&G);
             break;
         }
     }

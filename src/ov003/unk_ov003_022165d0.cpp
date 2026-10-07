@@ -71,9 +71,7 @@ void *Gfx3d_CopyTex(void *p, void *a);
 void Mem_Free(void *p);
 void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
-void _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, s32 e);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
-BOOL _ZN13BuildingActor10getDoorPosEP7VecFx32Ps(void *self, void *v, s16 *ang);
 
 BuildingActor *BuildingList_FindByItem(u32 a);
 u32 Field_GetStructureTexSuffix();
@@ -81,7 +79,6 @@ void *PlayerHouse_Create();
 u8 PlayerHouse_GetTexIndex();
 char *PlayerHouse_GetTexPath();
 }
-#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 
 class PlayerHouse : public BuildingActor {
 public:
@@ -121,10 +118,10 @@ BOOL PlayerHouse::initBuilding() {
     s16 ang;
     loadHouseTex();
     bindHouseTex();
-    if (_ZN13BuildingActor10getDoorPosEP7VecFx32Ps(this, &v, &ang)) {
+    if (((BuildingActor *)(this))->getDoorPos((VecFx32 *)(&v), &ang)) {
         v.x -= 0x2000;
         v.z += 0x1000;
-        Actor_spawn(0x24, 0x501d, &v, 0, 0);
+        Actor::spawn((void *)(0x24), (void *)(0x501d), &v, (void *)(0), (void *)(0));
     }
     return TRUE;
 }

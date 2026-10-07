@@ -3,17 +3,17 @@
 #include "item/Letter.h"
 #include "game/Loc488.h"
 #include "item/ItemName.h"
+#include "item/LetterView.h"
+#include "player/PlayerData.h"
 
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData10getCatalogEv(void *a);
 BOOL Catalog_HasItem(void *a, void *b);
 u8 *Random_GlobalBelow(s32 a);
 void MailText_SetSlot(s32 a, void *b);
 u32 _ZN10PlayerData11getPlayerIdEv(void *a);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
-void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
 void LetterDelivery_QueueOutgoing(void *a, s32 b);
 void Snowman_SendLetter(u32 a);
 extern u8 gLooseSnowballs[];
@@ -32,7 +32,7 @@ extern "C" void Snowman_SendLetter(u32 idx) {
             ItemName s(&l.b);
             MailText_SetSlot(1, &s);
             Letter_ComposeFromMail(&big, &l, "sp_npc_snowman", &data_020e2eb8, &data_020e2ebc, _ZN10PlayerData11getPlayerIdEv(obj));
-            _ZN10LetterView10setPresentEtj(&big, l.b, 1);
+            ((LetterView *)(&big))->setPresent(l.b, 1);
             LetterDelivery_QueueOutgoing(&big, 0);
         }
     }
@@ -44,14 +44,14 @@ extern "C" void Snowman_SendPrizeLetter() {
         u32 count = 0;
         for (u32 i = 0; i < 13; i++) {
             u16 t = sSnowmanPrizeItems[i];
-            if (!Catalog_HasItem(_ZN10PlayerData10getCatalogEv(obj), &t)) count++;
+            if (!Catalog_HasItem(((PlayerData *)(obj))->getCatalog(), &t)) count++;
         }
         if (count) {
             u32 r = (u32)Random_GlobalBelow(count);
             u32 c = 0;
             for (u32 i = 0; i < 13; i++) {
                 u16 t = sSnowmanPrizeItems[i];
-                if (!Catalog_HasItem(_ZN10PlayerData10getCatalogEv(obj), &t)) {
+                if (!Catalog_HasItem(((PlayerData *)(obj))->getCatalog(), &t)) {
                     if (c == r) {
                         Snowman_SendLetter(i);
                         return;

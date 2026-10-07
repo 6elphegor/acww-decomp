@@ -3,6 +3,9 @@
 #include "types.h"
 #include "nitro/gxoam.h"
 #include "menu/Keyboard.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "ui/LabelString.h"
 
 
 struct KeyboardTabCells {
@@ -50,14 +53,11 @@ s32 Text_SplitLines(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, 
 s32 MenuCtrl_GetKeyboardPageMode(s32 a);
 s32 MenuCtrl_GetKeyboardPage(void);
 s32 String_Load2dMenu(void *a, s32 b);
-s32 _ZN11LabelString13redrawAlignedEii(void *a, s32 b, s32 c);
-s32 _ZN11LabelString16createSmallLabelEjjjhhi(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
 s32 Oam_GetObjY(void *p);
 s32 Oam_GetObjX(void *p);
 s32 Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 s32 Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-s32 _ZN8PlayerId9getGenderEv(s32 p);
 s32 PlayerData_GetCurrent(void);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *a, void *b, s32 c, s32 d, s32 e);
 s32 Heap_Free(u32 heap, void *p);
@@ -71,8 +71,6 @@ void Snd_SetKeySeMode(s32 a);
 void Snd_PlaySe(s32 a);
 void MenuCtrl_SetKeyboardPageMode(s32 a, s32 b);
 void MenuCtrl_SetKeyboardPage(s32 a);
-void _ZN11LabelString12destroyLabelEv(void *a);
-s32 _ZN10PlayerData11getPlayerIdEv(s32 p);
 void _ZN10BgVramTask12requestCharsEjhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10BgVramTask6cancelEv(void *a);
 void MI_CpuCopy8(void *a, void *b, s32 c);
@@ -1247,7 +1245,7 @@ void Keyboard_Init(Keyboard *s, s32 a)
     r->tab1Attr2 = (r->tab1Attr2 & ~0x3ff) | 0x107;
     s32 pd;
     if ((pd = PlayerData_GetCurrent()) != 0) {
-        if (_ZN8PlayerId9getGenderEv(_ZN10PlayerData11getPlayerIdEv(pd)) == 0) {
+        if (((PlayerId *)(((PlayerData *)(pd))->getPlayerId()))->getGender() == 0) {
             Snd_SetKeySeMode(0);
             return;
         }
@@ -1259,8 +1257,8 @@ void Keyboard_Shutdown(Keyboard *s)
 {
     _ZN10BgVramTask6cancelEv(HOST_AT(s, 0x22f4, bgTasks[0], 0));
     _ZN10BgVramTask6cancelEv(HOST_AT(s, 0x2318, bgTasks[1], 0));
-    _ZN11LabelString12destroyLabelEv(HOST_AT(s, 0x233c, labels[0], 0));
-    _ZN11LabelString12destroyLabelEv(HOST_AT(s, 0x237c, labels[1], 0));
+    ((LabelString *)(HOST_AT(s, 0x233c, labels[0], 0)))->destroyLabel();
+    ((LabelString *)(HOST_AT(s, 0x237c, labels[1], 0)))->destroyLabel();
     MenuCtrl_SetKeyboardPage(s->page);
 }
 
@@ -1634,11 +1632,11 @@ void Keyboard_LoadObjGfx(Keyboard *s)
     Gfx2d_LoadCharFile((void *)"menu/chat2/b_cht_obj_0.bch", h, 8, 0xc0, 0xc0, 0x13f);
     Gfx2d_LoadCharFile((void *)"menu/chat2/b_cht_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
     String_Load2dMenu(s->labels, 0x9c);
-    _ZN11LabelString16createSmallLabelEjjjhhi(s->labels, 8, 0xd8, 4, 0xa, 0, 0);
-    _ZN11LabelString13redrawAlignedEii(s->labels, 1, 0);
+    ((LabelString *)(s->labels))->createSmallLabel(8, 0xd8, 4, 0xa, 0, 0);
+    ((LabelString *)(s->labels))->redrawAligned(1, 0);
     String_Load2dMenu(&s->labels[1], 0x9d);
-    _ZN11LabelString16createSmallLabelEjjjhhi(&s->labels[1], 8, 0xf8, 4, 0xa, 0, 0);
-    _ZN11LabelString13redrawAlignedEii(&s->labels[1], 1, 0);
+    ((LabelString *)(&s->labels[1]))->createSmallLabel(8, 0xf8, 4, 0xa, 0, 0);
+    ((LabelString *)(&s->labels[1]))->redrawAligned(1, 0);
 }
 
 void Keyboard_LoadEmotionIcons(Keyboard *s)

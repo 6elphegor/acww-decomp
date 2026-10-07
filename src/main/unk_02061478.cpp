@@ -6,6 +6,7 @@
 #include "talk/EncodedStringBase.h"
 #include "talk/EncodedString.h"
 #include "talk/EncodedString16Buf.h"
+#include "game/InfoTableSet.h"
 
 
 
@@ -60,17 +61,7 @@ void ItemInfoTables_FreeIndoor(void *);
 void ItemInfoTables_LoadIndoor(void *, s32);
 s32 ItemInfoTables_Close(void *);
 s32 ItemInfoTables_Open(void *);
-void *_ZN12InfoTableSet6getDmaEv(void *);
-void *_ZN12InfoTableSet9getIndoorEv(void *);
-void *_ZN12InfoTableSet9getAlwaysEv(void *);
-void _ZN12InfoTableSet10freeIndoorEv(void *);
-void _ZN12InfoTableSet10loadIndoorEi(void *, s32);
-s32 _ZN12InfoTableSet5closeEv(void *);
-BOOL _ZN12InfoTableSet4openEPviS0_iS0_ii(void *, const char *, s32, const char *, s32, const char *, s32, s32);
-u8 *_ZN10RecordFile9getRecordEj(void *, u32);
 s32 _ZN10RecordFile5closeEv(void *);
-s32 _ZN10RecordFile7loadAllEv(void *);
-s32 _ZN10RecordFile4openEPvii(void *, const char *, s32, s32);
 void func_0206d964(void *);
 void func_0206d974(void *);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
@@ -323,7 +314,7 @@ static inline BOOL Unk_020622cc_IsFree(u16 *g, u16 *t) {
 static inline u8 *Unk_02061e0c_Lookup(u32 v) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    return (u8 *)_ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getAlwaysEv((&gItemInfo)), i);
+    return (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getAlways()))->getRecord(i);
 }
 
 static inline BOOL Unk_02061e0c_InRange(u16 *p) {
@@ -346,7 +337,7 @@ static inline u16 Unk_02061e0c_Conv(u16 *p) {
 static inline u8 *Unk_02062024_Lookup(u32 v) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    return (u8 *)_ZN10RecordFile9getRecordEj(_ZN12InfoTableSet6getDmaEv((&gItemInfo)), i);
+    return (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getDma()))->getRecord(i);
 }
 
 extern "C" u16 *ItemInfo_GetName(u16 *p);
@@ -354,7 +345,7 @@ extern "C" u16 *ItemInfo_GetName(u16 *p);
 static inline BOOL Unk_0206198c_Tail(u32 v, u32 sh) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = _ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getAlwaysEv((&gItemInfo)), i);
+    u8 *r = ((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getAlways()))->getRecord(i);
     if (r) return (r[9] >> sh) & 1 ? TRUE : FALSE;
     return FALSE;
 }
@@ -370,35 +361,35 @@ BOOL EncodedString16Buf::copyTo(u8 *out, s32 n) {
 ItemInfoTables::ItemInfoTables() {}
 
 ItemInfoTables::~ItemInfoTables() {
-    _ZN12InfoTableSet5closeEv(this);
-    _ZN10RecordFile5closeEv(&series);
+    ((InfoTableSet *)(this))->close();
+    ((RecordFile *)(&series))->close();
 }
 
 s32 ItemInfoTables_Open(void *o) {
     BOOL ok;
     sHoldableItemCount = 0;
     ok = TRUE;
-    ok = (ok | _ZN12InfoTableSet4openEPviS0_iS0_ii(o, "/item_info/always.bin", 0xc, "/item_info/indoor.bin", 4, "/item_info/dma.bin", 0x14, 0x600)) ? TRUE : FALSE;
+    ok = (ok | ((InfoTableSet *)(o))->open((void *)(void *)("/item_info/always.bin"), 0xc, (void *)(void *)("/item_info/indoor.bin"), 4, (void *)(void *)("/item_info/dma.bin"), 0x14, 0x600)) ? TRUE : FALSE;
     if (ok) {
         ItemInfo_CountHoldable();
         ItemInfo_CountFlowerItems();
         ItemInfo_CountClass1dHeadwear();
     }
-    ok = (ok | _ZN10RecordFile4openEPvii(&((ItemInfoTables *)o)->series, "/item_info/series.bin", 0x14, 0x80)) ? TRUE : FALSE;
+    ok = (ok | ((RecordFile *)(&((ItemInfoTables *)o)->series))->open((void *)(void *)("/item_info/series.bin"), 0x14, 0x80)) ? TRUE : FALSE;
     if (ok) {
-        _ZN10RecordFile7loadAllEv(&((ItemInfoTables *)o)->series);
+        ((RecordFile *)(&((ItemInfoTables *)o)->series))->loadAll();
     }
     return ok;
 }
 
 s32 ItemInfoTables_Close(void *o) {
-    _ZN12InfoTableSet5closeEv(o);
+    ((InfoTableSet *)(o))->close();
     return _ZN10RecordFile5closeEv(&((ItemInfoTables *)o)->series);
 }
 
-void ItemInfoTables_LoadIndoor(void *p, s32 x) { _ZN12InfoTableSet10loadIndoorEi(p, x); }
+void ItemInfoTables_LoadIndoor(void *p, s32 x) { ((InfoTableSet *)(p))->loadIndoor(x); }
 
-void ItemInfoTables_FreeIndoor(void *p) { _ZN12InfoTableSet10freeIndoorEv(p); }
+void ItemInfoTables_FreeIndoor(void *p) { ((InfoTableSet *)(p))->freeIndoor(); }
 
 void ItemInfo_CountHoldable() {
     u16 i;
@@ -536,7 +527,7 @@ s32 ItemInfo_GetClass(u16 *p) {
 s32 ItemInfo_GetUnk07(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = (u8 *)_ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getAlwaysEv((&gItemInfo)), i);
+    u8 *r = (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getAlways()))->getRecord(i);
     if (r) return r[7];
     return 0;
 }
@@ -545,7 +536,7 @@ s32 ItemInfo_GetSeason(u16 *p) {
     if (ItemInfo_GetKind(p) == 5) {
         u32 i = *p & 0xfff;
         if (i >= 0x56e) i = 0x56d;
-        u8 *r = (u8 *)_ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getAlwaysEv((&gItemInfo)), i);
+        u8 *r = (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getAlways()))->getRecord(i);
         if (r) return r[8];
         return 0;
     }
@@ -635,7 +626,7 @@ extern "C" BOOL ItemInfo_TestFlag4(u16 *p) {
 extern "C" u32 ItemInfo_GetIndoorUnk1(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = _ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getIndoorEv((&gItemInfo)), i);
+    u8 *r = ((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getIndoor()))->getRecord(i);
     if (r) return r[1];
     return 0;
 }
@@ -643,14 +634,14 @@ extern "C" u32 ItemInfo_GetIndoorUnk1(u16 *p) {
 extern "C" u32 ItemInfo_GetIndoorUnk0(u16 *p) {
     u32 i = *p & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    u8 *r = _ZN10RecordFile9getRecordEj(_ZN12InfoTableSet9getIndoorEv((&gItemInfo)), i);
+    u8 *r = ((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getIndoor()))->getRecord(i);
     if (r) return r[0];
     return 0;
 }
 
 extern "C" u32 Series_GetType(s32 i) {
     if (i < 0x4a) {
-        u8 *r = _ZN10RecordFile9getRecordEj((&gItemInfo.series), i);
+        u8 *r = ((RecordFile *)((&gItemInfo.series)))->getRecord(i);
         if (r) return *r;
     }
     return 3;
@@ -658,7 +649,7 @@ extern "C" u32 Series_GetType(s32 i) {
 
 extern "C" u32 Series_GetName(s32 i) {
     if (i < 0x4a) {
-        u8 *r = _ZN10RecordFile9getRecordEj((&gItemInfo.series), i);
+        u8 *r = ((RecordFile *)((&gItemInfo.series)))->getRecord(i);
         if (r) return (u32)r + 1;
     }
     return 0;

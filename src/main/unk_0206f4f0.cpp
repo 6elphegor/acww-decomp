@@ -1,5 +1,8 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "net/CommManager.h"
+#include "save/TownExchangeRecord.h"
+#include "ui/HudController.h"
 
 // U119: network message handlers 0x0206f4f0-0x0206f804 (the handler table sCommSubHandlers is in the next unit)
 
@@ -19,8 +22,6 @@ extern u32 data_020c7c1c;
 
 s32 Snd_PlaySe(u32 a);
 void *Hud_GetCountdown();
-s32 _ZN12HudCountdown5startEii(void *a, u32 b, u32 c);
-BOOL _ZN12HudCountdown9isStoppedEv(void *a);
 s32 MI_CpuCopy8(void *src, void *dst, u32 n);
 void Melody_Pack(void *a, void *b);
 void Melody_ApplyEditPattern();
@@ -29,15 +30,10 @@ void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
 BOOL LetterDelivery_HasFreeOutgoingSlot(void);
-void _ZN11CommManager11beginRecordEv(void *p);
-void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
-void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
 void *BottleLetterRecord_GetLetter(void *p);
 void Letter_Clear(void *self);
 void *TownExchange_GetLetter(void *p);
 void Letter_Copy(void *p, void *q);
-void _ZN18TownExchangeRecord12resetCounterEv(void *p);
-void _ZN18TownExchangeRecord10setUnkFlagEj(void *p, s32 v);
 void NetBuf_UnpackPair20(void *a, void *b, void *c);
 s32 FishCatch_StartRelease(u8 a, u32 b, void *c);
 s32 BottleThrow_SetTarget(void *a, u8 b);
@@ -140,8 +136,8 @@ extern "C" void CommSub_RecvBottleLetter(u8 *p) {
     u8 *const g = data_021e7f8c;
     void *t = TownExchange_GetLetter(g);
     Letter_Copy(t, buf);
-    _ZN18TownExchangeRecord12resetCounterEv(g);
-    _ZN18TownExchangeRecord10setUnkFlagEj(g, 0);
+    ((TownExchangeRecord *)(g))->resetCounter();
+    ((TownExchangeRecord *)(g))->setUnkFlag(0);
     Heap_Free(heap, buf);
 }
 
@@ -155,9 +151,9 @@ extern "C" void CommSub_SetPostReply(u8 v) { sCommSubPostReply = v; }
 
 extern "C" void CommSub_Send(u32 a, u32 b, ...) {
     void *g = gCommManager;
-    _ZN11CommManager11beginRecordEv(g);
-    _ZN11CommManager11writeRecordEPhj(g, &a, 1);
-    _ZN11CommManager9endRecordEjj(g, 0x16, b);
+    ((CommManager *)(g))->beginRecord();
+    ((CommManager *)(g))->writeRecord((u8 *)(&a), 1);
+    ((CommManager *)(g))->endRecord(0x16, b);
 }
 
 extern "C" void CommSub_RecvPostLetter(u8 *p, u32 code) {
@@ -192,18 +188,18 @@ extern "C" void HudCountdown_StartWithSe(u32 x) {
         Snd_PlaySe(0x66);
     }
     void *r = Hud_GetCountdown();
-    _ZN12HudCountdown5startEii(r, sCommCountdownKinds[x], 0);
+    ((HudCountdown *)(r))->start(sCommCountdownKinds[x], 0);
 }
 
 extern "C" void CommSub_RecvCountdownRequest(u8 *p) {
     s32 i = p[0] - 0xd;
     if (i == 0) {
-        if (!_ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
+        if (!((HudCountdown *)(Hud_GetCountdown()))->isStopped()) {
             HudCountdown_StartWithSe(i);
             CommSub_Send(0x12, 4);
         }
     } else {
-        if (_ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
+        if (((HudCountdown *)(Hud_GetCountdown()))->isStopped()) {
             HudCountdown_StartWithSe(i);
             CommSub_Send((u8)(i + 0x12), 4);
         }

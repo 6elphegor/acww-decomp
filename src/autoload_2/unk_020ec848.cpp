@@ -191,7 +191,7 @@ extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
     if (a != 2) return;
     TreeNode_Detach(&gProcTree, &self->treeNode);
     List_Remove(&gTaskDeleteList, &self->executeNode);
-    if (self->procHeap != NULL) Heap_destroy2(self->procHeap);
+    if (self->procHeap != NULL) (self->procHeap)->destroy2();
     if (self->seq != NULL) CmdSeq_Undo(self->seq);
     delete self;
 }
@@ -263,20 +263,20 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         if (h != NULL) {
             BOOL ok;
             u32 f = h->regionStart & 0x10;
-            if (f) Heap_alloc(h, 0x10, 0x10);
+            if (f) (h)->alloc(0x10, 0x10);
             ok = self->allocResources();
             if (f == 0) {
-                if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
+                if ((h)->alloc(0x10, 0x10) == NULL) ok = FALSE;
             }
             Heap_RestoreCurrent();
             if (ok == 0) {
-                Heap_destroy(h);
+                (h)->destroy();
                 h = NULL;
             } else {
                 need = (u32)h->regionSize;
-                need = (need - Heap_getFreeSize(h) + 31) & ~31;
+                need = (need - (h)->getFreeSize() + 31) & ~31;
                 if (size == need) {
-                    Heap_adjust(h);
+                    (h)->adjust();
                     self->procHeap = h;
                     return TRUE;
                 }
@@ -288,51 +288,51 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         BOOL ok;
         h = FrameHeap_CreateAsCurrent(-1, parent);
         f = h->regionStart & 0x10;
-        if (f) Heap_alloc(h, 0x10, 0x10);
+        if (f) (h)->alloc(0x10, 0x10);
         ok = self->allocResources();
         if (f == 0) {
-            if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
+            if ((h)->alloc(0x10, 0x10) == NULL) ok = FALSE;
         }
         Heap_RestoreCurrent();
         if (ok == 0) {
-            Heap_destroy(h);
+            (h)->destroy();
             ProcBase_RequestDelete(self);
             return FALSE;
         }
         need = (u32)h->regionSize;
-                need = (need - Heap_getFreeSize(h) + 31) & ~31;
+                need = (need - (h)->getFreeSize() + 31) & ~31;
     }
     if (h != NULL) {
         u32 used = (u32)h->regionSize;
         h2 = NULL;
-        used -= Heap_getFreeSize(h);
-        if (((used + 15) & ~15) + 0x30 < Heap_getFreeSize(parent)) {
+        used -= (h)->getFreeSize();
+        if (((used + 15) & ~15) + 0x30 < (parent)->getFreeSize()) {
             h2 = FrameHeap_CreateAsCurrent(need, parent);
         }
         if (h2 != NULL) {
             if (h2 < h) {
                 BOOL r;
-                Heap_destroy(h);
+                (h)->destroy();
                 h = NULL;
                 r = self->allocResources();
                 Heap_RestoreCurrent();
                 if (r == 0) {
-                    Heap_destroy(h2);
+                    (h2)->destroy();
                     h2 = h;
                 }
             } else {
                 Heap_RestoreCurrent();
-                Heap_destroy(h2);
+                (h2)->destroy();
                 h2 = NULL;
             }
         }
         if (h2 != NULL) {
-            Heap_adjust(h2);
+            (h2)->adjust();
             self->procHeap = h2;
             return TRUE;
         }
         if (h != NULL) {
-            Heap_adjust(h);
+            (h)->adjust();
             self->procHeap = h;
             return TRUE;
         }
@@ -348,15 +348,15 @@ extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *paren
         if (h != NULL) {
             BOOL ok;
             u32 f = h->regionStart & 0x10;
-            if (f) Heap_alloc(h, 0x10, 0x10);
+            if (f) (h)->alloc(0x10, 0x10);
             ok = self->allocResources();
             if (f == 0) {
-                if (Heap_alloc(h, 0x10, 0x10) == NULL) ok = FALSE;
+                if ((h)->alloc(0x10, 0x10) == NULL) ok = FALSE;
             }
-            Heap_getFreeSize(h);
+            (h)->getFreeSize();
             Heap_RestoreCurrent();
             if (ok == 0) {
-                Heap_destroy(h);
+                (h)->destroy();
             } else {
                 self->procHeap = h;
                 return TRUE;
@@ -372,14 +372,14 @@ extern "C" BOOL _ZN8ProcBase14allocResourcesEv(ProcBase *self) {
 }
 
 extern "C" void *_ZN8ProcBasenwEm(u32 size) {
-    void *p = Heap_alloc(gProcHeap, size, -4);
+    void *p = (gProcHeap)->alloc(size, -4);
     if (p == NULL) return NULL;
     MI_CpuFill8(p, 0, size);
     return p;
 }
 
 extern "C" void _ZN8ProcBasedlEPv(void *p) {
-    Heap_free(gProcHeap, p);
+    (gProcHeap)->free(p);
 }
 
 extern "C" void ProcBase_StartCreate(ProcBase *self) {

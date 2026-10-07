@@ -85,15 +85,11 @@ public:
 };
 
 extern "C" {
-void _ZN6Camera11dragFocusToEP7VecFx32(void *self, VecFx32 *v);
 void _ZN6Camera14setLookAtOrbitEP7VecFx32iii(void *self, VecFx32 *v, s32 a, s32 b, s32 c);
 void _ZN6Camera11updateBlendEv(void *self);
-void _ZN6Camera7setFovyEi(void *self, s32 a);
 s32 _ZN6Camera11getDistanceEv(void *self);
 s16 _ZN6Camera6getYawEv(void *self);
 s16 _ZN6Camera8getPitchEv(void *self);
-void _ZN6Camera14setBlendPresetEi(void *self, s32 a);
-void _ZN6Camera8loadPoseEiP10CameraPose(void *self, s32 a, s32 b);
 }
 
 #define R_TAIL(V) \
@@ -136,8 +132,8 @@ extern "C" s32 data_ov068_0226fc40 = 1;
 extern "C" DebugColor data_ov068_02270fcc(0x14, 0x18, 0x18, 0x1f);
 
 BOOL CameraEventModes::initModeFollowTarget() {
-    _ZN6Camera8loadPoseEiP10CameraPose(this, 0, 0);
-    _ZN6Camera14setBlendPresetEi(this, 0);
+    ((Camera *)(this))->loadPose(0, (CameraPose *)(0));
+    ((Camera *)(this))->setBlendPreset(0);
     Camera_FinishBlend();
     return TRUE;
 }
@@ -154,15 +150,15 @@ void CameraEventModes::updateModeFollowTarget() {
         d.y = pv->y;
         d.z = pv->z;
     }
-    _ZN6Camera11dragFocusToEP7VecFx32(this, &d);
+    ((Camera *)(this))->dragFocusTo(&d);
     VecFx32 v;
     R_TAIL(v)
 }
 
 BOOL CameraEventModes::initModeTownTour() {
     u16 e[2];
-    _ZN6Camera8loadPoseEiP10CameraPose(this, 0, 0);
-    _ZN6Camera14setBlendPresetEi(this, 0);
+    ((Camera *)(this))->loadPose(0, (CameraPose *)(0));
+    ((Camera *)(this))->setBlendPreset(0);
     Camera_FinishBlend();
     void *g = gSceneBlockMap;
     s32 a = 0, b = 0, c = 0, d = 0;
@@ -262,7 +258,7 @@ void CameraEventModes::updateModeTownTour() {
 }
 
 BOOL CameraEventModes::initMode13() {
-    _ZN6Camera8loadPoseEiP10CameraPose(this, 0x1a, 0);
+    ((Camera *)(this))->loadPose(0x1a, (CameraPose *)(0));
     Camera_FinishBlend();
     return TRUE;
 }
@@ -274,20 +270,20 @@ void CameraEventModes::updateMode13() {
     if (p) {
         d = *p;
     }
-    _ZN6Camera11dragFocusToEP7VecFx32(this, &d);
+    ((Camera *)(this))->dragFocusTo(&d);
     VecFx32 v;
     R_TAIL(v)
 }
 
 BOOL CameraEventModes::initModeSway() {
-    _ZN6Camera8loadPoseEiP10CameraPose(this, 0x10, 0);
-    _ZN6Camera14setBlendPresetEi(this, 0);
+    ((Camera *)(this))->loadPose(0x10, (CameraPose *)(0));
+    ((Camera *)(this))->setBlendPreset(0);
     if (prevMode == 2) {
         Camera_StartBlend();
     } else {
         Camera_FinishBlend();
     }
-    _ZN6Camera7setFovyEi(this, 0x1c71);
+    ((Camera *)(this))->setFovy(0x1c71);
     Camera_SetSwayPattern((Camera *)this, 0);
     return TRUE;
 }

@@ -1,19 +1,17 @@
 #include "uptr.h"
 #include "types.h"
 #include "save/TownExchangeRecord.h"
+#include "game/ConstellationRecord.h"
+#include "item/Letter.h"
 
 extern "C" {
 s32 func_02065578();
 void Letter_Clear(void *p);
-void _ZN6LetterD1Ev(void *p);
-void _ZN6LetterC1Ev(void *p);
 void LostChildRecord_Destruct(void *p);
 void LostChildRecord_Construct(void *p);
 void VillagerTransfer_DestructVillager(void *p);
 void VillagerTransfer_ConstructVillager(void *p);
 void ConstellationRecord_Clear(void *p);
-void _ZN19ConstellationRecordD1Ev(void *p);
-void _ZN19ConstellationRecordC1Ev(void *p);
 void MI_CpuFill8(void *p, s32 v, u32 n);
 }
 
@@ -37,8 +35,8 @@ extern "C" void *TownExchange_GetForAid(s32 i);
 extern "C" void *TownExchange_GetRemote(s32 i);
 
 TownExchangeRecord::TownExchangeRecord() {
-    _ZN6LetterC1Ev(this);
-    _ZN19ConstellationRecordC1Ev(HOST_AT(this, 0xf4, unk_0f4, 0));
+    new (this) Letter();
+    new (HOST_AT(this, 0xf4, unk_0f4, 0)) ConstellationRecord();
     VillagerTransfer_ConstructVillager(HOST_AT(this, 0x13c, villager[0], 0));
     LostChildRecord_Construct(HOST_AT(this, 0x83e, lostChild[0], 0));
 }
@@ -46,8 +44,8 @@ TownExchangeRecord::TownExchangeRecord() {
 TownExchangeRecord::~TownExchangeRecord() {
     LostChildRecord_Destruct(HOST_AT(this, 0x83e, lostChild[0], 0));
     VillagerTransfer_DestructVillager(HOST_AT(this, 0x13c, villager[0], 0));
-    _ZN19ConstellationRecordD1Ev(HOST_AT(this, 0xf4, unk_0f4, 0));
-    _ZN6LetterD1Ev(this);
+    ((ConstellationRecord *)(HOST_AT(this, 0xf4, unk_0f4, 0)))->~ConstellationRecord();
+    ((Letter *)(this))->Letter::~Letter();
 }
 
 extern "C" void TownExchange_InitNop() {}

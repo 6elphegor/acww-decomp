@@ -13,6 +13,10 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
+#include "save/MuseumData.h"
+#include "ui/HandCursor.h"
+#include "ui/ScrollKnob.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -84,7 +88,6 @@ extern u8 gTouchCurX;
 extern void *gCurrentHeap;
 DonationMenu *DonationMenu_Create();
 
-void _ZN9MsgString4copyEPS_(void *self, void *o);
 void String_FormatNumberWrapper(LabelString *w, s32 a, s32 b, s32 c, s32 d, s32 e);
 void String_Load2dMenu(LabelString *w, s32 a);
 void MenuCtrl_SetResult(s32 a);
@@ -303,7 +306,7 @@ BOOL DonationMenu::onCreate() {
 }
 
 BOOL DonationMenu::onDelete() {
-    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -313,12 +316,12 @@ BOOL DonationMenu::onDraw() {
     u8 *p;
     s32 y;
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&cursor);
+        ((MenuCursorBase *)(&cursor))->drawWrapped();
     }
     if (!testFlags(1)) {
         return FALSE;
     }
-    MenuBottomButtons_drawAt(&bottomButtons, getSlideOffsetY());
+    ((MenuBottomButtons *)(&bottomButtons))->drawAt(getSlideOffsetY());
     y = slideY + 0x60;
     if (scrollMax > 0) {
         MenuScrollKnob *q = &scrollKnob;
@@ -394,7 +397,7 @@ void DonationMenu::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    MenuBottomButtons_setLayoutSingle05(&bottomButtons, 0x65);
+    ((MenuBottomButtons *)(&bottomButtons))->setLayoutSingle05(0x65);
     setTransitionState(1);
 }
 
@@ -407,7 +410,7 @@ void DonationMenu::stateOpening() {
 }
 
 void DonationMenu::stateClose() {
-    MenuLauncher_setNextRequest(ProcBase_GetParent(this), 0x44, 1);
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->setNextRequest(0x44, 1);
     beginSubSlideOut(0xa, 0, 0, 0x28);
     updateLayerSlide();
     setTransitionState(3);
@@ -443,12 +446,12 @@ void DonationMenu::initDonation() {
     buildPaintingList();
     buildFishList();
     buildInsectList();
-    MenuScrollKnob_show(&scrollKnob);
+    ((MenuScrollKnob *)(&scrollKnob))->show();
 }
 
 void DonationMenu::releaseResources() {
     resetTextLabels();
-    MenuBottomButtons_freeTexts(&bottomButtons);
+    ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
     BgVramTask_cancel(&vramTasks[0]);
     BgVramTask_cancel(&vramTasks[1]);
     BgVramTask_cancel(&vramTasks[2]);
@@ -467,7 +470,7 @@ void DonationMenu::postInputUpdate() {
 
 void DonationMenu::preStateUpdate() {
     resetTextLabels();
-    MenuBottomButtons_freeTexts(&bottomButtons);
+    ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
     BgVramTask_cancel(&vramTasks[0]);
     BgVramTask_cancel(&vramTasks[1]);
     BgVramTask_cancel(&vramTasks[2]);
@@ -478,7 +481,7 @@ void DonationMenu::postStateUpdate() {
     updateTabSwitch();
     updateScrollAnimation();
     flushDirty();
-    MenuScrollKnob_updateRelease(&scrollKnob);
+    ((MenuScrollKnob *)(&scrollKnob))->updateRelease();
 }
 
 void DonationMenu::setupBgLayers() {
@@ -513,7 +516,7 @@ void DonationMenu::updateTouch() {
         return;
     }
     if (Both()) {
-        if (MenuBottomButtonsBody_isTouched(&bottomButtons, 6)) {
+        if (((MenuBottomButtonsBody *)(&bottomButtons))->isTouched(6)) {
             startQuit();
         } else {
             s32 x = gTouchCurX;
@@ -525,7 +528,7 @@ void DonationMenu::updateTouch() {
                 if (tryGrabKnob(x, y)) {
                     setMainState(1);
                 } else if (x >= 0xe4 && x <= 0xec && y >= 0x15 && y <= 0x8d) {
-                    MenuScrollKnob_grab(&scrollKnob);
+                    ((MenuScrollKnob *)(&scrollKnob))->grab();
                     setMainState(2);
                 }
             }
@@ -578,7 +581,7 @@ void DonationMenu::updateKnobKeys() {
         moveKnobByKey();
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_warpTo(&cursor, a, b);
+        ((MenuCursorBase *)(&cursor))->warpTo(a, b);
     } else {
         releaseKnob();
         setMainState(5);
@@ -592,18 +595,18 @@ void DonationMenu::updateKnobKeysEnd() {
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&cursor, a, b);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
 }
 
 void DonationMenu::updateCursorMove() {
-    if (!MenuCursorBase_isMoving(&cursor)) {
+    if (!((MenuCursorBase *)(&cursor))->isMoving()) {
         setMainState(returnState);
         runMainState();
     }
 }
 
 void DonationMenu::updateCursorPress() {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         if (!activateTarget(cursorSlot)) {
             setMainState(3);
             releaseCursor();
@@ -612,19 +615,19 @@ void DonationMenu::updateCursorPress() {
 }
 
 void DonationMenu::updateCursorRelease() {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(returnState);
     }
 }
 
 void DonationMenu::updateBarTransition() {
-    if (MenuBottomButtonsBody_stepPress(&bottomButtons)) {
-        if (HandCursor_getAnim(&cursor)) {
-            s32 a = MenuBottomButtonsBody_getPressOffset(&bottomButtons);
-            s32 b = MenuBottomButtonsBody_getTargetX(&bottomButtons, -1);
-            s32 c = MenuBottomButtonsBody_getTargetY(&bottomButtons, -1);
-            MenuCursorBase_warpTo(&cursor, a + b, a + c);
+    if (((MenuBottomButtonsBody *)(&bottomButtons))->stepPress()) {
+        if (((HandCursor *)(&cursor))->getAnim()) {
+            s32 a = ((MenuBottomButtonsBody *)(&bottomButtons))->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetY(-1);
+            ((MenuCursorBase *)(&cursor))->warpTo(a + b, a + c);
         }
     } else {
         hideCursor();
@@ -654,15 +657,15 @@ void DonationMenu::resumeInput() {
 
 void DonationMenu::startQuit() {
     MenuCtrl_SetResult(1);
-    MenuBottomButtonsBody_setSelected(&bottomButtons, 6);
+    ((MenuBottomButtonsBody *)(&bottomButtons))->setSelected(6);
     setTransitionState(2);
     setMainState(9);
 }
 
 BOOL DonationMenu::tryGrabKnob(s32 x, s32 y) {
-    if (MenuScrollKnob_hitTest(&scrollKnob, x, y)) {
+    if (((MenuScrollKnob *)(&scrollKnob))->hitTest(x, y)) {
         knobGrabOffset = knobPos - y;
-        MenuScrollKnob_grab(&scrollKnob);
+        ((MenuScrollKnob *)(&scrollKnob))->grab();
         knobLastTickPos = knobPos;
         return TRUE;
     }
@@ -696,7 +699,7 @@ void DonationMenu::dragKnob(s32 a, s32 flag) {
 }
 
 void DonationMenu::releaseKnob() {
-    MenuScrollKnob_release(&scrollKnob);
+    ((MenuScrollKnob *)(&scrollKnob))->release();
 }
 
 void DonationMenu::moveKnobByKey() {
@@ -721,15 +724,15 @@ void DonationMenu::moveKnobByKey() {
 }
 
 BOOL DonationMenu::finishKnobRelease() {
-    if (ScrollKnob_areAnimsDone(&scrollKnob)) {
-        MenuScrollKnob_show(&scrollKnob);
+    if (((ScrollKnob *)(&scrollKnob))->areAnimsDone()) {
+        ((MenuScrollKnob *)(&scrollKnob))->show();
         return TRUE;
     }
     return FALSE;
 }
 
 void DonationMenu::updateKnobPosition() {
-    ScrollKnob_moveTo(&scrollKnob, 0x63, slideY + (knobPos - 0x4b));
+    ((ScrollKnob *)(&scrollKnob))->moveTo(0x63, slideY + (knobPos - 0x4b));
 }
 
 void DonationMenu::syncScrollToKnob() {
@@ -759,7 +762,7 @@ s32 DonationMenu::collectDonated(u16 *out, s32 start, s32 n, s32 step) {
     s32 i;
     for (i = cnt; i < n; i++) {
         v = start;
-        if (MuseumData_isDonated(&data_021ed0a0, &v)) {
+        if (((MuseumData *)(&data_021ed0a0))->isDonated((u16 *)(&v))) {
             out[cnt] = start;
             cnt++;
         }
@@ -795,11 +798,11 @@ void DonationMenu::buildInsectList() {
 void DonationMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&cursor, a, b);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
     if (cursorSlot == 4) {
-        MenuCursor_setAnimIfChanged(&cursor, 7);
+        ((MenuCursor *)(&cursor))->setAnimIfChanged(7);
     } else {
-        MenuCursor_setAnimIfChanged(&cursor, 1);
+        ((MenuCursor *)(&cursor))->setAnimIfChanged(1);
     }
     refreshCursor();
 }
@@ -811,9 +814,9 @@ s32 DonationMenu::getCursorTargetX() {
     }
     switch (c) {
     case 4:
-        return MenuBottomButtonsBody_getTargetX(&bottomButtons, 6);
+        return ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(6);
     case 5:
-        return MenuScrollKnob_getGripX(&scrollKnob);
+        return ((MenuScrollKnob *)(&scrollKnob))->getGripX();
     default:
         return 0x80;
     }
@@ -826,24 +829,24 @@ s32 DonationMenu::getCursorTargetY() {
     }
     switch (c) {
     case 4:
-        return MenuBottomButtonsBody_getTargetY(&bottomButtons, 6);
+        return ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetY(6);
     case 5:
-        return MenuScrollKnob_getGripY(&scrollKnob);
+        return ((MenuScrollKnob *)(&scrollKnob))->getGripY();
     default:
         return 0x60;
     }
 }
 
 void DonationMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&cursor, 0);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(0);
     cursor.update();
 }
 
 void DonationMenu::moveCursorToTarget() {
     if (cursorSlot == 4) {
-        MenuCursor_switchToAnim07(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim07();
     } else {
-        MenuCursor_switchToAnim01(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim01();
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -851,23 +854,23 @@ void DonationMenu::moveCursorToTarget() {
 }
 
 void DonationMenu::moveCursorTo(s32 a, s32 b) {
-    MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
+    ((MenuCursorBase *)(&cursor))->moveToEase(a, b, 3, 1);
     returnState = mainState;
     setMainState(6);
 }
 
 void DonationMenu::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseIdle();
     cursor.update();
 }
 
 void DonationMenu::pressCursor() {
-    MenuCursor_setPosePress(&cursor);
+    ((MenuCursor *)(&cursor))->setPosePress();
     setMainState(7);
 }
 
 void DonationMenu::releaseCursor() {
-    MenuCursorBase_setPoseRelease(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseRelease();
     returnState = mainState;
     setMainState(8);
 }
@@ -916,8 +919,8 @@ void DonationMenu::drawEntryNames() {
                 w->copy(&b);
                 w2 = allocTextLabel();
                 s[1] = *list;
-                if (MuseumData_getDonorName(&data_021ed0a0, &a, &s[1])) {
-                    _ZN9MsgString4copyEPS_(w2, &a);
+                if (((MuseumData *)(&data_021ed0a0))->getDonorName((s32)(&a), (u16 *)(&s[1]))) {
+                    ((MsgString *)(w2))->copy((MsgString *)(&a));
                 } else {
                     String_Load2dMenu(w2, 0xcc);
                 }
@@ -1054,7 +1057,7 @@ BOOL DonationMenu::activateTarget(u32 t) {
             startQuit();
             return TRUE;
         case 5:
-            MenuScrollKnob_grab(&scrollKnob);
+            ((MenuScrollKnob *)(&scrollKnob))->grab();
             Menu_PlayScrollGrabSe(&scrollKnob);
             setMainState(4);
             return TRUE;

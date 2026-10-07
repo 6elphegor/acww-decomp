@@ -30,6 +30,12 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
+#include "game/Unk_0201acf8.h"
+#include "npc/NpcLookAt.h"
+#include "player/PlayerData.h"
+#include "save/Pattern.h"
+#include "save/PatternOrder.h"
+#include "town/VisitorPos.h"
 
 
 class ActorTalkRequest;
@@ -41,16 +47,8 @@ class SpNpcWendellTalk;
 
 
 extern "C" {
-void _ZN16ActorTalkRequest15requestKeepItemEv(void *p);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
-void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
-void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
-void _ZN16ActorTalkRequest19requestReopenWindowEv(void *p);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 _ZN8PlayerId7isValidEv(void *p);
 s32 _ZN8PlayerId6equalsEPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
@@ -93,9 +91,6 @@ void *_ZN12VillagerData13getVillagerIdEv();
 void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *g, void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u16 data_020c6cc8;
 extern u8 gContestRecord[];
 extern u8 gSaveData[];
@@ -197,15 +192,6 @@ extern "C" {
 void EventWeekSlots_MarkPlayer(u32 a);
 u32 Pocket_GetItem(s32 v);
 BOOL Pocket_AddItem(u16 *p, u32 a);
-void *_ZN10PlayerData11getPatternsEv(void *p);
-void *_ZN14PlayerPatterns15getPatternOrderEv(void *p);
-u32 _ZN12PatternOrder7getSlotEj(void *p, u32 v);
-void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 v);
-void *_ZN7Pattern7getInfoEv(void *p);
-void _ZN11PatternInfo8getTitleEPv(void *p, void *q);
-u16 *_ZN10PlayerData6getHatEv(void *p);
-u16 *_ZN10PlayerData8getShirtEv(void *p);
-u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 void PlayerActor_RequestWearShirtAlt(u16 *p);
 void PlayerActor_RequestWearHatAlt(u16 *p);
 void PlayerActor_RequestChangeHeldItem(u16 *p);
@@ -213,36 +199,18 @@ void PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetFishWaterClass(u16 *p);
-void _ZN8ItemNameC1Ev(void *p);
-void _ZN8ItemNameD1Ev(void *p);
-void _ZN13NpcFootstepFx16disableFootstepsEv(void *p);
-void _ZN13NpcFootstepFx15enableFootstepsEv(void *p);
 void Math_CountDownU8(void *p);
 s32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
-BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
-s32 _ZN13NpcActionCtrl9getActionEv(void *p);
-s32 _ZN12Unk_0201acf88getLevelEv(void *p);
 BOOL NpcActor_IsFrontAngle(s16 a);
 s32 Math_AngleXZ(void *a, void *b);
-void *_ZN11NpcMoveCtrl14getDestinationEv(void *p);
-BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *a, void *b, u32 c);
-s32 _ZN9NpcLookAt15getObstacleBitsEv(void *p);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
-BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *a);
-void _ZN11NpcMoveCtrl16resetDestinationEv(void *a);
 void Npc_RotateOffsetXZ(void *out, void *base, void *off, s32 ang);
 BOOL Npc_IsPosBlocked(void *pos);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *v, s32 a);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *p, u32 a, u32 b, void *c, void *d, u32 e, u32 f, u32 g);
 BOOL EventAnnounce_IsBusy();
 void *TownSessionState_Get();
 void *TownSessionState_GetVisitorPos(void *p);
-void _ZN10VisitorPos13pickRandomPosEv(void *self);
-void _ZN16ActorTalkRequest14requestEatItemEv(void *p);
-void _ZN16ActorTalkRequest17requestReturnItemEv(void *p);
-void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *p, u32 a, u32 b);
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
 extern u8 gRandom[];
@@ -315,7 +283,7 @@ BOOL SpNpcWendell::onDelete() {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
-        _ZN10VisitorPos13pickRandomPosEv(TownSessionState_GetVisitorPos(TownSessionState_Get()));
+        ((VisitorPos *)(TownSessionState_GetVisitorPos(TownSessionState_Get())))->pickRandomPos();
     }
     return TRUE;
 }
@@ -344,10 +312,10 @@ void SpNpcWendell::changeAct(s32 state) {
 
 BOOL SpNpcWendell::setupAct02() {
     actCounter = 0;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, NULL, gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, (s32)(NULL), (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -428,34 +396,34 @@ BOOL SpNpcWendell::getOffsetPosIfFree(VecFx32 *out, void *in) {
 BOOL SpNpcWendell::handleCollision() {
     void *p564 = &actionCtrl;
     void *p350 = &moveCtrl;
-    s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
+    s32 k = ((NpcLookAt *)(&obstacleProbe))->getObstacleBits();
     BOOL r = FALSE;
     VecFx32 v;
-    if (!_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(p350, this, 1)) {
+    if (!((NpcMoveCtrl *)(p350))->hasArrived((Character *)(this), 1)) {
         switch (k) {
         case 3:
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, r, 1, r, r, r, r, r, r, data_020c6cc8, r);
+            ((NpcActionCtrl *)(p564))->requestAction(r, 1, r, r, r, r, r, r, data_020c6cc8, r);
             r = TRUE;
             break;
         case 1:
             if (getOffsetPosIfFree(&v, &sSpNpcWendellSideStepOffsets[1])) {
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(p350, &v);
+                ((NpcMoveCtrl *)(p350))->setDestination((VecFx32 *)(&v));
             } else {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, r, 1, r, r, r, r, r, r, data_020c6cc8, r);
+                ((NpcActionCtrl *)(p564))->requestAction(r, 1, r, r, r, r, r, r, data_020c6cc8, r);
             }
             r = TRUE;
             break;
         case 2:
             if (getOffsetPosIfFree(&v, sSpNpcWendellSideStepOffsets)) {
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(p350, &v);
+                ((NpcMoveCtrl *)(p350))->setDestination((VecFx32 *)(&v));
             } else {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, r, 1, r, r, r, r, r, r, data_020c6cc8, r);
+                ((NpcActionCtrl *)(p564))->requestAction(r, 1, r, r, r, r, r, r, data_020c6cc8, r);
             }
             r = TRUE;
             break;
         }
-    } else if (_ZN11NpcMoveCtrl10hasNextLegEv(p350)) {
-        _ZN11NpcMoveCtrl16resetDestinationEv(p350);
+    } else if (((NpcMoveCtrl *)(p350))->hasNextLeg()) {
+        ((NpcMoveCtrl *)(p350))->resetDestination();
     }
     return r;
 }
@@ -475,9 +443,9 @@ BOOL SpNpcWendell::mainAct02() {
     Math_CountDownU8(&actCounter);
     if (a) {
         if (checkCollisionWhileMoving() == 0) {
-            if (_ZN13NpcActionCtrl12isActionDoneEv(p)) {
-                if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
-                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            if (((NpcActionCtrl *)(p))->isActionDone()) {
+                if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
+                    ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     VecFx32 v;
                     v.x = ((VecFx32 *)gVec3Zero)->x;
@@ -490,32 +458,32 @@ BOOL SpNpcWendell::mainAct02() {
                             if (Random_GlobalBelow(4) == 0) {
                                 t = 2;
                             }
-                            if (t != _ZN13NpcActionCtrl9getActionEv(&actionCtrl)) {
-                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, t, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                            if (t != ((NpcActionCtrl *)(&actionCtrl))->getAction()) {
+                                ((NpcActionCtrl *)(p))->requestAction(t, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
                                 actCounter = 0x64;
                             }
-                        } else if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 4) {
-                            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 4, 1, v.x, v.z, 0, t, 0, 0, data_020c6cc8, 0);
+                        } else if (((NpcActionCtrl *)(&actionCtrl))->getAction() != 4) {
+                            ((NpcActionCtrl *)(p))->requestAction(4, 1, v.x, v.z, 0, t, 0, 0, data_020c6cc8, 0);
                             actCounter = 0x50;
                         }
                     } else {
-                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                        ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     }
                 } else {
-                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                    ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
             } else if (speed != 0) {
-                if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 4) {
+                if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 2 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 4) {
                     if (actCounter == 0) {
-                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                        ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     } else {
-                        VecFx32 *q = (VecFx32 *)_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
+                        VecFx32 *q = (VecFx32 *)((NpcMoveCtrl *)(&moveCtrl))->getDestination();
                         VecFx32 w;
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
                         if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
-                            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                            ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }
                 }
@@ -528,9 +496,9 @@ BOOL SpNpcWendell::mainAct02() {
 }
 
 BOOL SpNpcWendell::setupAct03() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     actCounter = 0;
-    _ZN13NpcFootstepFx16disableFootstepsEv(&footstepFx);
+    ((NpcFootstepFx *)(&footstepFx))->disableFootsteps();
     return TRUE;
 }
 
@@ -545,9 +513,9 @@ BOOL SpNpcWendell::setupAct04() {
     void *p = talk.getTalkPlayer();
     s32 x = rotY;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
@@ -556,7 +524,7 @@ BOOL SpNpcWendell::mainAct04() { return TRUE; }
 BOOL SpNpcWendell::setupAct00() { return TRUE; }
 
 BOOL SpNpcWendell::mainAct00() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
@@ -712,16 +680,16 @@ void SpNpcWendellTalk::onFoodPicked() {
             Pocket_RemoveItem(foodSlot);
             foodSlot = -1;
         }
-        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &foodItem, 0, 4, 0);
+        ((ActorTalkRequest *)(this))->requestTakeItem(&foodItem, 0, 4, 0);
         setNextResultHandler(1);
     } else {
-        _ZN16ActorTalkRequest19requestReopenWindowEv(this);
+        ((ActorTalkRequest *)(this))->requestReopenWindow();
     }
     m->setNextMessage(&v, (u8 *)"sp_npc_walrus");
 }
 
 void SpNpcWendellTalk::resultHandler01() {
-    _ZN16ActorTalkRequest19requestReopenWindowEv(this);
+    ((ActorTalkRequest *)(this))->requestReopenWindow();
 }
 
 void SpNpcWendellTalk::onPatternSlotPicked() {
@@ -732,7 +700,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
     if (MenuCtrl_IsResultOk()) {
         void *g = PlayerData_GetCurrent();
         u32 a0 = MenuCtrl_GetIndex();
-        u32 r6 = _ZN12PatternOrder7getSlotEj(_ZN14PlayerPatterns15getPatternOrderEv(_ZN10PlayerData11getPatternsEv(g)), a0);
+        u32 r6 = ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(g))->getPatterns()))->getPatternOrder()))->getSlot(a0);
         r4 = 0;
         if (Unk_ov079_02271718_Chk(this, &buf.items[4], 0x131f)) {
             r4 = 0x15;
@@ -781,7 +749,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
         PatternSrc_Copy(7, r4, 9, r6, 1);
         buf.msgIndex = 5;
         buf.items[0] = 0x3530;
-        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &buf.items[0], 0, 5, 0);
+        ((ActorTalkRequest *)(this))->requestGiveItem(&buf.items[0], 0, 5, 0);
         u32 a, b, c;
         if (r6 < 8) {
             a = (u16)(r6 + 0x12a8);
@@ -798,33 +766,33 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
         } else {
             c = 0x13a0;
         }
-        u32 x = *_ZN10PlayerData8getShirtEv(g);
-        u32 y = *_ZN10PlayerData6getHatEv(g);
-        u32 z = *_ZN10PlayerData11getHeldItemEv(g);
+        u32 x = *((PlayerData *)(g))->getShirt();
+        u32 y = *((PlayerData *)(g))->getHat();
+        u32 z = *((PlayerData *)(g))->getHeldItem();
         if (a == x) {
-            if (Unk_ov079_Rng(_ZN10PlayerData8getShirtEv(g), 0x12a8, 0x12af)) {
+            if (Unk_ov079_Rng(((PlayerData *)(g))->getShirt(), 0x12a8, 0x12af)) {
                 buf.items[1] = a;
                 PlayerActor_RequestWearShirtAlt(&buf.items[1]);
             }
         }
         if (b == y) {
-            if (Unk_ov079_Rng(_ZN10PlayerData6getHatEv(g), 0x1429, 0x1430)) {
+            if (Unk_ov079_Rng(((PlayerData *)(g))->getHat(), 0x1429, 0x1430)) {
                 buf.items[2] = b;
                 PlayerActor_RequestWearHatAlt(&buf.items[2]);
             }
         }
         if (c == z) {
-            if (Unk_ov079_Rng(_ZN10PlayerData11getHeldItemEv(g), 0x13a0, 0x13a7)) {
+            if (Unk_ov079_Rng(((PlayerData *)(g))->getHeldItem(), 0x13a0, 0x13a7)) {
                 buf.items[3] = c;
                 PlayerActor_RequestChangeHeldItem(&buf.items[3]);
             }
         }
-        void *h = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(g), r6);
+        void *h = ((PlayerPatterns *)(((PlayerData *)(g))->getPatterns()))->getPattern(r6);
         u32 obj[HOST_SIZED(0x24, ItemName) / 4] HOST_ALIGN8;
-        _ZN8ItemNameC1Ev(obj);
-        _ZN11PatternInfo8getTitleEPv(_ZN7Pattern7getInfoEv(h), obj);
+        new (obj) ItemName();
+        ((PatternInfo *)(((Pattern *)(h))->getInfo()))->getTitle(obj);
         window->setNamedSlot(1, obj, 7);
-        _ZN8ItemNameD1Ev(obj);
+        ((ItemName *)(obj))->ItemName::~ItemName();
     }
     m->setNextMessage(&buf.msgIndex, (u8 *)"sp_npc_walrus");
 }
@@ -862,7 +830,7 @@ void SpNpcWendellTalk::start(TalkStartMsg *out) {
 
 void SpNpcWendellTalk::onMessageStart(u32) {
     if (msgIndex == 0xf) {
-        _ZN16ActorTalkRequest14requestEatItemEv(this);
+        ((ActorTalkRequest *)(this))->requestEatItem();
     }
 }
 
@@ -875,7 +843,7 @@ void SpNpcWendellTalk::onMessageEnd(u32) {
         r = 0xf;
         break;
     case 2:
-        _ZN16ActorTalkRequest15requestKeepItemEv(this);
+        ((ActorTalkRequest *)(this))->requestKeepItem();
         break;
     case 15:
         r = 4;
@@ -885,21 +853,21 @@ void SpNpcWendellTalk::onMessageEnd(u32) {
                 foodItem = 0x3530;
             }
             r = 9;
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &foodItem, 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&foodItem), 0, 7);
         }
         EventWeekSlots_MarkPlayer(0x41);
         break;
     case 14:
-        _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0xa, 0);
-        _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
+        ((ActorTalkRequest *)(this))->setSubSceneKind(0xa, 0);
+        ((ActorTalkRequest *)(this))->openSubScene(2);
         setResultHandler(2);
         break;
     case 11:
-        _ZN16ActorTalkRequest17requestReturnItemEv(this);
+        ((ActorTalkRequest *)(this))->requestReturnItem();
         break;
     case 9:
         if (Pocket_AddItem(&foodItem, 0)) {
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &foodItem, 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&foodItem, 0, 5, 0);
         }
         r = 0xa;
         break;
@@ -923,8 +891,8 @@ void SpNpcWendellTalk::onChoice(u32) {
     switch (msgIndex) {
     case 0:
         if (t == 0) {
-            _ZN16ActorTalkRequest15setPocketFilterEjjj(this, SpNpcWendell_AcceptAnyItem, 0xd, 1);
-            _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
+            ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcWendell_AcceptAnyItem), 0xd, 1);
+            ((ActorTalkRequest *)(this))->openSubScene(0);
             setResultHandler(0);
         }
         break;
@@ -942,7 +910,7 @@ void SpNpcWendellTalk::onChoice(u32) {
 
 BOOL SpNpcWendell::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

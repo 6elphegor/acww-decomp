@@ -8,9 +8,6 @@
 
 
 
-inline void *operator new(size_t, void *p) {
-    return p;
-}
 
 struct TownMapAcreImage {
     u8 b[0x200];

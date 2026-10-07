@@ -176,7 +176,6 @@ extern "C" {
 BOOL Input_GetTouchTrigPos(s32 *x, s32 *y);
 }
 
-extern "C" void _ZN11LabelButton12setLabelTextEP9MsgString(LabelButton *self, LabelButtonText *p);
 
 extern "C" {
 BOOL Input_IsTouchTrigInRect(s32 x0, s32 x1, s32 y0, s32 y1);
@@ -741,7 +740,7 @@ void ChoiceSliderWindow::openWidgets() {
     LabelButtonText l;
     u8 v = 0x12;
     String_Load2d(&l, &v, 0);
-    _ZN11LabelButton12setLabelTextEP9MsgString(&okButton, &l);
+    (&okButton)->setLabelText((MsgString *)(void *)(&l));
     slider.setPos(0x800);
     requestSliderFocus();
 }

@@ -13,6 +13,12 @@
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
 #include "nitro/gxoam.h"
+#include "menu/MenuTabBar.h"
+#include "player/PlayerData.h"
+#include "save/Pattern.h"
+#include "save/PatternOrder.h"
+#include "talk/EncodedString16Buf.h"
+#include "talk/LabelBalloonText.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -466,7 +472,7 @@ BOOL DesignTab::onDraw() {
     }
     nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&cursor);
+        ((MenuCursorBase *)(&cursor))->drawWrapped();
     }
     PopupChoice_Draw(&popup);
     if (testFlags(4)) {
@@ -600,10 +606,10 @@ BOOL DesignTab::requestTab(s32 a) {
     s32 m = -1;
     if (a == m) goto fail;
     if (a == 1) goto fail;
-    MenuTabBar_selectTab(r, (u8)a);
+    ((MenuTabBar *)(r))->selectTab((u8)a);
     transitionState = 2;
     setPhase(1);
-    TouchPromptBalloon_hide(&nameBalloon, 1);
+    ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
     if (a != 7) {
         restoreCamera();
     }
@@ -670,7 +676,7 @@ void DesignTab::initDesignTab() {
         disableTarget(0xa);
         disableTarget(0xb);
         CommManager *g = gCommManager;
-        if (CommManager_isOnline(g) && g->myAid != 0) {
+        if (((CommManager *)(g))->isOnline() && g->myAid != 0) {
             disableTarget(0xf);
         }
     } else if (canDecorateRoom()) {
@@ -684,7 +690,7 @@ void DesignTab::initDesignTab() {
         disableTarget(0xe);
         disableTarget(0xf);
     }
-    PopupChoiceMenu_init(&popup, 3, 1, 0);
+    ((PopupChoiceMenu *)(&popup))->init(3, 1, 0);
     highlightedTarget = 0x18;
     cursorSlot = 0;
 }
@@ -692,7 +698,7 @@ void DesignTab::initDesignTab() {
 BOOL DesignTab::canDecorateRoom() {
     if (Scene_InHouseRoom()) {
         CommManager *g = gCommManager;
-        if (CommManager_isOnline(g) && g->myAid != 0) {
+        if (((CommManager *)(g))->isOnline() && g->myAid != 0) {
             return FALSE;
         }
         return TRUE;
@@ -724,7 +730,7 @@ void DesignTab::postStateUpdate() {
             clearFlags(2);
         }
     }
-    if (TouchPromptBalloon_updatePrompt(&nameBalloon)) {
+    if (((TouchPromptBalloon *)(&nameBalloon))->updatePrompt()) {
         refreshNameLabel();
     }
     PopupChoice_Update(&popup);
@@ -764,7 +770,7 @@ void DesignTab::loadPatternIcons() {
     i = 0;
     k = 4;
     do {
-        Gfx2d_LinearToTilesInRow32(Pattern_getPixels(PlayerPatterns_getPatternByOrder((void *)v, i)), r5, i << 2, k, k);
+        Gfx2d_LinearToTilesInRow32(Pattern_getPixels(((PlayerPatterns *)((void *)v))->getPatternByOrder(i)), r5, i << 2, k, k);
         i = (u8)(i + 1);
     } while (i < 8);
     Gfx2d_LoadCharRange(r5, 8, 0xc0, 0xc0, 0x13f);
@@ -773,7 +779,7 @@ void DesignTab::loadPatternIcons() {
     i = 0;
     n = i;
     do {
-        MIi_CpuCopy16(PatternInfo_getPaletteData(Pattern_getInfo(PlayerPatterns_getPatternByOrder((void *)v, n))), (u8 *)r7 + i * 2, 0x20);
+        MIi_CpuCopy16(PatternInfo_getPaletteData(((Pattern *)(((PlayerPatterns *)((void *)v))->getPatternByOrder(n)))->getInfo()), (u8 *)r7 + i * 2, 0x20);
         i += 0x10;
         n = (u8)(n + 1);
     } while (n < 8);
@@ -790,7 +796,7 @@ void DesignTab::updateTouch() {
         if (r4 != 0x18) {
             setMainState(1);
             balloonSlot = r4;
-            TouchPromptBalloon_queueOpen(&nameBalloon);
+            ((TouchPromptBalloon *)(&nameBalloon))->queueOpen();
             Snd_PlaySe(0xc);
         }
     }
@@ -799,16 +805,16 @@ void DesignTab::updateTouch() {
 void DesignTab::updateTouchHold() {
     if (gTouchHeld == 0) {
         setMainState(0);
-        TouchPromptBalloon_setAutoCloseTimer(&nameBalloon, 0x3c);
+        ((TouchPromptBalloon *)(&nameBalloon))->setAutoCloseTimer(0x3c);
     } else if (hasDragStarted()) {
         heldSlot = balloonSlot;
         setFlags(4);
         targetSlot = 0x18;
         setMainState(2);
-        TouchPromptBalloon_hide(&nameBalloon, 1);
+        ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
         Snd_PlaySe(0xd);
     } else {
-        TouchPromptBalloon_commitOpen(&nameBalloon);
+        ((TouchPromptBalloon *)(&nameBalloon))->commitOpen();
     }
 }
 
@@ -853,7 +859,7 @@ void DesignTab::updatePopupTouch() {
         return;
     }
     if (Unk_ov121_02293f34_Both()) {
-        s32 r6 = PopupChoiceMenuBody_hitTestRowOrLast(&popup, gTouchCurX, gTouchCurY);
+        s32 r6 = ((PopupChoiceMenuBody *)(&popup))->hitTestRowOrLast(gTouchCurX, gTouchCurY);
         if (r6 >= 0) {
             s32 r5 = 1;
             popupChoice = getPopupRowValue(r6);
@@ -880,14 +886,14 @@ void DesignTab::updatePopupTouch() {
 void DesignTab::updateButtons() {
     if (checkSwitchToTouch()) {
         startTouchInput();
-        TouchPromptBalloon_hide(&nameBalloon, 1);
+        ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
     } else if (moveCursorByPad((void *)takeRepeatedKeys(), 0)) {
         updateNameLabel();
         moveCursorToTarget();
-        TouchPromptBalloon_hide(&nameBalloon, 0);
+        ((TouchPromptBalloon *)(&nameBalloon))->hide(0);
     } else {
         if (gPad[1] & 1) {
-            TouchPromptBalloon_hide(&nameBalloon, 1);
+            ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
             if (getCursorTab() != -1) {
                 pressCursor();
                 return;
@@ -905,7 +911,7 @@ void DesignTab::updateButtons() {
         } else if (k & 2) {
             requestTab(7);
         } else {
-            TouchPromptBalloon_commitOpen(&nameBalloon);
+            ((TouchPromptBalloon *)(&nameBalloon))->commitOpen();
         }
     }
 }
@@ -925,28 +931,28 @@ void DesignTab::updateCarry() {
 }
 
 void DesignTab::updateCursorMove() {
-    if (!MenuCursorBase_isMoving(&cursor)) {
+    if (!((MenuCursorBase *)(&cursor))->isMoving()) {
         setMainState(returnState);
         runMainState();
     }
 }
 
 void DesignTab::updateCursorPress() {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         s32 r = getCursorTab();
         if (r == -1 || !requestTab(r)) releaseCursor();
     }
 }
 
 void DesignTab::updateCursorRelease() {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(4);
     }
 }
 
 void DesignTab::updateGrab() {
-    if (MenuCursorBase_isGripping(&cursor)) {
+    if (((MenuCursorBase *)(&cursor))->isGripping()) {
         setMainState(0xa);
         heldSlot = cursorSlot;
         setFlags(4);
@@ -955,11 +961,11 @@ void DesignTab::updateGrab() {
 }
 
 void DesignTab::updateCarryMove() {
-    if (HandCursor_isAnimDone(&cursor)) setMainState(5);
+    if (((HandCursor *)(&cursor))->isAnimDone()) setMainState(5);
 }
 
 void DesignTab::updateDrop() {
-    if (!MenuCursorBase_isGripping(&cursor)) {
+    if (!((MenuCursorBase *)(&cursor))->isGripping()) {
         clearFlags(4);
         if (testFlags(0x80)) {
             updateNameLabel();
@@ -988,7 +994,7 @@ void DesignTab::updatePopupButtons() {
     } else {
         u32 k = gPad[1];
         if (k & 1) {
-            MenuCursor_setPosePress(&cursor);
+            ((MenuCursor *)(&cursor))->setPosePress();
             setMainState(0xd);
         } else if (k & 2) {
             cancelPopup();
@@ -999,7 +1005,7 @@ void DesignTab::updatePopupButtons() {
 void DesignTab::updatePopupPress() {
     if (MenuCtrl_IsForceCloseDue()) {
         abortPopup();
-    } else if (HandCursor_isAnimDone(&cursor)) {
+    } else if (((HandCursor *)(&cursor))->isAnimDone()) {
         popupChoice = getPopupRowValue(popupRow);
         BOOL r5 = TRUE;
         switch (popupChoice) {
@@ -1022,7 +1028,7 @@ void DesignTab::updatePopupPress() {
 }
 
 void DesignTab::updatePopupOpen() {
-    if (PopupChoiceMenuBody_isOpen(&popup)) {
+    if (((PopupChoiceMenuBody *)(&popup))->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(0xc);
@@ -1035,13 +1041,13 @@ void DesignTab::updatePopupOpen() {
 void DesignTab::updatePopupClose() {
     if (PopupChoice_TickDecideDelay(&popup)) {
         PopupChoice_Close(&popup, 0);
-        if (HandCursor_getAnim(&cursor)) showCursorAtTarget();
+        if (((HandCursor *)(&cursor))->getAnim()) showCursorAtTarget();
         setMainState(0x10);
     }
 }
 
 void DesignTab::updatePopupDone() {
-    if (PopupChoiceMenuBody_isClosed(&popup)) onPopupChoice();
+    if (((PopupChoiceMenuBody *)(&popup))->isClosed()) onPopupChoice();
 }
 
 void DesignTab::updateWearRequest() {
@@ -1053,7 +1059,7 @@ void DesignTab::updateWearWait() {
 }
 
 void DesignTab::updateMessage() {
-    if (MenuErrorMessage_update(&errorMessage, 1)) resumeInput();
+    if (((MenuErrorMessage *)(&errorMessage))->update(1)) resumeInput();
 }
 
 void DesignTab::updateItemPlace() {
@@ -1098,7 +1104,7 @@ void DesignTab::openMessageWindow(u32 a, u32 b) {
     u8 buf[1];
     buf[0] = gU8None;
     buf[0] = a;
-    MenuErrorMessage_open(&errorMessage, buf, b, 0);
+    ((MenuErrorMessage *)(&errorMessage))->open(buf, b, 0);
     setMainState(0x13);
     hideCursor();
 }
@@ -1268,7 +1274,7 @@ BOOL DesignTab::dropHeldOnTarget() {
 
 void DesignTab::swapPatternSlots(u32 a, u32 b) {
     if (a != b) {
-        PatternOrder_swap(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(PlayerData_GetCurrent())), a, b);
+        ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(PlayerData_GetCurrent()))->getPatterns()))->getPatternOrder()))->swap(a, b);
         u8 t = slotIcons[a];
         slotIcons[a] = slotIcons[b];
         slotIcons[b] = t;
@@ -1276,7 +1282,7 @@ void DesignTab::swapPatternSlots(u32 a, u32 b) {
 }
 
 u32 DesignTab::getSlotPattern(u32 i) {
-    return PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(PlayerData_GetCurrent())), i);
+    return ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(PlayerData_GetCurrent()))->getPatterns()))->getPatternOrder()))->getSlot(i);
 }
 
 void DesignTab::setPopupChoices(u32 i) {
@@ -1292,7 +1298,7 @@ void DesignTab::dropOnPlayerFigure() {
     u16 w;
     void *r6 = PlayerData_GetCurrent();
     s32 s = Pocket_FindEmpty();
-    v = *(u16 *)PlayerData_getInventoryBackground(r6);
+    v = *(u16 *)((PlayerData *)(r6))->getInventoryBackground();
     if (Unk_ov121_02293188_InRange(&v, 0x11a8, 0x12a7) && s == -1) {
         openMessageWindow(4, 1);
         return;
@@ -1473,7 +1479,7 @@ void DesignTab::placeDesignInRoom() {
 }
 
 void DesignTab::placeDesignItem() {
-    s32 t = PlayerData_getIndex(PlayerData_GetCurrent());
+    s32 t = ((PlayerData *)(PlayerData_GetCurrent()))->getIndex();
     u32 u = getSlotPattern(heldSlot);
     u32 x = sDesignItemBase[t];
     x += u;
@@ -1520,10 +1526,10 @@ void DesignTab::onPopupChoice() {
 }
 
 void DesignTab::openPopup() {
-    PopupChoiceMenuBody_setRowsFromIds(&popup, &choiceList, 0);
+    ((PopupChoiceMenuBody *)(&popup))->setRowsFromIds((PopupChoiceIdList *)(&choiceList), 0);
     s32 a = getSlotX(targetSlot) - 0x18;
     s32 b = getSlotY(targetSlot) + 0x10;
-    PopupChoiceMenu_placeAt(&popup, a, b);
+    ((PopupChoiceMenu *)(&popup))->placeAt(a, b);
     PopupChoice_Open(&popup, 0);
     setMainState(0xe);
 }
@@ -1555,34 +1561,34 @@ void DesignTab::refreshNameLabel() {
     if (MenuCtrl_IsButtons()) {
         x -= 0xa;
     }
-    LabelBalloon_setPos(&nameBalloon, getSlotX(balloonSlot) - 0x78, x);
-    func_02062510(a);
-    PatternInfo_getTitleEncoded(Pattern_getInfo(PlayerPatterns_getPatternByOrder(PlayerData_getPatterns(PlayerData_GetCurrent()), balloonSlot)), a);
-    func_02089f44(b);
+    ((LabelBalloon *)(&nameBalloon))->setPos(getSlotX(balloonSlot) - 0x78, x);
+    new (a) EncodedString16Buf();
+    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(((PlayerData *)(PlayerData_GetCurrent()))->getPatterns()))->getPatternByOrder(balloonSlot)))->getInfo()))->getTitleEncoded((EncodedString16Buf *)(a));
+    new (b) LabelBalloonText();
     StrBuf_GameToAscii(b, a);
-    LabelBalloon_setText(&nameBalloon, b);
-    func_02089f30(b);
-    func_020624c0(a);
+    ((LabelBalloon *)(&nameBalloon))->setText((StrBuf *)(b));
+    ((LabelBalloonText *)(b))->LabelBalloonText::~LabelBalloonText();
+    ((EncodedString16Buf *)(a))->EncodedString16Buf::~EncodedString16Buf();
 }
 
 void DesignTab::updateNameLabel() {
     u32 t = cursorSlot;
     if (t <= 7) {
         balloonSlot = t;
-        TouchPromptBalloon_queueOpen(&nameBalloon);
+        ((TouchPromptBalloon *)(&nameBalloon))->queueOpen();
     } else {
-        TouchPromptBalloon_cancelQueuedOpen(&nameBalloon);
+        ((TouchPromptBalloon *)(&nameBalloon))->cancelQueuedOpen();
     }
 }
 
 void DesignTab::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&cursor, a, b);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
     if (getCursorTab() != -1) {
-        MenuCursor_setAnimIfChanged(&cursor, 0xd);
+        ((MenuCursor *)(&cursor))->setAnimIfChanged(0xd);
     } else {
-        MenuCursor_setAnimIfChanged(&cursor, 1);
+        ((MenuCursor *)(&cursor))->setAnimIfChanged(1);
     }
     refreshCursor();
 }
@@ -1609,7 +1615,7 @@ s32 DesignTab::getCursorTargetY() {
 }
 
 void DesignTab::hideCursor() {
-    MenuCursor_setAnimIfChanged(&cursor, 0);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(0);
     cursor.update();
 }
 
@@ -1617,21 +1623,21 @@ void DesignTab::moveCursorToTarget() {
     if (testFlags(0x10)) {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_warpTo(&cursor, a, b);
+        ((MenuCursorBase *)(&cursor))->warpTo(a, b);
         clearFlags(0x10);
     } else {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
+        ((MenuCursorBase *)(&cursor))->moveToEase(a, b, 3, 1);
         returnState = mainState;
         setMainState(6);
     }
 }
 
 void DesignTab::moveCursorToPopupRow() {
-    s32 a = PopupChoiceMenuBody_getRowX(&popup);
-    s32 b = PopupChoiceMenuBody_getRowY(&popup, popupRow);
-    MenuCursorBase_moveToLinear(&cursor, a, b, 2);
+    s32 a = ((PopupChoiceMenuBody *)(&popup))->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)(&popup))->getRowY(popupRow);
+    ((MenuCursorBase *)(&cursor))->moveToLinear(a, b, 2);
     returnState = mainState;
     setMainState(6);
 }
@@ -1639,63 +1645,63 @@ void DesignTab::moveCursorToPopupRow() {
 void DesignTab::cancelPopup() {
     popupChoice = 8;
     popupRow = PopupChoice_DecideCancel(&popup, 1);
-    s32 a = PopupChoiceMenuBody_getRowX(&popup);
-    s32 b = PopupChoiceMenuBody_getRowY(&popup, popupRow);
-    MenuCursorBase_warpTo(&cursor, a, b);
-    HandCursor_setAnimAtEnd(&cursor, 8);
+    s32 a = ((PopupChoiceMenuBody *)(&popup))->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)(&popup))->getRowY(popupRow);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
+    ((HandCursor *)(&cursor))->setAnimAtEnd(8);
     setMainState(0xf);
 }
 
 void DesignTab::cursorToPopupTop() {
     popupRow = 0;
-    s32 a = PopupChoiceMenuBody_getRowX(&popup);
-    s32 b = PopupChoiceMenuBody_getRowY(&popup, popupRow);
-    MenuCursorBase_warpTo(&cursor, a, b);
-    MenuCursor_setAnimIfChanged(&cursor, 7);
+    s32 a = ((PopupChoiceMenuBody *)(&popup))->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)(&popup))->getRowY(popupRow);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(7);
 }
 
 void DesignTab::showCursorAtTarget() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&cursor, a, b);
-    MenuCursor_setAnimIfChanged(&cursor, 1);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(1);
 }
 
 void DesignTab::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseIdle();
     cursor.update();
 }
 
 void DesignTab::pressCursor() {
-    MenuCursor_setPosePress(&cursor);
+    ((MenuCursor *)(&cursor))->setPosePress();
     setMainState(7);
 }
 
 void DesignTab::releaseCursor() {
-    MenuCursorBase_setPoseRelease(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseRelease();
     setMainState(8);
 }
 
 void DesignTab::startCarry() {
-    MenuCursor_setAnimIfChanged(&cursor, 4);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(4);
     setMainState(9);
 }
 
 void DesignTab::dropCarry() {
-    MenuCursor_setAnimIfChanged(&cursor, 5);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(5);
     clearFlags(0x80);
     setMainState(0xb);
 }
 
 void DesignTab::cancelCarry() {
-    MenuCursor_setAnimIfChanged(&cursor, 5);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(5);
     setFlags(0x80);
     setMainState(0xb);
 }
 
 void DesignTab::moveDragIconToCursor() {
-    handX = MenuCursorBase_getFrameScreenX(&cursor) - 3;
-    handY = MenuCursorBase_getFrameScreenY(&cursor) + 9;
+    handX = ((MenuCursorBase *)(&cursor))->getFrameScreenX() - 3;
+    handY = ((MenuCursorBase *)(&cursor))->getFrameScreenY() + 9;
 }
 
 BOOL DesignTab::stepCursorRight(u32 lo, u32 hi) {
@@ -1787,14 +1793,14 @@ BOOL DesignTab::moveCursorHorizontal(void *pad, u32 f) {
 }
 
 void DesignTab::moveCursorToTabs() {
-    s32 t = MenuCursorBase_getScreenX(&cursor);
+    s32 t = ((MenuCursorBase *)(&cursor))->getScreenX();
     cursorSlot = MenuTabBar_TabFromX(t) + 0x10;
-    MenuCursor_switchToAnim0D(&cursor);
+    ((MenuCursor *)(&cursor))->switchToAnim0D();
 }
 
 void DesignTab::moveCursorFromTab(u32 idx) {
     cursorSlot = sDesignTabTabDownSlot[idx];
-    MenuCursor_switchToAnim01(&cursor);
+    ((MenuCursor *)(&cursor))->switchToAnim01();
 }
 
 void DesignTab::moveCursorVertical(void *pad, u32 f) {
@@ -1885,11 +1891,11 @@ u32 DesignTab::getWornItem(s32 k) {
     void *p = PlayerData_GetCurrent();
     switch (k) {
     case 0:
-        return *PlayerData_getShirt(p);
+        return *((PlayerData *)(p))->getShirt();
     case 1:
-        return *PlayerData_getHat(p);
+        return *((PlayerData *)(p))->getHat();
     case 2:
-        return *PlayerData_getHeldItem(p);
+        return *((PlayerData *)(p))->getHeldItem();
     }
     return 0xfff1;
 }
@@ -1900,14 +1906,14 @@ u32 DesignTab::swapWornItem(s32 k, u32 v) {
     volatile u16 t = v;
     switch (k) {
     case 0:
-        PlayerData_setShirt(p, (u16 *)&t);
+        ((PlayerData *)(p))->setShirt((u16 *)&t);
         t = res;
         if (!Unk_ov121_022924e0_Range(&t, 0x11a8, 0x12a7)) {
             res = 0xfff1;
         }
         break;
     case 1:
-        PlayerData_setHat(p, (u16 *)&t);
+        ((PlayerData *)(p))->setHat((u16 *)&t);
         t = res;
         if (Unk_ov121_022924e0_Range(&t, 0x1429, 0x1430)) {
             res = 0xfff1;
@@ -1960,7 +1966,7 @@ BOOL DesignTab::isWearDone(s32 k) {
 
 BOOL DesignTab::isRoomEditAllowed() {
     CommManager *c = gCommManager;
-    if (CommManager_isOnline(c)) {
+    if (((CommManager *)(c))->isOnline()) {
         if (c->myAid != 0 || Room_CountOccupants() > 1) {
             return FALSE;
         }

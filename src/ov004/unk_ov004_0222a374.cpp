@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
+#include "player/PlayerData.h"
 
 // ---------------------------------------------------------------- PlayerBedSetter
 struct Unk_0204e858_Grid;
@@ -29,7 +30,6 @@ public:
 extern "C" {
 extern Unk_0204e858_Grid *gSceneBlockMap;
 void *PlayerData_Get(u32 i);
-u16 *_ZN10PlayerData6getBedEv(void *self);
 s32 Item_IsFurniture(Unk_ov004_0222a374_Loc *l);
 s32 Item_GetFurnitureIndex(u16 *p);
 void Item_SetFurnitureDirection(Unk_ov004_0222a374_Loc *l, s32 v);
@@ -69,7 +69,7 @@ void Room_PlacePlayerBeds() {
                 s32 x = e.a;
                 s32 y = e.b;
                 Unk_ov004_0222a374_Loc l;
-                l.a = *_ZN10PlayerData6getBedEv(p);
+                l.a = *((PlayerData *)(p))->getBed();
                 BOOL r;
                 if (Item_IsFurniture(&l) != 0) {
                     l.b = 0xfff1;

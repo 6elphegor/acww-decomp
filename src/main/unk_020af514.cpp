@@ -4,6 +4,7 @@
 #include "town/TownBlockCell.h"
 #include "town/SceneMapInfo.h"
 #include "game/SceneInfo.h"
+#include "net/CommManager.h"
 
 extern "C" {
 u32 GroundSeason_IsSnowPhase(u32);
@@ -146,8 +147,6 @@ Unk_020b4948 *Scene_GetWarpRequest();
 u32 Scene_GetCurrent();
 BOOL Scene_InUnk6Or7();
 BOOL Scene_InTown();
-BOOL _ZN11CommManager11isLocalSlotEj(void *, ...);
-void _ZN11CommManager12isSlotActiveEi(void *, u32);
 s32 PlayerSession_GetDataIndex(u32);
 BOOL PlayerDataArray_IsUsed(void *, s32);
 u32 PlayerSession_FindFreeGfxSlot();
@@ -190,7 +189,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
         if (idx < 4 && PlayerDataArray_IsUsed(gSavePlayers, PlayerSession_GetDataIndex(i))) {
-            if (!_ZN11CommManager11isLocalSlotEj(gCommManager, i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
+            if (!((CommManager *)(gCommManager))->isLocalSlot(i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
                 VecFx32 *v = SceneWarp_GetPos(Scene_GetWarpRequest());
@@ -206,7 +205,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32
             return TRUE;
         }
     } else {
-        if (_ZN11CommManager11isLocalSlotEj(gCommManager, i)) {
+        if (((CommManager *)(gCommManager))->isLocalSlot(i)) {
             if (SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 get(pos, rot_, out);
             } else {
@@ -242,7 +241,7 @@ BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
     ScenePlayerSpawn *items = (ScenePlayerSpawn *)list;
     if (items != NULL && Scene_GetCurrent() != 0xd && Scene_GetCurrent() != 0xe && Scene_GetCurrent() != 0x2f) {
         if (Scene_InUnk6Or7()) {
-            _ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid);
+            ((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid);
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
                 u32 v;

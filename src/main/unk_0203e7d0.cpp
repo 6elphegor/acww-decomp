@@ -157,7 +157,6 @@ s32 CharInteractSync_Check(u32);
 }
 
 extern "C" {
-BOOL _ZN11CommManager7isMyAidEj(void *, u32);
 }
 
 extern "C" {
@@ -165,19 +164,15 @@ void *PlayerActor_GetActor(u32);
 }
 
 extern "C" {
-BOOL _ZN11CommManager8isOnlineEv(void *);
 }
 
 extern "C" {
-void _ZN11CommManager11beginRecordEv(void *);
 }
 
 extern "C" {
-void _ZN11CommManager11writeRecordEPhj(void *, void *, u32);
 }
 
 extern "C" {
-void _ZN11CommManager9endRecordEjj(void *, u32, u32);
 }
 
 extern "C" {
@@ -211,9 +206,9 @@ extern "C" void CharInteractSync_Reset(void) {
 
 extern "C" void CharInteractSync_SendReply(u8 a, u32 aid, ...) {
     CommManager *o = gCommManager;
-    _ZN11CommManager11beginRecordEv(o);
-    _ZN11CommManager11writeRecordEPhj(o, &a, 1);
-    _ZN11CommManager9endRecordEjj(o, 0x17, aid);
+    ((CommManager *)(o))->beginRecord();
+    ((CommManager *)(o))->writeRecord((u8 *)(&a), 1);
+    ((CommManager *)(o))->endRecord(0x17, aid);
 }
 
 extern "C" u32 CharInteractSync_IsFree(u32 idx, u32 id) {
@@ -237,7 +232,7 @@ extern "C" void CharInteractSync_ClearLock(u32 idx) {
 
 extern "C" s32 CharInteractSync_Check(u32 id) {
     CommManager *o = gCommManager;
-    if (!_ZN11CommManager8isOnlineEv(o)) {
+    if (!((CommManager *)(o))->isOnline()) {
         return 2;
     }
     if (o->myAid == 0) {
@@ -251,7 +246,7 @@ extern "C" s32 CharInteractSync_Check(u32 id) {
 
 extern "C" void CharInteractSync_RequestLock(u32 id) {
     CommManager *o = gCommManager;
-    if (_ZN11CommManager8isOnlineEv(o)) {
+    if (((CommManager *)(o))->isOnline()) {
         if (o->myAid == 0) {
             sCharInteractLockIds[o->myAid] = id;
         } else {
@@ -263,16 +258,16 @@ extern "C" void CharInteractSync_RequestLock(u32 id) {
             buf[3] = id >> 16;
             buf[4] = id >> 24;
             CommManager *p = gCommManager;
-            _ZN11CommManager11beginRecordEv(p);
-            _ZN11CommManager11writeRecordEPhj(p, buf, 5);
-            _ZN11CommManager9endRecordEjj(p, 0x17, 0);
+            ((CommManager *)(p))->beginRecord();
+            ((CommManager *)(p))->writeRecord((u8 *)(buf), 5);
+            ((CommManager *)(p))->endRecord(0x17, 0);
         }
     }
 }
 
 extern "C" void CharInteractSync_ReleaseLock(void) {
     CommManager *o = gCommManager;
-    if (_ZN11CommManager8isOnlineEv(o)) {
+    if (((CommManager *)(o))->isOnline()) {
         if (o->myAid == 0) {
             CharInteractSync_ClearLock(0);
         } else {
@@ -282,7 +277,7 @@ extern "C" void CharInteractSync_ReleaseLock(void) {
 }
 
 extern "C" s32 CharInteractSync_CheckArea(void) {
-    if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (!((CommManager *)(gCommManager))->isOnline()) {
         return 2;
     }
     if (NetArea_IsLocalOwner()) {
@@ -300,7 +295,7 @@ extern "C" void CharInteractSync_SendEvent(u32 id, u8 x) {
 }
 
 extern "C" void CharInteractSync_SendCharMsg(u32 id, u8 x, u8 mode) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[6];
         sCharInteractSyncResult = mode;
         buf[0] = mode;
@@ -310,9 +305,9 @@ extern "C" void CharInteractSync_SendCharMsg(u32 id, u8 x, u8 mode) {
         buf[4] = id >> 24;
         buf[5] = x;
         CommManager *o = gCommManager;
-        _ZN11CommManager11beginRecordEv(o);
-        _ZN11CommManager11writeRecordEPhj(o, buf, 6);
-        _ZN11CommManager9endRecordEjj(o, 0x17, 6);
+        ((CommManager *)(o))->beginRecord();
+        ((CommManager *)(o))->writeRecord((u8 *)(buf), 6);
+        ((CommManager *)(o))->endRecord(0x17, 6);
     }
 }
 
@@ -340,7 +335,7 @@ extern "C" void CharInteractSync_OnCharMsg(u8 *msg, u32 aid) {
     void *w = PlayerActor_GetActor(aid);
     if (!o || !w) {
         if (msg[0] == 4) {
-            if (!_ZN11CommManager7isMyAidEj(gCommManager, aid)) {
+            if (!((CommManager *)(gCommManager))->isMyAid(aid)) {
                 CharInteractSync_SendReply(2, aid);
             } else {
                 sCharInteractSyncResult = 2;
@@ -361,7 +356,7 @@ extern "C" void CharInteractSync_OnCharMsg(u8 *msg, u32 aid) {
             r5 = o->acceptsSelfRequestedInteraction(w);
             break;
         }
-        if (!_ZN11CommManager7isMyAidEj(gCommManager, aid)) {
+        if (!((CommManager *)(gCommManager))->isMyAid(aid)) {
             if (r5) {
                 o->onInteractionEvent(3, (u8)aid);
                 CharInteractSync_SendReply(1, aid);

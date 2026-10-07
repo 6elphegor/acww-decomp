@@ -15,6 +15,8 @@
 #include "gfx/NNSG3dRS.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "gfx/BgModelCache.h"
+#include "gfx/Camera.h"
+#include "gfx/G3dResAccess.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -222,14 +224,14 @@ FieldGround::~FieldGround() {
 BOOL FieldGround::onCreate() {
     backdrop.clear();
     backdrop.init();
-    s32 r6 = BgModelCache_getGroundTex(BgModelCache_Get());
-    s32 r4 = BgModelCache_getRiverPatTex(BgModelCache_Get());
-    s32 r0 = BgModelCache_getRiverPatAnm(BgModelCache_Get());
-    TexPatVramAnim_init(&riverPatAnim, (void *)r6, "grd_riv.0", "grd_riv_pl", r4, r0, 0);
-    r6 = BgModelCache_getGroundTex(BgModelCache_Get());
-    r4 = BgModelCache_getBeBPatTex(BgModelCache_Get());
-    r0 = BgModelCache_getBeBPatAnm(BgModelCache_Get());
-    TexPatVramAnim_init(&beachPatAnim, (void *)r6, "grd_beB", "grd_beB_pl", r4, r0, 1);
+    s32 r6 = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
+    s32 r4 = ((BgModelCache *)(BgModelCache_Get()))->getRiverPatTex();
+    s32 r0 = ((BgModelCache *)(BgModelCache_Get()))->getRiverPatAnm();
+    ((TexPatVramAnim *)(&riverPatAnim))->init((u8 *)((void *)r6), "grd_riv.0", "grd_riv_pl", (u8 *)(r4), (u8 *)(r0), 0);
+    r6 = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
+    r4 = ((BgModelCache *)(BgModelCache_Get()))->getBeBPatTex();
+    r0 = ((BgModelCache *)(BgModelCache_Get()))->getBeBPatAnm();
+    ((TexPatVramAnim *)(&beachPatAnim))->init((u8 *)((void *)r6), "grd_beB", "grd_beB_pl", (u8 *)(r4), (u8 *)(r0), 1);
     Unk_0204e858_Grid *g = gSceneBlockMap;
     numBlocksX = g->width;
     numBlocksZ = g->height;
@@ -326,7 +328,7 @@ BOOL FieldGround::onDraw() {
     cam_r = 0;
     cam = gCamera;
     if (cam != 0) {
-        cam_r = Camera_getEyeCurveAngle(cam);
+        cam_r = ((Camera *)(cam))->getEyeCurveAngle();
         Camera_GetLookAtBlock(cam, &cx, &cy);
         a = WorldCurve_AngleToDistance(cam_r);
     }
@@ -439,7 +441,7 @@ extern "C" void FieldGround_SetWaterMatFlags(Model *o, s32 flag) {
     u8 *base = (u8 *)o->resMdl;
     u8 *r4 = base + *(s32 *)(base + 8);
     for (i = 0; i < 2; i++) {
-        u32 t = G3dResAccess_findMatIdx(o->resMdl, sWaterMatNames[i]);
+        u32 t = ((G3dResAccess *)(o->resMdl))->findMatIdx(sWaterMatNames[i]);
         if (t != (u32)-1) {
             u8 *r1 = r4 + 4;
             u32 hw = *(u16 *)(r4 + 0xa);
@@ -499,16 +501,16 @@ BOOL FieldGroundPiece::setup(VecFx32 *pos, s32 idx) {
     position.x = pos->x;
     position.y = pos->y;
     position.z = pos->z;
-    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), sFieldGroundPieceAcres[idx]);
-    s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
+    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)((BgModelCache *)(BgModelCache_Get()))->getAcre(sFieldGroundPieceAcres[idx]);
+    s32 t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
     NNSG3dResMdl *res = e->modelRes;
     ((Model *)&model)->setResourceAndBind(res, t);
     if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
-        matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
+        matAnims[0].init(((BgModelCache *)(BgModelCache_Get()))->getGroundMatAnm(), 0, 0x1000, 0);
         matAnims[0].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     if (matAnims[1].allocMatAnm((u32)res, gBgHeap)) {
-        matAnims[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
+        matAnims[1].init(((BgModelCache *)(BgModelCache_Get()))->getGroundTexSrtAnm(), 0, 0x1000, 0);
         matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     VecFx32 tmp;
@@ -562,18 +564,18 @@ BOOL FieldGroundBlock::init(TownBlockCell *o, s32 a, s32 b) {
     blockX = a;
     blockZ = b;
     acreId = MapBlockAcre_getAcreId(o);
-    u32 t = BgModelCache_getGroundTex(BgModelCache_Get());
+    u32 t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
     BgAcreModel *p = o->bgModel;
     u32 q = (u32)p->tex;
     if (q != 0) t = q;
     NNSG3dResMdl *res = (NNSG3dResMdl *)p->mdl;
     ((Model *)&model)->setResourceAndBind(res, t);
     if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
-        matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
+        matAnims[0].init(((BgModelCache *)(BgModelCache_Get()))->getGroundMatAnm(), 0, 0x1000, 0);
         matAnims[0].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     if (matAnims[1].allocMatAnm((u32)res, gBgHeap)) {
-        matAnims[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
+        matAnims[1].init(((BgModelCache *)(BgModelCache_Get()))->getGroundTexSrtAnm(), 0, 0x1000, 0);
         matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     Mtx43_SetTranslate(data_021f47e0, a * data_020c8cbc, 0, 0);

@@ -10,6 +10,7 @@
 #include "gfx/P.h"
 #include "game/GroundInfo.h"
 #include "gfx/Rgb555.h"
+#include "game/GroundInfoBase.h"
 
 
 
@@ -570,7 +571,6 @@ void EffectModel_InitUnitScale(void *o);
 void EffectModel_InitDefault(void *o);
 
 s32 Effect_SpawnParticleLandings(void *o, s32 a, void *b, s32 c, void *d, s32 e, void *f, s32 g, void *h);
-s32 _ZN14GroundInfoBase16getWaterSurfaceYEv(void *p);
 }
 }
 
@@ -775,7 +775,7 @@ extern "C" s32 EffectCb_CountdownTracked(EffectEmitterEntry *o)
         if (e->life > 0) e->life--;
         r = TRUE;
     }
-    if (r == 0) _ZN10EffectSlot5clearEv(e);
+    if (r == 0) ((EffectSlot *)(e))->clear();
     return r;
 }
 }
@@ -803,7 +803,7 @@ extern "C" s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, V
         if (e->life > 0) e->life--;
         r = TRUE;
     }
-    if (r == 0) _ZN10EffectSlot5clearEv(e);
+    if (r == 0) ((EffectSlot *)(e))->clear();
     return r;
 }
 }
@@ -830,9 +830,9 @@ extern "C" s32 Effect_StartTracked(void *p0, s32 p1, s32 p2, s32 p3, s32 e, void
     if (t == NULL) t = sEffectDefaultTrackedCbs;
     r = 3;
     EffectScratchSlot *const g = &(*(EffectScratchSlot *)&gEffectManager[32]);
-    _ZN10EffectSlot3setEijP7VecFx32PsS2_s(g, g->nextHandle, p1, p2, p3, e, -1);
+    ((EffectSlot *)(g))->set(g->nextHandle, p1, (VecFx32 *)(p2), (s16 *)(p3), (s16 *)(e), -1);
     if (EffectSpl_CreateTracked(p0, p2, p3, t)) r = 0;
-    _ZN10EffectSlot5clearEv(g);
+    ((EffectSlot *)(g))->clear();
     return r;
 }
 }
@@ -898,7 +898,7 @@ s32 EffectSplEmitter::spawnLandingEffects(s32 id1, void *d1, s32 id2, void *d2, 
             v.z = n->pos.z + n->epos.z;
             o.initAtPos(&v, 0, 0);
             if (o.waterKind != 0) {
-                s32 h = _ZN14GroundInfoBase16getWaterSurfaceYEv(&o);
+                s32 h = ((GroundInfoBase *)(&o))->getWaterSurfaceY();
                 if (v.y <= h) {
                     v.y = h;
                     if (id1 != -1) {
@@ -945,7 +945,7 @@ s32 EffectEmitterEntry::updateLanding(s32 id1, void *d1, s32 id2, void *d2, s32 
         }
     }
     if (!r) {
-        _ZN10EffectSlot5clearEv(e);
+        ((EffectSlot *)(e))->clear();
     }
     return r;
 }
@@ -977,7 +977,7 @@ extern "C" s32 Effect_StartModel(s32 kind, s32 a, void *b, void *c, s32 d, Effec
     if (f == 0) {
         f = EffectModel_InitDefault;
     }
-    _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectSlot *)&gEffectManager[32]), -1, a, b, c, d, -1);
+    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
     EffectModel_Start(kind, f);
     return 1;
 }
@@ -1066,12 +1066,12 @@ extern "C" s32 Effect_CreateKind01(s32 a, void *b, void *c, s32 d)
             result = Effect_StartOneShot(0x19, a, b, c, d, data_020e14b4);
         }
     } else if (t == 0x16 || Weather_GetFallingPrecip() == 1) {
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectSlot *)&gEffectManager[32]), *(u16 *)(g + 0x39c), a, b, c, 0, -1);
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(0), -1);
         if (EffectSpl_CreateTracked(0x1b, b, c, data_020e14d4) != 0) {
             result = 2;
         }
     } else if (t == 3 && GroundSeason_IsSnow() != 0) {
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectSlot *)&gEffectManager[32]), *(u16 *)(g + 0x39c), a, b, c, 0, -1);
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(0), -1);
         if (EffectSpl_CreateTracked(0x1c, b, c, data_020e14ec) != 0) {
             result = 2;
         }
@@ -1218,12 +1218,12 @@ extern "C" s32 Effect_CreateKind0A(s32 a, void *b, void *c, s32 d)
     t = o.attr;
     result = 3;
     if (Weather_GetFallingPrecip() == 1) {
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectSlot *)&gEffectManager[32]), *(u16 *)(g + 0x39c), a, b, c, d, -1);
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
         if (EffectSpl_CreateTracked(0x36, b, c, data_020e1594) != 0) {
             result = 2;
         }
     } else if (GroundSeason_IsSnow() != 0 && t == 3) {
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectSlot *)&gEffectManager[32]), *(u16 *)(g + 0x39c), a, b, c, 0, -1);
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(0), -1);
         if (EffectSpl_CreateTracked(0x35, b, c, data_020e15e4) != 0) {
             result = 2;
         }
@@ -1283,12 +1283,12 @@ extern "C" s32 Effect_StartWaterColumn(s32 a, void *b, void *c, s32 d, void *e, 
     }
     if (Effect_StartOneShot(0x4a, a, v, c, d, (void *)f) < 3) {
         Effect_StartModel(2, a, v, c, d, fn);
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectSlot *)&gEffectManager[32]), *(u16 *)(g + 0x39c), a, v, c, d, -1);
+        ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(*(u16 *)(g + 0x39c), a, (VecFx32 *)(v), (s16 *)(c), (s16 *)(d), -1);
         if (EffectSpl_CreateTracked(0x45, v, c, e) != 0) {
             result = 2;
         }
     }
-    _ZN10EffectSlot5clearEv(&(*(EffectSlot *)&gEffectManager[32]));
+    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->clear();
     return result;
 }
 }
@@ -1311,10 +1311,10 @@ extern "C" s32 Effect_CreateKind0C(s32 a, s32 b, s32 c, s32 d) {
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x37, a, b, c, d, 0); 
     if (t < 3) { 
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(VecFx32 *)&gEffectManager[32]), *(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
         if (EffectSpl_CreateTracked(0x5e, b, c, data_020e15ec) != 0) r = 2; 
     } 
-    _ZN10EffectSlot5clearEv(&(*(VecFx32 *)&gEffectManager[32])); 
+    ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
 }
 }
@@ -1325,10 +1325,10 @@ extern "C" s32 Effect_CreateKind0D(s32 a, s32 b, s32 c, s32 d) {
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x38, a, b, c, d, 0); 
     if (t < 3) { 
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(VecFx32 *)&gEffectManager[32]), *(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
         if (EffectSpl_CreateTracked(0x5e, b, c, data_020e14fc) != 0) r = 2; 
     } 
-    _ZN10EffectSlot5clearEv(&(*(VecFx32 *)&gEffectManager[32])); 
+    ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
 }
 }
@@ -1343,10 +1343,10 @@ extern "C" s32 Effect_CreateKind10(s32 a, s32 b, s32 c, s32 d) {
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x3b, a, b, c, d, 0); 
     if (t < 3) { 
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(VecFx32 *)&gEffectManager[32]), *(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
         if (EffectSpl_CreateTracked(0x5e, b, c, data_020e15dc) != 0) r = 2; 
     } 
-    _ZN10EffectSlot5clearEv(&(*(VecFx32 *)&gEffectManager[32])); 
+    ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
 }
 }
@@ -1368,7 +1368,7 @@ extern "C" void EffectKind0E_InitEmitter0(EffectEmitterEntry *p) {
     pos.x = g->x;
     pos.y = g->y;
     pos.z = g->z;
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(&o, &pos, 0, 0);
+    ((GroundInfo *)(&o))->initAtPos((VecFx32 *)(&pos), 0, 0);
     if (o.waterKind != 0) {
         VecFx32 *pv = (VecFx32 *)&o.flowDir;
         v.x = pv->x;
@@ -1408,7 +1408,7 @@ extern "C" s32 EffectKind0E_UpdateEmitter0(EffectEmitterEntry *p) {
         pos.x = r->x;
         pos.y = r->y;
         pos.z = r->z;
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii(&o, &pos, 0, 0);
+        ((GroundInfo *)(&o))->initAtPos((VecFx32 *)(&pos), 0, 0);
         if (o.waterKind != 0) {
             VecFx32 *pv = (VecFx32 *)&o.flowDir;
             v.x = pv->x;
@@ -1427,7 +1427,7 @@ extern "C" s32 EffectKind0E_UpdateEmitter0(EffectEmitterEntry *p) {
         s = 1;
         GroundInfo_Destruct(&o);
     }
-    if (s == 0) _ZN10EffectSlot5clearEv(r);
+    if (s == 0) ((EffectSlot *)(r))->clear();
     return s;
 }
 }
@@ -1459,7 +1459,7 @@ extern "C" s32 EffectKind11_UpdateEmitter2(EffectEmitterEntry *p) {
         EffectSplEmitter *b = p->emitter;
         if (b->particleCount > 0) s = Effect_SpawnParticleLandings(b, 0x5f, data_020e16d4, -1, 0, -1, 0, -1, 0);
     }
-    if (s == 0) _ZN10EffectSlot5clearEv(r);
+    if (s == 0) ((EffectSlot *)(r))->clear();
     return s;
 }
 }
@@ -1474,10 +1474,10 @@ extern "C" s32 Effect_CreateKind12(s32 a, s32 b, s32 c, s32 d) {
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x46, a, b, c, d, 0); 
     if (t < 3) { 
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(VecFx32 *)&gEffectManager[32]), *(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
         if (EffectSpl_CreateTracked(0x5e, b, c, data_020e1584) != 0) r = 2; 
     } 
-    _ZN10EffectSlot5clearEv(&(*(VecFx32 *)&gEffectManager[32])); 
+    ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
 }
 }
@@ -1500,10 +1500,10 @@ extern "C" s32 Effect_CreateKind13(s32 a, s32 b, s32 c, s32 d) {
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x47, a, b, c, d, data_020e15a4); 
     if (t < 3) { 
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(VecFx32 *)&gEffectManager[32]), *(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
         if (EffectSpl_CreateTracked(0x75, b, c, data_020e157c) != 0) r = 2; 
     } 
-    _ZN10EffectSlot5clearEv(&(*(VecFx32 *)&gEffectManager[32])); 
+    ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
 }
 }
@@ -1526,10 +1526,10 @@ extern "C" s32 Effect_CreateKind14(s32 a, s32 b, s32 c, s32 d) {
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x48, a, b, c, d, data_020e1614); 
     if (t < 3) { 
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(VecFx32 *)&gEffectManager[32]), *(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
         if (EffectSpl_CreateTracked(0x75, b, c, data_020e15b4) != 0) r = 2; 
     } 
-    _ZN10EffectSlot5clearEv(&(*(VecFx32 *)&gEffectManager[32])); 
+    ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
 }
 }
@@ -1548,10 +1548,10 @@ extern "C" s32 Effect_CreateKind15(s32 a, s32 b, s32 c, s32 d) {
     s32 r = 3; 
     s32 t = Effect_StartOneShot(0x49, a, b, c, d, data_020e1620); 
     if (t < 3) { 
-        _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(VecFx32 *)&gEffectManager[32]), *(u16 *)(s + 0x39c), a, b, c, d, -1); 
+        ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->set(*(u16 *)(s + 0x39c), a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1); 
         if (EffectSpl_CreateTracked(0x75, b, c, data_020e151c) != 0) r = 2; 
     } 
-    _ZN10EffectSlot5clearEv(&(*(VecFx32 *)&gEffectManager[32])); 
+    ((EffectSlot *)(&(*(VecFx32 *)&gEffectManager[32])))->clear(); 
     return r; 
 }
 }
@@ -1666,7 +1666,7 @@ namespace R4 {
 extern "C" s32 Effect_CreateKind22(s32 a, s32 b, s32 c, s32 d) {
     u32 buf[17];
     s32 r;
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, b, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
     u32 t = buf[13];
     r = 3;
     if (Unk_02092770_IsOne(gFieldSceneKind)) {
@@ -1694,7 +1694,7 @@ extern "C" s32 EffectKind23_InitEmitter0(void *a) {
 namespace R4 {
 extern "C" s32 Effect_CreateKind23(s32 a, s32 b, s32 c, s32 d) {
     u32 buf[16];
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, b, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
     s32 id;
     if (buf[13] == 0x13) {
         id = 0x6f;
@@ -1802,7 +1802,7 @@ extern "C" s32 EffectKind26_UpdateEmitter0(EffectEmitterEntry *o) {
         }
     }
     if (r == 0) {
-        _ZN10EffectSlot5clearEv(e);
+        ((EffectSlot *)(e))->clear();
     }
     return r;
 }
@@ -1817,7 +1817,7 @@ extern "C" s32 Effect_CreateKind26(s32 a, s32 b, s32 c, s32 d) {
 namespace R4 {
 extern "C" s32 Effect_CreateKind27(s32 a, s32 b, s32 c, s32 d) {
     u32 buf[16];
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, b, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
     u32 t = buf[13];
     if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
         s32 res = Effect_StartOneShot(0x55, a, b, c, d, data_020e16d4);
@@ -1832,7 +1832,7 @@ extern "C" s32 Effect_CreateKind27(s32 a, s32 b, s32 c, s32 d) {
 namespace R4 {
 extern "C" s32 Effect_CreateKind28(s32 a, s32 b, s32 c, s32 d) {
     u32 buf[16];
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, b, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
     u32 t = buf[13];
     if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
         s32 res = Effect_StartOneShot(0x56, a, b, c, d, data_020e16d4);
@@ -1887,7 +1887,7 @@ extern "C" void EffectKind29_InitEmitter0(EffectSplEmitter *o) {
 namespace R4 {
 extern "C" s32 Effect_StartOnSandOrSnow(s32 a, s32 b, s32 c, s32 d, s32 e, void *f) {
     u32 buf[16];
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, b, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
     u32 t = buf[13];
     s32 r = -1;
     if (t == 0x13 || (GroundSeason_IsSnow() && t == 3)) {
@@ -1972,7 +1972,7 @@ extern "C" s32 EffectKind2D_InitEmitter0(void *a) {
 namespace R4 {
 extern "C" s32 Effect_CreateKind2D(s32 a, s32 b, s32 c, s32 d) {
     s32 r = 3;
-    _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectSlot *)&gEffectManager[32]), -1, a, b, c, d, -1);
+    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
     if (EffectSpl_CreateOneShot(0x76, b, c, data_020e14c0) && EffectSpl_CreateOneShot(0x54, b, c, sEffectDefaultOneShotCbs)) {
         r = 1;
     }
@@ -2000,7 +2000,7 @@ extern "C" s32 EffectKind2E_InitEmitter2(void *a) {
 
 namespace R4 {
 extern "C" s32 EffectKind2E_Start(s32 a, s32 b, s32 c, s32 d, s32 e) {
-    _ZN10EffectSlot3setEijP7VecFx32PsS2_s(&(*(EffectSlot *)&gEffectManager[32]), -1, a, b, c, d, -1);
+    ((EffectSlot *)(&(*(EffectSlot *)&gEffectManager[32])))->set(-1, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -1);
     if (EffectSpl_CreateOneShot(e, b, c, data_020e14c0) != 0) {
         for (s32 i = 0; i < 3; i++) {
             if (EffectSpl_CreateOneShot(0x54, b, c, data_020e15fc + i * 4) == 0) {
@@ -2197,7 +2197,7 @@ extern "C" s32 EffectKind35_UpdateRamp(EffectEmitterEntry *p, s32 a, s32 b, s32 
         ok = TRUE;
     }
     if (!ok) {
-        _ZN10EffectSlot5clearEv(r);
+        ((EffectSlot *)(r))->clear();
     }
     return ok;
 }
@@ -2281,7 +2281,7 @@ extern "C" s32 EffectKind35_UpdateEmitter4(EffectEmitterEntry *p)
         ok = TRUE;
     }
     if (!ok) {
-        _ZN10EffectSlot5clearEv(r);
+        ((EffectSlot *)(r))->clear();
     }
     return ok;
 }
@@ -2292,11 +2292,11 @@ extern "C" s32 Effect_CreateKind35(s32 a, s32 b, s32 c, s32 d)
 {
     EffectScratchSlot *e = &(*(EffectScratchSlot *)&gEffectManager[32]);
     s32 r = 3;
-    _ZN10EffectSlot3setEijP7VecFx32PsS2_s(e, e->nextHandle, a, b, c, d, -0xb5);
+    ((EffectSlot *)(e))->set(e->nextHandle, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -0xb5);
     if (EffectSpl_CreateTracked(0x7e, b, c, data_020e1734) != 0) {
         r = 0;
     }
-    _ZN10EffectSlot5clearEv(e);
+    ((EffectSlot *)(e))->clear();
     return r;
 }
 }
@@ -2345,7 +2345,7 @@ extern "C" s32 EffectKind36_UpdateEmitter2(EffectEmitterEntry *p)
         ok = TRUE;
     }
     if (!ok) {
-        _ZN10EffectSlot5clearEv(r);
+        ((EffectSlot *)(r))->clear();
     }
     return ok;
 }
@@ -2356,11 +2356,11 @@ extern "C" s32 Effect_CreateKind36(s32 a, s32 b, s32 c, s32 d)
 {
     EffectScratchSlot *e = &(*(EffectScratchSlot *)&gEffectManager[32]);
     s32 r = 3;
-    _ZN10EffectSlot3setEijP7VecFx32PsS2_s(e, e->nextHandle, a, b, c, d, -0xb5);
+    ((EffectSlot *)(e))->set(e->nextHandle, a, (VecFx32 *)(b), (s16 *)(c), (s16 *)(d), -0xb5);
     if (EffectSpl_CreateTracked(0x7f, b, c, data_020e1784) != 0) {
         r = 0;
     }
-    _ZN10EffectSlot5clearEv(e);
+    ((EffectSlot *)(e))->clear();
     return r;
 }
 }
@@ -2402,7 +2402,7 @@ extern "C" s32 Effect_CreateKind37(s32 a, s32 b, s32 c, s32 d)
     s32 k;
     s32 id;
     s32 r;
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, b, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
     k = buf[13];
     id = -1;
     if (GroundSeason_IsSnow() != 0 && k == 3) {
@@ -2427,7 +2427,7 @@ extern "C" s32 Effect_CreateKind38(s32 a, s32 b, s32 c, s32 d)
     s32 k;
     s32 id;
     s32 r;
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, b, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
     k = buf[13];
     id = -1;
     if (GroundSeason_IsSnow() != 0 && k == 3) {
@@ -2455,14 +2455,14 @@ extern "C" s32 EffectKind39_InitEmitter0(void *p)
 namespace R3 {
 extern "C" s32 EffectKind39_UpdateEmitter0B(void *p)
 {
-    return _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(p, 0x1f, data_020e16d4, 0x1d, data_020e16d4, 0x1d, data_020e16d4, -1, 0);
+    return ((EffectEmitterEntry *)(p))->updateLanding(0x1f, (void *)(void *)(data_020e16d4), 0x1d, (void *)(void *)(data_020e16d4), 0x1d, (void *)(void *)(data_020e16d4), -1, (void *)(0));
 }
 }
 
 namespace R3 {
 extern "C" s32 EffectKind39_UpdateEmitter0A(void *p)
 {
-    return _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(p, 0x1f, data_020e16d4, 0x1d, data_020e16d4, 0x1d, data_020e16d4, -1, 0);
+    return ((EffectEmitterEntry *)(p))->updateLanding(0x1f, (void *)(void *)(data_020e16d4), 0x1d, (void *)(void *)(data_020e16d4), 0x1d, (void *)(void *)(data_020e16d4), -1, (void *)(0));
 }
 }
 
@@ -2472,7 +2472,7 @@ extern "C" s32 Effect_CreateKind39(s32 a, s32 b, s32 c, s32 d)
     u32 buf[17];
     s32 result;
     s32 k;
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, b, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(b), 0, 0);
     k = buf[13];
     result = 3;
     if (k == 0x16 || Weather_GetFallingPrecip() == 1) {
@@ -2543,7 +2543,7 @@ extern "C" s32 EffectKind3A_UpdateEmitter0(EffectEmitterEntry *p)
         for (n = p->emitter->particles; n != NULL; n = n->next) {
             n->age = n->life;
         }
-        _ZN10EffectSlot5clearEv(r);
+        ((EffectSlot *)(r))->clear();
     }
     return ok;
 }
@@ -2609,7 +2609,7 @@ extern "C" s32 EffectKind3D_UpdateEmitter0(EffectEmitterEntry *p)
         ok = TRUE;
     }
     if (!ok) {
-        _ZN10EffectSlot5clearEv(r);
+        ((EffectSlot *)(r))->clear();
     }
     return ok;
 }
@@ -2719,14 +2719,14 @@ namespace R2 {
 extern "C" void EffectKind3F_InitModel(s32 p)
 {
     s32 t = func_01ffcb0c(0x2000, (*(EffectSlot *)&gEffectManager[32]).param) + 0x99a;
-    _ZN14EffectModelObj10initAtSlotEi(p, t);
+    ((EffectModelObj *)(p))->initAtSlot(t);
 }
 }
 
 namespace R2 {
 extern "C" s32 EffectKind3F_UpdateEmitter0(void *p)
 {
-    return _ZN18EffectEmitterEntry13updateLandingEiPviS0_iS0_iS0_(p, 0x1f, data_020e16d4, 0x1e, data_020e16d4, 0x1e, data_020e16d4, -1, 0);
+    return ((EffectEmitterEntry *)(p))->updateLanding(0x1f, (void *)(void *)(data_020e16d4), 0x1e, (void *)(void *)(data_020e16d4), 0x1e, (void *)(void *)(data_020e16d4), -1, (void *)(0));
 }
 }
 

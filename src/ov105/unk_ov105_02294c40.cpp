@@ -191,8 +191,6 @@ extern "C" char data_ov105_02298524[];
 extern "C" const char *sLetterStoragePageChars[3];
 
 extern "C" void InventoryItemGrid_DrawPocketsClipped(void *p, s32 a, s32 b, u32 c);
-extern "C" void _ZN17LetterStorageMenu14dropHeldOnSlotEj(void *self, u32 a);
-extern "C" void _ZN17LetterStorageMenu14pickUpAndFlyToEjjj(void *self, u32 a, u32 b, u32 c);
 
 typedef void (LetterStorageMenu::*Unk_ov105_02298594_Fn)();
 
@@ -1074,7 +1072,7 @@ void LetterStorageMenu::mainAct07() {
                             t = s->findFreePocketSlot();
                         }
                         if (t != 0x41) {
-                            _ZN17LetterStorageMenu14pickUpAndFlyToEjjj(s, s->cursorSlot, t, 0); // c unused by pickUpAndFlyTo
+                            ((LetterStorageMenu *)(s))->pickUpAndFlyTo(s->cursorSlot, t, 0); // c unused by pickUpAndFlyTo
                             s->nameBalloon.hide(1);
                             s->setFlags(0x1000);
                         }
@@ -1267,7 +1265,7 @@ void LetterStorageMenu::mainAct12() {
     if (s->cursor.isGripping() == 0) {
         u32 a = s->targetSlot;
         if (s->cursorSlot == a) {
-            _ZN17LetterStorageMenu14dropHeldOnSlotEj(s, a);
+            ((LetterStorageMenu *)(s))->dropHeldOnSlot(a);
             s->updateBalloonForCursor();
             s->setMainState(7);
             Inventory_PlayPutDownSe();
@@ -1672,7 +1670,7 @@ u32 LetterStorageMenu::fromLetterGridIndex(u32 a) {
 }
 
 s32 LetterStorageMenu::getSlotAt(u32 a, u32 b, u32 c) {
-    s32 r = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid, a, b);
+    s32 r = ((LetterGrid *)(&letterGrid))->findPocketLetterAt(a, b);
     if (r == 0x37) {
         r = letterGrid.findLetterAt0A(a, b);
     }
@@ -2049,7 +2047,7 @@ void LetterStorageMenu::openPopup(u32 b) {
     s32 r6 = s->getSlotX(s->selectedSlot);
     s32 r2b = s->getSlotY(s->selectedSlot);
     if (b != 0) {
-        _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(&s->popup, &s->nameBalloon, r2b);
+        ((PopupChoiceMenu *)(&s->popup))->placeAboveBalloon((LabelBalloon *)(&s->nameBalloon));
     } else {
         s->popup.placeNearPoint(r6, r2b);
     }

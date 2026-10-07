@@ -5,6 +5,9 @@
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
 #include "gfx/TexVramTask.h"
+#include "actor/CharaClothTexRef.h"
+#include "player/FishBobber.h"
+#include "sys/Heap.h"
 
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
@@ -17,13 +20,11 @@ s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
 s32 PlayerHeadModelHeap_Destroy(void);
 void PlayerHeadModelHeap_Create(void *parent);
-BOOL _ZN10FishBobber9isInWaterEv(void *p);
 s32 ItemInfo_TestFlag2(u16 *p);
 s32 Item_IsFlowerItem(u16 *p);
 s32 Item_GetFlowerItemOrdinal(u16 *p);
 void G3dRes_CopyPlttByName(void *, void *, void *, void *);
 void G3dRes_CopyTexByName(void *, void *, void *, void *);
-void _ZN16CharaClothTexRef8loadItemEPtiii(void *, void *, s32, s32, s32);
 void *CharaClothTexPool_GetOwnRef();
 s32 CharaClothTexRef_GetBuffer(void *);
 s32 NNS_G3dTexGetRequiredSize(void *p);
@@ -147,14 +148,14 @@ PlayerHeadBank sPlayerHeadBank;
 #define MGR (&sPlayerHeadBank)
 
 extern "C" BOOL HeldItemModel_IsBobberLanded(u8 *p) {
-    return _ZN10FishBobber9isInWaterEv(p + 0x28);
+    return ((FishBobber *)(p + 0x28))->isInWater();
 }
 
 extern "C" void PlayerHeadBank_Init(void *parent) {
     PlayerHeadModelHeap_Create(parent);
     MGR->setup();
     if (gPlayerHeadModelHeap != 0)
-        Heap_adjust(gPlayerHeadModelHeap);
+        ((Heap *)(gPlayerHeadModelHeap))->adjust();
 }
 
 extern "C" void PlayerHeadBank_Destroy(void) {
@@ -265,7 +266,7 @@ void PlayerHeadBank::releaseAll(void) {
         modelFiles[i][1] = NULL;
     }
     if (gPlayerHeadModelHeap) {
-        Heap_freeAll((void *)gPlayerHeadModelHeap);
+        ((Heap *)((void *)gPlayerHeadModelHeap))->freeAll();
     }
     for (i = 0; i < 4; i++) {
         modelIds[i][0] = 0x9e;
@@ -328,7 +329,7 @@ extern "C" s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
                 PlayerHead_SetModelFile(p, 1, buf);
                 if (Unk_0205da08_InRange(c)) {
                     void *x = CharaClothTexPool_GetOwnRef();
-                    _ZN16CharaClothTexRef8loadItemEPtiii(x, c, d, 0, 0);
+                    ((CharaClothTexRef *)(x))->loadItem((u16 *)(c), d, 0, 0);
                     void *m = NNS_G3dGetTex((void *)CharaClothTexRef_GetBuffer(x));
                     void *n = NNS_G3dGetTex(buf);
                     G3dRes_CopyTexByName(m, n, (void *)"cloth", (void *)"myD");

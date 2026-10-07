@@ -22,6 +22,11 @@
 #include "gfx/Mtx43.h"
 #include "gfx/NNSG3dRS.h"
 #include "town/Unk_0204e858_Grid.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/AnimModel.h"
+#include "gfx/TexPatVramAnim.h"
+#include "room/FtrHeadwear.h"
+#include "sys/Heap.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -750,8 +755,8 @@ BOOL FurnitureManager::onCreate() {
     if (Scene_InMuseumRoom()) {
         flags = 0x1c00;
     }
-    ModelSlotPool_init(&sFtrMgrPool, FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (void *)FurnitureHeap_Create,
-                  (void *)FurnitureHeap_Destroy, (void *)"\x89\xc6\x8b\xef\x83\x7d\x83\x6c\x81\x5b\x83\x57\x83\x83\x81\x5b");
+    ((ModelSlotPool *)(&sFtrMgrPool))->init(FtrMgr_GetMaxFurniture(), (void *)(0x2000), (void *)(0x80), flags, (ModelSlotAllocFunc)((void *)FurnitureHeap_Create),
+                  (ModelSlotFreeFunc)((void *)FurnitureHeap_Destroy));
     FtrMgr_CreateHook(this);
     if (FtrMgr_GetMaxFurniture() > 1) {
         TvScreen_Load(&tvScreen);
@@ -1135,7 +1140,7 @@ BOOL FtrActorHeap::create(s32 n) {
 // @0x2235870 unk_022350c8.cpp
 void FtrActorHeap::destroy() {
     if (heap != 0) {
-        Heap_destroy2((void *)heap);
+        ((Heap *)((void *)heap))->destroy2();
     }
     reset();
 }
@@ -1483,7 +1488,7 @@ void FtrContactSet::requestToggle() {
 void *FtrContactSet::canRotateBy(s32 v) {
     void *o = getActor(0);
     if (o != 0) {
-        return (void *)FtrActor_canRotateBy(o, v);
+        return (void *)((FtrActor *)(o))->canRotateBy(v);
     }
     return 0;
 }
@@ -1492,7 +1497,7 @@ void *FtrContactSet::canRotateBy(s32 v) {
 void *FtrContactSet::startRotateBy(s32 v) {
     void *o = getActor(0);
     if (o != 0) {
-        return (void *)FtrActor_startRotate(o, v);
+        return (void *)((FtrActor *)(o))->startRotate(v);
     }
     return 0;
 }
@@ -1522,7 +1527,7 @@ void *FtrContactSet::canMoveAt(s32 v) {
     FtrContact *s = getContact(0);
     void *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)FtrActor_canMoveBy(o, makeStepVec((s16)(v + s->getPushAngle())));
+        return (void *)((FtrActor *)(o))->canMoveBy((s32)(makeStepVec((s16)(v + s->getPushAngle()))));
     }
     return 0;
 }
@@ -1574,7 +1579,7 @@ void *FtrContactSet::startPush() {
     FtrContact *s = getContact(0);
     void *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)FtrActor_startPush(o, s->getPushAngle());
+        return (void *)((FtrActor *)(o))->startPush(s->getPushAngle());
     }
     return 0;
 }
@@ -1589,7 +1594,7 @@ void *FtrContactSet::startPull() {
     FtrContact *s = getContact(0);
     void *o = getActor(0);
     if (s != 0 && o != 0) {
-        return (void *)FtrActor_startPull(o, s->getPushAngle());
+        return (void *)((FtrActor *)(o))->startPull(s->getPushAngle());
     }
     return 0;
 }
@@ -3727,7 +3732,7 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
         s32 minv = sFtrMgrSoundRangeSq;
         for (; i < FtrMgr_GetMaxFurniture(); i++) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
-            if (e != NULL && FtrActor_isCabinClock(e)) {
+            if (e != NULL && (e)->isCabinClock()) {
                 VecFx32 v0c;
                 VecFx32 t = *(VecFx32 *)e->centerPos;
                 v0c.x = t.x;
@@ -3764,7 +3769,7 @@ extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
         s32 minv = sFtrMgrSoundRangeSq;
         for (; i < FtrMgr_GetMaxFurniture(); i++) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
-            if (e != NULL && FtrActor_isSoundingClock(e)) {
+            if (e != NULL && (e)->isSoundingClock()) {
                 VecFx32 v0c;
                 VecFx32 t = *(VecFx32 *)e->centerPos;
                 v0c.x = t.x;
@@ -3806,7 +3811,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
             s32 minv = sFtrMgrSoundRangeSq;
             for (; i < FtrMgr_GetMaxFurniture(); i++) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(i);
-                if (e != NULL && FtrActor_isTvOn(e)) {
+                if (e != NULL && (e)->isTvOn()) {
                     VecFx32 v20;
                     VecFx32 t = *(VecFx32 *)e->centerPos;
                     v20.x = t.x;
@@ -4261,7 +4266,7 @@ extern "C" s32 FtrMgr_TakeDisplayedWearable(void *o0) {
             break;
         case 0x27:
             if (o) {
-                return func_ov004_0220af28(o);
+                return ((FtrHeadwear *)(o))->syncAct0();
             }
             break;
         }
@@ -4286,7 +4291,7 @@ extern "C" s32 FtrMgr_RestoreDisplayedWearable(void *o0) {
             break;
         case 0x27:
             if (o) {
-                return func_ov004_0220af14(o);
+                return ((FtrHeadwear *)(o))->syncAct1();
             }
             break;
         }
@@ -4422,7 +4427,7 @@ extern "C" void FtrMoveAnim_InstallCallback(NNSG3dRS *o) {
 
 // @0x2233b54 unk_0223349c.cpp
 extern "C" void *FtrMoveAnim_Construct(FtrMoveAnim *r) {
-    func_020548d0(r->model);
+    new (r->model) AnimModel();
     r->heap = 0;
     r->modelArc = 0;
     r->resMdl = 0;
@@ -4440,7 +4445,7 @@ extern "C" void *FtrMoveAnim_Construct(FtrMoveAnim *r) {
 // @0x2233b3c unk_0223349c.cpp
 extern "C" void *FtrMoveAnim_Destruct(FtrMoveAnim *r) {
     r->isPlaying = 0;
-    func_020548a0(r->model);
+    ((AnimModel *)(r->model))->AnimModel::~AnimModel();
     return r;
 }
 
@@ -4473,7 +4478,7 @@ extern "C" void FtrMoveAnim_SetPos(FtrMoveAnim *r, VecFx32 *v) {
 // @0x2233a70 unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, s32 x, volatile u8 *flag, VecFx32 *pos, s32 e) {
     if (*flag == 0 && r->isPlaying == 0 && x != 0) {
-        BlendAnimModel_initAnim(r->model, x, 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(r->model))->initAnim(x, 1, 0x1000, 0, 0);
         r->isPlaying = 1;
         *flag = r->isPlaying;
         r->posX = pos->x;
@@ -4500,12 +4505,12 @@ extern "C" BOOL FtrMoveAnim_StartPull(FtrMoveAnim *r, volatile u8 *a, VecFx32 *b
 // @0x22339cc unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_Step(FtrMoveAnim *r, volatile u8 *a, VecFx32 *out) {
     if (r->isPlaying != 0 && *a != 0) {
-        AnimModel_stepAnim(r->model);
-        Model_drawNoGeCmd(r->model);
+        ((AnimModel *)(r->model))->stepAnim();
+        ((Model *)(r->model))->drawNoGeCmd();
         out->x = r->posX;
         out->y = r->posY;
         out->z = r->posZ;
-        if (AnimFrameCtrl_isFinished(static_cast<AnimFrameCtrl *>((BlendAnimModel *)r->model))) {
+        if (((AnimFrameCtrl *)(static_cast<AnimFrameCtrl *>((BlendAnimModel *)r->model)))->isFinished()) {
             *a = 0;
             r->isPlaying = *a;
             return TRUE;
@@ -4529,7 +4534,7 @@ extern "C" BOOL FtrMoveAnim_CreateHeap(FtrMoveAnim *r) {
 // @0x223397c unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_DestroyHeap(FtrMoveAnim *r) {
     if (r->heap) {
-        Heap_destroy2(r->heap);
+        ((Heap *)(r->heap))->destroy2();
         r->heap = 0;
         return TRUE;
     }
@@ -4596,11 +4601,11 @@ extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r) {
             u8 *p;
             p = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName(sFtrMoveAnimModelNamePtr));
             r->resMdl = (u32)p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
-            if (Model_setResourceAndBind(r->model, (void *)r->resMdl, ok)) {
-                if (AnimModel_allocAnmObj(r->model, r->heap)) {
-                    BlendAnimModel_initAnim(r->model, FtrMoveAnim_GetPushAnim(r), 1, 0x1000, ok, ok);
-                    AnimModel_attachAnim(r->model);
-                    Model_setInitCallback(r->model, (void *)FtrMoveAnim_InstallCallback, r);
+            if (((Model *)(r->model))->setResourceAndBind((NNSG3dResMdl *)((void *)r->resMdl), ok)) {
+                if (((AnimModel *)(r->model))->allocAnmObj(r->heap)) {
+                    ((BlendAnimModel *)(r->model))->initAnim(FtrMoveAnim_GetPushAnim(r), 1, 0x1000, ok, ok);
+                    ((AnimModel *)(r->model))->attachAnim();
+                    ((Model *)(r->model))->setInitCallback((s32)((void *)FtrMoveAnim_InstallCallback), (s32)(r));
                     ok = TRUE;
                 }
             }
@@ -4635,7 +4640,7 @@ extern "C" u32 FtrMoveAnim_GetHaniwaAnim(FtrMoveAnim *r) {
 
 // @0x2233790 unk_0223349c.cpp
 extern "C" void *TvProgSlot_Construct(TvProgSlot *p) {
-    func_02056d8c(&p->texPatAnim);
+    new (&p->texPatAnim) TexPatVramAnim();
     p->program = -1;
     p->weather = -1;
     p->heap = 0;
@@ -4645,7 +4650,7 @@ extern "C" void *TvProgSlot_Construct(TvProgSlot *p) {
 
 // @0x223377c unk_0223349c.cpp
 extern "C" void *TvProgSlot_Destruct(TvProgSlot *p) {
-    func_02056d54(&p->texPatAnim);
+    ((TexPatVramAnim *)(&p->texPatAnim))->TexPatVramAnim::~TexPatVramAnim();
     return p;
 }
 
@@ -4683,7 +4688,7 @@ extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x) {
     }
     p->progTex = (u32)NNS_G3dGetTex(File_LoadAlloc(buf1, p->heap, 4, 0));
     p->progTexPat = (u32)func_021066ac(func_02106690(File_LoadAlloc(buf2, p->heap, 4, 0)), 0);
-    if (TexPatVramAnim_init(&p->texPatAnim, (void *)p->screenTex, "tv.0", "tv_pl", (void *)p->progTex, (void *)p->progTexPat, 0)) {
+    if (((TexPatVramAnim *)(&p->texPatAnim))->init((u8 *)((void *)p->screenTex), "tv.0", "tv_pl", (u8 *)((void *)p->progTex), (u8 *)((void *)p->progTexPat), 0)) {
         p->program = id;
         p->weather = r6;
         p->loopCount = 0;
@@ -4695,7 +4700,7 @@ extern "C" BOOL TvProgSlot_Load(TvProgSlot *p, u32 id, s32 x) {
 // @0x2233644 unk_0223349c.cpp
 extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p) {
     if (p->heap) {
-        Heap_freeAll(p->heap);
+        ((Heap *)(p->heap))->freeAll();
     }
     p->progTex = 0;
     p->progTexPat = 0;
@@ -4704,8 +4709,8 @@ extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p) {
 // @0x22335fc unk_0223349c.cpp
 extern "C" void TvProgSlot_Update(TvProgSlot *p) {
     if (p->progTex && p->progTexPat) {
-        TexPatVramAnim_update(&p->texPatAnim);
-        if (AnimFrameCtrl_hasPassedFrame(&p->texPatAnim, 0)) {
+        ((TexPatVramAnim *)(&p->texPatAnim))->update();
+        if (((AnimFrameCtrl *)(&p->texPatAnim))->hasPassedFrame(0)) {
             s32 t = p->loopCount + 1;
             if (t > 0xffff) {
                 p->loopCount = 0xffff;
@@ -4719,7 +4724,7 @@ extern "C" void TvProgSlot_Update(TvProgSlot *p) {
 // @0x22335dc unk_0223349c.cpp
 extern "C" void TvProgSlot_Release(TvProgSlot *p) {
     if (p->heap) {
-        Heap_destroy2(p->heap);
+        ((Heap *)(p->heap))->destroy2();
         p->heap = 0;
     }
     p->progTexPat = 0;
@@ -4798,12 +4803,12 @@ extern "C" BOOL TvScreen_SetProgram(TvScreen *o, s32 a, s32 b) {
         if (sFtrMgrTvSoundEnabled) {
             if (o->soundHeap) {
                 if (o->tvSound) {
-                    TvSound_callRelease(o->tvSound);
+                    ((TvSound *)(o->tvSound))->callRelease();
                     o->tvSound = 0;
                 }
-                Heap_freeAll(o->soundHeap);
+                ((Heap *)(o->soundHeap))->freeAll();
                 o->tvSound = TvSound_Create(o->soundHeap, a);
-                if (o->tvSound) TvSound_callReset(o->tvSound);
+                if (o->tvSound) ((TvSound *)(o->tvSound))->callReset();
             }
         }
         return TRUE;
@@ -4907,10 +4912,10 @@ extern "C" void TvScreen_Release(TvScreen *o) {
     if (sFtrMgrTvSoundEnabled) {
         if (o->soundHeap) {
             if (o->tvSound) {
-                TvSound_callRelease(o->tvSound);
+                ((TvSound *)(o->tvSound))->callRelease();
                 o->tvSound = 0;
             }
-            Heap_destroy2(o->soundHeap);
+            ((Heap *)(o->soundHeap))->destroy2();
             o->soundHeap = 0;
         }
     }
@@ -4985,7 +4990,7 @@ extern "C" u16 FtrSound_GetSe3(s32 idx) {
 extern "C" void FtrMgr_PlaySeatSound1At(s32 a) {
     void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
-        if (FtrActor_PredIsSeatOrBed(p)) FtrActor_playSound1(p);
+        if (FtrActor_PredIsSeatOrBed(p)) ((FtrActor *)(p))->playSound1();
     }
 }
 
@@ -4993,7 +4998,7 @@ extern "C" void FtrMgr_PlaySeatSound1At(s32 a) {
 extern "C" void FtrMgr_PlaySeatSound0At(s32 a) {
     void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
-        if (FtrActor_PredIsSeatOrBed(p)) FtrActor_playSound0(p);
+        if (FtrActor_PredIsSeatOrBed(p)) ((FtrActor *)(p))->playSound0();
     }
 }
 
@@ -5001,7 +5006,7 @@ extern "C" void FtrMgr_PlaySeatSound0At(s32 a) {
 extern "C" void FtrMgr_PlaySeatSound2At(s32 a) {
     void *p = FtrActorGrid_GetInstance()->getActorAtPos((void *)a, 0);
     if (p) {
-        if (FtrActor_PredIsSeatOrBed(p)) FtrActor_playSound2(p);
+        if (FtrActor_PredIsSeatOrBed(p)) ((FtrActor *)(p))->playSound2();
     }
 }
 

@@ -38,8 +38,6 @@ void LetterDelivery_Update(void *);
 s32 Scene_AllowsLetterDelivery(void);
 s32 Random_GlobalBelow(s32);
 void Letter_Clear(void *);
-void _ZN6LetterD1Ev(void *);
-void _ZN6LetterC1Ev(void *);
 }
 
 PlayerMailbox::PlayerMailbox() {}
@@ -122,12 +120,12 @@ void LetterStorage::clear() {
 }
 
 extern "C" Letter *BottleLetterRecord_Construct(Letter *p) {
-    _ZN6LetterC1Ev(p);
+    new (p) Letter();
     return p;
 }
 
 extern "C" Letter *BottleLetterRecord_Destruct(Letter *p) {
-    _ZN6LetterD1Ev(p);
+    ((Letter *)(p))->Letter::~Letter();
     return p;
 }
 
@@ -186,12 +184,12 @@ s32 BottleLetterRecord::pickUnusedMessage() {
 }
 
 extern "C" Letter *FutureLetter_Construct(Letter *p) {
-    _ZN6LetterC1Ev(p);
+    new (p) Letter();
     return p;
 }
 
 extern "C" Letter *FutureLetter_Destruct(Letter *p) {
-    _ZN6LetterD1Ev(p);
+    ((Letter *)(p))->Letter::~Letter();
     return p;
 }
 

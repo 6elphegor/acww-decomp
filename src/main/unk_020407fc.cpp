@@ -7,6 +7,8 @@
 #include "talk/TalkWindowState.h"
 #include "sys/ProcProfile.h"
 #include "nitro/io_access.h"
+#include "snd/BgmSceneFade.h"
+#include "talk/MsgRequest.h"
 
 
 class EventAnnouncer : public GameProc {
@@ -60,20 +62,13 @@ void EventWeekSlots_UpdateWeek(void *, s32);
 void Event_RefreshToday(s32);
 void EventWeekSlots_ClearWeek(void *);
 s32 Scene_GetCurrent(void);
-s32 _ZN11CommManager8isOnlineEv(void *);
 void *TownSessionState_Get(void);
 void *TownSessionState_GetResettiFlag(void *p);
 s32 _ZN16ResettiVisitFlag5isSetEv(void *self);
-s32 _ZN11CommManager12isSlotActiveEi(void *, s32);
 void Clock_GetDateTime(void *);
 void *TalkWindow_Get(s32);
-void _ZN15TalkWindowState13detachRequestEv(void *p);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32, s32);
-void _ZN12BgmSceneFade18prepareEventReturnEii(void *, s32, s32);
-void _ZN12BgmSceneFade16prepareEventWarpEii(void *, s32, s32);
-void _ZN10MsgRequest11setFileNameEPKc(void *, void *);
-void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
 s32 TalkRequestFlags_IsEventWarpStarted(void);
 BOOL EventAnnounce_RequestWarp(void);
 void EventAnnounce_RunIdle(s32);
@@ -183,7 +178,7 @@ BOOL EventAnnouncer::onCreate()
         return FALSE;
     }
     r5 = gSaveData;
-    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 && Scene_GetCurrent() != 0xd) {
+    if (((CommManager *)(gCommManager))->isOnline() == 0 && Scene_GetCurrent() != 0xd) {
         if (sEventAnnounceWasOnline != 0) {
             u32 k;
             t.a = 0;
@@ -245,7 +240,7 @@ BOOL EventAnnouncer::onCreate()
 BOOL EventAnnouncer::onExecute()
 {
     s32 x = (s32)this;
-    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+    if (((CommManager *)(gCommManager))->isOnline() == 0) {
         EventAnnounce_Update();
         switch (sEventAnnounceState.announceState) {
         case 0:
@@ -295,7 +290,7 @@ BOOL EventAnnouncer::onDelete()
         sEventAnnounceState.announceState = 2;
         break;
     }
-    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+    if (((CommManager *)(gCommManager))->isOnline() == 0) {
         data_021ed170[9] = sEventAnnounceCurEvent;
     }
     return TRUE;
@@ -314,7 +309,7 @@ extern "C" void EventAnnounce_Reset(void)
 extern "C" void EventAnnounce_Restart(void)
 {
     EventAnnounce_Reset();
-    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+    if (((CommManager *)(gCommManager))->isOnline() == 0) {
         EventAnnounce_CheckEvents();
     }
 }
@@ -471,7 +466,7 @@ extern "C" void EventAnnounce_RunWarp(s32)
                 if (r != 0) {
                     Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, buf, 0x400000, 0, 2, 2);
-                    _ZN12BgmSceneFade16prepareEventWarpEii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+                    ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->prepareEventWarp(sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
                     sEventAnnounceState.announceState = 4;
                     sEventAnnounceBusy = 1;
                 }
@@ -485,9 +480,9 @@ extern "C" void EventAnnounce_RunShowMessage(EventAnnouncer *o)
     if (Unk_02040ad8_IsTwo(gScreenTransition)) {
         TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
         o->msgRequest.resetMsg();
-        _ZN10MsgRequest11setFileNameEPKc(&o->msgRequest, (void *)sEventAnnounceMsgFiles[sEventAnnounceState.isEnd]);
+        ((MsgRequest *)(&o->msgRequest))->setFileName((const char *)((void *)sEventAnnounceMsgFiles[sEventAnnounceState.isEnd]));
         *(HOST_AT(o, 0x72, msgRequest.msgIndex, 0)) = sEventAnnounceState.msgIndex;
-        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(p, &o->msgRequest);
+        ((TalkWindowState *)(p))->attachRequest((TalkMsgRequest *)(&o->msgRequest));
         p->nextState = 1;
         sEventAnnounceState.announceState = 6;
     }
@@ -497,9 +492,9 @@ extern "C" void EventAnnounce_RunWaitMessageEnd(s32)
 {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->state == 0) {
-        _ZN15TalkWindowState13detachRequestEv(p);
+        ((TalkWindowState *)(p))->detachRequest();
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 20);
-        _ZN12BgmSceneFade18prepareEventReturnEii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+        ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->prepareEventReturn(sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
         sEventAnnounceBgmCode = 0;
         sEventAnnounceState.announceState = 0;
         sEventAnnounceState.busy = 0;
@@ -527,12 +522,12 @@ extern "C" void EventAnnounce_Request(s32 a, s32 b, s32 c)
 {
     s32 r4;
     s32 r6;
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         return;
     }
     if (Scene_GetCurrent() == 0) {
         if (_ZN16ResettiVisitFlag5isSetEv(TownSessionState_GetResettiFlag(TownSessionState_Get()))) {
-            if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
+            if (!((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid)) {
                 return;
             }
         }

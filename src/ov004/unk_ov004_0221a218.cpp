@@ -27,6 +27,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
 #include "talk/TalkTopicMsg.h"
+#include "npc/VillagerId.h"
 
 class CafeVillager;
 
@@ -151,10 +152,10 @@ BOOL CafeVillager::preCreate() {
     if (!VillagerActor::preCreate()) {
         return FALSE;
     }
-    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0x1e);
-    NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0x1e);
-    NpcMoveAnimSet_setRunAnim(&moveAnimSet, 0x1e);
-    NpcActor_setTalkRequest(this, &talk);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0x1e);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0x1e);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setRunAnim(0x1e);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
     return TRUE;
 }
@@ -186,24 +187,24 @@ void CafeVillager::changeAct(s32 idx) {
 }
 
 BOOL CafeVillager::setupAct02() {
-    NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL CafeVillager::mainAct02() { return TRUE; }
 
 BOOL CafeVillager::setupAct00() {
-    void *p = ActorTalkRequest_getTalkPlayer(&talk);
+    void *p = ((ActorTalkRequest *)(&talk))->getTalkPlayer();
     s32 v = 0;
     if (p) {
-        v = NpcActor_getAngleTo(this, p);
+        v = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, v, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, v, 0);
     return TRUE;
 }
 
 BOOL CafeVillager::mainAct00() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
@@ -218,13 +219,13 @@ CafeVillagerTalk::~CafeVillagerTalk() {}
 
 void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
     resetMsg();
-    VillagerTalk_begin(this, owner, 0x11);
+    ((VillagerTalk *)(this))->begin((VillagerActor *)(owner), 0x11);
     villager = owner;
 }
 
 void CafeVillagerTalk::start(TalkStartMsg *arg) {
     TalkTopicMsg *out = (TalkTopicMsg *)arg;
-    VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_022508e0, 0x28, "ai_shop3");
+    ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_022508e0), 0x28, (u32)("ai_shop3"));
     out->fileName = (u32)data_ov004_022508e0;
     out->msgIndex = Random_GlobalBelow(5);
 }
@@ -234,7 +235,7 @@ void CafeVillagerTalk::onMessageEnd(u32) {}
 void CafeVillagerTalk::onChoice(u32) {}
 
 BOOL CafeVillager::acceptsInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         return TRUE;
     }
     return FALSE;
@@ -244,7 +245,7 @@ void CafeVillager::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 0:
         talk.resetMsg();
-        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+        ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         changeAct(0);
         break;
     case 8:

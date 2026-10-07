@@ -17,6 +17,11 @@
 #include "town/BuildingActor.h"
 #include "game/TouchPickSphere.h"
 #include "gfx/DebugColor.h"
+#include "game/TouchPicker.h"
+#include "gfx/AnimModel.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "item/LetterView.h"
+#include "net/CommManager.h"
 
 
 
@@ -46,9 +51,6 @@ extern u8 data_021f47e0[];
 BOOL Building_RequestState(void *o, s32 v);
 BOOL BuildingState_Set(u32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
-void _ZN14BlendAnimModel8initAnimEiiitt(void *self, void *a, s32 b, s32 c, u16 d, u16 e);
-void _ZN9AnimModel8stepAnimEv(void *self);
-void _ZN9ModelAnim7replaceEiiiit(void *self, void *a, void *b, s32 c, s32 d, u16 e);
 BOOL MenuCtrl_IsFinished();
 BOOL PlayerActor_LocalRequestMailboxWaitOrClose(s32 a);
 BOOL MenuCtrl_OpenLauncher(u32 a);
@@ -58,21 +60,13 @@ u32 WorldCurve_ToCurved(void *out, void *in);
 void Mtx43_Translate(void *m, s32 a, s32 b, s32 c);
 void *PlayerData_GetCurrent();
 PlayerMailbox *PlayerData_GetMailbox(void *p);
-BOOL _ZN10LetterView8getStateEv(void *letter);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 void *Scene_GetTouchPicker();
-void _ZN11TouchPicker10pushSphereEP15TouchPickSphere(void *self, void *o);
-BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
 u32 BuildingList_IndexOf(void *p);
 BOOL Scene_InTown();
-BOOL _ZN11CommManager8isOnlineEv(void *self);
-BOOL _ZN11CommManager7isMyAidEj(void *self, u32 a);
 u32 BuildingState_Get(u32 a);
 void *Mailbox_Create();
-void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
-void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
-void _ZN9Character18clearTalkStartModeEv(void *self, void *a);
 }
 
 // ============================================================ class Mailbox
@@ -147,11 +141,11 @@ extern "C" void *Mailbox_Create() {
 }
 
 Mailbox::Mailbox() {
-    _ZN15TouchPickSphereC1Ev((TouchPickSphere *)touchSphere);
+    new ((TouchPickSphere *)touchSphere) TouchPickSphere();
 }
 
 Mailbox::~Mailbox() {
-    _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
+    ((TouchPickSphere *)((void *)((TouchPickSphere *)touchSphere)))->~TouchPickSphere();
 }
 
 BOOL Mailbox::initBuilding() {
@@ -169,14 +163,14 @@ BOOL Mailbox::initBuilding() {
     v.y = position.y;
     v.z = position.z;
     v.y = v.y + 0x1000;
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &v, 0x1000, 7, b);
+    ((TouchPicker *)(Scene_GetTouchPicker()))->addSphere((TouchPickSphere *)((TouchPickSphere *)touchSphere), (VecFx32 *)(&v), (VecFx32 *)(0x1000), 7, b);
     canUse = 1;
     if (!Scene_InTown()) {
         canUse = 0;
     } else {
         void *g = gCommManager;
-        if (_ZN11CommManager8isOnlineEv(g)) {
-            if (!_ZN11CommManager7isMyAidEj(g, 0)) {
+        if (((CommManager *)(g))->isOnline()) {
+            if (!((CommManager *)(g))->isMyAid(0)) {
                 canUse = 0;
             }
         }
@@ -192,7 +186,7 @@ BOOL Mailbox::initBuilding() {
 
 BOOL Mailbox::onExecute() {
     updateUseState();
-    _ZN11TouchPicker10pushSphereEP15TouchPickSphere(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere);
+    ((TouchPicker *)(Scene_GetTouchPicker()))->pushSphere((TouchPickSphere *)((TouchPickSphere *)touchSphere));
     return TRUE;
 }
 
@@ -201,7 +195,7 @@ BOOL Mailbox::needsMatrixUpdate() {
 }
 
 BOOL Mailbox::acceptsInteraction(void *a) {
-    _ZN9Character18clearTalkStartModeEv(this, a);
+    ((Character *)(this))->clearTalkStartMode();
     if (!isUsable()) {
         return FALSE;
     }
@@ -236,7 +230,7 @@ s32 Mailbox::countLetters() {
             for (i = n; i < 10; i++) {
                 void *l = p->getLetter(i);
                 if (l) {
-                    if (_ZN10LetterView8getStateEv(l)) {
+                    if (((LetterView *)(l))->getState()) {
                         n++;
                     }
                 }
@@ -394,10 +388,10 @@ void Mailbox::updateDoorState() {
 
 BOOL Mailbox::enterNoMail() {
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, 0, 0);
     void *r4 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
-    _ZN9ModelAnim7replaceEiiiit(&matAnim, r4, r2, 1, 0x1000, 0);
+    ((ModelAnim *)(&matAnim))->replace((s32)(r4), (s32)(r2), 1, 0x1000, 0);
     return TRUE;
 }
 
@@ -409,7 +403,7 @@ void Mailbox::execNoMail() {
 
 BOOL Mailbox::enterMailArrive() {
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, 0, 0);
     return TRUE;
 }
 
@@ -417,17 +411,17 @@ void Mailbox::execMailArrive() {
     if (isUsable() && ((AnimFrameCtrl *)doorAnimCtrl)->isFinished()) {
         Building_RequestState(this, 2);
     } else {
-        _ZN9AnimModel8stepAnimEv(model);
+        ((AnimModel *)(model))->stepAnim();
     }
 }
 
 BOOL Mailbox::enterHasMail() {
     NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorInAnim();
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, a->numFrame - 1, 0);
+    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, a->numFrame - 1, 0);
     void *r5 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
-    _ZN9ModelAnim7replaceEiiiit(&matAnim, r5, r2, 0, 0x1000, 0);
+    ((ModelAnim *)(&matAnim))->replace((s32)(r5), (s32)(r2), 0, 0x1000, 0);
     return TRUE;
 }
 
@@ -438,13 +432,13 @@ void Mailbox::execHasMail() {
 
 BOOL Mailbox::enterLidOpen() {
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
+    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, 0, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x819);
     return TRUE;
 }
 
 void Mailbox::execLidOpen() {
-    _ZN9AnimModel8stepAnimEv(model);
+    ((AnimModel *)(model))->stepAnim();
     matAnim.step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
     if (isUsable() && ((AnimFrameCtrl *)doorAnimCtrl)->isFinished()) {
@@ -455,7 +449,7 @@ void Mailbox::execLidOpen() {
 BOOL Mailbox::enterLidOpened() {
     NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorOutAnim();
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, a->numFrame - 1, 0);
+    ((BlendAnimModel *)(model))->initAnim((s32)(b), 1, 0x1000, a->numFrame - 1, 0);
     return TRUE;
 }
 
@@ -467,7 +461,7 @@ void Mailbox::execLidOpened() {
 BOOL Mailbox::enterLidClose() {
     NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorOutAnim();
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 3, 0x1000, a->numFrame - 1, 0);
+    ((BlendAnimModel *)(model))->initAnim((s32)(b), 3, 0x1000, a->numFrame - 1, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x81a);
     return TRUE;
 }
@@ -480,7 +474,7 @@ void Mailbox::execLidClose() {
             Building_RequestState(this, 2);
         }
     } else {
-        _ZN9AnimModel8stepAnimEv(model);
+        ((AnimModel *)(model))->stepAnim();
     }
     matAnim.step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
@@ -489,7 +483,7 @@ void Mailbox::execLidClose() {
 BOOL Mailbox::enterMailGone() {
     NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorInAnim();
     NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
-    _ZN14BlendAnimModel8initAnimEiiitt(model, b, 3, 0x1000, a->numFrame - 1, 0);
+    ((BlendAnimModel *)(model))->initAnim((s32)(b), 3, 0x1000, a->numFrame - 1, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x81b);
     return TRUE;
 }
@@ -499,7 +493,7 @@ void Mailbox::execMailGone() {
     if (isUsable() && ((AnimFrameCtrl *)doorAnimCtrl)->isFinished()) {
         Building_RequestState(this, 0);
     } else {
-        _ZN9AnimModel8stepAnimEv(model);
+        ((AnimModel *)(model))->stepAnim();
     }
     matAnim.step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;

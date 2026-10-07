@@ -4,6 +4,7 @@
 #include "sys/QNode.h"
 #include "sys/OSThread.h"
 #include "nitro/io_access.h"
+#include "sys/Heap.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -349,11 +350,11 @@ void CrashScreen_Frame(void) {
                     u32 b = gCurrentHeap;
                     u32 c = gProcHeap;
                     if ((keys & 0x20) != 0) {
-                        Heap_dump(a);
+                        ((Heap *)(a))->dump();
                     } else if ((keys & 0x10) != 0) {
-                        Heap_dump(c);
+                        ((Heap *)(c))->dump();
                     } else if ((keys & 0x40) != 0) {
-                        Heap_dump(b);
+                        ((Heap *)(b))->dump();
                     }
                 }
             }

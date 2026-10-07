@@ -73,25 +73,13 @@ s32 Camera_CalcPointSpan(void *p, void *a, s32 *b, s32 *out);
 s32 _ZN6Camera11getDistanceEv(Camera *o);
 s16 _ZN6Camera6getYawEv(Camera *o);
 s16 _ZN6Camera8getPitchEv(Camera *o);
-s32 _ZN6Camera7setModeEi(Camera *o, s32 a);
 void _ZN6Camera11updateBlendEv(Camera *o);
 void _ZN6Camera14setLookAtOrbitEP7VecFx32iii(Camera *o, void *a, s32 b, s32 c, s32 d);
-void _ZN6Camera14setBlendParamsEPj(Camera *o, u32 *src);
-void _ZN6Camera14setBlendPresetEi(Camera *o, s32 a);
-void _ZN6Camera8loadPoseEiP10CameraPose(Camera *o, s32 a, s32 b);
-void _ZN6Camera9lerpPosesEiii(Camera *o, s32 a, s32 b, s32 c);
-s32 _ZN6Camera15getRoomEdgeSideEPi(Camera *o, s32 *p);
 #define Camera_getDistance _ZN6Camera11getDistanceEv
 #define Camera_getYaw _ZN6Camera6getYawEv
 #define Camera_getPitch _ZN6Camera8getPitchEv
-#define Camera_setMode _ZN6Camera7setModeEi
 #define Camera_updateBlend _ZN6Camera11updateBlendEv
 #define Camera_setLookAtOrbit _ZN6Camera14setLookAtOrbitEP7VecFx32iii
-#define Camera_setBlendParams _ZN6Camera14setBlendParamsEPj
-#define Camera_setBlendPreset _ZN6Camera14setBlendPresetEi
-#define Camera_loadPose _ZN6Camera8loadPoseEiP10CameraPose
-#define Camera_lerpPoses _ZN6Camera9lerpPosesEiii
-#define Camera_getRoomEdgeSide _ZN6Camera15getRoomEdgeSideEPi
 
 void Camera_KkShowResetShot(Camera *o);
 void Camera_KkShowPickShot(Camera *o);
@@ -135,7 +123,7 @@ void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
     sc = FX_Div(t - 0x4800, 0x6800);
     inv = 0x1000 - sc;
     self->closeUpFactorTarget = inv;
-    Camera_lerpPoses(self, 0xb, sCameraPoseGrid[self->presetRow][self->presetCol], sc);
+    (self)->lerpPoses(0xb, sCameraPoseGrid[self->presetRow][self->presetCol], sc);
     d = gVec3Zero;
     if (p->z > self->focusPointA.z) {
         d = *p;
@@ -144,7 +132,7 @@ void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
         d.y = self->focusPointA.y;
         d.z = self->focusPointA.z;
     }
-    sp4 = Camera_getRoomEdgeSide(self, &a->focus);
+    sp4 = (self)->getRoomEdgeSide(&a->focus);
     sp8 = 0;
     ang = Math_AngleXZ(&a->focus, &d);
     s32 av = ang < 0 ? (s16)-ang : ang;
@@ -179,8 +167,8 @@ void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
 }
 
 BOOL Camera_InitMode10(Camera *self) {
-    Camera_loadPose(self, 0x11, 0);
-    Camera_setBlendPreset(self, 0);
+    (self)->loadPose(0x11, (CameraPose *)(0));
+    (self)->setBlendPreset(0);
     self->targetFocus.x = gVec3Zero.x;
     self->targetFocus.y = gVec3Zero.y;
     self->targetFocus.z = gVec3Zero.z;
@@ -189,8 +177,8 @@ BOOL Camera_InitMode10(Camera *self) {
 }
 
 BOOL Camera_StartBlendToPlayer(Camera *self) {
-    Camera_loadPose(self, sCameraPoseGrid[1][1], 0);
-    Camera_setBlendPreset(self, 0);
+    (self)->loadPose(sCameraPoseGrid[1][1], (CameraPose *)(0));
+    (self)->setBlendPreset(0);
     VecFx32 *p = PlayerActor_GetBodyPos(4);
     self->targetFocus.x = p->x;
     self->targetFocus.y = p->y;
@@ -201,11 +189,11 @@ BOOL Camera_StartBlendToPlayer(Camera *self) {
 
 void Camera_UpdateMode10(Camera *self) {
     VecFx32 v;
-    Camera_updateBlend(self);
+    (self)->updateBlend();
     Camera_GetLookAtPoint(&v, self);
-    s32 a = Camera_getPitch(self);
-    s32 b = Camera_getYaw(self);
-    Camera_setLookAtOrbit(self, &v, a, b, Camera_getDistance(self));
+    s32 a = (self)->getPitch();
+    s32 b = (self)->getYaw();
+    Camera_setLookAtOrbit(self, &v, a, b, (self)->getDistance());
 }
 
 s32 Camera_GetShopTier() {
@@ -230,21 +218,21 @@ s32 Camera_GetShopTier() {
 
 BOOL Camera_SetMode11() {
     if (gCamera) {
-        return Camera_setMode(gCamera, 11);
+        return (gCamera)->setMode(11);
     }
     return FALSE;
 }
 
 BOOL Camera_SetMode12() {
     if (gCamera) {
-        return Camera_setMode(gCamera, 12);
+        return (gCamera)->setMode(12);
     }
     return FALSE;
 }
 
 BOOL Camera_InitMode11(Camera *o) {
-    Camera_loadPose(o, Camera_GetShopTier() + 0x12, 0);
-    Camera_setBlendPreset(o, 0);
+    (o)->loadPose(Camera_GetShopTier() + 0x12, (CameraPose *)(0));
+    (o)->setBlendPreset(0);
     Camera_StartBlend();
     return TRUE;
 }
@@ -261,8 +249,8 @@ void Camera_UpdateMode11(Camera *o) {
 }
 
 BOOL Camera_InitMode12(Camera *o) {
-    Camera_loadPose(o, Camera_GetShopTier() + 0x16, 0);
-    Camera_setBlendPreset(o, 0);
+    (o)->loadPose(Camera_GetShopTier() + 0x16, (CameraPose *)(0));
+    (o)->setBlendPreset(0);
     Camera_StartBlend();
     return TRUE;
 }
@@ -283,15 +271,15 @@ BOOL Camera_SetMode16At(VecFx32 *v) {
     if (c) {
         VecFx32 *d = (VecFx32 *)&c->focusPointA;
         *d = *v;
-        return Camera_setMode(gCamera, 0x10);
+        return (gCamera)->setMode(0x10);
     }
     return FALSE;
 }
 
 BOOL Camera_InitMode16(Camera *o) {
     PlayerActor_GetBodyPos(4);
-    Camera_loadPose(o, 0x1e, 0);
-    Camera_setBlendPreset(o, 0);
+    (o)->loadPose(0x1e, (CameraPose *)(0));
+    (o)->setBlendPreset(0);
     Camera_StartBlend();
     Camera_PlaySe(o, 0x2f);
     return TRUE;
@@ -315,8 +303,8 @@ void Camera_UpdateMode16(Camera *o) {
 }
 
 BOOL Camera_InitMode14(Camera *o) {
-    Camera_loadPose(o, sCameraPoseGrid[o->presetRow][o->presetCol], 0);
-    Camera_setBlendPreset(o, 0);
+    (o)->loadPose(sCameraPoseGrid[o->presetRow][o->presetCol], (CameraPose *)(0));
+    (o)->setBlendPreset(0);
     Camera_StartBlend();
     return TRUE;
 }
@@ -329,8 +317,8 @@ void Camera_UpdateMode14(Camera *o) {
 }
 
 BOOL Camera_InitMode15(Camera *o) {
-    Camera_loadPose(o, 0x1d, 0);
-    Camera_setBlendPreset(o, 4);
+    (o)->loadPose(0x1d, (CameraPose *)(0));
+    (o)->setBlendPreset(4);
     Camera_StartBlend();
     return TRUE;
 }
@@ -343,15 +331,15 @@ void Camera_UpdateMode15(Camera *o) {
 }
 
 void Camera_SetMode14(void) {
-    Camera_setMode(gCamera, 0xe);
+    (gCamera)->setMode(0xe);
 }
 
 void Camera_SetMode15(void) {
-    Camera_setMode(gCamera, 0xf);
+    (gCamera)->setMode(0xf);
 }
 
 BOOL Camera_InitMode20(Camera *o) {
-    Camera_loadPose(o, 0x20, 0);
+    (o)->loadPose(0x20, (CameraPose *)(0));
     Camera_FinishBlend();
     return TRUE;
 }
@@ -365,11 +353,11 @@ void Camera_UpdateMode20(Camera *o) {
 
 void Camera_SetMode20At(VecFx32 *v) {
     *(VecFx32 *)&gCamera->focusPointA = *v;
-    Camera_setMode(gCamera, 0x14);
+    (gCamera)->setMode(0x14);
 }
 
 void Camera_SetMode18(void) {
-    Camera_setMode(gCamera, 0x12);
+    (gCamera)->setMode(0x12);
 }
 
 void RoomCamera_KkShowWideShot(void) {
@@ -407,7 +395,7 @@ BOOL Camera_InitMode18(Camera *o) {
     m->b0 = 0;
     m->b1 = 0;
     COPY_TBL(o, sCameraKkShowSetup);
-    Camera_setBlendParams(o, data_ov004_0224f32c);
+    (o)->setBlendParams(data_ov004_0224f32c);
     Camera_StartBlend();
     return TRUE;
 }
@@ -421,7 +409,7 @@ void Camera_UpdateMode18(Camera *o) {
         o->targetFocus.y = e->focusY;
         o->targetFocus.z = e->focusZ;
         VEC_Subtract(&o->targetFocus.x, &o->target.x, &o->targetFocus.x);
-        if (Camera_getDistance(o) > 0x1400) {
+        if ((o)->getDistance() > 0x1400) {
             o->target.w0 = o->target.w0 + e->distanceStep;
         }
         o->target.h0 = o->target.h0 + e->yawStep;
@@ -438,7 +426,7 @@ void Camera_UpdateMode18(Camera *o) {
 
 void Camera_KkShowWideShot(Camera *o) {
     COPY_TBL(o, sCameraKkShowWideSetup);
-    Camera_setBlendParams(o, data_ov004_0224f33c);
+    (o)->setBlendParams(data_ov004_0224f33c);
     Camera_StartBlend();
 }
 
@@ -505,7 +493,7 @@ void Camera_KkShowResetShot(Camera *o) {
     o->currentFocus = sCameraKkShowPrevSetup.q.x;
     o->currentFocusY = sCameraKkShowPrevSetup.q.y;
     o->currentFocusZ = sCameraKkShowPrevSetup.q.z;
-    Camera_setBlendParams(o, data_ov004_0224f31c);
+    (o)->setBlendParams(data_ov004_0224f31c);
     Camera_StartBlend();
 }
 

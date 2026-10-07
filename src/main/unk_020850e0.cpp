@@ -4,6 +4,11 @@
 #include "save/Unk_02085810_Rec.h"
 #include "save/ContestRecord.h"
 #include "game/GroundInfo.h"
+#include "npc/VillagerDataItemView.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "player/PlayerSpNpcRecord.h"
+#include "save/SaveData.h"
 
 
 
@@ -41,17 +46,10 @@ Unk_02085490_Pt sGardenNeighbourOffsets[8] = {
 TownSessionState gTownSessionState;
 
 extern "C" {
-void *_ZN13ContestRecord17getHolderVillagerEv(void *self);
-void *_ZN13ContestRecord15getHolderPlayerEv(void *self);
-void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *self, void *src);
-void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *self, void *src);
-void _ZN13ContestRecord10resetTodayEv(void *self);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 MI_CpuCopy8(void *, void *, s32);
 void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
-s32 _ZN10VillagerId7isValidEv(void *);
-u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
 void NetBuf_PackPair20(void *, s32, s32);
 void CommRecord_PackSource(void *, s32, s32);
 s32 VisitorSchedule_Clear(void *);
@@ -66,9 +64,6 @@ void MapBlock_SetItem(void *, u16 *, s32, s32, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData11getPlayerIdEv(void *);
-s32 _ZN8PlayerId7isValidEv(void *);
-s32 _ZN10PlayerData8testFlagEj(void *, s32);
 s32 Catalog_HasAllFish();
 s32 Catalog_HasAllInsects();
 void Clock_GetDateTime(void *);
@@ -91,7 +86,6 @@ void _ZN13PeteFallState9constructEv(void *);
 void _ZN16ResettiVisitFlag9constructEv(void *);
 void _ZN17VisitorSpawnFlags9constructEv(void *);
 void VillagerId_Clear(void *p);
-void _ZN8PlayerId5clearEv(void *self);
 s32 Random_GlobalBelow(s32);
 s32 Random_PickSetBit(u32, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
@@ -111,15 +105,7 @@ s32 Item_GetInsectBaseSize(u16 *);
 void Clock_GetDate(void *);
 s32 Date_DaysBetween(void *, void *);
 s32 Event_GetDaysSinceStart(s32);
-void _ZN8SaveData9clearFlagEj(void *, s32);
 void *PlayerData_GetResident(void *, s32);
-s32 _ZN10PlayerData6isUsedEv(void *);
-void *_ZN10PlayerData14getSpNpcRecordEv(void *);
-void _ZN17PlayerSpNpcRecord15resetAcornCountEv(void *);
-void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *);
-void _ZN10PlayerData9clearFlagEj(void *, s32);
-void _ZN17PlayerSpNpcRecord24setEnteredFishingTourneyEi(void *, s32);
-void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *, s32);
 void TownSessionState_SetFlag(void *self, u32 bit);
 }
 
@@ -143,7 +129,7 @@ void ContestRecord::setHolderPlayer(Unk_02085810_Base *src) { holderPlayer = *sr
 
 void *ContestRecord::getHolderPlayer() { return this; }
 
-void ContestRecord::setHolderVillager(VillagerId *src) { holderVillager = *src; _ZN8PlayerId5clearEv(this); }
+void ContestRecord::setHolderVillager(VillagerId *src) { holderVillager = *src; ((PlayerId *)(this))->clear(); }
 
 VillagerId *ContestRecord::getHolderVillager() { return &holderVillager; }
 
@@ -171,16 +157,16 @@ extern "C" void ContestRecord_BeginContestDay(u8 *self, u32 mode)
     if (self[0x36] == t.b[2] && self[0x35] == t.b[1] && self[0x34] == t.b[0]) {
         return;
     }
-    _ZN13ContestRecord10resetTodayEv(self);
+    ((ContestRecord *)(self))->resetToday();
     for (i = 0; i < 4; i++) {
         void *o = PlayerData_GetResident(gSavePlayers, i);
-        if (o != NULL && _ZN10PlayerData6isUsedEv(o) != 0) {
+        if (o != NULL && ((PlayerData *)(o))->isUsed() != 0) {
             switch (mode) {
             case 1:
-                _ZN17PlayerSpNpcRecord24setEnteredFishingTourneyEi(_ZN10PlayerData14getSpNpcRecordEv(o), z0);
+                ((PlayerSpNpcRecord *)(((PlayerData *)(o))->getSpNpcRecord()))->setEnteredFishingTourney(z0);
                 break;
             case 2:
-                _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(_ZN10PlayerData14getSpNpcRecordEv(o), z1);
+                ((PlayerSpNpcRecord *)(((PlayerData *)(o))->getSpNpcRecord()))->setEnteredBugOff(z1);
                 break;
             }
         }
@@ -211,24 +197,24 @@ extern "C" void ContestRecord_BeginFestival(u8 *self, u32 mode)
     }
     switch (mode) {
     case 1:
-        _ZN8SaveData9clearFlagEj(gSaveData, 0x11);
+        ((SaveData *)(gSaveData))->clearFlag(0x11);
         break;
     case 0:
     case 2:
         for (i = 0; i < 4; i++) {
             void *o = PlayerData_GetResident(gSavePlayers, i);
-            if (o != NULL && _ZN10PlayerData6isUsedEv(o) != 0) {
+            if (o != NULL && ((PlayerData *)(o))->isUsed() != 0) {
                 if (mode == 2) {
-                    _ZN17PlayerSpNpcRecord15resetAcornCountEv(_ZN10PlayerData14getSpNpcRecordEv(o));
-                    _ZN10PlayerData9clearFlagEj(o, 0xf);
+                    ((PlayerSpNpcRecord *)(((PlayerData *)(o))->getSpNpcRecord()))->resetAcornCount();
+                    ((PlayerData *)(o))->clearFlag(0xf);
                 } else {
-                    _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(_ZN10PlayerData14getSpNpcRecordEv(o));
+                    ((PlayerSpNpcRecord *)(((PlayerData *)(o))->getSpNpcRecord()))->clearFestivalGift();
                 }
             }
         }
         break;
     }
-    _ZN13ContestRecord10resetTodayEv(self);
+    ((ContestRecord *)(self))->resetToday();
 }
 
 extern "C" s32 Contest_GetCatchSize(u16 *p)
@@ -295,9 +281,9 @@ extern "C" s32 ContestRecord_ScoreVillagerGarden(void *obj, void *grid)
     void *k = _ZN12VillagerData13getVillagerIdEv(obj);
     s32 r = 0;
     s32 i, sx, sy, z1, z2, v;
-    if (_ZN10VillagerId7isValidEv(k) != 0) {
+    if (((VillagerId *)(k))->isValid() != 0) {
         u32 mask = r;
-        u8 *q = _ZN20VillagerDataItemView11getHousePosEv(obj);
+        u8 *q = ((VillagerDataItemView *)(obj))->getHousePos();
         sx = q[0];
         sy = q[1];
         s32 *d = (s32 *)sVillagerGardenOffsets;
@@ -409,15 +395,15 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
     BOOL b = (gFieldSceneKind == 0);
     if (b) {
         grid = *(void **)gSceneBlockMap;
-        VillagerId_Clear(_ZN13ContestRecord17getHolderVillagerEv(self));
-        _ZN8PlayerId5clearEv(_ZN13ContestRecord15getHolderPlayerEv(self));
+        VillagerId_Clear(((ContestRecord *)(self))->getHolderVillager());
+        ((PlayerId *)(((ContestRecord *)(self))->getHolderPlayer()))->clear();
         if (grid != NULL) {
             mask = 0;
             best = -1;
             cnt = 0;
             for (i = 0; i < 8; i++) {
                 void *o = SaveVillagers_Get(gSaveVillagers, i);
-                if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
+                if (o != NULL && ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(o)))->isValid() != 0) {
                     s32 v = ContestRecord_ScoreVillagerGarden(o, grid);
                     if (v > best) {
                         mask = (u8)(1 << i);
@@ -431,11 +417,11 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
             }
             s32 w = ContestRecord_ScorePlayerGarden(self, grid);
             if (cnt == 0 || w > best || (w > 0 && w == best && Random_GlobalBelow(2) == 0)) {
-                _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(self, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+                ((ContestRecord *)(self))->setHolderPlayer((Unk_02085810_Base *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()));
             } else {
                 void *o = SaveVillagers_Get(gSaveVillagers, Random_PickSetBit(mask, cnt, 8));
-                if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
-                    _ZN13ContestRecord17setHolderVillagerEP10VillagerId(self, _ZN12VillagerData13getVillagerIdEv(o));
+                if (o != NULL && ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(o)))->isValid() != 0) {
+                    ((ContestRecord *)(self))->setHolderVillager((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(o)));
                 }
             }
         }
@@ -527,10 +513,10 @@ extern "C" void TownSessionState_CheckTortimerReward(void *self)
 {
     void *r5 = PlayerData_GetCurrent();
     if (r5 != NULL) {
-        if (_ZN8PlayerId7isValidEv(_ZN10PlayerData11getPlayerIdEv(r5)) != 0) {
-            if (_ZN10PlayerData8testFlagEj(r5, 1) == 0) {
-                if ((_ZN10PlayerData8testFlagEj(r5, 0x21) == 0 && Catalog_HasAllFish() != 0) ||
-                    (_ZN10PlayerData8testFlagEj(r5, 0x22) == 0 && Catalog_HasAllInsects() != 0)) {
+        if (((PlayerId *)(((PlayerData *)(r5))->getPlayerId()))->isValid() != 0) {
+            if (((PlayerData *)(r5))->testFlag(1) == 0) {
+                if ((((PlayerData *)(r5))->testFlag(0x21) == 0 && Catalog_HasAllFish() != 0) ||
+                    (((PlayerData *)(r5))->testFlag(0x22) == 0 && Catalog_HasAllInsects() != 0)) {
                     s32 a[2];
                     s32 b[2];
                     a[0] = 0;

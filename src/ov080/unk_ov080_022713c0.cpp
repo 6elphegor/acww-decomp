@@ -22,6 +22,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "player/PlayerData.h"
+#include "talk/ChoiceList.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti
@@ -169,10 +171,10 @@ BOOL SpNpcTortimer::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    NpcAnimCtrl_playAnim(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
+    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
-    if (PlayerData_testFlag(PlayerData_GetCurrent(), 1) == 0) {
+    if (((PlayerData *)(PlayerData_GetCurrent()))->testFlag(1) == 0) {
         TalkRequestFlags_SetEventWarpBlock();
     }
     return TRUE;
@@ -208,7 +210,7 @@ void SpNpcTortimer::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimer::setupAct00() {
-    unk_564_func_020196b4(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -220,12 +222,12 @@ BOOL SpNpcTortimer::setupAct01() {
     if (p != NULL) {
         x = getAngleTo((NpcActor *)p);
     }
-    unk_618_func_020141b4(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimer::mainAct01() {
-    if (unk_618_func_02014220(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -246,15 +248,15 @@ void SpNpcTortimerTalk::attachOwner(SpNpcTortimer *owner) {
 
 void SpNpcTortimerTalk::start(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
-    if (PlayerData_testFlag(g, 1)) {
+    if (((PlayerData *)(g))->testFlag(1)) {
         out->msgKey = "sp_etc_sequence5_2";
-        if (PlayerData_testFlag(g, 0xd) == 0) {
+        if (((PlayerData *)(g))->testFlag(0xd) == 0) {
             out->msgIndex = 0;
-            PlayerData_setFlag(g, 0xd);
+            ((PlayerData *)(g))->setFlag(0xd);
         } else {
             out->msgIndex = Random_GlobalBelow(4) + 3;
         }
-        PlayerData_setFlag(g, 0xa);
+        ((PlayerData *)(g))->setFlag(0xa);
     } else {
         if (massageChairSlot == -1) {
             u16 v = 0x37e0;
@@ -266,7 +268,7 @@ void SpNpcTortimerTalk::start(TalkStartMsg *out) {
             }
         }
         out->msgKey = "sp_npc_turtle7";
-        if (PlayerData_testFlag(g, 0x21) == 0 && Catalog_HasAllFish()) {
+        if (((PlayerData *)(g))->testFlag(0x21) == 0 && Catalog_HasAllFish()) {
             out->msgIndex = 0;
             if (Pocket_FindEmpty() < 0) {
                 out->msgIndex = 9;
@@ -274,13 +276,13 @@ void SpNpcTortimerTalk::start(TalkStartMsg *out) {
                 s32 i;
                 for (i = 0; i < 4; i++) {
                     void *p = PlayerData_GetResident(gSavePlayers, i);
-                    if (p != NULL && PlayerData_isUsed(p) && p != g && PlayerData_testFlag(p, 0x21)) {
+                    if (p != NULL && ((PlayerData *)(p))->isUsed() && p != g && ((PlayerData *)(p))->testFlag(0x21)) {
                         out->msgIndex = 2;
                         break;
                     }
                 }
             }
-        } else if (PlayerData_testFlag(g, 0x22) == 0 && Catalog_HasAllInsects()) {
+        } else if (((PlayerData *)(g))->testFlag(0x22) == 0 && Catalog_HasAllInsects()) {
             out->msgIndex = 3;
             if (Pocket_FindEmpty() < 0) {
                 out->msgIndex = 0xa;
@@ -288,7 +290,7 @@ void SpNpcTortimerTalk::start(TalkStartMsg *out) {
                 s32 i;
                 for (i = 0; i < 4; i++) {
                     void *p = PlayerData_GetResident(gSavePlayers, i);
-                    if (p != NULL && PlayerData_isUsed(p) && p != g && PlayerData_testFlag(p, 0x22)) {
+                    if (p != NULL && ((PlayerData *)(p))->isUsed() && p != g && ((PlayerData *)(p))->testFlag(0x22)) {
                         out->msgIndex = 5;
                         break;
                     }
@@ -318,7 +320,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
     } else {
         void *g = PlayerData_GetCurrent();
         u8 *str;
-        if (PlayerData_testFlag(g, 1)) {
+        if (((PlayerData *)(g))->testFlag(1)) {
             str = (u8 *)"sp_etc_sequence5_2";
         } else {
             str = (u8 *)"sp_npc_turtle7";
@@ -329,7 +331,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
                 if (Pocket_AddItem(&buf.items[2], 0)) {
                     buf.items[3] = 0x1375;
                     this->requestGiveItem(&buf.items[3], 0, 5, 0);
-                    PlayerData_setFlag(g, 0x21);
+                    ((PlayerData *)(g))->setFlag(0x21);
                     buf.items[4] = 0x1375;
                     this->setItemNameSlot((u32)&buf.items[4], 0, 7);
                     r = 1;
@@ -341,7 +343,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
                 if (Pocket_AddItem(&buf.items[5], 0)) {
                     buf.items[6] = 0x1377;
                     this->requestGiveItem(&buf.items[6], 0, 5, 0);
-                    PlayerData_setFlag(g, 0x22);
+                    ((PlayerData *)(g))->setFlag(0x22);
                     buf.items[7] = 0x1377;
                     this->setItemNameSlot((u32)&buf.items[7], 0, 7);
                     r = 4;
@@ -358,7 +360,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
 
 void SpNpcTortimerTalk::onChoice(u32) {
     SpNpcTortimerChoiceLocal buf;
-    s32 t = ChoiceList_getResult(getChoiceList());
+    s32 t = ((ChoiceList *)(getChoiceList()))->getResult();
     void *g = PlayerData_GetCurrent();
     u8 r = 0xff;
     if (massageChairSlot >= 0) {
@@ -367,7 +369,7 @@ void SpNpcTortimerTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 buf.item = 0x37e0;
-                ActorTalkRequest_requestTakeItem(this, &buf.item, 0, 5, 0);
+                ((ActorTalkRequest *)(this))->requestTakeItem(&buf.item, 0, 5, 0);
             }
             r = 2;
         }
@@ -376,13 +378,13 @@ void SpNpcTortimerTalk::onChoice(u32) {
             window->setNextMessage(&buf.msgIndex, str);
         }
     } else {
-        PlayerData_testFlag(g, 1);
+        ((PlayerData *)(g))->testFlag(1);
     }
 }
 
 BOOL SpNpcTortimer::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (unk_618_func_02014220(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

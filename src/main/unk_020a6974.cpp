@@ -25,7 +25,6 @@
 #include "talk/MsgString33.h"
 #include "sys/ProcProfile.h"
 
-inline void *operator new(size_t, void *p) { return p; }
 
 extern "C" {
 // Other files
@@ -488,7 +487,6 @@ static inline BOOL IsTouching() {
 // ---- MsgQuery
 // MsgTag::MsgTag(), which func_020a6a0c calls to re-construct its token in place. A placement new adds a
 // null check, and C++ has no other way to call a constructor on an existing object.
-extern "C" void _ZN6MsgTagC1Ev(MsgTag *token);
 
 extern "C" {
 u32 Msg_CountChars(u32 a);
@@ -2067,7 +2065,7 @@ BOOL MsgQuery::canContinue() {
 
 void MsgQuery::resetQuery() {
     mode = 0;
-    _ZN6MsgTagC1Ev(&tag);
+    new (&tag) MsgTag();
     curChar = 0;
     findGroup = -1;
     findId = -1;

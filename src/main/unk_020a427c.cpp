@@ -192,12 +192,6 @@ s32 ScreenTransition_StartFadeOut(u32 a, u32 b);
 void Field_UpdateActions(void);
 void Gfx_ResetDisplayRegs(void);
 void MenuCtrl_ResetForceClose(void);
-u32 _ZN11CommManager10getAuxLenBEv(void *);
-void _ZN11CommManager12clearAuxLenBEv(void *);
-u32 _ZN11CommManager10getAuxBufBEv(void *);
-u32 _ZN11CommManager10getAuxLenAEv(void *);
-void _ZN11CommManager12clearAuxLenAEv(void *);
-u32 _ZN11CommManager10getAuxBufAEv(void *);
 s32 Comm_GetMemberMask(void);
 void Comm_ProcessReceived(s32 a);
 void TransitionCommIcon_Suspend(void);
@@ -226,14 +220,6 @@ void NetArea_BuildStateA(s32 a);
 void NetSyncMsg_Pack(void *p, u32 a, u32 b, u32 c);
 void NetSyncMsg_Fini(void *p);
 void NetSyncMsg_Init(void *p);
-void _ZN12NetMoveReady5resetEv(void *);
-void _ZN12NetMoveReady3getEPj(void *, s32 *);
-void _ZN14NetMoveRequest5resetEv(void *);
-void _ZN14NetMoveRequest3getEPiPh(void *, s32 *, u8 *);
-void _ZN13NetSlotStatus5resetEv(void *);
-void _ZN13NetSlotStatus3getEPhS0_S0_(void *, u8 *, u8 *, u8 *);
-void _ZN16NetPendingStatus5resetEv(void *);
-void _ZN16NetPendingStatus3getEPhS0_S0_Pj(void *, u8 *, u8 *, u8 *, u32 *);
 void NetStatusMsg_Pack(void *, s32, u32, u32, u32, u32);
 s32 Scene_GetWarpRequest(void);
 u32 Scene_GetRequestedScene(void);
@@ -278,8 +264,6 @@ extern u8 gSceneCreating;
 extern void *gActorDefaultParent;
 
 // callers pass an untruncated int to these u8/u16 parameters
-extern "C" void _ZN15NetSessionState17setSyncMemberMaskEt(void *self, s32 v);
-extern "C" void _ZN15NetSessionState17setCtrl07ReceivedEh(void *self, s32 v);
 
 // own prototypes
 extern "C" {
@@ -463,22 +447,22 @@ extern "C" void NetArea_SendStateA(s32 a) {
     NetArea_BuildStateA(a);
     CommManager *o = gCommManager;
     o->beginRecord();
-    u32 r6 = _ZN11CommManager10getAuxBufAEv(o);
-    u32 r2 = _ZN11CommManager10getAuxLenAEv(o);
+    u32 r6 = ((CommManager *)(o))->getAuxBufA();
+    u32 r2 = ((CommManager *)(o))->getAuxLenA();
     o->writeRecord((u8 *)r6, r2);
     o->endRecord(0xf, a);
-    _ZN11CommManager12clearAuxLenAEv(o);
+    ((CommManager *)(o))->clearAuxLenA();
 }
 
 extern "C" void NetArea_SendStateB(s32 a) {
     NetArea_BuildStateB(a);
     CommManager *o = gCommManager;
     o->beginRecord();
-    u32 r6 = _ZN11CommManager10getAuxBufBEv(o);
-    u32 r2 = _ZN11CommManager10getAuxLenBEv(o);
+    u32 r6 = ((CommManager *)(o))->getAuxBufB();
+    u32 r2 = ((CommManager *)(o))->getAuxLenB();
     o->writeRecord((u8 *)r6, r2);
     o->endRecord(0x10, a);
-    _ZN11CommManager12clearAuxLenBEv(o);
+    ((CommManager *)(o))->clearAuxLenB();
 }
 
 extern "C" s32 NetArea_FindSlotInScene(u32 a) {
@@ -532,7 +516,7 @@ extern "C" s32 NetSession_GetSyncState(s32 a) {
 }
 
 extern "C" void NetSession_SetSyncMemberMask(s32 a) {
-    _ZN15NetSessionState17setSyncMemberMaskEt(&gNetSessionState, a);
+    ((NetSessionState *)(&gNetSessionState))->setSyncMemberMask(a);
 }
 
 extern "C" u16 NetSession_GetSyncMemberMask() {
@@ -601,7 +585,7 @@ extern "C" void NetArea_OnStateAReceived() {
     CommManager *o = gCommManager;
     s32 r5 = o->myAid;
     if (o->isSlotActive(r5)) {
-        if (_ZN11CommManager10getAuxLenAEv(o)) {
+        if (((CommManager *)(o))->getAuxLenA()) {
             NetArea_ParseStateA();
             NetArea_SetSlotStatus(r5, 0x3f, 1, 0, 2);
             if (o->isOnline()) {
@@ -623,7 +607,7 @@ extern "C" void NetArea_OnStateAReceived() {
 extern "C" void NetArea_ApplyStateB() {
     CommManager *o = gCommManager;
     if (o->isSlotActive(*(s32 *)(HOST_AT(o, 0x64, myAid, 0)))) {
-        if (_ZN11CommManager10getAuxLenBEv(o)) {
+        if (((CommManager *)(o))->getAuxLenB()) {
             NetArea_ParseStateB();
         }
     }
@@ -654,7 +638,7 @@ extern "C" void NetArea_SendStateToRequester() {
 }
 
 extern "C" void NetSession_SetCtrl07Received(s32 a) {
-    _ZN15NetSessionState17setCtrl07ReceivedEh(&gNetSessionState, a);
+    ((NetSessionState *)(&gNetSessionState))->setCtrl07Received(a);
 }
 
 extern "C" void NetSession_GetCtrl07Received() {
@@ -754,10 +738,10 @@ void NetSessionState::resetSlot(s32 idx) {
 void NetSessionAreaView::reset() {
     s32 i;
     for (i = 3; i >= 0; i--) {
-        _ZN13NetSlotStatus5resetEv(&slotStatus[i * 3]);
-        _ZN14NetMoveRequest5resetEv(&moveQueue[i]);
-        _ZN12NetMoveReady5resetEv(&moveReady[i]);
-        _ZN16NetPendingStatus5resetEv(pendingStatus[i]);
+        ((NetSlotStatus *)(&slotStatus[i * 3]))->reset();
+        ((NetMoveRequest *)(&moveQueue[i]))->reset();
+        ((NetMoveReady *)(&moveReady[i]))->reset();
+        ((NetPendingStatus *)(pendingStatus[i]))->reset();
     }
     ((NetSessionState *)this)->resetSyncPhase();
     ((NetSessionState *)this)->resetSyncRequester();
@@ -802,7 +786,7 @@ void NetSessionAreaView::updateMoveQueue() {
         u32 off = i << 2;
         s32 r7 = *(u32 *)((u8 *)idx + off);
         if (r7 < 4) {
-            _ZN13NetSlotStatus3getEPhS0_S0_(&slotStatus[r7 * 3], &l.b0, &l.b1, &l.b2);
+            ((NetSlotStatus *)(&slotStatus[r7 * 3]))->get(&l.b0, &l.b1, &l.b2);
             NetStatusMsg_Init(l.buf);
             NetStatusMsg_Pack(l.buf, r7, l.b0, l.b1, l.b2, *(u32 *)((u8 *)cnt + off));
             o->beginRecord();
@@ -835,7 +819,7 @@ void NetSessionAreaView::startNextMove(u32 *a, u32 *b) {
 s32 NetSessionAreaView::peekMoveRequest() {
     s32 v;
     u8 byte;
-    _ZN14NetMoveRequest3getEPiPh(moveQueue, &v, &byte);
+    ((NetMoveRequest *)(moveQueue))->get(&v, &byte);
     return v;
 }
 
@@ -847,12 +831,12 @@ void NetSessionAreaView::popMoveRequest() {
             u8 *q = p + 8;
             s32 v;
             u8 byte;
-            _ZN14NetMoveRequest3getEPiPh(q, &v, &byte);
+            ((NetMoveRequest *)(q))->get(&v, &byte);
             if (v >= 4) break;
             MI_CpuCopy8(q, p, 8);
             p += 8;
         }
-        _ZN14NetMoveRequest5resetEv(p);
+        ((NetMoveRequest *)(p))->reset();
     }
 }
 
@@ -860,14 +844,14 @@ void NetSessionAreaView::sendMoveReady() {
     s32 idx = ((volatile CommManager *)gCommManager)->myAid;
     u32 *p = &moveReady[idx];
     s32 v;
-    _ZN12NetMoveReady3getEPj(p, &v);
+    ((NetMoveReady *)(p))->get((u32 *)(void *)(&v));
     if (v != 0) {
         u8 b = v;
         CommManager *o = gCommManager;
         o->beginRecord();
         o->writeRecord(&b, 1);
         o->endRecord(10, 0);
-        _ZN12NetMoveReady5resetEv(p);
+        ((NetMoveReady *)(p))->reset();
     }
 }
 
@@ -877,12 +861,12 @@ void NetSessionAreaView::processMoveRequest(u32 *a, u32 *b) {
     if (r5 < 4) {
         u32 *p = &moveReady[r5];
         s32 v;
-        _ZN12NetMoveReady3getEPj(p, &v);
+        ((NetMoveReady *)(p))->get((u32 *)(void *)(&v));
         if (v == 1) {
             s32 r7 = 1;
             s32 tmp;
             u8 byte;
-            _ZN14NetMoveRequest3getEPiPh(moveQueue, &tmp, &byte);
+            ((NetMoveRequest *)(moveQueue))->get(&tmp, &byte);
             s32 i;
             i = 3;
             o = gCommManager;
@@ -893,7 +877,7 @@ void NetSessionAreaView::processMoveRequest(u32 *a, u32 *b) {
                 }
             }
             NetArea_SetSlotStatus(r5, byte, r7, 0, 7);
-            _ZN12NetMoveReady5resetEv(p);
+            ((NetMoveReady *)(p))->reset();
             popMoveRequest();
             *a = r5;
             *b = 7;
@@ -909,7 +893,7 @@ void NetSessionAreaView::flushStatusUpdates() {
         u8 buf[5];
         u32 out;
         u8 *p = pendingStatus[i];
-        _ZN16NetPendingStatus3getEPhS0_S0_Pj(p, &b0, &b1, &b2, &out);
+        ((NetPendingStatus *)(p))->get(&b0, &b1, &b2, &out);
         if (out != 0) {
             NetArea_SetSlotStatus(i, b0, b1, b2, out);
             NetStatusMsg_Init(buf);
@@ -917,7 +901,7 @@ void NetSessionAreaView::flushStatusUpdates() {
             o->beginRecord();
             o->writeRecord(buf, 2);
             o->endRecord(9, 4);
-            _ZN16NetPendingStatus5resetEv(p);
+            ((NetPendingStatus *)(p))->reset();
             NetStatusMsg_Fini(buf);
         }
     }

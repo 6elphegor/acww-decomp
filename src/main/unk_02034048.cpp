@@ -1,5 +1,8 @@
 #include "types.h"
 #include "game/Unk_02034250_Id.h"
+#include "net/CommManager.h"
+#include "room/HouseData.h"
+#include "room/HouseRoom.h"
 
 // 2-byte element (0xfff1 = none), constructed by __sinit; destructor is in another unit (0x02004b60)
 class ItemId {
@@ -25,15 +28,8 @@ s32 Item_SetDesign(u16 *out, s32 a, s32 b);
 void *PlayerData_GetCurrent();
 u32 _ZN10PlayerData11getPlayerIdEv(void *);
 u32 PlayerDataArray_FindById(void *a, u32 b);
-BOOL _ZN11CommManager8isOnlineEv(void *p);
 s32 Scene_GetCurrent();
 BOOL SceneId_IsHouseRoom(s32 a);
-void _ZN11CommManager11beginRecordEv(void *p);
-void _ZN11CommManager11writeRecordEPhj(void *p, void *q, s32 n);
-void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
-void *_ZN9HouseData15getRoomForSceneEi(void *a, s32 b);
-void _ZN9HouseRoom12setWallpaperEPtj(void *a, void *b, s32 c);
-void _ZN9HouseRoom9setCarpetEPtj(void *a, void *b, s32 c);
 
 BOOL RoomWallFloor_SetSceneCarpet(u32 i, u16 *v);
 BOOL RoomWallFloor_SetSceneWallpaper(u32 i, u16 *v);
@@ -70,7 +66,7 @@ extern "C" void RoomWallFloor_MakeDesignItem(u16 *out, s32 a) {
 }
 
 extern "C" void RoomWallFloor_Send(u16 *id, s32 a, s32 b, s32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         Unk_02034320_Pkt pkt;
         pkt.a = *id;
         pkt.b = (pkt.b & ~0x3f) | (Scene_GetCurrent() & 0x3f);
@@ -78,9 +74,9 @@ extern "C" void RoomWallFloor_Send(u16 *id, s32 a, s32 b, s32 c) {
         pkt.b = (pkt.b & ~0x80) | (((u16)a & 1) << 7);
         pkt.b = (pkt.b & ~0x100) | ((c & 1) << 8);
         void *obj = gCommManager;
-        _ZN11CommManager11beginRecordEv(obj);
-        _ZN11CommManager11writeRecordEPhj(obj, &pkt, 4);
-        _ZN11CommManager9endRecordEjj(obj, 0x14, 4);
+        ((CommManager *)(obj))->beginRecord();
+        ((CommManager *)(obj))->writeRecord((u8 *)(&pkt), 4);
+        ((CommManager *)(obj))->endRecord(0x14, 4);
     }
 }
 
@@ -210,13 +206,13 @@ extern "C" void RoomWallFloor_ApplyRecv(RoomWallFloorPacket *p)
     if (p->id == Scene_GetCurrent()) {
         RoomWallFloor_Set(&tmp, f7, f6, f8, 0);
     } else if (SceneId_IsHouseRoom(id)) {
-        void *r = _ZN9HouseData15getRoomForSceneEi(gSaveHouse, id);
+        void *r = ((HouseData *)(gSaveHouse))->getRoomForScene(id);
         if (r != NULL) {
             if (f6) {
-                _ZN9HouseRoom12setWallpaperEPtj(r, &tmp, f7);
+                ((HouseRoom *)(r))->setWallpaper((u16 *)(&tmp), f7);
                 RoomWallFloor_SetSceneWallpaper(id, &tmp);
             } else {
-                _ZN9HouseRoom9setCarpetEPtj(r, &tmp, f7);
+                ((HouseRoom *)(r))->setCarpet((u16 *)(&tmp), f7);
                 RoomWallFloor_SetSceneCarpet(id, &tmp);
             }
         }

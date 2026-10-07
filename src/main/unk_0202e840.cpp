@@ -24,7 +24,6 @@ s32 Vec_SafeNormalize(void *v);
 void Vec_Scale(void *v, s32 s);
 s32 Vec_Distance(void *a, void *b);
 s32 Vec_DistXZ(void *a, void *b);
-s32 _ZN16CollisionSegment10distanceToEP7VecFx32(void *a, void *b);
 void *Proc_CreateRoot(u32 a, u32 b, u32 c);
 s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 PM_GetBattery(s32 *out);
@@ -58,7 +57,7 @@ void HitSphere::set(VecFx32Ctor *p, s32 r) {
 BOOL HitSphere::intersectSegment(VecFx32Ctor *out, CollisionSegment *cap) {
     s32 z;
     s32 r = radius;
-    if (_ZN16CollisionSegment10distanceToEP7VecFx32(cap, this) <= r) {
+    if (((CollisionSegment *)(cap))->distanceTo((VecFx32 *)(this)) <= r) {
         z = centerZ + func_01ffcb0c(cap->dir.z, radius);
         s32 y = centerY + func_01ffcb0c(cap->dir.y, radius);
         s32 x = centerX + func_01ffcb0c(cap->dir.x, radius);

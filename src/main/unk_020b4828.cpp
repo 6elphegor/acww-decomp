@@ -11,6 +11,8 @@
 #include "net/CommManager.h"
 #include "sys/ProcProfile.h"
 #include "nitro/io_access.h"
+#include "gfx/BgModelCache.h"
+#include "player/PlayerData.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -124,9 +126,6 @@ extern u8 data_ov054_0225b7a8[];
 extern u8 data_ov005_0225b79c[];
 
 // ---- functions of other units ----
-BOOL _ZN11CommManager12isSlotActiveEi(CommManager *p, u32 i);
-BOOL _ZN11CommManager7isMyAidEj(CommManager *p, u32 i);
-void _ZN11CommManager14setMemberCountEj(void*, s32);
 u32 NetArea_GetSlotScene(u32 i);
 void Scene_Request(s32 a, s32 b, s32 c, s32 d);
 s32 Scene_SaveFadeIn(s32 a);
@@ -144,18 +143,14 @@ void PlayerSession_SetDataIndex(s32, s32);
 void PlayerSession_ClearDataIndex(s32);
 void PlayerSession_SetGfxSlot(s32, s32);
 s32 PlayerSession_GetDataIndex(s32);
-s32 _ZN9SceneInfo12runSpawnListEPhS0_y(void*, void*, void*, u32, u32);
-void _ZN9SceneInfo20createSceneMapModuleEv(void*);
 s32 NetSession_GetLastSyncSlot();
 void NetSession_SetLastSyncSlot(s32);
 BOOL PlayerData_Get(s32);
-void _ZN10PlayerData5resetEv(void *self);
 s32 BgModelCache_Get();
 void _ZN15BgModelCacheObj5setupEj(s32, s32);
 void FtrInfo_LoadIndoor(s32);
 void ItemInfo_LoadIndoor(s32);
 void _ZN15TouchPickerView5resetEv(void *self);
-void _ZN11TouchPicker5resetEv(void *self);
 void CommCaution_Release();
 s32 ResCache_Destroy();
 void ResCache_Init();
@@ -218,7 +213,6 @@ void FtrInfo_FreeIndoor();
 void ItemInfo_FreeIndoor();
 void CharaShadow_Unload();
 void ObjShadow_Exit();
-void _ZN12BgModelCache5resetEv(void *self);
 void _ZN15PatternTexCache4loadEv(void *self);
 void CharaAnimCache_Create(u32);
 void CharaClothTexPool_Create(u32);
@@ -705,13 +699,13 @@ BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
     Snd_CreateScene();
     CommManager *p = gCommManager;
     s32 i;
-    if (_ZN11CommManager12isSlotActiveEi(p, p->myAid)) {
+    if ((p)->isSlotActive(p->myAid)) {
         for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, 4);
     } else if (Scene_InUnk6Or7()) {
-        _ZN11CommManager14setMemberCountEj(p, 4);
+        ((CommManager *)(p))->setMemberCount(4);
         for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, i);
     } else {
-        _ZN11CommManager14setMemberCountEj(p, 1);
+        ((CommManager *)(p))->setMemberCount(1);
         for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, 4);
     }
     if (Scene_InUnk6Or7()) {
@@ -772,12 +766,12 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
 }
 
 BOOL FieldSceneSteps::stepCreateSceneProc(u32, u32) {
-    _ZN9SceneInfo20createSceneMapModuleEv((void*)gCurSceneInfo);
+    ((SceneInfo *)((void*)gCurSceneInfo))->createSceneMapModule();
     return TRUE;
 }
 
 BOOL FieldSceneSteps::stepRunSceneEntries(u32 a, u32 b) {
-    return _ZN9SceneInfo12runSpawnListEPhS0_y((void*)gCurSceneInfo, data_021eda50, data_021eda58, a, b);
+    return ((SceneInfo *)((void*)gCurSceneInfo))->runSpawnList((u8 *)(data_021eda50), (u8 *)(data_021eda58), a);
 }
 
 BOOL FieldSceneSteps::stepFinish(u32, u32) {
@@ -832,7 +826,7 @@ BOOL FieldScene::onCreate() {
 
 BOOL FieldScene::onDelete() {
     Bgm_EndSceneBgm();
-    _ZN11TouchPicker5resetEv(Scene_GetTouchPicker());
+    ((TouchPicker *)(Scene_GetTouchPicker()))->reset();
     gGfxFrameHooks = 0;
     PlayerActorHeap_Destroy();
     NpcResPools_ClearOnSceneDelete();
@@ -855,7 +849,7 @@ BOOL FieldScene::onDelete() {
     ItemInfo_FreeIndoor();
     CharaShadow_Unload();
     ObjShadow_Exit();
-    _ZN12BgModelCache5resetEv((void *)BgModelCache_Get());
+    ((BgModelCache *)((void *)BgModelCache_Get()))->reset();
     Scene_ShutdownGraphics();
     data_021ce63c = 0;
     if (Scene_GetCurrent() == 6) {
@@ -876,7 +870,7 @@ BOOL FieldScene::onDelete() {
         s32 v = NetSession_GetLastSyncSlot();
         if (v > 0 && v < 4) {
             void *pd = (void *)PlayerData_Get(v + 3);
-            if (pd) _ZN10PlayerData5resetEv(pd);
+            if (pd) ((PlayerData *)(pd))->reset();
             PlayerSession_ClearDataIndex(v);
         }
         NetSession_SetLastSyncSlot(4);
@@ -1325,7 +1319,7 @@ extern "C" s32 SceneExit_Resolve(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, 
                             SceneWarp* e = &entries[id];
                             u8 ty = e->type;
                             if (e->pos.y == 0) e->pos.y = 0x200;
-                            if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) && ty == 7) ty = 8;
+                            if ((gCommManager)->isSlotActive(gCommManager->myAid) && ty == 7) ty = 8;
                             *type = ty;
                             pos->x = e->pos.x;
                             pos->y = e->pos.y;
@@ -1493,12 +1487,12 @@ extern "C" BOOL Scene_NoPlayerInUnsharedScene(void) {
     u32 v;
     s32 i;
     CommManager *p = gCommManager;
-    if (!_ZN11CommManager12isSlotActiveEi(p, p->myAid)) {
+    if (!(p)->isSlotActive(p->myAid)) {
         v = Scene_GetCurrent();
         if (v == 12 || v == 13 || v == 14 || (u8)(v + 0xd2) <= 1) return FALSE;
     } else {
         for (i = 3; i >= 0; i--) {
-            if (_ZN11CommManager12isSlotActiveEi(p, i) && !_ZN11CommManager7isMyAidEj(p, i)) {
+            if ((p)->isSlotActive(i) && !(p)->isMyAid(i)) {
                 v = NetArea_GetSlotScene(i);
                 if (v == 12 || v == 13 || v == 14 || (u8)(v + 0xd2) <= 1) return FALSE;
             }

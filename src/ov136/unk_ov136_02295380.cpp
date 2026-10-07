@@ -5,6 +5,8 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/DateTimePicker.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
+#include "ui/HandCursor.h"
 
 class DateTimePicker;
 
@@ -36,10 +38,6 @@ BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
 BOOL MenuKeys_HasUp(u32 v);
-s32 _ZN10HandCursor7getAnimEv(void *self);
-s32 _ZN10HandCursor10isAnimDoneEv(void *self);
-void _ZN12MenuLauncher14setNextRequestEii(void *self, s32 a, s32 b);
-void _ZN12MenuLauncher13onChildClosedEv(void *self);
 void MenuButtons_LoadTextColors(void *self);
 
 // ov134 library functions (plain symbols; first argument is the DateTimePicker object)
@@ -183,7 +181,7 @@ BOOL TimeSelectMenu::onCreate() {
 }
 
 BOOL TimeSelectMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -271,7 +269,7 @@ void TimeSelectMenu::stateOpening() {
 }
 
 void TimeSelectMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), 0x44, 1);
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->setNextRequest(0x44, 1);
     beginSubSlideOut(0xa, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);
@@ -498,7 +496,7 @@ void TimeSelectMenu::updateCursorMove() {
 }
 
 void TimeSelectMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         if (testFlags(2)) {
             if (picker.grabKnobByCursor()) {
                 setMainState(8);
@@ -520,7 +518,7 @@ void TimeSelectMenu::updateCursorPress() {
 }
 
 void TimeSelectMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(returnState);
     }
@@ -528,7 +526,7 @@ void TimeSelectMenu::updateCursorRelease() {
 
 void TimeSelectMenu::stateExit() {
     if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+        if (((HandCursor *)(&cursor))->getAnim()) {
             s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
             s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
             s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);

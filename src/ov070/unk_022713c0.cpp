@@ -31,6 +31,7 @@
 #include "item/ItemPickSpec.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
+#include "item/LetterView.h"
 
 
 class ActorTalkRequest;
@@ -142,7 +143,6 @@ void MailText_SetSlot(s32 i, void *x);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, void *f);
 u16 Item_MakePaper(u32 a, s32 b);
 void Catalog_AddItem(void *a, u16 *p, s32 c);
-void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
 s32 ItemList_GetTownClassRank(u16 *p, s32 mode);
 u32 Random_GlobalBelow(u32 a);
 void Hud_Hide();
@@ -164,14 +164,6 @@ BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetAmount();
 BOOL TalkRequest_SetTargetDone(void *p);
 void NpcActor_ChargePlayer(void *p, s32 v);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *self, u32 a, u32 b);
-void _ZN16ActorTalkRequest12openSubSceneEi(void *self, s32 a);
-void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
@@ -275,7 +267,7 @@ void SpNpcGracie::changeAct(s32 state) {
 }
 
 BOOL SpNpcGracie::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -285,14 +277,14 @@ BOOL SpNpcGracie::setupAct01() {
     void *p = talk.getTalkPlayer();
     u32 x = 0;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcGracie::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -661,7 +653,7 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
         u16 q = a;
         PlayerActor_RequestWearShirtAlt(&q);
         r7->setShirt(&a);
-        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &a, 0, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&a), 0, 7);
     }
     for (i = 0; i < 3; i++) {
         if (!Unk_ov070_IsNone2(&wornItems[i].id)) {
@@ -718,7 +710,7 @@ void SpNpcGracieTalk::onMessageEnd(u32) {
                 }
                 s.letterLevel = lvl;
                 s.giftItem = 0x1565;
-                _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &s.giftItem, 0, 5, 0);
+                ((ActorTalkRequest *)(this))->requestGiveItem(&s.giftItem, 0, 5, 0);
                 String_FormatNumber(&str, p->getStyleScore(), 10, 0, 0, 0);
                 MailText_SetSlot(0, &str);
                 Letter_ComposeFromMail(obj, &s, sSpNpcGracieKey, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
@@ -727,9 +719,9 @@ void SpNpcGracieTalk::onMessageEnd(u32) {
                     Catalog_AddItem(r7->getCatalog(), &s.paperItem, 0);
                 }
                 if (lvl <= 2) {
-                    _ZN10LetterView10setPresentEtj(obj, 0x12a7, 1);
+                    ((LetterView *)(obj))->setPresent(0x12a7, 1);
                 } else if (lvl <= 4) {
-                    _ZN10LetterView10setPresentEtj(obj, 0x1248, 1);
+                    ((LetterView *)(obj))->setPresent(0x1248, 1);
                 }
             }
         }
@@ -767,8 +759,8 @@ void SpNpcGracieTalk::onMessageEnd(u32) {
     case 0x2c:
     case 0x31:
         if (hasPocketRoomForOutfit()) {
-            _ZN16ActorTalkRequest15setSubSceneKindEjj(this, 0x39, 0);
-            _ZN16ActorTalkRequest12openSubSceneEi(this, 2);
+            ((ActorTalkRequest *)(this))->setSubSceneKind(0x39, 0);
+            ((ActorTalkRequest *)(this))->openSubScene(2);
             setResultHandler(0);
         } else {
             code = 0x39;
@@ -827,7 +819,7 @@ void SpNpcGracieTalk::onChoice(u32) {
 
 BOOL SpNpcGracie::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

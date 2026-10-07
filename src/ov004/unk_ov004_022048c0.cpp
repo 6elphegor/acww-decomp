@@ -15,6 +15,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "game/TouchPickTriangle.h"
+#include "player/PlayerData.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
@@ -43,9 +44,6 @@ BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 BOOL BoxCollider_Unregister(void *self);
 void BoxCollider_Register(void *self, s32 a, s32 b, s32 c, s32 *p, s16 s, s32 *q);
-void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void *_ZN10PlayerData13getNookPointsEv(void *self);
 void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12TouchPickBoxC2Ev(void *self);
@@ -54,9 +52,6 @@ extern char *sAtmMsgFilePtr;
 extern char *sAtmStringBankPtr;
 }
 
-#define Character_detachTalkRequest _ZN9Character17detachTalkRequestEi
-#define Character_attachTalkRequest _ZN9Character17attachTalkRequestEi
-#define PlayerData_getNookPoints _ZN10PlayerData13getNookPointsEv
 
 // ---------------------------------------------------------------- Atm
 class Atm : public Character, public TalkMsgRequest {
@@ -156,7 +151,7 @@ BOOL Atm::releaseCollision() {
 
 void Atm::setPointTexts() {
     if (window) {
-        u16 *p = NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()));
+        u16 *p = NookPoints_GetValuePtr(((PlayerData *)(PlayerData_GetCurrent()))->getNookPoints());
         u8 buf[2];
         MsgString25 obj;
         String_FormatNumber(&obj, *p, 10, 1, 0, 0);
@@ -241,7 +236,7 @@ void Atm::execTalkAct00() {}
 
 BOOL Atm::enterTalkAct01() {
     AtmTalkStackPad pad;
-    Character_attachTalkRequest(this, this);
+    ((Character *)(this))->attachTalkRequest((s32)(this));
     setFileName(sAtmMsgFilePtr);
     msgIndex = 0;
     setPointTexts();
@@ -264,7 +259,7 @@ BOOL Atm::enterTalkAct02() {
 void Atm::execTalkAct02() {
     if (window) {
         if (window->state == 0) {
-            Character_detachTalkRequest(this, this);
+            ((Character *)(this))->detachTalkRequest((s32)(this));
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -277,7 +272,7 @@ void Atm::onMessageEnd(u32) {
     switch (msgIndex) {
     case 1:
     case 2:
-        if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 4) {
+        if (NookPoints_GetRank(*NookPoints_GetValuePtr(((PlayerData *)(PlayerData_GetCurrent()))->getNookPoints())) == 4) {
             buf[0] = 5;
             window->setNextMessage(&buf[0], sAtmMsgFilePtr);
         } else {
@@ -296,7 +291,7 @@ void Atm::onChoice(u32) {
     if (st == 0 || st == 7) {
         switch (v) {
         case 0:
-            if (NookPoints_GetRank(*NookPoints_GetValuePtr(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 0) {
+            if (NookPoints_GetRank(*NookPoints_GetValuePtr(((PlayerData *)(PlayerData_GetCurrent()))->getNookPoints())) == 0) {
                 buf[0] = 1;
                 window->setNextMessage(&buf[0], sAtmMsgFilePtr);
             } else {

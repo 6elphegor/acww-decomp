@@ -16,6 +16,10 @@
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuCursor.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
+#include "ui/HandCursor.h"
+#include "ui/LabelBalloon.h"
+#include "ui/ScrollKnob.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -307,7 +311,7 @@ BOOL WfcFriendListMenu::onCreate() {
 }
 
 BOOL WfcFriendListMenu::onDelete() {
-    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -356,13 +360,13 @@ BOOL WfcFriendListMenu::onDraw() {
     s32 y2;
     s32 idx;
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&cursor);
+        ((MenuCursorBase *)(&cursor))->drawWrapped();
     }
     if (!testFlags(1)) {
         return FALSE;
     }
     knob.draw();
-    LabelBalloon_setPos(&title, 0, slideOffsetY);
+    ((LabelBalloon *)(&title))->setPos(0, slideOffsetY);
     title.draw();
     y = slideOffsetY + 0x60;
     y2 = y - (scrollY & 0xf);
@@ -499,7 +503,7 @@ void WfcFriendListMenu::execSlideIn() {
 }
 
 void WfcFriendListMenu::startClose() {
-    MenuLauncher_setNextRequest(ProcBase_GetParent(this), 0x44, 1);
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->setNextRequest(0x44, 1);
     beginSubSlideOut(0xa, 0, 0, 0x28);
     applySlide();
     setTransitionState(3);
@@ -529,11 +533,11 @@ void WfcFriendListMenu::initState() {
     cursorTarget = 3;
     confirmButtonPal = 9;
     quitButtonPal = 8;
-    MenuTitleBalloon_hideNow(&title);
-    MenuTitleBalloon_showText(&title, 0x7f, 0x90, 0x10);
-    LabelBalloon_showLayer2(&title);
+    ((MenuTitleBalloon *)(&title))->hideNow();
+    ((MenuTitleBalloon *)(&title))->showText(0x7f, 0x90, 0x10);
+    ((LabelBalloon *)(&title))->showLayer2();
     staticLabelsDrawn = 0;
-    MenuScrollKnob_show(&knob);
+    ((MenuScrollKnob *)(&knob))->show();
     for (i = 0; i < 7; i++) {
         rowFriends[i] = 0x21;
         rowColorKeys[i] = 0xff;
@@ -588,7 +592,7 @@ void WfcFriendListMenu::updateList() {
     }
     updateRowColors();
     flushVram();
-    MenuScrollKnob_updateRelease(&knob);
+    ((MenuScrollKnob *)(&knob))->updateRelease();
 }
 
 void WfcFriendListMenu::setupLayers() {
@@ -652,7 +656,7 @@ void WfcFriendListMenu::execTouch() {
         } else if (tryGrabKnob(x, y)) {
             setMainState(1);
         } else if (x >= 0xe6 && x <= 0xee && y >= 0x38 && y <= 0x88) {
-            MenuScrollKnob_grab(&knob);
+            ((MenuScrollKnob *)(&knob))->grab();
             setMainState(2);
         }
     }
@@ -699,7 +703,7 @@ void WfcFriendListMenu::execKnobKeys() {
         moveKnobByKeys();
         a = getTargetX();
         b = getTargetY();
-        MenuCursorBase_warpTo(&cursor, a, b);
+        ((MenuCursorBase *)(&cursor))->warpTo(a, b);
     } else {
         releaseKnob();
         setMainState(5);
@@ -715,11 +719,11 @@ void WfcFriendListMenu::execKnobRelease() {
     }
     a = getTargetX();
     b = getTargetY();
-    MenuCursorBase_warpTo(&cursor, a, b);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
 }
 
 void WfcFriendListMenu::execCursorMove() {
-    if (!MenuCursorBase_isMoving(&cursor)) {
+    if (!((MenuCursorBase *)(&cursor))->isMoving()) {
         setMainState(returnState);
         runMainState();
     }
@@ -727,7 +731,7 @@ void WfcFriendListMenu::execCursorMove() {
 
 // ---- 0x022931f8 ----
 void WfcFriendListMenu::execCursorPress() {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         if (!decideTarget(cursorTarget)) {
             setMainState(3);
             startCursorRelease();
@@ -736,7 +740,7 @@ void WfcFriendListMenu::execCursorPress() {
 }
 
 void WfcFriendListMenu::execCursorRelease() {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         setCursorIdle();
         setMainState(returnState);
         if (testFlags(0x10)) {
@@ -805,11 +809,11 @@ void WfcFriendListMenu::snapCursorToTarget() {
     }
     a = getTargetX();
     b = getTargetY();
-    MenuCursorBase_warpTo(&cursor, a, b);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
     if (cursorTarget == 2) {
-        MenuCursor_setAnimIfChanged(&cursor, 1);
+        ((MenuCursor *)(&cursor))->setAnimIfChanged(1);
     } else {
-        MenuCursor_setAnimIfChanged(&cursor, 7);
+        ((MenuCursor *)(&cursor))->setAnimIfChanged(7);
     }
     setCursorIdle();
 }
@@ -825,7 +829,7 @@ s32 WfcFriendListMenu::getTargetX() {
     case 1:
         return 0x99;
     case 2:
-        return MenuScrollKnob_getGripX(&knob);
+        return ((MenuScrollKnob *)(&knob))->getGripX();
     default:
         return 0x80;
     }
@@ -841,23 +845,23 @@ s32 WfcFriendListMenu::getTargetY() {
     case 1:
         return 0xad;
     case 2:
-        return MenuScrollKnob_getGripY(&knob);
+        return ((MenuScrollKnob *)(&knob))->getGripY();
     default:
         return 0x60;
     }
 }
 
 void WfcFriendListMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&cursor, 0);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(0);
     cursor.update();
 }
 
 void WfcFriendListMenu::moveCursorToTarget() {
     s32 a, b;
     if (cursorTarget == 2) {
-        MenuCursor_switchToAnim01(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim01();
     } else {
-        MenuCursor_switchToAnim07(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim07();
     }
     a = getTargetX();
     b = getTargetY();
@@ -866,27 +870,27 @@ void WfcFriendListMenu::moveCursorToTarget() {
 
 void WfcFriendListMenu::moveCursorTo(s32 a, s32 b) {
     if (testFlags(0x20)) {
-        MenuCursorBase_moveToEase(&cursor, a, b, 3, 0);
+        ((MenuCursorBase *)(&cursor))->moveToEase(a, b, 3, 0);
         clearFlags(0x20);
     } else {
-        MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
+        ((MenuCursorBase *)(&cursor))->moveToEase(a, b, 3, 1);
     }
     returnState = mainState;
     setMainState(6);
 }
 
 void WfcFriendListMenu::setCursorIdle() {
-    MenuCursorBase_setPoseIdle(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseIdle();
     cursor.update();
 }
 
 void WfcFriendListMenu::startCursorPress() {
-    MenuCursor_setPosePress(&cursor);
+    ((MenuCursor *)(&cursor))->setPosePress();
     setMainState(7);
 }
 
 void WfcFriendListMenu::startCursorRelease() {
-    MenuCursorBase_setPoseRelease(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseRelease();
     returnState = mainState;
     setMainState(8);
 }
@@ -1184,9 +1188,9 @@ BOOL WfcFriendListMenu::stepScroll() {
 }
 
 BOOL WfcFriendListMenu::tryGrabKnob(s32 x, s32 y) {
-    if (MenuScrollKnob_hitTest(&knob, x, y)) {
+    if (((MenuScrollKnob *)(&knob))->hitTest(x, y)) {
         knobGrabOffset = knobPos - y;
-        MenuScrollKnob_grab(&knob);
+        ((MenuScrollKnob *)(&knob))->grab();
         knobTickPos = knobPos;
         return TRUE;
     }
@@ -1219,7 +1223,7 @@ void WfcFriendListMenu::dragKnob(s32 v, BOOL c) {
     }
 }
 
-void WfcFriendListMenu::releaseKnob() { MenuScrollKnob_release(&knob); }
+void WfcFriendListMenu::releaseKnob() { ((MenuScrollKnob *)(&knob))->release(); }
 
 void WfcFriendListMenu::moveKnobByKeys() {
     s32 old = knobPos;
@@ -1243,15 +1247,15 @@ void WfcFriendListMenu::moveKnobByKeys() {
 }
 
 BOOL WfcFriendListMenu::finishKnobRelease() {
-    if (ScrollKnob_areAnimsDone(&knob)) {
-        MenuScrollKnob_show(&knob);
+    if (((ScrollKnob *)(&knob))->areAnimsDone()) {
+        ((MenuScrollKnob *)(&knob))->show();
         return TRUE;
     }
     return FALSE;
 }
 
 void WfcFriendListMenu::placeKnob() {
-    ScrollKnob_moveTo(&knob, 0x62, slideOffsetY + (knobPos - 0x28));
+    ((ScrollKnob *)(&knob))->moveTo(0x62, slideOffsetY + (knobPos - 0x28));
 }
 
 void WfcFriendListMenu::syncScrollFromKnob() {
@@ -1288,7 +1292,7 @@ BOOL WfcFriendListMenu::decideTarget(u32 k) {
     }
     switch (k) {
     case 2:
-        MenuScrollKnob_grab(&knob);
+        ((MenuScrollKnob *)(&knob))->grab();
         Menu_PlayScrollGrabSe(&knob);
         setMainState(4);
         return TRUE;
@@ -1398,7 +1402,7 @@ void WfcFriendListMenu::targetFromCursorY() {
     if (numOnline == 0) {
         cursorTarget = 1;
     } else {
-        s32 v = MenuCursorBase_getScreenY(&cursor);
+        s32 v = ((MenuCursorBase *)(&cursor))->getScreenY();
         if (v < 0x38) {
             v = 0x38;
         }

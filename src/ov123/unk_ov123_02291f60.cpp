@@ -9,6 +9,10 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "sys/ProcProfile.h"
+#include "player/PlayerData.h"
+#include "save/BlancaFaceRecord.h"
+#include "save/Pattern.h"
+#include "save/PatternOrder.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -74,19 +78,6 @@ void *ProcBase_GetParent(void *self);
 
 // methods of other modules' classes, called with the object first (mangled-name trick)
 void *_ZN15PatternTexCache10getPaletteEi(void *self, s32 a);
-s32 _ZN12PatternOrder7getSlotEj(void *self, void *p);
-void *_ZN14PlayerPatterns15getPatternOrderEv(void *self);
-void *_ZN14PlayerPatterns17getPatternByOrderEj(void *self, void *p);
-void *_ZN7Pattern7getInfoEv(void *self);
-void _ZN7Pattern9setPixelsEPv(void *self, void *p);
-void *_ZN7Pattern9getPixelsEv(void *self);
-void _ZN11PatternInfo24setAuthorToCurrentPlayerEv(void *self);
-void _ZN11PatternInfo10setPaletteEj(void *self, s32 a);
-u8 _ZN11PatternInfo10getPaletteEv(void *self);
-void *_ZN16BlancaFaceRecord10getPatternEv(void *self);
-void *_ZN10PlayerData11getPatternsEv(void *self);
-u16 *_ZN10PlayerData6getHatEv(void *self);
-u16 *_ZN10PlayerData8getShirtEv(void *self);
 void _ZN10BgVramTask14requestPaletteEjhj(void *self, void *q, s32 a, s32 b);
 void _ZN10BgVramTask12requestCharsEjhjjj(void *self, void *q, s32 a, s32 b, s32 c, s32 d);
 BOOL _ZN10BgVramTask13requestScreenEjhjj(void *self, void *a, u32 b, u32 c, u32 d);
@@ -679,11 +670,11 @@ void PatternEditorMenu::stateRewear() {
     }
     void *p = PlayerData_GetCurrent();
     if (testFlags(0x8000)) {
-        if (!PlayerActor_RequestWearShirtAlt(_ZN10PlayerData8getShirtEv(p))) return;
+        if (!PlayerActor_RequestWearShirtAlt(((PlayerData *)(p))->getShirt())) return;
         clearFlags(0x8000);
     }
     if (testFlags(0x10000)) {
-        if (!PlayerActor_RequestWearHatAlt(_ZN10PlayerData6getHatEv(p))) return;
+        if (!PlayerActor_RequestWearHatAlt(((PlayerData *)(p))->getHat())) return;
         clearFlags(0x8000);
     }
     setTransitionState(3);
@@ -1247,25 +1238,25 @@ void PatternEditorMenu::startBarTransition(u8 a, u8 b)
 
 void PatternEditorMenu::loadFromPlayerPattern()
 {
-    void *b = _ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent());
-    void *d = _ZN14PlayerPatterns17getPatternByOrderEj(b, MenuCtrl_GetIndex());
-    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), canvasA, 0x200);
-    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), canvasB, 0x200);
-    u8 r = _ZN11PatternInfo10getPaletteEv(_ZN7Pattern7getInfoEv(d));
+    void *b = ((PlayerData *)(PlayerData_GetCurrent()))->getPatterns();
+    void *d = ((PlayerPatterns *)(b))->getPatternByOrder((u32)(MenuCtrl_GetIndex()));
+    MIi_CpuCopy32(((Pattern *)(d))->getPixels(), canvasA, 0x200);
+    MIi_CpuCopy32(((Pattern *)(d))->getPixels(), canvasB, 0x200);
+    u8 r = ((PatternInfo *)(((Pattern *)(d))->getInfo()))->getPalette();
     setPalette(r);
 }
 
 void PatternEditorMenu::saveToPlayerPattern()
 {
     void *a = PlayerData_GetCurrent();
-    void *b = _ZN10PlayerData11getPatternsEv(a);
+    void *b = ((PlayerData *)(a))->getPatterns();
     void *c = MenuCtrl_GetIndex();
-    void *d = _ZN14PlayerPatterns17getPatternByOrderEj(b, c);
-    _ZN7Pattern9setPixelsEPv(d, getCanvas());
-    _ZN11PatternInfo24setAuthorToCurrentPlayerEv(_ZN7Pattern7getInfoEv(d));
-    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(d), paletteIndex);
-    s32 e = _ZN12PatternOrder7getSlotEj(_ZN14PlayerPatterns15getPatternOrderEv(b), c);
-    u16 *p = _ZN10PlayerData8getShirtEv(a);
+    void *d = ((PlayerPatterns *)(b))->getPatternByOrder((u32)(c));
+    ((Pattern *)(d))->setPixels(getCanvas());
+    ((PatternInfo *)(((Pattern *)(d))->getInfo()))->setAuthorToCurrentPlayer();
+    ((PatternInfo *)(((Pattern *)(d))->getInfo()))->setPalette(paletteIndex);
+    s32 e = ((PatternOrder *)(((PlayerPatterns *)(b))->getPatternOrder()))->getSlot((u32)(c));
+    u16 *p = ((PlayerData *)(a))->getShirt();
     s32 r;
     if (R1(p, 0x12a8, 0x12af)) {
         r = *p - 0x12a8;
@@ -1275,7 +1266,7 @@ void PatternEditorMenu::saveToPlayerPattern()
     if (r != -1 && r == e) {
         setFlags(0x8000);
     }
-    p = _ZN10PlayerData6getHatEv(a);
+    p = ((PlayerData *)(a))->getHat();
     if (R1(p, 0x1429, 0x1430)) {
         r = *p - 0x1429;
     } else {
@@ -1288,19 +1279,19 @@ void PatternEditorMenu::saveToPlayerPattern()
 
 void PatternEditorMenu::loadFromExternalPattern()
 {
-    void *o = _ZN16BlancaFaceRecord10getPatternEv(&gSaveBlancaFace);
-    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), canvasA, 0x200);
-    MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), canvasB, 0x200);
-    u8 r = _ZN11PatternInfo10getPaletteEv(_ZN7Pattern7getInfoEv(o));
+    void *o = ((BlancaFaceRecord *)(&gSaveBlancaFace))->getPattern();
+    MIi_CpuCopy32(((Pattern *)(o))->getPixels(), canvasA, 0x200);
+    MIi_CpuCopy32(((Pattern *)(o))->getPixels(), canvasB, 0x200);
+    u8 r = ((PatternInfo *)(((Pattern *)(o))->getInfo()))->getPalette();
     setPalette(r);
 }
 
 void PatternEditorMenu::saveToExternalPattern()
 {
-    void *o = _ZN16BlancaFaceRecord10getPatternEv(&gSaveBlancaFace);
-    _ZN7Pattern9setPixelsEPv(o, getCanvas());
-    _ZN11PatternInfo24setAuthorToCurrentPlayerEv(_ZN7Pattern7getInfoEv(o));
-    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(o), paletteIndex);
+    void *o = ((BlancaFaceRecord *)(&gSaveBlancaFace))->getPattern();
+    ((Pattern *)(o))->setPixels(getCanvas());
+    ((PatternInfo *)(((Pattern *)(o))->getInfo()))->setAuthorToCurrentPlayer();
+    ((PatternInfo *)(((Pattern *)(o))->getInfo()))->setPalette(paletteIndex);
 }
 
 void PatternEditorMenu::buildPreviewChars()

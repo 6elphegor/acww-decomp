@@ -55,9 +55,10 @@ CXX_FLAGS = ("-std=gnu++14 -fno-exceptions -fno-rtti -fno-threadsafe-statics -fn
 if X64:
     # no red zone: hw.c's interrupt injection pushes a return address just below the game's stack pointer
     GAME_FLAGS += " -mno-red-zone"
-    # for now: the game's pointer-to-u32 casts are warnings (its memory is mapped below 4 GB, so they don't lose
-    # anything yet; docs/host.md, 64-bit)
-    CXX_FLAGS += " -fpermissive"
+# for now: conversions between pointers and integers are warnings (the game's memory is mapped below 4 GB, so they
+# don't lose anything yet). The rewrite toward shared, correct declarations removes them and then this flag
+# (docs/host.md; count: tools/host_strict_errors.sh)
+CXX_FLAGS += " -fpermissive"
 # every unit with the full class definitions, in both builds: the layout tools (tools/host_view_layout.py) read the
 # types from the 32-bit and the 64-bit debug information (debug information only: the code is the same)
 CXX_FLAGS += " -femit-class-debug-always"

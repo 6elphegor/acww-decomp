@@ -12,6 +12,13 @@
 #include "npc/NpcSpawner.h"
 #include "sys/ProcProfile.h"
 #include "town/TownBlockMap.h"
+#include "actor/Actor.h"
+#include "npc/VillagerDataItemView.h"
+#include "npc/VillagerId.h"
+#include "player/PlayerData.h"
+#include "save/BlancaFaceRecord.h"
+#include "save/SaveRecord4.h"
+#include "town/VisitorPos.h"
 
 struct VisitorSpawner;
 struct VisitorSchedule;
@@ -269,14 +276,12 @@ void *TownSessionState_GetVisitorPos(void *p);
 void *TownSessionState_GetPeteFall(void *p);
 void *TownSessionState_GetKatieState(void *p);
 void _ZN17VisitorSpawnFlags16getGulliverSpawnEPvPtP7VecFx32(void *a, void *b, u16 *c, void *d);
-void _ZNK10VisitorPos6getPosEP7VecFx32(void *a, void *b);
 void _ZN13PeteFallState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN13PeteFallState9getFacingEv(void *a);
 void _ZN15KatieVisitState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN15KatieVisitState12pickKatiePosEv(void *a);
 s32 Random_GlobalBelow(s32 a);
 s32 PlayerData_GetCurrent();
-void *_ZN10PlayerData17getDailyTalkFlagsEv(void *self);
 s32 _ZN20PlayerDailyTalkFlags4testEj(void *a, s32 b);
 s32 _ZN11SaveRecord412isDateActiveEv(void *a);
 s32 Scene_GetCurrent();
@@ -287,7 +292,6 @@ s32 VisitorTable_FindByProfile(void *a, void *b, s32 c);
 s32 VisitorTable_FindByNpc(void *a, void *b, s32 c);
 void Clock_GetDateTime(void *p);
 s32 Event_IsActive(s32 a, void *p);
-s32 _ZN16BlancaFaceRecord11isBlancaDueEv(void *p);
 s32 LostChild_IsKaitlinDue();
 s32 LostChild_IsKatieDue();
 s32 MapBlock_HasAnyAttr(void *c, s32 v);
@@ -331,11 +335,9 @@ void *PlayerErrands_GetSlot(void *, s32);
 void *PlayerErrandSlot_GetRecord(void *);
 s32 _ZN12ErrandRecord8isActiveEv(void *);
 s32 _ZN12ErrandRecord11getSubGroupEv(void *);
-s32 _ZN10PlayerData8testFlagEj(void *, s32);
 void Clock_GetDateTime(void *);
 void *_ZN11SaveRecord412isDateActiveEv(void *);
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
-BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
 s32 TownSessionState_Get();
 s32 TownSessionState_GetKatieState(s32);
 s32 TownSessionState_GetResettiFlag(s32);
@@ -413,7 +415,6 @@ s32 CommSyncVar_SetVar(u32 a, u8 *p, s32 b, s32 c);
 s32 CommSyncVar_GetVarSize(u32 id);
 void CommRecord_PackSource(u8 *p, u32 a, s32 b);
 void NetBuf_PackPair20(u8 *p, s32 a, s32 b);
-u8 *_ZN11CommManager10getSyncVarEj(CommManager *g, s32 i);
 void *VillagerStates_GetEntry(s32 i);
 s32 VillagerState_SetMood(void *p, s32 v);
 s32 VillagerState_SetMoodTimer(void *p, s32 v);
@@ -465,7 +466,6 @@ extern u8 data_021ed315[];
 extern u8 sDateVisitorTable[];
 extern u8 sDateVisitorChecks[];
 extern u32 sDateVisitorTableCount;
-void _ZN21NpcSpawnerOverlayView21releaseVisitorOverlayEv(void *self);
 void VisitorSchedule_Clear(void *p);
 void VillagerStates_ClearFleaVillager();
 s32 Scene_InTown();
@@ -505,8 +505,6 @@ s32 VillagerEvent_GetTodayIndex();
 s32 VillagerStates_GetFleaMarketBuyer();
 s32 HouseVisitor_ClearPresent();
 s32 Scene_GetHouseRoom();
-void _ZN14VisitorSpawner11pickVisitorEv(void *p);
-void *_ZN14VisitorSpawner21spawnScheduledVisitorEP17VisitorSpawnEntryi(void *a, void *b, u32 c);
 void NpcSpawner_RepickKatiePosOnline(void *p);
 s32 _ZN10PlayerData10getErrandsEv(s32 p);
 s32 _ZN12ErrandRecord8isActiveEv(void *p);
@@ -540,8 +538,6 @@ s32 SceneId_IsTownUnk31(s32 v);
 void *_ZN20VillagerDataItemView11getHousePosEv(void *p);
 void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 s32 Villager_GetWhereabouts(void *p);
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, void *v, s32 a, s32 b);
-s32 _ZN14GroundInfoBase9getHeightEi(void *buf, s32 f);
 void GroundInfo_Destruct(void *buf);
 s32 _ZN11SaveRecord412isDateActiveEv(void *p);
 void *Visitor_FindTortimer(s32 v);
@@ -674,7 +670,7 @@ extern "C" void NpcNetRecords_InitVillagers()
     F5::MI_CpuFill8(p, 0, 0xf0);
     for (i = 0; i < 8; p += 0x1e, i++) {
         void *o = F5::SaveVillagers_Get(F5::gSaveVillagers, i);
-        if (o != NULL && F5::_ZN10VillagerId7isValidEv(F5::_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
+        if (o != NULL && ((VillagerId *)(F5::_ZN12VillagerData13getVillagerIdEv(o)))->isValid() != 0) {
             VecFx32 v;
             v.x = 0;
             v.y = 0;
@@ -799,10 +795,10 @@ extern "C" void Visitor_GetTodaysNpc(u16 *out)
 extern "C" void NpcSpawn_FixVillagerPos(void *a, void *vec)
 {
     u32 buf[17];
-    F4::_ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, vec, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(vec), 0, 0);
     if (F4::Villager_GetWhereabouts(a) == 0) {
-        if (F4::_ZN14GroundInfoBase9getHeightEi(buf, 0)) {
-            u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(a);
+        if (((GroundInfoBase *)(buf))->getHeight(0)) {
+            u8 *p = (u8 *)((VillagerDataItemView *)(a))->getHousePos();
             F4::FieldPos_FromUnitCenter(vec, p[0] + 1, p[1] + 2);
         }
     }
@@ -828,7 +824,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
         void *r7;
         r7 = F4::SaveVillagers_Get(F4::gSaveVillagers, i);
         if (r7 == 0) goto next0;
-        if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
+        if (((VillagerId *)(F4::_ZN12VillagerData13getVillagerIdEv(r7)))->isValid() == 0) goto next0;
         if (F4::SaveVillagers_IsOutdoors(F4::gSaveVillagers, F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
         w.b = 0;
         v.x = 0;
@@ -846,7 +842,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
                 F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
                 F4::MI_CpuCopy8(e + 9, &w.h[2], 2);
             } else {
-                u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
+                u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
                 F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             }
         } else if (F4::NetArea_IsLocalOwner() && ((u8 *)(F4::sVillagerNetRecords + i * 30))[0] != 0) {
@@ -854,14 +850,14 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
             F4::CommRecord_UnpackSource(t + 3, &w, 0);
             s32 wb = w.b;
             if (wb != F4::Scene_GetCurrent() && F4::SceneId_IsTown(wb) == 0 && F4::SceneId_IsTownUnk31(w.b) == 0 && w.b != 0x2c) {
-                u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
+                u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
                 F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             } else {
                 F4::NetBuf_UnpackPair20(t + 4, &v.x, &v.z);
                 F4::NpcSpawn_FixVillagerPos(r7, &v);
             }
         } else {
-            u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
+            u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
             F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
         }
         if (F4::_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x84, w.h[0], &v, &w.h[1], a)) {
@@ -881,7 +877,7 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
     if (obj == 0) {
         return;
     }
-    if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(obj)) == 0) {
+    if (((VillagerId *)(F4::_ZN12VillagerData13getVillagerIdEv(obj)))->isValid() == 0) {
         return;
     }
     u16 h[5];
@@ -1086,8 +1082,8 @@ BOOL NpcSpawner::onCreate()
             F4::NpcSpawner_SpawnPlayerHouseVisitor(a);
         }
     }
-    F4::_ZN14VisitorSpawner11pickVisitorEv(a);
-    u16 *r4 = (u16 *)F4::_ZN14VisitorSpawner21spawnScheduledVisitorEP17VisitorSpawnEntryi(a, F4::sVisitorSpawnTable, saved);
+    ((VisitorSpawner *)(a))->pickVisitor();
+    u16 *r4 = (u16 *)((VisitorSpawner *)(a))->spawnScheduledVisitor((VisitorSpawnEntry *)(F4::sVisitorSpawnTable), saved);
     if (r4) {
         F4::_ZN17VisitorSpawnFlags17setVisitorSpawnedEv(F4::TownSessionState_GetVisitorFlags(F4::TownSessionState_Get()));
         if (r4[1] != 0xd008 || F4::_ZN13PeteFallState10hasFallPosEv(F4::TownSessionState_GetPeteFall(F4::TownSessionState_Get())) != 0) {
@@ -1103,7 +1099,7 @@ BOOL NpcSpawner::onCreate()
 
 BOOL NpcSpawner::onDelete()
 {
-    F4::_ZN21NpcSpawnerOverlayView21releaseVisitorOverlayEv(this);
+    ((NpcSpawnerOverlayView *)(this))->releaseVisitorOverlay();
     F4::VisitorSchedule_Clear(F4::sVisitorSchedule);
     F4::VillagerStates_ClearFleaVillager();
     if (F4::Scene_InTown()) {
@@ -1113,7 +1109,7 @@ BOOL NpcSpawner::onDelete()
         if (F4::SceneId_IsVillagerHouse(v)) {
             void *r = F4::SaveVillagers_GetByHouseRoom(g, (s8)v);
             if (r) {
-                if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r))) {
+                if (((VillagerId *)(F4::_ZN12VillagerData13getVillagerIdEv(r)))->isValid()) {
                     F4::Villager_PlaceReceivedItems(r);
                 }
             }
@@ -1130,17 +1126,17 @@ BOOL NpcSpawner::onExecute()
     u16 id;
     if (F3::Scene_InTown()) {
         F3::VillagerTrend_TickIdle();
-        if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->myAid) == 0) {
+        if ((F3::gCommManager)->isSlotActive(F3::gCommManager->myAid) == 0) {
             if (g) F3::SaveVillagers_UpdatePlans(g);
         }
     }
-    if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->myAid) == 0) {
+    if ((F3::gCommManager)->isSlotActive(F3::gCommManager->myAid) == 0) {
         if (g) {
             id = 0xfff1;
             for (i = 0; i < 8; i++) {
                 a = F3::SaveVillagers_Get(g, i);
                 if (a) {
-                    if (F3::_ZN10VillagerId7isValidEv(F3::_ZN12VillagerData13getVillagerIdEv(a))) {
+                    if (((VillagerId *)(F3::_ZN12VillagerData13getVillagerIdEv(a)))->isValid()) {
                         b = F3::Villager_GetState(a);
                         if (b) {
                             id = (i & 0xfff) | 0xe000;
@@ -1209,7 +1205,7 @@ extern "C" void NpcNetRecord_PackVillager(void *dst, s32 id) {
 
 extern "C" u8 *NpcNetRecord_GetVillagerVar(u16 *p) {
     u32 i = *p & 0xfff;
-    if (i < 8) return F3::_ZN11CommManager10getSyncVarEj(F3::gCommManager, i + 0xc);
+    if (i < 8) return (F3::gCommManager)->getSyncVar(i + 0xc);
     return 0;
 }
 
@@ -1251,7 +1247,7 @@ extern "C" void NpcNetRecord_PackSpNpc(void *dst, s32 id) {
 
 extern "C" u8 *NpcNetRecord_GetSpNpcVar(u16 *p) {
     u32 i = *p & 0xfff;
-    if (i < 0x26) return F3::_ZN11CommManager10getSyncVarEj(F3::gCommManager, i + 0x20);
+    if (i < 0x26) return (F3::gCommManager)->getSyncVar(i + 0x20);
     return 0;
 }
 
@@ -1278,7 +1274,7 @@ extern "C" u8 *NpcNetRecord_GetVar(u16 *p) {
 
 extern "C" void NpcNetRecord_SetSlotsAndSync(u32 a, u32 b, u32 c, u16 *p) {
     F3::NpcNetRecord_SetSlots(p, b, c);
-    if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->myAid)) {
+    if ((F3::gCommManager)->isSlotActive(F3::gCommManager->myAid)) {
         u32 v = *p;
         s32 k = (s32)(v & 0xf000) >> 12;
         u32 idx = v & 0xfff;
@@ -1476,7 +1472,7 @@ extern "C" BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos) {
 }
 
 extern "C" BOOL Visitor_ScheduleLow(u16 *p, u8 b, VecFx32 *pos) {
-    if (F3::Visitor_IsNookJobActive(p) == 0 && F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->myAid) == 0) {
+    if (F3::Visitor_IsNookJobActive(p) == 0 && (F3::gCommManager)->isSlotActive(F3::gCommManager->myAid) == 0) {
         return F3::Visitor_ScheduleIfHigher(p, 1, b, pos);
     }
     return 0;
@@ -1519,9 +1515,9 @@ u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
                 } else {
                     clearVisitorOverlay();
                 }
-                if (F3::_ZN5Actor5spawnEPvS0_S0_S0_S0_(e->id, e->id2, &v, t, this)) {
+                if (Actor::spawn((void *)(e->id), (void *)(e->id2), &v, t, this)) {
                     if (F3::Unk_02083c28_IsZero(F3::gFieldSceneKind)) {
-                        if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->myAid) == 0) {
+                        if ((F3::gCommManager)->isSlotActive(F3::gCommManager->myAid) == 0) {
                             VecFx32 w;
                             w.x = v.x;
                             w.y = v.y;
@@ -1563,7 +1559,7 @@ extern "C" s32 Visitor_FindActiveEventEntry(EventVisitorEntry *p, s32 n)
 extern "C" BOOL Visitor_IsNookJobActive()
 {
     void *r = F2::PlayerData_GetCurrent();
-    if (r != 0 && F2::_ZN10PlayerData8testFlagEj(r, 1) != 0)
+    if (r != 0 && ((PlayerData *)(r))->testFlag(1) != 0)
         return TRUE;
     return FALSE;
 }
@@ -1578,7 +1574,7 @@ extern "C" BOOL Visitor_IsTaxiActive()
 extern "C" BOOL Visitor_CheckResetti()
 {
     u16 k;
-    if (F2::Scene_GetCurrent() == 0 && F2::_ZN16ResettiVisitFlag5isSetEv(F2::TownSessionState_GetResettiFlag(F2::TownSessionState_Get())) != 0 && F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0) {
+    if (F2::Scene_GetCurrent() == 0 && F2::_ZN16ResettiVisitFlag5isSetEv(F2::TownSessionState_GetResettiFlag(F2::TownSessionState_Get())) != 0 && (F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
         k = 0xd011;
         return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
@@ -1609,7 +1605,7 @@ extern "C" BOOL Visitor_CheckTomNook()
 {
     u16 k;
     void *r4 = F2::PlayerData_GetCurrent();
-    if (F2::Scene_GetCurrent() == 0 && F2::Visitor_IsTaxiActive() == 0 && F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0 && r4 != 0 && F2::_ZN10PlayerData8testFlagEj(r4, 0x23) != 0) {
+    if (F2::Scene_GetCurrent() == 0 && F2::Visitor_IsTaxiActive() == 0 && (F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0 && r4 != 0 && ((PlayerData *)(r4))->testFlag(0x23) != 0) {
         if (F2::SceneId_IsHouseRoom(F2::Scene_GetPrevious()) != 0 || F2::Scene_GetPrevious() == 6) {
             k = 0xd019;
             return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
@@ -1642,7 +1638,7 @@ extern "C" BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q)
 
 extern "C" BOOL Visitor_IsTortimerDue()
 {
-    if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0) {
+    if ((F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
         if (F2::TownSessionState_TestFlag(F2::TownSessionState_Get(), 8) != 0 && F2::Visitor_IsTaxiActive() == 0 && F2::Visitor_IsNookJobActive() == 0)
             return TRUE;
     }
@@ -1675,7 +1671,7 @@ extern "C" BOOL Visitor_IsNookJobErrandActive()
     void *r4;
     void *r = F2::PlayerData_GetCurrent();
     if (r != 0)
-        r4 = F2::PlayerErrands_GetSlot(F2::_ZN10PlayerData10getErrandsEv(r), 0);
+        r4 = F2::PlayerErrands_GetSlot(((PlayerData *)(r))->getErrands(), 0);
     else
         r4 = 0;
     if (r4 != 0) {
@@ -1693,7 +1689,7 @@ extern "C" BOOL Visitor_FindEventHost(s32 flag)
 {
     s32 pass; s32 idx; s32 ok; s32 r6;
     u16 k1, k2;
-    if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0) {
+    if ((F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
         ok = TRUE;
         if (flag != 0) {
             pass = FALSE;
@@ -1809,7 +1805,7 @@ extern "C" BOOL Visitor_FindLyle(s32 flag)
 {
     u16 k;
     void *r4 = F2::_ZN11SaveRecord412isDateActiveEv(&F2::data_021ed315);
-    if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0) {
+    if ((F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
         if (flag != 0) {
             BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
             if (!c)
@@ -1859,7 +1855,7 @@ extern "C" BOOL Visitor_FindJoan(s32 flag)
 {
     u16 k;
     void *r4 = F2::_ZN11SaveRecord412isDateActiveEv(&F2::data_021ed315);
-    if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0) {
+    if ((F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
         if (flag != 0) {
             BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
             if (!c)
@@ -1899,7 +1895,7 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
             }
             goto c2;
         a8:
-            if (F2::_ZN11CommManager12isSlotActiveEi(F2::gCommManager, F2::gCommManager->myAid) == 0) {
+            if ((F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
                 if (F2::Event_IsActive(0x3d, 0) == 0)
                     goto fe;
             }
@@ -1907,7 +1903,7 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
     c2:
         if (F2::_ZN15KatieVisitState11isFollowingEv(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get())) != 0) {
             if (F2::Scene_GetCurrent() == 0xb) {
-                if (F2::_ZN11CommManager8isOnlineEv(F2::gCommManager) == 0)
+                if ((F2::gCommManager)->isOnline() == 0)
                     goto fe;
             }
         }
@@ -2000,7 +1996,7 @@ extern "C" BOOL Visitor_FindBlanca(BOOL flag) {
     if (F1::Event_IsActive(0x42, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x43, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x44, loc) != 0) goto fail;
-    if (F1::_ZN16BlancaFaceRecord11isBlancaDueEv(&F1::gSaveBlancaFace) == 0) goto fail;
+    if (((BlancaFaceRecord *)(&F1::gSaveBlancaFace))->isBlancaDue() == 0) goto fail;
     v = 0xd020;
     return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:
@@ -2012,7 +2008,7 @@ extern "C" BOOL Visitor_CheckBlanca() {
 }
 
 extern "C" BOOL Visitor_FindInEventTable(void *tbl, void *fn, s32 x, BOOL flag) {
-    s32 r7 = F1::_ZN11SaveRecord412isDateActiveEv(&F1::data_021ed315);
+    s32 r7 = ((SaveRecord4 *)(&F1::data_021ed315))->isDateActive();
     s32 idx;
     if (flag) {
         if (!F1::Unk_02083058_IsA()) goto fail;
@@ -2046,7 +2042,7 @@ extern "C" BOOL Visitor_CheckPete() {
 extern "C" BOOL Visitor_CanPascalVisit() {
     s32 p = F1::PlayerData_GetCurrent();
     if (p) {
-        if (F1::_ZN20PlayerDailyTalkFlags4testEj(F1::_ZN10PlayerData17getDailyTalkFlagsEv((void *)p), 0x18) == 0) return TRUE;
+        if (F1::_ZN20PlayerDailyTalkFlags4testEj(((PlayerData *)((void *)p))->getDailyTalkFlags(), 0x18) == 0) return TRUE;
     }
     return FALSE;
 }
@@ -2140,7 +2136,7 @@ extern "C" BOOL VisitorPlace_Pete(void *self, void *b, u16 *out) {
 }
 
 extern "C" BOOL VisitorPlace_AtVisitorPos(void *self, void *b, u16 *out) {
-    F1::_ZNK10VisitorPos6getPosEP7VecFx32(F1::TownSessionState_GetVisitorPos(F1::TownSessionState_Get()), b);
+    ((VisitorPos *)(F1::TownSessionState_GetVisitorPos(F1::TownSessionState_Get())))->getPos((VecFx32 *)(b));
     out[1] = F1::Random_GlobalBelow(0xffff);
     return TRUE;
 }

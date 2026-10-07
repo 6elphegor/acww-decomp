@@ -2,6 +2,10 @@
 #include "gfx/VecFx32.h"
 #include "room/RoomFtrState.h"
 #include "room/FtrActor.h"
+#include "net/CommManager.h"
+#include "room/FtrSwitch.h"
+#include "room/HouseData.h"
+#include "room/HouseRoom.h"
 
 extern "C" {
 void *__cxa_vec_ctor(void *p, u32 n, u32 sz, void *ctor, void *dtor);
@@ -74,23 +78,15 @@ inline BOOL Range(u16 *p, u32 lo, u32 hi) {
 }
 
 extern "C" {
-BOOL _ZN8FtrActor11findOwnTileEPiS0_ii(s32 a, s32 *x, s32 *y, s32 z, s32 w);
 s32 FtrActor_GetLayer(s32 a);
 void *FtrActorGrid_GetInstance();
 FtrActor *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void FtrActor_GetFtrIndex(void *p);
-s32 _ZN8FtrActor9isPreviewEv(void *p);
 s32 FtrActor_PredIsStereo(void *p);
-s32 _ZN9FtrSwitch4isOnEv(void *p);
 s32 FtrMgr_CountSwitchedOn(void (*f)());
 void _ZN8FtrActor8isGyroidEv();
 void *FtrMgr_SwitchOffRandom(void (*f)(), s32 a);
 
-s32 _ZN11CommManager8isOnlineEv(void *p);
-s32 _ZN11CommManager7isMyAidEj(void *p, s32 v);
-void _ZN11CommManager11beginRecordEv(void *p);
-void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
-void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
 u32 Scene_GetCurrent();
 s32 NetArea_IsLocalOwner();
 void *BlockMap_GetItemPtr(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -100,9 +96,7 @@ void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Item_GetFurnitureDirection(void *p);
 s32 FtrInfo_GetUnk05(s32 a);
-void _ZN9HouseData11setRoomFlagEjj(void *p, s32 a, s32 b);
 s32 _ZN9HouseData7getRoomEi(void *p, s32 a);
-RoomFtrState *_ZN9HouseRoom11getFtrStateEv(s32 self);
 void HouseRoom_ClearSongForScene(s32 a);
 void HouseRoom_SetSongForScene(s32 a, u16 *p);
 s32 SceneId_IsHouseRoom(u32 id);
@@ -350,7 +344,7 @@ extern "C" RoomFtrState *RoomFtrState_GetForScene(u32 id) {
     if (SceneId_IsHouseRoom(id)) {
         s32 room = _ZN9HouseData7getRoomEi(gSaveHouse, SceneId_GetHouseRoom(id));
         if (room) {
-            return _ZN9HouseRoom11getFtrStateEv(room);
+            return ((HouseRoom *)(room))->getFtrState();
         }
     } else if (SceneId_IsVillagerHouse(id)) {
         return &sVillagerHouseFtrStates[SceneId_GetVillagerHouse(id)];
@@ -473,9 +467,9 @@ extern "C" void FtrSync_OnStateRecord(u32 *pp) {
         u32 w = *pp;
         w &= 0xdfffffff;
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, &w, 4);
-        _ZN11CommManager9endRecordEjj(g, 0x18, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(&w), 4);
+        ((CommManager *)(g))->endRecord(0x18, 4);
     } else {
         FtrSync_ApplyState(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
     }
@@ -485,16 +479,16 @@ extern "C" void FtrSync_OnRoomLightRecord(Unk_0205218c_B *p) {
     u32 a = p->a;
     BOOL b = p->b ? 1 : 0;
     if (p->c == 1) {
-        _ZN9HouseData11setRoomFlagEjj(gSaveHouse, a, b);
+        ((HouseData *)(gSaveHouse))->setRoomFlag(a, b);
         Unk_0205218c_B t;
         t = *p;
         t.c = 0;
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, &t, 1);
-        _ZN11CommManager9endRecordEjj(g, 0x19, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(&t), 1);
+        ((CommManager *)(g))->endRecord(0x19, 4);
     } else {
-        _ZN9HouseData11setRoomFlagEjj(gSaveHouse, a, b);
+        ((HouseData *)(gSaveHouse))->setRoomFlag(a, b);
     }
 }
 
@@ -522,7 +516,7 @@ extern "C" void FtrSync_ToggleGyroidAt(u8 a, s32 b, s32 c, u8 d, u8 e) {
         {
             FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
             if (o) {
-                if (_ZN9FtrSwitch4isOnEv((u8 *)o + 0x73c) == 0) {
+                if (((FtrSwitch *)((u8 *)o + 0x73c))->isOn() == 0) {
                     if ((u32)FtrMgr_CountSwitchedOn(_ZN8FtrActor8isGyroidEv) >= 4) {
                         void *r = FtrMgr_SwitchOffRandom(_ZN8FtrActor8isGyroidEv, 0);
                         if (r) {
@@ -551,12 +545,12 @@ extern "C" void SpotSync_OnReserveRequest(u8 *p, s32 q) {
     v.z = p[1] << 9;
     if (sSpotReservations.tryReserve(q, p[2], (VecFx32 *)&v)) {
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager9endRecordEjj(g, 0x1f, q);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->endRecord(0x1f, q);
     } else {
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager9endRecordEjj(g, 0x20, q);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->endRecord(0x20, q);
     }
 }
 
@@ -574,7 +568,7 @@ extern "C" s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) 
     u32 r5 = (g != 4) ? 1 : 0;
     FtrActor *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
     if (!o) return 0;
-    if (_ZN11CommManager8isOnlineEv(gCommManager) && o && !_ZN8FtrActor9isPreviewEv(o)) {
+    if (((CommManager *)(gCommManager))->isOnline() && o && !((FtrActor *)(o))->isPreview()) {
         u32 t = o->getActSwitchState(d);
         w = (w & ~0x3f) | (Scene_GetCurrent() & 0x3f);
         c = c & 1;
@@ -593,9 +587,9 @@ extern "C" s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) 
         w = (w & 0xdfffffff) | (r5 << 29);
         w = (w & 0xbfffffff) | ((FtrActor_PredIsStereo(o) & 1) << 30);
         void *g2 = gCommManager;
-        _ZN11CommManager11beginRecordEv(g2);
-        _ZN11CommManager11writeRecordEPhj(g2, &w, 4);
-        _ZN11CommManager9endRecordEjj(g2, 0x18, g);
+        ((CommManager *)(g2))->beginRecord();
+        ((CommManager *)(g2))->writeRecord((u8 *)(&w), 4);
+        ((CommManager *)(g2))->endRecord(0x18, g);
     }
     return 1;
 }
@@ -603,7 +597,7 @@ extern "C" s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) 
 extern "C" s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d) {
     s32 x, y;
     if (IsOne(gFieldSceneKind)) {
-        if (_ZN8FtrActor11findOwnTileEPiS0_ii(a, &x, &y, 0, 0)) {
+        if (((FtrActor *)(a))->findOwnTile(&x, &y, 0, 0)) {
             return FtrSync_ChangeActAt(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
     }
@@ -624,7 +618,7 @@ extern "C" s32 FtrSync_ChangeActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g)
 extern "C" s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d) {
     s32 x, y;
     if (IsOne(gFieldSceneKind)) {
-        if (_ZN8FtrActor11findOwnTileEPiS0_ii(a, &x, &y, 0, 0)) {
+        if (((FtrActor *)(a))->findOwnTile(&x, &y, 0, 0)) {
             return FtrSync_RequestActAt(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
     }
@@ -634,7 +628,7 @@ extern "C" s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d) {
 extern "C" s32 FtrSync_RequestActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     void *s = gCommManager;
     u8 *p;
-    if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
+    if (((CommManager *)(s))->isOnline() == 0 || ((CommManager *)(s))->isMyAid(0) != 0) {
         return FtrSync_ChangeActAt(a, b, c, d, e, f, g);
     }
     if (!(gFieldSceneKind == 1 ? TRUE : FALSE)) {
@@ -693,7 +687,7 @@ extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f,
             RoomFtrState_SetGyroidBeat(x, y, g, a);
         }
     }
-    if (_ZN11CommManager8isOnlineEv(gCommManager) != 0 && i != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() != 0 && i != 0) {
         void *t;
         bits.x = b;
         bits.y = c;
@@ -703,9 +697,9 @@ extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f,
         bits.isGyroid = f;
         bits.item = loc[0];
         t = gCommManager;
-        _ZN11CommManager11beginRecordEv(t);
-        _ZN11CommManager11writeRecordEPhj(t, &bits, 4);
-        _ZN11CommManager9endRecordEjj(t, 0x1c, 4);
+        ((CommManager *)(t))->beginRecord();
+        ((CommManager *)(t))->writeRecord((u8 *)(&bits), 4);
+        ((CommManager *)(t))->endRecord(0x1c, 4);
     }
     FtrFootprint_Destruct(&pk);
 }
@@ -755,7 +749,7 @@ extern "C" void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *
             RoomFtrState_RemoveGyroidBeat(x, y, a);
         }
     }
-    if (_ZN11CommManager8isOnlineEv(gCommManager) != 0 && h != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() != 0 && h != 0) {
         void *t;
         bits = (bits & ~1) | (d & 1);
         bits = (bits & ~0x1e) | ((b & 0xf) << 1);
@@ -764,9 +758,9 @@ extern "C" void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *
         bits = (bits & 0xfffffbff) | ((e & 1) << 10);
         bits = (bits & 0xf80007ff) | ((loc[0] & 0xffff) << 11);
         t = gCommManager;
-        _ZN11CommManager11beginRecordEv(t);
-        _ZN11CommManager11writeRecordEPhj(t, &bits, 4);
-        _ZN11CommManager9endRecordEjj(t, 0x1b, 4);
+        ((CommManager *)(t))->beginRecord();
+        ((CommManager *)(t))->writeRecord((u8 *)(&bits), 4);
+        ((CommManager *)(t))->endRecord(0x1b, 4);
     }
     FtrFootprint_Destruct(&pk);
 }
@@ -778,21 +772,21 @@ extern "C" void FtrSync_SetTopItem(s32 a, s32 b, s32 c, u16 *d, u8 f) {
     } else {
         o = BlockMap_GetForArea(a);
     }
-    if (o != NULL && BlockMap_SetItemAtUnit(o, d, b, c, 1) != 0 && f != 0 && _ZN11CommManager8isOnlineEv(gCommManager) != 0) {
+    if (o != NULL && BlockMap_SetItemAtUnit(o, d, b, c, 1) != 0 && f != 0 && ((CommManager *)(gCommManager))->isOnline() != 0) {
         u32 bits;
         void *t;
         bits = (bits & ~0xf) | (b & 0xf);
         bits = (bits & ~0xf0) | ((c & 0xf) << 4);
         bits = (bits & 0xff0000ff) | ((*d & 0xffff) << 8);
         t = gCommManager;
-        _ZN11CommManager11beginRecordEv(t);
-        _ZN11CommManager11writeRecordEPhj(t, &bits, 4);
-        _ZN11CommManager9endRecordEjj(t, 0x1a, 4);
+        ((CommManager *)(t))->beginRecord();
+        ((CommManager *)(t))->writeRecord((u8 *)(&bits), 4);
+        ((CommManager *)(t))->endRecord(0x1a, 4);
     }
 }
 
 extern "C" void FtrSync_SendRoomLight(s32 a, s32 b, s32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() != 0) {
         volatile u8 bits;
         BOOL f;
         void *t;
@@ -804,20 +798,20 @@ extern "C" void FtrSync_SendRoomLight(s32 a, s32 b, s32 c) {
         }
         bits = (bits & ~0x80) | ((f & 1) << 7);
         t = gCommManager;
-        _ZN11CommManager11beginRecordEv(t);
-        _ZN11CommManager11writeRecordEPhj(t, (void *)&bits, 1);
-        _ZN11CommManager9endRecordEjj(t, 0x19, c);
+        ((CommManager *)(t))->beginRecord();
+        ((CommManager *)(t))->writeRecord((u8 *)((void *)&bits), 1);
+        ((CommManager *)(t))->endRecord(0x19, c);
     }
 }
 
 extern "C" void FtrSync_ApplyRoomLight(s32 a, s32 b) {
-    _ZN9HouseData11setRoomFlagEjj(gSaveHouse, a, b);
+    ((HouseData *)(gSaveHouse))->setRoomFlag(a, b);
     FtrSync_SendRoomLight(a, b, 4);
 }
 
 extern "C" void FtrSync_SetRoomLight(s32 a, s32 b) {
     void *s = gCommManager;
-    if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
+    if (((CommManager *)(s))->isOnline() == 0 || ((CommManager *)(s))->isMyAid(0) != 0) {
         FtrSync_ApplyRoomLight(a, b);
     } else {
         FtrSync_SendRoomLight(a, b, 0);
@@ -825,7 +819,7 @@ extern "C" void FtrSync_SetRoomLight(s32 a, s32 b) {
 }
 
 extern "C" void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 || NetArea_IsLocalOwner() != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() == 0 || NetArea_IsLocalOwner() != 0) {
         ((void (*)(s32, s32, s32, s32, s32))FtrSync_ToggleGyroidAt)(a, b, c, d, 1);
     } else {
         volatile u16 bits;
@@ -839,9 +833,9 @@ extern "C" void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d) {
         bits = (bits & ~0x780) | (((u16)b & 0xf) << 7);
         bits = (bits & ~0x7800) | (((u16)c & 0xf) << 11);
         t = gCommManager;
-        _ZN11CommManager11beginRecordEv(t);
-        _ZN11CommManager11writeRecordEPhj(t, (void *)&bits, 2);
-        _ZN11CommManager9endRecordEjj(t, 0x1d, 6);
+        ((CommManager *)(t))->beginRecord();
+        ((CommManager *)(t))->writeRecord((u8 *)((void *)&bits), 2);
+        ((CommManager *)(t))->endRecord(0x1d, 6);
     }
 }
 
@@ -856,7 +850,7 @@ extern "C" void SpotSync_RequestReserve(s32 *p) {
     u8 buf[3];
     sSpotReserveResult = 0;
     s = gCommManager;
-    if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
+    if (((CommManager *)(s))->isOnline() == 0 || ((CommManager *)(s))->isMyAid(0) != 0) {
         if (sSpotReservations.tryReserve(0, Scene_GetCurrent(), (VecFx32 *)p) != 0) {
             sSpotReserveResult = 1;
         } else {
@@ -868,9 +862,9 @@ extern "C" void SpotSync_RequestReserve(s32 *p) {
         buf[1] = p[2] >> 9;
         buf[2] = Scene_GetCurrent();
         t = gCommManager;
-        _ZN11CommManager11beginRecordEv(t);
-        _ZN11CommManager11writeRecordEPhj(t, buf, 3);
-        _ZN11CommManager9endRecordEjj(t, 0x1e, 0);
+        ((CommManager *)(t))->beginRecord();
+        ((CommManager *)(t))->writeRecord((u8 *)(buf), 3);
+        ((CommManager *)(t))->endRecord(0x1e, 0);
     }
 }
 
@@ -886,12 +880,12 @@ extern "C" void SpotSync_Release(void *arg) {
     void *s;
     sSpotReserveResult = 0;
     s = gCommManager;
-    if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0 || _ZN11CommManager7isMyAidEj(s, 4) != 0) {
+    if (((CommManager *)(s))->isOnline() == 0 || ((CommManager *)(s))->isMyAid(0) != 0 || ((CommManager *)(s))->isMyAid(4) != 0) {
         sSpotReservations.release((s32)arg);
     } else {
         void *t = gCommManager;
-        _ZN11CommManager11beginRecordEv(t);
-        _ZN11CommManager9endRecordEjj(t, 0x21, 0);
+        ((CommManager *)(t))->beginRecord();
+        ((CommManager *)(t))->endRecord(0x21, 0);
     }
 }
 

@@ -6,6 +6,7 @@
 #include "game/TouchPickTriangle.h"
 #include "game/CollisionTriangle.h"
 #include "game/CollisionCylinder.h"
+#include "gfx/Camera.h"
 
 
 
@@ -23,7 +24,6 @@ extern s16 data_02135f44[];
 extern s32 gCamera;
 extern s32 data_020c8cb8;
 extern Mtx43 gViewMtx;
-s32 _ZN6Camera9getFovTanEv(s32 a);
 s32 FX_Div(s32 a, s32 b);
 void Vec_SafeNormalize(VecFx32 *v);
 void Vec_Scale(VecFx32 *v, s32 s);
@@ -92,7 +92,7 @@ extern "C" void TouchPick_CalcRay(Basis *out, s32 x, s32 z) {
     zero.x = 0;
     zero.y = 0;
     zero.z = 0;
-    s32 k = -FX_Div(0x60000, _ZN6Camera9getFovTanEv(gCamera));
+    s32 k = -FX_Div(0x60000, ((Camera *)(gCamera))->getFovTan());
     t.p.x = (x << 12) - 0x80000;
     t.p.y = -((z << 12) - 0x60000);
     t.p.z = k;

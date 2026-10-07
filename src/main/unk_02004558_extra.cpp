@@ -111,6 +111,14 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 
 
 #include "player/PlayerActor.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/Camera.h"
+#include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "item/ItemName.h"
+#include "player/FishBobber.h"
+#include "player/PlayerData.h"
+#include "talk/ChoiceList.h"
 
 
 
@@ -206,7 +214,6 @@ void MTX_Concat33(s32 *a, s32 *b, s32 *out);
 void _ZN5Model8setAlphaEj(void *obj, u8 v);
 void _ZN17TwoLayerAnimModel11drawLayeredEj(void *obj, u32 v);
 void Model_GetJointWorldMtx(void *obj, Mtx43 *out, u32 idx);
-void _ZN5Model10drawScaledEPi(void *obj, void *v);
 s32 PlayerHead_GetModelId(void *obj, u32 v);
 s32 PlayerGlassesModelRef_GetModelId(void *obj);
 void HeldItemModel_Draw(void *a, void *b);
@@ -278,7 +285,6 @@ void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 s32 _ZN11PlayerActor14testActionFlagEj(void *p, s32 v);
 void _ZN11PlayerActor15clearActionFlagEj(void *p, s32 v);
 s32 _ZN11PlayerActor13setActionFlagEj(void *p, s32 v);
-s32 _ZN11PlayerActor13clearRequestsEv(void *p);
 s32 _ZN11PlayerActor18isLocomotionActionEj(void *p, s32 v);
 void *_ZN11PlayerActor10getRequestEi(void *p, s32 i);
 s32 _ZN11PlayerActor13loadInputModeEv();
@@ -410,7 +416,6 @@ void PlayerActor_RequestFishShowCatch(PlayerActor *, u32, u32, s32);
 void PlayerActor_RequestInsectShowCatch(PlayerActor *, u32, u32, u32, u32, s32);
 void PlayerActor_RequestStowItem(PlayerActor *, u32, u32, u32, u32, u32, u32, s32);
 void WorldCurve_FromCurved(void *, void *);
-void *_ZN10FishBobber7getFishEv(void *);
 void HeldItemModel_PlayAnim(void *, u32, u32, u32);
 void PlayerActor_GetHeldItem(void *, PlayerActor *);
 BOOL Item_IsFurniture(void *);
@@ -829,7 +834,6 @@ extern u8 data_020d5e44[];
 void _ZN11PlayerActor9setAngleYEPs(void *, s16 *p);
 void _ZN11PlayerActor15clearActionFlagEj(void *, u32 a);
 void _ZN11PlayerActor13setActionFlagEj(void *, u32 a);
-void _ZN11PlayerActor17setEyeAnimForBodyEPiPh(void *, void *a, u8 *b);
 void _ZN11PlayerActor19setMouthAnimForBodyEPiPh(void *, void *a, u8 *b);
 u32 PlayerActor_GetHairStyle(void *);
 u32 PlayerActor_GetHairColor(void *);
@@ -838,7 +842,6 @@ BOOL _ZN11PlayerActor21requestFaceItemChangeEPt(void *, u16 *a);
 void _ZN11PlayerActor15setShirtTextureEPv(void *, u16 *p);
 BOOL _ZN11PlayerActor21requestShirtTexUploadEv(void *);
 void _ZN11PlayerActor11advanceAnimEv(void *);
-void _ZN11PlayerActor10replayAnimEv(void *);
 void PlayerActor_NetSendFaceChange(void *);
 void _ZN11PlayerActor20netSendClothesChangeEjj(void *, u32 a, u32 b);
 void _ZN11PlayerActor13startAnimOnceEijt(void *, u32 a, u32 b, u32 c);
@@ -986,7 +989,6 @@ s32 Item_GetFurnitureIndex(u16 *p);
 void HeldItemModel_Update(void *p);
 s32 Math_AngleToDir4(s16 a);
 s32 Math_AngleToSide(s16 a);
-s32 _ZN6Camera6getYawEv(void *p);
 s32 Scene_NoPlayerInUnsharedScene();
 void FieldInfoBalloon_ClearNetMsg();
 s32 Net_GetMode();
@@ -1001,7 +1003,6 @@ s32 TouchPick_GetTargetObject(u8 *obj, s32 *pa, u8 *pb);
 u16 *BlockMap_GetItemPtrAtPos(void *a, VecFx32Ctor *b, u32 c);
 void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32Ctor *v);
 void FieldPos_SnapToUnitCenter(VecFx32Ctor *a, VecFx32Ctor *b);
-s32 _ZN6Camera8getPitchEv(void *p);
 BOOL Camera_ProjectCurvedToScreen(s32 *a, s32 *b, VecFx32Ctor *p);
 s32 Vec_MagXZ(VecFx32Ctor *v);
 s32 Math_Atan2(s32 a, s32 b);
@@ -1083,12 +1084,6 @@ void Bgm_Release(u32 a);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-void *_ZN15TalkWindowState13getChoiceListEv(TalkWindowState *a);
-s32 _ZN10ChoiceList9getResultEv(void *self);
-void _ZN15TalkWindowState14setNextMessageEPhPv(TalkWindowState *a, u8 *b, s32 c);
-void _ZN8ItemNameC1EPt(void *obj, u16 *p);
-void _ZN8ItemNameD1Ev(void *obj);
-void _ZN15TalkWindowState12setNamedSlotEiPvj(TalkWindowState *a, s32 b, void *c, s32 d);
 void PlayerActor_GetHeldItem(u16 *out, void *obj);
 void PlayerActor_GetFaceItem(u16 *out, void *obj);
 void PlayerActor_GetHat(u16 *out, void *obj);
@@ -1515,19 +1510,19 @@ void PlayerActor::onMessageEnd(u32 attr) {
     switch (((PlayerActor *)this)->msgStep) {
     case 0:
         buf[0] = 0x3d;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[0], 0);
+        (((PlayerActor *)this)->window)->setNextMessage(&buf[0], (void *)(0));
         break;
     case 4:
         buf[1] = 0x3e;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[1], 0);
+        (((PlayerActor *)this)->window)->setNextMessage(&buf[1], (void *)(0));
         break;
     case 2:
         buf[2] = 3;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[2], 0);
+        (((PlayerActor *)this)->window)->setNextMessage(&buf[2], (void *)(0));
         break;
     case 1:
         buf[3] = 0x3c;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[3], 0);
+        (((PlayerActor *)this)->window)->setNextMessage(&buf[3], (void *)(0));
         ((PlayerActor *)this)->msgStep = 9;
         break;
     case 5:
@@ -1537,23 +1532,23 @@ void PlayerActor::onMessageEnd(u32 attr) {
     case 13: {
         u32 obj[9];
         buf[4] = 0x3f;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[4], 0);
+        (((PlayerActor *)this)->window)->setNextMessage(&buf[4], (void *)(0));
         *(u16 *)&buf[6] = ((PlayerActor *)this)->actionWorkRaw[8] + 0x12b0;
-        _ZN8ItemNameC1EPt(obj, (u16 *)&buf[6]);
-        _ZN15TalkWindowState12setNamedSlotEiPvj(((PlayerActor *)this)->window, 0, obj, 7);
-        _ZN8ItemNameD1Ev(obj);
+        new (obj) ItemName((u16 *)&buf[6]);
+        (((PlayerActor *)this)->window)->setNamedSlot(0, obj, 7);
+        ((ItemName *)(obj))->ItemName::~ItemName();
         ((PlayerActor *)this)->msgStep = 8;
         break;
     }
     case 14: {
         u32 obj[9];
         buf[5] = 0x3f;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &buf[5], 0);
+        (((PlayerActor *)this)->window)->setNextMessage(&buf[5], (void *)(0));
         ((PlayerActor *)this)->msgStep = 8;
         *(u16 *)&buf[8] = ((PlayerActor *)this)->actionWorkRaw[3] + 0x12e8;
-        _ZN8ItemNameC1EPt(obj, (u16 *)&buf[8]);
-        _ZN15TalkWindowState12setNamedSlotEiPvj(((PlayerActor *)this)->window, 0, obj, 7);
-        _ZN8ItemNameD1Ev(obj);
+        new (obj) ItemName((u16 *)&buf[8]);
+        (((PlayerActor *)this)->window)->setNamedSlot(0, obj, 7);
+        ((ItemName *)(obj))->ItemName::~ItemName();
         break;
     }
     }
@@ -1570,9 +1565,9 @@ void PlayerActor::onChoice(u32 attr) {
     case 4: {
         s32 r5;
         u8 b;
-        r5 = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(((PlayerActor *)this)->window));
+        r5 = ((ChoiceList *)((((PlayerActor *)this)->window)->getChoiceList()))->getResult();
         b = gTalkMsgIndexEnd;
-        _ZN15TalkWindowState14setNextMessageEPhPv(((PlayerActor *)this)->window, &b, 0);
+        (((PlayerActor *)this)->window)->setNextMessage(&b, (void *)(0));
         if (r5 == 0) {
             ((PlayerActor *)this)->msgStep = 5;
         } else {
@@ -1703,7 +1698,7 @@ void PlayerActor::readInput() {
     ((PlayerActor *)this)->toolTargetKind = 0;
     ((PlayerActor *)this)->touchTargetId = 0xff;
     if (Unk_0200d64c_IsTwo()) {
-    if (_ZN11PlayerActor14testActionFlagEj(this, 0xb) || _ZN11PlayerActor14testActionFlagEj(this, 0x1b)) {
+    if (((PlayerActor *)(this))->testActionFlag(0xb) || ((PlayerActor *)(this))->testActionFlag(0x1b)) {
         ((PlayerActor *)this)->inputMagnitude = 0;
         ((PlayerActor *)this)->inputRun = 0;
         ((PlayerActor *)this)->interactPressed = 0;
@@ -1711,10 +1706,10 @@ void PlayerActor::readInput() {
         ((PlayerActor *)this)->actionHeld = 0;
         ((PlayerActor *)this)->hasTargetPos = 0;
         *(VecFx32Ctor *)&((PlayerActor *)this)->targetPos = r5c;
-        if (_ZN11PlayerActor14testActionFlagEj(this, 0x1b)) {
+        if (((PlayerActor *)(this))->testActionFlag(0x1b)) {
             if (Scene_NoPlayerInUnsharedScene() == 1) {
                 if (!PlayerActor_IsWaitingForSlots(this)) {
-                    _ZN11PlayerActor15clearActionFlagEj(this, 0x1b);
+                    ((PlayerActor *)(this))->clearActionFlag(0x1b);
                     FieldInfoBalloon_ClearNetMsg();
                     if (*(s32 *)((u8 *)gCommManager + 0x64) == 0) {
                         if ((u8)(Net_GetMode() + 0xfd) <= 1) {
@@ -1752,7 +1747,7 @@ void PlayerActor::readInput() {
                 case 5:
                     if (Unk_0200d64c_Both()) {
                         ((PlayerActor *)this)->toolTargetKind = 1;
-                        if (_ZN11PlayerActor15getHeldToolKindEv(this) != 1) {
+                        if (((PlayerActor *)(this))->getHeldToolKind() != 1) {
                             r5c = *(VecFx32Ctor *)&((PlayerActor *)this)->toolTargetPos = p68;
                         } else {
                             u16 *hp = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &p68, 0);
@@ -1819,9 +1814,9 @@ void PlayerActor::readInput() {
                 pv[1].x = ((PlayerActor *)this)->bodyPos.x;
                 pv[1].y = ((PlayerActor *)this)->bodyPos.y;
                 pv[1].z = ((PlayerActor *)this)->bodyPos.z;
-                sp24 = ((u16)(s16)(0x4000 - _ZN6Camera8getPitchEv((void*)sp20)) >> 4) * 2;
+                sp24 = ((u16)(s16)(0x4000 - ((Camera *)((void*)sp20))->getPitch()) >> 4) * 2;
                 sp2c = FX_Div(func_01ffcb0c(0x1266, data_02135f44[sp24]), data_02135f44[sp24 + 1]);
-                sp28 = ((u16)_ZN6Camera6getYawEv((void*)sp20) >> 4) * 2;
+                sp28 = ((u16)((Camera *)((void*)sp20))->getYaw() >> 4) * 2;
                 pv[2].x = pv[1].x - func_01ffcb0c(sp2c, data_02135f44[sp28]);
                 s32 t = func_01ffcb0c(sp2c, data_02135f44[sp28 + 1]);
                 pv[2].z = pv[1].z - t;
@@ -1872,7 +1867,7 @@ void PlayerActor::readInput() {
             }
         } else {
             s32 keymask;
-            if (TalkRequestFlags_IsResetti() || _ZN11PlayerActor14testActionFlagEj(this, 0x13)) {
+            if (TalkRequestFlags_IsResetti() || ((PlayerActor *)(this))->testActionFlag(0x13)) {
                 keymask = 0x2fff;
             } else {
                 keymask = 0x2ff3;
@@ -1945,8 +1940,8 @@ void Unk_02007694::endChangeClothes(u32 a) {
             void *r = PlayerData_GetBySessionSlot(((Unk_02007694 *)this)->sessionSlot);
             if (r != NULL) {
                 PlayerData_SetStungFace(r, 0);
-                _ZN16PlayerFaceTexRef4loadEj(&((Unk_02007694 *)this)->faceTex[0], _ZN10PlayerData11getFaceTypeEv(r));
-                _ZN11PlayerActor10replayAnimEv(this);
+                ((PlayerFaceTexRef *)(&((Unk_02007694 *)this)->faceTex[0]))->load(((PlayerData *)(r))->getFaceType());
+                ((PlayerActor *)(this))->replayAnim();
                 VillagerStates_ClearUnk1dBit0();
             }
             break;
@@ -1971,15 +1966,15 @@ void Unk_02007694::endChangeClothes(u32 a) {
         default:
             return;
         }
-        _ZN11PlayerActor20netSendClothesChangeEjj(this, i, p->unk_00);
+        ((PlayerActor *)(this))->netSendClothesChange(i, p->unk_00);
     }
 }
 
 void Unk_02007694::changeClothesApply() {
     using namespace nL;
-    _ZN11PlayerActor15clearActionFlagEj(this, 0xf);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&((Unk_02007694 *)this)->bodyAnimCtrl[0], 8)) {
-        _ZN11PlayerActor13setActionFlagEj(this, 0xf);
+    ((PlayerActor *)(this))->clearActionFlag(0xf);
+    if (((AnimFrameCtrl *)(&((Unk_02007694 *)this)->bodyAnimCtrl[0]))->hasPassedFrame(8)) {
+        ((PlayerActor *)(this))->setActionFlag(0xf);
         switch (((Unk_02007694 *)this)->actionWork.changeKind) {
         case 0:
             changeClothesShirt();
@@ -1994,12 +1989,12 @@ void Unk_02007694::changeClothesApply() {
             void *r = PlayerData_GetBySessionSlot(((Unk_02007694 *)this)->sessionSlot);
             if (r != NULL) {
                 PlayerData_SetStungFace(r, 0);
-                _ZN16PlayerFaceTexRef4loadEj(&((Unk_02007694 *)this)->faceTex[0], _ZN10PlayerData11getFaceTypeEv(r));
+                ((PlayerFaceTexRef *)(&((Unk_02007694 *)this)->faceTex[0]))->load(((PlayerData *)(r))->getFaceType());
                 u8 buf[2];
                 buf[0] = ((Unk_02007694 *)this)->bodyAnimPlayMode;
-                _ZN11PlayerActor17setEyeAnimForBodyEPiPh(this, data_020d5e3c, &buf[0]);
+                ((PlayerActor *)(this))->setEyeAnimForBody((s32 *)(data_020d5e3c), &buf[0]);
                 buf[1] = ((Unk_02007694 *)this)->bodyAnimPlayMode;
-                _ZN11PlayerActor19setMouthAnimForBodyEPiPh(this, data_020d5e44, &buf[1]);
+                ((PlayerActor *)(this))->setMouthAnimForBody((s32 *)(data_020d5e44), &buf[1]);
                 VillagerStates_ClearUnk1dBit0();
             }
             break;
@@ -2019,7 +2014,7 @@ void PlayerActor::pickUpReachUpdate() {
         u8 b = s->unk_04.b.unk_06;
         s32 v;
         u8 flag;
-        if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot)) {
+        if (((CommManager *)(gCommManager))->isLocalSlot(((PlayerActor *)this)->sessionSlot)) {
             v = ((PlayerActor *)this)->fieldAnswerKind;
         } else {
             v = s->unk_04.b.unk_07;
@@ -2039,7 +2034,7 @@ void PlayerActor::pickUpReachUpdate() {
         case 0x16: {
             l.p[1].x = a;
             l.p[1].y = b;
-            _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(this, &l.p[1], flag, 6, -1);
+            ((PlayerActor *)(this))->requestPickUpFanfareAt((Unk_02006d14_Pair *)(void *)(&l.p[1]), flag, 6, -1);
             break;
         }
         }
@@ -2047,13 +2042,13 @@ void PlayerActor::pickUpReachUpdate() {
     }
     case 2:
         ((PlayerActor *)this)->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, ((PlayerActor *)this)->action);
-        _ZN11PlayerActor11requestWaitEjjj(this, 3, 1, -1);
+        ((PlayerActor *)(this))->requestWait(3, 1, -1);
         break;
     case 3:
         if (TalkRequest_AddPlayerMessage()) {
             *st = 4;
-            _ZN9Character17attachTalkRequestEi(((PlayerActor *)this), ((PlayerActor *)this));
-            _ZN11PlayerActor13setActionFlagEj(this, 0x11);
+            ((Character *)(void *)(((PlayerActor *)this)))->attachTalkRequest((s32)(((PlayerActor *)this)));
+            ((PlayerActor *)(this))->setActionFlag(0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, &sPlayerActorMsgFile);
             ((PlayerActor *)this)->msgIndex = 0;
             ((PlayerActor *)this)->window->nextState = 1;
@@ -2069,8 +2064,8 @@ void PlayerActor::pickUpReachUpdate() {
     case 5:
         if (((PlayerActor *)this)->window != NULL) {
             if (((PlayerActor *)this)->window->state == 0) {
-                _ZN9Character17detachTalkRequestEi(((PlayerActor *)this), ((PlayerActor *)this));
-                _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
+                ((Character *)(void *)(((PlayerActor *)this)))->detachTalkRequest((s32)(((PlayerActor *)this)));
+                ((PlayerActor *)(this))->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 *st = 6;
             }
@@ -2078,14 +2073,14 @@ void PlayerActor::pickUpReachUpdate() {
         break;
     case 6:
         ((PlayerActor *)this)->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, ((PlayerActor *)this)->action);
-        _ZN11PlayerActor11requestWaitEjjj(this, 3, 1, -1);
-        _ZN11PlayerActor15clearActionFlagEj(this, 0xd);
+        ((PlayerActor *)(this))->requestWait(3, 1, -1);
+        ((PlayerActor *)(this))->clearActionFlag(0xd);
         break;
     case 7:
         if (TalkRequest_AddPlayerMessage()) {
             *st = 8;
-            _ZN9Character17attachTalkRequestEi(((PlayerActor *)this), ((PlayerActor *)this));
-            _ZN11PlayerActor13setActionFlagEj(this, 0x11);
+            ((Character *)(void *)(((PlayerActor *)this)))->attachTalkRequest((s32)(((PlayerActor *)this)));
+            ((PlayerActor *)(this))->setActionFlag(0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, &sPlayerActorErrorMsgFile);
             ((PlayerActor *)this)->msgIndex = 1;
             ((PlayerActor *)this)->window->nextState = 1;
@@ -2101,11 +2096,11 @@ void PlayerActor::pickUpReachUpdate() {
     case 9:
         if (((PlayerActor *)this)->window != NULL) {
             if (((PlayerActor *)this)->window->state == 0) {
-                _ZN9Character17detachTalkRequestEi(((PlayerActor *)this), ((PlayerActor *)this));
-                _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
+                ((Character *)(void *)(((PlayerActor *)this)))->detachTalkRequest((s32)(((PlayerActor *)this)));
+                ((PlayerActor *)(this))->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 ((PlayerActor *)this)->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, ((PlayerActor *)this)->action);
-                _ZN11PlayerActor11requestWaitEjjj(this, 3, 1, -1);
+                ((PlayerActor *)(this))->requestWait(3, 1, -1);
             }
         }
         break;
@@ -2116,38 +2111,38 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
     using namespace nI;
     switch (*state) {
     case 0:
-        if (!_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)((PlayerActor *)this)->bodyModel)) break;
+        if (!((AnimFrameCtrl *)(&(AnimFrameCtrl &)((PlayerActor *)this)->bodyModel))->isFinished()) break;
         if (((PlayerActor *)this)->actionItem == 0x1520) {
             if (BottleLetter_Open()) {
                 *state = 6;
                 break;
             }
             if (!TalkRequest_AddPlayerMessage()) break;
-            _ZN11PlayerActor9startAnimEijt(this, 0x6c, 0, 0);
-            s32 r = _ZN11PlayerActor15getHeldToolKindEv(this);
+            ((PlayerActor *)(this))->startAnim(0x6c, 0, 0);
+            s32 r = ((PlayerActor *)(this))->getHeldToolKind();
             if (r == 4) {
                 HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0, 9, 0);
             } else if (r == 3) {
                 HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0x13, 3, 0);
             }
             *state = 7;
-            _ZN9Character17attachTalkRequestEi(this, ((PlayerActor *)this));
-            _ZN11PlayerActor13setActionFlagEj(this, 0x11);
+            ((Character *)(this))->attachTalkRequest((s32)(((PlayerActor *)this)));
+            ((PlayerActor *)(this))->setActionFlag(0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, sPlayerActorErrorMsgFile);
             ((PlayerActor *)this)->msgIndex = 0x12;
             ((PlayerActor *)this)->window->nextState = 1;
         } else if (flag) {
             if (!TalkRequest_IsPlayerMessage() && !TalkRequest_AddPlayerMessage()) break;
-            _ZN11PlayerActor9startAnimEijt(this, 0x6c, 0, 0);
-            s32 r = _ZN11PlayerActor15getHeldToolKindEv(this);
+            ((PlayerActor *)(this))->startAnim(0x6c, 0, 0);
+            s32 r = ((PlayerActor *)(this))->getHeldToolKind();
             if (r == 4) {
                 HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0, 9, 0);
             } else if (r == 3) {
                 HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0x13, 3, 0);
             }
             *state = 1;
-            _ZN9Character17attachTalkRequestEi(this, ((PlayerActor *)this));
-            _ZN11PlayerActor13setActionFlagEj(this, 0x11);
+            ((Character *)(this))->attachTalkRequest((s32)(((PlayerActor *)this)));
+            ((PlayerActor *)(this))->setActionFlag(0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, sPlayerActorMsgFile);
             ((PlayerActor *)this)->msgIndex = 2;
             ((PlayerActor *)this)->window->nextState = 1;
@@ -2182,8 +2177,8 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
             ((PlayerActor *)this)->bodyModel.frameStep = 0x1000;
             if (MenuCtrl_IsResultOk()) {
                 *state = 6;
-                _ZN9Character17detachTalkRequestEi(this, ((PlayerActor *)this));
-                _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
+                ((Character *)(this))->detachTalkRequest((s32)(((PlayerActor *)this)));
+                ((PlayerActor *)(this))->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 break;
             }
@@ -2193,9 +2188,9 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
         if (((PlayerActor *)this)->dropQuery != -1) break;
         ((PlayerActor *)this)->dropQuery = FieldAction_RequestPlaceAtPendingForAid(((PlayerActor *)this)->sessionSlot, ((PlayerActor *)this)->actionItem);
         if (((PlayerActor *)this)->dropQuery == -1) break;
-        _ZN11PlayerActor9startAnimEijt(this, 0, 6, 6);
+        ((PlayerActor *)(this))->startAnim(0, 6, 6);
         *state = 4;
-        if (_ZN11PlayerActor15getHeldToolKindEv(this) != 4) break;
+        if (((PlayerActor *)(this))->getHeldToolKind() != 4) break;
         HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0, 9, 0);
         break;
     case 4:
@@ -2204,19 +2199,19 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
     case 5:
         if (!((PlayerActor *)this)->window) break;
         if (((PlayerActor *)this)->window->state) break;
-        _ZN9Character17detachTalkRequestEi(this, ((PlayerActor *)this));
-        _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
+        ((Character *)(this))->detachTalkRequest((s32)(((PlayerActor *)this)));
+        ((PlayerActor *)(this))->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         *state = 6;
-        _ZN11PlayerActor9startAnimEijt(this, 0, 6, 6);
-        if (_ZN11PlayerActor15getHeldToolKindEv(this) == 4) {
+        ((PlayerActor *)(this))->startAnim(0, 6, 6);
+        if (((PlayerActor *)(this))->getHeldToolKind() == 4) {
             HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0, 9, 0);
         }
         break;
     case 6:
         ((PlayerActor *)this)->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, ((PlayerActor *)this)->action);
-        _ZN11PlayerActor11requestWaitEjjj(this, 3, 1, -1);
-        _ZN11PlayerActor15clearActionFlagEj(this, 0xd);
+        ((PlayerActor *)(this))->requestWait(3, 1, -1);
+        ((PlayerActor *)(this))->clearActionFlag(0xd);
         ((PlayerActor *)this)->msgStep = 15;
         break;
     case 7:
@@ -2232,8 +2227,8 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
         ((PlayerActor *)this)->dropQuery = FieldAction_RequestPlaceAtPendingForAid(((PlayerActor *)this)->sessionSlot, ((PlayerActor *)this)->actionItem);
         if (((PlayerActor *)this)->dropQuery == -1) break;
         *state = 5;
-        _ZN11PlayerActor9startAnimEijt(this, 0, 6, 6);
-        if (_ZN11PlayerActor15getHeldToolKindEv(this) == 4) {
+        ((PlayerActor *)(this))->startAnim(0, 6, 6);
+        if (((PlayerActor *)(this))->getHeldToolKind() == 4) {
             HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0, 9, 0);
         }
         break;
@@ -2260,7 +2255,7 @@ void PlayerActor::setupAct76(PlayerActionRequest *item, u32 old) {
     s->unk_05 = b;
     s->unk_06 = c;
     ((PlayerActor *)this)->netData.writeAct76Net(a, b, c);
-    _ZN11PlayerActor13startAnimOnceEijt(((PlayerActor *)this), sPlayerAct76Anims[a], 3, 0);
+    (((PlayerActor *)this))->startAnimOnce(sPlayerAct76Anims[a], 3, 0);
     ((PlayerActor *)this)->pendingAct76Kind = 0;
     s32 r = _ZN11PlayerActor15getHeldToolKindEv(((PlayerActor *)this));
     if (r != 3) {
@@ -2268,7 +2263,7 @@ void PlayerActor::setupAct76(PlayerActionRequest *item, u32 old) {
     } else {
         HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0x1f, 3, 1);
     }
-    if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot)) {
+    if (((CommManager *)(gCommManager))->isLocalSlot(((PlayerActor *)this)->sessionSlot)) {
         u32 t = 0xd;
         switch (a) {
         case 0:
@@ -2304,7 +2299,7 @@ void PlayerActor::act76Update() {
     VecFx32 v1, v2, v3, v4, v5;
     BOOL r;
 
-    _ZN11PlayerActor12turnToCameraEi(this, 0x400);
+    (this)->turnToCamera(0x400);
     p = &actionWorkRaw[0];
     kind = p[2];
     sub = p[5];
@@ -2335,7 +2330,7 @@ void PlayerActor::act76Update() {
         HeldInsect_SetHandMatrix((u8)sessionSlot, &t[5], &blk, 0);
         break;
     case 1:
-        void *o = _ZN10FishBobber7getFishEv(&heldItemModel.bobber);
+        void *o = ((FishBobber *)(&heldItemModel.bobber))->getFish();
         if (o != NULL) {
             v1.x = 0xb33;
             v1.y = 0x19a;
@@ -2352,23 +2347,23 @@ void PlayerActor::act76Update() {
     }
     switch (animId) {
     case 0x87:
-        if (!_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)bodyModel)) {
+        if (!((AnimFrameCtrl *)(&(AnimFrameCtrl &)bodyModel))->isFinished()) {
             return;
         }
-        _ZN11PlayerActor13startAnimOnceEijt(this, 0x88, 0, 0);
+        (this)->startAnimOnce(0x88, 0, 0);
         HeldItemModel_PlayAnim(&heldItemModel, 0xa, 0, 1);
         return;
     case 0x89:
-        if (!_ZN13AnimFrameCtrl10isFinishedEv(&(AnimFrameCtrl &)bodyModel)) {
+        if (!((AnimFrameCtrl *)(&(AnimFrameCtrl &)bodyModel))->isFinished()) {
             return;
         }
-        _ZN11PlayerActor13startAnimOnceEijt(this, 0x8a, 0, 0);
+        (this)->startAnimOnce(0x8a, 0, 0);
         HeldItemModel_PlayAnim(&heldItemModel, 0x20, 0, 1);
         return;
     case 0x86:
         lim = 0x19;
-        if (_ZN11CommManager11isLocalSlotEj(gCommManager, sessionSlot)) {
-            if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)bodyModel, 0xc)) {
+        if (((CommManager *)(gCommManager))->isLocalSlot(sessionSlot)) {
+            if (((AnimFrameCtrl *)(&(AnimFrameCtrl &)bodyModel))->hasPassedFrame(0xc)) {
                 Camera_SetMode4();
             }
         }
@@ -2381,16 +2376,16 @@ void PlayerActor::act76Update() {
         return;
     }
     g = gCommManager;
-    if (!_ZN11CommManager11isLocalSlotEj(g, sessionSlot)) {
-        actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, action);
+    if (!((CommManager *)(g))->isLocalSlot(sessionSlot)) {
+        actionPriority = ((Unk_02007694 *)(void *)(this))->getActionDonePriority(action);
         return;
     }
     switch (*st) {
     case 0:
         if (TalkRequest_AddPlayerMessage()) {
             *st = 1;
-            _ZN9Character17attachTalkRequestEi(this, this);
-            _ZN11PlayerActor13setActionFlagEj(this, 0x11);
+            ((Character *)(void *)(this))->attachTalkRequest((s32)(this));
+            (this)->setActionFlag(0x11);
             switch (kind) {
             case 0:
                 setFileName(sPlayerActorGetInsectMsgFile);
@@ -2447,13 +2442,13 @@ void PlayerActor::act76Update() {
         if (window->state != 0) {
             break;
         }
-        _ZN9Character17detachTalkRequestEi(this, this);
-        _ZN11PlayerActor15clearActionFlagEj(this, 0x11);
+        ((Character *)(void *)(this))->detachTalkRequest((s32)(this));
+        (this)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
-        if (_ZN11CommManager11isLocalSlotEj(g, sessionSlot)) {
+        if (((CommManager *)(g))->isLocalSlot(sessionSlot)) {
             Camera_SetModeDefault();
         }
-        actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, action);
+        actionPriority = ((Unk_02007694 *)(void *)(this))->getActionDonePriority(action);
         PlayerActor_GetHeldItem(&t[3], this);
         if (Item_IsFurniture(&t[3])) {
             t[4] = 0xfff1;
@@ -2461,15 +2456,15 @@ void PlayerActor::act76Update() {
         } else {
             r = t[3] == 0xfff1 ? TRUE : FALSE;
         }
-        if (!r && !_ZN11PlayerActor20getHeldHoldableIndexEv(this) && Unk_02008858_IsZero(gFieldSceneKind)) {
+        if (!r && !(this)->getHeldHoldableIndex() && Unk_02008858_IsZero(gFieldSceneKind)) {
             PlayerActor_RequestStowItem(this, 2, 2, 0, 0, 0, 6, -1);
             break;
         }
         if (Unk_02008858_IsZero(gFieldSceneKind)) {
             TalkRequest_FinishSceneEntry();
-            _ZN11PlayerActor13setActionFlagEj(this, 0);
+            (this)->setActionFlag(0);
         }
-        _ZN11PlayerActor11requestWaitEjjj(this, 3, 1, -1);
+        (this)->requestWait(3, 1, -1);
         break;
     }
 }
@@ -2517,7 +2512,7 @@ void Unk_02005e7c::handleNetEvent() {
         
     case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11:
     case 14: case 19: case 20: case 21: case 22:
-        if (_ZN11PlayerActor14testActionFlagEj(this, 10) == 0) {
+        if (((PlayerActor *)(this))->testActionFlag(10) == 0) {
             pendingEvent.set = 1;
             pendingEventUnitX = x;
             pendingEventUnitZ = y;
@@ -2525,7 +2520,7 @@ void Unk_02005e7c::handleNetEvent() {
             pendingEvent.sub = sub;
             return;
         }
-        _ZN11PlayerActor13clearRequestsEv(this);
+        ((PlayerActor *)(this))->clearRequests();
         break;
     case 12: case 13: case 15: case 16: case 18: case 23: case 24: case 25: case 26:
         return;
@@ -2566,14 +2561,14 @@ void Unk_02005e7c::handleNetEvent() {
             flag = 0;
         case 4: {
             v34[0] = x; v34[1] = y;
-            _ZN11PlayerActor15requestPickUpAtEP4Vec2ihis(this, v34, -1, flag, 6, -1);
+            ((PlayerActor *)(this))->requestPickUpAt((Vec2 *)(v34), -1, flag, 6, -1);
             break;
         }
         case 21:
             flag = 0;
         case 22: {
             v2122[0] = x; v2122[1] = y;
-            _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(this, v2122, flag, 6, -1);
+            ((PlayerActor *)(this))->requestPickUpFanfareAt((Unk_02006d14_Pair *)(v2122), flag, 6, -1);
             break;
         }
         }
@@ -2633,7 +2628,7 @@ void Unk_02005e7c::handleNetEvent() {
             q20.x = pa->a[0]; q20.y = pa->a[1]; q20.z = pa->a[2];
             FieldPos_ToUnit(&ux2, &uy2, &q20);
             if (ux2 == x && uy2 == y) {
-                _ZN11PlayerActor13setActionFlagEj(this, 0x1c);
+                ((PlayerActor *)(this))->setActionFlag(0x1c);
                 pa->e[3] = 1;
                 return;
             }
@@ -2658,8 +2653,8 @@ void Unk_02005e7c::handleNetEvent() {
         break;
     case 17:
         if (action == 0) {
-            _ZN11PlayerActor11requestWaitEjjj(this, 3, 1, -1);
-            _ZN11PlayerActor15clearActionFlagEj(this, 0x1c);
+            ((PlayerActor *)(this))->requestWait(3, 1, -1);
+            ((PlayerActor *)(this))->clearActionFlag(0x1c);
         }
         break;
     case 0: case 12: case 13: case 15: case 16: case 18: case 23: case 24: case 25: case 26:
@@ -2674,8 +2669,8 @@ void PlayerActor::drawReady() {
     VecFx32 t2;
     VecFx32 v;
     data_021cb69c = *(Mtx43 *)((u8 *)((PlayerActor *)this) + 0x294);
-    _ZN5Model8setAlphaEj(&((PlayerActor *)this)->bodyModel, ((PlayerActor *)this)->alpha);
-    _ZN17TwoLayerAnimModel11drawLayeredEj(&((PlayerActor *)this)->bodyModel, 0);
+    ((Model *)(&((PlayerActor *)this)->bodyModel))->setAlpha(((PlayerActor *)this)->alpha);
+    ((TwoLayerAnimModel *)(&((PlayerActor *)this)->bodyModel))->drawLayered(0);
     Model_GetJointWorldMtx(&((PlayerActor *)this)->bodyModel, (Mtx43 *)((u8 *)((PlayerActor *)this) + 0x428 + 0), 0xf);
     Model_GetJointWorldMtx(&((PlayerActor *)this)->bodyModel, &((PlayerActor *)this)->toolHandMtx, 0xe);
     Model_GetJointWorldMtx(&((PlayerActor *)this)->bodyModel, &((PlayerActor *)this)->itemHandMtx, 0xb);
@@ -2695,17 +2690,17 @@ void PlayerActor::drawReady() {
     t.z = a.m[11];
     WorldCurve_FromCurved((VecFx32 *)&((PlayerActor *)this)->headTopPos, &t);
     *(Mtx43 *)&((PlayerActor *)this)->headModel0.mtx = ((PlayerActor *)this)->headMtx;
-    _ZN5Model8setAlphaEj(&((PlayerActor *)this)->headModel0, ((PlayerActor *)this)->alpha);
-    _ZN5Model10drawScaledEPi(&((PlayerActor *)this)->headModel0, 0);
+    ((Model *)(&((PlayerActor *)this)->headModel0))->setAlpha(((PlayerActor *)this)->alpha);
+    ((Model *)(&((PlayerActor *)this)->headModel0))->drawScaled((s32 *)(0));
     if (PlayerHead_GetModelId(&((PlayerActor *)this)->headRef, 1) < 0x9e) {
         *(Mtx43 *)&((PlayerActor *)this)->headModel1.mtx = ((PlayerActor *)this)->headMtx;
-        _ZN5Model8setAlphaEj(&((PlayerActor *)this)->headModel1, ((PlayerActor *)this)->alpha);
-        _ZN5Model10drawScaledEPi(&((PlayerActor *)this)->headModel1, 0);
+        ((Model *)(&((PlayerActor *)this)->headModel1))->setAlpha(((PlayerActor *)this)->alpha);
+        ((Model *)(&((PlayerActor *)this)->headModel1))->drawScaled((s32 *)(0));
     }
     if (PlayerGlassesModelRef_GetModelId(&((PlayerActor *)this)->faceItemRef) != 0x4b) {
         *(Mtx43 *)&((PlayerActor *)this)->faceItemModel.mtx = ((PlayerActor *)this)->headMtx;
-        _ZN5Model8setAlphaEj(&((PlayerActor *)this)->faceItemModel, ((PlayerActor *)this)->alpha);
-        _ZN5Model10drawScaledEPi(&((PlayerActor *)this)->faceItemModel, 0);
+        ((Model *)(&((PlayerActor *)this)->faceItemModel))->setAlpha(((PlayerActor *)this)->alpha);
+        ((Model *)(&((PlayerActor *)this)->faceItemModel))->drawScaled((s32 *)(0));
     }
     if (((PlayerActor *)this)->shadowSize > 0) {
         Model_GetJointWorldMtx(&((PlayerActor *)this)->bodyModel, &a, 1);
@@ -2715,10 +2710,10 @@ void PlayerActor::drawReady() {
         WorldCurve_FromCurved(&v, &t2);
         CharaShadow_DrawPlayer(&v, ((PlayerActor *)this)->shadowSize);
     }
-    if (_ZN11PlayerActor14testActionFlagEj(this, 0)) {
+    if (((PlayerActor *)(this))->testActionFlag(0)) {
         HeldItemModel_Draw(&((PlayerActor *)this)->heldItemModel, &((PlayerActor *)this)->toolHandMtx);
         u32 mode;
-        switch (_ZN11PlayerActor15getHeldToolKindEv(this)) {
+        switch (((PlayerActor *)(this))->getHeldToolKind()) {
         case 4:
         case 10:
             mode = 2;
@@ -2733,7 +2728,7 @@ void PlayerActor::drawReady() {
             break;
         }
         ((PlayerActor *)this)->heldItemJointMtx = HeldItemModel_GetJointMtx(&((PlayerActor *)this)->heldItemModel, mode);
-        if (_ZN11PlayerActor15getHeldToolKindEv(this) == 4) {
+        if (((PlayerActor *)(this))->getHeldToolKind() == 4) {
             ((PlayerActor *)this)->heldItemJointMtx2 = HeldItemModel_GetJointMtx(&((PlayerActor *)this)->heldItemModel, 3);
         }
     }

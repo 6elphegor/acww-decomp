@@ -3,6 +3,8 @@
 #include "gfx/Mtx43.h"
 #include "net/CommManager.h"
 #include "player/PlayerActor.h"
+#include "player/PlayerData.h"
+#include "player/PlayerFaceTexRef.h"
 
 
 
@@ -36,7 +38,6 @@ void *PlayerData_GetBySessionSlot(u32 idx);
 }
 
 extern "C" {
-void _ZN10PlayerData6setTanEh(void *p, u32 v);
 }
 
 extern "C" {
@@ -48,23 +49,18 @@ u8 *_ZN10PlayerData11getFaceTypeEv(void *p);
 }
 
 extern "C" {
-void _ZN10PlayerData8setShirtEPt(void *p, u16 *v);
 }
 
 extern "C" {
-void _ZN10PlayerData11setFaceItemEPt(void *p, u16 *v);
 }
 
 extern "C" {
-void _ZN10PlayerData6setHatEPt(void *p, u16 *v);
 }
 
 extern "C" {
-void _ZN10PlayerData11setHeldItemEPt(void *p, u16 *v);
 }
 
 extern "C" {
-void _ZN16PlayerFaceTexRef4loadEj(PlayerFaceTexRef *p, u8 *v);
 }
 
 extern "C" {
@@ -92,11 +88,9 @@ s32 BlockMap_IsBuriedAtPos(void *g, void *v);
 }
 
 extern "C" {
-void _ZN11PlayerActor15setShirtTextureEPv(PlayerActor *o, u16 *p);
 }
 
 extern "C" {
-void _ZN11PlayerActor21requestShirtTexUploadEv(PlayerActor *o);
 }
 
 extern "C" {
@@ -157,8 +151,6 @@ s32 PlayerActor_RequestChangeClothes(u16 *p, s32 a, s32 b);
 
 // members of PlayerActor whose symbols.txt names do not fit the method declarations (taken `this` first)
 extern "C" {
-s32 _ZN11PlayerActor16requestHatChangeEPthhh(PlayerActor *o, u16 *p, u32 a, u32 b, u32 c);
-void _ZN11PlayerActor10replayAnimEv(PlayerActor *o);
 s32 PlayerActor_GetHairStyle(PlayerActor *o);
 s32 PlayerActor_GetHairColor(PlayerActor *o);
 }
@@ -189,24 +181,24 @@ extern "C" BOOL PlayerActor_SetHoldableItem(u32 a, u32 idx) {
     if (o->animId >= 0xa1) {
         if (a == 0 || ItemInfo_GetHoldableCount() < a) {
             v[1] = 0xfff1;
-            _ZN10PlayerData11setHeldItemEPt(p, &v[1]);
+            ((PlayerData *)(p))->setHeldItem(&v[1]);
         } else {
             ItemInfo_GetNthHoldable(&v[2], a - 1);
-            _ZN10PlayerData11setHeldItemEPt(p, &v[2]);
+            ((PlayerData *)(p))->setHeldItem(&v[2]);
         }
         return FALSE;
     }
     if (a == 0 || ItemInfo_GetHoldableCount() < a) {
         v[3] = 0xfff1;
-        _ZN10PlayerData11setHeldItemEPt(p, &v[3]);
+        ((PlayerData *)(p))->setHeldItem(&v[3]);
         v[4] = 0xfff1;
         HeldItemModel_SetItem(&o->heldItemModel, &v[4], 0);
-        _ZN11PlayerActor10replayAnimEv(o);
+        (o)->replayAnim();
     } else {
         ItemInfo_GetNthHoldable(&v[0], a - 1);
-        _ZN10PlayerData11setHeldItemEPt(p, &v[0]);
+        ((PlayerData *)(p))->setHeldItem(&v[0]);
         HeldItemModel_SetItem(&o->heldItemModel, &v[0], p);
-        _ZN11PlayerActor10replayAnimEv(o);
+        (o)->replayAnim();
         HeldItemModel_Update(&o->heldItemModel);
     }
     return TRUE;
@@ -218,13 +210,13 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
     if (!q) return FALSE;
     switch (kind) {
     case 0:
-        _ZN10PlayerData8setShirtEPt(q, p);
+        ((PlayerData *)(q))->setShirt(p);
         break;
     case 1:
-        _ZN10PlayerData11setFaceItemEPt(q, p);
+        ((PlayerData *)(q))->setFaceItem(p);
         break;
     case 2:
-        _ZN10PlayerData6setHatEPt(q, p);
+        ((PlayerData *)(q))->setHat(p);
         break;
     }
     PlayerActor *o = PlayerActor_Get(idx);
@@ -232,8 +224,8 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
     if (o->animId >= 0xa1) return FALSE;
     switch (kind) {
     case 0:
-        _ZN11PlayerActor15setShirtTextureEPv(o, p);
-        _ZN11PlayerActor21requestShirtTexUploadEv(o);
+        (o)->setShirtTexture((void *)(void *)(p));
+        (o)->requestShirtTexUpload();
         break;
     case 1:
         v1 = *p;
@@ -243,7 +235,7 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
         v2 = *p;
         s32 r4 = PlayerActor_GetHairStyle(o);
         s32 r3 = PlayerActor_GetHairColor(o);
-        _ZN11PlayerActor16requestHatChangeEPthhh(o, &v2, r4, r3, 0);
+        (o)->requestHatChange(&v2, r4, r3, 0);
         break;
     }
     }
@@ -263,14 +255,14 @@ extern "C" BOOL PlayerActor_SetSwollenFace(s32 a, u32 idx) {
     } else {
         v = _ZN10PlayerData11getFaceTypeEv(p);
     }
-    _ZN16PlayerFaceTexRef4loadEj(&o->faceTex, v);
+    (&o->faceTex)->load((u32)(v));
     return TRUE;
 }
 
 extern "C" BOOL PlayerActor_SetTan(u32 x, u32 idx) {
     void *p = PlayerData_GetBySessionSlot(idx);
     if (!p) return FALSE;
-    _ZN10PlayerData6setTanEh(p, x);
+    ((PlayerData *)(p))->setTan(x);
     return TRUE;
 }
 

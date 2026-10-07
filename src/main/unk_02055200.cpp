@@ -5,6 +5,7 @@
 #include "gfx/ModelAnim.h"
 #include "gfx/Model.h"
 #include "gfx/NNSG3dResTex.h"
+#include "gfx/G3dResAccess.h"
 
 struct NNSG3dResMdl {
     u32 size;
@@ -75,11 +76,9 @@ u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
 void *Heap_Alloc(void *h, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void Fatal_Trap(void);
-u32 _ZN12G3dResAccess17getTexImageOffsetEv(void *p);
 s32 func_02057110(u32 p);
 void ModelCacheHeap_Destroy(void);
 void ModelCacheHeap_Create(u32 a, u32 b);
-void _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, u32 c, u32 d);
 void func_02056714(void *p);
 s32 NNS_G3dGetResultMtx(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGlbGetInvV(void);
@@ -104,7 +103,7 @@ void *Gfx3d_CopyModel(u32 *a, void *heap);
 }
 
 void ModelAnim::initFromResource(NNSG3dResMdl *a, void *b, u32 c, u32 d, u16 e) {
-    _ZN13AnimFrameCtrl5setupEihit(this, *(u16 *)(HOST_AT(a, 4, ofsSbc, 0)), c, d, e);
+    ((AnimFrameCtrl *)(this))->setup(*(u16 *)(HOST_AT(a, 4, ofsSbc, 0)), c, d, e);
     NNS_G3dAnmObjInit((void *)anmObj, a, resMdl, (u32)b);
     *(u32 *)anmObj = e << 12;
 }
@@ -217,7 +216,7 @@ extern "C" void *ResCache_GetModel(u32 *a, u32 key) {
 }
 
 extern "C" void *Gfx3d_CopyTex(void *a, void *heap) {
-    u32 n = _ZN12G3dResAccess17getTexImageOffsetEv(a);
+    u32 n = ((G3dResAccess *)(a))->getTexImageOffset();
     void *p = Heap_Alloc(heap, n);
     if (p == NULL) {
         return NULL;

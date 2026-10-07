@@ -25,6 +25,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "player/PlayerData.h"
 
 #pragma opt_loop_invariants off
 
@@ -37,19 +38,15 @@ struct TalkStartMsg;
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
 s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 Random_GlobalBelow(u32 n);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
@@ -62,11 +59,7 @@ void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u8 gContestRecord[];
 extern u8 gSaveData[];
 }
@@ -131,12 +124,10 @@ struct Unk_ov086_022714e4_Ent {
 
 
 extern "C" {
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void String_Load(void *o, u8 *c, s32 a);
 void MailText_SetSlot(void *p, void *o);
 void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
 u32 Item_MakePaper(u32 a, u32 b);
-void *_ZN10PlayerData10getCatalogEv(void *p);
 void Catalog_AddItem(void *p, u16 *q, s32 a);
 void Clock_GetDate(void *p);
 s32 Clock_GetTimeOfDay();
@@ -205,7 +196,7 @@ BOOL SpNpcTortimerCountdown::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
+    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     return TRUE;
@@ -234,7 +225,7 @@ void SpNpcTortimerCountdown::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerCountdown::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -244,14 +235,14 @@ BOOL SpNpcTortimerCountdown::setupAct01() {
     void *p = talk.getTalkPlayer();
     s32 x = 0;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerCountdown::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -275,7 +266,7 @@ void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
     TortimerCountdownDateLocals a;
     TortimerCountdownTimeLocals t;
     BOOL f;
-    _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
+    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
     out->msgKey = "sp_npc_turtle6";
     if (massageChairSlot == -1) {
         h = 0x37e0;
@@ -355,7 +346,7 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             l.h1 = 0x1559;
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &l.h1, 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&l.h1, 0, 5, 0);
             l.h2 = 0x1559;
             Pocket_AddItem(&l.h2, 0);
             l.bb[1] = 4;
@@ -385,14 +376,14 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
                         i++;
                     } while (i < 4);
                     l.bb[0] = 0;
-                    Letter_ComposeFromMail(p, &l.bb[0], (u8 *)"ev_fortune", &data_ov086_02271c20, &data_ov086_02271c24, _ZN10PlayerData11getPlayerIdEv(g));
+                    Letter_ComposeFromMail(p, &l.bb[0], (u8 *)"ev_fortune", &data_ov086_02271c20, &data_ov086_02271c24, ((PlayerData *)(g))->getPlayerId());
                     if (g != NULL) {
                         l.h3 = Item_MakePaper(0x1d, 4);
-                        Catalog_AddItem(_ZN10PlayerData10getCatalogEv(g), &l.h3, 0);
+                        Catalog_AddItem(((PlayerData *)(g))->getCatalog(), &l.h3, 0);
                     }
                     TownSessionState_SetFlag(TownSessionState_Get(), 4);
                     l.h4 = 0x1565;
-                    _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &l.h4, 0, 5, 0);
+                    ((ActorTalkRequest *)(this))->requestGiveItem(&l.h4, 0, 5, 0);
                     msg = 0x15;
                 }
             }
@@ -401,7 +392,7 @@ void SpNpcTortimerCountdownTalk::onMessageEnd(u32) {
         case 0x1a:
         case 0x1b:
             l.h5 = 0x137d;
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &l.h5, 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&l.h5, 0, 5, 0);
             l.h6 = 0x137d;
             Pocket_AddItem(&l.h6, 0);
             msg = 0x1c + Random_GlobalBelow(3);
@@ -426,7 +417,7 @@ void SpNpcTortimerCountdownTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
-                _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h, 0, 5, 0);
+                ((ActorTalkRequest *)(this))->requestTakeItem(&h, 0, 5, 0);
             }
             msg = 2;
         }
@@ -439,7 +430,7 @@ void SpNpcTortimerCountdownTalk::onChoice(u32) {
 
 BOOL SpNpcTortimerCountdown::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

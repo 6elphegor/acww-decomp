@@ -13,6 +13,7 @@
 #include "gfx/Mtx43.h"
 #include "gfx/ObjShadowStrip.h"
 #include "nitro/io_access.h"
+#include "gfx/G3dResAccess.h"
 
 
 
@@ -55,8 +56,6 @@ void Gfx3d_LoadTexAndPltt(void *p, s32 a);
 u8 *Gfx3d_CopyTex(void *p, s32 heap);
 void Mem_Free(void *p);
 void Str_SPrintf(char *buf, const void *fmt, ...);
-u32 _ZN12G3dResAccess10findTexIdxEi(u8 *base, char *name);
-u32 _ZN12G3dResAccess11findPlttIdxEi(u8 *base, char *name);
 extern s32 gCamera;
 extern VecFx32 gCameraLookAt;
 extern u8 gViewMtx[];
@@ -125,8 +124,8 @@ extern "C" void ObjShadow_Init(void *arg) {
             e->plttBase = 0;
             e->texRes = res;
             e->polygonId = sObjShadowTexDefs[i].polygonId;
-            u32 idx1 = _ZN12G3dResAccess10findTexIdxEi(e->texRes, name);
-            u32 idx2 = _ZN12G3dResAccess11findPlttIdxEi(e->texRes, buf);
+            u32 idx1 = ((G3dResAccess *)(e->texRes))->findTexIdx((s32)(name));
+            u32 idx2 = ((G3dResAccess *)(e->texRes))->findPlttIdx((s32)(buf));
             NNSG3dResTex *tex = (NNSG3dResTex *)e->texRes;
             texData = Unk_020ac500_TexData(tex, idx1);
             u32 plttOfs = Unk_020ac500_PlttData(tex, idx2)->offset;

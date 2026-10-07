@@ -4,6 +4,8 @@
 #include "player/PlayerData.h"
 #include "net/CommManager.h"
 #include "player/PlayerInventory.h"
+#include "item/PlayerMailbox.h"
+#include "player/PlayerId.h"
 
 
 
@@ -28,8 +30,6 @@ u8 *PlayerDataArray_GetById(u8 *base, u16 *p);
 s32 PlayerData_IsGuestIndex(s32 idx);
 s32 PlayerData_GetGuestSlot(s32 idx);
 u8 *GuestPlayers_Get();
-s32 _ZN10PlayerData6isUsedEv(void *p);
-s32 _ZN10PlayerData5resetEv(void *p);
 void *_ZN10PlayerDataD1Ev(void *p, s32 f);
 void *_ZN10PlayerDataC1Ev(void *p, s32 f);
 u32 PlayerSession_GetDataIndex(u32 a);
@@ -38,47 +38,32 @@ u32 PlayerData_GetBySessionSlot(u32 a);
 void GuestPlayers_Reset(void *p);
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *, s32));
 void *__cxa_vec_ctor(void *, u32, u32, void *(*)(void *, s32), void *(*)(void *, s32));
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
-s32 _ZN8PlayerId7isValidEv(void *p);
-u16 _ZN8PlayerId5getIdEv(void *p);
 u32 PlayerId_GenerateUniqueId(u16 *p, u32 n);
-s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
-s32 _ZN10PlayerData8setupNewEjjjjhhhhhjPt(void *, s32, u32, s32, u32, u32, u32, u32, u32, u32, u32, u16 *);
-s32 _ZN10PlayerData6setBedEPt(void *, void *);
 s32 memcmp(void *, void *, u32);
 void *MI_CpuFill8(void *, s32, u32);
 s32 PlayerDataArray_FindById(u8 *base, u16 *p);
 u32 PlayerDataArray_CountUsed(u8 *base);
 u32 Random_GlobalBelow(u32 n);
-s32 _ZN10PlayerData14findUnusedSlotEi(void *, s32);
-s32 _ZN10PlayerData8getIndexEv(void *);
-void _ZN13PlayerMailbox17setLastWifiMailIdEj(void *, s32);
-s32 _ZN13PlayerMailbox17getLastWifiMailIdEv(void *);
 u8 *SaveManager_GetLetterStorage();
-s32 _ZN15PlayerInventory13getTotalBellsEi(u8 *, s32);
-s32 _ZN15PlayerInventory13getBellsSpaceEi(u8 *, s32);
 s32 PlayerInventory_PayWithBags(u8 *, s32);
 s32 PlayerInventory_StoreExcessInBags(u8 *, s32);
 s32 PlayerInventory_FindBagSlot(u8 *);
 s32 PlayerInventory_FindSmallestBag(u8 *, s32);
 s32 PlayerInventory_GetBellsRoom(u8 *, s32, s32);
-u16 *_ZN15PlayerInventory9getPocketEi(u8 *, s32);
-s32 _ZN15PlayerInventory9setPocketEPtij(u8 *, u16 *, s32, s32);
-s32 _ZN15PlayerInventory14getPocketFlagsEi(u8 *, s32);
 s32 Item_GetPrice(u16 *);
 }
 
 
 extern "C" s32 PlayerInventory_GetBellsRoom(u8 *p, s32 mode, s32 arg) {
-    s32 x = 99999 - _ZN15PlayerInventory13getTotalBellsEi(p, 0);
+    s32 x = 99999 - ((PlayerInventory *)(p))->getTotalBells(0);
     if (x < 0) x = 0;
-    if (mode == 1) x += _ZN15PlayerInventory13getBellsSpaceEi(p, arg);
+    if (mode == 1) x += ((PlayerInventory *)(p))->getBellsSpace(arg);
     return x;
 }
 
 extern "C" s32 PlayerInventory_FindSmallestBag(u8 *p, s32 mode) {
     StackPad8 pad;
-    u16 *q = _ZN15PlayerInventory9getPocketEi(p, 0);
+    u16 *q = ((PlayerInventory *)(p))->getPocket(0);
     s32 lim = mode == 1 ? 0x6b : 0x6a;
     s32 i = 0;
     s32 best = -1;
@@ -86,7 +71,7 @@ extern "C" s32 PlayerInventory_FindSmallestBag(u8 *p, s32 mode) {
         BOOL f1 = FALSE;
         u32 h = *q;
         if (h >= 0x1492 && h <= 0x14fd) f1 = TRUE;
-        if (f1 && _ZN15PlayerInventory14getPocketFlagsEi(p, i) == 0) {
+        if (f1 && ((PlayerInventory *)(p))->getPocketFlags(i) == 0) {
             BOOL f2 = FALSE;
             s32 v;
             h = *q;
@@ -103,7 +88,7 @@ extern "C" s32 PlayerInventory_FindSmallestBag(u8 *p, s32 mode) {
 }
 
 extern "C" s32 PlayerInventory_FindBagSlot(u8 *p) {
-    u16 *q = _ZN15PlayerInventory9getPocketEi(p, 0);
+    u16 *q = ((PlayerInventory *)(p))->getPocket(0);
     s32 i = 0;
     s32 r = -1;
     for (; i < 15; q++, i++) {
@@ -125,18 +110,18 @@ extern "C" s32 PlayerInventory_StoreExcessInBags(u8 *p, s32 n) {
     while ((u32)n > 99999) {
         s32 t = PlayerInventory_FindBagSlot(p);
         if (t == -1) break;
-        b[1] = *_ZN15PlayerInventory9getPocketEi(p, t);
+        b[1] = *((PlayerInventory *)(p))->getPocket(t);
         volatile u16 *vp = b;
         BOOL rr = FALSE;
         u32 c = vp[1];
         u32 a2 = vp[1];
         if (a2 >= 0x1492 && c <= 0x14fd) rr = TRUE;
         if (rr) {
-            _ZN15PlayerInventory9setPocketEPtij(p, b, t, 0);
+            ((PlayerInventory *)(p))->setPocket(b, t, 0);
             n -= a - Item_GetPrice(&b[1]);
         } else {
             if (c != 0xfff1) break;
-            _ZN15PlayerInventory9setPocketEPtij(p, b, t, 0);
+            ((PlayerInventory *)(p))->setPocket(b, t, 0);
             n -= a;
         }
     }
@@ -150,9 +135,9 @@ extern "C" s32 PlayerInventory_PayWithBags(u8 *p, s32 n) {
     while (n > 0) {
         s32 t = PlayerInventory_FindSmallestBag(p, 1);
         if (t == -1) break;
-        b[0] = *_ZN15PlayerInventory9getPocketEi(p, t);
+        b[0] = *((PlayerInventory *)(p))->getPocket(t);
         b[1] = 0xfff1;
-        _ZN15PlayerInventory9setPocketEPtij(p, &b[1], t, 0);
+        ((PlayerInventory *)(p))->setPocket(&b[1], t, 0);
         n -= Item_GetPrice(b);
     }
     if (n != 0) n = -n;
@@ -177,13 +162,13 @@ extern "C" BOOL PlayerInventory_CanAddBells(u8 *p, s32 v, s32 a, s32 b) {
     if (v >= 0) {
         if (v <= PlayerInventory_GetBellsRoom(p, a, b)) r = TRUE;
     } else {
-        if (-v <= _ZN15PlayerInventory13getTotalBellsEi(p, a)) r = TRUE;
+        if (-v <= ((PlayerInventory *)(p))->getTotalBells(a)) r = TRUE;
     }
     return r;
 }
 
 extern "C" void PlayerInventory_AddBells(u8 *p, s32 v, s32 mode) {
-    s32 x = v + _ZN15PlayerInventory13getTotalBellsEi(p, 0);
+    s32 x = v + ((PlayerInventory *)(p))->getTotalBells(0);
     if (x < 0) {
         if (mode == 1) {
             x = PlayerInventory_PayWithBags(p, -x);
@@ -201,7 +186,7 @@ extern "C" u8 *PlayerData_GetFutureLetter(u8 *p) { return p + 0x1c6c; }
 extern "C" u8 *PlayerData_GetMotherLetterState(u8 *p) { return p + 0x223e; }
 
 extern "C" u8 *PlayerData_GetLetterStorage(void *p) {
-    s32 s = _ZN10PlayerData8getIndexEv(p);
+    s32 s = ((PlayerData *)(p))->getIndex();
     if (s >= 0 && s < 4) {
         u8 *q = SaveManager_GetLetterStorage();
         if (q != 0) return q + s * 0x477c;
@@ -210,26 +195,26 @@ extern "C" u8 *PlayerData_GetLetterStorage(void *p) {
 }
 
 extern "C" u8 *PlayerData_GetMailbox(void *p) {
-    s32 s = _ZN10PlayerData8getIndexEv(p);
+    s32 s = ((PlayerData *)(p))->getIndex();
     if (s >= 0 && s < 4) return data_021e935c + s * 0x98c;
     return 0;
 }
 
 extern "C" u8 *PlayerData_GetDresser(void *p) {
-    s32 s = _ZN10PlayerData8getIndexEv(p);
+    s32 s = ((PlayerData *)(p))->getIndex();
     if (s >= 0 && s < 4) return gSaveDressers + s * 0xb4;
     return 0;
 }
 
 extern "C" s32 PlayerData_GetLastWifiMailId(void *p) {
-    s32 s = _ZN10PlayerData8getIndexEv(p);
-    if (s >= 0 && s < 4) return _ZN13PlayerMailbox17getLastWifiMailIdEv(data_021e935c + s * 0x98c);
+    s32 s = ((PlayerData *)(p))->getIndex();
+    if (s >= 0 && s < 4) return ((PlayerMailbox *)(data_021e935c + s * 0x98c))->getLastWifiMailId();
     return 0;
 }
 
 extern "C" void PlayerData_SetLastWifiMailId(void *p, s32 v) {
-    s32 s = _ZN10PlayerData8getIndexEv(p);
-    if (s >= 0 && s < 4) _ZN13PlayerMailbox17setLastWifiMailIdEj(data_021e935c + s * 0x98c, v);
+    s32 s = ((PlayerData *)(p))->getIndex();
+    if (s >= 0 && s < 4) ((PlayerMailbox *)(data_021e935c + s * 0x98c))->setLastWifiMailId(v);
 }
 
 extern "C" void *PlayerDataArray_Construct(void *p) {
@@ -249,7 +234,7 @@ extern "C" s32 PlayerData_IsResidentIndex(u32 idx) {
 
 extern "C" s32 PlayerDataArray_IsUsed(u8 *base, s32 idx) {
     if (PlayerData_IsResidentIndex(idx) != 0) {
-        if (_ZN10PlayerData6isUsedEv(base + idx * 0x228c) != 0) return 1;
+        if (((PlayerData *)(base + idx * 0x228c))->isUsed() != 0) return 1;
     }
     return 0;
 }
@@ -282,12 +267,12 @@ extern "C" u8 *PlayerDataArray_GetRandomOther(u8 *base, u16 *p) {
         s32 i;
         for (i = 0; i < 4; i++) {
             u8 *e = base + i * 0x228c;
-            if (_ZN10PlayerData6isUsedEv(e) == 1) {
+            if (((PlayerData *)(e))->isUsed() == 1) {
                 if (p != 0) {
-                    u16 *q = (u16 *)_ZN10PlayerData11getPlayerIdEv(e);
+                    u16 *q = (u16 *)((PlayerData *)(e))->getPlayerId();
                     if (p[0] == q[0]) {
                         if (memcmp(p + 1, q + 1, 8) == 0) {
-                            if (_ZN8PlayerId6equalsEPS_(p, q) != 0) continue;
+                            if (((PlayerId *)(p))->equals((PlayerId *)(q)) != 0) continue;
                         }
                     }
                 }
@@ -304,19 +289,19 @@ extern "C" u8 *PlayerDataArray_GetRandomOther(u8 *base, u16 *p) {
 
 extern "C" void PlayerDataArray_ResetAll(void *p) {
     s32 i;
-    for (i = 0; i < 4; i++) _ZN10PlayerData5resetEv((u8 *)p + i * 0x228c);
+    for (i = 0; i < 4; i++) ((PlayerData *)((u8 *)p + i * 0x228c))->reset();
 }
 
-extern "C" s32 PlayerDataArray_FindUnused(void *p) { return _ZN10PlayerData14findUnusedSlotEi(p, 4); }
+extern "C" s32 PlayerDataArray_FindUnused(void *p) { return ((PlayerData *)(p))->findUnusedSlot(4); }
 
 extern "C" s32 PlayerDataArray_FindById(u8 *base, u16 *p) {
-    if (_ZN8PlayerId7isValidEv(p) == 1) {
+    if (((PlayerId *)(p))->isValid() == 1) {
         s32 i;
         for (i = 0; i < 4; i++) {
-            u16 *q = (u16 *)_ZN10PlayerData11getPlayerIdEv(base + i * 0x228c);
+            u16 *q = (u16 *)((PlayerData *)(base + i * 0x228c))->getPlayerId();
             if (p[0] == q[0]) {
                 if (memcmp(p + 1, q + 1, 8) == 0) {
-                    if (_ZN8PlayerId6equalsEPS_(p, q) != 0) return i;
+                    if (((PlayerId *)(p))->equals((PlayerId *)(q)) != 0) return i;
                 }
             }
         }
@@ -337,20 +322,20 @@ extern "C" u8 *PlayerDataArray_CreateResident(u8 *base, s32 a1, s32 a2, u32 idx)
         for (i = 0; i < 4; i++) {
             if (i != idx) {
                 u8 *q = base + i * 0x228c;
-                if (_ZN8PlayerId7isValidEv(_ZN10PlayerData11getPlayerIdEv(q)) == 1) {
-                    v[cnt] = _ZN8PlayerId5getIdEv(_ZN10PlayerData11getPlayerIdEv(q));
+                if (((PlayerId *)(((PlayerData *)(q))->getPlayerId()))->isValid() == 1) {
+                    v[cnt] = ((PlayerId *)(((PlayerData *)(q))->getPlayerId()))->getId();
                     cnt++;
                 }
             }
         }
-        _ZN10PlayerData5resetEv(r);
+        ((PlayerData *)(r))->reset();
         hdr = 0xfff1;
         {
             u32 s = PlayerId_GenerateUniqueId(v, cnt);
-            _ZN10PlayerData8setupNewEjjjjhhhhhjPt(r, a1, s, a2, 0, 0, 0, 0, 0, 0, 0, &hdr);
+            ((PlayerData *)(r))->setupNew(a1, s, a2, 0, 0, 0, 0, 0, 0, 0, &hdr);
         }
         idx &= 3;
-        _ZN10PlayerData6setBedEPt(r, &tbl[idx]);
+        ((PlayerData *)(r))->setBed((u16 *)(&tbl[idx]));
     }
     return r;
 }
@@ -366,7 +351,7 @@ extern "C" u8 *GuestPlayers_Get() { return (u8 *)&gGuestPlayers; }
 
 extern "C" void GuestPlayers_Reset(void *p) {
     s32 i;
-    for (i = 0; i < 3; i++) _ZN10PlayerData5resetEv((u8 *)p + i * 0x228c);
+    for (i = 0; i < 3; i++) ((PlayerData *)((u8 *)p + i * 0x228c))->reset();
 }
 
 extern "C" void GuestPlayers_ResetAll() { GuestPlayers_Reset(GuestPlayers_Get()); }
@@ -408,7 +393,7 @@ extern "C" s32 PlayerData_IsUsedByIndex(s32 idx) {
     } else if (PlayerData_IsGuestIndex(idx) == 1) {
         if (GuestPlayers_Get() != 0) {
             s32 t = PlayerData_GetGuestSlot(idx);
-            r = _ZN10PlayerData6isUsedEv(GuestPlayers_Get() + t * 0x228c);
+            r = ((PlayerData *)(GuestPlayers_Get() + t * 0x228c))->isUsed();
         }
     }
     return r;

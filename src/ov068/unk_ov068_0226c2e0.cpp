@@ -27,6 +27,13 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "net/CommManager.h"
+#include "npc/NpcFaceAnim.h"
+#include "npc/NpcLookAt.h"
+#include "npc/NpcMoveAnimSet.h"
+#include "player/PlayerData.h"
+#include "save/SaveRecord4.h"
+#include "talk/MsgString.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -447,7 +454,7 @@ BOOL SpNpcRoostGuest::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    NpcActor_setTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
     shadowEnabled = 0;
     d.a = 0;
@@ -456,10 +463,10 @@ BOOL SpNpcRoostGuest::preCreate() {
     u8 mo = ((u8 *)&d)[2];
     u8 dy = ((u8 *)&d)[1];
     guestType = 8;
-    if (CommManager_isSlotActive(*(void **)gCommManager, *(s32 *)(*(u8 **)gCommManager + 0x64))) {
+    if (((CommManager *)(*(void **)gCommManager))->isSlotActive(*(s32 *)(*(u8 **)gCommManager + 0x64))) {
         return TRUE;
     }
-    if (SaveRecord4_isDateActive(data_021ed315)) {
+    if (((SaveRecord4 *)(data_021ed315))->isDateActive()) {
         return TRUE;
     }
     u8 *g = data_021e58a7;
@@ -467,7 +474,7 @@ BOOL SpNpcRoostGuest::preCreate() {
     case 6:
         if ((mo == 0x13 && dy >= 0x1e) || mo == 0x14 || mo == 0x15 || mo == 0x16 || (mo == 0x17 && dy <= 0x3b)) {
             guestType = 7;
-            Actor_spawn(0x10, 0, 0, 0, 0);
+            Actor::spawn((void *)(0x10), (void *)(0), (void *)(0), (void *)(0), (void *)(0));
         }
         break;
     case 0:
@@ -524,22 +531,22 @@ BOOL SpNpcRoostGuest::preCreate() {
         guestType = 0;
     }
     h = sRoostGuestNpcHandles[guestType];
-    NpcActor_setNpcHandle(this, &h);
+    ((NpcActor *)(this))->setNpcHandle(&h);
     if (guestType == 7) {
         setInteractionRange(0x5000);
         position.x = 0xf000;
         position.z = 0x13000;
         rotY = 0;
         moveAngleY = 0;
-        NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0x102);
-        NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0x102);
-        NpcMoveAnimSet_setRunAnim(&moveAnimSet, 0x102);
-        NpcLookAt_setTarget(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0x102);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0x102);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setRunAnim(0x102);
+        ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     } else {
-        NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0x1e);
-        NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0x1e);
-        NpcMoveAnimSet_setRunAnim(&moveAnimSet, 0x1e);
-        NpcLookAt_setPitchLimit(&lookAt, 0);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0x1e);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0x1e);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setRunAnim(0x1e);
+        ((NpcLookAt *)(&lookAt))->setPitchLimit(0);
     }
     return TRUE;
 }
@@ -555,7 +562,7 @@ BOOL SpNpcRoostGuest::onCreate() {
     changeAct(0);
     collider.groups |= 2;
     if (guestType == 3) {
-        NpcAnimCtrl_playAnim(&animCtrl, this, 0x142, 0, 0, 0x1000, 0, 1);
+        ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x142, 0, 0, 0x1000, 0, 1);
         ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     }
     return TRUE;
@@ -605,11 +612,11 @@ void SpNpcRoostGuest::changeAct(s32 state) {
 BOOL SpNpcRoostGuest::setupAct00() {
     using namespace sB;
     if (guestType == 7) {
-        NpcLookAt_setTarget(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-        NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x105, 0, data_020c6cc8, 0);
-        NpcLookAt_setManualAngles(&lookAt, 0, -0xc18, 0, data_020c6cc4, data_020c6cbc);
+        ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+        ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x105, 0, data_020c6cc8, 0);
+        ((NpcLookAt *)(&lookAt))->setManualAngles(0, -0xc18, 0, data_020c6cc4, data_020c6cbc);
     } else {
-        NpcLookAt_setTarget(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     }
     return TRUE;
 }
@@ -634,19 +641,19 @@ BOOL SpNpcRoostGuest::mainAct00() {
 BOOL SpNpcRoostGuest::setupAct01() {
     using namespace sB;
     if (guestType == 7) {
-        NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x102, 0, data_020c6cc8, 0);
+        ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x102, 0, data_020c6cc8, 0);
     }
-    NpcLookAt_setTarget(&lookAt, 4, 0, 0, gVec3Zero, 4, data_020c6d1c, 0);
-    NpcTalkCtrl_requestTalk(&talkCtrl, 0, 0);
+    ((NpcLookAt *)(&lookAt))->setTarget(4, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(0, 0);
     return TRUE;
 }
 
 BOOL SpNpcRoostGuest::mainAct01() {
     using namespace sB;
-    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         return TRUE;
     }
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(4);
     }
@@ -672,10 +679,10 @@ BOOL SpNpcRoostGuest::mainAct03() {
 
 BOOL SpNpcRoostGuest::setupAct02() {
     using namespace sB;
-    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0x102, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x102, 0, data_020c6cc8, 0);
     Camera_SetMode18();
-    NpcLookAt_setManualAngles(&lookAt, 0, 0, 0x1000, data_020c6cc4, data_020c6cbc);
-    NpcTalkCtrl_requestTalk(&talkCtrl, 0, 1);
+    ((NpcLookAt *)(&lookAt))->setManualAngles(0, 0, 0x1000, data_020c6cc4, data_020c6cbc);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(0, 1);
     Bgm_RequestSilence(0x10, 0xf, 0);
     Bgm_DisableHourChime();
     return TRUE;
@@ -684,10 +691,10 @@ BOOL SpNpcRoostGuest::setupAct02() {
 // ---- owner ----
 BOOL SpNpcRoostGuest::mainAct02() {
     using namespace sB;
-    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         return TRUE;
     }
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         if (PlayerActor_IsInAction(0x28, 4)) {
             PlayerActor_LocalRequestStandUp(0);
@@ -761,9 +768,9 @@ void SpNpcRoostGuestTalk::start(TalkStartMsg *out_) {
                 } else {
                     out->msgIndex = 0x12;
                 }
-            } else if (PlayerData_testFlag(p, 7) == 0) {
+            } else if (((PlayerData *)(p))->testFlag(7) == 0) {
                 out->msgIndex = 1;
-                PlayerData_setFlag(p, 7);
+                ((PlayerData *)(p))->setFlag(7);
             } else if (Talk_CheckAndSetPlayerFlag(0xc, 1) == 0) {
                 out->msgIndex = 2;
             } else {
@@ -774,8 +781,8 @@ void SpNpcRoostGuestTalk::start(TalkStartMsg *out_) {
                 ItemName a;
                 EncodedString16Buf b;
                 EncodedString_SetRaw(&b, owner->requestText, 0x10);
-                MsgString_fromEncoded(&a, &b, 0, 0);
-                TalkWindowState_setNamedSlot(window, 0, &a, 7);
+                ((MsgString *)(&a))->fromEncoded((EncodedString *)(&b), 0, 0);
+                ((TalkWindowState *)(window))->setNamedSlot(0, &a, 7);
             } else if (getTalkMode() == 2) {
                 h4 = owner->songItem;
                 setItemNameSlot((u32)&h4, 1, 7);
@@ -815,8 +822,8 @@ void SpNpcRoostGuestTalk::fillKkSongName(s32 a) {
         ItemName a;
         EncodedString16Buf b;
         EncodedString_SetRaw(&b, owner->requestText, 0x10);
-        MsgString_fromEncoded(&a, &b, 0, 0);
-        TalkWindowState_setNamedSlot(window, 0, &a, 7);
+        ((MsgString *)(&a))->fromEncoded((EncodedString *)(&b), 0, 0);
+        ((TalkWindowState *)(window))->setNamedSlot(0, &a, 7);
         break;
     }
     }
@@ -866,8 +873,8 @@ extern "C" char sRoostMsgCf2[11] = "sp_npc_cf2";
 
 void SpNpcRoostGuestTalk::onKkAskSongRequest() {
     using namespace sB;
-    ActorTalkRequest_setSubSceneKind(this, 0xd, 0);
-    ActorTalkRequest_openSubScene(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(0xd, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setScript(1);
 }
 
@@ -904,7 +911,7 @@ loop:
     u32 off;
     off = i * 12;
     if (idv == *pe) {
-        u32 x = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
+        u32 x = ((ChoiceList *)((window)->getChoiceList()))->getResult();
         SpNpcRoostGuestChoiceFn *fp = (SpNpcRoostGuestChoiceFn *)((u8 *)tbl + off + 4);
         (this->*(*fp))(x);
     }
@@ -1018,8 +1025,8 @@ void SpNpcRoostGuestTalk::scriptReadSongRequest() {
     ItemName objA;
     EncodedString16Buf objB;
     EncodedString_SetRaw(&objB, owner->requestText, 0x10);
-    MsgString_fromEncoded(&objA, &objB, 0, 0);
-    TalkWindowState_setNamedSlot(window, 0, &objA, 7);
+    ((MsgString *)(&objA))->fromEncoded((EncodedString *)(&objB), 0, 0);
+    (window)->setNamedSlot(0, &objA, 7);
     if (MenuCtrl_IsResultOk()) {
         u32 v;
         u16 h;
@@ -1038,7 +1045,7 @@ void SpNpcRoostGuestTalk::scriptReadSongRequest() {
         owner->songItem = RoostGuest_PickKKSong(owner);
     }
     cmd = 8;
-    TalkWindowState_setNextMessage(window, &cmd, sRoostGuestMsgFiles[owner->guestType]);
+    (window)->setNextMessage(&cmd, (void *)(void *)(sRoostGuestMsgFiles[owner->guestType]));
 }
 
 void SpNpcRoostGuestTalk::scriptStartPerformance() {
@@ -1049,7 +1056,7 @@ void SpNpcRoostGuestTalk::scriptStartPerformance() {
         if (owner->showTimer == 0x2d) {
             LightSwitch_SetOff(0, 0x1e);
             LightSwitch_SetOn(1, 1, 0);
-            NpcLookAt_setManualAngles(&owner->lookAt, 0, -0xc18, 0, 0x276, 0x276);
+            ((NpcLookAt *)(&owner->lookAt))->setManualAngles(0, -0xc18, 0, 0x276, 0x276);
         }
         if (Math_CountDownU16(&owner->showTimer) == 0) {
             RoomCamera_KkShowWideShot();
@@ -1113,9 +1120,9 @@ void SpNpcRoostGuestTalk::scriptPerform() {
         s32 t2 = p->seqVar0;
         if (t2 != lastBeatState.seqVar0 || p->seqVar4 != lastBeatState.seqVar4) {
             if (t2 == 1) {
-                NpcLookAt_setManualAngles(&owner->lookAt, 0, 0, 0, 0x100, 0x200);
+                ((NpcLookAt *)(&owner->lookAt))->setManualAngles(0, 0, 0, 0x100, 0x200);
             } else {
-                NpcLookAt_setManualAngles(&owner->lookAt, 0, -0xc18, 0, 0x100, 0x200);
+                ((NpcLookAt *)(&owner->lookAt))->setManualAngles(0, -0xc18, 0, 0x100, 0x200);
             }
             u16 v = data_020c6cc8;
             if (beatPoseStarted == 0) {
@@ -1124,15 +1131,15 @@ void SpNpcRoostGuestTalk::scriptPerform() {
             }
             s32 t0 = p->seqVar4;
             if (t0 == 3) {
-                NpcActionCtrl_requestPlayAnim(&owner->actionCtrl, 2, 0x103, 0, v, 0);
+                ((NpcActionCtrl *)(&owner->actionCtrl))->requestPlayAnim(2, 0x103, 0, v, 0);
             } else if (t0 == 4) {
-                NpcActionCtrl_requestPlayAnim(&owner->actionCtrl, 2, 0x104, 0, v, 0);
+                ((NpcActionCtrl *)(&owner->actionCtrl))->requestPlayAnim(2, 0x104, 0, v, 0);
             }
         }
         if ((u8)(s8)(p->seqVar4 - 3) <= 1) {
             owner->model.curFrame = 0;
             owner->model.frameStep = p->beatFrame;
-            ThreeLayerAnimModel_updateLayers3(&owner->model);
+            ((ThreeLayerAnimModel *)(&owner->model))->updateLayers3();
             owner->model.frameStep = 0;
         }
         {
@@ -1145,8 +1152,8 @@ void SpNpcRoostGuestTalk::scriptPerform() {
                 }
                 if (p->seqVar2 == 1) {
                     NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthM0);
-                    NpcFaceAnim_resumeMouthMaterial(&owner->faceAnim);
-                    NpcActionCtrl_requestStand(&owner->actionCtrl, 2, 0x28);
+                    ((NpcFaceAnim *)(&owner->faceAnim))->resumeMouthMaterial();
+                    ((NpcActionCtrl *)(&owner->actionCtrl))->requestStand(2, 0x28);
                 }
             }
         }
@@ -1168,16 +1175,16 @@ void SpNpcRoostGuestTalk::scriptEndPerformance() {
         owner->showAccepted = 0;
         if (owner->isRandomSong != 0) {
             c0 = 0xb;
-            TalkWindowState_setNextMessage(window, &c0, sRoostGuestMsgFiles[owner->guestType]);
+            (window)->setNextMessage(&c0, (void *)(void *)(sRoostGuestMsgFiles[owner->guestType]));
         } else {
             h = owner->songItem;
             if (Pocket_AddItem(&h, 0) == 0) {
                 c1 = 0xd;
-                TalkWindowState_setNextMessage(window, &c1, sRoostGuestMsgFiles[owner->guestType]);
+                (window)->setNextMessage(&c1, (void *)(void *)(sRoostGuestMsgFiles[owner->guestType]));
             } else {
                 Talk_CheckAndSetPlayerFlag(0xd, 1);
                 c2 = 0xc;
-                TalkWindowState_setNextMessage(window, &c2, sRoostGuestMsgFiles[owner->guestType]);
+                (window)->setNextMessage(&c2, (void *)(void *)(sRoostGuestMsgFiles[owner->guestType]));
             }
         }
         KkShowFx_Stop();
@@ -1192,7 +1199,7 @@ void SpNpcRoostGuestTalk::scriptEndPerformance() {
 void SpNpcRoostGuestTalk::scriptRestoreLook() {
     using namespace sA;
     if (Math_CountDownU16(&owner->showTimer) == 0) {
-        NpcLookAt_setManualAngles(&owner->lookAt, 0, 0, 0x1000, 0x276, 0x276);
+        ((NpcLookAt *)(&owner->lookAt))->setManualAngles(0, 0, 0x1000, 0x276, 0x276);
         window->nextState = 1;
         setScript(0);
     }

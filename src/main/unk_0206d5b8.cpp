@@ -10,6 +10,7 @@
 #include "talk/EncodedString40.h"
 #include "ui/LetterRenderer.h"
 #include "nitro/io_access.h"
+#include "net/CommManager.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -222,15 +223,12 @@ void Net_Update(void);
 }
 
 extern "C" {
-u32 _ZN11CommManager13getErrorFlagsEv(u32 p);
 }
 
 extern "C" {
-void _ZN11CommManager20setLatchedErrorFlagsEj(u32 p, u32 v);
 }
 
 extern "C" {
-u32 _ZN11CommManager20getLatchedErrorFlagsEv(u32 p);
 }
 
 extern "C" {
@@ -634,8 +632,8 @@ extern "C" void Main_Loop(void) {
     u16 *flag = &gMainWaitingFrame;
     for (;;) {
         Net_Update();
-        _ZN11CommManager20setLatchedErrorFlagsEj(v, _ZN11CommManager13getErrorFlagsEv(v));
-        r = _ZN11CommManager20getLatchedErrorFlagsEv(v);
+        ((CommManager *)(v))->setLatchedErrorFlags(((CommManager *)(v))->getErrorFlags());
+        r = ((CommManager *)(v))->getLatchedErrorFlags();
         Main_PreTaskUpdate(r);
         Main_PreTaskHook();
         if (r != 0) {

@@ -32,6 +32,9 @@
 #include "talk/TalkTopicMsg.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/DebugColor.h"
+#include "npc/VillagerId.h"
+#include "player/PlayerData.h"
+#include "talk/ChoiceList.h"
 
 class SickVillager;
 
@@ -341,22 +344,22 @@ extern "C" BOOL SickVillager_IsMedicine(u16 *p, s32 x) {
 }
 
 BOOL SickVillager::preCreate() {
-    if (func_0202dab0(this) == 0) {
+    if (((VillagerActor *)(this))->VillagerActor::preCreate() == 0) {
         return FALSE;
     }
     sSickVillager = this;
-    NpcActor_setTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
     u8 *p = (u8 *)SaveVillagers_GetUnk3830(gSaveVillagers);
     *(HOST_AT(this, 0xa3c, talk.sickStage, 0)) = p[0x8e];
     if (talk.getSickStage() > 1) {
-        NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xea);
-        NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xe9);
-        NpcMoveCtrl_setSpeedPreset(&moveCtrl, 1, 0xa4, 0x10, 0x10);
-        NpcLookAt_setTarget(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0xea);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xe9);
+        ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(1, 0xa4, 0x10, 0x10);
+        ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
         mood.severeSickness = 1;
     } else {
-        NpcMoveCtrl_setSpeedPreset(&moveCtrl, 1, 0xcd, 0x14, 0x14);
+        ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(1, 0xcd, 0x14, 0x14);
         mood.severeSickness = 0;
     }
     changeAct(0);
@@ -364,17 +367,17 @@ BOOL SickVillager::preCreate() {
 }
 
 BOOL SickVillager::onCreate() {
-    if (func_0202d948(this) == 0) {
+    if (((VillagerActor *)(this))->VillagerActor::onCreate() == 0) {
         return FALSE;
     }
     drawFn = PMB(data_ov004_0224ca68);
     blockFurnitureCells();
-    NpcFootstepFx_enableFootsteps(&footstepFx);
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     return TRUE;
 }
 
 BOOL SickVillager::drawModel() {
-    if (func_0201b138(this)) {
+    if (((NpcActor *)(this))->NpcActor::onDraw()) {
         return TRUE;
     }
     return FALSE;
@@ -388,7 +391,7 @@ BOOL SickVillager::onDraw() {
 }
 
 BOOL SickVillager::preDelete() {
-    if (func_0202d928(this) == 0) {
+    if (((VillagerActor *)(this))->VillagerActor::preDelete() == 0) {
         return FALSE;
     }
     sSickVillager = 0;
@@ -397,7 +400,7 @@ BOOL SickVillager::preDelete() {
 
 BOOL SickVillager::updateAct() {
     execAct();
-    VillagerMood_updateSoundPos(&mood, this);
+    ((VillagerMood *)(&mood))->updateSoundPos((VillagerTalk *)(this));
     return TRUE;
 }
 
@@ -426,7 +429,7 @@ void SickVillager::recordPlayerTalk() {
     void *p = PlayerData_GetCurrent();
     if (p) {
         if (villagerData) {
-            void *g = PlayerData_getPlayerId(p);
+            void *g = ((PlayerData *)(p))->getPlayerId();
             void *t = Villager_FindOrCreateMemory(villagerData, g);
             VillagerMemory_RecordTalk(t, 0, 0, 0);
         }
@@ -434,7 +437,7 @@ void SickVillager::recordPlayerTalk() {
 }
 
 BOOL SickVillager::acceptsInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         return FALSE;
     }
     if (act > 1) {
@@ -456,7 +459,7 @@ void SickVillager::onInteractionEvent(u32 idx, u8 v) {
         break;
     case 0:
         partnerPlayer = v;
-        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+        ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         changeAct(3);
         break;
     case 8:
@@ -480,11 +483,11 @@ extern "C" BOOL SickVillager_HasCurrentVisitor(void *o) {
 
 extern "C" void SickVillager_SetCurrentVisitor() {
     void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
-    SickVillagerRecord_setTodaysVisitor(p, PlayerData_getPlayerId(PlayerData_GetCurrent()));
+    SickVillagerRecord_setTodaysVisitor(p, ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId());
 }
 
 void SickVillagerTalk::attachOwner(SickVillager *owner) {
-    VillagerTalk_begin(this, owner, 0x11);
+    ((VillagerTalk *)(this))->begin((VillagerActor *)(owner), 0x11);
     villager = owner;
 }
 
@@ -503,14 +506,14 @@ void SickVillagerTalk::update() {
             if (MenuCtrl_IsResultOk() == 0) {
                 ((TalkWindowState *)window)->nextState = 1;
                 buf[0] = Random_GlobalBelow(3) + 13;
-                TalkWindowState_setNextMessage(window, buf, 0);
+                ((TalkWindowState *)(window))->setNextMessage((u8 *)(buf), (void *)(void *)(0));
                 villager->changeAct(4);
             } else {
                 Pocket_RemoveItem(MenuCtrl_GetIndex());
                 buf[1] = Random_GlobalBelow(3) + 16;
-                TalkWindowState_setNextMessage(window, &buf[1], 0);
+                ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf[1]), (void *)(void *)(0));
                 *(u16 *)(buf + 2) = 0x155e;
-                ActorTalkRequest_requestTakeItem(this, buf + 2, 0, 6, 0);
+                ((ActorTalkRequest *)(this))->requestTakeItem((u16 *)(buf + 2), 0, 6, 0);
                 villager->changeAct(7);
             }
         }
@@ -522,9 +525,9 @@ void SickVillagerTalk::start(TalkStartMsg *out_) {
     out->fileName = (u32)data_ov004_0225095c;
     getSickStage();
     if (villager->mood.severeSickness == 0) {
-        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_0225095c, 0x28, "q12_ask1_2");
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_0225095c), 0x28, (u32)("q12_ask1_2"));
     } else {
-        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_0225095c, 0x28, "q12_ask3_5");
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_0225095c), 0x28, (u32)("q12_ask3_5"));
     }
     villager->isAnswered = 0;
     if (SickVillager_HasCurrentVisitor(this)) {
@@ -540,7 +543,7 @@ void SickVillagerTalk::onMessageStart(u32) {
     void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
     if (p != 0) {
         if (SickVillagerRecord_getTodaysVisitor(p) != 0) {
-            ActorTalkRequest_setPlayerNameSlot(this, SickVillagerRecord_getTodaysVisitor(p), 0);
+            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(SickVillagerRecord_getTodaysVisitor(p)), 0);
         }
     }
 }
@@ -553,31 +556,31 @@ void SickVillagerTalk::onMessageEnd(u32) {
         case 0:
         case 1:
         case 2: {
-            void *h = TalkWindowState_getChoiceList(window);
+            void *h = ((TalkWindowState *)(window))->getChoiceList();
             if (h == 0) break;
-            ChoiceList_reset(h, 3, 2);
+            ((ChoiceList *)(h))->reset(3, 2);
             b[0] = 0x15;
-            ChoiceList_setEntry(h, 0, &b[0], 0, gTalkMsgIndexNone, 0, 0);
+            ((ChoiceList *)(h))->setEntry(0, (const u8 *)(&b[0]), 0, (const u8 *)(void *)(gTalkMsgIndexNone), (const char *)(0), 0);
             b[1] = 0x16;
-            ChoiceList_setEntry(h, 1, &b[1], 0, gTalkMsgIndexNone, 0, 0);
+            ((ChoiceList *)(h))->setEntry(1, (const u8 *)(&b[1]), 0, (const u8 *)(void *)(gTalkMsgIndexNone), (const char *)(0), 0);
             b[2] = Random_GlobalBelow(10) + 10;
-            ChoiceList_setEntry(h, 2, &b[2], 0, gTalkMsgIndexNone, 0, 0);
-            ChoiceList_loadTexts(h);
-            TalkWindowState_openChoices(window, 1);
+            ((ChoiceList *)(h))->setEntry(2, (const u8 *)(&b[2]), 0, (const u8 *)(void *)(gTalkMsgIndexNone), (const char *)(0), 0);
+            ((ChoiceList *)(h))->loadTexts();
+            ((TalkWindowState *)(window))->openChoices(1);
             break;
         }
         case 3:
         case 4:
         case 5: {
-            void *h = TalkWindowState_getChoiceList(window);
+            void *h = ((TalkWindowState *)(window))->getChoiceList();
             if (h == 0) break;
-            ChoiceList_reset(h, 2, 1);
+            ((ChoiceList *)(h))->reset(2, 1);
             b[3] = 0x17;
-            ChoiceList_setEntry(h, 0, &b[3], 0, gTalkMsgIndexNone, 0, 0);
+            ((ChoiceList *)(h))->setEntry(0, (const u8 *)(&b[3]), 0, (const u8 *)(void *)(gTalkMsgIndexNone), (const char *)(0), 0);
             b[4] = Random_GlobalBelow(10) + 0x78;
-            ChoiceList_setEntry(h, 1, &b[4], 0, gTalkMsgIndexNone, 0, 0);
-            ChoiceList_loadTexts(h);
-            TalkWindowState_openChoices(window, 1);
+            ((ChoiceList *)(h))->setEntry(1, (const u8 *)(&b[4]), 0, (const u8 *)(void *)(gTalkMsgIndexNone), (const char *)(0), 0);
+            ((ChoiceList *)(h))->loadTexts();
+            ((TalkWindowState *)(window))->openChoices(1);
             break;
         }
         }
@@ -606,12 +609,12 @@ void SickVillagerTalk::onMessageEnd(u32) {
 
 void SickVillagerTalk::onChoice(u32) {
     u8 buf[6];
-    s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.window));
+    s32 t = ((ChoiceList *)(((TalkWindowState *)(villager->talk.window))->getChoiceList()))->getResult();
     if (villager->mood.severeSickness == 0) {
-        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_02250984, 0x28, "q12_sick1_2");
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250984), 0x28, (u32)("q12_sick1_2"));
         villager->isAnswered = 1;
     } else {
-        VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_02250984, 0x28, "q12_sick3_5");
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250984), 0x28, (u32)("q12_sick3_5"));
         villager->isAnswered = 1;
     }
     if (villager->hasVisitor == 0) {
@@ -619,28 +622,28 @@ void SickVillagerTalk::onChoice(u32) {
         case 0:
             if (MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine) != 0) {
                 buf[0] = Random_GlobalBelow(3) + 7;
-                TalkWindowState_setNextMessage(villager->talk.window, &buf[0], data_ov004_02250984);
+                ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&buf[0]), (void *)(void *)(data_ov004_02250984));
             } else {
                 buf[1] = Random_GlobalBelow(3) + 10;
-                TalkWindowState_setNextMessage(villager->talk.window, &buf[1], data_ov004_02250984);
+                ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&buf[1]), (void *)(void *)(data_ov004_02250984));
             }
             break;
         case 1:
             buf[2] = Random_GlobalBelow(4);
-            TalkWindowState_setNextMessage(villager->talk.window, &buf[2], data_ov004_02250984);
+            ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&buf[2]), (void *)(void *)(data_ov004_02250984));
             break;
         default:
             buf[3] = Random_GlobalBelow(3) + 4;
-            TalkWindowState_setNextMessage(villager->talk.window, &buf[3], data_ov004_02250984);
+            ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&buf[3]), (void *)(void *)(data_ov004_02250984));
             break;
         }
     } else {
         if (t == 0) {
             buf[4] = Random_GlobalBelow(3) + 0x13;
-            TalkWindowState_setNextMessage(villager->talk.window, &buf[4], data_ov004_02250984);
+            ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&buf[4]), (void *)(void *)(data_ov004_02250984));
         } else {
             buf[5] = Random_GlobalBelow(3) + 4;
-            TalkWindowState_setNextMessage(villager->talk.window, &buf[5], data_ov004_02250984);
+            ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&buf[5]), (void *)(void *)(data_ov004_02250984));
         }
     }
 }
@@ -687,26 +690,26 @@ void SickVillager::execAct() {
 }
 
 BOOL SickVillager::setupAct00() {
-    return NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
+    return ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, data_020c6cc8);
 }
 
 void SickVillager::mainAct00() {
     VecFx32 v;
     if (mood.severeSickness != 0) {
-        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1) {
             if (gFrameCounter % 14 == 0) {
-                VillagerMood_playMood3Effect(&mood, this);
+                ((VillagerMood *)(&mood))->playMood3Effect((VillagerTalk *)(this));
             }
         }
     }
     if (collider.isHit != 0) {
-        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1) {
             if (changeAct(1)) {
                 return;
             }
         }
     }
-    if (NpcActionCtrl_getAction(&actionCtrl) == 0) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 0) {
         if (walkTimer != 0) {
             walkTimer--;
         }
@@ -716,7 +719,7 @@ void SickVillager::mainAct00() {
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
             if (walkAngle != rotY) {
-                if (NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) == 0) {
+                if (((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
                 if (mood.severeSickness != 0) {
@@ -725,7 +728,7 @@ void SickVillager::mainAct00() {
                     walkTimer = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
-                if (NpcActionCtrl_requestAction(&actionCtrl, 1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
+                if (((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
                 if (mood.severeSickness != 0) {
@@ -735,28 +738,28 @@ void SickVillager::mainAct00() {
                 }
             }
         } else {
-            if (NpcActionCtrl_isActionDone(&actionCtrl) != 0) {
-                NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
+            if (((NpcActionCtrl *)(&actionCtrl))->isActionDone() != 0) {
+                ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, data_020c6cc8);
             }
         }
     } else {
-        if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-            if (NpcActionCtrl_isActionDone(&actionCtrl) != 0) {
-                NpcActionCtrl_requestAction(&actionCtrl, 1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+            if (((NpcActionCtrl *)(&actionCtrl))->isActionDone() != 0) {
+                ((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, walkTarget.x, walkTarget.z, 0, 0, 0, 0, data_020c6cc8, 0);
             }
-        } else if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
-            switch (NpcActor_findAvoidPos(this, &v)) {
+        } else if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1) {
+            switch (((NpcActor *)(this))->findAvoidPos((VecFx32 *)(&v))) {
             case 1:
-                NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
+                ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, data_020c6cc8);
                 break;
             case 2:
                 waypoint = v;
-                NpcMoveCtrl_setWaypoint(&moveCtrl, &waypoint);
+                ((NpcMoveCtrl *)(&moveCtrl))->setWaypoint((VecFx32 *)(&waypoint));
                 break;
             default:
                 if (Vec_NotEqual(&waypoint, &walkTarget) != 0) {
                     waypoint = walkTarget;
-                    NpcMoveCtrl_setWaypoint(&moveCtrl, &walkTarget);
+                    ((NpcMoveCtrl *)(&moveCtrl))->setWaypoint((VecFx32 *)(&walkTarget));
                 } else if (Vec_DistXZ(&walkTarget, HOST_AT(this, 0x5c, position.x, 0)) < 0x200) {
                     changeAct(1);
                 }
@@ -767,7 +770,7 @@ void SickVillager::mainAct00() {
 }
 
 BOOL SickVillager::setupAct01() {
-    if (NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->requestStand(1, data_020c6cc8)) {
         emotionTimer = 0x46;
         return TRUE;
     }
@@ -777,10 +780,10 @@ BOOL SickVillager::setupAct01() {
 void SickVillager::mainAct01() {
     switch (emotionTimer) {
     case 0x45:
-        NpcActionCtrl_requestEmotion(&actionCtrl, 1, 7, data_020c6cc8);
+        ((NpcActionCtrl *)(&actionCtrl))->requestEmotion(1, 7, data_020c6cc8);
         break;
     case 1:
-        NpcActionCtrl_requestEmotion(&actionCtrl, 1, 0, data_020c6cc8);
+        ((NpcActionCtrl *)(&actionCtrl))->requestEmotion(1, 0, data_020c6cc8);
         walkTimer = Random_GlobalBelow(0x14) + 0x14;
         break;
     case 0:
@@ -796,7 +799,7 @@ void SickVillager::mainAct01() {
 
 BOOL SickVillager::setupAct02() {
     if (act == 1) {
-        NpcActionCtrl_requestEmotion(&actionCtrl, 2, 0, data_020c6cc8);
+        ((NpcActionCtrl *)(&actionCtrl))->requestEmotion(2, 0, data_020c6cc8);
     }
     return TRUE;
 }
@@ -807,7 +810,7 @@ BOOL SickVillager::setupAct03() {
     BOOL r;
     void *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, NpcActor_getAngleTo(this, o), 0);
+        ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, ((NpcActor *)(this))->getAngleTo((NpcActor *)(o)), 0);
         r = TRUE;
     } else {
         r = FALSE;

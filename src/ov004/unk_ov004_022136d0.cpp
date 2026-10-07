@@ -11,6 +11,7 @@
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
 #include "game/TouchPickSphere.h"
+#include "game/TouchPicker.h"
 
 
 
@@ -23,17 +24,11 @@
 class TouchPicker;
 
 extern "C" {
-void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
-void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
-void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker();
-BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(TouchPicker *self, TouchPickSphere *o, void *a, s32 b, s32 c, u8 d);
 u32 Scene_GetCurrent();
-s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 }
 
 class RoomBoardSign : public Character, public TalkMsgRequest {
@@ -103,11 +98,11 @@ extern "C" RoomBoardSign *RoomBoardSign_Create() {
 }
 
 RoomBoardSign::RoomBoardSign() {
-    _ZN15TouchPickSphereC1Ev((TouchPickSphere *)touchSphere);
+    new ((TouchPickSphere *)touchSphere) TouchPickSphere();
 }
 
 RoomBoardSign::~RoomBoardSign() {
-    _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
+    ((TouchPickSphere *)((void *)((TouchPickSphere *)touchSphere)))->~TouchPickSphere();
 }
 
 BOOL RoomBoardSign::onCreate() {
@@ -125,7 +120,7 @@ BOOL RoomBoardSign::onCreate() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position, radius, 0x10, index);
+    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(&position), (VecFx32 *)(radius), 0x10, index);
     return TRUE;
 }
 
@@ -226,7 +221,7 @@ void RoomBoardSign::mainAct00() {}
 
 BOOL RoomBoardSign::setupAct01() {
     BoardSignStackPad pad;
-    _ZN9Character17attachTalkRequestEi(this, this);
+    ((Character *)(this))->attachTalkRequest((s32)(this));
     setFileName("obj_etc_board");
     msgIndex = signMsgIndex;
     window->nextState = 1;
@@ -248,7 +243,7 @@ BOOL RoomBoardSign::setupAct02() {
 void RoomBoardSign::mainAct02() {
     if (window) {
         if (window->state == 0) {
-            _ZN9Character17detachTalkRequestEi(this, this);
+            ((Character *)(this))->detachTalkRequest((s32)(this));
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -268,6 +263,6 @@ extern "C" void RoomBoardSign_Spawn(void *a, s32 b, s32 c, s32 d) {
     loc[0] = 0;
     loc[1] = c;
     loc[2] = 0;
-    _ZN5Actor5spawnEPvS0_S0_S0_S0_(0x17, 0, a, loc, 0);
+    Actor::spawn((void *)(0x17), (void *)(0), a, loc, 0);
 }
 

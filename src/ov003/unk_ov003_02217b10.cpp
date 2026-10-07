@@ -6,6 +6,8 @@
 #include "field/FieldGroundBackdrop.h"
 #include "gfx/Model.h"
 #include "gfx/DebugColor.h"
+#include "gfx/BgModelCache.h"
+#include "gfx/Camera.h"
 
 // TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 
@@ -62,8 +64,8 @@ void FieldGroundBackdrop::clear() {
 }
 
 BOOL FieldGroundBackdrop::init() {
-    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), 0x83);
-    s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
+    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)((BgModelCache *)(BgModelCache_Get()))->getAcre(0x83);
+    s32 t = ((BgModelCache *)(BgModelCache_Get()))->getGroundTex();
     modelRes = e->modelRes;
     ((Model *)&model)->setResourceAndBind(modelRes, t);
     followCamera();
@@ -78,7 +80,7 @@ BOOL FieldGroundBackdrop::followCamera() {
         v.y = gCameraLookAt.y;
         v.z = gCameraLookAt.z;
         Mtx43_SetTranslate(data_021f47e0, v.x - data_020c8cb4, 0, 0);
-        Mtx43_RotateX(data_021f47e0, Camera_getEyeCurveAngle(cam));
+        Mtx43_RotateX(data_021f47e0, ((Camera *)(cam))->getEyeCurveAngle());
         ((Model *)&model)->mtx = *(Mtx43 *)data_021f47e0;  // (Model::mtx by name: it moves on 64-bit hosts)
         return TRUE;
     }

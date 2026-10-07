@@ -7,6 +7,7 @@ class VillagerActor;
 #include "item/ItemId.h"
 #include "sys/CameraBase.h"
 #include "gfx/Camera.h"
+#include "player/PlayerData.h"
 
 
 
@@ -153,7 +154,6 @@ BOOL File_LoadToBufferF(u32 a, s32 b, void *s, s32 idx);
 }
 
 extern "C" {
-void *_ZN10PlayerData10getCatalogEv(void *s);
 }
 
 extern "C" {
@@ -323,7 +323,7 @@ extern "C" s32 Catalog_CountRange(u16 base, u32 n) {
             Item_ToPlacedForm(&v[4], &v[1], 1);
             v[1] = v[4];
             if (Item_TestInfoFlag3(&v[1])) {
-                if (Catalog_HasItem((u8 *)_ZN10PlayerData10getCatalogEv(s), &v[1])) count++;
+                if (Catalog_HasItem((u8 *)((PlayerData *)(s))->getCatalog(), &v[1])) count++;
             }
         }
         return count;
@@ -337,7 +337,7 @@ extern "C" s32 Catalog_CountRange(u16 base, u32 n) {
         for (i = 0; i < n; i++) {
             v[3] = Item_MakeFurniture((s32)r + i, z);
             if (Item_TestInfoFlag3(&v[3])) {
-                if (Catalog_HasItem((u8 *)_ZN10PlayerData10getCatalogEv(s), &v[3])) count++;
+                if (Catalog_HasItem((u8 *)((PlayerData *)(s))->getCatalog(), &v[3])) count++;
             }
         }
     }
@@ -372,7 +372,7 @@ extern "C" s32 Catalog_CountInsects() {
 
 extern "C" BOOL Catalog_AddCreature(u16 *p) {
     void *s = PlayerData_GetCurrent();
-    if (s) return Catalog_AddItem(_ZN10PlayerData10getCatalogEv(s), p, 1);
+    if (s) return Catalog_AddItem(((PlayerData *)(s))->getCatalog(), p, 1);
     return FALSE;
 }
 

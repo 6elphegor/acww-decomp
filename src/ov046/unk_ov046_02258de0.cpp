@@ -29,6 +29,9 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
+#include "net/CommManager.h"
+#include "npc/NpcLookAt.h"
+#include "talk/MsgString.h"
 
 
 class ActorTalkRequest;
@@ -78,30 +81,7 @@ void Effect_End(s32 h);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 void Effect_SetPosition(s32 h, void *b, void *c, void *d);
 
-BOOL _ZN11CommManager8isOnlineEv(void *self);
-void _ZN24ConstellationMsgString17C1Ev(void *self);
-void _ZN24ConstellationMsgString17D1Ev(void *self);
-void _ZN9MsgString12appendStringEPS_(void *self, void *p);
-void _ZN9MsgString4copyEPS_(void *self, void *p);
-void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, void *b, void *c);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
-s32 _ZN13NpcActionCtrl9getActionEv(void *self);
-BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 }
-#define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define MsgString_appendString _ZN9MsgString12appendStringEPS_
-#define MsgString_copy _ZN9MsgString4copyEPS_
-#define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
-#define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
-#define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 
 
 
@@ -268,7 +248,7 @@ BOOL SpNpcCeleste::onCreate() {
     sleepBlend = 0;
     collider.groups |= 2;
     talk.setTopic(5);
-    if (Clock_GetTimeOfDay() == 2 || Clock_GetTimeOfDay() == 3 || CommManager_isOnline(gCommManager) != 0 ||
+    if (Clock_GetTimeOfDay() == 2 || Clock_GetTimeOfDay() == 3 || ((CommManager *)(gCommManager))->isOnline() != 0 ||
         *DebugVar_GetPtr(0, 0x4a) != 0) {
         changeAct(0);
     } else {
@@ -312,9 +292,9 @@ void SpNpcCeleste::changeAct(s32 state) {
 }
 
 BOOL SpNpcCeleste::setupAct00() {
-    NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     sleepTimer = 0x78;
-    NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -322,7 +302,7 @@ BOOL SpNpcCeleste::mainAct00() {
     if (tryStartTelescopeTalk()) {
         return TRUE;
     }
-    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0 || Clock_GetTimeOfDay() == 2 ||
+    if (((CommManager *)(gCommManager))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0 || Clock_GetTimeOfDay() == 2 ||
         Clock_GetTimeOfDay() == 3) {
         return TRUE;
     }
@@ -334,13 +314,13 @@ BOOL SpNpcCeleste::mainAct00() {
 }
 
 BOOL SpNpcCeleste::setupAct01() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcCeleste::mainAct01() {
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(0);
         }
     }
@@ -348,8 +328,8 @@ BOOL SpNpcCeleste::mainAct01() {
 }
 
 BOOL SpNpcCeleste::setupAct02() {
-    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xf0, 0, sleepBlend, 0);
-    NpcLookAt_setTarget(&lookAt, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xf0, 0, sleepBlend, 0);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     isAsleep = 1;
     return TRUE;
 }
@@ -376,13 +356,13 @@ BOOL SpNpcCeleste::setupAct03() {
         Effect_End(effectHandle);
         effectHandle = -1;
     }
-    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
-    NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r, 0);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcCeleste::mainAct03() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         isAsleep = 0;
         talk.setTopic(5);
         TalkRequest_SetTargetDone(this);
@@ -413,9 +393,9 @@ void SpNpcCelesteTalk::openConstellationPage() {
         if (Constellation_GetName(&a, r6)) {
             MsgString256 c;
             ChoiceEntry *q = r7->getEntry(r4);
-            MsgString_appendString(&c, &a);
-            MsgString_appendString(&c, &b);
-            MsgString_copy(q->getText(), &c);
+            ((MsgString *)(&c))->appendString((MsgString *)(&a));
+            ((MsgString *)(&c))->appendString((MsgString *)(&b));
+            ((MsgString *)(q->getText()))->copy((MsgString *)(&c));
             listSlots[r4] = r6;
             r4++;
             listRemaining = listRemaining - 1;
@@ -519,7 +499,7 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
         }
         setNumberSlot(m, 4, 2, 0, 0);
         msg[1] = h;
-        _ZN15TalkWindowState17setSlotFromStringEiii(o, 8, &msg[1], (u8 *)"st_general");
+        ((TalkWindowState *)(o))->setSlotFromString(8, (s32)(&msg[1]), (s32)((u8 *)"st_general"));
         msg[0] = 8;
     } else {
         Constellation_Erase(constellationSlot);
@@ -614,7 +594,7 @@ void SpNpcCelesteTalk::start(TalkStartMsg *out) {
     }
     s32 t = topic;
     if (t == 4 && owner[0x73a] == 0) {
-        if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
+        if (((CommManager *)(gCommManager))->isOnline() || *DebugVar_GetPtr(0, 0x4a) != 0) {
             if (Constellation_CountFreeSlots() < 0x10) {
                 out->msgIndex = 0x13;
             } else {
@@ -637,7 +617,7 @@ void SpNpcCelesteTalk::start(TalkStartMsg *out) {
 s32 SpNpcCelesteTalk::getFollowUpMenuMsg() {
     listRemaining = 0x10 - Constellation_CountFreeSlots();
     listStart = 0;
-    if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (Constellation_CountFreeSlots() < 0x10) {
             return 0x27;
         }
@@ -707,7 +687,7 @@ void SpNpcCelesteTalk::onMessageEnd(u32) {
 void SpNpcCelesteTalk::announceNewConstellations() {
     s32 v = 0;
     if (Constellation_GetNewStatus(&v) == 0) {
-        if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
+        if (((CommManager *)(gCommManager))->isOnline() || *DebugVar_GetPtr(0, 0x4a) != 0) {
             nextMsg = 0x2f;
         } else {
             nextMsg = 0x11;
@@ -726,7 +706,7 @@ void SpNpcCelesteTalk::announceNewConstellations() {
 }
 
 void SpNpcCelesteTalk::showTelescopeMenu() {
-    if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (Constellation_CountFreeSlots() < 0x10) {
             nextMsg = 0x13;
         } else {
@@ -861,7 +841,7 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
     constellationSlot = listSlots[idx];
     if (constellationSlot >= 0) {
         u32 buf[HOST_SIZED(0x24, ConstellationMsgString17) / 4] HOST_ALIGN8;
-        _ZN24ConstellationMsgString17C1Ev(buf);
+        new (buf) ConstellationMsgString17();
         Constellation_GetName(buf, constellationSlot);
         window->setSlot(6, buf);
         if (listMode == 0) {
@@ -884,7 +864,7 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
                 t4 = 0xc;
             }
             l.msg = r1;
-            _ZN15TalkWindowState17setSlotFromStringEiii(o, 8, &l.msg, (u8 *)"st_general");
+            ((TalkWindowState *)(o))->setSlotFromString(8, (s32)(&l.msg), (s32)((u8 *)"st_general"));
             setNumberSlot(t4, 4, 2, 0, 0);
             nextMsg = 0x17;
         } else if (listMode == 2) {
@@ -893,7 +873,7 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
             setResultHandler(3);
         }
         listMode = 0;
-        _ZN24ConstellationMsgString17D1Ev(buf);
+        ((ConstellationMsgString17 *)(buf))->ConstellationMsgString17::~ConstellationMsgString17();
     } else {
         if (listRemaining == 0) {
             nextMsg = getFollowUpMenuMsg();
@@ -990,11 +970,11 @@ void SpNpcCelesteTalk::onEraseConfirmChoice(s32 a) {
     listStart = 0;
     if (a == 0) {
         if (constellationSlot >= 0) {
-            _ZN24ConstellationMsgString17C1Ev(buf);
+            new (buf) ConstellationMsgString17();
             Constellation_GetName(buf, constellationSlot);
             window->setSlot(6, buf);
             Constellation_Erase(constellationSlot);
-            _ZN24ConstellationMsgString17D1Ev(buf);
+            ((ConstellationMsgString17 *)(buf))->ConstellationMsgString17::~ConstellationMsgString17();
         }
         listRemaining = 0x10 - Constellation_CountFreeSlots();
         listStart = 0;
@@ -1077,14 +1057,14 @@ void SpNpcCelesteTalk::onRenameChoice(s32 a) {
 }
 
 BOOL SpNpcCeleste::acceptsInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcCeleste::acceptsSelfRequestedInteraction(void *) {
-    return NpcTalkCtrl_isBusy(&talkCtrl) == 0 ? TRUE : FALSE;
+    return ((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0 ? TRUE : FALSE;
 }
 
 void SpNpcCeleste::onInteractionEvent(u32 a, u8) {
@@ -1114,7 +1094,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
     } else {
         r6 = FALSE;
     }
-    if (p == 0 || NpcTalkCtrl_isBusy(&talkCtrl) != 0) {
+    if (p == 0 || ((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0) {
         talk.setTopic(5);
         result = FALSE;
         goto end;

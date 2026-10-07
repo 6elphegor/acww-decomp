@@ -15,6 +15,8 @@
 #include "sys/ProcProfile.h"
 #include "gfx/CameraSway.h"
 #include "gfx/DebugColor.h"
+#include "gfx/ViewFrustum.h"
+#include "player/PlayerData.h"
 
 typedef VecFx32 V3;
 
@@ -232,7 +234,6 @@ s32 Math_EaseRampProgress(s32, s32, s32, s32, s32);
 s32 FX_Inv(s32);
 s32 Ground_GetFloorBounds(s32 *, s32 *, s32 *, s32 *);
 s32 _ZN12MapBlockAcre9getAcreIdEv(u32);
-void _ZN11ViewFrustum14setPerspectiveEitii(void *, s32, s32, s32, s32);
 void MTX_Inverse43(void *a, void *b);
 void Vec_ScaleTo(void *out, void *a, s32 n);
 void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
@@ -241,7 +242,6 @@ void WorldCurve_Update(void *a, void *b);
 s32 NpcRegistry_PickRandomVillager(s32 a);
 VillagerActor *NpcRegistry_GetVillager(s32 i);
 void *PlayerData_GetCurrent();
-s32 _ZN10PlayerData8testFlagEj(void *s, s32 a);
 void *Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(void *a);
 s32 NNS_G3dGetTex(void *p);
@@ -365,20 +365,6 @@ void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z);
 
 // ---- members called from the plain functions (explicit object argument; names filled by the build script) ----
 extern "C" {
-s32 _ZN6Camera9getFovTanEv(Camera *o);
-s32 _ZN6Camera11getDistanceEv(Camera *o);
-s32 _ZN6Camera6getYawEv(Camera *o);
-s32 _ZN6Camera8getPitchEv(Camera *o);
-s32 _ZN6Camera11getBlendEndEv(Camera *o);
-void _ZN6Camera16setFocusPreset11EPhP7VecFx32(Camera *o, CameraSetup *c, s32 a);
-void _ZN6Camera14setLookAtOrbitEP7VecFx32iii(Camera *o, void *a, s32 b, s32 c, s32 d);
-void _ZN6Camera7popViewEv(Camera *o);
-void _ZN6Camera8pushViewEv(Camera *o);
-s32 _ZN6Camera7setModeEi(Camera *o, s32 a);
-void _ZN6Camera11updateBlendEv(Camera *o);
-void _ZN6Camera11dragFocusToEP7VecFx32(Camera *o, void *a);
-void _ZN6Camera8loadPoseEiP10CameraPose(Camera *o, s32 a, s32 b);
-void _ZN6Camera14setBlendPresetEi(Camera *o, s32 a);
 }
 
 extern "C" s32 CarpetTex_GetTex(void *p) {
@@ -509,7 +495,7 @@ BOOL Camera::onCreate() {
     case 0: {
         void *s = PlayerData_GetCurrent();
         if (s) {
-            if (_ZN10PlayerData8testFlagEj(s, 0x23)) {
+            if (((PlayerData *)(s))->testFlag(0x23)) {
                 if (SceneId_IsHouseRoom(Scene_GetPrevious()) != 0 || (s32)Scene_GetPrevious() == 6) setMode(0xd);
             }
         }
@@ -648,7 +634,7 @@ void Camera::setFovy(s32 a)
     i = (u16)((s16)(M(s16, 0x1c8) + M(s16, 0x98)) >> 1) >> 4;
     M(s32, 0x1c0) = data_02135f44[i * 2 + 1];
     M(s32, 0x1c4) = func_01ffcb0c(M(s32, 0x1bc), FX_Inv(M(s32, 0x1c0)));
-    _ZN11ViewFrustum14setPerspectiveEitii(gViewFrustum, M(s32, 0x1b0), (s16)(M(s16, 0x1c8) + M(s16, 0x98)), M(s32, 0x1b4) + M(s32, 0x90),
+    ((ViewFrustum *)(gViewFrustum))->setPerspective(M(s32, 0x1b0), (s16)(M(s16, 0x1c8) + M(s16, 0x98)), M(s32, 0x1b4) + M(s32, 0x90),
                   M(s32, 0x1b8) + M(s32, 0x94));
 }
 
@@ -1224,13 +1210,13 @@ extern "C" void Camera_UpdateModeShake(Camera *o) {
     r->ang = r->ang + r->vel;
     Math_StepS16(&r->vel, 0x6000, 0x180);
     sc = func_01ffcb0c(data_02135f44[((u16)r->ang >> 4) * 2], o->modeParam);
-    _ZN6Camera11dragFocusToEP7VecFx32(o, &o->savedFocus);
+    (o)->dragFocusTo((V3 *)(&o->savedFocus));
     Math_ApproachS32((s32 *)r, 0, 0x400, 0x80, 0x10);
-    _ZN6Camera11updateBlendEv(o);
+    (o)->updateBlend();
     Camera_GetLookAtPoint(&cam, o);
-    s32 p = _ZN6Camera8getPitchEv(o);
-    s32 q = _ZN6Camera6getYawEv(o);
-    _ZN6Camera14setLookAtOrbitEP7VecFx32iii(o, &cam, p, q, _ZN6Camera11getDistanceEv(o));
+    s32 p = (o)->getPitch();
+    s32 q = (o)->getYaw();
+    (o)->setLookAtOrbit((V3 *)(&cam), p, q, (o)->getDistance());
     v.x = 0;
     v.y = 0x1000;
     v.z = 0;
@@ -1241,19 +1227,19 @@ extern "C" void Camera_UpdateModeShake(Camera *o) {
 }
 
 extern "C" BOOL Camera_InitMode19(Camera *o) {
-    _ZN6Camera8loadPoseEiP10CameraPose(o, 0x1f, 0);
-    _ZN6Camera14setBlendPresetEi(o, 5);
+    (o)->loadPose(0x1f, (CameraPose *)(0));
+    (o)->setBlendPreset(5);
     Camera_StartBlend();
     return TRUE;
 }
 
 extern "C" void Camera_UpdateMode19(Camera *o) {
     VecFx32 v;
-    _ZN6Camera11updateBlendEv(o);
+    (o)->updateBlend();
     Camera_GetLookAtPoint(&v, o);
-    s32 p = _ZN6Camera8getPitchEv(o);
-    s32 q = _ZN6Camera6getYawEv(o);
-    _ZN6Camera14setLookAtOrbitEP7VecFx32iii(o, &v, p, q, _ZN6Camera11getDistanceEv(o));
+    s32 p = (o)->getPitch();
+    s32 q = (o)->getYaw();
+    (o)->setLookAtOrbit((V3 *)(&v), p, q, (o)->getDistance());
 }
 
 extern "C" BOOL Camera_SetModeDefault(void) {
@@ -1264,11 +1250,11 @@ extern "C" BOOL Camera_SetModeDefault(void) {
     if (t == 0) {
         return TRUE;
     }
-    return _ZN6Camera7setModeEi(gCamera, 0);
+    return (gCamera)->setMode(0);
 }
 
 extern "C" s32 Camera_SetMode1(void) {
-    return _ZN6Camera7setModeEi(gCamera, 1);
+    return (gCamera)->setMode(1);
 }
 
 extern "C" s32 Camera_CalcPointSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 *d) {
@@ -1361,7 +1347,7 @@ extern "C" BOOL Camera_FocusOnPoint(VecFx32 *a) {
     }
     gCamera->focusIsPair = 0;
     gCamera->focusPointA = *a;
-    return _ZN6Camera7setModeEi(gCamera, 2);
+    return (gCamera)->setMode(2);
 }
 
 extern "C" void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b) {
@@ -1372,33 +1358,33 @@ extern "C" void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b) {
         gCamera->focusIsPair = 1;
         gCamera->focusPointA = *a;
         gCamera->focusPointB = *b;
-        _ZN6Camera7setModeEi(gCamera, 2);
+        (gCamera)->setMode(2);
     }
 }
 
 extern "C" void Camera_StartShake(s32 a) {
     gCamera->modeParam = a;
-    _ZN6Camera7setModeEi(gCamera, 0x11);
+    (gCamera)->setMode(0x11);
 }
 
 extern "C" void Camera_SetMode19(void) {
-    _ZN6Camera7setModeEi(gCamera, 0x13);
+    (gCamera)->setMode(0x13);
 }
 
 extern "C" void Camera_SetMode3(void) {
-    _ZN6Camera7setModeEi(gCamera, 3);
+    (gCamera)->setMode(3);
 }
 
 extern "C" s32 Camera_RestorePrevMode(void) {
-    return _ZN6Camera7setModeEi(gCamera, gCamera->prevMode);
+    return (gCamera)->setMode(gCamera->prevMode);
 }
 
 extern "C" void Camera_SetMode4(void) {
-    _ZN6Camera7setModeEi(gCamera, 4);
+    (gCamera)->setMode(4);
 }
 
 extern "C" void Camera_SetMode5(void) {
-    _ZN6Camera7setModeEi(gCamera, 5);
+    (gCamera)->setMode(5);
 }
 
 extern "C" BOOL Camera_RetargetFocus(VecFx32 *v) {
@@ -1438,14 +1424,14 @@ extern "C" s32 Camera_GetCloseUpFactor(void) {
 }
 
 extern "C" BOOL Camera_IsBlending(void) {
-    if (gCamera->blendTime <= _ZN6Camera11getBlendEndEv(gCamera)) {
+    if (gCamera->blendTime <= (gCamera)->getBlendEnd()) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" void Camera_FinishBlend(void) {
-    gCamera->blendTime = _ZN6Camera11getBlendEndEv(gCamera);
+    gCamera->blendTime = (gCamera)->getBlendEnd();
 }
 
 extern "C" void Camera_StartBlend(void) {
@@ -1453,7 +1439,7 @@ extern "C" void Camera_StartBlend(void) {
 }
 
 extern "C" u8 Camera_GetBlendFramesLeft(void) {
-    return (_ZN6Camera11getBlendEndEv(gCamera) - gCamera->blendTime) >> 12;
+    return ((gCamera)->getBlendEnd() - gCamera->blendTime) >> 12;
 }
 
 extern "C" void Camera_SaveView(void) {
@@ -1474,12 +1460,12 @@ extern "C" BOOL Camera_IsViewPushed(void) {
 }
 
 extern "C" BOOL Camera_PushView(void) {
-    _ZN6Camera8pushViewEv(gCamera);
+    (gCamera)->pushView();
     return TRUE;
 }
 
 extern "C" BOOL Camera_PopView(void) {
-    _ZN6Camera7popViewEv(gCamera);
+    (gCamera)->popView();
     return TRUE;
 }
 
@@ -1492,13 +1478,13 @@ extern "C" void Camera_LockFocusYaw(void) {
 }
 
 extern "C" void Camera_SnapToFocus(s32 a) {
-    _ZN6Camera16setFocusPreset11EPhP7VecFx32(gCamera, (CameraSetup *)&gCamera->target, a);
+    (gCamera)->setFocusPreset11((u8 *)(void *)((CameraSetup *)&gCamera->target), (V3 *)(a));
     *(CameraSetup *)&gCamera->current = *(CameraSetup *)&gCamera->target;
     VecFx32 v;
     Camera_GetLookAtPoint(&v, gCamera);
-    s32 p = _ZN6Camera8getPitchEv(gCamera);
-    s32 q = _ZN6Camera6getYawEv(gCamera);
-    _ZN6Camera14setLookAtOrbitEP7VecFx32iii(gCamera, &v, p, q, _ZN6Camera11getDistanceEv(gCamera));
+    s32 p = (gCamera)->getPitch();
+    s32 q = (gCamera)->getYaw();
+    (gCamera)->setLookAtOrbit((V3 *)(&v), p, q, (gCamera)->getDistance());
 }
 
 extern "C" void Camera_MuteSe(void) {
@@ -1546,7 +1532,7 @@ extern "C" BOOL Camera_ProjectToScreen(s32 *x, s32 *y, VecFx32 *p) {
         l.m = *src;
         data_021f47e0 = l.m;
         MTX_MultVec43(p, &data_021f47e0, &l.v);
-        s32 t = FX_Div(0x60000, _ZN6Camera9getFovTanEv(gCamera));
+        s32 t = FX_Div(0x60000, (gCamera)->getFovTan());
         t = FX_Div(-t, l.v.z);
         Vec_Scale(&l.v, t);
         *x = l.v.x >> 12;

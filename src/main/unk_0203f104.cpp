@@ -9,6 +9,10 @@
 #include "game/EventWeekSlots.h"
 #include "game/EventCalendarModule.h"
 #include "game/EventScheduleRule.h"
+#include "net/CommManager.h"
+#include "npc/VillagerId.h"
+#include "player/PlayerData.h"
+#include "save/BlancaFaceRecord.h"
 
 extern "C" void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
@@ -76,12 +80,10 @@ extern u32 gCommManager;
 }
 
 extern "C" {
-s32 _ZN11CommManager8isOnlineEv(u32 v);
 s32 Backup_GetStatus(void *p);
 s32 EventWeekSlots_UpdateToday(s32 v);
 s32 GameStart_IsActive(void);
 s32 PlayerData_GetCurrent();
-s32 _ZN10PlayerData8testFlagEj(s32 p, s32 v);
 s32 EventWeekSlots_IsSeenToday(u32 id);
 s32 DateTime_DiffMinutes(void *a, void *b);
 s32 DateTime_DiffDays(void *a, void *b);
@@ -97,8 +99,6 @@ s32 EventWeek_IsInLyleWeek(EventDate);
 s32 EventWeek_IsInUnkWeek(EventDate);
 s32 LostChild_IsKatieDue();
 s32 LostChild_IsKaitlinDue();
-s32 _ZN16BlancaFaceRecord11isBlancaDueEv(void *);
-s32 _ZN10VillagerId7isValidEv(void *);
 s32 Villager_GetResidentStatus(void *);
 s32 Villager_GetIndex(void *);
 void *SaveVillagers_Get(void *, s32);
@@ -474,7 +474,7 @@ extern "C" void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *e, EventDate *out)
 
 extern "C" BOOL Villager_IsSettledExcept(void *a, s32 b) {
     BOOL r = FALSE;
-    if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a))) {
+    if (((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(a)))->isValid()) {
         if (Villager_GetResidentStatus(a) == 3) {
             s32 x = Villager_GetIndex(a);
             if (x != -1 && x != b) {
@@ -741,7 +741,7 @@ extern "C" s32 EventSchedule_IsBlocked(EventScheduleRule *t, EventDate cal, Even
         if (LostChild_IsKatieDue() || LostChild_IsKaitlinDue()) return 1;
     }
     if (kind >= 3) {
-        if (_ZN16BlancaFaceRecord11isBlancaDueEv(gSaveBlancaFace)) return 1;
+        if (((BlancaFaceRecord *)(gSaveBlancaFace))->isBlancaDue()) return 1;
     }
     switch (e->id) {
     case 0x3c:
@@ -1004,7 +1004,7 @@ extern "C" void Event_GetRange(s32 *a, s32 *b, u32 id) {
 }
 
 BOOL EventCalendarModule::onCreate() {
-    if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
+    if (((CommManager *)(gCommManager))->isOnline() == 0) {
         if (sEventsOnlineRefresh) {
             Event_RefreshToday(0);
         }
@@ -1033,7 +1033,7 @@ extern "C" BOOL Game_IsIntroPeriod(void) {
         r = TRUE;
     } else {
         s32 p = PlayerData_GetCurrent();
-        if (p == 0 || _ZN10PlayerData8testFlagEj(p, 1) != 0) {
+        if (p == 0 || ((PlayerData *)(p))->testFlag(1) != 0) {
             r = TRUE;
         }
     }

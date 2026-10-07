@@ -8,6 +8,12 @@
 #include "sys/ClockDate.h"
 #include "player/PlayerId.h"
 #include "player/PlayerData.h"
+#include "item/ItemPickSpec.h"
+#include "item/LetterView.h"
+#include "net/CommManager.h"
+#include "player/PlayerInventory.h"
+#include "save/TownId.h"
+#include "talk/MsgString.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
 struct TopicWordList {
@@ -157,7 +163,9 @@ struct TrendScores {
     void add(u8 i, u32 v);
     void resetAndHalve(u32 i);
     u8 pickTop();
-    void copy();
+    // the scores from src (8 bytes). The decomp's copy() took no source: on the DS the caller's own register
+    // argument went along (VillagerPlan::rollTrend's trend table), so it is passed explicitly here.
+    void copy(const u8 *src);
     void clear();
 };
 
@@ -194,7 +202,7 @@ struct VillagerPlan {
     s32 getStateGroup();
     void setState(u32 v);
     u32 getState();
-    void rollTrend(s32 a, s32 flag);
+    void rollTrend(const u8 *trend, s32 flag);
     BOOL isValidState();
     BOOL hasTrend();
     void clear();
@@ -248,8 +256,6 @@ extern const TopicWordList sTopicWordLists[];
 }
 
 extern "C" {
-u8 _ZN11TrendScores3getEj(void *self, u8 i);
-void _ZN11TrendScores3setEhj(void *self, u8 i, u32 v);
 }
 
 extern "C" void TrendScores_Copy(void *p, void *q);
@@ -281,6 +287,10 @@ extern "C" void TrendScores_Copy(void *p, void *q)
 {
     MI_CpuCopy8(q, p, 8);
 }
+
+}
+void TrendScores::copy(const u8 *src) { n6::TrendScores_Copy(values, (void *)src); }
+namespace n6 {
 
 }
 u32 VillagerPlan::pickTopScore()
@@ -323,10 +333,10 @@ namespace n6 {
 void VillagerPlan::resetAndHalveScores(u8 i)
 {
     using namespace n6;
-    _ZN11TrendScores3setEhj(this, i, 0);
+    ((TrendScores *)(this))->set(i, 0);
     for (s32 j = 0; j < 8; j++) {
-        u32 v = _ZN11TrendScores3getEj(this, (u8)j);
-        _ZN11TrendScores3setEhj(this, (u8)j, (v << 23) >> 24);
+        u32 v = ((TrendScores *)(this))->get((u8)j);
+        ((TrendScores *)(this))->set((u8)j, (v << 23) >> 24);
     }
 }
 namespace n6 {
@@ -466,9 +476,9 @@ BOOL VillagerPlan::isValidState() {
 
 namespace n5 {
 }
-void VillagerPlan::rollTrend(s32 a, s32 flag) {
+void VillagerPlan::rollTrend(const u8 *trend, s32 flag) {
     using namespace n5;
-    scores.copy();
+    scores.copy(trend);
     planState = scores.pickTop();
     if (flag != 0) {
         scores.resetAndHalve(planState);
@@ -968,13 +978,13 @@ void ErrandRecord::setItem(u16 *p) {
 namespace n5 {
 extern "C" void *PlanErrand_Construct(ErrandRecord *self) {
     self->init();
-    _ZN8PlayerIdC1EPv((u8 *)self + 0xc, 0); // unused by PlayerId::PlayerId(void *)
+    new ((u8 *)self + 0xc) PlayerId(0); // unused by PlayerId::PlayerId(void *)
     *(u16 *)((u8 *)self + 0x24) = 0xfff1;
     return self;
 }
 
 extern "C" void *PlanErrand_Destruct(ErrandRecord *self) {
-    _ZN8PlayerIdC1Ev((u8 *)self + 0xc);
+    new ((u8 *)self + 0xc) PlayerId();
     self->func_0209ada0();
     return self;
 }
@@ -989,23 +999,15 @@ void _ZN12ErrandRecord13func_0209ada0Ev(void *p);
 void *_ZN12ErrandRecord4initEv(void *p);
 s32 _ZN12ErrandRecord7setItemEPt(void *p, u16 *v);
 s32 _ZN12ErrandRecord7getKindEv(void *p);
-s32 _ZN12ErrandRecord13getGroupIndexEPi(void *p, s32 *out);
 s32 Errand_GetGroupIndex(s32 *out, s32 kind);
 s32 Errand_GetGroup(s32 kind);
 s32 Errand_GetClassIndex(u32 *out, s32 x);
-s32 _ZN12ErrandRecord8getClassEv(void *p);
 s32 Errand_GetClass(s32 x);
 s32 _ZN12ErrandRecord8isActiveEv(void *p);
 s32 _ZN12ErrandRecord5startEhPth(void *p, s32 a, u16 *b, s32 c);
 u32 _ZN12ErrandRecord7getStepEv(void *p);
 void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
-s32 _ZN12ErrandRecord8setExtraEh(void *p, s32 v);
 s32 ErrandRecord_GetTime(void *p);
-s32 _ZN12VillagerPlan8getStateEv(void *p);
-s32 _ZN12VillagerPlan9rollTrendEii(void *p, s32 a, s32 flag);
-s32 _ZN12VillagerPlan5clearEv(void *p);
-s32 _ZN12VillagerPlanD1Ev(void *p);
-s32 _ZN12VillagerPlanC1Ev(void *p);
 s32 PlanErrand_Destruct(void *p);
 s32 PlanErrand_Construct(void *p);
 s32 PlanState_GetGroup(void *p);
@@ -1017,22 +1019,15 @@ void VillagerId_Clear(void *p);
 void VillagerId_Destruct(void *p);
 void VillagerId_Construct(void *p);
 void _ZN10VillagerId7getNameEj(void *a, void *b);
-s32 _ZN10VillagerId12makeFileNameEPvjj(void *a, void *b, s32 c, const void *d);
 void MailText_SetSlot(s32 a, void *b);
-void _ZN11MsgString9BC1Ev(void *p);
-void _ZN11MsgString9BD1Ev(void *p);
 void _ZN8PlayerId5clearEv(void *p);
 void _ZN8PlayerId6setRawEPv(void *p, s32 v);
-void _ZN11MsgString33C1Ev(void *p);
-void _ZN11MsgString33D1Ev(void *p);
-void _ZN9MsgString5clearEv(void *p);
 s32 String_LoadResolveAltText(void *a, u8 *b, s32 c);
 s32 Random_GlobalBelow(s32 n);
 void _ZN12ItemPickSpec3setEii(void *p, s32 a, s32 b);
 void ItemPickSpec_Destruct(void *p);
 void ItemPick_One(void *out, void *x, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Letter_ComposeVillagerToVillagerZ(void *a, u8 *b, u8 *c, u8 *d, u8 *e, void *f, const void *g, void *h, void *i, s32 j);
-s32 _ZN11CommManager8isOnlineEv(void *p);
 s32 Item_GetFossilGroup(u16 *p);
 s32 Item_IsFurniture(void *p);
 void *Item_GetFurnitureIndex(void *p);
@@ -1101,7 +1096,7 @@ extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self);
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Construct(PlayerErrandSlot *self);
 extern "C" u8 *VillagerPlanBlock_GetErrand(u8 *p);
 extern "C" void *VillagerPlanBlock_GetPlan(void *p);
-extern "C" s32 VillagerPlanBlock_RollTrend(void *p, s32 a, s32 flag);
+extern "C" s32 VillagerPlanBlock_RollTrend(void *p, const u8 *trend, s32 flag);
 extern "C" void VillagerPlanBlock_Clear(u8 *p);
 extern "C" u8 *VillagerPlanBlock_Destruct(u8 *p);
 extern "C" u8 *VillagerPlanBlock_Construct(u8 *p);
@@ -1134,8 +1129,8 @@ extern "C" void PlanErrand_Clear(void *pp);
 
 extern "C" void PlanErrand_Clear(void *pp) {
     PlanErrand *self = (PlanErrand *)pp;
-    _ZN12ErrandRecord5clearEv(self);
-    _ZN8PlayerId5clearEv(self->player);
+    ((ErrandRecord *)(self))->clear();
+    ((PlayerId *)(self->player))->clear();
     self->step = 7;
     self->shownItem = 0xfff1;
     self->count = 0;
@@ -1144,7 +1139,7 @@ extern "C" void PlanErrand_Clear(void *pp) {
 }
 
 extern "C" void PlanErrand_SetKind(void *p, s32 a, u16 *b) {
-    _ZN12ErrandRecord5startEhPth(p, a, b, 0);
+    ((ErrandRecord *)(p))->start(a, b, 0);
 }
 
 extern "C" void PlanErrand_Begin(PlanErrand *self, s32 a, u16 *b) {
@@ -1156,10 +1151,10 @@ extern "C" void PlanErrand_Begin(PlanErrand *self, s32 a, u16 *b) {
 extern "C" void PlanErrand_ResetProgress(void *pp) {
     PlanErrand *self = (PlanErrand *)pp;
     u16 v;
-    _ZN12ErrandRecord7setStepEh(PlanErrand_GetRecord(self), 0);
+    ((ErrandRecord *)(PlanErrand_GetRecord(self)))->setStep(0);
     v = 0xfff1;
-    _ZN12ErrandRecord7setItemEPt(PlanErrand_GetRecord(self), &v);
-    _ZN8PlayerId5clearEv(PlanErrand_GetPlayer(self));
+    ((ErrandRecord *)(PlanErrand_GetRecord(self)))->setItem(&v);
+    ((PlayerId *)(PlanErrand_GetPlayer(self)))->clear();
     *PlanErrand_GetShownItem(self) = 0xfff1;
 }
 
@@ -1167,9 +1162,9 @@ extern "C" void PlanErrand_Assign(PlanErrand *self, s32 a1, u16 *p, void *obj, u
     if (flag) {
         PlanErrand_Begin(self, a1, p);
     } else {
-        _ZN12ErrandRecord7setStepEh(PlanErrand_GetRecord(self), 0);
-        _ZN12ErrandRecord7setItemEPt(PlanErrand_GetRecord(self), p);
-        if (_ZN12ErrandRecord7getKindEv(PlanErrand_GetRecord(self)) == 2) {
+        ((ErrandRecord *)(PlanErrand_GetRecord(self)))->setStep(0);
+        ((ErrandRecord *)(PlanErrand_GetRecord(self)))->setItem(p);
+        if (((ErrandRecord *)(PlanErrand_GetRecord(self)))->getKind() == 2) {
             if (PlanErrand_GetStep(self) == 2) {
                 BOOL r = FALSE;
                 if (*p >= 0x450c && *p <= 0x45db) {
@@ -1184,18 +1179,18 @@ extern "C" void PlanErrand_Assign(PlanErrand *self, s32 a1, u16 *p, void *obj, u
     if (obj) {
         _ZN8PlayerId6setRawEPv(PlanErrand_GetPlayer(self), (s32)obj);
         Clock_GetDateTime(ErrandRecord_GetTime(PlanErrand_GetRecord(self)));
-        _ZN12ErrandRecord8setExtraEh(PlanErrand_GetRecord(self), 0);
+        ((ErrandRecord *)(PlanErrand_GetRecord(self)))->setExtra(0);
     } else {
-        _ZN8PlayerId5clearEv(PlanErrand_GetPlayer(self));
+        ((PlayerId *)(PlanErrand_GetPlayer(self)))->clear();
     }
 }
 
 extern "C" void PlanErrand_MarkReady(void *p) {
     void *o = PlanErrand_GetRecord(p);
-    if (_ZN12ErrandRecord8isActiveEv(o)) {
-        if (_ZN12ErrandRecord8getClassEv(o) == 0) {
-            if (_ZN12ErrandRecord7getStepEv(o) == 1) {
-                _ZN12ErrandRecord7setStepEh(o, 2);
+    if (((ErrandRecord *)(o))->isActive()) {
+        if (((ErrandRecord *)(o))->getClass() == 0) {
+            if (((ErrandRecord *)(o))->getStep() == 1) {
+                ((ErrandRecord *)(o))->setStep(2);
             }
         }
     }
@@ -1206,12 +1201,12 @@ extern "C" void PlanErrand_AdvanceStep(PlanErrand *self) {
     s32 t;
     s32 a;
     s32 ok;
-    if (_ZN12ErrandRecord8isActiveEv(o)) {
-        if (_ZN12ErrandRecord8getClassEv(o) == 0) {
-            t = PlanErrand_GetStepCount(_ZN12ErrandRecord7getKindEv(o));
+    if (((ErrandRecord *)(o))->isActive()) {
+        if (((ErrandRecord *)(o))->getClass() == 0) {
+            t = PlanErrand_GetStepCount(((ErrandRecord *)(o))->getKind());
             a = PlanErrand_GetStep(self);
             if (a < t - 1) {
-                if (_ZN12ErrandRecord7getKindEv(o) == 4) {
+                if (((ErrandRecord *)(o))->getKind() == 4) {
                     ok = PlanErrand_IsFurnitureGoalMet(self);
                 } else {
                     ok = 1;
@@ -1393,8 +1388,8 @@ extern "C" u8 PlanErrand_AddCount(PlanErrand *p, s32 n) {
 extern "C" BOOL PlanErrand_IsFurnitureGoalMet(void *self) {
     void *o = PlanErrand_GetRecord(self);
     s32 t;
-    if (_ZN12ErrandRecord8isActiveEv(o)) {
-        if (_ZN12ErrandRecord7getKindEv(o) == 4) {
+    if (((ErrandRecord *)(o))->isActive()) {
+        if (((ErrandRecord *)(o))->getKind() == 4) {
             t = PlanErrand_GetStep(self);
             if (t < 6) {
                 if (PlanErrand_GetCount(self) >= sFurnitureGoalCounts[t]) {
@@ -1408,25 +1403,25 @@ extern "C" BOOL PlanErrand_IsFurnitureGoalMet(void *self) {
 }
 
 extern "C" u8 *VillagerPlanBlock_Construct(u8 *p) {
-    _ZN12VillagerPlanC1Ev(p);
+    new (p) VillagerPlan();
     PlanErrand_Construct(p + 0x24);
     return p;
 }
 
 extern "C" u8 *VillagerPlanBlock_Destruct(u8 *p) {
     PlanErrand_Destruct(p + 0x24);
-    _ZN12VillagerPlanD1Ev(p);
+    ((VillagerPlan *)(p))->~VillagerPlan();
     return p;
 }
 
 extern "C" void VillagerPlanBlock_Clear(u8 *p) {
-    _ZN12VillagerPlan5clearEv(p);
+    ((VillagerPlan *)(p))->clear();
     PlanErrand_Clear(p + 0x24);
 }
 
-extern "C" s32 VillagerPlanBlock_RollTrend(void *p, s32 a, s32 flag) {
-    _ZN12VillagerPlan9rollTrendEii(p, a, flag);
-    return _ZN12VillagerPlan8getStateEv(p);
+extern "C" s32 VillagerPlanBlock_RollTrend(void *p, const u8 *trend, s32 flag) {
+    ((VillagerPlan *)(p))->rollTrend(trend, flag);
+    return ((VillagerPlan *)(p))->getState();
 }
 
 extern "C" void *VillagerPlanBlock_GetPlan(void *p) {
@@ -1438,20 +1433,20 @@ extern "C" u8 *VillagerPlanBlock_GetErrand(u8 *p) {
 }
 
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Construct(PlayerErrandSlot *self) {
-    _ZN12ErrandRecord4initEv(self);
+    ((ErrandRecord *)(self))->init();
     __cxa_vec_ctor(self->villagers, 2, 0xc, VillagerId_Construct, VillagerId_Destruct);
     return self;
 }
 
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self) {
     __cxa_vec_cleanup(self->villagers, 2, 0xc, VillagerId_Destruct);
-    _ZN12ErrandRecord13func_0209ada0Ev(self);
+    ((ErrandRecord *)(self))->func_0209ada0();
     return self;
 }
 
 extern "C" void PlayerErrandSlot_Clear(PlayerErrandSlot *self) {
     s32 i;
-    _ZN12ErrandRecord5clearEv(self);
+    ((ErrandRecord *)(self))->clear();
     for (i = 0; i < 2; i++) {
         VillagerId_Clear(&self->villagers[i]);
     }
@@ -1465,7 +1460,7 @@ extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6,
     if (Errand_GetGroup(kind) == 1) {
         if (Errand_GetGroupIndex(&idx, kind)) {
             v = 0xfff1;
-            _ZN12ErrandRecord5startEhPth(self, kind, &v, r);
+            ((ErrandRecord *)(self))->start(kind, &v, r);
             {
                 ErrandKindSetup *e = &sErrandKindSetups[idx];
                 if (e->setup) {
@@ -1495,7 +1490,7 @@ extern "C" u8 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *p, s32 i) {
 extern "C" BOOL Errand_CanOfferInPlanState(s32 a, void *b) {
     s32 t;
     BOOL r;
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         return FALSE;
     }
     t = PlanState_GetGroup(b);
@@ -1514,11 +1509,11 @@ extern "C" BOOL Errand_CanOfferInPlanState(s32 a, void *b) {
 extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind) {
     BOOL r = FALSE;
     s32 idx;
-    if (_ZN12ErrandRecord8isActiveEv(self)) {
+    if (((ErrandRecord *)(self))->isActive()) {
         if (Errand_GetGroup(kind) == 1) {
-            if (kind == _ZN12ErrandRecord7getKindEv(self)) {
-                if (_ZN12ErrandRecord13getGroupIndexEPi(self, &idx)) {
-                    if (_ZN12ErrandRecord7getStepEv(self) > sErrandKindSetups[idx].stepLimit) {
+            if (kind == ((ErrandRecord *)(self))->getKind()) {
+                if (((ErrandRecord *)(self))->getGroupIndex(&idx)) {
+                    if (((ErrandRecord *)(self))->getStep() > sErrandKindSetups[idx].stepLimit) {
                         r = TRUE;
                     }
                 }
@@ -1529,7 +1524,7 @@ extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind) {
 }
 
 extern "C" s32 PlayerErrandSlot_IsStepDone(void *self) {
-    return PlayerErrandSlot_IsPastStepLimit(self, _ZN12ErrandRecord7getKindEv(self));
+    return PlayerErrandSlot_IsPastStepLimit(self, ((ErrandRecord *)(self))->getKind());
 }
 
 extern "C" void PlayerErrandSlot_SetPresentReaction(u8 *p, u32 v) {
@@ -1543,16 +1538,16 @@ extern "C" u8 *PlayerErrandSlot_GetPresentReaction(u8 *p) {
 extern "C" BOOL ErrandSetup_RandomShirt(void *p) {
     u32 x[2];
     u16 out;
-    _ZN12ItemPickSpec3setEii(x, 2, 0);
+    ((ItemPickSpec *)(x))->set(2, 0);
     ItemPick_One(&out, x, 0, 0, 1, 1, 0);
     ItemPickSpec_Destruct(x);
-    _ZN12ErrandRecord7setItemEPt(p, &out);
+    ((ErrandRecord *)(p))->setItem(&out);
     return TRUE;
 }
 
 extern "C" BOOL ErrandSetup_LetterBundle(void *p) {
     u16 v = 0x1565;
-    _ZN12ErrandRecord7setItemEPt(p, &v);
+    ((ErrandRecord *)(p))->setItem(&v);
     return TRUE;
 }
 
@@ -1564,53 +1559,53 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
     u32 Y[HOST_SIZED(0x34, MsgString33) / 4] HOST_ALIGN8;
     s32 i;
     s32 r;
-    if (_ZN10VillagerId7isValidEv(&self->villagers[0]) && _ZN10VillagerId7isValidEv(&self->villagers[1])) {
-        _ZN11MsgString9BC1Ev(X);
-        _ZN11MsgString33C1Ev(Y);
+    if (((VillagerId *)(&self->villagers[0]))->isValid() && ((VillagerId *)(&self->villagers[1]))->isValid()) {
+        new (X) MsgString9B();
+        new (Y) MsgString33();
         cnt = 0;
-        _ZN10VillagerId7getNameEj(&self->villagers[1], X);
+        ((VillagerId *)(&self->villagers[1]))->getName((u32)(X));
         MailText_SetSlot(0, X);
-        _ZN9MsgString5clearEv(X);
-        _ZN10VillagerId7getNameEj(&self->villagers[0], X);
+        ((MsgString *)(X))->clear();
+        ((VillagerId *)(&self->villagers[0]))->getName((u32)(X));
         MailText_SetSlot(1, X);
         for (i = 0; i < 6; i++) {
             r = TopicWord_PickRandom(&cnt, i);
-            _ZN9MsgString5clearEv(Y);
+            ((MsgString *)(Y))->clear();
             b[0] = cnt;
             String_LoadResolveAltText(Y, b, r);
             MailText_SetSlot(i + 2, Y);
         }
-        _ZN10VillagerId12makeFileNameEPvjj(&self->villagers[0], buf, 0x1e, data_020d05bc);
+        ((VillagerId *)(&self->villagers[0]))->makeFileName(buf, 0x1e, (u32)(data_020d05bc));
         b[1] = Random_GlobalBelow(10);
         b[2] = Random_GlobalBelow(10);
         b[3] = Random_GlobalBelow(10);
         b[4] = Random_GlobalBelow(10);
         Letter_ComposeVillagerToVillagerZ(arg, &b[1], &b[2], &b[3], &b[4], buf, data_020e218c, &self->villagers[0], &self->villagers[1], 1);
-        _ZN11MsgString33D1Ev(Y);
-        _ZN11MsgString9BD1Ev(X);
+        ((MsgString33 *)(Y))->MsgString33::~MsgString33();
+        ((MsgString9B *)(X))->MsgString9B::~MsgString9B();
     }
 }
 
 extern "C" BOOL ErrandSetup_FurnitureParcel(void *p) {
     u16 v = 0x1563;
-    _ZN12ErrandRecord7setItemEPt(p, &v);
+    ((ErrandRecord *)(p))->setItem(&v);
     return TRUE;
 }
 
 extern "C" BOOL ErrandSetup_Carpet(void *p) {
     u16 v = 0x1561;
-    _ZN12ErrandRecord7setItemEPt(p, &v);
+    ((ErrandRecord *)(p))->setItem(&v);
     return TRUE;
 }
 
 extern "C" BOOL ErrandSetup_WateringCan(void *p) {
     u16 v = 0x1564;
-    _ZN12ErrandRecord7setItemEPt(p, &v);
+    ((ErrandRecord *)(p))->setItem(&v);
     return TRUE;
 }
 
 extern "C" void ParcelErrand_Clear(u8 *p) {
-    _ZN12ErrandRecord5clearEv(p);
+    ((ErrandRecord *)(p))->clear();
     p[0xc] = 5;
     p[0xd] = 0;
 }
@@ -1663,11 +1658,8 @@ void PlayerErrandSlot_Start(PlayerErrandSlot *e, s32 a, s32 b, void *c);
 void *ParcelErrand_GetRecord(ParcelErrand *z);
 void *ParcelErrand_GetRecipientName(ParcelErrand *z, s32 v);
 void _ZN12ErrandRecord7setItemEPt(ParcelErrand *z, u16 *v);
-u16 *_ZN12ErrandRecord7getItemEv(ErrandRecord *y);
 void _ZN12ErrandRecord7setStepEh(ErrandRecord *y, s32 v);
 u32 _ZN12ErrandRecord7getStepEv(ErrandRecord *y);
-u32 _ZN12ErrandRecord11getSubGroupEv(ErrandRecord *y);
-void _ZN12ErrandRecord14setTimeFromNowEi(ErrandRecord *y, s32 v);
 u32 _ZN12ErrandRecord7getKindEv(ErrandRecord *y);
 void _ZN12ErrandRecord5startEhPth(ErrandRecord *y, s32 t, u16 *v, s32 k);
 s32 _ZN12ErrandRecord8isActiveEv(ErrandRecord *y);
@@ -1677,10 +1669,8 @@ void VillagerId_Copy(VillagerIdCtorDtor *r, VillagerIdCtorDtor *o);
 void VillagerId_Clear(VillagerIdCtorDtor *r);
 VillagerIdCtorDtor *_ZN12VillagerData13getVillagerIdEv(void *p);
 void *SaveVillagers_PickRandomTalkPartner(void *g, VillagerIdCtorDtor **a, s32 n);
-s32 _ZN10LetterView8getStateEv(void *p);
 s32 Letter_GetRecipientVillager(void *p);
 s32 PlayerData_GetCurrent();
-void *_ZN10PlayerData10getErrandsEv(void *p);
 void func_02133ef8(void *p, s32 n);
 s32 memcmp(void *a, void *b, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -1690,8 +1680,6 @@ s32 Item_GetFurnitureIndex(u16 *p);
 u32 Random_GlobalBelow(u32 n);
 s32 Npc_GetName(void *p, u16 *v);
 u32 _ZN10VillagerId7getNameEj(VillagerIdCtorDtor *r, u32 a);
-s32 _ZN10PlayerData11getPlayerIdEv(s32 v);
-s32 _ZN6TownId15getTownRelationEv(s32 v);
 s32 NookShop_IsOpenHour();
 s32 NookShop_IsClosedToday(void *p);
 }
@@ -1765,7 +1753,7 @@ extern "C" void ParcelErrand_Start(ParcelErrand *z) {
     u32 r = Random_GlobalBelow(10) & 1;
     ParcelErrand_Clear(z);
     u16 v = sParcelItems[r];
-    _ZN12ErrandRecord5startEhPth(z, 0x14, &v, 0);
+    (z)->start(0x14, &v, 0);
     for (s32 i = 0; i < 5; i++) {
         z->pendingRecipients |= 1 << i;
     }
@@ -1794,9 +1782,9 @@ extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z) {
         if (r < 5) {
             ParcelErrand_RemoveRecipient(z, r);
             z->recipient = r;
-            _ZN12ErrandRecord7setStepEh(z, 0);
+            (z)->setStep(0);
             u16 v = sParcelItems[Random_GlobalBelow(10) & 1];
-            _ZN12ErrandRecord7setItemEPt(z, &v);
+            ((ErrandRecord *)(void *)(z))->setItem(&v);
             r = ParcelErrand_CountPendingRecipients(z, z->pendingRecipients);
             if ((r == 2 && (Random_GlobalBelow(10) & 1)) || r == 1) {
                 z->pendingRecipients = 0;
@@ -1810,7 +1798,7 @@ extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z) {
 }
 
 extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p) {
-    if (z->recipient < 5 && PlayerData_GetCurrent() && !_ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()))) {
+    if (z->recipient < 5 && PlayerData_GetCurrent() && !((TownId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getTownRelation()) {
         if (((s32)(*p & 0xf000) >> 12) == 0xd && _ZN12ErrandRecord8isActiveEv(z) && _ZN12ErrandRecord7getStepEv(z) == 0) {
             BOOL in = FALSE;
             if (*p >= 0xd019 && *p <= 0xd01c) {
@@ -1850,7 +1838,7 @@ extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p) {
 HouseVisitInvite::HouseVisitInvite() : visitTime(0), visitTimeHi(0) {
     using namespace n3;
     VillagerId_Clear(this);
-    _ZN12ErrandRecord5clearEv(&errand);
+    (&errand)->clear();
     visitTime = 0;
     visitTimeHi = 0;
     MI_CpuFill8(unk_20, 0, 1);
@@ -1865,7 +1853,7 @@ HouseVisitInvite::~HouseVisitInvite() {
 
 namespace n3 {
 extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x) {
-    _ZN12ErrandRecord5clearEv(&x->errand);
+    (&x->errand)->clear();
     VillagerId_Clear(x);
     x->visitTime = 0;
     x->visitTimeHi = 0;
@@ -1883,8 +1871,8 @@ extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerIdCtorDtor 
 extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, VillagerIdCtorDtor *r, void *src) {
     HouseVisitInvite_Clear(x);
     u16 v = 0xfff1;
-    _ZN12ErrandRecord5startEhPth(&x->errand, 0x15, &v, 0);
-    _ZN12ErrandRecord14setTimeFromNowEi(&x->errand, 0);
+    (&x->errand)->start(0x15, &v, 0);
+    (&x->errand)->setTimeFromNow(0);
     VillagerId_Copy(x, r);
     MI_CpuCopy8(src, &x->visitTime, 8);
 }
@@ -1920,7 +1908,7 @@ extern "C" PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i) {
 
 extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, VillagerIdCtorDtor *p, s32 idx) {
     PlayerErrandSlot *ret = 0;
-    if (_ZN10VillagerId7isValidEv(p)) {
+    if (((VillagerId *)(void *)(p))->isValid()) {
         s32 i;
         for (i = 0; i < 2; i++) {
             PlayerErrandSlot *e = &arr[i];
@@ -1943,7 +1931,7 @@ extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a,
         in = TRUE;
     }
     if (in) {
-        if (_ZN12ErrandRecord8isActiveEv((ErrandRecord *)ParcelErrand_GetRecord(&m->parcelErrand))) {
+        if (((ErrandRecord *)ParcelErrand_GetRecord(&m->parcelErrand))->isActive()) {
             ret = ParcelErrand_GetRecipientName(&m->parcelErrand, a);
             goto end;
         }
@@ -1960,8 +1948,8 @@ extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a,
         PlayerErrandSlot *e = PlayerErrands_GetSlot(m, k);
         if (e) {
             ErrandRecord *y = PlayerErrandSlot_GetRecord(e);
-            if (_ZN12ErrandRecord8isActiveEv(y)) {
-                u16 *q = _ZN12ErrandRecord7getItemEv(y);
+            if ((y)->isActive()) {
+                u16 *q = (y)->getItem();
                 BOOL same;
                 if (Item_IsFurniture(q)) {
                     if (Item_GetFurnitureIndex(q) == Item_GetFurnitureIndex(p)) {
@@ -1994,7 +1982,7 @@ extern "C" void PlayerErrands_ClearJobVillagers(PlayerErrands *m) {
 
 extern "C" BOOL PlayerErrands_IsJobActive(PlayerErrands *m) {
     ErrandRecord *y = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(m, 0));
-    if (_ZN12ErrandRecord8isActiveEv(y) && _ZN12ErrandRecord11getSubGroupEv(y) == 1) {
+    if ((y)->isActive() && (y)->getSubGroup() == 1) {
         return TRUE;
     }
     return FALSE;
@@ -2044,7 +2032,7 @@ extern "C" void Arbeit_StartLetterTask(PlayerErrands *m) {
     VillagerIdCtorDtor *a[1];
     func_02133ef8(a, 4);
     s32 n = 0;
-    if (_ZN10VillagerId7isValidEv(&m->jobVillagers[0])) {
+    if (((VillagerId *)(void *)(&m->jobVillagers[0]))->isValid()) {
         a[0] = &m->jobVillagers[0];
         n = 1;
     }
@@ -2055,9 +2043,9 @@ extern "C" void Arbeit_StartLetterTask(PlayerErrands *m) {
 
 extern "C" void Arbeit_OnLetterWritten(void *p) {
     ErrandRecord *y = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot((PlayerErrands *)p, 0));
-    if (_ZN12ErrandRecord7getKindEv(y) == 0xf) {
-        if (_ZN12ErrandRecord7getStepEv(y) == 0) {
-            _ZN12ErrandRecord7setStepEh(y, 1);
+    if ((y)->getKind() == 0xf) {
+        if ((y)->getStep() == 0) {
+            (y)->setStep(1);
         }
     }
 }
@@ -2065,36 +2053,36 @@ extern "C" void Arbeit_OnLetterWritten(void *p) {
 extern "C" void Arbeit_NotifyLetterWritten() {
     void *r = (void *)PlayerData_GetCurrent();
     if (r) {
-        Arbeit_OnLetterWritten(_ZN10PlayerData10getErrandsEv(r));
+        Arbeit_OnLetterWritten(((PlayerData *)(r))->getErrands());
     }
 }
 
 extern "C" BOOL Arbeit_OnLetterSent(PlayerErrands *m, void *p) {
-    if (p && _ZN10LetterView8getStateEv(p)) {
+    if (p && ((LetterView *)(p))->getState()) {
         PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
         ErrandRecord *y = PlayerErrandSlot_GetRecord(e);
-        if (_ZN12ErrandRecord7getKindEv(y) == 0xf) {
+        if ((y)->getKind() == 0xf) {
             s32 v = Letter_GetRecipientVillager(p);
             if (v) {
                 VillagerIdCtorDtor tmp(v);
-                if (_ZN10VillagerId7isValidEv(&tmp)) {
+                if (((VillagerId *)(void *)(&tmp))->isValid()) {
                     VillagerIdCtorDtor *q = PlayerErrandSlot_GetVillager(e, 1);
                     if (q->townId == tmp.townId && memcmp(q->townName, tmp.townName, 8) == 0 && q->species == tmp.species) {
-                        if (_ZN12ErrandRecord7getStepEv(y) < 2) {
-                            _ZN12ErrandRecord7setStepEh(y, 2);
+                        if ((y)->getStep() < 2) {
+                            (y)->setStep(2);
                             return TRUE;
                         }
                         goto out;
                     }
                 }
-                if (_ZN12ErrandRecord7getStepEv(y) == 0) {
-                    _ZN12ErrandRecord7setStepEh(y, 1);
+                if ((y)->getStep() == 0) {
+                    (y)->setStep(1);
                     return TRUE;
                 }
             out:;
             } else {
-                if (_ZN12ErrandRecord7getStepEv(y) == 0) {
-                    _ZN12ErrandRecord7setStepEh(y, 1);
+                if ((y)->getStep() == 0) {
+                    (y)->setStep(1);
                     return TRUE;
                 }
             }
@@ -2110,7 +2098,7 @@ extern "C" void Arbeit_StartCarpetDelivery(PlayerErrands *m) {
     s32 n = 0, i = n;
     for (; i < 2; i++) {
         VillagerIdCtorDtor *r = &m->jobVillagers[i];
-        if (_ZN10VillagerId7isValidEv(r)) {
+        if (((VillagerId *)(void *)(r))->isValid()) {
             a[n] = r;
             n++;
         }
@@ -2130,10 +2118,10 @@ extern "C" void Arbeit_StartBbsTask(PlayerErrands *m) {
 
 extern "C" void Arbeit_OnBbsPosted(PlayerErrands *m) {
     ErrandRecord *r = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(m, 0));
-    if (_ZN12ErrandRecord8isActiveEv(r)) {
-        if (_ZN12ErrandRecord7getKindEv(r) == 0x12) {
-            if (_ZN12ErrandRecord7getStepEv(r) == 0) {
-                _ZN12ErrandRecord7setStepEh(r, 1);
+    if ((r)->isActive()) {
+        if ((r)->getKind() == 0x12) {
+            if ((r)->getStep() == 0) {
+                (r)->setStep(1);
             }
         }
     }
@@ -2146,7 +2134,7 @@ extern "C" void Arbeit_Finish(PlayerErrands *m) {
 }
 
 extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerIdCtorDtor *r) {
-    if (_ZN10VillagerId7isValidEv(r) && PlayerErrands_IsJobActive(m) && r->townId == m->jobVillagers[1].townId &&
+    if (((VillagerId *)(void *)(r))->isValid() && PlayerErrands_IsJobActive(m) && r->townId == m->jobVillagers[1].townId &&
         memcmp(r->townName, m->jobVillagers[1].townName, 8) == 0 && r->species == m->jobVillagers[1].species) {
         return TRUE;
     }
@@ -2166,11 +2154,9 @@ s32 _ZN15PlayerInventory15findEmptyLetterEv(void *);
 BOOL _ZN15PlayerInventory18isPocketFlagsClearEi(void *, s32);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
 BOOL Pocket_IsValidIndex(s32);
-void _ZN15PlayerInventory9setPocketEPtij(void *, u16 *, s32, s32);
 s32 Item_GetKind(u16 *);
 void Item_FromPlacedForm(u16 *, u16 *);
 void Catalog_SetItem(void *, u16 *, s32, s32);
-void *_ZN10PlayerData10getCatalogEv(void *);
 void _ZN12ItemPickSpec3setEii(void *, u32, u32);
 void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
@@ -2180,8 +2166,6 @@ void *MI_CpuFill8(void *, s32, u32);
 s32 memcmp(void *, void *, u32);
 s32 MI_CpuCopy8(void *, void *, u32);
 s32 Random_GlobalBelow(u32);
-BOOL _ZN8PlayerId7isValidEv(void *);
-BOOL _ZN8PlayerId6equalsEPS_(void *, void *);
 void _ZN8PlayerId5clearEv(void *);
 s32 _ZN8PlayerId6setRawEPv(void *, void *);
 void *_ZN8PlayerIdC1Ev(void *);
@@ -2250,7 +2234,7 @@ namespace n2 {
 }
 SickVillagerRecord *SickVillagerRecord::constructRecord() {
     using namespace n2;
-    _ZN12ErrandRecord4initEv(this);
+    ((ErrandRecord *)(this))->init();
     VillagerId_Construct(&villagerId);
     __cxa_vec_ctor(visitors, 5, 0x16, _ZN8PlayerIdC1EPv, _ZN8PlayerIdC1Ev);
     resetRecord();
@@ -2264,7 +2248,7 @@ SickVillagerRecord *SickVillagerRecord::destructRecord() {
     using namespace n2;
     __cxa_vec_cleanup(visitors, 5, 0x16, _ZN8PlayerIdC1Ev);
     VillagerId_Destruct(&villagerId);
-    _ZN12ErrandRecord13func_0209ada0Ev(this);
+    ((ErrandRecord *)(this))->func_0209ada0();
     return this;
 }
 
@@ -2274,9 +2258,9 @@ namespace n2 {
 void SickVillagerRecord::resetRecord() {
     using namespace n2;
     s32 i;
-    _ZN12ErrandRecord5clearEv(this);
+    ((ErrandRecord *)(this))->clear();
     VillagerId_Clear(&villagerId);
-    for (i = 0; i < 5; i++) _ZN8PlayerId5clearEv(&visitors[i]);
+    for (i = 0; i < 5; i++) ((PlayerId *)(&visitors[i]))->clear();
     startDate[0] = 1;
     startDate[1] = 1;
     startDate[2] = 0;
@@ -2313,7 +2297,7 @@ void SickVillagerRecord::startSickness(VillagerId *a, u8 *b) {
     resetRecord();
     VillagerId_Copy(&villagerId, a);
     v = 0x155e;
-    _ZN12ErrandRecord5startEhPth(this, 9, &v, 0);
+    ((ErrandRecord *)(this))->start(9, &v, 0);
     MI_CpuCopy8(b, startDate, 4);
     MI_CpuCopy8(b, statusDate, 4);
     statusDate[3] = 1;
@@ -2342,11 +2326,11 @@ namespace n2 {
 }
 BOOL SickVillagerRecord::hasVisitor(PlayerId *e) {
     using namespace n2;
-    if (_ZN8PlayerId7isValidEv(e)) {
+    if (((PlayerId *)(e))->isValid()) {
         PlayerId *p = visitors;
         s32 i;
         for (i = 0; i < 5; i++) {
-            if (e->townId == p->townId && memcmp(e->townName, p->townName, 8) == 0 && _ZN8PlayerId6equalsEPS_(e, p)) return TRUE;
+            if (e->townId == p->townId && memcmp(e->townName, p->townName, 8) == 0 && ((PlayerId *)(e))->equals((PlayerId *)(p))) return TRUE;
         }
     }
     return FALSE;
@@ -2358,7 +2342,7 @@ namespace n2 {
 BOOL SickVillagerRecord::hasTodaysVisitor() {
     using namespace n2;
     PlayerId *p = getTodaysVisitor();
-    if (p && _ZN8PlayerId7isValidEv(p)) return TRUE;
+    if (p && ((PlayerId *)(p))->isValid()) return TRUE;
     return FALSE;
 }
 
@@ -2368,7 +2352,7 @@ namespace n2 {
 void SickVillagerRecord::setTodaysVisitor(PlayerId *e) {
     using namespace n2;
     PlayerId *p = getTodaysVisitor();
-    if (p) _ZN8PlayerId6setRawEPv(p, e);
+    if (p) ((PlayerId *)(p))->setRaw(e);
 }
 
 
@@ -2416,7 +2400,7 @@ PlayerId *SickVillagerRecord::getTopVisitor() {
     for (i = 0; i < 5; i++) {
         if ((mask >> i) & 1) continue;
         e = visitors + i;
-        if (!_ZN8PlayerId7isValidEv(e)) continue;
+        if (!((PlayerId *)(e))->isValid()) continue;
         grp = 0;
         mask |= 1 << i;
         mask = (u8)mask;
@@ -2432,7 +2416,7 @@ PlayerId *SickVillagerRecord::getTopVisitor() {
             if (*(u16 *)((u8 *)pi + 0x18) == *(u16 *)((u8 *)this + off + 0x18)) {
                 if (memcmp(e->townName, ((PlayerId *)((u8 *)visitors + off))->townName, 8) == 0) f2 = 1;
             }
-            if (f2 && _ZN8PlayerId6equalsEPS_(e, (PlayerId *)((u8 *)visitors + off))) f1 = 1;
+            if (f2 && ((PlayerId *)(e))->equals((PlayerId *)((PlayerId *)((u8 *)visitors + off)))) f1 = 1;
             if (f1) {
                 grp |= 1 << j;
                 grp = (u8)grp;
@@ -2553,7 +2537,7 @@ extern "C" s32 Inventory_GetEmptyLetter() {
 extern "C" u16 Item_PickRandomPresent() {
     u16 out[2];
     u8 obj[0xc];
-    _ZN12ItemPickSpec3setEii(obj, 0, 3);
+    ((ItemPickSpec *)(obj))->set(0, 3);
     ItemPick_One(out, obj, 0, 0, 1, 1, 0);
     ItemPickSpec_Destruct(obj);
     return out[0];
@@ -2586,15 +2570,15 @@ extern "C" void Pocket_SetItem(u16 *a, s32 b, s32 c) {
     void *r6 = PlayerData_GetCurrent();
     if (Pocket_IsValidIndex(c)) {
         if (*a != 0xfff1 && b == 0) {
-            Catalog_SetItem(_ZN10PlayerData10getCatalogEv(r6), a, 0, 1);
+            Catalog_SetItem(((PlayerData *)(r6))->getCatalog(), a, 0, 1);
         }
         if (b == 0) {
             if (Unk_02099124_R(a, 0x151f, 0x151f)) {
                 u16 t = 0x1033;
-                Catalog_SetItem(_ZN10PlayerData10getCatalogEv(r6), &t, 0, 1);
+                Catalog_SetItem(((PlayerData *)(r6))->getCatalog(), &t, 0, 1);
             }
         }
-        _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(r6), a, c, b);
+        ((PlayerInventory *)(((PlayerData *)(r6))->getInventory()))->setPocket(a, c, b);
     }
 }
 
@@ -2602,7 +2586,7 @@ extern "C" void Pocket_RemoveItem(s32 c) {
     void *r4 = PlayerData_GetCurrent();
     if (Pocket_IsValidIndex(c)) {
         u16 t = 0xfff1;
-        _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(r4), &t, c, 0);
+        ((PlayerInventory *)(((PlayerData *)(r4))->getInventory()))->setPocket(&t, c, 0);
     }
 }
 
@@ -2634,9 +2618,9 @@ extern "C" s32 Pocket_CountKind(PocketMatches *self, s32 v) {
     void *r7 = PlayerData_GetCurrent();
     s32 i;
     PocketMatches_Init(self);
-    u16 *tbl = _ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(r7), 0);
+    u16 *tbl = ((PlayerInventory *)(((PlayerData *)(r7))->getInventory()))->getPocket(0);
     for (i = 0; i < 15; i++) {
-        if (_ZN15PlayerInventory18isPocketFlagsClearEi(_ZN10PlayerData12getInventoryEv(r7), i)) {
+        if (((PlayerInventory *)(((PlayerData *)(r7))->getInventory()))->isPocketFlagsClear(i)) {
             if (v == Item_GetKind(tbl + i)) {
                 self->pocketMask |= (1 << i);
                 self->count++;
@@ -2666,7 +2650,7 @@ extern "C" s32 Pocket_CountMatching(PocketMatches *out, s32 (*fn)(u16 *)) {
     u16 *p = _ZN15PlayerInventory9getPocketEi(o->getInventory(), 0);
     s32 i;
     for (i = 0; i < 15; i++) {
-        if (_ZN15PlayerInventory18isPocketFlagsClearEi(o->getInventory(), i)) {
+        if (((PlayerInventory *)(o->getInventory()))->isPocketFlagsClear(i)) {
             if (fn(p + i)) {
                 out->pocketMask |= 1 << i;
                 out->count++;
@@ -2681,7 +2665,7 @@ extern "C" s32 Pocket_FindItem(u16 *a) {
     u16 *p = _ZN15PlayerInventory9getPocketEi(o->getInventory(), 0);
     s32 i;
     for (i = 0; i < 15; i++) {
-        if (_ZN15PlayerInventory18isPocketFlagsClearEi(o->getInventory(), i)) {
+        if (((PlayerInventory *)(o->getInventory()))->isPocketFlagsClear(i)) {
             s32 off = i << 1;
             u16 *e = (u16 *)((u32)p + off);
             BOOL r;

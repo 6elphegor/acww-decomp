@@ -12,6 +12,7 @@
 #include "talk/TalkMsgRequest.h"
 #include "game/TouchPickSphere.h"
 #include "gfx/DebugColor.h"
+#include "game/TouchPicker.h"
 
 
 
@@ -30,15 +31,10 @@ extern "C" {
 extern u8 gSaveVillagers[];
 u8 *SaveVillagers_Get(u8 *p, s32 i);
 VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
-void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
-BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(TouchPicker *self, TouchPickSphere *o, s32 *a, s32 b, s32 c, u8 d);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker();
-void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
-void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
 void VillagerBoard_ResetTable();
 }
 
@@ -91,11 +87,11 @@ extern "C" VillagerBoard *VillagerBoard_Create() {
 }
 
 VillagerBoard::VillagerBoard() {
-    _ZN15TouchPickSphereC1Ev((TouchPickSphere *)touchSphere);
+    new ((TouchPickSphere *)touchSphere) TouchPickSphere();
 }
 
 VillagerBoard::~VillagerBoard() {
-    _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
+    ((TouchPickSphere *)((void *)((TouchPickSphere *)touchSphere)))->~TouchPickSphere();
 }
 
 BOOL VillagerBoard::onCreate() {
@@ -109,7 +105,7 @@ BOOL VillagerBoard::onCreate() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position.x, 0xc00, 9, *(s32 *)((u8 *)this + 8));
+    (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(void *)(&position.x), (VecFx32 *)(0xc00), 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 
@@ -187,7 +183,7 @@ void VillagerBoard::mainIdle() {}
 
 BOOL VillagerBoard::setupRead() {
     StackPad4 pad;
-    _ZN9Character17attachTalkRequestEi(this, this);
+    ((Character *)(this))->attachTalkRequest((s32)(this));
     setFileName("obj_etc_board");
     msgIndex = 0;
     ((TalkWindowState *)window)->nextState = 1;
@@ -212,7 +208,7 @@ BOOL VillagerBoard::setupReadEnd() {
 void VillagerBoard::mainReadEnd() {
     if (window) {
         if (((TalkWindowState *)window)->state == 0) {
-            _ZN9Character17detachTalkRequestEi(this, this);
+            ((Character *)(this))->detachTalkRequest((s32)(this));
             TalkRequest_SetTargetDone(this);
         }
     }

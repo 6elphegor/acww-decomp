@@ -8,6 +8,8 @@
 #include "game/EventDayEntry.h"
 #include "talk/TalkRequestEntry.h"
 #include "gfx/WorldCurve.h"
+#include "player/PlayerData.h"
+#include "save/BbsBoard.h"
 
 
 
@@ -80,11 +82,9 @@ s32 List_Remove(void *list, void *node);
 }
 
 extern "C" {
-void _ZN6LetterC1Ev(void *p);
 }
 
 extern "C" {
-void _ZN6LetterD1Ev(void *p);
 }
 
 extern "C" {
@@ -108,7 +108,6 @@ s32 PlayerData_GetLastWifiMailId(s32 p);
 }
 
 extern "C" {
-s32 _ZN10PlayerData8getIndexEv(s32 p);
 }
 
 extern "C" {
@@ -120,11 +119,9 @@ s32 PlayerData_SetLastWifiMailId(s32 p, s32 v);
 }
 
 extern "C" {
-s32 _ZN8BbsBoard11getNoticeIdEv(void *p);
 }
 
 extern "C" {
-s32 _ZN8BbsBoard11setNoticeIdEt(void *p, s32 v);
 }
 
 extern "C" {
@@ -260,12 +257,12 @@ static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 TalkRequestEntry sTalkRequestPool[15];
 
 extern "C" void *AxMail_Construct(void *p) {
-    _ZN6LetterC1Ev(p);
+    new (p) Letter();
     return p;
 }
 
 extern "C" void *AxMail_Destruct(void *p) {
-    _ZN6LetterD1Ev(p);
+    ((Letter *)(p))->Letter::~Letter();
     return p;
 }
 
@@ -273,20 +270,20 @@ extern "C" u8 *AxMail_GetDigest(u8 *p) { return p + 0xf6; }
 
 extern "C" BOOL AxMail_Deliver(u8 *p) {
     u8 l[HOST_SIZED(0xf8, Letter) / 1] HOST_ALIGN8;
-    _ZN6LetterC1Ev(l);
+    new (l) Letter();
     s32 h = PlayerData_GetCurrent();
     if (*(u16 *)(p + 0xf4) != PlayerData_GetLastWifiMailId(h)) {
         Letter_Copy(l, p);
-        s32 q = _ZN10PlayerData8getIndexEv(h);
+        s32 q = ((PlayerData *)(h))->getIndex();
         Letter_SetRecipientResident(l, q);
         Letter_MarkReceived(l);
         if (LetterDelivery_PutInMailbox(l, q, 0)) {
             PlayerData_SetLastWifiMailId(h, *(u16 *)(p + 0xf4));
-            _ZN6LetterD1Ev(l);
+            ((Letter *)(l))->Letter::~Letter();
             return TRUE;
         }
     }
-    _ZN6LetterD1Ev(l);
+    ((Letter *)(l))->Letter::~Letter();
     return FALSE;
 }
 
@@ -299,8 +296,8 @@ extern "C" u8 *AxBbsNotice_GetDigest(u8 *p) { return p + 0xc2; }
 extern "C" BOOL AxBbsNotice_Post(u8 *p) {
     u8 *g = data_021e87d8;
     u32 v = *(u16 *)(p + 0xc0);
-    if (v != _ZN8BbsBoard11getNoticeIdEv(g)) {
-        _ZN8BbsBoard11setNoticeIdEt(g, v);
+    if (v != ((BbsBoard *)(g))->getNoticeId()) {
+        ((BbsBoard *)(g))->setNoticeId(v);
         Bbs_AddPost(p);
         return TRUE;
     }

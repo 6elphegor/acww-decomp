@@ -15,6 +15,10 @@
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
 #include "nitro/gxoam.h"
+#include "menu/MenuTabBar.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "talk/MsgString.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -52,7 +56,6 @@ extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
 
 void FriendRosterTab_SetupLayers();
-void _ZN15FriendRosterTab7setPageEh(void *self, u32 m);
 
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
@@ -160,7 +163,6 @@ void PopupChoiceMenuBody_setRowsFromIds(void *self, void *rec, u32 v);
 void PopupChoiceMenuBody_addCustomRow(void *self, void *rec, void *p, u32 v);
 s32 PopupChoiceMenuBody_hitTestRowOrLast(void *self, u32 a, u32 b);
 void _ZN11MsgString9CC2Ev(void *self);
-void _ZN11MsgString9CD1Ev(void *self);
 void _ZN15EncodedString8BC2Ev(void *self);
 void _ZN15EncodedString8BD1Ev(void *self);
 void _ZN11MsgString9BC1Ev(void *self);
@@ -425,7 +427,7 @@ BOOL FriendRosterTab::onCreate() {
 }
 
 BOOL FriendRosterTab::onDelete() {
-    MenuTabBar_onTabMenuClosed(ProcBase_GetParent(this));
+    ((MenuTabBar *)(ProcBase_GetParent(this)))->onTabMenuClosed();
     releaseResources();
     return TRUE;
 }
@@ -626,7 +628,7 @@ BOOL FriendRosterTab::handleTabSwitch() {
 BOOL FriendRosterTab::requestTab(s32 idx) {
     void *o = ProcBase_GetParent(this);
     if (idx != -1 && idx != 6) {
-        MenuTabBar_selectTab(o, (u8)idx);
+        ((MenuTabBar *)(o))->selectTab((u8)idx);
         transitionState = 3;
         setPhase(1);
         return TRUE;
@@ -635,7 +637,7 @@ BOOL FriendRosterTab::requestTab(s32 idx) {
 }
 
 void FriendRosterTab::hideTabBar() {
-    MenuTabBar_hideTabs(ProcBase_GetParent(this));
+    ((MenuTabBar *)(ProcBase_GetParent(this)))->hideTabs();
 }
 
 void FriendRosterTab::stateLoad() {
@@ -650,7 +652,7 @@ void FriendRosterTab::stateLoad() {
     } else {
         v = 0;
     }
-    _ZN15FriendRosterTab7setPageEh(this, getPageOfFriend(v));
+    ((FriendRosterTab *)(this))->setPage(getPageOfFriend(v));
     setTransitionState(1);
     stateOpen();
 }
@@ -707,11 +709,11 @@ void FriendRosterTab::initFriendRoster() {
     if (!isWifiMode()) {
         if (hasGaps()) {
             compactRoster();
-            MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
+            ((MenuTabBar *)(ProcBase_GetParent(this)))->requestSaveOnClose();
         }
     } else {
         if (syncFromWifiFriendList()) {
-            MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
+            ((MenuTabBar *)(ProcBase_GetParent(this)))->requestSaveOnClose();
         }
     }
     labelCount = 0;
@@ -724,7 +726,7 @@ void FriendRosterTab::initFriendRoster() {
     registerButtonPalette = 7;
     fadeLevel = 5;
     loadOwnFriendCode();
-    PopupChoiceMenu_init(&popup, 3, 1, "menu/friend/c_bg.bsc");
+    ((PopupChoiceMenu *)(&popup))->init(3, 1, "menu/friend/c_bg.bsc");
     buildFriendIndex();
 }
 
@@ -799,7 +801,7 @@ void FriendRosterTab::mainAct01() {
         cursorToPopupTop();
         setMainState(6);
     } else if (Unk_ov119_02294a44_Both()) {
-        s32 r5 = PopupChoiceMenuBody_hitTestRowOrLast(&popup, gTouchCurX, gTouchCurY);
+        s32 r5 = ((PopupChoiceMenuBody *)(&popup))->hitTestRowOrLast(gTouchCurX, gTouchCurY);
         if (r5 >= 0) {
             if (!(testFlags(0x10) && r5 == 0)) {
                 PopupChoice_DecideRow(&popup, r5, 1);
@@ -910,7 +912,7 @@ void FriendRosterTab::mainAct09() {
     if (B1V != 0) {
         B1V = 0;
         compactRoster();
-        MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
+        ((MenuTabBar *)(ProcBase_GetParent(this)))->requestSaveOnClose();
         if (isWifiMode()) {
             if (!Net_WifiDeleteFriend(friendIndex)) {
                 setMainState(0x11);
@@ -1028,7 +1030,7 @@ void FriendRosterTab::resetTextLabels() {
     i = 0;
     E9V = i;
     for (i = 0; i < 0x13; i++) {
-        LabelString_destroyLabel(&textLabels[i]);
+        ((LabelString *)(&textLabels[i]))->destroyLabel();
     }
 }
 
@@ -1043,15 +1045,15 @@ void *FriendRosterTab::allocTextLabel() {
 void FriendRosterTab::addRegisterLabel() {
     void *e = allocTextLabel();
     String_Load2dMenu(e, 0xd6);
-    LabelString_createLabel(e, 8, 0xca, 6, 0xf, 0, 0);
-    LabelString_redrawAligned(e, 1, 0);
+    ((LabelString *)(e))->createLabel(8, 0xca, 6, 0xf, 0, 0);
+    ((LabelString *)(e))->redrawAligned(1, 0);
 }
 
 void FriendRosterTab::addTitleLabel(u32 id) {
     void *e = allocTextLabel();
     String_Load2dMenu(e, id);
-    LabelString_createLabel(e, 8, 0x160, 0xd, 0xf, 0, 0);
-    LabelString_redrawAligned(e, 1, 0);
+    ((LabelString *)(e))->createLabel(8, 0x160, 0xd, 0xf, 0, 0);
+    ((LabelString *)(e))->redrawAligned(1, 0);
 }
 
 void FriendRosterTab::showCursor() {
@@ -1269,21 +1271,21 @@ void FriendRosterTab::openRegisterChoices()
     registerButtonPalette = 7;
     ChoiceIdList_Clear(U3D0, 0xa);
     CommManager *g = gCommManager;
-    if (CommManager_isOnline(g)) {
+    if (((CommManager *)(g))->isOnline()) {
         s32 skip = g->myAid;
         s32 i = 0;
         u32 tmp[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
-        _ZN11MsgString9BC1Ev(tmp);
+        new (tmp) MsgString9B();
         for (; i < 4; i++) {
             if (skip != i) {
                 void *p = PlayerData_GetBySessionSlot(i);
                 if (p) {
-                    PlayerId_getNameString(PlayerData_getPlayerId(p), tmp);
-                    PopupChoiceMenuBody_addCustomRow(&popup, U3D0, tmp, (u8)(i + 6));
+                    ((PlayerId *)(((PlayerData *)(p))->getPlayerId()))->getNameString((MsgString *)(tmp));
+                    ((PopupChoiceMenuBody *)(&popup))->addCustomRow((PopupChoiceIdList *)(U3D0), tmp, (u8)(i + 6));
                 }
             }
         }
-        _ZN11MsgString9BD1Ev(tmp);
+        ((MsgString9B *)(tmp))->MsgString9B::~MsgString9B();
     }
     ChoiceIdList_Add(U3D0, 0xce, 5);
     ChoiceIdList_Add(U3D0, 2, 0xa);
@@ -1358,20 +1360,20 @@ void FriendRosterTab::registerPresentPlayer()
         return;
     }
     void *a = PlayerData_GetBySessionSlot(popupValue - 6);
-    if (isInRoster(PlayerWifiData_GetOwnFriendData(PlayerData_getWifiUserData(a)))) {
+    if (isInRoster(PlayerWifiData_GetOwnFriendData(((PlayerData *)(a))->getWifiUserData()))) {
         showError(0x14);
         return;
     }
     u8 *b = (u8 *)getFriendEntries();
-    void *c = PlayerData_getPlayerId(a);
+    void *c = ((PlayerData *)(a))->getPlayerId();
     u8 *rec = b + i * 0x1c;
     void *d = FriendEntry_GetFriendData(rec);
-    DwcFriendData_Copy(d, PlayerWifiData_GetOwnFriendData(PlayerData_getWifiUserData(a)));
-    void *e = PlayerId_getName(c);
+    DwcFriendData_Copy(d, PlayerWifiData_GetOwnFriendData(((PlayerData *)(a))->getWifiUserData()));
+    void *e = ((PlayerId *)(c))->getName();
     Mem_Copy(e, FriendEntry_GetPlayerName(rec), 8);
     void *f = TownId_GetName(PlayerId_GetTownId(c));
     Mem_Copy(f, FriendEntry_GetTownName(rec), 8);
-    MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
+    ((MenuTabBar *)(ProcBase_GetParent(this)))->requestSaveOnClose();
     friendIndex = i;
     if (isWifiMode()) {
         if (Net_WifiAddFriend(friendIndex, DwcFriendData_GetBytes(FriendEntry_GetFriendData(b + friendIndex * 0x1c))) == 0) {
@@ -1387,7 +1389,7 @@ void FriendRosterTab::showFriend(s32 x)
     buildFriendIndex();
     u32 t = getPageOfFriend(x);
     if (t != targetPage) {
-        _ZN15FriendRosterTab7setPageEh(this, t);
+        ((FriendRosterTab *)(this))->setPage(t);
     } else {
         refreshPage();
     }
@@ -1532,7 +1534,7 @@ BOOL FriendRosterTab::isWifiMode()
 
 void *FriendRosterTab::getFriendEntries()
 {
-    return FriendList_GetEntries(PlayerData_getFriendList(PlayerData_GetCurrent()));
+    return FriendList_GetEntries(((PlayerData *)(PlayerData_GetCurrent()))->getFriendList());
 }
 
 void *FriendRosterTab::getFocusedFriendEntry()
@@ -1588,7 +1590,7 @@ void FriendRosterTab::compactRoster()
     if (isWifiMode()) {
         buildFriendIndex();
     } else {
-        FriendList_Compact(PlayerData_getFriendList(PlayerData_GetCurrent()));
+        FriendList_Compact(((PlayerData *)(PlayerData_GetCurrent()))->getFriendList());
     }
 }
 
@@ -1661,12 +1663,12 @@ void FriendRosterTab::drawPresentPage() {
     u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     u32 B[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
     _ZN11MsgString9CC2Ev(A);
-    _ZN11MsgString9BC1Ev(B);
+    new (B) MsgString9B();
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
         b = allocTextLabel();
         rec = 0;
-        if (CommManager_isOnline(g)) {
+        if (((CommManager *)(g))->isOnline()) {
             if (cur == n) {
                 n++;
             }
@@ -1676,60 +1678,60 @@ void FriendRosterTab::drawPresentPage() {
             }
         }
         if (rec != 0) {
-            void *g2 = PlayerData_getPlayerId(rec);
+            void *g2 = ((PlayerData *)(rec))->getPlayerId();
             TownId_GetNameString(PlayerId_GetTownId(g2), &A);
             String_SetSlot(0, &A);
             String_Load2dMenu(a, 0x66);
-            PlayerId_getNameString(g2, &B);
-            MsgString_copy(b, &B);
+            ((PlayerId *)(g2))->getNameString((MsgString *)(&B));
+            ((MsgString *)(b))->copy((MsgString *)(&B));
             setRowIcon(&pageScreens[pos], 0x58);
             rowMarkMask = rowMarkMask | (1 << i);
         } else {
-            MsgString_clear(a);
-            MsgString_clear(b);
+            ((MsgString *)(a))->clear();
+            ((MsgString *)(b))->clear();
             setRowIcon(&pageScreens[pos], 0x10);
         }
-        LabelString_createLabel(a, 4, x, 10, 0xf, 0, 0);
-        LabelString_redrawAligned(a, 0, 0);
-        LabelString_createLabel(b, 4, y, 8, 0xf, 0, 0);
-        LabelString_redrawAligned(b, 0, 0);
+        ((LabelString *)(a))->createLabel(4, x, 10, 0xf, 0, 0);
+        ((LabelString *)(a))->redrawAligned(0, 0);
+        ((LabelString *)(b))->createLabel(4, y, 8, 0xf, 0, 0);
+        ((LabelString *)(b))->redrawAligned(0, 0);
         x += 0x14;
         y += 0x10;
         pos += 0x40;
     }
     BgScreen_SetRectPalette(pageScreens, 5, 6, 0x17, 0x15, 5);
-    _ZN11MsgString9BD1Ev(B);
-    _ZN11MsgString9CD1Ev(A);
+    ((MsgString9B *)(B))->MsgString9B::~MsgString9B();
+    ((MsgString9C *)(A))->MsgString9C::~MsgString9C();
 }
 
 void FriendRosterTab::drawOwnCodePage() {
-    void *g = PlayerData_getPlayerId(PlayerData_GetCurrent());
+    void *g = ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
     void *a = allocTextLabel();
     u32 A[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     _ZN11MsgString9CC2Ev(A);
     TownId_GetNameString(PlayerId_GetTownId(g), &A);
     String_SetSlot(0, &A);
     String_Load2dMenu(a, 0x66);
-    LabelString_createLabel(a, 4, 0x102, 10, 0xf, 0, 0);
-    LabelString_redrawAligned(a, 0, 0);
+    ((LabelString *)(a))->createLabel(4, 0x102, 10, 0xf, 0, 0);
+    ((LabelString *)(a))->redrawAligned(0, 0);
     void *b = allocTextLabel();
     u32 B[HOST_SIZED(0x1c, MsgString9B) / 4] HOST_ALIGN8;
-    _ZN11MsgString9BC1Ev(B);
-    PlayerId_getNameString(g, &B);
-    MsgString_copy(b, &B);
-    LabelString_createLabel(b, 4, 0x116, 8, 0xf, 0, 0);
-    LabelString_redrawAligned(b, 0, 0);
-    _ZN11MsgString9BD1Ev(B);
-    _ZN11MsgString9CD1Ev(A);
+    new (B) MsgString9B();
+    ((PlayerId *)(g))->getNameString((MsgString *)(&B));
+    ((MsgString *)(b))->copy((MsgString *)(&B));
+    ((LabelString *)(b))->createLabel(4, 0x116, 8, 0xf, 0, 0);
+    ((LabelString *)(b))->redrawAligned(0, 0);
+    ((MsgString9B *)(B))->MsgString9B::~MsgString9B();
+    ((MsgString9C *)(A))->MsgString9C::~MsgString9C();
 }
 
 void FriendRosterTab::drawFriendCodeHelp() {
     u8 ch = gU8None;
     void *p = PlayerData_GetCurrent();
     s32 i;
-    if (PlayerWifiData_HasUserId(PlayerData_getWifiUserData(p)) == 0) {
+    if (PlayerWifiData_HasUserId(((PlayerData *)(p))->getWifiUserData()) == 0) {
         ch = 0xd4;
-    } else if (PlayerWifiData_IsConfigValid(PlayerData_getWifiUserData(p)) == 0) {
+    } else if (PlayerWifiData_IsConfigValid(((PlayerData *)(p))->getWifiUserData()) == 0) {
         ch = 0xec;
     } else {
         ch = 0xd5;
@@ -1737,9 +1739,9 @@ void FriendRosterTab::drawFriendCodeHelp() {
     String_Load2d(&helpText, &ch, 0);
     for (i = 0; i < 3; i++) {
         void *o = allocTextLabel();
-        MsgString_setLine(o, Msg_SkipLines(HOST_AT(this, 0x8ae, helpText.text[0], 0), i));
-        LabelString_createLabel(o, 4, i * 0x28 + 0x8a, 0x14, 0xf, 0, 0);
-        LabelString_redrawAligned(o, 0, 0);
+        ((MsgString *)(o))->setLine((u8 *)(Msg_SkipLines(HOST_AT(this, 0x8ae, helpText.text[0], 0), i)));
+        ((LabelString *)(o))->createLabel(4, i * 0x28 + 0x8a, 0x14, 0xf, 0, 0);
+        ((LabelString *)(o))->redrawAligned(0, 0);
     }
 }
 
@@ -1789,7 +1791,7 @@ void FriendRosterTab::drawRosterPage() {
         }
         if (rec != 0 && DwcFriendData_IsValid(FriendEntry_GetFriendData(rec))) {
             EncodedString_SetRaw(&B, (void *)FriendEntry_GetTownName(rec), 8);
-            MsgString_fromEncoded(&A, &B, 0, 0);
+            ((MsgString *)(&A))->fromEncoded((EncodedString *)(&B), 0, 0);
             String_SetSlot(0, &A);
             String_Load2dMenu(a, 0x66);
             String_FromEncodedBytes(b, (void *)FriendEntry_GetPlayerName(rec), 8);
@@ -1800,21 +1802,21 @@ void FriendRosterTab::drawRosterPage() {
                 setRowIcon(&pageScreens[pos], 0x54);
             }
         } else {
-            MsgString_clear(a);
-            MsgString_clear(b);
+            ((MsgString *)(a))->clear();
+            ((MsgString *)(b))->clear();
             setRowIcon(&pageScreens[pos], 0x10);
         }
-        LabelString_createLabel(a, 4, x, 10, 0xf, 0, 0);
-        LabelString_redrawAligned(a, 0, 0);
-        LabelString_createLabel(b, 4, y, 8, 0xf, 0, 0);
-        LabelString_redrawAligned(b, 0, 0);
+        ((LabelString *)(a))->createLabel(4, x, 10, 0xf, 0, 0);
+        ((LabelString *)(a))->redrawAligned(0, 0);
+        ((LabelString *)(b))->createLabel(4, y, 8, 0xf, 0, 0);
+        ((LabelString *)(b))->redrawAligned(0, 0);
         x += 0x14;
         y += 0x10;
         base++;
         pos += 0x40;
     }
     _ZN15EncodedString8BD1Ev(B);
-    _ZN11MsgString9CD1Ev(A);
+    ((MsgString9C *)(A))->MsgString9C::~MsgString9C();
 }
 
 void FriendRosterTab::refreshPage() {
@@ -1878,12 +1880,12 @@ u32 FriendRosterTab::getPageOfFriend(s32 idx) {
 void FriendRosterTab::loadOwnFriendCode() {
     void *p = PlayerData_GetCurrent();
     s32 i;
-    if ((PlayerWifiData_HasUserId(PlayerData_getWifiUserData(p)) & PlayerWifiData_IsConfigValid(PlayerData_getWifiUserData(p))) == 0) {
+    if ((PlayerWifiData_HasUserId(((PlayerData *)(p))->getWifiUserData()) & PlayerWifiData_IsConfigValid(((PlayerData *)(p))->getWifiUserData())) == 0) {
         for (i = 0; i < 12; i++) {
             ownCodeDigits[i] = 10;
         }
     } else {
-        u64 v = PlayerWifiData_GetFriendCode(PlayerData_getWifiUserData(p));
+        u64 v = PlayerWifiData_GetFriendCode(((PlayerData *)(p))->getWifiUserData());
         for (i = 11; i >= 0; i--) {
             ownCodeDigits[i] = (u8)(v % 10);
             v = v / 10;
@@ -1927,14 +1929,14 @@ void FriendRosterTab::onPopupChoice() {
 }
 
 void FriendRosterTab::openPopup(u32 x) {
-    PopupChoiceMenuBody_setRowsFromIds(&popup, HOST_AT(this, 0x3d0, choiceList.msgIds[0], 0), x);
+    ((PopupChoiceMenuBody *)(&popup))->setRowsFromIds((PopupChoiceIdList *)(HOST_AT(this, 0x3d0, choiceList.msgIds[0], 0)), x);
     u32 r;
     if (focus == 0x16) {
         r = 0x9c;
     } else {
         r = 0xb8;
     }
-    PopupChoiceMenu_placeAbove(&popup, 0x100, r);
+    ((PopupChoiceMenu *)(&popup))->placeAbove(0x100, r);
     PopupChoice_Open(&popup, 0);
     setMainState(10);
     clearFlags(0x10);

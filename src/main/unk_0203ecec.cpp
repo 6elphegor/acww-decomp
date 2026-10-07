@@ -9,6 +9,7 @@
 #include "talk/TalkRequestEntry.h"
 #include "gfx/WorldCurve.h"
 #include "game/EventCalendarModule.h"
+#include "gfx/Camera.h"
 
 
 
@@ -139,7 +140,6 @@ s32 Bbs_AddPost(void *p);
 }
 
 extern "C" {
-s32 _ZN6Camera8getPitchEv(s32 self);
 }
 
 extern "C" {
@@ -416,7 +416,7 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
     o->y = in->y;
     o->z = in->z;
     if (gCamera) {
-        s32 v = _ZN6Camera8getPitchEv(gCamera);
+        s32 v = ((Camera *)(gCamera))->getPitch();
         if (v > 0x27f7) {
             v = 0x27f7;
         } else if (v < 0x21fd) {

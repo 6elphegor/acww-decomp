@@ -2,12 +2,12 @@
 #include "item/ItemPickSpec.h"
 #include "item/RandomSource.h"
 #include "item/DateSeededRandomSource.h"
+#include "player/PlayerData.h"
 
 extern "C" {
 u32 Random_NextBelow(void *st, u32 n);
 void Random_SetSeed(void *st, u32 v);
 void Clock_GetDateTime(void *p);
-void *_ZN10PlayerData10getCatalogEv(void *p);
 BOOL Catalog_HasItem(void *base, u16 *p);
 BOOL Item_TestInfoFlag4(u16 *p);
 BOOL Item_IsFurniture(u16 *p);
@@ -366,7 +366,7 @@ extern "C" s32 ItemPick_GetSeason(s32 a, u32 b) {
 
 extern "C" BOOL ItemPick_IsCatalogued(void *p, u16 *q) {
     if (p != NULL) {
-        return Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), q);
+        return Catalog_HasItem(((PlayerData *)(p))->getCatalog(), q);
     }
     return FALSE;
 }
@@ -549,9 +549,9 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
         if (a9 && Item_TestInfoFlag4(&v[2])) continue;
         if (a5) {
             if (a6) {
-                if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(a5), &v[2])) count++;
+                if (Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
             } else {
-                if (!Catalog_HasItem(_ZN10PlayerData10getCatalogEv(a5), &v[2])) count++;
+                if (!Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[2])) count++;
             }
         } else {
             count++;
@@ -610,7 +610,7 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
         if (a9 && Item_TestInfoFlag4(&v[3])) continue;
         if (a5) {
             if (a6) {
-                if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(a5), &v[3])) {
+                if (Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[3])) {
                     if (pick == idx) {
                         *out = v[3];
                         return;
@@ -618,7 +618,7 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
                     idx++;
                 }
             } else {
-                if (!Catalog_HasItem(_ZN10PlayerData10getCatalogEv(a5), &v[3])) {
+                if (!Catalog_HasItem(((PlayerData *)(a5))->getCatalog(), &v[3])) {
                     if (pick == idx) {
                         *out = v[3];
                         return;

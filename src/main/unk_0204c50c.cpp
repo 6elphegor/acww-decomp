@@ -7,6 +7,7 @@
 #include "game/Unk_0204da0c_Map.h"
 #include "town/TownState.h"
 #include "town/SceneMapModule.h"
+#include "room/HouseData.h"
 
 
 
@@ -149,7 +150,6 @@ u32 House_GetLevelAcreId(void *p);
 }
 
 extern "C" {
-u32 _ZN9HouseData19buildRoomBlockEntryEiPv(void *p, u32 a, void *heap);
 }
 
 extern "C" {
@@ -314,7 +314,7 @@ u32 *SceneMapModule::buildEntries(u32 *src, s32 n, void *heap) {
     if (Scene_GetCurrent() == 0 || Scene_GetCurrent() == 0x31 || Scene_GetCurrent() == 0x2c) {
         r = (u32 *)_ZN7TownMap17buildBlockEntriesEi(gSaveTownMap, heap);
     } else if (Scene_InHouseRoom()) {
-        r = (u32 *)_ZN9HouseData19buildRoomBlockEntryEiPv(gSaveHouse, Scene_GetHouseRoom(), heap);
+        r = (u32 *)((HouseData *)(gSaveHouse))->buildRoomBlockEntry(Scene_GetHouseRoom(), heap);
     } else if (Scene_InVillagerHouse()) {
         i = Scene_GetVillagerHouse();
         r = (u32 *)ItemGrid_Alloc(heap, 4);

@@ -11,6 +11,7 @@
 #include "snd/BgmVolumeMixer.h"
 #include "snd/BgmManager.h"
 #include "sys/ProcProfile.h"
+#include "player/PlayerData.h"
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -309,7 +310,6 @@ void Snd_MoveBgmVolume(s32 a, s32 b);
 void Snd_StopBgm(s32 a);
 void Snd_PlayBgm(u32 a);
 VecFx32Ctor *PlayerActor_GetBodyPos(u32 n);
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(GroundInfo *p, VecFx32Ctor *pos, s32 a, s32 b);
 s32 _ZN10PlayerData8testFlagEj(void *p, s32 id);
 s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12BgmSceneFade6updateEv(void *p);
@@ -1229,7 +1229,7 @@ void RoomBgmClosingView::updateClosingMusic() {
     BOOL a;
     void *p = Ns_020354d8::PlayerData_GetCurrent();
     if (p) {
-        if (_ZN10PlayerData8testFlagEj(p, 0x23) != 0 || _ZN10PlayerData8testFlagEj(p, 1) != 0) {
+        if (((PlayerData *)(p))->testFlag(0x23) != 0 || ((PlayerData *)(p))->testFlag(1) != 0) {
             a = TRUE;
         } else {
             a = FALSE;
@@ -1246,13 +1246,13 @@ void RoomBgmClosingView::updateClosingMusic() {
     if (a == 0 && c != 0) {
         void *pl = Bgm_GetClock();
         if (closingFadeActive == 0) {
-            if (_ZN8BgmClock13isTimeInRangeEjjjjjj(pl, 0x16, 0x31, 0x32, 0x16, 0x32, 0) != 0) {
+            if (((BgmClock *)(pl))->isTimeInRange(0x16, 0x31, 0x32, 0x16, 0x32, 0) != 0) {
                 Ns_020354d8::Bgm_RequestSilence(0x10, 0xc8, 0);
                 closingFadeActive = 1;
             }
         }
         if (closingMusicPlaying == 0) {
-            if (_ZN8BgmClock13isTimeInRangeEjjjjjj(pl, 0x16, 0x32, 0, 0, 0, 0) != 0 || closingForced != 0) {
+            if (((BgmClock *)(pl))->isTimeInRange(0x16, 0x32, 0, 0, 0, 0) != 0 || closingForced != 0) {
                 Ns_020354d8::Bgm_Request(0xf, 0x51, 0x7f, 0);
                 closingMusicPlaying = 1;
             }
@@ -1434,11 +1434,11 @@ void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
     VecFx32Ctor *p = PlayerActor_GetBodyPos(4);
     if (p) {
         GroundInfo b1;
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii(&b1, p, 0, 0);
+        (&b1)->initAtPos((VecFx32 *)(void *)(p), 0, 0);
         s32 k = b1.attr;
         VecFx32Ctor v(p->x, p->y, p->z + 0x2000);
         GroundInfo b2;
-        _ZN10GroundInfo9initAtPosEP7VecFx32ii(&b2, &v, 0, 0);
+        (&b2)->initAtPos((VecFx32 *)(void *)(&v), 0, 0);
         s32 m = b2.waterKind;
         if (k == 0x13 || k == 0x16 || m == 1) {
             flag = 1;
@@ -1625,7 +1625,7 @@ void BgmSceneFade::onFadeOut() {
             exitSilenceState = 0;
         }
         sameSceneBgm = Bgm_IsSameSceneBgm();
-        _ZN7RoomBgm7setKeepEj(Bgm_GetRoomBgm(), sameSceneBgm);
+        ((RoomBgm *)(Bgm_GetRoomBgm()))->setKeep(sameSceneBgm);
         if (keepForWarp == 0 && sameSceneBgm == 0 && keepRequested == 0) {
             if (fadeDelay != 0 || releaseTimer != 0) {
                 Ns_020354d8::Bgm_ReleasePriority(7);
@@ -1634,7 +1634,7 @@ void BgmSceneFade::onFadeOut() {
             releaseTimer = 0;
             Ns_020354d8::Bgm_RequestSilence(7, 0xf, 0);
         } else {
-            _ZN8FieldBgm7setKeepEj(Bgm_GetFieldBgm(), 1);
+            ((FieldBgm *)(Bgm_GetFieldBgm()))->setKeep(1);
             if (sameSceneBgm != 0) {
                 Ns_020354d8::BgmTracks_FadeOutForScene(Bgm_GetTracks());
             }
@@ -1674,8 +1674,8 @@ void BgmSceneFade::onFadeIn() {
         keepForWarp = 0;
         sameSceneBgm = 0;
         keepRequested = 0;
-        _ZN8FieldBgm7setKeepEj(Bgm_GetFieldBgm(), 0);
-        _ZN7RoomBgm7setKeepEj(Bgm_GetRoomBgm(), 0);
+        ((FieldBgm *)(Bgm_GetFieldBgm()))->setKeep(0);
+        ((RoomBgm *)(Bgm_GetRoomBgm()))->setKeep(0);
     }
 }
 
@@ -1683,7 +1683,7 @@ void BgmSceneFade::init() {}
 
 extern "C" void BgmSceneFade_Reset(BgmSceneFade *p) { p->reset(); }
 
-extern "C" void BgmSceneFade_Update(void *p) { _ZN12BgmSceneFade6updateEv(p); }
+extern "C" void BgmSceneFade_Update(void *p) { ((BgmSceneFade *)(p))->update(); }
 
 void BgmSceneFade::reset() {
     keepForWarp = 0;

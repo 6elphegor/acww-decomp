@@ -3,6 +3,9 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "game/SceneInfo.h"
+#include "actor/Actor.h"
+#include "save/TownExchangeRecord.h"
+#include "talk/MsgString.h"
 
 // TU210: 0x020afeb4-0x020b0774. Owns sConstellationColumns (.bss, autoload_3 0x021ee27c-0x021ee284).
 
@@ -34,13 +37,11 @@ extern uptr sStarTwinklePalettePaths[];  // (path pointers)
 extern u8 data_021e7f8c[];
 
 // external
-void _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, VecFx32 *v, void *c, u32 d);
 u64 OS_GetTick(void);
 BOOL Text_EqualsTrimmed(const u8 *a, const u8 *b, s32 len);
 void Mem_Clear(void *dst, u32 size);
 s32 Mem_Copy(const void *src, void *dst, u32 size);
 Entry *_ZN18TownExchangeRecord16getConstellationEv(void *p);
-BOOL _ZN18TownExchangeRecord7isValidEv(void *p);
 void ConstellationRecord_Clear(void *e);
 BOOL ConstellationStore_IsUsed(Base *b, s32 i);
 void ConstellationStore_ClearUsed(Base *b, s32 i);
@@ -50,9 +51,7 @@ s32 Sky_GetStarViewingTime(void *a, s32 x, s32 y);
 s32 Sky_GetStarScrollX(void);
 s32 Sky_GetStarScrollY(void);
 void EncodedString_SetRaw(void *buf, const void *src, s32 len);
-void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *self, void *buf, s32 a, s32 b);
 void _ZN28ConstellationEncodedString16C2Ev(void *buf);
-void _ZN28ConstellationEncodedString16D1Ev(void *buf);
 void Clock_GetDateTime(void *p);
 s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void File_LoadToBuffer(u32 a, void *b, u32 c);
@@ -279,8 +278,8 @@ BOOL Constellation_GetName(void *self, s32 idx) {
     e = Constellation_GetRecord(idx);
     _ZN28ConstellationEncodedString16C2Ev(buf);
     EncodedString_SetRaw(buf, e->name, 16);
-    _ZN9MsgString11fromEncodedEP13EncodedStringii(self, buf, 0, 0);
-    _ZN28ConstellationEncodedString16D1Ev(buf);
+    ((MsgString *)(self))->fromEncoded((EncodedString *)(buf), 0, 0);
+    ((ConstellationEncodedString16 *)(buf))->ConstellationEncodedString16::~ConstellationEncodedString16();
     return TRUE;
 }
 
@@ -424,7 +423,7 @@ void Constellation_ImportExchanged(void) {
     s32 i, j;
     s32 count;
     u8 *p = data_021e7f8c;
-    if (_ZN18TownExchangeRecord7isValidEv(p)) {
+    if (((TownExchangeRecord *)(p))->isValid()) {
         e = _ZN18TownExchangeRecord16getConstellationEv(p);
         count = 0;
         for (i = 0; i < 16; i++) {
@@ -541,7 +540,7 @@ BOOL SceneSpawnGroup_SpawnActors(SceneSpawnGroup *self, u8 *idxp, u64 start) {
     while (TRUE) {
         VecFx32 v;
         setv(&v, (n->actor.x << 12) >> 4, (n->actor.y << 12) >> 4, (n->actor.z << 12) >> 4);
-        _ZN5Actor5spawnEPvS0_S0_S0_S0_(n->actor.profile, n->actor.spawnParam, &v, &n->actor.rot[0], 0);
+        Actor::spawn((void *)(n->actor.profile), (void *)(n->actor.spawnParam), (void *)(void *)(&v), &n->actor.rot[0], (void *)(0));
         n++;
         i++;
         if (idxp != NULL) {

@@ -1,10 +1,10 @@
 #include "types.h"
 #include "npc/NpcResPool.h"
 #include "npc/NpcResHandleView.h"
+#include "npc/VillagerAnimHeapRefPool.h"
 
 extern "C" {
 s32 NpcBodyAnimPool_Get();
-s32 _ZN10NpcResPool13clearAllSlotsEv(void *self);
 s32 NpcClothTexPool_Get();
 s32 NpcTexPatBufRefPool_Get();
 s32 NpcFaceAnimPool_Get();
@@ -19,9 +19,7 @@ s32 _ZN15NpcFaceAnimPool11getFaceAnimEj(void *, s32);
 s32 _ZN19NpcTexPatBufRefPool9getBufRefEj(void *, s32);
 s32 _ZN15NpcClothTexPool11getClothTexEj(void *, s32);
 s32 _ZN20SpNpcAnimHeapRefPool10getHeapRefEj(void *, s32);
-s32 _ZN23VillagerAnimHeapRefPool10getHeapRefEj(void *, s32);
 s32 _ZN15NpcBodyAnimPool8getLayerEjj(void *, s32, u32);
-s32 _ZN10NpcResPool12findFreeSlotEv(void *);
 void NpcResPools_ClearAll();
 }
 
@@ -45,7 +43,7 @@ BOOL NpcResHandle::acquire() {
     BOOL r = FALSE;
     if (c) {
         if (slot == -1) {
-            u32 i = _ZN10NpcResPool12findFreeSlotEv(c);
+            u32 i = ((NpcResPool *)(c))->findFreeSlot();
             if (i < (u32)c->numSlots) {
                 slot = i;
                 c->occupySlot(slot);
@@ -87,7 +85,7 @@ void *SpNpcAnimHeapHandle::getVillagerAnimHeapRef() {
     void *p = getPool();
     void *r = 0;
     if (p) {
-        r = (void *)_ZN23VillagerAnimHeapRefPool10getHeapRefEj(p, (s8)slot);
+        r = (void *)((VillagerAnimHeapRefPool *)(p))->getHeapRef((s8)slot);
     }
     return r;
 }
@@ -179,12 +177,12 @@ void *NpcResHandleView::getHeldItemModel() {
 }
 
 extern "C" void NpcResPools_ClearAll() {
-    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcBodyAnimPool_Get());
-    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcClothTexPool_Get());
-    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcTexPatBufRefPool_Get());
-    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcFaceAnimPool_Get());
-    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcTexPatHeapPool_Get());
-    _ZN10NpcResPool13clearAllSlotsEv((void *)NpcHeldItemModelPool_Get());
+    ((NpcResPool *)((void *)NpcBodyAnimPool_Get()))->clearAllSlots();
+    ((NpcResPool *)((void *)NpcClothTexPool_Get()))->clearAllSlots();
+    ((NpcResPool *)((void *)NpcTexPatBufRefPool_Get()))->clearAllSlots();
+    ((NpcResPool *)((void *)NpcFaceAnimPool_Get()))->clearAllSlots();
+    ((NpcResPool *)((void *)NpcTexPatHeapPool_Get()))->clearAllSlots();
+    ((NpcResPool *)((void *)NpcHeldItemModelPool_Get()))->clearAllSlots();
 }
 
 extern "C" void NpcResPools_ClearOnSceneCreate() { NpcResPools_ClearAll(); }

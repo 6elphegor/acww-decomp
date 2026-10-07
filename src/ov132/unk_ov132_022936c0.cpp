@@ -7,6 +7,9 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
+#include "player/PlayerData.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -23,8 +26,6 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData14getBankAccountEv(void *p);
-void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 MenuCtrl_GetMode();
 void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
@@ -41,18 +42,12 @@ s32 File_LoadToBuffer(const char *a, void *b, s32 c);
 s32 BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
 void _ZN10BgVramTask13requestScreenEjhjj(void *self, void *buf, s32 a, s32 b, s32 c);
-void _ZN10HandCursor16disableObjWindowEv(void *self);
-void _ZN10HandCursor15enableObjWindowEv(void *self);
 s32 NumberPad_LoadBgGraphics(s32 a);
 void ProcBase_RequestDelete(void *p);
 
 void _ZN9HouseData7setDebtEi(void *self, s32 v);
 s32 _ZN9HouseData7getDebtEv(void *self);
-s32 _ZN10HandCursor7getAnimEv(void *self);
-s32 _ZN10HandCursor10isAnimDoneEv(void *self);
 void MenuButtons_LoadTextColors(void *self);
-void _ZN12MenuLauncher14setNextRequestEii(void *self, s32 a, s32 b);
-void _ZN12MenuLauncher13onChildClosedEv(void *self);
 
 // ov130 (library overlay) plain functions; first argument is the NumberPad object
 s32 NumberPad_GetValue(void *self);
@@ -179,7 +174,7 @@ BOOL BankMenu::onCreate() {
 }
 
 BOOL BankMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -263,7 +258,7 @@ void BankMenu::stateOpening() {
 }
 
 void BankMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(this), nextMenuId, 1);
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->setNextRequest(nextMenuId, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);
@@ -404,7 +399,7 @@ void BankMenu::updateCursorMove() {
 }
 
 void BankMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         switch (cursorSlot) {
         case 2:
             quit();
@@ -420,7 +415,7 @@ void BankMenu::updateCursorPress() {
 }
 
 void BankMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(returnState);
     }
@@ -428,7 +423,7 @@ void BankMenu::updateCursorRelease() {
 
 void BankMenu::stateExit() {
     if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+        if (((HandCursor *)(&cursor))->getAnim()) {
             s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
             s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
             s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
@@ -453,7 +448,7 @@ void BankMenu::stateSelectWait() {
 void BankMenu::stateMessage() {
     if (errorMessage.update(0)) {
         resumeInput();
-        _ZN10HandCursor15enableObjWindowEv(&cursor);
+        ((HandCursor *)(&cursor))->enableObjWindow();
     }
 }
 
@@ -494,7 +489,7 @@ void BankMenu::startSelect() {
 }
 
 void BankMenu::selectDeposit() {
-    if (PlayerBank_GetBalance(_ZN10PlayerData14getBankAccountEv(PlayerData_GetCurrent())) == 0x3b9ac9ff) {
+    if (PlayerBank_GetBalance(((PlayerData *)(PlayerData_GetCurrent()))->getBankAccount()) == 0x3b9ac9ff) {
         showMessage(0xe);
     } else {
         nextMenuId = 0x35;
@@ -505,7 +500,7 @@ void BankMenu::selectDeposit() {
 }
 
 void BankMenu::selectWithdraw() {
-    if (PlayerInventory_GetBellsRoom(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), 1, 0) == 0) {
+    if (PlayerInventory_GetBellsRoom(((PlayerData *)(PlayerData_GetCurrent()))->getInventory(), 1, 0) == 0) {
         showMessage(0xf);
     } else {
         nextMenuId = 0x36;
@@ -519,7 +514,7 @@ void BankMenu::showMessage(u8 v) {
     u8 b = v;
     errorMessage.open(&b, 1, 0);
     setMainState(7);
-    _ZN10HandCursor16disableObjWindowEv(&cursor);
+    ((HandCursor *)(&cursor))->disableObjWindow();
 }
 
 void BankMenu::showCursor() {

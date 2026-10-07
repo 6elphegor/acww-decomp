@@ -57,4 +57,8 @@ typedef int BOOL;
 #define NULL 0
 #endif
 
+#ifdef __cplusplus
+#include "sys/new.h"
+#endif
+
 #endif

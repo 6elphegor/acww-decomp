@@ -37,8 +37,6 @@ class Letter;
 typedef PostOfficeMenu S;
 
 // Shared symbols whose real argument lists differ from their mangled names: called by name with the object first
-extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);
-extern "C" u32 _ZN10LetterGrid18findPocketLetterAtEii(void *self, s32 a, s32 b);
 
 extern "C" {
 void Snd_PlaySe(s32 a);
@@ -1349,7 +1347,7 @@ u8 PostOfficeMenu::fromLetterGridIndex(u32 i) {
 }
 
 u8 PostOfficeMenu::getSlotAt(u32 i, s32 a, u32 flag) {
-    u32 r = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid, i, a);
+    u32 r = ((LetterGrid *)(&letterGrid))->findPocketLetterAt(i, a);
     if (r == 0x37) {
         r = letterGrid.findLetterAt2D(i, a);
     }
@@ -1669,7 +1667,7 @@ void PostOfficeMenu_OpenPopup(S *s, s32 a) {
     r6 = s->getSlotX(s->selectedSlot);
     r2 = s->getSlotY(s->selectedSlot);
     if (a != 0) {
-        _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(&s->popup, &s->nameBalloon, r2);
+        ((PopupChoiceMenu *)(&s->popup))->placeAboveBalloon((LabelBalloon *)(&s->nameBalloon));
     } else {
         s->popup.placeNearPoint(r6, r2);
     }

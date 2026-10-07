@@ -15,6 +15,8 @@
 #include "town/KatrinaTent.h"
 #include "town/CountdownDigit.h"
 #include "town/CountdownSign.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/Model.h"
 
 
 
@@ -55,17 +57,11 @@ extern u32 gFieldStructureHeap;
 void CountdownDigit_Update(void *p);
 void CountdownSign_ModelCallback(void *p);
 s32 _ZN5Model12getRenderObjEv(void *p);
-void _ZN9ModelAnim7replaceEiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
 BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *m, s32 a, s32 b);
-void _ZN9ModelAnim4initEiiit(void *m, s32 a, s32 b, s32 c, s32 d);
 void _ZN9ModelAnim14addToRenderObjEj(void *m, s32 a);
 void Clock_GetDateTime(void *p);
-s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
-void _ZN5Model15setInitCallbackEii(void *m, void (*fn)(void *), void *self);
 s32 _ZN12G3dResAccess10findMatIdxEi(s32 a, const char *s);
 void Snd_PlaySe(u32 a);
-void _ZN13AnimFrameCtrl4stepEv(void *m);
-void _ZN13BuildingActor12updateMatrixEv(void *p);
 BOOL BuildingState_Set(u32 a, u32 b);
 void func_02094030(void *p);
 void func_02094018(void *p);
@@ -91,7 +87,7 @@ BOOL CountdownDigit::onExecute() {
     CountdownDigit_Update(this);
     s32 r4 = _ZN5Model12getRenderObjEv(model);
     s32 r2 = (s32)getBtaAnim(0);
-    _ZN9ModelAnim7replaceEiiiit(&matAnim, r4, r2, 1, 0x1000, digit);
+    ((ModelAnim *)(&matAnim))->replace(r4, r2, 1, 0x1000, digit);
     return TRUE;
 }
 
@@ -108,19 +104,19 @@ void CountdownDigit::operator delete(void *p) {}
 
 // ---------------------------------------------------------------- Y methods
 void CountdownSign::execNewYear() {
-    _ZN13AnimFrameCtrl4stepEv(&matAnim);
+    ((AnimFrameCtrl *)(&matAnim))->step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL CountdownSign::enterNewYear() {
     s32 r1 = (s32)getBtaAnim(1);
-    _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
+    ((ModelAnim *)(&matAnim))->init(r1, 0, 0x1000, 0);
     matAlpha = 1;
     return TRUE;
 }
 
 void CountdownSign::execCountdown() {
-    _ZN13AnimFrameCtrl4stepEv(&matAnim);
+    ((AnimFrameCtrl *)(&matAnim))->step();
     *(s32 *)matAnim.anmObj = matAnim.curFrame;
     u32 tm[2];
     tm[0] = 0;
@@ -134,7 +130,7 @@ void CountdownSign::execCountdown() {
 
 BOOL CountdownSign::enterCountdown() {
     s32 r1 = (s32)getBtaAnim(0);
-    _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
+    ((ModelAnim *)(&matAnim))->init(r1, 0, 0x1000, 0);
     matAlpha = 0x1f;
     return TRUE;
 }
@@ -178,7 +174,7 @@ BOOL CountdownSign::postDraw(s32 a) {
                 CountdownDigit *p = digits[i];
                 if (p) {
                     if (p->isCounting) {
-                        ::_ZN13BuildingActor12updateMatrixEv(p);
+                        ((BuildingActor *)(p))->updateMatrix();
                     }
                 }
             }
@@ -217,14 +213,14 @@ BOOL CountdownSign::initBuilding() {
         v[1] = b;
         v[2] = c;
         sCountdownSpawnIndex = i;
-        digits[i] = (CountdownDigit *)_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x26, 0x501f, v, z, z);
+        digits[i] = (CountdownDigit *)Actor::spawn((void *)(0x26), (void *)(0x501f), v, (void *)(z), (void *)(z));
         i++;
     } while (i < 6);
-    _ZN5Model15setInitCallbackEii(model, CountdownSign_ModelCallback, this);
+    ((Model *)(model))->setInitCallback((s32)(CountdownSign_ModelCallback), (s32)(this));
     alphaMatIdx = _ZN12G3dResAccess10findMatIdxEi((s32)modelRes, "m_cbs_Adt");
     if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, (s32)modelRes, gFieldStructureHeap)) {
         s32 r1 = (s32)getBtaAnim(0);
-        _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
+        ((ModelAnim *)(&matAnim))->init(r1, 0, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(model));
     }
     u32 tm[2];

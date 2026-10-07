@@ -124,6 +124,14 @@ extern u8 data_020e0c44[];
 extern s32 gGfxMainOnTop;
 }
 #include "types.h"
+#include "item/ItemPickSpec.h"
+#include "item/LetterView.h"
+#include "net/CommManager.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "save/MuseumData.h"
+#include "save/Pattern.h"
+#include "save/SaveData.h"
 
 
 
@@ -826,21 +834,21 @@ extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
     MissingLetterLocals l;
     u8 obj[8];
     void *r4 = PlayerData_GetCurrent();
-    if (r4 != NULL && _ZN10PlayerData8testFlagEj(r4, 0x36)) {
-        _ZN6LetterC1Ev(big);
+    if (r4 != NULL && ((PlayerData *)(r4))->testFlag(0x36)) {
+        new (big) Letter();
         l.a = 0;
         l.a = Ns_020874d8::Random_GlobalBelow(3);
         Ns_020874d8::Clock_GetDate(l.c);
         l.b = LetterPaper_PickRandom(3, l.c[1]);
         Ns_020874d8::Letter_ComposeFromMail(big, &l, "sp_npc_missing", data_020e0c44, &l.b, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(r4));
-        _ZN12ItemPickSpec3setEii(obj, 0, 0x1b);
+        ((ItemPickSpec *)(obj))->set(0, 0x1b);
         ItemPick_One(&l.h, obj, 0, 0, 1, 1, 0);
-        _ZN10LetterView10setPresentEtj(big, l.h, 1);
+        ((LetterView *)(big))->setPresent(l.h, 1);
         ItemPickSpec_Destruct(obj);
         if (LetterDelivery_QueueOutgoing(big, 0)) {
             Ns_020874d8::_ZN10PlayerData9clearFlagEj(r4, 0x36);
         }
-        _ZN6LetterD1Ev(big);
+        ((Letter *)(big))->Letter::~Letter();
     }
 }
 
@@ -848,18 +856,18 @@ BOOL PlayerSpNpcRecord::sendInsuranceLetter(s32 idx, u16 *v) {
     u32 big[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
     u8 c;
     BOOL r;
-    _ZN6LetterC1Ev(big);
+    new (big) Letter();
     c = 0;
     void *o = PlayerData_GetCurrent();
     c = idx;
     Ns_020874d8::Letter_ComposeFromMail(big, &c, "sp_npc_insurance", data_020e0c4c, data_020e0c54, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(o));
-    _ZN10LetterView10setPresentEtj(big, *v, 1);
+    ((LetterView *)(big))->setPresent(*v, 1);
     if (LetterDelivery_QueueOutgoing(big, 0)) {
         r = TRUE;
     } else {
         r = FALSE;
     }
-    _ZN6LetterD1Ev(big);
+    ((Letter *)(big))->Letter::~Letter();
     return r;
 }
 
@@ -870,17 +878,17 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
     s32 r6;
     _ZN11MsgString25C1Ev(bufA);
     void *obj = PlayerData_GetCurrent();
-    _ZN11MsgString9BC1Ev(bufB);
-    PlayerSpNpcRecord *r7 = (PlayerSpNpcRecord *)_ZN10PlayerData14getSpNpcRecordEv(obj);
-    if (_ZN10PlayerData8testFlagEj(obj, 0x17)) {
-        if (_ZN10PlayerData8testFlagEj(obj, 0x19)) {
+    new (bufB) MsgString9B();
+    PlayerSpNpcRecord *r7 = (PlayerSpNpcRecord *)((PlayerData *)(obj))->getSpNpcRecord();
+    if (((PlayerData *)(obj))->testFlag(0x17)) {
+        if (((PlayerData *)(obj))->testFlag(0x19)) {
             h[0] = 0x1492;
             s32 r = Ns_020874d8::Random_GlobalBelow(2);
             if (sendInsuranceLetter(r, &h[0])) {
                 Ns_020874d8::_ZN10PlayerData9clearFlagEj(obj, 0x19);
             }
         }
-        if (_ZN10PlayerData8testFlagEj(obj, 0x1a)) {
+        if (((PlayerData *)(obj))->testFlag(0x1a)) {
             h[1] = 0x1492;
             s32 r = Ns_020874d8::Random_GlobalBelow(2);
             if (sendInsuranceLetter(r + 2, &h[1])) {
@@ -888,7 +896,7 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
             }
         }
     }
-    if (_ZN10PlayerData8testFlagEj(obj, 0x18)) {
+    if (((PlayerData *)(obj))->testFlag(0x18)) {
         if (r7->getInsuranceClaims() >= 1) {
             String_FormatNumber(bufA, r7->getInsuranceClaims(), 10, 0, 0, 0);
             MailText_SetSlot(3, bufA);
@@ -906,7 +914,7 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
             }
         }
     }
-    _ZN11MsgString9BD1Ev(bufB);
+    ((MsgString9B *)(bufB))->MsgString9B::~MsgString9B();
     _ZN11MsgString25D1Ev(bufA);
 }
 
@@ -1055,19 +1063,19 @@ test4:
 }
 
 extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         return FALSE;
     }
     void *o = PlayerData_GetCurrent();
-    if (_ZN10PlayerData8testFlagEj(o, 1)) {
+    if (((PlayerData *)(o))->testFlag(1)) {
         return FALSE;
     }
     if (!Drama_FindScheduledPart(a, b, c, d)) {
         return FALSE;
     }
     Unk_020874e8_Bits t;
-    DramaRecord_GetLastPart(_ZN10PlayerData14getDramaRecordEv(o), &t);
-    u8 *p = DramaRecord_GetDate((u8 *)_ZN10PlayerData14getDramaRecordEv(o));
+    DramaRecord_GetLastPart(((PlayerData *)(o))->getDramaRecord(), &t);
+    u8 *p = DramaRecord_GetDate((u8 *)((PlayerData *)(o))->getDramaRecord());
     if (d->a == t.a && d->b == t.b && d->c == t.c) {
         if ((p[2] == a && p[1] == b && p[0] == c) || (p[2] == 0 && p[1] == 0 && p[0] == 0)) {
             return TRUE;
@@ -1077,12 +1085,12 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
     if (d->c == 0) {
         switch (d->a) {
         case 0:
-            if (_ZN10PlayerData8testFlagEj(o, 6)) {
+            if (((PlayerData *)(o))->testFlag(6)) {
                 return TRUE;
             }
             break;
         case 2:
-            if (((PlayerSpNpcRecord *)_ZN10PlayerData14getSpNpcRecordEv(o))->getSableTalkCount() == 0xf) {
+            if (((PlayerSpNpcRecord *)((PlayerData *)(o))->getSpNpcRecord())->getSableTalkCount() == 0xf) {
                 return TRUE;
             }
             break;
@@ -1094,7 +1102,7 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
             }
             break;
         case 1:
-            if (_ZN10PlayerData8testFlagEj(o, 8) || _ZN10MuseumData10isCompleteEv(data_021ed0a0)) {
+            if (((PlayerData *)(o))->testFlag(8) || ((MuseumData *)(data_021ed0a0))->isComplete()) {
                 return TRUE;
             }
             break;
@@ -1135,7 +1143,7 @@ extern "C" void LostChild_AdvanceDays(s32 n) {
 extern "C" BOOL LostChild_IsKatieDue() {
     void *c = PlayerData_GetCurrent();
     if (c != 0) {
-        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv(c);
+        LostChildRecord *p = (LostChildRecord *)((PlayerData *)(c))->getLostChildRecord();
         if (p->isKaitlinRole() == 0) {
             if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
@@ -1146,7 +1154,7 @@ extern "C" BOOL LostChild_IsKatieDue() {
 extern "C" BOOL LostChild_IsKaitlinDue() {
     void *c = PlayerData_GetCurrent();
     if (c != 0) {
-        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv(c);
+        LostChildRecord *p = (LostChildRecord *)((PlayerData *)(c))->getLostChildRecord();
         if (p->isKaitlinRole() == 1) {
             if (Ns_02086b7c::Math_IsInRange(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
@@ -1158,7 +1166,7 @@ extern "C" void LostChild_SaveToTown() {
     u8 *const g = gSaveData;
     void *c = PlayerData_GetCurrent();
     if (c != 0 && g != 0) {
-        Ns_02086b7c::MI_CpuCopy8(_ZN10PlayerData18getLostChildRecordEv(c), g + 0x15fca, 12);
+        Ns_02086b7c::MI_CpuCopy8(((PlayerData *)(c))->getLostChildRecord(), g + 0x15fca, 12);
     }
 }
 
@@ -1166,9 +1174,9 @@ extern "C" void LostChild_LoadFromTown() {
     u8 *const g = gSaveData;
     void *a = PlayerData_GetCurrent();
     if (a != 0 && g != 0) {
-        void *b = _ZN10PlayerData18getLostChildRecordEv(a);
+        void *b = ((PlayerData *)(a))->getLostChildRecord();
         Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
-        if (Ns_02086b7c::Math_IsInRange(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN10PlayerData9clearFlagEj(a, 0x33);
+        if (Ns_02086b7c::Math_IsInRange(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) ((PlayerData *)(a))->clearFlag(0x33);
     }
 }
 
@@ -1201,12 +1209,12 @@ void LostChildRecord::setEscorting() { escorting = 1; }
 void LostChildRecord::clearEscorting() { escorting = 0; }
 
 BlancaFaceRecord *BlancaFaceRecord::construct() {
-    _ZN7PatternC1Ev(this);
+    new (this) Pattern();
     return this;
 }
 
 BlancaFaceRecord *BlancaFaceRecord::destruct() {
-    _ZN7PatternD1Ev(this);
+    ((Pattern *)(this))->~Pattern();
     return this;
 }
 
@@ -1218,8 +1226,8 @@ void BlancaFaceRecord::reset() {
 void BlancaFaceRecord::init() { reset(); }
 
 void BlancaFaceRecord::resetPattern() {
-    _ZN7Pattern4fillEj(getPattern(), 0xf);
-    _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(getPattern()), 0);
+    ((Pattern *)(getPattern()))->fill(0xf);
+    ((PatternInfo *)(((Pattern *)(getPattern()))->getInfo()))->setPalette(0);
 }
 
 void *BlancaFaceRecord::getPattern() { return pattern; }
@@ -1233,7 +1241,7 @@ void BlancaFaceRecord::setConcept(u32 v) { concept = v; }
 u8 BlancaFaceRecord::getConcept() { return concept; }
 
 BOOL BlancaFaceRecord::isBlancaDue() {
-    if (_ZN8SaveData8testFlagEj(gSaveData, 0x13) == 0 && visitState == 2) return TRUE;
+    if (((SaveData *)(gSaveData))->testFlag(0x13) == 0 && visitState == 2) return TRUE;
     return FALSE;
 }
 
@@ -1593,7 +1601,7 @@ void VisitorSpawnFlags::clearVisitorSpawned() { visitorSpawned = 0; }
 void VisitorSpawnFlags::setVisitorSpawned() { visitorSpawned = 1; }
 
 void VisitorSpawnFlags::getGulliverSpawn(void *v, u16 *out, VecFx32 *p) {
-    if (gulliverSpotRolled == 0) _ZN17VisitorSpawnFlags16rollGulliverSpotEv(this);
+    if (gulliverSpotRolled == 0) ((VisitorSpawnFlags *)(this))->rollGulliverSpot();
     VecFx32 t;
     const VecXZ *tb = sGulliverSpotOffsets;
     const VecXZ *e = &tb[gulliverSpot];
@@ -1947,7 +1955,7 @@ void TurnipMarket::checkTurnipExpiry() {
     }
     if (DateTime_Compare(&l.b, &l.a, 0x38) == 1) {
         if (DateTime_DiffDays(&l.a, &l.b) >= 7) {
-            _ZN8SaveData9clearFlagEj(gSaveData, 4);
+            ((SaveData *)(gSaveData))->clearFlag(4);
             setPurchaseDate(&l.b);
         }
     }
@@ -1969,12 +1977,12 @@ void TurnipMarket::setPurchaseDate(void *src) {
 }
 
 ReddLastSale::ReddLastSale() {
-    _ZN8PlayerIdC1EPv(this);
+    new (this) PlayerId();
     item = 0xfff1;
 }
 
 ReddLastSale::~ReddLastSale() {
-    _ZN8PlayerIdC1Ev(this);
+    new (this) PlayerId();
 }
 
 void ReddLastSale::clear() {
@@ -2046,7 +2054,7 @@ void RoostGuestRoll::clear() {
 }
 
 extern "C" void RoostGuestRoll_Init(void *p) {
-    _ZN14RoostGuestRoll4rollEv(p);
+    ((RoostGuestRoll *)(p))->roll();
 }
 
 void RoostGuestRoll::roll() {
@@ -2098,15 +2106,15 @@ u32 RoostGuestRoll::getAfternoonGuest() { return afternoonGuest; }
 BOOL RoostGuestRoll::hasLateGuest() { if (lateGuest) return TRUE; return FALSE; }
 
 void ContestRecord::postResultNotice() {
-    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&holderVillager) == 0) {
-        _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
+    if (((PlayerId *)(this))->isValid() == 0 && ((VillagerId *)(&holderVillager))->isValid() == 0) {
+        ((SaveData *)(gSaveData))->clearFlag(0xf);
         return;
     }
     if (kind != 1 && kind != 2 && kind != 3) return;
-    if (_ZN8SaveData8testFlagEj(gSaveData, 0xf) == 0) return;
+    if (((SaveData *)(gSaveData))->testFlag(0xf) == 0) return;
     MsgString9B rec;
-    if (_ZN8PlayerId7isValidEv(this) != 0) _ZN8PlayerId13getNameStringEP9MsgString(this, &rec);
-    else _ZN10VillagerId7getNameEj(&holderVillager, &rec);
+    if (((PlayerId *)(this))->isValid() != 0) ((PlayerId *)(this))->getNameString((MsgString *)(&rec));
+    else ((VillagerId *)(&holderVillager))->getName((u32)(&rec));
     if ((u8)(kind + 0xff) <= 1) {
         MailText_SetSlotMonth(0, dateMonth);
         MailText_SetSlotDayOrdinal(1, dateDay);
@@ -2136,11 +2144,11 @@ void ContestRecord::postResultNotice() {
     if ((u8)(kind + 0xff) <= 1) k = Random_GlobalBelow(3);
     else k = Random_GlobalBelow(2);
     Bbs_PostMsgToday(k, sContestResultBbsFiles[kind]);
-    _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
+    ((SaveData *)(gSaveData))->clearFlag(0xf);
 }
 
 void ContestRecord::sendResultLetters() {
-    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&holderVillager) == 0) return;
+    if (((PlayerId *)(this))->isValid() == 0 && ((VillagerId *)(&holderVillager))->isValid() == 0) return;
     if (kind != 1 && kind != 2 && kind != 3) return;
     ContestLetterLocals l;
     Clock_GetDate(l.today);
@@ -2162,7 +2170,7 @@ void ContestRecord::sendResultLetters() {
     if (r6 == -1 && DateTime_DiffDays(&l.now, l.contestTime) >= 10) {
     reset:
         clear();
-        _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
+        ((SaveData *)(gSaveData))->clearFlag(0xf);
         return;
     }
     if (kind != 3) {
@@ -2176,7 +2184,7 @@ void ContestRecord::sendResultLetters() {
         }
         if (r6 == 1 && DateTime_DiffDays(l.contestTime, &l.now) < 1) return;
     }
-    if (kind == 3 && _ZN8PlayerId7isValidEv(this) == 0) {
+    if (kind == 3 && ((PlayerId *)(this))->isValid() == 0) {
         postResultNotice();
         clear();
         return;
@@ -2194,8 +2202,8 @@ void ContestRecord::sendResultLetters() {
         ok = z10;
         void *r4 = PlayerData_GetResident(gSavePlayers, i);
         if (r4 == 0) continue;
-        if (_ZN10PlayerData6isUsedEv(r4) == 0) continue;
-        void *r7 = _ZN10PlayerData14getSpNpcRecordEv(r4);
+        if (((PlayerData *)(r4))->isUsed() == 0) continue;
+        void *r7 = ((PlayerData *)(r4))->getSpNpcRecord();
         if ((u8)(kind + 0xff) <= 1) {
             MailText_SetSlotMonth(z14, dateMonth);
             MailText_SetSlotDayOrdinal(1, dateDay);
@@ -2216,14 +2224,14 @@ void ContestRecord::sendResultLetters() {
                 else String_FormatNumber(&n1, size >> 12, 3, z24, z24, z24);
                 MailText_SetSlot(3, &n1);
             }
-            if (kind == 1) ok = _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(r7);
-            else ok = _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(r7);
+            if (kind == 1) ok = ((PlayerSpNpcRecord *)(r7))->hasEnteredFishingTourney();
+            else ok = ((PlayerSpNpcRecord *)(r7))->hasEnteredBugOff();
         } else {
             u16 *p = _ZN10PlayerData11getPlayerIdEv(r4);
-            if ((holderPlayer.townId == p[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
+            if ((holderPlayer.townId == p[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), p + 1, 8) == 0 && ((PlayerId *)(this))->equals((PlayerId *)(p)) != 0) || ((PlayerSpNpcRecord *)(r7))->hasFestivalGift() != 0) {
                 l.letterVariant = Random_GlobalBelow(3);
-                _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
-                _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(r7);
+                ((PlayerId *)(((PlayerData *)(r4))->getPlayerId()))->getNameString((MsgString *)(&rec));
+                ((PlayerSpNpcRecord *)(r7))->clearFestivalGift();
                 MailText_SetSlot(z2c, &rec);
                 ok = 1;
             }
@@ -2231,22 +2239,22 @@ void ContestRecord::sendResultLetters() {
         if (ok == 0) continue;
         if ((u8)(kind + 0xff) <= 1) {
             u16 *q = _ZN10PlayerData11getPlayerIdEv(r4);
-            if (holderPlayer.townId == q[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
+            if (holderPlayer.townId == q[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), q + 1, 8) == 0 && ((PlayerId *)(this))->equals((PlayerId *)(q)) != 0) {
                 l.letterVariant = Random_GlobalBelow(3);
             } else {
                 l.letterVariant = Random_GlobalBelow(3) + 3;
             }
-            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
+            ((PlayerId *)(((PlayerData *)(r4))->getPlayerId()))->getNameString((MsgString *)(&rec));
             MailText_SetSlot(4, &rec);
         }
         u16 *w = _ZN10PlayerData11getPlayerIdEv(r4);
         Letter_ComposeFromMail(&buf, &l, sContestResultMailFiles[kind], data_020e0c50, data_020e0c48, w);
         u16 *x = _ZN10PlayerData11getPlayerIdEv(r4);
-        if ((holderPlayer.townId == x[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || kind == 3) {
+        if ((holderPlayer.townId == x[0] && memcmp(HOST_AT(this, 2, holderPlayer.townName[0], 0), x + 1, 8) == 0 && ((PlayerId *)(this))->equals((PlayerId *)(x)) != 0) || kind == 3) {
             l.trophy = 0x3878;
             if (kind == 2) l.trophy = 0x387c;
             else if (kind == 3) l.trophy = 0x3880;
-            _ZN10LetterView10setPresentEtj(&buf, l.trophy, 1);
+            ((LetterView *)(&buf))->setPresent(l.trophy, 1);
         }
         LetterDelivery_PutInAddresseeMailbox(&buf);
     }
@@ -2255,7 +2263,7 @@ void ContestRecord::sendResultLetters() {
 }
 
 ContestRecord *ContestRecord::construct() {
-    _ZN8PlayerIdC1EPv(this);
+    new (this) PlayerId();
     VillagerId_Construct(&holderVillager);
     VillagerId_Construct(&votedVillager);
     item = 0xfff1;
@@ -2265,12 +2273,12 @@ ContestRecord *ContestRecord::construct() {
 ContestRecord *ContestRecord::destruct() {
     VillagerId_Destruct(&votedVillager);
     VillagerId_Destruct(&holderVillager);
-    _ZN8PlayerIdC1Ev(this);
+    new (this) PlayerId();
     return this;
 }
 
 void ContestRecord::clear() {
-    _ZN8PlayerId5clearEv(this);
+    ((PlayerId *)(this))->clear();
     VillagerId_Clear(&holderVillager);
     VillagerId_Clear(&votedVillager);
     item = 0xfff1;

@@ -10,21 +10,6 @@
 // their symbols.txt names.
 extern "C" {
 void FS_InitFile(void *p);
-void *_ZN11HudObjGfxIo11freePaletteEv(void *p);
-void *_ZN11HudObjGfxIo9freeCharsEv(void *p);
-void _ZN11HudObjGfxIo21releaseSlideIconCharsEv(void *p);
-void _ZN11HudObjGfxIo20uploadSlideIconCharsEv(void *p);
-s32 _ZN11HudObjGfxIo18loadSlideIconCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo20releaseLinkIconCharsEv(void *p);
-void _ZN11HudObjGfxIo19uploadLinkIconCharsEv(void *p);
-s32 _ZN11HudObjGfxIo17loadLinkIconCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo23uploadCameraButtonCharsEi(void *p, u32 v);
-s32 _ZN11HudObjGfxIo21loadCameraButtonCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo13uploadPaletteEi(void *p, u32 v);
-void _ZN11HudObjGfxIo11uploadCharsEi(void *p, u32 v);
-s32 _ZN11HudObjGfxIo13loadKindCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo15uploadKindCharsEi(void *p, u32 v);
-void _ZN11HudObjGfxIo16releaseKindCharsEv(void *p);
 s32 InputMode_IsTouch(void);
 s32 Scene_GetCurrent(void);
 s32 ChatBalloon_RefreshLabelsUnk(void);
@@ -52,8 +37,8 @@ HudObjGfx::HudObjGfx() {
 }
 
 HudObjGfx::~HudObjGfx() {
-    _ZN11HudObjGfxIo11freePaletteEv(this);
-    _ZN11HudObjGfxIo9freeCharsEv(this);
+    ((HudObjGfxIo *)(this))->freePalette();
+    ((HudObjGfxIo *)(this))->freeChars();
 }
 
 extern "C" void HudObjGfx_LoadForScene(void) {
@@ -81,7 +66,7 @@ extern "C" void HudObjGfx_LoadSlideIcon(u32 a) { sHudObjGfx.loadSlideIcon(a); }
 extern "C" void HudObjGfx_FlushCameraButton(void) {
     HudObjGfx *p = &sHudObjGfx;
     if (sHudObjGfx.pendingCameraButtonScreens != 3) {
-        _ZN11HudObjGfxIo23uploadCameraButtonCharsEi(p, p->pendingCameraButtonScreens);
+        ((HudObjGfxIo *)(p))->uploadCameraButtonChars(p->pendingCameraButtonScreens);
         p->pendingCameraButtonScreens = 3;
     }
 }
@@ -97,10 +82,10 @@ extern "C" void HudObjGfx_ClearMsgUiActive(void) { sHudObjGfx.msgUiActive = 0; }
 void HudObjGfx::loadForScene(u32 a) {
     HudObjGfx *p = &sHudObjGfx;
     HudObjGfx_InitFile(p);
-    if (p->loadPalette(4)) _ZN11HudObjGfxIo13uploadPaletteEi(p, a);
-    _ZN11HudObjGfxIo11freePaletteEv(p);
-    if (p->loadChars()) _ZN11HudObjGfxIo11uploadCharsEi(p, a);
-    _ZN11HudObjGfxIo9freeCharsEv(p);
+    if (p->loadPalette(4)) ((HudObjGfxIo *)(p))->uploadPalette(a);
+    ((HudObjGfxIo *)(p))->freePalette();
+    if (p->loadChars()) ((HudObjGfxIo *)(p))->uploadChars(a);
+    ((HudObjGfxIo *)(p))->freeChars();
     if (Hud_GetSceneHudKind() == 2) {
         if (InputMode_IsTouch()) loadCameraButton(1, 0, a);
     }
@@ -109,10 +94,10 @@ void HudObjGfx::loadForScene(u32 a) {
 void HudObjGfx::loadKind(u32 a, u32 b) {
     HudObjGfx *p = &sHudObjGfx;
     HudObjGfx_InitFile(p);
-    if (p->loadPalette(a)) _ZN11HudObjGfxIo13uploadPaletteEi(p, b);
-    _ZN11HudObjGfxIo11freePaletteEv(p);
-    if (_ZN11HudObjGfxIo13loadKindCharsEi(p, a)) _ZN11HudObjGfxIo15uploadKindCharsEi(p, b);
-    _ZN11HudObjGfxIo16releaseKindCharsEv(p);
+    if (p->loadPalette(a)) ((HudObjGfxIo *)(p))->uploadPalette(b);
+    ((HudObjGfxIo *)(p))->freePalette();
+    if (((HudObjGfxIo *)(p))->loadKindChars(a)) ((HudObjGfxIo *)(p))->uploadKindChars(b);
+    ((HudObjGfxIo *)(p))->releaseKindChars();
     if (a == 2 || (a == 4 && Hud_GetSceneHudKind() == 2)) {
         if (InputMode_IsTouch()) loadCameraButton(1, 0, b);
     }
@@ -121,26 +106,26 @@ void HudObjGfx::loadKind(u32 a, u32 b) {
 void HudObjGfx::loadCameraButton(u32 a, u32 b, u32 c) {
     s32 r;
     HudObjGfx_InitFile(&sHudObjGfx);
-    r = _ZN11HudObjGfxIo21loadCameraButtonCharsEi(&sHudObjGfx, a);
+    r = ((HudObjGfxIo *)(&sHudObjGfx))->loadCameraButtonChars(a);
     if (b != 0) {
         pendingCameraButtonScreens = c;
     } else if (r != 0) {
-        _ZN11HudObjGfxIo23uploadCameraButtonCharsEi(&sHudObjGfx, c);
+        ((HudObjGfxIo *)(&sHudObjGfx))->uploadCameraButtonChars(c);
     }
 }
 
 void HudObjGfx::loadLinkIcon(u32 v) {
     HudObjGfx *p = &sHudObjGfx;
     HudObjGfx_InitFile(p);
-    if (_ZN11HudObjGfxIo17loadLinkIconCharsEi(p, v)) _ZN11HudObjGfxIo19uploadLinkIconCharsEv(p);
-    _ZN11HudObjGfxIo20releaseLinkIconCharsEv(this);
+    if (((HudObjGfxIo *)(p))->loadLinkIconChars(v)) ((HudObjGfxIo *)(p))->uploadLinkIconChars();
+    ((HudObjGfxIo *)(this))->releaseLinkIconChars();
 }
 
 void HudObjGfx::loadSlideIcon(u32 v) {
     HudObjGfx *p = &sHudObjGfx;
     HudObjGfx_InitFile(p);
-    if (_ZN11HudObjGfxIo18loadSlideIconCharsEi(p, v)) _ZN11HudObjGfxIo20uploadSlideIconCharsEv(p);
-    _ZN11HudObjGfxIo21releaseSlideIconCharsEv(this);
+    if (((HudObjGfxIo *)(p))->loadSlideIconChars(v)) ((HudObjGfxIo *)(p))->uploadSlideIconChars();
+    ((HudObjGfxIo *)(this))->releaseSlideIconChars();
 }
 
 extern "C" void HudObjGfx_InitFile(void *p) { FS_InitFile(p); }

@@ -14,6 +14,8 @@
 #include "gfx/ModelAnim.h"
 #include "room/RoomObjActor.h"
 #include "room/RoomObjTexAuto.h"
+#include "gfx/G3dResAccess.h"
+#include "gfx/TwoLayerAnimModel.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -205,10 +207,10 @@ TaxiInterior::~TaxiInterior() {}
 BOOL TaxiInterior::onCreate() {
     sTaxiInterior = this;
     loadModels();
-    Model_setInitCallback(&model, TaxiInterior_InitModelCallback, this);
-    rainAMatIdx = G3dResAccess_findMatIdx(MODEL_AT_RESMDL(&model), "m_rainA");
-    rainBMatIdx = G3dResAccess_findMatIdx(MODEL_AT_RESMDL(&model), "m_rainB");
-    splashMatIdx = G3dResAccess_findMatIdx(MODEL_AT_RESMDL(&model), "m_splash");
+    ((Model *)(&model))->setInitCallback((s32)(TaxiInterior_InitModelCallback), (s32)(this));
+    rainAMatIdx = ((G3dResAccess *)(MODEL_AT_RESMDL(&model)))->findMatIdx((s32)("m_rainA"));
+    rainBMatIdx = ((G3dResAccess *)(MODEL_AT_RESMDL(&model)))->findMatIdx((s32)("m_rainB"));
+    splashMatIdx = ((G3dResAccess *)(MODEL_AT_RESMDL(&model)))->findMatIdx((s32)("m_splash"));
     setRainState(0);
     Snd_PlaySeOnHandle(0x884);
     Snd_PlaySeOnHandle(0x885);
@@ -217,13 +219,13 @@ BOOL TaxiInterior::onCreate() {
 
 BOOL TaxiInterior::onExecute() {
     updateRainState();
-    AnimFrameCtrl_step(&bodyTexAnim);
+    ((AnimFrameCtrl *)(&bodyTexAnim))->step();
     *(u32 *)bodyTexAnim.anmObj = bodyTexAnim.curFrame;
-    AnimModel_stepAnim(&model);
-    AnimFrameCtrl_step(&bodyMatAnim);
+    ((AnimModel *)(&model))->stepAnim();
+    ((AnimFrameCtrl *)(&bodyMatAnim))->step();
     *(u32 *)bodyMatAnim.anmObj = bodyMatAnim.curFrame;
     if (isDriverAnimating) {
-        AnimModel_stepAnim(&driverModel);
+        ((AnimModel *)(&driverModel))->stepAnim();
     }
     s32 t = SpNpcKappn_GetAnimState();
     SpNpcKappn_GetAnimFrame();
@@ -249,7 +251,7 @@ BOOL TaxiInterior::onExecute() {
         break;
     }
     TaxiInterior_SetPartAnim(this, k, &wheelModel, &wheelRes, 0, 0x1000, 0, 0);
-    AnimModel_stepAnim(&wheelModel);
+    ((AnimModel *)(&wheelModel))->stepAnim();
     NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), rainAMatIdx, rainAlpha);
     NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), rainBMatIdx, rainAlpha);
     NNS_G3dMdlSetMdlAlpha(MODEL_AT_RESMDL(&model), splashMatIdx, rainAlpha);
@@ -257,9 +259,9 @@ BOOL TaxiInterior::onExecute() {
 }
 
 BOOL TaxiInterior::onDraw() {
-    AnimModel_drawAnimated(&model, 0);
-    AnimModel_drawAnimated(&driverModel, 0);
-    AnimModel_drawAnimated(&wheelModel, 0);
+    ((AnimModel *)(&model))->drawAnimated((void *)(0));
+    ((AnimModel *)(&driverModel))->drawAnimated((void *)(0));
+    ((AnimModel *)(&wheelModel))->drawAnimated((void *)(0));
     return TRUE;
 }
 
@@ -276,45 +278,45 @@ BOOL TaxiInterior::onDelete() {
 void TaxiInterior::loadModels() {
     loadResourcesByName("obj_taxi");
     if ((void *)RoomObjRes_GetBca(&res, 0)) {
-        if (AnimModel_allocAnmObj(&model, gBgHeap)) {
-            BlendAnimModel_initAnim(&model, (void *)RoomObjRes_GetBca(&res, 0), 0, 0x1000, 0, 0);
-            AnimModel_attachAnim(&model);
+        if (((AnimModel *)(&model))->allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)(&model))->initAnim((s32)((void *)RoomObjRes_GetBca(&res, 0)), 0, 0x1000, 0, 0);
+            ((AnimModel *)(&model))->attachAnim();
         }
     }
     if (RoomObjRes_GetBta(&res, 0)) {
-        if (ModelAnim_allocMatAnm(&bodyTexAnim, MODEL_AT_RESMDL(&model), gBgHeap)) {
-            ModelAnim_init(&bodyTexAnim, RoomObjRes_GetBta(&res, 0), 0, 0x1000, 0);
-            ModelAnim_addToRenderObj(&bodyTexAnim, Model_getRenderObj(&model));
+        if (((ModelAnim *)(&bodyTexAnim))->allocMatAnm(MODEL_AT_RESMDL(&model), gBgHeap)) {
+            ((ModelAnim *)(&bodyTexAnim))->init((s32)(RoomObjRes_GetBta(&res, 0)), 0, 0x1000, 0);
+            ((ModelAnim *)(&bodyTexAnim))->addToRenderObj((u32)(((Model *)(&model))->getRenderObj()));
         }
     }
     if (RoomObjRes_GetBma(&res, 0)) {
-        if (ModelAnim_allocMatAnm(&bodyMatAnim, MODEL_AT_RESMDL(&model), gBgHeap)) {
-            ModelAnim_init(&bodyMatAnim, RoomObjRes_GetBma(&res, 0), 0, 0x1000, 0);
-            ModelAnim_addToRenderObj(&bodyMatAnim, Model_getRenderObj(&model));
+        if (((ModelAnim *)(&bodyMatAnim))->allocMatAnm(MODEL_AT_RESMDL(&model), gBgHeap)) {
+            ((ModelAnim *)(&bodyMatAnim))->init((s32)(RoomObjRes_GetBma(&res, 0)), 0, 0x1000, 0);
+            ((ModelAnim *)(&bodyMatAnim))->addToRenderObj((u32)(((Model *)(&model))->getRenderObj()));
         }
     }
     RoomObj_LoadResourcesByName("obj_taxi_fig", &driverModel, &driverRes, &driverTex);
     if ((void *)RoomObjRes_GetBca(&driverRes, 0)) {
-        if (AnimModel_allocAnmObj(&driverModel, gBgHeap)) {
-            BlendAnimModel_initAnim(&driverModel, (void *)RoomObjRes_GetBca(&driverRes, 0), 1, 0x1000, 0, 0);
-            AnimModel_attachAnim(&driverModel);
+        if (((AnimModel *)(&driverModel))->allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)(&driverModel))->initAnim((s32)((void *)RoomObjRes_GetBca(&driverRes, 0)), 1, 0x1000, 0, 0);
+            ((AnimModel *)(&driverModel))->attachAnim();
         }
     }
     RoomObj_LoadResourcesByName("obj_taxi_hdl", &wheelModel, &wheelRes, &wheelTex);
     if ((void *)RoomObjRes_GetBca(&wheelRes, 0)) {
-        if (AnimModel_allocAnmObj(&wheelModel, gBgHeap)) {
-            BlendAnimModel_initAnim(&wheelModel, (void *)RoomObjRes_GetBca(&wheelRes, 0), 0, 0x1000, 0, 0);
-            AnimModel_attachAnim(&wheelModel);
+        if (((AnimModel *)(&wheelModel))->allocAnmObj(gBgHeap)) {
+            ((BlendAnimModel *)(&wheelModel))->initAnim((s32)((void *)RoomObjRes_GetBca(&wheelRes, 0)), 0, 0x1000, 0, 0);
+            ((AnimModel *)(&wheelModel))->attachAnim();
         }
     }
 }
 
 void TaxiInterior::playBodyAnim(s32 a) {
     void *p = (void *)RoomObjRes_GetBca(&res, 0);
-    BlendAnimModel_initAnim(&model, p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&model.curFrame)->mid, 0);
-    void *r6 = Model_getRenderObj(&model);
+    ((BlendAnimModel *)(&model))->initAnim((s32)(p), a, 0x1000, ((Unk_ov068_022702b4_Bits *)&model.curFrame)->mid, 0);
+    void *r6 = ((Model *)(&model))->getRenderObj();
     void *q = RoomObjRes_GetBma(&res, 0);
-    ModelAnim_replace(&bodyMatAnim, r6, q, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&bodyMatAnim.curFrame)->mid);
+    ((ModelAnim *)(&bodyMatAnim))->replace((s32)(r6), (s32)(q), a, 0x1000, ((Unk_ov068_022702b4_Bits *)&bodyMatAnim.curFrame)->mid);
 }
 
 BOOL TaxiInterior::setRainState(s32 s) {
@@ -351,9 +353,9 @@ BOOL TaxiInterior::enterRaining() {
 }
 
 void TaxiInterior::execRaining() {
-    if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&model, 0)) {
+    if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->hasPassedFrame(0)) {
         Snd_PlaySe(0x886);
-    } else if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&model, 0x1c)) {
+    } else if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->hasPassedFrame(0x1c)) {
         Snd_PlaySe(0x887);
     }
 }
@@ -364,9 +366,9 @@ BOOL TaxiInterior::enterRainFading() {
 }
 
 void TaxiInterior::execRainFading() {
-    if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&model, 0)) {
+    if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->hasPassedFrame(0)) {
         Snd_PlaySe(0x886);
-    } else if (AnimFrameCtrl_hasPassedFrame((AnimFrameCtrl *)&model, 0x1c)) {
+    } else if (((AnimFrameCtrl *)((AnimFrameCtrl *)&model))->hasPassedFrame(0x1c)) {
         Snd_PlaySe(0x887);
     }
     if (rainFadeFrame % 3 == 0) {
@@ -400,7 +402,7 @@ extern "C" BOOL TaxiInterior_StartDriverAnim() {
     TaxiInterior *g = sTaxiInterior;
     if (g) {
         g->isDriverAnimating = 1;
-        BlendAnimModel_initAnim(&sTaxiInterior->driverModel, (void *)RoomObjRes_GetBca(&sTaxiInterior->driverRes, 0), 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(&sTaxiInterior->driverModel))->initAnim((s32)((void *)RoomObjRes_GetBca(&sTaxiInterior->driverRes, 0)), 1, 0x1000, 0, 0);
         return TRUE;
     }
     return FALSE;
@@ -410,8 +412,8 @@ extern "C" void TaxiInterior_OnModelNode(void *p, u32 b, void *c) {
 }
 
 extern "C" void TaxiInterior_SetPartAnim(void *self, u8 k, void *sub, void *obj, u8 s0, u32 s1, u16 s2, u16 s3) {
-    s32 cur = BlendAnimModel_getAnmRes(sub);
+    s32 cur = ((BlendAnimModel *)(sub))->getAnmRes();
     if (cur != (s32)(void *)RoomObjRes_GetBca(obj, k)) {
-        BlendAnimModel_initAnim(sub, (void *)RoomObjRes_GetBca(obj, k), s0, s1, s2, s3);
+        ((BlendAnimModel *)(sub))->initAnim((s32)((void *)RoomObjRes_GetBca(obj, k)), s0, s1, s2, s3);
     }
 }

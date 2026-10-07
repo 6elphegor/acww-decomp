@@ -11,6 +11,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#include "gfx/AnimModel.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -75,7 +76,6 @@ void *_ZN19TownStyleRecordView11getTownFlagEv(void *);
 s32 TownFlag_GetPattern(s32);
 void TownFlag_SetPattern(s32, void *);
 s32 _ZN8TownFlag13getGateDesignEv(void *);
-void _ZN9AnimModel8stepAnimEv(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
@@ -86,7 +86,6 @@ void *GateHouse_Create();
 }
 #define TownStyleRecordView_getTownFlag _ZN19TownStyleRecordView11getTownFlagEv
 #define TownFlag_getGateDesign _ZN8TownFlag13getGateDesignEv
-#define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 
 class GateHouse : public BuildingActor {
 public:
@@ -143,7 +142,7 @@ BOOL GateHouse::initBuilding() {
 }
 
 BOOL GateHouse::onExecute() {
-    AnimModel_stepAnim(model);
+    ((AnimModel *)(model))->stepAnim();
     return TRUE;
 }
 

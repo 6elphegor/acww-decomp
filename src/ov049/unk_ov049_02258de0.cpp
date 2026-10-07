@@ -23,6 +23,15 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "net/CommManager.h"
+#include "item/ItemName.h"
+#include "npc/NpcActionCtrl.h"
+#include "npc/NpcLookAt.h"
+#include "npc/NpcMoveCtrl.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "save/PatternOrder.h"
+#include "talk/ChoiceList.h"
+#include "talk/TalkWindowState.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -98,7 +107,6 @@ struct SpNpcMabelChoiceMenu {
 
 extern "C" {
 void _ZN8NpcActor18onInteractionEventEi(void *self, u32 cmd, s32 arg);
-s32 _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 extern CommManager *gCommManager;
 extern u8 gTouchPrevHeld[];
 extern u8 gTouchPrevChanged[];
@@ -244,7 +252,7 @@ void func_02071e74(void *self);
 
 struct ItemNameStorage {
     u8 unk_00[0x24];
-    ItemNameStorage() { func_0206267c(this); }
+    ItemNameStorage() { new (this) ItemName(); }
 };
 
 struct TownIdInlineCopy {
@@ -707,7 +715,7 @@ BOOL SpNpcMabel::preCreate() {
     setColliderSize(0x119a, 0x2000);
     setCollisionRadius(0xf00);
     standBlend = data_020c6cc8;
-    NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x333, 0xcc, 0x133);
+    ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(2, 0x333, 0xcc, 0x133);
     return TRUE;
 }
 
@@ -716,7 +724,7 @@ BOOL SpNpcMabel::onCreate() {
     if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
-    if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner()) {
             collider.groups |= 2;
             position.x = 0xd000;
@@ -782,7 +790,7 @@ BOOL SpNpcMabel::mainAct00() {
 
 BOOL SpNpcMabel::setupAct01() {
     s32 v;
-    NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
+    ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, standBlend);
     standBlend = data_020c6cc8;
     dramaTimer = Random_GlobalBelow(5) * 20 + 100;
     if (Talk_IsDramaPending(this, &v, 2)) {
@@ -825,7 +833,7 @@ BOOL SpNpcMabel::mainAct01() {
 }
 
 BOOL SpNpcMabel::setupAct02() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -852,9 +860,9 @@ BOOL SpNpcMabel::mainAct02() {
             changeAct(3);
         }
     }
-    NpcMoveCtrl_setTargetAngle(&moveCtrl, r4);
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    ((NpcMoveCtrl *)(&moveCtrl))->setTargetAngle(r4);
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(1);
         }
     }
@@ -862,7 +870,7 @@ BOOL SpNpcMabel::mainAct02() {
 }
 
 BOOL SpNpcMabel::setupAct03() {
-    NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -883,15 +891,15 @@ BOOL SpNpcMabel::mainAct03() {
     s32 t = getDistanceToPlayer(4);
     BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
     if (t > 0x6000) {
-        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
-            NpcActionCtrl_requestAction(&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (NpcActionCtrl_getAction(&actionCtrl) == 2) {
-            NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 2) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
+    ((NpcMoveCtrl *)(&moveCtrl))->setWaypoint(&out);
     if (t <= 0x5000 || Vec_Equal(&out, &position) != 0) {
         changeAct(1);
     }
@@ -904,12 +912,12 @@ BOOL SpNpcMabel::setupAct04() {
     if (p) {
         r = getAngleTo(p);
     }
-    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct04() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         return TRUE;
     }
     if (purchasePending != 0 && AbleShop_IsPurchaseSynced() == 0) {
@@ -926,12 +934,12 @@ BOOL SpNpcMabel::setupAct05() {
     if (p) {
         r = getAngleTo(p);
     }
-    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 1);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r, 1);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct05() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         changeAct(6);
     }
@@ -943,7 +951,7 @@ BOOL SpNpcMabel::setupAct06() { return TRUE; }
 BOOL SpNpcMabel::mainAct06() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct07() {
-    NpcActionCtrl_requestAction(&actionCtrl, 0xa, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0xa, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -954,8 +962,8 @@ BOOL SpNpcMabel::mainAct07() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    if (NpcActionCtrl_getAction(&actionCtrl) == 0xa) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 0xa) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             standBlend = 0x18;
             changeAct(1);
         }
@@ -970,10 +978,10 @@ BOOL SpNpcMabel::mainAct08() {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && ((x = a), x == (t = gCommManager->myAid)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             talk.resetMsg();
-            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+            ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
             BOOL r;
             if (Item_IsFurniture(&selectedItem)) {
                 u16 tmp = 0xfff1;
@@ -1010,7 +1018,7 @@ BOOL SpNpcMabel::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
+        if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b)) && a == 4 && NetArea_IsLocalOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(0xa);
         }
@@ -1019,7 +1027,7 @@ BOOL SpNpcMabel::mainAct09() {
 }
 
 BOOL SpNpcMabel::setupAct0A() {
-    NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
+    ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, standBlend);
     return TRUE;
 }
 
@@ -1035,13 +1043,13 @@ BOOL SpNpcMabel::mainAct0A() {
 
 BOOL SpNpcMabel::setupAct0B() {
     s32 f = getAngleToPlayer(4);
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, f, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, f, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcMabel::mainAct0B() {
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(0xa);
         }
     }
@@ -1054,7 +1062,7 @@ BOOL SpNpcMabel::mainAct0C() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct0D() {
     approachTimer = 0x32;
-    NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1069,18 +1077,18 @@ BOOL SpNpcMabel::mainAct0D() {
     s32 t = getDistanceToPlayer(4);
     BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
     if (t > 0x6000) {
-        if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
-            NpcActionCtrl_requestAction(&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (NpcActionCtrl_getAction(&actionCtrl) == 2) {
-            NpcActionCtrl_requestAction(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 2) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    NpcMoveCtrl_setWaypoint(&moveCtrl, &out);
+    ((NpcMoveCtrl *)(&moveCtrl))->setWaypoint(&out);
     if (t <= 0x5000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         talk.resetMsg();
-        ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+        ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
         changeAct(4);
     }
     return TRUE;
@@ -1089,7 +1097,7 @@ BOOL SpNpcMabel::mainAct0D() {
 void SpNpcMabel::onJoinTalk() { changeAct(0xe); }
 
 void SpNpcMabel::onLeaveTalk() {
-    NpcLookAt_setTarget(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     changeAct(1);
 }
 
@@ -1098,19 +1106,19 @@ BOOL SpNpcMabel::setupAct0E() { return setupAct01(); }
 BOOL SpNpcMabel::mainAct0E() { return TRUE; }
 
 BOOL SpNpcMabel::setupAct0F() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 // ---- owner states and dialog base (unit 0225aa48)
 
 BOOL SpNpcMabel::mainAct0F() {
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
-            NpcActionCtrl_requestStand(&actionCtrl, 1, standBlend);
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestStand(1, standBlend);
         }
     }
-    NpcMoveCtrl_setTargetAngle(&moveCtrl, getAngleToPlayer(4));
+    ((NpcMoveCtrl *)(&moveCtrl))->setTargetAngle(getAngleToPlayer(4));
     TalkRequest_AddPlayerTalk6(this, 0);
     return TRUE;
 }
@@ -1133,7 +1141,7 @@ s32 SpNpcMabelTalk::getTopic() { return topic; }
 
 void SpNpcMabelTalk::start(TalkStartMsg *out) {
     void *r7 = PlayerData_GetCurrent();
-    void *r6 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7));
+    void *r6 = SickVillagerRecord_getParcelErrand(((PlayerData *)(r7))->getErrands());
     u8 buf[4];
     if (GameStart_IsActive() != 0 && getTopic() == 2) {
         out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
@@ -1156,8 +1164,8 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
     out->msgKey = (const char *)sSpNpcMabelMsgKeys[0];
     if (getTopic() == 4) {
         price = (s32)Item_GetPrice(&owner->selectedItem);
-        ActorTalkRequest_setNumberSlot(this, price, 0, 0xa, 1, 0);
-        ActorTalkRequest_setItemNameSlot(this, &owner->selectedItem, 0, 7);
+        ((ActorTalkRequest *)(this))->setNumberSlot(price, 0, 0xa, 1, 0);
+        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&owner->selectedItem), 0, 7);
         if (GameStart_IsActive() != 0) {
             out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
             out->msgIndex = 0x1e;
@@ -1177,11 +1185,11 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
             t = -1;
         }
         owner->patternSlot = t;
-        void *q6 = AbleSistersPatterns_getPattern(g + 0xfafc, owner->patternSlot);
+        void *q6 = ((AbleSistersPatterns *)(g + 0xfafc))->getPattern(owner->patternSlot);
         ItemNameStorage q;
-        PatternInfo_getTitle(Pattern_getInfo(q6), &q);
-        TalkWindowState_setNamedSlot(window, 2, &q, 7);
-        PlayerIdInlineCopy a(*PatternInfo_getAuthor(Pattern_getInfo(q6)));
+        ((PatternInfo *)(((Pattern *)(q6))->getInfo()))->getTitle(&q);
+        ((TalkWindowState *)(window))->setNamedSlot(2, &q, 7);
+        PlayerIdInlineCopy a(*PatternInfo_getAuthor(((Pattern *)(q6))->getInfo()));
         PlayerIdInlineCopy b(*PlayerData_getPlayerId(r7));
         TownIdInlineCopy c(*PlayerId_GetTownId(&a));
         TownIdInlineCopy d(*PlayerId_GetTownId(&b));
@@ -1189,19 +1197,19 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
             out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
             out->msgIndex = 0x1d;
         } else if (c.id != d.id || memcmp(&c.name, &d.name, 8) != 0) {
-            ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
-            ActorTalkRequest_setTownNameSlot(this, &c, 3);
+            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(&a), 2);
+            ((ActorTalkRequest *)(this))->setTownNameSlot((u32)(&c), 3);
             out->msgIndex = 0x33;
-        } else if (a.id0 == b.id0 && memcmp(&a.name0, &b.name0, 8) == 0 && PlayerId_equals(&a, &b) != 0) {
+        } else if (a.id0 == b.id0 && memcmp(&a.name0, &b.name0, 8) == 0 && ((PlayerId *)(void *)(&a))->equals((PlayerId *)(void *)(&b)) != 0) {
         } else {
-            ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
+            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(&a), 2);
             out->msgIndex = 0x32;
         }
         TownId_Destruct(&d);
         TownId_Destruct(&c);
-        func_020942c8(&b);
-        func_020942c8(&a);
-        func_0206260c(&q);
+        new (&b) PlayerId();
+        new (&a) PlayerId();
+        ((ItemName *)((void *)(&q)))->ItemName::~ItemName();
     }
 }
 
@@ -1288,14 +1296,14 @@ test0:
 }
 
 void SpNpcMabelTalk::startDesignEditor() {
-    ActorTalkRequest_setSubSceneKind(this, 4, 0);
-    ActorTalkRequest_openSubScene(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(4, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setScript(1);
 }
 
 void SpNpcMabelTalk::startDesignNameEntry() {
-    ActorTalkRequest_setSubSceneKind(this, 0xb, 0);
-    ActorTalkRequest_openSubScene(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(0xb, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setScript(2);
 }
 
@@ -1304,8 +1312,8 @@ void SpNpcMabelTalk::chargeDesignFee() {
 }
 
 void SpNpcMabelTalk::startSellItemSelect() {
-    ActorTalkRequest_setSubSceneKind(this, 0x1e, 0);
-    ActorTalkRequest_openSubScene(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(0x1e, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setScript(6);
 }
 
@@ -1328,20 +1336,20 @@ void SpNpcMabelTalk::openItemChoices() {
 }
 
 void SpNpcMabelTalk::startDisplayPatternSelect() {
-    ActorTalkRequest_setSubSceneKind(this, 5, 0);
-    ActorTalkRequest_openSubScene(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(5, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setScript(3);
 }
 
 void SpNpcMabelTalk::startTakePatternSelect() {
-    ActorTalkRequest_setSubSceneKind(this, 7, 0);
-    ActorTalkRequest_openSubScene(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(7, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setScript(4);
 }
 
 void SpNpcMabelTalk::startTradePatternSelect() {
-    ActorTalkRequest_setSubSceneKind(this, 8, 0);
-    ActorTalkRequest_openSubScene(this, 2);
+    ((ActorTalkRequest *)(this))->setSubSceneKind(8, 0);
+    ((ActorTalkRequest *)(this))->openSubScene(2);
     setScript(5);
 }
 
@@ -1455,7 +1463,7 @@ loop0:
     u32 id;
     id = tbl[i].id;
     if (id == *idp) {
-        u32 arg = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
+        u32 arg = ((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult();
         (this->*((SpNpcMabelChoiceHandler *)((u32)tbl + off))->fn)(arg);
     }
     i++;
@@ -1466,19 +1474,19 @@ test0:
 void SpNpcMabelTalk::onMenuChoice(u32 a) {
     u8 buf[2];
     void *g = gCommManager;
-    if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+    if (((CommManager *)(g))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (a == 2) {
             buf[0] = 0x1c;
-            TalkWindowState_setNextMessage(window, &buf[0], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf[0]), sSpNpcMabelMsgKeys[0]);
         } else if (a == 0) {
             buf[1] = 0x37;
-            TalkWindowState_setNextMessage(window, &buf[1], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf[1]), sSpNpcMabelMsgKeys[0]);
         }
     }
-    if (CommManager_isOnline(g) == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
+    if (((CommManager *)(g))->isOnline() == 0 && *DebugVar_GetPtr(0, 0x4a) == 0) {
         s32 r = NpcRegistry_FindSpNpc(5);
         if (r != 0) {
-            ActorTalkRequest_setPartnerActor(this, r);
+            ((ActorTalkRequest *)(this))->setPartnerActor((NpcActor *)(r));
         }
     }
 }
@@ -1488,10 +1496,10 @@ void SpNpcMabelTalk::onDesignFeeChoice(u32 a) {
     if (a == 0) {
         if (NpcActor_CanPlayerPay(owner, 0x15e) == 0) {
             buf[0] = 0xd;
-            TalkWindowState_setNextMessage(window, &buf[0], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf[0]), sSpNpcMabelMsgKeys[0]);
         } else {
             buf[1] = 0xe;
-            TalkWindowState_setNextMessage(window, &buf[1], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf[1]), sSpNpcMabelMsgKeys[0]);
         }
     }
 }
@@ -1522,15 +1530,15 @@ void SpNpcMabelTalk::onSellPriceChoice(s32 v) {
         case 0:
             NpcActor_PayPlayer(owner, price);
             m[0] = 0x1a;
-            TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(m), sSpNpcMabelMsgKeys[0]);
             break;
         case 1:
             m[1] = 0x1e;
-            TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), sSpNpcMabelMsgKeys[0]);
             break;
         case 2:
             m[2] = 0x38;
-            TalkWindowState_setNextMessage(window, &m[2], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[2]), sSpNpcMabelMsgKeys[0]);
             MenuCtrl_ReturnChosenItems(0);
             break;
         }
@@ -1557,13 +1565,13 @@ void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
         s32 r = Pocket_FindEmpty();
         if (r == -1) {
             m[0] = 0x2c;
-            TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(m), sSpNpcMabelMsgKeys[0]);
         } else if (!NpcActor_CanPlayerPay(owner, price)) {
             m[1] = 0x2b;
-            TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), sSpNpcMabelMsgKeys[0]);
         } else {
             m[2] = 0x29;
-            TalkWindowState_setNextMessage(window, &m[2], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[2]), sSpNpcMabelMsgKeys[0]);
             sellItemToPlayer();
         }
     } else if (v == 1) {
@@ -1576,29 +1584,29 @@ void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
             return;
         }
         if (owner->selectedItem >= 0x11a8 && owner->selectedItem <= 0x12a7) {
-            owner->tryOnPrevItem = *PlayerData_getShirt(h);
+            owner->tryOnPrevItem = *((PlayerData *)(h))->getShirt();
             A[1] = owner->selectedItem;
             PlayerActor_RequestWearShirtAlt(&A[1]);
         } else if ((owner->selectedItem >= 0x13c8 && owner->selectedItem <= 0x1407) || (owner->selectedItem >= 0x13a8 && owner->selectedItem <= 0x13c7)) {
             if (owner->selectedItem >= 0x13a8 && owner->selectedItem <= 0x13c7) {
                 if (!func_0204bab8(&owner->selectedItem)) {
-                    owner->tryOnRemovedItem = *PlayerData_getFaceItem(h);
+                    owner->tryOnRemovedItem = *((PlayerData *)(h))->getFaceItem();
                     B[0] = 0xfff1;
                     PlayerActor_RequestWearFaceItemAlt(&B[0]);
                 }
             }
-            owner->tryOnPrevItem = *PlayerData_getHat(h);
+            owner->tryOnPrevItem = *((PlayerData *)(h))->getHat();
             B[1] = owner->selectedItem;
             PlayerActor_RequestWearHatAlt(&B[1]);
         } else if (owner->selectedItem >= 0x1431 && owner->selectedItem <= 0x1470) {
-            owner->tryOnPrevItem = *PlayerData_getFaceItem(h);
+            owner->tryOnPrevItem = *((PlayerData *)(h))->getFaceItem();
             C[0] = owner->selectedItem;
             PlayerActor_RequestWearFaceItemAlt(&C[0]);
             A[0] = 0xfff1;
-            A[0] = *PlayerData_getHat(h);
+            A[0] = *((PlayerData *)(h))->getHat();
             if (Unk_ov049_02259dd8_VR(&A[0], 0x13a8, 0x13c7)) {
                 if (!func_0204bab8(&A[0])) {
-                    owner->tryOnRemovedItem = *PlayerData_getHat(h);
+                    owner->tryOnRemovedItem = *((PlayerData *)(h))->getHat();
                     C[1] = 0xfff1;
                     PlayerActor_RequestWearHatAlt(&C[1]);
                 }
@@ -1606,7 +1614,7 @@ void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
         }
         PlayerActor_SetNoFaceTalkTarget(1, 4);
         Camera_SetMode4();
-        TalkWindowState_lockAdvance(window);
+        ((TalkWindowState *)(window))->lockAdvance();
         setScript(7);
     }
 }
@@ -1651,13 +1659,13 @@ void SpNpcMabelTalk::onTryOnChoice(s32 v) {
         s32 r = Pocket_FindEmpty();
         if (r == -1) {
             m[0] = 0x2c;
-            TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(m), sSpNpcMabelMsgKeys[0]);
         } else if (!NpcActor_CanPlayerPay(owner, price)) {
             m[1] = 0x2b;
-            TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), sSpNpcMabelMsgKeys[0]);
         } else {
             m[2] = 0x29;
-            TalkWindowState_setNextMessage(window, &m[2], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[2]), sSpNpcMabelMsgKeys[0]);
             sellItemToPlayer();
         }
     }
@@ -1672,8 +1680,8 @@ extern "C" BOOL SpNpcMabel_IsDeliveryItem(u16 *p, s32 v) {
 
 void SpNpcMabelTalk::onDeliveryChoice(s32 v) {
     if (v == 0) {
-        ActorTalkRequest_setPocketFilter(this, (void *)SpNpcMabel_IsDeliveryItem, 0xd, 0);
-        ActorTalkRequest_openSubScene(this, 0);
+        ((ActorTalkRequest *)(this))->setPocketFilter((u32)((void *)SpNpcMabel_IsDeliveryItem), 0xd, 0);
+        ((ActorTalkRequest *)(this))->openSubScene(0);
         setScript(9);
     }
 }
@@ -1681,21 +1689,21 @@ void SpNpcMabelTalk::onDeliveryChoice(s32 v) {
 void SpNpcMabelTalk::onDramaMenuChoice() {
     u8 m[2];
     if ((s32)msgIndex >= 0 && (s32)msgIndex <= 0x11) {
-        s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
+        s32 t = ((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult();
         if (t != 2) {
             m[1] = sSpNpcMabelDramaMenuMsgs[t];
-            TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
+            ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), sSpNpcMabelMsgKeys[0]);
         } else {
             if (Talk_IsDramaPending(owner, m, 2)) {
                 Talk_AdvanceDrama(owner, m);
             }
         }
     }
-    if (!CommManager_isOnline(gCommManager)) {
+    if (!((CommManager *)(gCommManager))->isOnline()) {
         if (*DebugVar_GetPtr(0, 0x4a) == 0) {
             s32 r = NpcRegistry_FindSpNpc(5);
             if (r) {
-                ActorTalkRequest_setPartnerActor(this, r);
+                ((ActorTalkRequest *)(this))->setPartnerActor((NpcActor *)(r));
             }
         }
     }
@@ -1728,17 +1736,17 @@ void SpNpcMabelTalk::onDesignEditorDone() {
     u8 m[2];
     if (MenuCtrl_IsResultOk()) {
         m[0] = 0x10;
-        TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(m), sSpNpcMabelMsgKeys[0]);
     } else {
         m[1] = 0xf;
-        TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), sSpNpcMabelMsgKeys[0]);
     }
 }
 
 void SpNpcMabelTalk::onDesignNamed() {
     u8 m[1];
     m[0] = 0x12;
-    TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
+    ((TalkWindowState *)(window))->setNextMessage((u8 *)(m), sSpNpcMabelMsgKeys[0]);
 }
 
 void SpNpcMabelTalk::onDisplayPatternChosen() {
@@ -1746,13 +1754,13 @@ void SpNpcMabelTalk::onDisplayPatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(h)), a);
+        u32 t = ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(h))->getPatterns()))->getPatternOrder()))->getSlot(a);
         PatternSrc_Copy(9, t, 4, owner->patternSlot, 1);
         m[0] = 0x24;
-        TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(m), sSpNpcMabelMsgKeys[0]);
     } else {
         m[1] = 0x22;
-        TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), sSpNpcMabelMsgKeys[0]);
     }
 }
 
@@ -1762,7 +1770,7 @@ void SpNpcMabelTalk::onTakePatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(h)), a);
+        u32 t = ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(h))->getPatterns()))->getPatternOrder()))->getSlot(a);
         u16 lo, hi;
         PatternSrc_Copy(4, owner->patternSlot, 9, t, 1);
         if (t < 8) {
@@ -1775,25 +1783,25 @@ void SpNpcMabelTalk::onTakePatternChosen() {
         } else {
             hi = 0x1429;
         }
-        u32 x = *PlayerData_getShirt(h);
-        u32 y = *PlayerData_getHat(h);
+        u32 x = *((PlayerData *)(h))->getShirt();
+        u32 y = *((PlayerData *)(h))->getHat();
         if (lo == x) {
-            if (Unk_ov049_02259774_R(PlayerData_getShirt(h), 0x12a8, 0x12af)) {
+            if (Unk_ov049_02259774_R(((PlayerData *)(h))->getShirt(), 0x12a8, 0x12af)) {
                 v[0] = lo;
                 PlayerActor_RequestWearShirtAlt(&v[0]);
             }
         }
         if (hi == y) {
-            if (Unk_ov049_02259774_R(PlayerData_getHat(h), 0x1429, 0x1430)) {
+            if (Unk_ov049_02259774_R(((PlayerData *)(h))->getHat(), 0x1429, 0x1430)) {
                 v[1] = hi;
                 PlayerActor_RequestWearHatAlt(&v[1]);
             }
         }
         m[0] = 0x27;
-        TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(m), sSpNpcMabelMsgKeys[0]);
     } else {
         m[1] = 0x22;
-        TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), sSpNpcMabelMsgKeys[0]);
     }
 }
 
@@ -1803,7 +1811,7 @@ void SpNpcMabelTalk::onTradePatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(h)), a);
+        u32 t = ((PatternOrder *)(((PlayerPatterns *)(((PlayerData *)(h))->getPatterns()))->getPatternOrder()))->getSlot(a);
         u16 lo, hi;
         PatternSrc_Swap(9, t, 4, owner->patternSlot, 1);
         if (t < 8) {
@@ -1816,25 +1824,25 @@ void SpNpcMabelTalk::onTradePatternChosen() {
         } else {
             hi = 0x1429;
         }
-        u32 x = *PlayerData_getShirt(h);
-        u32 y = *PlayerData_getHat(h);
+        u32 x = *((PlayerData *)(h))->getShirt();
+        u32 y = *((PlayerData *)(h))->getHat();
         if (lo == x) {
-            if (Unk_ov049_02259774_R(PlayerData_getShirt(h), 0x12a8, 0x12af)) {
+            if (Unk_ov049_02259774_R(((PlayerData *)(h))->getShirt(), 0x12a8, 0x12af)) {
                 v[0] = lo;
                 PlayerActor_RequestWearShirtAlt(&v[0]);
             }
         }
         if (hi == y) {
-            if (Unk_ov049_02259774_R(PlayerData_getHat(h), 0x1429, 0x1430)) {
+            if (Unk_ov049_02259774_R(((PlayerData *)(h))->getHat(), 0x1429, 0x1430)) {
                 v[1] = hi;
                 PlayerActor_RequestWearHatAlt(&v[1]);
             }
         }
         m[0] = 0x21;
-        TalkWindowState_setNextMessage(window, m, sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(m), sSpNpcMabelMsgKeys[0]);
     } else {
         m[1] = 0x22;
-        TalkWindowState_setNextMessage(window, &m[1], sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(&m[1]), sSpNpcMabelMsgKeys[0]);
     }
 }
 
@@ -1860,13 +1868,13 @@ void SpNpcMabelTalk::onSellItemsChosen() {
         if (price == 0) {
             msg = 0x17;
         } else {
-            ActorTalkRequest_setNumberSlot(this, price, 1, 10, 1, 0);
+            ((ActorTalkRequest *)(this))->setNumberSlot(price, 1, 10, 1, 0);
             msg = 0x1b;
         }
     } else {
         msg = 0x15;
     }
-    TalkWindowState_setNextMessage(ctx, &msg, sSpNpcMabelMsgKeys[0]);
+    ((TalkWindowState *)(ctx))->setNextMessage((u8 *)(&msg), sSpNpcMabelMsgKeys[0]);
 }
 
 void SpNpcMabelTalk::waitTryOnDone() {
@@ -1876,9 +1884,9 @@ void SpNpcMabelTalk::waitTryOnDone() {
     if (PlayerActor_IsInAction(0x10, 4)) {
         void *ctx = window;
         u8 msg;
-        TalkWindowState_unlockAdvance(ctx);
+        ((TalkWindowState *)(ctx))->unlockAdvance();
         msg = 0x2d;
-        TalkWindowState_setNextMessage(ctx, &msg, sSpNpcMabelMsgKeys[0]);
+        ((TalkWindowState *)(ctx))->setNextMessage((u8 *)(&msg), sSpNpcMabelMsgKeys[0]);
         setScript(0);
     }
 }
@@ -1897,7 +1905,7 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
     u16 v[3];
     void *hh;
     if (MenuCtrl_IsResultOk()) {
-        hh = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
+        hh = SickVillagerRecord_getParcelErrand(((PlayerData *)(PlayerData_GetCurrent()))->getErrands());
         if (Talk_IsInOwnTown()) {
             s32 n = (s32)MenuCtrl_GetIndex();
             v[1] = Pocket_GetItem(n);
@@ -1905,38 +1913,38 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
                 Pocket_RemoveItem(n);
             }
             if (!Unk_ov049_02258ee0_Eq(&v[1], &v[2])) {
-                ActorTalkRequest_requestTakeItem(this, &v[1], 2, 5, 0);
+                ((ActorTalkRequest *)(this))->requestTakeItem(&v[1], 2, 5, 0);
                 msg = 0x2f;
                 ErrandRecord_setStep(ParcelErrand_GetRecord(hh), 1);
             }
         }
     }
     *(u8 *)v = msg;
-    TalkWindowState_setNextMessage(ctx, v, tbl);
+    ((TalkWindowState *)(ctx))->setNextMessage((u8 *)(v), tbl);
 }
 
 void SpNpcMabelTalk::openChoiceMenu(void *rec, s32 x) {
     void *ctx = window;
-    void *h = TalkWindowState_getChoiceList(window);
+    void *h = ((TalkWindowState *)(window))->getChoiceList();
     SpNpcMabelChoiceMenu *r = (SpNpcMabelChoiceMenu *)rec;
     u8 *p = (u8 *)r->choices;
     s32 n = r->count;
     s32 z = 0;
     s32 i;
     if (x != -1) {
-        ChoiceList_reset(h, n, x);
+        ((ChoiceList *)(h))->reset(n, x);
     } else {
-        ChoiceList_reset(h, n, -1);
+        ((ChoiceList *)(h))->reset(n, -1);
     }
     i = z;
     for (; i < n; i++) {
         u8 buf[2];
         buf[0] = p[i];
         buf[1] = 6;
-        ChoiceList_setEntry(h, i, buf, z, &buf[1], sSpNpcMabelMsgKeys[0], z);
+        ((ChoiceList *)(h))->setEntry(i, (const u8 *)(buf), z, (const u8 *)(&buf[1]), (const char *)(sSpNpcMabelMsgKeys[0]), z);
     }
-    ChoiceList_loadTexts(h);
-    TalkWindowState_openChoices(ctx, 1);
+    ((ChoiceList *)(h))->loadTexts();
+    ((TalkWindowState *)(ctx))->openChoices(1);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1951,14 +1959,14 @@ void SpNpcMabelTalk::sellItemToPlayer() {
 }
 
 BOOL SpNpcMabel::acceptsInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0 || tryStartShopItemTalk() != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || netIsTalkLocked() != 0 || tryStartShopItemTalk() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 BOOL SpNpcMabel::acceptsSelfRequestedInteraction(void *) {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
@@ -1989,15 +1997,15 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
             netSetSlotsIfOwner(1, g->myAid, g->myAid);
             if (talk.getTopic() == 1 || talk.getTopic() == 0) {
                 talk.resetMsg();
-                ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+                ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
                 changeAct(4);
             } else if (talk.getTopic() == 3) {
                 talk.resetMsg();
-                ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+                ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
                 changeAct(5);
-            } else if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+            } else if (((CommManager *)(g))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
                 talk.resetMsg();
-                ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+                ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
                 changeAct(4);
             } else {
                 changeAct(0xd);
@@ -2012,7 +2020,7 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
         } else if (isNetOwner()) {
             netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             talk.resetMsg();
-            ActorTalkRequest_setTalkPlayer(&talk, getPlayerActor(4));
+            ((ActorTalkRequest *)(&talk))->setTalkPlayer(getPlayerActor(4));
             talk.setTopic(2);
             changeAct(4);
         }
@@ -2022,7 +2030,7 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
             if (NetArea_IsLocalOwner()) {
                 g = gCommManager;
                 netSetSlotsIfOwner(1, g->myAid, 4);
-                if (CommManager_isOnline(g) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+                if (((CommManager *)(g))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
                     changeAct(0xa);
                 } else if (talk.getTopic() != 3) {
                     changeAct(1);
@@ -2038,7 +2046,7 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b)) {
+                if (((NpcActor *)(this))->netGetSlots((s32)(&a), (s32)(&b))) {
                     if (arg == 4) goto x4;
                     if (arg == b) goto y4;
                 x4:
@@ -2057,7 +2065,7 @@ void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
 void SpNpcMabel::setDesignConcept(u32 y) {
     void *h = PlayerData_GetCurrent();
     s32 n = MenuCtrl_GetIndex();
-    PatternInfo_setTaste(Pattern_getInfo(PlayerPatterns_getPatternByOrder(PlayerData_getPatterns(h), (s32)n)), y);
+    ((PatternInfo *)(((Pattern *)(((PlayerPatterns *)(((PlayerData *)(h))->getPatterns()))->getPatternByOrder((s32)n)))->getInfo()))->setTaste(y);
 }
 
 BOOL SpNpcMabel::pickShopItemAtPlayer() {
@@ -2066,7 +2074,7 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
     VecFx32 v;
     Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov049_02258ee0_Flags() ? TRUE : FALSE;
-    if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&talkCtrl) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
+    if (p == 0 || TalkRequest_IsActive() != 0 || ((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;
     }
     selectedItem = 0xfff1;
@@ -2139,7 +2147,7 @@ BOOL SpNpcMabel::tryStartShopItemTalk() {
 // ---- owner / dialog (unit 02258de0)
 
 BOOL SpNpcMabel::tryStartFarewellTalk() {
-    if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
+    if (((CommManager *)(gCommManager))->isOnline() != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         return FALSE;
     }
     VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);

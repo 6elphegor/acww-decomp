@@ -152,8 +152,6 @@ void _ZN9FtrSwitch3setEji(void *, s32, s32);
 BOOL _ZN9FtrSwitch10isChangingEv(void *);
 u8 _ZN9FtrSwitch4isOnEv(void *);
 void _ZN15FtrSoundEmitter4playEjj(void *, u32, void *);
-void *_ZN11FtrModelRes10getAnimSetEv(void *);
-void *_ZN10FtrAnimSet6getBvaEj(void *, u32);
 u32 FtrActor_StepAnims(void *);
 u32 FtrActor_GetFtrIndex(void *);
 u32 FtrSound_GetSe0(u32);
@@ -165,7 +163,6 @@ u32 _ZN10FtrContact12getPushAngleEv(void *);
 u32 ItemInfo_IsReady(void);
 void TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
-BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 }
 }
 
@@ -274,7 +271,7 @@ BOOL FtrSingingInsect::updateActive() {
         case 2:
         case 3: {
             if (h == 0x3ff) {
-                if (p10::_ZN13AnimFrameCtrl14hasPassedFrameEi(animFrameCtrl, 0x14)) {
+                if (((AnimFrameCtrl *)(animFrameCtrl))->hasPassedFrame(0x14)) {
                     if (h != p10::gFtrSoundNone) {
                         p10::_ZN15FtrSoundEmitter4playEjj(soundEmitter, h, centerPos);
                     }
@@ -293,7 +290,7 @@ BOOL FtrSingingInsect::updateActive() {
                             p10::_ZN15FtrSoundEmitter4playEjj(soundEmitter, h, centerPos);
                         }
                     } else {
-                        if (p10::_ZN10FtrAnimSet6getBvaEj(p10::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0) != 0) {
+                        if (((FtrAnimSet *)(((FtrModelRes *)(modelRes))->getAnimSet()))->getBva(0) != 0) {
                             restTimer = loopsPerPhrase * ((Unk_ov004_0220a648_Bits *)&anims[3].numFrames)->mid;
                         } else {
                             restTimer = loopsPerPhrase * ((Unk_ov004_0220a648_Bits *)&animNumFrames)->mid;
@@ -330,11 +327,9 @@ BOOL CarpetTex_Load(u32 a, u16 *p);
 s32 CarpetTex_GetTex(s32 a);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e, s32 f);
 
-s32 _ZN8FtrActor9initAnimsEiiii(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 _ZN8FtrActor8playAnimEiiij(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 FtrActor_GetFtrIndex(void *p);
 u16 FtrSound_GetSe0(s32 idx);
-u16 _ZN8FtrActor17getAnimFrameCountEi(void *p, s32 a);
 void FtrActor_StepAnims(void *p);
 void _ZN8FtrActor10playSound0Ev(void *p);
 void _ZN8FtrActor10playSound1Ev(void *p);
@@ -430,7 +425,7 @@ s32 _ZN12FtrPreviewer14getSampleIndexEv(s32 a);
 // Out-of-line constructors (defined after the factories so they are not inlined)
 
 BOOL FtrSingingInsect::initModel() {
-    p11::_ZN8FtrActor9initAnimsEiiii(this, 0, 1, 0x1000, 0);
+    ((FtrActor *)(this))->initAnims(0, 1, 0x1000, 0);
     s32 t = p11::FtrSound_GetSe0(p11::FtrActor_GetFtrIndex(this));
     switch (t) {
     case 0x3f9:
@@ -462,7 +457,7 @@ BOOL FtrSingingInsect::initModel() {
         } else if ((u16)(t + 0xfc07) <= 2) {
             restTimer = p11::Random_GlobalBelow(0xc8, 0);
         } else {
-            restTimer = p11::Random_GlobalBelow(loopsPerPhrase * p11::_ZN8FtrActor17getAnimFrameCountEi(this, 0));
+            restTimer = p11::Random_GlobalBelow(loopsPerPhrase * ((FtrActor *)(this))->getAnimFrameCount(0));
         }
     }
     return TRUE;

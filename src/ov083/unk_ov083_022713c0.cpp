@@ -24,6 +24,10 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "player/PlayerData.h"
+#include "player/PlayerSpNpcRecord.h"
+#include "save/ContestRecord.h"
+#include "save/SaveData.h"
 
 
 class ActorTalkRequest;
@@ -35,19 +39,12 @@ class SpNpcTortimerFlowerFestTalk;
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData10getErrandsEv(void *p);
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
-void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
 s32 Pocket_FindEmpty();
 s32 Pocket_FindItem(u16 *p);
 void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 Random_GlobalBelow(u32 n);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
@@ -55,16 +52,10 @@ void *TownSessionState_Get();
 BOOL TownSessionState_TestFlag(void *p, s32 v);
 void TownSessionState_SetFlag(void *p, s32 v);
 void ContestRecord_JudgeGardens(void *p);
-void _ZN13ContestRecord7setKindEj(void *p, s32 v);
-void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void ContestRecord_BeginFestival(void *p, s32 v);
 u32 Event_GetDaysSinceStart(s32 v);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
-void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 extern u16 data_020c6cc8;
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u8 gContestRecord[];
 extern u8 gSaveData[];
 }
@@ -162,7 +153,7 @@ BOOL SpNpcTortimerFlowerFest::onCreate() {
         return FALSE;
     }
     changeAct(0);
-    _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&animCtrl, this, 0x140, 0, 0, 0x1000, 0, 1);
+    ((NpcAnimCtrl *)(&animCtrl))->playAnim((NpcActor *)(this), 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
     collider.groups |= 2;
     festDay = Event_GetDaysSinceStart(0xe);
@@ -193,7 +184,7 @@ void SpNpcTortimerFlowerFest::changeAct(s32 state) {
 }
 
 BOOL SpNpcTortimerFlowerFest::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -204,8 +195,8 @@ BOOL SpNpcTortimerFlowerFest::mainAct00() {
     judgeTimer = 0x258;
     u8 *const g = gContestRecord;
     ContestRecord_JudgeGardens(g);
-    _ZN13ContestRecord7setKindEj(g, 3);
-    _ZN8SaveData7setFlagEj(gSaveData, 0xf);
+    ((ContestRecord *)(g))->setKind(3);
+    ((SaveData *)(gSaveData))->setFlag(0xf);
     return TRUE;
 }
 
@@ -220,14 +211,14 @@ BOOL SpNpcTortimerFlowerFest::setupAct01() {
     void *p = talk.getTalkPlayer();
     u32 x = 0;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
 BOOL SpNpcTortimerFlowerFest::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -249,7 +240,7 @@ void SpNpcTortimerFlowerFestTalk::attachOwner(SpNpcTortimerFlowerFest *owner) {
 void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
     u16 h;
     u32 w[2];
-    _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
+    ((PlayerData *)(PlayerData_GetCurrent()))->getErrands();
     out->msgKey = "sp_npc_turtle3";
     if (massageChairSlot == -1) {
         h = 0x37e0;
@@ -298,7 +289,7 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
         }
         if (msgIndex == 2) {
             h1 = 0x1559;
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h1, 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&h1, 0, 5, 0);
             h2 = 0x1559;
             Pocket_AddItem(&h2, 0);
             b1 = 4;
@@ -307,7 +298,7 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
     } else {
         if (msgIndex == 5 || msgIndex == 6 || msgIndex == 9) {
             if (!Talk_CheckAndSetPlayerFlag(0x1d, 1)) {
-                _ZN17PlayerSpNpcRecord15setFestivalGiftEv(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent()));
+                ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->setFestivalGift();
                 if (Pocket_FindEmpty() >= 0) {
                     msg = 7;
                     NookShop_PickFlowerBag(&h3);
@@ -316,9 +307,9 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
             }
         }
         if (msgIndex == 7) {
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&giftItem, 0, 5, 0);
             Pocket_AddItem(&giftItem, 0);
-            _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &giftItem, 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&giftItem), 0, 7);
             msg = 8;
         }
         if (msg != 0xff) {
@@ -341,7 +332,7 @@ void SpNpcTortimerFlowerFestTalk::onChoice(u32) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
                 h = 0x37e0;
-                _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h, 0, 5, 0);
+                ((ActorTalkRequest *)(this))->requestTakeItem(&h, 0, 5, 0);
             }
             msg = 2;
         }
@@ -366,7 +357,7 @@ void SpNpcTortimerFlowerFestTalk::onChoice(u32) {
 
 BOOL SpNpcTortimerFlowerFest::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

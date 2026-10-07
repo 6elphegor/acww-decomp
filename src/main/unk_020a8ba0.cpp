@@ -23,7 +23,6 @@
 #include "talk/MsgCopyProcessor.h"
 #include "talk/MsgUiProc.h"
 
-inline void *operator new(size_t, void *p) { return p; }
 
 extern "C" {
 // Other files

@@ -6,6 +6,10 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "sys/ProcProfile.h"
+#include "net/CommManager.h"
+#include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
+#include "talk/ChoiceList.h"
 
 
 
@@ -58,8 +62,6 @@ struct SaveMenuStateEntry {
 };
 
 extern "C" SaveMenu *SaveMenu_Create();
-extern "C" void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(TalkWindowState *o, TalkMsgRequest *p);
-extern "C" void _ZN15TalkWindowState12showBusyIconEj(TalkWindowState *o, s32 v);
 
 ProcProfile sSaveMenuProfile = {(void *(*)())SaveMenu_Create, 0xd5, 0xd0};
 
@@ -88,19 +90,15 @@ TalkWindowState *TalkWindow_Get(s32 v);
 }
 
 extern "C" {
-s32 _ZN10ChoiceList9getResultEv(void *h);
 }
 
 extern "C" {
-void _ZN10ChoiceList5resetEii(void *h, s32 a, s32 b);
 }
 
 extern "C" {
-void _ZN10ChoiceList8setEntryEiPKhiS1_PKci(void *h, s32 a, u8 *b, s32 c, u8 *d, s32 e, s32 f);
 }
 
 extern "C" {
-void _ZN10ChoiceList9loadTextsEv(void *h);
 }
 
 extern "C" {
@@ -140,7 +138,6 @@ void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-s32 _ZN11CommManager8isOnlineEv(void *p);
 }
 
 extern "C" {
@@ -172,7 +169,6 @@ s32 GameStart_IsNewResident();
 }
 
 extern "C" {
-void _ZN10MsgRequest11setFileNameEPKc(void *p, u8 *q);
 }
 
 extern "C" {
@@ -192,7 +188,6 @@ s32 TalkRequest_IsActive();
 }
 
 extern "C" {
-s32 _ZN11CommManager7isMyAidEj(void *p, s32 v);
 }
 
 extern "C" {
@@ -232,7 +227,6 @@ s32 _ZN10PlayerData12getInventoryEv(s32 v);
 }
 
 extern "C" {
-s32 _ZN15PlayerInventory13getTotalBellsEi(s32 a, s32 b);
 }
 
 extern "C" {
@@ -405,7 +399,7 @@ BOOL SaveMenu::onExecute() {
     if (*DebugVar_GetPtr(0, 0x4c) != 0) {
         s32 pd = PlayerData_GetCurrent();
         if (pd != 0) {
-            _ZN10PlayerData14getBankAccountEv(pd);
+            ((PlayerData *)(pd))->getBankAccount();
             if (*DebugVar_GetPtr(0, 0x4c) != 0) {
                 t = *DebugVar_GetPtr(0, 0x4c);
                 if (t < 1) {
@@ -423,7 +417,7 @@ BOOL SaveMenu::onExecute() {
     }
     if (*DebugVar_GetPtr(0, 0x48) != 0) {
         r6 = PlayerData_GetCurrent();
-        r4 = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(r6), 1);
+        r4 = ((PlayerInventory *)(((PlayerData *)(r6))->getInventory()))->getTotalBells(1);
         r4 += *DebugVar_GetPtr(0, 0x48);
         if (r4 < 0) {
             r4 = 0;
@@ -456,7 +450,7 @@ void SaveMenu::updateIdle() {
                     if (Unk_0209e7b4_Is2(gScreenTransition) != 0) {
                         if (TalkRequest_IsActive() == 0) {
                             void *g = gCommManager;
-                            if (_ZN11CommManager8isOnlineEv(g) != 0 && _ZN11CommManager7isMyAidEj(g, 0) == 0) {
+                            if (((CommManager *)(g))->isOnline() != 0 && ((CommManager *)(g))->isMyAid(0) == 0) {
                                 ChatQuickMsg_PostWantToSave();
                             } else if (TalkRequest_AddSaveMenu() != 0) {
                                 setState(1);
@@ -477,16 +471,16 @@ void SaveMenu::updateOpenTalk() {
         SaveMenuTalk *p = &talk;
         p->resetMsg();
         if (GameStart_IsNewTown() != 0 || GameStart_IsNewResident() != 0) {
-            _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence4");
+            ((MsgRequest *)(&talk))->setFileName((const char *)((u8 *)"sp_etc_sequence4"));
             talk.msgIndex = 4;
-        } else if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
-            _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence2");
+        } else if (((CommManager *)(gCommManager))->isOnline() != 0) {
+            ((MsgRequest *)(&talk))->setFileName((const char *)((u8 *)"sp_etc_sequence2"));
             talk.msgIndex = 4;
         } else {
-            _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence2");
+            ((MsgRequest *)(&talk))->setFileName((const char *)((u8 *)"sp_etc_sequence2"));
             talk.msgIndex = 0;
         }
-        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(o, &talk);
+        (o)->attachRequest(&talk);
         o->nextState = 1;
         setState(2);
     } else {
@@ -512,7 +506,7 @@ void SaveMenu::updateQuitting() {
     if (o->state == 0) {
         o->detachRequest();
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2e, 2, 3);
-        if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
+        if (((CommManager *)(gCommManager))->isOnline() != 0) {
             Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
             SaveManager_RequestAct1A();
         } else {
@@ -587,15 +581,15 @@ void SaveMenuTalk::onMessageEnd(u32) {
     if (msgIndex == 0) {
         TalkWindowState *o = (TalkWindowState *)window;
         void *h = o->getChoiceList();
-        _ZN10ChoiceList5resetEii(h, 2, 1);
+        ((ChoiceList *)(h))->reset(2, 1);
         u8 buf[4];
         buf[0] = 0xc;
         buf[1] = gTalkMsgIndexEnd[0];
-        _ZN10ChoiceList8setEntryEiPKhiS1_PKci(h, 0, buf, 1, &buf[1], 0, 2);
+        ((ChoiceList *)(h))->setEntry(0, (const u8 *)(buf), 1, (const u8 *)(&buf[1]), (const char *)(0), 2);
         buf[2] = 0xd;
         buf[3] = gTalkMsgIndexEnd[0];
-        _ZN10ChoiceList8setEntryEiPKhiS1_PKci(h, 1, &buf[2], 1, &buf[3], 0, 0);
-        _ZN10ChoiceList9loadTextsEv(h);
+        ((ChoiceList *)(h))->setEntry(1, (const u8 *)(&buf[2]), 1, (const u8 *)(&buf[3]), (const char *)(0), 0);
+        ((ChoiceList *)(h))->loadTexts();
         o->openChoices(1);
     }
 }
@@ -604,13 +598,13 @@ void SaveMenuTalk::onMessageEnd(u32) {
 
 void SaveMenuTalk::onChoice(u32) {
     TalkWindowState *o = (TalkWindowState *)window;
-    s32 r = _ZN10ChoiceList9getResultEv(o->getChoiceList());
+    s32 r = ((ChoiceList *)(o->getChoiceList()))->getResult();
     switch (msgIndex) {
     case 4:
         switch (r) {
         case 0:
             o->lockAdvance();
-            _ZN15TalkWindowState12showBusyIconEj(o, 1);
+            (o)->showBusyIcon(1);
             ownerMenu->setState(4);
             break;
         case 1: {
@@ -624,7 +618,7 @@ void SaveMenuTalk::onChoice(u32) {
         switch (r) {
         case 0:
             o->lockAdvance();
-            _ZN15TalkWindowState12showBusyIconEj(o, 1);
+            (o)->showBusyIcon(1);
             ownerMenu->setState(5);
             break;
         case 1:

@@ -13,6 +13,11 @@
 #include "talk/TalkMsgRequest.h"
 #include "sys/ProcProfile.h"
 #include "game/NibblePair.h"
+#include "player/PlayerData.h"
+#include "save/LostChildRecord.h"
+#include "save/SaveData.h"
+#include "save/TownExchangeRecord.h"
+#include "ui/HudController.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
@@ -296,12 +301,7 @@ void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void DGT_Hash1CalcHmac(void *a, void *b, u32 c, s32 d, u32 e);
 s32 Mem_Differs(u8 *a, u8 *b, u32 n);
 s32 Save_Sum16(void *a, u32 n);
-void _ZN16BlancaFaceRecord8setStateEj(void *p, u32 v);
-void _ZN16BlancaFaceRecord11setChecksumEj(void *p, s32 v);
-s32 _ZN16BlancaFaceRecord11getChecksumEv(void *p);
 s32 Save_CalcChecksum(void *p, u32 n, s32 v);
-s32 _ZN16BlancaFaceRecord8getStateEv(void *p);
-void _ZN16BlancaFaceRecord5resetEv(void *p);
 s32 _Z21NetOverlay_AssertWifiv(void);
 s32 Net_IsUploadDone(s32 a);
 s32 Net_IsDownloadDone(s32 a);
@@ -315,7 +315,6 @@ s32 Net_GameStatsUpload(void *a, void *b, u32 c, u32 d);
 s32 Net_GetMode(void);
 s32 Comm_End(void);
 s32 PlayerData_GetCurrent(void);
-s32 _ZN10PlayerData8getIndexEv(s32 h);
 void GameStats_ApplyDownload(void);
 void AxMail_ApplyMail(void);
 void AxMail_ApplyBbs(void);
@@ -347,19 +346,14 @@ void _ZN11SaveManager9startTalkEPKch(u32 a, void *b, u32 c);
 void _ZN10PlayerData9clearFlagEj(s32 a, u32 b);
 void _ZN10PlayerData7setFlagEj(s32 a, u32 b);
 s32 Hud_GetCountdown(void);
-void _ZN12HudCountdown5startEii(s32 a, u32 b, u32 c);
-u32 _ZN11CommManager7getModeEv(void *g);
 s32 CommCtrl_SendAct10(void);
 s32 _ZN11CommManager12isSlotActiveEi(void *g, s32 i);
-s32 _ZN11CommManager7isMyAidEj(void *g, s32 i);
 s32 NetArea_GetSlotScene(s32 i);
 s32 NetArea_IsSlotMoving(s32 i);
-void _ZN11CommManager14setPendingModeEj(void *g, u32 v);
 s32 CommCtrl_SendAct08(void);
 s32 Comm_IsConnectionLost(u32 a);
 void Comm_SetLostFlag(void);
 s32 _ZN11SaveManager15verifySlotsStepEv(void *p);
-s32 _ZN11SaveManager12loadSlotStepEi(void *p, u32 v);
 s32 _ZN11SaveManager12saveSlotStepEi(void *p, u32 v);
 s32 CommCtrl_SendAct0E(u32 a, u32 b);
 void SaveManager_ClearCtrlAct0E(void *p);
@@ -402,7 +396,6 @@ s32 _ZN11SaveManager12saveSlotStepEi(SaveManager *p, u32 v);
 void _ZN11SaveManager23restoreVillagerTransferEv(SaveManager *p);
 void SaveManager_ClearCtrlAct0E(SaveManager *p);
 void _ZN11SaveManager18showSequence2Msg0AEv(SaveManager *p);
-void _ZN11SaveManager18showSequence2Msg0BEv(SaveManager *p);
 void *_ZN11SaveManager15getTransferDestEj(SaveManager *p, s32 i);
 void _ZN11SaveRecord415markInterruptedEv(void *p);
 void _ZN11SaveRecord416setStateValidAltEv(void *p);
@@ -412,22 +405,13 @@ TalkWindowState *TalkWindow_Get(s32 i);
 void OS_ResetSystem(s32 v);
 void CommSend_VillagerTransferReply(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void *TownExchange_GetForAid(s32 a);
-BOOL _ZN18TownExchangeRecord7isValidEv(void *a);
 void *_ZN18TownExchangeRecord18getLostChildRecordEv(void *a);
 void _ZN15LostChildRecord5clearEv(void *a);
-s32 _ZN15LostChildRecord11getDaysLeftEv(void *a);
-void *_ZN15LostChildRecord9getTownIdEv(void *a);
-void _ZN15LostChildRecord13isKaitlinRoleEv(void *a);
-void _ZN15LostChildRecord14setKaitlinRoleEh(void *a, u8 b);
-void _ZN15LostChildRecord9setTownIdEPv(void *a, void *b);
-void _ZN15LostChildRecord11setDaysLeftEh(void *a, s32 b);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 void _ZN11MsgString9CC2Ev(void *p);
-void _ZN11MsgString9CD1Ev(void *p);
 void TownId_GetNameString(void *a, void *b);
 void *PlayerId_GetTownId(void *a);
 void *_ZN10PlayerData11getPlayerIdEv(void *a);
-void *_ZN10PlayerData18getLostChildRecordEv(void *a);
 void *PlayerData_GetCurrent();
 void *PlayerData_GetBySessionSlot(s32 i);
 void *DebugVar_GetPtr(s32 a, s32 b);
@@ -487,13 +471,11 @@ extern const u32 sSaveSlotOffsets[];
 extern u8 sSessionResidentIndex;
 extern u8 data_020e252c[];
 BOOL _ZN11CommManager12isSlotActiveEi(Unk_020cbb18_ff4c *, s32);
-void _ZN11CommManager14setMemberCountEj(Unk_020cbb18_ff4c *, u32);
 void *TownExchange_GetForAid(s32);
 void *_ZN18TownExchangeRecord18getLostChildRecordEv(void *);
 void _ZN15LostChildRecord5clearEv(void *);
 void LostChild_TryPair(void *, s32);
 s32 NetSession_GetLastSyncSlot();
-void _ZN11SaveManager15setTransferDestEjh(void *, s32, s32);
 s32 Random_GlobalBelow(s32);
 void Comm_ResetNetSession(void *);
 void Wifi_EndSession(void *);
@@ -617,17 +599,14 @@ extern u8 gSaveFooter[];
 extern u8 gTalkMsgIndexEnd[];
 extern u8 data_021e7f8c[];
 extern u8 sSessionResidentIndex;
-u8 _ZN11SaveManager14verifySlotStepEi(SaveManager *self, u32 x);
 s32 _ZN11SaveManager12saveSlotStepEi(SaveManager *self, u32 x);
 u32 Save_SlotStampsMatch(void);
 s32 SaveManager_GetCtrlAct14Aid(void);
 void _ZN11SaveManager8setStateEi(void *p, s32 x);
 void *TalkWindow_Get(u32 x);
-void _ZN15TalkWindowState11lockAdvanceEv(void *o);
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *o, void *a, void *b);
 void _ZN15TalkWindowState12hideBusyIconEv(void *o);
 s32 _ZN15TalkWindowState13unlockAdvanceEv(void *o);
-void _ZN15TalkWindowState12showBusyIconEj(void *o, u32 x);
 s32 Comm_IsConnectionLost(s32 x);
 void Comm_SetLostFlag(void);
 s32 CommCtrl_SendAct14(void);
@@ -640,7 +619,6 @@ s32 Net_IsReadyToSend(u32 x);
 u32 Net_GetConnectedMask(void);
 s32 Net_GetMyAid(s32 x);
 HudWallet *Hud_GetWallet(void);
-void _ZN18TownExchangeRecord16incrementCounterEv(void *p);
 void *PlayerData_GetCurrent(void);
 u32 PlayerData_Get(u32 x);
 s32 PlayerData_GetCurrentIndex(void);
@@ -649,7 +627,6 @@ void *_ZN10PlayerData5resetEv(void *p);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
 void _ZN8SaveData11resetPlayerEi(void *p, s32 x);
-void _ZN8SaveData7setFlagEj(void *p, u32 x);
 void _ZN11SaveRecord416setStateValidAltEv(void *p);
 void _ZN11SaveRecord415markInterruptedEv(void *p);
 u32 Wifi_EndSession(void *p);
@@ -847,7 +824,6 @@ void _ZN11SaveManager18showSequence2Msg0AEv(SaveManager *self);
 void _ZN11SaveManager8setStateEi(SaveManager *self, u32 n);
 void _ZN11SaveManager9startTalkEPKch(SaveManager *self, void *p, u32 n);
 s32 Save_InvalidateAll(SaveManager *self);
-s32 _ZN11SaveManager13eraseSlotStepEi(SaveManager *self, u32 n);
 TalkWindowState *TalkWindow_Get(s32 i);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
@@ -878,8 +854,6 @@ s32 TownUpdateThread_Start();
 s32 TownUpdateThread_PollDone();
 void TownUpdateThread_Create();
 s32 PlayerData_GetResident(void *p, u32 n);
-void _ZN11MsgString9BC1Ev(void *p);
-void _ZN11MsgString9BD1Ev(void *p);
 s32 _ZN10PlayerData11getPlayerIdEv(...);
 void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, void *p);
 void _ZN10PlayerData5resetEv(s32 a);
@@ -925,21 +899,18 @@ s32 TownState_ClampDate(void *p);
 s32 SaveVillagers_UpdateAllRoomInfo(void *p);
 s32 Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, u32 size);
-s32 _ZN18TownCompressThread4killEv(void *p);
 s32 TownBlockMap_Get(void);
 s32 _ZN12TownBlockMap13updateAcreIdsEv(s32 v);
 s32 _ZN12TownBlockMap6bindBgEv(s32 v);
 s32 Town_ClearBorderTrees(s32 v);
 s32 HouseRoomMaps_UpdateAll(void);
 s32 HouseRoomMaps_BindBg(void);
-void _ZN15SaveManagerTalk8setOwnerEj(void *p, void *q);
 s32 Save_ReadSlot(s32 v);
 void *SaveManager_GetLetterStorage(void);
 s32 Save_Sum16(void *p, u32 v);
 s32 LetterStorage_IsValid(void *p);
 s32 MI_CpuFill8(void *p, s32 v, u32 n);
 s32 LetterStorage_MarkValid(void *p);
-s32 _ZN18TownCompressThread4initEv(void *p);
 s32 _ZN11SaveRecord410clearStateEv(void *p);
 }
 }
@@ -1111,7 +1082,7 @@ BOOL SaveManager::onCreate() {
         }
     }
     NJ::gSaveManager = this;
-    NJ::_ZN15SaveManagerTalk8setOwnerEj(&talk, this);
+    ((SaveManagerTalk *)(&talk))->setOwner((u32)(this));
     bufferHeap = NJ::gCurrentHeap;
     if (NJ::Scene_GetCurrent() == 0x2e || NJ::Scene_GetCurrent() == 6 || NJ::Scene_GetCurrent() == 9 || NJ::Scene_GetCurrent() == 0xb) {
         workBuf = (u8 *)NJ::Heap_Alloc(bufferHeap, 0x15fe0);
@@ -1135,7 +1106,7 @@ BOOL SaveManager::onCreate() {
     if (NJ::sSaveManagerRequest == 0x14 || NJ::sSaveManagerRequest == 0x15) {
         townCompressBuf = NJ::Heap_Alloc(bufferHeap, 0x15fe4);
         townCompressThread = NJ::Heap_Alloc(bufferHeap, 0x10cc);
-        NJ::_ZN18TownCompressThread4initEv(townCompressThread);
+        ((TownCompressThread *)(townCompressThread))->init();
     }
     if (NJ::sSaveManagerRequest == 0x14) {
         void *p = NJ::Heap_Alloc(bufferHeap, 0x15fe0);
@@ -1168,7 +1139,7 @@ BOOL SaveManager::onDelete() {
         NJ::gTownTransferBuf = 0;
     }
     if (townCompressThread) {
-        NJ::_ZN18TownCompressThread4killEv(townCompressThread);
+        ((TownCompressThread *)(townCompressThread))->kill();
         NJ::Heap_Free(bufferHeap, townCompressThread);
         townCompressThread = 0;
     }
@@ -1255,7 +1226,7 @@ void SaveManager::execAct01() {
         }
         break;
     case 1: {
-        s32 r = NJ::_ZN11SaveManager15verifySlotsStepEv(this);
+        s32 r = ((SaveManager *)(this))->verifySlotsStep();
         if (r == 1) {
             actStep = 4;
         } else if (r != 3) {
@@ -1264,7 +1235,7 @@ void SaveManager::execAct01() {
         break;
     }
     case 2: {
-        s32 r = NJ::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = ((SaveManager *)(this))->saveSlotStep(slotOrder.hi);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1273,7 +1244,7 @@ void SaveManager::execAct01() {
         break;
     }
     case 3: {
-        s32 r = NJ::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.lo);
+        s32 r = ((SaveManager *)(this))->saveSlotStep(slotOrder.lo);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1317,7 +1288,7 @@ void SaveManager::execAct02() {
         }
         break;
     case 1: {
-        s32 r = NJ::_ZN11SaveManager15verifySlotsStepEv(this);
+        s32 r = ((SaveManager *)(this))->verifySlotsStep();
         if (r == 1) {
             actStep = 4;
         } else if (r != 3) {
@@ -1326,7 +1297,7 @@ void SaveManager::execAct02() {
         break;
     }
     case 2: {
-        s32 r = NJ::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = ((SaveManager *)(this))->saveSlotStep(slotOrder.hi);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1335,7 +1306,7 @@ void SaveManager::execAct02() {
         break;
     }
     case 3: {
-        s32 r = NJ::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.lo);
+        s32 r = ((SaveManager *)(this))->saveSlotStep(slotOrder.lo);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1365,7 +1336,7 @@ void SaveManager::enterAct03() {
 void SaveManager::execAct03() {
     switch (actStep) {
     case 0:
-        if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
+        if ((this)->func_020a15c8(0) != 0) {
             NI::Clock_Init();
             actStep = actStep + 1;
         }
@@ -1441,13 +1412,13 @@ void SaveManager::execAct04() {
         break;
     }
     case 6:
-        NI::_ZN11SaveManager18showSequence2Msg0AEv(this);
+        (this)->showSequence2Msg0A();
         actStep = 7;
         break;
     case 7:
         break;
     default:
-        NI::_ZN11SaveManager13func_020a15f8Ev(this);
+        (this)->func_020a15f8();
         NI::_ZN11SaveManager8setStateEi(this, 0x10);
         break;
     }
@@ -1461,7 +1432,7 @@ void SaveManager::enterAct05() {
 void SaveManager::execAct05() {
     switch (actStep) {
     case 0:
-        if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
+        if ((this)->func_020a15c8(0) != 0) {
             actStep = 1;
         }
         break;
@@ -1475,7 +1446,7 @@ void SaveManager::execAct05() {
         break;
     }
     case 2: {
-        s32 r = NI::_ZN11SaveManager13eraseSlotStepEi(this, 0);
+        s32 r = (this)->eraseSlotStep(0);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1484,7 +1455,7 @@ void SaveManager::execAct05() {
         break;
     }
     case 3: {
-        s32 r = NI::_ZN11SaveManager13eraseSlotStepEi(this, 1);
+        s32 r = (this)->eraseSlotStep(1);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1493,7 +1464,7 @@ void SaveManager::execAct05() {
         break;
     }
     case 4: {
-        s32 r = NI::_ZN11SaveManager13eraseSlotStepEi(this, 2);
+        s32 r = (this)->eraseSlotStep(2);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1502,13 +1473,13 @@ void SaveManager::execAct05() {
         break;
     }
     case 5:
-        NI::_ZN11SaveManager18showSequence2Msg0AEv(this);
+        (this)->showSequence2Msg0A();
         actStep = 6;
         break;
     case 6:
         break;
     default:
-        NI::_ZN11SaveManager13func_020a15f8Ev(this);
+        (this)->func_020a15f8();
         NI::_ZN11SaveManager8setStateEi(this, 0xc);
         break;
     }
@@ -1519,23 +1490,23 @@ void SaveManager::enterAct06() {
     u8 *d = NI::gSaveData;
     u8 buf[HOST_SIZED(0x1c, MsgString9B) / 1] HOST_ALIGN8;
     s32 h = NI::PlayerData_GetResident(NI::gSavePlayers, NI::sEraseResidentSlot);
-    NI::_ZN11MsgString9BC1Ev(buf);
+    new (buf) MsgString9B();
     NI::_ZN8PlayerId13getNameStringEP9MsgString(NI::_ZN10PlayerData11getPlayerIdEv(h), buf);
     o->setSlot(0, buf);
-    NI::_ZN10PlayerData5resetEv(h);
+    ((PlayerData *)(h))->reset();
     NI::_ZN8SaveData11resetPlayerEi(d, NI::sEraseResidentSlot);
     NI::_ZN11SaveManager9startTalkEPKch(this, (u32 *)"sp_etc_sequence1", 7);
     if (NI::PlayerDataArray_CountUsed(NI::gSavePlayers) == 0) {
         *(u8 *)(d + 0x15e76) = 0;
     }
     actStep = 0;
-    NI::_ZN11MsgString9BD1Ev(buf);
+    ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
 }
 
 void SaveManager::execAct06() {
     switch (actStep) {
     case 0:
-        if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
+        if ((this)->func_020a15c8(0) != 0) {
             actStep = 1;
         }
         break;
@@ -1576,13 +1547,13 @@ void SaveManager::execAct06() {
         break;
     }
     case 5:
-        NI::_ZN11SaveManager18showSequence2Msg0AEv(this);
+        (this)->showSequence2Msg0A();
         actStep = 6;
         break;
     case 6:
         break;
     default:
-        NI::_ZN11SaveManager13func_020a15f8Ev(this);
+        (this)->func_020a15f8();
         NI::_ZN11SaveManager8setStateEi(this, 0xc);
         break;
     }
@@ -1596,7 +1567,7 @@ void SaveManager::enterAct07() {
 void SaveManager::execAct07() {
     switch (actStep) {
     case 0:
-        if (NI::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
+        if ((this)->func_020a15c8(0) != 0) {
             actStep = 1;
         }
         break;
@@ -1628,13 +1599,13 @@ void SaveManager::execAct07() {
         break;
     }
     case 4:
-        NI::_ZN11SaveManager18showSequence2Msg0AEv(this);
+        (this)->showSequence2Msg0A();
         actStep = 5;
         break;
     case 5:
         break;
     default:
-        NI::_ZN11SaveManager13func_020a15f8Ev(this);
+        (this)->func_020a15f8();
         NI::_ZN11SaveManager8setStateEi(this, 0xf);
         break;
     }
@@ -1700,7 +1671,7 @@ void SaveManager::execAct0C() {
         o->detachRequest();
         s32 r = NI::Save_LoadSync();
         if (r == 4 || r == 1) {
-            NI::_ZN8SaveData5resetEv(NI::gSaveData);
+            ((SaveData *)(NI::gSaveData))->reset();
             NI::GuestPlayers_ResetAll();
             NI::VillagerStates_Init();
             NI::SaveData_Setup(NI::gSaveData, 3);
@@ -2046,7 +2017,7 @@ extern "C" void SaveManager_ExecAct15(SaveManager *p) {
         if (NH::Comm_IsConnectionLost(r5)) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN11SaveManager21runGatherPeersInSceneEPhjjj(p, &p->actStep, 1, 0xd, 0x2f);
+            (p)->runGatherPeersInScene(&p->actStep, 1, 0xd, 0x2f);
             if (p->actStep > 2) {
                 NH::NetArea_SetSlotStatus(NH::sJoiningAid, 0xc, 1, 0, 7);
                 CommManager *g = NH::gCommManager;
@@ -2195,14 +2166,14 @@ extern "C" void SaveManager_ExecAct17(SaveManager *p) {
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN11SaveManager12runSendAct10EPhj(p, &p->actStep, 1);
+            (p)->runSendAct10(&p->actStep, 1);
         }
         break;
     case 3:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else if (NH::_ZN11SaveManager18isTransferReceivedEj(p, NH::gCommManager->myAid)) {
-            NH::_ZN11SaveManager22backupVillagerTransferEv(p);
+            (p)->backupVillagerTransfer();
             p->actStep = 4;
         }
         break;
@@ -2214,7 +2185,7 @@ extern "C" void SaveManager_ExecAct17(SaveManager *p) {
     case 9:
     case 10:
     case 11:
-        NH::_ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(p, &p->actStep, 4, 0xe, 0x14, 1, 0, 1);
+        (p)->runSyncedSaveClient(&p->actStep, 4, 0xe, 0x14, 1, 0, 1);
         break;
     case 12:
         if (NH::Comm_IsConnectionLost(1)) {
@@ -2265,7 +2236,7 @@ extern "C" void SaveManager_ExecAct17(SaveManager *p) {
         NH::SaveManager_RunSessionEnd(p, &p->actStep, 0xe, 0x14, 1, 1);
         break;
     default:
-        NH::_ZN11SaveManager13func_020a15f8Ev(p);
+        (p)->func_020a15f8();
         NH::_ZN11SaveManager8setStateEi(p, 8);
         break;
     }
@@ -2292,13 +2263,13 @@ extern "C" void SaveManager_ExecAct18(SaveManager *p) {
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
         } else {
-            NH::_ZN11SaveManager21runGatherPeersInSceneEPhjjj(p, &p->actStep, 1, 0x2e, 0x2e);
+            (p)->runGatherPeersInScene(&p->actStep, 1, 0x2e, 0x2e);
         }
         break;
     case 3:
         if (NH::Comm_IsConnectionLost(NH::Comm_GetRemoteMask())) {
             NH::Comm_SetLostFlag();
-        } else if (NH::_ZN11SaveManager17allPeersSentAct10Ev(p)) {
+        } else if ((p)->allPeersSentAct10()) {
             p->actStep = 4;
         }
         break;
@@ -2311,7 +2282,7 @@ extern "C" void SaveManager_ExecAct18(SaveManager *p) {
             void *r6 = NH::TownExchange_GetForAid(r5);
             NH::MI_CpuCopy8(r6, NH::TownExchange_GetForAid(r7), 0x84c);
             NH::TownExchange_Clear(r6);
-            NH::_ZN11SaveManager22backupVillagerTransferEv(p);
+            (p)->backupVillagerTransfer();
             NH::JoinHistory_Remove((u8)r5);
             p->actStep = 5;
         }
@@ -2422,7 +2393,7 @@ extern "C" void SaveManager_ExecAct18(SaveManager *p) {
         NH::SaveManager_RunSessionEnd(p, &p->actStep, 0xf, 0x15, NH::Comm_GetRemoteMask(), 1);
         break;
     default:
-        NH::_ZN11SaveManager13func_020a15f8Ev(p);
+        (p)->func_020a15f8();
         NH::_ZN11SaveManager8setStateEi(p, 10);
         break;
     }
@@ -2437,7 +2408,7 @@ void SaveManager::execAct19() {
     case 0:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
-        } else if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 0)) {
+        } else if ((this)->func_020a15c8(0)) {
             memberMask = NG::Comm_GetMemberMask();
             actStep = 1;
         }
@@ -2447,14 +2418,14 @@ void SaveManager::execAct19() {
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN11SaveManager12runSendAct10EPhj(this, &actStep, 1);
+            (this)->runSendAct10(&actStep, 1);
         }
         break;
     case 3:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else if (NG::_ZN11SaveManager18isTransferReceivedEj(this, NG::gCommManager->myAid)) {
-            NG::_ZN11SaveManager22backupVillagerTransferEv(this);
+            (this)->backupVillagerTransfer();
             actStep = 4;
         }
         break;
@@ -2466,7 +2437,7 @@ void SaveManager::execAct19() {
     case 9:
     case 10:
     case 11:
-        NG::_ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(this, &actStep, 4, 0xf, 0x15, 1, 1, 1);
+        (this)->runSyncedSaveClient(&actStep, 4, 0xf, 0x15, 1, 1, 1);
         break;
     case 12:
         if (NG::Comm_IsConnectionLost(1)) {
@@ -2524,7 +2495,7 @@ void SaveManager::execAct19() {
         NG::SaveManager_RunSessionEnd(this, &actStep, 0xf, 0x15, 1, 1);
         break;
     default:
-        NG::_ZN11SaveManager13func_020a15f8Ev(this);
+        (this)->func_020a15f8();
         NG::_ZN11SaveManager8setStateEi(this, 0xa);
         break;
     }
@@ -2539,7 +2510,7 @@ void SaveManager::execAct1A() {
     case 0:
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
             NG::Comm_SetLostFlag();
-        } else if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 0)) {
+        } else if ((this)->func_020a15c8(0)) {
             if (NG::SaveManager_IsEndSessionSave()) {
                 NG::VillagerTransfer_PlanRotate(this);
                 NG::LostChild_ResetAndPairAll(this);
@@ -2552,13 +2523,13 @@ void SaveManager::execAct1A() {
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN11SaveManager21runGatherPeersInSceneEPhjjj(this, &actStep, 1, 0x2e, 0x2e);
+            (this)->runGatherPeersInScene(&actStep, 1, 0x2e, 0x2e);
         }
         break;
     case 3:
         if (NG::Comm_IsConnectionLost(NG::Comm_GetRemoteMask())) {
             NG::Comm_SetLostFlag();
-        } else if (NG::_ZN11SaveManager17allPeersSentAct10Ev(this)) {
+        } else if ((this)->allPeersSentAct10()) {
             actStep = 4;
         }
         break;
@@ -2578,7 +2549,7 @@ void SaveManager::execAct1A() {
                 for (r5 = 2; r5 >= 0; r5--) {
                     NG::TownExchange_Clear(NG::TownExchange_GetForAid(r5 + 1));
                 }
-                NG::_ZN11SaveManager22backupVillagerTransferEv(this);
+                (this)->backupVillagerTransfer();
                 actStep = 5;
             }
         } else {
@@ -2701,7 +2672,7 @@ void SaveManager::execAct1A() {
         break;
     default: {
         u8 b;
-        NG::_ZN11SaveManager13func_020a15f8Ev(this);
+        (this)->func_020a15f8();
         if (NG::SaveManager_IsEndSessionSave()) {
             b = 6;
             NG::TalkWindow_Get(0)->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
@@ -2721,7 +2692,7 @@ void SaveManager::execAct1B() {
     case 0:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
-        } else if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 0)) {
+        } else if ((this)->func_020a15c8(0)) {
             actStep = 1;
         }
         break;
@@ -2730,7 +2701,7 @@ void SaveManager::execAct1B() {
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else {
-            NG::_ZN11SaveManager12runSendAct10EPhj(this, &actStep, 1);
+            (this)->runSendAct10(&actStep, 1);
         }
         break;
     case 3:
@@ -2738,7 +2709,7 @@ void SaveManager::execAct1B() {
             NG::Comm_SetLostFlag();
         } else if (NG::SaveManager_IsEndSessionSave()) {
             if (NG::_ZN11SaveManager18isTransferReceivedEj(this, NG::gCommManager->myAid)) {
-                NG::_ZN11SaveManager22backupVillagerTransferEv(this);
+                (this)->backupVillagerTransfer();
                 actStep = 4;
             }
         } else {
@@ -2756,7 +2727,7 @@ void SaveManager::execAct1B() {
         BOOL a, b;
         if (NG::SaveManager_IsEndSessionSave()) a = FALSE; else a = TRUE;
         if (NG::SaveManager_IsEndSessionSave()) b = TRUE; else b = FALSE;
-        NG::_ZN11SaveManager19runSyncedSaveClientEPhjjhhhj(this, &actStep, 4, 0x11, 0x17, b, a, 1);
+        (this)->runSyncedSaveClient(&actStep, 4, 0x11, 0x17, b, a, 1);
         break;
     }
     case 12:
@@ -2839,7 +2810,7 @@ void SaveManager::execAct1B() {
         break;
     default: {
         u8 b;
-        NG::_ZN11SaveManager13func_020a15f8Ev(this);
+        (this)->func_020a15f8();
         if (NG::SaveManager_IsEndSessionSave()) {
             b = 6;
             NG::TalkWindow_Get(0)->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
@@ -2857,7 +2828,7 @@ void SaveManager::enterAct1C() {
 }
 
 void SaveManager::execAct1C() {
-    if (NG::_ZN11SaveManager13func_020a15c8Ej(this, 1)) {
+    if ((this)->func_020a15c8(1)) {
         NG::NetOverlay_LoadWireless();
         NG::_ZN11SaveManager8setStateEi(this, 0x1d);
     }
@@ -2871,7 +2842,7 @@ void SaveManager::enterAct1D() {
     NG::MI_CpuCopy8(NG::TownId_GetName(NG::gSaveTownId), buf, 8);
     buf[9] = 1;
     buf[8] = 0;
-    if (NG::_ZN8SaveData7isValidEv(NG::gSaveData) == 0) {
+    if (((SaveData *)(NG::gSaveData))->isValid() == 0) {
         buf[8] = 1;
     }
     NG::_Z25NetOverlay_AssertWirelessv();
@@ -2920,7 +2891,7 @@ void SaveManager::execAct1D() {
 
 void SaveManager::enterAct1E() {
     actStep = 0;
-    if (NG::_ZN8SaveData7isValidEv(NG::gSaveData) == 0) {
+    if (((SaveData *)(NG::gSaveData))->isValid() == 0) {
         noSaveData = 1;
     } else {
         noSaveData = 0;
@@ -2956,7 +2927,7 @@ void SaveManager::execAct1E() {
                 NF::SaveData_Setup(NF::gSaveData, 5);
                 NF::SaveData_Apply(NF::gSaveData);
             } else {
-                NF::_ZN8SaveData7setFlagEj(NF::gSaveData, 0x12);
+                ((SaveData *)(NF::gSaveData))->setFlag(0x12);
             }
             NF::PlayerOptions_Commit();
             actStep = 3;
@@ -3076,7 +3047,7 @@ void SaveManager::execAct1E() {
     }
     default:
         func_020a15f8();
-        NF::_ZN11SaveManager8setStateEi(this, 0xe);
+        ((SaveManager *)(this))->setState(0xe);
         break;
     }
 }
@@ -3125,7 +3096,7 @@ void SaveManager::execAct1F() {
             NF::Hud_GetWallet()->freezeValue();
             NF::MI_CpuCopy8(NF::PlayerData_GetCurrent(), playerDataCopy, 0x228c);
             NF::_ZN10PlayerData5resetEv(NF::PlayerData_GetCurrent());
-            NF::_ZN8SaveData11resetPlayerEi(NF::gSaveData, NF::PlayerData_GetCurrentIndex());
+            ((SaveData *)(NF::gSaveData))->resetPlayer(NF::PlayerData_GetCurrentIndex());
             actStep = 5;
         }
         break;
@@ -3210,7 +3181,7 @@ void SaveManager::execAct1F() {
         NF::SaveManager_RunSessionEnd(this, &actStep, 0xb, 0x11, 1, 1);
         break;
     default:
-        NF::_ZN11SaveManager8setStateEi(this, 0);
+        ((SaveManager *)(this))->setState(0);
         break;
     }
 }
@@ -3243,9 +3214,9 @@ BOOL SaveManager::func_020a15c8(u32 v) {
     void *o = NF::TalkWindow_Get(0);
     if (((u32 *)o)[1] == 2) {
         if (v != 0) {
-            NF::_ZN15TalkWindowState12showBusyIconEj(o, 1);
+            ((TalkWindowState *)(o))->showBusyIcon(1);
         } else {
-            NF::_ZN15TalkWindowState12showBusyIconEj(o, 0);
+            ((TalkWindowState *)(o))->showBusyIcon(0);
         }
         return TRUE;
     }
@@ -3266,7 +3237,7 @@ void SaveManagerTalk::onMessageEnd(u32) {
     void *o = NF::TalkWindow_Get(0);
     switch (((u8 *)fileName)[0x1a]) {
     case 0xa:
-        NF::_ZN15TalkWindowState11lockAdvanceEv(o);
+        ((TalkWindowState *)(o))->lockAdvance();
         break;
     case 8:
         NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, NF::gTalkMsgIndexEnd, 0);
@@ -3275,8 +3246,8 @@ void SaveManagerTalk::onMessageEnd(u32) {
         NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, NF::gTalkMsgIndexEnd, 0);
         break;
     case 0x26:
-        NF::_ZN15TalkWindowState11lockAdvanceEv(o);
-        NF::_ZN11SaveManager8setStateEi((void *)owner, 0x1e);
+        ((TalkWindowState *)(o))->lockAdvance();
+        ((SaveManager *)((void *)owner))->setState(0x1e);
         break;
     case 0x69:
         NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, NF::gTalkMsgIndexEnd, 0);
@@ -3294,7 +3265,7 @@ extern "C" void Save_StoreCurrentPlayerToResident(void) {
 
 void SaveManager::backupVillagerTransfer() {
     u8 *const g = NF::data_021e7f8c;
-    NF::_ZN18TownExchangeRecord16incrementCounterEv(g);
+    ((TownExchangeRecord *)(g))->incrementCounter();
     Unk_020a14ac_Ns::MI_CpuCopy8(g, villagerTransferBackup, 0x84c);
 }
 
@@ -3555,7 +3526,7 @@ s32 SaveManager::verifyStepReset() {
 }
 
 s32 SaveManager::verifyStepSlot0() {
-    slotStatus.hi = NF::_ZN11SaveManager14verifySlotStepEi(this, 0);
+    slotStatus.hi = (this)->verifySlotStep(0);
     if (slotStatus.hi == 3) {
         return 3;
     }
@@ -3564,7 +3535,7 @@ s32 SaveManager::verifyStepSlot0() {
 }
 
 s32 SaveManager::verifyStepSlot1() {
-    slotStatus.lo = NF::_ZN11SaveManager14verifySlotStepEi(this, 1);
+    slotStatus.lo = (this)->verifySlotStep(1);
     if (slotStatus.lo == 3) {
         return 3;
     }
@@ -3650,7 +3621,7 @@ s32 SaveManager::stepChecksum(s32 mode) {
         p = buf + 0x15c58;
         NE::_ZN18TownExchangeRecord15setChecksumByteEj(p, NE::Save_CalcChecksum(p, 0xf8, NE::_ZN18TownExchangeRecord15getChecksumByteEv(p)));
         for (s32 i = 0; i < 4; i++) {
-            void *e = NE::_ZN10PlayerData15getWifiUserDataEv(NE::PlayerData_GetResident(buf + 0xc, i));
+            void *e = ((PlayerData *)(NE::PlayerData_GetResident(buf + 0xc, i)))->getWifiUserData();
             NE::PlayerWifiData_SetChecksum(e, NE::Save_CalcChecksum(e, 0x50, NE::PlayerWifiData_GetChecksum(e)));
             e = NE::_ZN10PlayerData13getFriendListEv(NE::PlayerData_GetResident(buf + 0xc, i));
             NE::FriendList_SetChecksum(e, NE::Save_CalcChecksum(e, 0x384, NE::FriendList_GetChecksum(e)));
@@ -3774,13 +3745,13 @@ extern "C" s32 Save_ReadAndCheckSlot(s32 idx, s32 flag) {
         if (flag != 0) buf = NE::gSaveManager->workBuf;
         else buf = NE::gSaveData;
         s32 t = NE::Save_Sum16(buf, 0x15fe0);
-        if (NE::_ZN8SaveData7isValidEv(buf) == 0) return 4;
+        if (((SaveData *)(buf))->isValid() == 0) return 4;
         if (t == 0) {
             NE::Save_Sum16(buf + 0x10c3c, 0x84c);
             s32 i = 0;
             u8 *p = buf + 0xc;
             for (; i < 4; i++) {
-                NE::Save_Sum16(NE::_ZN10PlayerData15getWifiUserDataEv(NE::PlayerData_GetResident(p, i)), 0x50);
+                NE::Save_Sum16(((PlayerData *)(NE::PlayerData_GetResident(p, i)))->getWifiUserData(), 0x50);
                 NE::Save_Sum16(NE::_ZN10PlayerData13getFriendListEv(NE::PlayerData_GetResident(buf + 0xc, i)), 0x384);
             }
         } else {
@@ -3820,7 +3791,7 @@ s32 SaveManager::verifySlotStep(s32 idx) {
         NE::Backup_ReadAsync(NE::gBackup, readBackBuf, size, off);
     } else if (r != 3) {
         NE::Backup_EndAccess(NE::gBackup);
-        if (NE::_ZN8SaveData7isValidEv(NE::gSaveManager->readBackBuf) == 0) return 4;
+        if (((SaveData *)(NE::gSaveManager->readBackBuf))->isValid() == 0) return 4;
         if (NE::Save_Sum16(readBackBuf, NE::sSaveSlotDataSizes[idx]) == 0) return 0;
         return 4;
     } else if (r == 1) {
@@ -3840,7 +3811,7 @@ extern "C" s32 Save_ReadSlotAsyncStep(s32 idx, u8 *buf) {
     } else if (r != 3) {
         NE::Backup_EndAccess(NE::gBackup);
         s32 t = NE::Save_Sum16(buf, NE::sSaveSlotDataSizes[idx]);
-        if (NE::_ZN8SaveData7isValidEv(buf) == 0) return 4;
+        if (((SaveData *)(buf))->isValid() == 0) return 4;
         if (t == 0) return 0;
         return 4;
     } else if (r == 1) {
@@ -4049,8 +4020,8 @@ extern "C" BOOL Save_WriteVillagerTransfer() {
     void *q = ND::data_021ecfa8;
     a = (u32)p - (u32)base;
     b = (u32)q - (u32)base;
-    ND::_ZN18TownExchangeRecord11setChecksumEj(p, ND::Save_CalcChecksum(p, 0x84c, ND::_ZN18TownExchangeRecord11getChecksumEv(p)));
-    ND::_ZN18TownExchangeRecord15setChecksumByteEj(q, ND::Save_CalcChecksum(q, 0xf8, ND::_ZN18TownExchangeRecord15getChecksumByteEv(q)));
+    ND::_ZN18TownExchangeRecord11setChecksumEj(p, ND::Save_CalcChecksum(p, 0x84c, ((TownExchangeRecord *)(p))->getChecksum()));
+    ND::_ZN18TownExchangeRecord15setChecksumByteEj(q, ND::Save_CalcChecksum(q, 0xf8, ((TownExchangeRecord *)(q))->getChecksumByte()));
     if (ND::Backup_Write(ND::gBackup, ND::sSaveSlotOffsets[0] + a, p, 0x84c) == 1) return TRUE;
     if (ND::Backup_Write(ND::gBackup, ND::sSaveSlotOffsets[1] + a, p, 0x84c) == 1) return TRUE;
     if (ND::Backup_Write(ND::gBackup, ND::sSaveSlotOffsets[0] + b, q, 0xf8) == 1) return TRUE;
@@ -4060,7 +4031,7 @@ extern "C" BOOL Save_WriteVillagerTransfer() {
 
 extern "C" void GameStart_SetupSave() {
     if (!ND::GameStart_IsMode4()) {
-        if (ND::GameStart_IsNewTown()) ND::_ZN8SaveData5resetEv(ND::gSaveData);
+        if (ND::GameStart_IsNewTown()) ((SaveData *)(ND::gSaveData))->reset();
         if (ND::GameStart_IsMode3()) {
             Unk_020cbb18_ff4c *g = ND::gCommManager;
             g->localSlot = 0;
@@ -4209,7 +4180,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
         g->localSlot = 0;
     }
     g = ND::gCommManager;
-    ND::_ZN11CommManager14setMemberCountEj(g, 1);
+    ((CommManager *)(void *)(g))->setMemberCount(1);
     if (b < 7) {
         ND::PlayerSession_SetDataIndex(g->localSlot, b);
     }
@@ -4220,15 +4191,15 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
     }
     for (i = 2; i >= 0; i--) {
         s32 p = ND::PlayerData_Get(i + 4);
-        if (p) ND::_ZN10PlayerData5resetEv(p);
+        if (p) ((PlayerData *)(p))->reset();
     }
     if (c == 0) {
         ND::Clock_Update(0);
         ND::SaveData_Setup(ND::gSaveData, 2);
         ND::SaveData_Apply(ND::gSaveData);
         if (ND::TownBlockMap_Get()) {
-            ND::_ZN12TownBlockMap13updateAcreIdsEv(ND::TownBlockMap_Get());
-            ND::_ZN12TownBlockMap6bindBgEv(ND::TownBlockMap_Get());
+            ((TownBlockMap *)(ND::TownBlockMap_Get()))->updateAcreIds();
+            ((TownBlockMap *)(ND::TownBlockMap_Get()))->bindBg();
             ND::Town_ClearBorderTrees(ND::TownBlockMap_Get());
         }
         ND::HouseRoomMaps_UpdateAll();
@@ -4277,14 +4248,14 @@ extern "C" void VillagerTransfer_PlanSwap(void *a) {
     }
     for (i = 3; i >= 0; i--) {
         if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
-            ND::_ZN11SaveManager15setTransferDestEjh(a, i, i);
+            ((SaveManager *)(a))->setTransferDest(i, i);
         } else {
-            ND::_ZN11SaveManager15setTransferDestEjh(a, i, 4);
+            ((SaveManager *)(a))->setTransferDest(i, 4);
         }
     }
     pick = list[ND::Random_GlobalBelow(n)];
-    ND::_ZN11SaveManager15setTransferDestEjh(a, pick, cur);
-    ND::_ZN11SaveManager15setTransferDestEjh(a, cur, pick);
+    ((SaveManager *)(a))->setTransferDest(pick, cur);
+    ((SaveManager *)(a))->setTransferDest(cur, pick);
 }
 
 extern "C" void VillagerTransfer_PlanRotate(void *a) {
@@ -4299,13 +4270,13 @@ extern "C" void VillagerTransfer_PlanRotate(void *a) {
         }
     }
     for (i = 3; i >= 0; i--) {
-        ND::_ZN11SaveManager15setTransferDestEjh(a, i, 4);
+        ((SaveManager *)(a))->setTransferDest(i, 4);
     }
     j = 0;
     for (i = 0; i < n; i++) {
         s32 k = i + 1;
         if (k >= n) k = j;
-        ND::_ZN11SaveManager15setTransferDestEjh(a, n ? list[i] : list[i], list[k]);
+        ((SaveManager *)(a))->setTransferDest(n ? list[i] : list[i], list[k]);
     }
 }
 
@@ -4314,7 +4285,7 @@ extern "C" void LostChild_ResetAndPairLast(void *a) {
     Unk_020cbb18_ff4c *g = ND::gCommManager;
     for (; i >= 0; i--) {
         if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
-            ND::_ZN15LostChildRecord5clearEv(ND::_ZN18TownExchangeRecord18getLostChildRecordEv(ND::TownExchange_GetForAid(i)));
+            ((LostChildRecord *)(((TownExchangeRecord *)(ND::TownExchange_GetForAid(i)))->getLostChildRecord()))->clear();
         }
     }
     ND::LostChild_TryPair(a, ND::NetSession_GetLastSyncSlot());
@@ -4326,7 +4297,7 @@ extern "C" void LostChild_ResetAndPairAll(SaveManager *self) {
     o = NC::gCommManager;
     for (; i >= 0; i--) {
         if (o->isSlotActive(i)) {
-            NC::_ZN15LostChildRecord5clearEv(NC::_ZN18TownExchangeRecord18getLostChildRecordEv(NC::TownExchange_GetForAid(i)));
+            ((LostChildRecord *)(((TownExchangeRecord *)(NC::TownExchange_GetForAid(i)))->getLostChildRecord()))->clear();
         }
     }
     for (i = 3; i >= 0; i--) {
@@ -4343,11 +4314,11 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     if (r7 == 0) return;
     u32 sa[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sa);
-    NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)), sa);
-    void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r7);
-    if (NC::_ZN15LostChildRecord11getDaysLeftEv(r6)) {
+    NC::TownId_GetNameString(NC::PlayerId_GetTownId(((PlayerData *)(r7))->getPlayerId()), sa);
+    void *r6 = ((PlayerData *)(r7))->getLostChildRecord();
+    if (((LostChildRecord *)(r6))->getDaysLeft()) {
         NC::LostChild_DebugPrint(self, r6);
-        NC::_ZN11MsgString9CD1Ev(sa);
+        ((MsgString9C *)(sa))->MsgString9C::~MsgString9C();
         return;
     }
     s32 found = 4;
@@ -4362,9 +4333,9 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
         if (!o->isSlotActive(i)) continue;
         other = NC::PlayerData_GetBySessionSlot(i);
         if (!other) continue;
-        NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(other)), sb);
-        other2 = NC::_ZN10PlayerData18getLostChildRecordEv(other);
-        if (NC::_ZN15LostChildRecord11getDaysLeftEv(other2)) continue;
+        NC::TownId_GetNameString(NC::PlayerId_GetTownId(((PlayerData *)(other))->getPlayerId()), sb);
+        other2 = ((PlayerData *)(other))->getLostChildRecord();
+        if (((LostChildRecord *)(other2))->getDaysLeft()) continue;
         if (NC::Net_GetMode() == 3 || NC::Net_GetMode() == 4) {
             if (!NC::Wifi_IsInFriendList(self, other, r7)) continue;
             if (!NC::Wifi_IsInFriendList(self, r7, other)) continue;
@@ -4373,23 +4344,23 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
         break;
     }
     if (found == 4) {
-        NC::_ZN11MsgString9CD1Ev(sb);
-        NC::_ZN11MsgString9CD1Ev(sa);
+        ((MsgString9C *)(sb))->MsgString9C::~MsgString9C();
+        ((MsgString9C *)(sa))->MsgString9C::~MsgString9C();
         return;
     }
     s16 *pp = (s16 *)NC::DebugVar_GetPtr(0, 0x49);
     if (*pp == 0 && NC::Random_GlobalBelow(0x10)) {
-        NC::_ZN11MsgString9CD1Ev(sb);
-        NC::_ZN11MsgString9CD1Ev(sa);
+        ((MsgString9C *)(sb))->MsgString9C::~MsgString9C();
+        ((MsgString9C *)(sa))->MsgString9C::~MsgString9C();
         return;
     }
     s32 r4 = NC::Random_GlobalBelow(2);
-    NC::_ZN15LostChildRecord14setKaitlinRoleEh(other2, r4 == 0 ? 1 : 0);
-    NC::_ZN15LostChildRecord9setTownIdEPv(other2, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)));
-    NC::_ZN15LostChildRecord11setDaysLeftEh(other2, 0xa);
-    NC::_ZN15LostChildRecord14setKaitlinRoleEh(r6, r4 == 1 ? 1 : 0);
-    NC::_ZN15LostChildRecord9setTownIdEPv(r6, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(other)));
-    NC::_ZN15LostChildRecord11setDaysLeftEh(r6, 0xa);
+    ((LostChildRecord *)(other2))->setKaitlinRole(r4 == 0 ? 1 : 0);
+    ((LostChildRecord *)(other2))->setTownId(NC::PlayerId_GetTownId(((PlayerData *)(r7))->getPlayerId()));
+    ((LostChildRecord *)(other2))->setDaysLeft(0xa);
+    ((LostChildRecord *)(r6))->setKaitlinRole(r4 == 1 ? 1 : 0);
+    ((LostChildRecord *)(r6))->setTownId(NC::PlayerId_GetTownId(((PlayerData *)(other))->getPlayerId()));
+    ((LostChildRecord *)(r6))->setDaysLeft(0xa);
     NC::LostChild_DebugPrint(self, r6);
     NC::LostChild_DebugPrint(self, other2);
     void *h7 = NC::_ZN11SaveManager15getTransferDestEj(self, idx);
@@ -4399,26 +4370,26 @@ extern "C" void LostChild_TryPair(SaveManager *self, s32 idx) {
     u32 sc[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sc);
     if (c4) {
-        NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sc);
+        NC::TownId_GetNameString(NC::PlayerId_GetTownId(((PlayerData *)(c4))->getPlayerId()), sc);
     }
-    NC::MI_CpuCopy8(r6, NC::_ZN18TownExchangeRecord18getLostChildRecordEv(m7), 0xc);
+    NC::MI_CpuCopy8(r6, ((TownExchangeRecord *)(m7))->getLostChildRecord(), 0xc);
     c4 = NC::PlayerData_GetBySessionSlot((s32)h5);
     void *m5 = NC::TownExchange_GetForAid((s32)h5);
     u32 sd[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(sd);
     if (c4) {
-        NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sd);
+        NC::TownId_GetNameString(NC::PlayerId_GetTownId(((PlayerData *)(c4))->getPlayerId()), sd);
     }
-    NC::MI_CpuCopy8(other2, NC::_ZN18TownExchangeRecord18getLostChildRecordEv(m5), 0xc);
-    NC::_ZN11MsgString9CD1Ev(sd);
-    NC::_ZN11MsgString9CD1Ev(sc);
-    NC::_ZN11MsgString9CD1Ev(sb);
-    NC::_ZN11MsgString9CD1Ev(sa);
+    NC::MI_CpuCopy8(other2, ((TownExchangeRecord *)(m5))->getLostChildRecord(), 0xc);
+    ((MsgString9C *)(sd))->MsgString9C::~MsgString9C();
+    ((MsgString9C *)(sc))->MsgString9C::~MsgString9C();
+    ((MsgString9C *)(sb))->MsgString9C::~MsgString9C();
+    ((MsgString9C *)(sa))->MsgString9C::~MsgString9C();
     return;
 }
 
 extern "C" BOOL Wifi_IsInFriendList(SaveManager *self, void *a, void *b) {
-    void *r6 = NC::DwcFriendData_GetBytes(NC::PlayerWifiData_GetOwnFriendData(NC::_ZN10PlayerData15getWifiUserDataEv(a)));
+    void *r6 = NC::DwcFriendData_GetBytes(NC::PlayerWifiData_GetOwnFriendData(((PlayerData *)(a))->getWifiUserData()));
     u8 *r5 = (u8 *)NC::FriendList_GetEntries(NC::_ZN10PlayerData13getFriendListEv(b));
     s32 i;
     u32 st = 0x1c;
@@ -4436,19 +4407,19 @@ extern "C" void LostChild_ApplyReceived(SaveManager *self) {
     void *r4 = NC::PlayerData_GetCurrent();
     u32 s1[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(s1);
-    NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r4)), s1);
-    void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r4);
-    void *q = NC::_ZN18TownExchangeRecord18getLostChildRecordEv(p5);
+    NC::TownId_GetNameString(NC::PlayerId_GetTownId(((PlayerData *)(r4))->getPlayerId()), s1);
+    void *r6 = ((PlayerData *)(r4))->getLostChildRecord();
+    void *q = ((TownExchangeRecord *)(p5))->getLostChildRecord();
     u32 s2[HOST_SIZED(0x1c, MsgString9C) / 4] HOST_ALIGN8;
     NC::_ZN11MsgString9CC2Ev(s2);
-    NC::TownId_GetNameString(NC::_ZN15LostChildRecord9getTownIdEv(q), s2);
-    if (NC::_ZN15LostChildRecord11getDaysLeftEv(q)) {
+    NC::TownId_GetNameString(((LostChildRecord *)(q))->getTownId(), s2);
+    if (((LostChildRecord *)(q))->getDaysLeft()) {
         NC::MI_CpuCopy8(q, r6, 0xc);
-        NC::_ZN15LostChildRecord13isKaitlinRoleEv(q);
+        ((LostChildRecord *)(q))->isKaitlinRole();
     }
-    NC::_ZN15LostChildRecord5clearEv(NC::_ZN18TownExchangeRecord18getLostChildRecordEv(p5));
-    NC::_ZN11MsgString9CD1Ev(s2);
-    NC::_ZN11MsgString9CD1Ev(s1);
+    ((LostChildRecord *)(((TownExchangeRecord *)(p5))->getLostChildRecord()))->clear();
+    ((MsgString9C *)(s2))->MsgString9C::~MsgString9C();
+    ((MsgString9C *)(s1))->MsgString9C::~MsgString9C();
 }
 
 extern "C" void VillagerTransfer_SendReplies(SaveManager *self) {
@@ -4461,7 +4432,7 @@ extern "C" void VillagerTransfer_SendReplies(SaveManager *self) {
         if (o->isSlotActive(n)) {
             s32 q = (s32)NC::_ZN11SaveManager15getTransferDestEj(self, n);
             if (q < 4) {
-                if (NC::_ZN18TownExchangeRecord7isValidEv(NC::TownExchange_GetForAid(q))) {
+                if (((TownExchangeRecord *)(NC::TownExchange_GetForAid(q)))->isValid()) {
                     a.v[i] = 2;
                     b.v[i] = q;
                 } else {
@@ -4556,7 +4527,7 @@ extern "C" s32 SaveManager_RunSessionEnd(SaveManager *self, u8 *st, s32 base, s3
             }
         }
     } else if (cur == base + 4) {
-        if (a6) NC::_ZN11SaveManager18showSequence2Msg0AEv(self);
+        if (a6) (self)->showSequence2Msg0A();
         *st = base + 5;
     }
 
@@ -4619,7 +4590,7 @@ extern "C" s32 SaveManager_RunSessionEnd(SaveManager *self, u8 *st, s32 base, s3
             *st = base2 + 3;
         }
     } else if (cur == base2 + 3) {
-        if (a6) NC::_ZN11SaveManager18showSequence2Msg0BEv(self);
+        if (a6) (self)->showSequence2Msg0B();
         *st = base2 + 4;
     } else if (cur == base2 + 4) {
         if (NC::TalkWindow_Get(0)->state == 0) {
@@ -4766,7 +4737,7 @@ s32 SaveManager::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN11SaveManager15verifySlotsStepEv(this);
+        r = ((SaveManager *)(this))->verifySlotsStep();
         if (r == 1) {
             *p = fail;
         } else if (r != 3) {
@@ -4778,12 +4749,12 @@ s32 SaveManager::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN11SaveManager12loadSlotStepEi(this, slotOrder.lo);
+        r = ((SaveManager *)(this))->loadSlotStep(slotOrder.lo);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {
             if (a6 != 0) {
-                NB::_ZN11SaveManager23restoreVillagerTransferEv(this);
+                ((SaveManager *)(this))->restoreVillagerTransfer();
             }
             NB::Save_StoreCurrentPlayerToResident(this);
             if (a6 != 0) {
@@ -4798,7 +4769,7 @@ s32 SaveManager::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
+        r = ((SaveManager *)(this))->saveSlotStep(slotOrder.hi);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {
@@ -4829,7 +4800,7 @@ s32 SaveManager::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
+        r = ((SaveManager *)(this))->saveSlotStep(slotOrder.hi);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {
@@ -4867,7 +4838,7 @@ void SaveManager::runGatherPeersInScene(u8 *p, u32 base, u32 x, u32 y) {
         s32 i = 3;
         u8 *g = NB::gCommManager;
         for (; i >= 0; i--) {
-            if (NB::_ZN11CommManager12isSlotActiveEi(g, i) != 0 && NB::_ZN11CommManager7isMyAidEj(g, i) == 0) {
+            if (((CommManager *)(g))->isSlotActive(i) != 0 && ((CommManager *)(g))->isMyAid(i) == 0) {
                 if (x == NB::NetArea_GetSlotScene(i) || y == NB::NetArea_GetSlotScene(i)) {
                     if (NB::NetArea_IsSlotMoving(i) == 0) {
                         continue;
@@ -4878,11 +4849,11 @@ void SaveManager::runGatherPeersInScene(u8 *p, u32 base, u32 x, u32 y) {
             }
         }
         if (r) {
-            NB::_ZN11CommManager14setPendingModeEj(g, 1);
+            ((CommManager *)(g))->setPendingMode(1);
             *p = base + 1;
         }
     } else if (v == base + 1) {
-        if (NB::_ZN11CommManager7getModeEv(NB::gCommManager) == 1 && NB::CommCtrl_SendAct08() != 0) {
+        if (((CommManager *)(NB::gCommManager))->getMode() == 1 && NB::CommCtrl_SendAct08() != 0) {
             *p = base + 2;
         }
     }
@@ -4893,7 +4864,7 @@ BOOL SaveManager::allPeersSentAct10() {
     s32 i = 3;
     u8 *g = NB::gCommManager;
     for (; i >= 0; i--) {
-        if (NB::_ZN11CommManager12isSlotActiveEi(g, i) != 0 && NB::_ZN11CommManager7isMyAidEj(g, i) == 0 && ctrlAct10[i] == 0) {
+        if (((CommManager *)(g))->isSlotActive(i) != 0 && ((CommManager *)(g))->isMyAid(i) == 0 && ctrlAct10[i] == 0) {
             r = FALSE;
             break;
         }
@@ -4904,7 +4875,7 @@ BOOL SaveManager::allPeersSentAct10() {
 void SaveManager::runSendAct10(u8 *p, u32 base) {
     u32 v = *p;
     if (v == base) {
-        if (NB::_ZN11CommManager7getModeEv(NB::gCommManager) == 1) {
+        if (((CommManager *)(NB::gCommManager))->getMode() == 1) {
             *p = base + 1;
         }
     } else if (v == base + 1) {
@@ -4916,18 +4887,18 @@ void SaveManager::runSendAct10(u8 *p, u32 base) {
 
 extern "C" void SaveManager_StartGatekeeperTalk(u32 a, u32 b) {
     if (b == 0) {
-        NB::_ZN11SaveManager9startTalkEPKch(a, (u8 *)"sp_npc_gatekeeper", 0x69);
+        ((SaveManager *)(a))->startTalk((const char *)((u8 *)"sp_npc_gatekeeper"), 0x69);
     }
-    NB::_ZN10PlayerData9clearFlagEj(NB::PlayerData_GetCurrent(), 2);
-    NB::_ZN12HudCountdown5startEii(NB::Hud_GetCountdown(), 0, 1);
+    ((PlayerData *)(NB::PlayerData_GetCurrent()))->clearFlag(2);
+    ((HudCountdown *)(NB::Hud_GetCountdown()))->start(0, 1);
 }
 
 extern "C" void SaveManager_StartSequence2Talk(u32 a) {
-    NB::_ZN11SaveManager9startTalkEPKch(a, (u8 *)"sp_etc_sequence2", 7);
-    NB::_ZN10PlayerData9clearFlagEj(NB::PlayerData_GetCurrent(), 2);
+    ((SaveManager *)(a))->startTalk((const char *)((u8 *)"sp_etc_sequence2"), 7);
+    ((PlayerData *)(NB::PlayerData_GetCurrent()))->clearFlag(2);
     if (NB::SaveManager_IsEndSessionSave() != 0) {
-        NB::_ZN12HudCountdown5startEii(NB::Hud_GetCountdown(), 0, 1);
-        NB::_ZN10PlayerData7setFlagEj(NB::PlayerData_GetCurrent(), 2);
+        ((HudCountdown *)(NB::Hud_GetCountdown()))->start(0, 1);
+        ((PlayerData *)(NB::PlayerData_GetCurrent()))->setFlag(2);
     }
 }
 
@@ -5030,7 +5001,7 @@ extern "C" s32 Wifi_EndSession(void) {
     if (r4) {
         s32 h = NB::PlayerData_GetCurrent();
         if (h != 0) {
-            s32 q = NB::_ZN10PlayerData8getIndexEv(h);
+            s32 q = ((PlayerData *)(h))->getIndex();
             if (q >= 0 && q < 4) {
                 NB::GameStats_ApplyDownload();
                 NB::AxMail_ApplyMail();
@@ -5038,10 +5009,10 @@ extern "C" s32 Wifi_EndSession(void) {
                 NB::Wifi_StoreFriendList();
                 if (NB::Save_WritePlayerFriendList() != 0) {
                     s32 t = NB::TalkWindow_Get(0);
-                    NB::_ZN15TalkWindowState12hideBusyIconEv(t);
-                    NB::_ZN15TalkWindowState13unlockAdvanceEv(t);
+                    ((TalkWindowState *)(t))->hideBusyIcon();
+                    ((TalkWindowState *)(t))->unlockAdvance();
                     u8 b = 2;
-                    NB::_ZN15TalkWindowState14setNextMessageEPhPv(t, &b, (u8 *)"sp_npc_gatekeeper");
+                    ((TalkWindowState *)(t))->setNextMessage(&b, (u8 *)"sp_npc_gatekeeper");
                 }
             }
         }
@@ -5051,9 +5022,9 @@ extern "C" s32 Wifi_EndSession(void) {
 
 extern "C" BOOL GameStats_Upload(void) {
     u8 *p = NB::gSaveBlancaFace;
-    if (NB::_ZN16BlancaFaceRecord8getStateEv(p) == 3) {
-        s32 v = NB::_ZN16BlancaFaceRecord11getChecksumEv(p);
-        NB::_ZN16BlancaFaceRecord11setChecksumEj(p, NB::Save_CalcChecksum(p, 0x22c, v));
+    if (((BlancaFaceRecord *)(p))->getState() == 3) {
+        s32 v = ((BlancaFaceRecord *)(p))->getChecksum();
+        ((BlancaFaceRecord *)(p))->setChecksum(NB::Save_CalcChecksum(p, 0x22c, v));
         u32 t = NB::sNetRegion;
         NB::_Z21NetOverlay_AssertWifiv();
         NB::Net_GameStatsUpload((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/upload.asp", p, 0x22c, t);
@@ -5063,7 +5034,7 @@ extern "C" BOOL GameStats_Upload(void) {
 }
 
 extern "C" BOOL GameStats_Download(void) {
-    if (NB::_ZN16BlancaFaceRecord8getStateEv(NB::gSaveBlancaFace) == 0) {
+    if (((BlancaFaceRecord *)(NB::gSaveBlancaFace))->getState() == 0) {
         u32 t = NB::sNetRegion;
         NB::_Z21NetOverlay_AssertWifiv();
         if (NB::Net_GameStatsDownload((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/download.asp", NB::sGameStatsBuf, 0x22c, t) != 0) {
@@ -5077,7 +5048,7 @@ extern "C" BOOL GameStats_Download(void) {
 extern "C" BOOL AxMail_DownloadMail(void) {
     char a[0xc];
     char buf[0x84];
-    if (NB::_ZN8SaveData8testFlagEj(NB::gSaveData, 0x14) != 0) {
+    if (((SaveData *)(NB::gSaveData))->testFlag(0x14) != 0) {
         return FALSE;
     }
     NB::strcpy(buf, NB::sAxMailBaseUrl);
@@ -5096,7 +5067,7 @@ extern "C" BOOL AxMail_DownloadMail(void) {
 extern "C" BOOL AxMail_DownloadBbs(void) {
     char a[0xc];
     char buf[0x84];
-    if (NB::_ZN8SaveData8testFlagEj(NB::gSaveData, 0x14) != 0) {
+    if (((SaveData *)(NB::gSaveData))->testFlag(0x14) != 0) {
         return FALSE;
     }
     NB::strcpy(buf, NB::sAxMailBaseUrl);
@@ -5138,7 +5109,7 @@ extern "C" BOOL AxMail_PollBbs(void) {
 
 extern "C" BOOL GameStats_PollUpload(void) {
     if (NB::Net_IsUploadDone(NB::_Z21NetOverlay_AssertWifiv()) != 0) {
-        NB::_ZN16BlancaFaceRecord5resetEv(NB::gSaveBlancaFace);
+        ((BlancaFaceRecord *)(NB::gSaveBlancaFace))->reset();
         return TRUE;
     }
     return FALSE;
@@ -5150,11 +5121,11 @@ extern "C" void GameStats_ApplyDownload(void) {
         s32 r = NB::Save_Sum16(NB::sGameStatsBuf, 0x22c);
         u8 *dst = NB::gSaveBlancaFace;
         if (r == 0) {
-            NB::_ZN16BlancaFaceRecord8setStateEj(NB::sGameStatsBuf, 1);
+            ((BlancaFaceRecord *)(NB::sGameStatsBuf))->setState(1);
             NB::MI_CpuCopy8(NB::sGameStatsBuf, dst, 0x22c);
         }
         NB::MI_CpuFill8(NB::sGameStatsBuf, 0, 0x22c);
-        NB::_ZN16BlancaFaceRecord11setChecksumEj(NB::sGameStatsBuf, 1);
+        ((BlancaFaceRecord *)(NB::sGameStatsBuf))->setChecksum(1);
     }
 }
 

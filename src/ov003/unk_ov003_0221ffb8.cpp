@@ -18,6 +18,12 @@
 #include "town/Unk_0204e858_Grid.h"
 #include "player/FishBobber.h"
 #include "field/FishShadow.h"
+#include "game/CollisionState.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/CachedModel.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "net/CommManager.h"
+#include "snd/SndEnvChannel.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; the per-file aliases (E_f3, Obj_f6 .. Obj_f9, Rec_f7, Self_f5, ...) are typedefs of
@@ -834,7 +840,7 @@ BottleThrowStateOwner::~BottleThrowStateOwner() {}
 BottleThrow::BottleThrow()
 {
     BottleThrow *p = this;
-    _ZN14CollisionStateC1Ev(p);
+    new (p) CollisionState();
     p->state = 0;
     p->position.x = 0x1000;
     p->position.y = 0x1000;
@@ -852,7 +858,7 @@ BottleThrow::BottleThrow()
 //@ 0x2224d80
 BottleThrow::~BottleThrow()
 {
-    _ZN14CollisionStateD1Ev(this);
+    ((CollisionState *)(this))->~CollisionState();
 }
 
 
@@ -908,8 +914,8 @@ extern "C" s32 BottleThrow_Start(s32 i)
         return 0;
     }
     s = gCommManager;
-    if (CommManager_isOnline(s)) {
-        if (CommManager_isMyAid(s, i)) {
+    if (((CommManager *)(s))->isOnline()) {
+        if (((CommManager *)(s))->isMyAid(i)) {
             e->isLocal = 1;
         } else {
             e->isLocal = 0;
@@ -1469,7 +1475,7 @@ extern "C" s32 FishShadow_BiteInspect(Obj_f8 *self)
         ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, s, (s16)self->rotY);
         if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->position, q, dv, dv, dv)) {
             self->biteStepTimer = 0;
-            FishBobber_nudge(p);
+            ((FishBobber *)(p))->nudge();
             self->biteStep = 1;
         }
         break;
@@ -1562,7 +1568,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
         d = ((s64 (*)(void *, void *))Vec_DistSqXZ)(&self->position, q);
         if ((s64)func_01ffcb0c(dv, dv) >= d) {
             self->biteStepTimer = 0;
-            FishBobber_nudge(p);
+            ((FishBobber *)(p))->nudge();
             self->biteStep = 4;
         }
         ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x18);
@@ -1575,7 +1581,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
         } else {
             ang = Math_AngleXZ(&self->position, q);
             if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) < 5) {
-                FishBobber_nudge(p);
+                ((FishBobber *)(p))->nudge();
             }
         }
         ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->position, 0x100, ang);
@@ -1722,13 +1728,13 @@ extern "C" BOOL FishShadow_BiteHooked(Obj_f7 *o) {
         step = 0x1249;
     }
     if (o->pullDir != 0) {
-        if (AnimFrameCtrl_hasPassedFrame(o->animFrameCtrl, 4)) {
+        if (((AnimFrameCtrl *)(o->animFrameCtrl))->hasPassedFrame(4)) {
             o->animFrame = 0x3000;
         }
         o->rotY = o->rotY + step;
         ang = (s16)(o->rotY - 0x4000);
     } else {
-        if (AnimFrameCtrl_hasPassedFrame(o->animFrameCtrl, 0xb)) {
+        if (((AnimFrameCtrl *)(o->animFrameCtrl))->hasPassedFrame(0xb)) {
             o->animFrame = 0xa000;
         }
         o->rotY = o->rotY - step;
@@ -2011,13 +2017,13 @@ extern "C" BOOL FishCatch_StartLift(s32 idx, s32 flag) {
     }
     rec->mode = 3;
     void *g = gCommManager;
-    if (CommManager_isOnline(g)) {
-        if (CommManager_isMyAid(g, idx)) {
+    if (((CommManager *)(g))->isOnline()) {
+        if (((CommManager *)(g))->isMyAid(idx)) {
             u8 b = 2;
             g = gCommManager;
-            CommManager_beginRecord(g);
-            CommManager_writeRecord(g, &b, 1);
-            CommManager_endRecord(g, 0x2a, 4);
+            ((CommManager *)(g))->beginRecord();
+            ((CommManager *)(g))->writeRecord((u8 *)(&b), 1);
+            ((CommManager *)(g))->endRecord(0x2a, 4);
         }
     }
     return TRUE;
@@ -2059,9 +2065,9 @@ extern "C" BOOL FishCatch_NetSendStored(s32 idx) {
     if (p->storedSent == 0) {
         u8 b = 1;
         void *g = gCommManager;
-        CommManager_beginRecord(g);
-        CommManager_writeRecord(g, &b, 1);
-        CommManager_endRecord(g, 0x2a, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(&b), 1);
+        ((CommManager *)(g))->endRecord(0x2a, 4);
         r = TRUE;
         p->storedSent = r;
     }
@@ -2148,7 +2154,7 @@ extern "C" BOOL FishShadow_TryNoticeBobber(Obj_f7 *self) {
         return FALSE;
     }
     void *g = gCommManager;
-    if (CommManager_isOnline(g)) {
+    if (((CommManager *)(g))->isOnline()) {
         s32 t = e->ownerAid;
         if (t < 0) {
             return FALSE;
@@ -2343,9 +2349,9 @@ extern "C" BOOL FishShadow_Land(Obj_f6 *self, u32 k)
     NetBuf_PackPair20(tmp, self->position.x, self->position.z);
     MI_CpuCopy8(tmp, &buf[2], 5);
     s = gCommManager;
-    CommManager_beginRecord(s);
-    CommManager_writeRecord(s, buf, 7);
-    CommManager_endRecord(s, 0x2a, 4);
+    ((CommManager *)(s))->beginRecord();
+    ((CommManager *)(s))->writeRecord((u8 *)(buf), 7);
+    ((CommManager *)(s))->endRecord(0x2a, 4);
     return TRUE;
 }
 
@@ -2542,9 +2548,9 @@ extern "C" void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s
     v2.x = self->position.x + (r * data_02135f44[i2]) / 100;
     v2.y = -0x1333;
     v2.z = z2;
-    GroundInfo_initAtPos(&g0, &v0, 0, 0);
-    GroundInfo_initAtPos(&g1, &v1, 0, 0);
-    GroundInfo_initAtPos(&g2, &v2, 0, 0);
+    ((GroundInfo *)(&g0))->initAtPos((VecFx32 *)(&v0), 0, 0);
+    ((GroundInfo *)(&g1))->initAtPos((VecFx32 *)(&v1), 0, 0);
+    ((GroundInfo *)(&g2))->initAtPos((VecFx32 *)(&v2), 0, 0);
     *o1 = g0.attr;
     *o2 = g1.attr;
     *o3 = g2.attr;
@@ -2628,7 +2634,7 @@ extern "C" void FishCroak_Croak(FishCroak *s, Obj_f6 *o)
 {
     if (s->b1 != 0) {
         s->b1 = s->b1 - 1;
-        SndEnvChannel_callRequest(o->envChannel, 0x82f);
+        ((SndEnvChannel *)(o->envChannel))->callRequest((void *)(0x82f));
     } else {
         s->b2 = ((s32 (*)(s32, s32))FieldFish_RandRange)(0x14, 0x50);
         s->b3 = 1;
@@ -3026,8 +3032,8 @@ extern "C" void FishCatch_StartSwimAway(Self_f5 *self, s32 a) {
     }
     self->mode = 5;
     void *g = gCommManager;
-    if (CommManager_isOnline(g)) {
-        if (CommManager_isMyAid(g, a)) {
+    if (((CommManager *)(g))->isOnline()) {
+        if (((CommManager *)(g))->isMyAid(a)) {
             ((s32 (*)(void *, s32))FieldFish_ScareAround)(&v, ((*(u8 * *)(sFishRodParams))[data_020ca315[k] * 4] << 12) / 10);
         }
     } else {
@@ -3138,7 +3144,7 @@ extern "C" void FishCatch_PollRemote(void *a) {
     s32 m1 = -1;
     s32 z = 0;
     for (; i < 4; i++) {
-        if (CommManager_isMyAid(net, i) == 0) {
+        if (((CommManager *)(net))->isMyAid(i) == 0) {
             u32 t = FishDisplay_GetRequestKind(i);
             if (t == 9) {
                 t = 1;
@@ -3263,13 +3269,13 @@ extern "C" BOOL FishCatch_StartRemoteLift(void *a, u8 idx) {
 FishShadow::FishShadow()
 {
     u8 *a = (u8 *)this;
-    SndSeEmitter_ctor(a);
+    new (a) SndSeEmitter();
     *(volatile u8 **)(HOST_AT_A(a, FishShadow, 0x40, envChannel[0], 0)) = data_0213b91c;
     *(volatile u8 **)(HOST_AT_A(a, FishShadow, 0x40, envChannel[0], 0)) = data_0213b954;
-    _ZN14CollisionStateC1Ev(HOST_AT_A(a, FishShadow, 0x4c, collisionState[0], 0));
+    new (HOST_AT_A(a, FishShadow, 0x4c, collisionState[0], 0)) CollisionState();
     ModelSlotHandle_Init(HOST_AT_A(a, FishShadow, 0x7c, modelSlot[0], 0));
-    _ZN11CachedModelC1Ev(HOST_AT_A(a, FishShadow, 0x84, cachedModel[0], 0));
-    _ZN9AnimModelC1Ev(HOST_AT_A(a, FishShadow, 0x144, model[0], 0));
+    new (HOST_AT_A(a, FishShadow, 0x84, cachedModel[0], 0)) CachedModel();
+    new (HOST_AT_A(a, FishShadow, 0x144, model[0], 0)) AnimModel();
     *(u32 *)(HOST_AT_A(a, FishShadow, 0x208, spawnBlock.x, 0)) = 0;
     *(u32 *)(HOST_AT_A(a, FishShadow, 0x20c, spawnBlock.y, 0)) = 0;
     FishCroak_Init(HOST_AT_A(a, FishShadow, 0x248, croak.b0, 0));
@@ -3294,11 +3300,11 @@ FishShadow::~FishShadow()
 {
     u8 *a = (u8 *)this;
     FishCroak_Destroy(HOST_AT_A(a, FishShadow, 0x248, croak.b0, 0));
-    _ZN9AnimModelD1Ev(HOST_AT_A(a, FishShadow, 0x144, model[0], 0));
-    _ZN11CachedModelD1Ev(HOST_AT_A(a, FishShadow, 0x84, cachedModel[0], 0));
+    ((AnimModel *)(HOST_AT_A(a, FishShadow, 0x144, model[0], 0)))->AnimModel::~AnimModel();
+    ((CachedModel *)(HOST_AT_A(a, FishShadow, 0x84, cachedModel[0], 0)))->CachedModel::~CachedModel();
     ModelSlotHandle_Destroy(HOST_AT_A(a, FishShadow, 0x7c, modelSlot[0], 0));
-    _ZN14CollisionStateD1Ev(HOST_AT_A(a, FishShadow, 0x4c, collisionState[0], 0));
-    SndSeEmitter_dtor(a);
+    ((CollisionState *)(HOST_AT_A(a, FishShadow, 0x4c, collisionState[0], 0)))->~CollisionState();
+    ((SndSeEmitter *)(a))->SndSeEmitter::~SndSeEmitter();
 }
 
 
@@ -3306,7 +3312,7 @@ FishShadow::~FishShadow()
 FishFinModel::FishFinModel()
 {
     attachState = 0;
-    _ZN11PooledModel5resetEv(&pooledModel);
+    ((PooledModel *)(&pooledModel))->reset();
 }
 
 
@@ -3334,7 +3340,7 @@ extern "C" void FishCroak_Destroy(void *p) {
 FishCatch::FishCatch()
 {
     FishCatch *a = this;
-    SndSeEmitter_ctor(a);
+    new (a) SndSeEmitter();
     a->state = 0;
     a->displayHandle = -1;
     a->mode = 0;
@@ -3359,7 +3365,7 @@ FishCatch::FishCatch()
 //@ 0x2221874
 FishCatch::~FishCatch()
 {
-    SndSeEmitter_dtor(this);
+    ((SndSeEmitter *)(this))->SndSeEmitter::~SndSeEmitter();
 }
 
 
@@ -3419,7 +3425,7 @@ extern "C" void FishShadow_Despawn(void *a, s32 idx) {
 extern "C" BOOL FishFinModel_Attach(u8 *a) {
     (*(u32 *)((u8 *)&sFishFinModel)) = 2;
     ((void (*)(void *, void *))ModelSlotPool_acquire)(HOST_AT_A(a, FieldFishManager, 0x68, finModelPool.lastFreed, 0), ((u8 *)((u8 *)&sFishFinModel.modelSlot.index)));
-    PooledModel_reset(((u8 *)((u8 *)&sFishFinModel.pooledModel)));
+    ((PooledModel *)(((u8 *)((u8 *)&sFishFinModel.pooledModel))))->reset();
     return TRUE;
 }
 
@@ -3427,10 +3433,10 @@ extern "C" BOOL FishFinModel_Attach(u8 *a) {
 //@ 0x2221684
 extern "C" void FishFinModel_Release(u8 *a) {
     (*(u32 *)((u8 *)&sFishFinModel)) = 0;
-    AnimModel_detachJointAnim(((u8 *)((u8 *)&sFishFinModel.model)));
-    CachedModel_release(((u8 *)((u8 *)&sFishFinModel.model)));
-    PooledModel_unload(((u8 *)((u8 *)&sFishFinModel.pooledModel)));
-    ModelSlotPool_release(HOST_AT_A(a, FieldFishManager, 0x68, finModelPool.lastFreed, 0), ((u8 *)((u8 *)&sFishFinModel.modelSlot.index)));
+    ((AnimModel *)(((u8 *)((u8 *)&sFishFinModel.model))))->detachJointAnim();
+    ((CachedModel *)(((u8 *)((u8 *)&sFishFinModel.model))))->release();
+    ((PooledModel *)(((u8 *)((u8 *)&sFishFinModel.pooledModel))))->unload();
+    ((ModelSlotPool *)(HOST_AT_A(a, FieldFishManager, 0x68, finModelPool.lastFreed, 0)))->release((u16 *)(((u8 *)((u8 *)&sFishFinModel.modelSlot.index))));
     sFishFinModel.matAnim.anmObj = 0;
     sFishFinModel.matAnim.resMdl = 0;
 }
@@ -3439,8 +3445,8 @@ extern "C" void FishFinModel_Release(u8 *a) {
 //@ 0x2221524
 BOOL FieldFishManager::onCreate() {
     u8 *a = (u8 *)this;
-    ModelSlotPool_init(HOST_AT_A(a, FieldFishManager, 0x50, shadowModelPool.lastFreed, 0), 6, 0, 0, 0x800, (void *)FishShadowHeap_Create, (void *)FishShadowHeap_Destroy, (void *)"fish_sdw");
-    ModelSlotPool_init(HOST_AT_A(a, FieldFishManager, 0x68, finModelPool.lastFreed, 0), 1, 0x400, 0x80, 0x800, (void *)FishFinHeap_Create, (void *)FishFinHeap_Destroy, (void *)"fish_fin");
+    ((ModelSlotPool *)(HOST_AT_A(a, FieldFishManager, 0x50, shadowModelPool.lastFreed, 0)))->init(6, (void *)(0), (void *)(0), 0x800, (ModelSlotAllocFunc)((void *)FishShadowHeap_Create), (ModelSlotFreeFunc)((void *)FishShadowHeap_Destroy));
+    ((ModelSlotPool *)(HOST_AT_A(a, FieldFishManager, 0x68, finModelPool.lastFreed, 0)))->init(1, (void *)(0x400), (void *)(0x80), 0x800, (ModelSlotAllocFunc)((void *)FishFinHeap_Create), (ModelSlotFreeFunc)((void *)FishFinHeap_Destroy));
     *(s32 *)(HOST_AT_A(a, FieldFishManager, 0x80, shadowAnimFile, 0)) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&sFishShadowAnimPath)), gCurrentHeap, 4, 0);
     FishShadow *s = ((FishShadow *)(sFishShadows));
     s32 i = 0;
@@ -3457,8 +3463,8 @@ BOOL FieldFishManager::onCreate() {
         p208[1] = z;
         *(HOST_AT(s, 0x211, slotIndex, 0)) = i;
         *(u16 *)(HOST_AT(s, 0x212, respawnTimer, 0)) = i * 0x190 + 0x960;
-        SndSeEmitter_callInit(s);
-        SndEnvChannel_callReset(HOST_AT(s, 0x40, envChannel[0], 0));
+        ((SndSeEmitter *)(s))->callInit();
+        ((SndEnvChannel *)(HOST_AT(s, 0x40, envChannel[0], 0)))->callReset();
         s++;
         i++;
     } while (i < 6);
@@ -3466,10 +3472,10 @@ BOOL FieldFishManager::onCreate() {
     s32 k = 0;
     void *net = gCommManager;
     for (; k < 4; k++) {
-        if (CommManager_isOnline(net) && !CommManager_isMyAid(net, k) && FishDisplay_GetRequestKind(k) == 3) {
+        if (((CommManager *)(net))->isOnline() && !((CommManager *)(net))->isMyAid(k) && FishDisplay_GetRequestKind(k) == 3) {
             ((void (*)(u8, s32, s32, s32, s32))FishDisplay_PostRequest)(k, 6, -1, z, z);
         }
-        SndSeEmitter_callInit(q);
+        ((SndSeEmitter *)(q))->callInit();
         q += HOST_SIZED(0xa4, FishCatch);
     }
     return TRUE;
@@ -3489,7 +3495,7 @@ extern "C" void FishShadow_Run(void *a, u8 *b, void *c) {
     v2.x = pv->x;
     v2.y = pv->y;
     v2.z = pv->z;
-    SndEnvChannel_callUpdateRelative(HOST_AT_A(b, FishShadow, 0x40, envChannel[0], 0), &v2);
+    ((SndEnvChannel *)(HOST_AT_A(b, FishShadow, 0x40, envChannel[0], 0)))->callUpdateRelative(&v2);
     if (sFishShadowStates[*(s32 *)(HOST_AT_A(b, FishShadow, 0x80, state, 0))].exec) {
         (((FieldFishManager *)a)->*(sFishShadowStates[*(s32 *)(HOST_AT_A(b, FishShadow, 0x80, state, 0))].exec))(b, c);
     }
@@ -3648,7 +3654,7 @@ extern "C" void FishShadow_ExecSwim(O_f3 *o, E_f3 *e, s32 x) {
     if (e->hasFin != 0) {
         FishShadow_UpdateFin(o, e);
     } else {
-        AnimModel_stepAnim(e->model);
+        ((AnimModel *)(e->model))->stepAnim();
     }
     FishShadow_UpdateVisibility(o, e, x);
 }
@@ -3667,10 +3673,10 @@ extern "C" void FishShadow_UpdateFin(O_f3 *o, E_f3 *e) {
     *(s32 *)(q + 0xac) = e->animFrameStep;
     *(u32 *)(q + 0xa4) = (u32)(u16)(((Unk_ov003_022210a4_Bits *)&e->animFrame)->mid + 1) << 12;
     FieldFish_SetModelMatrix(o, pv, q, ang);
-    AnimModel_stepAnim(e->model);
-    AnimModel_stepAnim(q);
+    ((AnimModel *)(e->model))->stepAnim();
+    ((AnimModel *)(q))->stepAnim();
     FishFinMatAnim *r = &p->matAnim;
-    AnimFrameCtrl_step(r);
+    ((AnimFrameCtrl *)(r))->step();
     *(s32 *)r->anmObj = r->curFrame;
 }
 
@@ -3739,13 +3745,13 @@ BOOL FieldFishManager::onDraw() {
                 q->polyAttr = q->polyAttr & 0xffe0ffff;
                 q->polyAttr = q->polyAttr | ((n & 0x1f) << 16);
             }
-            AnimModel_drawAnimated(e->model, &v);
+            ((AnimModel *)(e->model))->drawAnimated((void *)(void *)(&v));
             if (e->hasFin != 0) {
                 V3_f3 v2;
                 v2.x = func_02133150(rec->shadowScaleX << 12, 100);
                 v2.y = 0x1000;
                 v2.z = func_02133150(rec->shadowScaleZ << 12, 100);
-                AnimModel_drawAnimated(((u8 *)((u8 *)&sFishFinModel.model)), &v2);
+                ((AnimModel *)(((u8 *)((u8 *)&sFishFinModel.model))))->drawAnimated((void *)(void *)(&v2));
             }
         }
         e = (E_f3 *)((u8 *)e + HOST_SIZED(0x24c, FishShadow));
@@ -3775,16 +3781,16 @@ extern "C" void FieldFishManager_FreeShadows(O_f3 *o) {
         }
         ((s32 (*)(O_f3 *, s32))FishShadow_Despawn)(o, i);
         ((s32 (*)(void *, void *))ModelSlotPool_release)(HOST_AT(o, 0x50, shadowModelPool.lastFreed, 0), HOST_AT(e, 0x7c, modelSlot[0], 0));
-        SndSeEmitter_callStop(e);
-        SndEnvChannel_callRelease(HOST_AT(e, 0x40, envChannel[0], 0));
+        ((SndSeEmitter *)(e))->callStop();
+        ((SndEnvChannel *)(HOST_AT(e, 0x40, envChannel[0], 0)))->callRelease();
         e = (E_f3 *)((u8 *)e + HOST_SIZED(0x24c, FishShadow));
     }
     Mem_Free(o->shadowAnimFile);
-    ModelSlotPool_destroy(HOST_AT(o, 0x50, shadowModelPool.lastFreed, 0));
+    ((ModelSlotPool *)(HOST_AT(o, 0x50, shadowModelPool.lastFreed, 0)))->destroy();
     if (f != FALSE) {
         ((s32 (*)(O_f3 *))FishFinModel_Release)(o);
     }
-    ModelSlotPool_destroy(HOST_AT(o, 0x68, finModelPool.lastFreed, 0));
+    ((ModelSlotPool *)(HOST_AT(o, 0x68, finModelPool.lastFreed, 0)))->destroy();
 }
 
 
@@ -3794,7 +3800,7 @@ extern "C" void FieldFishManager_FreeCatches(s32 a) {
     s32 i;
     for (i = 0; i < 4; i++) {
         ((s32 (*)(void *, u8))FishCatch_StateEnd)(p, i);
-        SndSeEmitter_callStop(p);
+        ((SndSeEmitter *)(p))->callStop();
         p += HOST_SIZED(0xa4, FishCatch);
     }
 }
@@ -3990,7 +3996,7 @@ extern "C" void FishShadow_CheckOffscreen(O_f3 *o, E_f3 *e, s32 idx) {
 //@ 0x22209ec
 extern "C" void FieldWater_ApplyFlow(s32 *p, s32 b) {
     GroundInfoBase buf;
-    GroundInfo_initAtPos(&buf, p, 0, 0);
+    ((GroundInfo *)(&buf))->initAtPos((VecFx32 *)(p), 0, 0);
     p[0] += func_01ffcb0c(b, buf.flowDir);
     p[2] += func_01ffcb0c(b, buf.flowDirZ);
     GroundInfo_Destruct(&buf);
@@ -4473,7 +4479,7 @@ extern "C" void FishShadow_SetAnimSpeed(u8 *self, s32 v) {
 extern "C" BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q) {
     BOOL r = FALSE;
     u8 *o = HOST_AT_A(self, FishShadow, 0x144, model[0], 0);
-    CachedModel_loadCached(o, 0x66736477, (*(void * *)((u8 *)&sFishShadowModelPath)));
+    ((CachedModel *)(o))->loadCached((void *)(0x66736477), (*(void * *)((u8 *)&sFishShadowModelPath)));
     if (p == NULL) {
         return r;
     }
@@ -4481,8 +4487,8 @@ extern "C" BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q) {
     s32 t = ((s32 (*)(void *))ModelSlot_getHeap)(slot);
     s32 u = func_021065f8(func_021065dc((s32)p), r);
     if (((BOOL (*)(void *, s32))AnimModel_allocAnmObj)(o, t)) {
-        BlendAnimModel_initAnim(o, u, r, 0x1000, 1, r);
-        AnimModel_attachAnim(o);
+        ((BlendAnimModel *)(o))->initAnim(u, r, 0x1000, 1, r);
+        ((AnimModel *)(o))->attachAnim();
         r = TRUE;
     }
     return r;
@@ -4493,23 +4499,23 @@ extern "C" BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q) {
 extern "C" BOOL FishFinModel_Load(u8 *self, void *a)
 {
     BOOL ok = FALSE;
-    void *res = ModelSlotPool_acquire(a, HOST_AT_A(self, FishFinModel, 4, modelSlot.index, 0));
+    void *res = ((ModelSlotPool *)(a))->acquire((u16 *)(HOST_AT_A(self, FishFinModel, 4, modelSlot.index, 0)));
     u8 *m = HOST_AT_A(self, FishFinModel, 8, pooledModel.resource, 0);
-    if (PooledModel_loadFromSlot(m, res, (*(void * *)((u8 *)&sFishFinModelPath)))) {
+    if (((PooledModel *)(m))->loadFromSlot((ModelSlot *)(res), (const char *)((*(void * *)((u8 *)&sFishFinModelPath))))) {
         u8 *r4 = HOST_AT_A(self, FishFinModel, 0x58, model, 0);
-        Model_setResource(r4, PooledModel_getModel(m), 0);
+        ((Model *)(r4))->setResource((NNSG3dResMdl *)(((PooledModel *)(m))->getModel()), 0);
         void *nm = ((void * (*)(void *))ModelSlot_getHeap)(res);
         s32 v = func_021065f8(func_021065dc((s32)File_LoadAlloc((*(void * *)((u8 *)&sFishFinAnimPath)), nm, 4, 0)), 0);
-        if (AnimModel_allocAnmObj(r4, nm)) {
-            BlendAnimModel_initAnim(r4, v, 0, 0x1000, 1, 0);
-            AnimModel_attachAnim(r4);
+        if (((AnimModel *)(r4))->allocAnmObj(nm)) {
+            ((BlendAnimModel *)(r4))->initAnim(v, 0, 0x1000, 1, 0);
+            ((AnimModel *)(r4))->attachAnim();
         } else {
             return FALSE;
         }
         s32 w = func_02106670(func_02106654((s32)File_LoadAlloc((*(void * *)((u8 *)&sFishFinTexAnimPath)), nm, 4, 0)), 0);
-        if (ModelAnim_allocMatAnm(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0), *(void **)(r4 + 0x5c), nm)) {
-            ModelAnim_init(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0), w, 0, 0x1000, 1);
-            ModelAnim_addToRenderObj(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0), Model_getRenderObj(r4));
+        if (((ModelAnim *)(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0)))->allocMatAnm((u32)(*(void **)(r4 + 0x5c)), nm)) {
+            ((ModelAnim *)(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0)))->init(w, 0, 0x1000, 1);
+            ((ModelAnim *)(HOST_AT_A(self, FishFinModel, 0x11c, matAnim, 0)))->addToRenderObj((u32)(((Model *)(r4))->getRenderObj()));
         } else {
             return FALSE;
         }

@@ -1,6 +1,9 @@
 #include "types.h"
 #include "sys/ClockDateTime.h"
 #include "nitro/os_rtc.h"
+#include "save/SaveRecord4.h"
+#include "town/VisitorPos.h"
+#include "ui/HudController.h"
 
 struct ClockOffset {
     u32 minutes;
@@ -78,7 +81,6 @@ s32 Clock_GetWeekday();
 s32 Date_GetDaysInMonth(u32 y, u32 m);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 
-void _ZN11SaveRecord410expireDateEv(void *);
 void NpcSpawn_ResetAll(void);
 void NpcNetRecords_InitVillagers(void);
 void SaveVillagers_ResetMoods(void *);
@@ -100,9 +102,7 @@ void *TownSessionState_GetPeteFall(u8 *p);
 void _ZN13PeteFallState5clearEv(void *self);
 void TownSessionState_CheckTortimerReward(void *self);
 void *TownSessionState_GetVisitorPos(u8 *p);
-BOOL _ZN10VisitorPos13pickRandomPosEv(void *self);
 s32 Hud_GetCountdown(void);
-void _ZN12HudCountdown5startEii(s32, s32, s32);
 void LowBattery_Reset(void);
 void SaveVillagers_PickGreeter(void *);
 void MenuCtrl_InitKeyboardState(void);
@@ -149,7 +149,7 @@ public:
 };
 
 extern "C" void SaveData_Apply(u8 *p) {
-    _ZN11SaveRecord410expireDateEv(p + 0x15fc5);
+    ((SaveRecord4 *)(p + 0x15fc5))->expireDate();
     NpcSpawn_ResetAll();
     NpcNetRecords_InitVillagers();
     SaveVillagers_ResetMoods(p + 0x8a3c);
@@ -167,8 +167,8 @@ extern "C" void SaveData_Apply(u8 *p) {
     _ZN15KatieVisitState12pickKatiePosEv(TownSessionState_GetKatieState((u8 *)TownSessionState_Get()));
     _ZN13PeteFallState5clearEv(TownSessionState_GetPeteFall((u8 *)TownSessionState_Get()));
     TownSessionState_CheckTortimerReward(TownSessionState_Get());
-    _ZN10VisitorPos13pickRandomPosEv(TownSessionState_GetVisitorPos((u8 *)TownSessionState_Get()));
-    _ZN12HudCountdown5startEii(Hud_GetCountdown(), 0, 1);
+    ((VisitorPos *)(TownSessionState_GetVisitorPos((u8 *)TownSessionState_Get())))->pickRandomPos();
+    ((HudCountdown *)(Hud_GetCountdown()))->start(0, 1);
     LowBattery_Reset();
     SaveVillagers_PickGreeter(p + 0x8a3c);
     MenuCtrl_InitKeyboardState();

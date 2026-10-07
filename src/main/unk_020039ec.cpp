@@ -3,6 +3,8 @@
 #include "snd/SndEnvChannel.h"
 #include "snd/SndSeEmitter.h"
 #include "snd/SndSceneBase.h"
+#include "snd/BgmSceneFade.h"
+#include "snd/SndMgr.h"
 
 
 extern u32 gCamera;
@@ -59,7 +61,6 @@ void SndMgr_PlayTalkVoice(void *, u32, u32, u32, u32);
 }
 
 extern "C" {
-s32 _ZN12BgmSceneFade12isKeepingBgmEv(u8 *);
 }
 
 extern "C" {
@@ -509,13 +510,13 @@ void SndMgr_init(void *a, void *b, u32 c, const char *d, s32 e);
 
 extern "C" void Snd_Init() {
     gSndScene = 0;
-    SndMgr_init(gSndMgr, gSndHeapBuffer, 0x80000, "/sound_dataENG.sdat", 1);
+    ((SndMgr *)(gSndMgr))->init((u32)(gSndHeapBuffer), 0x80000, (u32)("/sound_dataENG.sdat"));
     Melody_Init();
 }
 
 extern "C" void Snd_Update() {
     Melody_Update();
-    SndMgr_update(gSndMgr);
+    ((SndMgr *)(gSndMgr))->update();
     if (gSndScene != 0 && gCamera != 0) {
         gSndScene->update(gCameraDistance);
     }
@@ -660,7 +661,7 @@ extern "C" void Snd_CreateScene() {
 
 extern "C" void Snd_DestroyScene() {
     if (gSndScene != NULL) {
-        if (_ZN12BgmSceneFade12isKeepingBgmEv(data_021c1b3c + 0x2d0) != 0) {
+        if (((BgmSceneFade *)(data_021c1b3c + 0x2d0))->isKeepingBgm() != 0) {
             data_021f5be0[2] = 1;
         }
         gSndScene->unload();
@@ -669,9 +670,9 @@ extern "C" void Snd_DestroyScene() {
     }
 }
 
-extern "C" void Snd_VolumeOff() { SndMgr_volumeOff(gSndMgr); }
+extern "C" void Snd_VolumeOff() { ((SndMgr *)(gSndMgr))->volumeOff(); }
 
-extern "C" void Snd_VolumeOn() { SndMgr_volumeOn(gSndMgr); }
+extern "C" void Snd_VolumeOn() { ((SndMgr *)(gSndMgr))->volumeOn(); }
 
 extern "C" void Snd_FadeOutScene() { gSndScene->fadeOutAll(); }
 
@@ -684,7 +685,7 @@ extern "C" void Snd_PlaySeOnHandle(u32 a) { SndMgr_PlaySeOnHandle(gSndMgr, a); }
 
 extern "C" void Snd_StopSe(u32 a, u32 b) { SndMgr_StopSe(gSndMgr, a, b); }
 
-extern "C" void Snd_SetOutputMode(u32 a) { SndMgr_setOutputMode(gSndMgr, a); }
+extern "C" void Snd_SetOutputMode(u32 a) { ((SndMgr *)(gSndMgr))->setOutputMode(a); }
 
 extern "C" void Snd_BeginTalk(u32 a) { gSndScene->beginTalk(a); }
 
@@ -731,9 +732,9 @@ void SndSeEmitter::callUpdateRelative(VecFx32 *v) {
     }
 }
 
-extern "C" void Snd_SeEmitterPlayOneShot(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playOneShot(a, b, c, d); }
+extern "C" void Snd_SeEmitterPlayOneShot(u32 a, u32 b, u32 c, u32 d) { ((SndSeEmitter *)(a))->playOneShot(b, c, d); }
 
-extern "C" void Snd_SeEmitterPlayHeld(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playHeld(a, b, c, d); }
+extern "C" void Snd_SeEmitterPlayHeld(u32 a, u32 b, u32 c, u32 d) { ((SndSeEmitter *)(a))->playHeld(b, c, d); }
 
 void SndSeEmitter::callStop() { stop(); }
 
@@ -753,9 +754,9 @@ void SndSeEmitter::callUpdateRelativeAlt(VecFx32 *v) {
     }
 }
 
-extern "C" void Snd_SeEmitterPlayAlternate(void *e, u16 s) { SndSeEmitter_playAlternate(e, s); }
+extern "C" void Snd_SeEmitterPlayAlternate(void *e, u16 s) { ((SndSeEmitter *)(e))->playAlternate(s); }
 
-extern "C" void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d) { SndSeEmitter_playOneShot(a, b, c, d); }
+extern "C" void Snd_SeEmitterPlayOneShotAlt(u32 a, u32 b, u32 c, u32 d) { ((SndSeEmitter *)(a))->playOneShot(b, c, d); }
 
 void SndSeEmitter::callStopAlt() { stop(); }
 

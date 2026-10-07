@@ -18,6 +18,10 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuTabBar.h"
+#include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
+#include "ui/LetterLayout.h"
 
 class EncodedString;
 
@@ -52,28 +56,12 @@ void Snd_PlaySe(u32 v);
 s32 Text_GetLength(void *p, s32 n);
 void StrBuf_GetBytes(void *p, void *q, u32 n);
 void EncodedString_SetRaw(void *p, const void *src, s32 len);
-void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *p, void *q, s32 a, s32 b);
 s32 String_CensorTaboo(void *p);
-void _ZN13EncodedString13fromMsgStringEP9MsgString(void *p, void *q);
 u32 PlayerData_GetCurrent();
-void *_ZN10PlayerData12getInventoryEv(u32 self);
-void *_ZN15PlayerInventory9getUnk988Ev(void *self);
 void LetterDefaults_Store(void *a, void *b);
-s32 _ZN12LetterLayout16getBodyLineCountEv(void *p);
-void _ZN14MenuCursorBase11setPoseIdleEv(void *p);
-void _ZN14MenuCursorBase14setPoseReleaseEv(void *p);
-void _ZN10MenuCursor12setPosePressEv(void *p);
-void _ZN14MenuCursorBase6warpToEii(void *p, s32 a, s32 b);
-void _ZN14MenuCursorBase10moveToNearEiiih(void *p, s32 a, s32 b, u32 c, u32 d);
-void _ZN14MenuCursorBase12moveToLinearEiii(void *p, s32 a, s32 b, u32 c);
-void _ZN10MenuCursor16setAnimIfChangedEi(void *p, u32 v);
 void PopupChoice_Close(void *p, u32 v);
 void PopupChoice_OpenAddresseePage(void *p, u32 a, u32 b);
-s32 _ZN19PopupChoiceMenuBody7getRowXEv(void *p);
-s32 _ZN19PopupChoiceMenuBody7getRowYEi(void *p, u32 v);
-void _ZN21MenuBottomButtonsBody11setSelectedEh(void *p, u32 v);
 void Menu_PlayScrollTickSe(void *p);
-BOOL _ZN14MenuScrollKnob7hitTestEii(void *p, u32 a, u32 b);
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
 BOOL MenuKeys_HasDown(void *pad);
@@ -84,9 +72,6 @@ s32 Keyboard_GetCursorY(void *s);
 s32 Keyboard_ClearHighlight(void *s);
 extern u8 gU8None;
 s32 Text_MeasureWidth(void *p, s32 v);
-s32 _ZN12LetterLayout16getBodyLineOfPosEi(void *p, s32 v);
-s32 *_ZN12LetterLayout17getBodyLineStartsEv(void *p);
-s32 _ZN14LetterRenderer22getRecipientNameLengthEv(void *p);
 BOOL MenuCtrl_IsTouch();
 u32 Keyboard_DeleteRange(void *st, u8 *a, u32 b, u32 c, s32 d);
 s32 Keyboard_HitTestText(void *st, void *a, s32 b, s32 c, u32 d, u8 *out);
@@ -94,12 +79,7 @@ void Keyboard_ResetKeyPalettes(void *st);
 BOOL Keyboard_IsSlotDisabled(void *st, s32 v);
 void Keyboard_HighlightKey(void *st, s32 v);
 BOOL Keyboard_IsOnButtonKey(void *st, s32 v);
-s32 _ZN19PopupChoiceMenuBody11getRowCountEv(void *p);
-s32 _ZN21MenuBottomButtonsBody10getTargetXEi(void *p, s32 v);
 s32 _ZN21MenuBottomButtonsBody10getTargetYEi(void *p, s32 v);
-void _ZN16MenuErrorMessage8openHighEPhij(void *p, void *q, s32 a, s32 b);
-void _ZN10MenuCursor14switchToAnim01Ev(void *p);
-void _ZN10MenuCursor14switchToAnim07Ev(void *p);
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 s32 Mem_Clear(void *p, s32 n);
@@ -130,13 +110,7 @@ s32 Keyboard_GetPressedKey(void *st);
 BOOL Keyboard_UpdatePressedKey(void *st);
 BOOL Keyboard_TouchPageTab(void *st);
 s32 Keyboard_SetMode(void *st, s32 a, s32 b, s32 c);
-void _ZN10MenuCursor14switchToAnim0DEv(void *p);
-void _ZN14MenuScrollKnob7releaseEv(void *p);
-void _ZN14MenuScrollKnob4grabEv(void *p);
-s32 _ZN21MenuBottomButtonsBody9isTouchedEi(void *p, s32 v);
-s32 _ZN19PopupChoiceMenuBody10hitTestRowEii(void *p, s32 a, s32 b);
 void PopupChoice_DecideAddressee(void *p, s32 v);
-u32 _ZN19PopupChoiceMenuBody13pickAddresseeEjj(void *p, s32 a, u32 b);
 extern u32 gCurrentHeap;
 void Gfx2d_HideLayer(s32 a);
 void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
@@ -150,7 +124,6 @@ void *Letter_GetPaper(void *p);
 void Menu_LoadPaperBg(void *p, s32 a);
 s32 MenuCtrl_GetArg();
 s32 Letter_IsBottle(void *p);
-void _ZN10ScrollKnob8setStateEi(void *p, s32 v);
 void Keyboard_LoadObjGfx(void *p);
 void Keyboard_DisableModifierKeys(void *p);
 void Keyboard_UpdateModifierKeys(void *p, s32 a);
@@ -167,9 +140,6 @@ void Keyboard_DisableKey(void *p, s32 a);
 u32 Keyboard_GetTypedRunLength(void *p);
 void ProcBase_RequestDelete(void *p);
 u32 ProcBase_GetParent(void *self);
-void _ZN10MenuTabBar9selectTabEj(u32 a, u32 b);
-void _ZN10MenuTabBar15onTabMenuClosedEv(u32 a);
-void _ZN10MenuTabBar8showTabsEv(u32 a);
 u32 MenuCtrl_GetSavedSlot();
 void MenuCtrl_SetSavedSlot(u32 a);
 void MenuCtrl_TickForceClose();
@@ -185,44 +155,16 @@ void _ZN10ScrollKnob6moveToEii(void *a, u32 b, u32 c);
 void PopupChoice_Draw(void *p);
 void func_0206fca8(void *p);
 void _ZN14LetterRenderer17loadRecipientNameEPv(void *p, u32 a);
-BOOL _ZN10HandCursor7getAnimEv(void *p);
-BOOL _ZN10HandCursor10isAnimDoneEv(void *p);
-BOOL _ZN10ScrollKnob12areAnimsDoneEv(void *p);
 void func_ov002_02200a58(void *self, s32 s);
 void func_ov002_02200a60(void *self, s32 s);
 s32 func_ov002_022009d4(void *self);
 s32 func_ov002_022009c8(void *self);
 void Menu_PlayScrollGrabSe(void *p);
-BOOL _ZN16MenuErrorMessage6updateEi(void *p, s32 a);
-BOOL _ZN21MenuBottomButtonsBody9stepPressEv(void *p);
-s32 _ZN21MenuBottomButtonsBody14getPressOffsetEv(void *p);
-BOOL _ZN19PopupChoiceMenuBody8isClosedEv(void *p);
 s32 _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(void *p, u32 a, u32 b);
-u32 _ZN19PopupChoiceMenuBody12getPageCountEv(void *p);
 BOOL PopupChoice_TickDecideDelay(void *p);
-BOOL _ZN19PopupChoiceMenuBody6isOpenEv(void *p);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
-BOOL _ZN14MenuCursorBase8isMovingEv(void *p);
-void _ZN12LetterLayout18highlightBodyRangeEjjj(void *self, s32 a, s32 b, s32 c);
 void _ZN14LetterRenderer17highlightGreetingEjj(void *self, s32 a, s32 b, s32 c);
-void _ZN14LetterRenderer12setSignatureEPh(void *self, void *p);
-void _ZN14LetterRenderer7setBodyEPhi(void *self, void *p, u32 b);
-void _ZN14LetterRenderer11setGreetingEP10LetterViewPh(void *self, void *p, void *q);
-void _ZN14LetterRenderer6redrawEv(void *self);
-void _ZN14LetterRenderer7releaseEv(void *self);
-void _ZN14LetterRenderer8setLayerEi(void *self, s32 a);
-void _ZN14LetterRenderer16loadLetterScreenEj(void *self, s32 a);
-void _ZN19PopupChoiceMenuBody18buildAddresseeListEv(void *self);
-void _ZN14MenuCursorBase11drawWrappedEv(void *self);
-void _ZN21MenuBottomButtonsBody15showTitleLayer2Ev(void *self);
-void _ZN21MenuBottomButtonsBody16setLayoutYesNo07Ei(void *self, s32 a);
-void _ZN15PopupChoiceMenu4initEiiPKc(void *self, s32 a, s32 b, s32 c);
-s32 _ZN14MenuScrollKnob8getGripYEv(void *self);
-s32 _ZN14MenuScrollKnob8getGripXEv(void *self);
-void _ZN17MenuBottomButtons16setLayoutConfirmEv(void *self);
-void _ZN17MenuBottomButtons24setLayoutChangeAddresseeEv(void *self);
 void _ZN17MenuBottomButtons6drawAtEi(void *self, s32 a);
-void _ZN17MenuBottomButtons9freeTextsEv(void *self);
 void LetterLayout_HighlightSignature(void *self, s32 a, s32 b, s32 c);
 void PopupChoice_ForceClose(void *self);
 void PopupChoice_Update(void *self);
@@ -586,8 +528,8 @@ BOOL LetterWriteMenu::onCreate() {
 
 BOOL LetterWriteMenu::onDelete() {
     u32 t = ProcBase_GetParent(this);
-    _ZN10MenuTabBar15onTabMenuClosedEv(t);
-    _ZN10MenuTabBar8showTabsEv(t);
+    ((MenuTabBar *)(t))->onTabMenuClosed();
+    ((MenuTabBar *)(t))->showTabs();
     releaseResources();
     return TRUE;
 }
@@ -623,22 +565,22 @@ BOOL LetterWriteMenu::onDraw() {
     }
     if (testFlags(1)) {
         _ZN10ScrollKnob6moveToEii(&scrollKnob, 0x64, (u32)(keyboardSlideY - 0x58) + (scrollY >> 1));
-        s32 t = _ZN14MenuScrollKnob8getGripXEv(&scrollKnob);
-        Keyboard_SetTextFieldPos(&keyboard, t, _ZN14MenuScrollKnob8getGripYEv(&scrollKnob));
+        s32 t = ((MenuScrollKnob *)(&scrollKnob))->getGripX();
+        Keyboard_SetTextFieldPos(&keyboard, t, ((MenuScrollKnob *)(&scrollKnob))->getGripY());
         scrollKnob.draw();
     }
     if (MenuCtrl_IsButtons()) {
         if (testFlags(0x200)) {
-            s32 t = _ZN14MenuScrollKnob8getGripXEv(&scrollKnob);
-            _ZN14MenuCursorBase6warpToEii(&cursor, t, _ZN14MenuScrollKnob8getGripYEv(&scrollKnob));
+            s32 t = ((MenuScrollKnob *)(&scrollKnob))->getGripX();
+            ((MenuCursorBase *)(&cursor))->warpTo(t, ((MenuScrollKnob *)(&scrollKnob))->getGripY());
         }
-        _ZN14MenuCursorBase11drawWrappedEv(&cursor);
+        ((MenuCursorBase *)(&cursor))->drawWrapped();
     }
     if (testFlags(1)) {
         _ZN17MenuBottomButtons6drawAtEi(&bottomButtons, (s32)keyboardSlideY);
     }
     if (testFlags(2)) {
-        _ZN17MenuBottomButtons6drawAtEi(&bottomButtons, buttonsSlideY);
+        ((MenuBottomButtons *)(&bottomButtons))->drawAt(buttonsSlideY);
     }
     if (testFlags(4)) {
         s32 a = caretX;
@@ -742,7 +684,7 @@ BOOL LetterWriteMenu::requestTab(s32 a) {
     u32 r6 = ProcBase_GetParent(this);
     if (a != -1 && a != 8) {
         u32 r7 = MenuCtrl_GetSavedSlot();
-        _ZN10MenuTabBar9selectTabEj(r6, (u8)a);
+        ((MenuTabBar *)(r6))->selectTab((u8)a);
         MenuCtrl_SetSavedSlot(r7);
         transitionState = 2;
         setPhase(1);
@@ -752,7 +694,7 @@ BOOL LetterWriteMenu::requestTab(s32 a) {
 }
 
 void LetterWriteMenu::forceClose() {
-    _ZN10MenuTabBar9selectTabEj(ProcBase_GetParent(this), 7);
+    ((MenuTabBar *)(ProcBase_GetParent(this)))->selectTab(7);
     setScrollTarget(0);
     clearFlags(4);
     transitionState = 0xd;
@@ -929,14 +871,14 @@ void LetterWriteMenu::transitionAct0E() {
 void LetterWriteMenu::init() {
     letter = (u8 *)MenuCtrl_GetArg();
     Keyboard_Init(&keyboard, 1);
-    _ZN14LetterRenderer8setLayerEi(&renderer, 3);
+    ((LetterRenderer *)(&renderer))->setLayer(3);
     _ZN14LetterRenderer17loadRecipientNameEPv(&renderer, (u32)letter);
     setScroll(0x10);
     setScrollTarget(0x10);
     flags = 0;
-    _ZN10ScrollKnob8setStateEi(&scrollKnob, 1);
-    _ZN15PopupChoiceMenu4initEiiPKc(&addresseeMenu, 6, 1, 0);
-    _ZN19PopupChoiceMenuBody18buildAddresseeListEv(&addresseeMenu);
+    ((ScrollKnob *)(&scrollKnob))->setState(1);
+    ((PopupChoiceMenu *)(&addresseeMenu))->init(6, 1, (const char *)(0));
+    ((PopupChoiceMenuBody *)(&addresseeMenu))->buildAddresseeList();
     lengthGauge = 0;
     if (Letter_IsBottle(letter)) {
         Keyboard_SetAltWriteLayout(&keyboard);
@@ -946,9 +888,9 @@ void LetterWriteMenu::init() {
 
 void LetterWriteMenu::releaseResources() {
     Keyboard_Shutdown(&keyboard);
-    _ZN14LetterRenderer7releaseEv(&renderer);
+    ((LetterRenderer *)(&renderer))->release();
     PopupChoice_ForceClose(&addresseeMenu);
-    _ZN17MenuBottomButtons9freeTextsEv(&bottomButtons);
+    ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
 }
 
 void LetterWriteMenu::preInputUpdate() {
@@ -958,13 +900,13 @@ void LetterWriteMenu::preInputUpdate() {
 }
 
 void LetterWriteMenu::postInputUpdate() {
-    _ZN14LetterRenderer6redrawEv(&renderer);
+    ((LetterRenderer *)(&renderer))->redraw();
     Keyboard_EndFrame(&keyboard, 6);
     PopupChoice_Update(&addresseeMenu);
     postStateUpdate();
 }
 
-void LetterWriteMenu::preStateUpdate() { _ZN17MenuBottomButtons9freeTextsEv(&bottomButtons); }
+void LetterWriteMenu::preStateUpdate() { ((MenuBottomButtons *)(&bottomButtons))->freeTexts(); }
 
 void LetterWriteMenu::postStateUpdate() {
     if (testFlags(0x1000)) {
@@ -994,24 +936,24 @@ void LetterWriteMenu::loadBg() {
     Keyboard_LoadScreenNow(&keyboard, 6);
     Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", h, 6, 0x13d, 0x13d, 0x1e9);
     Menu_LoadPaperBg(Letter_GetPaper(letter), 4);
-    _ZN14LetterRenderer16loadLetterScreenEj(&renderer, 3);
+    ((LetterRenderer *)(&renderer))->loadLetterScreen(3);
     redrawText(1, 1);
-    _ZN14LetterRenderer6redrawEv(&renderer);
+    ((LetterRenderer *)(&renderer))->redraw();
 }
 
 void LetterWriteMenu::loadKeyboardObjGfx() { Keyboard_LoadObjGfx(&keyboard); }
 
 void LetterWriteMenu::setupDialogButtons() {
     if (testFlags(0x10)) {
-        _ZN17MenuBottomButtons16setLayoutConfirmEv(&bottomButtons);
+        ((MenuBottomButtons *)(&bottomButtons))->setLayoutConfirm();
     } else {
-        _ZN17MenuBottomButtons24setLayoutChangeAddresseeEv(&bottomButtons);
+        ((MenuBottomButtons *)(&bottomButtons))->setLayoutChangeAddressee();
     }
 }
 
 void LetterWriteMenu::showFinishDialog() {
-    _ZN21MenuBottomButtonsBody16setLayoutYesNo07Ei(&bottomButtons, 0x22);
-    _ZN21MenuBottomButtonsBody15showTitleLayer2Ev(&bottomButtons);
+    ((MenuBottomButtonsBody *)(&bottomButtons))->setLayoutYesNo07(0x22);
+    ((MenuBottomButtonsBody *)(&bottomButtons))->showTitleLayer2();
 }
 
 void LetterWriteMenu::redrawText(u32 a, u32 b) {
@@ -1020,20 +962,20 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
     u32 flag;
     setFlags(0x1000);
     if (a != 0) {
-        _ZN14LetterRenderer11setGreetingEP10LetterViewPh(&renderer, letter, greetingBuf);
-        _ZN14LetterRenderer7setBodyEPhi(&renderer, letter + 0x4c, b);
-        _ZN14LetterRenderer12setSignatureEPh(&renderer, letter + 0xcc);
+        ((LetterRenderer *)(&renderer))->setGreeting((LetterView *)(letter), (u8 *)(greetingBuf));
+        ((LetterRenderer *)(&renderer))->setBody((u8 *)(letter + 0x4c), b);
+        ((LetterRenderer *)(&renderer))->setSignature((u8 *)(letter + 0xcc));
     } else {
         switch (editPart) {
         case 0:
         case 1:
-            _ZN14LetterRenderer11setGreetingEP10LetterViewPh(&renderer, letter, greetingBuf);
+            ((LetterRenderer *)(&renderer))->setGreeting((LetterView *)(letter), (u8 *)(greetingBuf));
             break;
         case 2:
-            _ZN14LetterRenderer7setBodyEPhi(&renderer, letter + 0x4c, b);
+            ((LetterRenderer *)(&renderer))->setBody((u8 *)(letter + 0x4c), b);
             break;
         case 3:
-            _ZN14LetterRenderer12setSignatureEPh(&renderer, letter + 0xcc);
+            ((LetterRenderer *)(&renderer))->setSignature((u8 *)(letter + 0xcc));
             break;
         }
     }
@@ -1061,11 +1003,11 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
             _ZN14LetterRenderer17highlightGreetingEjj(&renderer, lo, n, flag);
             break;
         case 1:
-            lo += letter[0xec] + _ZN14LetterRenderer22getRecipientNameLengthEv(&renderer);
+            lo += letter[0xec] + ((LetterRenderer *)(&renderer))->getRecipientNameLength();
             _ZN14LetterRenderer17highlightGreetingEjj(&renderer, lo, n, flag);
             break;
         case 2:
-            _ZN12LetterLayout18highlightBodyRangeEjjj(&renderer, lo, n, flag);
+            ((LetterLayout *)(&renderer))->highlightBodyRange(lo, n, flag);
             break;
         case 3:
             LetterLayout_HighlightSignature(&renderer, lo, n, flag);
@@ -1118,12 +1060,12 @@ void C::mainAct00() {
     if (Unk_ov122_02298b70_Both()) {
         s32 x = gTouchCurX;
         s32 y = gTouchCurY;
-        if (_ZN21MenuBottomButtonsBody9isTouchedEi(&bottomButtons, 9)) {
+        if (((MenuBottomButtonsBody *)(&bottomButtons))->isTouched(9)) {
             askFinish();
             return;
         }
         if (!testFlags(0x10)) {
-            if (_ZN21MenuBottomButtonsBody9isTouchedEi(&bottomButtons, 0)) {
+            if (((MenuBottomButtonsBody *)(&bottomButtons))->isTouched(0)) {
                 askOpenList();
                 return;
             }
@@ -1143,7 +1085,7 @@ void C::mainAct00() {
                 }
             } else {
                 if (touchScrollKnob()) {
-                    _ZN14MenuScrollKnob4grabEv(&scrollKnob);
+                    ((MenuScrollKnob *)(&scrollKnob))->grab();
                     setMainState(2);
                     clearSelection();
                     redrawText(1, 1);
@@ -1178,7 +1120,7 @@ void C::mainAct02() {
     caretBlinkTimer = 0;
     if (gTouchHeld == 0) {
         endTouch();
-        _ZN14MenuScrollKnob7releaseEv(&scrollKnob);
+        ((MenuScrollKnob *)(&scrollKnob))->release();
         startTouchInput();
     } else {
         dragScrollKnob();
@@ -1209,9 +1151,9 @@ void C::mainAct04() {
     if (checkSwitchToButtons(1)) {
         enterDialogButtons();
     } else if (Unk_ov122_02298b70_Both()) {
-        if (_ZN21MenuBottomButtonsBody9isTouchedEi(&bottomButtons, 3)) {
+        if (((MenuBottomButtonsBody *)(&bottomButtons))->isTouched(3)) {
             openDialog(3);
-        } else if (_ZN21MenuBottomButtonsBody9isTouchedEi(&bottomButtons, 4)) {
+        } else if (((MenuBottomButtonsBody *)(&bottomButtons))->isTouched(4)) {
             openDialog(4);
         }
     }
@@ -1224,10 +1166,10 @@ void C::mainAct05() {
     } else if (checkSwitchToButtons(1)) {
         enterAddresseeButtons();
     } else if (Unk_ov122_02298b70_Both()) {
-        s32 t = _ZN19PopupChoiceMenuBody10hitTestRowEii(&addresseeMenu, gTouchCurX, gTouchCurY);
+        s32 t = ((PopupChoiceMenuBody *)(&addresseeMenu))->hitTestRow(gTouchCurX, gTouchCurY);
         if (t >= 0) {
             PopupChoice_DecideAddressee(&addresseeMenu, t);
-            choiceIndex = _ZN19PopupChoiceMenuBody13pickAddresseeEjj(&addresseeMenu, addresseePage, (u8)t);
+            choiceIndex = ((PopupChoiceMenuBody *)(&addresseeMenu))->pickAddressee(addresseePage, (u8)t);
             setMainState(0x17);
         } else {
             closeAddresseeList();
@@ -1487,15 +1429,15 @@ void C::mainAct06() {
     }
     switch (Keyboard_MoveCursor(&keyboard, b)) {
     case 1:
-        _ZN10MenuCursor14switchToAnim01Ev(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim01();
         moveCursorToTarget();
         break;
     case 2:
-        _ZN10MenuCursor14switchToAnim0DEv(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim0D();
         moveCursorToTarget();
         break;
     case 3:
-        _ZN10MenuCursor14switchToAnim07Ev(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim07();
         moveCursorToTarget();
         break;
     case 0:
@@ -1512,7 +1454,7 @@ void C::mainAct06() {
 
 void LetterWriteMenu::mainAct07()
 {
-    if (!_ZN14MenuCursorBase8isMovingEv(&cursor)) {
+    if (!((MenuCursorBase *)(&cursor))->isMoving()) {
         setMainState(returnState);
         runMainState();
     }
@@ -1524,14 +1466,14 @@ void LetterWriteMenu::mainAct08()
     s32 t;
     s32 r;
 
-    if (!_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (!((HandCursor *)(&cursor))->isAnimDone()) {
         return;
     }
     r4 = Keyboard_PressCursorKey(&keyboard);
     t = Keyboard_GetKeyCode(&keyboard, r4, 8);
     if (t == 0x112) {
         setMainState(0x10);
-        _ZN14MenuScrollKnob4grabEv(&scrollKnob);
+        ((MenuScrollKnob *)(&scrollKnob))->grab();
         Menu_PlayScrollGrabSe(&scrollKnob);
         if (hasSelection()) {
             clearSelection();
@@ -1570,7 +1512,7 @@ void LetterWriteMenu::mainAct09()
 
 void LetterWriteMenu::mainAct0A()
 {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(6);
     }
@@ -1671,7 +1613,7 @@ void LetterWriteMenu::mainAct0F()
 
 void LetterWriteMenu::mainAct10()
 {
-    if (_ZN10ScrollKnob12areAnimsDoneEv(&scrollKnob)) {
+    if (((ScrollKnob *)(&scrollKnob))->areAnimsDone()) {
         setMainState(0x11);
     }
 }
@@ -1679,7 +1621,7 @@ void LetterWriteMenu::mainAct10()
 void LetterWriteMenu::mainAct11()
 {
     if ((gPad[0] & 1) == 0) {
-        _ZN14MenuScrollKnob7releaseEv(&scrollKnob);
+        ((MenuScrollKnob *)(&scrollKnob))->release();
         setMainState(0x12);
         endTouch();
     } else {
@@ -1689,7 +1631,7 @@ void LetterWriteMenu::mainAct11()
 
 void LetterWriteMenu::mainAct12()
 {
-    if (_ZN10ScrollKnob12areAnimsDoneEv(&scrollKnob)) {
+    if (((ScrollKnob *)(&scrollKnob))->areAnimsDone()) {
         releaseCursor();
         clearFlags(0x200);
     }
@@ -1716,7 +1658,7 @@ void LetterWriteMenu::mainAct13()
             openDialog(4);
             break;
         }
-        _ZN10MenuCursor12setPosePressEv(&cursor);
+        ((MenuCursor *)(&cursor))->setPosePress();
         return;
     }
     r6 = choiceIndex;
@@ -1731,7 +1673,7 @@ void LetterWriteMenu::mainAct13()
     }
     r4 = choiceIndex;
     if (r6 != r4) {
-        r6 = _ZN21MenuBottomButtonsBody10getTargetXEi(&bottomButtons, data_ov122_0229a004[r4]);
+        r6 = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(data_ov122_0229a004[r4]);
         r5 = _ZN21MenuBottomButtonsBody10getTargetYEi(&bottomButtons, *(u8 *)((u32)data_ov122_0229a004 + r4));
         moveCursorTo(r6, r5);
     } else {
@@ -1761,7 +1703,7 @@ void LetterWriteMenu::mainAct14()
         }
         f = gPad[1];
         if (f & 1) {
-            _ZN10MenuCursor12setPosePressEv(&cursor);
+            ((MenuCursor *)(&cursor))->setPosePress();
             setMainState(0x15);
         } else if (f & 2) {
             closeAddresseeList();
@@ -1771,16 +1713,16 @@ void LetterWriteMenu::mainAct14()
 
 void LetterWriteMenu::mainAct15()
 {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         PopupChoice_DecideAddressee(&addresseeMenu, choiceIndex);
-        choiceIndex = _ZN19PopupChoiceMenuBody13pickAddresseeEjj(&addresseeMenu, addresseePage, choiceIndex);
+        choiceIndex = ((PopupChoiceMenuBody *)(&addresseeMenu))->pickAddressee(addresseePage, choiceIndex);
         setMainState(0x17);
     }
 }
 
 void LetterWriteMenu::mainAct16()
 {
-    if (_ZN19PopupChoiceMenuBody6isOpenEv(&addresseeMenu)) {
+    if (((PopupChoiceMenuBody *)(&addresseeMenu))->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             enterAddresseeButtons();
         } else {
@@ -1802,7 +1744,7 @@ void LetterWriteMenu::mainAct18()
 {
     s32 r;
 
-    if (!_ZN19PopupChoiceMenuBody8isClosedEv(&addresseeMenu)) {
+    if (!((PopupChoiceMenuBody *)(&addresseeMenu))->isClosed()) {
         return;
     }
     r = _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(&addresseeMenu, (u32)letter, choiceIndex);
@@ -1815,7 +1757,7 @@ void LetterWriteMenu::mainAct18()
         break;
     case 2:
         addresseePage = addresseePage + 1;
-        if (addresseePage >= _ZN19PopupChoiceMenuBody12getPageCountEv(&addresseeMenu)) {
+        if (addresseePage >= ((PopupChoiceMenuBody *)(&addresseeMenu))->getPageCount()) {
             addresseePage = 0;
         }
         openAddresseePage(0);
@@ -1841,19 +1783,19 @@ void LetterWriteMenu::mainAct19()
     s32 b;
     s32 c;
 
-    if (_ZN10HandCursor7getAnimEv(&cursor)) {
-        if (!_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->getAnim()) {
+        if (!((HandCursor *)(&cursor))->isAnimDone()) {
             return;
         }
     }
-    if (_ZN21MenuBottomButtonsBody9stepPressEv(&bottomButtons)) {
-        if (!_ZN10HandCursor7getAnimEv(&cursor)) {
+    if (((MenuBottomButtonsBody *)(&bottomButtons))->stepPress()) {
+        if (!((HandCursor *)(&cursor))->getAnim()) {
             return;
         }
-        a = _ZN21MenuBottomButtonsBody14getPressOffsetEv(&bottomButtons);
-        b = _ZN21MenuBottomButtonsBody10getTargetXEi(&bottomButtons, -1);
-        c = _ZN21MenuBottomButtonsBody10getTargetYEi(&bottomButtons, -1);
-        _ZN14MenuCursorBase6warpToEii(&cursor, a + b, a + c);
+        a = ((MenuBottomButtonsBody *)(&bottomButtons))->getPressOffset();
+        b = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(-1);
+        c = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetY(-1);
+        ((MenuCursorBase *)(&cursor))->warpTo(a + b, a + c);
         return;
     }
     switch (dialogId) {
@@ -1883,7 +1825,7 @@ void LetterWriteMenu::mainAct19()
 void LetterWriteMenu::mainAct1A()
 {
     Keyboard_UpdatePressedKey(&keyboard);
-    if (_ZN16MenuErrorMessage6updateEi(&errorMessage, 1)) {
+    if (((MenuErrorMessage *)(&errorMessage))->update(1)) {
         resumeInput();
     }
 }
@@ -1927,10 +1869,10 @@ BOOL C::toggleTextFocus() {
     }
     if (Keyboard_IsOnButtonKey(&keyboard, -1)) {
         if (testFlags(0x100)) {
-            _ZN10MenuCursor14switchToAnim01Ev(&cursor);
+            ((MenuCursor *)(&cursor))->switchToAnim01();
             setMainState(0xc);
         } else {
-            _ZN10MenuCursor14switchToAnim07Ev(&cursor);
+            ((MenuCursor *)(&cursor))->switchToAnim07();
             setMainState(6);
         }
         moveCursorToTarget();
@@ -1991,7 +1933,7 @@ void C::showMessage(u8 a, s32 b) {
     volatile u8 buf[1];
     buf[0] = gU8None;
     buf[0] = a;
-    _ZN16MenuErrorMessage8openHighEPhij(&errorMessage, (void *)buf, b, 0);
+    ((MenuErrorMessage *)(&errorMessage))->openHigh((u8 *)((void *)buf), b, 0);
     setMainState(0x1a);
     hideCursor();
 }
@@ -2004,9 +1946,9 @@ void C::enterDialogTouch() {
 void C::enterDialogButtons() {
     restartKeyRepeat();
     showCursor();
-    s32 a = _ZN21MenuBottomButtonsBody10getTargetXEi(&bottomButtons, 4);
-    s32 b = _ZN21MenuBottomButtonsBody10getTargetYEi(&bottomButtons, 4);
-    _ZN14MenuCursorBase6warpToEii(&cursor, a, b);
+    s32 a = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(4);
+    s32 b = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetY(4);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
     choiceIndex = 1;
     setMainState(0x13);
 }
@@ -2019,11 +1961,11 @@ void C::enterAddresseeTouch() {
 void C::enterAddresseeButtons() {
     restartKeyRepeat();
     showCursor();
-    choiceIndex = _ZN19PopupChoiceMenuBody11getRowCountEv(&addresseeMenu) - 1;
-    s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(&addresseeMenu);
-    s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(&addresseeMenu, choiceIndex);
-    _ZN14MenuCursorBase6warpToEii(&cursor, a, b);
-    _ZN10MenuCursor16setAnimIfChangedEi(&cursor, 7);
+    choiceIndex = ((PopupChoiceMenuBody *)(&addresseeMenu))->getRowCount() - 1;
+    s32 a = ((PopupChoiceMenuBody *)(&addresseeMenu))->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)(&addresseeMenu))->getRowY(choiceIndex);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(7);
     setMainState(0x14);
 }
 
@@ -2050,7 +1992,7 @@ u8 C::hitTestGreeting(s32 a, u8 *p) {
     u8 out;
     Keyboard_HitTestText(&keyboard, greetingBuf, 0x28, 0xa0, (u8)(a - 0x30), &out);
     s32 e = letter[0xec];
-    s32 s = e + _ZN14LetterRenderer22getRecipientNameLengthEv(&renderer);
+    s32 s = e + ((LetterRenderer *)(&renderer))->getRecipientNameLength();
     s32 h = (e + s) >> 1;
     if (out < h) {
         *p = 0;
@@ -2069,7 +2011,7 @@ void C::moveCaretToBody(s32 flag) {
     if (caretY < 0x40) caretY = 0x40;
     if (caretY >= 0x80) caretY = 0x7f;
     s32 i = (caretY - 0x40) >> 4;
-    s32 m = _ZN12LetterLayout16getBodyLineCountEv(&renderer);
+    s32 m = ((LetterLayout *)(&renderer))->getBodyLineCount();
     if (i > m) i = m;
     else flag = 0;
     caretY = i * 16 + 0x40;
@@ -2082,7 +2024,7 @@ void C::moveCaretToBody(s32 flag) {
 }
 
 u8 C::hitTestBodyLine(s32 idx, u32 *p) {
-    s32 o = _ZN12LetterLayout17getBodyLineStartsEv(&renderer)[idx];
+    s32 o = ((LetterLayout *)(&renderer))->getBodyLineStarts()[idx];
     u8 out;
     s32 t = Keyboard_HitTestText(&keyboard, letter + 0x4c + o, 0x28, 0x96, (u8)(*p - 0x30), &out);
     *p = t + 0x30;
@@ -2187,7 +2129,7 @@ void C::setCaretFromPoint(s32 a, s32 b, s32 c) {
 void C::updateCaretPosGreeting() {
     u32 v = caretIndex;
     if (editPart == 1) {
-        s32 t = _ZN14LetterRenderer22getRecipientNameLengthEv(&renderer);
+        s32 t = ((LetterRenderer *)(&renderer))->getRecipientNameLength();
         v += letter[0xec] + t;
     }
     caretX = (u8)(Text_MeasureWidth(greetingBuf, v) + 0x30);
@@ -2195,9 +2137,9 @@ void C::updateCaretPosGreeting() {
 }
 
 void C::updateCaretPosBody() {
-    s32 t = _ZN12LetterLayout16getBodyLineOfPosEi(&renderer, caretIndex);
+    s32 t = ((LetterLayout *)(&renderer))->getBodyLineOfPos(caretIndex);
     caretY = t * 16 + 0x40;
-    s32 o = _ZN12LetterLayout17getBodyLineStartsEv(&renderer)[t];
+    s32 o = ((LetterLayout *)(&renderer))->getBodyLineStarts()[t];
     caretX = (u8)(Text_MeasureWidth(letter + 0x4c + o, caretIndex - o) + 0x30);
 }
 
@@ -2278,7 +2220,7 @@ BOOL LetterWriteMenu::navigateText(void *pad, s32 flag) {
     }
     u8 mode = editPart;
     u8 idx = caretIndex;
-    s32 cnt = _ZN12LetterLayout16getBodyLineCountEv(&renderer);
+    s32 cnt = ((LetterLayout *)(&renderer))->getBodyLineCount();
     s32 lim;
     s32 sel;
     s32 n;
@@ -2430,7 +2372,7 @@ void LetterWriteMenu::setCursorIndex(u32 v) {
 }
 
 BOOL LetterWriteMenu::touchScrollKnob() {
-    if (_ZN14MenuScrollKnob7hitTestEii(&scrollKnob, gTouchCurX, gTouchCurY)) {
+    if (((MenuScrollKnob *)(&scrollKnob))->hitTest(gTouchCurX, gTouchCurY)) {
         dragStartTouchY = gTouchCurY;
         dragStartScrollY = scrollY;
         lastTickScrollY = scrollY;
@@ -2524,7 +2466,7 @@ void LetterWriteMenu::scrollToCaret() {
 void LetterWriteMenu::playErrorSe() { Snd_PlaySe(0x34); }
 
 void LetterWriteMenu::openDialog(u32 i) {
-    _ZN21MenuBottomButtonsBody11setSelectedEh(&bottomButtons, data_ov122_0229a008[i]);
+    ((MenuBottomButtonsBody *)(&bottomButtons))->setSelected(data_ov122_0229a008[i]);
     dialogId = i;
     setMainState(0x19);
     Snd_PlaySe(data_ov122_0229a010[i]);
@@ -2535,66 +2477,66 @@ void LetterWriteMenu::showCursor() {
     Keyboard_ResetCursor(&keyboard);
     s32 a = Keyboard_GetCursorX(&keyboard);
     s32 b = Keyboard_GetCursorY(&keyboard);
-    _ZN14MenuCursorBase6warpToEii(&cursor, a, b);
-    _ZN10MenuCursor16setAnimIfChangedEi(&cursor, 1);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(1);
     refreshCursor();
 }
 
 void LetterWriteMenu::hideCursor() {
-    _ZN10MenuCursor16setAnimIfChangedEi(&cursor, 0);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(0);
     cursor.update();
 }
 
 void LetterWriteMenu::moveCursorToTarget() {
     if (testFlags(0x100)) {
-        _ZN14MenuCursorBase10moveToNearEiiih(&cursor, caretX, caretY - scrollTargetY, 3, 2);
+        ((MenuCursorBase *)(&cursor))->moveToNear(caretX, caretY - scrollTargetY, 3, 2);
         returnState = 0xc;
     } else {
         s32 a = Keyboard_GetCursorX(&keyboard);
         s32 b = Keyboard_GetCursorY(&keyboard);
-        _ZN14MenuCursorBase10moveToNearEiiih(&cursor, a, b, 3, 2);
+        ((MenuCursorBase *)(&cursor))->moveToNear(a, b, 3, 2);
         returnState = 6;
     }
     setMainState(7);
 }
 
 void LetterWriteMenu::moveCursorTo(s32 a, s32 b) {
-    _ZN14MenuCursorBase10moveToNearEiiih(&cursor, a, b, 3, 2);
+    ((MenuCursorBase *)(&cursor))->moveToNear(a, b, 3, 2);
     returnState = mainState;
     setMainState(7);
 }
 
 void LetterWriteMenu::snapCursor() {
     if (testFlags(0x100)) {
-        _ZN14MenuCursorBase6warpToEii(&cursor, caretX, caretY - scrollTargetY);
+        ((MenuCursorBase *)(&cursor))->warpTo(caretX, caretY - scrollTargetY);
     } else {
         s32 a = Keyboard_GetCursorX(&keyboard);
         s32 b = Keyboard_GetCursorY(&keyboard);
-        _ZN14MenuCursorBase6warpToEii(&cursor, a, b);
+        ((MenuCursorBase *)(&cursor))->warpTo(a, b);
     }
     cursor.update();
 }
 
 void LetterWriteMenu::pressCursor() {
-    _ZN10MenuCursor12setPosePressEv(&cursor);
+    ((MenuCursor *)(&cursor))->setPosePress();
     setMainState(8);
 }
 
 void LetterWriteMenu::releaseCursor() {
     Keyboard_ClearHighlight(&keyboard);
-    _ZN14MenuCursorBase14setPoseReleaseEv(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseRelease();
     setMainState(0xa);
 }
 
 void LetterWriteMenu::refreshCursor() {
-    _ZN14MenuCursorBase11setPoseIdleEv(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseIdle();
     cursor.update();
 }
 
 void LetterWriteMenu::moveCursorToPopupRow() {
-    s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(&addresseeMenu);
-    s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(&addresseeMenu, choiceIndex);
-    _ZN14MenuCursorBase12moveToLinearEiii(&cursor, a, b, 2);
+    s32 a = ((PopupChoiceMenuBody *)(&addresseeMenu))->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)(&addresseeMenu))->getRowY(choiceIndex);
+    ((MenuCursorBase *)(&cursor))->moveToLinear(a, b, 2);
     returnState = 0x14;
     setMainState(7);
 }
@@ -2613,14 +2555,14 @@ void LetterWriteMenu::closeAddresseeList() {
 }
 
 void LetterWriteMenu::storeLetterDefaults() {
-    LetterDefaults_Store(_ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent())), letter);
+    LetterDefaults_Store(((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getUnk988(), letter);
 }
 
 void LetterWriteMenu::censorField(u8 *src, u32 n) {
     EncodedString_SetRaw(&encodedText, src, n);
-    _ZN9MsgString11fromEncodedEP13EncodedStringii(&censorString, &encodedText, 0, 0);
+    ((MsgString *)(&censorString))->fromEncoded((EncodedString *)(&encodedText), 0, 0);
     if (String_CensorTaboo(&censorString)) {
-        _ZN13EncodedString13fromMsgStringEP9MsgString(&encodedText, &censorString);
+        ((EncodedString *)(&encodedText))->fromMsgString((MsgString *)(&censorString));
         StrBuf_GetBytes(&encodedText, src, n);
     }
 }

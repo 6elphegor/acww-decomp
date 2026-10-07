@@ -4,6 +4,7 @@
 #include "net/CommManager.h"
 #include "field/Snowball.h"
 #include "town/Unk_0204e858_Grid.h"
+#include "actor/Actor.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
 struct UnitMaskChunk {
@@ -88,7 +89,7 @@ Snowball *sSnowballs[8];
 // ---- functions ----
 
 extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
-    if (CommManager_isSlotActive(gCommManager, gCommManager->myAid) != 0 || GroundSeason_IsSnow() == 0) {
+    if (((CommManager *)(gCommManager))->isSlotActive(gCommManager->myAid) != 0 || GroundSeason_IsSnow() == 0) {
         LooseSnowballs_reset(LooseSnowballs_Get());
         return;
     }
@@ -131,13 +132,13 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
             } else {
                 Snowball_FindSpawnPos(self, &f.B, (s32)&f.A, 1);
             }
-            if (Actor_spawn(0xbd, 0, &f.A, 0, self)) {
+            if (Actor::spawn((void *)(0xbd), (void *)(0), &f.A, (void *)(0), self)) {
                 LooseSnowballsView *s = LooseSnowballs_Get();
                 s->a.x = f.A.x;
                 s->a.y = f.A.y;
                 s->a.z = f.A.z;
             }
-            if (Actor_spawn(0xbd, 1, &f.B, 0, self)) {
+            if (Actor::spawn((void *)(0xbd), (void *)(1), &f.B, (void *)(0), self)) {
                 LooseSnowballsView *s = LooseSnowballs_Get();
                 s->b.x = f.B.x;
                 s->b.y = f.B.y;
@@ -175,8 +176,8 @@ extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
                                     n = v * 2 + 2;
                                     VecFx32 loc;
                                     FieldPos_FromBlockUnitCenter(&loc, bx, by, lx, ly);
-                                    Actor_spawn(0xbd, n, &loc, 0, self);
-                                    Actor_spawn(0xbd, n + 1, &loc, 0, self);
+                                    Actor::spawn((void *)(0xbd), (void *)(n), &loc, (void *)(0), self);
+                                    Actor::spawn((void *)(0xbd), (void *)(n + 1), &loc, (void *)(0), self);
                                 }
                             }
                         }

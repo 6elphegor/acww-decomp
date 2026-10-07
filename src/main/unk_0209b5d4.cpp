@@ -1,13 +1,13 @@
 #include "types.h"
 #include "town/TownAcreGrid.h"
+#include "sys/RecordFile.h"
+#include "town/TownAcreCell.h"
 
 // TU179: 0x0209b5d4-0x0209b63c. Fills the inner 4x4 cells of the 6x6 grid from a cached record and remembers the
 // record number in .bss (autoload_3 0x021d7128).
 
 extern "C" {
 s32 Random_GlobalBelow(s32);
-BOOL _ZN12TownAcreCell7setTypeEi(TownAcreCell *, s32);
-void *_ZN10RecordFile9getRecordEj(void *, s32);
 }
 
 
@@ -23,11 +23,11 @@ void TownAcreGrid::loadCandidate(s32 seed) {
         v = (u32)seed % 0x20c;
     }
     sTownGenCandidateIndex = v;
-    p = (u8 *)_ZN10RecordFile9getRecordEj(&candidates, v);
+    p = (u8 *)((RecordFile *)(&candidates))->getRecord(v);
     if (p) {
         for (y = 1; y < 5; y++) {
             for (x = 1; x < 5; x++) {
-                _ZN12TownAcreCell7setTypeEi(getCell(x, y), *p++);
+                (getCell(x, y))->setType(*p++);
             }
         }
     }

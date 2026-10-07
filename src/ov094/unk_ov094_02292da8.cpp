@@ -5,6 +5,13 @@
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
+#include "item/ItemName.h"
+#include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
+#include "talk/LabelBalloonText.h"
+#include "talk/MsgString9B.h"
+#include "ui/LabelBalloon.h"
+#include "ui/LabelString.h"
 
 
 
@@ -472,7 +479,7 @@ void InventoryItemGrid_LoadPockets(InventoryItemGrid *o)
     k = 0;
     i = 0;
     do {
-        InventoryItemGrid_LoadSlotIcon(o, k, (u16 *)(base + i * 2), PlayerInventory_getPocketFlags(h, i));
+        InventoryItemGrid_LoadSlotIcon(o, k, (u16 *)(base + i * 2), ((PlayerInventory *)(h))->getPocketFlags(i));
         k++;
         i++;
     } while (i < 0xf);
@@ -515,10 +522,10 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
     u32 b[10];
     u32 c[9];
     u32 d[7];
-    func_0206fcc8(a);
-    func_02089f44(b);
-    func_0206267c(c);
-    func_02094030(d);
+    new (a) LabelString();
+    new (b) LabelBalloonText();
+    new (c) ItemName();
+    new (d) MsgString9B();
     switch (mode) {
     case 1:
         String_Load2dMenu(a, 0x18);
@@ -526,7 +533,7 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
         break;
     case 2:
         if (InvItem_IsDeliveryParcel(*p)) {
-            ItemName_setFromItem(c, p);
+            ((ItemName *)(c))->setFromItem((u16 *)(p));
             StrBuf_Copy(b, c);
         } else {
             Player_GetDeliveryRecipientName(d, p);
@@ -537,15 +544,15 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
         break;
     case 0:
     default:
-        ItemName_setFromItem(c, p);
+        ((ItemName *)(c))->setFromItem((u16 *)(p));
         StrBuf_Copy(b, c);
         break;
     }
-    LabelBalloon_setText(dst, b);
-    func_02094018(d);
-    func_0206260c(c);
-    func_02089f30(b);
-    func_0206fca8(a);
+    ((LabelBalloon *)(dst))->setText((StrBuf *)(b));
+    ((MsgString9B *)(d))->MsgString9B::~MsgString9B();
+    ((ItemName *)(c))->ItemName::~ItemName();
+    ((LabelBalloonText *)(b))->LabelBalloonText::~LabelBalloonText();
+    ((LabelString *)(a))->LabelString::~LabelString();
 }
 
 void InventoryItemGrid_ShowSlotName(void *o, s32 a, s32 b)
@@ -607,7 +614,7 @@ void InventoryItemGrid_MarkSlot(InventoryItemGrid *s, s32 i) {
 u16 InventoryItemGrid_GetSlotItem(InventoryItemGrid *s, s32 i) {
     s32 t = PlayerData_getInventory(PlayerData_GetCurrent());
     if (i >= 0 && i <= 0xe) {
-        return PlayerInventory_getPocket(t, 0)[i];
+        return ((PlayerInventory *)(t))->getPocket(0)[i];
     }
     if (i >= 0xf && i <= 0x1d) {
         u16 *p = s->boxItems;
@@ -620,7 +627,7 @@ u16 InventoryItemGrid_GetSlotItem(InventoryItemGrid *s, s32 i) {
 
 u32 InventoryItemGrid_GetSlotFlags(InventoryItemGrid *s, s32 i) {
     if (i >= 0 && i <= 0xe) {
-        return (u8)PlayerInventory_getPocketFlags(PlayerData_getInventory(PlayerData_GetCurrent()), i);
+        return (u8)((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getPocketFlags(i);
     }
     return 0;
 }
@@ -674,7 +681,7 @@ void InventoryItemGrid_UploadIcon(InventoryItemGrid *s, Rec *r, void *dst, s32 c
     MI_CpuCopy8(dst, p, 0x40);
     MI_CpuCopy8((u8 *)dst + 0x400, q, 0x40);
     k *= 0x38;
-    BgVramTaskPair_requestCharPair(s->iconUploadTasks + k, p, q, 8, t, t + 1, t + 0x20, t + 0x21);
+    ((BgVramTaskPair *)(s->iconUploadTasks + k))->requestCharPair((u32)(p), (u32)(q), 8, t, t + 1, t + 0x20, t + 0x21);
     c &= 0xf;
     ((u32 *)r)[1] = (((u32 *)r)[1] & 0xffff0fff) | (c << 12);
 }

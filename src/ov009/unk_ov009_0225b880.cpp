@@ -28,6 +28,10 @@
 #include "game/CollisionTriangle.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/AnimModel.h"
+#include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
 
 
 
@@ -132,13 +136,10 @@ extern void *gFieldStructureHeap;
 extern void *gCurrentHeap;
 extern BgmManager *data_021c1b3c;
 
-void _ZN9Character17detachTalkRequestEi(void *self, MsgRequest *a);
-void _ZN9Character17attachTalkRequestEi(void *self, MsgRequest *a);
 void *func_ov009_0225b934(void *self);
 void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];
 void func_ov009_0225b94c(void *self);
-void _ZN17BuildingSeEmitter11setPositionEP7VecFx32(void *self, VecFx32 *v, u32 extra);
 StrBSizeData *StrBSize_Get(u16 *p);
 
 void BuildingInfo_Copy(void *self, const u8 *src);
@@ -403,9 +404,9 @@ extern "C" void *Building_GetFirstAnm(void *res) {
 
 BuildingActor::BuildingActor() {
     itemId = 0xfff1;
-    func_020548d0(model);
+    new (model) AnimModel();
     func_020b2034(lights);
-    func_ov009_0225b94c(seEmitter);
+    new (seEmitter) BuildingSeEmitter();
     ModelSlotHandle_Init(modelSlot);
 }
 
@@ -413,7 +414,7 @@ BuildingActor::~BuildingActor() {
     ModelSlotHandle_Destroy(modelSlot);
     func_ov009_0225b934(seEmitter);
     func_020b200c(lights);
-    func_020548a0(model);
+    ((AnimModel *)(model))->AnimModel::~AnimModel();
 }
 
 BOOL BuildingActor::initBuilding() { return TRUE; }
@@ -428,7 +429,7 @@ BOOL BuildingActor::onCreate() {
     BuildingList_Add(this);
     gridX = position.x >> 13;
     gridZ = position.z >> 13;
-    Character_setCharId(this, (u16)(((gridZ & 0xff) << 8) | (gridX & 0xff)));
+    ((Character *)(this))->setCharId((u16)(((gridZ & 0xff) << 8) | (gridX & 0xff)));
     itemId = param;  // (ProcBase::param: the spawn parameter)
     buildingIndex = itemId & 0xfff;
     char *a = getArcPath();
@@ -438,7 +439,7 @@ BOOL BuildingActor::onCreate() {
     initEntryArea();
     setupAnims();
     updateBaseMatrix(&b1);
-    Model_setInitCallback(model, (void *)Building_InitModelCallback, this);
+    ((Model *)(model))->setInitCallback((s32)((void *)Building_InitModelCallback), (s32)(this));
     b2 = b1;
     createShadows(&b2);
     s32 ang = WorldCurve_Apply(&v, &position.x);
@@ -457,7 +458,7 @@ BOOL BuildingActor::onCreate() {
 }
 
 BOOL BuildingActor::preExecute() {
-    if (!func_0203e638(this)) {
+    if (!((Character *)(this))->Character::preExecute()) {
         return FALSE;
     }
     ((BuildingSeEmitter *)seEmitter)->activate();
@@ -487,7 +488,7 @@ BOOL BuildingActor::preExecute() {
 BOOL BuildingActor::postExecute(u32 a) {
     VecFx32Ctor v = getSoundPos();
     u16 *pp = getItemId();
-    _ZN17BuildingSeEmitter11setPositionEP7VecFx32(seEmitter, (VecFx32 *)&v, *pp);
+    ((BuildingSeEmitter *)(seEmitter))->setPosition((VecFx32 *)&v);
     if (colliderFlags & 2) {
         colliderFlags |= 8;
     } else {
@@ -499,7 +500,7 @@ BOOL BuildingActor::postExecute(u32 a) {
 }
 
 BOOL BuildingActor::preDraw() {
-    if (!func_02002d9c(this)) {
+    if (!((Actor *)(this))->Actor::preDraw()) {
         return FALSE;
     }
     if ((colliderFlags & 1) == 0) {
@@ -516,13 +517,13 @@ BOOL BuildingActor::preDraw() {
 }
 
 BOOL BuildingActor::preDelete() {
-    if (!func_0203e650(this)) {
+    if (!((Character *)(this))->Character::preDelete()) {
         return FALSE;
     }
     ((BuildingSeEmitter *)seEmitter)->deactivate();
     destroyShadows();
     destroyColliders();
-    Model_clearResource(model);
+    ((Model *)(model))->clearResource();
     BuildingList_Remove(this);
     if (entryFlags.f0) {
         CharInteractSync_ReleaseLock();
@@ -549,9 +550,9 @@ void BuildingActor::initEntryArea() {
 
 void BuildingActor::setupAnims() {
     if (getDoorInAnim() != 0 || getDoorOutAnim() != 0) {
-        AnimModel_allocAnmObj(model, gFieldStructureHeap);
-        BlendAnimModel_initAnim(model, (void *)getDoorInAnim(), 0, 0x1000, 0, 0);
-        AnimModel_attachAnim(model);
+        ((AnimModel *)(model))->allocAnmObj(gFieldStructureHeap);
+        ((BlendAnimModel *)(model))->initAnim((s32)((void *)getDoorInAnim()), 0, 0x1000, 0, 0);
+        ((AnimModel *)(model))->attachAnim();
     }
     if (getEntranceType() != 0) {
         u16 *p = getItemId();
@@ -727,7 +728,7 @@ BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
     loadResources(a, b, c);
     BuildingResources *r = getResources();
     if (r != NULL && r->bmd0 != 0) {
-        if (Model_setResource(model, (void *)r->bmd0, 0)) {
+        if (((Model *)(model))->setResource((NNSG3dResMdl *)((void *)r->bmd0), 0)) {
             s32 x = PlayerHouseTex_Get(FieldStructureMgr_GetPlayerHouseTex());
             NNS_G3dBindMdlPltt((void *)r->bmd0, x);
             if (r->tex) {
@@ -1123,7 +1124,7 @@ BOOL BuildingActor::enterDoorIdle() {
         if (r == 0) {
             return FALSE;
         }
-        BlendAnimModel_initAnim(model, r, 0, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim((s32)(r), 0, 0x1000, 0, 0);
         break;
     }
     }
@@ -1167,7 +1168,7 @@ void BuildingActor::execDoorIdle() {
 BOOL BuildingActor::enterDoorOpenIn() {
     void *r = (void *)getDoorInAnim();
     if (r != 0) {
-        BlendAnimModel_initAnim(model, r, 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim((s32)(r), 1, 0x1000, 0, 0);
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d1);
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d2);
         if (playsDoorMelody()) {
@@ -1236,12 +1237,12 @@ BOOL BuildingActor::enterDoorOpenIn() {
 }
 
 void BuildingActor::execDoorOpenIn() {
-    AnimModel_stepAnim(model);
-    if (AnimFrameCtrl_isFinished(doorAnimCtrl)) {
+    ((AnimModel *)(model))->stepAnim();
+    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
         setDoorState(0);
-    } else if (AnimFrameCtrl_hasPassedFrame(doorAnimCtrl, 0x14)) {
+    } else if (((AnimFrameCtrl *)(doorAnimCtrl))->hasPassedFrame(0x14)) {
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d3);
-    } else if (AnimFrameCtrl_hasPassedFrame(doorAnimCtrl, 0x1e)) {
+    } else if (((AnimFrameCtrl *)(doorAnimCtrl))->hasPassedFrame(0x1e)) {
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d4);
     }
 }
@@ -1249,7 +1250,7 @@ void BuildingActor::execDoorOpenIn() {
 BOOL BuildingActor::enterDoorOpenOut() {
     void *r = (void *)getDoorOutAnim();
     if (r != 0) {
-        BlendAnimModel_initAnim(model, r, 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim((s32)(r), 1, 0x1000, 0, 0);
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d1);
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d2);
         if (playsDoorMelody()) {
@@ -1318,12 +1319,12 @@ BOOL BuildingActor::enterDoorOpenOut() {
 }
 
 void BuildingActor::execDoorOpenOut() {
-    AnimModel_stepAnim(model);
-    if (AnimFrameCtrl_isFinished(doorAnimCtrl)) {
+    ((AnimModel *)(model))->stepAnim();
+    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
         setDoorState(0);
-    } else if (AnimFrameCtrl_hasPassedFrame(doorAnimCtrl, 0x12)) {
+    } else if (((AnimFrameCtrl *)(doorAnimCtrl))->hasPassedFrame(0x12)) {
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d3);
-    } else if (AnimFrameCtrl_hasPassedFrame(doorAnimCtrl, 0x18)) {
+    } else if (((AnimFrameCtrl *)(doorAnimCtrl))->hasPassedFrame(0x18)) {
         ((BuildingSeEmitter *)seEmitter)->playSe(0x7d4);
     }
 }
@@ -1331,7 +1332,7 @@ void BuildingActor::execDoorOpenOut() {
 BOOL BuildingActor::enterDoorSlideOpen() {
     void *r = (void *)getDoorInAnim();
     if (r) {
-        BlendAnimModel_initAnim(model, r, 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim((s32)(r), 1, 0x1000, 0, 0);
         if (Item_IsNookShop(&itemId)) {
             ((BuildingSeEmitter *)seEmitter)->playSe(0x806);
         } else {
@@ -1343,8 +1344,8 @@ BOOL BuildingActor::enterDoorSlideOpen() {
 }
 
 void BuildingActor::execDoorSlideOpen() {
-    AnimModel_stepAnim(model);
-    if (AnimFrameCtrl_isFinished(doorAnimCtrl)) {
+    ((AnimModel *)(model))->stepAnim();
+    if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
         setDoorState(4);
     }
 }
@@ -1353,7 +1354,7 @@ BOOL BuildingActor::enterDoorSlideClose() {
     doorCloseSeDelay = 0x1a;
     void *r = (void *)getDoorOutAnim();
     if (r) {
-        BlendAnimModel_initAnim(model, r, 1, 0x1000, 0, 0);
+        ((BlendAnimModel *)(model))->initAnim((s32)(r), 1, 0x1000, 0, 0);
         return TRUE;
     }
     return FALSE;
@@ -1371,8 +1372,8 @@ void BuildingActor::execDoorSlideClose() {
         }
     }
     if (doorCloseSeDelay == 0) {
-        AnimModel_stepAnim(model);
-        if (AnimFrameCtrl_isFinished(doorAnimCtrl)) {
+        ((AnimModel *)(model))->stepAnim();
+        if (((AnimFrameCtrl *)(doorAnimCtrl))->isFinished()) {
             setDoorState(0);
         }
     }
@@ -1451,7 +1452,7 @@ void BuildingActor::execEntryCheck() {
 }
 
 BOOL BuildingActor::enterEntryTalkOpen() {
-    _ZN9Character17attachTalkRequestEi(this, this);
+    ((Character *)(this))->attachTalkRequest((s32)(this));
     window->nextState = 1;
     setupTalkMsg();
     return TRUE;
@@ -1469,7 +1470,7 @@ BOOL BuildingActor::enterEntryTalk() { return TRUE; }
 void BuildingActor::execEntryTalk() {
     if (window != NULL && window->state == 0) {
         onTalkEnded();
-        _ZN9Character17detachTalkRequestEi(this, this);
+        ((Character *)(this))->detachTalkRequest((s32)(this));
         TalkRequest_SetTargetDone(this);
     } else {
         updateTalk();
@@ -1659,7 +1660,7 @@ void BuildingActor::onTalkEnded() {}
 void BuildingActor::updateMatrix() {
     if (modelRes != NULL) {
         updateBaseMatrix(0);
-        AnimModel_drawAnimated(model, 0);
+        ((AnimModel *)(model))->drawAnimated((void *)(0));
         Mtx43 t = baseMatrix;
         updateShadows(&t);
     }
@@ -1678,7 +1679,7 @@ BOOL BuildingActor::getDoorPos(VecFx32 *out, s16 *ang) {
         }
         if (out != NULL) {
             VecFx32 r;
-            Vec_Add(&r, TriangleTrigger_getCenter(colliders), &v);
+            Vec_Add(&r, ((TriangleTrigger *)(colliders))->getCenter(), &v);
             out->x = r.x;
             out->y = r.y;
             out->z = r.z;
@@ -1830,7 +1831,7 @@ extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
 
 void BuildingSeEmitter::activate() {
     if (active == 0) {
-        SndSeEmitter_callInit(this);
+        ((SndSeEmitter *)(this))->callInit();
         active = 1;
     }
 }
@@ -1841,13 +1842,13 @@ void BuildingSeEmitter::setPosition(VecFx32 *v) {
         t.x = v->x;
         t.y = v->y;
         t.z = v->z;
-        SndSeEmitter_callUpdateRelative(this, &t);
+        ((SndSeEmitter *)(this))->callUpdateRelative((VecFx32 *)(&t));
     }
 }
 
 void BuildingSeEmitter::deactivate() {
     if (active != 0) {
-        SndSeEmitter_callStop(this);
+        ((SndSeEmitter *)(this))->callStop();
         active = 0;
     }
 }

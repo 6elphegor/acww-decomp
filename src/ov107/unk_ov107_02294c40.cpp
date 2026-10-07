@@ -13,6 +13,9 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
+#include "ui/HandCursor.h"
+#include "ui/LabelBalloon.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -431,7 +434,7 @@ BOOL PocketsFullMenu::onCreate() {
 }
 
 BOOL PocketsFullMenu::onDelete() {
-    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -443,14 +446,14 @@ BOOL PocketsFullMenu::onDraw() {
     }
     nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&cursor);
+        ((MenuCursorBase *)(&cursor))->drawWrapped();
     }
     drawHeldItem();
     if (testFlags(2)) {
-        MenuBottomButtons_drawAt(&bottomButtons, slideY);
+        ((MenuBottomButtons *)(&bottomButtons))->drawAt(slideY);
         s32 t = slideY - 0x10;
         InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
-        LetterGrid_drawPocketLetters(&letterGrid, 0, t);
+        ((LetterGrid *)(&letterGrid))->drawPocketLetters(0, t);
         InventoryBg_DrawSprite(&inventoryBg, t);
     }
     return TRUE;
@@ -526,11 +529,11 @@ void PocketsFullMenu::transitionAct00() {
 
 void PocketsFullMenu::transitionAct01() {
     loadObjGraphics();
-    MenuBottomButtons_setLayoutSingle05(&bottomButtons, 0x65);
+    ((MenuBottomButtons *)(&bottomButtons))->setLayoutSingle05(0x65);
     InventoryItemGrid_LoadPockets(&pocketGrid);
     disableLockedPockets();
     LetterGrid_LoadPocketLetters(&letterGrid);
-    LetterGrid_highlightLetterKinds(&letterGrid, 0xf);
+    ((LetterGrid *)(&letterGrid))->highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
     applySlideOffset(6, 0, -16);
@@ -550,9 +553,9 @@ void PocketsFullMenu::transitionAct02() {
 }
 
 void PocketsFullMenu::transitionAct03() {
-    TouchPromptBalloon_hide(&nameBalloon, 1);
+    ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
     hideCursor();
-    MenuLauncher_setNextRequest(ProcBase_GetParent(this), 0x44, 1);
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->setNextRequest(0x44, 1);
     beginSubSlideOut(8, 0, 0, 0x30);
     applySlideOffset(6, 0, -16);
     setTransitionState(4);
@@ -576,13 +579,13 @@ void PocketsFullMenu::initParts()
 {
     stateFlags = 0;
     InventoryItemGrid_Init(&pocketGrid, 2);
-    LetterGrid_init(&letterGrid, 2);
+    ((LetterGrid *)(&letterGrid))->init(2);
     InventoryBg_Init(&inventoryBg, 6);
     balloonSlot = 0x10;
-    CursorMotion_reset(&flyMotion);
+    ((CursorMotion *)(&flyMotion))->reset();
     handKind = 0;
     cursorSlot = 0;
-    PopupChoiceMenu_init(&popup, 3, 1, 0);
+    ((PopupChoiceMenu *)(&popup))->init(3, 1, (const char *)(0));
     if (canReleaseFish()) {
         setFlags(0x40);
     }
@@ -595,7 +598,7 @@ void PocketsFullMenu::releaseResources()
     InventoryBg_Exit(&inventoryBg);
     InventoryItemGrid_Exit(&pocketGrid);
     PopupChoice_ForceClose(&popup);
-    MenuBottomButtons_freeTexts(&bottomButtons);
+    ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
 }
 
 void PocketsFullMenu::preInputUpdate()
@@ -614,15 +617,15 @@ void PocketsFullMenu::preStateUpdate()
     cancelBgTasks();
     InventoryBg_PreUpdate(&inventoryBg);
     InventoryItemGrid_PreUpdate(&pocketGrid);
-    LetterGrid_updateCursorLift(&letterGrid);
-    MenuBottomButtons_freeTexts(&bottomButtons);
+    ((LetterGrid *)(&letterGrid))->updateCursorLift();
+    ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
 }
 
 void PocketsFullMenu::postStateUpdate()
 {
     PopupChoice_Update(&popup);
     InventoryBg_Update(&inventoryBg);
-    if (TouchPromptBalloon_updatePrompt(&nameBalloon)) {
+    if (((TouchPromptBalloon *)(&nameBalloon))->updatePrompt()) {
         placeBalloon();
     }
 }
@@ -652,7 +655,7 @@ void PocketsFullMenu::mainAct00()
         s32 r = getSlotAt(gTouchCurX, gTouchCurY + 0x10, 1);
         if (r != 0x10) {
             beginTouchOnSlot(r);
-        } else if (MenuBottomButtonsBody_isTouched(&bottomButtons, 9)) {
+        } else if (((MenuBottomButtonsBody *)(&bottomButtons))->isTouched(9)) {
             startCloseByTab();
         }
     }
@@ -663,12 +666,12 @@ void PocketsFullMenu::mainAct01()
     if (gTouchHeld == 0) {
         if (isSlotDisabled(touchedSlot)) {
             setMainState(0);
-            TouchPromptBalloon_setAutoCloseTimer(&nameBalloon, 0x3c);
+            ((TouchPromptBalloon *)(&nameBalloon))->setAutoCloseTimer(0x3c);
         } else {
             setMainState(3);
             runMainState();
         }
-    } else if (isSlotDisabled(touchedSlot) == 0 && TouchPromptBalloon_isOpenOrOpening(&nameBalloon)) {
+    } else if (isSlotDisabled(touchedSlot) == 0 && ((TouchPromptBalloon *)(&nameBalloon))->isOpenOrOpening()) {
         if (touchHoldDelay != 0) {
             touchHoldDelay = *(volatile u8 *)&touchHoldDelay - 1;
         } else {
@@ -676,7 +679,7 @@ void PocketsFullMenu::mainAct01()
             setMainState(2);
         }
     } else {
-        TouchPromptBalloon_commitOpen(&nameBalloon);
+        ((TouchPromptBalloon *)(&nameBalloon))->commitOpen();
     }
 }
 
@@ -689,7 +692,7 @@ void PocketsFullMenu::mainAct02()
 
 void PocketsFullMenu::mainAct03()
 {
-    if (TouchPromptBalloon_isOpenOrOpening(&nameBalloon)) {
+    if (((TouchPromptBalloon *)(&nameBalloon))->isOpenOrOpening()) {
         if (touchHoldDelay != 0) {
             touchHoldDelay = *(volatile u8 *)&touchHoldDelay - 1;
         } else {
@@ -701,11 +704,11 @@ void PocketsFullMenu::mainAct03()
 
 void PocketsFullMenu::mainAct04()
 {
-    if (PopupChoiceMenuBody_isOpen(&popup)) {
+    if (((PopupChoiceMenuBody *)(&popup))->isOpen()) {
         if (checkSwitchToButtons(1)) {
             cancelPopupForButtons();
         } else if (Unk_ov107_02296270_Both()) {
-            s32 r = PopupChoiceMenuBody_hitTestRowOrLast(&popup, gTouchCurX, gTouchCurY);
+            s32 r = ((PopupChoiceMenuBody *)(&popup))->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (r >= 0) {
                 PopupChoice_DecideRow(&popup, r, 1);
                 popupChoice = choiceList.values[r];
@@ -719,11 +722,11 @@ void PocketsFullMenu::mainAct05()
 {
     if (checkSwitchToTouch()) {
         startTouchInput();
-        TouchPromptBalloon_hide(&nameBalloon, 1);
+        ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
     } else if (moveCursorByPad((void *)takeRepeatedKeys())) {
         updateBalloonForCursor();
         moveCursorToTarget();
-        TouchPromptBalloon_hide(&nameBalloon, 0);
+        ((TouchPromptBalloon *)(&nameBalloon))->hide(0);
     } else if (isSlotDisabled(cursorSlot) == 0 && (gPad[1] & 1) != 0) {
         if (isPocketSlot(cursorSlot)) {
             if (!isSlotEmpty(cursorSlot)) {
@@ -735,9 +738,9 @@ void PocketsFullMenu::mainAct05()
     } else if ((gPad[1] & 2) != 0) {
         hideCursor();
         startCloseByTab();
-        TouchPromptBalloon_hide(&nameBalloon, 0);
+        ((TouchPromptBalloon *)(&nameBalloon))->hide(0);
     } else {
-        TouchPromptBalloon_commitOpen(&nameBalloon);
+        ((TouchPromptBalloon *)(&nameBalloon))->commitOpen();
     }
 }
 
@@ -750,7 +753,7 @@ void PocketsFullMenu::mainAct06()
     } else {
         u16 f = gPad[1];
         if ((f & 1) != 0) {
-            MenuCursor_setPosePress(&cursor);
+            ((MenuCursor *)(&cursor))->setPosePress();
             setMainState(7);
         } else if ((f & 2) != 0) {
             cancelPopup();
@@ -760,7 +763,7 @@ void PocketsFullMenu::mainAct06()
 
 void PocketsFullMenu::mainAct07()
 {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         PopupChoice_DecideRow(&popup, popupRow, 1);
         popupChoice = choiceList.values[popupRow];
         setMainState(0xc);
@@ -769,7 +772,7 @@ void PocketsFullMenu::mainAct07()
 
 void PocketsFullMenu::mainAct08()
 {
-    if (!MenuCursorBase_isMoving(&cursor)) {
+    if (!((MenuCursorBase *)(&cursor))->isMoving()) {
         setMainState(returnState);
         if (returnState == 5) {
             setFocusSlot(cursorSlot);
@@ -780,8 +783,8 @@ void PocketsFullMenu::mainAct08()
 
 void PocketsFullMenu::mainAct09()
 {
-    if (HandCursor_isAnimDone(&cursor)) {
-        MenuBottomButtonsBody_setSelected(&bottomButtons, 9);
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
+        ((MenuBottomButtonsBody *)(&bottomButtons))->setSelected(9);
         setMainState(0xf);
         Snd_PlaySe(0x28);
     }
@@ -789,7 +792,7 @@ void PocketsFullMenu::mainAct09()
 
 void PocketsFullMenu::mainAct0A()
 {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(5);
     }
@@ -797,7 +800,7 @@ void PocketsFullMenu::mainAct0A()
 
 void PocketsFullMenu::mainAct0B()
 {
-    if (PopupChoiceMenuBody_isOpen(&popup)) {
+    if (((PopupChoiceMenuBody *)(&popup))->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(6);
@@ -811,8 +814,8 @@ void PocketsFullMenu::mainAct0C()
 {
     if (PopupChoice_TickDecideDelay(&popup)) {
         PopupChoice_Close(&popup, 0);
-        TouchPromptBalloon_hide(&nameBalloon, 1);
-        if (HandCursor_getAnim(&cursor)) {
+        ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
+        if (((HandCursor *)(&cursor))->getAnim()) {
             showCursorAtSlot();
         }
         setMainState(0xd);
@@ -821,33 +824,33 @@ void PocketsFullMenu::mainAct0C()
 
 void PocketsFullMenu::mainAct0D()
 {
-    if (PopupChoiceMenuBody_isClosed(&popup)) {
+    if (((PopupChoiceMenuBody *)(&popup))->isClosed()) {
         onPopupChoice();
     }
 }
 
 void PocketsFullMenu::mainAct0E()
 {
-    if (MenuErrorMessage_update(&errorMessage, 0)) {
+    if (((MenuErrorMessage *)(&errorMessage))->update(0)) {
         setMainState(returnState);
-        HandCursor_enableObjWindow(&cursor);
+        ((HandCursor *)(&cursor))->enableObjWindow();
     }
 }
 
 void PocketsFullMenu::mainAct0F()
 {
-    if (MenuBottomButtonsBody_stepPress(&bottomButtons)) {
-        if (HandCursor_getAnim(&cursor)) {
-            s32 a = MenuBottomButtonsBody_getPressOffset(&bottomButtons);
-            s32 b = MenuBottomButtonsBody_getTargetX(&bottomButtons, -1);
-            s32 c = MenuBottomButtonsBody_getTargetY(&bottomButtons, -1);
-            MenuCursorBase_warpTo(&cursor, a + b, a + c);
+    if (((MenuBottomButtonsBody *)(&bottomButtons))->stepPress()) {
+        if (((HandCursor *)(&cursor))->getAnim()) {
+            s32 a = ((MenuBottomButtonsBody *)(&bottomButtons))->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetY(-1);
+            ((MenuCursorBase *)(&cursor))->warpTo(a + b, a + c);
         }
     } else {
         MenuCtrl_SetResult(0);
         transitionState = 3;
         setPhase(1);
-        TouchPromptBalloon_hide(&nameBalloon, 1);
+        ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
         hideCursor();
     }
 }
@@ -911,8 +914,8 @@ void PocketsFullMenu::beginTouchOnSlot(u32 a)
     dragOffsetX = getSlotX(touchedSlot) - x;
     dragOffsetY = getSlotY(touchedSlot) - y;
     balloonSlot = a;
-    TouchPromptBalloon_queueOpen(&nameBalloon);
-    TouchPromptBalloon_commitOpen(&nameBalloon);
+    ((TouchPromptBalloon *)(&nameBalloon))->queueOpen();
+    ((TouchPromptBalloon *)(&nameBalloon))->commitOpen();
     touchHoldDelay = 2;
     if (isSlotDisabled(a) == 0) {
         Inventory_PlayTouchSe();
@@ -928,9 +931,9 @@ void PocketsFullMenu::showMessage(s32 a, u32 b) {
     }
     v[0] = gU8None;
     v[0] = a;
-    MenuErrorMessage_open(&errorMessage, (void *)v, 1, 0);
+    ((MenuErrorMessage *)(&errorMessage))->open((u8 *)((void *)v), 1, 0);
     setMainState(0xe);
-    HandCursor_disableObjWindow(&cursor);
+    ((HandCursor *)(&cursor))->disableObjWindow();
 }
 
 void PocketsFullMenu::cancelBgTasks() {
@@ -1043,13 +1046,13 @@ u32 PocketsFullMenu::getSlotItemFlags(s32 a) {
 
 void PocketsFullMenu::clearFocusSlot() {
     InventoryItemGrid_ClearCursorSlot(&pocketGrid);
-    LetterGrid_clearCursorSlot(&letterGrid);
+    ((LetterGrid *)(&letterGrid))->clearCursorSlot();
 }
 
 void PocketsFullMenu::setFocusSlot(s32 a) {
     if (isPocketSlot(a)) {
         InventoryItemGrid_SetCursorSlot(&pocketGrid, toPocketIndex(a));
-        LetterGrid_clearCursorSlot(&letterGrid);
+        ((LetterGrid *)(&letterGrid))->clearCursorSlot();
     } else {
         clearFocusSlot();
     }
@@ -1059,7 +1062,7 @@ void PocketsFullMenu::placeBalloon() {
     s32 r6 = getSlotX(balloonSlot) - 0x6d;
     s32 r4 = getSlotY(balloonSlot) - 0x78;
     if (MenuCtrl_IsButtons()) r4 -= 8;
-    LabelBalloon_setPos(&nameBalloon, r6, r4);
+    ((LabelBalloon *)(&nameBalloon))->setPos(r6, r4);
     if (isPocketSlot(balloonSlot)) {
         InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, toPocketIndex(balloonSlot));
     }
@@ -1068,13 +1071,13 @@ void PocketsFullMenu::placeBalloon() {
 void PocketsFullMenu::updateBalloonForCursor() {
     if (isPocketSlot(cursorSlot)) {
         if (isSlotEmpty(cursorSlot)) {
-            TouchPromptBalloon_cancelQueuedOpen(&nameBalloon);
+            ((TouchPromptBalloon *)(&nameBalloon))->cancelQueuedOpen();
         } else {
             balloonSlot = cursorSlot;
-            TouchPromptBalloon_queueOpen(&nameBalloon);
+            ((TouchPromptBalloon *)(&nameBalloon))->queueOpen();
         }
     } else {
-        TouchPromptBalloon_cancelQueuedOpen(&nameBalloon);
+        ((TouchPromptBalloon *)(&nameBalloon))->cancelQueuedOpen();
     }
 }
 
@@ -1091,11 +1094,11 @@ void PocketsFullMenu::drawHeldItem() {
 void PocketsFullMenu::showCursor() {
     s32 r4 = getCursorTargetX();
     s32 r2 = getCursorTargetY();
-    MenuCursorBase_warpTo(&cursor, r4, r2);
+    ((MenuCursorBase *)(&cursor))->warpTo(r4, r2);
     if (cursorSlot == 0xf) {
-        MenuCursor_setAnimIfChanged(&cursor, 7);
+        ((MenuCursor *)(&cursor))->setAnimIfChanged(7);
     } else {
-        MenuCursor_setAnimIfChanged(&cursor, 1);
+        ((MenuCursor *)(&cursor))->setAnimIfChanged(1);
     }
     refreshCursor();
 }
@@ -1116,7 +1119,7 @@ s32 PocketsFullMenu::getCursorTargetY() {
 }
 
 void PocketsFullMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&cursor, 0);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(0);
     cursor.update();
 }
 
@@ -1124,21 +1127,21 @@ void PocketsFullMenu::moveCursorToTarget() {
     if (testFlags(4)) {
         s32 r5 = getCursorTargetX();
         s32 r2 = getCursorTargetY();
-        MenuCursorBase_warpTo(&cursor, r5, r2);
+        ((MenuCursorBase *)(&cursor))->warpTo(r5, r2);
         clearFlags(4);
     } else {
         s32 r5 = getCursorTargetX();
         s32 r2 = getCursorTargetY();
-        MenuCursorBase_moveToEase(&cursor, r5, r2, 3, 1);
+        ((MenuCursorBase *)(&cursor))->moveToEase(r5, r2, 3, 1);
         returnState = mainState;
         setMainState(8);
     }
 }
 
 void PocketsFullMenu::moveCursorToPopupRow() {
-    s32 r4 = PopupChoiceMenuBody_getRowX(&popup);
-    s32 r2 = PopupChoiceMenuBody_getRowY(&popup, popupRow);
-    MenuCursorBase_moveToLinear(&cursor, r4, r2, 2);
+    s32 r4 = ((PopupChoiceMenuBody *)(&popup))->getRowX();
+    s32 r2 = ((PopupChoiceMenuBody *)(&popup))->getRowY(popupRow);
+    ((MenuCursorBase *)(&cursor))->moveToLinear(r4, r2, 2);
     returnState = mainState;
     setMainState(8);
 }
@@ -1148,10 +1151,10 @@ void PocketsFullMenu::cancelPopup() {
     s32 r2;
     popupChoice = 4;
     popupRow = PopupChoice_DecideCancel(&popup, 1);
-    r4 = PopupChoiceMenuBody_getRowX(&popup);
-    r2 = PopupChoiceMenuBody_getRowY(&popup, popupRow);
-    MenuCursorBase_warpTo(&cursor, r4, r2);
-    HandCursor_setAnimAtEnd(&cursor, 8);
+    r4 = ((PopupChoiceMenuBody *)(&popup))->getRowX();
+    r2 = ((PopupChoiceMenuBody *)(&popup))->getRowY(popupRow);
+    ((MenuCursorBase *)(&cursor))->warpTo(r4, r2);
+    ((HandCursor *)(&cursor))->setAnimAtEnd(8);
     setMainState(0xc);
 }
 
@@ -1159,26 +1162,26 @@ void PocketsFullMenu::cursorToPopupTop() {
     s32 r4;
     s32 r2;
     popupRow = 0;
-    r4 = PopupChoiceMenuBody_getRowX(&popup);
-    r2 = PopupChoiceMenuBody_getRowY(&popup, popupRow);
-    MenuCursorBase_warpTo(&cursor, r4, r2);
-    MenuCursor_setAnimIfChanged(&cursor, 7);
+    r4 = ((PopupChoiceMenuBody *)(&popup))->getRowX();
+    r2 = ((PopupChoiceMenuBody *)(&popup))->getRowY(popupRow);
+    ((MenuCursorBase *)(&cursor))->warpTo(r4, r2);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(7);
 }
 
 void PocketsFullMenu::showCursorAtSlot() {
     s32 r4 = getCursorTargetX();
     s32 r2 = getCursorTargetY();
-    MenuCursorBase_warpTo(&cursor, r4, r2);
-    MenuCursor_setAnimIfChanged(&cursor, 1);
+    ((MenuCursorBase *)(&cursor))->warpTo(r4, r2);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(1);
 }
 
 void PocketsFullMenu::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseIdle();
     cursor.update();
 }
 
 void PocketsFullMenu::pressCloseButton() {
-    MenuCursor_setPosePress(&cursor);
+    ((MenuCursor *)(&cursor))->setPosePress();
     setMainState(9);
 }
 
@@ -1198,13 +1201,13 @@ void PocketsFullMenu::onPopupChoice() {
 
 void PocketsFullMenu::openPopup(s32 a) {
     s32 r6, r2;
-    PopupChoiceMenuBody_setRowsFromIds(&popup, &choiceList, 0);
+    ((PopupChoiceMenuBody *)(&popup))->setRowsFromIds((PopupChoiceIdList *)(&choiceList), 0);
     r6 = getSlotX(selectedSlot);
     r2 = getSlotY(selectedSlot);
     if (a != 0) {
-        PopupChoiceMenu_placeAboveBalloon(&popup, &nameBalloon, r2);
+        ((PopupChoiceMenu *)(&popup))->placeAboveBalloon((LabelBalloon *)(&nameBalloon));
     } else {
-        PopupChoiceMenu_placeNearPoint(&popup, r6, r2);
+        ((PopupChoiceMenu *)(&popup))->placeNearPoint(r6, r2);
     }
     PopupChoice_Open(&popup, 0);
     setMainState(0xb);
@@ -1222,12 +1225,12 @@ void PocketsFullMenu::closeWithSelection() {
     MenuCtrl_SetResult(1);
     transitionState = 3;
     setPhase(1);
-    TouchPromptBalloon_hide(&nameBalloon, 1);
+    ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
     hideCursor();
 }
 
 void PocketsFullMenu::startCloseByTab() {
-    MenuBottomButtonsBody_setSelected(&bottomButtons, 9);
+    ((MenuBottomButtonsBody *)(&bottomButtons))->setSelected(9);
     setMainState(0xf);
     Snd_PlaySe(0x28);
 }
@@ -1285,7 +1288,7 @@ void PocketsFullMenu::selectPocket(u32 idx, u32 flag) {
         setPopupChoices();
         hideCursor();
         if (flag == 0) {
-            TouchPromptBalloon_hide(&nameBalloon, 1);
+            ((TouchPromptBalloon *)(&nameBalloon))->hide(1);
         }
         openPopup(flag);
     }
@@ -1327,7 +1330,7 @@ void PocketsFullMenu::moveCursorInGrid(void *pad) {
                 cursorSlot = cursorSlot + 5;
             } else {
                 cursorSlot = 0xf;
-                MenuCursor_switchToAnim07(&cursor);
+                ((MenuCursor *)(&cursor))->switchToAnim07();
             }
         }
     }
@@ -1344,7 +1347,7 @@ BOOL PocketsFullMenu::moveCursorByPad(void *pad) {
     } else if (cursorSlot == 0xf) {
         if (MenuKeys_HasUp(pad)) {
             cursorSlot = 0xe;
-            MenuCursor_switchToAnim01(&cursor);
+            ((MenuCursor *)(&cursor))->switchToAnim01();
         }
     }
     if (old == cursorSlot) {
@@ -1420,14 +1423,14 @@ void PocketsFullMenu::mainAct10() {
 
 void PocketsFullMenu::sendInsectReleasePacket(u8 a, u8 b) {
     u8 buf[3];
-    if (CommManager_isOnline(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         buf[0] = 1;
         buf[1] = a;
         buf[2] = b;
         void *g = gCommManager;
-        CommManager_beginRecord(g);
-        CommManager_writeRecord(g, buf, 3);
-        CommManager_endRecord(g, 0x16, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 3);
+        ((CommManager *)(g))->endRecord(0x16, 4);
     }
 }
 
@@ -1488,15 +1491,15 @@ void PocketsFullMenu::mainAct11() {
 void PocketsFullMenu::sendFishReleasePacket(u8 v) {
     u8 buf[7];
     u8 tmp[5];
-    if (CommManager_isOnline(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         buf[0] = 2;
         buf[1] = v;
         NetBuf_PackPair20(tmp, releasePosX, releasePosZ);
         MI_CpuCopy8(tmp, &buf[2], 5);
         void *g = gCommManager;
-        CommManager_beginRecord(g);
-        CommManager_writeRecord(g, buf, 7);
-        CommManager_endRecord(g, 0x16, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 7);
+        ((CommManager *)(g))->endRecord(0x16, 4);
     }
 }
 
@@ -1547,7 +1550,7 @@ void PocketsFullMenu::mainAct17() {
 u8 PocketsFullMenu::getLocalPlayerIndex() {
     CommManager *g = gCommManager;
     u32 v = g->myAid;
-    if (CommManager_isSlotActive(g, v)) {
+    if (((CommManager *)(g))->isSlotActive(v)) {
         return (u8)v;
     }
     return 0;
@@ -1564,13 +1567,13 @@ void PocketsFullMenu::endNewItemAction(BOOL flag) {
             break;
         }
         PendingUnit_ClearActiveOfAid(k);
-        if (CommManager_isOnline(gCommManager)) {
+        if (((CommManager *)(gCommManager))->isOnline()) {
             buf[0] = 0x17;
             buf[1] = k;
             void *g = gCommManager;
-            CommManager_beginRecord(g);
-            CommManager_writeRecord(g, buf, 2);
-            CommManager_endRecord(g, 0x16, 4);
+            ((CommManager *)(g))->beginRecord();
+            ((CommManager *)(g))->writeRecord((u8 *)(buf), 2);
+            ((CommManager *)(g))->endRecord(0x16, 4);
         }
         break;
     case 0x2b:

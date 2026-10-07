@@ -18,6 +18,8 @@
 #include "talk/TalkMsgRequest.h"
 #include "talk/MsgString256.h"
 #include "field/Snowball.h"
+#include "gfx/Model.h"
+#include "snd/SndSeEmitter.h"
 
 
 
@@ -131,17 +133,10 @@ void SndSeEmitter_dtor(void *p);
 #define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
 void SndSeEmitter_ctor(void *p);
 
-void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 void _ZN12MsgString256C1Ev(void *self);
 void _ZN12MsgString256D1Ev(void *self);
 void _ZN14SnowmanRecords12markUnplacedEj(void *self, u32 a);
 s32 _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(void *self, u32 m, s32 *a, s32 *b, s32 *c, s32 z1, s32 z2, s32 z3);
-void _ZN5Model10drawScaledEPi(void *self, void *v);
-void _ZN11CachedModel10loadCachedEPvS0_(void *self, u32 a, const char *b);
-void _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *self, void *v);
-void _ZN12SndSeEmitter8callStopEv(void *self);
-void _ZN12SndSeEmitter8callInitEv(void *self);
 
 BOOL Snowball_ChangeState(Obj *o, s32 st);
 BOOL Snowball_IsLooseBall(Obj *o);
@@ -194,12 +189,12 @@ void SnowballCollider::onCollide(u32 a, u32 b, u32 c) {
 }
 
 Snowball::Snowball() {
-    SndSeEmitter_ctor(seEmitter);
+    new (seEmitter) SndSeEmitter();
     displacedItem = 0xfff1;
 }
 
 Snowball::~Snowball() {
-    SndSeEmitter_dtor(seEmitter);
+    ((SndSeEmitter *)(seEmitter))->SndSeEmitter::~SndSeEmitter();
 }
 
 extern "C" s32 Snowball_GetMinRadius() { return 0x800; }
@@ -226,8 +221,8 @@ BOOL Snowball::onCreate() {
     rotationQuat.y = data_020d0584[1];
     rotationQuat.z = data_020d0584[2];
     rotationQuat.w = data_020d0584[3];
-    _ZN11CachedModel10loadCachedEPvS0_(&ballModel, 0x534e5730, "/snowman/snowball1.nsbmd");
-    _ZN11CachedModel10loadCachedEPvS0_(&faceModel, 0x534e5731, "/snowman/snow_face.nsbmd");
+    ((CachedModel *)(&ballModel))->loadCached((void *)(0x534e5730), (void *)(void *)("/snowman/snowball1.nsbmd"));
+    ((CachedModel *)(&faceModel))->loadCached((void *)(0x534e5731), (void *)(void *)("/snowman/snow_face.nsbmd"));
     if (Snowball_IsLooseBall(this) != 0) {
         u32 i = param & 1;
         Rec *r = LooseSnowballs_Get();
@@ -262,7 +257,7 @@ BOOL Snowball::onCreate() {
     lastFramePos.z = pv->z;
     prevContactCount = collisionState.contacts.numContacts;
     Snowball_UpdateMatrix(this, 0, 0);
-    _ZN12SndSeEmitter8callInitEv(seEmitter);
+    ((SndSeEmitter *)(seEmitter))->callInit();
     clearTalkStartMode();
     return Snowball_Register(this);
 }
@@ -291,7 +286,7 @@ BOOL Snowball::onExecute() {
     lastFramePos.y = pv->y;
     lastFramePos.z = pv->z;
     V3P sp = *(V3P *)&position;
-    _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(seEmitter, &sp);
+    ((SndSeEmitter *)(seEmitter))->callUpdateRelative((VecFx32 *)(&sp));
     return TRUE;
 }
 
@@ -304,9 +299,9 @@ BOOL Snowball::onDraw() {
             v.y = s;
             v.z = s;
             if (snowballState == 0xb) {
-                _ZN5Model10drawScaledEPi(&faceModel, &v);
+                ((Model *)(&faceModel))->drawScaled((s32 *)(&v));
             } else {
-                _ZN5Model10drawScaledEPi(&ballModel, &v);
+                ((Model *)(&ballModel))->drawScaled((s32 *)(&v));
             }
             CharaShadow_Draw(&position, radius, 0x4000, 0x1000);
         }
@@ -346,7 +341,7 @@ BOOL Snowball::onDelete() {
         r = LooseSnowballs_Get();
         r[i & 1].w = sv;
     }
-    _ZN12SndSeEmitter8callStopEv(seEmitter);
+    ((SndSeEmitter *)(seEmitter))->callStop();
     return Snowball_Unregister(this);
 }
 
@@ -939,7 +934,7 @@ BOOL Snowball::setupTalkIdle() {
 void Snowball::mainTalkIdle() {}
 
 BOOL Snowball::setupTalk() {
-    _ZN9Character17attachTalkRequestEi(this, this);
+    ((Character *)(this))->attachTalkRequest((s32)(this));
     s32 r;
     if (snowballFlags.g) {
         r = (snowballFlags.b & 3) * 3 + Random_GlobalBelow(3);
@@ -974,7 +969,7 @@ BOOL Snowball::setupTalkEnd() {
 void Snowball::mainTalkEnd() {
     if (window) {
         if (((TalkWindowState *)window)->state == 0) {
-            _ZN9Character17detachTalkRequestEi(this, this);
+            ((Character *)(this))->detachTalkRequest((s32)(this));
             TalkRequest_SetTargetDone(this);
         }
     }

@@ -23,6 +23,8 @@
 #include "talk/TalkMsgRequest.h"
 #include "room/RoomTelephone.h"
 #include "net/CommManager.h"
+#include "save/SaveData.h"
+#include "talk/ChoiceList.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -220,7 +222,7 @@ RoomTelephone *RoomTelephone_Create();
 // It is the class's virtual at vtable slot 0x70 (and, through the thunk, the secondary base's slot 0x18).
 void RoomTelephone::onChoice(u32 a_) {
     TalkWindowState *p = window;
-    s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(p));
+    s32 t = ((p)->getChoiceList())->getResult();
     u32 r = 0;
     switch (msgIndex) {
     case 0xe:
@@ -231,13 +233,13 @@ void RoomTelephone::onChoice(u32 a_) {
             r = sRoomTelephoneChoiceMsgs[t];
         }
         if (r == 0x17) {
-            if (SaveData_testFlag(gSaveData, 0x13) && SaveData_testFlag(gSaveData, 0x14)) {
+            if (((SaveData *)(gSaveData))->testFlag(0x13) && ((SaveData *)(gSaveData))->testFlag(0x14)) {
                 r = 0x42;
-            } else if (!SaveData_testFlag(gSaveData, 0x13) && SaveData_testFlag(gSaveData, 0x14)) {
+            } else if (!((SaveData *)(gSaveData))->testFlag(0x13) && ((SaveData *)(gSaveData))->testFlag(0x14)) {
                 r = 0x41;
-            } else if (SaveData_testFlag(gSaveData, 0x13) && !SaveData_testFlag(gSaveData, 0x14)) {
+            } else if (((SaveData *)(gSaveData))->testFlag(0x13) && !((SaveData *)(gSaveData))->testFlag(0x14)) {
                 r = 0x40;
-            } else if (!SaveData_testFlag(gSaveData, 0x13) && !SaveData_testFlag(gSaveData, 0x14)) {
+            } else if (!((SaveData *)(gSaveData))->testFlag(0x13) && !((SaveData *)(gSaveData))->testFlag(0x14)) {
                 r = 0x3f;
             }
         }
@@ -255,20 +257,20 @@ void RoomTelephone::onChoice(u32 a_) {
     case 0x17:
         switch (t) {
         case 0:
-            SaveData_clearFlag(gSaveData, 0x13);
+            ((SaveData *)(gSaveData))->clearFlag(0x13);
             break;
         case 1:
-            SaveData_setFlag(gSaveData, 0x13);
+            ((SaveData *)(gSaveData))->setFlag(0x13);
             break;
         }
         break;
     case 0x1a:
         switch (t) {
         case 0:
-            SaveData_clearFlag(gSaveData, 0x14);
+            ((SaveData *)(gSaveData))->clearFlag(0x14);
             break;
         case 1:
-            SaveData_setFlag(gSaveData, 0x14);
+            ((SaveData *)(gSaveData))->setFlag(0x14);
             break;
         }
         break;
@@ -313,6 +315,6 @@ void RoomTelephone::onChoice(u32 a_) {
     }
     if (r) {
         u8 b = r;
-        TalkWindowState_setNextMessage(p, &b, sRoomTelephoneMsgFile);
+        (p)->setNextMessage(&b, (void *)(void *)(sRoomTelephoneMsgFile));
     }
 }

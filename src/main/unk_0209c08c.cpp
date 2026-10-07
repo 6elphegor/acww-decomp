@@ -15,7 +15,6 @@
 #include "gfx/ModelResource.h"
 #include "gfx/PooledModel.h"
 
-inline void *operator new(size_t, void *p) { return p; }
 
 
 extern "C" {
@@ -119,14 +118,13 @@ TexVramSlot *ModelSlot::getVramSlot() {
 }
 
 // TexVramSlot::alloc always returns TRUE.
-extern "C" s32 _ZN11TexVramSlot5allocEPvS0_S0_(TexVramSlot *self, void *a, void *b, void *c);
 
 BOOL ModelSlot::init(void *a, void *b, u32 size, void *extra) {
     if (size) {
         heap = FrameHeap_Create((size + 3) & ~3, (u32)extra);
     }
     if (a != 0 || b != 0) {
-        if (_ZN11TexVramSlot5allocEPvS0_S0_(&vramSlot, a, 0, b)) return TRUE;
+        if ((&vramSlot)->alloc(a, 0, b)) return TRUE;
         return FALSE;
     }
     return TRUE;
@@ -191,7 +189,7 @@ void ModelSlotPool::release(u16 *idx) {
         arr[i].inUse = 0;
         lastFreed = *idx;
         *idx = 0xffff;
-        if (e->heap) Heap_freeAll(e->heap);
+        if (e->heap) ((Heap *)(e->heap))->freeAll();
         numInUse--;
     }
 }

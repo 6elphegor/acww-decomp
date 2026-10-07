@@ -80,6 +80,8 @@ public:
 #include "sys/OverlayHandle.h"
 #include "game/NibblePair.h"
 #include "gfx/VecFx32.h"
+#include "player/PlayerData.h"
+#include "save/TownExchangeRecord.h"
 
 // ======== unk_02077a54.cpp ========
 namespace n7 {
@@ -461,12 +463,12 @@ extern "C" void CommVillager_UnpackHeader(s32 *a, s32 *b, u8 *p)
 extern "C" void CommSend_VillagerMemoryInit(s32 a, s32 b)
 {
     u8 buf;
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         CommVillager_PackHeader(&buf, a, b);
         void *t = gCommManager;
-        _ZN11CommManager11beginRecordEv(t);
-        _ZN11CommManager11writeRecordEPhj(t, &buf, 1);
-        _ZN11CommManager9endRecordEjj(t, 0x36, 4);
+        ((CommManager *)(t))->beginRecord();
+        ((CommManager *)(t))->writeRecord((u8 *)(&buf), 1);
+        ((CommManager *)(t))->endRecord(0x36, 4);
     }
 }
 }
@@ -589,7 +591,7 @@ static inline BOOL R1(u16 *p, u32 lo, u32 hi) {
 
 
 extern "C" void VillagerSync_MemoryInit(u32 a, u32 b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerMemoryInit(a, b);
@@ -598,18 +600,18 @@ extern "C" void VillagerSync_MemoryInit(u32 a, u32 b) {
 }
 
 extern "C" void CommSend_VillagerMemorySetPlayer(u32 a, u32 b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[1];
         CommVillager_PackHeader(buf, a, b);
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, buf, 1);
-        _ZN11CommManager9endRecordEjj(g, 0x37, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 1);
+        ((CommManager *)(g))->endRecord(0x37, 4);
     }
 }
 
 extern "C" void VillagerSync_MemorySetPlayer(u32 a, u32 b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerMemorySetPlayer(a, b);
@@ -618,19 +620,19 @@ extern "C" void VillagerSync_MemorySetPlayer(u32 a, u32 b) {
 }
 
 extern "C" void CommSend_VillagerImpression(u32 a, u32 b, u32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[1];
         CommVillager_PackHeader(buf, a, b);
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, buf, 1);
-        _ZN11CommManager11writeRecordEPhj(g, &c, 1);
-        _ZN11CommManager9endRecordEjj(g, 0x38, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 1);
+        ((CommManager *)(g))->writeRecord((u8 *)(&c), 1);
+        ((CommManager *)(g))->endRecord(0x38, 4);
     }
 }
 
 extern "C" void VillagerSync_Impression(u32 a, u32 b, u32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerImpression(a, b, c);
@@ -639,19 +641,19 @@ extern "C" void VillagerSync_Impression(u32 a, u32 b, u32 c) {
 }
 
 extern "C" void CommSend_VillagerFriendship(u32 a, u32 b, u32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[1];
         CommVillager_PackHeader(buf, a, b);
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, buf, 1);
-        _ZN11CommManager11writeRecordEPhj(g, &c, 1);
-        _ZN11CommManager9endRecordEjj(g, 0x39, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 1);
+        ((CommManager *)(g))->writeRecord((u8 *)(&c), 1);
+        ((CommManager *)(g))->endRecord(0x39, 4);
     }
 }
 
 extern "C" void VillagerSync_Friendship(u32 a, u32 b, u32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerFriendship(a, b, c);
@@ -670,18 +672,18 @@ extern "C" void CommVillager_UnpackReceivedItem(u32 *o0, u32 *o1, u16 *o2, u8 *s
 }
 
 extern "C" void CommSend_VillagerReceivedItem(u32 a, u32 b, u32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[3];
         CommVillager_PackReceivedItem(buf, a, b, (u16 *)c);
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, buf, 3);
-        _ZN11CommManager9endRecordEjj(g, 0x3e, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 3);
+        ((CommManager *)(g))->endRecord(0x3e, 4);
     }
 }
 
 extern "C" void VillagerSync_ReceivedItem(u32 a, u32 b, u32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerReceivedItem(a, b, c);
@@ -701,18 +703,18 @@ extern "C" void CommVillager_UnpackAct3C(s32 *o0, u8 *o1, u8 *o2, u8 *src) {
 }
 
 extern "C" void CommSend_VillagerAct3C(u32 a, u32 b, u32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[2];
         CommVillager_PackAct3C(buf, a, c, b);
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, buf, 2);
-        _ZN11CommManager9endRecordEjj(g, 0x3c, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 2);
+        ((CommManager *)(g))->endRecord(0x3c, 4);
     }
 }
 
 extern "C" void VillagerSync_Act3C(u32 a, u32 b, u32 c) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerAct3C(a, b, c);
@@ -742,18 +744,18 @@ extern "C" void CommVillager_UnpackAct3D(s32 *o0, u8 *o1, u16 *o2, s32 *o3, u8 *
 }
 
 extern "C" void CommSend_VillagerAct3D(u32 a, u32 b, u32 c, u32 d, u8 e) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[4];
         CommVillager_PackAct3D(buf, a, b, (u16 *)c, d, e ? 1 : 0);
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, buf, 4);
-        _ZN11CommManager9endRecordEjj(g, 0x3d, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 4);
+        ((CommManager *)(g))->endRecord(0x3d, 4);
     }
 }
 
 extern "C" void VillagerSync_Act3D(u32 a, u32 b, u32 c, u32 d, u8 e) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerAct3D(a, b, c, d, e);
@@ -762,18 +764,18 @@ extern "C" void VillagerSync_Act3D(u32 a, u32 b, u32 c, u32 d, u8 e) {
 }
 
 extern "C" void CommSend_VillagerAct3F(u32 a, u16 *b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[3];
         CommVillager_PackItem(buf, a, b);
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, buf, 3);
-        _ZN11CommManager9endRecordEjj(g, 0x3f, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 3);
+        ((CommManager *)(g))->endRecord(0x3f, 4);
     }
 }
 
 extern "C" void VillagerSync_Act3F(u32 a, u16 *b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerAct3F(a, b);
@@ -792,20 +794,20 @@ extern "C" void CommVillager_UnpackItem(s32 *out, u16 *dst, u8 *src) {
 }
 
 extern "C" void CommSend_VillagerShirt(u32 a, u16 *b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         if (R1(b, 0x11a8, 0x12a7)) {
             u8 buf[3];
             CommVillager_PackItem(buf, a, b);
             void *g = gCommManager;
-            _ZN11CommManager11beginRecordEv(g);
-            _ZN11CommManager11writeRecordEPhj(g, buf, 3);
-            _ZN11CommManager9endRecordEjj(g, 0x3a, 4);
+            ((CommManager *)(g))->beginRecord();
+            ((CommManager *)(g))->writeRecord((u8 *)(buf), 3);
+            ((CommManager *)(g))->endRecord(0x3a, 4);
         }
     }
 }
 
 extern "C" void VillagerSync_Shirt(u32 a, u16 *b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerShirt(a, b);
@@ -832,18 +834,18 @@ extern "C" void CommVillager_UnpackItems(s32 *out, u16 *dst, u8 *src) {
 }
 
 extern "C" void CommSend_VillagerItems(u32 a, u16 *b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager) && b) {
+    if (((CommManager *)(gCommManager))->isOnline() && b) {
         u8 buf[9];
         CommVillager_PackItems(buf, a, b);
         void *g = gCommManager;
-        _ZN11CommManager11beginRecordEv(g);
-        _ZN11CommManager11writeRecordEPhj(g, buf, 9);
-        _ZN11CommManager9endRecordEjj(g, 0x3b, 4);
+        ((CommManager *)(g))->beginRecord();
+        ((CommManager *)(g))->writeRecord((u8 *)(buf), 9);
+        ((CommManager *)(g))->endRecord(0x3b, 4);
     }
 }
 
 extern "C" void VillagerSync_Items(u32 a, u16 *b) {
-    if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+    if (((CommManager *)(gCommManager))->isOnline()) {
         a = Villager_GetIndex(a);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerItems(a, b);
@@ -1036,7 +1038,6 @@ extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
 }
 extern "C" {
-void _ZN11CommManager13appendControlEPvj(void *ctx, const void *p, u32 n);
 }
 extern "C" {
 void *_ZN12ErrandRecord4initEv(void *);
@@ -1084,7 +1085,6 @@ extern "C" {
 BOOL _ZN11CommManager7isMyAidEj(void *g, s32 i);
 }
 extern "C" {
-BOOL _ZN11CommManager13getSendCreditEi(void *g, s32 i);
 }
 extern "C" {
 void Heap_Free(void *g, s32 a);
@@ -1144,28 +1144,22 @@ extern "C" {
 s32 Net_IsSameFriendData(void *p, void *q);
 }
 extern "C" {
-u8 _ZN8BbsBoard12getPostCountEv(void *p);
 }
 extern "C" {
-void *_ZN8BbsBoard7addPostEv(void *p);
 }
 extern "C" {
 void Clock_GetDate(void *p);
 }
 extern "C" {
-void _ZN7BbsPost4initEPh(void *p, void *q);
 }
 extern "C" {
-void _ZN7BbsPost12markFreeTextEv(void *p);
 }
 extern "C" {
 u8 *BbsPost_GetText(void *p);
 }
 extern "C" {
-void _ZN12MsgString193C1Ev(void *p);
 }
 extern "C" {
-void _ZN12MsgString193D1Ev(void *p);
 }
 extern "C" {
 void _ZN11LabelStringC1Ev(void *p);
@@ -1183,10 +1177,8 @@ extern "C" {
 void *Msg_SkipLines(void *p, s32 i);
 }
 extern "C" {
-void _ZN9MsgString7setLineEPh(void *p, void *q);
 }
 extern "C" {
-void _ZN13EncodedString13fromMsgStringEP9MsgString(void *p, void *q);
 }
 extern "C" {
 void _ZN9MsgString5clearEv(void *p);
@@ -1195,7 +1187,6 @@ extern "C" {
 void StrBuf_GetBytes(void *p, void *q, u32 n);
 }
 extern "C" {
-s32 _ZN15EncodedString419getLengthEv(void *p);
 }
 extern "C" {
 void MailText_LoadBbs(void *a, void *b, u32 c);
@@ -1288,8 +1279,8 @@ struct Unk_02076f28_T {
 
 struct BbsMsgString193Local {
     u32 pad[(0xd8 + 0x40) / 4] __attribute__((aligned(8)));  // MsgString193 (larger on hosts)
-    BbsMsgString193Local() { _ZN12MsgString193C1Ev(this); }
-    ~BbsMsgString193Local() { _ZN12MsgString193D1Ev(this); }
+    BbsMsgString193Local() { new (this) MsgString193(); }
+    ~BbsMsgString193Local() { ((MsgString193 *)(this))->MsgString193::~MsgString193(); }
 };
 
 
@@ -1330,14 +1321,14 @@ extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
     for (; i < 6; i++) {
         void *e = Msg_SkipLines(((MsgString193 *)r1)->text, i);
         if (e != NULL) {
-            _ZN9MsgString7setLineEPh(&o1, e);
-            _ZN13EncodedString13fromMsgStringEP9MsgString(&o2, &o1);
+            ((MsgString *)(&o1))->setLine((u8 *)(e));
+            ((EncodedString *)(&o2))->fromMsgString((MsgString *)(&o1));
             StrBuf_GetBytes(&o2, buf + n, 0x28);
-            n = n + _ZN15EncodedString419getLengthEv(&o2);
+            n = n + ((EncodedString41 *)(&o2))->getLength();
             buf[n] = 0x86;
             n = n + 1;
         } else {
-            _ZN9MsgString5clearEv(&o1);
+            ((MsgString *)(&o1))->clear();
             buf[n] = 0x86;
             n++;
         }
@@ -1349,11 +1340,11 @@ extern "C" void Bbs_PostMsgDated(u32 a, u32 b, u32 c, u32 d, u8 e) {
     BbsMsgString193Local o;
     u8 l[3];
     Bbs_LoadMsg(&o, a, b);
-    void *r = _ZN8BbsBoard7addPostEv(data_021e87d8);
+    void *r = ((BbsBoard *)(data_021e87d8))->addPost();
     l[2] = c;
     l[1] = d;
     l[0] = e;
-    _ZN7BbsPost4initEPh(r, l);
+    ((BbsPost *)(r))->init((u8 *)(l));
     BbsPost_SetTextFromMsg(r, &o);
 }
 
@@ -1365,14 +1356,14 @@ extern "C" void Bbs_PostMsgToday(u32 a, u32 b) {
 
 extern "C" void Bbs_AddPost(void *dst) {
     u32 loc;
-    void *r = _ZN8BbsBoard7addPostEv(data_021e87d8);
+    void *r = ((BbsBoard *)(data_021e87d8))->addPost();
     Clock_GetDate(&loc);
-    _ZN7BbsPost4initEPh(r, &loc);
-    _ZN7BbsPost12markFreeTextEv(r);
+    ((BbsPost *)(r))->init((u8 *)(&loc));
+    ((BbsPost *)(r))->markFreeText();
     MI_CpuCopy8(dst, BbsPost_GetText(r), 0xc0);
 }
 
-extern "C" u8 Bbs_GetPostCount(void) { return _ZN8BbsBoard12getPostCountEv(data_021e87d8); }
+extern "C" u8 Bbs_GetPostCount(void) { return ((BbsBoard *)(data_021e87d8))->getPostCount(); }
 
 extern "C" void _ZN13DwcFriendDataC1Ev(void *) {}
 extern "C" void _ZN13DwcFriendDataD1Ev(void *) {}
@@ -1585,12 +1576,12 @@ extern "C" BOOL Comm_HasSendCredit(u32 mask) {
     void *g = gCommManager;
     u32 one = 1;
     for (; i >= 0; i--) {
-        if (!_ZN11CommManager12isSlotActiveEi(g, i)) continue;
-        if (_ZN11CommManager7isMyAidEj(g, i)) continue;
+        if (!((CommManager *)(g))->isSlotActive(i)) continue;
+        if (((CommManager *)(g))->isMyAid(i)) continue;
         u32 t = (u16)(one << i);
         t &= mask;
         if (t == 0) continue;
-        if (_ZN11CommManager13getSendCreditEi(g, i)) continue;
+        if (((CommManager *)(g))->getSendCredit(i)) continue;
         return FALSE;
     }
     return TRUE;
@@ -1704,12 +1695,12 @@ extern "C" void CommBlock_WriteAct01(void) {
         } else {
             t.b = 3;
         }
-        _ZN11CommManager13appendControlEPvj(ctx, &t.b, 1);
-        _ZN11CommManager13appendControlEPvj(ctx, VillagerState_GetErrand(p), 12);
+        ((CommManager *)(ctx))->appendControl((void *)(void *)(&t.b), 1);
+        ((CommManager *)(ctx))->appendControl((void *)(void *)(VillagerState_GetErrand(p)), 12);
         v = *(u32 *)((u8 *)p + 0x20);
-        _ZN11CommManager13appendControlEPvj(ctx, &v, 4);
+        ((CommManager *)(ctx))->appendControl((void *)(void *)(&v), 4);
         t.h = *(u16 *)((u8 *)p + 0x24);
-        _ZN11CommManager13appendControlEPvj(ctx, &t.h, 2);
+        ((CommManager *)(ctx))->appendControl((void *)(void *)(&t.h), 2);
     }
 }
 
@@ -1793,13 +1784,11 @@ extern "C" {
 s32 Insect_OnClaimGranted(u32 v);
 }
 extern "C" {
-s32 _ZN11CommManager14isSyncVarDirtyEi(CommManager *g, u32 i);
 }
 extern "C" {
 void *_ZN11CommManager10getSyncVarEj(CommManager *g, u32 i);
 }
 extern "C" {
-void _ZN11CommManager15setSyncVarDirtyEij(CommManager *g, u32 i, s32 v);
 }
 extern "C" {
 void _ZN11CommManager11beginRecordEv(CommManager *g);
@@ -1919,7 +1908,6 @@ extern "C" {
 s32 Net_IsReadyToSend();
 }
 extern "C" {
-void _ZN11CommManager15clearControlLenEv(CommManager *g);
 }
 extern "C" {
 s32 _ZN11CommManager10getSendBufEi(CommManager *g, u32 n);
@@ -1928,7 +1916,6 @@ extern "C" {
 void CommPacket_SetHeader(s32 p, u32 a, u32 b);
 }
 extern "C" {
-void _ZN11CommManager13setControlLenEj(CommManager *g, u32 n);
 }
 extern "C" {
 u32 _ZN11CommManager13getControlLenEv(CommManager *g);
@@ -1957,20 +1944,20 @@ extern "C" s32 CommBlock_BuildPacket(u32 a) {
         return 0;
     }
     CommManager *g = gCommManager;
-    _ZN11CommManager15clearControlLenEv(g);
+    (g)->clearControlLen();
     CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0xd);
-    _ZN11CommManager13setControlLenEj(g, 1);
+    (g)->setControlLen(1);
     s32 i = 0;
     goto test0;
 loop0:
     {
-        u32 s = _ZN11CommManager13getControlLenEv(g);
-        u8 *dst = (u8 *)_ZN11CommManager10getSendBufEi(g, 4) + s;
-        _ZN11CommManager13setControlLenEj(g, s + 3);
+        u32 s = (g)->getControlLen();
+        u8 *dst = (u8 *)(g)->getSendBuf(4) + s;
+        (g)->setControlLen(s + 3);
         sCommBlockWriters[i](a);
-        u32 e = _ZN11CommManager13getControlLenEv(g);
+        u32 e = (g)->getControlLen();
         if (e <= s + 3) {
-            _ZN11CommManager13setControlLenEj(g, s);
+            (g)->setControlLen(s);
         } else {
             l.len = e - s - 3;
             MI_CpuCopy8(&l.len, l.hdr, 2);
@@ -2090,19 +2077,19 @@ extern "C" void CommSyncVar_PackSpNpc24(u32 a) { NpcNetRecord_PackSpNpc(a, 0x44)
 extern "C" void CommSyncVar_PackSpNpc25(u32 a) { NpcNetRecord_PackSpNpc(a, 0x45); }
 extern "C" void CommSyncVar_SetVar(u32 a, u32 b, u32 c, s32 d) {
     CommManager *g = gCommManager;
-    s32 r = _ZN11CommManager14isSyncVarDirtyEi(g, a);
+    s32 r = (g)->isSyncVarDirty(a);
     u32 sz = CommSyncVar_GetVarSize(a);
-    void *obj = _ZN11CommManager10getSyncVarEj(g, a);
+    void *obj = (g)->getSyncVar(a);
     if (r == 0 && d == 0) {
         MI_CpuCopy8(obj, g->syncCompareBuf, sz);
     }
     sCommSyncVarPackHandlers[a](obj, b, c);
     if (d != 0) {
-        _ZN11CommManager15setSyncVarDirtyEij(g, a, 1);
+        (g)->setSyncVarDirty(a, 1);
     } else if (r == 0) {
         CommManager *h = gCommManager;
         s32 v = Mem_Differs(obj, h->syncCompareBuf, sz);
-        _ZN11CommManager15setSyncVarDirtyEij(h, a, v);
+        (h)->setSyncVarDirty(a, v);
     }
 }
 extern "C" void CommSyncVar_Init() {
@@ -2205,29 +2192,29 @@ extern "C" void CommRecv_FieldActorClaimRequest(u32 a, u32 b, u32 c, u32 d) {
     struct L { volatile u8 b; volatile u8 f; } l;
     l.f = 1;
     CommManager *g = gCommManager;
-    _ZN11CommManager10readRecordEPhj(g, (void *)&l, a);
+    (g)->readRecord((u8 *)((void *)&l), a);
     if (Unk_02075e60_IsZero(gFieldSceneKind)) {
         l.f = Insect_NetClaim(l.b);
     }
-    _ZN11CommManager11beginRecordEv(g);
+    (g)->beginRecord();
     if (l.f == 0) {
         l.b &= 0xf;
         l.b |= d << 4;
         l.b += 0x10;
         g = gCommManager;
-        _ZN11CommManager11writeRecordEPhj(g, (void *)&l, 1);
-        _ZN11CommManager9endRecordEjj(g, 0x29, 7);
+        (g)->writeRecord((u8 *)((void *)&l), 1);
+        (g)->endRecord(0x29, 7);
     } else {
         g = gCommManager;
-        _ZN11CommManager11writeRecordEPhj(g, (void *)&l.f, 1);
-        _ZN11CommManager9endRecordEjj(g, 0x29, d);
+        (g)->writeRecord((u8 *)((void *)&l.f), 1);
+        (g)->endRecord(0x29, d);
     }
 }
 extern "C" void CommRecv_FieldActorClaimResult(u32 a) {
     volatile u8 n;
     if (Unk_02075e60_IsZero(gFieldSceneKind)) {
         CommManager *g = gCommManager;
-        _ZN11CommManager10readRecordEPhj(g, (void *)&n, a);
+        (g)->readRecord((u8 *)((void *)&n), a);
         u32 v = n;
         u32 h = (v << 20) >> 24;
         n = (v & 0xf) | 0x10;
@@ -2326,7 +2313,6 @@ extern "C" {
 void *PlayerData_GetBySessionSlot(void *);
 }
 extern "C" {
-void *_ZN10PlayerData11getPlayerIdEv(void *);
 }
 extern "C" {
 s32 PlanErrand_Assign(void *, u32, u16 *, void *, s32);
@@ -2398,10 +2384,8 @@ extern "C" {
 s32 PlayerActor_UnpackHair(u8 *, u8 *, u8 *);
 }
 extern "C" {
-s32 _ZN10PlayerData12setHairStyleEh(void *, u32);
 }
 extern "C" {
-s32 _ZN10PlayerData12setHairColorEh(void *, u32);
 }
 extern "C" {
 s32 FishDisplay_OnNetPacket(void *, s32);
@@ -2413,7 +2397,6 @@ extern "C" {
 s32 PlayerActor_SetClothing(u16 *, u32, void *);
 }
 extern "C" {
-void *_ZN10PlayerData11getHeldItemEv(void *);
 }
 extern "C" {
 s32 Item_IsFurniture(u16 *);
@@ -2422,7 +2405,6 @@ extern "C" {
 s32 Item_GetFurnitureIndex(void *);
 }
 extern "C" {
-s32 _ZN10PlayerData11setHeldItemEPt(void *, u16 *);
 }
 extern "C" {
 u16 ItemInfo_GetHoldableIndex(u16 *);
@@ -2490,7 +2472,7 @@ static inline BOOL Unk_02075e1c_IsZero(u8 v) {
 
 extern "C" void CommRecv_FieldActorRemove(u32 n) {
     u8 buf;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), n);
     if (Unk_02075e1c_IsZero(gFieldSceneKind)) {
         if (buf < 4) {
             HeldInsect_Remove(buf, 0);
@@ -2502,7 +2484,7 @@ extern "C" void CommRecv_FieldActorRemove(u32 n) {
 
 extern "C" void CommRecv_FishDisplay(s32 n, s32 b, s32 c, s32 d) {
     u8 buf[8];
-    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(buf), n);
     FishDisplay_OnNetPacket(buf, d);
 }
 
@@ -2510,7 +2492,7 @@ extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
     u16 h, v;
     u8 buf[4];
     u32 k;
-    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(buf), n);
     PlayerActor_UnpackClothesChange(buf, &h, &k);
     v = h;
     switch (k) {
@@ -2521,7 +2503,7 @@ extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
         break;
     case 3: {
         void *r7 = PlayerData_GetBySessionSlot(d);
-        u16 *r5 = (u16 *)_ZN10PlayerData11getHeldItemEv(r7);
+        u16 *r5 = (u16 *)((PlayerData *)(r7))->getHeldItem();
         BOOL same;
         if (Item_IsFurniture(&v) != 0) {
             s32 r6 = Item_GetFurnitureIndex(&v);
@@ -2531,7 +2513,7 @@ extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
         }
         if (!same) {
             u16 r = ItemInfo_GetHoldableIndex(&v);
-            _ZN10PlayerData11setHeldItemEPt(r7, &v);
+            ((PlayerData *)(r7))->setHeldItem(&v);
             PlayerActor_SetHoldableItem(r + 1, d);
         }
         break;
@@ -2541,22 +2523,22 @@ extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
 
 extern "C" void CommRecv_HairChange(s32 n, s32 b, s32 c, void *d) {
     u8 buf[3];
-    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(buf), n);
     PlayerActor_UnpackHair(&buf[0], &buf[1], &buf[2]);
     void *r4 = PlayerData_GetBySessionSlot(d);
-    _ZN10PlayerData12setHairStyleEh(r4, buf[1]);
-    _ZN10PlayerData12setHairColorEh(r4, buf[2]);
+    ((PlayerData *)(r4))->setHairStyle(buf[1]);
+    ((PlayerData *)(r4))->setHairColor(buf[2]);
 }
 
 extern "C" void CommRecv_FaceChange(s32 n, s32 b, s32 c, s32 d) {
     u8 buf[4];
-    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(buf), n);
     PlayerActor_SetSwollenFace(buf[0], d);
 }
 
 extern "C" void CommRecv_TanChange(s32 n, s32 b, s32 c, s32 d) {
     u8 buf[4];
-    _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(buf), n);
     PlayerActor_SetTan(buf[0], d);
 }
 
@@ -2568,7 +2550,7 @@ extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
     grid = TownBlockMap_Get();
     if (grid != NULL) {
         BOOL ok;
-        _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 8);
+        ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 8);
         ok = FALSE;
         a1 = buf.unit;
         u16 t1 = a1;
@@ -2609,37 +2591,37 @@ extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
 
 extern "C" void CommRecv_ItemActionResult(s32 a, s32 b, s32 c) {
     u8 buf[14];
-    _ZN11CommManager10readRecordEPhj(gCommManager, buf, 0xe);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(buf), 0xe);
     FieldAction_OnNetResult(buf, c);
 }
 
 extern "C" void CommRecv_ObjectUseRequest(s32 a, s32 b, s32 c, s32 d) {
     u32 buf;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 1);
     RoomEntry_RecvEnterRequest(&buf, d);
 }
 
 extern "C" void CommRecv_ObjectUseReply() {
     u32 buf;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 1);
     RoomEntry_RecvEnterReply(&buf);
 }
 
 extern "C" void CommRecv_ObjectUseRelease(s32 a, s32 b, s32 c, s32 d) {
     u32 buf;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 1);
     RoomEntry_RecvLeave(&buf, d);
 }
 
 extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), n);
     CommVillager_UnpackHeader(&id, &x, &buf);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
-            void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
+            void *r1 = ((PlayerData *)(PlayerData_GetBySessionSlot(d)))->getPlayerId();
             VillagerMemory_InitForPlayer(r5, r1, gSaveTownId, 0);
         }
     }
@@ -2647,13 +2629,13 @@ extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {
 
 extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), n);
     CommVillager_UnpackHeader(&id, &x, &buf);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
-            void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
+            void *r1 = ((PlayerData *)(PlayerData_GetBySessionSlot(d)))->getPlayerId();
             VillagerMemory_RecordTalk(r5, r1, gSaveTownId, 0);
         }
     }
@@ -2663,13 +2645,13 @@ extern "C" void CommRecv_VillagerImpression() {
     u8 b[2];
     u32 id, x;
     void *r5 = gCommManager;
-    _ZN11CommManager10readRecordEPhj(r5, b, 1);
+    ((CommManager *)(r5))->readRecord((u8 *)(b), 1);
     CommVillager_UnpackHeader(&id, &x, b);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
         if (r4 != NULL) {
-            _ZN11CommManager10readRecordEPhj(r5, b + 1, 1);
+            ((CommManager *)(r5))->readRecord((u8 *)(b + 1), 1);
             _ZN14VillagerMemory13setImpressionEi(r4, b[1]);
         }
     }
@@ -2679,13 +2661,13 @@ extern "C" void CommRecv_VillagerFriendship() {
     s8 b[2];
     u32 id, x;
     void *r5 = gCommManager;
-    _ZN11CommManager10readRecordEPhj(r5, b, 1);
+    ((CommManager *)(r5))->readRecord((u8 *)(b), 1);
     CommVillager_UnpackHeader(&id, &x, b);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
         if (r4 != NULL) {
-            _ZN11CommManager10readRecordEPhj(r5, b + 1, 1);
+            ((CommManager *)(r5))->readRecord((u8 *)(b + 1), 1);
             _ZN14VillagerMemory13setFriendshipEa(r4, b[1]);
         }
     }
@@ -2696,7 +2678,7 @@ extern "C" void CommRecv_VillagerReceivedItem() {
     u32 id;
     u32 k;
     l.x = 0xfff1;
-    _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(l.y), 3);
     CommVillager_UnpackReceivedItem(&id, &k, &l.x, l.y);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
@@ -2714,7 +2696,7 @@ extern "C" void CommRecv_Act3C() {
     u32 id;
     l.a = 6;
     l.b = 0;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &l.c, 2);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&l.c), 2);
     CommVillager_UnpackAct3C(&id, &l.a, &l.b, &l.c);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
@@ -2760,7 +2742,7 @@ extern "C" void CommRecv_Act3D() {
     l.c = 0xfff1;
     n = 4;
     l.b = 0;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 4);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&buf), 4);
     CommVillager_UnpackAct3D(&id, &l.a, &l.c, &n, &l.b, &buf);
     void *r6 = SaveVillagers_Get(gSaveVillagers, id);
     if (r6 != NULL) {
@@ -2772,7 +2754,7 @@ extern "C" void CommRecv_Act3D() {
         if (n < 4) {
             void *q = PlayerData_GetBySessionSlot((void *)n);
             if (q != NULL) {
-                r4 = _ZN10PlayerData11getPlayerIdEv(q);
+                r4 = ((PlayerData *)(q))->getPlayerId();
             }
         }
         PlanErrand_Assign(r7, l.a, &l.c, r4, r5);
@@ -2783,7 +2765,7 @@ extern "C" void CommRecv_Act3F() {
     struct { u16 x; u8 y[4]; } l;
     u32 id;
     l.x = 0xfff1;
-    _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 4);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(l.y), 4);
     CommVillager_UnpackItem(&id, &l.x, l.y);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
@@ -2809,7 +2791,7 @@ extern "C" void CommRecv_VillagerShirt() {
     u32 id;
     VillagerShirtRecvStackPad pad;
     l.x = 0xfff1;
-    _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(l.y), 3);
     CommVillager_UnpackItem(&id, &l.x, l.y);
     void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
@@ -2828,7 +2810,7 @@ extern "C" void CommRecv_VillagerItems() {
     arr[1] = 0xfff1;
     arr[2] = 0xfff1;
     arr[3] = 0xfff1;
-    _ZN11CommManager10readRecordEPhj(gCommManager, buf, 9);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(buf), 9);
     CommVillager_UnpackItems(&id, arr, buf);
     r5 = SaveVillagers_Get(gSaveVillagers, id);
     if (r5 != NULL) {
@@ -2843,14 +2825,14 @@ extern "C" void CommRecv_VillagerItems() {
 
 extern "C" void CommRecv_PeerNetState(s32 a, s32 b, s32 c, void *d) {
     u8 v;
-    _ZN11CommManager10readRecordEPhj(gCommManager, &v, 1);
+    ((CommManager *)(gCommManager))->readRecord((u8 *)(&v), 1);
     NetSession_SetSyncState(d, v);
 }
 
 extern "C" void CommRecv_OwnNetState() {
     CommManager *o = (CommManager *)gCommManager;
     u8 b;
-    _ZN11CommManager10readRecordEPhj(o, &b, 1);
+    ((CommManager *)(o))->readRecord((u8 *)(&b), 1);
     NetSession_SetSyncState((void *)o->myAid, b);
 }
 
@@ -2933,7 +2915,6 @@ extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
 }
 extern "C" {
-BOOL _ZN18TownExchangeRecord7isValidEv(void *);
 }
 extern "C" {
 void *SaveManager_GetTownCompressBuf();
@@ -2963,16 +2944,12 @@ extern "C" {
 void ItemSync_Apply(void *);
 }
 extern "C" {
-u32 _ZN11CommManager10getAuxBufBEv(void *);
 }
 extern "C" {
-void _ZN11CommManager10setAuxLenBEj(void *, void *);
 }
 extern "C" {
-u32 _ZN11CommManager10getAuxBufAEv(void *);
 }
 extern "C" {
-void _ZN11CommManager10setAuxLenAEj(void *, void *);
 }
 extern "C" {
 void NetArea_OnStateAReceived();
@@ -3115,7 +3092,7 @@ extern "C" void CommRecv_Act0C(u32 a, u32 b, u32 c, u32 d) {
     s32 v[5];
     NetSyncMsg_Init(v);
     CommManager *g = gCommManager;
-    _ZN11CommManager10readRecordEPhj(g, v, 1);
+    ((CommManager *)(g))->readRecord((u8 *)(v), 1);
     NetSyncMsg_Unpack(v, v + 1, v + 2, v + 3);
     if (d == 0) NetSession_SetMemberSyncReply(g->myAid, v[1]);
     else NetSession_SetMemberSyncReply(d, v[1]);
@@ -3127,14 +3104,14 @@ extern "C" void CommRecv_Act0D(u32 a, u32 b, u32 c, u32 d) { NetArea_SetMemberAc
 extern "C" void CommRecv_Act0E(u32 a, u32 b, u32 c, u32 d) { NetArea_SetStateRequester(d); }
 extern "C" void CommRecv_Act0F(u32 n) {
     void *g = gCommManager;
-    _ZN11CommManager10readRecordEPhj(g, (void *)_ZN11CommManager10getAuxBufAEv(g), n);
-    _ZN11CommManager10setAuxLenAEj(g, (void *)n);
+    ((CommManager *)(g))->readRecord((u8 *)((void *)((CommManager *)(g))->getAuxBufA()), n);
+    ((CommManager *)(g))->setAuxLenA((u32)((void *)n));
     NetArea_OnStateAReceived();
 }
 extern "C" void CommRecv_Act10(u32 n) {
     void *g = gCommManager;
-    _ZN11CommManager10readRecordEPhj(g, (void *)_ZN11CommManager10getAuxBufBEv(g), n);
-    _ZN11CommManager10setAuxLenBEj(g, (void *)n);
+    ((CommManager *)(g))->readRecord((u8 *)((void *)((CommManager *)(g))->getAuxBufB()), n);
+    ((CommManager *)(g))->setAuxLenB((u32)((void *)n));
 }
 extern "C" void CommRecv_Act11() { NetArea_SetOwnerAck(1); }
 extern "C" void CommRecv_ItemSet(u32 n) {
@@ -3142,7 +3119,7 @@ extern "C" void CommRecv_ItemSet(u32 n) {
     void *g = gCommManager;
     u8 buf[5];
     while (i < n) {
-        _ZN11CommManager10readRecordEPhj(g, buf, 5);
+        ((CommManager *)(g))->readRecord((u8 *)(buf), 5);
         ItemSync_Apply(buf);
         i += 5;
     }
@@ -3153,7 +3130,7 @@ extern "C" void CommRecv_ItemSetRequest(u32 n) {
     s32 z = 0;
     u8 buf[7];
     while (i < n) {
-        _ZN11CommManager10readRecordEPhj(g, buf + 2, 5);
+        ((CommManager *)(g))->readRecord((u8 *)(buf + 2), 5);
         u32 v = NetBuf_ReadU16(buf + 2);
         CommRecord_UnpackSource(buf + 4, buf, buf + 1);
         ItemSync_SetAtUnit(((s8 *)buf)[5], ((s8 *)buf)[6], buf[0], v, buf[1] ? 1 : z);
@@ -3169,13 +3146,13 @@ extern "C" BOOL CommSend_MemberInfo(u32 a) {
     if (Net_IsReadyToSend()) {
         if (Comm_HasSendCredit(a)) {
             void *g = gCommManager;
-            _ZN11CommManager7isMyAidEj(g, 0);
+            ((CommManager *)(g))->isMyAid(0);
             u8 *b = _ZN11CommManager10getSendBufEi(g, 4);
             CommPacket_SetHeader(b, 0, 0);
             u32 m = 0;
             u32 i = 0;
             for (i = 0; i < 4; i++) {
-                if (_ZN11CommManager12isSlotActiveEi(g, i)) {
+                if (((CommManager *)(g))->isSlotActive(i)) {
                     m |= (u8)(1 << i);
                 }
             }
@@ -3221,7 +3198,7 @@ extern "C" void CommSend_TownChunk(u8 *p, u32 v) {
 }
 extern "C" BOOL CommSend_VillagerTransfer(u8 *p) {
     void *d = TownExchange_GetForAid(4);
-    if (_ZN18TownExchangeRecord7isValidEv(d)) {
+    if (((TownExchangeRecord *)(d))->isValid()) {
         return CommSend_Chunked(p, d, 0x84c, 2, 1);
     }
     _Z20NetOverlay_AssertAnyv();
@@ -3308,7 +3285,7 @@ extern "C" BOOL CommCtrl_SendAct08() {
         if (Net_IsReadyToSend()) {
             if (Comm_HasSendCredit(a)) {
                 void *g = gCommManager;
-                _ZN11CommManager7isMyAidEj(g, 0);
+                ((CommManager *)(g))->isMyAid(0);
                 u8 *b = _ZN11CommManager10getSendBufEi(g, 4);
                 CommPacket_SetHeader(b, 0, 8);
                 b[1] = 1;
@@ -3346,7 +3323,7 @@ extern "C" BOOL CommSend_JoinReady() {
     if (Net_IsReadyToSend()) {
         if (Comm_HasSendCredit(1)) {
             void *g = gCommManager;
-            _ZN11CommManager7isMyAidEj(g, 0);
+            ((CommManager *)(g))->isMyAid(0);
             CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 9);
             return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
         }
@@ -3442,10 +3419,8 @@ extern "C" {
 s32 _ZN11CommManager13getSyncVarBufEv(CommManager *);
 }
 extern "C" {
-s32 _ZN11CommManager14getPendingModeEv(CommManager *);
 }
 extern "C" {
-s32 _ZN11CommManager14setPendingModeEj(CommManager *, u32);
 }
 extern "C" {
 s32 NetSession_SetCtrl07Received(s32);
@@ -3528,7 +3503,7 @@ extern "C" s32 CommSend_DateTime(u32 a) {
     _Z20NetOverlay_AssertAnyv();
     if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(a) != 0) {
         CommManager *g = gCommManager;
-        _ZN11CommManager7isMyAidEj(g, 0);
+        (g)->isMyAid(0);
         u8 *p = (u8 *)_ZN11CommManager10getSendBufEi(g, 4);
         CommPacket_SetHeader((s32)p, 0, 0xa);
         u32 t[2];
@@ -3586,7 +3561,7 @@ extern "C" s32 CommCtrl_SendAct10() {
     _Z20NetOverlay_AssertAnyv();
     if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(1) != 0) {
         CommManager *g = gCommManager;
-        _ZN11CommManager7isMyAidEj(g, 0);
+        (g)->isMyAid(0);
         CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x10);
         return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
     }
@@ -3605,7 +3580,7 @@ extern "C" s32 CommCtrl_SendAct12(u32 a) {
     _Z20NetOverlay_AssertAnyv();
     if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(a) != 0) {
         CommManager *g = gCommManager;
-        _ZN11CommManager7isMyAidEj(g, 0);
+        (g)->isMyAid(0);
         CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x12);
         return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, a, 0, 0, 0, 0, 0, 0);
     }
@@ -3625,7 +3600,7 @@ extern "C" s32 CommCtrl_SendAct14() {
     _Z20NetOverlay_AssertAnyv();
     if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(1) != 0) {
         CommManager *g = gCommManager;
-        _ZN11CommManager7isMyAidEj(g, 0);
+        (g)->isMyAid(0);
         CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x14);
         return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
     }
@@ -3643,7 +3618,7 @@ extern "C" s32 CommCtrl_SendAct17() {
     _Z20NetOverlay_AssertAnyv();
     if (Net_IsReadyToSend() != 0 && Comm_HasSendCredit(1) != 0) {
         CommManager *g = gCommManager;
-        _ZN11CommManager7isMyAidEj(g, 0);
+        (g)->isMyAid(0);
         CommPacket_SetHeader(_ZN11CommManager10getSendBufEi(g, 4), 0, 0x17);
         return _ZN11CommManager11sendPacketsEPhjjS0_jtS0_jt(g, _ZN11CommManager10getSendBufEi(g, 4), 1, 1, 0, 0, 0, 0, 0, 0);
     }
@@ -3726,8 +3701,8 @@ extern "C" void CommCtrl_Act07() {
 }
 extern "C" void CommCtrl_Act08(u8 *a) {
     CommManager *g = gCommManager;
-    if (_ZN11CommManager14getPendingModeEv(g) == 3) {
-        _ZN11CommManager14setPendingModeEj(g, *a);
+    if ((g)->getPendingMode() == 3) {
+        (g)->setPendingMode(*a);
     }
 }
 extern "C" void CommCtrl_RecvJoinReady() {

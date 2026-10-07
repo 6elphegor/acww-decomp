@@ -16,6 +16,9 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#include "gfx/Model.h"
+#include "net/CommManager.h"
+#include "npc/VillagerId.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -64,10 +67,6 @@
 
 
 
-#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-#define VillagerId_getName _ZN10VillagerId7getNameEj
-#define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
-#define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define VillagerDataProfileView_getInfo28 _ZN23VillagerDataProfileView9getInfo28Ev
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 extern "C" {
@@ -92,16 +91,9 @@ s32 VillagerId_GetPersonality(void *);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void Vec_Add(VecFx32 *out, void *a, void *b);
 void NNS_G3dBindMdlTex(void *a, s32 b);
-void _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, void *e);
-void _ZN10VillagerId7getNameEj(void *self, void *x);
-void _ZN15TalkWindowState7setSlotEiPv(void *self, s32 a, void *q);
-BOOL _ZN11CommManager12isSlotActiveEi(void *self, s32 i);
 void *_ZN23VillagerDataProfileView9getInfo28Ev(void *self);
 void *_ZN12VillagerData13getVillagerIdEv(void *self);
 void *_ZN5Model12getRenderObjEv(void *self);
-BOOL _ZN5Model11setResourceEP12NNSG3dResMdlj(void *self, void *res, u32 b);
-void _ZN11MsgString9BC1Ev(void *p);
-void _ZN11MsgString9BD1Ev(void *p);
 void NNS_G3dBindMdlPltt(void *a, s32 b);
 
 s32 FieldStructureMgr_GetVillagerHouseTex();
@@ -198,7 +190,7 @@ BOOL VillagerHouse::initBuilding() {
     static FxVec3 v(-0x2000, 0x1000, 0x2000);
     VecFx32 tmp;
     Vec_Add(&tmp, &position, &v);
-    Actor_spawn(0x18, idx, &tmp, 0, this);
+    Actor::spawn((void *)(0x18), (void *)(idx), &tmp, (void *)(0), this);
     sVillagerHouses[idx] = (u32)this;
     s32 k = getHouseVariant();
     s32 r7 = VillagerHouseTex_GetHouseTex(FieldStructureMgr_GetVillagerHouseTex(), k);
@@ -213,7 +205,7 @@ BOOL VillagerHouse::initBuilding() {
     }
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
         s32 q = getHouseStyle() >> 2;
-        if (_ZN5Model11setResourceEP12NNSG3dResMdlj(&lightUpModel, HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q), 0)) {
+        if (((Model *)(&lightUpModel))->setResource((NNSG3dResMdl *)(HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q)), 0)) {
             void *a = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlTex(a, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
             void *b = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
@@ -319,10 +311,10 @@ void VillagerHouse::setupTalkMsg() {
         }
     }
     u32 l[9];
-    _ZN11MsgString9BC1Ev(&l[1]);
-    VillagerId_getName(VillagerData_getVillagerId(p), &l[1]);
-    TalkWindowState_setSlot(window, 0, &l[1]);
-    _ZN11MsgString9BD1Ev(&l[1]);
+    new (&l[1]) MsgString9B();
+    ((VillagerId *)(VillagerData_getVillagerId(p)))->getName((u32)(&l[1]));
+    ((TalkWindowState *)(window))->setSlot(0, &l[1]);
+    ((MsgString9B *)(&l[1]))->MsgString9B::~MsgString9B();
 }
 
 BOOL VillagerHouse::isOpen() {
@@ -358,7 +350,7 @@ BOOL VillagerHouse::areLightsOn() {
                 u32 i = 0;
                 void *g = gCommManager;
                 for (; i < 4; i++) {
-                    if (CommManager_isSlotActive(g, i)) {
+                    if (((CommManager *)(g))->isSlotActive(i)) {
                         NetArea_GetSlotStatus(i, &a, &b, &c);
                         if (idx == SceneId_GetVillagerHouse(a)) {
                             return TRUE;

@@ -28,6 +28,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "player/PlayerData.h"
 
 
 class FieldVillager;
@@ -247,10 +248,10 @@ BOOL SpNpcNookIntro::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    NpcActor_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].id);
-    NpcActor_setTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setNpcHandle(&tbl[NookShop_GetLevel(&data_021ed104)].id);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
-    NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0x133, 0x199);
+    ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(2, 0x399, 0x133, 0x199);
     return TRUE;
 }
 
@@ -300,7 +301,7 @@ BOOL SpNpcNookIntro::onCreate() {
     if (p != NULL) {
         if (!GameStart_IsNewResident()) {
             if (!GameStart_IsNewTown()) {
-                PlayerData_clearFlag(p, 1);
+                ((PlayerData *)(p))->clearFlag(1);
             }
         }
     }
@@ -347,17 +348,17 @@ BOOL SpNpcNookIntro::mainAct00() {
 
 BOOL SpNpcNookIntro::setupAct01() {
     u32 x;
-    void *p = ActorTalkRequest_getTalkPlayer(&talk);
+    void *p = ((ActorTalkRequest *)(&talk))->getTalkPlayer();
     x = 0;
     if (p != NULL) {
-        x = NpcActor_getAngleTo(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, x, 1);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 1);
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct01() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         Camera_SetModeDefault();
         Bgm_RequestSilence(0x13, 0x3c, 0);
         Bgm_Release(0x47);
@@ -380,20 +381,20 @@ BOOL SpNpcNookIntro::setupAct02() {
 BOOL SpNpcNookIntro::mainAct02() {
     if (PlayerActor_IsScriptedWalking(4) == 0) {
         talk.resetMsg();
-        ActorTalkRequest_setTalkPlayer(&talk, NpcActor_getPlayerActor(this, 4));
+        ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         changeAct(1);
     }
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::setupAct03() {
-    NpcActionCtrl_requestAction(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct03() {
-    if (NpcActionCtrl_getAction(&actionCtrl) == 3) {
-        if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(4);
         }
     }
@@ -406,13 +407,13 @@ BOOL SpNpcNookIntro::setupAct04() {
     walkTargetZ = position.z;
     walkTargetX -= 0x2000;
     walkTargetZ += 0xa000;
-    NpcActionCtrl_requestAction(&actionCtrl, 2, 1, walkTargetX, walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(2, 1, walkTargetX, walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
     actTimer = 0x3c;
     return TRUE;
 }
 
 BOOL SpNpcNookIntro::mainAct04() {
-    if (NpcActionCtrl_isActionDone(&actionCtrl) != 0 || Math_CountDownU8(&actTimer) == 0) {
+    if (((NpcActionCtrl *)(&actionCtrl))->isActionDone() != 0 || Math_CountDownU8(&actTimer) == 0) {
         TalkRequest_SetTargetDone(this);
         if (PlayerData_GetCurrent()) {
             GameStart_Clear();
@@ -449,7 +450,7 @@ void SpNpcNookIntroTalk::start(TalkStartMsg *out_) {
     TalkStartMsg *out = (TalkStartMsg *)out_;
     void *p = PlayerData_GetCurrent();
     if (p != 0) {
-        PlayerData_clearFlag(p, 0x23);
+        ((PlayerData *)(p))->clearFlag(0x23);
     }
     out->msgKey = (const char *)sNookIntroMsgFilePtr;
     out->msgIndex = 0x22;
@@ -461,7 +462,7 @@ void SpNpcNookIntroTalk::onMessageEnd(u32) {
     buf = 0;
     switch (msgIndex) {
     case 0x22:
-        TalkWindowState_setNextMessage(sc, gTalkMsgIndexEnd, 0);
+        ((TalkWindowState *)(sc))->setNextMessage((u8 *)(gTalkMsgIndexEnd), 0);
         sc->openMode = 0;
         setScript(1);
         break;
@@ -471,7 +472,7 @@ void SpNpcNookIntroTalk::onMessageEnd(u32) {
         if (p == 0) {
             buf = 0xf;
         } else {
-            ActorTalkRequest_setNumberSlot(this, p, 1, 0xa, 1, 0);
+            ((ActorTalkRequest *)(this))->setNumberSlot((s32)(p), 1, 0xa, 1, 0);
             if (GameStart_IsNewTown() != 0) {
                 buf = 0x1c;
             } else if (PlayerDataArray_CountUsed(gSavePlayers) <= 1) {
@@ -500,7 +501,7 @@ void SpNpcNookIntroTalk::onMessageEnd(u32) {
         break;
     }
     if (buf != 0) {
-        TalkWindowState_setNextMessage(sc, (u8 *)&buf, sNookIntroMsgFilePtr);
+        ((TalkWindowState *)(sc))->setNextMessage((u8 *)((u8 *)&buf), sNookIntroMsgFilePtr);
     }
 }
 
@@ -545,17 +546,17 @@ void SpNpcNookIntroTalk::runWalkScript() {
             o = owner;
             o->walkTargetX += 0x6000;
             o = owner;
-            NpcActionCtrl_requestAction(&o->actionCtrl, 2, 2, o->walkTargetX, o->walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(&o->actionCtrl))->requestAction(2, 2, o->walkTargetX, o->walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
             scriptStep = 1;
         }
         break;
     case 1: {
         SpNpcNookIntro *o = owner;
-        if (NpcActionCtrl_isActionDone(&o->actionCtrl) != 0) {
+        if (((NpcActionCtrl *)(&o->actionCtrl))->isActionDone() != 0) {
             o = owner;
-            if (NpcActionCtrl_getAction(&o->actionCtrl) == 2) {
+            if (((NpcActionCtrl *)(&o->actionCtrl))->getAction() == 2) {
                 o = owner;
-                NpcActionCtrl_requestAction(&o->actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(&o->actionCtrl))->requestAction(0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 scriptStep = 2;
             }
         }
@@ -563,9 +564,9 @@ void SpNpcNookIntroTalk::runWalkScript() {
     }
     case 2: {
         SpNpcNookIntro *o = owner;
-        if (NpcActionCtrl_isActionDone(&o->actionCtrl) != 0) {
+        if (((NpcActionCtrl *)(&o->actionCtrl))->isActionDone() != 0) {
             o = owner;
-            if (NpcActionCtrl_getAction(&o->actionCtrl) == 0) {
+            if (((NpcActionCtrl *)(&o->actionCtrl))->getAction() == 0) {
                 TalkWindowState *sc = (TalkWindowState *)window;
                 volatile u8 buf = gU8None;
                 if (GameStart_IsNewTown() != 0) {
@@ -573,7 +574,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
                 } else {
                     buf = 0xa;
                 }
-                TalkWindowState_setNextMessage(sc, (u8 *)&buf, sNookIntroMsgFilePtr);
+                ((TalkWindowState *)(sc))->setNextMessage((u8 *)((u8 *)&buf), sNookIntroMsgFilePtr);
                 sc->nextState = 1;
                 o = owner;
                 VecFx32 t;

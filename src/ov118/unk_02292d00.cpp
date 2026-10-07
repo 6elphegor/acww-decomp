@@ -12,9 +12,10 @@
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
+#include "talk/MsgString.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
-BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u16 gPad[];
@@ -29,9 +30,7 @@ extern u8 gSaveVillagers[];
 
 void String_Load2dMenu(void *self, u32 v);
 void _ZN11MsgString9CC2Ev(void *self);
-void _ZN11MsgString9CD1Ev(void *self);
 s32 _ZN10PlayerData11getPlayerIdEv(void *self);
-void _ZN9MsgString5clearEv(void *self);
 void Snd_PlaySePanned(u32 a, s32 b);
 void Snd_PlaySe(u32 v);
 void *ProcBase_GetParent(void *p);
@@ -597,7 +596,7 @@ void MapTab::stateOpen() {
     o->createLabel(8, 0x1ab, 0x12, 0xf, 0, 0);
     String_Load2dMenu(o, 0xa9);
     o->redrawAligned(1, 0);
-    _ZN11MsgString9CD1Ev(buf);
+    ((MsgString9C *)(buf))->MsgString9C::~MsgString9C();
     beginSubSlideIn(0xa, 3, 0, 0x30);
     Gfx2d_ShowLayer(4);
     applySlideOffset(4, 0, 0);
@@ -859,7 +858,7 @@ void MapTab::updateCursorMove() {
 }
 
 void MapTab::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         s32 r = onCursorDecide();
         if (r != 1) {
             if (r == 2) {
@@ -874,7 +873,7 @@ void MapTab::updateCursorPress() {
 }
 
 void MapTab::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         if (testFlags(0x800)) {
             setMainState(0xa);
@@ -1128,7 +1127,7 @@ void MapTab::buildEntryLabels(u8 *tbl) {
 
 void MapTab::setEntryName(LabelString *p, u32 idx) {
     if (idx == 0) {
-        _ZN9MsgString5clearEv(p);
+        ((MsgString *)(p))->clear();
     } else if (idx == 1) {
         PopupChoice_CopyPlayerIdName(p, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
     } else if (idx >= 2 && idx < 6) {
@@ -1138,7 +1137,7 @@ void MapTab::setEntryName(LabelString *p, u32 idx) {
     } else if (idx >= 0xe && idx < 0x13) {
         String_Load2dMenu(p, idx + 0x88);
     } else {
-        _ZN9MsgString5clearEv(p);
+        ((MsgString *)(p))->clear();
     }
 }
 

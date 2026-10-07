@@ -4,6 +4,7 @@
 #include "types.h"
 #include "gfx/BgVramTask.h"
 #include "nitro/io_access.h"
+#include "player/PlayerData.h"
 
 
 extern "C" {
@@ -66,7 +67,6 @@ void Heap_Free(void *, void *);
 void ClothTex_LoadItem(void *, void *, u32);
 void *ClothTex_GetPlttData(void *);
 void *ClothTex_GetTexData(void *);
-s32 _ZN10PlayerData22setInventoryBackgroundEPt(u32 a, u16 *p);
 s32 Gfx2d_LoadPaletteRange(void *, u32, u32, u32, u32);
 void Gfx2d_LinearToTiles4bppBytes(void *, void *, u32, u32);
 s32 Gfx2d_LoadCharRange(void *, u32, u32, u32, u32);
@@ -251,7 +251,7 @@ extern "C" void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img
             Gfx2d_LinearToTiles4bppBytes(ClothTex_GetTexData(o), img, 4, 4);
             Heap_Free(heap, o);
             if (x->requestCharsAndPalette((u32)img, 5, 0, 0, 0xf, (u32)pal, 0) != 0) {
-                _ZN10PlayerData22setInventoryBackgroundEPt(r, p);
+                ((PlayerData *)(r))->setInventoryBackground(p);
             }
         }
     }

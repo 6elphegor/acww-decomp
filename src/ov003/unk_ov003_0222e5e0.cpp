@@ -17,8 +17,6 @@ extern "C" {
 extern CommManager *gCommManager;
 
 BOOL NetArea_IsLocalOwner();
-BOOL _ZN11CommManager8isOnlineEv(void *g);
-u8 *_ZN11CommManager10getSyncVarEj(void *self, u32 a);
 void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
 void NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 CommSyncVar_GetVarSize(s32 a);
@@ -34,7 +32,7 @@ extern "C" void _ZN13InsectNetSyncD2Ev() {}
 
 extern "C" BOOL InsectNetSync_Set(s32 unused, s32 idx, s32 v, s32 *p, u8 e, s32 f) {
     if (NetArea_IsLocalOwner()) {
-        if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+        if (((CommManager *)(gCommManager))->isOnline()) {
             CommSyncVar_SetVar(idx + 0x18, (s32)&f, 0, 0);
             s32 off = idx << 4;
             s8 *pd = &sInsectNetSync[0].d;
@@ -69,8 +67,8 @@ extern "C" void InsectNetSync_PackVar(void *dst, s32 idx) {
 extern "C" BOOL InsectNetSync_Get(s32 a, s32 b, s8 *c, s32 *d, s32 *e, u8 *f) {
     if (!NetArea_IsLocalOwner()) {
         CommManager *g = gCommManager;
-        if (_ZN11CommManager8isOnlineEv(g)) {
-            s8 *r = (s8 *)_ZN11CommManager10getSyncVarEj(g, b + 0x18);
+        if (((CommManager *)(g))->isOnline()) {
+            s8 *r = (s8 *)((CommManager *)(g))->getSyncVar(b + 0x18);
             if (r != 0) {
                 NetBuf_UnpackPair20(r, d, e);
                 if (*e > 0) {

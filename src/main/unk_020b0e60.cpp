@@ -11,8 +11,11 @@
 #include "game/FxVec3.h"
 #include "town/TownUnitShapeQuery.h"
 #include "game/NibblePair.h"
+#include "gfx/G3dResAccess.h"
+#include "net/CommManager.h"
+#include "save/Pattern.h"
+#include "town/BuildingActor.h"
 
-inline void *operator new(size_t, void *p) { return p; }
 
 extern "C" {
 extern u32 OVERLAY_0_ID[];
@@ -273,7 +276,6 @@ Map *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 u32 BlockMap_GetBlockAttr(Map *m, s32 x, s32 y);
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
-s32 _ZN12G3dResAccess10findMatIdxEi(Ctx *c, const char *name);
 void Str_SPrintf(char *buf, const char *fmt, ...);
 u32 Random_GlobalBelow(...);
 void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
@@ -281,13 +283,6 @@ void Melody_PlayAt(void *p, s32 a);
 void Pattern_CopyFields(void *dst, void *src);
 void *TownFlagPattern_GetPattern(void *p);
 void *TownFlagPattern_InitDefault(void *p);
-void _ZN15TownFlagPatternD1Ev(void *p);
-void _ZN15TownFlagPatternC1Ev(void *p);
-void _ZN11CommManager9endRecordEjj(void *p, u32 a, u32 b);
-void _ZN11CommManager11writeRecordEPhj(void *p, void *q, u32 n);
-void _ZN11CommManager11beginRecordEv(void *p);
-BOOL _ZN11CommManager7isMyAidEj(void *p, u32 a);
-BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL SaveVillagers_Get(void *a, u32 b);
 u32 Villager_GetWhereabouts(void *a);
 void Town_RemoveShipParts(void);
@@ -313,8 +308,6 @@ void NNSi_G3dModifyMatFlag(Pal *p, s32 a, s32 b);
 Obj *BuildingList_FindByItem(u32 a);
 Obj *Building_FindNearPos(u32 a);
 BOOL _ZN21FieldObjectShapeQuery12getUnitShapeEPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
-u16 *_ZN13BuildingActor9getItemIdEv(Obj *o);
-BOOL _ZN13BuildingActor15getEntranceTypeEv(void *self);
 }
 
 
@@ -799,11 +792,11 @@ extern "C" u32 TownStyle_GetVillagerHouseStyle(u8 *p, u32 idx) {
 }
 
 TownFlag::~TownFlag() {
-    _ZN15TownFlagPatternC1Ev(this);
+    new (this) TownFlagPattern();
 }
 
 TownFlag::TownFlag() {
-    _ZN15TownFlagPatternD1Ev(this);
+    ((TownFlagPattern *)(this))->~TownFlagPattern();
 }
 
 TownFlag *TownFlag::initDefault() {
@@ -939,7 +932,7 @@ DoorLight::DoorLight() { matIdx = -1; }
 
 DoorLight::~DoorLight() {}
 
-void DoorLight::bindMaterial(Ctx *c) { matIdx = _ZN12G3dResAccess10findMatIdxEi(c, "m_door"); }
+void DoorLight::bindMaterial(Ctx *c) { matIdx = ((G3dResAccess *)(void *)(c))->findMatIdx((s32)("m_door")); }
 
 void DoorLight::apply(Ctx *c, s32 t)
 {
@@ -952,7 +945,7 @@ WindowLight::WindowLight() { matIdx = -1; }
 
 WindowLight::~WindowLight() { matIdx = -1; }
 
-void WindowLight::bindMaterial(Ctx *c) { matIdx = _ZN12G3dResAccess10findMatIdxEi(c, "m_window"); }
+void WindowLight::bindMaterial(Ctx *c) { matIdx = ((G3dResAccess *)(void *)(c))->findMatIdx((s32)("m_window")); }
 
 void WindowLight::apply(Ctx *c, s32 t)
 {
@@ -974,7 +967,7 @@ void LampLights::bindMaterials(Ctx *c)
 {
     for (u32 i = 0; i < 3; i++) {
         if (getMaterialName(i)) {
-            s32 r = _ZN12G3dResAccess10findMatIdxEi(c, getMaterialName(i));
+            s32 r = ((G3dResAccess *)(void *)(c))->findMatIdx((s32)(getMaterialName(i)));
             if (r != -1) {
                 matIndices[i] = r;
             } else {
@@ -1424,7 +1417,7 @@ extern "C" u32 Building_GetDoorAnimParamAt(u32 a) {
     }
     o = Building_FindNearPos(a);
     if (o) {
-        if (_ZN13BuildingActor15getEntranceTypeEv(o) == 1) {
+        if (((BuildingActor *)(o))->getEntranceType() == 1) {
             u16 *i = o->vfunc_64();
             if (i) {
                 return i[2];
@@ -1500,16 +1493,16 @@ extern "C" u32 Field_GetExitedBuildingKey(void) {
 extern "C" BOOL Building_RequestState(Obj *o, s32 v) {
     if (IsEnabled()) {
         if (o->vfunc_6c(v)) {
-            if (_ZN11CommManager8isOnlineEv(gCommManager)) {
+            if (((CommManager *)(gCommManager))->isOnline()) {
                 u16 f;
                 void *d;
-                f = (f & ~0x3f) | (_ZN13BuildingActor9getItemIdEv(o)[0] & 0x3f);
+                f = (f & ~0x3f) | (((BuildingActor *)(void *)(o))->getItemId()[0] & 0x3f);
                 f = (f & ~0xfc0) | ((v & 0x3f) << 6);
                 f &= ~0xf000;
                 d = gCommManager;
-                _ZN11CommManager11beginRecordEv(d);
-                _ZN11CommManager11writeRecordEPhj(d, &f, 2);
-                _ZN11CommManager9endRecordEjj(d, 0x22, 4);
+                ((CommManager *)(d))->beginRecord();
+                ((CommManager *)(d))->writeRecord((u8 *)(&f), 2);
+                ((CommManager *)(d))->endRecord(0x22, 4);
             }
             return TRUE;
         }
@@ -1601,9 +1594,9 @@ extern "C" void BuildingOccupancy_OnEnterRecord(Flags1 *p, s32 bit) {
         pk = *p;
         pk.mode = e->hi;
         d = gCommManager;
-        _ZN11CommManager11beginRecordEv(d);
-        _ZN11CommManager11writeRecordEPhj(d, &pk, 1);
-        _ZN11CommManager9endRecordEjj(d, 0x23, bit);
+        ((CommManager *)(d))->beginRecord();
+        ((CommManager *)(d))->writeRecord((u8 *)(&pk), 1);
+        ((CommManager *)(d))->endRecord(0x23, bit);
         BuildingInfo_Destroy(&info);
     }
     }
@@ -1627,7 +1620,7 @@ extern "C" void BuildingOccupancy_RequestEnter(u32 arg) {
     u16 buf[5];
     u32 idx = Item_GetBuildingIndex(arg);
     void *p = gCommManager;
-    if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0)) {
+    if (!((CommManager *)(p))->isOnline() || ((CommManager *)(p))->isMyAid(0)) {
         NibblePair *e = sBuildingOccupancy + idx;
         u8 lo;
         u32 y, z;
@@ -1651,9 +1644,9 @@ extern "C" void BuildingOccupancy_RequestEnter(u32 arg) {
         bits.a = 0;
         bits.b = idx;
         p = gCommManager;
-        _ZN11CommManager11beginRecordEv(p);
-        _ZN11CommManager11writeRecordEPhj(p, &bits, 1);
-        _ZN11CommManager9endRecordEjj(p, 0x23, 0);
+        ((CommManager *)(p))->beginRecord();
+        ((CommManager *)(p))->writeRecord((u8 *)(&bits), 1);
+        ((CommManager *)(p))->endRecord(0x23, 0);
     }
 }
 
@@ -1664,14 +1657,14 @@ extern "C" u8 BuildingOccupancy_GetAnswer(u32 a) {
 extern "C" void BuildingOccupancy_Leave(u32 a, u32 b) {
     u32 i = Item_GetBuildingIndex(a);
     void *p = gCommManager;
-    if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0) || _ZN11CommManager7isMyAidEj(p, 4)) {
+    if (!((CommManager *)(p))->isOnline() || ((CommManager *)(p))->isMyAid(0) || ((CommManager *)(p))->isMyAid(4)) {
         sBuildingOccupancy[i].lo &= ~(1 << b);
     } else {
         u8 x = i;
         p = gCommManager;
-        _ZN11CommManager11beginRecordEv(p);
-        _ZN11CommManager11writeRecordEPhj(p, &x, 1);
-        _ZN11CommManager9endRecordEjj(p, 0x24, 0);
+        ((CommManager *)(p))->beginRecord();
+        ((CommManager *)(p))->writeRecord((u8 *)(&x), 1);
+        ((CommManager *)(p))->endRecord(0x24, 0);
     }
 }
 
@@ -1689,7 +1682,7 @@ extern "C" void HouseVisitor_ClearPresent(void) {
 
 extern "C" u32 BuildingOccupancy_GetPlayersForScene(u32 a) {
     void *p = gCommManager;
-    if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0)) {
+    if (!((CommManager *)(p))->isOnline() || ((CommManager *)(p))->isMyAid(0)) {
         volatile u16 id = ((u16 *)sSceneBuildingTable)[a];
         BOOL ok = FALSE;
         u16 v = id;

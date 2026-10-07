@@ -1,6 +1,7 @@
 #include "text/Unk_02050288.h"
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
+#include "sys/Heap.h"
 
 // TU068: 0x020501d4-0x02051218, the text system (fonts, text objects drawn into a tile buffer, string buffers and
 // the scene object that loads the fonts). One original file: __sinit constructs the five fonts and fills the
@@ -592,7 +593,7 @@ extern "C" void Text_InitSystem(void) {
 extern "C" void Text_ShutdownSystem(void) {
     if (gTextHeap != NULL) {
         TextLabel_DestroyAll();
-        Heap_destroy2(gTextHeap);
+        ((Heap *)(gTextHeap))->destroy2();
         gTextHeap = NULL;
     }
     GameFont_Free(&gFontASub);

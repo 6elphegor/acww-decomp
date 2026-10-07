@@ -1,6 +1,7 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "player/PlayerBodyWorkRef.h"
+#include "sys/Heap.h"
 
 
 struct PlayerBodyWorkPool {
@@ -32,7 +33,7 @@ extern "C" void PlayerBodyWorkPool_Create(void *parent) {
     PlayerBodyAnimHeap_Create(parent);
     PlayerBodyWorkPool_CreateHeaps(sPlayerBodyWorkPool.heaps);
     if (gPlayerBodyAnimHeap) {
-        Heap_adjust(gPlayerBodyAnimHeap);
+        ((Heap *)(gPlayerBodyAnimHeap))->adjust();
     }
 }
 
@@ -60,12 +61,12 @@ extern "C" void PlayerBodyWorkPool_DestroyHeaps(u32 *tbl) {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (tbl[i]) {
-            Heap_freeAll((void *)tbl[i]);
+            ((Heap *)((void *)tbl[i]))->freeAll();
             tbl[i] = 0;
         }
     }
     if (gPlayerBodyAnimHeap) {
-        Heap_freeAll(gPlayerBodyAnimHeap);
+        ((Heap *)(gPlayerBodyAnimHeap))->freeAll();
     }
 }
 
@@ -78,7 +79,7 @@ PlayerBodyWorkRef::PlayerBodyWorkRef() { slot = 4; }
 extern "C" void PlayerBodyWorkRef_Destruct(void) {}
 
 extern "C" void PlayerBodyWorkRef_Assign(u8 *p, u8 v) {
-    Heap_freeAll((void *)PlayerBodyWorkPool_GetHeap(sPlayerBodyWorkPool.heaps, v));
+    ((Heap *)((void *)PlayerBodyWorkPool_GetHeap(sPlayerBodyWorkPool.heaps, v)))->freeAll();
     *p = v;
 }
 

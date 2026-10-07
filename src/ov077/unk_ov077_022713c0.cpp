@@ -25,6 +25,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
+#include "player/PlayerData.h"
+#include "player/PlayerSpNpcRecord.h"
 
 
 class ActorTalkRequest;
@@ -35,12 +37,6 @@ class SpNpcResettiTalk;
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
-s32 _ZN17PlayerSpNpcRecord13getResetCountEv(void *p);
-void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, u8 *b, void *c);
-void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1);
-void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *self, s32 a);
-void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 void TalkRequestFlags_ClearResetti();
 void TalkRequestFlags_SetResetti();
 s32 Math_IsInRange(void *p, u32 lo, u32 hi);
@@ -54,7 +50,6 @@ s32 Math_CountDownU8(void *p);
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_IsResultOk();
 s32 PlayerActor_GetCharacter(s32 v);
-s16 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 Effect_Create(s32 a, void *b, s32 c, s32 d);
 void Effect_End(s32 h);
 BOOL TalkRequest_SetTargetDone(void *p);
@@ -68,8 +63,6 @@ void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 s32 BlockMap_FindItemAllAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g1, s32 g2);
 s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
 void PlayerActor_LocalPlayAnim99(void *p);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 extern u16 data_020c6cc8;
 extern u8 gFieldSceneKind;
 extern void *gSceneBlockMap;
@@ -259,8 +252,8 @@ BOOL SpNpcResetti::preCreate() {
     lastApologyPhrase = 0xff;
     setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
-    _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xfc);
-    _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xfc);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xfc);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0xfc);
     shadowEnabled = 0;
     collisionEnabled = 0;
     return TRUE;
@@ -323,17 +316,17 @@ BOOL SpNpcResetti::setupAct01() {
     void *p = talk.getTalkPlayer();
     s16 v = 0;
     if (p != NULL) {
-        v = _ZN8NpcActor10getAngleToEPS_(this, p);
+        v = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, v, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, v, 0);
     return TRUE;
 }
 
 BOOL SpNpcResetti::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() != 0) {
         return TRUE;
     }
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         changeAct(5);
     }
     return TRUE;
@@ -347,7 +340,7 @@ BOOL SpNpcResetti::setupAct03() {
     void *g;
     s32 a, b, c, d;
     u16 u0, u1;
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xfd, 1, 0, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xfd, 1, 0, 0);
     if (Unk_ov077_02271bf4_IsZero(gFieldSceneKind)) {
         g = gSceneBlockMap;
         a = 0;
@@ -389,7 +382,7 @@ BOOL SpNpcResetti::mainAct03() {
     dx = ax - houseUnitX;
     dz = az - houseUnitZ;
     {
-        s16 w = _ZN8NpcActor10getAngleToEPS_(this, (void *)pl);
+        s16 w = ((NpcActor *)(this))->getAngleTo((NpcActor *)((void *)pl));
         rotY = w;
         moveAngleY = w;
     }
@@ -437,7 +430,7 @@ BOOL SpNpcResetti::setupAct04() {
 
 BOOL SpNpcResetti::mainAct04() {
     s32 r = PlayerActor_GetCharacter(4);
-    s16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
+    s16 v = ((NpcActor *)(this))->getAngleTo((NpcActor *)((void *)r));
     rotY = v;
     moveAngleY = v;
     if ((s16)((Unk_ov077_Word *)&model.curFrame)->b.mid == 0xc) {
@@ -458,7 +451,7 @@ BOOL SpNpcResetti::mainAct04() {
 }
 
 BOOL SpNpcResetti::setupAct05() {
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xfe, 1, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xfe, 1, data_020c6cc8, 0);
     Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x7e7, 0x7f, 0);
     return TRUE;
 }
@@ -466,7 +459,7 @@ BOOL SpNpcResetti::setupAct05() {
 BOOL SpNpcResetti::mainAct05() {
     s32 r = PlayerActor_GetCharacter(4);
     s32 f;
-    s16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
+    s16 v = ((NpcActor *)(this))->getAngleTo((NpcActor *)((void *)r));
     rotY = v;
     moveAngleY = v;
     f = (s16)((Unk_ov077_Word *)&model.curFrame)->b.mid;
@@ -588,7 +581,7 @@ void SpNpcResettiTalk::onSignalTag(s32 a) {
 }
 
 void SpNpcResettiTalk::start(TalkStartMsg *out) {
-    s32 t = _ZN17PlayerSpNpcRecord13getResetCountEv(_ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent())) - 1;
+    s32 t = ((PlayerSpNpcRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getSpNpcRecord()))->getResetCount() - 1;
     if (t < 0) {
         t = 0;
     } else if (t > 5) {
@@ -618,7 +611,7 @@ void SpNpcResettiTalk::onMessageStart(u32) {
         }
         ownerNpc->lastApologyPhrase = n;
         c = ownerNpc->lastApologyPhrase;
-        _ZN15TalkWindowState17setSlotFromStringEiii(window, 0, &c, (void *)"st_general");
+        ((TalkWindowState *)(window))->setSlotFromString(0, (s32)(&c), (s32)((void *)"st_general"));
     }
 }
 

@@ -24,14 +24,8 @@ extern "C" {
 void Anim_LerpRotMtx(Mtx33 *a, Mtx33 *b, Mtx33 *out, s32 t);
 }
 
-extern "C" s32 _ZN12G3dResAccess10findMatIdxEi(void *res, const char *name);
-extern "C" u32 _ZN12G3dResAccess10findTexIdxEi(void *res, ...);
-extern "C" void *_ZN12G3dResAccess10getTexDataEi(void *res, u32 x);
-extern "C" s32 _ZN12G3dResAccess11findPlttIdxEi(u8 *hdr, const char *name);
 extern "C" u8 *_ZN12G3dResAccess11getPlttDataEi(u8 *hdr, s32 idx);
-extern "C" s32 _ZN12G3dResAccess11getPlttSizeEi(u8 *hdr, s32 idx);
 extern "C" s32 G3dTex_GetImageSize(u32 v);
-extern "C" void _ZN13AnimFrameCtrl4stepEv(void *p);
 extern "C" void func_02056714(void *p);
 extern "C" s32 _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, void *c, void *d);
 extern "C" void *NNS_G3dGetAnmByIdx(void *p, s32 x);
@@ -278,7 +272,7 @@ BOOL TexPatVramUploader::uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s3
         G3dTex_GetImageSize(*(u32 *)p1);
         u32 r6 = *(u32 *)p1 + (u16) * (u32 *)(hdr + 8);
         if (r7 != NULL) {
-            u8 *t = (u8 *)_ZN12G3dResAccess10getTexDataEi(x, a);
+            u8 *t = (u8 *)((G3dResAccess *)(x))->getTexData(a);
             s32 r3 = G3dTex_GetImageSize(*(u32 *)r7);
             if (!_ZN11TexVramTask10requestTexEjjjh(this, t, (r6 & 0xffff) << 3, r3, 2)) {
                 return FALSE;
@@ -287,7 +281,7 @@ BOOL TexPatVramUploader::uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s3
         if (e2 != NULL && e3 != NULL) {
             s32 bb = b;
             u8 *t = _ZN12G3dResAccess11getPlttDataEi(x, bb);
-            s32 r3 = _ZN12G3dResAccess11getPlttSizeEi(x, bb);
+            s32 r3 = ((G3dResAccess *)(x))->getPlttSize(bb);
             if (!_ZN11TexVramTask11requestPlttEjjjh(TEXPAT_TASK1(tasks), t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
                 _ZN11TexVramTask6cancelEv(this);
                 return FALSE;
@@ -301,12 +295,12 @@ BOOL TexPatVramUploader::uploadByName(u8 *hdr, const char *n1, const char *n2, u
     s32 i1;
     s32 i2;
     if (n1 != NULL) {
-        i1 = _ZN12G3dResAccess10findTexIdxEi(hdr, n1);
+        i1 = ((G3dResAccess *)(hdr))->findTexIdx((s32)(n1));
     } else {
         i1 = -1;
     }
     if (n2 != NULL) {
-        i2 = _ZN12G3dResAccess11findPlttIdxEi(hdr, n2);
+        i2 = ((G3dResAccess *)(hdr))->findPlttIdx((s32)(n2));
     } else {
         i2 = -1;
     }
@@ -426,7 +420,7 @@ BOOL MatTexBinder::hasMaterial() {
 
 BOOL MatTexBinder::setMaterialByName(u8 *hdr, const char *name) {
     if (!hasMaterial()) {
-        s32 idx = (s8)_ZN12G3dResAccess10findMatIdxEi(hdr, name);
+        s32 idx = (s8)((G3dResAccess *)(hdr))->findMatIdx((s32)(name));
         if (idx != -1) {
             return setMaterial(hdr, idx);
         }
@@ -469,7 +463,7 @@ BOOL MatTexBinder::bindByIdx(u8 *hdr2, s32 a, s32 idx) {
 
 BOOL MatTexBinder::bindTexByName(u8 *hdr2, const char *name) {
     if (name != NULL) {
-        return bindTex(hdr2, _ZN12G3dResAccess10findTexIdxEi(hdr2, name));
+        return bindTex(hdr2, ((G3dResAccess *)(hdr2))->findTexIdx((s32)(name)));
     }
     return TRUE;
 }
@@ -562,7 +556,7 @@ BOOL MatTexBinder::bindTex(u8 *hdr2, s32 idx2) {
 
 BOOL MatTexBinder::bindPlttByName(u8 *hdr2, const char *name) {
     if (name != NULL) {
-        return bindPltt(hdr2, _ZN12G3dResAccess11findPlttIdxEi(hdr2, name));
+        return bindPltt(hdr2, ((G3dResAccess *)(hdr2))->findPlttIdx((s32)(name)));
     }
     return TRUE;
 }
@@ -915,7 +909,7 @@ void MatTexPatTrack::update(u32 frame, u8 *p2, void *p3, void *p4) {
 }
 
 void MatTexPatTrack::upload(void *a, void *b) {
-    if (!_ZN11TexVramTask13requestMatTexEPvjj(vramTask, a, matIdx, _ZN12G3dResAccess10getTexDataEi(b, texIdx))) {
+    if (!_ZN11TexVramTask13requestMatTexEPvjj(vramTask, a, matIdx, ((G3dResAccess *)(b))->getTexData(texIdx))) {
         keyIdx = 0xff;
         texIdx = 0xff;
         lastFrame = 0xffff;
@@ -991,7 +985,7 @@ void MatTexPatAnim::setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
 }
 
 void MatTexPatAnim::update() {
-    ::_ZN13AnimFrameCtrl4stepEv(this);
+    ((AnimFrameCtrl *)(this))->step();
     applyFrame();
 }
 
@@ -1007,10 +1001,10 @@ void MatTexPatAnim::applyFrame() {
 
 BOOL MatTexPatAnim::setMaterialTex(s32 matName, u32 x) {
     BOOL z = FALSE;
-    s32 id = _ZN12G3dResAccess10findMatIdxEi(resMdl, (const char *)matName);
+    s32 id = ((G3dResAccess *)(resMdl))->findMatIdx((s32)((const char *)matName));
     
     if (id == -1) return z;
-    u8 v = _ZN12G3dResAccess10findTexIdxEi(resTex, x);
+    u8 v = ((G3dResAccess *)(resTex))->findTexIdx(x);
     
     if (v == -1) return z;
     s32 i = z;
@@ -1031,7 +1025,7 @@ BOOL MatTexPatAnim::setMaterialTex(s32 matName, u32 x) {
 
 // Defined under its mangled name so it can take the material name its callers pass (the mangled name has no parameter)
 extern "C" void _ZN13MatTexPatAnim13pauseMaterialEv(MatTexPatAnim *self, const char *matName) {
-    s32 id = _ZN12G3dResAccess10findMatIdxEi(self->resMdl, matName);
+    s32 id = ((G3dResAccess *)(self->resMdl))->findMatIdx((s32)(matName));
     s32 i;
     if (id != -1) {
         for (i = 0; i < self->numTracks; i++) {
@@ -1045,7 +1039,7 @@ extern "C" void _ZN13MatTexPatAnim13pauseMaterialEv(MatTexPatAnim *self, const c
 
 extern "C" void MatTexPatAnim_ResumeMaterial(MatTexPatAnim *p, void *q) {
     s32 i, r;
-    r = _ZN12G3dResAccess10findMatIdxEi((void *)p->resMdl, (const char *)q);
+    r = ((G3dResAccess *)((void *)p->resMdl))->findMatIdx((s32)((const char *)q));
     i = 0;
     if (r != -1) {
         u32 n = p->numTracks;

@@ -17,6 +17,7 @@
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuBottomButtons.h"
 #include "sys/ProcProfile.h"
+#include "player/PlayerData.h"
 
 class CatalogMenu;
 
@@ -1241,7 +1242,7 @@ void CatalogMenu::buildFurnitureList() {
         if (r) goto next;
         if (Item_TestInfoFlag3(&id)) {
             tabTotalCounts[0] = tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(PlayerData_getCatalog(h), &id)) {
+            if (Catalog_HasItem(((PlayerData *)(h))->getCatalog(), &id)) {
                 *(u16 *)((u8 *)this + n * 2 + 0x708) = cur;
                 n++;
             }
@@ -1307,7 +1308,7 @@ s32 CatalogMenu::collectCataloguedFurniture(u16 *out, u16 start, s32 n, s32 off)
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
             q->tabTotalCounts[0] = q->tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(PlayerData_getCatalog(p), &tmp)) {
+            if (Catalog_HasItem(((PlayerData *)(p))->getCatalog(), &tmp)) {
                 out[cnt] = start;
                 cnt++;
             }
@@ -1327,7 +1328,7 @@ s32 CatalogMenu::collectCatalogued(u16 *out, u16 start, s32 n, s32 off) {
         tmp = start;
         if (Item_TestInfoFlag3(&tmp)) {
             q->tabTotalCounts[0] = q->tabTotalCounts[0] + 1;
-            if (Catalog_HasItem(PlayerData_getCatalog(p), &tmp)) {
+            if (Catalog_HasItem(((PlayerData *)(p))->getCatalog(), &tmp)) {
                 out[cnt] = start;
                 cnt++;
             }

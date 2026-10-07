@@ -1,5 +1,7 @@
 #include "types.h"
 #include "town/TownBlockMap.h"
+#include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
 
 extern u8 sInsectSpawnDecSlot3[8];
 extern u8 sInsectSpawnFebSlot2[8];
@@ -113,23 +115,18 @@ void *PlayerData_Get(s32 i);
 }
 
 extern "C" {
-void *_ZN10PlayerData12getInventoryEv(void *p);
 }
 
 extern "C" {
-s32 _ZN15PlayerInventory14getPocketFlagsEi(void *p, s32 i);
 }
 
 extern "C" {
-u16 *_ZN15PlayerInventory9getPocketEi(void *p, s32 i);
 }
 
 extern "C" {
-void _ZN15PlayerInventory9setPocketEPtij(void *p, u16 *v, s32 i, s32 z);
 }
 
 extern "C" {
-void *_ZN10PlayerData10getCatalogEv(void *p);
 }
 
 extern "C" {
@@ -375,13 +372,13 @@ extern "C" void Save_ConvertFakePaintings() {
         m = PlayerData_Get(k);
         if (m) {
             for (j = 0; j < 15; j++) {
-                s32 s = _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData12getInventoryEv(m), j);
-                t[0] = *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(m), j);
+                s32 s = ((PlayerInventory *)(((PlayerData *)(m))->getInventory()))->getPocketFlags(j);
+                t[0] = *((PlayerInventory *)(((PlayerData *)(m))->getInventory()))->getPocket(j);
                 Item_ConvertFakePainting(&t[1], &t[0]);
                 u16 *pb = &t[0];
                 if (!Unk_02060e3c_Eq(&t[1], pb) && s == 0) {
-                    _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(m), &t[1], j, 0);
-                    Catalog_AddItem(_ZN10PlayerData10getCatalogEv(m), &t[1], 0);
+                    ((PlayerInventory *)(((PlayerData *)(m))->getInventory()))->setPocket(&t[1], j, 0);
+                    Catalog_AddItem(((PlayerData *)(m))->getCatalog(), &t[1], 0);
                 }
             }
         }

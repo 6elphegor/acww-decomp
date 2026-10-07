@@ -25,6 +25,12 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
+#include "game/Unk_0201acf8.h"
+#include "npc/NpcLookAt.h"
+#include "npc/NpcMoveAnimSet.h"
+#include "npc/NpcMoveCtrl.h"
+#include "player/PlayerData.h"
+#include "talk/ChoiceList.h"
 
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -350,8 +356,8 @@ extern "C" void SpNpcPete_ChangeAct(void *self, s32 state) {
 
 BOOL SpNpcPete::setupAct00() {
     NpcLookAt_setTarget(&lookAt, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
-    NpcActionCtrl_requestPlayAnim(&actionCtrl, 1, 0xef, 1, data_020c6cc8, 0);
-    NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xef);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xef, 1, data_020c6cc8, 0);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xef);
     return TRUE;
 }
 
@@ -381,9 +387,9 @@ BOOL SpNpcPete::mainAct04() {
 
 BOOL SpNpcPete::setupAct05() {
     moveTimer = 0;
-    NpcActionCtrl_requestAction(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    NpcFootstepFx_enableFootsteps(&footstepFx);
-    NpcFootstepFx_enableFootsteps(&footstepFx);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     NpcLookAt_setTarget(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
@@ -469,35 +475,35 @@ BOOL SpNpcPete::findSidestepPos(VecFx32 *out, void *p) {
 BOOL SpNpcPete::steerAroundObstacle() {
     void *a = &actionCtrl;
     void *b = &moveCtrl;
-    s32 r6 = NpcLookAt_getObstacleBits(&obstacleProbe);
+    s32 r6 = ((NpcLookAt *)(&obstacleProbe))->getObstacleBits();
     BOOL r = FALSE;
     VecFx32 t;
-    if (NpcMoveCtrl_hasArrived(b, this, 1) == 0) {
+    if (((NpcMoveCtrl *)(b))->hasArrived((Character *)(this), 1) == 0) {
         switch (r6) {
         case 3:
-            NpcActionCtrl_requestAction(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(a))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             r = TRUE;
             break;
         case 1:
             if (findSidestepPos(&t, &sSpNpcPeteSidestepOffsets[1])) {
-                NpcMoveCtrl_setDestination(b, &t);
+                ((NpcMoveCtrl *)(b))->setDestination((VecFx32 *)(&t));
             } else {
-                NpcActionCtrl_requestAction(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(a))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         case 2:
             if (findSidestepPos(&t, &sSpNpcPeteSidestepOffsets[0])) {
-                NpcMoveCtrl_setDestination(b, &t);
+                ((NpcMoveCtrl *)(b))->setDestination((VecFx32 *)(&t));
             } else {
-                NpcActionCtrl_requestAction(a, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(a))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         }
     } else {
-        if (NpcMoveCtrl_hasNextLeg(b)) {
-            NpcMoveCtrl_resetDestination(b);
+        if (((NpcMoveCtrl *)(b))->hasNextLeg()) {
+            ((NpcMoveCtrl *)(b))->resetDestination();
         }
     }
     return r;
@@ -519,8 +525,8 @@ BOOL SpNpcPete::mainAct05() {
     Math_CountDownU8(&moveTimer);
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
-            if (NpcActionCtrl_isActionDone(r4) != 0) {
-                if (Unk_0201acf8_getLevel(&unk_3aa) == 2) {
+            if (((NpcActionCtrl *)(r4))->isActionDone() != 0) {
+                if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
                     Unk_ov075_0227188c_CallA();
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     VecFx32 a;
@@ -534,10 +540,10 @@ BOOL SpNpcPete::mainAct05() {
                             if (Random_GlobalBelow(4) == 0) {
                                 r6 = 2;
                             }
-                            NpcActionCtrl_requestAction(r4, r6, 1, a.x, a.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                            ((NpcActionCtrl *)(r4))->requestAction(r6, 1, a.x, a.z, 0, 0, 0, 0, data_020c6cc8, 0);
                             moveTimer = 100;
                         } else {
-                            NpcActionCtrl_requestAction(r4, 4, 1, a.x, a.z, 0, r6, 0, 0, data_020c6cc8, 0);
+                            ((NpcActionCtrl *)(r4))->requestAction(4, 1, a.x, a.z, 0, r6, 0, 0, data_020c6cc8, 0);
                             moveTimer = 80;
                         }
                     } else {
@@ -548,12 +554,12 @@ BOOL SpNpcPete::mainAct05() {
                 }
             } else {
                 if (speed != 0) {
-                    if (NpcActionCtrl_getAction(&actionCtrl) == 1 || NpcActionCtrl_getAction(&actionCtrl) == 2 || NpcActionCtrl_getAction(&actionCtrl) == 4) {
+                    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 2 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 4) {
                         if (moveTimer == 0) {
                             Unk_ov075_0227188c_CallA();
                         } else {
                             VecFx32 b;
-                            VecFx32 *q = NpcMoveCtrl_getDestination(&moveCtrl);
+                            VecFx32 *q = ((NpcMoveCtrl *)(&moveCtrl))->getDestination();
                             b.x = q->x;
                             b.y = q->y;
                             b.z = q->z;
@@ -577,9 +583,9 @@ BOOL SpNpcPete::setupAct01() {
         collider.groups &= ~2;
     }
     if (r4 != 0) {
-        r6 = NpcActor_getAngleTo(this, r4);
+        r6 = ((NpcActor *)(this))->getAngleTo((NpcActor *)(r4));
     }
-    NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r6, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r6, 0);
     return TRUE;
 }
 
@@ -589,13 +595,13 @@ BOOL SpNpcPete::mainAct01() {
 
 BOOL SpNpcPete::setupAct02() {
     if (isUp == 0) {
-        NpcTalkCtrl_requestTalk(&talkCtrl, 0, 0);
+        ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(0, 0);
     }
     return TRUE;
 }
 
 BOOL SpNpcPete::mainAct02() {
-    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         SpNpcPete_ChangeAct(this, 3);
     }
@@ -637,29 +643,29 @@ void SpNpcPeteTalk::scriptWakeUp() {
     switch (scriptStep) {
     case 0:
         if (window->state == 5) {
-            NpcActionCtrl_requestPlayAnim(ownerNpc + 0x564, 2, 0xd5, 1, data_020c6cc8, 0);
-            NpcMoveAnimSet_setStandAnim(ownerNpc + 0x2a0, 0);
+            ((NpcActionCtrl *)(ownerNpc + 0x564))->requestPlayAnim(2, 0xd5, 1, data_020c6cc8, 0);
+            ((NpcMoveAnimSet *)(ownerNpc + 0x2a0))->setStandAnim(0);
             scriptStep = scriptStep + 1;
         }
         break;
     case 1:
-        if (NpcAnimCtrl_getAnimId(ownerNpc + 0x334, 0) == 0xd5) {
-            if (NpcActionCtrl_isActionDone(ownerNpc + 0x564) != 0) {
-                u32 r = NpcActor_getAngleToPlayer(ownerNpc, 4);
-                NpcActionCtrl_requestAction(ownerNpc + 0x564, 3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
+        if (((NpcAnimCtrl *)(ownerNpc + 0x334))->getAnimId(0) == 0xd5) {
+            if (((NpcActionCtrl *)(ownerNpc + 0x564))->isActionDone() != 0) {
+                u32 r = ((NpcActor *)(ownerNpc))->getAngleToPlayer(4);
+                ((NpcActionCtrl *)(ownerNpc + 0x564))->requestAction(3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
                 scriptStep = scriptStep + 1;
             }
         }
         break;
     case 2:
-        if (NpcActionCtrl_getAction(ownerNpc + 0x564) == 3) {
-            if (NpcActionCtrl_isActionDone(ownerNpc + 0x564) != 0) {
+        if (((NpcActionCtrl *)(ownerNpc + 0x564))->getAction() == 3) {
+            if (((NpcActionCtrl *)(ownerNpc + 0x564))->isActionDone() != 0) {
                 void *p = PlayerData_GetCurrent();
                 u8 buf[2];
                 ownerNpc[0x714] = 1;
-                ActorTalkRequest_requestReopenWindow(this);
-                if (PlayerData_testFlag(p, 6) == 0) {
-                    PlayerData_setFlag(p, 6);
+                ((ActorTalkRequest *)(this))->requestReopenWindow();
+                if (((PlayerData *)(p))->testFlag(6) == 0) {
+                    ((PlayerData *)(p))->setFlag(6);
                     Talk_CheckAndSetPlayerFlag(0x12, 1);
                     buf[0] = 0x10;
                     window->setNextMessage(buf, (void *)"sp_npc_mpelican");
@@ -687,7 +693,7 @@ void SpNpcPeteTalk::attachOwner(void *owner) {
 void SpNpcPeteTalk::start(TalkStartMsg *out) {
     out->msgIndex = 0x1a;
     if (ownerNpc[0x714] != 0) {
-        if (PlayerData_testFlag(PlayerData_GetCurrent(), 6) != 0) {
+        if (((PlayerData *)(PlayerData_GetCurrent()))->testFlag(6) != 0) {
             out->msgIndex = Random_GlobalBelow(4) + 12;
         }
     }
@@ -697,19 +703,19 @@ void SpNpcPeteTalk::start(TalkStartMsg *out) {
 void SpNpcPeteTalk::onMessageEnd(u32) {
     PlayerData_GetCurrent();
     if (msgIndex == 0x1a) {
-        ActorTalkRequest_requestCloseWindow(this, 0);
+        ((ActorTalkRequest *)(this))->requestCloseWindow(0);
         setScript(1);
     }
 }
 
 void SpNpcPeteTalk::onChoice(u32) {
-    s32 r = ChoiceList_getResult(getChoiceList());
+    s32 r = (getChoiceList())->getResult();
 }
 
 BOOL SpNpcPete::acceptsInteraction(void *) {
     BOOL r = FALSE;
     if (updateEnabled != 0) {
-        if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
+        if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
             r = TRUE;
         }
     }
@@ -724,7 +730,7 @@ void SpNpcPete::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.setTalkPlayer(NpcActor_getPlayerActor(this, 4));
+        talk.setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         if (isUp != 0) {
             SpNpcPete_ChangeAct(this, 1);
         }

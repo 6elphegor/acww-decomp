@@ -5,6 +5,11 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/NumberPad.h"
 #include "sys/ProcProfile.h"
+#include "menu/MenuLauncher.h"
+#include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
+#include "room/HouseData.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -21,8 +26,6 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData14getBankAccountEv(void *self);
-void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 MenuCtrl_GetMode();
 void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
@@ -31,18 +34,11 @@ void MenuCtrl_SetAmount(u32 v);
 void PlayerBank_SetBalance(void *p, s32 v);
 s32 PlayerBank_GetBalance(void *p);
 void PlayerInventory_AddBells(void *p, s32 v, s32 w);
-s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
 s32 PlayerInventory_GetBellsRoom(void *p, s32 v, s32 w);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 
-void _ZN9HouseData7setDebtEi(void *self, s32 v);
-s32 _ZN9HouseData7getDebtEv(void *self);
-s32 _ZN10HandCursor7getAnimEv(void *self);
-s32 _ZN10HandCursor10isAnimDoneEv(void *self);
 void MenuButtons_LoadTextColors(void *self);
-void _ZN12MenuLauncher14setNextRequestEii(void *self, s32 a, s32 b);
-void _ZN12MenuLauncher13onChildClosedEv(void *self);
 
 // ov130 (library overlay) plain functions; first argument is the NumberPad object
 s32 NumberPad_GetValue(void *self);
@@ -158,7 +154,7 @@ BOOL AmountEntryMenu::onCreate() {
 }
 
 BOOL AmountEntryMenu::onDelete() {
-    _ZN12MenuLauncher13onChildClosedEv(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -239,7 +235,7 @@ void AmountEntryMenu::stateOpening() {
 
 void AmountEntryMenu::stateClose() {
     void *r = ProcBase_GetParent(this);
-    _ZN12MenuLauncher14setNextRequestEii(r, 0x44, 1);
+    ((MenuLauncher *)(r))->setNextRequest(0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);
@@ -365,7 +361,7 @@ void AmountEntryMenu::updateCursorMove() {
 }
 
 void AmountEntryMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         if (NumberPad_PressCursorKey(&numberPad)) {
             setMainState(6);
         } else if (NumberPad_IsCursorOnOk(&numberPad)) {
@@ -380,7 +376,7 @@ void AmountEntryMenu::updateCursorPress() {
 }
 
 void AmountEntryMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(returnState);
     }
@@ -398,7 +394,7 @@ void AmountEntryMenu::stateButtonRepeat() {
 
 void AmountEntryMenu::stateExit() {
     if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+        if (((HandCursor *)(&cursor))->getAnim()) {
             s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
             s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
             s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
@@ -509,7 +505,7 @@ void AmountEntryMenu::setupAmounts() {
     s32 lo;
     s32 m = MenuCtrl_GetMode();
     void *p = PlayerData_GetCurrent();
-    void *q = _ZN10PlayerData14getBankAccountEv(p);
+    void *q = ((PlayerData *)(p))->getBankAccount();
     switch (m) {
     case 0x38:
         hi = 0x98967f;
@@ -521,20 +517,20 @@ void AmountEntryMenu::setupAmounts() {
         hi = PlayerBank_GetBalance(q);
         break;
     default:
-        hi = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(p), 1);
+        hi = ((PlayerInventory *)(((PlayerData *)(p))->getInventory()))->getTotalBells(1);
         break;
     }
     lo = 0;
     void *g = gSaveHouse;
     switch (m) {
     case 0x34:
-        lo = _ZN9HouseData7getDebtEv(g);
+        lo = ((HouseData *)(g))->getDebt();
         break;
     case 0x35:
         lo = PlayerBank_GetBalance(q);
         break;
     case 0x36:
-        lo = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(p), 1);
+        lo = ((PlayerInventory *)(((PlayerData *)(p))->getInventory()))->getTotalBells(1);
         break;
     }
     volatile s32 mx = hi;
@@ -552,7 +548,7 @@ void AmountEntryMenu::setupAmounts() {
         break;
     }
     case 0x36: {
-        s32 t = PlayerInventory_GetBellsRoom(_ZN10PlayerData12getInventoryEv(p), 1, 0);
+        s32 t = PlayerInventory_GetBellsRoom(((PlayerData *)(p))->getInventory(), 1, 0);
         if (t < hi) {
             mx = t;
         }
@@ -567,7 +563,7 @@ void AmountEntryMenu::commitAmount() {
     s32 b = NumberPad_GetTopAmount(&numberPad);
     s32 c = NumberPad_GetBottomAmount(&numberPad);
     void *p = PlayerData_GetCurrent();
-    void *q = _ZN10PlayerData14getBankAccountEv(p);
+    void *q = ((PlayerData *)(p))->getBankAccount();
     s32 m = MenuCtrl_GetMode();
     switch (m) {
     case 0x36:
@@ -575,7 +571,7 @@ void AmountEntryMenu::commitAmount() {
         break;
     case 0x37:
     default:
-        PlayerInventory_AddBells(_ZN10PlayerData12getInventoryEv(p), -a, 1);
+        PlayerInventory_AddBells(((PlayerData *)(p))->getInventory(), -a, 1);
         break;
     case 0x38:
     case 0x39:
@@ -584,13 +580,13 @@ void AmountEntryMenu::commitAmount() {
     }
     switch (m) {
     case 0x34:
-        _ZN9HouseData7setDebtEi(gSaveHouse, c - a);
+        ((HouseData *)(gSaveHouse))->setDebt(c - a);
         break;
     case 0x35:
         PlayerBank_SetBalance(q, c + a);
         break;
     case 0x36:
-        PlayerInventory_AddBells(_ZN10PlayerData12getInventoryEv(p), a, 1);
+        PlayerInventory_AddBells(((PlayerData *)(p))->getInventory(), a, 1);
         break;
     }
 }

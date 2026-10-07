@@ -24,33 +24,24 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "talk/SpNpcKatieTalk.h"
 #include "npc/SpNpcKatie.h"
+#include "npc/NpcActionCtrl.h"
+#include "npc/NpcFaceAnim.h"
+#include "npc/NpcLookAt.h"
+#include "npc/NpcMoveAnimSet.h"
+#include "npc/NpcMoveCtrl.h"
+#include "npc/NpcTalkCtrl.h"
+#include "player/PlayerData.h"
+#include "save/LostChildRecord.h"
+#include "talk/ChoiceList.h"
 
 
 class SpNpcKatie;
 
 extern "C" {
-void _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(void *a, void *b);
-void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 s32 Scene_GetCurrent(void);
 s32 Scene_GetPrevious(void);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
-void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
-s32 _ZN13NpcActionCtrl9getActionEv(void *self);
-s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *a, s32 b, s32 c, s32 d, u8 *e, s32 f, s32 g, s32 h);
-void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
-void _ZN14NpcMoveAnimSet12setStandAnimEi(void *a, s32 b);
-void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *a, s32 b);
-s32 _ZN8NpcActor19getDistanceToPlayerEj(void *a, s32 b);
-u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
-s32 _ZN8NpcActor10getAngleToEPS_(void *a, s32 b);
 s32 _ZN16ActorTalkRequest13getTalkPlayerEv(void *a);
-void _ZN16ActorTalkRequest13setTalkPlayerEj(void *a, s32 b);
-s32 _ZN16ActorTalkRequest10onEventTagEj(void *p, void *q);
-void _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(void *p, s32 a);
 void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
-BOOL _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *a, s32 b, void *c);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 void Effect_SetPosition(s32 a, void *b, void *c, s32 d);
 void Effect_End(s32 a);
@@ -69,25 +60,15 @@ void Town_FindGateHouse(void *a, VecFx32 *b, s32 c, s32 d);
 void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 void FieldPos_FromUnitCenter(VecFx32 *a, s32 b, s32 c);
 s32 _ZN10PlayerData18getLostChildRecordEv(void *a);
-BOOL _ZN15LostChildRecord11isEscortingEv(s32 a);
-BOOL _ZN10PlayerData8testFlagEj(void *a, s32 b);
-s32 _ZN10PlayerData7setFlagEj(void *a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *a);
 void TalkRequestFlags_ClearSceneHold(void);
 void TalkRequestFlags_SetSceneHold(void);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *a);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *a, s32 b, s32 c, s32 d);
 BOOL TownMap_FindBuildingAbovePos(VecFx32 *a, s32 b, s32 c, s32 d);
 void TownMap_IsPosWalkable(VecFx32 *a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 BOOL Math_CountDownU16(void *a);
-s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
-void *_ZN15TalkWindowState13getChoiceListEv(void *p);
-s32 _ZN10ChoiceList9getResultEv(void *p);
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
-void _ZN15TalkWindowState11lockAdvanceEv(void *p);
-void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 void PlayerActor_RequestTurnTo(s32 a, s32 b);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
@@ -97,15 +78,11 @@ s32 Net_GetJoiningAid(void);
 s32 PlayerData_GetBySessionSlot(s32 a);
 BOOL SaveManager_IsSessionJoined(void);
 void FieldInfoBalloon_ShowPleaseWait(void);
-BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
-s32 _ZN15LostChildRecord13isKaitlinRoleEv(s32 rec);
-void _ZN15LostChildRecord5clearEv(s32 a);
 void _ZN15KatieVisitState5clearEv(void *a);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32 a, s32 b);
 s32 NpcRegistry_FindSpNpc(s32 a);
 void Camera_SetMode19(void);
-void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
 s32 _ZN15LostChildRecord9getTownIdEv(void *p);
 s32 Random_GlobalBelow(u32 n);
 extern u8 gScreenTransition;
@@ -160,10 +137,10 @@ BOOL SpNpcKatie::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
-    _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
-    _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x333, 0xcc, 0x133);
-    _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x1b3, 0xcc, 0x133);
+    ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(2, 0x333, 0xcc, 0x133);
+    ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(1, 0x1b3, 0xcc, 0x133);
     if (Scene_GetCurrent() == 0xb) {
         rotY = -0x8000;
         moveAngleY = -0x8000;
@@ -177,7 +154,7 @@ BOOL SpNpcKatie::preCreate() {
         moveAngleY = 0;
         position.x = 0xe000;
         position.z = 0x4000;
-        _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x280, 0xcc, 0x133);
+        ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(1, 0x280, 0xcc, 0x133);
     }
     netSyncOff = 1;
     return TRUE;
@@ -209,8 +186,8 @@ BOOL SpNpcKatie::onCreate() {
                 talk.setTopic(5);
                 changeAct(1);
             }
-        } else if (_ZN10PlayerData8testFlagEj(p, 0x33) == 0) {
-            if (_ZN10PlayerData8testFlagEj(p, 0x31) == 0) {
+        } else if (((PlayerData *)(p))->testFlag(0x33) == 0) {
+            if (((PlayerData *)(p))->testFlag(0x31) == 0) {
                 talk.setTopic(0);
             } else {
                 talk.setTopic(1);
@@ -268,7 +245,7 @@ BOOL SpNpcKatie::updateAct() {
         _ZN15KatieVisitState6setPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
     }
     if (Scene_GetCurrent() == 0xb) {
-        if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()))) {
+        if (((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->isEscorting()) {
             _ZN15KatieVisitState6setPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
         }
     }
@@ -276,7 +253,7 @@ BOOL SpNpcKatie::updateAct() {
 }
 
 BOOL SpNpcKatie::acceptsInteraction(void *) {
-    return _ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0;
+    return ((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0;
 }
 
 void SpNpcKatie::onInteractionEvent(u32 state, u8) {
@@ -284,7 +261,7 @@ void SpNpcKatie::onInteractionEvent(u32 state, u8) {
     case 0:
     case 1:
         talk.resetMsg();
-        _ZN16ActorTalkRequest13setTalkPlayerEj(&talk, _ZN8NpcActor14getPlayerActorEj(this, 4));
+        ((ActorTalkRequest *)(&talk))->setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         if (talk.getTopic() != 6) {
             changeAct(3);
         }
@@ -319,8 +296,8 @@ void SpNpcKatie::changeAct(s32 state) {
 
 BOOL SpNpcKatie::setupAct00() {
     collider.groups |= 2;
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -331,8 +308,8 @@ BOOL SpNpcKatie::mainAct00() {
 BOOL SpNpcKatie::setupAct01() {
     VecFx32 a, b;
     collider.groups |= 2;
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x53, 1, data_020c6cc8, 0);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x53, 1, data_020c6cc8, 0);
     Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
     FieldPos_SnapToUnitCenter(&b, (VecFx32 *)&position);
     if (b.z < a.z) {
@@ -345,10 +322,10 @@ BOOL SpNpcKatie::setupAct01() {
 }
 
 BOOL SpNpcKatie::mainAct01() {
-    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0x53, &moveAnimSet) && _ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-        _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0x54);
-        _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0x54);
+    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0x53, &moveAnimSet) && ((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+        ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0x54);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0x54);
     }
     if (effectHandle == -1) {
         effectHandle = Effect_Create(0x54, &jointPos[0], &rotY, 0);
@@ -360,37 +337,37 @@ BOOL SpNpcKatie::mainAct01() {
 }
 
 BOOL SpNpcKatie::setupAct02() {
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xab, 1, data_020c6cc8, 0);
+    ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xab, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcKatie::mainAct02() {
     collider.groups |= 2;
-    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0xab, &moveAnimSet) && _ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-        _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xac);
-        _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xac);
+    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0xab, &moveAnimSet) && ((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+        ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xac);
+        ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0xac);
     }
     return TRUE;
 }
 
 BOOL SpNpcKatie::setupAct03() {
     s32 p, r4;
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
     p = _ZN16ActorTalkRequest13getTalkPlayerEv(&talk);
     r4 = 0;
     if (p != 0) {
-        r4 = _ZN8NpcActor10getAngleToEPS_(this, p);
+        r4 = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xac);
-    _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xac);
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, r4, 0);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setStandAnim(0xac);
+    ((NpcMoveAnimSet *)(&moveAnimSet))->setWalkAnim(0xac);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r4, 0);
     return TRUE;
 }
 
 BOOL SpNpcKatie::mainAct03() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(7);
     }
@@ -451,14 +428,14 @@ BOOL SpNpcKatie::mainAct05() {
     if (q == NULL) {
         return TRUE;
     }
-    t = _ZN8NpcActor19getDistanceToPlayerEj(this, 4);
-    if ((Scene_GetCurrent() == 0 || (Scene_GetCurrent() == 0xc && _ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(p)) == 0)) && _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2) {
+    t = ((NpcActor *)(this))->getDistanceToPlayer(4);
+    if ((Scene_GetCurrent() == 0 || (Scene_GetCurrent() == 0xc && ((LostChildRecord *)(((PlayerData *)(p))->getLostChildRecord()))->isEscorting() == 0)) && ((NpcActionCtrl *)(&actionCtrl))->getAction() == 2) {
         s32 v, d2;
         if (t > 0x6000) {
             changeAct(6);
             return TRUE;
         }
-        v = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
+        v = ((NpcLookAt *)(&obstacleProbe))->getObstacleBits();
         d2 = Vec_DistXZ(&prevPos, &position);
         prevPos = *(VecFx32 *)&position;
         if (d2 <= 0x29 || v != 0) {
@@ -471,12 +448,12 @@ BOOL SpNpcKatie::mainAct05() {
         }
     }
     if (t > 0x2800) {
-        if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 2) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() != 2) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(2, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
-        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, q);
-    } else if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 0) {
-        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        ((NpcMoveCtrl *)(&moveCtrl))->setWaypoint((VecFx32 *)(q));
+    } else if (((NpcActionCtrl *)(&actionCtrl))->getAction() != 0) {
+        ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     }
     return TRUE;
 }
@@ -485,7 +462,7 @@ BOOL SpNpcKatie::setupAct06() {
     if (Scene_GetCurrent() == 0) {
         _ZN15KatieVisitState14clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
     }
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x122, 1, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x122, 1, data_020c6cc8, 0);
     talk.setTopic(4);
     Snd_SeEmitterPlayOneShot(&seEmitter, 0x7db, 0x7f, 0);
     return TRUE;
@@ -494,7 +471,7 @@ BOOL SpNpcKatie::setupAct06() {
 BOOL SpNpcKatie::mainAct06() {
     VecFx32 v;
     s16 a;
-    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0x122, &moveAnimSet)) {
+    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0x122, &moveAnimSet)) {
         a = rotY;
         VecFx32 *src = (VecFx32 *)&position;
         v = *src;
@@ -504,12 +481,12 @@ BOOL SpNpcKatie::mainAct06() {
         if ((((u32)model.curFrame << 4) >> 16) == 9) {
             Effect_Create(0x38, &v, &a, 0);
         }
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x123, 1, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0x123, 1, data_020c6cc8, 0);
         }
     }
-    if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0x123, &moveAnimSet)) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+    if (((NpcAnimCtrl *)(&animCtrl))->isPlayingAnim(0x123, &moveAnimSet)) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             changeAct(1);
         }
     }
@@ -540,77 +517,77 @@ BOOL SpNpcKatie::mainAct08() {
     case 1:
         vec30 = sSpNpcKatieReunionWalkPos;
         PlayerActor_RequestWalkTo(&vec30, 0x35c, r5);
-        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
+        ((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
         reunionStep = 2;
         break;
     case 2:
         if (PlayerActor_IsScriptedWalking(r5)) {
             break;
         }
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             reunionStep = 3;
             talk.setTopic(6);
-            _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 0, 1);
+            ((NpcLookAt *)(&lookAt))->setTarget(0, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(0, 1);
         }
         break;
     case 3:
         if (talk.window->state == 5) {
-            _ZN15TalkWindowState11lockAdvanceEv(talk.window);
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((TalkWindowState *)(talk.window))->lockAdvance();
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
             SpNpcKaitlin_ChangeAct04();
             Camera_SetMode19();
             reunionStep = 4;
         }
         break;
     case 4:
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, (VecFx32 *)(gVec3Zero), 4, data_020c6d1c, 1);
             s32 t = NpcRegistry_FindSpNpc(0x23);
             if (t) {
-                _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(&talk, t);
+                ((ActorTalkRequest *)(&talk))->setPartnerActor((NpcActor *)(t));
             }
             buf = 10;
             _ZN15TalkWindowState14setNextMessageEPhPv(talk.window, &buf, (u32)sSpNpcKatieMsgKey);
             talk.window->nextState = 1;
-            _ZN15TalkWindowState13unlockAdvanceEv(talk.window);
+            ((TalkWindowState *)(talk.window))->unlockAdvance();
             reunionStep = 5;
         }
         break;
     case 5:
-        if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+        if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
             vec24.x = 0xde00;
             vec24.y = 0;
             vec24.z = 0x13a00;
             s32 t = Math_AngleXZ(&position, &vec24);
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
             reunionStep = 6;
         }
         break;
     case 6:
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xde00, 0x13a00, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, 0xde00, 0x13a00, 0, 0, 0, 0, data_020c6cc8, 0);
             PlayerActor_RequestTurnTo(0, r5);
             SpNpcKaitlin_ChangeAct06();
             reunionStep = 7;
         }
         break;
     case 7:
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             reunionStep = 8;
         }
         break;
     case 8:
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xf000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(1, 1, 0xf000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
             reunionStep = 9;
         }
         break;
     case 9:
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             if (r5 != r6 && !SaveManager_IsSessionJoined()) {
                 FieldInfoBalloon_ShowPleaseWait();
                 break;
@@ -619,20 +596,20 @@ BOOL SpNpcKatie::mainAct08() {
         }
         break;
     case 10:
-        if (_ZN11CommManager7isMyAidEj(r7, 0)) {
+        if ((r7)->isMyAid(0)) {
             s32 x = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
-            if (_ZN15LostChildRecord13isKaitlinRoleEv(x) == 1) {
-                _ZN15LostChildRecord5clearEv(x);
+            if (((LostChildRecord *)(x))->isKaitlinRole() == 1) {
+                ((LostChildRecord *)(x))->clear();
             }
-            _ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 0x39);
-            _ZN15LostChildRecord5clearEv(_ZN10PlayerData18getLostChildRecordEv((void *)s));
+            ((PlayerData *)(PlayerData_GetCurrent()))->setFlag(0x39);
+            ((LostChildRecord *)(((PlayerData *)((void *)s))->getLostChildRecord()))->clear();
             _ZN15KatieVisitState5clearEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         }
         if (r5 == r6) {
-            _ZN15LostChildRecord5clearEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
+            ((LostChildRecord *)(((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord()))->clear();
             _ZN15KatieVisitState5clearEv(TownSessionState_GetKatieState(TownSessionState_Get()));
-            _ZN10PlayerData7setFlagEj(PlayerData_GetCurrent(), 0x31);
+            ((PlayerData *)(PlayerData_GetCurrent()))->setFlag(0x31);
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         } else {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
@@ -662,9 +639,9 @@ s32 SpNpcKatieTalk::getTopic() {
 
 void SpNpcKatieTalk::onEventTag(u32 p_) {
     void *p = (void *)p_;
-    _ZN14NpcMoveAnimSet12setStandAnimEi(&katie->moveAnimSet, 0);
-    _ZN14NpcMoveAnimSet11setWalkAnimEi(&katie->moveAnimSet, 1);
-    _ZN16ActorTalkRequest10onEventTagEj(this, p);
+    ((NpcMoveAnimSet *)(&katie->moveAnimSet))->setStandAnim(0);
+    ((NpcMoveAnimSet *)(&katie->moveAnimSet))->setWalkAnim(1);
+    ((ActorTalkRequest *)(this))->ActorTalkRequest::onEventTag((u32)(p));
 }
 
 void SpNpcKatieTalk::start(TalkStartMsg *out_) {
@@ -673,11 +650,11 @@ void SpNpcKatieTalk::start(TalkStartMsg *out_) {
     out->msgKey = (const char *)sSpNpcKatieMsgKey;
     switch (getTopic()) {
     case 0:
-        _ZN10PlayerData7setFlagEj(t, 0x33);
+        ((PlayerData *)(t))->setFlag(0x33);
         out->msgIndex = 0;
         break;
     case 1:
-        _ZN10PlayerData7setFlagEj(t, 0x33);
+        ((PlayerData *)(t))->setFlag(0x33);
         out->msgIndex = Random_GlobalBelow(3) + 1;
         break;
     case 2:
@@ -718,7 +695,7 @@ void SpNpcKatieTalk::onChoice(u32) {
     case 25: case 26: case 27:
     case 34: case 35: case 36: {
         u8 v[2];
-        switch (_ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(window))) {
+        switch (((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult()) {
         case 0:
             v[0] = Random_GlobalBelow(3) + 0x1c;
             _ZN15TalkWindowState14setNextMessageEPhPv(window, &v[0], (u32)sSpNpcKatieMsgKey);
@@ -744,7 +721,7 @@ void SpNpcKatieTalk::onChoice(u32) {
 extern "C" BOOL SpNpcKatie_IsIdle() {
     SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
-        if (_ZN11NpcFaceAnim12getMouthAnimEv(&p->faceAnim) == 0xba && sSpNpcKatieInstance->act == 0) {
+        if (((NpcFaceAnim *)(&p->faceAnim))->getMouthAnim() == 0xba && sSpNpcKatieInstance->act == 0) {
             return TRUE;
         }
         return FALSE;

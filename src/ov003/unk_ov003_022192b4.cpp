@@ -33,6 +33,12 @@ typedef u32 FileBufSlot;
 #include "actor/Actor.h"
 #include "gfx/SPLResource.h"
 #include "game/GroundInfoBase.h"
+#include "game/GroundInfo.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "player/PlayerData.h"
+#include "sys/Heap.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -3087,12 +3093,12 @@ FieldItemFx::FieldItemFx()
 {
     unitX = 0;
     unitZ = 0;
-    SndSeEmitter_ctor(seEmitter);
+    new (seEmitter) SndSeEmitter();
 }
 
 FieldItemFx::~FieldItemFx()
 {
-    SndSeEmitter_dtor(seEmitter);
+    ((SndSeEmitter *)(seEmitter))->SndSeEmitter::~SndSeEmitter();
 }
 
 FieldItemFxTable::~FieldItemFxTable() {}
@@ -4161,7 +4167,7 @@ BOOL FieldObj_LoadDesignModels(Obj *o) {
     u32 j;
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 8; j++) {
-            if (!CachedModel_loadWithSharedTex(p, (u8 *)"/fg/obj_myD.nsbmd", i, j)) {
+            if (!((CachedModel *)(p))->loadWithSharedTex((u8 *)"/fg/obj_myD.nsbmd", (void *)(i), (void *)(j))) {
                 return FALSE;
             }
             p++;
@@ -4702,7 +4708,7 @@ extern "C" void FieldObj_DrawModel(O *o, M *p, Blk m)
 {
     if (p != NULL) {
         *(Blk *)p->unk_64 = m;
-        Model_drawShapesDirect(p, 0);
+        ((Model *)(void *)(p))->drawShapesDirect((s32 *)(0));
         volatile u16 a = SceneLights_GetRoomColor();
         volatile u16 b = a;
         NNS_G3dMdlSetMdlEmiAll((u32)p->resMdl, b);
@@ -4889,7 +4895,7 @@ BOOL FieldObjectManager::onDelete() {
     FieldItemFxTable_Release(sFieldItemFxTable);
     PendingUnits_Flush();
     if (sFieldObjectModelHeap != 0) {
-        Heap_destroy(sFieldObjectModelHeap);
+        ((Heap *)(sFieldObjectModelHeap))->destroy();
         sFieldObjectModelHeap = 0;
     }
     if (sFieldObjectAnimHeap != 0) {
@@ -5511,10 +5517,10 @@ namespace ns_0221c220 {
 extern "C" {
 Elem2 *TreeAnim_Construct(Elem2 *self) {
     s32 *p;
-    func_020548d0(self->animModel);
+    new (self->animModel) AnimModel();
     self->unit.x = 0;
     self->unit.z = 0;
-    SndSeEmitter_ctor(self->seEmitter);
+    new (self->seEmitter) SndSeEmitter();
     p = self->unk_120;
     do {
         p[0] = 0;
@@ -5561,8 +5567,8 @@ Big *_ZN11TreeAnimSetD1Ev(Big *self) {
 namespace ns_0221c220 {
 extern "C" {
 Elem2 *TreeAnim_Destruct(Elem2 *self) {
-    SndSeEmitter_dtor(self->seEmitter);
-    func_020548a0(self->animModel);
+    ((SndSeEmitter *)(self->seEmitter))->SndSeEmitter::~SndSeEmitter();
+    ((AnimModel *)(self->animModel))->AnimModel::~AnimModel();
     return self;
 }
 }
@@ -5830,8 +5836,8 @@ void TreeAnim_Init(TreeAnim *o) {
     CachedModel_allocJointRecord(o->animModel, sFieldObjectAnimHeap);
     AnimModel_allocAnmObj(o->animModel, sFieldObjectAnimHeap);
     o->animKind = 8;
-    Model_setCallback(o->animModel, (void *)TreeAnim_ModelCallback, 2, 2, o, 0);
-    SndSeEmitter_callInit(o->seEmitter);
+    ((Model *)(o->animModel))->setCallback((s32)((void *)TreeAnim_ModelCallback), 2, 2, (s32)(o), 0);
+    ((SndSeEmitter *)(o->seEmitter))->callInit();
     TreeAnim_Reset(o);
 }
 }
@@ -5841,8 +5847,8 @@ namespace ns_0221b8bc {
 extern "C" {
 void TreeAnim_Update(TreeAnim *o) {
     if (o->active == 1) {
-        AnimModel_stepAnim(o->animModel);
-        if (AnimFrameCtrl_isFinished(o->frameCtrl)) {
+        ((AnimModel *)(o->animModel))->stepAnim();
+        if (((AnimFrameCtrl *)(o->frameCtrl))->isFinished()) {
             TreeAnim_Reset(o);
         } else {
             s32 r5 = 0;
@@ -5973,7 +5979,7 @@ void TreeAnim_Update(TreeAnim *o) {
         v3.x = o->posX;
         v3.y = o->posY;
         v3.z = o->posZ;
-        SndSeEmitter_callUpdateRelative(o->seEmitter, &v3);
+        ((SndSeEmitter *)(o->seEmitter))->callUpdateRelative(&v3);
     }
     o->playMode = 1;
 }
@@ -5990,7 +5996,7 @@ void TreeAnim_Draw(TreeAnim *o) {
         Mtx43_SetTranslate(&data_021f47e0, v.x, v.y, v.z);
         Mtx43_RotateX(&data_021f47e0, r);
         o->baseMatrix = data_021f47e0;
-        AnimModel_drawAnimated(o->animModel, 0);
+        ((AnimModel *)(o->animModel))->drawAnimated((void *)(0));
         l.a = SceneLights_GetRoomColor();
         l.b = l.a;
         NNS_G3dMdlSetMdlEmi(o->resMdl, 0, l.b);
@@ -6003,8 +6009,8 @@ namespace ns_0221b8bc {
 extern "C" {
 void TreeAnim_Release(TreeAnim *o) {
     TreeAnim_Reset(o);
-    CachedModel_release(o->animModel);
-    SndSeEmitter_callStop(o->seEmitter);
+    ((CachedModel *)(o->animModel))->release();
+    ((SndSeEmitter *)(o->seEmitter))->callStop();
 }
 }
 }
@@ -6150,7 +6156,7 @@ void Tree_DropBeeHive(TreeAnim *o, s32 *p) {
     Unk_ov003_0221b8bc_V3D c;
     VecFx32 e;
     VecFx32 d;
-    if (CommManager_isOnline(gCommManager) == 0 && PlayerData_testFlag(PlayerData_GetCurrent(), 1) == 0) {
+    if (CommManager_isOnline(gCommManager) == 0 && ((PlayerData *)(PlayerData_GetCurrent()))->testFlag(1) == 0) {
         FieldPos_FromUnitCenter(&b, p[0], p[1]);
         VecFx32 *t = data_ov003_0223291c[0];
         t = t + Tree_GetDropSide(o, &b);
@@ -6246,9 +6252,9 @@ extern "C" s32 TreeAnim_Start(TreeAnim *self, s32 a, P2 p, s32 kind, s32 idx, s3
     BOOL f = TRUE;
     u8 *tbl = gFieldObjectManager + 0x696c;
     if (kind == 2) f = FALSE;
-    BlendAnimModel_initAnim(&self->animModel, *(s32 *)(tbl + kind * 16 + 0x80 + idx * 4), f, 0x1000, 0, 0);
+    ((BlendAnimModel *)(&self->animModel))->initAnim(*(s32 *)(tbl + kind * 16 + 0x80 + idx * 4), f, 0x1000, 0, 0);
     if (self->animKind == 8) {
-        AnimModel_attachAnim(&self->animModel);
+        ((AnimModel *)(&self->animModel))->attachAnim();
     }
     self->animKind = kind;
     self->sessionSlot = a;
@@ -7081,7 +7087,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
 {
     GroundInfoBase b;
     VecFx32 v;
-    GroundInfo_initAtPos(&b, &self->posX, 0, 0);
+    ((GroundInfo *)(void *)(&b))->initAtPos((VecFx32 *)(&self->posX), 0, 0);
     if (b.waterKind != 0) {
         if (self->step == 0) {
             VEC_Add(&self->posX, &self->velocityX, &self->posX);
@@ -7134,7 +7140,7 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                 Sky_EndBalloonDrop();
                 if (self->timer == 0) {
                     if (self->item == 0x137b) {
-                        PlayerData_setFlag(PlayerData_GetCurrent(), 0x30);
+                        ((PlayerData *)(PlayerData_GetCurrent()))->setFlag(0x30);
                     }
                     Field_SetUnitItem(self->unitX, self->unitZ, self->item, 0);
                 }
@@ -7180,7 +7186,7 @@ void FieldItemFxTable_Init(Tbl *t) {
     for (i = 0; i < 20; e++, i++) {
         e->active = 0;
         e->item = 0xfff1;
-        SndSeEmitter_callInit(e->seEmitter);
+        ((SndSeEmitter *)(e->seEmitter))->callInit();
     }
 }
 }
@@ -7242,7 +7248,7 @@ void FieldItemFxTable_Update(Tbl *t) {
             tmp.x = e->pos.x;
             tmp.y = e->pos.y;
             tmp.z = e->pos.z;
-            SndSeEmitter_callUpdateRelative(e->seEmitter, &tmp);
+            ((SndSeEmitter *)(e->seEmitter))->callUpdateRelative((VecFx32 *)(&tmp));
         }
     }
 }
@@ -7372,7 +7378,7 @@ void FieldItemFxTable_Release(Tbl *t) {
         if (e->active != 0) {
             FieldItemFx_Finish(e);
         }
-        SndSeEmitter_callStop(e->seEmitter);
+        ((SndSeEmitter *)(e->seEmitter))->callStop();
     }
 }
 }
@@ -7692,7 +7698,7 @@ extern "C" s32 FieldItemFx_StartBalloonDrop(s32 a, s32 n)
     }
     CommManager *g = gCommManager;
     s32 r;
-    if (CommManager_isOnline(g)) {
+    if ((g)->isOnline()) {
         r = g->myAid;
     } else {
         r = 0;

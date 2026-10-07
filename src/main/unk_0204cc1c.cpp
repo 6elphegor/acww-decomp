@@ -17,6 +17,10 @@
 #include "town/TownState.h"
 #include "town/TownUnitShapeQuery.h"
 #include "town/SceneMapModule.h"
+#include "game/StrBSizeData.h"
+#include "net/CommManager.h"
+#include "npc/VillagerDataItemView.h"
+#include "sys/Heap.h"
 
 
 
@@ -216,8 +220,6 @@ void *Heap_AllocTail(void *heap, s32 size);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(u32 v);
 u32 SaveVillagers_Get(u32 *a, s32 b);
-s32 _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(u32 h, s32 *a, s32 *b);
-u32 _ZN20VillagerDataItemView13getInfo28ItemEv(u32 h);
 void Villager_ResolveRoomLayout(u32 h, void *p);
 void File_ReadRangeByPath(u32 a, void *dst, s32 size, s32 off);
 void *File_LoadAlloc(u32 a, void *heap, s32 b, s32 *sizeOut);
@@ -237,16 +239,11 @@ void RoomBclHeap_Create(s32 x);
 u32 SceneId_GetHouseRoom(u32 v);
 s32 HouseData_IsValidRoomIndex(s32 i);
 u16 *_ZN7TownMap12getAcreItemsEP4Vec2(void *t, s32 *idx);
-void _ZN7TownMap5clearEv(void *t);
 void Town_GenerateAcres(void *t);
 extern void *gTownBclHeap;
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 _ZN7TownMap15removeStructureEiiPt(u32 a, u32 b, u32 c, u32 d);
-s32 _ZN7TownMap12putStructureEPtii(u32 a, u32 b, u32 c, u32 d);
 void *StrBSize_Get(u16 *t);
-u32 _ZN12StrBSizeData16getTriangleCountEv(void *h);
-s32 _ZN12StrBSizeData11getTriangleEPiS0_S0_j(void *h, VecFx32 *a, VecFx32 *b, VecFx32 *c, u32 i);
 s32 FX_Div(s32 a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
 void MapBlock_Init(void *a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 *i, s32 j);
@@ -271,11 +268,6 @@ BOOL Item_IsNormalItem(u16 *p);
 void LostAndFound_Add(u16 v);
 s32 FieldStructureMgr_Get();
 BOOL FieldStructureMgr_SpawnBuilding(s32 a, void *b, s32 x, s32 y, s32 f);
-u32 _ZN12StrBSizeData21getFootprintUnitCountEv(void *h);
-u32 _ZN12StrBSizeData17getClearUnitCountEv(void *h);
-BOOL _ZN12StrBSizeData16getFootprintUnitEPiS0_j(void *h, s32 *dx, s32 *dy, u32 i);
-BOOL _ZN12StrBSizeData12getClearUnitEPiS0_j(void *h, s32 *dx, s32 *dy, u32 i);
-BOOL _ZN11CommManager8isOnlineEv(void *g);
 BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
 s32 Item_GetStumpSize(u16 *p);
@@ -518,9 +510,6 @@ static inline BOOL Unk_0204e51c_InRange(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-inline void *operator new(size_t, void *p) {
-    return p;
-}
 
 static inline TownBlockCell *Unk_0204e858_GetCell(Unk_0204e858_Grid *g, u32 x, u32 y) {
     if (x < g->width && y < g->height && g->blocks != NULL) {
@@ -857,13 +846,13 @@ BOOL TownMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile 
     }
     if (Unk_0204e51c_InRange(b, 0x5000, 0x5021)) h = StrBSize_Get(b);
     if (h) {
-        cnt = _ZN12StrBSizeData21getFootprintUnitCountEv(h);
+        cnt = ((StrBSizeData *)(h))->getFootprintUnitCount();
         i = 0;
         gx = x;
         gy = y;
         g = gCommManager;
         for (; i < cnt; i++) {
-            if (_ZN12StrBSizeData16getFootprintUnitEPiS0_j(h, &dx, &dy, i)) {
+            if (((StrBSizeData *)(h))->getFootprintUnit(&dx, &dy, i)) {
                 px = gx + dx;
                 py = gy + dy;
                 hx = px >> 4;
@@ -871,7 +860,7 @@ BOOL TownMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile 
                 cell = (u16 *)Ns_0204debc::BlockMap_GetItemPtr(this, hx, hy, px - (hx << 4), py - (hy << 4), 0);
                 if (cell) {
                     if (Item_IsFurniture(cell) || Item_IsNormalItem(cell)) {
-                        if (!_ZN11CommManager8isOnlineEv(g)) LostAndFound_Add(*cell);
+                        if (!((CommManager *)(g))->isOnline()) LostAndFound_Add(*cell);
                     } else if (Item_IsSnowman(cell)) {
                         _ZN14SnowmanRecords6removeEj(data_021ed2e6, Item_GetSnowmanIndex(cell));
                     }
@@ -888,9 +877,9 @@ BOOL TownMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile 
             ok = *c == 0xf030;
         }
         if (ok) {
-            cnt2 = _ZN12StrBSizeData17getClearUnitCountEv(h);
+            cnt2 = ((StrBSizeData *)(h))->getClearUnitCount();
             for (j = 0; j < cnt2; j++) {
-                if (_ZN12StrBSizeData12getClearUnitEPiS0_j(h, &dx, &dy, j)) {
+                if (((StrBSizeData *)(h))->getClearUnit(&dx, &dy, j)) {
                     qx = gx + dx;
                     qy = gy + dy;
                     hx = qx >> 4;
@@ -1298,7 +1287,7 @@ extern "C" void TownMap_ApplyAcreLayouts(void *ov, s32 arg) {
 }
 
 extern "C" void TownMap_Generate(TownMap *o, s32 arg) {
-    _ZN7TownMap5clearEv(o);
+    ((TownMap *)(o))->clear();
     o->grassType = Ns_0204d560::Random_GlobalBelow(3);
     do {
         Town_GenerateAcres(o);
@@ -1443,11 +1432,11 @@ extern "C" TownBlockMap *TownBlockMap_Get() {
 }
 
 extern "C" s32 BlockMap_PutStructure(u32 a, u32 b, u32 c, u32 d) {
-    return _ZN7TownMap12putStructureEPtii(a, b, c, d);
+    return ((TownMap *)(a))->putStructure((u16 *)(b), c, d);
 }
 
 extern "C" s32 BlockMap_RemoveStructure(u32 a, u32 b, u32 c, u32 d) {
-    return _ZN7TownMap15removeStructureEiiPt(a, b, c, d);
+    return ((TownMap *)(a))->removeStructure(b, c, (u16 *)(d));
 }
 
 extern "C" s32 BlockMap_RemoveStructureAt(u32 a, s32 b, s32 c, s32 d, s32 e, u32 f) {
@@ -1484,16 +1473,16 @@ extern "C" void BlockMap_FindStructure(u16 *ret, void *m, s32 *pos, s32 *p4, s32
     if (!Unk_0204d560_Chk(t)) {
         h = StrBSize_Get(t);
         if (h) {
-            n = _ZN12StrBSizeData16getTriangleCountEv(h);
+            n = ((StrBSizeData *)(h))->getTriangleCount();
             sx = 0; sz = 0; i = 0;
             for (; i < n; i++) {
                 VecFx32 v1, v2, v3;
-                if (_ZN12StrBSizeData11getTriangleEPiS0_S0_j(h, &v1, &v2, &v3, i)) {
+                if (((StrBSizeData *)(h))->getTriangle((s32 *)(void *)(&v1), (s32 *)(void *)(&v2), (s32 *)(void *)(&v3), i)) {
                     sx += v1.x; sx += v2.x; sx += v3.x;
                     sz += v1.z; sz += v2.z; sz += v3.z;
                 }
             }
-            d = (s32)_ZN12StrBSizeData16getTriangleCountEv(h) * 3 << 12;
+            d = (s32)((StrBSizeData *)(h))->getTriangleCount() * 3 << 12;
             ax = FX_Div(sx, d);
             az = FX_Div(sz, d);
             zz = v.z + az + 0x1000;
@@ -1624,7 +1613,7 @@ extern "C" void HouseRoomMap_Update(RoomBlockMap *p, s32 i) {
 
 extern "C" void HouseRoomMaps_BindBg() {
     s32 i;
-    Heap_freeAll(gRoomBclHeap);
+    ((Heap *)(gRoomBclHeap))->freeAll();
     for (i = 0; i < 5; i++) {
         if (gHouseRoomMaps[i]) HouseRoomMap_BindBg(gHouseRoomMaps[i]);
     }
@@ -1699,7 +1688,7 @@ extern "C" Unk_0204d0f4_Info *VillagerRoom_BuildEntry(u16 *dst, u32 b, void *hea
     if (p) {
         u32 h = SaveVillagers_Get(&gSaveVillagers, b);
         if (h) {
-            p->a = _ZN20VillagerDataItemView13getInfo28ItemEv(h);
+            p->a = ((VillagerDataItemView *)(h))->getInfo28Item();
         } else {
             p->a = 0x1010;
         }
@@ -1719,7 +1708,7 @@ extern "C" BOOL VillagerRoom_LoadLayout(u16 *dst, u32 b, void *heap) {
     y = 0;
     r = FALSE;
     h = SaveVillagers_Get(&gSaveVillagers, b);
-    if (h) _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(h, &x, &y);
+    if (h) ((VillagerDataItemView *)(h))->getRoomLayout(&x, &y);
     if (h) {
         if (FgData_ApplyLayoutGlobal(dst, x, y, heap)) {
             Villager_ResolveRoomLayout(h, dst);
@@ -1980,7 +1969,7 @@ extern "C" void *FgData_ReadLayoutEntries(void *a, s32 *b, s32 c, s32 d, void *h
 extern "C" void *FgData_ReadVillagerLayout(void *a, s32 *b, s32 c, void *d) {
     u32 h = SaveVillagers_Get(&gSaveVillagers, c);
     s32 x = 2, y = 0;
-    if (h && _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(h, &x, &y)) {
+    if (h && ((VillagerDataItemView *)(h))->getRoomLayout(&x, &y)) {
         return FgData_ReadLayoutEntries(a, b, x, y, d);
     }
     return 0;

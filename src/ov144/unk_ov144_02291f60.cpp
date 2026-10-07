@@ -9,6 +9,11 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#include "item/ItemName.h"
+#include "menu/MenuLauncher.h"
+#include "talk/MsgString.h"
+#include "ui/HandCursor.h"
+#include "ui/ScrollKnob.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -333,19 +338,19 @@ BOOL MusicMenu::onCreate() {
 }
 
 BOOL MusicMenu::onDelete() {
-    MenuLauncher_onChildClosed(ProcBase_GetParent(this));
+    ((MenuLauncher *)(ProcBase_GetParent(this)))->onChildClosed();
     releaseResources();
     return TRUE;
 }
 
 BOOL MusicMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&cursor);
+        ((MenuCursorBase *)(&cursor))->drawWrapped();
     }
     if (!testFlags(1)) {
         return FALSE;
     }
-    MenuBottomButtons_drawAt(&bottomButtons, getSlideOffsetY());
+    ((MenuBottomButtons *)(&bottomButtons))->drawAt(getSlideOffsetY());
     u32 p = slideY + 0x60;
     if (scrollMax > 0) {
         scrollKnob.draw();
@@ -421,7 +426,7 @@ void C::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    MenuBottomButtons_setLayoutSingle05(&bottomButtons, 0x65);
+    ((MenuBottomButtons *)(&bottomButtons))->setLayoutSingle05(0x65);
     setTransitionState(1);
 }
 
@@ -436,9 +441,9 @@ void C::stateOpening() {
 void C::stateClose() {
     s32 t = ProcBase_GetParent(this);
     if (testFlags(0x20)) {
-        MenuLauncher_setNextRequest(t, 0x23, 1);
+        ((MenuLauncher *)(t))->setNextRequest(0x23, 1);
     } else {
-        MenuLauncher_setNextRequest(t, 0x44, 1);
+        ((MenuLauncher *)(t))->setNextRequest(0x44, 1);
     }
     beginSubSlideOut(0xa, 0, 0, 0x18);
     updateLayerSlide();
@@ -470,12 +475,12 @@ void C::initMusic() {
     }
     buildSongList();
     findCurrentSong();
-    MenuScrollKnob_show(&scrollKnob);
+    ((MenuScrollKnob *)(&scrollKnob))->show();
 }
 
 void C::releaseResources() {
     resetTextLabels();
-    MenuBottomButtons_freeTexts(&bottomButtons);
+    ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
     BgVramTask_cancel(&screenTasks);
     BgVramTask_cancel(&screenTasks[1]);
 }
@@ -491,7 +496,7 @@ void C::postInputUpdate() {
 
 void C::preStateUpdate() {
     resetTextLabels();
-    MenuBottomButtons_freeTexts(&bottomButtons);
+    ((MenuBottomButtons *)(&bottomButtons))->freeTexts();
     BgVramTask_cancel(&screenTasks);
     BgVramTask_cancel(&screenTasks[1]);
     scrollKnob.update();
@@ -500,7 +505,7 @@ void C::preStateUpdate() {
 void C::postStateUpdate() {
     updateScrollAnimation();
     flushDirty();
-    MenuScrollKnob_updateRelease(&scrollKnob);
+    ((MenuScrollKnob *)(&scrollKnob))->updateRelease();
 }
 
 void C::setupBgLayers() {
@@ -547,7 +552,7 @@ void C::updateTouch() {
             if (tryGrabKnob(x, y)) {
                 setMainState(1);
             } else if (x >= 0xcf && x <= 0xdf && y >= 0x1d && y <= 0x93) {
-                MenuScrollKnob_grab(&scrollKnob);
+                ((MenuScrollKnob *)(&scrollKnob))->grab();
                 knobLastTickPos = knobPos;
                 setMainState(2);
             }
@@ -594,7 +599,7 @@ void C::updateKnobKeys() {
         moveKnobByKey();
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        MenuCursorBase_warpTo(&cursor, a, b);
+        ((MenuCursorBase *)(&cursor))->warpTo(a, b);
     } else {
         releaseKnob();
         setMainState(5);
@@ -608,18 +613,18 @@ void C::updateKnobKeysEnd() {
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&cursor, a, b);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
 }
 
 void C::updateCursorMove() {
-    if (!MenuCursorBase_isMoving(&cursor)) {
+    if (!((MenuCursorBase *)(&cursor))->isMoving()) {
         setMainState(returnState);
         runMainState();
     }
 }
 
 void C::updateCursorPress() {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         if (!activateTarget(cursorSlot)) {
             setMainState(3);
             releaseCursor();
@@ -628,19 +633,19 @@ void C::updateCursorPress() {
 }
 
 void C::updateCursorRelease() {
-    if (HandCursor_isAnimDone(&cursor)) {
+    if (((HandCursor *)(&cursor))->isAnimDone()) {
         refreshCursor();
         setMainState(returnState);
     }
 }
 
 void C::updateBarTransition() {
-    if (MenuBottomButtonsBody_stepPress(&bottomButtons)) {
-        if (HandCursor_getAnim(&cursor)) {
-            s32 a = MenuBottomButtonsBody_getPressOffset(&bottomButtons);
-            s32 b = MenuBottomButtonsBody_getTargetX(&bottomButtons, -1);
-            s32 c = MenuBottomButtonsBody_getTargetY(&bottomButtons, -1);
-            MenuCursorBase_warpTo(&cursor, a + b, a + c);
+    if (((MenuBottomButtonsBody *)(&bottomButtons))->stepPress()) {
+        if (((HandCursor *)(&cursor))->getAnim()) {
+            s32 a = ((MenuBottomButtonsBody *)(&bottomButtons))->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetY(-1);
+            ((MenuCursorBase *)(&cursor))->warpTo(a + b, a + c);
         }
     } else {
         hideCursor();
@@ -685,9 +690,9 @@ void C::updateCloseDelay() {
 }
 
 void C::updateMessage() {
-    if (MenuErrorMessage_update(&errorMessage, 1)) {
+    if (((MenuErrorMessage *)(&errorMessage))->update(1)) {
         resumeInput();
-        HandCursor_enableObjWindow(&cursor);
+        ((HandCursor *)(&cursor))->enableObjWindow();
     }
 }
 
@@ -703,7 +708,7 @@ void MusicMenu::startButtonInput() {
         cursorSlot = 0xb;
     }
     showCursor();
-    MenuProc_restartKeyRepeat(this);
+    ((MenuProc *)(this))->restartKeyRepeat();
     setMainState(3);
 }
 
@@ -717,7 +722,7 @@ void MusicMenu::resumeInput() {
 
 void MusicMenu::startQuit() {
     MenuCtrl_SetResult(0);
-    MenuBottomButtonsBody_setSelected(&bottomButtons, 6);
+    ((MenuBottomButtonsBody *)(&bottomButtons))->setSelected(6);
     setTransitionState(2);
     setMainState(9);
 }
@@ -793,15 +798,15 @@ void MusicMenu::startAddSongs() {
 
 void MusicMenu::showMessage(u8 v) {
     u8 l = v;
-    MenuErrorMessage_open(&errorMessage, &l, 1, 0);
+    ((MenuErrorMessage *)(&errorMessage))->open((u8 *)(&l), 1, 0);
     setMainState(0xc);
-    HandCursor_disableObjWindow(&cursor);
+    ((HandCursor *)(&cursor))->disableObjWindow();
 }
 
 BOOL MusicMenu::tryGrabKnob(s32 a, s32 b) {
-    if (MenuScrollKnob_hitTest(&scrollKnob, a, b)) {
+    if (((MenuScrollKnob *)(&scrollKnob))->hitTest(a, b)) {
         knobGrabOffset = knobPos - b;
-        MenuScrollKnob_grab(&scrollKnob);
+        ((MenuScrollKnob *)(&scrollKnob))->grab();
         knobLastTickPos = knobPos;
         return TRUE;
     }
@@ -862,15 +867,15 @@ void MusicMenu::moveKnobByKey() {
 }
 
 BOOL MusicMenu::finishKnobRelease() {
-    if (ScrollKnob_areAnimsDone(&scrollKnob)) {
-        MenuScrollKnob_show(&scrollKnob);
+    if (((ScrollKnob *)(&scrollKnob))->areAnimsDone()) {
+        ((MenuScrollKnob *)(&scrollKnob))->show();
         return TRUE;
     }
     return FALSE;
 }
 
 void MusicMenu::updateKnobPosition() {
-    ScrollKnob_moveTo(&scrollKnob, 0x4f, slideY + (knobPos - 0x4b));
+    ((ScrollKnob *)(&scrollKnob))->moveTo(0x4f, slideY + (knobPos - 0x4b));
 }
 
 void MusicMenu::syncScrollToKnob() {
@@ -942,8 +947,8 @@ void MusicMenu::findCurrentSong() {
 void MusicMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    MenuCursorBase_warpTo(&cursor, a, b);
-    MenuCursor_setAnimIfChanged(&cursor, 1);
+    ((MenuCursorBase *)(&cursor))->warpTo(a, b);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(1);
     refreshCursor();
 }
 
@@ -954,13 +959,13 @@ s32 MusicMenu::getCursorTargetX() {
     }
     switch (c) {
     case 9:
-        return MenuBottomButtonsBody_getTargetX(&bottomButtons, 6);
+        return ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetX(6);
     case 11:
     case 12:
     case 13:
         return 0x26;
     case 10:
-        return MenuScrollKnob_getGripX(&scrollKnob);
+        return ((MenuScrollKnob *)(&scrollKnob))->getGripX();
     default:
         return 0x80;
     }
@@ -973,7 +978,7 @@ s32 MusicMenu::getCursorTargetY() {
     }
     switch (c) {
     case 9:
-        return MenuBottomButtonsBody_getTargetY(&bottomButtons, 6);
+        return ((MenuBottomButtonsBody *)(&bottomButtons))->getTargetY(6);
     case 11:
         return 0x2a;
     case 12:
@@ -981,24 +986,24 @@ s32 MusicMenu::getCursorTargetY() {
     case 13:
         return 0x65;
     case 10:
-        return MenuScrollKnob_getGripY(&scrollKnob);
+        return ((MenuScrollKnob *)(&scrollKnob))->getGripY();
     default:
         return 0x60;
     }
 }
 
 void MusicMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&cursor, 0);
+    ((MenuCursor *)(&cursor))->setAnimIfChanged(0);
     cursor.update();
 }
 
 void MusicMenu::moveCursorToTarget() {
     if (cursorSlot == 9) {
-        MenuCursor_switchToAnim07(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim07();
     } else if (cursorSlot <= 8) {
-        MenuCursor_switchToAnim07(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim07();
     } else {
-        MenuCursor_switchToAnim01(&cursor);
+        ((MenuCursor *)(&cursor))->switchToAnim01();
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -1006,23 +1011,23 @@ void MusicMenu::moveCursorToTarget() {
 }
 
 void MusicMenu::moveCursorTo(s32 a, s32 b) {
-    MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
+    ((MenuCursorBase *)(&cursor))->moveToEase(a, b, 3, 1);
     returnState = mainState;
     setMainState(6);
 }
 
 void MusicMenu::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseIdle();
     cursor.update();
 }
 
 void MusicMenu::pressCursor() {
-    MenuCursor_setPosePress(&cursor);
+    ((MenuCursor *)(&cursor))->setPosePress();
     setMainState(7);
 }
 
 void MusicMenu::releaseCursor() {
-    MenuCursorBase_setPoseRelease(&cursor);
+    ((MenuCursorBase *)(&cursor))->setPoseRelease();
     returnState = mainState;
     setMainState(8);
 }
@@ -1039,7 +1044,7 @@ void MusicMenu::resetTextLabels() {
     s32 i = 0;
     labelCount = 0;
     for (; i < 9; i++) {
-        LabelString_destroyLabel(&textLabels[i]);
+        ((LabelString *)(&textLabels[i]))->destroyLabel();
     }
 }
 
@@ -1052,7 +1057,7 @@ void MusicMenu::drawSongNames() {
     s32 idx;
     u16 *p;
     s32 slot;
-    func_0206267c(buf);
+    new (buf) ItemName();
     idx = topRow;
     if (idx < 0) {
         p = songs;
@@ -1066,20 +1071,20 @@ void MusicMenu::drawSongNames() {
         if (idx < 0 || idx >= cnt) {
             shownRowItems[slot] = 0xfff1;
             obj = allocTextLabel();
-            MsgString_clear(obj);
+            ((MsgString *)(obj))->clear();
         } else {
             if (*p != shownRowItems[slot]) {
                 shownRowItems[slot] = *p;
                 obj = allocTextLabel();
                 t = *p;
-                ItemName_setFromItem(buf, &t);
-                MsgString_copy(obj, buf);
+                ((ItemName *)(buf))->setFromItem(&t);
+                ((MsgString *)(obj))->copy((MsgString *)(buf));
             }
             p++;
         }
         if (obj) {
-            LabelString_createLabel(obj, 4, slot * 0x1a + 0x184, 0xd, 0xf, 7, 0);
-            LabelString_redrawAligned(obj, 0, 0);
+            ((LabelString *)(obj))->createLabel(4, slot * 0x1a + 0x184, 0xd, 0xf, 7, 0);
+            ((LabelString *)(obj))->redrawAligned(0, 0);
         }
         idx++;
         slot++;
@@ -1087,7 +1092,7 @@ void MusicMenu::drawSongNames() {
             slot = 0;
         }
     }
-    func_0206260c(buf);
+    ((ItemName *)(buf))->ItemName::~ItemName();
 }
 
 void MusicMenu::flushDirty() {
@@ -1269,7 +1274,7 @@ BOOL MusicMenu::activateTarget(u32 a) {
         startAddSongs();
         return TRUE;
     case 1:
-        MenuScrollKnob_grab(&scrollKnob);
+        ((MenuScrollKnob *)(&scrollKnob))->grab();
         Menu_PlayScrollGrabSe(&scrollKnob);
         setMainState(4);
         return TRUE;
@@ -1278,7 +1283,7 @@ BOOL MusicMenu::activateTarget(u32 a) {
 }
 
 u32 MusicMenu::hitTestTarget(s32 x, s32 y) {
-    if (MenuBottomButtonsBody_isTouched(&bottomButtons, 6)) {
+    if (((MenuBottomButtonsBody *)(&bottomButtons))->isTouched(6)) {
         return 9;
     }
     if (x >= 0x10 && x <= 0x30 && y >= 0x20 && y <= 0x40) {
@@ -1300,7 +1305,7 @@ u32 MusicMenu::hitTestTarget(s32 x, s32 y) {
 }
 
 void MusicMenu::targetButtonAtCursor() {
-    s32 x = MenuCursorBase_getScreenY(&cursor);
+    s32 x = ((MenuCursorBase *)(&cursor))->getScreenY();
     if (x < 0x4c) {
         cursorSlot = 0xb;
     } else if (x < 0x74) {
@@ -1319,7 +1324,7 @@ BOOL MusicMenu::targetRowAtCursor() {
     if (n > 9) {
         n = 9;
     }
-    x = MenuCursorBase_getScreenY(&cursor);
+    x = ((MenuCursorBase *)(&cursor))->getScreenY();
     if (x < 0x20) {
         x = 0x20;
     }

@@ -23,6 +23,10 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/MsgString.h"
 #include "actor/ActorProfile.h"
+#include "net/CommManager.h"
+#include "npc/VillagerId.h"
+#include "player/PlayerData.h"
+#include "talk/ChoiceList.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -336,9 +340,9 @@ u8 *SpNpcKatrina::getTexturePath() { return sSpNpcKatrinaTexturePath; }
 u8 *SpNpcKatrina::getModelPath() { return sSpNpcKatrinaModelPath; }
 
 BOOL SpNpcKatrina::updateAct() {
-    s32 t = NpcActionCtrl_getEmotionId(&actionCtrl);
+    s32 t = ((NpcActionCtrl *)(&actionCtrl))->getEmotionId();
     if (t != 0x1e && t != 0x20) {
-    } else if (NpcActionCtrl_isActionDone(&actionCtrl)) {
+    } else if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
         talk.onEventTag(0);
     }
     if (effectHandle == -1) {
@@ -370,7 +374,7 @@ void SpNpcKatrina::changeAct(s32 state) {
 }
 
 BOOL SpNpcKatrina::setupAct00() {
-    unk_564_func_020196b4(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -386,12 +390,12 @@ BOOL SpNpcKatrina::setupAct01() {
     if (p) {
         getAngleTo(p);
     }
-    unk_618_func_02014198(&talkCtrl, 1, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTalk(1, 0);
     return TRUE;
 }
 
 BOOL SpNpcKatrina::mainAct01() {
-    if (!unk_618_func_02014220(&talkCtrl)) {
+    if (!((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -401,7 +405,7 @@ BOOL SpNpcKatrina::mainAct01() {
 BOOL SpNpcKatrina::setupAct03() { return TRUE; }
 
 BOOL SpNpcKatrina::mainAct03() {
-    if (!unk_618_func_02014220(&talkCtrl)) {
+    if (!((NpcTalkCtrl *)(&talkCtrl))->isBusy()) {
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
         changeAct(2);
     }
@@ -418,7 +422,7 @@ SpNpcKatrinaTalk::~SpNpcKatrinaTalk() {}
 
 void SpNpcKatrinaTalk::onEventTag(u32 a_) {
     s32 a = (s32)a_;
-    if (a != NpcActionCtrl_getEmotionId(&owner->actionCtrl) || NpcActionCtrl_getAction(&owner->actionCtrl) != 8) {
+    if (a != ((NpcActionCtrl *)(&owner->actionCtrl))->getEmotionId() || ((NpcActionCtrl *)(&owner->actionCtrl))->getAction() != 8) {
         switch (a) {
         case 0x1e:
             TarotProps_StartAct01();
@@ -432,7 +436,7 @@ void SpNpcKatrinaTalk::onEventTag(u32 a_) {
             break;
         }
     }
-    base_vfunc_38(this, a);
+    ((ActorTalkRequest *)(this))->ActorTalkRequest::onEventTag(a);
 }
 
 void SpNpcKatrinaTalk::attachOwner(SpNpcKatrina *o) {
@@ -492,7 +496,7 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
         if (NpcActor_CanPlayerPay(owner, 10000)) {
             NpcActor_ChargePlayer(owner, 10000);
         }
-        PlayerData_setFortune(h, 0);
+        ((PlayerData *)(h))->setFortune(0);
         Talk_CheckAndSetPlayerFlag(6, 1);
         sel = 0x16;
         break;
@@ -519,10 +523,10 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
             void *r5;
             sel = 0x10;
             kind = owner->getFortuneKind();
-            arg = PlayerData_getPlayerId(PlayerData_GetCurrent());
+            arg = ((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
             switch (owner->readingMode) {
             case 0:
-                PlayerData_setFortune(h, kind);
+                ((PlayerData *)(h))->setFortune(kind);
                 if (kind == 1) {
                     SaveVillagers_ApplyGoodFortune((gp + 0x8a3c), arg);
                 } else if (kind == 2) {
@@ -530,11 +534,11 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
                 }
                 break;
             case 1:
-                p = SaveVillagers_FindByName((gp + 0x8a3c), owner->partnerName, 10, PlayerData_getPlayerId(h));
+                p = SaveVillagers_FindByName((gp + 0x8a3c), owner->partnerName, 10, ((PlayerData *)(h))->getPlayerId());
                 if (p != 0) {
                     q = Villager_FindMemoryIndex(p, arg);
                     w = Villager_GetMemory(p, q);
-                    if (VillagerId_isValid(VillagerData_getVillagerId(p)) != 0) {
+                    if (((VillagerId *)(VillagerData_getVillagerId(p)))->isValid() != 0) {
                         r5 = Villager_GetState(p);
                     } else {
                         r5 = 0;
@@ -543,7 +547,7 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
                         switch (kind) {
                         case 1: {
                             u8 *g = gCommManager;
-                            if (CommManager_isSlotActive(g, *(s32 *)(g + 0x64)) == 0 && r5 != 0) {
+                            if (((CommManager *)(g))->isSlotActive(*(s32 *)(g + 0x64)) == 0 && r5 != 0) {
                                 if (VillagerState_GetMood(r5) == 1) {
                                     VillagerState_AddMoodTimer(r5, 0xe10);
                                 } else {
@@ -557,7 +561,7 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
                         }
                         case 2: {
                             u8 *g = gCommManager;
-                            if (CommManager_isSlotActive(g, *(s32 *)(g + 0x64)) == 0 && r5 != 0) {
+                            if (((CommManager *)(g))->isSlotActive(*(s32 *)(g + 0x64)) == 0 && r5 != 0) {
                                 if (VillagerState_GetMood(r5) == 4) {
                                     VillagerState_AddMoodTimer(r5, 0x4b0);
                                 } else {
@@ -597,7 +601,7 @@ void SpNpcKatrinaTalk::onChoice(u32) {
     u8 buf;
     u32 sel;
     s32 st;
-    st = ChoiceList_getResult(getChoiceList());
+    st = ((ChoiceList *)(getChoiceList()))->getResult();
     sel = 0xff;
     switch (msgIndex) {
     case 1:

@@ -11,10 +11,21 @@ the dual build (`HOST_AT`, `HOST_AT_A`, `HOST_SIZED`: `include/uptr.h`) go away 
 
 Checking changes without the matching ROM: the behaviour must not change. The 32-bit build is deterministic, and
 `~/acww/ref/oracle/oracle.sh <binary> quick|play` compares a build's screenshots and sound with captures of the
-last build that was checked against the matching sources (commit 0e82b012; the reference binary and captures are
-kept in `~/acww/ref/oracle`, not in the repository): `quick` - the attract demo and title, 60 s; `play` -
+reference build (`~/acww/ref/oracle`, not in the repository: commit a7a796d3 plus the fix of a read of stack garbage
+that made the earlier captures depend on stack contents; `oracle.sh <binary> record` re-records): `quick` - the attract demo and title, 60 s; `play` -
 scripted play through the intro (A every second), screenshots to frame 25000. The 64-bit build is compared with
 the same captures (its virtual timing drifts by a frame or two after the first scene changes).
+
+Finding where two builds part: `ACWW_RAMHASH=<file>` writes a hash of main RAM every frame and
+`ACWW_RAMDUMP=f1,f2,...:<prefix>` dumps it at frames (32-bit builds: the game's data and heaps live there). Diff
+the dumps, ignoring the bytes that differ at an early frame (code addresses in static data), then watch the first
+address that differs. Code that reads memory nothing wrote (a lost argument, an uninitialized buffer) shows up as a
+difference that depends only on code shape.
+
+Declarations: `tools/host_decls.py` (libclang; `pip install --user clang==21.*`) compares every declaration written
+in a source file with the function's definition; `tools/host_method_calls.py` rewrote the calls of methods through
+their mangled names into member calls (non-virtual where the method is virtual, as the direct call was; pointers
+passed unchanged); `tools/host_strict_errors.sh` counts what still needs -fpermissive.
 
 The modern build (docs/modern.md) compiles the game with GCC and plays like the original in an emulator. The next
 step is a host build: the same sources compiled for the PC, with the DS hardware replaced. This note records what

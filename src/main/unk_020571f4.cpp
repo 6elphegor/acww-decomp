@@ -38,7 +38,7 @@ void SndSeEmitter_ctor(void *p);
 
 class HandOverItem : public GameProc {
 public:
-    HandOverItem() { item = 0xfff1; SndSeEmitter_ctor(&seEmitter); }
+    HandOverItem() { item = 0xfff1; new (&seEmitter) SndSeEmitter(); }
 
     /* 0x50 */ u16 item;
     /* 0x54 */ s32 kind;
@@ -172,13 +172,9 @@ void RoomItemIcons_DrawIcon(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y
 void Field_DrawItemIcon(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y, s16 z);
 void RoomItemIcons_DrawItem(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y, s16 z);
 s32 FishDisplay_SetEntry(s32 c4, s32 idx, VecFx32 *p, VecFx32 *q, s32 a0, s32 a1, s32 a2, s32 z0, s32 z1, s32 k);
-s32 _ZN9Character9getCharIdEv(void *p);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 FishDisplay_Acquire();
-void _ZN12SndSeEmitter8callStopEv(void *p);
-void _ZN12SndSeEmitter8callInitEv(void *p);
-void _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *p, VecFx32 *v);
 void Math_CountDownU8(void *p);
 void *SaveVillagers_Get(void *p, u32 v);
 u32 Villager_GetAnimalKind(u32 a);
@@ -240,7 +236,6 @@ VecFx32 *HandOverItem_GetFishHoldOffset(ProcBase *t, u32 i);
 VecFx32 *HandOverItem_GetFishHoldOffset2(ProcBase *t, u32 i);
 u32 HandOverItem_GetFishScale(u32 a);
 void HandOverItem_DrawIcon(void *unused, u32 id, VecFx32 *p, VecFx32 *q, s16 *ang);
-void _ZN12HandOverItem13getHoldOffsetEj(VecFx32 *out, HandOverItem *self, s32 idx);
 void HandOverItem_DrawItem(HandOverItem *self, u16 *id, VecFx32 *p, VecFx32 *q, s16 *ang);
 }
 
@@ -301,14 +296,14 @@ extern "C" HandOverItem *HandOverItem_Create()
 BOOL HandOverItem::onCreate()
 {
     resetState();
-    _ZN12SndSeEmitter8callInitEv(&seEmitter);
+    ((SndSeEmitter *)(&seEmitter))->callInit();
     sHandOverItem = this;
     return TRUE;
 }
 
 BOOL HandOverItem::onDelete()
 {
-    _ZN12SndSeEmitter8callStopEv(&sHandOverItem->seEmitter);
+    ((SndSeEmitter *)(&sHandOverItem->seEmitter))->callStop();
     sHandOverItem = NULL;
     return TRUE;
 }
@@ -332,7 +327,7 @@ BOOL HandOverItem::onExecute()
                 v.x = itemPos.x;
                 v.y = itemPos.y;
                 v.z = itemPos.z;
-                _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(&seEmitter, &v);
+                ((SndSeEmitter *)(&seEmitter))->callUpdateRelative(&v);
             }
         }
         if (isAwaitingTake()) {
@@ -416,7 +411,7 @@ BOOL HandOverItem::begin(u16 *id, s32 a, u8 b, s32 c, Character *o0, Character *
 BOOL HandOverItem::isCharAt(void *p, u32 idx)
 {
     if (idx < 2 && chars[idx] != NULL) {
-        if (_ZN9Character9getCharIdEv(p) == _ZN9Character9getCharIdEv(*(Character **)((u8 *)this + idx * 4 + 0xcc))) {
+        if (((Character *)(p))->getCharId() == ((Character *)(*(Character **)((u8 *)this + idx * 4 + 0xcc)))->getCharId()) {
             return TRUE;
         }
     }
@@ -589,7 +584,7 @@ void HandOverItem::startAct01()
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
-    ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
+    ((HandOverItem *)(void *)(&off))->getHoldOffset((u32)(this));
     VEC_Add(&pos, &off, &pos);
     localToWorld(&basePos, &pos, 0);
     scale.x = 0;
@@ -679,7 +674,7 @@ void HandOverItem::startAct03()
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset2((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
-    ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
+    ((HandOverItem *)(void *)(&off))->getHoldOffset((u32)(this));
     VEC_Add(&pos, &off, &pos);
     localToWorld(&basePos, &pos, 0);
     target.x = basePos.x;
@@ -723,7 +718,7 @@ void HandOverItem::startAct04()
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
-    ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
+    ((HandOverItem *)(void *)(&off))->getHoldOffset((u32)(this));
     VEC_Add(&pos, &off, &pos);
     localToWorld(&basePos, &pos, 0);
     target.x = basePos.x;

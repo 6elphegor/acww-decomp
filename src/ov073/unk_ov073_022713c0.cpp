@@ -22,6 +22,13 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
+#include "game/Unk_0201acf8.h"
+#include "npc/NpcLookAt.h"
+#include "npc/NpcMoveCtrl.h"
+#include "save/SaveData.h"
+#include "talk/ChoiceList.h"
+#include "talk/TalkWindowState.h"
+#include "town/VisitorPos.h"
 
 
 class ActorTalkRequest;
@@ -67,31 +74,8 @@ void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *p, s32 v);
 
 // Methods of other modules' classes, called by their real (mangled) names with the object as first argument.
-void *_ZN16ActorTalkRequest13getChoiceListEv(void *self);
-s32 _ZN10ChoiceList9getResultEv(void *self);
 s32 _ZN12TurnipMarket8getPriceEv(void *p);
-void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN15TalkWindowState14setNextMessageEPhPv(void *obj, void *buf, const char *name);
-s32 _ZN8SaveData8testFlagEj(void *p, s32 n);
-void _ZN8SaveData7setFlagEj(void *p, s32 n);
-u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *p, s32 a, s32 b, s32 c);
-s32 _ZN11NpcTalkCtrl6isBusyEv(void *p);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-s32 _ZN13NpcActionCtrl12isActionDoneEv(void *p);
-s32 _ZN13NpcActionCtrl9getActionEv(void *p);
-s32 _ZN12Unk_0201acf88getLevelEv(void *p);
-VecFx32 *_ZN11NpcMoveCtrl14getDestinationEv(void *p);
-void _ZN13NpcFootstepFx16disableFootstepsEv(void *p);
-void _ZN13NpcFootstepFx15enableFootstepsEv(void *p);
-void _ZN10VisitorPos6setPosEii(void *p, s32 x, s32 z);
-s32 _ZN9NpcLookAt15getObstacleBitsEv(void *p);
-s32 _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *p, void *scene, s32 v);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *p, void *v);
-s32 _ZN11NpcMoveCtrl10hasNextLegEv(void *p);
-void _ZN11NpcMoveCtrl16resetDestinationEv(void *p);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 }
 
 
@@ -225,7 +209,7 @@ BOOL SpNpcJoan::onDelete() {
     if (!SpNpcActor::onDelete()) {
         return FALSE;
     }
-    _ZN10VisitorPos6setPosEii(TownSessionState_GetVisitorPos(TownSessionState_Get()), position.x, position.z);
+    ((VisitorPos *)(TownSessionState_GetVisitorPos(TownSessionState_Get())))->setPos(position.x, position.z);
     return TRUE;
 }
 
@@ -261,10 +245,10 @@ void SpNpcJoan::changeAct(s32 state) {
 
 BOOL SpNpcJoan::setupAct02() {
     actCounter = 0;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -342,33 +326,33 @@ BOOL SpNpcJoan::steerAroundObstacle() {
     VecFx32 v;
     void *q = &actionCtrl;
     void *s = &moveCtrl;
-    s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
+    s32 k = ((NpcLookAt *)(&obstacleProbe))->getObstacleBits();
     BOOL r = FALSE;
-    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(s, this, 1) == 0) {
+    if (((NpcMoveCtrl *)(s))->hasArrived((Character *)(this), 1) == 0) {
         switch (k) {
         case 3:
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(q, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(q))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             r = TRUE;
             break;
         case 1:
             if (findSidestepPos(&v, &sSpNpcJoanSidestepOffsets[1])) {
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(s, &v);
+                ((NpcMoveCtrl *)(s))->setDestination((VecFx32 *)(&v));
             } else {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(q, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(q))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         case 2:
             if (findSidestepPos(&v, &sSpNpcJoanSidestepOffsets[0])) {
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(s, &v);
+                ((NpcMoveCtrl *)(s))->setDestination((VecFx32 *)(&v));
             } else {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(q, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(q))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         }
-    } else if (_ZN11NpcMoveCtrl10hasNextLegEv(s)) {
-        _ZN11NpcMoveCtrl16resetDestinationEv(s);
+    } else if (((NpcMoveCtrl *)(s))->hasNextLeg()) {
+        ((NpcMoveCtrl *)(s))->resetDestination();
     }
     return r;
 }
@@ -390,8 +374,8 @@ BOOL SpNpcJoan::mainAct02() {
     Math_CountDownU8(&actCounter);
     if (r6 != 0) {
         if (tryAvoidObstacle() == 0) {
-            if (_ZN13NpcActionCtrl12isActionDoneEv(r4)) {
-                if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
+            if (((NpcActionCtrl *)(r4))->isActionDone()) {
+                if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
                     ZERO_CALL(r4);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     va = gVec3Zero;
@@ -402,12 +386,12 @@ BOOL SpNpcJoan::mainAct02() {
                             if (Random_GlobalBelow(4) == 0) {
                                 k = 2;
                             }
-                            if (k != _ZN13NpcActionCtrl9getActionEv(&actionCtrl)) {
-                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(r4, k, 1, va.x, va.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                            if (k != ((NpcActionCtrl *)(&actionCtrl))->getAction()) {
+                                ((NpcActionCtrl *)(r4))->requestAction(k, 1, va.x, va.z, 0, 0, 0, 0, data_020c6cc8, 0);
                                 actCounter = 100;
                             }
-                        } else if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 4) {
-                            _ZN13NpcActionCtrl13requestActionEjiiissiitt(r4, 4, 1, va.x, va.z, 0, t, 0, 0, data_020c6cc8, 0);
+                        } else if (((NpcActionCtrl *)(&actionCtrl))->getAction() != 4) {
+                            ((NpcActionCtrl *)(r4))->requestAction(4, 1, va.x, va.z, 0, t, 0, 0, data_020c6cc8, 0);
                             actCounter = 0x50;
                         }
                     } else {
@@ -417,11 +401,11 @@ BOOL SpNpcJoan::mainAct02() {
                     ZERO_CALL(r4);
                 }
             } else if (speed != 0) {
-                if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 4) {
+                if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 2 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 4) {
                     if (actCounter == 0) {
                         ZERO_CALL(r4);
                     } else {
-                        vb = *_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
+                        vb = *((NpcMoveCtrl *)(&moveCtrl))->getDestination();
                         s32 t = Math_AngleXZ(&position, &vb);
                         if (NpcActor_IsFrontAngle(t - rotY) == 0) {
                             ZERO_CALL(r4);
@@ -437,9 +421,9 @@ BOOL SpNpcJoan::mainAct02() {
 }
 
 BOOL SpNpcJoan::setupAct03() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     actCounter = 0;
-    _ZN13NpcFootstepFx16disableFootstepsEv(&footstepFx);
+    ((NpcFootstepFx *)(&footstepFx))->disableFootsteps();
     return TRUE;
 }
 
@@ -455,7 +439,7 @@ BOOL SpNpcJoan::setupAct00() {
 }
 
 BOOL SpNpcJoan::mainAct00() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         Hud_Show();
         changeAct(1);
@@ -471,9 +455,9 @@ BOOL SpNpcJoan::setupAct04() {
     void *p = talk.getTalkPlayer();
     s32 x = rotY;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
@@ -540,11 +524,11 @@ void SpNpcJoanTalk::onAmountEntered() {
         s32 a = MenuCtrl_GetAmount() * 10;
         amount = MenuCtrl_GetAmount();
         price = a * _ZN12TurnipMarket8getPriceEv(data_021ed29c);
-        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, a, 1, 3, 1, 0);
-        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, price, 2, 10, 1, 0);
+        ((ActorTalkRequest *)(this))->setNumberSlot(a, 1, 3, 1, 0);
+        ((ActorTalkRequest *)(this))->setNumberSlot(price, 2, 10, 1, 0);
         buf[0] = 0x13;
     }
-    _ZN15TalkWindowState14setNextMessageEPhPv(obj, buf, sSpNpcJoanKey);
+    ((TalkWindowState *)(obj))->setNextMessage((u8 *)(buf), (void *)(void *)(sSpNpcJoanKey));
 }
 
 SpNpcJoanTalk::SpNpcJoanTalk() {}
@@ -641,7 +625,7 @@ void SpNpcJoanTalk::onMessageEnd(u32) {
     }
     if (cmd != 0xff) {
         buf[0] = cmd;
-        _ZN15TalkWindowState14setNextMessageEPhPv(window, buf, str);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(buf), (void *)(void *)(str));
     }
 }
 
@@ -661,7 +645,7 @@ void SpNpcJoanTalk::onChoice(u32) {
     s32 cmd;
     s32 x;
     const char *str;
-    res = _ZN10ChoiceList9getResultEv(_ZN16ActorTalkRequest13getChoiceListEv(this));
+    res = ((ChoiceList *)(((ActorTalkRequest *)(this))->getChoiceList()))->getResult();
     str = sSpNpcJoanKey;
     cmd = 0xff;
     x = msgIndex;
@@ -723,7 +707,7 @@ b1:
     goto end;
 b3:
     if (res == 0) {
-        _ZN16ActorTalkRequest13setNumberSlotEijiii(this, _ZN12TurnipMarket8getPriceEv(data_021ed29c), 0, 10, 1, 0);
+        ((ActorTalkRequest *)(this))->setNumberSlot(_ZN12TurnipMarket8getPriceEv(data_021ed29c), 0, 10, 1, 0);
         cmd = 0x10;
     } else if (res == 1) {
         cmd = 0x17;
@@ -763,7 +747,7 @@ b19:
         } else {
             NpcActor_ChargePlayer(owner, price);
             a = 0x1531;
-            _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &a, 0, 5, 0);
+            ((ActorTalkRequest *)(this))->requestGiveItem(&a, 0, 5, 0);
             boughtSeeds = 0;
             cmd = 0x15;
         }
@@ -771,7 +755,7 @@ b19:
     goto end;
 b23:
     if (res == 0) {
-        if (_ZN8SaveData8testFlagEj(gSaveData, 4)) {
+        if (((SaveData *)(gSaveData))->testFlag(4)) {
             cmd = 0x18;
         } else {
             Hud_Hide();
@@ -788,10 +772,10 @@ b25:
             if (Pocket_AddItem(&b, 0)) {
                 cmd = 0x15;
                 NpcActor_ChargePlayer(owner, 0x3e8);
-                _ZN8SaveData7setFlagEj(gSaveData, 4);
+                ((SaveData *)(gSaveData))->setFlag(4);
                 boughtSeeds = 1;
                 c = 0x1567;
-                _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &c, 0, 5, 0);
+                ((ActorTalkRequest *)(this))->requestGiveItem(&c, 0, 5, 0);
             } else {
                 cmd = 0x1c;
             }
@@ -801,13 +785,13 @@ b25:
 end:
     if (cmd != 0xff) {
         buf[0] = cmd;
-        _ZN15TalkWindowState14setNextMessageEPhPv(window, buf, str);
+        ((TalkWindowState *)(window))->setNextMessage((u8 *)(buf), (void *)(void *)(str));
     }
 }
 
 BOOL SpNpcJoan::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

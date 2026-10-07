@@ -26,6 +26,7 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "item/ItemPickSpec.h"
 #include "actor/ActorProfile.h"
+#include "npc/NpcLookAt.h"
 
 
 class ActorTalkRequest;
@@ -47,22 +48,7 @@ struct Unk_ov076_02271a3c_Bits {
 
 
 extern "C" {
-void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
-void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 a);
-void _ZN9NpcLookAt7disableEv(void *self);
 void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, s32 d, s32 e);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
-s32 _ZN13NpcActionCtrl9getActionEv(void *self);
-s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *self, s32 a);
-BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *self, void *o);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
 s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void Pocket_AddItem(u16 *, s32);
@@ -254,7 +240,7 @@ void SpNpcPascal::changeAct(s32 state) {
 }
 
 BOOL SpNpcPascal::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -264,14 +250,14 @@ BOOL SpNpcPascal::setupAct01() {
     void *p = talk.getTalkPlayer();
     u32 r = 0;
     if (p != NULL) {
-        r = _ZN8NpcActor10getAngleToEPS_(this, p);
+        r = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, r, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, r, 0);
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -284,13 +270,13 @@ BOOL SpNpcPascal::setupAct03() {
     if (giftGiven == 1) {
         homeAngle = homeAngle + 0x8000;
     }
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, (s16)homeAngle, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 1, 0, 0, 0, (s16)homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct03() {
-    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
+    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+        if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
             if (giftGiven == 0) {
                 changeAct(0);
             } else {
@@ -302,11 +288,11 @@ BOOL SpNpcPascal::mainAct03() {
 }
 
 BOOL SpNpcPascal::setupAct04() {
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xf9, 1, 0, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xf9, 1, 0, 0);
     Snd_SeEmitterPlayOneShotAlt(&seEmitter, 0x814, 0x7f, 0);
     rotY = rotY + 0x8000;
     moveAngleY = rotY;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, rotY);
+    ((NpcMoveCtrl *)(&moveCtrl))->setTargetAngle(rotY);
     s32 t = -(rotY / 6);
     if (t < 0) {
         t = -t;
@@ -319,11 +305,11 @@ BOOL SpNpcPascal::setupAct04() {
 
 BOOL SpNpcPascal::mainAct04() {
     VecFx32 v;
-    if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 &&
-        _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&animCtrl, this)) {
+    if (((NpcAnimCtrl *)(&animCtrl))->getAnimId(0) == 0xf9 &&
+        ((NpcAnimCtrl *)(&animCtrl))->isAnimFinished((NpcActor *)(this))) {
         changeAct(5);
     } else {
-        if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)(HOST_AT(this, 0x190, model.curFrame, 0)))->mid == 0xb) {
+        if (((NpcAnimCtrl *)(&animCtrl))->getAnimId(0) == 0xf9 && ((Unk_ov076_02271a3c_Bits *)(HOST_AT(this, 0x190, model.curFrame, 0)))->mid == 0xb) {
             *(HOST_AT(this, 0x511, shadowEnabled, 0)) = 0;
             *(HOST_AT(this, 0x510, collisionEnabled, 0)) = 0;
         }
@@ -341,16 +327,16 @@ BOOL SpNpcPascal::mainAct04() {
         }
     }
     moveAngleY = rotY;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, rotY);
+    ((NpcMoveCtrl *)(&moveCtrl))->setTargetAngle(rotY);
     return TRUE;
 }
 
 BOOL SpNpcPascal::setupAct05() {
-    _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xfa, 0, 0, 0);
-    _ZN9NpcLookAt7disableEv(&lookAt);
+    ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(1, 0xfa, 0, 0, 0);
+    ((NpcLookAt *)(&lookAt))->disable();
     rotY = 0;
     moveAngleY = 0;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, 0);
+    ((NpcMoveCtrl *)(&moveCtrl))->setTargetAngle(0);
     position.z += 0x4000;
     return TRUE;
 }
@@ -358,7 +344,7 @@ BOOL SpNpcPascal::setupAct05() {
 BOOL SpNpcPascal::mainAct05() {
     moveAngleY = 0;
     rotY = 0;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, 0);
+    ((NpcMoveCtrl *)(&moveCtrl))->setTargetAngle(0);
     position.z += 0xeb;
     if (position.z > diveStartZ + 0x14000) {
         ProcBase_RequestDelete(this);
@@ -395,7 +381,7 @@ void SpNpcPascalTalk::onScallopPicked() {
             Pocket_RemoveItem(i);
         }
         m.item = 0x1559;
-        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.item, 0, 5, 0);
+        ((ActorTalkRequest *)(this))->requestTakeItem(&m.item, 0, 5, 0);
         m.msgIndex = 6;
     }
     r4->setNextMessage(&m.msgIndex, sSpNpcPascalKey);
@@ -445,8 +431,8 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
     }
     switch (msgIndex) {
     case 4:
-        _ZN16ActorTalkRequest15setPocketFilterEjjj(this, SpNpcPascal_IsScallop, 0xd, 0);
-        _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
+        ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcPascal_IsScallop), 0xd, 0);
+        ((ActorTalkRequest *)(this))->openSubScene(0);
         setResultHandler(0);
         break;
     case 5:
@@ -462,7 +448,7 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
         } else {
             giftItem = 0x1373;
         }
-        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+        ((ActorTalkRequest *)(this))->requestGiveItem(&giftItem, 0, 5, 0);
         Pocket_AddItem(&giftItem, 0);
         owner->giftGiven = 1;
         Talk_CheckAndSetPlayerFlag(0x18, 1);
@@ -511,7 +497,7 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
                     ItemPick_One(&oc, &o2, 0, 0, 1, 1, 0);
                     giftItem = oc;
                 }
-                _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &giftItem, 0, 5, 0);
+                ((ActorTalkRequest *)(this))->requestGiveItem(&giftItem, 0, 5, 0);
                 Pocket_AddItem(&giftItem, 0);
                 Talk_CheckAndSetPlayerFlag(0x18, 1);
             }
@@ -571,7 +557,7 @@ BOOL SpNpcPascal::acceptsInteraction(void *) {
     if (Talk_CheckAndSetPlayerFlag(0x18, r) == 1) {
         return r;
     }
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

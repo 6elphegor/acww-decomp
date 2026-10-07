@@ -9,6 +9,9 @@
 #include "sys/ProcProfile.h"
 #include "net/CommManager.h"
 #include "room/RoomTelephone.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "save/SaveData.h"
 
 // ---- sub-object declarations (defined in src/main/unk_0208d154.cpp etc.) ----
 
@@ -43,10 +46,6 @@ void Snd_PlaySe(s32 a);
 s32 PlayerDataArray_IsUsed(void *, s32);
 u8 *PlayerActor_GetCharacter(u32 id);
 void *PlayerData_GetResident(void *a, s32 i);
-void *_ZN10PlayerData11getPlayerIdEv(void *self);
-void _ZN8PlayerId13getNameStringEP9MsgString(void *self, void *o);
-#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
 void Camera_ProjectCurvedToScreen(s32 *a, s32 *b, void *c);
 void func_02094018(void *p);
 void func_02094030(void *);
@@ -65,10 +64,6 @@ s32 TouchPickResult_GetTarget(u8 *obj, void *out, s32 *a, u8 *b);
 void String_Load2d(void *o, u8 *p, u32 x);
 void Clock_GetDateTime(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 n);
-s32 _ZN8SaveData8testFlagEj(void *self, u32 i);
-#define SaveData_testFlag _ZN8SaveData8testFlagEj
-s32 _ZN10PlayerData6isUsedEv(void *self);
-#define PlayerData_isUsed _ZN10PlayerData6isUsedEv
 s32 MenuCtrl_IsClockEdited(void);
 s32 MenuCtrl_ClearClockChangeFlags(void);
 s32 MenuCtrl_SetClockMovedForward(void);
@@ -181,7 +176,7 @@ BOOL ResidentSelect::onCreate() {
     g = gSaveData;
     for (i = 0; i < 4; i++) {
         void *o = PlayerData_GetResident(g + 0xc, i);
-        if (o != 0 && PlayerData_isUsed(o) != 0) {
+        if (o != 0 && ((PlayerData *)(o))->isUsed() != 0) {
             selectedResident = i;
             break;
         }
@@ -191,7 +186,7 @@ BOOL ResidentSelect::onCreate() {
     }
     c = 0x81;
     String_Load2d(&phoneLabel, &c, 0);
-    if (SaveData_testFlag(g, 0) == 0) {
+    if (((SaveData *)(g))->testFlag(0) == 0) {
         changeState(0);
     } else if (InputMode_IsButtons()) {
         changeState(2);
@@ -499,7 +494,7 @@ void ResidentSelect::updateNameLabels() {
                 v[1] = pv[1];
                 v[2] = pv[2];
                 MsgString9B o;
-                PlayerId_getNameString(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i)), &o);
+                ((PlayerId *)(((PlayerData *)(PlayerData_GetResident(gSavePlayers, i)))->getPlayerId()))->getNameString((MsgString *)(&o));
                 Camera_ProjectCurvedToScreen(&x, &y, v);
                 x += sResidentLabelOffsets[i].x;
                 y += sResidentLabelOffsets[i].y;

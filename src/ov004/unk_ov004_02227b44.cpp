@@ -14,6 +14,9 @@
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
 #include "gfx/NNSG3dRS.h"
+#include "gfx/G3dResAccess.h"
+#include "gfx/Model.h"
+#include "save/MuseumData.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -102,11 +105,7 @@ extern void *gBgHeap;
 extern u8 data_021ed0a0[];
 s32 RoomObjRes_GetBca(void *, u32);
 void *Heap_Alloc(void *heap, u32 size);
-s32 _ZN10MuseumData9isDonatedEPt(void *p, u16 *v);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
-s32 _ZN12G3dResAccess11findNodeIdxEi(void *p, char *name);
-void _ZN9AnimModel12drawAnimatedEPv(void *p, u32 a);
-s32 _ZN5Model15setInitCallbackEii(void *p, void *fn, void *self);
 void MuseumDisplay_InitRenderObj(void *p);
 void MuseumDisplay_NodeCallback(NNSG3dRS *o);
 const MuseumDisplayKind *MuseumDisplay_GetKindInfo(u32 i);
@@ -196,7 +195,7 @@ MuseumDisplay::~MuseumDisplay() {}
 BOOL MuseumDisplay::onCreate() {
     const MuseumDisplayKind *r = MuseumDisplay_GetKindInfo(F(s32, 0x08));
     loadResources((char *)r->arcPath, (char *)r->texPath);
-    _ZN5Model15setInitCallbackEii(HOST_AT(this, 0xec, model, 0), (void *)MuseumDisplay_InitRenderObj, this);
+    ((Model *)(HOST_AT(this, 0xec, model, 0)))->setInitCallback((s32)((void *)MuseumDisplay_InitRenderObj), (s32)(this));
     selectNodes();
     return TRUE;
 }
@@ -206,7 +205,7 @@ BOOL MuseumDisplay::onExecute() {
 }
 
 BOOL MuseumDisplay::onDraw() {
-    _ZN9AnimModel12drawAnimatedEPv(HOST_AT(this, 0xec, model, 0), 0);
+    ((AnimModel *)(HOST_AT(this, 0xec, model, 0)))->drawAnimated((void *)(0));
     return TRUE;
 }
 
@@ -227,11 +226,11 @@ void MuseumDisplay::selectNodes() {
     for (i = 0; i < r->numItems; i++) {
         u16 v = r->getItemId(i);
         u32 f = z;
-        if (_ZN10MuseumData9isDonatedEPt(data_021ed0a0, &v) != 0) {
+        if (((MuseumData *)(data_021ed0a0))->isDonated(&v) != 0) {
             f = 1;
         }
         Str_SPrintf(sMuseumDisplayNodeName, "p%d_%d", i, f);
-        shownNodes[i] = _ZN12G3dResAccess11findNodeIdxEi(F(void *, 0x148), sMuseumDisplayNodeName);
+        shownNodes[i] = ((G3dResAccess *)(F(void *, 0x148)))->findNodeIdx((s32)(sMuseumDisplayNodeName));
     }
 }
 

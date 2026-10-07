@@ -4,6 +4,8 @@
 #include "gfx/VecFx32.h"
 #include "actor/Actor.h"
 #include "field/Snowball.h"
+#include "game/GroundInfo.h"
+#include "game/GroundInfoBase.h"
 
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
@@ -230,13 +232,13 @@ void Snowball::execSnowballRoll() {
         }
     }
     applySnowballMotion();
-    GroundInfo_initAtPos(objA, &position, 0, 0);
-    if (GroundInfoBase_getHeight(objA, 0) < 0) {
+    ((GroundInfo *)(objA))->initAtPos((VecFx32 *)(&position), 0, 0);
+    if (((GroundInfoBase *)(objA))->getHeight(0) < 0) {
         Snowball_ChangeState(this, 1);
         GroundInfo_Destruct(objA);
         return;
     }
-    GroundInfo_initAtPos(objB, &position, 1, 0);
+    ((GroundInfo *)(objB))->initAtPos((VecFx32 *)(&position), 1, 0);
     if (objB[12] == 1) {
         switch (objB[13]) {
         case 0x16:
@@ -349,7 +351,7 @@ void Snowball::execSnowballFall() {
         position.y = position.y - velocity.y;
     }
     if (collisionState.flags & 2) {
-        GroundInfo_initAtPos(buf, &position, 0, 0);
+        ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(&position), 0, 0);
         lim = (s32)buf[15] - radius - 0x200;
         if (position.y < lim) {
             spawnSnowballSplash();
@@ -383,7 +385,7 @@ void Snowball::execSnowballSink() {
     s32 t = radius;
     t = t + (t >> 1);
     Math_ApproachS32Max(&collisionRadius, t, 0x200, t);
-    GroundInfo_initAtPos(buf, &position, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(&position), 0, 0);
     s32 *p = (s32 *)&buf[9];
     position.x += p[0] >> 5;
     position.z += p[2] >> 5;
@@ -499,7 +501,7 @@ s32 Snowball::enterSnowballSplash() {
 
 void Snowball::execSnowballSplash() {
     u32 buf[16];
-    GroundInfo_initAtPos(buf, &position, 0, 0);
+    ((GroundInfo *)(buf))->initAtPos((VecFx32 *)(&position), 0, 0);
     s32 *p = (s32 *)&buf[9];
     position.x += p[0] >> 5;
     position.z += p[2] >> 5;

@@ -5,6 +5,13 @@
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
+#include "player/PlayerInventory.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString9C.h"
+#include "ui/LabelString.h"
 
 
 
@@ -367,19 +374,19 @@ void InventoryBg_SetupTextWindows(void *o)
     u8 buf[0x1c];
     u8 buf2[0x1c];
     s32 r = PlayerData_getPlayerId(PlayerData_GetCurrent());
-    func_02063888(buf);
+    new (buf) MsgString9C();
     TownId_GetNameString(PlayerId_GetTownId(r), buf);
     String_SetSlot(0, buf);
-    LabelString_createLabel(HOST_AT(p, 0xe0, textWindows[0], 0), p->bgId, 0x11, 0xa, 0xf, 0xc, 0);
+    ((LabelString *)(HOST_AT(p, 0xe0, textWindows[0], 0)))->createLabel(p->bgId, 0x11, 0xa, 0xf, 0xc, 0);
     String_Load2dMenu(HOST_AT(p, 0xe0, textWindows[0], 0), 0x66);
-    LabelString_redrawAligned(HOST_AT(p, 0xe0, textWindows[0], 0), 1, 0);
-    func_02094030(buf2);
-    PlayerId_getNameString(r, buf2);
-    LabelString_createLabel(HOST_AT(p, 0x120, textWindows[64], 0), p->bgId, 0x25, 8, 0xf, 0xc, 0);
-    MsgString_copy(HOST_AT(p, 0x120, textWindows[64], 0), buf2);
-    LabelString_redrawAligned(HOST_AT(p, 0x120, textWindows[64], 0), 1, 0);
-    func_02094018(buf2);
-    func_02063870(buf);
+    ((LabelString *)(HOST_AT(p, 0xe0, textWindows[0], 0)))->redrawAligned(1, 0);
+    new (buf2) MsgString9B();
+    ((PlayerId *)(r))->getNameString((MsgString *)(buf2));
+    ((LabelString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->createLabel(p->bgId, 0x25, 8, 0xf, 0xc, 0);
+    ((MsgString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->copy((MsgString *)(buf2));
+    ((LabelString *)(HOST_AT(p, 0x120, textWindows[64], 0)))->redrawAligned(1, 0);
+    ((MsgString9B *)(buf2))->MsgString9B::~MsgString9B();
+    ((MsgString9C *)(buf))->MsgString9C::~MsgString9C();
 }
 
 void InventoryBg_LoadObjGraphics()
@@ -429,7 +436,7 @@ void InventoryBg_ClearTextWindows(void *o)
     s32 i = 0;
     u8 *b = (u8 *)o + 0xe0;
     for (; i < 2; i++) {
-        LabelString_destroyLabel(b + (i << 6));
+        ((LabelString *)(b + (i << 6)))->destroyLabel();
     }
 }
 
@@ -462,8 +469,8 @@ void InventoryBg_PaintHighlight1(void *o)
 void InventoryBg_LoadPictureForHeldItem(void *o)
 {
     s32 a = PlayerData_GetCurrent();
-    s32 b = PlayerId_getGender(PlayerData_getPlayerId(a));
-    u16 *pv = PlayerData_getHeldItem(a);
+    s32 b = ((PlayerId *)(((PlayerData *)(a))->getPlayerId()))->getGender();
+    u16 *pv = ((PlayerData *)(a))->getHeldItem();
     s32 idx = 0;
     BOOL fl = FALSE;
     u32 v = *pv;
@@ -626,7 +633,7 @@ void InventoryBg_SetBellsPanelMode(void *o, u32 n)
 
 s32 InventoryBg_GetTotalBells()
 {
-    return PlayerInventory_getTotalBells(PlayerData_getInventory(PlayerData_GetCurrent()), 0);
+    return ((PlayerInventory *)(((PlayerData *)(PlayerData_GetCurrent()))->getInventory()))->getTotalBells(0);
 }
 
 void InventoryBg_ResetBells(void *o)

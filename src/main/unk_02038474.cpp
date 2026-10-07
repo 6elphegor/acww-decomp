@@ -13,6 +13,8 @@
 #include "talk/ChatBalloonText.h"
 #include "talk/MsgString9B.h"
 #include "sys/ProcProfile.h"
+#include "player/PlayerData.h"
+#include "player/PlayerId.h"
 
 extern "C" const s32 data_020c8cb4;
 extern "C" const s32 data_020c8cb8;
@@ -186,17 +188,12 @@ extern void *const gSpriteSeqTable[45];
 extern s32 gGfxMainOnTop;
 
 s32 PlayerActor_GetAction(s32 a);
-BOOL _ZN11CommManager8isOnlineEv(CommManager *p);
-BOOL _ZN11CommManager12isSlotActiveEi(CommManager *p, s32 i);
-u8 *_ZN11CommManager10getSyncVarEj(CommManager *p, s32 i);
 BOOL TalkRequest_IsActive();
 BOOL HudObjGfx_IsMsgUiActive();
 s32 Scene_GetCurrent();
 void String_Load2d(ChatBalloonText *buf, u8 *c, s32 z);
 void Snd_PlaySe(u32 a);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData11getPlayerIdEv(void *p);
-void _ZN8PlayerId13getNameStringEP9MsgString(void *p, MsgString9B *t);
 void StrBuf_ClearAlt(void *p);
 void StrBuf_AsciiToGame(EncodedStringBaseRef *p, void *q);
 void StrBuf_GameToAscii(ChatBalloonName *a, EncodedStringBaseRef *b);
@@ -213,10 +210,6 @@ void MsgTextLabel_Destroy(TextLabel *obj);
 s32 DebugVar_GetStub(s32 a, s32 b);
 void Math_StepS32(void *p, s32 a, s32 b);
 s32 *_ZN10SpriteAnim6getSeqEv(void *p);
-void _ZN10SpriteAnim8setFrameEii(void *p, s32 a, s32 b);
-void _ZN10SpriteAnim8setSpeedEi(void *p, s32 v);
-void _ZN10SpriteAnim11setPlayOnceEi(void *p, s32 v);
-void _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(void *p, void *v);
 void StrBuf_Clear(void *buf);
 BOOL StrBuf_Copy(StrBuf *dst, StrBuf *src);
 s32 MenuCtrl_GetTransitionProgressOrFull(void);
@@ -542,13 +535,13 @@ void ChatBalloon::execClose() {
 void ChatBalloon::initSprites() {
     u8 *t = (u8 *)gSpriteSeqTable[textSeqIndex];
     if (localIndex != 0) {
-        _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&nameAnim, (u8 *)gSpriteSeqTable[nameSeqIndex]);
-        _ZN10SpriteAnim11setPlayOnceEi(&nameAnim, 1);
-        _ZN10SpriteAnim8setSpeedEi(&nameAnim, 0);
+        ((SpriteAnim *)(&nameAnim))->setSeq((SpriteAnimSeq *)((u8 *)gSpriteSeqTable[nameSeqIndex]));
+        ((SpriteAnim *)(&nameAnim))->setPlayOnce(1);
+        ((SpriteAnim *)(&nameAnim))->setSpeed(0);
     }
-    _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&textAnim, t);
-    _ZN10SpriteAnim11setPlayOnceEi(&textAnim, 1);
-    _ZN10SpriteAnim8setSpeedEi(&textAnim, 0);
+    ((SpriteAnim *)(&textAnim))->setSeq((SpriteAnimSeq *)(t));
+    ((SpriteAnim *)(&textAnim))->setPlayOnce(1);
+    ((SpriteAnim *)(&textAnim))->setSpeed(0);
 }
 
 void ChatBalloon::fitToText() {
@@ -565,7 +558,7 @@ void ChatBalloon::fitToText() {
         } else if (lo <= hi) {
             hi = lo;
         }
-        _ZN10SpriteAnim8setFrameEii(&nameAnim, hi, 0);
+        ((SpriteAnim *)(&nameAnim))->setFrame(hi, 0);
         nameLabel->xOffset = pad;
     }
     w2 = textLabel->measureWidth();
@@ -577,7 +570,7 @@ void ChatBalloon::fitToText() {
     } else if (lo <= hi) {
         hi = lo;
     }
-    _ZN10SpriteAnim8setFrameEii(&textAnim, hi, 0);
+    ((SpriteAnim *)(&textAnim))->setFrame(hi, 0);
     if (localIndex == 0 && textLabel != NULL) {
         textLabel->xOffset = (n2 * 8 - w2) >> 1;
     }
@@ -921,7 +914,7 @@ void ChatBalloonReceiver::update() { ChatBalloon_ReceiveRemote(); }
 extern "C" void ChatBalloon_SendSyncVar(s32 i, ChatBalloon *x) {
     if (i < 4) {
         CommManager *g = gCommManager;
-        if (_ZN11CommManager8isOnlineEv(g) && _ZN11CommManager12isSlotActiveEi(g, i)) {
+        if ((g)->isOnline() && (g)->isSlotActive(i)) {
             CommSyncVar_SetVar(i + 0x14, (s32)x, 0, 1);
         }
     }
@@ -931,9 +924,9 @@ extern "C" void ChatBalloon_ReceiveRemote() {
     CommManager *g = gCommManager;
     s32 n = g->myAid;
     s32 i;
-    if (_ZN11CommManager8isOnlineEv(g)) {
+    if ((g)->isOnline()) {
         for (i = 0; i < 4; i++) {
-            if (i != n && _ZN11CommManager12isSlotActiveEi(g, i) && ChatBalloon_ReadSyncVar(i)) {
+            if (i != n && (g)->isSlotActive(i) && ChatBalloon_ReadSyncVar(i)) {
                 EncodedStringBaseRef s((sChatBalloonSyncBuf + 1), 8);
                 EncodedStringRef b((sChatBalloonSyncBuf + 9), 0x20);
                 ChatBalloonName t;
@@ -947,7 +940,7 @@ extern "C" void ChatBalloon_ReceiveRemote() {
 }
 
 extern "C" u8 ChatBalloon_ReadSyncVar(s32 idx) {
-    u8 *p = _ZN11CommManager10getSyncVarEj(gCommManager, idx + 0x14);
+    u8 *p = (gCommManager)->getSyncVar(idx + 0x14);
     u8 c = *p;
     if (c != 0) {
         s32 r = Scene_GetCurrent();
@@ -978,7 +971,7 @@ extern "C" void ChatQuickMsg_PostWantToSave() {
         MsgString9B t;
         ChatBalloonText buf;
         u8 code;
-        _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), &t);
+        ((PlayerId *)(((PlayerData *)(p))->getPlayerId()))->getNameString((MsgString *)(void *)(&t));
         code = 0xef;
         String_Load2d(&buf, &code, 0);
         ChatBalloon_Post(gCommManager->myAid, (StrBuf *)&t, &buf);
@@ -1045,7 +1038,7 @@ extern "C" void ChatQuickMsg_CheckButtons(void *self) {
         any = FALSE;
     }
     g = gCommManager;
-    ready = _ZN11CommManager8isOnlineEv(g);
+    ready = (g)->isOnline();
     if (TalkRequest_IsActive()) {
         idle = FALSE;
     } else {
@@ -1075,7 +1068,7 @@ extern "C" void ChatQuickMsg_CheckButtons(void *self) {
             u8 ch = code;
             String_Load2d(&buf, &ch, 0);
             MsgString9B t;
-            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), &t);
+            ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getNameString((MsgString *)(void *)(&t));
             ChatBalloon_Post(g->myAid, (StrBuf *)&t, &buf);
             Snd_PlaySe(0x32);
             sChatQuickMsgCooldown = 0x1e;

@@ -9,6 +9,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#include "player/PlayerData.h"
 
 
 
@@ -101,7 +102,7 @@ void ShopBuilding::setupTalkMsg() {
         }
     } else {
         void *x = PlayerData_GetCurrent();
-        if (GameStart_IsActive() || PlayerData_testFlag(x, 0x23)) {
+        if (GameStart_IsActive() || ((PlayerData *)(x))->testFlag(0x23)) {
             setFileName("sp_etc_sequence4");
             msgIndex = 0x15;
         } else if (isClosedToday()) {
@@ -147,10 +148,10 @@ BOOL ShopBuilding::isOpen() {
         return FALSE;
     }
     void *x = PlayerData_GetCurrent();
-    if (GameStart_IsActive() || (x && PlayerData_testFlag(x, 0x23))) {
+    if (GameStart_IsActive() || (x && ((PlayerData *)(x))->testFlag(0x23))) {
         return FALSE;
     }
-    if (x && PlayerData_testFlag(x, 1)) {
+    if (x && ((PlayerData *)(x))->testFlag(1)) {
         return TRUE;
     }
     if (isClosedToday()) {

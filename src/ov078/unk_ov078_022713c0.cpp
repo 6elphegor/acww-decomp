@@ -32,6 +32,9 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
+#include "game/Unk_0201acf8.h"
+#include "item/ItemPickSpec.h"
+#include "player/PlayerData.h"
 
 
 class ActorTalkRequest;
@@ -45,21 +48,7 @@ class ActorTalkRequest;
 
 
 extern "C" {
-void _ZN13NpcFootstepFx16disableFootstepsEv(void *self);
-void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
-void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, VecFx32 *d, s32 e, s32 f, s32 g);
-s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
-void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
-BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
-VecFx32 * _ZN11NpcMoveCtrl14getDestinationEv(void *self);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *self, VecFx32 *v);
-BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *owner, s32 v);
-s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN18SickVillagerRecord15getParcelErrandEv(void *p);
 void *ParcelErrand_GetRecord(void *p);
 void ParcelErrand_Start(void *p);
@@ -75,10 +64,6 @@ void Pocket_AddItem(u16 *p, s32 v);
 void Pocket_RemoveItem(s32 v);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
-void _ZN16ActorTalkRequest15requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
-void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void EventWeekSlots_MarkPlayer(s32 v);
@@ -87,7 +72,6 @@ u32 Random_GlobalBelow(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
 void Math_CountDownU8(void *p);
-BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 u32 Random_Next(void *p);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -294,7 +278,7 @@ void SpNpcSaharah::changeAct(s32 state) {
 BOOL SpNpcSaharah::setupAct00() { return TRUE; }
 
 BOOL SpNpcSaharah::mainAct00() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(1);
     }
@@ -305,10 +289,10 @@ BOOL SpNpcSaharah::mainAct01() { return TRUE; }
 
 BOOL SpNpcSaharah::setupAct02() {
     actCounter = 0;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    ((NpcLookAt *)(&lookAt))->setTarget(1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -393,35 +377,35 @@ BOOL SpNpcSaharah::getOffsetPosIfFree(VecFx32 *out, VecFx32 *p) {
 BOOL SpNpcSaharah::handleCollision() {
     NpcActionCtrl *p = &actionCtrl;
     NpcMoveCtrl *q = &moveCtrl;
-    s32 r6 = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
+    s32 r6 = ((NpcLookAt *)(&obstacleProbe))->getObstacleBits();
     BOOL r = FALSE;
     VecFx32 v;
-    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(q, this, 1) == 0) {
+    if (((NpcMoveCtrl *)(q))->hasArrived((Character *)(this), 1) == 0) {
         switch (r6) {
         case 3:
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             r = TRUE;
             break;
         case 1:
             if (getOffsetPosIfFree(&v, (VecFx32 *)&sSpNpcSaharahSideStepOffsets[1])) {
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(q, &v);
+                ((NpcMoveCtrl *)(q))->setDestination(&v);
             } else {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         case 2:
             if (getOffsetPosIfFree(&v, (VecFx32 *)&sSpNpcSaharahSideStepOffsets[0])) {
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(q, &v);
+                ((NpcMoveCtrl *)(q))->setDestination(&v);
             } else {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         }
     } else {
-        if (_ZN11NpcMoveCtrl10hasNextLegEv(q)) {
-            _ZN11NpcMoveCtrl16resetDestinationEv(q);
+        if (((NpcMoveCtrl *)(q))->hasNextLeg()) {
+            ((NpcMoveCtrl *)(q))->resetDestination();
         }
     }
     return r;
@@ -444,8 +428,8 @@ BOOL SpNpcSaharah::mainAct02() {
     if (r6 != 0) {
         if (checkCollisionWhileMoving() == 0) {
             if (p->isActionDone() != 0) {
-                if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
-                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
+                    ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     v.x = gVec3Zero.x;
                     v.y = gVec3Zero.y;
@@ -458,30 +442,30 @@ BOOL SpNpcSaharah::mainAct02() {
                                 r6 = 2;
                             }
                             if (r6 != actionCtrl.getAction()) {
-                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, r6, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                                ((NpcActionCtrl *)(p))->requestAction(r6, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
                                 actCounter = 0x64;
                             }
                         } else if (actionCtrl.getAction() != 4) {
-                            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 4, 1, v.x, v.z, 0, r6, 0, 0, data_020c6cc8, 0);
+                            ((NpcActionCtrl *)(p))->requestAction(4, 1, v.x, v.z, 0, r6, 0, 0, data_020c6cc8, 0);
                             actCounter = 0x50;
                         }
                     } else {
-                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                        ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     }
                 } else {
-                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                    ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
             } else if (speed != 0) {
                 if (actionCtrl.getAction() == 1 || actionCtrl.getAction() == 2 || actionCtrl.getAction() == 4) {
                     if (actCounter == 0) {
-                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                        ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     } else {
-                        VecFx32 *q = _ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
+                        VecFx32 *q = ((NpcMoveCtrl *)(&moveCtrl))->getDestination();
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
                         if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&position, &w) - rotY)) == 0) {
-                            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                            ((NpcActionCtrl *)(p))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }
                 }
@@ -494,9 +478,9 @@ BOOL SpNpcSaharah::mainAct02() {
 }
 
 BOOL SpNpcSaharah::setupAct03() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     actCounter = 0;
-    _ZN13NpcFootstepFx16disableFootstepsEv(&footstepFx);
+    ((NpcFootstepFx *)(&footstepFx))->disableFootsteps();
     return TRUE;
 }
 
@@ -511,9 +495,9 @@ BOOL SpNpcSaharah::setupAct04() {
     void *p = talk.getTalkPlayer();
     s32 x = rotY;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
@@ -534,7 +518,7 @@ void SpNpcSaharahTalk::attachOwner(SpNpcSaharah *owner) {
 
 void SpNpcSaharahTalk::start(TalkStartMsg *out) {
     u16 h;
-    void *g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent()));
+    void *g = _ZN18SickVillagerRecord15getParcelErrandEv(((PlayerData *)(PlayerData_GetCurrent()))->getErrands());
     MsgString9B o;
     out->msgKey = "sp_npc_camel";
     if (turbanSlot == -1) {
@@ -589,7 +573,7 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
     u8 *s;
     h[0] = 0xfff1;
     MsgString9B o3;
-    g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent()));
+    g = _ZN18SickVillagerRecord15getParcelErrandEv(((PlayerData *)(PlayerData_GetCurrent()))->getErrands());
     s = (u8 *)"sp_npc_camel";
     msg = 0;
     switch (msgIndex) {
@@ -631,7 +615,7 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
     case 6:
     case 7:
         Pocket_AddItem(_ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2);
-        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, _ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2, 5, 0);
+        ((ActorTalkRequest *)(this))->requestGiveItem(_ZN12ErrandRecord7getItemEv(ParcelErrand_GetRecord(g)), 2, 5, 0);
         if (ParcelErrand_GetRecipientName(g, &o3)) {
             window->setSlot(0, &o3);
         }
@@ -642,16 +626,16 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
         }
         break;
     case 0xc:
-        _ZN12ItemPickSpec3setEii(&o1, 4, 0x23);
+        ((ItemPickSpec *)(void *)(&o1))->set(4, 0x23);
         ItemPick_One(&h[1], &o1, msg, msg, 1, 1, msg);
         rewardItems[0].id = h[1];
         ItemPickSpec_Destruct(&o1);
-        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &rewardItems[0].id, 1, 7);
-        _ZN12ItemPickSpec3setEii(&o2, 3, 0x23);
+        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&rewardItems[0].id), 1, 7);
+        ((ItemPickSpec *)(void *)(&o2))->set(3, 0x23);
         ItemPick_One(&h[2], &o2, msg, msg, 1, 1, msg);
         rewardItems[1].id = h[2];
         ItemPickSpec_Destruct(&o2);
-        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &rewardItems[1].id, 2, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&rewardItems[1].id), 2, 7);
         msg = 0xd;
         break;
     case 0xe:
@@ -669,8 +653,8 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
             msg = 0x18;
         }
         turbanSlot = -2;
-        _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h[0], 0, 7);
-        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
+        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h[0]), 0, 7);
+        ((ActorTalkRequest *)(this))->requestGiveItem(&h[0], 0, 5, 0);
         Pocket_AddItem(&h[0], 0);
         break;
     }
@@ -707,7 +691,7 @@ void SpNpcSaharahTalk::onChoice(u32) {
         } else {
             h[0] = rewardItems[1].id;
         }
-        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h[0], 0, 5, 0);
+        ((ActorTalkRequest *)(this))->requestGiveItem(&h[0], 0, 5, 0);
         Pocket_AddItem(&h[0], 0);
         msg = 0xe;
         break;
@@ -716,7 +700,7 @@ void SpNpcSaharahTalk::onChoice(u32) {
             if (turbanSlot >= 0) {
                 Pocket_RemoveItem(turbanSlot);
                 h[1] = 0x13ac;
-                _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &h[1], 0, 5, 0);
+                ((ActorTalkRequest *)(this))->requestTakeItem(&h[1], 0, 5, 0);
             }
             msg = 0x16;
         }
@@ -730,7 +714,7 @@ void SpNpcSaharahTalk::onChoice(u32) {
 
 BOOL SpNpcSaharah::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         r = TRUE;
     }
     return r;

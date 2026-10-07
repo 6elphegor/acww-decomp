@@ -18,6 +18,9 @@
 #include "talk/TalkMsgRequest.h"
 #include "room/MuseumExhibitInfo.h"
 #include "game/TouchPickSphere.h"
+#include "game/TouchPicker.h"
+#include "save/MuseumData.h"
+#include "talk/ChoiceList.h"
 
 
 
@@ -62,8 +65,6 @@ extern s16 data_02135f44[];
 extern CommManager *gCommManager;
 extern TalkWindowState data_021ed0a0;
 
-void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
-void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
 s32 Actor_spawn(s32 a, s32 b, void *c, void *d, void *e);
 void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
 void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
@@ -160,7 +161,7 @@ extern "C" void MuseumExhibitInfo_Spawn(s32 a, void *b, s32 c, s32 d, s16 e, u8 
     loc[0] = 0;
     loc[1] = c;
     loc[2] = 0;
-    Actor_spawn(0x19, 0, b, loc, 0);
+    Actor::spawn((void *)(0x19), (void *)(0), b, loc, 0);
 }
 
 extern "C" void *MuseumExhibitInfo_GetByIndex(s32 i) {
@@ -180,15 +181,15 @@ void MuseumExhibitInfo::mainAct03() {
 
 BOOL MuseumExhibitInfo::setupAct03() {
     u16 id[2];
-    Character_attachTalkRequest(this, this);
+    ((Character *)(this))->attachTalkRequest((s32)(this));
     setFileName(sMuseumExhibitMsgFile);
     id[1] = 0x12e4;
     TalkWindowState *const g = &data_021ed0a0;
-    if ((u32)MuseumData_getDonationState(g, &id[1]) <= 1) {
+    if ((u32)((MuseumData *)(g))->getDonationState(&id[1]) <= 1) {
         MsgString9B obj;
-        if (MuseumData_getDonorName(g, &obj, &id[1])) {
+        if (((MuseumData *)(g))->getDonorName((s32)(&obj), &id[1])) {
             msgIndex = 3;
-            TalkWindowState_setSlot(window, 0, &obj);
+            ((TalkWindowState *)(window))->setSlot(0, (void *)(void *)(&obj));
         }
     } else {
         msgIndex = 4;
@@ -201,7 +202,7 @@ BOOL MuseumExhibitInfo::setupAct03() {
 void MuseumExhibitInfo::mainAct02() {
     if (window) {
         if (window->state == 0) {
-            Character_detachTalkRequest(this, this);
+            ((Character *)(this))->detachTalkRequest((s32)(this));
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -221,13 +222,13 @@ BOOL MuseumExhibitInfo::setupAct01() {
     cursor = i;
     for (; i < itemCount; i++) {
         l.w = items[i];
-        if (MuseumData_isDonated(&data_021ed0a0, &l.w)) {
+        if (((MuseumData *)(&data_021ed0a0))->isDonated(&l.w)) {
             cursor = i;
             break;
         }
     }
     l.sel = items[cursor];
-    Character_attachTalkRequest(this, this);
+    ((Character *)(this))->attachTalkRequest((s32)(this));
     TalkMsgRequest &s = *this;
     s.setFileName(sMuseumExhibitMsgFile);
     if (isAnyDonated() == 0) {
@@ -243,7 +244,7 @@ BOOL MuseumExhibitInfo::setupAct01() {
         if (n > 3) n = 3;
         msgIndex = (n - 1) % 3 + 5;
     } else {
-        if (MuseumData_getDonationState(&data_021ed0a0, &l.sel) != 2) {
+        if (((MuseumData *)(&data_021ed0a0))->getDonationState(&l.sel) != 2) {
             msgIndex = 1;
         } else {
             msgIndex = 2;
@@ -295,23 +296,23 @@ void MuseumExhibitInfo::onChoice(u32) {
     if (isAutoTalkKind() == 0) {
         u8 a0, a1, a2, a3;
         u16 sel;
-        if (ChoiceList_getResult(TalkWindowState_getChoiceList(window)) == 0) {
+        if (((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult() == 0) {
             sel = items[cursor];
             if (kind <= 1) {
                 u32 n = countDonatedFromCursor();
                 if (n > 3) n = 3;
                 a0 = (n - 1) % 3 + 5;
-                TalkWindowState_setNextMessage(window, &a0, 0);
-            } else if (MuseumData_getDonationState(&data_021ed0a0, &sel) != 2) {
+                ((TalkWindowState *)(window))->setNextMessage(&a0, 0);
+            } else if (((MuseumData *)(&data_021ed0a0))->getDonationState(&sel) != 2) {
                 a1 = 1;
-                TalkWindowState_setNextMessage(window, &a1, 0);
+                ((TalkWindowState *)(window))->setNextMessage(&a1, 0);
             } else {
                 a2 = 2;
-                TalkWindowState_setNextMessage(window, &a2, 0);
+                ((TalkWindowState *)(window))->setNextMessage(&a2, 0);
             }
         } else {
             a3 = gTalkMsgIndexEnd;
-            TalkWindowState_setNextMessage(window, &a3, 0);
+            ((TalkWindowState *)(window))->setNextMessage(&a3, 0);
         }
     }
 }
@@ -325,33 +326,33 @@ void MuseumExhibitInfo::onMessageEnd(u32) {
                     u32 e = msgIndex;
                     if (infoMsgIndex == e) {
                         b[0] = e + 1;
-                        TalkWindowState_setNextMessage(window, &b[0], 0);
+                        ((TalkWindowState *)(window))->setNextMessage(&b[0], 0);
                     } else {
                         b[1] = gTalkMsgIndexEnd;
-                        TalkWindowState_setNextMessage(window, &b[1], 0);
+                        ((TalkWindowState *)(window))->setNextMessage(&b[1], 0);
                     }
                 } else {
                     b[2] = gTalkMsgIndexEnd;
-                    TalkWindowState_setNextMessage(window, &b[2], 0);
+                    ((TalkWindowState *)(window))->setNextMessage(&b[2], 0);
                 }
             } else {
                 b[3] = gTalkMsgIndexEnd;
-                TalkWindowState_setNextMessage(window, &b[3], 0);
+                ((TalkWindowState *)(window))->setNextMessage(&b[3], 0);
             }
         } else if (countDonatedFromCursor() != 0) {
-            void *o = TalkWindowState_getChoiceList(window);
+            void *o = ((TalkWindowState *)(window))->getChoiceList();
             if (o) {
-                ChoiceList_reset(o, 2, 1);
+                ((ChoiceList *)(o))->reset(2, 1);
                 b[4] = 0xe5;
-                ChoiceList_setEntry(o, 0, &b[4], 0, gTalkMsgIndexNone, 0, 0);
+                ((ChoiceList *)(o))->setEntry(0, &b[4], 0, (const u8 *)(void *)(gTalkMsgIndexNone), (const char *)(0), 0);
                 b[5] = 0xe6;
-                ChoiceList_setEntry(o, 1, &b[5], 0, gTalkMsgIndexNone, 0, 0);
-                ChoiceList_loadTexts(o);
-                TalkWindowState_openChoices(window, 1);
+                ((ChoiceList *)(o))->setEntry(1, &b[5], 0, (const u8 *)(void *)(gTalkMsgIndexNone), (const char *)(0), 0);
+                ((ChoiceList *)(o))->loadTexts();
+                ((TalkWindowState *)(window))->openChoices(1);
             }
         } else {
             b[6] = gTalkMsgIndexEnd;
-            TalkWindowState_setNextMessage(window, &b[6], 0);
+            ((TalkWindowState *)(window))->setNextMessage(&b[6], 0);
         }
     }
 }
@@ -370,7 +371,7 @@ void MuseumExhibitInfo::onMessageStart(u32) {
             for (i = 0; i < n; i++) {
                 w1 = items[cursor];
                 ItemName o(&w1);
-                TalkWindowState_setNamedSlot(window, i, &o, 7);
+                ((TalkWindowState *)(window))->setNamedSlot(i, (void *)(void *)(&o), 7);
                 advanceToNextDonated();
             }
         } else {
@@ -378,10 +379,10 @@ void MuseumExhibitInfo::onMessageStart(u32) {
             if (idx < itemCount) {
                 w2 = items[idx];
                 MsgString9B e;
-                MuseumData_getDonorName(&data_021ed0a0, &e, &w2);
-                TalkWindowState_setSlot(window, 0, &e);
+                ((MuseumData *)(&data_021ed0a0))->getDonorName((s32)(&e), &w2);
+                ((TalkWindowState *)(window))->setSlot(0, (void *)(void *)(&e));
                 ItemName o2(&w2);
-                TalkWindowState_setNamedSlot(window, 0, &o2, 7);
+                ((TalkWindowState *)(window))->setNamedSlot(0, (void *)(void *)(&o2), 7);
                 if (kind != 3) {
                     advanceToNextDonated();
                 }
@@ -458,7 +459,7 @@ void MuseumExhibitInfo::advanceToNextDonated() {
     u32 i = cursor + 1;
     for (; i < itemCount; i++) {
         u16 w = items[i];
-        if (MuseumData_isDonated(&data_021ed0a0, &w)) {
+        if (((MuseumData *)(&data_021ed0a0))->isDonated(&w)) {
             cursor = i;
             return;
         }
@@ -471,7 +472,7 @@ u32 MuseumExhibitInfo::countDonatedFromCursor() {
     u32 i = cursor;
     for (; i < itemCount; i++) {
         u16 w = items[i];
-        if (MuseumData_isDonated(&data_021ed0a0, &w)) {
+        if (((MuseumData *)(&data_021ed0a0))->isDonated(&w)) {
             cnt++;
         }
     }
@@ -482,7 +483,7 @@ BOOL MuseumExhibitInfo::isAllDonated() {
     u32 i;
     for (i = 0; i < itemCount; i++) {
         u16 w = items[i];
-        if (MuseumData_isDonated(&data_021ed0a0, &w) == 0) {
+        if (((MuseumData *)(&data_021ed0a0))->isDonated(&w) == 0) {
             return FALSE;
         }
     }
@@ -493,7 +494,7 @@ BOOL MuseumExhibitInfo::isAnyDonated() {
     u32 i;
     for (i = 0; i < itemCount; i++) {
         u16 w = items[i];
-        if (MuseumData_isDonated(&data_021ed0a0, &w)) {
+        if (((MuseumData *)(&data_021ed0a0))->isDonated(&w)) {
             return TRUE;
         }
     }
@@ -532,7 +533,7 @@ BOOL MuseumExhibitInfo::onDraw() {
 BOOL MuseumExhibitInfo::onExecute() {
     execAct();
     if (isAutoTalkKind() == 0) {
-        TouchPicker_addSphere(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position, 0xc00, 0xe, index);
+        (Scene_GetTouchPicker())->addSphere((TouchPickSphere *)touchSphere, (VecFx32 *)(&position), (VecFx32 *)(0xc00), 0xe, index);
     }
     return TRUE;
 }
@@ -564,7 +565,7 @@ BOOL MuseumExhibitInfo::onCreate() {
         l.a = (u16)gCommManager->myAid;
         *(u16 *)&l = (*(u16 *)&l & ~0xfc) | ((Scene_GetCurrent() & 0x3f) << 2);
         l.c = index;
-        Character_setCharId(this, *(u16 *)&l);
+        ((Character *)(this))->setCharId(*(u16 *)&l);
         changeAct(0);
         r = buildItemList();
     } else {
@@ -574,11 +575,11 @@ BOOL MuseumExhibitInfo::onCreate() {
 }
 
 MuseumExhibitInfo::~MuseumExhibitInfo() {
-    _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
+    ((TouchPickSphere *)((void *)((TouchPickSphere *)touchSphere)))->~TouchPickSphere();
 }
 
 MuseumExhibitInfo::MuseumExhibitInfo() {
-    _ZN15TouchPickSphereC1Ev((TouchPickSphere *)touchSphere);
+    new ((TouchPickSphere *)touchSphere) TouchPickSphere();
 }
 
 extern "C" MuseumExhibitInfo *MuseumExhibitInfo_Create(void) {

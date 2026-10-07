@@ -1,5 +1,6 @@
 #include "types.h"
 #include "player/PlayerFaceTexRef.h"
+#include "sys/Heap.h"
 
 extern "C" {
 extern void *gPlayerFaceTexHeap;
@@ -36,7 +37,7 @@ extern "C" void PlayerFaceTexPool_Create(void *parent) {
     PlayerFaceTexHeap_Create(parent);
     PlayerFaceTexPool_AllocBuffers(sPlayerFaceTexPool.ptr);
     if (gPlayerFaceTexHeap) {
-        Heap_adjust(gPlayerFaceTexHeap);
+        ((Heap *)(gPlayerFaceTexHeap))->adjust();
     }
 }
 
@@ -67,7 +68,7 @@ extern "C" void PlayerFaceTexPool_AllocBuffers(u32 *arr) {
 
 void PlayerFaceTexPool::freeBuffers() {
     for (s32 i = 0; i < 4; i++) ptr[i] = 0;
-    if (gPlayerFaceTexHeap) Heap_freeAll(gPlayerFaceTexHeap);
+    if (gPlayerFaceTexHeap) ((Heap *)(gPlayerFaceTexHeap))->freeAll();
 }
 
 void *PlayerFaceTexPool::getBuffer(u32 idx) { return (void *)ptr[idx]; }

@@ -23,24 +23,11 @@
 #include "actor/ActorFollowCollider.h"
 #include "actor/SpNpcActor.h"
 #include "talk/SpNpcTalkRequest.h"
+#include "game/Unk_0201acf8.h"
+#include "player/PlayerData.h"
 
 extern "C" {
-void _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(void *a, void *b);
-void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
-void _ZN11NpcMoveCtrl11setTurnModeEh(void *self, s32 a);
 s32 Scene_GetCurrent(void);
-void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d0, s32 d1, s32 d2, s32 d3, s32 d4, s32 d5, s32 d6);
-void _ZN13NpcFootstepFx16disableFootstepsEv(void *self);
-void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
-s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
-s32 _ZN12Unk_0201acf88getLevelEv(void *self);
-s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
-s32 _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *owner, s32 a);
-void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *self, void *v);
-s32 _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
-void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
-s32 _ZN13NpcActionCtrl9getActionEv(void *self);
-void *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
 void Npc_RotateOffsetXZ(void *out, void *pos, void *a, s32 b);
 s32 Npc_IsPosBlocked(void *v);
 s32 Math_AngleXZ(void *pos, void *v);
@@ -54,16 +41,9 @@ void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
 void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
-void *_ZN10PlayerData18getLostChildRecordEv(void *);
 s32 _ZN15LostChildRecord9getTownIdEv(void *p);
-s32 _ZN10PlayerData8testFlagEj(void *p, s32 a);
-void _ZN10PlayerData7setFlagEj(void *p, s32 a);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
-u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
-u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
-BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern s32 gVec3Zero[3];
@@ -181,11 +161,11 @@ BOOL SpNpcKaitlin::preCreate() {
         return FALSE;
     }
     sSpNpcKaitlinInstance = this;
-    _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest(this, &talk);
+    ((NpcActor *)(this))->setTalkRequest((ActorTalkRequest *)(&talk));
     talk.attachOwner(this);
     if (Scene_GetCurrent()) {
-        _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x333, 0xcc, 0x133);
-        _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x280, 0xcc, 0x133);
+        ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(2, 0x333, 0xcc, 0x133);
+        ((NpcMoveCtrl *)(&moveCtrl))->setSpeedPreset(1, 0x280, 0xcc, 0x133);
     }
     netSyncOff = 1;
     return TRUE;
@@ -250,7 +230,7 @@ BOOL SpNpcKaitlin::updateAct() {
 }
 
 BOOL SpNpcKaitlin::acceptsInteraction(void *) {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         return TRUE;
     }
     return FALSE;
@@ -260,7 +240,7 @@ void SpNpcKaitlin::onInteractionEvent(u32 a, u8) {
     switch (a) {
     case 1:
         talk.resetMsg();
-        talk.setTalkPlayer(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         changeAct(1);
         break;
     case 0:
@@ -268,7 +248,7 @@ void SpNpcKaitlin::onInteractionEvent(u32 a, u8) {
         break;
     case 3:
         talk.resetMsg();
-        talk.setTalkPlayer(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.setTalkPlayer(((NpcActor *)(this))->getPlayerActor(4));
         changeAct(9);
         break;
     case 8:
@@ -288,7 +268,7 @@ void SpNpcKaitlin::changeAct(s32 state) {
 }
 
 BOOL SpNpcKaitlin::setupAct00() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -304,7 +284,7 @@ BOOL SpNpcKaitlin::setupAct01() {
 }
 
 BOOL SpNpcKaitlin::mainAct01() {
-    if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
+    if (((NpcTalkCtrl *)(&talkCtrl))->isBusy() == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(2);
     }
@@ -316,9 +296,9 @@ BOOL SpNpcKaitlin::setupAct09() {
     void *p = talk.getTalkPlayer();
     x = 0;
     if (p != NULL) {
-        x = _ZN8NpcActor10getAngleToEPS_(this, p);
+        x = ((NpcActor *)(this))->getAngleTo((NpcActor *)(p));
     }
-    _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
+    ((NpcTalkCtrl *)(&talkCtrl))->requestTurnAndTalk(0, x, 0);
     return TRUE;
 }
 
@@ -352,43 +332,43 @@ BOOL SpNpcKaitlin::mainAct03() {
 }
 
 BOOL SpNpcKaitlin::setupAct04() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 2, 0xf400, 0x14600, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(2, 2, 0xf400, 0x14600, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcKaitlin::mainAct04() {
-    if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-        if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 2) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
 }
 
 BOOL SpNpcKaitlin::setupAct05() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN11NpcMoveCtrl11setTurnModeEh(&moveCtrl, 2);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(3, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcMoveCtrl *)(&moveCtrl))->setTurnMode(2);
     return TRUE;
 }
 
 BOOL SpNpcKaitlin::mainAct05() {
-    if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-        if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 3) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
 }
 
 BOOL SpNpcKaitlin::setupAct06() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 4, 2, 0x10000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(4, 2, 0x10000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
 BOOL SpNpcKaitlin::mainAct06() {
-    if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-        if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (((NpcActionCtrl *)(&actionCtrl))->isActionDone()) {
+        if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1) {
+            ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
     return TRUE;
@@ -415,8 +395,8 @@ void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
     TalkStartMsg *out = (TalkStartMsg *)outp;
     void *p = PlayerData_GetCurrent();
     out->msgKey = sSpNpcKaitlinMsgKey;
-    if (_ZN10PlayerData8testFlagEj(p, 0x33) == 0) {
-        if (_ZN10PlayerData8testFlagEj(p, 0x39) == 0) {
+    if (((PlayerData *)(p))->testFlag(0x33) == 0) {
+        if (((PlayerData *)(p))->testFlag(0x39) == 0) {
             setTopic(0);
         } else {
             setTopic(1);
@@ -430,11 +410,11 @@ void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
     }
     switch (getTopic()) {
     case 0:
-        _ZN10PlayerData7setFlagEj(p, 0x33);
+        ((PlayerData *)(p))->setFlag(0x33);
         out->msgIndex = 0;
         break;
     case 1:
-        _ZN10PlayerData7setFlagEj(p, 0x33);
+        ((PlayerData *)(p))->setFlag(0x33);
         out->msgIndex = Random_GlobalBelow(3) + 1;
         break;
     case 2:
@@ -448,7 +428,7 @@ void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
 }
 
 void SpNpcKaitlinTalk::onMessageStart(u32) {
-    void *r4 = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
+    void *r4 = ((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord();
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 0);
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 1);
 }
@@ -459,9 +439,9 @@ void SpNpcKaitlinTalk::onChoice(u32) {}
 
 BOOL SpNpcKaitlin::setupAct07() {
     actCounter = 0;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
+    ((NpcFootstepFx *)(&footstepFx))->enableFootsteps();
     _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
@@ -541,35 +521,35 @@ BOOL SpNpcKaitlin::findSidestepPos(VecFx32 *out, s32 *data) {
 BOOL SpNpcKaitlin::avoidObstacle() {
     void *p564 = &actionCtrl;
     void *p350 = &moveCtrl;
-    s32 st = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
+    s32 st = ((NpcLookAt *)(&obstacleProbe))->getObstacleBits();
     BOOL result = FALSE;
     VecFx32 v;
-    if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(p350, this, 1) == 0) {
+    if (((NpcMoveCtrl *)(p350))->hasArrived((Character *)(this), 1) == 0) {
         switch (st) {
         case 3:
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             result = TRUE;
             break;
         case 1:
             if (findSidestepPos(&v, &data_021f4658[1].x)) {
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(p350, &v);
+                ((NpcMoveCtrl *)(p350))->setDestination((VecFx32 *)(&v));
             } else {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             result = TRUE;
             break;
         case 2:
             if (findSidestepPos(&v, &data_021f4658[0].x)) {
-                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(p350, &v);
+                ((NpcMoveCtrl *)(p350))->setDestination((VecFx32 *)(&v));
             } else {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             result = TRUE;
             break;
         }
     } else {
-        if (_ZN11NpcMoveCtrl10hasNextLegEv(p350)) {
-            _ZN11NpcMoveCtrl16resetDestinationEv(p350);
+        if (((NpcMoveCtrl *)(p350))->hasNextLeg()) {
+            ((NpcMoveCtrl *)(p350))->resetDestination();
         }
     }
     return result;
@@ -590,9 +570,9 @@ BOOL SpNpcKaitlin::mainAct07() {
     Math_CountDownU8(&actCounter);
     if (a) {
         if (!tryAvoidObstacle()) {
-            if (_ZN13NpcActionCtrl12isActionDoneEv(p564)) {
-                if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
-                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            if (((NpcActionCtrl *)(p564))->isActionDone()) {
+                if (((Unk_0201acf8 *)(&unk_3aa))->getLevel() == 2) {
+                    ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
                     VecFx32 v1;
                     v1.x = gVec3Zero[0];
@@ -605,36 +585,36 @@ BOOL SpNpcKaitlin::mainAct07() {
                             if (Random_GlobalBelow(4) == 0) {
                                 k = 2;
                             }
-                            if (k != _ZN13NpcActionCtrl9getActionEv(&actionCtrl)) {
-                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, k, 1, v1.x, v1.z, 0, 0, 0, 0, data_020c6cc8, 0);
+                            if (k != ((NpcActionCtrl *)(&actionCtrl))->getAction()) {
+                                ((NpcActionCtrl *)(p564))->requestAction(k, 1, v1.x, v1.z, 0, 0, 0, 0, data_020c6cc8, 0);
                                 actCounter = 0x64;
                             }
                         } else {
-                            if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 4) {
-                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 4, 1, v1.x, v1.z, 0, ang, 0, 0, data_020c6cc8, 0);
+                            if (((NpcActionCtrl *)(&actionCtrl))->getAction() != 4) {
+                                ((NpcActionCtrl *)(p564))->requestAction(4, 1, v1.x, v1.z, 0, ang, 0, 0, data_020c6cc8, 0);
                                 actCounter = 0x50;
                             }
                         }
                     } else {
-                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                        ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     }
                 } else {
-                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                    ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
             } else {
                 if (speed != 0) {
-                    if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 2 || _ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 4) {
+                    if (((NpcActionCtrl *)(&actionCtrl))->getAction() == 1 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 2 || ((NpcActionCtrl *)(&actionCtrl))->getAction() == 4) {
                         if (actCounter == 0) {
-                            _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                            ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         } else {
-                            VecFx32 *src = (VecFx32 *)_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
+                            VecFx32 *src = (VecFx32 *)((NpcMoveCtrl *)(&moveCtrl))->getDestination();
                             VecFx32 v2;
                             v2.x = src->x;
                             v2.y = src->y;
                             v2.z = src->z;
                             s32 ang = Math_AngleXZ(&position, &v2);
                             if (!NpcActor_IsFrontAngle(ang - rotY)) {
-                                _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                                ((NpcActionCtrl *)(p564))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                             }
                         }
                     }
@@ -650,9 +630,9 @@ BOOL SpNpcKaitlin::mainAct07() {
 }
 
 BOOL SpNpcKaitlin::setupAct08() {
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    ((NpcActionCtrl *)(&actionCtrl))->requestAction(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     actCounter = 0;
-    _ZN13NpcFootstepFx16disableFootstepsEv(&footstepFx);
+    ((NpcFootstepFx *)(&footstepFx))->disableFootsteps();
     return TRUE;
 }
 
