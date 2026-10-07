@@ -34,8 +34,6 @@
 #include "talk/MsgString.h"
 #define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02090268.h"
@@ -46,6 +44,7 @@
 #include "proto/main/unk_020a8c9c.h"
 #include "proto/main/unk_020afeb4.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov046/unk_ov046_02258de0.h"
 
 
@@ -60,16 +59,16 @@ typedef void (SpNpcCelesteTalk::*SpNpcCelesteChoiceFn)(s32);
 
 extern "C" {
 extern void *gCommManager;
-extern u8 gTouchPrevHeld;
-extern u8 gTouchPrevChanged;
 extern u16 gPad[];
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern VecFx32 gVec3Zero;
 
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void *Scene_GetTouchPicker();
 s32 TouchPickResult_GetTarget(void *a, void *b, void *c, s32 d);
+void Camera_LockFocusYaw();
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void TalkRequest_SetTargetDone(void *self);
 s32 Clock_GetTimeOfDay();
@@ -206,7 +205,6 @@ extern "C" u8 sSpNpcCelesteModelPath[];
 extern "C" u8 sSpNpcCelesteTexturePath[];
 extern "C" const TalkStartMsg sSpNpcCelesteTopicMsgs[5];
 extern "C" ActorProfile sSpNpcCelesteProfile;
-extern SpNpcCelesteActEntry sSpNpcCelesteActTable[5];
 extern "C" u8 sSpNpcCelesteKey[];
 
 static inline BOOL Unk_ov046_02258e68_Both() {

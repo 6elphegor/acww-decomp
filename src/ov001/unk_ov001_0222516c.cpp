@@ -49,9 +49,6 @@ extern const u16 sWfcTextBgCharBase[2];
 extern const u16 sWfcTextBgSize[4];
 #define data_ov001_0222a45a (sWfcTextBgSize + 1)
 extern const u16 gWfcScreenRect[4];
-extern void *sWfcFontPaths[2];
-extern char data_ov001_0222b894[];
-extern char data_ov001_0222b8a4[];
 
 void *WfcHeap_AllocClear(u32, u32);
 void *WfcHeap_Alloc(u32, u32);

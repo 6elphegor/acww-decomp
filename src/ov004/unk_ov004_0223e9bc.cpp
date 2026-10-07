@@ -4,7 +4,6 @@
 #include "Unk_020d8c7c.h"
 #include "item/ItemId.h"
 #include "sys/ProcProfile.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_0223e9bc.h"
 
@@ -30,6 +29,7 @@ u32 Scene_GetCurrent();
 BOOL Scene_InNookShop();
 BOOL SceneId_IsNookShop(u32 id);
 s32 Scene_GetNookShop();
+void Item_FromPlacedForm(u16 *out, u16 *in);
 u16 *AbleShop_GetItem(void *tbl, s32 idx, u16 *out);
 u16 *NookShop_GetItem(void *tbl, s32 idx, u16 *out);
 s32 NookShop_FindItem(void *tbl, u16 *p);
@@ -46,10 +46,6 @@ void _ZN15ShopStockPlacer11setupNoShopEv();
 void _ZN15ShopStockPlacer16setupScene15ShopEv();
 void _ZN15ShopStockPlacer13setupNookShopEv();
 void _ZN15ShopStockPlacer16setupScene10ShopEv();
-extern void *data_ov004_0224f254[2];
-extern void *data_ov004_0224f25c[2];
-extern void *data_ov004_0224f264[2];
-extern void *data_ov004_0224f274[2];
 }
 
 class ShopStockPlacer : public GameProc {

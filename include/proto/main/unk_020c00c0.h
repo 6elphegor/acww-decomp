@@ -27,6 +27,12 @@ void Weather_SetDateToday(void *p);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWeatherPrevDayRain
+extern u8 sWeatherPrevDayRain;
+#endif
+#ifndef PROTO_LOCAL_sWeatherRolledAtLoad
+extern s32 sWeatherRolledAtLoad;
+#endif
 #ifndef PROTO_LOCAL_Weather_UpdateDaily
 BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg);
 #endif

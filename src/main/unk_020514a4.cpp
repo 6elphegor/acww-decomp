@@ -11,7 +11,6 @@
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_02060034.h"
 #include "proto/main/unk_020a427c.h"
-#include "proto/ov004/unk_ov004_02204f24.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 
 extern "C" {
@@ -88,6 +87,7 @@ extern "C" {
 s32 FtrActor_GetLayer(s32 a);
 FtrActor *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
 void FtrActor_GetFtrIndex(void *p);
+s32 FtrActor_PredIsStereo(void *p);
 void _ZN8FtrActor8isGyroidEv();
 
 u32 Scene_GetCurrent();
@@ -118,13 +118,7 @@ RoomFtrState sNookShopFtrStates[6];
 RoomFtrState sScene10FtrState;
 SpotReservationTable sSpotReservations;
 
-extern Unk_0205242c_Item data_021c4e3c[2];
-extern Unk_0205242c_Item data_021c4e44[2];
-extern Unk_0205242c_Item data_021c4e54[2];
-extern Unk_0205242c_Item data_021c4e4c[2];
-extern Unk_0205242c_Item data_021c4e8c[4];
 extern const FtrFootprintShape *sFtrFootprintTables[3];
-extern s32 sSpotReserveResult;
 
 extern "C" {
 long long Vec_DistSq(void *a, void *b);

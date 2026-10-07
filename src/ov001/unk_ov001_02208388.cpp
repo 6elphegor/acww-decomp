@@ -4,6 +4,7 @@
 #include "proto/ov001/unk_ov001_02208388.h"
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
 #include "proto/ov001/unk_ov001_0221eb38.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
@@ -11,7 +12,6 @@
 typedef void (*WfcLoadFunc)(void *, s32, u32);
 
 extern "C" {
-extern void *gWfcMsgBank;
 
 extern void DC_FlushRange(void *, u32);
 extern void *strncpy(void *, void *, u32);

@@ -11,6 +11,37 @@ class CheckInGate;
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d7ac
+extern char data_ov004_0224d7ac[];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d788
+extern char data_ov004_0224d788[];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d7b8
+extern char data_ov004_0224d7b8[];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d794
+extern char data_ov004_0224d794[];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d7a0
+extern char data_ov004_0224d7a0[];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d7c4
+extern char data_ov004_0224d7c4[];
+#endif
+#ifndef PROTO_LOCAL_sCheckInGateGroundMats
+extern char *sCheckInGateGroundMats[7];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d77c
+extern char data_ov004_0224d77c[];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_CheckInGate_Create
 CheckInGate *CheckInGate_Create();
 #endif

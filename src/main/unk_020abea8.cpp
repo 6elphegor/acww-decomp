@@ -14,10 +14,10 @@
 #include "gfx/ObjShadowStrip.h"
 #include "nitro/io_access.h"
 #include "gfx/G3dResAccess.h"
-#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ObjShadow_Update  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/itcm/unk_01ff8ad4.h"
@@ -68,21 +68,7 @@ extern u8 gViewMtx[];
 
 extern const s32 sObjShadowCoordShift;
 extern const ObjShadowTexDef sObjShadowTexDefs[];
-extern char sObjShadowTexNameFc[];
-extern char sObjShadowTexNameTr[];
-extern char sObjShadowTexNameGr[];
-extern u8 sCharaShadowAlpha;
-extern u8 sObjShadowAlpha;
 
-extern s32 sObjShadowSkew;
-extern u8 sObjShadowNormMtx[];
-extern u8 sObjShadowViewMtx[];
-extern ObjShadowTexture sObjShadowTextures[];
-extern ObjShadowStrip sTreeShadowStage2;
-extern ObjShadowStrip sTreeShadowStage3;
-extern ObjShadowStrip sTreeShadowStage4;
-extern ObjShadowStrip sRockShadow;
-extern ObjShadowStrip sSignShadow;
 
 static inline void *Unk_020ac500_Data(const NNSG3dResDict *dict, u32 idx) {
     NNSG3dResDictEntryHeader *hdr = (NNSG3dResDictEntryHeader *)((u8 *)dict + dict->ofsEntry);

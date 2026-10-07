@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_02070560.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct PatternPresetInfoFile;
+struct PatternTexCache;
+struct PresetPatternBuffer;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -113,6 +116,15 @@ s32 PatternSrc_ResolveKind(s32 t);
 #ifndef PROTO_LOCAL_PatternSrc_Swap
 BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e);
 #endif
+#ifndef PROTO_LOCAL_sAblePatternTexWork
+extern u8 *sAblePatternTexWork;
+#endif
+#ifndef PROTO_LOCAL_sAblePatternVramTasks
+extern u8 *sAblePatternVramTasks;
+#endif
+#ifndef PROTO_LOCAL_sPlayerPatternTexKeys
+extern u32 sPlayerPatternTexKeys[4][8];
+#endif
 #ifndef PROTO_LOCAL_Pattern_RemovePlayerItems
 void Pattern_RemovePlayerItems(s32 p);
 #endif
@@ -155,7 +167,31 @@ BOOL PatternTex_UploadPlayer(u32 a, u32 b);
 #ifndef PROTO_LOCAL_PatternTex_UploadAble
 BOOL PatternTex_UploadAble(u32 x);
 #endif
+#ifndef PROTO_LOCAL_sPlayerPatternTexWork
+extern u8 *sPlayerPatternTexWork;
+#endif
+#ifndef PROTO_LOCAL_sPlayerPatternVramTasks
+extern u8 *sPlayerPatternVramTasks;
+#endif
+#ifndef PROTO_LOCAL_sAblePatternTexKeys
+extern u32 sAblePatternTexKeys[8];
+#endif
+#ifndef PROTO_LOCAL_data_021cbcac
+extern u8 data_021cbcac[4];
+#endif
+#ifndef PROTO_LOCAL_sAbleDisplayDirtyBits
+extern u8 sAbleDisplayDirtyBits;
+#endif
 }
+#ifndef PROTO_LOCAL_sPresetPatternBuffer
+extern PresetPatternBuffer sPresetPatternBuffer;
+#endif
+#ifndef PROTO_LOCAL_sPatternTexCache
+extern PatternTexCache sPatternTexCache;
+#endif
+#ifndef PROTO_LOCAL_sPatternPresetInfo
+extern PatternPresetInfoFile sPatternPresetInfo;
+#endif
 #endif
 
 #endif

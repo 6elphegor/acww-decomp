@@ -16,6 +16,7 @@
 #define PROTO_LOCAL_SndMgr_PlaySe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SndMgr_PlayTalkVoice  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SndMgr_PlayVoice  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ed81c.h"
 #include "proto/autoload_2/unk_020ee98c.h"
 #include "proto/autoload_2/unk_020ef150.h"
@@ -85,10 +86,6 @@ s32 SndMgr_ClampVolume(BgmObj *o, s32 v);
 void SndMgr_PlayVoice(BgmObj *o, u32 a, s32 b, s32 c);
 void SndMgr_PlaySe(void *p, u32 v);
 extern u8 gSndMgr[];
-extern u8 data_021f5b64, data_021f5b60, data_021f5b48, data_021f5b58, data_021f5b54, data_021f5b4c, data_021f5b50;
-extern u8 data_021f5b6c, data_021f5b68, sVoicePendingVolume;
-extern u16 sVoicePendingSyllable, data_021f5b74, data_021f5b78;
-extern s32 sVoicePendingPitch;
 extern Player gSndSeSystem;
 void *NNS_FndGetPrevListObject(void *list, void *obj);
 void *NNS_FndGetNextListObject(void *list, void *obj);
@@ -98,7 +95,6 @@ void NNS_FndAppendListObject(void *list, void *obj);
 extern s32 (*gSndListenerDistanceCallback)(PlayCtx *);
 extern s32 (*gSndListenerVolumeCallback)(PlayCtx *);
 extern s32 (*gSndListenerPanCallback)(PlayCtx *);
-extern u16 gSndPanTrackMask;
 void SndSeGroup_StartVoice(Group *g, s32 i, s32 v);
 void SndSeGroup_ApplyVoiceParams(Group *g, s32 i);
 }

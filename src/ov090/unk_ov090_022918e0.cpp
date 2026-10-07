@@ -18,24 +18,26 @@
 #include "menu/MenuErrorMessage.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTabSwitchCooldown  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206db88.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
 
 extern "C" {
 
-extern void *gMenuHeap;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
 }
 
@@ -55,8 +57,6 @@ typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 extern "C" {
 
 extern u32 gCurrentHeap;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u8 gFieldSceneKind;
 }
 

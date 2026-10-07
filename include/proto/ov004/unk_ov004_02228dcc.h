@@ -21,6 +21,9 @@ void TarotProps_Draw();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sTarotProps
+extern TarotProps *sTarotProps;
+#endif
 #ifndef PROTO_LOCAL_TarotProps_Create
 TarotProps *TarotProps_Create();
 #endif

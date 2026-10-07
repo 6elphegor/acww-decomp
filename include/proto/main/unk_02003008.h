@@ -24,6 +24,27 @@ void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
 u32 Villager_PersonalityToVoiceType(u32 t);
 #endif
 }
+#ifndef PROTO_LOCAL_sPersonalityPrefixSnooty
+extern char sPersonalityPrefixSnooty[];
+#endif
+#ifndef PROTO_LOCAL_sPersonalityPrefixJock
+extern char sPersonalityPrefixJock[];
+#endif
+#ifndef PROTO_LOCAL_sPersonalityPrefixNormal
+extern char sPersonalityPrefixNormal[];
+#endif
+#ifndef PROTO_LOCAL_sPersonalityPrefixPeppy
+extern char sPersonalityPrefixPeppy[];
+#endif
+#ifndef PROTO_LOCAL_sPersonalityPrefixCranky
+extern char sPersonalityPrefixCranky[];
+#endif
+#ifndef PROTO_LOCAL_sPersonalityPrefixes
+extern char *sPersonalityPrefixes[6];
+#endif
+#ifndef PROTO_LOCAL_sPersonalityPrefixLazy
+extern char sPersonalityPrefixLazy[];
+#endif
 #endif
 
 #endif

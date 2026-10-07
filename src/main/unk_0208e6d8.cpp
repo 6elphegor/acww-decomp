@@ -7,6 +7,8 @@ extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
 #include "ui/UiWidget.h"
 #include "ui/InputModeIcon.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_data_020d5d0c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020d5d34  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -101,7 +103,6 @@ public:
 
 
 
-extern TransitionCommIcon sTransitionCommIcon;
 
 extern "C" {
 }
@@ -110,7 +111,6 @@ typedef void (TransitionCommIcon::*Unk_020e10f8_Fn)();
 
 typedef void (TalkBusyIcon::*Unk_020e10dc_Fn)();
 
-extern ProcProfile sTransitionCommIconProfile;
 
 BOOL InputModeIcon::isDrawBlocked() {
     BOOL r = FALSE;

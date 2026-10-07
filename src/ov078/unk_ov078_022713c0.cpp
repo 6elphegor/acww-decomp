@@ -42,6 +42,7 @@
 #define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_Get  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_GetVisitorPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
@@ -193,6 +194,7 @@ extern FxVec3 sSpNpcSaharahSideStepOffsets[2];
 extern u8 sSpNpcSaharahModelPath[];
 extern u8 sSpNpcSaharahTexturePath[];
 extern ActorProfile sSpNpcSaharahProfile;
+SpNpcSaharah *SpNpcSaharah_Create();
 }
 
 DebugColor data_ov078_022725c4(0x1f, 0x14, 0x14, 0x1f);

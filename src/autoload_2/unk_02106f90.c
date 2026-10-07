@@ -11,6 +11,8 @@ typedef int BOOL;
 #define NULL 0
 
 #include "nnsys/g3d_rt.h"
+#define PROTO_LOCAL_data_0213bcbc  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02106f90.h"
 typedef G3dRS RS;  // NNSG3dRS
 
 // NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h: the pointers move the later members on 64-bit hosts)

@@ -6,8 +6,10 @@
 #include "gfx/BgVramTask.h"
 #include "nitro/io_access.h"
 #define PROTO_LOCAL_String_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/ov093/unk_ov093_022918e0.h"
 
 
 
@@ -20,8 +22,6 @@ void MIi_CpuCopy16(void *a, void *b, s32 c);
 void MIi_CpuClear16(u32 a, void *b, s32 c);
 
 extern void *gCurrentHeap;
-extern char *sStaffRollPalettePath;
-extern char *sStaffRollLogoCharPath;
 }
 
 struct StaffRollLayer {

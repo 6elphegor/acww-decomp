@@ -4,48 +4,5 @@
 // Prototypes of the functions defined in src/ov065/unk_ov065_0226ec94.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-#include "net/NetCheck.h"
-#ifdef __cplusplus
-#include "types.h"
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-#ifndef PROTO_LOCAL_NetCheck_Destroy
-void NetCheck_Destroy();
-#endif
-#ifndef PROTO_LOCAL_NetCheck_StartThread
-void NetCheck_StartThread();
-#endif
-#ifndef PROTO_LOCAL_NetCheck_Abort
-void NetCheck_Abort();
-#endif
-#ifndef PROTO_LOCAL_NetCheck_ThreadMain
-void NetCheck_ThreadMain(void);
-#endif
-#ifndef PROTO_LOCAL_Unk_ov065_0226ecfc_pool_order
-__declspec(weak) void Unk_ov065_0226ecfc_pool_order(void);
-#endif
-#ifdef __cplusplus
-}
-#endif
-
-#ifdef __cplusplus
-extern "C" {
-#ifndef PROTO_LOCAL_NetCheck_Start
-s32 NetCheck_Start(NetCheckParams *cfg);
-#endif
-#ifndef PROTO_LOCAL_NetCheck_GetState
-s32 NetCheck_GetState(void);
-#endif
-#ifndef PROTO_LOCAL_NetCheck_SetState
-void NetCheck_SetState(s32 v);
-#endif
-#ifndef PROTO_LOCAL_NetCheck_GetErrorCode
-s32 NetCheck_GetErrorCode(void);
-#endif
-}
-#endif
 
 #endif

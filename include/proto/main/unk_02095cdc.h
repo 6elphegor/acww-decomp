@@ -140,6 +140,12 @@ s32 BottleLetter_IsBottleInTown();
 void BottleLetter_OnNewDay(s32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sMotherMonthLetterCount
+extern u8 sMotherMonthLetterCount[0xc];
+#endif
+#ifndef PROTO_LOCAL_sMotherMonthLetterFirst
+extern u8 sMotherMonthLetterFirst[0xc];
+#endif
 #endif
 
 #endif

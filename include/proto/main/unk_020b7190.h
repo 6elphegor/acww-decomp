@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+class FieldInfoBalloon;
 #endif
 
 #ifdef __cplusplus
@@ -54,6 +55,9 @@ void FieldInfoBalloon_ShowSyncKindMsg(s32 i);
 void FieldInfoBalloon_ShowTimerMsg(u32 arg);
 #endif
 }
+#ifndef PROTO_LOCAL_sFieldInfoBalloon
+extern FieldInfoBalloon sFieldInfoBalloon;
+#endif
 #endif
 
 #endif

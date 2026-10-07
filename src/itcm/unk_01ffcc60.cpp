@@ -5,20 +5,19 @@
 #include "nitro/io_access.h"
 #define PROTO_LOCAL_Main_VBlankCallback  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
+#include "proto/dtcm/unk_027e0434.h"
 #include "proto/itcm/unk_01ffcc60.h"
-#include "proto/main/unk_020b8340.h"
+#include "proto/main/unk_02060b7c.h"
 
 extern "C" {
 extern s32 sVBlankCount;
-extern s32 gVBlanksPerFrame;
 extern u16 gMainWaitingFrame;
 extern u8 gFrameWaitQueue[];
 extern u8 gVBlankQueue[];
 extern u8 data_027e0000[];
-extern u8 sMenuWipeLine;
-extern u8 sMenuWipeEdge[];
 
 void OS_WakeupThread(void *queue); // OS_WakeupThread
+void VramQueueTex_Run(void);
 void HBlank_RunVBlank(void);
 }
 

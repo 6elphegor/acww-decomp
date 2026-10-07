@@ -22,7 +22,6 @@
 #include "save/MuseumData.h"
 #include "talk/ChoiceList.h"
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_02094810.h"
@@ -104,15 +103,6 @@ typedef BOOL (MuseumExhibitInfo::*Unk_ov004_02213f34_Fn)();
 
 
 extern "C" {
-extern s16 sMuseumExhibitSpawnMsg;
-extern char sMuseumExhibitMsgFile[];
-extern u8 sMuseumExhibitAutoTalkActive;
-extern u8 sMuseumExhibitInfoCount;
-extern u32 sMuseumExhibitSpawnKind;
-extern u8 *sMuseumExhibitSpawnList;
-extern u32 sMuseumExhibitSpawnCount;
-extern u32 sMuseumExhibitSpawnFacingArc;
-extern MuseumExhibitInfo *sMuseumExhibitInfos[0x20];
 }
 
 // ---- definitions ----

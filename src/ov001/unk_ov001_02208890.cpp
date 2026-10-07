@@ -3,7 +3,6 @@
 #include "proto/ov001/unk_ov001_02208388.h"
 #include "proto/ov001/unk_ov001_02208890.h"
 #include "proto/ov001/unk_ov001_0220c594.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
@@ -16,9 +15,8 @@ extern void DC_FlushRange(void *, u32);
 extern void MIi_CpuCopyFast(void *, void *, u32);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_Alloc(s32, s32);
+extern u8 *WfcConfig_GetEdit();
 extern void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
-extern void *sWfcHighlightScreens[20];
-extern u8 *sWfcHighlightScreen;
 }
 
 #pragma thumb off

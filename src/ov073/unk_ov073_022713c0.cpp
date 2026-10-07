@@ -31,6 +31,7 @@
 #include "town/VisitorPos.h"
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Pocket_CountMatching  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
@@ -156,6 +157,8 @@ extern char sSpNpcJoanKey[12];
 extern u8 sSpNpcJoanModelPath[23];
 extern u8 sSpNpcJoanTexturePath[27];
 extern const TalkStartMsg sSpNpcJoanTopicMsgs[3];
+s32 SpNpcJoan_IsEmptyItem(u16 *p);
+SpNpcJoan *SpNpcJoan_Create();
 }
 typedef BOOL (SpNpcJoan::*SpNpcJoanActFn)();
 extern SpNpcJoanActEntry sSpNpcJoanActTable[5];

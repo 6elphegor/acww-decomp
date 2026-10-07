@@ -21,22 +21,17 @@
 #include "gfx/Model.h"
 #include "snd/SndSeEmitter.h"
 #define PROTO_LOCAL_LooseSnowballs_Get  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Quat_Mul  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Quat_Normalize  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Quat_ToMtx43  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_MagXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02039c08.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020abbcc.h"
@@ -98,7 +93,6 @@ extern u32 gFrameCounter;
 extern s32 data_020d0584[4];
 extern u8 data_021ed2e6[];
 extern s16 data_02135f44[];
-extern void *gBgHeap;
 extern const s16 sSnowmanNeighbourOffsets[16];
 // 0x0222efba is the table's second element: no separate symbol once this unit is linked
 #define data_ov003_0222efba (&sSnowmanNeighbourOffsets[1])
@@ -114,6 +108,7 @@ s32 Vec_Sub(void *out, void *a, void *b);
 s32 Math_ApproachS32Max(void *p, s32 a, s32 b, s32 c);
 s32 Vec_MagXZ(void *v);
 s32 Math_ApproachS16Div(s16 *p, s32 a, s32 b, s32 c);
+void Vec_Scale(void *v, s32 ang);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
 s32 WorldCurve_ToCurved(void *out, void *in);

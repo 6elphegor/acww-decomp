@@ -34,6 +34,9 @@
 #include "item/LetterView.h"
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov070_022726e0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov070_022726e4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSpNpcGracieKey  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
@@ -139,8 +142,6 @@ struct SpNpcGracieActEntry {
 
 extern "C" {
 extern u8 sSpNpcGracieKey[];
-extern u8 sSpNpcGracieModelPath[];
-extern u8 sSpNpcGracieTexturePath[];
 extern const TalkStartMsg sSpNpcGracieTopicMsgs[];
 extern const SpNpcGracieOutfitTier sSpNpcGracieOutfitTiers[];
 extern u16 data_020c6cc8;

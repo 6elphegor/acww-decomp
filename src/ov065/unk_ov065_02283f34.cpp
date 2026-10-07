@@ -7,6 +7,17 @@
 #include "net/GsBytes.h"
 #include "net/gsPlatformUtil.h"
 #include "net/SockAddrIn.h"
+#define PROTO_LOCAL_gti2GetResponse  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gti2MessageCheck  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_serverreqs  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02283720.h"
+#include "proto/ov065/unk_ov065_02283f34.h"
+#include "proto/ov065/unk_ov065_02285778.h"
 
 extern "C" { u8 data_ov065_0228e14c[4] = {0xfe, 0xfe, 0, 0}; }
 
@@ -23,52 +34,20 @@ extern "C" {
 
 extern "C" {
 extern DArrayImplementation *serverreqs;
-extern s32 sGsPersistSocket;
-extern s32 stats_initstate;
-extern char *rcvbuffer;
-extern s32 rcvmax;
-extern s32 rcvlen;
-extern volatile s32 data_ov065_022910fc;
-extern char data_ov065_02291304[];
-extern char *sGsPersistXorKey;
 extern char data_ov065_0228e128[];
 extern char data_ov065_0228e108[];
 
 s32 strncmp(const char *, const char *, u32);
-s32 atol(const char *);
-char *strstr(const char *, const char *);
-u32 STD_GetStringLength(const char *);
-void STD_ConcatenateString(char *, const char *);
-void memmove(void *, void *, u32);
-void memcpy(void *, const void *, s32);
-s32 rand();
-void srand(s32);
-s32 abs(s32);
 
 void *ArrayNth(DArrayImplementation *, s32);
 s32 ArrayLength(DArrayImplementation *);
-void CallReqCallback(s32, s32, s32, char *, s32);
-s32 ProcessInBuffer(char *, s32);
-void ClosePendingCallbacks();
 s32 CanReceiveOnSocket(s32);
 s32 recv(s32, char *, s32, s32);
 void shutdown(s32, s32);
 void closesocket(s32);
-void GsUtil_Free(void *);
-void *GsUtil_Realloc(void *, s32);
-void *GsUtil_Alloc(s32);
 s32 current_time(u8 *);
 void gti2CloseSocket(GTI2Socket *);
 
-void ProcessPlayerAuth(char *, s32);
-void ProcessGetPid(char *, s32);
-void ProcessGetData(char *, s32);
-void ProcessSetData(char *, s32);
-s32 FindRequest(s32, s32, s32);
-char *value_for_key_safe(char *, char *);
-char *value_for_key(char *, char *);
-s32 SocketReadable(s32);
-void CloseStatsConnection();
 s32 gti2VerifyChallenge(u8 *);
 
 
@@ -116,20 +95,16 @@ extern "C" {
 extern void *ArrayNth(void *, s32);
 extern s32 ArrayLength(void *);
 extern void ArrayFree(void *);
-extern void GsUtil_Free(void *);
-extern void *GsUtil_Alloc(s32);
 extern s32 TableRemove(void *, void *);
 extern s32 ArrayAppend(void *, void *);
 extern s32 TableMapSafe(s32, void *, s32);
 extern void msleep(s32);
-extern void memcpy(void *, const void *, s32);
 
 extern s32 gti2CloseSocket(void *);
 extern s32 gti2SocketSend(void *, s32, u32, u32, u32);
 extern s32 gti2FreeSocketConnection(void *);
 extern s32 gti2NewSocketConnection(void *, void *, u32, u32);
 extern void gti2MessageCheck(void *, void *);
-extern s32 gt2StringToAddress(u32, u32 *, u16 *);
 
 extern void gti2GetChallenge(void *);
 extern void gti2GetResponse(void *, void *);
@@ -215,7 +190,6 @@ extern "C" {
 extern u8 data_ov065_0228e14c[];
 
 
-s32 memcmp(const void *, const void *, s32);
 
 s32 gti2RejectConnection(Conn *, s32, s32);
 s32 gti2AcceptConnection(Conn *, void *);
@@ -226,7 +200,6 @@ s32 gti2SocketError(Sock *);
 s32 gt2CloseAllConnectionsHard(Conn *);
 s32 gti2CloseSocket(Conn *);
 s32 gti2CreateSocket(s32, s32, s32, s32, s32);
-s32 gti2UShortToBuffer(u8 *, s32, s32);
 s32 gti2ConnectionSendData(Conn *, u8 *, s32);
 s32 gti2SocketSend(Sock *, s32, s32, u8 *, s32);
 s32 gti2BufferWriteData(Buf *, const u8 *, s32);
@@ -317,13 +290,10 @@ typedef GTI2IncomingBufferMessage It;
 
 extern "C" {
 
-s32 memcmp(void *, const void *, u32);
-s32 GsUtil_Free(void *);
 s32 ArrayNth(void *, s32);
 s32 ArrayLength(void *);
 s32 ArrayDeleteAt(void *, s32);
 s32 ArrayInsertSorted(void *, void *, void *);
-s32 gti2CheckResponse(void *, void *);
 s32 gti2GetResponse(void *, void *);
 s32 gti2GetChallenge(void *);
 s32 gti2BufferShorten(void *, s32, s32);
@@ -342,8 +312,6 @@ s32 gti2SendServerChallenge(Cn *, void *, void *);
 s32 gti2ConnectionMemoryError(Cn *);
 s32 gti2ConnectionCommunicationError(Cn *);
 s32 gti2ConnectionError(Cn *, s32, s32);
-s32 gti2SNDiff(u32, u32);
-s32 gti2UShortFromBuffer(void *, s32);
 s32 gti2HandleESN(Cn *, s32);
 
 s32 gti2HandleAck(Cn *c, void *p, s32 n);

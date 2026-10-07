@@ -173,6 +173,7 @@ extern u8 sSpNpcResettiModelPath[23];
 extern u8 sSpNpcResettiTexturePath[27];
 extern SpNpcResettiTalkScript sSpNpcResettiTalkScripts[3];
 extern SpNpcResettiActEntry sSpNpcResettiActTable[6];
+SpNpcResetti *SpNpcResetti_Create();
 }
 
 u8 sSpNpcResettiKey[13] = {'s','p','_','n','p','c','_','r','e','s','e','t',0};

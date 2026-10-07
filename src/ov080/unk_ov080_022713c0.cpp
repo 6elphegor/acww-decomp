@@ -59,8 +59,6 @@ void PlayerData_setFlag(void *p, u32 a);
 BOOL PlayerData_isUsed(void *p);
 extern u16 data_020c6cc8;
 extern u8 gSavePlayers[];
-extern u8 sSpNpcTortimerModelPath[];
-extern u8 sSpNpcTortimerTexturePath[];
 }
 
 

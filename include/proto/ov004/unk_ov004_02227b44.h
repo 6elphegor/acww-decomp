@@ -13,6 +13,21 @@ class MuseumDisplay;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sMuseumPictureTexPath
+extern char sMuseumPictureTexPath[0x20];
+#endif
+#ifndef PROTO_LOCAL_sMuseumDisplayNodeName
+extern char sMuseumDisplayNodeName[0x28];
+#endif
+#ifndef PROTO_LOCAL_sMuseumInsectTexPath
+extern char sMuseumInsectTexPath[0x20];
+#endif
+#ifndef PROTO_LOCAL_sMuseumInsectArcPath
+extern char sMuseumInsectArcPath[0x1c];
+#endif
+#ifndef PROTO_LOCAL_sMuseumPictureArcPath
+extern char sMuseumPictureArcPath[0x1c];
+#endif
 #ifndef PROTO_LOCAL_MuseumDisplay_InitRenderObj
 void MuseumDisplay_InitRenderObj(void *p);
 #endif

@@ -37,6 +37,12 @@ BOOL HBlank_Add(HBlankTask *t, s32 a, void (*b)(), void (*c)());
 BOOL HBlank_Remove(HBlankTask *t);
 #endif
 }
+#ifndef PROTO_LOCAL_sHBlankListHead
+extern HBlankTask *sHBlankListHead;
+#endif
+#ifndef PROTO_LOCAL_sHBlankListTail
+extern HBlankTask *sHBlankListTail;
+#endif
 #endif
 
 #endif

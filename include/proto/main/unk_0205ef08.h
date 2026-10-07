@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0205ef08.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct PlayerPalettePool;
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "types.h"
@@ -82,6 +83,12 @@ void PlayerPaletteRef_LoadSkin(u32 x, u32 y);
 void PlayerPaletteRef_LoadHair(u32 x, u32 y);
 #endif
 }
+#ifndef PROTO_LOCAL_sPlayerPalettePool
+extern PlayerPalettePool sPlayerPalettePool;
+#endif
+#ifndef PROTO_LOCAL_sPlayerPalettePathBuf
+extern char sPlayerPalettePathBuf[0x14];
+#endif
 #endif
 
 #endif

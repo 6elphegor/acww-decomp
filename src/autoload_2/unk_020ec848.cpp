@@ -12,6 +12,13 @@
 #include "sys/QNode.h"
 #include "sys/ProcBase.h"
 #include "sys/ProcProfile.h"
+#define PROTO_LOCAL_ProcBase_StartCreate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL__ZN8ProcBase10taskCreateEv  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020ec848.h"
+#include "proto/autoload_2/unk_020ed7e4.h"
+#include "proto/autoload_2/unk_02114d84.h"
+#include "proto/itcm/unk_01ffcfc0.h"
 
 
 class ProcBase;
@@ -26,8 +33,6 @@ typedef BOOL (ProcBase::*P2)();
 
 
 extern "C" {
-extern Heap *gCurrentHeap;
-extern Heap *gProcHeap;
 extern u8 gProcCreateStep;
 extern u8 sProcCreateGroup;
 extern u16 gProcCreateProfile;
@@ -44,19 +49,14 @@ extern TreeNode gProcTree;
 extern QList gTaskExecuteList, gTaskCreateList, gTaskDrawList, gTaskDeleteList;
 extern ProcProfile **gProfileTable;
 
-void Heap_Free(Heap *heap, void *p);
-void *Heap_Alloc(Heap *heap, u32 size);
-void OS_InitTick(void);
 #define Heap_alloc _ZN4Heap5allocEji
 void *Heap_alloc(Heap *self, u32 size, s32 align);
 #define Heap_destroy _ZN4Heap7destroyEv
 void Heap_destroy(Heap *self);
 #define Heap_destroy2 _ZN4Heap8destroy2Ev
 void Heap_destroy2(Heap *self);
-Heap *FrameHeap_CreateAsCurrent(u32 size, Heap *parent);
 #define Heap_getFreeSize _ZN4Heap11getFreeSizeEv
 u32 Heap_getFreeSize(Heap *self);
-void Heap_RestoreCurrent(void);
 #define Heap_adjust _ZN4Heap6adjustEv
 void *Heap_adjust(Heap *self);
 #define Heap_free _ZN4Heap4freeEPv
@@ -68,24 +68,12 @@ void TreeNode_Attach(TreeNode *root, TreeNode *n, TreeNode *parent);
 TreeNode *TreeNode_Construct(TreeNode *n);
 void Task_InsertByPriority(QList *l, QNode *n);
 void CmdSeq_Undo(void *p);
-BOOL CmdSeq_Poll(void *p);
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
-TreeNode *TreeNode_GetNextSkipChildren(TreeNode *n);
-TreeNode *TreeNode_GetNextPreOrder(TreeNode *n);
 u32 ProcBase_RunPhase(void *p, P2 a, P2 b, P2 c);
 
-void Mem_FreeForDelete(void *p);
-void *Mem_AllocForNew(u32 size);
-ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d);
-void Proc_CallDeleteHook(u32 a);
-u32 Proc_CallCreateHook(u32 a);
-void Proc_SetCreateParams(u32 a, TreeNode *parent, u32 c, u32 d);
 #define ProcBase_taskCreate _ZN8ProcBase10taskCreateEv
 void ProcBase_taskCreate(ProcBase *p);
 void ProcBase_StartCreate(ProcBase *p);
-void ProcBase_RequestDelete(ProcBase *p);
-ProcBase *ProcBase_GetParent(ProcBase *p);
-void _ZN8ProcBasedlEPv(void *p);
 }
 
 static inline BOOL isZero(u32 v) {

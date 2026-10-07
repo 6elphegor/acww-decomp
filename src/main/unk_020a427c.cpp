@@ -19,6 +19,7 @@
 #define PROTO_LOCAL_NetStatusUpdateMsg_Pack  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NetSyncMsg_Fini  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NetSyncMsg_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_0210fa84.h"
@@ -37,6 +38,7 @@
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_0208e6d8.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209c390.h"
 #include "proto/main/unk_0209c9f8.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020a427c.h"
@@ -197,9 +199,6 @@ struct NetSessionAreaView {
 extern "C" {
 extern CommManager *gCommManager;
 extern u8 gScreenTransition;
-extern u8 data_021c3cb8;
-extern u8 gSoftResetRequested;
-extern u32 gGameRoot;
 extern TownId gSaveTownId;
 }
 
@@ -230,21 +229,10 @@ s32 OS_ResetSystem(s32 v);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 }
 
-extern NetSessionState gNetSessionState;
 
 static inline NetSessionState &V2() { return gNetSessionState; }
 static inline NetSessionAreaView &V3() { return *(NetSessionAreaView *)&gNetSessionState; }
 
-extern u8 sSceneExists;
-extern u16 gNextSceneProfile;
-extern ProcProfile sSceneBaseProfile;
-extern u8 data_021eda50;
-extern volatile u8 sSceneFadeInDelay;
-extern u8 data_021eda58;
-extern u8 sSceneFadeInType;
-extern u8 sSceneFadeOutType;
-extern u8 gSceneCreating;
-extern void *gActorDefaultParent;
 
 // callers pass an untruncated int to these u8/u16 parameters
 

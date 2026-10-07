@@ -7,6 +7,7 @@
 #include "types64.h"
 struct OverlayHandleView;
 #ifdef __cplusplus
+#include "sys/OverlayHandle.h"
 #include "types.h"
 #endif
 
@@ -944,6 +945,15 @@ void CommCtrl_RecvLetterStorageToHost(u8 *a, s32 b);
 void CommCtrl_Dispatch(void *a, s32 b, s32 c, u32 idx);
 #endif
 }
+#ifndef PROTO_LOCAL_sBbsDefaultKey
+extern char *sBbsDefaultKey;
+#endif
+#ifndef PROTO_LOCAL_data_020e0548
+extern char data_020e0548[];
+#endif
+#ifndef PROTO_LOCAL_gOverlayHandle
+extern OverlayHandle gOverlayHandle;
+#endif
 #endif
 
 #endif

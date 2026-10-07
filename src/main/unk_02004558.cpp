@@ -130,6 +130,123 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "player/PlayerId.h"
 #include "snd/BgmManager.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_AnimSlotRef_Assign  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_AnimSlotRef_GetAnimId  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_AnimSlotRef_GetData  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_AnimSlotRef_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CharaClothTexRef_GetBuffer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ClothTex_GetTexThunk  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldObj_LoadIconModels  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldObj_LoadStones  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FieldObjectManager_Create  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FishShadow_EnterSpawn  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Footstep_GetSeAtPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FtrMgr_PollRemovedPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HeldItemModel_GetModel  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_HeldItemModel_PlayAnim  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetSlotAngle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetSlotPosXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_MainAct3C  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_MainDoorEntered  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetAct12  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetBeeSting  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetBuryItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetDrinkCoffee  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetFillHole  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetFtrPullMove  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetFtrPushMove  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetFtrRotate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetGetOutOfBedCheck  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetPickUpItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetPluck  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetSlingshotWatch  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetStandUpCheck  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_NetTreeShakeRelease  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_PackClothesChange  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_TestSlotFlag  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBodyModelRef_CancelTexUpload  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBodyModelRef_GetBuffer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBodyModelRef_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBodyModelRef_PollTexUpload  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBodyModelRef_RelocateTexture  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBodyModelRef_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBodyWorkRef_Assign  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerBodyWorkRef_GetHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerGlassesModelRef_CancelTexUpload  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerGlassesModelRef_GetBuffer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerGlassesModelRef_GetModelId  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerGlassesModelRef_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerGlassesModelRef_PollTexUpload  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerGlassesModelRef_Release  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerGlassesModelRef_RelocateTexture  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerGlassesModelRef_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerHead_CancelTexUpload  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerHead_GetModelFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerHead_GetModelId  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerHead_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerHead_PollTexUpload  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerHead_Release  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerHead_RelocateTextures  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerHead_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerPaletteRef_Assign  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerPaletteRef_GetHair  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerPaletteRef_GetSkin  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerSession_GetGfxSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RoomItemIcons_DrawItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SndMgr_PlaySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_SeEmitterPlayAlternate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sHouseRoachActiveCount  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_020e9a08.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02004558.h"
+#include "proto/main/unk_0201106c.h"
+#include "proto/main/unk_020119cc.h"
+#include "proto/main/unk_0202e840.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020571f4.h"
+#include "proto/main/unk_0205b7b0.h"
+#include "proto/main/unk_0205d480.h"
+#include "proto/main/unk_0205d7d8.h"
+#include "proto/main/unk_0205dfa4.h"
+#include "proto/main/unk_0205ef08.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206d988.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206fc44.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_0208eeac.h"
+#include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02097d1c.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209c37c.h"
+#include "proto/main/unk_0209c4a8.h"
+#include "proto/main/unk_020abbcc.h"
+#include "proto/main/unk_020af258.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_020b5e5c.h"
+#include "proto/main/unk_020b7190.h"
+#include "proto/main/unk_020b7d10.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_02225800.h"
+#include "proto/ov004/unk_ov004_02233074.h"
 
 
 
@@ -161,35 +278,20 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 namespace nA {
 extern "C" {
 
-void Melody_Update(void);
-void Melody_Init(void);
 #define SndMgr_update _ZN6SndMgr6updateEv
 void SndMgr_update(void *a);
 #define SndMgr_init _ZN6SndMgr4initEjjj
 void SndMgr_init(void *a, void *b, u32 c, void *d, s32 e);
-void Heap_Free(void *heap, void *p);
-void *Heap_AllocAligned(void *heap, unsigned long size, s32 align);
-s32 PlayerActor_GetObjectAlign(void);
-void memset(void *p, s32 v, unsigned long n);
-void Effect_End(s32 v);
-void PlayerSession_ClearActor(s32 v);
-void PlayerSession_ClearGfxSlot(s32 v);
-void Bgm_Release(s32 v);
-void FieldInfoBalloon_ClearNetMsg(void);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
-void CommSyncVar_SetVar(s32 v, s32 a, s32 b, s32 c);
 void _ZN13MatTexPatAnim7releaseEv(void *p);
 void _ZN11CachedModel7releaseEv(void *p);
-void HeldItemModel_Release(void *p);
 void PlayerGlassesModelRef_Release(void *p);
 void PlayerHead_Release(void *p);
 void PlayerBodyModelRef_CancelTexUpload(void *p);
 s32 Field_DrawItemModel(u16 a, void *b, void *c, s32 d, s32 e, s32 f);
 s32 RoomItemIcons_DrawItem(u16 a, void *b, void *c, s32 d, s32 e, s32 f);
 extern u8 gSndMgr[];
-extern void *gPlayerActorHeap;
-extern u8 gSndHeapBuffer[];
 extern u8 data_020d5e20[];
 extern s32 gCamera;
 extern s32 gCameraDistance;
@@ -213,7 +315,6 @@ extern "C" {
 
 void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
 s32 WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
-s32 WorldCurve_GetRadius();
 s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 void MTX_RotX33_(s32 *out, s32 a, s32 b);
 void MTX_RotY33_(s32 *out, s32 a, s32 b);
@@ -224,10 +325,6 @@ void Model_GetJointWorldMtx(void *obj, Mtx43 *out, u32 idx);
 void _ZN5Model10drawScaledEPi(void *obj, void *v);
 s32 PlayerHead_GetModelId(void *obj, u32 v);
 s32 PlayerGlassesModelRef_GetModelId(void *obj);
-void HeldItemModel_Draw(void *a, void *b);
-Mtx43 HeldItemModel_GetJointMtx(void *obj, u32 mode);
-void CharaShadow_DrawPlayer(VecFx32 *pos, s32 a);
-void HeldItemModel_Update(void *obj);
 void PlayerActor_CheckSceneExit(s32 a);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
@@ -244,7 +341,6 @@ void PlayerActor_FieldCheckUnitAhead(void *);
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern void *gCommManager;
-extern Mtx43 data_021cb69c;
 extern s16 data_02135f44[];
 enum Unk_020d6df4_State { Unk_020d6df4_State_0 = 0 };
 void PlayerActor_JointCbStart(NNSG3dRS *p);
@@ -424,15 +520,9 @@ void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 s32 _ZN11PlayerActor14testActionFlagEj(void *p, s32 v);
 void _ZN11PlayerActor15clearActionFlagEj(void *p, s32 v);
 s32 _ZN11PlayerActor13setActionFlagEj(void *p, s32 v);
-s32 InputMode_SetTouch();
-s32 InputMode_SetButtons();
-s32 InputMode_Clear();
 s32 _ZN11PlayerActor15requestPickUpAtEP4Vec2ihis(void *p, void *v, s32 a, s32 b, s32 c, s32 d);
 s32 _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(void *p, void *v, s32 a, s32 b, s32 c);
 s32 _ZN11PlayerActor11requestWaitEjjj(void *p, s32 a, s32 b, s32 c);
-s32 PlayerActor_GetSlotAction(s32 *out, s32 a, s32 b);
-u8 *PlayerActor_GetNetStateVar(s32 v);
-s32 NetBuf_ReadS16(void *p);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
 void PlayerActor_RequestTreeShake(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void PlayerActor_RequestPluck(void *p, void *v, s32 a, s32 b);
@@ -771,7 +861,6 @@ s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void Math_ApproachS32(void *p, s32 a, s32 b, s32 c, s32 d);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
-BOOL MenuCtrl_IsFinished();
 void TalkRequest_FinishPlayerMessage();
 extern u8 sPlayerActionResetsRotX[];
 extern u8 sPlayerActionStopsMovement[];
@@ -862,10 +951,6 @@ extern char sPlayerActorGetInsectMsgFile[];
 extern char sPlayerActorGetFishMsgFile[];
 extern char gSndMgr[];
 extern u8 gFieldSceneKind;
-u16 NetBuf_ReadU16(void *);
-void NetBuf_WriteU16(void *, u16);
-s16 NetBuf_ReadS16B(void *);
-void NetBuf_WriteS16B(void *, s16);
 BOOL _ZN11CommManager11isLocalSlotEj(void *, s32);
 void _ZN11PlayerActor11advanceAnimEv(PlayerActor *);
 void _ZN11PlayerActor18updateBodyColliderEv(PlayerActor *);
@@ -876,10 +961,7 @@ s32 _ZN11PlayerActor9startAnimEijt(PlayerActor *, u32, u32, u32);
 s32 _ZN11PlayerActor11requestWaitEjjj(PlayerActor *, u32, u32, s32);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(PlayerActor *, s32);
 void _ZN11PlayerActor11calcHandMtxEv(PlayerActor *);
-void Insect_FinishCatch(u32);
-void HeldInsect_Start(u32, u32);
 void PlayerActor_ApplyHoldOffset(void *, void *);
-void HeldInsect_SetHandMatrix(u32, void *, void *, u32);
 void Fish_GetDisplayScale(void *, s32);
 void FishCatch_SetDisplayPosScale(void *, void *, void *);
 void PlayerActor_RequestFishShowCatch(PlayerActor *, u32, u32, s32);
@@ -905,15 +987,11 @@ BOOL TalkRequest_AddPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
 void _ZN9Character17attachTalkRequestEi(PlayerActor *, MsgRequest *);
 void _ZN9Character17detachTalkRequestEi(PlayerActor *, MsgRequest *);
-void LowBattery_SetWarned();
 void Camera_SetMode4();
 void Camera_SetModeDefault();
-void Bgm_ReleasePriority(u32);
-void Bgm_RequestSilence(u32, u32, u32);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
 void SndMgr_PlaySe(void *, u32);
-void Effect_Create(u32, void *, u32, u32);
 void PlayerActor_ApproachAngle(void *, s32, u32, u32, u32);
 void _ZN11PlayerActor9setAngleYEPs(PlayerActor *, void *);
 static inline BOOL Unk_02008858_IsZero(u8 v) {
@@ -937,9 +1015,6 @@ s32 _ZN11PlayerActor13startAnimOnceEijt(PlayerActor *, u32, u32, u32);
 s32 _ZN11PlayerActor15getHeldToolKindEv(PlayerActor *);
 void HeldItemModel_PlayAnim(void *, u32, u32, u32);
 BOOL _ZN11CommManager11isLocalSlotEj(void *, s32);
-void Bgm_ReleasePriority(u32);
-void Bgm_RequestSilence(u32, u32, u32);
-void Bgm_Request(u32, u32, u32, u32);
 void *_ZN19PlayerActionRequestC1Ev(void *);
 void _ZN19PlayerActionRequest6assignEiis(void *, u32, u32, u32);
 void *_ZN19PlayerActionRequestD1Ev(void *);
@@ -952,10 +1027,7 @@ void TalkRequest_FinishLeaveRoom();
 void PlayerActor_TurnAngle(void *, s32);
 void _ZN11PlayerActor9setAngleYEPs(PlayerActor *, void *);
 void _ZN11PlayerActor17moveWithCollisionEv(PlayerActor *);
-void *RoomEntry_GetRequest();
-s32 RoomEntryRequest_GetDoorKind(void *t);
 s32 Ground_GetDefaultY(u32);
-s32 *RoomEntryRequest_GetPos(void *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void _ZN11PlayerActor10switchAnimEijt(PlayerActor *, u32, u32, u32);
@@ -972,15 +1044,12 @@ void _ZN11PlayerActor8setSpeedEPj(PlayerActor *, void *);
 BOOL _ZN11PlayerActor16isGuestInSessionEv(PlayerActor *);
 void *PlayerActor_GetPlayerData(PlayerActor *);
 void Clock_GetDateTime(void *);
-u8 *PlayerSession_GetSessionFlags();
 void DateTime_SubDays(void *, s32);
 void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(void *, Unk_020092c8_Bits);
 void _ZN11PlayerActor18netFollowTransformEv(PlayerActor *);
-void PlayerActor_SetHoldableItem(u32, s32);
 void _ZN11PlayerActor12turnToCameraEi(PlayerActor *, u32);
 void _ZN11PlayerActor17applyHeldItemPoseEiPv(PlayerActor *, u32, u32);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
-void *PlayerData_GetBySessionSlot(s32);
 u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 void _ZN11PlayerActor20netSendClothesChangeEjj(PlayerActor *, u32, u32);
 void _ZN11PlayerActor12requestAct10Esji(PlayerActor *, u32, u32, s32);
@@ -1005,22 +1074,10 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 _s32_div_f(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-u16 NetBuf_ReadU16(void* p);
-void NetBuf_WriteU16(void* p, u32 v);
 BOOL _ZN11CommManager11isLocalSlotEj(CommManager* p, u32 v);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void* p);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void* p, u32 v);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void* p);
-u32 HandOverItem_GetItem(u16* p);
-u32 HandOverItem_IsModeActive(u32 v);
-u32 HandOverItem_SwitchMaster(void* p);
-BOOL HandOverItem_GetPos(VecFx32* p);
-BOOL HandOverItem_CanTake(void* p);
-u32 HandOverItem_End(void* p);
-u32 HandOverItem_GetNextMode();
-u32 HandOverItem_RequestMode(u32 a, void* p);
-u32 HandOverItem_IsMaster(void* p);
-void HandOverItem_Begin(void* p, u32 a, u8 b, u32 c, void* d, u32 e);
 void _ZN19PlayerActionRequestC1Ev(PlayerAct30Request* p);
 void _ZN19PlayerActionRequest6assignEiis(PlayerAct30Request* p, u32 a, u32 b, u32 c);
 void _ZN19PlayerActionRequestD1Ev(PlayerAct30Request* p);
@@ -1097,21 +1154,11 @@ void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
 BOOL Item_IsFurniture(u16* p);
 s32 Item_GetFurnitureIndex(u16* p);
 void* BlockMap_GetItemPtrAtPos(void* a, void* b, u32 c);
-u16 NetBuf_ReadU16(u8* p);
-void NetBuf_WriteU16(u8* p, u16 v);
-void Bgm_ReleasePriority(u32 a);
-void Bgm_RequestSilence(u32 a, u32 b, u32 c);
-void Bgm_Request(u32 a, u32 b, u32 c, u32 d);
 BOOL TalkRequest_AddPlayerMessage();
 BOOL TalkRequest_IsPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
 void Camera_SetMode4();
 void Camera_SetModeDefault();
-BOOL BottleLetter_Open();
-void Pocket_AddFoundItem(u16* p);
-BOOL MenuCtrl_OpenPocketsFullPickUp(u32 v);
-BOOL MenuCtrl_IsFinished();
-BOOL MenuCtrl_IsResultOk();
 s32 FieldAction_RequestPlaceAtPendingForAid(u32 a, u32 b);
 void PlayerActor_NetReadPickUpFanfareStow(PlayerNetPickUpFanfareStowArgs* src, Unk_02006d14_Pair* out, u8* b);
 void PlayerActor_NetWritePickUpFanfareStow(PlayerNetPickUpFanfareStowArgs* dst, Unk_02006d14_Pair* p, u8 b);
@@ -1153,7 +1200,6 @@ BOOL TalkRequest_AddPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
 void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
 u16* BlockMap_GetItemPtrAtPos(void* p, void* q, u32 z);
-void* PlayerData_GetCurrent();
 void PendingUnit_CommitAt(Vec2* p, u32 z);
 void PendingUnit_ApplyAt(Vec2* p, u32 z);
 void VillagerTrend_NotifyUnk6(void* p);
@@ -1167,8 +1213,6 @@ void _ZN10MsgRequest11setFileNameEPKc(void* p, void* q);
 Unk_02006d14_V3* FtrMgr_PollRemovedPos(s32 idx);
 s32 _s32_div_f(s32 a, s32 b);
 u32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void* p, u32 id);
-u16 NetBuf_ReadU16(void* p);
-void NetBuf_WriteU16(void* p, u32 v);
 void _ZN19PlayerActionRequestC1Ev(void* p);
 void _ZN19PlayerActionRequest6assignEiis(void* p, u32 a, s32 b, s16 c);
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void* self, void* p);
@@ -1218,27 +1262,20 @@ extern void *gSceneBlockMap;
 extern void *gCommManager;
 extern u8 data_020c61d0[];
 extern u16 gPad[];
-s32 Pocket_FindEmpty();
 BOOL Scene_InHouseRoom();
 void FieldPos_FromUnitCenter(void *, u32, u32);
 u16 *BlockMap_GetItemPtrAtPos(void *, void *, u32);
-void FtrMgr_RemoveActor(s32, void *, void *);
-u32 Room_CountOccupants();
 void HeldItemModel_PlayAnim(void *, u32, u32, u32);
 void *_ZN19PlayerActionRequestC1Ev(void *);
 void _ZN19PlayerActionRequest6assignEiis(void *, u32, u32, s32);
 void *_ZN19PlayerActionRequestD1Ev(void *);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
-void Effect_Create(u32, void *, u32, u32);
 u32 AnimSlotRef_GetAnimId(void *);
-void *Emotion_GetEntry(u32);
 BOOL _ZN11CommManager11isLocalSlotEj(void *, s32);
 void *TalkRequest_GetTalkTarget();
-void *NpcRegistry_FindByHandle(void *);
 s32 Math_Atan2(s32, s32);
 void PlayerActor_TurnAngle(void *, s32);
-void PlayerActor_RequestReturnToWait();
 void _ZN11PlayerActor11advanceAnimEv(void *);
 s32 _ZN11PlayerActor15requestPickUpAtEP4Vec2ihis(void *, Unk_0200b750_Pair pr, s32 a, s32 b, u32 c, s32 d);
 void _ZN11PlayerActor15clearActionFlagEj(void *, u32 id);
@@ -1262,13 +1299,7 @@ void _ZN11PlayerActor17resetHeldToolAnimEv(void *);
 namespace nL {
 extern "C" {
 
-u16 NetBuf_ReadU16(void *p);
-void NetBuf_WriteU16(void *p, u32 a);
-void Effect_Create(u32 id, void *a, void *b, u32 c);
-void Effect_PlayById2(u32 id, void *a, u32 b, u32 c);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 a);
-void *PlayerData_GetBySessionSlot(u32 a);
-void PlayerData_SetStungFace(void *p, u32 a);
 u32 _ZN10PlayerData11getFaceTypeEv(void *p);
 void _ZN16PlayerFaceTexRef4loadEj(void *p, u32 a);
 void VillagerStates_ClearUnk1dBit0();
@@ -1277,8 +1308,6 @@ void PlayerActor_TurnAngle(void *p, s32 a);
 void PlayerActor_GetHat(u16 *out, Unk_02007694 *o);
 s32 PlayerActor_DecelerateSkid(s32 a, u32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void *PlayerData_GetCurrent();
-BOOL Random_GlobalBelow(u32 a);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 void PlayerActor_RequestTrip(Unk_02007694 *o, u32 a, s32 b);
 extern u32 gCommManager;
@@ -1335,7 +1364,6 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 s32 Vec_DistXZ(void *a, void *b);
-s32 Field_TryPushSnowball(void *out, void *a, void *b, s32 c, s32 d);
 BlendAnimModel &HeldItemModel_GetModel(void *p);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
@@ -1344,18 +1372,10 @@ s32 Scene_InHouseRoom();
 s32 Scene_InUnk6To8();
 s32 Scene_InTown();
 s32 Scene_NoPlayerInUnsharedScene();
-void FieldInfoBalloon_ShowPleaseWait();
-s32 Field_HasExitedBuildingKey();
 s32 Ground_GetHeightAt(void *p, s32 a, s32 b);
 void TalkRequest_FinishSceneEntry();
-void Net_WifiHostKeepAlive();
-s32 Net_GetMode();
 void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
-s32 PlayerSession_GetSessionFlags();
 s32 PlayerActor_TestSlotFlag(s32 a, s32 b);
-s32 PlayerActor_GetSlotAction(void *p, s32 a, s32 b);
-void Effect_Create(s32 a, void *b, void *c, s32 d);
-void PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
 s32 PlayerActor_Accelerate(s32 a, s32 b);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 void PlayerActor_TurnAngle(void *p, s32 a);
@@ -1420,26 +1440,15 @@ BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 s32 Scene_GetCurrent();
 s32 PlayerActor_GetSlotPosXZ(u16 *a, s32 *b, s32 *c, s32 d, s32 e);
 BOOL PlayerActor_GetSlotAngle(u16 *a, s32 b, s32 c);
-s32 PlayerData_GetBySessionSlot(s32 a);
 u16 *_ZN10PlayerData11getHeldItemEv(void *p);
-void HeldItemModel_SetItem(void *p, u16 *q, s32 r);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-void HeldItemModel_Update(void *p);
-s32 Math_AngleToDir4(s16 a);
-s32 Math_AngleToSide(s16 a);
 s32 _ZN6Camera6getYawEv(void *p);
 s32 Scene_NoPlayerInUnsharedScene();
-void FieldInfoBalloon_ClearNetMsg();
-s32 Net_GetMode();
-void Net_WifiHostKeepAlive();
 void TalkRequest_FinishSceneEntry();
-BOOL Stub_ReturnFalse();
 BOOL TalkRequestFlags_IsResetti();
 u8 *Scene_GetTouchPicker();
 s32 TouchPick_GetGroundPos(u8 *obj, VecFx32Ctor *out);
-BOOL TouchPickResult_GetTarget(u8 *obj, VecFx32Ctor *out, s32 *a, u8 *b);
-s32 TouchPick_GetTargetObject(u8 *obj, s32 *pa, u8 *pb);
 u16 *BlockMap_GetItemPtrAtPos(void *a, VecFx32Ctor *b, u32 c);
 void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32Ctor *v);
 void FieldPos_SnapToUnitCenter(VecFx32Ctor *a, VecFx32Ctor *b);
@@ -1451,12 +1460,8 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 extern Unk_0200d64c_Keys gPad;
-extern u16 gTouchX;
-extern u16 gTouchY;
 extern u8 gScreenTransition;
 extern s32 gGfxMainOnTop;
-extern u8 gTouchPrevHeld;
-extern u8 gTouchPrevChanged;
 extern void *gSceneBlockMap;
 extern u8 data_020d5e50[];
 extern u8 data_020d5e34[];
@@ -1495,13 +1500,9 @@ BOOL _ZN11PlayerActor15getHeldToolKindEv(void *);
 namespace nO {
 extern "C" {
 
-s32 PlayerActor_ParamGetSlot(s32);
-s32 PlayerActor_ParamGetAction(s32);
-void PlayerSession_SetActor(s32, void *);
 s32 PlayerSession_GetGfxSlot(s32);
 void PlayerPaletteRef_Assign(void *, u32);
 void _ZN16PlayerFaceTexRef4loadEj(void *, s32);
-void HeldItemModel_Setup(void *, u32, void *, void *, s32, s32);
 void _ZN12Unk_02005e7c15processRequestsEv(void *);
 void PlayerGlassesModelRef_SetSlot(void *, u32);
 void PlayerHead_SetSlot(void *, u32);
@@ -1516,8 +1517,6 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
 s32 PlayerActor_GetSlotPosXZ(void *a, void *b, void *c, s32 d, s32 e);
 s32 PlayerActor_GetSlotAngle(void *a, s32 b, s32 c);
-void Bgm_Release(u32 a);
-void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 _ZN15TalkWindowState13getChoiceListEv(TalkWindowState *a);
@@ -1558,7 +1557,6 @@ namespace nP {
 extern "C" {
 
 extern CommManager *gCommManager;
-extern Mtx43 data_021cb69c;
 extern u8 sPlayerActionTalkable[];
 extern s16 data_02135f44[];
 extern u32 data_020d5e40;
@@ -1574,7 +1572,6 @@ s32 _ZN5Model8setAlphaEj(void *p, s32 v);
 s32 _ZN17TwoLayerAnimModel11drawLayeredEj(void *p, s32 v);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
-BOOL PlayerActor_IsInAction(s32 a, s32 b);
 BOOL PlayerActor_GetSlotPosXZ(s16 *s, s32 *x, s32 *z, s32 m, s32 arg);
 VecFx32 *PlayerActor_GetBodyPos(u32 n);
 s32 Math_Atan2(s32 a, s32 b);
@@ -1587,11 +1584,6 @@ s32 PlayerActor_ApproachAngle(s16 *p, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_GetTan(PlayerActor *p);
 s32 PlayerActor_PackClothesChange(u32 *out, u32 a, u32 b);
 s32 WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
-BOOL InputMode_IsButtons();
-BOOL InputMode_IsTouch();
-s32 Snd_SeEmitterPlayHeld(void *p, u32 a, s32 b, s32 c);
-s32 Snd_SeEmitterPlayOneShot(void *p, u32 a, s32 b, s32 c);
-s32 Math_AngleToDir4(s32 a);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 Math_ApproachS32(s32 *p, s32 a, s32 b, s32 c, s32 d);
 void PlayerActor_CalcHandItemPos(VecFx32 *out, PlayerActor *p, void *args);
@@ -1621,9 +1613,7 @@ void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 BOOL _ZN11PlayerActor14testActionFlagEj(PlayerActor *o, s32 id);
-BOOL LowBattery_Poll();
 void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(s32 a, Unk_0200f17c_Date d);
-void *DebugVar_GetPtr(s32 a, s32 b);
 s32 PlayerActor_GetTan(PlayerActor *o);
 BOOL _ZN11PlayerActor16isGuestInSessionEv(PlayerActor *o);
 Unk_0200f17c_Date *PlayerSession_GetLastPlayDate();
@@ -1636,7 +1626,6 @@ s32 DateTime_Compare(void *a, void *b, s32 n);
 void Snd_SeEmitterPlayAlternate(void *a, void *b, s32 c);
 VecFx32 *Footstep_GetSeAtPos(VecFx32 *v);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, s32 id);
-void Effect_Create(s32 a, VecFx32 *v, s16 *r, s32 c);
 void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
@@ -1698,16 +1687,11 @@ extern u32 data_020cb360;
 extern u8 sPlayerSkinPalName[], sPlayerEyeTexName[], sPlayerMouthTexName[], sPlayerHairPalName[], sPlayerShirtTexName[], data_020d5e38[];
 void *FieldAction_Get(u32 p);
 s32 PlayerActor_RoomInteractAt(void *, s32, s32);
-s32 PlayerActor_FieldInteractAt(void *, s32);
 s32 PlayerActor_RoomUseTool(void *);
-s32 PlayerActor_FieldUseTool(void *);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_Atan2(s32, s32);
 s32 Math_AngleDiffAbs(s32, s32);
-void G3dRes_CopyPlttByName(void *, void *, void *, void *);
-void G3dRes_CopyTexByName(void *, void *, void *, void *);
 BOOL PlayerHead_PollTexUpload(void *);
-s32 PlayerHead_GetModelIds(s32, u32, u16 *, s32 *, s32 *);
 void PlayerHead_Load(void *, s32, s32, u16 *, s32);
 void *PlayerHead_GetModelFile(void *, s32);
 s32 NNS_G3dGetTex(void *);
@@ -1728,8 +1712,6 @@ void *_ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *);
 void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *, void *, u32, u32, u32, u32);
 s32 PlayerGlassesModelRef_GetModelId(void *);
 s32 PlayerGlassesModelRef_PollTexUpload(void *);
-s32 PlayerGlassesModel_GetAccessoryModelId(s32);
-s32 PlayerGlassesModel_GetFlowerModelId(s32);
 BOOL Item_IsFlowerAltItem(u16 *);
 s32 Item_GetFlowerAltOrdinal(u16 *);
 void PlayerGlassesModelRef_Load(void *, s32);
@@ -1744,20 +1726,12 @@ void *CharaClothTexRef_GetBuffer(void *);
 u32 ClothTex_GetTexThunk(void *tex);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
-void PlayerPaletteRef_LoadSkin(void *, u32 y);
-void PlayerPaletteRef_LoadHair(void *, s32);
 s32 func_01ffcb0c(s32, s32);
-s32 HeldItem_GetHandPose(u16 *);
-s32 CharaAnim_GetHoldPoseMode(s32);
 void AnimSlotRef_Load(void *, s32, s32, s32);
 s32 AnimSlotRef_GetData(void *);
 s32 func_021065dc(s32 a);
 s32 func_021065f8(s32, s32);
 void _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(void *, s32, s32, u32, u32, u32, u32, u32);
-s32 CharaAnim_GetJointGroup(s32);
-s32 JointGroup_GetRangeCount(s32 i);
-s32 JointGroup_GetRangeFirst(s32, s32);
-s32 JointGroup_GetRangeLast(s32, s32);
 void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(void *, s32, s32);
 void PlayerActor_GetHeldItem(u16 *, void *);
 inline BOOL Unk_02010154_In(u16 *p) { BOOL r = FALSE; u16 v = *p; if (*p >= 0x1380 && v <= 0x139f) r = TRUE; return r; }
@@ -1793,15 +1767,12 @@ void _ZN17TwoLayerAnimModel12updateLayersEv(void *a);
 void _ZN11PlayerActor17applyHeldItemPoseEiPv(PlayerActor *a, s32 b, u32 c);
 s32 _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *a);
 s32 _ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *a);
-s32 CharaAnim_GetMouthAnim(s32 a);
-s32 CharaAnim_GetEyeAnim(s32 a);
 void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *a, s32 b, u32 c, u32 d, u32 e, u32 f);
 s32 _ZN16PlayerFaceTexRef9getBufferEv(void *a);
 s32 _ZN20CharaFaceAnimWorkRef7getHeapEv(void *a);
 void _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 u32 Ground_GetDefaultY(u32 a);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *a, u32 b);
-BOOL BlinkTimer_Update(void *a);
 BOOL _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(PlayerActor *a, PlayerNetApproachLocals *b, u32 *c, u32 *d, s16 *e);
 BOOL PlayerActor_TurnAngleSlow(s16 *a, s32 b);
 void PlayerActor_ApproachCoord(void *a, u32 b);
@@ -1809,17 +1780,13 @@ void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
 void PlayerActor_TurnAngle(void *a, s32 target);
 u32 PlayerActor_GetPlayerData(u32 a);
 u32 PlayerActor_GetTan(u32 a);
-u32 PlayerActor_ParamGetAction(u32 a);
 BOOL _ZN11PlayerActor16isGuestInSessionEv(u32 a);
 s32 PlayerActor_CompareLastPlayDate(u32 a, void *b, void *c);
 void PlayerActor_SetLastPlayDate(u32 a, u32 b, void *c);
 s32 DateTime_DiffDays(void *a, void *b);
-u8 *PlayerSession_GetSessionFlags(void);
-u16 *PlayerSession_GetTanTimer(void);
 void _ZN11PlayerActor10netSendTanEv(u32 a);
 u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 u32 _ZN10PlayerData11getFaceTypeEv(u32 a);
-BOOL PlayerData_HasStungFace(u32 a);
 void PlayerActor_GetHeldItem(u16 *out, u32 x);
 u32 PlayerActor_GetFaceTexIndex(u32 x);
 u32 PlayerActor_GetFaceAltFlag(u32 x);
@@ -1831,8 +1798,6 @@ void PlayerActor_GetFaceItem(u16 *out, u32 x);
 namespace nT {
 extern "C" {
 
-s32 PlayerSession_GetDataIndex(s32 v);
-void *PlayerData_Get(s32 idx);
 s32 _ZN10PlayerData6getTanEv(void *p);
 s32 _ZN10PlayerData12getHairColorEv(void *p);
 s32 _ZN10PlayerData12getHairStyleEv(void *p);
@@ -1845,15 +1810,11 @@ BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
 BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_GetExitAtPos(VecFx32 *p);
-void PlayerActor_SetLocalExitId(s32 *p);
 void *Scene_GetWarpRequest(void);
 BOOL SceneExit_GetDoor(void *a, s32 b, s32 *c, s32 *d);
-void PlayerActor_SetLocalExitKind(s32 *p);
-BOOL RoomEntry_IsExclusiveExit(s32 v);
 BOOL Scene_InUnk6To8(void);
 void TalkRequest_FinishSceneEntry(void);
 void TalkRequest_AddLeaveRoom(void);
-s32 PlayerActor_GetCharacter(s32 v);
 void TalkRequest_AddSceneExit(s32 a, s32 b);
 extern void *gCommManager;
 s32 PlayerActor_GetTan(void *p);
@@ -1878,14 +1839,11 @@ void GX_LoadOBJ(void *p, u32 src, u32 size);
 void GXS_LoadOBJ(void *p, u32 src, u32 size);
 void GX_LoadOBJPltt(void *p, u32 src, u32 size);
 void GXS_LoadOBJPltt(void *p, u32 src, u32 size);
-void *Mem_AllocTail(u32 size);
-void Mem_Free(void *p);
 BOOL FS_OpenFile(void *self, const void *path);
 BOOL FS_SeekFile(void *self, u32 off, s32 z);
 s32 FS_ReadFile(void *self, void *dst, u32 size);
 BOOL FS_CloseFile(void *self);
 extern u8 sHudObjCharPathTen2[];
-extern u32 sSlideIconCharOffsets[];
 void *PlayerActor_Create();
 }
 }

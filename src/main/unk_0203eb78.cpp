@@ -10,7 +10,6 @@
 #include "gfx/WorldCurve.h"
 #include "player/PlayerData.h"
 #include "save/BbsBoard.h"
-#define PROTO_LOCAL_AxMail_Deliver  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_LetterDelivery_PutInMailbox  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Letter_MarkReceived  // declared below: the shared prototype conflicts with the calls here
@@ -51,7 +50,6 @@ extern SceneInfo *gCurSceneInfo;
 }
 
 extern "C" {
-extern s32 sWorldCurveZScale;
 }
 
 

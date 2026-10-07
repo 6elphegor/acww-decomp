@@ -12,6 +12,7 @@ typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
 #include "types64.h"
+#include "proto/autoload_2/unk_020fea34.h"
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/itcm/unk_01ffa4a0.h"

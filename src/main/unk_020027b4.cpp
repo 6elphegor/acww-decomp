@@ -8,18 +8,21 @@
 #include "npc/VillagerId.h"
 #include "actor/Actor.h"
 #include "nitro/io_access.h"
-#include "proto/autoload_2/unk_020e82bc.h"
+#define PROTO_LOCAL_sPersonalityPrefixes  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02105d50.h"
 #include "proto/autoload_2/unk_0210fa84.h"
 #include "proto/autoload_2/unk_02110c98.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_020029e8.h"
 #include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020d477c.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -30,7 +33,6 @@ typedef volatile u32 vu32;
 
 
 extern "C" {
-extern u16 sDefaultToonTable[32];
 }
 
 
@@ -71,7 +73,6 @@ extern u32 sPersonalityVoiceTypes[];
 }
 
 extern "C" {
-extern void *gActorDefaultParent;
 }
 
 extern "C" {
@@ -82,11 +83,9 @@ extern "C" {
 }
 
 extern "C" {
-extern void *sActorSpawnPos;
 }
 
 extern "C" {
-extern void *sActorSpawnRot;
 }
 
 extern "C" {
@@ -167,12 +166,15 @@ void List_PushBack(void *list, void *node);
 }
 
 extern "C" {
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
+void Mtx43_RotateX(void *m, s32 a);
 }
 
 extern "C" {
+void Mtx43_RotateY(void *m, s32 a);
 }
 
 extern "C" {
@@ -236,7 +238,6 @@ u8 gViewMtxInv[0x30];
 Mtx43 gViewMtx;
 
 
-extern AbAllObjGfx sAbAllObjGfx;
 
 
 

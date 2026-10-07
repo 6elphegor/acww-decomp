@@ -136,9 +136,6 @@ void *SaveVillagers_FindBestFriendOf(void *p, s32 v);
 void SaveVillagers_ClearTalkedToday(void *p);
 s32 SaveVillagers_Count(void *p);
 extern u8 gSaveVillagers[];
-extern u8 sSpNpcTortimerBrightNightsModelPath[];
-extern u8 sSpNpcTortimerBrightNightsTexturePath[];
-extern SpNpcTortimerBrightNightsActEntry sSpNpcTortimerBrightNightsActTable[3];
 }
 
 SpNpcTortimerBrightNightsActEntry sSpNpcTortimerBrightNightsActTable[3] = {

@@ -21,6 +21,25 @@ extern Buf data_02200080;
 extern u8 data_02200084[];
 extern u32 data_0220005c;
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
+#define PROTO_LOCAL_CTRDG_Init  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CTRDGi_CallbackForInitModuleInfo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_CTRDGi_PulledOutCallback  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL___close_console  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL___exit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL___flush_line_buffered_output_files  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL___read_console  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL___write_console  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_abort  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_memcpy  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02117984.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_02133ad0.h"
+#include "proto/autoload_2/unk_0213510c.h"
+#include "proto/main/unk_0206d49c.h"
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)
 extern u8 data_02200298[];
 extern u32 data_02200250;
@@ -28,19 +47,14 @@ extern s32 data_02200274;
 extern s32 data_02200148;
 extern u32 data_0220014c;
 extern void (*data_02200144)(void);
-extern void __destroy_global_chain(void);
-extern void raise(u32);
 extern void (*data_02200150[])(void);
 extern void (*data_02200140)(void);
 extern BOOL OS_TryLockMutex(void *);
 extern void OS_LockMutex(void *);
 extern void OS_UnlockMutex(void *);
-extern void _ExitProcess(void);
 
 extern void CpuSet(void *src, void *dst, u32 mode);
 extern void WaitByLoop(u32);
-extern void Fatal_Trap(void);
-extern void PXI_Init(void);
 extern BOOL PXI_IsCallbackReady(u32, u32);
 extern void PXI_SetFifoRecvCallback(u32, void *);
 extern u32 OS_SetIrqMask(u32);
@@ -102,8 +116,6 @@ extern s32 fflush(FILE *);
 extern u32 data_0213c320;
 extern double _f2d(u32);
 extern void __prep_buffer(FILE *);
-extern void __convert_to_newlines(u8 *, u32 *);
-extern void __convert_from_newlines(u8 *, u32 *);
 extern s32 fwide(FILE *, s32);
 extern void *memcpy(void *, const void *, u32);
 extern u32 func_0213335c(u32, u32);
@@ -111,38 +123,16 @@ extern s32 __flush_line_buffered_output_files(void);
 extern s32 __load_buffer(FILE *, u32 *, s32);
 /* prototypes */
 u32 __fread(void *ptr, u32 memb_size, u32 num_memb, FILE *file);
-void __convert_from_newlines(u8 *buf, u32 *count);
-void __convert_to_newlines(u8 *buf, u32 *count);
 void __prep_buffer(FILE *file);
 s32 __load_buffer(FILE *file, u32 *bytes_loaded, s32 alignment);
 s32 __flush_buffer(FILE *file, u32 *bytes_flushed);
-s32 abs(s32 x);
-s32 __flush_all(void);
 s32 __flush_line_buffered_output_files(void);
-double nan(const char *unused);
 void abort(void);
 void exit(s32 status);
 void __exit(s32 status);
-void STD_CopyLString(char *dst, const char *src, s32 n);
-u32 STD_GetStringLength(const char *s);
-u8 MATH_CalcChecksum8(const u8 *p, u32 len);
-void MATHi_CRC8InitTable(u8 *table, u32 poly);
-void MATHi_CRC8Update(const u8 *table, u8 *crc, const u8 *data, u32 len);
-void MATHi_CRC16InitTableRev(u16 *table, u32 poly);
-void MATHi_CRC16UpdateRev(const u16 *table, u16 *crc, const u8 *data, u32 len);
-void MATHi_CRC32InitTableRev(u32 *table, u32 poly);
-void MATHi_CRC32UpdateRev(const u32 *table, u32 *crc, const u8 *data, u32 len);
-u8 MATH_CalcCRC8(const u8 *table, const void *data, u32 len);
-u16 MATH_CalcCRC16(const u16 *table, const void *data, u32 len);
-u32 MATH_CalcCRC32(const u32 *table, const void *data, u32 len);
-void MATH_CalcSHA1(void *digest, const void *data, u32 len);
-u32 MATH_CountPopulation(u32 x);
 void CTRDG_Init(void);
-void CTRDGi_InitModuleInfo(void);
 void CTRDGi_CallbackForInitModuleInfo(u32 tag, u32 data);
 void CTRDGi_PulledOutCallback(u32 tag, u32 data);
-void CTRDG_TerminateForPulledOut(void);
-void CTRDGi_InitCommon(void);
 void CTRDGi_ChangeLatestAccessCycle(Cycle *p);
 void CTRDGi_RestoreAccessCycle(Cycle *p);
 

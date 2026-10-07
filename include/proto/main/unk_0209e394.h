@@ -4,6 +4,8 @@
 // Prototypes of the functions defined in src/main/unk_0209e394.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct SaveMenuStateEntry;
 #ifdef __cplusplus
 class SaveMenu;
 #endif
@@ -27,6 +29,12 @@ extern "C" {
 SaveMenu *SaveMenu_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_sSaveMenuProfile
+extern ProcProfile sSaveMenuProfile;
+#endif
+#ifndef PROTO_LOCAL_sSaveMenuStates
+extern SaveMenuStateEntry sSaveMenuStates[6];
+#endif
 #endif
 
 #endif

@@ -75,6 +75,9 @@ u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 BOOL Item_IsMarker(void *p);
 BOOL Item_IsTreeStage0(void *p);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
+void SpNpcGulliver_ScatterShipParts();
+BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g);
+BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, void *g);
 }
 
 
@@ -151,6 +154,8 @@ extern u8 sSpNpcGulliverTexturePath[27];
 extern const TalkStartMsg sSpNpcGulliverTopicMsgs[8];
 extern SpNpcGulliverTalkScript sSpNpcGulliverTalkScripts[2];
 extern SpNpcGulliverActEntry sSpNpcGulliverActTable[4];
+s32 SpNpcGulliver_TickTimer(void *self, s32 *p);
+SpNpcGulliver *SpNpcGulliver_Create();
 }
 
 DebugColor data_ov072_02272590(31, 20, 20, 31);

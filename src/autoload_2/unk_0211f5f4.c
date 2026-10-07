@@ -17,6 +17,7 @@ typedef int BOOL;
 #include "proto/autoload_2/unk_0211eb00.h"
 #include "proto/autoload_2/unk_0211ef94.h"
 #include "proto/autoload_2/unk_0211f488.h"
+#include "proto/autoload_2/unk_0211f5f4.h"
 #include "proto/main/unk_0206d49c.h"
 
 typedef struct CardCommon CardCommon;

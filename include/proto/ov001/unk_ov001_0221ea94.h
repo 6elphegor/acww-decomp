@@ -17,6 +17,27 @@ void WfcTop_LoadScreen(u32 i);
 void WfcTop_TransferTask(s32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_data_ov001_0222b46c
+extern char data_ov001_0222b46c[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b480
+extern char data_ov001_0222b480[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b494
+extern char data_ov001_0222b494[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b4a8
+extern char data_ov001_0222b4a8[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b4bc
+extern char data_ov001_0222b4bc[];
+#endif
+#ifndef PROTO_LOCAL_sWfcTopScreenPaths
+extern char *sWfcTopScreenPaths[5];
+#endif
+#ifndef PROTO_LOCAL_sWfcTopScreenData
+extern u8 *sWfcTopScreenData;
+#endif
 #endif
 
 #endif

@@ -33,7 +33,8 @@
 #define PROTO_LOCAL_PlayerActor_LocalRequestPhoneHangUp  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_LocalRequestPhonePickUp  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203c92c.h"
 #include "proto/main/unk_02065e88.h"
@@ -41,6 +42,7 @@
 #include "proto/main/unk_0208eeac.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020b5e5c.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_02229660.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
@@ -143,8 +145,6 @@ class ChoiceList;
 
 extern "C" {
 extern u8 gScreenTransition;
-extern u8 gTouchPrevHeld;
-extern u8 gTouchPrevChanged;
 extern CommManager *gCommManager;
 extern u8 gSaveData[];
 extern u8 gTalkMsgIndexNone[];
@@ -204,18 +204,10 @@ extern const u8 sRoomTelephoneChoiceMsgs[3];
 extern const u8 sRoomTelephoneChoiceMsgsScene6[4];
 extern const s32 sRoomTelephonePos[3];
 extern const char sRoomTelephoneMsgFile[];
-extern u8 data_ov004_0224e16c[2];
-extern u8 data_ov004_0224e170[3];
-extern u8 data_ov004_0224e174[4];
 extern const char *data_ov004_0224e178;
-extern char sRoomTelephoneMsgFile2[];
 extern PhoneChoiceSet data_ov004_0224e298;
 extern PhoneChoiceSet data_ov004_0224e2a0;
 extern PhoneChoiceSet data_ov004_0224e2a8;
-extern char sRoomTelephoneArcPath[];
-extern char sRoomTelephoneTexPath[];
-extern RoomTelephone *volatile sRoomTelephone;
-extern RoomTelephoneActEntry sRoomTelephoneActTable[15];
 }
 
 // ---- definitions ----

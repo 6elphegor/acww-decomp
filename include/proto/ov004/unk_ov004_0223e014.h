@@ -4,6 +4,8 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0223e014.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct ResidentSelectStateEntry;
 #ifdef __cplusplus
 class ResidentSelect;
 #endif
@@ -17,6 +19,12 @@ ResidentSelect *ResidentSelect_Create();
 void ResidentSelect_UpdateCursor(ResidentSelect *o);
 #endif
 }
+#ifndef PROTO_LOCAL_sResidentSelectProfile
+extern ProcProfile sResidentSelectProfile;
+#endif
+#ifndef PROTO_LOCAL_sResidentSelectStates
+extern ResidentSelectStateEntry sResidentSelectStates[7];
+#endif
 #endif
 
 #endif

@@ -88,6 +88,7 @@ void SimpleStart_Md5Init(SimpleStartMd5Ctx *ctx);
 s32 SimpleStart_BuildResult();
 s32 SimpleStart_SearchAp();
 s32 SimpleStart_ConnectAp(void);
+void SimpleStart_AlarmCallback(u32 a);
 void SimpleStart_SocFree(s32 a, void *p, s32 n);
 void *SimpleStart_SocAlloc(s32 a, s32 n);
 
@@ -105,61 +106,11 @@ extern const u32 data_ov001_02228f34[256];
 extern const u32 data_ov001_02229334[256];
 extern const u32 data_ov001_02229734[256];
 extern u8 *data_ov001_0222a52c;
-extern s32 data_ov001_0222a530;
-extern s32 sSimpleStartStackSize;
-extern u32 sSimpleStartDeadline;
-extern s32 data_ov001_0222a53c;
-extern u8 sSimpleStartSetupSsid[7];
-extern u8 data_ov001_0222a548[7];
-extern u8 sSimpleStartMd5Padding[64];
 extern void *sSimpleStartSocConfig[22];
-extern u8 data_ov001_0222c850;
-extern void *(*sSimpleStartAllocFunc)(u32);
 extern SimpleStartWcmConfig *data_ov001_0222c858;
-extern void (*sSimpleStartFreeFunc)(void *);
-extern s32 sSimpleStartCancel;
-extern u32 data_ov001_0222c864;
-extern s32 data_ov001_0222c868;
-extern s32 sSimpleStartStep;
-extern s32 data_ov001_0222c870;
-extern s32 data_ov001_0222c874;
-extern s32 data_ov001_0222c878;
-extern s32 sSimpleStartWcmState;
-extern s32 data_ov001_0222c880;
-extern u32 data_ov001_0222c884;
-extern s32 sSimpleStartState;
-extern u8 *data_ov001_0222c88c;
-extern u8 *data_ov001_0222c890;
-extern u8 *data_ov001_0222c894;
-extern u8 *data_ov001_0222c898;
-extern u8 *data_ov001_0222c89c;
-extern s32 data_ov001_0222c8a0;
-extern u8 *data_ov001_0222c8a4;
-extern s32 data_ov001_0222c8a8;
-extern u8 *data_ov001_0222c8ac;
-extern s32 data_ov001_0222c8b0;
-extern s32 data_ov001_0222c8b4;
-extern s32 sSimpleStartMsgTail;
-extern s32 sSimpleStartMsgHead;
-extern s32 sSimpleStartMaxAps;
-extern s32 data_ov001_0222c8c4;
-extern s32 sSimpleStartResultCode;
-extern void (*sSimpleStartStatusCb)(void *);
 extern SimpleStartWcmNotifyFunc sSimpleStartWcmNotifyCb;
-extern u8 data_ov001_0222c8d4[6];
-extern u8 data_ov001_0222c8dc[6];
-extern u8 data_ov001_0222c8e4[8];
-extern u32 sSimpleStartMsgQueue[4];
-extern u8 data_ov001_0222c8fc[0x10];
 extern u8 sSimpleStartAllocMutex[0x18];
-extern u8 data_ov001_0222c924[0x20];
-extern u8 data_ov001_0222c944[0x20];
-extern u8 data_ov001_0222c964[0x24];
-extern u8 sSimpleStartThread[0xc0];
-extern u32 sSimpleStartResult[58];
-extern u32 data_ov001_0222cb30[149];
 extern u8 sSimpleStartTlvBuf[0x800];
-extern u8 sSimpleStartPacketBuf[0x800];
 }
 #define data_ov001_0222c92c (data_ov001_0222c924 + 8)
 #define data_ov001_0222ca70 ((u8 *)&sSimpleStartResult[10])
@@ -706,11 +657,17 @@ extern "C" u8 sSimpleStartPacketBuf[0x800] = {0};
 #define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OS_SetAlarm  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SimpleStart_AlarmCallback  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SimpleStart_BuildResult  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SimpleStart_ConnectAp  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SimpleStart_SearchAp  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SimpleStart_SocAlloc  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SimpleStart_SocFree  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov001_0222a52c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov001_0222a550  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSimpleStartAllocMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSimpleStartSocConfig  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSimpleStartTlvBuf  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_strcpy  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/itcm/unk_01ffa4a0.h"

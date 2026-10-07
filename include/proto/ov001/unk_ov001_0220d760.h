@@ -53,6 +53,12 @@ void WfcTopMenu_Exit();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcTopMenuSel
+extern volatile u8 sWfcTopMenuSel;
+#endif
+#ifndef PROTO_LOCAL_sWfcTopMenuPalette
+extern u32 *sWfcTopMenuPalette;
+#endif
 #ifndef PROTO_LOCAL_WfcTopMenu_MoveCursor
 void WfcTopMenu_MoveCursor(s32 a);
 #endif

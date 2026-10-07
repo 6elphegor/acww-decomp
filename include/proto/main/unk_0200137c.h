@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_0200137c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct Gfx2dBgScroll;
+struct Gfx2dDispCtrl;
+struct Gfx2dWindowBlend;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -258,6 +261,21 @@ void Gfx2d_SetSubAlphaBlend(u8 a, u8 b, u8 c);
 void Gfx2d_SetMainAlphaBlend(u8 a, u8 b, u8 c);
 #endif
 }
+#ifndef PROTO_LOCAL_sGfx2dBackdropColor
+extern u8 sGfx2dBackdropColor[4];
+#endif
+#ifndef PROTO_LOCAL_sGfx2dBgScroll
+extern Gfx2dBgScroll sGfx2dBgScroll;
+#endif
+#ifndef PROTO_LOCAL_sGfx2dSubBg3Mtx
+extern u8 sGfx2dSubBg3Mtx[0x10];
+#endif
+#ifndef PROTO_LOCAL_sGfx2dDispCtrl
+extern Gfx2dDispCtrl sGfx2dDispCtrl;
+#endif
+#ifndef PROTO_LOCAL_sGfx2dWindowBlend
+extern Gfx2dWindowBlend sGfx2dWindowBlend;
+#endif
 #endif
 
 #endif

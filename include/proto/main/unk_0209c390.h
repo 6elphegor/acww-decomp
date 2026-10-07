@@ -25,6 +25,12 @@ extern "C" {
 BOOL RoomObjSync_OnRecv(NibblePair *p);
 #endif
 }
+#ifndef PROTO_LOCAL_gSoftResetRequested
+extern u8 gSoftResetRequested;
+#endif
+#ifndef PROTO_LOCAL_sSoftResetHeld
+extern u8 sSoftResetHeld;
+#endif
 #endif
 
 #endif

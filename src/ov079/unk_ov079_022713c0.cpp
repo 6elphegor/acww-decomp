@@ -38,6 +38,7 @@
 #include "town/VisitorPos.h"
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_020407fc.h"
@@ -182,8 +183,6 @@ struct SpNpcWendellActEntry {
 
 extern "C" {
 extern SpNpcWendellActEntry sSpNpcWendellActTable[5];
-extern u8 sSpNpcWendellModelPath[];
-extern u8 sSpNpcWendellTexturePath[];
 extern ActorProfile sSpNpcWendellProfile;
 }
 
@@ -537,29 +536,17 @@ void SpNpcWendellTalk::onTaskDone(u32) {
 // Named pointer-to-member constants of the static tables (definition order sets the data layout)
 extern "C" {
 void _ZN16SpNpcWendellTalk12onFoodPickedEv();
-extern void *data_ov079_02272980[2];
 void _ZN16SpNpcWendellTalk15resultHandler01Ev();
-extern void *data_ov079_02272988[2];
 void _ZN12SpNpcWendell9mainAct04Ev();
-extern void *data_ov079_02272990[2];
 void _ZN12SpNpcWendell10setupAct04Ev();
-extern void *data_ov079_02272998[2];
 void _ZN16SpNpcWendellTalk19onPatternSlotPickedEv();
-extern void *data_ov079_022729a0[2];
 void _ZN12SpNpcWendell9mainAct00Ev();
-extern void *data_ov079_022729a8[2];
 void _ZN12SpNpcWendell9mainAct01Ev();
-extern void *data_ov079_022729b0[2];
 void _ZN12SpNpcWendell10setupAct02Ev();
-extern void *data_ov079_022729b8[2];
 void _ZN12SpNpcWendell9mainAct02Ev();
-extern void *data_ov079_022729c0[2];
 void _ZN12SpNpcWendell10setupAct03Ev();
-extern void *data_ov079_022729c8[2];
 void _ZN12SpNpcWendell10setupAct00Ev();
-extern void *data_ov079_022729d0[2];
 void _ZN12SpNpcWendell9mainAct03Ev();
-extern void *data_ov079_022729d8[2];
 }
 typedef BOOL (SpNpcWendell::*SpNpcWendellActFn)();
 

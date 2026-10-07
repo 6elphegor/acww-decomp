@@ -33,9 +33,6 @@
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Room_PickRandomWalkTarget  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
@@ -142,7 +139,6 @@ extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern u8 gTalkMsgIndexEnd[];
-extern u8 sBirthdayHostMsgFile[];
 void *TalkWindowState_getChoiceList(void *);
 s32 ChoiceList_getResult(void *);
 void TalkWindowState_setNextMessageIfUnset(void *, void *, s32);
@@ -170,6 +166,8 @@ void Vec_Add(VecFx32 *out, void *a, void *b);
 void NpcActor_setTalkRequest(void *self, void *p);
 void *NpcActor_getPlayerActor(void *self, s32 n);
 void ActorTalkRequest_setTalkPlayer(void *p, void *q);
+void Camera_FocusOnPoint(void *p);
+void Camera_SetModeDefault();
 s32 PlayerData_getPlayerId(...);
 void *Villager_FindOrCreateMemory(void *p, s32 v);
 void VillagerMemory_RecordTalk(void *p, s32 a, s32 b, s32 c);

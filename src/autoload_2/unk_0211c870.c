@@ -7,6 +7,7 @@ typedef unsigned int u32;
 #include "types64.h"
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02117984.h"
+#include "proto/autoload_2/unk_0211c870.h"
 #include "proto/autoload_2/unk_0211c8e8.h"
 #include "proto/main/unk_0206d49c.h"
 typedef signed short s16;

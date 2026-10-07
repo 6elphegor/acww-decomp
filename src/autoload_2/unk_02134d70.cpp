@@ -6,6 +6,7 @@
 // (written with the iterator's members directly, mwcc keeps the action pointer in a register across that loop).
 #include "types.h"
 #include "proto/autoload_2/unk_02133d04.h"
+#include "proto/autoload_2/unk_02134d70.h"
 #include "proto/autoload_2/unk_0213510c.h"
 
 typedef struct ExceptionInfo {

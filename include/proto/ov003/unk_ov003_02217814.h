@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "types.h"
 class GulliverShip;
 #endif
 
@@ -12,6 +13,9 @@ class GulliverShip;
 extern "C" {
 #ifndef PROTO_LOCAL_GulliverShip_Create
 GulliverShip *GulliverShip_Create();
+#endif
+#ifndef PROTO_LOCAL_sGulliverShipVisitorProfile
+extern u32 sGulliverShipVisitorProfile;
 #endif
 }
 #endif

@@ -10,9 +10,10 @@
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
 #include "talk/ChoiceList.h"
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAxBbsBuf  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02000b7c.h"
 #include "proto/main/unk_02038474.h"
-#include "proto/main/unk_0203eb78.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065e88.h"
 #include "proto/main/unk_020720f8.h"
@@ -92,8 +93,6 @@ extern u8 gTalkMsgIndexEnd[];
 extern void *gCommManager;
 extern u16 gPad[];
 extern u8 gScreenTransition;
-extern u8 sRecentJoinAids[];
-extern u8 sAxBbsReceived;
 extern u8 sAxBbsBuf[];
 
 extern "C" {
@@ -249,9 +248,11 @@ extern "C" {
 }
 
 extern "C" {
+void AxBbsNotice_Construct(void *p);
 }
 
 extern "C" {
+void *AxBbsNotice_GetDigest(void *p);
 }
 
 extern "C" {
@@ -269,9 +270,11 @@ extern "C" {
 }
 
 extern "C" {
+void AxBbsNotice_Post(void *p);
 }
 
 extern "C" {
+void AxBbsNotice_Destruct(void *p);
 }
 
 static inline BOOL Unk_0209e7b4_Is2(u8 v) {

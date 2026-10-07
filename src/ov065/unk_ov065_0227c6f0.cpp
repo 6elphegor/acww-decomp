@@ -12,7 +12,6 @@
 
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
 extern "C" {
-extern s32 __GSIACResult;
 
 
 typedef s32 (*GsGpConnectCallback)(GPConnection *, void *, s32);

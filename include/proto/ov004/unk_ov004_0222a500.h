@@ -13,6 +13,12 @@ class RoomShell;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sRoomCarpetMatNameStr
+extern char sRoomCarpetMatNameStr[];
+#endif
+#ifndef PROTO_LOCAL_sRoomWallpaperMatNameStr
+extern char sRoomWallpaperMatNameStr[];
+#endif
 #ifndef PROTO_LOCAL_RoomShell_SpawnBoardSigns
 void RoomShell_SpawnBoardSigns(void *self);
 #endif
@@ -31,6 +37,9 @@ void RoomShell_InitRenderObj(void *p);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sRoomShell
+extern RoomShell *sRoomShell;
+#endif
 #ifndef PROTO_LOCAL_RoomShell_Create
 RoomShell *RoomShell_Create();
 #endif

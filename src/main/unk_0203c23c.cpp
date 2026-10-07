@@ -8,9 +8,8 @@ class VillagerActor;
 #include "sys/CameraBase.h"
 #include "gfx/Camera.h"
 #include "player/PlayerData.h"
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gWorldCurve  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcb2c.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02060b9c.h"
@@ -91,6 +90,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
+void Vec_ScaleTo(void *out, void *a, s32 n);
 }
 
 extern "C" {
@@ -141,6 +141,7 @@ s32 SceneId_IsHouseRoom(void *a);
 }
 
 extern "C" {
+void Camera_FinishBlend();
 }
 
 extern "C" {

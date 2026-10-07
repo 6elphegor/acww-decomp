@@ -1,4 +1,6 @@
 #include "types.h"
+#define PROTO_LOCAL_sSpotReservations  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSpotReserveResult  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02051218.h"
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_02052b50.h"
@@ -8,7 +10,6 @@
 extern "C" const u32 data_020ca638;
 
 extern "C" {
-extern u8 sTextCharWidths[0xe0];
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern u8 gFieldSceneKind;

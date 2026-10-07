@@ -62,6 +62,9 @@ void WfcSimpleStartRecv_WaitDialogClosed();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcSimpleStartRecvDone
+extern u8 sWfcSimpleStartRecvDone;
+#endif
 #ifndef PROTO_LOCAL_WfcSimpleStartRecv_IsLidClosed
 BOOL WfcSimpleStartRecv_IsLidClosed();
 #endif

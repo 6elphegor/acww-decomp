@@ -5,6 +5,7 @@
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02119f84.h"
 #include "proto/autoload_2/unk_0211a258.h"
+#include "proto/autoload_2/unk_0211a49c.h"
 #include "proto/autoload_2/unk_0211a6c0.h"
 #include "proto/autoload_2/unk_0211dc4c.h"
 #include "proto/main/unk_0206d49c.h"

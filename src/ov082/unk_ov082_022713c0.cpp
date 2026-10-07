@@ -164,9 +164,6 @@ static inline BOOL Unk_ov082_Neg(s32 v) {
 }
 
 extern "C" {
-extern SpNpcTortimerBugOffActEntry sSpNpcTortimerBugOffActTable[3];
-extern u8 sSpNpcTortimerBugOffTexturePath[];
-extern u8 sSpNpcTortimerBugOffModelPath[];
 }
 
 
@@ -296,7 +293,6 @@ void SpNpcTortimerBugOffTalk::onTaskDone(u32) {
         }
     }
 }// Declarations for data defined further down (definition order sets the data layout)
-extern SpNpcTortimerBugOffActEntry sSpNpcTortimerBugOffActTable[3];
 extern "C" u8 sSpNpcTortimerBugOffTexturePath[];
 extern "C" ActorProfile sSpNpcTortimerBugOffProfile;
 extern "C" u8 sSpNpcTortimerBugOffModelPath[];

@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_020815f8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct NpcActorRegistry;
 #ifdef __cplusplus
 #include "actor/NpcActor.h"
 #include "types.h"
@@ -67,6 +68,9 @@ s32 NpcRegistry_AddSpNpc(void *a, void *b);
 s32 NpcRegistry_RemoveSpNpc(void *a);
 #endif
 }
+#ifndef PROTO_LOCAL_gNpcActorRegistry
+extern NpcActorRegistry gNpcActorRegistry;
+#endif
 #endif
 
 #endif

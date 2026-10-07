@@ -27,6 +27,7 @@
 #include "player/PlayerData.h"
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02097444.h"
@@ -150,6 +151,9 @@ extern char sSpNpcKaitlinKey[16];
 extern char sSpNpcKaitlinModelPath[23];
 extern char sSpNpcKaitlinTexPath[27];
 extern const char *sSpNpcKaitlinMsgKey;
+extern "C" SpNpcKaitlin *SpNpcKaitlin_Create();
+void SpNpcKaitlin_ChangeAct06();
+void SpNpcKaitlin_ChangeAct04();
 
 extern "C" SpNpcKaitlin *SpNpcKaitlin_Create() {
     return new SpNpcKaitlin();

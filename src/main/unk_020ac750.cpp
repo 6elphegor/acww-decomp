@@ -47,7 +47,13 @@
 #define PROTO_LOCAL_Item_ToPlacedForm  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_LetterDelivery_QueueOutgoing  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e82bc.h"
+#define PROTO_LOCAL_data_020e2eb8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e2ebc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gLooseSnowballs  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sCharaShadowModel  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/itcm/unk_01ff8ad4.h"
@@ -56,7 +62,6 @@
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_0203ecec.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
@@ -347,16 +352,12 @@ extern "C" {
 extern u8 sShopRandom[];
 }
 extern "C" {
-extern u8 sLidSleepFlags;
 }
 extern "C" {
-extern u8 sLidSleepState;
 }
 extern "C" {
-extern u32 sLidSleepBacklightBottom;
 }
 extern "C" {
-extern u32 sLidSleepBacklightTop;
 }
 extern "C" {
 extern u8 gLooseSnowballs[];
@@ -1723,8 +1724,10 @@ extern "C" {
 u32 _ZN22DateSeededRandomSource6randomEj(void *p, u32 v);
 }
 extern "C" {
+u32 ItemInfo_GetFullHeadwearClass1dCount();
 }
 extern "C" {
+u32 ItemInfo_GetHatClass1dCount();
 }
 extern "C" {
 void StockList_Clear(void *a, void *b, u32 n);
@@ -2405,10 +2408,13 @@ extern "C" {
 void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 }
 extern "C" {
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 }
 extern "C" {
+void Mtx43_RotateX(void *m, s32 a);
 }
 extern "C" {
+void Mtx43_Scale(void *m, s32 a, s32 b, s32 c);
 }
 extern "C" {
 void MTX_Concat43(void *a, void *b, void *c);
@@ -2463,13 +2469,10 @@ extern "C" {
 extern u8 gFieldSceneKind;
 }
 extern "C" {
-extern u32 sCharaShadowPolyId;
 }
 extern "C" {
-extern u8 sCharaShadowAlpha;
 }
 extern "C" {
-extern u8 sObjShadowAlpha;
 }
 extern "C" {
 extern u32 sCharaShadowModelPath;
@@ -2487,22 +2490,18 @@ extern "C" {
 extern u8 data_021edf04[];
 }
 extern "C" {
-extern NNSG3dResMatData *sCharaShadowMatData;
 }
 extern "C" {
 extern u8 sCharaShadowModel[];
 }
 extern "C" {
-extern s32 sObjShadowSkew;
 }
 extern "C" {
 extern s32 sObjShadowCoordShift;
 }
 extern "C" {
-extern ObjShadowTexture sObjShadowTextures[];
 }
 extern "C" {
-extern ObjShadowStrip sRockShadow, sSignShadow, sTreeShadowStage2, sTreeShadowStage3, sTreeShadowStage4;
 }
 extern "C" {
 extern u32 data_021edf3c;
@@ -2550,10 +2549,8 @@ extern "C" {
 extern VecFx32 gCameraLookAt;
 }
 extern "C" {
-extern u8 sObjShadowViewMtx[];
 }
 extern "C" {
-extern u8 sObjShadowNormMtx[];
 }
 extern "C" {
 extern u8 gViewMtx[];
@@ -2618,6 +2615,7 @@ extern "C" {
 BOOL NookShop_CanTakeCatalogOrder(void);
 }
 extern "C" {
+void Item_FromPlacedForm(void *a, void *b);
 }
 extern "C" {
 }

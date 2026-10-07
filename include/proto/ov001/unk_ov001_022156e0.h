@@ -11,6 +11,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222b060
+extern char data_ov001_0222b060[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b078
+extern char data_ov001_0222b078[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b090
+extern char data_ov001_0222b090[];
+#endif
 #ifndef PROTO_LOCAL_WfcManualSetup_Enter
 void WfcManualSetup_Enter();
 #endif
@@ -80,6 +89,27 @@ void WfcManualSetup_WaitDialogClosed();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcManualSetupToggleItems
+extern u8 sWfcManualSetupToggleItems[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b050
+extern u8 data_ov001_0222b050[14];
+#endif
+#ifndef PROTO_LOCAL_sWfcAddressFormat
+extern u16 sWfcAddressFormat[16];
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupCursorItem
+extern u8 sWfcManualSetupCursorItem;
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupMode
+extern u8 sWfcManualSetupMode;
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupCursorRow
+extern u8 sWfcManualSetupCursorRow;
+#endif
+#ifndef PROTO_LOCAL_sWfcManualSetupScroll
+extern u16 sWfcManualSetupScroll;
+#endif
 #ifndef PROTO_LOCAL_WfcManualSetup_HandleTouch
 BOOL WfcManualSetup_HandleTouch();
 #endif

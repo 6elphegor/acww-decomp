@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/WifiApConfig.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_data_ov001_0222b2ec  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0206d49c.h"
 #include "proto/ov001/unk_ov001_02207904.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
@@ -21,7 +22,6 @@
 #include "proto/ov001/unk_ov001_0221bc10.h"
 #include "proto/ov001/unk_ov001_0221bee0.h"
 #include "proto/ov001/unk_ov001_0221d744.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221eb38.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
@@ -43,7 +43,6 @@ namespace F0221b794 {
 
 
 extern "C" {
-extern u8 sWfcConnTestSucceeded;
 
 s32 GX_LoadBG2Char();
 s32 GX_LoadBGPltt();
@@ -51,6 +50,7 @@ s32 GX_LoadBG2Scr();
 void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
+s32 WfcConfig_CommitEdit();
 
 
 
@@ -93,11 +93,6 @@ namespace F0221ae34 {
 
 
 extern "C" {
-extern u8 sWfcSetupMethodChosen;
-extern u8 sWfcConnTestSucceeded;
-extern s8 sWfcSetupMethodCursor;
-extern s8 sWfcSetupMethodColumn;
-extern void *sWfcSetupMethodPalette;
 extern u8 sWfcSetupMethodRects[];
 extern u16 sWfcSetupMethodCursorPos[][16];
 extern u16 data_ov001_0222a25a[][16];
@@ -115,6 +110,7 @@ extern void WfcUtil_LoadFileTo(void *, void *);
 extern void GX_LoadBG2Char();
 extern void GX_LoadBGPltt();
 extern void GX_LoadBG2Scr();
+extern u8 *WfcConfig_GetEdit();
 extern u8 *WfcConfig_Get();
 extern void WfcHeap_Free(s32);
 extern void WfcHeap_Alloc(s32, s32);

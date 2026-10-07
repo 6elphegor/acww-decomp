@@ -11,6 +11,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcCursor
+extern void * *sWfcCursor;
+#endif
 #ifndef PROTO_LOCAL_WfcCursor_Init
 void WfcCursor_Init();
 #endif

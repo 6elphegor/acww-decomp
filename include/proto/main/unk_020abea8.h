@@ -4,7 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_020abea8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "gfx/ObjShadowTexture.h"
 #ifdef __cplusplus
+#include "gfx/ObjShadowStrip.h"
 #include "gfx/VecFx32.h"
 #include "types.h"
 #endif
@@ -49,6 +51,48 @@ void ObjShadow_DrawRock(VecFx32 *p);
 void ObjShadow_DrawSign(VecFx32 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sObjShadowTexNameFc
+extern char sObjShadowTexNameFc[];
+#endif
+#ifndef PROTO_LOCAL_sTreeShadowStage2
+extern ObjShadowStrip sTreeShadowStage2;
+#endif
+#ifndef PROTO_LOCAL_sObjShadowTextures
+extern ObjShadowTexture sObjShadowTextures[3];
+#endif
+#ifndef PROTO_LOCAL_sObjShadowAlpha
+extern u8 sObjShadowAlpha;
+#endif
+#ifndef PROTO_LOCAL_sTreeShadowStage3
+extern ObjShadowStrip sTreeShadowStage3;
+#endif
+#ifndef PROTO_LOCAL_sTreeShadowStage4
+extern ObjShadowStrip sTreeShadowStage4;
+#endif
+#ifndef PROTO_LOCAL_sRockShadow
+extern ObjShadowStrip sRockShadow;
+#endif
+#ifndef PROTO_LOCAL_sSignShadow
+extern ObjShadowStrip sSignShadow;
+#endif
+#ifndef PROTO_LOCAL_sObjShadowTexNameTr
+extern char sObjShadowTexNameTr[];
+#endif
+#ifndef PROTO_LOCAL_sObjShadowTexNameGr
+extern char sObjShadowTexNameGr[];
+#endif
+#ifndef PROTO_LOCAL_sObjShadowSkew
+extern s32 sObjShadowSkew;
+#endif
+#ifndef PROTO_LOCAL_sCharaShadowAlpha
+extern u8 sCharaShadowAlpha;
+#endif
+#ifndef PROTO_LOCAL_sObjShadowNormMtx
+extern u8 sObjShadowNormMtx[0x24];
+#endif
+#ifndef PROTO_LOCAL_sObjShadowViewMtx
+extern u8 sObjShadowViewMtx[0x30];
+#endif
 #endif
 
 #endif

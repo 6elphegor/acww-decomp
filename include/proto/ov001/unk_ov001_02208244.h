@@ -20,6 +20,9 @@ void WfcUtil_ResetTopMessage();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcTopMessageShown
+extern u8 sWfcTopMessageShown;
+#endif
 #ifndef PROTO_LOCAL_WfcUtil_ShowTopMessage
 s32 WfcUtil_ShowTopMessage(s32 a, s32 b, s32 c);
 #endif

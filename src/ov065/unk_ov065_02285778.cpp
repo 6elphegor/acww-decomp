@@ -221,23 +221,12 @@ extern "C" {
 
 
 extern "C" {
-extern s32 data_ov065_02291504;
-extern char data_ov065_02291508[];
 
 
 
-extern u8 NNMagicData[];
 extern char data_ov065_0228e174[];
 extern char data_ov065_0228e190[];
 extern char data_ov065_0228e1ac[];
-extern char __GSIACGamename[];
-extern s32 __GSIACResult;
-extern u32 Matchup2Hostname;
-extern u32 Matchup1Hostname;
-extern u32 matchup2ip;
-extern u32 matchup1ip;
-extern void *negotiateList;
-extern u8 data_ov065_02291548[];
 
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);

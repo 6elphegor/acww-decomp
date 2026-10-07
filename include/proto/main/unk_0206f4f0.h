@@ -60,6 +60,12 @@ void HudCountdown_StartWithSe(u32 x);
 void CommSub_RecvCountdownRequest(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sCommSubPostReply
+extern u8 sCommSubPostReply;
+#endif
+#ifndef PROTO_LOCAL_sCommCountdownKinds
+extern u32 sCommCountdownKinds[5];
+#endif
 #endif
 
 #endif

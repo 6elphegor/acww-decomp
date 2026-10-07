@@ -15,7 +15,6 @@ struct PlayerBodyWorkPool {
 
 
 extern "C" {
-extern void *gPlayerBodyAnimHeap;
 extern CommManager *gCommManager;
 #define Heap_freeAll _ZN4Heap7freeAllEv
 extern void Heap_freeAll(void *p);

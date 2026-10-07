@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "game/InfoTableSet.h"
 #include "types.h"
 #endif
 
@@ -177,6 +178,9 @@ u32 Ftr_GetIndexInSeries(u16 *p);
 u32 FtrInfo_CountInSeries(u32 v);
 #endif
 }
+#ifndef PROTO_LOCAL_gFtrInfo
+extern InfoTableSet gFtrInfo;
+#endif
 #endif
 
 #endif

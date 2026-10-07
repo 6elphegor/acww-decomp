@@ -3,6 +3,7 @@
 #include "ui/UiWidget.h"
 #include "ui/TalkArrow.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02089330.h"
 
 extern "C" {
 }

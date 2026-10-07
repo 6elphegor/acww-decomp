@@ -5,12 +5,16 @@
 
 #include "types.h"
 #include "net/DwcNetChannel.h"
+#include "nitro/math.h"
 #ifdef __cplusplus
 #include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sDwcNetRandState
+extern MATHRandContext32 sDwcNetRandState;
 #endif
 #ifndef PROTO_LOCAL_DwcNet_SetSendDoneCallback
 void DwcNet_SetSendDoneCallback(void *cb);

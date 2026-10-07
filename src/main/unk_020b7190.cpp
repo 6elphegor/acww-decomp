@@ -9,8 +9,8 @@
 #include "gfx/Camera.h"
 #include "item/ItemName.h"
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Scale  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020d5d14  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02037734.h"
 #include "proto/main/unk_02065e88.h"

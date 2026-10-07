@@ -11,6 +11,30 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222ab10
+extern char data_ov001_0222ab10[16];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222aae0
+extern char data_ov001_0222aae0[16];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222aaf0
+extern char data_ov001_0222aaf0[16];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222aac0
+extern char data_ov001_0222aac0[16];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222aad0
+extern char data_ov001_0222aad0[16];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222ab00
+extern char data_ov001_0222ab00[16];
+#endif
+#ifndef PROTO_LOCAL_sWfcMsgFileNames
+extern void *sWfcMsgFileNames[6];
+#endif
+#ifndef PROTO_LOCAL_gWfcMsgBank
+extern void *gWfcMsgBank;
+#endif
 #ifndef PROTO_LOCAL_WfcBoot_Enter
 void WfcBoot_Enter();
 #endif

@@ -4,8 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_0208e6d8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "types.h"
+class TransitionCommIcon;
 class TransitionCommIconProc;
 #endif
 
@@ -49,6 +51,12 @@ void TransitionCommIcon_RequestHide(u32 i);
 TransitionCommIconProc *TransitionCommIconProc_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_sTransitionCommIcon
+extern TransitionCommIcon sTransitionCommIcon;
+#endif
+#ifndef PROTO_LOCAL_sTransitionCommIconProfile
+extern ProcProfile sTransitionCommIconProfile;
+#endif
 #endif
 
 #endif

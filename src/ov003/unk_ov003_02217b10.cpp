@@ -8,9 +8,8 @@
 #include "gfx/DebugColor.h"
 #include "gfx/BgModelCache.h"
 #include "gfx/Camera.h"
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02036c58.h"
+#include "proto/ov003/unk_ov003_02217b10.h"
 
 // TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 

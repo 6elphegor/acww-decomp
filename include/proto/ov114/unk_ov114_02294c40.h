@@ -11,6 +11,22 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sCreaturePicDir
+extern char *sCreaturePicDir;
+#endif
+#ifndef PROTO_LOCAL_sCreatureBgPaletteName
+extern char *sCreatureBgPaletteName;
+#endif
+#ifndef PROTO_LOCAL_sCreaturePicPath
+extern char sCreaturePicPath[0x38];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_CreatureBook_UpdateScrollTouch
 void CreatureBook_UpdateScrollTouch(CreatureBookPanel *s, s32 a);
 #endif
@@ -139,6 +155,27 @@ void CreatureBook_SetFlags(CreatureBookPanel *s, u32 m);
 #endif
 #ifndef PROTO_LOCAL_CreatureBook_ClearFlags
 void CreatureBook_ClearFlags(CreatureBookPanel *s, u32 m);
+#endif
+#ifndef PROTO_LOCAL_data_ov114_02296580
+extern u8 data_ov114_02296580[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov114_02296588
+extern u8 data_ov114_02296588[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov114_02296590
+extern u8 data_ov114_02296590[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov114_02296598
+extern u8 data_ov114_02296598[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov114_022965a0
+extern u8 data_ov114_022965a0[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov114_022965c0
+extern u8 data_ov114_022965c0[32];
+#endif
+#ifndef PROTO_LOCAL_data_ov114_022965e0
+extern u8 data_ov114_022965e0[72];
 #endif
 }
 #endif

@@ -6,14 +6,33 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+#include "uptr.h"
 class GateHouse;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02235228
+extern char data_ov003_02235228[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_0223524c
+extern char data_ov003_0223524c[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235204
+extern char data_ov003_02235204[0x24];
+#endif
 #ifndef PROTO_LOCAL_GateHouse_Create
 void *GateHouse_Create();
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022312a4
+extern char data_ov003_022312a4[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022312b0
+extern char data_ov003_022312b0[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022312bc
+extern char data_ov003_022312bc[12];
 #endif
 #ifdef __cplusplus
 }
@@ -29,6 +48,9 @@ u32 GateHouse_GetModelName();
 #endif
 #ifndef PROTO_LOCAL_GateHouse_ApplyTownFlag
 BOOL GateHouse_ApplyTownFlag(GateHouse *self);
+#endif
+#ifndef PROTO_LOCAL_sGateHouseModelNames
+extern uptr sGateHouseModelNames[3];
 #endif
 }
 #endif

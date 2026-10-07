@@ -58,6 +58,24 @@ void PlayerBank_SendMilestoneLetter(s32 n);
 void PlayerBank_SendDonationLetter(s32 n);
 #endif
 }
+#ifndef PROTO_LOCAL_data_020e1e08
+extern s32 data_020e1e08;
+#endif
+#ifndef PROTO_LOCAL_data_020e1e04
+extern s32 data_020e1e04;
+#endif
+#ifndef PROTO_LOCAL_data_020e1e00
+extern s32 data_020e1e00;
+#endif
+#ifndef PROTO_LOCAL_data_020e1dfc
+extern s32 data_020e1dfc;
+#endif
+#ifndef PROTO_LOCAL_data_020e1df8
+extern s32 data_020e1df8;
+#endif
+#ifndef PROTO_LOCAL_data_020e1e0c
+extern s32 data_020e1e0c;
+#endif
 #endif
 
 #endif

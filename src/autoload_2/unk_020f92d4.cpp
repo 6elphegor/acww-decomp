@@ -13,6 +13,8 @@
 #include "gfx/SplViews.h"
 #include "gfx/SplPt.h"
 #include "gfx/SplNode.h"
+#define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020f92d4.h"
 #include "proto/autoload_2/unk_020fa398.h"
 #include "proto/autoload_2/unk_020fa39c.h"

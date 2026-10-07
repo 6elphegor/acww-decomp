@@ -11,7 +11,6 @@
 #include "proto/ov001/unk_ov001_0221962c.h"
 #include "proto/ov001/unk_ov001_0221ab50.h"
 #include "proto/ov001/unk_ov001_0221d744.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
@@ -27,6 +26,8 @@ void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Char();
 void GX_LoadBGPltt();
 void GX_LoadBG2Scr();
+u8 *WfcConfig_GetEdit();
+void WfcConfig_BeginEdit(s32);
 
 }
 

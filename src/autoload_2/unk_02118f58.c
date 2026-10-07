@@ -1,8 +1,10 @@
 #include "nitro/fs.h"
+#define PROTO_LOCAL_data_0213a388  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_0211802c.h"
 #include "proto/autoload_2/unk_021182b8.h"
 #include "proto/autoload_2/unk_02118894.h"
+#include "proto/autoload_2/unk_02118f58.h"
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
 // mwcc-flags: -nothumb -O4,p

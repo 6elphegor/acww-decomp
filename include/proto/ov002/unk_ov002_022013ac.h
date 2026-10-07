@@ -10,6 +10,9 @@
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sPopupChoicePopOffsets
+extern s32 sPopupChoicePopOffsets[3];
+#endif
 #ifndef PROTO_LOCAL_PopupChoice_CopyPlayerIdName
 void PopupChoice_CopyPlayerIdName(s32 a, s32 b);
 #endif

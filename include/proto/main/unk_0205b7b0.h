@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0205b7b0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct CharaAnimCache;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -285,6 +286,123 @@ void TownBclHeap_Create(s32 x);
 void RoomBclHeap_Create(s32 x);
 #endif
 }
+#ifndef PROTO_LOCAL_gVillagerAnimPoolHeap
+extern void *gVillagerAnimPoolHeap;
+#endif
+#ifndef PROTO_LOCAL_gSpNpcAnimPoolHeap
+extern void *gSpNpcAnimPoolHeap;
+#endif
+#ifndef PROTO_LOCAL_gRoomBclHeap
+extern void *gRoomBclHeap;
+#endif
+#ifndef PROTO_LOCAL_gNetHeap
+extern void *gNetHeap;
+#endif
+#ifndef PROTO_LOCAL_gModelCacheHeap
+extern void *gModelCacheHeap;
+#endif
+#ifndef PROTO_LOCAL_gMenuHeap
+extern void *gMenuHeap;
+#endif
+#ifndef PROTO_LOCAL_gBgHeap
+extern void *gBgHeap;
+#endif
+#ifndef PROTO_LOCAL_gFieldStructureHeap
+extern void *gFieldStructureHeap;
+#endif
+#ifndef PROTO_LOCAL_sSpecialInsectHeap
+extern void *sSpecialInsectHeap;
+#endif
+#ifndef PROTO_LOCAL_sHeldInsectHeap
+extern void *sHeldInsectHeap;
+#endif
+#ifndef PROTO_LOCAL_sFieldInsectHeap
+extern void *sFieldInsectHeap;
+#endif
+#ifndef PROTO_LOCAL_sMuseumInsectHeap
+extern void *sMuseumInsectHeap;
+#endif
+#ifndef PROTO_LOCAL_sFishFinHeap
+extern void *sFishFinHeap;
+#endif
+#ifndef PROTO_LOCAL_sFishDisplayHeap
+extern void *sFishDisplayHeap;
+#endif
+#ifndef PROTO_LOCAL_sMuseumAquariumHeap
+extern void *sMuseumAquariumHeap;
+#endif
+#ifndef PROTO_LOCAL_sCharaAnimHeap
+extern void *sCharaAnimHeap;
+#endif
+#ifndef PROTO_LOCAL_sCharaAnimPathBuf
+extern char sCharaAnimPathBuf[0x14];
+#endif
+#ifndef PROTO_LOCAL_gPlayerFaceTexHeap
+extern void *gPlayerFaceTexHeap;
+#endif
+#ifndef PROTO_LOCAL_sJointGroupRanges
+extern u8 *sJointGroupRanges[4];
+#endif
+#ifndef PROTO_LOCAL_gPlayerBodyModelHeap
+extern void *gPlayerBodyModelHeap;
+#endif
+#ifndef PROTO_LOCAL_gPlayerHeadModelHeap
+extern void *gPlayerHeadModelHeap;
+#endif
+#ifndef PROTO_LOCAL_gPlayerPaletteHeap
+extern void *gPlayerPaletteHeap;
+#endif
+#ifndef PROTO_LOCAL_gPlayerGlassesModelHeap
+extern void *gPlayerGlassesModelHeap;
+#endif
+#ifndef PROTO_LOCAL_gHeldItemModelHeap
+extern void *gHeldItemModelHeap;
+#endif
+#ifndef PROTO_LOCAL_sFurnitureHeap
+extern void *sFurnitureHeap;
+#endif
+#ifndef PROTO_LOCAL_gPlayerBodyAnimHeap
+extern void *gPlayerBodyAnimHeap;
+#endif
+#ifndef PROTO_LOCAL_gHeldItemAnimHeap
+extern void *gHeldItemAnimHeap;
+#endif
+#ifndef PROTO_LOCAL_sFishShadowHeap
+extern void *sFishShadowHeap;
+#endif
+#ifndef PROTO_LOCAL_gNpcTexPatBufHeap
+extern void *gNpcTexPatBufHeap;
+#endif
+#ifndef PROTO_LOCAL_gCharaFaceAnimHeap
+extern void *gCharaFaceAnimHeap;
+#endif
+#ifndef PROTO_LOCAL_gNpcModelHeap
+extern void *gNpcModelHeap;
+#endif
+#ifndef PROTO_LOCAL_gPlayerActorHeap
+extern void *gPlayerActorHeap;
+#endif
+#ifndef PROTO_LOCAL_gCharaFaceAnimWorkHeap
+extern void *gCharaFaceAnimWorkHeap;
+#endif
+#ifndef PROTO_LOCAL_sCharaAnimCache
+extern CharaAnimCache sCharaAnimCache;
+#endif
+#ifndef PROTO_LOCAL_gCharaClothTexHeap
+extern void *gCharaClothTexHeap;
+#endif
+#ifndef PROTO_LOCAL_sCharaAnimJointGroups
+extern u16 sCharaAnimJointGroups[0x144];
+#endif
+#ifndef PROTO_LOCAL_gFishBobberHeap
+extern void *gFishBobberHeap;
+#endif
+#ifndef PROTO_LOCAL_gTownBclHeap
+extern void *gTownBclHeap;
+#endif
+#ifndef PROTO_LOCAL_sJointGroupRangeCounts
+extern u8 sJointGroupRangeCounts[4];
+#endif
 #endif
 
 #endif

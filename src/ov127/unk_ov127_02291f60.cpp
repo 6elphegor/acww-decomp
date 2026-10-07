@@ -2,21 +2,22 @@
 #include "gfx/VecFx32.h"
 #include "game/StarSkyView.h"
 #include "game/ConstellationRecord.h"
-#define PROTO_LOCAL_Constellation_GetRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_GetRecordAlt  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_HighlightAll  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_SetLinePalette  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_DrawArrows  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_DrawScopeSprite  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_DrawStarMarker  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_FindConstellationByLine  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_StarSky_IsConstellationFree  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_LoadSkyBg  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_RebuildScreen  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_ScrollByDir  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_ScrollX  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_data_ov127_02293fa4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov127_02293fac  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov127_02293fb4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov127_02293fc4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov127_02293fd4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -55,6 +56,8 @@ void Constellation_SetLinePalette(void *p, u32 slot, s32 r);
 void _ZN10BgVramTask6cancelEv(void *self);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e);
 void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+s32 Vec_MagXZ(VecFx32 *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);

@@ -8,18 +8,16 @@
 #include "menu/CreatureBookPanel.h"
 #include "menu/MenuTabBar.h"
 #include "sys/ProcProfile.h"
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov114/unk_ov114_02294c40.h"
 #include "proto/ov116/unk_ov116_022967e0.h"
 
 extern "C" {
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
 
 

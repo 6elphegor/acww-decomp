@@ -38,7 +38,6 @@
 #define PROTO_LOCAL_FieldItemFx_StartDigHole  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldItemFx_StartDigUpTree  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldItemFx_StartHoleShrink  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FishDisplay_SetEntry  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_HeldItemModel_PlayAnim  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_HeldItemModel_SetAnimSpeed  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_HeldItemModel_SetItem  // declared below: the shared prototype conflicts with the calls here
@@ -49,22 +48,31 @@
 #define PROTO_LOCAL_NetBuf_UnpackTriple20  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NetBuf_WriteS16B  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_AxeSwingSetArgs  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_FieldStartToolAction  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_FishCastGetNetData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_FishCastSetNetData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_InsectShowCatchGetNetData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_StowUmbrellaSetNetData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Tree_KeepShaking  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Equal  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_data_ov003_02230ac0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230ac4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230ac8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230ad0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230ad4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230ad8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230adc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230ae0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230ae8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02230af0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFishCastFarDist  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFishCastNearDist  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFishEscapeSpeed  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWateringPos  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c23c.h"
-#include "proto/main/unk_0204f2a4.h"
 #include "proto/main/unk_0205d7d8.h"
 #include "proto/main/unk_0205dfa4.h"
 #include "proto/main/unk_02063904.h"
@@ -267,7 +275,6 @@ extern "C" s32 Unk_02006d14_getFieldAnswerKind(PlayerActor *self);
 
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" BOOL PlayerActor_FieldStartToolAction(PlayerActor *self, s32 mode, s32 *pos);
 }
 
 namespace ns_022052f4 {
@@ -410,7 +417,6 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, u32 a, u32 b, u32
 extern "C" {
 extern void *gCommManager;
 extern u8 *data_021c1b3c;
-extern u8 sWateringActive;
 extern V3 sWateringPos;
 
 s32 Unk_02006d14_getTargetWalkSpeed(Obj *o);
@@ -445,6 +451,8 @@ u16 *PlayerData_getHeldItem(s32 a);
 void HeldItemModel_SetItem(void *p, u16 *a, s32 b);
 void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
+void Camera_SetModeDefault();
+void Camera_SetMode4();
 void BgmVolumeMixer_endFireworkDuck(void *p);
 void BgmVolumeMixer_startFireworkDuck(void *p);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
@@ -566,6 +574,8 @@ s32 PlayerData_testFlag(s32 a, s32 b);
 void PlayerData_setFlag(s32 a, s32 b);
 void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
 void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
+void Camera_SetMode4();
+void Camera_SetModeDefault();
 void TalkRequest_FinishPlayerMessage();
 void GroundInfo_initAtPos(void *out, V3 *v, s32 a, s32 b);
 void GroundInfo_Destruct(void *p);
@@ -573,6 +583,7 @@ s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 VEC_Mag(V3 *v);
+void Vec_Sub(V3 *out, V3 *a, V3 *b);
 s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
 s32 PlayerActor_RequestFirework(Obj *o, s32 a, s32 b);
@@ -1110,7 +1121,6 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16
 extern "C" {
 extern void *gCommManager;
 extern void *gSceneBlockMap;
-extern u8 sWateringActive;
 extern V3 sWateringPos;
 
 void Unk_020102ec_advanceAnim(Obj *o);
@@ -1256,6 +1266,8 @@ void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 s32 Math_Atan2(s32 a, s32 b);
 void TalkRequest_FinishPlayerMessage();
 s32 TalkRequest_AddPlayerMessage();
+void Camera_SetMode4();
+void Camera_SetModeDefault();
 void Character_detachTalkRequest(Obj *o, MsgRequest *s);
 void Character_attachTalkRequest(Obj *o, MsgRequest *s);
 void MsgRequest_setFileName(void *p, void *s);
@@ -1794,6 +1806,8 @@ s32 TalkRequest_AddPlayerMessage();
 void Character_attachTalkRequest(Obj *o, MsgRequest *b);
 void Character_detachTalkRequest(Obj *o, MsgRequest *b);
 void MsgRequest_setFileName(void *p, void *q);
+void Camera_SetMode4();
+void Camera_SetModeDefault();
 void TalkRequest_FinishPlayerMessage();
 s32 FieldAction_FindDropUnit(s32 a, s32 *p, u8 *out);
 void HudCountdown_incCountB(void *self);
@@ -2072,6 +2086,7 @@ void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void FishCatch_SetDisplayPosScale(Act *a, V3 *b, V3 *c);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
+void Camera_SetMode4();
 s32 TalkRequest_AddPlayerMessage();
 void Character_attachTalkRequest(Obj *o, Sec *s);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
@@ -2081,6 +2096,7 @@ void Character_detachTalkRequest(Obj *o, Sec *s);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void TalkRequest_FinishPlayerMessage();
 s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
+void Camera_SetModeDefault();
 s32 FieldAction_RequestDropForAid(u32 a, u32 b);
 void FishBobber_startCatchLift(void *p);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
@@ -2203,6 +2219,7 @@ s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_turnToward(Obj *o, s32 a);
+s32 Camera_SetMode5();
 s32 NetBuf_UnpackTriple20(void *p, s32 *a, s32 *b, s32 *c, u8 *d);
 s32 NetBuf_PackTriple20(void *p, s32 a, s32 b, s32 c, u32 d);
 s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
@@ -2337,6 +2354,8 @@ s32 TalkRequest_AddPlayerMessage();
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 Unk_02008040_requestAct77(Obj *o, s32 a, s32 b, s32 c);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
+s32 Camera_SetModeDefault();
+s32 Camera_SetMode4();
 s32 Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_advanceAnim(Obj *o);
@@ -2956,6 +2975,8 @@ void Effect_SetPosition(s32 a, V3 *b, u32 c, u32 d);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void Fish_GetDisplayScale(V3 *v, s32 a);
 s32 FishDisplay_SetEntry(void *a, s32 b, V3 *c, V3 *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+void FishDisplay_Release(void *a);
+void *FishDisplay_Acquire();
 void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 s32 func_02133150(s32 a, s32 b);
 s32 func_02132a4c(s32 a);

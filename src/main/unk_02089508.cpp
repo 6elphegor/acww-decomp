@@ -6,8 +6,13 @@
 #include "ui/UiWidget.h"
 #include "talk/LabelBalloonText.h"
 #include "ui/LabelBalloon.h"
+#define PROTO_LOCAL_data_020d5ce4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020d5cec  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFontA  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFontB  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02089508.h"
 
 extern "C" {
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);

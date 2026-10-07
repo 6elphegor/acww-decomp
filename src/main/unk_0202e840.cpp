@@ -5,7 +5,6 @@
 #include "game/CollisionSegment.h"
 #include "sys/ProcBase.h"
 #define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
@@ -21,6 +20,13 @@ s32 FX_Sqrt(...);
 s32 VEC_DotProduct(void *a, void *b);
 void VEC_Add(void *o, void *a, void *b);
 s64 Vec_DistSq(void *a, void *b);
+void Vec_RotateY(void *v, s16 a);
+void Vec_Sub(void *o, void *a, void *b);
+void Vec_CrossCopy(void *o, void *a, void *b, void *c);
+s32 Vec_SafeNormalize(void *v);
+void Vec_Scale(void *v, s32 s);
+s32 Vec_Distance(void *a, void *b);
+s32 Vec_DistXZ(void *a, void *b);
 s32 PM_GetBattery(s32 *out);
 }
 

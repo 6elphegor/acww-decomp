@@ -29,6 +29,8 @@
 #include "player/PlayerId.h"
 #include "player/PlayerSpNpcRecord.h"
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov084_02271d40  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov084_02271d44  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
@@ -135,12 +137,9 @@ BOOL func_0202e3a4(void *p);
 BOOL func_0202e514(void *p);
 void Clock_GetDate(u8 *p);
 void Letter_ComposeFromMail(void *obj, u8 *c, void *str, void *d44, void *d40, void *x);
-extern u8 sSpNpcTortimerFireworksModelPath[];
-extern u8 sSpNpcTortimerFireworksTexturePath[];
 extern u32 data_ov084_02271d40;
 extern u32 data_ov084_02271d44;
 extern const SpNpcTortimerFireworksFortuneLine sSpNpcTortimerFireworksFortuneLines[4];
-extern SpNpcTortimerFireworksActEntry sSpNpcTortimerFireworksActTable[3];
 }
 
 extern "C" char sSpNpcTortimerFireworksFortuneStrKey[];

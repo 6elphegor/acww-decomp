@@ -119,27 +119,28 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "player/FishBobber.h"
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
-#define PROTO_LOCAL_Camera_ProjectCurvedToScreen  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_HeldItemModel_GetJointMtx  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerGlassesModelRef_GetModelId  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerHead_GetModelId  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_MagXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sHouseRoachActiveCount  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ef150.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/itcm/unk_01ffb4e8.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_02004558_extra.h"
+#include "proto/main/unk_0201106c.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0203cbc0.h"
-#include "proto/main/unk_0203e438.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_020571f4.h"
 #include "proto/main/unk_0205b7b0.h"
@@ -150,10 +151,10 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "proto/main/unk_0205dfa4.h"
 #include "proto/main/unk_0205edfc.h"
 #include "proto/main/unk_0205ef08.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206d988.h"
 #include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_0206fc44.h"
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_0208eeac.h"
@@ -173,6 +174,7 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "proto/main/unk_020b0e60.h"
 #include "proto/main/unk_020b5e5c.h"
 #include "proto/main/unk_020b7190.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
@@ -224,8 +226,6 @@ void _ZN9AnimModel15detachJointAnimEv(void *p);
 void _ZN16CharaClothTexRef7releaseEv(void *p);
 s32 Field_DrawItemModel(u16 a, void *b, void *c, s32 d, s32 e, s32 f);
 extern u8 gSndMgr[];
-extern void *gPlayerActorHeap;
-extern u8 gSndHeapBuffer[];
 extern u8 data_020d5e20[];
 extern s32 gCamera;
 extern s32 gCameraDistance;
@@ -274,7 +274,6 @@ void PlayerActor_FieldCheckUnitAhead(void *);
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern void *gCommManager;
-extern Mtx43 data_021cb69c;
 extern s16 data_02135f44[];
 enum Unk_020d6df4_State { Unk_020d6df4_State_0 = 0 };
 void PlayerActor_JointCbStart(NNSG3dRS *p);
@@ -452,6 +451,8 @@ BOOL TalkRequest_AddPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
 void _ZN9Character17attachTalkRequestEi(PlayerActor *, MsgRequest *);
 void _ZN9Character17detachTalkRequestEi(PlayerActor *, MsgRequest *);
+void Camera_SetMode4();
+void Camera_SetModeDefault();
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
 void PlayerActor_ApproachAngle(void *, s32, u32, u32, u32);
@@ -497,6 +498,7 @@ void _ZN11PlayerActor16updateFootstepFxEv(PlayerActor *);
 s32 Scene_GetCurrent();
 void PlayerActor_ApproachCoord(void *, s32);
 s32 Vec_MagXZ(void *);
+s32 Vec_DistXZ(void *, void *);
 s32 PlayerActor_Decelerate(s32 v, s32 min);
 s32 PlayerActor_Accelerate(s32, s32);
 s32 Math_Atan2(s32, s32);
@@ -619,6 +621,8 @@ void* BlockMap_GetItemPtrAtPos(void* a, void* b, u32 c);
 BOOL TalkRequest_AddPlayerMessage();
 BOOL TalkRequest_IsPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
+void Camera_SetMode4();
+void Camera_SetModeDefault();
 s32 FieldAction_RequestPlaceAtPendingForAid(u32 a, u32 b);
 void PlayerActor_NetReadPickUpFanfareStow(PlayerNetPickUpFanfareStowArgs* src, Unk_02006d14_Pair* out, u8* b);
 void PlayerActor_NetWritePickUpFanfareStow(PlayerNetPickUpFanfareStowArgs* dst, Unk_02006d14_Pair* p, u8 b);
@@ -835,6 +839,7 @@ extern u8 *data_021c1b3c;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
+s32 Vec_DistXZ(void *a, void *b);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
 BOOL Scene_GetCurrent();
@@ -932,12 +937,8 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 extern Unk_0200d64c_Keys gPad;
-extern u16 gTouchX;
-extern u16 gTouchY;
 extern u8 gScreenTransition;
 extern s32 gGfxMainOnTop;
-extern u8 gTouchPrevHeld;
-extern u8 gTouchPrevChanged;
 extern void *gSceneBlockMap;
 extern u8 data_020d5e50[];
 extern u8 data_020d5e34[];
@@ -1024,7 +1025,6 @@ namespace nP {
 extern "C" {
 
 extern CommManager *gCommManager;
-extern Mtx43 data_021cb69c;
 extern u8 sPlayerActionTalkable[];
 extern s16 data_02135f44[];
 extern u32 data_020d5e40;
@@ -1039,6 +1039,7 @@ s32 _ZN17TwoLayerAnimModel11drawLayeredEj(void *p, s32 v);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void PlayerActor_OffsetByAngle(VecFx32 *out, PlayerActor *p, VecFx32 *v, s16 *ang, u32 arg);
 s32 _ZN11PlayerActor18updateBodyColliderEv(PlayerActor *p);
@@ -1100,6 +1101,7 @@ s32 PlayerActor_ApproachValue(void *a, s32 b, s32 c, s32 d, s32 e);
 void PlayerActor_GetHeldItem(Unk_0200f660_S *s, PlayerActor *o);
 BOOL Item_IsFurniture(Unk_0200f660_S *s);
 s32 Item_GetFurnitureIndex(u16 *p);
+s32 ItemInfo_GetHoldableIndex(Unk_0200f660_S *s);
 s32 _ZN11PlayerActor18getFieldAnswerKindEv(PlayerActor *o);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 void PlayerActor_RequestPickUpItem(PlayerActor *o, Unk_0200f6d4_V2 v, s32 a, s32 b, s32 c);
@@ -1151,6 +1153,7 @@ extern u8 sPlayerSkinPalName[], sPlayerEyeTexName[], sPlayerMouthTexName[], sPla
 void *FieldAction_Get(u32 p);
 s32 PlayerActor_RoomInteractAt(void *, s32, s32);
 s32 PlayerActor_RoomUseTool(void *);
+s32 Vec_DistXZ(void *);
 s32 Math_Atan2(s32, s32);
 s32 Math_AngleDiffAbs(s32, s32);
 s32 NNS_G3dGetTex(void *);
@@ -1170,6 +1173,7 @@ BOOL Item_IsFlowerAltItem(u16 *);
 s32 Item_GetFlowerAltOrdinal(u16 *);
 BOOL TalkRequestFlags_IsResetti(void *);
 void TalkRequest_AddTalk(void *, void *);
+BOOL Character_FindInteractionTarget(void *);
 BOOL _ZN9Character16checkInteractionEPS_(void *, void *);
 void PlayerActor_OffsetByAngle(VecFx32 *, void *, void *, void *, void *);
 void _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
@@ -1307,7 +1311,6 @@ BOOL FS_SeekFile(void *self, u32 off, s32 z);
 s32 FS_ReadFile(void *self, void *dst, u32 size);
 BOOL FS_CloseFile(void *self);
 extern u8 sHudObjCharPathTen2[];
-extern u32 sSlideIconCharOffsets[];
 void *PlayerActor_Create();
 }
 }

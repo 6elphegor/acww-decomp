@@ -20,6 +20,14 @@
 #define PROTO_LOCAL_Gfx2d_LoadScreen  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ScreenLayers_AcquireStub  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ScreenLayers_ReleaseStub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTitleLogoChars  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTitleLogoCharsWork  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTitleLogoHideMasks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTitleLogoRevealMasks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTitleLogoScreen  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
@@ -115,12 +123,8 @@ extern u16 sTitleLogoScreen[];
 extern u32 sTitleLogoChars[][8];
 extern u32 sTitleLogoHideMasks[][8];
 extern u32 sTitleLogoRevealMasks[][8];
-extern u8 sTitleLogoMask2[];
 extern const u8 sTitleGreetingMsgs[];
-extern char *sTitleTalkFilePtr;
 extern TitleStateEntry sTitleStates[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
 extern u8 *data_021c1b3c;
 

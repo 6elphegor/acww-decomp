@@ -12,6 +12,12 @@
 #define PROTO_LOCAL_PlayerBank_SendMilestoneLetter  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1df8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1dfc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1e00  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1e04  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1e08  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1e0c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0211ea4c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_0206e54c.h"

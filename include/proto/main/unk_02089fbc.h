@@ -4,8 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_02089fbc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "types.h"
+#include "ui/HudController.h"
 #include "ui/HudProc.h"
 #endif
 
@@ -52,6 +54,21 @@ s32 Hud_GetBells();
 HudProc *HudProc_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_sHudColonStr
+extern char sHudColonStr[];
+#endif
+#ifndef PROTO_LOCAL_sHudAmStr
+extern char sHudAmStr[];
+#endif
+#ifndef PROTO_LOCAL_sHudPmStr
+extern char sHudPmStr[];
+#endif
+#ifndef PROTO_LOCAL_sHudProcProfile
+extern ProcProfile sHudProcProfile;
+#endif
+#ifndef PROTO_LOCAL_gHud
+extern HudController gHud;
+#endif
 #endif
 
 #endif

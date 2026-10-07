@@ -7,6 +7,7 @@
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #include "types.h"
+class BgModelCacheObj;
 #endif
 
 #ifdef __cplusplus
@@ -36,6 +37,9 @@ u8 *BgModelCache_Get(void);
 }
 #ifndef PROTO_LOCAL_BgMgt_GetEntry
 VecFx32 BgMgt_GetEntry(u8 *base, s32 idx);
+#endif
+#ifndef PROTO_LOCAL_gBgModelCache
+extern BgModelCacheObj gBgModelCache;
 #endif
 #endif
 

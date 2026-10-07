@@ -289,6 +289,9 @@ s32 PlayerActor_RequestAct13();
 s32 PlayerActor_RequestEmotion(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_gPlayerSessionTable
+extern PlayerSessionTable gPlayerSessionTable;
+#endif
 #endif
 
 #endif

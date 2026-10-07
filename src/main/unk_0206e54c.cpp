@@ -13,6 +13,8 @@
 #define PROTO_LOCAL_MenuCtrl_SetFutureLetter  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MenuCtrl_SetTouch  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MenuCtrl_StoreFutureLetter  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFutureLetter  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/main/unk_020116e0.h"
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_0203cbc0.h"
@@ -27,6 +29,8 @@
 #include "proto/main/unk_02096c10.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_0209c390.h"
+#include "proto/main/unk_020b7d84.h"
 
 
 // 8-byte list head sOpenMenuList: inline constructor, no destructor
@@ -63,42 +67,8 @@ public:
 
 extern "C" {
 // data of this unit
-extern u8 sMenuRequest[4];
-extern u32 *kMenuOverlayLists[];
-extern u16 kMenuProfileIds[];
-extern u8 sKeyboardPage;
-extern u8 sMenuIndex;
-extern u8 sMenuSavedSlot;
-extern u8 sPocketSelectLabel;
-extern u8 sMenuResult;
-extern u8 sMenuMode;
-extern u8 sForceCloseDelay;
-extern u16 sPostOfficeResult;
-extern u16 sPocketSelectMask;
-extern u16 sMenuItem;
-extern u16 sMenuFlags;
-extern u32 gMenuManager;
-extern u32 sMenuAmount;
-extern u8 sKeyboardPageModes[4];
-extern u32 sMenuArg;
-extern s32 sMenuTransitionProgress;
-extern u32 sMenuPtrArg1;
-extern u32 sMenuPtrArg0;
-extern u32 sMenuHandBells;
-extern u32 sMenuReleaseMask[3];
-extern u32 sMenuLoadedMask[3];
-extern u8 sPocketBackupFlags[16];
-extern u8 sMenuText[16];
-extern u16 sPocketBackupItems[16];
-extern u16 sMenuChosenItems[16];
-extern u8 sChatDraft[32];
 
 // data of other units
-extern u8 gSoftResetRequested;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurY;
-extern u8 gTouchCurX;
 extern u16 gPad[];
 
 // functions of other units
@@ -130,53 +100,6 @@ void MenuCtrl_ReturnFutureLetter(void);
 }
 
 // ---- data ----
-extern u32 kMenuOverlayList23[2];
-extern u32 kMenuOverlayList25[2];
-extern u32 kMenuOverlayList26[2];
-extern u32 kMenuOverlayList0D[2];
-extern u32 kMenuOverlayList27[2];
-extern u32 kMenuOverlayList09[2];
-extern u32 kMenuOverlayList2D[2];
-extern u32 kMenuOverlayList0C[2];
-extern u32 kMenuOverlayList0B[2];
-extern ProcProfile sMenuManagerProfile;
-extern u32 kMenuOverlayList00[2];
-extern u32 kMenuOverlayList03[2];
-extern u32 kMenuOverlayList24[2];
-extern u32 kMenuOverlayList1F[3];
-extern u32 kMenuOverlayList07[3];
-extern u32 kMenuOverlayList20[3];
-extern u32 kMenuOverlayList2B[3];
-extern u32 kMenuOverlayList08[3];
-extern u32 kMenuOverlayList0A[3];
-extern u32 kMenuOverlayList21[3];
-extern u32 kMenuOverlayList22[3];
-extern u32 kMenuOverlayList0E[3];
-extern u32 kMenuOverlayList10[3];
-extern u32 kMenuOverlayList11[3];
-extern u32 kMenuOverlayList12[3];
-extern u32 kMenuOverlayList13[3];
-extern u32 kMenuOverlayList14[3];
-extern u32 kMenuOverlayList15[3];
-extern u32 kMenuOverlayList16[3];
-extern u32 kMenuOverlayList17[3];
-extern u32 kMenuOverlayList18[3];
-extern u32 kMenuOverlayList28[3];
-extern u32 kMenuOverlayList29[3];
-extern u32 kMenuOverlayList1B[3];
-extern u32 kMenuOverlayList2C[3];
-extern u32 kMenuOverlayList06[3];
-extern u32 kMenuOverlayList19[3];
-extern u32 kMenuOverlayList1A[3];
-extern u32 kMenuOverlayList1C[3];
-extern u32 kMenuOverlayList1D[3];
-extern u32 kMenuOverlayList1E[3];
-extern u32 kMenuOverlayList2A[3];
-extern u32 kMenuOverlayList04[4];
-extern u32 kMenuOverlayList05[4];
-extern u32 kMenuOverlayList0F[4];
-extern u32 kMenuOverlayList01[4];
-extern u32 kMenuOverlayList02[4];
 
 u8 sMenuIndex;
 u32 kMenuOverlayList18[3] = {0x6b, 0x5e, 0xffffffff};

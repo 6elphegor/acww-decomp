@@ -4,6 +4,7 @@
 #include "ui/LabelBalloon.h"
 #include "ui/FieldInfoLabelBalloon.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020b7bb0.h"
 
 extern "C" {
 // Other files

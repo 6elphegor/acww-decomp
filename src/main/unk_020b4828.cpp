@@ -13,19 +13,28 @@
 #include "nitro/io_access.h"
 #include "gfx/BgModelCache.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_data_021eda50  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021eda58  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov054_0225b7a8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gGfxFrameHooks  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gVBlanksPerFrame  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFishShadows  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_0210fa84.h"
 #include "proto/autoload_2/unk_02110c98.h"
 #include "proto/itcm/unk_01ff8ad4.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_02034010.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_02036c58.h"
 #include "proto/main/unk_02037734.h"
 #include "proto/main/unk_02038474.h"
-#include "proto/main/unk_0203e438.h"
 #include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_0204eeb4.h"
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_020536dc.h"
@@ -41,7 +50,6 @@
 #include "proto/main/unk_0205edfc.h"
 #include "proto/main/unk_0205ef08.h"
 #include "proto/main/unk_0205f284.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02070560.h"
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_020815f8.h"
@@ -58,7 +66,6 @@
 #include "proto/main/unk_020abea8.h"
 #include "proto/main/unk_020b4828.h"
 #include "proto/main/unk_020b7f7c.h"
-#include "proto/main/unk_020b8340.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -150,18 +157,11 @@ extern "C" {
 // ---- data of other units ----
 extern s32 data_020c8cc0;
 extern CommManager *gCommManager;
-extern u16 gNextSceneProfile;
 extern u8 data_021e5890[];
 extern S2f0* gActorDefaultParent;
-extern u8 gTouchHeld;
-extern u16 gTouchX;
-extern u16 gTouchY;
 extern u8 gScreenTransition;
-extern u8 data_021c3cb8;
 extern u32 gGfxFrameHooks;
-extern u32 data_021ce63c;
 extern u32 gVBlanksPerFrame;
-extern u8 gSceneCreating;
 extern u8 data_021eda50[];
 extern u8 data_021eda58[];
 extern u32 gCurrentHeap;
@@ -181,17 +181,23 @@ BOOL Town_FindGateHouse(void* o, VecFx32* v, s32* a, s32* b);
 void Clock_GetDayMonth(u8 *out);
 void TouchPick_Cast(s32, u32, u32, u32);
 void _ZN15BgModelCacheObj5setupEj(s32, s32);
+void ItemInfo_LoadIndoor(s32);
 void _ZN15TouchPickerView5resetEv(void *self);
 s32 ResCache_Destroy();
 void ResCache_Init();
+void VramQueue2d_Init();
+void VramQueueTex_Init();
 void GX_SetBankForSubBG(u32);
 void GX_SetBankForSubOBJ(u32);
 void G3X_SetFog(u32, u32, u32, u32);
+void FieldScene_DebugDraw();
 void Collision_UpdateDigHoles();
 void Field_UpdateActions();
+void Character_ResetList();
 void TalkRequestQueue_StartInitial();
 void NpcHeapPools_DestroyAll();
 void _ZN15PatternTexCache6unloadEv(void *self);
+void ItemInfo_FreeIndoor();
 void _ZN15PatternTexCache4loadEv(void *self);
 void NpcHeapPools_CreateAll();
 void NookShop_OnSceneLoad();

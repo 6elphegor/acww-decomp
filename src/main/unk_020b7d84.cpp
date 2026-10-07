@@ -1,20 +1,15 @@
 #include "types.h"
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/main/unk_020b7d84.h"
 
 extern "C" {
 }
 
 extern "C" {
-extern u8 gTouchHoldFrames, gTouchPrevChanged, gTouchPrevHeld;
-extern u8 gTouchHeld, gTouchChanged;
-extern u16 gTouchX, gTouchY;
 }
 
-extern u8 sTouchPrevReleaseFrames, sTouchPrevHoldFrames, sTouchPrevCurY, sTouchPrevCurX, sTouchPrevPressY, sTouchPrevPressX;
-extern u8 gTouchCurY, gTouchCurX, gTouchPressY, gTouchPressX, sTouchReleaseFrames;
-extern u16 sTouchPrevRawX, sTouchPrevRawY;
 
 extern "C" void Touch_Init(void) {
     TouchPanel_Init();
@@ -70,19 +65,6 @@ extern "C" void Touch_Update(void) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern u8 sTouchPrevHoldFrames;
-extern u8 sTouchReleaseFrames;
-extern u8 gTouchPressX;
-extern u8 gTouchPressY;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 sTouchPrevPressX;
-extern u8 sTouchPrevPressY;
-extern u8 sTouchPrevCurX;
-extern u16 sTouchPrevRawY;
-extern u16 sTouchPrevRawX;
-extern u8 sTouchPrevCurY;
-extern u8 sTouchPrevReleaseFrames;
 
 u8 sTouchPrevHoldFrames;
 

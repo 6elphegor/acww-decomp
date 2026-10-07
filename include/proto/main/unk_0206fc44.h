@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0206fc44.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "gfx/Mtx43.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
 #endif
@@ -30,6 +31,9 @@ void CpuMtx_MultTrans(VecFx32 *v);
 void CpuMtx_MultRotScaledTrans(void *a, VecFx32 *v, VecFx32 *w);
 #endif
 }
+#ifndef PROTO_LOCAL_data_021cb69c
+extern Mtx43 data_021cb69c;
+#endif
 #endif
 
 #endif

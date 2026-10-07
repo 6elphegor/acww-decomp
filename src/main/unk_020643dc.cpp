@@ -11,8 +11,8 @@
 #include "gfx/DebugColor.h"
 #include "gfx/Rgb555.h"
 #include "nitro/io_access.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_021104ac.h"
+#include "proto/main/unk_020027b4.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020643dc.h"
 
@@ -161,7 +161,6 @@ struct Unk_020b22ac_Dummy;
 extern "C" {
 extern u8 gFieldSceneKind;
 extern Camera *gCamera;
-extern Mtx43 gViewMtx;
 }
 
 extern SceneLights *gSceneLights;
@@ -177,6 +176,9 @@ extern "C" {
 void NNS_G3dGlbLightVector(s32 id, s32 x, s32 y, s32 z);
 void NNS_G3dGlbLightColor(s32 id, u32 c);
 u16 Sky_GetLightColor(s32 a);
+void Vec_RotateX(VecFx32 *v, s32 a);
+void Vec_RotateY(VecFx32 *v, s32 a);
+s32 Vec_SafeNormalize(VecFx32 *v);
 s32 VEC_Mag(VecFx32 *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Clock_GetMinuteHour(MinuteHour *t);

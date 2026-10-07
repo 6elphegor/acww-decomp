@@ -37,8 +37,6 @@
 #include "talk/MsgString33.h"
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Room_PickRandomWalkTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0213510c.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_020039ec.h"
@@ -233,33 +231,6 @@ void _ZN18HouseVisitVillager13execVisitCallEv();
 void _ZN18HouseVisitVillager17execVisitTalkWaitEv();
 void _ZN18HouseVisitVillager16execVisitOutsideEv();
 void _ZN18HouseVisitVillager13execVisitTalkEv();
-extern void *data_ov068_0227097c[2];
-extern void *data_ov068_02270984[2];
-extern void *data_ov068_0227098c[2];
-extern void *data_ov068_02270994[2];
-extern void *data_ov068_0227099c[2];
-extern void *data_ov068_022709a4[2];
-extern void *data_ov068_022709ac[2];
-extern void *data_ov068_022709b4[2];
-extern void *data_ov068_022709bc[2];
-extern void *data_ov068_022709c4[2];
-extern void *data_ov068_022709cc[2];
-extern void *data_ov068_022709d4[2];
-extern void *data_ov068_022709dc[2];
-extern void *data_ov068_022709e4[2];
-extern void *data_ov068_022709ec[2];
-extern void *data_ov068_022709f4[2];
-extern void *data_ov068_022709fc[2];
-extern void *data_ov068_02270a04[2];
-extern void *data_ov068_02270a0c[2];
-extern void *data_ov068_02270a14[2];
-extern void *data_ov068_02270a1c[2];
-extern void *data_ov068_02270a24[2];
-extern void *data_ov068_02270a2c[2];
-extern void *data_ov068_02270a34[2];
-extern HouseVisitVillager *sHouseVisitVillager;
-extern u8 data_ov068_022712b8[0x28];
-extern u8 sHouseVisitMsgFileName[0x28];
 extern HouseVisitStarText data_ov068_02270a3c;
 }
 

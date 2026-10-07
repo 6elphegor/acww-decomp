@@ -5,11 +5,21 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "game/SceneInfo.h"
 #include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sFieldSceneProfiles
+extern u32 sFieldSceneProfiles[14];
+#endif
+#ifndef PROTO_LOCAL_sFieldSceneProfileCount
+extern u32 sFieldSceneProfileCount;
+#endif
+#ifndef PROTO_LOCAL_sFieldSceneObjectList
+extern SceneWarpList sFieldSceneObjectList;
+#endif
 #ifndef PROTO_LOCAL_PlayerHouseTex_Get
 s32 PlayerHouseTex_Get(s32 *p);
 #endif

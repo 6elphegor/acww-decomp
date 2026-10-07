@@ -20,18 +20,16 @@
 #include "proto/main/unk_020027b4.h"
 #include "proto/main/unk_02051218.h"
 #include "proto/main/unk_0206c768.h"
+#include "proto/main/unk_0206cabc.h"
 #include "proto/main/unk_020b2c50.h"
 
 extern "C" {
-extern u8 sMailCheckWords[];
 }
 
 extern "C" {
-extern s16 sMailCheckWordEnds[];
 }
 
 extern "C" {
-extern u8 sMailCheckWordUses[];
 }
 
 extern "C" {

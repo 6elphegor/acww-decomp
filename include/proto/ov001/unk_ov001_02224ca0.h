@@ -28,6 +28,12 @@ void WfcPool_Destroy(void *a, ...);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcFadeFlags
+extern u8 sWfcFadeFlags[4];
+#endif
+#ifndef PROTO_LOCAL_sWfcFadeEndValues
+extern u8 sWfcFadeEndValues[4];
+#endif
 #ifndef PROTO_LOCAL_WfcFade_IsBusy
 u8 WfcFade_IsBusy(u32 mode);
 #endif

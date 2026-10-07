@@ -12,6 +12,7 @@
 #include "proto/main/unk_020116e0.h"
 #include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02089f78.h"
 #include "proto/main/unk_02089fbc.h"
 #include "proto/main/unk_0208de68.h"
 #include "proto/main/unk_0208eeac.h"

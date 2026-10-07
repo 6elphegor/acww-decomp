@@ -8,6 +8,7 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
 #include "types.h"
+class PlayerGlassesModelPool;
 #endif
 
 #ifdef __cplusplus
@@ -86,6 +87,12 @@ u8 PlayerGlassesModelRef_GetModelId(u8 *p);
 void PlayerGlassesModelRef_SetModelId(u8 *p, s32 v);
 #endif
 }
+#ifndef PROTO_LOCAL_sPlayerGlassesModelPathBuf
+extern char sPlayerGlassesModelPathBuf[0x14];
+#endif
+#ifndef PROTO_LOCAL_sPlayerGlassesModelPool
+extern PlayerGlassesModelPool sPlayerGlassesModelPool;
+#endif
 #endif
 
 #endif

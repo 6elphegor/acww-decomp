@@ -24,24 +24,20 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "net/CommManager.h"
 #include "snd/SndEnvChannel.h"
+#define PROTO_LOCAL_FieldFish_MoveXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FishCatch_StartLift  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FishCatch_StartRemoteHook  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FishDisplay_GetRequestPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FishShadow_CanSeeBobber  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Fishing_StepArc  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0204f134.h"
-#include "proto/main/unk_0204f2a4.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205f284.h"
 #include "proto/main/unk_02063904.h"
@@ -377,7 +373,6 @@ extern u8 data_0213b954[];
 extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
 extern void * gSceneBlockMap;
-extern u8 gTouchHeld;
 extern u8 data_021f47e0[];
 extern void * gCurrentHeap;
 extern u8 sFishShadowPoolName[];
@@ -390,6 +385,7 @@ s32 Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 u32 MapBlock_GetAttr(void *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
+void FishDisplay_PostRequest(u32 i, s32 a, s32 b, s32 c, s32 d);
 void AnimModel_attachAnim(void *o);
 void BlendAnimModel_initAnim(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL AnimModel_allocAnmObj(void *o, void *t);
@@ -403,6 +399,8 @@ BOOL CommManager_isOnline(void *g);
 void ModelSlotPool_release(void *p, void *q);
 void *ModelSlotPool_acquire(void *p, void *q);
 s32 ModelSlot_getHeap(void *a);
+s64 Vec_DistSqXZ(void *a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
 s32 func_021065dc(s32 a);
 s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -425,7 +423,13 @@ s32 FieldAction_FindDropUnit(s32 a, s32 *p, s32 c);
 void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
+BOOL FishDisplay_HasPassedFrame(void *o, s32 a);
+void FishDisplay_Release(s32 h);
+void FishDisplay_SetEntry(s32 h, s32 a, V3_f5 *p, V3_f5 *q, s32 r, s32 s, s32 t, s32 u, s32 v, s32 w);
+s32 FishDisplay_Acquire();
 s32 FishDisplay_GetRequestPos(VecFx32 *v, s32 *p, u8 i);
+u32 FishDisplay_GetRequestFish(u8 i);
+u32 FishDisplay_GetRequestKind(u8 i);
 void AnimModel_detachJointAnim(void *p);
 void AnimModel_drawAnimated(void *p, V3_f3 *v);
 s32 AnimModel_stepAnim(void *p);
@@ -491,7 +495,6 @@ BOOL FieldFish_IsPlayerApproaching(s32 a, s32 b, E_f3 *e);
 BOOL FishShadow_TryFlee(E_f3 *e, s32 a);
 BOOL FishShadow_StartFlee(E_f3 *e, s32 a);
 void FishShadow_CheckOffscreen(O_f3 *o, E_f3 *e, s32 idx);
-void FishCatch_StartRemoteHook(void *a, s32 idx);
 u8 *func_ov003_022219dc(u8 *a);
 u8 *func_ov003_02221998(u8 *a);
 u8 *func_ov003_02221980(u8 *a);
@@ -554,6 +557,7 @@ s32 BottleThrow_IsOffscreen(E_f9 *e);
 void BottleThrow_Run(BottleThrowStateOwner *self, E_f9 *e);
 void BottleThrow_StateFly(void *self, E_f9 *e);
 void BottleThrow_StateDrift(void *self, E_f9 *e);
+void FieldFish_MoveXZ(s32 *p, s32 a, s32 ang);
 void FishShadow_RunAppearAi(Obj_f9 *o);
 void FishShadow_RunAi(Obj_f9 *o);
 void FishShadow_AppearFree(Obj_f9 *o);
@@ -604,30 +608,11 @@ FishCatch sFishCatches[4];
 void *data_ov003_02257a7c = (void *)gSceneBlockMap;
 BottleThrowStateOwner sBottleThrowStateOwner;
 BottleThrow sBottleThrows[4];
-extern void *data_ov003_022348a0[2];
-extern void *data_ov003_02234868[2];
-extern void *data_ov003_022348a8[2];
 BottleThrowStateEntry sBottleThrowStates[3] = {
     {*(StFn_f9 *)data_ov003_022348a0},
     {*(StFn_f9 *)data_ov003_02234868},
     {*(StFn_f9 *)data_ov003_022348a8},
 };
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
-extern u8 data_ov003_022348b0[16];
 FishSizeClassParams sFishSizeClassParams[8] = {
     {0x3c, 0x40, 0xa, 0x14, 0x28, 0x64, 0x14, 0xa, 0x5, 0x3e, 0x5d, data_ov003_022348b0[0], data_ov003_022348b0[1], 0xdc, 0x8c},
     {0x3c, 0x42, 0xf, 0x1e, 0x28, 0x64, 0x14, 0xa, 0x5, 0x48, 0x69, data_ov003_022348b0[2], data_ov003_022348b0[3], 0xe6, 0x82},
@@ -638,11 +623,6 @@ FishSizeClassParams sFishSizeClassParams[8] = {
     {0x96, 0x9a, 0x28, 0x50, 0x28, 0x64, 0x14, 0xa, 0x5, 0x6e, 0xd5, data_ov003_022348b0[12], data_ov003_022348b0[13], 0x11d, 0x78},
     {0x55, 0x56, 0x19, 0x32, 0x28, 0x64, 0x14, 0xa, 0x5, 0x5d, 0x9b, data_ov003_022348b0[14], data_ov003_022348b0[15], 0xff, 0x78},
 };
-extern void *data_ov003_022347b0[2];
-extern void *data_ov003_02234890[2];
-extern void *data_ov003_02234888[2];
-extern void *data_ov003_02234880[2];
-extern void *data_ov003_02234878[2];
 FishCatchStateEntry sFishCatchStates[5] = {
     {*(Fn_f6 *)data_ov003_022347b0},
     {*(Fn_f6 *)data_ov003_02234890},
@@ -650,27 +630,15 @@ FishCatchStateEntry sFishCatchStates[5] = {
     {*(Fn_f6 *)data_ov003_02234880},
     {*(Fn_f6 *)data_ov003_02234878},
 };
-extern char sFishShadowAnimPathStr[];
 char *sFishShadowAnimPath = sFishShadowAnimPathStr;
-extern char sFishFinTexAnimPathStr[];
 char *sFishFinTexAnimPath = sFishFinTexAnimPathStr;
 void *data_ov003_02234820[2] = {(void *)FishShadow_BiteIdle, 0};
 void *data_ov003_022347b0[2] = {(void *)FishCatch_StateIdle, 0};
-extern void *data_ov003_02234838[2];
-extern void *data_ov003_02234840[2];
-extern void *data_ov003_02234808[2];
-extern void *data_ov003_02234800[2];
 FishAiStateEntry sFishShadowAiTable[2] = {
     {*(Fn_f9 *)data_ov003_02234838, *(Fn_f9 *)data_ov003_02234840},
     {*(Fn_f9 *)data_ov003_02234808, *(Fn_f9 *)data_ov003_02234800},
 };
 s32 sBottleDriftSpeed = 0x11f;
-extern void *data_ov003_022347f0[2];
-extern void *data_ov003_022347e8[2];
-extern void *data_ov003_022347e0[2];
-extern void *data_ov003_022347b8[2];
-extern void *data_ov003_022347c8[2];
-extern void *data_ov003_022347d0[2];
 FishMoveStateEntry sFishShadowMoveStates[6] = {
     {*(Fn_f9 *)data_ov003_022347f0},
     {*(Fn_f9 *)data_ov003_022347e8},
@@ -684,10 +652,6 @@ void *data_ov003_02234838[2] = {(void *)FishShadow_AppearFree, 0};
 void *data_ov003_02234898[2] = {(void *)FishShadow_BiteTug, 0};
 void *data_ov003_022348a0[2] = {(void *)BottleThrow_StateIdle, 0};
 void *data_ov003_022348a8[2] = {(void *)BottleThrow_StateDrift, 0};
-extern void *data_ov003_02234858[2];
-extern void *data_ov003_022347a0[2];
-extern void *data_ov003_02234810[2];
-extern void *data_ov003_022347f8[2];
 FishBiteStateEntry sFishBiteStates[8] = {
     {*(Fn_f8 *)data_ov003_02234820},
     {*(Fn_f8 *)data_ov003_02234830},
@@ -701,9 +665,7 @@ void *data_ov003_022347a0[2] = {(void *)FishShadow_BiteNibble, 0};
 s32 sBottleSinkStep = 0x14;
 void *data_ov003_02234888[2] = {(void *)FishCatch_StateHold, 0};
 char sFishShadowAnimPathStr[] = "/fish/03/fish_shadow.nsbca";
-extern u16 sFishSightFishingRod[10];
 extern FishBiteWindow sFishBiteWindowFishingRod;
-extern u16 sFishSightGoldenRod[10];
 extern FishBiteWindow sFishBiteWindowGoldenRod;
 FishRodParams sFishRodParams[2] = {
     {(u8 *)sFishSightFishingRod, (void *)&sFishBiteWindowFishingRod},

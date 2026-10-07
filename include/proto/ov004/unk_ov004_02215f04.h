@@ -12,6 +12,22 @@ class BirthdayGuestVillager;
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224c158
+extern void *data_ov004_0224c158[2];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sBirthdayGuestVillager
+extern BirthdayGuestVillager *sBirthdayGuestVillager;
+#endif
+#ifndef PROTO_LOCAL_sBirthdayGuestMsgFile
+extern u8 sBirthdayGuestMsgFile[0x28];
+#endif
 #ifndef PROTO_LOCAL_BirthdayGuestVillager_Create
 BirthdayGuestVillager *BirthdayGuestVillager_Create();
 #endif

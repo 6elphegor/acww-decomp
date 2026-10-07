@@ -2,6 +2,8 @@
 #include "sys/DebugText.h"
 #define PROTO_LOCAL_DebugText_VPrintf  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OS_VSNPrintf  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0206d49c.h"
 #include "proto/main/unk_020b7f7c.h"
 
@@ -18,8 +20,6 @@ extern u32 (*data_0213bc10)(u32, u32);
 extern u32 (*data_0213bc18)(u32);
 }
 
-extern u32 sPlttVramUsed, sTexVramTexelBHi, sTexVramIdxBHi, sTexVramIdxAHi, sTexVramTexelAHi, sTexVramTexelBLo, sTexVramIdxBLo;
-extern u32 sTexVramIdxALo, sTexVramTexelALo, sPlttVramSize;
 
 extern "C" void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, char *ap);
 
@@ -198,16 +198,6 @@ extern "C" void TexVram_OnAllocFail(void) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern u32 sTexVramTexelALo;
-extern u32 sTexVramIdxALo;
-extern u32 sTexVramIdxBLo;
-extern u32 sTexVramTexelBLo;
-extern u32 sTexVramTexelAHi;
-extern u32 sTexVramIdxAHi;
-extern u32 sTexVramIdxBHi;
-extern u32 sTexVramTexelBHi;
-extern u32 sPlttVramUsed;
-extern u32 sPlttVramSize;
 
 u32 sTexVramTexelALo;
 

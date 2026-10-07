@@ -38,7 +38,6 @@
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02089fbc.h"
 #include "proto/main/unk_02094810.h"
@@ -138,11 +137,6 @@ extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern VecFx32 gVec3Zero;
-extern uptr sSpNpcBrewsterMsgFiles[];
-extern u8 data_ov004_0224cec8[];
-extern u8 sSpNpcBrewsterModelPath[];
-extern u8 sSpNpcBrewsterTexturePath[];
-extern SpNpcBrewster *sSpNpcBrewster;
 extern SpNpcBrewsterTalkScript sSpNpcBrewsterTalkScripts[];
 extern SpNpcBrewsterActEntry sSpNpcBrewsterActTable[];
 // 0x02250aa8 is a label inside the 0x80-byte table (second ptmf of entry 0)
@@ -185,6 +179,7 @@ void PlayerSpNpcRecord_setCafeVisits(void *p, u32 v);
 void PlayerSpNpcRecord_setSableTalkCount(void *self, u32 v);
 u32 PlayerSpNpcRecord_getSableTalkCount(void *self);
 s32 PlayerId_getGender(void *p);
+void Camera_UnmuteSe();
 s32 Talk_CheckAndSetPlayerFlag(u32 a, BOOL flag);
 s32 CommManager_isOnline(void *p);
 s32 CommManager_isSlotActive(void *p, u32 i);

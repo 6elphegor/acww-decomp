@@ -5,6 +5,7 @@
 
 #include "types.h"
 #include "item/PocketMatches.h"
+struct ErrandKindSetup;
 struct PlanErrand;
 #ifdef __cplusplus
 #include "types.h"
@@ -400,6 +401,45 @@ s32 Pocket_FindItem(u16 *a);
 s32 Player_GetDeliveryRecipientName(void *a, void *b);
 #endif
 }
+#ifndef PROTO_LOCAL_data_020e2190
+extern void *data_020e2190[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e21a0
+extern void *data_020e21a0[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e21c0
+extern char data_020e21c0[9];
+#endif
+#ifndef PROTO_LOCAL_data_020e218c
+extern char data_020e218c[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e21b8
+extern void *data_020e21b8[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e21f0
+extern char data_020e21f0[10];
+#endif
+#ifndef PROTO_LOCAL_data_020e21d8
+extern char data_020e21d8[9];
+#endif
+#ifndef PROTO_LOCAL_data_020e21e4
+extern char data_020e21e4[10];
+#endif
+#ifndef PROTO_LOCAL_data_020e21b0
+extern char data_020e21b0[8];
+#endif
+#ifndef PROTO_LOCAL_data_020e21a8
+extern void *data_020e21a8[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e21cc
+extern char data_020e21cc[9];
+#endif
+#ifndef PROTO_LOCAL_data_020e2198
+extern void *data_020e2198[2];
+#endif
+#ifndef PROTO_LOCAL_sErrandKindSetups
+extern ErrandKindSetup sErrandKindSetups[10];
+#endif
 #endif
 
 #endif

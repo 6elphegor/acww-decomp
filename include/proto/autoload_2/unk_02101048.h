@@ -11,6 +11,18 @@ extern "C" {
 #ifndef PROTO_LOCAL_NNS_FndGetArchiveFileByName
 void *NNS_FndGetArchiveFileByName(const char *path);
 #endif
+#ifndef PROTO_LOCAL_data_0213bc18
+extern s32 (*data_0213bc18) ();
+#endif
+#ifndef PROTO_LOCAL_data_0213bc14
+extern s32 (*data_0213bc14) ();
+#endif
+#ifndef PROTO_LOCAL_data_0213bc10
+extern s32 (*data_0213bc10) ();
+#endif
+#ifndef PROTO_LOCAL_data_0213bc1c
+extern s32 (*data_0213bc1c) ();
+#endif
 #ifdef __cplusplus
 }
 #endif

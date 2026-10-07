@@ -6,9 +6,7 @@
 #include "game/FxVec3.h"
 #include "actor/Character.h"
 #include "sys/ProcProfile.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_0204f2a4.h"
 #include "proto/main/unk_020571f4.h"
 #include "proto/main/unk_02090268.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
@@ -159,17 +157,24 @@ extern "C" {
 extern u8 gFieldSceneKind[];
 extern u8 gSaveVillagers[];
 
+void FishDisplay_Release(s32 a);
+s32 Vec_DistXZ(void *a, void *b);
 void Math_StepS32(s32 *p, s32 target, s32 step);
+void Vec_RotateY(VecFx32 *v, s32 angle);
 void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
 void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 s32 Scene_GetCurrent();
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02133150(s32 a, s32 b);
+s32 Fish_GetSizeClass(s32 a);
 void Field_DrawIconModel(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y, s16 z);
 void Field_DrawItemIcon(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y, s16 z);
+s32 FishDisplay_SetEntry(s32 c4, s32 idx, VecFx32 *p, VecFx32 *q, s32 a0, s32 a1, s32 a2, s32 z0, s32 z1, s32 k);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
+s32 FishDisplay_Acquire();
 void Math_CountDownU8(void *p);
 void *SaveVillagers_Get(void *p, u32 v);
 u32 Villager_GetAnimalKind(u32 a);
@@ -195,7 +200,6 @@ extern const s32 data_020ca934[0x30];
 extern const s32 data_020ca9f4[0x30];
 extern const s32 data_020caab4[0x30];
 
-extern FishHoldOffsets *sFishHoldOffsetSets[6];
 
 HandOverItem *sHandOverItem;
 HandOverItemAct sHandOverItemActs[12][2] = {

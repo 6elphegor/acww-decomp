@@ -23,6 +23,9 @@ extern "C" {
 #ifndef PROTO_LOCAL_BarberMachine_Create
 BarberMachine *BarberMachine_Create();
 #endif
+#ifndef PROTO_LOCAL_sBarberMachine
+extern BarberMachine *volatile sBarberMachine;
+#endif
 }
 #endif
 

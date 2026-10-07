@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_020b4174.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class BootLogoScene;
 #endif
@@ -14,6 +15,9 @@ extern "C" {
 BootLogoScene *BootLogoScene_Create(void);
 #endif
 }
+#ifndef PROTO_LOCAL_data_020e3fd4
+extern ProcProfile data_020e3fd4;
+#endif
 #endif
 
 #endif

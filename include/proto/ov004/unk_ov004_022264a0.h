@@ -14,8 +14,71 @@ class ObjB;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov004_0224d938
+extern void *data_ov004_0224d938[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d8e0
+extern void *data_ov004_0224d8e0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d918
+extern void *data_ov004_0224d918[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d908
+extern void *data_ov004_0224d908[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d958
+extern void *data_ov004_0224d958[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d950
+extern void *data_ov004_0224d950[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d948
+extern void *data_ov004_0224d948[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d940
+extern void *data_ov004_0224d940[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d8d0
+extern void *data_ov004_0224d8d0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d8e8
+extern void *data_ov004_0224d8e8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d910
+extern void *data_ov004_0224d910[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d930
+extern void *data_ov004_0224d930[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d960
+extern void *data_ov004_0224d960[2];
+#endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_UpdateMatrices
 void CafeCoffeeSet_UpdateMatrices(void *ov);
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d900
+extern void *data_ov004_0224d900[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d8f8
+extern void *data_ov004_0224d8f8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d8f0
+extern void *data_ov004_0224d8f0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d928
+extern void *data_ov004_0224d928[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d920
+extern void *data_ov004_0224d920[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d8d8
+extern void *data_ov004_0224d8d8[2];
+#endif
+#ifndef PROTO_LOCAL_sCafeCoffeeSet
+extern void *volatile sCafeCoffeeSet;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d8c8
+extern void *data_ov004_0224d8c8[2];
 #endif
 #ifndef PROTO_LOCAL_CafeCoffeeSet_SyncToBrewster
 void CafeCoffeeSet_SyncToBrewster(void);

@@ -2,13 +2,13 @@
 #include "gfx/Mtx43.h"
 #include "save/MuseumData.h"
 #include "proto/main/unk_02052b50.h"
+#include "proto/main/unk_0206fc44.h"
 #include "proto/main/unk_0206fde4.h"
 
 
 
 
 extern "C" {
-extern Mtx43 data_021cb69c;
 }
 
 Mtx43 sCpuMtxStack[31];

@@ -39,7 +39,8 @@
 #define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SpNpcBlanca_FindSidestepPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_020119cc.h"
@@ -258,7 +259,14 @@ struct SpNpcBlancaActEntry {
 
 
 extern "C" {
+SpNpcBlanca *SpNpcBlanca_Create();
+void SpNpcBlanca_ChangeAct(SpNpcBlanca *self, s32 state);
+s32 SpNpcBlanca_IsInCameraBox(void *self);
+s32 SpNpcBlanca_TryAvoidObstacle(void *self);
+s32 SpNpcBlanca_SteerAroundObstacle(void *self);
 s32 SpNpcBlanca_FindSidestepPos(void *self, void *out, void *x);
+s32 SpNpcBlanca_PickWanderTarget(void *self, s32 *a, s32 *b);
+s32 SpNpcBlanca_IsInFocusBox(void *self, void *a, void *b);
 extern u8 sSpNpcBlancaModelPath[];
 extern SpNpcBlancaActEntry sSpNpcBlancaActTable[5];
 extern FxVec3 sSpNpcBlancaSidestepOffsets[2];

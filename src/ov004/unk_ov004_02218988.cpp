@@ -36,9 +36,6 @@
 #include "talk/TalkWindowState.h"
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TalkWindow_Get  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Equal  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02052b50.h"
@@ -118,10 +115,6 @@ extern u8 gTalkMsgIndexEnd[];
 extern u8 gFieldSceneKind[];
 extern FleaMarketBuyerTalkScript sFleaMarketBuyerTalkScripts[2];
 extern FleaMarketBuyerActEntry sFleaMarketBuyerActTable[9];
-extern u8 data_ov004_022507b0[0x28];
-extern u8 data_ov004_022507d8[0x28];
-extern u8 data_ov004_02250800[0x28];
-extern u8 data_ov004_02250828[0x28];
 
 void *FtrActorTable_get(void *, s32);
 void *FtrActor_GetFtrIndex(...);

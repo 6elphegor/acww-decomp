@@ -35,6 +35,7 @@
 #define PROTO_LOCAL_NpcActor_IsFrontAngle  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020850e0.h"
@@ -133,6 +134,8 @@ extern void *gCamera;
 extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 
+void SpNpcPete_ChangeAct(void *self, s32 state);
+s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b);
 }
 
 
@@ -216,6 +219,7 @@ struct SpNpcPeteTalkScript {
 
 
 extern "C" {
+SpNpcPete *SpNpcPete_Create();
 void _ZN13SpNpcPeteTalk12scriptWakeUpEv();
 extern void *data_ov075_02272280[2];
 void _ZN9SpNpcPete10setupAct00Ev();

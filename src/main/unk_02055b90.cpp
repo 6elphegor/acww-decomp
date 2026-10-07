@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/ModelAnim.h"
+#include "proto/main/unk_02055b90.h"
 #include "proto/main/unk_02055bcc.h"
 
 

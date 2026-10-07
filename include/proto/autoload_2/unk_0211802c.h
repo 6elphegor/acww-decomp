@@ -18,6 +18,9 @@ int FSi_OpenFileDirectCommand(FSFile *file);
 #ifndef PROTO_LOCAL_FSi_CloseFileCommand
 int FSi_CloseFileCommand(void);
 #endif
+#ifndef PROTO_LOCAL_data_0213a388
+extern int (*const data_0213a388[9]) (FSFile *);
+#endif
 #ifdef __cplusplus
 }
 #endif

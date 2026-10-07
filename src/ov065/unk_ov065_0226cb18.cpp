@@ -28,6 +28,19 @@ namespace N_d080 {
 extern "C" {
 
 #include "types64.h"
+#define PROTO_LOCAL_OS_GetTick  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WifiAp_FoldApIndex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WifiAp_GetBlock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WifiAp_GetState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WifiAp_SetConnectedApType  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WifiAp_SetError  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSockYieldMode  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02115468.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
+#include "proto/ov065/unk_ov065_0226cb18.h"
 
 
 
@@ -86,11 +99,9 @@ extern char data_ov065_0228b90c[];
 extern char data_ov065_0228b918[];
 extern char data_ov065_0228b924[];
 
-extern s32 memcmp(const void *a, const void *b, u32 n);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 n);
 extern void MI_CpuFill8(void *dst, u32 v, u32 n);
 extern void OS_GetMacAddress(void *p);
-extern void OS_GetOwnerInfo(void *p);
 extern s32 RTC_GetDate(void *p);
 extern s32 RTC_GetTime(void *p);
 extern u32 OS_DisableInterrupts(void);
@@ -100,10 +111,6 @@ extern s32 OS_SNPrintf(char *buf, u32 n, const char *fmt, ...);
 extern s32 strlen(const char *s);
 extern s32 wcslen(const void *s);
 extern void DWCi_BM_GetWiFiInfo(void *p);
-extern void OS_LockMutex(void *m);
-extern void OS_UnlockMutex(void *m);
-extern s32 atol(void);
-extern s32 strtol(const char *s, char **end, s32 base);
 extern s32 DWCi_AUTH_UpDateWiFiID(void *p, u32 v);
 extern void DWCi_AUTH_RemakeWiFiID(void *p);
 extern void DWCi_AUTH_MakeWiFiID(u32 v);
@@ -116,7 +123,6 @@ extern void WifiAp_DecodeNdwcshapSsid(void *in, void *out);
 extern void WifiAp_DeriveNdwcshapWepKey(void *in, void *p);
 extern u8 *WifiLink_GetConnectedBssid(void);
 extern u8 *WifiLink_GetConnectedSsid(u16 *out);
-extern u32 WifiAp_GetConnectedApType(void);
 extern s32 DwcHttp_AddField(DwcHttpFieldList *f, const char *k, const char *v);
 extern s32 DwcHttp_AddHeader(void *a, const char *k, const char *v);
 extern s32 DwcHttp_AddFormParam(void *a, const char *k, const char *v, u32 n);

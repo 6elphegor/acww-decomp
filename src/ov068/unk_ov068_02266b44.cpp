@@ -32,7 +32,6 @@
 #define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_020943dc.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
@@ -69,6 +68,8 @@ BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_SetTargetDone(void *p);
 u32 NookShop_GetLevel(void *p);
 u32 Math_CountDownU8(void *p);
+void Camera_SetModeDefault();
+void Camera_FocusOnPoint(VecFx32 *v);
 void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
 void PlayerData_clearFlag(void *self, s32 a);
 void *HouseData_getDebt(void *self);
@@ -92,7 +93,6 @@ extern u8 gU8None;
 extern u8 gTalkMsgIndexEnd[];
 extern u8 gSaveHouse[];
 extern u8 gSavePlayers[];
-extern void *sNookIntroMsgFilePtr;
 extern const char *sNookModelPaths[];
 extern const char *sNookTexPaths[];
 }
@@ -198,28 +198,6 @@ void _ZN14SpNpcNookIntro9mainAct02Ev();
 void _ZN14SpNpcNookIntro9mainAct05Ev();
 void _ZN14SpNpcNookIntro10setupAct01Ev();
 void _ZN14SpNpcNookIntro10setupAct02Ev();
-extern void *data_ov068_0226fd00[2];
-extern void *data_ov068_0226fd08[2];
-extern void *data_ov068_0226fd10[2];
-extern void *data_ov068_0226fd18[2];
-extern void *data_ov068_0226fd20[2];
-extern void *data_ov068_0226fd28[2];
-extern void *data_ov068_0226fd30[2];
-extern void *data_ov068_0226fd38[2];
-extern void *data_ov068_0226fd40[2];
-extern void *data_ov068_0226fd48[2];
-extern void *data_ov068_0226fd50[2];
-extern void *data_ov068_0226fd58[2];
-extern void *data_ov068_0226fd60[2];
-extern char sNookIntroMsgFile[0x14];
-extern char sNookModelRcn[0x18];
-extern char sNookModelRcc[0x18];
-extern char sNookModelRcs[0x18];
-extern char sNookModelRcd[0x18];
-extern char sNookTexRcn[0x1c];
-extern char sNookTexRcc[0x1c];
-extern char sNookTexRcs[0x1c];
-extern char sNookTexRcd[0x1c];
 extern SpNpcNookIntroTalkScript sNookIntroTalkScripts[2];
 extern SpNpcNookIntroActEntry sSpNpcNookIntroActTable[6];
 }

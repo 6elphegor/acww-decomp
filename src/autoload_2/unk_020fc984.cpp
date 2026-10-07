@@ -14,9 +14,6 @@
 #include "gfx/P.h"
 #include "nitro/mtx.h"
 #include "gfx/SplEmitterE.h"
-#include "proto/autoload_2/unk_020fc984.h"
-#include "proto/autoload_2/unk_020fe4b4.h"
-#include "proto/autoload_2/unk_02117984.h"
 
 struct P;
 
@@ -77,11 +74,13 @@ u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 old);
 void OSi_UnlockVram(u32 a, u32 b);
 s32 OSi_TryLockVram(u32 a, u32 b);
+void PXI_Init(void);
 s32 PXI_IsCallbackReady(u32 a, u32 b);
 void PXI_SetFifoRecvCallback(u32 a, void *b);
 s32 PXI_SendWordByFifo(u32 a, u32 b, u32 c);
 s32 OS_GetLockID(void);
 void WvrDummyAsyncCallback(u32 a, u32 b);
+void WvrReceiveCallback(u32 a, u32 b);
 void spl_rndm_get_arb_vec_xyz(VecFx32 *v);
 void spl_rndm_get_arb_vec_xy(VecFx32 *v);
 void spl_push_front(PList *l, P *n);

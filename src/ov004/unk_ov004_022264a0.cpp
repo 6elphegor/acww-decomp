@@ -18,13 +18,11 @@
 #include "room/RoomObjActor.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_CafeCoffeeSet_UpdateMatrices  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02090268.h"
 #include "proto/ov004/unk_ov004_0221c01c.h"
 #include "proto/ov004/unk_ov004_022264a0.h"
@@ -202,12 +200,13 @@ public:
 #define F(T, off) (*(T *)((u8 *)this + off))
 
 extern "C" {
-extern void *volatile sCafeCoffeeSet;
 extern Mtx data_021f47e0;
-extern void *gBgHeap;
 extern u8 data_021ed0a0[];
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
+s32 Camera_RestorePrevMode(void);
+s32 Camera_MuteSe(void);
+s32 Camera_SetMode4(void);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 s32 Math_IsInRange(void *p, u32 a, u32 b);
 s32 Effect_SetPosition(s32 a, void *b, u32 c, u32 d);
@@ -219,7 +218,6 @@ void *_ZN9AnimModelC1Ev(void *, s32);
 void *_ZN9AnimModelD1Ev(void *, s32);
 void *_ZN10RoomObjResC1Ev(void *, s32);
 void *_ZN10RoomObjResD1Ev(void *, s32);
-void CafeCoffeeSet_UpdateMatrices(void *ov);
 void CafeCoffeeSet_UpdateState03(ObjA *o);
 void CafeCoffeeSet_UpdateState04(ObjA *o);
 void CafeCoffeeSet_UpdateState05(ObjA *o);

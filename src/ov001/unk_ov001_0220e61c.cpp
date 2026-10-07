@@ -13,7 +13,6 @@
 #include "proto/ov001/unk_ov001_0220eb90.h"
 #include "proto/ov001/unk_ov001_0220f9e4.h"
 #include "proto/ov001/unk_ov001_0221cd74.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221ea94.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
@@ -44,6 +43,7 @@ void WfcUtil_LoadFileTo(void *, void *);
 void GX_LoadBG2Scr();
 void OS_SpinWait(u32);
 void PM_ForceToPowerOff();
+void WfcConfig_EraseAll();
 void WfcGx_HidePlanes(s32, s32);
 void OS_GetMacAddress(void *);
 void swprintf(void *, s32, void *, ...);

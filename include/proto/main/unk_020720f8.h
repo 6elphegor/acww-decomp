@@ -142,6 +142,12 @@ void NetOverlay_AssertOv067();
 #ifndef PROTO_LOCAL_NetOverlay_AssertAny
 void NetOverlay_AssertAny();
 #endif
+#ifndef PROTO_LOCAL_sCommAckPackets
+extern u8 sCommAckPackets[4];
+#endif
+#ifndef PROTO_LOCAL_gCommManagerInstance
+extern CommManager gCommManagerInstance;
+#endif
 #endif
 
 #endif

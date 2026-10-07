@@ -5,7 +5,6 @@
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov001/unk_ov001_02218054.h"
 #include "proto/ov001/unk_ov001_02219c3c.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 
@@ -18,6 +17,7 @@ void GX_LoadBG2Char();
 s32 GX_LoadBG2Scr(void *, s32, u32);
 void GX_LoadBGPltt();
 void WfcUtil_LoadFileTo(void *, void *);
+void WfcConfig_CommitEdit();
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
 }

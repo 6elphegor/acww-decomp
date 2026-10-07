@@ -40,10 +40,11 @@
 #define PROTO_LOCAL_PlayerErrands_GetSlot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Pocket_CountMatching  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Pocket_FindEmpty  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_SpNpcNookShop_IsEmptyItem  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTouchPrevChanged  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTouchPrevHeld  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02034048.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
@@ -57,7 +58,6 @@
 #include "proto/main/unk_020b5e5c.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_0223e9bc.h"
-#include "proto/ov004/unk_ov004_0223f43c.h"
 #include "proto/ov050/unk_ov050_02258de0.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
@@ -407,12 +407,6 @@ extern const u8 sSpNpcNookShopRoofColorChoices[16];
 extern const u8 sSpNpcNookShopDramaMsgTable[32];
 extern const s32 sSpNpcNookShopItemTopicTable[6][2];
 extern const TalkStartMsg sSpNpcNookShopTopicTable[31];
-extern char sSpNpcNookShopTwinsKey[];
-extern char sSpNpcNookShopDramaKey[];
-extern char sSpNpcNookShopKey[];
-extern char sSpNpcNookShopSequence5_1Key[];
-extern char *sSpNpcNookShopTexturePaths[5];
-extern char *sSpNpcNookShopModelPaths[5];
 extern Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];
 
 s32 VEC_Mag(void *v);
@@ -448,6 +442,8 @@ BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 Ground_IsOnLockedExit(void *p);
 void Ground_LockExit(s32 a);
 void RoomBgm_forceClosingMusic(void *p);
+void Camera_RestorePrevMode();
+void Camera_SetModeDefault();
 void TalkRequest_SetTargetDone(void *self);
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 s32 TalkRequest_IsActive();
@@ -530,9 +526,15 @@ void TouchPick_GetGroundPos(void *a, void *b);
 s32 Math_CountDownU16(void *p);
 s32 Math_CountDownU8(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_NotEqual(VecFx32 *a, void *b);
+s32 Vec_Equal(VecFx32 *a, void *b);
+void Vec_Sub(void *out, void *a, void *b);
 s32 strncmp(const char *a, const char *b, s32 n);
 s32 strlen(const char *s);
 void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
+void Camera_SetMode12();
+void Camera_SetMode11();
+BOOL SpNpcNookShop_IsEmptyItem(u16 *p);
 }
 
 #define func_ov050_0225bd54_self _ZN17SpNpcNookShopTalk17checkNotInUniformEP12TalkStartMsg

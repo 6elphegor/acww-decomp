@@ -4,6 +4,7 @@
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_0208d64c.h"
 
 extern "C" {
 }

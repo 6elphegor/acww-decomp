@@ -4,6 +4,8 @@
 #define PROTO_LOCAL_FrameHeap_Create  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_RoomBclHeap_Create  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownBclHeap_Create  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRoomBclHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTownBclHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0205b7b0.h"
@@ -47,41 +49,7 @@ struct CharaAnimCache {
 
 extern "C" {
 extern void *gTownBclHeap;
-extern void *gPlayerActorHeap;
-extern void *gNpcModelHeap;
-extern void *gSpNpcAnimPoolHeap;
-extern void *gVillagerAnimPoolHeap;
-extern void *gNpcTexPatBufHeap;
-extern void *gFishBobberHeap;
-extern void *gHeldItemAnimHeap;
-extern void *gPlayerBodyAnimHeap;
-extern void *gCharaFaceAnimWorkHeap;
-extern void *gHeldItemModelHeap;
-extern void *gPlayerGlassesModelHeap;
-extern void *gPlayerPaletteHeap;
-extern void *gPlayerHeadModelHeap;
-extern void *gPlayerBodyModelHeap;
-extern void *gCharaFaceAnimHeap;
-extern void *gPlayerFaceTexHeap;
-extern void *gCharaClothTexHeap;
-extern void *sCharaAnimHeap;
-extern void *sMuseumAquariumHeap;
-extern void *sFishDisplayHeap;
-extern void *sFishFinHeap;
-extern void *sFishShadowHeap;
-extern void *sMuseumInsectHeap;
-extern void *sFieldInsectHeap;
-extern void *sHeldInsectHeap;
-extern void *sSpecialInsectHeap;
-extern void *gFieldStructureHeap;
-extern void *sFurnitureHeap;
-extern void *gBgHeap;
-extern void *gMenuHeap;
-extern void *gModelCacheHeap;
-extern void *gNetHeap;
 extern void *gRoomBclHeap;
-extern char sCharaAnimPathBuf[];
-extern CharaAnimCache sCharaAnimCache;
 extern u8 gFieldSceneKind;
 extern u32 data_020cbf94, data_020cbf98, data_020cbf9c, data_020cbfa0, data_020cbfa4;
 extern u32 data_020c8b9c;
@@ -94,9 +62,6 @@ extern const u8 sJointGroup2Ranges[4];
 extern const u8 sCharaAnimHoldPoseModes[];
 extern const u16 sCharaAnimEyeAnims[];
 extern const u16 sCharaAnimMouthAnims[];
-extern u8 sJointGroupRangeCounts[];
-extern u8 *sJointGroupRanges[];
-extern u16 sCharaAnimJointGroups[];
 
 #define Heap_destroy2 _ZN4Heap8destroy2Ev
 void Heap_destroy2(void *heap);

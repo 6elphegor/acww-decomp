@@ -4,7 +4,6 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020f8b44.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
-struct Entry;
 struct Fp;
 struct Mgr;
 #ifdef __cplusplus
@@ -25,13 +24,10 @@ s32 SPL_LoadTexPlttByVRAMManager(Fp *self);
 #ifndef PROTO_LOCAL_SPL_Draw
 void SPL_Draw(Mgr *m, u32 a1, u32 a2);
 #endif
-#ifndef PROTO_LOCAL_SPL_Create
-Entry *SPL_Create(Mgr *m, s32 idx, void *p);
-#endif
-#ifndef PROTO_LOCAL_SPL_CreateWithInitialize
-Entry *SPL_CreateWithInitialize(Mgr *m, u32 idx, void (*cb)(Entry *));
-#endif
 }
+#ifndef PROTO_LOCAL_data_021f5c38
+extern u16 data_021f5c38;
+#endif
 #endif
 
 #endif

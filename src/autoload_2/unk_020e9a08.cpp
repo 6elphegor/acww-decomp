@@ -19,7 +19,24 @@
 #define PROTO_LOCAL_Net_WlxStopExchange  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Wlx_StartExchange  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Wlx_StopExchange  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_data_0213b064  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213b068  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213b06c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021f48a4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021f48b4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021f48b8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021f48c0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021f48c4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021f48c8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021f48dc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021f49e0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAllocHook  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFreeHook  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sRecvCallback  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSendSlots  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWifiFriendList  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWifiPingState  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWifiUserData  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/itcm/unk_01ffa4a0.h"
@@ -42,6 +59,9 @@ extern "C" {
 void VEC_Normalize(VecFx32 *v); // VEC_Normalize
 void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *out); // VEC_CrossProduct
 s32 FX_Div(s32 a, s32 b); // FX_Div
+s32 Math_Sqrt64(u64 x);
+void Math_InitSqrt64(void);
+void Vec_NormalizeCopy(VecFx32 *out, VecFx32 *in);
 extern const s16 data_02135f44[]; // FX_SinCosTable_
 }
 
@@ -69,16 +89,10 @@ s32 DWC_GetFriendDataType(void *p);
 s32 DWC_IsEqualFriendData(void *p, void *q);
 s32 DWC_CheckValidConsole(void *p);
 
-extern u16 sWifiConnectStep;
-extern u8 sNetMode;
 extern u8 *sWifiFriendList;
 extern u8 *sWifiUserData;
-extern u32 data_021f48e8;
-extern u32 data_021f48e0;
 extern void *data_021f48c0;
 extern void *data_021f48b8;
-extern u32 data_021f489c;
-extern u32 data_021f48cc;
 extern s32 data_0213b06c;
 extern s32 data_0213b068;
 extern s32 data_0213b064;
@@ -86,9 +100,6 @@ extern u32 data_021f48dc;
 extern u32 data_021f48a4;
 extern u32 data_021f48b4;
 extern u32 data_021f48c4;
-extern u32 data_021f48ac;
-extern u32 data_021f48a8;
-extern u32 data_021f48e4;
 }
 } // namespace NetA
 
@@ -128,23 +139,14 @@ s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
 s32 LocalWl_GetBeaconGameInfo(void *p);
 s32 DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(void);
-extern u8 data_021f488c;
 extern u8 data_021f49e0[];
-extern u32 data_021f4910[];
-extern u32 sLastErrorCode;
 extern u32 sWifiPingState[];
 extern const HexTable data_0213b084;
 
-extern u16 sWifiConnectStep;
-extern u8 sNetMode;
 extern u8 *sWifiFriendList;
 extern u8 *sWifiUserData;
-extern u32 data_021f48e8;
-extern u32 data_021f48e0;
 extern void *data_021f48c0;
 extern void *data_021f48b8;
-extern u32 data_021f489c;
-extern u32 data_021f48cc;
 extern s32 data_0213b06c;
 extern s32 data_0213b068;
 extern s32 data_0213b064;
@@ -152,9 +154,6 @@ extern u32 data_021f48dc;
 extern u32 data_021f48a4;
 extern u32 data_021f48b4;
 extern char *data_021f48c4;
-extern u32 data_021f48ac;
-extern u32 data_021f48a8;
-extern u32 data_021f48e4;
 }
 } // namespace NetB
 
@@ -185,14 +184,9 @@ s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
 s32 LocalWl_GetBeaconGameInfo(void *p);
 s32 DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(u32 *p);
-extern u8 data_021f488c;
 extern u8 data_021f49e0[];
-extern u32 data_021f4910[];
-extern u32 sLastErrorCode;
 extern Ent sWifiPingState[];
 
-extern u16 sWifiConnectStep;
-extern u8 sNetMode;
 extern u8 *sWifiFriendList;
 }
 } // namespace NetC
@@ -216,17 +210,8 @@ s32 DwcConn_CloseAllConnections(void);
 void DwcCore_Shutdown(void);
 
 
-extern u8 sNetMode;
-extern u8 sLocalPeerState[];
-extern u8 sSendQueue[];
-extern u32 data_021f48b0;
-extern u32 data_0213b060;
 extern u8 *sWifiFriendList;
-extern u16 sWifiConnectStep;
-extern u16 sWifiShutdownStep;
-extern u32 data_021f48ec;
 extern u32 data_0213b06c;
-extern u32 data_021f48e0;
 extern void *data_021f48c0;
 extern void *data_021f48b4;
 extern void *data_021f48c4;
@@ -262,8 +247,6 @@ void DwcCore_Process(void);
 void LocalWlMp_Start(void *p);
 void OS_InitMessageQueue(void *a, void *b, u32 n);
 BOOL Net_WifiConnectStep(void);
-extern u8 data_021f48f4[];
-extern u8 data_021f4bc0[];
 extern u8 *sWifiUserData;
 extern u32 data_0213b064;
 extern u32 data_0213b068;
@@ -271,17 +254,9 @@ extern NetCb3 sRecvCallback;
 extern NetCb data_021f48c8;
 extern Ent sWifiPingState[];
 
-extern u32 data_021f48e4;
-extern u32 data_021f48ac;
-extern u32 data_021f48a8;
-extern u32 data_021f48cc;
 extern u32 data_021f48b8;
-extern u8 data_021f488c;
-extern u8 data_0213b05c;
-extern u32 data_021f489c;
 extern AllocFn sAllocHook;
 extern FreeFn sFreeHook;
-extern u8 data_021f4950[];
 }
 extern "C" {
 BOOL DwcMatch_IsServerLocked(void);
@@ -293,11 +268,7 @@ void DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f
 u32 DwcFriend_GetStatusData(u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
 BOOL DWC_IsValidFriendData(void *p);
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...);
-extern u8 data_0213b058;
 extern HexTable data_0213b070;
-extern u32 data_021f48e8;
-extern u32 data_021f48ac;
-extern u32 data_021f48a8;
 }
 struct NetSlot {
     u32 a;

@@ -14,9 +14,12 @@ typedef char *va_list;
 #define va_end(ap)
 
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
+#define PROTO_LOCAL_data_0213c4fc  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_mbtowc  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_raise  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_rand  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_srand  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212a454.h"

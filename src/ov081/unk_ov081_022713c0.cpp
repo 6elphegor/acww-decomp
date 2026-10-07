@@ -178,9 +178,6 @@ static inline BOOL Unk_ov081_Neg(s32 v) {
 }
 
 extern "C" {
-extern SpNpcTortimerFishingTourneyActEntry sSpNpcTortimerFishingTourneyActTable[3];
-extern u8 sSpNpcTortimerFishingTourneyTexturePath[];
-extern u8 sSpNpcTortimerFishingTourneyModelPath[];
 }
 
 

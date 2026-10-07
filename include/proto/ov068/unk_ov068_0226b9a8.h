@@ -11,6 +11,9 @@ class TaxiInterior;
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sTaxiInterior
+extern TaxiInterior *sTaxiInterior;
+#endif
 #ifndef PROTO_LOCAL_TaxiInterior_Create
 TaxiInterior *TaxiInterior_Create();
 #endif

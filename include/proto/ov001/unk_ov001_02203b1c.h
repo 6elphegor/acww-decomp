@@ -15,6 +15,15 @@ struct SimpleStartSessionId;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sSimpleStartSocConfig
+extern void *sSimpleStartSocConfig[22];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartStatusCb
+extern void (*sSimpleStartStatusCb) (void *);
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartFreeFunc
+extern void (*sSimpleStartFreeFunc) (void *);
+#endif
 #ifndef PROTO_LOCAL_SimpleStart_WcmCallback
 void SimpleStart_WcmCallback(void *pp);
 #endif
@@ -39,6 +48,162 @@ void SimpleStart_NotifyStatus(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov001_0222c898
+extern u8 *data_ov001_0222c898;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartStackSize
+extern s32 sSimpleStartStackSize;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartAllocFunc
+extern void *(*sSimpleStartAllocFunc) (u32);
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartStep
+extern s32 sSimpleStartStep;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c864
+extern u32 data_ov001_0222c864;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartSetupSsid
+extern u8 sSimpleStartSetupSsid[7];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a548
+extern u8 data_ov001_0222a548[7];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a550
+extern u8 data_ov001_0222a550[12];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartMd5Padding
+extern u8 sSimpleStartMd5Padding[64];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c850
+extern u8 data_ov001_0222c850;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c894
+extern u8 *data_ov001_0222c894;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartDeadline
+extern u32 sSimpleStartDeadline;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c89c
+extern u8 *data_ov001_0222c89c;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c868
+extern s32 data_ov001_0222c868;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a52c
+extern u8 *data_ov001_0222a52c;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a53c
+extern s32 data_ov001_0222a53c;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c884
+extern u32 data_ov001_0222c884;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartResultCode
+extern s32 sSimpleStartResultCode;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8c4
+extern s32 data_ov001_0222c8c4;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartMaxAps
+extern s32 sSimpleStartMaxAps;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartMsgTail
+extern s32 sSimpleStartMsgTail;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8b4
+extern s32 data_ov001_0222c8b4;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a530
+extern s32 data_ov001_0222a530;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8ac
+extern u8 *data_ov001_0222c8ac;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c870
+extern s32 data_ov001_0222c870;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8a8
+extern s32 data_ov001_0222c8a8;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8a4
+extern u8 *data_ov001_0222c8a4;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8a0
+extern s32 data_ov001_0222c8a0;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c874
+extern s32 data_ov001_0222c874;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartCancel
+extern s32 sSimpleStartCancel;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c890
+extern u8 *data_ov001_0222c890;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c88c
+extern u8 *data_ov001_0222c88c;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartState
+extern s32 sSimpleStartState;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c880
+extern s32 data_ov001_0222c880;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartWcmState
+extern s32 sSimpleStartWcmState;
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartMsgHead
+extern s32 sSimpleStartMsgHead;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c878
+extern s32 data_ov001_0222c878;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8b0
+extern s32 data_ov001_0222c8b0;
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8d4
+extern u8 data_ov001_0222c8d4[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8dc
+extern u8 data_ov001_0222c8dc[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8e4
+extern u8 data_ov001_0222c8e4[8];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartMsgQueue
+extern u32 sSimpleStartMsgQueue[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c8fc
+extern u8 data_ov001_0222c8fc[0x10];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartAllocMutex
+extern u8 sSimpleStartAllocMutex[0x18];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c944
+extern u8 data_ov001_0222c944[0x20];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c924
+extern u8 data_ov001_0222c924[0x20];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222c964
+extern u8 data_ov001_0222c964[0x24];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartThread
+extern u8 sSimpleStartThread[0xc0];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartResult
+extern u32 sSimpleStartResult[58];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222cb30
+extern u32 data_ov001_0222cb30[149];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartTlvBuf
+extern u8 sSimpleStartTlvBuf[0x800];
+#endif
+#ifndef PROTO_LOCAL_sSimpleStartPacketBuf
+extern u8 sSimpleStartPacketBuf[0x800];
+#endif
 #ifndef PROTO_LOCAL_SimpleStart_WcmToIdle
 s32 SimpleStart_WcmToIdle(void);
 #endif

@@ -14,6 +14,9 @@ extern "C" {
 #ifndef PROTO_LOCAL_MenuTabBar_Create
 MenuTabBar *MenuTabBar_Create();
 #endif
+#ifndef PROTO_LOCAL_sTabBarOamCells
+extern u32 sTabBarOamCells[32];
+#endif
 #ifndef PROTO_LOCAL_MenuTabBar_HitTestTouch
 s32 MenuTabBar_HitTestTouch();
 #endif
@@ -30,6 +33,9 @@ u8 MenuTabBar_NextTab(u8 a);
 s32 MenuTabBar_TabFromX(s32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sTabSwitchCooldown
+extern u8 sTabSwitchCooldown;
+#endif
 #endif
 
 #endif

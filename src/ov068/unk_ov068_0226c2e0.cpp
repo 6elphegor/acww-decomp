@@ -40,7 +40,6 @@
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
@@ -50,8 +49,6 @@
 #include "proto/main/unk_0209c37c.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov004/unk_ov004_022264a0.h"
-#include "proto/ov004/unk_ov004_0223f2c8.h"
-#include "proto/ov004/unk_ov004_0223f43c.h"
 #include "proto/ov068/unk_ov068_0226c2e0.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -246,61 +243,7 @@ void _ZN19SpNpcRoostGuestTalk21scriptReadSongRequestEv();
 void _ZN15SpNpcRoostGuest9mainAct04Ev();
 void _ZN19SpNpcRoostGuestTalk20scriptEndPerformanceEv();
 void _ZN19SpNpcRoostGuestTalk17scriptRestoreLookEv();
-extern void *data_ov068_0227037c[2];
-extern void *data_ov068_02270384[2];
-extern void *data_ov068_0227038c[2];
-extern void *data_ov068_02270394[2];
-extern void *data_ov068_0227039c[2];
-extern void *data_ov068_022703a4[2];
-extern void *data_ov068_022703ac[2];
-extern void *data_ov068_022703b4[2];
-extern void *data_ov068_022703bc[2];
-extern void *data_ov068_022703c4[2];
-extern void *data_ov068_022703cc[2];
-extern void *data_ov068_022703d4[2];
-extern void *data_ov068_022703dc[2];
-extern void *data_ov068_022703e4[2];
-extern void *data_ov068_022703ec[2];
-extern void *data_ov068_022703f4[2];
-extern void *data_ov068_022703fc[2];
-extern void *data_ov068_02270404[2];
-extern void *data_ov068_0227040c[2];
-extern void *data_ov068_02270414[2];
-extern void *data_ov068_0227041c[2];
-extern void *data_ov068_02270424[2];
-extern void *data_ov068_0227042c[2];
-extern char sKkMouthM2[4];
-extern char sKkMouthM0[4];
-extern char sKkMouthM4[4];
-extern char sKkMouthM1[4];
-extern char sKkMouthM5[4];
-extern char sKkMouthM3[4];
-extern char sRoostMsgDog[11];
-extern char sRoostMsgCf6[11];
-extern char sRoostMsgCf1[11];
-extern char sRoostMsgCf5[11];
-extern char sRoostMsgCf7[11];
-extern char sRoostMsgCf2[11];
-extern char sRoostMsgCf3[11];
-extern char sRoostMsgCf4[11];
-extern char sRoostModelPga[23];
-extern char sRoostTexPga[27];
-extern char sRoostModelPgb[23];
-extern char sRoostTexPgb[27];
-extern char sRoostModelPoo[23];
-extern char sRoostTexPoo[27];
-extern char sRoostModelOtt[23];
-extern char sRoostTexOtt[27];
-extern char sRoostModelWip[23];
-extern char sRoostTexWip[27];
-extern char sRoostModelXct[23];
-extern char sRoostTexXct[27];
-extern char sRoostModelMof[23];
-extern char sRoostTexMof[27];
-extern char sRoostModelEnd[23];
-extern char sRoostTexEnd[27];
 extern ActorProfile sSpNpcRoostGuestProfile;
-extern char *sKkMouthTextures[6];
 extern const char *sRoostGuestMsgFiles[9];
 extern const char *sRoostGuestModelPaths[9];
 extern const char *sRoostGuestTexPaths[9];
@@ -336,6 +279,16 @@ void TalkWindowState_setNamedSlot(TalkWindowState *self, s32 a, void *b, u32 c);
 u32 TalkWindowState_getChoiceList(TalkWindowState *self);
 u32 ChoiceList_getResult(u32 a);
 
+void KkShowFx_Stop();
+void KkShowFx_Update();
+void RoomCamera_KkShowResetShot();
+void KkShowFx_CallUnk1de4();
+void RoomCamera_KkShowPickShot();
+void KkShowFx_SetParam(s32 a);
+void KkShowFx_CallUnk1f70();
+BOOL KkShowFx_GetState();
+void RoomCamera_KkShowWideShot();
+void KkShowFx_Start();
 }
 
 }
@@ -345,6 +298,9 @@ void TalkRequest_SetTargetDone(void *p);
 void NpcActor_setTalkRequest(void *p, void *q);
 void NpcActor_setNpcHandle(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
+void Camera_SetModeDefault();
+void Camera_SetMode18();
+void KkShowFx_Stop();
 void CafeCoffeeSet_StartEffectB(void *p);
 void NNS_G3dMdlSetMdlLightEnableFlagAll(s32 a, s32 b);
 void NpcAnimCtrl_playAnim(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);

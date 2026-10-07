@@ -9,6 +9,7 @@ struct FtrSoundRecord;
 struct TvProgSlot;
 struct TvScreen;
 #ifdef __cplusplus
+#include "gfx/ModelSlotPool.h"
 #include "gfx/VecFx32.h"
 #include "room/FtrActor.h"
 #include "room/FtrActorTable.h"
@@ -31,6 +32,27 @@ void FtrMgr_SetSaleMode();
 #ifndef PROTO_LOCAL_FtrSoundEmitter_Destroy
 void FtrSoundEmitter_Destroy();
 #endif
+#ifndef PROTO_LOCAL_data_ov004_0224e934
+extern char data_ov004_0224e934[8];
+#endif
+#ifndef PROTO_LOCAL_sFtrMoveAnimModelName
+extern char sFtrMoveAnimModelName[0x10];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e954
+extern char data_ov004_0224e954[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e964
+extern char data_ov004_0224e964[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e944
+extern char data_ov004_0224e944[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e96c
+extern char data_ov004_0224e96c[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e974
+extern char data_ov004_0224e974[8];
+#endif
 #ifndef PROTO_LOCAL_FtrMgr_CreateHook
 void FtrMgr_CreateHook(void *);
 #endif
@@ -48,6 +70,21 @@ void FurnitureManager_SetTvProgramChanged(void);
 #endif
 #ifndef PROTO_LOCAL_FurnitureManager_GetMoveAnim
 void *FurnitureManager_GetMoveAnim(void);
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e95c
+extern char data_ov004_0224e95c[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e97c
+extern char data_ov004_0224e97c[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e93c
+extern char data_ov004_0224e93c[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e984
+extern char data_ov004_0224e984[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224e94c
+extern char data_ov004_0224e94c[8];
 #endif
 #ifdef __cplusplus
 }
@@ -352,7 +389,40 @@ void FtrMgr_PlaySeatSound0At(s32 a);
 #ifndef PROTO_LOCAL_FtrMgr_PlaySeatSound2At
 void FtrMgr_PlaySeatSound2At(s32 a);
 #endif
+#ifndef PROTO_LOCAL_sFtrMgrTvSoundEnabled
+extern u8 sFtrMgrTvSoundEnabled;
+#endif
+#ifndef PROTO_LOCAL_sFtrMgrSaleMode
+extern u8 sFtrMgrSaleMode;
+#endif
+#ifndef PROTO_LOCAL_sFtrMgrCycleCounter
+extern u16 sFtrMgrCycleCounter;
+#endif
+#ifndef PROTO_LOCAL_sFurnitureManager
+extern FurnitureManager *sFurnitureManager;
+#endif
 }
+#ifndef PROTO_LOCAL_sFtrMgrPool
+extern ModelSlotPool sFtrMgrPool;
+#endif
+#ifndef PROTO_LOCAL_sFtrActorTable
+extern FtrActorTable sFtrActorTable;
+#endif
+#ifndef PROTO_LOCAL_sFtrActorHeap
+extern FtrActorHeap sFtrActorHeap;
+#endif
+#ifndef PROTO_LOCAL_sFtrPreviewer
+extern FtrPreviewer sFtrPreviewer;
+#endif
+#ifndef PROTO_LOCAL_sFtrActorGrid
+extern FtrActorGrid sFtrActorGrid;
+#endif
+#ifndef PROTO_LOCAL_sFtrContactSet
+extern FtrContactSet sFtrContactSet;
+#endif
+#ifndef PROTO_LOCAL_sFtrMgrSoundRangeSq
+extern s32 sFtrMgrSoundRangeSq;
+#endif
 #endif
 
 #endif

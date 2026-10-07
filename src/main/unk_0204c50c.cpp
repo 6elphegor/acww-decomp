@@ -9,6 +9,7 @@
 #include "town/SceneMapModule.h"
 #include "room/HouseData.h"
 #define PROTO_LOCAL_House_GetLevelAcreId  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0204c50c.h"
 #include "proto/main/unk_02063904.h"

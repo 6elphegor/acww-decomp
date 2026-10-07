@@ -12,6 +12,9 @@
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sEventWeekSeenMask
+extern u16 sEventWeekSeenMask;
+#endif
 #ifndef PROTO_LOCAL_EventWeekSlots_MarkTodaySeen
 void EventWeekSlots_MarkTodaySeen(u32 id);
 #endif

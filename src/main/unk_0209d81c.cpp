@@ -19,6 +19,8 @@
 #define PROTO_LOCAL_TownExchange_InitNop  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_InitWithName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFallbackTownName  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02085940.h"

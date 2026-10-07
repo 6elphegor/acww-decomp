@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221962c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,6 +57,17 @@ void WfcApSearch_ResultDialog();
 void WfcApSearch_WaitDialogClosed();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcApSearchResult
+extern u8 sWfcApSearchResult;
+#endif
+#ifndef PROTO_LOCAL_sWfcApSearchTimer
+extern volatile u16 sWfcApSearchTimer;
+#endif
 }
 #endif
 

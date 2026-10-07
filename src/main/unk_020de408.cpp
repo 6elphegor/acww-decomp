@@ -3,8 +3,8 @@
 // (0x0206f804) and the font palette (unk_020e0408.cpp). The palette is a separate file: mwcc sorts a file's .data by
 // size, and the 0x60-byte palette follows the 0x2000-byte characters.
 #include "types.h"
+#include "proto/main/unk_020de408.h"
 
-extern u16 sCrashFontChars[0x1000];
 
 u16 sCrashFontChars[0x1000] = {
     0x1112, 0x2211, 0x2211, 0x2111, 0x2211, 0x2111, 0x2211, 0x2111, 0x2211, 0x2111, 0x2211, 0x2111, 0x1112, 0x2211, 0x2222, 0x2222,

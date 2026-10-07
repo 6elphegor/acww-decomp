@@ -33,6 +33,12 @@ s32 GameProc_CreateChild(u32 a, void *b, u32 c, u32 d);
 void *GameProc_CreateRoot(u32 a, u32 b, u32 c);
 #endif
 }
+#ifndef PROTO_LOCAL_sLowBatteryWarned
+extern u8 sLowBatteryWarned;
+#endif
+#ifndef PROTO_LOCAL_sLowBatteryPollTimer
+extern s32 sLowBatteryPollTimer;
+#endif
 #endif
 
 #endif

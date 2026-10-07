@@ -8,7 +8,6 @@
 #include "proto/autoload_2/unk_02111ccc.h"
 #include "proto/autoload_2/unk_0211220c.h"
 #include "proto/main/unk_0200137c.h"
-#include "proto/main/unk_020b8340.h"
 #include "proto/main/unk_020b8594.h"
 
 extern "C" {
@@ -37,6 +36,8 @@ u8 TexTransfer_GetPlttCost(TexTransfer *p);
 
 
 extern "C" {
+void VramQueue2d_Dequeue(VramTask *p);
+BOOL VramQueue2d_Enqueue(VramTask *p);
 }
 
 

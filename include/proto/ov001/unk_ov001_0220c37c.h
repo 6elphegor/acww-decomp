@@ -23,6 +23,9 @@ void WfcAoss_Free(void *p);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcAossSucceeded
+extern volatile u8 sWfcAossSucceeded;
+#endif
 #ifndef PROTO_LOCAL_WfcAoss_End
 void WfcAoss_End(s32 a);
 #endif

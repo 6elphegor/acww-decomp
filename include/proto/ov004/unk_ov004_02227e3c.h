@@ -10,6 +10,22 @@ class RecycleBox;
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sRecycleBoxMsgFile
+extern char sRecycleBoxMsgFile[0x10];
+#endif
+#ifndef PROTO_LOCAL_sRecycleBoxMsgFilePtr
+extern char *sRecycleBoxMsgFilePtr;
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sRecycleBox
+extern RecycleBox *sRecycleBox;
+#endif
 #ifndef PROTO_LOCAL_RecycleBox_Create
 RecycleBox *RecycleBox_Create();
 #endif

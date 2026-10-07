@@ -5,6 +5,8 @@
 #include "net/WfcRect.h"
 #define PROTO_LOCAL_WfcNumPad_Destroy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcNumPad  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcTextKb  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02208c2c.h"
 #include "proto/ov001/unk_ov001_0220aba4.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
@@ -75,7 +77,6 @@ extern u16 data_ov001_02229bf4[];
 extern u8 data_ov001_02229be8[];
 extern u8 data_ov001_02229be0[];
 extern u16 data_ov001_02229bec[];
-extern u16 *sWfcTextKbGlyphMaps[];
 extern u16 data_ov001_02229f14[];
 extern s8 sWfcNumPadNavTable[][4];
 
@@ -146,7 +147,6 @@ extern u32 data_ov001_02229ebc[];
 extern u8 data_ov001_02229ea4[];
 extern u8 data_ov001_02229eac[];
 extern u8 data_ov001_02229eb0[];
-extern u16 data_ov001_0222aa58[];
 extern u16 data_ov001_02229ea4_h[];
 extern u8 data_ov001_02229e90[];
 extern u8 data_ov001_02229e94[];

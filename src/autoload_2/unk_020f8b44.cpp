@@ -9,6 +9,7 @@
 #include "gfx/SplEmitterViews.h"
 #include "snd/SndBgmHd.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020f7a5c.h"
 #include "proto/autoload_2/unk_020f8b44.h"
 #include "proto/autoload_2/unk_0210c084.h"
@@ -250,8 +251,6 @@ struct Pool32 {
 
 extern "C" {
 extern Mg gSndMgr;
-extern s16 data_021f5c30;
-extern s16 data_021f5c34;
 void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
 void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
 void Snd_StopHandle(void *p, u32 v);
@@ -269,7 +268,6 @@ void spl_push_front(void *list, Entry *e);
 Entry *spl_del(void *list, Entry *e);
 void spl_draw(Mgr *m, u32 a);
 void spl_calc(Mgr *m, Entry *e);
-extern u16 data_021f5c38;
 void spl_calc_gravity(void);
 void spl_calc_random(void);
 void spl_calc_magnet(void);

@@ -12,10 +12,12 @@
 #include "talk/EncodedString8B.h"
 #include "menu/MenuTitleBalloon.h"
 #include "menu/MenuTownListPanel.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/ov139/unk_ov139_02291f60.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files

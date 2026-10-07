@@ -27,13 +27,13 @@
 #include "room/HouseRoom.h"
 #include "snd/SndEnvChannel.h"
 #define PROTO_LOCAL_FtrMgr_GetCycleCounter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Wallpaper_GetTex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034048.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_02070560.h"
+#include "proto/main/unk_02088b98.h"
 #include "proto/main/unk_020abbcc.h"
 #include "proto/main/unk_020abea8.h"
 #include "proto/main/unk_020b8d98.h"
@@ -258,6 +258,7 @@ u32 Item_GetFurnitureIndex(u16 *p);
 u32 Item_GetDesignPlayer(u16 *p);
 u32 Item_GetDesignSlot(u16 *p);
 u8 *PatternTexCache_getPlayerTexKey(u32 a, u32 b, u32 c);
+void *CarpetTex_GetTex(void *o);
 BOOL Wallpaper_LoadTexture(void *o, u16 *p);
 void *Wallpaper_GetTex(void *o);
 void *HouseData_getRoom(void *self, u32 idx);
@@ -320,7 +321,6 @@ extern u8 data_0213b91c[];
 extern u32 data_020c8cc0;
 extern Unk_0204e858_Grid *gSceneBlockMap;
 extern u32 gBgHeap;
-extern u32 data_021ce63c;
 
 // own functions (plain symbols), declared before their first use
 }

@@ -4,11 +4,13 @@
 // Prototypes of the functions defined in src/main/unk_02038474.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "talk/MsgString.h"
 #include "text/Unk_02050288.h"
 #include "types.h"
 class ChatBalloon;
+class ChatBalloonList;
 class ChatBalloonProc;
 #endif
 
@@ -64,6 +66,18 @@ void ChatBalloon_PackSyncVar(u8 *a, void *b, ChatBalloon *c);
 ChatBalloonProc *ChatBalloonProc_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_sChatBalloonSyncBuf
+extern u8 sChatBalloonSyncBuf[0x29];
+#endif
+#ifndef PROTO_LOCAL_sChatBalloonProcProfile
+extern ProcProfile sChatBalloonProcProfile;
+#endif
+#ifndef PROTO_LOCAL_sChatBalloonList
+extern ChatBalloonList *sChatBalloonList;
+#endif
+#ifndef PROTO_LOCAL_sChatQuickMsgCooldown
+extern s32 sChatQuickMsgCooldown;
+#endif
 #endif
 
 #endif

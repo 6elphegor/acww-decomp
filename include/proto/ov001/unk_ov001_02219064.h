@@ -62,6 +62,9 @@ void WfcSimpleStartInit_WaitDialogClosed();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcSimpleStartInitReady
+extern u8 sWfcSimpleStartInitReady;
+#endif
 #ifndef PROTO_LOCAL_WfcSimpleStartInit_IsLidClosed
 s32 WfcSimpleStartInit_IsLidClosed();
 #endif

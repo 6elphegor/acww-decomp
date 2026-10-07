@@ -50,6 +50,36 @@ void NitroMain(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sPanicFile
+extern u32 sPanicFile;
+#endif
+#ifndef PROTO_LOCAL_sCrashContext
+extern u32 *sCrashContext;
+#endif
+#ifndef PROTO_LOCAL_sCrashScreenState
+extern u8 sCrashScreenState;
+#endif
+#ifndef PROTO_LOCAL_sCrashSP
+extern u32 sCrashSP;
+#endif
+#ifndef PROTO_LOCAL_sCrashTimeMs
+extern u32 sCrashTimeMs;
+#endif
+#ifndef PROTO_LOCAL_sPanicLine
+extern u32 sPanicLine;
+#endif
+#ifndef PROTO_LOCAL_sCrashPC
+extern u32 sCrashPC;
+#endif
+#ifndef PROTO_LOCAL_sCrashPrevKeys
+extern u32 sCrashPrevKeys;
+#endif
+#ifndef PROTO_LOCAL_sCrashScreenMain
+extern u32 sCrashScreenMain;
+#endif
+#ifndef PROTO_LOCAL_sCrashScreenSub
+extern u32 sCrashScreenSub;
+#endif
 #ifndef PROTO_LOCAL_Fatal_PanicV
 void Fatal_PanicV(const char *a, u32 b, const char *c, void *d);
 #endif

@@ -34,12 +34,18 @@ void TalkWindow_UpdateAll();
 #ifndef PROTO_LOCAL_TalkWindow_DrawAll
 void TalkWindow_DrawAll();
 #endif
+#ifndef PROTO_LOCAL_sTalkMessagePath
+extern char sTalkMessagePath[0x40];
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_gTalkWindows
+extern TalkWindowState *gTalkWindows;
+#endif
 #ifndef PROTO_LOCAL_TalkFrame_FreeBuffers
 void TalkFrame_FreeBuffers(TalkFrame *p);
 #endif
@@ -52,8 +58,14 @@ u8 Talk_ColorTagToTextColor(u32 x);
 #ifndef PROTO_LOCAL_TalkWindow_Get
 TalkWindowState *TalkWindow_Get(s32 i);
 #endif
+#ifndef PROTO_LOCAL_sTalkWindowCloseOffsets
+extern s16 sTalkWindowCloseOffsets[6];
+#endif
 #ifndef PROTO_LOCAL_Talk_IsAltTextEnabled
 BOOL Talk_IsAltTextEnabled();
+#endif
+#ifndef PROTO_LOCAL_sTalkWindowOpenOffsets
+extern s16 sTalkWindowOpenOffsets[6];
 #endif
 }
 #endif

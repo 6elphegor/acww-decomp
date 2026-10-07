@@ -3,6 +3,8 @@
 
 #include "ds_stdarg.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRootHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021127c0.h"
 #include "proto/autoload_2/unk_02119434.h"

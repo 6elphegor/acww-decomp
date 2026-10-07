@@ -6,6 +6,8 @@
 #define PROTO_LOCAL_WfcConnSelect_LoadBg  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcFs_LoadFile  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcUtil_LocalizePath  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcApSearchTimer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcConnSelect  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207904.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
@@ -24,7 +26,6 @@
 #include "proto/ov001/unk_ov001_0221c180.h"
 #include "proto/ov001/unk_ov001_0221cd74.h"
 #include "proto/ov001/unk_ov001_0221d744.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221eb38.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
@@ -49,11 +50,13 @@ namespace F0221a40c {
 
 extern "C" {
 extern WfcConnSelectWork *sWfcConnSelect;
-extern u8 sWfcConnSelectCursor;
 extern const s8 data_ov001_0222a160[];
 extern const u16 sWfcConnSelectButtonPos[];
 extern const u8 sWfcConnSelectSlotCells[];
 
+u8 *WfcConfig_GetEdit();
+u32 WfcConfig_GetSlotStatus(u32);
+void WfcConfig_BeginEdit(s32);
 s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);
@@ -270,12 +273,7 @@ extern "C" {
 extern u8 data_ov001_0222b1fc[];
 extern u8 data_ov001_0222b214[];
 extern u8 data_ov001_0222b22c[];
-extern u8 data_ov001_0222b240[];
-extern u8 data_ov001_0222b244[];
-extern char data_ov001_0222b260[];
 extern u16 sWfcApSearchTimer;
-extern u8 sWfcApSearchResult;
-extern u8 sWfcConnSelectCursor;
 extern WfcConnSelectWork *sWfcConnSelect;
 extern const u8 sWfcConnSelectSlotCells[];
 extern const u16 sWfcConnSelectButtonPos[];
@@ -287,12 +285,15 @@ extern void GX_LoadOBJPltt();
 extern void WfcGx_ShowPlanes(s32, s32);
 extern void WfcGx_HidePlanes(s32, s32);
 extern void WfcUtil_LoadFileTo(void *, void *);
+extern u32 WfcConfig_GetSlotStatus(u32 idx);
 extern s32 WfcObj_SetModePalette(void *, s32, s32, s32);
+extern void WfcConfig_EraseSlot(s32);
 extern void *WfcObj_GetOam(void *, s32);
 extern void WfcCell_Copy(s32, s32, void *);
 extern void WfcObj_SetPos(void *, s32, s32, s32);
 extern void WfcObj_SetPriority(void *, s32, s32);
 extern void WfcObj_Free(void *);
+extern u8 *WfcConfig_GetEdit();
 extern void WfcHeap_FreeAndClear(void *);
 
 

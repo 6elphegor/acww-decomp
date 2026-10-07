@@ -105,6 +105,15 @@ void SndSeGroup_StopHeld(Group *g, s32 a);
 BOOL SndSeSystem_LoadGroup(Player *o);
 #endif
 }
+#ifndef PROTO_LOCAL_gSndListenerPanCallback
+extern s32 (*gSndListenerPanCallback) (PlayCtx *);
+#endif
+#ifndef PROTO_LOCAL_gSndListenerDistanceCallback
+extern s32 (*gSndListenerDistanceCallback) (PlayCtx *);
+#endif
+#ifndef PROTO_LOCAL_gSndListenerVolumeCallback
+extern s32 (*gSndListenerVolumeCallback) (PlayCtx *);
+#endif
 #endif
 
 #endif

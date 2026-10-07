@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov002/unk_ov002_02202fac.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "nitro/gxoam.h"
 #ifdef __cplusplus
 #include "menu/MenuLabelButton.h"
 #include "types.h"
@@ -11,6 +12,27 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sButtonCellsW8
+extern GXOamAttr sButtonCellsW8[5];
+#endif
+#ifndef PROTO_LOCAL_sButtonCellsW4A
+extern GXOamAttr sButtonCellsW4A[3];
+#endif
+#ifndef PROTO_LOCAL_sButtonCellsW6A
+extern GXOamAttr sButtonCellsW6A[6];
+#endif
+#ifndef PROTO_LOCAL_sButtonCellsW6B
+extern GXOamAttr sButtonCellsW6B[6];
+#endif
+#ifndef PROTO_LOCAL_sButtonCellsW12
+extern GXOamAttr sButtonCellsW12[7];
+#endif
+#ifndef PROTO_LOCAL_sButtonCellsW6Single
+extern GXOamAttr sButtonCellsW6Single[4];
+#endif
+#ifndef PROTO_LOCAL_sButtonCellsW4B
+extern GXOamAttr sButtonCellsW4B[3];
 #endif
 #ifndef PROTO_LOCAL_MenuButtons_LoadTextColors
 void MenuButtons_LoadTextColors();

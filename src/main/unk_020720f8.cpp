@@ -20,6 +20,7 @@
 #define PROTO_LOCAL_Comm_Start  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Comm_WriteSyncReply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_GetName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gNetHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_02128030.h"
@@ -679,7 +680,6 @@ extern "C" {
 void _Z21Comm_CountNoAckFramesP11CommManager(CommManager *self);
 }
 extern "C" {
-extern u8 sCommAckPackets[4];
 }
 extern "C" {
 BOOL _Z20Comm_AnyPeerTimedOutv(CommManager *self);
@@ -2074,7 +2074,6 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-extern OverlayHandle gOverlayHandle;
 }
 extern "C" {
 }

@@ -4,9 +4,11 @@
 // Prototypes of the functions defined in src/main/unk_020a427c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "sys/SceneBase.h"
 #include "types.h"
+class NetSessionState;
 #endif
 
 #ifdef __cplusplus
@@ -166,6 +168,39 @@ void Scene_Request(u32 a, u32 b, u32 c, u32 d);
 BOOL Scene_CreateRequested(void);
 #endif
 }
+#ifndef PROTO_LOCAL_sSceneFadeInType
+extern u8 sSceneFadeInType;
+#endif
+#ifndef PROTO_LOCAL_data_021eda58
+extern u8 data_021eda58;
+#endif
+#ifndef PROTO_LOCAL_gNetSessionState
+extern NetSessionState gNetSessionState;
+#endif
+#ifndef PROTO_LOCAL_sSceneBaseProfile
+extern ProcProfile sSceneBaseProfile;
+#endif
+#ifndef PROTO_LOCAL_gNextSceneProfile
+extern u16 gNextSceneProfile;
+#endif
+#ifndef PROTO_LOCAL_gActorDefaultParent
+extern void *gActorDefaultParent;
+#endif
+#ifndef PROTO_LOCAL_sSceneFadeOutType
+extern u8 sSceneFadeOutType;
+#endif
+#ifndef PROTO_LOCAL_sSceneFadeInDelay
+extern volatile u8 sSceneFadeInDelay;
+#endif
+#ifndef PROTO_LOCAL_gSceneCreating
+extern u8 gSceneCreating;
+#endif
+#ifndef PROTO_LOCAL_sSceneExists
+extern u8 sSceneExists;
+#endif
+#ifndef PROTO_LOCAL_data_021eda50
+extern u8 data_021eda50;
+#endif
 #endif
 
 #endif

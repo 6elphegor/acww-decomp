@@ -116,6 +116,9 @@ void NNSi_G3dGetJointScaleBasic(u32 *obj, s32 *src, u8 *info, u32 flags)
 
 // NNS g3d (NNSi_G3dAnmObjInitVisAnm-like): bind a visibility animation block to the model
 #include "nnsys/g3d_rt.h"
+#define PROTO_LOCAL_data_0213bcb8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bcc4  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02107cac.h"
 // (by the members: include/nnsys/g3d_rt.h)
 void NNSi_G3dAnmObjInitNsBva(u8 *out_, u32 res, u8 *blk)
 {

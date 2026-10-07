@@ -19,6 +19,7 @@
 #define PROTO_LOCAL_RoomObj_LoadResourcesByName  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_RoomObj_ReleaseResources  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/ov051/unk_ov051_02258de0.h"
 #include "proto/ov068/unk_ov068_0226b9a8.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
@@ -107,7 +108,6 @@ extern "C" TaxiInterior *sTaxiInterior;
 extern "C" ActorProfile sTaxiInteriorProfile;
 
 extern "C" {
-extern void *gBgHeap;
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, u32 i);
 void *RoomObjRes_GetBma(void *p, u32 i);
 void *RoomObjRes_GetBta(void *p, u32 i);

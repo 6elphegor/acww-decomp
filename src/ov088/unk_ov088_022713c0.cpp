@@ -40,6 +40,7 @@
 #define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_Get  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_GetVisitorPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
@@ -179,6 +180,7 @@ struct SpNpcShrunkActEntry {
     BOOL (SpNpcShrunk::*exit)();
 };
 
+extern "C" SpNpcShrunk *SpNpcShrunk_Create();
 
 typedef void (SpNpcShrunkTalk::*Unk_ov088_02272618_Fn)();
 typedef BOOL (SpNpcShrunk::*Unk_ov088_022726ac_Fn)();

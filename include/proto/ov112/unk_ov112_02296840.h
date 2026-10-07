@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "types.h"
 class BbsWriteMenu;
 #endif
 
@@ -12,6 +13,12 @@ class BbsWriteMenu;
 extern "C" {
 #ifndef PROTO_LOCAL_BbsWriteMenu_Create
 BbsWriteMenu *BbsWriteMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_data_ov112_02299ad8
+extern u32 data_ov112_02299ad8[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov112_02299ac0
+extern u32 data_ov112_02299ac0[2];
 #endif
 }
 #endif

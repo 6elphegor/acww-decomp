@@ -49,7 +49,6 @@
 #define PROTO_LOCAL_FieldVillagerAi_CanSeePlayer  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldVillagerAi_ChangeState  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldVillagerAi_CheckHeldItemChange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_DirCrossesPlayerTalk  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldVillagerAi_FindChatPartner  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldVillagerAi_GetRouteTarget  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldVillagerAi_IsNearPlayerTalkSpot  // declared below: the shared prototype conflicts with the calls here
@@ -69,22 +68,41 @@
 #define PROTO_LOCAL_FishShadow_GetPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Distance  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_VillagerId_GetSpecies  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_VillagerRoute_Destruct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL__ZN13FieldVillager28acceptsInteractionOutOfRangeEPv  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_data_ov068_0226f870  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov068_0226f910  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAbsentSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAdmireCatchSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sApproachSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sBirthdayInviteSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sChatOutcomes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sChatSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFaceTalkerSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFleaRemovedSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sGoInHouseSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sHitByNetSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sHitTalkSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sInHouseSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sLeaveHouseSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPitfallClimbOutSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPitfallSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPushTalkSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPushedSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPutAwayItemSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sReactionSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTakeOutItemSteps  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTalkSteps  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206fc44.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02090268.h"
@@ -789,7 +807,6 @@ s32 Villager_HasFlea(void *);
 
 namespace ns_0225fc60 {
 extern "C" {
-extern s16 sTalkFacingArc;
 extern s16 data_020c6cc0;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -832,39 +849,22 @@ extern "C" BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(FieldVillage
 typedef void (FieldVillagerAiStates::*Fn_225fd54)(FieldVillager *);
 extern "C" {
 extern Fn_225fd54 sAdmireCatchSteps[2];
-extern u32 sAdmireCatchStepsGuard;
-extern void *data_ov068_0226f938[2];
-extern void *data_ov068_0226f9f0[2];
 }
 typedef void (FieldVillagerAiStates::*Fn_225ff18)(FieldVillager *);
 extern "C" {
 extern Fn_225ff18 sPushTalkSteps[2];
-extern u32 sPushTalkStepsGuard;
-extern void *data_ov068_0226fb30[2];
-extern void *data_ov068_0226f800[2];
 }
 typedef void (FieldVillagerAiStates::*Fn_2260068)(FieldVillager *);
 extern "C" {
 extern Fn_2260068 sHitTalkSteps[3];
-extern u32 sHitTalkStepsGuard;
-extern void *data_ov068_0226f9b8[2];
-extern void *data_ov068_0226fa18[2];
-extern void *data_ov068_0226fa48[2];
 }
 typedef void (FieldVillagerAiStates::*Fn_2260290)(FieldVillager *);
 extern "C" {
 extern Fn_2260290 sPushedSteps[2];
-extern u32 sPushedStepsGuard;
-extern void *data_ov068_0226f8a0[2];
-extern void *data_ov068_0226f908[2];
 }
 typedef void (FieldVillagerAiStates::*Fn_2260450)(FieldVillager *);
 extern "C" {
 extern Fn_2260450 sHitByNetSteps[3];
-extern u32 sHitByNetStepsGuard;
-extern void *data_ov068_0226f810[2];
-extern void *data_ov068_0226f828[2];
-extern void *data_ov068_0226f850[2];
 }
 }
 
@@ -905,18 +905,10 @@ void FieldPos_SnapToUnitCenter(void *, void *);
 typedef void (FieldVillagerAiStates::*Fn_226071c)(FieldVillager *);
 extern "C" {
 extern Fn_226071c sPitfallClimbOutSteps[1];
-extern u32 sPitfallClimbOutStepsGuard;
-extern void *data_ov068_0226fa78[2];
 }
 typedef void (FieldVillagerAiStates::*Fn_2260944)(FieldVillager *);
 extern "C" {
 extern Fn_2260944 sPitfallSteps[5];
-extern u32 sPitfallStepsGuard;
-extern void *data_ov068_0226f9e0[2];
-extern void *data_ov068_0226fa10[2];
-extern void *data_ov068_0226fa30[2];
-extern void *data_ov068_0226fa40[2];
-extern void *data_ov068_0226fa58[2];
 }
 }
 
@@ -948,6 +940,7 @@ void TalkRequest_SetTargetDone(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 void TalkRequestFlags_ClearEventWarpBlock(void);
 void TalkRequest_AddPlayerTalk6(void *, s32);
+void Camera_SetModeDefault(void);
 s32 NpcTalkCtrl_isBusy(void *);
 void *ActorTalkRequest_getTalkPlayer(void *);
 s32 NpcActor_getAngleTo(void *, void *);
@@ -973,31 +966,20 @@ static inline BOOL Unk_ov068_02261118_InRange(volatile u16 *p) {
 typedef void (FieldVillagerAiPutAway::*Fn_2260f90)(FieldVillager *);
 extern "C" {
 extern Fn_2260f90 sPutAwayItemSteps[2];
-extern u32 sPutAwayItemStepsGuard;
-extern void *data_ov068_0226f978[2];
-extern void *data_ov068_0226f9a0[2];
 }
 typedef void (FieldVillagerAiTakeOut::*Fn_2261290)(FieldVillager *);
 extern "C" {
 extern Fn_2261290 sTakeOutItemSteps[2];
-extern u32 sTakeOutItemStepsGuard;
-extern void *data_ov068_0226f8d8[2];
-extern void *data_ov068_0226f900[2];
 }
 typedef void (FieldVillagerAiBirthdayInvite::*Fn_2261574)(FieldVillager *);
 extern "C" {
 extern Fn_2261574 sBirthdayInviteSteps[3];
-extern u32 sBirthdayInviteStepsGuard;
-extern void *data_ov068_0226f860[2];
-extern void *data_ov068_0226f8d0[2];
-extern void *data_ov068_0226f880[2];
 }
 }
 
 namespace ns_02261900 {
 extern "C" {
 extern s16 sFieldVillagerPushLimit;
-extern s16 sSeePlayerArc;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
@@ -1028,25 +1010,14 @@ void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 typedef void (FieldVillagerAiPlayerStates::*Fn_2261900)(FieldVillager *);
 extern "C" {
 extern Fn_2261900 sFleaRemovedSteps[2];
-extern u32 sFleaRemovedStepsGuard;
-extern void *data_ov068_0226f920[2];
-extern void *data_ov068_0226f840[2];
 }
 typedef void (FieldVillagerAiPlayerStates::*Fn_2261ae8)(FieldVillager *);
 extern "C" {
 extern Fn_2261ae8 sFaceTalkerSteps[1];
-extern u32 sFaceTalkerStepsGuard;
-extern void *data_ov068_0226f808[2];
 }
 typedef void (FieldVillagerAiPlayerStates::*Fn_2261c38)(FieldVillager *);
 extern "C" {
 extern Fn_2261c38 sApproachSteps[5];
-extern u32 sApproachStepsGuard;
-extern void *data_ov068_0226fa70[2];
-extern void *data_ov068_0226fa88[2];
-extern void *data_ov068_0226faa8[2];
-extern void *data_ov068_0226fae8[2];
-extern void *data_ov068_0226fb28[2];
 }
 }
 
@@ -1099,30 +1070,14 @@ void VillagerActor_clearFlag834(void *);
 typedef void (FieldVillagerAiReaction::*Fn_2262294)(FieldVillager *);
 extern "C" {
 extern Fn_2262294 sReactionSteps[2];
-extern u32 sReactionStepsGuard;
-extern void *data_ov068_0226fa50[2];
-extern void *data_ov068_0226fa60[2];
 }
 typedef void (FieldVillagerAiChat::*Fn_2262414)(FieldVillager *);
 extern "C" {
 extern Fn_2262414 sChatSteps[4];
-extern u32 sChatStepsGuard;
-extern void *data_ov068_0226fa08[2];
-extern void *data_ov068_0226fa20[2];
-extern void *data_ov068_0226fa28[2];
-extern void *data_ov068_0226fa38[2];
 }
 typedef BOOL (FieldVillagerAiChat::*Fn_2262548)(FieldVillager *);
 extern "C" {
 extern Fn_2262548 sChatOutcomes[7];
-extern u32 sChatOutcomesGuard;
-extern void *data_ov068_0226f970[2];
-extern void *data_ov068_0226f980[2];
-extern void *data_ov068_0226f998[2];
-extern void *data_ov068_0226f9a8[2];
-extern void *data_ov068_0226f9b0[2];
-extern void *data_ov068_0226f9c0[2];
-extern void *data_ov068_0226f9d8[2];
 }
 }
 
@@ -1251,30 +1206,18 @@ extern "C" s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u
 typedef void (FieldVillagerAiTalk::*Fn_22638c0)(FieldVillager *);
 extern "C" {
 extern Fn_22638c0 sTalkSteps[2];
-extern u32 sTalkStepsGuard;
-extern void *data_ov068_0226f858[2];
-extern void *data_ov068_0226f8e0[2];
 }
 typedef void (FieldVillagerAiLeaveHouse::*Fn_2263a40)(FieldVillager *);
 extern "C" {
 extern Fn_2263a40 sLeaveHouseSteps[2];
-extern u32 sLeaveHouseStepsGuard;
-extern void *data_ov068_0226f838[2];
-extern void *data_ov068_0226f848[2];
 }
 typedef void (FieldVillagerAiAbsent::*Fn_2263cf0)(FieldVillager *);
 extern "C" {
 extern Fn_2263cf0 sAbsentSteps[2];
-extern u32 sAbsentStepsGuard;
-extern void *data_ov068_0226f930[2];
-extern void *data_ov068_0226f820[2];
 }
 typedef void (FieldVillagerAiInHouse::*Fn_2263e4c)(FieldVillager *);
 extern "C" {
 extern Fn_2263e4c sInHouseSteps[2];
-extern u32 sInHouseStepsGuard;
-extern void *data_ov068_0226f950[2];
-extern void *data_ov068_0226f948[2];
 }
 }
 
@@ -1340,10 +1283,6 @@ s32 FieldVillagerAi_CheckHeldItemChange(void *, void *);
 typedef void (FieldVillagerAiStates::*Fn_226410c)(FieldVillager *);
 extern "C" {
 extern Fn_226410c sGoInHouseSteps[3];
-extern u32 sGoInHouseStepsGuard;
-extern void *data_ov068_0226fae0[2];
-extern void *data_ov068_0226fb10[2];
-extern void *data_ov068_0226fb20[2];
 }
 }
 
@@ -1386,14 +1325,15 @@ s32 VillagerRoute_runStep(void *, void *);
 s32 TalkRequest_IsTalking();
 void *TalkRequest_GetTalkTarget();
 void Vec_Sub(void *, void *, void *);
+void Vec_ShiftRight(void *, s32);
 void Vec_Add(void *, void *, void *);
+void Vec_RotateY(void *, s32);
 s32 Vec_NotEqual(void *, void *);
 s32 func_01ffcb0c(s32, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 s32 PlayerData_testFlag(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
-s32 FieldVillagerAi_DirCrossesPlayerTalk(void *, void *, VecFx32 *);
 s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
 void *FieldVillagerAi_FindChatPartner(void *, FieldVillager *);
 void X_func_ov068_02265dc8(void *);
@@ -1450,7 +1390,6 @@ extern "C" BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, FieldV
 extern "C" void *FieldVillagerAi_FindChatPartner(void *self, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, VecFx32 *out, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim);
-extern "C" BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, VecFx32 *b);
 }
 
 namespace ns_02265324 {
@@ -1493,10 +1432,8 @@ s32 Villager_HasFlea(void *);
 extern s32 sRandomRouteTypes[];
 extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
-extern void *data_ov068_0226fa68[2];
 extern u16 data_020c6cc8;
 extern s32 sFieldVillagerAiCooldown;
-extern s16 sSeePlayerArc;
 extern FieldVillagerAiState sFieldVillagerAiTable[];
 extern u8 sSimCatchClassWeights[];
 extern u8 sSimCatchClassWeightsPlanned[];
@@ -1595,7 +1532,6 @@ extern "C" {
 extern Unk_ov068_0226fb80_Fn data_ov068_0226f870;
 extern u16 sFleaRemovedHoldFrames;
 extern u16 data_020c6cc8;
-extern Mtx43 data_021cb69c;
 extern CameraSwayPattern kCameraSwayPatterns[];
 extern s16 data_02135f44[];
 void X_func_ov068_0225f838(void *, ...);
@@ -1759,114 +1695,8 @@ void _ZN22FieldVillagerAiInHouse11execInHouseEP13FieldVillager();
 void _ZN22FieldVillagerAiInHouse12inHouseStep1EP13FieldVillager();
 void _ZN22FieldVillagerAiInHouse12inHouseStep0EP13FieldVillager();
 void _ZN13FieldVillager11drawDefaultEv();
-extern void *data_ov068_0226f800[2];
-extern void *data_ov068_0226f808[2];
-extern void *data_ov068_0226f810[2];
-extern void *data_ov068_0226f818[2];
-extern void *data_ov068_0226f820[2];
-extern void *data_ov068_0226f828[2];
-extern void *data_ov068_0226f830[2];
-extern void *data_ov068_0226f838[2];
-extern void *data_ov068_0226f840[2];
-extern void *data_ov068_0226f848[2];
-extern void *data_ov068_0226f850[2];
-extern void *data_ov068_0226f858[2];
-extern void *data_ov068_0226f860[2];
-extern void *data_ov068_0226f868[2];
 extern void *data_ov068_0226f870[2];
-extern void *data_ov068_0226f878[2];
-extern void *data_ov068_0226f880[2];
-extern void *data_ov068_0226f888[2];
-extern void *data_ov068_0226f890[2];
-extern void *data_ov068_0226f898[2];
-extern void *data_ov068_0226f8a0[2];
-extern void *data_ov068_0226f8a8[2];
-extern void *data_ov068_0226f8b0[2];
-extern void *data_ov068_0226f8b8[2];
-extern void *data_ov068_0226f8c0[2];
-extern void *data_ov068_0226f8c8[2];
-extern void *data_ov068_0226f8d0[2];
-extern void *data_ov068_0226f8d8[2];
-extern void *data_ov068_0226f8e0[2];
-extern void *data_ov068_0226f8e8[2];
-extern void *data_ov068_0226f8f0[2];
-extern void *data_ov068_0226f8f8[2];
-extern void *data_ov068_0226f900[2];
-extern void *data_ov068_0226f908[2];
 extern void *data_ov068_0226f910[2];
-extern void *data_ov068_0226f918[2];
-extern void *data_ov068_0226f920[2];
-extern void *data_ov068_0226f928[2];
-extern void *data_ov068_0226f930[2];
-extern void *data_ov068_0226f938[2];
-extern void *data_ov068_0226f940[2];
-extern void *data_ov068_0226f948[2];
-extern void *data_ov068_0226f950[2];
-extern void *data_ov068_0226f958[2];
-extern void *data_ov068_0226f960[2];
-extern void *data_ov068_0226f968[2];
-extern void *data_ov068_0226f970[2];
-extern void *data_ov068_0226f978[2];
-extern void *data_ov068_0226f980[2];
-extern void *data_ov068_0226f988[2];
-extern void *data_ov068_0226f990[2];
-extern void *data_ov068_0226f998[2];
-extern void *data_ov068_0226f9a0[2];
-extern void *data_ov068_0226f9a8[2];
-extern void *data_ov068_0226f9b0[2];
-extern void *data_ov068_0226f9b8[2];
-extern void *data_ov068_0226f9c0[2];
-extern void *data_ov068_0226f9c8[2];
-extern void *data_ov068_0226f9d0[2];
-extern void *data_ov068_0226f9d8[2];
-extern void *data_ov068_0226f9e0[2];
-extern void *data_ov068_0226f9e8[2];
-extern void *data_ov068_0226f9f0[2];
-extern void *data_ov068_0226f9f8[2];
-extern void *data_ov068_0226fa00[2];
-extern void *data_ov068_0226fa08[2];
-extern void *data_ov068_0226fa10[2];
-extern void *data_ov068_0226fa18[2];
-extern void *data_ov068_0226fa20[2];
-extern void *data_ov068_0226fa28[2];
-extern void *data_ov068_0226fa30[2];
-extern void *data_ov068_0226fa38[2];
-extern void *data_ov068_0226fa40[2];
-extern void *data_ov068_0226fa48[2];
-extern void *data_ov068_0226fa50[2];
-extern void *data_ov068_0226fa58[2];
-extern void *data_ov068_0226fa60[2];
-extern void *data_ov068_0226fa68[2];
-extern void *data_ov068_0226fa70[2];
-extern void *data_ov068_0226fa78[2];
-extern void *data_ov068_0226fa80[2];
-extern void *data_ov068_0226fa88[2];
-extern void *data_ov068_0226fa90[2];
-extern void *data_ov068_0226fa98[2];
-extern void *data_ov068_0226faa0[2];
-extern void *data_ov068_0226faa8[2];
-extern void *data_ov068_0226fab0[2];
-extern void *data_ov068_0226fab8[2];
-extern void *data_ov068_0226fac0[2];
-extern void *data_ov068_0226fac8[2];
-extern void *data_ov068_0226fad0[2];
-extern void *data_ov068_0226fad8[2];
-extern void *data_ov068_0226fae0[2];
-extern void *data_ov068_0226fae8[2];
-extern void *data_ov068_0226faf0[2];
-extern void *data_ov068_0226faf8[2];
-extern void *data_ov068_0226fb00[2];
-extern void *data_ov068_0226fb08[2];
-extern void *data_ov068_0226fb10[2];
-extern void *data_ov068_0226fb18[2];
-extern void *data_ov068_0226fb20[2];
-extern void *data_ov068_0226fb28[2];
-extern void *data_ov068_0226fb30[2];
-extern void *data_ov068_0226fb38[2];
-extern void *data_ov068_0226fb40[2];
-extern void *data_ov068_0226fb48[2];
-extern void *data_ov068_0226fb50[2];
-extern void *data_ov068_0226fb58[2];
 }
 }
 namespace nsD {

@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02218dc8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,6 +39,14 @@ void WfcSimpleStartDone_Exit();
 void WfcSimpleStartDone_CountDown();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcSimpleStartDoneTimer
+extern u8 sWfcSimpleStartDoneTimer;
+#endif
 }
 #endif
 

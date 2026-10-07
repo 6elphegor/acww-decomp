@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+#include "ui/InputModeIcon.h"
 #endif
 
 #ifdef __cplusplus
@@ -54,6 +55,9 @@ BOOL InputMode_IsButtons();
 BOOL InputMode_IsTouch();
 #endif
 }
+#ifndef PROTO_LOCAL_sInputModeIcon
+extern InputModeIcon sInputModeIcon;
+#endif
 #endif
 
 #endif

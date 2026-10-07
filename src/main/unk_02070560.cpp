@@ -31,12 +31,18 @@
 #define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_SetId  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_SetNameString  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e0498  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e049c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPatternPresetInfo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPatternTexCache  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPlayerPatternTexKeys  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPresetPatternBuffer  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0203cbc0.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_020637e4.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
@@ -168,7 +174,6 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-extern OverlayHandle gOverlayHandle;
 }
 extern "C" {
 }
@@ -728,7 +733,6 @@ extern "C" {
 extern u8 sPatternPresetInfo[];
 }
 extern "C" {
-extern u32 sAblePatternTexKeys[8];
 }
 extern "C" {
 extern u32 sPlayerPatternTexKeys[4][8];
@@ -740,10 +744,8 @@ extern "C" {
 extern u8 sPresetPatternBuffer[];
 }
 extern "C" {
-extern u8 sAbleDisplayDirtyBits;
 }
 extern "C" {
-extern u8 data_021cbcac[4];
 }
 extern "C" {
 extern SaveData gSaveData;
@@ -752,16 +754,12 @@ extern "C" {
 extern void *gCurrentHeap;
 }
 extern "C" {
-extern u8 *sPlayerPatternTexWork;
 }
 extern "C" {
-extern u8 *sPlayerPatternVramTasks;
 }
 extern "C" {
-extern u8 *sAblePatternTexWork;
 }
 extern "C" {
-extern u8 *sAblePatternVramTasks;
 }
 extern "C" {
 extern u16 data_020cb6f4;
@@ -1272,6 +1270,7 @@ extern "C" {
 void AbleShop_GetItem(void *tbl, s32 i, u16 *out);
 }
 extern "C" {
+void Item_FromPlacedForm(u16 *dst, u16 *src);
 }
 extern "C" {
 s32 _ZN19AbleSistersPatterns10getPatternEh(void *p, s32 i);
@@ -1678,22 +1677,17 @@ extern "C" {
 extern u8 data_020e0498[];
 }
 extern "C" {
-extern u32 sAblePatternTexKeys[];
 }
 extern "C" {
 extern u32 sPlayerPatternTexKeys[8][8];
 }
 extern "C" {
-extern u8 *sAblePatternTexWork;
 }
 extern "C" {
-extern u8 *sAblePatternVramTasks;
 }
 extern "C" {
-extern u8 *sPlayerPatternTexWork;
 }
 extern "C" {
-extern u8 *sPlayerPatternVramTasks;
 }
 extern "C" {
 extern u8 gSaveAbleSistersPatterns[];

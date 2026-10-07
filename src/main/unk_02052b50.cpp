@@ -27,7 +27,6 @@ s32 Item_IsFurniture(void *p);
 
 
 
-extern InfoTableSet gFtrInfo;
 
 struct FtrInfoRecord {
     u8 fossilGroup;

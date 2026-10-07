@@ -1,6 +1,8 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "net/NetSessionParts.h"
+#define PROTO_LOCAL_gNetSessionState  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_020a6388.h"
 
 
 extern CommManager *gCommManager;

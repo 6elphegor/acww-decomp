@@ -38,11 +38,14 @@
 #include "player/PlayerId.h"
 #include "talk/MsgString9B.h"
 #define PROTO_LOCAL_String_FromEncodedBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_02065330.h"
@@ -53,6 +56,7 @@
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov002/unk_ov002_022025cc.h"
@@ -98,17 +102,10 @@ void MIi_CpuCopy16(void *dst, void *src, s32 n);
 void MIi_CpuClear16(s32 v, void *dst, s32 n);
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 
-extern void *gMenuHeap;
 extern void *gCurrentHeap;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern volatile u16 gPad[];
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchPressX;
-extern u8 gTouchPressY;
 extern u8 gTalkMsgIndexEnd[];
 }
 
@@ -120,9 +117,6 @@ extern "C" {
 extern char _ZTV9MenuTween[];
 extern char _ZTV8MenuProc[];
 extern char _ZTV19MenuLabelButtonBase[];
-extern void *_ZTV10MenuCursor[7];
-extern void *_ZTV14MenuCursorBuf0[7];
-extern void *_ZTV14MenuCursorBuf1[7];
 extern char _ZTV8GameProc[];
 void *_ZN11LabelButtonC2Ehi(void *self, u8 a, s32 b);
 void *_ZN10HandCursorC2Ei(void *self, s32 flag);
@@ -163,14 +157,6 @@ extern const u8 sMenuButtonTextColors[];
 extern const u8 sBottomButtonTargetX[];
 extern const u8 sBottomButtonTargetY[];
 extern const u8 sBottomButtonOfTarget[];
-extern s32 sPopupChoicePopOffsets[];
-extern GXOamAttr sButtonCellsW4A[];
-extern GXOamAttr sButtonCellsW4B[];
-extern GXOamAttr sButtonCellsW6Single[];
-extern GXOamAttr sButtonCellsW8[];
-extern GXOamAttr sButtonCellsW6A[];
-extern GXOamAttr sButtonCellsW6B[];
-extern GXOamAttr sButtonCellsW12[];
 }
 
 

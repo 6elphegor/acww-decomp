@@ -5,6 +5,8 @@
 // no vtable (the class SndObj only DECLARES its virtuals), all data and callees extern.
 #include "types.h"
 #include "snd/SndMgr.h"
+#define PROTO_LOCAL_sVoicePendingPitch  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ee98c.h"
 #include "proto/autoload_2/unk_020ef150.h"
 #include "proto/autoload_2/unk_0210c084.h"
 
@@ -40,11 +42,7 @@ struct SndEnt {
 };
 
 extern "C" {
-extern u16 sVoicePendingSyllable;
-extern u8 sVoicePendingVolume;
 extern u32 sVoicePendingPitch;
-extern u16 gSndPanTrackMask;
-extern SndEnt sBgmTrackVariantTable[];
 
 s32 FX_Div(s32 a, s32 b); // FX_Div
 void Snd_StartSeqArc(u16 a, u16 b, void *out);

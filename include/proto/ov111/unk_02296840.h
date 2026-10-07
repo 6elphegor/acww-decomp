@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "uptr.h"
 class ChatMenu;
 #endif
 
@@ -14,6 +15,18 @@ extern "C" {
 #ifndef PROTO_LOCAL_ChatMenu_SetupBgLayer
 void ChatMenu_SetupBgLayer();
 #endif
+#ifndef PROTO_LOCAL_data_ov111_022989c8
+extern char data_ov111_022989c8[];
+#endif
+#ifndef PROTO_LOCAL_data_ov111_022989e0
+extern char data_ov111_022989e0[];
+#endif
+#ifndef PROTO_LOCAL_data_ov111_022989f8
+extern char data_ov111_022989f8[];
+#endif
+#ifndef PROTO_LOCAL_data_ov111_02298a10
+extern char data_ov111_02298a10[];
+#endif
 #ifdef __cplusplus
 }
 #endif
@@ -22,6 +35,9 @@ void ChatMenu_SetupBgLayer();
 extern "C" {
 #ifndef PROTO_LOCAL_ChatMenu_Create
 ChatMenu *ChatMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_sChatSendAnimScreens
+extern uptr sChatSendAnimScreens[4];
 #endif
 }
 #endif

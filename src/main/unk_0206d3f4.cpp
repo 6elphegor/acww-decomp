@@ -7,6 +7,10 @@
 #include "talk/EncodedString40.h"
 #include "ui/LetterRenderer.h"
 #include "ui/LetterTextLine.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gMelodyPlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gOverlayHandle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sCrashContext  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8208.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
@@ -26,7 +30,7 @@
 #include "proto/main/unk_020536dc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065330.h"
-#include "proto/main/unk_0206d4a4.h"
+#include "proto/main/unk_0206d3f4.h"
 #include "proto/main/unk_0206d5b8.h"
 #include "proto/main/unk_0206d988.h"
 #include "proto/main/unk_020720f8.h"
@@ -35,7 +39,6 @@
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020af258.h"
 #include "proto/main/unk_020b7d84.h"
-#include "proto/main/unk_020b8340.h"
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov002/unk_ov002_022025cc.h"
 
@@ -54,8 +57,6 @@ extern u32 OVERLAY_65_ID[];
 
 
 extern "C" {
-extern u8 sDwcInitResult;
-extern s32 data_020ddf8c;
 extern u32 gCurrentHeap;
 extern u8 sFatalEntered;
 extern u8 data_021fccfc[];
@@ -67,7 +68,6 @@ extern u8 gFrameWaitQueue[];
 extern u8 gVBlankQueue[];
 extern u32 sCrashContext;
 extern u8 gBackup[];
-extern s32 sMelodyTimer;
 extern u8 gMelodyPlayer[];
 
 void func_020a791c(void *p);
@@ -88,11 +88,15 @@ u32 func_0207238c(u32 p);
 void Task_RunFrame(s32 v);
 void Sky_SwapBuffers(void);
 void HBlank_RunFrame(void);
+void VramQueue2d_Run(void);
 void Clock_Update(u32 v);
 void Backup_GetStatus(void *p);
 BOOL FS_OpenFileFast(void *f, FSFileID p);
 void FS_CloseFile(void *f);
 void FS_ConvertPathToFileID(void *p, void *q);
+void Main_PxiSendWordRetry(s32 a, s32 b);
+void Main_DwcFree(u32 a, void *p);
+void *Main_DwcAlloc(u32 a, void *p, u32 n);
 }
 
 

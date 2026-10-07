@@ -55,6 +55,36 @@ u32 TexVram_Alloc(u32 a, u32 b);
 u32 PlttVram_Alloc(u32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sTexVramTexelALo
+extern u32 sTexVramTexelALo;
+#endif
+#ifndef PROTO_LOCAL_sTexVramIdxALo
+extern u32 sTexVramIdxALo;
+#endif
+#ifndef PROTO_LOCAL_sTexVramIdxBLo
+extern u32 sTexVramIdxBLo;
+#endif
+#ifndef PROTO_LOCAL_sTexVramTexelBLo
+extern u32 sTexVramTexelBLo;
+#endif
+#ifndef PROTO_LOCAL_sTexVramTexelAHi
+extern u32 sTexVramTexelAHi;
+#endif
+#ifndef PROTO_LOCAL_sTexVramIdxAHi
+extern u32 sTexVramIdxAHi;
+#endif
+#ifndef PROTO_LOCAL_sTexVramIdxBHi
+extern u32 sTexVramIdxBHi;
+#endif
+#ifndef PROTO_LOCAL_sTexVramTexelBHi
+extern u32 sTexVramTexelBHi;
+#endif
+#ifndef PROTO_LOCAL_sPlttVramUsed
+extern u32 sPlttVramUsed;
+#endif
+#ifndef PROTO_LOCAL_sPlttVramSize
+extern u32 sPlttVramSize;
+#endif
 #endif
 
 #endif

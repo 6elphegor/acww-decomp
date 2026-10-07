@@ -9,6 +9,8 @@
 #include "nitro/io_access.h"
 #include "snd/BgmSceneFade.h"
 #include "talk/MsgRequest.h"
+#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020407fc.h"

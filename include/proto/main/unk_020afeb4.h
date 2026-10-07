@@ -5,7 +5,6 @@
 
 #include "types.h"
 #include "types64.h"
-struct Entry;
 #ifdef __cplusplus
 #include "game/SceneInfo.h"
 #include "types.h"
@@ -38,6 +37,9 @@ void Constellation_ImportExchanged(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sConstellationColumns
+extern u32 sConstellationColumns[2];
+#endif
 #ifndef PROTO_LOCAL_Constellation_MarkColumn
 void Constellation_MarkColumn(s32 n);
 #endif
@@ -53,17 +55,8 @@ s32 Constellation_FindFreeSlot(void);
 #ifndef PROTO_LOCAL_Constellation_CountFreeSlots
 s32 Constellation_CountFreeSlots(void);
 #endif
-#ifndef PROTO_LOCAL_Constellation_GetRecord
-Entry *Constellation_GetRecord(s32 idx);
-#endif
-#ifndef PROTO_LOCAL_Constellation_Store
-void Constellation_Store(Entry *e, s32 idx, s32 flag);
-#endif
 #ifndef PROTO_LOCAL_Constellation_Erase
 void Constellation_Erase(s32 idx);
-#endif
-#ifndef PROTO_LOCAL_Constellation_GetRecordAlt
-Entry *Constellation_GetRecordAlt(s32 idx);
 #endif
 #ifndef PROTO_LOCAL_Constellation_SetCreator
 void Constellation_SetCreator(u8 *dst);
@@ -89,9 +82,6 @@ BOOL Constellation_IsInView(s32 x, s32 y, s32 px, s32 py);
 #ifndef PROTO_LOCAL_Constellation_FindVisibleNow
 s32 Constellation_FindVisibleNow(void);
 #endif
-#ifndef PROTO_LOCAL_Constellation_AddReceived
-BOOL Constellation_AddReceived(Entry *e);
-#endif
 #ifndef PROTO_LOCAL_Constellation_IsNameTaken
 BOOL Constellation_IsNameTaken(const u8 *name, s32 skip);
 #endif
@@ -103,9 +93,6 @@ s32 Constellation_CellToScreenIndex(s32 x, s32 y);
 #endif
 #ifndef PROTO_LOCAL_Constellation_SetLinePalette
 void Constellation_SetLinePalette(u16 *p, u32 slot, s32 r);
-#endif
-#ifndef PROTO_LOCAL_Constellation_SetLinesPalette
-void Constellation_SetLinesPalette(u16 *p, Entry *e, s32 r);
 #endif
 #ifndef PROTO_LOCAL_Constellation_HighlightAll
 void Constellation_HighlightAll(u16 *p);

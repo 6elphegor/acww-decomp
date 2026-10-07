@@ -14,7 +14,6 @@
 #include "proto/ov001/unk_ov001_02213424.h"
 #include "proto/ov001/unk_ov001_022156e0.h"
 #include "proto/ov001/unk_ov001_0221bc10.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
@@ -43,8 +42,12 @@ s32 WfcGx_HidePlanes(u32 a, u32 b);
 s32 WfcHeap_FreeAndClear(void *a);
 s32 WfcGx_ShowPlanes(u32 a, u32 b);
 void *WfcHeap_AllocClear(u32 a, u32 b);
+s32 WfcConfig_GetEditSsid(void *a);
 void *WfcObj_CreateSingle(u32 a, u32 b);
 
+void WfcConfig_FormatEditDns2();
+void WfcConfig_SetEditWepKey();
+void WfcConfig_SetEditSsid();
 void WfcTextEdit_Exit();
 
 const u8 data_ov001_0222a058[4] = {0x20, 0x31, 0, 0};

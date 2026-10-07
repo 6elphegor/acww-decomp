@@ -4,6 +4,7 @@ extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
 #include "ui/UiWidget.h"
 #include "ui/HandCursor.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0208d538.h"
 
 extern "C" {
 }

@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0223e9bc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "types.h"
 class ShopStockPlacer;
@@ -39,6 +40,21 @@ u16 *ShopStock_GetItemAtTile(s32 x, s32 y);
 u16 *_ZN15ShopStockPlacer13callGetItemAtEv(s32 x, s32 y);
 #endif
 }
+#ifndef PROTO_LOCAL_sShopStockPlacerProfile
+extern ProcProfile sShopStockPlacerProfile;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224f254
+extern void *data_ov004_0224f254[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224f25c
+extern void *data_ov004_0224f25c[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224f274
+extern void *data_ov004_0224f274[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224f264
+extern void *data_ov004_0224f264[2];
+#endif
 #endif
 
 #endif

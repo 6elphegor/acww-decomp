@@ -60,6 +60,12 @@ s32 WorldCurve_GetRadius(void);
 void WorldCurve_Update(WorldCurve *o, WorldCurve *in);
 #endif
 }
+#ifndef PROTO_LOCAL_sWorldCurveZScale
+extern s32 sWorldCurveZScale;
+#endif
+#ifndef PROTO_LOCAL_gWorldCurve
+extern WorldCurve gWorldCurve;
+#endif
 #endif
 
 #endif

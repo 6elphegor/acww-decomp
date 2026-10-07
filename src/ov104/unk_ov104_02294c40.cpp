@@ -42,10 +42,13 @@
 #define PROTO_LOCAL_Letter_Clear  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02065330.h"
 #include "proto/main/unk_02065e88.h"
 #include "proto/main/unk_0206e54c.h"
@@ -53,6 +56,7 @@
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
@@ -92,15 +96,8 @@ void PopupChoice_Open(void *p, s32 a);
 void MenuButtons_LoadTextColors(void *p);
 
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchPressX;
-extern u8 gTouchPressY;
 extern u32 gCurrentHeap;
 extern u8 gSavePlayers[];
-extern void *gMenuHeap;
 }
 
 // Main-module helper classes (real symbol names) -------------------------------------------------

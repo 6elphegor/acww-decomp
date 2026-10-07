@@ -242,13 +242,6 @@ struct SpNpcKatrinaActEntry {
 extern "C" {
 extern const KatrinaFortuneCard sSpNpcKatrinaGoodFortuneCards[17];
 extern const KatrinaFortuneCard sSpNpcKatrinaBadFortuneCards[21];
-extern void *sSpNpcKatrinaMsgKey;
-extern u8 sSpNpcKatrinaKey[];
-extern u8 sSpNpcKatrinaModelPath[];
-extern u8 sSpNpcKatrinaTexturePath[];
-extern SpNpcKatrina *sSpNpcKatrinaInstance;
-extern SpNpcKatrinaTalkScript sSpNpcKatrinaTalkScripts[2];
-extern SpNpcKatrinaActEntry sSpNpcKatrinaActTable[4];
 }
 
 

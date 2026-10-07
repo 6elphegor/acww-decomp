@@ -12,6 +12,15 @@ struct WfcTextCanvas;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcFontPaths
+extern void *sWfcFontPaths[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b894
+extern char data_ov001_0222b894[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b8a4
+extern char data_ov001_0222b8a4[];
+#endif
 #ifndef PROTO_LOCAL_WfcText_Init
 void WfcText_Init();
 #endif

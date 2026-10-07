@@ -7,6 +7,9 @@
 struct LetterDefaults;
 #ifdef __cplusplus
 #include "item/LetterView.h"
+#include "talk/MsgString129.h"
+#include "talk/MsgString25B.h"
+#include "talk/MsgString33B.h"
 #include "types.h"
 #endif
 
@@ -142,6 +145,15 @@ void LetterDefaults_Store(LetterDefaults *a, LetterView *b);
 void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra);
 #endif
 }
+#ifndef PROTO_LOCAL_sMailGreeting
+extern MsgString25B sMailGreeting;
+#endif
+#ifndef PROTO_LOCAL_sMailBody
+extern MsgString129 sMailBody;
+#endif
+#ifndef PROTO_LOCAL_sMailSignature
+extern MsgString33B sMailSignature;
+#endif
 #endif
 
 #endif

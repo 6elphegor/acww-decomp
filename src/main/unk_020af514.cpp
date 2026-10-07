@@ -5,13 +5,13 @@
 #include "town/SceneMapInfo.h"
 #include "game/SceneInfo.h"
 #include "net/CommManager.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_02093ff0.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020af514.h"
 #include "proto/main/unk_020afeb4.h"
 
@@ -93,7 +93,6 @@ struct Grid {
 };
 
 extern "C" {
-extern void *gActorDefaultParent;
 }
 
 class SceneSpawnGroup;
@@ -152,6 +151,7 @@ Unk_020b4948 *Scene_GetWarpRequest();
 u32 Scene_GetCurrent();
 BOOL Scene_InUnk6Or7();
 BOOL Scene_InTown();
+void Vec_RotateY(VecFx32 *, s32);
 
 struct Data020cbb18 {
     u8 pad[0x64];

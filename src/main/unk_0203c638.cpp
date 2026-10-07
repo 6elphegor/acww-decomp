@@ -12,6 +12,7 @@
 #include "gfx/G3dResAccess.h"
 #include "player/PlayerData.h"
 #include "save/Pattern.h"
+#define PROTO_LOCAL_sPlayerOptions  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0203c92c.h"
 #include "proto/main/unk_02063904.h"

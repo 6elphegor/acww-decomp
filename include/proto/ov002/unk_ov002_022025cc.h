@@ -18,6 +18,15 @@ void Menu_PlayScrollTickSe();
 #ifndef PROTO_LOCAL_Menu_PlayScrollGrabSe
 void Menu_PlayScrollGrabSe();
 #endif
+#ifndef PROTO_LOCAL__ZTV14MenuCursorBuf1
+extern void *_ZTV14MenuCursorBuf1[7];
+#endif
+#ifndef PROTO_LOCAL__ZTV14MenuCursorBuf0
+extern void *_ZTV14MenuCursorBuf0[7];
+#endif
+#ifndef PROTO_LOCAL__ZTV10MenuCursor
+extern void *_ZTV10MenuCursor[7];
+#endif
 #ifdef __cplusplus
 }
 #endif

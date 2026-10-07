@@ -19,12 +19,16 @@
 #define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StrBuf_GameToAscii  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPatternSelectIconCell  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov125/unk_ov125_02297060.h"
@@ -33,10 +37,6 @@ struct PopupChoiceIdList;
 
 extern "C" {
 extern volatile u16 gPad[];
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern void *gCurrentHeap;
 void MIi_CpuCopy16(void *a, void *b, u32 n);
 void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);

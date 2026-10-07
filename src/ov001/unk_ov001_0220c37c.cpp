@@ -4,7 +4,6 @@
 #include "proto/main/unk_0206d49c.h"
 #include "proto/ov001/unk_ov001_02202c44.h"
 #include "proto/ov001/unk_ov001_0220c37c.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 
 extern "C" {
 extern const char data_ov001_02229f84[12];
@@ -22,6 +21,7 @@ extern void WfcHeap_Free(void *p);
 extern void *WfcHeap_Alloc(s32, s32);
 extern void *WfcHeap_AllocClear(s32, s32);
 extern void WfcHeap_FreeAndClear(void *);
+extern void WfcConfig_StoreAoss(void *);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MI_CpuCopy8(const void *, void *);
 extern void OS_GetMacAddress(void *);

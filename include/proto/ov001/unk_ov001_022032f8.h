@@ -20,6 +20,36 @@ void Aoss_WcmCallback(void *arg);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sAossWcmWork
+extern u8 *sAossWcmWork;
+#endif
+#ifndef PROTO_LOCAL_sAossWcmWepDesc
+extern u8 *sAossWcmWepDesc;
+#endif
+#ifndef PROTO_LOCAL_sAossWcmBssDesc
+extern u8 *sAossWcmBssDesc;
+#endif
+#ifndef PROTO_LOCAL_sAossWcmBssid
+extern u8 sAossWcmBssid[6];
+#endif
+#ifndef PROTO_LOCAL_sAossWcmState
+extern s32 sAossWcmState;
+#endif
+#ifndef PROTO_LOCAL_sAossWcmSsid
+extern u8 sAossWcmSsid[0x20];
+#endif
+#ifndef PROTO_LOCAL_sAossWcmBssidPtr
+extern u8 *sAossWcmBssidPtr;
+#endif
+#ifndef PROTO_LOCAL_sAossWcmConnectOption
+extern s32 sAossWcmConnectOption;
+#endif
+#ifndef PROTO_LOCAL_sAossWcmSsidPtr
+extern u8 *sAossWcmSsidPtr;
+#endif
+#ifndef PROTO_LOCAL_sAossWcmSearchOption
+extern s32 sAossWcmSearchOption;
+#endif
 #ifndef PROTO_LOCAL_Aoss_WcmToIdle
 s32 Aoss_WcmToIdle(void);
 #endif

@@ -12,6 +12,19 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sDwcHttpRootCaList
+extern void *sDwcHttpRootCaList[11];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sDwcHttpTestServer
+extern s32 sDwcHttpTestServer;
+#endif
 #ifndef PROTO_LOCAL_DwcHttp_Init
 s32 DwcHttp_Init(DwcHttp *c, DwcHttpParams *cfg);
 #endif

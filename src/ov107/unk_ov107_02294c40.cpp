@@ -23,17 +23,18 @@
 #define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_LocalReleaseCatch  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203c23c.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov094/unk_ov094_02292360.h"
@@ -121,10 +122,6 @@ typedef void (PocketsFullMenu::*Unk_ov107_02296e78_Fn)();
 extern "C" {
 extern CommManager *gCommManager;
 extern u8 gU8None;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
 
 s32 PendingUnit_ClearActiveOfAid(u32 aid);
@@ -143,6 +140,7 @@ s32 FieldAction_RequestDropOrPlace(s32 a, s32 b);
 s32 FieldAction_RequestToolAtPending(s32 a, s32 b, s32 c, s32 d);
 u16 *PendingUnit_GetActivePosOfAid(s32 a);
 s32 Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
+void Item_FromPlacedForm(void *a, void *b);
 s32 PlayerData_getCatalog(void *self);
 void HandCursor_setAnimAtEnd(void *a, s32 b);
 void HandCursor_disableObjWindow(void *a);

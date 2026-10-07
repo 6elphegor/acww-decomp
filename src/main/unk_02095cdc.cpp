@@ -36,6 +36,13 @@
 #define PROTO_LOCAL_VillagerId_Construct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_VillagerId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_VillagerId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1df8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1dfc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1e00  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1e04  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1e08  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e1e0c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gPlayerSessionTable  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
@@ -111,8 +118,6 @@ extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
 extern u8 gU8None[];
 extern SaveTownStateView data_021ed150;
-extern u8 sMotherMonthLetterCount[];
-extern u8 sMotherMonthLetterFirst[];
 extern u8 data_021ecfa8[];
 extern const u32 sSeasonLetterPaperCounts[];
 extern const u8 *sSeasonLetterPapers[];
@@ -845,7 +850,6 @@ extern "C" void BottleLetter_WashUpThrownBottle() {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern u8 sMotherMonthLetterCount[0xc];
 extern const u8 sWinterLetterPapers[0x4];
 extern const s32 data_020d0428;
 extern const u8 sSpringLetterPapers[0x4];
@@ -860,7 +864,6 @@ extern const u8 sLetterPapersPersonality4[0x24];
 extern const u8 sLetterPapersPersonality0[0x24];
 extern const u8 sLetterPapersPersonality3[0x24];
 extern const u8 sLetterPapersPersonality5[0x24];
-extern u8 sMotherMonthLetterFirst[0xc];
 extern const u8 *sSeasonLetterPapers[4];
 extern const u8 *sPersonalityLetterPapers[6];
 

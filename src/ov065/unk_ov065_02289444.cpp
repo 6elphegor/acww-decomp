@@ -6,6 +6,15 @@
 #include "net/gsPlatformUtil.h"
 #include "net/SockHostEnt.h"
 #include "net/SockAddrIn.h"
+#include "proto/autoload_2/unk_0212703c.h"
+#include "proto/autoload_2/unk_02128030.h"
+#include "proto/autoload_2/unk_02128c60.h"
+#include "proto/autoload_2/unk_0212a120.h"
+#include "proto/autoload_2/unk_0212b770.h"
+#include "proto/autoload_2/unk_0212fa54.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_022884fc.h"
+#include "proto/ov065/unk_ov065_02289444.h"
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
@@ -36,19 +45,11 @@ static inline u16 Unk_ov065_02289044_Htons(u16 x) {
 
 extern "C" {
 extern char *data_ov065_0228e928[2];
-extern char *qr2_registered_key_list[];
 extern u16 data_0213a510[];
-extern s32 __GSIACResult;
 extern s32 SBNullServer;
 
-s32 strcmp(const char *, const char *);
-u32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 atol(char *);
-s32 func_02130b04(char *, char *);
 
-s32 GsUtil_Free(void *);
-void *GsUtil_Alloc(s32);
 s32 ArrayLength(void *);
 void *TableLookup(void *, void *);
 s32 TableEnter(void *, void *);
@@ -124,7 +125,6 @@ s32 recv(s32, void *, s32, s32);
 s32 CanReceiveOnSocket(s32);
 void ErrorDisconnect(SBServerList *);
 void GOADecrypt(void *, void *, s32);
-void memmove(void *, void *, s32);
 s32 ParseServerIPPort(SBServerList *, u8 *, s32, u32 *, u16 *);
 s32 SBServerListFindServerByIP(SBServerList *, u32, u32);
 s32 SBAllocServer(SBServerList *, u32, u32);
@@ -190,14 +190,8 @@ namespace F0228a20c {
 
 extern "C" {
 
-s32 STD_GetStringLength(const char *);
-void memcpy(void *, const void *, s32);
-s32 memcmp(void *, void *, u32);
-s32 rand();
 s32 func_02133150(s32, s32);
 
-void *GsUtil_Alloc(u32);
-void GsUtil_Free(void *);
 void *ArrayNth(void *, s32);
 s32 ArrayLength(void *);
 void ArrayFree(void *);
@@ -264,17 +258,10 @@ extern "C" {
 extern char *SBOverrideMasterServer;
 extern char *data_ov065_0228e954;
 extern u32 SBNullServer;
-extern s32 __GSIACResult;
 extern Ctx070 *g_sortserverlist;
 extern u8 data_0213a410[];
-s32 STD_GetStringLength(const char *s);
-void *memcpy(void *d, const void *s, u32 n);
-char *STD_CopyString(char *d, const char *s);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 strncmp(const char *a, const char *b, u32 n);
-s32 strcmp(const char *a, const char *b);
-s32 func_02130b04(const char *a, const char *b);
-void srand(u32 seed);
 
 s32 inet_addr(char *s);
 SockHostEnt *Sock_GetHostByName(char *name);

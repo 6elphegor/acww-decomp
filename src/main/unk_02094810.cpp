@@ -49,7 +49,6 @@ extern const u32 sPlayerStateSyncVars[];
 extern const s32 data_020d0428;
 extern CommManager *gCommManager;
 }
-extern PlayerSessionTable gPlayerSessionTable;
 
 extern "C" {
 
@@ -947,7 +946,6 @@ extern const u32 sPlayerAngleSyncVars[4];
 extern const u32 sPlayerStateSyncVars[4];
 extern const u8 sEmotionHoldFrames[0x20];
 extern const u32 sPlayerPosSyncVars[4];
-extern PlayerSessionTable gPlayerSessionTable;
 
 const u32 sPlayerAngleSyncVars[4] = {4, 5, 6, 7};
 

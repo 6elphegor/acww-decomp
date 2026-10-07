@@ -29,6 +29,9 @@ void *Snowball_FindOtherInBallState(void *self);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sSnowballs
+extern Snowball *sSnowballs[8];
+#endif
 #ifndef PROTO_LOCAL_Snowball_Register
 BOOL Snowball_Register(Snowball *p);
 #endif

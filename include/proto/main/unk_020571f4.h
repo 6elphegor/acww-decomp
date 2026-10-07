@@ -4,6 +4,8 @@
 // Prototypes of the functions defined in src/main/unk_020571f4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct FishHoldOffsets;
 #ifdef __cplusplus
 #include "actor/Actor.h"
 #include "gfx/VecFx32.h"
@@ -14,6 +16,24 @@ class HandOverItem;
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sHandOverItem
+extern HandOverItem *sHandOverItem;
+#endif
+#ifndef PROTO_LOCAL_data_021c5a30
+extern u8 data_021c5a30[4];
+#endif
+#ifndef PROTO_LOCAL_data_021c5a2c
+extern u8 data_021c5a2c[4];
+#endif
+#ifndef PROTO_LOCAL_data_021c5a28
+extern u8 data_021c5a28[4];
+#endif
+#ifndef PROTO_LOCAL_data_021c5a24
+extern u8 data_021c5a24[4];
+#endif
+#ifndef PROTO_LOCAL_data_021c5ae8
+extern s32 data_021c5ae8[4];
+#endif
 #ifndef PROTO_LOCAL_HandOverItem_GetFishScale
 u32 HandOverItem_GetFishScale(u32 i);
 #endif
@@ -72,6 +92,12 @@ void HandOverItem_GetItem(u16 *out);
 s32 HandOverItem_SetNextMode(u8 a, s32 b);
 #endif
 }
+#ifndef PROTO_LOCAL_sHandOverItemProfile
+extern ProcProfile sHandOverItemProfile;
+#endif
+#ifndef PROTO_LOCAL_sFishHoldOffsetSets
+extern FishHoldOffsets *sFishHoldOffsetSets[6];
+#endif
 #endif
 
 #endif

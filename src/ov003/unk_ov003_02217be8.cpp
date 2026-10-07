@@ -28,14 +28,13 @@
 #define PROTO_LOCAL_FieldGround_ReleaseBackdrop  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldGround_ReleaseEnvChannel  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldGround_ResetEnvChannel  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021ce63c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02036c58.h"
 #include "proto/main/unk_02037260.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_020abbcc.h"
 #include "proto/main/unk_020abea8.h"
 #include "proto/ov003/unk_ov003_02217be8.h"
@@ -140,7 +139,6 @@ public:
 extern "C" {
 extern void *gCamera;
 extern VecFx32Ctor gCameraLookAt;
-extern void *gBgHeap;
 extern Unk_0204e858_Grid *gSceneBlockMap;
 extern s32 data_021ce63c;
 extern s32 data_020c8cbc;
@@ -157,6 +155,7 @@ s32 BgModelCache_getBeBPatAnm(void *self);
 void *BgModelCache_getAcre(void *self, s32 i);
 s32 MapBlockAcre_getAcreId(void *self);
 s32 Camera_getEyeCurveAngle(void *self);
+void Camera_GetLookAtBlock(void *, s32 *, s32 *);
 s16 WorldCurve_ToCurved(VecFx32Ctor *out, VecFx32Ctor *v);
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 Ground_GetSpecialPieceKind(s32, s32);

@@ -83,7 +83,6 @@ void *_ZN10PlayerData18getLostChildRecordEv(void *p);
 s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
-extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
 void *TownId_Construct(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
@@ -126,6 +125,12 @@ extern s32 gGfxMainOnTop;
 #define PROTO_LOCAL_TownId_Clear  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_Construct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e0c44  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e0c48  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e0c4c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e0c50  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e0c54  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sContestResultMailFiles  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020030d8.h"
 #include "proto/main/unk_0203cbc0.h"
@@ -142,7 +147,6 @@ extern s32 gGfxMainOnTop;
 
 extern u8 gSaveData[];
 
-extern uptr sContestResultBbsFiles[4];
 
 extern u8 gSavePlayers[];
 
@@ -415,12 +419,6 @@ struct MissingLetterLocals {
 
 // extern declarations
 extern "C" {
-extern char data_020e0c58[];
-extern char data_020e0c64[];
-extern char data_020e0c70[];
-extern char data_020e0c7c[];
-extern char data_020e0c88[];
-extern char data_020e0c98[];
 void _ZN8PlayerId5clearEv(void *p);
 void Clock_GetDate(u8 *p);
 void _ZN8PlayerIdC1Ev(void *p);
@@ -488,7 +486,6 @@ void *_ZN10PlayerData18getLostChildRecordEv(void *p);
 s32 _ZN10PlayerData9clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
-extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
 void *TownId_Construct(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
@@ -2226,22 +2223,14 @@ void ContestRecord::clear() {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern char data_020e0c88[];
 extern const s16 sGulliverRepairedAngles[4];
 extern const u8 data_020cf288[0xa0];
 extern const u8 data_020cf328[0x230];
-extern char data_020e0c7c[];
 extern u8 data_020e0c4c[4];
-extern u32 sKatieSpotRows[0x20];
 extern const VecXZ sGulliverSpotOffsets[3];
 extern u8 data_020e0c50[4];
-extern char data_020e0c58[];
-extern char data_020e0c98[];
-extern uptr sContestResultBbsFiles[4];
 extern void *sContestResultMailFiles[4];
-extern char data_020e0c70[];
 extern u8 data_020e0c48[4];
-extern char data_020e0c64[];
 extern u8 data_020e0c54[4];
 extern u8 data_020e0c44[4];
 

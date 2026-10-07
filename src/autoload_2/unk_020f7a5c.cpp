@@ -18,6 +18,7 @@
 #include "snd/BgmBeatPhase.h"
 #include "snd/SndBgmViews.h"
 #include "snd/SndBgmHd.h"
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020f7a5c.h"
 #include "proto/autoload_2/unk_0210c084.h"
 

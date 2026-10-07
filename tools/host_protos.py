@@ -83,11 +83,32 @@ def strip_defaults(proto):
     return ''.join(out)
 
 
+def pretty(text):
+    """A declaration from its tokens: `u8 * a [ 4 ]` -> `u8 *a[4]`."""
+    text = ' '.join(text.split())
+    text = re.sub(r' ?\[ ?', '[', text)
+    text = re.sub(r' \]', ']', text)
+    text = re.sub(r'\* (?=[\w(])', '*', text)
+    text = re.sub(r' ,', ',', text)
+    text = re.sub(r'\( ', '(', text)
+    text = re.sub(r' \)', ')', text)
+    return text
+
+
+AMBIGUOUS = set()   # names of types defined in more than one source file (a forward declaration would collide)
+ASM_NAMES = set()   # variables declared somewhere with an assembler label
+
+
 def usable(r):
     """Whether a definition's prototype can go to a header: its named types must be reachable there."""
     p = r.get('proto')
+    if r['name'] in ASM_NAMES or r.get('asm'):
+        return False
     if not p or 'cls' in r or not r['file'].startswith('src/'):
         return False
+    if r.get('var') and (r.get('const') or 'static' in p.split() or re.search(r'\bconst\b', p) and
+                         not r['file'].endswith('.c')):
+        return False  # (const at namespace scope: internal linkage in C++)
     if re.search(r'\bstatic\b|\binline\b|\boperator\b|\[\[|__attribute__\s*\(\(\s*(section|alias)', p):
         return False
     for name, kind, f, qual in r.get('types', []):
@@ -95,7 +116,7 @@ def usable(r):
             continue
         if kind not in ('STRUCT_DECL', 'CLASS_DECL', 'UNION_DECL'):
             return False      # a typedef / enum / template local to a source file
-        if '<' in qual or '(anonymous' in qual or 'lambda' in qual:
+        if '<' in qual or '(anonymous' in qual or 'lambda' in qual or name in AMBIGUOUS:
             return False
     return True
 
@@ -103,6 +124,8 @@ def usable(r):
 def make_headers(defs):
     by_file = {}
     for r in defs.values():
+        if r['file'].startswith('src/'):
+            by_file.setdefault(r['file'], [])  # (a header for every source file, also when empty: units include them)
         if usable(r):
             by_file.setdefault(r['file'], []).append(r)
     for src, recs in sorted(by_file.items()):
@@ -130,10 +153,10 @@ def make_headers(defs):
                         cpp = True
                     else:
                         fwd_c.add(decl)
-            text = strip_defaults(' '.join(r['proto'].split()))
+            text = strip_defaults(' '.join(r['proto'].split())) if not r.get('var') else pretty(r['proto'])
             if CPP_ONLY.search(text):
                 cpp = True
-            line = f'#ifndef PROTO_LOCAL_{r["name"]}\n{text};\n#endif'
+            line = f'#ifndef PROTO_LOCAL_{r["name"]}\n{"extern " if r.get("var") else ""}{text};\n#endif'
             ns = r.get('ns', '')
             if r.get('c_linkage') and not cpp and not ns:
                 c_protos.append(('C', line))
@@ -191,7 +214,7 @@ def check_headers(names_by_header):
             for ln in re.findall(r'include/%s:(\d+):\d+: error' % re.escape(h), r.stderr):
                 l = lines[int(ln) - 1]
                 for n in names:
-                    if re.search(r'\b%s\s*\(' % re.escape(n), l):
+                    if re.search(r'\b%s\s*[(\[;]' % re.escape(n), l):
                         bad.add(n)
             if 'error' in r.stderr and not re.search(r'include/%s:\d+:\d+: error' % re.escape(h), r.stderr):
                 bad |= set(names)  # an error in an included header: none of these
@@ -216,6 +239,7 @@ def local_decls(path):
     tu = index.parse(path, args=args)
     src = open(path, 'rb').read()
     out = []
+    incompatible = set()
     stack = [tu.cursor]
     while stack:
         node = stack.pop()
@@ -223,13 +247,18 @@ def local_decls(path):
             if c.kind in (ci.CursorKind.NAMESPACE, ci.CursorKind.LINKAGE_SPEC, ci.CursorKind.UNEXPOSED_DECL):
                 stack.append(c)
                 continue
-            if c.kind != ci.CursorKind.FUNCTION_DECL or c.is_definition():
+            is_var = c.kind == ci.CursorKind.VAR_DECL and c.storage_class == ci.StorageClass.EXTERN and \
+                not c.is_definition()
+            if not is_var and (c.kind != ci.CursorKind.FUNCTION_DECL or c.is_definition()):
                 continue
             if c.location.file is None or not os.path.samefile(c.location.file.name, path):
                 continue
             name = c.spelling
             if name not in HEADER_OF:
                 continue
+            if is_var and not same_var_type(c.type.get_canonical().spelling, DEFS.get(name, {}).get('result', '')):
+                incompatible.add(name)  # (an array declared for a scalar, a view's type ...: the name means
+                continue                #  something else here - the unit keeps its declaration)
             s, e = c.extent.start.offset, c.extent.end.offset
             # through the ';' and the line's end; from the line's start when only `extern "C"` precedes it
             semi = src.find(b';', e)
@@ -237,7 +266,9 @@ def local_decls(path):
                 continue
             ls = src.rfind(b'\n', 0, s) + 1
             before = src[ls:s].strip()
-            if before in (b'', b'extern "C"', b'extern'):
+            if src[ls:s].strip() not in (b'', b'extern "C"', b'extern'):
+                continue  # (another declaration on the line)
+            if src[s:s + 6] == b'extern' or before in (b'', b'extern "C"', b'extern'):
                 s = ls
             else:
                 continue
@@ -246,22 +277,40 @@ def local_decls(path):
             if src[semi + 1:le].strip() and not src[semi + 1:le].strip().startswith(b'//'):
                 le = semi + 1
             out.append((s, le, name))
-    return src, sorted(set(out))
+    return src, sorted(set(out)), incompatible
+
+
+def keep_needed(incompatible, marked):
+    return bool(set(incompatible) - set(marked))
+
+
+def same_var_type(a, b):
+    """Whether a variable declared with canonical type a means the same in expressions as one of type b: the same
+    type, or arrays of the same element type (with or without the size)."""
+    if a == b:
+        return True
+    ea, eb = re.sub(r'\[\d*\]$', '[]', a), re.sub(r'\[\d*\]$', '[]', b)
+    return ea == eb and ea.endswith('[]')
 
 
 def apply(path):
+    original = open(path, 'rb').read()
     try:
         return _apply(path)
     except Exception as e:
+        with open(path, 'wb') as fh:
+            fh.write(original)
         return path, 0, [], f'failed: {type(e).__name__}: {e}'
 
 
 def _apply(path):
-    src, decls = local_decls(path)
-    if not decls:
+    src, decls, incompatible = local_decls(path)
+    marked = set(re.findall(r'^#define PROTO_LOCAL_(\w+)', src.decode(errors='replace'), re.M))
+    decls = [d for d in decls if d[2] not in marked]  # (kept by an earlier run)
+    if not decls and not keep_needed(incompatible, marked):
         return path, 0, [], ''
     own = proto_header(path) if os.path.exists(os.path.join('include', proto_header(path))) else None
-    keep = set()      # functions that keep the unit's declaration (their shared prototype conflicts here)
+    keep = set(incompatible) - marked  # functions / variables that keep the unit's declaration (conflicts)
     for rnd in range(10):
         active = [d for d in decls if d[2] not in keep]
         headers = sorted({HEADER_OF[n] for _, _, n in active} | ({own} if own else set()))
@@ -271,7 +320,7 @@ def _apply(path):
         text = b.decode()
         block = ''.join(f'#define PROTO_LOCAL_{n}  // declared below: the shared prototype conflicts with the calls here\n'
                         for n in sorted(keep))
-        block += ''.join(f'#include "{h}"\n' for h in headers)
+        block += ''.join(f'#include "{h}"\n' for h in headers if f'#include "{h}"' not in text)
         m = list(re.finditer(r'^#include [^\n]*\n', text, re.M))
         at = m[-1].end() if m else 0
         text = text[:at] + block + text[at:]
@@ -283,6 +332,8 @@ def _apply(path):
         # the functions named in the errors that have shared prototypes: their own declarations stay
         names = set(re.findall(r"[‘']((?:[\w:]+::)?\w+)\s*\(", err)) | set(re.findall(r"function [‘']([^’']+)[’']", err))
         names |= set(re.findall(r"argument \d+ of [‘'][^’'(]*?\b(\w+)\s*\(", err))
+        names |= {q.split()[-1].strip('*&') for q in re.findall(r"declaration [‘']([^’']+)[’']", err) if q.split()}
+        names |= {q.split()[-1].strip('*&') for q in re.findall(r"declaration as [‘']([^’']+)[’']", err) if q.split()}
         hit = set()
         for n in names:
             n = n.split('(')[0].split()[-1].split('::')[-1]
@@ -293,11 +344,15 @@ def _apply(path):
         for ln in re.findall(r'^%s:(\d+):\d+: error' % re.escape(path), err, re.M):
             ln = int(ln)
             if 0 < ln <= len(cur):
-                for n in re.findall(r'\b(\w+)\s*\(', cur[ln - 1]):
+                for n in re.findall(r'\b(\w+)\b', cur[ln - 1]):
                     if n in HEADER_OF and n not in keep:
                         hit.add(n)
         if not hit:
-            break
+            # last resort: every function / variable this unit declares itself keeps its declaration
+            rest = {d[2] for d in decls} - keep
+            if not rest:
+                break
+            hit = rest
         keep |= hit
     with open(path, 'wb') as fh:
         fh.write(src)
@@ -307,7 +362,16 @@ def _apply(path):
 
 def _init(decls):
     global DEFS
-    DEFS = json.load(open(decls))['defs']
+    data = json.load(open(decls))
+    DEFS = data['defs']
+    where = {}
+    for r in list(DEFS.values()) + data['local']:
+        for name, kind, f, qual in r.get('types', []):
+            if f and not f.startswith('include/') and kind in ('STRUCT_DECL', 'CLASS_DECL', 'UNION_DECL'):
+                where.setdefault(name, set()).add(f)
+        if r.get('asm'):
+            ASM_NAMES.add(r['name'])
+    AMBIGUOUS.update(n for n, fs in where.items() if len(fs) > 1)
     excluded = set()
     if os.path.exists('include/proto/.excluded'):
         excluded = set(open('include/proto/.excluded').read().split())

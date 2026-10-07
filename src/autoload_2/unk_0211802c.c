@@ -24,7 +24,6 @@ extern u32 FSi_GetPackedName(const char *, int);
 extern int FSi_ReadMemoryCore(FSArc *, void *, u32, u32);
 extern int FSi_ReadMemCallback(FSArc *, void *, u32, u32);
 extern int FSi_WriteMemCallback(FSArc *, void *, u32, u32);
-extern int (*const data_0213a388[9])(FSFile *);
 extern char data_0213bff4[];
 extern FSArc *data_021fea68;
 extern FSDirPos data_021fea6c;

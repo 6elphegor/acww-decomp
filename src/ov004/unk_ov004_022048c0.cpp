@@ -16,7 +16,6 @@
 #include "talk/TalkMsgRequest.h"
 #include "game/TouchPickTriangle.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b2c50.h"
 #include "proto/ov004/unk_ov004_022048c0.h"
@@ -50,8 +49,6 @@ void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12TouchPickBoxC2Ev(void *self);
 void _ZN12TouchPickBoxD2Ev(void *self);
-extern char *sAtmMsgFilePtr;
-extern char *sAtmStringBankPtr;
 }
 
 

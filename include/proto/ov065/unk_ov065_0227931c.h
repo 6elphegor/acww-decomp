@@ -13,6 +13,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_ghiConnections
+extern void * *ghiConnections;
+#endif
+#ifndef PROTO_LOCAL_ghiProxyAddress
+extern void *ghiProxyAddress;
+#endif
 #ifndef PROTO_LOCAL_ghttpStartup
 void ghttpStartup();
 #endif
@@ -43,6 +49,27 @@ void ghiUnlock();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_ghiThrottleBufferSize
+extern s32 ghiThrottleBufferSize;
+#endif
+#ifndef PROTO_LOCAL_ghiThrottleTimeDelay
+extern u32 ghiThrottleTimeDelay;
+#endif
+#ifndef PROTO_LOCAL_ghiNextUniqueID
+extern s32 ghiNextUniqueID;
+#endif
+#ifndef PROTO_LOCAL_ghiNumConnections
+extern s32 ghiNumConnections;
+#endif
+#ifndef PROTO_LOCAL_ghiConnectionsLen
+extern s32 ghiConnectionsLen;
+#endif
+#ifndef PROTO_LOCAL_ghiProxyPort
+extern u32 ghiProxyPort;
+#endif
+#ifndef PROTO_LOCAL_ghiReferenceCount
+extern s32 ghiReferenceCount;
+#endif
 #ifndef PROTO_LOCAL_ghttpGetA
 s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d);
 #endif

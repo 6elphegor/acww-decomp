@@ -172,6 +172,18 @@ void HeldItemModel_GetJointMtx(Mtx43 *out, HeldItemModel *o, u32 a);
 void *HeldItemModel_GetModel(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sHeldItemModelPathBuf
+extern char sHeldItemModelPathBuf[0x18];
+#endif
+#ifndef PROTO_LOCAL_sHeldItemAnimPathBuf
+extern char sHeldItemAnimPathBuf[0x18];
+#endif
+#ifndef PROTO_LOCAL_sHeldItemTexAnimPathBuf
+extern char sHeldItemTexAnimPathBuf[0x1c];
+#endif
+#ifndef PROTO_LOCAL_sHeldItemModelBank
+extern HeldItemModelBank sHeldItemModelBank;
+#endif
 #endif
 
 #endif

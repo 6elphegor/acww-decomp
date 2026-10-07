@@ -89,6 +89,16 @@ typedef struct Job {
 
 #ifdef HOST64
 #include "sys/OSThread.h"
+#define PROTO_LOCAL_FS_CancelFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrmThreadProc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_func_0210b48c  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0210da28.h"
+#include "proto/autoload_2/unk_0210ec0c.h"
 // (by the types: the thread queue and the mutex are larger on 64-bit hosts; the stack after the thread isn't used
 // on hosts, whose threads run on their own stacks)
 typedef struct ThreadInfo {
@@ -216,7 +226,6 @@ BOOL SetupStrmPlayers(void *);
 void OutputEffectHeadphone();
 void OutputEffectMono();
 void OutputEffectSurround();
-void OutputEffectNormal(void);
 void OutputEffectCallback();
 void NNS_SndCaptureChangeOutputEffect(s32);
 BOOL NNSi_SndFaderIsFinished(Fader *);

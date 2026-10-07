@@ -52,6 +52,9 @@ void OverlayMgr_Acquire(u32 id);
 void OverlayMgr_Release(u32 id);
 #endif
 }
+#ifndef PROTO_LOCAL_sOverlaySlots
+extern OverlaySlot sOverlaySlots[12];
+#endif
 #endif
 
 #endif

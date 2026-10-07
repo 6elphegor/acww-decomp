@@ -6,6 +6,7 @@
 #include "types.h"
 #include "ds_stdarg.h"
 #include "nitro/fs.h"
+struct FileBlockCache;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -125,6 +126,15 @@ u16 TownId_GenerateId(void *p);
 void TownId_InitWithName(u16 *p, const void *src);
 #endif
 }
+#ifndef PROTO_LOCAL_sFileBlockCacheIndex
+extern u8 sFileBlockCacheIndex;
+#endif
+#ifndef PROTO_LOCAL_sFileBlockCacheFileId
+extern u16 sFileBlockCacheFileId;
+#endif
+#ifndef PROTO_LOCAL_sFileBlockCache
+extern FileBlockCache sFileBlockCache;
+#endif
 #endif
 
 #endif

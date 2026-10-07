@@ -35,11 +35,10 @@
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gTouchPrevChanged  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTouchPrevHeld  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020119cc.h"
-#include "proto/main/unk_0203a0cc.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02070560.h"
@@ -156,6 +155,7 @@ void *Scene_GetTouchPicker();
 void TouchPick_GetGroundPos(void *a, void *b);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
+void Item_FromPlacedForm(u16 *a, u16 *b);
 void AbleShop_BuyAt(s32 a, s32 b, s32 c);
 s32 VillagerTrend_OnClothesBought();
 void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
@@ -190,6 +190,8 @@ void Talk_AdvanceDrama(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *self, s32 v);
 void ActorTalkRequest_setPocketFilter(void *, void *, u32, u32);
 void ActorTalkRequest_openSubScene(void *self, s32 a);
+void Camera_RestorePrevMode();
+void Camera_SetMode4();
 BOOL func_0204bab8(u16 *);
 void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
 u32 strlen(const char *s);
@@ -220,6 +222,8 @@ void NpcActor_FindFreeUnitNear(VecFx32 *out, void *self, VecFx32 *v);
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
 void NpcMoveCtrl_setWaypoint(void *self, VecFx32 *v);
 void BlockMap_getWalkLinksAtPos(void *g, void *v);
+s32 Vec_Equal(VecFx32 *a, void *b);
+s32 Vec_NotEqual(VecFx32 *a, void *b);
 s32 Math_CountDownU8(void *p);
 s32 Math_CountDownU16(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -429,13 +433,10 @@ struct SpNpcMabelMessageEndHandler {
 
 
 extern "C" {
-extern char *sSpNpcMabelMsgKeys[3];
 extern const u8 sSpNpcMabelDramaMenuMsgs[8];
 extern const u8 sSpNpcMabelTopicMsgs[8];
 extern const u8 sSpNpcMabelDramaMsgTable[28];
 extern const u32 sSpNpcMabelDesignConcepts[10];
-extern char sSpNpcMabelModelPath[];
-extern char sSpNpcMabelTexturePath[];
 extern SpNpcMabelChoiceMenu sSpNpcMabelItemChoiceMenus[4];
 extern SpNpcMabelTalkScript sSpNpcMabelTalkScripts[10];
 extern SpNpcMabelActEntry sSpNpcMabelActTable[16];

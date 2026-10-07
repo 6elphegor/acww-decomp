@@ -11,6 +11,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcNumPad
+extern void *sWfcNumPad;
+#endif
 #ifndef PROTO_LOCAL_WfcNumPad_Create
 void WfcNumPad_Create();
 #endif
@@ -56,6 +59,9 @@ void WfcNumPad_UpdateCursor();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov001_0222aa58
+extern u16 data_ov001_0222aa58[4];
+#endif
 #ifndef PROTO_LOCAL_WfcNumPad_GetKey
 u32 WfcNumPad_GetKey();
 #endif

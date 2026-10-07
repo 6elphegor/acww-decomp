@@ -35,7 +35,7 @@
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Npc_IsPosBlocked  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Npc_RotateOffsetXZ  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_020407fc.h"
 #include "proto/main/unk_02063904.h"
@@ -105,10 +105,12 @@ void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, u32 cb, u32 b, u32 c
 void Npc_RotateOffsetXZ(SpNpcLyleSidestepPos *t, void *pos, void *p, s32 ang);
 BOOL Npc_IsPosBlocked(SpNpcLyleSidestepPos *t);
 void TalkRequest_SetTargetDone(void *self);
+s32 Vec_Distance(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
+BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x);
 }
 
 
@@ -222,6 +224,7 @@ extern ActorProfile sSpNpcLyleProfile;
 extern SpNpcLyleActEntry sSpNpcLyleActTable[6];
 extern s16 sSpNpcLyleFrontAngle;
 extern FxVec3 sSpNpcLyleSidestepOffsets[2];
+SpNpcLyle *SpNpcLyle_Create();
 extern void *data_ov071_02272ac0[2];
 extern void *data_ov071_02272ac8[2];
 extern void *data_ov071_02272ad0[2];

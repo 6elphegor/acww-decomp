@@ -6,12 +6,19 @@
 #include "types.h"
 #include "net/SockCoreCommand.h"
 #include "net/SockCoreSocket.h"
+#include "sys/OSMessageQueue.h"
 #ifdef __cplusplus
 #include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sSockMsgPool
+extern void *sSockMsgPool;
+#endif
+#ifndef PROTO_LOCAL_sSockMsgFreeQueue
+extern OSMessageQueue sSockMsgFreeQueue;
 #endif
 #ifndef PROTO_LOCAL_SockCore_FreeMsg
 void SockCore_FreeMsg(void *m);

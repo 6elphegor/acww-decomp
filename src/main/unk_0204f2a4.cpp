@@ -15,11 +15,6 @@
 #include "gfx/TwoLayerAnimModel.h"
 #define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateXYZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0204f2a4.h"
@@ -59,6 +54,10 @@ class FishDisplay;
 extern "C" {
 s32 func_02072e44(void *);
 void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
+s32 FishDisplay_FindFreeEntry(void);
+u32 FishDisplay_GetRequestKind(u32 i);
+void FishDisplayEntry_SetScale(FishDisplayEntry *, VecFx32 *);
+void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e);
 extern s32 sFishDisplayEntryCount;
 extern FishDisplay *gFishDisplay;
 extern u8 gFieldSceneKind;
@@ -86,6 +85,7 @@ s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 extern "C" {
 FishDisplayEntry *FishDisplayEntry_Construct(FishDisplayEntry *p);
 FishDisplayEntry *FishDisplayEntry_Destruct(FishDisplayEntry *p);
+FishDisplay *FishDisplay_Create(void);
 }
 
 class FishDisplay : public GameProc {
@@ -113,6 +113,7 @@ public:
 extern "C" {
 FishDisplayEntry *FishDisplayEntry_Construct(FishDisplayEntry *p);
 FishDisplayEntry *FishDisplayEntry_Destruct(FishDisplayEntry *p);
+FishDisplay *FishDisplay_Create(void);
 }
 
 // Declarations for data defined further down (definition order sets the data layout)

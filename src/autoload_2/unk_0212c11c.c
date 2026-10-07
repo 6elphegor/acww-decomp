@@ -16,6 +16,7 @@ typedef u16 wchar_t;
 #define PROTO_LOCAL_mbtowc  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_memchr  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_memcpy  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0212c11c.h"
 
 /* MSL C FILE (layout recovered from the code, see S020a) */
 typedef struct {

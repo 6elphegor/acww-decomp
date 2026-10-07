@@ -39,16 +39,11 @@ typedef u32 FileBufSlot;
 #include "gfx/TwoLayerAnimModel.h"
 #include "player/PlayerData.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_Camera_IsBlockingFocusView  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_EffectSpl_CreateOneShot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_EffectSpl_CreateTracked  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldObj_LoadPaletteFiles  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldObj_LoadTextureFiles  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Insect_SpawnBeeSwarm  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateXYZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ObjShadow_DrawRock  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ObjShadow_DrawTree  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TreeAnimSet_Request  // declared below: the shared prototype conflicts with the calls here
@@ -56,12 +51,55 @@ typedef u32 FileBufSlot;
 #define PROTO_LOCAL_Tree_DropBeeHive  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Tree_DropFruit  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232630  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232634  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232648  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_0223264c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232650  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232654  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022326e8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232720  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232778  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232788  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022328a4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022328b0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022328bc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022328d4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022328e0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022328ec  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022328f8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232910  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_0223291c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232928  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232934  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_0223294c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232a18  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232a28  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232a48  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232b48  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232b78  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232bc8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02232bd8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_022335c0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov003_02234604  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gEffectSplDefaultInitCbs  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFieldObjectManager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFieldItemFxTable  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFieldObjectAnimHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFieldObjectLoaders  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFieldObjectManagerProfile_p  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFieldObjectModelHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFishFinAnimPath  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFishFinModelPath  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFishFinTexAnimPath  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFishShadows  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTreeAnimPaths  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTreeLeafFx  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0208f268.h"
@@ -1496,13 +1534,6 @@ extern void **data_ov003_022328f8[];
 extern void **data_ov003_02232910[];
 extern void **data_ov003_0223294c[];
 extern void **data_ov003_022328e0[];
-extern uptr data_ov003_02232904[];
-extern uptr data_ov003_0223263c[];
-extern uptr data_ov003_02232638[];
-extern uptr data_ov003_02232644[];
-extern uptr data_ov003_02232940[];
-extern uptr data_ov003_022328c8[];
-extern uptr data_ov003_02232640[];
 extern uptr *data_ov003_02232934[];
 extern uptr *data_ov003_022328d4[];
 extern void *data_ov003_022328b0[];
@@ -1515,6 +1546,7 @@ BOOL ModelSet_Load(void *t, void *file, void *heap);
 void *ModelSet_Find(void *t, void *name);
 void Gfx3d_LoadPltt(void *a, u32 b);
 void Gfx3d_LoadTex(void *a, u32 b);
+u32 Item_GetIconModelName(s32 a, s32 b);
 s32 TownState_GetSeasonPeriod();
 void *NNS_G3dGetTex(void *file);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);

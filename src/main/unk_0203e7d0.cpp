@@ -6,11 +6,8 @@
 #include "net/CommManager.h"
 #include "sys/ProcBase.h"
 #include "actor/Character.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_02002b1c.h"
-#include "proto/main/unk_0203e438.h"
 #include "proto/main/unk_0203e7d0.h"
-#include "proto/main/unk_0203eb78.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020a427c.h"
@@ -24,9 +21,6 @@
 
 
 extern CharacterList gCharacterList;
-extern u32 sCharInteractReservedId;
-extern u32 sCharInteractLockIds[4];
-extern u8 sCharInteractSyncResult;
 
 
 
@@ -62,6 +56,7 @@ void PrioList_Init(void *);
 }
 
 extern "C" {
+void TalkRequestPool_Reset(void);
 }
 
 extern "C" {
@@ -120,6 +115,7 @@ extern "C" {
 }
 
 extern "C" {
+long long Vec_MagSqXZ(VecFx32 *);
 }
 
 extern "C" {
@@ -181,6 +177,7 @@ extern "C" {
 }
 
 extern "C" {
+Character *Character_FindByCharId(u32 id);
 }
 
 

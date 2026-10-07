@@ -7,7 +7,6 @@
 #include "gfx/DebugColor.h"
 #define PROTO_LOCAL_Camera_GetLookAtPoint  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/ov068/unk_ov068_0226647c.h"
 
@@ -34,13 +33,10 @@ extern VecFx32 gVec3Zero;
 extern void *gSceneBlockMap;
 extern CameraSwayPattern kCameraSwayPatterns[];
 extern s16 data_02135f44[];
-extern s32 data_ov068_0226fc48;
-extern s32 data_ov068_0226fc40;
-extern s32 data_ov068_0226fc44;
-extern u16 sTownTourBuildings[];
 extern const u32 sTownTourBuildingAttrs[];
-extern void *sTownTourOffsets[];
 VecFx32 *PlayerActor_GetBodyPos(s32 id);
+void Camera_StartBlend();
+void Camera_FinishBlend();
 void Camera_GetLookAtPoint(VecFx32 *out, CameraEventModes *self);
 void VEC_Add(VecFx32 *a, void *b, VecFx32 *c);
 void Math_StepS32Alt(void *a, s32 b, s32 c);

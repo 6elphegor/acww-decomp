@@ -21,10 +21,12 @@
 #define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Letter_Copy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
@@ -32,11 +34,7 @@
 #include "proto/ov108/unk_ov108_02294c40.h"
 
 extern "C" {
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 
 void Letter_Copy(void *a, void *b);
 void ChoiceIdList_Clear(void *p, u32 v);

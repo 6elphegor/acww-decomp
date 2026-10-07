@@ -47,10 +47,9 @@
 #define PROTO_LOCAL_FtrSound_GetSe0  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_020514a4.h"
-#include "proto/main/unk_02061478.h"
+#include "proto/ov004/unk_ov004_02209f70_switch.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
@@ -165,6 +164,7 @@ void *_ZN13FtrContactSet11findContactEPv(void *, void *);
 s32 *_ZN10FtrContact22getClampedContactPointEv(void);
 u32 _ZN10FtrContact12getPushAngleEv(void *);
 
+u32 ItemInfo_IsReady(void);
 void TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 }
@@ -325,6 +325,7 @@ extern char data_ov004_0224bb50[];
 
 s32 Random_GlobalBelow(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
+s32 CarpetTex_GetTex(s32 a);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e, s32 f);
 
 s32 _ZN8FtrActor8playAnimEiiij(void *p, s32 a, s32 b, s32 c, s32 d);

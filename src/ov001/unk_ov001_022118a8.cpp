@@ -2,6 +2,11 @@
 #include "types.h"
 #include "ui/WfcApList.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_sWfcAossDoneTimer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcAossSetupSucceeded  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcAossSetupTimer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcApList  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcTransferWaitResult  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207904.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
@@ -39,9 +44,6 @@ extern "C" {
 extern u8 data_ov001_0222ae94[];
 extern u8 GX_LoadBG2Scr[];
 extern u8 sWfcAossDoneTimer;
-extern u8 data_ov001_0222aea8;
-extern u8 sWfcApListCursor;
-extern u16 sWfcApListScroll;
 extern WfcApList *sWfcApList;
 extern u16 data_ov001_0222a030[];
 extern u16 data_ov001_0222a032[];
@@ -112,7 +114,6 @@ extern u8 data_ov001_0222ae80[];
 extern volatile u8 sWfcTransferWaitResult;
 extern volatile u8 sWfcAossSetupSucceeded;
 extern volatile u16 sWfcAossSetupTimer;
-extern u32 sWfcAossSetupUiTask;
 extern volatile u8 sWfcAossDoneTimer;
 
 s32 WfcGx_ShowPlanes(s32, s32);

@@ -6,6 +6,9 @@
 #include "gfx/Model.h"
 #include "gfx/NNSG3dResTex.h"
 #include "gfx/G3dResAccess.h"
+#define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021040ac.h"
 #include "proto/main/unk_02055200.h"
@@ -83,7 +86,6 @@ void func_02056714(void *p);
 s32 NNS_G3dGetResultMtx(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGlbGetInvV(void);
 void MTX_Concat43(void *a, void *b, void *c);
-extern void *gModelCacheHeap;
 extern u8 gFieldSceneKind;
 extern void *gCurrentHeap;
 extern u32 (*data_0213bc18)(u32, u32, u32);

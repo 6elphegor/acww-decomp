@@ -45,6 +45,7 @@ void Input_SetButtonMode();
 void Input_SetTouchMode();
 s32 Input_StoreMode();
 BOOL TalkRequest_IsActive();
+void Camera_SetPresetCell(u32 a, u32 b);
 BOOL Input_IsTouchTrigInRect(s32 x0, s32 x1, s32 y0, s32 y1);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void Clock_GetRtcDateTime(void *p);
@@ -57,6 +58,7 @@ void Clock_GetMinuteHour(void *p);
 s32 Clock_GetWeekday();
 
 // plain-named functions of the unit
+s32 Hud_GetBells();
 
 // functions of the unit that other classes of the unit call (symbols.txt names)
 }
@@ -73,10 +75,6 @@ extern u8 data_020d467c[];
 // The sequence table at data_020d467c spans several arrays (src/main/unk_020d467c.cpp)
 extern void *const gSpriteSeqTable[45];
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchPressX;
-extern u8 gTouchPressY;
 
 // Data of this unit
 extern const char *const kHudColonString;
@@ -300,13 +298,16 @@ public:
 #include "sys/ProcProfile.h"
 #include "player/PlayerData.h"
 #include "player/PlayerInventory.h"
+#define PROTO_LOCAL_Hud_GetBells  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFontC  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFontD  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_020030d8.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020116e0.h"
 #include "proto/main/unk_02038474.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02089fbc.h"
@@ -315,9 +316,9 @@ public:
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b7190.h"
+#include "proto/main/unk_020b7d84.h"
 
 
-extern HudController gHud;
 
 static inline BOOL Unk_0208a150_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 static inline BOOL Unk_0208b9f0_Or(BOOL a, BOOL v) { if ((a | v) != 0) return TRUE; return FALSE; }

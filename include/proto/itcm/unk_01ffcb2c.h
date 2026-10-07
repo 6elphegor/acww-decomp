@@ -6,7 +6,6 @@
 #include "types.h"
 struct CellGrid;
 struct Chunk;
-struct Obj;
 #ifdef __cplusplus
 #include "gfx/Camera.h"
 #include "gfx/VecFx32.h"
@@ -25,9 +24,6 @@ void HBlank_Handler(void);
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_func_01ffcc10
-BOOL func_01ffcc10(void *a, Obj *o);
-#endif
 #ifndef PROTO_LOCAL_TownBlockMap_IsBuried
 BOOL TownBlockMap_IsBuried(CellGrid *g, s32 x, s32 z);
 #endif

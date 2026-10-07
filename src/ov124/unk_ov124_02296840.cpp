@@ -4,6 +4,9 @@
 #include "menu/GeneralMenuHeader.h"
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_FromEncodedBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov124_02296f50  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov124_02296f70  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_02063904.h"
@@ -17,12 +20,8 @@ void String_FromEncodedBytes(void *p, void *s, s32 n);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 
 extern void *gCurrentHeap;
-extern char data_ov124_02296e70[],data_ov124_02296e84[],data_ov124_02296e98[],data_ov124_02296eac[],data_ov124_02296ec0[],data_ov124_02296ed4[],data_ov124_02296ee8[],data_ov124_02296efc[],data_ov124_02296f10[],data_ov124_02296f24[];
-extern void *sGeneralHeaderObjChars[];
-extern void *sGeneralHeaderScreens[];
 extern u8 data_ov124_02296f50[];
 extern u8 data_ov124_02296f70[];
-extern u8 data_ov124_02296f90[];
 }
 
 

@@ -21,6 +21,7 @@
 #include "npc/VillagerId.h"
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02003008.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/ov003/unk_ov003_02215c74.h"
@@ -78,13 +79,8 @@
 extern "C" {
 extern u8 gSaveVillagers[];
 extern void *gCommManager;
-extern void *gFieldStructureHeap;
 extern const u8 sVillagerHouseClosedMsgs[];
 extern const u8 sVillagerHouseClosedMsgsAlt[];
-extern char data_ov003_02235330[];
-extern char data_ov003_02235308[];
-extern char data_ov003_022352d4[];
-extern u32 sVillagerHouses[];
 
 BOOL Building_IsNight(void *p);
 void *SaveVillagers_Get(void *p, s32 i);

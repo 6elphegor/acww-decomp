@@ -18,44 +18,26 @@
 #define PROTO_LOCAL_StarSky_Reset  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarTwinkle_Init  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarTwinkle_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov128_02295540  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov128_022955c0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02094810.h"
-#include "proto/main/unk_020afeb4.h"
 #include "proto/main/unk_020b0774.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov127/unk_ov127_02291f60.h"
 #include "proto/ov128/unk_ov128_022940e0.h"
 
 extern "C" {
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchPressX;
-extern u8 gTouchPressY;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern void *gCurrentHeap;
 extern u8 *data_021c1b3c;
 extern u16 gPad[];
 extern const u32 sNameLabelAnimY[4];
-extern u8 sArrowCursorY[4];
-extern u8 sArrowCursorX[4];
-extern void *sNameLabelFrames[12];
-extern u32 data_ov128_02295458[16];
-extern u32 data_ov128_02295268[6];
-extern u32 data_ov128_02295280[6];
-extern u32 data_ov128_02295298[8];
-extern u32 data_ov128_022952b8[8];
-extern u32 data_ov128_022952d8[8];
-extern u32 data_ov128_022952f8[10];
-extern u32 data_ov128_02295350[12];
-extern u32 data_ov128_02295380[12];
-extern u32 data_ov128_022953b0[12];
-extern u32 data_ov128_022953e0[14];
-extern u32 data_ov128_02295418[16];
-extern u32 data_ov128_02295498[16];
 extern u32 data_ov128_02295540[32];
 extern u32 data_ov128_022955c0[32];
 
@@ -67,6 +49,7 @@ void StarSky_Reset(void *s);
 
 void StarTwinkle_Init(void *p, s32 a);
 void StarTwinkle_Update(void *p);
+u8 *Constellation_GetRecord();
 void Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void BgmTracks_FadeInScene22(void *p);
 void BgmTracks_FadeOutScene22(void *p);
@@ -93,35 +76,20 @@ struct GXOamAttr;
 
 extern "C" {
 void _ZN14StargazingMenu15transitionAct00Ev();
-extern void *data_ov128_022951e8[2];
 void _ZN14StargazingMenu15transitionAct01Ev();
-extern void *data_ov128_02295228[2];
 void _ZN14StargazingMenu15transitionAct02Ev();
-extern void *data_ov128_02295260[2];
 void _ZN14StargazingMenu15transitionAct03Ev();
-extern void *data_ov128_022951f0[2];
 void _ZN14StargazingMenu9mainAct00Ev();
-extern void *data_ov128_02295238[2];
 void _ZN14StargazingMenu9mainAct01Ev();
-extern void *data_ov128_02295240[2];
 void _ZN14StargazingMenu9mainAct02Ev();
-extern void *data_ov128_02295220[2];
 void _ZN14StargazingMenu9mainAct03Ev();
-extern void *data_ov128_02295258[2];
 void _ZN14StargazingMenu9mainAct04Ev();
-extern void *data_ov128_02295230[2];
 void _ZN14StargazingMenu9mainAct05Ev();
-extern void *data_ov128_02295248[2];
 void _ZN14StargazingMenu9mainAct06Ev();
-extern void *data_ov128_02295250[2];
 void _ZN14StargazingMenu16updateCursorMoveEv();
-extern void *data_ov128_02295210[2];
 void _ZN14StargazingMenu17updateCursorPressEv();
-extern void *data_ov128_02295208[2];
 void _ZN14StargazingMenu19updateCursorReleaseEv();
-extern void *data_ov128_02295200[2];
 void _ZN14StargazingMenu9mainAct0AEv();
-extern void *data_ov128_022951f8[2];
 }
 
 class StargazingMenu;

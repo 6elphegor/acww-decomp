@@ -26,6 +26,7 @@
 #include "sys/ProcProfile.h"
 #define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_File_ReadRange  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/main/unk_0200137c.h"
@@ -38,6 +39,7 @@
 #include "proto/main/unk_020a6974.h"
 #include "proto/main/unk_020a8ba0.h"
 #include "proto/main/unk_020b7190.h"
+#include "proto/main/unk_020b7d84.h"
 
 
 extern "C" {
@@ -290,35 +292,27 @@ void MsgUiProc_ShowObjPlane(void);
 }
 
 extern "C" {
-extern void *gTextHeap;
 }
 
 extern "C" {
-extern u8 gTextLabelList[];
 }
 
 extern "C" {
-extern u8 gTouchCurY;
 }
 
 extern "C" {
-extern u8 gTouchCurX;
 }
 
 extern "C" {
-extern u8 gTouchPressY;
 }
 
 extern "C" {
-extern u8 gTouchPressX;
 }
 
 extern "C" {
-extern u8 gTouchHeld;
 }
 
 extern "C" {
-extern u8 gTouchChanged;
 }
 
 extern "C" {

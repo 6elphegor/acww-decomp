@@ -11,6 +11,7 @@
 #include "snd/SndMgr.h"
 #define PROTO_LOCAL_NNS_SndCaptureStopEffect  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_020f0dec.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_0206d49c.h"
 

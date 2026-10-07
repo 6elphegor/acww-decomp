@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/ModelAnim.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02055bcc.h"
 

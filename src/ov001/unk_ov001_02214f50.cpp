@@ -5,6 +5,7 @@
 #include "proto/ov001/unk_ov001_02208388.h"
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
 #include "proto/ov001/unk_ov001_022140bc.h"
 #include "proto/ov001/unk_ov001_02214f50.h"
 #include "proto/ov001/unk_ov001_022156e0.h"
@@ -17,7 +18,6 @@
 
 #define REGSET(a) do { u32 t = *(volatile u16 *)(a); t &= ~3; t |= 3; *(volatile u16 *)(a) = t; } while (0)
 extern "C" {
-extern void *gWfcMsgBank;
 
 s32 WfcGx_ShowPlanes(s32, s32);
 s32 WfcGx_HidePlanes(s32, s32);

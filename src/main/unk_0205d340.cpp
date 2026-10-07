@@ -8,9 +8,7 @@
 #include "proto/main/unk_02063f3c.h"
 
 extern "C" {
-extern void *gPlayerFaceTexHeap;
 extern u8 *gCommManager;
-extern char sPlayerFaceTexPathBuf[0x14];
 
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);

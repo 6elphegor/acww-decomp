@@ -5,6 +5,7 @@
 #include "net/AossParam.h"
 #include "nitro/wm.h"
 #define PROTO_LOCAL_Aoss_ConnectAp  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Aoss_PostAlarmMsg  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Aoss_ScanAps  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OS_CancelAlarm  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OS_CreateAlarm  // declared below: the shared prototype conflicts with the calls here
@@ -67,6 +68,7 @@ s32 WifiLink_Init(void *, s32);
 s32 WifiLink_StartupAsync(void *, void *);
 s32 WifiLink_ConnectAsync(void *, void *, s32);
 s32 WifiLink_CleanupAsync();
+void Aoss_PostAlarmMsg(s32);
 void Aoss_ConvertBssDesc(WMBssDesc *, AossApInfo *);
 
 }

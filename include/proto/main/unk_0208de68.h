@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_0208de68.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "ui/HudUnkIcon.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,6 +25,12 @@ void HudUnkIcon_Draw();
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_sHudUnkIcon
+extern HudUnkIcon sHudUnkIcon;
+#endif
 #endif
 
 #endif

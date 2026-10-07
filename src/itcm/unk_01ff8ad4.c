@@ -7,6 +7,12 @@ typedef unsigned short u16;
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
 #include "types64.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_data_0213bd28  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bd34  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bd40  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bd60  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bd70  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213be50  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ff8000.h"
 #include "proto/itcm/unk_01ff8228.h"
 #include "proto/itcm/unk_01ff8ad4.h"

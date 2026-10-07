@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_0206db88.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+union Slot16;
+union Slot8;
+union SlotS16;
 #ifdef __cplusplus
 #include "gfx/BgVramTask.h"
 #include "types.h"
@@ -127,6 +130,33 @@ BOOL MenuScreen_HasFlags(u32 a);
 void MenuScreen_SetBackgroundKind(u32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sMenuScreenFlags
+extern Slot8 sMenuScreenFlags;
+#endif
+#ifndef PROTO_LOCAL_sMenuScreenProgress
+extern s32 sMenuScreenProgress;
+#endif
+#ifndef PROTO_LOCAL_sMenuScreenProgressStep
+extern s32 sMenuScreenProgressStep;
+#endif
+#ifndef PROTO_LOCAL_sMenuScreenState
+extern Slot16 sMenuScreenState;
+#endif
+#ifndef PROTO_LOCAL_sMenuWipePos
+extern SlotS16 sMenuWipePos;
+#endif
+#ifndef PROTO_LOCAL_sMenuScreenScroll
+extern Slot16 sMenuScreenScroll;
+#endif
+#ifndef PROTO_LOCAL_sMenuScreenWipeFlags
+extern Slot8 sMenuScreenWipeFlags;
+#endif
+#ifndef PROTO_LOCAL_sMenuScreenBgKind
+extern Slot8 sMenuScreenBgKind;
+#endif
+#ifndef PROTO_LOCAL_sMenuScreenSteps
+extern BOOL (*sMenuScreenSteps[]) ();
+#endif
 #endif
 
 #endif

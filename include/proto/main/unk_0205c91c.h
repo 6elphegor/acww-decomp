@@ -37,6 +37,9 @@ void CharaClothTexRef_CopyFromSlot(void *pp, s32 x);
 u32 CharaClothTexRef_GetBuffer(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sCharaClothTexPool
+extern CharaClothTexPool sCharaClothTexPool;
+#endif
 #endif
 
 #endif

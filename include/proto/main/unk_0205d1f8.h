@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0205d1f8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct CharaFaceAnimWorkPool;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -27,6 +28,9 @@ extern "C" {
 u32 CharaFaceAnimWork_GetHeapSize();
 #endif
 }
+#ifndef PROTO_LOCAL_sCharaFaceAnimWorkPool
+extern CharaFaceAnimWorkPool sCharaFaceAnimWorkPool;
+#endif
 #endif
 
 #endif

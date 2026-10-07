@@ -4,8 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_020030d8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct HudLinkIcon;
 #ifdef __cplusplus
 #include "npc/VillagerId.h"
+class HudUnkSlideIcon;
 #endif
 
 #ifdef __cplusplus
@@ -63,6 +65,12 @@ void VillagerId_Clear(VillagerId *p);
 void VillagerId_Copy(VillagerId *dst, VillagerId *src);
 #endif
 }
+#ifndef PROTO_LOCAL_sHudLinkIcon
+extern HudLinkIcon sHudLinkIcon;
+#endif
+#ifndef PROTO_LOCAL_sHudUnkSlideIcon
+extern HudUnkSlideIcon sHudUnkSlideIcon;
+#endif
 #endif
 
 #endif

@@ -10,6 +10,7 @@ typedef int BOOL;
 #include "ds_stdarg.h"
 #include "proto/autoload_2/unk_021127c0.h"
 #include "proto/autoload_2/unk_02113088.h"
+#include "proto/autoload_2/unk_02113ed0.h"
 #include "proto/autoload_2/unk_02114ef4.h"
 #include "proto/itcm/unk_01ffa3cc.h"
 #include "proto/itcm/unk_01ffa4a0.h"

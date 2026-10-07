@@ -19,7 +19,6 @@
 #include "proto/ov001/unk_ov001_02210110.h"
 #include "proto/ov001/unk_ov001_02210390.h"
 #include "proto/ov001/unk_ov001_02210cc0.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
@@ -34,6 +33,7 @@ s32 WfcTransfer_SetCallback(void *a);
 s32 WfcTransferNotice_StartExit();
 s32 WfcTransferNotice_FadeIn();
 s32 WfcTransferNotice_Enter();
+s32 WfcConfig_EraseAll();
 s32 WfcGx_HidePlanes(u32 a, u32 b);
 s32 WfcGx_ShowPlanes(u32 a, u32 b);
 s32 WfcInput_IsKeyPressed(u32 a);

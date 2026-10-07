@@ -68,6 +68,18 @@ void *Snd_RestoreHeapLevel(u32 a);
 void CmdSeq_Undo(CmdSeq *o);
 #endif
 }
+#ifndef PROTO_LOCAL_gSndHeap
+extern void *gSndHeap;
+#endif
+#ifndef PROTO_LOCAL_gSndDefaultHandle
+extern u8 gSndDefaultHandle[sizeof (void *)];
+#endif
+#ifndef PROTO_LOCAL_gSndCaptureBuffer
+extern void *gSndCaptureBuffer;
+#endif
+#ifndef PROTO_LOCAL_gSndSeSystem
+extern Player gSndSeSystem;
+#endif
 #endif
 
 #endif

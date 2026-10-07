@@ -21,6 +21,7 @@ typedef struct NNSFndList { void *head; void *tail; u16 num; u16 offset; } NNSFn
 #include "proto/autoload_2/unk_021093f4.h"
 #include "proto/autoload_2/unk_021096d4.h"
 #include "proto/autoload_2/unk_02109830.h"
+#include "proto/autoload_2/unk_0210a478.h"
 #include "proto/autoload_2/unk_0210a9c4.h"
 #include "proto/autoload_2/unk_0210b1b0.h"
 #include "proto/autoload_2/unk_0210da28.h"

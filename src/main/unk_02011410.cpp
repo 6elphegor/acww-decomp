@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/HudObjGfx.h"
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02011410.h"
 #include "proto/main/unk_020116e0.h"
 
 extern "C" {

@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gfx/HudObjGfx.h"
+#include "proto/main/unk_02011690.h"
 #include "proto/main/unk_020116e0.h"
 
 

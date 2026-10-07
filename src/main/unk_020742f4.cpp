@@ -138,6 +138,8 @@ public:
 #define PROTO_LOCAL_RoomEntry_RecvLeave  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_RoomObjSync_OnRecv  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gNetHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
@@ -150,7 +152,6 @@ public:
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205ef08.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206f804.h"
@@ -187,13 +188,10 @@ extern "C" {
 extern void *sNpcTexPatBufPool[];
 }
 extern "C" {
-extern void *gSpNpcAnimPoolHeap;
 }
 extern "C" {
-extern void *gVillagerAnimPoolHeap;
 }
 extern "C" {
-extern void *gNpcTexPatBufHeap;
 }
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -588,7 +586,6 @@ extern "C" {
 extern void *gCommManager;
 }
 extern "C" {
-extern char *sBbsDefaultKey;
 }
 extern "C" {
 void CommVillager_UnpackHeader(u32 *o0, u32 *o1, u8 *src);
@@ -1763,7 +1760,6 @@ extern "C" {
 extern u8 gFieldSceneKind;
 }
 extern "C" {
-extern u8 sInsectCatchResult;
 }
 extern "C" {
 extern void *gCurrentHeap;
@@ -2379,6 +2375,7 @@ s32 Item_GetFurnitureIndex(void *);
 extern "C" {
 }
 extern "C" {
+u16 ItemInfo_GetHoldableIndex(u16 *);
 }
 extern "C" {
 }
@@ -3858,7 +3855,6 @@ const FPT_data_020cbd60 sCommSyncVarInitHandlers[70] = {
 };
 }
 }
-extern char data_020e0548[];
 char *sBbsDefaultKey = data_020e0548;
 char data_020e0548[] = "bbs_default";
 namespace n0 {

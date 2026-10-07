@@ -11,6 +11,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcSceneFunc
+extern void (*sWfcSceneFunc) ();
+#endif
 #ifndef PROTO_LOCAL_WfcUtil_InitSystem
 void WfcUtil_InitSystem();
 #endif
@@ -32,6 +35,21 @@ void WfcUtil_RequestExit();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcLanguage
+extern u8 sWfcLanguage;
+#endif
+#ifndef PROTO_LOCAL_sWfcParams
+extern u32 sWfcParams;
+#endif
+#ifndef PROTO_LOCAL_sWfcExitRequested
+extern u8 sWfcExitRequested;
+#endif
+#ifndef PROTO_LOCAL_sWfcWorkArea
+extern u32 sWfcWorkArea;
+#endif
+#ifndef PROTO_LOCAL_sWfcScreenFlags
+extern u32 sWfcScreenFlags[4];
+#endif
 #ifndef PROTO_LOCAL_WfcUtil_Run
 s32 WfcUtil_Run(u32 a, s32 b, u32 c);
 #endif

@@ -7,6 +7,7 @@
 #ifdef __cplusplus
 #include "player/PlayerInventory.h"
 #include "types.h"
+class GuestPlayerArray;
 #endif
 
 #ifdef __cplusplus
@@ -130,6 +131,9 @@ u32 PlayerData_Get(s32 idx);
 s32 PlayerData_IsUsedByIndex(s32 idx);
 #endif
 }
+#ifndef PROTO_LOCAL_gGuestPlayers
+extern GuestPlayerArray gGuestPlayers;
+#endif
 #endif
 
 #endif

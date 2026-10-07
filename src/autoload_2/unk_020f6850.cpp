@@ -9,6 +9,8 @@
 #include "types.h"
 #include "snd/TvSound.h"
 #define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020f6850.h"
 #include "proto/autoload_2/unk_0210c084.h"
 
 

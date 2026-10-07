@@ -4,7 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_020abbcc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "gfx/NNSG3dResMatData.h"
 #ifdef __cplusplus
+#include "gfx/CachedModel.h"
 #include "gfx/VecFx32.h"
 #include "types.h"
 #endif
@@ -37,6 +39,15 @@ void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c);
 void CharaShadow_DrawPlayer(VecFx32 *pos, s32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sCharaShadowPolyId
+extern u32 sCharaShadowPolyId;
+#endif
+#ifndef PROTO_LOCAL_sCharaShadowMatData
+extern NNSG3dResMatData *sCharaShadowMatData;
+#endif
+#ifndef PROTO_LOCAL_sCharaShadowModel
+extern CachedModel sCharaShadowModel;
+#endif
 #endif
 
 #endif

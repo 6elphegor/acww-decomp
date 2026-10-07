@@ -38,6 +38,9 @@ u32 strcspn(const char *str, const char *set);
 #ifndef PROTO_LOCAL_srand
 void srand(u32 seed);
 #endif
+#ifndef PROTO_LOCAL_data_0213c4fc
+extern u32 data_0213c4fc;
+#endif
 }
 #endif
 

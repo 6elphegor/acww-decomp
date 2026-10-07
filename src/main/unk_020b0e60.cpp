@@ -17,6 +17,7 @@
 #include "town/BuildingActor.h"
 #define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownFlagPattern_InitDefault  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_02063904.h"
@@ -313,26 +314,12 @@ BOOL _ZN21FieldObjectShapeQuery12getUnitShapeEPiS0_S0_ii(void *p, s32 *a, s32 *b
 
 extern const u32 sLightFlickerTable[11];
 extern const u16 sSceneBuildingTable[52];
-extern s32 sHourHandCos;
-extern u8 sTaxiArriving;
-extern u8 sTaxiLeaving;
-extern u8 sHouseVisitorPresent;
-extern void *sStrBSizeArchive;
-extern u32 sLastEntranceType;
-extern s32 sHourHandSin;
-extern s32 sHourHandFrame;
-extern FieldObjectShapeQuery sFieldObjectShapeQuery;
-extern u32 sExitedBuildingKey;
-extern u32 sFieldStructureMgr;
-extern char sLampMatNameBuf[12];
-extern u8 sBuildingStates[0x22];
-extern NibblePair sBuildingOccupancy[0x22];
-extern u32 sStrBSizeTable[0x22];
 
 // own prototypes
 extern "C" {
 void BuildingInfo_Copy(BuildingInfo *dst, BuildingInfo *src);
 void BuildingInfo_Destroy(BuildingInfo *i);
+BOOL Building_RequestState(Obj *o, s32 v);
 }
 
 

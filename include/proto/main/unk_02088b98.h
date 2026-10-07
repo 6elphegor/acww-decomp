@@ -4,6 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_02088b98.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "actor/ActorCollider.h"
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -19,6 +23,15 @@ void ActorCollider_ResolveAll();
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_data_021ce63c
+extern u32 data_021ce63c;
+#endif
+#ifndef PROTO_LOCAL_gActorColliderList
+extern ActorCollider *gActorColliderList;
+#endif
 #endif
 
 #endif

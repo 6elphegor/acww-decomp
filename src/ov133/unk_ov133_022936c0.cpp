@@ -15,6 +15,8 @@
 #include "sys/ProcProfile.h"
 #define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sCaretCells  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -24,6 +26,7 @@
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov130/unk_ov130_02292360.h"
 #include "proto/ov133/unk_ov133_022936c0.h"
@@ -35,12 +38,7 @@ extern const u8 sFriendCodeTouchKeyMap[12];
 extern const s32 sFriendCodeCursorYTable[12];
 extern const u32 sKeyRowY[12];
 extern const s32 sFriendCodeCursorXTable[12];
-extern u16 sFriendCodeKeySeIds[10];
 extern u32 sCaretCells[2];
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u8 gU8None;
 extern u16 gPad[];
 
@@ -50,41 +48,23 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 void NumberPad_DrawKeypadFrame(s32 a);
 void MenuButtons_LoadTextColors(void *self);
 void _ZN14FriendCodeMenu12stateMessageEv();
-extern void *data_ov133_02295200[2];
 void _ZN14FriendCodeMenu10stateCloseEv();
-extern void *data_ov133_02295208[2];
 void _ZN14FriendCodeMenu12stateOpeningEv();
-extern void *data_ov133_02295210[2];
 void _ZN14FriendCodeMenu12stateClosingEv();
-extern void *data_ov133_02295218[2];
 void _ZN14FriendCodeMenu17updateCursorPressEv();
-extern void *data_ov133_02295220[2];
 void _ZN14FriendCodeMenu19updateCursorReleaseEv();
-extern void *data_ov133_02295228[2];
 void _ZN14FriendCodeMenu19stateRetryAddFriendEv();
-extern void *data_ov133_02295238[2];
 void _ZN14FriendCodeMenu9stateOpenEv();
-extern void *data_ov133_02295240[2];
 void _ZN14FriendCodeMenu9stateExitEv();
-extern void *data_ov133_02295248[2];
 void _ZN14FriendCodeMenu16stateCaretSelectEv();
-extern void *data_ov133_02295250[2];
 void _ZN14FriendCodeMenu20stateBackspaceRepeatEv();
-extern void *data_ov133_02295258[2];
 void _ZN14FriendCodeMenu17stateButtonRepeatEv();
-extern void *data_ov133_02295260[2];
 void _ZN14FriendCodeMenu9stateLoadEv();
-extern void *data_ov133_02295270[2];
 void _ZN14FriendCodeMenu16updateCursorMoveEv();
-extern void *data_ov133_02295278[2];
 void _ZN14FriendCodeMenu13updateButtonsEv();
-extern void *data_ov133_02295280[2];
 void _ZN14FriendCodeMenu19stateTouchDragCaretEv();
-extern void *data_ov133_02295288[2];
 void _ZN14FriendCodeMenu16stateTouchRepeatEv();
-extern void *data_ov133_02295290[2];
 void _ZN14FriendCodeMenu11updateTouchEv();
-extern void *data_ov133_02295298[2];
 }
 
 

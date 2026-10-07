@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_020029e8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "gfx/AbAllObjGfx.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,6 +19,12 @@ void AbAllObjGfx_InitFile(void *p);
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_sAbAllObjGfx
+extern AbAllObjGfx sAbAllObjGfx;
+#endif
 #endif
 
 #endif

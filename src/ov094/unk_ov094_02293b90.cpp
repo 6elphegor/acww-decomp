@@ -14,6 +14,9 @@
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StrBuf_Copy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sLetterIconSprite  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sLetterMarkSprites  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020637e4.h"
@@ -140,15 +143,9 @@ extern const u8 sItemIconPalettes[];
 extern const u8 sLetterPopScales[];
 extern const u32 sLetterCursorLift[];
 extern const u8 sLetterKindMsgIds[];
-extern u8 sInventoryBgSprite[];
-extern u8 sHeldItemSprite[];
-extern u8 sItemGridMarkSprites[];
 extern OamObjTemplate sItemGridSlotSprites[];
-extern u8 sLetterGridColumnX[];
 extern u8 sLetterIconSprite[];
-extern u8 sLetterIconPalettes[];
 extern u8 sLetterMarkSprites[];
-extern u16 sLetterIconChars[];
 }
 
 extern "C" {

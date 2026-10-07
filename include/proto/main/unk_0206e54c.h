@@ -4,9 +4,13 @@
 // Prototypes of the functions defined in src/main/unk_0206e54c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
+#include "item/Letter.h"
 #include "types.h"
 class MenuManager;
+class Unk_021cb4e8;
+class Unk_021cb4f0;
 #endif
 
 #ifdef __cplusplus
@@ -403,6 +407,243 @@ BOOL MenuCtrl_IsFriendPageFromIndex(void);
 void MenuCtrl_SetChatDraft(u32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sMenuIndex
+extern u8 sMenuIndex;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList18
+extern u32 kMenuOverlayList18[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList28
+extern u32 kMenuOverlayList28[3];
+#endif
+#ifndef PROTO_LOCAL_sOpenMenuList
+extern Unk_021cb4e8 sOpenMenuList;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList03
+extern u32 kMenuOverlayList03[2];
+#endif
+#ifndef PROTO_LOCAL_sMenuMode
+extern u8 sMenuMode;
+#endif
+#ifndef PROTO_LOCAL_sFutureLetter
+extern Letter sFutureLetter;
+#endif
+#ifndef PROTO_LOCAL_sPocketBackupItems
+extern u16 sPocketBackupItems[16];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList06
+extern u32 kMenuOverlayList06[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuArg
+extern u32 sMenuArg;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList13
+extern u32 kMenuOverlayList13[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList23
+extern u32 kMenuOverlayList23[2];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList1A
+extern u32 kMenuOverlayList1A[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuTransitionProgress
+extern s32 sMenuTransitionProgress;
+#endif
+#ifndef PROTO_LOCAL_sMenuPtrArg1
+extern u32 sMenuPtrArg1;
+#endif
+#ifndef PROTO_LOCAL_sChatDraft
+extern u8 sChatDraft[32];
+#endif
+#ifndef PROTO_LOCAL_sMenuHandBells
+extern u32 sMenuHandBells;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList2A
+extern u32 kMenuOverlayList2A[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuManagerProfile
+extern ProcProfile sMenuManagerProfile;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList00
+extern u32 kMenuOverlayList00[2];
+#endif
+#ifndef PROTO_LOCAL_sMenuSavedSlot
+extern u8 sMenuSavedSlot;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList2D
+extern u32 kMenuOverlayList2D[2];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList1B
+extern u32 kMenuOverlayList1B[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList2B
+extern u32 kMenuOverlayList2B[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList08
+extern u32 kMenuOverlayList08[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList0A
+extern u32 kMenuOverlayList0A[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList17
+extern u32 kMenuOverlayList17[3];
+#endif
+#ifndef PROTO_LOCAL_sPocketSelectLabel
+extern u8 sPocketSelectLabel;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList0D
+extern u32 kMenuOverlayList0D[2];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList04
+extern u32 kMenuOverlayList04[4];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList0B
+extern u32 kMenuOverlayList0B[2];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList05
+extern u32 kMenuOverlayList05[4];
+#endif
+#ifndef PROTO_LOCAL_sKeyboardPageModes
+extern u8 sKeyboardPageModes[4];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList25
+extern u32 kMenuOverlayList25[2];
+#endif
+#ifndef PROTO_LOCAL_sPocketSelectMask
+extern u16 sPocketSelectMask;
+#endif
+#ifndef PROTO_LOCAL_sForceCloseDelay
+extern u8 sForceCloseDelay;
+#endif
+#ifndef PROTO_LOCAL_sKeyboardPage
+extern u8 sKeyboardPage;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList15
+extern u32 kMenuOverlayList15[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList09
+extern u32 kMenuOverlayList09[2];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList0F
+extern u32 kMenuOverlayList0F[4];
+#endif
+#ifndef PROTO_LOCAL_sMenuReleaseMask
+extern u32 sMenuReleaseMask[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList29
+extern u32 kMenuOverlayList29[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList2C
+extern u32 kMenuOverlayList2C[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList01
+extern u32 kMenuOverlayList01[4];
+#endif
+#ifndef PROTO_LOCAL_sMenuLoadedMask
+extern u32 sMenuLoadedMask[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuFlags
+extern u16 sMenuFlags;
+#endif
+#ifndef PROTO_LOCAL_sMenuChosenItems
+extern u16 sMenuChosenItems[16];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList1C
+extern u32 kMenuOverlayList1C[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList1E
+extern u32 kMenuOverlayList1E[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuText
+extern u8 sMenuText[16];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList1F
+extern u32 kMenuOverlayList1F[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList07
+extern u32 kMenuOverlayList07[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList0C
+extern u32 kMenuOverlayList0C[2];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList21
+extern u32 kMenuOverlayList21[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList22
+extern u32 kMenuOverlayList22[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList0E
+extern u32 kMenuOverlayList0E[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList11
+extern u32 kMenuOverlayList11[3];
+#endif
+#ifndef PROTO_LOCAL_gMenuManager
+extern u32 gMenuManager;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList14
+extern u32 kMenuOverlayList14[3];
+#endif
+#ifndef PROTO_LOCAL_sPostOfficeResult
+extern u16 sPostOfficeResult;
+#endif
+#ifndef PROTO_LOCAL_sMenuDateTime
+extern Unk_021cb4f0 sMenuDateTime;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList02
+extern u32 kMenuOverlayList02[4];
+#endif
+#ifndef PROTO_LOCAL_sMenuItem
+extern u16 sMenuItem;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList19
+extern u32 kMenuOverlayList19[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuPtrArg0
+extern u32 sMenuPtrArg0;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList20
+extern u32 kMenuOverlayList20[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuAmount
+extern u32 sMenuAmount;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList10
+extern u32 kMenuOverlayList10[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuResult
+extern u8 sMenuResult;
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList16
+extern u32 kMenuOverlayList16[3];
+#endif
+#ifndef PROTO_LOCAL_sMenuRequest
+extern u8 sMenuRequest[4];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList26
+extern u32 kMenuOverlayList26[2];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList24
+extern u32 kMenuOverlayList24[2];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayLists
+extern u32 *kMenuOverlayLists[46];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList12
+extern u32 kMenuOverlayList12[3];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList27
+extern u32 kMenuOverlayList27[2];
+#endif
+#ifndef PROTO_LOCAL_sPocketBackupFlags
+extern u8 sPocketBackupFlags[16];
+#endif
+#ifndef PROTO_LOCAL_kMenuProfileIds
+extern u16 kMenuProfileIds[46];
+#endif
+#ifndef PROTO_LOCAL_kMenuOverlayList1D
+extern u32 kMenuOverlayList1D[3];
+#endif
 #endif
 
 #endif

@@ -10,6 +10,9 @@
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sBuryHoleAngles
+extern s16 sBuryHoleAngles[16];
+#endif
 #ifndef PROTO_LOCAL_PocketMenu_CanDropOutdoor
 s32 PocketMenu_CanDropOutdoor(s32 a, u32 b);
 #endif

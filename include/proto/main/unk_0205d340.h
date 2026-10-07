@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0205d340.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct PlayerFaceTexPool;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -33,6 +34,12 @@ s32 PlayerFaceTex_GetBufferSize();
 void PlayerFaceTexPool_AllocBuffers(u32 *arr);
 #endif
 }
+#ifndef PROTO_LOCAL_sPlayerFaceTexPathBuf
+extern char sPlayerFaceTexPathBuf[0x14];
+#endif
+#ifndef PROTO_LOCAL_sPlayerFaceTexPool
+extern PlayerFaceTexPool sPlayerFaceTexPool;
+#endif
 #endif
 
 #endif

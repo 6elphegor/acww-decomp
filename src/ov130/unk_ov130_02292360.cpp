@@ -13,6 +13,9 @@
 #define PROTO_LOCAL_NumberPad_PrintSmallNumber  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NumberPad_SetKeyPalette  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov130_02293518  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov130_02293568  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"

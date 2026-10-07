@@ -12,6 +12,7 @@ struct Unk_0205242c_Self;
 #ifdef __cplusplus
 #include "room/RoomFtrState.h"
 #include "types.h"
+class SpotReservationTable;
 #endif
 
 #ifdef __cplusplus
@@ -141,6 +142,36 @@ void SpotSync_RequestStandUpSpot(s32 *p);
 u32 SpotSync_GetStandUpSpotResult();
 #endif
 }
+#ifndef PROTO_LOCAL_sVillagerHouseFtrStates
+extern RoomFtrState sVillagerHouseFtrStates[8];
+#endif
+#ifndef PROTO_LOCAL_sNookShopFtrStates
+extern RoomFtrState sNookShopFtrStates[6];
+#endif
+#ifndef PROTO_LOCAL_sScene10FtrState
+extern RoomFtrState sScene10FtrState;
+#endif
+#ifndef PROTO_LOCAL_sSpotReservations
+extern SpotReservationTable sSpotReservations;
+#endif
+#ifndef PROTO_LOCAL_data_021c4e3c
+extern Unk_0205242c_Item data_021c4e3c[2];
+#endif
+#ifndef PROTO_LOCAL_data_021c4e44
+extern Unk_0205242c_Item data_021c4e44[2];
+#endif
+#ifndef PROTO_LOCAL_data_021c4e54
+extern Unk_0205242c_Item data_021c4e54[2];
+#endif
+#ifndef PROTO_LOCAL_sSpotReserveResult
+extern s32 sSpotReserveResult;
+#endif
+#ifndef PROTO_LOCAL_data_021c4e4c
+extern Unk_0205242c_Item data_021c4e4c[2];
+#endif
+#ifndef PROTO_LOCAL_data_021c4e8c
+extern Unk_0205242c_Item data_021c4e8c[4];
+#endif
 #endif
 
 #endif

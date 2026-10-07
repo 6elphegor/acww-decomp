@@ -5,11 +5,15 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "types.h"
 class MusicMenu;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov144_02293d70
+extern u32 data_ov144_02293d70[16];
+#endif
 #ifndef PROTO_LOCAL_MusicMenu_Create
 MusicMenu *MusicMenu_Create();
 #endif

@@ -10,8 +10,10 @@
 #include "net/WifiLinkEvent.h"
 #include "net/SockStartupConfig.h"
 #define PROTO_LOCAL_WifiAp_GetBlock  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWifiRssiCount  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/itcm/unk_01ffa4a0.h"
+#include "proto/ov065/unk_ov065_0225f1a0.h"
 #include "proto/ov065/unk_ov065_0226aca8.h"
 #include "proto/ov065/unk_ov065_0226ad84.h"
 #include "proto/ov065/unk_ov065_0226b3c4.h"
@@ -46,7 +48,6 @@ extern "C" {
 extern u8 gWifiLinkAnyBssid[];
 extern u8 gWifiLinkAnySsid[];
 extern u8 sWifiApSocketConfigTemplate[];
-extern u32 sSockYieldMode;
 extern s8 *sWifiApUsbKey1Ptr;
 extern s8 *sWifiApUsbKey2Ptr;
 extern s8 *sWifiApNdwcshapKey1Ptr;
@@ -1368,10 +1369,6 @@ extern "C" {
 extern WifiLinkSendState sWifiLinkSendState;
 extern u8 sWifiLinkSendLock[];
 extern volatile u8 sWifiRssiCount;
-extern u8 sWifiRssiSamples[];
-extern u8 *sWifiApContext;
-extern void *sWifiApLinkWork;
-extern void *sWifiApSocketConfig;
 extern WifiApAllocator *sWifiApAllocator;
 extern WifiApControl *sWifiApControl;
 

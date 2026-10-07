@@ -21,6 +21,11 @@
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sMapTabFrameCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sMapTabPlacesButtonCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sMapTabResidentsButtonCells  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -29,6 +34,7 @@
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020943dc.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
@@ -36,12 +42,8 @@
 #include "proto/ov118/unk_02292d00.h"
 
 extern "C" {
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u16 gPad[];
 extern u32 gCurrentHeap;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u8 gFieldSceneKind;
 extern u8 gTownReturnPos[];
 extern u8 gSaveTownId[];

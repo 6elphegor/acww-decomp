@@ -27,6 +27,14 @@
 #define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov119_02295588  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov119_02295648  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov119_02295660  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov119_02295778  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov119_022957a8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov119_022957d8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -40,6 +48,7 @@
 #include "proto/main/unk_02087e0c.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
@@ -74,10 +83,6 @@
 extern "C" {
 extern u8 gU8None;
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
 
 
@@ -140,12 +145,6 @@ void _ZN11MsgString9BD1Ev(void *self);
 extern CommManager *gCommManager;
 extern u8 *data_ov119_02295648[6];
 extern u32 data_ov119_02295660[8];
-extern u32 data_ov119_02295680[10];
-extern u32 data_ov119_022956a8[10];
-extern u32 data_ov119_022956d0[10];
-extern u32 data_ov119_022956f8[10];
-extern u32 data_ov119_02295720[10];
-extern u32 data_ov119_02295748[12];
 extern u32 data_ov119_02295778[12];
 extern u32 data_ov119_022957a8[12];
 extern u32 data_ov119_022957d8[24];
@@ -177,51 +176,28 @@ typedef void (FriendRosterTab::*Unk_ov119_02295840_Fn)();
 #define U3D0 ((u8 *)this + 0x3d0)
 extern "C" {
 void _ZN15FriendRosterTab11updateTouchEv();
-extern void *data_ov119_02295608[2];
 void _ZN15FriendRosterTab9mainAct01Ev();
-extern void *data_ov119_022955a8[2];
 void _ZN15FriendRosterTab13updateButtonsEv();
-extern void *data_ov119_022955e8[2];
 void _ZN15FriendRosterTab16updateCursorMoveEv();
-extern void *data_ov119_022955f0[2];
 void _ZN15FriendRosterTab17updateCursorPressEv();
-extern void *data_ov119_022955a0[2];
 void _ZN15FriendRosterTab19updateCursorReleaseEv();
-extern void *data_ov119_022955b0[2];
 void _ZN15FriendRosterTab9mainAct06Ev();
-extern void *data_ov119_02295610[2];
 void _ZN15FriendRosterTab9mainAct07Ev();
-extern void *data_ov119_02295580[2];
 void _ZN15FriendRosterTab9mainAct08Ev();
-extern void *data_ov119_022955c8[2];
 void _ZN15FriendRosterTab9mainAct09Ev();
-extern void *data_ov119_022955c0[2];
 void _ZN15FriendRosterTab9mainAct0AEv();
-extern void *data_ov119_02295618[2];
 void _ZN15FriendRosterTab9mainAct0BEv();
-extern void *data_ov119_02295600[2];
 void _ZN15FriendRosterTab9mainAct0CEv();
-extern void *data_ov119_02295598[2];
 void _ZN15FriendRosterTab9mainAct0DEv();
-extern void *data_ov119_022955f8[2];
 void _ZN15FriendRosterTab9mainAct0EEv();
-extern void *data_ov119_022955d8[2];
 void _ZN15FriendRosterTab9mainAct0FEv();
-extern void *data_ov119_02295590[2];
 void _ZN15FriendRosterTab9mainAct10Ev();
-extern void *data_ov119_022955b8[2];
 void _ZN15FriendRosterTab9mainAct11Ev();
-extern void *data_ov119_022955e0[2];
 void _ZN15FriendRosterTab9stateLoadEv();
-extern void *data_ov119_02295640[2];
 void _ZN15FriendRosterTab9stateOpenEv();
-extern void *data_ov119_02295638[2];
 void _ZN15FriendRosterTab12stateOpeningEv();
-extern void *data_ov119_02295630[2];
 void _ZN15FriendRosterTab10stateCloseEv();
-extern void *data_ov119_02295628[2];
 void _ZN15FriendRosterTab12stateClosingEv();
-extern void *data_ov119_02295620[2];
 }
 #define A0V (*(volatile u8 *)&focus)
 #define E9V (*(volatile u8 *)&labelCount)

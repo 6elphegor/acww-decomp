@@ -71,7 +71,6 @@ namespace Na {
 
 
 extern "C" {
-extern char __GSIACGamename[];
 
 typedef s32 (*gpiProfileMapFunc)(GPConnection *, GPIProfile *, void *);
 

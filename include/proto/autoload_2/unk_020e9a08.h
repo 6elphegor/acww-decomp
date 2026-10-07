@@ -318,6 +318,129 @@ BOOL Net_WlxIsReady(void *p);
 #ifndef PROTO_LOCAL_Net_WlxIsExchangeDone
 u32 Net_WlxIsExchangeDone(void *p);
 #endif
+#ifndef PROTO_LOCAL_data_021f4bc0
+extern u8 data_021f4bc0[0xdb4];
+#endif
+#ifndef PROTO_LOCAL_sSendSlots
+extern u8 sSendSlots[0x100];
+#endif
+#ifndef PROTO_LOCAL_data_021f49e0
+extern u8 data_021f49e0[0xe0];
+#endif
+#ifndef PROTO_LOCAL_sWifiPingState
+extern u8 sWifiPingState[0x50];
+#endif
+#ifndef PROTO_LOCAL_data_021f4950
+extern u8 data_021f4950[0x40];
+#endif
+#ifndef PROTO_LOCAL_data_021f4910
+extern u32 data_021f4910[8];
+#endif
+#ifndef PROTO_LOCAL_sSendQueue
+extern u8 sSendQueue[0x20];
+#endif
+#ifndef PROTO_LOCAL_sLocalPeerState
+extern u8 sLocalPeerState[0x10];
+#endif
+#ifndef PROTO_LOCAL_data_021f48f4
+extern u8 data_021f48f4[0xc];
+#endif
+#ifndef PROTO_LOCAL_sRecvCallback
+extern u32 sRecvCallback;
+#endif
+#ifndef PROTO_LOCAL_data_021f48e8
+extern u32 data_021f48e8;
+#endif
+#ifndef PROTO_LOCAL_data_021f48e4
+extern u32 data_021f48e4;
+#endif
+#ifndef PROTO_LOCAL_data_021f48e0
+extern u32 data_021f48e0;
+#endif
+#ifndef PROTO_LOCAL_data_021f48dc
+extern u32 data_021f48dc;
+#endif
+#ifndef PROTO_LOCAL_sWifiUserData
+extern u32 sWifiUserData;
+#endif
+#ifndef PROTO_LOCAL_sWifiFriendList
+extern u32 sWifiFriendList;
+#endif
+#ifndef PROTO_LOCAL_data_021f489c
+extern u32 data_021f489c;
+#endif
+#ifndef PROTO_LOCAL_data_0213b064
+extern s32 data_0213b064;
+#endif
+#ifndef PROTO_LOCAL_data_021f48c8
+extern u32 data_021f48c8;
+#endif
+#ifndef PROTO_LOCAL_data_021f48c4
+extern u32 data_021f48c4;
+#endif
+#ifndef PROTO_LOCAL_data_021f48b0
+extern u32 data_021f48b0;
+#endif
+#ifndef PROTO_LOCAL_data_021f48ac
+extern u32 data_021f48ac;
+#endif
+#ifndef PROTO_LOCAL_sLastErrorCode
+extern u32 sLastErrorCode;
+#endif
+#ifndef PROTO_LOCAL_data_021f48b8
+extern u32 data_021f48b8;
+#endif
+#ifndef PROTO_LOCAL_data_021f48ec
+extern u32 data_021f48ec;
+#endif
+#ifndef PROTO_LOCAL_data_021f48cc
+extern u32 data_021f48cc;
+#endif
+#ifndef PROTO_LOCAL_data_021f48a8
+extern u32 data_021f48a8;
+#endif
+#ifndef PROTO_LOCAL_data_021f48a4
+extern u32 data_021f48a4;
+#endif
+#ifndef PROTO_LOCAL_sAllocHook
+extern u32 sAllocHook;
+#endif
+#ifndef PROTO_LOCAL_data_0213b068
+extern s32 data_0213b068;
+#endif
+#ifndef PROTO_LOCAL_data_0213b06c
+extern s32 data_0213b06c;
+#endif
+#ifndef PROTO_LOCAL_data_021f48c0
+extern u32 data_021f48c0;
+#endif
+#ifndef PROTO_LOCAL_data_021f48b4
+extern u32 data_021f48b4;
+#endif
+#ifndef PROTO_LOCAL_sFreeHook
+extern u32 sFreeHook;
+#endif
+#ifndef PROTO_LOCAL_data_0213b060
+extern u32 data_0213b060;
+#endif
+#ifndef PROTO_LOCAL_sWifiShutdownStep
+extern u16 sWifiShutdownStep;
+#endif
+#ifndef PROTO_LOCAL_sWifiConnectStep
+extern u16 sWifiConnectStep;
+#endif
+#ifndef PROTO_LOCAL_sNetMode
+extern u8 sNetMode;
+#endif
+#ifndef PROTO_LOCAL_data_0213b05c
+extern u8 data_0213b05c;
+#endif
+#ifndef PROTO_LOCAL_data_021f488c
+extern u8 data_021f488c;
+#endif
+#ifndef PROTO_LOCAL_data_0213b058
+extern u8 data_0213b058;
+#endif
 }
 #endif
 

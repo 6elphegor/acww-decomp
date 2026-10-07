@@ -11,6 +11,16 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_0213c388
+extern char *data_0213c388[8];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_memcpy
 void *memcpy(void *dst, const void *src, u32 n);
 #endif
@@ -40,6 +50,9 @@ int mbstowcs(u16 *pwcs, const char *s, u32 n);
 #endif
 #ifndef PROTO_LOCAL_scalbn
 s64 scalbn(s64 a, s32 delta);
+#endif
+#ifndef PROTO_LOCAL_data_0213c400
+extern u16 data_0213c400[58];
 #endif
 }
 #endif

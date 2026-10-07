@@ -7,7 +7,6 @@
 
 
 extern "C" {
-extern u8 sCommSubPostReply;
 
 
 typedef void (*CommSubHandler)(u8 *, u32);

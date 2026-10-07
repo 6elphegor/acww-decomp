@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0221cfc0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcScrollBar;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -66,6 +67,9 @@ void WfcScrollBar_GetPartRect(s32 a, u16 *out);
 void WfcScrollBar_SetThumbPos(u32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sWfcScrollBar
+extern WfcScrollBar *sWfcScrollBar;
+#endif
 #endif
 
 #endif

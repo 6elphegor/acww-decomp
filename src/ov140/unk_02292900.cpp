@@ -14,6 +14,10 @@
 #define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov140_02293da4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov140_02293dcc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov140_02293e64  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -22,16 +26,13 @@
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov140/unk_02292900.h"
 
 class DistantTownsMenu;
 
 extern "C" {
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u16 gPad[];
 
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
@@ -153,10 +154,6 @@ public:
 };
 
 extern "C" {
-extern u32 data_ov140_02293d00[];
-extern u32 data_ov140_02293d40[];
-extern u32 data_ov140_02293d80[];
-extern u32 data_ov140_02293d88[];
 extern u32 data_ov140_02293da4[];
 extern u32 data_ov140_02293dcc[];
 extern u32 data_ov140_02293e64[];

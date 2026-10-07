@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/HudObjGfx.h"
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0201106c.h"
 
 extern "C" {
 void DC_FlushRange(void *p, u32 size);

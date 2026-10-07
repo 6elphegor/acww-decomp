@@ -10,6 +10,12 @@
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWifiRssiCount
+extern volatile u8 sWifiRssiCount[4];
+#endif
+#ifndef PROTO_LOCAL_sWifiRssiSamples
+extern u8 sWifiRssiSamples[16];
+#endif
 #ifndef PROTO_LOCAL_WifiLink_GetAverageRssi
 u8 WifiLink_GetAverageRssi();
 #endif

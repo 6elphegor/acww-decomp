@@ -27,6 +27,12 @@ void Snowman_SendLetter(u32 idx);
 u8 *LooseSnowballs_Get();
 #endif
 }
+#ifndef PROTO_LOCAL_data_020e2ebc
+extern u32 data_020e2ebc;
+#endif
+#ifndef PROTO_LOCAL_data_020e2eb8
+extern u32 data_020e2eb8;
+#endif
 #endif
 
 #endif

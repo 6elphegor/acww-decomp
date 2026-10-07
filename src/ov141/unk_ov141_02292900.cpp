@@ -12,6 +12,8 @@
 #include "sys/ProcProfile.h"
 #define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -20,6 +22,7 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov141/unk_ov141_02292900.h"
 
@@ -27,10 +30,6 @@ class NearbyTownsMenu;
 
 extern "C" {
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
 
 void MI_CpuCopy8(void *a, void *b, u32 n);

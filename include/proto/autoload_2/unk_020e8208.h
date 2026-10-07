@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020e8208.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,6 +19,15 @@ void Pad_Update(void);
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_data_021f47d0
+extern u8 data_021f47d0;
+#endif
+#ifndef PROTO_LOCAL_sPadPrevHeld
+extern u16 sPadPrevHeld;
+#endif
 #endif
 
 #endif

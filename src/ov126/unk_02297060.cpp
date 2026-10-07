@@ -32,6 +32,9 @@
 #define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_InitWithName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov126_02299ad0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -43,6 +46,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020afeb4.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov095/unk_02292360.h"
 #include "proto/ov126/unk_02297060.h"
@@ -121,10 +125,6 @@ extern u8 gSaveBlancaFace[];
 extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 gU8None;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurY;
-extern u8 gTouchCurX;
 extern u32 gCurrentHeap;
 extern u8 *gCommManager;
 extern u32 data_ov126_02299ad0[4];

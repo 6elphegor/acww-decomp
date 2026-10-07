@@ -15,7 +15,6 @@ u32 VillagerId_IsValidSpecies(u32 id);
 
 
 extern const u32 sPersonalityVoiceTypes[];
-extern char *sPersonalityPrefixes[6];
 
 u32 VillagerId::isValid() {
     if (TownId_IsValid(this) == 1 && VillagerId_IsValidSpecies(species) == 1) return TRUE;
@@ -58,14 +57,7 @@ extern "C" u32 Villager_PersonalityToVoiceType(u32 t) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern char sPersonalityPrefixSnooty[];
-extern char sPersonalityPrefixJock[];
 extern const u32 sPersonalityVoiceTypes[6];
-extern char sPersonalityPrefixNormal[];
-extern char sPersonalityPrefixPeppy[];
-extern char sPersonalityPrefixCranky[];
-extern char *sPersonalityPrefixes[6];
-extern char sPersonalityPrefixLazy[];
 
 char sPersonalityPrefixSnooty[] = "ta_";
 

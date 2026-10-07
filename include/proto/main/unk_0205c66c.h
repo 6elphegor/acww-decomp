@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0205c66c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct PlayerBodyModelPool;
 #ifdef __cplusplus
 #include "gfx/TexVramTask.h"
 #include "types.h"
@@ -70,6 +71,12 @@ void *PlayerBodyModelRef_GetVramSlot(u8 *p);
 TexVramTask *PlayerBodyModelRef_GetTexTask(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sPlayerBodyModelPool
+extern PlayerBodyModelPool sPlayerBodyModelPool;
+#endif
+#ifndef PROTO_LOCAL_sPlayerBodyModelPaths
+extern char *sPlayerBodyModelPaths[];
+#endif
 #endif
 
 #endif

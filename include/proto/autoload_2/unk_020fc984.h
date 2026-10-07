@@ -16,6 +16,9 @@
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_0213bba4
+extern s16 data_0213bba4[2];
+#endif
 #ifndef PROTO_LOCAL_WvrDummyAsyncCallback
 void WvrDummyAsyncCallback(u32 a, u32 b);
 #endif
@@ -65,6 +68,9 @@ void spl_chld_alp_out(P *p, void *x, s32 t);
 void spl_set_circle_axis(VecFx32 *out, const VecFx32 *in, E *e);
 #endif
 }
+#ifndef PROTO_LOCAL_data_021f5c3c
+extern u32 data_021f5c3c;
+#endif
 #endif
 
 #endif

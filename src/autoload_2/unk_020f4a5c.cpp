@@ -15,6 +15,7 @@
 #define PROTO_LOCAL_MelodyPlayer_PlayRandom  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NNS_SndArcPlayerStartSeqArc  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020f4a5c.h"
 #include "proto/autoload_2/unk_0210c084.h"
 
@@ -118,9 +119,6 @@ void MelodyTrack_ReadParams(Seq2 *s);
 }
 
 // this file's objects (defined at the end of the file; defining them here instead gives the same object)
-extern u8 data_0213b9d8;
-extern u16 data_021f5c28;
-extern u8 *sMelodyBeatPattern;
 extern const u8 sMelodyPresetPatterns[48][16];
 extern const u8 sMelodyDefaultPattern[16];
 extern const u8 data_0213597c[16];

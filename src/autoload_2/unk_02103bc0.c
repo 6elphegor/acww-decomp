@@ -10,6 +10,7 @@ typedef int BOOL;
 
 // NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h; next and priority move on 64-bit hosts)
 #include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_02103bc0.h"
 #include "proto/autoload_2/unk_02111ccc.h"
 #include "proto/autoload_2/unk_0211220c.h"
 typedef struct Node { int frame, ratio; void *resAnm; void *funcAnm; struct Node *next; void *resTex; u8 prio; } Node;

@@ -8,7 +8,6 @@
 #define PROTO_LOCAL_PlayerActor_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0205dfa4.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020943dc.h"
 #include "proto/main/unk_02094810.h"
@@ -28,7 +27,6 @@ extern u8 sEmotionHoldFrames[];
 }
 
 extern "C" {
-extern u32 sPlayerFrontItemDist;
 }
 
 extern "C" {
@@ -100,9 +98,11 @@ extern "C" {
 }
 
 extern "C" {
+s32 ItemInfo_GetHoldableCount();
 }
 
 extern "C" {
+void ItemInfo_GetNthHoldable(u16 *out, u32 v);
 }
 
 extern "C" {

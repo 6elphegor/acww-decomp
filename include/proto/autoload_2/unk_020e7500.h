@@ -103,6 +103,15 @@ u8 Math_CountDownU8(u8 *p);
 u16 Math_CountDownU16(u16 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_data_0213a748
+extern u16 data_0213a748[1025];
+#endif
+#ifndef PROTO_LOCAL_gFrameCounter
+extern s32 gFrameCounter;
+#endif
+#ifndef PROTO_LOCAL_data_021f476c
+extern s32 data_021f476c;
+#endif
 #endif
 
 #endif

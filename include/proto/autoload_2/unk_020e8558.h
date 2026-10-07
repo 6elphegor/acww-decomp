@@ -87,6 +87,30 @@ void *Mem_AllocTail(u32 size);
 void *Mem_Alloc(u32 size);
 #endif
 }
+#ifndef PROTO_LOCAL_sRootHeapSize
+extern u32 sRootHeapSize;
+#endif
+#ifndef PROTO_LOCAL_sHeapSystemReady
+extern u8 sHeapSystemReady;
+#endif
+#ifndef PROTO_LOCAL_sRootHeapArenaId
+extern u32 sRootHeapArenaId;
+#endif
+#ifndef PROTO_LOCAL_gCurrentHeap
+extern Heap *gCurrentHeap;
+#endif
+#ifndef PROTO_LOCAL_gHeapCreateOption
+extern u16 gHeapCreateOption;
+#endif
+#ifndef PROTO_LOCAL_sSavedCurrentHeap
+extern Heap *sSavedCurrentHeap[16];
+#endif
+#ifndef PROTO_LOCAL_gProcHeap
+extern Heap *gProcHeap;
+#endif
+#ifndef PROTO_LOCAL_gRootHeap
+extern Heap *gRootHeap;
+#endif
 #endif
 
 #endif

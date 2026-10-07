@@ -11,6 +11,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcAddrEditLoadFuncs
+extern void *sWfcAddrEditLoadFuncs[5];
+#endif
+#ifndef PROTO_LOCAL_sWfcAddrEditStoreFuncs
+extern void *sWfcAddrEditStoreFuncs[5];
+#endif
 #ifndef PROTO_LOCAL_WfcAddrEdit_Enter
 void WfcAddrEdit_Enter();
 #endif
@@ -74,6 +80,15 @@ void WfcAddrEdit_ReturnToInput();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov001_0222af7c
+extern u8 data_ov001_0222af7c[4];
+#endif
+#ifndef PROTO_LOCAL_sWfcAddrEditTitleMsgs
+extern u8 sWfcAddrEditTitleMsgs[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222af88
+extern u16 data_ov001_0222af88[4];
+#endif
 #ifndef PROTO_LOCAL_WfcAddrEdit_IsOctetFull
 s32 WfcAddrEdit_IsOctetFull(s32 n);
 #endif

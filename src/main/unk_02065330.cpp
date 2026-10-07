@@ -73,9 +73,6 @@ struct PlayerIdLocal {
     ~PlayerIdLocal() { new (this) PlayerId(); }
 };
 
-extern MsgString25B sMailGreeting;
-extern MsgString129 sMailBody;
-extern MsgString33B sMailSignature;
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
 

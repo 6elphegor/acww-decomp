@@ -3,6 +3,7 @@
 #include "nitro/io_access.h"
 #define PROTO_LOCAL_WfcTopMenu_HighlightSelection  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcUtil_RequestPaletteLine  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcTopMenuPalette  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
 #include "proto/ov001/unk_ov001_02208388.h"

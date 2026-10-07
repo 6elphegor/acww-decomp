@@ -7,6 +7,7 @@
 struct Unk_020874e8_Bits;
 #ifdef __cplusplus
 #include "types.h"
+#include "uptr.h"
 #endif
 
 #ifdef __cplusplus
@@ -148,6 +149,48 @@ BOOL Field_IsClearSpotXY(s32 x, s32 y, void *map);
 s32 Field_PickRandomInLine(s32 *out, BOOL (*cb)(s32, s32, void *), s32 arg, s32 cur, s32 limit, void *m, u16 *buf, s32 n);
 #endif
 }
+#ifndef PROTO_LOCAL_data_020e0c88
+extern char data_020e0c88[];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c7c
+extern char data_020e0c7c[];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c4c
+extern u8 data_020e0c4c[4];
+#endif
+#ifndef PROTO_LOCAL_sKatieSpotRows
+extern u32 sKatieSpotRows[0x20];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c50
+extern u8 data_020e0c50[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c58
+extern char data_020e0c58[];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c98
+extern char data_020e0c98[];
+#endif
+#ifndef PROTO_LOCAL_sContestResultBbsFiles
+extern uptr sContestResultBbsFiles[4];
+#endif
+#ifndef PROTO_LOCAL_sContestResultMailFiles
+extern void *sContestResultMailFiles[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c70
+extern char data_020e0c70[];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c48
+extern u8 data_020e0c48[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c64
+extern char data_020e0c64[];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c54
+extern u8 data_020e0c54[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e0c44
+extern u8 data_020e0c44[4];
+#endif
 #endif
 
 #endif

@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+class BufferBmgReader;
 #endif
 
 #ifdef __cplusplus
@@ -20,6 +21,9 @@ s32 ChoiceWindow_GetLabelTile(s32 a, s32 mode);
 const void *Choice_GetBmgName(u32 i);
 #endif
 }
+#ifndef PROTO_LOCAL_sChoiceBmgReader
+extern BufferBmgReader sChoiceBmgReader;
+#endif
 #endif
 
 #endif

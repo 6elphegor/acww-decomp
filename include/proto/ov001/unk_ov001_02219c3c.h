@@ -11,6 +11,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcConnSelect
+extern void *sWfcConnSelect;
+#endif
 #ifndef PROTO_LOCAL_WfcConnSelect_Enter
 void WfcConnSelect_Enter();
 #endif
@@ -65,14 +68,26 @@ void WfcConnSelect_WaitDialogClosed();
 #ifndef PROTO_LOCAL_WfcConnSelect_HighlightSelection
 void WfcConnSelect_HighlightSelection();
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222b260
+extern char data_ov001_0222b260[22];
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcConnSelectCursor
+extern u8 sWfcConnSelectCursor;
+#endif
 #ifndef PROTO_LOCAL_WfcConnSelect_MoveCursor
 void WfcConnSelect_MoveCursor(u32 a);
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b244
+extern u8 data_ov001_0222b244[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b240
+extern u8 data_ov001_0222b240[4];
 #endif
 }
 #endif

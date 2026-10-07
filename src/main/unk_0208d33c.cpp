@@ -6,6 +6,7 @@
 #include "ui/NameLabelBalloon.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_0208d33c.h"
 
 extern "C" {
 }

@@ -76,9 +76,6 @@ extern u16 data_020c6cc8;
 extern SpNpcTortimer2ActEntry sSpNpcTortimer2ActTable[];
 // 0x02250bcc is a label inside the 0x20-byte table (second ptmf of entry 0)
 #define data_ov004_02250bcc ((SpNpcTortimer2ActEntry *)((u8 *)sSpNpcTortimer2ActTable + 8))
-extern SpNpcTortimer2 *volatile sSpNpcTortimer2;
-extern u8 sSpNpcTortimer2ModelPath[];
-extern u8 sSpNpcTortimer2TexturePath[];
 
 void NpcMoveAnimSet_setStandAnim(void *self, s32 a);
 s32 NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);

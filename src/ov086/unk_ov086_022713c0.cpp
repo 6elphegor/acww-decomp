@@ -27,6 +27,8 @@
 #include "actor/ActorProfile.h"
 #include "player/PlayerData.h"
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov086_02271c20  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov086_02271c24  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
@@ -129,7 +131,6 @@ s32 Clock_GetTimeOfDay();
 extern u32 data_ov086_02271c20;
 extern u32 data_ov086_02271c24;
 extern const Unk_ov086_022714e4_Ent sSpNpcTortimerCountdownFortuneLines[4];
-extern SpNpcTortimerCountdownActEntry sSpNpcTortimerCountdownActTable[3];
 }
 
 extern "C" char sSpNpcTortimerCountdownFortuneStrKey[];

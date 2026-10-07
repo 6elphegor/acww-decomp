@@ -5,6 +5,8 @@
 #include "ui/HudController.h"
 #define PROTO_LOCAL_CommSub_RecvTownTune  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Melody_Pack  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gMelodyEditPattern  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02065330.h"

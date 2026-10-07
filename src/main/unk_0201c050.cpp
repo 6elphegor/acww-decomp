@@ -84,15 +84,14 @@
 #define PROTO_LOCAL_PlanErrand_GetShownItem  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Pocket_CountMatching  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_CopyFrom  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0201c050.h"
+#include "proto/main/unk_0202e2d4.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0203c92c.h"
@@ -679,6 +678,7 @@ BOOL Talk_CheckAndSetPlayerFlag(u32, BOOL);
 void TalkChoiceList_SetIndices(u32, u8 *, s32, s32);
 s32 MapBlock_HasAnyAttr(void *, u32);
 u16 * MapBlock_GetItemPtr(void *, s32, s32, s32);
+void Camera_FocusOnPoint(void *);
 s32 Event_GetState(u32, void *, u32);
 s32 Event_GetDaysSinceStart(u32);
 u32 Item_GetFurnitureIndex(void *);
@@ -797,6 +797,7 @@ s32 Scene_InMuseumRoom();
 s32 SceneId_GetMuseumRoom(s32);
 s32 Scene_InNookShop();
 s32 Weather_GetFallingPrecip();
+s32 Vec_DistXZ(void *, void *);
 #define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
 void SndSeEmitter_dtor(void *);
 #define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
@@ -1194,7 +1195,6 @@ extern u32 sVillagerClothMaterialNames;
 extern u32 data_020c6cf0;
 extern u8 sVillagerTexturePathBuf[];
 extern u8 sVillagerModelPathBuf[];
-extern s32 sSpNpcWalkAnimSpeedScale;
 }
 
 static inline BOOL Unk_020d8938_IsSet(u16 *p)

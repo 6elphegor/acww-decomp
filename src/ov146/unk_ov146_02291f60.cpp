@@ -24,6 +24,14 @@
 #define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov146_02293e98  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcConfirmButtonCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcFrameCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcQuitButtonCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcRowCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcRowCellsSelected  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -32,6 +40,7 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov146/unk_ov146_02291f60.h"
 
@@ -84,10 +93,6 @@ class MsgString;
 
 extern "C" {
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurY;
-extern u8 gTouchCurX;
 extern void *gCurrentHeap;
 
 void MIi_CpuCopy16(void *dst, void *src, u32 n);

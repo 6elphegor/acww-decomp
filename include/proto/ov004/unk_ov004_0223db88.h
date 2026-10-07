@@ -4,6 +4,8 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_0223db88.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct MuseumInfoPoint;
 #ifdef __cplusplus
 class MuseumFossilRoom;
 class MuseumRoom;
@@ -22,6 +24,36 @@ MuseumFossilRoom *MuseumFossilRoom_Create();
 MuseumRoomUnk53 *MuseumRoomUnk53_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_sMuseumFishPoints23
+extern MuseumInfoPoint sMuseumFishPoints23[4];
+#endif
+#ifndef PROTO_LOCAL_sMuseumFishPoints24
+extern MuseumInfoPoint sMuseumFishPoints24[2];
+#endif
+#ifndef PROTO_LOCAL_sMuseumFossilPoints25
+extern MuseumInfoPoint sMuseumFossilPoints25[12];
+#endif
+#ifndef PROTO_LOCAL_sMuseumFossilRoomProfile
+extern ProcProfile sMuseumFossilRoomProfile;
+#endif
+#ifndef PROTO_LOCAL_sMuseumFossilPoints26
+extern MuseumInfoPoint sMuseumFossilPoints26[12];
+#endif
+#ifndef PROTO_LOCAL_sMuseumRoomProfile
+extern ProcProfile sMuseumRoomProfile;
+#endif
+#ifndef PROTO_LOCAL_sMuseumInsectPoints27
+extern MuseumInfoPoint sMuseumInsectPoints27[4];
+#endif
+#ifndef PROTO_LOCAL_sMuseumInsectPoints28
+extern MuseumInfoPoint sMuseumInsectPoints28[5];
+#endif
+#ifndef PROTO_LOCAL_sMuseumRoomUnk53Profile
+extern ProcProfile sMuseumRoomUnk53Profile;
+#endif
+#ifndef PROTO_LOCAL_sMuseumPaintingPoints29
+extern MuseumInfoPoint sMuseumPaintingPoints29[20];
+#endif
 #endif
 
 #endif

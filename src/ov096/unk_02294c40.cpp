@@ -67,10 +67,10 @@
 #define PROTO_LOCAL__ZN10PocketMenu9mainAct29Ev  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL__ZN10PocketMenu9mainAct2AEv  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL__ZN10PocketMenu9mainAct2BEv  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02065330.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f4f0.h"
@@ -78,6 +78,8 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b7d10.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov002/unk_ov002_022025cc.h"
@@ -128,14 +130,10 @@ extern "C" {
 extern CommManager *gCommManager;
 extern u8 gFieldSceneKind;
 extern u8 gU8None;
-extern u8 gTouchHoldFrames;
-extern u8 gTouchCurY;
-extern u8 gTouchCurX;
-extern u8 gTouchPressY;
-extern u8 gTouchPressX;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
+void Camera_PopView();
+void Camera_PushView();
+BOOL Camera_IsViewPushed();
 void FieldAction_Release(s32 a);
 s32 FieldAction_PollDrop(s32 a);
 s32 FieldAction_RequestDrop(s32 a, s32 b);

@@ -97,6 +97,15 @@ void *MuseumInsectRoom_Create();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sMuseumScorpionSlot
+extern s8 sMuseumScorpionSlot;
+#endif
+#ifndef PROTO_LOCAL_sMuseumDungBallSlot
+extern s8 sMuseumDungBallSlot;
+#endif
+#ifndef PROTO_LOCAL_sMuseumInsectFrame
+extern u8 sMuseumInsectFrame;
+#endif
 #ifndef PROTO_LOCAL_MuseumInsect_CheckFloorAhead
 u8 MuseumInsect_CheckFloorAhead(void *o_);
 #endif
@@ -401,6 +410,9 @@ MuseumInsect *MuseumInsect_FindDungBall();
 u32 MuseumInsect_GetTimeOfDayBit();
 #endif
 }
+#ifndef PROTO_LOCAL_sMuseumInsects
+extern MuseumInsect sMuseumInsects[0x20];
+#endif
 #endif
 
 #endif

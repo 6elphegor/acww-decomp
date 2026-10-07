@@ -15,16 +15,8 @@
 #include "game/CollisionEdge.h"
 #include "game/CollisionTriangle.h"
 #define PROTO_LOCAL_CollisionMap_GetBlockRef  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_DistSq  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistSqXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_SafeNormalize  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/main/unk_0202fa70.h"
 
@@ -132,6 +124,7 @@ public:
 // ---------------------------------------------------------------- unk_0202f600.cpp
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" s32 FX_Sqrt(s32 a);
+extern "C" s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 struct FloorBoundsRange { s32 lo, hi; };
 struct FloorBoundsStackPad { s32 v[6]; FloorBoundsStackPad() {} ~FloorBoundsStackPad() {} };
 
@@ -205,6 +198,7 @@ struct BoxColliderShape {
     BOOL updateTransform(VecFx32 *a, s32 ang, VecFx32 *b);
 };
 extern u8 data_021f47e0[];
+extern "C" s32 Vec_NotEqual(void *a, void *b);
 extern "C" void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 extern "C" void Mtx43_RotateY(void *m, s32 ang);
 extern "C" void Mtx43_Scale(void *m, s32 x, s32 y, s32 z);

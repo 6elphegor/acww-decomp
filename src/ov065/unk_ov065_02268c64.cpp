@@ -9,6 +9,17 @@
 #include "nitro/wm.h"
 #include "net/WifiLinkEvent.h"
 #include "sys/OSThread.h"
+#define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_SetAlarm  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_SleepThread  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWifiRssiCount  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02114410.h"
+#include "proto/autoload_2/unk_02114d84.h"
+#include "proto/autoload_2/unk_02114ef4.h"
+#include "proto/ov065/unk_ov065_02268c64.h"
+#include "proto/ov065/unk_ov065_0226aca8.h"
+#include "proto/ov065/unk_ov065_0226ad84.h"
 
 extern "C" {
 
@@ -47,10 +58,6 @@ extern "C" {
 extern WifiLinkSendState sWifiLinkSendState;
 extern u8 sWifiLinkSendLock[];
 extern volatile u8 sWifiRssiCount;
-extern u8 sWifiRssiSamples[];
-extern u8 *sWifiApContext;
-extern void *sWifiApLinkWork;
-extern void *sWifiApSocketConfig;
 extern WifiApAllocator *sWifiApAllocator;
 extern WifiApControl *sWifiApControl;
 
@@ -81,7 +88,6 @@ u8 WifiAp_ProcessSearch();
 u8 WifiAp_ProcessStartup();
 u8 WifiAp_ProcessNetSetup();
 
-u8 WifiLink_GetAverageRssi();
 
 
 
@@ -98,12 +104,9 @@ u8 WifiLink_GetAverageRssi();
 
 
 
-void WifiAp_FreeBlock(u32, void *, u32);
 
 
 
-u8 WifiAp_GetState();
-void *WifiAp_GetBlock(u32);
 
 
 
@@ -210,18 +213,13 @@ s32 WM_Finish(void);
 s32 WM_SetIndCallback(void *);
 s32 WM_Enable(void *);
 s32 OS_IsTickAvailable(void);
-void OS_InitTick(void);
 s32 OS_IsAlarmAvailable(void);
-void OS_InitAlarm(void);
-void OS_CreateAlarm(void *);
 void MIi_CpuCopyFast(void *, void *, u32);
 void *MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 WM_SetDCFData(void *, void *, void *, u32);
 void OS_WakeupThread(void *);
 void OS_SleepThread(void *);
-void OS_LockMutex(void *);
-void OS_UnlockMutex(void *);
 
 // overlay 065, other groups
 void WifiLink_OnScanResult(void);
@@ -234,7 +232,6 @@ void WifiLink_SetDefaultOptions(void);
 void WifiLink_RestartKeepAliveAlarm(void);
 WifiLinkWork *WifiLink_GetWork(void);
 s32 WifiLink_EndSearchAsync(void *, void *, s32);
-s32 WifiAp_MacEquals(void *, void *);
 void WifiLink_InitSendState(void);
 
 // same group
@@ -838,7 +835,6 @@ extern u8 gWifiLinkAnySsid[];
 // main module
 u32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(u32);
-void OS_CancelAlarm(void *);
 void OS_SetAlarm(void *, u32, u32, void *, u32);
 void MI_CpuFill8(void *, u32, u32);
 void MI_CpuCopy8(void *, void *, u32);
@@ -1313,7 +1309,6 @@ void WifiLink_ResetOnError();
 u32 WifiLink_CountBits(u32);
 u32 WifiLink_CountLeadingZeros(u32);
 u32 WifiLink_NextAllowedChannel(u32);
-void WifiLink_AddRssiSample(u32);
 void WifiLink_OnFrameReceived(void *);
 void WifiLink_AddApListEntry(WMBssDesc *, u32);
 void DC_InvalidateRange(void *, u32);

@@ -25,6 +25,39 @@
 #include "save/MuseumData.h"
 #include "save/SaveRecord4.h"
 #include "talk/MsgString9B.h"
+#define PROTO_LOCAL_EffectSpl_CreateOneShot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemDrop_StartToUnit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LostAndFound_AddDailyItems  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_MotherLetter_OnNewDay  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_PlayerActor_GetSlotPosXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_RecycleBin_AdvanceDays  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gEffectSplDefaultInitCbs  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02113088.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_0203cbc0.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_02041e00.h"
+#include "proto/main/unk_02051218.h"
+#include "proto/main/unk_0205ef08.h"
+#include "proto/main/unk_02060b9c.h"
+#include "proto/main/unk_0206269c.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_02097d1c.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_020c00c0.h"
+#include "proto/ov003/unk_ov003_022192b4.h"
+#include "proto/ov004/unk_ov004_0222bed0.h"
 
 
 struct Unk_0204a768_Pos {
@@ -164,12 +197,9 @@ s32 TownUpdateThread_Destroy();
 s32 TownUpdateThread_StartCtx(TownUpdateThread *p);
 void TownUpdateThread_SetArgs(TownUpdateThread *p, u8 *a, u8 *b, u32 c, u8 d);
 void TownUpdateThread_Init(TownUpdateThread *p);
-void *Heap_Alloc(u32 heap, u32 size);
 void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
-void Heap_SetThreadHeap(u32 a, u32 b);
 void OS_WakeupThreadDirect(void *th);
 u32 DC_FlushAll();
-void OS_ExitThread();
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void TownUpdateThread_Main(u8 *arg);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -185,7 +215,6 @@ s32 TownBbs_GetDaysToPost(void *o, u8 *a, Unk_02042104_Date *d);
 void TownBbs_CatchUpPelicanDate(void *o, u8 *base, Unk_02042104_Date *d);
 void TownBbs_PostDays(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, s32 flag);
 void TownBbs_PostEventsForDay(void *o, u8 *base, Unk_02042104_Date *d);
-s32 PlayerDataArray_CountUsed(void *p);
 s32 Game_IsIntroPeriod();
 s32 DateTime_DiffDays(Unk_02042104_Date *a, Unk_02042104_Date *b);
 void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
@@ -198,12 +227,8 @@ extern u8 gSaveVillagers[];
 extern u32 sBbsEventMsgs[];
 s32 SaveVillagers_Get(void *p, u32 v);
 s32 _ZN12VillagerData13getVillagerIdEv(s32 self);
-u32 VillagerId_GetSpecies(s32 id);
 void Villager_GetSpeciesName(MsgString9BStorage *o, u32 v);
-void MailText_SetSlot(s32 a, MsgString9BStorage *o);
-s32 Random_GlobalBelow(s32 v);
 s32 Event_GetStateAt(u32 ty, Unk_02042104_Date *d, s32 v);
-void Bbs_PostMsgDated(s32 a, const char *fmt, u32 b, u32 c, u32 d);
 s32 TownBbs_UnpackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
 void TownBbs_PostRandomUnused(void *o, s32 n, const char *fmt, u8 *p, s32 len, Unk_02042104_Date *d);
 void TownBbs_PackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
@@ -226,7 +251,6 @@ struct Unk_02042104_Pair {
     s32 hi, lo;
 };
 extern u8 gFieldSceneKind;
-u32 PlayerActor_GetActor(u32 v);
 void PendingUnit_CancelAt(Unk_02042104_Pair *p, s32 k);
 void FieldAction_WaterFlowers(u32 v, Unk_02042104_Pair *p);
 void FieldItemFx_StartDrop(u32 a, u32 b, Unk_02042104_Pair *c, VecFx32 *d);
@@ -272,30 +296,23 @@ s32 _ZN11CommManager8isOnlineEv(void *);
 s32 PendingUnit_Find(void *, s32);
 s32 _s32_div_f(s32, s32);
 void Scene_SetUnitItem(s32, s32, u32, s32);
-s32 Inventory_GetEmptyLetter(void);
-s32 Pocket_FindEmpty(void);
 s32 Scene_GetCurrent(void);
-u32 NetArea_FindSlotInScene(s32);
 void FieldAction_Submit(u8, u32);
 void Town_ClearObjectFcFdAtPos(void *, void *);
 s32 Field_AidOrZero(void *);
 s32 FieldAction_RequestPlaceAtPending(s32, void *);
-s32 Math_AngleToDir8(s32);
 void FieldPos_ToUnit(void *, void *, void *);
 s32 PendingUnit_IndexAt(void *, s32);
 s32 Field_IsUnitClearOfOthers(void *, s32);
 s32 Scene_InTown(void);
-s32 Room_CanDropOnFurnitureAt(s32, s32);
 s32 Ground_IsNeighbourReachable(s32, s32, s32, s32, s32);
 s32 _ZN8BlockMap12getPlantFlagEii(void *, s32, s32);
 u16 *FieldAction_CheckFreeUnit(u32, void *, s32, s32, Vec2 *);
 BOOL FieldItemFx_StartPop(u32, u32, Vec2 *);
 BOOL FieldItemFx_StartDrop(u32, u32, Vec2 *, VecFx32 *);
 BOOL ItemDrop_StartToUnit(u32, u32, Vec2 *, VecFx32 *, u32);
-void *PlayerActor_GetActor(u32);
 u32 FieldPlayer_GetHeldItem(void *);
 u16 Flower_GetWateredForm(void *, void *, s32);
-void ItemSync_SetAtUnit(s32, s32, s32, u32, s32);
 void FieldPos_FromUnitCenter(void *, s32, s32);
 s32 VillagerTrend_NotifyUnk5(void *);
 void FieldAction_Clear(FieldActionRequest *, s32);
@@ -354,7 +371,6 @@ s32 FieldAction_FindDropUnit(s32 a, s32 *pos, void *out);
 void Item_ToPlantedFieldId(u16 *a, u16 *b, s32 c);
 s32 _ZN11CommManager8isOnlineEv(void *o);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-u8 *PlayerActor_GetActor(s32 a);
 s32 Item_IsTreeStage0(u16 *p);
 s32 Item_GetFruitTreeFruit(u16 *p);
 void FieldItemFx_StartPlant(s32 a, u16 b, Pos p, VecFx32Copy v);
@@ -422,7 +438,6 @@ BOOL Item_IsTreeGrown(u16 *p);
 BOOL Town_CanReleaseBees(void);
 u32 ChopCount_Get(void *g, Unk_020434f0_P p);
 BOOL _ZN11CommManager8isOnlineEv(void *g);
-s32 PlayerData_GetCurrentIndex(void);
 extern s32 sTreeChopHits[];
 s32 _ZN8BlockMap10getDigKindEii(void *b, s32 x, s32 y);
 s32 BlockMap_IsBuriedAtUnit(void *b, s32 x, s32 y);
@@ -435,7 +450,6 @@ BOOL Field_IsLocalAid(void *a);
 s32 FieldAction_RequestWater(void *a, u16 *id, Unk_020434f0_P *pos, s32 d);
 void Town_ClearBeesReleased(void);
 void Town_SetBeesReleased(void);
-s32 PlayerData_GetCurrent(void);
 BOOL Item_ToPlantedFieldId(u16 *out, u16 *out2, u16 c);
 void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c);
 BOOL Town_CanReleaseBees(void);
@@ -463,7 +477,6 @@ s32 FieldPlayer_GetHeldItem(s32 v);
 s32 TownState_IsPlayerDateNotToday(void *p);
 s32 Item_GetPrice(volatile u16 *p);
 s32 FengShui_GetWestTotal(void);
-s32 Random_GlobalBelow(s32 n);
 s32 TownState_SetPlayerDateToday(void *p);
 extern u8 gSaveData[];
 void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c);
@@ -540,15 +553,12 @@ extern u8 data_020da2a8[];
 s32 Flower_GetSpecies(u16 *a);
 s32 Flower_GetColor(u16 *a);
 void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, VecFx32 *v, s16 e);
-void *PlayerData_GetBySessionSlot(u32 slot);
 s32 _ZN11CommManager8isOnlineEv(void *g);
 s32 _ZN11CommManager7isMyAidEj(void *g, s32 a);
 void *TownBlockMap_Get(void);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 Random_GlobalBelow(s32 a);
 s32 Item_IsFlower(u16 *p);
 s32 Scene_GetCurrent(void);
-s32 ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
 void Flower_TrampleAt(VecXZ *p, s32 f);
@@ -596,7 +606,6 @@ void FieldAction_ApplyResult(FieldActionResultMsg *e);
 void FieldAction_CancelPendingForResult(FieldActionResultMsg *e);
 void FieldAction_ApplyResultOffscreen(FieldActionResultMsg *e, s32 t);
 void FieldActionFx_Start(FieldActionResultMsg *e);
-s32 PlayerActor_TestSlotFlag(s32 a, s32 b);
 void Area_PlaceItem(s32 m, s32 x, s32 z, s32 a, s32 b);
 void FieldAction_OnNetResult(FieldActionResultMsg *e, s32 t);
 void FieldAction_ApplyResultOffscreen(FieldActionResultMsg *e, s32 m);
@@ -655,7 +664,6 @@ static inline BOOL Unk_02044aa8_R(volatile u16 *p, u32 c, u32 lo, u32 hi)
 }
 BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-Actor *PlayerActor_GetActor(u32 i);
 s32 func_01ffcb0c(s32 a, s32 b);
 u32 Field_AidOrLocal(u32 a);
 s32 PendingUnit_Reset(void *p);
@@ -672,8 +680,6 @@ BOOL _ZN8BlockMap12canPlaceItemEii(void *obj, s32 x, s32 y);
 s32 PendingUnit_IndexAt(Vec2 *p, s32 a);
 void ItemPickSpec_Destruct(Unk_02044aa8_Rng *r);
 void ItemPick_One(u16 *out, Unk_02044aa8_Rng *r, s32 a, s32 b, s32 c, s32 d, s32 e);
-u32 Tree_GetDropSide(u32 a, VecFx32 *v);
-BOOL NetArea_IsLocalOwner();
 void FieldAction_HostProcess(FieldActionRequestMsg *s, s32 a, s32 b);
 s32 _ZN11CommManager11beginRecordEv(CommManager *g);
 s32 _ZN11CommManager11writeRecordEPhj(CommManager *g, void *p, s32 n);
@@ -734,8 +740,6 @@ void PendingUnit_SetIndex(s32 idx, u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, 
 BOOL PendingUnit_CanAddAt(Vec2 *pos);
 BOOL PendingUnit_Add(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
 void Tree_DropItems(PackedUnitPos *q, u32 kind, Vec2 *pos);
-void Field_SetUnitItem(s32 x, s32 y, u32 a, u32 b);
-void Room_SetItemAtUnit(s32 x, s32 y, u32 a, u32 b);
 BOOL Scene_InTown();
 s32 FieldItemFx_CancelAt(u32 kind, Vec2 *pos);
 static inline s32 Unk_021c3f8c_GetX(PackedUnitPos p) { return p.v >> 8; }
@@ -853,13 +857,9 @@ void Town_RefreshEvents(void *, s32);
 void Town_UpdateDay(s32);
 s32 FieldActionFx_ClearAll(void *);
 s32 MoneyRock_Init(void *);
-s32 MenuCtrl_IsClockMovedBack();
 extern u8 gSaveRecycleBin[];
 extern u8 gSavePlayers[];
 void *HouseRoomMaps_Get(s32);
-s32 PlayerDataArray_IsUsed(void *, s32);
-void *PlayerData_GetResident(void *, s32);
-s32 Random_GlobalBelow(s32);
 s32 Town_SpawnItemInAcre(void *, void *, s32, s32, s32, void *, s32);
 s32 Town_IsSandAt(void *p, s32 x, s32 y);
 s32 Item_RandomSeashell(void *);
@@ -870,14 +870,12 @@ s32 Scene_InTown();
 s32 Scene_InTownUnk31();
 s32 EventWeekSlots_Update();
 s32 TownBbs_UpdateDaily();
-s32 Weather_GetPrevDayRain();
 s32 DateTime_SubHours(void *, s32);
 s32 TownState_PickNextWeekDate(void *, void *);
 s32 RoomScoreEvaluator_Construct(void *);
 s32 HappyRoom_EvaluateHouse(void *);
 s32 RoomScoreEvaluator_Destruct(void *);
 s32 _ZN12TurnipMarket9updateDayEi(void *, s32);
-s32 PlayerData_UpdateDay();
 extern u8 gSaveData[];
 extern u8 data_021ed29c[];
 s32 TownState_SetSeasonPeriod(u32);
@@ -891,8 +889,6 @@ void RecycleBin_SpoilTurnips(void *);
 void Town_ApplyElapsedDays(void *, void *, s32, s32, s32);
 u16 *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 s32 FieldUnit_FromBlockUnit(void *, void *, s32, s32, s32, s32);
-s32 EventAnnounce_CanCheck();
-s32 EventAnnounce_Request(s32, s32, s32);
 s32 Town_UpdateSeashells(void *);
 s32 Clock_GetDateTime(void *);
 s32 DateTime_DiffMinutes(void *, void *);
@@ -958,9 +954,7 @@ s32 PlayerActor_GetSlotPosXZ(void *, void *, void *, s32, s32);
 s32 SceneId_IsTown(u32);
 s32 SceneId_IsTownUnk31(u32);
 TownBlockMap *TownBlockMap_Get();
-s32 Random_GlobalBelow(s32);
 void Town_SpawnSeashellsInAcre(void *, void *, s32);
-Actor *PlayerActor_GetActor(s32);
 void TownEval_EvaluateAcreAt(void *, void *, s32, s32);
 s32 Town_SpawnItemInAcre(void *, void *, s32, s32, u32, void *, s32);
 s32 Town_IsSandAt(void *p, s32 x, s32 y);
@@ -974,7 +968,6 @@ void Clock_GetDateTime(void *);
 s32 TownEval_Evaluate(void *, void *);
 void Town_UpdateEvents(void *, void *, s32, s32, void *, s32);
 s32 Game_IsIntroPeriod();
-s32 PlayerData_GetCurrent();
 void Clock_GetDateTimeCleared(void *);
 void DateTime_SubHours(void *, s32);
 void Town_CleanupExpiredEvents(void *, void *, s32, s32, void *);
@@ -983,17 +976,12 @@ void Town_RemoveVisitorStructures(void *, s32);
 void Town_PlaceVisitorStructures(void *, void *, s32);
 s32 MI_CpuCopy8(void *, void *, s32);
 s32 Event_GetState(s32, void *, s32);
-void Town_RemoveReddTent();
-void Town_RemoveKatrinaTent();
-void Town_RemoveGracieCar();
-void Town_RemoveGulliverShip();
 void Clock_GetCalendarKey(void *);
 u16 *TownState_GetEvent(s32);
 s32 Clock_GetYear();
 void TownState_RemoveEvent(void *, s32);
 s32 Town_EndEventEffect(void *, s32, void *, s32, s32);
 void Town_UndecorateCedars(void *, void *, s32);
-void Town_RemoveCountdownSign();
 void Town_ClearBorderTrees(void *);
 void Town_WaterAll(void *, void *, s32, s32);
 void TownEval_EvaluateAndClean(void *, void *, s32, s32);
@@ -1021,7 +1009,6 @@ void Town_SpawnCoconut(void *, void *, s32);
 void Town_BuryGyroids(void *, void *, s32, s32, u32);
 void Town_UpgradeBuriedShovels(void *, void *, s32, s32);
 void NookShop_ApplyRenovation();
-void Save_ConvertFakePaintings();
 void LostAndFound_AddDailyItems(void *, s32);
 void RecycleBin_AdvanceDays(void *, void *, s32);
 void RoomScoreEvaluator_Construct(void *);
@@ -1029,11 +1016,9 @@ void HappyRoom_EvaluateHouse(void *);
 void RoomScoreEvaluator_Destruct(void *);
 void _ZN7TownMap18updateGroundSeasonEv(void *);
 void Sky_OnDayChange(s32);
-void BottleLetter_OnNewDay(s32);
 void MotherLetter_OnNewDay(void *, s32);
 void _ZN14RoostGuestRoll4rollEv(void *);
 void NookShop_UpdateDaily(void *, s32);
-void LostChild_AdvanceDays(s32);
 void SaveVillagers_OnNewDay(void *, void *);
 s32 Date_GetWeekday(s32, s32, s32);
 void Turnips_SpoilAll(void *);
@@ -1099,10 +1084,6 @@ extern volatile u32 gTownEval[];
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
-void Town_PlaceReddTent();
-void Town_PlaceKatrinaTent();
-void Town_PlaceGracieCar();
-void Town_PlaceCountdownSign();
 EventDayEntry *Event_GetTodayList();
 void Clock_GetCalendarKey(void *);
 void TownState_AddEvent(void *, u32);
@@ -1111,7 +1092,6 @@ u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 BlockMap_PlaceItem(void *m, s32 x, s32 z, u32 t, s32 f);
 s32 Item_IsTreeGrown(void *);
-s32 Random_GlobalBelow(s32);
 void LitCedarList_Add(s32, s32);
 void Town_SpawnVillagerHouseFlowers(void *, void *, s32, s32);
 s32 TownState_FindEvent(u32, s32);
@@ -1120,7 +1100,6 @@ s32 Date_DaysBetween(void *, u32);
 s32 BlockMap_IsBuried(void *, s32, s32, s32, s32);
 void BlockMap_PlaceItemAt(void *, void *, s32, s32, s32, s32, s32, s32);
 s32 Weather_GetCurrent();
-s32 ItemPick_FromRange(u16 *, u32, u32, u32, u32, u32, u32, u32, u32, u32);
 s32 func_02133150_dummy();
 void Town_SpawnItemInAcre(void *, void *, s32, s32, s32, void *, s32);
 void Town_UpgradeBuriedShovels(void *a, void *b, s32 c, s32 d);
@@ -1179,7 +1158,6 @@ extern u8 gSaveVillagers[];
 extern u16 data_020c912c[];
 extern u16 data_020c9754[];
 extern u8 data_020c96b8[];
-s32 Random_GlobalBelow(s32 n);
 s32 _s32_div_f(s32 a, s32 b);
 TownBlockMap *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *map, s32 x, s32 y, s32 a, s32 b, s32 c);
@@ -1196,7 +1174,6 @@ s32 SaveVillagers_GetUnk3830Index(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
 s32 Villager_IsSettledExcept(void *a, s32 b);
 s32 Villager_GetPlan(void *p);
-s32 VillagerPlanBlock_GetPlan(s32 block);
 s32 _ZN12VillagerPlan8getStateEv(s32 self);
 s32 HousePos_IsValid(void *p);
 s32 Town_SpawnBeeTrees(void *a, void *b, s32 c, s32 d);
@@ -1271,7 +1248,6 @@ struct Unk_020485d4_Size {
     Unk_020485d4_Size(s32 a, s32 b) : w(a), h(b) {}
 };
 extern void *gCommManager;
-s32 Random_GlobalBelow(s32);
 s32 Town_MakeSpecialTree(void *a, void *b, s32 x, s32 y, s32 e);
 u16 *BlockMap_GetItemPtr(void *q, s32 a, s32 b, s32 c, s32 d, s32 e);
 void FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
@@ -1281,7 +1257,6 @@ void BlockMap_SetItemAtUnit(void *b, u16 *id, s32 x, s32 y, s32 z);
 void BlockMap_SetBuriedAtUnit(void *b, s32 x, s32 y);
 void BlockMap_ClearBuriedAtUnit(void *b, s32 x, s32 y);
 void *Scene_GetCurrent();
-void ItemSync_SetAtUnit(s32 x, s32 y, void *r, u16 id, s32 g);
 s32 _ZN8BlockMap7isShoreEii(void *self, s32 x, s32 y);
 s32 _ZN8BlockMap10getDigKindEii(void *self, s32 x, s32 y);
 s32 _ZN8BlockMap12getPlantFlagEii(void *self, s32 x, s32 y);
@@ -1361,7 +1336,6 @@ BOOL Item_IsTreeStage0(u16 *p);
 void Town_WitherSapling(void *m, u32 id, s32 x, s32 y);
 BOOL _ZN8BlockMap12getPlantFlagEii(void *m, s32 x, s32 y);
 s32 BlockMap_PlaceItem(void *m, s32 x, s32 y, u32 id, s32 layer);
-s32 Random_GlobalBelow(s32 n);
 s32 _s32_div_f(s32 a, s32 b);
 s32 Town_IsPlantable(void *m, s32 x, s32 y);
 s32 Flower_GetSpecies(u16 *p);
@@ -1460,7 +1434,6 @@ struct FlowerHybridList {
     s32 numEntries;
     FlowerHybridEntry *entries;
 };
-s32 Random_GlobalBelow(s32 n);
 extern FlowerHybridList *sFlowerHybridTable[][10];
 s32 Flower_GetColor(u16 *p);
 u16 *BlockMap_GetItemPtr(void *a, s32 x, s32 y, s32 lx, s32 ly, s32 z);
@@ -1492,8 +1465,6 @@ BOOL Scene_InTown();
 BOOL Scene_InTownUnk31();
 void *TownBlockMap_Get();
 void *HouseRoomMaps_GetForScene(void *a);
-void Field_SetUnitItem(void *a, void *b, void *c, void *d);
-void Room_SetItemAtUnit(void *a, void *b, void *c, s32 d);
 void Town_GrowTree(void *a, u16 *p, s32 x, s32 y);
 void Town_WitherSapling(void *a, u32 v, s32 x, s32 y);
 void BlockMap_PlaceItemAt(void *a0, void *a1, s32 a2, s32 a3, s32 a4, s32 a5, u16 a6, s32 a7);

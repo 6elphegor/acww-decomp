@@ -18,6 +18,8 @@
 #include "sys/ProcProfile.h"
 #define PROTO_LOCAL_InventoryBg_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Inventory_PlayPutDownSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -25,6 +27,7 @@
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov094/unk_ov094_02292360.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
@@ -48,12 +51,6 @@ extern void *gCommManager;
 extern u8 gSaveLostAndFound[];
 extern u8 gSaveRecycleBin[];
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchPressY;
-extern u8 gTouchPressX;
 extern s32 gCurrentHeap;
 }
 

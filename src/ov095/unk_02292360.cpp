@@ -20,6 +20,14 @@
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_GetObjX  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_GetObjY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov095_02295588  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov095_02295894  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov095_022958bc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov095_02295da4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov095_02295dd4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov095_02295e48  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sLengthGaugeCells  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -32,6 +40,7 @@
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02085940.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov095/unk_02292360.h"
@@ -56,8 +65,6 @@ struct KeyboardKeyCell {
 
 extern "C" {
 extern volatile u16 sCharSortKeyZero;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
 s32 Oam_GetObjY(void *p);
 s32 Oam_GetObjX(void *p);

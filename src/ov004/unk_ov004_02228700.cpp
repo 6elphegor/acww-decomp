@@ -20,8 +20,8 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "item/ItemPickSpec.h"
 #define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
@@ -129,9 +129,7 @@ public:
 #define G(T, off) (*(T *)((u8 *)g + off))
 
 extern "C" {
-extern void *gBgHeap;
 extern Mtx43 data_021f47e0;
-extern SewingMachine *sSewingMachine;
 void RoomObjTex_Construct(void *);
 void RoomObjTex_Destruct(void *);
 void RoomObjRes_Free(void *);

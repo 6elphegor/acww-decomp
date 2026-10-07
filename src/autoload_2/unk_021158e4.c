@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MI (mi_dma.c): autoload_2 0x021158e4-0x02115ad4.
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_021158e4.h"
 #include "proto/autoload_2/unk_02115bac.h"
 #include "proto/main/unk_0206d49c.h"
 typedef unsigned char u8;

@@ -20,18 +20,12 @@
 #include "gfx/CachedModel.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_EffectSplEntry_Start  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_EffectSpl_CreateOneShot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_EffectSpl_ToCurvedPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateXYZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SPL_Create  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SPL_CreateWithInitialize  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SPL_Draw  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SPL_Load  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gViewMtx  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020f8b44.h"
 #include "proto/main/unk_02063f3c.h"
@@ -208,16 +202,10 @@ struct EffectModelAnimFiles {
 };
 
 extern "C" {
-extern EffectSplProc *sEffectSplProc;
-extern void *sEffectModelHeap;
-extern void *sEffectSplFrmHeap;
-extern void *sEffectSplHeapMem;
-extern s32 *sEffectSplEmitPos;
 extern s32 gCurrentHeap;
 extern u32 gViewMtx[];
 extern u8 data_021f47e0[];
 
-s32 EffectSplEntry_Start(EffectEmitterEntry *, s32, s32, s32, EffectEmitterCbs *, EffectEmitterTag);
 void EffectSplPool_ReleaseAll(EffectSplPool *p);
 void EffectSplPool_Update(EffectSplPool *p);
 u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3);
@@ -225,39 +213,17 @@ void *EffectSpl_CopyResourceData(void *unused, EffectSplArchive *p);
 }
 
 extern const EffectSplResEntry sEffectResTable[152];
-extern s16 sEffectSeasonTint0[24];
-extern s16 sEffectSeasonTint1[24];
-extern s16 sEffectSeasonTint2[24];
-extern s16 sEffectSeasonTint3[24];
-extern s16 sEffectSeasonTint[24];
-extern uptr sEffectModelAnimFiles[4][3];  // (path pointers)
-extern void (*gEffectSplDefaultInitCbs[10])(EffectSplEmitter *);
 extern const u32 sEffectRes06EmitterIds[8];
 extern const u32 sEffectRes7FEmitterIds[7];
 extern const u32 sEffectRes12EmitterIds[7];
-extern char sPathEfWaterColNsbca[24];
-extern char sPathEfWaterColNsbma[24];
-extern char sPathEfWaterColNsbmd[24];
-extern char sPathCraRibbon1Nsbmd[23];
-extern char sPathCraRibbon1Nsbca[23];
-extern char sPathCraRibbon1Nsbma[23];
-extern char sPathMpSiturenNsbma[22];
-extern char sPathMpSiturenNsbva[22];
-extern char sPathMpSiturenNsbmd[22];
-extern char sPathMpSiturenNsbca[22];
 extern const u32 sEffectRes7EEmitterIds[5];
 extern const u32 sEffectRes5AEmitterIds[5];
-extern char sPathMpLoveNsbca[19];
-extern char sPathMpLoveNsbma[19];
-extern char sPathMpLoveNsbmd[19];
-extern uptr sEffectModelFiles[4];
 extern const u32 sEffectRes01EmitterIds[4];
 extern const u32 sEffectRes05EmitterIds[4];
 extern const u32 sEffectRes10EmitterIds[4];
 extern const u32 sEffectRes13EmitterIds[4];
 extern const u32 sEffectRes62EmitterIds[4];
 extern const u32 sEffectRes59EmitterIds[4];
-extern s16 *sEffectSeasonTintTables[4];
 extern const u32 sEffectRes31EmitterIds[3];
 extern const u32 sEffectRes32EmitterIds[3];
 extern const u32 sEffectRes93EmitterIds[3];

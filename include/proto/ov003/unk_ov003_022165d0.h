@@ -11,6 +11,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02235358
+extern char data_ov003_02235358[0x20];
+#endif
 #ifndef PROTO_LOCAL_PlayerHouse_Create
 void *PlayerHouse_Create();
 #endif

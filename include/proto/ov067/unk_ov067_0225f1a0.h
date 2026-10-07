@@ -16,6 +16,198 @@ struct WlxWmWork;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov067_02261b3c
+extern char data_ov067_02261b3c[14];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b0c
+extern char data_ov067_02261b0c[13];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261c1c
+extern char data_ov067_02261c1c[18];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b4c
+extern char data_ov067_02261b4c[14];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261cd0
+extern char data_ov067_02261cd0[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261bcc
+extern char data_ov067_02261bcc[17];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261e70
+extern char data_ov067_02261e70[27];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261a8c
+extern char data_ov067_02261a8c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261e00
+extern char data_ov067_02261e00[25];
+#endif
+#ifndef PROTO_LOCAL_sWmApiNames
+extern char *sWmApiNames[44];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261a74
+extern char data_ov067_02261a74[9];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ac8
+extern char data_ov067_02261ac8[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261a68
+extern char data_ov067_02261a68[9];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b7c
+extern char data_ov067_02261b7c[15];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261aa4
+extern char data_ov067_02261aa4[11];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261d10
+extern char data_ov067_02261d10[22];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b9c
+extern char data_ov067_02261b9c[15];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261d88
+extern char data_ov067_02261d88[23];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261da0
+extern char data_ov067_02261da0[23];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261d40
+extern char data_ov067_02261d40[22];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b5c
+extern char data_ov067_02261b5c[14];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261dd0
+extern char data_ov067_02261dd0[23];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261d70
+extern char data_ov067_02261d70[22];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261c94
+extern char data_ov067_02261c94[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ca8
+extern char data_ov067_02261ca8[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ea8
+extern char data_ov067_02261ea8[29];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261e8c
+extern char data_ov067_02261e8c[28];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261c6c
+extern char data_ov067_02261c6c[19];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261c80
+extern char data_ov067_02261c80[19];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b2c
+extern char data_ov067_02261b2c[13];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ae0
+extern char data_ov067_02261ae0[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b1c
+extern char data_ov067_02261b1c[13];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261be0
+extern char data_ov067_02261be0[18];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261bf4
+extern char data_ov067_02261bf4[18];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261a80
+extern char data_ov067_02261a80[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261c44
+extern char data_ov067_02261c44[19];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261e1c
+extern char data_ov067_02261e1c[25];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261e54
+extern char data_ov067_02261e54[26];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ad4
+extern char data_ov067_02261ad4[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b6c
+extern char data_ov067_02261b6c[15];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261abc
+extern char data_ov067_02261abc[11];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261bbc
+extern char data_ov067_02261bbc[16];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261db8
+extern char data_ov067_02261db8[23];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261bac
+extern char data_ov067_02261bac[15];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261c58
+extern char data_ov067_02261c58[19];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261cf8
+extern char data_ov067_02261cf8[21];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ab0
+extern char data_ov067_02261ab0[11];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261afc
+extern char data_ov067_02261afc[13];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261cbc
+extern char data_ov067_02261cbc[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ee8
+extern char data_ov067_02261ee8[31];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261c30
+extern char data_ov067_02261c30[19];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ec8
+extern char data_ov067_02261ec8[30];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261b8c
+extern char data_ov067_02261b8c[15];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261d28
+extern char data_ov067_02261d28[22];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261de8
+extern char data_ov067_02261de8[23];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261f08
+extern char data_ov067_02261f08[32];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261a98
+extern char data_ov067_02261a98[11];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261ce4
+extern char data_ov067_02261ce4[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261a60
+extern char data_ov067_02261a60[7];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261aec
+extern char data_ov067_02261aec[13];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261d58
+extern char data_ov067_02261d58[22];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261c08
+extern char data_ov067_02261c08[18];
+#endif
+#ifndef PROTO_LOCAL_data_ov067_02261e38
+extern char data_ov067_02261e38[25];
+#endif
+#ifndef PROTO_LOCAL_sWmErrCodeNames
+extern char *sWmErrCodeNames[20];
+#endif
 #ifndef PROTO_LOCAL_Wlx_SelectNextEntry
 void Wlx_SelectNextEntry(void);
 #endif
@@ -64,6 +256,9 @@ void WlxDebug_Printf(const char *fmt, ...);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWlxState
+extern s32 sWlxState;
+#endif
 #ifndef PROTO_LOCAL_Wlx_OnWmEvent
 s32 Wlx_OnWmEvent(u32 cmd, void *arg);
 #endif

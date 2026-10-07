@@ -13,6 +13,7 @@ typedef int s32;
 typedef int BOOL;
 #include "types64.h"
 #define PROTO_LOCAL_memcmp  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020fe848.h"
 #include "proto/autoload_2/unk_0211d20c.h"
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/itcm/unk_01ffa4a0.h"

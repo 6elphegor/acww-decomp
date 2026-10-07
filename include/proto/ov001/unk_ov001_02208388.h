@@ -10,6 +10,9 @@
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcPathBuf
+extern u8 sWfcPathBuf[0x40];
+#endif
 #ifndef PROTO_LOCAL_WfcUtil_LocalizePath
 u8 *WfcUtil_LocalizePath(u8 *p);
 #endif

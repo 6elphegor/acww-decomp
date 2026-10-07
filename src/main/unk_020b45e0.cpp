@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "sys/SceneBase.h"
+#define PROTO_LOCAL_gGfxFrameHooks  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020029e8.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0208e6d8.h"

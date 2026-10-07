@@ -9,16 +9,18 @@
 #define PROTO_LOCAL_MenuScreen_StepAct09  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ScreenLayers_AcquireStub  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ScreenLayers_ReleaseStub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gMelodyPlayer  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020f4a5c.h"
+#include "proto/dtcm/unk_027e0434.h"
 #include "proto/itcm/unk_01ffcc60.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020116e0.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203c638.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_0206d988.h"
 #include "proto/main/unk_0206db88.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02097444.h"
@@ -27,21 +29,22 @@
 extern "C" {
 extern u8 gMelodyPlayer[];
 extern u8 gSaveTownTune[];
-extern u8 gMelodyEditPattern[];
-extern s32 sMelodyTimer;
 extern s32 gGfxMainOnTop;
 extern u8 gFieldSceneKind;
 extern u8 gCurrentHeap[];
-extern u8 sMenuWipeEdge[24];
-extern u8 sMenuWipeLine;
 
 s64 func_02133540(u32, u32, u32);
 #define MelodyTrack_dtor _ZN11MelodyTrackD1Ev
+void *MelodyTrack_dtor(void *);
+BOOL Camera_RestorePrevMode();
 void Sky_SetEngine(u32);
 void ScreenLayers_ReleaseStub(u32);
 s32 func_01ffcb0c(s32, s32);
+BOOL Camera_IsViewPushed();
+void Camera_PopView();
 void ScreenLayers_AcquireStub(u32);
 void Sky_Disable();
+BOOL Camera_SetMode1();
 u16 *_ZN10PlayerData22getInventoryBackgroundEv(void *self);
 BOOL HBlank_Add(void *, void (*)(void), void (*)(void), s32);
 void HBlank_Remove(void *);

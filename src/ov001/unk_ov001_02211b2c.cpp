@@ -11,6 +11,7 @@
 #define PROTO_LOCAL_WfcFs_LoadFile  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcUtil_LocalizePath  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcApList  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
 #include "proto/ov001/unk_ov001_02208388.h"
@@ -26,7 +27,6 @@
 #include "proto/ov001/unk_ov001_0221cd74.h"
 #include "proto/ov001/unk_ov001_0221cfc0.h"
 #include "proto/ov001/unk_ov001_0221d744.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
@@ -65,9 +65,6 @@ namespace F02212e84 {
 extern "C" {
 extern WfcApList *sWfcApList;
 extern WfcTextEdit *sWfcTextEdit;
-extern u16 sWfcApListScroll;
-extern u8 sWfcApListCursor;
-extern void *sWfcTextEditStoreFuncs[];
 
 void GX_LoadBG3Scr();
 s32 FX_DivS32(s32, s32);
@@ -216,8 +213,6 @@ namespace F022123e4 {
 
 extern "C" {
 extern WfcApList *sWfcApList;
-extern u16 sWfcApListScroll;
-extern u8 sWfcApListCursor;
 extern u8 gWfcScreenRect[];
 
 s32 FX_DivS32(s32, s32);
@@ -225,6 +220,9 @@ s32 FX_ModS32(s32, s32);
 s32 WfcOam_FreeEntry(void *);
 s32 WfcText_ReleaseBgCanvas(void *);
 s32 WfcGx_HidePlanes(s32, s32);
+u8 *WfcConfig_GetEdit();
+s32 WfcConfig_BeginEdit(s32);
+s32 WfcConfig_SetEditSsid(void *);
 s32 WfcHeap_FreeAndClear(void *);
 s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsTouchReleasedIn(void *);
@@ -489,10 +487,6 @@ namespace F0221197c {
 extern "C" {
 extern u8 data_ov001_0222ae94[];
 extern u8 GX_LoadBG2Scr[];
-extern u8 sWfcAossDoneTimer;
-extern u8 data_ov001_0222aea8;
-extern u8 sWfcApListCursor;
-extern u16 sWfcApListScroll;
 extern WfcApList *sWfcApList;
 
 s32 WfcGx_ShowPlanes(u32 a, u32 b);

@@ -10,6 +10,9 @@ class RoostCafeSet;
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sRoostCafeSet
+extern RoostCafeSet *sRoostCafeSet;
+#endif
 #ifndef PROTO_LOCAL_RoostCafeSet_Create
 RoostCafeSet *RoostCafeSet_Create();
 #endif

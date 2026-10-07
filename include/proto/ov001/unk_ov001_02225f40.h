@@ -33,6 +33,12 @@ void WfcInput_UpdateTouch();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcTouchRepeatCounter
+extern u8 sWfcTouchRepeatCounter;
+#endif
+#ifndef PROTO_LOCAL_sWfcKeyRepeatCounters
+extern u8 sWfcKeyRepeatCounters[16];
+#endif
 #ifndef PROTO_LOCAL_WfcInput_IsKeyHeld
 BOOL WfcInput_IsKeyHeld(u32 m);
 #endif

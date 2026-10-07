@@ -12,6 +12,7 @@
 #include "gfx/NNSG3dRenderObj.h"
 #include "gfx/NNSG3dRS.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/main/unk_02055c38.h"

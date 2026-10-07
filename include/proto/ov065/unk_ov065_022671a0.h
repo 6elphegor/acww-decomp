@@ -12,6 +12,15 @@ struct SslMd5Context;
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sSslMd5WordIndex
+extern u8 sSslMd5WordIndex[0x40];
+#endif
+#ifndef PROTO_LOCAL_sSslMd5Padding
+extern u8 sSslMd5Padding[0x40];
+#endif
+#ifndef PROTO_LOCAL_sSslMd5SineTable
+extern u32 sSslMd5SineTable[0x40];
+#endif
 #ifndef PROTO_LOCAL_SslMd5_Transform
 void SslMd5_Transform(SslMd5Context *ctx, const u8 *block);
 #endif

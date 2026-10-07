@@ -193,7 +193,6 @@ public:
 
 // Data
 extern const u8 data_020c8ce4;  // first .rodata object of the next unit
-extern u8 sChatBalloonSyncBuf[0x29];
 extern const u32 sChatBalloonNameSeqs[4];
 
 extern "C" {
@@ -313,11 +312,7 @@ extern const s32 data_020c8cbc;
 extern const u32 sChatBalloonNameSeqs[4];
 extern const s32 data_020c8cb4;
 extern const s32 data_020c8cc0;
-extern u8 sChatBalloonSyncBuf[0x29];
-extern ProcProfile sChatBalloonProcProfile;
 extern const u32 sChatBalloonTextSeqs[4];
-extern ChatBalloonList *sChatBalloonList;
-extern s32 sChatQuickMsgCooldown;
 
 const s32 data_020c8cb8 = 0x20000;
 

@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_020b478c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class DummyScene4;
 #endif
@@ -14,6 +15,9 @@ extern "C" {
 DummyScene4 *DummyScene4_Create(void);
 #endif
 }
+#ifndef PROTO_LOCAL_sDummyScene4Profile
+extern ProcProfile sDummyScene4Profile;
+#endif
 #endif
 
 #endif

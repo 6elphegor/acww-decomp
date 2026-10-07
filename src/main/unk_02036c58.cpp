@@ -6,6 +6,10 @@
 #include "game/Unk_02037674_V3.h"
 #include "game/Unk_021e5890_T.h"
 #include "gfx/BgModelCache.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sNewYearDayDate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sNewYearEveDate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sNewYearEveTime  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_02133d04.h"
@@ -41,7 +45,6 @@ void MI_CpuCopy8(void *, void *, u32);
 void *_ZN7TownMap12getGrassTypeEv(void *);
 extern u16 sNewYearEveDate, sNewYearDayDate, sNewYearEveTime;
 extern u16 sHourlyBgmIds[];
-extern void *gBgHeap;
 extern void *gCurrentHeap;
 extern Unk_021e5890_T data_021e5890;}
 
@@ -51,7 +54,6 @@ s32 Scene_GetCurrent(void);
 void _ZN7TownMap18updateGroundSeasonEv(char *);
 }
 class BgModelCacheObj;
-extern BgModelCacheObj gBgModelCache;
 extern const u8 sBgHeapSizeByRoom[];
 
 

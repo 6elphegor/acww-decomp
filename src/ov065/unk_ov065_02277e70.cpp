@@ -27,9 +27,6 @@ extern "C" {
 
 s32 OS_SPrintf(char *, const char *, ...);
 
-extern s32 __GSIACResult;
-extern char GSIACHostname[];
-extern char __GSIACGamename[];
 
 GsAvailQuery AC;
 

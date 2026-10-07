@@ -15,11 +15,10 @@
 #include "gfx/Model.h"
 #include "sys/Heap.h"
 #define PROTO_LOCAL_FishBobber_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFishBobberHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205ef08.h"
 #include "proto/main/unk_0205f284.h"
@@ -83,8 +82,11 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
+void Vec_ShiftRightTo(VecFx32 *out, VecFx32 *in, s32 n);
 void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
 void VEC_Subtract(VecFx32 *a, VecFx32 *b, VecFx32 *out);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+void Vec_ShiftRight(VecFx32 *v, s32 n);
 void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void WorldCurve_FromCurved(void *p, VecFx32 *v);
 void WorldCurve_ToCurved(VecFx32 *a, VecFx32 *b);

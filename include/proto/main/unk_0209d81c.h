@@ -27,6 +27,9 @@ void SaveData_InitCurrentPlayer(u8 *p);
 void SaveData_InitNew(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sFallbackTownName
+extern u8 sFallbackTownName[8];
+#endif
 #endif
 
 #endif

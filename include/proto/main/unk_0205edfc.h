@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0205edfc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct PlayerBodyWorkPool;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -45,6 +46,9 @@ void PlayerBodyWorkRef_Assign(u8 *p, u8 v);
 u32 PlayerBodyWorkRef_GetHeap(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sPlayerBodyWorkPool
+extern PlayerBodyWorkPool sPlayerBodyWorkPool;
+#endif
 #endif
 
 #endif

@@ -16,7 +16,6 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
-#include "proto/main/unk_020c256c.h"
 
 extern "C" {
 BOOL TalkRequest_SetTargetDone(void *p);
@@ -95,6 +94,7 @@ extern const u8 sSpNpcTestMsgKey[8];
 extern const char *const sSpNpcModelPaths[];
 }
 
+extern "C" SpNpcTest *SpNpcTest_Create();
 extern SpNpcTestActEntry sSpNpcTestActTable[4];
 extern char sSpNpcModelLos[23];
 extern char sSpNpcModelWrl[23];

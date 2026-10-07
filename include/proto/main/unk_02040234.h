@@ -25,6 +25,9 @@ void EventWeekSlots_UpdateToday(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sEventWeekLastHour
+extern u32 sEventWeekLastHour;
+#endif
 #ifndef PROTO_LOCAL_EventWeekSlots_PlaceVisitors
 void EventWeekSlots_PlaceVisitors(EventWeekSlots *s, s32 *arr, s32 *cnt, u8 *a, ClockDateTime *pd);
 #endif

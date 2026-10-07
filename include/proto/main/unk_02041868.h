@@ -6,6 +6,7 @@
 #include "types.h"
 #include "game/Unk_02042104_Date.h"
 #include "town/TownUpdateThread.h"
+struct TownJunkInsectFlags;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -62,6 +63,12 @@ s32 TownUpdateThread_Start();
 BOOL TownUpdateThread_PollDone();
 #endif
 }
+#ifndef PROTO_LOCAL_sTownBbsUpdateCtx
+extern u8 sTownBbsUpdateCtx[4];
+#endif
+#ifndef PROTO_LOCAL_gTownJunkInsectFlags
+extern TownJunkInsectFlags gTownJunkInsectFlags;
+#endif
 #endif
 
 #endif

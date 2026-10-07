@@ -8,10 +8,10 @@
 #define PROTO_LOCAL_MenuCtrl_IsFinished  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetActor  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL__ZN8ProcBase11postExecuteEv  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203d4d8.h"
-#include "proto/main/unk_0203e438.h"
 #include "proto/main/unk_0203e7d0.h"
-#include "proto/main/unk_0203eb78.h"
 #include "proto/main/unk_02065e88.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02094810.h"
@@ -41,11 +41,11 @@ extern TalkRequestFn sTalkRequestEndFns[];
 
 extern "C" {
 extern u8 gScreenTransition;
-extern u8 sCharInteractSyncResult;
 extern s32 gActorDefaultParent;
 extern s32 gCommManager;
 
 Character *PlayerActor_GetActor(s32 id);
+Character *Character_FindByCharId(u32 id);
 TalkRequestEntry *TalkRequestPool_Alloc();
 void PrioList_Insert(TalkRequestList *l, TalkRequestEntry *t);
 void TalkRequestList_FreeAll(TalkRequestList *l);
@@ -56,6 +56,7 @@ void TalkRequest_SetTalkTarget(u32 v);
 void TalkRequest_FinishCurrent();
 u32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(u32 a, u32 b);
+Character *Character_FindInteractionTarget(Character *o);
 BOOL TalkRequest_AcquireHostLock(TalkRequestEntry *t);
 
 void TalkRequestFlags_Set(u32 mask);
@@ -67,6 +68,7 @@ s32 _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(u32 a, u32 b);
 u32 MenuCtrl_IsFinished(u32 a);
 void TalkRequestQueue_Reset(void);
 void PrioList_Init(void *p);
+void TalkRequestPool_Reset(void);
 BOOL TalkRequest_Add(u32 a, u32 b, u32 c, u32 d, u8 e);
 BOOL TalkRequest_IsCurrentKind(u32 x);
 BOOL TalkRequestFlags_IsEventWarpBlock();

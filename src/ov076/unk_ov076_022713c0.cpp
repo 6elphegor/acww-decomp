@@ -166,10 +166,6 @@ static inline BOOL Unk_ov076_IsItem(u16 *p, u16 k) {
 }
 
 extern "C" {
-extern SpNpcPascalActEntry sSpNpcPascalActTable[6];
-extern u8 sSpNpcPascalKey[];
-extern u8 sSpNpcPascalModelPath[];
-extern u8 sSpNpcPascalTexturePath[];
 extern const TalkStartMsg sSpNpcPascalTopicMsgs[3];
 }
 

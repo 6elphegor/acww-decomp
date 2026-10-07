@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_020376c0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,6 +16,12 @@ void Main_LoadBuildTime();
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_gBuildTime
+extern u8 gBuildTime[0x20];
+#endif
 #endif
 
 #endif

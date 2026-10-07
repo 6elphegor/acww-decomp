@@ -18,6 +18,7 @@
 #include "gfx/Model.h"
 #include "save/MuseumData.h"
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/ov004/unk_ov004_02227b44.h"
 
@@ -104,7 +105,6 @@ public:
 };
 
 extern "C" {
-extern void *gBgHeap;
 extern u8 data_021ed0a0[];
 s32 RoomObjRes_GetBca(void *, u32);
 void MuseumDisplay_NodeCallback(NNSG3dRS *o);

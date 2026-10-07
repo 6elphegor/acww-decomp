@@ -32,6 +32,15 @@ char *_strlwr(char *s);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_randomnum
+extern s32 randomnum;
+#endif
+#ifndef PROTO_LOCAL_GSINitroErrno
+extern s32 GSINitroErrno;
+#endif
+#ifndef PROTO_LOCAL_data_ov065_0229107c
+extern u8 data_ov065_0229107c[4];
+#endif
 #ifndef PROTO_LOCAL_ghiAppendHeaderToBuffer
 s32 ghiAppendHeaderToBuffer(GHIBuffer *o, char *a, char *b);
 #endif

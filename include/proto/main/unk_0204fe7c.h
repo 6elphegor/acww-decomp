@@ -21,6 +21,9 @@ void Backup_CancelAndWait(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sFishDisplayNetHandlers
+extern void (*sFishDisplayNetHandlers[3]) (u8 *, u32);
+#endif
 #ifndef PROTO_LOCAL_Backup_Write
 s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c);
 #endif

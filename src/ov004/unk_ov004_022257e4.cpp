@@ -21,6 +21,7 @@
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "net/CommManager.h"
+#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02036c58.h"
 #include "proto/main/unk_020850e0.h"

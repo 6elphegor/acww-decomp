@@ -14,6 +14,7 @@
 #include "gfx/TexVramTask.h"
 #include "gfx/ModelResource.h"
 #include "gfx/PooledModel.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0209c08c.h"
 

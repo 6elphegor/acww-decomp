@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "types.h"
 class DistantTownsMenu;
 #endif
 
@@ -20,8 +21,29 @@ void DistantTownsMenu_SetupBgLayers();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov140_02293e64
+extern u32 data_ov140_02293e64[84];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293d80
+extern u32 data_ov140_02293d80[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293d40
+extern u32 data_ov140_02293d40[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293d00
+extern u32 data_ov140_02293d00[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293d88
+extern u32 data_ov140_02293d88[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293dcc
+extern u32 data_ov140_02293dcc[12];
+#endif
 #ifndef PROTO_LOCAL_DistantTownsMenu_Create
 DistantTownsMenu *DistantTownsMenu_Create();
+#endif
+#ifndef PROTO_LOCAL_data_ov140_02293da4
+extern u32 data_ov140_02293da4[10];
 #endif
 }
 #endif

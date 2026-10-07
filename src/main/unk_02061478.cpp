@@ -28,11 +28,37 @@ public:
 
 
 extern "C" {
+u32 ItemInfo_GetPrice(u16 *p);
+s32 ItemInfo_GetNameForm(u16 *);
+u16 *ItemInfo_GetName(u16 *p);
+void ItemInfo_FreeIndoor();
+void ItemInfo_LoadIndoor(s32 a);
+s32 ItemInfo_Exit();
+s32 ItemInfo_Init();
+BOOL ItemInfo_IsReady();
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL Item_IsFurniture(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
 BOOL Item_IsFlowerAltItem(u16 *p);
 BOOL Item_IsFlowerItem(u16 *p);
+void Item_FromPlacedForm(u16 *out, u16 *in);
+u32 Series_GetName(s32);
+BOOL ItemInfo_IsHoldable(u16 *p);
+s32 ItemInfo_GetSeason(u16 *p);
+s32 ItemInfo_GetUnk07(u16 *p);
+s32 ItemInfo_GetClass(u16 *p);
+s32 ItemInfo_GetKind(u16 *p);
+s32 ItemInfo_GetSeries(u16 *p);
+s32 ItemInfo_GetNameAttrA(u16 *p);
+s32 ItemInfo_GetNameAttrB(u16 *p);
+s32 ItemInfo_GetUnk02(u16 *p);
+void ItemInfo_CountClass1dHeadwear();
+void ItemInfo_CountFlowerItems();
+void ItemInfo_CountHoldable();
+void ItemInfoTables_FreeIndoor(void *);
+void ItemInfoTables_LoadIndoor(void *, s32);
+s32 ItemInfoTables_Close(void *);
+s32 ItemInfoTables_Open(void *);
 s32 _ZN10RecordFile5closeEv(void *);
 void func_0206d964(void *);
 void func_0206d974(void *);
@@ -312,6 +338,7 @@ static inline u8 *Unk_02062024_Lookup(u32 v) {
     return (u8 *)((RecordFile *)(((InfoTableSet *)((&gItemInfo)))->getDma()))->getRecord(i);
 }
 
+extern "C" u16 *ItemInfo_GetName(u16 *p);
 
 static inline BOOL Unk_0206198c_Tail(u32 v, u32 sh) {
     u32 i = v & 0xfff;

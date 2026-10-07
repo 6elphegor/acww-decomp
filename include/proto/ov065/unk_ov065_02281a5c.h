@@ -13,6 +13,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov065_0228dadc
+extern char data_ov065_0228dadc[0x40];
+#endif
 #ifndef PROTO_LOCAL_gpiProfilesTableFree
 void gpiProfilesTableFree(void *p);
 #endif

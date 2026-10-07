@@ -15,6 +15,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sRoomPlayerMsgFile
+extern char sRoomPlayerMsgFile[16];
+#endif
+#ifndef PROTO_LOCAL_sRoomErrorMsgFile
+extern char sRoomErrorMsgFile[16];
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_NetGetOutOfBedCheck
 void PlayerActor_NetGetOutOfBedCheck(void);
 #endif
@@ -45,6 +51,27 @@ void PlayerActor_NetDrinkCoffee();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov004_0224d4a4
+extern s32 data_ov004_0224d4a4;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d4a8
+extern s32 data_ov004_0224d4a8;
+#endif
+#ifndef PROTO_LOCAL_sFtrPullDist
+extern s32 sFtrPullDist;
+#endif
+#ifndef PROTO_LOCAL_sSeatApproachDist
+extern s32 sSeatApproachDist;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d4b0
+extern s32 data_ov004_0224d4b0;
+#endif
+#ifndef PROTO_LOCAL_sRoomInteractDist
+extern s32 sRoomInteractDist;
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224d4b4
+extern s32 data_ov004_0224d4b4;
+#endif
 #ifndef PROTO_LOCAL__ZN12RoomObjActorC2Ev
 RoomObjActor *_ZN12RoomObjActorC2Ev(RoomObjActor *self);
 #endif

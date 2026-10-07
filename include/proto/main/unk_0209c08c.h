@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+class SavedFadeIn;
 #endif
 
 #ifdef __cplusplus
@@ -23,6 +24,9 @@ void Scene_SaveFadeIn(u32 v);
 u32 Scene_GetSavedFadeIn();
 #endif
 }
+#ifndef PROTO_LOCAL_sSavedFadeIn
+extern SavedFadeIn sSavedFadeIn;
+#endif
 #endif
 
 #endif

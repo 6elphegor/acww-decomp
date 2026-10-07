@@ -113,7 +113,6 @@ struct SpNpcTortimerFlowerFestActEntry {
 };
 
 extern "C" {
-extern SpNpcTortimerFlowerFestActEntry sSpNpcTortimerFlowerFestActTable[3];
 }
 
 SpNpcTortimerFlowerFestActEntry sSpNpcTortimerFlowerFestActTable[3] = {

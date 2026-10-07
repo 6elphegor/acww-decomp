@@ -13,11 +13,14 @@
 #include "talk/EncodedString.h"
 #include "talk/MsgString9B.h"
 #include "talk/EncodedString8.h"
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gEffectManager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sEffectDefaultOneShotCbs  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sEffectDefaultTrackedCbs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0208f268.h"
 #include "proto/main/unk_02090268.h"
+#include "proto/main/unk_02093f8c.h"
 #include "proto/main/unk_02093ff0.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
@@ -72,9 +75,11 @@ s32 func_02090538(void *);
 }
 
 extern "C" {
+void Vec_RotateY(void *, s32);
 }
 
 extern "C" {
+s32 Vec_SafeNormalize(void *);
 }
 
 extern "C" {

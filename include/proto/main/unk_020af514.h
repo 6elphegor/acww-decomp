@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+class LooseSnowballs;
 #endif
 
 #ifdef __cplusplus
@@ -17,6 +18,9 @@ BOOL Snowman_FindInTown(u32 *a, u32 *b, u32 idx);
 BOOL Snowman_RemoveFromTown(u32 idx);
 #endif
 }
+#ifndef PROTO_LOCAL_gLooseSnowballs
+extern LooseSnowballs gLooseSnowballs;
+#endif
 #endif
 
 #endif

@@ -3,14 +3,11 @@
 // WvrReceiveCallback: PXI receive callback of the VRAM C/D lock helper (WVR_StartUpAsync, G015b). On message 0x10000/7 or 0x20000/0 it releases the
 // locked banks (OSi_UnlockVram) and then calls the user callback stored by WVR_StartUpAsync.
 #include "types.h"
+#include "proto/autoload_2/unk_020fe4b4.h"
 
 extern "C" {
 // written by the PXI interrupt callback: volatile as in the original (user decision 2026-10-02)
-extern volatile u16 data_021f5c40;
 // written by the PXI interrupt callback: volatile as in the original (user decision 2026-10-02)
-extern volatile u16 data_021f5c44;
-extern u32 data_021f5c48;
-extern void (*data_021f5c4c)(u32, u32);
 
 void OSi_UnlockVram(u32 a, u32 b);
 void PXI_SetFifoRecvCallback(u32 a, void *b);

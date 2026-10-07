@@ -12,6 +12,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov065_0228ca58
+extern char data_ov065_0228ca58[4];
+#endif
 #ifndef PROTO_LOCAL_Unk_ov065_0227ae94_pool_order
 __declspec(weak) void Unk_ov065_0227ae94_pool_order(void);
 #endif
@@ -21,6 +24,18 @@ __declspec(weak) void Unk_ov065_0227ae94_pool_order(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov065_022910e4
+extern volatile s32 data_ov065_022910e4;
+#endif
+#ifndef PROTO_LOCAL_data_ov065_022910e0
+extern volatile s32 data_ov065_022910e0;
+#endif
+#ifndef PROTO_LOCAL_data_ov065_022910dc
+extern volatile s32 data_ov065_022910dc;
+#endif
+#ifndef PROTO_LOCAL_data_ov065_022910e8
+extern volatile s32 data_ov065_022910e8;
+#endif
 #ifndef PROTO_LOCAL_ghiParseURL
 BOOL ghiParseURL(GHIConnection *u);
 #endif

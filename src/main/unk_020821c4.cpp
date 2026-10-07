@@ -45,13 +45,11 @@ struct NpcFaceAnimPool : NpcResPool {
     CharaFaceAnimRef *getFaceAnim(u32 i);
 };
 
-extern NpcFaceAnimPool sNpcFaceAnimPool;
 extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get();
 
 // ---- 0x020e0798
 
 
-extern VillagerAnimHeapRefPool sVillagerAnimHeapRefPool;
 
 // ---- 0x020e07b4
 struct NpcTexPatBufRefSlot : NpcResSlot {
@@ -70,7 +68,6 @@ struct NpcTexPatBufRefPool : NpcResPool {
     NpcTexPatBufRef *getBufRef(u32 i);
 };
 
-extern NpcTexPatBufRefPool sNpcTexPatBufRefPool;
 extern "C" NpcTexPatBufRefPool *NpcTexPatBufRefPool_Get();
 
 // ---- 0x020e07d0
@@ -92,7 +89,6 @@ struct NpcClothTexPool : NpcResPool {
     CharaClothTexRef *getClothTex(u32 i);
 };
 
-extern NpcClothTexPool sNpcClothTexPool;
 extern "C" NpcClothTexPool *NpcClothTexPool_Get();
 
 // ---- 0x020e07ec
@@ -115,7 +111,6 @@ struct NpcHeldItemModelPool : NpcResPool {
     BOOL loadItem(u32 i, u16 *p);
 };
 
-extern NpcHeldItemModelPool sNpcHeldItemModelPool;
 extern "C" NpcHeldItemModelPool *NpcHeldItemModelPool_Get();
 
 // ---- 0x020e0808
@@ -129,7 +124,6 @@ struct SpNpcAnimHeapRefPool : NpcResPool {
     SpNpcAnimHeapRef *getHeapRef(u32 i);
 };
 
-extern SpNpcAnimHeapRefPool sSpNpcAnimHeapRefPool;
 extern "C" SpNpcAnimHeapRefPool *SpNpcAnimHeapRefPool_Get();
 
 // ---- 0x020e0824
@@ -149,7 +143,6 @@ struct NpcTexPatHeapPool : NpcResPool {
     CharaFaceAnimWorkRef *getHeapRef(u32 i);
 };
 
-extern NpcTexPatHeapPool sNpcTexPatHeapPool;
 extern "C" NpcTexPatHeapPool *NpcTexPatHeapPool_Get();
 
 // ---- 0x020e0840
@@ -163,7 +156,6 @@ struct NpcBodyAnimPool : NpcResPool {
     AnimSlotRef *getLayer(u32 i, u32 off);
 };
 
-extern NpcBodyAnimPool sNpcBodyAnimPool;
 extern "C" NpcBodyAnimPool *NpcBodyAnimPool_Get();
 
 extern const s32 sNpcBodyAnimLayerIdBases[];

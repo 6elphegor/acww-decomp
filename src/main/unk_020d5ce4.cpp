@@ -7,6 +7,7 @@
 // offset; data_020d5cec is set as a SpriteAnimSeq table in unk_02089508.cpp, and the DataRef12 offset words decode as x/y).
 #include "types.h"
 #include "gfx/SpriteAnim.h"
+#include "proto/main/unk_020d5ce4.h"
 
 // objects of the other files of the block
 extern SpriteAnimFrame data_020d5644[14];
@@ -16,8 +17,6 @@ extern SpriteAnimFrame data_020d583c[20];
 extern SpriteAnimFrame data_020d592c[20];
 
 // creation order (declarations, then definitions in the same order) gives the original layout after mwcc's size sort
-extern SpriteAnimSeq data_020d5cec[4];
-extern SpriteAnimSeq data_020d5ce4[1];
 
 SpriteAnimSeq data_020d5cec[4] = {
     {data_020d592c, 20}, {data_020d5644, 14}, {data_020d56ec, 14}, {data_020d5794, 14},

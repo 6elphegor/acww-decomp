@@ -86,6 +86,9 @@ void SslSha1_LoadBe32(u32 *dst, u8 *src, u32 n);
 #ifndef PROTO_LOCAL_SslSha1_Transform
 void SslSha1_Transform(u32 *ctx, u8 *data);
 #endif
+#ifndef PROTO_LOCAL_sSslSha1Padding
+extern u8 sSslSha1Padding[0x40];
+#endif
 #ifndef PROTO_LOCAL_SslSha1_Update
 void SslSha1_Update(SslSha1Context *ctx, const u8 *data, u32 n);
 #endif

@@ -9,6 +9,7 @@
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/VecFx32.h"
 #include "types.h"
+class EffectManager;
 class EffectModelObj;
 #endif
 
@@ -718,6 +719,261 @@ s32 Effect_PlayById2(s32 a, s32 b, s32 c, s32 d);
 s32 Effect_CreateById(s32 a, s32 b, s32 c, s32 d);
 #endif
 }
+#ifndef PROTO_LOCAL_data_020e14a4
+extern void *data_020e14a4[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e147c
+extern void *data_020e147c[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e1490
+extern void *data_020e1490[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14a0
+extern void *data_020e14a0[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e148c
+extern void *data_020e148c[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e1494
+extern void *data_020e1494[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e1484
+extern void *data_020e1484[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14bc
+extern void *data_020e14bc[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e1474
+extern void *data_020e1474[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e149c
+extern void *data_020e149c[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14b4
+extern void *data_020e14b4[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14ac
+extern void *data_020e14ac[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14b0
+extern void *data_020e14b0[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14c4
+extern void *data_020e14c4[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14c8
+extern void *data_020e14c8[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14a8
+extern void *data_020e14a8[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e1478
+extern void *data_020e1478[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14c0
+extern void *data_020e14c0[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e14b8
+extern void *data_020e14b8[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e1480
+extern void *data_020e1480[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e1498
+extern void *data_020e1498[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e1488
+extern void *data_020e1488[1];
+#endif
+#ifndef PROTO_LOCAL_data_020e15b4
+extern void *data_020e15b4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e14f4
+extern void *data_020e14f4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e14fc
+extern void *data_020e14fc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e150c
+extern void *data_020e150c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15f4
+extern void *data_020e15f4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1564
+extern void *data_020e1564[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e152c
+extern void *data_020e152c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1544
+extern void *data_020e1544[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1574
+extern void *data_020e1574[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e151c
+extern void *data_020e151c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e157c
+extern void *data_020e157c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e156c
+extern void *data_020e156c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1514
+extern void *data_020e1514[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1524
+extern void *data_020e1524[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e154c
+extern void *data_020e154c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e155c
+extern void *data_020e155c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e14ec
+extern void *data_020e14ec[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1554
+extern void *data_020e1554[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1534
+extern void *data_020e1534[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e153c
+extern void *data_020e153c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e14e4
+extern void *data_020e14e4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1584
+extern void *data_020e1584[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e158c
+extern void *data_020e158c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1594
+extern void *data_020e1594[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e14dc
+extern void *data_020e14dc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e159c
+extern void *data_020e159c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15a4
+extern void *data_020e15a4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15ac
+extern void *data_020e15ac[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e14d4
+extern void *data_020e14d4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15bc
+extern void *data_020e15bc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15c4
+extern void *data_020e15c4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15cc
+extern void *data_020e15cc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15d4
+extern void *data_020e15d4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15dc
+extern void *data_020e15dc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15e4
+extern void *data_020e15e4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15ec
+extern void *data_020e15ec[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e1504
+extern void *data_020e1504[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e14cc
+extern void *data_020e14cc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e15fc
+extern void *data_020e15fc[3];
+#endif
+#ifndef PROTO_LOCAL_data_020e1608
+extern void *data_020e1608[3];
+#endif
+#ifndef PROTO_LOCAL_data_020e1614
+extern void *data_020e1614[3];
+#endif
+#ifndef PROTO_LOCAL_data_020e1620
+extern void *data_020e1620[3];
+#endif
+#ifndef PROTO_LOCAL_data_020e162c
+extern void *data_020e162c[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e163c
+extern void *data_020e163c[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e164c
+extern void *data_020e164c[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e165c
+extern void *data_020e165c[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e166c
+extern void *data_020e166c[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e167c
+extern void *data_020e167c[4];
+#endif
+#ifndef PROTO_LOCAL_data_020e168c
+extern void *data_020e168c[6];
+#endif
+#ifndef PROTO_LOCAL_data_020e16a4
+extern void *data_020e16a4[6];
+#endif
+#ifndef PROTO_LOCAL_data_020e16bc
+extern void *data_020e16bc[6];
+#endif
+#ifndef PROTO_LOCAL_data_020e16d4
+extern void *data_020e16d4[8];
+#endif
+#ifndef PROTO_LOCAL_sEffectDefaultOneShotCbs
+extern void *sEffectDefaultOneShotCbs[8];
+#endif
+#ifndef PROTO_LOCAL_data_020e1714
+extern void *data_020e1714[8];
+#endif
+#ifndef PROTO_LOCAL_data_020e1734
+extern void *data_020e1734[10];
+#endif
+#ifndef PROTO_LOCAL_data_020e175c
+extern void *data_020e175c[10];
+#endif
+#ifndef PROTO_LOCAL_data_020e1784
+extern void *data_020e1784[14];
+#endif
+#ifndef PROTO_LOCAL_sEffectDefaultTrackedCbs
+extern void *sEffectDefaultTrackedCbs[16];
+#endif
+#ifndef PROTO_LOCAL_data_020e17fc
+extern void *data_020e17fc[16];
+#endif
+#ifndef PROTO_LOCAL_data_020e18a8
+extern s32 data_020e18a8[27];
+#endif
+#ifndef PROTO_LOCAL_data_020e183c
+extern s32 data_020e183c[27];
+#endif
+#ifndef PROTO_LOCAL_sEffectKindTable
+extern void *sEffectKindTable[204];
+#endif
+#ifndef PROTO_LOCAL_gEffectManager
+extern EffectManager gEffectManager;
+#endif
 #endif
 
 #endif

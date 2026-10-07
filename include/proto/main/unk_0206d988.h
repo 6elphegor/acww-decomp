@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+class MelodyPlayer;
 #endif
 
 #ifdef __cplusplus
@@ -35,6 +36,9 @@ void Melody_Update(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_020ddf8c
+extern s32 data_020ddf8c;
+#endif
 #ifndef PROTO_LOCAL_Melody_Pack
 void Melody_Pack(u32 *dst, u8 *src);
 #endif
@@ -66,6 +70,15 @@ BOOL Melody_IsBusy();
 void Melody_PlayRandom(u32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sMelodyTimer
+extern s32 sMelodyTimer;
+#endif
+#ifndef PROTO_LOCAL_gMelodyEditPattern
+extern u8 gMelodyEditPattern[0x10];
+#endif
+#ifndef PROTO_LOCAL_gMelodyPlayer
+extern MelodyPlayer gMelodyPlayer;
+#endif
 #endif
 
 #endif

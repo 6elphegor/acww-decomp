@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/io_access.h"
+#include "proto/autoload_2/unk_021045e4.h"
 #include "proto/autoload_2/unk_02105d50.h"
 #include "proto/itcm/unk_01ff8ad4.h"
 typedef unsigned char u8;

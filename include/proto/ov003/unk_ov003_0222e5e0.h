@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov003/unk_ov003_0222e5e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct InsectNetSyncRec;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -33,6 +34,9 @@ void InsectNetSync_PackVar(void *dst, s32 idx);
 BOOL InsectNetSync_Get(s32 a, s32 b, s8 *c, s32 *d, s32 *e, u8 *f);
 #endif
 }
+#ifndef PROTO_LOCAL_sInsectNetSync
+extern InsectNetSyncRec sInsectNetSync[8];
+#endif
 #endif
 
 #endif

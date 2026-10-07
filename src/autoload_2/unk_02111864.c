@@ -1,4 +1,5 @@
 #include "proto/autoload_2/unk_021104ac.h"
+#include "proto/autoload_2/unk_02111864.h"
 // mwcc-flags: -nothumb -O4,p
 typedef unsigned char u8;
 typedef unsigned short u16;

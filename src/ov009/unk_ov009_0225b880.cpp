@@ -32,22 +32,19 @@
 #include "gfx/AnimModel.h"
 #include "gfx/Model.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_Camera_IsBlockingFocusView  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ModelSlotHandle_Destroy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ModelSlotHandle_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203e7d0.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206d988.h"
@@ -158,7 +155,6 @@ extern BuildingResources sBuildingResources[];
 extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
 extern u8 data_020d0a7c[];
-extern void *gFieldStructureHeap;
 extern void *gCurrentHeap;
 extern BgmManager *data_021c1b3c;
 
@@ -185,7 +181,9 @@ void TalkAutoAdvance_start(void *, u32);
 void *Scene_GetWarpRequest();
 void Scene_ResetTownReturnPos();
 s32 Math_AngleDiffAbs(s32, s32);
+s32 Vec_DistXZ(void *, void *);
 s32 *PlayerActor_GetBodyPos(u32);
+void Camera_SetMode3();
 void TalkRequest_SetTargetDone(void *);
 s32 Scene_GetCurrent();
 s32 SceneWarp_RequestExit(void *, s32);

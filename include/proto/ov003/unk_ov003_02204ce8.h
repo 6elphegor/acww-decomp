@@ -294,6 +294,45 @@ void PlayerActor_PitfallFallSetNetData(u8 *p, u8 a, u8 b);
 #ifndef PROTO_LOCAL_PlayerActor_PitfallFallGetNetData
 void PlayerActor_PitfallFallGetNetData(u8 *s, u8 *a, u8 *b);
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02230af0
+extern s32 data_ov003_02230af0;
+#endif
+#ifndef PROTO_LOCAL_sFishEscapeSpeed
+extern s32 sFishEscapeSpeed;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230ae8
+extern s32 data_ov003_02230ae8;
+#endif
+#ifndef PROTO_LOCAL_sFishCastFarDist
+extern s32 sFishCastFarDist;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230ae0
+extern s32 data_ov003_02230ae0;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230adc
+extern s32 data_ov003_02230adc;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230ad8
+extern s32 data_ov003_02230ad8;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230ad4
+extern s32 data_ov003_02230ad4;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230ad0
+extern s32 data_ov003_02230ad0;
+#endif
+#ifndef PROTO_LOCAL_sFishCastNearDist
+extern s32 sFishCastNearDist;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230ac8
+extern s32 data_ov003_02230ac8;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230ac4
+extern s32 data_ov003_02230ac4;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02230ac0
+extern s32 data_ov003_02230ac0;
+#endif
 #ifndef PROTO_LOCAL_PlayerActor_FishReleaseSetNetData
 void PlayerActor_FishReleaseSetNetData(u8 *p, u32 a, u32 b);
 #endif

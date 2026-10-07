@@ -8,6 +8,7 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
 #include "types.h"
+class PlayerHeadBank;
 #endif
 
 #ifdef __cplusplus
@@ -107,6 +108,12 @@ s32 PlayerHead_GetModelId(u8 *p, s32 j);
 void PlayerHead_SetModelId(u8 *p, s32 j, u32 v);
 #endif
 }
+#ifndef PROTO_LOCAL_sPlayerHeadPathBuf
+extern char sPlayerHeadPathBuf[0x14];
+#endif
+#ifndef PROTO_LOCAL_sPlayerHeadBank
+extern PlayerHeadBank sPlayerHeadBank;
+#endif
 #endif
 
 #endif

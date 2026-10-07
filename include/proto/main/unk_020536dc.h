@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/GfxFrameHooks.h"
 #include "gfx/ThreeLayerAnimModel.h"
 #endif
 
@@ -38,6 +39,9 @@ void Gfx_VBlankFlush();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_gGfxFrameHooks
+extern GfxFrameHooks *gGfxFrameHooks;
+#endif
 #ifndef PROTO_LOCAL_ThreeLayerAnimModel_ClearLayer3Mask
 void ThreeLayerAnimModel_ClearLayer3Mask(ThreeLayerAnimModel *o);
 #endif

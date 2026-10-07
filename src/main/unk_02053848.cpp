@@ -33,12 +33,13 @@ struct NNSG3dResJntAnm {
 #include "gfx/TwoLayerAnimModel.h"
 #include "gfx/ThreeLayerAnimModel.h"
 #include "gfx/Model.h"
-#define PROTO_LOCAL_func_01ffcc10  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0212a120.h"
 #include "proto/main/unk_020536dc.h"
 #include "proto/main/unk_02053848.h"
 #include "proto/main/unk_02055bcc.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206fc44.h"
 #include "proto/main/unk_0206fde4.h"
@@ -59,7 +60,6 @@ void NNS_G3dRenderObjRemoveAnmObj(void *a, void *b);
 void NNS_G3dRenderObjAddAnmObj(void *a, void *b);
 extern u8 sJointAnmHeader2[];
 extern void *gCurrentHeap;
-extern void *gModelCacheHeap;
 void *NNS_G3dGetMdlSet(void *p);
 void *NNS_G3dGetTex(void *p);
 void MI_CpuCopy8(void *src, void *dst, u32 size);

@@ -14,6 +14,7 @@
 #include "town/KatrinaTent.h"
 #include "town/CountdownDigit.h"
 #include "town/CountdownSign.h"
+#define PROTO_LOCAL_gFieldStructureHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020039ec.h"

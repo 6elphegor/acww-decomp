@@ -9,6 +9,7 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #define PROTO_LOCAL_Visitor_ScheduleLow  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sGulliverShipVisitorProfile  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov003/unk_ov003_02217814.h"
 
 

@@ -8,10 +8,6 @@
 
 extern "C" {
 extern SockCoreConfig *sSockCoreConfig;
-extern u32 sSockYieldMode;
-extern u32 sSockLastHostIp;
-extern u32 sSockCoreState;
-extern void *sSockDefaultSocket;
 extern IpStackConfig sIpStackParams;
 
 // other TUs of this overlay

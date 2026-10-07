@@ -379,7 +379,6 @@ extern "C" u8 sSpNpcBlathersModelPath[];
 extern "C" u8 sSpNpcBlathersTexturePath[];
 extern "C" const u8 sSpNpcBlathersDramaMsgTable[32];
 extern "C" ActorProfile sSpNpcBlathersProfile;
-extern SpNpcBlathersActEntry sSpNpcBlathersActTable[9];
 
 struct SpNpcBlathersMsgByte {
     u8 v;

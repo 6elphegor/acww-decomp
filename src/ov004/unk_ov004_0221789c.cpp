@@ -33,8 +33,8 @@
 #include "room/FtrActor.h"
 #include "talk/TalkWindowState.h"
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_02063904.h"
@@ -43,6 +43,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b5e5c.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_0221789c.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 
@@ -92,15 +93,11 @@ extern "C" {
 extern u16 data_020c6cc8;
 extern void *gSceneBlockMap;
 extern s32 gCurrentHeap;
-extern u8 gTouchPrevHeld;
-extern u8 gTouchPrevChanged;
 extern u8 gFieldSceneKind;
 extern u16 gPad[];
 extern s16 data_02135f44[];
 extern void *gCommManager;
 extern FleaMarketSellerActEntry sFleaMarketSellerActTable[8];
-extern u8 data_ov004_022506c8[0x28];
-extern u8 data_ov004_022506f0[0x28];
 
 VecFx32 *PlayerActor_GetBodyPos(u32);
 void NpcActor_FindFreeUnitNear(void *, void *, void *);
@@ -110,6 +107,8 @@ s32 NpcActor_getPlayerActor(void *, u32);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 void BlockMap_getWalkLinksAtPos(void *, void *);
+s32 Vec_Equal(void *, void *);
+s32 Vec_NotEqual(void *, void *);
 s32 Math_CountDownU8(void *);
 s32 Math_AngleDiffAbs(s32, s32);
 s32 NpcActionCtrl_getAction(void *);

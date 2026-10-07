@@ -65,6 +65,9 @@ void PlayerActor_SetLocalExitKind(s32 *p);
 void PlayerActor_PlayLocalSe(u32 x);
 #endif
 }
+#ifndef PROTO_LOCAL_sPlayerFrontItemDist
+extern u32 sPlayerFrontItemDist;
+#endif
 #endif
 
 #endif

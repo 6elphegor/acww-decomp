@@ -32,13 +32,15 @@
 #define PROTO_LOCAL_Net_WlxStartExchange  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_WlxStopExchange  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gOverlayHandle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_0208f0b0.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020afeb4.h"
-#include "proto/ov004/unk_ov004_0223f43c.h"
 #include "proto/ov055/unk_ov055_02258de0.h"
 
 
@@ -68,13 +70,8 @@ extern u32 OVERLAY_67_ID[];
 extern u8 data_021ecfa8[];
 extern u16 data_020c6cc8;
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u8 gScreenTransition;
 extern const void *sSpNpcRoverMsgKey;
-extern u8 sSpNpcRoverModelPath[];
-extern u8 sSpNpcRoverTexturePath[];
-extern SpNpcRover *sSpNpcRoverInstance;
 
 void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
@@ -88,6 +85,7 @@ void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
+void Camera_SetMode20At(void *p);
 }
 void *NetOverlay_AssertOv067();
 class SpNpcRoverTalk;
@@ -185,8 +183,6 @@ extern SpNpcRoverActEntry sSpNpcRoverActTable[3];
 #define data_ov055_02259a4c ((SpNpcRoverActEntry *)((u8 *)sSpNpcRoverActTable + 8))
 extern SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4];
 #define data_ov055_022598d4 (sSpNpcRoverTalkScripts) // (the flag column: the entries' flag member on hosts)
-extern u8 sSpNpcRoverModelPath[];
-extern u8 sSpNpcRoverTexturePath[];
 extern ActorProfile sSpNpcRoverProfile;
 void _ZN14SpNpcRoverTalk15waitTagModeStopEv();
 void _ZN14SpNpcRoverTalk11waitLidOpenEv();

@@ -188,7 +188,6 @@ s32 WM_SetMPDataToPortEx(void *, u32, void *, ...);
 
 // data
 extern WlxWmWork *sWlxWm;
-extern s32 sWlxState;
 extern WlxWork *sWlx;
 extern const u32 sWlxRoleTable[16];
 

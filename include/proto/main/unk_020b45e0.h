@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_020b45e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 class FieldEntryScene;
 #endif
@@ -14,6 +15,9 @@ extern "C" {
 FieldEntryScene *FieldEntryScene_Create(void);
 #endif
 }
+#ifndef PROTO_LOCAL_sFieldEntrySceneProfile
+extern ProcProfile sFieldEntrySceneProfile;
+#endif
 #endif
 
 #endif

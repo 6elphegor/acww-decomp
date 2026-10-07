@@ -53,6 +53,9 @@ void WfcConnTest_Exit();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcConnTestSucceeded
+extern u8 sWfcConnTestSucceeded;
+#endif
 #ifndef PROTO_LOCAL_WfcConnTest_PollTask
 void WfcConnTest_PollTask(s32 a);
 #endif

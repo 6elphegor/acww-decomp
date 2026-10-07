@@ -4,6 +4,8 @@
 // Prototypes of the functions defined in src/main/unk_020501d4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct GameFont;
 #ifdef __cplusplus
 #include "text/Unk_02050288.h"
 #include "types.h"
@@ -125,6 +127,45 @@ u32 Text_ToUpper(u32 key);
 u16 Text_GetCharSortKey(u32 index);
 #endif
 }
+#ifndef PROTO_LOCAL_sGameFontPartAttr
+extern char sGameFontPartAttr[];
+#endif
+#ifndef PROTO_LOCAL_sCharSortKeyTable
+extern u16 sCharSortKeyTable[0xe0];
+#endif
+#ifndef PROTO_LOCAL_gFontASub
+extern GameFont gFontASub;
+#endif
+#ifndef PROTO_LOCAL_gTextTileBuffer
+extern u8 gTextTileBuffer[0x400];
+#endif
+#ifndef PROTO_LOCAL_gFontA
+extern GameFont gFontA;
+#endif
+#ifndef PROTO_LOCAL_gFontB
+extern GameFont gFontB;
+#endif
+#ifndef PROTO_LOCAL_gFontC
+extern GameFont gFontC;
+#endif
+#ifndef PROTO_LOCAL_sGameFontPartHead
+extern char sGameFontPartHead[];
+#endif
+#ifndef PROTO_LOCAL_gTextLabelList
+extern u8 gTextLabelList[2 *sizeof (void *) + 4];
+#endif
+#ifndef PROTO_LOCAL_gTextHeap
+extern void *gTextHeap;
+#endif
+#ifndef PROTO_LOCAL_sTextSystemModuleProfile
+extern ProcProfile sTextSystemModuleProfile;
+#endif
+#ifndef PROTO_LOCAL_sGameFontPartImg
+extern char sGameFontPartImg[];
+#endif
+#ifndef PROTO_LOCAL_gFontD
+extern GameFont gFontD;
+#endif
 #endif
 
 #endif

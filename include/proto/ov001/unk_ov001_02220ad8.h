@@ -71,6 +71,9 @@ u8 *WfcMoveMb_GetChildInfo(u32 id);
 #ifndef PROTO_LOCAL_WfcMoveMb_FindAidByMac
 u32 WfcMoveMb_FindAidByMac(u8 *mac);
 #endif
+#ifndef PROTO_LOCAL_sWfcMoveMbMaskPtrs
+extern u16 *sWfcMoveMbMaskPtrs[6];
+#endif
 }
 #endif
 

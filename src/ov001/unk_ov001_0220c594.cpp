@@ -10,7 +10,6 @@
 #include "proto/ov001/unk_ov001_0220c37c.h"
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov001/unk_ov001_0220d1d8.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
@@ -45,6 +44,7 @@ extern void WfcHeap_Free(void *p);
 extern void *WfcHeap_Alloc(s32, s32);
 extern void *WfcHeap_AllocClear(s32, s32);
 extern void WfcHeap_FreeAndClear(void *);
+extern void WfcConfig_StoreAoss(void *);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MI_CpuCopy8(void *, void *);
 extern void OS_GetMacAddress(void *);

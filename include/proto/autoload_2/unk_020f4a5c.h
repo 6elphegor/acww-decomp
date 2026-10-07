@@ -5,7 +5,6 @@
 
 #include "types.h"
 struct Ctl2;
-struct Obj;
 struct Seq1;
 struct Seq2;
 #ifdef __cplusplus
@@ -15,9 +14,6 @@ struct Seq2;
 
 #ifdef __cplusplus
 extern "C" {
-#endif
-#ifndef PROTO_LOCAL__ZN11MelodyTrackD1Ev
-Obj *MelodyTrack_dtor(Obj *self);
 #endif
 #ifndef PROTO_LOCAL_MelodyTrack_Stop
 void MelodyTrack_Stop(void *p);
@@ -113,6 +109,15 @@ BOOL MelodyBeat_EndStep(Seq1 *self);
 void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos);
 #endif
 }
+#ifndef PROTO_LOCAL_data_0213b9d8
+extern u8 data_0213b9d8;
+#endif
+#ifndef PROTO_LOCAL_data_021f5c28
+extern u16 data_021f5c28;
+#endif
+#ifndef PROTO_LOCAL_sMelodyBeatPattern
+extern u8 *sMelodyBeatPattern;
+#endif
 #endif
 
 #endif

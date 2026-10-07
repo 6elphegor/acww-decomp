@@ -5,9 +5,8 @@
 #include "player/FishBobberStates.h"
 #include "net/CommManager.h"
 #include "sys/Heap.h"
-#include "proto/autoload_2/unk_020e82bc.h"
+#define PROTO_LOCAL_sFishBobberPool  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205ef08.h"
@@ -22,7 +21,6 @@
 
 
 extern "C" {
-extern void *gPlayerPaletteHeap;
 extern u8 *gCommManager;
 extern s16 data_02135f44[];
 extern u8 sFishBobberPool[];
@@ -42,8 +40,12 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
+void Vec_ShiftRightTo(VecFx32 *out, VecFx32 *in, s32 n);
 void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
 void VEC_Subtract(VecFx32 *a, VecFx32 *b, VecFx32 *out);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+void Vec_ShiftRight(VecFx32 *v, s32 n);
+void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void *func_0205fd94(u8 *tbl, u32 idx);
 s32 func_0205fbb8(void *p);
 void func_0205553c(void *e, s32 a);

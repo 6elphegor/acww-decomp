@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_0205ce0c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct CharaFaceAnimPool;
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -36,6 +37,12 @@ u32 CharaFaceAnim_GetSlotSize();
 u32 CharaFaceAnim_GetKind(u32 x);
 #endif
 }
+#ifndef PROTO_LOCAL_sCharaFaceAnimPathBuf
+extern u8 sCharaFaceAnimPathBuf[0x14];
+#endif
+#ifndef PROTO_LOCAL_sCharaFaceAnimPool
+extern CharaFaceAnimPool sCharaFaceAnimPool;
+#endif
 #endif
 
 #endif

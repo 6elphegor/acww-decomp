@@ -4,8 +4,11 @@
 // Prototypes of the functions defined in src/main/unk_02082d74.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 struct EventVisitorEntry;
+struct NpcNetRecord;
 struct Unk_02083314_K;
+struct VisitorCheckEntry;
 struct VisitorSchedule;
 struct VisitorSpawnEntry;
 #ifdef __cplusplus
@@ -261,6 +264,135 @@ BOOL VisitorPlace_Gulliver(void *self, void *b, u16 *out, void *d);
 BOOL VisitorPlace_Gracie(void *self, void *g, u16 *out, s32 *a);
 #endif
 }
+#ifndef PROTO_LOCAL_sVillagerNetRecords
+extern NpcNetRecord sVillagerNetRecords[8];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_FlowerFest
+extern void *sVisitorPlacePmf_FlowerFest[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Gulliver
+extern void *sVisitorPlacePmf_Gulliver[2];
+#endif
+#ifndef PROTO_LOCAL_sEventTortimerProfile
+extern u32 sEventTortimerProfile[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Blanca
+extern void *sVisitorPlacePmf_Blanca[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_Resetti
+extern void *sVisitorCheckPmf_Resetti[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Saharah
+extern void *sVisitorPlacePmf_Saharah[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Pascal
+extern void *sVisitorPlacePmf_Pascal[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Gracie
+extern void *sVisitorPlacePmf_Gracie[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_TomNook
+extern void *sVisitorCheckPmf_TomNook[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorSchedule
+extern VisitorSchedule sVisitorSchedule;
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_Kaitlin
+extern void *sVisitorCheckPmf_Kaitlin[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Wendell
+extern void *sVisitorPlacePmf_Wendell[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_Blanca
+extern void *sVisitorCheckPmf_Blanca[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_Pete
+extern void *sVisitorCheckPmf_Pete[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Fireworks
+extern void *sVisitorPlacePmf_Fireworks[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Shrunk
+extern void *sVisitorPlacePmf_Shrunk[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Tortimer
+extern void *sVisitorPlacePmf_Tortimer[2];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcNetRecords
+extern NpcNetRecord sSpNpcNetRecords[0x26];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_BugOff
+extern void *sVisitorPlacePmf_BugOff[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Kaitlin
+extern void *sVisitorPlacePmf_Kaitlin[2];
+#endif
+#ifndef PROTO_LOCAL_sNpcSpawnerProfile
+extern ProcProfile sNpcSpawnerProfile;
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckTable
+extern VisitorCheckEntry sVisitorCheckTable[11];
+#endif
+#ifndef PROTO_LOCAL_sTortimerVisitorProfile
+extern u32 sTortimerVisitorProfile;
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Joan
+extern void *sVisitorPlacePmf_Joan[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Katie
+extern void *sVisitorPlacePmf_Katie[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_TomNook
+extern void *sVisitorPlacePmf_TomNook[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_BrightNights
+extern void *sVisitorPlacePmf_BrightNights[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_EventHost
+extern void *sVisitorCheckPmf_EventHost[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_DateVisitors
+extern void *sVisitorCheckPmf_DateVisitors[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_Lyle
+extern void *sVisitorCheckPmf_Lyle[2];
+#endif
+#ifndef PROTO_LOCAL_sVillagerNetRecordPacked
+extern u8 sVillagerNetRecordPacked;
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_FishingTourney
+extern void *sVisitorPlacePmf_FishingTourney[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Cornimer
+extern void *sVisitorPlacePmf_Cornimer[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_TortimerTti
+extern void *sVisitorPlacePmf_TortimerTti[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Pete
+extern void *sVisitorPlacePmf_Pete[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_Katie
+extern void *sVisitorCheckPmf_Katie[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_Joan
+extern void *sVisitorCheckPmf_Joan[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorSpawnTable
+extern VisitorSpawnEntry sVisitorSpawnTable[23];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Countdown
+extern void *sVisitorPlacePmf_Countdown[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Lyle
+extern void *sVisitorPlacePmf_Lyle[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorCheckPmf_Tortimer
+extern void *sVisitorCheckPmf_Tortimer[2];
+#endif
+#ifndef PROTO_LOCAL_sVisitorPlacePmf_Resetti
+extern void *sVisitorPlacePmf_Resetti[2];
+#endif
 #endif
 
 #endif

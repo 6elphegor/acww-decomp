@@ -17,6 +17,7 @@
 #include "room/RoomObjActor.h"
 #include "gfx/TwoLayerAnimModel.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0209c3e0.h"
 #include "proto/ov004/unk_ov004_02225290.h"
@@ -42,7 +43,6 @@
 class BarberMachine;
 
 extern "C" {
-extern void *gBgHeap;
 
 void func_02002dd0(void *o, u32 v);
 void func_020555ec(void *m, void *r, u32 z);

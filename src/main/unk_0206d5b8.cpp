@@ -20,6 +20,10 @@
 #define PROTO_LOCAL_OS_SleepThread  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gMelodyPlayer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gOverlayHandle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sCrashContext  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8208.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
@@ -37,7 +41,6 @@
 #include "proto/main/unk_020536dc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065330.h"
-#include "proto/main/unk_0206d4a4.h"
 #include "proto/main/unk_0206d5b8.h"
 #include "proto/main/unk_0206d988.h"
 #include "proto/main/unk_020720f8.h"
@@ -45,7 +48,6 @@
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020af258.h"
 #include "proto/main/unk_020b7d84.h"
-#include "proto/main/unk_020b8340.h"
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov002/unk_ov002_022025cc.h"
 
@@ -64,11 +66,9 @@ extern char data_020ddf6c[];
 }
 
 extern "C" {
-extern u8 sDwcInitResult;
 }
 
 extern "C" {
-extern s32 data_020ddf8c;
 }
 
 extern "C" {
@@ -116,7 +116,6 @@ extern u8 gBackup[];
 }
 
 extern "C" {
-extern s32 sMelodyTimer;
 }
 
 extern "C" {
@@ -311,6 +310,7 @@ extern "C" {
 }
 
 extern "C" {
+void VramQueue2d_Run(void);
 }
 
 extern "C" {
@@ -388,15 +388,18 @@ extern "C" {
 }
 
 extern "C" {
+void Main_PxiSendWordRetry(s32 a, s32 b);
 }
 
 extern "C" {
 }
 
 extern "C" {
+void Main_DwcFree(u32 a, void *p);
 }
 
 extern "C" {
+void *Main_DwcAlloc(u32 a, void *p, u32 n);
 }
 
 
@@ -404,6 +407,7 @@ extern "C" {
 // ---- free functions ----
 
 extern "C" {
+void Fatal_Handler(void *arg);
 }
 
 #pragma thumb off

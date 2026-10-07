@@ -16,6 +16,8 @@
 #define PROTO_LOCAL_BgScreen_SetRectPalette  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Gfx2d_LinearToTiles4bpp  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -26,15 +28,12 @@
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov123/unk_ov123_02291f60.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
 extern void *gCurrentHeap;
 
@@ -95,28 +94,7 @@ extern const u16 sStampSquare[16];
 extern const u16 sStampHeart[16];
 extern const u16 sStampStar[16];
 extern const u16 sPatternEditorSineTable[322];
-extern u32 data_ov123_02295800[2];
-extern u32 data_ov123_02295828[2];
-extern u32 data_ov123_02295830[2];
-extern u32 data_ov123_02295848[2];
-extern u32 data_ov123_02295850[2];
-extern u32 data_ov123_02295858[2];
-extern u32 data_ov123_022958a8[2];
-extern u32 data_ov123_022958b8[2];
-extern u32 data_ov123_0229590c[4];
-extern u32 data_ov123_0229591c[4];
-extern u32 data_ov123_0229593c[4];
-extern u32 data_ov123_0229594c[4];
-extern u32 data_ov123_0229595c[4];
-extern u32 data_ov123_0229596c[8];
-extern u32 data_ov123_02295a24[28];
-extern u32 data_ov123_02295a94[36];
-extern u32 data_ov123_02295b24[38];
-extern u16 data_ov123_02295840[4];
 extern PatternShapeCornerCell data_ov123_022958c0;
-extern u16 *sStampBitmaps[4];
-extern void *sPatternEditorToolCursors[12];
-extern void *data_ov123_02295900[3];
 extern ProcProfile sPatternEditorMenuProfile;
 }
 
@@ -302,55 +280,30 @@ public:
 // ptmf constants named so their order can be controlled
 extern "C" {
 void _ZN17PatternEditorMenu19stateConfirmOpeningEv();
-extern void *data_ov123_022957e0[2];
 void _ZN17PatternEditorMenu13stateWaitWearEv();
-extern void *data_ov123_022957e8[2];
 void _ZN17PatternEditorMenu18updateConfirmTouchEv();
-extern void *data_ov123_022957f0[2];
 void _ZN17PatternEditorMenu10stateCloseEv();
-extern void *data_ov123_022957f8[2];
 void _ZN17PatternEditorMenu19updateCursorReleaseEv();
-extern void *data_ov123_02295808[2];
 void _ZN17PatternEditorMenu9stateOpenEv();
-extern void *data_ov123_02295810[2];
 void _ZN17PatternEditorMenu19updateBarTransitionEv();
-extern void *data_ov123_02295818[2];
 void _ZN17PatternEditorMenu12stateOpeningEv();
-extern void *data_ov123_02295820[2];
 void _ZN17PatternEditorMenu13updateButtonsEv();
-extern void *data_ov123_02295838[2];
 void _ZN17PatternEditorMenu16stateConfirmOpenEv();
-extern void *data_ov123_02295860[2];
 void _ZN17PatternEditorMenu18updateCanvasCursorEv();
-extern void *data_ov123_02295870[2];
 void _ZN17PatternEditorMenu11stateRewearEv();
-extern void *data_ov123_02295878[2];
 void _ZN17PatternEditorMenu17updateCursorPressEv();
-extern void *data_ov123_02295880[2];
 void _ZN17PatternEditorMenu20updateConfirmButtonsEv();
-extern void *data_ov123_02295888[2];
 void _ZN17PatternEditorMenu16updateEyedropperEv();
-extern void *data_ov123_02295890[2];
 void _ZN17PatternEditorMenu17updateCanvasShapeEv();
-extern void *data_ov123_02295898[2];
 void _ZN17PatternEditorMenu17updateCanvasPaintEv();
-extern void *data_ov123_022958a0[2];
 void _ZN17PatternEditorMenu16updateCursorMoveEv();
-extern void *data_ov123_022958b0[2];
 void _ZN17PatternEditorMenu11updateTouchEv();
-extern void *data_ov123_022958c8[2];
 void _ZN17PatternEditorMenu17updateTouchStrokeEv();
-extern void *data_ov123_022958d0[2];
 void _ZN17PatternEditorMenu12stateClosingEv();
-extern void *data_ov123_022958d8[2];
 void _ZN17PatternEditorMenu16stateConfirmBackEv();
-extern void *data_ov123_022958e0[2];
 void _ZN17PatternEditorMenu19stateConfirmClosingEv();
-extern void *data_ov123_022958e8[2];
 void _ZN17PatternEditorMenu17stateConfirmCloseEv();
-extern void *data_ov123_022958f0[2];
 void _ZN17PatternEditorMenu12stateConfirmEv();
-extern void *data_ov123_022958f8[2];
 }
 
 static inline BOOL Unk_ov123_022946c4_Both() {

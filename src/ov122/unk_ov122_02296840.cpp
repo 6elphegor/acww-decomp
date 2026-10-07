@@ -35,6 +35,9 @@
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov122_0229a180  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -43,6 +46,7 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov095/unk_02292360.h"
 #include "proto/ov122/unk_ov122_02296840.h"
@@ -73,8 +77,6 @@ class LetterWriteMenu;
 typedef void (LetterWriteMenu::*Unk_ov122_0229a1b8_Fn)();
 
 extern "C" {
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u16 gPad[];
 void StrBuf_GetBytes(void *p, void *q, u32 n);
 void EncodedString_SetRaw(void *p, const void *src, s32 len);
@@ -85,8 +87,6 @@ void PopupChoice_OpenAddresseePage(void *p, u32 a, u32 b);
 void Menu_PlayScrollTickSe(void *p);
 extern u8 gU8None;
 s32 _ZN21MenuBottomButtonsBody10getTargetYEi(void *p, s32 v);
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 s32 Keyboard_PlayPasteSe(void *st);
 s32 Keyboard_PlayCopySe(void *st);
 BOOL Keyboard_ReplaceCharBeforeCursor(void *st, u8 *a, u8 *b, s32 c, s32 d, s32 e);

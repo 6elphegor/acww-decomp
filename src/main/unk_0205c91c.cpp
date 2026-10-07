@@ -14,7 +14,6 @@
 struct CharaClothTexPool;
 
 extern "C" {
-extern void *gCharaClothTexHeap;
 extern u8 *gCommManager;
 
 BOOL Item_IsFurniture(u16 *p);
@@ -45,7 +44,6 @@ struct CharaClothTexPool {
 };
 
 extern "C" {
-extern CharaClothTexPool sCharaClothTexPool;
 }
 
 extern "C" void CharaClothTexPool_Create(void *parent) {

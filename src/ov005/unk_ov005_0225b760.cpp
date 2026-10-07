@@ -3,6 +3,9 @@
 #include "gfx/VecFx32.h"
 #include "game/SceneWarp.h"
 #include "game/SceneInfo.h"
+#define PROTO_LOCAL_sFieldSceneProfileCount  // declared below: the shared prototype conflicts with the calls here
+#include "proto/ov003/unk_ov003_022187f8.h"
+#include "proto/ov005/unk_ov005_0225b760.h"
 
 // ov005: map scene tables (a scene record, its entry list, the id grid).
 // Generated from the original image; the definition order below
@@ -13,8 +16,6 @@
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
 
 extern u8 sFieldSceneProfileCount;  // copied into the entry table by __sinit
-extern SceneWarpList sFieldSceneObjectList;
-extern u32 sFieldSceneProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern SceneInfo data_ov005_0225b7b4;

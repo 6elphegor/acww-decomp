@@ -59,6 +59,7 @@
 #define PROTO_LOCAL_Snd_StopBellRollSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_StopBgm  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_StopSe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_020f4a5c.h"
 #include "proto/autoload_2/unk_020f7a5c.h"

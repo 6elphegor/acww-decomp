@@ -34,6 +34,18 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "snd/BgmVolumeMixer.h"
+#define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Snd_PlaySe  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Str_SPrintf  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_String_GetArticle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TalkFrame_FreeBuffers  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TalkFrame_HideBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TalkFrame_SetupBgControl  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TalkFrame_ShowBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TalkFrame_UploadBg  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTalkMessagePath  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTalkWindowCloseOffsets  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sTalkWindowOpenOffsets  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/main/unk_02065e88.h"
 

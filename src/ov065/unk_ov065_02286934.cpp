@@ -9,9 +9,13 @@
 #include "net/qr2.h"
 #include "net/GsBytes.h"
 #include "net/gsPlatformUtil.h"
+#define PROTO_LOCAL_negotiateList  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
+#include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02285778.h"
 #include "proto/ov065/unk_ov065_02286934.h"
+#include "proto/ov065/unk_ov065_022884fc.h"
 
 
 
@@ -37,23 +41,13 @@ extern "C" {
 
 
 extern "C" {
-extern s32 data_ov065_02291504;
-extern char data_ov065_02291508[];
 
 
 
-extern u8 NNMagicData[];
 
 
 
-extern char __GSIACGamename[];
-extern s32 __GSIACResult;
-extern u32 Matchup2Hostname;
-extern u32 Matchup1Hostname;
-extern u32 matchup2ip;
-extern u32 matchup1ip;
 extern void *negotiateList;
-extern u8 data_ov065_02291548[];
 
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
@@ -118,7 +112,6 @@ typedef _NATNegotiator Ent;
 typedef DArrayImplementation Vec;
 
 extern "C" {
-extern u8 NNMagicData[];
 extern Qr *current_rec;
 extern u8 data_ov065_0228e1b8[];
 extern char data_ov065_0228e2d0[];
@@ -134,7 +127,6 @@ extern char data_ov065_0228e32c[];
 extern char data_ov065_0228e340[];
 extern char data_ov065_0228e348[];
 extern char data_ov065_0228e34c[];
-extern char *qr2_registered_key_list[];
 extern Vec *negotiateList;
 extern s32 num_local_ips;
 extern u32 local_ip_list[];

@@ -26,6 +26,10 @@
 #define PROTO_LOCAL_NumberPad_PressCursorKey  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NumberPad_SetAmounts  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NumberPad_TickKeyRepeat  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTouchChanged  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTouchCurX  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTouchCurY  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTouchHeld  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"

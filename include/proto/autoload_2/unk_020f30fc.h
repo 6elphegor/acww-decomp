@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+class SndPosList;
 #endif
 
 #ifdef __cplusplus
@@ -27,6 +28,9 @@ extern "C" {
 s32 Snd_CalcSeVolume(s32 a, s32 b);
 #endif
 }
+#ifndef PROTO_LOCAL_gSndPosList
+extern SndPosList *gSndPosList;
+#endif
 #endif
 
 #endif

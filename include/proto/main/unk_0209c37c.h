@@ -10,6 +10,9 @@
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sDebugVarTable
+extern u16 sDebugVarTable[0x82];
+#endif
 #ifndef PROTO_LOCAL_DebugVar_GetStub
 u32 DebugVar_GetStub();
 #endif

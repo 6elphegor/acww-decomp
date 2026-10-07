@@ -4,6 +4,7 @@ typedef int s32;
 typedef unsigned char u8;
 #include "types64.h"
 #include "proto/autoload_2/unk_0212ef04.h"
+#include "proto/autoload_2/unk_0212f300.h"
 typedef struct {
     u8 sign;
     char unused;
@@ -15,7 +16,6 @@ typedef struct {
     } sig;
 } decimal;
 
-extern double data_0213c574[8];
 extern float data_0213c31c;
 extern void __str2dec(decimal *, const u8 *, short);
 extern int __less_dec(const decimal *, const decimal *);

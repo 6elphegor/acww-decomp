@@ -8,11 +8,11 @@
 #include "actor/CharaClothTexRef.h"
 #include "player/FishBobber.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_gPlayerHeadModelHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205c91c.h"
 #include "proto/main/unk_0205d7d8.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 
@@ -22,6 +22,7 @@ void *Heap_adjust(u32 self);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
+s32 ItemInfo_TestFlag2(u16 *p);
 s32 Item_IsFlowerItem(u16 *p);
 s32 Item_GetFlowerItemOrdinal(u16 *p);
 void *CharaClothTexPool_GetOwnRef();
@@ -93,7 +94,6 @@ extern const u8 sPlayerHatHairModelIds[0x10];
 extern const u8 sFlowerHeadModelIds[0x18];
 extern const u8 sFullHeadwearModelIds[0x20];
 extern const u8 sHatModelIds[0x48];
-extern char sPlayerHeadPathBuf[0x14];
 
 #define PlayerHead_ctor _ZN10PlayerHeadC1Ev
 #define PlayerHead_dtor _ZN10PlayerHeadD1Ev

@@ -66,18 +66,13 @@ extern u32 PopCommandBuffer();
 extern void FreeCommandBuffer();
 extern void RequestNextStrm();
 extern u32 _u32_div_f();
-extern const signed char data_02135e80[16];
-extern const short data_02135e90[89];
 
 extern u8 data_021fbd6c[0x3c];
 extern u32 LoadSingleWaves();
-extern u32 LoadSingleWave();
-extern void SingleWaveDisposeCallback();
 extern void WaveArcTableDisposeCallback();
 extern void WaveArcDisposeCallback();
 extern void BankDisposeCallback();
 extern void SeqDisposeCallback();
-extern void DisposeCallback();
 extern u32 LoadWaveArcTable();
 extern u32 LoadWaveArc();
 extern u32 LoadBank();
@@ -108,6 +103,30 @@ typedef struct BankRec { u32 fileId; u16 wa[4]; } BankRec;
 typedef struct NNSFndLink { void *prev; void *next; } NNSFndLink;
 #include "nitro/fs.h"       // the real FSFile and OSMutex: larger on 64-bit hosts
 #include "sys/OSThread.h"
+#define PROTO_LOCAL_BankDisposeCallback  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LoadBank  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LoadSeq  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LoadSeqArc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LoadSingleWaves  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LoadWaveArc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_LoadWaveArcTable  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNS_SndArcLoadGroup  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNS_SndArcLoadSeqArc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNS_SndArcLoadWaveArc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNSi_SndArcLoadBank  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNSi_SndArcLoadFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNSi_SndArcLoadGroup  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNSi_SndArcLoadSeq  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNSi_SndArcLoadSeqArc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_NNSi_SndArcLoadWaveArc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_LockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_SleepThread  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OS_UnlockMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SeqDisposeCallback  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_StrmThreadProc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WaveArcDisposeCallback  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WaveArcTableDisposeCallback  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_0210c084.h"
 typedef struct NNSSndFader { s32 a, b, c, d; } NNSSndFader;
 typedef enum { NNS_SND_STRM_FORMAT_PCM8, NNS_SND_STRM_FORMAT_PCM16 } NNSSndStrmFormat;
 typedef void (*NNSSndStrmCallback)(s32 status, int numChannels, void *buffer[], u32 len, NNSSndStrmFormat format, void *arg);

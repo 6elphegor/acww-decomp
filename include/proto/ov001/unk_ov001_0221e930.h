@@ -39,6 +39,9 @@ void WfcSound_SetVolume(s32 a);
 void WfcSound_SetTrackPitch(s32 a, s32 b);
 #endif
 }
+#ifndef PROTO_LOCAL_sWfcSound
+extern u8 *sWfcSound;
+#endif
 #endif
 
 #endif

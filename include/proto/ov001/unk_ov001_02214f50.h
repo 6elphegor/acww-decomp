@@ -56,6 +56,12 @@ void WfcError_Exit();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcErrorCodeFormat
+extern u16 sWfcErrorCodeFormat[4];
+#endif
+#ifndef PROTO_LOCAL_sWfcErrorCode
+extern s32 sWfcErrorCode;
+#endif
 #ifndef PROTO_LOCAL_WfcError_SetCode
 void WfcError_SetCode(s32 a);
 #endif

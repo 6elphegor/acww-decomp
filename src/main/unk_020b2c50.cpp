@@ -205,7 +205,6 @@ struct Empty {
     ~Empty() {}
 };
 
-extern StringBank gStringBank;
 
 StringBank gStringBank;
 

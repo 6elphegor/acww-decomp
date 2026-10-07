@@ -5,13 +5,18 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "town/BuildingActor.h"
 #include "types.h"
 class HouseLightUpDeco;
+class PlayerHouseTex;
 class VillagerHouseTex;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02235888
+extern char data_ov003_02235888[0x28];
 #endif
 #ifndef PROTO_LOCAL_FieldStructureMgr_Create
 void *FieldStructureMgr_Create();
@@ -43,6 +48,24 @@ void PlayerHouseTex_Release(void *p);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sPlayerHouseTex
+extern PlayerHouseTex sPlayerHouseTex;
+#endif
+#ifndef PROTO_LOCAL_sVillagerHouseTex
+extern VillagerHouseTex sVillagerHouseTex;
+#endif
+#ifndef PROTO_LOCAL_sHouseLightUpDeco
+extern HouseLightUpDeco sHouseLightUpDeco;
+#endif
+#ifndef PROTO_LOCAL_sDoorExitMode
+extern u8 sDoorExitMode;
+#endif
+#ifndef PROTO_LOCAL_sSpawnedBuildingCount1
+extern u16 sSpawnedBuildingCount1;
+#endif
+#ifndef PROTO_LOCAL_sBuildingList
+extern BuildingActor *sBuildingList[0x20];
+#endif
 #ifndef PROTO_LOCAL_func_ov003_02219164
 void func_ov003_02219164(s32 a);
 #endif

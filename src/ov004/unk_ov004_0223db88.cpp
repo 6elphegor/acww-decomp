@@ -159,19 +159,12 @@ extern const u8 data_ov004_02244130[1];
 extern const u8 data_ov004_022440cc[1];
 extern const u8 data_ov004_02244100[1];
 extern const MuseumInfoPointDef sMuseumFishPointDefs23[4];
-extern MuseumInfoPoint sMuseumFishPoints23[4];
 extern const MuseumInfoPointDef sMuseumFishPointDefs24[2];
-extern MuseumInfoPoint sMuseumFishPoints24[2];
 extern const MuseumInfoPointDef sMuseumFossilPointDefs25[12];
-extern MuseumInfoPoint sMuseumFossilPoints25[12];
 extern const MuseumInfoPointDef sMuseumFossilPointDefs26[12];
-extern MuseumInfoPoint sMuseumFossilPoints26[12];
 extern const MuseumInfoPointDef sMuseumInsectPointDefs27[4];
-extern MuseumInfoPoint sMuseumInsectPoints27[4];
 extern const MuseumInfoPointDef sMuseumInsectPointDefs28[5];
-extern MuseumInfoPoint sMuseumInsectPoints28[5];
 extern const MuseumInfoPointDef sMuseumPaintingPointDefs29[20];
-extern MuseumInfoPoint sMuseumPaintingPoints29[20];
 
 // ---- data (definition order sets the emitted order; the statics of vfunc_48 are created when it is compiled) ----
 const u8 data_ov004_022440f4[1] = {0x2};

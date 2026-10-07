@@ -36,6 +36,7 @@
 #define PROTO_LOCAL_TownState_Destruct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TurnipMarket_Destruct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Weather_Destruct  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02039c08.h"
 #include "proto/main/unk_0203c92c.h"
@@ -48,6 +49,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_0209c4a8.h"
 #include "proto/main/unk_0209d81c.h"
+#include "proto/main/unk_0209dc94.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020af3f4.h"
 #include "proto/main/unk_020afeb4.h"

@@ -5,6 +5,8 @@
 #include "nitro/io_access.h"
 #include "save/SaveData.h"
 #include "save/SaveRecord4.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gVBlanksPerFrame  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0210fa84.h"
 #include "proto/itcm/unk_01ffa4a0.h"
@@ -16,7 +18,6 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020b4174.h"
-#include "proto/main/unk_020b8340.h"
 
 extern "C" const u8 data_020d0c08;
 
@@ -28,6 +29,8 @@ void SaveData_Setup(void *p, u32 x);
 void SceneWarp_RequestScene(void *p, u32 x);
 void FieldScene_Request(u32 a, u32 b);
 u8 *Scene_GetWarpRequest(void);
+void VramQueue2d_Init(void);
+void VramQueueTex_Init(void);
 void GX_SetBankForSubBG(u32 x);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 

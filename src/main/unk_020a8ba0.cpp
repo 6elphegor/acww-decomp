@@ -22,6 +22,7 @@
 #include "talk/MsgQuery.h"
 #include "talk/MsgCopyProcessor.h"
 #include "talk/MsgUiProc.h"
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_0212a120.h"
@@ -35,6 +36,7 @@
 #include "proto/main/unk_0208eeac.h"
 #include "proto/main/unk_020a8ba0.h"
 #include "proto/main/unk_020b7190.h"
+#include "proto/main/unk_020b7d84.h"
 
 
 extern "C" {
@@ -285,11 +287,9 @@ void MsgUiProc_ShowObjPlane(void);
 }
 
 extern "C" {
-extern void *gTextHeap;
 }
 
 extern "C" {
-extern u8 gTextLabelList[];
 }
 
 extern "C" {
@@ -309,27 +309,21 @@ extern u8 sColorTags[][7];
 }
 
 extern "C" {
-extern u8 gTouchCurY;
 }
 
 extern "C" {
-extern u8 gTouchCurX;
 }
 
 extern "C" {
-extern u8 gTouchPressY;
 }
 
 extern "C" {
-extern u8 gTouchPressX;
 }
 
 extern "C" {
-extern u8 gTouchHeld;
 }
 
 extern "C" {
-extern u8 gTouchChanged;
 }
 
 extern "C" {

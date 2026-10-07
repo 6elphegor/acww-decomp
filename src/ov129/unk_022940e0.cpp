@@ -14,7 +14,6 @@
 #define PROTO_LOCAL_BgmTracks_FadeOutScene22  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ConstellationRecord_Clear  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_SetCreator  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_Store  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MenuButtons_LoadTextColors  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_LoadObjGraphics  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_LoadScopeBg  // declared below: the shared prototype conflicts with the calls here
@@ -22,6 +21,8 @@
 #define PROTO_LOCAL_StarSky_Reset  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarTwinkle_Init  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarTwinkle_Update  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -29,6 +30,7 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020afeb4.h"
 #include "proto/main/unk_020b0774.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov127/unk_ov127_02291f60.h"
@@ -36,15 +38,10 @@
 
 extern "C" {
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchPressX;
-extern u8 gTouchPressY;
 extern s32 gCurrentHeap;
 extern u8 *data_021c1b3c;
 
+void *Constellation_GetRecord(s32 i);
 void ConstellationRecord_Clear(void *p);
 void Constellation_SetCreator(void *p);
 void Constellation_Store(void *p, s32 a, s32 b);
@@ -61,59 +58,32 @@ void StarSky_LoadObjGraphics(void *a);
 void StarSky_Reset(void *a);
 
 void _ZN23ConstellationEditorMenu9mainAct04Ev();
-extern void *data_ov129_02296518[2];
 void _ZN23ConstellationEditorMenu9mainAct02Ev();
-extern void *data_ov129_02296520[2];
 void _ZN23ConstellationEditorMenu9mainAct00Ev();
-extern void *data_ov129_02296528[2];
 void _ZN23ConstellationEditorMenu9mainAct05Ev();
-extern void *data_ov129_02296530[2];
 void _ZN23ConstellationEditorMenu9mainAct06Ev();
-extern void *data_ov129_02296538[2];
 void _ZN23ConstellationEditorMenu17updateCursorPressEv();
-extern void *data_ov129_02296540[2];
 void _ZN23ConstellationEditorMenu19updateCursorReleaseEv();
-extern void *data_ov129_02296548[2];
 void _ZN23ConstellationEditorMenu15transitionAct03Ev();
-extern void *data_ov129_02296550[2];
 void _ZN23ConstellationEditorMenu15transitionAct04Ev();
-extern void *data_ov129_02296558[2];
 void _ZN23ConstellationEditorMenu15transitionAct00Ev();
-extern void *data_ov129_02296560[2];
 void _ZN23ConstellationEditorMenu16updateCursorMoveEv();
-extern void *data_ov129_02296568[2];
 void _ZN23ConstellationEditorMenu9mainAct0AEv();
-extern void *data_ov129_02296570[2];
 void _ZN23ConstellationEditorMenu9mainAct0BEv();
-extern void *data_ov129_02296578[2];
 void _ZN23ConstellationEditorMenu15transitionAct08Ev();
-extern void *data_ov129_02296580[2];
 void _ZN23ConstellationEditorMenu9mainAct03Ev();
-extern void *data_ov129_02296588[2];
 void _ZN23ConstellationEditorMenu9mainAct0CEv();
-extern void *data_ov129_02296590[2];
 void _ZN23ConstellationEditorMenu9mainAct01Ev();
-extern void *data_ov129_02296598[2];
 void _ZN23ConstellationEditorMenu9mainAct0DEv();
-extern void *data_ov129_022965a0[2];
 void _ZN23ConstellationEditorMenu15transitionAct0BEv();
-extern void *data_ov129_022965a8[2];
 void _ZN23ConstellationEditorMenu9mainAct0EEv();
-extern void *data_ov129_022965b0[2];
 void _ZN23ConstellationEditorMenu15transitionAct01Ev();
-extern void *data_ov129_022965b8[2];
 void _ZN23ConstellationEditorMenu15transitionAct0AEv();
-extern void *data_ov129_022965c0[2];
 void _ZN23ConstellationEditorMenu15transitionAct09Ev();
-extern void *data_ov129_022965c8[2];
 void _ZN23ConstellationEditorMenu15transitionAct02Ev();
-extern void *data_ov129_022965d0[2];
 void _ZN23ConstellationEditorMenu15transitionAct07Ev();
-extern void *data_ov129_022965d8[2];
 void _ZN23ConstellationEditorMenu15transitionAct06Ev();
-extern void *data_ov129_022965e0[2];
 void _ZN23ConstellationEditorMenu15transitionAct05Ev();
-extern void *data_ov129_022965e8[2];
 extern const u8 sStarStateColours[4];
 extern const u8 data_ov129_0229649c[8];
 extern const u8 data_ov129_022964a4[8];
@@ -121,8 +91,6 @@ extern const u8 data_ov129_022964ac[8];
 extern const u8 data_ov129_022964b4[8];
 extern const s32 data_ov129_022964bc[5];
 extern const s32 data_ov129_022964d0[5];
-extern u8 sEditorArrowCursorX[8];
-extern u8 sEditorArrowCursorY[8];
 }
 
 static inline BOOL Unk_ov129_02295000_Both() {

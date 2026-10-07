@@ -16,6 +16,9 @@ struct LocalWlMpRecord;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sLocalWlFreeHook
+extern void (*sLocalWlFreeHook) (void *);
+#endif
 #ifndef PROTO_LOCAL_LocalWlMp_Shutdown
 void LocalWlMp_Shutdown(void);
 #endif
@@ -262,6 +265,27 @@ void LocalWl_CallEventCallback(void *p);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sLocalWlPowerApis
+extern s32 (*sLocalWlPowerApis[4]) (void *);
+#endif
+#ifndef PROTO_LOCAL_data_ov066_022647c4
+extern u32 data_ov066_022647c4;
+#endif
+#ifndef PROTO_LOCAL_data_ov066_022647c0
+extern u32 data_ov066_022647c0;
+#endif
+#ifndef PROTO_LOCAL_data_ov066_022647bc
+extern u32 data_ov066_022647bc;
+#endif
+#ifndef PROTO_LOCAL_sLocalWlRandSeed
+extern u32 sLocalWlRandSeed;
+#endif
+#ifndef PROTO_LOCAL_sLocalWlAllocHook
+extern void *(*sLocalWlAllocHook) (u32, u32);
+#endif
+#ifndef PROTO_LOCAL_sLocalWlErrorHook
+extern void (*sLocalWlErrorHook) (u32);
+#endif
 #ifndef PROTO_LOCAL_LocalWlMp_AllocRing
 void *LocalWlMp_AllocRing(s32 n);
 #endif

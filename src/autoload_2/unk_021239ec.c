@@ -1,6 +1,7 @@
 #include "nitro/fs.h"
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_021239ec.h"
 #include "proto/autoload_2/unk_02125c94.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK MB (mb_fileinfo.c), autoload_2 0x021239ec-0x02123e58: MB_ReadSegment. ARM code, mwcc 1.2/base.

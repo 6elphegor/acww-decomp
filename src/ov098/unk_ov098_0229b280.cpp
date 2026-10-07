@@ -10,8 +10,10 @@
 #define PROTO_LOCAL_BottleThrow_IsActive  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FishCatch_StartRelease  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PocketMenu_GetPlayerSlot  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_020039ec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065330.h"
 #include "proto/main/unk_0206e54c.h"
@@ -39,11 +41,8 @@ u32 BlockMap_GetBlockAttr(void *grid, s32 x, s32 z);
 BOOL Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 
-extern void *gMenuHeap;
 extern void *gSceneBlockMap;
 extern u8 data_021e7f8c[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
 extern "C" s16 sBuryHoleAngles[16] = {0, 0x1800, -0x1800, 0};
 

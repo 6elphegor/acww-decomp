@@ -6,6 +6,9 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+class CautionMsgString256;
+class CautionMsgString64;
+class CommCautionWindow;
 #endif
 
 #ifdef __cplusplus
@@ -54,6 +57,30 @@ BOOL CommCaution_IsShutDown();
 void CommCaution_Update(u8 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sCommCautionErrorCode
+extern u32 sCommCautionErrorCode;
+#endif
+#ifndef PROTO_LOCAL_sCommCautionWindow
+extern CommCautionWindow sCommCautionWindow;
+#endif
+#ifndef PROTO_LOCAL_sCommCautionNumberGap
+extern u8 sCommCautionNumberGap[4];
+#endif
+#ifndef PROTO_LOCAL_sCommCautionShowErrorCode
+extern u8 sCommCautionShowErrorCode;
+#endif
+#ifndef PROTO_LOCAL_sCommCautionErrorCodeText
+extern u8 sCommCautionErrorCodeText[0x20];
+#endif
+#ifndef PROTO_LOCAL_sCommCautionLagMsg
+extern CautionMsgString256 sCommCautionLagMsg;
+#endif
+#ifndef PROTO_LOCAL_sCommCautionSecondsMsg
+extern CautionMsgString64 sCommCautionSecondsMsg;
+#endif
+#ifndef PROTO_LOCAL_sCommCautionEndedMsg
+extern CautionMsgString256 sCommCautionEndedMsg;
+#endif
 #endif
 
 #endif

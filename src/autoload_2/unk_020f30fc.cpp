@@ -108,9 +108,7 @@ public:
 class SndPosList;
 
 extern "C" {
-extern SndPosList *gSndPosList;
 extern SndSeqHandle gSndBgmHandle;
-extern u16 gSndPanTrackMask;
 void SndList_InitLink(void **p);
 void *SndList_GetLast(void **p);
 void *SndList_GetFirst(void **p);
@@ -189,6 +187,8 @@ public:
 // vtable 0x0213b968 (data_0213b970)
 #include "snd/SkySndChannel.h"
 #define PROTO_LOCAL_SndMgr_Rand  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020ef150.h"
 #include "proto/autoload_2/unk_020f30fc.h"
 #include "proto/main/unk_0206d49c.h"
 

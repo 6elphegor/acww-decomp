@@ -11,6 +11,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222a884
+extern char data_ov001_0222a884[0x30];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a8b4
+extern char data_ov001_0222a8b4[0x30];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a8e4
+extern char data_ov001_0222a8e4[0x30];
+#endif
+#ifndef PROTO_LOCAL_sWfcTextKb
+extern void *sWfcTextKb;
+#endif
 #ifndef PROTO_LOCAL_WfcTextKb_Create
 void WfcTextKb_Create();
 #endif
@@ -56,6 +68,33 @@ void WfcTextKb_UpdateCursor();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov001_0222a914
+extern u16 data_ov001_0222a914[50];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a978
+extern u16 data_ov001_0222a978[50];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a9dc
+extern u16 data_ov001_0222a9dc[50];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a874
+extern u32 data_ov001_0222a874[4];
+#endif
+#ifndef PROTO_LOCAL_sWfcTextKbGlyphMaps
+extern u16 *sWfcTextKbGlyphMaps[3];
+#endif
+#ifndef PROTO_LOCAL_sWfcTextKbCharMaps
+extern u8 *sWfcTextKbCharMaps[3];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a844
+extern u8 data_ov001_0222a844[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a84c
+extern u8 data_ov001_0222a84c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222a854
+extern u8 data_ov001_0222a854[5];
+#endif
 #ifndef PROTO_LOCAL_WfcTextKb_GetKey
 u32 WfcTextKb_GetKey();
 #endif

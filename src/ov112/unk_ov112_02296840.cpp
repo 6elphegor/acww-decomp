@@ -33,11 +33,15 @@
 #define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_FromEncodedBytesEx  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov112_02299ad8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02051218.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206cbdc.h"
 #include "proto/main/unk_0206e54c.h"
@@ -46,6 +50,7 @@
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov095/unk_02292360.h"
 #include "proto/ov112/unk_ov112_02296840.h"
@@ -218,12 +223,7 @@ extern "C" {
 extern u16 gPad[];
 extern u32 gCurrentHeap;
 extern u8 gU8None;
-extern u8 gTouchCurY;
-extern u8 gTouchCurX;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern CommManager *gCommManager;
-extern void *gMenuHeap;
 }
 
 extern "C" u32 data_ov112_02299ac0[];

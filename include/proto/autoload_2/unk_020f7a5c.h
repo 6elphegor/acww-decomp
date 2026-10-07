@@ -33,6 +33,12 @@ s32 BgmSyncSnd_Update(Rb *r, void *arg);
 s32 BgmSyncSnd_CalcPhase(Rb *r);
 #endif
 }
+#ifndef PROTO_LOCAL_data_021f5c30
+extern s16 data_021f5c30;
+#endif
+#ifndef PROTO_LOCAL_data_021f5c34
+extern s16 data_021f5c34;
+#endif
 #endif
 
 #endif

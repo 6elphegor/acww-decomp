@@ -10,6 +10,8 @@
 #include "gfx/SplPt.h"
 #include "gfx/SplNode.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_data_0213bc10  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020fa398.h"
 #include "proto/autoload_2/unk_020fa39c.h"
 #include "proto/autoload_2/unk_021104ac.h"

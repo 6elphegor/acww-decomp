@@ -29,7 +29,6 @@
 #define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TalkWindow_Get  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02090268.h"
 #include "proto/main/unk_020943dc.h"
 #include "proto/main/unk_02094810.h"
@@ -195,7 +194,6 @@ public:
 };
 
 extern "C" {
-extern s16 sKappnTaxiLeaveTimer;
 extern u8 gSaveData[];
 void *PlayerActor_GetPlayerData(void *);
 void Clock_GetDateTime(void *);

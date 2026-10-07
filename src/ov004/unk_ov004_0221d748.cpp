@@ -125,9 +125,6 @@ extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern u8 gSaveVillagers[];
-extern u8 *sSpNpcBookerModelPath;
-extern u8 *sSpNpcBookerTexturePath;
-extern uptr sSpNpcBookerMsgFiles[];
 extern SpNpcBookerTalkScript sSpNpcBookerTalkScripts[];
 extern SpNpcBookerActEntry sSpNpcBookerActTable[];
 // 0x02250b58 is a label inside the 0x70-byte table (second ptmf of entry 0)

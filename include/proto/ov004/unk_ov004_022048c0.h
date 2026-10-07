@@ -10,11 +10,33 @@ class Atm;
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sAtmStringBankPtr
+extern char *sAtmStringBankPtr;
+#endif
+#ifndef PROTO_LOCAL_sAtmMsgFile
+extern char sAtmMsgFile[12];
+#endif
+#ifndef PROTO_LOCAL_sAtmMsgFilePtr
+extern char *sAtmMsgFilePtr;
+#endif
+#ifndef PROTO_LOCAL_sAtmStringBank
+extern char sAtmStringBank[8];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_Atm_Create
 Atm *Atm_Create();
 #endif
 #ifndef PROTO_LOCAL_Atm_GetInstance
 Atm *Atm_GetInstance();
+#endif
+#ifndef PROTO_LOCAL_sAtmInstance
+extern Atm *sAtmInstance;
 #endif
 }
 #endif

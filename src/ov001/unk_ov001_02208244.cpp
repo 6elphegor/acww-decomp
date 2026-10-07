@@ -4,6 +4,7 @@
 #include "proto/ov001/unk_ov001_02208244.h"
 #include "proto/ov001/unk_ov001_02208388.h"
 #include "proto/ov001/unk_ov001_0220cbd0.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
 #include "proto/ov001/unk_ov001_0222516c.h"
 
 typedef void (*WfcLoadFunc)(void *, s32, u32);
@@ -12,7 +13,6 @@ extern "C" u8 sWfcTopMessageShown = 0;
 extern "C" const u16 data_ov001_02229b74[4] = {0x14, 0, 0xd8, 0x40};
 
 extern "C" {
-extern void *gWfcMsgBank;
 extern void GXS_LoadBG0Scr(void *, s32, u32);
 void WfcUtil_LoadFileTo(void *a, WfcLoadFunc fn);
 }

@@ -48,9 +48,6 @@ extern "C" {
 extern "C" {
 }
 
-extern u8 sMailCheckWords[0x8fc];
-extern s16 sMailCheckWordEnds[0x1a];
-extern u8 sMailCheckWordUses[0xc0];
 extern const u8 sMailCheckSeparators[8];
 
 

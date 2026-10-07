@@ -38,8 +38,6 @@
 #include "talk/MsgString.h"
 #include "talk/MsgString9B.h"
 #include "talk/MsgString9C.h"
-#define PROTO_LOCAL_AxBbsNotice_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AxBbsNotice_Destruct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Comm_SendEmpty  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NetOverlay_AssertAny  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NetOverlay_AssertWifi  // declared below: the shared prototype conflicts with the calls here
@@ -54,11 +52,10 @@
 #define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_GetName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_0203a0cc.h"
-#include "proto/main/unk_0203eb78.h"
 #include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065e88.h"
@@ -72,9 +69,7 @@
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b7190.h"
-#include "proto/main/unk_020c0324.h"
 #include "proto/ov004/unk_ov004_022257e4.h"
-#include "proto/ov004/unk_ov004_0223f43c.h"
 #include "proto/ov048/unk_ov048_02258de0.h"
 
 
@@ -91,13 +86,6 @@ struct SpNpcCopperVecLocal : VecFx32 {
 
 // Two-step storage for the three model/sequence name pointers (their strings are named arrays below).
 extern "C" {
-extern char sSpNpcCopperSequence4Key[];
-extern char sSpNpcCopperKey[];
-extern char sSpNpcCopperModelPath[];
-extern char sSpNpcCopperTexturePath[];
-extern void *sSpNpcCopperMsgKey;
-extern void *sSpNpcCopperTexturePathPtr;
-extern void *sSpNpcCopperModelPathPtr;
 extern const u8 sCopperWifiStartMsgs[4];
 extern const VecFx32 sCopperGateCheckPos;
 extern const VecFx32 sCopperTurnBackPos;
@@ -119,6 +107,8 @@ BOOL EncodedString_SetRaw(void *, const void *, s32);
 BOOL Math_CountDownU16(void *);
 s32 Math_IsInRange(s32, s32, s32);
 BOOL Net_WifiShutdownStepExt(s32);
+void SpNpcKatie_ChangeAct05();
+s32 SpNpcKatie_ResetAct();
 BOOL Comm_SendEmpty();
 s32 Net_CountHostCandidates(s32);
 void * Net_GetScanResults(s32);
@@ -135,11 +125,15 @@ void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
 void _ZN15TownTravelState7setModeEj(void *, s32);
 void _ZN15TownTravelState8setAngleEi(void *, s32);
 s32 Scene_SetSavedPos(void *, s32, VecFx32 *, s32, s32, s32, s32);
+void Camera_SaveView();
 s32 SceneWarp_RequestAt(void *, s32, VecFx32 *, s32, s32, s32, s32);
 void SceneWarp_RequestExit(void *, s32);
 void PlayerActor_RequestWalkTo(void *, s32, s32);
 u8 * _ZN5Actor13findByProfileEjPS_(s32, s32);
 s32 Math_CountDownU8(void *);
+s32 Camera_SetMode15();
+s32 Camera_SetMode14();
+s32 Camera_IsBlending();
 void TalkRequest_SetTargetDone(void *);
 s32 Net_WifiStartHost(s32);
 void * TownId_GetName(void *);
@@ -154,6 +148,7 @@ void _ZN15TownTravelState9clearModeEv(void *);
 void TalkRequestFlags_SetSceneHold();
 s32 _ZN10SpNpcActor9preCreateEv();
 void TalkRequest_AddPlayerTalk6(void *, s32);
+BOOL SpNpcKatie_IsIdle();
 BOOL TalkRequest_IsActive();
 BOOL _ZN15KatieVisitState11isFollowingEv(void *);
 
@@ -389,135 +384,6 @@ struct Unk_ov048_0225a8d4_Row {
 
 
 extern "C" {
-extern void *data_ov048_0225c6ec[2];
-extern void *data_ov048_0225c6f4[2];
-extern void *data_ov048_0225c6fc[2];
-extern void *data_ov048_0225c704[2];
-extern void *data_ov048_0225c70c[2];
-extern void *data_ov048_0225c714[2];
-extern void *data_ov048_0225c71c[2];
-extern void *data_ov048_0225c724[2];
-extern void *data_ov048_0225c72c[2];
-extern void *data_ov048_0225c734[2];
-extern void *data_ov048_0225c73c[2];
-extern void *data_ov048_0225c744[2];
-extern void *data_ov048_0225c74c[2];
-extern void *data_ov048_0225c754[2];
-extern void *data_ov048_0225c75c[2];
-extern void *data_ov048_0225c764[2];
-extern void *data_ov048_0225c76c[2];
-extern void *data_ov048_0225c774[2];
-extern void *data_ov048_0225c77c[2];
-extern void *data_ov048_0225c784[2];
-extern void *data_ov048_0225c78c[2];
-extern void *data_ov048_0225c794[2];
-extern void *data_ov048_0225c79c[2];
-extern void *data_ov048_0225c7a4[2];
-extern void *data_ov048_0225c7ac[2];
-extern void *data_ov048_0225c7b4[2];
-extern void *data_ov048_0225c7bc[2];
-extern void *data_ov048_0225c7c4[2];
-extern void *data_ov048_0225c7cc[2];
-extern void *data_ov048_0225c7d4[2];
-extern void *data_ov048_0225c7dc[2];
-extern void *data_ov048_0225c7e4[2];
-extern void *data_ov048_0225c7ec[2];
-extern void *data_ov048_0225c7f4[2];
-extern void *data_ov048_0225c7fc[2];
-extern void *data_ov048_0225c804[2];
-extern void *data_ov048_0225c80c[2];
-extern void *data_ov048_0225c814[2];
-extern void *data_ov048_0225c81c[2];
-extern void *data_ov048_0225c824[2];
-extern void *data_ov048_0225c82c[2];
-extern void *data_ov048_0225c834[2];
-extern void *data_ov048_0225c83c[2];
-extern void *data_ov048_0225c844[2];
-extern void *data_ov048_0225c84c[2];
-extern void *data_ov048_0225c854[2];
-extern void *data_ov048_0225c85c[2];
-extern void *data_ov048_0225c864[2];
-extern void *data_ov048_0225c86c[2];
-extern void *data_ov048_0225c874[2];
-extern void *data_ov048_0225c87c[2];
-extern void *data_ov048_0225c884[2];
-extern void *data_ov048_0225c88c[2];
-extern void *data_ov048_0225c894[2];
-extern void *data_ov048_0225c89c[2];
-extern void *data_ov048_0225c8a4[2];
-extern void *data_ov048_0225c8ac[2];
-extern void *data_ov048_0225c8b4[2];
-extern void *data_ov048_0225c8bc[2];
-extern void *data_ov048_0225c8c4[2];
-extern void *data_ov048_0225c8cc[2];
-extern void *data_ov048_0225c8d4[2];
-extern void *data_ov048_0225c8dc[2];
-extern void *data_ov048_0225c8e4[2];
-extern void *data_ov048_0225c8ec[2];
-extern void *data_ov048_0225c8f4[2];
-extern void *data_ov048_0225c8fc[2];
-extern void *data_ov048_0225c904[2];
-extern void *data_ov048_0225c90c[2];
-extern void *data_ov048_0225c914[2];
-extern void *data_ov048_0225c91c[2];
-extern void *data_ov048_0225c924[2];
-extern void *data_ov048_0225c92c[2];
-extern void *data_ov048_0225c934[2];
-extern void *data_ov048_0225c93c[2];
-extern void *data_ov048_0225c944[2];
-extern void *data_ov048_0225c94c[2];
-extern void *data_ov048_0225c954[2];
-extern void *data_ov048_0225c95c[2];
-extern void *data_ov048_0225c964[2];
-extern void *data_ov048_0225c96c[2];
-extern void *data_ov048_0225c974[2];
-extern void *data_ov048_0225c97c[2];
-extern void *data_ov048_0225c984[2];
-extern void *data_ov048_0225c98c[2];
-extern void *data_ov048_0225c994[2];
-extern void *data_ov048_0225c99c[2];
-extern void *data_ov048_0225c9a4[2];
-extern void *data_ov048_0225c9ac[2];
-extern void *data_ov048_0225c9b4[2];
-extern void *data_ov048_0225c9bc[2];
-extern void *data_ov048_0225c9c4[2];
-extern void *data_ov048_0225c9cc[2];
-extern void *data_ov048_0225c9d4[2];
-extern void *data_ov048_0225c9dc[2];
-extern void *data_ov048_0225c9e4[2];
-extern void *data_ov048_0225c9ec[2];
-extern void *data_ov048_0225c9f4[2];
-extern void *data_ov048_0225c9fc[2];
-extern void *data_ov048_0225ca04[2];
-extern void *data_ov048_0225ca0c[2];
-extern void *data_ov048_0225ca14[2];
-extern void *data_ov048_0225ca1c[2];
-extern void *data_ov048_0225ca24[2];
-extern void *data_ov048_0225ca2c[2];
-extern void *data_ov048_0225ca34[2];
-extern void *data_ov048_0225ca3c[2];
-extern void *data_ov048_0225ca44[2];
-extern void *data_ov048_0225ca4c[2];
-extern void *data_ov048_0225ca54[2];
-extern void *data_ov048_0225ca5c[2];
-extern void *data_ov048_0225ca64[2];
-extern void *data_ov048_0225ca6c[2];
-extern void *data_ov048_0225ca74[2];
-extern void *data_ov048_0225ca7c[2];
-extern void *data_ov048_0225ca84[2];
-extern void *data_ov048_0225ca8c[2];
-extern void *data_ov048_0225ca94[2];
-extern void *data_ov048_0225ca9c[2];
-extern void *data_ov048_0225caa4[2];
-extern void *data_ov048_0225caac[2];
-extern void *data_ov048_0225cab4[2];
-extern void *data_ov048_0225cabc[2];
-extern void *data_ov048_0225cac4[2];
-extern void *data_ov048_0225cacc[2];
-extern void *data_ov048_0225cad4[2];
-extern void *data_ov048_0225cadc[2];
-extern void *data_ov048_0225cae4[2];
-extern void *data_ov048_0225caec[2];
 extern Unk_ov048_State_Ent sSpNpcCopperActTable[];
 extern SpNpcCopperTalkScript sSpNpcCopperTalkScripts[];
 }
@@ -525,6 +391,8 @@ extern SpNpcCopperTalkScript sSpNpcCopperTalkScripts[];
 extern "C" {
 void AxBbsNotice_Destruct(void *);
 void AxBbsNotice_Construct(void *);
+void AxMail_Destruct(void *);
+void AxMail_Construct(void *);
 void _ZN7PatternD1Ev(void *);
 void _ZN7PatternC1Ev(void *);
 }

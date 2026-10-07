@@ -63,6 +63,15 @@ void CharInteractSync_OnRelease(void *msg, u32 aid);
 void CharInteractSync_OnCharMsg(u8 *msg, u32 aid);
 #endif
 }
+#ifndef PROTO_LOCAL_sCharInteractSyncResult
+extern u8 sCharInteractSyncResult;
+#endif
+#ifndef PROTO_LOCAL_sCharInteractReservedId
+extern u32 sCharInteractReservedId;
+#endif
+#ifndef PROTO_LOCAL_sCharInteractLockIds
+extern u32 sCharInteractLockIds[4];
+#endif
 #endif
 
 #endif

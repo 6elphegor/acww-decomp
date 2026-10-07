@@ -4,8 +4,11 @@
 #include "game/GroundInfo.h"
 #define PROTO_LOCAL_Main_Init  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gHeapCreateOption  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gOverlayHandle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sBuildingOccupancy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sProfileTableMain  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_020fe5c0.h"
 #include "proto/autoload_2/unk_0210f154.h"
@@ -21,7 +24,6 @@
 #include "proto/main/unk_02051218.h"
 #include "proto/main/unk_020536dc.h"
 #include "proto/main/unk_02060b7c.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206d49c.h"
 #include "proto/main/unk_0206d5b8.h"
@@ -91,6 +93,7 @@ extern "C" {
 }
 
 extern "C" {
+u32 ItemInfo_GetIndoorUnk1(u16 *p);
 }
 
 extern "C" {
@@ -147,19 +150,15 @@ extern u8 gFieldSceneKind;
 }
 
 extern "C" {
-extern u32 sLastEntranceType;
 }
 
 extern "C" {
-extern u8 sTaxiArriving;
 }
 
 extern "C" {
-extern u8 sTaxiLeaving;
 }
 
 extern "C" {
-extern u8 sHouseVisitorPresent;
 }
 
 extern "C" {
@@ -292,6 +291,7 @@ extern "C" {
 }
 
 extern "C" {
+void Math_InitSqrt64(void);
 }
 
 extern "C" {

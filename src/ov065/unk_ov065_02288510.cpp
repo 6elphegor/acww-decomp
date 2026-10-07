@@ -5,9 +5,11 @@
 #include "net/SockAddrIn.h"
 #include "net/sb_internal.h"
 #include "net/gsPlatformUtil.h"
+#define PROTO_LOCAL_qr2_registered_key_list  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212fa54.h"
 #include "proto/ov065/unk_ov065_02277974.h"
+#include "proto/ov065/unk_ov065_02288510.h"
 
 // ov065_066: GameSpy transport (RC4-like cipher, connection manager) 0x022884fc..0x02288df0
 
@@ -22,7 +24,6 @@ struct SBQueryEngine;
 
 extern "C" {
 extern uptr qr2_registered_key_list[];
-extern s32 __GSIACResult;
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);

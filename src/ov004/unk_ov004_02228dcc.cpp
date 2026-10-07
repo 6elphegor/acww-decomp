@@ -16,8 +16,8 @@
 #include "gfx/Model.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SpNpcKatrina_GetJointMtx  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/ov004/unk_ov004_02228dcc.h"
 #include "proto/ov045/unk_02258de0.h"
 
@@ -119,9 +119,7 @@ typedef void (TarotProps::*Unk_ov004_02229148_Fn)();
 typedef BOOL (TarotProps::*Unk_ov004_022291d4_Fn)();
 
 extern "C" {
-extern void *gBgHeap;
 extern Mtx43 data_021f47e0;
-extern TarotProps *sTarotProps;
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
 void RoomObjRes_Free(void *);

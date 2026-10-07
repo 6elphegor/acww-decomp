@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "types.h"
+class TownExchangeRemoteRecords;
 #endif
 
 #ifdef __cplusplus
@@ -33,6 +34,9 @@ void *TownExchange_GetRemote(s32 i);
 void *TownExchange_GetForAid(s32 i);
 #endif
 }
+#ifndef PROTO_LOCAL_sTownExchangeRemoteRecords
+extern TownExchangeRemoteRecords sTownExchangeRemoteRecords;
+#endif
 #endif
 
 #endif

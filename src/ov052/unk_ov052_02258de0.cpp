@@ -29,7 +29,8 @@
 #include "npc/NpcActionCtrl.h"
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gTouchPrevChanged  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTouchPrevHeld  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02063904.h"
@@ -86,6 +87,8 @@ void _ZN12ReddLastSale12copyItemFromEPKS_(void *dst, void *src);
 void NpcActor_FindFreeUnitNear(void *out, void *self, void *v);
 s32 Math_CountDownU8(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_NotEqual(void *a, void *b);
+s32 Vec_Equal(void *a, void *b);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
 extern u8 data_021ed284[];
@@ -194,12 +197,9 @@ struct SpNpcReddActEntry {
 
 
 extern "C" {
-extern char sSpNpcReddKey[];
 extern const TalkStartMsg sSpNpcReddTopicMsgs[13];
 extern SpNpcReddActEntry sSpNpcReddActTable[11];
 #define MSG_ID(i) (sSpNpcReddTopicMsgs[i].msgIndex)
-extern u8 sSpNpcReddModelPath[];
-extern u8 sSpNpcReddTexturePath[];
 extern ActorProfile sSpNpcReddProfile;
 }
 

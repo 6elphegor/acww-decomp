@@ -25,7 +25,8 @@
 #include "net/CommManager.h"
 #include "save/SaveData.h"
 #include "talk/ChoiceList.h"
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203c92c.h"
 #include "proto/main/unk_02065e88.h"
@@ -33,8 +34,10 @@
 #include "proto/main/unk_0208eeac.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_020b5e5c.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov004/unk_ov004_02229660.h"
+#include "proto/ov004/unk_ov004_02229660_switch.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -136,8 +139,6 @@ class ChoiceList;
 
 extern "C" {
 extern u8 gScreenTransition;
-extern u8 gTouchPrevHeld;
-extern u8 gTouchPrevChanged;
 extern CommManager *gCommManager;
 extern u8 gSaveData[];
 extern u8 gTalkMsgIndexNone[];
@@ -180,6 +181,7 @@ u32 Scene_GetCurrent();
 TouchPicker *Scene_GetTouchPicker();
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_SetTargetDone(void *p);
+s32 Vec_DistXZ(s32 *a, s32 *b);
 }
 
 
@@ -195,18 +197,10 @@ extern const u8 sRoomTelephoneChoiceMsgs[3];
 extern const u8 sRoomTelephoneChoiceMsgsScene6[4];
 extern const s32 sRoomTelephonePos[3];
 extern const char sRoomTelephoneMsgFile[];
-extern u8 data_ov004_0224e16c[2];
-extern u8 data_ov004_0224e170[3];
-extern u8 data_ov004_0224e174[4];
 extern const char *data_ov004_0224e178;
-extern char sRoomTelephoneMsgFile2[];
 extern PhoneChoiceSet data_ov004_0224e298;
 extern PhoneChoiceSet data_ov004_0224e2a0;
 extern PhoneChoiceSet data_ov004_0224e2a8;
-extern char sRoomTelephoneArcPath[];
-extern char sRoomTelephoneTexPath[];
-extern RoomTelephone *volatile sRoomTelephone;
-extern RoomTelephoneActEntry sRoomTelephoneActTable[15];
 }
 
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).

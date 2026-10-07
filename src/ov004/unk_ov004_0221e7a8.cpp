@@ -43,16 +43,27 @@
 #define PROTO_LOCAL_Snd_SeEmitterPlayOneShot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SpotSync_RequestReserve  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SpotSync_RequestStandUpSpot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov004_0224d4a4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov004_0224d4a8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov004_0224d4b0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov004_0224d4b4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gEffectSplDefaultInitCbs  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFtrPullDist  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sRoomErrorMsgFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sRoomInteractDist  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sRoomPlayerMsgFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSeatApproachDist  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02051218.h"
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_020571f4.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205dfa4.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
@@ -294,7 +305,6 @@ typedef RoomObjRes Res;
 
 extern "C" {
 extern void *gCommManager;
-extern void *gBgHeap;
 extern void *gCurrentHeap;
 
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
@@ -1451,6 +1461,7 @@ void PlayerActor_ApproachValue(void *p, s32 a, u32 b, u32 c, u32 d);
 s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, u32 arg);
 void PlayerActor_StepTowardXZ(Obj *o, s32 a, s32 b);
 void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
+s32 Camera_SnapToFocus(V3 *v);
 void BedSpot_RequestApproach(V3 *v);
 s32 FieldPos_FromUnitCenter(void *p, u32 a, s32 b);
 u16 *BlockMap_GetItemPtrAtPos(void *g, void *p, s32 a);
@@ -4063,6 +4074,9 @@ void _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, u32 c, u32 d);
 void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 void _ZN11PlayerActor16updateFootstepFxEv(Obj *o);
 void _ZN11PlayerActor14playFootstepSeEv(Obj *o);
+void Vec_Sub(V3 *o, V3 *a, V3 *b);
+s32 Vec_MagXZ(V3 *v);
+s32 Vec_DistXZ(V3 *a, V3 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void Collision_Move(void *a, V3 *b, V3 *c, s32 d, u32 e, Obj *f, u32 g);
@@ -5413,6 +5427,8 @@ extern u8 data_ov004_0224d4a8[];
 extern s16 data_02135f44[];
 extern void *gSceneBlockMap;
 
+s32 Vec_MagXZ(V3 *v);
+s32 Vec_DistXZ(void *a, void *b);
 s32 Math_Atan2(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *c);

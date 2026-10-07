@@ -12,6 +12,31 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov094_02294c14
+extern char data_ov094_02294c14[];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sLetterGridColumnX
+extern u8 sLetterGridColumnX[5];
+#endif
+#ifndef PROTO_LOCAL_sLetterIconSprite
+extern u8 sLetterIconSprite[8];
+#endif
+#ifndef PROTO_LOCAL_sLetterIconPalettes
+extern u8 sLetterIconPalettes[16];
+#endif
+#ifndef PROTO_LOCAL_sLetterMarkSprites
+extern u8 sLetterMarkSprites[24];
+#endif
+#ifndef PROTO_LOCAL_sLetterIconChars
+extern u16 sLetterIconChars[16];
+#endif
 #ifndef PROTO_LOCAL_LetterGrid_DrawSlot
 void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0);
 #endif

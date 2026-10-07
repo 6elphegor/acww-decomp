@@ -9,6 +9,7 @@
 #include "types.h"
 class ArticleCacheEntry;
 class MsgString256;
+class StringBank;
 #endif
 
 #ifdef __cplusplus
@@ -86,6 +87,9 @@ ArticleCacheEntry *String_GetArticle(u8 *key);
 BOOL String_CharEqualsIgnoreCase(u32 a, u32 b);
 #endif
 }
+#ifndef PROTO_LOCAL_gStringBank
+extern StringBank gStringBank;
+#endif
 #endif
 
 #endif

@@ -4,6 +4,7 @@
 #include "net/WfcRect.h"
 #define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcOptions_Exit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcOptionsSprite  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
 #include "proto/ov001/unk_ov001_02208388.h"

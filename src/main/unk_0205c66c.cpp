@@ -24,8 +24,6 @@ struct PlayerBodyModelPool {
 };
 
 extern "C" {
-extern PlayerBodyModelPool sPlayerBodyModelPool;
-extern void *gPlayerBodyModelHeap;
 extern u8 *gCommManager;
 
 #define Heap_freeAll _ZN4Heap7freeAllEv
@@ -46,7 +44,6 @@ extern "C" void PlayerBodyModelPool_Destroy() {
     PlayerBodyModelHeap_Destroy();
 }
 
-extern char *sPlayerBodyModelPaths[];
 
 extern "C" char *PlayerBodyModel_GetPath(u32 i) { return sPlayerBodyModelPaths[i]; }
 extern "C" u32 PlayerBodyModel_GetBufferSize() { return 0x2380; }
@@ -122,8 +119,6 @@ extern "C" void *PlayerBodyModelRef_GetBuffer(u8 *p) { return (void *)sPlayerBod
 extern "C" void *PlayerBodyModelRef_GetVramSlot(u8 *p) { return sPlayerBodyModelPool.getVramSlot(*p); }
 extern "C" TexVramTask *PlayerBodyModelRef_GetTexTask(u8 *p) { return sPlayerBodyModelPool.getTexTask(*p); }
 // Declarations for data defined further down (definition order sets the data layout)
-extern PlayerBodyModelPool sPlayerBodyModelPool;
-extern char *sPlayerBodyModelPaths[];
 
 PlayerBodyModelPool sPlayerBodyModelPool;
 

@@ -17,18 +17,13 @@
 #include "gfx/DebugColor.h"
 #include "gfx/ViewFrustum.h"
 #include "player/PlayerData.h"
-#define PROTO_LOCAL_Camera_CalcPointSpan  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_CalcTriangleSpan  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_FocusOnPair  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_FocusOnPoint  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Camera_GetLookAtPoint  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_ProjectCurvedToScreen  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_GetHorizonAngle  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_Update  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gWorldCurve  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203a0cc.h"
@@ -41,7 +36,6 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_0222ee6c.h"
-#include "proto/ov004/unk_ov004_0223f43c.h"
 #include "proto/ov068/unk_ov068_0226647c.h"
 
 typedef VecFx32 V3;
@@ -227,23 +221,33 @@ s32 WorldCurve_Apply(void *p, void *q);
 void MTX_MultVec43(void *in, void *m, void *out);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
+void Vec_Scale(void *v, s32 s);
 void Camera_GetLookAtPoint(void *out, void *o);
 V3 *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetCurrent();
+void Vec_Sub(void *out, void *a, void *b);
+void Vec_ShiftRightTo(void *out, void *in, s32 s);
 s32 VEC_Mag(void *v);
 void MTX_MultVec33(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
 void Math_StepS16(s16 *p, s32 a, s32 b);
 void Math_ApproachS32(s32 *p, s32 a, s32 b, s32 c, s32 d);
+s32 Vec_MagXZ(void *v);
 s32 Math_AngleXZ(void *a, void *b);
+void Vec_RotateX(void *v, s32 a);
+void Vec_RotateY(void *v, s32 a);
 s32 Scene_InHouseRoom();
 s32 Scene_InVillagerHouse();
 s32 Scene_InMuseumRoom();
+void Camera_UpdateRoomFocus(void *self, s32 a);
+BOOL Vec_SafeNormalize(void *v);
+void Vec_RotateZ(void *v, s32 a);
 s32 WorldCurve_GetHorizonAngle(void *p);
 s32 FX_Inv(s32);
 s32 Ground_GetFloorBounds(s32 *, s32 *, s32 *, s32 *);
 s32 _ZN12MapBlockAcre9getAcreIdEv(u32);
 void MTX_Inverse43(void *a, void *b);
+void Vec_ScaleTo(void *out, void *a, s32 n);
 void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 void WorldCurve_Update(void *a, void *b);
@@ -260,16 +264,27 @@ s32 Item_MakeFurniture(s32 a, s32 b);
 BOOL Item_TestInfoFlag3(u16 *p);
 }
 
+extern "C" void Camera_UpdateMode20();
 extern "C" void _ZN6Camera13initModeShakeEv();
+extern "C" void Camera_UpdateMode16();
+extern "C" void Camera_InitMode11();
+extern "C" void Camera_InitMode12();
 extern "C" void _ZN6Camera15initModeDefaultEv();
 extern "C" void _ZN16CameraEventModes10initMode13Ev();
+extern "C" void Camera_UpdateMode18();
 extern "C" void _ZN16CameraEventModes12updateMode13Ev();
+extern "C" void Camera_UpdateMode12();
 extern "C" void _ZN6Camera9initMode4Ev();
+extern "C" void Camera_InitMode18();
+extern "C" void Camera_InitMode14();
+extern "C" void Camera_InitMode10();
 extern "C" void _ZN16CameraEventModes14updateModeSwayEv();
 extern "C" void _ZN16CameraEventModes12initModeSwayEv();
 extern "C" void _ZN16CameraEventModes18updateModeTownTourEv();
+extern "C" void Camera_UpdateMode14();
 extern "C" void _ZN6Camera19updateModeTrackPairEv();
 extern "C" void _ZN6Camera15initModeRestoreEv();
+extern "C" void Camera_InitMode15();
 extern "C" void _ZN6Camera17initModeTrackPairEv();
 extern "C" void _ZN6Camera11updateMode4Ev();
 extern "C" void _ZN6Camera17updateModeRestoreEv();
@@ -281,8 +296,13 @@ extern "C" void _ZN6Camera11updateMode1Ev();
 extern "C" void _ZN6Camera9initMode1Ev();
 extern "C" void _ZN6Camera17updateModeDefaultEv();
 extern "C" void _ZN16CameraEventModes20initModeFollowTargetEv();  // ov068 (0x02266b24, shared with ov065)
+extern "C" void Camera_UpdateMode15();
 extern "C" void _ZN16CameraEventModes22updateModeFollowTargetEv();
+extern "C" void Camera_UpdateMode11();
 extern "C" void _ZN16CameraEventModes16initModeTownTourEv();
+extern "C" void Camera_InitMode16();
+extern "C" void Camera_UpdateMode10();
+extern "C" void Camera_InitMode20();
 extern void *data_020d9258[2];
 extern void *data_020d9260[2];
 extern void *data_020d9268[2];
@@ -328,9 +348,17 @@ extern void *data_020d93a8[2];
 
 // ---- own plain functions (file unk_0203a058) ----
 extern "C" {
+BOOL Camera_SetModeDefault(void);
 MtxFx43 *Camera_GetViewMatrix(void);
+void Camera_StartBlend(void);
+void Camera_FinishBlend(void);
 s32 Camera_CalcPointSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 *d);
 s32 Camera_CalcTriangleSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx32 *d, s32 *e);
+BOOL Camera_ProjectToScreen(s32 *x, s32 *y, VecFx32 *p);
+BOOL Camera_IsBlending(void);
+void Camera_RestoreView(void);
+void Camera_PlaySe(Camera *o, s32 a);
+void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z);
 }
 
 // ---- members called from the plain functions (explicit object argument; names filled by the build script) ----

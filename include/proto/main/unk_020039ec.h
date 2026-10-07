@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
+#include "snd/SndSceneBase.h"
 #include "types.h"
 #endif
 
@@ -247,6 +248,12 @@ void Snd_MelodyBeatStart(void *s, u16 id);
 void Snd_MelodyBeatUpdate(u32 a, VecFx32 *v);
 #endif
 }
+#ifndef PROTO_LOCAL_gSndScene
+extern SndSceneBase *gSndScene;
+#endif
+#ifndef PROTO_LOCAL_gSndHeapBuffer
+extern u8 gSndHeapBuffer[0x80000];
+#endif
 #endif
 
 #endif

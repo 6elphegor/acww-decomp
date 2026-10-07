@@ -28,7 +28,6 @@
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0205c91c.h"
 #include "proto/main/unk_0205dfa4.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_02082d74.h"
@@ -90,12 +89,6 @@ extern "C" {
 extern const u8 sHeldItemModelIds[0x40];
 extern const u8 sHeldItemAnimIds[0x40];
 extern const u16 sHeldItemHandPoses[0x40];
-extern char sHeldItemModelPathBuf[0x18];
-extern char sHeldItemAnimPathBuf[0x18];
-extern char sHeldItemTexAnimPathBuf[0x1c];
-extern HeldItemModelBank sHeldItemModelBank;
-extern void *gHeldItemAnimHeap;
-extern void *gHeldItemModelHeap;
 extern CommManager *gCommManager;
 
 void *NNS_G3dGetTex(void *p);
@@ -110,6 +103,8 @@ void Heap_adjust(void *p);
 void *Scene_GetCurrent(void);
 u32 Scene_GetMaxPlayers(void *p);
 u32 Scene_GetMaxCharacters(void *p);
+u32 ItemInfo_GetHoldableIndex(u16 *p);
+u32 ItemInfo_GetHoldableCount(void);
 
 void HeldItemModels_OnJointCalcPost(NNSG3dRS *rs);
 void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs);

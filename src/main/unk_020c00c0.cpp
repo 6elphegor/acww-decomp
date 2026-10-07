@@ -13,9 +13,8 @@
 #include "talk/SpNpcTalkRequest.h"
 #include "talk/SpNpcKatieTalk.h"
 #include "npc/SpNpcKatie.h"
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02002b1c.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020815f8.h"
@@ -25,7 +24,6 @@
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020b7190.h"
 #include "proto/main/unk_020c00c0.h"
-#include "proto/main/unk_020c1738.h"
 
 
 static inline void Unk_020bfe30_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
@@ -75,6 +73,7 @@ s32 FX_Div(s32 a, s32 b);
 }
 
 extern "C" {
+void Vec_Scale(void *a, s32 b);
 }
 
 extern "C" {
@@ -249,9 +248,11 @@ void func_02067a78(void *p);
 }
 
 extern "C" {
+void SpNpcKaitlin_ChangeAct04(void);
 }
 
 extern "C" {
+void Camera_SetMode19(void);
 }
 
 extern "C" {
@@ -276,6 +277,7 @@ extern "C" {
 }
 
 extern "C" {
+void SpNpcKaitlin_ChangeAct06(void);
 }
 
 extern "C" {

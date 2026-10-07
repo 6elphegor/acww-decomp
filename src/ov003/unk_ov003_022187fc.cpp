@@ -16,6 +16,8 @@
 #define PROTO_LOCAL_FieldStructureMgr_SpawnAll  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldStructureMgr_SpawnBuilding  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldStructureMgr_Unregister  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/main/unk_0202e840.h"
@@ -82,10 +84,8 @@ public:
 #define BuildingActor_openDoorForEntry _ZN13BuildingActor16openDoorForEntryEv
 
 extern "C" {
-extern void *gFieldStructureHeap;
 extern u8 gSaveTownFlag[];
 extern void *gCurrentHeap;
-extern BuildingActor *sBuildingList[0x20];
 extern Unk_ov003_02218c60_Grid *gSceneBlockMap;
 extern u8 data_020d0a7c[];
 extern u32 *gActorDefaultParent;

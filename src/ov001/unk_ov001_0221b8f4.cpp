@@ -15,7 +15,6 @@
 #include "proto/ov001/unk_ov001_0221bc10.h"
 #include "proto/ov001/unk_ov001_0221bee0.h"
 #include "proto/ov001/unk_ov001_0221d744.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221eb38.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
@@ -38,6 +37,7 @@ s32 GX_LoadBG2Scr();
 void WfcUtil_LoadFileTo(void *, void *);
 s32 WfcGx_HidePlanes(s32, s32);
 s32 WfcGx_ShowPlanes(s32, s32);
+s32 WfcConfig_CommitEdit();
 
 
 

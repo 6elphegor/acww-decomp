@@ -12,11 +12,11 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "save/SaveData.h"
-#define PROTO_LOCAL_Camera_ProjectCurvedToScreen  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomCamera_StartBlendToPlayer  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0208eeac.h"
@@ -24,6 +24,7 @@
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov004/unk_ov004_02229660.h"
 #include "proto/ov004/unk_ov004_0223e014.h"
@@ -42,10 +43,6 @@ struct PadState {
 
 extern "C" {
 extern u8 gScreenTransition;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchPrevHeld;
-extern u8 gTouchPrevChanged;
 extern u8 gSaveData[];
 extern u8 gSavePlayers[];
 extern PadState gPad;
@@ -77,7 +74,6 @@ struct ResidentSelectStateEntry {
     Unk_ov004_0224f20c_Fn enter;
     Unk_ov004_0224f20c_Fn exit;
 };
-extern ResidentSelectStateEntry sResidentSelectStates[];
 
 
 static inline BOOL Unk_ov004_0223e2f4_IsMode2() {

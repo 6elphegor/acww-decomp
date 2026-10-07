@@ -58,7 +58,6 @@ struct CafeVillagerActEntry {
 extern "C" {
 extern u16 data_020c6cc8;
 extern CafeVillagerActEntry sCafeVillagerActTable[3];
-extern u8 data_ov004_022508e0[0x28];
 
 void *VillagerData_getVillagerId(void *o);
 void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);

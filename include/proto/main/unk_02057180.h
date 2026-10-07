@@ -17,6 +17,9 @@ u32 G3dTex_GetTexelCount(u32 v);
 u32 G3dTex_GetImageSize(u32 v);
 #endif
 }
+#ifndef PROTO_LOCAL_sTexDimSizes
+extern u16 sTexDimSizes[8];
+#endif
 #endif
 
 #endif

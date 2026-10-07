@@ -11,6 +11,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcApList
+extern void *sWfcApList;
+#endif
 #ifndef PROTO_LOCAL_WfcApList_Enter
 void WfcApList_Enter();
 #endif
@@ -86,6 +89,15 @@ void WfcApList_WaitDialogClosed();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov001_0222aea8
+extern u8 data_ov001_0222aea8;
+#endif
+#ifndef PROTO_LOCAL_sWfcApListCursor
+extern u8 sWfcApListCursor;
+#endif
+#ifndef PROTO_LOCAL_sWfcApListScroll
+extern u16 sWfcApListScroll;
+#endif
 #ifndef PROTO_LOCAL_WfcApList_DrawSsid
 void WfcApList_DrawSsid(s32 a, s32 b);
 #endif

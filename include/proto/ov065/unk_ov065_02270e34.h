@@ -14,6 +14,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sDwcLoginControl
+extern void *sDwcLoginControl;
+#endif
+#ifndef PROTO_LOCAL_sDwcFriendControl
+extern void *sDwcFriendControl;
+#endif
 #ifndef PROTO_LOCAL_DwcFriend_DeleteFriend
 void DwcFriend_DeleteFriend(void *p);
 #endif
@@ -68,6 +74,18 @@ void DwcCore_ClearError(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sDwcLoginDoneCallback
+extern void (*sDwcLoginDoneCallback) (void *, void *, u32);
+#endif
+#ifndef PROTO_LOCAL_sDwcLoginDoneArg
+extern u32 sDwcLoginDoneArg;
+#endif
+#ifndef PROTO_LOCAL_sDwcErrorCode
+extern s32 sDwcErrorCode;
+#endif
+#ifndef PROTO_LOCAL_sDwcErrorClass
+extern s32 sDwcErrorClass;
+#endif
 #ifndef PROTO_LOCAL_DwcFriend_GetStatus
 s32 DwcFriend_GetStatus(void *a, u8 *p1, u8 *p2, char *dst);
 #endif

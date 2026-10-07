@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "talk/MailTextBuilder.h"
 #include "talk/MsgString.h"
 #include "types.h"
 #endif
@@ -55,6 +56,48 @@ void MailText_SetSlotMonth(s32 i, s32 x);
 void MailText_SetSlotDayOrdinal(s32 i, s32 x);
 #endif
 }
+#ifndef PROTO_LOCAL_data_020d943c
+extern char data_020d943c[];
+#endif
+#ifndef PROTO_LOCAL_data_020d9440
+extern char data_020d9440[];
+#endif
+#ifndef PROTO_LOCAL_data_020d9448
+extern char data_020d9448[];
+#endif
+#ifndef PROTO_LOCAL_data_020d9450
+extern char data_020d9450[];
+#endif
+#ifndef PROTO_LOCAL_data_020d9458
+extern char data_020d9458[];
+#endif
+#ifndef PROTO_LOCAL_data_020d9460
+extern void *data_020d9460[2];
+#endif
+#ifndef PROTO_LOCAL_data_020d9468
+extern void *data_020d9468[2];
+#endif
+#ifndef PROTO_LOCAL_data_020d9470
+extern void *data_020d9470[2];
+#endif
+#ifndef PROTO_LOCAL_data_020d9438
+extern char data_020d9438[];
+#endif
+#ifndef PROTO_LOCAL_data_020d9478
+extern char data_020d9478[];
+#endif
+#ifndef PROTO_LOCAL_data_020d9488
+extern char data_020d9488[];
+#endif
+#ifndef PROTO_LOCAL_data_020d949c
+extern char data_020d949c[];
+#endif
+#ifndef PROTO_LOCAL_data_020d9434
+extern char data_020d9434[];
+#endif
+#ifndef PROTO_LOCAL_gMailTextBuilder
+extern MailTextBuilder gMailTextBuilder;
+#endif
 #endif
 
 #endif

@@ -14,6 +14,9 @@ extern "C" {
 void *Gfx3d_AllocAnmObj(u32 a, const char *b, void *c);
 #endif
 }
+#ifndef PROTO_LOCAL_sMatAnmHeader
+extern char sMatAnmHeader[4];
+#endif
 #endif
 
 #endif

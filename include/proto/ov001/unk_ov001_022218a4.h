@@ -42,6 +42,39 @@ void WfcMoveWh_Reset();
 #ifndef PROTO_LOCAL_DWCi_MOV_WH_Finalize
 void DWCi_MOV_WH_Finalize();
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222b4ec
+extern char data_ov001_0222b4ec[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b508
+extern char data_ov001_0222b508[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b524
+extern char data_ov001_0222b524[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b540
+extern char data_ov001_0222b540[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b55c
+extern char data_ov001_0222b55c[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b57c
+extern char data_ov001_0222b57c[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b59c
+extern char data_ov001_0222b59c[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b5bc
+extern char data_ov001_0222b5bc[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b5e0
+extern char data_ov001_0222b5e0[];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b604
+extern char data_ov001_0222b604[];
+#endif
+#ifndef PROTO_LOCAL_sWfcMoveWhSysStateNames
+extern char *sWfcMoveWhSysStateNames[10];
+#endif
 #ifdef __cplusplus
 }
 #endif

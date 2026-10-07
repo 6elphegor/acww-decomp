@@ -93,6 +93,9 @@ InventoryBg *_ZN11InventoryBgC1Ev(InventoryBg *s);
 #ifndef PROTO_LOCAL__ZN11InventoryBgD1Ev
 InventoryBg *_ZN11InventoryBgD1Ev(InventoryBg *s);
 #endif
+#ifndef PROTO_LOCAL_sInventoryBgSprite
+extern u8 sInventoryBgSprite[8];
+#endif
 #ifndef PROTO_LOCAL_InventoryBg_Init
 void InventoryBg_Init(InventoryBg *s, u32 v);
 #endif

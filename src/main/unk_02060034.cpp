@@ -9,6 +9,7 @@
 #define PROTO_LOCAL_OS_GetOwnerInfo  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_02060034.h"
+#include "proto/main/unk_02060b9c.h"
 
 
 
@@ -22,7 +23,6 @@ extern "C" {
 extern HouseData gSaveHouse;
 extern u8 gSaveSongSet[];
 extern u8 gSaveData[];
-extern void *gInsectSpawnTables[];
 extern u8 gSaveData[];
 s32 SceneId_GetHouseRoom(u32 x);
 s32 SceneId_IsHouseRoom(u32 x);

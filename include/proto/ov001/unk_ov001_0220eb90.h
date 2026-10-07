@@ -4,12 +4,19 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220eb90.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "nitro/gxoam.h"
 #ifdef __cplusplus
 #include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sWfcOptionsPalette
+extern void *sWfcOptionsPalette;
+#endif
+#ifndef PROTO_LOCAL_sWfcOptionsSprite
+extern GXOamAttr *sWfcOptionsSprite;
 #endif
 #ifndef PROTO_LOCAL_WfcOptions_Enter
 void WfcOptions_Enter();
@@ -56,6 +63,12 @@ void WfcOptions_HighlightSelection();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcOptionsChosen
+extern u8 sWfcOptionsChosen;
+#endif
+#ifndef PROTO_LOCAL_sWfcOptionsSel
+extern u8 sWfcOptionsSel;
+#endif
 #ifndef PROTO_LOCAL_WfcOptions_MoveCursor
 void WfcOptions_MoveCursor(s32 a);
 #endif

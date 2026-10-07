@@ -12,7 +12,6 @@
 #include "proto/ov001/unk_ov001_0220d1d8.h"
 #include "proto/ov001/unk_ov001_0220d760.h"
 #include "proto/ov001/unk_ov001_02219c3c.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
@@ -51,8 +50,11 @@ extern void GX_LoadOBJ();
 extern void GX_LoadOBJPltt();
 extern void GXS_LoadBG1Scr();
 
+extern void WfcConfig_StoreSimpleStart(void *);
 extern void WfcMsg_Unload(void *);
 extern void *WfcMsg_Load(void *);
+extern void WfcConfig_Shutdown();
+extern void WfcConfig_Init();
 extern void WfcUtil_LoadFileTo(void *, void *);
 extern void WfcCell_Unload(s32);
 extern void WfcCell_Load(s32, void *);

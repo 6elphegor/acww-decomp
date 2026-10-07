@@ -53,6 +53,9 @@ void WfcTransferWait_Exit();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcTransferWaitResult
+extern u8 sWfcTransferWaitResult;
+#endif
 #ifndef PROTO_LOCAL_WfcTransferWait_IsLidClosed
 BOOL WfcTransferWait_IsLidClosed();
 #endif

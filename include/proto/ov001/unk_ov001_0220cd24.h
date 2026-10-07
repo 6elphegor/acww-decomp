@@ -4,12 +4,22 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220cd24.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct WfcTransferWork;
 #ifdef __cplusplus
 #include "types.h"
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222aa60
+extern char data_ov001_0222aa60[0x14];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222aa8c
+extern char data_ov001_0222aa8c[0x18];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222aa74
+extern char data_ov001_0222aa74[0x18];
 #endif
 #ifndef PROTO_LOCAL_WfcTransfer_RequestEnd
 void WfcTransfer_RequestEnd();
@@ -36,6 +46,9 @@ u8 *WfcTransfer_GetChildUser();
 void WfcTransfer_Task(s32 a);
 #endif
 }
+#ifndef PROTO_LOCAL_sWfcTransfer
+extern WfcTransferWork *sWfcTransfer;
+#endif
 #endif
 
 #endif

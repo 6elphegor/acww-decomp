@@ -13,6 +13,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_negotiateList
+extern void *negotiateList;
+#endif
 #ifndef PROTO_LOCAL_AddNegotiator
 void *AddNegotiator(void);
 #endif
@@ -31,14 +34,26 @@ void NNThink();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_Matchup1Hostname
+extern u32 Matchup1Hostname;
+#endif
+#ifndef PROTO_LOCAL_matchup1ip
+extern u32 matchup1ip;
+#endif
 #ifndef PROTO_LOCAL_CheckMagic
 BOOL CheckMagic(void *p);
+#endif
+#ifndef PROTO_LOCAL_data_ov065_02291548
+extern u8 data_ov065_02291548[0x200];
 #endif
 #ifndef PROTO_LOCAL_SendPacket__natneg
 s32 SendPacket__natneg(s32 sock, u32 ip, s32 port, void *buf, s32 len);
 #endif
 #ifndef PROTO_LOCAL_GetLocalIP
 u32 GetLocalIP();
+#endif
+#ifndef PROTO_LOCAL_NNMagicData
+extern u8 NNMagicData[6];
 #endif
 #ifndef PROTO_LOCAL_GetLocalPort
 u32 GetLocalPort(s32 fd);
@@ -55,8 +70,14 @@ s32 ResolveServers();
 #ifndef PROTO_LOCAL_NNBeginNegotiationWithSocket
 s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, s32 d, void *e, void *f);
 #endif
+#ifndef PROTO_LOCAL_matchup2ip
+extern u32 matchup2ip;
+#endif
 #ifndef PROTO_LOCAL_NNCancel
 void NNCancel(u32 cookie);
+#endif
+#ifndef PROTO_LOCAL_Matchup2Hostname
+extern u32 Matchup2Hostname;
 #endif
 #ifndef PROTO_LOCAL_ProcessConnectPacket
 void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, SockAddrIn *sa);

@@ -19,8 +19,8 @@
 #include "net/CommManager.h"
 #include "npc/NpcActionCtrl.h"
 #include "npc/NpcFaceAnim.h"
-#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
+#include "proto/main/unk_0202e2d4.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_020a427c.h"
 

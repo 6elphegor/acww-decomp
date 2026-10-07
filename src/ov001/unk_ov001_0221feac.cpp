@@ -4,6 +4,7 @@
 #include "nitro/io_access.h"
 #define PROTO_LOCAL_WfcDialog_Open  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcText_CreateObjCanvas  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gWfcMsgBank  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02208388.h"
 #include "proto/ov001/unk_ov001_0220cbd0.h"
 #include "proto/ov001/unk_ov001_0221feac.h"

@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020e92f4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "game/FxVec3.h"
 #include "types64.h"
 #ifdef __cplusplus
 #include "gfx/VecFx32.h"
@@ -86,6 +87,9 @@ void Vec_RotateY(VecFx32 *v, s32 angle);
 void Vec_RotateZ(VecFx32 *v, s32 angle);
 #endif
 }
+#ifndef PROTO_LOCAL_gVec3Zero
+extern FxVec3 gVec3Zero (0, 0, 0);
+#endif
 #endif
 
 #endif

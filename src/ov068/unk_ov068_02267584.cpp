@@ -6,18 +6,11 @@
 #include "field/Snowball.h"
 #include "game/GroundInfo.h"
 #include "game/GroundInfoBase.h"
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Distance  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_MagXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_SafeNormalize  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Scale  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02090268.h"
 #include "proto/main/unk_020943dc.h"
@@ -48,6 +41,7 @@ void func_0201bc28(void *p, void *q);
 void func_0201bda8(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
 u32 Math_CountDownU8(void *p);
+void Camera_SetModeDefault();
 void func_02097ff4(void *p, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);

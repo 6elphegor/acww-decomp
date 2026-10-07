@@ -139,8 +139,32 @@ s32 StarSky_FindConstellationByLine(u16 v);
 #ifndef PROTO_LOCAL_StarSky_CollectStars
 void StarSky_CollectStars(ConstellationRecord *p, u8 *out);
 #endif
+#ifndef PROTO_LOCAL_data_ov127_02293fa4
+extern u8 data_ov127_02293fa4[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fac
+extern u8 data_ov127_02293fac[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fb4
+extern s32 data_ov127_02293fb4[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fc4
+extern s32 data_ov127_02293fc4[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fd4
+extern u8 data_ov127_02293fd4[32];
+#endif
 #ifndef PROTO_LOCAL_StarSky_IsConstellationFree
 BOOL StarSky_IsConstellationFree(ConstellationRecord *p);
+#endif
+#ifndef PROTO_LOCAL_sTestedConstellationStars
+extern u8 sTestedConstellationStars[0x11];
+#endif
+#ifndef PROTO_LOCAL_sSavedConstellationStars
+extern u8 sSavedConstellationStars[0x11];
+#endif
+#ifndef PROTO_LOCAL_data_ov127_02293fa0
+extern u8 data_ov127_02293fa0[4];
 #endif
 }
 #endif

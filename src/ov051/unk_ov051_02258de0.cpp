@@ -27,8 +27,8 @@
 #include "player/PlayerData.h"
 #include "player/PlayerId.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02065e88.h"
@@ -73,6 +73,7 @@ s32 Math_CountDownU16(void *p);
 s32 Math_CountDownU8(void *p);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
+void Camera_SetSwayPattern3();
 extern u16 data_020c6cc8;
 extern u8 gScreenTransition;
 extern u8 gSaveData[];
@@ -180,11 +181,6 @@ extern const u8 sSpNpcKappnPurposeReplyMsgs[];
 extern const u8 sSpNpcKappnRainReplyMsgs[];
 extern const u8 sSpNpcKappnRainReplyMsgsMode3[];
 extern const u32 sSpNpcKappnFaceTable[];
-extern char *sSpNpcKappnMsgKey;
-extern u8 sSpNpcKappnModelPath[];
-extern u8 sSpNpcKappnTexturePath[];
-extern SpNpcKappnActEntry sSpNpcKappnActTable[];
-extern SpNpcKappn *sSpNpcKappnInstance;
 }
 
 

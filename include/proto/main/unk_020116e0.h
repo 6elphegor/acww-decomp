@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "gfx/HudObjGfx.h"
 #include "types.h"
 #endif
 
@@ -60,6 +61,9 @@ s32 Hud_GetSceneHudKind(void);
 u8 HudObjGfx_IsMsgUiActive(void);
 #endif
 }
+#ifndef PROTO_LOCAL_sHudObjGfx
+extern HudObjGfx sHudObjGfx;
+#endif
 #endif
 
 #endif

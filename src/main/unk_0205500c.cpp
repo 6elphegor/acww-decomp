@@ -5,7 +5,9 @@
 #include "gfx/VramTask.h"
 #include "gfx/TexVramTask.h"
 #include "gfx/ModelResource.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_0205500c.h"
 #include "proto/main/unk_02063f3c.h"
 
 extern "C" {

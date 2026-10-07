@@ -9,9 +9,11 @@
 #include "npc/VillagerAnimHeapRefPool.h"
 #include "npc/NpcSpawner.h"
 #include "npc/NpcBodyAnimPool.h"
+#define PROTO_LOCAL_sVisitorSpawnTable  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020821c4.h"
+#include "proto/main/unk_02082d2c.h"
 #include "proto/main/unk_02082d74.h"
 #include "proto/main/unk_020850e0.h"
 #include "proto/main/unk_02085940.h"
@@ -25,11 +27,9 @@ NpcBodyAnimPool *NpcBodyAnimPool_Get();
 }
 
 extern "C" {
-extern VillagerAnimHeapRefPool sVillagerAnimHeapRefPool;
 }
 
 extern "C" {
-extern NpcBodyAnimPool sNpcBodyAnimPool;
 }
 
 

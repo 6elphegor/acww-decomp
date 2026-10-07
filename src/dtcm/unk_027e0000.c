@@ -1,3 +1,4 @@
+#include "proto/dtcm/unk_027e0000.h"
 #include "proto/itcm/unk_01ff8000.h"
 #include "proto/itcm/unk_01ff8228.h"
 // mwcc-flags: -nothumb

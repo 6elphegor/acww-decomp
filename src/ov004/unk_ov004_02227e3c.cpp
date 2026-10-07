@@ -21,7 +21,7 @@
 #include "room/RoomObjActor.h"
 #include "game/TouchPickTriangle.h"
 #include "gfx/TwoLayerAnimModel.h"
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0209c3e0.h"
 #include "proto/ov004/unk_ov004_02227e3c.h"

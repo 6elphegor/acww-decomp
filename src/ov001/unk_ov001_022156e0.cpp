@@ -18,7 +18,6 @@
 #include "proto/ov001/unk_ov001_0221b44c.h"
 #include "proto/ov001/unk_ov001_0221cd74.h"
 #include "proto/ov001/unk_ov001_0221cfc0.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02223fc4.h"
@@ -105,6 +104,10 @@ void GX_LoadBGPltt();
 void * MI_CpuFill8(void *, s32, u32);
 void swprintf(void *, s32, void *, ...);
 void WfcUtil_LoadFileTo(void *, void *);
+s32 WfcConfig_BeginEdit(s32);
+void WfcConfig_SetEditAutoDns(u32);
+void WfcConfig_SetEditAutoIp(u32);
+u8 * WfcConfig_GetEdit();
 GXOamAttr * WfcObj_CreateSingle(s32, s32);
 void WfcCell_Copy(s32, u32, void *);
 s32 WfcGx_HidePlanes(s32, s32);

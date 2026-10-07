@@ -15,7 +15,6 @@
 #include "proto/ov001/unk_ov001_0220eb90.h"
 #include "proto/ov001/unk_ov001_02219c3c.h"
 #include "proto/ov001/unk_ov001_0221cd74.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221ea94.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
@@ -41,6 +40,7 @@ void GX_LoadBGPltt();
 void GX_LoadBG2Scr();
 void OS_SpinWait(u32);
 void PM_ForceToPowerOff();
+void WfcConfig_EraseAll();
 void OS_GetMacAddress(void *);
 void swprintf(void *, s32, void *, ...);
 void DWCi_BM_GetWiFiInfo(u64 *);

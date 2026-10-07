@@ -12,6 +12,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcHeap
+extern void *sWfcHeap;
+#endif
 #ifndef PROTO_LOCAL_WfcHeap_Init
 void WfcHeap_Init(void *buf);
 #endif

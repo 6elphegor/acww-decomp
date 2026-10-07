@@ -7,6 +7,8 @@
 #include "ui/WfcLinkIcon.h"
 #define PROTO_LOCAL_WfcOam_FreeEntry  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcTextKb_Destroy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcNumPad  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcTextKb  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02208a24.h"
 #include "proto/ov001/unk_ov001_02208c2c.h"
 #include "proto/ov001/unk_ov001_0220aba4.h"
@@ -201,10 +203,6 @@ extern u16 data_ov001_02229c00[][2];
 extern u16 data_ov001_02229c08[][2];
 extern u16 data_ov001_02229c28[][2];
 extern u8 gWfcScreenRect[];
-extern u8 data_ov001_0222a844[];
-extern u8 data_ov001_0222a84c[];
-extern u8 data_ov001_0222a854[];
-extern u8 *sWfcTextKbCharMaps[];
 
 s32 FX_ModS32(s32, s32);
 void WfcObj_SetModePalette(void *, s32, s32, u32);
@@ -237,8 +235,6 @@ extern u32 data_ov001_02229c08[];
 extern u32 data_ov001_02229c18[];
 extern u8 data_ov001_02229bf8[];
 extern u8 data_ov001_02229be4[];
-extern u8 *sWfcTextKbCharMaps[];
-extern u32 data_ov001_0222a874[];
 extern u16 data_ov001_02229c28_h[];
 
 static inline void Unk_ov001_0220a478_Get(u32 *ip, s32 *a, s32 *b) {
@@ -269,7 +265,6 @@ extern u16 data_ov001_02229bf4[];
 extern u8 data_ov001_02229be8[];
 extern u8 data_ov001_02229be0[];
 extern u16 data_ov001_02229bec[];
-extern u16 *sWfcTextKbGlyphMaps[];
 extern u16 data_ov001_02229f14[];
 extern u16 data_ov001_02229f16[];
 extern s8 sWfcNumPadNavTable[][4];

@@ -4,8 +4,14 @@
 // Prototypes of the functions defined in src/main/unk_0209eb94.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct GuestSlotTriple;
+struct SaveManagerActEntry;
 #ifdef __cplusplus
+#include "save/BlancaFaceRecord.h"
 #include "types.h"
+class AxBbsNotice;
+class AxMail;
 class SaveManager;
 class SaveRecord4;
 #endif
@@ -410,6 +416,288 @@ void JoinHistory_Remove(u32 v);
 u32 JoinHistory_GetLatest();
 #endif
 }
+#ifndef PROTO_LOCAL_sAxMailBuf
+extern AxMail sAxMailBuf;
+#endif
+#ifndef PROTO_LOCAL_sAxBbsBuf
+extern AxBbsNotice sAxBbsBuf;
+#endif
+#ifndef PROTO_LOCAL_sGameStatsBuf
+extern BlancaFaceRecord sGameStatsBuf;
+#endif
+#ifndef PROTO_LOCAL_sSaveManagerStates
+extern SaveManagerActEntry sSaveManagerStates[32];
+#endif
+#ifndef PROTO_LOCAL_data_020e2654
+extern void *data_020e2654[2];
+#endif
+#ifndef PROTO_LOCAL_data_021ed390
+extern u8 data_021ed390;
+#endif
+#ifndef PROTO_LOCAL_gSaveManager
+extern SaveManager *gSaveManager;
+#endif
+#ifndef PROTO_LOCAL_data_020e2674
+extern void *data_020e2674[2];
+#endif
+#ifndef PROTO_LOCAL_sJoiningAid
+extern u8 sJoiningAid;
+#endif
+#ifndef PROTO_LOCAL_data_020e2574
+extern void *data_020e2574[2];
+#endif
+#ifndef PROTO_LOCAL_sNetRegion
+extern char *sNetRegion;
+#endif
+#ifndef PROTO_LOCAL_data_020e2624
+extern void *data_020e2624[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2790
+extern char data_020e2790[];
+#endif
+#ifndef PROTO_LOCAL_data_020e24f0
+extern char data_020e24f0[];
+#endif
+#ifndef PROTO_LOCAL_data_020e250c
+extern void *data_020e250c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2514
+extern void *data_020e2514[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e256c
+extern void *data_020e256c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25d4
+extern void *data_020e25d4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2754
+extern void *data_020e2754[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25cc
+extern void *data_020e25cc[2];
+#endif
+#ifndef PROTO_LOCAL_sSaveManagerRequest
+extern s32 sSaveManagerRequest;
+#endif
+#ifndef PROTO_LOCAL_sRecentJoinAids
+extern u8 sRecentJoinAids[3];
+#endif
+#ifndef PROTO_LOCAL_data_020e272c
+extern void *data_020e272c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2724
+extern void *data_020e2724[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e271c
+extern void *data_020e271c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e257c
+extern void *data_020e257c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2584
+extern void *data_020e2584[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2704
+extern void *data_020e2704[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26fc
+extern void *data_020e26fc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26f4
+extern void *data_020e26f4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2594
+extern void *data_020e2594[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26e4
+extern void *data_020e26e4[2];
+#endif
+#ifndef PROTO_LOCAL_sGameStatsReceived
+extern u8 sGameStatsReceived;
+#endif
+#ifndef PROTO_LOCAL_sAxBbsReceived
+extern u8 sAxBbsReceived;
+#endif
+#ifndef PROTO_LOCAL_data_020e26cc
+extern void *data_020e26cc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26c4
+extern void *data_020e26c4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26bc
+extern void *data_020e26bc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26b4
+extern void *data_020e26b4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26ac
+extern void *data_020e26ac[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26a4
+extern void *data_020e26a4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e269c
+extern void *data_020e269c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2694
+extern void *data_020e2694[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e268c
+extern void *data_020e268c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e267c
+extern void *data_020e267c[2];
+#endif
+#ifndef PROTO_LOCAL_gTownTransferBuf
+extern void *gTownTransferBuf;
+#endif
+#ifndef PROTO_LOCAL_data_020e2684
+extern void *data_020e2684[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2770
+extern GuestSlotTriple data_020e2770;
+#endif
+#ifndef PROTO_LOCAL_data_020e26ec
+extern void *data_020e26ec[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e270c
+extern void *data_020e270c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e273c
+extern void *data_020e273c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2744
+extern void *data_020e2744[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2644
+extern void *data_020e2644[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e263c
+extern void *data_020e263c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2634
+extern void *data_020e2634[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e253c
+extern void *data_020e253c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e261c
+extern void *data_020e261c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2614
+extern void *data_020e2614[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e277c
+extern char data_020e277c[];
+#endif
+#ifndef PROTO_LOCAL_data_020e2604
+extern void *data_020e2604[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25fc
+extern void *data_020e25fc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25f4
+extern void *data_020e25f4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25ec
+extern void *data_020e25ec[2];
+#endif
+#ifndef PROTO_LOCAL_sAxMailFileName
+extern char *sAxMailFileName;
+#endif
+#ifndef PROTO_LOCAL_data_020e25dc
+extern void *data_020e25dc[2];
+#endif
+#ifndef PROTO_LOCAL_sGameStartMode
+extern s32 sGameStartMode;
+#endif
+#ifndef PROTO_LOCAL_data_020e2554
+extern void *data_020e2554[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25c4
+extern void *data_020e25c4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2734
+extern void *data_020e2734[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25b4
+extern void *data_020e25b4[2];
+#endif
+#ifndef PROTO_LOCAL_sEraseResidentSlot
+extern s32 sEraseResidentSlot;
+#endif
+#ifndef PROTO_LOCAL_data_020e259c
+extern void *data_020e259c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25a4
+extern void *data_020e25a4[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e25ac
+extern void *data_020e25ac[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e264c
+extern void *data_020e264c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e265c
+extern void *data_020e265c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2764
+extern GuestSlotTriple data_020e2764;
+#endif
+#ifndef PROTO_LOCAL_data_021ed3a4
+extern u8 data_021ed3a4;
+#endif
+#ifndef PROTO_LOCAL_sAxBbsFileName
+extern char *sAxBbsFileName;
+#endif
+#ifndef PROTO_LOCAL_data_020e2714
+extern void *data_020e2714[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e274c
+extern void *data_020e274c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2544
+extern void *data_020e2544[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e2504
+extern void *data_020e2504[2];
+#endif
+#ifndef PROTO_LOCAL_sAxMailReceived
+extern u8 sAxMailReceived;
+#endif
+#ifndef PROTO_LOCAL_data_020e252c
+extern u8 data_020e252c[8];
+#endif
+#ifndef PROTO_LOCAL_data_020e2534
+extern void *data_020e2534[2];
+#endif
+#ifndef PROTO_LOCAL_sSaveManagerProfile
+extern ProcProfile sSaveManagerProfile;
+#endif
+#ifndef PROTO_LOCAL_data_020e25bc
+extern void *data_020e25bc[2];
+#endif
+#ifndef PROTO_LOCAL_sSessionResidentIndex
+extern u8 sSessionResidentIndex;
+#endif
+#ifndef PROTO_LOCAL_data_020e266c
+extern void *data_020e266c[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e26dc
+extern void *data_020e26dc[2];
+#endif
+#ifndef PROTO_LOCAL_data_020e27a4
+extern char data_020e27a4[];
+#endif
+#ifndef PROTO_LOCAL_data_020e2564
+extern void *data_020e2564[2];
+#endif
+#ifndef PROTO_LOCAL_sAxMailBaseUrl
+extern char *sAxMailBaseUrl;
+#endif
+#ifndef PROTO_LOCAL_data_021ed398
+extern u8 data_021ed398;
+#endif
 #endif
 
 #endif

@@ -12,6 +12,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWifiApSocketConfig
+extern void *sWifiApSocketConfig;
+#endif
+#ifndef PROTO_LOCAL_sWifiApLinkWork
+extern void *sWifiApLinkWork;
+#endif
 #ifndef PROTO_LOCAL_WifiAp_FreeAll
 void WifiAp_FreeAll();
 #endif
@@ -27,6 +33,9 @@ void WifiAp_HashReset(void *ctx);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWifiApContext
+extern u8 *sWifiApContext;
+#endif
 #ifndef PROTO_LOCAL_WifiAp_Init
 s32 WifiAp_Init(WifiApConfig *cfg);
 #endif

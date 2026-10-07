@@ -11,6 +11,7 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #define PROTO_LOCAL_Visitor_ScheduleLow  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sGracieCarVisitorProfile  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov003/unk_ov003_02214ce0.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).

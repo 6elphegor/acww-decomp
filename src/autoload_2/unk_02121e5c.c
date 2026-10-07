@@ -3,6 +3,7 @@
 #include "proto/autoload_2/unk_02120c98.h"
 #include "proto/autoload_2/unk_02120ed4.h"
 #include "proto/autoload_2/unk_02120fe8.h"
+#include "proto/autoload_2/unk_02121e5c.h"
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p

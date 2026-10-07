@@ -13,7 +13,9 @@ typedef int BOOL;
 #define NULL 0
 
 #include "nnsys/g3d_rt.h"
+#define PROTO_LOCAL_data_0213bd40  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_021040ac.h"
+#include "proto/autoload_2/unk_02105b3c.h"
 #include "proto/autoload_2/unk_02105d50.h"
 #include "proto/autoload_2/unk_021104ac.h"
 #include "proto/autoload_2/unk_02110c98.h"

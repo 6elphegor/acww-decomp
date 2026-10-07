@@ -25,15 +25,14 @@
 #include "town/BuildingCollider.h"
 #include "game/TouchPickTriangle.h"
 #include "game/CollisionTriangle.h"
-#include "proto/autoload_2/unk_020e82bc.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203e7d0.h"
 #include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206d988.h"
@@ -45,6 +44,7 @@
 #include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_022187f8.h"
 #include "proto/ov003/unk_ov003_022187fc.h"
+#include "proto/ov009/unk_ov009_0225b880_switch.h"
 
 
 
@@ -145,7 +145,6 @@ extern BuildingResources sBuildingResources[];
 extern u32 gCamera;
 extern VecFx32 gCameraLookAt;
 extern u8 data_020d0a7c[];
-extern void *gFieldStructureHeap;
 extern void *gCurrentHeap;
 extern BgmManager *data_021c1b3c;
 
@@ -174,6 +173,8 @@ void TalkAutoAdvance_start(void *, u32);
 void *Scene_GetWarpRequest();
 void Scene_ResetTownReturnPos(s32 unused);
 s32 Math_AngleDiffAbs(s32, s32);
+s32 Vec_DistXZ(void *, void *);
+void Camera_SetMode3();
 void TalkRequest_SetTargetDone(void *);
 s32 Scene_GetCurrent();
 s32 SceneWarp_RequestExit(void *, s32);
@@ -191,6 +192,8 @@ TouchPicker *Scene_GetTouchPicker();
 
 s32 TriangleTrigger_Unregister(void *node);
 void TriangleTrigger_Register(void *node);
+void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
+void Mtx43_RotateX(void *m, s32 a);
 s32 NNS_FndMountArchive(void *buf, char *name, void *data);
 void NNS_FndUnmountArchive(void *buf);
 void *func_02106654();
@@ -220,6 +223,7 @@ s32 func_02002dd0(void *, u32);
 BOOL func_0203e638(void *);
 BOOL func_0203e650(void *);
 void Character_setCharId(void *, u32);
+BOOL Camera_IsBlockingFocusView(void *, s32, s32);
 void NNS_G3dBindMdlPltt(void *, s32);
 void NNS_G3dBindMdlTex(void *, s32);
 

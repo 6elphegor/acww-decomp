@@ -80,6 +80,9 @@ void WfcTransferNotice_Exit();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcTransferIntroAccepted
+extern u8 sWfcTransferIntroAccepted;
+#endif
 #ifndef PROTO_LOCAL_WfcTransferNotice_Enter
 s32 WfcTransferNotice_Enter();
 #endif

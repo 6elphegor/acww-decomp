@@ -72,6 +72,9 @@ void Mem_Clear(void *dst, u32 size);
 BOOL Text_EqualsTrimmed(const u8 *a, const u8 *b, s32 len);
 #endif
 }
+#ifndef PROTO_LOCAL_sTextCharWidths
+extern u8 sTextCharWidths[0xe0];
+#endif
 #endif
 
 #endif

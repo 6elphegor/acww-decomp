@@ -19,6 +19,7 @@ typedef int BOOL;
 #define PROTO_LOCAL_MATHi_CRC32InitTableRev  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MATHi_CRC8InitTable  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_memcmp  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020fedcc.h"
 #include "proto/autoload_2/unk_0211d20c.h"
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_02000b44.h"

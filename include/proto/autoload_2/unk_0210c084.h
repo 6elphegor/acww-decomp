@@ -10,6 +10,12 @@
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_02135e80
+extern const s8 data_02135e80[16];
+#endif
+#ifndef PROTO_LOCAL_data_02135e90
+extern const s16 data_02135e90[89];
+#endif
 #ifndef PROTO_LOCAL_StrmThreadProc
 void StrmThreadProc(u8 *obj);
 #endif

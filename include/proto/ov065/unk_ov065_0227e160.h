@@ -13,6 +13,16 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov065_0228d1a4
+extern char data_ov065_0228d1a4[0x40];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_randomString
 void randomString(char *buf, s32 n);
 #endif

@@ -19,6 +19,11 @@
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_SetSlot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownId_GetNameString  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sMapViewFrameCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sMapViewPlacesButtonCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sMapViewResidentsButtonCells  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -26,6 +31,7 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov002/unk_ov002_022013ac.h"
 #include "proto/ov120/unk_ov120_02292d00.h"
@@ -64,8 +70,6 @@ void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
 void MenuLauncher_onChildClosed(s32 self);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u8 gFieldSceneKind;
 extern u8 gTownReturnPos[];
 extern u8 gSaveTownId[];
@@ -87,8 +91,6 @@ void TownMapMarkers_Clear(void *p);
 void MenuCursorBase_drawWrapped(void *p);
 void func_ov117_02292cac();
 void func_02135558(void *a, void *b, void *c);
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
 extern u16 gPad[];
 void ScrollKnob_setState(void *p, s32 v);
 s32 ScrollKnob_areAnimsDone(void *p);

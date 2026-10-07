@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_02034438.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "snd/BgmManager.h"
 #include "snd/BgmSceneFade.h"
@@ -131,6 +132,18 @@ u16 Bgm_GetCurrent(void);
 BgmRequest *Bgm_GetPlayingRequest();
 #endif
 }
+#ifndef PROTO_LOCAL_sNewYearEveDate
+extern u16 sNewYearEveDate[2];
+#endif
+#ifndef PROTO_LOCAL_sNewYearEveTime
+extern u16 sNewYearEveTime[2];
+#endif
+#ifndef PROTO_LOCAL_sNewYearDayDate
+extern u16 sNewYearDayDate[2];
+#endif
+#ifndef PROTO_LOCAL_sBgmProcProfile
+extern ProcProfile sBgmProcProfile;
+#endif
 #endif
 
 #endif

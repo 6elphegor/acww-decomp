@@ -4,6 +4,7 @@
 // of its own; game code uses it by the symbols.txt names. mwcc sorts a file's .data by size, so every run of ascending
 // sizes in the block is at least one file (each drop in size starts a new file); the types are neutral (u16 words, DataRef12 / DataRef8 records).
 #include "types.h"
+#include "proto/main/unk_020d477c.h"
 
 struct DataRef12 {
     const void *data;
@@ -32,7 +33,6 @@ extern DataRef12 data_020d41cc[20];
 
 // creation order (declarations, then definitions in the same order) gives the original layout after mwcc's size sort
 extern DataRef8 data_020d47a4[8];
-extern u16 sDefaultToonTable[32];
 extern DataRef8 data_020d4794[1];
 extern DataRef8 data_020d478c[1];
 extern DataRef8 data_020d479c[1];

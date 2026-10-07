@@ -11,6 +11,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sWfcSetupMethodPalette
+extern void *sWfcSetupMethodPalette;
+#endif
 #ifndef PROTO_LOCAL_WfcSetupMethod_Enter
 void WfcSetupMethod_Enter();
 #endif
@@ -50,14 +53,32 @@ void WfcSetupMethod_Exit();
 #ifndef PROTO_LOCAL_WfcSetupMethod_HighlightOption
 void WfcSetupMethod_HighlightOption();
 #endif
+#ifndef PROTO_LOCAL_data_ov001_0222b304
+extern char data_ov001_0222b304[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b2ec
+extern char data_ov001_0222b2ec[24];
+#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcSetupMethodColumn
+extern s8 sWfcSetupMethodColumn;
+#endif
+#ifndef PROTO_LOCAL_sWfcSetupMethodChosen
+extern u8 sWfcSetupMethodChosen;
+#endif
+#ifndef PROTO_LOCAL_sWfcSetupMethodCursor
+extern s8 sWfcSetupMethodCursor;
+#endif
 #ifndef PROTO_LOCAL_WfcSetupMethod_MoveCursor
 void WfcSetupMethod_MoveCursor(s32 p);
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222b2d0
+extern u8 data_ov001_0222b2d0[4];
 #endif
 }
 #endif

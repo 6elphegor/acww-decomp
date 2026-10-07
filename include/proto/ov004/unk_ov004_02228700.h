@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov004/unk_ov004_02228700.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct ClothTex;
 #ifdef __cplusplus
 #include "types.h"
 class SewingMachine;
@@ -11,6 +12,9 @@ class SewingMachine;
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sSewingMachine
+extern SewingMachine *sSewingMachine;
+#endif
 #ifndef PROTO_LOCAL_SewingMachine_Create
 SewingMachine *SewingMachine_Create();
 #endif
@@ -30,6 +34,9 @@ void SewingMachine_SetFrame(u32 x);
 u32 SewingMachine_GetFrame();
 #endif
 }
+#ifndef PROTO_LOCAL_sSewingMachineCloth
+extern ClothTex sSewingMachineCloth;
+#endif
 #endif
 
 #endif

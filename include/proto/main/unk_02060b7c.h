@@ -4,6 +4,10 @@
 // Prototypes of the functions defined in src/main/unk_02060b7c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "game/Random.h"
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,6 +17,15 @@ void Random_SeedGlobal();
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_gVBlanksPerFrame
+extern s32 gVBlanksPerFrame;
+#endif
+#ifndef PROTO_LOCAL_gRandom
+extern Random gRandom;
+#endif
 #endif
 
 #endif

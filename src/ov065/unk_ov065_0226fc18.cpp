@@ -10,6 +10,7 @@
 #include "net/gpiInfo.h"
 
 #include "types64.h"
+#define PROTO_LOCAL_sNasBase64AlphabetPtr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
@@ -199,8 +200,6 @@ extern s32 sDwcErrorCode;
 extern u32 sDwcLoginDoneArg;
 extern DwcLoginControl *sDwcLoginControl;
 extern DwcNasLoginCallback sDwcLoginDoneCallback;
-extern u8 data_ov065_02291104[];
-extern u8 data_ov065_02291204[];
 extern u8 data_ov065_0228c818[];
 void qr2_shutdown(void *);
 void ServerBrowserFree(void *);

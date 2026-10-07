@@ -24,6 +24,12 @@
 #define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov142_02294d38  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov142_02294d58  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov142_02294d78  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov142_02294e08  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
@@ -32,6 +38,7 @@
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_0206f834.h"
 #include "proto/main/unk_02097444.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov142/unk_ov142_02291f60.h"
@@ -56,10 +63,6 @@ class TextLabel;
 extern "C" {
 extern u8 gFieldSceneKind;
 extern u16 gPad[];
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
-extern u8 gTouchCurY;
-extern u8 gTouchCurX;
 extern void *gCurrentHeap;
 
 s32 Item_TestInfoFlag4(u16 *p);

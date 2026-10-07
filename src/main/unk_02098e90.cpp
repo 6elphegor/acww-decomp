@@ -14,42 +14,6 @@
 #include "player/PlayerInventory.h"
 #include "save/TownId.h"
 #include "talk/MsgString.h"
-#define PROTO_LOCAL_Arbeit_OnLetterSent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Arbeit_StartCarpetDelivery  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Arbeit_StartFurnitureDelivery  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Arbeit_StartLetterTask  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ErrandSetup_RandomShirt  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HouseVisitInvite_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HouseVisitInvite_Set  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Item_PickRandomPresent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ParcelErrand_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ParcelErrand_Start  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlanErrand_SetStep  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrandSlot_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrandSlot_ComposeLetter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrandSlot_GetVillager  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrandSlot_Start  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrandSlots_FindByVillager  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrands_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrands_ClearJobVillagers  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrands_GetDeliveryRecipientName  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_String_LoadResolveAltText  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_Copy  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_02128030.h"
-#include "proto/autoload_2/unk_02133d04.h"
-#include "proto/main/unk_020030d8.h"
-#include "proto/main/unk_0203c23c.h"
-#include "proto/main/unk_0203cbc0.h"
-#include "proto/main/unk_02052b50.h"
-#include "proto/main/unk_02061478.h"
-#include "proto/main/unk_02063904.h"
-#include "proto/main/unk_02065330.h"
-#include "proto/main/unk_02097444.h"
-#include "proto/main/unk_02097d1c.h"
-#include "proto/main/unk_02098e90.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
 struct TopicWordList {
@@ -249,6 +213,10 @@ struct VillagerPlan {
 
 // ======== data ========
 extern "C" {
+BOOL ErrandSetup_WateringCan(void *p);
+BOOL ErrandSetup_Carpet(void *p);
+BOOL ErrandSetup_FurnitureParcel(void *p);
+BOOL ErrandSetup_LetterBundle(void *p);
 BOOL ErrandSetup_RandomShirt(void *p);
 }
 
@@ -281,6 +249,7 @@ const char data_020d05bc[10] = "re_normal";
 // ======== unk_0209b494.cpp ========
 namespace n6 {
 extern "C" {
+s32 Random_GlobalBelow(s32);
 void *MI_CpuCopy8(void *, void *, s32);
 void *MI_CpuFill8(void *, s32, s32);
 extern const TopicWordList sTopicWordLists[];
@@ -289,6 +258,11 @@ extern const TopicWordList sTopicWordLists[];
 extern "C" {
 }
 
+extern "C" void TrendScores_Copy(void *p, void *q);
+extern "C" void TrendScores_Clear(void *p);
+extern "C" void TrendScores_Destruct();
+extern "C" void *TrendScores_Construct(void *p);
+extern "C" u32 TopicWord_PickRandom(u32 *out, s32 idx);
 
 extern "C" u32 TopicWord_PickRandom(u32 *out, s32 idx)
 {
@@ -379,6 +353,7 @@ s32 DateTime_IsInvalid(void *p);
 s32 DateTime_DiffMinutes(void *p, void *q);
 s32 DateTime_Compare(void *p, void *q, s32 m);
 s32 DateTime_DiffDays(void *p, void *q);
+s32 Random_GlobalBelow(s32 x);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 void MI_CpuFill8(void *a, s32 v, s32 n);
 s32 _s32_div_f(s32 a, s32 b);
@@ -388,12 +363,39 @@ extern u32 sErrandGroupStarts[];
 extern u32 sErrandClassStarts[];
 extern u8 sPlanStateGroupStarts[];
 extern u8 sTrendWeights[];
+s32 Errand_GetSubGroup(u32 x);
+s32 Errand_GetSlotIndex(u32 x);
+BOOL Errand_GetGroupIndex(s32 *out, s32 x);
+s32 Errand_GetGroup(u32 x);
+BOOL Errand_IsValidGroup(u32 x);
+BOOL Errand_GetClassIndex(s32 *out, s32 x);
+s32 Errand_GetClass(u32 x);
+BOOL Errand_IsValidClass(u32 x);
+BOOL Errand_IsValidKind(u32 x);
 }
 
 
+extern "C" BOOL Trend_IsValid(u32 x);
+extern "C" s32 PlanState_GetGroup(u32 x);
 
 extern "C" void *PlanErrand_Destruct(ErrandRecord *self);
 extern "C" void *PlanErrand_Construct(ErrandRecord *self);
+extern "C" s32 Errand_GetSubGroup(u32 x);
+extern "C" s32 Errand_GetSlotIndex(u32 x);
+extern "C" void *ErrandRecord_GetTime(void *p);
+extern "C" BOOL Errand_GetGroupIndex(s32 *out, s32 x);
+extern "C" s32 Errand_GetGroup(u32 x);
+extern "C" BOOL Errand_IsValidGroup(u32 x);
+extern "C" BOOL Errand_GetClassIndex(s32 *out, s32 x);
+extern "C" s32 Errand_GetClass(u32 x);
+extern "C" BOOL Errand_IsValidClass(u32 x);
+extern "C" BOOL Errand_IsValidKind(u32 x);
+extern "C" void Trend_GetToolItem(u16 *out, s32 idx);
+extern "C" void *VillagerPlan_GetStateDate(void *p);
+extern "C" void *VillagerPlan_GetPlanTime(void *p);
+extern "C" s32 PlanState_GetGroupIndex(u8 *out, s32 x);
+extern "C" s32 PlanState_GetGroup(u32 x);
+extern "C" BOOL Trend_IsValid(u32 x);
 
 }
 void TrendScores::add(u8 i, u32 v) {
@@ -997,25 +999,44 @@ void _ZN12ErrandRecord13func_0209ada0Ev(void *p);
 void *_ZN12ErrandRecord4initEv(void *p);
 s32 _ZN12ErrandRecord7setItemEPt(void *p, u16 *v);
 s32 _ZN12ErrandRecord7getKindEv(void *p);
+s32 Errand_GetGroupIndex(s32 *out, s32 kind);
+s32 Errand_GetGroup(s32 kind);
+s32 Errand_GetClassIndex(u32 *out, s32 x);
+s32 Errand_GetClass(s32 x);
 s32 _ZN12ErrandRecord8isActiveEv(void *p);
 s32 _ZN12ErrandRecord5startEhPth(void *p, s32 a, u16 *b, s32 c);
 u32 _ZN12ErrandRecord7getStepEv(void *p);
 void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
+s32 ErrandRecord_GetTime(void *p);
 s32 PlanErrand_Destruct(void *p);
 s32 PlanErrand_Construct(void *p);
+s32 PlanState_GetGroup(void *p);
+s32 TopicWord_PickRandom(u32 *a, s32 i);
 s32 Clock_GetDateTime(s32 x);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void VillagerId_Copy(void *p, s32 v);
 void VillagerId_Clear(void *p);
+void VillagerId_Destruct(void *p);
+void VillagerId_Construct(void *p);
 void _ZN10VillagerId7getNameEj(void *a, void *b);
+void MailText_SetSlot(s32 a, void *b);
 void _ZN8PlayerId5clearEv(void *p);
 void _ZN8PlayerId6setRawEPv(void *p, s32 v);
 s32 String_LoadResolveAltText(void *a, u8 *b, s32 c);
+s32 Random_GlobalBelow(s32 n);
 void _ZN12ItemPickSpec3setEii(void *p, s32 a, s32 b);
 void ItemPickSpec_Destruct(void *p);
 void ItemPick_One(void *out, void *x, s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 Letter_ComposeVillagerToVillagerZ(void *a, u8 *b, u8 *c, u8 *d, u8 *e, void *f, const void *g, void *h, void *i, s32 j);
+s32 Item_GetFossilGroup(u16 *p);
 s32 Item_IsFurniture(void *p);
 void *Item_GetFurnitureIndex(void *p);
+s32 Ftr_GetFlagPairB(void *p);
+s32 FtrInfo_GetColor1(void *p);
+s32 FtrInfo_GetColor2(void *p);
+s32 Ftr_GetFlagPairA(void *p);
+s32 Ftr_GetCollectionGroup(void *p);
+s32 Ftr_GetSeries(void *p);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)(void *));
 void __cxa_vec_ctor(void *p, u32 n, u32 sz, void (*c)(void *), void (*d)(void *));
@@ -1029,8 +1050,21 @@ extern u8 data_020e218c[];
 
 
 extern "C" ErrandKindSetup sErrandKindSetups[];extern "C" {
+u8 ParcelErrand_CountPending(void *unused, s32 v);
+u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v);
+void *PlanErrand_GetRecord(void *p);
+u8 PlanErrand_GetStep(void *p);
 void PlanErrand_SetStep(void *p, u8 v);
+u8 PlanErrand_GetCount(void *p);
+BOOL PlanErrand_IsFurnitureGoalMet(void *p);
+u16 *PlanErrand_GetShownItem(PlanErrand *p);
 void *PlanErrand_GetPlayer(PlanErrand *p);
+s32 PlanErrand_GetStepCount(s32 x);
+void PlanErrand_SetFossilGroup(PlanErrand *p, u32 v);
+void PlanErrand_ResetProgress(void *p);
+void PlanErrand_Begin(PlanErrand *p, s32 a, u16 *b);
+void PlanErrand_SetKind(void *p, s32 a, u16 *b);
+void PlanErrand_Clear(void *p);
 void PlanErrand_ClearFlags(PlanErrand *p);
 }
 
@@ -1040,16 +1074,58 @@ extern "C" s32 PlanErrand_SetStep(void *p, u8 v);
 }
 
 
+extern "C" u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v);
+extern "C" u8 ParcelErrand_CountPending(void *unused, s32 v);
 extern "C" void ParcelErrand_Clear(u8 *p);
+extern "C" BOOL ErrandSetup_WateringCan(void *p);
+extern "C" BOOL ErrandSetup_Carpet(void *p);
+extern "C" BOOL ErrandSetup_FurnitureParcel(void *p);
 extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg);
+extern "C" BOOL ErrandSetup_LetterBundle(void *p);
 extern "C" BOOL ErrandSetup_RandomShirt(void *p);
+extern "C" u8 *PlayerErrandSlot_GetPresentReaction(u8 *p);
+extern "C" void PlayerErrandSlot_SetPresentReaction(u8 *p, u32 v);
+extern "C" s32 PlayerErrandSlot_IsStepDone(void *self);
+extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind);
+extern "C" BOOL Errand_CanOfferInPlanState(s32 a, void *b);
 extern "C" u8 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *p, s32 i);
+extern "C" void *PlayerErrandSlot_GetRecord(void *p);
 extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6, s32 r3);
 extern "C" void PlayerErrandSlot_Clear(PlayerErrandSlot *self);
+extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self);
+extern "C" PlayerErrandSlot *PlayerErrandSlot_Construct(PlayerErrandSlot *self);
+extern "C" u8 *VillagerPlanBlock_GetErrand(u8 *p);
+extern "C" void *VillagerPlanBlock_GetPlan(void *p);
+extern "C" s32 VillagerPlanBlock_RollTrend(void *p, const u8 *trend, s32 flag);
+extern "C" void VillagerPlanBlock_Clear(u8 *p);
+extern "C" u8 *VillagerPlanBlock_Destruct(u8 *p);
+extern "C" u8 *VillagerPlanBlock_Construct(u8 *p);
+extern "C" BOOL PlanErrand_IsFurnitureGoalMet(void *self);
+extern "C" u8 PlanErrand_AddCount(PlanErrand *p, s32 n);
+extern "C" u8 PlanErrand_GetCount(void *p);
+extern "C" s32 Furniture_ScoreAttribute(void *self, u32 kind, s32 val);
+extern "C" void FossilGroup_GetItem(u16 *out, s32 a, s32 b);
+extern "C" u8 FossilGroup_PickMissing(u16 *p, s32 n);
+extern "C" s32 FossilGroup_ToIndex(u32 v);
 extern "C" void PlanErrand_ClearFlags(PlanErrand *p);
+extern "C" BOOL PlanErrand_TestFlag(PlanErrand *p, u32 i);
+extern "C" void PlanErrand_SetFlag(PlanErrand *p, s32 i);
+extern "C" void PlanErrand_SetFossilGroup(PlanErrand *p, u32 v);
+extern "C" u8 PlanErrand_GetFossilGroup(PlanErrand *p);
+extern "C" u16 *PlanErrand_GetShownItem(PlanErrand *p);
+extern "C" s32 PlanErrand_GetTime(void *p);
+extern "C" s32 PlanErrand_GetStepCount(s32 x);
 extern "C" void *PlanErrand_GetPlayer(PlanErrand *p);
 extern "C" void PlanErrand_SetStep(void *p, u8 v);
+extern "C" u8 PlanErrand_GetStep(void *p);
+extern "C" void *PlanErrand_GetRecord(void *p);
 extern "C" void PlanErrand_AdvanceStep(PlanErrand *self);
+extern "C" void PlanErrand_MarkReady(void *p);
+extern "C" void PlanErrand_Assign(PlanErrand *self, s32 a1, u16 *p, void *obj, u8 flag);
+extern "C" void PlanErrand_ResetProgress(void *pp);
+extern "C" void PlanErrand_Begin(PlanErrand *self, s32 a, u16 *b);
+extern "C" void PlanErrand_SetKind(void *p, s32 a, u16 *b);
+extern "C" void PlanErrand_Clear(void *pp);
 
 extern "C" void PlanErrand_Clear(void *pp) {
     PlanErrand *self = (PlanErrand *)pp;
@@ -1564,12 +1640,23 @@ extern u8 gSaveVillagers[];
 extern u16 sParcelRecipients[];
 extern u16 sParcelItems[];
 extern u8 data_021ed104[];
+PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i);
+BOOL PlayerErrands_IsJobActive(PlayerErrands *m);
 void PlayerErrands_ClearJobVillagers(PlayerErrands *m);
+void Arbeit_ClearOnDuty(PlayerErrands *m);
 void HouseVisitInvite_Clear(HouseVisitInvite *x);
+void Arbeit_OnLetterWritten(void *p);
+void ParcelErrand_RemoveRecipient(ParcelErrand *z, s32 i);
+s32 ParcelErrand_PickRecipient(ParcelErrand *z, s32 mask);
+s32 ParcelErrand_CountPendingRecipients(ParcelErrand *z, s32 v);
+s32 ParcelErrand_CountPending(ParcelErrand *z, u32 mask);
 void ParcelErrand_Clear(ParcelErrand *z);
 s32 PlayerErrandSlot_Clear(PlayerErrandSlot *e);
+ErrandRecord *PlayerErrandSlot_GetRecord(PlayerErrandSlot *e);
 VillagerIdCtorDtor *PlayerErrandSlot_GetVillager(PlayerErrandSlot *e, s32 i);
 void PlayerErrandSlot_Start(PlayerErrandSlot *e, s32 a, s32 b, void *c);
+void *ParcelErrand_GetRecord(ParcelErrand *z);
+void *ParcelErrand_GetRecipientName(ParcelErrand *z, s32 v);
 void _ZN12ErrandRecord7setItemEPt(ParcelErrand *z, u16 *v);
 void _ZN12ErrandRecord7setStepEh(ErrandRecord *y, s32 v);
 u32 _ZN12ErrandRecord7getStepEv(ErrandRecord *y);
@@ -1582,10 +1669,15 @@ void VillagerId_Copy(VillagerIdCtorDtor *r, VillagerIdCtorDtor *o);
 void VillagerId_Clear(VillagerIdCtorDtor *r);
 VillagerIdCtorDtor *_ZN12VillagerData13getVillagerIdEv(void *p);
 void *SaveVillagers_PickRandomTalkPartner(void *g, VillagerIdCtorDtor **a, s32 n);
+s32 Letter_GetRecipientVillager(void *p);
+s32 PlayerData_GetCurrent();
+void func_02133ef8(void *p, s32 n);
+s32 memcmp(void *a, void *b, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
+u32 Random_GlobalBelow(u32 n);
 s32 Npc_GetName(void *p, u16 *v);
 u32 _ZN10VillagerId7getNameEj(VillagerIdCtorDtor *r, u32 a);
 s32 NookShop_IsOpenHour();
@@ -1593,17 +1685,39 @@ s32 NookShop_IsClosedToday(void *p);
 }
 
 
+extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerIdCtorDtor *r);
+extern "C" void Arbeit_Finish(PlayerErrands *m);
+extern "C" void Arbeit_OnBbsPosted(PlayerErrands *m);
+extern "C" void Arbeit_StartBbsTask(PlayerErrands *m);
+extern "C" void Arbeit_StartWateringCanDelivery(PlayerErrands *m);
 extern "C" void Arbeit_StartCarpetDelivery(PlayerErrands *m);
 extern "C" BOOL Arbeit_OnLetterSent(PlayerErrands *m, void *p);
+extern "C" void Arbeit_NotifyLetterWritten();
+extern "C" void Arbeit_OnLetterWritten(void *p);
 extern "C" void Arbeit_StartLetterTask(PlayerErrands *m);
 extern "C" void Arbeit_StartFurnitureDelivery(PlayerErrands *m);
+extern "C" void Arbeit_StartGreetings(PlayerErrands *m);
+extern "C" void Arbeit_StartPlanting(PlayerErrands *m);
+extern "C" BOOL Arbeit_IsOnDuty(PlayerErrands *m);
+extern "C" void Arbeit_ClearOnDuty(PlayerErrands *m);
+extern "C" void Arbeit_SetOnDuty(PlayerErrands *m);
+extern "C" void Arbeit_Start(PlayerErrands *m);
+extern "C" BOOL PlayerErrands_IsJobActive(PlayerErrands *m);
 extern "C" void PlayerErrands_ClearJobVillagers(PlayerErrands *m);
 extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a, u16 *p);
 extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, VillagerIdCtorDtor *p, s32 idx);
+extern "C" PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i);
 extern "C" void PlayerErrands_Clear(PlayerErrands *m);
 extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, VillagerIdCtorDtor *r, void *src);
+extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerIdCtorDtor *p);
 extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x);
+extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p);
+extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z);
+extern "C" void *ParcelErrand_GetRecipientName(ParcelErrand *z, s32 v);
+extern "C" void *ParcelErrand_GetRecord(ParcelErrand *z);
 extern "C" void ParcelErrand_Start(ParcelErrand *z);
+extern "C" void ParcelErrand_RemoveRecipient(ParcelErrand *z, s32 i);
+extern "C" s32 ParcelErrand_PickRecipient(ParcelErrand *z, s32 m);
 
 extern "C" s32 ParcelErrand_PickRecipient(ParcelErrand *z, s32 m) {
     if (NookShop_IsOpenHour() == 0) {
@@ -2032,20 +2146,26 @@ extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerIdCtorDtor *r
 // ======== unk_02098f90.cpp ========
 namespace n2 {
 extern "C" {
+void *PlayerData_GetCurrent();
 void *_ZN10PlayerData12getInventoryEv(void *);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(void *);
 s32 _ZN15PlayerInventory14getEmptyLetterEv(void *);
 s32 _ZN15PlayerInventory15findEmptyLetterEv(void *);
 BOOL _ZN15PlayerInventory18isPocketFlagsClearEi(void *, s32);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
+BOOL Pocket_IsValidIndex(s32);
 s32 Item_GetKind(u16 *);
+void Item_FromPlacedForm(u16 *, u16 *);
+void Catalog_SetItem(void *, u16 *, s32, s32);
 void _ZN12ItemPickSpec3setEii(void *, u32, u32);
 void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 s32 func_01ffcb0c(s32, s32);
 s32 FX_InvSqrt(s32);
 void *MI_CpuFill8(void *, s32, u32);
+s32 memcmp(void *, void *, u32);
 s32 MI_CpuCopy8(void *, void *, u32);
+s32 Random_GlobalBelow(u32);
 void _ZN8PlayerId5clearEv(void *);
 s32 _ZN8PlayerId6setRawEPv(void *, void *);
 void *_ZN8PlayerIdC1Ev(void *);
@@ -2054,12 +2174,15 @@ s32 Date_DaysBetween(void *, void *);
 s32 Clock_GetDate(void *);
 void VillagerId_Copy(void *, void *);
 void VillagerId_Clear(void *);
+void *VillagerId_Destruct(void *);
+void *VillagerId_Construct(void *);
 void _ZN12ErrandRecord5startEhPth(void *, u32, u16 *, u32);
 void _ZN12ErrandRecord5clearEv(void *);
 void *_ZN12ErrandRecord13func_0209ada0Ev(void *);
 void *_ZN12ErrandRecord4initEv(void *);
 void *__cxa_vec_ctor(void *, s32, s32, void *(*)(void *), void *(*)(void *));
 void __cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
+s32 Threshold_FindIndex(u32, u8 *, s32);
 extern u8 data_020d0598[];
 extern u8 data_020d05a0[];
 }
@@ -2071,12 +2194,34 @@ static inline BOOL Unk_02099124_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }extern "C" {
 void PocketMatches_Init(PocketMatches *p);
+s32 Pocket_FindEmpty();
+void Pocket_SetItem(u16 *a, s32 b, s32 c);
+void Pocket_SetFoundItem(u16 *a, s32 b);
 u16 Item_PickRandomPresent();
+void Quat_ToMtx33(s32 *a, s32 *m);
 }
 
 
+extern "C" s32 Pocket_CountKind(PocketMatches *self, s32 v);
 extern "C" void PocketMatches_Init(PocketMatches *p);
+extern "C" s32 Pocket_FindEmpty();
+extern "C" BOOL Pocket_AddItem(u16 *a, s32 b);
+extern "C" u16 Pocket_GetItem(s32 i);
+extern "C" void Pocket_RemoveItem(s32 c);
+extern "C" void Pocket_SetItem(u16 *a, s32 b, s32 c);
+extern "C" BOOL Pocket_AddFoundItem(u16 *a);
+extern "C" void Pocket_SetFoundItem(u16 *a, s32 b);
 extern "C" u16 Item_PickRandomPresent();
+extern "C" s32 Inventory_GetEmptyLetter();
+extern "C" s32 Inventory_FindEmptyLetter();
+extern "C" void Main_EmptyInitStub();
+extern "C" void Quat_Mul(s32 *a, s32 *b, s32 *out);
+extern "C" void Quat_ToMtx43(s32 *a, s32 *b);
+extern "C" void Quat_ToMtx33(s32 *a, s32 *m);
+extern "C" void Quat_Normalize(s32 *q);
+extern "C" s32 FishSpawn_GetWeightClass(u32 v);
+extern "C" s32 InsectSpawn_GetWeightClass(u32 v);
+extern "C" s32 Threshold_FindIndex(u32 v, u8 *tbl, s32 n);
 
 }
 u8 *SickVillagerRecord::getParcelErrand() {
@@ -2490,6 +2635,7 @@ extern "C" s32 Pocket_CountKind(PocketMatches *self, s32 v) {
 // ======== unk_0209865c.cpp (0x02098e90..0x02098f90) ========
 namespace n1 {
 extern "C" {
+PlayerData *PlayerData_GetCurrent();
 s32 PlayerErrands_GetDeliveryRecipientName(void *, void *, void *);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, u32);
 s32 _ZN15PlayerInventory18isPocketFlagsClearEi(void *, s32);

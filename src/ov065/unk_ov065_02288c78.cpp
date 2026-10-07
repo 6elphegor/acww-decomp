@@ -5,6 +5,7 @@
 #include "net/SockAddrIn.h"
 #include "net/sb_internal.h"
 #include "net/gsPlatformUtil.h"
+#define PROTO_LOCAL_qr2_registered_key_list  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128c60.h"
 #include "proto/autoload_2/unk_0212a120.h"
@@ -36,7 +37,6 @@ extern uptr qr2_registered_key_list[];
 extern u8 data_ov065_0228e8fc[];
 extern GsSrvQueryBasicInfoStr data_ov065_0228e904;
 extern GsSrvQueryStatusStr data_ov065_0228e914;
-extern s32 __GSIACResult;
 extern u32 SBNullServer;
 extern u8 data_0213a410[];
 
@@ -111,7 +111,6 @@ extern void *g_SBRefStrList;
 extern char *data_ov065_0228e928[2];
 extern char *qr2_registered_key_list[];
 extern u16 data_0213a510[];
-extern s32 __GSIACResult;
 extern s32 SBNullServer;
 
 s32 OS_SPrintf(char *, const char *, ...);

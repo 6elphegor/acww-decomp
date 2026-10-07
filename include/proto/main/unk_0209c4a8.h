@@ -9,6 +9,7 @@ struct SceneOccupantBits;
 #include "gfx/VecFx32.h"
 #include "types.h"
 class RoomEntryRequest;
+class SceneOccupantTable;
 #endif
 
 #ifdef __cplusplus
@@ -111,6 +112,12 @@ void RoomEntry_RecvEnterReply(u8 *p);
 void RoomEntry_RecvLeave(u8 *p, u32 x);
 #endif
 }
+#ifndef PROTO_LOCAL_sRoomEntryRequest
+extern RoomEntryRequest sRoomEntryRequest;
+#endif
+#ifndef PROTO_LOCAL_sSceneOccupantTable
+extern SceneOccupantTable sSceneOccupantTable;
+#endif
 #endif
 
 #endif

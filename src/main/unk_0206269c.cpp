@@ -3,9 +3,9 @@
 #include "item/RandomSource.h"
 #include "item/DateSeededRandomSource.h"
 #include "player/PlayerData.h"
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_02052b50.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 
@@ -27,6 +27,8 @@ void _ZN6ItemIdC1Ev(void *);
 void _ZN6ItemIdD1Ev(void *);
 BOOL Item_IsNormalItem(u16 *p);
 s32 Item_GetShirtUnkGroup(u16 *p);
+s32 ItemInfo_GetClass(u16 *p);
+s32 ItemInfo_GetSeason(u16 *p);
 s32 ItemList_IsFurniture(u16 *p);
 s32 ItemList_IsPaper(u16 *p);
 s32 Item_MakeShirt(u16 *p);

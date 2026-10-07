@@ -14,6 +14,21 @@ extern "C" {
 #ifndef PROTO_LOCAL_SpNpcGracie_Create
 SpNpcGracie *SpNpcGracie_Create();
 #endif
+#ifndef PROTO_LOCAL_data_ov070_022726e4
+extern u32 data_ov070_022726e4[1];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcGracieTexturePath
+extern u8 sSpNpcGracieTexturePath[];
+#endif
+#ifndef PROTO_LOCAL_data_ov070_022726e0
+extern u32 data_ov070_022726e0[1];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcGracieModelPath
+extern u8 sSpNpcGracieModelPath[];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcGracieKey
+extern u8 sSpNpcGracieKey[];
+#endif
 #ifndef PROTO_LOCAL_SpNpcGracie_CountUnaskedQuestions
 s32 SpNpcGracie_CountUnaskedQuestions(void *unused, u8 *p, s32 n);
 #endif

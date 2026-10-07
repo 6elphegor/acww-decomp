@@ -14,6 +14,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sDwcControl
+extern void *sDwcControl;
+#endif
 #ifndef PROTO_LOCAL_DwcCore_Shutdown
 void DwcCore_Shutdown(void);
 #endif
@@ -35,6 +38,15 @@ void DwcConn_OnGt2SocketError(void *socket);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov065_02290674
+extern u32 data_ov065_02290674;
+#endif
+#ifndef PROTO_LOCAL_sDwcConnTable
+extern u32 sDwcConnTable[32];
+#endif
+#ifndef PROTO_LOCAL_sDwcConnInfo
+extern u8 sDwcConnInfo[0x100];
+#endif
 #ifndef PROTO_LOCAL_DwcCore_CheckFatalError
 s32 DwcCore_CheckFatalError(void);
 #endif

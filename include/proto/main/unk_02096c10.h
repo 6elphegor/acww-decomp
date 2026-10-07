@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_02096c10.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
 #include "item/Letter.h"
 class LetterDeliveryProc;
@@ -46,6 +47,9 @@ Letter *FutureLetter_Destruct(Letter *p);
 LetterDeliveryProc *LetterDeliveryProc_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_data_020e1da0
+extern ProcProfile data_020e1da0;
+#endif
 #endif
 
 #endif

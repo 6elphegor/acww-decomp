@@ -12,6 +12,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sMuseumExhibitMsgFile
+extern char sMuseumExhibitMsgFile[];
+#endif
 #ifndef PROTO_LOCAL_MuseumExhibitInfo_ClearRegistry
 void MuseumExhibitInfo_ClearRegistry(void);
 #endif
@@ -21,6 +24,30 @@ void MuseumExhibitInfo_ClearRegistry(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sMuseumExhibitSpawnMsg
+extern s16 sMuseumExhibitSpawnMsg;
+#endif
+#ifndef PROTO_LOCAL_sMuseumExhibitAutoTalkActive
+extern u8 sMuseumExhibitAutoTalkActive;
+#endif
+#ifndef PROTO_LOCAL_sMuseumExhibitInfoCount
+extern u8 sMuseumExhibitInfoCount;
+#endif
+#ifndef PROTO_LOCAL_sMuseumExhibitSpawnKind
+extern u32 sMuseumExhibitSpawnKind;
+#endif
+#ifndef PROTO_LOCAL_sMuseumExhibitSpawnList
+extern u8 *sMuseumExhibitSpawnList;
+#endif
+#ifndef PROTO_LOCAL_sMuseumExhibitSpawnCount
+extern u32 sMuseumExhibitSpawnCount;
+#endif
+#ifndef PROTO_LOCAL_sMuseumExhibitSpawnFacingArc
+extern u32 sMuseumExhibitSpawnFacingArc;
+#endif
+#ifndef PROTO_LOCAL_sMuseumExhibitInfos
+extern MuseumExhibitInfo *sMuseumExhibitInfos[0x20];
+#endif
 #ifndef PROTO_LOCAL_MuseumExhibitInfo_SpawnAutoTalk
 s32 MuseumExhibitInfo_SpawnAutoTalk();
 #endif

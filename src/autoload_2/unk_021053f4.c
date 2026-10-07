@@ -14,6 +14,7 @@ typedef int BOOL;
 
 
 #include "nnsys/g3d_rt.h"
+#include "proto/autoload_2/unk_021053f4.h"
 #include "proto/itcm/unk_01ff8ad4.h"
 typedef G3dRS RS;  // NNSG3dRS
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);

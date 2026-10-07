@@ -7,6 +7,7 @@
 #include "ui/HudUnkIcon.h"
 #include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_0208de68.h"
+#include "proto/main/unk_0208dff4.h"
 #include "proto/main/unk_02094810.h"
 
 extern "C" {
@@ -51,7 +52,6 @@ extern s32 gGfxMainOnTop;
 extern u8 data_020d4694[];
 extern u8 data_020d468c[];
 extern SpriteAnimSeq data_020d5b0c[];
-extern u16 sLabelButtonColorCache[];
 extern u8 sLabelButtonKindTextColors[];
 extern u32 sLabelButtonKindLabelVram[];
 extern u8 sLabelButtonKindSeqOffsets[];

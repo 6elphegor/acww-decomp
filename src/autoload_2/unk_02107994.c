@@ -56,6 +56,8 @@ void GetTexSRTAnm_(u8 *res, u32 idx, u32 frame, u32 *out)
 
 // NNS g3d (NNSi_G3dAnmObjInitMatAnm-like): bind a material animation block to the model, build the material -> animation index table
 #include "nnsys/g3d_rt.h"
+#define PROTO_LOCAL_data_0213bcc0  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02107994.h"
 // (by the members: include/nnsys/g3d_rt.h)
 void NNSi_G3dAnmObjInitNsBta(u8 *obj_, u8 *res, u8 *blk)
 {

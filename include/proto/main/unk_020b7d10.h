@@ -4,7 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_020b7d10.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
+#include "types.h"
 class DummyProcC8;
 #endif
 
@@ -14,6 +16,18 @@ extern "C" {
 DummyProcC8 *DummyProcC8_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_gTouchPrevHeld
+extern u8 gTouchPrevHeld;
+#endif
+#ifndef PROTO_LOCAL_gTouchPrevChanged
+extern u8 gTouchPrevChanged;
+#endif
+#ifndef PROTO_LOCAL_gTouchHoldFrames
+extern u8 gTouchHoldFrames;
+#endif
+#ifndef PROTO_LOCAL_sDummyProcC8Profile
+extern ProcProfile sDummyProcC8Profile;
+#endif
 #endif
 
 #endif

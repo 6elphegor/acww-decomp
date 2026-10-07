@@ -4,9 +4,11 @@
 // Prototypes of the functions defined in src/main/unk_020850e0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct Unk_02085490_Pt;
 #ifdef __cplusplus
 #include "save/ContestRecord.h"
 #include "types.h"
+class TownSessionState;
 #endif
 
 #ifdef __cplusplus
@@ -91,6 +93,15 @@ void *TownSessionState_GetVisitorFlags(u8 *p);
 void *TownSessionState_GetVisitorPos(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sVillagerGardenOffsets
+extern Unk_02085490_Pt sVillagerGardenOffsets[14];
+#endif
+#ifndef PROTO_LOCAL_sGardenNeighbourOffsets
+extern Unk_02085490_Pt sGardenNeighbourOffsets[8];
+#endif
+#ifndef PROTO_LOCAL_gTownSessionState
+extern TownSessionState gTownSessionState;
+#endif
 #endif
 
 #endif

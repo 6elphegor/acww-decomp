@@ -3,6 +3,7 @@
 #include "town/TownUpdateThread.h"
 #include "game/EventDayEntry.h"
 #include "game/Unk_02042104_Date.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/main/unk_02041868.h"
@@ -18,7 +19,6 @@ extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo
 extern CommManager *gCommManager;
 extern TownUpdater gTownUpdater;
 extern uptr gCurrentHeap;  // Heap *
-extern u8 sAntSpawnEnabled;
 extern volatile u32 gTownEval[];
 extern u8 gSaveData[];
 extern u8 data_021ed20c[];

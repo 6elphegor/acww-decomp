@@ -7,6 +7,8 @@ typedef unsigned int u32;
 typedef int s32;
 typedef short s16;
 #include "types64.h"
+#define PROTO_LOCAL_data_0213bcc8  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02107634.h"
 typedef int BOOL;
 #define NULL 0
 

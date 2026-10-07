@@ -14,6 +14,7 @@ Needs the clang Python bindings (pip install --user clang==21.*) and libclang (/
 import argparse
 import glob
 import json
+import re
 import os
 import sys
 from multiprocessing import Pool
@@ -112,11 +113,65 @@ def scan(path):
                     rec['wparams'] = [a.type.spelling for a in c.get_arguments()]
                     rec['wresult'] = c.result_type.spelling
                 out.append(rec)
+            if c.kind == ci.CursorKind.VAR_DECL and node.kind in (ci.CursorKind.TRANSLATION_UNIT,
+                    ci.CursorKind.NAMESPACE, ci.CursorKind.LINKAGE_SPEC, ci.CursorKind.UNEXPOSED_DECL) and \
+                    c.location.file is not None and c.storage_class != ci.StorageClass.STATIC:
+                try:
+                    out.append(_var_record(c))
+                except Exception:
+                    pass
             if c.kind in (ci.CursorKind.NAMESPACE, ci.CursorKind.LINKAGE_SPEC, ci.CursorKind.UNEXPOSED_DECL,
                           ci.CursorKind.CLASS_DECL, ci.CursorKind.STRUCT_DECL, ci.CursorKind.CLASS_TEMPLATE):
                 visit(c, depth + 1)
     visit(tu.cursor)
     return path, out, errors
+
+
+def _var_record(c):
+    """A variable at file / namespace scope: its declaration as written (without the initializer or extern)."""
+    ci = _ci()
+    f = os.path.relpath(c.location.file.name)
+    ns, p = [], c.semantic_parent
+    while p is not None and p.kind == ci.CursorKind.NAMESPACE:
+        ns.insert(0, p.spelling)
+        p = p.semantic_parent
+    toks, depth = [], 0
+    for tk in c.get_tokens():
+        s = tk.spelling
+        if s in ('(', '[', '{'):
+            depth += 1
+        elif s in (')', ']', '}'):
+            depth -= 1
+        if depth == 0 and s in ('=', ';'):
+            break
+        if depth == 0 and s == '{' and toks:
+            break
+        toks.append(s)
+    text = ' '.join(t for t in toks if t != 'extern')
+    text = re.sub(r'\s*"C"\s*', ' ', text, count=1) if text.startswith('"C"') else text
+    sym = c.mangled_name or c.spelling
+    # C language linkage: declared in an extern "C" block / with extern "C" (a global variable's symbol is its
+    # name in both languages, so the symbol doesn't tell)
+    c_link, lp = False, c.lexical_parent
+    while lp is not None and lp.kind != ci.CursorKind.TRANSLATION_UNIT:
+        if lp.kind in (ci.CursorKind.LINKAGE_SPEC, ci.CursorKind.UNEXPOSED_DECL):
+            c_link = True
+        lp = lp.lexical_parent
+    asm_label = any(tk.spelling in ('__asm__', 'asm') for tk in c.get_tokens())
+    return {'sym': sym, 'name': c.spelling, 'file': f, 'line': c.location.line, 'var': True, 'asm': asm_label,
+            'def': c.is_definition() and c.storage_class != ci.StorageClass.EXTERN,
+            'result': c.type.get_canonical().spelling, 'params': [], 'c_linkage': c_link or f.endswith('.c'),
+            'ns': '::'.join(ns), 'types': _signature_types_of(c.type), 'proto': text,
+            'const': c.type.is_const_qualified(),
+            'start': c.extent.start.offset, 'end': c.extent.end.offset}
+
+
+def _signature_types_of(ty):
+    class _C:  # (a stand-in cursor: the walker reads the result type and the arguments)
+        result_type = ty
+        def get_arguments(self):
+            return []
+    return _signature_types(_C())
 
 
 def _has_virtual_dtor(cls):

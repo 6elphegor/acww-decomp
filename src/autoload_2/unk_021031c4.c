@@ -1,3 +1,4 @@
+#include "proto/autoload_2/unk_021031c4.h"
 #include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) g2d text drawing + font (NFTR) resource loading.

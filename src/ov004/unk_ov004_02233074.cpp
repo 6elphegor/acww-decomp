@@ -30,19 +30,13 @@
 #define PROTO_LOCAL_FtrFootprint_GetTileCount  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrFootprint_GetTileOffset  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrFootprint_Init  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrMgr_FindFacingFurniture  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrMgr_FindPlacement  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrMgr_TryPlaceAt  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrMoveAnim_Start  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Heap_Alloc  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DivScalar  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sHouseRoachVillager  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/itcm/unk_01ffcfc0.h"
@@ -59,8 +53,8 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b8d98.h"
-#include "proto/ov004/unk_ov004_02204f24.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/ov004/unk_ov004_02235fd0.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -358,14 +352,7 @@ public:
     /* 0x2b0 */ u8 tvProgramChanged;
 };
 
-extern FtrPreviewer sFtrPreviewer;
-extern FtrActorTable sFtrActorTable;
-extern FtrContactSet sFtrContactSet;
-extern FtrActorGrid sFtrActorGrid;
-extern FtrActorHeap sFtrActorHeap;
-extern ModelSlotPool sFtrMgrPool;
 extern FxVec3 sFtrRemovePos;
-extern s32 sFtrMgrSoundRangeSq;
 
 extern "C" {
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
@@ -373,7 +360,6 @@ void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, 
 extern s16 data_02135f44[];
 extern Unk_0204e858_Grid *gSceneBlockMap;
 extern u8 gBackup[];
-extern void *gBgHeap;
 extern u8 gSavePlayers[];
 extern TvWeatherSrcView data_021ed2b0;
 extern s32 data_021f47e0[];
@@ -395,11 +381,6 @@ extern const u16 sFtrKindProfiles[0x30];
 extern const FtrSoundRecord sFtrSoundTable[0x6e9];
 extern const char *sFtrMoveAnimModelNamePtr;
 extern const char *sTvWeatherNames[11];
-extern u8 sFtrMgrSaleMode;
-extern u8 sFtrMgrTvSoundEnabled;
-extern u16 sFtrMgrCycleCounter;
-extern FurnitureManager *sFurnitureManager;
-extern s8 sHouseRoachTurnCounter;
 extern u8 *sHouseRoachVillager;
 void MTX_MultVec43(void *v, void *m, void *out);
 void VEC_Add(void *, void *, void *);
@@ -471,6 +452,7 @@ void *Heap_Alloc(void *heap, s32 size);
 void Heap_freeAll(void *p);
 #define Heap_destroy2 _ZN4Heap8destroy2Ev
 void Heap_destroy2(void *p);
+s32 Vec_RotateY(VecFx32 *, s32);
 s32 Vec_DistXZ(void *a, void *b);
 void Vec_DivScalar(void *, s32);
 void Vec_Sub(void *out, void *a, void *b);
@@ -488,8 +470,12 @@ s32 func_02133150(s32 a, s32 b);
 s32 FtrActor_startPull(void *, s32);
 s32 FtrActor_startPush(void *, s32);
 s32 FtrActor_startRotate(void *, s32);
+void FtrActor_GetItemId(u16 *out, FtrActor *o);
+s32 FtrActor_PredIsSeatOrBed(void *);
+BOOL FtrActor_PredIsStereo(FtrActor *);
 s32 FtrActor_canMoveBy(void *, void *);
 s32 FtrActor_canRotateBy(void *, s32);
+s32 FtrActor_AngleToDir(s32 a);
 u32 FtrActor_GetLayer(void *);
 s32 FtrActor_RequestToggle(void *);
 u32 FtrActor_GetFtrIndex(void *o);
@@ -501,6 +487,9 @@ BOOL FtrActor_isSoundingClock(FtrActor *);
 BOOL FtrActor_isCabinClock(FtrActor *);
 BOOL FtrActor_isGyroid(FtrActor *);
 BOOL FtrActor_isTvOn(FtrActor *);
+s32 FtrActor_GetArgMode(FtrActor *);
+s32 FtrActor_GetArgFtrIndex(FtrActor *);
+FtrActor *FtrActor_MakeSpawnArg(s32 a, s32 b, s32 c, s32 d, u32 e, s32 f);
 s32 func_ov004_0220af14(void *p);
 s32 func_ov004_0220af28(void *p);
 s32 FtrShirt_syncAct0(void *p);
@@ -516,7 +505,6 @@ u32 _ZN12FtrSoundList7getListEv(FtrSoundList *);
 }
 
 
-extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, VecFx32 *pos, s32 ang, u16 *p1, u16 *p2);
 extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 layer, s32 cx, s32 cy);
 extern "C" s32 FtrMgr_FindPlacement(void *out, u16 *tile, VecFx32 *pos, s32 ang, s32 mode);
 extern "C" s32 FtrMgr_FindPlacementMyDesignA(void *a, u32 b, u32 c);
@@ -530,7 +518,6 @@ extern "C" void *FtrMoveAnim_Destruct(FtrMoveAnim *r);
 extern "C" void FtrMoveAnim_Load(FtrMoveAnim *r);
 extern "C" void FtrMoveAnim_Unload(FtrMoveAnim *r);
 extern "C" void *FtrMoveAnim_GetMtx(FtrMoveAnim *r);
-extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, s32 x, volatile u8 *flag, VecFx32 *pos, s32 e);
 extern "C" void *TvProgSlot_Construct(TvProgSlot *p);
 extern "C" void *TvProgSlot_Destruct(TvProgSlot *p);
 extern "C" void TvProgSlot_FreeFiles(TvProgSlot *p);

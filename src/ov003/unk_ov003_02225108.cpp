@@ -7,6 +7,9 @@
 #include "field/BottleThrow.h"
 #include "field/Unk_ov003_02225238_Grid.h"
 #include "actor/Character.h"
+#define PROTO_LOCAL_sFishShadows  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sInsectSpawnMaskDry  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sInsectSpawnMaskLand  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/ov003/unk_ov003_0221ffb8.h"

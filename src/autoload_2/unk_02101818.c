@@ -1,3 +1,5 @@
+#define PROTO_LOCAL_data_0213bc18  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_0213bc1c  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02101818.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) code: gfd palette VRAM frame manager + g2d font (NNSG2dFont): autoload_2 0x02101818-0x02101de8.

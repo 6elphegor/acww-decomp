@@ -36,8 +36,6 @@
 #include "player/PlayerData.h"
 #include "talk/ChoiceList.h"
 #define PROTO_LOCAL_Room_PickRandomWalkTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
@@ -148,11 +146,15 @@ s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, 
 void VillagerMood_playMood3Effect(void *, void *);
 s32 NpcActor_findAvoidPos(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
+s32 Vec_NotEqual(void *, void *);
 s32 Vec_DistXZ(void *, void *);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 void *SaveVillagers_GetUnk3830(void *);
 void *SickVillagerRecord_getTodaysVisitor(void *);
 void ActorTalkRequest_setPlayerNameSlot(void *, void *, s32);
+BOOL SickVillager_IsMedicine(u16 *p, s32 x);
+BOOL SickVillager_HasCurrentVisitor(void *o);
+void SickVillager_SetCurrentVisitor();
 void ActorTalkRequest_requestTakeItem(void *, void *, s32, s32, s32);
 void *PlayerData_getPlayerId(void *);
 void SickVillagerRecord_setTodaysVisitor(void *, void *);
@@ -262,6 +264,7 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
+extern "C" SickVillager *SickVillager_Create();
 extern "C" {
 void _ZN12SickVillager9mainAct05Ev();
 void _ZN12SickVillager9drawModelEv();

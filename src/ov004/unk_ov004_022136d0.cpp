@@ -12,7 +12,6 @@
 #include "talk/TalkMsgRequest.h"
 #include "game/TouchPickSphere.h"
 #include "game/TouchPicker.h"
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov004/unk_ov004_022136d0.h"
 
 

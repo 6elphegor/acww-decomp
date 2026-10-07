@@ -3,10 +3,12 @@
 #define PROTO_LOCAL_WfcMove_Init  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcMove_Update  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WfcTransfer_Task  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcTransfer  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0206d49c.h"
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov001/unk_ov001_0220cbd0.h"
 #include "proto/ov001/unk_ov001_0220cd24.h"
+#include "proto/ov001/unk_ov001_0220d1d8.h"
 #include "proto/ov001/unk_ov001_02222e84.h"
 #include "proto/ov001/unk_ov001_02226f68.h"
 
@@ -35,7 +37,6 @@ WfcTransferWork *sWfcTransfer;
 //ENDDEFS
 
 extern "C" {
-extern void *gWfcMsgBank;
 
 extern void MIi_CpuCopy16(void *, void *, u32);
 

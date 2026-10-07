@@ -10,7 +10,6 @@
 #include "proto/ov001/unk_ov001_0220c594.h"
 #include "proto/ov001/unk_ov001_022140bc.h"
 #include "proto/ov001/unk_ov001_022156e0.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
 #include "proto/ov001/unk_ov001_02224ca0.h"
@@ -40,6 +39,7 @@ struct WfcAddrEditTitleMsgIds { u8 v[5]; };
 extern "C" {
 extern u8 GX_LoadOBJPltt[];
 
+s32 WfcUtil_ParseIpDigits(void *a, void *b);
 void WfcUtil_LoadFileTo(const char *a, void *b);
 s32 WfcGx_HidePlanes(u32 a, u32 b);
 s32 WfcHeap_FreeAndClear(void *a);
@@ -53,6 +53,16 @@ s32 GX_LoadBG2Char(void);
 s32 GX_LoadBGPltt(void);
 s32 GX_LoadBG2Scr(void);
 
+void WfcConfig_FormatEditDns2();
+void WfcConfig_FormatEditDns1();
+void WfcConfig_FormatEditGateway();
+void WfcConfig_FormatEditSubnetMask();
+void WfcConfig_FormatEditIp();
+void WfcConfig_SetEditDns2();
+void WfcConfig_SetEditDns1();
+void WfcConfig_SetEditGateway();
+void WfcConfig_SetEditSubnetMask();
+void WfcConfig_SetEditIp();
 
 const u16 data_ov001_0222a070[2] = {0x0b, 0x10};
 const u8 data_ov001_0222a074[12] = {0x31, 0x3d, 0x49, 0x5a, 0x66, 0x72, 0x83, 0x8f, 0x9b, 0xac, 0xb8, 0xc4};

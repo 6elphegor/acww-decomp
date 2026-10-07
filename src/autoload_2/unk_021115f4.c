@@ -1,4 +1,5 @@
 #include "proto/autoload_2/unk_021104ac.h"
+#include "proto/autoload_2/unk_021115f4.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK graphics (G2/G3/GX), autoload_2 0x021115f4-0x02111864. ARM code, mwcc 1.2/base with -O4,p.
 typedef unsigned char u8;

@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_0220e61c.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,6 +51,17 @@ void WfcSysInfo_FadeOut();
 void WfcSysInfo_Exit();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_data_ov001_0222acd8
+extern u16 data_ov001_0222acd8[30];
+#endif
+#ifndef PROTO_LOCAL_data_ov001_0222ad14
+extern u16 data_ov001_0222ad14[40];
+#endif
 }
 #endif
 

@@ -20,6 +20,11 @@
 #define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov114_02296588  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov114_02296598  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov114_022965a0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov114_022965c0  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203c23c.h"
@@ -45,16 +50,10 @@ extern const u8 data_ov114_0229654c[];
 extern const u8 data_ov114_02296550[];
 extern const s32 data_ov114_02296554[];
 extern const s32 data_ov114_02296564[];
-extern u8 data_ov114_02296580[];
 extern u8 data_ov114_02296588[];
-extern u8 data_ov114_02296590[];
 extern u8 data_ov114_02296598[];
 extern u8 data_ov114_022965a0[];
 extern u8 data_ov114_022965c0[0x20];
-extern u8 data_ov114_022965e0[];
-extern char *sCreaturePicDir;
-extern char *sCreatureBgPaletteName;
-extern char sCreaturePicPath[];
 extern u32 *gCurrentHeap;
 extern u16 gPad;
 

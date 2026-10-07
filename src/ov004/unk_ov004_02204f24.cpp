@@ -125,7 +125,6 @@ typedef FtrActor Self;
 #include "gfx/TwoLayerAnimModel.h"
 #include "room/FtrActorTable.h"
 #include "save/TownId.h"
-#define PROTO_LOCAL_FtrActor_SpawnActorC0  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrMgr_SetRemovePos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrMoveAnim_StartPull  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrMoveAnim_StartPush  // declared below: the shared prototype conflicts with the calls here
@@ -133,25 +132,16 @@ typedef FtrActor Self;
 #define PROTO_LOCAL_FtrSoundEmitter_Destroy  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ItemDrop_StartFromLocalPlayer  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetRotY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_Translate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_RoomItemIcons_DrawItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Distance  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sFtrMgrPool  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020514a4.h"
 #include "proto/main/unk_02052b50.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_020815f8.h"
@@ -336,6 +326,7 @@ BOOL FtrMoveAnim_StartPush(void *o, void *a, s32 *b, s32 c);
 BOOL FtrMoveAnim_Step(void *o, void *a, s32 *out);
 s32 Math_StepAngle(s16 *v, s32 target, s32 step);
 s32 func_01ffcb0c(s32 a, s32 b);
+void Vec_RotateY(VecFx32 *v, s16 a);
 s32 G3dResAccess_findNodeIdx(void *p, u32 id);
 u16 Item_MakeFurniture(s32 a, s32 b);
 s32 ItemDrop_StartFromLocalPlayer(u16 *a, VecFx32 *b);
@@ -395,6 +386,7 @@ extern u8 gFieldSceneKind;
 BOOL Scene_InHouseRoom(void);
 BOOL Ground_CanPlaceItem(s32 x, s32 y);
 s32 Ground_GetExitAtPos(void *v);
+u32 ItemInfo_GetIndoorUnk1(u16 *p);
 u32 GroundAttr_GetDragSe(u32 a);
 void LightSwitch_SetOff(u32 a, u32 b);
 void *Math_AngleXZ(void *v, void *cam);
@@ -413,6 +405,7 @@ void Model_setInitCallback(void *self, s32 fn, void *arg);
 void NNS_G3dBindMdlTex(s32 a, void *b);
 void NNS_G3dBindMdlPltt(s32 a, void *b);
 void FieldPos_FromBlockUnitCenter(void *p, s32 a, s32 b, u32 c, u32 d);
+s32 Vec_SafeNormalize(void *v);
 extern u32 sFtrMgrPool[];
 void TouchPicker_addCylinder(u32 o, void *p, void *v, s32 a, s32 b, s32 c, s32 d);
 void TouchPicker_addBox(u32 o, void *p, void *v, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -490,6 +483,7 @@ void *FtrActorHeap_alloc(void *heap, u32 size);
 void *FtrContactSet_findContact(void *, void *);
 s32 *FtrContact_getClampedContactPoint(void);
 u32 FtrContact_getPushAngle(void *);
+u32 ItemInfo_IsReady(void);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 BOOL AnimFrameCtrl_hasPassedFrame(void *, u32);
 u32 Scene_GetTouchPicker();
@@ -500,6 +494,7 @@ extern void *gSceneBlockMap;
 extern Mtx43 data_021f47e0;
 void _ZN11FtrTileList7releaseEv(void *self);
 FtrActor *FtrActorTable_get(void *a, u32 b);
+void *_ZN11FtrColliderD1Ev(void *);
 void _ZN12FtrModelAnimD1Ev(void *);
 void _ZN12FtrModelAnimC1Ev(void *);
 typedef void (*FtrArrayElemFn)(void *);
@@ -512,7 +507,21 @@ extern u32 _ZTV11FtrCollider[];
 
 // plain functions defined in this unit
 extern "C" {
+void FtrVisNodes_Destruct(void *);
+void FtrVisNodes_Construct(void *);
+u16 FtrGlowMat_GetBaseEmission();
+BOOL FtrStack_CalcRelPlacement(s32 *idx, VecFx32 *pos, s16 *ang, s32 x, s32 a, s16 b);
+void FtrActor_GetItemId(u16 *out, FtrActor *o);
+s32 FtrActor_PredIsGyroid(FtrActor *p);
+s32 FtrActor_PredIsSeatOrBed(FtrActor *p);
+s32 FtrActor_PredIsStereo(FtrActor *p);
+s32 FtrActor_PredIsLightSource(FtrActor *p);
 void FtrActor_SpawnActorC0(void *a, u32 x);
+s32 FtrActor_GetDragSe(void);
+s32 FtrActor_TestCurSceneUnk();
+s32 FtrActor_TestSceneUnk(s32 a);
+void FtrActor_MakeItemForAngle(u16 *out, FtrActor *obj, s32 ang);
+u32 FtrActor_AngleToDir(s32 v);
 void FtrActor_SetInitialAct(Self *self);
 void FtrActor_UpdateTopItemBoxes(Self *self);
 void FtrActor_UpdateBox(Self *self);
@@ -527,17 +536,26 @@ s32 FtrActor_GetFtrIndex(Self *self);
 Self *FtrActor_GetParent(Self *self);
 BOOL FtrActor_IsPosClearOfCharacters(Self *self, s32 a, s32 b, s32 c, s32 d);
 BOOL FtrActor_IsWithinDist(Self *self, s32 a, void *p, s32 b);
+BOOL FtrActor_TestPlayerUnk();
 void FtrActor_GetCenter(Self *self, VecFx32 *out);
 void FtrActor_GetCorner(Self *self, void *out, s32 i);
 void FtrActor_LocalToWorld(Self *self, void *out, void *src);
 u32 FtrActor_GetHeap(Self *self);
 BOOL FtrActor_StepAnims(Self *self);
 void FtrActor_PlayAnimsFromLastFrame(Self *self, u32 a, s32 b, s32 c);
+BOOL FtrActor_IsStereo(FtrActor *p);
+BOOL FtrActor_IsLightSource(FtrActor *p);
+u32 FtrActor_GetArgMode(u32 v);
+u32 FtrActor_GetArgFtrIndex(u32 v);
+u32 FtrActor_MakeSpawnArg(u32 a, u32 b, u32 c, u32 d, u8 f, u32 e);
+void FtrActor_TurnOnRoomLight(u32 a);
+u32 FtrActor_IsLightKind1(u32 a);
 void FtrActor_SetModelCallbacks(NNSG3dRS *o);
 void FtrActor_NodeCallback(NNSG3dRS *o);
 void FtrActor_NodeDescCallbackB(NNSG3dRS *self);
 void FtrActor_NodeDescCallbackA(NNSG3dRS *self);
 void FtrActor_MatCallback(NNSG3dRS *self);
+void *FtrActor_Create();
 }
 
 // ================================================================ static inline helpers

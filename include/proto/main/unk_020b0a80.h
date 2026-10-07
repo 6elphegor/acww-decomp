@@ -54,6 +54,9 @@ u32 Footstep_GetSeAtPos(u32 a);
 void Startup_OnWvrStartUp(u32 a, u32 b);
 #endif
 }
+#ifndef PROTO_LOCAL_sWvrStartUpDone
+extern volatile u8 sWvrStartUpDone;
+#endif
 #endif
 
 #endif

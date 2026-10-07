@@ -21,6 +21,12 @@ void InventoryItemGrid_Exit(void *o);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sHeldItemSprite
+extern u8 sHeldItemSprite[8];
+#endif
+#ifndef PROTO_LOCAL_sItemGridMarkSprites
+extern u8 sItemGridMarkSprites[24];
+#endif
 #ifndef PROTO_LOCAL_InventoryItemGrid_GetIconPalette
 u8 InventoryItemGrid_GetIconPalette(void *o, s32 i);
 #endif

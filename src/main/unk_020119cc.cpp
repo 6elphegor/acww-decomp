@@ -59,8 +59,6 @@
 #define PROTO_LOCAL_BlinkTimer_BlinkNow  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_BlinkTimer_Clear  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_BlinkTimer_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_FocusOnPair  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_FocusOnPoint  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Emotion_GetEntry  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Footstep_GetSeAtPos  // declared below: the shared prototype conflicts with the calls here
@@ -78,18 +76,12 @@
 #define PROTO_LOCAL_PlayerActor_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetSlotPosXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_SeEmitterPlayAlternate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_NotEqual  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerRoute_PickAttr200Target  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerRoute_PickCoastBlock  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerRoute_PickOtherHouseBlock  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerRoute_PickOwnHouseBlock  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerRoute_PickPathUnitInBlock  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerRoute_PickRandomBlock  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gNpcModelHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/itcm/unk_01ffb4e8.h"
@@ -98,7 +90,6 @@
 #include "proto/main/unk_020116e0.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02038474.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0203ecec.h"
 #include "proto/main/unk_02055c38.h"
 #include "proto/main/unk_020571f4.h"
@@ -540,7 +531,6 @@ extern u8 data_021bddc0[];
 extern u8 sSceneHudKinds[];
 extern u32 data_021bdd80[];
 extern u32 data_020d6f54[];
-extern HudObjGfx sHudObjGfx;
 void *_ZN11HudObjGfxIo11freePaletteEv(void *p);
 void *_ZN11HudObjGfxIo9freeCharsEv(void *p);
 void _ZN11HudObjGfxIo21releaseSlideIconCharsEv(void *p);
@@ -621,11 +611,6 @@ static inline MapBlock *GetCellD(BlockMap *w, u32 x, u32 y, MapBlock *volatile *
     }
     return *dflt;
 }
-void VillagerRoute_PickCoastBlock(Vec2 *out, void *self, VecFx32 *v);
-void VillagerRoute_PickRandomBlock(Vec2 *out, void *self);
-void VillagerRoute_PickOwnHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj);
-void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj);
-void VillagerRoute_PickAttr200Target(Vec2 *out, void *self);
 }
 }
 
@@ -637,6 +622,7 @@ extern s32 sRouteDirs[];
 extern BlockMap *gSceneBlockMap;
 s32 _ZN8BlockMap17getWalkLinksAtPosEPv(BlockMap *o, VecFx32 *v);
 u32 BlockMap_GetBlockAttr(BlockMap *o, s32 x, s32 z);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void FieldPos_ToBlockUnit2(RouteGridPos *a, RouteGridPos *c, VecFx32 *v);
 void FieldPos_FromBlockUnitCenter(VecFx32 *out, u32 a, u32 b, u32 c, u32 d);
 s32 TownMap_IsUnitWalkable(u32 x, u32 z, BlockMap *o);
@@ -694,6 +680,9 @@ namespace nE {
 extern "C" {
 
 s32 _ZN16ActorTalkRequest9startTaskEi(ActorTalkRequest *p, s32 a);
+u32 Camera_IsBlending(void);
+u32 Camera_GetBlendFramesLeft(void);
+void Camera_RetargetFocus(VecFx32 *v);
 void _ZN10MsgRequest11setFileNameEPKc(ActorTalkRequest *o, s32 a);
 s32 _ZN13NpcActionCtrl16requestTalkingOnEv(void *p);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
@@ -707,6 +696,7 @@ void _ZN16ActorTalkRequest11playEmotionEjj(ActorTalkRequest *o, s32 a, s32 b);
 void _ZN16ActorTalkRequest4tickEv(ActorTalkRequest *o);
 void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b);
 void Camera_FocusOnPoint(VecFx32 *a);
+void Camera_SetModeDefault(void);
 extern u16 data_020c6cc8;
 extern NpcTalkCtrlState sNpcTalkCtrlStates[5];
 }
@@ -724,8 +714,6 @@ BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 BOOL _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u32 i, s32 j);
 void Melody_Unpack(void *p, void *q);
 extern u16 data_020c6cc8;
-extern s32 data_020ddf8c;
-extern u8 gMelodyEditPattern[];
 }
 }
 
@@ -968,6 +956,7 @@ void Effect_SetPosition(s32 h, void *a, void *b, s32 c);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void Math_StepAngle(s16 *p, s32 target, s32 step);
+s32 Vec_Distance(void *a, void *b);
 extern Unk_0201a1e0_Fn sNpcLookAtTypes[6];
 }
 }
@@ -985,9 +974,12 @@ s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out);
 Character *PlayerActor_GetCharacter(s32 h);
 BOOL PlayerActor_GetHeadPos(VecFx32 *out, s32 h);
 s32 Math_StepAngle(s16 *p, s32 v, s32 n);
+s32 Vec_Distance(void *a, void *b);
 s32 Vec_NotEqual(void *a, void *b);
+s32 Vec_Equal(void *a, void *b);
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
 s32 Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
@@ -1018,6 +1010,8 @@ extern u8 *gCommManager;
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 u32 _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, VecFx32 *v);
 void FieldPos_SnapToUnitCenter(VecFx32 *out, VecFx32 *in);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+void Vec_Equal(VecFx32 *a, VecFx32 *b);
 s32 TownMap_IsPosWalkable(VecFx32 *v, s32 a);
 s32 _ZN11CommManager8isOnlineEv(u8 *g);
 VecFx32 *PlayerActor_GetBodyPos(u32 n);
@@ -1063,6 +1057,7 @@ s32 NpcNetRecord_SetSlotsAndSync(s32 a, s32 b, s32 c, void *d);
 s32 PlayerActor_GetCharacter(u32 id);
 BOOL PlayerActor_GetSlotPosXZ(u8 *a, void *b, void *c, s32 d, u32 e);
 s32 Math_AngleXZ(void *a, void *b);
+s32 Vec_Distance(void *a, void *b);
 BOOL Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
 BOOL Scene_InMuseumRoom();
@@ -1273,225 +1268,9 @@ void _ZN16ActorTalkRequest12taskSubSceneEv(void);
 void _ZN16ActorTalkRequest12subSceneWaitEv(void);
 void _ZN16ActorTalkRequest12subSceneOpenEv(void);
 void _ZN16ActorTalkRequest19subSceneCloseWindowEv(void);
-void VillagerRoute_PickCoastBlock(void);
-void VillagerRoute_PickRandomBlock(void);
-void VillagerRoute_PickOwnHouseBlock(void);
-void VillagerRoute_PickOtherHouseBlock(void);
-void VillagerRoute_PickAttr200Target(void);
 }
 }
 extern "C" {
-extern void *data_020d7074[2];
-extern void *data_020d707c[2];
-extern void *data_020d7084[2];
-extern void *data_020d708c[2];
-extern void *data_020d7094[2];
-extern void *data_020d709c[2];
-extern void *data_020d70a4[2];
-extern void *data_020d70ac[2];
-extern void *data_020d70b4[2];
-extern void *data_020d70bc[2];
-extern void *data_020d70c4[2];
-extern void *data_020d70cc[2];
-extern void *data_020d70d4[2];
-extern void *data_020d70dc[2];
-extern void *data_020d70e4[2];
-extern void *data_020d70ec[2];
-extern void *data_020d70f4[2];
-extern void *data_020d70fc[2];
-extern void *data_020d7104[2];
-extern void *data_020d710c[2];
-extern void *data_020d7114[2];
-extern void *data_020d711c[2];
-extern void *data_020d7124[2];
-extern void *data_020d712c[2];
-extern void *data_020d7134[2];
-extern void *data_020d713c[2];
-extern void *data_020d7144[2];
-extern void *data_020d714c[2];
-extern void *data_020d7154[2];
-extern void *data_020d715c[2];
-extern void *data_020d7164[2];
-extern void *data_020d716c[2];
-extern void *data_020d7174[2];
-extern void *data_020d717c[2];
-extern void *data_020d7184[2];
-extern void *data_020d718c[2];
-extern void *data_020d7194[2];
-extern void *data_020d719c[2];
-extern void *data_020d71a4[2];
-extern void *data_020d71ac[2];
-extern void *data_020d71b4[2];
-extern void *data_020d71bc[2];
-extern void *data_020d71c4[2];
-extern void *data_020d71cc[2];
-extern void *data_020d71d4[2];
-extern void *data_020d71dc[2];
-extern void *data_020d71e4[2];
-extern void *data_020d71ec[2];
-extern void *data_020d71f4[2];
-extern void *data_020d71fc[2];
-extern void *data_020d7204[2];
-extern void *data_020d720c[2];
-extern void *data_020d7214[2];
-extern void *data_020d721c[2];
-extern void *data_020d7224[2];
-extern void *data_020d722c[2];
-extern void *data_020d7234[2];
-extern void *data_020d723c[2];
-extern void *data_020d7244[2];
-extern void *data_020d724c[2];
-extern void *data_020d7254[2];
-extern void *data_020d725c[2];
-extern void *data_020d7264[2];
-extern void *data_020d726c[2];
-extern void *data_020d7274[2];
-extern void *data_020d727c[2];
-extern void *data_020d7284[2];
-extern void *data_020d728c[2];
-extern void *data_020d7294[2];
-extern void *data_020d729c[2];
-extern void *data_020d72a4[2];
-extern void *data_020d72ac[2];
-extern void *data_020d72b4[2];
-extern void *data_020d72bc[2];
-extern void *data_020d72c4[2];
-extern void *data_020d72cc[2];
-extern void *data_020d72d4[2];
-extern void *data_020d72dc[2];
-extern void *data_020d72e4[2];
-extern void *data_020d72ec[2];
-extern void *data_020d72f4[2];
-extern void *data_020d72fc[2];
-extern void *data_020d7304[2];
-extern void *data_020d730c[2];
-extern void *data_020d7314[2];
-extern void *data_020d731c[2];
-extern void *data_020d7324[2];
-extern void *data_020d732c[2];
-extern void *data_020d7334[2];
-extern void *data_020d733c[2];
-extern void *data_020d7344[2];
-extern void *data_020d734c[2];
-extern void *data_020d7354[2];
-extern void *data_020d735c[2];
-extern void *data_020d7364[2];
-extern void *data_020d736c[2];
-extern void *data_020d7374[2];
-extern void *data_020d737c[2];
-extern void *data_020d7384[2];
-extern void *data_020d738c[2];
-extern void *data_020d7394[2];
-extern void *data_020d739c[2];
-extern void *data_020d73a4[2];
-extern void *data_020d73ac[2];
-extern void *data_020d73b4[2];
-extern void *data_020d73bc[2];
-extern void *data_020d73c4[2];
-extern void *data_020d73cc[2];
-extern void *data_020d73d4[2];
-extern void *data_020d73dc[2];
-extern void *data_020d73e4[2];
-extern void *data_020d73ec[2];
-extern void *data_020d73f4[2];
-extern void *data_020d73fc[2];
-extern void *data_020d7404[2];
-extern void *data_020d740c[2];
-extern void *data_020d7414[2];
-extern void *data_020d741c[2];
-extern void *data_020d7424[2];
-extern void *data_020d742c[2];
-extern void *data_020d7434[2];
-extern void *data_020d743c[2];
-extern void *data_020d7444[2];
-extern void *data_020d744c[2];
-extern void *data_020d7454[2];
-extern void *data_020d745c[2];
-extern void *data_020d7464[2];
-extern void *data_020d746c[2];
-extern void *data_020d7474[2];
-extern void *data_020d747c[2];
-extern void *data_020d7484[2];
-extern void *data_020d748c[2];
-extern void *data_020d7494[2];
-extern void *data_020d749c[2];
-extern void *data_020d74a4[2];
-extern void *data_020d74ac[2];
-extern void *data_020d74b4[2];
-extern void *data_020d74bc[2];
-extern void *data_020d74c4[2];
-extern void *data_020d74cc[2];
-extern void *data_020d74d4[2];
-extern void *data_020d74dc[2];
-extern void *data_020d74e4[2];
-extern void *data_020d74ec[2];
-extern void *data_020d74f4[2];
-extern void *data_020d74fc[2];
-extern void *data_020d7504[2];
-extern void *data_020d750c[2];
-extern void *data_020d7514[2];
-extern void *data_020d751c[2];
-extern void *data_020d7524[2];
-extern void *data_020d752c[2];
-extern void *data_020d7534[2];
-extern void *data_020d753c[2];
-extern void *data_020d7544[2];
-extern void *data_020d754c[2];
-extern void *data_020d7554[2];
-extern void *data_020d755c[2];
-extern void *data_020d7564[2];
-extern void *data_020d756c[2];
-extern void *data_020d7574[2];
-extern void *data_020d757c[2];
-extern void *data_020d7584[2];
-extern void *data_020d758c[2];
-extern void *data_020d7594[2];
-extern void *data_020d759c[2];
-extern void *data_020d75a4[2];
-extern void *data_020d75ac[2];
-extern void *data_020d75b4[2];
-extern void *data_020d75bc[2];
-extern void *data_020d75c4[2];
-extern void *data_020d75cc[2];
-extern void *data_020d75d4[2];
-extern void *data_020d75dc[2];
-extern void *data_020d75e4[2];
-extern void *data_020d75ec[2];
-extern void *data_020d75f4[2];
-extern void *data_020d75fc[2];
-extern void *data_020d7604[2];
-extern void *data_020d760c[2];
-extern void *data_020d7614[2];
-extern void *data_020d761c[2];
-extern void *data_020d7624[2];
-extern void *data_020d762c[2];
-extern void *data_020d7634[2];
-extern void *data_020d763c[2];
-extern void *data_020d7644[2];
-extern void *data_020d764c[2];
-extern void *data_020d7654[2];
-extern void *data_020d765c[2];
-extern void *data_020d7664[2];
-extern void *data_020d766c[2];
-extern void *data_020d7674[2];
-extern void *data_020d767c[2];
-extern void *data_020d7684[2];
-extern void *data_020d768c[2];
-extern void *data_020d7694[2];
-extern void *data_020d769c[2];
-extern void *data_020d76a4[2];
-extern void *data_020d76ac[2];
-extern void *data_020d76b4[2];
-extern void *data_020d76bc[2];
-extern void *data_020d76c4[2];
-extern void *data_020d76cc[2];
-extern void *data_020d76d4[2];
-extern void *data_020d76dc[2];
-extern void *data_020d76e4[2];
-extern void *data_020d76ec[2];
-extern void *data_020d76f4[2];
-extern void *data_020d76fc[2];
-extern void *data_020d7704[2];
 }
 
 namespace nR {

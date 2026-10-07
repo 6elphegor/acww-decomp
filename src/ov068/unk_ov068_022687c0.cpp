@@ -14,15 +14,9 @@
 #define PROTO_LOCAL_Insect_SetAnimSpeed  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Moth_CircleLight  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Pondskater_Skate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Stinger_Threaten  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Stinger_TryAttack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Stinger_UpdateChase  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Stinger_Walk  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Sub  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
@@ -81,6 +75,7 @@ s32 Flower_GetSpecies(void *cell);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Snowball_ChangeState(void *o, s32 st);
 s32 Snowball_Break(void *o, s32 a);
+s32 Vec_Distance(void *a, void *b);
 s32 Math_Atan2(s32 x, s32 z);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 BOOL Item_IsMarker(u16 *p);
@@ -124,14 +119,12 @@ s32 Ground_GetWaterKind(s32, s32);
 s32 Insect_CheckObstacle(void *, s32, s32);
 void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out);
 s32 Dragonfly_FindPerch(Insect *o);
-void Pondskater_Skate(Insect *o, s16 *p);
 void Dragonfly_FlyToPerch(Insect *o);
 void Moth_CircleLight(Insect *o);
 s32 Moth_SteerToLight(Insect *o, u16 *p, V3 *out);
 s32 Moth_FindNearestLight(Insect *o, V3 *out);
 void Bee_StingAndLeave(Insect *o);
 void Stinger_Walk(Insect *o, s16 *p, u32 mode);
-s32 Stinger_UpdateChase(Insect *o, s16 *p);
 }
 
 #define FX32_CONST(x) ((s32)((x) > 0 ? (x) * 4096.0f + 0.5f : (x) * 4096.0f - 0.5f))

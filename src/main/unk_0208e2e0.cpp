@@ -7,6 +7,7 @@
 #include "talk/MsgString.h"
 #include "ui/LabelButton.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_0208e2e0.h"
 
 extern "C" {
 }

@@ -17,6 +17,9 @@ void Town_SetGenGateMode(s32 v);
 void Town_GenerateAcres(s32 arg);
 #endif
 }
+#ifndef PROTO_LOCAL_sTownGenGateMode
+extern s32 sTownGenGateMode;
+#endif
 #endif
 
 #endif

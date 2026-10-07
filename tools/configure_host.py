@@ -141,7 +141,7 @@ def main():
         n.rule("gaps", f"python3 tools/host_gaps.py {'--x86-64 --own-slots tools/host_gap_pointers.txt ' if X64 else ''}$in $out",
                description="GAPS $out")
         gaps_c = str(build / "gaps.c")
-        n.build(gaps_c, "gaps", "build/usa/objects_aliases.txt", implicit=["tools/host_gaps.py", "tools/host_gap_pointers.txt"])
+        n.build(gaps_c, "gaps", "tools/host_objects_aliases.txt", implicit=["tools/host_gaps.py", "tools/host_gap_pointers.txt"])
         n.build(str(build / "gaps.o"), "hostcc", gaps_c)
         objs.append(str(build / "gaps.o"))
         for s in sources(Path("modern/ds"), (".c",)):

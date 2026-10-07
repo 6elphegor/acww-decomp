@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov095/unk_02292360.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "nitro/gxoam.h"
 #ifdef __cplusplus
 #include "menu/Keyboard.h"
 #include "types.h"
@@ -11,6 +12,87 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sLengthGaugeCells
+extern void *sLengthGaugeCells[32];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295e48
+extern GXOamAttr data_ov095_02295e48[12];
+#endif
+#ifndef PROTO_LOCAL_sKeyboardModeCharFiles
+extern void *sKeyboardModeCharFiles[8];
+#endif
+#ifndef PROTO_LOCAL_sKeyboardModeScreensChat
+extern void *sKeyboardModeScreensChat[8];
+#endif
+#ifndef PROTO_LOCAL_sKeyboardModeScreens
+extern void *sKeyboardModeScreens[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295704
+extern char data_ov095_02295704[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229574c
+extern char data_ov095_0229574c[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022956d4
+extern char data_ov095_022956d4[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229565c
+extern char data_ov095_0229565c[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022956ec
+extern char data_ov095_022956ec[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229577c
+extern char data_ov095_0229577c[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229568c
+extern char data_ov095_0229568c[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022956a4
+extern char data_ov095_022956a4[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022956bc
+extern char data_ov095_022956bc[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295674
+extern char data_ov095_02295674[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295734
+extern char data_ov095_02295734[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229571c
+extern char data_ov095_0229571c[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295794
+extern char data_ov095_02295794[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295764
+extern char data_ov095_02295764[24];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295620
+extern char data_ov095_02295620[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295648
+extern char data_ov095_02295648[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022955f8
+extern char data_ov095_022955f8[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022955bc
+extern char data_ov095_022955bc[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022955a8
+extern char data_ov095_022955a8[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022955d0
+extern char data_ov095_022955d0[20];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022955e4
+extern char data_ov095_022955e4[20];
+#endif
+#ifndef PROTO_LOCAL_sKeyboardPageCells
+extern void *sKeyboardPageCells[4];
 #endif
 #ifndef PROTO_LOCAL_Keyboard_PlayCopySe
 void Keyboard_PlayCopySe();
@@ -24,6 +106,162 @@ void Keyboard_PlayPasteSe();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_data_ov095_022965bc
+extern u32 data_ov095_022965bc[120];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022963e4
+extern u32 data_ov095_022963e4[118];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02296214
+extern u32 data_ov095_02296214[116];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022960dc
+extern u32 data_ov095_022960dc[78];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage3
+extern s16 sKeyCodesPage3[56];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage1Lower
+extern s16 sKeyCodesPage1Lower[54];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage1Upper
+extern s16 sKeyCodesPage1Upper[54];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage1Alt
+extern s16 sKeyCodesPage1Alt[54];
+#endif
+#ifndef PROTO_LOCAL_sKeyCodesPage2
+extern s16 sKeyCodesPage2[34];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295d44
+extern u32 data_ov095_02295d44[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295d74
+extern u32 data_ov095_02295d74[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295da4
+extern u32 data_ov095_02295da4[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295dd4
+extern u32 data_ov095_02295dd4[12];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295c7c
+extern u32 data_ov095_02295c7c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295ca4
+extern u32 data_ov095_02295ca4[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295ccc
+extern u32 data_ov095_02295ccc[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295cf4
+extern u32 data_ov095_02295cf4[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295d1c
+extern u32 data_ov095_02295d1c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295c2c
+extern u32 data_ov095_02295c2c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229586c
+extern u32 data_ov095_0229586c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295894
+extern u32 data_ov095_02295894[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022958bc
+extern u32 data_ov095_022958bc[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295b8c
+extern u32 data_ov095_02295b8c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022958e4
+extern u32 data_ov095_022958e4[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229590c
+extern u32 data_ov095_0229590c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295934
+extern u32 data_ov095_02295934[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295aec
+extern u32 data_ov095_02295aec[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229595c
+extern u32 data_ov095_0229595c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295984
+extern u32 data_ov095_02295984[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022959ac
+extern u32 data_ov095_022959ac[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022959d4
+extern u32 data_ov095_022959d4[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022959fc
+extern u32 data_ov095_022959fc[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295a24
+extern u32 data_ov095_02295a24[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295a4c
+extern u32 data_ov095_02295a4c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295a74
+extern u32 data_ov095_02295a74[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295a9c
+extern u32 data_ov095_02295a9c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295ac4
+extern u32 data_ov095_02295ac4[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295b14
+extern u32 data_ov095_02295b14[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295b3c
+extern u32 data_ov095_02295b3c[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295b64
+extern u32 data_ov095_02295b64[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295bb4
+extern u32 data_ov095_02295bb4[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295bdc
+extern u32 data_ov095_02295bdc[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295c04
+extern u32 data_ov095_02295c04[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295c54
+extern u32 data_ov095_02295c54[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_022957ac
+extern u32 data_ov095_022957ac[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229580c
+extern u32 data_ov095_0229580c[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229582c
+extern u32 data_ov095_0229582c[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_0229560c
+extern s32 data_ov095_0229560c[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295634
+extern s32 data_ov095_02295634[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295590
+extern u32 data_ov095_02295590[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295588
+extern u32 data_ov095_02295588[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov095_02295580
+extern u32 data_ov095_02295580[2];
+#endif
 #ifndef PROTO_LOCAL_Keyboard_IsSlotDisabled
 BOOL Keyboard_IsSlotDisabled(Keyboard *s, s32 i);
 #endif

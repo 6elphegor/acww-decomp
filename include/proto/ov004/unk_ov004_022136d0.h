@@ -12,6 +12,9 @@ class RoomBoardSign;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sRoomBoardSigns
+extern void *sRoomBoardSigns[0x40];
+#endif
 #ifndef PROTO_LOCAL_RoomBoardSign_ClearRegistry
 void RoomBoardSign_ClearRegistry();
 #endif
@@ -21,8 +24,17 @@ void RoomBoardSign_ClearRegistry();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sRoomBoardSignSpawnRadius
+extern s32 sRoomBoardSignSpawnRadius;
+#endif
 #ifndef PROTO_LOCAL_RoomBoardSign_Create
 RoomBoardSign *RoomBoardSign_Create();
+#endif
+#ifndef PROTO_LOCAL_sRoomBoardSignSpawnMsg
+extern s16 sRoomBoardSignSpawnMsg;
+#endif
+#ifndef PROTO_LOCAL_sRoomBoardSignCount
+extern u8 sRoomBoardSignCount;
 #endif
 #ifndef PROTO_LOCAL_RoomBoardSign_GetByIndex
 void *RoomBoardSign_GetByIndex(s32 i);

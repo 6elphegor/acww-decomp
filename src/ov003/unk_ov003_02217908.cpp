@@ -10,7 +10,6 @@
 #include "gfx/BgModelCache.h"
 #define PROTO_LOCAL_BgMgt_GetEntry  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FieldGround_FindSoundSrc  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/main/unk_02036c58.h"
 #include "proto/ov003/unk_ov003_02217908.h"
 
@@ -45,6 +44,7 @@ extern s32 data_020c8cbc;
 extern u8 data_0213b91c[];
 extern u8 data_0213b938[];
 
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 }
 Unk_ov003_022179b8_Ent BgMgt_GetEntry(u8 *obj, s32 i);
 extern "C" {

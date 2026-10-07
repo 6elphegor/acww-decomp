@@ -11,13 +11,8 @@
 #include "snd/SndSeEmitter.h"
 #define PROTO_LOCAL_FtrMgr_GetSurfaceHeightAtPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ItemDropList_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateXYZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_Scale  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/ov004/unk_ov004_0222bed0.h"
 #include "proto/ov004/unk_ov004_02233074.h"
@@ -89,6 +84,7 @@ s32 CommManager_isOnline(void *g);
 void ModelSet_Release(void *p);
 s32 ModelSet_Load(void *p, void *a, s32 b);
 void *ModelSet_Find(void *p, u32 a);
+u32 Item_GetIconModelName(s32 a, s32 b);
 void Town_GetEnvironmentRank();
 void FieldPos_FromUnitCenter(VecFx32Copy *out, s32 a, s32 b);
 void SndSeEmitter_callStop(void *p);

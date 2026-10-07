@@ -354,8 +354,6 @@ u32 fread(const void *ptr, u32 size, u32 n, FILE *file) {
 // regions below) gives the original order after mwcc's size sort.
 extern LocaleCase data_0213c378;
 extern LocaleCtype data_0213c33c;
-extern u16 data_0213c400[58];
-extern char *data_0213c388[8];
 u16 data_0213c400[58] = {
     2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32,
     34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 0, 0, 0, 0, 0, 0,

@@ -14,6 +14,7 @@
 #include "nitro/io_access.h"
 #include "proto/autoload_2/unk_020fa398.h"
 #include "proto/autoload_2/unk_020fa39c.h"
+#include "proto/autoload_2/unk_020fa488.h"
 #include "proto/autoload_2/unk_020fac28.h"
 #include "proto/autoload_2/unk_021104ac.h"
 

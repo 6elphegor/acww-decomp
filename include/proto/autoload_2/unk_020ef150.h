@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020ef150.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct SndEnt;
 #ifdef __cplusplus
 #include "snd/SndMgr.h"
 #include "types.h"
@@ -147,6 +148,12 @@ u16 SndMgr_GetVoiceSeqIndex(SndMgr *self, u16 id);
 s32 SndVoice_GetSyllable(s32 a, s32 b);
 #endif
 }
+#ifndef PROTO_LOCAL_gSndPanTrackMask
+extern u16 gSndPanTrackMask;
+#endif
+#ifndef PROTO_LOCAL_sBgmTrackVariantTable
+extern SndEnt sBgmTrackVariantTable[24];
+#endif
 #endif
 
 #endif

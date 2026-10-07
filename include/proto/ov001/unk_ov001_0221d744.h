@@ -44,6 +44,9 @@ s32 WfcApScan_GetResults(WfcApScanEntry **out);
 void WfcApScan_WmCallback(u16 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sWfcApScan
+extern u8 *sWfcApScan;
+#endif
 #endif
 
 #endif

@@ -8,6 +8,7 @@ struct EffectSplPool;
 #ifdef __cplusplus
 #include "gfx/EffectSplEmitter.h"
 #include "types.h"
+#include "uptr.h"
 class EffectModel;
 class EffectModelGroup;
 class EffectSplProc;
@@ -100,6 +101,87 @@ void EffectModelGroup_Unload(EffectModelGroup *b);
 void EffectModelGroup_Start(EffectModelGroup *b, void (*a)(EffectModel *));
 #endif
 }
+#ifndef PROTO_LOCAL_sEffectSeasonTint0
+extern s16 sEffectSeasonTint0[24];
+#endif
+#ifndef PROTO_LOCAL_sEffectSeasonTint1
+extern s16 sEffectSeasonTint1[24];
+#endif
+#ifndef PROTO_LOCAL_sEffectSeasonTint2
+extern s16 sEffectSeasonTint2[24];
+#endif
+#ifndef PROTO_LOCAL_sEffectSeasonTint3
+extern s16 sEffectSeasonTint3[24];
+#endif
+#ifndef PROTO_LOCAL_sEffectSeasonTint
+extern s16 sEffectSeasonTint[24];
+#endif
+#ifndef PROTO_LOCAL_sEffectModelAnimFiles
+extern uptr sEffectModelAnimFiles[4][3];
+#endif
+#ifndef PROTO_LOCAL_gEffectSplDefaultInitCbs
+extern void (*gEffectSplDefaultInitCbs[10]) (EffectSplEmitter *);
+#endif
+#ifndef PROTO_LOCAL_sPathEfWaterColNsbca
+extern char sPathEfWaterColNsbca[];
+#endif
+#ifndef PROTO_LOCAL_sPathEfWaterColNsbma
+extern char sPathEfWaterColNsbma[];
+#endif
+#ifndef PROTO_LOCAL_sPathEfWaterColNsbmd
+extern char sPathEfWaterColNsbmd[];
+#endif
+#ifndef PROTO_LOCAL_sPathCraRibbon1Nsbmd
+extern char sPathCraRibbon1Nsbmd[];
+#endif
+#ifndef PROTO_LOCAL_sPathCraRibbon1Nsbca
+extern char sPathCraRibbon1Nsbca[];
+#endif
+#ifndef PROTO_LOCAL_sPathCraRibbon1Nsbma
+extern char sPathCraRibbon1Nsbma[];
+#endif
+#ifndef PROTO_LOCAL_sPathMpSiturenNsbma
+extern char sPathMpSiturenNsbma[];
+#endif
+#ifndef PROTO_LOCAL_sPathMpSiturenNsbva
+extern char sPathMpSiturenNsbva[];
+#endif
+#ifndef PROTO_LOCAL_sPathMpSiturenNsbmd
+extern char sPathMpSiturenNsbmd[];
+#endif
+#ifndef PROTO_LOCAL_sPathMpSiturenNsbca
+extern char sPathMpSiturenNsbca[];
+#endif
+#ifndef PROTO_LOCAL_sPathMpLoveNsbca
+extern char sPathMpLoveNsbca[];
+#endif
+#ifndef PROTO_LOCAL_sPathMpLoveNsbma
+extern char sPathMpLoveNsbma[];
+#endif
+#ifndef PROTO_LOCAL_sPathMpLoveNsbmd
+extern char sPathMpLoveNsbmd[];
+#endif
+#ifndef PROTO_LOCAL_sEffectModelFiles
+extern uptr sEffectModelFiles[4];
+#endif
+#ifndef PROTO_LOCAL_sEffectSeasonTintTables
+extern s16 *sEffectSeasonTintTables[4];
+#endif
+#ifndef PROTO_LOCAL_sEffectSplEmitPos
+extern s32 *sEffectSplEmitPos;
+#endif
+#ifndef PROTO_LOCAL_sEffectSplHeapMem
+extern void *sEffectSplHeapMem;
+#endif
+#ifndef PROTO_LOCAL_sEffectSplFrmHeap
+extern void *sEffectSplFrmHeap;
+#endif
+#ifndef PROTO_LOCAL_sEffectModelHeap
+extern void *sEffectModelHeap;
+#endif
+#ifndef PROTO_LOCAL_sEffectSplProc
+extern EffectSplProc *sEffectSplProc;
+#endif
 #endif
 
 #endif

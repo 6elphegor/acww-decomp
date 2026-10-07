@@ -10,20 +10,21 @@
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"
 #include "actor/Actor.h"
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sPersonalityPrefixes  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02105d50.h"
 #include "proto/autoload_2/unk_0210fa84.h"
 #include "proto/autoload_2/unk_02110c98.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_020029e8.h"
 #include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020d477c.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -32,19 +33,15 @@ typedef volatile u32 vu32;
 // Externs
 
 extern "C" {
-extern u16 sGfx3dClearColor;
 }
 
 extern "C" {
-extern u32 sGfx3dClearDepth;
 }
 
 extern "C" {
-extern u16 sDefaultToonTable[32];
 }
 
 extern "C" {
-extern u8 gViewMtxInv[];
 }
 
 extern "C" {
@@ -84,7 +81,6 @@ extern u32 sPersonalityVoiceTypes[];
 }
 
 extern "C" {
-extern void *gActorDefaultParent;
 }
 
 extern "C" {
@@ -230,11 +226,9 @@ void func_020030b4_dummy(void);
 
 
 
-extern Mtx43 gViewMtx;
 extern Mtx43 data_02135934_;
 
 
-extern AbAllObjGfx sAbAllObjGfx;
 
 
 

@@ -22,12 +22,10 @@
 #include "gfx/TwoLayerAnimModel.h"
 #include "item/LetterView.h"
 #include "net/CommManager.h"
-#define PROTO_LOCAL_Building_RequestState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_Translate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerData_GetMailbox  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#include "proto/main/unk_0205b7b0.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov003/unk_ov003_02204ce8.h"
@@ -55,7 +53,6 @@
 
 
 extern "C" {
-extern void *gFieldStructureHeap;
 extern void *gCommManager;
 extern u8 data_021f47e0[];
 

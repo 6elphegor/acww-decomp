@@ -14,6 +14,7 @@
 #include "net/qr2.h"
 
 #include "types64.h"
+#define PROTO_LOCAL_NNMagicData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NNProcessData  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
@@ -646,7 +647,6 @@ extern u8 sDwcMatchServerLock[];
 extern DwcMatchControl *sDwcMatch;
 extern DwcMatchSyncOption *sDwcMatchSyncOption;
 extern DwcNetChannelTable *sDwcNetChannels;
-extern MATHRandContext32 sDwcNetRandState;
 
 s32 DwcConn_GetAid(s32);
 s32 DwcConn_FindConnectionByAid(s32);

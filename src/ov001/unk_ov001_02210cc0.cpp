@@ -1,6 +1,10 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_sWfcAossDoneTimer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcAossSetupSucceeded  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcAossSetupTimer  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sWfcTransferWaitResult  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov001/unk_ov001_02207904.h"
 #include "proto/ov001/unk_ov001_02207b3c.h"
 #include "proto/ov001/unk_ov001_02208244.h"
@@ -42,7 +46,6 @@ extern u8 data_ov001_0222ae80[];
 extern volatile u8 sWfcTransferWaitResult;
 extern volatile u8 sWfcAossSetupSucceeded;
 extern volatile u16 sWfcAossSetupTimer;
-extern u32 sWfcAossSetupUiTask;
 extern volatile u8 sWfcAossDoneTimer;
 
 s32 WfcGx_ShowPlanes(s32, s32);
@@ -104,9 +107,6 @@ void WfcTransferWait_WaitFadeIn() {
 namespace F02210708 {
 
 extern "C" {
-extern u8 sWfcTransferFailedTopShown;
-extern u8 sWfcTransferConfirmError;
-extern u8 sWfcTransferConfirmAccepted;
 extern u8 sWfcTransferWaitResult;
 extern u8 data_ov001_0222ae14[];
 extern u8 data_ov001_0222ae28[];

@@ -8,8 +8,8 @@
 #include "game/CollisionCylinder.h"
 #include "gfx/Camera.h"
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_020027b4.h"
 #include "proto/main/unk_020b6b44.h"
 
 
@@ -27,10 +27,14 @@ s32 func_01ffcb0c(s32 a, s32 b);
 extern s16 data_02135f44[];
 extern s32 gCamera;
 extern s32 data_020c8cb8;
-extern Mtx43 gViewMtx;
 s32 FX_Div(s32 a, s32 b);
+void Vec_SafeNormalize(VecFx32 *v);
+void Vec_Scale(VecFx32 *v, s32 s);
 void MTX_Inverse43(Mtx43 *a, Mtx43 *b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_RotateY(VecFx32 *v, s32 angle);
+void Vec_RotateX(VecFx32 *v, s32 angle);
 s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 }
 

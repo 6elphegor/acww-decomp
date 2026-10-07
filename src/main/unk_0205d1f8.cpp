@@ -19,9 +19,7 @@ struct CharaFaceAnimWorkPool {
 };
 
 extern "C" {
-extern void *gCharaFaceAnimWorkHeap;
 extern u8 *gCommManager;
-extern CharaFaceAnimWorkPool sCharaFaceAnimWorkPool;
 
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);

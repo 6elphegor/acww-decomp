@@ -61,6 +61,9 @@ u32 PlayerOptions_GetTalkVoice();
 void PlayerOptions_SetTalkVoice(u32 v);
 #endif
 }
+#ifndef PROTO_LOCAL_sPlayerOptions
+extern PlayerOptions sPlayerOptions;
+#endif
 #endif
 
 #endif

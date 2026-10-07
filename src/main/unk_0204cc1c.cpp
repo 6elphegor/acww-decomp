@@ -28,6 +28,8 @@
 #define PROTO_LOCAL_Heap_Free  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownBclHeap_Destroy  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRoomBclHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0211a6c0.h"
 #include "proto/main/unk_02039c08.h"
@@ -176,7 +178,6 @@ public:
 
 
 
-extern OverlaySlot sOverlaySlots[];
 
 namespace Unk_0204eba0_Ns {
 extern "C" u16 *BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
@@ -253,7 +254,6 @@ u32 _ZN9HouseData13getRoomAcreIdEi(u32 *a, s32 x);
 void _ZN12MapBlockAcre9setAcreIdEj(u32 h, s32 i);
 u32 SceneId_GetHouseRoom(u32 v);
 u16 *_ZN7TownMap12getAcreItemsEP4Vec2(void *t, s32 *idx);
-extern void *gTownBclHeap;
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 FX_Div(s32 a, s32 b);

@@ -11,6 +11,11 @@
 #include "talk/EncodedString41.h"
 #define PROTO_LOCAL_StrBuf_GetBytes  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_ToEncodedBytes  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFontB  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFontC  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFontD  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gMelodyEditPattern  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -54,11 +59,9 @@ class MsgString;
 
 
 extern "C" {
-extern u8 sCommSubPostReply;
 }
 
 extern "C" {
-extern u32 sCommCountdownKinds[];
 }
 
 extern "C" {
@@ -126,11 +129,9 @@ extern GameFontDesc gFontC;
 }
 
 extern "C" {
-extern Mtx43 data_021cb69c;
 }
 
 extern "C" {
-extern Mtx43 sCpuMtxStack[];
 }
 
 extern "C" {

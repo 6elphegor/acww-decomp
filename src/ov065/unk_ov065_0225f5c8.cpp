@@ -5,6 +5,7 @@
 #include "net/SockCoreConfig.h"
 #include "net/SockCoreSocket.h"
 #define PROTO_LOCAL_OS_InitMutex  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSockDefaultSocket  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/ov065/unk_ov065_0225f5c8.h"

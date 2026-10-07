@@ -28,6 +28,8 @@
 #include "player/PlayerData.h"
 #include "player/PlayerSpNpcRecord.h"
 #define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov087_02271d80  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov087_02271d84  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02063904.h"
@@ -126,12 +128,9 @@ u32 Item_MakePaper(u32 a, u32 b);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 extern const u8 sSpNpcCornimerPrizeTable[];
-extern u8 sSpNpcCornimerModelPath[];
-extern u8 sSpNpcCornimerTexturePath[];
 extern u32 data_ov087_02271d80;
 extern u32 data_ov087_02271d84;
 extern const Unk_ov087_02271cc4_Ent sSpNpcCornimerFortuneLines[4];
-extern SpNpcCornimerActEntry sSpNpcCornimerActTable[3];
 }
 
 extern "C" char sSpNpcCornimerFortuneStrKey[];

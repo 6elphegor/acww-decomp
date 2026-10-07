@@ -5,19 +5,36 @@
 // one address (relocs.txt had them as ov147 bss + 0x2e8c).
 #include "types.h"
 #include "sys/ProcProfile.h"
+#include "proto/main/unk_02034438.h"
+#include "proto/main/unk_02038474.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_020501d4.h"
+#include "proto/main/unk_020571f4.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_02089fbc.h"
+#include "proto/main/unk_0208e6d8.h"
 #include "proto/main/unk_0208f268.h"
+#include "proto/main/unk_02095794.h"
+#include "proto/main/unk_02095b1c.h"
+#include "proto/main/unk_02096c10.h"
+#include "proto/main/unk_0209c9f8.h"
+#include "proto/main/unk_0209e394.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b4174.h"
+#include "proto/main/unk_020b45e0.h"
+#include "proto/main/unk_020b478c.h"
+#include "proto/main/unk_020b5da0.h"
+#include "proto/main/unk_020b7d10.h"
+#include "proto/main/unk_020e1e2c.h"
+#include "proto/ov004/unk_ov004_0223db88.h"
+#include "proto/ov004/unk_ov004_0223e014.h"
+#include "proto/ov004/unk_ov004_0223e9bc.h"
 
-extern ProcProfile sGameRootProfile;
-extern ProcProfile data_020e3fd4;
-extern ProcProfile sSceneBaseProfile;
-extern ProcProfile sDummyScene3Profile;
-extern ProcProfile sDummyScene4Profile;
-extern ProcProfile sFieldEntrySceneProfile;
 extern ProcProfile sFieldSceneProfile;
 extern ProcProfile sSceneLightsProfile;
-extern ProcProfile sRemotePlayerSpawnerProfile;
 extern ProcProfile sPlayerActorProfile;
-extern ProcProfile sPlayerNetSyncProfile;
 extern ProcProfile sCameraProfile;
 extern ProcProfile data_020da3c4;
 extern ProcProfile sFieldGroundProfile;
@@ -88,9 +105,6 @@ extern ProcProfile sFtrComputerProfile;
 extern ProcProfile sFtrSingingInsectProfile;
 extern ProcProfile sFtrPhoneProfile;
 extern ProcProfile sFtrNookwayProfile;
-extern ProcProfile sMuseumRoomProfile;
-extern ProcProfile sMuseumFossilRoomProfile;
-extern ProcProfile sMuseumRoomUnk53Profile;
 extern ProcProfile sSpNpcPeteProfile;
 extern ProcProfile sSpNpcReddProfile;
 extern ProcProfile sSpNpcTortimerProfile;
@@ -148,8 +162,6 @@ extern ProcProfile sSkyProcProfile;
 extern ProcProfile sFieldObjectManagerProfile;
 extern ProcProfile sRoomItemIconsProfile;
 extern ProcProfile data_020d96ec;
-extern ProcProfile data_020e1da0;
-extern ProcProfile sMenuManagerProfile;
 extern ProcProfile sMenuTabBarProfile;
 extern ProcProfile sMenuLauncherProfile;
 extern ProcProfile sPocketMenuProfile;
@@ -205,29 +217,15 @@ extern ProcProfile sFishDisplayProfile;
 extern ProcProfile sMuseumAquariumProfile;
 extern ProcProfile sFieldStructureMgrProfile;
 extern ProcProfile sFurnitureManagerProfile;
-extern ProcProfile sShopStockPlacerProfile;
-extern ProcProfile sSaveManagerProfile;
-extern ProcProfile sDummyProcC8Profile;
 extern ProcProfile sMsgUiProcProfile;
-extern ProcProfile sHudProcProfile;
-extern ProcProfile sChatBalloonProcProfile;
-extern ProcProfile sTransitionCommIconProfile;
 extern ProcProfile sDummyProcCDProfile;
-extern ProcProfile sTextSystemModuleProfile;
-extern ProcProfile sBgmProcProfile;
-extern ProcProfile sNpcSpawnerProfile;
-extern ProcProfile sHandOverItemProfile;
 extern ProcProfile data_020e1178;
 // the effect process's profile is gap data (DS layout, a 4-byte create pointer): a C copy for the host's layout
 static ProcProfile sEffectSplProcProfileHost = {(void *(*)())EffectSplProc_Create, 0xd2, 0xd5};
 #define data_020e1178 sEffectSplProcProfileHost
-extern ProcProfile sResidentSelectProfile;
 extern ProcProfile sTitleScreenProfile;
-extern ProcProfile sSaveMenuProfile;
-extern ProcProfile sEventAnnouncerProfile;
 extern ProcProfile data_020d9520;
 
-extern ProcProfile *sProfileTableMain[216];
 
 ProcProfile *sProfileTableMain[216] = {
     &sGameRootProfile, // 0x00

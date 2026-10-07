@@ -104,7 +104,6 @@ extern VecFx32 gVec3Zero;
 extern const u8 sSpNpcSableDramaMsgs[];
 extern const u8 sSpNpcSableWeekdayMsgs[];
 extern const u8 sSpNpcSableTalkMsgs[];
-extern uptr sSpNpcSableMsgFiles[];
 
 s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
 BOOL NpcActor_isNetOwner(void *self);
@@ -201,8 +200,6 @@ struct SpNpcSableActEntry {
 
 extern "C" {
 extern SpNpcSableActEntry sSpNpcSableActTable[7];
-extern u8 sSpNpcSableModelPath[];
-extern u8 sSpNpcSableTexturePath[];
 }
 
 

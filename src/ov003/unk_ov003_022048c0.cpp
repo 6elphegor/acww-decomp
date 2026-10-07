@@ -13,7 +13,6 @@
 #include "game/TouchPickSphere.h"
 #include "gfx/DebugColor.h"
 #include "game/TouchPicker.h"
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov003/unk_ov003_022048c0.h"
 
 

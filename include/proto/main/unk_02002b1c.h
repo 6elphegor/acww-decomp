@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "actor/Actor.h"
 #include "npc/VillagerId.h"
 #include "types.h"
 #endif
@@ -34,6 +35,15 @@ u32 VillagerId_IsValidSpecies(u32 id);
 s32 Math_AngleXZ(s32 *a, s32 *b);
 #endif
 }
+#ifndef PROTO_LOCAL_gActorList
+extern ActorList gActorList;
+#endif
+#ifndef PROTO_LOCAL_sActorSpawnPos
+extern void *sActorSpawnPos;
+#endif
+#ifndef PROTO_LOCAL_sActorSpawnRot
+extern void *sActorSpawnRot;
+#endif
 #endif
 
 #endif

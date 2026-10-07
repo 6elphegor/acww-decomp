@@ -2,6 +2,9 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK os_thread.c: OS_InitThread, autoload_2 0x02113b6c-0x02113cc8. ARM code, mwcc 1.2/base.
 #include "uptr.h"
+#define PROTO_LOCAL_OS_InitThread  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_OSi_IdleThreadProc  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_02113b6c.h"
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;

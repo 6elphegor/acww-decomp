@@ -26,17 +26,21 @@
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StrBuf_GameToAscii  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sDesignTabIconCell  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sDesignTabTargetFrameCells  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034048.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_02098e90.h"
 #include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov004/unk_ov004_0222a500.h"
 #include "proto/ov004/unk_ov004_02233074.h"
@@ -107,13 +111,7 @@
 
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 gTouchCurY;
-extern u8 gTouchCurX;
-extern u8 gTouchPressY;
-extern u8 gTouchPressX;
 extern u8 gU8None;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u8 gFieldSceneKind;
 extern u16 gPad[];
 extern u32 *gCurrentHeap;
@@ -152,6 +150,9 @@ s32 StrBuf_GameToAscii(void *p, void *q);
 s32 FieldAction_RequestDrop(u32 p, u32 a);
 s32 MenuScreen_UploadClothPattern(u16 *a, void *b, void *c, void *d);
 void MI_CpuCopy8(const void *a, void *b, u32 n);
+s32 Camera_IsViewPushed();
+s32 Camera_PopView();
+s32 Camera_PushView();
 s32 FieldAction_PollDrop(s32 h);
 void FieldAction_Release(s32 h);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -220,7 +221,6 @@ extern const u16 sDesignTabTargetTileY[];
 extern const u8 sDesignTabSlotY[];
 extern const u8 sDesignTabSlotX[];
 extern const u8 sDesignTabPopupChoices[][0xb];
-extern u16 sDesignItemBase[];
 extern GXOamAttr sDesignTabIconCell;
 extern u32 sDesignTabTargetFrameCells[];
 }

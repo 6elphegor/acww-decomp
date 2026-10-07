@@ -4,7 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_0209c9f8.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
 #ifdef __cplusplus
+#include "types.h"
 class GameRoot;
 #endif
 
@@ -27,6 +29,12 @@ extern "C" {
 GameRoot *GameRoot_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_gGameRoot
+extern u32 gGameRoot;
+#endif
+#ifndef PROTO_LOCAL_sGameRootProfile
+extern ProcProfile sGameRootProfile;
+#endif
 #endif
 
 #endif

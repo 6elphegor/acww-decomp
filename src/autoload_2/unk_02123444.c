@@ -1,6 +1,7 @@
 #include "nitro/fs.h"
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
+#include "proto/autoload_2/unk_02123444.h"
 #include "proto/autoload_2/unk_02123e58.h"
 #include "proto/autoload_2/unk_02124480.h"
 #include "proto/autoload_2/unk_02125c94.h"

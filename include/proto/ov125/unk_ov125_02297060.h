@@ -5,6 +5,7 @@
 
 #include "types.h"
 #ifdef __cplusplus
+#include "types.h"
 class PatternSelectMenu;
 #endif
 
@@ -27,6 +28,9 @@ extern "C" {
 PatternSelectMenu *PatternSelectMenu_Create();
 #endif
 }
+#ifndef PROTO_LOCAL_sPatternSelectIconCell
+extern u16 sPatternSelectIconCell[4];
+#endif
 #endif
 
 #endif

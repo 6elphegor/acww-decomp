@@ -8,8 +8,6 @@
 #include "gfx/CachedModel.h"
 #include "game/GroundInfo.h"
 #define PROTO_LOCAL_CharaShadow_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020abbcc.h"
 #include "proto/main/unk_020abea8.h"

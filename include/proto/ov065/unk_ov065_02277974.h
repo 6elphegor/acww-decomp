@@ -13,6 +13,12 @@ struct DwcInetControl;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_GSIACHostname
+extern char GSIACHostname[0x40];
+#endif
+#ifndef PROTO_LOCAL___GSIACGamename
+extern char __GSIACGamename[0x40];
+#endif
 #ifndef PROTO_LOCAL_DwcInet_StartConnect
 void DwcInet_StartConnect();
 #endif
@@ -31,6 +37,9 @@ u64 DwcNet_GetTimeMs();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL___GSIACResult
+extern s32 __GSIACResult;
+#endif
 #ifndef PROTO_LOCAL_DwcInet_InitEx
 void DwcInet_InitEx(DwcInetControl *p, s32 x, s32 y, u32 z);
 #endif

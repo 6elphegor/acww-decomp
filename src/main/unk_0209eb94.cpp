@@ -18,18 +18,10 @@
 #include "save/SaveData.h"
 #include "save/TownExchangeRecord.h"
 #include "ui/HudController.h"
-#define PROTO_LOCAL_AxBbsNotice_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AxBbsNotice_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AxBbsNotice_GetDigest  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AxBbsNotice_Post  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_AxMail_ApplyBbs  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_AxMail_ApplyMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AxMail_Construct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AxMail_Deliver  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AxMail_Destruct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_AxMail_DownloadBbs  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_AxMail_DownloadMail  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AxMail_GetDigest  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_AxMail_GetDigestKey  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_AxMail_PollBbs  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_AxMail_PollMail  // declared below: the shared prototype conflicts with the calls here
@@ -76,11 +68,16 @@
 #define PROTO_LOCAL_FriendEntry_GetFriendData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FriendList_GetChecksum  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FriendList_SetChecksum  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GameStart_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GameStart_IsActive  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_GameStart_IsMode3  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_GameStart_IsMode4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GameStart_IsNewResident  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_GameStart_IsNewTown  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_GameStart_SetMode3  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_GameStart_SetMode4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GameStart_SetNewResident  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_GameStart_SetNewTown  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_GameStart_SetupSave  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_GameStats_ApplyDownload  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_GameStats_Download  // declared below: the shared prototype conflicts with the calls here
@@ -93,6 +90,7 @@
 #define PROTO_LOCAL_Hud_GetCountdown  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Hud_GetWallet  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_JoinHistory_Clear  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_JoinHistory_GetLatest  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_JoinHistory_Push  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_JoinHistory_Remove  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_LetterDelivery_DeliverOutgoing  // declared below: the shared prototype conflicts with the calls here
@@ -120,6 +118,7 @@
 #define PROTO_LOCAL_Net_GameStatsUpload  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GetBrid  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GetConnectedMask  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_GetJoiningAid  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GetMemberCount  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GetMode  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_GetMyAid  // declared below: the shared prototype conflicts with the calls here
@@ -129,6 +128,7 @@
 #define PROTO_LOCAL_Net_IsSameFriendData  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_IsUploadDone  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_PollConnected  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Net_SetJoiningAid  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Net_SetLocalGameInfo  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OS_ExitThread  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_OverlayHandle_Load  // declared below: the shared prototype conflicts with the calls here
@@ -173,8 +173,28 @@
 #define PROTO_LOCAL_SaveManager_IsEndSessionSave  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SaveManager_IsGatePassed  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SaveManager_IsSessionJoined  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct01  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct02  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct03  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct05  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct06  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct12  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct13  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct14  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct15  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct16  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct17  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct18  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct19  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct1A  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct1B  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct1C  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_RequestAct1F  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SaveManager_RunSessionEnd  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SaveManager_RunSyncedSaveHost  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_SetEndSessionSave  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_SetGatePassed  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_SaveManager_SetSaveCorrupted  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SaveManager_StartGatekeeperTalk  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SaveManager_StartSequence2Talk  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Save_CheckBackupError  // declared below: the shared prototype conflicts with the calls here
@@ -204,6 +224,45 @@
 #define PROTO_LOCAL_Wifi_EndSession  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Wifi_IsInFriendList  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Wifi_StoreFriendList  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e252c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e2534  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e2554  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e2564  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e256c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e257c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e25b4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e25c4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e25dc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e25ec  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e25f4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e2764  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e2770  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021c3cb8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021ed390  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021ed398  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_021ed3a4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gOverlayHandle  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSaveManager  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gTownTransferBuf  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAxBbsBuf  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAxBbsFileName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAxBbsReceived  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAxMailBaseUrl  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAxMailBuf  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAxMailFileName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sAxMailReceived  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sEraseResidentSlot  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sGameStartMode  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sGameStatsBuf  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sGameStatsReceived  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sJoiningAid  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sNetRegion  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sRecentJoinAids  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSaveManagerRequest  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSaveManagerStates  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSessionResidentIndex  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_strcat  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_strcpy  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0209eb94.h"
@@ -1112,10 +1171,6 @@ extern const VecFx32 data_020d0770;
 extern const s32 sSaveSlotDataSizes[3];
 extern const VecFx32 data_020d0788;
 extern const u32 sSaveSlotOffsets[3];
-extern char data_020e24f0[];
-extern char data_020e277c[];
-extern char data_020e2790[];
-extern char data_020e27a4[];
 namespace NT {
 extern "C" {
 void _ZN11SaveManager10enterAct00Ev();
@@ -1184,47 +1239,6 @@ void _ZN11SaveManager10enterAct1FEv();
 void _ZN11SaveManager9execAct1FEv();
 }
 }
-extern void *data_020e273c[2];
-extern void *data_020e2734[2];
-extern void *data_020e25bc[2];
-extern void *data_020e2724[2];
-extern void *data_020e271c[2];
-extern void *data_020e25ac[2];
-extern void *data_020e2574[2];
-extern void *data_020e2704[2];
-extern void *data_020e26fc[2];
-extern void *data_020e26f4[2];
-extern void *data_020e26ec[2];
-extern void *data_020e26e4[2];
-extern void *data_020e26dc[2];
-extern void *data_020e259c[2];
-extern void *data_020e25cc[2];
-extern void *data_020e26c4[2];
-extern void *data_020e26bc[2];
-extern void *data_020e26b4[2];
-extern void *data_020e26ac[2];
-extern void *data_020e26a4[2];
-extern void *data_020e269c[2];
-extern void *data_020e2694[2];
-extern void *data_020e2654[2];
-extern void *data_020e266c[2];
-extern void *data_020e2674[2];
-extern void *data_020e2684[2];
-extern void *data_020e268c[2];
-extern void *data_020e270c[2];
-extern void *data_020e2714[2];
-extern void *data_020e2744[2];
-extern void *data_020e274c[2];
-extern void *data_020e2644[2];
-extern void *data_020e263c[2];
-extern void *data_020e2634[2];
-extern void *data_020e253c[2];
-extern void *data_020e2624[2];
-extern void *data_020e2504[2];
-extern void *data_020e250c[2];
-extern void *data_020e2514[2];
-extern void *data_020e2604[2];
-extern void *data_020e25fc[2];
 extern void *data_020e25f4[2];
 extern void *data_020e25ec[2];
 extern void *data_020e2534[2];
@@ -1235,19 +1249,6 @@ extern void *data_020e25c4[2];
 extern void *data_020e256c[2];
 extern void *data_020e25b4[2];
 extern void *data_020e257c[2];
-extern void *data_020e25a4[2];
-extern void *data_020e2584[2];
-extern void *data_020e2594[2];
-extern void *data_020e25d4[2];
-extern void *data_020e2614[2];
-extern void *data_020e261c[2];
-extern void *data_020e264c[2];
-extern void *data_020e265c[2];
-extern void *data_020e267c[2];
-extern void *data_020e26cc[2];
-extern void *data_020e272c[2];
-extern void *data_020e2754[2];
-extern void *data_020e2544[2];
 
 extern "C" SaveManager *SaveManager_Create() {
     return new SaveManager;

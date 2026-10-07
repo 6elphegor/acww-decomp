@@ -14,6 +14,9 @@ class RoomItemIcons;
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sRoomItemIcons
+extern RoomItemIcons *sRoomItemIcons;
+#endif
 #ifndef PROTO_LOCAL_RoomItemIcons_Create
 RoomItemIcons *RoomItemIcons_Create();
 #endif

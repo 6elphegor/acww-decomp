@@ -57,6 +57,9 @@ u32 Main_InitDwc(void);
 u8 Main_TakeDwcInitResult(void);
 #endif
 }
+#ifndef PROTO_LOCAL_sDwcInitResult
+extern u8 sDwcInitResult;
+#endif
 #endif
 
 #endif

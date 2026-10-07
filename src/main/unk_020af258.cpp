@@ -7,6 +7,9 @@
 #include "game/Elem2a.h"
 #include "game/Loc488.h"
 #include "game/NookShop.h"
+#define PROTO_LOCAL_data_020e2eb8  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_020e2ebc  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gLooseSnowballs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0203cbc0.h"

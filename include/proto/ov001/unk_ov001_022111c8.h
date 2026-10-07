@@ -68,6 +68,15 @@ void WfcAossSetup_Cancel();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcAossSetupSucceeded
+extern u8 sWfcAossSetupSucceeded;
+#endif
+#ifndef PROTO_LOCAL_sWfcAossSetupTimer
+extern u16 sWfcAossSetupTimer;
+#endif
+#ifndef PROTO_LOCAL_sWfcAossSetupUiTask
+extern u32 sWfcAossSetupUiTask;
+#endif
 #ifndef PROTO_LOCAL_WfcAossSetup_IsLidClosed
 BOOL WfcAossSetup_IsLidClosed();
 #endif

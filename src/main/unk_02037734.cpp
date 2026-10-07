@@ -14,7 +14,9 @@
 #include "gfx/Model.h"
 #include "net/CommManager.h"
 #define PROTO_LOCAL_Gfx2d_TilesToLinear4bpp  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gFontA  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
 #include "proto/autoload_2/unk_0212a120.h"
@@ -84,10 +86,6 @@ void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 s32 func_01ffcb0c(s32 a, s32 b);
 }
 
-extern u8 sCommCautionNumberGap[];
-extern u8 sCommCautionShowErrorCode;
-extern u32 sCommCautionErrorCode;
-extern u8 sCommCautionErrorCodeText[];
 extern Mtx43 data_021f47e0;
 extern u8 gFieldSceneKind;
 extern u8 gFontA[];
@@ -170,10 +168,6 @@ public:
     /* 0x2e4 */ u8 lineTiles[0x800];
 };
 
-extern CommCautionWindow sCommCautionWindow;
-extern CautionMsgString256 sCommCautionLagMsg;
-extern CautionMsgString64 sCommCautionSecondsMsg;
-extern CautionMsgString256 sCommCautionEndedMsg;
 
 extern "C" {
 s32 Scene_GetCurrent(void);
@@ -182,8 +176,6 @@ void Backup_CancelAndWait(void);
 s32 _s32_div_f(s32, s32);
 }
 extern void *gCommManager;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
 
 u32 sCommCautionErrorCode;

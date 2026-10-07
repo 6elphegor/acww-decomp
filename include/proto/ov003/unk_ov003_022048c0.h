@@ -21,8 +21,14 @@ void VillagerBoard_ResetTable();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sVillagerBoardCount
+extern u8 sVillagerBoardCount;
+#endif
 #ifndef PROTO_LOCAL_VillagerBoard_Create
 VillagerBoard *VillagerBoard_Create();
+#endif
+#ifndef PROTO_LOCAL_sVillagerBoards
+extern VillagerBoard *sVillagerBoards[8];
 #endif
 #ifndef PROTO_LOCAL_VillagerBoard_Get
 VillagerBoard *VillagerBoard_Get(s32 i);

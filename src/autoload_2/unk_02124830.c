@@ -1,5 +1,6 @@
 #include "proto/autoload_2/unk_02122e24.h"
 #include "proto/autoload_2/unk_02124480.h"
+#include "proto/autoload_2/unk_02124830.h"
 #include "proto/autoload_2/unk_02124c40.h"
 #include "proto/autoload_2/unk_02125c94.h"
 #include "proto/main/unk_0206d49c.h"

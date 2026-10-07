@@ -12,6 +12,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_sSockDefaultSocket
+extern void *sSockDefaultSocket;
+#endif
 #ifndef PROTO_LOCAL_SockCore_SetupStackConfig
 void SockCore_SetupStackConfig(void);
 #endif
@@ -27,6 +30,15 @@ void SockCore_OnDhcpAddressReady(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sSockCoreState
+extern u32 sSockCoreState;
+#endif
+#ifndef PROTO_LOCAL_sSockLastHostIp
+extern u32 sSockLastHostIp;
+#endif
+#ifndef PROTO_LOCAL_sSockYieldMode
+extern u32 sSockYieldMode;
+#endif
 #ifndef PROTO_LOCAL_SockCore_Startup
 s32 SockCore_Startup(SockCoreConfig *cfg);
 #endif

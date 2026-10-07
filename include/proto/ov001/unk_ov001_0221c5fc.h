@@ -65,6 +65,9 @@ void WfcUsbWait_WaitGrantedClosed();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sWfcUsbWaitResult
+extern u8 sWfcUsbWaitResult;
+#endif
 #ifndef PROTO_LOCAL_WfcUsbWait_IsLidClosed
 s32 WfcUsbWait_IsLidClosed();
 #endif

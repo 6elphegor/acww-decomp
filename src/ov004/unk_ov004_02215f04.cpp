@@ -26,10 +26,8 @@
 #include "npc/NpcTalkCtrl.h"
 #include "player/PlayerData.h"
 #define PROTO_LOCAL_BirthdayHostVillager_Get  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_02002b1c.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_0206269c.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
@@ -153,6 +151,8 @@ extern u8 gSaveData[];
 extern u8 gSaveVillagers[];
 extern Unk_0204e858_Grid *gSceneBlockMap;
 BirthdayHostVillager *BirthdayHostVillager_Get(...);
+s32 Vec_DistXZ(void *, void *);
+s32 Vec_NotEqual(void *, void *);
 s32 Math_Atan2(s32, s32);
 s32 Math_AngleDiffAbs(s32, s32);
 s32 NpcActionCtrl_getAction(void *);
@@ -164,6 +164,8 @@ s32 NpcActor_findAvoidPos(void *, void *);
 s32 NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 void NpcFootstepFx_enableFootsteps(void *);
+void Camera_FocusOnPoint(void *);
+void Camera_SetModeDefault();
 s32 VillagerMemory_RecordTalk(void *, s32, s32, s32);
 void *Villager_FindOrCreateMemory(void *, void *);
 void *PlayerData_getPlayerId(void *);
@@ -189,7 +191,6 @@ void func_02067a84(void *, void *, s32);
 s32 TalkRequest_SetTargetDone(void *);
 s32 TalkRequest_AddPlayerTalk6(void *, u32);
 extern u8 gTalkMsgIndexEnd[];
-extern u8 sBirthdayHostMsgFile[];
 void *func_020679b4(void *);
 s32 func_020aa514(void *);
 void func_02067abc(void *, void *, s32);

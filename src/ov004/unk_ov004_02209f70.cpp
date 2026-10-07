@@ -64,16 +64,10 @@
 #include "talk/ChoiceList.h"
 #define PROTO_LOCAL_Bgm_Release  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Bgm_Request  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CarpetTex_GetTex  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_CarpetTex_Load  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ClothTex_GetTex  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ClothTex_LoadItem  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrActorGrid_GetInstance  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrActor_GetDragSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrActor_MakeSpawnArg  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrActor_TestPlayerUnk  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrBed_IsDma06Is5  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrBed_IsTileFree  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrContactSet_GetInstance  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrInfo_TestIndoorFlag2  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FtrMgr_GetCycleCounter  // declared below: the shared prototype conflicts with the calls here
@@ -100,8 +94,6 @@
 #define PROTO_LOCAL_HouseRoom_ClearCurrentSong  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_HouseRoom_GetCurrentSong  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_HouseRoom_SetCurrentSong  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ItemInfo_IsReady  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Item_FromPlacedForm  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MelodyBeat_Construct  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MelodyBeat_Destruct  // declared below: the shared prototype conflicts with the calls here
@@ -149,8 +141,6 @@
 #define PROTO_LOCAL_Snd_MelodyBeatStop  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_MelodyBeatUpdate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Snd_SeEmitterPlayOneShot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_RotateY  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Wallpaper_GetTex  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/ov004/unk_ov004_02209f70.h"

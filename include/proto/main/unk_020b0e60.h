@@ -4,11 +4,12 @@
 // Prototypes of the functions defined in src/main/unk_020b0e60.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "game/NibblePair.h"
 #include "town/BuildingInfo.h"
 struct Flags1;
 #ifdef __cplusplus
 #include "types.h"
-class Obj;
+class FieldObjectShapeQuery;
 #endif
 
 #ifdef __cplusplus
@@ -194,9 +195,6 @@ BOOL Field_HasExitedBuildingKey(void);
 #ifndef PROTO_LOCAL_Field_GetExitedBuildingKey
 u32 Field_GetExitedBuildingKey(void);
 #endif
-#ifndef PROTO_LOCAL_Building_RequestState
-BOOL Building_RequestState(Obj *o, s32 v);
-#endif
 #ifndef PROTO_LOCAL_SaveVillager_IsAsleepAt
 u32 SaveVillager_IsAsleepAt(s32 v);
 #endif
@@ -248,6 +246,51 @@ u32 Building_GetLastEntranceType(void);
 }
 #ifndef PROTO_LOCAL_Math_LerpFx
 s32 Math_LerpFx(s32 t, s32 lo, s32 hi);
+#endif
+#ifndef PROTO_LOCAL_sHourHandFrame
+extern s32 sHourHandFrame;
+#endif
+#ifndef PROTO_LOCAL_sLastEntranceType
+extern u32 sLastEntranceType;
+#endif
+#ifndef PROTO_LOCAL_sStrBSizeArchive
+extern void *sStrBSizeArchive;
+#endif
+#ifndef PROTO_LOCAL_sTaxiLeaving
+extern u8 sTaxiLeaving;
+#endif
+#ifndef PROTO_LOCAL_sExitedBuildingKey
+extern u32 sExitedBuildingKey;
+#endif
+#ifndef PROTO_LOCAL_sBuildingOccupancy
+extern NibblePair sBuildingOccupancy[0x22];
+#endif
+#ifndef PROTO_LOCAL_sLampMatNameBuf
+extern char sLampMatNameBuf[12];
+#endif
+#ifndef PROTO_LOCAL_sFieldObjectShapeQuery
+extern FieldObjectShapeQuery sFieldObjectShapeQuery;
+#endif
+#ifndef PROTO_LOCAL_sBuildingStates
+extern u8 sBuildingStates[0x22];
+#endif
+#ifndef PROTO_LOCAL_sFieldStructureMgr
+extern u32 sFieldStructureMgr;
+#endif
+#ifndef PROTO_LOCAL_sHouseVisitorPresent
+extern u8 sHouseVisitorPresent;
+#endif
+#ifndef PROTO_LOCAL_sHourHandCos
+extern s32 sHourHandCos;
+#endif
+#ifndef PROTO_LOCAL_sStrBSizeTable
+extern u32 sStrBSizeTable[0x22];
+#endif
+#ifndef PROTO_LOCAL_sTaxiArriving
+extern u8 sTaxiArriving;
+#endif
+#ifndef PROTO_LOCAL_sHourHandSin
+extern s32 sHourHandSin;
 #endif
 #endif
 

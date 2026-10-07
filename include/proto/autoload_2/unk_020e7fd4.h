@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/autoload_2/unk_020e7fd4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,6 +19,21 @@ void TouchPanel_Update(void);
 #endif
 #ifdef __cplusplus
 }
+#endif
+
+#ifdef __cplusplus
+#ifndef PROTO_LOCAL_gTouchChanged
+extern u8 gTouchChanged;
+#endif
+#ifndef PROTO_LOCAL_gTouchHeld
+extern u8 gTouchHeld;
+#endif
+#ifndef PROTO_LOCAL_gTouchY
+extern u16 gTouchY;
+#endif
+#ifndef PROTO_LOCAL_gTouchX
+extern u16 gTouchX;
+#endif
 #endif
 
 #endif

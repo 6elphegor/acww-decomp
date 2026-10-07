@@ -57,6 +57,7 @@ extern Player gSndSeSystem;
 void *Snd_GetHeap(void);
 void *Snd_GetHeapLevel(void);
 void *Snd_RestoreHeapLevel(u32 a);
+BOOL SndSeSystem_Setup(Player *o, u32 a, u32 b, Bytes4 s);
 void SndSeSystem_Shutdown(Player *p, s32 v);
 void NNS_SndHeapSaveState(void *p);
 void NNS_SndHeapLoadState(void *a, u32 b);
@@ -102,8 +103,9 @@ extern "C" Bytes4 data_0213b2c4 = {0x00, 0x02, 0xff, 0x00};
 #define PROTO_LOCAL_SndMgr_SetVoiceType  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SndMgr_StartVolumeFadeIn  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_SndMgr_UpdateVolumeCurve  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
-#include "proto/autoload_2/unk_020edd58.h"
+#include "proto/autoload_2/unk_020f0fb4.h"
 #include "proto/autoload_2/unk_020f30fc.h"
 #include "proto/autoload_2/unk_0210c084.h"
 

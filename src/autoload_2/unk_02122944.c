@@ -1,6 +1,7 @@
 #include "proto/autoload_2/unk_02119020.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02122114.h"
+#include "proto/autoload_2/unk_02122944.h"
 #include "proto/main/unk_0206d49c.h"
 // mwcc-flags: -nothumb -O4,p
 // MB/WH-style peer manager module, event dispatcher MBi_CommParentCallback, autoload_2 0x02122944-0x02122e24. ARM, mwcc 1.2/base, -O4,p.

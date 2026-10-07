@@ -26,13 +26,10 @@
 #include "save/MuseumData.h"
 #include "snd/SndSeEmitter.h"
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TouchPickResult_GetTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_DistSqXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Distance  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_02000c2c.h"
 #include "proto/main/unk_020039ec.h"
@@ -41,6 +38,7 @@
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_0209c08c.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_0222c9bc.h"
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -577,8 +575,6 @@ void *__cxa_vec_cleanup(void *, s32, s32, void *);
 extern s16 data_02135f44[];
 extern u8 gRandom[];
 extern u8 data_021ed0a0[];
-extern u8 gTouchPrevChanged;
-extern u8 gTouchPrevHeld;
 extern Mtx data_021f47e0;
 extern void *gCurrentHeap;
 extern V3 sRoomHasuPos;

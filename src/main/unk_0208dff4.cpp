@@ -8,6 +8,8 @@ extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
 #include "talk/MsgString.h"
 #include "ui/LabelButton.h"
 #include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_0208de68.h"
+#include "proto/main/unk_0208dff4.h"
 #include "proto/main/unk_02094810.h"
 
 extern "C" {
@@ -50,7 +52,6 @@ extern s32 gGfxMainOnTop;
 extern u8 data_020d4694[];
 extern u8 data_020d468c[];
 extern SpriteAnimSeq data_020d5b0c[];
-extern u16 sLabelButtonColorCache[2];
 extern const u8 sLabelButtonKindTextColors[4];
 extern const u32 sLabelButtonKindLabelVram[2];
 extern const u8 sLabelButtonKindSeqOffsets[4];
@@ -61,7 +62,6 @@ extern const s32 sLabelButtonStatePlayOnce[4];
 
 
 
-extern HudUnkIcon sHudUnkIcon;
 
 
 void LabelButton::enableObjWindow() { objWindow = 1; }
@@ -182,7 +182,6 @@ extern const s32 sLabelButtonStateSeqIds[4];
 extern const u32 sLabelButtonKindLabelVram[2];
 extern const u8 sLabelButtonKindTextColors[4];
 extern const u8 sLabelButtonKindSeqOffsets[4];
-extern u16 sLabelButtonColorCache[2];
 
 const s32 sLabelButtonStatePlayOnce[4] = {1, 1, 1, 1};
 

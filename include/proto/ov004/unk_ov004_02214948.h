@@ -11,6 +11,19 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov004_0224befc
+extern void *data_ov004_0224befc[2];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sBirthdayHostVillager
+extern BirthdayHostVillager *sBirthdayHostVillager;
+#endif
 #ifndef PROTO_LOCAL_BirthdayHostVillager_Create
 BirthdayHostVillager *BirthdayHostVillager_Create();
 #endif
@@ -22,6 +35,9 @@ BOOL BirthdayHostVillager_HasReceivedGift();
 #endif
 #ifndef PROTO_LOCAL_BirthdayHost_GiftFilter
 BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag);
+#endif
+#ifndef PROTO_LOCAL_sBirthdayHostMsgFile
+extern u8 sBirthdayHostMsgFile[0x28];
 #endif
 #ifndef PROTO_LOCAL_BirthdayHost_PickReturnGift
 u16 BirthdayHost_PickReturnGift(s32 n);

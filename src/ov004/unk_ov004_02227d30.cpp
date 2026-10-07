@@ -13,6 +13,7 @@
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
 #include "gfx/TwoLayerAnimModel.h"
+#define PROTO_LOCAL_gBgHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/ov004/unk_ov004_02227d30.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).

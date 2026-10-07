@@ -22,7 +22,6 @@
 #include "proto/ov001/unk_ov001_0221b44c.h"
 #include "proto/ov001/unk_ov001_0221b8f4.h"
 #include "proto/ov001/unk_ov001_0221cd74.h"
-#include "proto/ov001/unk_ov001_0221dcec.h"
 #include "proto/ov001/unk_ov001_0221e930.h"
 #include "proto/ov001/unk_ov001_0221eb38.h"
 #include "proto/ov001/unk_ov001_0221feac.h"
@@ -57,11 +56,6 @@ extern "C" const s8 data_ov001_0222a1f0[];
 
 
 extern "C" {
-extern u8 sWfcSetupMethodChosen;
-extern u8 sWfcConnTestSucceeded;
-extern s8 sWfcSetupMethodCursor;
-extern s8 sWfcSetupMethodColumn;
-extern void *sWfcSetupMethodPalette;
 
 extern s32 WfcInput_IsTouchPressedIn(void *);
 extern s32 WfcInput_IsKeyPressed(s32);
@@ -71,6 +65,7 @@ extern void WfcUtil_LoadFileTo(void *, void *);
 extern void GX_LoadBG2Char();
 extern void GX_LoadBGPltt();
 extern void GX_LoadBG2Scr();
+extern u8 *WfcConfig_GetEdit();
 extern u8 *WfcConfig_Get();
 extern void WfcHeap_Free(s32);
 extern void WfcHeap_Alloc(s32, s32);
@@ -231,13 +226,11 @@ namespace F0221a40c {
 
 
 extern "C" {
-extern s8 sWfcSetupMethodCursor;
-extern s8 sWfcSetupMethodColumn;
-extern u8 sWfcSetupMethodChosen;
-extern void *sWfcSetupMethodPalette;
-extern u8 data_ov001_0222b2d0[];
 extern const s8 sWfcSetupMethodNav[];
 
+u8 *WfcConfig_GetEdit();
+u32 WfcConfig_GetSlotStatus(u32);
+void WfcConfig_BeginEdit(s32);
 s32 WfcInput_IsTouchPressedIn(void *);
 s32 WfcInput_IsKeyPressed(s32);
 s32 WfcInput_IsKeyRepeat(s32);

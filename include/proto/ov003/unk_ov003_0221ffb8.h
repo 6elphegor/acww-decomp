@@ -8,10 +8,150 @@
 #include "field/FishShadow.h"
 #include "gfx/VecFx32.h"
 #include "types.h"
+class BottleThrowStateOwner;
+class FishFinModel;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02257a7c
+extern void *data_ov003_02257a7c;
+#endif
+#ifndef PROTO_LOCAL_sFishShadowAnimPath
+extern char *sFishShadowAnimPath;
+#endif
+#ifndef PROTO_LOCAL_sFishFinTexAnimPath
+extern char *sFishFinTexAnimPath;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234820
+extern void *data_ov003_02234820[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347b0
+extern void *data_ov003_022347b0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234830
+extern void *data_ov003_02234830[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234838
+extern void *data_ov003_02234838[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234898
+extern void *data_ov003_02234898[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022348a0
+extern void *data_ov003_022348a0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022348a8
+extern void *data_ov003_022348a8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347a0
+extern void *data_ov003_022347a0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234888
+extern void *data_ov003_02234888[2];
+#endif
+#ifndef PROTO_LOCAL_sFishShadowAnimPathStr
+extern char sFishShadowAnimPathStr[];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234870
+extern void *data_ov003_02234870[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347c8
+extern void *data_ov003_022347c8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234858
+extern void *data_ov003_02234858[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234850
+extern void *data_ov003_02234850[2];
+#endif
+#ifndef PROTO_LOCAL_sFishFinAnimPathStr
+extern char sFishFinAnimPathStr[];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234798
+extern void *data_ov003_02234798[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347b8
+extern void *data_ov003_022347b8[2];
+#endif
+#ifndef PROTO_LOCAL_sFishShadowModelPathStr
+extern char sFishShadowModelPathStr[];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234790
+extern void *data_ov003_02234790[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234800
+extern void *data_ov003_02234800[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347f8
+extern void *data_ov003_022347f8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234890
+extern void *data_ov003_02234890[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347e8
+extern void *data_ov003_022347e8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347e0
+extern void *data_ov003_022347e0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347d8
+extern void *data_ov003_022347d8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347d0
+extern void *data_ov003_022347d0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234880
+extern void *data_ov003_02234880[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234808
+extern void *data_ov003_02234808[2];
+#endif
+#ifndef PROTO_LOCAL_sFishFinAnimPath
+extern char *sFishFinAnimPath;
+#endif
+#ifndef PROTO_LOCAL_sFishFinTexAnimPathStr
+extern char sFishFinTexAnimPathStr[];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234828
+extern void *data_ov003_02234828[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347a8
+extern void *data_ov003_022347a8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347c0
+extern void *data_ov003_022347c0[2];
+#endif
+#ifndef PROTO_LOCAL_sFishShadowModelPath
+extern char *sFishShadowModelPath;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022347f0
+extern void *data_ov003_022347f0[2];
+#endif
+#ifndef PROTO_LOCAL_sFishFinModelPathStr
+extern char sFishFinModelPathStr[];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234818
+extern void *data_ov003_02234818[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234848
+extern void *data_ov003_02234848[2];
+#endif
+#ifndef PROTO_LOCAL_sFishFinModelPath
+extern char *sFishFinModelPath;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234878
+extern void *data_ov003_02234878[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234840
+extern void *data_ov003_02234840[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234810
+extern void *data_ov003_02234810[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02234868
+extern void *data_ov003_02234868[2];
 #endif
 #ifndef PROTO_LOCAL_FieldFishManager_Create
 void *FieldFishManager_Create();
@@ -55,6 +195,36 @@ void FishShadow_EnterSwim(void);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sFishShadows
+extern FishShadow sFishShadows[6];
+#endif
+#ifndef PROTO_LOCAL_sFishFinModel
+extern FishFinModel sFishFinModel;
+#endif
+#ifndef PROTO_LOCAL_sBottleThrowStateOwner
+extern BottleThrowStateOwner sBottleThrowStateOwner;
+#endif
+#ifndef PROTO_LOCAL_sBottleDriftSpeed
+extern s32 sBottleDriftSpeed;
+#endif
+#ifndef PROTO_LOCAL_sBottleSinkStep
+extern s32 sBottleSinkStep;
+#endif
+#ifndef PROTO_LOCAL_sFishSightGoldenRod
+extern u16 sFishSightGoldenRod[10];
+#endif
+#ifndef PROTO_LOCAL_sFishCastSplashTimer
+extern u16 sFishCastSplashTimer;
+#endif
+#ifndef PROTO_LOCAL_sFishPullJitter
+extern s32 sFishPullJitter;
+#endif
+#ifndef PROTO_LOCAL_sFishSightFishingRod
+extern u16 sFishSightFishingRod[10];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022348b0
+extern u8 data_ov003_022348b0[16];
+#endif
 #ifndef PROTO_LOCAL_BottleThrow_IsActive
 BOOL BottleThrow_IsActive(s32 i);
 #endif

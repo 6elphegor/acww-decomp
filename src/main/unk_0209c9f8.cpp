@@ -1,12 +1,12 @@
 #include "types.h"
 #include "sys/ProcProfile.h"
 #include "Unk_020d8c7c.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0202e840.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_02038474.h"
 #include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02052b50.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02070560.h"
 #include "proto/main/unk_020720f8.h"
 #include "proto/main/unk_02082d74.h"
@@ -23,10 +23,12 @@ u32 gGameRoot;
 
 extern "C" {
 void AcreAttr_Unload();
+void ItemInfo_Exit();
 void FgData_Unload(u32);
 void TownBlockMap_Destroy(u32);
 void HouseRoomMaps_Destroy(u32);
 void AcreAttr_Load();
+void ItemInfo_Init();
 void FgData_Load(u32);
 void TownBlockMap_Create(u32);
 void HouseRoomMaps_Create(u32);

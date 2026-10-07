@@ -11,6 +11,82 @@ class SpNpcRedd;
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sSpNpcReddKey
+extern char sSpNpcReddKey[];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a788
+extern void *data_ov052_0225a788[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a768
+extern void *data_ov052_0225a768[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a808
+extern void *data_ov052_0225a808[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a800
+extern void *data_ov052_0225a800[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7f8
+extern void *data_ov052_0225a7f8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7f0
+extern void *data_ov052_0225a7f0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7e8
+extern void *data_ov052_0225a7e8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7e0
+extern void *data_ov052_0225a7e0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7d8
+extern void *data_ov052_0225a7d8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7d0
+extern void *data_ov052_0225a7d0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7b8
+extern void *data_ov052_0225a7b8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7c0
+extern void *data_ov052_0225a7c0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7c8
+extern void *data_ov052_0225a7c8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7b0
+extern void *data_ov052_0225a7b0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7a8
+extern void *data_ov052_0225a7a8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a7a0
+extern void *data_ov052_0225a7a0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a798
+extern void *data_ov052_0225a798[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a790
+extern void *data_ov052_0225a790[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a760
+extern void *data_ov052_0225a760[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a780
+extern void *data_ov052_0225a780[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a778
+extern void *data_ov052_0225a778[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov052_0225a770
+extern void *data_ov052_0225a770[2];
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #ifndef PROTO_LOCAL_SpNpcRedd_Create
 SpNpcRedd *SpNpcRedd_Create();
 #endif
@@ -22,6 +98,12 @@ s32 SpNpcRedd_PickUnusedFlag(void *self, u8 *buf, s32 n);
 #endif
 #ifndef PROTO_LOCAL_SpNpcRedd_IsSoldOut
 BOOL SpNpcRedd_IsSoldOut(void *self);
+#endif
+#ifndef PROTO_LOCAL_sSpNpcReddModelPath
+extern u8 sSpNpcReddModelPath[];
+#endif
+#ifndef PROTO_LOCAL_sSpNpcReddTexturePath
+extern u8 sSpNpcReddTexturePath[];
 #endif
 }
 #endif

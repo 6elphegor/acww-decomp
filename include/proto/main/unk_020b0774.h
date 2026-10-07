@@ -48,6 +48,27 @@ void StarTwinkle_Init(u8 *self, s32 arg);
 u8 *Constellation_GetLineCells(s32 n);
 #endif
 }
+#ifndef PROTO_LOCAL_sConstellationLineCells
+extern u16 sConstellationLineCells[0x718];
+#endif
+#ifndef PROTO_LOCAL_sStarPalPathA
+extern char sStarPalPathA[0x14];
+#endif
+#ifndef PROTO_LOCAL_sStarPalPathB1
+extern char sStarPalPathB1[0x14];
+#endif
+#ifndef PROTO_LOCAL_sStarPalPathB3
+extern char sStarPalPathB3[0x14];
+#endif
+#ifndef PROTO_LOCAL_sStarPalPathB2
+extern char sStarPalPathB2[0x14];
+#endif
+#ifndef PROTO_LOCAL_sStarTwinklePalettePaths
+extern char *sStarTwinklePalettePaths[5];
+#endif
+#ifndef PROTO_LOCAL_sStarPalPathB4
+extern char sStarPalPathB4[0x14];
+#endif
 #endif
 
 #endif

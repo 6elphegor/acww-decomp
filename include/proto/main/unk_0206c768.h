@@ -40,6 +40,15 @@ BOOL MailCheck_MatchWord(u8 *p, s32 n);
 BOOL MailCheck_MatchWordAt(u8 *p, s32 n, s32 off);
 #endif
 }
+#ifndef PROTO_LOCAL_sMailCheckWords
+extern u8 sMailCheckWords[0x8fc];
+#endif
+#ifndef PROTO_LOCAL_sMailCheckWordEnds
+extern s16 sMailCheckWordEnds[0x1a];
+#endif
+#ifndef PROTO_LOCAL_sMailCheckWordUses
+extern u8 sMailCheckWordUses[0xc0];
+#endif
 #endif
 
 #endif

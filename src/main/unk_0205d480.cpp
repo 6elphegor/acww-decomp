@@ -17,7 +17,6 @@ void Heap_adjust(void *p);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *p);
 void *NNS_G3dGetTex(void *h);
-extern void *gPlayerGlassesModelHeap;
 extern u8 *gCommManager;
 }
 
@@ -55,7 +54,6 @@ public:
 extern "C" {
 extern const u8 sPlayerGlassesFlowerModelIds[0xc];
 extern const u8 sPlayerGlassesAccessoryModelIds[0x40];
-extern char sPlayerGlassesModelPathBuf[0x14];
 
 }
 

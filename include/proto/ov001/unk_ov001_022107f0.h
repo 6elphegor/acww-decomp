@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_022107f0.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,6 +48,17 @@ void WfcTransferConfirm_Exit();
 void WfcTransferConfirm_OnTransferError();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcTransferConfirmAccepted
+extern u8 sWfcTransferConfirmAccepted;
+#endif
+#ifndef PROTO_LOCAL_sWfcTransferConfirmError
+extern u8 sWfcTransferConfirmError;
+#endif
 }
 #endif
 

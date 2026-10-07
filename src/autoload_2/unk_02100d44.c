@@ -1,3 +1,4 @@
+#include "proto/autoload_2/unk_02100d44.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_0210169c.h"
 #include "proto/autoload_2/unk_02119020.h"
@@ -150,8 +151,6 @@ extern GfdMan data_0213bc3c[5];   // the regions by kind (0x0213bc3c-0x0213bcb4)
 extern GfdMan *data_0213bc20[];     // 2 entries: 4x4 compressed textures
 extern GfdMan *data_0213bc28[];     // 5 entries: normal textures
 extern u16 data_021f5cb0;
-extern s32 (*data_0213bc10)();
-extern s32 (*data_0213bc14)();
 
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);

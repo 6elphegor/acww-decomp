@@ -9,10 +9,14 @@
 #include "field/Insect.h"
 #include "gfx/VecFx32.h"
 #include "types.h"
+class FxVec3NoCtor;
 #endif
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_sInsectBehaviors
+extern void *sInsectBehaviors[120];
 #endif
 #ifndef PROTO_LOCAL_InsectManager_Create
 void *InsectManager_Create();
@@ -41,6 +45,54 @@ void FieldInsect_PurgeStale();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sFieldInsects
+extern Insect sFieldInsects[8];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02258f10
+extern u16 data_ov003_02258f10;
+#endif
+#ifndef PROTO_LOCAL_sWateringActive
+extern u8 sWateringActive;
+#endif
+#ifndef PROTO_LOCAL_sInsectSpawnMaskDry
+extern u8 sInsectSpawnMaskDry[0x200];
+#endif
+#ifndef PROTO_LOCAL_sSpecialInsects
+extern Insect sSpecialInsects[2];
+#endif
+#ifndef PROTO_LOCAL_sTrashFlySpawnEnabled
+extern s8 sTrashFlySpawnEnabled;
+#endif
+#ifndef PROTO_LOCAL_sAntSpawnEnabled
+extern u8 sAntSpawnEnabled;
+#endif
+#ifndef PROTO_LOCAL_sHeldInsects
+extern Insect sHeldInsects[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02258f08
+extern u8 data_ov003_02258f08;
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02258f04
+extern u8 data_ov003_02258f04;
+#endif
+#ifndef PROTO_LOCAL_sInsectSpawnTimer
+extern u8 sInsectSpawnTimer;
+#endif
+#ifndef PROTO_LOCAL_sInsectSpawnMaskLand
+extern u8 sInsectSpawnMaskLand[0x200];
+#endif
+#ifndef PROTO_LOCAL_sInsectModelParams
+extern u16 sInsectModelParams[180];
+#endif
+#ifndef PROTO_LOCAL_sFieldInsectPurgeTimer
+extern u16 sFieldInsectPurgeTimer;
+#endif
+#ifndef PROTO_LOCAL_sInsectCatchResult
+extern u8 sInsectCatchResult;
+#endif
+#ifndef PROTO_LOCAL_sWateringPos
+extern FxVec3NoCtor sWateringPos;
+#endif
 #ifndef PROTO_LOCAL_Insect_IsOverWater
 BOOL Insect_IsOverWater(s32 v);
 #endif

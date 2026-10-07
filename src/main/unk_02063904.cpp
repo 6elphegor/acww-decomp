@@ -3,6 +3,9 @@
 
 #include "ds_stdarg.h"
 #include "gfx/G3dResAccess.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRootHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_021127c0.h"
 #include "proto/autoload_2/unk_02119434.h"
@@ -206,9 +209,6 @@ struct FileBlockCache {
     u8 out[0x1000];
 };
 
-extern FileBlockCache sFileBlockCache;
-extern u16 sFileBlockCacheFileId;
-extern u8 sFileBlockCacheIndex;
 
 extern "C" {
 enum FileBlockType { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_TF0 = 0xf0 };

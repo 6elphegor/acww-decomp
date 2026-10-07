@@ -16,6 +16,7 @@
 #define PROTO_LOCAL_MailText_SetSlotMonth  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_GetDayOrdinal  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_GetMonthName  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gMailTextBuilder  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02063904.h"
@@ -40,16 +41,6 @@ void String_GetDayOrdinal(void *, s32);
 void String_GetMonthName(void *, s32);
 }
 
-extern char data_020d9434[];
-extern char data_020d9438[];
-extern char data_020d943c[];
-extern char data_020d9440[];
-extern char data_020d9448[];
-extern char data_020d9450[];
-extern char data_020d9458[];
-extern char data_020d9478[];
-extern char data_020d9488[];
-extern char data_020d949c[];
 extern "C" {
 void _ZN16MailTextExpander10insertSlotEv();
 void _ZN16MailTextExpander16handleGrammarTagEv();
@@ -76,9 +67,6 @@ public:
 
 class MailTextExpander;
 typedef void (MailTextExpander::*Unk_020d94e8_Fn)();
-extern void *data_020d9460[2];
-extern void *data_020d9468[2];
-extern void *data_020d9470[2];
 
 // Script interpreter (vtable 0x020d94e8): expands a mail message into gMailTextBuilder.output
 class MailTextExpander : public MsgWalker {
@@ -481,20 +469,7 @@ u32 *MailMsgRequest::getNamePosOut() { return namePosOut; }
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern const uptr sMailPartDirs[8];
-extern char data_020d943c[];
 extern const uptr sMailFolderDirs[3];
-extern char data_020d9440[];
-extern char data_020d9448[];
-extern char data_020d9450[];
-extern char data_020d9458[];
-extern void *data_020d9460[2];
-extern void *data_020d9468[2];
-extern void *data_020d9470[2];
-extern char data_020d9438[];
-extern char data_020d9478[];
-extern char data_020d9488[];
-extern char data_020d949c[];
-extern char data_020d9434[];
 extern MailTextBuilder gMailTextBuilder;
 
 const uptr sMailPartDirs[8] = {0, (uptr)data_020d9450, (uptr)data_020d943c, (uptr)data_020d9434, (uptr)data_020d9458, (uptr)data_020d9448, (uptr)data_020d9440, (uptr)data_020d9438};

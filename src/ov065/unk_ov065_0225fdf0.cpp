@@ -10,6 +10,7 @@
 #include "net/SockStartupConfig.h"
 #include "net/SockCoreConfig.h"
 #define PROTO_LOCAL_OS_WakeupThread  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sSockDefaultSocket  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02113088.h"
 #include "proto/autoload_2/unk_02114410.h"
 #include "proto/autoload_2/unk_0212703c.h"
@@ -546,8 +547,6 @@ extern File *sSockClosedList;
 extern File *sSockOpenList;
 extern File *sSockDefaultSocket;
 extern Alloc *sSockCoreConfig;
-extern u32 sSockLastHostIp;
-extern u32 sSockCoreState;
 extern u32 gOwnIp;
 extern u32 sIpStackParams[];
 extern u32 sDnsServers[2];

@@ -10,19 +10,17 @@
 #define PROTO_LOCAL_ConstellationStore_ClearUsed  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ConstellationStore_IsUsed  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_ConstellationStore_SetUsed  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_AddReceived  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_CopyName  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_CountFreeSlots  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_Erase  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_FindFreeSlot  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_GetName  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_GetNewStatus  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_GetRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_GetRecordAlt  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_ImportExchanged  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Constellation_PrepareExchange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Constellation_Store  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_StarSky_IsConstellationFree  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sConstellationLineCells  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_sStarTwinklePalettePaths  // declared below: the shared prototype conflicts with the calls here
 #include "proto/itcm/unk_01ffa4a0.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_0204eeb4.h"
@@ -84,6 +82,7 @@ u64 func_02132ef8(u64 a, u64 b);
 
 // this file
 void Constellation_Store(Entry *e, s32 idx, s32 flag);
+void Constellation_SetLinesPalette(u16 *p, Entry *e, s32 r);
 BOOL Constellation_AddReceived(Entry *e);
 Base *Constellation_GetData(void);
 Entry *Constellation_GetRecordAlt(s32 i);

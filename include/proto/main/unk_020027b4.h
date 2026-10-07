@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/main/unk_020027b4.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "gfx/Mtx43.h"
 #ifdef __cplusplus
 #include "types.h"
 #endif
@@ -42,6 +43,18 @@ void Gfx3d_SetClearColor(u16 v);
 BOOL Gfx2d_IsMainScreenLayer(u32 x);
 #endif
 }
+#ifndef PROTO_LOCAL_sGfx3dClearColor
+extern u16 sGfx3dClearColor;
+#endif
+#ifndef PROTO_LOCAL_sGfx3dClearDepth
+extern u32 sGfx3dClearDepth;
+#endif
+#ifndef PROTO_LOCAL_gViewMtxInv
+extern u8 gViewMtxInv[0x30];
+#endif
+#ifndef PROTO_LOCAL_gViewMtx
+extern Mtx43 gViewMtx;
+#endif
 #endif
 
 #endif

@@ -8,11 +8,12 @@
 #include "proto/main/unk_020411dc.h"
 #include "proto/main/unk_020536dc.h"
 #include "proto/main/unk_02087e70.h"
-#include "proto/main/unk_020b8340.h"
 
 extern "C" {
 extern volatile u32 gGfxMainOnTop;
 void GX_SetBankForLCDC(s32);
+void VramQueue2d_Init();
+void VramQueueTex_Init();
 void GX_DisableBankForLCDC();
 void MIi_CpuClearFast(u32, void *, u32);
 }

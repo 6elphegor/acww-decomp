@@ -3,6 +3,10 @@
 #include "sys/OSThread.h"
 #include "sys/QNode.h"
 #include "nitro/io_access.h"
+#define PROTO_LOCAL_gBuildTime  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gProcHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gRootHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_0210f154.h"
 #include "proto/autoload_2/unk_0210fa84.h"
@@ -15,6 +19,7 @@
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_0206d49c.h"
 #include "proto/main/unk_020b7f7c.h"
+#include "proto/main/unk_020e0408.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -26,35 +31,27 @@ typedef volatile u32 vu32;
 
 
 extern "C" {
-extern u8 sCrashScreenState;
 }
 
 extern "C" {
-extern u32 sCrashPrevKeys;
 }
 
 extern "C" {
-extern u32 sCrashPC;
 }
 
 extern "C" {
-extern u32 sCrashScreenMain;
 }
 
 extern "C" {
-extern u32 sCrashTimeMs;
 }
 
 extern "C" {
-extern u32 sCrashSP;
 }
 
 extern "C" {
-extern u32 sCrashScreenSub;
 }
 
 extern "C" {
-extern u32 *sCrashContext;
 }
 
 extern "C" {
@@ -62,11 +59,9 @@ extern const char *sPanicMessage;
 }
 
 extern "C" {
-extern u32 sPanicLine;
 }
 
 extern "C" {
-extern u32 sPanicFile;
 }
 
 extern "C" {
@@ -116,7 +111,6 @@ extern char sCrashFmtTimeMs[], sCrashFmtLoopProc[], sCrashFmtProfStep[], sCrashF
 }
 
 extern "C" {
-extern u16 sCrashFontChars[], sCrashFontPalette[];
 }
 
 extern "C" {

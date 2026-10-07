@@ -30,6 +30,43 @@
 #include "item/LetterView.h"
 #include "player/PlayerData.h"
 #include "save/SaveData.h"
+#define PROTO_LOCAL_FS_InitFile  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_ItemPick_One  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Letter_ComposeFromMail  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_TownId_CopyTo  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Weather_UpdateDaily  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/autoload_2/unk_02133d04.h"
+#include "proto/itcm/unk_01ffcc60.h"
+#include "proto/main/unk_02000c2c.h"
+#include "proto/main/unk_0200137c.h"
+#include "proto/main/unk_020027b4.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02063f3c.h"
+#include "proto/main/unk_0206e54c.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_020943dc.h"
+#include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095cdc.h"
+#include "proto/main/unk_02097444.h"
+#include "proto/main/unk_0209eb94.h"
+#include "proto/main/unk_020afeb4.h"
+#include "proto/main/unk_020b0774.h"
+#include "proto/main/unk_020b0e60.h"
+#include "proto/main/unk_020b7190.h"
+#include "proto/main/unk_020b8d9c.h"
+#include "proto/main/unk_020c00c0.h"
+#include "proto/ov003/unk_ov003_02204ce8.h"
+#include "proto/ov003/unk_ov003_022192b4.h"
 
 // ======== class types (global scope) ========
 class SkyProc;
@@ -956,10 +993,8 @@ extern "C" {
 void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *c);
 }
 extern "C" {
-Actor *PlayerActor_GetActor(s32 n);
 }
 extern "C" {
-u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
 Mtx43 *Camera_GetViewMatrix(void);
@@ -982,7 +1017,6 @@ extern "C" {
 s32 __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*dtor)(void *));
 }
 extern "C" {
-void _ZN6FxVec3D1Ev(void *p);
 }
 extern "C" {
 void _ZN14SkyShotRequestD1Ev(void *p);
@@ -1015,10 +1049,8 @@ extern "C" {
 s32 Scene_GetCurrent(void);
 }
 extern "C" {
-BOOL GameStart_IsActive(void);
 }
 extern "C" {
-s32 PlayerData_GetCurrent(void);
 }
 extern "C" {
 BOOL _ZN10PlayerData8testFlagEj(s32 a, s32 b);
@@ -1048,10 +1080,8 @@ extern "C" {
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
 }
 extern "C" {
-void *TownSessionState_Get(void);
 }
 extern "C" {
-void TownSessionState_GetKatieState(void);
 }
 extern "C" {
 void _ZN15KatieVisitState12setFollowingEv(void);
@@ -1093,22 +1123,17 @@ extern "C" {
 void func_020c11b8(void *p, s32 n);
 }
 extern "C" {
-s32 Net_GetJoiningAid(void);
 }
 extern "C" {
-s32 PlayerData_GetBySessionSlot(s32 a);
 }
 extern "C" {
-BOOL PlayerActor_SetNetFollowPaused(s32 a, s32 b);
 }
 extern "C" {
-void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 }
 extern "C" {
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 }
 extern "C" {
-BOOL PlayerActor_IsScriptedWalking(s32 a);
 }
 extern "C" {
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
@@ -1129,7 +1154,6 @@ extern "C" {
 void Camera_SetMode19(void);
 }
 extern "C" {
-s32 NpcRegistry_FindSpNpc(s32 a);
 }
 extern "C" {
 void _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(void *p, s32 a);
@@ -1141,19 +1165,15 @@ extern "C" {
 s32 _ZN11NpcTalkCtrl6isBusyEv(void *p);
 }
 extern "C" {
-s32 Math_AngleXZ(void *a, void *b);
 }
 extern "C" {
-void PlayerActor_RequestTurnTo(s32 a, s32 b);
 }
 extern "C" {
 void _Z13func_020c22e0v(void);
 }
 extern "C" {
-BOOL SaveManager_IsSessionJoined(void);
 }
 extern "C" {
-void FieldInfoBalloon_ShowPleaseWait(void);
 }
 extern "C" {
 BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
@@ -1206,10 +1226,8 @@ extern "C" {
 extern s32 gCamera;
 }
 extern "C" {
-extern u8 sWeatherPrevDayRain;
 }
 extern "C" {
-extern s32 sWeatherRolledAtLoad;
 }
 extern "C" {
 extern SpNpcKatie *sSpNpcKatieInstance;
@@ -1399,7 +1417,6 @@ extern "C" {
 void _ZN15SkyShotSequence9setTargetEiiih(void *, s32, s32, s32, s32);
 }
 extern "C" {
-s32 Random_GlobalBelow(s32);
 }
 extern "C" {
 void SkySprite_BeginCrossing(void *, s32, s32);
@@ -1449,7 +1466,6 @@ extern "C" {
 BOOL SkySprite_FollowShootingStar(SkySprite *);
 }
 extern "C" {
-void *PlayerActor_GetActor(s32);
 }
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } gSkySprites; } }
 #define data_021f3010 (*(decltype(&n12::L_021f3010::gSkySprites.v))((u8 *)&::n00::gSkySprites.gfxSlots[0].gfxId + 0))  // (the member: it moves on 64-bit hosts)
@@ -1929,7 +1945,6 @@ extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-s32 Random_GlobalBelow(s32 n);
 }
 extern "C" {
 }
@@ -1966,13 +1981,10 @@ extern "C" {
 void EventWeekSlots_MarkTodaySeen(s32 a);
 }
 extern "C" {
-s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
-s32 PlayerActor_GetBodyPos(s32 slot);
 }
 extern "C" {
-void Town_PlaceGulliverShip(s32 a, BOOL b);
 }
 extern "C" {
 }
@@ -2481,10 +2493,8 @@ extern "C" {
 void Vec_Scale(VecFx32 *v, s32 a);
 }
 extern "C" {
-u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
-s32 Random_GlobalBelow2(s32 n);
 }
 extern "C" {
 }
@@ -2501,7 +2511,6 @@ extern "C" {
 VecFx32 Sky_ProjectToScreenX(VecFx32 *v);
 }
 extern "C" {
-s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
 s32 _ZN10SkySprites5spawnEiiP7VecFx32i(void *a, u32 b, u32 c, void *d, u32 e);
@@ -3713,10 +3722,8 @@ extern "C" {
 void Math_StepAngle(s16* p, s32 target, s32 step);
 }
 extern "C" {
-void PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
 }
 extern "C" {
-void* PlayerActor_GetBodyPos(s32 a);
 }
 extern "C" {
 void Sky_ProjectToScreenX(s32* out, void* p);
@@ -3725,16 +3732,13 @@ extern "C" {
 s32 FX_Div(s32 a, s32 b);
 }
 extern "C" {
-void *TownSessionState_Get();
 }
 extern "C" {
-void *TownSessionState_GetPeteFall(void *p);
 }
 extern "C" {
 void _ZN13PeteFallState11pickFallPosEii(void *a, void* p, u8 b);
 }
 extern "C" {
-void PlayerActor_LocalEndWatch();
 }
 extern "C" {
 void Camera_RestorePrevMode();
@@ -3746,7 +3750,6 @@ extern "C" {
 void SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c);
 }
 extern "C" {
-void* PlayerData_GetResident(void* a, s32 i);
 }
 extern "C" {
 }
@@ -3756,19 +3759,14 @@ extern "C" {
 void _ZN20PlayerDailyTalkFlags5clearEj(void* p, s32 a);
 }
 extern "C" {
-void GulliverQuest_Clear(void* p);
 }
 extern "C" {
-void EventAnnounce_Request(s32 a, s32 b, s32 c);
 }
 extern "C" {
-s32 FieldItemFx_StartBalloonDrop(s32 a, s32 b);
 }
 extern "C" {
-void PlayerActor_SetWatchMode(s32 a, s32 b);
 }
 extern "C" {
-void* PlayerData_GetCurrent();
 }
 extern "C" {
 u32 _ZN10PlayerData14getSkyShotHitsEv(void* p);
@@ -3776,10 +3774,8 @@ u32 _ZN10PlayerData14getSkyShotHitsEv(void* p);
 extern "C" {
 }
 extern "C" {
-s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
-s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
 BOOL SkyShot_HasMaxHits();
@@ -4416,7 +4412,6 @@ extern "C" {
 void SceneLights_StartFlash(s32 a);
 }
 extern "C" {
-s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
 void _ZN9SkySprite9endByKindEv(SkySprite *s);
@@ -4465,7 +4460,6 @@ extern "C" {
 u32 Clock_GetSecond();
 }
 extern "C" {
-void *PlayerData_GetResident(void *p, u32 i);
 }
 extern "C" {
 u32 _ZN10PlayerData8testFlagEj(void *p, u32 n);
@@ -4479,7 +4473,6 @@ void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, cons
 extern "C" {
 }
 extern "C" {
-u32 LetterDelivery_PutInAddresseeMailbox(void *c);
 }
 extern "C" {
 }
@@ -4490,10 +4483,8 @@ extern "C" {
 s32 SkySprites_GetMoonPhaseGfx();
 }
 extern "C" {
-s32 PlayerActor_GetBodyPos(s32 i);
 }
 extern "C" {
-void PlayerActor_GetSlotHeldItem(void *p, s32 i);
 }
 extern "C" {
 }
@@ -4997,7 +4988,6 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-BOOL NpcRegistry_FindSpNpc(s32);
 }
 extern "C" {
 }
@@ -5007,16 +4997,13 @@ extern "C" {
 s32 Weather_GetFallingPrecip();
 }
 extern "C" {
-void *TownSessionState_Get();
 }
 extern "C" {
-void *TownSessionState_GetPeteFall(void *p);
 }
 extern "C" {
 s32 _ZN13PeteFallState15isVisitorActiveEv(void *self);
 }
 extern "C" {
-void *TownSessionState_GetVisitorFlags(void *p);
 }
 extern "C" {
 s32 _ZN17VisitorSpawnFlags16isVisitorSpawnedEv(void *self);
@@ -5044,10 +5031,8 @@ extern "C" {
 s32 Event_GetState(s32, void *, s32);
 }
 extern "C" {
-s32 Random_GlobalBelow(s32);
 }
 extern "C" {
-s32 EventAnnounce_GetActiveEvent();
 }
 extern "C" {
 BOOL Scene_InTownUnk31();
@@ -5062,7 +5047,6 @@ extern "C" {
 void Math_StepS32Alt(void *, s32, s32);
 }
 extern "C" {
-void *PlayerData_GetCurrent();
 }
 extern "C" {
 BOOL _ZN10PlayerData8testFlagEj(void *, s32);
@@ -5833,7 +5817,6 @@ namespace n06 {
 // ======== unk_020bb25c.cpp ========
 namespace n05 {
 extern "C" {
-u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
 void SceneLights_StartFlash(s32 a);
@@ -6422,7 +6405,6 @@ extern "C" {
 void RainSe_FadeVolume(void*);
 }
 extern "C" {
-void func_02133ef8(void *p, u32 n);
 }
 extern "C" {
 void Clock_GetMinuteHour(void*);
@@ -6449,7 +6431,6 @@ extern "C" {
 extern "C" {
 }
 extern "C" {
-void Oam_DrawCell(s32, void*, s32, s32, s32, s32, s32, s32, u32, s32, u32, u32);
 }
 extern "C" {
 }
@@ -6544,10 +6525,8 @@ extern "C" {
 void Fog_SetAlpha(s32);
 }
 extern "C" {
-void Gfx3d_SetClearDepth(s32);
 }
 extern "C" {
-void Gfx3d_SetClearColor(u32);
 }
 extern "C" {
 u16 SceneLights_GetRoomColor();
@@ -6990,22 +6969,16 @@ extern "C" {
 void RainSe_FadeVolume(RainSndChannel *o);
 }
 extern "C" {
-BOOL Gfx2d_LoadScreen(void *p, s32 a, s32 b, s32 off);
 }
 extern "C" {
-BOOL Gfx2d_LoadCharFile8bpp(u32 res, void *heap, s32 c, s32 d, s32 e, s32 f);
 }
 extern "C" {
-s32 Gfx2d_LoadPaletteRange(u8 *a, s32 b, s32 c, s32 d, s32 e);
 }
 extern "C" {
-u8 *File_LoadAlloc(u32 res, void *heap, s32 a, void *b);
 }
 extern "C" {
-BOOL File_LoadToBuffer(u32 res, u8 *a, s32 b);
 }
 extern "C" {
-s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
@@ -7047,7 +7020,6 @@ extern "C" {
 s32 Random_NextBelow(void *st, s32 n);
 }
 extern "C" {
-void *Mem_AllocTail(s32 n);
 }
 extern "C" {
 void Math_StepS32Alt(s32 *p, s32 a, s32 b);
@@ -7547,7 +7519,6 @@ extern "C" {
 void Clock_GetMinuteHour(u8 *out);
 }
 extern "C" {
-Actor *PlayerActor_GetActor(u32 x);
 }
 extern "C" {
 s32 SceneLights_GetLightParam(u32 x);
@@ -7565,35 +7536,25 @@ extern "C" {
 extern u16 sSkyBlendLineCache[];
 }
 extern "C" {
-void Gfx2d_HideMainPlanes(u32 x);
 }
 extern "C" {
-void Gfx2d_HideSubPlanes(u32 x);
 }
 extern "C" {
-void Gfx2d_ShowSubPlanes(u32 x);
 }
 extern "C" {
-s32 MenuCtrl_IsMenuOnTop();
 }
 extern "C" {
-void Gfx2d_ShowMainPlanes(u32 x);
 }
 extern "C" {
-void Gfx2d_EnableMainWindows(u32 x);
 }
 extern "C" {
-void Gfx2d_SetMainWin0Planes(u32 x);
 }
 extern "C" {
-void Gfx2d_SetMainWinOutPlanes(u32 x);
 }
 extern "C" {
-void Gfx2d_SetMainWin0Rect(u32 a, u32 b, u32 c, u32 d);
 }
 #define REG16(a) (*(volatile u16 *)(a))
 #define REG32(a) (*(volatile u32 *)(a))
-extern "C" s32 Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 off);
 extern "C" {
 void Clock_GetDateTime(void *p);
 }
@@ -8051,7 +8012,6 @@ extern u8 gFieldSceneKind;
 #define data_020e676c ((char *)"menu/star/a_bg.bch")
 #define data_020e6780 ((u8 *)"menu/star/bg.bsc")
 extern "C" {
-void *PlayerData_GetCurrent(void);
 }
 extern "C" {
 void _ZN10PlayerData7setFlagEj(void *p, u32 x);
@@ -8109,28 +8069,21 @@ extern "C" {
 u32 HBlank_Add(void *p, void *fn, void *cb, void *cb2);
 }
 extern "C" {
-void Gfx2d_HideMainPlanes(u32 x);
 }
 extern "C" {
-void Gfx2d_HideSubPlanes(u32 x);
 }
 extern "C" {
-void Gfx2d_ShowSubPlanes(u32 x);
 }
 extern "C" {
-void Gfx2d_ShowMainPlanes(u32 x);
 }
 extern "C" {
-void Gfx2d_SetSubBgModeState(u32 x);
 }
 extern "C" {
-void Gfx2d_SetMainBgModeState(u32 x);
 }
 extern "C" {
 void Clock_GetMinuteHour(void *p);
 }
 extern "C" {
-void Sky_HBlankNone(void);
 }
 extern "C" {
 void Sky_HBlankMain(void);
@@ -8154,7 +8107,6 @@ extern "C" {
 void Sky_FrameIndoor(void);
 }
 extern "C" {
-void *PlayerActor_GetActor(u32 x);
 }
 extern "C" {
 void _ZN13SkyObjPalette10invalidateEi(void *p, s32 x);
@@ -8166,31 +8118,22 @@ extern "C" {
 void _ZN10SkySprites9initClockEv(void *p);
 }
 extern "C" {
-BOOL Gfx2d_LoadCharFile(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
 }
 extern "C" {
-void *Heap_AllocTail(void *heap, u32 size);
 }
 extern "C" {
-void Heap_Free(void *heap, void *ptr);
 }
 extern "C" {
-void Mem_Free(u32 p);
 }
 extern "C" {
-void File_LoadToBuffer(void *a, void *b, u32 c);
 }
 extern "C" {
-void Constellation_MaskSkyScreen(void *p);
 }
 extern "C" {
-BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
 }
 extern "C" {
-void StarTwinkle_Init(void *p, u32 x);
 }
 extern "C" {
-void StarTwinkle_Stop(void *p);
 }
 extern "C" {
 }
@@ -8215,10 +8158,8 @@ extern "C" {
 void SkySprites_Draw(void *p);
 }
 extern "C" {
-BOOL MenuCtrl_IsMenuOnTop(void);
 }
 extern "C" {
-void StarTwinkle_Update(void *p);
 }
 extern "C" {
 void SkySprites_Update(void *p);
@@ -8261,7 +8202,6 @@ extern "C" {
 void Sky_ApplyPalettes(s32 x);
 }
 extern "C" {
-s32 MenuCtrl_GetTransitionProgress(void);
 }
 extern "C" {
 s32 Camera_GetCloseUpFactor(void);

@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
 #include "sys/Heap.h"
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02133d04.h"
 #include "proto/main/unk_020501d4.h"
@@ -75,20 +76,7 @@ extern const u8 sToUpperPairs[0x7a];
 extern const u8 sGameCharToAsciiTable[0xe0];
 // the first object of the next file's .rodata (0x80000000: "glyph of the secondary font")
 extern const u32 data_020ca638;
-extern char sGameFontPartImg[];
-extern char sGameFontPartHead[];
-extern char sGameFontPartAttr[];
-extern ProcProfile sTextSystemModuleProfile;
-extern u16 sCharSortKeyTable[0xe0];
-extern void *gTextHeap;
-extern u8 gTextLabelList[];
-extern u8 gTextTileBuffer[0x400];
 }
-extern GameFont gFontASub;
-extern GameFont gFontD;
-extern GameFont gFontA;
-extern GameFont gFontB;
-extern GameFont gFontC;
 
 // ---- data. The definition order is what makes mwcc emit the objects in the original order (it sorts a
 // file's objects by size with a heapsort over the reversed creation order); do not reorder.

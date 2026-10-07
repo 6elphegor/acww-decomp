@@ -35,6 +35,18 @@ void LidSleep_WakeLcd();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sLidSleepFlags
+extern u8 sLidSleepFlags;
+#endif
+#ifndef PROTO_LOCAL_sLidSleepState
+extern u8 sLidSleepState;
+#endif
+#ifndef PROTO_LOCAL_sLidSleepBacklightBottom
+extern u32 sLidSleepBacklightBottom;
+#endif
+#ifndef PROTO_LOCAL_sLidSleepBacklightTop
+extern u32 sLidSleepBacklightTop;
+#endif
 #ifndef PROTO_LOCAL_Field_TryPushSnowball
 s32 Field_TryPushSnowball(s32 a, s32 b, s32 c, s32 d, s16 e);
 #endif

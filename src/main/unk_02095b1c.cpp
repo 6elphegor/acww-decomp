@@ -7,6 +7,7 @@
 #include "item/ItemPickSpec.h"
 #include "sys/ProcProfile.h"
 #define PROTO_LOCAL_PlayerSession_GetLastPos  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gPlayerSessionTable  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0203c23c.h"
 #include "proto/main/unk_0206269c.h"
@@ -17,6 +18,7 @@
 #include "proto/main/unk_0208f0b0.h"
 #include "proto/main/unk_02093ff0.h"
 #include "proto/main/unk_02094810.h"
+#include "proto/main/unk_02095b1c.h"
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02096c10.h"
 #include "proto/main/unk_02097444.h"

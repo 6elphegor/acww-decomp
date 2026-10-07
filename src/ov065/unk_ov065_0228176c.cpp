@@ -242,7 +242,6 @@ extern char data_ov065_0228dd70[];
 extern char data_ov065_0228dd78[];
 extern char data_ov065_0228dd7c[];
 extern char data_ov065_0228db2c[];
-extern char __GSIACGamename[];
 extern char data_ov065_0228db1c[];
 
 s32 gpiReadKeyAndValue(GPConnection *, char *, s32 *, char *, char *);

@@ -18,6 +18,12 @@ extern "C" {
 #ifndef PROTO_LOCAL_Aoss_FreeScanBuffers
 void Aoss_FreeScanBuffers();
 #endif
+#ifndef PROTO_LOCAL_sAossConnectResult
+extern void *sAossConnectResult;
+#endif
+#ifndef PROTO_LOCAL_sAossScanList
+extern void *sAossScanList;
+#endif
 #ifdef __cplusplus
 }
 #endif
@@ -224,6 +230,45 @@ u16 Aoss_Rand16(void);
 #endif
 #ifndef PROTO_LOCAL_Aoss_FdSet
 void Aoss_FdSet(u32 v, AossPollFd *s);
+#endif
+#ifndef PROTO_LOCAL_sAossError
+extern s32 sAossError;
+#endif
+#ifndef PROTO_LOCAL_sAossRc4Key
+extern u8 sAossRc4Key[0x64];
+#endif
+#ifndef PROTO_LOCAL_sAossRandSeeded
+extern u32 sAossRandSeeded;
+#endif
+#ifndef PROTO_LOCAL_sAossCrcTable
+extern u32 sAossCrcTable[0x100];
+#endif
+#ifndef PROTO_LOCAL_sAossSessionId
+extern u8 sAossSessionId[8];
+#endif
+#ifndef PROTO_LOCAL_sAossPacketBuf
+extern u8 *sAossPacketBuf;
+#endif
+#ifndef PROTO_LOCAL_sAossProgress
+extern s32 sAossProgress;
+#endif
+#ifndef PROTO_LOCAL_sAossDefaultRetry
+extern s16 sAossDefaultRetry[2];
+#endif
+#ifndef PROTO_LOCAL_sAossKeyBlockTags
+extern u8 sAossKeyBlockTags[4];
+#endif
+#ifndef PROTO_LOCAL_sAossEncryptFlag
+extern s32 sAossEncryptFlag;
+#endif
+#ifndef PROTO_LOCAL_sAossKeyBuf
+extern u8 sAossKeyBuf[0x6a0];
+#endif
+#ifndef PROTO_LOCAL_sAossSocket
+extern s32 sAossSocket;
+#endif
+#ifndef PROTO_LOCAL_sAossNameBuf
+extern u8 sAossNameBuf[0x280];
 #endif
 }
 #endif

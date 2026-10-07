@@ -14,9 +14,6 @@
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_02063f3c.h"
 #include "proto/main/unk_020b0774.h"
-extern u16 sConstellationLineCells[0x718];
-extern char *sStarTwinklePalettePaths[5];
-extern char sStarPalPathB4[0x14];
 
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
@@ -167,13 +164,6 @@ u8 *Constellation_GetLineCells(s32 n) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern u16 sConstellationLineCells[0x718];
-extern char sStarPalPathA[0x14];
-extern char sStarPalPathB1[0x14];
-extern char sStarPalPathB3[0x14];
-extern char sStarPalPathB2[0x14];
-extern char *sStarTwinklePalettePaths[5];
-extern char sStarPalPathB4[0x14];
 
 u16 sConstellationLineCells[0x718] = {
     0x0001, 0x0002, 0x0003, 0x0004, 0x0006, 0x0007, 0x0008, 0xffff,

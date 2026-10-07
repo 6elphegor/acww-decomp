@@ -35,9 +35,8 @@
 #include "talk/ChoiceList.h"
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_RequestWalkTo  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
+#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_020850e0.h"
@@ -48,7 +47,6 @@
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020b7190.h"
 #include "proto/main/unk_020c0324.h"
-#include "proto/main/unk_020c1738.h"
 
 
 class SpNpcKatie;
@@ -74,6 +72,7 @@ void TalkRequestFlags_ClearSceneHold(void);
 void TalkRequestFlags_SetSceneHold(void);
 BOOL TownMap_FindBuildingAbovePos(VecFx32 *a, s32 b, s32 c, s32 d);
 void TownMap_IsPosWalkable(VecFx32 *a, s32 b);
+s32 Vec_DistXZ(void *a, void *b);
 BOOL Math_CountDownU16(void *a);
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
 s32 Math_AngleXZ(void *a, void *b);
@@ -81,6 +80,7 @@ void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 void _ZN15KatieVisitState5clearEv(void *a);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32 a, s32 b);
+void Camera_SetMode19(void);
 s32 _ZN15LostChildRecord9getTownIdEv(void *p);
 extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
@@ -88,6 +88,8 @@ extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern CommManager *gCommManager;
 }
+void SpNpcKaitlin_ChangeAct04(void);
+void SpNpcKaitlin_ChangeAct06(void);
 static inline BOOL Unk_020c06a0_IsMode2() {
     return gScreenTransition == 2;
 }
@@ -122,6 +124,7 @@ extern char sSpNpcKatieModelPath[23];
 extern char sSpNpcKatieTexPath[27];
 extern char *sSpNpcKatieMsgKey;
 extern const VecFx32 sSpNpcKatieReunionWalkPos;
+extern "C" SpNpcKatie *SpNpcKatie_Create(void);
 
 extern "C" SpNpcKatie *SpNpcKatie_Create(void) {
     return new SpNpcKatie();

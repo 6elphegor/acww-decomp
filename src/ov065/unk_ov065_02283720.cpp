@@ -7,6 +7,10 @@
 #include "net/gpersist.h"
 #include "net/gt2Main.h"
 #include "net/gpiCallback.h"
+#define PROTO_LOCAL_data_ov065_0228df7c  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_enc1  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_enc3  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_serverreqs  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"
@@ -58,7 +62,6 @@ extern char data_ov065_0228df50[];
 extern char data_ov065_0228df58[];
 extern char data_ov065_0228df60[];
 extern char data_ov065_0228df6c[];
-extern char *sGsPersistXorKey;
 extern char data_ov065_0228df7c[];
 extern char enc1[];
 extern char enc3[];
@@ -142,14 +145,6 @@ extern "C" {
 
 extern "C" {
 extern DArrayImplementation *serverreqs;
-extern s32 sGsPersistSocket;
-extern s32 stats_initstate;
-extern char *rcvbuffer;
-extern s32 rcvmax;
-extern s32 rcvlen;
-extern volatile s32 data_ov065_022910fc;
-extern char data_ov065_02291304[];
-extern char *sGsPersistXorKey;
 
 
 

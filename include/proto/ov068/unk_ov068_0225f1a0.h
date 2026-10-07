@@ -16,6 +16,330 @@ class FieldVillagerAiStates;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa10
+extern void *data_ov068_0226fa10[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f958
+extern void *data_ov068_0226f958[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f980
+extern void *data_ov068_0226f980[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f938
+extern void *data_ov068_0226f938[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f900
+extern void *data_ov068_0226f900[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f970
+extern void *data_ov068_0226f970[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f878
+extern void *data_ov068_0226f878[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f850
+extern void *data_ov068_0226f850[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f910
+extern void *data_ov068_0226f910[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb58
+extern void *data_ov068_0226fb58[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f920
+extern void *data_ov068_0226f920[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f830
+extern void *data_ov068_0226f830[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f960
+extern void *data_ov068_0226f960[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb48
+extern void *data_ov068_0226fb48[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9e0
+extern void *data_ov068_0226f9e0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb38
+extern void *data_ov068_0226fb38[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb30
+extern void *data_ov068_0226fb30[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb20
+extern void *data_ov068_0226fb20[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb00
+extern void *data_ov068_0226fb00[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226faf8
+extern void *data_ov068_0226faf8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226faf0
+extern void *data_ov068_0226faf0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa68
+extern void *data_ov068_0226fa68[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fae0
+extern void *data_ov068_0226fae0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226faa8
+extern void *data_ov068_0226faa8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fab0
+extern void *data_ov068_0226fab0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fac0
+extern void *data_ov068_0226fac0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fac8
+extern void *data_ov068_0226fac8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb08
+extern void *data_ov068_0226fb08[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb28
+extern void *data_ov068_0226fb28[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb40
+extern void *data_ov068_0226fb40[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa90
+extern void *data_ov068_0226fa90[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa88
+extern void *data_ov068_0226fa88[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa80
+extern void *data_ov068_0226fa80[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa78
+extern void *data_ov068_0226fa78[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8b8
+extern void *data_ov068_0226f8b8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f808
+extern void *data_ov068_0226f808[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa58
+extern void *data_ov068_0226fa58[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa50
+extern void *data_ov068_0226fa50[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa48
+extern void *data_ov068_0226fa48[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa38
+extern void *data_ov068_0226fa38[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f898
+extern void *data_ov068_0226f898[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f890
+extern void *data_ov068_0226f890[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f840
+extern void *data_ov068_0226f840[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9d8
+extern void *data_ov068_0226f9d8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9d0
+extern void *data_ov068_0226f9d0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9c8
+extern void *data_ov068_0226f9c8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9b8
+extern void *data_ov068_0226f9b8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9b0
+extern void *data_ov068_0226f9b0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9a8
+extern void *data_ov068_0226f9a8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9a0
+extern void *data_ov068_0226f9a0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f998
+extern void *data_ov068_0226f998[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f990
+extern void *data_ov068_0226f990[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f988
+extern void *data_ov068_0226f988[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8f0
+extern void *data_ov068_0226f8f0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f978
+extern void *data_ov068_0226f978[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f968
+extern void *data_ov068_0226f968[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f918
+extern void *data_ov068_0226f918[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f928
+extern void *data_ov068_0226f928[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f858
+extern void *data_ov068_0226f858[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f860
+extern void *data_ov068_0226f860[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9f8
+extern void *data_ov068_0226f9f8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb18
+extern void *data_ov068_0226fb18[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa28
+extern void *data_ov068_0226fa28[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa60
+extern void *data_ov068_0226fa60[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa98
+extern void *data_ov068_0226fa98[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fad0
+extern void *data_ov068_0226fad0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fab8
+extern void *data_ov068_0226fab8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fad8
+extern void *data_ov068_0226fad8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb10
+extern void *data_ov068_0226fb10[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8d0
+extern void *data_ov068_0226f8d0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8c8
+extern void *data_ov068_0226f8c8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8c0
+extern void *data_ov068_0226f8c0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8a8
+extern void *data_ov068_0226f8a8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8a0
+extern void *data_ov068_0226f8a0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f820
+extern void *data_ov068_0226f820[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa20
+extern void *data_ov068_0226fa20[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f838
+extern void *data_ov068_0226f838[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f848
+extern void *data_ov068_0226f848[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f870
+extern void *data_ov068_0226f870[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f880
+extern void *data_ov068_0226f880[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8d8
+extern void *data_ov068_0226f8d8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8e8
+extern void *data_ov068_0226f8e8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f908
+extern void *data_ov068_0226f908[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f948
+extern void *data_ov068_0226f948[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9e8
+extern void *data_ov068_0226f9e8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa08
+extern void *data_ov068_0226fa08[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa18
+extern void *data_ov068_0226fa18[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa70
+extern void *data_ov068_0226fa70[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fae8
+extern void *data_ov068_0226fae8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f800
+extern void *data_ov068_0226f800[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8b0
+extern void *data_ov068_0226f8b0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa00
+extern void *data_ov068_0226fa00[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9c0
+extern void *data_ov068_0226f9c0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8e0
+extern void *data_ov068_0226f8e0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f8f8
+extern void *data_ov068_0226f8f8[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f930
+extern void *data_ov068_0226f930[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f940
+extern void *data_ov068_0226f940[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa30
+extern void *data_ov068_0226fa30[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226faa0
+extern void *data_ov068_0226faa0[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f810
+extern void *data_ov068_0226f810[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f818
+extern void *data_ov068_0226f818[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f888
+extern void *data_ov068_0226f888[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f868
+extern void *data_ov068_0226f868[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fa40
+extern void *data_ov068_0226fa40[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f950
+extern void *data_ov068_0226f950[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226fb50
+extern void *data_ov068_0226fb50[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f828
+extern void *data_ov068_0226f828[2];
+#endif
+#ifndef PROTO_LOCAL_data_ov068_0226f9f0
+extern void *data_ov068_0226f9f0[2];
+#endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_PickOtherAblePattern
 void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x);
 #endif
@@ -25,6 +349,138 @@ void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x);
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sReactionStepsGuard
+extern u32 sReactionStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sBirthdayInviteSteps
+extern u32 sBirthdayInviteSteps[6];
+#endif
+#ifndef PROTO_LOCAL_sPushTalkSteps
+extern u32 sPushTalkSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sHitTalkStepsGuard
+extern u32 sHitTalkStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sChatSteps
+extern u32 sChatSteps[8];
+#endif
+#ifndef PROTO_LOCAL_sTalkSteps
+extern u32 sTalkSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sChatStepsGuard
+extern u32 sChatStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sPitfallClimbOutSteps
+extern u32 sPitfallClimbOutSteps[2];
+#endif
+#ifndef PROTO_LOCAL_sPutAwayItemSteps
+extern u32 sPutAwayItemSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sTalkStepsGuard
+extern u32 sTalkStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sReactionSteps
+extern u32 sReactionSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sApproachStepsGuard
+extern u32 sApproachStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sFaceTalkerStepsGuard
+extern u32 sFaceTalkerStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sTakeOutItemStepsGuard
+extern u32 sTakeOutItemStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sAbsentStepsGuard
+extern u32 sAbsentStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sInHouseStepsGuard
+extern u32 sInHouseStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sAbsentSteps
+extern u32 sAbsentSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sApproachSteps
+extern u32 sApproachSteps[10];
+#endif
+#ifndef PROTO_LOCAL_sSeePlayerArc
+extern s16 sSeePlayerArc;
+#endif
+#ifndef PROTO_LOCAL_sGoInHouseSteps
+extern u32 sGoInHouseSteps[6];
+#endif
+#ifndef PROTO_LOCAL_sHitByNetSteps
+extern u32 sHitByNetSteps[6];
+#endif
+#ifndef PROTO_LOCAL_sPutAwayItemStepsGuard
+extern u32 sPutAwayItemStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sGoInHouseStepsGuard
+extern u32 sGoInHouseStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sChatOutcomesGuard
+extern u32 sChatOutcomesGuard;
+#endif
+#ifndef PROTO_LOCAL_sTakeOutItemSteps
+extern u32 sTakeOutItemSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sPushedSteps
+extern u32 sPushedSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sAdmireCatchStepsGuard
+extern u32 sAdmireCatchStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sFleaRemovedStepsGuard
+extern u32 sFleaRemovedStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sHitByNetStepsGuard
+extern u32 sHitByNetStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sChatOutcomes
+extern u32 sChatOutcomes[14];
+#endif
+#ifndef PROTO_LOCAL_sLeaveHouseSteps
+extern u32 sLeaveHouseSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sBirthdayInviteStepsGuard
+extern u32 sBirthdayInviteStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sLeaveHouseStepsGuard
+extern u32 sLeaveHouseStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sHitTalkSteps
+extern u32 sHitTalkSteps[6];
+#endif
+#ifndef PROTO_LOCAL_sPitfallSteps
+extern u32 sPitfallSteps[10];
+#endif
+#ifndef PROTO_LOCAL_sAdmireCatchSteps
+extern u32 sAdmireCatchSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sPitfallClimbOutStepsGuard
+extern u32 sPitfallClimbOutStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sInHouseSteps
+extern u32 sInHouseSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sFleaRemovedSteps
+extern u32 sFleaRemovedSteps[4];
+#endif
+#ifndef PROTO_LOCAL_sPushTalkStepsGuard
+extern u32 sPushTalkStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sPitfallStepsGuard
+extern u32 sPitfallStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sPushedStepsGuard
+extern u32 sPushedStepsGuard;
+#endif
+#ifndef PROTO_LOCAL_sFaceTalkerSteps
+extern u32 sFaceTalkerSteps[2];
+#endif
+#ifndef PROTO_LOCAL_sTalkFacingArc
+extern s16 sTalkFacingArc;
+#endif
 #ifndef PROTO_LOCAL_FieldVillager_Create
 FieldVillager *FieldVillager_Create();
 #endif

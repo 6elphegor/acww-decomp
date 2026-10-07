@@ -23,13 +23,12 @@
 #define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_FormatNumber  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_String_LoadResolveAltText  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/main/unk_02003008.h"
-#include "proto/main/unk_02034010.h"
 #include "proto/main/unk_0203cbc0.h"
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_020594dc.h"
-#include "proto/main/unk_02061478.h"
 #include "proto/main/unk_02095cdc.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_0209c37c.h"
@@ -243,7 +242,12 @@ s32 Item_GetFurnitureDirection(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 FX_Div(s32 a, s32 b);
+void Debug_SetHappyRoomScore(s32 v);
+void Debug_SetHappyRoomBonusFlags(u32 v);
 void MIi_CpuClearFast(u32 v, void *dst, u32 n);
+s32 FtrClass_GetBasePoints(s32 v);
+s32 Series_GetType(s32 v);
+s32 ItemInfo_GetSeries(u16 *p);
 void *VillagerRoomMap_Create(s32 a, void *heap);
 void VillagerRoomMap_Destroy(void *heap);
 void *HouseRoomMaps_Get(s32 i);

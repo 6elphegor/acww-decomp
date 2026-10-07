@@ -39,6 +39,9 @@
 #define PROTO_LOCAL_Snd_DuckSubPlayers  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Taxi_IsArriving  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_exit  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gActorDefaultParent  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gBgModelCache  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02101048.h"
 #include "proto/autoload_2/unk_02133d04.h"
@@ -122,7 +125,6 @@ extern u8 sBgAcreArcPathFmt[], sBgArchiveName[], sBgAcreBmdPath[], sBgAcreBclPat
 extern u8 sBgAcreBcaPath[], sBgAcreBmaPath[], sBgAcreBtaPath[], sBgAcreMgtPath[], sBgAcreTexPathFmt[];
 extern u8 sBgGroundAnimArcPath[], sBgGroundSetBmaPath[], sBgGroundSetBtaPath[], sBgRiverBtpPath[], sBgRiverItpTexPath[];
 extern u8 sBgBeBBtpPath[], sBgBeBItpTexPath[], sBgGroundSetTexPathFmt[];
-extern void *gBgHeap;
 extern void *gCurrentHeap;
 extern u8 gSaveTownMap[];
 extern u8 gBgModelCache[];
@@ -337,7 +339,6 @@ extern u8 sBgAcreArcPathFmt[], sBgArchiveName[], sBgAcreBmdPath[], sBgAcreBclPat
 extern u8 sBgAcreBcaPath[], sBgAcreBmaPath[], sBgAcreBtaPath[], sBgAcreMgtPath[], sBgAcreTexPathFmt[];
 extern u8 sBgGroundAnimArcPath[], sBgGroundSetBmaPath[], sBgGroundSetBtaPath[], sBgRiverBtpPath[], sBgRiverItpTexPath[];
 extern u8 sBgBeBBtpPath[], sBgBeBItpTexPath[], sBgGroundSetTexPathFmt[];
-extern void *gBgHeap;
 extern void *gCurrentHeap;
 extern u8 gSaveTownMap[];
 extern u8 gBgModelCache[];
@@ -347,10 +348,6 @@ extern Unk_021e5890_T data_021e5890;
 // Declarations for data defined further down
 // Data order: this unit is placed object by object (see object_order.txt).
 extern const u16 sSceneBgmTable[0x3a];
-extern u16 sNewYearEveDate[2];
-extern u16 sNewYearEveTime[2];
-extern u16 sNewYearDayDate[2];
-extern ProcProfile sBgmProcProfile;
 extern const u8 sBgmSceneFadeDelays[8];
 extern const s32 sBgmMenuDuckStates[3];
 extern const u16 sHourlyBgmIds[0x18];

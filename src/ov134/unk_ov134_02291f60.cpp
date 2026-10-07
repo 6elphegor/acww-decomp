@@ -14,6 +14,18 @@
 #define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Oam_DrawObjRotated  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02294d44  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02294d54  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02294d74  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02294db4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02294e84  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02294f44  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02295014  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02295034  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_022950d4  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02295104  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_data_ov134_02295204  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"

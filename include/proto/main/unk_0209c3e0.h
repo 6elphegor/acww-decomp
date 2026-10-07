@@ -21,6 +21,9 @@ void RoomObjSync_Reset();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sRoomObjSyncStates
+extern u8 sRoomObjSyncStates[3];
+#endif
 #ifndef PROTO_LOCAL_RoomObjSync_ChangeState
 BOOL RoomObjSync_ChangeState(RoomObjActor *self, u8 v);
 #endif

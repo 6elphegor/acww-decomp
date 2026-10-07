@@ -4,6 +4,9 @@
 // Prototypes of the functions defined in src/ov001/unk_ov001_02210110.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#ifdef __cplusplus
+#include "types.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,6 +39,14 @@ void WfcTransferCancelled_Exit();
 void WfcTransferCancelled_WaitTimer();
 #endif
 #ifdef __cplusplus
+}
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#ifndef PROTO_LOCAL_sWfcTransferCancelledTimer
+extern u8 sWfcTransferCancelledTimer;
+#endif
 }
 #endif
 

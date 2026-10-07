@@ -3,18 +3,10 @@
 #include "gfx/VecFx32.h"
 #include "gfx/Camera.h"
 #include "gfx/DebugColor.h"
-#define PROTO_LOCAL_Camera_CalcPointSpan  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_StartBlendToPlayer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_UpdateMode16  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_UpdateMode18  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Camera_UpdateRoomFocus  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_RotateY  // declared below: the shared prototype conflicts with the calls here
-#include "proto/autoload_2/unk_020e92f4.h"
 #include "proto/itcm/unk_01ffcb2c.h"
 #include "proto/itcm/unk_01ffcfc0.h"
-#include "proto/main/unk_0203a0cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/ov004/unk_ov004_0223f43c.h"
 
@@ -73,7 +65,11 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
+void Vec_ShiftRightTo(void *out, void *in, s32 s);
 void Vec_RotateY(void *v, s32 a);
+void Camera_StartBlend(void);
+void Camera_FinishBlend(void);
+void Camera_PlaySe(Camera *o, s32 a);
 s32 Camera_CalcPointSpan(void *p, void *a, s32 *b, s32 *out);
 
 // methods of Camera (main), called through their real symbols with the object first
@@ -88,6 +84,9 @@ void _ZN6Camera14setLookAtOrbitEP7VecFx32iii(Camera *o, void *a, s32 b, s32 c, s
 #define Camera_updateBlend _ZN6Camera11updateBlendEv
 #define Camera_setLookAtOrbit _ZN6Camera14setLookAtOrbitEP7VecFx32iii
 
+void Camera_KkShowResetShot(Camera *o);
+void Camera_KkShowPickShot(Camera *o);
+void Camera_KkShowWideShot(Camera *o);
 }
 
 #define Unk_0223f44c_Finish(o)                                          \

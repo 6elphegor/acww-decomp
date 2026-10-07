@@ -8,6 +8,7 @@
 #include "net/GsBytes.h"
 #include "net/gsPlatformUtil.h"
 #include "net/SockHostEnt.h"
+#define PROTO_LOCAL_qr2_registered_key_list  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_0212703c.h"
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02128c60.h"

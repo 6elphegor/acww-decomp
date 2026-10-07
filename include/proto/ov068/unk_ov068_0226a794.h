@@ -20,6 +20,9 @@ void *KappnTaxi_Create();
 
 #ifdef __cplusplus
 extern "C" {
+#ifndef PROTO_LOCAL_sKappnTaxiLeaveTimer
+extern s16 sKappnTaxiLeaveTimer;
+#endif
 #ifndef PROTO_LOCAL_KappnTaxi_RequestPlayerGetOut
 s32 KappnTaxi_RequestPlayerGetOut();
 #endif

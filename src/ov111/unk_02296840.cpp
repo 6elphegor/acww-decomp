@@ -25,6 +25,8 @@
 #define PROTO_LOCAL_Keyboard_PlayPasteSe  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Keyboard_ReplaceCharBeforeCursor  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Keyboard_TouchSendKey  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
+#include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020ec848.h"
 #include "proto/main/unk_0200137c.h"
@@ -37,6 +39,7 @@
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
 #include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020b7d84.h"
 #include "proto/ov002/unk_ov002_02200840.h"
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov095/unk_02292360.h"
@@ -54,15 +57,9 @@ typedef ChatMenu S;
 
 extern "C" {
 extern u8 gU8None;
-extern u8 gTouchCurX;
-extern u8 gTouchCurY;
-extern u8 gTouchHeld;
-extern u8 gTouchChanged;
 extern u16 gPad[];
 extern u32 gCommManager;
 extern u32 gCurrentHeap;
-extern uptr sChatSendAnimScreens[];
-extern char data_ov111_022989c8[];
 
 void ChatBalloon_Post(s32 a, void *p, void *q);
 void BgScreen_ReplaceRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);

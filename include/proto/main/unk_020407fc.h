@@ -4,6 +4,8 @@
 // Prototypes of the functions defined in src/main/unk_020407fc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "sys/ProcProfile.h"
+struct EventAnnounceState;
 #ifdef __cplusplus
 #include "types.h"
 class EventAnnouncer;
@@ -94,6 +96,30 @@ void EventWeekSlots_Reset(u8 *p);
 void EventWeekSlots_OnLoad(u8 *p);
 #endif
 }
+#ifndef PROTO_LOCAL_sEventAnnounceBusy
+extern s32 sEventAnnounceBusy;
+#endif
+#ifndef PROTO_LOCAL_sEventAnnouncerProfile
+extern ProcProfile sEventAnnouncerProfile;
+#endif
+#ifndef PROTO_LOCAL_sEventAnnounceWasOnline
+extern s32 sEventAnnounceWasOnline;
+#endif
+#ifndef PROTO_LOCAL_sEventAnnounceBgmCode
+extern s32 sEventAnnounceBgmCode;
+#endif
+#ifndef PROTO_LOCAL_sEventAnnouncePendingEvent
+extern s32 sEventAnnouncePendingEvent;
+#endif
+#ifndef PROTO_LOCAL_sEventAnnounceActiveEvent
+extern s32 sEventAnnounceActiveEvent;
+#endif
+#ifndef PROTO_LOCAL_sEventAnnounceCurEvent
+extern s32 sEventAnnounceCurEvent;
+#endif
+#ifndef PROTO_LOCAL_sEventAnnounceState
+extern EventAnnounceState sEventAnnounceState;
+#endif
 #endif
 
 #endif
