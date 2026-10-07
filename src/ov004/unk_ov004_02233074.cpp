@@ -1,3 +1,5 @@
+#include "gfx/Model.h"
+#include "gfx/TwoLayerAnimModel.h"
 // mwcc-version: 1.2/base
 // ov004 TU32: .text 0x02233074-0x02235fd0 (furniture/TV resource slots, tile placement helpers, actor tables, scene object 0224e9d8)
 #include "types.h"
@@ -148,10 +150,16 @@ struct FtrMoveAnim {
     u32 haniwaAnim;
     void *modelArc;
     u32 resMdl;
+#ifdef HOST
+    // the BlendAnimModel (constructed in place by FtrMoveAnim_Construct); its matrix and frame control are the
+    // modelMtx / animFrameCtrl of the DS layout below (the host types are larger: storage of the real size)
+    alignas(8) u8 model[sizeof(BlendAnimModel)];
+#else
     u8 model[0x64];
     Mtx43 modelMtx;
     u8 unk_c0[8];
     u8 animFrameCtrl[0x1c];
+#endif
 };
 
 struct FtrModelPath {
@@ -4455,7 +4463,11 @@ extern "C" void FtrMoveAnim_Unload(FtrMoveAnim *r) {
 
 // @0x2233b00 unk_0223349c.cpp
 extern "C" void *FtrMoveAnim_GetMtx(FtrMoveAnim *r) {
+#ifdef HOST
+    return &MODEL_AT_MTX(r->model);
+#else
     return &r->modelMtx;
+#endif
 }
 
 // @0x2233af0 unk_0223349c.cpp
@@ -4476,7 +4488,11 @@ extern "C" BOOL FtrMoveAnim_Start(FtrMoveAnim *r, s32 x, volatile u8 *flag, VecF
         r->posZ = pos->z;
         Mtx43_SetTranslate(data_021f47e0, pos->x, pos->y, pos->z);
         Mtx43_RotateY(data_021f47e0, *(s16 *)&e);
+#ifdef HOST
+        MODEL_AT_MTX(r->model) = *(Mtx43 *)data_021f47e0;
+#else
         r->modelMtx = *(Mtx43 *)data_021f47e0;
+#endif
         return TRUE;
     }
     return FALSE;
@@ -4500,7 +4516,11 @@ extern "C" BOOL FtrMoveAnim_Step(FtrMoveAnim *r, volatile u8 *a, VecFx32 *out) {
         out->x = r->posX;
         out->y = r->posY;
         out->z = r->posZ;
+#ifdef HOST
+        if (AnimFrameCtrl_isFinished(static_cast<AnimFrameCtrl *>((BlendAnimModel *)r->model))) {
+#else
         if (AnimFrameCtrl_isFinished(r->animFrameCtrl)) {
+#endif
             *a = 0;
             r->isPlaying = *a;
             return TRUE;

@@ -1,5 +1,8 @@
 #include "uptr.h"
 #include "gfx/ModelSlotPool.h"
+#include "gfx/PooledModel.h"
+#include "gfx/AnimModel.h"
+#include "snd/SndSeEmitter.h"
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -10,13 +13,13 @@
 extern "C" const u8 data_020ca314[4];
 
 struct FishDisplayEntry {
-    u8 pad_00[0x40];
+    u8 pad_00[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter (Snd_SeEmitterPlayOneShot)
     s32 fishId;
     s32 entryState;
     u8 modelSlot[4];
-    u8 pooledModel[0x40];
+    u8 pooledModel[HOST_SIZED(0x40, PooledModel)] HOST_ALIGN8;
     VecFx32 pos;
-    u8 model[0xb8];
+    u8 model[HOST_SIZED(0xb8, AnimModel)] HOST_ALIGN8;
     VecFx32 scale;
     s16 rotX, rotY, rotZ;
     u8 pad_162[2];
@@ -113,7 +116,11 @@ public:
     virtual BOOL onDraw();
     ~FishDisplay() {
         _ZN13ModelSlotPoolD1Ev(modelPool);
+#ifdef HOST
+        __cxa_vec_cleanup(entries, 4, sizeof(FishDisplayEntry), (void *)FishDisplayEntry_Destruct);
+#else
         __cxa_vec_cleanup(entries, 4, 0x16c, (void *)FishDisplayEntry_Destruct);
+#endif
     }
     void releaseEntry(s32);
     BOOL beginLoad(s32);
@@ -147,7 +154,11 @@ extern const u8 sFishBaseSizes[0x160];
 extern Backup gBackup;
 
 inline FishDisplay::FishDisplay() {
+#ifdef HOST
+    __cxa_vec_ctor(entries, 4, sizeof(FishDisplayEntry), (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
+#else
     __cxa_vec_ctor(entries, 4, 0x16c, (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
+#endif
     _ZN13ModelSlotPoolC1Ev(modelPool);
 }
 

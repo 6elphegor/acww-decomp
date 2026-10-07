@@ -9873,7 +9873,11 @@ BOOL VillagerTalkRumorTopics::selectTsuHome() {
         t = 1;
     }
     t <<= 3;
+#ifdef HOST
+    Talk_SelectTopicMessage(this, topicFile, &topicIndex, 30, VillagerId_GetPersonality(((VillagerId *)_ZN12VillagerData13getVillagerIdEv(actor->villagerData))), (u32)(uptr)nZ::sTalkTopicsTsuHome[(t >> 3) * 2], *(u8 *)&nZ::sTalkTopicsTsuHome[(t >> 3) * 2 + 1], 0, 0);  // (pairs: 16 bytes on 64-bit hosts)
+#else
     Talk_SelectTopicMessage(this, topicFile, &topicIndex, 30, VillagerId_GetPersonality(((VillagerId *)_ZN12VillagerData13getVillagerIdEv(actor->villagerData))), *(u32 *)((u8 *)sTalkTopicsTsuHome + t), *((u8 *)((u8 *)&nZ::sTalkTopicsTsuHome[1]) + t), 0, 0);
+#endif
     return TRUE;
 }
 
