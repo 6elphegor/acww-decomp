@@ -121,7 +121,7 @@ def usable(r):
     return True
 
 
-def make_headers(defs):
+def make_headers(defs, only=None):
     by_file = {}
     for r in defs.values():
         if r['file'].startswith('src/'):
@@ -129,6 +129,8 @@ def make_headers(defs):
         if usable(r):
             by_file.setdefault(r['file'], []).append(r)
     for src, recs in sorted(by_file.items()):
+        if only is not None and src not in only:
+            continue
         h = proto_header(src)
         includes, fwd_c, fwd_cpp = set(), set(), set()
         c_protos, cpp_protos = [], []
@@ -380,14 +382,48 @@ def _init(decls):
             HEADER_OF[r['name']] = proto_header(r['file'])
 
 
+def regen_only(files):
+    """Rewrite the headers of the given source files from a fresh scan of just those files."""
+    import tempfile
+    tmp = tempfile.mktemp(suffix='.json')
+    subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'host_decls.py'), '--json', tmp] + files,
+                   check=True, capture_output=True)
+    data = json.load(open(tmp))
+    os.unlink(tmp)
+    global DEFS
+    DEFS = data['defs']
+    excluded = set()
+    if os.path.exists('include/proto/.excluded'):
+        excluded = set(open('include/proto/.excluded').read().split())
+    only = set(os.path.relpath(f) for f in files)
+    for rnd in range(6):
+        HEADER_OF.clear()
+        make_headers({k: v for k, v in DEFS.items() if v['name'] not in excluded and v['file'] in only}, only)
+        by_h = {}
+        for name, h in HEADER_OF.items():
+            by_h.setdefault(h, []).append(name)
+        bad = check_headers(by_h)
+        if not bad:
+            break
+        excluded |= bad
+        print(f'left out (do not compile alone): {", ".join(sorted(bad))}', file=sys.stderr)
+    print(f'rewrote {len(only)} headers ({len(HEADER_OF)} declarations)', file=sys.stderr)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--decls', required=True)
+    ap.add_argument('--decls')
     ap.add_argument('--jobs', type=int, default=os.cpu_count())
     ap.add_argument('--report')
     ap.add_argument('--headers-only', action='store_true')
+    ap.add_argument('--only', nargs='+', metavar='SRC',
+                    help='regenerate just the headers of these source files (after changing definitions there): '
+                         'scans them, rewrites include/proto/<their headers>, leaves every other header alone')
     ap.add_argument('files', nargs='*')
     a = ap.parse_args()
+    if a.only:
+        regen_only(a.only)
+        return
     _init(a.decls)
     excluded = set()
     for rnd in range(6):
