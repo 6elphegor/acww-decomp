@@ -7,12 +7,15 @@
 #include "sys/ProcProfile.h"
 struct FieldItemFxTable;
 struct TreeAnim;
+struct TreeLeafFx;
 #ifdef __cplusplus
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/VecFx32.h"
+#include "proto/main/unk_0208f268.h"
+#include "sys/Heap.h"
 #include "types.h"
-#include "uptr.h"
 class FieldObjectManager;
+class TreeAnimSet;
 #endif
 
 #ifdef __cplusplus
@@ -72,6 +75,9 @@ extern char data_ov003_02233420[0x20];
 #ifndef PROTO_LOCAL_data_ov003_022329c8
 extern char data_ov003_022329c8[0x10];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232dcc
+extern char *data_ov003_02232dcc[6];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02232cc4
 extern char data_ov003_02232cc4[0x18];
 #endif
@@ -120,6 +126,9 @@ extern char data_ov003_02232cdc[0x18];
 #ifndef PROTO_LOCAL_data_ov003_02233aa8
 extern char data_ov003_02233aa8[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_0223263c
+extern char *data_ov003_0223263c[1];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02232f78
 extern char data_ov003_02232f78[0x1c];
 #endif
@@ -128,6 +137,12 @@ extern char data_ov003_02233af0[0x24];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233b14
 extern char data_ov003_02233b14[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232a28
+extern char *data_ov003_02232a28[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232b18
+extern char *data_ov003_02232b18[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_0223288c
 extern char data_ov003_0223288c[0xc];
@@ -147,6 +162,12 @@ extern char data_ov003_02232f94[0x1c];
 #ifndef PROTO_LOCAL_data_ov003_02233c10
 extern char data_ov003_02233c10[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232630
+extern char *data_ov003_02232630[1];
+#endif
+#ifndef PROTO_LOCAL_sTreeAnimPaths
+extern char *sTreeAnimPaths[32];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233c7c
 extern char data_ov003_02233c7c[0x24];
 #endif
@@ -156,11 +177,23 @@ extern char data_ov003_022329f8[0x10];
 #ifndef PROTO_LOCAL_data_ov003_02233004
 extern char data_ov003_02233004[0x1c];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232bec
+extern char *data_ov003_02232bec[5];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232910
+extern char * *data_ov003_02232910[3];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233020
 extern char data_ov003_02233020[0x1c];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_0223303c
 extern char data_ov003_0223303c[0x1c];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232d3c
+extern char *data_ov003_02232d3c[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232654
+extern char *data_ov003_02232654[1];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022343f0
 extern char data_ov003_022343f0[0x28];
@@ -183,8 +216,14 @@ extern char data_ov003_02233500[0x20];
 #ifndef PROTO_LOCAL_data_ov003_02234418
 extern char data_ov003_02234418[0x28];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232d84
+extern char *data_ov003_02232d84[6];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233100
 extern char data_ov003_02233100[0x1c];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232d9c
+extern char *data_ov003_02232d9c[6];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233138
 extern char data_ov003_02233138[0x1c];
@@ -198,6 +237,15 @@ extern char data_ov003_02232998[0x10];
 #ifndef PROTO_LOCAL_data_ov003_02234468
 extern char data_ov003_02234468[0x28];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232db4
+extern char *data_ov003_02232db4[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232aa8
+extern char *data_ov003_02232aa8[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_0223294c
+extern char * *data_ov003_0223294c[3];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233520
 extern char data_ov003_02233520[0x20];
 #endif
@@ -206,6 +254,12 @@ extern char data_ov003_02233e2c[0x24];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233e50
 extern char data_ov003_02233e50[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_0223264c
+extern char *data_ov003_0223264c[1];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232ac8
+extern char *data_ov003_02232ac8[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233e74
 extern char data_ov003_02233e74[0x24];
@@ -234,8 +288,17 @@ extern char data_ov003_0223285c[0xc];
 #ifndef PROTO_LOCAL_data_ov003_02233f70
 extern char data_ov003_02233f70[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232a18
+extern char *data_ov003_02232a18[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232b28
+extern char *data_ov003_02232b28[4];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_022331e0
 extern char data_ov003_022331e0[0x1c];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232dfc
+extern char *data_ov003_02232dfc[6];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233fb8
 extern char data_ov003_02233fb8[0x24];
@@ -261,6 +324,9 @@ extern char data_ov003_022344e0[0x28];
 #ifndef PROTO_LOCAL_data_ov003_022340d8
 extern char data_ov003_022340d8[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232634
+extern char *data_ov003_02232634[1];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_0223326c
 extern char data_ov003_0223326c[0x1c];
 #endif
@@ -275,6 +341,9 @@ extern char data_ov003_022340fc[0x24];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02234508
 extern char data_ov003_02234508[0x28];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232648
+extern char *data_ov003_02232648[1];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022332c0
 extern char data_ov003_022332c0[0x1c];
@@ -291,8 +360,14 @@ extern char data_ov003_022332f8[0x1c];
 #ifndef PROTO_LOCAL_data_ov003_02234530
 extern char data_ov003_02234530[0x28];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232638
+extern char *data_ov003_02232638[1];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02234558
 extern char data_ov003_02234558[0x28];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022328bc
+extern char * *data_ov003_022328bc[3];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_0223418c
 extern char data_ov003_0223418c[0x24];
@@ -306,8 +381,17 @@ extern char data_ov003_02233384[0x1c];
 #ifndef PROTO_LOCAL_data_ov003_0223421c
 extern char data_ov003_0223421c[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232788
+extern char *data_ov003_02232788[2];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02234288
 extern char data_ov003_02234288[0x28];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022328d4
+extern char * *data_ov003_022328d4[3];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232904
+extern char * *data_ov003_02232904[3];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022335e0
 extern char data_ov003_022335e0[0x24];
@@ -354,8 +438,14 @@ extern char data_ov003_02233748[0x24];
 #ifndef PROTO_LOCAL_data_ov003_022337b4
 extern char data_ov003_022337b4[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232a48
+extern char *data_ov003_02232a48[4];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_022337d8
 extern char data_ov003_022337d8[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232650
+extern char *data_ov003_02232650[1];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02234350
 extern char data_ov003_02234350[0x28];
@@ -375,6 +465,9 @@ extern char data_ov003_02233940[0x24];
 #ifndef PROTO_LOCAL_data_ov003_02233368
 extern char data_ov003_02233368[0x1c];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232934
+extern char * *data_ov003_02232934[3];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_022329d8
 extern char data_ov003_022329d8[0x10];
 #endif
@@ -390,6 +483,15 @@ extern char data_ov003_02232a08[0x10];
 #ifndef PROTO_LOCAL_data_ov003_02233acc
 extern char data_ov003_02233acc[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232ab8
+extern char *data_ov003_02232ab8[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232940
+extern char *data_ov003_02232940[3];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232d0c
+extern char *data_ov003_02232d0c[6];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233ba4
 extern char data_ov003_02233ba4[0x24];
 #endif
@@ -399,6 +501,9 @@ extern char data_ov003_022334e0[0x20];
 #ifndef PROTO_LOCAL_data_ov003_02233c34
 extern char data_ov003_02233c34[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232720
+extern char *data_ov003_02232720[2];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233ca0
 extern char data_ov003_02233ca0[0x24];
 #endif
@@ -407,6 +512,12 @@ extern char data_ov003_022343c8[0x28];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233074
 extern char data_ov003_02233074[0x1c];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232d54
+extern char *data_ov003_02232d54[6];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022328ec
+extern char * *data_ov003_022328ec[3];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022330ac
 extern char data_ov003_022330ac[0x1c];
@@ -429,6 +540,9 @@ extern char data_ov003_02232820[0xc];
 #ifndef PROTO_LOCAL_data_ov003_0223318c
 extern char data_ov003_0223318c[0x1c];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_022326e8
+extern char *data_ov003_022326e8[2];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_022331a8
 extern char data_ov003_022331a8[0x1c];
 #endif
@@ -447,17 +561,32 @@ extern char data_ov003_02233f94[0x24];
 #ifndef PROTO_LOCAL_data_ov003_02234000
 extern char data_ov003_02234000[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232778
+extern char *data_ov003_02232778[2];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_0223406c
 extern char data_ov003_0223406c[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232e14
+extern char *data_ov003_02232e14[6];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022332a4
 extern char data_ov003_022332a4[0x1c];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232e2c
+extern char *data_ov003_02232e2c[6];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02234144
 extern char data_ov003_02234144[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_022328b0
+extern char *data_ov003_022328b0[3];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_022335a0
 extern char data_ov003_022335a0[0x20];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232bc8
+extern char *data_ov003_02232bc8[4];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022341b0
 extern char data_ov003_022341b0[0x24];
@@ -467,6 +596,9 @@ extern char data_ov003_022341d4[0x24];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02234580
 extern char data_ov003_02234580[0x28];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232bd8
+extern char *data_ov003_02232bd8[5];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02232958
 extern char data_ov003_02232958[0x10];
@@ -492,14 +624,29 @@ extern char data_ov003_02232838[0xc];
 #ifndef PROTO_LOCAL_data_ov003_02232eec
 extern char data_ov003_02232eec[0x1c];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_022328a4
+extern char * *data_ov003_022328a4[3];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232c14
+extern char *data_ov003_02232c14[5];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233964
 extern char data_ov003_02233964[0x24];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022339f4
 extern char data_ov003_022339f4[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_022328f8
+extern char * *data_ov003_022328f8[3];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232af8
+extern char *data_ov003_02232af8[4];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233b38
 extern char data_ov003_02233b38[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232cf4
+extern char *data_ov003_02232cf4[6];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022330c8
 extern char data_ov003_022330c8[0x1c];
@@ -513,8 +660,14 @@ extern char data_ov003_02232fcc[0x1c];
 #ifndef PROTO_LOCAL_data_ov003_02232fe8
 extern char data_ov003_02232fe8[0x1c];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232d24
+extern char *data_ov003_02232d24[6];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233cc4
 extern char data_ov003_02233cc4[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232d6c
+extern char *data_ov003_02232d6c[6];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233dc0
 extern char data_ov003_02233dc0[0x24];
@@ -524,6 +677,9 @@ extern char data_ov003_02233154[0x1c];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233e08
 extern char data_ov003_02233e08[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232de4
+extern char *data_ov003_02232de4[6];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233fdc
 extern char data_ov003_02233fdc[0x24];
@@ -555,6 +711,9 @@ extern char data_ov003_022336dc[0x24];
 #ifndef PROTO_LOCAL_data_ov003_0223376c
 extern char data_ov003_0223376c[0x24];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_022328c8
+extern char *data_ov003_022328c8[3];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233844
 extern char data_ov003_02233844[0x24];
 #endif
@@ -563,6 +722,9 @@ extern char data_ov003_022338f8[0x24];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022339d0
 extern char data_ov003_022339d0[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_022328e0
+extern char * *data_ov003_022328e0[3];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233b5c
 extern char data_ov003_02233b5c[0x24];
@@ -575,6 +737,9 @@ extern char data_ov003_02233c58[0x24];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_02233058
 extern char data_ov003_02233058[0x1c];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232644
+extern char *data_ov003_02232644[1];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_0223311c
 extern char data_ov003_0223311c[0x1c];
@@ -618,6 +783,9 @@ extern char data_ov003_0223282c[0xc];
 #ifndef PROTO_LOCAL_data_ov003_022331c4
 extern char data_ov003_022331c4[0x1c];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02232b58
+extern char *data_ov003_02232b58[4];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_022340b4
 extern char data_ov003_022340b4[0x24];
 #endif
@@ -633,8 +801,14 @@ extern char data_ov003_02234378[0x28];
 #ifndef PROTO_LOCAL_data_ov003_022334c0
 extern char data_ov003_022334c0[0x20];
 #endif
+#ifndef PROTO_LOCAL_data_ov003_02234604
+extern char *data_ov003_02234604[12];
+#endif
 #ifndef PROTO_LOCAL_data_ov003_02233a3c
 extern char data_ov003_02233a3c[0x24];
+#endif
+#ifndef PROTO_LOCAL_data_ov003_02232640
+extern char *data_ov003_02232640[1];
 #endif
 #ifndef PROTO_LOCAL_data_ov003_022333e0
 extern char data_ov003_022333e0[0x20];
@@ -642,422 +816,29 @@ extern char data_ov003_022333e0[0x20];
 #ifndef PROTO_LOCAL_FieldObjectManager_Create
 void *FieldObjectManager_Create();
 #endif
-#ifndef PROTO_LOCAL_FieldObj_GetGroundTexSet
-void *FieldObj_GetGroundTexSet();
-#endif
-#ifndef PROTO_LOCAL_FieldItemFx_SplashPosCallback
-void FieldItemFx_SplashPosCallback(void *p);
-#endif
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef __cplusplus
 extern "C" {
-#ifndef PROTO_LOCAL_data_ov003_022326a8
-extern uptr data_ov003_022326a8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232dcc
-extern uptr data_ov003_02232dcc[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327b0
-extern uptr data_ov003_022327b0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327f0
-extern uptr data_ov003_022327f0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326c0
-extern uptr data_ov003_022326c0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232800
-extern uptr data_ov003_02232800[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327f8
-extern uptr data_ov003_022327f8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_0223263c
-extern uptr data_ov003_0223263c[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a28
-extern uptr data_ov003_02232a28[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b18
-extern uptr data_ov003_02232b18[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232660
-extern uptr data_ov003_02232660[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232718
-extern uptr data_ov003_02232718[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326b0
-extern uptr data_ov003_022326b0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232768
-extern uptr data_ov003_02232768[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327d8
-extern uptr data_ov003_022327d8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232630
-extern uptr data_ov003_02232630[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232770
-extern uptr data_ov003_02232770[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a58
-extern uptr data_ov003_02232a58[4];
-#endif
-#ifndef PROTO_LOCAL_sTreeAnimPaths
-extern uptr sTreeAnimPaths[32];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a78
-extern uptr data_ov003_02232a78[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232bec
-extern uptr data_ov003_02232bec[5];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232910
-extern uptr data_ov003_02232910[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a88
-extern uptr data_ov003_02232a88[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232d3c
-extern uptr data_ov003_02232d3c[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232760
-extern uptr data_ov003_02232760[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232654
-extern uptr data_ov003_02232654[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232d84
-extern uptr data_ov003_02232d84[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232d9c
-extern uptr data_ov003_02232d9c[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327b8
-extern uptr data_ov003_022327b8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a98
-extern uptr data_ov003_02232a98[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232db4
-extern uptr data_ov003_02232db4[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232aa8
-extern uptr data_ov003_02232aa8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_0223294c
-extern uptr data_ov003_0223294c[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232c3c
-extern uptr data_ov003_02232c3c[5];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_0223264c
-extern uptr data_ov003_0223264c[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232ac8
-extern uptr data_ov003_02232ac8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326e0
-extern uptr data_ov003_022326e0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a18
-extern uptr data_ov003_02232a18[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b28
-extern uptr data_ov003_02232b28[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232dfc
-extern uptr data_ov003_02232dfc[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232708
-extern uptr data_ov003_02232708[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232634
-extern uptr data_ov003_02232634[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232648
-extern uptr data_ov003_02232648[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232798
-extern uptr data_ov003_02232798[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b88
-extern uptr data_ov003_02232b88[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326d0
-extern uptr data_ov003_022326d0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232738
-extern uptr data_ov003_02232738[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232638
-extern uptr data_ov003_02232638[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022328bc
-extern uptr data_ov003_022328bc[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232928
-extern uptr data_ov003_02232928[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232728
-extern uptr data_ov003_02232728[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232688
-extern uptr data_ov003_02232688[2];
-#endif
 #ifndef PROTO_LOCAL_data_ov003_022335c0
 extern u32 data_ov003_022335c0[8];
 #endif
-#ifndef PROTO_LOCAL_data_ov003_02232788
-extern uptr data_ov003_02232788[2];
-#endif
 #ifndef PROTO_LOCAL_sFieldObjectLoaders
-extern uptr sFieldObjectLoaders[9];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326f8
-extern uptr data_ov003_022326f8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022328d4
-extern uptr data_ov003_022328d4[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232904
-extern uptr data_ov003_02232904[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232680
-extern uptr data_ov003_02232680[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327c8
-extern uptr data_ov003_022327c8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232c28
-extern uptr data_ov003_02232c28[5];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a48
-extern uptr data_ov003_02232a48[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232650
-extern uptr data_ov003_02232650[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232808
-extern uptr data_ov003_02232808[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232934
-extern uptr data_ov003_02232934[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326d8
-extern uptr data_ov003_022326d8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232740
-extern uptr data_ov003_02232740[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232ab8
-extern uptr data_ov003_02232ab8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a38
-extern uptr data_ov003_02232a38[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232940
-extern uptr data_ov003_02232940[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232d0c
-extern uptr data_ov003_02232d0c[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327c0
-extern uptr data_ov003_022327c0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232720
-extern uptr data_ov003_02232720[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232a68
-extern uptr data_ov003_02232a68[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232758
-extern uptr data_ov003_02232758[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232d54
-extern uptr data_ov003_02232d54[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022328ec
-extern uptr data_ov003_022328ec[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326e8
-extern uptr data_ov003_022326e8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b08
-extern uptr data_ov003_02232b08[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b48
-extern uptr data_ov003_02232b48[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327d0
-extern uptr data_ov003_022327d0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232778
-extern uptr data_ov003_02232778[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232e14
-extern uptr data_ov003_02232e14[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232818
-extern uptr data_ov003_02232818[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232810
-extern uptr data_ov003_02232810[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b68
-extern uptr data_ov003_02232b68[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232e2c
-extern uptr data_ov003_02232e2c[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b98
-extern uptr data_ov003_02232b98[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022328b0
-extern uptr data_ov003_022328b0[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232bb8
-extern uptr data_ov003_02232bb8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232bc8
-extern uptr data_ov003_02232bc8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326b8
-extern uptr data_ov003_022326b8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232c50
-extern uptr data_ov003_02232c50[5];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232bd8
-extern uptr data_ov003_02232bd8[5];
+extern BOOL (*sFieldObjectLoaders[9]) ();
 #endif
 #ifndef PROTO_LOCAL_data_ov003_0223291c
-extern uptr data_ov003_0223291c[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327a8
-extern uptr data_ov003_022327a8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022328a4
-extern uptr data_ov003_022328a4[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b78
-extern uptr data_ov003_02232b78[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232c14
-extern uptr data_ov003_02232c14[5];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326a0
-extern uptr data_ov003_022326a0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022328f8
-extern uptr data_ov003_022328f8[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232af8
-extern uptr data_ov003_02232af8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232cf4
-extern uptr data_ov003_02232cf4[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232d24
-extern uptr data_ov003_02232d24[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232d6c
-extern uptr data_ov003_02232d6c[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327e8
-extern uptr data_ov003_022327e8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232de4
-extern uptr data_ov003_02232de4[6];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b38
-extern uptr data_ov003_02232b38[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232790
-extern uptr data_ov003_02232790[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232780
-extern uptr data_ov003_02232780[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327a0
-extern uptr data_ov003_022327a0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326f0
-extern uptr data_ov003_022326f0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022328c8
-extern uptr data_ov003_022328c8[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022328e0
-extern uptr data_ov003_022328e0[3];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232710
-extern uptr data_ov003_02232710[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232644
-extern uptr data_ov003_02232644[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232678
-extern uptr data_ov003_02232678[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232ae8
-extern uptr data_ov003_02232ae8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232698
-extern uptr data_ov003_02232698[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232700
-extern uptr data_ov003_02232700[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232730
-extern uptr data_ov003_02232730[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232658
-extern uptr data_ov003_02232658[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022326c8
-extern uptr data_ov003_022326c8[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232748
-extern uptr data_ov003_02232748[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232b58
-extern uptr data_ov003_02232b58[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232670
-extern uptr data_ov003_02232670[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_022327e0
-extern uptr data_ov003_022327e0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232ad8
-extern uptr data_ov003_02232ad8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232ba8
-extern uptr data_ov003_02232ba8[4];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02234604
-extern uptr data_ov003_02234604[12];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232640
-extern uptr data_ov003_02232640[1];
-#endif
-#ifndef PROTO_LOCAL_data_ov003_02232750
-extern uptr data_ov003_02232750[2];
+extern VecFx32 *data_ov003_0223291c[3];
 #endif
 #ifndef PROTO_LOCAL_FieldObj_GetShapeRecord
-u8 *FieldObj_GetShapeRecord(u8 *p);
+const u8 *FieldObj_GetShapeRecord(u16 *p);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadTextureFiles
-BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n);
+BOOL FieldObj_LoadTextureFiles(void *self, void **a, void **b, char **names, s32 n);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadPaletteFiles
-BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, uptr *names, s32 n);
+BOOL FieldObj_LoadPaletteFiles(void *self, void **a, void **b, char **names, s32 n);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadIconModels
 BOOL FieldObj_LoadIconModels(FieldObjectManager *self);
@@ -1096,37 +877,37 @@ void *FieldObj_GetPalmModelPath(FieldObjectManager *self, s32 i);
 void *FieldObj_GetPalmAnimModelPath(void *self, s32 i);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_GetTreeTexturePaths
-u32 FieldObj_GetTreeTexturePaths(void *self, s32 i);
+char **FieldObj_GetTreeTexturePaths(void *self, s32 i);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadTreeTextures
-BOOL FieldObj_LoadTreeTextures(void *self, u32 *a, u32 *b);
+BOOL FieldObj_LoadTreeTextures(void *self, void **a, void **b);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadCedarTextures
-BOOL FieldObj_LoadCedarTextures(void *a, u32 *b, u32 *c);
+BOOL FieldObj_LoadCedarTextures(void *a, void **b, void **c);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadLitCedarTexture
-BOOL FieldObj_LoadLitCedarTexture(void *a, u32 *b, u32 *c);
+BOOL FieldObj_LoadLitCedarTexture(void *a, void **b, void **c);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadPalmTextures
-BOOL FieldObj_LoadPalmTextures(void *a, u32 *b, u32 *c);
+BOOL FieldObj_LoadPalmTextures(void *a, void **b, void **c);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadTreePalettes
-BOOL FieldObj_LoadTreePalettes(void *a, u32 *b, u32 *c, u32 *d, u32 *e);
+BOOL FieldObj_LoadTreePalettes(void *a, void **b, void **c, void **d, void **e);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadCedarPalettes
-BOOL FieldObj_LoadCedarPalettes(void *a, u32 *b, u32 *c, u32 *d, u32 *e);
+BOOL FieldObj_LoadCedarPalettes(void *a, void **b, void **c, void **d, void **e);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadLitCedarPalette
-BOOL FieldObj_LoadLitCedarPalette(void *a, u32 *b, u32 *c);
+BOOL FieldObj_LoadLitCedarPalette(void *a, void **b, void **c);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadTreeSaplingModels
-BOOL FieldObj_LoadTreeSaplingModels(FieldObjectManager *self, u32 *a, u32 *b, u32 c);
+BOOL FieldObj_LoadTreeSaplingModels(FieldObjectManager *self, void **a, void **b, u32 *c);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadCedarSaplingModel
-BOOL FieldObj_LoadCedarSaplingModel(FieldObjectManager *self, u32 *a, u32 *b, u32 c);
+BOOL FieldObj_LoadCedarSaplingModel(FieldObjectManager *self, void **a, void **b, u32 *c);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadPalmSaplingModel
-BOOL FieldObj_LoadPalmSaplingModel(FieldObjectManager *self, u32 *a, u32 *b, u32 c);
+BOOL FieldObj_LoadPalmSaplingModel(FieldObjectManager *self, void **a, void **b, u32 *c);
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadTrees
 BOOL FieldObj_LoadTrees();
@@ -1137,11 +918,17 @@ BOOL FieldObj_LoadFlowers();
 #ifndef PROTO_LOCAL_FieldObj_LoadGrass
 BOOL FieldObj_LoadGrass();
 #endif
+#ifndef PROTO_LOCAL_FieldObj_GetGroundTexSet
+u32 FieldObj_GetGroundTexSet();
+#endif
 #ifndef PROTO_LOCAL_FieldObj_LoadHoles
 BOOL FieldObj_LoadHoles();
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadCracks
 BOOL FieldObj_LoadCracks();
+#endif
+#ifndef PROTO_LOCAL_FieldObj_LoadTurnips
+BOOL FieldObj_LoadTurnips();
 #endif
 #ifndef PROTO_LOCAL_FieldObj_LoadDesigns
 BOOL FieldObj_LoadDesigns();
@@ -1162,7 +949,7 @@ s32 TreeLeafFx_OnEffectStep(EffectEmitterEntry *self);
 s32 TreeLeafFx_OnEffectUpdate(EffectEmitterEntry *self);
 #endif
 #ifndef PROTO_LOCAL_TreeAnimSet_Request
-void TreeAnimSet_Request(u8 *a, s32 id, s32 *pos, s32 c, s32 d);
+void TreeAnimSet_Request(TreeAnimSet *a, s32 id, s32 *pos, s32 c, s32 d);
 #endif
 #ifndef PROTO_LOCAL_Tree_KeepShaking
 void Tree_KeepShaking(s32 id, s32 *pos);
@@ -1171,22 +958,25 @@ void Tree_KeepShaking(s32 id, s32 *pos);
 void TreeAnim_Begin(TreeAnim *o, s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Tree_GetDropSide
-s32 Tree_GetDropSide(TreeAnim *o, VecFx32 *p);
+s32 Tree_GetDropSide(s32 aid, VecFx32 *p);
 #endif
 #ifndef PROTO_LOCAL_Tree_DropFruit
 void Tree_DropFruit(u16 *cell, s32 id, s32 *pos);
 #endif
 #ifndef PROTO_LOCAL_Tree_DropBeeHive
-void Tree_DropBeeHive(TreeAnim *o, s32 *p);
+void Tree_DropBeeHive(s32 aid, s32 *p);
 #endif
 #ifndef PROTO_LOCAL_TreeAnimSet_LoadAnims
-void TreeAnimSet_LoadAnims(u32 (*arr)[4]);
+void TreeAnimSet_LoadAnims(TreeAnimSet *set);
 #endif
 #ifndef PROTO_LOCAL_TreeAnimSet_FreeAnims
-void TreeAnimSet_FreeAnims(u32 (*arr)[4]);
+void TreeAnimSet_FreeAnims(TreeAnimSet *set);
 #endif
 #ifndef PROTO_LOCAL_TreeAnimSet_GetAnimPath
-s32 TreeAnimSet_GetAnimPath(void *self, u32 a, u32 b);
+char *TreeAnimSet_GetAnimPath(TreeAnimSet *self, u32 a, u32 b);
+#endif
+#ifndef PROTO_LOCAL_FieldItemFx_SplashPosCallback
+void FieldItemFx_SplashPosCallback(EffectModel *p);
 #endif
 #ifndef PROTO_LOCAL_FieldItemFx_StartDigHole
 s32 FieldItemFx_StartDigHole(s32 type, s32 v, s32 w);
@@ -1217,22 +1007,22 @@ s32 FieldItemFx_StartPitfallClose(s32 a, s32 b);
 #endif
 }
 #ifndef PROTO_LOCAL_sTreeLeafFx
-extern u8 sTreeLeafFx[0x44];
+extern TreeLeafFx sTreeLeafFx;
 #endif
 #ifndef PROTO_LOCAL_sFieldItemFxTable
 extern FieldItemFxTable sFieldItemFxTable;
 #endif
 #ifndef PROTO_LOCAL_sFieldObjectModelHeap
-extern u8 sFieldObjectModelHeap[HOST_SIZED (0x4, void *)];
+extern Heap *sFieldObjectModelHeap;
 #endif
-#ifndef PROTO_LOCAL_sFieldObjectManagerProfile_p
-extern ProcProfile sFieldObjectManagerProfile_p;
+#ifndef PROTO_LOCAL_sFieldObjectManagerProfile
+extern ProcProfile sFieldObjectManagerProfile;
 #endif
 #ifndef PROTO_LOCAL_gFieldObjectManager
-extern u8 gFieldObjectManager[HOST_SIZED (0x4, void *)];
+extern FieldObjectManager *gFieldObjectManager;
 #endif
 #ifndef PROTO_LOCAL_sFieldObjectAnimHeap
-extern u8 sFieldObjectAnimHeap[HOST_SIZED (0x4, void *)];
+extern Heap *sFieldObjectAnimHeap;
 #endif
 #endif
 

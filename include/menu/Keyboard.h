@@ -4,6 +4,7 @@
 // On-screen text keyboard of the chat/letter/BBS menus (0x3bbc bytes). Its methods are the plain functions
 // Keyboard_* of src/ov095/unk_02292360.cpp; owners construct it inline (ov111, ov112, ov122, ov126).
 #include "types.h"
+#include "nitro/gxoam.h"
 #include "gfx/BgVramTask.h"
 #include "ui/LabelString.h"
 
@@ -33,7 +34,7 @@ public:
     /* 0x002d */ u8 typedRunLength;
     /* 0x002e */ u8 layout;
     /* 0x002f */ u8 cursorWrap;
-    /* 0x0030 */ u8 *tabCells;
+    /* 0x0030 */ GXOamAttr *tabCells; // the page tab cell (3 tab objects, then the bar cell from entry 3)
     /* 0x0034 */ u8 unk_34[0x22f4 - 0x34];
     /* 0x22f4 */ BgVramTask bgTasks[2];
     /* 0x233c */ LabelString labels[2];

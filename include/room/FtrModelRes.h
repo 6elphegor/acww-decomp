@@ -8,6 +8,8 @@
 #include "gfx/ModelResource.h"
 #include "room/FtrAnimSet.h"
 
+class ModelSlot;
+
 struct FtrModelRes {
     FtrModelRes();
     ~FtrModelRes();
@@ -23,11 +25,11 @@ struct FtrModelRes {
     void release();
     void *getTexture();
     void *getModel();
-    BOOL loadAsync(void *obj, s32 a, s32 flag);
-    BOOL loadSync(void *obj, s32 a, s32 flag);
+    BOOL loadAsync(ModelSlot *obj, s32 a, s32 flag);
+    BOOL loadSync(ModelSlot *obj, s32 a, s32 flag);
     void freeTexFile();
     FtrAnimSet *getAnimSet();
-    BOOL loadFiles(void *obj, s32 id);
+    BOOL loadFiles(ModelSlot *obj, s32 id);
     char *makeTexPath(s32 id);
     char *makeArcPath(s32 id);
     BOOL isLoaded();

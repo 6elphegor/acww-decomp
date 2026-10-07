@@ -10,13 +10,13 @@ struct NNSG3dResAnmCommon;
 struct FtrAnimSet {
     inline FtrAnimSet() { clear(); }
     ~FtrAnimSet();
-    s32 getTexCopy();
+    void *getTexCopy();
     NNSG3dResAnmCommon *getBtp(u32 i);
     NNSG3dResAnmCommon *getBta(u32 i);
     NNSG3dResAnmCommon *getBva(u32 i);
     NNSG3dResAnmCommon *getBma(u32 i);
     NNSG3dResAnmCommon *getBca(u32 i);
-    void setTexCopy(s32 v);
+    void setTexCopy(void *v);
     void setBtp(void *v, u32 i);
     void setBta(void *v, u32 i);
     void setBva(void *v, u32 i);
@@ -29,7 +29,7 @@ struct FtrAnimSet {
     /* 0x10 */ void *bva[2];
     /* 0x18 */ void *bta[2];
     /* 0x20 */ void *btp[2];
-    /* 0x28 */ s32 texCopy;
+    /* 0x28 */ void *texCopy;
 };
 
 #endif // ROOM_FTRANIMSET_H

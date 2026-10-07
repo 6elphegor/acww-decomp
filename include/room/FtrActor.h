@@ -90,10 +90,10 @@ public:
     void spawnEffectAt(VecFx32 *v);
     void spawnActorC0AtCenter();
     void spawnActorC0AtTile(s32 a);
-    BOOL findOwnTile(s32 *ox, s32 *oy, s32 a, s32 b);
-    u16 makeCharId(s32 a, s32 b);
-    BOOL canMoveTo(s32 a, s32 b);
-    BOOL canMoveBy(s32 a);
+    BOOL findOwnTile(s32 *ox, s32 *oy, VecFx32 *a, s32 b);
+    u16 makeCharId(VecFx32 *a, s32 b);
+    BOOL canMoveTo(VecFx32 *a, s32 b);
+    BOOL canMoveBy(VecFx32 *a);
     BOOL canRotateBy(s32 a);
     BOOL hasItemOnTop();
     void releaseRoomLight();

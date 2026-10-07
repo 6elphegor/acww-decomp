@@ -7,7 +7,6 @@
 #include "talk/EncodedString.h"
 #include "item/ItemName.h"
 #include "talk/EncodedString16Buf.h"
-#define PROTO_LOCAL_FtrInfo_GetNameForm  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020501d4.h"
 #include "proto/main/unk_02052b50.h"
 #include "proto/main/unk_02062530.h"
@@ -282,9 +281,6 @@ void MI_CpuCopy8(const void *src, void *dst, u32 n);
 extern "C" {
 }
 
-extern "C" {
-u32 FtrInfo_GetNameForm(s32);
-}
 
 extern "C" {
 }
@@ -373,7 +369,7 @@ BOOL ItemName::setFromItem(u16 *p) {
     if (Item_IsFurniture(l.t)) {
         s32 x = Item_GetFurnitureIndex(l.t);
         setString((u8 *)FtrInfo_GetName(x));
-        r->form = FtrInfo_GetNameForm(x);
+        r->form = FtrInfo_GetNameForm();
         r->attrB = FtrInfo_GetNameAttrB(x);
         r->attrA = FtrInfo_GetNameAttrA(x);
         return TRUE;

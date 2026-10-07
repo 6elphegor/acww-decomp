@@ -130,79 +130,15 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "player/PlayerId.h"
 #include "snd/BgmManager.h"
 #include "sys/Heap.h"
-#define PROTO_LOCAL_AnimSlotRef_Assign  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AnimSlotRef_GetAnimId  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AnimSlotRef_GetData  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_AnimSlotRef_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CharaClothTexRef_GetBuffer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_ClothTex_GetTexThunk  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldObj_LoadIconModels  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldObj_LoadStones  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldObjectManager_Create  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FishShadow_EnterSpawn  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Footstep_GetSeAtPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FtrMgr_PollRemovedPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HeldItemModel_GetModel  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HeldItemModel_PlayAnim  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetSlotAngle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetSlotPosXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_MainAct3C  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_MainDoorEntered  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetAct12  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetBeeSting  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetBuryItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetDrinkCoffee  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetFillHole  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetFtrPullMove  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetFtrPushMove  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetFtrRotate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetGetOutOfBedCheck  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetPickUpItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetPluck  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetSlingshotWatch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetStandUpCheck  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_NetTreeShakeRelease  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_PackClothesChange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_TestSlotFlag  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBodyModelRef_CancelTexUpload  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBodyModelRef_GetBuffer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBodyModelRef_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBodyModelRef_PollTexUpload  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBodyModelRef_RelocateTexture  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBodyModelRef_SetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBodyWorkRef_Assign  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerBodyWorkRef_GetHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerGlassesModelRef_CancelTexUpload  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerGlassesModelRef_GetBuffer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerGlassesModelRef_GetModelId  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerGlassesModelRef_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerGlassesModelRef_PollTexUpload  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerGlassesModelRef_Release  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerGlassesModelRef_RelocateTexture  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerGlassesModelRef_SetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerHead_CancelTexUpload  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerHead_GetModelFile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerHead_GetModelId  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerHead_Load  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerHead_PollTexUpload  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerHead_Release  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerHead_RelocateTextures  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerHead_SetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerPaletteRef_Assign  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerPaletteRef_GetHair  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerPaletteRef_GetSkin  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerSession_GetGfxSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomItemIcons_DrawItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_SndMgr_PlaySe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snd_SeEmitterPlayAlternate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+// gScreenTransition: its type (ScreenTransition) is local to src/main/unk_020411dc.cpp; only its first byte (state)
+// is read here. Footstep_GetSeAtPos: the definition (src/main/unk_020b0a80.cpp) takes the position as a u32.
 #define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gSndMgr  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sHouseRoachActiveCount  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_Footstep_GetSeAtPos  // declared below: the shared prototype conflicts with the calls here
+// WorldCurve_ToCurved / _FromCurved / _Apply: the definitions (src/main/unk_0203ecec.cpp) type their vectors as
+// WorldCurve * (the curvature parameters) instead of VecFx32 *.
+#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
+#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e7fd4.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_020e9a08.h"
@@ -247,6 +183,27 @@ inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 #include "proto/ov003/unk_ov003_02204ce8.h"
 #include "proto/ov003/unk_ov003_02225800.h"
 #include "proto/ov004/unk_ov004_02233074.h"
+#include "proto/autoload_2/unk_020ef150.h"
+#include "proto/autoload_2/unk_020f0dec.h"
+#include "proto/itcm/unk_01ffb4e8.h"
+#include "proto/main/unk_0203c638.h"
+#include "proto/main/unk_020411dc.h"
+#include "proto/main/unk_0205c66c.h"
+#include "proto/main/unk_0205c91c.h"
+#include "proto/main/unk_0205edfc.h"
+#include "proto/main/unk_020b0a80.h"
+#include "proto/ov003/unk_ov003_0221ffb8.h"
+#include "proto/ov003/unk_ov003_022192b4.h"
+#include "proto/ov004/unk_ov004_0221e7a8.h"
+#include "proto/ov004/unk_ov004_0222bed0.h"
+#include "proto/ov004/unk_ov004_02235fd0.h"
+extern "C" {
+extern u8 gScreenTransition;
+u32 Footstep_GetSeAtPos(VecFx32 *v);
+s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
+s32 WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
+s32 WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
+}
 
 
 
@@ -286,12 +243,7 @@ BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
 void _ZN13MatTexPatAnim7releaseEv(void *p);
 void _ZN11CachedModel7releaseEv(void *p);
-void PlayerGlassesModelRef_Release(void *p);
-void PlayerHead_Release(void *p);
-void PlayerBodyModelRef_CancelTexUpload(void *p);
 s32 Field_DrawItemModel(u16 a, void *b, void *c, s32 d, s32 e, s32 f);
-s32 RoomItemIcons_DrawItem(u16 a, void *b, void *c, s32 d, s32 e, s32 f);
-extern u8 gSndMgr[];
 extern u8 data_020d5e20[];
 extern s32 gCamera;
 extern s32 gCameraDistance;
@@ -313,18 +265,12 @@ extern PM_02004ce8 data_020d5ff4;
 namespace nB {
 extern "C" {
 
-void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
-s32 WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
-s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
-void MTX_RotX33_(s32 *out, s32 a, s32 b);
-void MTX_RotY33_(s32 *out, s32 a, s32 b);
-void MTX_Concat33(s32 *a, s32 *b, s32 *out);
+void MTX_RotX33_(MtxFx33 *out, fx32 s, fx32 c);
+void MTX_RotY33_(MtxFx33 *out, fx32 s, fx32 c);
 void _ZN5Model8setAlphaEj(void *obj, u8 v);
 void _ZN17TwoLayerAnimModel11drawLayeredEj(void *obj, u32 v);
 void Model_GetJointWorldMtx(void *obj, Mtx43 *out, u32 idx);
 void _ZN5Model10drawScaledEPi(void *obj, void *v);
-s32 PlayerHead_GetModelId(void *obj, u32 v);
-s32 PlayerGlassesModelRef_GetModelId(void *obj);
 void PlayerActor_CheckSceneExit(s32 a);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
@@ -855,8 +801,6 @@ namespace nE {
 extern "C" {
 
 void MI_CpuFill8(void *p, u32 v, u32 n);
-u16 WorldCurve_ToCurved(void *a, void *b);
-void WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 s32 FX_Div(s32 a, s32 b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void Math_ApproachS32(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -949,7 +893,6 @@ extern char sPlayerActorErrorMsgFile[];
 extern char sPlayerActorMsgFile[];
 extern char sPlayerActorGetInsectMsgFile[];
 extern char sPlayerActorGetFishMsgFile[];
-extern char gSndMgr[];
 extern u8 gFieldSceneKind;
 BOOL _ZN11CommManager11isLocalSlotEj(void *, s32);
 void _ZN11PlayerActor11advanceAnimEv(PlayerActor *);
@@ -967,9 +910,7 @@ void FishCatch_SetDisplayPosScale(void *, void *, void *);
 void PlayerActor_RequestFishShowCatch(PlayerActor *, u32, u32, s32);
 void PlayerActor_RequestInsectShowCatch(PlayerActor *, u32, u32, u32, u32, s32);
 void PlayerActor_RequestStowItem(PlayerActor *, u32, u32, u32, u32, u32, u32, s32);
-void WorldCurve_FromCurved(void *, void *);
 void *_ZN10FishBobber7getFishEv(void *);
-void HeldItemModel_PlayAnim(void *, u32, u32, u32);
 void PlayerActor_GetHeldItem(void *, PlayerActor *);
 BOOL Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
@@ -991,7 +932,6 @@ void Camera_SetMode4();
 void Camera_SetModeDefault();
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
-void SndMgr_PlaySe(void *, u32);
 void PlayerActor_ApproachAngle(void *, s32, u32, u32, u32);
 void _ZN11PlayerActor9setAngleYEPs(PlayerActor *, void *);
 static inline BOOL Unk_02008858_IsZero(u8 v) {
@@ -1013,7 +953,6 @@ extern u8 gFieldSceneKind;
 void TalkRequest_FinishSceneEntry();
 s32 _ZN11PlayerActor13startAnimOnceEijt(PlayerActor *, u32, u32, u32);
 s32 _ZN11PlayerActor15getHeldToolKindEv(PlayerActor *);
-void HeldItemModel_PlayAnim(void *, u32, u32, u32);
 BOOL _ZN11CommManager11isLocalSlotEj(void *, s32);
 void *_ZN19PlayerActionRequestC1Ev(void *);
 void _ZN19PlayerActionRequest6assignEiis(void *, u32, u32, u32);
@@ -1148,7 +1087,6 @@ void PendingUnit_CommitAt(Unk_02006d14_Pair* p, u32 v);
 void PendingUnit_ApplyAt(Unk_02006d14_Pair* p, u32 v);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void* p, u32 v);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void* p);
-void HeldItemModel_PlayAnim(void* p, u32 a, u32 b, u32 c);
 void _ZN10MsgRequest11setFileNameEPKc(void* p, void* q);
 void FieldPos_FromUnitCenter(void* p, u32 a, u32 b);
 BOOL Item_IsFurniture(u16* p);
@@ -1203,14 +1141,12 @@ u16* BlockMap_GetItemPtrAtPos(void* p, void* q, u32 z);
 void PendingUnit_CommitAt(Vec2* p, u32 z);
 void PendingUnit_ApplyAt(Vec2* p, u32 z);
 void VillagerTrend_NotifyUnk6(void* p);
-void HeldItemModel_PlayAnim(void* p, u32 a, u32 b, u32 c);
 extern void* gSceneBlockMap;
 BOOL Item_IsFurniture(void* p);
 u32 Item_GetFurnitureIndex(void* p);
 void _ZN9Character17attachTalkRequestEi(PlayerActor *a, MsgRequest *b);
 void _ZN9Character17detachTalkRequestEi(PlayerActor *a, MsgRequest *b);
 void _ZN10MsgRequest11setFileNameEPKc(void* p, void* q);
-Unk_02006d14_V3* FtrMgr_PollRemovedPos(s32 idx);
 s32 _s32_div_f(s32 a, s32 b);
 u32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void* p, u32 id);
 void _ZN19PlayerActionRequestC1Ev(void* p);
@@ -1265,13 +1201,11 @@ extern u16 gPad[];
 BOOL Scene_InHouseRoom();
 void FieldPos_FromUnitCenter(void *, u32, u32);
 u16 *BlockMap_GetItemPtrAtPos(void *, void *, u32);
-void HeldItemModel_PlayAnim(void *, u32, u32, u32);
 void *_ZN19PlayerActionRequestC1Ev(void *);
 void _ZN19PlayerActionRequest6assignEiis(void *, u32, u32, s32);
 void *_ZN19PlayerActionRequestD1Ev(void *);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
-u32 AnimSlotRef_GetAnimId(void *);
 BOOL _ZN11CommManager11isLocalSlotEj(void *, s32);
 void *TalkRequest_GetTalkTarget();
 s32 Math_Atan2(s32, s32);
@@ -1356,15 +1290,12 @@ extern "C" {
 
 extern s16 data_02135f44[];
 extern u8 gFieldSceneKind;
-extern u8 gScreenTransition;
-extern u8 sHouseRoachActiveCount;
 extern CommManager *gCommManager;
 extern u8 *data_021c1b3c;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 s32 Vec_DistXZ(void *a, void *b);
-BlendAnimModel &HeldItemModel_GetModel(void *p);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
 BOOL Scene_GetCurrent();
@@ -1374,8 +1305,6 @@ s32 Scene_InTown();
 s32 Scene_NoPlayerInUnsharedScene();
 s32 Ground_GetHeightAt(void *p, s32 a, s32 b);
 void TalkRequest_FinishSceneEntry();
-void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
-s32 PlayerActor_TestSlotFlag(s32 a, s32 b);
 s32 PlayerActor_Accelerate(s32 a, s32 b);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 void PlayerActor_TurnAngle(void *p, s32 a);
@@ -1427,19 +1356,11 @@ void _ZN11PlayerActor12requestAct10Esji(void *, u32 a, u32 b, s32 c);
 namespace nN {
 extern "C" {
 
-void AnimSlotRef_Assign(void *p, u32 v);
-void *PlayerBodyModelRef_GetBuffer(void *p);
-BOOL PlayerBodyModelRef_PollTexUpload(void *p);
 void _ZN11CachedModel11setFromFileEPv(void *p, void *v);
 void _ZN5Model11setCallbackEiiiii(void *p, void (*f)(void *), u32 a, u32 b, void *c, u32 d);
-s32 PlayerSession_GetGfxSlot(s32 a);
-void PlayerBodyWorkRef_Assign(void *p, u32 v);
-void *PlayerBodyWorkRef_GetHeap(void *p);
 void PlayerActor_JointCbPre(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 s32 Scene_GetCurrent();
-s32 PlayerActor_GetSlotPosXZ(u16 *a, s32 *b, s32 *c, s32 d, s32 e);
-BOOL PlayerActor_GetSlotAngle(u16 *a, s32 b, s32 c);
 u16 *_ZN10PlayerData11getHeldItemEv(void *p);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -1460,7 +1381,6 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 extern Unk_0200d64c_Keys gPad;
-extern u8 gScreenTransition;
 extern s32 gGfxMainOnTop;
 extern void *gSceneBlockMap;
 extern u8 data_020d5e50[];
@@ -1500,23 +1420,11 @@ BOOL _ZN11PlayerActor15getHeldToolKindEv(void *);
 namespace nO {
 extern "C" {
 
-s32 PlayerSession_GetGfxSlot(s32);
-void PlayerPaletteRef_Assign(void *, u32);
 void _ZN16PlayerFaceTexRef4loadEj(void *, s32);
 void _ZN12Unk_02005e7c15processRequestsEv(void *);
-void PlayerGlassesModelRef_SetSlot(void *, u32);
-void PlayerHead_SetSlot(void *, u32);
-void PlayerBodyModelRef_SetSlot(void *, u32);
-void PlayerBodyModelRef_Load(void *, s32);
-s32 PlayerBodyModelRef_GetBuffer(void *);
-s32 CharaClothTexRef_GetBuffer(void *);
-s32 PlayerPaletteRef_GetSkin(void *);
-void PlayerBodyModelRef_RelocateTexture(void *);
-s32 NNS_G3dGetTex(s32 a);
+void *NNS_G3dGetTex(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
-s32 PlayerActor_GetSlotPosXZ(void *a, void *b, void *c, s32 d, s32 e);
-s32 PlayerActor_GetSlotAngle(void *a, s32 b, s32 c);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 _ZN15TalkWindowState13getChoiceListEv(TalkWindowState *a);
@@ -1537,7 +1445,6 @@ extern u8 gTalkMsgIndexEnd;
 extern char sPlayerClothTexName[], sPlayerSkinPalName[];
 BOOL PlayerActor_CalcNetFollowAngle(s32 unused, s32 a, s32 b, s32 c, s16 d, s16 *out);
 s32 PlayerActor_GetHairColor(void *);
-s32 _ZN11PlayerActor7calcTanEj(void *, s32 v);
 s32 PlayerActor_GetFaceTexIndex(void *);
 s32 PlayerActor_GetPlayerData(void *);
 BOOL _ZN11PlayerActor13setActionFlagEj(void *, s32 v);
@@ -1565,25 +1472,18 @@ s32 Scene_GetCurrent();
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
 BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
 BOOL _ZN11CommManager11isLocalSlotEj(CommManager *g, s32 i);
-BOOL PlayerActor_GetSlotAngle(u32 *out, s32 a, s32 b);
-u32 WorldCurve_ToCurved(void *a, void *b);
 s32 _ZN5Actor15calcModelMatrixEPv(PlayerActor *p, void *buf);
 s32 _ZN5Model8setAlphaEj(void *p, s32 v);
 s32 _ZN17TwoLayerAnimModel11drawLayeredEj(void *p, s32 v);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
-s32 HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
-BOOL PlayerActor_GetSlotPosXZ(s16 *s, s32 *x, s32 *z, s32 m, s32 arg);
-VecFx32 *PlayerActor_GetBodyPos(u32 n);
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void PlayerActor_OffsetByAngle(VecFx32 *out, PlayerActor *p, VecFx32 *v, s16 *ang, u32 arg);
+void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 s32 _ZN11PlayerActor18updateBodyColliderEv(PlayerActor *p);
 s32 PlayerActor_ApproachAngle(s16 *p, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_GetTan(PlayerActor *p);
-s32 PlayerActor_PackClothesChange(u32 *out, u32 a, u32 b);
-s32 WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 Math_ApproachS32(s32 *p, s32 a, s32 b, s32 c, s32 d);
 void PlayerActor_CalcHandItemPos(VecFx32 *out, PlayerActor *p, void *args);
@@ -1610,10 +1510,9 @@ extern void *gSceneBlockMap;
 extern u32 data_020c6210[];
 s32 func_01ffcb0c(s32 a, s32 b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
-void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 BOOL _ZN11PlayerActor14testActionFlagEj(PlayerActor *o, s32 id);
-void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(s32 a, Unk_0200f17c_Date d);
+void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(PlayerData *a, Unk_0200f17c_Date d);
 s32 PlayerActor_GetTan(PlayerActor *o);
 BOOL _ZN11PlayerActor16isGuestInSessionEv(PlayerActor *o);
 Unk_0200f17c_Date *PlayerSession_GetLastPlayDate();
@@ -1623,8 +1522,6 @@ s32 _ZN10PlayerData15getLastPlayDateEv(void *p);
 void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 s32 DateTime_Compare(void *a, void *b, s32 n);
-void Snd_SeEmitterPlayAlternate(void *a, void *b, s32 c);
-VecFx32 *Footstep_GetSeAtPos(VecFx32 *v);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, s32 id);
 void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
 void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
@@ -1659,7 +1556,7 @@ static inline void Unk_0200f070_Set(VecFx32 *r, s32 x, s32 y, s32 z)
     r->z = z;
 }
 void PlayerActor_CalcHandItemPos(VecFx32 *dst, PlayerActor *o, s32 *p);
-void PlayerActor_SetLastPlayDate(PlayerActor *o, s32 a, Unk_0200f17c_Date *d);
+void PlayerActor_SetLastPlayDate(PlayerActor *o, PlayerData *a, Unk_0200f17c_Date *d);
 s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
 s32 PlayerActor_CompareLastPlayDateNow(void *o);
 void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
@@ -1691,18 +1588,10 @@ s32 PlayerActor_RoomUseTool(void *);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_Atan2(s32, s32);
 s32 Math_AngleDiffAbs(s32, s32);
-BOOL PlayerHead_PollTexUpload(void *);
-void PlayerHead_Load(void *, s32, s32, u16 *, s32);
-void *PlayerHead_GetModelFile(void *, s32);
-s32 NNS_G3dGetTex(void *);
+void *NNS_G3dGetTex(void *p);
 void *_ZN16PlayerFaceTexRef9getBufferEv(void *);
-void *PlayerPaletteRef_GetSkin(void *);
-void *PlayerPaletteRef_GetHair(void *);
-void PlayerHead_RelocateTextures(void *);
-void PlayerHead_CancelTexUpload(void *);
 void _ZN11CachedModel7releaseEv(void *);
 void _ZN11CachedModel11setFromFileEPv(void *, void *);
-s32 PlayerHead_GetModelId(void *, s32);
 void _ZN13MatTexPatAnim7releaseEv(void *);
 void *_ZN20CharaFaceAnimWorkRef7getHeapEv(void *);
 #define Heap_freeAll _ZN4Heap7freeAllEv
@@ -1710,25 +1599,15 @@ void Heap_freeAll(void *heap);
 void *_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *);
 void *_ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *);
 void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *, void *, u32, u32, u32, u32);
-s32 PlayerGlassesModelRef_GetModelId(void *);
-s32 PlayerGlassesModelRef_PollTexUpload(void *);
 BOOL Item_IsFlowerAltItem(u16 *);
 s32 Item_GetFlowerAltOrdinal(u16 *);
-void PlayerGlassesModelRef_Load(void *, s32);
-void PlayerGlassesModelRef_RelocateTexture(void *);
-void PlayerGlassesModelRef_CancelTexUpload(void *);
-void *PlayerGlassesModelRef_GetBuffer(void *);
 BOOL TalkRequestFlags_IsResetti(void *);
 void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
 void PlayerActor_OffsetByAngle(VecFx32 *, void *, void *, void *, void *);
-void *CharaClothTexRef_GetBuffer(void *);
-u32 ClothTex_GetTexThunk(void *tex);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
 s32 func_01ffcb0c(s32, s32);
-void AnimSlotRef_Load(void *, s32, s32, s32);
-s32 AnimSlotRef_GetData(void *);
 s32 func_021065dc(s32 a);
 s32 func_021065f8(s32, s32);
 void _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(void *, s32, s32, u32, u32, u32, u32, u32);
@@ -1736,9 +1615,8 @@ void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(void *, s32, s32);
 void PlayerActor_GetHeldItem(u16 *, void *);
 inline BOOL Unk_02010154_In(u16 *p) { BOOL r = FALSE; u16 v = *p; if (*p >= 0x1380 && v <= 0x139f) r = TRUE; return r; }
 BOOL _ZN11PlayerActor14testActionFlagEj(void *, s32 n);
-void * PlayerActor_GetGender(void *);
+BOOL PlayerActor_GetGender(void *);
 void * PlayerActor_GetPlayerData(void *);
-void * _ZN11PlayerActor7calcTanEj(void *, s32 n);
 void _ZN11PlayerActor13initFaceAnimsEv(void *);
 s32 PlayerActor_GetFaceTexIndex(void *);
 BOOL PlayerActor_GetFaceAltFlag(void *);
@@ -1758,8 +1636,6 @@ BOOL _ZN11CommManager11isLocalSlotEj(void *a, u32 b);
 BOOL Scene_InUnk6To8(void);
 u32 Scene_GetCurrent(void);
 u32 Scene_GetTouchPicker(void);
-void AnimSlotRef_Load(void *a, s32 b, u32 c, u32 d);
-s32 AnimSlotRef_GetData(void *a);
 u32 func_021065dc(u32 a);
 u32 func_021065f8(u32 a, u32 b);
 void BlendAnimModel_Play(void *a, u32 b, u32 c, u32 d, s32 e, u32 f, u32 g);
@@ -1768,8 +1644,6 @@ void _ZN11PlayerActor17applyHeldItemPoseEiPv(PlayerActor *a, s32 b, u32 c);
 s32 _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *a);
 s32 _ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *a);
 void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *a, s32 b, u32 c, u32 d, u32 e, u32 f);
-s32 _ZN16PlayerFaceTexRef9getBufferEv(void *a);
-s32 _ZN20CharaFaceAnimWorkRef7getHeapEv(void *a);
 void _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 u32 Ground_GetDefaultY(u32 a);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *a, u32 b);
@@ -1778,19 +1652,17 @@ BOOL PlayerActor_TurnAngleSlow(s16 *a, s32 b);
 void PlayerActor_ApproachCoord(void *a, u32 b);
 void Collision_Move(void *a, void *b, void *c, s32 d, u32 e, void *f, u32 g);
 void PlayerActor_TurnAngle(void *a, s32 target);
-u32 PlayerActor_GetPlayerData(u32 a);
-u32 PlayerActor_GetTan(u32 a);
-BOOL _ZN11PlayerActor16isGuestInSessionEv(u32 a);
-s32 PlayerActor_CompareLastPlayDate(u32 a, void *b, void *c);
-void PlayerActor_SetLastPlayDate(u32 a, u32 b, void *c);
+void *PlayerActor_GetPlayerData(void *p);
+s32 PlayerActor_GetTan(void *p);
+s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
+void PlayerActor_SetLastPlayDate(PlayerActor *o, PlayerData *a, Unk_0200f17c_Date *d);
 s32 DateTime_DiffDays(void *a, void *b);
-void _ZN11PlayerActor10netSendTanEv(u32 a);
 u16 *_ZN10PlayerData11getHeldItemEv(void *p);
-u32 _ZN10PlayerData11getFaceTypeEv(u32 a);
-void PlayerActor_GetHeldItem(u16 *out, u32 x);
-u32 PlayerActor_GetFaceTexIndex(u32 x);
-u32 PlayerActor_GetFaceAltFlag(u32 x);
-void PlayerActor_GetFaceItem(u16 *out, u32 x);
+u32 _ZN10PlayerData11getFaceTypeEv(PlayerData *a);
+void PlayerActor_GetHeldItem(u16 *out, void *x);
+u32 PlayerActor_GetFaceTexIndex(void *x);
+u32 PlayerActor_GetFaceAltFlag(void *x);
+void PlayerActor_GetFaceItem(u16 *out, void *x);
 }
 }
 
@@ -1807,15 +1679,13 @@ s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 s32 PlayerActor_ApproachAngle(s16 *p, s32 target, s32 rate, s32 maxstep, s32 minstep);
 void PlayerActor_ApproachValue(s32 *p, s32 target, s32 rate, s32 maxstep, s32 minstep);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
-BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
-VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_GetExitAtPos(VecFx32 *p);
 void *Scene_GetWarpRequest(void);
 BOOL SceneExit_GetDoor(void *a, s32 b, s32 *c, s32 *d);
 BOOL Scene_InUnk6To8(void);
 void TalkRequest_FinishSceneEntry(void);
 void TalkRequest_AddLeaveRoom(void);
-void TalkRequest_AddSceneExit(s32 a, s32 b);
+BOOL TalkRequest_AddSceneExit(Character *o, s32 v);
 extern void *gCommManager;
 s32 PlayerActor_GetTan(void *p);
 s32 PlayerActor_GetHairColor(void *p);
@@ -1896,7 +1766,6 @@ void PlayerActor_MainSitDownSide2();
 void PlayerActor_MainSitDownSide1();
 void PlayerActor_MainSit();
 void PlayerActor_MainStandUpSide2();
-void FishShadow_EnterSpawn();
 void PlayerActor_MainStandUpCheck();
 void PlayerActor_MainStandUpFront();
 void PlayerActor_MainStorageOpen();
@@ -1912,9 +1781,7 @@ void PlayerActor_MainAct36();
 void PlayerActor_MainAct37();
 void PlayerActor_MainDoorApproach();
 void PlayerActor_MainDoorEnter();
-void PlayerActor_MainDoorEntered();
 void PlayerActor_MainDoorExit();
-void PlayerActor_MainAct3C();
 void PlayerActor_MainStowItem();
 void PlayerActor_MainStowUmbrella();
 void _ZN11PlayerActor18mainChangeHeldItemEv();
@@ -1976,7 +1843,6 @@ void _ZN11PlayerActor9mainAct76Ev();
 void _ZN11PlayerActor9mainAct77Ev();
 void PlayerActor_MainBeeSting();
 void _ZN11PlayerActor9mainAct79Ev();
-void FieldObj_LoadIconModels();
 void PlayerActor_MainHaircutCut();
 void PlayerActor_MainHaircutFinish();
 void PlayerActor_MainPhonePickUp();
@@ -2010,7 +1876,6 @@ void _ZN12Unk_020076948netAct05Ej();
 void PlayerActor_NetReleaseCreature();
 void _ZN12Unk_0200769416netChangeClothesEs();
 void PlayerActor_NetLieInBed();
-void PlayerActor_NetGetOutOfBedCheck();
 void PlayerActor_NetGetOutOfBed();
 void PlayerActor_NetBedRollCheck();
 void PlayerActor_NetBedRollBlocked();
@@ -2019,24 +1884,18 @@ void PlayerActor_NetBedApproach();
 void PlayerActor_NetGetIntoBed();
 void _ZN11PlayerActor8netAct10Ej();
 void PlayerActor_NetAct11();
-void PlayerActor_NetAct12();
 void _ZN11PlayerActor8netAct13Ej();
 void _ZN11PlayerActor10netEmotionEs();
 void _ZN11PlayerActor8netAct15Ej();
 void PlayerActor_NetPluckReach();
-void PlayerActor_NetPluck();
 void _ZN11PlayerActor14netPickUpReachEs();
 void _ZN11PlayerActor9netPickUpEs();
 void _ZN11PlayerActor16netPickUpFanfareEs();
 void _ZN11PlayerActor20netPickUpFanfareStowEs();
-void PlayerActor_NetPickUpItem();
 void PlayerActor_NetFtrGrabApproach();
 void PlayerActor_NetFtrHold();
-void PlayerActor_NetFtrRotate();
 void PlayerActor_NetFtrPush();
 void PlayerActor_NetFtrPull();
-void PlayerActor_NetFtrPushMove();
-void PlayerActor_NetFtrPullMove();
 void PlayerActor_NetSeatApproach();
 void PlayerActor_NetSitDownFront();
 void PlayerActor_NetSitDownSide2();
@@ -2044,7 +1903,6 @@ void PlayerActor_NetSitDownSide1();
 void PlayerActor_NetSit();
 void PlayerActor_NetStandUpSide2();
 void PlayerActor_NetStandUpSide1();
-void PlayerActor_NetStandUpCheck();
 void PlayerActor_NetStandUpFront();
 void PlayerActor_NetStorageOpen();
 void PlayerActor_NetStorageHold();
@@ -2069,7 +1927,6 @@ void PlayerActor_NetLeaveRoom();
 void PlayerActor_NetAct41();
 void PlayerActor_NetAct42();
 void PlayerActor_NetAct43();
-void FieldObjectManager_Create();
 void PlayerActor_NetUmbrellaSpin();
 void PlayerActor_NetAxeSwing();
 void PlayerActor_NetAxeFollowThrough();
@@ -2098,15 +1955,11 @@ void PlayerActor_NetShovelStrike();
 void PlayerActor_NetDig();
 void PlayerActor_NetDigUpItem();
 void PlayerActor_NetDugItemStore();
-void PlayerActor_NetBuryItem();
-void PlayerActor_NetFillHole();
 void PlayerActor_NetWateringCan();
 void PlayerActor_NetSlingshot();
-void PlayerActor_NetSlingshotWatch();
 void PlayerActor_NetAct66();
 void PlayerActor_NetAct67();
 void PlayerActor_NetTreeShake();
-void PlayerActor_NetTreeShakeRelease();
 void PlayerActor_NetMailboxOpen();
 void PlayerActor_NetMailboxWait();
 void PlayerActor_NetMailboxClose();
@@ -2121,7 +1974,6 @@ void PlayerActor_NetPitfallStruggle();
 void PlayerActor_NetPitfallClimbOut();
 void _ZN11PlayerActor8netAct76Es();
 void _ZN11PlayerActor8netAct77Ej();
-void PlayerActor_NetBeeSting();
 void _ZN11PlayerActor8netAct79Ej();
 void PlayerActor_NetHaircutStart();
 void PlayerActor_NetHaircutCut();
@@ -2139,7 +1991,6 @@ void _ZN12Unk_0200769418netLowerHeldUpItemEj();
 void _ZN19PlayerActTaxiGetOut13netTaxiGetOutEv();
 void _ZN18PlayerActTaxiGetIn12netTaxiGetInEv();
 void PlayerActor_NetThrowBottle();
-void PlayerActor_NetDrinkCoffee();
 void PlayerActor_NetDoorWalkIn();
 void PlayerActor_NetDoorWalkOut();
 void PlayerActor_NetExitWalkOut();
@@ -2271,7 +2122,6 @@ void _ZN11PlayerActor10setupAct77EPh();
 void PlayerActor_SetupBeeSting();
 void _ZN11PlayerActor10setupAct79Ev();
 void PlayerActor_SetupHaircutStart();
-void FieldObj_LoadStones();
 void PlayerActor_SetupHaircutFinish();
 void PlayerActor_SetupPhonePickUp();
 void PlayerActor_SetupPhoneHold();
@@ -2402,7 +2252,7 @@ PM_02005294 data_020d612c = {{(PMF)nPM::PlayerActor_MainSitDownSide2, 0}};
 PM_02005294 data_020d64bc = {{(PMF)nPM::PlayerActor_MainSitDownSide1, 0}};
 PM_02005294 data_020d64ac = {{(PMF)nPM::PlayerActor_MainSit, 0}};
 PM_02005294 data_020d6114 = {{(PMF)nPM::PlayerActor_MainStandUpSide2, 0}};
-PM_02005294 data_020d5e5c = {{(PMF)nPM::FishShadow_EnterSpawn, 0}};
+PM_02005294 data_020d5e5c = {{(PMF)FishShadow_EnterSpawn, 0}};
 PM_02005294 data_020d6104 = {{(PMF)nPM::PlayerActor_MainStandUpCheck, 0}};
 PM_02005294 data_020d60fc = {{(PMF)nPM::PlayerActor_MainStandUpFront, 0}};
 PM_02005294 data_020d60f4 = {{(PMF)nPM::PlayerActor_MainStorageOpen, 0}};
@@ -2418,9 +2268,9 @@ PM_02005294 data_020d60ac = {{(PMF)nPM::PlayerActor_MainAct36, 0}};
 PM_02005294 data_020d60a4 = {{(PMF)nPM::PlayerActor_MainAct37, 0}};
 PM_02005294 data_020d609c = {{(PMF)nPM::PlayerActor_MainDoorApproach, 0}};
 PM_02005294 data_020d6094 = {{(PMF)nPM::PlayerActor_MainDoorEnter, 0}};
-PM_02005294 data_020d5eac = {{(PMF)nPM::PlayerActor_MainDoorEntered, 0}};
+PM_02005294 data_020d5eac = {{(PMF)PlayerActor_MainDoorEntered, 0}};
 PM_02005294 data_020d6084 = {{(PMF)nPM::PlayerActor_MainDoorExit, 0}};
-PM_02005294 data_020d607c = {{(PMF)nPM::PlayerActor_MainAct3C, 0}};
+PM_02005294 data_020d607c = {{(PMF)PlayerActor_MainAct3C, 0}};
 PM_02005294 data_020d6074 = {{(PMF)nPM::PlayerActor_MainStowItem, 0}};
 PM_02005294 data_020d606c = {{(PMF)nPM::PlayerActor_MainStowUmbrella, 0}};
 PM_02005294 data_020d6064 = {{(PMF)nPM::_ZN11PlayerActor18mainChangeHeldItemEv, 0}};
@@ -2482,7 +2332,7 @@ PM_02005294 data_020d61ac = {{(PMF)nPM::_ZN11PlayerActor9mainAct76Ev, 0}};
 PM_02005294 data_020d61d4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct77Ev, 0}};
 PM_02005294 data_020d659c = {{(PMF)nPM::PlayerActor_MainBeeSting, 0}};
 PM_02005294 data_020d65c4 = {{(PMF)nPM::_ZN11PlayerActor9mainAct79Ev, 0}};
-PM_02005294 data_020d6dcc = {{(PMF)nPM::FieldObj_LoadIconModels, 0}};
+PM_02005294 data_020d6dcc = {{(PMF)FieldObj_LoadIconModels, 0}};
 PM_02005294 data_020d5e84 = {{(PMF)nPM::PlayerActor_MainHaircutCut, 0}};
 PM_02005294 data_020d5e7c = {{(PMF)nPM::PlayerActor_MainHaircutFinish, 0}};
 PM_02005294 data_020d5e74 = {{(PMF)nPM::PlayerActor_MainPhonePickUp, 0}};
@@ -2521,7 +2371,7 @@ PM_020063a0 data_020d66f4 = {{(PMF)nPM::_ZN12Unk_020076948netAct05Ej, 0}};
 PM_020063a0 data_020d66ec = {{(PMF)nPM::PlayerActor_NetReleaseCreature, 0}};
 PM_020063a0 data_020d66e4 = {{(PMF)nPM::_ZN12Unk_0200769416netChangeClothesEs, 0}};
 PM_020063a0 data_020d66dc = {{(PMF)nPM::PlayerActor_NetLieInBed, 0}};
-PM_020063a0 data_020d66d4 = {{(PMF)nPM::PlayerActor_NetGetOutOfBedCheck, 0}};
+PM_020063a0 data_020d66d4 = {{(PMF)PlayerActor_NetGetOutOfBedCheck, 0}};
 PM_020063a0 data_020d66cc = {{(PMF)nPM::PlayerActor_NetGetOutOfBed, 0}};
 PM_020063a0 data_020d66c4 = {{(PMF)nPM::PlayerActor_NetBedRollCheck, 0}};
 PM_020063a0 data_020d66bc = {{(PMF)nPM::PlayerActor_NetBedRollBlocked, 0}};
@@ -2530,24 +2380,24 @@ PM_020063a0 data_020d66ac = {{(PMF)nPM::PlayerActor_NetBedApproach, 0}};
 PM_020063a0 data_020d66a4 = {{(PMF)nPM::PlayerActor_NetGetIntoBed, 0}};
 PM_020063a0 data_020d669c = {{(PMF)nPM::_ZN11PlayerActor8netAct10Ej, 0}};
 PM_020063a0 data_020d6694 = {{(PMF)nPM::PlayerActor_NetAct11, 0}};
-PM_020063a0 data_020d620c = {{(PMF)nPM::PlayerActor_NetAct12, 0}};
+PM_020063a0 data_020d620c = {{(PMF)PlayerActor_NetAct12, 0}};
 PM_020063a0 data_020d6684 = {{(PMF)nPM::_ZN11PlayerActor8netAct13Ej, 0}};
 PM_020063a0 data_020d667c = {{(PMF)nPM::_ZN11PlayerActor10netEmotionEs, 0}};
 PM_020063a0 data_020d6674 = {{(PMF)nPM::_ZN11PlayerActor8netAct15Ej, 0}};
 PM_020063a0 data_020d666c = {{(PMF)nPM::PlayerActor_NetPluckReach, 0}};
-PM_020063a0 data_020d6664 = {{(PMF)nPM::PlayerActor_NetPluck, 0}};
+PM_020063a0 data_020d6664 = {{(PMF)PlayerActor_NetPluck, 0}};
 PM_020063a0 data_020d665c = {{(PMF)nPM::_ZN11PlayerActor14netPickUpReachEs, 0}};
 PM_020063a0 data_020d6654 = {{(PMF)nPM::_ZN11PlayerActor9netPickUpEs, 0}};
 PM_020063a0 data_020d664c = {{(PMF)nPM::_ZN11PlayerActor16netPickUpFanfareEs, 0}};
 PM_020063a0 data_020d6644 = {{(PMF)nPM::_ZN11PlayerActor20netPickUpFanfareStowEs, 0}};
-PM_020063a0 data_020d663c = {{(PMF)nPM::PlayerActor_NetPickUpItem, 0}};
+PM_020063a0 data_020d663c = {{(PMF)PlayerActor_NetPickUpItem, 0}};
 PM_020063a0 data_020d6634 = {{(PMF)nPM::PlayerActor_NetFtrGrabApproach, 0}};
 PM_020063a0 data_020d662c = {{(PMF)nPM::PlayerActor_NetFtrHold, 0}};
-PM_020063a0 data_020d6624 = {{(PMF)nPM::PlayerActor_NetFtrRotate, 0}};
+PM_020063a0 data_020d6624 = {{(PMF)PlayerActor_NetFtrRotate, 0}};
 PM_020063a0 data_020d661c = {{(PMF)nPM::PlayerActor_NetFtrPush, 0}};
 PM_020063a0 data_020d6614 = {{(PMF)nPM::PlayerActor_NetFtrPull, 0}};
-PM_020063a0 data_020d5f54 = {{(PMF)nPM::PlayerActor_NetFtrPushMove, 0}};
-PM_020063a0 data_020d5e6c = {{(PMF)nPM::PlayerActor_NetFtrPullMove, 0}};
+PM_020063a0 data_020d5f54 = {{(PMF)PlayerActor_NetFtrPushMove, 0}};
+PM_020063a0 data_020d5e6c = {{(PMF)PlayerActor_NetFtrPullMove, 0}};
 PM_020063a0 data_020d6be4 = {{(PMF)nPM::PlayerActor_NetSeatApproach, 0}};
 PM_020063a0 data_020d65b4 = {{(PMF)nPM::PlayerActor_NetSitDownFront, 0}};
 PM_020063a0 data_020d65cc = {{(PMF)nPM::PlayerActor_NetSitDownSide2, 0}};
@@ -2555,7 +2405,7 @@ PM_020063a0 data_020d65d4 = {{(PMF)nPM::PlayerActor_NetSitDownSide1, 0}};
 PM_020063a0 data_020d65dc = {{(PMF)nPM::PlayerActor_NetSit, 0}};
 PM_020063a0 data_020d65ec = {{(PMF)nPM::PlayerActor_NetStandUpSide2, 0}};
 PM_020063a0 data_020d65fc = {{(PMF)nPM::PlayerActor_NetStandUpSide1, 0}};
-PM_020063a0 data_020d670c = {{(PMF)nPM::PlayerActor_NetStandUpCheck, 0}};
+PM_020063a0 data_020d670c = {{(PMF)PlayerActor_NetStandUpCheck, 0}};
 PM_020063a0 data_020d6714 = {{(PMF)nPM::PlayerActor_NetStandUpFront, 0}};
 PM_020063a0 data_020d674c = {{(PMF)nPM::PlayerActor_NetStorageOpen, 0}};
 PM_020063a0 data_020d6754 = {{(PMF)nPM::PlayerActor_NetStorageHold, 0}};
@@ -2580,7 +2430,7 @@ PM_020063a0 data_020d651c = {{(PMF)nPM::PlayerActor_NetLeaveRoom, 0}};
 PM_020063a0 data_020d6514 = {{(PMF)nPM::PlayerActor_NetAct41, 0}};
 PM_020063a0 data_020d650c = {{(PMF)nPM::PlayerActor_NetAct42, 0}};
 PM_020063a0 data_020d6504 = {{(PMF)nPM::PlayerActor_NetAct43, 0}};
-PM_020063a0 data_020d64fc = {{(PMF)nPM::FieldObjectManager_Create, 0}};
+PM_020063a0 data_020d64fc = {{(PMF)FieldObjectManager_Create, 0}};
 PM_020063a0 data_020d64f4 = {{(PMF)nPM::PlayerActor_NetUmbrellaSpin, 0}};
 PM_020063a0 data_020d64ec = {{(PMF)nPM::PlayerActor_NetAxeSwing, 0}};
 PM_020063a0 data_020d64e4 = {{(PMF)nPM::PlayerActor_NetAxeFollowThrough, 0}};
@@ -2609,15 +2459,15 @@ PM_020063a0 data_020d6434 = {{(PMF)nPM::PlayerActor_NetShovelStrike, 0}};
 PM_020063a0 data_020d642c = {{(PMF)nPM::PlayerActor_NetDig, 0}};
 PM_020063a0 data_020d6424 = {{(PMF)nPM::PlayerActor_NetDigUpItem, 0}};
 PM_020063a0 data_020d641c = {{(PMF)nPM::PlayerActor_NetDugItemStore, 0}};
-PM_020063a0 data_020d6414 = {{(PMF)nPM::PlayerActor_NetBuryItem, 0}};
-PM_020063a0 data_020d640c = {{(PMF)nPM::PlayerActor_NetFillHole, 0}};
+PM_020063a0 data_020d6414 = {{(PMF)PlayerActor_NetBuryItem, 0}};
+PM_020063a0 data_020d640c = {{(PMF)PlayerActor_NetFillHole, 0}};
 PM_020063a0 data_020d6404 = {{(PMF)nPM::PlayerActor_NetWateringCan, 0}};
 PM_020063a0 data_020d63fc = {{(PMF)nPM::PlayerActor_NetSlingshot, 0}};
-PM_020063a0 data_020d63f4 = {{(PMF)nPM::PlayerActor_NetSlingshotWatch, 0}};
+PM_020063a0 data_020d63f4 = {{(PMF)PlayerActor_NetSlingshotWatch, 0}};
 PM_020063a0 data_020d63ec = {{(PMF)nPM::PlayerActor_NetAct66, 0}};
 PM_020063a0 data_020d63e4 = {{(PMF)nPM::PlayerActor_NetAct67, 0}};
 PM_020063a0 data_020d63dc = {{(PMF)nPM::PlayerActor_NetTreeShake, 0}};
-PM_020063a0 data_020d63d4 = {{(PMF)nPM::PlayerActor_NetTreeShakeRelease, 0}};
+PM_020063a0 data_020d63d4 = {{(PMF)PlayerActor_NetTreeShakeRelease, 0}};
 PM_020063a0 data_020d63cc = {{(PMF)nPM::PlayerActor_NetMailboxOpen, 0}};
 PM_020063a0 data_020d63c4 = {{(PMF)nPM::PlayerActor_NetMailboxWait, 0}};
 PM_020063a0 data_020d63bc = {{(PMF)nPM::PlayerActor_NetMailboxClose, 0}};
@@ -2632,7 +2482,7 @@ PM_020063a0 data_020d637c = {{(PMF)nPM::PlayerActor_NetPitfallStruggle, 0}};
 PM_020063a0 data_020d6374 = {{(PMF)nPM::PlayerActor_NetPitfallClimbOut, 0}};
 PM_020063a0 data_020d636c = {{(PMF)nPM::_ZN11PlayerActor8netAct76Es, 0}};
 PM_020063a0 data_020d6364 = {{(PMF)nPM::_ZN11PlayerActor8netAct77Ej, 0}};
-PM_020063a0 data_020d635c = {{(PMF)nPM::PlayerActor_NetBeeSting, 0}};
+PM_020063a0 data_020d635c = {{(PMF)PlayerActor_NetBeeSting, 0}};
 PM_020063a0 data_020d6354 = {{(PMF)nPM::_ZN11PlayerActor8netAct79Ej, 0}};
 PM_020063a0 data_020d634c = {{(PMF)nPM::PlayerActor_NetHaircutStart, 0}};
 PM_020063a0 data_020d6344 = {{(PMF)nPM::PlayerActor_NetHaircutCut, 0}};
@@ -2650,7 +2500,7 @@ PM_020063a0 data_020d62ec = {{(PMF)nPM::_ZN12Unk_0200769418netLowerHeldUpItemEj,
 PM_020063a0 data_020d62e4 = {{(PMF)nPM::_ZN19PlayerActTaxiGetOut13netTaxiGetOutEv, 0}};
 PM_020063a0 data_020d62dc = {{(PMF)nPM::_ZN18PlayerActTaxiGetIn12netTaxiGetInEv, 0}};
 PM_020063a0 data_020d62d4 = {{(PMF)nPM::PlayerActor_NetThrowBottle, 0}};
-PM_020063a0 data_020d62cc = {{(PMF)nPM::PlayerActor_NetDrinkCoffee, 0}};
+PM_020063a0 data_020d62cc = {{(PMF)PlayerActor_NetDrinkCoffee, 0}};
 PM_020063a0 data_020d62c4 = {{(PMF)nPM::PlayerActor_NetDoorWalkIn, 0}};
 PM_020063a0 data_020d62bc = {{(PMF)nPM::PlayerActor_NetDoorWalkOut, 0}};
 PM_020063a0 data_020d62b4 = {{(PMF)nPM::PlayerActor_NetExitWalkOut, 0}};
@@ -2787,7 +2637,7 @@ PM_02006d14 data_020d6814 = {{(PMF)nPM::_ZN11PlayerActor10setupAct77EPh, 0}};
 PM_02006d14 data_020d680c = {{(PMF)nPM::PlayerActor_SetupBeeSting, 0}};
 PM_02006d14 data_020d6804 = {{(PMF)nPM::_ZN11PlayerActor10setupAct79Ev, 0}};
 PM_02006d14 data_020d67fc = {{(PMF)nPM::PlayerActor_SetupHaircutStart, 0}};
-PM_02006d14 data_020d67f4 = {{(PMF)nPM::FieldObj_LoadStones, 0}};
+PM_02006d14 data_020d67f4 = {{(PMF)FieldObj_LoadStones, 0}};
 PM_02006d14 data_020d67ec = {{(PMF)nPM::PlayerActor_SetupHaircutFinish, 0}};
 PM_02006d14 data_020d67e4 = {{(PMF)nPM::PlayerActor_SetupPhonePickUp, 0}};
 PM_02006d14 data_020d67dc = {{(PMF)nPM::PlayerActor_SetupPhoneHold, 0}};
@@ -2885,7 +2735,7 @@ extern "C" void PlayerActor_CheckSceneExit(s32 a) {
     s32 sp8;
     VecFx32 *pos;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, a) && !PlayerActor_TestSlotFlag(0xb, a) && !PlayerActor_TestSlotFlag(0x13, a) &&
-        !PlayerActor_TestSlotFlag(5, a) && (pos = PlayerActor_GetBodyPos(4)) != NULL) {
+        !PlayerActor_TestSlotFlag(5, a) && (pos = (VecFx32 *)PlayerActor_GetBodyPos(4)) != NULL) {
         sp4 = Ground_GetExitAtPos(pos);
         if (sp4 != -1) {
             PlayerActor_SetLocalExitId(&sp4);
@@ -2897,7 +2747,7 @@ extern "C" void PlayerActor_CheckSceneExit(s32 a) {
                     }
                     TalkRequest_AddLeaveRoom();
                 } else {
-                    TalkRequest_AddSceneExit(PlayerActor_GetCharacter(4), sp4);
+                    TalkRequest_AddSceneExit((Character *)PlayerActor_GetCharacter(4), sp4);
                 }
             }
         }
@@ -3076,7 +2926,7 @@ extern "C" s32 PlayerActor_GetTan(void *p) {
 
 u32 PlayerActor::calcTan(u32 r7) {
     using namespace nS;
-    u32 r5 = PlayerActor_GetTan((u32)this);
+    u32 r5 = PlayerActor_GetTan(this);
     BOOL flag = FALSE;
     u32 k = Scene_GetCurrent();
     if (k == 0x2e || k == 0xd || k == 0xe || k == 0xc || k == 0x2f) {
@@ -3092,24 +2942,24 @@ u32 PlayerActor::calcTan(u32 r7) {
     } else if (r7 == 1) {
         r7 = 0;
     }
-    if (_ZN11PlayerActor16isGuestInSessionEv((u32)this)) {
+    if (isGuestInSession()) {
         flag = TRUE;
     }
-    u32 obj = PlayerActor_GetPlayerData((u32)this);
+    PlayerData *obj = (PlayerData *)PlayerActor_GetPlayerData(this);
     Unk_02010b08_Time a, b;
-    Unk_02010b08_Bits bits;
+    Unk_0200f17c_Date bits;
     a.unk_00 = 0;
     a.unk_04 = 0;
     b.unk_00 = 0;
     b.unk_04 = 0;
-    s32 r3 = PlayerActor_CompareLastPlayDate((u32)this, &a, &b);
-    bits.year = *((u8 *)&a + 5);
-    bits.month = *((u8 *)&a + 4);
-    bits.day = *((u8 *)&a + 3);
+    s32 r3 = PlayerActor_CompareLastPlayDate(this, &a, (u8 *)&b);
+    bits.a = *((u8 *)&a + 5);
+    bits.b = *((u8 *)&a + 4);
+    bits.c = *((u8 *)&a + 3);
     switch (r3) {
     case -1:
         if (r7 != 0) {
-            PlayerActor_SetLastPlayDate((u32)this, obj, &bits);
+            PlayerActor_SetLastPlayDate(this, obj, &bits);
         }
         break;
     case 0:
@@ -3125,13 +2975,13 @@ u32 PlayerActor::calcTan(u32 r7) {
                 r5 = 0;
             }
             if (r7 != 0) {
-                ((PlayerData *)(obj))->setTan(r5);
-                PlayerActor_SetLastPlayDate((u32)this, obj, &bits);
+                obj->setTan(r5);
+                PlayerActor_SetLastPlayDate(this, obj, &bits);
                 *p &= 0xfd;
                 if (!flag) {
                     *p &= ~0x10;
                 }
-                _ZN11PlayerActor10netSendTanEv((u32)this);
+                netSendTan();
             }
         }
         *p &= 0xfe;
@@ -3146,15 +2996,15 @@ u32 PlayerActor::calcTan(u32 r7) {
 }
 
 namespace nS {
-extern "C" void PlayerActor_GetFaceItem(u16 *out, u32 x) {
-    u32 pd = PlayerActor_GetPlayerData(x);
-    *out = *((PlayerData *)((void *)pd))->getFaceItem();
+extern "C" void PlayerActor_GetFaceItem(u16 *out, void *x) {
+    PlayerData *pd = (PlayerData *)PlayerActor_GetPlayerData(x);
+    *out = *pd->getFaceItem();
 }
 }
 
 namespace nS {
-extern "C" u32 PlayerActor_GetFaceAltFlag(u32 x) {
-    u32 a = PlayerActor_GetPlayerData(x);
+extern "C" u32 PlayerActor_GetFaceAltFlag(void *x) {
+    void *a = PlayerActor_GetPlayerData(x);
     if (a) {
         return PlayerData_HasStungFace(a);
     }
@@ -3163,8 +3013,8 @@ extern "C" u32 PlayerActor_GetFaceAltFlag(u32 x) {
 }
 
 namespace nS {
-extern "C" u32 PlayerActor_GetFaceTexIndex(u32 x) {
-    u32 a = PlayerActor_GetPlayerData(x);
+extern "C" u32 PlayerActor_GetFaceTexIndex(void *x) {
+    PlayerData *a = (PlayerData *)PlayerActor_GetPlayerData(x);
     s32 r = 0x20;
     if (a) {
         r = _ZN10PlayerData11getFaceTypeEv(a);
@@ -3180,11 +3030,11 @@ extern "C" u32 PlayerActor_GetFaceTexIndex(u32 x) {
 }
 
 namespace nS {
-extern "C" void PlayerActor_GetHeldItem(u16 *out, u32 x) {
+extern "C" void PlayerActor_GetHeldItem(u16 *out, void *x) {
     *out = 0xfff1;
-    u32 pd;
-    if ((pd = PlayerActor_GetPlayerData(x)) != 0) {
-        *out = *((PlayerData *)((void *)pd))->getHeldItem();
+    PlayerData *pd;
+    if ((pd = (PlayerData *)PlayerActor_GetPlayerData(x)) != 0) {
+        *out = *pd->getHeldItem();
     }
 }
 }
@@ -3309,7 +3159,7 @@ u32 PlayerActor::getBodyColliderFlags(u32 *a) {
 void PlayerActor::setBodyColliderAt(Unk_020107c8_Blk *a, u32 *b) {
     using namespace nS;
     u32 f = getBodyColliderFlags(b);
-    _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi((u8 *)&bodyCollider, this, (u32)a, 0xfd7, 0x2800, f | 4, 0x2fc, 0x15, (u8)sessionSlot, 0x1000);
+    bodyCollider.setupForActorAt(this, (VecFx32 *)a, 0xfd7, 0x2800, f | 4, 0x2fc, 0x15, (u8)sessionSlot, 0x1000);  // a: s32 x, y, z
 }
 
 void PlayerActor::setBodyCollider(u32 *a) {
@@ -3328,7 +3178,7 @@ void PlayerActor::setBodyColliderAtDrawPos(u32 *a) {
 
 void PlayerActor::setSubColliderBody(u32 *a) {
     using namespace nS;
-    _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi((u8 *)&subCollider, this, (u32)a, 0xfd7, 0x2800, 6, 0x2fc, 0, 0xff, 0x1000);
+    subCollider.setupForActorAt(this, (VecFx32 *)a, 0xfd7, 0x2800, 6, 0x2fc, 0, 0xff, 0x1000);  // (a is a position)
 }
 
 void PlayerActor::setSubCollider(u32 a, u32 b, u32 c) {
@@ -3366,14 +3216,14 @@ void PlayerActor::submitSceneCollider() {
 
 void PlayerActor::initFaceAnims() {
     using namespace nS;
-    s32 t = (s32)headModel0.resMdl;
-    s32 a = _ZN16PlayerFaceTexRef9getBufferEv((u8 *)&faceTex);
-    s32 b = _ZN20CharaFaceAnimWorkRef7getHeapEv((u8 *)&faceAnimWork);
-    ((MatTexPatAnim *)((u8 *)&eyeTexAnim))->init((void *)(t), (void *)(a), 1, (void *)(b));
-    t = (s32)headModel0.resMdl;
-    a = _ZN16PlayerFaceTexRef9getBufferEv((u8 *)&faceTex);
-    b = _ZN20CharaFaceAnimWorkRef7getHeapEv((u8 *)&faceAnimWork);
-    ((MatTexPatAnim *)((u8 *)&mouthTexAnim))->init((void *)(t), (void *)(a), 1, (void *)(b));
+    void *t = headModel0.resMdl;
+    void *a = faceTex.getBuffer();
+    void *b = faceAnimWork.getHeap();
+    eyeTexAnim.init(t, a, 1, b);
+    t = headModel0.resMdl;
+    a = faceTex.getBuffer();
+    b = faceAnimWork.getHeap();
+    mouthTexAnim.init(t, a, 1, b);
 }
 
 void PlayerActor::setEyeAnimForBody(s32 *a, u8 *b) {
@@ -3428,8 +3278,8 @@ void PlayerActor::playAnim(s32 a, u32 b, u8 c, s32 d, u32 e, u16 f, s32 g) {
     }
     v = g >= 0x137 ? getAnimResIndex((u32 *)&a) : g;
     if (!(a == 0 && t == 0 && *(u16 *)&e == 0 && b != 0 && g >= 0x137)) {
-        AnimSlotRef_Load((u8 *)&bodyAnimSlot, v, 1, 0);
-        u32 r = func_021065f8(func_021065dc(AnimSlotRef_GetData((u8 *)&bodyAnimSlot)), 0);
+        AnimSlotRef_Load(&bodyAnimSlot.slot, v, 1, 0);
+        u32 r = func_021065f8(func_021065dc(AnimSlotRef_GetData(&bodyAnimSlot.slot)), 0);
         BlendAnimModel_Play((u8 *)&bodyModel, r, b, c, d, *(u16 *)&e, 0);
         animId = a;
         animMode = c;
@@ -3491,8 +3341,8 @@ void PlayerActor::applyHoldPose(u16 *p, s32 b, void *c) {
     {
         s32 n, cnt, item;
         s32 i;
-        AnimSlotRef_Load(&((PlayerActor *)this)->holdAnimSlot, r6, 1, 0);
-        _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(&((PlayerActor *)this)->bodyModel, func_021065f8(func_021065dc(AnimSlotRef_GetData(&((PlayerActor *)this)->holdAnimSlot)), 0), (s32)c, 0, 0x1000, 0, 0, 0);
+        AnimSlotRef_Load(&((PlayerActor *)this)->holdAnimSlot.slot, r6, 1, 0);
+        _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(&((PlayerActor *)this)->bodyModel, func_021065f8(func_021065dc(AnimSlotRef_GetData(&((PlayerActor *)this)->holdAnimSlot.slot)), 0), (s32)c, 0, 0x1000, 0, 0, 0);
         n = CharaAnim_GetJointGroup(r6);
         if (n < 4) {
             cnt = JointGroup_GetRangeCount(n);
@@ -3542,10 +3392,10 @@ void PlayerActor::applySkinHairPalette(s32 a, s32 b) {
     }
     r4 = b + ((a << 3) + 0x80);
     if (r1 < 0x80) {
-        PlayerPaletteRef_LoadSkin(&((PlayerActor *)this)->skinHairPalette, r1);
+        PlayerPaletteRef_LoadSkin(&((PlayerActor *)this)->skinHairPalette.slot, r1);
     }
     if (r4 >= 0x80 && r4 < 0xc0) {
-        PlayerPaletteRef_LoadHair(&((PlayerActor *)this)->skinHairPalette, r4);
+        PlayerPaletteRef_LoadHair(&((PlayerActor *)this)->skinHairPalette.slot, r4);
     }
 }
 
@@ -3558,7 +3408,7 @@ BOOL PlayerActor::requestShirtTexUpload() {
     using namespace nR;
     u32 r4 = (u32)((PlayerActor *)this)->bodyModel.resMdl;
     return _ZN14MatTexVramTask7requestEPvjS0_jj(&((PlayerActor *)this)->shirtTexUpload, r4, sPlayerShirtTexName,
-                                         ClothTex_GetTexThunk(CharaClothTexRef_GetBuffer(&((PlayerActor *)this)->shirtTex)), 0, 0);
+                                         ClothTex_GetTexThunk(CharaClothTexRef_GetBuffer(&((PlayerActor *)this)->shirtTex.v)), 0, 0);
 }
 
 s32 PlayerActor::tryInteract() {
@@ -3616,13 +3466,13 @@ void PlayerActor::applyFaceItemChange() {
             }
         }
     }
-    PlayerGlassesModelRef_Load(&((PlayerActor *)this)->faceItemRef, r4);
-    if (PlayerGlassesModelRef_GetModelId(&((PlayerActor *)this)->faceItemRef) != 0x4b) {
-        PlayerGlassesModelRef_RelocateTexture(&((PlayerActor *)this)->faceItemRef);
-        PlayerGlassesModelRef_CancelTexUpload(&((PlayerActor *)this)->faceItemRef);
+    PlayerGlassesModelRef_Load(&((PlayerActor *)this)->faceItemRef.slot, r4);
+    if (PlayerGlassesModelRef_GetModelId(&((PlayerActor *)this)->faceItemRef.slot) != 0x4b) {
+        PlayerGlassesModelRef_RelocateTexture(&((PlayerActor *)this)->faceItemRef.slot);
+        PlayerGlassesModelRef_CancelTexUpload(&((PlayerActor *)this)->faceItemRef.slot);
         ((CachedModel *)(&((PlayerActor *)this)->faceItemModel))->release();
-        ((CachedModel *)(&((PlayerActor *)this)->faceItemModel))->setFromFile(PlayerGlassesModelRef_GetBuffer(&((PlayerActor *)this)->faceItemRef));
-        PlayerGlassesModelRef_PollTexUpload(&((PlayerActor *)this)->faceItemRef);
+        ((CachedModel *)(&((PlayerActor *)this)->faceItemModel))->setFromFile(PlayerGlassesModelRef_GetBuffer(&((PlayerActor *)this)->faceItemRef.slot));
+        PlayerGlassesModelRef_PollTexUpload(&((PlayerActor *)this)->faceItemRef.slot);
         ((PlayerActor *)this)->faceItemState = 1;
     } else {
         ((PlayerActor *)this)->faceItemState = 1;
@@ -3634,8 +3484,8 @@ void PlayerActor::pollFaceItemLoad() {
     using namespace nR;
     if (((PlayerActor *)this)->faceItemState == 1) {
         s32 r = 1;
-        if (PlayerGlassesModelRef_GetModelId(&((PlayerActor *)this)->faceItemRef) != 0x4b) {
-            r = PlayerGlassesModelRef_PollTexUpload(&((PlayerActor *)this)->faceItemRef);
+        if (PlayerGlassesModelRef_GetModelId(&((PlayerActor *)this)->faceItemRef.slot) != 0x4b) {
+            r = PlayerGlassesModelRef_PollTexUpload(&((PlayerActor *)this)->faceItemRef.slot);
         }
         if (r != 0) {
             ((PlayerActor *)this)->faceItemState = 2;
@@ -3657,8 +3507,8 @@ void PlayerActor::applyHatChange() {
     using namespace nR;
     u16 a[2];
     s32 x, y;
-    s32 r4, r6, r7;
-    s32 t;
+    void *r4, *r6, *r7;
+    void *t;
     if (((PlayerActor *)this)->hatState != 0) return;
     a[0] = 0xfff1;
     if (((PlayerActor *)(this))->testActionFlag(12)) {
@@ -3666,35 +3516,35 @@ void PlayerActor::applyHatChange() {
     } else {
         a[0] = ((PlayerActor *)this)->pendingHat;
     }
-    PlayerHead_GetModelIds((s32)PlayerActor_GetGender(this), ((PlayerActor *)this)->pendingHairStyle, a, &y, &x);
+    PlayerHead_GetModelIds(PlayerActor_GetGender(this), ((PlayerActor *)this)->pendingHairStyle, a, (u32 *)&y, (u32 *)&x);
     a[1] = ((PlayerActor *)this)->pendingHat;
-    PlayerHead_Load(&((PlayerActor *)this)->headRef, y, x, &a[1], (s32)PlayerActor_GetPlayerData(this));
-    applySkinHairPalette(((PlayerActor *)this)->pendingHairColor, (s32)_ZN11PlayerActor7calcTanEj(this, 0));
-    r4 = NNS_G3dGetTex(PlayerHead_GetModelFile(&((PlayerActor *)this)->headRef, 0));
+    PlayerHead_Load(&((PlayerActor *)this)->headRef.slot, y, x, &a[1], (s32)PlayerActor_GetPlayerData(this));
+    applySkinHairPalette(((PlayerActor *)this)->pendingHairColor, calcTan(0));
+    r4 = NNS_G3dGetTex(PlayerHead_GetModelFile(&((PlayerActor *)this)->headRef.slot, 0));
     r6 = 0;
     if (x < 0x9e) {
-        r6 = NNS_G3dGetTex(PlayerHead_GetModelFile(&((PlayerActor *)this)->headRef, 1));
+        r6 = NNS_G3dGetTex(PlayerHead_GetModelFile(&((PlayerActor *)this)->headRef.slot, 1));
     }
     if (((PlayerActor *)this)->pendingHatBindFace != 0) {
         r7 = NNS_G3dGetTex(_ZN16PlayerFaceTexRef9getBufferEv(&((PlayerActor *)this)->faceTex));
-        bindTextureByName((void *)r7, (void *)r4, sPlayerEyeTexName, sPlayerEyeTexName);
-        bindTextureByName((void *)r7, (void *)r4, sPlayerMouthTexName, sPlayerMouthTexName);
+        bindTextureByName(r7, r4, sPlayerEyeTexName, sPlayerEyeTexName);
+        bindTextureByName(r7, r4, sPlayerMouthTexName, sPlayerMouthTexName);
     }
-    r7 = NNS_G3dGetTex(PlayerPaletteRef_GetSkin(&((PlayerActor *)this)->skinHairPalette));
-    t = NNS_G3dGetTex(PlayerPaletteRef_GetHair(&((PlayerActor *)this)->skinHairPalette));
-    bindPaletteByName((void *)r7, (void *)r4, sPlayerSkinPalName, sPlayerSkinPalName);
-    bindPaletteByName((void *)t, (void *)r4, sPlayerHairPalName, sPlayerHairPalName);
+    r7 = NNS_G3dGetTex(PlayerPaletteRef_GetSkin(&((PlayerActor *)this)->skinHairPalette.slot));
+    t = NNS_G3dGetTex(PlayerPaletteRef_GetHair(&((PlayerActor *)this)->skinHairPalette.slot));
+    bindPaletteByName(r7, r4, sPlayerSkinPalName, sPlayerSkinPalName);
+    bindPaletteByName(t, r4, sPlayerHairPalName, sPlayerHairPalName);
     if (r6 != 0) {
-        bindPaletteByName((void *)r7, (void *)r6, sPlayerSkinPalName, sPlayerSkinPalName);
+        bindPaletteByName(r7, r6, sPlayerSkinPalName, sPlayerSkinPalName);
     }
-    PlayerHead_RelocateTextures(&((PlayerActor *)this)->headRef);
-    PlayerHead_CancelTexUpload(&((PlayerActor *)this)->headRef);
-    PlayerHead_PollTexUpload(&((PlayerActor *)this)->headRef);
+    PlayerHead_RelocateTextures(&((PlayerActor *)this)->headRef.slot);
+    PlayerHead_CancelTexUpload(&((PlayerActor *)this)->headRef.slot);
+    PlayerHead_PollTexUpload(&((PlayerActor *)this)->headRef.slot);
     ((CachedModel *)(&((PlayerActor *)this)->headModel0))->release();
     ((CachedModel *)(&((PlayerActor *)this)->headModel1))->release();
-    ((CachedModel *)(&((PlayerActor *)this)->headModel0))->setFromFile(PlayerHead_GetModelFile(&((PlayerActor *)this)->headRef, 0));
-    if (PlayerHead_GetModelId(&((PlayerActor *)this)->headRef, 1) < 0x9e) {
-        ((CachedModel *)(&((PlayerActor *)this)->headModel1))->setFromFile(PlayerHead_GetModelFile(&((PlayerActor *)this)->headRef, 1));
+    ((CachedModel *)(&((PlayerActor *)this)->headModel0))->setFromFile(PlayerHead_GetModelFile(&((PlayerActor *)this)->headRef.slot, 0));
+    if (PlayerHead_GetModelId(&((PlayerActor *)this)->headRef.slot, 1) < 0x9e) {
+        ((CachedModel *)(&((PlayerActor *)this)->headModel1))->setFromFile(PlayerHead_GetModelFile(&((PlayerActor *)this)->headRef.slot, 1));
     }
     if (((PlayerActor *)this)->pendingHatBindFace == 0) {
         u32 p = ((u32)((PlayerActor *)this)->eyeTexAnim.curFrame << 4) >> 16;
@@ -3712,7 +3562,7 @@ void PlayerActor::applyHatChange() {
 void PlayerActor::pollHatLoad() {
     using namespace nR;
     if (((PlayerActor *)this)->hatState == 1) {
-        if (PlayerHead_PollTexUpload(&((PlayerActor *)this)->headRef)) {
+        if (PlayerHead_PollTexUpload(&((PlayerActor *)this)->headRef.slot)) {
             ((PlayerActor *)this)->hatState = 2;
         }
     }
@@ -4038,9 +3888,9 @@ void PlayerActor::playFootstepSe() {
             v.y = (((PlayerActor *)this)->footPosA.y + ((PlayerActor *)this)->footPosB.y) >> 1;
             v.z = (((PlayerActor *)this)->footPosA.z + ((PlayerActor *)this)->footPosB.z) >> 1;
             if ((((PlayerActor *)this))->testActionFlag(0x19)) {
-                Snd_SeEmitterPlayAlternate(&((PlayerActor *)this)->seEmitterLocal, Footstep_GetSeAtPos(&v), flag);
+                Snd_SeEmitterPlayAlternate(&((PlayerActor *)this)->seEmitterLocal, Footstep_GetSeAtPos(&v));
             } else {
-                Snd_SeEmitterPlayAlternate(&((PlayerActor *)this)->seEmitterRemote, Footstep_GetSeAtPos(&v), flag);
+                Snd_SeEmitterPlayAlternate(&((PlayerActor *)this)->seEmitterRemote, Footstep_GetSeAtPos(&v));
             }
         }
     }
@@ -4076,7 +3926,7 @@ extern "C" s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b) {
 }
 
 namespace nQ {
-extern "C" void PlayerActor_SetLastPlayDate(PlayerActor *o, s32 a, Unk_0200f17c_Date *d) {
+extern "C" void PlayerActor_SetLastPlayDate(PlayerActor *o, PlayerData *a, Unk_0200f17c_Date *d) {
     _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(a, *d);
     u16 *r = (u16 *)DebugVar_GetPtr(0, 0x50);
     *r = d->c * 10 + (d->b * 1000 + PlayerActor_GetTan(o));
@@ -4280,11 +4130,11 @@ BOOL PlayerActor::getHeldItemPos(VecFx32 *out) {
 void PlayerActor::netSendClothesChange(u32 a, u32 b) {
     using namespace nP;
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        u32 buf;
-        PlayerActor_PackClothesChange(&buf, b, a);
+        u8 buf[4];
+        PlayerActor_PackClothesChange(buf, b, a);
         CommManager *g = gCommManager;
         (g)->beginRecord();
-        (g)->writeRecord((u8 *)(&buf), 3);
+        (g)->writeRecord(buf, 3);
         (g)->endRecord(0x2b, 4);
     }
 }
@@ -4340,7 +4190,7 @@ BOOL PlayerActor::canAcceptTalk(u32 id) {
 
 void PlayerActor::netUpdateBodyCollider() {
     using namespace nP;
-    s16 s[2];
+    struct { u8 scene; s16 angle; } s;
     volatile s32 sx, sy, sz;
     VecFx32 *q = (VecFx32 *)&((PlayerActor *)this)->position;
     sx = q->x;
@@ -4350,24 +4200,24 @@ void PlayerActor::netUpdateBodyCollider() {
         u32 n = ((PlayerActor *)this)->bodyCollider.hitTargetIndex;
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, n) && PlayerActor_IsInAction(2, 4)) {
             VecFx32 v;
-            if (PlayerActor_GetSlotPosXZ(s, &v.x, &v.z, -1, ((PlayerActor *)this)->sessionSlot)) {
+            if (PlayerActor_GetSlotPosXZ(&s.scene, &v.x, &v.z, -1, ((PlayerActor *)this)->sessionSlot)) {
                 VecFx32 v2;
-                VecFx32 *p = PlayerActor_GetBodyPos(n);
+                VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(n);  // (the definition returns the position as u8 *)
                 VecFx32 *q2 = (VecFx32 *)&((PlayerActor *)this)->position;
                 v2 = *q2;
                 s32 a = Math_Atan2(p->x - v2.x, p->z - v2.z);
-                s[1] = Math_Atan2(v.x - v2.x, v.z - v2.z);
-                if (Math_AngleDiffAbs(a, s[1]) < 0x400) {
+                s.angle = Math_Atan2(v.x - v2.x, v.z - v2.z);
+                if (Math_AngleDiffAbs(a, s.angle) < 0x400) {
                     s32 d1 = Vec_DistXZ(&v2, p);
                     s32 d2 = Vec_DistXZ(&v2, &v);
                     if (d1 <= d2) {
                         VecFx32 out;
                         if (((PlayerActor *)this)->sessionSlot >= (s32)n) {
-                            s[1] = s[1] + 0x4000;
+                            s.angle = s.angle + 0x4000;
                         } else {
-                            s[1] = s[1] - 0x4000;
+                            s.angle = s.angle - 0x4000;
                         }
-                        PlayerActor_OffsetByAngle(&out, ((PlayerActor *)this), &v2, &s[1], (u32)&data_020d5e40);
+                        PlayerActor_OffsetByAngle(&out, ((PlayerActor *)this), &v2, (u16 *)&s.angle, (s32 *)&data_020d5e40);
                         VecFx32 *q3 = (VecFx32 *)&((PlayerActor *)this)->position;
                         *q3 = out;
                     }
@@ -4423,7 +4273,7 @@ namespace nP {
 extern "C" BOOL PlayerActor_IsWaitingForSlots() {
     s32 t = Scene_GetPrevious();
     if (t == 12 || t == 13 || t == 14 || (u8)(t + 0xd2) <= 1) {
-        u32 buf;
+        s16 buf;
         s32 i = 0;
         CommManager *g = gCommManager;
         for (; i < 4; i++) {
@@ -4454,7 +4304,7 @@ BOOL PlayerActor::getRemoteTransform(u8 *a, s32 *b, s32 *c, u16 *d) {
         s16 b;
     } t;
     s32 t8, tc;
-    if (!PlayerActor_GetSlotPosXZ(&t, &t8, &tc, -1, ((PlayerActor *)this)->sessionSlot)) return FALSE;
+    if (!PlayerActor_GetSlotPosXZ(&t.a, &t8, &tc, -1, ((PlayerActor *)this)->sessionSlot)) return FALSE;
     if (!PlayerActor_GetSlotAngle(&t.b, -1, ((PlayerActor *)this)->sessionSlot)) return FALSE;
     *a = t.a;
     *b = t8;
@@ -4562,30 +4412,30 @@ s32 PlayerActor::getRequiredPriority() {
 void PlayerActor::initShirtModel() {
     using namespace nO;
     u16 v;
-    s32 r4, r6;
-    PlayerBodyModelRef_SetSlot(&((PlayerActor *)this)->bodyModelRef, data_020c61a8[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
+    void *r4, *r6;
+    PlayerBodyModelRef_SetSlot(&((PlayerActor *)this)->bodyModelRef.slot, data_020c61a8[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
     if (PlayerActor_GetGender(this) == 0) {
-        PlayerBodyModelRef_Load(&((PlayerActor *)this)->bodyModelRef, 0);
+        PlayerBodyModelRef_Load(&((PlayerActor *)this)->bodyModelRef.slot, 0);
     } else {
-        PlayerBodyModelRef_Load(&((PlayerActor *)this)->bodyModelRef, 1);
+        PlayerBodyModelRef_Load(&((PlayerActor *)this)->bodyModelRef.slot, 1);
     }
     ((CharaClothTexRef *)(&((PlayerActor *)this)->shirtTex))->assign(data_020c61a0[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
     PlayerActor_GetShirt(&v, ((PlayerActor *)this));
     ((PlayerActor *)(this))->setShirtTexture(&v);
-    r4 = NNS_G3dGetTex(PlayerBodyModelRef_GetBuffer(&((PlayerActor *)this)->bodyModelRef));
-    r6 = NNS_G3dGetTex(CharaClothTexRef_GetBuffer(&((PlayerActor *)this)->shirtTex));
-    ((PlayerActor *)(this))->bindTextureByName((void *)(r6), (void *)(r4), (void *)(void *)(sPlayerClothTexName), (void *)(void *)(sPlayerClothTexName));
-    ((PlayerActor *)(this))->bindPaletteByName((void *)(r6), (void *)(r4), (void *)(void *)(sPlayerClothTexName), (void *)(void *)(sPlayerClothTexName));
-    r4 = NNS_G3dGetTex(PlayerPaletteRef_GetSkin(&((PlayerActor *)this)->skinHairPalette));
-    _ZN11PlayerActor17bindPaletteByNameEPvS0_S0_S0_(this, r4, NNS_G3dGetTex(PlayerBodyModelRef_GetBuffer(&((PlayerActor *)this)->bodyModelRef)), sPlayerSkinPalName, sPlayerSkinPalName);
-    PlayerBodyModelRef_RelocateTexture(&((PlayerActor *)this)->bodyModelRef);
+    r4 = NNS_G3dGetTex(PlayerBodyModelRef_GetBuffer(&((PlayerActor *)this)->bodyModelRef.slot));
+    r6 = NNS_G3dGetTex(CharaClothTexRef_GetBuffer(&((PlayerActor *)this)->shirtTex.v));
+    ((PlayerActor *)(this))->bindTextureByName(r6, r4, (void *)(void *)(sPlayerClothTexName), (void *)(void *)(sPlayerClothTexName));
+    ((PlayerActor *)(this))->bindPaletteByName(r6, r4, (void *)(void *)(sPlayerClothTexName), (void *)(void *)(sPlayerClothTexName));
+    r4 = NNS_G3dGetTex(PlayerPaletteRef_GetSkin(&((PlayerActor *)this)->skinHairPalette.slot));
+    bindPaletteByName(r4, NNS_G3dGetTex(PlayerBodyModelRef_GetBuffer(&((PlayerActor *)this)->bodyModelRef.slot)), (void *)sPlayerSkinPalName, (void *)sPlayerSkinPalName);
+    PlayerBodyModelRef_RelocateTexture(&((PlayerActor *)this)->bodyModelRef.slot);
 }
 
 void PlayerActor::initHatModel() {
     using namespace nO;
     u16 v[2];
     s32 r4, r3;
-    PlayerHead_SetSlot(&((PlayerActor *)this)->headRef, data_020c61b4[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
+    PlayerHead_SetSlot(&((PlayerActor *)this)->headRef.slot, data_020c61b4[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
     PlayerActor_GetHat(&v[1], ((PlayerActor *)this));
     v[0] = v[1];
     r4 = PlayerActor_GetHairStyle(this);
@@ -4596,7 +4446,7 @@ void PlayerActor::initHatModel() {
 void PlayerActor::initFaceItemModel() {
     using namespace nO;
     u16 v[2];
-    PlayerGlassesModelRef_SetSlot(&((PlayerActor *)this)->faceItemRef, data_020c6198[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
+    PlayerGlassesModelRef_SetSlot(&((PlayerActor *)this)->faceItemRef.slot, data_020c6198[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
     PlayerActor_GetFaceItem(&v[0], ((PlayerActor *)this));
     v[1] = v[0];
     ((PlayerActor *)(this))->requestFaceItemChange(&v[1]);
@@ -4610,7 +4460,7 @@ BOOL PlayerActor::doCreate() {
     ((PlayerActor *)this)->sessionSlot = PlayerActor_ParamGetSlot(r6);
     ((Character *)(this))->setCharId((u16)((PlayerActor *)this)->sessionSlot);
     PlayerSession_SetActor(((PlayerActor *)this)->sessionSlot, ((PlayerActor *)this));
-    PlayerPaletteRef_Assign(&((PlayerActor *)this)->skinHairPalette, data_020c6194[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
+    PlayerPaletteRef_Assign(&((PlayerActor *)this)->skinHairPalette.slot, data_020c6194[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
     r5 = PlayerActor_GetHairColor(this);
     ((PlayerActor *)(this))->applySkinHairPalette(r5, ((PlayerActor *)(this))->calcTan(1));
     initShirtModel();
@@ -4720,7 +4570,7 @@ void PlayerActor::netInit() {
 void PlayerActor::endInit(u32 a) {
     using namespace nN;
     void *r6 = gCommManager;
-    u16 arr[4];
+    struct { u8 scene; s16 angle; u16 item[2]; } arr;
     s32 vx, vz;
     if (((CommManager *)(r6))->isLocalSlot(((PlayerActor *)this)->sessionSlot) || (a != 2 && a != 0x8b)) {
         ((PlayerActor *)this)->drawStep = 1;
@@ -4728,7 +4578,7 @@ void PlayerActor::endInit(u32 a) {
     if (!((CommManager *)(r6))->isLocalSlot(((PlayerActor *)this)->sessionSlot)) {
         s32 t = Scene_GetCurrent();
         if (!((PlayerActor *)(this))->testActionFlag(0x10) && t != 0x2e && t != 0xd && t != 0xe && t != 0xc && t != 0x2f) {
-            if (PlayerActor_GetSlotPosXZ(arr, &vx, &vz, -1, ((PlayerActor *)this)->sessionSlot)) {
+            if (PlayerActor_GetSlotPosXZ(&arr.scene, &vx, &vz, -1, ((PlayerActor *)this)->sessionSlot)) {
                 s32 *e = (s32 *)&((PlayerActor *)this)->position;
                 s32 *d = (s32 *)&((PlayerActor *)this)->prevPosition;
                 d[0] = vx;
@@ -4736,21 +4586,21 @@ void PlayerActor::endInit(u32 a) {
                 d[2] = vz;
                 e[2] = d[2];
             }
-            if (PlayerActor_GetSlotAngle(&arr[1], -1, ((PlayerActor *)this)->sessionSlot)) {
-                ((PlayerActor *)(this))->setAngleY((s16 *)(void *)(&arr[1]));
+            if (PlayerActor_GetSlotAngle(&arr.angle, -1, ((PlayerActor *)this)->sessionSlot)) {
+                ((PlayerActor *)(this))->setAngleY(&arr.angle);
             }
         }
     }
     if (((PlayerActor *)(this))->testActionFlag(0)) {
         s32 t = PlayerData_GetBySessionSlot(((PlayerActor *)this)->sessionSlot);
-        arr[2] = *((PlayerData *)((void *)t))->getHeldItem();
-        HeldItemModel_SetItem(&((PlayerActor *)this)->heldItemModel, &arr[2], t);
+        arr.item[0] = *((PlayerData *)((void *)t))->getHeldItem();
+        HeldItemModel_SetItem(&((PlayerActor *)this)->heldItemModel, &arr.item[0], t);
         BOOL ok;
-        if (Item_IsFurniture(&arr[2])) {
-            arr[3] = 0xfff1;
-            ok = Item_GetFurnitureIndex(&arr[2]) == Item_GetFurnitureIndex(&arr[3]);
+        if (Item_IsFurniture(&arr.item[0])) {
+            arr.item[1] = 0xfff1;
+            ok = Item_GetFurnitureIndex(&arr.item[0]) == Item_GetFurnitureIndex(&arr.item[1]);
         } else {
-            ok = arr[2] == 0xfff1;
+            ok = arr.item[0] == 0xfff1;
         }
         if (!ok) {
             ((PlayerActor *)(this))->startAnim(0, 0, 0);
@@ -4764,18 +4614,18 @@ BOOL PlayerActor::finishModelSetup() {
     BOOL result = FALSE;
     PlayerInitWork *p = (PlayerInitWork *)((PlayerActor *)this)->actionWorkRaw;
     if (p->modelSetupDone == 0) {
-        BOOL a = PlayerBodyModelRef_PollTexUpload(&((PlayerActor *)this)->bodyModelRef);
+        BOOL a = PlayerBodyModelRef_PollTexUpload(&((PlayerActor *)this)->bodyModelRef.slot);
         BOOL b = ((PlayerActor *)this)->hatState == 2;
         BOOL c = ((PlayerActor *)this)->faceItemState == 2;
         if (a && b && c) {
-            ((CachedModel *)(&((PlayerActor *)this)->bodyModel))->setFromFile(PlayerBodyModelRef_GetBuffer(&((PlayerActor *)this)->bodyModelRef));
-            PlayerBodyWorkRef_Assign(&((PlayerActor *)this)->bodyWork, data_020c6190[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
-            ((TwoLayerAnimModel *)(&((PlayerActor *)this)->bodyModel))->allocLayerAnims((u32)(PlayerBodyWorkRef_GetHeap(&((PlayerActor *)this)->bodyWork)));
-            ((CachedModel *)(&((PlayerActor *)this)->bodyModel))->allocJointRecord(PlayerBodyWorkRef_GetHeap(&((PlayerActor *)this)->bodyWork));
+            ((CachedModel *)(&((PlayerActor *)this)->bodyModel))->setFromFile(PlayerBodyModelRef_GetBuffer(&((PlayerActor *)this)->bodyModelRef.slot));
+            PlayerBodyWorkRef_Assign(&((PlayerActor *)this)->bodyWork.slot, data_020c6190[PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot)]);
+            ((TwoLayerAnimModel *)(&((PlayerActor *)this)->bodyModel))->allocLayerAnims((u32)(PlayerBodyWorkRef_GetHeap(&((PlayerActor *)this)->bodyWork.slot)));
+            ((CachedModel *)(&((PlayerActor *)this)->bodyModel))->allocJointRecord(PlayerBodyWorkRef_GetHeap(&((PlayerActor *)this)->bodyWork.slot));
             ((PlayerActor *)(this))->initFaceAnims();
             s32 i = PlayerSession_GetGfxSlot(((PlayerActor *)this)->sessionSlot) * 2;
-            AnimSlotRef_Assign(&((PlayerActor *)this)->bodyAnimSlot, data_020c61b8[i]);
-            AnimSlotRef_Assign(&((PlayerActor *)this)->holdAnimSlot, (data_020c61b8 + 1)[i]);
+            AnimSlotRef_Assign(&((PlayerActor *)this)->bodyAnimSlot.slot, data_020c61b8[i]);
+            AnimSlotRef_Assign(&((PlayerActor *)this)->holdAnimSlot.slot, (data_020c61b8 + 1)[i]);
             ((PlayerActor *)(this))->startAnim(0, 0, 0);
             ((AnimModel *)(&((PlayerActor *)this)->bodyModel))->attachAnim();
             _ZN5Model11setCallbackEiiiii(&((PlayerActor *)this)->bodyModel, PlayerActor_JointCbPre, 6, 1, ((PlayerActor *)this), 0);
@@ -5053,7 +4903,7 @@ void PlayerActor::waitNetCheckEnd(u8 *p) {
         if (PlayerActor_TestSlotFlag(0x1b, 4)) {
             ((PlayerActor *)this)->drawStep = 1;
         } else {
-            s32 buf;
+            u32 buf;
             if (PlayerActor_GetSlotAction(&buf, -1, ((PlayerActor *)this)->sessionSlot)) {
                 if (buf == 2 || buf == 0x40) {
                     ((PlayerActor *)this)->drawStep = 1;
@@ -5225,9 +5075,9 @@ void PlayerActor::walkMove() {
     r4 = func_01ffcb0c(v, 0x3ae1);
     if (r4 <= (s32)((PlayerActor *)this)->bodyModel.numFrames) {
         ((PlayerActor *)this)->bodyModel.frameStep = r4;
-        AnimFrameCtrl &p = HeldItemModel_GetModel(&((PlayerActor *)this)->heldItemModel);
+        AnimFrameCtrl &p = *(BlendAnimModel *)HeldItemModel_GetModel(&((PlayerActor *)this)->heldItemModel.slot);
         if (r4 <= (s32)p.numFrames) {
-            AnimFrameCtrl &q = HeldItemModel_GetModel(&((PlayerActor *)this)->heldItemModel);
+            AnimFrameCtrl &q = *(BlendAnimModel *)HeldItemModel_GetModel(&((PlayerActor *)this)->heldItemModel.slot);
             q.frameStep = r4;
         }
     }
@@ -5680,7 +5530,7 @@ void PlayerActor::act10FaceTalkTarget() {
 void PlayerActor::act10CheckTalk() {
     using namespace nK;
     ProcBase *p = 0;
-    s16 tmp;
+    u16 tmp;
     void *o;
     if (((PlayerActor *)this)->inputMode == 2) {
         p = *(ProcBase **)((u8 *)((PlayerActor *)this) + 0x138);
@@ -5815,7 +5665,7 @@ void PlayerActor::endEmotion() {
 void PlayerActor::emotionUpdateAnim() {
     using namespace nK;
     Unk_0200b908_Obj *p;
-    u32 t = AnimSlotRef_GetAnimId(&((PlayerActor *)this)->bodyAnimSlot);
+    u32 t = AnimSlotRef_GetAnimId(&((PlayerActor *)this)->bodyAnimSlot.slot);
     ((NpcEmotionFx *)(&((PlayerActor *)this)->emotionFx))->update(&((PlayerActor *)this)->headTopPos, ((PlayerActor *)this)->rotY, t, (u32)(((PlayerActor *)this)->bodyModel.curFrame << 4) >> 16);
     ((PlayerActor *)(this))->advanceAnim();
     if (((AnimFrameCtrl *)(&(AnimFrameCtrl &)((PlayerActor *)this)->bodyModel))->isFinished()) {
@@ -6240,7 +6090,7 @@ void PlayerActor::setupPickUp(PlayerActionRequest* item, u32 old) {
         ((PlayerActor *)(this))->startAnimOnce(0x16, 3, 0);
     }
     if (((PlayerActor *)(this))->getHeldToolKind() == 4) {
-        HeldItemModel_PlayAnim((u8*)((PlayerActor *)this) + 0x59c, 0xc, 3, 1);
+        HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0xc, 3, 1);
     }
 }
 
@@ -6283,7 +6133,7 @@ void PlayerActor::pickUpUpdateAnim(PlayerActionRequest* item, u32 old) {
 void PlayerActor::pickUpUpdateItem() {
     using namespace nJ;
     PlayerPickUpWork* s;
-    Unk_02006d14_V3* r;
+    VecFx32 *r;
     s32 t;
     u32 v;
     s16 sh;
@@ -7340,7 +7190,7 @@ void PlayerActor::walkToMove() {
     using namespace nG;
     if (((PlayerActor *)(this))->testActionFlag(0x18)) {
         (((PlayerActor *)this))->moveWithCollision();
-        void *r7 = RoomEntry_GetRequest();
+        RoomEntryRequest *r7 = (RoomEntryRequest *)RoomEntry_GetRequest();
         if (RoomEntryRequest_GetDoorKind(r7) == 1) {
             s32 *r4 = &((PlayerActor *)this)->position.y;
             s32 r6 = Ground_GetDefaultY(0);
@@ -7680,7 +7530,7 @@ void PlayerActor::lidClosedUpdateAnim() {
     (this)->advanceAnim();
     if (((AnimFrameCtrl *)(&(AnimFrameCtrl &)bodyModel))->hasPassedFrame(1)) {
         if (((CommManager *)(gCommManager))->isLocalSlot(sessionSlot)) {
-            SndMgr_PlaySe(gSndMgr, 0x79);
+            SndMgr_PlaySe(&gSndMgr, 0x79);
         } else {
             (this)->playSe(0x79);
         }
@@ -8019,7 +7869,7 @@ void Unk_02007694::mainAct92() {
 void Unk_02007694::calcModelMatrixCurved() {
     using namespace nE;
     Mtx43 m;
-    ((Unk_02007694 *)this)->drawTilt = WorldCurve_ToCurved(((Unk_02007694 *)this)->drawPos, ((Unk_02007694 *)this)->position);
+    ((Actor *)this)->drawTilt = WorldCurve_ToCurved(&((Actor *)this)->drawPos, &((Actor *)this)->position);
     ((Actor *)(this))->calcModelMatrix((void *)(void *)(&m));
     ((Unk_02007694 *)this)->bodyBaseMtx = m;
 }
@@ -8167,7 +8017,7 @@ void PlayerActor::changeAction(PlayerActionRequest* item) {
 void Unk_02005e7c::followNetAction() {
     using namespace nC;
     s32 st;
-    if (!PlayerActor_GetSlotAction(&st, -1, sessionSlot)) {
+    if (!PlayerActor_GetSlotAction((u32 *)&st, -1, sessionSlot)) {
         lastNetAction = 0x93;
         return;
     }
@@ -8423,11 +8273,11 @@ extern "C" void PlayerActor_JointCbPre(NNSG3dRS *p) {
 
 namespace nB {
 extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
-    s32 *pm;
-    s32 m2[9];
-    s32 m1[9];
+    MtxFx33 *pm;
+    MtxFx33 m2;
+    MtxFx33 m1;
     VecFx32 v1;
-    s32 m3[9];
+    MtxFx33 m3;
     Mtx43 c;
     VecFx32 t3;
     VecFx32 v2;
@@ -8438,13 +8288,13 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
     if (p->c[1] == 0xf && o != 0) {
         s16 a = o->headPitch;
         if (a != 0 || o->headYaw != 0) {
-            pm = (s32 *)&p->pJntAnmResult->rot;
+            pm = (MtxFx33 *)&p->pJntAnmResult->rot;  // Mtx33: the same s32[9]
             s32 i = (u16)a >> 4;
-            MTX_RotY33_(m1, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
-            MTX_Concat33(pm, m1, pm);
+            MTX_RotY33_(&m1, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
+            MTX_Concat33(pm, &m1, pm);
             i = (u16)o->headYaw >> 4;
-            MTX_RotX33_(m2, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
-            MTX_Concat33(pm, m2, pm);
+            MTX_RotX33_(&m2, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
+            MTX_Concat33(pm, &m2, pm);
         }
     }
     r6 = (PlayerActor *)p->pRenderObj->ptrUser;
@@ -8453,7 +8303,7 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
         if (p->c[1] == 0) {
             if ((u32)(r6->animId - 0x82) <= 1) {
                 NNSG3dJntAnmResult *r = p->pJntAnmResult;
-                pm = (s32 *)&r->rot;
+                pm = (MtxFx33 *)&r->rot;
                 VecFx32 *pv = (VecFx32 *)&r->trans;
                 v1 = *pv;
                 v2 = *pv;
@@ -8462,8 +8312,8 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
                 pv->y = v1.y - WorldCurve_GetRadius();
                 if (ang != 0) {
                     s32 i = (u16)ang >> 4;
-                    MTX_RotX33_(m3, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
-                    MTX_Concat33(pm, m3, pm);
+                    MTX_RotX33_(&m3, data_02135f44[i * 2], data_02135f44[i * 2 + 1]);
+                    MTX_Concat33(pm, &m3, pm);
                 }
             }
             JointCb_CalcCpuMatrix(&r6->bodyModel, p, 0);
@@ -8512,23 +8362,23 @@ void PlayerActor::doDraw() {
     if (((PlayerActor *)(this))->testActionFlag(0xd)) {
         BOOL c = gFieldSceneKind == 0 ? TRUE : FALSE;
         if (c == TRUE) {
-            s32 a[6];
-            a[0] = shownItemPosX;
-            a[1] = shownItemPosY;
-            a[2] = shownItemPosZ;
-            a[3] = shownItemScaleX;
-            a[4] = shownItemScaleY;
-            a[5] = shownItemScaleZ;
-            Field_DrawItemModel(shownItem, &a[0], &a[3], 0, 0, 0);
+            VecFx32Copy a[2];
+            a[0].x = shownItemPosX;
+            a[0].y = shownItemPosY;
+            a[0].z = shownItemPosZ;
+            a[1].x = shownItemScaleX;
+            a[1].y = shownItemScaleY;
+            a[1].z = shownItemScaleZ;
+            Field_DrawItemModel(shownItem, &a[0], &a[1], 0, 0, 0);
         } else {
-            s32 b[6];
-            b[0] = shownItemPosX;
-            b[1] = shownItemPosY;
-            b[2] = shownItemPosZ;
-            b[3] = shownItemScaleX;
-            b[4] = shownItemScaleY;
-            b[5] = shownItemScaleZ;
-            RoomItemIcons_DrawItem(shownItem, &b[0], &b[3], 0, 0, 0);
+            VecFx32Copy b[2];
+            b[0].x = shownItemPosX;
+            b[0].y = shownItemPosY;
+            b[0].z = shownItemPosZ;
+            b[1].x = shownItemScaleX;
+            b[1].y = shownItemScaleY;
+            b[1].z = shownItemScaleZ;
+            RoomItemIcons_DrawItem(shownItem, &b[0], &b[1], 0, 0, 0);
         }
     }
 }
@@ -8552,11 +8402,11 @@ BOOL PlayerActor::doDelete() {
     ((AnimModel *)(&bodyModel))->detachJointAnim();
     ((CachedModel *)(&bodyModel))->release();
     HeldItemModel_Release(&heldItemModel);
-    PlayerGlassesModelRef_Release(&faceItemRef);
+    PlayerGlassesModelRef_Release(&faceItemRef.slot);
     faceItemState = 2;
-    PlayerHead_Release(&headRef);
+    PlayerHead_Release(&headRef.slot);
     ((CharaClothTexRef *)(&shirtTex))->release();
-    PlayerBodyModelRef_CancelTexUpload(&bodyModelRef);
+    PlayerBodyModelRef_CancelTexUpload(&bodyModelRef.slot);
     PlayerSession_ClearGfxSlot(sessionSlot);
     if (((PlayerActor *)(this))->testActionFlag(0x1a)) {
         Bgm_Release(0x3f);
@@ -8628,7 +8478,7 @@ BOOL PlayerActor::onDelete() {
 
 void *PlayerActor::operator new(size_t size) {
     using namespace nA;
-    void *heap = gPlayerActorHeap;
+    Heap *heap = (Heap *)gPlayerActorHeap;
     void *p = Heap_AllocAligned(heap, size, PlayerActor_GetObjectAlign());
     if (p == 0) {
         return 0;
@@ -8639,7 +8489,7 @@ void *PlayerActor::operator new(size_t size) {
 
 void PlayerActor::operator delete(void *p) {
     using namespace nA;
-    Heap_Free(gPlayerActorHeap, p);
+    Heap_Free((Heap *)gPlayerActorHeap, p);
 }
 
 namespace nZ {
