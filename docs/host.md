@@ -109,7 +109,10 @@ Differences from the DS that the sources handle under `HOST` (or MODERN):
 ### 64-bit hosts (in progress)
 
 `python3 tools/configure_host.py --arch x86_64 && ninja -f build_host64.ninja` builds `build/host64_usa/acww`, a
-native x86-64 program (status: boots through the logo into the first field scene). For now everything stays below
+native x86-64 program (status: plays like the i386 build through the attract demo, the title (logo, clouds, talk
+text) into the town scene with villagers, insects, fish and particle effects; the pictures match the i386 build
+frame for frame until the town scene's first transitions, then drift by a frame or two of virtual time). For now
+everything stays below
 4 GB: the DS memory at its DS addresses, the program at 0x10000000 (`-Wl,-Ttext-segment`), the threads' stacks
 (`host_stack_alloc`, MAP_32BIT) - so a pointer stored in 32 bits still works while the code is made clean. Moving the
 DS memory above 4 GB (macOS arm64) comes after.
@@ -139,10 +142,28 @@ matching build and with the i386 build's screenshots and sound staying bit-ident
 - Hand-written varargs: `DS_VA_ARG` (`include/ds_stdarg.h`).
 - A C-style cast from a base pointer to a derived class is a static downcast (it subtracts the base's offset):
   converting a derived pointer to its base subobject's address needs `reinterpret_cast` after the `static_cast`.
+- Members reached by a DS offset from a pointer: `tools/host_this_offsets.py` rewrites `(u8 *)this + N` (and
+  `p + N` for a `u8 *p` / a typed or base-class pointer listed in `tools/host_offset_assumes.txt` with its real type)
+  to `HOST_AT` / `HOST_AT_A`; a unit reaching `this`'s members through a macro (`#define M(T, o)`) gets a
+  compile-time map of the offsets it uses (`tools/host_offset_map.py`, e.g. the camera); an actor's position from
+  an untyped pointer is `ACTOR_POS_AT(p)`; views of whole objects are generated (`tools/host_view_layout.py
+  --remove` regenerates one after the real class changed; a size check fails the build when a layout is stale).
+- Tables of pointers to member functions: an entry is 16 bytes on x86-64; code that reads the second member at the
+  DS offset `+ 8` (state tables: title screen, NPC behaviour, talk scripts) reads half of the first.
+- Heaps are sized for the DS's objects: on 64-bit hosts every heap the game creates with a size is twice that
+  (`ExpHeap_Create` / `FrameHeap_Create`), and the root heap is a block of its own (`host_root_heap_region`,
+  8 MB below 4 GB) instead of the DS's main RAM arena.
+- Stack buffers sized to what the DS's stack slot padding absorbed: `Clock_GetDate` writes four bytes into
+  three-byte locals (on x86-64 the fourth hit a saved register).
+- ARM idioms that don't carry over: an empty function's "result" is its first argument (still in r0 on the DS).
 
-Debugging: gdb works directly (`handle SIGALRM nostop noprint pass`); SIGINT prints every game thread's backtrace. Most
-crashes so far were heap blocks overwritten past their end: walk the heap's free list at the crash, then watch the
-damaged block header from `Main_Init` on to find the writer.
+Debugging: gdb works directly (`handle SIGALRM nostop noprint pass`, and `handle SIGFPE nostop noprint pass`: the
+division by zero emulation); SIGINT prints every game thread's backtrace. Most crashes so far were heap blocks
+overwritten past their end: walk the heap's free list at the crash, then watch the damaged block header from
+`Main_Init` on to find the writer. Comparing with the i386 build: `ACWW_STATS=<frames>` (display registers, VRAM bank
+contents, 3D command and register access counts per interval), `ACWW_VRAMDUMP=<frame>:<file>` (VRAM banks, palettes,
+OAM, display I/O), `ACWW_PROCLOG=1` (processes created), screenshots at the same frames; the random number calls
+(a breakpoint on `Random_NextBelow` logging the callers) show where the two runs' logic first differs.
 
 Not done yet: resetting an overlay's data when it is loaded again. The game reaches each scene later (in frames)
 than on the DS: the title at about frame 1500 instead of 900 (virtual time passes in waits that the DS doesn't
