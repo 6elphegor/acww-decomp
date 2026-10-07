@@ -6,7 +6,11 @@ typedef int s32;
 
 typedef struct { u32 a, b, c; } T12;
 void OS_EnableIrqMask(u32 mask);                                   // OS_EnableIrqMask
+#ifdef HOST
+typedef struct { void *func; u32 enable; void *arg; } IrqCb;  // (OSIrqCallbackInfo: pointers on hosts)
+#else
 typedef struct { u32 func, enable, arg; } IrqCb;
+#endif
 extern IrqCb data_027e0088[]; // OSi_IrqCallbackInfo
 
 // clears two words at 0x027e0450 (DTCM), probably an OS_Init* helper
@@ -23,8 +27,13 @@ void OS_InitIrqTable(void) {
 
 // OSi_EnterTimerCallback (arg 0 = timer index; OSi_IrqCallbackInfo[index] = {func, enable, arg})
 void OSi_EnterTimerCallback(u32 n, u32 func, u32 arg) {
+#ifdef HOST
+    data_027e0088[n].func = (void *)(__UINTPTR_TYPE__)func;
+    data_027e0088[n].arg = (void *)(__UINTPTR_TYPE__)arg;
+#else
     data_027e0088[n].func = func;
     data_027e0088[n].arg = arg;
+#endif
     OS_EnableIrqMask(1 << (n + 3));
     data_027e0088[n].enable = 1;
 }

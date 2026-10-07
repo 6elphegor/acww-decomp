@@ -48,6 +48,9 @@ struct OverlayHandleView {
 
 struct Unk_02076fc8_D {
     u8 a, b, c;
+#ifdef HOST
+    u8 pad;  // (Clock_GetDate writes four bytes; on the DS the stack slot's padding takes the fourth)
+#endif
 };
 
 
@@ -67,7 +70,11 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
+#ifdef HOST
+    u8 text[0xc1];  // (capacity() bytes from text: on the DS the object's end bounds it, 0x12 + 0xaf)
+#else
     /* 0x12 */ u8 text[0xaf];
+#endif
 };
 
 
@@ -1286,7 +1293,11 @@ struct Unk_02076f28_T {
 };
 
 struct BbsMsgString193Local {
+#ifdef HOST
+    u32 pad[(0xd8 + 0x40) / 4] __attribute__((aligned(8)));  // MsgString193 (larger on hosts)
+#else
     u32 pad[0xd8 / 4];
+#endif
     BbsMsgString193Local() { _ZN12MsgString193C1Ev(this); }
     ~BbsMsgString193Local() { _ZN12MsgString193D1Ev(this); }
 };
@@ -1327,7 +1338,11 @@ extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
     s32 n = 0;
     s32 i = n;
     for (; i < 6; i++) {
+#ifdef HOST
+        void *e = Msg_SkipLines(((MsgString193 *)r1)->text, i);
+#else
         void *e = Msg_SkipLines((u8 *)r1 + 0x12, i);
+#endif
         if (e != NULL) {
             _ZN9MsgString7setLineEPh(&o1, e);
             _ZN13EncodedString13fromMsgStringEP9MsgString(&o2, &o1);
