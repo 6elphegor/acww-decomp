@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 #include "actor/CharaFaceAnimRef.h"
 #include "sys/Heap.h"
 #include "proto/autoload_2/unk_020e8558.h"
@@ -28,7 +29,7 @@ struct CharaFaceAnimPool {
 extern "C" {
 extern CharaFaceAnimPool sCharaFaceAnimPool;
 extern void *gCharaFaceAnimHeap;
-extern u8 *gCommManager;
+extern CommManager *gCommManager;
 extern const u8 sCharaFaceAnimKinds[];
 extern u8 sCharaFaceAnimPathBuf[];
 
@@ -74,7 +75,7 @@ CharaFaceAnimPool::~CharaFaceAnimPool() {}
 void CharaFaceAnimPool::allocBuffers() {
     void *heap = gCharaFaceAnimHeap;
     u32 n, i, m;
-    n = gCommManager[0x6c];
+    n = gCommManager->memberCount;
     m = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < m) m = n;
     for (i = 0; i < m; i++) {

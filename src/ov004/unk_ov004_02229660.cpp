@@ -626,7 +626,7 @@ BOOL RoomTelephone::acceptsInteraction(void *a) {
     Character *o = (Character *)a;
     if (o) {
         if (Vec_DistXZ(&o->position.x, (s32 *)sRoomTelephonePos) < 0x2333) {
-            u32 d = (u16)(*(s16 *)((u8 *)o + 0x8e) - (F(s16, 0x8e) + 0x8000));
+            u32 d = (u16)(o->rotY - (rotY + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;
             }

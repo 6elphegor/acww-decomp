@@ -1544,7 +1544,7 @@ void PlayerActor::readInput() {
                 if (!PlayerActor_IsWaitingForSlots(this)) {
                     ((PlayerActor *)(this))->clearActionFlag(0x1b);
                     FieldInfoBalloon_ClearNetMsg();
-                    if (*(s32 *)((u8 *)gCommManager + 0x64) == 0) {
+                    if (((CommManager *)gCommManager)->myAid == 0) {
                         if ((u8)(Net_GetMode() + 0xfd) <= 1) {
                             Net_WifiHostKeepAlive();
                         }

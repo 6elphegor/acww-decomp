@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 #include "player/PlayerFaceTexRef.h"
 #include "sys/Heap.h"
 #include "proto/autoload_2/unk_020e8558.h"
@@ -9,7 +10,7 @@
 
 extern "C" {
 extern void *gPlayerFaceTexHeap;
-extern u8 *gCommManager;
+extern CommManager *gCommManager;
 extern char sPlayerFaceTexPathBuf[0x14];
 
 #define Heap_freeAll _ZN4Heap7freeAllEv
@@ -56,7 +57,7 @@ PlayerFaceTexPool::~PlayerFaceTexPool() {}
 
 extern "C" void PlayerFaceTexPool_AllocBuffers(u32 *arr) {
     void *heap = gPlayerFaceTexHeap;
-    u32 n = *(u8 *)(gCommManager + 0x6c);
+    u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
         arr[i] = (u32)Heap_AllocAligned(heap, PlayerFaceTex_GetBufferSize(), 4);

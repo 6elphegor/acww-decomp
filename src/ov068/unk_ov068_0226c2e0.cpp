@@ -346,7 +346,7 @@ void NpcActor_setTalkRequest(void *p, void *q);
 void NpcActor_setNpcHandle(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
 void CafeCoffeeSet_StartEffectB(void *p);
-void NNS_G3dMdlSetMdlLightEnableFlagAll(s32 a, s32 b);
+void NNS_G3dMdlSetMdlLightEnableFlagAll(void *mdl, s32 b);
 void NpcAnimCtrl_playAnim(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
@@ -441,7 +441,7 @@ BOOL SpNpcRoostGuest::preCreate() {
     u8 mo = ((u8 *)&d)[2];
     u8 dy = ((u8 *)&d)[1];
     guestType = 8;
-    if (((CommManager *)(*(void **)gCommManager))->isSlotActive(*(s32 *)(*(u8 **)gCommManager + 0x64))) {
+    if ((*(CommManager **)gCommManager)->isSlotActive((*(CommManager **)gCommManager)->myAid)) {
         return TRUE;
     }
     if (((SaveRecord4 *)(data_021ed315))->isDateActive()) {
@@ -535,7 +535,7 @@ BOOL SpNpcRoostGuest::onCreate() {
         return FALSE;
     }
     if (guestType == 7) {
-        NNS_G3dMdlSetMdlLightEnableFlagAll(*(s32 *)((u8 *)this + 0x148), 3);
+        NNS_G3dMdlSetMdlLightEnableFlagAll(model.resMdl, 3);
     }
     changeAct(0);
     collider.groups |= 2;
@@ -828,7 +828,7 @@ void SpNpcRoostGuestTalk::dispatchKkMessageEnd(s32 a) {
         u32 off = i * 12;
         u32 id = tbl[i].id;
         if (id == *pc) {
-            SpNpcRoostGuestMessageEndHandler *e = (SpNpcRoostGuestMessageEndHandler *)((u32)tbl + off);
+            SpNpcRoostGuestMessageEndHandler *e = &tbl[i];
             (this->*e->fn)();
         }
     }
@@ -890,7 +890,7 @@ loop:
     off = i * 12;
     if (idv == *pe) {
         u32 x = ((ChoiceList *)((window)->getChoiceList()))->getResult();
-        SpNpcRoostGuestChoiceFn *fp = (SpNpcRoostGuestChoiceFn *)((u8 *)tbl + off + 4);
+        SpNpcRoostGuestChoiceFn *fp = &tbl[i].fn;
         (this->*(*fp))(x);
     }
     i++;

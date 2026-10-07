@@ -204,8 +204,8 @@ BOOL Mailbox::acceptsInteraction(void *a) {
         return FALSE;
     }
     if (doorState == 2 && a) {
-        if (Vec_DistXZ((u8 *)a + 0x5c, &position) < 0x2333) {
-            if (Math_AngleDiffAbs((s16)(rotY + 0x8000), *(s16 *)((u8 *)a + 0x8e)) < 0x1200) {
+        if (Vec_DistXZ(&((Actor *)a)->position, &position) < 0x2333) {
+            if (Math_AngleDiffAbs((s16)(rotY + 0x8000), ((Actor *)a)->rotY) < 0x1200) {
                 return TRUE;
             }
         }

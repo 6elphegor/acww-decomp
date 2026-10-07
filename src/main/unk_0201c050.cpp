@@ -6011,7 +6011,7 @@ BOOL VillagerTalkTopics::tryOfferVisitRequest(void *a, void *b) {
     k.words[0] = 0;
     k.words[1] = 0;
     Clock_GetDateTime(&k);
-    if (((CommManager *)(gCommManager))->isSlotActive(*(s32 *)((u8 *)gCommManager + 0x64)) == 0) {
+    if (((CommManager *)(gCommManager))->isSlotActive(((CommManager *)(gCommManager))->myAid) == 0) {
         r6 = (u8 *)r6 + 0xc;
         if (_ZN12ErrandRecord8isActiveEv(r6) == 0 && Villager_IsInPlayerErrand(a, b) == 0 && Villager_GetResidentStatus(a) == 3 && ((VillagerTalk *)actor)->getEventKind() == 0xb && Villager_GetUpcomingBirthdayDay(a, 1, &k) == -1 && VillagerEvent_FindUpcomingIndex(1, &k) == 0xb) {
             TalkChoiceTable s;
@@ -8284,7 +8284,7 @@ void VillagerTalkRequestItemTopics::finishRequestChain() {
     void *r4 = actor->villagerData;
     _ZN12ErrandRecord7setStepEh(PlanErrand_GetRecord(planErrand), 3);
     VillagerSync_Act3C00(actor->villagerData, 3);
-    if (_ZN11CommManager12isSlotActiveEi(((void * *)&gCommManager)[0], (u32)(((void **)((void * *)&gCommManager)[0])[0x64 / 4])) == 0) {
+    if (((CommManager *)(gCommManager))->isSlotActive(((CommManager *)(gCommManager))->myAid) == 0) {
         Villager_UpdatePlanErrand(r4);
         VillagerState_SetUnk1dBit1(Villager_GetState(r4));
     }

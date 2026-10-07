@@ -3496,9 +3496,9 @@ void PocketMenu::openAddresseePage(s32 x) {
 // ===== unit 0229567c =====
 
 extern "C" u32 PocketMenu_GetPlayerSlot() {
-    u8 *g = (u8 *)gCommManager;
-    u32 v = *(u32 *)(g + 0x64);
-    if (((CommManager *)(g))->isSlotActive(v)) {
+    CommManager *g = gCommManager;
+    u32 v = g->myAid;
+    if (g->isSlotActive(v)) {
         return (u8)v;
     }
     return 0;

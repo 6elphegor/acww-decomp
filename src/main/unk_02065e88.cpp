@@ -1171,13 +1171,13 @@ void TalkRenderProcessor::pushArticle(MsgString33 *e) {
 }
 void TalkRenderProcessor::expandSlot(s32 idx) {
     using namespace n17;
-    MsgString33 *e = (MsgString33 *)(window + 0x13c0 + idx * 0x34);
+    MsgString33 *e = &((TalkWindowMsg *)window)->slots[idx];
     pushText(e->data());
     pushArticle(e);
 }
 void TalkRenderProcessor::expandNamedSlot(s32 idx) {
     using namespace n17;
-    MsgString33 *e = (MsgString33 *)(window + 0x15fc + idx * 0x34);
+    MsgString33 *e = &((TalkWindowMsg *)window)->namedSlots[idx];
     pushText(e->data());
     pushArticle(e);
 }
@@ -3782,8 +3782,8 @@ TalkWindowState::~TalkWindowState() {
     ((MsgString33 *)(monthText))->MsgString33::~MsgString33();
     _ZN11MsgString25D1Ev(yearText);
     ((TalkVoice *)(voice))->TalkVoice::~TalkVoice();
-    __cxa_vec_cleanup(namedSlots, 4, 0x34, (void *)_ZN11MsgString33D1Ev);
-    __cxa_vec_cleanup(slots, 0xb, 0x34, (void *)_ZN11MsgString33D1Ev);
+    __cxa_vec_cleanup(namedSlots, 4, sizeof(MsgString33), (void *)_ZN11MsgString33D1Ev);
+    __cxa_vec_cleanup(slots, 0xb, sizeof(MsgString33), (void *)_ZN11MsgString33D1Ev);
     BmgMsgAttr_Fini(msgAttr);
     MsgRunner_DtorStub(runner);
     ((TalkParser *)(parser))->TalkParser::~TalkParser();
@@ -3821,15 +3821,15 @@ void TalkWindowState::clearAdvancePending() {
     using namespace n7; advancePending = 0; }
 s32 TalkWindowState::setSlot(s32 idx, void *p) {
     using namespace n7;
-    return ((MsgString *)(slots + idx * 0x34))->copy((MsgString *)(p));
+    return ((MsgString33 *)slots + idx)->copy((MsgString *)(p));
 }
 void TalkWindowState::setSlotFromString(s32 idx, s32 a, s32 b) {
     using namespace n7;
-    String_Load(slots + idx * 0x34, a, b);
+    String_Load((MsgString33 *)slots + idx, a, b);
 }
 void TalkWindowState::setNamedSlot(s32 idx, void *p, u32 val) {
     using namespace n7;
-    ((MsgString *)(namedSlots + idx * 0x34))->copy((MsgString *)(p));
+    ((MsgString33 *)namedSlots + idx)->copy((MsgString *)(p));
     namedSlotColors[idx] = val;
 }
 void TalkWindowState::openChoices(s32 v) {

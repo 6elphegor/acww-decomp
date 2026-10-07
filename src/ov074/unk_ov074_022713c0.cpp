@@ -324,7 +324,7 @@ BOOL SpNpcBlanca::onCreate() {
     if (SpNpcActor::onCreate() == 0) {
         return FALSE;
     }
-    faceTexture.init(gCurrentHeap, (u8 *)this + 0xec);
+    faceTexture.init(gCurrentHeap, &model);
     SpNpcBlanca_ChangeAct(this, 3);
     return TRUE;
 }

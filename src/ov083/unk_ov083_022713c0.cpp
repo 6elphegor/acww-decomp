@@ -257,7 +257,7 @@ void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
     if (!TownSessionState_TestFlag(TownSessionState_Get(), 1)) {
         u32 c;
         TownSessionState_SetFlag(TownSessionState_Get(), 1);
-        c = *((u8 *)ownerNpc + 0x714);
+        c = ownerNpc->festDay;
         if (c == 0) {
             out->msgIndex = 1;
         } else if (c >= 1 && c <= 5) {

@@ -1480,7 +1480,7 @@ loop0:
     u32 id;
     id = tbl[i].id;
     if (id == *idp) {
-        (this->*((SpNpcBlathersChoiceHandler *)((u32)tbl + i * 12))->fn)(arg);
+        (this->*(&tbl[i])->fn)(arg);
     }
     i++;
 test0:

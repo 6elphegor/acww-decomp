@@ -2115,7 +2115,7 @@ void SpNpcCopperTalk::onMessageEnd(u32) {
     s32 i = 0;
     u8 *p = &msgIndex;
     for (; (u32)i < 0x1c; i++) {
-        u32 a = *(u32 *)((u8 *)tbl + i * 12);
+        u32 a = tbl[i].id;
         u32 b = *p;
         if (a == b) {
             (this->*tbl[i].f)();
@@ -2448,11 +2448,11 @@ void SpNpcCopperTalk::onChoice(u32) {
         u8 *p = &msgIndex;
         for (; (u32)i < 0x1d; i++) {
             u32 off = i * 12;
-            u32 a = *(u32 *)((u8 *)tbl + off);
+            u32 a = tbl[i].id;
             u32 b = *p;
             if (a == b) {
                 s32 arg = ((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult();
-                SpNpcCopperChoiceHandler *r = (SpNpcCopperChoiceHandler *)((u32)tbl + off);
+                SpNpcCopperChoiceHandler *r = &tbl[i];
                 (this->*r->f)(arg);
             }
         }

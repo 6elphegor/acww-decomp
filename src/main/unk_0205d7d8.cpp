@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "net/CommManager.h"
 #include "sys/PrioListNode.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexTransfer.h"
@@ -28,7 +29,7 @@ void *CharaClothTexPool_GetOwnRef();
 s32 NNS_G3dTexGetRequiredSize(void *p);
 s32 NNS_G3dTex4x4GetRequiredSize(void *p);
 s32 NNS_G3dPlttGetRequiredSize(void *p);
-extern u8 *gCommManager;
+extern CommManager *gCommManager;
 extern u32 gPlayerHeadModelHeap;
 }
 
@@ -212,7 +213,7 @@ PlayerHeadBank::PlayerHeadBank() {
 PlayerHeadBank::~PlayerHeadBank() {}
 
 void PlayerHeadBank::setup(void) {
-    u32 n = *(u8 *)(gCommManager + 0x6c);
+    u32 n = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < n; i++) {
         vramSlots[i][0].alloc((void *)PlayerHead_GetTexVramSize(), (void *)PlayerHead_GetTex4x4VramSize(), (void *)PlayerHead_GetPlttVramSize());

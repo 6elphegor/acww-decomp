@@ -412,8 +412,8 @@ extern "C" void ShopAckCounter_Clear(Counter *c) {
 }
 extern "C" void ShopAckCounter_Start(Counter *c) {
     c->received = 0;
-    u8 *p = *(u8 **)gCommManager;
-    if (((CommManager *)(p))->isOnline()) c->needed = p[0x6c] - 1;
+    CommManager *p = *(CommManager **)gCommManager;
+    if (p->isOnline()) c->needed = p->memberCount - 1;
     else c->needed = 0;
 }
 extern "C" BOOL ShopAckCounter_IsDone(Counter *c) {

@@ -1269,7 +1269,7 @@ loop0:
     u32 id;
     id = tbl[i].id;
     if (id == *idp) {
-        (this->*((SpNpcMabelMessageEndHandler *)((u32)tbl + i * 12))->fn)();
+        (this->*(&tbl[i])->fn)();
     }
     i++;
 test0:
@@ -1445,7 +1445,7 @@ loop0:
     id = tbl[i].id;
     if (id == *idp) {
         u32 arg = ((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult();
-        (this->*((SpNpcMabelChoiceHandler *)((u32)tbl + off))->fn)(arg);
+        (this->*(&tbl[i])->fn)(arg);
     }
     i++;
 test0:

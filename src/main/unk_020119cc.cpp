@@ -6615,10 +6615,10 @@ BOOL ActorTalkRequest::giveItemStart() {
         if (window != NULL) {
             ((TalkWindowState *)(window))->lockAdvance();
         }
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564) == 0) {
+        if (ownerActor->actionCtrl.getAction() == 8 && ownerActor->actionCtrl.isActionDone() == 0) {
             onEventTag(0);
         } else if (window != NULL) {
-            if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->requestGiveItem(4, &subSceneItem, handOverKind, handOverMode, handOverVariant, talkPlayer)) {
+            if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->requestGiveItem(4, &subSceneItem, handOverKind, handOverMode, handOverVariant, talkPlayer)) {
                 taskStep = 1;
             }
         }
@@ -6630,7 +6630,7 @@ BOOL ActorTalkRequest::giveItemWait() {
     using namespace nG;
     BOOL result = FALSE;
     if (ownerActor != NULL && window != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 13 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564) != 0) {
+        if (ownerActor->actionCtrl.getAction() == 13 && ownerActor->actionCtrl.isActionDone() != 0) {
             ((TalkWindowState *)(window))->unlockAdvance();
             taskStep = 2;
             result = TRUE;
@@ -6674,10 +6674,10 @@ BOOL ActorTalkRequest::takeItemStart() {
         if (window != NULL) {
             ((TalkWindowState *)(window))->lockAdvance();
         }
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->getAction() == 8 && !((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->isActionDone()) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->getAction() == 8 && !((NpcActionCtrl *)(&ownerActor->actionCtrl))->isActionDone()) {
             onEventTag(0);
         } else if (window != NULL) {
-            if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->requestTakeItem(4, &subSceneItem, handOverKind, handOverMode, handOverVariant, talkPlayer)) {
+            if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->requestTakeItem(4, &subSceneItem, handOverKind, handOverMode, handOverVariant, talkPlayer)) {
                 ((ActorTalkRequest *)(this))->setItemActionBusy();
                 taskStep = 1;
             }
@@ -6690,7 +6690,7 @@ BOOL ActorTalkRequest::takeItemWait() {
     using namespace nF;
     BOOL r = 0;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->getAction() == 0xe && ((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->isActionDone()) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->getAction() == 0xe && ((NpcActionCtrl *)(&ownerActor->actionCtrl))->isActionDone()) {
             ((TalkWindowState *)(window))->unlockAdvance();
             if (handOverMode != 4) {
                 ((ActorTalkRequest *)(this))->clearItemActionBusy();
@@ -6741,7 +6741,7 @@ BOOL ActorTalkRequest::requestItemAct0F() {
 BOOL ActorTalkRequest::itemAct0FStart() {
     using namespace nF;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->requestAction(0xf, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->requestAction(0xf, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
             ((TalkWindowState *)(window))->lockAdvance();
             taskStep = 1;
         }
@@ -6753,7 +6753,7 @@ BOOL ActorTalkRequest::itemAct0FWait() {
     using namespace nF;
     BOOL r = 0;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->getAction() == 0xf && ((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->isActionDone()) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->getAction() == 0xf && ((NpcActionCtrl *)(&ownerActor->actionCtrl))->isActionDone()) {
             ((TalkWindowState *)(window))->unlockAdvance();
             ((ActorTalkRequest *)(this))->clearItemActionBusy();
             taskStep = 2;
@@ -6796,7 +6796,7 @@ BOOL ActorTalkRequest::requestKeepItem() {
 BOOL ActorTalkRequest::keepItemStart() {
     using namespace nF;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->requestAction(0x10, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->requestAction(0x10, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
             ((ActorTalkRequest *)(this))->setItemActionBusy();
             ((TalkWindowState *)(window))->lockAdvance();
             taskStep = 1;
@@ -6809,7 +6809,7 @@ BOOL ActorTalkRequest::keepItemWait() {
     using namespace nF;
     BOOL r = 0;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->getAction() == 0x10 && ((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->isActionDone()) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->getAction() == 0x10 && ((NpcActionCtrl *)(&ownerActor->actionCtrl))->isActionDone()) {
             ((TalkWindowState *)(window))->unlockAdvance();
             ((ActorTalkRequest *)(this))->clearItemActionBusy();
             taskStep = 2;
@@ -6852,7 +6852,7 @@ BOOL ActorTalkRequest::requestReturnItem() {
 BOOL ActorTalkRequest::returnItemStart() {
     using namespace nF;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->requestAction(0x11, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->requestAction(0x11, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
             ((ActorTalkRequest *)(this))->setItemActionBusy();
             ((TalkWindowState *)(window))->lockAdvance();
             taskStep = 1;
@@ -6865,7 +6865,7 @@ BOOL ActorTalkRequest::returnItemWait() {
     using namespace nF;
     BOOL r = 0;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->getAction() == 0x11 && ((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->isActionDone()) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->getAction() == 0x11 && ((NpcActionCtrl *)(&ownerActor->actionCtrl))->isActionDone()) {
             ((TalkWindowState *)(window))->unlockAdvance();
             ((ActorTalkRequest *)(this))->clearItemActionBusy();
             taskStep = 2;
@@ -6905,7 +6905,7 @@ BOOL ActorTalkRequest::requestItemAct12() {
 BOOL ActorTalkRequest::itemAct12Start() {
     using namespace nF;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->requestAction(0x12, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->requestAction(0x12, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
             ((TalkWindowState *)(window))->lockAdvance();
             taskStep = 1;
         }
@@ -6917,7 +6917,7 @@ BOOL ActorTalkRequest::itemAct12Wait() {
     using namespace nF;
     BOOL r = 0;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->getAction() == 0x12 && ((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->isActionDone()) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->getAction() == 0x12 && ((NpcActionCtrl *)(&ownerActor->actionCtrl))->isActionDone()) {
             ((TalkWindowState *)(window))->unlockAdvance();
             taskStep = 2;
             r = 1;
@@ -6960,7 +6960,7 @@ BOOL ActorTalkRequest::requestEatItem() {
 BOOL ActorTalkRequest::eatItemStart() {
     using namespace nF;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->requestAction(0x13, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->requestAction(0x13, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
             ((TalkWindowState *)(window))->lockAdvance();
             taskStep = 1;
         }
@@ -6972,7 +6972,7 @@ BOOL ActorTalkRequest::eatItemWait() {
     using namespace nF;
     BOOL r = 0;
     if (ownerActor != NULL && window != NULL) {
-        if (((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->getAction() == 0x13 && ((NpcActionCtrl *)((u8 *)ownerActor + 0x564))->isActionDone()) {
+        if (((NpcActionCtrl *)(&ownerActor->actionCtrl))->getAction() == 0x13 && ((NpcActionCtrl *)(&ownerActor->actionCtrl))->isActionDone()) {
             ((TalkWindowState *)(window))->unlockAdvance();
             ((ActorTalkRequest *)(this))->clearItemActionBusy();
             taskStep = 2;

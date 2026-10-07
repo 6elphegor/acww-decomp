@@ -10,6 +10,7 @@
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"
 #include "actor/Actor.h"
+#include "actor/ActorProfile.h"
 #define PROTO_LOCAL_Mtx43_RotateX  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Mtx43_RotateY  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Mtx43_SetTranslate  // declared below: the shared prototype conflicts with the calls here
@@ -72,7 +73,7 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern u32 **gProfileTable;
+extern ProcProfile **gProfileTable;
 }
 
 extern "C" {
@@ -286,9 +287,9 @@ Actor::Actor() {
         moveAngleY = x->y;
         moveAngleZ = x->z;
     }
-    u32 *e = gProfileTable[profile];
-    actorFlags = e[2];
-    setCullParams(e[3], e[4], e[5]);
+    ActorProfile *e = (ActorProfile *)gProfileTable[profile];  // an actor's profile is an ActorProfile (ProcProfile first)
+    actorFlags = e->actorFlags;
+    setCullParams(e->cullHeight, e->cullRadius, e->cullDepth);
 }
 
 BOOL Actor::preCreate() {

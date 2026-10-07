@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 #include "actor/CharaFaceAnimWorkRef.h"
 #include "sys/Heap.h"
 #include "proto/autoload_2/unk_020e8558.h"
@@ -20,7 +21,7 @@ struct CharaFaceAnimWorkPool {
 
 extern "C" {
 extern void *gCharaFaceAnimWorkHeap;
-extern u8 *gCommManager;
+extern CommManager *gCommManager;
 extern CharaFaceAnimWorkPool sCharaFaceAnimWorkPool;
 
 #define Heap_freeAll _ZN4Heap7freeAllEv
@@ -53,7 +54,7 @@ CharaFaceAnimWorkPool::~CharaFaceAnimWorkPool() {}
 void CharaFaceAnimWorkPool::createHeaps() {
     void *heap = gCharaFaceAnimWorkHeap;
     u32 n, i, m;
-    n = gCommManager[0x6c];
+    n = gCommManager->memberCount;
     m = Scene_GetMaxPlayers(Scene_GetCurrent());
     if (n < m) m = n;
     for (i = 0; i < m; i++) {

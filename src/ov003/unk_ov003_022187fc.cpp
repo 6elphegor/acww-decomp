@@ -323,7 +323,7 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
         }
     }
     if (Scene_InTown()) {
-        if (!((CommManager *)(gCommManager))->isSlotActive(gCommManager[0x64 / 4])) {
+        if (!((CommManager *)(gCommManager))->isSlotActive(((CommManager *)(gCommManager))->myAid)) {
             s32 k = TownBlockMap_Get();
             if (Taxi_IsArriving() != 0 || Taxi_IsLeaving() != 0) {
                 if (Town_FindTownHallFront(k, &tl.cx, &bx, &by)) {

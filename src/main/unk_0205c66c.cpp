@@ -1,4 +1,5 @@
 #include "types.h"
+#include "net/CommManager.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexVramTask.h"
 #include "sys/Heap.h"
@@ -26,7 +27,7 @@ struct PlayerBodyModelPool {
 extern "C" {
 extern PlayerBodyModelPool sPlayerBodyModelPool;
 extern void *gPlayerBodyModelHeap;
-extern u8 *gCommManager;
+extern CommManager *gCommManager;
 
 #define Heap_freeAll _ZN4Heap7freeAllEv
 void Heap_freeAll(void *);
@@ -61,7 +62,7 @@ PlayerBodyModelPool::~PlayerBodyModelPool() {
 }
 
 void PlayerBodyModelPool::allocBuffers() {
-    u32 cnt = gCommManager[0x6c];
+    u32 cnt = gCommManager->memberCount;
     u32 i;
     for (i = 0; i < cnt; i++) {
         u32 a = PlayerBodyModel_GetTexVramSize();

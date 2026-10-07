@@ -156,7 +156,7 @@ void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out) {
         out->y = q->y;
         out->z = q->z;
         best = Vec_DistXZ(out, me);
-        Insect_AccumAlarmFromActor(o, &flag, *(s32 *)((u8 *)p + 0x98), best);
+        Insect_AccumAlarmFromActor(o, &flag, ((Actor *)p)->speed, best);
         *fp = (*fp & flag) ? 1 : 0;
     }
     zero = 0;
@@ -170,7 +170,7 @@ void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out) {
             t.y = q->y;
             t.z = q->z;
             d = Vec_DistXZ(&t, me);
-            Insect_AccumAlarmFromActor(o, &flag, *(s32 *)((u8 *)e + 0x98), d);
+            Insect_AccumAlarmFromActor(o, &flag, ((Actor *)e)->speed, d);
             *fp = (*fp & flag) ? 1 : zero;
             if (best > d) {
                 best = d;

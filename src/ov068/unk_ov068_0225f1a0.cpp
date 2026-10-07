@@ -4835,9 +4835,9 @@ void FieldVillagerAi_AddRandomPairRelation(void *a, s32 unused, s8 *t) {
 namespace ns_02263600 {
 extern "C" {
 void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag) {
-    ((VillagerMood *)((u8 *)o + 0x838))->addMood(x, y);
+    ((VillagerMood *)(&((FieldVillager *)o)->mood))->addMood(x, y);
     if (flag != 0) {
-        ((VillagerMood *)((u8 *)o + 0x838))->requestApply();
+        ((VillagerMood *)(&((FieldVillager *)o)->mood))->requestApply();
     }
 }
 }

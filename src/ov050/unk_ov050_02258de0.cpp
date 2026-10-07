@@ -3015,10 +3015,10 @@ void SpNpcNookShopTalk::onMessageEnd(u32) {
 loop:
     {
         u32 off = i * 12;
-        u32 a = *(u32 *)((u8 *)tbl + off);
+        u32 a = tbl[i].id;
         u32 b = *q;
         if (a == b) {
-            Unk_ov050_0225a6e0_Row *r = (Unk_ov050_0225a6e0_Row *)((u32)tbl + off);
+            Unk_ov050_0225a6e0_Row *r = &tbl[i];
             (this->*r->f)();
         }
     }
@@ -3336,7 +3336,7 @@ void SpNpcNookShopTalk::onShopChoice() {
     goto test;
 loop:
     {
-        u32 id = *(u32 *)((u8 *)tbl + i * 12);
+        u32 id = tbl[i].id;
         u32 cur = *pe;
         if (id == cur) {
             (this->*tbl[i].fn)(t);
@@ -3649,7 +3649,7 @@ void SpNpcNookShopTalk::onArbeitChoice() {
     goto test;
 loop:
     {
-        u32 id = *(u32 *)((u8 *)tbl + i * 12);
+        u32 id = tbl[i].id;
         u32 cur = *pe;
         if (id == cur) {
             (this->*tbl[i].fn)(t);

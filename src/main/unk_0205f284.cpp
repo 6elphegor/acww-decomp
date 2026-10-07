@@ -623,7 +623,7 @@ void FishBobberStates::updateCastFail()
     } else if (stateTimer >= 0x15) {
         setState(1);
     } else {
-        s16 ang = (s16)(*(s16 *)((u8 *)ownerActor + 0x8e) - 0x1838);
+        s16 ang = (s16)(ownerActor->rotY - 0x1838);
         u32 idx = (u16)ang >> 4;
         idx = idx * 2;
         pos.x += func_01ffcb0c(data_02135f44[idx], 0x640);
@@ -833,7 +833,7 @@ void FishBobberStates::updateAct09()
 void FishBobberStates::updateCastSwing()
 {
     s32 d = _s32_div_f(stateTimer * stateTimer * 0x4800, 0xe1);
-    s16 ang = (s16)(*(s16 *)((u8 *)ownerActor + 0x8e) - d);
+    s16 ang = (s16)(ownerActor->rotY - d);
     u32 idx = (u16)ang >> 4;
     idx = idx * 2;
     pos.x -= func_01ffcb0c(data_02135f44[idx], 0x2ee);

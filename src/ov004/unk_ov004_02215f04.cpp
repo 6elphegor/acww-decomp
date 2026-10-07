@@ -482,13 +482,13 @@ void BirthdayGuestVillagerTalk::start(TalkStartMsg *arg) {
         void *p = Scene_GetVillagerHouse();
         if (SaveVillagers_IsOccupied(gSaveVillagers, p)) {
             MsgString9B loc;
-            ((ActorTalkRequest *)((u8 *)villager + 0x898))->setVillagerNameSlot((u32)(VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p))), 1);
+            ((ActorTalkRequest *)(&o->talk))->setVillagerNameSlot((u32)(VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p))), 1);
         }
         BirthdayGuestVillager *o2 = villager;
         if (o2) {
             void *m = o2->villagerData;
             if (m) {
-                ((ActorTalkRequest *)((u8 *)villager + 0x898))->setVillagerNameSlot((u32)(VillagerData_getVillagerId(m)), 0);
+                ((ActorTalkRequest *)(&o->talk))->setVillagerNameSlot((u32)(VillagerData_getVillagerId(m)), 0);
             }
         }
     }

@@ -538,8 +538,8 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
                     if (w != 0) {
                         switch (kind) {
                         case 1: {
-                            u8 *g = gCommManager;
-                            if (((CommManager *)(g))->isSlotActive(*(s32 *)(g + 0x64)) == 0 && r5 != 0) {
+                            CommManager *g = (CommManager *)gCommManager;
+                            if (g->isSlotActive(g->myAid) == 0 && r5 != 0) {
                                 if (VillagerState_GetMood(r5) == 1) {
                                     VillagerState_AddMoodTimer(r5, 0xe10);
                                 } else {
@@ -552,8 +552,8 @@ void SpNpcKatrinaTalk::onMessageEnd(u32) {
                             break;
                         }
                         case 2: {
-                            u8 *g = gCommManager;
-                            if (((CommManager *)(g))->isSlotActive(*(s32 *)(g + 0x64)) == 0 && r5 != 0) {
+                            CommManager *g = (CommManager *)gCommManager;
+                            if (g->isSlotActive(g->myAid) == 0 && r5 != 0) {
                                 if (VillagerState_GetMood(r5) == 4) {
                                     VillagerState_AddMoodTimer(r5, 0x4b0);
                                 } else {

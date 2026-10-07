@@ -5119,7 +5119,7 @@ void Tree_RequestChop(void *o, P2 pos, s32 mode) {
 namespace ns_0221cb54 {
 extern "C" {
 void FieldItemFx_StartStrikeResult(P2 pos) {
-    u32 t = *(u32 *)(gCommManager + 0x64);
+    u32 t = ((CommManager *)gCommManager)->myAid;
     s32 idx = PendingUnit_FindBySlot(t, 4);
     if (idx >= 0) {
         PendingUnit *r = PendingUnit_Get(idx);
@@ -5797,7 +5797,7 @@ void TreeAnim_Update(TreeAnim *o) {
             TreeAnim_Reset(o);
         } else {
             s32 r5 = 0;
-            s32 r6 = *(s32 *)((u8 *)gCommManager + 0x68);
+            s32 r6 = ((CommManager *)gCommManager)->localSlot;
             switch (o->animKind) {
             case 4:
             case 5:
