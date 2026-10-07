@@ -1,3 +1,4 @@
+#include "uptr.h"
 
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -692,7 +693,7 @@ void FishBobberStates::updateFloat()
     VecFx32 base;
     GroundInfo o;
     VecFx32 v, w;
-    VecFx32 *pb = (VecFx32 *)((u8 *)ownerActor + 0x5c);
+    VecFx32 *pb = (VecFx32 *)(ACTOR_POS_AT(ownerActor));
     base.x = pb->x;
     base.y = pb->y;
     base.z = pb->z;

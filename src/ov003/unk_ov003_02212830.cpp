@@ -682,7 +682,7 @@ extern "C" BOOL Snowball_CanBuildSnowmanAt(Pos *pos) {
         px0 = -1;
         py0 = -1;
         a = PlayerActor_GetActor(4);
-        if (a) FieldPos_ToUnit(&px0, &py0, (u8 *)a + 0x5c);
+        if (a) FieldPos_ToUnit(&px0, &py0, ACTOR_POS_AT(a));
         FieldPos_ToUnit(&x, &y, pos);
         lx = *(volatile s32 *)&x;
         ly = *(volatile s32 *)&y;

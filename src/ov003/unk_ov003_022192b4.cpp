@@ -6123,7 +6123,7 @@ s32 Tree_GetDropSide(TreeAnim *o, VecFx32 *p) {
     s32 r = 0;
     u16 *q = PlayerActor_GetActor(Field_AidOrLocal(o));
     if (q != 0) {
-        if (*(s32 *)((u8 *)q + 0x5c) < p->x) {
+        if (*(s32 *)(ACTOR_POS_AT(q)) < p->x) {
             r = 1;
         }
     }

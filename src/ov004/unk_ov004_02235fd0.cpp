@@ -556,7 +556,7 @@ void HouseRoach::updateCollision() {
     func_02031c48(colliders[2]);
     func_02031c48(colliders[3]);
     p = (VecFx32 *)this;
-    p = (VecFx32 *)((u8 *)p + 0x5c);
+    p = (VecFx32 *)(ACTOR_POS_AT(p));
     n = 1;
     ang = rotY;
     t = FX_Div(0x1000, 0x2000);
@@ -869,7 +869,11 @@ void HouseRoach::updateCrawl() {
             o = (s32)sHouseRoachVillager;
         }
         if (o != 0 && res == 0) {
+#ifdef HOST
+            u8 *q = ACTOR_POS_AT(o);
+#else
             u8 *q = (u8 *)(o + 0x5c);
+#endif
             stateTimer = stateTimer - 1;
             speed = zero;
             if (stateTimer <= 0) {

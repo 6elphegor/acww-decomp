@@ -73,4 +73,16 @@ typedef signed int sptr;
 // VillagerRoute's size on 64-bit hosts (it is declared in src/main/unk_020119cc.cpp only; the AI state in
 // src/ov068/unk_ov068_0225f1a0.cpp holds one in a byte array): checked there
 #define VILLAGER_ROUTE_HOST_SIZE 0xa0
+// An actor's position (Actor::position) from an untyped pointer to the actor: DS offset 0x5c; on hosts the member
+// (HostActor_Pos, src/main/unk_02002b1c.cpp: the units using this needn't know Actor's layout)
+#ifdef HOST
+#ifdef __cplusplus
+extern "C"
+#endif
+unsigned char *HostActor_Pos(void *actor);
+#define ACTOR_POS_AT(p) (HostActor_Pos((void *)(p)))
+#else
+#define ACTOR_POS_AT(p) ((u8 *)(p) + 0x5c)
+#endif
+
 #endif

@@ -5739,7 +5739,7 @@ void FieldVillagerAiPlayerStates::approachStep0(FieldVillager *o) {
                 stateTimer = 0xc8;
             } else {
                 Character *p = approachTarget;
-                VecFx32 *pv = (VecFx32 *)((u8 *)p + 0x5c);
+                VecFx32 *pv = (VecFx32 *)(ACTOR_POS_AT(p));
                 NpcActionCtrl_requestAction(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0), 2, 1, pv->x, pv->z, 0, 0, 0, 0, data_020c6cc8, 0);
                 step = 1;
                 stateTimer = 0xc8;
@@ -5783,7 +5783,7 @@ void FieldVillagerAiPlayerStates::approachStep1(FieldVillager *o) {
                 Villager_HalveTalkUrge((s32)o->getVillagerData());
             }
         } else if (isNearApproachStart(o) != 0) {
-            NpcMoveCtrl_setWaypoint(q, (u8 *)approachTarget + 0x5c);
+            NpcMoveCtrl_setWaypoint(q, ACTOR_POS_AT(approachTarget));
         } else {
             FieldVillagerAi_ChangeState(this, o, 0);
             seekPlayerCooldown = 0x4b0;
@@ -5851,7 +5851,7 @@ void FieldVillagerAiPlayerStates::approachStep4(FieldVillager *o) {
             stateTimer = 0xc8;
         } else if (NpcActionCtrl_getAction(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)) == 0 && NpcActionCtrl_isActionDone(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)) != 0) {
             Character *p = approachTarget;
-            VecFx32 *pv = (VecFx32 *)((u8 *)p + 0x5c);
+            VecFx32 *pv = (VecFx32 *)(ACTOR_POS_AT(p));
             NpcActionCtrl_requestAction(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0), 2, 1, pv->x, pv->z, 0, 0, 0, 0, data_020c6cc8, 0);
             step = 1;
             stateTimer = 0xc8;

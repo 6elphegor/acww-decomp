@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -155,7 +156,7 @@ void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out) {
     p = PlayerActor_GetActor(4);
     me = &o->position;
     if (p != 0) {
-        V3 *q = (V3 *)((u8 *)p + 0x5c);
+        V3 *q = (V3 *)(ACTOR_POS_AT(p));
         out->x = q->x;
         out->y = q->y;
         out->z = q->z;
@@ -168,7 +169,7 @@ void Insect_AccumAlarmOffline(Insect *o, u8 *fp, V3 *out) {
     for (; i < NpcRegistry_GetSlotCount(); i++) {
         void *e = NpcRegistry_GetBySlot(i);
         if (e != 0) {
-            V3 *q = (V3 *)((u8 *)e + 0x5c);
+            V3 *q = (V3 *)(ACTOR_POS_AT(e));
             V3 t;
             t.x = q->x;
             t.y = q->y;
@@ -454,7 +455,7 @@ void Moth_CircleLight(Insect *o) {
     if (o->isAlarmed != 0) {
         V3 *q = (V3 *)PlayerActor_GetActor(4);
         if (q != 0) {
-            q = (V3 *)((u8 *)q + 0x5c);
+            q = (V3 *)(ACTOR_POS_AT(q));
             if (o->rotX == 1 && o->kind == 8) {
                 s32 v;
                 if (pos->x > q->x) {
@@ -981,7 +982,7 @@ void Bee_StingAndLeave(Insect *o) {
             s16 c = o->rotY;
             s16 buf = c;
             V3 vec;
-            Math_StepAngle(&buf, Math_AngleXZ(r6, (u8 *)q + 0x5c), 0x1554);
+            Math_StepAngle(&buf, Math_AngleXZ(r6, ACTOR_POS_AT(q)), 0x1554);
             o->rotY = buf;
             Insect_GetDirVec(&vec, buf);
             r6->x = r6->x + func_01ffcb0c(0x23000, vec.x);
@@ -1051,7 +1052,7 @@ void Stinger_Walk(Insect *o, s16 *p, u32 mode) {
             if (*p == 0) {
                 void *q = PlayerActor_GetActor(4);
                 if (q) {
-                    o->rotY = Math_AngleXZ(&o->position, (u8 *)q + 0x5c);
+                    o->rotY = Math_AngleXZ(&o->position, ACTOR_POS_AT(q));
                     Insect_PlaySe(o, 1, 0);
                 }
             }

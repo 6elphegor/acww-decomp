@@ -1,3 +1,4 @@
+#include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
@@ -566,7 +567,7 @@ s32 Snowball::enterSnowballStack() {
     snowballFlags.c = 0;
     snowballFlags.d = 1;
     Snowball *o = (Snowball *)Snowball_FindOtherInBallState(this);
-    FieldPos_SnapToUnitCenter(&targetPos, (u8 *)o + 0x5c);
+    FieldPos_SnapToUnitCenter(&targetPos, ACTOR_POS_AT(o));
     targetPos.y += ((o->radius * 2 - (o->radius >> 3)) - (radius >> 3)) - 0x400;
     velocity.y = -(FX_Div(0, 0x3e8000) + 0x8f2);
     u32 ei = param & 1;

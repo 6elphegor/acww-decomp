@@ -2885,7 +2885,7 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
         } else {
             void *e = PlayerActor_GetActor(4);
             if (e != NULL) {
-                Vec_Sub(&w, r7, (u8 *)e + 0x5c);
+                Vec_Sub(&w, r7, ACTOR_POS_AT(e));
                 v = w;
                 Insect_ClampStepXZ(&v, &v, 3);
                 VEC_Add(r7, &v, r7);
@@ -4216,7 +4216,7 @@ extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt) {
     void *o = Insect_FindNearestPlayer(pos);
     if (Insect_CheckDigHit(self, pos)) {
         if (o != 0) {
-            s32 a = Math_AngleXZ(pos, (u8 *)o + 0x5c);
+            s32 a = Math_AngleXZ(pos, ACTOR_POS_AT(o));
             self->state = 5;
             NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(&self->pooledModel), 0, 0x1f);
             self->rotY = a + 0x8000;
@@ -4224,7 +4224,7 @@ extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt) {
         }
     } else {
         if (o != 0) {
-            if (Vec_DistXZ(pos, (u8 *)o + 0x5c) < 0x5000) {
+            if (Vec_DistXZ(pos, ACTOR_POS_AT(o)) < 0x5000) {
                 self->cooldownTimer = 0x3c;
             }
         }
@@ -4687,7 +4687,7 @@ extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out) {
         if (*p == 0) {
             void *o = Insect_FindNearestPlayer(sub);
             if (o) {
-                s32 v = Math_AngleXZ(sub, (u8 *)o + 0x5c);
+                s32 v = Math_AngleXZ(sub, ACTOR_POS_AT(o));
                 self->state = 5;
                 NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(&self->pooledModel), 0, 0x1f);
                 self->rotY = v + 0x8000;
@@ -5779,7 +5779,7 @@ extern "C" void Crawler_Update(Rec *o) {
         if (o->state == 4 || o->state == 0x13) {
             void *r = PlayerActor_GetActor(4);
             if (r != 0) {
-                o->rotY = Math_AngleXZ(&o->position, (u8 *)r + 0x5c);
+                o->rotY = Math_AngleXZ(&o->position, ACTOR_POS_AT(r));
             }
             o->state = 0x13;
         }
@@ -8391,7 +8391,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
                 o = NpcRegistry_FindVillager(i);
                 if (o) {
                     s32 lim = e->disturbRadius;
-                    if (Vec_DistXZ(pv, (u8 *)o + 0x5c) < lim) {
+                    if (Vec_DistXZ(pv, ACTOR_POS_AT(o)) < lim) {
                         if (o->vfunc_ac()) {
                             e->alarm = 0xfe;
                         }
@@ -10209,7 +10209,7 @@ extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag) {
                 }
             }
         } else {
-            VecFx32Ctor *pp = (VecFx32Ctor *)((u8 *)q + 0x5c);
+            VecFx32Ctor *pp = (VecFx32Ctor *)(ACTOR_POS_AT(q));
             SpawnMask_MarkRect(&buf, pp->x, pp->z, 5, 8, 5);
         }
     }

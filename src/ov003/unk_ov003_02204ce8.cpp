@@ -6995,7 +6995,7 @@ extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p) {
             s8 v = a->fishId;
             r->fishId = v;
             if (v < 0x38) {
-                VillagerTrend_OnFishCaught((u8 *)o + 0x5c);
+                VillagerTrend_OnFishCaught(ACTOR_POS_AT(o));
                 HudCountdown_incCountA(Hud_GetCountdown());
             }
         }

@@ -435,3 +435,8 @@ void Actor::calcModelMatrix(void *out) {
     *(Mtx43 *)out = *(Mtx43 *)m;
 }
 
+
+#ifdef HOST
+// ACTOR_POS_AT (include/uptr.h)
+extern "C" unsigned char *HostActor_Pos(void *actor) { return (unsigned char *)&((Actor *)actor)->position; }
+#endif
