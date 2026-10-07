@@ -663,9 +663,15 @@ extern "C" void FieldScene_AcquireOv002(void) { OverlayMgr_Acquire((u32)OVERLAY_
 extern "C" void FieldScene_ReleaseOv002(void) { OverlayMgr_Release((u32)OVERLAY_2_ID); }
 
 extern "C" void FieldScene_AcquireInfoOverlays(u8 *obj) {
+#ifdef HOST
+    s32 a = ((SceneInfo *)obj)->infoOverlayA;  // (after the pointers: elsewhere on 64-bit hosts)
+    sInfoOverlayA = a;
+    sInfoOverlayB = ((SceneInfo *)obj)->infoOverlayB;
+#else
     s32 a = *(s32 *)(obj + 0x10);
     sInfoOverlayA = a;
     sInfoOverlayB = *(s32 *)(obj + 0x14);
+#endif
     if (a != -1) {
         OverlayMgr_Acquire(a);
     }

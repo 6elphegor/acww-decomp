@@ -55,10 +55,18 @@ struct NpcNetRecord {
 
 
 struct VisitorSpawner {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in NpcSpawner)
+    u8 pad[0xb0];  // DS +0x0 [0x70]
+    u8 overlayLoaded;  // DS +0x70
+    u8 pad2[0x3];  // DS +0x71 [0x3]
+    u32 overlayId;  // DS +0x74
+#else
     u8 pad[0x70];
     u8 overlayLoaded;
     u8 pad2[3];
     u32 overlayId;
+#endif
 
     u16 *spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n);
     BOOL pickVisitor();
@@ -67,10 +75,18 @@ struct VisitorSpawner {
 };
 
 struct NpcSpawnerOverlayView {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in NpcSpawner)
+    u8 pad_00[0xb0];  // DS +0x0 [0x70]
+    u8 overlayLoaded;  // DS +0x70
+    u8 pad_71[0x3];  // DS +0x71 [0x3]
+    u32 overlayId;  // DS +0x74
+#else
     u8 pad_00[0x70];
     u8 overlayLoaded;
     u8 pad_71[3];
     u32 overlayId;
+#endif
 
     void releaseVisitorOverlay();
 };
@@ -2176,3 +2192,19 @@ void *sVisitorPlacePmf_Countdown[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
 void *sVisitorPlacePmf_Lyle[2] = {(void *)Dp::VisitorPlace_Lyle, 0};
 void *sVisitorCheckPmf_Tortimer[2] = {(void *)Dp::Visitor_CheckTortimer, 0};
 void *sVisitorPlacePmf_Resetti[2] = {(void *)Dp::VisitorPlace_Resetti, 0};
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(NpcSpawnerOverlayView, pad_00) == 0x0, "NpcSpawnerOverlayView.pad_00");
+static_assert(__builtin_offsetof(NpcSpawnerOverlayView, overlayLoaded) == 0xb0, "NpcSpawnerOverlayView.overlayLoaded");
+static_assert(__builtin_offsetof(NpcSpawnerOverlayView, pad_71) == 0xb1, "NpcSpawnerOverlayView.pad_71");
+static_assert(__builtin_offsetof(NpcSpawnerOverlayView, overlayId) == 0xb4, "NpcSpawnerOverlayView.overlayId");
+static_assert(sizeof(NpcSpawnerOverlayView) == sizeof(NpcSpawner), "NpcSpawnerOverlayView: regenerate (tools/host_view_layout.py --remove)");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(VisitorSpawner, pad) == 0x0, "VisitorSpawner.pad");
+static_assert(__builtin_offsetof(VisitorSpawner, overlayLoaded) == 0xb0, "VisitorSpawner.overlayLoaded");
+static_assert(__builtin_offsetof(VisitorSpawner, pad2) == 0xb1, "VisitorSpawner.pad2");
+static_assert(__builtin_offsetof(VisitorSpawner, overlayId) == 0xb4, "VisitorSpawner.overlayId");
+static_assert(sizeof(VisitorSpawner) == sizeof(NpcSpawner), "VisitorSpawner: regenerate (tools/host_view_layout.py --remove)");
+#endif
