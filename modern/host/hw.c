@@ -25,6 +25,7 @@
 
 // 3D command port writes since the last ACWW_STATS line (register writes and GX FIFO DMA)
 static unsigned long long sGxWrites;
+static u64 sIoCount;  // trapped and called register accesses
 
 // the interrupted context's registers (signal handlers)
 #if defined(__x86_64__)
@@ -218,6 +219,7 @@ static void run_events_body(void) {
             melon_debug();
             fprintf(stderr, " gx %llu", sGxWrites);
             sGxWrites = 0;
+            { static unsigned long long lastIo; fprintf(stderr, " io %llu", (unsigned long long)sIoCount - lastIo); lastIo = sIoCount; }
             fprintf(stderr, " vramcnt %08x %08x ime %x ie %08x if %08x cpu %x\n", R32(0x04000240), R32(0x04000244), R32(0x04000208), R32(0x04000210), sIF, host_irq_state());
         }
         if (getenv("ACWW_FPS") && host_frame() % 120 == 0) {  // frames per second of real time, over the last 120
@@ -418,7 +420,6 @@ static void *page_of(u32 a) { return (void *)(uintptr_t)(a & ~(PAGE - 1)); }
 struct IoLog { u32 addr, eip, write; };
 static struct IoLog sRing[16];
 static u32 sRingPos;
-static u64 sIoCount;
 
 // frame-pointer walk, staying within 1 MB above the stack pointer (host stacks are 512 KB, the main one is the
 // process stack)

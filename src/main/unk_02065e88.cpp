@@ -1621,7 +1621,11 @@ void TalkTextBox::redrawLines() {
     for (i = 0; i < numLines; i++) {
         TextLabel *e = labels[i];
         if (e != 0 && lineDirty[i] != 0) {
+#ifdef HOST
+            e->textStart = (u32)(uptr)lineStarts[i];  // (the pointers, not their words: 8 bytes on 64-bit hosts)
+#else
             e->textStart = lineStartWords[i];
+#endif
             e->textEnd = 0;
             e->xOffset = lineOffsets[i];
             e->fgColor = Talk_ColorTagToTextColor(lineColors[i]);
@@ -1639,7 +1643,11 @@ void TalkTextBox::endText() {
 void TalkTextBox::markLineDirty() {
     using namespace n15;
     s32 i = numLines;
+#ifdef HOST
+    if (i != 0 && (u32)i <= 3) lineDirty[i - 1] = 1;
+#else
     if (i != 0 && (u32)i <= 3) *((u8 *)this + i + 0x437) = 1;
+#endif
 }
 TalkCharStepper::TalkCharStepper(TalkWindow *owner, TalkTextBox *buf)
     : window(owner), textBox(buf), mode(0), endPos(0), remaining(0) {
