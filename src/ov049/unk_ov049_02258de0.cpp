@@ -32,16 +32,13 @@
 #include "save/PatternOrder.h"
 #include "talk/ChoiceList.h"
 #include "talk/TalkWindowState.h"
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerId_GetTownId  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_TownId_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchPrevChanged  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gTouchPrevHeld  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02063904.h"
 #include "proto/main/unk_0206e54c.h"
 #include "proto/main/unk_02070560.h"
+#include "proto/main/unk_02093ff0.h"
+#include "proto/main/unk_020943dc.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_02094810.h"
 #include "proto/main/unk_02097444.h"
@@ -50,6 +47,7 @@
 #include "proto/main/unk_0209eb94.h"
 #include "proto/main/unk_020a427c.h"
 #include "proto/main/unk_020b5e5c.h"
+#include "proto/main/unk_020b7d10.h"
 #include "proto/ov004/unk_ov004_0221e7a8.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov004/unk_ov004_0223e9bc.h"
@@ -130,8 +128,6 @@ struct SpNpcMabelChoiceMenu {
 extern "C" {
 void _ZN8NpcActor18onInteractionEventEi(void *self, u32 cmd, s32 arg);
 extern CommManager *gCommManager;
-extern u8 gTouchPrevHeld[];
-extern u8 gTouchPrevChanged[];
 extern u16 gPad[];
 extern s16 data_02135f44[];
 extern u8 gU8None[];
@@ -143,7 +139,6 @@ extern s16 data_020c6cc0;
 extern void *gSceneBlockMap;
 
 BOOL CommManager_isOnline(void *g);
-VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 s32 TalkRequest_IsActive();
@@ -170,7 +165,7 @@ void ChoiceList_setEntry(void *h, s32 a, u8 *b, s32 c, u8 *d, char *e, s32 f);
 void ChoiceList_loadTexts(void *h);
 s32 TalkWindowState_setNextMessage(void *self, void *buf, void *cb);
 void *PlayerData_getErrands(...);
-void *SickVillagerRecord_getParcelErrand(void *p);
+ParcelErrand *SickVillagerRecord_getParcelErrand(void *p);
 s32 Talk_IsInOwnTown();
 void ActorTalkRequest_requestTakeItem(void *self, u16 *p, u32 a, u32 b, u32 c);
 void ErrandRecord_setStep(void *p, s32 a);
@@ -202,11 +197,9 @@ void PatternInfo_getTitle(void *a, void *b);
 void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
 const PlayerIdInlineCopy *PatternInfo_getAuthor(void *a);
 const PlayerIdInlineCopy *PlayerData_getPlayerId(...);
-const TownIdInlineCopy *PlayerId_GetTownId(PlayerIdInlineCopy *a);
 BOOL PlayerId_equals(PlayerIdInlineCopy *a, PlayerIdInlineCopy *b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, void *a, s32 n);
 void ActorTalkRequest_setTownNameSlot(void *self, void *a, s32 n);
-void TownId_Destruct(TownIdInlineCopy *p);
 void func_020942c8(PlayerIdInlineCopy *p);
 void func_0206267c(ItemNameStorage *p);
 void func_0206260c(ItemNameStorage *p);
@@ -320,7 +313,7 @@ public:
     void dispatchShopMessageEnd();
     s32 getTopic();
     void setTopic(s32 v);
-    void attachOwner(s32 v);
+    void attachOwner(SpNpcMabel *o);
 
     /* 0xac */ SpNpcMabel *owner;
     /* 0xb0 */ s32 topic;
@@ -635,7 +628,7 @@ extern "C" void *data_ov049_0225bc50[2] = {(void *)_ZN14SpNpcMabelTalk19restoreT
 
 
 static inline BOOL Unk_ov049_02258ee0_Flags() {
-    if (gTouchPrevHeld[0] && gTouchPrevChanged[0]) {
+    if (gTouchPrevHeld && gTouchPrevChanged) {
         return TRUE;
     }
     return FALSE;
@@ -693,7 +686,7 @@ BOOL SpNpcMabel::preCreate() {
         return FALSE;
     }
     setTalkRequest((ActorTalkRequest *)&talk);
-    talk.attachOwner((s32)this);
+    talk.attachOwner(this);
     setColliderSize(0x119a, 0x2000);
     setCollisionRadius(0xf00);
     standBlend = data_020c6cc8;
@@ -784,7 +777,7 @@ BOOL SpNpcMabel::setupAct01() {
 }
 
 BOOL SpNpcMabel::mainAct01() {
-    VecFx32 *pv = PlayerActor_GetBodyPos(4);
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
     VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
@@ -826,7 +819,7 @@ BOOL SpNpcMabel::mainAct02() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    VecFx32 *pv = PlayerActor_GetBodyPos(4);
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
     VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
@@ -863,7 +856,7 @@ BOOL SpNpcMabel::mainAct03() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    VecFx32 *pv = PlayerActor_GetBodyPos(4);
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
     VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1049,7 +1042,7 @@ BOOL SpNpcMabel::setupAct0D() {
 }
 
 BOOL SpNpcMabel::mainAct0D() {
-    VecFx32 *pv = PlayerActor_GetBodyPos(4);
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
     VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
@@ -1109,9 +1102,9 @@ SpNpcMabelTalk::SpNpcMabelTalk() {}
 
 SpNpcMabelTalk::~SpNpcMabelTalk() {}
 
-void SpNpcMabelTalk::attachOwner(s32 v) {
+void SpNpcMabelTalk::attachOwner(SpNpcMabel *o) {
     resetMsg();
-    owner = (SpNpcMabel *)v;
+    owner = o;
 }
 
 void SpNpcMabelTalk::setTopic(s32 v) { topic = v; }
@@ -1123,7 +1116,7 @@ s32 SpNpcMabelTalk::getTopic() { return topic; }
 
 void SpNpcMabelTalk::start(TalkStartMsg *out) {
     void *r7 = PlayerData_GetCurrent();
-    void *r6 = SickVillagerRecord_getParcelErrand(((PlayerData *)(r7))->getErrands());
+    ParcelErrand *r6 = SickVillagerRecord_getParcelErrand(((PlayerData *)(r7))->getErrands());
     u8 buf[4];
     if (GameStart_IsActive() != 0 && getTopic() == 2) {
         out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
@@ -1173,8 +1166,8 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
         ((TalkWindowState *)(window))->setNamedSlot(2, &q, 7);
         PlayerIdInlineCopy a(*PatternInfo_getAuthor(((Pattern *)(q6))->getInfo()));
         PlayerIdInlineCopy b(*PlayerData_getPlayerId(r7));
-        TownIdInlineCopy c(*PlayerId_GetTownId(&a));
-        TownIdInlineCopy d(*PlayerId_GetTownId(&b));
+        TownIdInlineCopy c(*(const TownIdInlineCopy *)PlayerId_GetTownId(&a));
+        TownIdInlineCopy d(*(const TownIdInlineCopy *)PlayerId_GetTownId(&b));
         if (GameStart_IsActive() != 0) {
             out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
             out->msgIndex = 0x1d;
@@ -1187,8 +1180,8 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
             ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(&a), 2);
             out->msgIndex = 0x32;
         }
-        TownId_Destruct(&d);
-        TownId_Destruct(&c);
+        TownId_Destruct();
+        TownId_Destruct();
         new (&b) PlayerId();
         new (&a) PlayerId();
         ((ItemName *)((void *)(&q)))->ItemName::~ItemName();
@@ -1270,7 +1263,7 @@ loop0:
     u32 id;
     id = tbl[i].id;
     if (id == *idp) {
-        (this->*((SpNpcMabelMessageEndHandler *)((u32)tbl + i * 12))->fn)();
+        (this->*tbl[i].fn)();
     }
     i++;
 test0:
@@ -1440,13 +1433,11 @@ void SpNpcMabelTalk::dispatchShopChoice() {
     u8 *idp = &msgIndex;
     goto test0;
 loop0:
-    u32 off;
-    off = i * 12;
     u32 id;
     id = tbl[i].id;
     if (id == *idp) {
         u32 arg = ((ChoiceList *)(((TalkWindowState *)(window))->getChoiceList()))->getResult();
-        (this->*((SpNpcMabelChoiceHandler *)((u32)tbl + off))->fn)(arg);
+        (this->*tbl[i].fn)(arg);
     }
     i++;
 test0:
@@ -1885,7 +1876,7 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
     char *tbl = sSpNpcMabelMsgKeys[0];
     u32 msg = 0x30;
     u16 v[3];
-    void *hh;
+    ParcelErrand *hh;
     if (MenuCtrl_IsResultOk()) {
         hh = SickVillagerRecord_getParcelErrand(((PlayerData *)(PlayerData_GetCurrent()))->getErrands());
         if (Talk_IsInOwnTown()) {

@@ -57,7 +57,7 @@ s32 NpcSpawn_GetSpNpcSlotCount();
 NpcSpawner *NpcSpawner_Create();
 #endif
 #ifndef PROTO_LOCAL_NpcSpawner_PickFreeRoomPos
-s32 NpcSpawner_PickFreeRoomPos(u8 *a, void *out);
+s32 NpcSpawner_PickFreeRoomPos(NpcSpawner *a, void *out);
 #endif
 #ifndef PROTO_LOCAL_Event_IsActive
 BOOL Event_IsActive(s32 a, s32 *p);
@@ -66,7 +66,7 @@ BOOL Event_IsActive(s32 a, s32 *p);
 void Visitor_GetTodaysNpc(u16 *out);
 #endif
 #ifndef PROTO_LOCAL_NpcSpawner_SpawnHouseOwner
-void NpcSpawner_SpawnHouseOwner(u8 *a);
+void NpcSpawner_SpawnHouseOwner(NpcSpawner *a);
 #endif
 #ifndef PROTO_LOCAL_NpcNetRecord_SetVillagerState
 BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
@@ -132,10 +132,10 @@ void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, VecFx32 *
 BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g);
 #endif
 #ifndef PROTO_LOCAL_VisitorTable_FindByNpc
-u16 *VisitorTable_FindByNpc(u16 *key, VisitorSpawnEntry *tbl, s32 n);
+u16 *VisitorTable_FindByNpc(const u16 *key, VisitorSpawnEntry *tbl, s32 n);
 #endif
 #ifndef PROTO_LOCAL_VisitorTable_FindByProfile
-u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32 n);
+u16 *VisitorTable_FindByProfile(const u16 *key, VisitorSpawnEntry *tbl, s32 n);
 #endif
 #ifndef PROTO_LOCAL_Visitor_ScheduleIfHigher
 BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos);
@@ -144,7 +144,7 @@ BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos);
 BOOL Visitor_ScheduleLow(u16 *p, u8 b, VecFx32 *pos);
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindActiveEventEntry
-s32 Visitor_FindActiveEventEntry(EventVisitorEntry *p, s32 n);
+s32 Visitor_FindActiveEventEntry(const EventVisitorEntry *p, s32 n);
 #endif
 #ifndef PROTO_LOCAL_Visitor_IsNookJobActive
 BOOL Visitor_IsNookJobActive();
@@ -153,13 +153,13 @@ BOOL Visitor_IsNookJobActive();
 BOOL Visitor_IsTaxiActive();
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckResetti
-BOOL Visitor_CheckResetti();
+u16 *Visitor_CheckResetti();
 #endif
 #ifndef PROTO_LOCAL_VisitorPlace_Resetti
 BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckTomNook
-BOOL Visitor_CheckTomNook();
+u16 *Visitor_CheckTomNook();
 #endif
 #ifndef PROTO_LOCAL_VisitorPlace_TomNook
 BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q);
@@ -168,19 +168,19 @@ BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q);
 BOOL Visitor_IsTortimerDue();
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindTortimer
-BOOL Visitor_FindTortimer(s32 flag);
+u16 *Visitor_FindTortimer(s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckTortimer
-BOOL Visitor_CheckTortimer(s32 a, s32 b, s32 c);
+u16 *Visitor_CheckTortimer(s32 a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Visitor_IsNookJobErrandActive
 BOOL Visitor_IsNookJobErrandActive();
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindEventHost
-BOOL Visitor_FindEventHost(s32 flag);
+u16 *Visitor_FindEventHost(s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckEventHost
-BOOL Visitor_CheckEventHost(s32 a, s32 b, s32 c);
+u16 *Visitor_CheckEventHost(s32 a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_VisitorPlace_NearTownHall
 BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q);
@@ -198,52 +198,52 @@ BOOL VisitorPlace_Tortimer(s32 a, VecFx32 *p, Unk_02083314_K *q);
 BOOL VisitorPlace_Origin(s32 a, VecFx32 *p);
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindLyle
-BOOL Visitor_FindLyle(s32 flag);
+u16 *Visitor_FindLyle(s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckLyle
-BOOL Visitor_CheckLyle(s32 a, s32 b, s32 c);
+u16 *Visitor_CheckLyle(s32 a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_VisitorPlace_Lyle
 BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q);
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindJoan
-BOOL Visitor_FindJoan(s32 flag);
+u16 *Visitor_FindJoan(s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckJoan
-BOOL Visitor_CheckJoan(s32 a, s32 b, s32 c);
+u16 *Visitor_CheckJoan(s32 a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindKatie
-BOOL Visitor_FindKatie(s32 flag);
+u16 *Visitor_FindKatie(s32 flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckKatie
-BOOL Visitor_CheckKatie(s32 a, s32 b, s32 c);
+u16 *Visitor_CheckKatie(s32 a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_VisitorPlace_Katie
 BOOL VisitorPlace_Katie(s32 a, VecFx32 *p);
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindKaitlin
-BOOL Visitor_FindKaitlin(BOOL flag);
+u16 *Visitor_FindKaitlin(BOOL flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckKaitlin
-BOOL Visitor_CheckKaitlin();
+u16 *Visitor_CheckKaitlin();
 #endif
 #ifndef PROTO_LOCAL_VisitorPlace_Kaitlin
 BOOL VisitorPlace_Kaitlin(void *self, void *b);
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindBlanca
-BOOL Visitor_FindBlanca(BOOL flag);
+u16 *Visitor_FindBlanca(BOOL flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckBlanca
-BOOL Visitor_CheckBlanca();
+u16 *Visitor_CheckBlanca();
 #endif
 #ifndef PROTO_LOCAL_Visitor_FindInEventTable
-BOOL Visitor_FindInEventTable(void *tbl, void *fn, s32 x, BOOL flag);
+u16 *Visitor_FindInEventTable(const EventVisitorEntry *tbl, const void *fn, s32 x, BOOL flag);
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckDateVisitors
-BOOL Visitor_CheckDateVisitors();
+u16 *Visitor_CheckDateVisitors();
 #endif
 #ifndef PROTO_LOCAL_Visitor_CheckPete
-BOOL Visitor_CheckPete();
+u16 *Visitor_CheckPete();
 #endif
 #ifndef PROTO_LOCAL_Visitor_CanPascalVisit
 BOOL Visitor_CanPascalVisit();
@@ -274,7 +274,7 @@ extern void *sVisitorPlacePmf_FlowerFest[2];
 extern void *sVisitorPlacePmf_Gulliver[2];
 #endif
 #ifndef PROTO_LOCAL_sEventTortimerProfile
-extern u32 sEventTortimerProfile[2];
+extern u16 sEventTortimerProfile[4];
 #endif
 #ifndef PROTO_LOCAL_sVisitorPlacePmf_Blanca
 extern void *sVisitorPlacePmf_Blanca[2];
@@ -334,7 +334,7 @@ extern ProcProfile sNpcSpawnerProfile;
 extern VisitorCheckEntry sVisitorCheckTable[11];
 #endif
 #ifndef PROTO_LOCAL_sTortimerVisitorProfile
-extern u32 sTortimerVisitorProfile;
+extern u16 sTortimerVisitorProfile[2];
 #endif
 #ifndef PROTO_LOCAL_sVisitorPlacePmf_Joan
 extern void *sVisitorPlacePmf_Joan[2];

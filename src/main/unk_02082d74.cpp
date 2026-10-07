@@ -19,55 +19,10 @@
 #include "save/BlancaFaceRecord.h"
 #include "save/SaveRecord4.h"
 #include "town/VisitorPos.h"
-#define PROTO_LOCAL_CommRecord_PackSource  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_CommRecord_UnpackSource  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CommSyncVar_GetVarSize  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_CommSyncVar_SetVar  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_EventAnnounce_GetCurrentEvent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Event_IsActive  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HouseVisitor_ClearPresent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LostChild_IsKaitlinDue  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_LostChild_IsKatieDue  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetArea_IsLocalOwner  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetBuf_PackPair20  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_NetBuf_UnpackPair20  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_GetSlots  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_GetSpNpcVar  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_GetVar  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_GetVillagerVar  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_InitVillagerVar  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_PackSpNpc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_PackVillager  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_ResetTalkSlots  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_SetSlots  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_SetSlotsAndSync  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_SetSpNpcSlots  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_SetSpNpcState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_SetState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_SetVillagerSlots  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_SetVillagerState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecords_InitVillagers  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcRegistry_FindVillagerByHandle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcSpawn_FixVillagerPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcSpawn_ResetAll  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcSpawner_Create  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcSpawner_PickFreeRoomPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcSpawner_RepickKatiePosOnline  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcSpawner_SpawnHouseOwner  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcSpawner_SpawnPlayerHouseVisitor  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcSpawner_SpawnVillagers  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OverlayMgr_Acquire  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_OverlayMgr_Release  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerData_GetCurrent  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrandSlot_GetRecord  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerErrands_GetSlot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Random_GlobalBelow  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomFreeUnitMap_Build  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomFreeUnitMap_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomFreeUnitMap_Set  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_RoomFreeUnitMap_Test  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Taxi_IsArriving  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Taxi_IsLeaving  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_Get  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_GetKatieState  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_GetPeteFall  // declared below: the shared prototype conflicts with the calls here
@@ -75,97 +30,16 @@
 #define PROTO_LOCAL_TownSessionState_GetVisitorFlags  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_GetVisitorPos  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_TownSessionState_TestFlag  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_AtVisitorPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Beach  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_EventHost  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Gracie  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Gulliver  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Kaitlin  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Katie  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Lyle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_NearPlayerHouse  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_NearTownHall  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Origin  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Pete  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Resetti  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_TomNook  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorPlace_Tortimer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorSchedule_IsSet  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorSchedule_Set  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorTable_FindByNpc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VisitorTable_FindByProfile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CanPascalVisit  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckBlanca  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckDateVisitors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckEventHost  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckJoan  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckKaitlin  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckKatie  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckLyle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckPete  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckResetti  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckTomNook  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_CheckTortimer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindActiveEventEntry  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindBlanca  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindEventHost  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindInEventTable  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindJoan  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindKaitlin  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindKatie  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindLyle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_FindTortimer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_GetTodaysNpc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_IsNookJobActive  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_IsNookJobErrandActive  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_IsTaxiActive  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_IsTortimerDue  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_ScheduleIfHigher  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Visitor_ScheduleLow  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sEventTortimerProfile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sNpcSpawnerProfile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sSpNpcNetRecords  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sTortimerVisitorProfile  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVillagerNetRecordPacked  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVillagerNetRecords  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_Blanca  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_DateVisitors  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_EventHost  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_Joan  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_Kaitlin  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_Katie  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_Lyle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_Pete  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_Resetti  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_TomNook  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckPmf_Tortimer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorCheckTable  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Blanca  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_BrightNights  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_BugOff  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Cornimer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Countdown  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Fireworks  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_FishingTourney  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_FlowerFest  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Gracie  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Gulliver  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Joan  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Kaitlin  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Katie  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Lyle  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Pascal  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Pete  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Resetti  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Saharah  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Shrunk  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_TomNook  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Tortimer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_TortimerTti  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorPlacePmf_Wendell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorSchedule  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sVisitorSpawnTable  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_02082d74.h"
+#include "proto/main/unk_020407fc.h"
+#include "proto/main/unk_0204eeb4.h"
+#include "proto/main/unk_02063904.h"
+#include "proto/main/unk_020742f4.h"
+#include "proto/main/unk_020815f8.h"
+#include "proto/main/unk_02085940.h"
+#include "proto/main/unk_02098e90.h"
+#include "proto/main/unk_020a427c.h"
+#include "proto/main/unk_020b0e60.h"
 
 struct VisitorSpawner;
 struct VisitorSchedule;
@@ -271,69 +145,9 @@ struct VillagerSpawnLocals {
 
 namespace Dp {
 extern "C" {
-void VisitorPlace_Gracie();
-void VisitorPlace_Gulliver();
-void VisitorPlace_AtVisitorPos();
-void VisitorPlace_Pete();
-void VisitorPlace_Beach();
-void Visitor_CanPascalVisit();
-void Visitor_CheckPete();
-void Visitor_CheckDateVisitors();
-void Visitor_CheckBlanca();
-void VisitorPlace_Kaitlin();
-void Visitor_CheckKaitlin();
-void VisitorPlace_Katie();
-void Visitor_CheckKatie();
-void Visitor_CheckJoan();
-void VisitorPlace_Lyle();
-void Visitor_CheckLyle();
-void VisitorPlace_Origin();
-void VisitorPlace_Tortimer();
-void VisitorPlace_EventHost();
-void Visitor_CheckEventHost();
-void Visitor_CheckTortimer();
-void VisitorPlace_TomNook();
-void Visitor_CheckTomNook();
-void VisitorPlace_Resetti();
-void Visitor_CheckResetti();
-void NpcSpawner_Create();
 }
 }
 
-extern void *sVisitorPlacePmf_Joan[2];
-extern void *sVisitorPlacePmf_Saharah[2];
-extern void *sVisitorCheckPmf_EventHost[2];
-extern void *sVisitorPlacePmf_Pascal[2];
-extern void *sVisitorPlacePmf_Pete[2];
-extern void *sVisitorCheckPmf_Tortimer[2];
-extern void *sVisitorCheckPmf_Joan[2];
-extern void *sVisitorPlacePmf_Gulliver[2];
-extern void *sVisitorPlacePmf_Gracie[2];
-extern void *sVisitorCheckPmf_DateVisitors[2];
-extern void *sVisitorPlacePmf_Shrunk[2];
-extern void *sVisitorCheckPmf_Lyle[2];
-extern void *sVisitorPlacePmf_Wendell[2];
-extern void *sVisitorPlacePmf_Blanca[2];
-extern void *sVisitorCheckPmf_TomNook[2];
-extern void *sVisitorPlacePmf_Countdown[2];
-extern void *sVisitorPlacePmf_BrightNights[2];
-extern void *sVisitorPlacePmf_TomNook[2];
-extern void *sVisitorPlacePmf_Katie[2];
-extern void *sVisitorPlacePmf_TortimerTti[2];
-extern void *sVisitorPlacePmf_Lyle[2];
-extern void *sVisitorPlacePmf_Cornimer[2];
-extern void *sVisitorPlacePmf_Kaitlin[2];
-extern void *sVisitorPlacePmf_FishingTourney[2];
-extern void *sVisitorPlacePmf_BugOff[2];
-extern void *sVisitorPlacePmf_Resetti[2];
-extern void *sVisitorPlacePmf_Tortimer[2];
-extern void *sVisitorPlacePmf_FlowerFest[2];
-extern void *sVisitorPlacePmf_Fireworks[2];
-extern void *sVisitorCheckPmf_Pete[2];
-extern void *sVisitorCheckPmf_Blanca[2];
-extern void *sVisitorCheckPmf_Resetti[2];
-extern void *sVisitorCheckPmf_Kaitlin[2];
-extern void *sVisitorCheckPmf_Katie[2];
 extern const s32 sVisitorSpawnTableCount;
 extern const s32 sDateVisitorTableCount;
 extern const EventVisitorEntry sPeteVisitTable[1];
@@ -341,40 +155,33 @@ extern void *const sDateVisitorChecks[4];
 extern const s32 sEventHostCheckValues[8];
 extern const EventVisitorEntry sDateVisitorTable[4];
 extern const EventVisitorEntry sEventHostTable[8];
-extern u32 sTortimerVisitorProfile;
-extern u32 sEventTortimerProfile[2];
-extern ProcProfile sNpcSpawnerProfile;
-extern VisitorSchedule sVisitorSchedule;
-extern VisitorCheckEntry sVisitorCheckTable[11];
-extern VisitorSpawnEntry sVisitorSpawnTable[23];
-extern NpcNetRecord sVillagerNetRecords[8];
-extern NpcNetRecord sSpNpcNetRecords[0x26];
-extern u8 sVillagerNetRecordPacked;
 
 NpcNetRecord sVillagerNetRecords[8];
-void *sVisitorPlacePmf_FlowerFest[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
-void *sVisitorPlacePmf_Gulliver[2] = {(void *)Dp::VisitorPlace_Gulliver, 0};
-u32 sEventTortimerProfile[2] = {0x56, 0};
-void *sVisitorPlacePmf_Blanca[2] = {(void *)Dp::VisitorPlace_AtVisitorPos, 0};
-void *sVisitorCheckPmf_Resetti[2] = {(void *)Dp::Visitor_CheckResetti, 0};
+
+void *sVisitorPlacePmf_FlowerFest[2] = {(void *)VisitorPlace_EventHost, 0};
+void *sVisitorPlacePmf_Gulliver[2] = {(void *)VisitorPlace_Gulliver, 0};
+u16 sEventTortimerProfile[4] = {0x56, 0, 0, 0};
+void *sVisitorPlacePmf_Blanca[2] = {(void *)VisitorPlace_AtVisitorPos, 0};
+void *sVisitorCheckPmf_Resetti[2] = {(void *)Visitor_CheckResetti, 0};
 const s32 sDateVisitorTableCount = 4;
-void *sVisitorPlacePmf_Saharah[2] = {(void *)Dp::VisitorPlace_AtVisitorPos, 0};
-void *sVisitorPlacePmf_Pascal[2] = {(void *)Dp::VisitorPlace_Beach, 0};
-void *sVisitorPlacePmf_Gracie[2] = {(void *)Dp::VisitorPlace_Gracie, 0};
-void *sVisitorCheckPmf_TomNook[2] = {(void *)Dp::Visitor_CheckTomNook, 0};
+void *sVisitorPlacePmf_Saharah[2] = {(void *)VisitorPlace_AtVisitorPos, 0};
+void *sVisitorPlacePmf_Pascal[2] = {(void *)VisitorPlace_Beach, 0};
+void *sVisitorPlacePmf_Gracie[2] = {(void *)VisitorPlace_Gracie, 0};
+void *sVisitorCheckPmf_TomNook[2] = {(void *)Visitor_CheckTomNook, 0};
 VisitorSchedule sVisitorSchedule = {Unk_02083c28_VecZ(), 0xfff1, 0x33, 0};
-void *sVisitorCheckPmf_Kaitlin[2] = {(void *)Dp::Visitor_CheckKaitlin, 0};
-void *sVisitorPlacePmf_Wendell[2] = {(void *)Dp::VisitorPlace_AtVisitorPos, 0};
-void *sVisitorCheckPmf_Blanca[2] = {(void *)Dp::Visitor_CheckBlanca, 0};
-void *sVisitorCheckPmf_Pete[2] = {(void *)Dp::Visitor_CheckPete, 0};
-void *sVisitorPlacePmf_Fireworks[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
-void *sVisitorPlacePmf_Shrunk[2] = {(void *)Dp::VisitorPlace_AtVisitorPos, 0};
-void *sVisitorPlacePmf_Tortimer[2] = {(void *)Dp::VisitorPlace_Tortimer, 0};
+
 NpcNetRecord sSpNpcNetRecords[0x26];
+void *sVisitorCheckPmf_Kaitlin[2] = {(void *)Visitor_CheckKaitlin, 0};
+void *sVisitorPlacePmf_Wendell[2] = {(void *)VisitorPlace_AtVisitorPos, 0};
+void *sVisitorCheckPmf_Blanca[2] = {(void *)Visitor_CheckBlanca, 0};
+void *sVisitorCheckPmf_Pete[2] = {(void *)Visitor_CheckPete, 0};
+void *sVisitorPlacePmf_Fireworks[2] = {(void *)VisitorPlace_EventHost, 0};
+void *sVisitorPlacePmf_Shrunk[2] = {(void *)VisitorPlace_AtVisitorPos, 0};
+void *sVisitorPlacePmf_Tortimer[2] = {(void *)VisitorPlace_Tortimer, 0};
 const EventVisitorEntry sDateVisitorTable[4] = {{0x3e, 0x6a, 0}, {0x41, 0x6b, 0}, {0x42, 0x68, 0}, {0x43, 0x62, 0}};
-void *sVisitorPlacePmf_BugOff[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
-void *sVisitorPlacePmf_Kaitlin[2] = {(void *)Dp::VisitorPlace_Kaitlin, 0};
-ProcProfile sNpcSpawnerProfile = {(void *(*)())Dp::NpcSpawner_Create, 0xd0, 0xcc};
+void *sVisitorPlacePmf_BugOff[2] = {(void *)VisitorPlace_EventHost, 0};
+void *sVisitorPlacePmf_Kaitlin[2] = {(void *)VisitorPlace_Kaitlin, 0};
+ProcProfile sNpcSpawnerProfile = {(void *(*)())NpcSpawner_Create, 0xd0, 0xcc};
 VisitorCheckEntry sVisitorCheckTable[11] = {
     {*(Unk_02083d14_Fn *)sVisitorCheckPmf_Tortimer, 4},
     {*(Unk_02083d14_Fn *)sVisitorCheckPmf_Resetti, 4},
@@ -388,32 +195,32 @@ VisitorCheckEntry sVisitorCheckTable[11] = {
     {*(Unk_02083d14_Fn *)sVisitorCheckPmf_Blanca, 2},
     {*(Unk_02083d14_Fn *)sVisitorCheckPmf_Pete, 2},
 };
-u32 sTortimerVisitorProfile = 0x56;
-void *sVisitorPlacePmf_Joan[2] = {(void *)Dp::VisitorPlace_AtVisitorPos, 0};
-void *sVisitorPlacePmf_Katie[2] = {(void *)Dp::VisitorPlace_Katie, 0};
-void *sVisitorPlacePmf_TomNook[2] = {(void *)Dp::VisitorPlace_TomNook, 0};
-void *sVisitorPlacePmf_BrightNights[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
+u16 sTortimerVisitorProfile[2] = {0x56, 0};
+void *sVisitorPlacePmf_Joan[2] = {(void *)VisitorPlace_AtVisitorPos, 0};
+void *sVisitorPlacePmf_Katie[2] = {(void *)VisitorPlace_Katie, 0};
+void *sVisitorPlacePmf_TomNook[2] = {(void *)VisitorPlace_TomNook, 0};
+void *sVisitorPlacePmf_BrightNights[2] = {(void *)VisitorPlace_EventHost, 0};
 const EventVisitorEntry sEventHostTable[8] = {{0x14, 0x57, 0}, {0x15, 0x58, 0}, {0x16, 0x59, 0}, {0x17, 0x5a, 0}, {0x18, 0x5f, 0}, {0x19, 0x5b, 0}, {0x1a, 0x5c, 0}, {0x1b, 0x5c, 0}};
-void *sVisitorCheckPmf_EventHost[2] = {(void *)Dp::Visitor_CheckEventHost, 0};
+void *sVisitorCheckPmf_EventHost[2] = {(void *)Visitor_CheckEventHost, 0};
 const EventVisitorEntry sPeteVisitTable[1] = {{0x45, 0x54, 0}};
 const s32 sVisitorSpawnTableCount = 0x17;
-void *sVisitorCheckPmf_DateVisitors[2] = {(void *)Dp::Visitor_CheckDateVisitors, 0};
-void *sVisitorCheckPmf_Lyle[2] = {(void *)Dp::Visitor_CheckLyle, 0};
+
 u8 sVillagerNetRecordPacked;
-void *sVisitorPlacePmf_FishingTourney[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
+void *sVisitorCheckPmf_DateVisitors[2] = {(void *)Visitor_CheckDateVisitors, 0};
+void *sVisitorCheckPmf_Lyle[2] = {(void *)Visitor_CheckLyle, 0};
+void *sVisitorPlacePmf_FishingTourney[2] = {(void *)VisitorPlace_EventHost, 0};
 const s32 sEventHostCheckValues[8] = {9, 10, 14, 15, 16, 17, 18, 19};
-void *sVisitorPlacePmf_Cornimer[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
-void *sVisitorPlacePmf_TortimerTti[2] = {(void *)Dp::VisitorPlace_Origin, 0};
-void *sVisitorPlacePmf_Pete[2] = {(void *)Dp::VisitorPlace_Pete, 0};
-void *const sDateVisitorChecks[4] = {0, 0, (void *)Dp::Visitor_CanPascalVisit, 0};
-void *sVisitorCheckPmf_Katie[2] = {(void *)Dp::Visitor_CheckKatie, 0};
+void *sVisitorPlacePmf_Cornimer[2] = {(void *)VisitorPlace_EventHost, 0};
+void *sVisitorPlacePmf_TortimerTti[2] = {(void *)VisitorPlace_Origin, 0};
+void *sVisitorPlacePmf_Pete[2] = {(void *)VisitorPlace_Pete, 0};
+void *const sDateVisitorChecks[4] = {0, 0, (void *)Visitor_CanPascalVisit, 0};
+void *sVisitorCheckPmf_Katie[2] = {(void *)Visitor_CheckKatie, 0};
 
 namespace F1 {
 extern "C" {
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
 extern Unk_02082e80_Grid *gSceneBlockMap;
-extern u8 sPeteVisitTable[], sDateVisitorTable[], sDateVisitorChecks[], sVisitorSpawnTable[];
 extern s32 sVisitorSpawnTableCount;
 extern u8 data_021ed315, gSaveBlancaFace;
 void FieldPos_SnapToUnitCenter(void *g, void *v);
@@ -427,27 +234,16 @@ void _ZN13PeteFallState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN13PeteFallState9getFacingEv(void *a);
 void _ZN15KatieVisitState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN15KatieVisitState12pickKatiePosEv(void *a);
-s32 Random_GlobalBelow(s32 a);
 s32 PlayerData_GetCurrent();
 s32 _ZN20PlayerDailyTalkFlags4testEj(void *a, s32 b);
 s32 _ZN11SaveRecord412isDateActiveEv(void *a);
 s32 Scene_GetCurrent();
-s32 Visitor_IsNookJobActive();
-s32 Visitor_IsTaxiActive();
-s32 Visitor_FindActiveEventEntry(void *tbl, s32 x);
-s32 VisitorTable_FindByProfile(void *a, void *b, s32 c);
-s32 VisitorTable_FindByNpc(void *a, void *b, s32 c);
 void Clock_GetDateTime(void *p);
-s32 Event_IsActive(s32 a, void *p);
-s32 LostChild_IsKaitlinDue();
-s32 LostChild_IsKatieDue();
 s32 MapBlock_HasAnyAttr(void *c, s32 v);
 s32 MapBlock_HasAllAttr(void *c, s32 v);
 s32 Ground_IsSandAboveSea(s32 x, s32 y);
 void FieldUnit_FromBlockUnit(s32 *o1, s32 *o2, s32 a, s32 b, s32 c, s32 d);
 void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
-BOOL Visitor_FindBlanca(BOOL flag);
-BOOL Visitor_FindKaitlin(BOOL flag);
 }
 static inline BOOL Unk_02083058_IsA() { return gFieldSceneKind == 0 ? TRUE : FALSE; }
 static inline TownBlockCell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
@@ -465,21 +261,13 @@ extern CommManager *gCommManager;
 extern u8 data_021ed315;
 extern void *gSceneBlockMap;
 extern s32 sVisitorSpawnTableCount;
-extern u8 sVisitorSpawnTable[];
-extern u8 sEventTortimerProfile[];
-extern u8 sTortimerVisitorProfile[];
 extern EventVisitorEntry sEventHostTable[];
 extern s32 sEventHostCheckValues[];
 s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
-s32 EventAnnounce_GetCurrentEvent();
 s32 SceneId_IsHouseRoom(s32);
-s32 Taxi_IsArriving();
-s32 Taxi_IsLeaving();
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getErrandsEv(void *);
-void *PlayerErrands_GetSlot(void *, s32);
-void *PlayerErrandSlot_GetRecord(void *);
 s32 _ZN12ErrandRecord8isActiveEv(void *);
 s32 _ZN12ErrandRecord11getSubGroupEv(void *);
 void Clock_GetDateTime(void *);
@@ -492,76 +280,33 @@ s32 TownSessionState_TestFlag(s32, s32);
 s32 _ZN15KatieVisitState6getPosEP7VecFx32(s32, void *);
 s32 _ZN15KatieVisitState11isFollowingEv(s32);
 s32 _ZN16ResettiVisitFlag5isSetEv(s32);
-s32 LostChild_IsKatieDue();
-s32 Event_IsActive(u32, void *);
 s32 FieldPos_FromUnitCenter(void *, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
 void FieldPos_FromBlockUnitCenter(void *, s32, s32, s32, s32);
 void FieldPos_FromBlockUnit(void *, s32, s32, s32, s32);
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
-s32 Random_GlobalBelow(s32);
-void OverlayMgr_Release(u32);
-void *VisitorTable_FindByNpc(u16 *, void *, s32);
-void *VisitorTable_FindByProfile(void *, void *, s32);
-BOOL VisitorPlace_Katie(s32 a, VecFx32 *p);
-BOOL Visitor_CheckKatie(s32 a, s32 b, s32 c);
-BOOL Visitor_FindKatie(s32 flag);
-BOOL Visitor_CheckJoan(s32 a, s32 b, s32 c);
-BOOL Visitor_FindJoan(s32 flag);
-BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q);
-BOOL Visitor_CheckLyle(s32 a, s32 b, s32 c);
-BOOL Visitor_FindLyle(s32 flag);
-BOOL VisitorPlace_Origin(s32 a, VecFx32 *p);
-BOOL VisitorPlace_Tortimer(s32 a, VecFx32 *p, Unk_02083314_K *q);
-BOOL VisitorPlace_EventHost(s32 a, VecFx32 *p, Unk_02083314_K *q);
-BOOL VisitorPlace_NearPlayerHouse(s32 a, VecFx32 *p, Unk_02083314_K *q);
-BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q);
-BOOL Visitor_CheckEventHost(s32 a, s32 b, s32 c);
-BOOL Visitor_FindEventHost(s32 flag);
-BOOL Visitor_IsNookJobErrandActive();
-BOOL Visitor_CheckTortimer(s32 a, s32 b, s32 c);
-BOOL Visitor_FindTortimer(s32 flag);
-BOOL Visitor_IsTortimerDue();
-BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q);
-BOOL Visitor_CheckTomNook();
-BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p);
-BOOL Visitor_CheckResetti();
-BOOL Visitor_IsTaxiActive();
-BOOL Visitor_IsNookJobActive();
-s32 Visitor_FindActiveEventEntry(EventVisitorEntry *p, s32 n);
 }
 
 }
 
 namespace F3 {
 extern "C" {
-extern VisitorSchedule sVisitorSchedule;
-extern u32 sEventTortimerProfile[2];
-extern VisitorCheckEntry sVisitorCheckTable[11];
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
 extern VecFx32 gVec3Zero;
-extern NpcNetRecord sSpNpcNetRecords[0x26];
-extern NpcNetRecord sVillagerNetRecords[8];
-extern u8 sVillagerNetRecordPacked;
 extern u8 gSaveVillagers[];
 extern u16 *gSceneBlockMap;
 s32 Scene_GetCurrent();
 s32 Scene_InTown();
 s32 _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
-void OverlayMgr_Acquire(u32 ovl);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, void *d, void *e);
 s32 Field_ClearObjectFcFdAt(VecFx32 *v);
-s32 Visitor_IsNookJobActive(u16 *p);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 CommRecord_UnpackSource(u8 *p, u8 *dst, s32 z);
 s32 CommSyncVar_SetVar(u32 a, u8 *p, s32 b, s32 c);
-s32 CommSyncVar_GetVarSize(u32 id);
-void CommRecord_PackSource(u8 *p, u32 a, s32 b);
-void NetBuf_PackPair20(u8 *p, s32 a, s32 b);
 void *VillagerStates_GetEntry(s32 i);
 s32 VillagerState_SetMood(void *p, s32 v);
 s32 VillagerState_SetMoodTimer(void *p, s32 v);
@@ -571,31 +316,12 @@ void *SaveVillagers_Get(void *p, s32 i);
 void *_ZN12VillagerData13getVillagerIdEv(void *p);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void *Villager_GetState(void *p);
-s32 NpcRegistry_FindVillagerByHandle(u16 *p);
 s32 VillagerState_GetMood(void *p);
 s32 VillagerState_TickMoodTimer(void *p);
 s32 VillagerState_GetMoodTimer(void *p);
 void *VillagerState_GetTalkRepeat(void *p);
 s32 TalkRepeat_Tick(void *p, s32 v);
-u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32 n);
-BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g);
 void VisitorSchedule_Clear(VisitorSchedule *g);
-void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, VecFx32 *pos);
-BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos);
-BOOL RoomFreeUnitMap_Test(u16 *arr, s32 x, s32 y);
-BOOL RoomFreeUnitMap_Clear(u16 *arr, s32 x, s32 y);
-BOOL RoomFreeUnitMap_Set(u16 *arr, s32 x, s32 y);
-u8 *NpcNetRecord_GetVar(u16 *p);
-BOOL NpcNetRecord_GetSlots(s32 *a, s32 *b, u16 *p);
-void NpcNetRecord_SetSlotsAndSync(u32 a, u32 b, u32 c, u16 *p);
-u8 *NpcNetRecord_GetVillagerVar(u16 *p);
-u8 *NpcNetRecord_GetSpNpcVar(u16 *p);
-BOOL NpcNetRecord_SetVillagerSlots(u16 *p, u32 b, u32 c);
-BOOL NpcNetRecord_SetSpNpcSlots(u16 *p, u32 b, u32 c);
-BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
-BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
-void NpcNetRecord_PackVillager(void *src, s32 id);
-BOOL NpcNetRecord_SetSlots(u16 *p, u32 b, u32 c);
 }
 static inline BOOL Unk_02083c28_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 }
@@ -604,15 +330,9 @@ namespace F4 {
 extern "C" {
 extern CommManager *gCommManager;
 extern u8 gSaveVillagers[];
-extern u8 sVisitorSchedule[];
-extern u8 sVillagerNetRecords[];
 extern u8 gFieldSceneKind;
 extern u32 sVisitorSpawnTableCount;
-extern u8 sVisitorSpawnTable[];
 extern u8 data_021ed315[];
-extern u8 sDateVisitorTable[];
-extern u8 sDateVisitorChecks[];
-extern u32 sDateVisitorTableCount;
 void VisitorSchedule_Clear(void *p);
 void VillagerStates_ClearFleaVillager();
 s32 Scene_InTown();
@@ -641,7 +361,6 @@ void Clock_GetDateTime(void *p);
 s32 SaveVillagers_FindBirthdayVillager(void *p, void *q);
 void VillagerStates_SetBirthdayHost(s32 v);
 void VillagerStates_SetBirthdayGuest(s32 v);
-s32 Visitor_IsTaxiActive();
 s32 _ZN11CommManager12isSlotActiveEi(void *g, s32 i);
 s32 PlayerData_GetCurrent();
 s32 _ZN10PlayerData11getPlayerIdEv(s32 p);
@@ -650,9 +369,7 @@ s32 Scene_InVillagerHouse();
 s32 Scene_InHouseRoom();
 s32 VillagerEvent_GetTodayIndex();
 s32 VillagerStates_GetFleaMarketBuyer();
-s32 HouseVisitor_ClearPresent();
 s32 Scene_GetHouseRoom();
-void NpcSpawner_RepickKatiePosOnline(void *p);
 s32 _ZN10PlayerData10getErrandsEv(s32 p);
 s32 _ZN12ErrandRecord8isActiveEv(void *p);
 s32 _ZN12ErrandRecord7getKindEv(void *p);
@@ -669,9 +386,6 @@ void SaveVillagers_PickFleaMarketBuyerNow(void *p);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 s32 Scene_GetVillagerHouse();
 void *SaveVillagers_Get(void *p, s32 i);
-void *NpcNetRecord_GetVillagerVar(void *p);
-s32 NetArea_IsLocalOwner();
-s32 Random_GlobalBelow(s32 n);
 s32 VillagerStates_GetBirthdayGuest();
 s32 SaveVillagers_GetUnk3830Index(void *p);
 s32 SaveVillagers_GetUnk3830(void *p);
@@ -687,34 +401,13 @@ void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 s32 Villager_GetWhereabouts(void *p);
 void GroundInfo_Destruct(void *buf);
 s32 _ZN11SaveRecord412isDateActiveEv(void *p);
-void *Visitor_FindTortimer(s32 v);
-void *Visitor_FindEventHost(s32 v);
-u16 *Visitor_FindLyle(s32 v);
-u16 *Visitor_FindJoan(s32 v);
-u16 *Visitor_FindKatie(s32 v);
-u16 *Visitor_FindKaitlin(s32 v);
-u16 *Visitor_FindInEventTable(void *a, void *b, u32 c, s32 d);
-u16 *Visitor_FindBlanca(s32 v);
-BOOL Event_IsActive(s32 a, s32 *p);
 s32 Event_GetState(s32 a, void *b, s32 c);
-s32 RoomFreeUnitMap_Build(void *p);
-void RoomFreeUnitMap_Clear(void *p, s32 x, s32 y);
-s32 RoomFreeUnitMap_Test(void *p, s32 x, s32 y);
-void NpcSpawner_SpawnVillagers(void *a);
-void NpcSpawner_SpawnHouseOwner(u8 *a);
-void NpcSpawner_SpawnPlayerHouseVisitor(void *a);
-s32 NpcSpawner_PickFreeRoomPos(u8 *a, void *v);
-void NpcSpawn_FixVillagerPos(void *a, void *v);
 }
 static inline BOOL Unk_020845a8_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 }
 
 namespace F5 {
 extern "C" {
-extern u8 sVillagerNetRecordPacked;
-extern u8 sVillagerNetRecords[];
-extern u8 sSpNpcNetRecords[];
-extern u8 sVisitorSchedule[];
 extern u8 gSaveVillagers[];
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
@@ -724,8 +417,6 @@ void *_ZN12VillagerData13getVillagerIdEv(void *);
 s32 _ZN10VillagerId7isValidEv(void *);
 u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
 void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-void NetBuf_PackPair20(void *, s32, s32);
-void CommRecord_PackSource(void *, s32, s32);
 s32 VisitorSchedule_Clear(void *);
 BOOL _ZN11CommManager12isSlotActiveEi(void *, u32);
 s32 Scene_GetCurrent();
@@ -803,15 +494,15 @@ extern "C" NpcSpawner *NpcSpawner_Create()
 
 extern "C" void NpcSpawn_ResetAll()
 {
-    F5::sVillagerNetRecordPacked = 0;
-    F5::MI_CpuFill8(F5::sVillagerNetRecords, 0, 0xf0);
-    F5::MI_CpuFill8(F5::sSpNpcNetRecords, 0, 0x474);
-    F5::VisitorSchedule_Clear(F5::sVisitorSchedule);
+    sVillagerNetRecordPacked = 0;
+    F5::MI_CpuFill8(sVillagerNetRecords, 0, 0xf0);
+    F5::MI_CpuFill8(sSpNpcNetRecords, 0, 0x474);
+    F5::VisitorSchedule_Clear(&sVisitorSchedule);
 }
 
 extern "C" void NpcNetRecords_InitVillagers()
 {
-    u8 *p = F5::sVillagerNetRecords;
+    u8 *p = (u8 *)sVillagerNetRecords;
     s32 i;
     s32 z = 0;
     F5::MI_CpuFill8(p, 0, 0xf0);
@@ -824,34 +515,34 @@ extern "C" void NpcNetRecords_InitVillagers()
             v.z = 0;
             u8 *q = F5::_ZN20VillagerDataItemView11getHousePosEv(o);
             F5::FieldPos_FromUnitCenter(&v, q[0] + 1, q[1] + 2);
-            F5::NetBuf_PackPair20(p + 4, v.x, v.z);
-            F5::CommRecord_PackSource(p + 3, z, z);
+            NetBuf_PackPair20(p + 4, v.x, v.z);
+            CommRecord_PackSource(p + 3, z, z);
             p[0] = 1;
         }
     }
 }
 
-extern "C" s32 NpcSpawner_PickFreeRoomPos(u8 *a, void *out)
+extern "C" s32 NpcSpawner_PickFreeRoomPos(NpcSpawner *a, void *out)
 {
     s32 r6;
-    if (F4::RoomFreeUnitMap_Build(a + 0x50)) {
+    if (RoomFreeUnitMap_Build(a->freeUnitMap.rows)) {
         s32 cnt = 0;
         s32 x, y;
         for (x = 0; x < 16; x++) {
-            F4::RoomFreeUnitMap_Clear(a + 0x50, x, 14);
-            F4::RoomFreeUnitMap_Clear(a + 0x50, x, 15);
+            RoomFreeUnitMap_Clear(a->freeUnitMap.rows, x, 14);
+            RoomFreeUnitMap_Clear(a->freeUnitMap.rows, x, 15);
         }
         for (y = 0; y < 14; y++) {
             for (x = 0; x < 16; x++) {
-                if (F4::RoomFreeUnitMap_Test(a + 0x50, x, y)) cnt++;
+                if (RoomFreeUnitMap_Test(a->freeUnitMap.rows, x, y)) cnt++;
             }
         }
         if (cnt > 0) {
             s32 y, x;
-            r6 = F4::Random_GlobalBelow(cnt);
+            r6 = Random_GlobalBelow(cnt);
             for (y = 0; y < 14; y++) {
                 for (x = 0; x < 16; x++) {
-                    if (F4::RoomFreeUnitMap_Test(a + 0x50, x, y)) {
+                    if (RoomFreeUnitMap_Test(a->freeUnitMap.rows, x, y)) {
                         if (r6 == 0) {
                             F4::FieldPos_FromUnitCenter(out, x, y);
                             return 1;
@@ -886,52 +577,52 @@ extern "C" void Visitor_GetTodaysNpc(u16 *out)
 {
     s32 r4 = F4::_ZN11SaveRecord412isDateActiveEv(F4::data_021ed315);
     u16 *p;
-    void *q = F4::Visitor_FindTortimer(0);
+    void *q = Visitor_FindTortimer(0);
     if (q == 0) {
-        q = F4::Visitor_FindEventHost(0);
+        q = Visitor_FindEventHost(0);
     }
     if (q) {
         *out = 0xfff1;
         return;
     }
-    p = F4::Visitor_FindLyle(0);
+    p = Visitor_FindLyle(0);
     if (p) {
         *out = p[1];
         return;
     }
-    p = F4::Visitor_FindJoan(0);
+    p = Visitor_FindJoan(0);
     if (p) {
         *out = p[1];
         return;
     }
-    if (r4 == 0 && F4::Event_IsActive(0x3d, 0)) {
+    if (r4 == 0 && Event_IsActive(0x3d, 0)) {
         *out = 0xd00e;
         return;
     }
-    p = F4::Visitor_FindKatie(0);
+    p = Visitor_FindKatie(0);
     if (p) {
         *out = p[1];
         return;
     }
-    p = F4::Visitor_FindKaitlin(0);
+    p = Visitor_FindKaitlin(0);
     if (p) {
         *out = p[1];
         return;
     }
-    p = F4::Visitor_FindInEventTable(F4::sDateVisitorTable, F4::sDateVisitorChecks, F4::sDateVisitorTableCount, 0);
+    p = Visitor_FindInEventTable(sDateVisitorTable, sDateVisitorChecks, sDateVisitorTableCount, 0);
     if (p) {
         *out = p[1];
         return;
     }
-    if (r4 == 0 && F4::Event_IsActive(0x3f, 0)) {
+    if (r4 == 0 && Event_IsActive(0x3f, 0)) {
         *out = 0xd00a;
         return;
     }
-    if (r4 == 0 && F4::Event_IsActive(0x40, 0)) {
+    if (r4 == 0 && Event_IsActive(0x40, 0)) {
         *out = 0xd00b;
         return;
     }
-    p = F4::Visitor_FindBlanca(0);
+    p = Visitor_FindBlanca(0);
     if (p) {
         *out = p[1];
         return;
@@ -982,7 +673,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
         w.h[3] = 0;
         w.h[0] = (i & 0xfff) | 0xe000;
         u8 *e;
-        e = (u8 *)F4::NpcNetRecord_GetVillagerVar(&w.h[0]);
+        e = (u8 *)NpcNetRecord_GetVillagerVar(&w.h[0]);
         if (e != 0 && e[0] != 0) {
             F4::CommRecord_UnpackSource(e + 3, &w, 0);
             if (w.b == F4::Scene_GetCurrent()) {
@@ -992,8 +683,8 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
                 u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
                 F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             }
-        } else if (F4::NetArea_IsLocalOwner() && ((u8 *)(F4::sVillagerNetRecords + i * 30))[0] != 0) {
-            u8 *t = F4::sVillagerNetRecords + i * 30;
+        } else if (NetArea_IsLocalOwner() && ((u8 *)&sVillagerNetRecords[i])[0] != 0) {
+            u8 *t = (u8 *)&sVillagerNetRecords[i];
             F4::CommRecord_UnpackSource(t + 3, &w, 0);
             s32 wb = w.b;
             if (wb != F4::Scene_GetCurrent() && F4::SceneId_IsTown(wb) == 0 && F4::SceneId_IsTownUnk31(w.b) == 0 && w.b != 0x2c) {
@@ -1001,7 +692,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
                 F4::FieldPos_FromUnitCenter(&v, p[0] + 1, p[1] + 2);
             } else {
                 F4::NetBuf_UnpackPair20(t + 4, &v.x, &v.z);
-                F4::NpcSpawn_FixVillagerPos(r7, &v);
+                NpcSpawn_FixVillagerPos(r7, &v);
             }
         } else {
             u8 *p = (u8 *)((VillagerDataItemView *)(r7))->getHousePos();
@@ -1017,7 +708,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
     }
 }
 
-extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
+extern "C" void NpcSpawner_SpawnHouseOwner(NpcSpawner *a)
 {
     s32 r7 = F4::Scene_GetVillagerHouse();
     void *obj = F4::SaveVillagers_Get(F4::gSaveVillagers, r7);
@@ -1038,18 +729,18 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
     h[3] = 0;
     h[4] = 0;
     h[0] = (r7 & 0xfff) | 0xe000;
-    u8 *e = (u8 *)F4::NpcNetRecord_GetVillagerVar(h);
+    u8 *e = (u8 *)NpcNetRecord_GetVillagerVar(h);
     s32 r4;
-    if (F4::NetArea_IsLocalOwner()) {
-        r4 = F4::NpcSpawner_PickFreeRoomPos(a, &v);
-        h[3] = F4::Random_GlobalBelow(4) << 14;
+    if (NetArea_IsLocalOwner()) {
+        r4 = NpcSpawner_PickFreeRoomPos(a, &v);
+        h[3] = Random_GlobalBelow(4) << 14;
     } else if (e != 0 && e[0] != 0) {
         F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
         F4::MI_CpuCopy8(e + 9, &h[3], 2);
         r4 = 1;
     } else {
-        r4 = F4::NpcSpawner_PickFreeRoomPos(a, &v);
-        h[3] = F4::Random_GlobalBelow(4) << 14;
+        r4 = NpcSpawner_PickFreeRoomPos(a, &v);
+        h[3] = Random_GlobalBelow(4) << 14;
     }
     if (r4 != 0) {
         s32 c = 0x85;
@@ -1074,8 +765,8 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
         F4::_ZN5Actor5spawnEPvS0_S0_S0_S0_(c, h[0], &v, &h[2], a);
         if (r6 != 0xd8) {
             if (((s32)(h[1] & 0xf000) >> 12) == 0xe) {
-                F4::NpcSpawner_PickFreeRoomPos(a, &v);
-                h[3] = F4::Random_GlobalBelow(4) << 14;
+                NpcSpawner_PickFreeRoomPos(a, &v);
+                h[3] = Random_GlobalBelow(4) << 14;
                 F4::_ZN5Actor5spawnEPvS0_S0_S0_S0_(r6, h[1], &v, &h[2], a);
             }
         }
@@ -1124,14 +815,14 @@ extern "C" void NpcSpawner_SpawnPlayerHouseVisitor(void *a)
                     if (t <= 0x3c) {
                         r5 = F4::SaveVillagers_FindIndex(F4::gSaveVillagers, r7);
                         if (F4::SaveVillagers_IsValidIndex(r5)) {
-                            u8 *e = F4::sVillagerNetRecords + r5 * 30;
+                            u8 *e = (u8 *)&sVillagerNetRecords[r5];
                             if (e[0] != 0) {
                                 F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
                                 F4::MI_CpuCopy8(e + 9, &h[2], 2);
                             }
                         }
                     } else {
-                        F4::HouseVisitor_ClearPresent();
+                        HouseVisitor_ClearPresent();
                         void *f = F4::SaveVillagers_Find(F4::gSaveVillagers, r7);
                         if (f) {
                             F4::VillagerState_ResetRole(F4::Villager_GetState(f));
@@ -1154,7 +845,7 @@ extern "C" void NpcSpawner_SpawnPlayerHouseVisitor(void *a)
             h[0] = (r4 & 0xfff) | 0xe000;
             code = 0x87;
             if (F4::SceneId_IsTown(F4::Scene_GetPrevious()) == 0) {
-                u8 *e = F4::sVillagerNetRecords + r4 * 30;
+                u8 *e = (u8 *)&sVillagerNetRecords[r4];
                 if (e[0] != 0) {
                     F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
                     F4::MI_CpuCopy8(e + 9, &h[2], 2);
@@ -1201,7 +892,7 @@ BOOL NpcSpawner::onCreate()
         }
     }
     if (F4::Unk_020845a8_IsZero(F4::gFieldSceneKind)) {
-        if (F4::Visitor_IsTaxiActive() == 0) {
+        if (Visitor_IsTaxiActive() == 0) {
             if (F4::_ZN11CommManager12isSlotActiveEi(F4::gCommManager, F4::gCommManager->myAid) == 0) {
                 s32 r1;
                 if (F4::PlayerData_GetCurrent()) {
@@ -1211,33 +902,33 @@ BOOL NpcSpawner::onCreate()
                 }
                 F4::SaveVillagers_PickFleaVillager(g, r1);
             }
-            F4::NpcSpawner_SpawnVillagers(a);
+            NpcSpawner_SpawnVillagers(a);
         }
     } else if (F4::Scene_InVillagerHouse()) {
-        F4::NpcSpawner_SpawnHouseOwner(a);
+        NpcSpawner_SpawnHouseOwner(this);
     } else if (F4::Scene_InHouseRoom()) {
         if (g != 0) {
             if (F4::VillagerEvent_GetTodayIndex() != 0xa) {
                 s32 m = -1;
                 if (F4::VillagerStates_GetFleaMarketBuyer() != m) {
                     F4::VillagerStates_SetFleaMarketBuyer(m);
-                    F4::HouseVisitor_ClearPresent();
+                    HouseVisitor_ClearPresent();
                 }
             }
         }
         if (F4::Scene_GetHouseRoom() == 0) {
-            F4::NpcSpawner_SpawnPlayerHouseVisitor(a);
+            NpcSpawner_SpawnPlayerHouseVisitor(a);
         }
     }
     ((VisitorSpawner *)(a))->pickVisitor();
-    u16 *r4 = (u16 *)((VisitorSpawner *)(a))->spawnScheduledVisitor((VisitorSpawnEntry *)(F4::sVisitorSpawnTable), saved);
+    u16 *r4 = (u16 *)((VisitorSpawner *)(a))->spawnScheduledVisitor(sVisitorSpawnTable, saved);
     if (r4) {
         F4::_ZN17VisitorSpawnFlags17setVisitorSpawnedEv(F4::TownSessionState_GetVisitorFlags(F4::TownSessionState_Get()));
         if (r4[1] != 0xd008 || F4::_ZN13PeteFallState10hasFallPosEv(F4::TownSessionState_GetPeteFall(F4::TownSessionState_Get())) != 0) {
             F4::_ZN13PeteFallState16setVisitorActiveEv(F4::TownSessionState_GetPeteFall(F4::TownSessionState_Get()));
         }
     }
-    F4::NpcSpawner_RepickKatiePosOnline(a);
+    NpcSpawner_RepickKatiePosOnline();
     if (F4::Scene_InTown()) {
         F4::SaveVillagers_UpdatePlansNow(g);
     }
@@ -1247,7 +938,7 @@ BOOL NpcSpawner::onCreate()
 BOOL NpcSpawner::onDelete()
 {
     ((NpcSpawnerOverlayView *)(this))->releaseVisitorOverlay();
-    F4::VisitorSchedule_Clear(F4::sVisitorSchedule);
+    F4::VisitorSchedule_Clear(&sVisitorSchedule);
     F4::VillagerStates_ClearFleaVillager();
     if (F4::Scene_InTown()) {
         void *g = F4::gSaveVillagers;
@@ -1287,7 +978,7 @@ BOOL NpcSpawner::onExecute()
                         b = F3::Villager_GetState(a);
                         if (b) {
                             id = (i & 0xfff) | 0xe000;
-                            if (F3::NpcRegistry_FindVillagerByHandle(&id) == 0) {
+                            if (NpcRegistry_FindVillagerByHandle(&id) == 0) {
                                 if (F3::VillagerState_GetMood(b)) {
                                     F3::VillagerState_TickMoodTimer(b);
                                     if (F3::VillagerState_GetMoodTimer(b) == 0) F3::VillagerState_SetMood(b, 0);
@@ -1306,10 +997,10 @@ BOOL NpcSpawner::onExecute()
 extern "C" BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e) {
     u32 i = *p & 0xfff;
     if (i < 8) {
-        NpcNetRecord *r = &F3::sVillagerNetRecords[i];
+        NpcNetRecord *r = &sVillagerNetRecords[i];
         r->isSet = 1;
-        F3::CommRecord_PackSource(HOST_AT(r, 3, pad[0], 0), b, 0);
-        F3::NetBuf_PackPair20(HOST_AT(r, 4, pad[1], 0), v->x, v->z);
+        CommRecord_PackSource(HOST_AT(r, 3, pad[0], 0), b, 0);
+        NetBuf_PackPair20(HOST_AT(r, 4, pad[1], 0), v->x, v->z);
         F3::MI_CpuCopy8(&c, HOST_AT(r, 9, pad[6], 0), 2);
         F3::MI_CpuCopy8(d, HOST_AT(r, 0xf, pad[12], 0), 0xf);
         F3::MI_CpuCopy8(e, HOST_AT(r, 0xb, pad[8], 0), 4);
@@ -1321,7 +1012,7 @@ extern "C" BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, 
 extern "C" BOOL NpcNetRecord_SetVillagerSlots(u16 *p, u32 b, u32 c) {
     u32 i = *p & 0xfff;
     if (i < 8) {
-        NpcNetRecord *r = &F3::sVillagerNetRecords[i];
+        NpcNetRecord *r = &sVillagerNetRecords[i];
         r->isSet = 1;
         r->slotA = b;
         r->slotB = c;
@@ -1332,7 +1023,7 @@ extern "C" BOOL NpcNetRecord_SetVillagerSlots(u16 *p, u32 b, u32 c) {
 
 extern "C" void NpcNetRecord_InitVillagerVar(void *dst, s32 id) {
     void *o;
-    F3::NpcNetRecord_PackVillager(dst, id);
+    NpcNetRecord_PackVillager(dst, id);
     o = F3::VillagerStates_GetEntry(id - 0xc);
     if (o) {
         F3::VillagerState_SetMood(o, 0);
@@ -1343,10 +1034,10 @@ extern "C" void NpcNetRecord_InitVillagerVar(void *dst, s32 id) {
 extern "C" void NpcNetRecord_PackVillager(void *dst, s32 id) {
     u32 i = id - 0xc;
     if (i < 8) {
-        NpcNetRecord *r = &F3::sVillagerNetRecords[i];
+        NpcNetRecord *r = &sVillagerNetRecords[i];
         r->isSet = 1;
-        F3::MI_CpuCopy8(r, dst, F3::CommSyncVar_GetVarSize(id));
-        F3::sVillagerNetRecordPacked = 1;
+        F3::MI_CpuCopy8(r, dst, CommSyncVar_GetVarSize(id));
+        sVillagerNetRecordPacked = 1;
     }
 }
 
@@ -1359,10 +1050,10 @@ extern "C" u8 *NpcNetRecord_GetVillagerVar(u16 *p) {
 extern "C" BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e) {
     u32 i = *p & 0xfff;
     if (i < 0x26) {
-        NpcNetRecord *r = &F3::sSpNpcNetRecords[i];
+        NpcNetRecord *r = &sSpNpcNetRecords[i];
         r->isSet = 1;
-        F3::CommRecord_PackSource(HOST_AT(r, 3, pad[0], 0), b, 0);
-        F3::NetBuf_PackPair20(HOST_AT(r, 4, pad[1], 0), v->x, v->z);
+        CommRecord_PackSource(HOST_AT(r, 3, pad[0], 0), b, 0);
+        NetBuf_PackPair20(HOST_AT(r, 4, pad[1], 0), v->x, v->z);
         F3::MI_CpuCopy8(&c, HOST_AT(r, 9, pad[6], 0), 2);
         F3::MI_CpuCopy8(d, HOST_AT(r, 0xf, pad[12], 0), 0xf);
         F3::MI_CpuCopy8(e, HOST_AT(r, 0xb, pad[8], 0), 4);
@@ -1374,7 +1065,7 @@ extern "C" BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 
 extern "C" BOOL NpcNetRecord_SetSpNpcSlots(u16 *p, u32 b, u32 c) {
     u32 i = *p & 0xfff;
     if (i < 0x26) {
-        NpcNetRecord *r = &F3::sSpNpcNetRecords[i];
+        NpcNetRecord *r = &sSpNpcNetRecords[i];
         r->isSet = 1;
         r->slotA = b;
         r->slotB = c;
@@ -1386,9 +1077,9 @@ extern "C" BOOL NpcNetRecord_SetSpNpcSlots(u16 *p, u32 b, u32 c) {
 extern "C" void NpcNetRecord_PackSpNpc(void *dst, s32 id) {
     u32 i = id - 0x20;
     if (i < 0x26) {
-        NpcNetRecord *r = &F3::sSpNpcNetRecords[i];
+        NpcNetRecord *r = &sSpNpcNetRecords[i];
         r->isSet = 1;
-        F3::MI_CpuCopy8(r, dst, F3::CommSyncVar_GetVarSize(id));
+        F3::MI_CpuCopy8(r, dst, CommSyncVar_GetVarSize(id));
     }
 }
 
@@ -1400,27 +1091,27 @@ extern "C" u8 *NpcNetRecord_GetSpNpcVar(u16 *p) {
 
 extern "C" BOOL NpcNetRecord_SetState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e) {
     s32 k = (*p & 0xf000) >> 12;
-    if (k == 0xe) return F3::NpcNetRecord_SetVillagerState(p, b, v, c, d, e);
-    if (k == 0xd) return F3::NpcNetRecord_SetSpNpcState(p, b, v, c, d, e);
+    if (k == 0xe) return NpcNetRecord_SetVillagerState(p, b, v, c, d, e);
+    if (k == 0xd) return NpcNetRecord_SetSpNpcState(p, b, v, c, d, e);
     return 0;
 }
 
 extern "C" BOOL NpcNetRecord_SetSlots(u16 *p, u32 b, u32 c) {
     s32 k = (*p & 0xf000) >> 12;
-    if (k == 0xe) return F3::NpcNetRecord_SetVillagerSlots(p, b, c);
-    if (k == 0xd) return F3::NpcNetRecord_SetSpNpcSlots(p, b, c);
+    if (k == 0xe) return NpcNetRecord_SetVillagerSlots(p, b, c);
+    if (k == 0xd) return NpcNetRecord_SetSpNpcSlots(p, b, c);
     return 0;
 }
 
 extern "C" u8 *NpcNetRecord_GetVar(u16 *p) {
     s32 k = (*p & 0xf000) >> 12;
-    if (k == 0xe) return F3::NpcNetRecord_GetVillagerVar(p);
-    if (k == 0xd) return F3::NpcNetRecord_GetSpNpcVar(p);
+    if (k == 0xe) return NpcNetRecord_GetVillagerVar(p);
+    if (k == 0xd) return NpcNetRecord_GetSpNpcVar(p);
     return 0;
 }
 
 extern "C" void NpcNetRecord_SetSlotsAndSync(u32 a, u32 b, u32 c, u16 *p) {
-    F3::NpcNetRecord_SetSlots(p, b, c);
+    NpcNetRecord_SetSlots(p, b, c);
     if ((F3::gCommManager)->isSlotActive(F3::gCommManager->myAid)) {
         u32 v = *p;
         s32 k = (s32)(v & 0xf000) >> 12;
@@ -1434,7 +1125,7 @@ extern "C" void NpcNetRecord_SetSlotsAndSync(u32 a, u32 b, u32 c, u16 *p) {
 }
 
 extern "C" BOOL NpcNetRecord_GetSlots(s32 *a, s32 *b, u16 *p) {
-    u8 *rec = F3::NpcNetRecord_GetVar(p);
+    u8 *rec = NpcNetRecord_GetVar(p);
     if (rec && rec[0] != 0) {
         *a = rec[1];
         *b = rec[2];
@@ -1460,17 +1151,17 @@ extern "C" void NpcNetRecord_ResetTalkSlots() {
     for (; i < 8; i++) {
         u8 *rec;
         l.id = (i & 0xfff) | 0xe000;
-        rec = F3::NpcNetRecord_GetVar(&l.id);
+        rec = NpcNetRecord_GetVar(&l.id);
         if (rec) {
             F3::CommRecord_UnpackSource(rec + 3, l.b, 0);
             if (l.b[0] == ovl) {
                 s4 = 4;
                 s8 = 4;
-                if (F3::NpcNetRecord_GetSlots(&s4, &s8, &l.id)) {
+                if (NpcNetRecord_GetSlots(&s4, &s8, &l.id)) {
                     if (s8 >= 4) {
-                        F3::NpcNetRecord_SetSlotsAndSync(1, 4, 4, &l.id);
+                        NpcNetRecord_SetSlotsAndSync(1, 4, 4, &l.id);
                     } else if (s8 == d->myAid && s8 != s4) {
-                        F3::NpcNetRecord_SetSlotsAndSync(1, d->myAid, 4, &l.id);
+                        NpcNetRecord_SetSlotsAndSync(1, d->myAid, 4, &l.id);
                     }
                 }
             }
@@ -1479,17 +1170,17 @@ extern "C" void NpcNetRecord_ResetTalkSlots() {
     for (i = 0; i < 0x26; i++) {
         u8 *rec;
         l.id = (i & 0xfff) | 0xd000;
-        rec = F3::NpcNetRecord_GetVar(&l.id);
+        rec = NpcNetRecord_GetVar(&l.id);
         if (rec) {
             F3::CommRecord_UnpackSource(rec + 3, l.b, 0);
             if (l.b[0] == ovl) {
                 s4 = 4;
                 s8 = 4;
-                if (F3::NpcNetRecord_GetSlots(&s4, &s8, &l.id)) {
+                if (NpcNetRecord_GetSlots(&s4, &s8, &l.id)) {
                     if (s8 >= 4) {
-                        F3::NpcNetRecord_SetSlotsAndSync(1, 4, 4, &l.id);
+                        NpcNetRecord_SetSlotsAndSync(1, 4, 4, &l.id);
                     } else if (s8 == d->myAid && s8 != s4) {
-                        F3::NpcNetRecord_SetSlotsAndSync(1, d->myAid, 4, &l.id);
+                        NpcNetRecord_SetSlotsAndSync(1, d->myAid, 4, &l.id);
                     }
                 }
             }
@@ -1514,16 +1205,16 @@ extern "C" BOOL RoomFreeUnitMap_Build(u16 *out) {
                     F3::FieldPos_FromUnitCenter(&v, x, y);
                     GroundInfo o(&v, 0, 0);
                     if (*p == 0xfff1 && !o.getHeight(1)) {
-                        F3::RoomFreeUnitMap_Set(out, x, y);
+                        RoomFreeUnitMap_Set(out, x, y);
                     }
                     p++;
                 }
             }
             for (y = 0; y < 14; y++) {
                 for (x = 0; x < 16; x++) {
-                    if (F3::RoomFreeUnitMap_Test(out, x, y) && !F3::RoomFreeUnitMap_Test(out, x + 1, y) && !F3::RoomFreeUnitMap_Test(out, x - 1, y)
-                        && !F3::RoomFreeUnitMap_Test(out, x, y + 1) && !F3::RoomFreeUnitMap_Test(out, x, y - 1)) {
-                        F3::RoomFreeUnitMap_Clear(out, x, y);
+                    if (RoomFreeUnitMap_Test(out, x, y) && !RoomFreeUnitMap_Test(out, x + 1, y) && !RoomFreeUnitMap_Test(out, x - 1, y)
+                        && !RoomFreeUnitMap_Test(out, x, y + 1) && !RoomFreeUnitMap_Test(out, x, y - 1)) {
+                        RoomFreeUnitMap_Clear(out, x, y);
                     }
                 }
             }
@@ -1577,7 +1268,7 @@ extern "C" void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c
 }
 
 extern "C" void VisitorSchedule_Clear(VisitorSchedule *g) {
-    F3::VisitorSchedule_Set(g, (u16 *)&F3::sEventTortimerProfile[1], 0x33, 0, 0);
+    VisitorSchedule_Set(g, &sEventTortimerProfile[2], 0x33, 0, 0);
 }
 
 extern "C" BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g) {
@@ -1594,7 +1285,7 @@ void VisitorSpawner::setVisitorOverlay(u32 *p) {
 
 void VisitorSpawner::clearVisitorOverlay() { overlayLoaded = 0; }
 
-extern "C" u16 *VisitorTable_FindByNpc(u16 *key, VisitorSpawnEntry *tbl, s32 n) {
+extern "C" u16 *VisitorTable_FindByNpc(const u16 *key, VisitorSpawnEntry *tbl, s32 n) {
     s32 i;
     for (i = 0; i < n; tbl++, i++) {
         if (tbl->id2 == *key) return (u16 *)tbl;
@@ -1602,7 +1293,7 @@ extern "C" u16 *VisitorTable_FindByNpc(u16 *key, VisitorSpawnEntry *tbl, s32 n) 
     return 0;
 }
 
-extern "C" u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32 n) {
+extern "C" u16 *VisitorTable_FindByProfile(const u16 *key, VisitorSpawnEntry *tbl, s32 n) {
     s32 i;
     for (i = 0; i < n; tbl++, i++) {
         if (*key == tbl->id) return (u16 *)tbl;
@@ -1611,31 +1302,31 @@ extern "C" u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32
 }
 
 extern "C" BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos) {
-    if (F3::sVisitorSchedule.priority < lvl) {
-        F3::VisitorSchedule_Set(&F3::sVisitorSchedule, p, b, lvl, pos);
+    if (sVisitorSchedule.priority < lvl) {
+        VisitorSchedule_Set(&sVisitorSchedule, p, b, lvl, pos);
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" BOOL Visitor_ScheduleLow(u16 *p, u8 b, VecFx32 *pos) {
-    if (F3::Visitor_IsNookJobActive(p) == 0 && (F3::gCommManager)->isSlotActive(F3::gCommManager->myAid) == 0) {
-        return F3::Visitor_ScheduleIfHigher(p, 1, b, pos);
+    if (Visitor_IsNookJobActive() == 0 && (F3::gCommManager)->isSlotActive(F3::gCommManager->myAid) == 0) {
+        return Visitor_ScheduleIfHigher(p, 1, b, pos);
     }
     return 0;
 }
 
 BOOL VisitorSpawner::pickVisitor() {
-    VisitorCheckEntry *e = F3::sVisitorCheckTable;
+    VisitorCheckEntry *e = sVisitorCheckTable;
     s32 ovl = F3::Scene_GetCurrent();
     s32 i = 0;
     VecFx32 *z = 0;
     for (; i < 11; e++, i++) {
-        if (e->lvl <= F3::sVisitorSchedule.priority) break;
+        if (e->lvl <= sVisitorSchedule.priority) break;
         if (e->fn) {
             u16 *r = (this->*(e->fn))();
             if (r) {
-                if (F3::Visitor_ScheduleIfHigher(r, e->lvl, ovl, z)) return TRUE;
+                if (Visitor_ScheduleIfHigher(r, e->lvl, ovl, z)) return TRUE;
             }
         }
     }
@@ -1644,20 +1335,20 @@ BOOL VisitorSpawner::pickVisitor() {
 
 u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
     u16 *result = 0;
-    if (F3::VisitorSchedule_IsSet(this, &F3::sVisitorSchedule)) {
-        VisitorSpawnEntry *e = (VisitorSpawnEntry *)F3::VisitorTable_FindByProfile(&F3::sVisitorSchedule.profile, tbl, n);
+    if (VisitorSchedule_IsSet(this, &sVisitorSchedule)) {
+        VisitorSpawnEntry *e = (VisitorSpawnEntry *)VisitorTable_FindByProfile(&sVisitorSchedule.profile, tbl, n);
         if (e) {
-            if (F3::sVisitorSchedule.sceneId == F3::Scene_GetCurrent()) {
+            if (sVisitorSchedule.sceneId == F3::Scene_GetCurrent()) {
                 VecFx32 v;
                 u16 t[3];
                 t[0] = 0;
                 t[1] = 0;
                 t[2] = 0;
                 if (e->fn) {
-                    (this->*(e->fn))(&v, t, &F3::sVisitorSchedule);
+                    (this->*(e->fn))(&v, t, &sVisitorSchedule);
                 }
                 if (e->flag) {
-                    F3::OverlayMgr_Acquire(e->ovl);
+                    OverlayMgr_Acquire(e->ovl);
                     setVisitorOverlay(&e->ovl);
                 } else {
                     clearVisitorOverlay();
@@ -1676,7 +1367,7 @@ u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
                 }
             }
         }
-        F3::VisitorSchedule_Clear(&F3::sVisitorSchedule);
+        F3::VisitorSchedule_Clear(&sVisitorSchedule);
     }
     return result;
 }
@@ -1684,20 +1375,20 @@ u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
 void NpcSpawnerOverlayView::releaseVisitorOverlay()
 {
     if (overlayLoaded != 0) {
-        F2::OverlayMgr_Release(overlayId);
+        OverlayMgr_Release(overlayId);
         ((VisitorSpawner *)this)->clearVisitorOverlay();
     }
 }
 
-extern "C" s32 Visitor_FindActiveEventEntry(EventVisitorEntry *p, s32 n)
+extern "C" s32 Visitor_FindActiveEventEntry(const EventVisitorEntry *p, s32 n)
 {
-    u32 buf[3];
+    s32 buf[3];
     s32 i;
     buf[0] = 0;
     buf[1] = 0;
     F2::Clock_GetDateTime(buf);
     for (i = 0; i < n; p++, i++) {
-        if (F2::Event_IsActive(p->a, buf) != 0)
+        if (Event_IsActive(p->a, buf) != 0)
             return i;
     }
     return -1;
@@ -1713,19 +1404,19 @@ extern "C" BOOL Visitor_IsNookJobActive()
 
 extern "C" BOOL Visitor_IsTaxiActive()
 {
-    if (F2::Taxi_IsArriving() != 0 || F2::Taxi_IsLeaving() != 0)
+    if (Taxi_IsArriving() != 0 || Taxi_IsLeaving() != 0)
         return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL Visitor_CheckResetti()
+extern "C" u16 *Visitor_CheckResetti()
 {
     u16 k;
     if (F2::Scene_GetCurrent() == 0 && F2::_ZN16ResettiVisitFlag5isSetEv(F2::TownSessionState_GetResettiFlag(F2::TownSessionState_Get())) != 0 && (F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
         k = 0xd011;
-        return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+        return VisitorTable_FindByNpc(&k, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
-    return FALSE;
+    return NULL;
 }
 
 extern "C" BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p)
@@ -1748,17 +1439,17 @@ extern "C" BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p)
     return FALSE;
 }
 
-extern "C" BOOL Visitor_CheckTomNook()
+extern "C" u16 *Visitor_CheckTomNook()
 {
     u16 k;
     void *r4 = F2::PlayerData_GetCurrent();
-    if (F2::Scene_GetCurrent() == 0 && F2::Visitor_IsTaxiActive() == 0 && (F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0 && r4 != 0 && ((PlayerData *)(r4))->testFlag(0x23) != 0) {
+    if (F2::Scene_GetCurrent() == 0 && Visitor_IsTaxiActive() == 0 && (F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0 && r4 != 0 && ((PlayerData *)(r4))->testFlag(0x23) != 0) {
         if (F2::SceneId_IsHouseRoom(F2::Scene_GetPrevious()) != 0 || F2::Scene_GetPrevious() == 6) {
             k = 0xd019;
-            return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+            return VisitorTable_FindByNpc(&k, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
         }
     }
-    return FALSE;
+    return NULL;
 }
 
 extern "C" BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q)
@@ -1786,15 +1477,15 @@ extern "C" BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q)
 extern "C" BOOL Visitor_IsTortimerDue()
 {
     if ((F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
-        if (F2::TownSessionState_TestFlag(F2::TownSessionState_Get(), 8) != 0 && F2::Visitor_IsTaxiActive() == 0 && F2::Visitor_IsNookJobActive() == 0)
+        if (F2::TownSessionState_TestFlag(F2::TownSessionState_Get(), 8) != 0 && Visitor_IsTaxiActive() == 0 && Visitor_IsNookJobActive() == 0)
             return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL Visitor_FindTortimer(s32 flag)
+extern "C" u16 *Visitor_FindTortimer(s32 flag)
 {
-    if (F2::Visitor_IsTortimerDue() != 0) {
+    if (Visitor_IsTortimerDue() != 0) {
         if (flag != 0) {
             BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
             if (!c)
@@ -1802,29 +1493,29 @@ extern "C" BOOL Visitor_FindTortimer(s32 flag)
             if (F2::Scene_GetCurrent() == 0x2c)
                 goto fail;
         }
-        return (BOOL)F2::VisitorTable_FindByProfile(F2::sTortimerVisitorProfile, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+        return VisitorTable_FindByProfile(sTortimerVisitorProfile, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
   fail:
-    return FALSE;
+    return NULL;
 }
 
-extern "C" BOOL Visitor_CheckTortimer(s32 a, s32 b, s32 c)
+extern "C" u16 *Visitor_CheckTortimer(s32 a, s32 b, s32 c)
 {
-    return F2::Visitor_FindTortimer(1);
+    return Visitor_FindTortimer(1);
 }
 
 extern "C" BOOL Visitor_IsNookJobErrandActive()
 {
-    void *r4;
+    PlayerErrandSlot *r4;
     void *r = F2::PlayerData_GetCurrent();
     if (r != 0)
-        r4 = F2::PlayerErrands_GetSlot(((PlayerData *)(r))->getErrands(), 0);
+        r4 = PlayerErrands_GetSlot((PlayerErrands *)((PlayerData *)(r))->getErrands(), 0);
     else
         r4 = 0;
     if (r4 != 0) {
-        if (F2::_ZN12ErrandRecord8isActiveEv(F2::PlayerErrandSlot_GetRecord(r4)) != 0) {
-            if (F2::_ZN12ErrandRecord11getSubGroupEv(F2::PlayerErrandSlot_GetRecord(r4)) == 1) {
-                if (F2::Visitor_IsTaxiActive() == 0)
+        if (F2::_ZN12ErrandRecord8isActiveEv(PlayerErrandSlot_GetRecord(r4)) != 0) {
+            if (F2::_ZN12ErrandRecord11getSubGroupEv(PlayerErrandSlot_GetRecord(r4)) == 1) {
+                if (Visitor_IsTaxiActive() == 0)
                     return TRUE;
             }
         }
@@ -1832,7 +1523,7 @@ extern "C" BOOL Visitor_IsNookJobErrandActive()
     return FALSE;
 }
 
-extern "C" BOOL Visitor_FindEventHost(s32 flag)
+extern "C" u16 *Visitor_FindEventHost(s32 flag)
 {
     s32 pass; s32 idx; s32 ok; s32 r6;
     u16 k1, k2;
@@ -1847,39 +1538,39 @@ extern "C" BOOL Visitor_FindEventHost(s32 flag)
             if (pass == 0)
                 ok = FALSE;
         }
-        if (F2::Visitor_IsNookJobErrandActive() != 0) {
+        if (Visitor_IsNookJobErrandActive() != 0) {
             if (ok == 0)
                 goto fail;
-            return (BOOL)F2::VisitorTable_FindByProfile(F2::sEventTortimerProfile, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+            return VisitorTable_FindByProfile(sEventTortimerProfile, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
         }
         idx = -1;
-        if (F2::Visitor_IsTaxiActive() == 0)
-            idx = F2::Visitor_FindActiveEventEntry(F2::sEventHostTable, 8);
+        if (Visitor_IsTaxiActive() == 0)
+            idx = Visitor_FindActiveEventEntry(F2::sEventHostTable, 8);
         if (idx != -1) {
             r6 = F2::sEventHostCheckValues[idx];
-            if (r6 != F2::EventAnnounce_GetCurrentEvent() && r6 != 0x13)
+            if (r6 != EventAnnounce_GetCurrentEvent() && r6 != 0x13)
                 idx = -1;
         }
         if (idx != -1) {
             if (ok == 0)
                 goto fail;
-            return (BOOL)F2::VisitorTable_FindByProfile(&F2::sEventHostTable[idx].b, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+            return VisitorTable_FindByProfile(&F2::sEventHostTable[idx].b, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
         }
-        if (F2::Visitor_IsTortimerDue() == 0 && F2::Scene_GetCurrent() == 9) {
+        if (Visitor_IsTortimerDue() == 0 && F2::Scene_GetCurrent() == 9) {
             k1 = 0xd025;
-            return (BOOL)F2::VisitorTable_FindByNpc(&k1, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+            return VisitorTable_FindByNpc(&k1, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
         }
     } else if (F2::Scene_GetCurrent() == 9) {
         k2 = 0xd025;
-        return (BOOL)F2::VisitorTable_FindByNpc(&k2, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+        return VisitorTable_FindByNpc(&k2, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
   fail:
-    return FALSE;
+    return NULL;
 }
 
-extern "C" BOOL Visitor_CheckEventHost(s32 a, s32 b, s32 c)
+extern "C" u16 *Visitor_CheckEventHost(s32 a, s32 b, s32 c)
 {
-    return F2::Visitor_FindEventHost(1);
+    return Visitor_FindEventHost(1);
 }
 
 extern "C" BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q)
@@ -1897,7 +1588,7 @@ extern "C" BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q)
             bx -= 2;
             bz += 3;
             F2::FieldPos_FromUnitCenter(p, bx, bz);
-            q->b = F2::Random_GlobalBelow(0xffff);
+            q->b = Random_GlobalBelow(0xffff);
             return TRUE;
         }
     }
@@ -1920,7 +1611,7 @@ extern "C" BOOL VisitorPlace_NearPlayerHouse(s32 a, VecFx32 *p, Unk_02083314_K *
             bx += 2;
             bz += 2;
             F2::FieldPos_FromUnitCenter(p, bx, bz);
-            q->b = F2::Random_GlobalBelow(0xffff);
+            q->b = Random_GlobalBelow(0xffff);
             return TRUE;
         }
     }
@@ -1929,15 +1620,15 @@ extern "C" BOOL VisitorPlace_NearPlayerHouse(s32 a, VecFx32 *p, Unk_02083314_K *
 
 extern "C" BOOL VisitorPlace_EventHost(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
-    return F2::VisitorPlace_NearTownHall(a, p, q);
+    return VisitorPlace_NearTownHall(a, p, q);
 }
 
 extern "C" BOOL VisitorPlace_Tortimer(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     F2::PlayerData_GetCurrent();
-    if (F2::Visitor_IsNookJobActive() != 0)
-        return F2::VisitorPlace_NearTownHall(a, p, q);
-    return F2::VisitorPlace_NearPlayerHouse(a, p, q);
+    if (Visitor_IsNookJobActive() != 0)
+        return VisitorPlace_NearTownHall(a, p, q);
+    return VisitorPlace_NearPlayerHouse(a, p, q);
 }
 
 extern "C" BOOL VisitorPlace_Origin(s32 a, VecFx32 *p)
@@ -1948,7 +1639,7 @@ extern "C" BOOL VisitorPlace_Origin(s32 a, VecFx32 *p)
     return TRUE;
 }
 
-extern "C" BOOL Visitor_FindLyle(s32 flag)
+extern "C" u16 *Visitor_FindLyle(s32 flag)
 {
     u16 k;
     void *r4 = F2::_ZN11SaveRecord412isDateActiveEv(&F2::data_021ed315);
@@ -1961,19 +1652,19 @@ extern "C" BOOL Visitor_FindLyle(s32 flag)
                 goto fail2;
         }
         {
-            if (r4 == 0 && F2::Visitor_IsNookJobActive() == 0 && F2::Visitor_IsTaxiActive() == 0 && F2::Event_IsActive(0x3c, 0) != 0) {
+            if (r4 == 0 && Visitor_IsNookJobActive() == 0 && Visitor_IsTaxiActive() == 0 && Event_IsActive(0x3c, 0) != 0) {
                 k = 0xd00d;
-                return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+                return VisitorTable_FindByNpc(&k, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
             }
         }
     }
   fail2:
-    return FALSE;
+    return NULL;
 }
 
-extern "C" BOOL Visitor_CheckLyle(s32 a, s32 b, s32 c)
+extern "C" u16 *Visitor_CheckLyle(s32 a, s32 b, s32 c)
 {
-    return F2::Visitor_FindLyle(1);
+    return Visitor_FindLyle(1);
 }
 
 extern "C" BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q)
@@ -1998,7 +1689,7 @@ extern "C" BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q)
     return FALSE;
 }
 
-extern "C" BOOL Visitor_FindJoan(s32 flag)
+extern "C" u16 *Visitor_FindJoan(s32 flag)
 {
     u16 k;
     void *r4 = F2::_ZN11SaveRecord412isDateActiveEv(&F2::data_021ed315);
@@ -2011,26 +1702,26 @@ extern "C" BOOL Visitor_FindJoan(s32 flag)
                 goto fail1;
         }
         {
-            if (r4 == 0 && F2::Visitor_IsNookJobActive() == 0 && F2::Visitor_IsTaxiActive() == 0 && F2::Event_IsActive(0x3b, 0) != 0) {
+            if (r4 == 0 && Visitor_IsNookJobActive() == 0 && Visitor_IsTaxiActive() == 0 && Event_IsActive(0x3b, 0) != 0) {
                 k = 0xd002;
-                return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+                return VisitorTable_FindByNpc(&k, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
             }
         }
     }
   fail1:
-    return FALSE;
+    return NULL;
 }
 
-extern "C" BOOL Visitor_CheckJoan(s32 a, s32 b, s32 c)
+extern "C" u16 *Visitor_CheckJoan(s32 a, s32 b, s32 c)
 {
-    return F2::Visitor_FindJoan(1);
+    return Visitor_FindJoan(1);
 }
 
-extern "C" BOOL Visitor_FindKatie(s32 flag)
+extern "C" u16 *Visitor_FindKatie(s32 flag)
 {
     u16 k;
-    if (F2::Visitor_IsNookJobActive() == 0 && F2::Visitor_IsTaxiActive() == 0) {
-        if (F2::LostChild_IsKatieDue() != 0) {
+    if (Visitor_IsNookJobActive() == 0 && Visitor_IsTaxiActive() == 0) {
+        if (LostChild_IsKatieDue() != 0) {
             if (flag == 0)
                 goto a8;
             {
@@ -2043,7 +1734,7 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
             goto c2;
         a8:
             if ((F2::gCommManager)->isSlotActive(F2::gCommManager->myAid) == 0) {
-                if (F2::Event_IsActive(0x3d, 0) == 0)
+                if (Event_IsActive(0x3d, 0) == 0)
                     goto fe;
             }
         }
@@ -2058,16 +1749,16 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
             if (F2::Scene_GetCurrent() == 0xc) {
             fe:
                 k = 0xd022;
-                return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
+                return VisitorTable_FindByNpc(&k, sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
             }
         }
     }
-    return FALSE;
+    return NULL;
 }
 
-extern "C" BOOL Visitor_CheckKatie(s32 a, s32 b, s32 c)
+extern "C" u16 *Visitor_CheckKatie(s32 a, s32 b, s32 c)
 {
-    return F2::Visitor_FindKatie(1);
+    return Visitor_FindKatie(1);
 }
 
 extern "C" BOOL VisitorPlace_Katie(s32 a, VecFx32 *p)
@@ -2084,8 +1775,8 @@ extern "C" BOOL VisitorPlace_Katie(s32 a, VecFx32 *p)
 
 extern "C" void NpcSpawner_RepickKatiePosOnline() {
     if (F1::gCommManager->isSlotActive(F1::gCommManager->myAid) != 0) {
-        if (F1::Visitor_IsNookJobActive() == 0) {
-            if (F1::LostChild_IsKatieDue() != 0) {
+        if (Visitor_IsNookJobActive() == 0) {
+            if (LostChild_IsKatieDue() != 0) {
                 if (F1::Unk_02083058_IsA()) {
                     F1::_ZN15KatieVisitState12pickKatiePosEv(F1::TownSessionState_GetKatieState(F1::TownSessionState_Get()));
                 }
@@ -2094,25 +1785,25 @@ extern "C" void NpcSpawner_RepickKatiePosOnline() {
     }
 }
 
-extern "C" BOOL Visitor_FindKaitlin(BOOL flag) {
+extern "C" u16 *Visitor_FindKaitlin(BOOL flag) {
     u16 v;
-    if (F1::LostChild_IsKaitlinDue() == 0) goto fail;
-    if (F1::Visitor_IsNookJobActive() != 0) goto fail;
-    if (F1::Visitor_IsTaxiActive() != 0) goto fail;
+    if (LostChild_IsKaitlinDue() == 0) goto fail;
+    if (Visitor_IsNookJobActive() != 0) goto fail;
+    if (Visitor_IsTaxiActive() != 0) goto fail;
     if (flag) {
         if (!F1::Unk_02083058_IsA()) goto fail;
         if (F1::Scene_GetCurrent() == 0x2c) goto fail;
     }
     if (F1::gCommManager->isSlotActive(F1::gCommManager->myAid) != 0) goto fail;
-    if (F1::Event_IsActive(0x3d, NULL) != 0) goto fail;
+    if (Event_IsActive(0x3d, NULL) != 0) goto fail;
     v = 0xd023;
-    return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
+    return VisitorTable_FindByNpc(&v, sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:
-    return FALSE;
+    return NULL;
 }
 
-extern "C" BOOL Visitor_CheckKaitlin() {
-    return F1::Visitor_FindKaitlin(1);
+extern "C" u16 *Visitor_CheckKaitlin() {
+    return Visitor_FindKaitlin(1);
 }
 
 extern "C" BOOL VisitorPlace_Kaitlin(void *self, void *b) {
@@ -2120,41 +1811,41 @@ extern "C" BOOL VisitorPlace_Kaitlin(void *self, void *b) {
     return TRUE;
 }
 
-extern "C" BOOL Visitor_FindBlanca(BOOL flag) {
+extern "C" u16 *Visitor_FindBlanca(BOOL flag) {
     u16 v;
     s32 loc[2];
     loc[0] = 0;
     loc[1] = 0;
     F1::Clock_GetDateTime(loc);
-    if (F1::Visitor_IsNookJobActive() != 0) goto fail;
-    if (F1::Visitor_IsTaxiActive() != 0) goto fail;
+    if (Visitor_IsNookJobActive() != 0) goto fail;
+    if (Visitor_IsTaxiActive() != 0) goto fail;
     if (flag) {
         if (!F1::Unk_02083058_IsA()) goto fail;
         if (F1::Scene_GetCurrent() == 0x2c) goto fail;
     }
     if (F1::gCommManager->isSlotActive(F1::gCommManager->myAid) != 0) goto fail;
-    if (F1::Event_IsActive(0x3b, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x3c, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x3d, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x3e, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x3f, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x40, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x41, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x42, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x43, loc) != 0) goto fail;
-    if (F1::Event_IsActive(0x44, loc) != 0) goto fail;
+    if (Event_IsActive(0x3b, loc) != 0) goto fail;
+    if (Event_IsActive(0x3c, loc) != 0) goto fail;
+    if (Event_IsActive(0x3d, loc) != 0) goto fail;
+    if (Event_IsActive(0x3e, loc) != 0) goto fail;
+    if (Event_IsActive(0x3f, loc) != 0) goto fail;
+    if (Event_IsActive(0x40, loc) != 0) goto fail;
+    if (Event_IsActive(0x41, loc) != 0) goto fail;
+    if (Event_IsActive(0x42, loc) != 0) goto fail;
+    if (Event_IsActive(0x43, loc) != 0) goto fail;
+    if (Event_IsActive(0x44, loc) != 0) goto fail;
     if (((BlancaFaceRecord *)(&F1::gSaveBlancaFace))->isBlancaDue() == 0) goto fail;
     v = 0xd020;
-    return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
+    return VisitorTable_FindByNpc(&v, sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:
-    return FALSE;
+    return NULL;
 }
 
-extern "C" BOOL Visitor_CheckBlanca() {
-    return F1::Visitor_FindBlanca(1);
+extern "C" u16 *Visitor_CheckBlanca() {
+    return Visitor_FindBlanca(1);
 }
 
-extern "C" BOOL Visitor_FindInEventTable(void *tbl, void *fn, s32 x, BOOL flag) {
+extern "C" u16 *Visitor_FindInEventTable(const EventVisitorEntry *tbl, const void *fn, s32 x, BOOL flag) {
     s32 r7 = ((SaveRecord4 *)(&F1::data_021ed315))->isDateActive();
     s32 idx;
     if (flag) {
@@ -2162,28 +1853,28 @@ extern "C" BOOL Visitor_FindInEventTable(void *tbl, void *fn, s32 x, BOOL flag) 
         if (F1::Scene_GetCurrent() == 0x2c) goto fail;
     }
     if (r7 != 0) goto fail;
-    if (F1::Visitor_IsNookJobActive() != 0) goto fail;
-    if (F1::Visitor_IsTaxiActive() != 0) goto fail;
+    if (Visitor_IsNookJobActive() != 0) goto fail;
+    if (Visitor_IsTaxiActive() != 0) goto fail;
     if (F1::gCommManager->isSlotActive(F1::gCommManager->myAid) != 0) goto fail;
-    idx = F1::Visitor_FindActiveEventEntry(tbl, x);
+    idx = Visitor_FindActiveEventEntry(tbl, x);
     if (idx == -1) goto fail;
     if (fn != NULL) {
-        BOOL (*f)() = ((BOOL (**)())fn)[idx];
+        BOOL (*f)() = ((BOOL (*const *)())fn)[idx];
         if (f != NULL) {
             if (f() == 0) goto fail;
         }
     }
-    return F1::VisitorTable_FindByProfile((u8 *)tbl + idx * 8 + 4, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
+    return VisitorTable_FindByProfile(&tbl[idx].b, sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:
-    return FALSE;
+    return NULL;
 }
 
-extern "C" BOOL Visitor_CheckDateVisitors() {
-    return Visitor_FindInEventTable(F1::sDateVisitorTable, F1::sDateVisitorChecks, 4, 1);
+extern "C" u16 *Visitor_CheckDateVisitors() {
+    return Visitor_FindInEventTable(sDateVisitorTable, sDateVisitorChecks, 4, 1);
 }
 
-extern "C" BOOL Visitor_CheckPete() {
-    return Visitor_FindInEventTable(F1::sPeteVisitTable, NULL, 1, 1);
+extern "C" u16 *Visitor_CheckPete() {
+    return Visitor_FindInEventTable(sPeteVisitTable, NULL, 1, 1);
 }
 
 extern "C" BOOL Visitor_CanPascalVisit() {
@@ -2267,7 +1958,7 @@ ytest:
     if (y < h) goto yloop;
 ybreak:
     if (count > 0) {
-        s32 i = F1::Random_GlobalBelow(count);
+        s32 i = Random_GlobalBelow(count);
         F1::FieldPos_FromUnitCenter(p1, list[i].x, list[i].y);
         return TRUE;
     }
@@ -2284,7 +1975,7 @@ extern "C" BOOL VisitorPlace_Pete(void *self, void *b, u16 *out) {
 
 extern "C" BOOL VisitorPlace_AtVisitorPos(void *self, void *b, u16 *out) {
     ((VisitorPos *)(F1::TownSessionState_GetVisitorPos(F1::TownSessionState_Get())))->getPos((VecFx32 *)(b));
-    out[1] = F1::Random_GlobalBelow(0xffff);
+    out[1] = Random_GlobalBelow(0xffff);
     return TRUE;
 }
 
@@ -2305,7 +1996,7 @@ extern "C" BOOL VisitorPlace_Gracie(void *self, void *g, u16 *out, s32 *a) {
     return TRUE;
 }
 
-void *sVisitorCheckPmf_Joan[2] = {(void *)Dp::Visitor_CheckJoan, 0};
+void *sVisitorCheckPmf_Joan[2] = {(void *)Visitor_CheckJoan, 0};
 VisitorSpawnEntry sVisitorSpawnTable[23] = {
     {0x56, 0xd012, 0x50, *(Unk_02083c28_Fn *)sVisitorPlacePmf_Tortimer, 1},
     {0x65, 0xd011, 0x4d, *(Unk_02083c28_Fn *)sVisitorPlacePmf_Resetti, 1},
@@ -2331,10 +2022,10 @@ VisitorSpawnEntry sVisitorSpawnTable[23] = {
     {0x6c, 0xd00b, 0x46, *(Unk_02083c28_Fn *)sVisitorPlacePmf_Gracie, 1},
     {0x67, 0xd020, 0x4a, *(Unk_02083c28_Fn *)sVisitorPlacePmf_Blanca, 1},
 };
-void *sVisitorPlacePmf_Countdown[2] = {(void *)Dp::VisitorPlace_EventHost, 0};
-void *sVisitorPlacePmf_Lyle[2] = {(void *)Dp::VisitorPlace_Lyle, 0};
-void *sVisitorCheckPmf_Tortimer[2] = {(void *)Dp::Visitor_CheckTortimer, 0};
-void *sVisitorPlacePmf_Resetti[2] = {(void *)Dp::VisitorPlace_Resetti, 0};
+void *sVisitorPlacePmf_Countdown[2] = {(void *)VisitorPlace_EventHost, 0};
+void *sVisitorPlacePmf_Lyle[2] = {(void *)VisitorPlace_Lyle, 0};
+void *sVisitorCheckPmf_Tortimer[2] = {(void *)Visitor_CheckTortimer, 0};
+void *sVisitorPlacePmf_Resetti[2] = {(void *)VisitorPlace_Resetti, 0};
 
 #ifdef HOST64
 static_assert(__builtin_offsetof(NpcSpawnerOverlayView, pad_00) == 0x0, "NpcSpawnerOverlayView.pad_00");

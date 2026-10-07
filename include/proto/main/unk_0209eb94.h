@@ -101,7 +101,7 @@ void VillagerTransfer_PlanSwap(void *a);
 void VillagerTransfer_PlanRotate(void *a);
 #endif
 #ifndef PROTO_LOCAL_LostChild_ResetAndPairLast
-void LostChild_ResetAndPairLast(void *a);
+void LostChild_ResetAndPairLast(SaveManager *a);
 #endif
 #ifndef PROTO_LOCAL_Wifi_StoreFriendList
 void Wifi_StoreFriendList(void);
@@ -242,7 +242,7 @@ u32 Net_GetJoiningAid();
 void Net_SetJoiningAid(u32 v);
 #endif
 #ifndef PROTO_LOCAL_SaveManager_GetTownTransferBuf
-s32 SaveManager_GetTownTransferBuf();
+void *SaveManager_GetTownTransferBuf();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_IsGatePassed
 u32 SaveManager_IsGatePassed();
@@ -251,13 +251,13 @@ u32 SaveManager_IsGatePassed();
 u32 SaveManager_IsSessionJoined();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_GetLetterStorage
-s32 SaveManager_GetLetterStorage();
+u8 *SaveManager_GetLetterStorage();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_GetTownCompressBuf
-s32 SaveManager_GetTownCompressBuf();
+void *SaveManager_GetTownCompressBuf();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_GetTownCompressThread
-s32 SaveManager_GetTownCompressThread();
+void *SaveManager_GetTownCompressThread();
 #endif
 #ifndef PROTO_LOCAL_SaveManager_Get
 SaveManager *SaveManager_Get();
@@ -353,7 +353,7 @@ BOOL Wifi_IsInFriendList(SaveManager *self, void *a, void *b);
 void LostChild_ApplyReceived(SaveManager *self);
 #endif
 #ifndef PROTO_LOCAL_VillagerTransfer_SendReplies
-void VillagerTransfer_SendReplies(SaveManager *self);
+BOOL VillagerTransfer_SendReplies(SaveManager *self);
 #endif
 #ifndef PROTO_LOCAL_SaveManager_RunSessionEnd
 s32 SaveManager_RunSessionEnd(SaveManager *self, u8 *st, s32 base, s32 base2, u32 mask, u8 a6);
@@ -362,10 +362,10 @@ s32 SaveManager_RunSessionEnd(SaveManager *self, u8 *st, s32 base, s32 base2, u3
 s32 SaveManager_RunSyncedSaveHost(SaveManager *self, u8 *st, s32 a2, s32 base, u8 a5, u8 a6, s32 a7, u8 a8, u32 a9);
 #endif
 #ifndef PROTO_LOCAL_SaveManager_StartGatekeeperTalk
-void SaveManager_StartGatekeeperTalk(u32 a, u32 b);
+void SaveManager_StartGatekeeperTalk(SaveManager *a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_SaveManager_StartSequence2Talk
-void SaveManager_StartSequence2Talk(u32 a);
+void SaveManager_StartSequence2Talk(SaveManager *a);
 #endif
 #ifndef PROTO_LOCAL_SaveManager_IsEndSessionSave
 u8 SaveManager_IsEndSessionSave(void);
