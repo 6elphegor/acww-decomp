@@ -1,6 +1,7 @@
 #include "uptr.h"
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "npc/VillagerId.h"
 #include "player/PlayerErrandsInviteView.h"
 #include "gfx/VecFx32.h"
 #include "npc/VillagerClothModel.h"
@@ -46,7 +47,6 @@
 #include "proto/main/unk_020b0e60.h"
 #include "proto/ov004/unk_ov004_02233074.h"
 #include "proto/ov068/unk_ov068_0226dbe8.h"
-#define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
@@ -124,7 +124,7 @@ typedef BOOL (HouseVisitVillager::*Unk_ov068_02270afc_BFn)();
 
 
 
-#define SPEAK(str) VillagerId_makeFileName(VillagerData_getVillagerId(ownerVillager->villagerData), sHouseVisitMsgFileName, 0x28, (void *)str)
+#define SPEAK(str) ((VillagerId *)VillagerData_getVillagerId(ownerVillager->villagerData))->makeFileName(sHouseVisitMsgFileName, 0x28, str)
 
 // Menu/dialog sub-object at +0x898 of the owner (vtable 0x02270a6c)
 class HouseVisitVillagerTalk : public VillagerTalk {
@@ -303,7 +303,6 @@ extern "C" {
 extern u8 sHouseVisitTsuTopicTable[];
 extern u8 data_021be810[];
 extern u8 gTalkMsgIndexEnd;
-void VillagerId_makeFileName(void *, void *, u32, void *);
 void *VillagerData_getVillagerId(void *);
 void *PlayerData_getErrands(void *);
 }
@@ -609,7 +608,7 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     out->msgKey = (const char *)sHouseVisitMsgFileName;
     if (ownerVillager->visitState == 1) {
         ownerVillager->talkTopic = 1;
-        SPEAK((void *)"q10_call");
+        SPEAK("q10_call");
         out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetCalled(this);
         return;
@@ -619,28 +618,28 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     }
     if (ownerVillager->wantsToLeave != 0) {
         ownerVillager->talkTopic = 6;
-        SPEAK((void *)"q10_back");
+        SPEAK("q10_back");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(3);
         return;
     }
     if (ownerVillager->playerAtExit != 0) {
         ownerVillager->talkTopic = 8;
-        SPEAK((void *)"q10_wait");
+        SPEAK("q10_wait");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(2);
         return;
     }
     if (HouseVisit_IsDoorTalkDone(this) == 0) {
         ownerVillager->talkTopic = 2;
-        SPEAK((void *)"q10_door");
+        SPEAK("q10_door");
         out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetDoorTalkDone(this);
         return;
     }
     if (HouseVisit_IsFirstTalkPending(this)) {
         ownerVillager->talkTopic = 5;
-        SPEAK((void *)"q10_first");
+        SPEAK("q10_first");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetFirstTalkDone(this);
@@ -665,14 +664,14 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     window->setSlot(3, &obj2);
     if (rnd < 30 && v != -1) {
         ownerVillager->talkTopic = 3;
-        SPEAK((void *)"q10_furniture");
+        SPEAK("q10_furniture");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = v;
         return;
     }
     if (rnd < 50) {
         ownerVillager->talkTopic = 4;
-        SPEAK((void *)"q10_layout");
+        SPEAK("q10_layout");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         u32 f = ownerVillager->roomRateFlags;
         if (f & 1) {
@@ -719,7 +718,7 @@ void HouseVisitVillagerTalk::onMessageEnd(u32 a) {
             o->setVisitState(2);
         } else if (st == 6 || st == 8) {
             o->talkTopic = 7;
-            VillagerId_makeFileName(VillagerData_getVillagerId(ownerVillager->villagerData), data_ov068_022712b8, 0x28, (void *)"q_bye");
+            ((VillagerId *)VillagerData_getVillagerId(ownerVillager->villagerData))->makeFileName(data_ov068_022712b8, 0x28, "q_bye");
             buf[0] = Random_GlobalBelow(3);
             ownerVillager->talk.window->setNextMessageIfUnset(buf, data_ov068_022712b8);
         } else if (st == 7) {

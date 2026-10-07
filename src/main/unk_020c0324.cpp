@@ -55,7 +55,6 @@ extern "C" {
 s32 Scene_GetCurrent(void);
 s32 Scene_GetPrevious(void);
 s32 _ZN16ActorTalkRequest13getTalkPlayerEv(void *a);
-void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
 void _ZN15KatieVisitState14clearFollowingEv(void *a);
 void _ZN15KatieVisitState12setFollowingEv(void *a);
 s32 _ZN15KatieVisitState11isFollowingEv(void *a);
@@ -81,7 +80,7 @@ void _ZN15KatieVisitState5clearEv(void *a);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32 a, s32 b);
 void Camera_SetMode19(void);
-s32 _ZN15LostChildRecord9getTownIdEv(void *p);
+u16 *_ZN15LostChildRecord9getTownIdEv(void *p);
 extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -676,8 +675,8 @@ void SpNpcKatieTalk::start(TalkStartMsg *out_) {
 
 void SpNpcKatieTalk::onMessageStart(u32) {
     s32 a = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
-    _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 0);
-    _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 1);
+    ((ActorTalkRequest *)this)->setTownNameSlot(_ZN15LostChildRecord9getTownIdEv((void *)a), 0);
+    ((ActorTalkRequest *)this)->setTownNameSlot(_ZN15LostChildRecord9getTownIdEv((void *)a), 1);
 }
 
 void SpNpcKatieTalk::onMessageEnd(u32) {

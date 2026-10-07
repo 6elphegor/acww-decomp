@@ -1927,8 +1927,6 @@ s32 _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 s32 Scene_InHouseRoom(void);
 s32 TalkRequest_AddPlayerMessage(void);
 void TalkRequest_FinishPlayerMessage(void);
-void _ZN9Character17detachTalkRequestEi(void *o, Sec *s);
-void _ZN9Character17attachTalkRequestEi(void *o, Sec *s);
 void _ZN11PlayerActor15clearActionFlagEj(Obj *o, s32 a);
 void _ZN11PlayerActor13setActionFlagEj(Obj *o, s32 a);
 void _ZN10MsgRequest11setFileNameEPKc(Sec *s, void *d);
@@ -2029,7 +2027,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
                         HeldItemModel_PlayAnim(&o->heldItemModel, 0x13, 3, 0);
                     }
                     *p = 1;
-                    ((Character *)(o))->attachTalkRequest((s32)(o));
+                    ((Character *)(o))->attachTalkRequest(o);
                     (o)->setActionFlag(0x11);
                     {
                         Sec &s = *o;
@@ -2072,7 +2070,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
                         ((AnimFrameCtrl &)o->bodyModel).frameStep = 0x1000;
                         if (MenuCtrl_IsResultOk() != 0) {
                             *p = 5;
-                            ((Character *)(o))->detachTalkRequest((s32)(o));
+                            ((Character *)(o))->detachTalkRequest(o);
                             (o)->clearActionFlag(0x11);
                             TalkRequest_FinishPlayerMessage();
                         } else {
@@ -2094,7 +2092,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 4:
         if (o->window != 0) {
             if (o->window->state == 0) {
-                ((Character *)(o))->detachTalkRequest((s32)(o));
+                ((Character *)(o))->detachTalkRequest(o);
                 (o)->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 *p = 5;
@@ -2111,7 +2109,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 6:
         if (TalkRequest_AddPlayerMessage() != 0) {
             *p = 7;
-            ((Character *)(o))->attachTalkRequest((s32)(o));
+            ((Character *)(o))->attachTalkRequest(o);
             (o)->setActionFlag(0x11);
             {
                 Sec &s = *o;
@@ -2131,7 +2129,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 8:
         if (o->window != 0) {
             if (o->window->state == 0) {
-                ((Character *)(o))->detachTalkRequest((s32)(o));
+                ((Character *)(o))->detachTalkRequest(o);
                 (o)->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 *p = 9;
@@ -2146,7 +2144,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 10:
         if (TalkRequest_AddPlayerMessage() != 0) {
             *p = 0xb;
-            ((Character *)(o))->attachTalkRequest((s32)(o));
+            ((Character *)(o))->attachTalkRequest(o);
             (o)->setActionFlag(0x11);
             {
                 Sec &s = *o;
@@ -2166,7 +2164,7 @@ extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
     case 12:
         if (o->window != 0) {
             if (o->window->state == 0) {
-                ((Character *)(o))->detachTalkRequest((s32)(o));
+                ((Character *)(o))->detachTalkRequest(o);
                 (o)->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
@@ -2381,7 +2379,7 @@ extern "C" void PlayerActor_FtrHoldUpdate(Obj *o) {
     case 1:
         if (TalkRequest_AddPlayerMessage() != 0) {
             (*q)++;
-            ((Character *)(o))->attachTalkRequest((s32)(o));
+            ((Character *)(o))->attachTalkRequest(o);
             (o)->setActionFlag(0x11);
             {
                 Sec &s = *o;
@@ -2401,7 +2399,7 @@ extern "C" void PlayerActor_FtrHoldUpdate(Obj *o) {
     case 3:
         if (o->window != 0) {
             if (o->window->state == 0) {
-                ((Character *)(o))->detachTalkRequest((s32)(o));
+                ((Character *)(o))->detachTalkRequest(o);
                 (o)->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 *q = 0;
@@ -4014,8 +4012,6 @@ void _ZN11PlayerActor18updateBodyColliderEv(Obj *o);
 void _ZN11PlayerActor13setActionFlagEj(Obj *o, u32 a);
 void _ZN11PlayerActor15clearActionFlagEj(Obj *o, u32 a);
 void _ZN11PlayerActor6playSeEj(Obj *o, u32 a);
-void _ZN9Character17attachTalkRequestEi(Obj *o, Sec *s);
-void _ZN9Character17detachTalkRequestEi(Obj *o, Sec *s);
 void _ZN10MsgRequest11setFileNameEPKc(Sec *s, void *n);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 Scene_GetWarpRequest(void);
@@ -4135,7 +4131,7 @@ extern "C" s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, s32
 
 extern "C" void PlayerActor_SetupAct36(Obj *o, PlayerActionRequest *m) {
     PlayerAct36Args *p = (PlayerAct36Args *)m->unk_0c_b;
-    HandOverItem_Begin(&o->actionItem, ((PlayerAct36Args *)m->unk_0c_b)->kind, p->nextMode, p->variant, o, p->partner);
+    HandOverItem_Begin(&o->actionItem, ((PlayerAct36Args *)m->unk_0c_b)->kind, p->nextMode, p->variant, o, (Character *)p->partner);
     (o)->startAnimOnce(0x2e, 3, 0);
     HandOverItem_RequestMode(1, o);
     if (Scene_GetCurrent() == 9) {
@@ -4380,7 +4376,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
                 }
                 break;
             case 1: {
-                ((Character *)(void *)(o))->attachTalkRequest((s32)(o));
+                ((Character *)(void *)(o))->attachTalkRequest(o);
                 (o)->setActionFlag(0x11);
                 {
                     Sec &s = *o;
@@ -4413,7 +4409,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
                     l.a.y = v->y;
                     l.a.z = v->z;
                     Sec *s = o;
-                    ((Character *)(void *)(o))->detachTalkRequest((s32)(s));
+                    ((Character *)(void *)(o))->detachTalkRequest(s);
                     (o)->clearActionFlag(0x11);
                     o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
                     l.b.x = l.a.x;

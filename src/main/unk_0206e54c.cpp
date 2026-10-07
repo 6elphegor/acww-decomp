@@ -110,12 +110,12 @@ u8 sMenuMode;
 Letter sFutureLetter;
 u16 sPocketBackupItems[16];
 u32 kMenuOverlayList06[3] = {0x6f, 0x5f, 0xffffffff};
-u32 sMenuArg;
+void *sMenuArg;
 u32 kMenuOverlayList13[3] = {0x66, 0x5e, 0xffffffff};
 u32 kMenuOverlayList23[2] = {0x8e, 0xffffffff};
 u32 kMenuOverlayList1A[3] = {0x81, 0x7f, 0xffffffff};
 s32 sMenuTransitionProgress;
-u32 sMenuPtrArg1;
+void *sMenuPtrArg1;
 u8 sChatDraft[32];
 u32 sMenuHandBells;
 u32 kMenuOverlayList2A[3] = {0x8a, 0x86, 0xffffffff};
@@ -165,7 +165,7 @@ Unk_021cb4f0 sMenuDateTime;
 u32 kMenuOverlayList02[4] = {0x60, 0x62, 0x5e, 0xffffffff};
 u16 sMenuItem;
 u32 kMenuOverlayList19[3] = {0x80, 0x7f, 0xffffffff};
-u32 sMenuPtrArg0;
+void *sMenuPtrArg0;
 u32 kMenuOverlayList20[3] = {0x84, 0x82, 0xffffffff};
 u32 sMenuAmount;
 u32 kMenuOverlayList10[3] = {0x63, 0x5e, 0xffffffff};
@@ -366,7 +366,7 @@ extern "C" BOOL MenuCtrl_RequestOpenNested(u32 v) {
     return TRUE;
 }
 
-extern "C" BOOL MenuCtrl_RequestOpenMenu12(u32 v) {
+extern "C" BOOL MenuCtrl_RequestOpenMenu12(void *v) {
     BOOL r = MenuCtrl_RequestOpen(12);
     if (r) MenuCtrl_SetArg(v);
     return r;
@@ -485,9 +485,9 @@ extern "C" void MenuCtrl_SetScreenChanging() { return MenuCtrl_SetFlags(0x10); }
 
 extern "C" void MenuCtrl_ClearScreenChanging() { return MenuCtrl_ClearFlags(0x10); }
 
-extern "C" u32 MenuCtrl_GetArg() { return sMenuArg; }
+extern "C" void *MenuCtrl_GetArg() { return sMenuArg; }
 
-extern "C" void MenuCtrl_SetArg(u32 v) { sMenuArg = v; }
+extern "C" void MenuCtrl_SetArg(void *v) { sMenuArg = v; }
 
 extern "C" u32 MenuCtrl_GetMode() { return sMenuMode; }
 
@@ -511,7 +511,7 @@ extern "C" void MenuCtrl_SetResult(u32 v) { sMenuResult = v; }
 
 extern "C" void *MenuCtrl_GetText() { return sMenuText; }
 
-extern "C" void MenuCtrl_SetText(u32 a, u32 b) {
+extern "C" void MenuCtrl_SetText(const void *a, u32 b) {
     Mem_Clear(sMenuText, 16);
     Mem_Copy(a, sMenuText, b);
 }
@@ -615,13 +615,13 @@ extern "C" BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b) {
     return FALSE;
 }
 
-extern "C" u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, void *)) {
+extern "C" u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, s32)) {
     u32 a = PlayerData_GetCurrent();
     u16 *p = ((PlayerInventory *)(((PlayerData *)(a))->getInventory()))->getPocket(0);
     s32 i;
     u16 mask = 0;
     for (i = 0; i < 15; i++) {
-        if (cb(p + i, _ZN15PlayerInventory14getPocketFlagsEi(((PlayerData *)(a))->getInventory(), i))) {
+        if (cb(p + i, ((PlayerInventory *)(((PlayerData *)(a))->getInventory()))->getPocketFlags(i))) {
             mask |= 1 << i;
         }
     }
@@ -731,7 +731,7 @@ extern "C" void MenuCtrl_GetDateTime(void *a) {
     MI_CpuCopy8(&sMenuDateTime, a, 8);
 }
 
-extern "C" BOOL MenuCtrl_OpenNearbyTowns(u32 a, u32 b) {
+extern "C" BOOL MenuCtrl_OpenNearbyTowns(void *a, void *b) {
     if (MenuCtrl_OpenLauncher(0x3d)) {
         sMenuPtrArg0 = a;
         sMenuPtrArg1 = b;
@@ -745,9 +745,9 @@ extern "C" void MenuCtrl_ClearPtrArgs(void) {
     sMenuPtrArg1 = 0;
 }
 
-extern "C" u32 MenuCtrl_GetPtrArg0(void) { return sMenuPtrArg0; }
+extern "C" void *MenuCtrl_GetPtrArg0(void) { return sMenuPtrArg0; }
 
-extern "C" u32 MenuCtrl_GetPtrArg1(void) { return sMenuPtrArg1; }
+extern "C" void *MenuCtrl_GetPtrArg1(void) { return sMenuPtrArg1; }
 
 extern "C" BOOL MenuCtrl_IsClockMovedBack(void) { return MenuCtrl_HasFlags(8); }
 
@@ -775,7 +775,7 @@ extern "C" BOOL MenuCtrl_OpenPocketsFullInsect(u32 v) {
     return FALSE;
 }
 
-extern "C" BOOL MenuCtrl_OpenPocketsFullFish(u32 a, u32 b) {
+extern "C" BOOL MenuCtrl_OpenPocketsFullFish(u32 a, void *b) {
     if (MenuCtrl_OpenLauncher(0x2c)) {
         sMenuPtrArg0 = b;
         sMenuItem = a;
@@ -812,7 +812,7 @@ extern "C" void MenuCtrl_SetSongItem(u32 v) { sMenuItem = v; }
 
 extern "C" u16 MenuCtrl_GetSongItem(void) { return sMenuItem; }
 
-extern "C" BOOL MenuCtrl_OpenLauncherWithText(u32 a, u32 b, u32 c) {
+extern "C" BOOL MenuCtrl_OpenLauncherWithText(u32 a, const void *b, u32 c) {
     if (MenuCtrl_OpenLauncher(a)) {
         MenuCtrl_SetText(b, c);
         return TRUE;

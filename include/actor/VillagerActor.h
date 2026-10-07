@@ -26,7 +26,7 @@ public:
     virtual void *getVillagerData();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
-    virtual void getName(u32 a);
+    virtual void getName(MsgString *buf);
     virtual u32 getGender();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();

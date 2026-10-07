@@ -645,7 +645,7 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
         u16 q = a;
         PlayerActor_RequestWearShirtAlt(&q);
         r7->setShirt(&a);
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&a), 0, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&a, 0, 7);
     }
     for (i = 0; i < 3; i++) {
         if (!Unk_ov070_IsNone2(&wornItems[i].id)) {

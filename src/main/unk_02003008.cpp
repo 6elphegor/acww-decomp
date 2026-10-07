@@ -41,12 +41,12 @@ u32 VillagerId::getGender() {
     return Villager_PersonalityToGender(VillagerId_GetPersonality(this));
 }
 
-extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx) {
+extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, const char *key, u32 idx) {
     MI_CpuFill8(buf, 0, size);
-    Str_SPrintf(buf, (void *)"%s%s", (u32)sPersonalityPrefixes[idx], arg);
+    Str_SPrintf((char *)buf, "%s%s", sPersonalityPrefixes[idx], key);
 }
 
-void VillagerId::makeFileName(void *buf, u32 size, u32 arg) {
+void VillagerId::makeFileName(void *buf, u32 size, const char *arg) {
     Villager_MakePersonalityFileName(buf, size, arg, VillagerId_GetPersonality(this));
 }
 

@@ -103,8 +103,6 @@ struct SpNpcBookerActEntry {
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
 #define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
-#define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
-#define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
 #define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
@@ -151,8 +149,6 @@ s32 NpcTalkCtrl_isBusy(void *self);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 void ActorTalkRequest_setSubSceneKind(void *self, s32 a, s32 b);
 void ActorTalkRequest_openSubScene(void *self, s32 a);
-s32 ActorTalkRequest_setItemNameSlot(void *self, u16 *p, s32 a, s32 b);
-void ActorTalkRequest_setPlayerNameSlot(void *self, s32 a, s32 b);
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 NpcAnimCtrl_isPlayingAnim(void *self, s32 a, void *b);
 void *PlayerData_getPatterns(void *p);
@@ -465,7 +461,7 @@ void SpNpcBookerTalk::onChoice(u32) {
                 if (((CommManager *)(s))->isOnline() != 0) {
                     s32 q = PlayerData_GetBySessionSlot(JoinHistory_GetLatest());
                     if (q != 0) {
-                        ActorTalkRequest_setPlayerNameSlot(this, (s32)PlayerData_getPlayerId(q), 1);
+                        ((ActorTalkRequest *)this)->setPlayerNameSlot((PlayerId *)PlayerData_getPlayerId(q), 1);
                     }
                     r = 0x30;
                 } else {
@@ -634,7 +630,7 @@ void SpNpcBookerTalk::runScript03() {
             c = 0x1c;
         } else {
             v = *MenuCtrl_GetChosenItems();
-            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&v), 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot(&v, 0, 7);
             c = 0x1e;
         }
     }

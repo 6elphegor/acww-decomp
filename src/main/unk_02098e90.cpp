@@ -1018,7 +1018,6 @@ void VillagerId_Copy(void *p, s32 v);
 void VillagerId_Clear(void *p);
 void VillagerId_Destruct(void *p);
 void VillagerId_Construct(void *p);
-void _ZN10VillagerId7getNameEj(void *a, void *b);
 void MailText_SetSlot(s32 a, void *b);
 void _ZN8PlayerId5clearEv(void *p);
 void _ZN8PlayerId6setRawEPv(void *p, s32 v);
@@ -1563,10 +1562,10 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
         new (X) MsgString9B();
         new (Y) MsgString33();
         cnt = 0;
-        ((VillagerId *)(&self->villagers[1]))->getName((u32)(X));
+        ((VillagerId *)(&self->villagers[1]))->getName((MsgString *)X);
         MailText_SetSlot(0, X);
         ((MsgString *)(X))->clear();
-        ((VillagerId *)(&self->villagers[0]))->getName((u32)(X));
+        ((VillagerId *)(&self->villagers[0]))->getName((MsgString *)X);
         MailText_SetSlot(1, X);
         for (i = 0; i < 6; i++) {
             r = TopicWord_PickRandom(&cnt, i);
@@ -1575,7 +1574,7 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
             String_LoadResolveAltText(Y, b, r);
             MailText_SetSlot(i + 2, Y);
         }
-        ((VillagerId *)(&self->villagers[0]))->makeFileName(buf, 0x1e, (u32)(data_020d05bc));
+        ((VillagerId *)(&self->villagers[0]))->makeFileName(buf, 0x1e, (const char *)data_020d05bc);
         b[1] = Random_GlobalBelow(10);
         b[2] = Random_GlobalBelow(10);
         b[3] = Random_GlobalBelow(10);
@@ -1679,7 +1678,6 @@ s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 u32 Random_GlobalBelow(u32 n);
 s32 Npc_GetName(void *p, u16 *v);
-u32 _ZN10VillagerId7getNameEj(VillagerIdCtorDtor *r, u32 a);
 s32 NookShop_IsOpenHour();
 s32 NookShop_IsClosedToday(void *p);
 }
@@ -1965,7 +1963,7 @@ extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a,
                     }
                 }
                 if (same) {
-                    ret = (void *)_ZN10VillagerId7getNameEj(PlayerErrandSlot_GetVillager(e, 1), a);
+                    ret = (void *)(uptr)((VillagerId *)PlayerErrandSlot_GetVillager(e, 1))->getName((MsgString *)a);
                 }
             }
         }

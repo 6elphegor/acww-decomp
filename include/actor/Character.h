@@ -9,6 +9,8 @@
 // Actor that can be talked to / interacted with (villagers, special NPCs, players, buildings, interactive field and
 // room objects); defined in src/main/unk_0203e438.cpp (vtable 0x020d9668). Members end at 0xea; derived classes
 // (NpcActor::unk_ea) start in the tail padding, so no padding member is declared. Size 0xec.
+class TalkMsgRequest;
+
 class Character : public Actor {
 public:
     Character();
@@ -34,8 +36,8 @@ public:
     void setTalkStartMode1();
     void setTalkStartMode0();
     void setInteractionRange(s32 v);
-    void detachTalkRequest(s32 a);
-    void attachTalkRequest(s32 a);
+    void detachTalkRequest(TalkMsgRequest *req);
+    void attachTalkRequest(TalkMsgRequest *req);
     BOOL checkInteraction(Character *other);
     BOOL isInInteractionRange(Character *other);
     BOOL isInFacingArcOf(Character *other, s16 lo, s16 hi);

@@ -732,7 +732,7 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
         pocketSlot = MenuCtrl_GetIndex();
         item = Pocket_GetItem(pocketSlot);
         if (!Unk_ov047_0225a3e4_Same(&item, &m.cmpItem)) {
-            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&item), 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot(&item, 0, 7);
             if (Unk_ov047_0225a4a8_R(&item, 0x1549, 0x1549)) {
                 m.msgIndex = 0x21;
             } else {
@@ -1168,13 +1168,13 @@ end:;
 }
 
 void SpNpcBlathersTalk::openDonationPicker() {
-    ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcBlathers_IsDonatableItem), 0xd, 1);
+    ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcBlathers_IsDonatableItem, 0xd, 1);
     ((ActorTalkRequest *)(this))->openSubScene(0);
     setScript(0);
 }
 
 void SpNpcBlathersTalk::openAppraisalPicker() {
-    ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcBlathers_IsUnidentifiedFossil), 0xd, 1);
+    ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcBlathers_IsUnidentifiedFossil, 0xd, 1);
     ((ActorTalkRequest *)(this))->openSubScene(0);
     setScript(1);
 }
@@ -1213,9 +1213,9 @@ void SpNpcBlathersTalk::appraiseFossil() {
         if (pocketSlot >= 0) {
             Pocket_SetItem(&item, 0, pocketSlot);
         }
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&item), 0, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&item, 0, 7);
         ItemPick_FromRange(&bufa, 0x450c, 0x34, &item, 1, 0, 1, 10, 0, 1);
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&bufa), 1, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&bufa, 1, 7);
     }
     nextMsg = (u8)(Random_GlobalBelow(3) + 0x1a);
 }
@@ -1645,7 +1645,7 @@ void SpNpcBlathersTalk::onDonateMoreChoice(u32 a) {
 
 void SpNpcBlathersTalk::onDeliveryChoice(u32 a) {
     if (a == 0) {
-        ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcBlathers_IsDeliveryItem), 0xd, 0);
+        ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcBlathers_IsDeliveryItem, 0xd, 0);
         ((ActorTalkRequest *)(this))->openSubScene(0);
         setScript(2);
     } else if (((SaveData *)(gSaveData))->testFlag(0xc)) {

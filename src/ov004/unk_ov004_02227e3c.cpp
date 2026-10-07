@@ -387,7 +387,7 @@ void RecycleBox::execAct00() {}
 
 BOOL RecycleBox::enterAct01() {
     RecycleBoxStackPad pad;
-    ((Character *)(this))->attachTalkRequest((s32)((TalkMsgRequest *)this));
+    ((Character *)(this))->attachTalkRequest((TalkMsgRequest *)this);
     MsgRequest::setFileName(sRecycleBoxMsgFilePtr);
     MsgRequest::msgIndex = 0;
     TalkMsgRequest::window->nextState = 1;
@@ -409,7 +409,7 @@ BOOL RecycleBox::enterAct02() {
 void RecycleBox::execAct02() {
     if (TalkMsgRequest::window != 0) {
         if (TalkMsgRequest::window->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)((TalkMsgRequest *)this));
+            ((Character *)(this))->detachTalkRequest((TalkMsgRequest *)this);
             changeAct(3);
         }
     }

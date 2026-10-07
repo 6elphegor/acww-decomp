@@ -299,7 +299,7 @@ void VillagerHouse::setupTalkMsg() {
     }
     u32 l[9];
     new (&l[1]) MsgString9B();
-    ((VillagerId *)(VillagerData_getVillagerId(p)))->getName((u32)(&l[1]));
+    ((VillagerId *)(VillagerData_getVillagerId(p)))->getName((MsgString *)&l[1]);
     ((TalkWindowState *)(window))->setSlot(0, &l[1]);
     ((MsgString9B *)(&l[1]))->MsgString9B::~MsgString9B();
 }

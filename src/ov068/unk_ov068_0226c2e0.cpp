@@ -59,7 +59,6 @@
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcFaceAnim_resumeMouthMaterial _ZN11NpcFaceAnim19resumeMouthMaterialEv
-#define NpcFaceAnim_setMouthTexture _ZN11NpcFaceAnim15setMouthTextureEj
 #define NpcLookAt_setManualAngles _ZN9NpcLookAt15setManualAnglesEissss
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcLookAt_setPitchLimit _ZN9NpcLookAt13setPitchLimitEs
@@ -266,7 +265,6 @@ void TalkWindowState_setNextMessage(TalkWindowState *self, u8 *cmd, const char *
 void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void LightSwitch_SetOff(s32 a, s32 b);
 void LightSwitch_SetOn(s32 a, s32 b, s32 c);
-void NpcFaceAnim_setMouthTexture(void *self, u32 a);
 void NpcFaceAnim_resumeMouthMaterial(void *self);
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 void NpcActionCtrl_requestStand(void *self, u32 a, u16 b);
@@ -719,9 +717,9 @@ void SpNpcRoostGuestTalk::start(TalkStartMsg *out_) {
                 ((TalkWindowState *)(window))->setNamedSlot(0, &a, 7);
             } else if (getTalkMode() == 2) {
                 h4 = owner->songItem;
-                setItemNameSlot((u32)&h4, 1, 7);
+                setItemNameSlot(&h4, 1, 7);
                 h6 = owner->songItem;
-                setItemNameSlot((u32)&h6, 2, 7);
+                setItemNameSlot(&h6, 2, 7);
             }
             out->msgIndex = sKkTalkModeMessages[talkMode];
             out->msgKey = sRoostGuestMsgFiles[owner->guestType];
@@ -749,7 +747,7 @@ void SpNpcRoostGuestTalk::fillKkSongName(s32 a) {
     case 12:
     case 13: {
         u16 v = owner->songItem;
-        setItemNameSlot((u32)&v, 1, 7);
+        setItemNameSlot(&v, 1, 7);
         break;
     }
     case 11: {
@@ -973,7 +971,7 @@ void SpNpcRoostGuestTalk::scriptReadSongRequest() {
         }
         owner->songItem = h;
         tmp = owner->songItem;
-        setItemNameSlot((u32)&tmp, 1, 7);
+        setItemNameSlot(&tmp, 1, 7);
     } else {
         owner->isRandomSong = 1;
         owner->songItem = RoostGuest_PickKKSong(owner);
@@ -1046,9 +1044,9 @@ void SpNpcRoostGuestTalk::scriptPerform() {
         s32 t1 = p->trackAnim;
         if (t1 != lastBeatState.trackAnim) {
             if (t1 == -1) {
-                NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthM0);
+                owner->faceAnim.setMouthTexture(sKkMouthM0);
             } else {
-                NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthTextures[t1]);
+                owner->faceAnim.setMouthTexture(sKkMouthTextures[t1]);
             }
         }
         s32 t2 = p->seqVar0;
@@ -1085,7 +1083,7 @@ void SpNpcRoostGuestTalk::scriptPerform() {
                     KkShowFx_CallUnk1f70();
                 }
                 if (p->seqVar2 == 1) {
-                    NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthM0);
+                    owner->faceAnim.setMouthTexture(sKkMouthM0);
                     ((NpcFaceAnim *)(&owner->faceAnim))->resumeMouthMaterial();
                     ((NpcActionCtrl *)(&owner->actionCtrl))->requestStand(2, 0x28);
                 }

@@ -148,8 +148,6 @@ extern u8 data_020d0a7c[];
 extern void *gCurrentHeap;
 extern BgmManager *data_021c1b3c;
 
-void _ZN9Character17detachTalkRequestEi(void *self, MsgRequest *a);
-void _ZN9Character17attachTalkRequestEi(void *self, MsgRequest *a);
 void *func_ov009_0225b934(void *self);
 void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];

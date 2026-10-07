@@ -632,12 +632,12 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
         ItemPick_One(&h[1], &o1, msg, msg, 1, 1, msg);
         rewardItems[0].id = h[1];
         ItemPickSpec_Destruct(&o1);
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&rewardItems[0].id), 1, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&rewardItems[0].id, 1, 7);
         ((ItemPickSpec *)(void *)(&o2))->set(3, 0x23);
         ItemPick_One(&h[2], &o2, msg, msg, 1, 1, msg);
         rewardItems[1].id = h[2];
         ItemPickSpec_Destruct(&o2);
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&rewardItems[1].id), 2, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&rewardItems[1].id, 2, 7);
         msg = 0xd;
         break;
     case 0xe:
@@ -655,7 +655,7 @@ void SpNpcSaharahTalk::onMessageEnd(u32) {
             msg = 0x18;
         }
         turbanSlot = -2;
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h[0]), 0, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&h[0], 0, 7);
         ((ActorTalkRequest *)(this))->requestGiveItem(&h[0], 0, 5, 0);
         Pocket_AddItem(&h[0], 0);
         break;

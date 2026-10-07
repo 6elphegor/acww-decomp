@@ -8,6 +8,7 @@
 struct FishHoldOffsets;
 #ifdef __cplusplus
 #include "actor/Actor.h"
+#include "actor/Character.h"
 #include "gfx/VecFx32.h"
 #include "sys/ProcBase.h"
 #include "types.h"
@@ -56,19 +57,19 @@ void HandOverItem_DrawItem(HandOverItem *self, u16 *id, VecFx32 *p, VecFx32 *q, 
 void HandOverItem_DrawIcon(void *unused, u32 id, VecFx32 *p, VecFx32 *q, s16 *ang);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_Begin
-s32 HandOverItem_Begin(s32 a, s32 b, u8 c, s32 d, s32 e, s32 f);
+s32 HandOverItem_Begin(u16 *item, s32 b, u8 c, s32 d, Character *master, Character *partner);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_IsMaster
-s32 HandOverItem_IsMaster(s32 a);
+s32 HandOverItem_IsMaster(Character *a);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_RequestMode
-s32 HandOverItem_RequestMode(u8 a, s32 b);
+s32 HandOverItem_RequestMode(u8 a, Character *b);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_GetNextMode
 u8 HandOverItem_GetNextMode(void);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_End
-void HandOverItem_End(s32 a);
+void HandOverItem_End(Character *a);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_CanTake
 BOOL HandOverItem_CanTake(Actor *p);
@@ -77,7 +78,7 @@ BOOL HandOverItem_CanTake(Actor *p);
 BOOL HandOverItem_GetPos(VecFx32 *out);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_SwitchMaster
-s32 HandOverItem_SwitchMaster(s32 a);
+s32 HandOverItem_SwitchMaster(Character *a);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_IsModeActive
 BOOL HandOverItem_IsModeActive(u32 a);
@@ -89,7 +90,7 @@ BOOL HandOverItem_IsActive(void);
 void HandOverItem_GetItem(u16 *out);
 #endif
 #ifndef PROTO_LOCAL_HandOverItem_SetNextMode
-s32 HandOverItem_SetNextMode(u8 a, s32 b);
+s32 HandOverItem_SetNextMode(u8 a, Character *b);
 #endif
 }
 #ifndef PROTO_LOCAL_sHandOverItemProfile

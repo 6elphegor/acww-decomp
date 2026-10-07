@@ -936,7 +936,7 @@ BOOL Snowball::setupTalkIdle() {
 void Snowball::mainTalkIdle() {}
 
 BOOL Snowball::setupTalk() {
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     s32 r;
     if (snowballFlags.g) {
         r = (snowballFlags.b & 3) * 3 + Random_GlobalBelow(3);
@@ -971,7 +971,7 @@ BOOL Snowball::setupTalkEnd() {
 void Snowball::mainTalkEnd() {
     if (window) {
         if (((TalkWindowState *)window)->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             TalkRequest_SetTargetDone(this);
         }
     }

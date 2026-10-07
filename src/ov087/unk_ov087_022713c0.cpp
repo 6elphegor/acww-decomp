@@ -311,7 +311,7 @@ void SpNpcCornimerTalk::start(TalkStartMsg *out) {
     }
 }
 
-extern "C" BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m) {
+extern "C" BOOL SpNpcCornimer_IsAcorn(u16 *p, s32 m) {
     BOOL r;
     if (m == 0) {
         r = FALSE;
@@ -332,7 +332,7 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
     switch (msgIndex) {
     case 2:
     case 3:
-        if (MenuCtrl_BuildPocketMask((u32)SpNpcCornimer_IsAcorn)) {
+        if (MenuCtrl_BuildPocketMask(SpNpcCornimer_IsAcorn)) {
             s32 i = 0;
             u32 cnt = 0;
             while (i < 15) {
@@ -372,7 +372,7 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
         u32 t = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
         if (t >= (sSpNpcCornimerPrizeTable + 2)[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4]) {
             buf.v[1] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
-            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&buf.v[1]), 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot(&buf.v[1], 0, 7);
             k = 0xb;
         } else {
             u32 a = ((PlayerSpNpcRecord *)(g))->getAcornPrizeStep();
@@ -397,7 +397,7 @@ void SpNpcCornimerTalk::onMessageEnd(u32) {
                 u32 b = ((PlayerSpNpcRecord *)(g))->getAcornsDelivered();
                 if (b >= (sSpNpcCornimerPrizeTable + 2)[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4]) {
                     buf.v[4] = *(u16 *)&sSpNpcCornimerPrizeTable[((PlayerSpNpcRecord *)(g))->getAcornPrizeStep() * 4];
-                    ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&buf.v[4]), 0, 7);
+                    ((ActorTalkRequest *)(this))->setItemNameSlot(&buf.v[4], 0, 7);
                     k = 0xd;
                     break;
                 }

@@ -612,7 +612,7 @@ void PlayerData::sendForeignVillagerLetter()
             ((PlayerId *)(r8))->getNameString((MsgString *)(o20));
             MailText_SetSlot(0, o20);
             ((MsgString *)(o20))->clear();
-            ((VillagerId *)(r7))->getName((u32)(o20));
+            ((VillagerId *)(r7))->getName((MsgString *)o20);
             MailText_SetSlot(1, o20);
             s32 i;
             for (i = 0; i < 6; i++) {

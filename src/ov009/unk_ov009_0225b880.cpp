@@ -1433,7 +1433,7 @@ void BuildingActor::execEntryCheck() {
 }
 
 BOOL BuildingActor::enterEntryTalkOpen() {
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     window->nextState = 1;
     setupTalkMsg();
     return TRUE;
@@ -1451,7 +1451,7 @@ BOOL BuildingActor::enterEntryTalk() { return TRUE; }
 void BuildingActor::execEntryTalk() {
     if (window != NULL && window->state == 0) {
         onTalkEnded();
-        ((Character *)(this))->detachTalkRequest((s32)(this));
+        ((Character *)(this))->detachTalkRequest(this);
         TalkRequest_SetTargetDone(this);
     } else {
         updateTalk();

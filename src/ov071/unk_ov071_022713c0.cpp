@@ -100,7 +100,6 @@ u32 Item_GetFurnitureIndex(u16 *p);
 s32 Math_AngleXZ(void *a, void *b);
 u32 Random_Next(void *p);
 
-void _ZN16ActorTalkRequest15setPocketFilterEjjj(void *self, u32 cb, u32 b, u32 c);
 
 void Npc_RotateOffsetXZ(SpNpcLyleSidestepPos *t, void *pos, void *p, s32 ang);
 BOOL Npc_IsPosBlocked(SpNpcLyleSidestepPos *t);
@@ -1003,13 +1002,13 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         ((PlayerData *)(h))->setFlag(0x18);
         break;
     case 0x23:
-        _ZN16ActorTalkRequest15setPocketFilterEjjj(this, (u32)SpNpcLyle_IsForgedPainting, 0xd, 1);
+        ((ActorTalkRequest *)this)->setPocketFilter(SpNpcLyle_IsForgedPainting, 0xd, 1);
         ((ActorTalkRequest *)(this))->openSubScene(0);
         setScript(0);
         break;
     case 0x25:
         ((ActorTalkRequest *)(this))->requestKeepItem();
-        if (MenuCtrl_BuildPocketMask((void *)SpNpcLyle_IsForgedPainting) != 0) {
+        if (MenuCtrl_BuildPocketMask(SpNpcLyle_IsForgedPainting) != 0) {
             r5 = 0x21;
         } else {
             r5 = 0x26;
@@ -1125,7 +1124,7 @@ blkC2:
     }
     goto end;
 blkD:
-    _ZN16ActorTalkRequest15setPocketFilterEjjj(this, (u32)SpNpcLyle_IsForgedPainting, 0xd, 1);
+    ((ActorTalkRequest *)this)->setPocketFilter(SpNpcLyle_IsForgedPainting, 0xd, 1);
     ((ActorTalkRequest *)(this))->openSubScene(0);
     setScript(0);
 end:

@@ -386,7 +386,7 @@ void SpNpcTortimerFishingTourneyTalk::scriptCatchChosen() {
         ownerNpc->entrySize = Contest_GetCatchSize(&entryItem);
         ((ActorTalkRequest *)(this))->requestTakeItem(&entryItem, 0, 4, 0);
         setNextScript(1);
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&entryItem), 2, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&entryItem, 2, 7);
         ((ActorTalkRequest *)(this))->setFixedPointSlot(ownerNpc->entrySize, 4, 1);
         if (r4 >= 0) {
             Pocket_RemoveItem(r4);
@@ -504,10 +504,10 @@ s32 SpNpcTortimerFishingTourneyTalk::getRecordHolder() {
             r6 = ((ContestRecord *)(g))->getHolderPlayer();
             r4 = ((ContestRecord *)(g))->getHolderVillager();
             ContestRecord_GetItem(&h[1], g);
-            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h[1]), 1, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot(&h[1], 1, 7);
             ((ActorTalkRequest *)(this))->setFixedPointSlot(((ContestRecord *)(g))->getSize(), 0, 1);
             if (((PlayerId *)(r6))->isValid() != 0) {
-                ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(((ContestRecord *)(g))->getHolderPlayer()), 1);
+                ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)(((ContestRecord *)(g))->getHolderPlayer()), 1);
                 p4 = (u16 *)((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
                 p5 = (u16 *)((ContestRecord *)(g))->getHolderPlayer();
                 if (p5[0] == p4[0] && memcmp(p5 + 1, p4 + 1, 8) == 0 && ((PlayerId *)(p5))->equals((PlayerId *)(p4)) != 0) {
@@ -518,7 +518,7 @@ s32 SpNpcTortimerFishingTourneyTalk::getRecordHolder() {
                 return 0;
             } else if (((VillagerId *)(r4))->isValid() != 0) {
                 MsgString9B o;
-                ((VillagerId *)(r4))->getName((u32)(&o));
+                ((VillagerId *)(r4))->getName(&o);
                 window->setSlot(1, &o);
                 return 2;
             }
@@ -593,7 +593,7 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd(u32) {
                 h0 = h3;
                 ItemPickSpec_Destruct(&o);
                 ((ActorTalkRequest *)(this))->requestGiveItem(&h0, 0, 5, 0);
-                ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h0), 0, 7);
+                ((ActorTalkRequest *)(this))->setItemNameSlot(&h0, 0, 7);
                 Pocket_AddItem(&h0, 0);
                 break;
             }
@@ -609,7 +609,7 @@ void SpNpcTortimerFishingTourneyTalk::onMessageEnd(u32) {
             Talk_CheckAndSetPlayerFlag(0x1b, 1);
             break;
         case 0xb:
-            ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcTortimerFishingTourney_IsFish), 0xd, 1);
+            ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcTortimerFishingTourney_IsFish, 0xd, 1);
             ((ActorTalkRequest *)(this))->openSubScene(0);
             setScript(0);
             break;

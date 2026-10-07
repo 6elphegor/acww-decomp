@@ -995,12 +995,12 @@ void MatTexPatAnim::applyFrame() {
     }
 }
 
-BOOL MatTexPatAnim::setMaterialTex(s32 matName, u32 x) {
+BOOL MatTexPatAnim::setMaterialTex(const char *matName, const char *texName) {
     BOOL z = FALSE;
-    s32 id = ((G3dResAccess *)(resMdl))->findMatIdx((s32)((const char *)matName));
+    s32 id = ((G3dResAccess *)(resMdl))->findMatIdx((s32)matName);
     
     if (id == -1) return z;
-    u8 v = ((G3dResAccess *)(resTex))->findTexIdx(x);
+    u8 v = ((G3dResAccess *)(resTex))->findTexIdx((s32)texName);
     
     if (v == -1) return z;
     s32 i = z;

@@ -68,7 +68,7 @@ public:
     ChoiceList *getChoiceList();
     void openChoices(s32 v);
     void setNamedSlot(s32 idx, void *p, u32 val);
-    void setSlotFromString(s32 idx, s32 a, s32 b);
+    void setSlotFromString(s32 idx, u8 *key, const char *bank);
     s32 setSlot(s32 idx, void *p);
     void clearAdvancePending();
     void setAdvancePending();

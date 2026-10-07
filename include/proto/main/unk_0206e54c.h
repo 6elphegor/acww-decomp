@@ -43,6 +43,12 @@ void MenuCtrl_SetScreenChanging();
 #ifndef PROTO_LOCAL_MenuCtrl_ClearScreenChanging
 void MenuCtrl_ClearScreenChanging();
 #endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetArg
+void *MenuCtrl_GetArg();
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_SetArg
+void MenuCtrl_SetArg(void *v);
+#endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetText
 void *MenuCtrl_GetText();
 #endif
@@ -75,6 +81,12 @@ void MenuCtrl_GetDateTime(void *a);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_ClearPtrArgs
 void MenuCtrl_ClearPtrArgs(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetPtrArg0
+void *MenuCtrl_GetPtrArg0(void);
+#endif
+#ifndef PROTO_LOCAL_MenuCtrl_GetPtrArg1
+void *MenuCtrl_GetPtrArg1(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetClockMovedBack
 void MenuCtrl_SetClockMovedBack(void);
@@ -161,7 +173,7 @@ BOOL MenuCtrl_RequestOpen(u32 v);
 BOOL MenuCtrl_RequestOpenNested(u32 v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_RequestOpenMenu12
-BOOL MenuCtrl_RequestOpenMenu12(u32 v);
+BOOL MenuCtrl_RequestOpenMenu12(void *v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsLoaded
 BOOL MenuCtrl_IsLoaded(s32 i);
@@ -229,12 +241,6 @@ BOOL MenuCtrl_IsTransitionActive();
 #ifndef PROTO_LOCAL_MenuCtrl_IsScreenChanging
 BOOL MenuCtrl_IsScreenChanging();
 #endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetArg
-u32 MenuCtrl_GetArg();
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_SetArg
-void MenuCtrl_SetArg(u32 v);
-#endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetMode
 u32 MenuCtrl_GetMode();
 #endif
@@ -257,7 +263,7 @@ BOOL MenuCtrl_IsResultDuplicateName();
 void MenuCtrl_SetResult(u32 v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_SetText
-void MenuCtrl_SetText(u32 a, u32 b);
+void MenuCtrl_SetText(const void *a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_OpenLauncher
 BOOL MenuCtrl_OpenLauncher(u32 a);
@@ -287,7 +293,7 @@ void MenuCtrl_ReplaceBackupItem(u32 key, u16 val);
 BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_BuildPocketMask
-u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, void *));
+u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, s32));
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetPocketSelectMask
 u16 MenuCtrl_GetPocketSelectMask(void);
@@ -332,13 +338,7 @@ u32 MenuCtrl_GetAmount(void);
 void MenuCtrl_SetAmount(u32 v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_OpenNearbyTowns
-BOOL MenuCtrl_OpenNearbyTowns(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetPtrArg0
-u32 MenuCtrl_GetPtrArg0(void);
-#endif
-#ifndef PROTO_LOCAL_MenuCtrl_GetPtrArg1
-u32 MenuCtrl_GetPtrArg1(void);
+BOOL MenuCtrl_OpenNearbyTowns(void *a, void *b);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_IsClockMovedBack
 BOOL MenuCtrl_IsClockMovedBack(void);
@@ -353,7 +353,7 @@ BOOL MenuCtrl_IsClockEdited(void);
 BOOL MenuCtrl_OpenPocketsFullInsect(u32 v);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_OpenPocketsFullFish
-BOOL MenuCtrl_OpenPocketsFullFish(u32 a, u32 b);
+BOOL MenuCtrl_OpenPocketsFullFish(u32 a, void *b);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_OpenPocketsFullPickUp
 BOOL MenuCtrl_OpenPocketsFullPickUp(u32 v);
@@ -380,7 +380,7 @@ void MenuCtrl_SetSongItem(u32 v);
 u16 MenuCtrl_GetSongItem(void);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_OpenLauncherWithText
-BOOL MenuCtrl_OpenLauncherWithText(u32 a, u32 b, u32 c);
+BOOL MenuCtrl_OpenLauncherWithText(u32 a, const void *b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_MenuCtrl_GetKeyboardPage
 u8 MenuCtrl_GetKeyboardPage(void);
@@ -435,7 +435,7 @@ extern u16 sPocketBackupItems[16];
 extern u32 kMenuOverlayList06[3];
 #endif
 #ifndef PROTO_LOCAL_sMenuArg
-extern u32 sMenuArg;
+extern void *sMenuArg;
 #endif
 #ifndef PROTO_LOCAL_kMenuOverlayList13
 extern u32 kMenuOverlayList13[3];
@@ -450,7 +450,7 @@ extern u32 kMenuOverlayList1A[3];
 extern s32 sMenuTransitionProgress;
 #endif
 #ifndef PROTO_LOCAL_sMenuPtrArg1
-extern u32 sMenuPtrArg1;
+extern void *sMenuPtrArg1;
 #endif
 #ifndef PROTO_LOCAL_sChatDraft
 extern u8 sChatDraft[32];
@@ -600,7 +600,7 @@ extern u16 sMenuItem;
 extern u32 kMenuOverlayList19[3];
 #endif
 #ifndef PROTO_LOCAL_sMenuPtrArg0
-extern u32 sMenuPtrArg0;
+extern void *sMenuPtrArg0;
 #endif
 #ifndef PROTO_LOCAL_kMenuOverlayList20
 extern u32 kMenuOverlayList20[3];

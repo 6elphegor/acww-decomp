@@ -4,6 +4,8 @@
 #include "talk/TalkRequestQueue.h"
 #include "talk/TalkRequestEntry.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/TalkWindowState.h"
 #include "net/CommManager.h"
 #define PROTO_LOCAL_MenuCtrl_IsFinished  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_GetActor  // declared below: the shared prototype conflicts with the calls here
@@ -63,8 +65,6 @@ void TalkRequestFlags_Set(u32 mask);
 BOOL TalkRequestFlags_Test(u32 mask);
 BOOL TalkRequest_AddPlayerExclusive(u32 x);
 void TalkRequestEntry_Free(void *p);
-s32 _ZN15TalkWindowState13detachRequestEv(u32 x);
-s32 _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(u32 a, u32 b);
 u32 MenuCtrl_IsFinished(u32 a);
 void TalkRequestQueue_Reset(void);
 void PrioList_Init(void *p);
@@ -88,10 +88,6 @@ void TalkRequestQueue_StartNext(TalkRequestEntry *t);
 
 }
 
-struct TalkMsgRequestView {
-    u8 unk_00[0x3c];
-    u32 window;
-};
 
 extern "C" BOOL TalkRequest_FinishExclusive(u32 x);
 extern "C" BOOL TalkRequest_IsExclusiveRunning(u32 x);
@@ -891,12 +887,12 @@ extern "C" u32 TalkRequest_GetTalkTarget(void) {
     return 0;
 }
 
-extern "C" s32 Talk_AttachRequestToWindow0(u32 x) {
-    return _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(TalkWindow_Get(0), x);
+extern "C" void Talk_AttachRequestToWindow0(TalkMsgRequest *x) {
+    TalkWindow_Get(0)->attachRequest(x);
 }
 
-extern "C" s32 Talk_DetachRequest(TalkMsgRequestView *p) {
-    return _ZN15TalkWindowState13detachRequestEv(p->window);
+extern "C" void Talk_DetachRequest(TalkMsgRequest *p) {
+    p->window->detachRequest();
 }
 
 extern "C" void TalkRequest_FinishCurrent(void) {

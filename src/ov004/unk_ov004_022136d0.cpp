@@ -219,7 +219,7 @@ void RoomBoardSign::mainAct00() {}
 
 BOOL RoomBoardSign::setupAct01() {
     BoardSignStackPad pad;
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     setFileName("obj_etc_board");
     msgIndex = signMsgIndex;
     window->nextState = 1;
@@ -241,7 +241,7 @@ BOOL RoomBoardSign::setupAct02() {
 void RoomBoardSign::mainAct02() {
     if (window) {
         if (window->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             TalkRequest_SetTargetDone(this);
         }
     }

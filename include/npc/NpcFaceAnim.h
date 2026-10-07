@@ -27,8 +27,8 @@ struct NpcFaceAnim : BlinkTimer {
     void release();
     void blinkNow();
     void resumeMouthMaterial();
-    BOOL setMouthTexture(u32 a);
-    BOOL setMaterialTex(MatTexPatAnim *m, const char *q, u32 r);
+    BOOL setMouthTexture(const char *texName);
+    BOOL setMaterialTex(MatTexPatAnim *m, const char *matName, const char *texName);
     void setFaceAnimsFrom(u32 a, s32 b, s32 c);
     void setFaceAnims(s32 t, s32 u, s32 x, s32 mode);
     void restoreMouthAnim();

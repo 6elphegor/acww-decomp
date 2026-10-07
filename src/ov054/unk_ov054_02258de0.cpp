@@ -259,9 +259,7 @@ struct SpNpcPellyPhyllisActEntry {
 #define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
 #define ActorTalkRequest_requestReopenWindow _ZN16ActorTalkRequest19requestReopenWindowEv
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
-#define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
 #define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
-#define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setDaySlot _ZN16ActorTalkRequest10setDaySlotEjj
 #define ActorTalkRequest_setMonthSlot _ZN16ActorTalkRequest12setMonthSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
@@ -327,7 +325,6 @@ s32 HouseData_getDebt(void *m);
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void ActorTalkRequest_setSubSceneKind(void *self, s32 a, s32 b);
 void ActorTalkRequest_openSubScene(void *self, s32 a);
-void ActorTalkRequest_setPocketFilter(void *self, void *cb, s32 a, s32 b);
 void TalkChoiceList_SetIndices(void *self, void *tbl, s32 n, s32 m);
 s32 ActorTalkRequest_getChoiceList(void *self);
 s32 ChoiceList_getResult(s32 v);
@@ -365,7 +362,6 @@ void MsgString_fromEncoded(void *dst, void *src, s32 a, s32 b);
 void ActorTalkRequest_requestGiveItem(void *self, u16 *p, s32 a, s32 b, s32 c);
 void ActorTalkRequest_setDaySlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setMonthSlot(void *self, u32 a, u32 b);
-void ActorTalkRequest_setPlayerNameSlot(void *self, u32 a, s32 b);
 
 void ActorTalkRequest_requestReopenWindow(void *self);
 void ActorTalkRequest_requestTakeItem(void *self, u16 *p, s32 a, s32 b, s32 c);
@@ -1439,7 +1435,7 @@ void SpNpcPellyPhyllisTalk::onMessageStart(u32) {
         do {
             if (PlayerDataArray_IsUsed(g, i)) {
                 if (i != (s32)PlayerData_GetCurrentIndex()) {
-                    ActorTalkRequest_setPlayerNameSlot(this, PlayerData_getPlayerId(PlayerData_GetResident(g, i)), cnt + 2);
+                    ((ActorTalkRequest *)this)->setPlayerNameSlot((PlayerId *)PlayerData_getPlayerId(PlayerData_GetResident(g, i)), cnt + 2);
                     cnt++;
                 }
             }
@@ -1723,7 +1719,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     switch (msgIndex) {
     case 0x5f:
         if (r == 0) {
-            ((ActorTalkRequest *)(this))->setPocketFilter((u32)((void *)SpNpcPellyPhyllis_IsDeliveryItem), 0xd, 0);
+            ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcPellyPhyllis_IsDeliveryItem, 0xd, 0);
             ((ActorTalkRequest *)(this))->openSubScene(0);
             setScript(0xb);
         } else if (r == 1) {

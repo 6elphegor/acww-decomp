@@ -1349,26 +1349,26 @@ void HandOverItem::updateAct09V1(void) {
     }
 }
 
-extern "C" s32 HandOverItem_Begin(s32 a, s32 b, u8 c, s32 d, s32 e, s32 f) {
+extern "C" s32 HandOverItem_Begin(u16 *item, s32 b, u8 c, s32 d, Character *master, Character *partner) {
     s32 r = 0;
     if (sHandOverItem) {
-        r = sHandOverItem->begin((u16 *)a, b, c, d, (Character *)e, (Character *)f);
+        r = sHandOverItem->begin(item, b, c, d, master, partner);
     }
     return r;
 }
 
-extern "C" s32 HandOverItem_IsMaster(s32 a) {
+extern "C" s32 HandOverItem_IsMaster(Character *a) {
     s32 r = 0;
     if (sHandOverItem) {
-        r = sHandOverItem->isCharAt((void *)a, 0);
+        r = sHandOverItem->isCharAt(a, 0);
     }
     return r;
 }
 
-extern "C" s32 HandOverItem_RequestMode(u8 a, s32 b) {
+extern "C" s32 HandOverItem_RequestMode(u8 a, Character *b) {
     s32 r = 0;
     if (sHandOverItem) {
-        r = sHandOverItem->requestModeBy(a, (void *)b);
+        r = sHandOverItem->requestModeBy(a, b);
     }
     return r;
 }
@@ -1380,7 +1380,7 @@ extern "C" u8 HandOverItem_GetNextMode(void) {
     return 0xc;
 }
 
-extern "C" void HandOverItem_End(s32 a) {
+extern "C" void HandOverItem_End(Character *a) {
     if (sHandOverItem) {
         if (HandOverItem_IsMaster(a) == 1) {
             if (sHandOverItem->fishDisplay != -1) {
@@ -1421,10 +1421,10 @@ extern "C" BOOL HandOverItem_GetPos(VecFx32 *out) {
     return r;
 }
 
-extern "C" s32 HandOverItem_SwitchMaster(s32 a) {
+extern "C" s32 HandOverItem_SwitchMaster(Character *a) {
     s32 r = 0;
     if (sHandOverItem) {
-        r = sHandOverItem->switchMaster((void *)a);
+        r = sHandOverItem->switchMaster(a);
     }
     return r;
 }
@@ -1459,10 +1459,10 @@ extern "C" void HandOverItem_GetItem(u16 *out) {
 
 // ======== FUNCTIONS ========
 
-extern "C" s32 HandOverItem_SetNextMode(u8 a, s32 b) {
+extern "C" s32 HandOverItem_SetNextMode(u8 a, Character *b) {
     s32 r = 0;
     if (sHandOverItem) {
-        r = sHandOverItem->setNextModeBy(a, (void *)b);
+        r = sHandOverItem->setNextModeBy(a, b);
     }
     return r;
 }

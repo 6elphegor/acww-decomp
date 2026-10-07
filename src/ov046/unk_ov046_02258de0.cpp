@@ -491,7 +491,7 @@ void SpNpcCelesteTalk::onConstellationDrawn() {
         }
         setNumberSlot(m, 4, 2, 0, 0);
         msg[1] = h;
-        ((TalkWindowState *)(o))->setSlotFromString(8, (s32)(&msg[1]), (s32)((u8 *)"st_general"));
+        ((TalkWindowState *)(o))->setSlotFromString(8, &msg[1], "st_general");
         msg[0] = 8;
     } else {
         Constellation_Erase(constellationSlot);
@@ -856,7 +856,7 @@ void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
                 t4 = 0xc;
             }
             l.msg = r1;
-            ((TalkWindowState *)(o))->setSlotFromString(8, (s32)(&l.msg), (s32)((u8 *)"st_general"));
+            ((TalkWindowState *)(o))->setSlotFromString(8, &l.msg, "st_general");
             setNumberSlot(t4, 4, 2, 0, 0);
             nextMsg = 0x17;
         } else if (listMode == 2) {

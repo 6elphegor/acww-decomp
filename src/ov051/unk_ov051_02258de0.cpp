@@ -506,7 +506,7 @@ void SpNpcKappnTalk::onMessageStart(u32) {
             r4 = 0x1a;
         }
         l.msg = r4;
-        ((TalkWindowState *)(h))->setSlotFromString(0, (s32)(&l.msg), (s32)((void *)"st_general"));
+        ((TalkWindowState *)(h))->setSlotFromString(0, &l.msg, "st_general");
         u32 t = ((u8 *)l.w)[2];
         if (t >= 0xc) {
             t -= 0xc;

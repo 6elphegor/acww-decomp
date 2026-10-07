@@ -3,13 +3,15 @@
 
 #include "types.h"
 
+class MsgString;
+
 // Villager identity (0xc bytes): home town id and name, personality and species.
 // Members defined in src/main/unk_02003008.cpp (isValid / set / getGender / makeFileName) and
 // src/main/unk_02002b1c.cpp (getName).
 class VillagerId {
 public:
-    u32 getName(u32 arg);
-    void makeFileName(void *buf, u32 size, u32 arg);
+    BOOL getName(MsgString *buf);
+    void makeFileName(void *buf, u32 size, const char *key);
     u32 getGender();
     void set(u32 id, u32 type, void *s);
     u32 isValid();

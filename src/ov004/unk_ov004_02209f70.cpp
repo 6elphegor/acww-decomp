@@ -70,7 +70,6 @@
 #define PROTO_LOCAL_Ftr_GetUnk06  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_FurnitureManager_GetTvTex  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_MTX_Concat33  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_MenuCtrl_BuildPocketMask  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Model_BindMatTexByIdx  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_Model_BindMatTexByName  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_PlayerActor_LocalRequestBedApproach  // declared below: the shared prototype conflicts with the calls here
@@ -272,7 +271,7 @@ BOOL FtrPhone::enterTalkAct04() {
 void FtrPhone::execTalkAct03() {
     if (window != 0) {
         if (window->state == 0) {
-            detachTalkRequest((s32)(TalkMsgRequest *)this);
+            detachTalkRequest((TalkMsgRequest *)this);
             setTalkAct(4);
         }
     }
@@ -291,7 +290,7 @@ void FtrPhone::execTalkAct02() {
 
 BOOL FtrPhone::enterTalkAct02() {
     StackPad8 pad;
-    attachTalkRequest((s32)(TalkMsgRequest *)this);
+    attachTalkRequest((TalkMsgRequest *)this);
     window->nextState = 1;
     TalkMsgRequest &s = *this;
     s.setFileName(p10::data_ov004_0224bb44);
@@ -1204,8 +1203,6 @@ BOOL _ZN9FtrSwitch10isChangingEv(void *p);
 u32 Item_MakeFurniture(u32 a, s32 b);
 void Snd_MelodyBeatUpdate(void *p, void *v);
 void FtrSync_RequestAct(void *p, s32 a, s32 b, s32 c);
-void _ZN9Character17detachTalkRequestEi(void *p, TalkMsgRequest *q);
-void _ZN9Character17attachTalkRequestEi(void *p, TalkMsgRequest *q);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 FX_Div(s32 a, s32 b);
@@ -1355,7 +1352,7 @@ typedef void (FtrVillagerPic::*Unk_ov004_0220bec8_Fn)();
 void FtrVillagerPic::execTalkAct03() {
     if (((TalkWindowState *)window)) {
         if (((TalkWindowState *)window)->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             p13::TalkRequest_SetTargetDone(this);
         }
     }
@@ -1376,7 +1373,7 @@ void FtrVillagerPic::execTalkAct02() {
 BOOL FtrVillagerPic::enterTalkAct02() {
     volatile u16 va[2];
     s32 idx;
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     ((TalkWindowState *)window)->nextState = 1;
     va[1] = p13::Item_MakeFurniture(p13::FtrActor_GetFtrIndex(this), 0);
     BOOL r = FALSE;
@@ -3090,8 +3087,6 @@ extern u8 data_ov004_02240028[];
 extern u16 sStereoSong;
 extern u8 gSaveVillagers[];
 extern u8 data_ov004_0224bbb0[];
-void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
-void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
 s32 TalkRequest_SetTargetDone(void *self);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void _ZN10MsgRequest11setFileNameEPKc(void *p, void *q);
@@ -3200,7 +3195,7 @@ u8 FtrStereo::getActSwitchState(u32 a) {
 void FtrStereo::execTalkAct05() {
     if (window != NULL) {
         if (window->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             p18::TalkRequest_SetTargetDone(this);
         }
     }
@@ -3219,7 +3214,7 @@ void FtrStereo::execTalkAct04() {
 }
 
 BOOL FtrStereo::enterTalkAct04() {
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     window->nextState = 1;
     {
         TalkMsgRequest &sec = *this;
@@ -3536,8 +3531,6 @@ u16 _ZN10FtrContact12getPushAngleEv(void *);
 void *_ZN10FtrContact22getClampedContactPointEv(void *);
 BOOL PlayerActor_LocalRequestStorageClose(s32 *);
 BOOL PlayerActor_LocalRequestStorageOpen(s32 *, void *, void *, u16 *);
-void _ZN9Character17detachTalkRequestEi(void *, TalkMsgRequest *);
-void _ZN9Character17attachTalkRequestEi(void *, TalkMsgRequest *);
 void TalkRequest_SetTargetDone(void *);
 void _ZN10MsgRequest11setFileNameEPKc(TalkMsgRequest &, void *);
 BOOL FtrSync_ChangeAct(void *, s32, s32, s32);
@@ -3762,7 +3755,6 @@ void _ZN8FtrActordlEPv(void *);
 void *_ZN8FtrActornwEm(u32);
 u32 _ZN15TalkWindowState13getChoiceListEv(u32);
 void _ZN15TalkWindowState14setNextMessageEPhPv(u32, void *, u32);
-void _ZN9Character17detachTalkRequestEi(void *, void *);
 void TalkRequest_SetTargetDone(void *);
 void *FtrActor_MakeSpawnArg(u32, u32, u32, u32, u8, u32);
 BOOL FtrMgr_SpawnFromArg(void *self);
@@ -4027,11 +4019,8 @@ extern char data_ov004_0224bbe4[];
 extern s32 data_020c8cbc;
 extern void *gCommManager;
 
-s32 MenuCtrl_BuildPocketMask(BOOL (*cb)(void *, s32));
 BOOL Item_IsFurniture(void *);
 s32 Ftr_GetUnk06(void *p);
-void _ZN9Character17detachTalkRequestEi(void *p, TalkMsgRequest *q);
-void _ZN9Character17attachTalkRequestEi(void *p, TalkMsgRequest *q);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 TalkRequest_AddPlayerTalk6(void *p, s32 a);
 s32 Scene_GetWarpRequest(void);
@@ -4159,7 +4148,7 @@ public:
     /* 0x85c */ FtrGlowMatSet glowMats;
 };
 
-extern "C" BOOL FtrBed_IsDma06Is5(void *p, s32 b) {
+extern "C" BOOL FtrBed_IsDma06Is5(u16 *p, s32 b) {
     if (b == 0) {
         if (p21::Item_IsFurniture(p)) {
             if (p21::Ftr_GetUnk06(p) == 5) {
@@ -4177,7 +4166,7 @@ BOOL FtrBed::enterFtrAct0B() {
 void FtrBed::execFtrAct0A() {
     if (((TalkWindowState *)window)) {
         if (((TalkWindowState *)window)->state == 0) {
-            if (MenuCtrl_OpenPocketSelect(p21::MenuCtrl_BuildPocketMask(FtrBed_IsDma06Is5), 0x28)) {
+            if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask(FtrBed_IsDma06Is5), 0x28)) {
                 changeAct(0xb, 0xff);
             }
         }
@@ -4191,7 +4180,7 @@ BOOL FtrBed::enterFtrAct0A() {
 void FtrBed::execFtrAct09() {
     if (((TalkWindowState *)window)) {
         if (((TalkWindowState *)window)->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             p21::TalkRequest_SetTargetDone(this);
         }
     }
@@ -4206,7 +4195,7 @@ void FtrBed::execFtrAct08() {
 
 BOOL FtrBed::enterFtrAct08() {
     FtrBedStackPad pad;
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     ((TalkWindowState *)window)->nextState = 1;
     MsgRequest::setFileName(p21::data_ov004_0224bbb0);
     msgIndex = 4;
@@ -4224,7 +4213,7 @@ BOOL FtrBed::enterFtrAct07() {
 void FtrBed::execFtrAct06() {
     if (((TalkWindowState *)window)) {
         if (((TalkWindowState *)window)->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             p21::TalkRequest_SetTargetDone(this);
             p21::SceneWarp_RequestFade(p21::Scene_GetWarpRequest(), 0x2e, 2, 0);
             SaveManager_RequestAct01();
@@ -4240,7 +4229,7 @@ void FtrBed::execFtrAct05() {
     if (((TalkWindowState *)window)) {
         if (((TalkWindowState *)window)->state == 0) {
             PlayerActor_LocalRequestGetOutOfBed(inLeftHalf, 0);
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             p21::TalkRequest_SetTargetDone(this);
         }
     }
@@ -4255,7 +4244,7 @@ void FtrBed::execFtrAct04() {
 
 BOOL FtrBed::enterFtrAct04() {
     FtrBedStackPad pad;
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     ((TalkWindowState *)window)->nextState = 1;
     if (GameStart_IsNewTown() || GameStart_IsNewResident()) {
         MsgRequest::setFileName(p21::data_ov004_0224bbd0);
@@ -6015,7 +6004,7 @@ void FtrClock::onJointCalcPost(s32 a, void *b) {
 void FtrStorage::execTalkAct0B() {
     u32 f = ftrAct;
     if (f == 0) {
-        ((Character *)(this))->detachTalkRequest((s32)(this));
+        ((Character *)(this))->detachTalkRequest(this);
         p19::TalkRequest_SetTargetDone(this);
     }
 }
@@ -6049,7 +6038,7 @@ void FtrStorage::execTalkAct09() {
 
 BOOL FtrStorage::enterTalkAct09() {
     s32 y, x;
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     window->nextState = 1;
     p19::_ZN10MsgRequest11setFileNameEPKc(*this, p19::data_ov004_0224bbc0);
     u32 t = p19::FtrActor_GetFtrIndex(this);
@@ -6312,7 +6301,7 @@ void FtrBed::execFtrAct0D() {
         leaveTimer++;
     }
     if (leaveTimer == 0x16) {
-        p20::_ZN9Character17detachTalkRequestEi(this, static_cast<TalkMsgRequest *>(this));
+        ((Character *)this)->detachTalkRequest(static_cast<TalkMsgRequest *>(this));
         p20::TalkRequest_SetTargetDone(this);
         ProcBase_RequestDelete(this);
     }
@@ -6354,7 +6343,7 @@ BOOL FtrBed::enterFtrAct0C() {
 void FtrBed::execFtrAct0B() {
     if (MenuCtrl_IsFinished()) {
         if (MenuCtrl_IsResultOk() == 0) {
-            p20::_ZN9Character17detachTalkRequestEi(this, static_cast<TalkMsgRequest *>(this));
+            ((Character *)this)->detachTalkRequest(static_cast<TalkMsgRequest *>(this));
             p20::TalkRequest_SetTargetDone(this);
         } else {
             u32 r4 = MenuCtrl_GetIndex();

@@ -667,7 +667,7 @@ void SpNpcShrunkTalk::scriptFirstLesson() {
         ownerNpc->reactionWindow = 0x14;
         if (((NpcActor *)(ownerNpc))->getLastTaughtEmotion() != -1) {
             b[1] = 0x17;
-            ((TalkWindowState *)(window))->setSlotFromString(0, (s32)(&b[1]), (s32)((void *)"st_learn"));
+            ((TalkWindowState *)(window))->setSlotFromString(0, &b[1], "st_learn");
             ownerNpc->reactionWindow = 0;
             ownerNpc->waitTimer = 0x14;
             ((PlayerData *)(PlayerData_GetCurrent()))->setFlag(0x10);
@@ -712,7 +712,7 @@ void SpNpcShrunkTalk::scriptCheckTriggerReaction() {
             }
         }
         b[1] = pendingEmotion;
-        ((TalkWindowState *)(window))->setSlotFromString(0, (s32)(&b[1]), (s32)((void *)"st_learn"));
+        ((TalkWindowState *)(window))->setSlotFromString(0, &b[1], "st_learn");
         ownerNpc->reactionWindow = 0;
         ownerNpc->waitTimer = 0x14;
         r4->setNextMessage(&b[0], (void *)"sp_npc_reaction");
@@ -802,10 +802,10 @@ void SpNpcShrunkTalk::onChoice(u32) {
             msg = 0x1b;
         } else {
             b[0] = Emotion_GetSlot(t);
-            ((TalkWindowState *)(window))->setSlotFromString(1, (s32)(&b[0]), (s32)((void *)"st_learn"));
+            ((TalkWindowState *)(window))->setSlotFromString(1, &b[0], "st_learn");
             ownerNpc->teachEmotion(t, pendingEmotion);
             b[1] = pendingEmotion;
-            ((TalkWindowState *)(window))->setSlotFromString(0, (s32)(&b[1]), (s32)((void *)"st_learn"));
+            ((TalkWindowState *)(window))->setSlotFromString(0, &b[1], "st_learn");
             msg = 0x1c;
         }
         break;

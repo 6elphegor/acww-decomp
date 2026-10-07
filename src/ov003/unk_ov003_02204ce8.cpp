@@ -125,8 +125,6 @@
 #define BgmVolumeMixer_startFireworkDuck _ZN14BgmVolumeMixer17startFireworkDuckEv
 #define BgmVolumeMixer_endFishDuck _ZN14BgmVolumeMixer11endFishDuckEv
 #define BgmVolumeMixer_startFishDuck _ZN14BgmVolumeMixer13startFishDuckEv
-#define Character_detachTalkRequest _ZN9Character17detachTalkRequestEi
-#define Character_attachTalkRequest _ZN9Character17attachTalkRequestEi
 #define TwoLayerAnimModel_updateLayers _ZN17TwoLayerAnimModel12updateLayersEv
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
@@ -526,8 +524,6 @@ void PlayerFaceTexRef_load(void *p, void *q);
 u8 *PlayerData_getFaceType(s32 a);
 s32 PlayerData_testFlag(s32 a, s32 b);
 void PlayerData_setFlag(s32 a, s32 b);
-void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
-void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
 void Camera_SetMode4();
 void Camera_SetModeDefault();
 void TalkRequest_FinishPlayerMessage();
@@ -1092,7 +1088,6 @@ void Unk_02006d14_turnToward(Obj *o, s32 a);
 s32 Math_Atan2(s32 a, s32 b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
-void Character_detachTalkRequest(Obj *o, TalkMsgRequest *s);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
 void PlayerActor_Act66SetArgs(u8 *d, Pair v, u32 c);
@@ -1204,8 +1199,6 @@ void TalkRequest_FinishPlayerMessage();
 s32 TalkRequest_AddPlayerMessage();
 void Camera_SetMode4();
 void Camera_SetModeDefault();
-void Character_detachTalkRequest(Obj *o, MsgRequest *s);
-void Character_attachTalkRequest(Obj *o, MsgRequest *s);
 void MsgRequest_setFileName(void *p, void *s);
 s32 PlayerData_testFlag(void *p, s32 a);
 void PlayerData_setFlag(void *p, s32 a);
@@ -1624,7 +1617,6 @@ void Unk_02006d14_turnToward(Obj *o, s32 a);
 s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, void *arg);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
-void Character_detachTalkRequest(Obj *o, Sec *s);
 void TalkRequest_FinishPlayerMessage();
 
 s32 PlayerActor_ShovelDispatch(Obj *o, V3C v, s32 a);
@@ -1728,8 +1720,6 @@ void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
 s16 Math_Atan2(s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 s32 TalkRequest_AddPlayerMessage();
-void Character_attachTalkRequest(Obj *o, MsgRequest *b);
-void Character_detachTalkRequest(Obj *o, MsgRequest *b);
 void MsgRequest_setFileName(void *p, void *q);
 void Camera_SetMode4();
 void Camera_SetModeDefault();
@@ -1907,7 +1897,6 @@ void Fish_GetDisplayScale(V3 *v, s32 a);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
-void Character_detachTalkRequest(Obj *o, TalkMsgRequest *s);
 void TalkRequest_FinishPlayerMessage();
 s32 FieldAction_RequestDropForAid(u32 a, u32 b);
 void PlayerActor_RequestFishRelease(Obj *o, void *d, u32 a, u32 b, s32 c);
@@ -1995,11 +1984,9 @@ void FishCatch_SetDisplayPosScale(Act *a, V3 *b, V3 *c);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 void Camera_SetMode4();
 s32 TalkRequest_AddPlayerMessage();
-void Character_attachTalkRequest(Obj *o, Sec *s);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
 void MsgRequest_setFileName(Sec *s, void *d);
 s32 FieldAction_FindDropUnit(u32 a, u32 *b, u8 *out);
-void Character_detachTalkRequest(Obj *o, Sec *s);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void TalkRequest_FinishPlayerMessage();
 s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
@@ -2243,8 +2230,6 @@ s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 Unk_02006d14_netSendClothesChange(Obj *o, u32 a, u32 b);
-s32 Character_detachTalkRequest(Obj *o, Sec *s);
-s32 Character_attachTalkRequest(Obj *o, Sec *s);
 s32 MsgRequest_setFileName(Sec *s, void *d);
 s32 TalkRequest_FinishPlayerMessage();
 s32 TalkRequest_AddPlayerMessage();
@@ -5942,7 +5927,7 @@ extern "C" void PlayerActor_SetupAxeBrokenMessage(Obj *o) {
     (o)->startAnim(0x48, 3, 0);
     PlayerActor_AxeBrokenMessageInitWork((Rec *)&o->actionWork);
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-        ((Character *)(void *)(o))->attachTalkRequest((s32)(o));
+        ((Character *)(void *)(o))->attachTalkRequest(o);
         Sec &s = *o;
         ((MsgRequest *)(void *)(&s))->setFileName((const char *)((void *)"obj_etc_player"));
         o->msgIndex = 10;
@@ -5976,7 +5961,7 @@ extern "C" void PlayerActor_AxeBrokenMessageUpdate(Obj *o) {
     case 1:
         if (o->window) {
             if (!o->window->state) {
-                ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+                ((Character *)(void *)(o))->detachTalkRequest(o);
                 (o)->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
@@ -6708,7 +6693,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
     case 0:
         if (TalkRequest_AddPlayerMessage()) {
             *r5 = 1;
-            ((Character *)(void *)(o))->attachTalkRequest((s32)(o));
+            ((Character *)(void *)(o))->attachTalkRequest(o);
             (o)->setActionFlag(0x11);
             Sec &s = *o;
             ((MsgRequest *)(void *)(&s))->setFileName((const char *)((void *)"obj_etc_getfish"));
@@ -6755,7 +6740,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         } else {
             if (o->window == 0) return;
             if (o->window->state != 0) return;
-            ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+            ((Character *)(void *)(o))->detachTalkRequest(o);
             (o)->clearActionFlag(0x11);
             TalkRequest_FinishPlayerMessage();
             PlayerActor_RequestFishStore(o, 0, 6, -1);
@@ -6780,7 +6765,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         } else {
             if (o->window == 0) return;
             if (o->window->state != 0) return;
-            ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+            ((Character *)(void *)(o))->detachTalkRequest(o);
             (o)->clearActionFlag(0x11);
             PlayerActor_RequestFishStore(o, 1, 6, -1);
             Camera_SetModeDefault();
@@ -6790,7 +6775,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         if (o->window == 0) return;
         if (o->window->state != 0) return;
         ((FishBobber *)((u8 *)&o->heldItemModel.bobber))->startCatchLift();
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+        ((Character *)(void *)(o))->detachTalkRequest(o);
         (o)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
@@ -6800,7 +6785,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
     case 5:
         if (o->window == 0) return;
         if (o->window->state != 0) return;
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+        ((Character *)(void *)(o))->detachTalkRequest(o);
         (o)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         (o)->requestAct76(1, r6->fishId, 0, 6, -1);
@@ -6957,7 +6942,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                     ((FishBobber *)((u8 *)&o->heldItemModel.bobber))->setFish((void *)(0));
                     if ((o)->testActionFlag(0x11)) {
                         (o)->clearActionFlag(0x11);
-                        ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+                        ((Character *)(void *)(o))->detachTalkRequest(o);
                     }
                     TalkRequest_FinishPlayerMessage();
                     v[1] = MenuCtrl_GetPocketsFullItem();
@@ -6997,7 +6982,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                 ((FishBobber *)((u8 *)&o->heldItemModel.bobber))->startCatchLift();
                 if ((o)->testActionFlag(0x11)) {
                     (o)->clearActionFlag(0x11);
-                    ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+                    ((Character *)(void *)(o))->detachTalkRequest(o);
                 }
                 TalkRequest_FinishPlayerMessage();
             }
@@ -7743,8 +7728,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             break;
         }
         *st = 2;
-        MsgRequest *sec = o;
-        ((Character *)(void *)(o))->attachTalkRequest((s32)(sec));
+        TalkMsgRequest *sec = o;
+        ((Character *)(void *)(o))->attachTalkRequest(sec);
         (o)->setActionFlag(0x11);
         MsgRequest &sr = *o;
         ((MsgRequest *)(&sr))->setFileName((const char *)((void *)"obj_etc_getinsect"));
@@ -7799,8 +7784,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         if (h->state != 0) {
             break;
         }
-        MsgRequest *sec = o;
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(sec));
+        TalkMsgRequest *sec = o;
+        ((Character *)(void *)(o))->detachTalkRequest(sec);
         (o)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         PlayerActor_RequestInsectStore(o, b8, 0, 6, -1);
@@ -7819,8 +7804,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         if (h->state != 0) {
             break;
         }
-        MsgRequest *sec = o;
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(sec));
+        TalkMsgRequest *sec = o;
+        ((Character *)(void *)(o))->detachTalkRequest(sec);
         (o)->clearActionFlag(0x11);
         PlayerActor_RequestInsectStore(o, b8, 1, 6, -1);
         Camera_SetModeDefault();
@@ -7840,8 +7825,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         s16 ang = Random_GlobalBelow(0x2aaa) - 0x1555;
         HeldInsect_Release((u8)r7, ang);
         PlayerActor_InsectShowCatchSetNetAngle(sub, ang);
-        MsgRequest *sec = o;
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(sec));
+        TalkMsgRequest *sec = o;
+        ((Character *)(void *)(o))->detachTalkRequest(sec);
         (o)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         (o)->startAnim(0, 3, 3);
@@ -7859,8 +7844,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
                     if (((CommManager *)(g))->isLocalSlot(o->sessionSlot)) {
                         if ((o)->testActionFlag(0x11)) {
                             (o)->clearActionFlag(0x11);
-                            MsgRequest *sec = o;
-                            ((Character *)(void *)(o))->detachTalkRequest((s32)(sec));
+                            TalkMsgRequest *sec = o;
+                            ((Character *)(void *)(o))->detachTalkRequest(sec);
                         }
                         TalkRequest_FinishPlayerMessage();
                     }
@@ -7910,8 +7895,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         if (h->state != 0) {
             break;
         }
-        MsgRequest *sec = o;
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(sec));
+        TalkMsgRequest *sec = o;
+        ((Character *)(void *)(o))->detachTalkRequest(sec);
         (o)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         (o)->requestAct76(0, b8, *p7, 6, -1);
@@ -8112,7 +8097,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
                 if (MenuCtrl_IsResultOk() != 0) {
                     if ((o)->testActionFlag(0x11)) {
                         (o)->clearActionFlag(0x11);
-                        ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+                        ((Character *)(void *)(o))->detachTalkRequest(o);
                     }
                     TalkRequest_FinishPlayerMessage();
                     o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
@@ -8127,7 +8112,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
             PlayerActor_InsectStoreSetNetAngle(p6, v);
             if ((o)->testActionFlag(0x11)) {
                 (o)->clearActionFlag(0x11);
-                ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+                ((Character *)(void *)(o))->detachTalkRequest(o);
             }
             TalkRequest_FinishPlayerMessage();
             *st = 2;
@@ -9313,7 +9298,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
     case 0: {
         if (TalkRequest_AddPlayerMessage() == 0) break;
         *r6 = 1;
-        ((Character *)(void *)(o))->attachTalkRequest((s32)(o));
+        ((Character *)(void *)(o))->attachTalkRequest(o);
         (o)->setActionFlag(0x11);
         void *q = PlayerData_GetCurrent();
         MsgRequest &s = *o;
@@ -9357,7 +9342,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         }
         if (o->window == 0) break;
         if (o->window->state != 0) break;
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+        ((Character *)(void *)(o))->detachTalkRequest(o);
         (o)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         ab.a0 = 0;
@@ -9378,7 +9363,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         }
         if (o->window == 0) break;
         if (o->window->state != 0) break;
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+        ((Character *)(void *)(o))->detachTalkRequest(o);
         (o)->clearActionFlag(0x11);
         ab.a1 = 0;
         ab.b1 = 0;
@@ -9395,7 +9380,7 @@ extern "C" void PlayerActor_DigUpItemMessage(Obj *o) {
         if (o->window == 0) break;
         if (o->window->state != 0) break;
         if (MenuCtrl_IsFinished() == 0) break;
-        ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+        ((Character *)(void *)(o))->detachTalkRequest(o);
         (o)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         *r6 = 5;
@@ -9541,7 +9526,7 @@ extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o) {
                 (o)->clearActionFlag(0xd);
                 if ((o)->testActionFlag(0x11) != 0) {
                     (o)->clearActionFlag(0x11);
-                    ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+                    ((Character *)(void *)(o))->detachTalkRequest(o);
                 }
                 TalkRequest_FinishPlayerMessage();
                 o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
@@ -9550,7 +9535,7 @@ extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o) {
             l76c:
                 if ((o)->testActionFlag(0x11) != 0) {
                     (o)->clearActionFlag(0x11);
-                    ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+                    ((Character *)(void *)(o))->detachTalkRequest(o);
                 }
                 TalkRequest_FinishPlayerMessage();
                 *st = *st + 1;
@@ -9825,7 +9810,7 @@ extern "C" void PlayerActor_FillHoleCheckEnd(Obj *o) {
             } else if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot) && b == 3) {
                 if ((o)->testActionFlag(0x11)) {
                     (o)->clearActionFlag(0x11);
-                    ((Character *)(void *)(o))->detachTalkRequest((s32)(o));
+                    ((Character *)(void *)(o))->detachTalkRequest(o);
                 }
                 ((Unk_02007694 *)(void *)(o))->requestWaitMenu(3, 1, -1);
             } else {
@@ -11730,7 +11715,7 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
         switch (*p) {
         case 0:
             *p = 1;
-            ((Character *)(o))->attachTalkRequest((s32)(o));
+            ((Character *)(o))->attachTalkRequest(o);
             (o)->setActionFlag(0x11);
             ((MsgRequest *)(&(TalkMsgRequest &)*o))->setFileName("obj_etc_player");
             o->msgIndex = 0x14;
@@ -11746,7 +11731,7 @@ extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
         case 2:
             if (o->window) {
                 if (o->window->state == 0) {
-                    ((Character *)(o))->detachTalkRequest((s32)(o));
+                    ((Character *)(o))->detachTalkRequest(o);
                     (o)->clearActionFlag(0x11);
                     TalkRequest_FinishPlayerMessage();
                     o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);

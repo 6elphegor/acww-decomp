@@ -326,7 +326,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
                     this->requestGiveItem(&buf.items[3], 0, 5, 0);
                     ((PlayerData *)(g))->setFlag(0x21);
                     buf.items[4] = 0x1375;
-                    this->setItemNameSlot((u32)&buf.items[4], 0, 7);
+                    this->setItemNameSlot(&buf.items[4], 0, 7);
                     r = 1;
                 }
                 break;
@@ -338,7 +338,7 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
                     this->requestGiveItem(&buf.items[6], 0, 5, 0);
                     ((PlayerData *)(g))->setFlag(0x22);
                     buf.items[7] = 0x1377;
-                    this->setItemNameSlot((u32)&buf.items[7], 0, 7);
+                    this->setItemNameSlot(&buf.items[7], 0, 7);
                     r = 4;
                 }
                 break;

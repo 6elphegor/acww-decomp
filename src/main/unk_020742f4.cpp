@@ -514,7 +514,7 @@ extern "C" {
 s32 _ZN11CommManager9endRecordEjj(void *g, s32 a, s32 b);
 }
 extern "C" {
-u32 Villager_GetIndex(u32 a);
+u32 Villager_GetIndex(void *villager);
 }
 extern "C" {
 BOOL SaveVillagers_IsValidIndex(u32 a);
@@ -581,9 +581,9 @@ static inline BOOL R1(u16 *p, u32 lo, u32 hi) {
 
 
 
-extern "C" void VillagerSync_MemoryInit(u32 a, u32 b) {
+extern "C" void VillagerSync_MemoryInit(void *villager, u32 b) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerMemoryInit(a, b);
         }
@@ -601,9 +601,9 @@ extern "C" void CommSend_VillagerMemorySetPlayer(u32 a, u32 b) {
     }
 }
 
-extern "C" void VillagerSync_MemorySetPlayer(u32 a, u32 b) {
+extern "C" void VillagerSync_MemorySetPlayer(void *villager, u32 b) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerMemorySetPlayer(a, b);
         }
@@ -622,9 +622,9 @@ extern "C" void CommSend_VillagerImpression(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void VillagerSync_Impression(u32 a, u32 b, u32 c) {
+extern "C" void VillagerSync_Impression(void *villager, u32 b, u32 c) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerImpression(a, b, c);
         }
@@ -643,9 +643,9 @@ extern "C" void CommSend_VillagerFriendship(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void VillagerSync_Friendship(u32 a, u32 b, u32 c) {
+extern "C" void VillagerSync_Friendship(void *villager, u32 b, u32 c) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerFriendship(a, b, c);
         }
@@ -662,10 +662,10 @@ extern "C" void CommVillager_UnpackReceivedItem(s32 *o0, s32 *o1, u16 *o2, u8 *s
     *o2 = NetBuf_ReadU16(src);
 }
 
-extern "C" void CommSend_VillagerReceivedItem(u32 a, u32 b, u32 c) {
+extern "C" void CommSend_VillagerReceivedItem(u32 a, u32 b, u16 *c) {
     if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[3];
-        CommVillager_PackReceivedItem(buf, a, b, (u16 *)c);
+        CommVillager_PackReceivedItem(buf, a, b, c);
         void *g = gCommManager;
         ((CommManager *)(g))->beginRecord();
         ((CommManager *)(g))->writeRecord((u8 *)(buf), 3);
@@ -673,9 +673,9 @@ extern "C" void CommSend_VillagerReceivedItem(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void VillagerSync_ReceivedItem(u32 a, u32 b, u32 c) {
+extern "C" void VillagerSync_ReceivedItem(void *villager, u32 b, u16 *c) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerReceivedItem(a, b, c);
         }
@@ -704,21 +704,21 @@ extern "C" void CommSend_VillagerAct3C(u32 a, u32 b, u32 c) {
     }
 }
 
-extern "C" void VillagerSync_Act3C(u32 a, u32 b, u32 c) {
+extern "C" void VillagerSync_Act3C(void *villager, u32 b, u32 c) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerAct3C(a, b, c);
         }
     }
 }
-extern "C" void VillagerSync_Act3C00(u32 a, u32 b) { VillagerSync_Act3C(a, b, 0); }
-extern "C" void VillagerSync_Act3C01(u32 a) { VillagerSync_Act3C(a, 0, 1); }
-extern "C" void VillagerSync_Act3C02(u32 a) { VillagerSync_Act3C(a, 1, 2); }
-extern "C" void VillagerSync_Act3C03(u32 a, u32 b) { VillagerSync_Act3C(a, b, 3); }
-extern "C" void VillagerSync_Act3C04(u32 a, u32 b) { VillagerSync_Act3C(a, b, 4); }
+extern "C" void VillagerSync_Act3C00(void *villager, u32 b) { VillagerSync_Act3C(villager, b, 0); }
+extern "C" void VillagerSync_Act3C01(void *villager) { VillagerSync_Act3C(villager, 0, 1); }
+extern "C" void VillagerSync_Act3C02(void *villager) { VillagerSync_Act3C(villager, 1, 2); }
+extern "C" void VillagerSync_Act3C03(void *villager, u32 b) { VillagerSync_Act3C(villager, b, 3); }
+extern "C" void VillagerSync_Act3C04(void *villager, u32 b) { VillagerSync_Act3C(villager, b, 4); }
 
-extern "C" void VillagerSync_Act3C05(u32 a, u32 b) { VillagerSync_Act3C(a, b, 5); }
+extern "C" void VillagerSync_Act3C05(void *villager, u32 b) { VillagerSync_Act3C(villager, b, 5); }
 
 extern "C" void CommVillager_PackAct3D(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e) {
     out[2] = (d & 7) | (((a << 4) & 0xf0) | ((e & 1) << 3));
@@ -734,10 +734,10 @@ extern "C" void CommVillager_UnpackAct3D(s32 *o0, u8 *o1, u16 *o2, s32 *o3, u8 *
     *o2 = NetBuf_ReadU16(src);
 }
 
-extern "C" void CommSend_VillagerAct3D(u32 a, u32 b, u32 c, u32 d, u8 e) {
+extern "C" void CommSend_VillagerAct3D(u32 a, u32 b, u16 *c, u32 d, u8 e) {
     if (((CommManager *)(gCommManager))->isOnline()) {
         u8 buf[4];
-        CommVillager_PackAct3D(buf, a, b, (u16 *)c, d, e ? 1 : 0);
+        CommVillager_PackAct3D(buf, a, b, c, d, e ? 1 : 0);
         void *g = gCommManager;
         ((CommManager *)(g))->beginRecord();
         ((CommManager *)(g))->writeRecord((u8 *)(buf), 4);
@@ -745,9 +745,9 @@ extern "C" void CommSend_VillagerAct3D(u32 a, u32 b, u32 c, u32 d, u8 e) {
     }
 }
 
-extern "C" void VillagerSync_Act3D(u32 a, u32 b, u32 c, u32 d, u8 e) {
+extern "C" void VillagerSync_Act3D(void *villager, u32 b, u16 *c, u32 d, u8 e) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerAct3D(a, b, c, d, e);
         }
@@ -765,9 +765,9 @@ extern "C" void CommSend_VillagerAct3F(u32 a, u16 *b) {
     }
 }
 
-extern "C" void VillagerSync_Act3F(u32 a, u16 *b) {
+extern "C" void VillagerSync_Act3F(void *villager, u16 *b) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerAct3F(a, b);
         }
@@ -797,9 +797,9 @@ extern "C" void CommSend_VillagerShirt(u32 a, u16 *b) {
     }
 }
 
-extern "C" void VillagerSync_Shirt(u32 a, u16 *b) {
+extern "C" void VillagerSync_Shirt(void *villager, u16 *b) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerShirt(a, b);
         }
@@ -835,9 +835,9 @@ extern "C" void CommSend_VillagerItems(u32 a, u16 *b) {
     }
 }
 
-extern "C" void VillagerSync_Items(u32 a, u16 *b) {
+extern "C" void VillagerSync_Items(void *villager, u16 *b) {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        a = Villager_GetIndex(a);
+        u32 a = Villager_GetIndex(villager);
         if (SaveVillagers_IsValidIndex(a)) {
             CommSend_VillagerItems(a, b);
         }

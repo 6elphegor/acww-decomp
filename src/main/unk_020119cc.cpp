@@ -269,32 +269,6 @@ typedef BOOL (ActorTalkRequest::*Unk_02014420_Fn)();
 struct Actor;
 
 
-// unk_02014d90.cpp
-struct TalkSubSceneParams {
-      s32 subSceneType;
-      s32 menuPtrArg0;
-      s32 menuPtrArg1;
-      s32 menu12Arg;
-      s32 pocketFilter;
-      u16 pocketMask;
-      u16 subSceneItem;
-      s32 handOverKind;
-      u8 pocketSelectMode;
-      u8 pad_1d;
-      u8 launcherMenu;
-      u8 launcherIndex;
-      u8 keepWindowClosed;
-      u8 pad_21[0x2c - 0x21];
-      u8 handOverMode;
-      u8 pad_2d[3];
-      s32 handOverVariant;
-      s32 launcherText;
-      s32 launcherTextSize;
-      u8 focusNewSpeaker;
-      u8 unk_3d;
-      u8 pad_3e[2];
-      s32 closeMode;
-};
 
 
 // unk_02014d90.cpp
@@ -616,7 +590,6 @@ void _ZN16ActorTalkRequest11playEmotionEjj(void *self, u32 a, u32 b);
 NpcActor* _ZN16ActorTalkRequest15getPartnerActorEv(void *self);
 void _ZN16ActorTalkRequest4tickEv(void *self);
 ActorTalkRequest* _ZN8NpcActor14getTalkRequestEv(void *self);
-void _ZN9Character17detachTalkRequestEi(void *self, ActorTalkRequest* o);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *self, u32 v);
 BOOL _ZN8BlockMap12getWalkLinksEii(void* p, u32 x, u32 y);
 void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
@@ -651,7 +624,6 @@ void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, 
 NpcActor *_ZN16ActorTalkRequest15getPartnerActorEv(ActorTalkRequest *o);
 u8 *_ZN16ActorTalkRequest15getSpeakerActorEv(ActorTalkRequest *o);
 void _ZN14NpcSpeechState12stopSpeakingEv(void *p);
-void _ZN9Character17detachTalkRequestEi(NpcActor *ctx, ActorTalkRequest *o);
 void _ZN16ActorTalkRequest11playEmotionEjj(ActorTalkRequest *o, s32 a, s32 b);
 void _ZN16ActorTalkRequest4tickEv(ActorTalkRequest *o);
 void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b);
@@ -3140,11 +3112,11 @@ void NpcFaceAnim::setFaceAnimsFrom(u32 a, s32 b, s32 c) {
     }
 }
 
-BOOL NpcFaceAnim::setMaterialTex(MatTexPatAnim *m, const char *q, u32 r) {
+BOOL NpcFaceAnim::setMaterialTex(MatTexPatAnim *m, const char *q, const char *r) {
     using namespace nO;
     if (isLoaded()) {
         _ZN13MatTexPatAnim13pauseMaterialEv(m, q);
-        if (m->setMaterialTex((s32)(q), r)) {
+        if (m->setMaterialTex(q, r)) {
             return TRUE;
         }
         MatTexPatAnim_ResumeMaterial(m, (void *)q);
@@ -3152,7 +3124,7 @@ BOOL NpcFaceAnim::setMaterialTex(MatTexPatAnim *m, const char *q, u32 r) {
     return FALSE;
 }
 
-BOOL NpcFaceAnim::setMouthTexture(u32 a) {
+BOOL NpcFaceAnim::setMouthTexture(const char *a) {
     using namespace nO;
     return setMaterialTex(&mouthTexAnim, "m", a);
 }
@@ -4178,7 +4150,7 @@ BOOL NpcActionCtrl::setupAct0D(NpcActor *c) {
         ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
     }
     Snd_SeEmitterPlayOneShotAlt(&c->seEmitter, 0x4f, 0x7f, 0);
-    HandOverItem_Begin(&d->item, d->handOverKind, d->handOverMode, d->handOverVariant, c, d->handOverPartner);
+    HandOverItem_Begin(&d->item, d->handOverKind, d->handOverMode, d->handOverVariant, c, (Character *)d->handOverPartner);
     HandOverItem_RequestMode(1, c);
     ((NpcActionCtrl *)(this))->setActionDone(0);
     if (d->handOverVariant == 1) {
@@ -4238,7 +4210,7 @@ void NpcActionCtrl::act0DStep4(NpcActor *c) {
     if (!HandOverItem_IsModeActive(1)) {
         NpcActionParams *d = ((NpcActionCtrl *)(this))->getCurParams();
         HandOverItem_SetNextMode(9, c);
-        if (HandOverItem_SwitchMaster((void *)d->handOverPartner)) {
+        if (HandOverItem_SwitchMaster((Character *)d->handOverPartner)) {
             if (PlayerActor_LocalRequestAct37()) {
                 actStep = 2;
             }
@@ -4641,7 +4613,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep19EP12Unk_02006d14(NpcActionCtrl *s
     void *r = _ZN13NpcActionCtrl12getCurParamsEv(s);
     if (!HandOverItem_IsModeActive(2)) {
         HandOverItem_SetNextMode(9, c);
-        if (HandOverItem_SwitchMaster(*(void **)((u8 *)r + 0x28))) {
+        if (HandOverItem_SwitchMaster((Character *)((NpcActionParams *)r)->handOverPartner)) {
             if (PlayerActor_LocalRequestAct37()) {
                 s->actStep = 9;
             }
@@ -4699,7 +4671,7 @@ BOOL NpcActionCtrl::setupAct0F(Unk_02006d14 *o) {
     HandOverItem_GetItem(&v);
     s->item = v;
     if (HandOverItem_IsActive()) {
-        HandOverItem_End(o);
+        HandOverItem_End((Character *)o);
     }
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
     Effect_PlayById2(0x61, &o->position, 0, 0);
@@ -4722,7 +4694,7 @@ void NpcActionCtrl::postAct0F(Unk_02006d14 *o) {
 BOOL NpcActionCtrl::setupAct10(Unk_02006d14 *o) {
     using namespace nJ;
     if (HandOverItem_IsActive()) {
-        if (HandOverItem_RequestMode(5, o)) {
+        if (HandOverItem_RequestMode(5, (Character *)o)) {
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
             Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x4f, 0x7f, 0);
             if ((&o->animCtrl)->getAnimId(1) == 0x139) {
@@ -4737,7 +4709,7 @@ BOOL NpcActionCtrl::setupAct10(Unk_02006d14 *o) {
 void NpcActionCtrl::postAct10(Unk_02006d14 *o) {
     using namespace nJ;
     if ((&o->animCtrl)->isAnimFinished((NpcActor *)(void *)(o))) {
-        HandOverItem_End(o);
+        HandOverItem_End((Character *)o);
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         ((NpcActionCtrl *)(this))->setActionDone(1);
     }
@@ -4746,12 +4718,12 @@ void NpcActionCtrl::postAct10(Unk_02006d14 *o) {
 BOOL NpcActionCtrl::setupAct11(Unk_02006d14 *o) {
     using namespace nJ;
     if (HandOverItem_IsActive()) {
-        if (HandOverItem_RequestMode(7, o)) {
+        if (HandOverItem_RequestMode(7, (Character *)o)) {
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
             if ((&o->animCtrl)->getAnimId(1) == 0x139) {
                 ((TwoLayerAnimModel *)(void *)(&o->model))->playLayer2FromBase(0, 0);
             }
-            HandOverItem_SetNextMode(5, o);
+            HandOverItem_SetNextMode(5, (Character *)o);
             ((NpcActionCtrl *)(this))->setActionDone(0);
         }
     }
@@ -4770,7 +4742,7 @@ void NpcActionCtrl::act11Step0(Unk_02006d14 *o) {
 
 void NpcActionCtrl::act11Step1(Unk_02006d14 *o) {
     using namespace nJ;
-    if (!HandOverItem_IsMaster(o)) {
+    if (!HandOverItem_IsMaster((Character *)o)) {
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
         actStep = 2;
     }
@@ -4804,8 +4776,8 @@ void NpcActionCtrl::mainAct11(Unk_02006d14 *o) {
 BOOL NpcActionCtrl::setupAct12(Unk_02006d14 *o) {
     using namespace nJ;
     if (HandOverItem_IsActive()) {
-        if (HandOverItem_RequestMode(8, o)) {
-            HandOverItem_SetNextMode(8, o);
+        if (HandOverItem_RequestMode(8, (Character *)o)) {
+            HandOverItem_SetNextMode(8, (Character *)o);
             actStep = 0;
             ((NpcActionCtrl *)(this))->setActionDone(0);
             PlayerActor_PlayLocalSe(0x72);
@@ -4853,7 +4825,7 @@ BOOL NpcActionCtrl::setupAct13(Unk_02006d14 *o) {
     v[1] = o->headTopPos.y;
     v[2] = o->headTopPos.z;
     ang = o->rotY;
-    HandOverItem_RequestMode(0xb, o);
+    HandOverItem_RequestMode(0xb, (Character *)o);
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
     itemEffect = Effect_Create(0x40, v, &ang, 0);
     Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x6f, 0x7f, 0);
@@ -4888,7 +4860,7 @@ void NpcActionCtrl::postAct13(Unk_02006d14 *o) {
     using namespace nJ;
     if ((&o->animCtrl)->getAnimId(0) == 0x2a) {
         if ((&o->animCtrl)->isAnimFinished((NpcActor *)(void *)(o))) {
-            HandOverItem_End(o);
+            HandOverItem_End((Character *)o);
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
             ((NpcActionCtrl *)(this))->setActionDone(1);
         }
@@ -5776,34 +5748,34 @@ void ActorTalkRequest::setDaySlot(u32 a, u32 b) {
     (window)->setSlot(b, &local);
 }
 
-void ActorTalkRequest::setTownNameSlot(u32 a, u32 b) {
+void ActorTalkRequest::setTownNameSlot(void *a, u32 b) {
     using namespace nH;
     MsgString9C local;
     TownId_GetNameString(a, &local);
     (window)->setSlot(b, &local);
 }
 
-void ActorTalkRequest::setPlayerNameSlot(u32 a, u32 b) {
+void ActorTalkRequest::setPlayerNameSlot(PlayerId *a, u32 b) {
     using namespace nH;
     MsgString9B local;
-    ((PlayerId *)(a))->getNameString((MsgString *)(&local));
+    a->getNameString(&local);
     (window)->setSlot(b, &local);
 }
 
-void ActorTalkRequest::setVillagerNameSlot(u32 a, u32 b) {
+void ActorTalkRequest::setVillagerNameSlot(VillagerId *a, u32 b) {
     using namespace nH;
     MsgString9B local;
-    ((VillagerId *)(a))->getName((u32)(&local));
+    a->getName(&local);
     (window)->setSlot(b, &local);
 }
 
-void ActorTalkRequest::setItemNameSlot(u32 a, u32 b, u32 c) {
+void ActorTalkRequest::setItemNameSlot(u16 *a, u32 b, u32 c) {
     using namespace nH;
-    ItemName local((u16 *)a);
+    ItemName local(a);
     (window)->setNamedSlot(b, &local, c);
 }
 
-void ActorTalkRequest::setSlotFromString(u32 a, u32 b, u32 c) {
+void ActorTalkRequest::setSlotFromString(u32 a, u8 *b, const char *c) {
     using namespace nH;
     (window)->setSlotFromString(a, b, c);
 }
@@ -6021,30 +5993,30 @@ void ActorTalkRequest::resetTasks() {
     taskId = 12;
     taskStep = 0;
     taskRunning = 0;
-    initSubSceneParams((TalkSubSceneParams *)&subSceneType);
+    initSubSceneParams();
 }
 
-void ActorTalkRequest::initSubSceneParams(TalkSubSceneParams *p) {
+void ActorTalkRequest::initSubSceneParams() {
     using namespace nG;
-    p->subSceneType = 8;
-    p->menuPtrArg0 = 0;
-    p->menuPtrArg1 = 0;
-    p->menu12Arg = 0;
-    p->pocketMask = 0;
-    p->pocketFilter = 0;
-    p->pocketSelectMode = 13;
-    p->subSceneItem = 0xfff1;
-    p->handOverKind = 0;
-    p->launcherMenu = 0x45;
-    p->launcherIndex = 0;
-    p->keepWindowClosed = 2;
-    p->handOverMode = 12;
-    p->handOverVariant = 2;
-    p->focusNewSpeaker = 1;
-    p->launcherText = 0;
-    p->launcherTextSize = 0;
-    p->unk_3d = 0;
-    p->closeMode = 0;
+    subSceneType = 8;
+    menuPtrArg0 = NULL;
+    menuPtrArg1 = NULL;
+    menu12Arg = NULL;
+    pocketMask = 0;
+    pocketFilter = NULL;
+    pocketSelectMode = 13;
+    subSceneItem = 0xfff1;
+    handOverKind = 0;
+    launcherMenu = 0x45;
+    launcherIndex = 0;
+    keepWindowClosed = 2;
+    handOverMode = 12;
+    handOverVariant = 2;
+    focusNewSpeaker = 1;
+    launcherText = NULL;
+    launcherTextSize = 0;
+    randomMelody = 0;
+    closeMode = 0;
 }
 
 BOOL ActorTalkRequest::startTask(s32 x) {
@@ -6111,7 +6083,7 @@ void ActorTalkRequest::setPocketItem(u32 a, u32 b, u32 c) {
     keepWindowClosed = c;
 }
 
-void ActorTalkRequest::setPocketFilter(u32 a, u32 b, u32 c) {
+void ActorTalkRequest::setPocketFilter(BOOL (*a)(u16 *, s32), u32 b, u32 c) {
     using namespace nG;
     pocketMask = 0;
     pocketFilter = a;
@@ -6133,20 +6105,20 @@ void ActorTalkRequest::setSubSceneKindArg(u32 a, u32 b, u32 c) {
     keepWindowClosed = c;
 }
 
-void ActorTalkRequest::setSelectionList(u32 a, u32 b, u32 c) {
+void ActorTalkRequest::setSelectionList(void *a, void *b, u32 c) {
     using namespace nG;
     menuPtrArg0 = a;
     menuPtrArg1 = b;
     keepWindowClosed = c;
 }
 
-void ActorTalkRequest::setMenu12Arg(u32 a, u32 b) {
+void ActorTalkRequest::setMenu12Arg(void *a, u32 b) {
     using namespace nG;
     menu12Arg = a;
     keepWindowClosed = b;
 }
 
-void ActorTalkRequest::setSubSceneKind2(u32 a, u32 b, u32 c, u8 d) {
+void ActorTalkRequest::setSubSceneKind2(u32 a, u8 *b, u32 c, u8 d) {
     using namespace nG;
     launcherMenu = a;
     launcherText = b;
@@ -6859,7 +6831,7 @@ BOOL ActorTalkRequest::switchSpeakerSwap() {
             NpcActor *n = (this)->getActorB(speakerIndex);
             if (n != 0) {
                 MsgString9B x;
-                n->getName((u32)&x);
+                n->getName(&x);
                 ((TalkMsgRequest *)(void *)(this))->changeSpeakerName((MsgString *)(void *)(&x), (u32)(((NpcActor *)(n))->getSpeakerGender()));
                 window->nextState = 1;
                 taskStep = 3;
@@ -6959,11 +6931,11 @@ void NpcTalkCtrl::startTalkMessage(NpcActor *ctx) {
     if (o != 0) {
         struct { s32 pad; TalkStartMsg msg; } out;
         MsgString9B x;
-        ctx->getName((u32)&x);
+        ctx->getName(&x);
         MsgString9B *px = &x;
         u8 *r = px->data();
         ((TalkMsgRequest *)(void *)(o))->setSpeakerName(r, (u32)(((NpcActor *)(ctx))->getSpeakerGender()));
-        ((Character *)(void *)(ctx))->attachTalkRequest((s32)(o));
+        ((Character *)(void *)(ctx))->attachTalkRequest(o);
         o->start(&out.msg);
         o->setFileName(out.msg.msgKey);
         o->msgIndex = out.msg.msgIndex;
@@ -7052,7 +7024,7 @@ void NpcTalkCtrl::state0Step1(NpcActor *ctx) {
     if (o != 0 && o->window != 0) {
         if (o->window->state == 0) {
             o->runDeferred();
-            ((Character *)(void *)(ctx))->detachTalkRequest((s32)(o));
+            ((Character *)(void *)(ctx))->detachTalkRequest(o);
             u8 *e = _ZN16ActorTalkRequest15getSpeakerActorEv(o);
             if (e) ((NpcSpeechState *)(e + 0x418))->stopSpeaking();
             a = 0;
@@ -7204,7 +7176,7 @@ void NpcTalkCtrl::state1Step1(NpcActor* p) {
         if (r4->window != NULL) {
             if (r4->window->state == 0) {
                 r4->runDeferred();
-                ((Character *)(p))->detachTalkRequest((s32)(r4));
+                ((Character *)(p))->detachTalkRequest(r4);
                 NpcActor* t = ((ActorTalkRequest *)(r4))->getSpeakerActor();
                 if (t != NULL) {
                     ((NpcSpeechState *)(&t->speechState))->stopSpeaking();

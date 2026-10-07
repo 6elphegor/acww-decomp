@@ -41,7 +41,7 @@ public:
     virtual void onTag09_8();               // 0x5c
     virtual void onTag09_9();               // 0x60
     virtual void onScannedTag(u32 tag);     // 0x64
-    virtual u32 getSpeakerData();           // 0x68
+    virtual void *getSpeakerData();           // 0x68
     virtual s32 getVoiceType();             // 0x6c
     virtual void onWindowClose();           // 0x70
     virtual void onTalkEnd();               // 0x74

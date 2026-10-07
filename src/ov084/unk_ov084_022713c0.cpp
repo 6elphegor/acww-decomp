@@ -389,7 +389,7 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
                     s32 r = ((PlayerId *)(((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId()))->getGender();
                     ((ActorTalkRequest *)(this))->requestGiveItem(&h[0], 0, 5, 0);
                     Pocket_AddItem(&h[0], 0);
-                    ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h[0]), 0, 7);
+                    ((ActorTalkRequest *)(this))->setItemNameSlot(&h[0], 0, 7);
                     if (r == 0) {
                         msg = 3;
                     } else {
@@ -399,7 +399,7 @@ void SpNpcTortimerFireworksTalk::onMessageEnd(u32) {
                     msg = 0xb;
                 }
             } else {
-                ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h[0]), 0, 7);
+                ((ActorTalkRequest *)(this))->setItemNameSlot(&h[0], 0, 7);
                 msg = 5;
             }
             break;

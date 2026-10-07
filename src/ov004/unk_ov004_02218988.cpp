@@ -52,14 +52,12 @@
 class FleaMarketBuyerVillagerTalk;
 class FleaMarketBuyerVillager;
 
-#define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
 #define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
-#define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
@@ -138,7 +136,6 @@ s32 NpcActor_getPlayerActor(void *, s32);
 void *ActorTalkRequest_getChoiceList(void *);
 s32 ChoiceList_getResult(void *self);
 void *VillagerData_getVillagerId(void *);
-void VillagerId_makeFileName(void *, const void *, u32, const void *);
 void ActorTalkRequest_setSubSceneKind(void *, s32, s32);
 void ActorTalkRequest_openSubScene(void *, s32);
 void ActorTalkRequest_requestGiveItem(void *, void *, s32, s32, s32);
@@ -148,7 +145,6 @@ void TalkWindowState_setNextMessage(void *, void *, const void *);
 void Villager_SetFleaMarketVisited(void *, void *);
 void *Villager_FindOrCreateMemory(void *, void *);
 s32 VillagerMemory_RecordTalk(void *, s32, s32, s32);
-void ActorTalkRequest_setItemNameSlot(void *, void *, s32, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void *Villager_GetMemorySlotForNew(void *);
 void VillagerMemory_setReceivedItem(void *, void *);
@@ -890,7 +886,7 @@ void FleaMarketBuyerVillagerTalk::offerPrice() {
                 }
             }
         }
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_022507b0), 0x28, (u32)("ev_fmarket3"));
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_022507b0), 0x28, "ev_fmarket3");
         ((TalkWindowState *)((void *)sp8))->setNextMessage((u8 *)(buf), (void *)(void *)(data_ov004_022507b0));
         setScript(0);
     }
@@ -931,25 +927,25 @@ void FleaMarketBuyerVillagerTalk::start(TalkStartMsg *arg) {
     FleaMarketBuyerVillager *b = villager;
     u32 st = b->visitStage;
     if (st == 5) {
-        ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250800), 0x28, (u32)("q10_wait"));
+        ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((data_ov004_02250800), 0x28, "q10_wait");
         out->fileName = (u32)data_ov004_02250800;
         out->msgIndex = Random_GlobalBelow(3);
     } else if (st == 3) {
-        ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250800), 0x28, (u32)("ev_fmarket3"));
+        ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((data_ov004_02250800), 0x28, "ev_fmarket3");
         out->fileName = (u32)data_ov004_02250800;
         out->msgIndex = Random_GlobalBelow(2) + 2;
     } else {
         switch (st) {
         case 0:
-            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250800), 0x28, (u32)("q10_call"));
+            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((data_ov004_02250800), 0x28, "q10_call");
             out->msgIndex = Random_GlobalBelow(3);
             break;
         case 1:
-            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250800), 0x28, (u32)("ev_fmarket3"));
+            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((data_ov004_02250800), 0x28, "ev_fmarket3");
             out->msgIndex = Random_GlobalBelow(2);
             break;
         case 2: {
-            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250800), 0x28, (u32)("ev_fmarket3"));
+            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((data_ov004_02250800), 0x28, "ev_fmarket3");
             u16 *p = &villager->targetItem;
             BOOL eq;
             if (Item_IsFurniture(p)) {
@@ -969,7 +965,7 @@ void FleaMarketBuyerVillagerTalk::start(TalkStartMsg *arg) {
             if (eq || villager->prevAct == 5) {
                 out->msgIndex = Random_GlobalBelow(2) + 4;
             } else {
-                ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&villager->targetItem), 0, 7);
+                ((ActorTalkRequest *)(this))->setItemNameSlot(&villager->targetItem, 0, 7);
                 out->msgIndex = Random_GlobalBelow(2) + 6;
             }
             break;
@@ -1000,7 +996,7 @@ void FleaMarketBuyerVillagerTalk::onMessageEnd(u32) {
         } else {
             b->visitStage = 4;
         }
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250828), 0x28, (u32)("q_bye"));
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_02250828), 0x28, "q_bye");
         buf = Random_GlobalBelow(3);
         ((TalkWindowState *)(window))->setNextMessage((u8 *)(&buf), (void *)(void *)(data_ov004_02250828));
     } else {
@@ -1070,7 +1066,7 @@ void FleaMarketBuyerVillagerTalk::onChoice(u32) {
         case 7:
         case 10:
         case 11:
-            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((void *)(void *)(data_ov004_022507d8), 0x28, (u32)("ev_fmarket3"));
+            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((data_ov004_022507d8), 0x28, "ev_fmarket3");
             if (st == 0) {
                 ((ActorTalkRequest *)(this))->setSubSceneKind(0x38, 0);
                 ((ActorTalkRequest *)(this))->openSubScene(2);
@@ -1085,7 +1081,7 @@ void FleaMarketBuyerVillagerTalk::onChoice(u32) {
             break;
         case 12:
         case 13:
-            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((void *)(void *)(data_ov004_022507d8), 0x28, (u32)("ev_fmarket3"));
+            ((VillagerId *)(VillagerData_getVillagerId(b->villagerData)))->makeFileName((data_ov004_022507d8), 0x28, "ev_fmarket3");
             if (st == 0) {
                 void *r7 = ((PlayerData *)(PlayerData_GetCurrent()))->getInventory();
                 st = NpcActor_CheckPayoutFits(villager, (void *)offerAmount, 0);

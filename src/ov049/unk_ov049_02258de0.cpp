@@ -57,11 +57,7 @@
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
-#define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
 #define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
-#define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
-#define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
-#define ActorTalkRequest_setTownNameSlot _ZN16ActorTalkRequest15setTownNameSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_setPartnerActor _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
@@ -183,7 +179,6 @@ u32 ChoiceList_getResult(void *p);
 BOOL Talk_IsDramaPending(void *owner, void *buf, s32 n);
 void Talk_AdvanceDrama(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *self, s32 v);
-void ActorTalkRequest_setPocketFilter(void *, void *, u32, u32);
 void ActorTalkRequest_openSubScene(void *self, s32 a);
 void Camera_RestorePrevMode();
 void Camera_SetMode4();
@@ -191,15 +186,12 @@ BOOL func_0204bab8(u16 *);
 void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
 u32 strlen(const char *s);
 s32 strncmp(void *a, const char *b, u32 n);
-void ActorTalkRequest_setItemNameSlot(void *self, void *a, s32 b, s32 c);
 void *AbleSistersPatterns_getPattern(void *a, u32 b);
 void PatternInfo_getTitle(void *a, void *b);
 void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
 const PlayerIdInlineCopy *PatternInfo_getAuthor(void *a);
 const PlayerIdInlineCopy *PlayerData_getPlayerId(...);
 BOOL PlayerId_equals(PlayerIdInlineCopy *a, PlayerIdInlineCopy *b);
-void ActorTalkRequest_setPlayerNameSlot(void *self, void *a, s32 n);
-void ActorTalkRequest_setTownNameSlot(void *self, void *a, s32 n);
 void func_020942c8(PlayerIdInlineCopy *p);
 void func_0206267c(ItemNameStorage *p);
 void func_0206260c(ItemNameStorage *p);
@@ -1140,7 +1132,7 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
     if (getTopic() == 4) {
         price = (s32)Item_GetPrice(&owner->selectedItem);
         ((ActorTalkRequest *)(this))->setNumberSlot(price, 0, 0xa, 1, 0);
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&owner->selectedItem), 0, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&owner->selectedItem, 0, 7);
         if (GameStart_IsActive() != 0) {
             out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
             out->msgIndex = 0x1e;
@@ -1172,12 +1164,12 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
             out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
             out->msgIndex = 0x1d;
         } else if (c.id != d.id || memcmp(&c.name, &d.name, 8) != 0) {
-            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(&a), 2);
-            ((ActorTalkRequest *)(this))->setTownNameSlot((u32)(&c), 3);
+            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)&a, 2);
+            ((ActorTalkRequest *)(this))->setTownNameSlot(&c, 3);
             out->msgIndex = 0x33;
         } else if (a.id0 == b.id0 && memcmp(&a.name0, &b.name0, 8) == 0 && ((PlayerId *)(void *)(&a))->equals((PlayerId *)(void *)(&b)) != 0) {
         } else {
-            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(&a), 2);
+            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)&a, 2);
             out->msgIndex = 0x32;
         }
         TownId_Destruct();
@@ -1653,7 +1645,7 @@ extern "C" BOOL SpNpcMabel_IsDeliveryItem(u16 *p, s32 v) {
 
 void SpNpcMabelTalk::onDeliveryChoice(s32 v) {
     if (v == 0) {
-        ((ActorTalkRequest *)(this))->setPocketFilter((u32)((void *)SpNpcMabel_IsDeliveryItem), 0xd, 0);
+        ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcMabel_IsDeliveryItem, 0xd, 0);
         ((ActorTalkRequest *)(this))->openSubScene(0);
         setScript(9);
     }

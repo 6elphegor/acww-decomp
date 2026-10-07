@@ -104,11 +104,9 @@ s32 func_01ffcb0c(s32);
 }
 
 extern "C" {
-u32 Talk_DetachRequest(s32);
 }
 
 extern "C" {
-u32 Talk_AttachRequestToWindow0(s32);
 }
 
 extern "C" {

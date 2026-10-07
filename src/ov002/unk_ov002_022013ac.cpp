@@ -64,7 +64,6 @@
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
-#define VillagerId_getName _ZN10VillagerId7getNameEj
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define func_02094018 _ZN11MsgString9BD1Ev
 #define func_02094030 _ZN11MsgString9BC1Ev
@@ -80,7 +79,6 @@
 extern "C" {
 void _ZN8GameProc10postCreateEv(void *self, s32 a);
 void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
-void VillagerId_getName(s32 a, void *buf);
 s32 VillagerData_getVillagerId(void *self);
 void func_02094018(void *p);
 void func_02094030(void *p);
@@ -759,7 +757,7 @@ void PopupChoice_CopyResidentName(s32 x, s32 y) {
 void PopupChoice_CopyVillagerIdName(s32 a, s32 b) {
     u32 buf[7];
     new (buf) MsgString9B();
-    ((VillagerId *)(b))->getName((u32)(buf));
+    ((VillagerId *)(b))->getName((MsgString *)buf);
     ((MsgString *)((void *)a))->copy((MsgString *)(buf));
     ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
 }

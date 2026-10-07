@@ -109,11 +109,11 @@ s32 func_01ffcb0c(s32 v1, s32 v2);
 }
 
 extern "C" {
-u32 Talk_DetachRequest(s32);
+void Talk_DetachRequest(TalkMsgRequest *req);
 }
 
 extern "C" {
-u32 Talk_AttachRequestToWindow0(s32);
+void Talk_AttachRequestToWindow0(TalkMsgRequest *req);
 }
 
 extern "C" {
@@ -315,9 +315,9 @@ BOOL Character::acceptsSelfRequestedInteraction(void *a) { return FALSE; }
 
 BOOL Character::getHeldItemPos(VecFx32 *out) { return FALSE; }
 
-void Character::attachTalkRequest(s32 a) { Talk_AttachRequestToWindow0(a); }
+void Character::attachTalkRequest(TalkMsgRequest *req) { Talk_AttachRequestToWindow0(req); }
 
-void Character::detachTalkRequest(s32 a) { Talk_DetachRequest(a); }
+void Character::detachTalkRequest(TalkMsgRequest *req) { Talk_DetachRequest(req); }
 
 void Character::setInteractionRange(s32 v) { interactionRangeSq = func_01ffcb0c(v, v); }
 

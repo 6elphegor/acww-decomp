@@ -120,7 +120,7 @@ extern "C" void LetterParty_GetNameBytes(LetterParty *self, void *out) {
         break;
     case 3:
         VillagerId_CopyFrom(&c, self);
-        ((VillagerId *)(&c))->getName((u32)(&a));
+        ((VillagerId *)(&c))->getName(&a);
         ((EncodedString *)(&b))->fromMsgString((MsgString *)(&a));
         ((EncodedString8 *)(&b))->copyTo(out, 8);
         break;
@@ -147,7 +147,7 @@ extern "C" void LetterParty_GetName(LetterParty *self, void *out) {
     case 3:
     case 5:
         VillagerId_CopyFrom(&a, self);
-        ((VillagerId *)(&a))->getName((u32)(out));
+        ((VillagerId *)(&a))->getName((MsgString *)out);
         break;
     }
 }
@@ -311,7 +311,7 @@ extern "C" void Letter_ComposeVillagerMail(LetterView *self, void *a1, void *a2,
     u32 out;
     if (a6 != 0xb) {
         MsgString9B o;
-        ((VillagerId *)(a4))->getName((u32)(&o));
+        ((VillagerId *)(a4))->getName(&o);
         MailText_SetSlot(a6, &o);
     }
     MailText_LoadLetter(&sMailGreeting, &sMailBody, &sMailSignature, &out, a1, a2);
@@ -322,7 +322,7 @@ extern "C" void Letter_ComposeVillagerMailZ(LetterView *self, void *a1, void *a2
     u32 out;
     if (a9 != 0xb) {
         MsgString9B o;
-        ((VillagerId *)(a7))->getName((u32)(&o));
+        ((VillagerId *)(a7))->getName(&o);
         MailText_SetSlot(a9, &o);
     }
     MailText_LoadLetterZ(&sMailGreeting, &sMailBody, &sMailSignature, &out, a1, a2, a3, a4, a5);
@@ -351,7 +351,7 @@ extern "C" void Letter_ComposeVillagerToVillagerZ(LetterView *self, void *a1, vo
     u32 out;
     if (a9 != 0xb) {
         MsgString9B o;
-        ((VillagerId *)(a7))->getName((u32)(&o));
+        ((VillagerId *)(a7))->getName(&o);
         MailText_SetSlot(a9, &o);
     }
     MailText_LoadLetterZ(&sMailGreeting, &sMailBody, &sMailSignature, &out, a1, a2, a3, a4, a5);

@@ -7,8 +7,10 @@
 #include "talk/TalkStartMsg.h"
 
 class ChoiceList;
+class MsgString;
+class PlayerId;
+class VillagerId;
 class NpcActor;
-struct TalkSubSceneParams;
 
 // Talk request of an actor conversation (0xac bytes; vtable 0x020d7710): TalkMsgRequest plus the two talking actors,
 // emotion state, the deferred task runner and the sub-scene parameters (0x64..0xa8). Base of the SpNpc*Talk /
@@ -43,11 +45,11 @@ public:
     NpcActor *getActorB(u32 idx);
     NpcActor *getActionActor();
     NpcActor *getActor(u32 idx);
-    void setSlotFromString(u32 a, u32 b, u32 c);
-    void setItemNameSlot(u32 a, u32 b, u32 c);
-    void setVillagerNameSlot(u32 a, u32 b);
-    void setPlayerNameSlot(u32 a, u32 b);
-    void setTownNameSlot(u32 a, u32 b);
+    void setSlotFromString(u32 slot, u8 *key, const char *bank);
+    void setItemNameSlot(u16 *item, u32 slot, u32 color);
+    void setVillagerNameSlot(VillagerId *id, u32 slot);
+    void setPlayerNameSlot(PlayerId *id, u32 slot);
+    void setTownNameSlot(void *townId, u32 slot);
     void setDaySlot(u32 a, u32 b);
     void setMonthSlot(u32 a, u32 b);
     void setFixedPointSlot(s32 a, u32 b, s32 c);
@@ -117,18 +119,18 @@ public:
     BOOL subSceneWait();
     BOOL subSceneOpen();
     BOOL subSceneCloseWindow();
-    void setSubSceneKind2(u32 a, u32 b, u32 c, u8 d);
-    void setMenu12Arg(u32 a, u32 b);
-    void setSelectionList(u32 a, u32 b, u32 c);
+    void setSubSceneKind2(u32 menu, u8 *text, u32 textSize, u8 keepClosed);
+    void setMenu12Arg(void *arg, u32 keepClosed);
+    void setSelectionList(void *arg0, void *arg1, u32 keepClosed);
     void setSubSceneKindArg(u32 a, u32 b, u32 c);
     void setSubSceneKind(u32 a, u32 b);
-    void setPocketFilter(u32 a, u32 b, u32 c);
+    void setPocketFilter(BOOL (*filter)(u16 *item, s32 flags), u32 mode, u32 keepClosed);
     void setPocketItem(u32 a, u32 b, u32 c);
     BOOL openSubScene(s32 type);
     void runTask();
     BOOL isTaskRunning();
     BOOL startTask(s32 id);
-    void initSubSceneParams(TalkSubSceneParams *p);
+    void initSubSceneParams();
     void resetTasks();
     void makePlayerTurnTo(NpcActor *actor);
     void makePlayerLookAt(NpcActor *actor);
@@ -142,12 +144,12 @@ public:
     /* 0x58 */ u32 lastEmotion;
     /* 0x5c */ u8 itemActionBusy;
     /* 0x60 */ u32 taskId;                      // running task id (0xc = none)
-    // 0x64..0xa7: sub-scene parameters (TalkSubSceneParams; ActorTalkRequest::initSubSceneParams)
+    // 0x64..0xa7: sub-scene parameters (ActorTalkRequest::initSubSceneParams)
     /* 0x64 */ s32 subSceneType;
-    /* 0x68 */ u32 menuPtrArg0;
-    /* 0x6c */ u32 menuPtrArg1;
-    /* 0x70 */ u32 menu12Arg;
-    /* 0x74 */ u32 pocketFilter;
+    /* 0x68 */ void *menuPtrArg0;
+    /* 0x6c */ void *menuPtrArg1;
+    /* 0x70 */ void *menu12Arg;
+    /* 0x74 */ BOOL (*pocketFilter)(u16 *item, s32 flags);
     /* 0x78 */ u16 pocketMask;
     /* 0x7a */ u16 subSceneItem;
     /* 0x7c */ u32 handOverKind;
@@ -161,10 +163,10 @@ public:
     /* 0x90 */ u8 handOverMode;
     /* 0x91 */ u8 pad_91[3];
     /* 0x94 */ u32 handOverVariant;
-    /* 0x98 */ u32 launcherText;
+    /* 0x98 */ u8 *launcherText;
     /* 0x9c */ u32 launcherTextSize;
-    /* 0xa0 */ u8 focusNewSpeaker;              // switch-speaker task: refocus the camera (TalkSubSceneParams 0x3c)
-    /* 0xa1 */ u8 randomMelody;                 // melody task plays a random melody (requestPlayRandomMelody; TalkSubSceneParams::unk_3d)
+    /* 0xa0 */ u8 focusNewSpeaker;              // switch-speaker task: refocus the camera
+    /* 0xa1 */ u8 randomMelody;                 // melody task plays a random melody (requestPlayRandomMelody)
     /* 0xa2 */ u8 pad_a2[2];
     /* 0xa4 */ u32 closeMode;
     /* 0xa8 */ u8 taskStep;                     // step of the running task (ActorTalkRequest::runTask)

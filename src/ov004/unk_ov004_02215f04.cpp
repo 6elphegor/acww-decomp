@@ -2,6 +2,7 @@
 // mwcc-version: 1.2/base
 // ov004 TU07: .text 0x02215f04-0x02216ccc (classes BirthdayGuestVillager and its member BirthdayGuestVillagerTalk)
 #include "types.h"
+#include "npc/VillagerId.h"
 #include "gfx/VecFx32.h"
 // The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
 #include "Unk_020d8c7c.h"
@@ -121,11 +122,9 @@ public:
 
 
 
-#define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define ActorTalkRequest_setVillagerNameSlot _ZN16ActorTalkRequest19setVillagerNameSlotEjj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
@@ -178,11 +177,9 @@ void Ground_UnlinkUnit(s32, s32);
 s32 Ground_GetWalkLinks(s32, s32);
 void FieldPos_FromUnitCenter(void *, s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
-void VillagerId_makeFileName(void *, void *, u32, u32);
 void *Scene_GetVillagerHouse();
 s32 SaveVillagers_IsOccupied(void *, void *);
 void *SaveVillagers_Get(void *, void *);
-s32 ActorTalkRequest_setVillagerNameSlot(void *, void *, u32);
 s32 func_0201bd20(void *, u32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 s32 NpcActor_getAngleTo(void *, void *);
@@ -457,7 +454,7 @@ void BirthdayGuestVillagerTalk::attachOwner(VillagerActor *owner) {
 void BirthdayGuestVillagerTalk::start(TalkStartMsg *arg) {
     BirthdayGuestVillager *o = villager;
     u32 *out = (u32 *)arg;
-    VillagerId_makeFileName(VillagerData_getVillagerId(o->villagerData), sBirthdayGuestMsgFile, 0x28, (u32)"ev_nbirth");
+    ((VillagerId *)VillagerData_getVillagerId(o->villagerData))->makeFileName(sBirthdayGuestMsgFile, 0x28, "ev_nbirth");
     out[0] = (u32)sBirthdayGuestMsgFile;
     s32 r6 = 2;
     if (isNotTalkedYet()) {
@@ -483,13 +480,13 @@ void BirthdayGuestVillagerTalk::start(TalkStartMsg *arg) {
         void *p = Scene_GetVillagerHouse();
         if (SaveVillagers_IsOccupied(gSaveVillagers, p)) {
             MsgString9B loc;
-            ((ActorTalkRequest *)(&o->talk))->setVillagerNameSlot((u32)(VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p))), 1);
+            ((ActorTalkRequest *)(&o->talk))->setVillagerNameSlot((VillagerId *)VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p)), 1);
         }
         BirthdayGuestVillager *o2 = villager;
         if (o2) {
             void *m = o2->villagerData;
             if (m) {
-                ((ActorTalkRequest *)(&o->talk))->setVillagerNameSlot((u32)(VillagerData_getVillagerId(m)), 0);
+                ((ActorTalkRequest *)(&o->talk))->setVillagerNameSlot((VillagerId *)VillagerData_getVillagerId(m), 0);
             }
         }
     }

@@ -159,10 +159,10 @@ void Atm::setPointTexts() {
         window->setSlot(1, &obj);
         if (NookPoints_GetRank(*p) != 0) {
             buf[0] = NookPoints_GetRank(*p) - 1;
-            window->setSlotFromString(2, (s32)&buf[0], (s32)sAtmStringBankPtr);
+            window->setSlotFromString(2, &buf[0], sAtmStringBankPtr);
         }
         buf[1] = NookPoints_GetRank(*p);
-        window->setSlotFromString(3, (s32)&buf[1], (s32)sAtmStringBankPtr);
+        window->setSlotFromString(3, &buf[1], sAtmStringBankPtr);
     }
 }
 
@@ -235,7 +235,7 @@ void Atm::execTalkAct00() {}
 
 BOOL Atm::enterTalkAct01() {
     AtmTalkStackPad pad;
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     setFileName(sAtmMsgFilePtr);
     msgIndex = 0;
     setPointTexts();
@@ -258,7 +258,7 @@ BOOL Atm::enterTalkAct02() {
 void Atm::execTalkAct02() {
     if (window) {
         if (window->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             TalkRequest_SetTargetDone(this);
         }
     }

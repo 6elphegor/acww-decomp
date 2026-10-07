@@ -15,7 +15,7 @@ public:
     virtual BOOL preCreate();
     virtual BOOL onDelete();
     virtual BOOL preDelete();
-    virtual void getName(u32 a);
+    virtual void getName(MsgString *buf);
     virtual u32 getGender();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();

@@ -18,6 +18,12 @@ class MsgString193;
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifndef PROTO_LOCAL_VillagerSync_Act3C01
+void VillagerSync_Act3C01(void *villager);
+#endif
+#ifndef PROTO_LOCAL_VillagerSync_Act3C02
+void VillagerSync_Act3C02(void *villager);
+#endif
 #ifndef PROTO_LOCAL_Bbs_AddPost
 void Bbs_AddPost(void *dst);
 #endif
@@ -361,25 +367,25 @@ void CommVillager_UnpackHeader(s32 *a, s32 *b, u8 *p);
 void CommSend_VillagerMemoryInit(s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_MemoryInit
-void VillagerSync_MemoryInit(u32 a, u32 b);
+void VillagerSync_MemoryInit(void *villager, u32 b);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerMemorySetPlayer
 void CommSend_VillagerMemorySetPlayer(u32 a, u32 b);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_MemorySetPlayer
-void VillagerSync_MemorySetPlayer(u32 a, u32 b);
+void VillagerSync_MemorySetPlayer(void *villager, u32 b);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerImpression
 void CommSend_VillagerImpression(u32 a, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Impression
-void VillagerSync_Impression(u32 a, u32 b, u32 c);
+void VillagerSync_Impression(void *villager, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerFriendship
 void CommSend_VillagerFriendship(u32 a, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Friendship
-void VillagerSync_Friendship(u32 a, u32 b, u32 c);
+void VillagerSync_Friendship(void *villager, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_CommVillager_PackReceivedItem
 void CommVillager_PackReceivedItem(u8 *out, s32 a, s32 b, u16 *c);
@@ -388,10 +394,10 @@ void CommVillager_PackReceivedItem(u8 *out, s32 a, s32 b, u16 *c);
 void CommVillager_UnpackReceivedItem(s32 *o0, s32 *o1, u16 *o2, u8 *src);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerReceivedItem
-void CommSend_VillagerReceivedItem(u32 a, u32 b, u32 c);
+void CommSend_VillagerReceivedItem(u32 a, u32 b, u16 *c);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_ReceivedItem
-void VillagerSync_ReceivedItem(u32 a, u32 b, u32 c);
+void VillagerSync_ReceivedItem(void *villager, u32 b, u16 *c);
 #endif
 #ifndef PROTO_LOCAL_CommVillager_PackAct3C
 void CommVillager_PackAct3C(u8 *out, s32 a, s32 b, u32 c);
@@ -403,25 +409,19 @@ void CommVillager_UnpackAct3C(s32 *o0, u8 *o1, u8 *o2, u8 *src);
 void CommSend_VillagerAct3C(u32 a, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Act3C
-void VillagerSync_Act3C(u32 a, u32 b, u32 c);
+void VillagerSync_Act3C(void *villager, u32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Act3C00
-void VillagerSync_Act3C00(u32 a, u32 b);
-#endif
-#ifndef PROTO_LOCAL_VillagerSync_Act3C01
-void VillagerSync_Act3C01(u32 a);
-#endif
-#ifndef PROTO_LOCAL_VillagerSync_Act3C02
-void VillagerSync_Act3C02(u32 a);
+void VillagerSync_Act3C00(void *villager, u32 b);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Act3C03
-void VillagerSync_Act3C03(u32 a, u32 b);
+void VillagerSync_Act3C03(void *villager, u32 b);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Act3C04
-void VillagerSync_Act3C04(u32 a, u32 b);
+void VillagerSync_Act3C04(void *villager, u32 b);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Act3C05
-void VillagerSync_Act3C05(u32 a, u32 b);
+void VillagerSync_Act3C05(void *villager, u32 b);
 #endif
 #ifndef PROTO_LOCAL_CommVillager_PackAct3D
 void CommVillager_PackAct3D(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e);
@@ -430,16 +430,16 @@ void CommVillager_PackAct3D(u8 *out, s32 a, u32 b, u16 *c, s32 d, u8 e);
 void CommVillager_UnpackAct3D(s32 *o0, u8 *o1, u16 *o2, s32 *o3, u8 *o4, u8 *src);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerAct3D
-void CommSend_VillagerAct3D(u32 a, u32 b, u32 c, u32 d, u8 e);
+void CommSend_VillagerAct3D(u32 a, u32 b, u16 *c, u32 d, u8 e);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Act3D
-void VillagerSync_Act3D(u32 a, u32 b, u32 c, u32 d, u8 e);
+void VillagerSync_Act3D(void *villager, u32 b, u16 *c, u32 d, u8 e);
 #endif
 #ifndef PROTO_LOCAL_CommSend_VillagerAct3F
 void CommSend_VillagerAct3F(u32 a, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Act3F
-void VillagerSync_Act3F(u32 a, u16 *b);
+void VillagerSync_Act3F(void *villager, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_CommVillager_PackItem
 void CommVillager_PackItem(u8 *out, s32 a, u16 *b);
@@ -451,7 +451,7 @@ void CommVillager_UnpackItem(s32 *out, u16 *dst, u8 *src);
 void CommSend_VillagerShirt(u32 a, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Shirt
-void VillagerSync_Shirt(u32 a, u16 *b);
+void VillagerSync_Shirt(void *villager, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_CommVillager_PackItems
 void CommVillager_PackItems(u8 *out, s32 a, u16 *src);
@@ -463,7 +463,7 @@ void CommVillager_UnpackItems(s32 *out, u16 *dst, u8 *src);
 void CommSend_VillagerItems(u32 a, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_VillagerSync_Items
-void VillagerSync_Items(u32 a, u16 *b);
+void VillagerSync_Items(void *villager, u16 *b);
 #endif
 #ifndef PROTO_LOCAL_BbsPost_GetText
 u8 *BbsPost_GetText(BbsPost *p);

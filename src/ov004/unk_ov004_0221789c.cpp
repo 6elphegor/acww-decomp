@@ -49,11 +49,9 @@
 
 class FleaMarketSellerVillager;
 
-#define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
-#define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define ActorTalkRequest_getChoiceList _ZN16ActorTalkRequest13getChoiceListEv
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
@@ -150,7 +148,6 @@ void *Scene_GetTouchPicker();
 void TouchPick_GetGroundPos(void *a, void *b);
 s32 Villager_HasShownFurnitureAt(void *o, s32 *xy, u32 a, u32 b);
 void *ChoiceList_getResult(void *o);
-u32 VillagerId_makeFileName(void *a, void *b, u32 c, const void *d);
 void *FtrActor_GetFtrIndex(void *self);
 void TalkWindowState_setNextMessage(void *a, u8 *b, void *c);
 void *PlayerData_getPlayerId(void *o);
@@ -162,7 +159,6 @@ void func_ov004_022180e0(void *o);
 s32 Item_GetPrice(void *o);
 void ActorTalkRequest_setNumberSlot(void *o, s32 a, u32 b, u32 c, u32 d, u32 e);
 s32 Villager_CountFurnitureLike(void *o, u16 *p);
-void ActorTalkRequest_setItemNameSlot(void *o, void *a, u32 b, u32 c);
 void *ActorTalkRequest_getChoiceList(void *o);
 }
 
@@ -609,7 +605,7 @@ void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
         VillagerMemory_RecordTalk(r7, 0, 0, 0);
     }
     if (villager->talkStage == 3) {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, (u32)("ev_fmarket2"));
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, "ev_fmarket2");
         out->fileName = (u32)data_ov004_022506f0;
         out->msgIndex = Random_GlobalBelow(3) + 3;
         return;
@@ -626,7 +622,7 @@ void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
     }
     if (!eq) {
         s32 r6 = 0;
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&villager->saleItem), r6, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&villager->saleItem, r6, 7);
         salePrice = Item_GetPrice(&villager->saleItem);
         if (salePrice < 10) {
             salePrice = 10;
@@ -659,24 +655,24 @@ void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
             r6 = 10 - Villager_CountFurnitureLike(villager->villagerData, &w);
         }
         if (!(villager->saleUnitX != -1 && Pocket_FindEmpty() != -1 && r6 > 3 && NpcActor_CanPlayerPay(villager, salePrice))) {
-            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, (u32)("q11_trade4"));
+            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, "q11_trade4");
         } else {
-            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, (u32)("q11_trade3"));
+            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, "q11_trade3");
         }
         out->fileName = (u32)data_ov004_022506f0;
         out->msgIndex = Random_GlobalBelow(3);
     } else {
         switch (villager->talkStage) {
         case 0:
-            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, (u32)("ev_fmarket2"));
+            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, "ev_fmarket2");
             out->msgIndex = Random_GlobalBelow(3);
             break;
         case 1:
-            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, (u32)("q11_trade1"));
+            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, "q11_trade1");
             out->msgIndex = Random_GlobalBelow(3);
             break;
         case 2:
-            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, (u32)("ev_fmarket2"));
+            ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506f0, 0x28, "ev_fmarket2");
             out->msgIndex = Random_GlobalBelow(3) + 6;
             break;
         }
@@ -709,11 +705,11 @@ void FleaMarketSellerVillagerTalk::onChoice(u32) {
             s = data_ov004_022506c8;
             r4 = (u8)Random_GlobalBelow(3);
             if (r6 == 0) {
-                ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506c8, 0x28, (u32)("q11_trade2"));
+                ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506c8, 0x28, "q11_trade2");
                 Hud_Hide();
                 villager->talkStage = 2;
             } else {
-                ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506c8, 0x28, (u32)("q_no"));
+                ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506c8, 0x28, "q_no");
             }
             break;
         }
@@ -723,10 +719,10 @@ void FleaMarketSellerVillagerTalk::onChoice(u32) {
         case 1:
         case 2:
             if (r6 == 0) {
-                ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506c8, 0x28, (u32)("q11_yes"));
+                ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506c8, 0x28, "q11_yes");
                 sellFurniture();
             } else {
-                ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506c8, 0x28, (u32)("q11_no"));
+                ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName(data_ov004_022506c8, 0x28, "q11_no");
             }
             s = data_ov004_022506c8;
             r4 = (u8)Random_GlobalBelow(3);

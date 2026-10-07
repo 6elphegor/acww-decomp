@@ -8,7 +8,6 @@
 #include "npc/VillagerId.h"
 #include "actor/Actor.h"
 #include "nitro/io_access.h"
-#define PROTO_LOCAL_sPersonalityPrefixes  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02105d50.h"
 #include "proto/autoload_2/unk_0210fa84.h"
@@ -53,7 +52,6 @@ extern u32 sPersonalityFileNameFmt[];
 }
 
 extern "C" {
-extern uptr sPersonalityPrefixes[];
 }
 
 extern "C" {

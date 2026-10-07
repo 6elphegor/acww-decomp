@@ -449,8 +449,6 @@ BOOL _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(PlayerActor *, void *)
 void *_ZN19PlayerActionRequestD1Ev(void *);
 BOOL TalkRequest_AddPlayerMessage();
 void TalkRequest_FinishPlayerMessage();
-void _ZN9Character17attachTalkRequestEi(PlayerActor *, MsgRequest *);
-void _ZN9Character17detachTalkRequestEi(PlayerActor *, MsgRequest *);
 void Camera_SetMode4();
 void Camera_SetModeDefault();
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
@@ -640,8 +638,6 @@ void _ZN11PlayerActor15netSyncNearUnitEPi(void *, Unk_02006d14_Pair* p);
 void _ZN11PlayerActor13setActionFlagEj(void *, u32 id);
 void _ZN11PlayerActor15clearActionFlagEj(void *, u32 id);
 u8 _ZN12Unk_0200769421getActionDonePriorityEj(void *, u32 id);
-void _ZN9Character17attachTalkRequestEi(void *, MsgRequest *p);
-void _ZN9Character17detachTalkRequestEi(void *, MsgRequest *p);
 void _ZN11PlayerActor11calcHandMtxEv(void *);
 void _ZN11PlayerActor18updateShownItemPosEjz(void *, u32 v);
 void _ZN11PlayerActor12turnToCameraEi(void *, u32 v);
@@ -674,8 +670,6 @@ void VillagerTrend_NotifyUnk6(void* p);
 extern void* gSceneBlockMap;
 BOOL Item_IsFurniture(void* p);
 u32 Item_GetFurnitureIndex(void* p);
-void _ZN9Character17attachTalkRequestEi(PlayerActor *a, MsgRequest *b);
-void _ZN9Character17detachTalkRequestEi(PlayerActor *a, MsgRequest *b);
 void _ZN10MsgRequest11setFileNameEPKc(void* p, void* q);
 s32 _s32_div_f(s32 a, s32 b);
 u32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void* p, u32 id);
@@ -1883,7 +1877,7 @@ void PlayerActor::pickUpReachUpdate() {
     case 3:
         if (TalkRequest_AddPlayerMessage()) {
             *st = 4;
-            ((Character *)(void *)(((PlayerActor *)this)))->attachTalkRequest((s32)(((PlayerActor *)this)));
+            ((Character *)(void *)(((PlayerActor *)this)))->attachTalkRequest((PlayerActor *)this);
             ((PlayerActor *)(this))->setActionFlag(0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, &sPlayerActorMsgFile);
             ((PlayerActor *)this)->msgIndex = 0;
@@ -1900,7 +1894,7 @@ void PlayerActor::pickUpReachUpdate() {
     case 5:
         if (((PlayerActor *)this)->window != NULL) {
             if (((PlayerActor *)this)->window->state == 0) {
-                ((Character *)(void *)(((PlayerActor *)this)))->detachTalkRequest((s32)(((PlayerActor *)this)));
+                ((Character *)(void *)(((PlayerActor *)this)))->detachTalkRequest((PlayerActor *)this);
                 ((PlayerActor *)(this))->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 *st = 6;
@@ -1915,7 +1909,7 @@ void PlayerActor::pickUpReachUpdate() {
     case 7:
         if (TalkRequest_AddPlayerMessage()) {
             *st = 8;
-            ((Character *)(void *)(((PlayerActor *)this)))->attachTalkRequest((s32)(((PlayerActor *)this)));
+            ((Character *)(void *)(((PlayerActor *)this)))->attachTalkRequest((PlayerActor *)this);
             ((PlayerActor *)(this))->setActionFlag(0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, &sPlayerActorErrorMsgFile);
             ((PlayerActor *)this)->msgIndex = 1;
@@ -1932,7 +1926,7 @@ void PlayerActor::pickUpReachUpdate() {
     case 9:
         if (((PlayerActor *)this)->window != NULL) {
             if (((PlayerActor *)this)->window->state == 0) {
-                ((Character *)(void *)(((PlayerActor *)this)))->detachTalkRequest((s32)(((PlayerActor *)this)));
+                ((Character *)(void *)(((PlayerActor *)this)))->detachTalkRequest((PlayerActor *)this);
                 ((PlayerActor *)(this))->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 ((PlayerActor *)this)->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, ((PlayerActor *)this)->action);
@@ -1962,7 +1956,7 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
                 HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0x13, 3, 0);
             }
             *state = 7;
-            ((Character *)(this))->attachTalkRequest((s32)(((PlayerActor *)this)));
+            ((Character *)(this))->attachTalkRequest((PlayerActor *)this);
             ((PlayerActor *)(this))->setActionFlag(0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, sPlayerActorErrorMsgFile);
             ((PlayerActor *)this)->msgIndex = 0x12;
@@ -1977,7 +1971,7 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
                 HeldItemModel_PlayAnim(&((PlayerActor *)this)->heldItemModel, 0x13, 3, 0);
             }
             *state = 1;
-            ((Character *)(this))->attachTalkRequest((s32)(((PlayerActor *)this)));
+            ((Character *)(this))->attachTalkRequest((PlayerActor *)this);
             ((PlayerActor *)(this))->setActionFlag(0x11);
             _ZN10MsgRequest11setFileNameEPKc((u8*)((PlayerActor *)this) + 0xec, sPlayerActorMsgFile);
             ((PlayerActor *)this)->msgIndex = 2;
@@ -2013,7 +2007,7 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
             ((PlayerActor *)this)->bodyModel.frameStep = 0x1000;
             if (MenuCtrl_IsResultOk()) {
                 *state = 6;
-                ((Character *)(this))->detachTalkRequest((s32)(((PlayerActor *)this)));
+                ((Character *)(this))->detachTalkRequest((PlayerActor *)this);
                 ((PlayerActor *)(this))->clearActionFlag(0x11);
                 TalkRequest_FinishPlayerMessage();
                 break;
@@ -2035,7 +2029,7 @@ void PlayerActor::pickUpUpdateStore(u8* state, u8 flag) {
     case 5:
         if (!((PlayerActor *)this)->window) break;
         if (((PlayerActor *)this)->window->state) break;
-        ((Character *)(this))->detachTalkRequest((s32)(((PlayerActor *)this)));
+        ((Character *)(this))->detachTalkRequest((PlayerActor *)this);
         ((PlayerActor *)(this))->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         *state = 6;
@@ -2220,7 +2214,7 @@ void PlayerActor::act76Update() {
     case 0:
         if (TalkRequest_AddPlayerMessage()) {
             *st = 1;
-            ((Character *)(void *)(this))->attachTalkRequest((s32)(this));
+            ((Character *)(void *)(this))->attachTalkRequest(this);
             (this)->setActionFlag(0x11);
             switch (kind) {
             case 0:
@@ -2278,7 +2272,7 @@ void PlayerActor::act76Update() {
         if (window->state != 0) {
             break;
         }
-        ((Character *)(void *)(this))->detachTalkRequest((s32)(this));
+        ((Character *)(void *)(this))->detachTalkRequest(this);
         (this)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         if (((CommManager *)(g))->isLocalSlot(sessionSlot)) {

@@ -115,8 +115,6 @@ class ChoiceList;
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define Character_detachTalkRequest _ZN9Character17detachTalkRequestEi
-#define Character_attachTalkRequest _ZN9Character17attachTalkRequestEi
 #define TalkWindowState_detachRequest _ZN15TalkWindowState13detachRequestEv
 #define TalkWindowState_attachRequest _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
@@ -156,8 +154,6 @@ void AnimModel_drawAnimated(void *p, s32 a);
 void AnimModel_stepAnim(void *p);
 BOOL AnimModel_allocAnmObj(void *p, s32 v);
 BOOL AnimFrameCtrl_isFinished(void *p);
-void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
-void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
 void TalkWindowState_detachRequest(TalkWindowState *p);
 void TalkWindowState_attachRequest(TalkWindowState *p, TalkMsgRequest *sec);
 ChoiceList *TalkWindowState_getChoiceList(TalkWindowState *p);

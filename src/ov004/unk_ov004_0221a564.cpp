@@ -46,12 +46,10 @@
 
 class SickVillager;
 
-#define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
-#define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define NpcActionCtrl_requestStand _ZN13NpcActionCtrl12requestStandEjt
 #define NpcActionCtrl_requestEmotion _ZN13NpcActionCtrl14requestEmotionEiht
@@ -134,7 +132,6 @@ void ChoiceList_loadTexts(void *);
 void TalkWindowState_openChoices(void *, s32);
 s32 TalkWindowState_setNextMessage(void *, void *, const void *);
 void *VillagerData_getVillagerId(void *);
-void VillagerId_makeFileName(void *, const void *, s32, const void *);
 s32 TalkRequest_SetTargetDone(void *);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
@@ -151,7 +148,6 @@ s32 Vec_DistXZ(void *, void *);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 void *SaveVillagers_GetUnk3830(void *);
 void *SickVillagerRecord_getTodaysVisitor(void *);
-void ActorTalkRequest_setPlayerNameSlot(void *, void *, s32);
 BOOL SickVillager_IsMedicine(u16 *p, s32 x);
 BOOL SickVillager_HasCurrentVisitor(void *o);
 void SickVillager_SetCurrentVisitor();
@@ -523,9 +519,9 @@ void SickVillagerTalk::start(TalkStartMsg *out_) {
     out->fileName = (u32)data_ov004_0225095c;
     getSickStage();
     if (villager->mood.severeSickness == 0) {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_0225095c), 0x28, (u32)("q12_ask1_2"));
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_0225095c), 0x28, "q12_ask1_2");
     } else {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_0225095c), 0x28, (u32)("q12_ask3_5"));
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_0225095c), 0x28, "q12_ask3_5");
     }
     villager->isAnswered = 0;
     if (SickVillager_HasCurrentVisitor(this)) {
@@ -541,7 +537,7 @@ void SickVillagerTalk::onMessageStart(u32) {
     void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
     if (p != 0) {
         if (SickVillagerRecord_getTodaysVisitor(p) != 0) {
-            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(SickVillagerRecord_getTodaysVisitor(p)), 0);
+            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)SickVillagerRecord_getTodaysVisitor(p), 0);
         }
     }
 }
@@ -609,16 +605,16 @@ void SickVillagerTalk::onChoice(u32) {
     u8 buf[6];
     s32 t = ((ChoiceList *)(((TalkWindowState *)(villager->talk.window))->getChoiceList()))->getResult();
     if (villager->mood.severeSickness == 0) {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250984), 0x28, (u32)("q12_sick1_2"));
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_02250984), 0x28, "q12_sick1_2");
         villager->isAnswered = 1;
     } else {
-        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_02250984), 0x28, (u32)("q12_sick3_5"));
+        ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_02250984), 0x28, "q12_sick3_5");
         villager->isAnswered = 1;
     }
     if (villager->hasVisitor == 0) {
         switch (t) {
         case 0:
-            if (MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine) != 0) {
+            if (MenuCtrl_BuildPocketMask(SickVillager_IsMedicine) != 0) {
                 buf[0] = Random_GlobalBelow(3) + 7;
                 ((TalkWindowState *)(villager->talk.window))->setNextMessage((u8 *)(&buf[0]), (void *)(void *)(data_ov004_02250984));
             } else {
@@ -839,7 +835,7 @@ BOOL SickVillager::setupAct05() {
 void SickVillager::mainAct05() {
     TalkWindowState *m = talk.window;
     if (m->state == 5) {
-        if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine), 0xd) != 0) {
+        if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask(SickVillager_IsMedicine), 0xd) != 0) {
             changeAct(6);
         }
     }

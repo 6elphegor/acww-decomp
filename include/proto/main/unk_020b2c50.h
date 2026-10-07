@@ -6,6 +6,7 @@
 #include "types.h"
 #ifdef __cplusplus
 #include "talk/MsgString.h"
+#include "talk/MsgStringBase.h"
 #include "types.h"
 class ArticleCacheEntry;
 class MsgString256;
@@ -75,7 +76,7 @@ BOOL String_GetMonthName(MsgString *buf, u8 v);
 BOOL String_GetDayOrdinal(MsgString *buf, u8 v);
 #endif
 #ifndef PROTO_LOCAL_String_MakeNickname
-BOOL String_MakeNickname(MsgString *buf, u32 x, u8 *key);
+BOOL String_MakeNickname(MsgString *buf, MsgStringBase *name, u8 *key);
 #endif
 #ifndef PROTO_LOCAL_String_CensorTaboo
 BOOL String_CensorTaboo(MsgString *buf);

@@ -301,7 +301,7 @@ void SpNpcTortimerFlowerFestTalk::onMessageEnd(u32) {
         if (msgIndex == 7) {
             ((ActorTalkRequest *)(this))->requestGiveItem(&giftItem, 0, 5, 0);
             Pocket_AddItem(&giftItem, 0);
-            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&giftItem), 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot(&giftItem, 0, 7);
             msg = 8;
         }
         if (msg != 0xff) {

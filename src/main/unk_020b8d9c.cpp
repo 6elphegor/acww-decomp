@@ -1096,7 +1096,6 @@ extern "C" {
 s32 _ZN15LostChildRecord9getTownIdEv(s32 a);
 }
 extern "C" {
-s32 _ZN16ActorTalkRequest15setTownNameSlotEjj(void *p, s32 a, s32 b);
 }
 extern "C" {
 s32 _ZN10PlayerData7setFlagEj(s32 a, s32 b);

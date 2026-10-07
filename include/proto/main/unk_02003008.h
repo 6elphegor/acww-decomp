@@ -18,7 +18,7 @@ u32 VillagerId_GetPersonality(VillagerId *o);
 u32 Villager_PersonalityToGender(u32 t);
 #endif
 #ifndef PROTO_LOCAL_Villager_MakePersonalityFileName
-void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
+void Villager_MakePersonalityFileName(void *buf, u32 size, const char *key, u32 idx);
 #endif
 #ifndef PROTO_LOCAL_Villager_PersonalityToVoiceType
 u32 Villager_PersonalityToVoiceType(u32 t);

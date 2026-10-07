@@ -10,7 +10,6 @@
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"
 #include "actor/Actor.h"
-#define PROTO_LOCAL_sPersonalityPrefixes  // declared below: the shared prototype conflicts with the calls here
 #include "actor/ActorProfile.h"
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02105d50.h"
@@ -62,7 +61,6 @@ extern u32 sPersonalityFileNameFmt[];
 }
 
 extern "C" {
-extern uptr sPersonalityPrefixes[];
 }
 
 extern "C" {
@@ -199,7 +197,7 @@ extern "C" {
 }
 
 extern "C" {
-u32 Villager_GetSpeciesName(u32 a, u32 b);
+BOOL Villager_GetSpeciesName(MsgString *buf, u32 x);
 }
 
 extern "C" {
@@ -254,9 +252,9 @@ extern "C" u32 VillagerId_IsValidSpecies(u32 id) {
     return FALSE;
 }
 
-u32 VillagerId::getName(u32 arg) {
-    u32 r = 0;
-    if (isValid() == 1) r = Villager_GetSpeciesName(arg, species);
+BOOL VillagerId::getName(MsgString *buf) {
+    BOOL r = FALSE;
+    if (isValid() == 1) r = Villager_GetSpeciesName(buf, species);
     return r;
 }
 

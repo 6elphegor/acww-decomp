@@ -61,15 +61,12 @@
 #include "proto/ov050/unk_ov050_02258de0.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
-#define VillagerId_getName _ZN10VillagerId7getNameEj
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define ActorTalkRequest_requestTakeItem _ZN16ActorTalkRequest15requestTakeItemEPtjjj
 #define ActorTalkRequest_requestGiveItem _ZN16ActorTalkRequest15requestGiveItemEPtjjj
 #define ActorTalkRequest_setSubSceneKind _ZN16ActorTalkRequest15setSubSceneKindEjj
-#define ActorTalkRequest_setPocketFilter _ZN16ActorTalkRequest15setPocketFilterEjjj
 #define ActorTalkRequest_openSubScene _ZN16ActorTalkRequest12openSubSceneEi
-#define ActorTalkRequest_setItemNameSlot _ZN16ActorTalkRequest15setItemNameSlotEjjj
 #define ActorTalkRequest_setDaySlot _ZN16ActorTalkRequest10setDaySlotEjj
 #define ActorTalkRequest_setMonthSlot _ZN16ActorTalkRequest12setMonthSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
@@ -93,7 +90,6 @@
 #define HouseData_orderRoofPaint _ZN9HouseData14orderRoofPaintEj
 #define HouseData_getLevel _ZN9HouseData8getLevelEv
 #define HouseData_isUpgradePending _ZN9HouseData16isUpgradePendingEv
-#define TalkWindowState_setSlotFromString _ZN15TalkWindowState17setSlotFromStringEiii
 #define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -412,17 +408,14 @@ extern Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];
 s32 VEC_Mag(void *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *Actor_findByProfile(s32 a, s32 b);
-void VillagerId_getName(void *p, void *buf);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 s32 NpcTalkCtrl_isBusy(void *p);
 void ActorTalkRequest_requestTakeItem(void *self, u16 *a, u32 b, u32 c, u32 d);
 void ActorTalkRequest_requestGiveItem(void *self, u16 *p, s32 b, s32 c, s32 d);
 void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
-void ActorTalkRequest_setPocketFilter(void *self, void *fn, u32 b, u32 c);
 s32 ActorTalkRequest_openSubScene(void *self, s32 a);
 void ActorTalkRequest_setDaySlot(void *self, u32 a, u32 b);
 void ActorTalkRequest_setMonthSlot(void *self, u32 a, u32 b);
-void ActorTalkRequest_setItemNameSlot(void *self, u16 *p, s32 a, s32 b);
 void ActorTalkRequest_setNumberSlot(void *self, ...);
 void *ActorTalkRequest_getChoiceList(void *self);
 NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
@@ -462,7 +455,6 @@ s32 HouseData_getDebt(void *g);
 void HouseData_orderRoofPaint(void *g, u32 a);
 s32 HouseData_getLevel(void *m);
 BOOL HouseData_isUpgradePending(void *p);
-void TalkWindowState_setSlotFromString(void *o, s32 a, void *b, void *c);
 void TalkWindowState_setSlot(void *self, s32 id, void *buf);
 void TalkWindowState_setNextMessage(void *o, void *p, void *q);
 void func_02071e74(void *self);
@@ -2011,7 +2003,7 @@ void SpNpcNookShopTalk::handleCatalogMenu() {
             price = (s32)Item_GetMemberPrice(&ownerNpc->selectedItem);
             if (price) {
                 ((ActorTalkRequest *)(this))->setNumberSlot(price, 0, 10, 1, 0);
-                ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&ownerNpc->selectedItem), 1, 7);
+                ((ActorTalkRequest *)(this))->setItemNameSlot(&ownerNpc->selectedItem, 1, 7);
                 m.msgIndex = 0x1a;
             }
         }
@@ -2311,7 +2303,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
             u8 s = ownerNpc->arbeitPrompted;
             if (s == 0 || s == 2) {
                 if (c) {
-                    ((VillagerId *)(c))->getName((u32)(&o));
+                    ((VillagerId *)(c))->getName(&o);
                     ((TalkWindowState *)(window))->setSlot(0, &o);
                 }
                 out->msgIndex = 0x21;
@@ -2325,7 +2317,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(TalkStartMsg *out) {
         }
         if (ErrandRecord_getStep(b) == 1) {
             if (c) {
-                ((VillagerId *)(c))->getName((u32)(&o));
+                ((VillagerId *)(c))->getName(&o);
                 ((TalkWindowState *)(window))->setSlot(0, &o);
             }
             out->msgIndex = 0x27;
@@ -2578,7 +2570,7 @@ void SpNpcNookShopTalk::arbeitStartLetterTask(void *h) {
         r = PlayerErrandSlot_GetVillager(r, 1);
         if (r) {
             new (buf) MsgString9B();
-            ((VillagerId *)(r))->getName((u32)(buf));
+            ((VillagerId *)(r))->getName((MsgString *)buf);
             ((TalkWindowState *)(window))->setSlot(0, buf);
             ((MsgString9B *)(buf))->MsgString9B::~MsgString9B();
         }
@@ -2905,7 +2897,7 @@ void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
                         idx = -1;
                     }
                     l.roofColor = idx;
-                    ((TalkWindowState *)(window))->setSlotFromString(2, (s32)(&l.roofColor), (s32)((void *)"st_roof_paint"));
+                    ((TalkWindowState *)(window))->setSlotFromString(2, &l.roofColor, "st_roof_paint");
                 }
             }
             case 8:
@@ -2919,7 +2911,7 @@ void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
                 if (!Unk_ov050_0225a888_Same(&ownerNpc->selectedItem, &t3)) {
                     price = Item_GetShopPrice(&ownerNpc->selectedItem);
                     ((ActorTalkRequest *)(this))->setNumberSlot(price, 4, 10, 1, 0);
-                    ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&ownerNpc->selectedItem), 1, 7);
+                    ((ActorTalkRequest *)(this))->setItemNameSlot(&ownerNpc->selectedItem, 1, 7);
                 }
                 break;
             case 0xe:
@@ -3139,7 +3131,7 @@ void SpNpcNookShopTalk::setRoofColor(s32 row, s32 col) {
     const u8 *q = sSpNpcNookShopRoofColorChoices + row * 4;
     u8 v = q[col];
     u8 b = v;
-    ((TalkWindowState *)(window))->setSlotFromString(2, (s32)(&b), (s32)((void *)"st_roof_paint"));
+    ((TalkWindowState *)(window))->setSlotFromString(2, &b, "st_roof_paint");
     ((HouseData *)(gSaveHouse))->orderUpgrade(v);
 }
 extern "C" void *data_ov050_0225e080[2] = {(void *)_ZN17SpNpcNookShopTalk20arbeitPresentUniformEPv, 0};
@@ -3388,7 +3380,7 @@ void SpNpcNookShopTalk::onMainMenuChoice(s32 p) {
 
 void SpNpcNookShopTalk::onDeliveryChoice(s32 p) {
     if (p == 0) {
-        ((ActorTalkRequest *)(this))->setPocketFilter((u32)((void *)SpNpcNookShop_IsDeliveryParcel), 0xd, 0);
+        ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcNookShop_IsDeliveryParcel, 0xd, 0);
         ((ActorTalkRequest *)(this))->openSubScene(0);
         setPendingMenuHandler(2);
     } else {

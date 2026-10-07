@@ -43,8 +43,7 @@ u32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
-void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
-s32 _ZN15LostChildRecord9getTownIdEv(void *p);
+u16 *_ZN15LostChildRecord9getTownIdEv(void *p);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
 extern u16 data_020c6cc8;
@@ -432,8 +431,8 @@ void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
 
 void SpNpcKaitlinTalk::onMessageStart(u32) {
     void *r4 = ((PlayerData *)(PlayerData_GetCurrent()))->getLostChildRecord();
-    _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 0);
-    _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 1);
+    ((ActorTalkRequest *)this)->setTownNameSlot(_ZN15LostChildRecord9getTownIdEv(r4), 0);
+    ((ActorTalkRequest *)this)->setTownNameSlot(_ZN15LostChildRecord9getTownIdEv(r4), 1);
 }
 
 void SpNpcKaitlinTalk::onMessageEnd(u32) {}

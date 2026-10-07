@@ -659,14 +659,14 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
                     if (((PlayerId *)(ReddLastSale_GetBuyer(data_021ed284)))->isValid() != 0 &&
                         (_ZN12ReddLastSale12copyItemFromEPKS_(&b, data_021ed284), !Unk_ov052_022595dc_Eq(&b, &k2))) {
                         _ZN12ReddLastSale12copyItemFromEPKS_(&c, data_021ed284);
-                        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&c), 0, 7);
+                        ((ActorTalkRequest *)(this))->setItemNameSlot(&c, 0, 7);
                         u16 *r6 = (u16 *)((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
                         u16 *r7 = (u16 *)ReddLastSale_GetBuyer(data_021ed284);
                         if (!(r7[0] == r6[0] && memcmp(r7 + 1, r6 + 1, 8) == 0 && ((PlayerId *)(r7))->equals((PlayerId *)(r6)) != 0)) {
-                            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(ReddLastSale_GetBuyer(data_021ed284)), 1);
+                            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)ReddLastSale_GetBuyer(data_021ed284), 1);
                             topic = 8;
                         } else {
-                            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(((PlayerData *)(h))->getPlayerId()), 1);
+                            ((ActorTalkRequest *)(this))->setPlayerNameSlot(((PlayerData *)(h))->getPlayerId(), 1);
                             topic = 9;
                         }
                     } else {
@@ -690,7 +690,7 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
         s32 hit = 0;
         if (!Unk_ov052_022595dc_Eq(&owner->selectedItem, &k3)) {
             price = Item_GetPrice(&owner->selectedItem) * 2;
-            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&owner->selectedItem), 1, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot(&owner->selectedItem, 1, 7);
             ((ActorTalkRequest *)(this))->setNumberSlot(price, 2, 10, 1, 0);
             s32 i;
             for (i = 0; i < 3; i++) {

@@ -51,7 +51,6 @@ struct TalkStartMsg;
 extern "C" {
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
-void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
@@ -244,7 +243,7 @@ void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
     for (; r6 < 8 && n < 4; r6++) {
         void *g = SaveVillagers_Get(gSaveVillagers, r6);
         if (((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(g)))->isValid()) {
-            ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(g)))->getName((u32)(&o));
+            ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(g)))->getName(&o);
             ((MsgString *)(((ChoiceEntry *)(((ChoiceList *)(r7))->getEntry(n)))->getText()))->copy((MsgString *)(void *)(&o));
             choiceVillagers[n] = r6;
             n++;
@@ -296,7 +295,7 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
             void *g = ((ContestRecord *)(gContestRecord))->getHolderVillager();
             if (((VillagerId *)(g))->isValid()) {
                 MsgString9B o;
-                ((VillagerId *)(g))->getName((u32)(&o));
+                ((VillagerId *)(g))->getName(&o);
                 window->setSlot(1, &o);
             }
             out->msgIndex = Random_GlobalBelow(3) + 0x11;
@@ -308,7 +307,7 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
         void *g = ((ContestRecord *)(gContestRecord))->getVotedVillager();
         if (((VillagerId *)(g))->isValid()) {
             MsgString9B o;
-            ((VillagerId *)(g))->getName((u32)(&o));
+            ((VillagerId *)(g))->getName(&o);
             window->setSlot(0, &o);
             out->msgIndex = Random_GlobalBelow(4) + 0xb;
         } else {
@@ -366,7 +365,7 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
                     r = ((ContestRecord *)(gContestRecord))->getHolderVillager();
                 }
             }
-            ((VillagerId *)(r))->getName((u32)(&o));
+            ((VillagerId *)(r))->getName(&o);
             MailText_SetSlot(0, &o);
             window->setSlot(1, &o);
             Bbs_PostMsgToday(Random_GlobalBelow(2), (u8 *)"bbs_snowfes");
@@ -429,7 +428,7 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
                 MsgString9B o;
                 void *e = SaveVillagers_Get(gSaveVillagers, *p);
                 if (((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(e)))->isValid()) {
-                    ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(e)))->getName((u32)(&o));
+                    ((VillagerId *)(_ZN12VillagerData13getVillagerIdEv(e)))->getName(&o);
                     window->setSlot(0, &o);
                 }
                 if (Random_GlobalBelow(2) == 0) {

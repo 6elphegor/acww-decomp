@@ -36,7 +36,7 @@ public:
     virtual void onActionTag3(u32 arg);
     virtual void onActionTag4(u32 arg);
     virtual void onTag09_9();
-    virtual u32 getSpeakerData();
+    virtual void *getSpeakerData();
     virtual void onWindowClose();
     virtual void start(TalkStartMsg *out);
     virtual void runDeferred();

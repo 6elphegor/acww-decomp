@@ -66,11 +66,9 @@ class SpNpcWendellTalk;
 
 extern "C" {
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
-void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
 s32 _ZN8PlayerId7isValidEv(void *p);
 s32 _ZN8PlayerId6equalsEPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
-void _ZN10VillagerId7getNameEj(void *p, void *q);
 void *_ZN13ContestRecord15getHolderPlayerEv(void *p);
 void *_ZN13ContestRecord17getHolderVillagerEv(void *p);
 s32 _ZN13ContestRecord7getSizeEv(void *p);
@@ -828,7 +826,7 @@ void SpNpcWendellTalk::onMessageEnd(u32) {
                 foodItem = 0x3530;
             }
             r = 9;
-            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&foodItem), 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot(&foodItem, 0, 7);
         }
         EventWeekSlots_MarkPlayer(0x41);
         break;
@@ -866,7 +864,7 @@ void SpNpcWendellTalk::onChoice(u32) {
     switch (msgIndex) {
     case 0:
         if (t == 0) {
-            ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcWendell_AcceptAnyItem), 0xd, 1);
+            ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcWendell_AcceptAnyItem, 0xd, 1);
             ((ActorTalkRequest *)(this))->openSubScene(0);
             setResultHandler(0);
         }

@@ -231,6 +231,7 @@ public:
 #include "save/Pattern.h"
 #include "save/TownExchangeRecord.h"
 #include "sys/Heap.h"
+#include "proto/main/unk_020742f4.h"
 class EncodedString16 : public EncodedString {
 public:
     EncodedString16();
@@ -1246,7 +1247,6 @@ s32 SaveVillagers_GetUnk3830Index(void *);
 BOOL Villager_CanBeTalkPartner(void *);
 void *MI_CpuFill8(void *, s32, s32);
 void _ZN9MsgString5clearEv(void *);
-void _ZN10VillagerId7getNameEj(void *, void *);
 void _ZN13EncodedString13fromMsgStringEP9MsgString(void *, void *);
 void _ZN11MsgString9BC1Ev(void *);
 void _ZN14EncodedString8C1Ev(void *);
@@ -1464,7 +1464,6 @@ s32 Item_GetPrice(u16 *);
 s32 Random_GlobalBelow(s32);
 s32 Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-s32 VillagerSync_Items(void *, u16 *);
 s32 PlayerData_GetCurrent();
 s32 Villager_FindMemory(void *, s32);
 s32 String_Load(void *, void *, void *);
@@ -1608,11 +1607,10 @@ s32 Item_GetFurnitureIndex(u16 *p);
 s32 VillagerEvent_GetTodayIndex(u32 a);
 s32 SaveVillagers_Count(void *p);
 void *SaveVillagers_PickRandomExcept(void *p, void *q, u32 n);
-void *SaveVillagers_FindEnemyOf(void *p, u32 n);
+void *SaveVillagers_FindEnemyOf(void *p, void *n);
 void func_02133ef8(void *p, u32 n);
 void *_ZN12VillagerData13getVillagerIdEv(void *a);
 s32 _ZN10VillagerId7isValidEv(void *a);
-s32 _ZN10VillagerId7getNameEj(void *a, u32 b);
 s32 PlayerData_HasStungFace(u32 a, u32 b, u32 c);
 void *PlayerActor_GetBodyPos(u32 n);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
@@ -1658,8 +1656,8 @@ BOOL ImpressionCond_FewVillagers(void);
 s32 ImpressionCond_PlayerFaceFlag(u32 a, u32 b, u32 c);
 s32 ImpressionCond_FlowersAround(void);
 s32 ImpressionCond_WeedsAround(void);
-void Villager_GetRandomOtherName(u32 a, u32 b);
-void Villager_GetEnemyName(u32 a, u32 b);
+void Villager_GetRandomOtherName(void *a, MsgString *b);
+void Villager_GetEnemyName(void *a, MsgString *b);
 }
 }
 
@@ -1710,7 +1708,7 @@ s32 VillagerPlanBlock_GetErrand(void *);
 s32 PlanErrand_MarkReady(s32);
 void Item_ToPlacedForm(u16 *, u16 *, s32);
 s32 Random_GlobalBelow(s32);
-void Villager_GetFriendName(void *a, u32 b);
+void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_SetMoveInKind(VillagerData *a, u32 b);
 u32 Villager_GetMoveInKind(VillagerData *a);
 BOOL Villager_IsInPlayerErrand(VillagerData *a, void *b);
@@ -1750,7 +1748,7 @@ static inline BOOL Unk_0207e440_InRange(volatile u16 *p) {
     if (v2 >= 0xf000 && v1 <= 0xf02f) r = TRUE;
     return r;
 }
-void Villager_GetFriendName(void *a, u32 b);
+void Villager_GetFriendName(void *a, MsgString *b);
 void Villager_SetMoveInKind(VillagerData *a, u32 b);
 u32 Villager_GetMoveInKind(VillagerData *a);
 BOOL Villager_IsInPlayerErrand(VillagerData *a, void *b);
@@ -2163,7 +2161,6 @@ u8 *SaveVillagers_Get(void *tbl, u32 idx);
 s32 Villager_GetInfoByte2(u8 *p);
 u8 *_ZN12VillagerData13getVillagerIdEv(u8 *p);
 s32 VillagerId_GetVoiceType(u8 *p);
-s32 _ZN10VillagerId7getNameEj(u8 *p, void *q);
 s32 SaveVillagers_IsValidIndex(s32 i);
 s32 NpcRegistry_GetSlotCount();
 s32 _ZN16NpcActorRegistry8getSpNpcEi(void *tbl, s32 i);
@@ -3122,7 +3119,7 @@ extern "C" BOOL Npc_GetName(u8 *self, u16 *p) {
     if (t != 13) {
         if (t == 14) {
             u8 *q = SaveVillagers_Get(gSaveVillagers, idx);
-            if (q) r = _ZN10VillagerId7getNameEj(_ZN12VillagerData13getVillagerIdEv(q), self);
+            if (q) r = ((VillagerId *)_ZN12VillagerData13getVillagerIdEv(q))->getName((MsgString *)self);
         }
     } else {
         if (idx < 0x26) {
@@ -5808,7 +5805,7 @@ extern "C" void Villager_SetMoveInKind(VillagerData *a, u32 b) { a->moveInKind =
 }
 
 namespace nL {
-extern "C" void Villager_GetFriendName(void *a, u32 b) {
+extern "C" void Villager_GetFriendName(void *a, MsgString *b) {
     void *r = SaveVillagers_FindFriendOf(gSaveVillagers, a);
     if (r != 0) {
         if (_ZN12VillagerData13getVillagerIdEv(r)->isValid() != 0) {
@@ -5819,7 +5816,7 @@ extern "C" void Villager_GetFriendName(void *a, u32 b) {
 }
 
 namespace nK {
-extern "C" void Villager_GetEnemyName(u32 a, u32 b) {
+extern "C" void Villager_GetEnemyName(void *a, MsgString *b) {
     void *r = SaveVillagers_FindEnemyOf(gSaveVillagers, a);
     if (r) {
         if (((VillagerId *)(((VillagerData *)(r))->getVillagerId()))->isValid()) {
@@ -5830,10 +5827,10 @@ extern "C" void Villager_GetEnemyName(u32 a, u32 b) {
 }
 
 namespace nK {
-extern "C" void Villager_GetRandomOtherName(u32 a, u32 b) {
+extern "C" void Villager_GetRandomOtherName(void *a, MsgString *b) {
     uptr v;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
     func_02133ef8(&v, 4);
-    v = (uptr)((VillagerData *)((void *)a))->getVillagerId();
+    v = (uptr)((VillagerData *)a)->getVillagerId();
     void *r = SaveVillagers_PickRandomExcept(gSaveVillagers, &v, 1);
     if (r) {
         if (((VillagerId *)(((VillagerData *)(r))->getVillagerId()))->isValid()) {
@@ -7103,7 +7100,7 @@ extern "C" s32 Villager_SendLetter4(void *a, u32 b, void *c, void *d, void *e, u
         v2 = b + Random_GlobalBelow((u32)c);
         v3 = b + Random_GlobalBelow((u32)c);
         v4 = b + Random_GlobalBelow((u32)c);
-        ((VillagerId *)(e))->makeFileName(sVillagerLetter4Path, 0x28, (u32)(a));
+        ((VillagerId *)(e))->makeFileName(sVillagerLetter4Path, 0x28, (const char *)a);
         buf[1] = v1;
         buf[2] = v2;
         buf[3] = v3;
@@ -7130,7 +7127,7 @@ extern "C" s32 Villager_SendLetter(void *a, u32 b, void *c, void *d, u16 *e) {
     if (((PlayerId *)(c))->isValid() && ((VillagerId *)(d))->isValid()) {
         new (obj) Letter();
         buf[0] = LetterPaper_PickForPersonality(VillagerId_GetPersonality(d));
-        ((VillagerId *)(d))->makeFileName(sVillagerLetterPath, 0x28, (u32)(a));
+        ((VillagerId *)(d))->makeFileName(sVillagerLetterPath, 0x28, (const char *)a);
         buf[1] = b;
         Letter_ComposeVillagerMail(obj, &buf[1], sVillagerLetterPath, buf, d, c, 1);
         if (e) {
@@ -7409,7 +7406,7 @@ extern "C" u8 *SaveVillagers_FindByName(u8 *base, u8 *a1, s32 a2, void *a3) {
         for (i = 0; i < 8; i++) {
             if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(p)) && (a3 == NULL || Villager_FindMemory(p, a3))) {
                 ((MsgString *)(objA))->clear();
-                ((VillagerId *)(((VillagerData *)(p))->getVillagerId()))->getName((u32)(objA));
+                ((VillagerId *)(((VillagerData *)(p))->getVillagerId()))->getName((MsgString *)objA);
                 ((EncodedString *)(objB))->fromMsgString((MsgString *)(objA));
                 t = ((EncodedStringBase *)objB)->data();
                 {

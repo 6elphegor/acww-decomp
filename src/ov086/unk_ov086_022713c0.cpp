@@ -50,7 +50,6 @@ struct TalkStartMsg;
 extern "C" {
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
-void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);

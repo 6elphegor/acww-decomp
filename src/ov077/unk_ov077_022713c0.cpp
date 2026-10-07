@@ -607,7 +607,7 @@ void SpNpcResettiTalk::onMessageStart(u32) {
         }
         ownerNpc->lastApologyPhrase = n;
         c = ownerNpc->lastApologyPhrase;
-        ((TalkWindowState *)(window))->setSlotFromString(0, (s32)(&c), (s32)((void *)"st_general"));
+        ((TalkWindowState *)(window))->setSlotFromString(0, &c, "st_general");
     }
 }
 

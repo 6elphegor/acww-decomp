@@ -218,7 +218,7 @@ void ReddTent::execTentCheck() {
 
 BOOL ReddTent::enterTentTalkOpen() {
     StackPad8 pad;
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     setFileName("sp_npc_fox");
     if (isOpen() == 0) {
         msgIndex = 0x34;
@@ -259,7 +259,7 @@ void ReddTent::execTentTalk() {
     TalkWindowState *t = window;
     if (t) {
         if (t->state == 0) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
             TalkRequest_SetTargetDone(this);
         }
     }
@@ -328,7 +328,7 @@ BOOL ReddTent::enterTentEntry07() {
 void ReddTent::execTentEntry07() {
     if (PlayerActor_IsStowFinished()) {
         if (setTentState(8)) {
-            ((Character *)(this))->detachTalkRequest((s32)(this));
+            ((Character *)(this))->detachTalkRequest(this);
         }
     }
 }

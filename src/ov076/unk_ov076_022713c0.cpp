@@ -422,7 +422,7 @@ void SpNpcPascalTalk::onMessageEnd(u32) {
     }
     switch (msgIndex) {
     case 4:
-        ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcPascal_IsScallop), 0xd, 0);
+        ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcPascal_IsScallop, 0xd, 0);
         ((ActorTalkRequest *)(this))->openSubScene(0);
         setResultHandler(0);
         break;

@@ -102,7 +102,6 @@ struct Unk_ov074_02271e54_V {
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
-#define TalkWindowState_setSlotFromString _ZN15TalkWindowState17setSlotFromStringEiii
 #define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define Pattern_getInfo _ZN7Pattern7getInfoEv
@@ -142,7 +141,6 @@ void BlancaFaceRecord_setConcept(u8 *p, s32 v);
 void BlancaFaceRecord_setState(u8 *p, s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 TalkWindowState_setNextMessage(void *self, u8 *b, char *c);
-void TalkWindowState_setSlotFromString(void *self, s32 a, u8 *b, char *c);
 void TalkWindowState_setSlot(void *self, s32 a, void *b);
 u32 BlancaFaceRecord_getConcept(u8 *p);
 s32 ChoiceList_getResult(void *self);
@@ -739,10 +737,10 @@ void SpNpcBlancaTalk::start(TalkStartMsg *out) {
 next:
     new (obj) ItemName();
     if (((PlayerId *)(void *)(&m))->isValid() != 0) {
-        setPlayerNameSlot((u32)&m, 1);
+        setPlayerNameSlot((PlayerId *)&m, 1);
         setTownNameSlot(PlayerId_GetTownId(&m), 0);
         buf[0] = ((BlancaFaceRecord *)(g))->getConcept();
-        ((TalkWindowState *)(window))->setSlotFromString(2, (s32)(buf), (s32)(((char *)"st_impress")));
+        ((TalkWindowState *)(window))->setSlotFromString(2, buf, "st_impress");
         ((PatternInfo *)(void *)(&l))->getTitle(obj);
         ((TalkWindowState *)(window))->setSlot(3, obj);
     }

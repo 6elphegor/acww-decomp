@@ -121,8 +121,6 @@ class ChoiceList;
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 #define AnimModel_allocAnmObj _ZN9AnimModel11allocAnmObjEPv
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define Character_detachTalkRequest _ZN9Character17detachTalkRequestEi
-#define Character_attachTalkRequest _ZN9Character17attachTalkRequestEi
 #define TalkWindowState_detachRequest _ZN15TalkWindowState13detachRequestEv
 #define TalkWindowState_attachRequest _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
@@ -160,8 +158,6 @@ void AnimModel_drawAnimated(void *p, s32 a);
 void AnimModel_stepAnim(void *p);
 BOOL AnimModel_allocAnmObj(void *p, s32 v);
 BOOL AnimFrameCtrl_isFinished(void *p);
-void Character_detachTalkRequest(void *self, TalkMsgRequest *sec);
-void Character_attachTalkRequest(void *self, TalkMsgRequest *sec);
 void TalkWindowState_detachRequest(TalkWindowState *p);
 void TalkWindowState_attachRequest(TalkWindowState *p, TalkMsgRequest *sec);
 ChoiceList *TalkWindowState_getChoiceList(TalkWindowState *p);
@@ -444,7 +440,7 @@ void RoomTelephone::enterAct06() {}
 
 void RoomTelephone::execAct05() {
     if (((AnimFrameCtrl *)(HOST_AT(this, 0x188, model, 0)))->isFinished()) {
-        ((Character *)(this))->detachTalkRequest((s32)(this));
+        ((Character *)(this))->detachTalkRequest(this);
         TalkRequest_SetTargetDone(this);
         changeAct(6);
     }
@@ -485,7 +481,7 @@ void RoomTelephone::execAct02() {
 
 void RoomTelephone::enterAct02() {
     StackPad8 pad;
-    ((Character *)(this))->attachTalkRequest((s32)(this));
+    ((Character *)(this))->attachTalkRequest(this);
     setFileName(data_ov004_0224e178);
     if (((CommManager *)(gCommManager))->isOnline()) {
         msgIndex = 0x1d;

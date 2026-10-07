@@ -33,7 +33,6 @@
 
 class CafeVillager;
 
-#define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
@@ -60,7 +59,6 @@ extern u16 data_020c6cc8;
 extern CafeVillagerActEntry sCafeVillagerActTable[3];
 
 void *VillagerData_getVillagerId(void *o);
-void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);
 void ActorTalkRequest_setTalkPlayer(void *o, s32 a);
 s32 NpcActor_getPlayerActor(void *o, s32 a);
 s32 NpcTalkCtrl_isBusy(void *o);
@@ -224,7 +222,7 @@ void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
 
 void CafeVillagerTalk::start(TalkStartMsg *arg) {
     TalkTopicMsg *out = (TalkTopicMsg *)arg;
-    ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((void *)(void *)(data_ov004_022508e0), 0x28, (u32)("ai_shop3"));
+    ((VillagerId *)(VillagerData_getVillagerId(villager->villagerData)))->makeFileName((data_ov004_022508e0), 0x28, "ai_shop3");
     out->fileName = (u32)data_ov004_022508e0;
     out->msgIndex = Random_GlobalBelow(5);
 }

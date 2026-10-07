@@ -348,7 +348,7 @@ void SpNpcTortimerBugOffTalk::scriptCatchChosen() {
         ownerNpc->entrySize = Contest_GetCatchSize(&entryItem);
         ((ActorTalkRequest *)(this))->requestTakeItem(&entryItem, 0, 4, 0);
         setNextScript(1);
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&entryItem), 2, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&entryItem, 2, 7);
         ((ActorTalkRequest *)(this))->setNumberSlot(ownerNpc->entrySize >> 12, 4, 3, 0, 0);
         if (r4 >= 0) {
             Pocket_RemoveItem(r4);
@@ -433,10 +433,10 @@ s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
         void *r6 = ((ContestRecord *)(r7))->getHolderPlayer();
         void *r4 = ((ContestRecord *)(r7))->getHolderVillager();
         ContestRecord_GetItem(&w, r7);
-        ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&w), 1, 7);
+        ((ActorTalkRequest *)(this))->setItemNameSlot(&w, 1, 7);
         ((ActorTalkRequest *)(this))->setNumberSlot(((ContestRecord *)(r7))->getSize() >> 12, 0, 3, 0, 0);
         if (((PlayerId *)(r6))->isValid()) {
-            ((ActorTalkRequest *)(this))->setPlayerNameSlot((u32)(((ContestRecord *)(r7))->getHolderPlayer()), 1);
+            ((ActorTalkRequest *)(this))->setPlayerNameSlot((PlayerId *)(((ContestRecord *)(r7))->getHolderPlayer()), 1);
             u16 *q = (u16 *)((PlayerData *)(PlayerData_GetCurrent()))->getPlayerId();
             u16 *p = (u16 *)((ContestRecord *)(r7))->getHolderPlayer();
             if (p[0] != q[0] || memcmp(p + 1, q + 1, 8) != 0 || ((PlayerId *)(p))->equals((PlayerId *)(q)) == 0) {
@@ -446,7 +446,7 @@ s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
         }
         if (((VillagerId *)(r4))->isValid()) {
             MsgString9B o;
-            ((VillagerId *)(r4))->getName((u32)(&o));
+            ((VillagerId *)(r4))->getName(&o);
             window->setSlot(1, &o);
             return 2;
         }
@@ -534,7 +534,7 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
             h0 = h16;
             ItemPickSpec_Destruct(&o);
             ((ActorTalkRequest *)(this))->requestGiveItem(&h0, 0, 5, 0);
-            ((ActorTalkRequest *)(this))->setItemNameSlot((u32)(&h0), 0, 7);
+            ((ActorTalkRequest *)(this))->setItemNameSlot(&h0, 0, 7);
             Pocket_AddItem(&h0, 0);
             break;
         }
@@ -549,7 +549,7 @@ void SpNpcTortimerBugOffTalk::onMessageEnd(u32) {
         Talk_CheckAndSetPlayerFlag(0x1c, 1);
         break;
     case 0xb:
-        ((ActorTalkRequest *)(this))->setPocketFilter((u32)(SpNpcTortimerBugOff_IsInsect), 0xd, 1);
+        ((ActorTalkRequest *)(this))->setPocketFilter(SpNpcTortimerBugOff_IsInsect, 0xd, 1);
         ((ActorTalkRequest *)(this))->openSubScene(0);
         setScript(0);
         break;

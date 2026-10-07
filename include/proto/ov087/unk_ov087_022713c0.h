@@ -56,7 +56,7 @@ extern u32 data_ov087_02271d80;
 SpNpcCornimer *SpNpcCornimer_Create();
 #endif
 #ifndef PROTO_LOCAL_SpNpcCornimer_IsAcorn
-BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m);
+BOOL SpNpcCornimer_IsAcorn(u16 *p, s32 m);
 #endif
 }
 #ifndef PROTO_LOCAL_sSpNpcCornimerActTable

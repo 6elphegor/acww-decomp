@@ -1869,7 +1869,7 @@ void SpNpcCopperTalk::startTownSearch() {
 }
 
 void SpNpcCopperTalk::openTownList() {
-    setSelectionList((u32)hostBeacon, (u32)hostGameInfo, 0);
+    setSelectionList(hostBeacon, hostGameInfo, 0);
     openSubScene(4);
     setScript(3);
 }

@@ -48,6 +48,8 @@
 #define PROTO_LOCAL_sTalkWindowOpenOffsets  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/main/unk_02065e88.h"
+#include "proto/main/unk_020b2c50.h"
+#include "proto/main/unk_020742f4.h"
 
 class MsgRequest;
 class MsgString;
@@ -2745,7 +2747,7 @@ void TalkParserCondTags::tagBranchFriendship() {
     o->onConditionTag(2, 2);
     tag.getArgs3(&r[0], &r[2], &r[3]);
     s32 k = 0;
-    void *p = (void *)o->getSpeakerData();
+    void *p = o->getSpeakerData();
     s32 pd = PlayerData_GetCurrent();
     if (p) {
         s32 v = _ZN10PlayerData11getPlayerIdEv(pd);
@@ -2891,7 +2893,7 @@ extern "C" { void _ZN12TalkBusyIcon4initEv(void *p); }
 extern "C" { void _ZN12TalkBusyIconD1Ev(void *p); }
 extern "C" { void _ZN12TalkBusyIconC1Ev(void *p); }
 extern "C" { BOOL Talk_IsAltTextEnabled(void); }
-extern "C" { s32 Villager_GetAnimalKind(s32 a); }
+extern "C" { s32 Villager_GetAnimalKind(void *a); }
 extern "C" { s32 PlayerData_GetCurrentIndex(void); }
 extern "C" { s32 PlayerData_IsResidentIndex(u32 idx); }
 extern "C" { s32 PlayerDataArray_CountUsed(void *p); }
@@ -2962,7 +2964,7 @@ void TalkTagScanner::tagBranchSpecies() {
     u8 b[4];
     TalkMsgRequest *m = window->request;
     BOOL i;
-    s32 res;
+    void *res;
     m->onConditionTag(0xd, 2);
     msgTag.getArgs3(&b[0], &b[2], &b[3]);
     b[0]--;
@@ -3641,7 +3643,7 @@ u8 TalkVoice::getSpeakerMoodIndex()
 {
     using namespace n8;
     u32 i = 0;
-    void *p = (void *)window->request->getSpeakerData();
+    void *p = window->request->getSpeakerData();
     if (p) {
         p = Villager_GetState(p);
         if (p) i = VillagerState_GetMood(p);
@@ -3730,7 +3732,6 @@ extern "C" { s32 _ZN13TalkFrameView12showBusyIconEj(void *p, u32 se); }
 extern "C" { s32 _ZN10ChoiceMenu14setListChoicesEP10ChoiceList(void *p, void *q); }
 extern "C" { s32 _ZN10ChoiceMenu4openEv(void *p); }
 extern "C" { s32 _ZN9MsgString4copyEPS_(void *p, void *q); }
-extern "C" { s32 String_Load(void *p, s32 a, s32 b); }
 extern "C" { s32 strncpy(void *d, void *s, s32 n); }
 extern "C" { s32 MI_CpuFill8(void *d, s32 v, s32 n); }
 extern "C" { s32 Input_IsTouchTrigInRect(s32 a, s32 b, s32 c, s32 d); }
@@ -3835,7 +3836,7 @@ s32 TalkWindowState::setSlot(s32 idx, void *p) {
     using namespace n7;
     return ((MsgString33 *)slots + idx)->copy((MsgString *)(p));
 }
-void TalkWindowState::setSlotFromString(s32 idx, s32 a, s32 b) {
+void TalkWindowState::setSlotFromString(s32 idx, u8 *a, const char *b) {
     using namespace n7;
     String_Load((MsgString33 *)slots + idx, a, b);
 }
@@ -4235,12 +4236,11 @@ extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(void *p); }
 extern "C" { s32 Villager_FindMemoryIndex(void *a, s32 b); }
 extern "C" { void *Villager_GetMemory(void *a, s32 b); }
 extern "C" { void _ZN14VillagerMemory13addFriendshipEi(void *a, s32 b); }
-extern "C" { void *_ZN14VillagerMemory13getFriendshipEv(void *a); }
-extern "C" { void VillagerSync_Friendship(void *a, s32 b, void *c); }
+extern "C" { s32 _ZN14VillagerMemory13getFriendshipEv(void *a); }
 extern "C" { s32 _ZN10PlayerData20getOtherResidentNameEPv(void *g, void *p); }
-extern "C" { void Villager_GetRandomOtherName(void *a, void *b); }
-extern "C" { void Villager_GetEnemyName(void *a, void *b); }
-extern "C" { void Villager_GetFriendName(void *a, void *b); }
+extern "C" { void Villager_GetRandomOtherName(void *a, MsgString *b); }
+extern "C" { void Villager_GetEnemyName(void *a, MsgString *b); }
+extern "C" { void Villager_GetFriendName(void *a, MsgString *b); }
 extern "C" { void Villager_GetImpressionText(void *a, void *b, s32 c); }
 extern "C" { s32 Villager_GetTrend(void *a, void *b); }
 extern "C" { s32 _ZN20VillagerDataItemView14getGreetingForEPvS0_(void *a, void *b, s32 c); }
@@ -4283,7 +4283,7 @@ void TalkWindowMsg::clearCatchphrase() {
     using namespace n5; ((MsgString *)(catchphrase))->clear(); }
 BOOL TalkWindowMsg::buildCatchphrase() {
     using namespace n5;
-    void *r6 = (void *)OWNER->getSpeakerData();
+    void *r6 = OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     ((MsgString *)(catchphrase))->clear();
     if (r6 != 0) {
@@ -4313,11 +4313,11 @@ void TalkWindowMsg::clearFriendName() {
     using namespace n5; ((MsgString *)(friendName))->clear(); }
 BOOL TalkWindowMsg::buildFriendName() {
     using namespace n5;
-    void *r6 = (void *)OWNER->getSpeakerData();
+    void *r6 = OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     ((MsgString *)(friendName))->clear();
     if (r6 != 0) {
-        Villager_GetFriendName(r6, friendName);
+        Villager_GetFriendName(r6, (MsgString *)friendName);
         r4 = TRUE;
     }
     return r4;
@@ -4326,11 +4326,11 @@ void TalkWindowMsg::clearEnemyName() {
     using namespace n5; ((MsgString *)(enemyName))->clear(); }
 BOOL TalkWindowMsg::buildEnemyName() {
     using namespace n5;
-    void *r6 = (void *)OWNER->getSpeakerData();
+    void *r6 = OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     ((MsgString *)(enemyName))->clear();
     if (r6 != 0) {
-        Villager_GetEnemyName(r6, enemyName);
+        Villager_GetEnemyName(r6, (MsgString *)enemyName);
         r4 = TRUE;
     }
     return r4;
@@ -4344,10 +4344,10 @@ BOOL TalkWindowMsg::buildRandomVillagerName() {
     using namespace n5;
     BOOL r4 = TRUE;
     if (randomVillagerNameBuilt == 0) {
-        void *r6 = (void *)OWNER->getSpeakerData();
+        void *r6 = OWNER->getSpeakerData();
         ((MsgString *)(randomVillagerName))->clear();
         if (r6 != 0) {
-            Villager_GetRandomOtherName(r6, randomVillagerName);
+            Villager_GetRandomOtherName(r6, (MsgString *)randomVillagerName);
         } else {
             r4 = FALSE;
         }
@@ -4368,9 +4368,9 @@ BOOL TalkWindowMsg::buildOtherResidentName() {
         void *g = PlayerData_GetCurrent();
         ((MsgString *)(otherResidentName))->clear();
         if (((PlayerData *)(g))->getOtherResidentName(otherResidentName) == 0) {
-            void *r0 = (void *)OWNER->getSpeakerData();
+            void *r0 = OWNER->getSpeakerData();
             if (r0 != 0) {
-                Villager_GetRandomOtherName(r0, otherResidentName);
+                Villager_GetRandomOtherName(r0, (MsgString *)otherResidentName);
                 otherResidentIsVillager = r4;
             } else {
                 r4 = FALSE;
@@ -4384,7 +4384,7 @@ void TalkWindowMsg::clearTrend() {
     using namespace n5; ((MsgString *)(trend))->clear(); }
 BOOL TalkWindowMsg::buildTrend() {
     using namespace n5;
-    void *r6 = (void *)OWNER->getSpeakerData();
+    void *r6 = OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     ((MsgString *)(trend))->clear();
     if (r6 != 0) {
@@ -4398,7 +4398,7 @@ void TalkWindowMsg::clearImpression() {
     using namespace n5; ((MsgString *)(impression))->clear(); }
 BOOL TalkWindowMsg::buildImpression() {
     using namespace n5;
-    void *r6 = (void *)OWNER->getSpeakerData();
+    void *r6 = OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     ((MsgString *)(impression))->clear();
     if (r6 != 0) {
@@ -4411,7 +4411,7 @@ void TalkWindowMsg::clearNickname() {
     using namespace n5; ((MsgString *)(nickname))->clear(); }
 BOOL TalkWindowMsg::buildNickname() {
     using namespace n5;
-    void *r6 = (void *)OWNER->getSpeakerData();
+    void *r6 = OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     ((MsgString *)(nickname))->clear();
     if (r6 != 0) {
@@ -4425,7 +4425,7 @@ void TalkWindowMsg::clearCompliment() {
     using namespace n5; ((MsgString *)(compliment))->clear(); }
 BOOL TalkWindowMsg::buildCompliment() {
     using namespace n5;
-    void *r6 = (void *)OWNER->getSpeakerData();
+    void *r6 = OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     ((MsgString *)(compliment))->clear();
     if (r6 != 0) {
@@ -4439,7 +4439,7 @@ void TalkWindowMsg::clearGreeting() {
     using namespace n5; ((MsgString *)(greeting))->clear(); }
 BOOL TalkWindowMsg::buildGreeting() {
     using namespace n5;
-    void *r6 = (void *)OWNER->getSpeakerData();
+    void *r6 = OWNER->getSpeakerData();
     BOOL r4 = FALSE;
     ((MsgString *)(greeting))->clear();
     if (r6 != 0) {
@@ -4472,7 +4472,7 @@ BOOL TalkAutoAdvance::tick() {
 void TalkWindowMsg::applyFriendshipDelta(s32 idx) {
     using namespace n5;
     if (idx != 0) {
-        void *r4 = (void *)OWNER->getSpeakerData();
+        void *r4 = OWNER->getSpeakerData();
         void *g = PlayerData_GetCurrent();
         if (r4 != 0) {
             s32 r7 = Villager_FindMemoryIndex(r4, _ZN10PlayerData11getPlayerIdEv(g));
@@ -5065,8 +5065,8 @@ void TalkMsgRequest::onTag09_9() {
     using namespace n1;}
 void TalkMsgRequest::onScannedTag(u32 tag) {
     using namespace n1;}
-u32 TalkMsgRequest::getSpeakerData() {
-    using namespace n1; return 0; }
+void *TalkMsgRequest::getSpeakerData() {
+    using namespace n1; return NULL; }
 s32 TalkMsgRequest::getVoiceType() {
     using namespace n1; return 5; }
 void TalkMsgRequest::onWindowClose() {

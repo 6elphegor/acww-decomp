@@ -33,7 +33,6 @@ s32 _ZN8SaveData8testFlagEj(void *, s32);
 void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(void *p);
-void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId7isValidEv(void *p);
 s32 _ZN8PlayerId7isValidEv(void *p);
 void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
@@ -429,7 +428,6 @@ s32 _ZN8SaveData8testFlagEj(void *, s32);
 void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(void *p);
-void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId7isValidEv(void *p);
 s32 _ZN8PlayerId7isValidEv(void *p);
 void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
@@ -2046,7 +2044,7 @@ void ContestRecord::postResultNotice() {
     if (((SaveData *)(gSaveData))->testFlag(0xf) == 0) return;
     MsgString9B rec;
     if (((PlayerId *)(this))->isValid() != 0) ((PlayerId *)(this))->getNameString((MsgString *)(&rec));
-    else ((VillagerId *)(&holderVillager))->getName((u32)(&rec));
+    else ((VillagerId *)(&holderVillager))->getName(&rec);
     if ((u8)(kind + 0xff) <= 1) {
         MailText_SetSlotMonth(0, dateMonth);
         MailText_SetSlotDayOrdinal(1, dateDay);

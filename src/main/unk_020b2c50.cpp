@@ -942,13 +942,13 @@ extern "C" BOOL String_GetDayOrdinal(MsgString *buf, u8 v) {
     return String_Load(buf, &c, "st_day_month");
 }
 
-extern "C" BOOL String_MakeNickname(MsgString *buf, u32 x, u8 *key) {
+extern "C" BOOL String_MakeNickname(MsgString *buf, MsgStringBase *name, u8 *key) {
     StringMsgRequest req;
     req.setFileName("st_nickn");
     req.msgIndex = *key;
     req.dest = buf;
     req.nicknameMode = 1;
-    gStringBank.nameSource = (MsgStringBase *)x;
+    gStringBank.nameSource = name;
     gStringBank.reset();
     BOOL r = gStringBank.load(&req);
     gStringBank.nameSource = 0;

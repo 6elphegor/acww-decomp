@@ -225,7 +225,6 @@ extern "C" {
 void *SaveVillagers_Find(void *tbl, s32 id);
 void *Villager_GetBirthday(void *p);
 s32 Random_GlobalBelow(s32 n);
-void _ZN10VillagerId12makeFileNameEPvjj(s32 a, void *b, s32 c, s32 d);
 void Letter_ComposeVillagerMail(void *obj, u8 *b, void *fmt, u8 *c, s32 a, s32 b2, s32 c2);
 s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
@@ -1535,7 +1534,7 @@ extern "C" BOOL Villager_SendLetterWithPaper(const void *r0, u8 r1, s32 r2, s32 
     if (SaveVillagers_Find(gSaveVillagers, r3)) {
         u8 buf[2];
         u32 obj[HOST_SIZED(0xf4, Letter) / 4] HOST_ALIGN8;
-        _ZN10VillagerId12makeFileNameEPvjj(r3, sVillagerLetterWithPaperPath, 0x28, (s32)r0);
+        ((VillagerId *)r3)->makeFileName(sVillagerLetterWithPaperPath, 0x28, (const char *)r0);
         buf[0] = r1;
         buf[1] = LetterPaper_PickForPersonality(VillagerId_GetPersonality(r3));
         if (v != -1) buf[1] = v;
