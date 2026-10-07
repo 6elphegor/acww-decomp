@@ -71,13 +71,8 @@ extern u8 data_0213be0c[], data_0213be08[];
 extern s32 data_0213bdf0[3], data_0213bdfc[3];
 extern u8 data_0213bdc4[], data_0213bdcc[], data_0213bdc0[];
 typedef struct MtxEnt { s32 m[25]; } MtxEnt;
-#ifdef MODERN
 extern u32 data_021f70c4[0x1900 / 4];
 extern u8 data_021f7104[];
-#else
-extern u32 data_021f70c4[16];
-extern u8 data_021f7104[0x18c0];
-#endif
 extern void MIi_CpuClearFast(u32, void *, u32);
 extern void G3_MultMtx43(void *);
 extern void G3_MultMtx33(void *);
@@ -107,13 +102,9 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
     volatile u32 zero = 0;
     e = c + 3;
     pw = 0;
-#ifdef MODERN
     // the original clears pos and nrm in one go: they are adjacent on mwcc's stack, not on GCC's
     MIi_CpuClearFast(zero, pos, sizeof(pos));
     MIi_CpuClearFast(zero, nrm, sizeof(nrm));
-#else
-    MIi_CpuClearFast(zero, pos, 0x54);
-#endif
     NNS_G3dGeFlushBuffer();
     IO_W((volatile u32 *)0x04000440, 0);
     IO_W((volatile u32 *)0x0400044c, 1);
@@ -189,11 +180,6 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
 
 // ---- file-scope objects (autoload_3 .bss 0x021f70c4-0x021f89c4): the NODEMIX work areas (per-matrix flags and the
 // blended matrix cache), addressed by byte offset as MtxEnt records
-#ifdef MODERN
 // one array in the original (64 matrix records of 100 bytes); data_021f7104 is its offset 0x40, which the linker
 // script defines from symbols.txt
 u32 data_021f70c4[0x1900 / 4];
-#else
-u32 data_021f70c4[16];
-u8 data_021f7104[0x18c0];
-#endif

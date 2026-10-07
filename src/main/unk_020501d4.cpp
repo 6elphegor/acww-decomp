@@ -181,11 +181,7 @@ const u16 sSpecialCharStr7 = 7;
 
 const u16 sSpecialCharStr1 = 1;
 
-#ifdef HOST
 u8 gTextLabelList[2 * sizeof(void *) + 4] HOST_ALIGN8;  // an NNSFndList (pointers: 64-bit hosts)
-#else
-u8 gTextLabelList[0xc];
-#endif
 
 void *gTextHeap;
 

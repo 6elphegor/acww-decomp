@@ -181,22 +181,10 @@ extern "C" void CmdSeq_Undo(CmdSeq *o) {
 // gSndSeSystem sits between this file's 4-byte and 0x90-byte objects, so it is this file's object although only other
 // units use it.
 void *gSndHeap;
-#ifdef HOST
 u8 gSndDefaultHandle[sizeof(void *)] __attribute__((aligned(8)));  // NNSSndHandle: a pointer
-#else
-u8 gSndDefaultHandle[4]; // NNSSndHandle
-#endif
 void *gSndCaptureBuffer;
 Player gSndSeSystem;
-#ifdef HOST
 u8 data_021f5a1c[0x34 + sizeof(FSFile) + sizeof(FSFileID) + 3 * sizeof(void *)] HOST_ALIGN8;  // a sound archive too
-#else
-u8 data_021f5a1c[0x90];
-#endif
-#ifdef HOST
 // the sound archive (Arc in unk_0210b448.c: a 0x34-byte header, an FSFile, its file id and three pointers): the
 // real size on 64-bit hosts
 u8 data_021f5aac[0x34 + sizeof(FSFile) + sizeof(FSFileID) + 3 * sizeof(void *)] HOST_ALIGN8;
-#else
-u8 data_021f5aac[0x90];
-#endif

@@ -26,7 +26,6 @@ DataRef8 data_020d467c[2] = {
     {data_020d20b0, 1}, {data_020d2e04, 4},
 };
 
-#ifdef MODERN
 // The game indexes one table of 45 sequence records that starts here and ends at 0x020d47e4 (HUD clock and countdown,
 // camera grid, chat balloons: data_020d467c + i * 8). In the original these are the arrays below, contiguous over three
 // files; the modern build doesn't keep them together or in this order, so the indexed users go through this table.
@@ -52,4 +51,3 @@ void *const gSpriteSeqTable[45] = {
     &data_020d47a4[0], &data_020d47a4[1], &data_020d47a4[2], &data_020d47a4[3], &data_020d47a4[4],
     &data_020d47a4[5], &data_020d47a4[6], &data_020d47a4[7],
 };
-#endif

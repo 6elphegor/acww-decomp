@@ -208,8 +208,4 @@ void SND_SetPlayerTempoRatio(u32 a, u32 b) {
 
 // ---- file-scope objects (autoload_3 .bss 0x021fcf6c-0x021fcf88)
 u32 data_021fcf6c; // initialised flag
-#ifdef HOST
 u32 data_021fcf70[sizeof(OSMutex) / 4] __attribute__((aligned(8)));  // OSMutex (its size on 64-bit hosts)
-#else
-u32 data_021fcf70[6]; // OSMutex
-#endif

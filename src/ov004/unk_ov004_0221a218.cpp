@@ -169,11 +169,7 @@ BOOL CafeVillager::onCreate() {
 
 BOOL CafeVillager::updateAct() {
     BOOL r = FALSE;
-#ifdef HOST
     if (sCafeVillagerActTable[act].b) { // (the DS label is the table + one member: the b member)
-#else
-    if (data_ov004_02250910[act].a) {
-#endif
         r = (this->*sCafeVillagerActTable[act].b)();
     }
     return r;

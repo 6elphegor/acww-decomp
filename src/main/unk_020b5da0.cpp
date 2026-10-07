@@ -36,8 +36,6 @@ BOOL DummyScene3::onExecute() { return TRUE; }
 BOOL DummyScene3::onDraw() { return TRUE; }
 
 BOOL DummyScene3::onDeleteRequest() {
-#ifdef MODERN
     return 0; // the original returns whatever r0 holds; callers ignore it
-#endif
 }
 

@@ -24,20 +24,11 @@ struct LetterDefaults {
     /* 0x51 */ u8 futureSelfNamePos;
 };
 
-#ifdef HOST
 // the object's real size and layout (its vtable pointer and fields move on 64-bit hosts): text through the class
 struct EncodedString41Storage {
     u8 raw[sizeof(EncodedString41)] __attribute__((aligned(8)));
 };
 #define ES41_TEXT(s) (((EncodedString41 *)&(s))->text)
-#else
-struct EncodedString41Storage {
-    /* 0x00 */ u32 unk_00[3];
-    /* 0x0c */ u8 unk_0c[2];
-    /* 0x0e */ u8 text[0x2e];
-};
-#define ES41_TEXT(s) ((s).text)
-#endif
 
 extern "C" {
 void VillagerId_Construct(void *);
@@ -61,11 +52,7 @@ struct VillagerIdLocal {
 };
 struct PlayerIdLocal {
     u32 v[6];
-#ifdef MODERN
     PlayerIdLocal() { _ZN8PlayerIdC1EPv(this, 0); } // o unused by PlayerId::PlayerId (TownId_Construct is empty)
-#else
-    PlayerIdLocal() { ((void (*)(void *))_ZN8PlayerIdC1EPv)(this); } // the original leaves o as whatever r1 holds
-#endif
     ~PlayerIdLocal() { _ZN8PlayerIdC1Ev(this); }
 };
 

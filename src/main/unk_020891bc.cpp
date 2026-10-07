@@ -1,7 +1,5 @@
 #include "types.h"
-#ifdef HOST
 extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
-#endif
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "ui/TalkArrow.h"
@@ -35,18 +33,10 @@ void TalkArrow::setState(s32 idx) {
     b = (Unk_020892b0_E)(a + 1);
     c = ((u32 *)sTalkArrowPlayOnce)[idx];
     state = idx;
-#ifdef HOST
     anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[a]); // (the block of tables: src/main/unk_020d5d34.cpp)
-#else
-    anim.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
-#endif
     anim.setPlayOnce(c);
     anim.restart();
-#ifdef HOST
     subAnim.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[b]); // (the block of tables: src/main/unk_020d5d34.cpp)
-#else
-    subAnim.setSeq((SpriteAnimSeq *)(data_020d5b0c + b * 8));
-#endif
     subAnim.setPlayOnce(c);
     subAnim.restart();
 }

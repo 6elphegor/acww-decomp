@@ -217,12 +217,10 @@ extern ProcProfile sBgmProcProfile;
 extern ProcProfile sNpcSpawnerProfile;
 extern ProcProfile sHandOverItemProfile;
 extern ProcProfile data_020e1178;
-#ifdef HOST
 // the effect process's profile is gap data (DS layout, a 4-byte create pointer): a C copy for the host's layout
 extern "C" void *EffectSplProc_Create();
 static ProcProfile sEffectSplProcProfileHost = {(void *(*)())EffectSplProc_Create, 0xd2, 0xd5};
 #define data_020e1178 sEffectSplProcProfileHost
-#endif
 extern ProcProfile sResidentSelectProfile;
 extern ProcProfile sTitleScreenProfile;
 extern ProcProfile sSaveMenuProfile;

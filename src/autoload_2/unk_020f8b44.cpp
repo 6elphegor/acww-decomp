@@ -292,22 +292,10 @@ static inline BOOL nz(u32 v) { return v != 0; }
 extern "C" void SPL_Load(Fp *self, u8 *base) {
     s32 i;
     u32 off = 0;
-#ifdef HOST
     self->p1c = (u8 *)self->alloc(self->h24 * SPL_RES_SIZE);
-#else
-    self->p1c = (u8 *)self->alloc(self->h24 << 5);
-#endif
-#ifdef HOST
     MI_CpuFill8(self->p1c, 0, self->h24 * SPL_RES_SIZE);
-#else
-    MI_CpuFill8(self->p1c, 0, self->h24 << 5);
-#endif
     for (i = 0; i < self->h24; i++) {
-#ifdef HOST
         Pool32 *p = (Pool32 *)(self->p1c + i * SPL_RES_SIZE);
-#else
-        Pool32 *p = (Pool32 *)(self->p1c + i * 32);
-#endif
         HdrBits h;
         p->p0 = base + off;
         off += 0x54;
@@ -344,11 +332,7 @@ extern "C" void SPL_Load(Fp *self, u8 *base) {
         }
         p->h1c = h.b24 + h.b25 + h.b26 + h.b27 + h.b28 + h.b29;
         if (p->h1c != 0) {
-#ifdef HOST
             Item8 *it = (Item8 *)self->alloc(p->h1c * SPL_FIELD_SIZE);
-#else
-            Item8 *it = (Item8 *)self->alloc(p->h1c << 3);
-#endif
             p->p18 = it;
             it = p->p18;
             if (h.b24) {
@@ -481,11 +465,7 @@ extern "C" Entry *SPL_Create(Mgr *m, s32 idx, void *p) {
     Entry *e = 0;
     if (m->fr != 0) {
         e = spl_pop_front(&m->fr);
-#ifdef HOST
         spl_init(e, m->tab + idx * SPL_RES_SIZE, p);
-#else
-        spl_init(e, m->tab + idx * 32, p);
-#endif
         spl_push_front(&m->act, e);
         if (e->res->p0->f14 != 0) e = 0;
     }
@@ -497,11 +477,7 @@ extern "C" Entry *SPL_CreateWithInitialize(Mgr *m, u32 idx, void (*cb)(Entry *))
     if (m->fr != 0) {
         Fx3 z = {0, 0, 0};
         e = spl_pop_front(&m->fr);
-#ifdef HOST
         spl_init(e, m->tab + idx * SPL_RES_SIZE, &z);
-#else
-        spl_init(e, m->tab + idx * 32, &z);
-#endif
         if (cb != 0) cb(e);
         spl_push_front(&m->act, e);
         if (e->res->p0->f14 != 0) e = 0;

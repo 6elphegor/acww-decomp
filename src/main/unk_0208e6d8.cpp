@@ -1,7 +1,5 @@
 #include "uptr.h"
-#ifdef HOST
 extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
-#endif
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -144,11 +142,7 @@ void InputModeIcon::startModeAnim() {
         } else {
             i = 0x44;
         }
-#ifdef HOST
         anim.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[i]);  // (the block of tables: src/main/unk_020d5d34.cpp)
-#else
-        anim.setSeq((SpriteAnimSeq *)data_020d5b0c[i]);
-#endif
         anim.setPlayOnce(1);
         anim.restart();
         isVisible = 1;

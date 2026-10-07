@@ -1,12 +1,7 @@
 #include "types.h"
 #include "nitro/fs.h"
 
-#ifdef HOST
 #include "ds_stdarg.h"
-#else
-typedef char *va_list;
-#define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
-#endif
 
 
 struct FileLzHeader {

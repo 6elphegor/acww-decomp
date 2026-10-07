@@ -173,11 +173,7 @@ BOOL FishCatch_GetReelTarget(void *a, s32 b);
 s32 HeldInsect_GetStage(...);
 void HeldInsect_Start(s32 a, s32 b);
 void HeldInsect_Release(s32 a, s32 b);
-#ifdef MODERN
 void PlayerActor_LocalReleaseCatch(s32 a, s32 b, s32 c, s32 d);
-#else
-void PlayerActor_LocalReleaseCatch(s32 a);
-#endif
 
 void Inventory_PlayTouchSe();
 BOOL InvItem_IsNotFishInsectOrFlower(s32 a);
@@ -1415,11 +1411,7 @@ void PocketsFullMenu::mainAct10() {
         x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
-#ifdef MODERN
         PlayerActor_LocalReleaseCatch(0, 0, 0, 0); // b, c, d unused by PlayerActor_LocalReleaseCatch
-#else
-        PlayerActor_LocalReleaseCatch(0); // the original leaves b, c, d as whatever r1-r3 hold
-#endif
         sendInsectReleasePacket((u8)r5, t);
         setMainState(0x12);
         storeNewItem();

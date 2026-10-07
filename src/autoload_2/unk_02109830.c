@@ -36,11 +36,7 @@ typedef struct HeapBlk {
     Seq *seq;               // 0x0c
     s32 playerNo;           // 0x10
 } HeapBlk;
-#ifdef HOST
 #define HEAPBLK_SIZE ((sizeof(HeapBlk) + 3) & ~3)  // (20 on the DS)
-#else
-#define HEAPBLK_SIZE 20
-#endif
 
 struct Seq {
     Handle *handle;         // 0x00

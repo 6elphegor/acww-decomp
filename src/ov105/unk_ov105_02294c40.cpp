@@ -1074,12 +1074,7 @@ void LetterStorageMenu::mainAct07() {
                             t = s->findFreePocketSlot();
                         }
                         if (t != 0x41) {
-#ifdef MODERN
                             _ZN17LetterStorageMenu14pickUpAndFlyToEjjj(s, s->cursorSlot, t, 0); // c unused by pickUpAndFlyTo
-#else
-                            // the original leaves c as whatever findFree*Slot left in r3
-                            ((void (*)(void *, u32, u32))_ZN17LetterStorageMenu14pickUpAndFlyToEjjj)(s, s->cursorSlot, t);
-#endif
                             s->nameBalloon.hide(1);
                             s->setFlags(0x1000);
                         }

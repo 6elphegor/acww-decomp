@@ -1,12 +1,7 @@
 #include "types.h"
 #include "nitro/fs.h"
 
-#ifdef HOST
 #include "ds_stdarg.h"
-#else
-typedef char *va_list;
-#define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
-#endif
 
 
 extern "C" {
@@ -71,11 +66,7 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
     void *h;
     u32 usize;
     u32 hdr[2];
-#ifdef HOST
     u32 st[8]; // the LZ streaming context (MI_InitUncompContextLZ): pointer-sized destination on hosts
-#else
-    u32 st[4];
-#endif
     FSFile f;
     u32 size;
     void *p;
@@ -154,11 +145,7 @@ s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
     s32 ret;
     u32 flags;
     u32 hdr[2];
-#ifdef HOST
     u32 st[8]; // the LZ streaming context (MI_InitUncompContextLZ): pointer-sized destination on hosts
-#else
-    u32 st[4];
-#endif
     u32 size = f->prop.file.end - f->prop.file.start;
     ret = size;
     if (size < 8) {

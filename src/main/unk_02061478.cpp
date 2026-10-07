@@ -672,11 +672,7 @@ extern "C" u32 FtrClass_GetBasePoints(s32 i) {
 extern "C" u32 Item_GetIconModelName(s32 a, s32 b) {
     if (a < 0x49) {
         u32 c = b == 0 ? 1 : 0;
-#ifdef HOST
         return (u32)(uptr)sItemIconModelNames[a * 2 + (u8)c];  // (pairs of pointers: 16 bytes on 64-bit hosts)
-#else
-        return *(u32 *)((u8 *)sItemIconModelNames + a * 8 + (u8)c * 4);
-#endif
     }
     return Item_GetIconModelName(0, b);
 }

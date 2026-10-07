@@ -67,13 +67,8 @@ typedef struct SndHeapBlk {
 } SndHeapBlk;
 // the heap's and a block's header sizes (16 and 32 on the DS; the structures are larger on 64-bit hosts, the block
 // header stays a multiple of the blocks' 32-byte alignment)
-#ifdef HOST
 #define SNDHEAP_HDR ((sizeof(SndHeap) + 3) & ~3)
 #define SNDHEAP_BLK_HDR ((sizeof(SndHeapBlk) + 31) & ~31)
-#else
-#define SNDHEAP_HDR 16
-#define SNDHEAP_BLK_HDR 32
-#endif
 
 extern Cap data_021fb7b4;
 extern void NNS_FndInitList(NNSFndList *, u16);
@@ -271,11 +266,7 @@ BOOL InitHeap(SndHeap *h, void *heap)
 // NNS_SndHeapCreateLevel (push a state)
 BOOL NewSection(SndHeap *h)
 {
-#ifdef HOST
     NNSFndList *lv = NNS_FndAllocFromFrmHeapEx(h->heap, sizeof(NNSFndList) + sizeof(NNSFndLink), 8);  // a section: list, link
-#else
-    NNSFndList *lv = NNS_FndAllocFromFrmHeapEx(h->heap, 20, 4);
-#endif
     if (lv == 0) {
         return 0;
     }

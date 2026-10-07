@@ -13,7 +13,6 @@ typedef int BOOL;
 #include "nnsys/g3d_rt.h"
 typedef G3dRS RS;  // NNSG3dRS
 
-#ifdef HOST
 // NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h: the pointers move the later members on 64-bit hosts)
 typedef struct TexObj {
     u32 pad0, pad4;
@@ -24,16 +23,6 @@ typedef struct TexObj {
     u8 cnt;                  // numMapData
     u16 tbl[1];              // mapData
 } TexObj;
-#else
-typedef struct TexObj {
-    u32 pad0, pad4;
-    u8 *res;         // 0x08
-    u32 w0c;         // 0x0c
-    u8 pad10[9];
-    u8 cnt;          // 0x19
-    u16 tbl[1];      // 0x1a
-} TexObj;
-#endif
 
 typedef struct JOut {
     u32 flags;

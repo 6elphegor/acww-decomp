@@ -53,18 +53,10 @@ public:
 // What a frame heap takes besides its memory: the FrameHeap object, NitroSystem's header, rounding (the callers that
 // size a frame heap for a given content: RoomBclHeap_Create). Pointers make it larger on 64-bit hosts: generous
 // there.
-#ifdef HOST
 #define FRAMEHEAP_OVERHEAD_ROUNDED (0x4b * 2)
-#else
-#define FRAMEHEAP_OVERHEAD_ROUNDED 0x4b
-#endif
 
 // a model slot's frame heap and its management, rounded up (ModelSlotPool::init: the pool's block holds n of them);
 // larger on hosts like the overheads above
-#ifdef HOST
 #define MODELSLOT_HEAP_OVERHEAD (0x5b * 2)
-#else
-#define MODELSLOT_HEAP_OVERHEAD 0x5b
-#endif
 
 #endif

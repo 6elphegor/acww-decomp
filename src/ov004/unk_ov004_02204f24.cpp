@@ -966,11 +966,7 @@ FtrActor::~FtrActor() {
 // @02209578
 BOOL FtrActor::onCreate() {
     FtrSpawnArgBuf l;
-#ifdef HOST
     *(u32 *)&l = param;  // (ProcBase::param: the spawn parameter)
-#else
-    *(u32 *)&l = *(u32 *)((u8 *)this + 8);
-#endif
     u32 t = l.mode;
     spawnMode = t;
     FtrActorTable_add(FtrActorTable_GetInstance(), this);

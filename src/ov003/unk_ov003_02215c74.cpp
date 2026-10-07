@@ -223,15 +223,7 @@ BOOL VillagerHouse::initBuilding() {
                 s32 d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 lightUpAnim.initWithTex(c, d, 0, 0x1000, 0);
                 lightUpAnim.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&lightUpModel));
-#ifdef HOST
                 lightUpModel.mtx = baseMatrix;  // (the members by name: they move on 64-bit hosts)
-#else
-        #ifdef HOST
-        lightUpModel.mtx = baseMatrix;
-#else
-        *(Mtx43 *)(HOST_AT(this, 0x314, lightUpModel.mtx.m[0], 0)) = baseMatrix;
-#endif
-#endif
             }
         }
     }
@@ -243,11 +235,7 @@ BOOL VillagerHouse::onExecute() {
         *(Mtx43 *)(HOST_AT(this, 0x314, lightUpModel.mtx.m[0], 0)) = baseMatrix;
         if ((colliderFlags & 1) == 0) {
             lightUpAnim.step();
-#ifdef HOST
             *(u32 *)(uptr)lightUpAnim.anmObj = lightUpAnim.curFrame;  // (the frame of the anm object)
-#else
-            **(u32 **)(HOST_AT(this, 0x380, lightUpAnim.anmObj, 0)) = *(u32 *)(HOST_AT(this, 0x370, lightUpAnim.curFrame, 0));
-#endif
         }
     }
     return TRUE;

@@ -364,11 +364,7 @@ u8 *SpNpcHarriet::getModelPath() { return sSpNpcHarrietModelPath; }
 
 BOOL SpNpcHarriet::updateAct() {
     BOOL r = FALSE;
-#ifdef HOST
     if (sSpNpcHarrietActTable[act].exit) { // (the DS label is the table + one member: the exit member)
-#else
-    if (data_ov053_0225a62c[act].enter) {
-#endif
         r = (this->*sSpNpcHarrietActTable[act].exit)();
     }
     return r;

@@ -23,13 +23,8 @@
 // The NitroSystem heap headers in front of a heap's memory (its HeapHead + ExpHead + a block header, HeapHead +
 // FrmHead; src/autoload_2/unk_02100234.c): they hold pointers, so on a 64-bit host they're larger - these are
 // generous there (an overestimate only leaves a few bytes unused).
-#ifdef HOST
 #define NNS_EXPHEAP_OVERHEAD (0x4c * 2)
 #define NNS_FRMHEAP_OVERHEAD (0x30 * 2)
-#else
-#define NNS_EXPHEAP_OVERHEAD 0x4c
-#define NNS_FRMHEAP_OVERHEAD 0x30
-#endif
 
 
 inline void *operator new(size_t, void *p) {

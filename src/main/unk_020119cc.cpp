@@ -2436,9 +2436,7 @@ BOOL NpcActor::onDraw() {
 
 BOOL NpcActor::onDeleteRequest() {
     using namespace nQ;
-#ifdef MODERN
     return 0; // the original returns whatever r0 holds; callers ignore it
-#endif
 }
 
 BOOL NpcActor::onDelete() {
@@ -5992,12 +5990,8 @@ void NpcAnimCtrl::updateAnimSpeed(NpcActor *scene) {
     s32 v = *(s32 *)((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x98, speed, 0));
     if (v == 0) {
         animSpeed = 0x1000;
-#ifdef HOST
     // (getCurSpeedPreset is empty: on the DS its "result" is its argument, still in r0; not so on hosts)
     } else if (scene->moveCtrl.curSpeedPreset.x == 0) {
-#else
-    } else if (*_ZN11NpcMoveCtrl17getCurSpeedPresetEv(((void *)HOST_AT_A((u8 *)scene, NpcActor, 0x350, moveCtrl.curSpeedPreset.x, 0))) == 0) {
-#endif
         animSpeed = 0x1000;
     } else {
         animSpeed = func_01ffcb0c(v, animSpeedScale);
@@ -8855,11 +8849,7 @@ extern "C" void VillagerRoute_PickOtherHouseDoor(Vec2 *out, void *self, u32 unus
     out->x = 0;
     out->y = 0;
     if (obj->getVillagerData()) {
-#ifdef HOST
         uptr key;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
-#else
-        s32 key;
-#endif
         func_02133ef8(&key, 4);
         key = (uptr)_ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
         void *v;
@@ -8900,11 +8890,7 @@ extern "C" void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unu
     out->x = 0;
     out->y = 0;
     if (world && obj->getVillagerData()) {
-#ifdef HOST
         uptr key;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
-#else
-        s32 key;
-#endif
         func_02133ef8(&key, 4);
         key = (uptr)_ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
         void *v;
@@ -9110,11 +9096,7 @@ BOOL HeldToolModel::attach(u32 a, u16 *b, u32 c, u16 d) {
     void *p = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (p) {
         HeldItemModel_SetItem(p, b, 0);
-#ifdef HOST
         _ZN11NpcAnimCtrl16playHoldItemPoseEP8NpcActorPtPvt((void *)&((NpcActor *)(uptr)a)->animCtrl, a, b, c, d);
-#else
-        _ZN11NpcAnimCtrl16playHoldItemPoseEP8NpcActorPtPvt((void *)(a + 0x334), a, b, c, d);
-#endif
         heldItem = *b;
         return TRUE;
     }

@@ -24,11 +24,7 @@ typedef struct Fader {
     s32 frames;     // 0x0c
 } Fader;
 
-#ifdef HOST
 #define HDR(c) ((u8 *)(c)->pad_a8)  // (the header buffer: pad_a8 .. the u8 / u16 fields after it, by the member)
-#else
-#define HDR(c) ((u8 *)(c) + 0xa8)
-#endif
 
 // stream context (NNSSndArcStrm), 0x160 bytes, 4 of them (data_021fc650)
 typedef struct Ctx {

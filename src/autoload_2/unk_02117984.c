@@ -197,7 +197,6 @@ void PXI_Init(void) {
 }
 
 // SND_... slot attach
-#ifdef HOST
 // The wave archive links live in the bank and wave archive files (SNDBankData / SNDWaveArc): 32-bit slots, also on
 // 64-bit hosts (the files' layout, the ARM7 side reads them too). The functions through 32-bit accessors.
 typedef struct Slot32 {
@@ -298,94 +297,6 @@ void SND_DestroyWaveArc(Obj *p_) {
     }
     SNDi_UnlockMutex();
 }
-#else
-void SND_AssignWaveArc(Obj *p, s32 i, Obj *item) {
-    Obj *old;
-    SNDi_LockMutex();
-    old = p->s[i].a;
-    if (old != 0) {
-        Slot *q;
-        if (item == old) {
-            SNDi_UnlockMutex();
-            return;
-        }
-        q = old->s[0].a;
-        if (&p->s[i] == q) {
-            old->s[0].a = p->s[i].next;
-            DC_StoreRange(p->s[i].a, 0x3c);
-        } else {
-            if (q != 0) {
-                Slot *n;
-                do {
-                    n = q->next;
-                    if (&p->s[i] == n) {
-                        break;
-                    }
-                    q = n;
-                } while (n != 0);
-            }
-            q->next = p->s[i].next;
-            DC_StoreRange(q, 8);
-        }
-    }
-    {
-        Slot *prev = item->s[0].a;
-        item->s[0].a = &p->s[i];
-        p->s[i].next = prev;
-        p->s[i].a = item;
-    }
-    SNDi_UnlockMutex();
-    DC_StoreRange(p, 0x3c);
-    DC_StoreRange(item, 0x3c);
-}
-
-// SND_... slot detach all
-void SND_DestroyBank(Obj *p) {
-    s32 i;
-    SNDi_LockMutex();
-    for (i = 0; i < 4; i++) {
-        Obj *o = p->s[i].a;
-        if (o != 0) {
-            Slot *q = o->s[0].a;
-            if (&p->s[i] == q) {
-                o->s[0].a = p->s[i].next;
-                DC_StoreRange(o, 0x3c);
-            } else {
-                if (q != 0) {
-                    Slot *n;
-                    do {
-                        n = q->next;
-                        if (&p->s[i] == n) {
-                            break;
-                        }
-                        q = n;
-                    } while (n != 0);
-                }
-                q->next = p->s[i].next;
-                DC_StoreRange(q, 8);
-            }
-        }
-    }
-    SNDi_UnlockMutex();
-}
-
-void SND_DestroyWaveArc(Obj *p) {
-    Slot *n;
-    SNDi_LockMutex();
-    n = p->s[0].a;
-    if (n != 0) {
-        do {
-            Slot *nx = n->next;
-            n->a = 0;
-            n->next = 0;
-            DC_StoreRange(n, 8);
-            n = nx;
-        } while (n != 0);
-    }
-    SNDi_UnlockMutex();
-}
-
-#endif
 
 void SND_GetFirstInstDataPos(Pair *p) {
     Pair t;

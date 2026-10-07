@@ -17,33 +17,19 @@ typedef volatile u32 vu32;
 
 // mwcc's size_t is unsigned long; GCC's (ARM EABI) is unsigned int. Both are 32 bits. (HOST alone: the host runtime
 // including a game header.)
-#if defined(MODERN) || defined(HOST)
 typedef __SIZE_TYPE__ size_t;
-#else
-typedef unsigned long size_t;
-#endif
 
-#ifdef MODERN
 // mwcc's __declspec(weak) (the only __declspec in the code)
 #define __declspec(x) __attribute__((x))
 // mwcc intrinsic: zero n bytes at p
 #define __builtin__clear(p, n) __builtin_memset((p), 0, (n))
-#endif
 
 // An inline function that other code calls by its symbol name: mwcc emitted it out of line, GCC has to be told to
-#ifdef MODERN
 #define MODERN_EMIT __attribute__((used))
-#else
-#define MODERN_EMIT
-#endif
 
 // A variable that an interrupt handler, a callback or the ARM7 changes while the code polls it. The original
 // declarations aren't volatile and mwcc reloaded them anyway; GCC keeps them in a register (see docs/modern.md).
-#ifdef MODERN
 #define MODERN_VOLATILE volatile
-#else
-#define MODERN_VOLATILE
-#endif
 
 // mwcc's class layout (docs/modern.md, "Class layout"): a derived class's first member goes after its base's data size
 // (the base's tail padding is reused, POD bases too), and a class's data size ends at its last member's data size.

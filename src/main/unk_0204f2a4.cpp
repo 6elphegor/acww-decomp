@@ -116,11 +116,7 @@ public:
     virtual BOOL onDraw();
     ~FishDisplay() {
         _ZN13ModelSlotPoolD1Ev(modelPool);
-#ifdef HOST
         __cxa_vec_cleanup(entries, 4, sizeof(FishDisplayEntry), (void *)FishDisplayEntry_Destruct);
-#else
-        __cxa_vec_cleanup(entries, 4, 0x16c, (void *)FishDisplayEntry_Destruct);
-#endif
     }
     void releaseEntry(s32);
     BOOL beginLoad(s32);
@@ -154,11 +150,7 @@ extern const u8 sFishBaseSizes[0x160];
 extern Backup gBackup;
 
 inline FishDisplay::FishDisplay() {
-#ifdef HOST
     __cxa_vec_ctor(entries, 4, sizeof(FishDisplayEntry), (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
-#else
-    __cxa_vec_ctor(entries, 4, 0x16c, (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
-#endif
     _ZN13ModelSlotPoolC1Ev(modelPool);
 }
 

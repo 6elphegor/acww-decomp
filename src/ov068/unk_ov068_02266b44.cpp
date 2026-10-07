@@ -187,11 +187,7 @@ public:
 };
 
 extern "C" SpNpcNookIntro *SpNpcNookIntro_Create();
-#ifdef HOST
 #define data_ov068_0226fe1c (sNookIntroTalkScripts) // (the flag column: the entries' flag member on hosts)
-#else
-#define data_ov068_0226fe1c ((Unk_ov068_0226fea4_Flag *)((u8 *)sNookIntroTalkScripts + 8))
-#endif
 #define PMA(x) (*(SpNpcNookIntroTalkScriptFn *)(x))
 #define PMB(x) (*(SpNpcNookIntroActFn *)(x))
 extern "C" {

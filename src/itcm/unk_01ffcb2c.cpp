@@ -12,7 +12,6 @@ struct Chunk {
     /* 0x04 */ u8 *walkLinks;
 };
 
-#ifdef HOST
 // CollisionMap (src/main/unk_0202fa70.cpp) by its members: the block references are pointers
 struct Grid {
     Chunk blocks[6][6];
@@ -20,13 +19,6 @@ struct Grid {
     u32 numBlocksX;
     u32 numBlocksZ;
 };
-#else
-struct Grid {
-    /* 0x000 */ u8 pad_00[0x124];
-    /* 0x124 */ u32 numBlocksX;
-    /* 0x128 */ u32 numBlocksZ;
-};
-#endif
 
 
 struct CellGrid {
@@ -54,11 +46,7 @@ void Camera_GetLookAtOffset(VecFx32 *out, Camera *c);
 static inline Chunk *At(s32 x, s32 z) {
     Grid *g = gCurCollisionMap;
     if (x >= 0 && z >= 0 && (u32)x < g->numBlocksX && (u32)z < g->numBlocksZ) {
-#ifdef HOST
         return &g->blocks[z][x];
-#else
-        return (Chunk *)((u8 *)g + z * 0x30 + x * 8);
-#endif
     }
     return 0;
 }

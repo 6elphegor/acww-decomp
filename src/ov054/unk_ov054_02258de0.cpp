@@ -572,11 +572,7 @@ extern void *data_ov054_0225b8a0[2];
 // symbols.txt labels inside the tables above
 #define data_ov054_0225b3b4 ((const u8 *)sSpNpcPellyPhyllisCounterPos + 8)
 #define data_ov054_0225b974 ((char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + 8))
-#ifdef HOST
 #define data_ov054_0225bb08 (sSpNpcPellyPhyllisTalkScripts) // (the flag column: the entries' flag member on hosts)
-#else
-#define data_ov054_0225bb08 ((Unk_ov054_0225b9c4_Flag *)((u8 *)sSpNpcPellyPhyllisTalkScripts + 8))
-#endif
 #define data_ov054_0225bca4 ((SpNpcPellyPhyllisActEntry *)((u8 *)sSpNpcPellyPhyllisActTable + 8))
 
 // Data. mwcc sorts a file's data by size, and the order of equal-sized objects follows from the order in which
@@ -776,11 +772,7 @@ u8 *SpNpcPellyPhyllis::getModelPath() { return ((u8 **)sSpNpcPellyPhyllisModelPa
 
 BOOL SpNpcPellyPhyllis::updateAct() {
     BOOL r = FALSE;
-#ifdef HOST
     if (sSpNpcPellyPhyllisActTable[act].exit) { // (the DS label is the table + one member: the exit member)
-#else
-    if (data_ov054_0225bca4[act].enter) {
-#endif
         r = (this->*sSpNpcPellyPhyllisActTable[act].exit)();
     }
     return r;
@@ -1766,11 +1758,7 @@ void SpNpcPellyPhyllisTalk::onDramaMsgEnd(s32 a) {}
 
 void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
     void *ctx = window;
-#ifdef HOST
     char *tbl = (char *)sSpNpcPellyPhyllisMsgKeys[owner->sister][2];
-#else
-    char *tbl = *(char **)((u8 *)data_ov054_0225b974 + owner->sister * 12);
-#endif
     u32 r4 = 0;
     u8 msg;
     switch (msgIndex) {
@@ -1822,7 +1810,6 @@ void SpNpcPellyPhyllisTalk::onChoice(u32 a_) {
 // (see docs/assembly.md). The assembly below is the original code; the C version under
 // NONMATCHING is the closest known attempt (246 bytes differ: it gets a 17-entry jump table for cases 0..16 under a
 // compare tree rooted at 0x52, the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39).
-#if defined(NONMATCHING) || defined(MODERN)
 void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     TalkWindowState *o = window;
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
@@ -1901,220 +1888,6 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
         TalkWindowState_setNextMessage(o, &m, (u32)sSpNpcPellyPhyllisMsgKeys[owner->sister][0]);
     }
 }
-#else
-void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
-    // The function body is one asm block: mwcc defers such a function like any C++ function (an `asm void f()`
-    // function is emitted at once, ahead of every other function of the file) and adds the prologue and epilogue
-    // itself: push {r4-r7, lr}; sub sp, #12 ... add sp, #12; pop {r4-r7}; pop {r3}; bx r3, as in the original
-    // (the block uses r4-r7; `frame` gives the 12-byte stack frame: sp+0 = a, sp+4 = unk_3c, sp+8 = message byte).
-    // `this` arrives in r0, `a` in r1.
-    // The jump-table entries are 16-bit offsets (case label - L_tbl + 1). mwcc's inline assembler has no 16-bit
-    // data directive and no label arithmetic, and dcd must be 4-byte aligned (the table is at +0x4a), so each
-    // entry is written as the Thumb instruction with the same encoding: lsl rd, rs, #n = n << 6 | rs << 3 | rd.
-    u32 frame[3];
-    asm {
-        add r5, r0, #0
-        str r1, [sp, #frame]
-        ldr r1, [r5, #60]
-        str r1, [sp, #4]
-        bl ActorTalkRequest_getChoiceList
-        bl ChoiceList_getResult
-        add r4, r0, #0
-        bl PlayerData_GetCurrent
-        add r7, r0, #0
-        mov r6, #255
-        ldrb r0, [r5, #30]
-        cmp r0, #57
-        bgt L_gt39
-        cmp r0, #57
-        blt L_lt39
-        b L_38_39
-    L_lt39:
-        cmp r0, #16
-        bgt L_gt10
-        cmp r0, #16
-        bge L_10
-        cmp r0, #9
-        bgt L_gt9
-        cmp r0, #0
-        bge L_table
-        b L_end
-    L_table:
-        add r1, r0, r0
-        add r1, pc
-        ldrh r1, [r1, #8]
-        lsl r1, r1, #16
-        asr r1, r1, #16
-        add r1, pc
-        bx r1
-    L_tbl:
-        lsl r7, r1, #2  // case 0: dcw 0x008f = L_0_52_53_56 - L_tbl + 1
-        lsl r7, r2, #4  // case 1: dcw 0x0117 = L_end - L_tbl + 1
-        lsl r7, r2, #4  // case 2: dcw 0x0117 = L_end - L_tbl + 1
-        lsl r1, r3, #2  // case 3: dcw 0x0099 = L_3_9 - L_tbl + 1
-        lsl r1, r2, #3  // case 4: dcw 0x00d1 = L_4_1c_34_5d_5e - L_tbl + 1
-        lsl r7, r2, #4  // case 5: dcw 0x0117 = L_end - L_tbl + 1
-        lsl r7, r2, #4  // case 6: dcw 0x0117 = L_end - L_tbl + 1
-        lsl r7, r2, #4  // case 7: dcw 0x0117 = L_end - L_tbl + 1
-        lsl r7, r2, #4  // case 8: dcw 0x0117 = L_end - L_tbl + 1
-        lsl r1, r3, #2  // case 9: dcw 0x0099 = L_3_9 - L_tbl + 1
-    L_gt9:
-        cmp r0, #12
-        beq L_c
-        b L_end
-    L_gt10:
-        cmp r0, #52
-        bgt L_gt34
-        cmp r0, #52
-        bge L_4_1c_34_5d_5e
-        cmp r0, #28
-        beq L_4_1c_34_5d_5e
-        b L_end
-    L_gt34:
-        cmp r0, #56
-        beq L_38_39
-        b L_end
-    L_gt39:
-        cmp r0, #86
-        bgt L_gt56
-        cmp r0, #86
-        bge L_0_52_53_56
-        cmp r0, #82
-        bgt L_gt52
-        cmp r0, #82
-        beq L_0_52_53_56
-        b L_end
-    L_gt52:
-        cmp r0, #83
-        beq L_0_52_53_56
-        b L_end
-    L_gt56:
-        cmp r0, #94
-        bgt L_gt5e
-        cmp r0, #94
-        bge L_4_1c_34_5d_5e
-        cmp r0, #93
-        beq L_4_1c_34_5d_5e
-        b L_end
-    L_gt5e:
-        cmp r0, #95
-        bne L_end
-        cmp r4, #0
-        bne L_5f_not0
-        add r0, r5, #0
-        ldr r1, =SpNpcPellyPhyllis_IsDeliveryItem
-        mov r2, #13
-        mov r3, #0
-        bl ActorTalkRequest_setPocketFilter
-        add r0, r5, #0
-        mov r1, #0
-        bl ActorTalkRequest_openSubScene
-        add r0, r5, #0
-        mov r1, #11
-        bl setScript
-        b L_end
-    L_5f_not0:
-        cmp r4, #1
-        bne L_end
-        add r0, r5, #0
-        add r0, #172
-        ldr r1, [r0, #0]
-        ldr r0, =0x808
-        ldr r1, [r1, r0]
-        ldr r0, =data_ov054_0225b344
-        ldrb r6, [r0, r1]
-        b L_end
-    L_0_52_53_56:
-        add r0, r5, #0
-        ldr r1, [sp, #0]
-        bl onPostOfficeMenuChoice
-        b L_end
-    L_3_9:
-        cmp r4, #0
-        bne L_end
-        add r0, r5, #0
-        mov r1, #1
-        bl ActorTalkRequest_openSubScene
-        add r0, r5, #0
-        mov r1, #1
-        bl setScript
-        b L_end
-    L_10:
-        cmp r4, #0
-        beq L_10_0
-        cmp r4, #1
-        beq L_10_1
-        b L_end
-    L_10_0:
-        mov r6, #17
-        b L_end
-    L_10_1:
-        mov r6, #14
-        bl MenuCtrl_ReturnFutureLetter
-        b L_end
-    L_c:
-        cmp r4, #0
-        bne L_end
-        bl MenuCtrl_StoreFutureLetter
-        mov r6, #7
-        b L_end
-    L_4_1c_34_5d_5e:
-        cmp r4, #2
-        beq L_r2
-        cmp r4, #3
-        beq L_r3
-        b L_end
-    L_r2:
-        add r0, r7, #0
-        mov r1, #4
-        bl PlayerData_testFlag
-        cmp r0, #0
-        bne L_r2_set
-        mov r6, #26
-        add r0, r7, #0
-        mov r1, #4
-        bl PlayerData_setFlag
-        b L_end
-    L_r2_set:
-        mov r6, #25
-        b L_end
-    L_r3:
-        add r0, r7, #0
-        mov r1, #1
-        bl PlayerData_testFlag
-        cmp r0, #0
-        beq L_r3_clear
-        mov r6, #96
-        b L_end
-    L_r3_clear:
-        mov r6, #53
-        b L_end
-    L_38_39:
-        cmp r4, #1
-        bne L_end
-        add r0, r5, #0
-        bl endComm
-        mov r6, #58
-    L_end:
-        cmp r6, #255
-        beq L_ret
-        add r5, #172
-        ldr r1, [r5, #0]
-        ldr r0, =0x804
-        ldr r1, [r1, r0]
-        mov r0, #12
-        mul r1, r0
-        ldr r0, =sSpNpcPellyPhyllisMsgKeys
-        ldr r2, [r0, r1]
-        add r0, sp, #8
-        strb r6, [r0, #0]
-        ldr r0, [sp, #4]
-        add r1, sp, #8
-        bl TalkWindowState_setNextMessage
-    L_ret:
-    }
-}
-#endif
 
 void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
     TalkWindowState *o = window;

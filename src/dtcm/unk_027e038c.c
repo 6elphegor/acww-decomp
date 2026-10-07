@@ -5,16 +5,8 @@
 // unk_027e0000.c). The two objects have one size; their order is mwcc's for this definition order.
 #pragma define_section DTCM ".dtcm" abs32 RWX
 
-#ifdef HOST
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
-#else
-typedef unsigned long u32;
-#endif
-#ifdef HOST
 typedef signed int s32;  // (long is 64 bits on 64-bit hosts)
-#else
-typedef signed long s32;
-#endif
 
 #pragma section DTCM begin
 

@@ -2,68 +2,12 @@
 #include "gfx/VecFx32.h"
 
 
-#ifdef MODERN
 // GCC: the real classes. The twins below only reproduce mwcc's vtable order in .data; with them, this file would define
 // StaticCollider / ActorFollowCollider / ActorPlacedCollider on other bases than every other file does (-Wodr).
 #include "actor/ActorCollider.h"
 #include "actor/ActorFollowCollider.h"
 #include "actor/ActorPlacedCollider.h"
 #include "actor/StaticCollider.h"
-#else
-// Declaration-only twins (same layout and virtuals as ActorCollider / ActorFollowCollider): the original vtable order in .data
-// is a heapsort of the class declaration order that cannot be reached with the real bases declared first.
-// aliases.txt maps the twins' constructor/destructor/method names onto the real functions.
-class ActorColliderView {
-public:
-    ActorColliderView();
-    ~ActorColliderView();
-    virtual VecFx32 *getPos() = 0;
-    virtual u32 getOwnerId() = 0;
-    virtual void onCollide(u32 a, u32 b, u32 c);
-    void setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
-    u8 pad[0x3c];
-};
-
-class ActorFollowColliderView : public ActorColliderView {
-public:
-    ActorFollowColliderView();
-    ~ActorFollowColliderView();
-    virtual VecFx32 *getPos();
-    virtual u32 getOwnerId();
-    void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x40 */ u8 *ownerActor;
-};
-
-class ActorPlacedCollider : public ActorFollowColliderView {
-public:
-    ActorPlacedCollider();
-    ~ActorPlacedCollider();
-    virtual VecFx32 *getPos();
-    virtual u32 getOwnerId();
-    void setupForActorAt(void *p, VecFx32 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x44 */ VecFx32 position;
-};
-
-class StaticCollider : public ActorColliderView {
-public:
-    StaticCollider();
-    ~StaticCollider();
-    virtual VecFx32 *getPos();
-    virtual u32 getOwnerId();
-    void setupAtPos(VecFx32 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x40 */ VecFx32 position;
-};
-
-class ActorFollowCollider : public ActorColliderView {
-public:
-    ActorFollowCollider();
-    ~ActorFollowCollider();
-    virtual VecFx32 *getPos();
-    virtual u32 getOwnerId();
-    void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x40 */ u8 *ownerActor;
-};
-#endif
 
 // Included here, after the twins above: the class definition order decides the vtable order in .data.
 #include "actor/ActorCollider.h"

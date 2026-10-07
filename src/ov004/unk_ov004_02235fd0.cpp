@@ -869,11 +869,7 @@ void HouseRoach::updateCrawl() {
             o = (s32)sHouseRoachVillager;
         }
         if (o != 0 && res == 0) {
-#ifdef HOST
             u8 *q = ACTOR_POS_AT(o);
-#else
-            u8 *q = (u8 *)(o + 0x5c);
-#endif
             stateTimer = stateTimer - 1;
             speed = zero;
             if (stateTimer <= 0) {

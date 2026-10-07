@@ -8,16 +8,8 @@
 // the game's camera code declares as a block of its own); they are recorded in config/usa/arm9/dtcm/lcf_symbols.txt.
 #pragma define_section DTCM ".dtcm" abs32 RWX
 
-#ifdef HOST
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
-#else
-typedef unsigned long u32;
-#endif
-#ifdef HOST
 typedef signed int fx32;  // (long is 64 bits on 64-bit hosts)
-#else
-typedef signed long fx32;
-#endif
 
 typedef struct { fx32 x, y, z; } VecFx32;
 typedef struct { fx32 m[4][4]; } MtxFx44;

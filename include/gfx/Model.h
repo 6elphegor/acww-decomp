@@ -4,9 +4,7 @@
 #include "types.h"
 #include "gfx/Mtx43.h"
 #include "uptr.h"
-#ifdef HOST
 #include "nnsys/g3d_rt.h"
-#endif
 
 // 3D model instance (0x98 bytes): an NNS G3D render object at 0x08, the model resource at 0x5c, its texture/palette
 // key, a 4x3 base matrix at 0x64 and the texture VRAM slot. Defined in src/main/unk_02055200.cpp (ctor 0x02055704);
@@ -45,7 +43,6 @@ public:
 
     /* 0x04 */ u16 modelFlags;
     /* 0x06 */ u16 unk_06;
-#ifdef HOST
     // the render object by its real layout (include/nnsys/g3d_rt.h: pointers), the names at its members
     union {
         u8 unk_08[sizeof(G3dRenderObj)];
@@ -65,29 +62,6 @@ public:
             void *renderJntRecord;      // recJntAnm
         };
     };
-#else
-    union {
-        /* 0x08 */ u8 unk_08[0x2c]; // NNSG3dRenderObj (0x54 bytes, up to 0x5c)
-        struct {
-            /* 0x08 */ u32 renderObj; // NNSG3dRenderObj::flag
-            /* 0x0c */ u8 *renderResMdl;
-            /* 0x10 */ u8 pad_10[8];
-            /* 0x18 */ NNSG3dAnmObj *renderAnmJnt;
-            /* 0x1c */ s32 unk_1c;
-            /* 0x20 */ NNSG3dAnmObj *renderAnmVis;
-            /* 0x24 */ u8 pad_24[0x10];
-        };
-    };
-    /* 0x34 */ s32 renderUserPtr;
-    union {
-        /* 0x38 */ u8 unk_38[0x24];
-        struct {
-            /* 0x38 */ u8 pad_38[4];
-            /* 0x3c */ void *renderJntRecord;
-            /* 0x40 */ u8 pad_40[0x1c];
-        };
-    };
-#endif
     /* 0x5c */ NNSG3dResMdl *resMdl;
     /* 0x60 */ u32 resTex;
     union {
@@ -102,12 +76,7 @@ public:
 
 // Model members reached by their DS offsets from a Model's storage (code that keeps the model as raw storage): the
 // DS expression there, the member on hosts
-#ifdef HOST
 #define MODEL_AT_MTX(p) (((Model *)(p))->mtx)
 #define MODEL_AT_RESMDL(p) ((u32)(uptr)((Model *)(p))->resMdl)
-#else
-#define MODEL_AT_MTX(p) (*(Mtx43 *)((u8 *)(p) + 0x64))
-#define MODEL_AT_RESMDL(p) (*(u32 *)((u8 *)(p) + 0x5c))
-#endif
 
 #endif

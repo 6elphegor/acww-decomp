@@ -3824,11 +3824,7 @@ namespace ns_02211818 {
 extern "C" s32 PlayerActor_RequestReleaseCreature(Obj *o, u32 a, s32 b, s16 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 6, b, c);
-#ifdef HOST
     *(u16 *)((u8 *)&m.unk_0c) = a;
-#else
-    *(u16 *)((u8 *)&m + 0xc) = a;
-#endif
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }
@@ -7218,11 +7214,7 @@ namespace ns_0220cd4c {
 extern "C" s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     _ZN19PlayerActionRequest6assignEiis(&m, 0x55, b, c);
-#ifdef HOST
     *(u8 *)((u8 *)&m.unk_0c) = a;
-#else
-    *(u8 *)((u8 *)&m + 0xc) = a;
-#endif
     s32 r = PlayerActor_pushRequest(o, &m);
     return r;
 }

@@ -20,14 +20,8 @@ extern BOOL (*data_02200060)(void);
 extern Buf data_02200080;
 extern u8 data_02200084[];
 extern u32 data_0220005c;
-#ifdef HOST
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)
-#else
-typedef struct { u8 pad[0x6c]; u32 id; } Thread;
-typedef struct { u32 pad[2]; Thread *list; } ThreadInfo;
-extern ThreadInfo data_021fcc2c;
-#endif
 extern u8 data_02200298[];
 extern u32 data_02200250;
 extern s32 data_02200274;

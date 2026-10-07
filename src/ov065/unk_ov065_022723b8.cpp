@@ -962,9 +962,7 @@ s32 DwcMatch_StartClient(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
     if (r != 0) {
         return r;
     }
-#ifdef MODERN
     return r; // the original returns r (0) left in r0; an explicit return changes mwcc's code
-#endif
 }
 #undef g
 }

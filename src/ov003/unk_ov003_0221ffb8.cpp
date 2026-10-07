@@ -1987,11 +1987,7 @@ extern "C" BOOL FishCatch_StartLift(s32 idx, s32 flag) {
     if (ob == NULL) {
         return FALSE;
     }
-#ifdef HOST
     pos = (V3_f7 *)&((Actor *)ob)->position;
-#else
-    pos = (V3_f7 *)(ob + 0x5c);
-#endif
     Rec_f7 *rec = &((Rec_f7 *)(sFishCatches))[idx];
     t = rec->fishId;
     if ((u32)(t - 0x38) <= 2) {
@@ -3688,11 +3684,7 @@ extern "C" void FieldFish_SetModelMatrix(O_f3 *a, void *b, void *dstv, s32 ang) 
     Mtx43_RotateX(data_021f47e0, r);
     Mtx43_RotateY(data_021f47e0, ang);
     struct T { s32 v[12]; };
-#ifdef HOST
     *(T *)&MODEL_AT_MTX(dst) = *(T *)data_021f47e0;  // (Model::mtx: elsewhere on 64-bit hosts)
-#else
-    *(T *)(dst + 0x64) = *(T *)data_021f47e0;
-#endif
 }
 
 
@@ -3813,13 +3805,8 @@ extern "C" void FieldFishManager_ResetBottles(s32 a) {
     u8 *p = ((u8 *)(sBottleThrows));
     s32 i;
     for (i = 0; i < 4; i++) {
-#ifdef HOST
         ((BottleThrow *)p)->state = 0;  // (by the members)
         ((BottleThrow *)p)->stateTimer = 0;
-#else
-        p[0x30] = 0;
-        *(s32 *)(p + 0x58) = 0;
-#endif
         p += HOST_SIZED(0x60, BottleThrow);
     }
 }
@@ -4458,11 +4445,7 @@ extern "C" BOOL FishCatch_StartRelease(s32 idx, u16 id0, VecFx32 *pos) {
         return FALSE;
     }
     VecFx32 v;
-#ifdef HOST
     VecFx32 *ps = (VecFx32 *)&((Actor *)ob)->position;
-#else
-    VecFx32 *ps = (VecFx32 *)(ob + 0x5c);
-#endif
     v = *ps;
     s32 r6 = (u16)id - 0x12e8;
     rec->fishId = r6;

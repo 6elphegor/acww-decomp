@@ -33,13 +33,9 @@ namespace F02270b74 {
 
 
 namespace Unk_ov065_0227138c_Ns {
-#ifdef MODERN
 // `unused` is only read for a result outside GP_NO_ERROR..GP_SERVER_ERROR (0-4), never returned by gp*; the
 // original leaves whatever r1 holds
 extern "C" s32 DwcLogin_HandleGpResult(s32 r, s32 unused = 0);
-#else
-extern "C" s32 DwcLogin_HandleGpResult(s32 r);
-#endif
 }
 extern "C" {
 extern s32 sDwcErrorClass;

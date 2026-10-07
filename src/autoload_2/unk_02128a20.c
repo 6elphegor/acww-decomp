@@ -1,18 +1,9 @@
 // mwcc-flags: -nothumb -O4,p
 
-#ifdef HOST
 #define FILL_WORD unsigned int  // the 32-bit word of the fill (long is 64 bits on 64-bit hosts)
-#else
-#define FILL_WORD unsigned long
-#endif
-#ifdef MODERN
 // GCC has no cast lvalues (an mwcc extension): reinterpret the pointer variable itself
 #define cpd (*(unsigned char **)&dst)
 #define lpd (*(FILL_WORD **)&dst)
-#else
-#define cpd ((unsigned char *) dst)
-#define lpd ((unsigned long *) dst)
-#endif
 #define deref_auto_inc(p) *(p)++
 // __fill_mem
 void __fill_mem(void *dst, int val, unsigned long n) {

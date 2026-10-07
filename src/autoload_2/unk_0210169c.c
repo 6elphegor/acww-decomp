@@ -204,11 +204,7 @@ void FreeHead(HeapHead *heap);
 void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
-#ifdef HOST
 void *NNS_FndGetArchiveFileByName(const char *path);
-#else
-u32 NNS_FndGetArchiveFileByName(const char *path);
-#endif
 BOOL NNS_FndUnmountArchive(void *arc);
 BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc);
 BOOL func_0210149c(u32 *narc);

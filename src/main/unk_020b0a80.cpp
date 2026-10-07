@@ -615,10 +615,8 @@ extern "C" void Startup_SetupMainArena(void) {
 }
 
 extern "C" void Startup_FillOverlayArea(void) {
-#ifdef HOST
     // the host build links the overlays in: its variables can lie where the DS loads overlays (docs/host.md)
     return;
-#endif
     volatile u32 fill;
     u32 info[12];
     u32 start, size;

@@ -13,11 +13,7 @@
 // recorded in config/usa/arm9/dtcm/lcf_symbols.txt.
 #pragma define_section DTCM ".dtcm" abs32 RWX
 
-#ifdef HOST
 typedef unsigned int u32;  // (long is 64 bits on 64-bit hosts)
-#else
-typedef unsigned long u32;
-#endif
 typedef void (*OSIrqFunction)(void);
 
 typedef struct OSIrqCallbackInfo {

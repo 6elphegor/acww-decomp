@@ -45,14 +45,9 @@ extern const u8 data_02135ca0[];
 extern u8 data_021f5c62[];
 extern u8 data_021f5c5c[], data_021f5c61[], data_021f5c66[], data_021f5c68[];
 extern u32 data_021f5c58;
-#ifdef MODERN
 // set by the PXI callback while NVRAMm_ExecuteCommand polls them (see docs/modern.md, "volatile")
 extern volatile u16 data_021f5c50;
 extern volatile u32 data_021f5c54;
-#else
-extern u16 data_021f5c50;
-extern u32 data_021f5c54;
-#endif
 extern u8 data_021f5c80[];
 extern const u8 data_02135c9c[];
 extern s32 memcmp(const void *a, const void *b, u32 n);

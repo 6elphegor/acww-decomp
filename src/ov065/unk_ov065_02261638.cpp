@@ -2183,13 +2183,9 @@ void IpSoc_Consume(u32 a) {
 }
 
 u32 Tcp_SendSegments(u8 *a, u32 b, Sess *s, u32 flag) {
-#ifdef MODERN
     // Without a pass through the loop the original returns its caller's r4: Tcp_SendTwoBuffers's d, which it then
     // tests for != 0 itself, so any nonzero value behaves the same.
     u32 r4 = 1;
-#else
-    u32 r4;
-#endif
     u32 win;
     u32 cnt;
     u32 budget;

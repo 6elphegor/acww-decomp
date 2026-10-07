@@ -155,25 +155,12 @@ void CARDi_ReadCard(void *p) {
             dst = buf;
             d->f8 = page;
         }
-#ifdef HOST
         // the host build reads the page from the ROM image at once (each register access is a trap there)
         {
             extern void host_card_read(u32 addr, void *dst, u32 n);
             host_card_read(page, dst, 512);
             (void)n; (void)st;
         }
-#else
-        CARDi_SetRomOp((page >> 8) | 0xb7000000, page << 24);
-        IO_W(&REG_MCCNT1, d->f4);
-        n = 0;
-        do {
-            st = IO_R(&REG_MCCNT1);
-            if (st & 0x800000) {
-                u32 v = IO_R(&REG_MCD1);
-                if (n < 512) dst[n++] = v;
-            }
-        } while (st & 0x80000000);
-#endif
         if (dst == (u32 *)c->dst) {
             data_021fec00.src += 512;
             data_021fec00.dst += 512;

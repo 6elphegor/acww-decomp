@@ -273,11 +273,7 @@ extern "C" void sDrawParent(Pm *mp, u32 a) {
     TexFn tf;
     Node *n;
     DrawFn fn = 0;
-#ifdef HOST
     spl_set_tex((u8 *)m->tex + h->c43 * SPL_TEX_SIZE);
-#else
-    spl_set_tex((u8 *)m->tex + h->c43 * 20);
-#endif
     switch (h->k4) {
         case 0:
             fn = spl_draw_bb;
@@ -293,11 +289,7 @@ extern "C" void sDrawParent(Pm *mp, u32 a) {
     n = cur->l8;
     if (n == 0) return;
     do {
-#ifdef HOST
         tf((u8 *)m->tex + n->c2c * SPL_TEX_SIZE);
-#else
-        tf((u8 *)m->tex + n->c2c * 20);
-#endif
         fn(m, n, a);
         n = n->next;
     } while (n != 0);
@@ -310,11 +302,7 @@ extern "C" void sDrawChild(Pm *mp, u32 a) {
     DrawFn fn = 0;
     Node *n;
     if (!res->p0->b16) return;
-#ifdef HOST
     spl_set_tex((u8 *)m->tex + res->p14->c15 * SPL_TEX_SIZE);
-#else
-    spl_set_tex((u8 *)m->tex + res->p14->c15 * 20);
-#endif
     switch (res->p14->k7) {
         case 0:
             fn = spl_draw_chld_bb;
@@ -362,18 +350,10 @@ extern "C" u32 sAllocTexPalette(u32 a, u32 b) {
 }
 
 extern "C" PmNew *SPL_Init(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16 a4, u16 a5) {
-#ifdef HOST
     PmNew *m = (PmNew *)alloc(SPL_MANAGER_SIZE);
-#else
-    PmNew *m = (PmNew *)alloc(60);
-#endif
     s32 i;
     u8 *p;
-#ifdef HOST
     MI_CpuFill8(m, 0, SPL_MANAGER_SIZE);
-#else
-    MI_CpuFill8(m, 0, 60);
-#endif
     m->h40 = n1;
     m->h42 = n2;
     m->b0 = a4;
@@ -389,41 +369,17 @@ extern "C" PmNew *SPL_Init(void *(*alloc)(u32), s32 n1, s32 n2, u32 a3, u16 a4, 
     m->w12 = 0;
     m->w20 = 0;
     m->w48 = 0;
-#ifdef HOST
     p = (u8 *)alloc(n1 * SPL_EMITTER_SIZE);
-#else
-    p = (u8 *)alloc(n1 * 132);
-#endif
-#ifdef HOST
     MI_CpuFill8(p, 0, n1 * SPL_EMITTER_SIZE);
-#else
-    MI_CpuFill8(p, 0, n1 * 132);
-#endif
     for (i = 0; i < n1; i++) {
         spl_push_front(&m->w12, p);
-#ifdef HOST
         p += SPL_EMITTER_SIZE;
-#else
-        p += 132;
-#endif
     }
-#ifdef HOST
     p = (u8 *)alloc(n2 * SPL_PARTICLE_SIZE);
-#else
-    p = (u8 *)alloc(n2 * 68);
-#endif
-#ifdef HOST
     MI_CpuFill8(p, 0, n2 * SPL_PARTICLE_SIZE);
-#else
-    MI_CpuFill8(p, 0, n2 * 68);
-#endif
     for (i = 0; i < n2; i++) {
         spl_push_front(&m->w20, p);
-#ifdef HOST
         p += SPL_PARTICLE_SIZE;
-#else
-        p += 68;
-#endif
     }
     m->w28 = 0;
     m->w32 = 0;
@@ -457,16 +413,8 @@ extern "C" void func_020f92d4(Pm *self, u8 *base) {
             }
         }
     }
-#ifdef HOST
     self->tex = (TexEnt *)self->alloc(self->h26 * SPL_TEX_SIZE);
-#else
-    self->tex = (TexEnt *)self->alloc(self->h26 * 20);
-#endif
-#ifdef HOST
     MI_CpuFill8(self->tex, 0, self->h26 * SPL_TEX_SIZE);
-#else
-    MI_CpuFill8(self->tex, 0, self->h26 * 20);
-#endif
     {
         for (i = 0; i < self->h26; i++) {
             TexEnt *t = &self->tex[i];

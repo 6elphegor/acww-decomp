@@ -1024,11 +1024,7 @@ void PatternPaletteFile::unload() {
     clear();
 }
 namespace n3 {
-#ifdef HOST
 extern "C" u8 *PatternPaletteFile_GetPalette(u8 **self, s32 i) { return ((PatternPaletteFile *)self)->palettes[i & 15]; }
-#else
-extern "C" u8 *PatternPaletteFile_GetPalette(u8 **self, s32 i) { return *(u8 **)((u8 *)self + ((i & 15) << 2) + 4); }
-#endif
 }
 PatternTexKeys::PatternTexKeys() {
     using namespace n3; PatternTexKeys_Clear(this); }

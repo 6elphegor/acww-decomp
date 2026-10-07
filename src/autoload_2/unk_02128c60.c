@@ -13,12 +13,7 @@ typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
 #define va_end(ap)
 
-#ifdef HOST
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
-#else
-typedef struct { u8 pad[20]; } OSMutex;
-typedef struct OSThread { u8 pad[0x6c]; u32 id; } OSThread;
-#endif
 
 typedef struct scan_format {
     u8 suppress_assignment;
@@ -37,11 +32,7 @@ extern const u16 data_0213a510[];         // __ctype_map
 extern OSMutex data_02200324;             // signal-table mutex (data_02200298[7])
 extern u32 data_02200250[];
 extern s32 data_02200274[];
-#ifdef HOST
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)
-#else
-extern struct { u32 a; u32 b; OSThread *list; } data_021fcc2c;
-#endif
 extern u32 data_02200650[];               // signal handler table
 
 int OS_TryLockMutex(OSMutex *);

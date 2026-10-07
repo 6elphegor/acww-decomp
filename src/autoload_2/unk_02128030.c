@@ -9,12 +9,7 @@ typedef signed short s16;
 typedef signed int s32;
 #include "types64.h"
 
-#ifdef HOST
 #include "sys/OSThread.h"  // the real types (larger on 64-bit hosts)
-#else
-typedef struct { u8 pad[20]; } OSMutex;                     // OSMutex (20 bytes)
-typedef struct OSThread { u8 pad[0x6c]; u32 id; } OSThread; // only the id at +0x6c is used
-#endif
 
 // MSL FILE (offsets as used by the code: handle 0, mode 4, state 8, eof 12, error 13, ..., idle_proc 72)
 typedef struct FILE {
@@ -52,11 +47,7 @@ extern FILE data_0213c238, data_0213c284, data_0213c2d0; // stdout/stdin/stderr 
 extern OSMutex data_02200298[9]; // the critical-region mutexes (autoload_3 bss, defined below)
 extern u32 data_02200250[9];     // mutex owner thread ids
 extern s32 data_02200274[9];     // mutex lock counts
-#ifdef HOST
 extern OSThreadInfo data_021fcc2c;  // OSi_ThreadInfo (+8 on the DS: the thread list)
-#else
-extern struct { u32 a; u32 b; OSThread *list; } data_021fcc2c; // OS thread info (+8: the thread list)
-#endif
 extern int data_0220064c;       // errno
 typedef struct LocaleCtype { int (*mbtowc)(u16 *, const char *, u32); int (*wctomb)(char *, u16); } LocaleCtype;
 typedef struct LocaleCase { u32 a; u32 b; u32 c; u16 *map; } LocaleCase;

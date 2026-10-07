@@ -8,16 +8,11 @@ typedef int s32;
 typedef int BOOL;
 #define NULL 0
 
-#ifdef HOST
 // NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h; next and priority move on 64-bit hosts)
 #include "nnsys/g3d_rt.h"
 typedef struct Node { int frame, ratio; void *resAnm; void *funcAnm; struct Node *next; void *resTex; u8 prio; } Node;
 #define NODE_RES_KIND(n) (*(u8 *)(n)->resAnm)
 #define RO(o) ((G3dRenderObj *)(o))
-#else
-typedef struct Node { u8 pad[0x10]; struct Node *next; u8 pad14[4]; u8 prio; } Node;
-#define NODE_RES_KIND(n) (*(u8 *)((u32 *)(n))[2])
-#endif
 
 typedef struct TexData {
     u32 sig;            // 0x00
@@ -57,7 +52,6 @@ BOOL removeLink_(Node **head, Node *n);
 // add a node to the list chosen by its kind ('M', 'J', 'V')
 void NNS_G3dRenderObjAddAnmObj(u8 *o, Node *n)
 {
-#ifdef HOST
     switch (NODE_RES_KIND(n)) {
     case 'M':
         updateHintVec___kernel(RO(o)->hintMatAnmExist, n);
@@ -72,21 +66,5 @@ void NNS_G3dRenderObjAddAnmObj(u8 *o, Node *n)
         addLink_((Node **)&RO(o)->anmVis, n);
         break;
     }
-#else
-    switch (*(u8 *)((u32 *)n)[2]) {
-    case 'M':
-        updateHintVec___kernel(o + 0x3c, n);
-        addLink_((Node **)(o + 8), n);
-        break;
-    case 'J':
-        updateHintVec___kernel(o + 0x44, n);
-        addLink_((Node **)(o + 16), n);
-        break;
-    case 'V':
-        updateHintVec___kernel(o + 0x4c, n);
-        addLink_((Node **)(o + 24), n);
-        break;
-    }
-#endif
 }
 

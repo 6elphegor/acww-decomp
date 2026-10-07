@@ -217,7 +217,6 @@ extern "C" void SndSeGroup_SetEnabled(Group *g, s32 x) {
     SndSeGroup_SetFlag(g, 0, x);
 }
 
-#ifdef HOST
 // (by the members: the voices are larger on 64-bit hosts)
 extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
     s32 i;
@@ -231,22 +230,6 @@ extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
 #include "snd/SndSeEmitter.h"
 static_assert(sizeof(SndHandle) == sizeof(Group), "SndHandle views Group");
 static_assert(__builtin_offsetof(SndHandle, volCb) == __builtin_offsetof(Group, applyParamsFn), "SndHandle::volCb");
-#endif
-#else
-extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
-    s32 i;
-    s32 n = g->numVoices;
-    u8 *p = (u8 *)g;
-    i = 0;
-    if (n > 0) {
-        do {
-            if (*(void **)(HOST_AT_A(p, Group, 8, voices[0].handle, 0)) == NULL && (p[17] & 2) == 0) return i;
-            i++;
-            p += 12;
-        } while (i < n);
-    }
-    return n;
-}
 #endif
 
 extern "C" void SndSeGroup_Init(Group *g) {

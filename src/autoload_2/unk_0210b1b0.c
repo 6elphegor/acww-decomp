@@ -210,17 +210,9 @@ void NNSi_SndCaptureMain(void)
 
 // ---- file-scope objects (autoload_3 .bss 0x021fb774-0x021fbd68; this definition order gives the original order after
 // mwcc's size sort)
-#ifdef HOST  // the real sizes (pointers: 64-bit hosts)
 u32 data_021fb774[(2 * sizeof(OSThreadQueue) + sizeof(void *) + 3 * 4 + 7) / 4] __attribute__((aligned(8)));  // OSMessageQueue
-#else
-u32 data_021fb774[8]; // OSMessageQueue
-#endif
 u32 data_021fb794[8]; // OSMessage[8]
 Cap data_021fb7b4;
 u32 data_021fb808[40]; // CapMsg[8] (used by unk_0210a9c4.c)
-#ifdef HOST
 u32 data_021fb8a8[sizeof(OSThread) / 4] __attribute__((aligned(8)));  // OSThread
-#else
-u32 data_021fb8a8[0x30]; // OSThread
-#endif
 static u64 sCaptureThreadStack[128];

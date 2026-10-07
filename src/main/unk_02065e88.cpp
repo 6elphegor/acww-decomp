@@ -594,11 +594,7 @@ public:
     u8 *getBuffer();
     void clear();
 
-#ifdef HOST
     u32 unk_00[sizeof(BmgReader) / 4] HOST_ALIGN8; // the BmgReader base (larger on 64-bit hosts)
-#else
-    /* 0x00 */ u32 unk_00[0xa4 / 4];
-#endif
     /* 0xa4 */ u8 buffer[0x800];
 };
 
@@ -1621,11 +1617,7 @@ void TalkTextBox::redrawLines() {
     for (i = 0; i < numLines; i++) {
         TextLabel *e = labels[i];
         if (e != 0 && lineDirty[i] != 0) {
-#ifdef HOST
             e->textStart = (u32)(uptr)lineStarts[i];  // (the pointers, not their words: 8 bytes on 64-bit hosts)
-#else
-            e->textStart = lineStartWords[i];
-#endif
             e->textEnd = 0;
             e->xOffset = lineOffsets[i];
             e->fgColor = Talk_ColorTagToTextColor(lineColors[i]);
@@ -1643,11 +1635,7 @@ void TalkTextBox::endText() {
 void TalkTextBox::markLineDirty() {
     using namespace n15;
     s32 i = numLines;
-#ifdef HOST
     if (i != 0 && (u32)i <= 3) lineDirty[i - 1] = 1;
-#else
-    if (i != 0 && (u32)i <= 3) *((u8 *)this + i + 0x437) = 1;
-#endif
 }
 TalkCharStepper::TalkCharStepper(TalkWindow *owner, TalkTextBox *buf)
     : window(owner), textBox(buf), mode(0), endPos(0), remaining(0) {
@@ -4561,11 +4549,7 @@ char *TalkWindowMsg::buildMessagePath(const char *a, const char *b) {
     if (r6 == 0) {
         r6 = (u32)OWNER->getMsgDir();
     }
-#ifdef HOST
     const char *r5 = a ? a : (const char *)((MsgRequest *)request)->fileName;
-#else
-    const char *r5 = a ? a : (const char *)request + 4;
-#endif
     const char *r7 = matchDirPrefix(r5);
     if (r7 != 0) {
         r5 += strlen(r7) + 1;
@@ -4609,11 +4593,7 @@ void TalkWindowMsg::loadMessageAttr() {
     using namespace n5;
     _ZN13TalkMsgBuffer5clearEv(msgBuffer);
     if (M->open(buildMessagePath(0, 0))) {
-#ifdef HOST
         M->loadMessage(&((MsgRequest *)request)->msgIndex);
-#else
-        M->loadMessage((u8 *)request + 0x1e);
-#endif
     }
     BmgMsgAttr_Copy(msgAttr, Bmg_GetMsgAttr(msgBuffer));
     M->close();

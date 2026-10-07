@@ -91,11 +91,7 @@ extern "C" void VramQueueTex_Run(void) {
                 r5->state = 2;
             }
         }
-#ifdef HOST
         if (r5 != 0) r5 = reinterpret_cast<VramTask *>(static_cast<PrioListNode *>(r5));  // (the node base: after the vtable pointer)
-#else
-        if (r5 != 0) r5 = (VramTask *)((u8 *)r5 + 4);
-#endif
         List_Remove(&sVramQueueTex, r5);
     }
     volatile u16 *vc = (volatile u16 *)0x4000006;
@@ -109,22 +105,12 @@ extern "C" void VramQueue2d_Init(void) {
 }
 
 extern "C" BOOL VramQueue2d_Enqueue(VramTask *p) {
-#ifdef HOST
     void *n = p != 0 ? (void *)static_cast<PrioListNode *>(p) : 0;  // (the node base: where the queue links it)
-#else
-    u8 *n = (u8 *)p;
-    if (n != 0) n = n + 4;
-#endif
     return PrioList_Insert(&sVramQueue2d, n);
 }
 
 extern "C" void VramQueue2d_Dequeue(VramTask *p) {
-#ifdef HOST
     void *n = p != 0 ? (void *)static_cast<PrioListNode *>(p) : 0;  // (the node base: where the queue links it)
-#else
-    u8 *n = (u8 *)p;
-    if (n != 0) n = n + 4;
-#endif
     List_Remove(&sVramQueue2d, n);
 }
 
@@ -138,11 +124,7 @@ extern "C" void VramQueue2d_Run(void) {
                 r5->state = 2;
             }
         }
-#ifdef HOST
         if (r5 != 0) r5 = reinterpret_cast<VramTask *>(static_cast<PrioListNode *>(r5));  // (the node base: after the vtable pointer)
-#else
-        if (r5 != 0) r5 = (VramTask *)((u8 *)r5 + 4);
-#endif
         List_Remove(&sVramQueue2d, r5);
     }
 }

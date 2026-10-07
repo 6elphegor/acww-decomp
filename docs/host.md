@@ -1,5 +1,21 @@
 # Toward a native PC build (plan)
 
+## The modern branch is PC-only (2026-10-07)
+
+This branch no longer builds the matching DS ROM (nor the GCC-built DS ROM of docs/modern.md); the decomp's own
+branches do. The code here is the PC port's, and it is rewritten freely toward plain, portable C/C++: real shared
+types and member access instead of DS-offset views, padding arrays and per-site host branches. The `HOST` / `MODERN`
+/ `NONMATCHING` conditionals were resolved (`tools/host_resolve_ifdefs.py`: their DS-only alternatives deleted);
+`HOST64` (`__SIZEOF_POINTER__ == 8`) remains while the 32-bit build serves as the reference. The helpers left from
+the dual build (`HOST_AT`, `HOST_AT_A`, `HOST_SIZED`: `include/uptr.h`) go away as their users are rewritten.
+
+Checking changes without the matching ROM: the behaviour must not change. The 32-bit build is deterministic, and
+`~/acww/ref/oracle/oracle.sh <binary> quick|play` compares a build's screenshots and sound with captures of the
+last build that was checked against the matching sources (commit 0e82b012; the reference binary and captures are
+kept in `~/acww/ref/oracle`, not in the repository): `quick` - the attract demo and title, 60 s; `play` -
+scripted play through the intro (A every second), screenshots to frame 25000. The 64-bit build is compared with
+the same captures (its virtual timing drifts by a frame or two after the first scene changes).
+
 The modern build (docs/modern.md) compiles the game with GCC and plays like the original in an emulator. The next
 step is a host build: the same sources compiled for the PC, with the DS hardware replaced. This note records what
 that involves and the choice still open.

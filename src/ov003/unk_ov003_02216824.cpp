@@ -302,9 +302,7 @@ s32 Mailbox::enterUseIdle() {
 }
 
 s32 Mailbox::execUseIdle() {
-#ifdef MODERN
     return 0; // the original returns whatever r0 holds; callers ignore it
-#endif
 }
 
 s32 Mailbox::enterUseOpen() {
@@ -324,9 +322,7 @@ s32 Mailbox::execUseOpen() {
     if (doorState == 4) {
         setUseState(2);
     }
-#ifdef MODERN
     return 0; // the original returns whatever r0 holds; callers ignore it
-#endif
 }
 
 s32 Mailbox::enterUseMenu() {
@@ -350,9 +346,7 @@ s32 Mailbox::execUseMenuWait() {
             setUseState(4);
         }
     }
-#ifdef MODERN
     return 0; // the original returns whatever r0 holds; callers ignore it
-#endif
 }
 
 // ---- old file 02216df0
@@ -366,9 +360,7 @@ s32 Mailbox::execUseClose() {
     if (s == 0 || s == 2) {
         TalkRequest_SetTargetDone(this);
     }
-#ifdef MODERN
     return 0; // the original returns whatever r0 holds; callers ignore it
-#endif
 }
 
 s32 Mailbox::setDoorState(s32 idx) {

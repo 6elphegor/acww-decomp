@@ -1,5 +1,8 @@
 # The modern build
 
+(Retired on the modern branch, 2026-10-07: the branch is the PC port only - docs/host.md. What follows describes
+the GCC-built DS ROM as it was.)
+
 The matching build (`tools/configure.py`, `build.ninja`) reproduces the original ROM with the original compiler and
 stays the reference. The modern build compiles the same sources with GCC (`arm-none-eabi-gcc`). It is the first
 step towards a native PC port: first a DS ROM built with GCC that runs in an emulator, then the same code on other

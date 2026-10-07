@@ -8,12 +8,7 @@
 // inline. Same helper as src/ov067/unk_ov067_0225f1a0.cpp (see docs/assembly.md).
 static inline u32 MATH_CountLeadingZerosInline(u32 x)
 {
-#ifdef MODERN
     return x == 0 ? 32 : __builtin_clz(x);
-#else
-    asm { clz x, x }
-    return x;
-#endif
 }
 static inline u32 MATH_ILog2(u32 x) { return 31 - MATH_CountLeadingZerosInline(x); }
 

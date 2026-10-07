@@ -13,11 +13,7 @@
 #endif
 // the tree / cedar / palm loaders' file buffer slots: u32 arrays (the loaders store the buffers as u32); on the DS
 // the free functions see them as void * (the same 4 bytes), on 64-bit hosts they keep the u32 view
-#ifdef HOST
 typedef u32 FileBufSlot;
-#else
-typedef void *FileBufSlot;
-#endif
 // mwcc-version: 1.2/base
 // ov003 TU22 (field objects, .text 0x02219294-0x0221ffb8): 11 unit files merged; every old file is a namespace
 #include "types.h"
@@ -259,12 +255,8 @@ struct FieldItemFx {
     u32 unitX;
     u32 unitZ;
     u8 pad_18[0x48];
-#ifdef HOST
     u8 seEmitter[HOST_SIZED(0x40, SndSeEmitter)] HOST_ALIGN8;  // SndSeEmitter (larger on 64-bit hosts), then the
     u8 seTail[4];                                              // flags at 0xa0 (the other views of the entry)
-#else
-    u8 seEmitter[0x44];
-#endif
     FieldItemFx();
     ~FieldItemFx();
 };
@@ -1135,22 +1127,14 @@ class TreeAnimSet {
 public:
     TreeAnimSet();
     ~TreeAnimSet();
-#ifdef HOST
     u8 pad[sizeof(::TreeAnimSet)];
-#else
-    u32 pad[4];
-#endif
 };
 class FieldObjectManager : public GameProc {
 public:
     FieldObjectManager();
     virtual ~FieldObjectManager();
 
-#ifdef HOST
     CachedModel *iconModels[0x49];
-#else
-    /* 0x050 */ u8 pad_050[0x174 - 0x50];
-#endif
     /* 0x174 */ CachedModel treeModels[0x12];
     /* 0xc6c */ CachedModel cedarModels[6];
     /* 0x1014 */ CachedModel litCedarModels[3];
@@ -1171,12 +1155,8 @@ public:
     /* 0x4b00 */ ModelSet stoneModelSet;
     /* 0x4b10 */ ModelSet stumpModelSet;
     /* 0x4b20 */ TreeAnimSet treeAnimSet;
-#ifndef HOST
-    /* 0x4b30 */ u8 pad_4b30[0x6a6c - 0x4b30];
-#endif
     /* 0x6a6c */ s32 frameCounter;
 };
-#ifdef HOST
 // the same object as ::FieldObjectManager (above)
 static_assert(__builtin_offsetof(FieldObjectManager, treeModels) == __builtin_offsetof(::FieldObjectManager, treeModels), "treeModels");
 static_assert(__builtin_offsetof(FieldObjectManager, designModels) == __builtin_offsetof(::FieldObjectManager, designModels), "designModels");
@@ -1187,7 +1167,6 @@ static_assert(__builtin_offsetof(FieldObjectManager, iconModelSet) == __builtin_
 static_assert(__builtin_offsetof(FieldObjectManager, treeAnimSet) == __builtin_offsetof(::FieldObjectManager, treeAnimSet), "treeAnimSet");
 static_assert(__builtin_offsetof(FieldObjectManager, frameCounter) == __builtin_offsetof(::FieldObjectManager, frameCounter), "frameCounter");
 static_assert(sizeof(FieldObjectManager) == sizeof(::FieldObjectManager), "size");
-#endif
 typedef FieldObjectManager O;
 typedef CachedModel M;
 extern "C" {
@@ -1745,9 +1724,6 @@ extern "C" uptr data_ov003_02232d84[6];
 extern "C" char data_ov003_02233100[0x1c];
 extern "C" uptr data_ov003_02232d9c[6];
 extern "C" uptr data_ov003_022327b8[2];
-#ifndef HOST
-extern "C" u32 sFieldObjectManagerProfile[2];
-#endif
 extern "C" char data_ov003_02233138[0x1c];
 extern "C" char data_ov003_02234440[0x28];
 extern "C" char data_ov003_02232998[0x10];
@@ -2353,15 +2329,9 @@ extern "C" uptr data_ov003_02232d9c[6] = {
 extern "C" uptr data_ov003_022327b8[2] = {
     (uptr)data_ov003_0222f34c, 0,
 };
-#ifdef HOST
 // (a ProcProfile: the create function is a pointer, larger on 64-bit hosts)
 extern "C" ProcProfile sFieldObjectManagerProfile_p __asm__("sFieldObjectManagerProfile");
 ProcProfile sFieldObjectManagerProfile_p = {(void *(*)(void))FieldObjectManager_Create, 0x8a, 0xb};
-#else
-extern "C" u32 sFieldObjectManagerProfile[2] = {
-    (u32)FieldObjectManager_Create, 0xb008a,
-};
-#endif
 extern "C" char data_ov003_02233138[0x1c] = "/fg/eff_tree/anm_t04s.nsbmd";
 extern "C" char data_ov003_02234440[0x28] = "/fg/tree/cedar_mdl/obj_x_cedar.nsbmd";
 extern "C" char data_ov003_02232998[0x10] = "palm04_stamp";
@@ -5666,7 +5636,6 @@ void TreeAnimSet_Release(Big *self) {
 
 namespace ns_0221c220 {
 extern "C" {
-#ifdef HOST
 // (by the members of TreeAnimSet: the animations are larger on 64-bit hosts)
 u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
     ::TreeAnimSet *s = (::TreeAnimSet *)self;
@@ -5682,21 +5651,6 @@ u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
     if (t >= 0xc8 && t <= 0xcf) return (u8 *)(s->palmAnims + a);
     return (u8 *)(&s->treeAnims[b][0] + a);
 }
-#else
-u8 *TreeAnimSet_GetInstance(Big *self, u16 *p, s32 a, s32 b) {
-    BOOL f = FALSE;
-    u32 t = *p;
-    if (t >= 0x2f && t <= 0x56) f = TRUE;
-    if (f) return HOST_AT(self, 0xa60, treeAnims[8].active, 0) + a * 0x14c;
-    if (t >= 0x57 && t <= 0x5b) return (u8 *)self + b * 0x530 + a * 0x14c;
-    if (t == 0x69) return HOST_AT(self, 0xa60, treeAnims[8].active, 0) + a * 0x14c;
-    if (t >= 0x6a && t <= 0x6c) return HOST_AT(self, 0xf90, cedarAnims[0].active, 0) + a * 0x14c;
-    if (t == 0x6d) return HOST_AT(self, 0xf90, cedarAnims[0].active, 0) + a * 0x14c;
-    if (t >= 0x5d && t <= 0x61) return HOST_AT(self, 0xf90, cedarAnims[0].active, 0) + a * 0x14c;
-    if (t >= 0xc8 && t <= 0xcf) return HOST_AT(self, 0x18a4, palmAnims[0].active, 0) + a * 0x14c;
-    return (u8 *)self + b * 0x530 + a * 0x14c;
-}
-#endif
 }
 }
 

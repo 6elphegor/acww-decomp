@@ -19,7 +19,6 @@ SpriteAnimSeq data_020d5d34[2] = {
     {data_020d491c, 1}, {data_020d494c, 1},
 };
 
-#ifdef MODERN
 // The game indexes one table of 71 sequence records that starts at data_020d5b0c (0x020d5b0c + i * 8: the HUD
 // buttons, the talk arrow, the input mode icon, ...). In the original these are the arrays below, contiguous over
 // four files; the modern build doesn't keep them together, so the indexed users go through this table (like
@@ -44,4 +43,3 @@ void *const gSpriteSeqTable5b0c[71] = {
     &data_020d5cec[0], &data_020d5cec[1], &data_020d5cec[2], &data_020d5cec[3], &data_020d5d0c[0], &data_020d5d14[0],
     &data_020d5d14[1], &data_020d5d14[2], &data_020d5d14[3], &data_020d5d34[0], &data_020d5d34[1],
 };
-#endif

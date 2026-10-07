@@ -344,11 +344,7 @@ BOOL FleaMarketSellerVillager::onDelete() {
 
 BOOL FleaMarketSellerVillager::updateAct() {
     BOOL r = FALSE;
-#ifdef HOST
     if (sFleaMarketSellerActTable[act].b) { // (the DS label is the table + one member: the b member)
-#else
-    if (data_ov004_02250720[act].a) {
-#endif
         r = (this->*sFleaMarketSellerActTable[act].b)();
     }
     return r;

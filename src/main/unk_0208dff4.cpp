@@ -1,7 +1,5 @@
 #include "types.h"
-#ifdef HOST
 extern void *const gSpriteSeqTable5b0c[71];  // (src/main/unk_020d5d34.cpp)
-#endif
 #include "text/Unk_02050288.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
@@ -105,18 +103,10 @@ void LabelButton::setState(s32 v) {
     s32 j = i + 1;
     s32 k = sLabelButtonStatePlayOnce[v];
     state = v;
-#ifdef HOST
     layer1.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[i]);
-#else
-    layer1.setSeq(&data_020d5b0c[i]);
-#endif
     layer1.setPlayOnce(k);
     layer1.restart();
-#ifdef HOST
     layer2.setSeq((SpriteAnimSeq *)gSpriteSeqTable5b0c[v ? j : j]);
-#else
-    layer2.setSeq(&data_020d5b0c[v ? j : j]);
-#endif
     layer2.setPlayOnce(k);
     layer2.restart();
     if (v == 1) {

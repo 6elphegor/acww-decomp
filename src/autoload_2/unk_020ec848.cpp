@@ -19,16 +19,9 @@ class ProcBase;
 
 
 
-#ifdef HOST
 // the dispatcher's pointer-to-member type: two pointers on the host (the arguments are passed as such on x86-64)
 class ProcBase;
 typedef BOOL (ProcBase::*P2)();
-#else
-struct P2 {
-    u32 a;
-    u32 b;
-};
-#endif
 
 
 
@@ -204,9 +197,7 @@ extern "C" void _ZN8ProcBase10postDeleteEv(ProcBase *self, s32 a) {
 }
 
 extern "C" BOOL _ZN8ProcBase15onDeleteRequestEv(ProcBase *self) {
-#ifdef MODERN
     return 0; // the original returns whatever r0 holds; callers ignore it
-#endif
 }
 
 extern "C" void ProcBase_SetHeap(ProcBase *self, Heap *heap) {
@@ -441,7 +432,6 @@ extern "C" ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d) {
     Proc_SetCreateParams(a, parent, c, d);
     gProcCreateStep = 3;
     ProcBase *r = (ProcBase *)gProfileTable[a]->create();
-#ifdef HOST
     {
         extern void host_log_proc(u32 profile, void *create, void *obj);
         host_log_proc(a, (void *)gProfileTable[a]->create, r);
@@ -451,7 +441,6 @@ extern "C" ProcBase *Proc_Create(u32 a, TreeNode *parent, u32 c, u32 d) {
         extern void host_bad_object(u32 profile, void *create, void *obj);
         host_bad_object(a, (void *)gProfileTable[a]->create, r);
     }
-#endif
     if (r == NULL) {
         gProcCreateStep = 0;
         gProcCreateProfile = 0xffff;

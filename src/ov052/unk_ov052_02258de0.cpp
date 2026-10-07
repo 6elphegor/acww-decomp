@@ -218,11 +218,7 @@ extern "C" {
 extern char sSpNpcReddKey[];
 extern const TalkStartMsg sSpNpcReddTopicMsgs[13];
 extern SpNpcReddActEntry sSpNpcReddActTable[11];
-#ifdef HOST
 #define MSG_ID(i) (sSpNpcReddTopicMsgs[i].msgIndex)
-#else
-#define MSG_ID(i) (((u8 (*)[8])((u8 *)sSpNpcReddTopicMsgs + 4))[i][0])
-#endif
 extern u8 sSpNpcReddModelPath[];
 extern u8 sSpNpcReddTexturePath[];
 extern ActorProfile sSpNpcReddProfile;

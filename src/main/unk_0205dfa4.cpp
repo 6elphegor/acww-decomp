@@ -551,14 +551,8 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
             HeldItemModels_SetMatAnmHeap(&sHeldItemModelBank, id, (u32)a1);
             Heap_AllocAligned(a1, 0x1c, 4);
             u32 *p = (u32 *)HeldItemModels_GetTexAnim(&sHeldItemModelBank, id);
-#ifdef HOST
             ((ModelAnim *)p)->anmObj = 0;  // (the members after the frame control's vtable pointer)
             ((ModelAnim *)p)->resMdl = 0;
-#else
-            Unk_0205e310_P *pp = (Unk_0205e310_P *)p;
-            pp->anmObj = 0;
-            pp->resMdl = 0;
-#endif
             HeldItemModels_LoadTexAnim(&sHeldItemModelBank, id, 0);
             u32 q = (u32)func_02106670(func_02106654(HeldItemModels_GetTexAnimBuffer(&sHeldItemModelBank, id)), 0);
             u32 w = MODEL_AT_RESMDL(slot);

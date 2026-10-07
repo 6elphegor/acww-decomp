@@ -428,11 +428,7 @@ void MakeWaveData(LoadCommand *command)
 
                     if (blockOffsetSample == 0)
                     {
-#ifdef MODERN
                         *state = *(*(AdpcmState **)&srcp)++;
-#else
-                        *state = *((AdpcmState *)srcp)++;
-#endif
                     }
 
                     end = blockOffsetSample + samples;

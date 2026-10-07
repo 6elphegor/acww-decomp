@@ -1817,7 +1817,6 @@ void MoveCollisionVisitor::visitWalls(u8* p) {
 void MoveCollisionVisitor::visitFloors(u8* p) {
     u8* e;
     VecFx32CtorDtor dead;
-#ifdef HOST
     // (the list's triangles by their type: they grow on 64-bit hosts)
     FloorTriangleList *fl = (FloorTriangleList *)p;
     for (u32 i = 0; i < fl->numTriangles; i++) {
@@ -1831,18 +1830,6 @@ void MoveCollisionVisitor::visitFloors(u8* p) {
             }
         }
     }
-#else
-    u8* end = p + *(s32*)(p + 0xa00) * 0x40;
-    for (e = p; e < end; e += 0x40) {
-        if (pos->y < *(s32*)(e + 8)) {
-            if (_ZN17CollisionTriangle10containsXZEP15Unk_0202f2ac_V3(e, pos)) {
-                pos->y = *(s32*)(e + 8);
-                state->flags |= 1;
-                state->groundAttr = *(u8*)(e + 0x38);
-            }
-        }
-    }
-#endif
 }
 
 void MoveCollisionVisitor::visitCylinders(u8* p) {
@@ -1863,13 +1850,8 @@ void MoveCollisionVisitor::visitCylinders(u8* p) {
 void SegmentCollisionVisitor::visitWalls(u8* p) {
     VecFx32 out;
     WallEdgeView* e;
-#ifdef HOST
     numWalls = ((WallEdgeList *)p)->numEdges;
     for (e = (WallEdgeView*)p; (u8*)e < p + numWalls * sizeof(WallEdge); e = (WallEdgeView*)((u8 *)e + sizeof(WallEdge))) {
-#else
-    numWalls = *(s32*)(p + 0x480);
-    for (e = (WallEdgeView*)p; (u8*)e < p + numWalls * 0x30; e++) {
-#endif
         VecFx32Ctor v0(e->normal, 0, e->normalZ);
         VecFx32Ctor v1(e->start, e->topY, e->startZ);
         VecFx32Ctor v2(e->start, -0x8000, e->startZ);
@@ -1907,13 +1889,8 @@ void SegmentCollisionVisitor::visitFloors(u8* p) {
     u8* e;
     u8* end;
     BOOL one = TRUE;
-#ifdef HOST
     numFloors = ((FloorTriangleList *)p)->numTriangles;
     for (e = p; e < p + numFloors * sizeof(FloorTriangle); e += sizeof(FloorTriangle)) {
-#else
-    numFloors = *(s32*)(p + 0xa00);
-    for (e = p; e < p + numFloors * 0x40; e += 0x40) {
-#endif
         FloorTriangleView* ent = (FloorTriangleView*)e;
         if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(e, &segStart) >= 0) {
             if (Unk_02031f90_Ge0(_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(e, segEnd))) {

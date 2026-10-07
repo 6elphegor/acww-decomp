@@ -9768,11 +9768,7 @@ BOOL VillagerTalkRumorTopics::selectTsuFriend() {
     c[0] = data_020d7860[0];
     c[1] = data_020d7860[1];
     VillagerId *d[2];
-#ifdef HOST
     func_02133ef8(d, sizeof(d));
-#else
-    func_02133ef8(d, 8);
-#endif
     x = 0;
     y = 0;
     d[0] = ((VillagerId *)_ZN12VillagerData13getVillagerIdEv(actor->villagerData));
@@ -9873,11 +9869,7 @@ BOOL VillagerTalkRumorTopics::selectTsuHome() {
         t = 1;
     }
     t <<= 3;
-#ifdef HOST
     Talk_SelectTopicMessage(this, topicFile, &topicIndex, 30, VillagerId_GetPersonality(((VillagerId *)_ZN12VillagerData13getVillagerIdEv(actor->villagerData))), (u32)(uptr)nZ::sTalkTopicsTsuHome[(t >> 3) * 2], *(u8 *)&nZ::sTalkTopicsTsuHome[(t >> 3) * 2 + 1], 0, 0);  // (pairs: 16 bytes on 64-bit hosts)
-#else
-    Talk_SelectTopicMessage(this, topicFile, &topicIndex, 30, VillagerId_GetPersonality(((VillagerId *)_ZN12VillagerData13getVillagerIdEv(actor->villagerData))), *(u32 *)((u8 *)sTalkTopicsTsuHome + t), *((u8 *)((u8 *)&nZ::sTalkTopicsTsuHome[1]) + t), 0, 0);
-#endif
     return TRUE;
 }
 
@@ -11255,11 +11247,7 @@ void VillagerTalkHobbyTopics::selectEvAdmireMsg12(TalkTopicMsg *out) {
 void VillagerTalkHobbyTopics::openEvAdmireWordEntryB() {
     ((VillagerTalk *)this)->setSubSceneKind2(0x17, (u32)sTalkInputBuffer, 0x10, 0);
     ((VillagerTalk *)this)->openSubScene(6);
-#ifdef MODERN
     ((VillagerTalk *)this)->setTaskDoneFn(*(Unk_020d8938_Fn *)nZ::data_020d7f70);
-#else
-    ((VillagerTalk *)this)->setTaskDoneFn((*(Unk_020d8938_Fn *)&((Unk_0201eea4_Fn)(*(void (VillagerTalkHobbyTopics::**)())nZ::data_020d7f70))));
-#endif
 }
 
 void VillagerTalkHobbyTopics::onEvAdmireWordEnteredB() {

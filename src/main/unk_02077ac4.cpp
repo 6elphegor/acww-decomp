@@ -2222,11 +2222,7 @@ void _ZN8PlayerId5clearEv(void *p);
 void TownId_Destruct(void *p);
 void TownId_Construct(void *p);
 void _ZN8PlayerIdC1Ev(void *p);
-#ifdef MODERN
 void _ZN8PlayerIdC1EPv(void *p, void *o);
-#else
-void _ZN8PlayerIdC1EPv(void *p);
-#endif
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor);
 void _ZN13VillagerStateD1Ev(void *p);
 s32 VillagerId_IsValidSpecies(u32 x);
@@ -3480,11 +3476,7 @@ extern "C" void HousePos_SetFromUnit(u8 *out, s32 *in) {
 
 namespace nQ {
 extern "C" u8 *VillagerMemory_Construct(u8 *self) {
-#ifdef MODERN
     _ZN8PlayerIdC1EPv(self, 0); // unused by PlayerId::PlayerId(void *)
-#else
-    _ZN8PlayerIdC1EPv(self);
-#endif
     *(s32 *)(self + 0x40) = 0;
     *(s32 *)(self + 0x44) = 0;
     TownId_Construct(self + 0x48);
@@ -5907,11 +5899,7 @@ extern "C" void Villager_GetEnemyName(u32 a, u32 b) {
 
 namespace nK {
 extern "C" void Villager_GetRandomOtherName(u32 a, u32 b) {
-#ifdef HOST
     uptr v;  // (a one-entry array of pointers: SaveVillagers_PickRandomExcept)
-#else
-    u32 v;
-#endif
     func_02133ef8(&v, 4);
     v = (uptr)_ZN12VillagerData13getVillagerIdEv((void *)a);
     void *r = SaveVillagers_PickRandomExcept(gSaveVillagers, &v, 1);
@@ -8372,11 +8360,7 @@ extern "C" void SaveVillagers_PlaceMissingHouses(u8 *self) {
     static HousePos arr[30];
     if (g != NULL) {
         n = 0;
-#ifdef HOST
         s32 *d = &((TownBlockMap *)g)->unitsX; // (the map's unit counts: after the blocks pointer)
-#else
-        s32 *d = (s32 *)((u8 *)g + 0xc);
-#endif
         s32 w = d[0];
         s32 h = d[1];
         s32 xy[2];

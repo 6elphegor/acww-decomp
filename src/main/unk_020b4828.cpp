@@ -405,7 +405,6 @@ GfxFrameHooks sFieldGfxFrameHooks;
 
 ViewFrustum gViewFrustum;
 
-#ifdef MODERN
 // The modern build places each overlay's data on its own: every entry names the SceneInfo of the scene's
 // overlay (sSceneOverlayIds), not the shared address the original table holds.
 extern "C" SceneInfo data_ov005_0225b7b4;
@@ -500,61 +499,6 @@ SceneInfo *sSceneInfoTable[51] = {
     &data_ov005_0225b7b4,
     &data_ov018_02258acc,
 };
-#else
-SceneInfo *sSceneInfoTable[51] = {
-    (SceneInfo *)data_ov006_0225b7b4,
-    (SceneInfo *)(sFishShadows + 0xb08),
-    (SceneInfo *)(sFishShadows + 0x968),
-    (SceneInfo *)(sFishShadows + 0x968),
-    (SceneInfo *)(sFishShadows + 0x968),
-    (SceneInfo *)(sFishShadows + 0x9a8),
-    (SceneInfo *)(sFishShadows + 0x908),
-    (SceneInfo *)(sFishShadows + 0x900),
-    (SceneInfo *)(sFishShadows + 0x914),
-    (SceneInfo *)(sFishShadows + 0x94c),
-    (SceneInfo *)(sFishShadows + 0x95c),
-    (SceneInfo *)(sFishShadows + 0x9cc),
-    (SceneInfo *)(sFishShadows + 0x9cc),
-    (SceneInfo *)(sFishShadows + 0x9cc),
-    (SceneInfo *)(sFishShadows + 0x9cc),
-    (SceneInfo *)(sFishShadows + 0x958),
-    (SceneInfo *)(sFishShadows + 0x95c),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0xaa4),
-    (SceneInfo *)(sFishShadows + 0x95c),
-    (SceneInfo *)(sFishShadows + 0x95c),
-    (SceneInfo *)(sFishShadows + 0x95c),
-    (SceneInfo *)(sFishShadows + 0x9e4),
-    (SceneInfo *)(sFishShadows + 0x9a4),
-    (SceneInfo *)(sFishShadows + 0x97c),
-    (SceneInfo *)(sFishShadows + 0xb20),
-    (SceneInfo *)(sFishShadows + 0x97c),
-    (SceneInfo *)(sFishShadows + 0x978),
-    (SceneInfo *)(sFishShadows + 0x9ec),
-    (SceneInfo *)(sFishShadows + 0x9ac),
-    (SceneInfo *)(sFishShadows + 0x9c8),
-    (SceneInfo *)(sFishShadows + 0x968),
-    (SceneInfo *)(sFishShadows + 0x9f0),
-    (SceneInfo *)(sFishShadows + 0x9ac),
-    (SceneInfo *)(sFishShadows + 0x97c),
-    (SceneInfo *)data_ov054_0225b7a8,
-    (SceneInfo *)data_ov005_0225b79c,
-    (SceneInfo *)data_ov005_0225b79c,
-    (SceneInfo *)(sFishShadows + 0x95c),
-    (SceneInfo *)(sFishShadows + 0x9a8),
-    (SceneInfo *)(sFishShadows + 0x988),
-    (SceneInfo *)(sFishShadows + 0x918),
-    (SceneInfo *)data_ov006_0225b7b4,
-    (SceneInfo *)(sFishShadows + 0x9a0),
-};
-#endif
 
 s32 sSceneOverlayIds[51] = {
     5, 32, 31, 34, 33, 35, 11, 12,
@@ -663,15 +607,9 @@ extern "C" void FieldScene_AcquireOv002(void) { OverlayMgr_Acquire((u32)OVERLAY_
 extern "C" void FieldScene_ReleaseOv002(void) { OverlayMgr_Release((u32)OVERLAY_2_ID); }
 
 extern "C" void FieldScene_AcquireInfoOverlays(u8 *obj) {
-#ifdef HOST
     s32 a = ((SceneInfo *)obj)->infoOverlayA;  // (after the pointers: elsewhere on 64-bit hosts)
     sInfoOverlayA = a;
     sInfoOverlayB = ((SceneInfo *)obj)->infoOverlayB;
-#else
-    s32 a = *(s32 *)(obj + 0x10);
-    sInfoOverlayA = a;
-    sInfoOverlayB = *(s32 *)(obj + 0x14);
-#endif
     if (a != -1) {
         OverlayMgr_Acquire(a);
     }

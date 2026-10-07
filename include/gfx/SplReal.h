@@ -79,12 +79,10 @@ struct SplRealManager {
     void *mtx;                       // 0x38
 };
 
-#ifdef HOST
 // (the types in every unit's debug information: tools/host_view_layout.py maps the views from them)
 static struct {
     SplRealManager *m; SplRealEmitter *e; SplRealParticle *p; SplRealRes *r; SplRealTex *t; SplRealField *f;
 } sSplRealTypes __attribute__((used, unused));
-#endif
 
 // the sizes the SPL code allocates (the DS's on the DS)
 #define SPL_MANAGER_SIZE HOST_SIZED(0x3c, SplRealManager)

@@ -205,7 +205,6 @@ u8 *NNS_G3dGlbGetInvWV(void)
     return data_027e0228;
 }
 
-#ifdef HOST
 #include "nnsys/g3d_rt.h"
 // (the object's real size: its pointers are larger on 64-bit hosts)
 u32 NNS_G3dAnmObjCalcSizeRequired(u8 *a, u8 *b)
@@ -219,16 +218,3 @@ u32 NNS_G3dAnmObjCalcSizeRequired(u8 *a, u8 *b)
     }
     return 0;
 }
-#else
-u32 NNS_G3dAnmObjCalcSizeRequired(u8 *a, u8 *b)
-{
-    switch (*a) {
-    case 'M':
-        return (b[0x18] * 2 + 0x1c) & ~3;
-    case 'J':
-    case 'V':
-        return (b[0x17] * 2 + 0x1c) & ~3;
-    }
-    return 0;
-}
-#endif

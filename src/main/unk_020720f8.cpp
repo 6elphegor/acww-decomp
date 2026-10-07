@@ -1226,19 +1226,10 @@ extern "C" BOOL Comm_RequestSync(u8 a) {
 }
 extern "C" s32 Comm_GetSyncState() {
     s32 a = gCommManager->myAid;
-#ifdef MODERN
     if (!gCommManager->isSlotActive(a)) {
         return NetSession_GetSyncState(3);
     }
     return NetSession_GetSyncState(a);
-#else
-    // mwcc swaps the branches when they return; r0 holds the result either way.
-    if (!gCommManager->isSlotActive(a)) {
-        NetSession_GetSyncState(3);
-    } else {
-        NetSession_GetSyncState(a);
-    }
-#endif
 }
 extern "C" void Comm_ClearSyncState() {
     s32 a = gCommManager->myAid;

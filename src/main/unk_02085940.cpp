@@ -722,11 +722,7 @@ extern "C" void PlayerSpNpcRecord_InitNop() {}
 u8 *PlayerSpNpcRecord::getArbeitDate() { return serviceDates + 4; }
 
 void PlayerSpNpcRecord::stampArbeitDate() {
-#ifdef HOST
     u8 tmp[4];  // (Clock_GetDate writes four bytes)
-#else
-    u8 tmp[3];
-#endif
     Ns_020874d8::Clock_GetDate(tmp);
     serviceDates[6] = tmp[2];
     serviceDates[5] = tmp[1];
@@ -811,11 +807,7 @@ void PlayerSpNpcRecord::clearFestivalGift() { unk_10_6 = 0; }
 extern "C" void *PlayerSpNpcRecord_GetInsuranceDate(void *p) { return p; }
 
 void PlayerDailyTalkFlags::stampToday() {
-#ifdef HOST
     u8 tmp[4];  // (Clock_GetDate writes four bytes)
-#else
-    u8 tmp[3];
-#endif
     Ns_020874d8::Clock_GetDate(tmp);
     date[2] = tmp[2];
     date[1] = tmp[1];
@@ -948,11 +940,7 @@ out:
 }
 
 void PlayerDailyTalkFlags::set(u32 i) {
-#ifdef HOST
     u8 tmp[4];  // (Clock_GetDate writes four bytes)
-#else
-    u8 tmp[3];
-#endif
     s32 w = i >> 5;
     u32 b = i & 0x1f;
     if (w < 2) {

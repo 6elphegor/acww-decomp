@@ -13,7 +13,6 @@
 #ifndef NITRO_IO_ACCESS_H
 #define NITRO_IO_ACCESS_H
 
-#ifdef HOST
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,16 +41,5 @@ template <class T> struct IoUnqual_<volatile T> { typedef T type; };
 #define IO_ADD(p, v) IO_RMW_(p, +, v)
 #define IO_SUB(p, v) IO_RMW_(p, -, v)
 
-#else
-
-#define IO_R(p) (*(p))
-#define IO_W(p, v) (*(p) = (v))
-#define IO_OR(p, v) (*(p) |= (v))
-#define IO_AND(p, v) (*(p) &= (v))
-#define IO_XOR(p, v) (*(p) ^= (v))
-#define IO_ADD(p, v) (*(p) += (v))
-#define IO_SUB(p, v) (*(p) -= (v))
-
-#endif
 
 #endif

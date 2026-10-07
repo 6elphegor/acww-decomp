@@ -87,17 +87,9 @@ public:
 
 
 
-#ifdef HOST
 #define TEXPAT_TASK1(t) ((u8 *)&(t)[1])
-#else
-#define TEXPAT_TASK1(t) ((u8 *)(t) + 0x1c)
-#endif
 struct TexPatVramUploader {
-#ifdef HOST
     TexVramTask tasks[2];  // (the TexPatVramTasks: by its type on 64-bit hosts)
-#else
-    u32 tasks[14];
-#endif
     BOOL uploadByName(u8 *hdr, const char *n1, const char *n2, u8 *x, s32 a, s32 b);
     BOOL uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b);
 };

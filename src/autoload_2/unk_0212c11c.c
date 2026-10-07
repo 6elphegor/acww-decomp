@@ -10,13 +10,7 @@ typedef int BOOL;
 typedef u16 wchar_t;
 #include "types64.h"
 #define NULL ((void *)0)
-#ifdef HOST
 #include "ds_stdarg.h"
-#else
-typedef char *va_list;
-#define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
-#define va_end(ap)
-#endif
 #include "ds_stdarg.h"  // DS_VA_ARG_C (both builds)
 
 /* MSL C FILE (layout recovered from the code, see S020a) */
@@ -444,15 +438,11 @@ wchar_t *float2str__wide(double num, wchar_t *buff, print_format format) {
 }
 
 // __wpformatter
-#ifdef HOST
 // (a va_list parameter is a pointer on 64-bit hosts: the function works on a local copy, as parse_format__wide takes
 // its address)
 s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteProcArg, const wchar_t *format_str, va_list arg_in) {
     va_list arg;
     __builtin_va_copy(arg, arg_in);
-#else
-s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteProcArg, const wchar_t *format_str, va_list arg) {
-#endif
     s32 num_chars, chars_written, field_width;
     const wchar_t *format_ptr;
     const wchar_t *curr_format;

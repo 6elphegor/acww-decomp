@@ -3278,11 +3278,7 @@ void EffectManager::end(s32 id) { using namespace R1;
     if (id != -1) {
         u32 t = getKind(id);
         if (t < 0x66) {
-#ifdef HOST
             void (*f)(s32) = ((void (**)(s32))sEffectKindTable)[t * 2 + 1]; // (the entry's end function)
-#else
-            void (*f)(s32) = ((void (**)(s32))((u8 *)sEffectKindTable + 4))[t * 2];
-#endif
             if (f) {
                 f(id);
             }

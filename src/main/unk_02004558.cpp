@@ -1162,11 +1162,7 @@ void _ZN11PlayerActor11calcHandMtxEv(void *);
 void _ZN11PlayerActor18updateShownItemPosEjz(void *, u32 v);
 void _ZN11PlayerActor12turnToCameraEi(void *, u32 v);
 BOOL _ZN11PlayerActor14testActionFlagEj(void *, u32 id);
-#ifdef MODERN
 void _ZN11PlayerActor16pickUpUpdateAnimEP19PlayerActionRequestj(void *, void *item, u32 old);
-#else
-void _ZN11PlayerActor16pickUpUpdateAnimEP19PlayerActionRequestj(void *);
-#endif
 void _ZN11PlayerActor19submitSceneColliderEv(void *);
 void _ZN11PlayerActor16pickUpUpdateItemEv(void *);
 void _ZN11PlayerActor9startAnimEijt(void *, u32 a, u32 b, u32 c);
@@ -1703,12 +1699,8 @@ s32 PlayerActor_GetTan(PlayerActor *o);
 BOOL _ZN11PlayerActor16isGuestInSessionEv(PlayerActor *o);
 Unk_0200f17c_Date *PlayerSession_GetLastPlayDate();
 void *PlayerActor_GetPlayerData(void *o);
-#ifdef MODERN
 // Defined as s32 PlayerData::getLastPlayDate(); GCC returns the struct through a hidden pointer (-fpcc-struct-return)
 s32 _ZN10PlayerData15getLastPlayDateEv(void *p);
-#else
-Unk_0200f17c_Date _ZN10PlayerData15getLastPlayDateEv(void *p);
-#endif
 void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 s32 DateTime_Compare(void *a, void *b, s32 n);
@@ -4205,14 +4197,10 @@ extern "C" s32 PlayerActor_CompareLastPlayDateNow(void *o) {
 namespace nQ {
 extern "C" s32 PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b) {
     Unk_0200f17c_Date d0, d1, d2;
-#ifdef MODERN
     {
         u16 raw = _ZN10PlayerData15getLastPlayDateEv(PlayerActor_GetPlayerData(o));
         __builtin_memcpy(&d0, &raw, sizeof(d0));
     }
-#else
-    d0 = _ZN10PlayerData15getLastPlayDateEv(PlayerActor_GetPlayerData(o));
-#endif
     d1 = d0;
     d2 = d1;
     Clock_GetDateTime(a);
@@ -6505,11 +6493,7 @@ void PlayerActor::pickUpRemoteCheckEnd() {
 
 void PlayerActor::mainPickUp() {
     using namespace nI;
-#ifdef MODERN
     _ZN11PlayerActor16pickUpUpdateAnimEP19PlayerActionRequestj(this, 0, 0); // unused by pickUpUpdateAnim
-#else
-    _ZN11PlayerActor16pickUpUpdateAnimEP19PlayerActionRequestj(this);
-#endif
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot)) {
         _ZN11PlayerActor18updateBodyColliderEv(this);
         _ZN11PlayerActor19submitSceneColliderEv(this);
