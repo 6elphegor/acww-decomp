@@ -10,7 +10,7 @@ struct TalkTopicMsg;
 
 class VillagerTalkAcornTopics : public VillagerTalkKaraokeTopics {
 public:
-    void selectEvSnowfesTalk(u32 arg);
+    void selectEvSnowfesTalk(void *arg);
     void selectEvAcornMsg15(TalkTopicMsg *out);
     void giveAcornReward();
     void selectEvAcornMsg19(TalkTopicMsg *out);
@@ -27,7 +27,7 @@ public:
     void selectEvAcornMsg7(TalkTopicMsg *out);
     void selectEvAcornMsg10(TalkTopicMsg *out);
     void selectEvAcorn(TalkTopicMsg *out);
-    void selectEvAcornTalk(u32 arg);
+    void selectEvAcornTalk(void *arg);
     void openSmallTalkChoiceGardeniing();
 };
 

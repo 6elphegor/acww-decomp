@@ -4,6 +4,8 @@
 #include "types.h"
 
 struct TalkTopicMsg;
+struct PlanErrand;
+class PlayerErrandSlot;
 class VillagerActor;
 class VillagerTalkRequestItemTopics;
 
@@ -39,15 +41,15 @@ public:
     /* 0x0ec */ Unk_020238b0_Fn updateFn;
     /* 0x0f4 */ Unk_020238b0_Fn closeFn;
     /* 0x0fc */ VillagerActor *actor;
-    /* 0x100 */ u8 topicFile[0x11e - 0x100];
+    /* 0x100 */ char topicFile[0x11e - 0x100];
     /* 0x11e */ u8 topicIndex;
     /* 0x11f */ u8 pad_11f;
     /* 0x120 */ u16 itemFromPlayer;
     /* 0x122 */ u8 pad_122[2];
     /* 0x124 */ s32 memoryIndex;
     /* 0x128 */ union { void *memory; void *unk_128_p; u32 unk_128; };
-    /* 0x12c */ u32 partnerMemoryIndex;
-    /* 0x130 */ u32 partnerMemory;
+    /* 0x12c */ s32 partnerMemoryIndex;
+    /* 0x130 */ void *partnerMemory;
     /* 0x134 */ union { void *unk_134; u32 unk_134_w; };
     /* 0x138 */ u8 noMemoryUpdate;
     /* 0x139 */ u8 pad_139[3];
@@ -57,8 +59,8 @@ public:
     /* 0x155 */ u8 deliveryTimeIndex;
     /* 0x156 */ u16 pendingSe;
     /* 0x158 */ void *deliveryRecipient;
-    /* 0x15c */ union { void *errandSlot; u32 unk_15c_w; };
-    /* 0x160 */ void *planErrand;
+    /* 0x15c */ PlayerErrandSlot *errandSlot;
+    /* 0x160 */ PlanErrand *planErrand;
     /* 0x164 */ u8 pad_164[0x168 - 0x164];
     /* 0x168 */ Unk_020238b0_Fn customFn0;
     /* 0x170 */ Unk_020238b0_Fn customFn1;
@@ -71,7 +73,7 @@ public:
     /* 0x198 */ u16 itemToPlayer;
     /* 0x19a */ u8 itemToPlayerIsReceived;
     /* 0x19b */ u8 pad_19b;
-    /* 0x19c */ union { s32 price; void *unk_19c_p; u32 unk_19c_w; };
+    /* 0x19c */ union { s32 price; u32 unk_19c_w; };
 };
 
 #endif // TALK_VILLAGERTALKREQUESTITEMTOPICS_H

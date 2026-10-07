@@ -10,6 +10,7 @@
 
 // sys/ClockDateTime.h is not included: unk_02077ac4.cpp includes this header and still has its own ClockDateTime.
 union ClockDateTimeWords;
+struct PlanErrand;
 
 // Base of the town villagers (0x894 bytes). Defined in src/main/unk_0201c050.cpp (ctor, dtor, vtable, overrides
 // 0x0202daf8..).
@@ -47,10 +48,10 @@ public:
     void attachVillagerData();
     // errand catch plans (insect / fish shown to the player), defined in unk_0201c050.cpp among the talk topics
     void updateCatchPlans(u8 *a, void *b, u32 c);
-    void updateFishCatchPlan(void *s1, u8 *tbl, void *p2, u8 p3, ClockDateTimeWords *arr);
+    void updateFishCatchPlan(PlanErrand *s1, u8 *tbl, void *p2, u8 p3, ClockDateTimeWords *arr);
 
     /* 0x640 */ u8 eventKind;
-    /* 0x644 */ u32 talkPartnerId;
+    /* 0x644 */ VillagerActor *talkPartner;
     /* 0x648 */ u8 invitedByPartner;
     /* 0x64c */ VillagerClothModel clothModel;
     /* 0x680 */ VillagerTalk villagerTalk;

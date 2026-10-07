@@ -55,8 +55,8 @@ public:
     BOOL selectTsuStar();
     u32 selectTsuDrama();
     BOOL selectTsuEvent();
-    u32 findTsuEvent2Message(u8 *a, s32 *b, u8 *c, u32 *d);
-    u32 findTsuEvent1Message(u8 *a, s32 *b, u8 *c, u32 *d);
+    const char *findTsuEvent2Message(u8 *a, s32 *b, u8 *c, u32 *d);
+    const char *findTsuEvent1Message(u8 *a, s32 *b, u8 *c, u32 *d);
     BOOL selectTsuMemory();
     BOOL selectTsuAlways();
     BOOL selectTsuDress();
@@ -195,7 +195,7 @@ public:
     BOOL tryOfferVisitRequest(void *a, void *b);
     BOOL tryOfferCollectRequest(void *a);
     BOOL tryOfferDeliveryRequest(void *a, void *b);
-    s32 pickRandomOtherVillager();
+    void *pickRandomOtherVillager();
     s32 tryAddActiveRequestChoice(void *a, void *b);
     BOOL tryAddVisitReminderChoice(void *a, void *b, u32 c);
     void setVisitTimeArgs(ClockDateTime *p);
@@ -204,9 +204,9 @@ public:
     s32 openShirtRequestMenu();
     s32 openFurnitureRequestMenu();
     s32 openCreatureRequestMenu(BOOL (*f)(u16 *), s32 pa, s32 pb);
-    BOOL tryAddDeliveryClientChoice(s32 unused, s32 a, s32 b);
-    BOOL tryAddDeliveryRecipientChoice(s32 a, s32 b);
-    BOOL tryAddHandOverChoice(s32 a, s32 b);
+    BOOL tryAddDeliveryClientChoice(void *unused, void *errands, s32 b);
+    BOOL tryAddDeliveryRecipientChoice(void *a, void *b);
+    BOOL tryAddHandOverChoice(void *a, void *b);
     void selectEtcConnect(TalkTopicMsg *out);
     void selectApNicknRefused(TalkTopicMsg *out);
     void selectApNicknAccepted(TalkTopicMsg *out);
