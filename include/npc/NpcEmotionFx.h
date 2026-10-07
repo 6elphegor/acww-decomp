@@ -2,6 +2,7 @@
 #define NPC_NPCEMOTIONFX_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 // Emotion effect/sound player of the NPCs and the player (0x28 bytes; PlayerActor::emotionFx). Methods defined in
 // src/main/unk_020119cc.cpp (unk_02019998 section, 0x02019e2c..0x0201a0f4). Its constructor/destructor are the empty
@@ -14,10 +15,10 @@ struct NpcEmotionFxSlot {
 
 struct NpcEmotionPhase {
     /* 0x0 */ s32 animId;
-    /* 0x4 */ void *fxSlots;
+    /* 0x4 */ const void *fxSlots; // NpcEmotionFxSlot[numFxSlots]
     /* 0x8 */ u8 numFxSlots;
     /* 0x9 */ u8 killPrevFx;
-    /* 0xa */ u8 pad_0a[2];
+    /* 0xa */ s16 seFrame;         // frame of the emotion sound (NpcEmotionFx::updateSlot)
 };
 
 struct NpcEmotionFx {
@@ -34,16 +35,16 @@ struct NpcEmotionFx {
     NpcEmotionFx();
     ~NpcEmotionFx();
     void stop();
-    void update(void *a, s16 b, s32 c, u16 d);
+    void update(VecFx32 *a, s16 b, s32 c, u16 d);
     void killEffects();
-    void updateSlot(void *a, s16 b, s32 c, u16 d, s32 j);
+    void updateSlot(VecFx32 *a, s16 b, s32 c, u16 d, s32 j);
     void stopSound();
     void keepSound();
     void playSound(NpcEmotionFxSlot *s);
     void startEntry(NpcEmotionPhase *tbl, s32 idx);
-    void setSlots(void *a, u32 b, s32 c);
+    void setSlots(const void *a, u32 b, s32 c);
     s32 findFreeHandle();
-    void copySlots(void *dst, void *src, s32 n);
+    void copySlots(void *dst, const void *src, s32 n);
     void clearSlots(void *p, s32 n);
     void reset();
 };

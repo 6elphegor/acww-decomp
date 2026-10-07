@@ -136,10 +136,10 @@ void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b);
 void PlayerActor_StowItemSetNetData(u8 *p, u32 a, u32 b, u32 c, s16 d);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_StowItemGetNetData
-void PlayerActor_StowItemGetNetData(u8 *p, u8 *a, u32 b, u32 c, u16 *d);
+void PlayerActor_StowItemGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_StowUmbrellaSetNetData
-s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
+void PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_StowUmbrellaGetNetData
 void PlayerActor_StowUmbrellaGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d);
@@ -151,7 +151,7 @@ void PlayerActor_UmbrellaSpinInitWork(u8 *p);
 void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_AxeSwingSetNetData
-void PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c);
+void PlayerActor_AxeSwingSetNetData(u8 *p, s32 a, s32 b, u8 c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_AxeSwingGetNetData
 void PlayerActor_AxeSwingGetNetData(void *p, s32 *a, s32 *b, u8 *c);
@@ -175,10 +175,10 @@ void PlayerActor_AxeBreakSetNetData(u8 *p, u32 v);
 void PlayerActor_AxeBreakGetNetData(u8 *src, u8 *dst);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FishCastSetNetData
-s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b);
+void PlayerActor_FishCastSetNetData(u8 *p, s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FishCastGetNetData
-s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b);
+void PlayerActor_FishCastGetNetData(u8 *p, s32 *a, s32 *b);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FishReelInSetArgs
 void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);

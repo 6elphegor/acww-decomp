@@ -43,65 +43,16 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/MsgString.h"
 #include "talk/VillagerTalk.h"
-#define PROTO_LOCAL_ContestRecord_SetItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldInsect_GetPosAndKind  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_CanSeePlayer  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_ChangeState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_CheckHeldItemChange  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_FindChatPartner  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_GetRouteTarget  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_IsNearPlayerTalkSpot  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_IsPlayerShowingCatch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_IsState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_OrderByFriendship  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_Resume  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_SaveResumeState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_SetResumeState  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_StartCooldown  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_StartRoute  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_TryStartChat  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillagerAi_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillager_IsNearCameraFocus  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillager_SimulateFishCatch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldVillager_SimulateInsectCatch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FishShadow_GetPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Vec_Add  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerId_GetSpecies  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_VillagerRoute_Destruct  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL__ZN13FieldVillager28acceptsInteractionOutOfRangeEPv  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov068_0226f870  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov068_0226f910  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sAbsentSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sAdmireCatchSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sApproachSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sBirthdayInviteSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sChatOutcomes  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sChatSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sFaceTalkerSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sFleaRemovedSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sGoInHouseSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sHitByNetSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sHitTalkSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sInHouseSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sLeaveHouseSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPitfallClimbOutSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPitfallSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPushTalkSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPushedSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sPutAwayItemSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sReactionSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sTakeOutItemSteps  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sTalkSteps  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_02128030.h"
 #include "proto/autoload_2/unk_02133d04.h"
+#include "proto/itcm/unk_01ffcfc0.h"
+#include "proto/main/unk_02002b1c.h"
 #include "proto/main/unk_02003008.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_020119cc.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_02063904.h"
+#include "proto/main/unk_02060b7c.h"
 #include "proto/main/unk_0206fc44.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_020850e0.h"
@@ -254,6 +205,10 @@ class FieldVillagerAi;
 typedef void (FieldVillagerAiLeaveHouse::*Unk_ov068_02263b90_Fn)(FieldVillager *);
 typedef void (FieldVillagerAi::*FieldVillagerAiStateFn)(FieldVillager *);
 typedef BOOL (FieldVillager::*Unk_ov068_0226fb80_Fn)();
+// draw callbacks (FieldVillagerLook::drawFn) set by the states
+extern "C" Unk_ov068_0226fb80_Fn data_ov068_0226f870;
+extern "C" Unk_ov068_0226fb80_Fn data_ov068_0226f910;
+extern "C" Unk_ov068_0226fb80_Fn data_ov068_0226fa68;
 
 extern "C" s32 func_01ffcb0c(s32, s32);
 extern "C" void HeldToolModel_init(void *);
@@ -323,16 +278,18 @@ public:
     /* 0x02 */ u16 holdCount;
 };
 
-// State-machine member at +0x8b4 of FieldVillager (0xfc bytes)
+struct FieldVillagerFocusRange {
+    s32 negX, posX, negZ, posZ;
+};
+
+// State-machine member at +0x8b4 of FieldVillager (0xfc bytes). The state machine's states are methods of the classes derived from it below (FieldVillagerAiStates ...: no
+// members of their own, `this` is the FieldVillagerAi).
 class FieldVillagerAi {
 public:
     ~FieldVillagerAi();
     FieldVillagerAi *initAi();
 
-    /* 0x00 */ s32 focusRangeNegX;
-    /* 0x04 */ s32 focusRangePosX;
-    /* 0x08 */ s32 focusRangeNegZ;
-    /* 0x0c */ s32 focusRangePosZ;
+    /* 0x00 */ FieldVillagerFocusRange focusRange;
     /* 0x10 */ s32 state;
     /* 0x14 */ FieldVillagerAiState *stateEntry;
     /* 0x18 */ s32 resumeState;
@@ -340,9 +297,10 @@ public:
     /* 0x1d */ u8 pad_1d[3];
     /* 0x20 */ s32 stateTimer;
     /* 0x24 */ s32 cooldown;
-    /* 0x28 */ sptr chatTarget;
+    /* 0x28 */ FieldVillager *chatTarget;
     /* 0x2c */ s16 pitfallTimer;
-    /* 0x2e */ u8 pad_2e[6];
+    /* 0x2e */ u8 pad_2e[2];
+    /* 0x30 */ s32 pitfallAnimSpeed;
     /* 0x34 */ s16 activityTimer;
     /* 0x36 */ s16 heldItemCheckTimer;
     /* 0x38 */ u8 hitCount;
@@ -359,8 +317,8 @@ public:
     /* 0xde */ s16 lookStopCooldown;
     /* 0xe0 */ u8 isAdmiringCatch;
     /* 0xe1 */ u8 pad_e1[3];
-    /* 0xe4 */ s32 approachTarget;
-    /* 0xe8 */ u8 pad_e8[0xf4 - 0xe8];
+    /* 0xe4 */ Character *approachTarget;
+    /* 0xe8 */ VecFx32 approachStart;
     /* 0xf4 */ s32 seekPlayerCooldown;
     /* 0xf8 */ s32 talkUrgeTimer;
 };
@@ -420,60 +378,8 @@ public:
     /* 0xa08 */ s32 talkReason;
 };
 
-class FieldVillagerAiStates {
+class FieldVillagerAiStates : public FieldVillagerAi {
 public:
-#ifdef HOST64
-    // the 64-bit layout (tools/host_view_layout.py: the members at their places in FieldVillagerAi)
-    u8 pad_00[0x24];  // DS +0x0 [0x1c]
-    u8 step;  // DS +0x1c
-    u8 pad_1d[0x3];  // DS +0x1d [0x3]
-    s32 stateTimer;  // DS +0x20
-    u8 pad_24[0x4];  // DS +0x24 [0x4]
-    u8 * chatTarget;  // DS +0x28
-    s16 pitfallTimer;  // DS +0x2c
-    u8 pad_2e[0x2];  // DS +0x2e [0x2]
-    s32 pitfallAnimSpeed;  // DS +0x30
-    s16 activityTimer;  // DS +0x34
-    s16 heldItemCheckTimer;  // DS +0x36
-    u8 hitCount;  // DS +0x38
-    u8 pad_39;  // DS +0x39
-    u16 hitResetTimer;  // DS +0x3a
-    u8 route[0xa0];  // DS +0x3c [0x9c]
-    s16 routeTimeout;  // DS +0xd8
-    s16 routeStepTimer;  // DS +0xda
-    s16 lookStopTimer;  // DS +0xdc
-    s16 lookStopCooldown;  // DS +0xde
-    u8 isAdmiringCatch;  // DS +0xe0
-    u8 pad_e1[0x13];  // DS +0xe1 [0x13]
-    u32 seekPlayerCooldown;  // DS +0xf4
-    u32 talkUrgeTimer;  // DS +0xf8
-    u8 hpad_0[0x4];
-#else
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-    /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 stateTimer;
-    /* 0x24 */ u8 pad_24[4];
-    /* 0x28 */ u8 *chatTarget;
-    /* 0x2c */ s16 pitfallTimer;
-    /* 0x2e */ u8 pad_2e[2];
-    /* 0x30 */ s32 pitfallAnimSpeed;
-    /* 0x34 */ s16 activityTimer;
-    /* 0x36 */ s16 heldItemCheckTimer;
-    /* 0x38 */ u8 hitCount;
-    /* 0x39 */ u8 pad_39;
-    /* 0x3a */ u16 hitResetTimer;
-    /* 0x3c */ u8 route[0xd8 - 0x3c];
-    /* 0xd8 */ s16 routeTimeout;
-    /* 0xda */ s16 routeStepTimer;
-    /* 0xdc */ s16 lookStopTimer;
-    /* 0xde */ s16 lookStopCooldown;
-    /* 0xe0 */ u8 isAdmiringCatch;
-    /* 0xe1 */ u8 pad_e1[0xf4 - 0xe1];
-    /* 0xf4 */ u32 seekPlayerCooldown;
-    /* 0xf8 */ u32 talkUrgeTimer;
-#endif
-
     s32 execAdmireCatch(FieldVillager *o);
     void admireCatchStep1(FieldVillager *o);
     void admireCatchStep0(FieldVillager *o);
@@ -522,37 +428,24 @@ struct FieldVillagerPosCopy : VecFx32 {
     ~FieldVillagerPosCopy() {}
 };
 
-class FieldVillagerAiPutAway {
+class FieldVillagerAiPutAway : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-    /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 stateTimer;
-
     s32 execPutAwayItem(FieldVillager *o);
     void putAwayItemStep1(FieldVillager *o);
     void putAwayItemStep0(FieldVillager *o);
     BOOL enterPutAwayItem(FieldVillager *o);
 };
 
-class FieldVillagerAiTakeOut {
+class FieldVillagerAiTakeOut : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-
     s32 execTakeOutItem(FieldVillager *o);
     void takeOutItemStep1(FieldVillager *o);
     void takeOutItemStep0(FieldVillager *o);
     BOOL enterTakeOutItem(FieldVillager *o);
 };
 
-class FieldVillagerAiBirthdayInvite {
+class FieldVillagerAiBirthdayInvite : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-    /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 stateTimer;
-
     s32 execBirthdayInvite(FieldVillager *o);
     void birthdayInviteStep2(FieldVillager *o);
     void birthdayInviteStep1(FieldVillager *o);
@@ -560,7 +453,7 @@ public:
     BOOL enterBirthdayInvite(FieldVillager *o);
 };
 
-class FieldVillagerAiBirthdayWait {
+class FieldVillagerAiBirthdayWait : public FieldVillagerAi {
 public:
     s32 execBirthdayWait(FieldVillager *o);
     BOOL enterBirthdayWait(FieldVillager *o);
@@ -573,19 +466,8 @@ struct FieldVillagerApproachFx {
     u8 c;
 };
 
-class FieldVillagerAiPlayerStates {
+class FieldVillagerAiPlayerStates : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-    /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 stateTimer;
-    /* 0x24 */ u8 pad_24[0xe4 - 0x24];
-    /* 0xe4 */ Character *approachTarget;
-    /* 0xe8 */ s32 approachStartX;
-    /* 0xec */ s32 approachStartY;
-    /* 0xf0 */ s32 approachStartZ;
-    /* 0xf4 */ u32 seekPlayerCooldown;
-
     s32 execFleaRemoved(FieldVillager *o);
     void fleaRemovedStep1(FieldVillager *o);
     void fleaRemovedStep0(FieldVillager *o);
@@ -606,43 +488,16 @@ public:
     BOOL enterApproach(FieldVillager *o);
 };
 
-class FieldVillagerAiReaction {
+class FieldVillagerAiReaction : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-
     void reactionStep1(FieldVillager *o);
     void reactionStep0(FieldVillager *o);
     BOOL enterReaction(FieldVillager *o);
     s32 execReaction(FieldVillager *o);
 };
 
-class FieldVillagerAiChat {
+class FieldVillagerAiChat : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-    /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 stateTimer;
-    /* 0x24 */ u8 pad_24[4];
-    /* 0x28 */ u8 *chatTarget;
-    /* 0x2c */ s16 pitfallTimer;
-    /* 0x2e */ u8 pad_2e[2];
-    /* 0x30 */ s32 pitfallAnimSpeed;
-    /* 0x34 */ s16 activityTimer;
-    /* 0x36 */ s16 heldItemCheckTimer;
-    /* 0x38 */ u8 hitCount;
-    /* 0x39 */ u8 pad_39;
-    /* 0x3a */ u16 hitResetTimer;
-    /* 0x3c */ u8 route[0xd8 - 0x3c];
-    /* 0xd8 */ s16 routeTimeout;
-    /* 0xda */ s16 routeStepTimer;
-    /* 0xdc */ s16 lookStopTimer;
-    /* 0xde */ s16 lookStopCooldown;
-    /* 0xe0 */ u8 isAdmiringCatch;
-    /* 0xe1 */ u8 pad_e1[0xf4 - 0xe1];
-    /* 0xf4 */ u32 seekPlayerCooldown;
-    /* 0xf8 */ u32 talkUrgeTimer;
-
     s32 execChat(FieldVillager *o);
     void chatStep3(FieldVillager *o);
     void chatStep2(FieldVillager *o);
@@ -675,69 +530,32 @@ struct Unk_ov068_02263aac_Bits {
     u32 hi : 4;
 };
 
-class FieldVillagerAiTalk {
+class FieldVillagerAiTalk : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-
     s32 execTalk(FieldVillager *o);
     void talkStep1(FieldVillager *o);
     void talkStep0(FieldVillager *o);
     BOOL enterTalk(FieldVillager *o);
 };
 
-class FieldVillagerAiLeaveHouse {
+class FieldVillagerAiLeaveHouse : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-    /* 0x1d */ u8 pad_1d[0x34 - 0x1d];
-    /* 0x34 */ s16 activityTimer;
-    /* 0x36 */ u8 pad_36[0xf8 - 0x36];
-    /* 0xf8 */ s32 talkUrgeTimer;
-
     s32 execLeaveHouse(FieldVillager *o);
     void leaveHouseStep1(FieldVillager *o);
     void leaveHouseStep0(FieldVillager *o);
     BOOL enterLeaveHouse(FieldVillager *o);
 };
 
-class FieldVillagerAiAbsent {
+class FieldVillagerAiAbsent : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-
     s32 execAbsent(FieldVillager *o);
     void absentStep1(FieldVillager *o);
     void absentStep0(FieldVillager *o);
     BOOL enterAbsent(FieldVillager *o);
 };
 
-class FieldVillagerAiInHouse {
+class FieldVillagerAiInHouse : public FieldVillagerAi {
 public:
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u8 step;
-    /* 0x1d */ u8 pad_1d[3];
-    /* 0x20 */ s32 stateTimer;
-    /* 0x24 */ u8 pad_24[4];
-    /* 0x28 */ u8 *chatTarget;
-    /* 0x2c */ s16 pitfallTimer;
-    /* 0x2e */ u8 pad_2e[2];
-    /* 0x30 */ s32 pitfallAnimSpeed;
-    /* 0x34 */ s16 activityTimer;
-    /* 0x36 */ s16 heldItemCheckTimer;
-    /* 0x38 */ u8 hitCount;
-    /* 0x39 */ u8 pad_39;
-    /* 0x3a */ u16 hitResetTimer;
-    /* 0x3c */ u8 route[0xd8 - 0x3c];
-    /* 0xd8 */ s16 routeTimeout;
-    /* 0xda */ s16 routeStepTimer;
-    /* 0xdc */ s16 lookStopTimer;
-    /* 0xde */ s16 lookStopCooldown;
-    /* 0xe0 */ u8 isAdmiringCatch;
-    /* 0xe1 */ u8 pad_e1[0xf4 - 0xe1];
-    /* 0xf4 */ u32 seekPlayerCooldown;
-    /* 0xf8 */ u32 talkUrgeTimer;
-
     s32 execInHouse(FieldVillager *o);
     void inHouseStep1(FieldVillager *o);
     void inHouseStep0(FieldVillager *o);
@@ -752,11 +570,6 @@ struct VillagerStateFlags {
 
 
 
-struct FieldVillagerFocusRange {
-    s32 negX, posX, negZ, posZ;
-};
-
-
 
 
 
@@ -764,8 +577,6 @@ namespace ns_0225f1a0 {
 extern "C" {
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 FishShadow_GetPos(void *, s32);
-s32 FieldInsect_GetPosAndKind(void *, u8);
 s32 Vec_DistXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
@@ -776,11 +587,6 @@ void *VillagerTalk_getPartner(void *);
 void VillagerTalk_setPartner(void *, u32);
 void VillagerTalk_setInvitedByPartner(void *, u32);
 void VillagerMood_requestApply(void *);
-s32 FieldVillagerAi_Resume(void *, void *);
-void FieldVillagerAi_ChangeState(void *, void *, s32);
-void FieldVillagerAi_StartCooldown(void *);
-void FieldVillagerAi_SaveResumeState(void *);
-s32 FieldVillagerAi_IsState(void *, s32);
 void *X_func_ov068_02265f58(void *);
 s32 VillagerMemory_IsUsed(void *);
 s32 NpcActor_isPlayerNear(void *, s32, u32);
@@ -811,10 +617,6 @@ extern s16 data_020c6cc0;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 FieldVillagerAi_IsState(void *, s32);
-s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
-s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-s32 FieldVillagerAi_SetResumeState(void *, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 VillagerActor_isFlag834(void *);
 void VillagerActor_clearFlag834(void *);
@@ -842,10 +644,9 @@ void Character_setTalkStartMode0(void *);
 void TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void Character_clearTalkStartMode(void *);
-void Villager_HalveTalkUrge(s32);
+void Villager_HalveTalkUrge(void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 }
-extern "C" BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(FieldVillager *o, s32 x);
 typedef void (FieldVillagerAiStates::*Fn_225fd54)(FieldVillager *);
 extern "C" {
 extern Fn_225fd54 sAdmireCatchSteps[2];
@@ -875,7 +676,6 @@ extern s16 data_020c6cc0;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
-s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 void NpcAnimCtrl_setAnimSpeedFixed(void *, s32);
 void VillagerActor_clearFlag834(void *);
 void VillagerActor_setFlag834(void *);
@@ -892,7 +692,6 @@ void Character_clearTalkStartMode(void *);
 s32 NpcActor_getRelativeAngleTo(void *, void *);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void VillagerMood_disableEffects(void *);
-void Effect_SetPosition(s32, void *, s32, s32);
 void Npc_GetStateHeldItem(void *, void *);
 void GroundInfo_initAtPos(void *, void *, s32, s32);
 void GroundInfo_Destruct(void *);
@@ -918,8 +717,6 @@ extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern void *gSceneBlockMap;
-s32 FieldVillagerAi_Resume(void *, void *);
-s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -949,7 +746,6 @@ void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
 void FieldPos_FromBlockUnit(VecFx32 *, s32, s32, s32, s32);
-s16 Math_AngleXZ(VecFx32 *, VecFx32 *);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
 void VillagerStates_SetBirthdayVisitor(s32);
 void TalkRequestFlags_SetEventWarpBlock(void);
@@ -986,7 +782,6 @@ extern u8 gVec3Zero[];
 extern FieldVillagerApproachFx sApproachAnimFx[];
 s32 X_func_ov068_0225f83c(void *);
 void X_func_ov068_0225f838(...);
-s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1003,8 +798,8 @@ s32 NpcActor_getAngleTo(void *, void *);
 s32 Vec_Distance(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 NpcAnimCtrl_getAnimId(void *, s32);
-void Villager_HalveTalkUrge(s32);
-void Villager_AddTalkUrge(s32, s32);
+void Villager_HalveTalkUrge(void *);
+void Villager_AddTalkUrge(void *, s32);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 }
 typedef void (FieldVillagerAiPlayerStates::*Fn_2261900)(FieldVillager *);
@@ -1033,19 +828,15 @@ extern u8 sChatEmotions[];
 extern s32 sChatDurations[];
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_SetTargetDone(void *);
-s32 FieldVillagerAi_SetResumeState(void *, s32);
 void *X_func_ov068_02265f58(void *);
 s32 VillagerMemory_getFriendship(void *);
-s32 VillagerData_getVillagerId(s32);
+VillagerId *VillagerData_getVillagerId(void *);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestState4(void *, s32, s32, s32, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 FieldVillager *VillagerTalk_getPartner(void *);
 void VillagerTalk_setPartner(void *, s32);
 void VillagerTalk_setInvitedByPartner(void *, s32);
-s32 FieldVillagerAi_Resume(void *, void *);
-s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-s32 FieldVillagerAi_StartCooldown(void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_getEmotionId(void *);
@@ -1057,7 +848,7 @@ s32 VillagerActor_isFlag834(void *);
 s32 VillagerTalk_isInvitedByPartner(void *);
 void NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 void NpcActionCtrl_requestStand(void *, s32, u32);
-s32 SaveVillagers_GetRelationLevelOf(void *, s32, s32);
+s32 SaveVillagers_GetRelationLevelOf(void *, void *, void *);
 s32 PlayerData_getPlayerId(...);
 s32 PlayerId_isValid(s32);
 s32 Villager_FindMemory(s32, s32);
@@ -1087,15 +878,14 @@ extern u32 gSaveVillagers[];
 extern u8 sChatBadMoods[];
 extern u8 sChatClothesMoods[];
 extern u8 sChatCatchphraseMoods[];
-extern u8 sChatRevertClothesDeltas[];
-extern u8 sChatMoodByRelationDeltas[];
-extern u8 sChatSpreadShirtDeltas[];
-extern u8 sChatNeutralDeltas[];
-extern u8 sChatRevertCatchphraseDeltas[];
-extern u8 sChatAblePatternDeltas[];
-extern u8 sChatSpreadCatchphraseDeltas[];
+extern const s8 sChatRevertClothesDeltas[];
+extern const s8 sChatMoodByRelationDeltas[];
+extern const s8 sChatSpreadShirtDeltas[];
+extern const s8 sChatNeutralDeltas[];
+extern const s8 sChatRevertCatchphraseDeltas[];
+extern const s8 sChatAblePatternDeltas[];
+extern const s8 sChatSpreadCatchphraseDeltas[];
 FieldVillager *VillagerTalk_getPartner(void *);
-s32 FieldVillagerAi_OrderByFriendship(void *, void *, void *, s32, s32);
 u16 *VillagerDataProfileView_getShirt(void *);
 u8 *VillagerData_getPattern(void *);
 u8 *VillagerData_getVillagerId(void *);
@@ -1103,7 +893,6 @@ void Villager_ShareTrendWith(void *, void *);
 void Villagers_ShareNickname(void *, void *, s32);
 void VillagerDataProfileView_setShirt(void *, u16 *);
 void NpcActionCtrl_requestAct14(void *, s32, u16 *);
-s32 VillagerId_GetSpecies(void *);
 s32 Villager_GetDefaultCatchphraseEncoded(void *, s32);
 void Villager_SetCatchphraseEncoded(void *, void *);
 void Villager_SetCatchphraseFromMsg(void *, void *);
@@ -1122,7 +911,7 @@ s32 Random_PickSetBit(s32, s32, s32);
 s32 SaveVillagers_IsValidIndex(s32);
 void VillagerDataProfileView_getCatchphrase(void *, void *, s32);
 s32 MsgString_equals(void *, void *);
-s32 SaveVillagers_GetRelationLevelOf(void *, s32, s32);
+s32 SaveVillagers_GetRelationLevelOf(void *, void *, void *);
 }
 static inline BOOL Unk_ov068_02262c20_InRange(u16 *p) {
     BOOL r = FALSE;
@@ -1147,7 +936,6 @@ extern u8 gSaveVillagers[];
 extern u8 gVec3Zero[];
 extern u32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern Unk_ov068_02263b90_Fn data_ov068_0226f910;
 void *AbleSistersPatterns_getPattern(void *, u8);
 s32 Pattern_equals(void *, void *);
 u32 Random_PickSetBit(u32, u32, u32);
@@ -1157,12 +945,12 @@ void *Villager_FindMemory(u32, void *);
 s32 VillagerMemory_getFriendship(void *);
 s32 VillagerMood_addMood(void *, s32, s32);
 void VillagerMood_requestApply(void *);
-s32 VillagerData_getVillagerId(void *);
+void *VillagerData_getVillagerId(void *);
 void *SaveVillagers_PickRandomExcept(void *, void *, s32);
 FieldVillager *VillagerTalk_getPartner(void *);
-s32 SaveVillagers_FindIndex(void *, s32);
+s32 SaveVillagers_FindIndex(void *, void *);
 s32 SaveVillagers_GetRelationLevel(void *, s32, s32);
-void SaveVillagers_AddRelation(void *, s32, s32, s32);
+void SaveVillagers_AddRelation(void *, void *, void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_SetTargetDone(void *);
 void VillagerTalk_setPartner(void *, s32);
@@ -1178,8 +966,6 @@ s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 void NpcActor_setCollisionRadius(void *, s32);
 void Npc_GetStateHeldItem(void *, void *);
-s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-s32 FieldVillagerAi_SetResumeState(void *, s32);
 s32 NpcFootstepFx_playFootstepSe(void *, void *);
 void *Villager_GetState(void *);
 s32 Villager_GetIndex(void *);
@@ -1195,14 +981,11 @@ void NpcActionCtrl_requestStand(void *, s32, u32);
 s32 VillagerState_GetRole(void *);
 s32 Villager_GetWhereabouts(void *);
 s32 Villager_IsAsleep(void *, s32);
-s32 FieldVillager_IsNearCameraFocus(void *, void *);
 s32 NpcActor_isNear(void *, void *, s32);
 void VillagerRoute_reset(void *);
 void X_func_ov068_02265fb4(void *);
 void Villager_RaiseTalkUrge(void *, s32);
-s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d);
 }
-extern "C" s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d);
 typedef void (FieldVillagerAiTalk::*Fn_22638c0)(FieldVillager *);
 extern "C" {
 extern Fn_22638c0 sTalkSteps[2];
@@ -1230,7 +1013,6 @@ extern u8 data_ov068_0226f13c[];
 extern u8 data_ov068_0226f0f4[];
 extern s16 sFieldVillagerPushLimit[];
 extern u32 __ptmf_null[];
-extern u8 gRandom[];
 }
 extern "C" {
 s32 PlayerData_testFlag(void *, s32);
@@ -1249,36 +1031,26 @@ s32 NpcAnimCtrl_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_getEmotionId(void *);
-void FieldVillagerAi_ChangeState(void *, void *, s32);
-void FieldVillagerAi_SetResumeState(void *, s32);
 void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 void Math_StepS32(void *, s32, s32);
 void NpcFootstepFx_playFootstepSe(void *, void *);
-void *Villager_GetIndex(void *);
+s32 Villager_GetIndex(void *);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, u32, s32);
 void NpcFootstepFx_disableFootsteps(void *);
-s32 FieldVillager_IsNearCameraFocus(void *, void *);
 s32 VillagerActor_updateCatchPlans(void *, void *, void *, s32);
 void Villager_RaiseTalkUrge(void *, s32);
 s32 VillagerRoute_isActive(void *);
-void FieldVillagerAi_StartRoute(void *, s32, void *);
 s32 VillagerRoute_getStage(void *);
 void VillagerRoute_start(void *, void *, s32, s32, void *);
 s32 VillagerRoute_runStep(void *, void *);
 void VillagerRoute_setStepMode(void *, s32);
 s32 Unk_0201acf8_getLevel(void *);
 s32 Random_Next(void *);
-s32 FieldVillagerAi_GetRouteTarget(void *, void *, void *);
-s32 FieldVillagerAi_IsNearPlayerTalkSpot(void *, void *, s32);
-s16 Math_AngleXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 void *NpcMoveCtrl_getDestination(void *);
 void Npc_GetStateHeldItem(void *, void *);
-s32 FieldVillagerAi_CanSeePlayer(void *, void *);
-s32 FieldVillagerAi_TryStartChat(void *, void *);
-s32 FieldVillagerAi_CheckHeldItemChange(void *, void *);
 }
 typedef void (FieldVillagerAiStates::*Fn_226410c)(FieldVillager *);
 extern "C" {
@@ -1306,11 +1078,7 @@ void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 s32 BlockMap_IsBuriedAtUnit(void *, s32, s32);
 void VillagerTalk_setPartner(void *, void *);
 void VillagerTalk_setInvitedByPartner(void *, u32);
-void FieldVillagerAi_SaveResumeState(void *);
-void FieldVillagerAi_ChangeState(void *, void *, s32);
-void FieldVillagerAi_SetResumeState(void *, s32);
 void *VillagerData_getVillagerId(void *);
-s32 Math_AngleXZ(void *, void *);
 s32 NpcMoveCtrl_hasArrived(void *, void *, s32);
 s32 NpcActor_findAvoidPos(void *, void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
@@ -1320,13 +1088,11 @@ void NpcMoveCtrl_resetDestination(void *);
 s32 VillagerRoute_getStage(void *);
 void *Villager_GetState(void *);
 s32 VillagerRoute_isActive(void *);
-void FieldVillagerAi_StartRoute(void *, s32, void *);
 s32 VillagerRoute_runStep(void *, void *);
 s32 TalkRequest_IsTalking();
 void *TalkRequest_GetTalkTarget();
 void Vec_Sub(void *, void *, void *);
 void Vec_ShiftRight(void *, s32);
-void Vec_Add(void *, void *, void *);
 void Vec_RotateY(void *, s32);
 s32 Vec_NotEqual(void *, void *);
 s32 func_01ffcb0c(s32, s32);
@@ -1334,8 +1100,6 @@ void *VillagerDataItemView_getHousePos(void *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 s32 PlayerData_testFlag(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
-s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
-void *FieldVillagerAi_FindChatPartner(void *, FieldVillager *);
 void X_func_ov068_02265dc8(void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1384,20 +1148,12 @@ static inline BOOL Unk_ov068_022652d0_B(BOOL v) {
     }
     return FALSE;
 }
-extern "C" s32 FieldVillagerAi_IsPlayerShowingCatch(void *self);
-extern "C" BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, FieldVillager *o);
-extern "C" void *FieldVillagerAi_FindChatPartner(void *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, VecFx32 *out, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim);
 }
 
 namespace ns_02265324 {
 extern "C" {
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 FishShadow_GetPos(void *, s32);
-s32 FieldInsect_GetPosAndKind(void *, u8);
 s32 Vec_DistXZ(void *, void *);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
@@ -1437,12 +1193,12 @@ extern s32 sFieldVillagerAiCooldown;
 extern FieldVillagerAiState sFieldVillagerAiTable[];
 extern u8 sSimCatchClassWeights[];
 extern u8 sSimCatchClassWeightsPlanned[];
-extern u8 gContestRecord[];
+extern ContestRecord gContestRecord;
 extern u32 gSceneBlockMap;
 void *Villager_GetState(void *);
 s32 PlayerData_testFlag(void *, s32);
 void Clock_GetDateTime(void *);
-void *VillagerData_getVillagerId(void *);
+VillagerId *VillagerData_getVillagerId(void *);
 s32 Personality_IsAsleep(s32, void *);
 s32 VillagerId_isValid(void *);
 s32 VillagerState_GetActivity(void *);
@@ -1454,14 +1210,12 @@ void NpcFootstepFx_enableFootsteps(void *);
 void VillagerRoute_setStepMode(void *, u32);
 void VillagerActor_clearFlag834(void *);
 void VillagerMood_enableEffects(void *);
-void VillagerRoute_Destruct(void *);
 void VillagerRoute_resetTarget(void *);
 void VillagerRoute_reset(void *);
 s32 Villager_IsTalkUrgeFull(void *, s32);
 s32 Scene_InTownUnk31();
 s32 NpcActor_getDistanceTo(void *, void *);
 s32 NpcActor_getRelativeAngleTo(void *, void *);
-s32 FieldVillagerAi_IsPlayerShowingCatch(void *, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRepeat_Tick(void *, s32);
 void X_func_ov068_02265e6c(void *);
@@ -1474,15 +1228,14 @@ void NpcEmotionFx_startEntry(void *, s32, s32);
 s32 TalkRequest_IsTalking();
 s32 VillagerTalk_getEventKind(void *);
 void X_func_ov068_0225f630(void *, void *);
-s32 Villager_GetPlan(void *);
-s32 VillagerPlan_getState(s32);
+void *Villager_GetPlan(void *);
+s32 VillagerPlan_getState(void *);
 s32 Talk_PickWeightedIndex(void *, s32);
 s32 FishPick_PickForDate(void *, s32, s32, s32, s32, s32, s32);
 s32 InsectPick_PickForMonth(void *, s32, s32, s32, s32, s32);
 s32 ContestRecord_getSize(void *);
 void ContestRecord_setHolderVillager(void *, void *);
 void ContestRecord_setSize(void *, s32);
-void ContestRecord_SetItem(void *, void *);
 s32 BlockMap_BlockHasAllAttr(u32, s32, s32, s32);
 s32 Weather_GetFallingPrecip();
 void *VillagerState_GetHeldItem(void *);
@@ -1490,12 +1243,6 @@ void VillagerState_SetHeldItem(void *, void *);
 s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
 void Villager_GetUmbrella(void *, void *);
-void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 idx);
-void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v);
-void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o);
-void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b);
-void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b);
-s32 FieldVillagerAi_IsState(FieldVillagerAi *self, s32 v);
 }
 static inline BOOL Unk_ov068_02265a40_R(volatile u16 *p, u32 lo, u32 hi) {
     u32 a = *p;
@@ -1513,23 +1260,10 @@ static inline BOOL Unk_ov068_02265c24_R(u16 *p, u32 lo, u32 hi) {
     }
     return r;
 }
-extern "C" void FieldVillagerAi_StartRoute(FieldVillagerAi *self, s32 a, FieldVillager *o);
-extern "C" s32 FieldVillager_IsNearCameraFocus(FieldVillagerFocusRange *r, FieldVillager *o);
-extern "C" void FieldVillagerAi_StartCooldown(FieldVillagerAi *self);
-extern "C" s32 FieldVillagerAi_IsState(FieldVillagerAi *self, s32 v);
-extern "C" s32 FieldVillagerAi_CanSeePlayer(FieldVillagerAi *self, FieldVillager *o);
-extern "C" s32 FieldVillagerAi_Resume(FieldVillagerAi *self, FieldVillager *o);
-extern "C" void FieldVillagerAi_SaveResumeState(FieldVillagerAi *self);
-extern "C" void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v);
-extern "C" void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 idx);
-extern "C" void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o);
-extern "C" void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b);
-extern "C" void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b);
 }
 
 namespace ns_02265d34 {
 extern "C" {
-extern Unk_ov068_0226fb80_Fn data_ov068_0226f870;
 extern u16 sFleaRemovedHoldFrames;
 extern u16 data_020c6cc8;
 extern CameraSwayPattern kCameraSwayPatterns[];
@@ -1541,7 +1275,6 @@ void X_func_ov068_0225f8f0(void *);
 void X_func_ov068_0225f900(void *);
 void X_func_ov068_0225f6b0(void *);
 void X_func_ov068_0225f670(void *, void *);
-void FieldVillagerAi_ChangeState(void *, void *, s32);
 void X_func_ov068_0226581c(void *);
 void *VillagerData_getVillagerId(void *);
 s32 VillagerId_isValid(void *);
@@ -1555,7 +1288,6 @@ s32 VillagerTalk_getEventKind(void *);
 void VillagerState_SetActivity(void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 s32 ActorCollider_isHitByGroup(void *, s32);
-s32 Math_AngleXZ(void *, void *);
 void *PlayerData_getPlayerId(void *);
 BOOL PlayerId_isValid(void *);
 BOOL Villager_FindMemory(void *, void *);
@@ -1694,9 +1426,6 @@ void _ZN21FieldVillagerAiAbsent11enterAbsentEP13FieldVillager();
 void _ZN22FieldVillagerAiInHouse11execInHouseEP13FieldVillager();
 void _ZN22FieldVillagerAiInHouse12inHouseStep1EP13FieldVillager();
 void _ZN22FieldVillagerAiInHouse12inHouseStep0EP13FieldVillager();
-void _ZN13FieldVillager11drawDefaultEv();
-extern void *data_ov068_0226f870[2];
-extern void *data_ov068_0226f910[2];
 }
 }
 namespace nsD {
@@ -1716,7 +1445,7 @@ void *data_ov068_0226f958[2] = {(void *)_ZN27FieldVillagerAiPlayerStates15execFl
 }
 namespace nsD {
 extern "C" {
-extern const u8 sChatRevertClothesDeltas[8] = {0xc8, 0xbc, 0xd8, 0xec, 0x00, 0x00, 0x00, 0x00};
+extern const s8 sChatRevertClothesDeltas[8] = {-56, -68, -40, -20, 0, 0, 0, 0};
 }
 }
 namespace nsD {
@@ -1756,7 +1485,7 @@ void *data_ov068_0226f850[2] = {(void *)_ZN21FieldVillagerAiStates13hitByNetStep
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f910[2] = {(void *)_ZN13FieldVillager11drawDefaultEv, 0};
+Unk_ov068_0226fb80_Fn data_ov068_0226f910 = &FieldVillager::drawDefault;
 }
 }
 namespace nsD {
@@ -1766,12 +1495,12 @@ extern const u8 sFieldVillagerPushLimit[4] = {0x64, 0x00, 0x00, 0x00};
 }
 namespace nsD {
 extern "C" {
-u32 sBirthdayInviteSteps[6];
+ns_02260f90::Fn_2261574 sBirthdayInviteSteps[3];
 }
 }
 namespace nsD {
 extern "C" {
-u32 sPushTalkSteps[4];
+ns_0225fc60::Fn_225ff18 sPushTalkSteps[2];
 }
 }
 namespace nsD {
@@ -1791,7 +1520,7 @@ void *data_ov068_0226fb58[2] = {(void *)_ZN27FieldVillagerAiPlayerStates14execFa
 }
 namespace nsD {
 extern "C" {
-extern const u8 sChatRevertCatchphraseDeltas[8] = {0xf6, 0xee, 0xe4, 0xf2, 0xfe, 0x00, 0x00, 0x00};
+extern const s8 sChatRevertCatchphraseDeltas[8] = {-10, -18, -28, -14, -2, 0, 0, 0};
 }
 }
 namespace nsD {
@@ -1801,12 +1530,12 @@ void *data_ov068_0226f920[2] = {(void *)_ZN27FieldVillagerAiPlayerStates16fleaRe
 }
 namespace nsD {
 extern "C" {
-u32 sChatSteps[8];
+ns_02262294::Fn_2262414 sChatSteps[4];
 }
 }
 namespace nsD {
 extern "C" {
-u32 sTalkSteps[4];
+ns_02263600::Fn_22638c0 sTalkSteps[2];
 }
 }
 namespace nsD {
@@ -1829,7 +1558,7 @@ FieldVillagerAiState sFieldVillagerAiTable[8] = {
 }
 namespace nsD {
 extern "C" {
-extern const u8 sChatMoodByRelationDeltas[8] = {0x02, 0x08, 0x10, 0x0a, 0x06, 0x00, 0x00, 0x00};
+extern const s8 sChatMoodByRelationDeltas[8] = {2, 8, 16, 10, 6, 0, 0, 0};
 }
 }
 namespace nsD {
@@ -1887,7 +1616,7 @@ FieldVillagerAiState sFieldVillagerAiTable2[8] = {
 }
 namespace nsD {
 extern "C" {
-u32 sPitfallClimbOutSteps[2];
+ns_022605f4::Fn_226071c sPitfallClimbOutSteps[1];
 }
 }
 namespace nsD {
@@ -1897,7 +1626,7 @@ extern const u8 sFieldVillagerAiCooldown[4] = {0xb0, 0x04, 0x00, 0x00};
 }
 namespace nsD {
 extern "C" {
-u32 sPutAwayItemSteps[4];
+ns_02260f90::Fn_2260f90 sPutAwayItemSteps[2];
 }
 }
 namespace nsD {
@@ -1917,7 +1646,7 @@ void *data_ov068_0226faf0[2] = {(void *)_ZN22FieldVillagerAiTakeOut16enterTakeOu
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226fa68[2] = {(void *)_ZN13FieldVillager11drawDefaultEv, 0};
+Unk_ov068_0226fb80_Fn data_ov068_0226fa68 = &FieldVillager::drawDefault;
 }
 }
 namespace nsD {
@@ -1945,7 +1674,7 @@ FieldVillagerAiState sFieldVillagerAiTable3[8] = {
 }
 namespace nsD {
 extern "C" {
-u32 sReactionSteps[4];
+ns_02262294::Fn_2262294 sReactionSteps[2];
 }
 }
 namespace nsD {
@@ -2070,12 +1799,12 @@ void *data_ov068_0226f898[2] = {(void *)_ZN21FieldVillagerAiStates14enterGoInHou
 }
 namespace nsD {
 extern "C" {
-extern const u8 sChatSpreadCatchphraseDeltas[8] = {0x02, 0x0e, 0x1c, 0x12, 0x0a, 0x00, 0x00, 0x00};
+extern const s8 sChatSpreadCatchphraseDeltas[8] = {2, 14, 28, 18, 10, 0, 0, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 sAbsentSteps[4];
+ns_02263600::Fn_2263cf0 sAbsentSteps[2];
 }
 }
 namespace nsD {
@@ -2095,7 +1824,7 @@ extern const u8 sChatBadMoods[4] = {0x02, 0x03, 0x00, 0x00};
 }
 namespace nsD {
 extern "C" {
-u32 sApproachSteps[10];
+ns_02261900::Fn_2261c38 sApproachSteps[5];
 }
 }
 namespace nsD {
@@ -2110,17 +1839,17 @@ s16 sSeePlayerArc = data_020c6cc0;
 }
 namespace nsD {
 extern "C" {
-extern const u8 sChatAblePatternDeltas[8] = {0x01, 0x02, 0x06, 0x04, 0x02, 0x00, 0x00, 0x00};
+extern const s8 sChatAblePatternDeltas[8] = {1, 2, 6, 4, 2, 0, 0, 0};
 }
 }
 namespace nsD {
 extern "C" {
-extern const u8 sChatSpreadShirtDeltas[8] = {0x01, 0x02, 0x0c, 0x04, 0x02, 0x00, 0x00, 0x00};
+extern const s8 sChatSpreadShirtDeltas[8] = {1, 2, 12, 4, 2, 0, 0, 0};
 }
 }
 namespace nsD {
 extern "C" {
-u32 sGoInHouseSteps[6];
+ns_02264000::Fn_226410c sGoInHouseSteps[3];
 }
 }
 namespace nsD {
@@ -2140,7 +1869,7 @@ void *data_ov068_0226f9c8[2] = {(void *)_ZN21FieldVillagerAiStates12execHitByNet
 }
 namespace nsD {
 extern "C" {
-u32 sHitByNetSteps[6];
+ns_0225fc60::Fn_2260450 sHitByNetSteps[3];
 }
 }
 namespace nsD {
@@ -2205,7 +1934,7 @@ void *data_ov068_0226f968[2] = {(void *)_ZN27FieldVillagerAiBirthdayWait17enterB
 }
 namespace nsD {
 extern "C" {
-extern const u8 sChatNeutralDeltas[8] = {0xfa, 0xf6, 0xf0, 0xf8, 0xfe, 0x00, 0x00, 0x00};
+extern const s8 sChatNeutralDeltas[8] = {-6, -10, -16, -8, -2, 0, 0, 0};
 }
 }
 namespace nsD {
@@ -2245,7 +1974,7 @@ u32 sChatOutcomesGuard;
 }
 namespace nsD {
 extern "C" {
-u32 sTakeOutItemSteps[4];
+ns_02260f90::Fn_2261290 sTakeOutItemSteps[2];
 }
 }
 namespace nsD {
@@ -2255,7 +1984,7 @@ void *data_ov068_0226f9f8[2] = {(void *)_ZN21FieldVillagerAiStates16enterAdmireC
 }
 namespace nsD {
 extern "C" {
-u32 sPushedSteps[4];
+ns_0225fc60::Fn_2260290 sPushedSteps[2];
 }
 }
 namespace nsD {
@@ -2330,7 +2059,7 @@ u32 sHitByNetStepsGuard;
 }
 namespace nsD {
 extern "C" {
-u32 sChatOutcomes[14];
+ns_02262294::Fn_2262548 sChatOutcomes[7];
 }
 }
 namespace nsD {
@@ -2360,7 +2089,7 @@ void *data_ov068_0226f838[2] = {(void *)_ZN25FieldVillagerAiLeaveHouse15leaveHou
 }
 namespace nsD {
 extern "C" {
-u32 sLeaveHouseSteps[4];
+ns_02263600::Fn_2263a40 sLeaveHouseSteps[2];
 }
 }
 namespace nsD {
@@ -2380,7 +2109,7 @@ extern const u8 sRandomRouteTypes[12] = {0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x0
 }
 namespace nsD {
 extern "C" {
-void *data_ov068_0226f870[2] = {(void *)_ZN13FieldVillager11drawDefaultEv, 0};
+Unk_ov068_0226fb80_Fn data_ov068_0226f870 = &FieldVillager::drawDefault;
 }
 }
 namespace ns_02265d34 {
@@ -2420,12 +2149,12 @@ u32 sLeaveHouseStepsGuard;
 }
 namespace nsD {
 extern "C" {
-u32 sHitTalkSteps[6];
+ns_0225fc60::Fn_2260068 sHitTalkSteps[3];
 }
 }
 namespace nsD {
 extern "C" {
-u32 sPitfallSteps[10];
+ns_022605f4::Fn_2260944 sPitfallSteps[5];
 }
 }
 namespace nsD {
@@ -2465,7 +2194,7 @@ void *data_ov068_0226fae8[2] = {(void *)_ZN27FieldVillagerAiPlayerStates13approa
 }
 namespace nsD {
 extern "C" {
-u32 sAdmireCatchSteps[4];
+ns_0225fc60::Fn_225fd54 sAdmireCatchSteps[2];
 }
 }
 namespace nsD {
@@ -2485,7 +2214,7 @@ void *data_ov068_0226f8b0[2] = {(void *)_ZN22FieldVillagerAiInHouse11execInHouse
 }
 namespace nsD {
 extern "C" {
-u32 sInHouseSteps[4];
+ns_02263600::Fn_2263e4c sInHouseSteps[2];
 }
 }
 namespace nsD {
@@ -2500,7 +2229,7 @@ void *data_ov068_0226fa00[2] = {(void *)_ZN21FieldVillagerAiStates15execAdmireCa
 }
 namespace nsD {
 extern "C" {
-u32 sFleaRemovedSteps[4];
+ns_02261900::Fn_2261900 sFleaRemovedSteps[2];
 }
 }
 namespace nsD {
@@ -2585,7 +2314,7 @@ void *data_ov068_0226fa40[2] = {(void *)_ZN21FieldVillagerAiStates12pitfallStep3
 }
 namespace nsD {
 extern "C" {
-u32 sFaceTalkerSteps[2];
+ns_02261900::Fn_2261ae8 sFaceTalkerSteps[1];
 }
 }
 namespace nsD {
@@ -2821,7 +2550,7 @@ BOOL FieldVillager::isPlayerFacing() {
     if (collider.isHit != 0 && ((ActorCollider *)(&collider))->isHitByGroup(4) != 0) {
         Character *p = (Character *)PlayerActor_GetCharacter(4);
         if (p != NULL && p->speed != 0) {
-            s16 d = Math_AngleXZ(&p->position, &position) - p->moveAngleY;
+            s16 d = Math_AngleXZ(&p->position.x, &position.x) - p->moveAngleY;
             if (d < 0) {
                 d = -d;
             }
@@ -2984,7 +2713,7 @@ namespace ns_02265324 {
 extern "C" {
 void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b) {
     u8 *t = sSimCatchClassWeights;
-    u8 *g = gContestRecord;
+    ContestRecord *g = &gContestRecord;
     if (VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(o->getVillagerData()))) == 0) {
         t = sSimCatchClassWeightsPlanned;
     }
@@ -2999,11 +2728,11 @@ void FieldVillager_SimulateInsectCatch(FieldVillager *o, u8 *b) {
             }
             if (k) {
                 s32 x = Contest_GetCatchSize(&v);
-                s32 y = ((ContestRecord *)(g))->getSize();
+                s32 y = g->getSize();
                 if ((x >> 12) > (y >> 12)) {
                     void *w = VillagerData_getVillagerId(o->getVillagerData());
-                    ((ContestRecord *)(g))->setHolderVillager((VillagerId *)(w));
-                    ((ContestRecord *)(g))->setSize(x);
+                    g->setHolderVillager((VillagerId *)(w));
+                    g->setSize(x);
                     ContestRecord_SetItem(g, &v);
                 }
             }
@@ -3017,7 +2746,7 @@ namespace ns_02265324 {
 extern "C" {
 void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b) {
     u8 *t = sSimCatchClassWeights;
-    u8 *g = gContestRecord;
+    ContestRecord *g = &gContestRecord;
     if (VillagerPlan_getState(VillagerPlanBlock_GetPlan(Villager_GetPlan(o->getVillagerData()))) == 1) {
         t = sSimCatchClassWeightsPlanned;
     }
@@ -3032,12 +2761,12 @@ void FieldVillager_SimulateFishCatch(FieldVillager *o, u8 *b) {
             }
             if (k) {
                 s32 x = Contest_GetCatchSize(&v);
-                s32 ty = ((ContestRecord *)(g))->getSize() * 10;
+                s32 ty = g->getSize() * 10;
                 s32 tx = x * 10;
                 if ((tx >> 12) > (ty >> 12)) {
                     void *w = VillagerData_getVillagerId(o->getVillagerData());
-                    ((ContestRecord *)(g))->setHolderVillager((VillagerId *)(w));
-                    ((ContestRecord *)(g))->setSize(x);
+                    g->setHolderVillager((VillagerId *)(w));
+                    g->setSize(x);
                     ContestRecord_SetItem(g, &v);
                 }
             }
@@ -3078,7 +2807,7 @@ extern "C" {
 void FieldVillager_StopEmotion(FieldVillager *o) {
     if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->getAction() == 8) {
         if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->getEmotionId() != 0) {
-            s32 r = Emotion_GetEntry(0);
+            NpcEmotionEntry *r = Emotion_GetEntry(0);
             if (r != 0) {
                 *(u8 *)(HOST_AT(o, 0x445, emotionFx.emotionId, 0)) = 0;
                 ((NpcEmotionFx *)(HOST_AT(o, 0x420, emotionFx.effects[0], 0)))->startEntry((NpcEmotionPhase *)(r), 0);
@@ -3146,10 +2875,10 @@ FieldVillagerAi *FieldVillagerAi::initAi() {
     VillagerRoute_resetTarget(route);
     approachTarget = 0;
     resumeState = 0x18;
-    focusRangeNegX = 0x10000;
-    focusRangePosX = 0x10000;
-    focusRangeNegZ = 0x1a000;
-    focusRangePosZ = 0xa000;
+    focusRange.negX = 0x10000;
+    focusRange.posX = 0x10000;
+    focusRange.negZ = 0x1a000;
+    focusRange.posZ = 0xa000;
     cooldown = 0;
     VillagerRoute_reset(route);
     stateTimer = 0;
@@ -3171,14 +2900,14 @@ FieldVillagerAi *FieldVillagerAi::initAi() {
 
 FieldVillagerAi::~FieldVillagerAi() {
     using namespace ns_02265324;
-    VillagerRoute_Destruct(route);
+    VillagerRoute_Destruct();
 }
 
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o) {
     if (self->isAdmiringCatch != 0) {
-        if (FieldVillagerAi_IsPlayerShowingCatch(self, self->isAdmiringCatch) == 0) {
+        if (FieldVillagerAi_IsPlayerShowingCatch(self) == 0) {
             self->isAdmiringCatch = 0;
         }
     }
@@ -3357,7 +3086,7 @@ namespace ns_02265324 {
 extern "C" {
 s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o) {
     FieldVillager_StopEmotion(o);
-    *(Unk_ov068_0226fb80_Fn *)(HOST_AT(o, 0x8ac, look, 24)) = *(Unk_ov068_0226fb80_Fn *)data_ov068_0226fa68;
+    o->look.drawFn = data_ov068_0226fa68;
     ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestStand(1, data_020c6cc8);
     ((NpcFootstepFx *)(HOST_AT(o, 0x558, footstepFx.footstepsEnabled, 0)))->enableFootsteps();
     ((FieldVillagerLook *)(HOST_AT(o, 0x894, look.isLocked, 0)))->resetLook((FieldVillager *)(o));
@@ -3540,13 +3269,13 @@ extern "C" {
 BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, VecFx32 *b) {
     if (TalkRequest_IsTalking() != 0) {
         if (Vec_NotEqual(b, gVec3Zero) != 0) {
-            u8 *p = (u8 *)PlayerActor_GetCharacter(4);
-            u8 *q = (u8 *)TalkRequest_GetTalkTarget();
+            Character *p = (Character *)PlayerActor_GetCharacter(4);
+            Character *q = (Character *)TalkRequest_GetTalkTarget();
             if (p != 0 && q != 0) {
                 VecFx32 t1;
                 VecFx32 t2;
-                Vec_Sub(&t1, p + 0x5c, a);
-                Vec_Sub(&t2, q + 0x5c, a);
+                Vec_Sub(&t1, &p->position, a);
+                Vec_Sub(&t2, &q->position, a);
                 s32 x = func_01ffcb0c(b->x, t1.z);
                 x -= func_01ffcb0c(b->z, t1.x);
                 s32 y = func_01ffcb0c(b->x, t2.z);
@@ -3592,14 +3321,14 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim) {
     if (TalkRequest_IsTalking() != 0) {
-        u8 *a = (u8 *)PlayerActor_GetCharacter(4);
-        u8 *b = (u8 *)TalkRequest_GetTalkTarget();
+        Character *a = (Character *)PlayerActor_GetCharacter(4);
+        Character *b = (Character *)TalkRequest_GetTalkTarget();
         if (a != 0 && b != 0) {
             VecFx32 t1;
             VecFx32 t2;
-            Vec_Sub(&t1, a + 0x5c, b + 0x5c);
+            Vec_Sub(&t1, &a->position, &b->position);
             Vec_ShiftRight(&t1, 1);
-            Vec_Add(&t2, a + 0x5c, &t1);
+            Vec_Add(&t2, &a->position, &t1);
             s32 d = Vec_DistXZ(v, &t2);
             if (d < 0) {
                 d = -d;
@@ -3676,11 +3405,10 @@ namespace ns_022649f4 {
 extern "C" {
 void *FieldVillagerAi_FindChatPartner(void *self, FieldVillager *o) {
     FieldVillager *s = o;
-    void *pos = o;
+    VecFx32 *pos = &o->position;
     s16 lim = data_020c6cc0;
     FieldVillager *e;
     s32 i;
-    pos = &o->position;
     for (i = 0; i < 8; i++) {
         e = (FieldVillager *)NpcRegistry_GetVillager(i);
         if (e == 0) {
@@ -3701,7 +3429,7 @@ void *FieldVillagerAi_FindChatPartner(void *self, FieldVillager *o) {
         if (Vec_DistXZ(pos, &e->position) >= 0x3000) {
             continue;
         }
-        s32 d = Math_AngleXZ(pos, &e->position);
+        s32 d = Math_AngleXZ(&pos->x, &e->position.x);
         if (NpcLookAt_IsWithin((s16)(d - s->rotY), lim) != 0) {
             return e;
         }
@@ -4031,7 +3759,7 @@ BOOL FieldVillagerAiStates::execWander(FieldVillager *o) {
     using namespace ns_02264000;
     u8 *r6 = HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0);
     VecFx32 va, vb;
-    if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
+    if (FieldVillager_IsNearCameraFocus(&focusRange, o) != 0) {
     if (checkWanderEvents(o) != 0) {
         goto end;
     }
@@ -4070,8 +3798,8 @@ BOOL FieldVillagerAiStates::execWander(FieldVillager *o) {
             ((NpcActionCtrl *)(r6))->requestStand(1, data_020c6cc8);
             goto end;
         }
-        if ((Random_Next(gRandom) & 7) == 0) {
-            u8 *r7 = HOST_AT(o, 0x5c, position.x, 0);
+        if ((Random_Next(&gRandom.seed) & 7) == 0) {
+            VecFx32 *r7 = &o->position;
             va.x = *(s32 *)gVec3Zero;
             va.y = *(s32 *)(gVec3Zero + 4);
             va.z = *(s32 *)(gVec3Zero + 8);
@@ -4081,7 +3809,7 @@ BOOL FieldVillagerAiStates::execWander(FieldVillager *o) {
                         goto fail;
                     }
                 }
-                s32 d = Math_AngleXZ(r7, &va);
+                s32 d = Math_AngleXZ(&r7->x, &va.x);
                 if (NpcActor_IsFrontAngle((s16)(d - *(s16 *)(HOST_AT(o, 0x8e, rotY, 0)))) != 0) {
                     s32 m = 1;
                     if (Random_GlobalBelow(4) == 0 && FieldVillager_GetMood(o) == 0) {
@@ -4124,7 +3852,7 @@ BOOL FieldVillagerAiStates::execWander(FieldVillager *o) {
             vb.x = pv[0];
             vb.y = pv[1];
             vb.z = pv[2];
-            s32 d = Math_AngleXZ(HOST_AT(o, 0x5c, position.x, 0), &vb);
+            s32 d = Math_AngleXZ(&o->position.x, &vb.x);
             if (NpcActor_IsFrontAngle((s16)(d - *(s16 *)(HOST_AT(o, 0x8e, rotY, 0)))) == 0) {
                 ((NpcActionCtrl *)(r6))->requestStand(1, data_020c6cc8);
             }
@@ -4161,13 +3889,13 @@ BOOL FieldVillagerAiStates::enterOffscreen(FieldVillager *o) {
 
 BOOL FieldVillagerAiStates::execOffscreen(FieldVillager *o) {
     using namespace ns_02264000;
-    if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
+    if (FieldVillager_IsNearCameraFocus(&focusRange, o) != 0) {
         FieldVillagerAi_ChangeState(this, o, 0);
     } else {
         ((VillagerActor *)(o))->updateCatchPlans((u8 *)(data_ov068_0226f13c), data_ov068_0226f0f4, 1);
         FieldVillager_UpdateCatchSim(o);
         if (talkUrgeTimer == 0) {
-            if ((s32)o->getVillagerData() != 0) {
+            if (o->getVillagerData() != NULL) {
                 Villager_RaiseTalkUrge((void *)o->getVillagerData(), 0);
             }
             talkUrgeTimer = 0x384;
@@ -4212,7 +3940,7 @@ void FieldVillagerAiStates::goInHouseStep0(FieldVillager *o) {
     using namespace ns_02264000;
     if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->getAction() == 3) {
         if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->isActionDone() != 0) {
-            if (VillagerHouse_TryOpenDoorForEntry(Villager_GetIndex((void *)o->getVillagerData())) != 0) {
+            if (VillagerHouse_TryOpenDoorForEntry(Villager_GetIndex(o->getVillagerData())) != 0) {
                 ((VillagerDataItemView *)((void *)o->getVillagerData()))->getHousePos();
                 ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestPlayAnim(2, 0x3b, 1, data_020c6cc8, 0);
                 *(HOST_AT(o, 0x511, shadowEnabled, 0)) = 0;
@@ -4226,7 +3954,7 @@ void FieldVillagerAiStates::goInHouseStep1(FieldVillager *o) {
     using namespace ns_02264000;
     if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->getAction() == 1) {
         if (((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->isActionDone() != 0) {
-            if (VillagerHouse_TryOpenDoorForEntry(Villager_GetIndex((void *)o->getVillagerData())) != 0) {
+            if (VillagerHouse_TryOpenDoorForEntry(Villager_GetIndex(o->getVillagerData())) != 0) {
                 ((VillagerDataItemView *)((void *)o->getVillagerData()))->getHousePos();
                 ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestPlayAnim(2, 0x3b, 1, data_020c6cc8, 0);
                 *(HOST_AT(o, 0x511, shadowEnabled, 0)) = 0;
@@ -4351,7 +4079,7 @@ void FieldVillagerAiInHouse::inHouseStep1(FieldVillager *o) {
         r = TRUE;
     }
     if (r != 0) {
-        if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
+        if (FieldVillager_IsNearCameraFocus(&focusRange, o) != 0) {
             if (((NpcActor *)(o))->isNear((NpcActor *)(PlayerActor_GetCharacter(4)), 0x6000) == 0) {
                 VillagerRoute_reset(route);
                 FieldVillagerAi_ChangeState(this, o, 4);
@@ -4470,7 +4198,7 @@ void FieldVillagerAiLeaveHouse::leaveHouseStep0(FieldVillager *o) {
     void *r6 = Villager_GetState(ow);
     if (VillagerHouse_TryOpenDoorForExit(Villager_GetIndex(ow)) != 0) {
         ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestPlayAnim(2, 0x3d, 1, 1, 0);
-        *(Unk_ov068_02263b90_Fn *)(HOST_AT(o, 0x8ac, look, 24)) = data_ov068_0226f910;
+        o->look.drawFn = data_ov068_0226f910;
         VillagerState_SetRole(r6, 1);
         VillagerState_SetPresence(r6, 0);
         *(HOST_AT(o, 0x561, updateEnabled, 0)) = 1;
@@ -4589,8 +4317,8 @@ s32 FieldVillagerAi_GetRelationLevel(void *a, void *b) {
     void *g = gSaveVillagers;
     s32 res = 2;
     if (g != 0) {
-        s32 a1 = SaveVillagers_FindIndex(g, (s32)a);
-        s32 a2 = SaveVillagers_FindIndex(g, (s32)b);
+        s32 a1 = SaveVillagers_FindIndex(g, a);
+        s32 a2 = SaveVillagers_FindIndex(g, b);
         s32 r = SaveVillagers_GetRelationLevel(g, a1, a2);
         if (r < 5) {
             res = r;
@@ -4616,12 +4344,12 @@ s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o) {
 
 namespace ns_02263600 {
 extern "C" {
-void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, s8 *t) {
+void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, const s8 *t) {
     void *g = gSaveVillagers;
     if (g != 0) {
         s32 k = FieldVillagerAi_GetRelationLevel(r1, r2);
         if (k < 5) {
-            SaveVillagers_AddRelation(g, (s32)r1, (s32)r2, t[k]);
+            SaveVillagers_AddRelation(g, r1, r2, t[k]);
         }
     }
 }
@@ -4630,28 +4358,28 @@ void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, s8 *t) {
 
 namespace ns_02263600 {
 extern "C" {
-void FieldVillagerAi_AddPartnerRelation(void *a, void *o, s8 *t) {
+void FieldVillagerAi_AddPartnerRelation(void *a, void *o, const s8 *t) {
     FieldVillager *p = VillagerTalk_getPartner(o);
     void *x = ((FieldVillager *)o)->getVillagerData();
     void *y = p->getVillagerData();
-    s32 a1 = VillagerData_getVillagerId(x);
-    s32 a2 = VillagerData_getVillagerId(y);
-    FieldVillagerAi_AddRelationByLevel(a, (void *)a1, (void *)a2, t);
+    void *a1 = VillagerData_getVillagerId(x);
+    void *a2 = VillagerData_getVillagerId(y);
+    FieldVillagerAi_AddRelationByLevel(a, a1, a2, t);
 }
 }
 }
 
 namespace ns_02263600 {
 extern "C" {
-void FieldVillagerAi_AddRandomPairRelation(void *a, s32 unused, s8 *t) {
+void FieldVillagerAi_AddRandomPairRelation(void *a, FieldVillager *unused, const s8 *t) {
     void *g = gSaveVillagers;
     if (g != 0) {
         void *q = SaveVillagers_PickRandomExcept(g, 0, 0);
         if (q != 0) {
             void *r4 = (void *)VillagerData_getVillagerId(q);
-            u32 buf;
-            func_02133ef8(&buf, 4);
-            buf = (u32)r4;
+            void *buf;
+            func_02133ef8(&buf, sizeof(buf));
+            buf = r4;
             void *q2 = SaveVillagers_PickRandomExcept(g, &buf, 1);
             if (q2 != 0) {
                 FieldVillagerAi_AddRelationByLevel(a, r4, (void *)VillagerData_getVillagerId(q2), t);
@@ -4687,7 +4415,7 @@ void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p
 
 namespace ns_02263600 {
 extern "C" {
-s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d) {
+s32 FieldVillagerAi_OrderByFriendship(void *unused, void **a, void **b, void *c, void *d) {
     void *g;
     if (PlayerData_GetCurrent() != 0) {
         g = PlayerData_getPlayerId(PlayerData_GetCurrent());
@@ -4724,7 +4452,7 @@ s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d
 namespace ns_02263600 {
 extern "C" {
 void *FieldVillagerAi_PickOtherAblePattern(void *unused, void *x) {
-    if ((u32)gSaveAbleSistersPatterns != 0) {
+    if (gSaveAbleSistersPatterns != NULL) {
         u32 i; u16 mask; u32 cnt; mask = 0; cnt = 0; i = 0;
         goto test0;
     loop0:
@@ -4750,12 +4478,12 @@ BOOL FieldVillagerAiChat::tryChatMoodByRelation(FieldVillager *o) {
     void *a;
     void *b;
     FieldVillager *other = VillagerTalk_getPartner(o);
-    s32 vx = (s32)o->getVillagerData();
-    s32 vy = (s32)other->getVillagerData();
+    void *vx = o->getVillagerData();
+    void *vy = other->getVillagerData();
     a = 0;
     b = 0;
-    s32 x = (s32)o->getVillagerData();
-    s32 y = (s32)other->getVillagerData();
+    void *x = o->getVillagerData();
+    void *y = other->getVillagerData();
     FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
@@ -4785,8 +4513,8 @@ BOOL FieldVillagerAiChat::tryChatNeutral(FieldVillager *o) {
     FieldVillager *other = VillagerTalk_getPartner(o);
     a = 0;
     b = 0;
-    s32 x = (s32)o->getVillagerData();
-    s32 y = (s32)other->getVillagerData();
+    void *x = o->getVillagerData();
+    void *y = other->getVillagerData();
     FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
@@ -4804,8 +4532,8 @@ BOOL FieldVillagerAiChat::tryChatSpreadCatchphrase(FieldVillager *o) {
     FieldVillager *other = VillagerTalk_getPartner(o);
     a = 0;
     b = 0;
-    s32 x = (s32)o->getVillagerData();
-    s32 y = (s32)other->getVillagerData();
+    void *x = o->getVillagerData();
+    void *y = other->getVillagerData();
     FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     MsgString11 s1;
     MsgString11 s2;
@@ -4817,7 +4545,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadCatchphrase(FieldVillager *o) {
         u8 *r6 = VillagerData_getVillagerId(a);
         u8 *r7 = VillagerData_getVillagerId(b);
         b = 0;
-        if ((u32)gSaveVillagers != 0) {
+        if (gSaveVillagers != NULL) {
             void *e;
             u32 mask = 0, cnt = 0;
             s32 i = 0;
@@ -4876,12 +4604,12 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
     FieldVillager *other = VillagerTalk_getPartner(o);
     a = 0;
     b = 0;
-    s32 x = (s32)o->getVillagerData();
-    s32 y = (s32)other->getVillagerData();
+    void *x = o->getVillagerData();
+    void *y = other->getVillagerData();
     if (FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y) == 0) {
-        chatTarget = (u8 *)other;
+        chatTarget = other;
     } else {
-        chatTarget = (u8 *)o;
+        chatTarget = o;
     }
     BOOL ok = TRUE;
     if (Unk_ov068_02262c20_InRange(VillagerDataProfileView_getShirt(a))) {
@@ -4893,7 +4621,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
         u8 *p10 = VillagerData_getVillagerId(b);
         ok = FALSE;
         b = 0;
-        if ((u32)gSaveVillagers != 0) {
+        if (gSaveVillagers != NULL) {
             void *e;
             u32 mask = 0, cnt = 0;
             s32 i = 0;
@@ -4947,7 +4675,7 @@ BOOL FieldVillagerAiChat::tryChatSpreadShirt(FieldVillager *o) {
         FieldVillagerAi_AddMood(this, o, 1, 2, 0);
         FieldVillagerAi_AddMood(this, other, 1, 2, 0);
         h1 = 0x12a8;
-        ((NpcActionCtrl *)(chatTarget + 0x564))->requestAct14(1, &h1);
+        chatTarget->actionCtrl.requestAct14(1, &h1);
         step = 2;
     } else {
         FieldVillagerAi_AddMood(this, o, 1, 2, 1);
@@ -4966,15 +4694,15 @@ BOOL FieldVillagerAiChat::tryChatRevertClothes(FieldVillager *o) {
     void *a = 0;
     void *b = 0;
     FieldVillager *other = VillagerTalk_getPartner(o);
-    s32 x = (s32)o->getVillagerData();
-    s32 y = (s32)other->getVillagerData();
+    void *x = o->getVillagerData();
+    void *y = other->getVillagerData();
     s32 r = FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     if (r == 0) {
-        chatTarget = (u8 *)o;
+        chatTarget = o;
     } else {
-        chatTarget = (u8 *)other;
+        chatTarget = other;
     }
     FieldVillagerAi_AddRandomPairRelation(this, o, sChatRevertClothesDeltas);
     if (Unk_ov068_02262e5c_InRange(VillagerState_GetHeldItem(Villager_GetState(a))) == 0) {
@@ -5003,7 +4731,7 @@ BOOL FieldVillagerAiChat::tryChatRevertClothes(FieldVillager *o) {
         FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 0);
         FieldVillagerAi_AddRandomMood(this, other, sChatClothesMoods, 4, 2, 0);
         VillagerDataProfileView_setShirt(a, &v0);
-        ((NpcActionCtrl *)(chatTarget + 0x564))->requestAct14(1, &v0);
+        chatTarget->actionCtrl.requestAct14(1, &v0);
         step = 2;
     } else {
         FieldVillagerAi_AddRandomMood(this, o, sChatClothesMoods, 4, 2, 1);
@@ -5020,14 +4748,14 @@ BOOL FieldVillagerAiChat::tryChatRevertCatchphrase(FieldVillager *o) {
     FieldVillager *other = VillagerTalk_getPartner(o);
     a = 0;
     b = 0;
-    s32 x = (s32)o->getVillagerData();
-    s32 y = (s32)other->getVillagerData();
+    void *x = o->getVillagerData();
+    void *y = other->getVillagerData();
     FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y);
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     FieldVillagerAi_AddRandomPairRelation(this, o, sChatRevertCatchphraseDeltas);
     EncodedString10 obj;
-    if (Villager_GetDefaultCatchphraseEncoded(&obj, VillagerId_GetSpecies(VillagerData_getVillagerId(b))) != 0) {
+    if (Villager_GetDefaultCatchphraseEncoded(&obj, VillagerId_GetSpecies((VillagerId *)VillagerData_getVillagerId(b))) != 0) {
         Villager_SetCatchphraseEncoded(b, &obj);
     }
     FieldVillagerAi_AddRandomMood(this, o, sChatCatchphraseMoods, 4, 2, 1);
@@ -5044,14 +4772,14 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(FieldVillager *o) {
     FieldVillager *other = VillagerTalk_getPartner(o);
     a = 0;
     b = 0;
-    s32 x = (s32)o->getVillagerData();
-    s32 y = (s32)other->getVillagerData();
+    void *x = o->getVillagerData();
+    void *y = other->getVillagerData();
     if (FieldVillagerAi_OrderByFriendship(this, &a, &b, x, y) == 0) {
-        chatTarget = (u8 *)o;
+        chatTarget = o;
     } else {
-        chatTarget = (u8 *)other;
+        chatTarget = other;
     }
-    u8 *rec = 0;
+    void *rec = 0;
     if (Unk_ov068_02262c20_InRange(VillagerDataProfileView_getShirt(a))) {
         rec = VillagerData_getPattern(a);
     }
@@ -5066,7 +4794,7 @@ BOOL FieldVillagerAiChat::tryChatAdoptAblePattern(FieldVillager *o) {
     h0 = 0x12a8;
     VillagerDataProfileView_setShirt(a, &h0);
     h1 = 0x12a8;
-    ((NpcActionCtrl *)(chatTarget + 0x564))->requestAct14(1, &h1);
+    chatTarget->actionCtrl.requestAct14(1, &h1);
     step = 2;
     return TRUE;
     }
@@ -5162,8 +4890,8 @@ BOOL FieldVillagerAiChat::isStrangerPlayerNear(FieldVillager *o, s32 v) {
 BOOL FieldVillagerAiChat::isEnemyPairWithPlayerNear(FieldVillager *o, s32 v) {
     using namespace ns_02262294;
     FieldVillager *p = VillagerTalk_getPartner(o);
-    s32 a = (s32)o->getVillagerData();
-    s32 b = (s32)p->getVillagerData();
+    void *a = o->getVillagerData();
+    void *b = p->getVillagerData();
     if (SaveVillagers_GetRelationLevelOf(gSaveVillagers, a, b) >= 4) {
         if (v < 0x6000) {
             return TRUE;
@@ -5336,7 +5064,7 @@ void FieldVillagerAiChat::pickChatOutcome(FieldVillager *o) {
 
 void FieldVillagerAiChat::chatStep2(FieldVillager *o) {
     using namespace ns_02262294;
-    if (((NpcActionCtrl *)(chatTarget + 0x564))->getAction() == 0x14 && ((NpcActionCtrl *)(chatTarget + 0x564))->isActionDone() != 0) {
+    if (chatTarget->actionCtrl.getAction() == 0x14 && chatTarget->actionCtrl.isActionDone() != 0) {
         ((VillagerMood *)(HOST_AT(o, 0x838, mood.pad_00[0], 0)))->requestApply();
         VillagerMood_requestApply((u8 *)VillagerTalk_getPartner(o) + 0x838);
         step = 3;
@@ -5378,7 +5106,8 @@ BOOL FieldVillagerAiReaction::enterReaction(FieldVillager *o) {
     using namespace ns_02262294;
     void *p = PlayerActor_GetCharacter(4);
     s32 v = 0;
-    s32 st = *(s32 *)(HOST_AT(o, 0x82c, villagerData, 0));
+    void *data = o->villagerData;
+    s32 st;
     void *q = X_func_ov068_02265f58(o);
     s32 x = v;
     s32 t;
@@ -5386,14 +5115,14 @@ BOOL FieldVillagerAiReaction::enterReaction(FieldVillager *o) {
         x = VillagerMemory_getFriendship(q);
     }
     if (x >= 0) {
-        t = VillagerId_GetPersonality(VillagerData_getVillagerId(st));
+        t = VillagerId_GetPersonality(VillagerData_getVillagerId(data));
         if (t == 0 || t == 3) {
             st = 1;
         } else {
             st = 0;
         }
     } else {
-        t = VillagerId_GetPersonality(VillagerData_getVillagerId(st));
+        t = VillagerId_GetPersonality(VillagerData_getVillagerId(data));
         switch (t) {
         case 0:
         case 3:
@@ -5450,9 +5179,9 @@ BOOL FieldVillagerAiPlayerStates::enterApproach(FieldVillager *o) {
     FieldVillager_StopEmotion(o);
     approachTarget = (Character *)PlayerActor_GetCharacter(4);
     VecFx32 *pv = (VecFx32 *)(HOST_AT(o, 0x5c, position.x, 0));
-    approachStartX = *(s32 *)(HOST_AT(o, 0x5c, position.x, 0));
-    approachStartY = pv->y;
-    approachStartZ = pv->z;
+    approachStart.x = o->position.x;
+    approachStart.y = pv->y;
+    approachStart.z = pv->z;
     ((NpcActionCtrl *)(HOST_AT(o, 0x564, actionCtrl.netMoveMode, 0)))->requestPlayAnim(1, 0xdf, 1, data_020c6cc8, 0);
     X_func_ov068_0225f5f4(HOST_AT(o, 0x894, look.isLocked, 0), o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     step = 0;
@@ -5462,7 +5191,7 @@ BOOL FieldVillagerAiPlayerStates::enterApproach(FieldVillager *o) {
 
 BOOL FieldVillagerAiPlayerStates::isNearApproachStart(FieldVillager *o) {
     using namespace ns_02261900;
-    if (Vec_Distance(HOST_AT(o, 0x5c, position.x, 0), &approachStartX) <= 0xc000) {
+    if (Vec_Distance(HOST_AT(o, 0x5c, position.x, 0), &approachStart) <= 0xc000) {
         return TRUE;
     }
     return FALSE;
@@ -5510,8 +5239,8 @@ void FieldVillagerAiPlayerStates::approachStep0(FieldVillager *o) {
     } else {
         FieldVillagerAi_ChangeState(this, o, 0);
         seekPlayerCooldown = 0x4b0;
-        if ((s32)o->getVillagerData() != 0) {
-            Villager_AddTalkUrge((s32)o->getVillagerData(), -1);
+        if (o->getVillagerData() != NULL) {
+            Villager_AddTalkUrge(o->getVillagerData(), -1);
         }
     }
 }
@@ -5531,23 +5260,23 @@ void FieldVillagerAiPlayerStates::approachStep1(FieldVillager *o) {
         } else if (stateTimer == 0) {
             FieldVillagerAi_ChangeState(this, o, 0);
             seekPlayerCooldown = 0x4b0;
-            if ((s32)o->getVillagerData() != 0) {
-                Villager_HalveTalkUrge((s32)o->getVillagerData());
+            if (o->getVillagerData() != NULL) {
+                Villager_HalveTalkUrge(o->getVillagerData());
             }
         } else if (isNearApproachStart(o) != 0) {
             ((NpcMoveCtrl *)(q))->setWaypoint((VecFx32 *)(ACTOR_POS_AT(approachTarget)));
         } else {
             FieldVillagerAi_ChangeState(this, o, 0);
             seekPlayerCooldown = 0x4b0;
-            if ((s32)o->getVillagerData() != 0) {
-                Villager_HalveTalkUrge((s32)o->getVillagerData());
+            if (o->getVillagerData() != NULL) {
+                Villager_HalveTalkUrge(o->getVillagerData());
             }
         }
     } else {
         FieldVillagerAi_ChangeState(this, o, 0);
         seekPlayerCooldown = 0x4b0;
-        if ((s32)o->getVillagerData() != 0) {
-            Villager_AddTalkUrge((s32)o->getVillagerData(), -1);
+        if (o->getVillagerData() != NULL) {
+            Villager_AddTalkUrge(o->getVillagerData(), -1);
         }
     }
 }
@@ -5566,15 +5295,15 @@ void FieldVillagerAiPlayerStates::approachStep2(FieldVillager *o) {
         } else if (stateTimer == 0) {
             FieldVillagerAi_ChangeState(this, o, 0);
             seekPlayerCooldown = 0x4b0;
-            if ((s32)o->getVillagerData() != 0) {
-                Villager_HalveTalkUrge((s32)o->getVillagerData());
+            if (o->getVillagerData() != NULL) {
+                Villager_HalveTalkUrge(o->getVillagerData());
             }
         }
     } else {
         FieldVillagerAi_ChangeState(this, o, 0);
         seekPlayerCooldown = 0x4b0;
-        if ((s32)o->getVillagerData() != 0) {
-            Villager_AddTalkUrge((s32)o->getVillagerData(), -1);
+        if (o->getVillagerData() != NULL) {
+            Villager_AddTalkUrge(o->getVillagerData(), -1);
         }
     }
 }
@@ -5747,7 +5476,7 @@ BOOL FieldVillagerAiBirthdayWait::enterBirthdayWait(FieldVillager *o) {
             *pv = q;
             VecFx32 *pw = (VecFx32 *)(HOST_AT(o, 0x68, prevPosition.x, 0));
             *pw = *pv;
-            *(s16 *)(HOST_AT(o, 0x8e, rotY, 0)) = Math_AngleXZ(&q, &p);
+            *(s16 *)(HOST_AT(o, 0x8e, rotY, 0)) = Math_AngleXZ(&q.x, &p.x);
             *(s16 *)(HOST_AT(o, 0x94, moveAngleY, 0)) = *(s16 *)(HOST_AT(o, 0x8e, rotY, 0));
             ((NpcMoveCtrl *)(HOST_AT(o, 0x350, moveCtrl.curSpeedPreset.x, 0)))->setTargetAngle(*(s16 *)(HOST_AT(o, 0x8e, rotY, 0)));
         }
@@ -6191,7 +5920,7 @@ void FieldVillagerAiStates::pitfallStep3(FieldVillager *o) {
         } else {
             *(s32 *)(HOST_AT(o, 0x198, model.frameStep, 0)) = pitfallAnimSpeed;
             if (*(s32 *)(HOST_AT(o, 0x9fc, pitfallEffect, 0)) != -1) {
-                Effect_SetPosition(*(s32 *)(HOST_AT(o, 0x9fc, pitfallEffect, 0)), HOST_AT(o, 0x5c, position.x, 0), 0, 0);
+                Effect_SetPosition(o->pitfallEffect, &o->position, NULL, NULL);
             }
         }
     }
@@ -6407,8 +6136,8 @@ BOOL FieldVillagerAiStates::enterPushed(FieldVillager *o) {
     ((Character *)(o))->clearTalkStartMode();
     step = 0;
     ((VillagerMood *)(HOST_AT(o, 0x838, mood.pad_00[0], 0)))->disableEffects();
-    if ((s32)o->getVillagerData() != 0) {
-        Villager_HalveTalkUrge((s32)o->getVillagerData());
+    if (o->getVillagerData() != NULL) {
+        Villager_HalveTalkUrge(o->getVillagerData());
     }
     return TRUE;
 }
@@ -6635,7 +6364,7 @@ BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(FieldVillager *o, s32 x
     s16 k = sTalkFacingArc;
     u32 v = FieldVillager_GetMood(o);
     BOOL r = FALSE;
-    if (o->acceptsInteraction((void *)x) != 0 && ((VillagerActor *)(o))->isFlag834() == 0 && FieldVillagerAi_IsState(HOST_AT(o, 0x8b4, ai.focusRangeNegX, 0), r) != 0 && v <= 1 &&
+    if (o->acceptsInteraction((void *)x) != 0 && ((VillagerActor *)(o))->isFlag834() == 0 && FieldVillagerAi_IsState(&o->ai, r) != 0 && v <= 1 &&
         ((NpcActor *)(o))->isNear((NpcActor *)(x), 0x5000) == 0 && ((NpcActor *)(o))->isNear((NpcActor *)(x), 0xe000) != 0 && ((Character *)(o))->isInFacingArcOf((Character *)(x), (s16)-k, k) != 0) {
         r = TRUE;
     }
@@ -6693,9 +6422,9 @@ void FieldVillager::onInteractionEvent(u32 idx, u8 v) {
             }
         }
         if (talkType == 0) {
-            s32 rep = FieldVillager_GetTalkRepeat(this);
+            void *rep = FieldVillager_GetTalkRepeat(this);
             if (rep) {
-                TalkRepeat_Count((void *)rep);
+                TalkRepeat_Count(rep);
             }
         }
         FieldVillagerAi_ChangeState(&ai, this, 8);
@@ -6767,9 +6496,9 @@ void FieldVillager::onInteractionEvent(u32 idx, u8 v) {
             if (FieldVillagerAi_Resume(&ai, this) == 0) {
                 FieldVillagerAi_ChangeState(&ai, this, 0);
             }
-            s32 rep = FieldVillager_GetTalkRepeat(this);
+            void *rep = FieldVillager_GetTalkRepeat(this);
             if (rep) {
-                TalkRepeat_StartWindow((void *)rep);
+                TalkRepeat_StartWindow(rep);
             }
         }
         ((Character *)(this))->setTalkStartMode0();
@@ -6962,7 +6691,7 @@ void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, voi
 
 s32 FieldVillagerLook::getInsectIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
-    s32 t = FieldInsect_GetPosAndKind(v, i);
+    s32 t = FieldInsect_GetPosAndKind((VecFx32Ctor *)v, i);
     if (t != -1 && Vec_DistXZ(p, v) < lim) {
         return t;
     }
@@ -7023,7 +6752,7 @@ void FieldVillagerLook::trackInsect(FieldVillager *o) {
 
 BOOL FieldVillagerLook::getFishPosIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
-    if (FishShadow_GetPos(v, i) && Vec_DistXZ(p, v) < lim) {
+    if (FishShadow_GetPos((u32 *)v, i) && Vec_DistXZ(p, v) < lim) {
         return TRUE;
     }
     return FALSE;
@@ -7128,29 +6857,3 @@ void FieldVillagerLook::update(FieldVillager *o) {
     }
 }
 
-#ifdef HOST64
-static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_00) == 0x0, "FieldVillagerAiStates.pad_00");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, step) == 0x24, "FieldVillagerAiStates.step");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_1d) == 0x25, "FieldVillagerAiStates.pad_1d");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, stateTimer) == 0x28, "FieldVillagerAiStates.stateTimer");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_24) == 0x2c, "FieldVillagerAiStates.pad_24");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, chatTarget) == 0x30, "FieldVillagerAiStates.chatTarget");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, pitfallTimer) == 0x38, "FieldVillagerAiStates.pitfallTimer");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_2e) == 0x3a, "FieldVillagerAiStates.pad_2e");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, pitfallAnimSpeed) == 0x3c, "FieldVillagerAiStates.pitfallAnimSpeed");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, activityTimer) == 0x40, "FieldVillagerAiStates.activityTimer");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, heldItemCheckTimer) == 0x42, "FieldVillagerAiStates.heldItemCheckTimer");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, hitCount) == 0x44, "FieldVillagerAiStates.hitCount");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_39) == 0x45, "FieldVillagerAiStates.pad_39");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, hitResetTimer) == 0x46, "FieldVillagerAiStates.hitResetTimer");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, route) == 0x48, "FieldVillagerAiStates.route");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, routeTimeout) == 0xe8, "FieldVillagerAiStates.routeTimeout");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, routeStepTimer) == 0xea, "FieldVillagerAiStates.routeStepTimer");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, lookStopTimer) == 0xec, "FieldVillagerAiStates.lookStopTimer");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, lookStopCooldown) == 0xee, "FieldVillagerAiStates.lookStopCooldown");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, isAdmiringCatch) == 0xf0, "FieldVillagerAiStates.isAdmiringCatch");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, pad_e1) == 0xf1, "FieldVillagerAiStates.pad_e1");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, seekPlayerCooldown) == 0x104, "FieldVillagerAiStates.seekPlayerCooldown");
-static_assert(__builtin_offsetof(FieldVillagerAiStates, talkUrgeTimer) == 0x108, "FieldVillagerAiStates.talkUrgeTimer");
-static_assert(sizeof(FieldVillagerAiStates) == sizeof(FieldVillagerAi), "FieldVillagerAiStates: regenerate (tools/host_view_layout.py --remove)");
-#endif

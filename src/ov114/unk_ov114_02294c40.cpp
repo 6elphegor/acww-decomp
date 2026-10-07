@@ -12,19 +12,6 @@
 #include "menu/CreatureBookPanel.h"
 #include "player/PlayerData.h"
 #include "ui/ScrollKnob.h"
-#define PROTO_LOCAL_CreatureBook_ActivateFocus  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CreatureBook_DrawRows  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CreatureBook_UpdateScrollHold  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_CreatureBook_UpdateScrollTouch  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollGrabSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Menu_PlayScrollTickSe  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawCell  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Oam_DrawObj  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov114_02296588  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov114_02296598  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov114_022965a0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov114_022965c0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gCurrentHeap  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_0200137c.h"
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_0203c23c.h"
@@ -38,37 +25,26 @@
 #include "proto/ov090/unk_ov090_022918e0.h"
 #include "proto/ov094/unk_ov094_02292da8.h"
 #include "proto/ov114/unk_ov114_02294c40.h"
+#include "proto/autoload_2/unk_020e8558.h"
+#include "proto/main/unk_02087e70.h"
+#include "proto/ov002/unk_ov002_022025cc.h"
 
-// Icon row object of the creature book list: OAM cell entry (charName = icon tiles, palette per icon) + cached icon id.
-struct CreatureBookIconObj {
-    /* 0x0 */ GXOamAttr cell;
-    /* 0x8 */ s32 iconId;
-};
 
 extern "C" {
 extern const u8 data_ov114_0229654c[];
 extern const u8 data_ov114_02296550[];
 extern const s32 data_ov114_02296554[];
 extern const s32 data_ov114_02296564[];
-extern u8 data_ov114_02296588[];
-extern u8 data_ov114_02296598[];
-extern u8 data_ov114_022965a0[];
-extern u8 data_ov114_022965c0[0x20];
-extern u32 *gCurrentHeap;
 extern u16 gPad;
 
-void Menu_PlayScrollGrabSe(void *p);
 s32 _s32_div_f(s32 a, s32 b);
-s32 Item_GetInfoUnk02(u32 v);
+s32 Item_GetInfoUnk02(u16 *item);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 
-void Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Msg_SkipLines(void *p, s32 i);
 void _ZN10BgVramTask6cancelEv(void *p);
-void Menu_PlayScrollTickSe(void *p);
 void Math_StepS32(void *p, s32 a, s32 b);
 
-void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 _ZN10BgVramTask14requestPaletteEjhj(void *a, void *b, s32 c, s32 d);
 void func_020b8800(void *p);
 void func_020b85f8(void *p);
@@ -78,10 +54,6 @@ void func_0206fca8(void *p);
 void func_02135714(void *, s32, s32, void (*)(void *), void (*)(void *));
 void func_021355f0(void *, s32, s32, void (*)(void *));
 
-BOOL CreatureBook_ActivateFocus(CreatureBookPanel *s);
-void CreatureBook_DrawRows(CreatureBookPanel *s, s32 a);
-void CreatureBook_UpdateScrollHold(CreatureBookPanel *s);
-void CreatureBook_UpdateScrollTouch(CreatureBookPanel *s, s32 a);
 }
 
 
@@ -159,11 +131,11 @@ void CreatureBookPanel::postUpdate() {
 }
 
 void CreatureBookPanel::loadBgGraphics() {
-    s32 h = (s32)gCurrentHeap;
-    Gfx2d_LoadCharFile("menu/fish/bg0.bch", (u32 *)h, mainLayer, 0x109, 0x109, 0x153);
-    Gfx2d_LoadCharFile("menu/fish/bg1.bch", (u32 *)h, mainLayer, 0x154, 0x154, 0x19f);
+    Heap *h = gCurrentHeap;
+    Gfx2d_LoadCharFile("menu/fish/bg0.bch", h, mainLayer, 0x109, 0x109, 0x153);
+    Gfx2d_LoadCharFile("menu/fish/bg1.bch", h, mainLayer, 0x154, 0x154, 0x19f);
     if (mode == 1) {
-        Gfx2d_LoadCharFile("menu/fish/bug_bg.bch", (u32 *)h, mainLayer, 0x150, 0x150, 0x164);
+        Gfx2d_LoadCharFile("menu/fish/bug_bg.bch", h, mainLayer, 0x150, 0x150, 0x164);
     }
     switch (mode) {
     case 0:
@@ -182,17 +154,16 @@ void CreatureBookPanel::loadBgGraphics() {
 }
 
 void CreatureBookPanel::loadObjGraphics() {
-    s32 h = (s32)gCurrentHeap;
+    Heap *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/icon/b_obj_itm.bpl", h, 8, 7, 7, 0xe);
     Gfx2d_LoadPaletteFile("menu/fish/obj.bpl", h, 8, 4, 4, 6);
-    Gfx2d_LoadCharFile("menu/fish/obj0.bch", (u32 *)h, 8, 0xc0, 0xc0, 0x140);
-    Gfx2d_LoadCharFile("menu/fish/obj1.bch", (u32 *)h, 8, 0x141, 0x141, 0x1bf);
+    Gfx2d_LoadCharFile("menu/fish/obj0.bch", h, 8, 0xc0, 0xc0, 0x140);
+    Gfx2d_LoadCharFile("menu/fish/obj1.bch", h, 8, 0x141, 0x141, 0x1bf);
 }
 
 void CreatureBookPanel::drawButtons(s32 y) {
     s32 py = y + 0x60;
     s32 i = 0;
-    s32 z = i;
     do {
         s32 pal = pageButtonPalettes[i];
         u8 *b = (u8 *)this + i;
@@ -202,25 +173,27 @@ void CreatureBookPanel::drawButtons(s32 y) {
             *q = v - 1;
             pal = 6;
         }
-        Oam_DrawObj(1, data_ov114_02296588 + i * 8, 0x80, py, pal, 1, z);
+        // the next / previous page buttons' cells
+        GXOamAttr *cell = i == 0 ? &data_ov114_02296588 : &data_ov114_02296590;
+        Oam_DrawObj(1, (u32 *)cell, 0x80, py, pal, 1, NULL);
         i++;
     } while (i < 2);
     s32 py1 = py;
     if (touchTarget == 0) py1 = py + 2;
-    Oam_DrawObj(1, data_ov114_022965c0, 0x80, py1, -1, 1, 0);
+    Oam_DrawObj(1, (u32 *)&data_ov114_022965c0[0], 0x80, py1, -1, 1, NULL);
     s32 py2 = py;
     if (touchTarget == 1) py2 = py + 2;
-    Oam_DrawObj(1, (data_ov114_022965c0 + 8), 0x80, py2, -1, 1, 0);
-    Oam_DrawCell(1, (data_ov114_022965c0 + 16), 0x80, py, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawObj(1, (u32 *)&data_ov114_022965c0[1], 0x80, py2, -1, 1, NULL);
+    Oam_DrawCell(1, &data_ov114_022965c0[2], 0x80, py, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 BOOL CreatureBookPanel::hitDescPageButtons(s32 x, s32 y) {
     s32 xs = x - 0x80;
     s32 ys = y - 0x60;
-    if (Cell_HitTest(data_ov114_02296588, xs, ys, 2, 2)) {
+    if (Cell_HitTest(&data_ov114_02296588, xs, ys, 2, 2)) {
         return CreatureBook_NextDescPage(this);
     }
-    if (Cell_HitTest(data_ov114_02296590, xs, ys, 2, 2)) {
+    if (Cell_HitTest(&data_ov114_02296590, xs, ys, 2, 2)) {
         return CreatureBook_PrevDescPage(this);
     }
     return FALSE;
@@ -255,11 +228,11 @@ BOOL CreatureBookPanel::beginScrollTouch(s32 x, s32 y) {
     }
     s32 xs = x - 0x80;
     s32 ys = y - 0x60;
-    if (Cell_HitTest(data_ov114_022965c0, xs, ys, 2, 2)) {
+    if (Cell_HitTest(&data_ov114_022965c0[0], xs, ys, 2, 2)) {
         touchTarget = 0;
         return TRUE;
     }
-    if (Cell_HitTest((data_ov114_022965c0 + 8), xs, ys, 2, 2)) {
+    if (Cell_HitTest(&data_ov114_022965c0[1], xs, ys, 2, 2)) {
         touchTarget = 1;
         return TRUE;
     }
@@ -300,11 +273,11 @@ void CreatureBook_UpdateScrollTouch(CreatureBookPanel *s, s32 a)
     if (s->touchTarget == 2) {
         s32 d = s->knobLastTickPos - s->knobPos;
         if (d >= 4 || d <= -4) {
-            Menu_PlayScrollTickSe(&s->scrollKnob);
+            Menu_PlayScrollTickSe();
             s->knobLastTickPos = s->knobPos;
         }
     } else if (s->knobPos != old) {
-        Menu_PlayScrollTickSe(&s->scrollKnob);
+        Menu_PlayScrollTickSe();
     }
 }
 
@@ -352,7 +325,7 @@ void CreatureBook_UpdateScrollHold(CreatureBookPanel *s)
         s->knobPos = 0x8c;
     }
     if (s->knobPos != old) {
-        Menu_PlayScrollTickSe(&s->scrollKnob);
+        Menu_PlayScrollTickSe();
     }
     s->syncScrollToKnob();
 }
@@ -612,29 +585,29 @@ void CreatureBook_SetNameLabel(CreatureBookPanel *s, u32 a)
 
 void CreatureBook_DrawRows(CreatureBookPanel *s, s32 a)
 {
-    s32 z18 = 0, z1c = 0, z20 = 0, z24 = 0;
+    s32 z24 = 0;
     s32 i;
     s32 rowY = s->firstIconX;
     s32 x = s->iconRowY + a;
     s32 idx = s->firstIconSlot;
     s32 m1;
     s32 t14;
-    void *src;
+    GXOamAttr *src;
     i = 0;
     m1 = -1;
     do {
         if (CreatureBook_IsCaught(s, s->firstVisibleEntry + i)) {
-            src = (u8 *)s->rowIcons + idx * 12;
+            src = &s->rowIcons[idx].cell;
             t14 = m1;
         } else {
-            src = data_ov114_02296580;
+            src = &data_ov114_02296580;
             t14 = 4;
         }
-        Oam_DrawObj(1, src, rowY, x, m1, 2, z18);
-        if (*(u8 *)(HOST_AT(s, 0x1295, selectedEntry, 0)) == s->firstVisibleEntry + i) {
-            Oam_DrawObj(1, data_ov114_022965a0, rowY, x, m1, 2, z1c);
+        Oam_DrawObj(1, (u32 *)src, rowY, x, m1, 2, NULL);
+        if (s->selectedEntry == s->firstVisibleEntry + i) {
+            Oam_DrawObj(1, (u32 *)&data_ov114_022965a0, rowY, x, m1, 2, NULL);
         }
-        Oam_DrawObj(1, data_ov114_02296598, rowY, x, t14, 2, z20);
+        Oam_DrawObj(1, (u32 *)&data_ov114_02296598, rowY, x, t14, 2, NULL);
         rowY += 0x1b;
         idx++;
         if (idx >= 9) {
@@ -691,7 +664,7 @@ loop0:
     default:
         return;
     }
-    CreatureBook_SetRowIcon(s, (u32)&col, idx);
+    CreatureBook_SetRowIcon(s, &col, idx);
     idx++;
     if (idx >= 9) {
         idx = zero;
@@ -739,18 +712,18 @@ BOOL CreatureBook_TouchRow(CreatureBookPanel *s, s32 x, s32 y) {
 void CreatureBook_InitRows(CreatureBookPanel *s) {
     s32 i;
     for (i = 0; i < 9; i++) {
-        CreatureBookIconObj *e = &((CreatureBookIconObj *)s->rowIcons)[i];
-        MI_CpuCopy8(data_ov114_02296580, e, 8);
+        CreatureBookIconObj *e = &s->rowIcons[i];
+        e->cell = data_ov114_02296580;
         e->cell.charNo = i * 2 + 0xc0;
         e->iconId = -1;
     }
-    s->iconRowY = (s32)Oam_GetObjY(data_ov114_022965e0) + 0x70;
+    s->iconRowY = (s32)Oam_GetObjY((s8 *)&data_ov114_022965e0[0]) + 0x70;
     CreatureBook_SetScroll(s, 0);
 }
 
-void CreatureBook_SetRowIcon(CreatureBookPanel *s, u32 a, s32 idx) {
-    CreatureBookIconObj *e = &((CreatureBookIconObj *)s->rowIcons)[idx];
-    s32 key = Item_GetInfoUnk02(a);
+extern "C" void CreatureBook_SetRowIcon(CreatureBookPanel *s, u16 *item, s32 idx) {
+    CreatureBookIconObj *e = &s->rowIcons[idx];
+    s32 key = Item_GetInfoUnk02(item);
     if (key != e->iconId) {
         e->iconId = key;
         u32 lo = e->cell.charNo;
@@ -771,7 +744,7 @@ void CreatureBook_InitPictureView(CreatureBookPanel *s) {
     CreatureBook_SetNameLabel(s, 0xff);
     CreatureBook_ShowSelected(s);
     CreatureBook_SetBgFadeColor(s, 0, 0x10);
-    Gfx2d_SetSubAlphaBlend((void *)s->pictureBlendMask, (void *)s->listBlendMask, 0);
+    Gfx2d_SetSubAlphaBlend(s->pictureBlendMask, s->listBlendMask, 0);
 }
 
 void CreatureBook_StopPictureFade(CreatureBookPanel *s) {
@@ -792,7 +765,7 @@ void CreatureBook_LoadPicture(CreatureBookPanel *s) {
         return;
     }
     s32 q = (s32)c / 12;
-    u32 *font = gCurrentHeap;
+    Heap *font = gCurrentHeap;
     switch (s->mode) {
     case 0:
         sCreaturePicDir = "menu/fish_pic";
@@ -819,7 +792,7 @@ void CreatureBook_UpdatePictureFade(CreatureBookPanel *s) {
                     Gfx2d_ShowLayer(s->pictureLayer);
                 }
                 s->pictureFade = s->pictureFade + 4;
-                Gfx2d_SetSubAlphaBlend((void *)s->pictureBlendMask, (void *)s->listBlendMask, s->pictureFade);
+                Gfx2d_SetSubAlphaBlend(s->pictureBlendMask, s->listBlendMask, s->pictureFade);
             } else {
                 Gfx2d_ResetSubBlend();
             }
@@ -828,7 +801,7 @@ void CreatureBook_UpdatePictureFade(CreatureBookPanel *s) {
         CreatureBook_ShowSelected(s);
     } else if (old > 4) {
         s->pictureFade = old - 4;
-        Gfx2d_SetSubAlphaBlend((void *)s->pictureBlendMask, (void *)s->listBlendMask, s->pictureFade);
+        Gfx2d_SetSubAlphaBlend(s->pictureBlendMask, s->listBlendMask, s->pictureFade);
     } else {
         s->pictureFade = 0;
         Gfx2d_HideLayer(s->pictureLayer);
@@ -901,7 +874,7 @@ BOOL CreatureBook_IsFocusOnPageArrow(CreatureBookPanel *s) {
     return r;
 }
 
-BOOL CreatureBook_MoveFocus(CreatureBookPanel *s, void *pad) {
+BOOL CreatureBook_MoveFocus(CreatureBookPanel *s, u32 pad) {
     if (pad == 0) {
         return FALSE;
     }
@@ -1040,7 +1013,7 @@ BOOL CreatureBook_ActivateFocus(CreatureBookPanel *s) {
         case 4:
             s->touchTarget = 2;
             ((MenuScrollKnob *)(&s->scrollKnob))->grab();
-            Menu_PlayScrollGrabSe(&s->scrollKnob);
+            Menu_PlayScrollGrabSe();
             return TRUE;
         default:
             return FALSE;
@@ -1096,14 +1069,10 @@ void CreatureBook_ClearFlags(CreatureBookPanel *s, u32 m) { s->flags = s->flags 
 extern "C" const u8 data_ov114_02296550[4];
 extern "C" const s32 data_ov114_02296554[4];
 extern "C" const s32 data_ov114_02296564[4];
-extern "C" u8 data_ov114_02296580[8];
-extern "C" u8 data_ov114_02296588[8];
-extern "C" u8 data_ov114_02296590[8];
-extern "C" u8 data_ov114_02296598[8];
-extern "C" u8 data_ov114_022965a0[8];
+extern "C" GXOamAttr data_ov114_02296580;
+extern "C" GXOamAttr data_ov114_02296590;
 extern "C" const u8 data_ov114_0229654c[4];
-extern "C" u8 data_ov114_022965c0[32];
-extern "C" u8 data_ov114_022965e0[72];
+extern "C" GXOamAttr data_ov114_022965e0[9];
 extern "C" char *sCreaturePicDir;
 extern "C" char *sCreatureBgPaletteName;
 extern "C" char sCreaturePicPath[0x38];
@@ -1114,21 +1083,36 @@ extern "C" const s32 data_ov114_02296554[4] = {0x62, 0x34, 0x2d, 0xd4};
 
 extern "C" const s32 data_ov114_02296564[4] = {0x71, 0x71, 0xb0, 0xb0};
 
-extern "C" u8 data_ov114_02296580[8] = {0xf8, 0x00, 0xf8, 0x41, 0x04, 0x41, 0xff, 0xff};
+extern "C" GXOamAttr data_ov114_02296580 = {0x41f800f8, 0x104, 0, 0x4, 0xffff};
 
-extern "C" u8 data_ov114_02296588[8] = {0x07, 0x00, 0xdc, 0x51, 0x00, 0x51, 0x00, 0x00};
+extern "C" GXOamAttr data_ov114_02296588 = {0x51dc0007, 0x100, 0, 0x5, 0x0};
 
-extern "C" u8 data_ov114_02296590[8] = {0x07, 0x00, 0xac, 0x41, 0x00, 0x41, 0xff, 0xff};
+extern "C" GXOamAttr data_ov114_02296590 = {0x41ac0007, 0x100, 0, 0x4, 0xffff};
 
-extern "C" u8 data_ov114_02296598[8] = {0xf0, 0x00, 0xf0, 0x81, 0x44, 0x55, 0xff, 0xff};
+extern "C" GXOamAttr data_ov114_02296598 = {0x81f000f0, 0x144, 1, 0x5, 0xffff};
 
-extern "C" u8 data_ov114_022965a0[8] = {0xf0, 0x00, 0xf0, 0x81, 0x4c, 0x45, 0xff, 0xff};
+extern "C" GXOamAttr data_ov114_022965a0 = {0x81f000f0, 0x14c, 1, 0x4, 0xffff};
 
 extern "C" const u8 data_ov114_0229654c[4] = {0x04, 0x03, 0x03, 0x00};
 
-extern "C" u8 data_ov114_022965c0[32] = {0x49, 0x00, 0xa4, 0x41, 0x02, 0x51, 0x00, 0x00, 0x49, 0x00, 0x4d, 0x50, 0x02, 0x51, 0x00, 0x00, 0x4b, 0x00, 0xa4, 0x41, 0x02, 0x11, 0x00, 0x00, 0x4b, 0x00, 0x4d, 0x50, 0x02, 0x11, 0xff, 0xff};
+extern "C" GXOamAttr data_ov114_022965c0[4] = {
+    {0x41a40049, 0x102, 0, 0x5, 0x0},
+    {0x504d0049, 0x102, 0, 0x5, 0x0},
+    {0x41a4004b, 0x102, 0, 0x1, 0x0},
+    {0x504d004b, 0x102, 0, 0x1, 0xffff},
+};
 
-extern "C" u8 data_ov114_022965e0[72] = {0x2e, 0x00, 0x84, 0x81, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0x9f, 0x81, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0xba, 0x81, 0x44, 0x45, 0x00, 0x00, 0x2e, 0x00, 0xd5, 0x81, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0xf0, 0x81, 0x44, 0x45, 0x00, 0x00, 0x2e, 0x00, 0x0b, 0x80, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0x26, 0x80, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0x41, 0x80, 0x44, 0x45, 0x00, 0x00, 0x2e, 0x00, 0x5c, 0x80, 0x44, 0x55, 0xff, 0xff};
+extern "C" GXOamAttr data_ov114_022965e0[9] = {
+    {0x8184002e, 0x144, 1, 0x5, 0x0},
+    {0x819f002e, 0x144, 1, 0x5, 0x0},
+    {0x81ba002e, 0x144, 1, 0x4, 0x0},
+    {0x81d5002e, 0x144, 1, 0x5, 0x0},
+    {0x81f0002e, 0x144, 1, 0x4, 0x0},
+    {0x800b002e, 0x144, 1, 0x5, 0x0},
+    {0x8026002e, 0x144, 1, 0x5, 0x0},
+    {0x8041002e, 0x144, 1, 0x4, 0x0},
+    {0x805c002e, 0x144, 1, 0x5, 0xffff},
+};
 
 extern "C" char *sCreaturePicDir = 0;
 

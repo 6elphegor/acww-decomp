@@ -32,47 +32,13 @@
 #include "snd/BgmManager.h"
 #include "snd/BgmVolumeMixer.h"
 #include "ui/HudController.h"
-#define PROTO_LOCAL_BugNet_HitTest  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Building_OpenDoorForEntryAt  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldItemFx_StartDigHole  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldItemFx_StartDigUpTree  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_FieldItemFx_StartHoleShrink  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HeldItemModel_PlayAnim  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HeldItemModel_SetAnimSpeed  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HeldItemModel_SetItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Insect_GetCatchResult  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetBuf_PackPair20  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetBuf_PackTriple20  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetBuf_UnpackPair20  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetBuf_UnpackTriple20  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NetBuf_WriteS16B  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_AxeSwingSetArgs  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_FishCastGetNetData  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_FishCastSetNetData  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_InsectShowCatchGetNetData  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_StowUmbrellaSetNetData  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Tree_KeepShaking  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230ac0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230ac4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230ac8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230ad0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230ad4  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230ad8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230adc  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230ae0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230ae8  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_data_ov003_02230af0  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gScreenTransition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sFishCastFarDist  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sFishCastNearDist  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_sFishEscapeSpeed  // declared below: the shared prototype conflicts with the calls here
 #define PROTO_LOCAL_sWateringPos  // declared below: the shared prototype conflicts with the calls here
 #include "proto/main/unk_020039ec.h"
 #include "proto/main/unk_02034438.h"
 #include "proto/main/unk_0203c23c.h"
+#include "proto/main/unk_0203ecec.h"
+#include "proto/main/unk_020411dc.h"
+#include "gfx/ScreenTransition.h"
 #include "proto/main/unk_0205d7d8.h"
 #include "proto/main/unk_0205dfa4.h"
 #include "proto/main/unk_02063904.h"
@@ -80,6 +46,7 @@
 #include "proto/main/unk_020742f4.h"
 #include "proto/main/unk_020815f8.h"
 #include "proto/main/unk_020850e0.h"
+#include "proto/main/unk_02087e70.h"
 #include "proto/main/unk_02089fbc.h"
 #include "proto/main/unk_02090268.h"
 #include "proto/main/unk_020943dc.h"
@@ -238,7 +205,6 @@ namespace ns_02204d90 {
 
 extern "C" {
 s32 Vec_DistXZ(s32 *a, s32 *b);
-extern s32 data_ov003_02230af0[];
 extern s32 sFieldFrontDist[];
 extern void *gSceneBlockMap;
 BOOL PlayerActor_FieldInteractFront(PlayerActor *self, s32 *p);
@@ -299,9 +265,6 @@ typedef Unk_ov003_022052f4_Date Date;
 
 extern "C" {
 extern void *gSceneBlockMap;
-extern u8 data_ov003_02230ae8[];
-extern u8 sFishCastFarDist[];
-extern u8 sFishCastNearDist[];
 extern u8 sFieldFrontDist[];
 
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
@@ -444,12 +407,8 @@ void PlayerActor_TurnAngle(void *a, s32 b);
 void Unk_020102ec_setAngleY(Obj *o, s16 *a);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
-void Effect_SetPosition(s32 a, V3 *v, void *p, s32 b);
 void PlayerData_setHeldItem(s32 a, u16 *p);
 u16 *PlayerData_getHeldItem(s32 a);
-void HeldItemModel_SetItem(void *p, u16 *a, s32 b);
-void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 void Camera_SetModeDefault();
 void Camera_SetMode4();
@@ -563,12 +522,7 @@ s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 s32 CommManager_isLocalSlot(void *g, s32 a);
 void PlayerData_setHeldItem(s32 a, u16 *p);
 u16 *PlayerData_getHeldItem(s32 a);
-void HeldItemModel_SetItem(void *p, u16 *a, s32 b);
-void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
-void HeldItemModel_SetAnimSpeed(void *p, s32 a);
 void PlayerFaceTexRef_load(void *p, void *q);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
-void Effect_SetPosition(s32 a, void *v, void *p, s32 b);
 u8 *PlayerData_getFaceType(s32 a);
 s32 PlayerData_testFlag(s32 a, s32 b);
 void PlayerData_setFlag(s32 a, s32 b);
@@ -659,10 +613,7 @@ extern "C" void GroundInfo_Destruct(GroundInfoBase *self);
 
 extern "C" {
 extern void *gCommManager;
-extern u8 data_ov003_02230ad0[];
-extern u8 data_ov003_02230ad8[];
 
-s32 Effect_SetPosition(s32 a, void *b, s32 c, s32 d);
 s32 Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 PlayerActor_getInputMagnitude(Obj *o);
@@ -675,11 +626,9 @@ s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 Unk_02006d14_getHeldToolKind(Obj *o);
 s32 PlayerActor_StepTowardPose(Obj *o, s32 x, s32 z, s16 a);
 s32 Unk_02006d14_turnToCamera(Obj *o, u32 a);
-s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, u32 arg);
+s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, s32 *arg);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
-void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
-void HeldItemModel_SetAnimSpeed(void *p, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 void TwoLayerAnimModel_updateLayers(void *p);
@@ -693,7 +642,6 @@ s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 Sky_WishOnShootingStar();
 s32 PlayerData_testFlag(void *p, s32 a);
 s32 PlayerData_setFlag(void *p, s32 a);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
@@ -807,7 +755,6 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16
 extern "C" {
 extern void *gCommManager;
 extern u8 *data_021c1b3c;
-extern u8 gScreenTransition;
 
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
@@ -833,7 +780,6 @@ s32 Unk_02008040_requestAct77(Obj *o, s16 v, u32 a, u32 b);
 s32 AnimFrameCtrl_hasPassedFrame(void *a, s32 b);
 s32 AnimFrameCtrl_isFinished(void *a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-void HeldItemModel_PlayAnim(void *a, u32 b, u32 c, u32 d);
 void FaintBgm_fadeOut(void *a);
 void FaintBgm_play(void *a);
 s32 TalkRequest_FinishSceneEntry();
@@ -847,9 +793,6 @@ s32 Town_FindPlayerHouse(s32 o, V3 *v, s32 *a, s32 *b);
 s32 Town_FindGateHouse(s32 o, V3 *v, s32 *a, s32 *b);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestAt(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
-s32 Effect_SetPosition(s32 h, void *a, void *b, s32 c);
-void NetBuf_UnpackTriple20(void *p, s32 *out, s32 *x, s32 *y, s32 *z);
-void NetBuf_PackTriple20(void *p, s32 a, s32 x, s32 y, s32 z);
 s32 Math_Atan2(s32 a, s32 b);
 void PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Tree_RequestShake(u32 a, Pair *p, s32 b);
@@ -865,8 +808,8 @@ s32 PlayerActor_RequestMailboxClose(Obj *o, s32 a, s16 b);
 s32 PlayerActor_RequestMailboxWait(Obj *o, s32 a, s16 b);
 void PlayerActor_MailboxOpenMove(Obj *o);
 void PlayerActor_MailboxOpenCheckEnd(Obj *o);
-void PlayerActor_MailboxOpenGetNetData(void *a, V3 *v);
-void PlayerActor_MailboxOpenSetNetData(void *a, V3 *v);
+void PlayerActor_MailboxOpenGetNetData(u8 *a, V3 *v);
+void PlayerActor_MailboxOpenSetNetData(u8 *a, V3 *v);
 void PlayerActor_MailboxOpenSetWork(V3 *d, V3 v);
 s32 PlayerActor_RequestMailboxOpen(Obj *o, V3 v, s32 a, s16 b);
 void PlayerActor_MailboxOpenSetArgs(V3 *d, V3 v);
@@ -915,8 +858,8 @@ extern "C" void PlayerActor_MailboxOpenCheckEnd(Obj *o);
 extern "C" void PlayerActor_MailboxOpenMove(Obj *o);
 extern "C" void PlayerActor_NetMailboxOpen(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupMailboxOpen(Obj *o, Msg *m);
-extern "C" void PlayerActor_MailboxOpenGetNetData(void *a, V3 *v);
-extern "C" void PlayerActor_MailboxOpenSetNetData(void *a, V3 *v);
+extern "C" void PlayerActor_MailboxOpenGetNetData(u8 *a, V3 *v);
+extern "C" void PlayerActor_MailboxOpenSetNetData(u8 *a, V3 *v);
 extern "C" void PlayerActor_MailboxOpenSetWork(V3 *d, V3 v);
 extern "C" s32 PlayerActor_RequestMailboxOpen(Obj *o, V3 v, s32 a, s16 b);
 extern "C" void PlayerActor_MailboxOpenSetArgs(V3 *d, V3 v);
@@ -995,7 +938,7 @@ extern "C" {
 extern void *gCommManager;
 
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
-void *Unk_02007694_getActionDonePriority(Obj *o, s32 a);
+s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
@@ -1013,15 +956,11 @@ s32 Unk_02006d14_testActionFlag(Obj *o, s32 a);
 void Unk_02006d14_setActionFlag(Obj *o, s32 a);
 void Unk_02006d14_playSe(Obj *o, s32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
-void FieldPos_SnapToUnitCenter(V3 *out, s32 a);
+void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
 void FieldPos_FromUnitCenter(V3 *out, s32 a, s32 b);
-void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
-void NetBuf_PackPair20(void *a, s32 b, s32 c);
 s32 Math_Atan2(s32 a, s32 b);
 
-void Tree_KeepShaking(s32 a, Pair p);
 void Tree_RequestShake(s32 a, Pair p, s32 b);
-void FieldItemFx_StartHoleShrink(s32 a, V3 v);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void PlayerActor_Act66GetNetData(void *a, Pair *p);
 void PlayerActor_Act66SetNetData(void *a, Pair *p);
@@ -1145,10 +1084,7 @@ void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02007694_requestWaitMenu(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 void Sky_OnSlingshotFired(s32 h);
-void HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
-void Effect_SetPosition(s32 h, V3 *v, s16 *a, s16 *b);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 s32 Unk_02006d14_startFieldQuery(Obj *o, V3 *v, s32 a, s32 b);
 void Unk_02006d14_netSyncNearPoint(Obj *o, V3 *v);
@@ -1371,11 +1307,8 @@ s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 BOOL Unk_02006d14_testActionFlag(Obj *o, u32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 void Collision_AddDigHole(s32 a, s32 b);
-void FieldItemFx_StartDigHole(s32 a, V3 v, u32 b);
-void FieldItemFx_StartDigUpTree(s32 a, V3 v, s16 b);
 void Unk_02006d14_calcHandMtx(Obj *o);
 void Unk_02006d14_updateShownItemPos(Obj *o, s32 a);
-void WorldCurve_FromCurved(void *a, void *b);
 s32 CommManager_isLocalSlot(void *g, s32 a);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, s32 b, s32 c);
 BOOL Item_IsFurniture(u16 *p);
@@ -1421,9 +1354,6 @@ static inline BOOL Unk_ov003_02209fc8_Rng(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-namespace Unk_ov003_02209ef4_P {
-extern "C" void FieldItemFx_StartDigHole(s32 a, V3 *v, u32 b);
-}
 
 static inline BOOL Unk_ov003_02209fc8_IsNone(u16 *p) {
     return Unk_ov003_02209fc8_Eq(p);
@@ -1693,9 +1623,7 @@ void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
 void Unk_02006d14_turnToward(Obj *o, s32 a);
 s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, void *arg);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
-void HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
-void WorldCurve_ToCurved(V3 *a, V3 *b);
 void Character_detachTalkRequest(Obj *o, Sec *s);
 void TalkRequest_FinishPlayerMessage();
 
@@ -1788,7 +1716,6 @@ s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
-void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
 void Unk_02006d14_playSe(Obj *o, u32 a);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
@@ -1798,8 +1725,6 @@ void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 void Unk_02006d14_requestAct76(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void PlayerActor_ApproachAngle(void *p, s32 a, s32 b, s32 c, s32 d);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
-void Effect_SetPosition(s32 a, V3 *v, void *p, s32 b);
 s16 Math_Atan2(s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 s32 TalkRequest_AddPlayerMessage();
@@ -1812,11 +1737,9 @@ void TalkRequest_FinishPlayerMessage();
 s32 FieldAction_FindDropUnit(s32 a, s32 *p, u8 *out);
 void HudCountdown_incCountB(void *self);
 void VillagerTrend_OnInsectCaught(void *p);
-void NetBuf_WriteS16B(u8 *p, u32 a);
 
 void PlayerActor_ApplyHoldOffset(T48 *t, V3 *d);
 V3 *HeldInsect_GetPos(u8 a);
-void PlayerActor_InsectShowCatchGetNetData(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
 void PlayerActor_RequestInsectShowCatch(Obj *o, u32 a, u32 b, u32 c, s32 d, s32 e);
 
 void PlayerActor_EndInsectStore(Obj *o);
@@ -1866,12 +1789,8 @@ typedef Unk_ov003_0220c4ac_Rec Rec;
 extern "C" {
 extern void *gCommManager;
 extern void *gSceneBlockMap;
-extern u8 data_ov003_02230ad4[];
-extern u8 data_ov003_02230adc[];
-extern u8 data_ov003_02230ae0[];
 extern s16 data_02135f44[];
 
-void NetBuf_WriteS16B(void *p, s32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 CommManager_isLocalSlot(void *g, s32 a);
 s32 AnimFrameCtrl_isFinished(void *p);
@@ -1879,7 +1798,6 @@ s32 AnimFrameCtrl_hasPassedFrame(void *p, s32 a);
 void Unk_020102ec_moveWithCollision(Obj *o);
 void Unk_020102ec_updateBodyCollider(Obj *o);
 s32 Unk_02006d14_netFollowTransform(Obj *o);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
@@ -1889,7 +1807,6 @@ void CollisionTag_Destruct(void *p);
 s32 Collision_TestSegment(void *p, V3 *a, V3 *b, s32 c);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
-void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *c);
 void Flower_PlayTrampleFx(void *p);
 s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, void *pos, void *ang, void *arg);
@@ -1900,7 +1817,6 @@ s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 
-s32 Insect_GetCatchResult(s32 a, u32 b);
 s32 PlayerActor_CheckToolHitActor(Obj *o);
 void PlayerActor_BugNetSwingTurn(Obj *o);
 void PlayerActor_BugNetSwingUpdate(Obj *o);
@@ -1918,7 +1834,6 @@ s32 PlayerActor_BugNetSwingCanReach(Obj *o, V3 *a, V3 *b, u8 *c);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void PlayerActor_InsectShowCatchGetNetData(u8 *p, u8 *a, u8 *b, u8 *c, u8 *d, u16 *e);
 extern "C" s32 PlayerActor_RequestInsectShowCatch(Obj *o, u32 a, u32 b, u32 c, s32 d, s16 e);
 extern "C" void PlayerActor_MainBugNetSwing(Obj *o);
 extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o);
@@ -1961,13 +1876,9 @@ extern void *gCommManager;
 // 0x022349e6 is byte 0x12 of the record table sFishSizeClassParams (unit unk_ov003_0221ffb8)
 extern u8 sFishSizeClassParams[];
 #define data_ov003_022349e6 (sFishSizeClassParams + 0x12)
-extern u8 data_ov003_02230ac4[];
-extern u8 data_ov003_02230ac8[];
 
 s32 AnimFrameCtrl_isFinished(void *p);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
-s32 BugNet_HitTest(V3 *a, V3 *b, s32 c, u8 *d, s32 e);
 s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *v, u8 *b);
 s32 PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *c);
 s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c);
@@ -1980,7 +1891,6 @@ void ActorCollider_submit(void *p);
 void Unk_02006d14_turnToward(Obj *o, s32 a);
 void Unk_020102ec_advanceAnim(Obj *o);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
-s32 HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void Unk_02006d14_netFollowTransform(Obj *o);
 void Unk_020102ec_updateBodyCollider(Obj *o);
@@ -2076,14 +1986,11 @@ typedef FishShowCatchWork Rec;
 
 extern "C" {
 extern void *gCommManager;
-extern u8 data_ov003_02230ac0[];
-extern u8 sFishEscapeSpeed[];
 
 void Unk_02006d14_turnToCamera(Obj *o, s32 a);
 Act *FishBobber_getFish(void *p);
 void Fish_GetDisplayScale(V3 *v, s32 a);
 void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
 void FishCatch_SetDisplayPosScale(Act *a, V3 *b, V3 *c);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 void Camera_SetMode4();
@@ -2106,7 +2013,6 @@ s32 CommManager_isLocalSlot(void *g, u32 a);
 void VillagerTrend_OnFishCaught(void *p);
 void HudCountdown_incCountA(void *self);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
-void HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void Unk_020102ec_advanceAnim(Obj *o);
 s32 Unk_02006d14_netFollowTransform(Obj *o);
@@ -2201,7 +2107,6 @@ s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
-s32 HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 BgmVolumeMixer_startFishDuck(void *p);
 s32 BgmVolumeMixer_endFishDuck(void *p);
@@ -2220,10 +2125,6 @@ s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_turnToward(Obj *o, s32 a);
 s32 Camera_SetMode5();
-s32 NetBuf_UnpackTriple20(void *p, s32 *a, s32 *b, s32 *c, u8 *d);
-s32 NetBuf_PackTriple20(void *p, s32 a, s32 b, s32 c, u32 d);
-s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
-s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFishReelIn(Obj *o, s32 a, s32 b, s32 c);
@@ -2243,14 +2144,14 @@ void PlayerActor_FishWaitSyncBobber(Obj *o);
 void PlayerActor_EndFishWait(Obj *o, s32 a);
 void PlayerActor_NetFishWait(Obj *o, s16 a);
 void PlayerActor_SetupFishWait(Obj *o);
-void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out);
-s32 PlayerActor_FishWaitSetNetData(void *p, V3 *v, u8 c);
+void PlayerActor_FishWaitGetNetData(u8 *p, V3 *v, u8 *out);
+void PlayerActor_FishWaitSetNetData(u8 *p, V3 *v, u8 c);
 s32 PlayerActor_RequestFishWait(Obj *o, s32 a, s16 b);
 void PlayerActor_MainFishCastFail(Obj *o);
 void PlayerActor_FishCastFailCheckEnd(Obj *o);
 void PlayerActor_FishCastFailUpdate(Obj *o);
 s32 PlayerActor_NetFishCastFail(Obj *o, s16 a);
-s32 PlayerActor_SetupFishCastFail(Obj *o);
+void PlayerActor_SetupFishCastFail(Obj *o);
 s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b);
 void PlayerActor_MainFishCast(Obj *o);
 void PlayerActor_FishCastCheckEnd(Obj *o);
@@ -2258,8 +2159,6 @@ s32 PlayerActor_FishCastTurn(Obj *o);
 void PlayerActor_FishCastUpdate(Obj *o);
 s32 PlayerActor_NetFishCast(Obj *o, s16 a);
 void PlayerActor_SetupFishCast(Obj *o, Msg *a);
-s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b);
-s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b);
 s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b);
 void PlayerActor_FishCastSetArgs(P2 *d, V3 *s);
 void PlayerActor_MainAxeBrokenMessage(Obj *o);
@@ -2279,14 +2178,14 @@ extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o);
 extern "C" void PlayerActor_EndFishWait(Obj *o, s32 a);
 extern "C" void PlayerActor_NetFishWait(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupFishWait(Obj *o);
-extern "C" void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out);
-extern "C" s32 PlayerActor_FishWaitSetNetData(void *p, V3 *v, u8 c);
+extern "C" void PlayerActor_FishWaitGetNetData(u8 *p, V3 *v, u8 *out);
+extern "C" void PlayerActor_FishWaitSetNetData(u8 *p, V3 *v, u8 c);
 extern "C" s32 PlayerActor_RequestFishWait(Obj *o, s32 a, s16 b);
 extern "C" void PlayerActor_MainFishCastFail(Obj *o);
 extern "C" void PlayerActor_FishCastFailCheckEnd(Obj *o);
 extern "C" void PlayerActor_FishCastFailUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetFishCastFail(Obj *o, s16 a);
-extern "C" s32 PlayerActor_SetupFishCastFail(Obj *o);
+extern "C" void PlayerActor_SetupFishCastFail(Obj *o);
 extern "C" s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b);
 extern "C" void PlayerActor_MainFishCast(Obj *o);
 extern "C" void PlayerActor_FishCastCheckEnd(Obj *o);
@@ -2294,8 +2193,6 @@ extern "C" s32 PlayerActor_FishCastTurn(Obj *o);
 extern "C" void PlayerActor_FishCastUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetFishCast(Obj *o, s16 a);
 extern "C" void PlayerActor_SetupFishCast(Obj *o, Msg *a);
-extern "C" s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b);
-extern "C" s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b);
 extern "C" s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b);
 extern "C" void PlayerActor_FishCastSetArgs(P2 *d, V3 *s);
 extern "C" void PlayerActor_MainAxeBrokenMessage(Obj *o);
@@ -2365,7 +2262,6 @@ s32 Unk_020102ec_submitSceneCollider(Obj *o);
 s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 PendingUnit_ApplyAt(P2 *p, s32 a);
-s32 WorldCurve_FromCurved(V3 *a, V3 *b);
 void MTX_MultVec43(V3 *a, Mtx *m, V3 *out);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Unk_02006d14_turnToCamera(Obj *o, s32 a);
@@ -2487,8 +2383,6 @@ s32 AnimFrameCtrl_isFinished(void *p);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_turnToward(Obj *o, s32 a);
-s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
-s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 Unk_02006d14_getHeldHoldableIndex(Obj *o);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
@@ -2529,7 +2423,6 @@ void PlayerActor_SetupAxeSwing(Obj *o, Msg *a);
 void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a);
 s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e);
 s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b);
-void PlayerActor_AxeSwingSetArgs(u8 *d, s32 a, s32 b, u32 c);
 }
 
 static inline BOOL Unk_ov003_0220fa70_Ge(s32 v) {
@@ -2623,30 +2516,23 @@ s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_requestAct10(Obj *o, s32 a, s32 b, s32 c);
-s32 WorldCurve_FromCurved(V3 *a, V3 *b);
-s32 Effect_SetPosition(s32 h, V3 *v, s16 *p, s16 *b);
 s32 Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 TalkRequest_FinishSceneEntry();
-s32 HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 s32 PlayerActor_GetHeldItem(H *h, Obj *o);
 s32 PlayerActor_GetPlayerData(Obj *o);
 s32 PlayerData_setHeldItem(s32 r, void *p);
 s32 Unk_02006d14_applyHeldItemPose(Obj *o, s32 a, s32 b);
-s32 NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
-s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
-s32 NetBuf_WriteS16B(void *p, s32 a);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 s32 PlayerActor_RequestDoorApproach(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 PlayerActor_RequestDoorEnter(Obj *o, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 PlayerActor_RequestStowItem(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
 s32 PlayerActor_StowItemSetWork(void *p, s32 st, u32 bits, s32 x, s32 y, s32 h, s32 v);
 
-void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
 void PlayerActor_MainUmbrellaSpin(Obj *o);
 void PlayerActor_UmbrellaSpinCheckEnd(Obj *o);
 void PlayerActor_UmbrellaSpinEffect(Obj *o);
@@ -2659,7 +2545,6 @@ void PlayerActor_StowUmbrellaCheckEnd(Obj *o);
 void PlayerActor_StowUmbrellaUpdate(Obj *o);
 s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a);
 s32 PlayerActor_SetupStowUmbrella(Obj *o, Msg *a);
-s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
 void PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
 s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
 void PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
@@ -2671,7 +2556,6 @@ s32 PlayerActor_SetupStowItem(Obj *o, Msg *a);
 }
 
 // forward declarations (functions are emitted in descending address order)
-extern "C" void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c);
 extern "C" void PlayerActor_MainUmbrellaSpin(Obj *o);
 extern "C" void PlayerActor_UmbrellaSpinCheckEnd(Obj *o);
 extern "C" void PlayerActor_UmbrellaSpinEffect(Obj *o);
@@ -2684,7 +2568,6 @@ extern "C" void PlayerActor_StowUmbrellaCheckEnd(Obj *o);
 extern "C" void PlayerActor_StowUmbrellaUpdate(Obj *o);
 extern "C" s32 PlayerActor_NetStowUmbrella(Obj *o, s32 a);
 extern "C" s32 PlayerActor_SetupStowUmbrella(Obj *o, Msg *a);
-extern "C" s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h);
 extern "C" void PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
 extern "C" s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 id, u8 low, s32 x, s32 y, s16 h, s32 a, s32 b);
 extern "C" void PlayerActor_StowUmbrellaSetArgs(RecA *p, s32 st, u32 bits, s32 x, s32 y, s32 h);
@@ -2720,9 +2603,6 @@ typedef DoorEnterWork Rec3;
 extern "C" {
 extern void *gCommManager;
 
-s32 NetBuf_UnpackPair20(void *p, u32 a, u32 b);
-s32 NetBuf_PackPair20(void *p, u32 a, u32 b);
-void NetBuf_WriteS16B(void *p, s32 a);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
@@ -2842,9 +2722,6 @@ extern "C" {
 extern void *gCommManager;
 extern void *gSceneBlockMap;
 
-void NetBuf_UnpackPair20(void *p, s32 *a, s32 *b);
-void NetBuf_PackPair20(void *p, s32 a, s32 b);
-void NetBuf_WriteS16B(void *p, s32 a);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 s32 Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
@@ -2869,9 +2746,7 @@ void VEC_Add(V3 *a, V3 *b, V3 *c);
 s32 Flower_SpawnPetalFxAt(u16 *a, Pair *b, s32 c, s32 d);
 void PendingUnit_ApplyAt(Pair *a, s32 b);
 void FieldPos_FromUnitCenter(V3 *a, u32 b, u32 c);
-void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
-s32 Building_OpenDoorForEntryAt(void *p, s32 a);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void PlayerActor_PluckReachGetNetData(void *p, Pair *q);
 s32 PlayerActor_RequestPluckReach(Obj *o, Pair *q, s32 a, s32 b);
@@ -2958,7 +2833,6 @@ extern void *gCommManager;
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
-void HeldItemModel_PlayAnim(void *p, u32 a, u32 b, u32 c);
 s32 Unk_02006d14_getHeldToolKind(Obj *o);
 s32 CommManager_isLocalSlot(void *g, u32 a);
 void Unk_02006d14_act10FaceTalkTarget(Obj *o);
@@ -2971,8 +2845,6 @@ void Unk_02006d14_playSe(Obj *o, u32 a);
 void Unk_02006d14_calcHandMtx(Obj *o);
 void Unk_020102ec_moveWithCollision(Obj *o);
 void Unk_02006d14_turnToCamera(Obj *o, s32 a);
-void Effect_SetPosition(s32 a, V3 *b, u32 c, u32 d);
-void WorldCurve_FromCurved(V3 *a, V3 *b);
 void Fish_GetDisplayScale(V3 *v, s32 a);
 s32 FishDisplay_SetEntry(void *a, s32 b, V3 *c, V3 *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 void FishDisplay_Release(void *a);
@@ -3710,8 +3582,8 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         v5c.x = b.m[9];
         v5c.y = b.m[10];
         v5c.z = b.m[11];
-        WorldCurve_FromCurved(&v5c, &v5c);
-        Effect_SetPosition(*r7, &v5c, 0, 0);
+        WorldCurve_FromCurved((WorldCurve *)&v5c, (WorldCurve *)&v5c);
+        Effect_SetPosition(*r7, (VecFx32 *)&v5c, NULL, NULL);
     } else if (*r7 == -1) {
         *r7 = -2;
         if (r6->isFish == 0) {
@@ -3720,7 +3592,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
                 v5c.x = b.m[9];
                 v5c.y = b.m[10];
                 v5c.z = b.m[11];
-                WorldCurve_FromCurved(&v5c, &v5c);
+                WorldCurve_FromCurved((WorldCurve *)&v5c, (WorldCurve *)&v5c);
                 *r7 = Effect_CreateById(0x5a, &v5c, 0, 0);
             }
         }
@@ -3762,7 +3634,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         v5c.x = b.m[9];
         v5c.y = b.m[10];
         v5c.z = b.m[11];
-        WorldCurve_FromCurved(&v5c, &v5c);
+        WorldCurve_FromCurved((WorldCurve *)&v5c, (WorldCurve *)&v5c);
         i = Idx(&t.item, 0x12e8, 0x131f);
         FishDisplay_SetEntry(r6->fishDisplay, i, &v5c, &v68, 0, 0, 0, 1, 1, 0x1f);
     }
@@ -3938,7 +3810,7 @@ extern "C" void PlayerActor_SetupPluckReach(Obj *o, u8 *m) {
     PlayerActor_PluckReachSetNetData(o->netData.bytes, &s);
     (o)->startAnim(0x15, 3, 0);
     if ((o)->getHeldToolKind() == 4) {
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0xb, 3, 0);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0xb, 3, 0);
     }
 }
 }
@@ -4034,7 +3906,7 @@ extern "C" void PlayerActor_SetupPluck(Obj *o, Msg *m) {
     ((u8 *)pv)[12] = 0;
     (o)->startAnimOnce(0x14, 3, 0);
     if ((o)->getHeldToolKind() == 4) {
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0xe, 3, 0);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0xe, 3, 0);
     }
     u16 *g = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &v, 0);
     o->shownItem = *g;
@@ -4341,8 +4213,7 @@ extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m) {
     s16 ang = *(s16 *)(p + 8);
     Unk_ov003_02210f7c_Ns::PlayerActor_DoorEnterSetWork(r, id, t.a, t.b, ang, k);
     PlayerActor_DoorEnterSetNetData(o->netData.bytes, id, t.a, t.b, ang);
-    s32 b = ((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot) ? 1 : 0;
-    Building_OpenDoorForEntryAt((V3 *)&o->position, b);
+    Building_OpenDoorForEntryAt((V3 *)&o->position);
 }
 }
 
@@ -4800,7 +4671,7 @@ extern "C" void PlayerActor_StowItemSetNetData(u8 *p, u32 a, u32 b, u32 c, s16 d
 }
 
 namespace ns_022105bc {
-extern "C" void PlayerActor_StowItemGetNetData(u8 *p, u8 *a, u32 b, u32 c, u16 *d) {
+extern "C" void PlayerActor_StowItemGetNetData(u8 *p, u8 *a, s32 *b, s32 *c, s16 *d) {
     *a = p[7];
     NetBuf_UnpackPair20(p, b, c);
     *d = NetBuf_ReadS16B(p + 5);
@@ -4978,10 +4849,10 @@ extern "C" void PlayerActor_StowUmbrellaSetWork(RecA *p, s32 st, u32 bits, s32 x
 }
 
 namespace ns_0220fc88 {
-extern "C" s32 PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h) {
+extern "C" void PlayerActor_StowUmbrellaSetNetData(u8 *p, u32 id, s32 x, s32 y, s32 h) {
     p[7] = id;
     NetBuf_PackPair20(p, x, y);
-    return NetBuf_WriteS16B(p + 5, *(s16 *)&h);
+    NetBuf_WriteS16B(p + 5, *(s16 *)&h);
 }
 }
 
@@ -4998,7 +4869,7 @@ extern "C" s32 PlayerActor_SetupStowUmbrella(Obj *o, Msg *a) {
     RecA *r = (RecA *)a->unk_0c_b;
     u8 bits = r->bits;
     RecA *p7d0 = (RecA *)&o->actionWork;
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x24, 3, 1);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x24, 3, 1);
     s32 x, y, st;
     s16 h;
     if ((bits & 3) != 2) {
@@ -5172,11 +5043,11 @@ extern "C" void PlayerActor_UmbrellaSpinEffect(Obj *o) {
     (o)->advanceAnim();
     s32 *p = (s32 *)&o->actionWorkRaw[4]; // RecB.a
     V3 v(o->heldItemJointMtx.m[9], o->heldItemJointMtx.m[10], o->heldItemJointMtx.m[11]);
-    WorldCurve_FromCurved(&v, &v);
+    WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
     if (((RecB *)&o->actionWork)->a == -1) {
         *p = Effect_Create(0x33, &v, &o->rotY, 0);
     } else {
-        Effect_SetPosition(((RecB *)&o->actionWork)->a, &v, &o->rotY, 0);
+        Effect_SetPosition(((RecB *)&o->actionWork)->a, (VecFx32 *)&v, &o->rotY, NULL);
     }
 }
 }
@@ -5221,7 +5092,7 @@ extern "C" void PlayerActor_AxeSwingSetArgs(s32 *p, s32 a, s32 b, u32 c) {
 namespace ns_0220f314 {
 extern "C" s32 PlayerActor_RequestAxeSwing(Obj *o, s32 a, s16 b) {
     Msg m;
-    u8 *p = m.unk_0c_b;
+    s32 *p = m.unk_0c.v;
     (&m)->assign(0x46, a, b);
     if (o->hasTargetPos) {
         PlayerActor_AxeSwingSetArgs(p, o->targetPos.x, o->targetPos.z, 1);
@@ -5237,7 +5108,7 @@ namespace ns_0220f314 {
 extern "C" s32 PlayerActor_RequestAxeSwingAt(Obj *o, s32 *a, s32 *b, u8 *c, s32 d, s32 e) {
     Msg m;
     (&m)->assign(0x46, d, *(s16 *)&e);
-    PlayerActor_AxeSwingSetArgs(m.unk_0c_b, *a, *b, *c);
+    PlayerActor_AxeSwingSetArgs(m.unk_0c.v, *a, *b, *c);
     s32 r = (o)->pushRequest(&m);
     return r;
 }
@@ -5254,9 +5125,9 @@ extern "C" void PlayerActor_AxeSwingSetWork(u8 *d, V3 *v, s32 a) {
 }
 
 namespace ns_0220f314 {
-extern "C" void PlayerActor_AxeSwingSetNetData(void *p, s32 a, s32 b, u8 c) {
+extern "C" void PlayerActor_AxeSwingSetNetData(u8 *p, s32 a, s32 b, u8 c) {
     NetBuf_PackPair20(p, a, b);
-    ((u8 *)p)[5] = c;
+    p[5] = c;
 }
 }
 
@@ -6006,7 +5877,7 @@ extern "C" void PlayerActor_AxeBreakUpdate(Obj *o) {
             pos.x = t.m[9];
             pos.y = t.m[10];
             pos.z = t.m[11];
-            WorldCurve_FromCurved(&pos, &pos);
+            WorldCurve_FromCurved((WorldCurve *)&pos, (WorldCurve *)&pos);
             Effect_PlayById(0x8c, &pos, 0, 0);
             pos.x = t.m[9];
             pos.y = t.m[10];
@@ -6021,7 +5892,7 @@ extern "C" void PlayerActor_AxeBreakUpdate(Obj *o) {
             pos.x = pos.x + out.x;
             pos.y = pos.y + out.y;
             pos.z = pos.z + out.z;
-            WorldCurve_FromCurved(&pos, &pos);
+            WorldCurve_FromCurved((WorldCurve *)&pos, (WorldCurve *)&pos);
             Effect_PlayById(0x8b, &pos, 0, 0);
         }
         (o)->turnToCamera(0x200);
@@ -6163,21 +6034,21 @@ extern "C" s32 PlayerActor_RequestFishCast(Obj *o, V3 *v, s32 a, s16 b) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishCastSetNetData(void *p, s32 a, s32 b) {
-    return NetBuf_PackPair20(p, a, b);
+extern "C" void PlayerActor_FishCastSetNetData(u8 *p, s32 a, s32 b) {
+    NetBuf_PackPair20(p, a, b);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishCastGetNetData(void *p, s32 *a, s32 *b) {
-    return NetBuf_UnpackPair20(p, a, b);
+extern "C" void PlayerActor_FishCastGetNetData(u8 *p, s32 *a, s32 *b) {
+    NetBuf_UnpackPair20(p, a, b);
 }
 }
 
 namespace ns_0220e030 {
 extern "C" void PlayerActor_SetupFishCast(Obj *o, Msg *a) {
     (o)->startAnimOnce(0x52, 3, 0);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x15, 3, 0);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x15, 3, 0);
     P2 &q = *(P2 *)a->unk_0c_b;
     struct { V3 t1, t2; } l;
     s32 z = q.z;
@@ -6267,9 +6138,9 @@ extern "C" s32 PlayerActor_RequestFishCastFail(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_SetupFishCastFail(Obj *o) {
+extern "C" void PlayerActor_SetupFishCastFail(Obj *o) {
     (o)->startAnimOnce(0x53, 3, 0);
-    return HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x16, 3, 0);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x16, 3, 0);
 }
 }
 
@@ -6320,13 +6191,13 @@ extern "C" s32 PlayerActor_RequestFishWait(Obj *o, s32 a, s16 b) {
 }
 
 namespace ns_0220e030 {
-extern "C" s32 PlayerActor_FishWaitSetNetData(void *p, V3 *v, u8 c) {
-    return NetBuf_PackTriple20(p, v->x, v->y, v->z, c);
+extern "C" void PlayerActor_FishWaitSetNetData(u8 *p, V3 *v, u8 c) {
+    NetBuf_PackTriple20(p, v->x, v->y, v->z, c);
 }
 }
 
 namespace ns_0220e030 {
-extern "C" void PlayerActor_FishWaitGetNetData(void *p, V3 *v, u8 *out) {
+extern "C" void PlayerActor_FishWaitGetNetData(u8 *p, V3 *v, u8 *out) {
     NetBuf_UnpackTriple20(p, &v->x, &v->y, &v->z, out);
 }
 }
@@ -6348,7 +6219,7 @@ extern "C" void PlayerActor_SetupFishWait(Obj *o) {
             ((FishBobber *)((u8 *)&o->heldItemModel.bobber))->setPos((VecFx32 *)(void *)(&cur));
         }
     }
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x17, 3, 0);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x17, 3, 0);
     if (((CommManager *)(g))->isLocalSlot(o->sessionSlot)) {
         PlayerActor_FishWaitSetNetData(p, (V3 *)&o->heldItemModel.bobber.pos, o->heldItemModel.bobber.curState);
     }
@@ -6500,7 +6371,7 @@ extern "C" s32 PlayerActor_RequestFishHook(Obj *o, s32 a, s16 b) {
 namespace ns_0220e030 {
 extern "C" void PlayerActor_SetupFishHook(Obj *o) {
     (o)->startAnim(0x55, 3, 0);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x18, 3, 0);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x18, 3, 0);
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
         Bgm_RequestSilence(0x12, 0, 0);
     }
@@ -6585,7 +6456,7 @@ extern "C" void PlayerActor_SetupFishReelIn(Obj *o, u8 *p) {
     PlayerActor_FishReelInSetWork((u8 *)&o->actionWork, b);
     PlayerActor_FishReelInSetNetData(o->netData.bytes, b);
     (o)->startAnimOnce(0x56, 3, 0);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x19, 3, 0);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x19, 3, 0);
     (o)->playSe(0x84c);
     (o)->playSe(0x84e);
     s32 *q = (s32 *)&o->heldItemModel.bobber.pos;
@@ -6637,9 +6508,9 @@ extern "C" s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s16 b) {
 
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_SetupFishEscape(Obj *o) {
-    (o)->setSpeed((u32 *)(void *)((s32 *)sFishEscapeSpeed));
+    (o)->setSpeed((u32 *)&sFishEscapeSpeed);
     (o)->startAnimOnce(0x57, 3, 0);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x1a, 3, 0);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x1a, 3, 0);
 }
 }
 
@@ -6655,7 +6526,7 @@ extern "C" void PlayerActor_FishEscapeCheckEnd(Obj *o) {
         if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) Camera_SetModeDefault();
         o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
         (o)->requestWait(3, 1, -1);
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x13, 3, 0);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0x13, 3, 0);
     }
 }
 }
@@ -6686,7 +6557,7 @@ extern "C" s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s16 b) {
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_SetupFishLand(Obj *o) {
     (o)->startAnimOnce(0x58, 3, 0);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x1b, 3, 1);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x1b, 3, 1);
     (o)->playSe(0x84c);
     (o)->playSe(0x84e);
     s32 *p = (s32 *)&o->heldItemModel.bobber.pos;
@@ -6760,7 +6631,7 @@ extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p) {
         }
         r->step = 0;
         (o)->startAnimOnce(0x59, 3, 0);
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x1c, 3, 1);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0x1c, 3, 1);
     } else {
         r->step = 2;
         r->unk_00 = 0x3a;
@@ -6819,7 +6690,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         v60.x = b.m[9];
         v60.y = b.m[10];
         v60.z = b.m[11];
-        WorldCurve_FromCurved(&v60, &v60);
+        WorldCurve_FromCurved((WorldCurve *)&v60, (WorldCurve *)&v60);
         v6c.x = v60.x;
         v6c.y = v60.y;
         v6c.z = v60.z;
@@ -6923,7 +6794,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         (o)->clearActionFlag(0x11);
         TalkRequest_FinishPlayerMessage();
         o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
-        PlayerActor_RequestFishRelease(o, data_ov003_02230ac0, 0, 6, -1);
+        PlayerActor_RequestFishRelease(o, (u8 *)&data_ov003_02230ac0, 0, 6, -1);
         Camera_SetModeDefault();
         return;
     case 5:
@@ -7045,7 +6916,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
     v[0] = 0xfff1;
     if (p5) {
         V3 a, b;
-        WorldCurve_FromCurved(&v48, &v48);
+        WorldCurve_FromCurved((WorldCurve *)&v48, (WorldCurve *)&v48);
         a.x = v48.x;
         a.y = v48.y;
         a.z = v48.z;
@@ -7073,7 +6944,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
         if (o->animId == 0x5a) {
             if (!((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->isFinished()) return;
             (o)->startAnim(0x6c, 6, 6);
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x13, 6, 0);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 0x13, 6, 0);
         }
         if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
             if (o->msgStep == 5) {
@@ -7092,7 +6963,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                     v[1] = MenuCtrl_GetPocketsFullItem();
                     o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
                     if (Rng(&v[1], 0x12e8, 0x131f)) {
-                        PlayerActor_RequestFishRelease(o, data_ov003_02230ac4, 0, 6, -1);
+                        PlayerActor_RequestFishRelease(o, (u8 *)&data_ov003_02230ac4, 0, 6, -1);
                     } else {
                         (o)->requestWait(6, 1, -1);
                         *r6 = 2;
@@ -7120,7 +6991,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                         b.z = vf.z;
                         FishCatch_SetDisplayPosScale(p5, &a, &b);
                     }
-                    PlayerActor_RequestFishRelease(o, data_ov003_02230ac8, 0, 6, -1);
+                    PlayerActor_RequestFishRelease(o, (u8 *)&data_ov003_02230ac8, 0, 6, -1);
                     PlayerActor_FishStoreSetNetState(r7, 2);
                 }
                 ((FishBobber *)((u8 *)&o->heldItemModel.bobber))->startCatchLift();
@@ -7169,7 +7040,7 @@ extern "C" void PlayerActor_FishStoreCheckEndRemote(Obj *o) {
     if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->isFinished()) {
         o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
         (o)->startAnim(0x6c, 6, 6);
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x13, 6, 0);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0x13, 6, 0);
     }
 }
 }
@@ -7210,7 +7081,7 @@ extern "C" void PlayerActor_SetupBugNetSwing(Obj *o, u8 *b) {
     r->targetAngle = *(s16 *)(b + 0xc);
     r->caughtInsect = 0xff;
     (o)->startAnimOnce(0x5b, 3, z);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 3, 3, 0);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 3, 3, 0);
 }
 }
 
@@ -7265,7 +7136,7 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
     st.a = 0;
     st.b = 0;
     v0c = V3(o->toolHandMtx.m[9], o->toolHandMtx.m[10], o->toolHandMtx.m[11]);
-    WorldCurve_FromCurved(&v0c, &v0c);
+    WorldCurve_FromCurved((WorldCurve *)&v0c, (WorldCurve *)&v0c);
     v18.x = v0c.x;
     v18.y = v0c.y;
     v18.z = v0c.z;
@@ -7278,7 +7149,7 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
             id = 0xa00;
         else
             id = 0xd1f;
-        if (BugNet_HitTest(&v18, &v24, id, &st.c, 0)) {
+        if (BugNet_HitTest(&v18, &v24, id, &st.c)) {
             st.a = 1;
             FieldInsect_GetPosAndKind(&v3c, st.c);
             st.b = FieldInsect_IsTreeKind(st.c);
@@ -7368,7 +7239,7 @@ extern "C" void PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *out) {
     }
     Mtx43 l = o->heldItemJointMtx;
     V3 t(l.m[9], l.m[10], l.m[11]);
-    WorldCurve_FromCurved(&t, &t);
+    WorldCurve_FromCurved((WorldCurve *)&t, (WorldCurve *)&t);
     *out = t;
 }
 }
@@ -7382,7 +7253,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
             (o)->setActionFlag(9);
             (o)->playSe(0x846);
             o->bodyModel.frameStep = 0;
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 4, 3, 1);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 4, 3, 1);
             if (o->toolHitKind == 4) {
                 return 3;
             }
@@ -7391,13 +7262,13 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
             }
             return 2;
         }
-        PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, data_ov003_02230adc);
+        PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, &data_ov003_02230adc);
         FieldPos_SnapToUnitCenter(&v, &v);
         if (Ground_GetHeightAt(&v, &t, 0x19) >= 0x400) {
             (o)->setActionFlag(9);
             (o)->playSe(0x846);
             o->bodyModel.frameStep = 0;
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 4, 3, 1);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 4, 3, 1);
             if (a[0] != 0) {
                 if (PlayerActor_BugNetSwingCanReach(o, &v, b, c)) {
                     return 1;
@@ -7410,7 +7281,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *b, u8 *c) {
         if (a[0] != 0) {
             V3 w;
             s32 u;
-            PlayerActor_OffsetByAngle(&w, o, (V3 *)&o->position, &o->rotY, data_ov003_02230ae0);
+            PlayerActor_OffsetByAngle(&w, o, (V3 *)&o->position, &o->rotY, &data_ov003_02230ae0);
             FieldPos_SnapToUnitCenter(&w, &w);
             if (Ground_GetHeightAt(&w, &u, 0x19) >= 0x400) {
                 if (PlayerActor_BugNetSwingCanReach(o, &w, b, c)) {
@@ -7483,15 +7354,15 @@ extern "C" s32 PlayerActor_BugNetSwingCheckWall(Obj *o) {
             (o)->setActionFlag(9);
             (o)->playSe(0x846);
             o->bodyModel.frameStep = 0;
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 4, 3, 1);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 4, 3, 1);
             return 1;
         }
-        PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, data_ov003_02230ad4);
+        PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, &data_ov003_02230ad4);
         if (Ground_GetHeightAt(&v, &t, 0x19) >= 0x400) {
             (o)->setActionFlag(9);
             (o)->playSe(0x846);
             o->bodyModel.frameStep = 0;
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 4, 3, 1);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 4, 3, 1);
             return 1;
         }
     }
@@ -7509,7 +7380,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c) {
         (o)->setActionFlag(9);
         (o)->playSe(0x846);
         o->bodyModel.frameStep = 0;
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 4, 3, 1);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 4, 3, 1);
         if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(5)) {
             Vec2 p;
             x = 0;
@@ -7539,7 +7410,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c) {
         }
         Effect_Create(0xb, b, 0, 0);
         (o)->setActionFlag(9);
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 4, 3, 1);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 4, 3, 1);
     }
 end0:
     CollisionTag_Destruct(&l);
@@ -7553,7 +7424,7 @@ extern "C" void PlayerActor_BugNetSwingUpdateRemote(Obj *o) {
         if (PlayerActor_BugNetSwingCheckWall(o) == 0) {
             V3 a(o->toolHandMtx.m[9], o->toolHandMtx.m[10], o->toolHandMtx.m[11]);
             V3 b, c, d, e;
-            WorldCurve_FromCurved(&a, &a);
+            WorldCurve_FromCurved((WorldCurve *)&a, (WorldCurve *)&a);
             b = a;
             PlayerActor_BugNetSwingGetSweep(o, &b, &c, &d);
             e = a;
@@ -7586,7 +7457,7 @@ extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o) {
         if (id == 0xff) {
             PlayerActor_RequestInsectShowCatch(o, 0, id, 0x30, 6, -1);
         } else {
-            s32 r = Insect_GetCatchResult(id, (u8)o->sessionSlot);
+            s32 r = Insect_GetCatchResult(id);
             if (r == 0) {
                 u32 t = (u8)Insect_FinishCatch(id);
                 PlayerActor_RequestInsectShowCatch(o, 0, id, t, 6, -1);
@@ -7629,7 +7500,7 @@ extern "C" void PlayerActor_MainBugNetSwing(Obj *o) {
     }
     u8 *p = &o->actionWorkRaw[0];
     V3 a, b(o->heldItemJointMtx.m[9], o->heldItemJointMtx.m[10], o->heldItemJointMtx.m[11]);
-    WorldCurve_FromCurved(&a, &b);
+    WorldCurve_FromCurved((WorldCurve *)&a, (WorldCurve *)&b);
     *(V3 *)(p + 8) = a;
 }
 }
@@ -7699,7 +7570,7 @@ extern "C" void PlayerActor_SetupInsectShowCatch(Obj *o, Msg *r) {
     u32 c = q[2];
     if (c == 0) {
         (o)->startAnimOnce(0x5c, 3, 0);
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 5, 3, 1);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 5, 3, 1);
     }
     State *rec = (State *)&o->actionWork;
     rec->insectSlot = a;
@@ -7737,7 +7608,7 @@ extern "C" void PlayerActor_SetupInsectShowCatch(Obj *o, Msg *r) {
 namespace ns_0220ba90 {
 extern "C" void PlayerActor_NetInsectShowCatch(Obj *o, s32 a) {
     u8 buf[4];
-    u32 e;
+    u16 e;
     PlayerActor_InsectShowCatchGetNetData(o->netData.bytes, &buf[0], &buf[1], &buf[2], &buf[3], &e);
     PlayerActor_RequestInsectShowCatch(o, buf[3], buf[1], buf[2], 6, a);
 }
@@ -7756,7 +7627,9 @@ extern "C" void PlayerActor_EndInsectShowCatch(Obj *o) {
 namespace ns_0220ba90 {
 extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     struct {
-        s16 v[5];
+        s16 unk0;
+        u16 item;
+        s16 scale[3];
         s32 pr[2];
     } L2;
     T48 t;
@@ -7797,7 +7670,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             vv.x = ((V3 *)((u8 *)&t + 0x24))->x;
             vv.y = ((V3 *)((u8 *)&t + 0x24))->y;
             vv.z = ((V3 *)((u8 *)&t + 0x24))->z;
-            WorldCurve_FromCurved(&vv, &vv);
+            WorldCurve_FromCurved((WorldCurve *)&vv, (WorldCurve *)&vv);
             rec->effect = Effect_Create(0x25, &vv, 0, 0);
         }
         HeldInsect_Start(b8, (u8)r7);
@@ -7826,12 +7699,12 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         w.x = ((V3 *)((u8 *)&t2 + 0x24))->x;
         w.y = ((V3 *)((u8 *)&t2 + 0x24))->y;
         w.z = ((V3 *)((u8 *)&t2 + 0x24))->z;
-        WorldCurve_FromCurved(&w, &w);
+        WorldCurve_FromCurved((WorldCurve *)&w, (WorldCurve *)&w);
         Effect_SetPosition(rec->effect, &w, 0, 0);
     }
-    L2.v[2] = 0;
-    L2.v[3] = 0;
-    L2.v[4] = 0;
+    L2.scale[0] = 0;
+    L2.scale[1] = 0;
+    L2.scale[2] = 0;
     u32 fr = ((Unk_ov003_0220bc84_Bits *)&o->bodyModel.curFrame)->f;
     if (fr < 0x17 && o->animId == 0x5c) {
         goto tail;
@@ -7847,9 +7720,9 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             }
         }
     }
-    L2.v[2] = 0x64;
-    L2.v[3] = 0x64;
-    L2.v[4] = 0x64;
+    L2.scale[0] = 0x64;
+    L2.scale[1] = 0x64;
+    L2.scale[2] = 0x64;
     if (o->animId == 0x5c) {
         u32 f2 = ((Unk_ov003_0220bc84_Bits *)&o->bodyModel.curFrame)->f;
         if (f2 <= 0x21) {
@@ -7857,9 +7730,9 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             if (t >= 0x64) {
                 t = 0x64;
             }
-            L2.v[2] = t;
-            L2.v[3] = t;
-            L2.v[4] = t;
+            L2.scale[0] = t;
+            L2.scale[1] = t;
+            L2.scale[2] = t;
         }
     }
     switch (*st) {
@@ -7876,8 +7749,8 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         MsgRequest &sr = *o;
         ((MsgRequest *)(&sr))->setFileName((const char *)((void *)"obj_etc_getinsect"));
         o->msgIndex = b8;
-        L2.v[1] = b8 + 0x12b0;
-        Catalog_AddCreature(&L2.v[1]);
+        L2.item = b8 + 0x12b0;
+        Catalog_AddCreature(&L2.item);
         o->window->nextState = 1;
         Camera_SetMode4();
         if ((o)->testActionFlag(0x1a)) {
@@ -8046,7 +7919,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     }
     }
 tail:
-    HeldInsect_SetHandMatrix((u8)r7, &L2.v[2], &t2, 0);
+    HeldInsect_SetHandMatrix((u8)r7, L2.scale, &t2, 0);
 }
 }
 
@@ -8137,7 +8010,7 @@ extern "C" void PlayerActor_SetupInsectStore(Obj *o, Msg *r) {
     p[1] = y;
     PlayerActor_InsectStoreSetNetData(o->netData.bytes, x, y, 0);
     (o)->startAnimOnce(0x5d, 3, 0);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 6, 3, 1);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 6, 3, 1);
     (o)->playSe(0x4f);
 }
 }
@@ -8160,7 +8033,10 @@ extern "C" void PlayerActor_EndInsectStore(Obj *o) {
 namespace ns_0220b0f0 {
 extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
     s32 flag = 0;
-    s16 w[4];
+    struct {
+        u16 item;
+        s16 scale[3];
+    } w;
     V3 pos;
     S30 cp;
     u32 code;
@@ -8182,9 +8058,9 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
     } else {
         h = 0;
     }
-    w[1] = h;
-    w[2] = h;
-    w[3] = h;
+    w.scale[0] = h;
+    w.scale[1] = h;
+    w.scale[2] = h;
     cp = o->itemHandMtx;
     PlayerActor_ApplyHoldOffset(&cp, 0);
     u8 *rec = (u8 *)&o->actionWork;
@@ -8200,8 +8076,8 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
         (o)->requestWait(6, 1, -1);
         if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
-            w[0] = code;
-            Pocket_AddFoundItem(w);
+            w.item = code;
+            Pocket_AddFoundItem(&w.item);
         }
         flag = 1;
         goto tail;
@@ -8211,12 +8087,12 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
                 goto tail;
             }
             (o)->startAnim(0x6c, 3, 3);
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0, 3, 0);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 0, 3, 0);
         }
         pos.x -= 0x400;
         pos.y += 0x1b34;
         pos.z += 0x1400;
-        WorldCurve_ToCurved(&pos, &pos);
+        WorldCurve_ToCurved((WorldCurve *)&pos, (WorldCurve *)&pos);
         cp.m[9] = pos.x;
         cp.m[10] = pos.y;
         cp.m[11] = pos.z;
@@ -8296,7 +8172,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         }
     default:
     tail:
-        HeldInsect_SetHandMatrix(id, &w[1], &cp, flag);
+        HeldInsect_SetHandMatrix(id, w.scale, &cp, flag);
     }
 }
 }
@@ -9095,10 +8971,10 @@ extern "C" void PlayerActor_EndDig(Obj *o) {
             p.y = r->digPos.y;
             p.z = r->digPos.z;
             if (o->animId == 0x4b) {
-                FieldItemFx_StartDigHole(o->sessionSlot, p, 0);
+                FieldItemFx_StartDigHole(o->sessionSlot, &p, 0);
             } else {
-                FieldItemFx_StartDigUpTree(o->sessionSlot, p, o->rotY);
-                FieldItemFx_StartDigHole(o->sessionSlot, p, 0);
+                FieldItemFx_StartDigUpTree(o->sessionSlot, &p, o->rotY);
+                FieldItemFx_StartDigHole(o->sessionSlot, &p, 0);
             }
             (o)->clearActionFlag(0x1c);
         }
@@ -9128,7 +9004,7 @@ extern "C" void PlayerActor_DigUpdate(Obj *o) {
                 break;
             case 7: {
                 Effect_Create(7, &p, &h, 0);
-                FieldItemFx_StartDigHole(o->sessionSlot, p, 0);
+                FieldItemFx_StartDigHole(o->sessionSlot, &p, 0);
                 (o)->clearActionFlag(0x1c);
                 FieldPos_ToUnit(&a, &b, &p);
                 Collision_AddDigHole(a, b);
@@ -9148,8 +9024,8 @@ extern "C" void PlayerActor_DigUpdate(Obj *o) {
                 Effect_Create(8, &p, &h, 0);
                 break;
             case 21: {
-                FieldItemFx_StartDigUpTree(o->sessionSlot, p, o->rotY);
-                FieldItemFx_StartDigHole(o->sessionSlot, p, 0);
+                FieldItemFx_StartDigUpTree(o->sessionSlot, &p, o->rotY);
+                FieldItemFx_StartDigHole(o->sessionSlot, &p, 0);
                 (o)->playSe(0x85c);
                 (o)->clearActionFlag(0x1c);
                 break;
@@ -9269,7 +9145,7 @@ extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m) {
     o->shownItemPosX = x2;
     o->shownItemPosY = y2;
     o->shownItemPosZ = z2;
-    WorldCurve_FromCurved((V3 *)&o->shownItemPosX, (V3 *)&o->shownItemPosX);
+    WorldCurve_FromCurved((WorldCurve *)&o->shownItemPosX, (WorldCurve *)&o->shownItemPosX);
     o->shownItemScaleX = 0x1000;
     o->shownItemScaleY = 0x1000;
     o->shownItemScaleZ = 0x1000;
@@ -9336,7 +9212,7 @@ extern "C" void PlayerActor_EndDigUpItem(Obj *o, s32 p) {
             Rec *r = (Rec *)&o->actionWork;
             V3 v;
             v = r->digPos;
-            Unk_ov003_02209ef4_P::FieldItemFx_StartDigHole(o->sessionSlot, &v, r->holeKind);
+            FieldItemFx_StartDigHole(o->sessionSlot, &v, r->holeKind);
             (o)->clearActionFlag(0x1c);
             (o)->clearActionFlag(9);
         }
@@ -9368,7 +9244,7 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
             Effect_Create(8, &p, 0, 0);
             FieldPos_ToUnit(&a, &b, &p);
             Collision_AddDigHole(a, b);
-            FieldItemFx_StartDigHole(o->sessionSlot, p, r->holeKind);
+            FieldItemFx_StartDigHole(o->sessionSlot, &p, r->holeKind);
             (o)->setActionFlag(0xd);
             (o)->clearActionFlag(0x1c);
             break;
@@ -9398,7 +9274,7 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
             o->shownItemPosX = x2;
             o->shownItemPosY = y2;
             o->shownItemPosZ = z2;
-            WorldCurve_FromCurved((V3 *)&o->shownItemPosX, (V3 *)&o->shownItemPosX);
+            WorldCurve_FromCurved((WorldCurve *)&o->shownItemPosX, (WorldCurve *)&o->shownItemPosX);
         }
     }
 }
@@ -10037,7 +9913,7 @@ extern "C" void PlayerActor_WateringCanUpdate(Obj *o) {
         v.x = o->heldItemJointMtx.m[9];
         v.y = y;
         v.z = z;
-        WorldCurve_FromCurved(&v, &v);
+        WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
         if (*h == -1) {
             *h = Effect_Create(0x26, &v, &o->rotY, 0);
             (o)->playSe(0x854);
@@ -10090,7 +9966,7 @@ extern "C" void PlayerActor_WateringCanCheckEnd(Obj *o) {
 namespace ns_02208a58 {
 extern "C" void PlayerActor_WateringCanCheckEndRemote(Obj *o) {
     u8 b;
-    s32 out;
+    u32 out;
     o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
     u8 *p6 = o->netData.bytes;
     PlayerActor_WateringCanGetNetData(p6, &b);
@@ -10140,7 +10016,7 @@ extern "C" void PlayerActor_SetupSlingshot(Obj *o) {
     } else {
         Sky_OnSlingshotFired(o->sessionSlot);
         (o)->startAnimOnce(0x5f, 3, 0);
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x22, 3, 1);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0x22, 3, 1);
     }
 }
 }
@@ -10315,7 +10191,7 @@ extern "C" void PlayerActor_EndAct66(Obj *o, s32 a) {
         } else if (a != 0x67) {
             if ((o)->testActionFlag(0x1c)) {
                 V3 *p = (V3 *)((u8 *)o + 0x7d0);
-                FieldItemFx_StartHoleShrink(o->sessionSlot, *p);
+                FieldItemFx_StartHoleShrink(o->sessionSlot, p);
                 (o)->clearActionFlag(0x1c);
             }
         } else {
@@ -10352,7 +10228,7 @@ extern "C" void PlayerActor_Act66CheckEnd(Obj *o) {
         r->waitFrames++;
     } else {
         if (((CommManager *)(g))->isLocalSlot(o->sessionSlot) == 0) {
-            o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         }
         switch (r->answer) {
         case 0:
@@ -10366,7 +10242,7 @@ extern "C" void PlayerActor_Act66CheckEnd(Obj *o) {
             break;
         }
         case 2:
-            o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             (o)->requestWait(3, 1, -1);
             break;
         }
@@ -10401,7 +10277,7 @@ extern "C" s32 PlayerActor_RequestAct67(Obj *o, V3 *v, s32 a, s16 b) {
     Msg m;
     (&m)->assign(0x67, a, b);
     V3 t;
-    FieldPos_SnapToUnitCenter(&t, (s32)v);
+    FieldPos_SnapToUnitCenter(&t, v);
     PlayerActor_Act67SetArgs((V3 *)m.unk_0c_b, t);
     return (o)->pushRequest(&m);
 }
@@ -10424,7 +10300,7 @@ extern "C" void PlayerActor_SetupAct67(Obj *o, u8 *m) {
     s32 ang = Math_Atan2(d.x, d.z);
     PlayerActor_Act67SetWork((RecC *)((u8 *)o + 0x7d0), ang, l);
     (o)->startAnimOnce(0x65, 3, 0);
-    FieldItemFx_StartHoleShrink(o->sessionSlot, l);
+    FieldItemFx_StartHoleShrink(o->sessionSlot, &l);
     (o)->clearActionFlag(0x1c);
     (o)->playSe(0x7da);
     (o)->setActionFlag(9);
@@ -10458,7 +10334,7 @@ extern "C" void PlayerActor_Act67Turn(Obj *o) {
 namespace ns_02208108 {
 extern "C" void PlayerActor_Act67CheckEnd(Obj *o) {
     if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->isFinished()) {
-        o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
+        o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
         (o)->requestWait(3, 1, -1);
     }
     if (((Unk_ov003_02208190_Bits *)&o->bodyModel.curFrame)->mid >= 0x16) {
@@ -10469,7 +10345,7 @@ extern "C" void PlayerActor_Act67CheckEnd(Obj *o) {
 
 namespace ns_02208108 {
 extern "C" void PlayerActor_Act67CheckEndRemote(Obj *o) {
-    o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
+    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->isFinished()) {
         (o)->requestWait(3, 1, -1);
     }
@@ -10613,7 +10489,7 @@ extern "C" void PlayerActor_TreeShakeCheckEnd(Obj *o) {
             r->doRelease = 1;
             o->bodyModel.playMode = 1;
         } else if (t == 2) {
-            o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
+            o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
             (o)->requestWait(3, 1, -1);
         }
     }
@@ -10623,7 +10499,7 @@ extern "C" void PlayerActor_TreeShakeCheckEnd(Obj *o) {
 namespace ns_02208108 {
 extern "C" void PlayerActor_TreeShakeCheckEndRemote(Obj *o) {
     RecA *r = (RecA *)((u8 *)o + 0x7d0);
-    o->actionPriority = (s32)Unk_02007694_getActionDonePriority(o, o->action);
+    o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);
     if (r->doRelease != 0) {
         if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->isFinished()) {
             PlayerActor_RequestTreeShakeRelease(o, r->treePosX, r->treePosZ, r->unk_0b, 1, 6, -1);
@@ -10641,7 +10517,7 @@ extern "C" void PlayerActor_MainTreeShake(Obj *o) {
     p.b = 0;
     FieldPos_ToUnit(&p.a, &p.b, &v);
     if (r->shakeFrames > 5) {
-        Tree_KeepShaking(o->sessionSlot, p);
+        Tree_KeepShaking(o->sessionSlot, &p.a); // (unit x, z)
     } else {
         r->shakeFrames++;
         if (r->shakeFrames == 5) {
@@ -10811,14 +10687,14 @@ extern "C" void PlayerActor_MailboxOpenSetWork(V3 *d, V3 v) {
 }
 
 namespace ns_022077c8 {
-extern "C" void PlayerActor_MailboxOpenSetNetData(void *a, V3 *v) {
+extern "C" void PlayerActor_MailboxOpenSetNetData(u8 *a, V3 *v) {
     NetBuf_PackTriple20(a, v->x, v->y, v->z, 0);
 }
 }
 
 namespace ns_022077c8 {
-extern "C" void PlayerActor_MailboxOpenGetNetData(void *a, V3 *v) {
-    s32 t;
+extern "C" void PlayerActor_MailboxOpenGetNetData(u8 *a, V3 *v) {
+    u8 t;
     NetBuf_UnpackTriple20(a, &v->x, &v->y, &v->z, &t);
 }
 }
@@ -10961,9 +10837,9 @@ extern "C" void PlayerActor_SetupFaint(Obj *o, Msg *m) {
     if (t == 3 || t == 4 || t == 10) {
         (o)->startAnimOnce(0x69, 3, 6);
         if (t == 3) {
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x14, 3, 1);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 0x14, 3, 1);
         } else if (t == 4) {
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 2, 9, 1);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 2, 9, 1);
         }
     } else {
         (o)->startAnimOnce(0x68, 3, 6);
@@ -10999,7 +10875,7 @@ extern "C" void PlayerActor_FaintEffect(Obj *o) {
     if (*r4 == -1) {
         *r4 = Effect_Create(0x34, (u8 *)&o->headTopPos, 0, 0);
     } else {
-        Effect_SetPosition(*r4, (u8 *)&o->headTopPos, 0, 0);
+        Effect_SetPosition(*r4, &o->headTopPos, NULL, NULL);
     }
 }
 }
@@ -11073,7 +10949,7 @@ extern "C" s32 PlayerActor_NetAct6E(Obj *o, s16 a) {
 
 namespace ns_022077c8 {
 extern "C" void PlayerActor_Act6EUpdateAnim(Obj *o) {
-    if (Unk_ov003_022078e0_IsTwo(gScreenTransition)) {
+    if (Unk_ov003_022078e0_IsTwo(gScreenTransition.state)) {
         (o)->advanceAnim();
         if (o->animId == 0x6a) {
             u32 m = ((Unk_ov003_022077c8_Bits *)&o->bodyModel.curFrame)->mid;
@@ -11153,11 +11029,11 @@ extern "C" void PlayerActor_SetupTrip(Obj *o) {
     ((Rec *)&o->actionWork)->unk_00 = st;
     switch (st) {
     case 4:
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 7, 2, 1);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 7, 2, 1);
         (o)->startAnimOnce(0x8d, 2, 0);
         break;
     case 3:
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x1d, 2, 1);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0x1d, 2, 1);
         (o)->startAnimOnce(0x8d, 2, 0);
         break;
     case 10:
@@ -11209,21 +11085,21 @@ extern "C" void PlayerActor_TripEffects(Obj *o) {
                     va.x = t;
                     va.y = o->toolHandMtx.m[10];
                     va.z = o->toolHandMtx.m[11];
-                    WorldCurve_FromCurved(&va, &va);
+                    WorldCurve_FromCurved((WorldCurve *)&va, (WorldCurve *)&va);
                 }
                 Effect_Create(0x32, &va, 0, 0);
                 PlayerActor_SetHoldableItem(0, o->sessionSlot);
             }
         }
         if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(7) != 0) {
-            PlayerActor_OffsetByAngle(&out1, o, (V3 *)&o->position, &hh[0], (u32)data_ov003_02230ad0);
+            PlayerActor_OffsetByAngle(&out1, o, (V3 *)&o->position, &hh[0], &data_ov003_02230ad0);
             vb.x = out1.x;
             vb.y = out1.y;
             vb.z = out1.z;
             Effect_Create(0x39, &vb, (s32)&hh[0], 0);
         }
         if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->hasPassedFrame(9) != 0) {
-            PlayerActor_OffsetByAngle(&out2, o, (V3 *)&o->position, &hh[0], (u32)data_ov003_02230ad8);
+            PlayerActor_OffsetByAngle(&out2, o, (V3 *)&o->position, &hh[0], &data_ov003_02230ad8);
             vb.x = out2.x;
             vb.y = out2.y;
             vb.z = out2.z;
@@ -11255,11 +11131,11 @@ extern "C" void PlayerActor_TripUpdate(Obj *o) {
             if (((AnimFrameCtrl *)((AnimFrameCtrl *)&o->bodyModel))->isFinished() != 0) {
                 switch (r->unk_00) {
                 case 4:
-                    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 8, 3, 0);
+                    HeldItemModel_PlayAnim(&o->heldItemModel, 8, 3, 0);
                     (o)->startAnimOnce(0x8e, 3, 0);
                     break;
                 case 3:
-                    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x1e, 3, 0);
+                    HeldItemModel_PlayAnim(&o->heldItemModel, 0x1e, 3, 0);
                     (o)->startAnimOnce(0x8e, 3, 0);
                     break;
                 case 10:
@@ -11391,7 +11267,7 @@ extern "C" s32 PlayerActor_SetupPitfallFall(Obj *o, u8 *a) {
     r->unk_08 = -1;
     (o)->startAnim(0x90, 3, 0);
     if ((o)->getHeldToolKind() == 4) {
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0xf, 3, 0);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0xf, 3, 0);
     }
     PlayerActor_PitfallFallSetNetData(o->netData.bytes, c0, c1);
     return Unk_02006d14_playSe(o, 0x7ee);
@@ -11459,7 +11335,7 @@ extern "C" s32 PlayerActor_PitfallFallEffect(Obj *o) {
     if (*p == -1) {
         *p = Effect_Create(0x4c, (u8 *)&o->headTopPos, z, z);
     } else {
-        Effect_SetPosition(*p, (u8 *)&o->headTopPos, z, z);
+        Effect_SetPosition(*p, &o->headTopPos, NULL, NULL);
     }
     return Unk_02006d14_playSeAt(o, 0x8a, (V3 *)&o->position);
 }
@@ -11512,7 +11388,7 @@ extern "C" void PlayerActor_PitfallFallUpdate(Obj *o) {
             FieldItemFx_StartPitfallHole(o->sessionSlot, &c);
             (o)->clearActionFlag(0x12);
             if ((o)->getHeldToolKind() == 4) {
-                HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x10, 3, 1);
+                HeldItemModel_PlayAnim(&o->heldItemModel, 0x10, 3, 1);
             }
             GroundInfo_Destruct(&x);
         }
@@ -11554,8 +11430,8 @@ extern "C" void PlayerActor_SetupPitfallStruggle(Obj *o, s32 *a) {
     r->effectHandle = t;
     (o)->clearActionFlag(9);
     if ((o)->getHeldToolKind() == 4) {
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x11, 3, 0);
-        HeldItemModel_SetAnimSpeed((u8 *)&o->heldItemModel, 0x800);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0x11, 3, 0);
+        HeldItemModel_SetAnimSpeed(&o->heldItemModel, 0x800);
     }
 }
 }
@@ -11606,7 +11482,7 @@ extern "C" void PlayerActor_PitfallStruggleUpdate(Obj *o) {
     }
     o->bodyModel.frameStep = *r4;
     if ((o)->getHeldToolKind() == 4) {
-        HeldItemModel_SetAnimSpeed((u8 *)&o->heldItemModel, *r4);
+        HeldItemModel_SetAnimSpeed(&o->heldItemModel, *r4);
     }
     (o)->advanceAnim();
     s32 *r4b = &r6->f18;
@@ -11614,7 +11490,7 @@ extern "C" void PlayerActor_PitfallStruggleUpdate(Obj *o) {
     if (r6->f18 == -1) {
         *r4b = Effect_Create(0x4c, (V3 *)(u8 *)&o->headTopPos, (void *)z, z);
     } else {
-        Effect_SetPosition(r6->f18, (u8 *)&o->headTopPos, (void *)z, z);
+        Effect_SetPosition(r6->f18, &o->headTopPos, NULL, NULL);
     }
     (o)->playSeAt(0x8a, (VecFx32 *)(&o->position));
 }
@@ -11707,7 +11583,7 @@ extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o) {
     if (st == 10 || (u32)(st - 3) <= 1) {
         (o)->startAnimOnce(0x94, 3, 0);
         if ((o)->getHeldToolKind() == 4) {
-            HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x12, 3, 1);
+            HeldItemModel_PlayAnim(&o->heldItemModel, 0x12, 3, 1);
         }
     } else {
         (o)->startAnimOnce(0x93, 3, 0);
@@ -11777,7 +11653,7 @@ extern "C" void PlayerActor_SetupBeeSting(Obj *o) {
     (o)->startAnimOnce(0x71, 3, 0);
     *(u8 *)&o->actionWork = 0;
     if ((o)->getHeldToolKind() == 3) {
-        HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x13, 3, 0);
+        HeldItemModel_PlayAnim(&o->heldItemModel, 0x13, 3, 0);
     }
     (o)->clearActionFlag(0x1a);
     Bgm_Release(0x3f);
@@ -11938,7 +11814,7 @@ extern "C" void PlayerActor_Act80Update(Obj *o) {
         t[0] = 0xfff1;
         ((PlayerData *)(r))->setHeldItem(&t[0]);
         t[1] = 0xfff1;
-        HeldItemModel_SetItem((u8 *)&o->heldItemModel, &t[1], 0);
+        HeldItemModel_SetItem(&o->heldItemModel, &t[1], 0);
         (o)->playSe(0x850);
         V3 v;
         s32 tz = o->toolHandMtx.m[11];
@@ -11947,7 +11823,7 @@ extern "C" void PlayerActor_Act80Update(Obj *o) {
         v.x = tx;
         v.y = ty;
         v.z = tz;
-        WorldCurve_FromCurved(&v, &v);
+        WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
         Effect_Create(0x24, &v, &o->rotY, 0);
         (o)->setActionFlag(9);
     }
@@ -11999,7 +11875,7 @@ extern "C" void PlayerActor_SetupFirework(Obj *o) {
     ((u8 *)r2)[4] = 0;
     ((u8 *)r2)[5] = 0x14;
     (o)->startAnim(0x7c, 9, 0);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x28, 0, 1);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x28, 0, 1);
     if (((CommManager *)(gCommManager))->isLocalSlot(o->sessionSlot)) {
         Camera_SetMode4();
         ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->startFireworkDuck();
@@ -12041,7 +11917,7 @@ extern "C" void PlayerActor_FireworkUpdate(Obj *o) {
     s32 *r6 = &o->actionWork;
     u8 *r4 = (u8 *)r6 + 4;
     VecFx32Ctor v(o->heldItemJointMtx.m[9], o->heldItemJointMtx.m[10], o->heldItemJointMtx.m[11]);
-    WorldCurve_FromCurved((V3 *)&v, (V3 *)&v);
+    WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
     s32 z = 0;
     s32 m1 = ~z;
     if (o->actionWork == m1) {
@@ -12095,7 +11971,7 @@ extern "C" void PlayerActor_FireworkCheckEnd(Obj *o) {
                 t[0] = 0xfff1;
                 ((PlayerData *)(r))->setHeldItem(&t[0]);
                 t[1] = 0xfff1;
-                HeldItemModel_SetItem((u8 *)&o->heldItemModel, &t[1], 0);
+                HeldItemModel_SetItem(&o->heldItemModel, &t[1], 0);
                 o->actionPriority = ((Unk_02007694 *)(void *)(o))->getActionDonePriority(o->action);
                 (o)->requestWait(9, 1, -1);
             }
@@ -12126,7 +12002,7 @@ namespace ns_02205c28 {
 extern "C" void PlayerActor_SetupAct82(Obj *o) {
     o->actionWork = -1;
     (o)->startAnimOnce(0x7d, 3, 0);
-    HeldItemModel_PlayAnim((u8 *)&o->heldItemModel, 0x2a, 0, 0);
+    HeldItemModel_PlayAnim(&o->heldItemModel, 0x2a, 0, 0);
     (o)->playSe(0x85d);
 }
 }
@@ -12158,7 +12034,7 @@ extern "C" void PlayerActor_Act82Update(Obj *o) {
     if (f >= 0xe && f <= 0x18) {
         s32 *r4 = &o->actionWork;
         VecFx32Ctor v(o->toolHandMtx.m[9], o->toolHandMtx.m[10], o->toolHandMtx.m[11]);
-        WorldCurve_FromCurved((V3 *)&v, (V3 *)&v);
+        WorldCurve_FromCurved((WorldCurve *)&v, (WorldCurve *)&v);
         if (o->actionWork == -1) {
             *r4 = Effect_Create(0x31, (V3 *)&v, &o->rotY, 0);
         } else {
@@ -12171,7 +12047,7 @@ extern "C" void PlayerActor_Act82Update(Obj *o) {
         t[0] = 0xfff1;
         ((PlayerData *)(r))->setHeldItem(&t[0]);
         t[1] = 0xfff1;
-        HeldItemModel_SetItem((u8 *)&o->heldItemModel, &t[1], 0);
+        HeldItemModel_SetItem(&o->heldItemModel, &t[1], 0);
     }
 }
 }
@@ -12531,12 +12407,12 @@ extern "C" BOOL PlayerActor_FishFindCastTarget(Obj *o, V3 *out, V3 *tgt) {
     } else {
         ang = Math_Atan2(tgt->x - o->position.x, tgt->z - o->position.z);
     }
-    PlayerActor_OffsetByAngle(&t0, o, (V3 *)&o->position, &ang, sFishCastFarDist);
+    PlayerActor_OffsetByAngle(&t0, o, (V3 *)&o->position, &ang, &sFishCastFarDist);
     out->x = t0.x;
     out->y = t0.y;
     out->z = t0.z;
     BOOL r4 = Ground_IsWaterAt(out);
-    PlayerActor_OffsetByAngle(&t1, o, (V3 *)&o->position, &ang, sFishCastNearDist);
+    PlayerActor_OffsetByAngle(&t1, o, (V3 *)&o->position, &ang, &sFishCastNearDist);
     if (r4 && Ground_IsWaterAt(&t1)) return TRUE;
     return FALSE;
 }
@@ -12548,7 +12424,7 @@ extern "C" void PlayerActor_FieldCheckUnitAhead(Obj *o) {
     V3 out;
     p.x = 0;
     p.y = 0;
-    PlayerActor_OffsetByAngle(&out, o, (V3 *)&o->position, &o->rotY, data_ov003_02230ae8);
+    PlayerActor_OffsetByAngle(&out, o, (V3 *)&o->position, &o->rotY, &data_ov003_02230ae8);
     FieldPos_ToUnit(&p.x, &p.y, &out);
     BOOL same = FALSE;
     s32 x = p.x;
@@ -13049,7 +12925,7 @@ extern "C" BOOL PlayerActor_FieldInteractAt(PlayerActor *self, s32 a) {
     }
     if (self->inputMode == 1) {
         VecFx32 t;
-        PlayerActor_OffsetByAngle(&t, self, &self->position.x, (u16 *)&self->rotY, data_ov003_02230af0);
+        PlayerActor_OffsetByAngle(&t, self, &self->position.x, (u16 *)&self->rotY, &data_ov003_02230af0);
         v.x = t.x;
         v.y = t.y;
         v.z = t.z;

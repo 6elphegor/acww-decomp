@@ -10,6 +10,13 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/InventoryItemGrid.h"
+#include "nitro/gxoam.h"
+
+// Icon row object of the creature book list: OAM cell entry (charName = icon tiles, palette per icon) + cached icon id.
+struct CreatureBookIconObj {
+    /* 0x0 */ GXOamAttr cell;
+    /* 0x8 */ s32 iconId;
+};
 
 class MsgString406 : public MsgString {
 public:
@@ -48,7 +55,7 @@ public:
     /* 0x9f4 */ u16 paletteBuf[0x10];  // [2]: blend of the two (CreatureBook_BlendBgColor)
     /* 0xa14 */ ItemIconUploadChars iconUploadChars[9];
     /* 0xe94 */ BgVramTaskPair rowIconTasks[9];
-    /* 0x108c */ u8 rowIcons[0x10f8 - 0x108c]; // CreatureBookIconObj[9] (type defined in the TU)
+    /* 0x108c */ CreatureBookIconObj rowIcons[9];
     /* 0x10f8 */ LabelString labels[4];
     /* 0x11f8 */ MenuScrollKnob scrollKnob;
     /* 0x1240 */ u32 caughtMask[3];

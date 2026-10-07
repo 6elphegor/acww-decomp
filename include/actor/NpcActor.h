@@ -68,7 +68,7 @@ public:
     BOOL netIsTalkLocked();
     s32 netGetSlots(s32 a, s32 b);
     void netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...);
-    s32 netSetSlots(s32 a, s32 b, s32 c);
+    void netSetSlots(s32 a, s32 b, s32 c);
     BOOL isNetOwner();
     s32 findAvoidPos(VecFx32 *out);
     BOOL getFreeOffsetPos(VecFx32 *out, void *p);

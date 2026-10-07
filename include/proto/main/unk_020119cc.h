@@ -4,7 +4,9 @@
 // Prototypes of the functions defined in src/main/unk_020119cc.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+struct BlockMap;
 struct NpcEmotionEntry;
+struct RouteGridPos;
 #ifdef __cplusplus
 #include "actor/NpcActor.h"
 #include "gfx/VecFx32.h"
@@ -701,7 +703,7 @@ s32 NpcFace_PickTalkMouth();
 void NpcAction_PackMove(u8 *out, u32 a, u32 b, u32 c, u32 s0, s16 s1, u16 s2);
 #endif
 #ifndef PROTO_LOCAL_NpcAction_UnpackMove
-void NpcAction_UnpackMove(u32 a, u32 b, u32 c, u32 d, void *s0, u16 *s1, u8 *out);
+void NpcAction_UnpackMove(s32 *a, s32 *b, s32 *c, s32 *d, void *s0, u16 *s1, u8 *out);
 #endif
 #ifndef PROTO_LOCAL_NpcAction_PackTurn
 void NpcAction_PackTurn(u8 *out, u16 a, u16 b, u32 c);
@@ -789,6 +791,9 @@ s32 TalkRequest_GetPlayerId(void);
 #endif
 #ifndef PROTO_LOCAL__ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP5VecXZiS3_iP8BlockMap
 BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP5VecXZiS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
+#endif
+#ifndef PROTO_LOCAL_VillagerRoute_PickPathUnitInBlock
+void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridPos *p, BlockMap *obj);
 #endif
 #ifndef PROTO_LOCAL_VillagerRoute_PickAttr200Target
 void VillagerRoute_PickAttr200Target(Vec2 *out, void *self);

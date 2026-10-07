@@ -40,9 +40,6 @@ extern void *data_ov068_0226f878[2];
 #ifndef PROTO_LOCAL_data_ov068_0226f850
 extern void *data_ov068_0226f850[2];
 #endif
-#ifndef PROTO_LOCAL_data_ov068_0226f910
-extern void *data_ov068_0226f910[2];
-#endif
 #ifndef PROTO_LOCAL_data_ov068_0226fb58
 extern void *data_ov068_0226fb58[2];
 #endif
@@ -78,9 +75,6 @@ extern void *data_ov068_0226faf8[2];
 #endif
 #ifndef PROTO_LOCAL_data_ov068_0226faf0
 extern void *data_ov068_0226faf0[2];
-#endif
-#ifndef PROTO_LOCAL_data_ov068_0226fa68
-extern void *data_ov068_0226fa68[2];
 #endif
 #ifndef PROTO_LOCAL_data_ov068_0226fae0
 extern void *data_ov068_0226fae0[2];
@@ -250,9 +244,6 @@ extern void *data_ov068_0226f838[2];
 #ifndef PROTO_LOCAL_data_ov068_0226f848
 extern void *data_ov068_0226f848[2];
 #endif
-#ifndef PROTO_LOCAL_data_ov068_0226f870
-extern void *data_ov068_0226f870[2];
-#endif
 #ifndef PROTO_LOCAL_data_ov068_0226f880
 extern void *data_ov068_0226f880[2];
 #endif
@@ -352,35 +343,14 @@ extern "C" {
 #ifndef PROTO_LOCAL_sReactionStepsGuard
 extern u32 sReactionStepsGuard;
 #endif
-#ifndef PROTO_LOCAL_sBirthdayInviteSteps
-extern u32 sBirthdayInviteSteps[6];
-#endif
-#ifndef PROTO_LOCAL_sPushTalkSteps
-extern u32 sPushTalkSteps[4];
-#endif
 #ifndef PROTO_LOCAL_sHitTalkStepsGuard
 extern u32 sHitTalkStepsGuard;
-#endif
-#ifndef PROTO_LOCAL_sChatSteps
-extern u32 sChatSteps[8];
-#endif
-#ifndef PROTO_LOCAL_sTalkSteps
-extern u32 sTalkSteps[4];
 #endif
 #ifndef PROTO_LOCAL_sChatStepsGuard
 extern u32 sChatStepsGuard;
 #endif
-#ifndef PROTO_LOCAL_sPitfallClimbOutSteps
-extern u32 sPitfallClimbOutSteps[2];
-#endif
-#ifndef PROTO_LOCAL_sPutAwayItemSteps
-extern u32 sPutAwayItemSteps[4];
-#endif
 #ifndef PROTO_LOCAL_sTalkStepsGuard
 extern u32 sTalkStepsGuard;
-#endif
-#ifndef PROTO_LOCAL_sReactionSteps
-extern u32 sReactionSteps[4];
 #endif
 #ifndef PROTO_LOCAL_sApproachStepsGuard
 extern u32 sApproachStepsGuard;
@@ -397,20 +367,8 @@ extern u32 sAbsentStepsGuard;
 #ifndef PROTO_LOCAL_sInHouseStepsGuard
 extern u32 sInHouseStepsGuard;
 #endif
-#ifndef PROTO_LOCAL_sAbsentSteps
-extern u32 sAbsentSteps[4];
-#endif
-#ifndef PROTO_LOCAL_sApproachSteps
-extern u32 sApproachSteps[10];
-#endif
 #ifndef PROTO_LOCAL_sSeePlayerArc
 extern s16 sSeePlayerArc;
-#endif
-#ifndef PROTO_LOCAL_sGoInHouseSteps
-extern u32 sGoInHouseSteps[6];
-#endif
-#ifndef PROTO_LOCAL_sHitByNetSteps
-extern u32 sHitByNetSteps[6];
 #endif
 #ifndef PROTO_LOCAL_sPutAwayItemStepsGuard
 extern u32 sPutAwayItemStepsGuard;
@@ -421,12 +379,6 @@ extern u32 sGoInHouseStepsGuard;
 #ifndef PROTO_LOCAL_sChatOutcomesGuard
 extern u32 sChatOutcomesGuard;
 #endif
-#ifndef PROTO_LOCAL_sTakeOutItemSteps
-extern u32 sTakeOutItemSteps[4];
-#endif
-#ifndef PROTO_LOCAL_sPushedSteps
-extern u32 sPushedSteps[4];
-#endif
 #ifndef PROTO_LOCAL_sAdmireCatchStepsGuard
 extern u32 sAdmireCatchStepsGuard;
 #endif
@@ -436,35 +388,14 @@ extern u32 sFleaRemovedStepsGuard;
 #ifndef PROTO_LOCAL_sHitByNetStepsGuard
 extern u32 sHitByNetStepsGuard;
 #endif
-#ifndef PROTO_LOCAL_sChatOutcomes
-extern u32 sChatOutcomes[14];
-#endif
-#ifndef PROTO_LOCAL_sLeaveHouseSteps
-extern u32 sLeaveHouseSteps[4];
-#endif
 #ifndef PROTO_LOCAL_sBirthdayInviteStepsGuard
 extern u32 sBirthdayInviteStepsGuard;
 #endif
 #ifndef PROTO_LOCAL_sLeaveHouseStepsGuard
 extern u32 sLeaveHouseStepsGuard;
 #endif
-#ifndef PROTO_LOCAL_sHitTalkSteps
-extern u32 sHitTalkSteps[6];
-#endif
-#ifndef PROTO_LOCAL_sPitfallSteps
-extern u32 sPitfallSteps[10];
-#endif
-#ifndef PROTO_LOCAL_sAdmireCatchSteps
-extern u32 sAdmireCatchSteps[4];
-#endif
 #ifndef PROTO_LOCAL_sPitfallClimbOutStepsGuard
 extern u32 sPitfallClimbOutStepsGuard;
-#endif
-#ifndef PROTO_LOCAL_sInHouseSteps
-extern u32 sInHouseSteps[4];
-#endif
-#ifndef PROTO_LOCAL_sFleaRemovedSteps
-extern u32 sFleaRemovedSteps[4];
 #endif
 #ifndef PROTO_LOCAL_sPushTalkStepsGuard
 extern u32 sPushTalkStepsGuard;
@@ -474,9 +405,6 @@ extern u32 sPitfallStepsGuard;
 #endif
 #ifndef PROTO_LOCAL_sPushedStepsGuard
 extern u32 sPushedStepsGuard;
-#endif
-#ifndef PROTO_LOCAL_sFaceTalkerSteps
-extern u32 sFaceTalkerSteps[2];
 #endif
 #ifndef PROTO_LOCAL_sTalkFacingArc
 extern s16 sTalkFacingArc;
@@ -611,13 +539,13 @@ s32 FieldVillagerAi_GetRelationLevel(void *a, void *b);
 s32 FieldVillagerAi_GetPartnerRelationLevel(void *a, void *o);
 #endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_AddRelationByLevel
-void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, s8 *t);
+void FieldVillagerAi_AddRelationByLevel(void *a, void *r1, void *r2, const s8 *t);
 #endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_AddPartnerRelation
-void FieldVillagerAi_AddPartnerRelation(void *a, void *o, s8 *t);
+void FieldVillagerAi_AddPartnerRelation(void *a, void *o, const s8 *t);
 #endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_AddRandomPairRelation
-void FieldVillagerAi_AddRandomPairRelation(void *a, s32 unused, s8 *t);
+void FieldVillagerAi_AddRandomPairRelation(void *a, FieldVillager *unused, const s8 *t);
 #endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_AddMood
 void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag);
@@ -626,7 +554,7 @@ void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag);
 void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6);
 #endif
 #ifndef PROTO_LOCAL_FieldVillagerAi_OrderByFriendship
-s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d);
+s32 FieldVillagerAi_OrderByFriendship(void *unused, void **a, void **b, void *c, void *d);
 #endif
 #ifndef PROTO_LOCAL_FieldVillager_StepToward
 void FieldVillager_StepToward(s32 *p, s32 target, s32 a, s32 spd, s32 min);

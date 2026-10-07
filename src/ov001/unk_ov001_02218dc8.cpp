@@ -28,7 +28,7 @@ extern "C" void WfcSimpleStartDone_Enter() {
     WfcHighlight_SetConnection();
     WfcUtil_ShowBottomMessage(0x6b);
     WfcSound_Play(0x10);
-    WfcUtil_SetScene((void *)WfcSimpleStartDone_FadeIn);
+    WfcUtil_SetScene(WfcSimpleStartDone_FadeIn);
 }
 
 extern "C" void WfcSimpleStartDone_LoadBg() {
@@ -48,12 +48,12 @@ extern "C" void WfcSimpleStartDone_LoadBg() {
 extern "C" void WfcSimpleStartDone_FadeIn() {
     WfcFade_Start(2, 0, 0x15, 8);
     WfcGx_ShowPlanes(0, 0x15);
-    WfcUtil_SetScene((void *)WfcSimpleStartDone_WaitFadeIn);
+    WfcUtil_SetScene(WfcSimpleStartDone_WaitFadeIn);
 }
 
 extern "C" void WfcSimpleStartDone_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
-    WfcUtil_SetScene((void *)WfcSimpleStartDone_Update);
+    WfcUtil_SetScene(WfcSimpleStartDone_Update);
 }
 
 extern "C" void WfcSimpleStartDone_Update() {
@@ -67,7 +67,7 @@ extern "C" void WfcSimpleStartDone_Idle() {
 extern "C" void WfcSimpleStartDone_FadeOut() {
     WfcFade_Start(3, 1, 1, 8);
     WfcFade_Start(3, 0, 0x15, 8);
-    WfcUtil_SetScene((void *)WfcSimpleStartDone_Exit);
+    WfcUtil_SetScene(WfcSimpleStartDone_Exit);
 }
 
 extern "C" void WfcSimpleStartDone_Exit() {
@@ -79,12 +79,12 @@ extern "C" void WfcSimpleStartDone_Exit() {
     WfcGx_HidePlanes(0, 0x15);
     WfcUtil_SetScreenFlags(0, 0);
     WfcUtil_SetEditParams(0, 1);
-    WfcUtil_SetScene((void *)WfcTestConfirm_Enter);
+    WfcUtil_SetScene(WfcTestConfirm_Enter);
 }
 
 extern "C" void WfcSimpleStartDone_CountDown() {
     sWfcSimpleStartDoneTimer++;
     if (sWfcSimpleStartDoneTimer < 0x78) return;
-    WfcUtil_SetScene((void *)WfcSimpleStartDone_FadeOut);
+    WfcUtil_SetScene(WfcSimpleStartDone_FadeOut);
 }
 

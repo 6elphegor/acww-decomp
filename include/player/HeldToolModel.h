@@ -4,6 +4,7 @@
 #include "types.h"
 #include "uptr.h"
 #include "npc/NpcResHandleView.h"
+#include "gfx/Mtx43.h"
 
 class BlendAnimModel;
 struct Unk_02006d14;
@@ -14,7 +15,7 @@ struct HeldToolModel {
     /* 0x00 */ u16 heldItem;
     /* 0x02 */ u8 unk_02[2];
     /* 0x04 */ u8 modelHandle[HOST_SIZED(8, NpcHeldItemModelHandle)] HOST_ALIGN8;  // NpcHeldItemModelHandle (constructed in place)
-    /* 0x0c */ u8 handMtx[0x30];
+    /* 0x0c */ Mtx43 handMtx;
     /* 0x3c */ u8 visible;
     /* 0x3d */ u8 pad_3d[3];
 

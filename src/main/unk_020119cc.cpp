@@ -56,34 +56,12 @@
 #include "player/PlayerId.h"
 #include "snd/SndSeEmitter.h"
 #include "talk/MsgString.h"
-#define PROTO_LOCAL_BlinkTimer_BlinkNow  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BlinkTimer_Clear  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_BlinkTimer_Update  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Effect_SetPosition  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Emotion_GetEntry  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Footstep_GetSeAtPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HandOverItem_GetPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HeldItemModel_Draw  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_HeldItemModel_GetModel  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Math_AngleXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Melody_Unpack  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcAction_PackItem  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcAction_UnpackAnim  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcLookAt_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_NpcNetRecord_SetSlotsAndSync  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetBodyPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetCharacter  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetHeadPos  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_PlayerActor_GetSlotPosXZ  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_Snd_SeEmitterPlayAlternate  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_Apply  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_FromCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_WorldCurve_ToCurved  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gNpcModelHeap  // declared below: the shared prototype conflicts with the calls here
-#define PROTO_LOCAL_gRandom  // declared below: the shared prototype conflicts with the calls here
 #include "proto/autoload_2/unk_020e8558.h"
 #include "proto/autoload_2/unk_02119434.h"
 #include "proto/autoload_2/unk_02133d04.h"
+#include "proto/main/unk_02002b1c.h"
+#include "proto/main/unk_02060b7c.h"
+#include "proto/main/unk_020b0a80.h"
 #include "proto/itcm/unk_01ffb4e8.h"
 #include "proto/itcm/unk_01ffcfc0.h"
 #include "proto/main/unk_020039ec.h"
@@ -240,9 +218,9 @@ struct VillagerRoute {
 
     BOOL isActive();
     void setStepMode(u32 v);
-    void checkUnitChanged(u32 v);
+    void checkUnitChanged(VecFx32 *v);
     void markUnitUnset();
-    void rememberUnit(u32 v);
+    void rememberUnit(VecFx32 *v);
     void start(u32 a, u32 idx, u32 b, u32 c);
     void reset();
     VillagerRoute* resetTarget();
@@ -373,9 +351,7 @@ public:
     NpcAnimCtrl animCtrl;  // DS +0x334
     NpcMoveCtrl moveCtrl;  // DS +0x350
     u8 pad_3a8[0xd8];  // DS +0x3a8 [0xd0]
-    s32 headTopPosX;  // DS +0x478
-    s32 headTopPosY;  // DS +0x47c
-    s32 headTopPosZ;  // DS +0x480
+    VecFx32 headTopPos;  // DS +0x478
     u8 pad_484[0xac];  // DS +0x484 [0x90]
     SndSeEmitterKind1 seEmitter;  // DS +0x514
     u8 pad_558[0xe0];  // DS +0x558 [0xd0]
@@ -387,9 +363,7 @@ public:
     NpcAnimCtrl animCtrl;
     NpcMoveCtrl moveCtrl;
     u8 pad_3a8[0x478 - 0x3a8];
-    s32 headTopPosX;
-    s32 headTopPosY;
-    s32 headTopPosZ;
+    VecFx32 headTopPos;
     u8 pad_484[0x514 - 0x484];
     SndSeEmitterKind1 seEmitter;
     u8 pad_558[0x628 - 0x558];
@@ -400,11 +374,6 @@ public:
 
 
 // unk_02017d74.cpp
-struct Unk_02017d74_Buf {
-    s32 a;
-    s32 b;
-    s32 c;
-};
 
 
 // unk_02017d74.cpp
@@ -503,14 +472,12 @@ struct Unk_021be028_Dir {
     s32 x, z;
     Unk_021be028_Dir(s32 a, s32 b) { x = a; z = b; }
 };
+// An emotion: its intro and loop phases (NpcEmotionFx::startEntry), then how the intro plays and the sound mode.
 struct NpcEmotionEntry {
-    u32 introAnim;
-    const u16 *introFxSlots;
-    u32 introFxInfo;
-    u32 loopAnim;
-    const u16 *loopFxSlots;
-    u32 loopFxInfo;
-    u32 playFlags;
+    /* 0x00 */ NpcEmotionPhase phases[2];
+    /* 0x18 */ u8 introMode;
+    /* 0x19 */ u8 seMode;
+    /* 0x1a */ u8 pad_1a[2];
 };
 typedef void (NpcTalkCtrl::*Unk_02014040_Fn)(NpcActor *);
 
@@ -554,9 +521,7 @@ void MI_CpuFill8(void *dst, u32 v, u32 n);
 #define SndSeEmitter_dtorBase _ZN12SndSeEmitterD2Ev
 void SndSeEmitter_dtorBase(void *p);
 HeldItemModel *_ZN16NpcResHandleView16getHeldItemModelEv(void *p);
-BlendAnimModel *HeldItemModel_GetModel(HeldItemModel *p);
 void Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
-void HeldItemModel_Draw(HeldItemModel *p, void *src);
 void _ZN12NpcResHandle7releaseEv(void *p);
 inline BOOL Unk_02011c44_InRange(u32 id, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -572,12 +537,10 @@ extern "C" {
 
 void _ZN13VillagerRoute8planStepEP7VecFx32(void *self, VecFx32 *p);
 void _ZN13VillagerRoute14clearJunctionsEv(void *self);
-void _ZN13VillagerRoute16checkUnitChangedEj(void *self, u32 v);
 void *_ZN16NpcResHandleView16getHeldItemModelEv(void *);
 s32 _ZN12NpcResHandle7acquireEv(void *);
 extern BlockMap *gSceneBlockMap;
 extern u8 gSaveVillagers[];
-extern u8 gRandom[];
 extern s16 data_02135f44[];
 extern s32 sRouteDirs[];
 s32 MapBlock_HasAnyAttr(void *, u32);
@@ -590,7 +553,6 @@ void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
 void FieldPos_FromUnitCenter(VecFx32 *, s32, s32);
 s32 BlockMap_BlockHasAllAttr(BlockMap *, s32, s32, u32);
 s32 BlockMap_FindBlockAllAttr(BlockMap *, u32);
-s32 Math_AngleXZ(VecFx32 *, VecFx32 *);
 s32 Random_Next(void *);
 s32 func_01ffcb0c(s32, s32);
 void FieldPos_SnapToUnitCenter(VecFx32 *, VecFx32 *);
@@ -656,11 +618,9 @@ void _ZN16ActorTalkRequest4tickEv(void *self);
 ActorTalkRequest* _ZN8NpcActor14getTalkRequestEv(void *self);
 void _ZN9Character17detachTalkRequestEi(void *self, ActorTalkRequest* o);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *self, u32 v);
-void Snd_SeEmitterPlayAlternate(void *self, s32 a, u32 b);
-s32 Footstep_GetSeAtPos(void *self);
 BOOL _ZN8BlockMap12getWalkLinksEii(void* p, u32 x, u32 y);
 void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
-void FieldPos_ToUnit(u32* a, u32* b, u32 c);
+void FieldPos_ToUnit(u32 *a, u32 *b, VecFx32 *v);
 void MI_CpuFill8(void* p, u32 v, u32 n);
 extern VillagerRouteType sVillagerRouteTypes[];
 s32 _ZN8NpcActor19getTeachableEmotionEv();
@@ -712,7 +672,6 @@ void _ZN15TalkWindowState11lockAdvanceEv(void *p);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 BOOL _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u32 i, s32 j);
-void Melody_Unpack(void *p, void *q);
 extern u16 data_020c6cc8;
 }
 }
@@ -728,9 +687,6 @@ u32 _ZN13NpcActionCtrl9getActionEv(u8 *p);
 u32 _ZN13NpcActionCtrl12isActionDoneEv(u8 *p);
 void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 void _ZN15TalkWindowState11lockAdvanceEv(void *p);
-u32 PlayerActor_GetBodyPos(u32 n);
-s32 Math_AngleXZ(u32 a, u8 *b);
-Actor *PlayerActor_GetCharacter(u32 a);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
 void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(u8 *p, u32 a, u32 b, u8 *c, u8 *d, u32 e, u32 f, u32 g);
 ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void *self);
@@ -805,7 +761,6 @@ extern "C" {
 
 void _ZN13NpcActionCtrl13setActionDoneEi(void *self, s32 v);
 NpcActionParams * _ZN13NpcActionCtrl12getCurParamsEv(void *self);
-void NpcAction_PackItem(void *self, void *a, u16 *b);
 extern volatile u16 data_020c6cc8;
 extern u8 gVec3Zero[];
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -819,7 +774,6 @@ s32 _ZN11NpcAnimCtrl9getAnimIdEj(NpcAnimCtrl *p, u32 a);
 BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(NpcAnimCtrl *p, ...);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(NpcAnimCtrl *p, Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void _ZN13HeldToolModel12playIdleAnimEjj(void *p, u32 a, u32 b);
-void Effect_SetPosition(s32 h, void *a, s16 *b, u32 c);
 void _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(Unk_02016a44_S0ec *p, u32 a, u32 b);
 }
 }
@@ -836,7 +790,6 @@ s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *p, u32 a);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 s32 _ZN13NpcActionCtrl13setActionDoneEi(NpcActionCtrl *s, u32 a);
 void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
-s32 Effect_SetPosition(s32 a, void *b, void *c, u32 d);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, u32 a, u32 b);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
@@ -856,7 +809,6 @@ BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(void *p, void *q);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h);
 s32 _ZN13NpcActionCtrl13setActionDoneEi(void *s, u32 a);
 void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
-BOOL HandOverItem_GetPos(void *p);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
 void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
 void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
@@ -904,7 +856,6 @@ s32 _ZN11NpcMoveCtrl14getTargetAngleEv(void *a);
 s32 _ZN11NpcMoveCtrl15getDestinationBEv(void *a);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *a, void *b, u32 c);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *a);
-NpcEmotionEntry *Emotion_GetEntry(u32 i);
 }
 }
 
@@ -925,12 +876,9 @@ void _ZN12Unk_0201acf813func_0201acf8Et(void *p, s32 v);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *p);
 BOOL _ZN14NpcSpeechState10isSpeakingEv(void *p);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 v);
-BOOL BlinkTimer_Update(void *p);
 extern u16 data_020c6cc8;
 extern u32 gVec3Zero[3];
 extern NpcActionEntry sNpcActionTable[];
-void NpcAction_PackItem(void *unused, void *p, u16 *v);
-void NpcAction_UnpackAnim(u32 *a, u8 *b, u16 *c, u16 *d, u8 *src);
 }
 }
 
@@ -938,21 +886,16 @@ void NpcAction_UnpackAnim(u32 *a, u8 *b, u16 *c, u16 *d, u8 *src);
 namespace nO {
 extern "C" {
 
-BOOL NpcLookAt_GetHeadPos(void *self, void *a);
 extern s32 sNpcTalkMouthAnims[];
 void *_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *h);
 void *_ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *h);
 s32 NNS_G3dGetAnmByIdx(void *p, s32 v);
 void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *p, void *a, s32 b, s32 c, s32 d, s32 e);
 void _ZN12NpcResHandle7releaseEv(void *p);
-void BlinkTimer_BlinkNow(void *p);
-void BlinkTimer_Clear(void *p);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 BOOL _ZN12NpcResHandle7acquireEv(void *p);
-void NpcTexPatBufRef_LoadFile(void *a, s32 b);
-s32 NpcTexPatBufRef_GetBuffer(void *a);
-u8 *Emotion_GetEntry(u32 a);
-void Effect_SetPosition(s32 h, void *a, void *b, s32 c);
+void NpcTexPatBufRef_LoadFile(s32 *p, void *path);
+void *NpcTexPatBufRef_GetBuffer(s32 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void Math_StepAngle(s16 *p, s32 target, s32 step);
@@ -970,9 +913,6 @@ extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern VecFx32 sNpcObstacleProbeOffsets[];
 extern NpcMoveModeEntry sNpcMoveModeTable[];
-s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out);
-Character *PlayerActor_GetCharacter(s32 h);
-BOOL PlayerActor_GetHeadPos(VecFx32 *out, s32 h);
 s32 Math_StepAngle(s16 *p, s32 v, s32 n);
 s32 Vec_Distance(void *a, void *b);
 s32 Vec_NotEqual(void *a, void *b);
@@ -982,15 +922,12 @@ s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Math_AngleXZ(void *a, void *b);
 s32 Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
-s32 WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
-s32 Ground_GetExitAtPos(s32 id);
-void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, s32 id, s32 a, s32 b);
-s32 Collision_HasUnitShapeAt(s32 id);
+s32 Ground_GetExitAtPos(VecFx32 *p);
+void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, VecFx32 *p, s32 a, s32 b);
+s32 Collision_HasUnitShapeAt(VecFx32 *p);
 void GroundInfo_Destruct(void *buf);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, s32 c, u32 d, s32 e, s32 f, s32 g, s32 h);
-s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out);
 static inline BOOL Unk_0201a834_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
 }
@@ -1014,8 +951,6 @@ s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void Vec_Equal(VecFx32 *a, VecFx32 *b);
 s32 TownMap_IsPosWalkable(VecFx32 *v, s32 a);
 s32 _ZN11CommManager8isOnlineEv(u8 *g);
-VecFx32 *PlayerActor_GetBodyPos(u32 n);
-void WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 void _ZN8NpcActor12releaseModelEv(void *p);
 void _ZN8NpcActor12netSendStateEjz(void *p, s32 v);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
@@ -1023,11 +958,9 @@ s32 _ZN8NpcActor10isNetOwnerEv(void *p);
 s32 _ZN8NpcActor13netReadActionEPiS0_Ph(void *p, s32 *a, s32 *b, void *buf);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 s32 _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void NpcAction_UnpackAnim(u32 *a, void *b, u16 *c, u16 *d, void *buf);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(void *p, s32 a);
 void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, void *f, s32 g);
 s32 Ground_GetDefaultY(s32 a);
-u32 WorldCurve_ToCurved(void *a, void *b);
 s32 _ZN8NpcActor15netIsTalkLockedEv(void *p);
 void _ZN13HeldToolModel6updateEP12Unk_02006d14(s32 v, void *p);
 void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in);
@@ -1044,7 +977,6 @@ extern s32 data_020c6d60[];
 extern s32 data_020c6d48[];
 extern s32 data_020c6d20;
 extern u8 sNpcAvoidOffsets[];
-extern s32 gNpcModelHeap;
 extern s16 data_02135f44[];
 BOOL _ZN11NpcMoveCtrl14setTargetAngleEs(void *p, s32 v);
 void *MI_CpuFill8(void *dst, s32 v, u32 n);
@@ -1053,10 +985,6 @@ u8 Npc_GetInfoByte2(void *p);
 s32 Scene_GetCurrent();
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 v);
 BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
-s32 NpcNetRecord_SetSlotsAndSync(s32 a, s32 b, s32 c, void *d);
-s32 PlayerActor_GetCharacter(u32 id);
-BOOL PlayerActor_GetSlotPosXZ(u8 *a, void *b, void *c, s32 d, u32 e);
-s32 Math_AngleXZ(void *a, void *b);
 s32 Vec_Distance(void *a, void *b);
 BOOL Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
@@ -1065,7 +993,6 @@ s32 Scene_GetMuseumRoom();
 void JointCb_UseRestTranslation(void *self, u32 flags);
 void MTX_RotY33_(MtxFx33 *m, s32 a, s32 b);
 void MTX_RotX33_(MtxFx33 *m, s32 a, s32 b);
-s32 WorldCurve_Apply(VecFx32 *a, VecFx32 *b);
 void NpcActor_JointCalcLayer3Cb(NNSG3dRS *p);
 void NpcActor_SetJointCallbackNext(NNSG3dRS *self);
 void NpcActor_SetJointCallbackNext(NNSG3dRS *self);
@@ -1337,7 +1264,7 @@ extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
             s32 r;
             va = *pv;
             vb = *pv;
-            r = WorldCurve_Apply(&va, &vb);
+            r = WorldCurve_Apply((WorldCurve *)&va, (WorldCurve *)&vb);
             pv->z = va.z;
             pv->y = va.y - WorldCurve_GetRadius();
             if (r != 0) {
@@ -1364,9 +1291,9 @@ extern "C" void NpcActor_SetJointCallbackNext(NNSG3dRS *self) {
 
 BOOL NpcActor::loadModel() {
     using namespace nR;
-    s32 t = (s32)getModelPath();
+    u8 *t = getModelPath();
     BOOL r = FALSE;
-    if (((CachedModel *)(&model))->load((void *)(t), (void *)(gNpcModelHeap)) != 0) {
+    if (((CachedModel *)(&model))->load(t, gNpcModelHeap) != 0) {
         r = TRUE;
     }
     return r;
@@ -1413,7 +1340,7 @@ extern "C" BOOL NpcActor_IsFrontAngle(s32 x) {
 
 BOOL NpcActor::isPosInFront(s16 *out, VecFx32 *pos) {
     using namespace nR;
-    *out = Math_AngleXZ(&position, pos);
+    *out = Math_AngleXZ(&position.x, &pos->x);
     return NpcActor_IsFrontAngle((s16)(*out - rotY));
 }
 
@@ -1455,7 +1382,7 @@ s32 NpcActor::getAngleTo(NpcActor *other) {
     using namespace nR;
     s32 r = 0;
     if (other != NULL) {
-        r = Math_AngleXZ(&position, &other->position);
+        r = Math_AngleXZ(&position.x, &other->position.x);
     }
     return r;
 }
@@ -1466,12 +1393,12 @@ s32 NpcActor::getAngleToPlayer(u32 id) {
     u8 flag;
     VecFx32 vec;
     flag = 0;
-    if (PlayerActor_GetSlotPosXZ(&flag, &vec, &vec.z, -1, id) != 0) {
-        result = Math_AngleXZ(&position, &vec);
+    if (PlayerActor_GetSlotPosXZ(&flag, &vec.x, &vec.z, -1, id) != 0) {
+        result = Math_AngleXZ(&position.x, &vec.x);
     } else {
-        s32 p = PlayerActor_GetCharacter(id);
-        if (p != 0) {
-            result = getAngleTo((NpcActor *)p);
+        NpcActor *p = (NpcActor *)PlayerActor_GetCharacter(id);
+        if (p != NULL) {
+            result = getAngleTo(p);
         }
     }
     return result;
@@ -1608,9 +1535,9 @@ BOOL NpcActor::isNetOwner() {
     return TRUE;
 }
 
-s32 NpcActor::netSetSlots(s32 a, s32 b, s32 c) {
+void NpcActor::netSetSlots(s32 a, s32 b, s32 c) {
     using namespace nR;
-    return NpcNetRecord_SetSlotsAndSync(a, b, c, &npcHandle);
+    NpcNetRecord_SetSlotsAndSync(a, b, c, &npcHandle);
 }
 
 void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
@@ -1833,7 +1760,7 @@ BOOL NpcActor::onExecute() {
                     case 12:
                         L.z = 0x137;
                         s.b0 = 0;
-                        NpcAction_UnpackAnim((u32 *)&L.z, &s, &s.h6, &s.h8, buf);
+                        NpcAction_UnpackAnim((u32 *)&L.z, &s.b0, &s.h6, &s.h8, buf);
                         ((NpcActionCtrl *)(&actionCtrl))->requestPlayAnim(L.b, L.z, s.b0, s.h6, s.h8);
                         break;
                     case 20:
@@ -1857,7 +1784,7 @@ BOOL NpcActor::onExecute() {
     ((NpcLookAt *)(&lookAt))->update((NpcActor *)(this));
     ((NpcObstacleProbe *)(&obstacleProbe))->clear();
     ((NpcObstacleProbe *)(&obstacleProbe))->probe((Character *)(this));
-    drawTilt = WorldCurve_ToCurved(&drawPos, &position);
+    drawTilt = WorldCurve_ToCurved((WorldCurve *)&drawPos, (WorldCurve *)&position);
     ((Actor *)(this))->calcModelMatrix(&t);
     (*(Mtx43 *)&model.mtx) = t;
     if (netIsTalkLocked()) {
@@ -1882,7 +1809,7 @@ BOOL NpcActor::onExecute() {
     v.z = pp->z;
     ((SndSeEmitter *)(&seEmitter))->callUpdateRelativeAlt(&v);
     if (curHeldTool) {
-        _ZN13HeldToolModel6updateEP12Unk_02006d14((s32)curHeldTool, this);
+        ((HeldToolModel *)curHeldTool)->update((Unk_02006d14 *)this);
     }
     ((NpcFootstepFx *)(&footstepFx))->updateFootsteps((NpcActor *)(this));
     ((NpcFaceAnim *)(&faceAnim))->update((u8 *)(this));
@@ -1928,13 +1855,13 @@ BOOL NpcActor::onDraw() {
     Model_GetJointWorldMtx(&model, &jointMtx, 0xb);
     Model_GetJointWorldMtx(&model, &buf, 0x10);
     t0 = *(VecFx32 *)&buf.m[9];
-    WorldCurve_FromCurved((VecFx32 *)&jointPos[0], &t0);
+    WorldCurve_FromCurved((WorldCurve *)&jointPos[0], (WorldCurve *)&t0);
     Model_GetJointWorldMtx(&model, &buf, 0x7);
     t1 = *(VecFx32 *)&buf.m[9];
-    WorldCurve_FromCurved((VecFx32 *)&jointPos[1], &t1);
+    WorldCurve_FromCurved((WorldCurve *)&jointPos[1], (WorldCurve *)&t1);
     Model_GetJointWorldMtx(&model, &buf, 0x4);
     t2 = *(VecFx32 *)&buf.m[9];
-    WorldCurve_FromCurved((VecFx32 *)&jointPos[2], &t2);
+    WorldCurve_FromCurved((WorldCurve *)&jointPos[2], (WorldCurve *)&t2);
     if (shadowEnabled != 0) {
         CharaShadow_Draw(&position, 0xb00, 0x4000, 0x1000);
     }
@@ -1967,7 +1894,7 @@ BOOL NpcActor::getHeldItemPos(VecFx32 *out) {
     out->x = a;
     out->y = jointMtx.m[10];
     out->z = jointMtx.m[11];
-    WorldCurve_FromCurved(out, out);
+    WorldCurve_FromCurved((WorldCurve *)out, (WorldCurve *)out);
     return TRUE;
 }
 
@@ -2042,7 +1969,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
             u32 k;
             z1 = 0;
             for (k = 0; k < 4; k++) {
-                V3 *p = PlayerActor_GetBodyPos(k);
+                V3 *p = (V3 *)PlayerActor_GetBodyPos(k);
                 if (p) {
                     FieldPos_SnapToUnitCenter(&tmp, p);
                     tmp.y = z1;
@@ -2213,7 +2140,7 @@ void NpcMoveCtrl::applyMovement(Character *scene) {
             hi = curSpeedPreset.z;
         }
         Math_StepS32Alt(&scene->speed, lo, hi);
-        s32 ang = Math_AngleXZ((VecFx32 *)&scene->position, &destination);
+        s32 ang = Math_AngleXZ(&scene->position.x, &destination.x);
         if (ang == scene->moveAngleY) {
             s32 d = Vec_DistXZ(&destination, (VecFx32 *)&scene->position);
             if (d < scene->speed) {
@@ -2258,7 +2185,7 @@ s32 NpcMoveCtrl::getMoveMode() {
 
 void NpcMoveCtrl::aimAtDestination(Character *scene) {
     using namespace nP;
-    targetAngle = Math_AngleXZ((VecFx32 *)&scene->position, &destination);
+    targetAngle = Math_AngleXZ(&scene->position.x, &destination.x);
 }
 
 s32 NpcMoveCtrl::stepAngle(s16 *p, s16 target, s16 step, u8 mode) {
@@ -2441,17 +2368,17 @@ namespace nP {
 extern "C" BOOL Npc_IsPosBlocked(VecFx32 *pos) {
     u32 buf[16];
     if (Unk_0201a834_IsOne(gFieldSceneKind)) {
-        if (Ground_GetExitAtPos((s32)pos) != -1) {
+        if (Ground_GetExitAtPos(pos) != -1) {
             return TRUE;
         }
-        if (FtrMgr_GetSurfaceHeightAtPos((s32)pos)) {
+        if (FtrMgr_GetSurfaceHeightAtPos(pos)) {
             return TRUE;
         }
         return FALSE;
     }
-    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, (s32)pos, 0, 0);
+    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, pos, 0, 0);
     s32 r;
-    if (buf[12] != 0 || ((GroundInfoBase *)(buf))->getHeight(1) > 0 || Collision_HasUnitShapeAt((s32)pos)) {
+    if (buf[12] != 0 || ((GroundInfoBase *)(buf))->getHeight(1) > 0 || Collision_HasUnitShapeAt(pos)) {
         r = 1;
     } else {
         r = 0;
@@ -2526,7 +2453,7 @@ extern "C" s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out) {
         out->x = x;
         out->y = self->headPos.y;
         out->z = self->headPos.z;
-        WorldCurve_FromCurved(out, out);
+        WorldCurve_FromCurved((WorldCurve *)out, (WorldCurve *)out);
         r = 1;
     }
     return r;
@@ -2594,7 +2521,7 @@ BOOL NpcLookAt::canSeeTarget(Character *scene) {
     z.z = 0;
     switch (lookType) {
     case 1: {
-        Character *t = PlayerActor_GetCharacter(targetPlayer);
+        Character *t = (Character *)PlayerActor_GetCharacter(targetPlayer);
         if (t != 0) {
             p = (VecFx32 *)&t->position;
         }
@@ -2618,7 +2545,7 @@ BOOL NpcLookAt::canSeeTarget(Character *scene) {
 
 s32 NpcLookAt::calcYaw(VecFx32 *a, VecFx32 *b, s32 c) {
     using namespace nP;
-    return (s16)(Math_AngleXZ(b, a) - c);
+    return (s16)(Math_AngleXZ(&b->x, &a->x) - c);
 }
 
 s32 NpcLookAt::calcPitch(VecFx32 *a, VecFx32 *b, s32 c) {
@@ -2709,9 +2636,9 @@ void NpcLookAt::relax() {
 
 void NpcLookAt::lookAtPlayer(Character *scene, s32 h, s32 limit, u8 flag) {
     using namespace nP;
-    Character *t = PlayerActor_GetCharacter(h);
+    Character *t = (Character *)PlayerActor_GetCharacter(h);
     if (t != 0) {
-        VecFx32 v;
+        VecFx32Ctor v;
         if (PlayerActor_GetHeadPos(&v, h)) {
             VecFx32 w;
             w.x = v.x;
@@ -2750,7 +2677,7 @@ void NpcLookAt::lookAtPoint(NpcActor *o) {
     using namespace nO;
     s32 r6 = 0;
     s32 r7 = 0;
-    u8 sp[12];
+    VecFx32 sp;
     s32 d = Vec_Distance(&targetPos, (VecFx32 *)&o->position);
     s32 lim;
     onTarget = 0;
@@ -2759,8 +2686,8 @@ void NpcLookAt::lookAtPoint(NpcActor *o) {
         s32 t = ((NpcLookAt *)(this))->calcYaw((VecFx32 *)(&targetPos), (VecFx32 *)((VecFx32 *)&o->position), o->rotY);
         if (useYawLimit == 0 || isWithinYawLimit(t)) {
             r6 = ((NpcLookAt *)(this))->calcClampedYaw((VecFx32 *)(&targetPos), (VecFx32 *)((VecFx32 *)&o->position), o->rotY);
-            if (nO::NpcLookAt_GetHeadPos(this, sp)) {
-                r7 = ((NpcLookAt *)(this))->calcClampedPitch((VecFx32 *)(&targetPos), (VecFx32 *)(sp), o->rotX);
+            if (NpcLookAt_GetHeadPos(this, &sp)) {
+                r7 = ((NpcLookAt *)(this))->calcClampedPitch((VecFx32 *)(&targetPos), &sp, o->rotX);
                 onTarget = 1;
             }
         }
@@ -2901,7 +2828,7 @@ void NpcEmotionFx::clearSlots(void *p, s32 n) {
     }
 }
 
-void NpcEmotionFx::copySlots(void *dst, void *src, s32 n) {
+void NpcEmotionFx::copySlots(void *dst, const void *src, s32 n) {
     using namespace nO;
     MI_CpuCopy8(src, dst, n << 2);
 }
@@ -2920,7 +2847,7 @@ s32 NpcEmotionFx::findFreeHandle() {
     return r;
 }
 
-void NpcEmotionFx::setSlots(void *a, u32 b, s32 c) {
+void NpcEmotionFx::setSlots(const void *a, u32 b, s32 c) {
     using namespace nO;
     clearSlots(slots, 2);
     copySlots(slots, a, b);
@@ -2941,9 +2868,9 @@ void NpcEmotionFx::startEntry(NpcEmotionPhase *tbl, s32 idx) {
 
 void NpcEmotionFx::playSound(NpcEmotionFxSlot *s) {
     using namespace nO;
-    u8 *bank = Emotion_GetEntry(emotionId);
+    NpcEmotionEntry *bank = Emotion_GetEntry(emotionId);
     if (s->repeat == 1 || seMode == 2) {
-        seMode = bank[0x19];
+        seMode = bank->seMode;
         if (seMode == 1) {
             if (useGlobalSe == 0) {
                 Snd_SeEmitterPlayHeld(seEmitter, emotionId + 0x84, 0x7f, 0);
@@ -2975,7 +2902,7 @@ void NpcEmotionFx::stopSound() {
     seMode = 2;
 }
 
-void NpcEmotionFx::updateSlot(void *a, s16 b, s32 c, u16 d, s32 j) {
+void NpcEmotionFx::updateSlot(VecFx32 *a, s16 b, s32 c, u16 d, s32 j) {
     using namespace nO;
     NpcEmotionFxSlot *s = &slots[j];
     s32 id = s->effectId;
@@ -2991,8 +2918,8 @@ void NpcEmotionFx::updateSlot(void *a, s16 b, s32 c, u16 d, s32 j) {
                     }
                 }
             }
-            u8 *bank = Emotion_GetEntry(emotionId);
-            s32 bv = *(s16 *)(bank + entryPart * 12 + 10);
+            NpcEmotionEntry *bank = Emotion_GetEntry(emotionId);
+            s32 bv = bank->phases[entryPart].seFrame;
             if (bv == dd) {
                 playSound(s);
             }
@@ -3012,13 +2939,13 @@ void NpcEmotionFx::killEffects() {
     stopSound();
 }
 
-void NpcEmotionFx::update(void *a, s16 b, s32 c, u16 d) {
+void NpcEmotionFx::update(VecFx32 *a, s16 b, s32 c, u16 d) {
     using namespace nO;
     keepSound();
     s32 zero = 0;
     for (s32 i = 0; i < 4; i++) {
         if (effects[i] != ~zero) {
-            Effect_SetPosition(effects[i], a, &b, zero);
+            Effect_SetPosition(effects[i], a, &b, NULL);
         }
     }
     for (s32 j = 0; j < 2; j++) {
@@ -3058,25 +2985,25 @@ s32 NpcFaceAnim::getMouthAnim() {
 
 BOOL NpcFaceAnim::load(NpcActor *o) {
     using namespace nO;
-    void *r6 = o->getTexturePath();
+    u8 *r6 = o->getTexturePath();
     if (((NpcFaceAnimHandle *)(&texPatBuf))->getTexPatBufRef() == 0 && r6 != 0) {
         if (!((NpcResHandle *)(&texPatBuf))->acquire()) {
             return FALSE;
         }
-        void *a = ((NpcFaceAnimHandle *)(&texPatBuf))->getTexPatBufRef();
-        NpcTexPatBufRef_LoadFile(a, (s32)r6);
+        s32 *a = (s32 *)((NpcFaceAnimHandle *)(&texPatBuf))->getTexPatBufRef();
+        NpcTexPatBufRef_LoadFile(a, r6);
         if (!((NpcResHandle *)(&texPatHeap))->acquire()) {
             return FALSE;
         }
         void *h = ((NpcHeldItemModelHandle *)(&texPatHeap))->getTexPatHeapRef();
-        s32 fl = (s32)o->model.resMdl;
-        s32 x = NpcTexPatBufRef_GetBuffer(a);
-        if (!((MatTexPatAnim *)(&eyeTexAnim))->init((void *)(fl), (void *)(x), 1, (void *)(((CharaFaceAnimWorkRef *)(h))->getHeap()))) {
+        NNSG3dResMdl *fl = o->model.resMdl;
+        void *x = NpcTexPatBufRef_GetBuffer(a);
+        if (!((MatTexPatAnim *)(&eyeTexAnim))->init(fl, x, 1, (void *)(((CharaFaceAnimWorkRef *)(h))->getHeap()))) {
             return FALSE;
         }
-        s32 fl2 = (s32)o->model.resMdl;
-        s32 y = NpcTexPatBufRef_GetBuffer(a);
-        if (!((MatTexPatAnim *)(&mouthTexAnim))->init((void *)(fl2), (void *)(y), 1, (void *)(((CharaFaceAnimWorkRef *)(h))->getHeap()))) {
+        NNSG3dResMdl *fl2 = o->model.resMdl;
+        void *y = NpcTexPatBufRef_GetBuffer(a);
+        if (!((MatTexPatAnim *)(&mouthTexAnim))->init(fl2, y, 1, (void *)(((CharaFaceAnimWorkRef *)(h))->getHeap()))) {
             return FALSE;
         }
         if (!((NpcResHandle *)(&faceAnimRef))->acquire()) {
@@ -3084,7 +3011,7 @@ BOOL NpcFaceAnim::load(NpcActor *o) {
         }
         eyeAnimId = 0x16f;
         mouthAnimId = 0x16f;
-        BlinkTimer_Clear(this);
+        BlinkTimer_Clear((u8 *)(BlinkTimer *)this);
         loaded = 1;
     }
     return TRUE;
@@ -3198,7 +3125,7 @@ void NpcFaceAnim::setFaceAnims(s32 t, s32 u, s32 x, s32 mode) {
     }
 }
 
-void NpcFaceAnim::setFaceAnimsFrom(void *a, s32 b, s32 c) {
+void NpcFaceAnim::setFaceAnimsFrom(u32 a, s32 b, s32 c) {
     using namespace nO;
     if (isLoaded()) {
         s32 t = CharaAnim_GetEyeAnim(a);
@@ -3213,21 +3140,21 @@ void NpcFaceAnim::setFaceAnimsFrom(void *a, s32 b, s32 c) {
     }
 }
 
-BOOL NpcFaceAnim::setMaterialTex(void *m, void *q, u32 r) {
+BOOL NpcFaceAnim::setMaterialTex(MatTexPatAnim *m, const char *q, u32 r) {
     using namespace nO;
     if (isLoaded()) {
         _ZN13MatTexPatAnim13pauseMaterialEv(m, q);
-        if (((MatTexPatAnim *)(m))->setMaterialTex((s32)(q), r)) {
+        if (m->setMaterialTex((s32)(q), r)) {
             return TRUE;
         }
-        MatTexPatAnim_ResumeMaterial(m, q);
+        MatTexPatAnim_ResumeMaterial(m, (void *)q);
     }
     return FALSE;
 }
 
 BOOL NpcFaceAnim::setMouthTexture(u32 a) {
     using namespace nO;
-    return setMaterialTex(&mouthTexAnim, ((u8 *)"m"), a);
+    return setMaterialTex(&mouthTexAnim, "m", a);
 }
 
 void NpcFaceAnim::resumeMouthMaterial() {
@@ -3237,7 +3164,7 @@ void NpcFaceAnim::resumeMouthMaterial() {
 
 void NpcFaceAnim::blinkNow() {
     using namespace nO;
-    BlinkTimer_BlinkNow(this);
+    BlinkTimer_BlinkNow((u8 *)(BlinkTimer *)this);
 }
 
 void NpcFaceAnim::release() {
@@ -3253,7 +3180,7 @@ void NpcFaceAnim::update(u8 *o) {
     using namespace nN;
     if (isLoaded()) {
         if (eyeAnimId == 0) {
-            if (!((AnimFrameCtrl *)(&eyeTexAnim))->hasPassedFrame(0) || BlinkTimer_Update(this)) {
+            if (!((AnimFrameCtrl *)(&eyeTexAnim))->hasPassedFrame(0) || BlinkTimer_Update((u8 *)(BlinkTimer *)this)) {
                 ((MatTexPatAnim *)(&eyeTexAnim))->update();
             }
         } else {
@@ -3533,9 +3460,9 @@ extern "C" void NpcAction_PackMove(u8 *out, u32 a, u32 b, u32 c, u32 s0, s16 s1,
 }
 
 namespace nN {
-extern "C" void NpcAction_UnpackMove(u32 a, u32 b, u32 c, u32 d, void *s0, u16 *s1, u8 *out) {
-    NetBuf_UnpackPair20(out, a, b);
-    NetBuf_UnpackPair20(out + 5, c, d);
+extern "C" void NpcAction_UnpackMove(s32 *a, s32 *b, s32 *c, s32 *d, void *s0, u16 *s1, u8 *out) {
+    NetBuf_UnpackPair20(out, (u32 *)a, (u32 *)b);
+    NetBuf_UnpackPair20(out + 5, (u32 *)c, (u32 *)d);
     MI_CpuCopy8(out + 10, s0, 2);
     *s1 = out[12];
 }
@@ -4031,13 +3958,13 @@ s32 NpcActionCtrl::setupAct08(NpcActor *c) {
         v = c->getEmotion0BlendFrames();
     }
     emotionEntry = (NpcEmotionEntry *)&sEmotionTable[i];
-    emotionIntro = *(u8 *)&emotionEntry->playFlags;
-    ((NpcAnimCtrl *)(&c->animCtrl))->playAnim((NpcActor *)(c), emotionEntry->introAnim, v, emotionIntro, 0x1000, 0, 0);
+    emotionIntro = emotionEntry->introMode;
+    ((NpcAnimCtrl *)(&c->animCtrl))->playAnim((NpcActor *)(c), emotionEntry->phases[0].animId, v, emotionIntro, 0x1000, 0, 0);
     if (c->curHeldTool) {
         ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
     }
     c->emotionFx.emotionId = i;
-    ((NpcEmotionFx *)(&c->emotionFx))->startEntry((NpcEmotionPhase *)(emotionEntry), 0);
+    ((NpcEmotionFx *)(&c->emotionFx))->startEntry(emotionEntry->phases, 0);
     (this)->setActionDone(0);
     return 1;
 }
@@ -4049,22 +3976,22 @@ void NpcActionCtrl::mainAct08(NpcActor *c) {
         if (emotionIntro == 1) {
             if (((NpcAnimCtrl *)(&c->animCtrl))->isAnimFinished((NpcActor *)(c))) {
                 NpcEmotionEntry *r = emotionEntry;
-                s32 *pv = (s32 *)&r->loopAnim;
-                if ((s32)r->loopAnim < 0x137) {
+                s32 *pv = &r->phases[1].animId;
+                if (r->phases[1].animId < 0x137) {
                     u16 v = data_020c6cc8;
                     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, *pv, data_020c6cc8, 0, 0x1000, 0, 0);
                     if (c->curHeldTool) {
                         ((HeldToolModel *)(c->curHeldTool))->playIdleAnim(v, 0);
                     }
                     c->emotionFx.emotionId = emotionId;
-                    ((NpcEmotionFx *)(&c->emotionFx))->startEntry((NpcEmotionPhase *)(emotionEntry), 1);
+                    ((NpcEmotionFx *)(&c->emotionFx))->startEntry(emotionEntry->phases, 1);
                     emotionIntro = 0;
-                } else if (r->loopAnim == 0x137) {
+                } else if (r->phases[1].animId == 0x137) {
                     (this)->setActionDone(1);
                 }
             }
         } else {
-            if (t->introAnim == 0) {
+            if (t->phases[0].animId == 0) {
                 if ((((u32)c->model.curFrame << 4) >> 16) == 0) {
                     (this)->setActionDone(1);
                 }
@@ -4383,11 +4310,11 @@ void NpcActionCtrl::act0EStep00(NpcActor *c) {
                 actStep = 2;
             }
         } else {
-            Unk_02017d74_Buf buf;
+            VecFx32 buf;
             if (HandOverItem_GetPos(&buf)) {
-                buf.b = 0;
-                ((NpcMoveCtrl *)(&c->moveCtrl))->setWaypoint((VecFx32 *)(&buf));
-                ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination((VecFx32 *)(&buf));
+                buf.y = 0;
+                ((NpcMoveCtrl *)(&c->moveCtrl))->setWaypoint(&buf);
+                ((NpcMoveCtrl *)(&c->moveCtrl))->setDestination(&buf);
                 _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 1, 0, data_020c6cc8);
                 actStep = 1;
             }
@@ -4511,7 +4438,7 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14(NpcActionCtrl *s
         (s)->setActionDone(1);
         s->actStep = 0x14;
     } else if (s->itemEffect != -1) {
-        Effect_SetPosition(s->itemEffect, &c->jointPos[0], &c->rotY, 0);
+        Effect_SetPosition(s->itemEffect, &c->jointPos[0], &c->rotY, NULL);
     }
 }
 }
@@ -4780,7 +4707,7 @@ BOOL NpcActionCtrl::setupAct0F(Unk_02006d14 *o) {
     ((NpcActionCtrl *)(this))->setActionDone(0);
     netAction = 0x14;
     netPriority = priority;
-    nJ::NpcAction_PackItem(this, netArgs, &s->item);
+    NpcAction_PackItem(this, netArgs, &s->item);
     return TRUE;
 }
 
@@ -4922,9 +4849,9 @@ BOOL NpcActionCtrl::setupAct13(Unk_02006d14 *o) {
     using namespace nJ;
     s32 v[3];
     s16 ang;
-    v[0] = o->headTopPosX;
-    v[1] = o->headTopPosY;
-    v[2] = o->headTopPosZ;
+    v[0] = o->headTopPos.x;
+    v[1] = o->headTopPos.y;
+    v[2] = o->headTopPos.z;
     ang = o->rotY;
     HandOverItem_RequestMode(0xb, o);
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
@@ -4944,7 +4871,7 @@ void NpcActionCtrl::act13Step0(Unk_02006d14 *o) {
         actStep = 1;
     } else {
         if (itemEffect != -1) {
-            Effect_SetPosition(itemEffect, &o->headTopPosX, &o->rotY, 0);
+            Effect_SetPosition(itemEffect, &o->headTopPos, &o->rotY, NULL);
         }
     }
 }
@@ -5354,7 +5281,7 @@ vdone:
         ((NpcAnimCtrl *)(this))->syncMouthType((NpcActor *)(o));
         s32 t = ((NpcAnimCtrl *)(this))->getAnimId(0);
         s32 u = ((NpcSpeechState *)(&o->speechState))->getMouthType();
-        ((NpcFaceAnim *)(&o->faceAnim))->setFaceAnimsFrom((void *)(t), a4, u);
+        ((NpcFaceAnim *)(&o->faceAnim))->setFaceAnimsFrom(t, a4, u);
         break;
     }
     case 1: {
@@ -5736,7 +5663,7 @@ ChoiceList *ActorTalkRequest::getChoiceList() {
     using namespace nH;
     ChoiceList *r = 0;
     if (window != 0) {
-        r = (ChoiceList *)_ZN15TalkWindowState13getChoiceListEv((u32)window);
+        r = window->getChoiceList();
     }
     return r;
 }
@@ -5956,36 +5883,36 @@ void ActorTalkRequest::onTag09_3() {
 
 void ActorTalkRequest::onTag09_4() {
     using namespace nG;
-    u8 *p5 = nG::_ZN16ActorTalkRequest8getActorEj(this, actionActorIndex);
+    NpcActor *p5 = getActor(actionActorIndex);
     if (p5 != NULL) {
-        ActorTalkRequest *h = ((NpcActor *)(p5))->getTalkRequest();
+        ActorTalkRequest *h = p5->getTalkRequest();
         u32 u = TalkRequest_GetPlayerId();
-        s32 v = ((NpcActor *)(p5))->getAngleToPlayer(u);
+        s32 v = p5->getAngleToPlayer(u);
         if (h != NULL) {
             h->onEventTag(0);
         }
-        ((NpcLookAt *)(p5 + 0x3b0))->setTarget(4, 0, (s32)(NULL), (VecFx32 *)(gVec3Zero), u, 0, 0);
-        ((NpcActionCtrl *)(p5 + 0x564))->requestAction(3, 2, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
+        p5->lookAt.setTarget(4, 0, (s32)(NULL), (VecFx32 *)(gVec3Zero), u, 0, 0);
+        p5->actionCtrl.requestAction(3, 2, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
     }
 }
 
-void ActorTalkRequest::makePlayerLookAt(u8 *p) {
+void ActorTalkRequest::makePlayerLookAt(NpcActor *p) {
     using namespace nG;
     u32 a = TalkRequest_GetPlayerId();
-    u32 b = PlayerActor_GetBodyPos(a);
-    if (b != 0) {
-        s32 s = Math_AngleXZ(b, p + 0x5c);
-        s16 d = s - PlayerActor_GetCharacter(4)->rotY;
+    VecFx32 *b = (VecFx32 *)PlayerActor_GetBodyPos(a);
+    if (b != NULL) {
+        s32 s = Math_AngleXZ(&b->x, &p->position.x);
+        s16 d = s - ((Actor *)PlayerActor_GetCharacter(4))->rotY;
         PlayerActor_SetHeadTilt(0, d, a);
     }
 }
 
-void ActorTalkRequest::makePlayerTurnTo(u8 *p) {
+void ActorTalkRequest::makePlayerTurnTo(NpcActor *p) {
     using namespace nG;
     u32 a = TalkRequest_GetPlayerId();
-    u32 b = PlayerActor_GetBodyPos(a);
-    if (b != 0) {
-        s32 s = Math_AngleXZ(b, p + 0x5c);
+    VecFx32 *b = (VecFx32 *)PlayerActor_GetBodyPos(a);
+    if (b != NULL) {
+        s32 s = Math_AngleXZ(&b->x, &p->position.x);
         PlayerActor_SetHeadTilt(0, 0, a);
         PlayerActor_RequestTurnTo(s, a);
         PlayerActor_SetNoFaceTalkTarget(1, a);
@@ -5994,14 +5921,14 @@ void ActorTalkRequest::makePlayerTurnTo(u8 *p) {
 
 void ActorTalkRequest::onTag09_5() {
     using namespace nG;
-    u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, 0);
+    NpcActor *p4 = getActor(0);
     if (p4 != NULL) {
         u8 s = actionActorIndex;
         switch (s) {
         case 1: {
-            u8 *p = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
+            NpcActor *p = getActor(s);
             if (p != NULL) {
-                ((NpcLookAt *)(p + 0x3b0))->setTarget(2, 0, (s32)(p4), (VecFx32 *)(gVec3Zero), 4, 0, 0);
+                p->lookAt.setTarget(2, 0, (s32)(p4), (VecFx32 *)(gVec3Zero), 4, 0, 0);
             }
             break;
         }
@@ -6014,20 +5941,20 @@ void ActorTalkRequest::onTag09_5() {
 
 void ActorTalkRequest::onTag09_6() {
     using namespace nG;
-    u8 *p7 = nG::_ZN16ActorTalkRequest8getActorEj(this, 0);
+    NpcActor *p7 = getActor(0);
     if (p7 != NULL) {
         u8 s = actionActorIndex;
         switch (s) {
         case 1: {
-            u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
+            NpcActor *p4 = getActor(s);
             if (p4 != NULL) {
-                ActorTalkRequest *h = ((NpcActor *)(p4))->getTalkRequest();
-                s32 v = ((NpcActor *)(p4))->getAngleTo((NpcActor *)(p7));
+                ActorTalkRequest *h = p4->getTalkRequest();
+                s32 v = p4->getAngleTo(p7);
                 onTag09_5();
                 if (h != NULL) {
                     h->onEventTag(0);
                 }
-                ((NpcActionCtrl *)(p4 + 0x564))->requestAction(3, 2, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
+                p4->actionCtrl.requestAction(3, 2, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
             }
             break;
         }
@@ -6040,14 +5967,14 @@ void ActorTalkRequest::onTag09_6() {
 
 void ActorTalkRequest::onTag09_7() {
     using namespace nG;
-    u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, 1);
+    NpcActor *p4 = getActor(1);
     if (p4 != NULL) {
         u8 s = actionActorIndex;
         switch (s) {
         case 0: {
-            u8 *p = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
+            NpcActor *p = getActor(s);
             if (p != NULL) {
-                ((NpcLookAt *)(p + 0x3b0))->setTarget(2, 0, (s32)(p4), (VecFx32 *)(gVec3Zero), 4, 0, 0);
+                p->lookAt.setTarget(2, 0, (s32)(p4), (VecFx32 *)(gVec3Zero), 4, 0, 0);
             }
             break;
         }
@@ -6060,20 +5987,20 @@ void ActorTalkRequest::onTag09_7() {
 
 void ActorTalkRequest::onTag09_8() {
     using namespace nG;
-    u8 *p7 = nG::_ZN16ActorTalkRequest8getActorEj(this, 1);
+    NpcActor *p7 = getActor(1);
     if (p7 != NULL) {
         u8 s = actionActorIndex;
         switch (s) {
         case 0: {
-            u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
+            NpcActor *p4 = getActor(s);
             if (p4 != NULL) {
-                ActorTalkRequest *h = ((NpcActor *)(p4))->getTalkRequest();
-                s32 v = ((NpcActor *)(p4))->getAngleTo((NpcActor *)(p7));
+                ActorTalkRequest *h = p4->getTalkRequest();
+                s32 v = p4->getAngleTo(p7);
                 onTag09_7();
                 if (h != NULL) {
                     h->onEventTag(0);
                 }
-                ((NpcActionCtrl *)(p4 + 0x564))->requestAction(3, 2, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
+                p4->actionCtrl.requestAction(3, 2, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
             }
             break;
         }
@@ -6803,7 +6730,7 @@ BOOL ActorTalkRequest::requestPlayRandomMelody() {
 BOOL ActorTalkRequest::melodyStart() {
     using namespace nF;
     u32 v;
-    void *tbl = gMelodyEditPattern;
+    u8 *tbl = gMelodyEditPattern;
     if (ownerActor != NULL) {
         v = ownerActor->getSpecies();
     } else {
@@ -6814,7 +6741,7 @@ BOOL ActorTalkRequest::melodyStart() {
             ((TalkWindowState *)(window))->lockAdvance();
         }
         if (randomMelody == 0) {
-            Melody_Unpack(&melodyPattern, tbl);
+            Melody_Unpack(melodyPattern, tbl);
             Melody_PlayEditPattern((u16)v);
         } else {
             Melody_PlayRandom((u16)v);
@@ -7034,11 +6961,11 @@ void NpcTalkCtrl::startTalkMessage(NpcActor *ctx) {
         MsgString9B x;
         ctx->getName((u32)&x);
         MsgString9B *px = &x;
-        s32 r = (s32)px->data();
-        ((TalkMsgRequest *)(void *)(o))->setSpeakerName((u8 *)(r), (u32)(((NpcActor *)(ctx))->getSpeakerGender()));
+        u8 *r = px->data();
+        ((TalkMsgRequest *)(void *)(o))->setSpeakerName(r, (u32)(((NpcActor *)(ctx))->getSpeakerGender()));
         ((Character *)(void *)(ctx))->attachTalkRequest((s32)(o));
         o->start(&out.msg);
-        _ZN10MsgRequest11setFileNameEPKc(o, (s32)out.msg.msgKey);
+        o->setFileName(out.msg.msgKey);
         o->msgIndex = out.msg.msgIndex;
         o->window->nextState = 1;
     }
@@ -7433,66 +7360,66 @@ NpcTalkCtrlState sNpcTalkCtrlStates[5] = {
     *(Unk_02014040_Fn *)data_020d7364, *(Unk_02014040_Fn *)data_020d72ac,
 };
 const NpcEmotionEntry sEmotionTable[60] = {
-    {0x0, 0, 0xffff0100, 0x137, 0, 0xffff0100, 0x0},
-    {0x45, data_020c6d34, 0x60101, 0x46, 0, 0xffff0000, 0x1},
-    {0x47, data_020c6ce8, 0x101, 0x48, 0, 0xffff0000, 0x1},
-    {0x49, data_020c6d18, 0x101, 0x4a, 0, 0xffff0000, 0x101},
-    {0x4b, data_020c6d38, 0x20101, 0x4c, 0, 0xffff0000, 0x1},
-    {0x4d, 0, 0xffff0100, 0x4e, data_020c6d08, 0x30101, 0x1},
-    {0x4f, data_020c6cdc, 0x101, 0x50, 0, 0xffff0000, 0x101},
-    {0x51, data_020c6d14, 0x101, 0x52, 0, 0xffff0000, 0x101},
-    {0x53, data_020c6d3c, 0x50101, 0x54, 0, 0xffff0000, 0x101},
-    {0x55, data_020c6cec, 0x101, 0x56, 0, 0xffff0000, 0x1},
-    {0x57, data_020c6d28, 0x101, 0x58, 0, 0xffff0000, 0x101},
-    {0x59, data_020c6cd8, 0x101, 0x5a, 0, 0xffff0000, 0x1},
-    {0x5b, data_020c6d24, 0x90101, 0x5c, 0, 0xffff0000, 0x1},
-    {0x5d, data_020c6d2c, 0x101, 0x5e, 0, 0xffff0000, 0x1},
-    {0x5f, data_020c6d58, 0x102, 0x60, 0, 0xffff0000, 0x1},
-    {0x61, data_020c6d10, 0x101, 0x62, 0, 0xffff0000, 0x1},
-    {0x63, data_020c6cf8, 0x101, 0x64, 0, 0xffff0000, 0x1},
-    {0x65, data_020c6ce4, 0x60101, 0x66, 0, 0xffff0000, 0x1},
-    {0x67, data_020c6d70, 0x102, 0x68, data_020c6ce0, 0xffff0001, 0x1},
-    {0x69, data_020c6cd0, 0x101, 0x6a, 0, 0xffff0000, 0x1},
-    {0x6b, data_020c6d30, 0x101, 0x137, 0, 0xffff0100, 0x0},
-    {0x6c, data_020c6d30, 0x101, 0x137, 0, 0xffff0100, 0x0},
-    {0x6d, data_020c6d30, 0x101, 0x137, 0, 0xffff0100, 0x0},
-    {0x6e, data_020c6cfc, 0x101, 0x6f, 0, 0xffff0000, 0x101},
-    {0x70, data_020c6d50, 0x30102, 0x71, 0, 0xffff0000, 0x1},
-    {0x72, data_020c6d30, 0x101, 0x73, 0, 0xffff0100, 0x1},
-    {0x74, data_020c6d04, 0x101, 0x137, 0, 0xffff0000, 0x0},
-    {0x75, data_020c6d30, 0x101, 0x76, 0, 0xffff0100, 0x1},
-    {0x77, data_020c6d0c, 0x101, 0x78, 0, 0xffff0000, 0x1},
-    {0x79, data_020c6cf4, 0x101, 0x7a, 0, 0xffff0000, 0x1},
-    {0x7b, data_020c6d30, 0x101, 0x137, 0, 0xffff0100, 0x1},
-    {0x7c, data_020c6d30, 0x101, 0x7d, 0, 0xffff0100, 0x1},
-    {0x7e, data_020c6d30, 0x101, 0x137, 0, 0x100, 0x1},
-    {0x7f, data_020c6cd4, 0x120101, 0x80, 0, 0x100, 0x1},
-    {0x81, data_020c6d30, 0x101, 0x82, 0, 0x100, 0x1},
-    {0x83, data_020c6d30, 0x101, 0x137, 0, 0x100, 0x0},
-    {0x84, data_020c6d38, 0x20101, 0x85, 0, 0xffff0000, 0x1},
-    {0x86, data_020c6cd8, 0x101, 0x87, 0, 0xffff0000, 0x1},
-    {0x88, data_020c6d30, 0x101, 0x89, 0, 0xffff0000, 0x101},
-    {0x8a, data_020c6d00, 0x101, 0x8b, 0, 0xffff0000, 0x1},
-    {0x8c, data_020c6d30, 0x101, 0x137, 0, 0x100, 0x1},
-    {0x9c, 0, 0x100, 0x9d, data_020c6d08, 0x30101, 0x1},
-    {0x9e, data_020c6d30, 0x101, 0x137, 0, 0x100, 0x0},
-    {0x9f, data_020c6cec, 0x101, 0xa0, 0, 0xffff0000, 0x1},
-    {0xa1, data_020c6cf4, 0x101, 0xa2, 0, 0xffff0000, 0x1},
-    {0xa3, data_020c6d30, 0x101, 0xa4, 0, 0x100, 0x1},
-    {0xa5, data_020c6d30, 0x101, 0xa6, 0, 0x100, 0x1},
-    {0xa7, data_020c6d30, 0x101, 0xa8, 0, 0x100, 0x1},
-    {0x8d, data_020c6d30, 0x101, 0x8e, 0, 0x100, 0x1},
-    {0x8f, data_020c6d30, 0x101, 0x90, 0, 0xffff0000, 0x1},
-    {0x91, data_020c6d30, 0x101, 0x92, 0, 0xffff0000, 0x101},
-    {0x93, data_020c6d30, 0x101, 0x94, 0, 0xffff0100, 0x1},
-    {0x95, data_020c6d30, 0x101, 0x137, 0, 0xffff0100, 0x0},
-    {0x96, data_020c6d30, 0x101, 0x137, 0, 0xffff0100, 0x0},
-    {0x97, data_020c6d30, 0x101, 0x98, 0, 0xffff0000, 0x101},
-    {0x99, data_020c6d30, 0x101, 0x9a, 0, 0xffff0100, 0x1},
-    {0x9b, data_020c6d30, 0x101, 0x137, 0, 0xffff0100, 0x0},
-    {0xa9, data_020c6d38, 0x20101, 0xaa, 0, 0xffff0000, 0x1},
-    {0xab, data_020c6d30, 0x101, 0xac, 0, 0xffff0000, 0x101},
-    {0x4f, data_020c6ccc, 0x101, 0x50, 0, 0xffff0000, 0x101},
+    {{{0x0, 0, 0x0, 0x1, -1}, {0x137, 0, 0x0, 0x1, -1}}, 0x0, 0x0},
+    {{{0x45, data_020c6d34, 0x1, 0x1, 6}, {0x46, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x47, data_020c6ce8, 0x1, 0x1, 0}, {0x48, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x49, data_020c6d18, 0x1, 0x1, 0}, {0x4a, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x4b, data_020c6d38, 0x1, 0x1, 2}, {0x4c, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x4d, 0, 0x0, 0x1, -1}, {0x4e, data_020c6d08, 0x1, 0x1, 3}}, 0x1, 0x0},
+    {{{0x4f, data_020c6cdc, 0x1, 0x1, 0}, {0x50, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x51, data_020c6d14, 0x1, 0x1, 0}, {0x52, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x53, data_020c6d3c, 0x1, 0x1, 5}, {0x54, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x55, data_020c6cec, 0x1, 0x1, 0}, {0x56, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x57, data_020c6d28, 0x1, 0x1, 0}, {0x58, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x59, data_020c6cd8, 0x1, 0x1, 0}, {0x5a, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x5b, data_020c6d24, 0x1, 0x1, 9}, {0x5c, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x5d, data_020c6d2c, 0x1, 0x1, 0}, {0x5e, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x5f, data_020c6d58, 0x2, 0x1, 0}, {0x60, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x61, data_020c6d10, 0x1, 0x1, 0}, {0x62, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x63, data_020c6cf8, 0x1, 0x1, 0}, {0x64, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x65, data_020c6ce4, 0x1, 0x1, 6}, {0x66, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x67, data_020c6d70, 0x2, 0x1, 0}, {0x68, data_020c6ce0, 0x1, 0x0, -1}}, 0x1, 0x0},
+    {{{0x69, data_020c6cd0, 0x1, 0x1, 0}, {0x6a, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x6b, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, -1}}, 0x0, 0x0},
+    {{{0x6c, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, -1}}, 0x0, 0x0},
+    {{{0x6d, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, -1}}, 0x0, 0x0},
+    {{{0x6e, data_020c6cfc, 0x1, 0x1, 0}, {0x6f, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x70, data_020c6d50, 0x2, 0x1, 3}, {0x71, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x72, data_020c6d30, 0x1, 0x1, 0}, {0x73, 0, 0x0, 0x1, -1}}, 0x1, 0x0},
+    {{{0x74, data_020c6d04, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x0, -1}}, 0x0, 0x0},
+    {{{0x75, data_020c6d30, 0x1, 0x1, 0}, {0x76, 0, 0x0, 0x1, -1}}, 0x1, 0x0},
+    {{{0x77, data_020c6d0c, 0x1, 0x1, 0}, {0x78, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x79, data_020c6cf4, 0x1, 0x1, 0}, {0x7a, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x7b, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, -1}}, 0x1, 0x0},
+    {{{0x7c, data_020c6d30, 0x1, 0x1, 0}, {0x7d, 0, 0x0, 0x1, -1}}, 0x1, 0x0},
+    {{{0x7e, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, 0}}, 0x1, 0x0},
+    {{{0x7f, data_020c6cd4, 0x1, 0x1, 18}, {0x80, 0, 0x0, 0x1, 0}}, 0x1, 0x0},
+    {{{0x81, data_020c6d30, 0x1, 0x1, 0}, {0x82, 0, 0x0, 0x1, 0}}, 0x1, 0x0},
+    {{{0x83, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, 0}}, 0x0, 0x0},
+    {{{0x84, data_020c6d38, 0x1, 0x1, 2}, {0x85, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x86, data_020c6cd8, 0x1, 0x1, 0}, {0x87, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x88, data_020c6d30, 0x1, 0x1, 0}, {0x89, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x8a, data_020c6d00, 0x1, 0x1, 0}, {0x8b, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x8c, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, 0}}, 0x1, 0x0},
+    {{{0x9c, 0, 0x0, 0x1, 0}, {0x9d, data_020c6d08, 0x1, 0x1, 3}}, 0x1, 0x0},
+    {{{0x9e, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, 0}}, 0x0, 0x0},
+    {{{0x9f, data_020c6cec, 0x1, 0x1, 0}, {0xa0, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0xa1, data_020c6cf4, 0x1, 0x1, 0}, {0xa2, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0xa3, data_020c6d30, 0x1, 0x1, 0}, {0xa4, 0, 0x0, 0x1, 0}}, 0x1, 0x0},
+    {{{0xa5, data_020c6d30, 0x1, 0x1, 0}, {0xa6, 0, 0x0, 0x1, 0}}, 0x1, 0x0},
+    {{{0xa7, data_020c6d30, 0x1, 0x1, 0}, {0xa8, 0, 0x0, 0x1, 0}}, 0x1, 0x0},
+    {{{0x8d, data_020c6d30, 0x1, 0x1, 0}, {0x8e, 0, 0x0, 0x1, 0}}, 0x1, 0x0},
+    {{{0x8f, data_020c6d30, 0x1, 0x1, 0}, {0x90, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0x91, data_020c6d30, 0x1, 0x1, 0}, {0x92, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x93, data_020c6d30, 0x1, 0x1, 0}, {0x94, 0, 0x0, 0x1, -1}}, 0x1, 0x0},
+    {{{0x95, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, -1}}, 0x0, 0x0},
+    {{{0x96, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, -1}}, 0x0, 0x0},
+    {{{0x97, data_020c6d30, 0x1, 0x1, 0}, {0x98, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x99, data_020c6d30, 0x1, 0x1, 0}, {0x9a, 0, 0x0, 0x1, -1}}, 0x1, 0x0},
+    {{{0x9b, data_020c6d30, 0x1, 0x1, 0}, {0x137, 0, 0x0, 0x1, -1}}, 0x0, 0x0},
+    {{{0xa9, data_020c6d38, 0x1, 0x1, 2}, {0xaa, 0, 0x0, 0x0, -1}}, 0x1, 0x0},
+    {{{0xab, data_020c6d30, 0x1, 0x1, 0}, {0xac, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
+    {{{0x4f, data_020c6ccc, 0x1, 0x1, 0}, {0x50, 0, 0x0, 0x0, -1}}, 0x1, 0x1},
 };
 const u16 data_020c6cc4[2] = {0x200, 0x0};
 void *data_020d7524[2] = {(void *)_ZN16ActorTalkRequest12subSceneOpenEv, 0};
@@ -7540,7 +7467,7 @@ void NpcFootstepFx::playFootstepSe(NpcActor* p) {
     u32 f = p->actorFlags;
     if (!(Unk_02013568_IsSet(f, 4) && Unk_02013568_IsSet(f, 2))) {
         if (footstepsEnabled != 0) {
-            nD::Snd_SeEmitterPlayAlternate(&p->seEmitter, nD::Footstep_GetSeAtPos(&p->position), 0);
+            Snd_SeEmitterPlayAlternate(&p->seEmitter, Footstep_GetSeAtPos(&p->position));
         }
     }
 }
@@ -7658,7 +7585,7 @@ void VillagerRoute::start(u32 a, u32 idx, u32 b, u32 c) {
     }
 }
 
-void VillagerRoute::rememberUnit(u32 v) {
+void VillagerRoute::rememberUnit(VecFx32 *v) {
     using namespace nD;
     FieldPos_ToUnit(&lastUnitX, &lastUnitZ, v);
 }
@@ -7671,7 +7598,7 @@ void VillagerRoute::markUnitUnset() {
     }
 }
 
-void VillagerRoute::checkUnitChanged(u32 v) {
+void VillagerRoute::checkUnitChanged(VecFx32 *v) {
     using namespace nD;
     u32 a = 0;
     u32 b = 0;
@@ -7681,7 +7608,7 @@ void VillagerRoute::checkUnitChanged(u32 v) {
         ((VillagerRoute *)(this))->clearJunctions();
         pathDir = 0;
         pathMode = 2;
-        nD::_ZN13VillagerRoute8planStepEP7VecFx32(this, v);
+        planStep(v);
         approachDir = 4;
     }
 }
@@ -7960,7 +7887,7 @@ s32 VillagerRoute::runStep(VecFx32 *v) {
         if (*pf != 0) {
             s32 r = (this->*(*pf))(v);
             if (stepMode == 1) {
-                ((VillagerRoute *)(this))->rememberUnit((u32)(v));
+                ((VillagerRoute *)(this))->rememberUnit(v);
             }
             return r;
         }
@@ -8154,7 +8081,7 @@ void VillagerRoute::planStep(VecFx32 *pos) {
 
 BOOL VillagerRoute::followPathDir(VecFx32 *p, Vec2 *lim, BlockMap *w) {
     using namespace nB;
-    nB::_ZN13VillagerRoute16checkUnitChangedEj(this, (u32)p);
+    checkUnitChanged(p);
     if ((u32)approachDir < 4) {
         Vec2 *tbl = (Vec2 *)sRouteDirs;
         Vec2 *e = &tbl[approachDir];
@@ -8205,7 +8132,7 @@ BOOL VillagerRoute::stepFollowPath(VecFx32 *p) {
 
 BOOL VillagerRoute::advanceOnPath(VecFx32 *p, BlockMap *w) {
     using namespace nB;
-    nB::_ZN13VillagerRoute16checkUnitChangedEj(this, (u32)p);
+    checkUnitChanged(p);
     s32 flag = pathDir;
     if (flag != 0) {
         s32 k = ((VillagerRoute *)(this))->firstDir(flag);
@@ -8284,12 +8211,12 @@ BOOL VillagerRoute::stepWander(VecFx32 *p) {
     VecFx32 tmp;
     FieldPos_FromUnitCenter(&tmp, targetUnit.x, targetUnit.y);
     if (mode == 0) {
-        base = Math_AngleXZ(p, &tmp);
+        base = Math_AngleXZ(&p->x, &tmp.x);
         mag = 0x1000;
     } else if (mode == 1) {
-        base = (s16)Random_Next(gRandom);
+        base = (s16)Random_Next(&gRandom);
     } else {
-        base = (s16)Random_Next(gRandom);
+        base = (s16)Random_Next(&gRandom);
         mag >>= 1;
     }
     i = 0;
@@ -8600,7 +8527,7 @@ BOOL HeldToolModel::load(u32 a) {
 
 BOOL HeldToolModel::attach(u32 a, u16 *b, u32 c, u16 d) {
     using namespace nB;
-    void *p = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    HeldItemModel *p = (HeldItemModel *)_ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (p) {
         HeldItemModel_SetItem(p, b, 0);
         ((NpcAnimCtrl *)((void *)&((NpcActor *)(uptr)a)->animCtrl))->playHoldItemPose((NpcActor *)(a), (u16 *)(b), (void *)(c), d);
@@ -8696,7 +8623,7 @@ void HeldToolModel::update(Unk_02006d14 *p) {
     HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (r) {
         u32 v = p->modelAnimFrameStep;
-        AnimFrameCtrl &s = *HeldItemModel_GetModel(r);
+        AnimFrameCtrl &s = *(BlendAnimModel *)HeldItemModel_GetModel((u8 *)r);
         s.frameStep = v;
         HeldItemModel_Update(r);
     }
@@ -8708,9 +8635,9 @@ void HeldToolModel::draw(Unk_02006d14 *p) {
         HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
         if (p) {
             Unk_02006d14_TalkBase &s = *p;
-            Model_GetJointWorldMtx(&s, handMtx, 0xe);
+            Model_GetJointWorldMtx(&s, &handMtx, 0xe);
         }
-        if (r) HeldItemModel_Draw(r, handMtx);
+        if (r) HeldItemModel_Draw(r, &handMtx);
     }
 }
 
@@ -8730,7 +8657,7 @@ void HeldToolModel::setAnimSpeed(u32 v) {
 BlendAnimModel *HeldToolModel::getModel() {
     using namespace nA;
     HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
-    if (r) return HeldItemModel_GetModel(r);
+    if (r) return (BlendAnimModel *)HeldItemModel_GetModel((u8 *)r);
     return 0;
 }
 
@@ -8784,9 +8711,7 @@ static_assert(__builtin_offsetof(Unk_02006d14, pad_19c) == 0x248, "Unk_02006d14.
 static_assert(__builtin_offsetof(Unk_02006d14, animCtrl) == 0x468, "Unk_02006d14.animCtrl");
 static_assert(__builtin_offsetof(Unk_02006d14, moveCtrl) == 0x490, "Unk_02006d14.moveCtrl");
 static_assert(__builtin_offsetof(Unk_02006d14, pad_3a8) == 0x4e8, "Unk_02006d14.pad_3a8");
-static_assert(__builtin_offsetof(Unk_02006d14, headTopPosX) == 0x5c0, "Unk_02006d14.headTopPosX");
-static_assert(__builtin_offsetof(Unk_02006d14, headTopPosY) == 0x5c4, "Unk_02006d14.headTopPosY");
-static_assert(__builtin_offsetof(Unk_02006d14, headTopPosZ) == 0x5c8, "Unk_02006d14.headTopPosZ");
+static_assert(__builtin_offsetof(Unk_02006d14, headTopPos) == 0x5c0, "Unk_02006d14.headTopPos");
 static_assert(__builtin_offsetof(Unk_02006d14, pad_484) == 0x5cc, "Unk_02006d14.pad_484");
 static_assert(__builtin_offsetof(Unk_02006d14, seEmitter) == 0x678, "Unk_02006d14.seEmitter");
 static_assert(__builtin_offsetof(Unk_02006d14, pad_558) == 0x6d8, "Unk_02006d14.pad_558");

@@ -130,8 +130,8 @@ public:
     BOOL startTask(s32 id);
     void initSubSceneParams(TalkSubSceneParams *p);
     void resetTasks();
-    void makePlayerTurnTo(u8 *actor);
-    void makePlayerLookAt(u8 *actor);
+    void makePlayerTurnTo(NpcActor *actor);
+    void makePlayerLookAt(NpcActor *actor);
 
     /* 0x44 */ u32 talkPlayer;                  // player actor the talk / item hand-over is with
     /* 0x48 */ NpcActor *ownerActor;  // owner actor (speaker 0)
@@ -157,7 +157,7 @@ public:
     /* 0x83 */ u8 launcherIndex;
     /* 0x84 */ u8 keepWindowClosed;
     /* 0x85 */ u8 pad_85[3];
-    /* 0x88 */ s32 melodyPattern[2];                // packed melody of the melody task (requestPlayMelody)
+    /* 0x88 */ u32 melodyPattern[2];                // packed melody of the melody task (requestPlayMelody)
     /* 0x90 */ u8 handOverMode;
     /* 0x91 */ u8 pad_91[3];
     /* 0x94 */ u32 handOverVariant;

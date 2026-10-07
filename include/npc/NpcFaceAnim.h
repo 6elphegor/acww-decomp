@@ -28,8 +28,8 @@ struct NpcFaceAnim : BlinkTimer {
     void blinkNow();
     void resumeMouthMaterial();
     BOOL setMouthTexture(u32 a);
-    BOOL setMaterialTex(void *m, void *q, u32 r);
-    void setFaceAnimsFrom(void *a, s32 b, s32 c);
+    BOOL setMaterialTex(MatTexPatAnim *m, const char *q, u32 r);
+    void setFaceAnimsFrom(u32 a, s32 b, s32 c);
     void setFaceAnims(s32 t, s32 u, s32 x, s32 mode);
     void restoreMouthAnim();
     void startTalkMouth(s32 i);

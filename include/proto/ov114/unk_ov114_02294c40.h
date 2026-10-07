@@ -4,6 +4,7 @@
 // Prototypes of the functions defined in src/ov114/unk_ov114_02294c40.cpp (generated: tools/host_protos.py)
 
 #include "types.h"
+#include "nitro/gxoam.h"
 #ifdef __cplusplus
 #include "menu/CreatureBookPanel.h"
 #include "types.h"
@@ -11,6 +12,27 @@
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+#ifndef PROTO_LOCAL_data_ov114_02296580
+extern GXOamAttr data_ov114_02296580;
+#endif
+#ifndef PROTO_LOCAL_data_ov114_02296588
+extern GXOamAttr data_ov114_02296588;
+#endif
+#ifndef PROTO_LOCAL_data_ov114_02296590
+extern GXOamAttr data_ov114_02296590;
+#endif
+#ifndef PROTO_LOCAL_data_ov114_02296598
+extern GXOamAttr data_ov114_02296598;
+#endif
+#ifndef PROTO_LOCAL_data_ov114_022965a0
+extern GXOamAttr data_ov114_022965a0;
+#endif
+#ifndef PROTO_LOCAL_data_ov114_022965c0
+extern GXOamAttr data_ov114_022965c0[4];
+#endif
+#ifndef PROTO_LOCAL_data_ov114_022965e0
+extern GXOamAttr data_ov114_022965e0[9];
 #endif
 #ifndef PROTO_LOCAL_sCreaturePicDir
 extern char *sCreaturePicDir;
@@ -97,7 +119,7 @@ BOOL CreatureBook_TouchRow(CreatureBookPanel *s, s32 x, s32 y);
 void CreatureBook_InitRows(CreatureBookPanel *s);
 #endif
 #ifndef PROTO_LOCAL_CreatureBook_SetRowIcon
-void CreatureBook_SetRowIcon(CreatureBookPanel *s, u32 a, s32 idx);
+void CreatureBook_SetRowIcon(CreatureBookPanel *s, u16 *item, s32 idx);
 #endif
 #ifndef PROTO_LOCAL_CreatureBook_InitPictureView
 void CreatureBook_InitPictureView(CreatureBookPanel *s);
@@ -129,9 +151,6 @@ s32 CreatureBook_GetFocusedTab(CreatureBookPanel *s);
 #ifndef PROTO_LOCAL_CreatureBook_IsFocusOnPageArrow
 BOOL CreatureBook_IsFocusOnPageArrow(CreatureBookPanel *s);
 #endif
-#ifndef PROTO_LOCAL_CreatureBook_MoveFocus
-BOOL CreatureBook_MoveFocus(CreatureBookPanel *s, void *pad);
-#endif
 #ifndef PROTO_LOCAL_CreatureBook_ClampFocusToView
 void CreatureBook_ClampFocusToView(CreatureBookPanel *s);
 #endif
@@ -156,28 +175,10 @@ void CreatureBook_SetFlags(CreatureBookPanel *s, u32 m);
 #ifndef PROTO_LOCAL_CreatureBook_ClearFlags
 void CreatureBook_ClearFlags(CreatureBookPanel *s, u32 m);
 #endif
-#ifndef PROTO_LOCAL_data_ov114_02296580
-extern u8 data_ov114_02296580[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov114_02296588
-extern u8 data_ov114_02296588[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov114_02296590
-extern u8 data_ov114_02296590[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov114_02296598
-extern u8 data_ov114_02296598[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov114_022965a0
-extern u8 data_ov114_022965a0[8];
-#endif
-#ifndef PROTO_LOCAL_data_ov114_022965c0
-extern u8 data_ov114_022965c0[32];
-#endif
-#ifndef PROTO_LOCAL_data_ov114_022965e0
-extern u8 data_ov114_022965e0[72];
-#endif
 }
+#ifndef PROTO_LOCAL_CreatureBook_MoveFocus
+BOOL CreatureBook_MoveFocus(CreatureBookPanel *s, u32 pad);
+#endif
 #endif
 
 #endif

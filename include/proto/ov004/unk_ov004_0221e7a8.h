@@ -52,10 +52,10 @@ void PlayerActor_NetDrinkCoffee();
 #ifdef __cplusplus
 extern "C" {
 #ifndef PROTO_LOCAL_data_ov004_0224d4a4
-extern s32 data_ov004_0224d4a4;
+extern u32 data_ov004_0224d4a4;
 #endif
 #ifndef PROTO_LOCAL_data_ov004_0224d4a8
-extern s32 data_ov004_0224d4a8;
+extern u32 data_ov004_0224d4a8;
 #endif
 #ifndef PROTO_LOCAL_sFtrPullDist
 extern s32 sFtrPullDist;
@@ -64,13 +64,13 @@ extern s32 sFtrPullDist;
 extern s32 sSeatApproachDist;
 #endif
 #ifndef PROTO_LOCAL_data_ov004_0224d4b0
-extern s32 data_ov004_0224d4b0;
+extern u32 data_ov004_0224d4b0;
 #endif
 #ifndef PROTO_LOCAL_sRoomInteractDist
 extern s32 sRoomInteractDist;
 #endif
 #ifndef PROTO_LOCAL_data_ov004_0224d4b4
-extern s32 data_ov004_0224d4b4;
+extern u32 data_ov004_0224d4b4;
 #endif
 #ifndef PROTO_LOCAL__ZN12RoomObjActorC2Ev
 RoomObjActor *_ZN12RoomObjActorC2Ev(RoomObjActor *self);
@@ -85,7 +85,7 @@ void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomOb
 void RoomObj_ReleaseResources(RoomObjRes *a, RoomObjTex *b);
 #endif
 #ifndef PROTO_LOCAL_RoomObj_PlaySeHeld
-s32 RoomObj_PlaySeHeld(s32 a, s32 b);
+void RoomObj_PlaySeHeld(s32 a, s32 b);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_TestLocalFlag0F
 s32 PlayerActor_TestLocalFlag0F(void);
@@ -214,10 +214,10 @@ void PlayerActor_GetIntoBedGetNetData(u8 *src, u8 *out, s32 *x, s32 *z);
 void PlayerActor_PickUpItemSetArgs(void *out, s32 *in, s32 c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FtrGrabApproachSetNetData
-void PlayerActor_FtrGrabApproachSetNetData(void *p, s32 x, s32 z, s16 h);
+void PlayerActor_FtrGrabApproachSetNetData(u8 *p, s32 x, s32 z, s16 h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FtrGrabApproachGetNetData
-void PlayerActor_FtrGrabApproachGetNetData(void *p, s32 *x, s32 *z, s16 *h);
+void PlayerActor_FtrGrabApproachGetNetData(u8 *p, s32 *x, s32 *z, s16 *h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_FtrHoldSetArgs
 void PlayerActor_FtrHoldSetArgs(u8 *p, u32 a, u32 b);
@@ -244,22 +244,22 @@ void PlayerActor_SeatApproachSetNetData(u8 *self, s32 x, s32 z, s16 h, u8 d);
 void PlayerActor_SeatApproachGetNetData(u8 *self, s32 *x, s32 *z, s16 *h, u8 *d);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_SitDownFrontSetNetData
-void PlayerActor_SitDownFrontSetNetData(void *p, s32 x, s32 z, s16 h);
+void PlayerActor_SitDownFrontSetNetData(u8 *p, s32 x, s32 z, s16 h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_SitDownFrontGetNetData
-void PlayerActor_SitDownFrontGetNetData(void *p, s32 *x, s32 *z, s16 *h);
+void PlayerActor_SitDownFrontGetNetData(u8 *p, s32 *x, s32 *z, s16 *h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_SitDownSide2SetNetData
-void PlayerActor_SitDownSide2SetNetData(void *p, s32 x, s32 z, s16 h);
+void PlayerActor_SitDownSide2SetNetData(u8 *p, s32 x, s32 z, s16 h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_SitDownSide2GetNetData
-void PlayerActor_SitDownSide2GetNetData(void *p, s32 *x, s32 *z, s16 *h);
+void PlayerActor_SitDownSide2GetNetData(u8 *p, s32 *x, s32 *z, s16 *h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_SitDownSide1SetNetData
-void PlayerActor_SitDownSide1SetNetData(void *p, s32 x, s32 z, s16 h);
+void PlayerActor_SitDownSide1SetNetData(u8 *p, s32 x, s32 z, s16 h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_SitDownSide1GetNetData
-void PlayerActor_SitDownSide1GetNetData(void *p, s32 *x, s32 *z, s16 *h);
+void PlayerActor_SitDownSide1GetNetData(u8 *p, s32 *x, s32 *z, s16 *h);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_StandUpCheckSetArgs
 void PlayerActor_StandUpCheckSetArgs(u8 *p, u32 v);
@@ -304,28 +304,28 @@ void PlayerActor_Act36SetArgs(void *p, s32 a, u32 b, s32 c, s32 d);
 void PlayerActor_LeaveRoomSetArgs(void *p, s32 a, s16 b);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_DoorWalkInSetNetData
-void PlayerActor_DoorWalkInSetNetData(void *a, s32 b, s32 c);
+void PlayerActor_DoorWalkInSetNetData(u8 *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_DoorWalkInGetNetData
-void PlayerActor_DoorWalkInGetNetData(void *a, s32 *b, s32 *c);
+void PlayerActor_DoorWalkInGetNetData(u8 *a, s32 *b, s32 *c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_DoorWalkOutSetNetData
-void PlayerActor_DoorWalkOutSetNetData(void *a, s32 b, s32 c);
+void PlayerActor_DoorWalkOutSetNetData(u8 *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_DoorWalkOutGetNetData
-void PlayerActor_DoorWalkOutGetNetData(void *a, s32 *b, s32 *c);
+void PlayerActor_DoorWalkOutGetNetData(u8 *a, s32 *b, s32 *c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_ExitWalkOutSetNetData
-void PlayerActor_ExitWalkOutSetNetData(void *a, s32 b, s32 c);
+void PlayerActor_ExitWalkOutSetNetData(u8 *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_ExitWalkOutGetNetData
-void PlayerActor_ExitWalkOutGetNetData(void *a, s32 *b, s32 *c);
+void PlayerActor_ExitWalkOutGetNetData(u8 *a, s32 *b, s32 *c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_ExitWalkInSetNetData
-void PlayerActor_ExitWalkInSetNetData(void *a, s32 b, s32 c);
+void PlayerActor_ExitWalkInSetNetData(u8 *a, s32 b, s32 c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_ExitWalkInGetNetData
-void PlayerActor_ExitWalkInGetNetData(void *a, s32 *b, s32 *c);
+void PlayerActor_ExitWalkInGetNetData(u8 *a, s32 *b, s32 *c);
 #endif
 #ifndef PROTO_LOCAL_PlayerActor_NetSendHair
 void PlayerActor_NetSendHair(void *unused, s32 a, s32 b);
