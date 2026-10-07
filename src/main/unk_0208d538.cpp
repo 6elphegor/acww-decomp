@@ -54,12 +54,20 @@ void HandCursor::setAnim(s32 idx) {
         f = TRUE;
     }
     anim = idx;
+#ifdef HOST
+    layer1.setSeq((SpriteAnimSeq *)data_020d5b0c + a); // (the records grow on 64-bit hosts)
+#else
     layer1.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
+#endif
     layer1.setPlayOnce(f);
     layer1.restart();
     hasLayer2 = sHandCursorAnimHasLayer2[idx];
     if (hasLayer2 != 0) {
+#ifdef HOST
+        layer2.setSeq((SpriteAnimSeq *)data_020d5b0c + n); // (the records grow on 64-bit hosts)
+#else
         layer2.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
+#endif
         layer2.setPlayOnce(f);
         layer2.restart();
     }

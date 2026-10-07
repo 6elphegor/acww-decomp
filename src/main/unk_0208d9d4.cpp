@@ -43,10 +43,18 @@ void ScrollKnob::setState(s32 idx) {
     n = (Unk_0208d9d4_E)(a + 1);
     f = sScrollKnobPlayOnce[idx];
     state = idx;
+#ifdef HOST
+    layerAnim1.setSeq((SpriteAnimSeq *)data_020d5b0c + a); // (the records grow on 64-bit hosts)
+#else
     layerAnim1.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
+#endif
     layerAnim1.setPlayOnce(f);
     layerAnim1.restart();
+#ifdef HOST
+    priority.setSeq((SpriteAnimSeq *)data_020d5b0c + n); // (the records grow on 64-bit hosts)
+#else
     priority.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
+#endif
     priority.setPlayOnce(f);
     priority.restart();
     if (idx == 1) {

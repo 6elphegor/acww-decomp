@@ -32,10 +32,18 @@ void TalkArrow::setState(s32 idx) {
     b = (Unk_020892b0_E)(a + 1);
     c = ((u32 *)sTalkArrowPlayOnce)[idx];
     state = idx;
+#ifdef HOST
+    anim.setSeq((SpriteAnimSeq *)data_020d5b0c + a); // (the records grow on 64-bit hosts)
+#else
     anim.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
+#endif
     anim.setPlayOnce(c);
     anim.restart();
+#ifdef HOST
+    subAnim.setSeq((SpriteAnimSeq *)data_020d5b0c + b); // (the records grow on 64-bit hosts)
+#else
     subAnim.setSeq((SpriteAnimSeq *)(data_020d5b0c + b * 8));
+#endif
     subAnim.setPlayOnce(c);
     subAnim.restart();
 }

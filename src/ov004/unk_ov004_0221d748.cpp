@@ -302,7 +302,11 @@ u8 *SpNpcBooker::getModelPath() { return sSpNpcBookerModelPath; }
 
 BOOL SpNpcBooker::updateAct() {
     BOOL r = FALSE;
+#ifdef HOST
+    if (sSpNpcBookerActTable[act].exit) { // (the DS label is the table + one member: the exit member)
+#else
     if (data_ov004_02250b58[act].enter) {
+#endif
         r = (this->*sSpNpcBookerActTable[act].exit)();
     }
     return r;

@@ -53,8 +53,9 @@ if X64:
     # for now: the game's pointer-to-u32 casts are warnings (its memory is mapped below 4 GB, so they don't lose
     # anything yet; docs/host.md, 64-bit)
     CXX_FLAGS += " -fpermissive"
-    # (every unit with the full class definitions: the layout tools read them from the debug information)
-    CXX_FLAGS += " -femit-class-debug-always"
+# every unit with the full class definitions, in both builds: the layout tools (tools/host_view_layout.py) read the
+# types from the 32-bit and the 64-bit debug information (debug information only: the code is the same)
+CXX_FLAGS += " -femit-class-debug-always"
 SECTIONS = ("-Wl,--allow-multiple-definition -Wl,--section-start=.dtcm=0x027e0000 -Wl,--section-start=gdata=0x02001000 "
             "-Wl,--section-start=gbss=0x02040000")
 M = args.melonds

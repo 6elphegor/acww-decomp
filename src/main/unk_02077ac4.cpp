@@ -1,3 +1,4 @@
+#include "town/TownBlockMap.h"
 #include "uptr.h"
 #include "item/Letter.h"
 #include "player/PlayerId.h"
@@ -8367,7 +8368,11 @@ extern "C" void SaveVillagers_PlaceMissingHouses(u8 *self) {
     static HousePos arr[30];
     if (g != NULL) {
         n = 0;
+#ifdef HOST
+        s32 *d = &((TownBlockMap *)g)->unitsX; // (the map's unit counts: after the blocks pointer)
+#else
         s32 *d = (s32 *)((u8 *)g + 0xc);
+#endif
         s32 w = d[0];
         s32 h = d[1];
         s32 xy[2];

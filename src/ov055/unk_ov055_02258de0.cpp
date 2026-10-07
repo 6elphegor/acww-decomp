@@ -187,7 +187,11 @@ SpNpcRover *SpNpcRover_Create();
 extern SpNpcRoverActEntry sSpNpcRoverActTable[3];
 #define data_ov055_02259a4c ((SpNpcRoverActEntry *)((u8 *)sSpNpcRoverActTable + 8))
 extern SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4];
+#ifdef HOST
+#define data_ov055_022598d4 (sSpNpcRoverTalkScripts) // (the flag column: the entries' flag member on hosts)
+#else
 #define data_ov055_022598d4 ((Unk_ov055_02259234_Flag *)((u8 *)sSpNpcRoverTalkScripts + 8))
+#endif
 extern u8 sSpNpcRoverModelPath[];
 extern u8 sSpNpcRoverTexturePath[];
 extern ActorProfile sSpNpcRoverProfile;
@@ -276,7 +280,11 @@ u8 *SpNpcRover::getModelPath() { return sSpNpcRoverModelPath; }
 
 BOOL SpNpcRover::updateAct() {
     BOOL r = FALSE;
+#ifdef HOST
+    if (sSpNpcRoverActTable[act].exit) { // (the DS label is the table + one member: the exit member)
+#else
     if (data_ov055_02259a4c[act].enter) {
+#endif
         r = (this->*sSpNpcRoverActTable[act].exit)();
     }
     return r;

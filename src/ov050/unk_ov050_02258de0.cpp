@@ -2960,7 +2960,11 @@ void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
         }
     }
     if (topic >= 0 && topic < 0x1f) {
+#ifdef HOST
+        out->msgIndex = sSpNpcNookShopTopicTable[topic].msgIndex;
+#else
         out->msgIndex = (((u8 (*)[8])((u8 *)sSpNpcNookShopTopicTable + 4))[topic][0]);
+#endif
         out->msgKey = (char *)sSpNpcNookShopTopicTable[topic].msgKey;
         if (topic == 0x12) {
             void *r = Actor_findByProfile(ownerNpc->getOtherTwinProfile(), 0);

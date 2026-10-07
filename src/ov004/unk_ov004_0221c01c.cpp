@@ -351,7 +351,11 @@ u8 *SpNpcBrewster::getModelPath() {
 BOOL SpNpcBrewster::updateAct() {
     BOOL r = FALSE;
     s32 i = act;
+#ifdef HOST
+    if (sSpNpcBrewsterActTable[i].fn2 != 0) { // (the DS label is the table + one member: the fn2 member)
+#else
     if (data_ov004_02250aa8[i].fn1 != 0) {
+#endif
         r = (this->*sSpNpcBrewsterActTable[i].fn2)();
     }
     if (Math_IsInRange(Bgm_GetCurrent(), 0x63, 0xab) != 0) {

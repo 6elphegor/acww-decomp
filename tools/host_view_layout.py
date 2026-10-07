@@ -9,7 +9,8 @@ build's) and prints the view's members for the host: each member at its mapped p
 resized to what they cover in the real structure, 4-byte integers that hold a pointer in the real structure uptr.
 
 Usage: host_view_layout.py <game_all.o, 32-bit> <game_all.o, 64-bit> <view type> <real type> <header or source>
-       [--cu <source of the compile unit to take both types from>]
+       [--cu <source of the compile unit to take both types from>] [--apply]
+       host_view_layout.py --remove <view type> <header or source> [<compile unit source>]  (drop a generated layout)
 The members are printed (to paste into an #ifdef HOST branch of the view's declaration).
 """
 import re
@@ -206,8 +207,39 @@ def view_members(die):
                 out.append(("bf", [name], unit, t, us))
             continue
         loc = c.attributes["DW_AT_data_member_location"].value if "DW_AT_data_member_location" in c.attributes else 0
-        out.append(("m", name, loc, t))
+        # a base class: shared with the real structure (the same bytes there), not declared again
+        out.append(("base" if c.tag == "DW_TAG_inheritance" else "m", name, loc, t))
     return out
+
+
+def remove(view, src, cu=None):
+    """--remove <view> <source> [<compile unit source>]: drop a generated 64-bit branch and its checks (to regenerate
+    the layout after the real structure changed)."""
+    text = open(src).read()
+    ms = re.search(r"(?:class|struct) %s\b[^;{]*\{" % re.escape(view), text)
+    if not ms:
+        raise SystemExit(f"{view}: not in {src}")
+    b0 = ms.end()
+    depth, k = 1, b0
+    while depth:
+        depth += {"{": 1, "}": -1}.get(text[k], 0)
+        k += 1
+    body = text[b0:k - 1]
+    m = re.search(r"#ifdef HOST64\n    // the 64-bit layout \(tools/host_view_layout\.py[^\n]*\n.*?#else\n(.*?)#endif\n", body, re.S)
+    if not m:
+        raise SystemExit(f"{view}: no generated 64-bit branch")
+    body = body[:m.start()] + m.group(1) + body[m.end():]
+    text = text[:b0] + body + text[k - 1:]
+    pat = re.compile(r"\n#ifdef HOST64\n(?:// %s \(.*\n)?(?:static_assert\((?:__builtin_offsetof\(|sizeof\()%s\b.*\n)+#endif\n" % (re.escape(view), re.escape(view)))
+    if cu and cu != src:
+        open(src, "w").write(text)
+        ct = open(cu).read()
+        ct, n = pat.subn("\n", ct)
+        open(cu, "w").write(ct)
+    else:
+        text, n = pat.subn("\n", text)
+        open(src, "w").write(text)
+    print(f"removed {view} ({n} check block{'s' if n != 1 else ''})")
 
 
 def main():
@@ -236,6 +268,9 @@ def main():
                 break
             if not done:
                 print(f"NONE {v} {s}")
+        return
+    if args and args[0] == "--remove":
+        remove(*args[1:])
         return
     apply = "--apply" in args
     if apply:
@@ -340,6 +375,10 @@ def main():
                 out.append(bf_line(nm))
             cur = o + us
             continue
+        if ent[0] == "base":
+            _, name, loc, t = ent
+            cur = map64(loc + tsize(t, o32))  # (the members start after it, where the real structure's do)
+            continue
         _, name, loc, t = ent
         s = tsize(t, o32)
         o = map64(loc)
@@ -392,6 +431,10 @@ def main():
         out.append(f"    u8 hpad_{npad}[{end - cur:#x}];")
     gen = "\n".join(out)
     checks = [f"static_assert(__builtin_offsetof({view}, {n}) == {o:#x}, \"{view}.{n}\");" for n, o in asserts]
+    if vsize32 >= size32:
+        # a view of the whole object: it must stay as large as the real one (a member of the real one growing later
+        # makes the generated layout stale; this catches it)
+        checks.append(f"static_assert(sizeof({view}) == sizeof({real}), \"{view}: regenerate (tools/host_view_layout.py --remove)\");")
     print(f"// {view}: {vsize32:#x} on the DS, {end:#x} here ({real})", file=sys.stderr)
     if not apply:
         print(gen)
@@ -407,7 +450,7 @@ def main():
     body_full = text_full[b0:k - 1]
     if "#ifdef HOST64" in body_full:
         raise SystemExit(f"{view}: already has a 64-bit branch")
-    names = [e[1] if e[0] == "m" else e[1][0] for e in view_members(v32)] + [e[1][-1] for e in view_members(v32) if e[0] == "bf"]
+    names = [e[1] if e[0] == "m" else e[1][0] for e in view_members(v32) if e[0] != "base"] + [e[1][-1] for e in view_members(v32) if e[0] == "bf"]
     lines = body_full.split("\n")
     idx = [n for n, l in enumerate(lines) if re.search(r"\b(" + "|".join(map(re.escape, names)) + r")\b\s*(\[[^\]]*\])?\s*(:\s*\d+\s*)?;", l) and "(" not in l
            or re.search(r"\(\s*\*\s*(" + "|".join(map(re.escape, names)) + r")\s*\)", l)]  # (pointers to functions)

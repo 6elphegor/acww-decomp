@@ -293,7 +293,11 @@ BOOL TitleScreen::onDelete() {
 }
 
 BOOL TitleScreen::onExecute() {
+#ifdef HOST
+    if (sTitleStates[titleState].update) { // (the update member: the DS form's +8 is half an entry on 64-bit hosts)
+#else
     if (((TitleStateEntry *)((u8 *)sTitleStates + 8))[titleState].enter) {
+#endif
         (this->*sTitleStates[titleState].update)();
     }
     updateLogo();

@@ -142,7 +142,11 @@ u8 *SpNpcTortimer2::getModelPath() { return sSpNpcTortimer2ModelPath; }
 
 BOOL SpNpcTortimer2::updateAct() {
     BOOL r = FALSE;
+#ifdef HOST
+    if (sSpNpcTortimer2ActTable[act].exit) { // (the DS label is the table + one member: the exit member)
+#else
     if (data_ov004_02250bcc[act].enter) {
+#endif
         r = (this->*sSpNpcTortimer2ActTable[act].exit)();
     }
     return r;

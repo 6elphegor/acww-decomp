@@ -790,9 +790,15 @@ BOOL BmgReader::readText() {
 // ---- MsgRunner
 extern "C" u8 *Bmg_GetMsgAttr(u8 *p) {
     u8 *r = NULL;
+#ifdef HOST
+    if (((BmgReader *)p)->hasAttributes != 0) {
+        r = (u8 *)((BmgReader *)p)->entry;
+    }
+#else
     if (p[4] != 0) {
         r = p + 0x90;
     }
+#endif
     return r;
 }
 

@@ -2,6 +2,8 @@
 #define TALK_BMGREADER_H
 
 #include "types.h"
+#include "uptr.h"
+#include "nitro/fs.h"
 
 // BMG message file reader (abstract base; the buffer is supplied by subclasses such as BmgReader512,
 // TalkBmgReader, BufferBmgReader) and the BMG file-format headers it reads. Defined in unk_020a6974.cpp.
@@ -56,7 +58,7 @@ public:
 
     /* 0x04 */ u8 hasAttributes;
     /* 0x05 */ u8 filePath[0x3f];
-    /* 0x44 */ u8 file[0x48];
+    /* 0x44 */ u8 file[HOST_SIZED(0x48, FSFile)] HOST_ALIGN8; // FSFile (larger on 64-bit hosts)
     /* 0x8c */ u8 isOpen;
     /* 0x8d */ u8 msgIndex;
     /* 0x90 */ u32 entry[3];

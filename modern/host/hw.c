@@ -23,6 +23,9 @@
 
 #include "host.h"
 
+// 3D command port writes since the last ACWW_STATS line (register writes and GX FIFO DMA)
+static unsigned long long sGxWrites;
+
 // the interrupted context's registers (signal handlers)
 #if defined(__x86_64__)
 #define R_PC REG_RIP
@@ -191,6 +194,8 @@ static void run_events_body(void) {
             for (int i = 0; i < 12; i++) fprintf(stderr, " %x", gScreenTransition[i]);
             extern void melon_debug(void);
             melon_debug();
+            fprintf(stderr, " gx %llu", sGxWrites);
+            sGxWrites = 0;
             fprintf(stderr, " vramcnt %08x %08x ime %x ie %08x if %08x cpu %x\n", R32(0x04000240), R32(0x04000244), R32(0x04000208), R32(0x04000210), sIF, host_irq_state());
         }
         if (getenv("ACWW_FPS") && host_frame() % 120 == 0) {  // frames per second of real time, over the last 120
@@ -301,7 +306,7 @@ void host_card_dma(void) {
 }
 
 // ---- the 3D engine: for now a sink; GXSTAT says idle with an empty FIFO
-void gx_fifo_write(u32 addr, u32 value) { melon_write32(addr, value); }
+void gx_fifo_write(u32 addr, u32 value) { sGxWrites++; melon_write32(addr, value); }
 
 // ---- register reads and writes
 static void io_read(u32 a) {
@@ -329,7 +334,7 @@ static void io_read(u32 a) {
 // display registers for the renderer: the 3D command ports in full on every write, the others as changed halves
 static void forward_display(u32 w, u32 old) {
     u32 v = R32(w);
-    if ((w >= 0x04000400 && w < 0x04000600) || w == 0x04000600) { melon_write32(w, v); return; }
+    if ((w >= 0x04000400 && w < 0x04000600) || w == 0x04000600) { sGxWrites++; melon_write32(w, v); return; }
     if (w >= 0x04000240 && w < 0x0400024c) {
         for (int i = 0; i < 4; i++) {
             u8 b = v >> (8 * i), o = old >> (8 * i);

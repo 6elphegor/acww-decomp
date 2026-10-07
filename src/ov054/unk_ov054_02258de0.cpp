@@ -445,7 +445,7 @@ extern void *sSpNpcPellyPhyllisMenus[5];
 extern u8 sSpNpcPellyModelPath[];
 extern u8 sSpNpcPhyllisModelPath[];
 extern ActorProfile sSpNpcPellyPhyllisProfile;
-extern u32 sSpNpcPellyPhyllisMsgKeys[2][3];
+extern uptr sSpNpcPellyPhyllisMsgKeys[2][3];
 extern u8 sSpNpcPellyTexturePath[];
 extern u8 sSpNpcPhyllisTexturePath[];
 extern SpNpcPellyPhyllisTalkScript sSpNpcPellyPhyllisTalkScripts[16];
@@ -572,7 +572,11 @@ extern void *data_ov054_0225b8a0[2];
 // symbols.txt labels inside the tables above
 #define data_ov054_0225b3b4 ((const u8 *)sSpNpcPellyPhyllisCounterPos + 8)
 #define data_ov054_0225b974 ((char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + 8))
+#ifdef HOST
+#define data_ov054_0225bb08 (sSpNpcPellyPhyllisTalkScripts) // (the flag column: the entries' flag member on hosts)
+#else
 #define data_ov054_0225bb08 ((Unk_ov054_0225b9c4_Flag *)((u8 *)sSpNpcPellyPhyllisTalkScripts + 8))
+#endif
 #define data_ov054_0225bca4 ((SpNpcPellyPhyllisActEntry *)((u8 *)sSpNpcPellyPhyllisActTable + 8))
 
 // Data. mwcc sorts a file's data by size, and the order of equal-sized objects follows from the order in which
@@ -584,9 +588,9 @@ extern "C" void *data_ov054_0225b838[2] = {(void *)_ZN17SpNpcPellyPhyllis10setup
 extern "C" void *data_ov054_0225b7e0[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk11showGoodbyeEv, 0};
 extern "C" void *data_ov054_0225b890[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk15waitMailboxSaveEv, 0};
 extern "C" const u8 data_ov054_0225b350[2] = {0x34, 0};
-extern "C" u32 sSpNpcPellyPhyllisMsgKeys[2][3] = {
-    {(u32)sSpNpcPellyKey, (u32)sSpNpcPellyDramaKey, (u32)sSpNpcPellyPhyllisSequence4Key},
-    {(u32)sSpNpcPhyllisKey, (u32)sSpNpcPhyllisDramaKey, 0},
+extern "C" uptr sSpNpcPellyPhyllisMsgKeys[2][3] = {
+    {(uptr)sSpNpcPellyKey, (uptr)sSpNpcPellyDramaKey, (uptr)sSpNpcPellyPhyllisSequence4Key},
+    {(uptr)sSpNpcPhyllisKey, (uptr)sSpNpcPhyllisDramaKey, 0},
 };
 extern "C" void *data_ov054_0225b6b8[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk17scanForMoveTargetEv, 0};
 extern "C" const u8 data_ov054_0225b344[2] = {0x34, 0};
@@ -772,7 +776,11 @@ u8 *SpNpcPellyPhyllis::getModelPath() { return ((u8 **)sSpNpcPellyPhyllisModelPa
 
 BOOL SpNpcPellyPhyllis::updateAct() {
     BOOL r = FALSE;
+#ifdef HOST
+    if (sSpNpcPellyPhyllisActTable[act].exit) { // (the DS label is the table + one member: the exit member)
+#else
     if (data_ov054_0225bca4[act].enter) {
+#endif
         r = (this->*sSpNpcPellyPhyllisActTable[act].exit)();
     }
     return r;
@@ -1758,7 +1766,11 @@ void SpNpcPellyPhyllisTalk::onDramaMsgEnd(s32 a) {}
 
 void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
     void *ctx = window;
+#ifdef HOST
+    char *tbl = (char *)sSpNpcPellyPhyllisMsgKeys[owner->sister][2];
+#else
     char *tbl = *(char **)((u8 *)data_ov054_0225b974 + owner->sister * 12);
+#endif
     u32 r4 = 0;
     u8 msg;
     switch (msgIndex) {
