@@ -12,25 +12,8 @@ typedef int BOOL;
 #define NULL 0
 
 
-typedef struct RS RS;
-struct RS {
-    u8 *c;              // 0x00 SBC command pointer
-    void *obj;          // 0x04
-    u32 flag;           // 0x08
-    u8 pad0c[0x1c];
-    void (*cb28)(RS *); // 0x28
-    void (*cb2c)(RS *); // 0x2c
-    u8 pad30[4];
-    void (*cb34)(RS *); // 0x34
-    u8 pad38[4];
-    void (*cb3c)(RS *); // 0x3c
-    u8 pad40[0x53];
-    u8 t93, t94, t95, t96, t97, t98;
-    u8 pad99[0x17];
-    u32 *mat_b0;       // 0xb0
-    u8 padb4[0x24];
-    u8 *mat_d8;        // 0xd8
-};
+#include "nnsys/g3d_rt.h"
+typedef G3dRS RS;  // NNSG3dRS
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 extern void NNS_G3dGeSendDL(void *, u32);
 
@@ -60,11 +43,11 @@ void NNSi_G3dFuncSbc_CALLDL(RS *rs)
 {
     u32 timing;
     u32 skip;
-    timing = rs->cb34 ? rs->t96 : 0;
+    timing = rs->cbVecFunc[G3D_SBC_NODEMIX] ? rs->cbVecTiming[G3D_SBC_NODEMIX] : 0;
     if (timing == 1) {
         rs->flag &= ~0x40;
-        rs->cb34(rs);
-        timing = rs->cb34 ? rs->t96 : 0;
+        rs->cbVecFunc[G3D_SBC_NODEMIX](rs);
+        timing = rs->cbVecFunc[G3D_SBC_NODEMIX] ? rs->cbVecTiming[G3D_SBC_NODEMIX] : 0;
         skip = rs->flag & 0x40;
     } else {
         skip = 0;
@@ -75,7 +58,7 @@ void NNSi_G3dFuncSbc_CALLDL(RS *rs)
     }
     if (timing == 3) {
         rs->flag &= ~0x40;
-        rs->cb34(rs);
+        rs->cbVecFunc[G3D_SBC_NODEMIX](rs);
     }
     rs->c += 9;
 }
@@ -94,28 +77,27 @@ void NNSi_G3dFuncSbc_ENVMAP(RS *rs)
     s32 mtx[9];
     V3 sc;
     if ((rs->flag & 0x200) == 0 && (rs->flag & 1)) {
-        u32 w = rs->mat_b0[4];
+        u32 w = rs->pMatAnmResult->prmTexImage;
         if ((w & 0xc0000000) != 0x80000000) {
-            rs->mat_b0[4] &= ~0xc0000000;
-            rs->mat_b0[4] |= 0x80000000;
-            data_0213bd58[1] = rs->mat_b0[4];
+            rs->pMatAnmResult->prmTexImage &= ~0xc0000000;
+            rs->pMatAnmResult->prmTexImage |= 0x80000000;
+            data_0213bd58[1] = rs->pMatAnmResult->prmTexImage;
             NNS_G3dGeBufferOP_N(data_0213bd58[0], &data_0213bd5c, 1);
         }
         mode = 3;
         NNS_G3dGeBufferOP_N(0x10, &mode, 1);
-        timing = CB_TIMING(rs, cb3c, t98);
+        timing = CB_TIMING(rs, cbVecFunc[G3D_SBC_ENVMAP], cbVecTiming[G3D_SBC_ENVMAP]);
         if (timing == 1) {
             rs->flag &= ~0x40;
-            rs->cb3c(rs);
-            timing = CB_TIMING(rs, cb3c, t98);
+            rs->cbVecFunc[G3D_SBC_ENVMAP](rs);
+            timing = CB_TIMING(rs, cbVecFunc[G3D_SBC_ENVMAP], cbVecTiming[G3D_SBC_ENVMAP]);
             skip = rs->flag & 0x40;
         } else {
             skip = 0;
         }
         if (skip == 0) {
-            u16 *m = (u16 *)rs->mat_b0;
-            u32 t = m[0x2c / 2];
-            u32 s = m[0x2e / 2];
+            u32 t = rs->pMatAnmResult->origWidth;
+            u32 s = rs->pMatAnmResult->origHeight;
             sc.x = t << 15;
             sc.y = -s << 15;
             sc.z = 0x10000;
@@ -125,16 +107,16 @@ void NNSi_G3dFuncSbc_ENVMAP(RS *rs)
         }
         if (timing == 2) {
             rs->flag &= ~0x40;
-            rs->cb3c(rs);
-            timing = CB_TIMING(rs, cb3c, t98);
+            rs->cbVecFunc[G3D_SBC_ENVMAP](rs);
+            timing = CB_TIMING(rs, cbVecFunc[G3D_SBC_ENVMAP], cbVecTiming[G3D_SBC_ENVMAP]);
             skip = rs->flag & 0x40;
         } else {
             skip = 0;
         }
         if (skip == 0) {
-            u8 *d = rs->mat_d8 + 4;
-            u8 *dict = d + *(u16 *)(rs->mat_d8 + 10);
-            u8 *mat = rs->mat_d8 + *(u32 *)(dict + *(u16 *)dict * rs->c[1] + 4);
+            u8 *d = rs->pResMat + 4;
+            u8 *dict = d + *(u16 *)(rs->pResMat + 10);
+            u8 *mat = rs->pResMat + *(u32 *)(dict + *(u16 *)dict * rs->c[1] + 4);
             u16 f = *(u16 *)(mat + 0x1e);
             if (f & 0x2000) {
                 u8 *p = mat + 0x2c;
@@ -146,7 +128,7 @@ void NNSi_G3dFuncSbc_ENVMAP(RS *rs)
         }
         if (timing == 3) {
             rs->flag &= ~0x40;
-            rs->cb3c(rs);
+            rs->cbVecFunc[G3D_SBC_ENVMAP](rs);
             skip = rs->flag & 0x40;
         } else {
             skip = 0;

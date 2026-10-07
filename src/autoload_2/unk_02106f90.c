@@ -10,13 +10,8 @@ typedef short s16;
 typedef int BOOL;
 #define NULL 0
 
-typedef struct RS {
-    u8 *node;                 // 0x00
-    u8 pad4[0xd0];
-    u8 *jnt;                  // 0xd4
-    u8 pad_d8[0x10];
-    void (*fn)(void *, void *, void *, void *);   // 0xe8
-} RS;
+#include "nnsys/g3d_rt.h"
+typedef G3dRS RS;  // NNSG3dRS
 
 #ifdef HOST
 // NNSG3dAnmObj by its members (include/nnsys/g3d_rt.h: the pointers move the later members on 64-bit hosts)
@@ -55,8 +50,8 @@ extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, si
 
 static inline u8 *JntEnt(RS *rs)
 {
-    u8 *jnt = rs->jnt;
-    u32 id = rs->node[1];
+    u8 *jnt = rs->pResNodeInfo;
+    u32 id = rs->c[1];
     u8 *t = jnt + *(u16 *)(jnt + 6);
     return jnt + *(u32 *)(t + *(u16 *)t * id + 4);
 }
@@ -100,8 +95,8 @@ void getMdlTrans_(JOut *out)
 void getMdlScale_(void *out)
 {
     RS *rs = data_021f5cc0;
-    u8 *jnt = rs->jnt;
-    u8 *node = rs->node;
+    u8 *jnt = rs->pResNodeInfo;
+    u8 *node = rs->c;
     u8 *t = jnt + *(u16 *)(jnt + 6);
     u8 *ent = jnt + *(u32 *)(t + *(u16 *)t * node[1] + 4);
     u32 flag = *(u16 *)ent;
@@ -116,7 +111,7 @@ void getMdlScale_(void *out)
             p += 16;
         }
     }
-    rs->fn(out, p, node, (void *)flag);
+    rs->funcJntScale(out, p, node, (void *)flag);
 }
 
 // joint rotation from the render state node (identity flag / pivot matrix / 8 stored values)

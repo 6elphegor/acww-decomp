@@ -3,6 +3,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "sys/NNSFndArchive.h"
 #include "gfx/VecFx32.h"
 #include "actor/CharacterListNode.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -353,7 +354,7 @@ enum Unk_ov004_02224a80_Limit { Unk_ov004_02224a80_LIMIT_6 = 6 };
 extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
     if (self->archive == 0) {
         char buf[0x24];
-        u8 res[0x68];
+        u8 res[HOST_SIZED(0x68, NNSFndArchive)] HOST_ALIGN8;  // an NNSFndArchive
         self->archive = File_LoadAlloc(id, gBgHeap, 4, 0);
         if (self->archive) {
             if (NNS_FndMountArchive(res, "RMO", self->archive)) {

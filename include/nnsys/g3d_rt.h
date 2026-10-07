@@ -45,6 +45,73 @@ typedef struct G3dRenderObj {
     unsigned int hintVisAnmExist[2];     // 0x4c
 } G3dRenderObj;
 
+// NNSG3dMatAnmResult (0x38 bytes)
+typedef struct G3dMatAnmResult {
+    unsigned int flag;                   // 0x00
+    unsigned int prmMatColor0;           // 0x04
+    unsigned int prmMatColor1;           // 0x08
+    unsigned int prmPolygonAttr;         // 0x0c
+    unsigned int prmTexImage;            // 0x10
+    unsigned int prmTexPltt;             // 0x14
+    int scaleS, scaleT;                  // 0x18
+    short sinR, cosR;                    // 0x20
+    int transS, transT;                  // 0x24
+    unsigned short origWidth, origHeight; // 0x2c
+    int magW, magH;                      // 0x30
+} G3dMatAnmResult;
+
+// NNSG3dJntAnmResult (0x58 bytes)
+typedef struct G3dJntAnmResult {
+    unsigned int flag;                   // 0x00
+    int scale[3];                        // 0x04
+    int scaleEx0[3];                     // 0x10
+    int scaleEx1[3];                     // 0x1c
+    int rot[9];                          // 0x28
+    int trans[3];                        // 0x4c
+} G3dJntAnmResult;
+
+// NNSG3dVisAnmResult
+typedef struct G3dVisAnmResult {
+    int isVisible;                       // 0x00
+} G3dVisAnmResult;
+
+// NNSG3dRS, the render state of the SBC interpreter (0x188 bytes on the DS)
+typedef struct G3dRS {
+    unsigned char *c;                    // 0x00 current SBC command
+    G3dRenderObj *pRenderObj;            // 0x04
+    unsigned int flag;                   // 0x08
+    void (*cbVecFunc[32])(struct G3dRS *); // 0x0c callback per SBC command
+    unsigned char cbVecTiming[32];       // 0x8c
+    unsigned char currentNode;           // 0xac
+    unsigned char currentMat;            // 0xad
+    unsigned char currentNodeDesc;       // 0xae
+    unsigned char dummy_;
+    G3dMatAnmResult *pMatAnmResult;      // 0xb0
+    G3dJntAnmResult *pJntAnmResult;      // 0xb4
+    G3dVisAnmResult *pVisAnmResult;      // 0xb8
+    unsigned int isMatCached[2];         // 0xbc
+    unsigned int isScaleCacheOne[2];     // 0xc4
+    unsigned int isEnvCached[2];         // 0xcc
+    unsigned char *pResNodeInfo;         // 0xd4
+    unsigned char *pResMat;              // 0xd8
+    unsigned char *pResShp;              // 0xdc
+    int posScale;                        // 0xe0
+    int invPosScale;                     // 0xe4
+    void (*funcJntScale)(void *, void *, void *, void *); // 0xe8
+    void (*funcJntMtx)(void *);          // 0xec
+    void (*funcTexMtx)(void *);          // 0xf0
+    G3dMatAnmResult tmpMatAnmResult;     // 0xf4
+    G3dJntAnmResult tmpJntAnmResult;     // 0x12c
+    G3dVisAnmResult tmpVisAnmResult;     // 0x184
+} G3dRS;
+
+// the SBC command callbacks / timings by command (NNS_G3D_SBC_*)
+#define G3D_SBC_NODEDESC 6
+#define G3D_SBC_BB 7
+#define G3D_SBC_BBY 8
+#define G3D_SBC_NODEMIX 10
+#define G3D_SBC_ENVMAP 12
+
 // an animation object's size for numMapData resources (NNS_G3dAnmObjCalcSizeRequired)
 #define G3D_ANMOBJ_SIZE(n) ((unsigned int)(((__UINTPTR_TYPE__)&((G3dAnmObj *)0)->mapData[0] + 2 * (n) + 3) & ~3u))
 

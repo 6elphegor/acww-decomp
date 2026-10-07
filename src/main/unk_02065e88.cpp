@@ -665,7 +665,7 @@ public:
     TalkTagScannerView(void *owner);
     ~TalkTagScannerView();
     void scan(u32 v);
-    u8 pad[0x44];
+    u8 pad[HOST_SIZED(0x44, TalkTagScanner)] HOST_ALIGN8;  // a TalkTagScanner
 };
 
 class TalkAutoAdvance {

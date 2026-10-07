@@ -12,25 +12,8 @@ typedef int s32;
 typedef int BOOL;
 #define NULL 0
 
-typedef struct RS RS;
-struct RS {
-    u8 *c;              // 0x00 SBC command pointer
-    void *obj;          // 0x04
-    u32 flag;           // 0x08
-    u8 pad0c[0x1c];
-    void (*cb28)(RS *); // 0x28
-    void (*cb2c)(RS *); // 0x2c
-    u8 pad30[4];
-    void (*cb34)(RS *); // 0x34
-    u8 pad38[4];
-    void (*cb3c)(RS *); // 0x3c
-    u8 pad40[0x53];
-    u8 t93, t94, t95, t96, t97, t98;
-    u8 pad99[0x17];
-    u32 *mat_b0;       // 0xb0
-    u8 padb4[0x24];
-    u8 *mat_d8;        // 0xd8
-};
+#include "nnsys/g3d_rt.h"
+typedef G3dRS RS;  // NNSG3dRS
 extern void NNS_G3dGeBufferOP_N(u32, void *, u32);
 extern void NNS_G3dGeSendDL(void *, u32);
 

@@ -9,7 +9,8 @@ typedef int s32;
 #include "types64.h"
 typedef int BOOL;
 typedef struct VecFx32 { s32 x, y, z; } VecFx32;
-typedef struct RS { u8 pad[0xc4]; u32 isScaleCacheOne[2]; } RS;
+#include "nnsys/g3d_rt.h"
+typedef G3dRS RS;  // NNSG3dRS
 typedef struct ScaleCache { VecFx32 s; VecFx32 inv; } ScaleCache;
 typedef struct JntAnmResult {
     u32 flag;           // 0x00

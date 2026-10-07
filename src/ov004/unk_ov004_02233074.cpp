@@ -3,6 +3,8 @@
 // mwcc-version: 1.2/base
 // ov004 TU32: .text 0x02233074-0x02235fd0 (furniture/TV resource slots, tile placement helpers, actor tables, scene object 0224e9d8)
 #include "types.h"
+#include "snd/SndSeqHandle.h"
+#include "sys/FndList.h"
 #include "sys/NNSFndArchive.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
@@ -291,7 +293,13 @@ public:
 // small helper at +0x50 of the main object, flag at +0x10
 class FtrSoundList {
 public:
+#ifdef HOST
+    // a SndPosList (src/autoload_2/unk_020f30fc.cpp: {FndList list; SndSeqHandle h;}), larger on 64-bit hosts
+    struct PosListLayout { FndList list; SndSeqHandle h; };
+    u8 posList[HOST_SIZED(0x10, PosListLayout)] HOST_ALIGN8;
+#else
     /* 0x00 */ u8 posList[0x10];
+#endif
     /* 0x10 */ u8 initialized;
 
     void update();
