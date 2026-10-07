@@ -48,7 +48,83 @@ struct CameraShakeParam {
 
 
 
+#ifdef HOST64
+// Camera: the DS offsets of the M() accesses -> the same members on 64-bit hosts (tools/host_offset_map.py)
+template <unsigned O> struct CameraHostOff;
+template <> struct CameraHostOff<0x80> { enum { v = 0xc0 }; };  // distanceOffset
+template <> struct CameraHostOff<0x90> { enum { v = 0xd0 }; };  // nearOffset
+template <> struct CameraHostOff<0x94> { enum { v = 0xd4 }; };  // farOffset
+template <> struct CameraHostOff<0x98> { enum { v = 0xd8 }; };  // fovyOffset
+template <> struct CameraHostOff<0xa8> { enum { v = 0xe8 }; };  // blendDelayOffset
+template <> struct CameraHostOff<0xac> { enum { v = 0xec }; };  // blendEndOffset
+template <> struct CameraHostOff<0xb0> { enum { v = 0xf0 }; };  // blendEaseInOffset
+template <> struct CameraHostOff<0xb4> { enum { v = 0xf4 }; };  // blendEaseOutOffset
+template <> struct CameraHostOff<0xb8> { enum { v = 0xf8 }; };  // blendDelay
+template <> struct CameraHostOff<0xbc> { enum { v = 0xfc }; };  // blendEnd
+template <> struct CameraHostOff<0xc0> { enum { v = 0x100 }; };  // blendEaseIn
+template <> struct CameraHostOff<0xc4> { enum { v = 0x104 }; };  // blendEaseOut
+template <> struct CameraHostOff<0xc8> { enum { v = 0x108 }; };  // blendTime
+template <> struct CameraHostOff<0xfc> { enum { v = 0x13c }; };  // target.h0
+template <> struct CameraHostOff<0xfe> { enum { v = 0x13e }; };  // target.h1
+template <> struct CameraHostOff<0x100> { enum { v = 0x140 }; };  // target.w0
+template <> struct CameraHostOff<0x104> { enum { v = 0x144 }; };  // target.x
+template <> struct CameraHostOff<0x108> { enum { v = 0x148 }; };  // target.y
+template <> struct CameraHostOff<0x10c> { enum { v = 0x14c }; };  // target.z
+template <> struct CameraHostOff<0x110> { enum { v = 0x150 }; };  // targetFocus.x
+template <> struct CameraHostOff<0x114> { enum { v = 0x154 }; };  // targetFocus.y
+template <> struct CameraHostOff<0x118> { enum { v = 0x158 }; };  // targetFocus.z
+template <> struct CameraHostOff<0x11c> { enum { v = 0x15c }; };  // saved
+template <> struct CameraHostOff<0x11e> { enum { v = 0x15e }; };  // savedPitch
+template <> struct CameraHostOff<0x120> { enum { v = 0x160 }; };  // savedDistance
+template <> struct CameraHostOff<0x124> { enum { v = 0x164 }; };  // savedOffset
+template <> struct CameraHostOff<0x128> { enum { v = 0x168 }; };  // savedOffsetY
+template <> struct CameraHostOff<0x12c> { enum { v = 0x16c }; };  // savedOffsetZ
+template <> struct CameraHostOff<0x130> { enum { v = 0x170 }; };  // savedFocus
+template <> struct CameraHostOff<0x134> { enum { v = 0x174 }; };  // savedFocusY
+template <> struct CameraHostOff<0x138> { enum { v = 0x178 }; };  // savedFocusZ
+template <> struct CameraHostOff<0x13c> { enum { v = 0x17c }; };  // savedEye
+template <> struct CameraHostOff<0x140> { enum { v = 0x180 }; };  // savedEyeY
+template <> struct CameraHostOff<0x144> { enum { v = 0x184 }; };  // savedEyeZ
+template <> struct CameraHostOff<0x148> { enum { v = 0x188 }; };  // current
+template <> struct CameraHostOff<0x14a> { enum { v = 0x18a }; };  // currentPitch
+template <> struct CameraHostOff<0x14c> { enum { v = 0x18c }; };  // currentDistance
+template <> struct CameraHostOff<0x150> { enum { v = 0x190 }; };  // currentOffset
+template <> struct CameraHostOff<0x154> { enum { v = 0x194 }; };  // currentOffsetY
+template <> struct CameraHostOff<0x158> { enum { v = 0x198 }; };  // currentOffsetZ
+template <> struct CameraHostOff<0x15c> { enum { v = 0x19c }; };  // currentFocus
+template <> struct CameraHostOff<0x160> { enum { v = 0x1a0 }; };  // currentFocusY
+template <> struct CameraHostOff<0x164> { enum { v = 0x1a4 }; };  // currentFocusZ
+template <> struct CameraHostOff<0x168> { enum { v = 0x1a8 }; };  // eye
+template <> struct CameraHostOff<0x16c> { enum { v = 0x1ac }; };  // eyeY
+template <> struct CameraHostOff<0x170> { enum { v = 0x1b0 }; };  // eyeZ
+template <> struct CameraHostOff<0x174> { enum { v = 0x1b4 }; };  // roll
+template <> struct CameraHostOff<0x178> { enum { v = 0x1b8 }; };  // pad_176.[2]
+template <> struct CameraHostOff<0x17c> { enum { v = 0x1bc }; };  // pad_176.[6]
+template <> struct CameraHostOff<0x180> { enum { v = 0x1c0 }; };  // pad_176.[10]
+template <> struct CameraHostOff<0x184> { enum { v = 0x1c4 }; };  // pad_176.[14]
+template <> struct CameraHostOff<0x188> { enum { v = 0x1c8 }; };  // lookTarget
+template <> struct CameraHostOff<0x194> { enum { v = 0x1d4 }; };  // lookEye
+template <> struct CameraHostOff<0x1a0> { enum { v = 0x1e0 }; };  // lookUp
+template <> struct CameraHostOff<0x1a4> { enum { v = 0x1e4 }; };  // lookUpY
+template <> struct CameraHostOff<0x1a8> { enum { v = 0x1e8 }; };  // lookUpZ
+template <> struct CameraHostOff<0x1ac> { enum { v = 0x1ec }; };  // eyeCurveAngle
+template <> struct CameraHostOff<0x1b0> { enum { v = 0x1f0 }; };  // aspect
+template <> struct CameraHostOff<0x1b4> { enum { v = 0x1f4 }; };  // nearClip
+template <> struct CameraHostOff<0x1b8> { enum { v = 0x1f8 }; };  // farClip
+template <> struct CameraHostOff<0x1bc> { enum { v = 0x1fc }; };  // pad_1bc.[0]
+template <> struct CameraHostOff<0x1c0> { enum { v = 0x200 }; };  // pad_1bc.[4]
+template <> struct CameraHostOff<0x1c4> { enum { v = 0x204 }; };  // pad_1bc.[8]
+template <> struct CameraHostOff<0x1c8> { enum { v = 0x208 }; };  // fovy
+template <> struct CameraHostOff<0x1e4> { enum { v = 0x224 }; };  // closeUpFactorTarget
+template <> struct CameraHostOff<0x1e8> { enum { v = 0x228 }; };  // closeUpFactor
+template <> struct CameraHostOff<0x1f4> { enum { v = 0x234 }; };  // viewPushed
+template <> struct CameraHostOff<0x1f8> { enum { v = 0x238 }; };  // mode
+template <> struct CameraHostOff<0x1fc> { enum { v = 0x23c }; };  // prevMode
+template <> struct CameraHostOff<0x200> { enum { v = 0x240 }; };  // startMode
+#define M(T, o) (*(T *)((u8 *)this + CameraHostOff<(o)>::v))
+#else
 #define M(T, o) (*(T *)((u8 *)this + (o)))
+#endif
 
 class Camera;
 typedef BOOL (Camera::*CameraModeInitFn)();

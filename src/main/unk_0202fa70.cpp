@@ -250,8 +250,15 @@ extern "C" s64 Vec_DistSq(void* v, void* p);
 extern "C" void Collision_CalcTriangleNormal(void* out, VecFx32* a, VecFx32* b, VecFx32* c);
 extern "C" void _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(void* self, VecFx32* a, VecFx32* b, VecFx32* c, void* d);
 struct CollisionTagView {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in CollisionTagX)
+    u8 attr;  // DS +0x0
+    u8 hpad_0[0x7];
+    sptr callback;  // DS +0x4
+#else
     u8 attr;
     s32 callback;
+#endif
 };
 struct ShapeCylinderView {
     VecFx32 center;
@@ -280,18 +287,41 @@ struct CollisionVisitor {
 };
 
 struct FloorTriangleView {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in FloorTriangle)
+    u8 unk_00[0x2c];  // DS +0x0 [0x28]
+    VecFx32 normal;  // DS +0x28
+    u8 unk_34[0x8];  // DS +0x34 [0x4]
+    CollisionTagView tag;  // DS +0x38
+#else
     u8 unk_00[0x28];
     VecFx32 normal;
     u8 unk_34[4];
     CollisionTagView tag;
+#endif
 };
 struct WallEdgeView {
+#ifdef HOST64
+    // the 64-bit layout (tools/host_view_layout.py: the members at their places in WallEdge)
+    u8 unk_00[0x8];  // DS +0x0 [0x4]
+    s32 start;  // DS +0x4
+    s32 startZ;  // DS +0x8
+    s32 end;  // DS +0xc
+    s32 endZ;  // DS +0x10
+    s32 normal;  // DS +0x14
+    s32 normalZ;  // DS +0x18
+    u8 unk_1c[0x8];  // DS +0x1c [0x4]
+    CollisionTagView tag;  // DS +0x20
+    u8 unk_28[0x4];  // DS +0x28 [0x4]
+    s32 topY;  // DS +0x2c
+#else
     u8 unk_00[4];
     s32 start, startZ, end, endZ, normal, normalZ;
     u8 unk_1c[4];
     CollisionTagView tag;
     u8 unk_28[4];
     s32 topY;
+#endif
 };
 struct WallCornerPadded {
     VecFx32Ctor v4;
@@ -1787,6 +1817,21 @@ void MoveCollisionVisitor::visitWalls(u8* p) {
 void MoveCollisionVisitor::visitFloors(u8* p) {
     u8* e;
     VecFx32CtorDtor dead;
+#ifdef HOST
+    // (the list's triangles by their type: they grow on 64-bit hosts)
+    FloorTriangleList *fl = (FloorTriangleList *)p;
+    for (u32 i = 0; i < fl->numTriangles; i++) {
+        FloorTriangle *t = &fl->triangles[i];
+        e = (u8 *)t;
+        if (pos->y < t->vertex0.y) {
+            if (_ZN17CollisionTriangle10containsXZEP15Unk_0202f2ac_V3(e, pos)) {
+                pos->y = t->vertex0.y;
+                state->flags |= 1;
+                state->groundAttr = t->attr;
+            }
+        }
+    }
+#else
     u8* end = p + *(s32*)(p + 0xa00) * 0x40;
     for (e = p; e < end; e += 0x40) {
         if (pos->y < *(s32*)(e + 8)) {
@@ -1797,6 +1842,7 @@ void MoveCollisionVisitor::visitFloors(u8* p) {
             }
         }
     }
+#endif
 }
 
 void MoveCollisionVisitor::visitCylinders(u8* p) {
@@ -1817,8 +1863,13 @@ void MoveCollisionVisitor::visitCylinders(u8* p) {
 void SegmentCollisionVisitor::visitWalls(u8* p) {
     VecFx32 out;
     WallEdgeView* e;
+#ifdef HOST
+    numWalls = ((WallEdgeList *)p)->numEdges;
+    for (e = (WallEdgeView*)p; (u8*)e < p + numWalls * sizeof(WallEdge); e = (WallEdgeView*)((u8 *)e + sizeof(WallEdge))) {
+#else
     numWalls = *(s32*)(p + 0x480);
     for (e = (WallEdgeView*)p; (u8*)e < p + numWalls * 0x30; e++) {
+#endif
         VecFx32Ctor v0(e->normal, 0, e->normalZ);
         VecFx32Ctor v1(e->start, e->topY, e->startZ);
         VecFx32Ctor v2(e->start, -0x8000, e->startZ);
@@ -1856,8 +1907,13 @@ void SegmentCollisionVisitor::visitFloors(u8* p) {
     u8* e;
     u8* end;
     BOOL one = TRUE;
+#ifdef HOST
+    numFloors = ((FloorTriangleList *)p)->numTriangles;
+    for (e = p; e < p + numFloors * sizeof(FloorTriangle); e += sizeof(FloorTriangle)) {
+#else
     numFloors = *(s32*)(p + 0xa00);
     for (e = p; e < p + numFloors * 0x40; e += 0x40) {
+#endif
         FloorTriangleView* ent = (FloorTriangleView*)e;
         if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(e, &segStart) >= 0) {
             if (Unk_02031f90_Ge0(_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(e, segEnd))) {
@@ -3374,3 +3430,32 @@ BOOL CollisionCylinderX::clipSegmentSide(VecFx32 *out, VecFx32 *a) {
     return FALSE;
 }
 
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(CollisionTagView, attr) == 0x0, "CollisionTagView.attr");
+static_assert(__builtin_offsetof(CollisionTagView, callback) == 0x8, "CollisionTagView.callback");
+static_assert(sizeof(CollisionTagView) == sizeof(CollisionTagX), "CollisionTagView: regenerate (tools/host_view_layout.py --remove)");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(FloorTriangleView, unk_00) == 0x0, "FloorTriangleView.unk_00");
+static_assert(__builtin_offsetof(FloorTriangleView, normal) == 0x2c, "FloorTriangleView.normal");
+static_assert(__builtin_offsetof(FloorTriangleView, unk_34) == 0x38, "FloorTriangleView.unk_34");
+static_assert(__builtin_offsetof(FloorTriangleView, tag) == 0x40, "FloorTriangleView.tag");
+static_assert(sizeof(FloorTriangleView) == sizeof(FloorTriangle), "FloorTriangleView: regenerate (tools/host_view_layout.py --remove)");
+#endif
+
+#ifdef HOST64
+static_assert(__builtin_offsetof(WallEdgeView, unk_00) == 0x0, "WallEdgeView.unk_00");
+static_assert(__builtin_offsetof(WallEdgeView, start) == 0x8, "WallEdgeView.start");
+static_assert(__builtin_offsetof(WallEdgeView, startZ) == 0xc, "WallEdgeView.startZ");
+static_assert(__builtin_offsetof(WallEdgeView, end) == 0x10, "WallEdgeView.end");
+static_assert(__builtin_offsetof(WallEdgeView, endZ) == 0x14, "WallEdgeView.endZ");
+static_assert(__builtin_offsetof(WallEdgeView, normal) == 0x18, "WallEdgeView.normal");
+static_assert(__builtin_offsetof(WallEdgeView, normalZ) == 0x1c, "WallEdgeView.normalZ");
+static_assert(__builtin_offsetof(WallEdgeView, unk_1c) == 0x20, "WallEdgeView.unk_1c");
+static_assert(__builtin_offsetof(WallEdgeView, tag) == 0x28, "WallEdgeView.tag");
+static_assert(__builtin_offsetof(WallEdgeView, unk_28) == 0x38, "WallEdgeView.unk_28");
+static_assert(__builtin_offsetof(WallEdgeView, topY) == 0x3c, "WallEdgeView.topY");
+static_assert(sizeof(WallEdgeView) == sizeof(WallEdge), "WallEdgeView: regenerate (tools/host_view_layout.py --remove)");
+#endif

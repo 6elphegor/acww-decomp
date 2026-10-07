@@ -181,7 +181,29 @@ static void run_events_body(void) {
         extern void host_heap_check(void);
         host_heap_check();
         host_screenshot();
-        if (getenv("ACWW_STATS") && host_frame() % 300 == 0) {
+        {   // ACWW_VRAMDUMP=<frame>:<file>: the 9 VRAM banks, palettes (0x800), OAM (0x800), I/O 0x04000000-0x04001100
+            static long dumpAt = -2; static const char *dumpTo;
+            if (dumpAt == -2) {
+                const char *e = getenv("ACWW_VRAMDUMP");
+                dumpAt = e ? strtol(e, 0, 10) : -1;
+                dumpTo = e && strchr(e, ':') ? strchr(e, ':') + 1 : 0;
+            }
+            if (dumpAt >= 0 && dumpTo && (long)host_frame() == dumpAt) {
+                extern u8 *host_vram_bank(int i);
+                extern u32 host_vram_bank_size(int i);
+                FILE *df = fopen(dumpTo, "wb");
+                if (df) {
+                    for (int b = 0; b < 9; b++) fwrite(host_vram_bank(b), 1, host_vram_bank_size(b), df);
+                    fwrite((u8 *)0x05000000, 1, 0x800, df);
+                    fwrite((u8 *)0x07000000, 1, 0x800, df);
+                    for (u32 w = 0x04000000; w < 0x04001100; w += 4) { u32 v = R32(w); fwrite(&v, 4, 1, df); }  // display I/O
+                    fclose(df);
+                }
+            }
+        }
+        static int statsEvery = -1;  // ACWW_STATS=<frames> (1: every 300)
+        if (statsEvery < 0) statsEvery = getenv("ACWW_STATS") ? (atoi(getenv("ACWW_STATS")) > 1 ? atoi(getenv("ACWW_STATS")) : 300) : 0;
+        if (statsEvery && host_frame() % statsEvery == 0) {
             extern u8 *host_vram_bank(int i);
             extern u32 host_vram_bank_size(int i);
             int pal = 0; for (int i = 0; i < 0x800; i++) pal += ((u8 *)0x05000000)[i] != 0;
