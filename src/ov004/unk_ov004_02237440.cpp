@@ -316,8 +316,8 @@ public:
 
     /* 0x050 */ u8 obstacleHitBoxes[4][0x4c];
     /* 0x180 */ u8 modelPool[0x18];
-    /* 0x198 */ s32 dungBeetleAnimFile;
-    /* 0x19c */ s32 dungBallAnimFile;
+    /* 0x198 */ void *dungBeetleAnimFile;
+    /* 0x19c */ void *dungBallAnimFile;
 };
 
 extern "C" {
@@ -325,9 +325,9 @@ void * _ZN12MuseumInsect5crawlEv(void *self);
 void *_ZN16MuseumInsectRoomC1Ev(void *self);
 extern MuseumInsectParam sMuseumInsectParams[];
 BOOL AnimModel_allocAnmObj(void *self, u32 a);
-u32 func_02106788(u32 a);
-u32 func_021067a4(u32 a, s32 b);
-void BlendAnimModel_initAnim(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
+void *func_02106788(void *a);
+void *func_021067a4(void *a, s32 b);
+void BlendAnimModel_initAnim(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
 void AnimModel_attachAnim(void *p);
 void SndEnvChannel_callReset(void *p);
 void func_020548a0(void *p);
@@ -379,16 +379,16 @@ extern u8 data_021ed0a0[];
 u32 ModelSlotPool_acquire(void *self, void *p);
 void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 BOOL PooledModel_loadFromSlot(void *self, u32 a, void *s);
-u32 ModelSlot_getHeap(u32 self);
-void Model_setResource(void *self, u32 a, s32 b);
+void *ModelSlot_getHeap(ModelSlot *self);
+void Model_setResource(void *self, NNSG3dResMdl *a, s32 b);
 BOOL ModelAnim_allocMatAnm(void *self, u32 a, u32 b);
-void ModelAnim_init(void *self, s32 a, s32 b, s32 c, s32 d);
+void ModelAnim_init(void *self, void *a, s32 b, s32 c, s32 d);
 u32 Model_getRenderObj(void *self);
 void ModelAnim_addToRenderObj(void *self, u32 a);
-u32 func_021065dc(u32 a);
-u32 func_021065f8(u32 a, s32 b);
-u32 func_02106654(u8 *p);
-u32 func_02106670(u32 a, s32 b);
+void *func_021065dc(void *a);
+void *func_021065f8(void *a, s32 b);
+void *func_02106654(void *p);
+void *func_02106670(void *a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_ov004_022378e4(void *m);
 void func_ov004_0223756c(void *m);
@@ -4121,29 +4121,29 @@ BOOL MuseumInsectRoom::onCreate() {
     return TRUE;
 }
 
-extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
-    u32 sp8;
-    u32 res;
-    u32 sp10;
-    u8 *mdl;
-    u8 *rec;
-    u32 sp1c;
-    res = ModelSlotPool_acquire(m + 0x180, s + 0x284);
-    mdl = s + 0x288;
+extern "C" void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s) {
+    void *sp8;
+    ModelSlot *res;
+    void *sp10;
+    PooledModel *mdl;
+    MuseumInsectParam *rec;
+    void *sp1c;
+    res = ((ModelSlotPool *)(m->modelPool))->acquire(&s->modelSlot);
+    mdl = (PooledModel *)s->pooledModel;
     char nm[0x10];
     char pth[0x18];
     char buf3[0x24];
-    u32 tmp;
-    u8 *r6;
+    void *tmp;
+    AnimModel *r6;
     BOOL ok;
     s32 t;
 
     func_02133ef8(nm, 0x11);
     func_02133ef8(pth + 1, 0x17);
-    t = *(s8 *)(s + 0x196);
-    if (t == 0x25 && s[0x22] == 0) {
+    t = s->insectIndex;
+    if (t == 0x25 && s->isActive == 0) {
         Str_SPrintf(nm, "/insect/51/bug57");
-        ((u8 *)sMuseumInsectParams)[t * 4] = 1;
+        sMuseumInsectParams[t].useVisAnim = 1;
     } else if (t == 0x18) {
         Str_SPrintf(nm, "/insect/61/bug%d", 0x3c);
     } else if (t == 0x23) {
@@ -4165,11 +4165,11 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
     }
     Str_SPrintf(pth + 1, "%s.nsbmd", nm);
     if (File_Exists(pth + 1)) {
-        if (((PooledModel *)(mdl))->loadFromSlot((ModelSlot *)(res), (const char *)(pth + 1))) {
-            r6 = s + 0xb0;
-            Model_setResource(r6, (u32)PooledModel_getModel(mdl), 0);
-            rec = ((u8 *)sMuseumInsectParams) + t * 4;
-            if (*rec) {
+        if (mdl->loadFromSlot(res, (const char *)(pth + 1))) {
+            r6 = &s->model;
+            Model_setResource(r6, (NNSG3dResMdl *)mdl->getModel(), 0);
+            rec = &sMuseumInsectParams[t];
+            if (rec->useVisAnim) {
                 Str_SPrintf(pth + 1, "%s.nsbva", nm);
             } else {
                 Str_SPrintf(pth + 1, "%s.nsbca", nm);
@@ -4177,33 +4177,33 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
             if (File_Exists(pth + 1)) {
                 sp10 = ModelSlot_getHeap(res);
                 if (t == 0x38) {
-                    tmp = *(u32 *)(m + 0x19c) = File_LoadAlloc(pth + 1, gCurrentHeap, 4, 0);
+                    tmp = m->dungBallAnimFile = File_LoadAlloc(pth + 1, gCurrentHeap, 4, 0);
                 } else if (t == 0x23) {
-                    tmp = *(u32 *)(m + 0x198) = File_LoadAlloc(pth + 1, gCurrentHeap, 4, 0);
+                    tmp = m->dungBeetleAnimFile = File_LoadAlloc(pth + 1, gCurrentHeap, 4, 0);
                 } else {
                     tmp = File_LoadAlloc(pth + 1, sp10, 4, 0);
                 }
                 if (tmp) {
                     ok = TRUE;
-                    if (*rec) {
+                    if (rec->useVisAnim) {
                         sp8 = func_021067a4(func_02106788(tmp), 0);
                     } else {
                         sp8 = func_021065f8(func_021065dc(tmp), 0);
                     }
-                    if (((AnimModel *)(r6))->allocAnmObj((void *)(sp10))) {
+                    if (r6->allocAnmObj(sp10)) {
                         s32 k = 0x1000;
                         if (t == 0x35 || t == 9) k = 0;
                         ((BlendAnimModel *)(r6))->initAnim(sp8, 0, k, 0, 0);
-                        ((AnimModel *)(r6))->attachAnim();
+                        r6->attachAnim();
                     }
                     if (t == 0x18) {
                         Str_SPrintf(buf3, "/insect/61/bug%d.nsbta", 0x3c);
                         ok = FALSE;
                         if (File_Exists(buf3)) {
-                            s32 file = File_LoadAlloc(buf3, sp10, 4, ok);
+                            void *file = File_LoadAlloc(buf3, sp10, 4, NULL);
                             if (file) {
-                                sp1c = func_02106670(func_02106654((u8 *)file), ok);
-                                if (((ModelAnim *)(s))->allocMatAnm(*(u32 *)(r6 + 0x5c), (void *)(sp10))) {
+                                sp1c = func_02106670(func_02106654(file), ok);
+                                if (s->matAnim.allocMatAnm(MODEL_AT_RESMDL(r6), sp10)) {
                                     ((ModelAnim *)(s))->init(sp1c, ok, 0x1000, ok);
                                     ModelAnim_addToRenderObj(s, Model_getRenderObj(r6));
                                     ok = TRUE;
@@ -4213,9 +4213,9 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
                     }
                     if (ok) {
                         sMuseumInsectBehaviors[t].setup(s);
-                        ((SndEnvChannel *)(s + 0x24))->callReset();
-                        ((MuseumInsect *)s)->updateFn = sMuseumInsectBehaviors[t].update;
-                        *(u32 *)(s + 0x198) = 2;
+                        ((SndEnvChannel *)(&s->sound))->callReset();
+                        s->updateFn = sMuseumInsectBehaviors[t].update;
+                        s->loadState = 2;
                     }
                 }
             }
@@ -4224,12 +4224,12 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
 }
 
 // clamp x/z of the slot position against its bounds
-extern "C" void MuseumInsect_RevertOutOfBounds(void *m, u8 *s, s32 *p) {
-    s32 *hi = (s32 *)(s + 0x60);
-    s32 *lo = (s32 *)(s + 0x58);
-    s32 *v = (s32 *)(s + 0x2c8);
-    if (v[0] < lo[0] || v[0] > hi[0]) v[0] = p[0];
-    if (v[2] < lo[1] || v[2] > hi[1]) v[2] = p[2];
+extern "C" void MuseumInsect_RevertOutOfBounds(MuseumInsectRoom *m, MuseumInsect *s, VecFx32 *p) {
+    Vec2 *hi = &s->boundsMax;
+    Vec2 *lo = &s->boundsMin;
+    VecFx32 *v = &s->position;
+    if (v->x < lo->x || v->x > hi->x) v->x = p->x;
+    if (v->z < lo->y || v->z > hi->y) v->z = p->z;
 }
 
 void MuseumInsectRoom::updateInsect(MuseumInsect *e) {
@@ -4249,7 +4249,7 @@ void MuseumInsectRoom::updateInsect(MuseumInsect *e) {
         if (obj->isHit != 0) {
             pos->x = pos->x + obj->pushX;
             pos->z = pos->z + obj->pushZ;
-            MuseumInsect_RevertOutOfBounds(this, (u8 *)e, (s32 *)&prev);
+            MuseumInsect_RevertOutOfBounds(this, e, &prev);
             if (((ActorCollider *)(obj))->isHitByGroup(0x40)) {
                 V3_7690 *pv = &e->targetPos;
                 *pv = *pos;
@@ -4378,7 +4378,7 @@ BOOL MuseumInsectRoom::onExecute() {
     for (i = 0; i < 0x20; e++, i++) {
         switch (e->loadState) {
         case 1:
-            MuseumInsectRoom_LoadInsect((u8 *)this, (u8 *)e);
+            MuseumInsectRoom_LoadInsect(this, e);
             break;
         case 2:
             updateInsect(e);

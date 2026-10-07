@@ -8,6 +8,7 @@
 #include "gfx/VecFx32.h"
 #include "types.h"
 class MuseumInsect;
+class MuseumInsectRoom;
 #endif
 
 #ifdef __cplusplus
@@ -395,10 +396,10 @@ s32 MuseumInsectRoom_FindFreeSlot();
 BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsectRoom_LoadInsect
-void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s);
+void MuseumInsectRoom_LoadInsect(MuseumInsectRoom *m, MuseumInsect *s);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_RevertOutOfBounds
-void MuseumInsect_RevertOutOfBounds(void *m, u8 *s, s32 *p);
+void MuseumInsect_RevertOutOfBounds(MuseumInsectRoom *m, MuseumInsect *s, VecFx32 *p);
 #endif
 #ifndef PROTO_LOCAL_MuseumInsect_FindScorpion
 MuseumInsect *MuseumInsect_FindScorpion();
